@@ -3,28 +3,23 @@
 # This file is distributed under the same license as the Synfig Studio package.
 # 
 # Translators:
-# Henrik Berglund <cyaoeu@gmail.com>, 2013
-# Henrik Berglund <cyaoeu@gmail.com>, 2013
-# Henrik Berglund <cyaoeu@gmail.com>, 2013
-# Tou Omiya, 2014
-# Tou Omiya, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
 "POT-Creation-Date: 2021-08-23 11:23+0700\n"
 "PO-Revision-Date: 2021-08-23 04:23+0000\n"
-"Last-Translator: Tou Omiya\n"
-"Language-Team: Japanese (Japan) (http://www.transifex.com/morevnaproject/synfig/language/ja_JP/)\n"
+"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
+"Language-Team: Hindi (http://www.transifex.com/morevnaproject/synfig/language/hi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ja_JP\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Language: hi\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../org.synfig.SynfigStudio.desktop.in.h:1 ../src/gui/dialogs/about.cpp:79
 msgid "2D vector animation studio"
-msgstr "２次元ベクター・アニメーション・スタジオ"
+msgstr ""
 
 #: ../org.synfig.SynfigStudio.desktop.in.h:2
 msgid "Create and edit 2D animations and compositions"
@@ -41,7 +36,7 @@ msgstr ""
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:2
 msgid "Features:"
-msgstr "特色:"
+msgstr ""
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:3
 msgid "Can manipulate vector and bitmap artwork"
@@ -73,7 +68,7 @@ msgstr ""
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:9
 msgid "Pentablet-friendly tools"
-msgstr "ペンタブレットに最適化したツール群"
+msgstr ""
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:10
 msgid "Sound support"
@@ -101,15 +96,15 @@ msgstr ""
 
 #: ../synfigstudio-thumbnailer.schemas.in.h:3
 msgid "Invoke Synfig as Thumbnailer"
-msgstr "Synfig をサムネイラとして呼び出して実行"
+msgstr ""
 
 #: ../synfigstudio-thumbnailer.schemas.in.h:4
 msgid "Invokes Synfig as a gnome thumbnailer for image/sif files"
-msgstr "Synfig を image/sif ファイル用の GNOME サムネイラとして呼び出して実行します"
+msgstr ""
 
 #: ../plugins/add-skeleton-simple/plugin.xml.in.h:1
 msgid "Add Skeleton (Simple)"
-msgstr "スケルトンを追加 (シンプル)"
+msgstr ""
 
 #: ../plugins/lottie-exporter/plugin.xml.in.h:1
 msgid "Export to Lottie format"
@@ -168,7 +163,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:29
 msgid "Random"
-msgstr "ランダム"
+msgstr ""
 
 #: ../src/brushlib/brushsettings.py:29
 msgid ""
@@ -236,7 +231,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:524
 #: ../src/gui/states/state_star.cpp:636 ../src/gui/states/state_text.cpp:414
 msgid "Opacity"
-msgstr "不透明度"
+msgstr ""
 
 #: ../src/brushlib/brushsettings.py:44
 msgid ""
@@ -267,7 +262,7 @@ msgstr ""
 
 #: ../src/brushlib/brushsettings.py:47 ../src/gui/dialogs/dialog_setup.cpp:789
 msgid "Radius"
-msgstr "半径"
+msgstr ""
 
 #: ../src/brushlib/brushsettings.py:47
 msgid ""
@@ -673,7 +668,7 @@ msgstr ""
 #: ../src/gui/actionmanagers/groupactionmanager.cpp:176
 #: ../src/gui/docks/dock_layergroups.cpp:71
 msgid "Add a New Set"
-msgstr "新しいセットを追加"
+msgstr ""
 
 #: ../src/gui/actionmanagers/groupactionmanager.cpp:269
 msgid "Unnamed Set"
@@ -681,11 +676,11 @@ msgstr ""
 
 #: ../src/gui/actionmanagers/keyframeactionmanager.cpp:239
 msgid "Add New Keyframe"
-msgstr "キーフレームを追加"
+msgstr ""
 
 #: ../src/gui/actionmanagers/keyframeactionmanager.cpp:244
 msgid "Keyframe Properties"
-msgstr "キーフレームのプロパティ"
+msgstr ""
 
 #: ../src/gui/actionmanagers/keyframeactionmanager.cpp:248
 msgid "Toggle Keyframe"
@@ -700,18 +695,18 @@ msgstr ""
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:269
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:523
 msgid "Increase Amount"
-msgstr "合成量を増加"
+msgstr ""
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:120
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:270
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:540
 msgid "Decrease Amount"
-msgstr "合成量を減少"
+msgstr ""
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:132
 #: ../src/gui/iconcontroller.cpp:266
 msgid "Select All Child Layers"
-msgstr "子レイヤーを選択"
+msgstr ""
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:266
 msgid "Increase Opacity"
@@ -723,14 +718,14 @@ msgstr ""
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:390
 msgid "Paste"
-msgstr "貼り付け"
+msgstr ""
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:479
 #: ../src/synfigapp/actions/layerduplicate.cpp:333
 #: ../src/synfigapp/canvasinterface.cpp:222
 #, c-format
 msgid "Index %d"
-msgstr "インデックス %d"
+msgstr ""
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:235
 #: ../src/gui/states/state_text.cpp:586
@@ -756,7 +751,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:82
 msgid "Visit the Synfig website"
-msgstr "Synfig の Web サイトを開く"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:84
 msgid ""
@@ -766,16 +761,16 @@ msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:103
 msgid "Original developers:"
-msgstr "開発者:"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:108
 msgid "Contributors:"
-msgstr "貢献者:"
+msgstr ""
 
 #. TRANSLATORS: change this to your name, separate multiple names with \n
 #: ../src/gui/dialogs/about.cpp:220
 msgid "translator-credits"
-msgstr "Henrik Berglund <cyaoeu@gmail.com>"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:235
 #, c-format
@@ -783,7 +778,7 @@ msgid ""
 "\n"
 "Development version:\n"
 "%s\n"
-msgstr "\n開発バージョン:\n%s\n"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:240
 #, c-format
@@ -794,7 +789,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:242
 msgid "Built with:\n"
-msgstr "ビルド環境:\n"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:243
 #, c-format
@@ -804,17 +799,17 @@ msgstr ""
 #: ../src/gui/dialogs/about.cpp:244
 #, c-format
 msgid "Synfig API %s\n"
-msgstr "Synfig API %s\n"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:245
 #, c-format
 msgid "Synfig library %d\n"
-msgstr "Synfig ライブラリ %d\n"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:246
 #, c-format
 msgid "GTK+ %d.%d.%d\n"
-msgstr "GTK+ %d.%d.%d\n"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:248
 #, c-format
@@ -824,65 +819,65 @@ msgstr ""
 #: ../src/gui/dialogs/about.cpp:250
 #, c-format
 msgid "GNU G++ %d.%d.%d\n"
-msgstr "GNU G++ %d.%d.%d\n"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:257
 msgid "Using:\n"
-msgstr "使用中:\n"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:258
 #, c-format
 msgid "Synfig %s\n"
-msgstr "Synfig %s\n"
+msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:259
 #, c-format
 msgid "GTK+ %d.%d.%d"
-msgstr "GTK+ %d.%d.%d"
+msgstr ""
 
 #: ../src/gui/dialogs/canvasoptions.cpp:150
 msgid "Options"
-msgstr "オプション"
+msgstr ""
 
 #: ../src/gui/dialogs/canvasoptions.cpp:168
 msgid "Not yet implemented"
-msgstr "まだ実装していません"
+msgstr ""
 
 #: ../src/gui/dialogs/canvasproperties.cpp:62
 msgid "Canvas Properties"
-msgstr "キャンバスのプロパティ"
+msgstr ""
 
 #: ../src/gui/dialogs/canvasproperties.cpp:76
 msgid "Canvas Info"
-msgstr "キャンバス情報"
+msgstr ""
 
 #: ../src/gui/dialogs/canvasproperties.cpp:78
 msgid "<b>Canvas Info</b>"
-msgstr "<b>キャンバス情報</b>"
+msgstr ""
 
 #: ../src/gui/dialogs/canvasproperties.cpp:93
 msgid "_ID"
-msgstr "ID"
+msgstr ""
 
 #: ../src/gui/dialogs/canvasproperties.cpp:100
 msgid "_Name"
-msgstr "名前(_N)"
+msgstr ""
 
 #: ../src/gui/dialogs/canvasproperties.cpp:104
 msgid "_Description"
-msgstr "説明(_D)"
+msgstr ""
 
 #: ../src/gui/dialogs/canvasproperties.cpp:198 ../src/gui/app.cpp:1022
 msgid "Properties"
-msgstr "プロパティ"
+msgstr ""
 
 #: ../src/gui/dialogs/canvasproperties.cpp:227
 msgid "Edit Canvas Properties"
-msgstr "キャンバスのプロパティを編集"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_color.cpp:58
 msgid "Colors"
-msgstr "色"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_color.cpp:65 ../src/gui/iconcontroller.cpp:291
 msgid "Set as Outline"
@@ -894,7 +889,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:45
 msgid "Custom Video Codec"
-msgstr "カスタム動画コーデック"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:46
 msgid "write your video codec here"
@@ -902,31 +897,31 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:68
 msgid "Flash Video (FLV) / Sorenson Spark / Sorenson H.263"
-msgstr "Flash Video (FLV) / Sorenson Spark / Sorenson H.263"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:69
 msgid "H.263+ / H.263-1998 / H.263 version 2"
-msgstr "H.263+ / H.263-1998 / H.263 version 2"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:70
 msgid "Huffyuv / HuffYUV"
-msgstr "Huffyuv / HuffYUV"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:71
 msgid "libtheora Theora"
-msgstr "libtheora Theora"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:72
 msgid "H.264 / AVC / MPEG-4 AVC"
-msgstr "H.264 / AVC / MPEG-4 AVC"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:73
 msgid "H.264 / AVC / MPEG-4 AVC (LossLess)"
-msgstr "H.264 / AVC / MPEG-4 AVC (ロスレス)"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:74
 msgid "MJPEG (Motion JPEG)"
-msgstr "MJPEG (Motion JPEG)"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:75
 msgid "raw MPEG-1 video"
@@ -954,11 +949,11 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:81
 msgid "Windows Media Video 7"
-msgstr "Windows Media ビデオ 7"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:82
 msgid "Windows Media Video 8"
-msgstr "Windows Media ビデオ 8"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:91
 msgid "FFmpeg parameters"
@@ -966,19 +961,19 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:100
 msgid "Available Video Codecs:"
-msgstr "利用可能な動画コーデック:"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:119
 msgid "Video Bit Rate:"
-msgstr "動画ビットレート:"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_gradient.cpp:60
 msgid "Gradient Editor"
-msgstr "グラデーションエディター"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_gradient.cpp:75
 msgid "Set as Default"
-msgstr "デフォルトにする"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_input.cpp:102
 msgid "Input Dialog"
@@ -1018,7 +1013,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_input.cpp:179
 msgid "Screen"
-msgstr "スクリーン"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_input.cpp:180
 msgid "Window"
@@ -1026,7 +1021,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_keyframe.cpp:58
 msgid "Keyframe Dialog"
-msgstr "キーフレームダイアログ"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_keyframe.cpp:92 ../src/gui/canvasview.cpp:3348
 #: ../src/gui/instance.cpp:1037
@@ -1041,7 +1036,7 @@ msgstr ""
 #: ../src/gui/canvasview.cpp:1195
 #: ../src/gui/resources/ui/preview_options.glade.h:2
 msgid "Preview"
-msgstr "プレビュー"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:79
 msgid "Synfig Studio Preferences"
@@ -1053,7 +1048,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:94
 msgid "Document"
-msgstr "ドキュメント"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:95
 msgid "Editing"
@@ -1062,7 +1057,7 @@ msgstr ""
 #: ../src/gui/dialogs/dialog_setup.cpp:96 ../src/gui/canvasview.cpp:1168
 #: ../src/gui/render.cpp:211
 msgid "Render"
-msgstr "レンダリング"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:97
 msgid "System"
@@ -1076,43 +1071,43 @@ msgstr ""
 #: ../src/gui/dialogs/dialog_setup.cpp:164
 #: ../src/gui/resources/ui/canvas_options.glade.h:9
 msgid "Units"
-msgstr "ユニット"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:138
 msgid "Timestamp"
-msgstr "タイムスタンプ"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:165
 msgid "Pixels"
-msgstr "ピクセル"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:166
 msgid "Points"
-msgstr "ポイント"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:167
 msgid "Inches"
-msgstr "インチ"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:168
 msgid "Meters"
-msgstr "メートル"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:169
 msgid "Centimeters"
-msgstr "センチメートル"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:170
 msgid "Millimeters"
-msgstr "ミリメートル"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:175
 msgid "Unit System"
-msgstr "単位系"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:181
 msgid "Recent Files"
-msgstr "最近のファイル"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:186
 msgid "Autosave"
@@ -1133,7 +1128,7 @@ msgstr ""
 #: ../src/gui/dialogs/dialog_setup.cpp:258 ../src/gui/iconcontroller.cpp:169
 #: ../src/synfigapp/actions/canvasadd.cpp:74
 msgid "New Canvas"
-msgstr "新しいキャンバスを追加"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:260
 msgid "Name prefix"
@@ -1141,7 +1136,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:262
 msgid "File name prefix for the new created document"
-msgstr "新規作成ドキュメントのファイル名に使用する接頭辞"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:267
 msgid "FPS"
@@ -1149,19 +1144,19 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:270
 msgid "Frames per second of the new created document"
-msgstr "新規作成ドキュメントの 1 秒あたりフレーム数"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:292
 msgid "Size"
-msgstr "サイズ"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:297
 msgid "Width"
-msgstr "幅"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:302
 msgid "Width in pixels of the new created document"
-msgstr "新規作成ドキュメントの横方向のピクセル数"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:313
 msgid "Height"
@@ -1177,55 +1172,55 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:326
 msgid "2048x1556 Full Aperture Native 2K"
-msgstr "2048x1556 Full Aperture ネイティブ 2K"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:327
 msgid "1920x1080 HDTV 1080p/i"
-msgstr "1920x1080 HDTV 1080p/i"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:328
 msgid "1280x720  HDTV 720p"
-msgstr "1280x720  HDTV 720p"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:329
 msgid "720x576   DVD PAL"
-msgstr "720x576   DVD PAL"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:330
 msgid "720x480   DVD NTSC"
-msgstr "720x480   DVD NTSC"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:331
 msgid "720x540   Web 720x"
-msgstr "720x540 ウェブ 720x"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:332
 msgid "720x405   Web 720x HD"
-msgstr "720x405 ウェブ 720x HD"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:333
 msgid "640x480   Web 640x"
-msgstr "640x480 ウェブ 640x"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:334
 msgid "640x360   Web 640x HD"
-msgstr "640x360 ウェブ 640x HD"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:335
 msgid "480x360   Web 480x"
-msgstr "480x360 ウェブ 480x"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:336
 msgid "480x270   Web 480x HD"
-msgstr "480x270 ウェブ 480x HD"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:337
 msgid "360x270   Web 360x"
-msgstr "360x270 ウェブ 360x"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:338
 msgid "360x203   Web 360x HD"
-msgstr "360x203 ウェブ 360x HD"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:343
 msgid "Default Background"
@@ -1237,11 +1232,11 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:355
 msgid "Solid Color"
-msgstr "単色"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:369 ../src/gui/renddesc.cpp:222
 msgid "Image"
-msgstr "画像"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:374
 #: ../src/gui/dialogs/dialog_setup.cpp:655
@@ -1264,7 +1259,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:431 ../src/gui/renddesc.cpp:225
 msgid "Other"
-msgstr "その他"
+msgstr "अन्य"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:434
 msgid "Restrict real value handles to top right quadrant"
@@ -1288,7 +1283,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:448 ../src/gui/render.cpp:122
 msgid "Choose..."
-msgstr "選択..."
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:450
 msgid "Choose the preferred Image editor for Edit in external tool option"
@@ -1307,7 +1302,7 @@ msgstr ""
 #: ../src/gui/dialogs/dialog_setup.cpp:490
 #: ../src/gui/docks/dock_history.cpp:206
 msgid "Action"
-msgstr "アクション"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:498
 msgid "Shortcut"
@@ -1381,7 +1376,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:748
 msgid "System Language"
-msgstr "システム言語"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:760
 msgid "Language"
@@ -1425,12 +1420,12 @@ msgstr ""
 #: ../src/synfigapp/actions/valuenoderename.cpp:86
 #: ../src/gui/resources/ui/dialog_workspaces.glade.h:2
 msgid "Name"
-msgstr "名前"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:805 ../src/gui/trees/layertree.cpp:280
 #: ../src/synfigapp/actions/canvasmetadataset.cpp:84
 msgid "Value"
-msgstr "値"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:831
 msgid "Restore default settings"
@@ -1450,31 +1445,31 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.h:51
 msgid "Custom Size"
-msgstr "カスタムサイズ"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.h:54
 msgid "Custom fps"
-msgstr "カスタムフレームレート"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:58
 msgid "Sound Select"
-msgstr "音声選択"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:62
 msgid "Sound Parameters"
-msgstr "音声のパラメータ"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:63
 msgid "<b>Sound Parameters</b>"
-msgstr "<b>音声のパラメータ</b>"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:70
 msgid "_Sound File"
-msgstr "音声ファイル(_S)"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:74
 msgid "Time _Offset"
-msgstr "時間オフセット(_O)"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_spritesheetparam.cpp:36
 msgid "Sprite sheet parameters"
@@ -1510,7 +1505,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_template.cpp:65
 msgid "Restore Defaults"
-msgstr "デフォルトに戻す"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_template.cpp:116
 msgid "Category"
@@ -1518,7 +1513,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_waypoint.cpp:53
 msgid "Waypoint Editor"
-msgstr "通過点エディター"
+msgstr ""
 
 #: ../src/gui/dialogs/dialog_workspaces.cpp:131
 #, c-format
@@ -1569,47 +1564,47 @@ msgstr ""
 
 #: ../src/gui/dials/framedial.cpp:57
 msgid "Seek to begin"
-msgstr "始まりにシーク"
+msgstr ""
 
 #: ../src/gui/dials/framedial.cpp:58
 msgid "Seek to previous keyframe"
-msgstr "前のキーフレームにシーク"
+msgstr ""
 
 #: ../src/gui/dials/framedial.cpp:59 ../src/gui/preview.cpp:396
 msgid "Seek to previous frame"
-msgstr "前のフレームにシーク"
+msgstr ""
 
 #: ../src/gui/dials/framedial.cpp:60 ../src/gui/app.cpp:961
 #: ../src/gui/iconcontroller.cpp:297 ../src/gui/preview.cpp:412
 msgid "Play"
-msgstr "再生"
+msgstr ""
 
 #: ../src/gui/dials/framedial.cpp:61 ../src/gui/app.cpp:964
 #: ../src/gui/iconcontroller.cpp:299 ../src/gui/preview.cpp:428
 msgid "Pause"
-msgstr "停止"
+msgstr ""
 
 #: ../src/gui/dials/framedial.cpp:62 ../src/gui/preview.cpp:445
 msgid "Seek to next frame"
-msgstr "次のフレームにシーク"
+msgstr ""
 
 #: ../src/gui/dials/framedial.cpp:63
 msgid "Seek to next keyframe"
-msgstr "次のキーフレームにシーク"
+msgstr ""
 
 #: ../src/gui/dials/framedial.cpp:64
 msgid "Seek to end"
-msgstr "終わりにシーク"
+msgstr ""
 
 #: ../src/gui/dials/framedial.cpp:65
 msgid "End Time"
-msgstr "終了時間"
+msgstr ""
 
 #: ../src/gui/dials/framedial.cpp:66 ../src/gui/preview.cpp:466
 #: ../src/synfigapp/actions/valuenodedynamiclistloop.cpp:53
 #: ../src/synfigapp/actions/valuenodestaticlistloop.cpp:52
 msgid "Loop"
-msgstr "ループ"
+msgstr ""
 
 #: ../src/gui/dials/framedial.cpp:67
 msgid "Set lower playback bound"
@@ -1634,11 +1629,11 @@ msgstr ""
 
 #: ../src/gui/dials/keyframedial.cpp:57
 msgid "Unlock past keyframe"
-msgstr "過去のキーフレームのロックを解除"
+msgstr ""
 
 #: ../src/gui/dials/keyframedial.cpp:58
 msgid "Unlock future keyframe"
-msgstr "未来のキーフレームのロックを解除"
+msgstr ""
 
 #: ../src/gui/dials/resolutiondial.cpp:57
 msgid "Increase Resolution"
@@ -1646,7 +1641,7 @@ msgstr ""
 
 #: ../src/gui/dials/resolutiondial.cpp:57
 msgid "Increase Display Resolution"
-msgstr "表示解像度を上げる"
+msgstr ""
 
 #: ../src/gui/dials/resolutiondial.cpp:58
 msgid "Decrease Resolution"
@@ -1654,15 +1649,15 @@ msgstr ""
 
 #: ../src/gui/dials/resolutiondial.cpp:58
 msgid "Decrease Display Resolution"
-msgstr "表示解像度を下げる"
+msgstr ""
 
 #: ../src/gui/dials/resolutiondial.cpp:59
 msgid "Low Res"
-msgstr "低解像度"
+msgstr ""
 
 #: ../src/gui/dials/resolutiondial.cpp:59
 msgid "Use Low Resolution when enabled"
-msgstr "有効にすると、低解像度で表示します"
+msgstr ""
 
 #: ../src/gui/dials/toggleducksdial.cpp:57
 msgid "Position handles"
@@ -1670,7 +1665,7 @@ msgstr ""
 
 #: ../src/gui/dials/toggleducksdial.cpp:57 ../src/gui/iconcontroller.cpp:319
 msgid "Toggle position handles"
-msgstr "位置ハンドルの表示を切り替え"
+msgstr ""
 
 #: ../src/gui/dials/toggleducksdial.cpp:58
 msgid "Vertex handles"
@@ -1678,7 +1673,7 @@ msgstr ""
 
 #: ../src/gui/dials/toggleducksdial.cpp:58 ../src/gui/iconcontroller.cpp:320
 msgid "Toggle vertex handles"
-msgstr "頂点ハンドルの表示を切り替え"
+msgstr ""
 
 #: ../src/gui/dials/toggleducksdial.cpp:59
 msgid "Tangent handles"
@@ -1686,7 +1681,7 @@ msgstr ""
 
 #: ../src/gui/dials/toggleducksdial.cpp:59 ../src/gui/iconcontroller.cpp:321
 msgid "Toggle tangent handles"
-msgstr "接線ハンドルの表示を切り替え"
+msgstr ""
 
 #: ../src/gui/dials/toggleducksdial.cpp:60
 msgid "Radius handles"
@@ -1694,7 +1689,7 @@ msgstr ""
 
 #: ../src/gui/dials/toggleducksdial.cpp:60 ../src/gui/iconcontroller.cpp:322
 msgid "Toggle radius handles"
-msgstr "半径ハンドルの表示を切り替え"
+msgstr ""
 
 #: ../src/gui/dials/toggleducksdial.cpp:61
 msgid "Width handles"
@@ -1702,7 +1697,7 @@ msgstr ""
 
 #: ../src/gui/dials/toggleducksdial.cpp:61 ../src/gui/iconcontroller.cpp:323
 msgid "Toggle width handles"
-msgstr "線幅ハンドルの表示を切り替え"
+msgstr ""
 
 #: ../src/gui/dials/toggleducksdial.cpp:62
 msgid "Angle handles"
@@ -1710,110 +1705,110 @@ msgstr ""
 
 #: ../src/gui/dials/toggleducksdial.cpp:62 ../src/gui/iconcontroller.cpp:324
 msgid "Toggle angle handles"
-msgstr "角度ハンドルの表示を切り替え"
+msgstr ""
 
 #: ../src/gui/dials/zoomdial.cpp:58
 msgid "Zoom In"
-msgstr "ズームイン"
+msgstr ""
 
 #: ../src/gui/dials/zoomdial.cpp:59
 msgid "Zoom Out"
-msgstr "ズームアウト"
+msgstr ""
 
 #: ../src/gui/dials/zoomdial.cpp:60
 msgid "Zoom to Fit"
-msgstr "ウィンドウのサイズに合わせる"
+msgstr ""
 
 #: ../src/gui/dials/zoomdial.cpp:61
 msgid "Zoom to 100%"
-msgstr "100% にズーム"
+msgstr ""
 
 #: ../src/gui/docks/dialog_tooloptions.cpp:52
 #: ../src/gui/docks/dialog_tooloptions.cpp:72 ../src/gui/app.cpp:993
 msgid "Tool Options"
-msgstr "ツールオプション"
+msgstr ""
 
 #: ../src/gui/docks/dialog_tooloptions.cpp:53
 msgid "This tool has no options"
-msgstr "このツールにはオプションはありません"
+msgstr ""
 
 #: ../src/gui/docks/dock_canvases.cpp:54 ../src/gui/app.cpp:995
 msgid "Canvas Browser"
-msgstr "キャンバスブラウザー"
+msgstr ""
 
 #: ../src/gui/docks/dock_canvases.cpp:107 ../src/gui/trees/childrentree.cpp:64
 #: ../src/synfigapp/actions/canvasadd.cpp:79
 msgid "ID"
-msgstr "ID"
+msgstr ""
 
 #: ../src/gui/docks/dock_children.cpp:56 ../src/gui/app.cpp:1000
 #: ../src/gui/iconcontroller.cpp:271
 msgid "Library"
-msgstr "ライブラリ"
+msgstr ""
 
 #: ../src/gui/docks/dock_curves.cpp:55 ../src/gui/app.cpp:1004
 #: ../src/gui/iconcontroller.cpp:272
 msgid "Graphs"
-msgstr "グラフ"
+msgstr ""
 
 #: ../src/gui/docks/dock_history.cpp:65 ../src/gui/docks/dock_history.cpp:124
 #: ../src/gui/app.cpp:994 ../src/gui/iconcontroller.cpp:277
 msgid "History"
-msgstr "履歴"
+msgstr ""
 
 #: ../src/gui/docks/dock_history.cpp:77 ../src/gui/iconcontroller.cpp:268
 msgid "Clear Undo Stack"
-msgstr "取り消しスタックをクリア"
+msgstr ""
 
 #: ../src/gui/docks/dock_history.cpp:78
 msgid "Clear the undo stack"
-msgstr "取り消しスタックをクリアします"
+msgstr ""
 
 #: ../src/gui/docks/dock_history.cpp:88 ../src/gui/iconcontroller.cpp:269
 msgid "Clear Redo Stack"
-msgstr "やり直しスタックをクリア"
+msgstr ""
 
 #: ../src/gui/docks/dock_history.cpp:89
 msgid "Clear the redo stack"
-msgstr "やり直しスタックをクリアします"
+msgstr ""
 
 #: ../src/gui/docks/dock_history.cpp:99
 msgid "Clear Undo and Redo Stacks"
-msgstr "取り消しスタックとやり直しスタックをクリア"
+msgstr ""
 
 #: ../src/gui/docks/dock_history.cpp:100
 msgid "Clear the undo and redo stacks"
-msgstr "取り消しスタックとやり直しスタックをクリアします"
+msgstr ""
 
 #: ../src/gui/docks/dock_history.cpp:110 ../src/gui/iconcontroller.cpp:180
 msgid "Undo"
-msgstr "取り消し"
+msgstr ""
 
 #: ../src/gui/docks/dock_history.cpp:111
 msgid "Undo the previous action"
-msgstr "直前の操作を取り消します"
+msgstr ""
 
 #: ../src/gui/docks/dock_history.cpp:118 ../src/gui/iconcontroller.cpp:179
 msgid "Redo"
-msgstr "やり直し"
+msgstr ""
 
 #: ../src/gui/docks/dock_history.cpp:119
 msgid "Redo the previously undone action"
-msgstr "直前に取り消した操作をやり直します"
+msgstr ""
 
 #: ../src/gui/docks/dock_history.cpp:189 ../src/gui/trees/keyframetree.cpp:104
 #: ../src/gui/trees/keyframetree.cpp:292
 msgid "Jump"
-msgstr "ジャンプ"
+msgstr ""
 
 #: ../src/gui/docks/dock_history.cpp:194 ../src/gui/trees/keyframetree.cpp:108
 msgid "(JMP)"
-msgstr "(ジャンプ)"
+msgstr ""
 
 #: ../src/gui/docks/dock_history.cpp:254 ../src/gui/docks/dock_history.cpp:268
 #: ../src/gui/docks/dock_history.cpp:282
 msgid "Clear History"
-msgstr "履歴をクリア"
+msgstr ""
 
 #: ../src/gui/docks/dock_history.cpp:255
 msgid ""
@@ -1824,7 +1819,7 @@ msgstr ""
 #: ../src/gui/docks/dock_history.cpp:259 ../src/gui/docks/dock_history.cpp:273
 #: ../src/gui/docks/dock_history.cpp:287
 msgid "Clear"
-msgstr "クリア"
+msgstr ""
 
 #: ../src/gui/docks/dock_history.cpp:269
 msgid ""
@@ -1840,7 +1835,7 @@ msgstr ""
 
 #: ../src/gui/docks/dock_info.cpp:94 ../src/gui/app.cpp:1001
 msgid "Info"
-msgstr "情報"
+msgstr ""
 
 #: ../src/gui/docks/dock_info.cpp:103
 msgid "X: "
@@ -1902,16 +1897,16 @@ msgstr ""
 
 #: ../src/gui/docks/dock_info.cpp:214 ../src/gui/iconcontroller.cpp:298
 msgid "Stop"
-msgstr "停止"
+msgstr ""
 
 #: ../src/gui/docks/dock_keyframes.cpp:61 ../src/gui/app.cpp:996
 #: ../src/gui/iconcontroller.cpp:273
 msgid "Keyframes"
-msgstr "キーフレーム"
+msgstr ""
 
 #: ../src/gui/docks/dock_layergroups.cpp:60 ../src/gui/app.cpp:1005
 msgid "Sets"
-msgstr "セット"
+msgstr ""
 
 #: ../src/gui/docks/dock_layergroups.cpp:69
 msgid "Set Ops"
@@ -1919,7 +1914,7 @@ msgstr ""
 
 #: ../src/gui/docks/dock_layers.cpp:63 ../src/gui/app.cpp:997
 msgid "Layers"
-msgstr "レイヤー"
+msgstr ""
 
 #: ../src/gui/docks/dock_layers.cpp:149
 msgid "Layer Ops"
@@ -1928,12 +1923,12 @@ msgstr ""
 #: ../src/gui/docks/dock_layers.cpp:151 ../src/gui/app.cpp:866
 #: ../src/gui/canvasview.cpp:2184 ../src/synfigapp/actions/layeradd.cpp:84
 msgid "New Layer"
-msgstr "新しいレイヤーを追加"
+msgstr ""
 
 #: ../src/gui/docks/dock_metadata.cpp:59 ../src/gui/docks/dock_metadata.cpp:89
 #: ../src/gui/app.cpp:999
 msgid "Canvas MetaData"
-msgstr "キャンバスのメタデータ"
+msgstr ""
 
 #: ../src/gui/docks/dock_metadata.cpp:68
 msgid "Add new MetaData entry"
@@ -1962,12 +1957,12 @@ msgstr ""
 #: ../src/gui/docks/dock_navigator.cpp:305 ../src/gui/app.cpp:1002
 #: ../src/gui/iconcontroller.cpp:275
 msgid "Navigator"
-msgstr "ナビゲーター"
+msgstr ""
 
 #: ../src/gui/docks/dock_params.cpp:57 ../src/gui/app.cpp:998
 #: ../src/gui/iconcontroller.cpp:279
 msgid "Parameters"
-msgstr "パラメータ"
+msgstr ""
 
 #: ../src/gui/docks/dock_soundwave.cpp:114
 msgid "Select a sound layer or type an audio file"
@@ -2079,7 +2074,7 @@ msgstr ""
 #: ../src/gui/trees/childrentree.cpp:111 ../src/gui/trees/layertree.cpp:345
 #: ../src/gui/iconcontroller.cpp:276
 msgid "Time Track"
-msgstr "タイムトラック"
+msgstr ""
 
 #: ../src/gui/docks/dock_timetrack.cpp:349 ../src/gui/app.cpp:1003
 msgid "Timetrack (old)"
@@ -2087,7 +2082,7 @@ msgstr ""
 
 #: ../src/gui/docks/dock_timetrack2.cpp:43 ../src/gui/app.cpp:1008
 msgid "Timetrack"
-msgstr "タイムトラック"
+msgstr ""
 
 #: ../src/gui/docks/dock_timetrack2.cpp:182
 msgid ""
@@ -2129,7 +2124,7 @@ msgstr ""
 #: ../src/gui/docks/dock_toolbox.cpp:70 ../src/gui/app.cpp:867
 #: ../src/gui/app.cpp:992
 msgid "Toolbox"
-msgstr "ツールボックス"
+msgstr ""
 
 #: ../src/gui/docks/dockbook.cpp:280
 msgid "Undock panel"
@@ -2137,38 +2132,38 @@ msgstr ""
 
 #: ../src/gui/docks/dockdialog.cpp:99 ../src/gui/docks/dockmanager.cpp:827
 msgid "Dock Panel"
-msgstr "ドッキングパネル"
+msgstr ""
 
 #: ../src/gui/docks/dockmanager.cpp:827 ../src/gui/docks/dockmanager.cpp:837
 #: ../src/gui/app.cpp:1417
 msgid "Synfig Studio"
-msgstr "Synfig Studio"
+msgstr ""
 
 #: ../src/gui/modules/mod_palette/dock_palbrowse.cpp:52
 msgid "Palette Browser"
-msgstr "パレットブラウザー"
+msgstr ""
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:120 ../src/gui/app.cpp:1006
 msgid "Palette Editor"
-msgstr "パレットエディター"
+msgstr ""
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:131
 msgid "Add Color"
-msgstr "色を追加"
+msgstr ""
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:132
 msgid ""
 "Add current outline color\n"
 "to the palette"
-msgstr "現在の輪郭線の色を\nパレットに追加"
+msgstr ""
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:142
 msgid "Save palette"
-msgstr "パレットを保存"
+msgstr ""
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:143
 msgid "Save the current palette"
-msgstr "このパレットを保存します"
+msgstr ""
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:153
 msgid "Open a palette"
@@ -2180,11 +2175,11 @@ msgstr ""
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:164
 msgid "Load default"
-msgstr "デフォルトを読み込み"
+msgstr ""
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:165
 msgid "Load default palette"
-msgstr "デフォルトパレットを読み込み"
+msgstr ""
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:236
 #: ../src/gui/instance.cpp:486 ../src/gui/instance.cpp:589
@@ -2226,7 +2221,7 @@ msgstr ""
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:304 ../src/gui/app.cpp:4254
 msgid "Unable to open file"
-msgstr "ファイルを開けません"
+msgstr ""
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:304
 msgid "Unknown error"
@@ -2239,7 +2234,7 @@ msgstr ""
 #: ../src/gui/states/state_bline.cpp:493 ../src/gui/states/state_bline.cpp:651
 #: ../src/gui/iconcontroller.cpp:143
 msgid "Spline Tool"
-msgstr "スプラインツール"
+msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:502 ../src/gui/states/state_bone.cpp:366
 #: ../src/gui/states/state_circle.cpp:524 ../src/gui/states/state_draw.cpp:608
@@ -2249,7 +2244,7 @@ msgstr "スプラインツール"
 #: ../src/gui/states/state_rectangle.cpp:475
 #: ../src/gui/states/state_star.cpp:588 ../src/gui/states/state_text.cpp:381
 msgid "Name:"
-msgstr "名前:"
+msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:509
 #: ../src/gui/states/state_circle.cpp:531 ../src/gui/states/state_draw.cpp:615
@@ -2268,7 +2263,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:489
 #: ../src/gui/states/state_star.cpp:602
 msgid "Create a region layer"
-msgstr "領域レイヤーを作成"
+msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:516
 #: ../src/gui/states/state_circle.cpp:540 ../src/gui/states/state_draw.cpp:622
@@ -2292,7 +2287,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:495
 #: ../src/gui/states/state_star.cpp:608
 msgid "Create a plant layer"
-msgstr "植物レイヤーを作成"
+msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:522
 #: ../src/gui/states/state_circle.cpp:546
@@ -2300,7 +2295,7 @@ msgstr "植物レイヤーを作成"
 #: ../src/gui/states/state_rectangle.cpp:497
 #: ../src/gui/states/state_star.cpp:610
 msgid "Create a gradient layer"
-msgstr "グラデーションレイヤーを作成"
+msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:532
 #: ../src/gui/states/state_circle.cpp:557 ../src/gui/states/state_draw.cpp:632
@@ -2309,7 +2304,7 @@ msgstr "グラデーションレイヤーを作成"
 #: ../src/gui/states/state_rectangle.cpp:508
 #: ../src/gui/states/state_star.cpp:620 ../src/gui/states/state_text.cpp:398
 msgid "Blend Method:"
-msgstr "合成方法:"
+msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:539
 #: ../src/gui/states/state_circle.cpp:564 ../src/gui/states/state_draw.cpp:639
@@ -2318,7 +2313,7 @@ msgstr "合成方法:"
 #: ../src/gui/states/state_rectangle.cpp:515
 #: ../src/gui/states/state_star.cpp:627 ../src/gui/states/state_text.cpp:405
 msgid "Blend Method"
-msgstr "合成方法"
+msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:540
 msgid "Defines the blend method to be used for splines"
@@ -2332,7 +2327,7 @@ msgstr ""
 #: ../src/gui/states/state_rectangle.cpp:518
 #: ../src/gui/states/state_star.cpp:630 ../src/gui/states/state_text.cpp:408
 msgid "Opacity:"
-msgstr "不透明度:"
+msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:550
 #: ../src/gui/states/state_circle.cpp:575 ../src/gui/states/state_draw.cpp:650
@@ -2341,7 +2336,7 @@ msgstr "不透明度:"
 #: ../src/gui/states/state_rectangle.cpp:526
 #: ../src/gui/states/state_star.cpp:638
 msgid "Brush Size:"
-msgstr "ブラシのサイズ:"
+msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:559
 #: ../src/gui/states/state_circle.cpp:607 ../src/gui/states/state_draw.cpp:724
@@ -2350,7 +2345,7 @@ msgstr "ブラシのサイズ:"
 #: ../src/gui/states/state_rectangle.cpp:542
 #: ../src/gui/states/state_star.cpp:690
 msgid "Feather:"
-msgstr "境界のぼかし:"
+msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:568
 #: ../src/gui/states/state_circle.cpp:634 ../src/gui/states/state_draw.cpp:731
@@ -2358,7 +2353,7 @@ msgstr "境界のぼかし:"
 #: ../src/gui/states/state_rectangle.cpp:560
 #: ../src/gui/states/state_star.cpp:699
 msgid "Link Origins"
-msgstr "原点をリンク"
+msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:576 ../src/gui/states/state_draw.cpp:739
 #: ../src/gui/states/state_lasso.cpp:700
@@ -2379,7 +2374,7 @@ msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:767
 msgid "New Spline"
-msgstr "新しいスプライン"
+msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:809
 msgid "Unable to add value node"
@@ -2428,7 +2423,7 @@ msgstr ""
 #: ../src/gui/states/state_star.cpp:1270 ../src/gui/states/state_star.cpp:1354
 #: ../src/gui/states/state_text.cpp:595
 msgid "Unable to create layer"
-msgstr "レイヤーを作成できません"
+msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:859
 #: ../src/gui/states/state_circle.cpp:932
@@ -2436,7 +2431,7 @@ msgstr "レイヤーを作成できません"
 #: ../src/gui/states/state_rectangle.cpp:804
 #: ../src/gui/states/state_star.cpp:1038
 msgid " Gradient"
-msgstr "グラデーション"
+msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:883 ../src/gui/states/state_bline.cpp:906
 #: ../src/gui/states/state_circle.cpp:959
@@ -2447,7 +2442,7 @@ msgstr "グラデーション"
 #: ../src/gui/states/state_rectangle.cpp:844
 #: ../src/gui/states/state_star.cpp:1066 ../src/gui/states/state_star.cpp:1088
 msgid "Unable to create Gradient layer"
-msgstr "グラデーションレイヤーを作成できません"
+msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:930
 #: ../src/gui/states/state_circle.cpp:1010
@@ -2455,7 +2450,7 @@ msgstr "グラデーションレイヤーを作成できません"
 #: ../src/gui/states/state_rectangle.cpp:875
 #: ../src/gui/states/state_star.cpp:1117
 msgid " Plant"
-msgstr "植物"
+msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:954 ../src/gui/states/state_bline.cpp:976
 #: ../src/gui/states/state_circle.cpp:1034
@@ -2466,7 +2461,7 @@ msgstr "植物"
 #: ../src/gui/states/state_rectangle.cpp:915
 #: ../src/gui/states/state_star.cpp:1141 ../src/gui/states/state_star.cpp:1163
 msgid "Unable to create Plant layer"
-msgstr "植物レイヤーを作成できません"
+msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:1000
 #: ../src/gui/states/state_circle.cpp:1085
@@ -2476,7 +2471,7 @@ msgstr "植物レイヤーを作成できません"
 #: ../src/gui/states/state_rectangle.cpp:946
 #: ../src/gui/states/state_star.cpp:1192
 msgid " Region"
-msgstr "領域"
+msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:1032
 #: ../src/gui/states/state_bline.cpp:1054
@@ -2492,7 +2487,7 @@ msgstr "領域"
 #: ../src/gui/states/state_rectangle.cpp:996
 #: ../src/gui/states/state_star.cpp:1224 ../src/gui/states/state_star.cpp:1246
 msgid "Unable to create Region layer"
-msgstr "領域レイヤーを作成できません"
+msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:1078
 #: ../src/gui/states/state_circle.cpp:1168
@@ -2502,7 +2497,7 @@ msgstr "領域レイヤーを作成できません"
 #: ../src/gui/states/state_rectangle.cpp:1020
 #: ../src/gui/states/state_star.cpp:1275
 msgid " Outline"
-msgstr "輪郭線"
+msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:1111
 #: ../src/gui/states/state_bline.cpp:1133
@@ -2515,7 +2510,7 @@ msgstr "輪郭線"
 #: ../src/gui/states/state_rectangle.cpp:1075
 #: ../src/gui/states/state_star.cpp:1308 ../src/gui/states/state_star.cpp:1330
 msgid "Unable to create Outline layer"
-msgstr "輪郭線レイヤーを作成できません"
+msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:1157
 #: ../src/gui/states/state_circle.cpp:1251
@@ -2544,32 +2539,32 @@ msgstr ""
 #: ../src/gui/states/state_bline.cpp:1747
 #: ../src/gui/states/state_bline.cpp:1896
 msgid "Unloop Spline"
-msgstr "スプラインのループを解除"
+msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:1701
 #: ../src/gui/states/state_bline.cpp:1753
 #: ../src/gui/states/state_bline.cpp:1902
 msgid "Loop Spline"
-msgstr "スプラインをループ"
+msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:1712
 #: ../src/gui/states/state_bline.cpp:1912
 msgid "Delete Vertex"
-msgstr "頂点を削除"
+msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:1731
 msgid "Insert Vertex"
-msgstr "頂点を挿入"
+msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:1805
 msgid ""
 "Unable to find where to insert vertex, internal error, please report this "
 "bug"
-msgstr "内部エラーにより頂点を挿入する位置を見つけられません。バグを報告してください。"
+msgstr ""
 
 #: ../src/gui/states/state_bline.cpp:1825
 msgid "Unable to remove vertex, internal error, please report this bug"
-msgstr "内部エラーにより頂点を削除できません。バグを報告してください。"
+msgstr ""
 
 #: ../src/gui/states/state_bone.cpp:240 ../src/gui/states/state_bone.cpp:288
 #: ../src/gui/states/state_bone.cpp:1011
@@ -2582,7 +2577,7 @@ msgstr ""
 
 #: ../src/gui/states/state_bone.cpp:347 ../src/gui/iconcontroller.cpp:234
 msgid "Skeleton Layer"
-msgstr "スケルトンレイヤー"
+msgstr ""
 
 #: ../src/gui/states/state_bone.cpp:348
 msgid "Skeleton Deform Layer"
@@ -2614,7 +2609,7 @@ msgstr ""
 
 #: ../src/gui/states/state_brush.cpp:578 ../src/gui/iconcontroller.cpp:149
 msgid "Brush Tool"
-msgstr "ブラシツール"
+msgstr ""
 
 #: ../src/gui/states/state_brush.cpp:760
 msgid "brush image"
@@ -2623,38 +2618,38 @@ msgstr ""
 #: ../src/gui/states/state_circle.cpp:515
 #: ../src/gui/states/state_circle.cpp:724 ../src/gui/iconcontroller.cpp:151
 msgid "Circle Tool"
-msgstr "円ツール"
+msgstr ""
 
 #: ../src/gui/states/state_circle.cpp:536
 msgid "Create a circle layer"
-msgstr "円レイヤーを作成"
+msgstr ""
 
 #: ../src/gui/states/state_circle.cpp:565
 msgid "Defines the blend method to be used for circles"
-msgstr "円の合成方法を定義します"
+msgstr ""
 
 #: ../src/gui/states/state_circle.cpp:584
 msgid "Spline Points:"
-msgstr "スプラインの制御点:"
+msgstr ""
 
 #: ../src/gui/states/state_circle.cpp:590 ../src/gui/states/state_star.cpp:651
 msgid "Offset:"
-msgstr "オフセット:"
+msgstr ""
 
 #: ../src/gui/states/state_circle.cpp:599
 #: ../src/gui/states/state_polygon.cpp:517
 #: ../src/gui/states/state_rectangle.cpp:534
 #: ../src/gui/states/state_star.cpp:682
 msgid "Invert"
-msgstr "反転"
+msgstr ""
 
 #: ../src/gui/states/state_circle.cpp:616
 msgid "Falloff:"
-msgstr "減衰:"
+msgstr ""
 
 #: ../src/gui/states/state_circle.cpp:624
 msgid "Falloff"
-msgstr "減衰"
+msgstr ""
 
 #: ../src/gui/states/state_circle.cpp:625
 msgid "Determines the falloff function for the feather"
@@ -2667,7 +2662,7 @@ msgstr ""
 #: ../src/gui/widgets/widget_waypointmodel.cpp:90
 #: ../src/gui/canvasview.cpp:888 ../src/gui/instance.cpp:1199
 msgid "Linear"
-msgstr "線形"
+msgstr ""
 
 #: ../src/gui/states/state_circle.cpp:628
 msgid "Squared"
@@ -2675,7 +2670,7 @@ msgstr ""
 
 #: ../src/gui/states/state_circle.cpp:629
 msgid "Square Root"
-msgstr "平方根"
+msgstr ""
 
 #: ../src/gui/states/state_circle.cpp:630
 msgid "Sigmond"
@@ -2683,19 +2678,19 @@ msgstr ""
 
 #: ../src/gui/states/state_circle.cpp:631
 msgid "Cosine"
-msgstr "コサイン"
+msgstr ""
 
 #: ../src/gui/states/state_circle.cpp:642 ../src/gui/states/state_star.cpp:707
 msgid "Spline Origins at Center"
-msgstr "スプラインの原点を図形の中心に配置"
+msgstr ""
 
 #: ../src/gui/states/state_circle.cpp:770
 msgid "New Circle"
-msgstr "新しい円"
+msgstr ""
 
 #: ../src/gui/states/state_circle.cpp:903
 msgid "Unable to create Circle layer"
-msgstr "円レイヤーを作成できません"
+msgstr ""
 
 #: ../src/gui/states/state_draw.cpp:596 ../src/gui/states/state_draw.cpp:894
 #: ../src/gui/states/state_lasso.cpp:591
@@ -2705,7 +2700,7 @@ msgstr ""
 #: ../src/gui/states/state_draw.cpp:599 ../src/gui/states/state_draw.cpp:889
 #: ../src/gui/iconcontroller.cpp:147
 msgid "Draw Tool"
-msgstr "ドローツール"
+msgstr ""
 
 #: ../src/gui/states/state_draw.cpp:640
 msgid "Defines the blend method to be used for draws"
@@ -2713,7 +2708,7 @@ msgstr ""
 
 #: ../src/gui/states/state_draw.cpp:657 ../src/gui/states/state_lasso.cpp:634
 msgid "Pressure Sensitive"
-msgstr "筆圧感知"
+msgstr ""
 
 #: ../src/gui/states/state_draw.cpp:667 ../src/gui/states/state_lasso.cpp:642
 msgid "Min Width:"
@@ -2721,7 +2716,7 @@ msgstr ""
 
 #: ../src/gui/states/state_draw.cpp:675 ../src/gui/states/state_lasso.cpp:649
 msgid "Smoothness"
-msgstr "なめらかさ"
+msgstr ""
 
 #: ../src/gui/states/state_draw.cpp:681
 msgid "Local:"
@@ -2759,7 +2754,7 @@ msgstr ""
 #: ../src/gui/states/state_draw.cpp:1844
 #: ../src/gui/states/state_lasso.cpp:1760
 msgid "Define Region"
-msgstr "領域を定義"
+msgstr ""
 
 #: ../src/gui/states/state_draw.cpp:2449 ../src/gui/states/state_draw.cpp:2640
 #: ../src/gui/states/state_lasso.cpp:2353
@@ -2804,7 +2799,7 @@ msgstr ""
 #: ../src/gui/states/state_eyedrop.cpp:116
 #: ../src/gui/states/state_eyedrop.cpp:156 ../src/gui/iconcontroller.cpp:145
 msgid "Eyedrop Tool"
-msgstr "スポイトツール"
+msgstr ""
 
 #: ../src/gui/states/state_eyedrop.cpp:128
 msgid "Click to assign Outline Color"
@@ -2816,7 +2811,7 @@ msgstr ""
 
 #: ../src/gui/states/state_fill.cpp:162
 msgid "No layer here"
-msgstr "ここにはレイヤーはありません"
+msgstr ""
 
 #: ../src/gui/states/state_fill.cpp:172
 msgid "Unable to set layer color"
@@ -2825,23 +2820,23 @@ msgstr ""
 #: ../src/gui/states/state_gradient.cpp:376
 #: ../src/gui/states/state_gradient.cpp:489 ../src/gui/iconcontroller.cpp:160
 msgid "Gradient Tool"
-msgstr "グラデーションツール"
+msgstr ""
 
 #: ../src/gui/states/state_gradient.cpp:397
 msgid "Create a linear gradient"
-msgstr "線形グラデーションを作成"
+msgstr ""
 
 #: ../src/gui/states/state_gradient.cpp:399
 msgid "Create a radial gradient"
-msgstr "放射状グラデーションを作成"
+msgstr ""
 
 #: ../src/gui/states/state_gradient.cpp:401
 msgid "Create a conical gradient"
-msgstr "円錐形グラデーションを作成"
+msgstr ""
 
 #: ../src/gui/states/state_gradient.cpp:403
 msgid "Create a spiral gradient"
-msgstr "渦巻きグラデーションを作成"
+msgstr ""
 
 #: ../src/gui/states/state_gradient.cpp:420
 msgid "Defines the blend method to be used for gradients"
@@ -2849,7 +2844,7 @@ msgstr ""
 
 #: ../src/gui/states/state_gradient.cpp:547
 msgid "New Gradient"
-msgstr "新しいグラデーション"
+msgstr ""
 
 #: ../src/gui/states/state_lasso.cpp:594 ../src/gui/states/state_lasso.cpp:809
 #: ../src/gui/iconcontroller.cpp:148
@@ -2862,84 +2857,84 @@ msgstr ""
 
 #: ../src/gui/states/state_mirror.cpp:165
 msgid "Horizontal"
-msgstr "水平"
+msgstr ""
 
 #: ../src/gui/states/state_mirror.cpp:166
 msgid "Vertical"
-msgstr "垂直"
+msgstr ""
 
 #: ../src/gui/states/state_mirror.cpp:169
 #: ../src/gui/states/state_mirror.cpp:249 ../src/gui/iconcontroller.cpp:158
 msgid "Mirror Tool"
-msgstr "ミラーツール"
+msgstr ""
 
 #: ../src/gui/states/state_mirror.cpp:185
 msgid "(Shift key toggles axis)"
-msgstr "(Shift で対称軸を切り替え)"
+msgstr ""
 
 #: ../src/gui/states/state_normal.cpp:281
 #: ../src/gui/states/state_normal.cpp:318 ../src/gui/iconcontroller.cpp:141
 msgid "Transform Tool"
-msgstr "変形ツール"
+msgstr ""
 
 #: ../src/gui/states/state_normal.cpp:293
 msgid "Ctrl to rotate"
-msgstr "Ctrl で回転"
+msgstr ""
 
 #: ../src/gui/states/state_normal.cpp:295
 msgid "Alt to scale"
-msgstr "Alt で拡大/縮小"
+msgstr ""
 
 #: ../src/gui/states/state_normal.cpp:297
 msgid "Shift to constrain"
-msgstr "Shift で水平/垂直に移動"
+msgstr ""
 
 #: ../src/gui/states/state_polygon.cpp:448
 #: ../src/gui/states/state_polygon.cpp:610 ../src/gui/iconcontroller.cpp:142
 msgid "Polygon Tool"
-msgstr "多角形ツール"
+msgstr ""
 
 #: ../src/gui/states/state_polygon.cpp:469
 msgid "Create a polygon layer"
-msgstr "多角形レイヤーを作成"
+msgstr ""
 
 #: ../src/gui/states/state_polygon.cpp:498
 msgid "Defines the blend method to be used for polygons"
-msgstr "多角形の合成方法を定義します"
+msgstr ""
 
 #: ../src/gui/states/state_polygon.cpp:615
 msgid "Make Polygon"
-msgstr "多角形を作成"
+msgstr ""
 
 #: ../src/gui/states/state_polygon.cpp:625
 msgid "Clear current Polygon"
-msgstr "現在の多角形をクリア"
+msgstr ""
 
 #: ../src/gui/states/state_polygon.cpp:694
 msgid "New Polygon"
-msgstr "新しい多角形"
+msgstr ""
 
 #: ../src/gui/states/state_polygon.cpp:816
 #: ../src/gui/states/state_polygon.cpp:818
 msgid "Unable to create Polygon layer"
-msgstr "多角形レイヤーを作成できません"
+msgstr ""
 
 #: ../src/gui/states/state_rectangle.cpp:466
 #: ../src/gui/states/state_rectangle.cpp:632 ../src/gui/iconcontroller.cpp:152
 msgid "Rectangle Tool"
-msgstr "矩形ツール"
+msgstr ""
 
 #: ../src/gui/states/state_rectangle.cpp:487
 msgid "Create a rectangle layer"
-msgstr "矩形レイヤーを作成"
+msgstr ""
 
 #: ../src/gui/states/state_rectangle.cpp:516
 msgid "Defines the blend method to be used for rectangles"
-msgstr "矩形の合成方法を定義します"
+msgstr ""
 
 #: ../src/gui/states/state_rectangle.cpp:531
 msgid "Brush size"
-msgstr "ブラシのサイズ"
+msgstr ""
 
 #: ../src/gui/states/state_rectangle.cpp:551
 msgid "Expansion:"
@@ -2947,16 +2942,16 @@ msgstr ""
 
 #: ../src/gui/states/state_rectangle.cpp:680
 msgid "New Rectangle"
-msgstr "新しい矩形"
+msgstr ""
 
 #: ../src/gui/states/state_rotate.cpp:202
 #: ../src/gui/states/state_rotate.cpp:251 ../src/gui/iconcontroller.cpp:154
 msgid "Rotate Tool"
-msgstr "回転ツール"
+msgstr ""
 
 #: ../src/gui/states/state_rotate.cpp:211
 msgid "Allow Scale"
-msgstr "同時に拡大/縮小できるようにする"
+msgstr ""
 
 #: ../src/gui/states/state_rotate.cpp:425
 msgid "Move Handle"
@@ -2969,11 +2964,11 @@ msgstr ""
 #: ../src/gui/states/state_scale.cpp:188 ../src/gui/states/state_scale.cpp:237
 #: ../src/gui/iconcontroller.cpp:156
 msgid "Scale Tool"
-msgstr "拡大/縮小ツール"
+msgstr ""
 
 #: ../src/gui/states/state_scale.cpp:197
 msgid "Lock Aspect Ratio"
-msgstr "アスペクト比をロック"
+msgstr ""
 
 #: ../src/gui/states/state_sketch.cpp:150
 msgid "Save Sketch"
@@ -2994,11 +2989,11 @@ msgstr ""
 #: ../src/gui/states/state_sketch.cpp:238
 #: ../src/gui/states/state_sketch.cpp:320 ../src/gui/iconcontroller.cpp:150
 msgid "Sketch Tool"
-msgstr "スケッチツール"
+msgstr ""
 
 #: ../src/gui/states/state_sketch.cpp:247
 msgid "Show Sketch"
-msgstr "スケッチを表示"
+msgstr ""
 
 #: ../src/gui/states/state_sketch.cpp:325
 msgid "Undo Last Stroke"
@@ -3019,29 +3014,29 @@ msgstr ""
 #: ../src/gui/states/state_smoothmove.cpp:199
 #: ../src/gui/iconcontroller.cpp:153
 msgid "SmoothMove Tool"
-msgstr "スムーズムーブツール"
+msgstr ""
 
 #: ../src/gui/states/state_smoothmove.cpp:208
 #: ../src/gui/states/state_width.cpp:257
 msgid "Radius:"
-msgstr "半径:"
+msgstr ""
 
 #: ../src/gui/states/state_smoothmove.cpp:249
 msgid "Smooth Move"
-msgstr "スムーズムーブ"
+msgstr ""
 
 #: ../src/gui/states/state_star.cpp:579 ../src/gui/states/state_star.cpp:807
 #: ../src/gui/iconcontroller.cpp:161
 msgid "Star Tool"
-msgstr "星形ツール"
+msgstr ""
 
 #: ../src/gui/states/state_star.cpp:600
 msgid "Create a star layer"
-msgstr "星形レイヤーを作成"
+msgstr ""
 
 #: ../src/gui/states/state_star.cpp:628
 msgid "Defines the blend method to be used for stars"
-msgstr "星形の合成方法を定義します"
+msgstr ""
 
 #: ../src/gui/states/state_star.cpp:647
 msgid "Star Points:"
@@ -3049,11 +3044,11 @@ msgstr ""
 
 #: ../src/gui/states/state_star.cpp:655
 msgid "Radius Ratio:"
-msgstr "半径比率:"
+msgstr ""
 
 #: ../src/gui/states/state_star.cpp:659
 msgid "Regular Polygon"
-msgstr "正多角形"
+msgstr ""
 
 #: ../src/gui/states/state_star.cpp:666
 msgid "Inner Width:"
@@ -3073,44 +3068,44 @@ msgstr ""
 
 #: ../src/gui/states/state_star.cpp:853
 msgid "New Star"
-msgstr "新しい星形"
+msgstr ""
 
 #: ../src/gui/states/state_star.cpp:1008
 msgid "Unable to create Star layer"
-msgstr "星形レイヤーを作成できません"
+msgstr ""
 
 #: ../src/gui/states/state_text.cpp:372 ../src/gui/states/state_text.cpp:510
 #: ../src/gui/iconcontroller.cpp:159
 msgid "Text Tool"
-msgstr "テキストツール"
+msgstr ""
 
 #: ../src/gui/states/state_text.cpp:393
 msgid "Create a text layer"
-msgstr "テキストレイヤーを作成"
+msgstr ""
 
 #: ../src/gui/states/state_text.cpp:406
 msgid "Defines the blend method to be used for texts"
-msgstr "テキストの合成方法を定義します"
+msgstr ""
 
 #: ../src/gui/states/state_text.cpp:416
 msgid "Multiline Text"
-msgstr "複数行テキスト"
+msgstr ""
 
 #: ../src/gui/states/state_text.cpp:422
 msgid "Size:"
-msgstr "サイズ:"
+msgstr ""
 
 #: ../src/gui/states/state_text.cpp:429
 msgid "Orientation:"
-msgstr "方向:"
+msgstr ""
 
 #: ../src/gui/states/state_text.cpp:435
 msgid "Family:"
-msgstr "ファミリ:"
+msgstr ""
 
 #: ../src/gui/states/state_text.cpp:559
 msgid "New Text"
-msgstr "新しいテキスト"
+msgstr ""
 
 #: ../src/gui/states/state_text.cpp:588
 msgid "Input text"
@@ -3123,15 +3118,15 @@ msgstr ""
 #: ../src/gui/states/state_width.cpp:236 ../src/gui/states/state_width.cpp:336
 #: ../src/gui/iconcontroller.cpp:155
 msgid "Width Tool"
-msgstr "線幅ツール"
+msgstr ""
 
 #: ../src/gui/states/state_width.cpp:245
 msgid "Relative Growth"
-msgstr "相対的に増加させる"
+msgstr ""
 
 #: ../src/gui/states/state_width.cpp:253
 msgid "Growth:"
-msgstr "増加量:"
+msgstr ""
 
 #: ../src/gui/states/state_width.cpp:613
 msgid "Sketch Width"
@@ -3160,7 +3155,7 @@ msgstr ""
 #: ../src/gui/trees/childrentree.cpp:83 ../src/gui/trees/layertree.cpp:328
 #: ../src/synfigapp/actions/valuedescconvert.cpp:99
 msgid "Type"
-msgstr "タイプ"
+msgstr ""
 
 #: ../src/gui/trees/childrentree.cpp:94
 #: ../src/synfigapp/actions/layerparamset.cpp:81
@@ -3226,11 +3221,11 @@ msgstr ""
 #: ../src/synfigapp/actions/waypointsetsmart.cpp:100
 #: ../src/gui/resources/ui/canvas_options.glade.h:7
 msgid "Time"
-msgstr "時間"
+msgstr ""
 
 #: ../src/gui/trees/keyframetree.cpp:89
 msgid "Length"
-msgstr "長さ"
+msgstr ""
 
 #: ../src/gui/trees/keyframetree.cpp:118
 #: ../src/synfigapp/actions/canvasdescriptionset.cpp:83
@@ -3238,7 +3233,7 @@ msgstr "長さ"
 #: ../src/synfigapp/actions/layerencapsulatefilter.cpp:86
 #: ../src/synfigapp/actions/layerencapsulateswitch.cpp:85
 msgid "Description"
-msgstr "説明"
+msgstr ""
 
 #: ../src/gui/trees/keyframetreestore.cpp:722
 #: ../src/gui/trees/keyframetreestore.cpp:737
@@ -3251,7 +3246,7 @@ msgstr ""
 
 #: ../src/gui/trees/layergrouptree.cpp:90 ../src/gui/trees/layertree.cpp:194
 msgid "Z Depth"
-msgstr "Z 深度"
+msgstr ""
 
 #: ../src/gui/trees/layergrouptreestore.cpp:447
 msgid "Activate "
@@ -3263,7 +3258,7 @@ msgstr ""
 
 #: ../src/gui/trees/layergrouptreestore.cpp:570
 msgid "Reset"
-msgstr "リセット"
+msgstr ""
 
 #: ../src/gui/trees/layergrouptreestore.cpp:944
 #: ../src/gui/trees/layertreestore.cpp:1181 ../src/gui/iconcontroller.cpp:183
@@ -3292,11 +3287,11 @@ msgstr "リセット"
 #: ../src/synfigapp/actions/layersetexcludefromrendering.cpp:97
 #: ../src/synfigapp/actions/layerzdepthrangeset.cpp:87
 msgid "Layer"
-msgstr "レイヤー"
+msgstr ""
 
 #: ../src/gui/trees/layerparamtreestore.cpp:234
 msgid "Set Layer Parameters"
-msgstr "レイヤーのパラメータを設定"
+msgstr ""
 
 #: ../src/gui/trees/layerparamtreestore.cpp:250
 msgid "Unable to set all layer parameters."
@@ -3304,7 +3299,7 @@ msgstr ""
 
 #: ../src/gui/trees/layertree.cpp:167
 msgid "Icon"
-msgstr "アイコン"
+msgstr ""
 
 #: ../src/gui/trees/layertreestore.cpp:444
 msgid "Create Group from Ghost"
@@ -3312,7 +3307,7 @@ msgstr ""
 
 #: ../src/gui/trees/layertreestore.cpp:587
 msgid "Move Layers"
-msgstr "レイヤーを移動"
+msgstr ""
 
 #: ../src/gui/trees/metadatatree.cpp:56
 #: ../src/synfigapp/actions/canvasmetadataerase.cpp:80
@@ -3331,7 +3326,7 @@ msgstr ""
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:114
 msgid "Other..."
-msgstr "その他..."
+msgstr ""
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:131
 msgid "Choose canvas"
@@ -3347,7 +3342,7 @@ msgstr ""
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:147
 msgid "No canvas name was specified"
-msgstr "キャンバス名が指定されていません"
+msgstr ""
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:166
 msgid ""
@@ -3357,15 +3352,15 @@ msgstr ""
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:176
 msgid "Unknown Exception"
-msgstr "不明な例外"
+msgstr ""
 
 #: ../src/gui/widgets/widget_coloredit.cpp:370
 msgid "RGB"
-msgstr "RGB"
+msgstr ""
 
 #: ../src/gui/widgets/widget_coloredit.cpp:371
 msgid "YUV"
-msgstr "YUV"
+msgstr ""
 
 #: ../src/gui/widgets/widget_coloredit.cpp:372
 msgid "HSV"
@@ -3373,39 +3368,39 @@ msgstr ""
 
 #: ../src/gui/widgets/widget_coloredit.cpp:392
 msgid "Red"
-msgstr "赤"
+msgstr ""
 
 #: ../src/gui/widgets/widget_coloredit.cpp:393
 msgid "Green"
-msgstr "緑"
+msgstr ""
 
 #: ../src/gui/widgets/widget_coloredit.cpp:394
 msgid "Blue"
-msgstr "青"
+msgstr ""
 
 #: ../src/gui/widgets/widget_coloredit.cpp:417
 msgid "Luma"
-msgstr "輝度"
+msgstr ""
 
 #: ../src/gui/widgets/widget_coloredit.cpp:418
 msgid "Hue"
-msgstr "色相"
+msgstr ""
 
 #: ../src/gui/widgets/widget_coloredit.cpp:419
 msgid "Saturation"
-msgstr "彩度"
+msgstr ""
 
 #: ../src/gui/widgets/widget_coloredit.cpp:420
 msgid "U"
-msgstr "U"
+msgstr ""
 
 #: ../src/gui/widgets/widget_coloredit.cpp:421
 msgid "V"
-msgstr "V"
+msgstr ""
 
 #: ../src/gui/widgets/widget_coloredit.cpp:434
 msgid "Alpha"
-msgstr "アルファ"
+msgstr ""
 
 #: ../src/gui/widgets/widget_curves.cpp:836
 #, c-format
@@ -3425,7 +3420,7 @@ msgstr ""
 
 #: ../src/gui/widgets/widget_curves.cpp:883 ../src/gui/canvasview.cpp:2930
 msgid "Remove Waypoints"
-msgstr "通過点を削除"
+msgstr ""
 
 #: ../src/gui/widgets/widget_curves.cpp:932
 #: ../src/gui/widgets/widget_curves.cpp:1228
@@ -3454,25 +3449,25 @@ msgstr ""
 
 #: ../src/gui/widgets/widget_defaults.cpp:196
 msgid "Outline Color"
-msgstr "輪郭線の色"
+msgstr ""
 
 #: ../src/gui/widgets/widget_defaults.cpp:207
 msgid "Fill Color"
-msgstr "塗りつぶしの色"
+msgstr ""
 
 #: ../src/gui/widgets/widget_defaults.cpp:222
 msgid ""
 "Swap Fill and\n"
 "Outline Colors"
-msgstr "塗りつぶしの色を輪郭線の色と交換する"
+msgstr ""
 
 #: ../src/gui/widgets/widget_defaults.cpp:235
 msgid "Reset Colors to Black and White"
-msgstr "色を黒と白にリセットする"
+msgstr ""
 
 #: ../src/gui/widgets/widget_defaults.cpp:256
 msgid "Brush Preview"
-msgstr "ブラシのプレビュー"
+msgstr ""
 
 #: ../src/gui/widgets/widget_defaults.cpp:259
 msgid "Increase brush size"
@@ -3485,11 +3480,11 @@ msgstr ""
 #: ../src/gui/widgets/widget_defaults.cpp:274
 #: ../src/gui/widgets/widget_defaults.cpp:296
 msgid "Brush Size"
-msgstr "ブラシのサイズ"
+msgstr ""
 
 #: ../src/gui/widgets/widget_defaults.cpp:331
 msgid "Default Gradient"
-msgstr "デフォルトのグラデーション"
+msgstr ""
 
 #: ../src/gui/widgets/widget_filename.cpp:140 ../src/gui/canvasview.cpp:1721
 msgid "Please choose an image file"
@@ -3509,7 +3504,7 @@ msgstr ""
 
 #: ../src/gui/widgets/widget_keyframe_list.cpp:252
 msgid "Not possible to ALT-drag the first keyframe"
-msgstr "最初のキーフレームをALTドラッグできません"
+msgstr ""
 
 #: ../src/gui/widgets/widget_keyframe_list.cpp:275
 msgid "Delta set not allowed"
@@ -3525,7 +3520,7 @@ msgstr ""
 
 #: ../src/gui/widgets/widget_keyframe_list.cpp:357
 msgid "Click and drag keyframes"
-msgstr "キーフレームをクリックしてドラッグします"
+msgstr ""
 
 #: ../src/gui/widgets/widget_keyframe_list.cpp:365
 #: ../src/gui/widgets/widget_keyframe_list.cpp:375
@@ -3605,7 +3600,7 @@ msgstr ""
 #: ../src/gui/widgets/widget_waypointmodel.cpp:86
 #: ../src/gui/canvasview.cpp:884 ../src/gui/instance.cpp:1195
 msgid "Clamped"
-msgstr "クランプ"
+msgstr ""
 
 #: ../src/gui/widgets/widget_waypoint.cpp:84
 #: ../src/gui/widgets/widget_waypoint.cpp:102
@@ -3613,7 +3608,7 @@ msgstr "クランプ"
 #: ../src/gui/widgets/widget_waypointmodel.cpp:87
 #: ../src/gui/canvasview.cpp:885 ../src/gui/instance.cpp:1196
 msgid "TCB"
-msgstr "TCB"
+msgstr ""
 
 #: ../src/gui/widgets/widget_waypoint.cpp:85
 #: ../src/gui/widgets/widget_waypoint.cpp:103
@@ -3621,7 +3616,7 @@ msgstr "TCB"
 #: ../src/gui/widgets/widget_waypointmodel.cpp:88
 #: ../src/gui/canvasview.cpp:886 ../src/gui/instance.cpp:1197
 msgid "Constant"
-msgstr "定数"
+msgstr ""
 
 #: ../src/gui/widgets/widget_waypoint.cpp:86
 #: ../src/gui/widgets/widget_waypoint.cpp:104
@@ -3629,7 +3624,7 @@ msgstr "定数"
 #: ../src/gui/widgets/widget_waypointmodel.cpp:89
 #: ../src/gui/canvasview.cpp:887
 msgid "Ease In/Out"
-msgstr "イーズイン/アウト"
+msgstr ""
 
 #: ../src/gui/widgets/widget_waypoint.cpp:123
 #: ../src/synfigapp/actions/waypointremove.cpp:78
@@ -3637,15 +3632,15 @@ msgstr "イーズイン/アウト"
 #: ../src/synfigapp/actions/waypointsimpleadd.cpp:79
 #: ../src/synfigapp/value_desc.cpp:94
 msgid "Waypoint"
-msgstr "通過点"
+msgstr ""
 
 #: ../src/gui/widgets/widget_waypoint.cpp:125
 msgid "<b>Waypoint</b>"
-msgstr "<b>通過点</b>"
+msgstr ""
 
 #: ../src/gui/widgets/widget_waypoint.cpp:132
 msgid "_Value"
-msgstr "値(_V)"
+msgstr ""
 
 #: ../src/gui/widgets/widget_waypoint.cpp:138
 msgid "_Time"
@@ -3654,15 +3649,15 @@ msgstr ""
 #: ../src/gui/widgets/widget_waypoint.cpp:143 ../src/gui/instance.cpp:1203
 #: ../src/synfigapp/actions/valuedescsetinterpolation.cpp:91
 msgid "Interpolation"
-msgstr "補間方法"
+msgstr ""
 
 #: ../src/gui/widgets/widget_waypoint.cpp:145
 msgid "<b>Interpolation</b>"
-msgstr "<b>補間方法</b>"
+msgstr ""
 
 #: ../src/gui/widgets/widget_waypoint.cpp:152
 msgid "_In Interpolation"
-msgstr "イーズインの補間(_I)"
+msgstr ""
 
 #: ../src/gui/widgets/widget_waypoint.cpp:158
 msgid "O_ut Interpolation"
@@ -3670,11 +3665,11 @@ msgstr ""
 
 #: ../src/gui/widgets/widget_waypoint.cpp:164
 msgid "TCB Parameters"
-msgstr "TCB のパラメータ"
+msgstr ""
 
 #: ../src/gui/widgets/widget_waypoint.cpp:166
 msgid "<b>TCB Parameter</b>"
-msgstr "<b>TCB のパラメータ</b>"
+msgstr ""
 
 #: ../src/gui/widgets/widget_waypoint.cpp:173
 msgid "T_ension"
@@ -3686,7 +3681,7 @@ msgstr ""
 
 #: ../src/gui/widgets/widget_waypoint.cpp:185
 msgid "_Bias"
-msgstr "バイアス(_B)"
+msgstr ""
 
 #: ../src/gui/widgets/widget_waypoint.cpp:191
 msgid "Te_mporal Tension"
@@ -3694,23 +3689,23 @@ msgstr ""
 
 #: ../src/gui/widgets/widget_waypointmodel.cpp:56
 msgid "Out:"
-msgstr "アウト:"
+msgstr ""
 
 #: ../src/gui/widgets/widget_waypointmodel.cpp:57
 msgid "In:"
-msgstr "イン:"
+msgstr ""
 
 #: ../src/gui/widgets/widget_waypointmodel.cpp:58
 msgid "Tension:"
-msgstr "テンション:"
+msgstr ""
 
 #: ../src/gui/widgets/widget_waypointmodel.cpp:59
 msgid "Continuity:"
-msgstr "連続性"
+msgstr ""
 
 #: ../src/gui/widgets/widget_waypointmodel.cpp:60
 msgid "Bias:"
-msgstr "バイアス:"
+msgstr ""
 
 #: ../src/gui/widgets/widget_waypointmodel.cpp:61
 msgid "Temporal Tension:"
@@ -3747,43 +3742,43 @@ msgstr ""
 
 #: ../src/gui/app.cpp:854
 msgid "_File"
-msgstr "ファイル(_F)"
+msgstr ""
 
 #: ../src/gui/app.cpp:855
 msgid "Open Recent"
-msgstr "最近使ったファイルを開く"
+msgstr ""
 
 #: ../src/gui/app.cpp:857 ../src/gui/canvasview.cpp:3007
 msgid "_Edit"
-msgstr "編集(_E)"
+msgstr ""
 
 #: ../src/gui/app.cpp:859
 msgid "_View"
-msgstr "表示(_V)"
+msgstr ""
 
 #: ../src/gui/app.cpp:860
 msgid "Show/Hide Handles"
-msgstr "ハンドルの表示/非表示"
+msgstr ""
 
 #: ../src/gui/app.cpp:861
 msgid "Low-Res Pixel Size"
-msgstr "低解像度表示時のピクセルサイズ"
+msgstr ""
 
 #: ../src/gui/app.cpp:863
 msgid "_Canvas"
-msgstr "キャンバス (_C)"
+msgstr ""
 
 #: ../src/gui/app.cpp:865
 msgid "_Layer"
-msgstr "レイヤー(_L)"
+msgstr ""
 
 #: ../src/gui/app.cpp:868
 msgid "Plug-Ins"
-msgstr "プラグイン"
+msgstr ""
 
 #: ../src/gui/app.cpp:870
 msgid "_Window"
-msgstr "ウィンドウ(_W)"
+msgstr ""
 
 #: ../src/gui/app.cpp:871
 msgid "_Arrange"
@@ -3795,7 +3790,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:874
 msgid "_Help"
-msgstr "ヘルプ(_H)"
+msgstr ""
 
 #: ../src/gui/app.cpp:876 ../src/synfigapp/actions/keyframeduplicate.cpp:79
 #: ../src/synfigapp/actions/keyframeremove.cpp:79
@@ -3803,7 +3798,7 @@ msgstr "ヘルプ(_H)"
 #: ../src/synfigapp/actions/keyframetoggl.cpp:93
 #: ../src/synfigapp/actions/keyframewaypointset.cpp:78
 msgid "Keyframe"
-msgstr "キーフレーム"
+msgstr ""
 
 #: ../src/gui/app.cpp:878
 msgid "_Navigation"
@@ -3811,7 +3806,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:904 ../src/gui/canvasview.cpp:1473
 msgid "Import..."
-msgstr "インポート..."
+msgstr ""
 
 #: ../src/gui/app.cpp:905 ../src/gui/canvasview.cpp:1476
 msgid "Import Sequence..."
@@ -3819,39 +3814,39 @@ msgstr ""
 
 #: ../src/gui/app.cpp:906 ../src/gui/canvasview.cpp:1479
 msgid "Render..."
-msgstr "レンダリング..."
+msgstr ""
 
 #: ../src/gui/app.cpp:907 ../src/gui/canvasview.cpp:1482
 msgid "Preview..."
-msgstr "プレビュー..."
+msgstr ""
 
 #: ../src/gui/app.cpp:908 ../src/gui/canvasview.cpp:1488
 msgid "Close Document"
-msgstr "ドキュメントを閉じる"
+msgstr ""
 
 #: ../src/gui/app.cpp:917 ../src/gui/canvasview.cpp:1495
 msgid "Select All Handles"
-msgstr "すべてのハンドルを選択"
+msgstr ""
 
 #: ../src/gui/app.cpp:918 ../src/gui/canvasview.cpp:1499
 msgid "Unselect All Handles"
-msgstr "すべてのハンドルの選択を解除"
+msgstr ""
 
 #: ../src/gui/app.cpp:919 ../src/gui/canvasview.cpp:1503
 msgid "Select All Layers"
-msgstr "すべてのレイヤーを選択"
+msgstr ""
 
 #: ../src/gui/app.cpp:920 ../src/gui/canvasview.cpp:1507
 msgid "Unselect All Layers"
-msgstr "すべてのレイヤーの選択を解除"
+msgstr ""
 
 #: ../src/gui/app.cpp:921 ../src/gui/mainwindow.cpp:169
 msgid "Input Devices..."
-msgstr "入力デバイス..."
+msgstr ""
 
 #: ../src/gui/app.cpp:922 ../src/gui/mainwindow.cpp:172
 msgid "Preferences..."
-msgstr "設定..."
+msgstr ""
 
 #: ../src/gui/app.cpp:925
 msgid "Menubar"
@@ -3859,7 +3854,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:926 ../src/gui/mainwindow.cpp:181
 msgid "Toolbar"
-msgstr "ツールバー"
+msgstr ""
 
 #: ../src/gui/app.cpp:928 ../src/gui/canvasview.cpp:1655
 msgid "Toggle None/Last visible Handles"
@@ -3867,23 +3862,23 @@ msgstr ""
 
 #: ../src/gui/app.cpp:929 ../src/gui/canvasview.cpp:1667
 msgid "Show Position Handles"
-msgstr "位置ハンドルを表示"
+msgstr ""
 
 #: ../src/gui/app.cpp:930 ../src/gui/canvasview.cpp:1669
 msgid "Show Vertex Handles"
-msgstr "頂点ハンドルを表示"
+msgstr ""
 
 #: ../src/gui/app.cpp:931 ../src/gui/canvasview.cpp:1668
 msgid "Show Tangent Handles"
-msgstr "接線ハンドルを表示"
+msgstr ""
 
 #: ../src/gui/app.cpp:932 ../src/gui/canvasview.cpp:1670
 msgid "Show Radius Handles"
-msgstr "半径ハンドルを表示"
+msgstr ""
 
 #: ../src/gui/app.cpp:933 ../src/gui/canvasview.cpp:1671
 msgid "Show Width Handles"
-msgstr "線幅ハンドルを表示"
+msgstr ""
 
 #: ../src/gui/app.cpp:934 ../src/gui/canvasview.cpp:1672
 msgid "Show WidthPoints Position Handles"
@@ -3891,7 +3886,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:935 ../src/gui/canvasview.cpp:1673
 msgid "Show Angle Handles"
-msgstr "角度ハンドルを表示"
+msgstr ""
 
 #: ../src/gui/app.cpp:936
 msgid "Show Bone Setup Handles"
@@ -3903,40 +3898,40 @@ msgstr ""
 
 #: ../src/gui/app.cpp:938 ../src/gui/canvasview.cpp:1680
 msgid "Next Bone Handles"
-msgstr "次のボーンハンドル"
+msgstr ""
 
 #: ../src/gui/app.cpp:941 ../src/gui/canvasview.cpp:1538
 #, c-format
 msgid "Set Low-Res pixel size to %d"
-msgstr "低解像度表示時のピクセルサイズを %d に設定"
+msgstr ""
 
 #: ../src/gui/app.cpp:943
 msgid "Toggle Grid Show"
-msgstr "グリッドの表示を切り替え"
+msgstr ""
 
 #: ../src/gui/app.cpp:944
 msgid "Toggle Grid Snap"
-msgstr "グリッドのスナップを切り替え"
+msgstr ""
 
 #: ../src/gui/app.cpp:945
 msgid "Toggle Guide Show"
-msgstr "ガイドの表示を切り替え"
+msgstr ""
 
 #: ../src/gui/app.cpp:946
 msgid "Toggle Guide Snap"
-msgstr "ガイドのスナップを切り替え"
+msgstr ""
 
 #: ../src/gui/app.cpp:947
 msgid "Toggle Low-Res"
-msgstr "低解像度表示を切り替え"
+msgstr ""
 
 #: ../src/gui/app.cpp:949 ../src/gui/canvasview.cpp:1548
 msgid "Decrease Low-Res Pixel Size"
-msgstr "低解像度表示時のピクセルサイズを小さく"
+msgstr ""
 
 #: ../src/gui/app.cpp:950 ../src/gui/canvasview.cpp:1551
 msgid "Increase Low-Res Pixel Size"
-msgstr "低解像度表示時のピクセルサイズを大きく"
+msgstr ""
 
 #: ../src/gui/app.cpp:951
 msgid "Toggle Background Rendering"
@@ -3944,63 +3939,63 @@ msgstr ""
 
 #: ../src/gui/app.cpp:952
 msgid "Toggle Onion Skin"
-msgstr "オニオンスキンの表示を切り替え"
+msgstr ""
 
 #: ../src/gui/app.cpp:966 ../src/gui/iconcontroller.cpp:301
 msgid "Seek to Next Keyframe"
-msgstr "次のキーフレームにシーク"
+msgstr ""
 
 #: ../src/gui/app.cpp:967
 msgid "Seek to previous Keyframe"
-msgstr "前のキーフレームにシーク"
+msgstr ""
 
 #: ../src/gui/app.cpp:968
 msgid "Seek to Next Frame"
-msgstr "次のフレームにシーク"
+msgstr ""
 
 #: ../src/gui/app.cpp:969 ../src/gui/iconcontroller.cpp:296
 msgid "Seek to Previous Frame"
-msgstr "前のフレームにシーク"
+msgstr ""
 
 #: ../src/gui/app.cpp:970 ../src/gui/canvasview.cpp:1615
 msgid "Seek Forward"
-msgstr "前方へシーク"
+msgstr ""
 
 #: ../src/gui/app.cpp:971 ../src/gui/canvasview.cpp:1617
 msgid "Seek Backward"
-msgstr "後方へシーク"
+msgstr ""
 
 #: ../src/gui/app.cpp:972 ../src/gui/iconcontroller.cpp:294
 msgid "Seek to Begin"
-msgstr "始まりにシーク"
+msgstr ""
 
 #: ../src/gui/app.cpp:973 ../src/gui/iconcontroller.cpp:302
 msgid "Seek to End"
-msgstr "終わりにシーク"
+msgstr ""
 
 #: ../src/gui/app.cpp:979 ../src/gui/canvasview.cpp:1519
 msgid "Properties..."
-msgstr "プロパティ..."
+msgstr ""
 
 #: ../src/gui/app.cpp:980 ../src/gui/canvasview.cpp:1485
 msgid "Options..."
-msgstr "オプション..."
+msgstr ""
 
 #: ../src/gui/app.cpp:983
 msgid "Increase Layer Amount"
-msgstr "レイヤーの合成量を増加"
+msgstr ""
 
 #: ../src/gui/app.cpp:984
 msgid "Decrease Layer Amount"
-msgstr "レイヤーの合成量を減少"
+msgstr ""
 
 #: ../src/gui/app.cpp:987 ../src/gui/mainwindow.cpp:186
 msgid "Compositing"
-msgstr "構成"
+msgstr ""
 
 #: ../src/gui/app.cpp:989 ../src/gui/mainwindow.cpp:189
 msgid "Animating"
-msgstr "アニメーション編集"
+msgstr ""
 
 #: ../src/gui/app.cpp:990 ../src/gui/mainwindow.cpp:195
 msgid "Save workspace..."
@@ -4008,7 +4003,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:991
 msgid "Preview Dialog"
-msgstr "プレビューダイアログ"
+msgstr ""
 
 #: ../src/gui/app.cpp:1251
 #, c-format
@@ -4029,7 +4024,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:1430 ../src/gui/app.cpp:1435
 msgid "Failed to initialize synfig!"
-msgstr "Synfig の初期化に失敗しました！"
+msgstr ""
 
 #: ../src/gui/app.cpp:1447
 msgid "Loading Basic Settings..."
@@ -4037,15 +4032,15 @@ msgstr ""
 
 #: ../src/gui/app.cpp:1466
 msgid "Loading Plugins..."
-msgstr "プラグインを読み込み中..."
+msgstr ""
 
 #: ../src/gui/app.cpp:1470
 msgid "Init UI Manager..."
-msgstr "UIマネージャーを初期化..."
+msgstr ""
 
 #: ../src/gui/app.cpp:1474
 msgid "Init Dock Manager..."
-msgstr "ドックマネージャーを初期化..."
+msgstr ""
 
 #: ../src/gui/app.cpp:1477
 msgid "Init State Manager..."
@@ -4053,55 +4048,55 @@ msgstr ""
 
 #: ../src/gui/app.cpp:1480
 msgid "Init Main Window..."
-msgstr "メインウィンドウを初期化..."
+msgstr ""
 
 #: ../src/gui/app.cpp:1484
 msgid "Init Toolbox..."
-msgstr "ツールボックスを初期化..."
+msgstr ""
 
 #: ../src/gui/app.cpp:1488
 msgid "Init About Dialog..."
-msgstr "「このアプリケーションについて」ダイアログを初期化..."
+msgstr ""
 
 #: ../src/gui/app.cpp:1491
 msgid "Init Tool Options..."
-msgstr "ツールオプションを初期化..."
+msgstr ""
 
 #: ../src/gui/app.cpp:1495
 msgid "Init History..."
-msgstr "履歴を初期化..."
+msgstr ""
 
 #: ../src/gui/app.cpp:1499
 msgid "Init Canvases..."
-msgstr "キャンバスを初期化..."
+msgstr ""
 
 #: ../src/gui/app.cpp:1503
 msgid "Init Keyframes..."
-msgstr "キーフレームを初期化..."
+msgstr ""
 
 #: ../src/gui/app.cpp:1510
 msgid "Init Layers..."
-msgstr "レイヤーを初期化..."
+msgstr ""
 
 #: ../src/gui/app.cpp:1514
 msgid "Init Parameters..."
-msgstr "パラメータを初期化..."
+msgstr ""
 
 #: ../src/gui/app.cpp:1518
 msgid "Init MetaData..."
-msgstr "メタデータを初期化..."
+msgstr ""
 
 #: ../src/gui/app.cpp:1522
 msgid "Init Library..."
-msgstr "ライブラリを初期化..."
+msgstr ""
 
 #: ../src/gui/app.cpp:1526
 msgid "Init Info..."
-msgstr "情報を初期化..."
+msgstr ""
 
 #: ../src/gui/app.cpp:1530
 msgid "Init Navigator..."
-msgstr "ナビゲーターを初期化..."
+msgstr ""
 
 #: ../src/gui/app.cpp:1534
 msgid "Init SoundWave..."
@@ -4113,27 +4108,27 @@ msgstr ""
 
 #: ../src/gui/app.cpp:1542
 msgid "Init Timetrack..."
-msgstr "タイムトラックを初期化..."
+msgstr ""
 
 #: ../src/gui/app.cpp:1546
 msgid "Init Curve Editor..."
-msgstr "カーブエディターを初期化..."
+msgstr ""
 
 #: ../src/gui/app.cpp:1550
 msgid "Init Layer Sets..."
-msgstr "レイヤーセットを初期化..."
+msgstr ""
 
 #: ../src/gui/app.cpp:1555
 msgid "Init Color Dialog..."
-msgstr "色ダイアログを初期化..."
+msgstr ""
 
 #: ../src/gui/app.cpp:1558
 msgid "Init Gradient Dialog..."
-msgstr "グラデーションダイアログを初期化..."
+msgstr ""
 
 #: ../src/gui/app.cpp:1561
 msgid "Init DeviceTracker..."
-msgstr "デバイストラッカを初期化..."
+msgstr ""
 
 #: ../src/gui/app.cpp:1566
 msgid "Init ModPalette..."
@@ -4141,11 +4136,11 @@ msgstr ""
 
 #: ../src/gui/app.cpp:1569
 msgid "Init Setup Dialog..."
-msgstr "セットアップダイアログを初期化..."
+msgstr ""
 
 #: ../src/gui/app.cpp:1572
 msgid "Init Input Dialog..."
-msgstr "入力ダイアログを初期化..."
+msgstr ""
 
 #: ../src/gui/app.cpp:1576
 msgid "Loading Custom Workspace List..."
@@ -4153,15 +4148,15 @@ msgstr ""
 
 #: ../src/gui/app.cpp:1581
 msgid "Init auto recovery..."
-msgstr "自動修復を初期化..."
+msgstr ""
 
 #: ../src/gui/app.cpp:1585
 msgid "Loading Settings..."
-msgstr "設定を読み込み中..."
+msgstr ""
 
 #: ../src/gui/app.cpp:1595
 msgid "Init Tools..."
-msgstr "ツールを初期化..."
+msgstr ""
 
 #: ../src/gui/app.cpp:1637
 msgid "Checking auto-recover..."
@@ -4208,11 +4203,11 @@ msgstr ""
 
 #: ../src/gui/app.cpp:1681
 msgid "Loading files..."
-msgstr "ファイルを読み込み中..."
+msgstr ""
 
 #: ../src/gui/app.cpp:1692
 msgid "Done."
-msgstr "完了しました。"
+msgstr ""
 
 #: ../src/gui/app.cpp:1723
 msgid ""
@@ -4244,7 +4239,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:2298
 msgid "Quit Request"
-msgstr "終了リクエスト"
+msgstr ""
 
 #: ../src/gui/app.cpp:2304
 msgid ""
@@ -4253,7 +4248,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:2317
 msgid "Quit Request sent"
-msgstr "終了リクエストが送信されました"
+msgstr ""
 
 #: ../src/gui/app.cpp:2336 ../src/gui/app.cpp:2992
 msgid "All Files (*.*)"
@@ -4261,7 +4256,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:2390 ../src/synfigapp/canvasinterface.cpp:709
 msgid "Import"
-msgstr "インポート"
+msgstr ""
 
 #: ../src/gui/app.cpp:2395 ../src/gui/app.cpp:2891
 msgid "All supported files"
@@ -4368,7 +4363,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:3099
 msgid "File Format Version: "
-msgstr "ファイルフォーマットのバージョン:"
+msgstr ""
 
 #: ../src/gui/app.cpp:3463
 msgid "Feature not available"
@@ -4391,7 +4386,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:3591
 msgid "Help"
-msgstr "ヘルプ"
+msgstr ""
 
 #: ../src/gui/app.cpp:3617
 msgid ""
@@ -4497,7 +4492,7 @@ msgstr ""
 
 #: ../src/gui/canvasview.cpp:150
 msgid "Idle"
-msgstr "アイドル"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:230
 msgid "ERROR"
@@ -4521,11 +4516,11 @@ msgstr ""
 
 #: ../src/gui/canvasview.cpp:895
 msgid "Default Interpolation"
-msgstr "デフォルトの補間方法"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:910 ../src/gui/canvasview.cpp:2389
 msgid "Turn on animate editing mode"
-msgstr "アニメーション編集モードをオンにする"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:927
 msgid "Toggle timebar"
@@ -4533,19 +4528,19 @@ msgstr ""
 
 #: ../src/gui/canvasview.cpp:944
 msgid "Current time"
-msgstr "現在の時間"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:1154
 msgid "Shows the Preview Settings Dialog"
-msgstr "プレビュー設定ダイアログを表示します"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:1169
 msgid "Shows the Render Settings Dialog"
-msgstr "レンダリング設定ダイアログを表示します"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:1185
 msgid "Refresh"
-msgstr "更新"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:1186
 msgid "Refresh workarea"
@@ -4594,7 +4589,7 @@ msgstr ""
 #: ../src/gui/canvasview.cpp:1333 ../src/gui/canvasview.cpp:1568
 #: ../src/gui/iconcontroller.cpp:251 ../src/gui/iconcontroller.cpp:256
 msgid "Show Grid"
-msgstr "グリッドを表示"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:1334
 msgid "Show Grid when enabled"
@@ -4602,7 +4597,7 @@ msgstr ""
 
 #: ../src/gui/canvasview.cpp:1349 ../src/gui/canvasview.cpp:1572
 msgid "Snap to Grid"
-msgstr "グリッドにスナップ"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:1350
 msgid "Snap to Grid when enabled"
@@ -4610,7 +4605,7 @@ msgstr ""
 
 #: ../src/gui/canvasview.cpp:1365 ../src/gui/canvasview.cpp:1576
 msgid "Show Guides"
-msgstr "ガイドを表示"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:1366
 msgid "Show Guides when enabled"
@@ -4618,7 +4613,7 @@ msgstr ""
 
 #: ../src/gui/canvasview.cpp:1381 ../src/gui/canvasview.cpp:1580
 msgid "Snap to Guides"
-msgstr "ガイドにスナップ"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:1382
 msgid "Snap to Guides when enabled"
@@ -4631,7 +4626,7 @@ msgstr ""
 
 #: ../src/gui/canvasview.cpp:1461
 msgid "Save As..."
-msgstr "別名で保存..."
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:1461 ../src/gui/iconcontroller.cpp:176
 msgid "Save As"
@@ -4648,7 +4643,7 @@ msgstr ""
 
 #: ../src/gui/canvasview.cpp:1467 ../src/gui/iconcontroller.cpp:178
 msgid "Save All"
-msgstr "すべて保存"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:1467
 msgid "Save all opened documents"
@@ -4656,15 +4651,15 @@ msgstr ""
 
 #: ../src/gui/canvasview.cpp:1491 ../src/gui/mainwindow.cpp:164
 msgid "Quit"
-msgstr "終了"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:1559
 msgid "Preview Window"
-msgstr "プレビューウィンドウ"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:1584
 msgid "Use Low-Res"
-msgstr "低解像度で表示"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:1588
 msgid "Enable rendering in background"
@@ -4672,15 +4667,15 @@ msgstr ""
 
 #: ../src/gui/canvasview.cpp:1592
 msgid "Show Onion Skin"
-msgstr "オニオンスキンを表示"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:1644
 msgid "Zoom In on Timeline"
-msgstr "タイムラインをズームイン"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:1647
 msgid "Zoom Out on Timeline"
-msgstr "タイムラインをズームアウト"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:1771 ../src/gui/canvasview.cpp:2187
 msgid "Select All Children"
@@ -4688,19 +4683,19 @@ msgstr ""
 
 #: ../src/gui/canvasview.cpp:2379
 msgid "Turn off animate editing mode"
-msgstr "アニメーション編集モードをオフにする"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:2400
 msgid "Unlock future keyframes"
-msgstr "未来のキーフレームのロックを解除"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:2410
 msgid "Lock future keyframes"
-msgstr "未来のキーフレームをロック"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:2420
 msgid "Unlock past keyframes"
-msgstr "過去のキーフレームのロックを解除"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:2430
 msgid "Lock past keyframes"
@@ -4712,24 +4707,24 @@ msgstr ""
 
 #: ../src/gui/canvasview.cpp:2914
 msgid "Duplicate Waypoints"
-msgstr "通過点を複製"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:2984
 msgid "_Jump To"
-msgstr "ここにジャンプ(_J)"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:2991
 msgid "_Duplicate"
-msgstr "複製(_D)"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:2998
 msgid "_Remove"
-msgstr "削除(_R)"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:2998
 #, c-format
 msgid "_Remove %d Waypoints"
-msgstr "%d 個の通過点を削除(_R)"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:3023
 msgid "_In"
@@ -4741,19 +4736,19 @@ msgstr ""
 
 #: ../src/gui/canvasview.cpp:3069
 msgid "_Clamped"
-msgstr "クランプ(_C)"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:3070
 msgid "_TCB"
-msgstr "TCB(_T)"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:3071
 msgid "_Constant"
-msgstr "定数(_C)"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:3072
 msgid "_Ease In"
-msgstr "イーズイン(_E)"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:3072
 msgid "_Ease Out"
@@ -4761,11 +4756,11 @@ msgstr ""
 
 #: ../src/gui/canvasview.cpp:3072
 msgid "_Ease In/Out"
-msgstr "イーズイン/アウト(_E)"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:3073
 msgid "_Linear"
-msgstr "線形(_L)"
+msgstr ""
 
 #: ../src/gui/canvasview.cpp:3501
 msgid "Please select files"
@@ -4807,39 +4802,39 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:126
 msgid "Bool"
-msgstr "ブーリアン"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:127
 msgid "Integer"
-msgstr "整数"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:128
 msgid "Angle"
-msgstr "角度"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:130
 msgid "Real"
-msgstr "実数"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:131
 msgid "Vector"
-msgstr "ベクター"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:132
 msgid "Color"
-msgstr "色彩"
+msgstr "रंग "
 
 #: ../src/gui/iconcontroller.cpp:133
 msgid "Segment"
-msgstr "線分"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:134
 msgid "Spline Point"
-msgstr "スプライン制御点"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:135
 msgid "List"
-msgstr "リスト"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:136
 msgid "String"
@@ -4847,19 +4842,19 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:138
 msgid "Gradient"
-msgstr "グラデーション"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:146
 msgid "Fill Tool"
-msgstr "塗りつぶしツール"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:157
 msgid "Zoom Tool"
-msgstr "ズームツール"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:163
 msgid "Reset Colors"
-msgstr "色をリセット"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:164
 msgid "Swap Colors"
@@ -4884,11 +4879,11 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:167 ../src/gui/instance.cpp:1032
 msgid "Rename"
-msgstr "名前を変更"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:172
 msgid "About"
-msgstr "このアプリケーションについて"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:173 ../src/gui/mainwindow.cpp:158
 msgid "New"
@@ -4896,23 +4891,23 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:185
 msgid "Blur Layer"
-msgstr "ぼかしレイヤー"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:186
 msgid "Motion Blur Layer"
-msgstr "モーションぼかしレイヤー"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:187
 msgid "Radial Blur Layer"
-msgstr "放射状ぼかしレイヤー"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:189
 msgid "Curve Warp Layer"
-msgstr "カーブワープレイヤー"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:190
 msgid "Inside Out Layer"
-msgstr "裏返しレイヤー"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:191
 msgid "Noise Distort Layer"
@@ -4932,7 +4927,7 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:195
 msgid "Warp Layer"
-msgstr "ワープレイヤー"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:197
 msgid "Metaballs Layer"
@@ -4964,11 +4959,11 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:206
 msgid "Julia Set Layer"
-msgstr "ジュリア集合レイヤー"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:207
 msgid "Mandelbrot Set Layer"
-msgstr "マンデルブロ集合レイヤー"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:209
 msgid "Checkerboard Layer"
@@ -4976,11 +4971,11 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:210
 msgid "Circle Layer"
-msgstr "円レイヤー"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:211
 msgid "Outline Layer"
-msgstr "輪郭線レイヤー"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:212
 msgid "Advanced Outline Layer"
@@ -4988,15 +4983,15 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:213
 msgid "Polygon Layer"
-msgstr "多角形レイヤー"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:214
 msgid "Rectangle Layer"
-msgstr "矩形レイヤー"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:215
 msgid "Region Layer"
-msgstr "領域レイヤー"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:216
 msgid "Solid Color Layer"
@@ -5004,11 +4999,11 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:217
 msgid "Star Layer"
-msgstr "星形レイヤー"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:219
 msgid "Conical Gradient Layer"
-msgstr "円錐形グラデーションレイヤー"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:220
 msgid "Curve Gradient Layer"
@@ -5020,21 +5015,21 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:222
 msgid "Linear Gradient Layer"
-msgstr "線形グラデーションレイヤー"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:223
 msgid "Radial Gradient Layer"
-msgstr "放射状グラデーションレイヤー"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:224
 msgid "Spiral Gradient Layer"
-msgstr "渦巻きグラデーションレイヤー"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:226
 #: ../src/synfigapp/actions/layerduplicate.cpp:55
 #: ../src/synfigapp/actions/layerduplicate.cpp:190
 msgid "Duplicate Layer"
-msgstr "レイヤーを複製"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:227
 msgid "Import Image Layer"
@@ -5044,23 +5039,23 @@ msgstr ""
 #: ../src/synfigapp/actions/layerencapsulate.cpp:53
 #: ../src/synfigapp/actions/layerencapsulate.cpp:73
 msgid "Group Layer"
-msgstr "レイヤーをグループ化"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:229
 msgid "Plant Layer"
-msgstr "植物レイヤー"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:230
 msgid "Stroboscope Layer"
-msgstr "ストロボレイヤー"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:231
 msgid "Super Sample Layer"
-msgstr "スーパーサンプリングレイヤー"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:232
 msgid "Sound Layer"
-msgstr "音声レイヤー"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:233
 msgid "Switch Layer"
@@ -5068,11 +5063,11 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:235
 msgid "Text Layer"
-msgstr "テキストレイヤー"
+msgstr " टेक्स्ट तह"
 
 #: ../src/gui/iconcontroller.cpp:236
 msgid "Time Loop Layer"
-msgstr "タイムループレイヤー"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:237
 msgid "XOR Pattern Layer"
@@ -5080,11 +5075,11 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:239
 msgid "Bevel Layer"
-msgstr "ベベルレイヤー"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:240
 msgid "Shade Layer"
-msgstr "影付けレイヤー"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:242
 msgid "Rotate Layer"
@@ -5110,23 +5105,23 @@ msgstr ""
 #: ../src/synfigapp/actions/groupaddlayers.cpp:79
 #: ../src/synfigapp/actions/groupremove.cpp:72
 msgid "Set"
-msgstr "セット"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:257
 msgid "Hide Grid"
-msgstr "グリッドを非表示"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:258
 msgid "Enable Grid Snap"
-msgstr "グリッドのスナップを有効化"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:259
 msgid "Disable Grid Snap"
-msgstr "グリッドのスナップを無効化"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:260
 msgid "Duplicate"
-msgstr "複製"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:261
 msgid "Group"
@@ -5150,19 +5145,19 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:281
 msgid "Past keyframes unlocked"
-msgstr "過去のキーフレームのロックを解除しました"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:282
 msgid "Past keyframes locked"
-msgstr "過去のキーフレームをロックしました"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:283
 msgid "Future keyframes unlocked"
-msgstr "未来のキーフレームのロックを解除しました"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:284
 msgid "Future keyframes locked"
-msgstr "未来のキーフレームをロックしました"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:286
 msgid "Animate Mode Off"
@@ -5178,11 +5173,11 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:295
 msgid "Seek to Previous Keyframe"
-msgstr "前のキーフレームにシーク"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:300
 msgid "Seek to Next frame"
-msgstr "次のフレームにシーク"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:303
 msgid "Animate Loop"
@@ -5202,17 +5197,17 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:308
 msgid "Add Layer to Set"
-msgstr "レイヤーをセットに追加"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:309
 msgid "Remove Layer from Set"
-msgstr "セットからレイヤーを削除"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:310
 #: ../src/synfigapp/actions/layersetdesc.cpp:51
 #: ../src/synfigapp/actions/layersetdesc.cpp:73
 msgid "Set Layer Description"
-msgstr "レイヤーの説明を設定"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:311
 msgid "Export Value Node"
@@ -5244,23 +5239,23 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:326
 msgid "Toggle show grid"
-msgstr "グリッドの表示を切り替え"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:327
 msgid "Toggle snap grid"
-msgstr "グリッドのスナップを切り替え"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:328
 msgid "Toggle show guide"
-msgstr "ガイドの表示を切り替え"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:329
 msgid "Toggle snap guide"
-msgstr "ガイドのスナップを切り替え"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:331
 msgid "Toggle onion skin"
-msgstr "オニオンスキンの表示を切り替え"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:333
 msgid "Toggle background rendering"
@@ -5276,31 +5271,31 @@ msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:338
 msgid "Preview Options Dialog"
-msgstr "プレビューオプションダイアログ"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:339
 msgid "Render Options Dialog"
-msgstr "レンダリングオプションダイアログ"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:341
 msgid "Clamped interpolation"
-msgstr "クランプ補間"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:342
 msgid "TCB interpolation"
-msgstr "TCB 補間"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:343
 msgid "Const interpolation"
-msgstr "定数補間"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:344
 msgid "Ease In/Out interpolation"
-msgstr "イーズイン/アウトの補間"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:345
 msgid "Linear interpolation"
-msgstr "線形補間"
+msgstr ""
 
 #: ../src/gui/iconcontroller.cpp:347
 msgid "Linked"
@@ -5362,7 +5357,7 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:509
 msgid "Unknown extension"
-msgstr "未知の拡張子"
+msgstr ""
 
 #: ../src/gui/instance.cpp:510
 msgid ""
@@ -5428,7 +5423,7 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:1039
 msgid "Add"
-msgstr "加算"
+msgstr ""
 
 #: ../src/gui/instance.cpp:1146
 #: ../src/synfigapp/actions/valuedescconvert.cpp:63
@@ -5441,7 +5436,7 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:1247
 msgid "Edit Waypoint"
-msgstr "通過点を編集"
+msgstr ""
 
 #: ../src/gui/instance.cpp:1330
 msgid "Set width to zero"
@@ -5477,7 +5472,7 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:1497
 msgid "Edit Waypoints"
-msgstr "通過点を編集"
+msgstr ""
 
 #: ../src/gui/instance.cpp:1651 ../src/gui/instance.cpp:1708
 msgid "Edit image in external tool..."
@@ -5494,7 +5489,7 @@ msgstr ""
 
 #: ../src/gui/instance.h:42
 msgid "Synfig Animation "
-msgstr "Synfig アニメーション "
+msgstr ""
 
 #: ../src/gui/main.cpp:109
 msgid "synfig studio is already running"
@@ -5506,7 +5501,7 @@ msgstr ""
 
 #: ../src/gui/main.cpp:129
 msgid "synfig studio -- starting up application..."
-msgstr "Synfig Studio -- アプリケーションを開始中..."
+msgstr ""
 
 #: ../src/gui/mainwindow.cpp:158
 msgid "Create a new document"
@@ -5518,7 +5513,7 @@ msgstr ""
 
 #: ../src/gui/mainwindow.cpp:177
 msgid "Show Menubar"
-msgstr "メニューバーを表示"
+msgstr ""
 
 #: ../src/gui/mainwindow.cpp:199
 msgid "Edit workspaces..."
@@ -5528,7 +5523,7 @@ msgstr ""
 #. |
 #: ../src/gui/mainwindow.cpp:222
 msgid "Tutorials"
-msgstr "チュートリアル"
+msgstr ""
 
 #: ../src/gui/mainwindow.cpp:222
 msgid "/Category:Tutorials"
@@ -5536,7 +5531,7 @@ msgstr ""
 
 #: ../src/gui/mainwindow.cpp:223
 msgid "Reference"
-msgstr "資料"
+msgstr ""
 
 #: ../src/gui/mainwindow.cpp:223
 msgid "/Category:Reference"
@@ -5544,7 +5539,7 @@ msgstr ""
 
 #: ../src/gui/mainwindow.cpp:224
 msgid "Frequently Asked Questions"
-msgstr "よくある質問"
+msgstr ""
 
 #: ../src/gui/mainwindow.cpp:224
 msgid "/FAQ"
@@ -5552,7 +5547,7 @@ msgstr ""
 
 #: ../src/gui/mainwindow.cpp:225
 msgid "Get Support"
-msgstr "サポート"
+msgstr ""
 
 #: ../src/gui/mainwindow.cpp:225
 msgid "https://forums.synfig.org/"
@@ -5560,11 +5555,11 @@ msgstr ""
 
 #: ../src/gui/mainwindow.cpp:228
 msgid "About Synfig Studio"
-msgstr "Synfig Studio について"
+msgstr ""
 
 #: ../src/gui/onemoment.cpp:70
 msgid "One Moment, Please..."
-msgstr "しばらくお待ちください..."
+msgstr ""
 
 #: ../src/gui/onemoment.cpp:72
 msgid "Working..."
@@ -5575,7 +5570,7 @@ msgid ""
 "Error: No Python 3 binary found.\n"
 "\n"
 "Hint: You can set SYNFIG_PYTHON_BINARY environment variable pointing at your custom python installation."
-msgstr "エラー: Python 3 バイナリが見つかりません。\n\nヒント: Python のインストールディレクトリを変更した場合は環境変数 SYNFIG_PYTHON_BINARY を使用してパスを指定してください。"
+msgstr ""
 
 #: ../src/gui/pluginmanager.cpp:306
 msgid "Error: Unsupported interpreter"
@@ -5620,27 +5615,27 @@ msgstr ""
 
 #: ../src/gui/renddesc.cpp:573
 msgid "_Pixel Aspect"
-msgstr "ピクセルのアスペクト比(_P)"
+msgstr ""
 
 #: ../src/gui/renddesc.cpp:576
 msgid "Pi_xel Width"
-msgstr "ピクセルの幅(_X)"
+msgstr ""
 
 #: ../src/gui/renddesc.cpp:579
 msgid "Pix_el Height"
-msgstr "ピクセルの高さ(_E)"
+msgstr ""
 
 #: ../src/gui/renddesc.cpp:582
 msgid "Image _Aspect"
-msgstr "画像のアスペクト比(_A)"
+msgstr ""
 
 #: ../src/gui/renddesc.cpp:585
 msgid "Image _Width"
-msgstr "画像の幅(_W)"
+msgstr ""
 
 #: ../src/gui/renddesc.cpp:588
 msgid "Image _Height"
-msgstr "画像の高さ(_H)"
+msgstr ""
 
 #: ../src/gui/renddesc.cpp:591
 msgid "Image _Span"
@@ -5664,51 +5659,51 @@ msgstr ""
 
 #: ../src/gui/renddesc.cpp:643
 msgid "Image Size"
-msgstr "画像サイズ"
+msgstr ""
 
 #: ../src/gui/renddesc.cpp:645
 msgid "<b>Image Size</b>"
-msgstr "<b>画像サイズ</b>"
+msgstr ""
 
 #: ../src/gui/renddesc.cpp:656
 msgid "_Width"
-msgstr "幅(_W)"
+msgstr ""
 
 #: ../src/gui/renddesc.cpp:659
 msgid "_Height"
-msgstr "高さ(_H)"
+msgstr ""
 
 #: ../src/gui/renddesc.cpp:662
 msgid "_XRes"
-msgstr "X 解像度(_X)"
+msgstr ""
 
 #: ../src/gui/renddesc.cpp:665
 msgid "_YRes"
-msgstr "Y 解像度(_Y)"
+msgstr ""
 
 #: ../src/gui/renddesc.cpp:668
 msgid "_Physical Width"
-msgstr "実際の幅(_P)"
+msgstr ""
 
 #: ../src/gui/renddesc.cpp:671
 msgid "Phy_sical Height"
-msgstr "実際の高さ(_S)"
+msgstr ""
 
 #: ../src/gui/renddesc.cpp:703
 msgid "Image Area"
-msgstr "画像エリア"
+msgstr ""
 
 #: ../src/gui/renddesc.cpp:705
 msgid "<b>Image Area</b>"
-msgstr "<b>画像エリア</b>"
+msgstr ""
 
 #: ../src/gui/renddesc.cpp:717
 msgid "_Top Left"
-msgstr "左上(_T)"
+msgstr ""
 
 #: ../src/gui/renddesc.cpp:720
 msgid "_Bottom Right"
-msgstr "右下(_B)"
+msgstr ""
 
 #: ../src/gui/renddesc.cpp:723
 msgid "I_mage Span"
@@ -5716,27 +5711,27 @@ msgstr ""
 
 #: ../src/gui/renddesc.cpp:753
 msgid "Time Settings"
-msgstr "時間設定"
+msgstr ""
 
 #: ../src/gui/renddesc.cpp:755
 msgid "<b>Time Settings</b>"
-msgstr "<b>時間設定</b>"
+msgstr ""
 
 #: ../src/gui/renddesc.cpp:769
 msgid "_Frames per second"
-msgstr "フレーム/秒(_F)"
+msgstr ""
 
 #: ../src/gui/renddesc.cpp:777
 msgid "_Start Time"
-msgstr "開始時間(_S)"
+msgstr ""
 
 #: ../src/gui/renddesc.cpp:784
 msgid "_End Time"
-msgstr "終了時間(_E)"
+msgstr ""
 
 #: ../src/gui/renddesc.cpp:791
 msgid "_Duration"
-msgstr "再生時間(_D)"
+msgstr ""
 
 #: ../src/gui/renddesc.cpp:813
 msgid "Gamma Correction Settings"
@@ -5760,11 +5755,11 @@ msgstr ""
 
 #: ../src/gui/renddesc.cpp:897
 msgid "Locks and Links"
-msgstr "ロックとリンク"
+msgstr ""
 
 #: ../src/gui/renddesc.cpp:899
 msgid "<b>Locks and Links</b>"
-msgstr "<b>ロックとリンク</b>"
+msgstr ""
 
 #: ../src/gui/renddesc.cpp:923
 msgid "Focus Point"
@@ -5780,11 +5775,11 @@ msgstr ""
 
 #: ../src/gui/render.cpp:84 ../src/gui/render.cpp:216
 msgid "Render Settings"
-msgstr "レンダリング設定"
+msgstr ""
 
 #: ../src/gui/render.cpp:90
 msgid "Render _current frame only"
-msgstr "現在のフレームのみレンダリング(_C)"
+msgstr ""
 
 #: ../src/gui/render.cpp:91
 msgid "Extract alpha"
@@ -5792,51 +5787,51 @@ msgstr ""
 
 #: ../src/gui/render.cpp:103
 msgid "Auto"
-msgstr "自動"
+msgstr ""
 
 #: ../src/gui/render.cpp:126
 msgid "Parameters..."
-msgstr "パラメータ..."
+msgstr ""
 
 #: ../src/gui/render.cpp:131
 msgid "Target"
-msgstr "ターゲット"
+msgstr ""
 
 #: ../src/gui/render.cpp:133
 msgid "<b>Target</b>"
-msgstr "<b>ターゲット</b>"
+msgstr ""
 
 #: ../src/gui/render.cpp:144
 msgid "_Filename"
-msgstr "ファイル名(_F)"
+msgstr ""
 
 #: ../src/gui/render.cpp:153
 msgid "_Target"
-msgstr "ターゲット(_T)"
+msgstr ""
 
 #: ../src/gui/render.cpp:164
 msgid "Settings"
-msgstr "設定"
+msgstr ""
 
 #: ../src/gui/render.cpp:166
 msgid "<b>Settings</b>"
-msgstr "<b>設定</b>"
+msgstr ""
 
 #: ../src/gui/render.cpp:177 ../src/gui/resources/ui/preview_options.glade.h:3
 msgid "_Quality"
-msgstr "画質(_Q)"
+msgstr ""
 
 #: ../src/gui/render.cpp:185
 msgid "_Anti-Aliasing"
-msgstr "アンチエイリアス(_A)"
+msgstr ""
 
 #: ../src/gui/render.cpp:373
 msgid "You must supply a filename!"
-msgstr "ファイル名を入力してください！"
+msgstr ""
 
 #: ../src/gui/render.cpp:399
 msgid "Unable to determine proper target from filename."
-msgstr "ファイル名から適切なターゲットを判別できません。"
+msgstr ""
 
 #: ../src/gui/render.cpp:406
 msgid "A filename is required for this target"
@@ -5865,7 +5860,7 @@ msgstr ""
 
 #: ../src/gui/render.cpp:533
 msgid "Target initialization failure"
-msgstr "ターゲットの初期化に失敗"
+msgstr ""
 
 #: ../src/gui/render.cpp:539
 #, c-format
@@ -5878,15 +5873,15 @@ msgstr ""
 
 #: ../src/gui/render.cpp:554
 msgid "sec"
-msgstr "秒"
+msgstr ""
 
 #: ../src/gui/splash.cpp:97
 msgid "ERROR:"
-msgstr "エラー:"
+msgstr ""
 
 #: ../src/gui/splash.cpp:111
 msgid "WARNING:"
-msgstr "警告:"
+msgstr ""
 
 #: ../src/gui/workarea.cpp:499
 msgid "Unable to set \"grid_color\""
@@ -5918,11 +5913,11 @@ msgstr ""
 
 #: ../src/synfigapp/action.cpp:574 ../src/synfigapp/action.cpp:575
 msgid "Canvas Interface"
-msgstr "キャンバスインターフェース"
+msgstr ""
 
 #: ../src/synfigapp/actions/activepointadd.cpp:51
 msgid "Add Activepoint"
-msgstr "アクティブポイントを追加"
+msgstr ""
 
 #: ../src/synfigapp/actions/activepointadd.cpp:77
 #: ../src/synfigapp/actions/activepointremove.cpp:76
@@ -5958,7 +5953,7 @@ msgstr ""
 #: ../src/synfigapp/actions/activepointadd.cpp:81
 #: ../src/synfigapp/actions/activepointsetsmart.cpp:88
 msgid "New Activepoint"
-msgstr "新しいアクティブポイント"
+msgstr ""
 
 #: ../src/synfigapp/actions/activepointadd.cpp:82
 #: ../src/synfigapp/actions/activepointsetsmart.cpp:89
@@ -5983,7 +5978,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/activepointremove.cpp:51
 msgid "Remove Activepoint"
-msgstr "アクティブポイントを削除"
+msgstr ""
 
 #: ../src/synfigapp/actions/activepointremove.cpp:80
 #: ../src/synfigapp/actions/activepointset.cpp:80
@@ -5991,7 +5986,7 @@ msgstr "アクティブポイントを削除"
 #: ../src/synfigapp/actions/activepointseton.cpp:89
 #: ../src/synfigapp/actions/activepointsimpleadd.cpp:81
 msgid "Activepoint"
-msgstr "アクティブポイント"
+msgstr ""
 
 #: ../src/synfigapp/actions/activepointremove.cpp:81
 #: ../src/synfigapp/actions/activepointset.cpp:81
@@ -6004,7 +5999,7 @@ msgstr ""
 #: ../src/synfigapp/actions/activepointset.cpp:258
 #: ../src/synfigapp/actions/activepointset.cpp:279
 msgid "Unable to find activepoint"
-msgstr "アクティブポイントが見つかりません"
+msgstr ""
 
 #: ../src/synfigapp/actions/activepointset.cpp:52
 msgid "Set Activepoint"
@@ -6012,11 +6007,11 @@ msgstr ""
 
 #: ../src/synfigapp/actions/activepointsetoff.cpp:60
 msgid "Mark Activepoint as \"Off\""
-msgstr "アクティブポイントをオフにする"
+msgstr ""
 
 #: ../src/synfigapp/actions/activepointseton.cpp:59
 msgid "Mark Activepoint as \"On\""
-msgstr "アクティブポイントをオンにする"
+msgstr ""
 
 #: ../src/synfigapp/actions/activepointsetsmart.cpp:58
 msgid "Set Activepoint (Smart)"
@@ -6046,7 +6041,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/blinepointtangentmerge.cpp:60
 msgid "Merge Tangents"
-msgstr "接線を統合"
+msgstr ""
 
 #: ../src/synfigapp/actions/blinepointtangentmerge.cpp:68
 msgid "Merge Tangents's Radius"
@@ -6059,7 +6054,7 @@ msgstr ""
 #: ../src/synfigapp/actions/blinepointtangentmerge.cpp:125
 #, c-format
 msgid "Merge Tangents of '%s'"
-msgstr "'%s' の接線を統合"
+msgstr ""
 
 #: ../src/synfigapp/actions/blinepointtangentmerge.cpp:130
 #, c-format
@@ -6108,7 +6103,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/blinepointtangentsplit.cpp:60
 msgid "Split Tangents"
-msgstr "接線を分割"
+msgstr ""
 
 #: ../src/synfigapp/actions/blinepointtangentsplit.cpp:68
 msgid "Split Tangents's Radius"
@@ -6121,7 +6116,7 @@ msgstr ""
 #: ../src/synfigapp/actions/blinepointtangentsplit.cpp:125
 #, c-format
 msgid "Split Tangents of '%s'"
-msgstr "'%s' の接線を分割"
+msgstr ""
 
 #: ../src/synfigapp/actions/blinepointtangentsplit.cpp:130
 #, c-format
@@ -6158,14 +6153,14 @@ msgstr ""
 
 #: ../src/synfigapp/actions/canvasdescriptionset.cpp:52
 msgid "Set Canvas Description"
-msgstr "キャンバスの説明を設定"
+msgstr ""
 
 #. TRANSLATORS: This is used in the 'history' dialog when a Canvas has its
 #. description changed.
 #: ../src/synfigapp/actions/canvasdescriptionset.cpp:72
 #, c-format
 msgid "Change canvas description from '%s' to '%s'"
-msgstr "キャンバスの説明を '%s' から '%s' に変更"
+msgstr ""
 
 #: ../src/synfigapp/actions/canvasidset.cpp:50
 msgid "Set Canvas Id"
@@ -6180,7 +6175,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/canvasidset.cpp:81
 msgid "Id"
-msgstr "ID"
+msgstr ""
 
 #: ../src/synfigapp/actions/canvasmetadataerase.cpp:51
 msgid "Erase Canvas Metadata"
@@ -6215,11 +6210,11 @@ msgstr ""
 
 #: ../src/synfigapp/actions/canvasremove.cpp:51
 msgid "Remove Canvas"
-msgstr "キャンバスを削除"
+msgstr ""
 
 #: ../src/synfigapp/actions/canvasremove.cpp:108
 msgid "You cannot remove the root canvas!"
-msgstr "ルートキャンバスは削除できません！"
+msgstr ""
 
 #: ../src/synfigapp/actions/canvasremove.cpp:111
 msgid "You cannot remove a canvas from a Group!"
@@ -6235,11 +6230,11 @@ msgstr ""
 
 #: ../src/synfigapp/actions/colorset.cpp:57
 msgid "Apply Outline Color"
-msgstr "輪郭線の色を適用"
+msgstr ""
 
 #: ../src/synfigapp/actions/colorset.cpp:65
 msgid "Apply Fill Color"
-msgstr "塗りつぶしの色を適用"
+msgstr ""
 
 #: ../src/synfigapp/actions/editmodeset.cpp:50
 msgid "Set Edit Mode"
@@ -6251,19 +6246,19 @@ msgstr ""
 
 #: ../src/synfigapp/actions/gradientset.cpp:56
 msgid "Apply Default Gradient"
-msgstr "デフォルトのグラデーションを適用"
+msgstr ""
 
 #: ../src/synfigapp/actions/groupaddlayers.cpp:51
 msgid "Add Layers to Set"
-msgstr "レイヤーをセットに追加"
+msgstr ""
 
 #: ../src/synfigapp/actions/groupaddlayers.cpp:74
 msgid "Layer to be added to set"
-msgstr "セットに追加されるレイヤー"
+msgstr ""
 
 #: ../src/synfigapp/actions/groupaddlayers.cpp:80
 msgid "Name of the Set to add the Layers to"
-msgstr "レイヤーを追加するセットの名前"
+msgstr ""
 
 #: ../src/synfigapp/actions/groupremove.cpp:50
 msgid "Remove Set"
@@ -6275,11 +6270,11 @@ msgstr ""
 
 #: ../src/synfigapp/actions/groupremovelayers.cpp:51
 msgid "Remove Layers from a Set"
-msgstr "レイヤーをセットから削除"
+msgstr ""
 
 #: ../src/synfigapp/actions/groupremovelayers.cpp:74
 msgid "Layer to be removed from Set"
-msgstr "セットから削除されるレイヤー"
+msgstr ""
 
 #: ../src/synfigapp/actions/grouprename.cpp:50
 msgid "Rename Set"
@@ -6304,7 +6299,7 @@ msgstr ""
 #: ../src/synfigapp/actions/grouprename.cpp:123
 #, c-format
 msgid "A set with the name \"%s\" already exists!"
-msgstr "\"%s\" という名前のセットは既に存在します！"
+msgstr ""
 
 #: ../src/synfigapp/actions/keyframeadd.cpp:51
 msgid "Add Keyframe"
@@ -6335,15 +6330,15 @@ msgstr ""
 
 #: ../src/synfigapp/actions/keyframeduplicate.cpp:54
 msgid "Duplicate Keyframe"
-msgstr "キーフレームを複製"
+msgstr ""
 
 #: ../src/synfigapp/actions/keyframeduplicate.cpp:80
 msgid "Keyframe to be duplicated"
-msgstr "複製されるキーフレーム"
+msgstr ""
 
 #: ../src/synfigapp/actions/keyframeduplicate.cpp:102
 msgid " (Duplicate)"
-msgstr "(複製)"
+msgstr ""
 
 #: ../src/synfigapp/actions/keyframeduplicate.cpp:145
 #: ../src/synfigapp/actions/keyframeremove.cpp:128
@@ -6356,11 +6351,11 @@ msgstr ""
 
 #: ../src/synfigapp/actions/keyframeremove.cpp:55
 msgid "Remove Keyframe"
-msgstr "キーフレームを削除"
+msgstr ""
 
 #: ../src/synfigapp/actions/keyframeremove.cpp:80
 msgid "Keyframe to be removed"
-msgstr "削除されるキーフレーム"
+msgstr ""
 
 #: ../src/synfigapp/actions/keyframeset.cpp:57
 msgid "Set Keyframe"
@@ -6451,17 +6446,17 @@ msgstr ""
 #: ../src/synfigapp/actions/layersetexcludefromrendering.cpp:162
 #: ../src/synfigapp/actions/vectorization.cpp:291
 msgid "This layer doesn't exist anymore."
-msgstr "このレイヤーは既に存在しません。"
+msgstr ""
 
 #: ../src/synfigapp/actions/layeradd.cpp:53
 #: ../src/synfigapp/actions/layeradd.cpp:73
 #: ../src/synfigapp/actions/layeradd.cpp:75
 msgid "Add Layer"
-msgstr "レイヤーを追加"
+msgstr ""
 
 #: ../src/synfigapp/actions/layeradd.cpp:85
 msgid "Layer to be added"
-msgstr "追加されるレイヤー"
+msgstr ""
 
 #: ../src/synfigapp/actions/layeraddframe.cpp:54
 msgid "Make New Frame"
@@ -6502,7 +6497,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/layercopy.cpp:82
 msgid "Layer to be copied"
-msgstr "コピーされるレイヤー"
+msgstr ""
 
 #: ../src/synfigapp/actions/layercopy.cpp:154
 #: ../src/synfigapp/actions/layerduplicate.cpp:265
@@ -6512,7 +6507,7 @@ msgstr "コピーされるレイヤー"
 #: ../src/synfigapp/actions/layermakebline.cpp:167
 #: ../src/synfigapp/actions/layerremove.cpp:183
 msgid "This layer doesn't belong to this canvas anymore"
-msgstr "このレイヤーは既にこのキャンバスに属していません"
+msgstr ""
 
 #: ../src/synfigapp/actions/layerduplicate.cpp:88
 msgid "Skeleton layer without 'bones' parameter!"
@@ -6524,11 +6519,11 @@ msgstr ""
 
 #: ../src/synfigapp/actions/layerduplicate.cpp:190
 msgid "Duplicate Layers"
-msgstr "レイヤーを複製"
+msgstr ""
 
 #: ../src/synfigapp/actions/layerduplicate.cpp:200
 msgid "Layer to be duplicated"
-msgstr "複製されるレイヤー"
+msgstr ""
 
 #: ../src/synfigapp/actions/layerduplicate.cpp:311
 #, c-format
@@ -6539,7 +6534,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/layerembed.cpp:57
 msgid "Embed Layer"
-msgstr "レイヤーを埋め込み"
+msgstr ""
 
 #: ../src/synfigapp/actions/layerembed.cpp:76
 msgid "Layer to be embedded"
@@ -6559,13 +6554,13 @@ msgstr ""
 
 #: ../src/synfigapp/actions/layerencapsulate.cpp:73
 msgid "Group Layers"
-msgstr "レイヤーをグループ化"
+msgstr ""
 
 #: ../src/synfigapp/actions/layerencapsulate.cpp:83
 #: ../src/synfigapp/actions/layerencapsulatefilter.cpp:82
 #: ../src/synfigapp/actions/layerencapsulateswitch.cpp:81
 msgid "Layer to be grouped"
-msgstr "グループ化されるレイヤー"
+msgstr ""
 
 #: ../src/synfigapp/actions/layerencapsulate.cpp:88
 msgid "Description of new group"
@@ -6650,15 +6645,15 @@ msgstr ""
 #: ../src/synfigapp/actions/layerlower.cpp:52
 #: ../src/synfigapp/actions/layerlower.cpp:71
 msgid "Lower Layer"
-msgstr "レイヤーを背面に"
+msgstr ""
 
 #: ../src/synfigapp/actions/layerlower.cpp:71
 msgid "Lower Layers"
-msgstr "レイヤーを背面に"
+msgstr ""
 
 #: ../src/synfigapp/actions/layerlower.cpp:81
 msgid "Layer to be lowered"
-msgstr "背面に移動されるレイヤー"
+msgstr ""
 
 #: ../src/synfigapp/actions/layermakebline.cpp:66
 msgid "Make Outline"
@@ -6791,28 +6786,28 @@ msgstr ""
 #: ../src/synfigapp/actions/layerraise.cpp:52
 #: ../src/synfigapp/actions/layerraise.cpp:71
 msgid "Raise Layer"
-msgstr "レイヤーを前面に"
+msgstr ""
 
 #: ../src/synfigapp/actions/layerraise.cpp:71
 msgid "Raise Layers"
-msgstr "レイヤーを前面に"
+msgstr ""
 
 #: ../src/synfigapp/actions/layerraise.cpp:81
 msgid "Layer to be raised"
-msgstr "前面に移動されるレイヤー"
+msgstr ""
 
 #: ../src/synfigapp/actions/layerremove.cpp:51
 #: ../src/synfigapp/actions/layerremove.cpp:105
 msgid "Delete Layer"
-msgstr "レイヤーを削除"
+msgstr ""
 
 #: ../src/synfigapp/actions/layerremove.cpp:105
 msgid "Delete Layers"
-msgstr "レイヤーを削除"
+msgstr ""
 
 #: ../src/synfigapp/actions/layerremove.cpp:115
 msgid "Layer to be deleted"
-msgstr "削除されるレイヤー"
+msgstr ""
 
 #: ../src/synfigapp/actions/layerresetpose.cpp:52
 #: ../src/synfigapp/actions/valuedescresetpose.cpp:53
@@ -6836,7 +6831,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/layersetdesc.cpp:90
 msgid "New Description"
-msgstr "新しい説明"
+msgstr ""
 
 #: ../src/synfigapp/actions/layersetdesc.cpp:91
 msgid "Enter a new description for this layer"
@@ -6852,15 +6847,15 @@ msgstr ""
 
 #: ../src/synfigapp/actions/layersetexcludefromrendering.cpp:82
 msgid "Toggle Exclude from Rendering"
-msgstr "レンダリングから除外するかどうかを切り替え"
+msgstr ""
 
 #: ../src/synfigapp/actions/layersetexcludefromrendering.cpp:86
 msgid "Disable layer rendering - "
-msgstr "レイヤーのレンダリングを無効化 -"
+msgstr ""
 
 #: ../src/synfigapp/actions/layersetexcludefromrendering.cpp:87
 msgid "Enable layer rendering - "
-msgstr "レイヤーのレンダリングを有効化 -"
+msgstr ""
 
 #: ../src/synfigapp/actions/layersetexcludefromrendering.cpp:101
 msgid "New State"
@@ -6873,15 +6868,15 @@ msgstr ""
 #: ../src/synfigapp/actions/layerzdepthrangeset.cpp:55
 #: ../src/synfigapp/actions/layerzdepthrangeset.cpp:78
 msgid "Make Z Range visible"
-msgstr "Z 範囲を可視化"
+msgstr ""
 
 #: ../src/synfigapp/actions/layerzdepthrangeset.cpp:88
 msgid "Layer to make Z Range visible"
-msgstr "Z 範囲を可視化するレイヤー"
+msgstr ""
 
 #: ../src/synfigapp/actions/layerzdepthrangeset.cpp:160
 msgid "No layers selected"
-msgstr "レイヤーが選択されていません"
+msgstr ""
 
 #: ../src/synfigapp/actions/layerzdepthrangeset.cpp:168
 msgid "No Parent Group found!"
@@ -6980,7 +6975,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/valuedescblinelink.cpp:62
 msgid "Link to Spline"
-msgstr "スプラインにリンク"
+msgstr ""
 
 #: ../src/synfigapp/actions/valuedescblinelink.cpp:85
 #: ../src/synfigapp/actions/valuedescbonelink.cpp:83
@@ -7001,11 +6996,11 @@ msgstr ""
 #: ../src/synfigapp/actions/valuenodestaticlistinsertsmart.cpp:86
 #: ../src/synfigapp/actions/valuenodestaticlistremovesmart.cpp:92
 msgid "Origin"
-msgstr "原点"
+msgstr ""
 
 #: ../src/synfigapp/actions/valuedescbonelink.cpp:60
 msgid "Link to Bone"
-msgstr "ボーンにリンク"
+msgstr ""
 
 #: ../src/synfigapp/actions/valuedescbonelink.cpp:87
 msgid "ValueDesc on Bone to link to"
@@ -7034,7 +7029,7 @@ msgstr ""
 #: ../src/synfigapp/actions/valuedescconnect.cpp:76
 #, c-format
 msgid "Connect '%s' to '%s'"
-msgstr "'%s' と '%s' を接続"
+msgstr ""
 
 #: ../src/synfigapp/actions/valuedescconnect.cpp:87
 msgid "Destination ValueDesc"
@@ -7076,7 +7071,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/valuedesccreatechildbone.cpp:55
 msgid "Create Child Bone"
-msgstr "子ボーンを作成"
+msgstr ""
 
 #: ../src/synfigapp/actions/valuedesccreatechildbone.cpp:92
 msgid "Origin of the child bone"
@@ -7152,7 +7147,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/valuedesclink.cpp:60
 msgid "Link"
-msgstr "リンク"
+msgstr ""
 
 #: ../src/synfigapp/actions/valuedesclink.cpp:68
 msgid "Link Opposite"
@@ -7222,7 +7217,7 @@ msgstr ""
 #: ../src/synfigapp/actions/valuedesclink.cpp:280
 #, c-format
 msgid "Cannot link two values of different types ('%s' and '%s')"
-msgstr "種類の違う値同士をリンクさせることはできません ('%s' と '%s')"
+msgstr ""
 
 #: ../src/synfigapp/actions/valuedesclink.cpp:317
 msgid "No ValueNodes were available, so one was created."
@@ -7339,7 +7334,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/valuedescset.cpp:955
 msgid "You must be in Animate-Editing-Mode to directly manipulate this value"
-msgstr "この値を直接編集するには、アニメーション編集モードをオンにしてください"
+msgstr ""
 
 #: ../src/synfigapp/actions/valuedescset.cpp:974
 msgid "Unsupported ValueDesc type"
@@ -7352,11 +7347,11 @@ msgstr ""
 #: ../src/synfigapp/actions/valuedescsetinterpolation.cpp:75
 #, c-format
 msgid "Set interpolation for %s"
-msgstr "%s の補間を設定"
+msgstr ""
 
 #: ../src/synfigapp/actions/valuedescskeletonlink.cpp:65
 msgid "Link to Skeleton"
-msgstr "スケルトンにリンク"
+msgstr ""
 
 #: ../src/synfigapp/actions/valuedescskeletonlink.cpp:92
 msgid "ValueDesc of Skeleton's Bone"
@@ -7404,7 +7399,7 @@ msgstr ""
 #: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:52
 #: ../src/synfigapp/actions/valuenodestaticlistinsert.cpp:52
 msgid "Insert Item"
-msgstr "アイテムを挿入"
+msgstr ""
 
 #: ../src/synfigapp/actions/valuenodedynamiclistinsert.cpp:90
 #: ../src/synfigapp/actions/valuenodestaticlistinsert.cpp:89
@@ -7430,12 +7425,12 @@ msgstr ""
 #: ../src/synfigapp/actions/valuenodedynamiclistremove.cpp:52
 #: ../src/synfigapp/actions/valuenodestaticlistremove.cpp:51
 msgid "Remove Item"
-msgstr "アイテムを削除"
+msgstr ""
 
 #: ../src/synfigapp/actions/valuenodedynamiclistremovesmart.cpp:54
 #: ../src/synfigapp/actions/valuenodestaticlistremovesmart.cpp:52
 msgid "Remove Item (Smart)"
-msgstr "アイテムを削除 (スマート)"
+msgstr ""
 
 #: ../src/synfigapp/actions/valuenodedynamiclistrotateorder.cpp:51
 #: ../src/synfigapp/actions/valuenodestaticlistrotateorder.cpp:51
@@ -7445,7 +7440,7 @@ msgstr ""
 #: ../src/synfigapp/actions/valuenodedynamiclistunloop.cpp:54
 #: ../src/synfigapp/actions/valuenodestaticlistunloop.cpp:52
 msgid "Unloop"
-msgstr "ループを解除"
+msgstr ""
 
 #: ../src/synfigapp/actions/valuenodelinkconnect.cpp:51
 msgid "Connect ValueNode Link"
@@ -7574,7 +7569,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/valuenodestaticlistinsertsmart.cpp:53
 msgid "Insert Item (Smart)"
-msgstr "アイテムを挿入 (スマート)"
+msgstr ""
 
 #: ../src/synfigapp/actions/vectorization.cpp:56
 msgid "Vectorization"
@@ -7640,23 +7635,23 @@ msgstr ""
 #: ../src/synfigapp/actions/waypointadd.cpp:52
 #: ../src/synfigapp/actions/waypointsetsmart.cpp:60
 msgid "Add Waypoint"
-msgstr "通過点を追加"
+msgstr ""
 
 #: ../src/synfigapp/actions/waypointadd.cpp:81
 #: ../src/synfigapp/actions/waypointsetsmart.cpp:89
 msgid "New Waypoint"
-msgstr "新しい通過点"
+msgstr ""
 
 #: ../src/synfigapp/actions/waypointadd.cpp:82
 #: ../src/synfigapp/actions/waypointsetsmart.cpp:90
 #: ../src/synfigapp/actions/waypointsimpleadd.cpp:80
 msgid "Waypoint to be added"
-msgstr "追加される通過点"
+msgstr ""
 
 #: ../src/synfigapp/actions/waypointadd.cpp:88
 #: ../src/synfigapp/actions/waypointsetsmart.cpp:101
 msgid "Time where waypoint is to be added"
-msgstr "通過点が追加される時間"
+msgstr ""
 
 #: ../src/synfigapp/actions/waypointadd.cpp:186
 #, c-format
@@ -7670,7 +7665,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/waypointconnect.cpp:51
 msgid "Connect Waypoint"
-msgstr "通過点を接続"
+msgstr ""
 
 #: ../src/synfigapp/actions/waypointconnect.cpp:78
 #: ../src/synfigapp/actions/waypointdisconnect.cpp:80
@@ -7679,11 +7674,11 @@ msgstr ""
 
 #: ../src/synfigapp/actions/waypointdisconnect.cpp:52
 msgid "Disconnect Waypoint"
-msgstr "通過点の接続を解除"
+msgstr ""
 
 #: ../src/synfigapp/actions/waypointremove.cpp:50
 msgid "Remove Waypoint"
-msgstr "通過点を削除"
+msgstr ""
 
 #: ../src/synfigapp/actions/waypointremove.cpp:74
 msgid "ValueNode (Animated)"
@@ -7691,7 +7686,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/waypointremove.cpp:79
 msgid "Waypoint to be Removed"
-msgstr "削除される通過点"
+msgstr ""
 
 #: ../src/synfigapp/actions/waypointremove.cpp:124
 #, c-format
@@ -7729,14 +7724,14 @@ msgstr ""
 
 #: ../src/synfigapp/actions/waypointset.cpp:79
 msgid "Waypoint to be changed"
-msgstr "変更される通過点"
+msgstr ""
 
 #: ../src/synfigapp/actions/waypointset.cpp:134
 #: ../src/synfigapp/actions/waypointset.cpp:195
 #: ../src/synfigapp/actions/waypointset.cpp:239
 #: ../src/synfigapp/actions/waypointset.cpp:260
 msgid "Unable to find waypoint"
-msgstr "通過点が見つかりません"
+msgstr ""
 
 #: ../src/synfigapp/actions/waypointsimpleadd.cpp:148
 msgid "The waypoint to remove no longer exists"
@@ -7776,7 +7771,7 @@ msgstr ""
 
 #: ../src/synfigapp/action_system.cpp:244
 msgid "Failed to undo."
-msgstr "取り消しに失敗しました。"
+msgstr ""
 
 #: ../src/synfigapp/action_system.cpp:265
 #: ../src/synfigapp/action_system.cpp:267
@@ -7785,7 +7780,7 @@ msgstr ""
 
 #: ../src/synfigapp/action_system.cpp:313
 msgid "Failed to redo."
-msgstr "やり直しに失敗しました。"
+msgstr ""
 
 #: ../src/synfigapp/action_system.cpp:528
 msgid "State restore failure"
@@ -7823,7 +7818,7 @@ msgstr ""
 
 #: ../src/synfigapp/canvasinterface.cpp:498
 msgid "Empty name!"
-msgstr "名前が空白です！"
+msgstr ""
 
 #: ../src/synfigapp/canvasinterface.cpp:717
 msgid "File name must have an extension!"
@@ -7943,7 +7938,7 @@ msgstr ""
 
 #: ../src/synfigapp/value_desc.cpp:73
 msgid "Layer Parameter"
-msgstr "レイヤーのパラメータ"
+msgstr ""
 
 #: ../src/synfigapp/value_desc.cpp:90
 msgid "Const ValueNode"
@@ -7959,27 +7954,27 @@ msgstr ""
 
 #: ../src/gui/resources/ui/canvas_options.glade.h:2
 msgid "_Grid size"
-msgstr "グリッドのサイズ"
+msgstr ""
 
 #: ../src/gui/resources/ui/canvas_options.glade.h:3
 msgid "S_how grid"
-msgstr "グリッドを表示(_H)"
+msgstr ""
 
 #: ../src/gui/resources/ui/canvas_options.glade.h:4
 msgid "_Snap to grid"
-msgstr "グリッドにスナップ(_S)"
+msgstr ""
 
 #: ../src/gui/resources/ui/canvas_options.glade.h:5
 msgid "Grid"
-msgstr "グリッド"
+msgstr ""
 
 #: ../src/gui/resources/ui/canvas_options.glade.h:6
 msgid "Snap to _frame"
-msgstr "フレームにスナップ(_F)"
+msgstr ""
 
 #: ../src/gui/resources/ui/canvas_options.glade.h:8
 msgid "Not yet implemented!"
-msgstr "まだ実装していません！"
+msgstr ""
 
 #: ../src/gui/resources/ui/dialog_workspaces.glade.h:1
 msgid "Custom workspaces editor"
@@ -7995,7 +7990,7 @@ msgstr ""
 
 #: ../src/gui/resources/ui/preview_options.glade.h:5
 msgid "_FPS"
-msgstr "フレーム/秒(_F)"
+msgstr ""
 
 #: ../src/gui/resources/ui/preview_options.glade.h:6
 msgid "12,0"
@@ -8003,16 +7998,16 @@ msgstr ""
 
 #: ../src/gui/resources/ui/preview_options.glade.h:7
 msgid "<b>General settings</b>"
-msgstr "<b>全般設定</b>"
+msgstr ""
 
 #: ../src/gui/resources/ui/preview_options.glade.h:8
 msgid "_Begin time"
-msgstr "開始時間(_B)"
+msgstr ""
 
 #: ../src/gui/resources/ui/preview_options.glade.h:9
 msgid "_End time"
-msgstr "終了時間(_E)"
+msgstr ""
 
 #: ../src/gui/resources/ui/preview_options.glade.h:10
 msgid "<b>Time settings</b>"
-msgstr "<b>時間設定</b>"
+msgstr ""

@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the Synfig Core package.
 # 
 # Translators:
-# Kunda, 2013-2014
+# jaewoo lee <njaewooo@gmail.com>, 2021
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
@@ -11,17 +11,17 @@ msgstr ""
 "POT-Creation-Date: 2021-08-23 11:23+0700\n"
 "PO-Revision-Date: 2021-08-23 04:23+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
-"Language-Team: Hebrew (http://www.transifex.com/morevnaproject/synfig/language/he/)\n"
+"Language-Team: Korean (Korea) (http://www.transifex.com/morevnaproject/synfig/language/ko_KR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: he\n"
-"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % 1 == 0) ? 1: (n % 10 == 0 && n % 1 == 0 && n > 10) ? 2 : 3;\n"
+"Language: ko_KR\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:105
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:864
 msgid "Text"
-msgstr ""
+msgstr "텍스트"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:106
 #: ../src/modules/lyr_std/import.cpp:69
@@ -35,19 +35,19 @@ msgstr ""
 #: ../src/synfig/layers/layer_sound.cpp:58
 #: ../src/synfig/layers/layer_switch.cpp:62
 msgid "Other"
-msgstr ""
+msgstr "기타"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:439
 msgid "Text Layer"
-msgstr ""
+msgstr "텍스트 레이어"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:574
 msgid "unable to initialize"
-msgstr ""
+msgstr "초기화할 수 없습니다"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:615
 msgid "empty font set"
-msgstr ""
+msgstr "빈 폰트 세트"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:746
 msgid "Unable to open font face."
@@ -55,7 +55,7 @@ msgstr ""
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:865
 msgid "Text to Render"
-msgstr ""
+msgstr "렌더링할 텍스트"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:870
 #: ../src/modules/lyr_std/shade.cpp:177
@@ -64,39 +64,39 @@ msgstr ""
 #: ../src/synfig/layers/layer_solidcolor.cpp:113
 #: ../src/synfig/paramdesc.cpp:87
 msgid "Color"
-msgstr "צבע"
+msgstr "색상"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:871
 msgid "Color of the text"
-msgstr ""
+msgstr "텍스트 색상"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:875
 msgid "Font Family"
-msgstr ""
+msgstr "폰트 패밀리"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:880
 msgid "Style"
-msgstr ""
+msgstr "스타일"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:883
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:896
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:374
 msgid "Normal"
-msgstr ""
+msgstr "기본"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:884
 msgid "Oblique"
-msgstr ""
+msgstr "기울임체"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:885
 msgid "Italic"
-msgstr ""
+msgstr "이탤릭체"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:889
 #: ../src/synfig/valuenodes/valuenode_boneweightpair.cpp:160
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:839
 msgid "Weight"
-msgstr ""
+msgstr "굵기"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:892
 msgid "Thin"
@@ -104,7 +104,7 @@ msgstr ""
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:893
 msgid "Ultralight"
-msgstr ""
+msgstr "더 가늘게"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:894
 msgid "Light"
@@ -120,15 +120,15 @@ msgstr ""
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:898
 msgid "Bold"
-msgstr ""
+msgstr "굵게"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:899
 msgid "Ultrabold"
-msgstr ""
+msgstr "더 굵게"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:900
 msgid "Heavy"
-msgstr ""
+msgstr "매우 굵게"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:901
 msgid "Ultraheavy"
@@ -136,7 +136,7 @@ msgstr ""
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:904
 msgid "Horizontal Spacing"
-msgstr ""
+msgstr "수평 간격"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:905
 msgid "Defines how close the glyphs are horizontally"
@@ -144,7 +144,7 @@ msgstr ""
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:909
 msgid "Vertical Spacing"
-msgstr ""
+msgstr "수직 간격"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:910
 msgid "Defines how close the text lines are vertically"
@@ -159,19 +159,19 @@ msgstr ""
 #: ../src/modules/mod_noise/distort.cpp:205
 #: ../src/modules/mod_noise/noise.cpp:270
 msgid "Size"
-msgstr ""
+msgstr "크기"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:915
 msgid "Size of the text"
-msgstr ""
+msgstr "텍스트 크기"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:922
 msgid "Orientation"
-msgstr ""
+msgstr "방향"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:923
 msgid "Text Orientation"
-msgstr ""
+msgstr "텍스트 방향"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:928
 #: ../src/modules/lyr_std/curvewarp.cpp:403
@@ -190,23 +190,23 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:704
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:236
 msgid "Origin"
-msgstr ""
+msgstr "원점"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:929
 msgid "Text Position"
-msgstr ""
+msgstr "텍스트 위치"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:934
 msgid "Font"
-msgstr "גופן"
+msgstr "폰트"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:935
 msgid "Filename of the font to use"
-msgstr ""
+msgstr "사용할 폰트의 파일이름"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:942
 msgid "Kerning"
-msgstr ""
+msgstr "커닝"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:943
 msgid "When checked, enables font kerning (If the font supports it)"
@@ -214,7 +214,7 @@ msgstr ""
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:947
 msgid "Sharpen Edges"
-msgstr ""
+msgstr "가장자리 선명하게"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:948
 msgid "Turn this off if you are animating the text"
@@ -224,114 +224,114 @@ msgstr ""
 #: ../src/modules/lyr_std/shade.cpp:202
 #: ../src/synfig/layers/layer_shape.cpp:169
 msgid "Invert"
-msgstr ""
+msgstr "반전"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:1018
 msgid "No face loaded, no text will be rendered."
-msgstr ""
+msgstr "글꼴이 열리지 않아, 텍스트가 렌더링되지 않습니다"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:1039
 msgid "Text too small, no text will be rendered."
-msgstr ""
+msgstr "텍스트가 너무 작아, 텍스트가 렌더링되지 않습니다"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:1063
 msgid "Unable to set face size."
-msgstr ""
+msgstr "글꼴 크기를 설정할 수 없습니다"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:1125
 msgid "Can't parse multibyte character.\n"
-msgstr ""
+msgstr "멀티바이트 문자를 분석할 수 없습니다\n"
 
 #: ../src/modules/lyr_std/bevel.cpp:71
 #: ../src/modules/mod_geometry/advanced_outline.cpp:772
 #: ../src/modules/mod_geometry/rectangle.cpp:205
 msgid "Bevel"
-msgstr ""
+msgstr "경사"
 
 #: ../src/modules/lyr_std/bevel.cpp:72 ../src/modules/lyr_std/shade.cpp:73
 msgid "Stylize"
-msgstr ""
+msgstr "스타일화"
 
 #: ../src/modules/lyr_std/bevel.cpp:423 ../src/modules/lyr_std/shade.cpp:190
 #: ../src/modules/mod_filter/blur.cpp:146
 #: ../src/modules/mod_filter/halftone2.cpp:171
 msgid "Type"
-msgstr ""
+msgstr "유형"
 
 #: ../src/modules/lyr_std/bevel.cpp:424 ../src/modules/lyr_std/shade.cpp:191
 #: ../src/modules/mod_filter/blur.cpp:147
 msgid "Type of blur to use"
-msgstr ""
+msgstr "사용할 블러의 유형"
 
 #: ../src/modules/lyr_std/bevel.cpp:427 ../src/modules/lyr_std/shade.cpp:194
 #: ../src/modules/mod_filter/blur.cpp:150
 #: ../src/synfig/layers/layer_shape.cpp:183
 msgid "Box Blur"
-msgstr ""
+msgstr "박스 블러"
 
 #: ../src/modules/lyr_std/bevel.cpp:428 ../src/modules/lyr_std/shade.cpp:195
 #: ../src/modules/mod_filter/blur.cpp:151
 #: ../src/synfig/layers/layer_shape.cpp:184
 msgid "Fast Gaussian Blur"
-msgstr ""
+msgstr "빠른 가우시안 블러"
 
 #: ../src/modules/lyr_std/bevel.cpp:429 ../src/modules/lyr_std/shade.cpp:196
 #: ../src/modules/mod_filter/blur.cpp:152
 #: ../src/synfig/layers/layer_shape.cpp:185
 msgid "Cross-Hatch Blur"
-msgstr ""
+msgstr "크로스 해치 블러"
 
 #: ../src/modules/lyr_std/bevel.cpp:430 ../src/modules/lyr_std/shade.cpp:197
 #: ../src/modules/mod_filter/blur.cpp:153
 #: ../src/synfig/layers/layer_shape.cpp:186
 msgid "Gaussian Blur"
-msgstr ""
+msgstr "가우시안 블러"
 
 #: ../src/modules/lyr_std/bevel.cpp:431 ../src/modules/lyr_std/shade.cpp:198
 #: ../src/modules/mod_filter/blur.cpp:154
 #: ../src/synfig/layers/layer_shape.cpp:187
 msgid "Disc Blur"
-msgstr ""
+msgstr "디스크 블러"
 
 #: ../src/modules/lyr_std/bevel.cpp:435
 msgid "Hi-Color"
-msgstr ""
+msgstr "밝은 색상"
 
 #: ../src/modules/lyr_std/bevel.cpp:438
 msgid "Lo-Color"
-msgstr ""
+msgstr "어두운 색상"
 
 #: ../src/modules/lyr_std/bevel.cpp:441
 msgid "Light Angle"
-msgstr ""
+msgstr "빛 각도"
 
 #: ../src/modules/lyr_std/bevel.cpp:445
 msgid "Depth of Bevel"
-msgstr ""
+msgstr "경사의 깊이"
 
 #: ../src/modules/lyr_std/bevel.cpp:449
 msgid "Softness"
-msgstr ""
+msgstr "부드러움"
 
 #: ../src/modules/lyr_std/bevel.cpp:452
 msgid "Use Luma"
-msgstr ""
+msgstr "루마 사용"
 
 #: ../src/modules/lyr_std/bevel.cpp:455
 msgid "Solid"
-msgstr ""
+msgstr "단색"
 
 #: ../src/modules/lyr_std/booleancurve.cpp:108
 msgid "Region Set"
-msgstr ""
+msgstr "영역 세트"
 
 #: ../src/modules/lyr_std/booleancurve.cpp:109
 msgid "Set of regions to combine"
-msgstr ""
+msgstr "결합할 영역 세트"
 
 #: ../src/modules/lyr_std/clamp.cpp:58 ../src/tool/printing_functions.cpp:222
 msgid "Clamp"
-msgstr ""
+msgstr "클램프"
 
 #: ../src/modules/lyr_std/clamp.cpp:59
 #: ../src/modules/mod_filter/colorcorrect.cpp:59
@@ -339,15 +339,15 @@ msgstr ""
 #: ../src/modules/mod_filter/halftone3.cpp:59
 #: ../src/modules/mod_filter/lumakey.cpp:59
 msgid "Filters"
-msgstr ""
+msgstr "필터"
 
 #: ../src/modules/lyr_std/clamp.cpp:258
 msgid "Invert Negative"
-msgstr ""
+msgstr "음수 반전"
 
 #: ../src/modules/lyr_std/clamp.cpp:262
 msgid "Clamp Ceiling"
-msgstr ""
+msgstr "상한선 제한"
 
 #: ../src/modules/lyr_std/clamp.cpp:263
 msgid "When checked, the Ceiling value is used"
@@ -355,23 +355,23 @@ msgstr ""
 
 #: ../src/modules/lyr_std/clamp.cpp:267
 msgid "Ceiling"
-msgstr ""
+msgstr "상한선"
 
 #: ../src/modules/lyr_std/clamp.cpp:268
 msgid "Upper boundary of the clamping"
-msgstr ""
+msgstr "범위 제한의 상단 범위"
 
 #: ../src/modules/lyr_std/clamp.cpp:272
 msgid "Floor"
-msgstr ""
+msgstr "하한선"
 
 #: ../src/modules/lyr_std/clamp.cpp:273
 msgid "Lower boundary of the clamping"
-msgstr ""
+msgstr "범위 제한의 하단 범위"
 
 #: ../src/modules/lyr_std/curvewarp.cpp:62
 msgid "Curve Warp"
-msgstr ""
+msgstr "곡선 워프"
 
 #: ../src/modules/lyr_std/curvewarp.cpp:63
 #: ../src/modules/lyr_std/insideout.cpp:64
@@ -381,11 +381,11 @@ msgstr ""
 #: ../src/modules/mod_noise/distort.cpp:58
 #: ../src/synfig/layers/layer_skeletondeformation.cpp:64
 msgid "Distortions"
-msgstr ""
+msgstr "왜곡"
 
 #: ../src/modules/lyr_std/curvewarp.cpp:404
 msgid "Position of the destiny Spline line"
-msgstr ""
+msgstr "데스티니 스플라인 라인의 위치"
 
 #: ../src/modules/lyr_std/curvewarp.cpp:408
 #: ../src/modules/lyr_std/supersample.cpp:124
@@ -399,27 +399,27 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_stripes.cpp:198
 #: ../src/tool/printing_functions.cpp:113
 msgid "Width"
-msgstr ""
+msgstr "너비"
 
 #: ../src/modules/lyr_std/curvewarp.cpp:410
 msgid "How much is expanded the result perpendicular to the source line"
-msgstr ""
+msgstr "결과가 소스 라인에 수직으로 확장되는 정도"
 
 #: ../src/modules/lyr_std/curvewarp.cpp:413
 msgid "Start Point"
-msgstr ""
+msgstr "시작 포인트"
 
 #: ../src/modules/lyr_std/curvewarp.cpp:415
 msgid "First point of the source line"
-msgstr ""
+msgstr "소스 라인의 첫번째 포인트"
 
 #: ../src/modules/lyr_std/curvewarp.cpp:419
 msgid "End Point"
-msgstr ""
+msgstr "끝 포인트"
 
 #: ../src/modules/lyr_std/curvewarp.cpp:420
 msgid "Final point of the source line"
-msgstr ""
+msgstr "소스 라인의 마지막 포인트"
 
 #: ../src/modules/lyr_std/curvewarp.cpp:424
 #: ../src/modules/mod_geometry/advanced_outline.cpp:726
@@ -428,25 +428,25 @@ msgstr ""
 #: ../src/modules/mod_gradient/curvegradient.cpp:535
 #: ../src/modules/mod_particle/plant.cpp:399
 msgid "Vertices"
-msgstr ""
+msgstr "정점"
 
 #: ../src/modules/lyr_std/curvewarp.cpp:427
 msgid "List of Spline Points where the source line is curved to"
-msgstr ""
+msgstr "소스 라인이 구부러진 스플라인 포인트의 목록"
 
 #: ../src/modules/lyr_std/curvewarp.cpp:430
 #: ../src/modules/mod_gradient/curvegradient.cpp:556
 msgid "Fast"
-msgstr ""
+msgstr "빠르게"
 
 #: ../src/modules/lyr_std/curvewarp.cpp:431
 #: ../src/modules/mod_gradient/curvegradient.cpp:557
 msgid "When checked, renders quickly but with artifacts"
-msgstr ""
+msgstr "체크하면 빠르게 렌더링하지만 깨짐현상이 생깁니다"
 
 #: ../src/modules/lyr_std/freetime.cpp:55
 msgid "Free Time"
-msgstr ""
+msgstr "프리 타임"
 
 #: ../src/modules/lyr_std/freetime.cpp:56
 #: ../src/modules/lyr_std/freetime.cpp:96
@@ -455,39 +455,39 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_timedswap.cpp:262
 #: ../src/synfig/valuenodes/valuenode_timestring.cpp:150
 msgid "Time"
-msgstr ""
+msgstr "시간"
 
 #: ../src/modules/lyr_std/freetime.cpp:97
 msgid "Current time for next layers"
-msgstr ""
+msgstr "다음 레이어의 현재 시간"
 
 #: ../src/modules/lyr_std/import.cpp:68
 msgid "Import Image"
-msgstr ""
+msgstr "이미지 임포트"
 
 #: ../src/modules/lyr_std/import.cpp:199
 #: ../src/modules/mod_svg/layer_svg.cpp:103
 #: ../src/synfig/layers/layer_sound.cpp:106
 #: ../src/synfig/valuenodes/valuenode_animatedfile.cpp:484
 msgid "Filename"
-msgstr ""
+msgstr "파일 이름"
 
 #: ../src/modules/lyr_std/import.cpp:200
 msgid "File to import"
-msgstr ""
+msgstr "임포트할 파일"
 
 #: ../src/modules/lyr_std/import.cpp:204
 #: ../src/synfig/layers/layer_pastecanvas.cpp:148
 msgid "Time Offset"
-msgstr ""
+msgstr "시간 오프셋"
 
 #: ../src/modules/lyr_std/import.cpp:205
 msgid "Time Offset to apply to the imported file"
-msgstr ""
+msgstr "임포트한 파일에 적용할 시간 오프셋"
 
 #: ../src/modules/lyr_std/insideout.cpp:63
 msgid "Inside Out"
-msgstr ""
+msgstr "인사이드 아웃"
 
 #: ../src/modules/lyr_std/insideout.cpp:171
 msgid "Center of the distortion"
@@ -495,105 +495,105 @@ msgstr ""
 
 #: ../src/modules/lyr_std/julia.cpp:61
 msgid "Julia Set"
-msgstr "קבוצת ג'וליה"
+msgstr "쥘리아 집합"
 
 #: ../src/modules/lyr_std/julia.cpp:62
 #: ../src/modules/lyr_std/mandelbrot.cpp:61
 msgid "Fractals"
-msgstr "פרקטלים"
+msgstr "프렉탈"
 
 #: ../src/modules/lyr_std/julia.cpp:349
 msgid "Inside Color"
-msgstr "צבע פנימי"
+msgstr "내부 색상"
 
 #: ../src/modules/lyr_std/julia.cpp:350
 msgid "Color of the Set"
-msgstr ""
+msgstr "세트의 색상"
 
 #: ../src/modules/lyr_std/julia.cpp:353
 msgid "Outside Color"
-msgstr "צבע חיצוני"
+msgstr "외부 색상"
 
 #: ../src/modules/lyr_std/julia.cpp:354
 msgid "Color outside the Set"
-msgstr ""
+msgstr "세트 외부 색상"
 
 #: ../src/modules/lyr_std/julia.cpp:357
 msgid "Color Shift"
-msgstr ""
+msgstr "색상 변화"
 
 #: ../src/modules/lyr_std/julia.cpp:360
 #: ../src/modules/lyr_std/mandelbrot.cpp:222
 msgid "Iterations"
-msgstr ""
+msgstr "반복"
 
 #: ../src/modules/lyr_std/julia.cpp:363
 msgid "Seed Point"
-msgstr ""
+msgstr "시드 지점"
 
 #: ../src/modules/lyr_std/julia.cpp:366
 #: ../src/modules/lyr_std/mandelbrot.cpp:225
 msgid "Bailout ValueBase"
-msgstr ""
+msgstr "베일아웃 ValueBase"
 
 #: ../src/modules/lyr_std/julia.cpp:370
 #: ../src/modules/lyr_std/mandelbrot.cpp:235
 #: ../src/modules/lyr_std/twirl.cpp:131
 msgid "Distort Inside"
-msgstr ""
+msgstr "내부 왜곡"
 
 #: ../src/modules/lyr_std/julia.cpp:373
 #: ../src/modules/lyr_std/mandelbrot.cpp:239
 msgid "Shade Inside"
-msgstr ""
+msgstr "내부 음영"
 
 #: ../src/modules/lyr_std/julia.cpp:376
 #: ../src/modules/lyr_std/mandelbrot.cpp:243
 msgid "Solid Inside"
-msgstr ""
+msgstr "내부 단색"
 
 #: ../src/modules/lyr_std/julia.cpp:379
 #: ../src/modules/lyr_std/mandelbrot.cpp:247
 msgid "Invert Inside"
-msgstr ""
+msgstr "내부 반전"
 
 #: ../src/modules/lyr_std/julia.cpp:382
 msgid "Color Inside"
-msgstr ""
+msgstr "내부 색상"
 
 #: ../src/modules/lyr_std/julia.cpp:385
 #: ../src/modules/lyr_std/mandelbrot.cpp:264
 #: ../src/modules/lyr_std/twirl.cpp:136
 msgid "Distort Outside"
-msgstr ""
+msgstr "외부 왜곡"
 
 #: ../src/modules/lyr_std/julia.cpp:388
 #: ../src/modules/lyr_std/mandelbrot.cpp:268
 msgid "Shade Outside"
-msgstr ""
+msgstr "외부 음영"
 
 #: ../src/modules/lyr_std/julia.cpp:391
 #: ../src/modules/lyr_std/mandelbrot.cpp:272
 msgid "Solid Outside"
-msgstr ""
+msgstr "외부 단색"
 
 #: ../src/modules/lyr_std/julia.cpp:394
 #: ../src/modules/lyr_std/mandelbrot.cpp:276
 msgid "Invert Outside"
-msgstr ""
+msgstr "외부 반전"
 
 #: ../src/modules/lyr_std/julia.cpp:397
 msgid "Color Outside"
-msgstr ""
+msgstr "외부 색상"
 
 #: ../src/modules/lyr_std/julia.cpp:401
 msgid "Color Cycle"
-msgstr ""
+msgstr "색상 사이클"
 
 #: ../src/modules/lyr_std/julia.cpp:404
 #: ../src/modules/lyr_std/mandelbrot.cpp:284
 msgid "Smooth Outside"
-msgstr ""
+msgstr "외부 부드럽게"
 
 #: ../src/modules/lyr_std/julia.cpp:405
 msgid "When checked, smoothes the coloration outside the set"
@@ -602,16 +602,16 @@ msgstr ""
 #: ../src/modules/lyr_std/julia.cpp:408
 #: ../src/modules/lyr_std/mandelbrot.cpp:229
 msgid "Break Set"
-msgstr ""
+msgstr "브레이크 세트"
 
 #: ../src/modules/lyr_std/julia.cpp:409
 #: ../src/modules/lyr_std/mandelbrot.cpp:230
 msgid "Modify equation to achieve interesting results"
-msgstr ""
+msgstr "흥미로운 결과를 얻기 위해 방정식 수정"
 
 #: ../src/modules/lyr_std/mandelbrot.cpp:60
 msgid "Mandelbrot Set"
-msgstr "קבוצת מנדלברוט"
+msgstr "망델브로 집합"
 
 #: ../src/modules/lyr_std/mandelbrot.cpp:236
 #: ../src/modules/lyr_std/mandelbrot.cpp:240
@@ -621,19 +621,19 @@ msgstr "קבוצת מנדלברוט"
 #: ../src/modules/lyr_std/mandelbrot.cpp:256
 #: ../src/modules/lyr_std/mandelbrot.cpp:260
 msgid "Inside"
-msgstr ""
+msgstr "내부"
 
 #: ../src/modules/lyr_std/mandelbrot.cpp:251
 msgid "Gradient Inside"
-msgstr ""
+msgstr "내부 그라데이션"
 
 #: ../src/modules/lyr_std/mandelbrot.cpp:255
 msgid "Offset Inside"
-msgstr ""
+msgstr "내부 오프셋"
 
 #: ../src/modules/lyr_std/mandelbrot.cpp:259
 msgid "Loop Inside"
-msgstr ""
+msgstr "내부 반복"
 
 #: ../src/modules/lyr_std/mandelbrot.cpp:265
 #: ../src/modules/lyr_std/mandelbrot.cpp:269
@@ -644,33 +644,33 @@ msgstr ""
 #: ../src/modules/lyr_std/mandelbrot.cpp:290
 #: ../src/modules/lyr_std/mandelbrot.cpp:294
 msgid "Outside"
-msgstr ""
+msgstr "외부"
 
 #: ../src/modules/lyr_std/mandelbrot.cpp:280
 msgid "Gradient outside"
-msgstr ""
+msgstr "외부 그라데이션"
 
 #: ../src/modules/lyr_std/mandelbrot.cpp:285
 msgid "Smooth the coloration outside the set"
-msgstr ""
+msgstr "세트의 외부 색상을 부드럽게"
 
 #: ../src/modules/lyr_std/mandelbrot.cpp:289
 msgid "Offset Outside"
-msgstr ""
+msgstr "외부 오프셋"
 
 #: ../src/modules/lyr_std/mandelbrot.cpp:293
 msgid "Scale Outside"
-msgstr ""
+msgstr "외부 스케일"
 
 #: ../src/modules/lyr_std/rotate.cpp:64
 #: ../src/synfig/valuenodes/valuenode_bonelink.cpp:215
 msgid "Rotate"
-msgstr ""
+msgstr "회전"
 
 #: ../src/modules/lyr_std/rotate.cpp:65
 #: ../src/modules/lyr_std/translate.cpp:61 ../src/modules/lyr_std/zoom.cpp:60
 msgid "Transform"
-msgstr ""
+msgstr "변형"
 
 #: ../src/modules/lyr_std/rotate.cpp:125
 msgid "Origin of the rotation"
@@ -685,15 +685,15 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_segcalctangent.cpp:155
 #: ../src/synfig/valuenodes/valuenode_segcalcvertex.cpp:153
 msgid "Amount"
-msgstr ""
+msgstr "수치"
 
 #: ../src/modules/lyr_std/rotate.cpp:131
 msgid "Amount of rotation"
-msgstr ""
+msgstr "회전시킬 양"
 
 #: ../src/modules/lyr_std/shade.cpp:72
 msgid "Shade"
-msgstr ""
+msgstr "음영"
 
 #: ../src/modules/lyr_std/shade.cpp:185
 msgid "Size of the shade"
@@ -702,12 +702,12 @@ msgstr ""
 #: ../src/modules/lyr_std/sphere_distort.cpp:76
 #: ../src/modules/lyr_std/sphere_distort.cpp:170
 msgid "Spherize"
-msgstr ""
+msgstr "구형화"
 
 #: ../src/modules/lyr_std/sphere_distort.cpp:142
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:735
 msgid "Position"
-msgstr ""
+msgstr "위치"
 
 #: ../src/modules/lyr_std/sphere_distort.cpp:143
 msgid "Center of the sphere distortion"
@@ -722,7 +722,7 @@ msgstr ""
 #: ../src/modules/mod_noise/valuenode_random.cpp:248
 #: ../src/synfig/valuenodes/valuenode_radialcomposite.cpp:266
 msgid "Radius"
-msgstr "רדיוס"
+msgstr "반지름"
 
 #: ../src/modules/lyr_std/sphere_distort.cpp:151
 msgid "Size of the sphere distortion"
@@ -735,7 +735,7 @@ msgstr ""
 #: ../src/modules/lyr_std/sphere_distort.cpp:161
 #: ../src/modules/lyr_std/perspective.cpp:1081
 msgid "Clip"
-msgstr ""
+msgstr "클립"
 
 #: ../src/modules/lyr_std/sphere_distort.cpp:162
 msgid "When checked, the area outside the Radius is not distorted"
@@ -743,7 +743,7 @@ msgstr ""
 
 #: ../src/modules/lyr_std/sphere_distort.cpp:166
 msgid "Distort Type"
-msgstr ""
+msgstr "왜곡 유형"
 
 #: ../src/modules/lyr_std/sphere_distort.cpp:167
 msgid "Direction of the distortion"
@@ -751,19 +751,19 @@ msgstr ""
 
 #: ../src/modules/lyr_std/sphere_distort.cpp:171
 msgid "Vertical Bar"
-msgstr ""
+msgstr "수직 막대"
 
 #: ../src/modules/lyr_std/sphere_distort.cpp:172
 msgid "Horizontal Bar"
-msgstr ""
+msgstr "수평 막대"
 
 #: ../src/modules/lyr_std/stretch.cpp:60
 msgid "Stretch"
-msgstr ""
+msgstr "스트레치"
 
 #: ../src/modules/lyr_std/stretch.cpp:108
 msgid "Size of the stretch relative to its Center"
-msgstr ""
+msgstr "중심을 기준으로 늘리는 크기"
 
 #: ../src/modules/lyr_std/stretch.cpp:112 ../src/modules/lyr_std/twirl.cpp:112
 #: ../src/modules/mod_example/simplecircle.cpp:147
@@ -771,7 +771,7 @@ msgstr ""
 #: ../src/modules/mod_gradient/radialgradient.cpp:116
 #: ../src/modules/mod_gradient/spiralgradient.cpp:116
 msgid "Center"
-msgstr ""
+msgstr "중심"
 
 #: ../src/modules/lyr_std/stretch.cpp:113
 msgid "Center of the stretch distortion"
@@ -779,19 +779,19 @@ msgstr ""
 
 #: ../src/modules/lyr_std/stroboscope.cpp:59
 msgid "Stroboscope"
-msgstr ""
+msgstr "스트포보 스코프"
 
 #: ../src/modules/lyr_std/stroboscope.cpp:102
 msgid "Frequency"
-msgstr ""
+msgstr "주파수"
 
 #: ../src/modules/lyr_std/stroboscope.cpp:103
 msgid "Frequency of the Strobe in times per second"
-msgstr ""
+msgstr "초당 신호 횟수"
 
 #: ../src/modules/lyr_std/supersample.cpp:58
 msgid "Super Sample"
-msgstr ""
+msgstr "슈퍼 샘플"
 
 #: ../src/modules/lyr_std/supersample.cpp:125
 msgid "Width of the sample area (In pixels)"
@@ -800,7 +800,7 @@ msgstr ""
 #: ../src/modules/lyr_std/supersample.cpp:128
 #: ../src/tool/printing_functions.cpp:119
 msgid "Height"
-msgstr "גובה"
+msgstr "높이"
 
 #: ../src/modules/lyr_std/supersample.cpp:129
 msgid "Height of the sample area (In pixels)"
@@ -808,7 +808,7 @@ msgstr ""
 
 #: ../src/modules/lyr_std/supersample.cpp:132
 msgid "Use Parametric"
-msgstr ""
+msgstr "파라메트릭 사용"
 
 #: ../src/modules/lyr_std/supersample.cpp:133
 msgid "When checked, uses the Parametric Renderer"
@@ -816,7 +816,7 @@ msgstr ""
 
 #: ../src/modules/lyr_std/supersample.cpp:136
 msgid "Be Alpha Safe"
-msgstr ""
+msgstr "알파 세이프"
 
 #: ../src/modules/lyr_std/supersample.cpp:137
 msgid "When checked, avoids alpha artifacts"
@@ -824,41 +824,41 @@ msgstr ""
 
 #: ../src/modules/lyr_std/timeloop.cpp:63
 msgid "Time Loop"
-msgstr ""
+msgstr "타임 루프"
 
 #: ../src/modules/lyr_std/timeloop.cpp:136
 #: ../src/synfig/valuenodes/valuenode_timeloop.cpp:173
 msgid "Link Time"
-msgstr ""
+msgstr "링크 타임"
 
 #: ../src/modules/lyr_std/timeloop.cpp:137
 msgid "Start time of the loop for the cycled context"
-msgstr ""
+msgstr "순환되는 컨텍스트 반복의 시작 시간"
 
 #: ../src/modules/lyr_std/timeloop.cpp:142
 #: ../src/synfig/valuenodes/valuenode_timeloop.cpp:178
 msgid "Local Time"
-msgstr ""
+msgstr "로컬 타임"
 
 #: ../src/modules/lyr_std/timeloop.cpp:143
 #: ../src/synfig/valuenodes/valuenode_timeloop.cpp:179
 msgid "The time when the resulted loop starts"
-msgstr ""
+msgstr "결과 반복이 시작되는 시간"
 
 #: ../src/modules/lyr_std/timeloop.cpp:148
 #: ../src/synfig/valuenodes/valuenode_step.cpp:191
 #: ../src/synfig/valuenodes/valuenode_timeloop.cpp:183
 msgid "Duration"
-msgstr ""
+msgstr "듀레이션"
 
 #: ../src/modules/lyr_std/timeloop.cpp:149
 #: ../src/synfig/valuenodes/valuenode_timeloop.cpp:184
 msgid "Length of the loop"
-msgstr ""
+msgstr "반복의 길이"
 
 #: ../src/modules/lyr_std/timeloop.cpp:154
 msgid "Only For Positive Duration"
-msgstr ""
+msgstr "오직 양수 듀레이션"
 
 #: ../src/modules/lyr_std/timeloop.cpp:155
 msgid "When checked, loops only positive durations"
@@ -866,16 +866,16 @@ msgstr ""
 
 #: ../src/modules/lyr_std/timeloop.cpp:160
 msgid "Symmetrical"
-msgstr ""
+msgstr "대칭"
 
 #: ../src/modules/lyr_std/timeloop.cpp:161
 msgid "When checked, loops are mirrored centered at Local Time"
-msgstr ""
+msgstr "체크하면 로컬 타임에 중심에서 대칭하여 반복"
 
 #: ../src/modules/lyr_std/translate.cpp:60
 #: ../src/synfig/valuenodes/valuenode_bonelink.cpp:210
 msgid "Translate"
-msgstr ""
+msgstr "이동"
 
 #: ../src/modules/lyr_std/translate.cpp:105
 msgid "Origin of the translation"
@@ -883,12 +883,12 @@ msgstr ""
 
 #: ../src/modules/lyr_std/twirl.cpp:57
 msgid "Twirl"
-msgstr ""
+msgstr "트윌"
 
 #: ../src/modules/lyr_std/twirl.cpp:113
 #: ../src/modules/mod_example/simplecircle.cpp:148
 msgid "Center of the circle"
-msgstr ""
+msgstr "원형의 중심"
 
 #: ../src/modules/lyr_std/twirl.cpp:119
 #: ../src/modules/mod_example/simplecircle.cpp:153
@@ -896,11 +896,11 @@ msgstr ""
 #: ../src/modules/mod_gradient/radialgradient.cpp:123
 #: ../src/modules/mod_gradient/spiralgradient.cpp:123
 msgid "Radius of the circle"
-msgstr ""
+msgstr "원형의 반지름"
 
 #: ../src/modules/lyr_std/twirl.cpp:125
 msgid "Rotations"
-msgstr ""
+msgstr "회전"
 
 #: ../src/modules/lyr_std/twirl.cpp:126
 msgid "Number of rotations of the twirl effect"
@@ -908,11 +908,11 @@ msgstr ""
 
 #: ../src/modules/lyr_std/twirl.cpp:132
 msgid "When checked, distorts inside the circle"
-msgstr ""
+msgstr "체크하면 원형의 내부가 왜곡됩니다"
 
 #: ../src/modules/lyr_std/twirl.cpp:137
 msgid "When checked, distorts outside the circle"
-msgstr ""
+msgstr "체크하면 원형의 외부가 왜곡됩니다"
 
 #: ../src/modules/lyr_std/perspective.cpp:66
 msgid "Perspective"
@@ -920,7 +920,7 @@ msgstr ""
 
 #: ../src/modules/lyr_std/perspective.cpp:1040
 msgid "Source TL"
-msgstr ""
+msgstr "소스영역 좌측상단"
 
 #: ../src/modules/lyr_std/perspective.cpp:1042
 msgid "Top Left corner of the source to perspective"
@@ -928,7 +928,7 @@ msgstr ""
 
 #: ../src/modules/lyr_std/perspective.cpp:1047
 msgid "Source BR"
-msgstr ""
+msgstr "소스영역 우측하단"
 
 #: ../src/modules/lyr_std/perspective.cpp:1048
 msgid "Bottom Right corner of the source to perspective"
@@ -936,35 +936,35 @@ msgstr ""
 
 #: ../src/modules/lyr_std/perspective.cpp:1053
 msgid "Dest TL"
-msgstr ""
+msgstr "대상영역 좌측상단"
 
 #: ../src/modules/lyr_std/perspective.cpp:1055
 msgid "Top Left corner of the destination"
-msgstr ""
+msgstr "대상영역의 좌측 상단 모서리"
 
 #: ../src/modules/lyr_std/perspective.cpp:1060
 msgid "Dest TR"
-msgstr ""
+msgstr "대상영역 우측상단"
 
 #: ../src/modules/lyr_std/perspective.cpp:1062
 msgid "Top Right corner of the destination"
-msgstr ""
+msgstr "대상영역의 우측 상단 모서리"
 
 #: ../src/modules/lyr_std/perspective.cpp:1067
 msgid "Dest BR"
-msgstr ""
+msgstr "대상영역 우측하단"
 
 #: ../src/modules/lyr_std/perspective.cpp:1069
 msgid "Bottom Right corner of the destination"
-msgstr ""
+msgstr "대상영역의 우측 하단 모서리"
 
 #: ../src/modules/lyr_std/perspective.cpp:1074
 msgid "Dest BL"
-msgstr ""
+msgstr "대상영역 좌측하단"
 
 #: ../src/modules/lyr_std/perspective.cpp:1076
 msgid "Bottom Left corner of the destination"
-msgstr ""
+msgstr "대상영역의 좌측 하단 모서리"
 
 #: ../src/modules/lyr_std/perspective.cpp:1085
 #: ../src/modules/mod_noise/distort.cpp:214
@@ -972,7 +972,7 @@ msgstr ""
 #: ../src/modules/mod_noise/valuenode_random.cpp:263
 #: ../src/synfig/layers/layer_bitmap.cpp:170
 msgid "Interpolation"
-msgstr ""
+msgstr "보간"
 
 #: ../src/modules/lyr_std/perspective.cpp:1086
 #: ../src/modules/mod_noise/distort.cpp:215
@@ -984,7 +984,7 @@ msgstr ""
 #: ../src/modules/mod_noise/noise.cpp:279
 #: ../src/synfig/layers/layer_bitmap.cpp:173
 msgid "Nearest Neighbor"
-msgstr ""
+msgstr "최근접 이웃"
 
 #: ../src/modules/lyr_std/perspective.cpp:1089
 #: ../src/modules/mod_noise/distort.cpp:219
@@ -993,7 +993,7 @@ msgstr ""
 #: ../src/synfig/layers/layer_bitmap.cpp:174
 #: ../src/synfig/layers/layer_motionblur.cpp:135
 msgid "Linear"
-msgstr ""
+msgstr "선형"
 
 #: ../src/modules/lyr_std/perspective.cpp:1090
 #: ../src/modules/mod_noise/distort.cpp:220
@@ -1001,7 +1001,7 @@ msgstr ""
 #: ../src/modules/mod_noise/valuenode_random.cpp:268
 #: ../src/synfig/layers/layer_bitmap.cpp:175
 msgid "Cosine"
-msgstr ""
+msgstr "코싸인"
 
 #: ../src/modules/lyr_std/perspective.cpp:1091
 #: ../src/modules/mod_noise/distort.cpp:222
@@ -1009,19 +1009,19 @@ msgstr ""
 #: ../src/modules/mod_noise/valuenode_random.cpp:270
 #: ../src/synfig/layers/layer_bitmap.cpp:176
 msgid "Cubic"
-msgstr ""
+msgstr "큐빅"
 
 #: ../src/modules/lyr_std/xorpattern.cpp:60
 msgid "XOR Pattern"
-msgstr ""
+msgstr "XOR 패턴"
 
 #: ../src/modules/lyr_std/xorpattern.cpp:134
 msgid "Center of the pattern"
-msgstr ""
+msgstr "패턴의 중심"
 
 #: ../src/modules/lyr_std/xorpattern.cpp:139
 msgid "Size of the pattern"
-msgstr ""
+msgstr "패턴의 크기"
 
 #: ../src/modules/lyr_std/zoom.cpp:59
 #: ../src/synfig/valuenodes/valuenode_blinecalctangent.cpp:246
@@ -1029,78 +1029,78 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:830
 #: ../src/synfig/valuenodes/valuenode_exp.cpp:148
 msgid "Scale"
-msgstr ""
+msgstr "스케일"
 
 #: ../src/modules/lyr_std/zoom.cpp:106
 msgid "Amount to scale to"
-msgstr ""
+msgstr "확장시킬 양"
 
 #: ../src/modules/lyr_std/zoom.cpp:113
 msgid "Point to scale from"
-msgstr ""
+msgstr "확장이 시작되는 지점"
 
 #: ../src/modules/mod_bmp/mptr_bmp.cpp:131
 #: ../src/modules/mod_bmp/mptr_bmp.cpp:132
 #: ../src/modules/mod_ppm/mptr_ppm.cpp:67
 #, c-format
 msgid "Unable to open %s"
-msgstr "לא ניתן לפתוח את %s"
+msgstr "%s 를 열 수 없습니다"
 
 #: ../src/modules/mod_bmp/mptr_bmp.cpp:143
 #: ../src/modules/mod_bmp/mptr_bmp.cpp:144
 #, c-format
 msgid "%s is not in BMP format"
-msgstr ""
+msgstr "%s 는 BMP 형식이 아닙니다"
 
 #: ../src/modules/mod_bmp/mptr_bmp.cpp:150
 #, c-format
 msgid "Failure while reading BITMAP::FILEHEADER from %s"
-msgstr ""
+msgstr "%s 에서 BITMAP::FILEHEADER 를 읽는 동안 실패했습니다"
 
 #: ../src/modules/mod_bmp/mptr_bmp.cpp:158
 #, c-format
 msgid "Failure while reading BITMAP::INFOHEADER from %s"
-msgstr ""
+msgstr " %s 에서 BITMAP::INFOHEADER 를 읽는 동안 실패했습니다"
 
 #: ../src/modules/mod_bmp/mptr_bmp.cpp:168
 #, c-format
 msgid "Bad BITMAP::FILEHEADER in %s. (bfOffsetBits=%d, should be %zu)"
-msgstr ""
+msgstr "%s 에서 잘못된 BITMAP::FILEHEADER (bfOffsetBits=%d, should be %zu)"
 
 #: ../src/modules/mod_bmp/mptr_bmp.cpp:176
 #, c-format
 msgid "Bad BITMAP::INFOHEADER in %s. (biSize=%d, should be %zu)"
-msgstr ""
+msgstr "%s 에서 잘못된 BITMAP::INFOHEADER (biSizes=%d, should be %zu)"
 
 #: ../src/modules/mod_bmp/mptr_bmp.cpp:194
 #: ../src/modules/mod_bmp/mptr_bmp.cpp:195
 msgid "Reading compressed bitmaps is not supported"
-msgstr ""
+msgstr "압축 된 비트맵을 읽는 것은 지원하지 않습니다"
 
 #: ../src/modules/mod_bmp/mptr_bmp.cpp:201
 #: ../src/modules/mod_bmp/mptr_bmp.cpp:202
 #, c-format
 msgid "Unsupported bit depth (bit_count=%d, should be 24 or 32)"
-msgstr ""
+msgstr "지원하지 않는 비트 깊이 (bit_count=%d, should be 24 or 32)"
 
 #: ../src/modules/mod_bmp/trgt_bmp.cpp:222
 msgid " (animated)"
-msgstr ""
+msgstr "(애니메이션)"
 
 #: ../src/modules/mod_bmp/trgt_bmp.cpp:232
 #: ../src/modules/mod_bmp/trgt_bmp.cpp:233
 msgid "Unable to open file"
-msgstr "לא ניתן לפתוח את הקובץ"
+msgstr "파일을 열 수 없습니다"
 
 #: ../src/modules/mod_bmp/trgt_bmp.cpp:264
 #: ../src/modules/mod_bmp/trgt_bmp.cpp:265
 msgid "Unable to write file header to file"
-msgstr ""
+msgstr "파일 헤더를 파일에 쓸 수 없습니다"
 
 #: ../src/modules/mod_bmp/trgt_bmp.cpp:271
 #: ../src/modules/mod_bmp/trgt_bmp.cpp:272
 msgid "Unable to write info header"
-msgstr ""
+msgstr "정보 헤더를 쓸 수 없습니다"
 
 #: ../src/modules/mod_dv/trgt_dv.cpp:163 ../src/modules/mod_dv/trgt_dv.cpp:172
 #: ../src/modules/mod_dv/trgt_dv.cpp:179 ../src/modules/mod_dv/trgt_dv.cpp:189
@@ -1108,16 +1108,16 @@ msgstr ""
 #: ../src/modules/mod_dv/trgt_dv.cpp:206 ../src/modules/mod_dv/trgt_dv.cpp:215
 #: ../src/modules/mod_dv/trgt_dv.cpp:224
 msgid "Unable to open pipe to encodedv"
-msgstr ""
+msgstr "encodev에 대한 파이프를 열 수 없습니다"
 
 #: ../src/modules/mod_example/metaballs.cpp:55
 msgid "Metaballs"
-msgstr ""
+msgstr "메타볼"
 
 #: ../src/modules/mod_example/metaballs.cpp:56
 #: ../src/modules/mod_example/simplecircle.cpp:59
 msgid "Example"
-msgstr "דוגמא"
+msgstr "예제"
 
 #: ../src/modules/mod_example/metaballs.cpp:126
 #: ../src/modules/mod_gradient/conicalgradient.cpp:107
@@ -1131,76 +1131,76 @@ msgstr "דוגמא"
 #: ../src/synfig/valuenodes/valuenode_gradientrotate.cpp:158
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:197
 msgid "Gradient"
-msgstr ""
+msgstr "그라데이션"
 
 #: ../src/modules/mod_example/metaballs.cpp:130
 msgid "Balls"
-msgstr ""
+msgstr "볼"
 
 #: ../src/modules/mod_example/metaballs.cpp:134
 msgid "Radii"
-msgstr ""
+msgstr "반지름"
 
 #: ../src/modules/mod_example/metaballs.cpp:138
 msgid "Weights"
-msgstr ""
+msgstr "가중치"
 
 #: ../src/modules/mod_example/metaballs.cpp:142
 msgid "Gradient Left"
-msgstr ""
+msgstr "그라데이션 좌측"
 
 #: ../src/modules/mod_example/metaballs.cpp:146
 msgid "Gradient Right"
-msgstr ""
+msgstr "그라데이션 우측"
 
 #: ../src/modules/mod_example/metaballs.cpp:150
 msgid "Positive Only"
-msgstr ""
+msgstr "오직 양수만"
 
 #: ../src/modules/mod_example/simplecircle.cpp:58
 msgid "Simple Circle"
-msgstr ""
+msgstr "심플 원형"
 
 #: ../src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:167
 msgid "Unable to initialize Sound subsystem"
-msgstr ""
+msgstr "사운드 하위 시스템을 초기화할 수 없습니다"
 
 #: ../src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:221
 msgid ""
 "Error: No FFmpeg binary found.\n"
 "\n"
 "Please install \"ffmpeg\" or \"avconv\" (libav-tools package)."
-msgstr ""
+msgstr "오류: FFmpeg 바이너리가 없습니다.\n\n\"ffmpeg\" 또는 \"avconv\" (libav-tools 패키지)를 설치해 주세요."
 
 #: ../src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:303
 msgid "Unable to open pipe to ffmpeg (no pipe)"
-msgstr ""
+msgstr "ffmpeg에 대한 파이프를 열 수 없습니다 (파이프 없음)"
 
 #: ../src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:310
 msgid "Unable to open pipe to ffmpeg (pid == -1)"
-msgstr ""
+msgstr "ffmpeg에 대한 파이프를 열 수 없습니다 (pid == -1)"
 
 #: ../src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:320
 msgid "Unable to open pipe to ffmpeg (dup2( p[0], STDIN_FILENO ) == -1)"
-msgstr ""
+msgstr "ffmpeg에 대한 파이프를 열 수 없습니다 (dup2 (p [0], STDIN_FILENO) == -1)"
 
 #: ../src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:342
 msgid "Unable to open pipe to ffmpeg (exec failed)"
-msgstr ""
+msgstr "ffmpeg에 대한 파이프를 열 수 없습니다 (실행 실패)"
 
 #: ../src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:360
 msgid "Unable to open pipe to ffmpeg (no file)"
-msgstr ""
+msgstr "ffmpeg에 대한 파이프를 열 수 없습니다 (파일 없음)"
 
 #: ../src/modules/mod_filter/blur.cpp:68
 msgid "Blur"
-msgstr ""
+msgstr "블러"
 
 #: ../src/modules/mod_filter/blur.cpp:69
 #: ../src/modules/mod_filter/radialblur.cpp:57
 #: ../src/synfig/layers/layer_motionblur.cpp:57
 msgid "Blurs"
-msgstr ""
+msgstr "흐림효과"
 
 #: ../src/modules/mod_filter/blur.cpp:142
 #: ../src/modules/mod_filter/radialblur.cpp:116
@@ -1209,106 +1209,106 @@ msgstr ""
 
 #: ../src/modules/mod_filter/colorcorrect.cpp:58
 msgid "Color Correct"
-msgstr ""
+msgstr "색상 보정"
 
 #: ../src/modules/mod_filter/colorcorrect.cpp:189
 msgid "Hue Adjust"
-msgstr ""
+msgstr "색조 조정"
 
 #: ../src/modules/mod_filter/colorcorrect.cpp:193
 msgid "Brightness"
-msgstr ""
+msgstr "명도"
 
 #: ../src/modules/mod_filter/colorcorrect.cpp:197
 msgid "Contrast"
-msgstr ""
+msgstr "대비"
 
 #: ../src/modules/mod_filter/colorcorrect.cpp:201
 msgid "Exposure Adjust"
-msgstr ""
+msgstr "노출 조정"
 
 #: ../src/modules/mod_filter/colorcorrect.cpp:205
 #: ../src/synfig/layers/layer_bitmap.cpp:181
 msgid "Gamma Adjustment"
-msgstr ""
+msgstr "감마 조정"
 
 #: ../src/modules/mod_filter/halftone2.cpp:57
 msgid "Halftone 2"
-msgstr ""
+msgstr "하프톤 2"
 
 #: ../src/modules/mod_filter/halftone2.cpp:152
 msgid "Mask Origin"
-msgstr ""
+msgstr "마스크 원점"
 
 #: ../src/modules/mod_filter/halftone2.cpp:156
 msgid "Mask Angle"
-msgstr ""
+msgstr "마스크 각도"
 
 #: ../src/modules/mod_filter/halftone2.cpp:160
 #: ../src/modules/mod_filter/halftone3.cpp:326
 msgid "Mask Size"
-msgstr ""
+msgstr "마스크 크기"
 
 #: ../src/modules/mod_filter/halftone2.cpp:165
 msgid "Light Color"
-msgstr ""
+msgstr "밝은 색상"
 
 #: ../src/modules/mod_filter/halftone2.cpp:168
 msgid "Dark Color"
-msgstr ""
+msgstr "어두운 색상"
 
 #: ../src/modules/mod_filter/halftone2.cpp:174
 #: ../src/modules/mod_filter/halftone3.cpp:333
 #: ../src/modules/mod_gradient/conicalgradient.cpp:124
 msgid "Symmetric"
-msgstr ""
+msgstr "대칭"
 
 #: ../src/modules/mod_filter/halftone2.cpp:175
 #: ../src/modules/mod_filter/halftone3.cpp:334
 msgid "Light On Dark"
-msgstr ""
+msgstr "어둠 속 조명"
 
 #: ../src/modules/mod_filter/halftone2.cpp:177
 #: ../src/modules/mod_filter/halftone3.cpp:336
 msgid "Diamond"
-msgstr ""
+msgstr "다이아몬드"
 
 #: ../src/modules/mod_filter/halftone2.cpp:178
 #: ../src/modules/mod_filter/halftone3.cpp:337
 msgid "Stripe"
-msgstr ""
+msgstr "줄무늬"
 
 #: ../src/modules/mod_filter/halftone3.cpp:58
 msgid "Halftone 3"
-msgstr ""
+msgstr "하프톤 3"
 
 #: ../src/modules/mod_filter/halftone3.cpp:330
 msgid " Type"
-msgstr ""
+msgstr "유형"
 
 #: ../src/modules/mod_filter/halftone3.cpp:340
 msgid "Subtractive Flag"
-msgstr ""
+msgstr "뺄셈 플래그"
 
 #: ../src/modules/mod_filter/halftone3.cpp:348
 msgid " Color"
-msgstr "צבע"
+msgstr "색상"
 
 #: ../src/modules/mod_filter/halftone3.cpp:352
 msgid " Mask Origin"
-msgstr ""
+msgstr "마스크 원점"
 
 #: ../src/modules/mod_filter/halftone3.cpp:356
 msgid " Mask Angle"
-msgstr ""
+msgstr "마스크 각도"
 
 #: ../src/modules/mod_filter/lumakey.cpp:58
 msgid "Luma Key"
-msgstr ""
+msgstr "루마 키"
 
 #: ../src/modules/mod_filter/radialblur.cpp:56
 msgid "Radial Blur"
-msgstr ""
+msgstr "방사형 블러"
 
 #: ../src/modules/mod_filter/radialblur.cpp:110
 msgid "Origin of the blur"
@@ -1316,11 +1316,11 @@ msgstr ""
 
 #: ../src/modules/mod_filter/radialblur.cpp:122
 msgid "Fade Out"
-msgstr ""
+msgstr "페이드 아웃"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:68
 msgid "Advanced Outline"
-msgstr ""
+msgstr "고급 윤곽선"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:69
 #: ../src/modules/mod_geometry/checkerboard.cpp:65
@@ -1332,7 +1332,7 @@ msgstr ""
 #: ../src/synfig/layers/layer_polygon.cpp:58
 #: ../src/synfig/layers/layer_solidcolor.cpp:57
 msgid "Geometry"
-msgstr "גיאומטריה"
+msgstr "도형"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:729
 #: ../src/modules/mod_geometry/outline.cpp:274
@@ -1340,35 +1340,35 @@ msgstr "גיאומטריה"
 #: ../src/modules/mod_gradient/curvegradient.cpp:538
 #: ../src/modules/mod_particle/plant.cpp:400
 msgid "A list of spline points"
-msgstr ""
+msgstr "스플라인 지점 목록"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:733
 #: ../src/modules/mod_geometry/outline.cpp:279
 msgid "Outline Width"
-msgstr ""
+msgstr "윤곽선 너비"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:734
 #: ../src/modules/mod_geometry/outline.cpp:280
 msgid "Global width of the outline"
-msgstr ""
+msgstr "윤곽선의 전역 너비"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:738
 #: ../src/modules/mod_geometry/outline.cpp:285
 msgid "Expand"
-msgstr ""
+msgstr "확장"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:739
 #: ../src/modules/mod_geometry/outline.cpp:286
 msgid "Value to add to the global width"
-msgstr ""
+msgstr "전역 너비에 추가되는 값"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:742
 msgid "Tip Type at Start"
-msgstr ""
+msgstr "시작 팁 유형"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:743
 msgid "Defines the Tip type of the first spline point when spline is unlooped"
-msgstr ""
+msgstr "스플라인이 반복되지 않을 때 첫 번째 스플라인 지점의 팁 유형을 정의합니다"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:746
 #: ../src/modules/mod_geometry/advanced_outline.cpp:758
@@ -1377,7 +1377,7 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:793
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:804
 msgid "Rounded Stop"
-msgstr ""
+msgstr "둥근 모양"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:747
 #: ../src/modules/mod_geometry/advanced_outline.cpp:759
@@ -1386,7 +1386,7 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:794
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:805
 msgid "Squared Stop"
-msgstr ""
+msgstr "사각 모양"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:748
 #: ../src/modules/mod_geometry/advanced_outline.cpp:760
@@ -1395,7 +1395,7 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:795
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:806
 msgid "Peak Stop"
-msgstr ""
+msgstr "뾰족한 모양"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:749
 #: ../src/modules/mod_geometry/advanced_outline.cpp:761
@@ -1404,7 +1404,7 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:796
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:807
 msgid "Flat Stop"
-msgstr ""
+msgstr "납작한 모양"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:750
 #: ../src/modules/mod_geometry/advanced_outline.cpp:762
@@ -1413,7 +1413,7 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:797
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:808
 msgid "Inner Rounded Stop"
-msgstr ""
+msgstr "안쪽으로 둥근 모양"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:751
 #: ../src/modules/mod_geometry/advanced_outline.cpp:763
@@ -1422,19 +1422,19 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:798
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:809
 msgid "Off-Peak Stop"
-msgstr ""
+msgstr "안쪽으로 뾰족한 모양"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:754
 msgid "Tip Type at End"
-msgstr ""
+msgstr "끝 팁 유형"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:755
 msgid "Defines the Tip type of the last spline point when spline is unlooped"
-msgstr ""
+msgstr "스플라인이 반복되지 않을 때 마지막 스플라인 지점의 팁 유형을 정의합니다"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:766
 msgid "Cusps Type"
-msgstr ""
+msgstr "모퉁이 유형"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:767
 #: ../src/modules/mod_geometry/outline.cpp:291
@@ -1443,20 +1443,20 @@ msgstr ""
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:770
 msgid "Sharp"
-msgstr ""
+msgstr "날카로운 모양"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:771
 msgid "Rounded"
-msgstr ""
+msgstr "둥근 모양"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:775
 msgid "Smoothness"
-msgstr ""
+msgstr "매끄러움"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:776
 msgid ""
 "Determines the interpolation between widthpoints. (0) Linear (1) Smooth"
-msgstr ""
+msgstr "너비 지점 간의 보간을 결정합니다. (0) 직선 (1) 부드럽게"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:779
 #: ../src/modules/mod_geometry/outline.cpp:304
@@ -1464,7 +1464,7 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_blinecalcvertex.cpp:191
 #: ../src/synfig/valuenodes/valuenode_blinecalcwidth.cpp:205
 msgid "Homogeneous"
-msgstr ""
+msgstr "단일"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:780
 msgid "When checked, widthpoints positions are spline length based"
@@ -1472,15 +1472,15 @@ msgstr ""
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:784
 msgid "Width Point List"
-msgstr ""
+msgstr "너비 지점 목록"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:787
 msgid "List of width Points that defines the variable width"
-msgstr ""
+msgstr "너비를 가변적으로 정의하는 너비 지점의 목록"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:790
 msgid "Dashed Outline"
-msgstr ""
+msgstr "파선 윤곽선"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:792
 msgid "When checked, outline is dashed"
@@ -1488,65 +1488,65 @@ msgstr ""
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:795
 msgid "Dash Item List"
-msgstr ""
+msgstr "파선 아이템 목록"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:798
 msgid "List of dash items that defines the dashed outline"
-msgstr ""
+msgstr "파선 윤곽선을 정의하는 파선 아이템의 목록"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:801
 msgid "Dash Items Offset"
-msgstr ""
+msgstr "파선 아이템 오프셋"
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:804
 msgid "Distance to Offset the Dash Items"
-msgstr ""
+msgstr "파선 아이템 오프셋의 거리"
 
 #: ../src/modules/mod_geometry/checkerboard.cpp:64
 msgid "Checkerboard"
-msgstr ""
+msgstr "체커보드"
 
 #: ../src/modules/mod_geometry/checkerboard.cpp:271
 msgid "Color of checkers"
-msgstr ""
+msgstr "체크무늬의 색상"
 
 #: ../src/modules/mod_geometry/checkerboard.cpp:275
 msgid "Center of the checkers"
-msgstr ""
+msgstr "체크무늬의 중심"
 
 #: ../src/modules/mod_geometry/checkerboard.cpp:280
 msgid "Size of checkers"
-msgstr ""
+msgstr "체크무늬의 크기"
 
 #: ../src/modules/mod_geometry/checkerboard.cpp:285
 #: ../src/synfig/layers/layer_shape.cpp:172
 msgid "Antialiasing"
-msgstr ""
+msgstr "안티앨리어싱"
 
 #: ../src/modules/mod_geometry/circle.cpp:48
 msgid "Circle"
-msgstr ""
+msgstr "원형"
 
 #: ../src/modules/mod_geometry/outline.cpp:67
 msgid "Outline"
-msgstr ""
+msgstr "윤곽선"
 
 #: ../src/modules/mod_geometry/outline.cpp:290
 msgid "Sharp Cusps"
-msgstr ""
+msgstr "뾰족한 모서리"
 
 #: ../src/modules/mod_geometry/outline.cpp:295
 msgid "Rounded Begin"
-msgstr ""
+msgstr "시작을 둥글게"
 
 #: ../src/modules/mod_geometry/outline.cpp:296
 #: ../src/modules/mod_geometry/outline.cpp:301
 msgid "Round off the tip"
-msgstr ""
+msgstr "팁을 둥글게 하기"
 
 #: ../src/modules/mod_geometry/outline.cpp:300
 msgid "Rounded End"
-msgstr ""
+msgstr "끝을 둥글게"
 
 #: ../src/modules/mod_geometry/outline.cpp:305
 msgid "When checked, the width takes the length of the spline to interpolate"
@@ -1554,47 +1554,47 @@ msgstr ""
 
 #: ../src/modules/mod_geometry/rectangle.cpp:51
 msgid "Rectangle"
-msgstr "מלבן"
+msgstr "사각형"
 
 #: ../src/modules/mod_geometry/rectangle.cpp:181
 #: ../src/modules/mod_gradient/lineargradient.cpp:158
 #: ../src/synfig/layers/layer_skeletondeformation.cpp:105
 msgid "Point 1"
-msgstr ""
+msgstr "지점 1"
 
 #: ../src/modules/mod_geometry/rectangle.cpp:183
 msgid "First corner of the rectangle"
-msgstr ""
+msgstr "사각형의 첫번째 모서리"
 
 #: ../src/modules/mod_geometry/rectangle.cpp:187
 #: ../src/modules/mod_gradient/lineargradient.cpp:164
 #: ../src/synfig/layers/layer_skeletondeformation.cpp:112
 msgid "Point 2"
-msgstr ""
+msgstr "지점 2"
 
 #: ../src/modules/mod_geometry/rectangle.cpp:188
 msgid "Second corner of the rectangle"
-msgstr ""
+msgstr "사각형의 두번째 모서리"
 
 #: ../src/modules/mod_geometry/rectangle.cpp:193
 msgid "Expand amount"
-msgstr ""
+msgstr "확장 수치"
 
 #: ../src/modules/mod_geometry/rectangle.cpp:197
 msgid "Feather X"
-msgstr ""
+msgstr "페더 X"
 
 #: ../src/modules/mod_geometry/rectangle.cpp:201
 msgid "Feather Y"
-msgstr ""
+msgstr "페더 Y"
 
 #: ../src/modules/mod_geometry/rectangle.cpp:206
 msgid "Use Bevel for the corners"
-msgstr ""
+msgstr "모서리를 둥글게"
 
 #: ../src/modules/mod_geometry/rectangle.cpp:210
 msgid "Keep Bevel Circular"
-msgstr ""
+msgstr "경사를 원형으로"
 
 #: ../src/modules/mod_geometry/rectangle.cpp:211
 msgid "When checked, the bevel is circular"
@@ -1602,27 +1602,27 @@ msgstr ""
 
 #: ../src/modules/mod_geometry/region.cpp:61
 msgid "Region"
-msgstr ""
+msgstr "영역"
 
 #: ../src/modules/mod_geometry/star.cpp:58
 msgid "Star"
-msgstr "כוכב"
+msgstr "별형"
 
 #: ../src/modules/mod_geometry/star.cpp:153
 msgid "Outer Radius"
-msgstr ""
+msgstr "외부 반지름"
 
 #: ../src/modules/mod_geometry/star.cpp:154
 msgid "The radius of the outer points in the star"
-msgstr ""
+msgstr "별 모양의 외부 지점 반지름"
 
 #: ../src/modules/mod_geometry/star.cpp:160
 msgid "Inner Radius"
-msgstr ""
+msgstr "내부 반지름"
 
 #: ../src/modules/mod_geometry/star.cpp:161
 msgid "The radius of the inner points in the star"
-msgstr ""
+msgstr "별 모양의 내부 지점 반지름"
 
 #: ../src/modules/mod_geometry/star.cpp:167
 #: ../src/modules/mod_gradient/conicalgradient.cpp:118
@@ -1633,23 +1633,23 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_cos.cpp:148
 #: ../src/synfig/valuenodes/valuenode_sine.cpp:148
 msgid "Angle"
-msgstr "זוית"
+msgstr "각도"
 
 #: ../src/modules/mod_geometry/star.cpp:168
 msgid "The orientation of the star"
-msgstr ""
+msgstr "별 모양의 방향"
 
 #: ../src/modules/mod_geometry/star.cpp:173 ../src/synfig/distance.cpp:251
 msgid "Points"
-msgstr ""
+msgstr "지점"
 
 #: ../src/modules/mod_geometry/star.cpp:174
 msgid "The number of points in the star"
-msgstr ""
+msgstr "별 모양의 지점 개수"
 
 #: ../src/modules/mod_geometry/star.cpp:178
 msgid "Regular Polygon"
-msgstr ""
+msgstr "일반 다각형"
 
 #: ../src/modules/mod_geometry/star.cpp:179
 msgid "When checked, draws a regular polygon instead of a star"
@@ -1658,15 +1658,15 @@ msgstr ""
 #: ../src/modules/mod_gif/trgt_gif.cpp:113
 #, c-format
 msgid "Unable to open \"%s\" for write access!"
-msgstr ""
+msgstr "쓰기 엑세스를 워해 \"%s' 를 열 수 없습니다"
 
 #: ../src/modules/mod_gif/trgt_gif.cpp:194
 msgid "Description not set!"
-msgstr ""
+msgstr "설명이 설정되지 않았습니다!"
 
 #: ../src/modules/mod_gradient/conicalgradient.cpp:56
 msgid "Conical Gradient"
-msgstr ""
+msgstr "원추형 그라데이션"
 
 #: ../src/modules/mod_gradient/conicalgradient.cpp:57
 #: ../src/modules/mod_gradient/curvegradient.cpp:64
@@ -1675,7 +1675,7 @@ msgstr ""
 #: ../src/modules/mod_gradient/spiralgradient.cpp:57
 #: ../src/modules/mod_noise/noise.cpp:59
 msgid "Gradients"
-msgstr ""
+msgstr "그라데이션"
 
 #: ../src/modules/mod_gradient/conicalgradient.cpp:108
 #: ../src/modules/mod_gradient/curvegradient.cpp:542
@@ -1684,15 +1684,15 @@ msgstr ""
 #: ../src/modules/mod_gradient/spiralgradient.cpp:112
 #: ../src/modules/mod_noise/noise.cpp:263
 msgid "Gradient to apply"
-msgstr ""
+msgstr "적용할 그라데이션"
 
 #: ../src/modules/mod_gradient/conicalgradient.cpp:113
 msgid "Center of the cone"
-msgstr ""
+msgstr "원뿔의 중심"
 
 #: ../src/modules/mod_gradient/conicalgradient.cpp:120
 msgid "Rotation of the gradient around the center"
-msgstr ""
+msgstr "센터를 중심으로 그라데이션 회전"
 
 #: ../src/modules/mod_gradient/conicalgradient.cpp:125
 #: ../src/modules/mod_gradient/curvegradient.cpp:546
@@ -1703,16 +1703,16 @@ msgstr ""
 
 #: ../src/modules/mod_gradient/curvegradient.cpp:63
 msgid "Curve Gradient"
-msgstr ""
+msgstr "곡선 그라데이션"
 
 #: ../src/modules/mod_gradient/curvegradient.cpp:526
 #: ../src/modules/mod_particle/plant.cpp:407
 msgid "Offset for the Vertices List"
-msgstr ""
+msgstr "정점 목록의 오프셋"
 
 #: ../src/modules/mod_gradient/curvegradient.cpp:532
 msgid "Global width of the gradient"
-msgstr ""
+msgstr "그라데이션의 전역 너비"
 
 #: ../src/modules/mod_gradient/curvegradient.cpp:545
 #: ../src/modules/mod_gradient/lineargradient.cpp:173
@@ -1722,13 +1722,13 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_blinecalcwidth.cpp:190
 #: ../src/synfig/valuenodes/valuenode_gradientcolor.cpp:161
 msgid "Loop"
-msgstr ""
+msgstr "반복"
 
 #: ../src/modules/mod_gradient/curvegradient.cpp:549
 #: ../src/modules/mod_gradient/lineargradient.cpp:177
 #: ../src/modules/mod_gradient/radialgradient.cpp:134
 msgid "ZigZag"
-msgstr ""
+msgstr "지그재그"
 
 #: ../src/modules/mod_gradient/curvegradient.cpp:550
 #: ../src/modules/mod_gradient/lineargradient.cpp:178
@@ -1738,40 +1738,40 @@ msgstr ""
 
 #: ../src/modules/mod_gradient/curvegradient.cpp:553
 msgid "Perpendicular"
-msgstr ""
+msgstr "수직"
 
 #: ../src/modules/mod_gradient/lineargradient.cpp:54
 msgid "Linear Gradient"
-msgstr ""
+msgstr "선형 그라데이션"
 
 #: ../src/modules/mod_gradient/lineargradient.cpp:160
 msgid "Start point of the gradient"
-msgstr ""
+msgstr "그라데이션의 시작 지점"
 
 #: ../src/modules/mod_gradient/lineargradient.cpp:165
 msgid "End point of the gradient"
-msgstr ""
+msgstr "그라데이션의 끝 지점"
 
 #: ../src/modules/mod_gradient/radialgradient.cpp:56
 msgid "Radial Gradient"
-msgstr ""
+msgstr "방사형 그라데이션"
 
 #: ../src/modules/mod_gradient/radialgradient.cpp:117
 #: ../src/modules/mod_gradient/spiralgradient.cpp:117
 msgid "Center of the gradient"
-msgstr ""
+msgstr "그라데이션의 중심"
 
 #: ../src/modules/mod_gradient/spiralgradient.cpp:56
 msgid "Spiral Gradient"
-msgstr ""
+msgstr "나선형 그라데이션"
 
 #: ../src/modules/mod_gradient/spiralgradient.cpp:130
 msgid "Rotation of the spiral"
-msgstr ""
+msgstr "나선의 회전"
 
 #: ../src/modules/mod_gradient/spiralgradient.cpp:135
 msgid "Clockwise"
-msgstr ""
+msgstr "시계방향"
 
 #: ../src/modules/mod_gradient/spiralgradient.cpp:136
 msgid "When checked, the spiral turns clockwise"
@@ -1782,69 +1782,69 @@ msgstr ""
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:238
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:239
 msgid "No file to load"
-msgstr ""
+msgstr "로드할 파일이 없습니다"
 
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:122
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:123
 msgid "Cannot create temporary file of "
-msgstr ""
+msgstr "임시 파일을 만들 수 없습니다"
 
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:179
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:180
 #: ../src/synfig/listimporter.cpp:177 ../src/synfig/listimporter.cpp:178
 msgid "Unable to open "
-msgstr "לא ניתן לפתוח"
+msgstr "열 수 없습니다"
 
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:186
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:187
 msgid "Unable to get frame from "
-msgstr ""
+msgstr "프레임을 가져올 수 없습니다"
 
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:193
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:194
 msgid "Bad surface from "
-msgstr ""
+msgstr "잘못된 표면 "
 
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:249
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:250
 msgid "Unable to open pipe to imagemagick"
-msgstr ""
+msgstr "imagemagick에 파이프를 열 수 없습니다"
 
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:261
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:262
 msgid "Reached end of stream without finding PPM header"
-msgstr ""
+msgstr "PPM 헤더를 찾지 못하고 스트림 끝에 도달했습니다"
 
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:270
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:271
 msgid "stream not in PPM format"
-msgstr ""
+msgstr "PPM 형식이 아닌 스트림"
 
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:282
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:283
 msgid "Premature end of file (after header)"
-msgstr ""
+msgstr "파일의 너무 이른 끝 (헤더 이후)"
 
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:295
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:296
 msgid "Premature end of file"
-msgstr ""
+msgstr "파일의 너무 이른 끝"
 
 #: ../src/modules/mod_imagemagick/trgt_imagemagick.cpp:153
 msgid "Unable to open pipe to imagemagick's convert utility"
-msgstr ""
+msgstr "파이프를 imagemagick의 변환 유틸리티로 열 수 없습니다"
 
 #: ../src/modules/mod_noise/distort.cpp:57
 msgid "Noise Distort"
-msgstr ""
+msgstr "노이즈 왜곡"
 
 #: ../src/modules/mod_noise/distort.cpp:199
 msgid "Displacement"
-msgstr ""
+msgstr "대체"
 
 #: ../src/modules/mod_noise/distort.cpp:200
 msgid "How big the distortion displaces the context"
-msgstr ""
+msgstr "왜곡이 컨텍스트를 대체하는 정도"
 
 #: ../src/modules/mod_noise/distort.cpp:206
 msgid "Distance between distortions"
@@ -1853,12 +1853,12 @@ msgstr ""
 #: ../src/modules/mod_noise/distort.cpp:210
 #: ../src/modules/mod_noise/noise.cpp:266
 msgid "RandomNoise Seed"
-msgstr ""
+msgstr "랜덤노이즈 시드"
 
 #: ../src/modules/mod_noise/distort.cpp:211
 #: ../src/modules/mod_noise/noise.cpp:267
 msgid "Change to modify the random seed of the noise"
-msgstr ""
+msgstr "노이즈의 랜덤 시드를 수정하려면 변경"
 
 #: ../src/modules/mod_noise/distort.cpp:221
 #: ../src/modules/mod_noise/noise.cpp:282
@@ -1867,32 +1867,32 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_blinecalcvertex.cpp:176
 #: ../src/synfig/valuenodes/valuenode_blinecalcwidth.cpp:185
 msgid "Spline"
-msgstr ""
+msgstr "스플라인"
 
 #: ../src/modules/mod_noise/distort.cpp:225
 #: ../src/modules/mod_noise/noise.cpp:286
 msgid "Detail"
-msgstr ""
+msgstr "디테일"
 
 #: ../src/modules/mod_noise/distort.cpp:226
 #: ../src/modules/mod_noise/noise.cpp:287
 msgid "Increase to obtain fine details of the noise"
-msgstr ""
+msgstr "노이즈의 세밀한 디테일을 얻으려면 증가시킵니다"
 
 #: ../src/modules/mod_noise/distort.cpp:229
 #: ../src/modules/mod_noise/noise.cpp:290
 msgid "Animation Speed"
-msgstr ""
+msgstr "애니메이션 속도"
 
 #: ../src/modules/mod_noise/distort.cpp:230
 #: ../src/modules/mod_noise/noise.cpp:291
 msgid "In cycles per second"
-msgstr ""
+msgstr "초당 사이클"
 
 #: ../src/modules/mod_noise/distort.cpp:234
 #: ../src/modules/mod_noise/noise.cpp:294
 msgid "Turbulent"
-msgstr ""
+msgstr "난류"
 
 #: ../src/modules/mod_noise/distort.cpp:235
 #: ../src/modules/mod_noise/noise.cpp:295
@@ -1901,28 +1901,28 @@ msgstr ""
 
 #: ../src/modules/mod_noise/noise.cpp:58
 msgid "Noise Gradient"
-msgstr ""
+msgstr "노이즈 그라데이션"
 
 #: ../src/modules/mod_noise/noise.cpp:271
 msgid "Size of the noise"
-msgstr ""
+msgstr "노이즈의 크기"
 
 #: ../src/modules/mod_noise/noise.cpp:276
 #: ../src/synfig/layers/layer_bitmap.cpp:171
 msgid "What type of interpolation to use"
-msgstr ""
+msgstr "사용할 보간의 유형"
 
 #: ../src/modules/mod_noise/noise.cpp:298
 msgid "Do Alpha"
-msgstr ""
+msgstr "알파 적용"
 
 #: ../src/modules/mod_noise/noise.cpp:299
 msgid "Uses transparency"
-msgstr ""
+msgstr "투명도를 사용합니다"
 
 #: ../src/modules/mod_noise/noise.cpp:302
 msgid "Super Sampling"
-msgstr ""
+msgstr "슈퍼 샘플링"
 
 #: ../src/modules/mod_noise/noise.cpp:303
 msgid "When checked, the gradient is supersampled"
@@ -1945,190 +1945,190 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_step.cpp:186
 #: ../src/synfig/valuenodes/valuenode_timeloop.cpp:168
 msgid "Link"
-msgstr ""
+msgstr "연결"
 
 #: ../src/modules/mod_noise/valuenode_random.cpp:244
 msgid "The value node source that provides the central value"
-msgstr ""
+msgstr "중심값을 제공하는 값노드 소스"
 
 #: ../src/modules/mod_noise/valuenode_random.cpp:249
 msgid "The value of the maximum random difference"
-msgstr ""
+msgstr "최대 랜덤 차이 값"
 
 #: ../src/modules/mod_noise/valuenode_random.cpp:253
 #: ../src/modules/mod_particle/plant.cpp:459
 msgid "Seed"
-msgstr ""
+msgstr "시드"
 
 #: ../src/modules/mod_noise/valuenode_random.cpp:254
 msgid "Seeds the random number generator"
-msgstr ""
+msgstr "난수 생성기를 시드합니다"
 
 #: ../src/modules/mod_noise/valuenode_random.cpp:258
 #: ../src/synfig/layers/layer_pastecanvas.cpp:143
 msgid "Speed"
-msgstr "מהירות"
+msgstr "속도"
 
 #: ../src/modules/mod_noise/valuenode_random.cpp:259
 msgid ""
 "Defines how often a new random value is chosen (in choices per second) "
-msgstr ""
+msgstr "새로운 랜덤 값이 선택되는 빈도를 정의합니다 (초당 선택 횟수)"
 
 #: ../src/modules/mod_noise/valuenode_random.cpp:264
 msgid ""
 "Determines how the value is interpolated from one random choice to the next"
-msgstr ""
+msgstr "하나의 랜덤 선택에서 다음 항목으로 값을 보간하는 방법을 결정합니다"
 
 #: ../src/modules/mod_noise/valuenode_random.cpp:266
 msgid "No interpolation"
-msgstr ""
+msgstr "보간 없음"
 
 #: ../src/modules/mod_noise/valuenode_random.cpp:275
 msgid "Loop Time"
-msgstr ""
+msgstr "반복 시간"
 
 #: ../src/modules/mod_noise/valuenode_random.cpp:276
 msgid "Makes the random value repeat after the given time"
-msgstr ""
+msgstr "주어진 시간 이후에 랜덤 값을 생성합니다"
 
 #: ../src/modules/mod_particle/plant.cpp:70
 msgid "Plant"
-msgstr ""
+msgstr "식물"
 
 #: ../src/modules/mod_particle/plant.cpp:413
 msgid "Gradient to be used for coloring the plant"
-msgstr ""
+msgstr "식물 채색에 사용할 그라데이션"
 
 #: ../src/modules/mod_particle/plant.cpp:417
 msgid "Split Angle"
-msgstr ""
+msgstr "분할 각도"
 
 #: ../src/modules/mod_particle/plant.cpp:418
 msgid "Angle by which each split deviates from its parent"
-msgstr ""
+msgstr "각각의 분할이 부모에서 벗어나는 각도"
 
 #: ../src/modules/mod_particle/plant.cpp:422
 msgid "Gravity"
-msgstr ""
+msgstr "중력"
 
 #: ../src/modules/mod_particle/plant.cpp:423
 msgid "Direction in which the shoots tend to face"
-msgstr ""
+msgstr "새싹이 향하는 방향"
 
 #: ../src/modules/mod_particle/plant.cpp:428
 msgid "Tangential Velocity"
-msgstr ""
+msgstr "접선 속도"
 
 #: ../src/modules/mod_particle/plant.cpp:429
 msgid "Amount to which shoots tend to grow along the tangent to the spline"
-msgstr ""
+msgstr "새싹이 스플라인의 접선을 따라 자라는 경향"
 
 #: ../src/modules/mod_particle/plant.cpp:433
 msgid "Perpendicular Velocity"
-msgstr ""
+msgstr "수직 속도"
 
 #: ../src/modules/mod_particle/plant.cpp:434
 msgid ""
 "Amount to which shoots tend to grow perpendicular to the tangent to the "
 "spline"
-msgstr ""
+msgstr "새싹이 스플라인의 접선에 수직으로 자라는 경향"
 
 #: ../src/modules/mod_particle/plant.cpp:438
 msgid "Stem Size"
-msgstr ""
+msgstr "줄기 크기"
 
 #: ../src/modules/mod_particle/plant.cpp:439
 msgid "Size of the stem"
-msgstr ""
+msgstr "줄기의 크기"
 
 #: ../src/modules/mod_particle/plant.cpp:444
 msgid "Size As Alpha"
-msgstr ""
+msgstr "알파에 크기 맞춤"
 
 #: ../src/modules/mod_particle/plant.cpp:445
 msgid ""
 "If enabled, the alpha channel from the gradient is multiplied by the stem "
 "size, and an alpha of 1.0 is used when rendering"
-msgstr ""
+msgstr "활성화하면 그라데이션의 알파 채널에 줄기 크기가 곱해지고, 렌더링할 때 1.0의 알파가 사용됩니다"
 
 #: ../src/modules/mod_particle/plant.cpp:449
 #: ../src/synfig/valuenodes/valuenode_blinereversetangent.cpp:162
 msgid "Reverse"
-msgstr ""
+msgstr "반전"
 
 #: ../src/modules/mod_particle/plant.cpp:450
 msgid "If enabled, render the plant in the opposite direction"
-msgstr ""
+msgstr "활성화하면 식물을 반대 방향으로 렌더링합니다"
 
 #: ../src/modules/mod_particle/plant.cpp:454
 #: ../src/synfig/valuenodes/valuenode_duplicate.cpp:198
 msgid "Step"
-msgstr ""
+msgstr "스텝"
 
 #: ../src/modules/mod_particle/plant.cpp:455
 msgid "Measure of the distance between points when rendering"
-msgstr ""
+msgstr "렌더링할 때 지점간 거리 측정"
 
 #: ../src/modules/mod_particle/plant.cpp:460
 msgid "Used to seed the pseudo-random number generator"
-msgstr ""
+msgstr "수도-난수 생성기를 시드하는 데 사용됩니다"
 
 #: ../src/modules/mod_particle/plant.cpp:464
 msgid "Splits"
-msgstr ""
+msgstr "분열"
 
 #: ../src/modules/mod_particle/plant.cpp:465
 msgid "Maximum number of times that each sprout can sprout recursively"
-msgstr ""
+msgstr "각각의 새싹이 재귀적으로 싹을 틔울 수 있는 최대 횟수"
 
 #: ../src/modules/mod_particle/plant.cpp:469
 msgid "Sprouts"
-msgstr ""
+msgstr "새싹"
 
 #: ../src/modules/mod_particle/plant.cpp:470
 msgid "Number of places that growth occurs on each spline section"
-msgstr ""
+msgstr "각각의 스플라인 섹션에서 성장이 발생하는 위치의 개수"
 
 #: ../src/modules/mod_particle/plant.cpp:474
 msgid "Random Factor"
-msgstr ""
+msgstr "랜덤 요소"
 
 #: ../src/modules/mod_particle/plant.cpp:475
 msgid ""
 "Used to scale down all random effects.  Set to zero to disable randomness"
-msgstr ""
+msgstr "모든 랜덤 효과를 축소하는 데 사용됩니다. 랜덤 속성을 비활성화 하려면 0으로 설정하십시오"
 
 #: ../src/modules/mod_particle/plant.cpp:479
 msgid "Drag"
-msgstr ""
+msgstr "드래그"
 
 #: ../src/modules/mod_particle/plant.cpp:480
 msgid "Drag slows the growth"
-msgstr ""
+msgstr "드래그는 장애물로 성장을 늦춥니다"
 
 #: ../src/modules/mod_particle/plant.cpp:484
 msgid "Use Width"
-msgstr ""
+msgstr "너비 사용"
 
 #: ../src/modules/mod_particle/plant.cpp:485
 msgid "Scale the velocity by the spline's width"
-msgstr ""
+msgstr "스플라인의 너비로 속도를 조정합니다"
 
 #: ../src/modules/mod_png/trgt_png_spritesheet.cpp:90
 #, c-format
 msgid ""
 "The image is too large. It's size must be not more than 5000*2000=10000000 "
 "px. Currently it's %d*%d=%d px."
-msgstr ""
+msgstr "이미지가 너무 큽니다. 크기는 5000 * 2000 = 10000000 픽셀 이하 여야합니다. 현재는 %d * %d = %d 픽셀입니다."
 
 #: ../src/modules/mod_ppm/mptr_ppm.cpp:75
 #, c-format
 msgid "%s was not in PPM format"
-msgstr ""
+msgstr "%s 는 PPM 형식이 아닙니다"
 
 #: ../src/modules/mod_svg/layer_svg.cpp:54
 msgid "Import Svg"
-msgstr ""
+msgstr "SVG 임포트"
 
 #: ../src/modules/mod_svg/svg_parser.cpp:268
 msgid "Synfig Animation 1"
@@ -2140,166 +2140,166 @@ msgstr ""
 
 #: ../src/synfig/base_types.cpp:83 ../src/synfig/base_types.cpp:84
 msgid "bool"
-msgstr ""
+msgstr "부울"
 
 #: ../src/synfig/base_types.cpp:104 ../src/synfig/base_types.cpp:105
 msgid "integer"
-msgstr ""
+msgstr "정수"
 
 #: ../src/synfig/base_types.cpp:127
 msgid "angle"
-msgstr "זוית"
+msgstr "각도"
 
 #: ../src/synfig/base_types.cpp:173 ../src/synfig/base_types.cpp:174
 msgid "real"
-msgstr "אמיתי"
+msgstr "실수"
 
 #: ../src/synfig/base_types.cpp:204 ../src/synfig/base_types.cpp:205
 msgid "time"
-msgstr "זמן"
+msgstr "시간"
 
 #: ../src/synfig/base_types.cpp:231
 msgid "vector"
-msgstr "וקטור"
+msgstr "벡터"
 
 #: ../src/synfig/base_types.cpp:250
 msgid "color"
-msgstr "צבע"
+msgstr "색상"
 
 #: ../src/synfig/base_types.cpp:269
 msgid "segment"
-msgstr ""
+msgstr "세그먼트"
 
 #: ../src/synfig/base_types.cpp:289
 msgid "spline_point"
-msgstr ""
+msgstr "스플라인_지점"
 
 #: ../src/synfig/base_types.cpp:308
 msgid "matrix"
-msgstr ""
+msgstr "매트릭스"
 
 #: ../src/synfig/base_types.cpp:327
 msgid "bone_weight_pair"
-msgstr ""
+msgstr "뼈대_무게_쌍"
 
 #: ../src/synfig/base_types.cpp:347
 msgid "width_point"
-msgstr ""
+msgstr "너비_포인트"
 
 #: ../src/synfig/base_types.cpp:367
 msgid "dash_item"
-msgstr ""
+msgstr "파선_아이템"
 
 #: ../src/synfig/base_types.cpp:386
 msgid "list"
-msgstr ""
+msgstr "목록"
 
 #: ../src/synfig/base_types.cpp:448
 msgid "canvas"
-msgstr ""
+msgstr "캔버스"
 
 #: ../src/synfig/base_types.cpp:479
 msgid "string"
-msgstr ""
+msgstr "문자열"
 
 #: ../src/synfig/base_types.cpp:500
 msgid "gradient"
-msgstr ""
+msgstr "그라데이션"
 
 #: ../src/synfig/base_types.cpp:519
 msgid "bone_object"
-msgstr ""
+msgstr "뼈대_오브젝트"
 
 #: ../src/synfig/base_types.cpp:558
 msgid "bone_valuenode"
-msgstr ""
+msgstr "뼈대_값노드"
 
 #: ../src/synfig/base_types.cpp:581
 msgid "transformation"
-msgstr ""
+msgstr "변환"
 
 #: ../src/synfig/canvas.cpp:951 ../src/synfig/canvas.cpp:1018
 #: ../src/synfig/canvas.cpp:1037
 msgid "in line"
-msgstr ""
+msgstr "라인"
 
 #: ../src/synfig/distance.cpp:249
 msgid "Units"
-msgstr "יחידות"
+msgstr "단위"
 
 #: ../src/synfig/distance.cpp:250
 msgid "Pixels"
-msgstr "פיקסלים"
+msgstr "픽셀"
 
 #: ../src/synfig/distance.cpp:252
 msgid "Inches"
-msgstr ""
+msgstr "인치"
 
 #: ../src/synfig/distance.cpp:253
 msgid "Meters"
-msgstr "מטר"
+msgstr "미터"
 
 #: ../src/synfig/distance.cpp:254
 msgid "Millimeters"
-msgstr "מילימטרים"
+msgstr "밀리미터"
 
 #: ../src/synfig/distance.cpp:255
 msgid "Centimeters"
-msgstr "סנטימטרים"
+msgstr "센티미터"
 
 #: ../src/synfig/importer.cpp:100
 msgid "Importer::open(): Cannot open empty filename"
-msgstr ""
+msgstr "Importer::open() : 빈 파일 이름을 열 수 없습니다"
 
 #: ../src/synfig/importer.cpp:114
 msgid "Importer::open(): Couldn't find extension"
-msgstr ""
+msgstr "Importer::open() : 확장자를 찾을 수 없습니다"
 
 #: ../src/synfig/importer.cpp:125
 msgid "Importer::open(): Unknown file type -- "
-msgstr ""
+msgstr "Importer::open() : 알 수 없는 파일 유형 --"
 
 #: ../src/synfig/layer.cpp:841
 msgid "Unable to create surface target"
-msgstr ""
+msgstr "표면 타겟을 만들 수 없습니다"
 
 #: ../src/synfig/layer.cpp:934
 msgid "Z Depth"
-msgstr ""
+msgstr "Z 깊이"
 
 #: ../src/synfig/layer.cpp:936
 msgid "Modifies the position of the layer in the layer stack"
-msgstr ""
+msgstr "레이어 스택에서 레이어의 위치를 수정합니다"
 
 #: ../src/synfig/layers/layer_bitmap.cpp:158
 msgid "Top-Left"
-msgstr ""
+msgstr "상단-좌측"
 
 #: ../src/synfig/layers/layer_bitmap.cpp:159
 msgid "Upper left-hand Corner of image"
-msgstr ""
+msgstr "이미지의 상단 좌측 모서리"
 
 #: ../src/synfig/layers/layer_bitmap.cpp:164
 msgid "Bottom-Right"
-msgstr ""
+msgstr "하단-우측"
 
 #: ../src/synfig/layers/layer_bitmap.cpp:165
 msgid "Lower right-hand Corner of image"
-msgstr ""
+msgstr "이미지의 하단 우측 모서리"
 
 #: ../src/synfig/layers/layer_composite.cpp:94
 #: ../src/synfig/layers/layer_skeleton.cpp:136
 msgid "Opacity"
-msgstr ""
+msgstr "불투명"
 
 #: ../src/synfig/layers/layer_composite.cpp:95
 #: ../src/synfig/layers/layer_skeleton.cpp:137
 msgid "Alpha channel of the layer"
-msgstr ""
+msgstr "레이어의 알파 채널"
 
 #: ../src/synfig/layers/layer_composite.cpp:98 ../src/synfig/paramdesc.cpp:70
 msgid "Blend Method"
-msgstr ""
+msgstr "혼합 방식"
 
 #: ../src/synfig/layers/layer_composite.cpp:99
 msgid "Blending method used to composite on the layers below"
@@ -2307,70 +2307,70 @@ msgstr ""
 
 #: ../src/synfig/layers/layer_duplicate.cpp:62
 msgid "Duplicate"
-msgstr ""
+msgstr "복제"
 
 #: ../src/synfig/layers/layer_duplicate.cpp:143
 #: ../src/synfig/valuenodes/valuenode_gradientcolor.cpp:156
 msgid "Index"
-msgstr ""
+msgstr "인덱스"
 
 #: ../src/synfig/layers/layer_duplicate.cpp:144
 msgid "Copy Index"
-msgstr ""
+msgstr "인덱스 복사"
 
 #: ../src/synfig/layers/layer_filtergroup.cpp:60
 #: ../src/synfig/layers/layer_filtergroup.cpp:77
 msgid "Filter Group"
-msgstr ""
+msgstr "필터 그룹"
 
 #: ../src/synfig/layers/layer_group.cpp:63
 #: ../src/synfig/layers/layer_group.cpp:88
 msgid "Group"
-msgstr ""
+msgstr "그룹"
 
 #: ../src/synfig/layers/layer_group.cpp:97
 msgid "Z Range"
-msgstr ""
+msgstr "Z 범위"
 
 #: ../src/synfig/layers/layer_group.cpp:98
 msgid "When checked, only layers inside range are visible"
-msgstr ""
+msgstr "체크하면 범위 내의 레이어만 보여집니다"
 
 #: ../src/synfig/layers/layer_group.cpp:102
 msgid "Z Range Position"
-msgstr ""
+msgstr "Z 범위 위치"
 
 #: ../src/synfig/layers/layer_group.cpp:103
 msgid "Starting position where layers are visible"
-msgstr ""
+msgstr "레이어가 보여지는 시작 위치"
 
 #: ../src/synfig/layers/layer_group.cpp:106
 msgid "Z Range Depth"
-msgstr ""
+msgstr "Z 범위 깊이"
 
 #: ../src/synfig/layers/layer_group.cpp:107
 msgid "Depth where layers are visible in range"
-msgstr ""
+msgstr "레이어가 보여지는 범위의 깊이"
 
 #: ../src/synfig/layers/layer_group.cpp:110
 msgid "Z Range Blur"
-msgstr ""
+msgstr "Z 범위 블러"
 
 #: ../src/synfig/layers/layer_group.cpp:111
 msgid "Area where layers inside are partially visible"
-msgstr ""
+msgstr "내부 레이어가 부분적으로 보여지는 영역"
 
 #: ../src/synfig/layers/layer_mime.cpp:84
 msgid "[MIME]"
-msgstr ""
+msgstr "[MIME]"
 
 #: ../src/synfig/layers/layer_motionblur.cpp:56
 msgid "Motion Blur"
-msgstr ""
+msgstr "모션 블러"
 
 #: ../src/synfig/layers/layer_motionblur.cpp:120
 msgid "Aperture"
-msgstr ""
+msgstr "조리개"
 
 #: ../src/synfig/layers/layer_motionblur.cpp:121
 msgid "Shutter time"
@@ -2378,7 +2378,7 @@ msgstr ""
 
 #: ../src/synfig/layers/layer_motionblur.cpp:125
 msgid "Subsamples Factor"
-msgstr ""
+msgstr "서브샘플 지수"
 
 #: ../src/synfig/layers/layer_motionblur.cpp:126
 msgid "Multiplies the number of subsamples rendered"
@@ -2386,7 +2386,7 @@ msgstr ""
 
 #: ../src/synfig/layers/layer_motionblur.cpp:130
 msgid "Subsampling Type"
-msgstr ""
+msgstr "서브샘플링 유형"
 
 #: ../src/synfig/layers/layer_motionblur.cpp:131
 msgid "Curve type for weighting subsamples"
@@ -2395,15 +2395,15 @@ msgstr ""
 #: ../src/synfig/layers/layer_motionblur.cpp:134
 #: ../src/synfig/valuenodes/valuenode_const.cpp:168
 msgid "Constant"
-msgstr "קבוע"
+msgstr "상수"
 
 #: ../src/synfig/layers/layer_motionblur.cpp:136
 msgid "Hyperbolic"
-msgstr ""
+msgstr "쌍곡선"
 
 #: ../src/synfig/layers/layer_motionblur.cpp:140
 msgid "Subsample Start Amount"
-msgstr ""
+msgstr "서브샘플 시작 수치"
 
 #: ../src/synfig/layers/layer_motionblur.cpp:141
 msgid "Relative amount of the first subsample (For Linear weighting)"
@@ -2411,7 +2411,7 @@ msgstr ""
 
 #: ../src/synfig/layers/layer_motionblur.cpp:145
 msgid "Subsample End Amount"
-msgstr ""
+msgstr "서브샘플 종료 수치"
 
 #: ../src/synfig/layers/layer_motionblur.cpp:146
 msgid "Relative amount of the last subsample (For Linear weighting)"
@@ -2419,11 +2419,11 @@ msgstr ""
 
 #: ../src/synfig/layers/layer_pastecanvas.cpp:128
 msgid "Position offset"
-msgstr ""
+msgstr "위치 오프셋"
 
 #: ../src/synfig/layers/layer_pastecanvas.cpp:133
 msgid "Transformation"
-msgstr ""
+msgstr "변형"
 
 #: ../src/synfig/layers/layer_pastecanvas.cpp:134
 msgid "Offset, Angle, Skew Angle and Scale"
@@ -2431,23 +2431,23 @@ msgstr ""
 
 #: ../src/synfig/layers/layer_pastecanvas.cpp:138
 msgid "Canvas"
-msgstr ""
+msgstr "캔버스"
 
 #: ../src/synfig/layers/layer_pastecanvas.cpp:139
 msgid "Group content"
-msgstr ""
+msgstr "그룹 콘텐츠"
 
 #: ../src/synfig/layers/layer_pastecanvas.cpp:144
 msgid "Multiplier to speed up, slow down, freeze, or reverse time"
-msgstr ""
+msgstr "시간을 가속, 감속, 정지 또는 반전시키는 승수"
 
 #: ../src/synfig/layers/layer_pastecanvas.cpp:149
 msgid "Time Offset to apply to the context"
-msgstr ""
+msgstr "컨텍스트에 적용할 시간 오프셋"
 
 #: ../src/synfig/layers/layer_pastecanvas.cpp:153
 msgid "Lock Selection"
-msgstr ""
+msgstr "선택 잠금"
 
 #: ../src/synfig/layers/layer_pastecanvas.cpp:154
 msgid "When checked, prevents selecting the children using the mouse click"
@@ -2455,31 +2455,31 @@ msgstr ""
 
 #: ../src/synfig/layers/layer_pastecanvas.cpp:159
 msgid "Outline Grow"
-msgstr ""
+msgstr "윤곽선 증가"
 
 #: ../src/synfig/layers/layer_pastecanvas.cpp:160
 msgid "Exponential value to grow children Outline layers width"
-msgstr ""
+msgstr "자식 윤곽선 레이어의 너비를 증가시키는 지수 값"
 
 #: ../src/synfig/layers/layer_polygon.cpp:57
 msgid "Polygon"
-msgstr ""
+msgstr "다각형"
 
 #: ../src/synfig/layers/layer_polygon.cpp:153
 msgid "Vertices List"
-msgstr ""
+msgstr "정점 목록"
 
 #: ../src/synfig/layers/layer_polygon.cpp:154
 msgid "Define the corners of the polygon"
-msgstr ""
+msgstr "다각형의 모서리를 정의합니다"
 
 #: ../src/synfig/layers/layer_shape.cpp:59
 msgid "Shape"
-msgstr ""
+msgstr "모양"
 
 #: ../src/synfig/layers/layer_shape.cpp:60
 msgid "Internal"
-msgstr ""
+msgstr "내부"
 
 #: ../src/synfig/layers/layer_shape.cpp:162
 msgid "Layer Color"
@@ -2487,120 +2487,120 @@ msgstr ""
 
 #: ../src/synfig/layers/layer_shape.cpp:175
 msgid "Feather"
-msgstr ""
+msgstr "페더"
 
 #: ../src/synfig/layers/layer_shape.cpp:179
 msgid "Type of Feather"
-msgstr ""
+msgstr "페더 유형"
 
 #: ../src/synfig/layers/layer_shape.cpp:180
 msgid "Type of feathering to use"
-msgstr ""
+msgstr "사용할 페더의 유형"
 
 #: ../src/synfig/layers/layer_shape.cpp:190
 msgid "Winding Style"
-msgstr ""
+msgstr "와인딩 스타일"
 
 #: ../src/synfig/layers/layer_shape.cpp:191
 msgid "Winding style to use"
-msgstr ""
+msgstr "사용할 와인딩 규칙"
 
 #: ../src/synfig/layers/layer_shape.cpp:194
 msgid "Non Zero"
-msgstr ""
+msgstr "넌제로"
 
 #: ../src/synfig/layers/layer_shape.cpp:195
 msgid "Even/Odd"
-msgstr ""
+msgstr "짝수/홀수"
 
 #: ../src/synfig/layers/layer_skeleton.cpp:56
 msgid "Skeleton"
-msgstr ""
+msgstr "스켈레톤"
 
 #: ../src/synfig/layers/layer_skeleton.cpp:142
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:585
 msgid "Name"
-msgstr "שם"
+msgstr "이름"
 
 #: ../src/synfig/layers/layer_skeleton.cpp:145
 #: ../src/synfig/layers/layer_skeletondeformation.cpp:99
 msgid "Bones"
-msgstr ""
+msgstr "뼈대"
 
 #: ../src/synfig/layers/layer_skeletondeformation.cpp:63
 #: ../src/synfig/layers/layer_skeletondeformation.cpp:90
 msgid "Skeleton Deformation"
-msgstr ""
+msgstr "스켈레톤 변형"
 
 #: ../src/synfig/layers/layer_skeletondeformation.cpp:100
 msgid "List of bones"
-msgstr ""
+msgstr "뼈대 목록"
 
 #: ../src/synfig/layers/layer_skeletondeformation.cpp:107
 msgid "First corner of the bounds rectangle"
-msgstr ""
+msgstr "경계 사각형의 첫번째 모서리"
 
 #: ../src/synfig/layers/layer_skeletondeformation.cpp:113
 msgid "Second corner of the bounds rectangle"
-msgstr ""
+msgstr "경계 사각형의 두번째 모서리"
 
 #: ../src/synfig/layers/layer_skeletondeformation.cpp:118
 msgid "Horizontal subdivisions"
-msgstr ""
+msgstr "수평 세분"
 
 #: ../src/synfig/layers/layer_skeletondeformation.cpp:119
 msgid "Count of horizontal subdivisions of the transformation grid"
-msgstr ""
+msgstr "변형 격자의 수평 세분 개수"
 
 #: ../src/synfig/layers/layer_skeletondeformation.cpp:123
 msgid "Vertical subdivisions"
-msgstr ""
+msgstr "수직 세분"
 
 #: ../src/synfig/layers/layer_skeletondeformation.cpp:124
 msgid "Count of vertical subdivisions of the transformation grid"
-msgstr ""
+msgstr "변형 격자의 수직 세분 개수"
 
 #: ../src/synfig/layers/layer_solidcolor.cpp:56
 msgid "Solid Color"
-msgstr ""
+msgstr "단색"
 
 #: ../src/synfig/layers/layer_solidcolor.cpp:114
 msgid "Fill color of the layer"
-msgstr ""
+msgstr "레이어의 채우기 색상"
 
 #: ../src/synfig/layers/layer_sound.cpp:57
 msgid "Sound"
-msgstr ""
+msgstr "사운드"
 
 #: ../src/synfig/layers/layer_sound.cpp:107
 msgid "Path to sound file"
-msgstr ""
+msgstr "사운드 파일 경로"
 
 #: ../src/synfig/layers/layer_sound.cpp:113
 msgid "Delay"
-msgstr ""
+msgstr "지연 시간"
 
 #: ../src/synfig/layers/layer_sound.cpp:114
 msgid "Delay before play"
-msgstr ""
+msgstr "플레이 전 지연 시간"
 
 #: ../src/synfig/layers/layer_sound.cpp:119
 msgid "Volume"
-msgstr ""
+msgstr "볼륨"
 
 #: ../src/synfig/layers/layer_sound.cpp:120
 msgid "Volume of sound"
-msgstr ""
+msgstr "사운드의 볼륨"
 
 #: ../src/synfig/layers/layer_switch.cpp:61
 #: ../src/synfig/layers/layer_switch.cpp:85
 #: ../src/synfig/valuenodes/valuenode_switch.cpp:157
 msgid "Switch"
-msgstr ""
+msgstr "스위치"
 
 #: ../src/synfig/layers/layer_switch.cpp:94
 msgid "Active Layer Name"
-msgstr ""
+msgstr "활성 레이어 이름"
 
 #: ../src/synfig/layers/layer_switch.cpp:95
 msgid "Only the layer with the specified name is visible"
@@ -2608,7 +2608,7 @@ msgstr ""
 
 #: ../src/synfig/layers/layer_switch.cpp:100
 msgid "Active Layer Depth"
-msgstr ""
+msgstr "활성 레이어 깊이"
 
 #: ../src/synfig/layers/layer_switch.cpp:101
 msgid ""
@@ -2618,105 +2618,105 @@ msgstr ""
 
 #: ../src/synfig/listimporter.cpp:165 ../src/synfig/listimporter.cpp:166
 msgid "No images in list"
-msgstr ""
+msgstr "목록에 이미지가 없습니다"
 
 #: ../src/synfig/loadcanvas.cpp:127
 #, c-format
 msgid "Cannot find canvas for delete '%s'"
-msgstr ""
+msgstr "'%s' 를 삭제할 캔버스를 찾을 수 없습니다"
 
 #: ../src/synfig/loadcanvas.cpp:154
 #, c-format
 msgid "cannot load '%s' recursively"
-msgstr ""
+msgstr "'%s' 를 재귀적으로 로그할 수 없습니다"
 
 #: ../src/synfig/loadcanvas.cpp:198
 #, c-format
 msgid "Unexpected element <%s>, Expected <%s>"
-msgstr ""
+msgstr "예기치 않은 요소 <%s>, 예상됨 <%s>"
 
 #: ../src/synfig/loadcanvas.cpp:204
 #, c-format
 msgid "Unexpected element <%s>"
-msgstr ""
+msgstr "예기치 않은 요소 <%s>"
 
 #: ../src/synfig/loadcanvas.cpp:218
 msgid "Too many warnings"
-msgstr "יותר מדי אזהרות"
+msgstr "너무 많은 경고"
 
 #: ../src/synfig/loadcanvas.cpp:249
 #, c-format
 msgid "<%s> is missing \"%s\" attribute"
-msgstr ""
+msgstr "<%s> 에 \"%s\" 속성이 없습니다"
 
 #: ../src/synfig/loadcanvas.cpp:279 ../src/synfig/loadcanvas.cpp:298
 #: ../src/synfig/loadcanvas.cpp:317 ../src/synfig/loadcanvas.cpp:336
 #: ../src/synfig/loadcanvas.cpp:481 ../src/synfig/loadcanvas.cpp:1260
 #, c-format
 msgid "<%s> should not contain anything"
-msgstr ""
+msgstr "<%s> 에는 아무것도 포함되지 않아야 합니다"
 
 #: ../src/synfig/loadcanvas.cpp:283 ../src/synfig/loadcanvas.cpp:302
 #: ../src/synfig/loadcanvas.cpp:321 ../src/synfig/loadcanvas.cpp:340
 #: ../src/synfig/loadcanvas.cpp:485 ../src/synfig/loadcanvas.cpp:1264
 #, c-format
 msgid "<%s> is missing \"value\" attribute"
-msgstr ""
+msgstr "<%s> 에 \"값\" 속성이 없습니다"
 
 #: ../src/synfig/loadcanvas.cpp:496 ../src/synfig/loadcanvas.cpp:1449
 #: ../src/synfig/loadcanvas.cpp:1467
 #, c-format
 msgid "Bad value \"%s\" in <%s>"
-msgstr ""
+msgstr "\"%s\" 는 <%s> 에서 잘못된 값입니다"
 
 #: ../src/synfig/loadcanvas.cpp:520
 #, c-format
 msgid "<%s> is missing \"pos\" attribute"
-msgstr ""
+msgstr "<%s> 에 \"pos\" 속성이 없습니다"
 
 #: ../src/synfig/loadcanvas.cpp:1660
 #, c-format
 msgid "Unable to create <animated> with type \"%s\""
-msgstr ""
+msgstr "유형 \"%s\" 는 <animated> 을 생성할 수 없습니다"
 
 #: ../src/synfig/loadcanvas.cpp:1682
 msgid "<waypoint> is missing attribute \"time\""
-msgstr ""
+msgstr "<waypoint> 에 \"시간\" 속성이 없습니다"
 
 #: ../src/synfig/loadcanvas.cpp:1695
 msgid ""
 "Found \"use\" attribute for <waypoint>, but it wasn't empty. Ignoring "
 "contents..."
-msgstr ""
+msgstr "<waypoint>에 대한 \"사용\" 속성을 찾았지만, 비어 있지 않습니다. 내용을 무시합니다..."
 
 #: ../src/synfig/loadcanvas.cpp:1711
 #, c-format
 msgid "Unknown ID (%s) referenced in waypoint"
-msgstr ""
+msgstr "알수 없는 ID (%s)가 지점에서 참조되었습니다 "
 
 #: ../src/synfig/loadcanvas.cpp:1717 ../src/synfig/loadcanvas.cpp:1729
 #, c-format
 msgid "<%s> is missing its data"
-msgstr ""
+msgstr "<%s> 에 데이터가 없습니다"
 
 #: ../src/synfig/loadcanvas.cpp:1746
 msgid "Bad data for <waypoint>"
-msgstr ""
+msgstr "<waypoint> 에 잘못된 데이터"
 
 #: ../src/synfig/loadcanvas.cpp:1762
 #, c-format
 msgid "Unexpected element <%s> after <waypoint> data, ignoring..."
-msgstr ""
+msgstr "<waypoint> 데이터 이후에 예기치 않은 요소 <%s>, 무시합니다..."
 
 #: ../src/synfig/loadcanvas.cpp:1863
 #, c-format
 msgid "Missing attribute \"type\" in <%s>"
-msgstr ""
+msgstr "<%s> 에 \"유형\" 속성이 없습니다"
 
 #: ../src/synfig/loadcanvas.cpp:1871
 #, c-format
 msgid "Bad type in <%s>"
-msgstr ""
+msgstr "<%s> 에 잘못된 유형"
 
 #: ../src/synfig/loadcanvas.cpp:1883
 #, c-format
@@ -2726,155 +2726,155 @@ msgstr ""
 #: ../src/synfig/loadcanvas.cpp:1893
 #, c-format
 msgid "<%s> did not accept type '%s'"
-msgstr ""
+msgstr "<%s> 는 유형 '%s' 를 허용하지 않습니다"
 
 #: ../src/synfig/loadcanvas.cpp:1925 ../src/synfig/loadcanvas.cpp:2012
 #, c-format
 msgid "'%s' was already defined in <%s>"
-msgstr ""
+msgstr "'%s' 는 이미 <%s> 에 정의되어 있습니다"
 
 #: ../src/synfig/loadcanvas.cpp:1938
 #, c-format
 msgid "'%s' attribute in <%s> references unknown ID '%s'"
-msgstr ""
+msgstr "'%s' 속성이 <%s> 에서 잘못된 ID '%s'를 참조합니다"
 
 #: ../src/synfig/loadcanvas.cpp:1956
 #, c-format
 msgid "Unable to set link '\"%s\" to ValueNode \"%s\" (link #%d in \"%s\")"
-msgstr ""
+msgstr "\"%s\" 를 값노드 \"%s\" 에 연결 설정할 수 없습니다 (연결 #%d in \"%s\")"
 
 #: ../src/synfig/loadcanvas.cpp:1980
 #, c-format
 msgid "Unknown Exception thrown when referencing ValueNode \"%s\""
-msgstr ""
+msgstr "값노드 \"%s\" 를 참조할 때 알 수 없는 예외가 발생했습니다"
 
 #: ../src/synfig/loadcanvas.cpp:2027
 #, c-format
 msgid "element <%s> is missing its contents"
-msgstr ""
+msgstr "요소 <%s>에 내용이 없습니다"
 
 #: ../src/synfig/loadcanvas.cpp:2036
 #, c-format
 msgid "Parse of '%s' failed"
-msgstr ""
+msgstr "'%s' 분석에 실패했습니다"
 
 #: ../src/synfig/loadcanvas.cpp:2052
 #, c-format
 msgid "Unable to connect value node ('%s' of type '%s') to link %d (%s)"
-msgstr ""
+msgstr "값노드 ('%s' of 유형 '%s') 를 링크 %d (%s)에 결합할 수 없습니다"
 
 #: ../src/synfig/loadcanvas.cpp:2070
 #, c-format
 msgid "Unknown Exception thrown when working on element \"%s\""
-msgstr ""
+msgstr "요소 \"%s' 에서 작업할 때 알 수 없는 예외가 발생했습니다"
 
 #: ../src/synfig/loadcanvas.cpp:2171
 #, c-format
 msgid "<%s> is missing link %d (%s)"
-msgstr ""
+msgstr "<%s> 는 링크 %d (%s) 가 없습니다 "
 
 #: ../src/synfig/loadcanvas.cpp:2221
 msgid "Unable to create <list>"
-msgstr ""
+msgstr "<list> 을 생성할 수 없습니다"
 
 #: ../src/synfig/loadcanvas.cpp:2263 ../src/synfig/loadcanvas.cpp:2523
 msgid "<entry> is missing its contents or missing \"use\" element"
-msgstr ""
+msgstr "<entry> 는 내용이 없거나 \"사용\" 요소가 없습니다"
 
 #: ../src/synfig/loadcanvas.cpp:2354
 msgid "Unable to create <dynamic_list>"
-msgstr ""
+msgstr "<dynamic_list> 를 생성할 수 없습니다"
 
 #: ../src/synfig/loadcanvas.cpp:2593
 #, c-format
 msgid "Bad data in <%s>"
-msgstr ""
+msgstr "<%s> 의 잘못된 데이터"
 
 #: ../src/synfig/loadcanvas.cpp:2659
 #, c-format
 msgid "Expected a ValueNode.  Refer to '%s'"
-msgstr ""
+msgstr "값노드가 필요합니다. '%s' 를 참조하세요"
 
 #: ../src/synfig/loadcanvas.cpp:2680
 #, c-format
 msgid "Bad ID \"%s\""
-msgstr ""
+msgstr "잘못된 ID \"%s\""
 
 #: ../src/synfig/loadcanvas.cpp:2686
 #, c-format
 msgid "Duplicate ID \"%s\""
-msgstr ""
+msgstr "복제 ID \"%s\""
 
 #: ../src/synfig/loadcanvas.cpp:2692
 #, c-format
 msgid "Unknown Exception thrown when adding ValueNode \"%s\""
-msgstr ""
+msgstr "값노드 \"%s\"를 추가할 때 알려지지 않은 예외가 발생했습니다"
 
 #: ../src/synfig/loadcanvas.cpp:2749
 msgid "Missing \"type\" attribute to \"layer\" element"
-msgstr ""
+msgstr "\"레이어\" 요소에 \"유형\" 속성이 없습니다"
 
 #: ../src/synfig/loadcanvas.cpp:2770
 msgid "Installed layer version is smaller than layer version in file"
-msgstr ""
+msgstr "설치된 레이어 버전이 파일의 레이어 버전보다 낮습니다"
 
 #: ../src/synfig/loadcanvas.cpp:2819
 msgid "<name> entry for <layer> is not yet supported. Ignoring..."
-msgstr ""
+msgstr "<layer>의 <name> 항목은 아직 지원하지 않습니다. 무시합니다..."
 
 #: ../src/synfig/loadcanvas.cpp:2822
 msgid "<desc> entry for <layer> is not yet supported. Ignoring..."
-msgstr ""
+msgstr "<layer>의 <desc>항목은 아직 지원하지 않습니다. 무시합니다..."
 
 #: ../src/synfig/loadcanvas.cpp:2830
 msgid "Missing \"name\" attribute for <param>."
-msgstr ""
+msgstr "<param> 에 \"이름\" 속성이 없습니다"
 
 #: ../src/synfig/loadcanvas.cpp:2847
 msgid ""
 "Found \"use\" attribute for <param>, but it wasn't empty. Ignoring "
 "contents..."
-msgstr ""
+msgstr "<param>에 \"사용\" 속성을 찾았습니다, 하지만 비어 있지 않습니다. 내용을 무시합니다..."
 
 #: ../src/synfig/loadcanvas.cpp:2852
 msgid "Empty use=\"\" value in <param>"
-msgstr ""
+msgstr "<param>에서 user=\"\" 값이 비어 있습니다"
 
 #: ../src/synfig/loadcanvas.cpp:2858
 #, c-format
 msgid "Failed to load subcanvas '%s'"
-msgstr ""
+msgstr "하위 캔버스 '%s'를 로그하는데 실패했습니다"
 
 #: ../src/synfig/loadcanvas.cpp:2860
 msgid "Layer rejected canvas link"
-msgstr ""
+msgstr "레이어가 캔버스 링크를 거부합니다"
 
 #: ../src/synfig/loadcanvas.cpp:2913
 #, c-format
 msgid "Unknown ID (%s) referenced in parameter \"%s\""
-msgstr ""
+msgstr "알 수 없는 ID (%s) 가 파라미터 \"%s\"에서 참조되었습니다"
 
 #: ../src/synfig/loadcanvas.cpp:2929
 msgid "<param> is either missing its contents, or missing a \"use\" attribute."
-msgstr ""
+msgstr "<param>에 내용이 없거나, \"사용\" 속성이 없습니다"
 
 #: ../src/synfig/loadcanvas.cpp:2944 ../src/synfig/loadcanvas.cpp:2954
 msgid "Bad data for <param>"
-msgstr ""
+msgstr "<param> 에 잘못된 데이터"
 
 #: ../src/synfig/loadcanvas.cpp:3019
 #, c-format
 msgid "Layer '%s' rejected value for parameter '%s'"
-msgstr ""
+msgstr "레이어 '%s'가 파라미터 '%s'의 값을 거부합니다"
 
 #: ../src/synfig/loadcanvas.cpp:3030
 #, c-format
 msgid "Unexpected element <%s> after <param> data, ignoring..."
-msgstr ""
+msgstr "예기치 않은 요소 <%s>가 <param> 다음에 있습니다, 무시합니다..."
 
 #: ../src/synfig/loadcanvas.cpp:3185 ../src/synfig/loadcanvas.cpp:3193
 msgid "Canvas with width or height less than one is not allowed"
-msgstr ""
+msgstr "너비 또는 높이가 1보다 작은 캔버스는 허용되지 않습니다"
 
 #: ../src/synfig/loadcanvas.cpp:3212
 msgid ""
@@ -2884,340 +2884,340 @@ msgstr ""
 
 #: ../src/synfig/loadcanvas.cpp:3301
 msgid "Group canvases cannot have a <defs> section"
-msgstr ""
+msgstr "그룹 캔버스에는 <defs> 섹션이 있을 수 없습니다"
 
 #: ../src/synfig/loadcanvas.cpp:3308
 msgid "Inline canvas cannot have a <bones> section"
-msgstr ""
+msgstr "인라인 캔버스에는 <bones> 섹션이 있을 수 없습니다"
 
 #: ../src/synfig/loadcanvas.cpp:3316
 msgid "Group canvases cannot have keyframes"
-msgstr ""
+msgstr "그룹 캔버스에는 키 프레임이 있을 수 없습니다"
 
 #: ../src/synfig/loadcanvas.cpp:3328
 msgid "Group canvases cannot have metadata"
-msgstr ""
+msgstr "그룹 캔버스는 메타 데이터를 가질 수 없습니다"
 
 #: ../src/synfig/loadcanvas.cpp:3334
 msgid "<meta> must have a name"
-msgstr ""
+msgstr "<meta> 는 이름이 있어야 합니다"
 
 #: ../src/synfig/loadcanvas.cpp:3340
 msgid "<meta> must have content"
-msgstr ""
+msgstr "<meta> 는 내용이 있어야 합니다"
 
 #: ../src/synfig/loadcanvas.cpp:3380
 msgid "blank \"name\" entity"
-msgstr ""
+msgstr "빈 \"이름\" 엔티티"
 
 #: ../src/synfig/loadcanvas.cpp:3395
 msgid "blank \"desc\" entity"
-msgstr ""
+msgstr "빈 \"desc\" 엔티티"
 
 #: ../src/synfig/loadcanvas.cpp:3410
 msgid "blank \"author\" entity"
-msgstr ""
+msgstr "빈 \"저작자\" 엔티티"
 
 #: ../src/synfig/loadcanvas.cpp:3445
 #, c-format
 msgid "Canvas '%s' has undefined %s: %s"
-msgstr ""
+msgstr "캔버스 '%s'에 정의되지 않은 요소가 있습니다 %s : %s"
 
 #: ../src/synfig/loadcanvas.cpp:3447 ../src/synfig/valuenode.cpp:187
 msgid "ValueNode"
-msgstr ""
+msgstr "값노드"
 
 #: ../src/synfig/loadcanvas.cpp:3447
 msgid "ValueNodes"
-msgstr ""
+msgstr "값노드"
 
 #: ../src/synfig/loadcanvas.cpp:3527
 msgid "Can't find linked file"
-msgstr ""
+msgstr "연결된 파일을 찾을 수 없습니다"
 
 #: ../src/synfig/loadcanvas.cpp:3538 ../src/synfig/loadcanvas.cpp:3594
 msgid "Can't open file"
-msgstr ""
+msgstr "파일을 열 수 없습니다"
 
 #: ../src/synfig/main.cpp:135
 #, c-format
 msgid "API Version mismatch (LIB:%zu, PROG:%zu)"
-msgstr ""
+msgstr "API 버전 불일치 (LIB:%zu, PROG:%zu)"
 
 #: ../src/synfig/main.cpp:140
 #, c-format
 msgid "Size of Vector mismatch (app:%zu, lib:%zu)"
-msgstr ""
+msgstr "벡터 크기 불일치 (app:%zu, lib:%zu)"
 
 #: ../src/synfig/main.cpp:145
 #, c-format
 msgid "Size of Color mismatch (app:%zu, lib:%zu)"
-msgstr ""
+msgstr "색상 크기 불일치 (app: %zu, lib: %zu)"
 
 #: ../src/synfig/main.cpp:150
 #, c-format
 msgid "Size of Canvas mismatch (app:%zu, lib:%zu)"
-msgstr ""
+msgstr "캔버스 크기 불일치 (app: %zu, lib: %zu)"
 
 #: ../src/synfig/main.cpp:155
 #, c-format
 msgid "Size of Layer mismatch (app:%zu, lib:%zu)"
-msgstr ""
+msgstr "레이어 크기 불일치 (app: %zu, lib: %zu)"
 
 #: ../src/synfig/main.cpp:235
 msgid "Starting Subsystem \"Sound\""
-msgstr ""
+msgstr "하위 시스템 \"사운드\" 시작"
 
 #: ../src/synfig/main.cpp:237
 msgid "Unable to initialize subsystem \"Sound\""
-msgstr ""
+msgstr "하위 시스템 \"사운드\"를 초기화할 수 없습니다"
 
 #: ../src/synfig/main.cpp:239
 msgid "Starting Subsystem \"Types\""
-msgstr ""
+msgstr "하위 시스템 \"유형\" 시작"
 
 #: ../src/synfig/main.cpp:243
 msgid "Unable to initialize subsystem \"Types\""
-msgstr ""
+msgstr "하위 시스템 \"유형\"을 초기화할 수 없습니다"
 
 #: ../src/synfig/main.cpp:246
 msgid "Starting Subsystem \"Rendering\""
-msgstr ""
+msgstr "하위 시스템 \"렌더링\" 시작"
 
 #: ../src/synfig/main.cpp:251
 msgid "Unable to initialize subsystem \"Rendering\""
-msgstr ""
+msgstr "하위 시스템 \"렌더링\"을 초기화할 수 없습니다"
 
 #: ../src/synfig/main.cpp:254
 msgid "Starting Subsystem \"Modules\""
-msgstr ""
+msgstr "하위 시스템 \"모듈\" 시작"
 
 #: ../src/synfig/main.cpp:260
 msgid "Unable to initialize subsystem \"Modules\""
-msgstr ""
+msgstr "하위 시스템 \"모듈\"을 초기화할 수 없습니다"
 
 #: ../src/synfig/main.cpp:263
 msgid "Starting Subsystem \"Layers\""
-msgstr ""
+msgstr "하위 시스템 \"레이어\" 시작"
 
 #: ../src/synfig/main.cpp:270
 msgid "Unable to initialize subsystem \"Layers\""
-msgstr ""
+msgstr "하위 시스템 \"레이어\"를 초기화할 수 없습니다"
 
 #: ../src/synfig/main.cpp:273
 msgid "Starting Subsystem \"Targets\""
-msgstr ""
+msgstr "하위 시스템 \"타겟\" 시작"
 
 #: ../src/synfig/main.cpp:281
 msgid "Unable to initialize subsystem \"Targets\""
-msgstr ""
+msgstr "하위 시스템 \"타겟\"을 초기화할 수 없습니다"
 
 #: ../src/synfig/main.cpp:284
 msgid "Starting Subsystem \"Importers\""
-msgstr ""
+msgstr "하위 시스템 \"임포터\" 시작"
 
 #: ../src/synfig/main.cpp:293
 msgid "Unable to initialize subsystem \"Importers\""
-msgstr ""
+msgstr "하위 시스템 \"임포터\"를 초기화할 수 없습니다"
 
 #: ../src/synfig/main.cpp:296
 msgid "Starting Subsystem \"Thread Pool\""
-msgstr ""
+msgstr "하위 시스템 \"스레드 풀\" 시작"
 
 #: ../src/synfig/main.cpp:298
 msgid "Unable to initialize subsystem \"Thread Pool\""
-msgstr ""
+msgstr "하위 시스템 \"스레드 풀\"을 초기화할 수 없습니다"
 
 #: ../src/synfig/main.cpp:336 ../src/synfig/main.cpp:338
 #, c-format
 msgid "Loading modules from %s"
-msgstr ""
+msgstr "%s 에서 모듈을 로딩"
 
 #: ../src/synfig/main.cpp:365 ../src/tool/renderprogress.cpp:93
 msgid "DONE"
-msgstr ""
+msgstr "완료"
 
 #: ../src/synfig/main.cpp:440 ../src/tool/progress.h:48
 #: ../src/tool/renderprogress.cpp:40
 msgid "error"
-msgstr "שגיאה"
+msgstr "오류"
 
 #: ../src/synfig/main.cpp:457 ../src/tool/progress.h:55
 #: ../src/tool/renderprogress.cpp:46
 msgid "warning"
-msgstr "אזהרה"
+msgstr "경고"
 
 #: ../src/synfig/main.cpp:477
 msgid "info"
-msgstr "מידע"
+msgstr "정보"
 
 #: ../src/synfig/module.cpp:65
 msgid "Errors on lt_dlinit()"
-msgstr ""
+msgstr "lt_dlinit () 오류"
 
 #: ../src/synfig/module.cpp:119
 #, c-format
 msgid "Unable to load module '%s'"
-msgstr ""
+msgstr "모듈 '%s' 를 로그할 수 없습니다"
 
 #: ../src/synfig/module.cpp:147
 #, c-format
 msgid "Attempting to register \"%s\""
-msgstr ""
+msgstr "\"%s\" 등록 시도"
 
 #: ../src/synfig/module.cpp:155
 #, c-format
 msgid "Unable to find module \"%s\" (%s)"
-msgstr ""
+msgstr "모듈 \"%s\" (%s) 을 찾을 수 없습니다"
 
 #: ../src/synfig/module.cpp:159
 #, c-format
 msgid "Found module \"%s\""
-msgstr ""
+msgstr "모듈 \"%s\" 을 찾음"
 
 #: ../src/synfig/module.cpp:178
 #, c-format
 msgid "Unable to find entrypoint in module \"%s\" (%s)"
-msgstr ""
+msgstr "모듈 \"%s\" (%s) 의 진입지점을 찾을 수 없습니다"
 
 #: ../src/synfig/module.cpp:188
 msgid "Entrypoint did not return a module."
-msgstr ""
+msgstr "진입지점이 모듈을 반환하지 않았습니다."
 
 #: ../src/synfig/module.cpp:192
 #, c-format
 msgid "Success for \"%s\""
-msgstr "הצלחה עבור \"%s\""
+msgstr "\"%s\" 성공"
 
 #: ../src/synfig/palette.cpp:80
 msgid "Unnamed"
-msgstr "ללא שם"
+msgstr "이름 없음"
 
 #: ../src/synfig/palette.cpp:97
 msgid "Surface Palette"
-msgstr ""
+msgstr "표면 팔레트"
 
 #: ../src/synfig/palette.cpp:294
 #, c-format
 msgid "%0.2f%% Gray"
-msgstr "%0.2f%% אפור"
+msgstr "%0.2f%% 회색"
 
 #: ../src/synfig/palette.cpp:305
 #, c-format
 msgid "Unable to open %s for write"
-msgstr ""
+msgstr "쓰기 위해 %s 를 열 수 없습니다"
 
 #: ../src/synfig/palette.cpp:323
 #, c-format
 msgid "Unable to open %s for read"
-msgstr ""
+msgstr "읽기 위해 %s 를 열 수 없습니다"
 
 #: ../src/synfig/palette.cpp:335 ../src/synfig/palette.cpp:376
 #, c-format
 msgid "%s does not appear to be a valid %s palette file"
-msgstr ""
+msgstr "%s 은 유효한 %s 팔레트 파일이 아닌 것 같습니다"
 
 #: ../src/synfig/palette.cpp:427
 #, c-format
 msgid "%s does not appear to be a supported palette file"
-msgstr ""
+msgstr "%s 은 지원되는 팔레트 파일이 아닌 것 같습니다"
 
 #: ../src/synfig/paramdesc.cpp:72
 msgid "Composite"
-msgstr ""
+msgstr "합성물 (Composite)"
 
 #: ../src/synfig/paramdesc.cpp:73
 msgid "Straight"
-msgstr "ישר"
+msgstr "직진 (Straight)"
 
 #: ../src/synfig/paramdesc.cpp:74
 msgid "Onto"
-msgstr "על גבי"
+msgstr "위에 (Onto)"
 
 #: ../src/synfig/paramdesc.cpp:75
 msgid "Straight Onto"
-msgstr "ישר על גבי"
+msgstr "곧장 (Straight Onto)"
 
 #: ../src/synfig/paramdesc.cpp:76
 msgid "Behind"
-msgstr "מאחור"
+msgstr "뒤에 (Behind)"
 
 #: ../src/synfig/paramdesc.cpp:77
 msgid "Screen"
-msgstr ""
+msgstr "화면 (Screen)"
 
 #: ../src/synfig/paramdesc.cpp:78
 msgid "Overlay"
-msgstr ""
+msgstr "겹침 (Overlay)"
 
 #: ../src/synfig/paramdesc.cpp:79
 msgid "Hard Light"
-msgstr ""
+msgstr "하드 라이트 (Hard Light)"
 
 #: ../src/synfig/paramdesc.cpp:80
 msgid "Multiply"
-msgstr "להכפיל"
+msgstr "곱하기 (Multiply)"
 
 #: ../src/synfig/paramdesc.cpp:81
 msgid "Divide"
-msgstr "לחלק"
+msgstr "나누기 (Divide)"
 
 #: ../src/synfig/paramdesc.cpp:82
 msgid "Add"
-msgstr ""
+msgstr "더하기 (Add)"
 
 #: ../src/synfig/paramdesc.cpp:83
 msgid "Subtract"
-msgstr ""
+msgstr "빼기 (Subtract)"
 
 #: ../src/synfig/paramdesc.cpp:84
 msgid "Difference"
-msgstr ""
+msgstr "차이 (Difference)"
 
 #: ../src/synfig/paramdesc.cpp:85
 msgid "Brighten"
-msgstr ""
+msgstr "밝게 (Brighten)"
 
 #: ../src/synfig/paramdesc.cpp:86
 msgid "Darken"
-msgstr ""
+msgstr "어둡게 (Darken)"
 
 #: ../src/synfig/paramdesc.cpp:88
 #: ../src/synfig/valuenodes/valuenode_radialcomposite.cpp:255
 msgid "Hue"
-msgstr ""
+msgstr "색조 (Hue)"
 
 #: ../src/synfig/paramdesc.cpp:89
 #: ../src/synfig/valuenodes/valuenode_radialcomposite.cpp:252
 msgid "Saturation"
-msgstr ""
+msgstr "채도 (Saturation)"
 
 #: ../src/synfig/paramdesc.cpp:90
 msgid "Luminance"
-msgstr ""
+msgstr "휘도 (Luminance)"
 
 #: ../src/synfig/paramdesc.cpp:91
 msgid "Alpha Over"
-msgstr ""
+msgstr "알파 오버 (Alpha Over)"
 
 #: ../src/synfig/paramdesc.cpp:92
 msgid "Alpha Brighten"
-msgstr ""
+msgstr "알파 밝게 (Alpha Brighten)"
 
 #: ../src/synfig/paramdesc.cpp:93
 msgid "Alpha Darken"
-msgstr ""
+msgstr "알파 어둡게 (Alpha Darken)"
 
 #: ../src/synfig/paramdesc.cpp:94
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:651
 #: ../src/synfig/valuenodes/valuenode_radialcomposite.cpp:258
 msgid "Alpha"
-msgstr "אלפא"
+msgstr "알파"
 
 #: ../src/synfig/render.cpp:121 ../src/synfig/render.cpp:122
 #: ../src/synfig/render.cpp:176 ../src/synfig/render.cpp:177
 msgid "Target panic"
-msgstr ""
+msgstr "타겟 패닉"
 
 #: ../src/synfig/rendering/opengl/renderergl.cpp:65
 msgid "Cobra (hardware)"
@@ -3225,129 +3225,129 @@ msgstr ""
 
 #: ../src/synfig/rendering/software/rendererdraftsw.cpp:106
 msgid "Cobra Draft (software)"
-msgstr ""
+msgstr "코브라 드래프트 (소프트웨어)"
 
 #: ../src/synfig/rendering/software/rendererlowressw.cpp:81
 msgid "Cobra LowRes (software)"
-msgstr ""
+msgstr "코브라 로우레즈 (소프트웨어)"
 
 #: ../src/synfig/rendering/software/renderersafe.cpp:58
 msgid "Cobra (safe) - very slow"
-msgstr ""
+msgstr "코브라 (세이프) - 매우 느림"
 
 #: ../src/synfig/rendering/software/renderersw.cpp:79
 msgid "Cobra (software)"
-msgstr ""
+msgstr "코브라 (소프트웨어)"
 
 #: ../src/synfig/rendering/software/rendererpreviewsw.cpp:80
 msgid "Cobra Preview (software)"
-msgstr ""
+msgstr "코브라 프리뷰 (소프트웨어)"
 
 #: ../src/synfig/savecanvas.cpp:433
 #, c-format
 msgid "Unknown value(%s), cannot create XML representation!"
-msgstr ""
+msgstr "알 수 없는 값(%s), XML 표현을 만들 수 없습니다!"
 
 #: ../src/synfig/savecanvas.cpp:746 ../src/synfig/savecanvas.cpp:771
 #, c-format
 msgid "Unknown ValueNode Type (%s), cannot create an XML representation"
-msgstr ""
+msgstr "알 수 없는 값노드 유형 (%s), XML 표현을 만들 수 없습니다"
 
 #: ../src/synfig/target_scanline.cpp:139 ../src/synfig/target_tile.cpp:310
 msgid "Target initialization failure"
-msgstr ""
+msgstr "타겟 초기화 실패"
 
 #: ../src/synfig/target_scanline.cpp:196 ../src/synfig/target_scanline.cpp:349
 #: ../src/synfig/target_scanline.cpp:508
 msgid "add_frame(): target panic on start_frame()"
-msgstr ""
+msgstr "add_frame () : start_frame ()에서 타겟 패닉"
 
 #: ../src/synfig/target_scanline.cpp:221 ../src/synfig/target_scanline.cpp:293
 #: ../src/synfig/target_scanline.cpp:374 ../src/synfig/target_scanline.cpp:450
 #: ../src/synfig/target_tile.cpp:240
 msgid "Accelerated Renderer Failure"
-msgstr ""
+msgstr "가속화 된 렌더러 실패"
 
 #: ../src/synfig/target_scanline.cpp:226
 msgid "Accelerated Renderer Failure: cannot read surface"
-msgstr ""
+msgstr "가속 렌더러 실패 : 표면을 읽을 수 없습니다"
 
 #: ../src/synfig/target_scanline.cpp:245 ../src/synfig/target_scanline.cpp:401
 #: ../src/synfig/target_scanline.cpp:519
 msgid "add_frame(): call to start_scanline(y) returned NULL"
-msgstr ""
+msgstr "add_frame () : start_scanline (y) 호출이 NULL을 반환했습니다"
 
 #: ../src/synfig/target_scanline.cpp:275 ../src/synfig/target_scanline.cpp:431
 #: ../src/synfig/target_scanline.cpp:549
 msgid "add_frame(): target panic on end_scanline()"
-msgstr ""
+msgstr "add_frame () : end_scanline ()의 타겟 패닉"
 
 #: ../src/synfig/target_scanline.cpp:300 ../src/synfig/target_scanline.cpp:382
 #: ../src/synfig/target_scanline.cpp:458 ../src/synfig/target_tile.cpp:248
 msgid "Bad surface"
-msgstr ""
+msgstr "잘못된 표면"
 
 #: ../src/synfig/target_scanline.cpp:308 ../src/synfig/target_scanline.cpp:466
 msgid "Unable to put surface on target"
-msgstr ""
+msgstr "타겟에 표면을 놓을 수 없습니다"
 
 #: ../src/synfig/target_scanline.cpp:478 ../src/synfig/target_tile.cpp:373
 msgid "Caught string: "
-msgstr ""
+msgstr "잡힌 문자열:"
 
 #: ../src/synfig/target_scanline.cpp:483 ../src/synfig/target_tile.cpp:378
 msgid "Ran out of memory (Probably a bug)"
-msgstr ""
+msgstr "메모리 부족 (아마도 버그)"
 
 #: ../src/synfig/target_scanline.cpp:488 ../src/synfig/target_tile.cpp:383
 msgid "Caught unknown error, rethrowing..."
-msgstr ""
+msgstr "알 수 없는 오류 발견, 다시 던지는 중 ..."
 
 #: ../src/synfig/target_tile.cpp:279
 msgid "add_tile(): Unable to put surface on target"
-msgstr ""
+msgstr "add_tile () : 대상에 표면을 둘 수 없습니다."
 
 #: ../src/synfig/time.cpp:104
 #, c-format
 msgid "Time(): No unit provided in time code, assuming FRAMES (\"%s\")"
-msgstr ""
+msgstr "Time () : FRAMES ( \"%s\")를 가정하면 시간 코드에 단위가 제공되지 않습니다"
 
 #: ../src/synfig/time.cpp:109
 msgid ""
 "Time(): No unit provided in time code and frame rate is unknown! Assuming "
 "SECONDS"
-msgstr ""
+msgstr "Time () : 시간 코드에 제공된 단위가 없으며 프레임 속도를 알 수 없습니다. SECONDS로 가정합니다"
 
 #: ../src/synfig/time.cpp:198
 msgid "Translating Time to unknown format (not implemented)"
-msgstr ""
+msgstr "시간을 알 수 없는 형식으로 변환 (구현되지 않음)"
 
 #: ../src/synfig/token.cpp:110
 msgid "Loop in hierarchy of tokens detected"
-msgstr ""
+msgstr "토큰 계층 구조의 반복이 감지되었습니다"
 
 #: ../src/synfig/token.cpp:132
 msgid "Loop detected while tokens preparing"
-msgstr ""
+msgstr "토큰을 준비하는 동안 반복이 감지되었습니다"
 
 #: ../src/synfig/valuenode.cpp:507
 msgid "Placeholder"
-msgstr ""
+msgstr "플레이스홀더"
 
 #: ../src/synfig/valuenode.h:59
 #, c-format
 msgid "%s:%d wrong type for %s: need %s but got %s"
-msgstr ""
+msgstr "%s:%d 잘못된 유형 %s : %s이 필요하지만 얻는 것은 %s 입니다"
 
 #: ../src/synfig/valuenode_registry.cpp:75
 #, c-format
 msgid "Bad name: ValueNode type name '%s' isn't registered"
-msgstr ""
+msgstr "잘못된 이름: 값노드 유형 '%s' 은 등록되지 않았습니다"
 
 #: ../src/synfig/valuenode_registry.cpp:81
 #, c-format
 msgid "Bad type: ValueNode '%s' doesn't accept type '%s'"
-msgstr ""
+msgstr "잘못된 유형: 값노드 '%s' 은 유형 '%s'를 승인하지 않습니다"
 
 #: ../src/synfig/valuenodes/valuenode_add.cpp:120
 #: ../src/synfig/valuenodes/valuenode_average.cpp:65
@@ -3365,35 +3365,35 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_weightedaverage.cpp:67
 #: ../src/synfig/valuenodes/valuenode_weightedaverage.cpp:77
 msgid ":Bad type "
-msgstr ""
+msgstr ": 잘못된 유형"
 
 #: ../src/synfig/valuenodes/valuenode_add.cpp:148
 #: ../src/synfig/valuenodes/valuenode_scale.cpp:125
 #: ../src/synfig/valuenodes/valuenode_subtract.cpp:150
 msgid "One or both of my parameters aren't set!"
-msgstr ""
+msgstr "내 매개 변수 중 하나 또는 둘 모두가 설정되지 않았습니다!"
 
 #: ../src/synfig/valuenodes/valuenode_add.cpp:216
 msgid "Left Hand Side of the add"
-msgstr ""
+msgstr "추가의 왼쪽"
 
 #: ../src/synfig/valuenodes/valuenode_add.cpp:220
 msgid "Addition"
-msgstr ""
+msgstr "더하기"
 
 #: ../src/synfig/valuenodes/valuenode_add.cpp:221
 msgid "Right Hand Side of the add"
-msgstr ""
+msgstr "추가의 오른쪽"
 
 #: ../src/synfig/valuenodes/valuenode_add.cpp:225
 #: ../src/synfig/valuenodes/valuenode_scale.cpp:247
 #: ../src/synfig/valuenodes/valuenode_subtract.cpp:232
 msgid "Scalar"
-msgstr ""
+msgstr "스칼라"
 
 #: ../src/synfig/valuenodes/valuenode_add.cpp:226
 msgid "Value that multiplies the add"
-msgstr ""
+msgstr "곱하는 값"
 
 #: ../src/synfig/valuenodes/valuenode_add.cpp:256
 #: ../src/synfig/valuenodes/valuenode_add.cpp:265
@@ -3403,12 +3403,12 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_scale.cpp:155
 #: ../src/synfig/valuenodes/valuenode_scale.cpp:169
 msgid "Attempting to get the inverse of a non invertible Valuenode"
-msgstr ""
+msgstr "비가역적 값노드의 역을 얻으려고 시도"
 
 #: ../src/synfig/valuenodes/valuenode_add.cpp:256
 #: ../src/synfig/valuenodes/valuenode_scale.cpp:155
 msgid "Scalar is zero"
-msgstr ""
+msgstr "스칼라가 0입니다"
 
 #: ../src/synfig/valuenodes/valuenode_add.cpp:265
 #: ../src/synfig/valuenodes/valuenode_integer.cpp:170
@@ -3416,63 +3416,63 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_real.cpp:172
 #: ../src/synfig/valuenodes/valuenode_scale.cpp:169
 msgid "Invalid value type"
-msgstr ""
+msgstr "잘못된 값 유형"
 
 #: ../src/synfig/valuenodes/valuenode_and.cpp:140
 #: ../src/synfig/valuenodes/valuenode_or.cpp:141
 msgid "Link1"
-msgstr ""
+msgstr "링크1"
 
 #: ../src/synfig/valuenodes/valuenode_and.cpp:141
 msgid "First operand of the AND operation"
-msgstr ""
+msgstr "AND 연산의 첫 번째 피연산자"
 
 #: ../src/synfig/valuenodes/valuenode_and.cpp:145
 #: ../src/synfig/valuenodes/valuenode_or.cpp:146
 msgid "Link2"
-msgstr ""
+msgstr "링크2"
 
 #: ../src/synfig/valuenodes/valuenode_and.cpp:146
 msgid "Second operand of the AND operation"
-msgstr ""
+msgstr "AND 연산의 두 번째 피연산자"
 
 #: ../src/synfig/valuenodes/valuenode_anglestring.cpp:163
 #: ../src/synfig/valuenodes/valuenode_intstring.cpp:160
 #: ../src/synfig/valuenodes/valuenode_realstring.cpp:165
 msgid "Value to convert to string"
-msgstr ""
+msgstr "문자열로 변환할 값"
 
 #: ../src/synfig/valuenodes/valuenode_anglestring.cpp:168
 #: ../src/synfig/valuenodes/valuenode_intstring.cpp:165
 #: ../src/synfig/valuenodes/valuenode_realstring.cpp:170
 msgid "Width of the string"
-msgstr ""
+msgstr "문자열의 너비"
 
 #: ../src/synfig/valuenodes/valuenode_anglestring.cpp:172
 #: ../src/synfig/valuenodes/valuenode_realstring.cpp:174
 msgid "Precision"
-msgstr ""
+msgstr "정도"
 
 #: ../src/synfig/valuenodes/valuenode_anglestring.cpp:173
 #: ../src/synfig/valuenodes/valuenode_realstring.cpp:175
 msgid "Number of decimal places"
-msgstr ""
+msgstr "소수점 이하 자릿수"
 
 #: ../src/synfig/valuenodes/valuenode_anglestring.cpp:177
 #: ../src/synfig/valuenodes/valuenode_intstring.cpp:169
 #: ../src/synfig/valuenodes/valuenode_realstring.cpp:179
 msgid "Zero Padded"
-msgstr ""
+msgstr "제로 패딩"
 
 #: ../src/synfig/valuenodes/valuenode_anglestring.cpp:178
 #: ../src/synfig/valuenodes/valuenode_intstring.cpp:170
 #: ../src/synfig/valuenodes/valuenode_realstring.cpp:180
 msgid "When checked, the string is left filled with zeros to match the width"
-msgstr ""
+msgstr "체크하면 너비에 일치하도록 문자열의 왼쪽이 0으로 채워집니다"
 
 #: ../src/synfig/valuenodes/valuenode_animated.cpp:93
 msgid "Animated"
-msgstr ""
+msgstr "애니메이션"
 
 #: ../src/synfig/valuenodes/valuenode_animatedfile.cpp:203
 #, c-format
@@ -3536,7 +3536,7 @@ msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_animatedfile.cpp:485
 msgid "File with waypoints"
-msgstr ""
+msgstr "지점이 있는 파일"
 
 #: ../src/synfig/valuenodes/valuenode_animatedinterface.cpp:355
 #: ../src/synfig/valuenodes/valuenode_animatedinterface.cpp:376
@@ -3545,12 +3545,12 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_animatedinterface.cpp:786
 #: ../src/synfig/valuenodes/valuenode_animatedinterface.cpp:805
 msgid "A waypoint already exists at this point in time"
-msgstr ""
+msgstr "이 시점에 이미 지점이 있습니다"
 
 #: ../src/synfig/valuenodes/valuenode_animatedinterface.cpp:1190
 #, c-format
 msgid "%s: You cannot use a %s in an animated ValueNode"
-msgstr ""
+msgstr "%s: 애니메이션 값노드에 %s 를 사용해야만 합니다"
 
 #: ../src/synfig/valuenodes/valuenode_atan2.cpp:141
 msgid "X"
@@ -3558,15 +3558,15 @@ msgstr "X"
 
 #: ../src/synfig/valuenodes/valuenode_atan2.cpp:142
 msgid "Cosine of the angle"
-msgstr ""
+msgstr "각도의 코사인값"
 
 #: ../src/synfig/valuenodes/valuenode_atan2.cpp:146
 msgid "Y"
-msgstr ""
+msgstr "Y"
 
 #: ../src/synfig/valuenodes/valuenode_atan2.cpp:147
 msgid "Sine of the angle"
-msgstr ""
+msgstr "각도의 사인값"
 
 #: ../src/synfig/valuenodes/valuenode_bline.cpp:908
 #: ../src/synfig/valuenodes/valuenode_dilist.cpp:160
@@ -3574,7 +3574,7 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_staticlist.cpp:358
 #: ../src/synfig/valuenodes/valuenode_wplist.cpp:340
 msgid "No entries in list"
-msgstr ""
+msgstr "목록에 항목이 없습니다"
 
 #: ../src/synfig/valuenodes/valuenode_bline.cpp:911
 #: ../src/synfig/valuenodes/valuenode_dilist.cpp:163
@@ -3582,27 +3582,27 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_staticlist.cpp:361
 #: ../src/synfig/valuenodes/valuenode_wplist.cpp:343
 msgid "No entries in ret_list"
-msgstr ""
+msgstr "ret_list에 항목이 없습니다"
 
 #: ../src/synfig/valuenodes/valuenode_bline.cpp:920
 #: ../src/synfig/valuenodes/valuenode_bline.cpp:1027
 #, c-format
 msgid "Vertex %03d"
-msgstr ""
+msgstr "정점 %03d"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalctangent.cpp:227
 msgid "The Spline where the tangent is linked to"
-msgstr ""
+msgstr "접선이 연결된 스플라인"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalctangent.cpp:232
 #: ../src/synfig/valuenodes/valuenode_blinecalcvertex.cpp:182
 #: ../src/synfig/valuenodes/valuenode_blinecalcwidth.cpp:191
 msgid "When checked, the amount would loop"
-msgstr ""
+msgstr "체크하면 수치가 반복됩니다"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalctangent.cpp:237
 msgid "The position of the linked tangent on the Spline (0,1]"
-msgstr ""
+msgstr "스플라인에서 링크 된 접선의 위치 (0,1]"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalctangent.cpp:241
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:782
@@ -3610,672 +3610,672 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_gradientrotate.cpp:163
 #: ../src/synfig/valuenodes/valuenode_linear.cpp:215
 msgid "Offset"
-msgstr ""
+msgstr "오프셋"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalctangent.cpp:242
 msgid "Angle offset of the tangent"
-msgstr ""
+msgstr "접선의 각도 오프셋"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalctangent.cpp:247
 msgid "Scale of the tangent"
-msgstr ""
+msgstr "접선의 스케일"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalctangent.cpp:251
 msgid "Fixed Length"
-msgstr ""
+msgstr "고정된 길이"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalctangent.cpp:252
 msgid "When checked, the tangent's length is fixed"
-msgstr ""
+msgstr "체크하면 접선의 길이가 고정됩니다"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalctangent.cpp:257
 msgid "When checked, the tangent is Spline length based"
-msgstr ""
+msgstr "체크하면 접선이 스플라인 길이를 기반으로 합니다"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalcvertex.cpp:177
 msgid "The spline where the vertex is linked to"
-msgstr ""
+msgstr "정점이 연결된 스플라인"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalcvertex.cpp:187
 msgid "The position of the linked vertex on the Spline (0,1]"
-msgstr ""
+msgstr "스플라인에서 링크된 정점의 위치 (0,1]"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalcvertex.cpp:192
 msgid "When checked, the position is Spline length based"
-msgstr ""
+msgstr "체크하면 위치는 스플라인 길이를 기반으로 합니다"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalcwidth.cpp:186
 msgid "The spline where the width is linked to"
-msgstr ""
+msgstr "너비가 연결된 스플라인"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalcwidth.cpp:196
 msgid "The position of the linked width on the spline (0,1]"
-msgstr ""
+msgstr "스플라인에서 링크된 너비의 위치 (0,1]"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalcwidth.cpp:201
 msgid "Scale of the width"
-msgstr ""
+msgstr "너비의 스케일"
 
 #: ../src/synfig/valuenodes/valuenode_blinecalcwidth.cpp:206
 msgid "When checked, the width is spline length based"
-msgstr ""
+msgstr "체크하면 너비는 스플라인 길이를 기반으로 합니다"
 
 #: ../src/synfig/valuenodes/valuenode_blinereversetangent.cpp:157
 msgid "Reference"
-msgstr ""
+msgstr "참조"
 
 #: ../src/synfig/valuenodes/valuenode_blinereversetangent.cpp:158
 msgid "The referenced tangent to reverse"
-msgstr ""
+msgstr "반전시킬 참조된 접선"
 
 #: ../src/synfig/valuenodes/valuenode_blinereversetangent.cpp:163
 msgid "When checked, the reference is reversed"
-msgstr ""
+msgstr "체크하면 참조가 반전됩니다"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:257
 #, c-format
 msgid "Bone %d"
-msgstr ""
+msgstr "뼈대 %d"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:586
 msgid "The name of the bone"
-msgstr ""
+msgstr "뼈대의 이름"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:590
 msgid "Parent"
-msgstr ""
+msgstr "부모"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:591
 msgid "The parent bone of the bone"
-msgstr ""
+msgstr "뼈대의 부모 뼈대"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:596
 msgid "The rotating origin of the bone relative to its parent"
-msgstr ""
+msgstr "부모를 기준으로 하는 뼈대의 회전 원점"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:602
 msgid "The rotating angle of the bone relative to its parent"
-msgstr ""
+msgstr "부모를 기준으로 하는 뼈대의 회전 각도"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:606
 msgid "Local Length Scale"
-msgstr ""
+msgstr "지역 길이 스케일"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:607
 msgid "The scale of the bone aligned to its length"
-msgstr ""
+msgstr "길이에 맞춰진 뼈대의 스케일"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:611
 msgid "Bone Width"
-msgstr ""
+msgstr "뼈대 너비"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:612
 msgid "Bone width at its origin"
-msgstr ""
+msgstr "원점에서의 뼈대 너비"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:617
 msgid "Recursive Length Scale"
-msgstr ""
+msgstr "재귀 길이 스케일"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:618
 msgid "The scale of the bone and its children aligned to its length"
-msgstr ""
+msgstr "길이에 맞춰 정렬된 자식과 뼈대의 스케일"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:622
 msgid "Tip Width"
-msgstr ""
+msgstr "팁 너비"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:623
 msgid "Bone width at its tip"
-msgstr ""
+msgstr "팁에서 뼈대 너비"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:628
 msgid "Z-Depth"
-msgstr ""
+msgstr "Z-깊이"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:629
 msgid "The z-depth of the bone"
-msgstr ""
+msgstr "뼈대의 z-깊이"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:633
 msgid "Length Setup"
-msgstr ""
+msgstr "설정 길이"
 
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:634
 msgid "The length of the bone at setup"
-msgstr ""
+msgstr "설정에서 뼈대 길이"
 
 #: ../src/synfig/valuenodes/valuenode_boneinfluence.cpp:216
 msgid "Bone Weight List"
-msgstr ""
+msgstr "뼈 가중치 목록"
 
 #: ../src/synfig/valuenodes/valuenode_boneinfluence.cpp:217
 msgid "List of bones used to calculate the influence"
-msgstr ""
+msgstr "영향을 계산하는 데 사용되는 뼈대 목록"
 
 #: ../src/synfig/valuenodes/valuenode_boneinfluence.cpp:222
 msgid "The value node being bone influenced"
-msgstr ""
+msgstr "뼈대의 영향을 받는 값노드"
 
 #: ../src/synfig/valuenodes/valuenode_bonelink.cpp:200
 #: ../src/synfig/valuenodes/valuenode_boneweightpair.cpp:155
 msgid "Bone"
-msgstr ""
+msgstr "뼈대"
 
 #: ../src/synfig/valuenodes/valuenode_bonelink.cpp:201
 msgid "The linked bone"
-msgstr ""
+msgstr "연결된 뼈대"
 
 #: ../src/synfig/valuenodes/valuenode_bonelink.cpp:205
 #: ../src/synfig/valuenodes/valuenode_bonelink.cpp:206
 msgid "Base value"
-msgstr ""
+msgstr "기본 값"
 
 #: ../src/synfig/valuenodes/valuenode_bonelink.cpp:211
 msgid "Make translation"
-msgstr ""
+msgstr "이동하기"
 
 #: ../src/synfig/valuenodes/valuenode_bonelink.cpp:216
 msgid "Make rotation"
-msgstr ""
+msgstr "회전하기"
 
 #: ../src/synfig/valuenodes/valuenode_bonelink.cpp:220
 msgid "Skew"
-msgstr ""
+msgstr "기울임"
 
 #: ../src/synfig/valuenodes/valuenode_bonelink.cpp:221
 msgid "Make skew"
-msgstr ""
+msgstr "기울이기"
 
 #: ../src/synfig/valuenodes/valuenode_bonelink.cpp:225
 msgid "Scale X"
-msgstr ""
+msgstr "스케일 X"
 
 #: ../src/synfig/valuenodes/valuenode_bonelink.cpp:226
 msgid "Make scaling by X-axis"
-msgstr ""
+msgstr "X축으로 스케일하기"
 
 #: ../src/synfig/valuenodes/valuenode_bonelink.cpp:230
 msgid "Scale Y"
-msgstr ""
+msgstr "스케일 Y"
 
 #: ../src/synfig/valuenodes/valuenode_bonelink.cpp:231
 msgid "Make scaling by Y-axis"
-msgstr ""
+msgstr "Y축으로 스케일하기"
 
 #: ../src/synfig/valuenodes/valuenode_boneweightpair.cpp:156
 msgid "Bone used to make influence"
-msgstr ""
+msgstr "영향을 미치는 데 사용되는 뼈대"
 
 #: ../src/synfig/valuenodes/valuenode_boneweightpair.cpp:161
 msgid "The relative value of influence of the bone"
-msgstr ""
+msgstr "뼈대 영향의 상대적 값"
 
 #: ../src/synfig/valuenodes/valuenode_compare.cpp:160
 #: ../src/synfig/valuenodes/valuenode_dotproduct.cpp:161
 #: ../src/synfig/valuenodes/valuenode_subtract.cpp:222
 msgid "LHS"
-msgstr ""
+msgstr "LHS"
 
 #: ../src/synfig/valuenodes/valuenode_compare.cpp:161
 msgid "The left side of the comparison"
-msgstr ""
+msgstr "비교의 왼쪽"
 
 #: ../src/synfig/valuenodes/valuenode_compare.cpp:165
 #: ../src/synfig/valuenodes/valuenode_dotproduct.cpp:166
 #: ../src/synfig/valuenodes/valuenode_subtract.cpp:227
 msgid "RHS"
-msgstr ""
+msgstr "RHS"
 
 #: ../src/synfig/valuenodes/valuenode_compare.cpp:166
 msgid "The right side of the comparison"
-msgstr ""
+msgstr "비교의 오른쪽"
 
 #: ../src/synfig/valuenodes/valuenode_compare.cpp:170
 msgid "Greater"
-msgstr "רב"
+msgstr "클 때"
 
 #: ../src/synfig/valuenodes/valuenode_compare.cpp:171
 msgid "When checked, returns true if LHS > RHS"
-msgstr ""
+msgstr "체크하면 LHS > RHS 일때 참을 반환합니다"
 
 #: ../src/synfig/valuenodes/valuenode_compare.cpp:175
 msgid "Equal"
-msgstr "שווה"
+msgstr "같을 때"
 
 #: ../src/synfig/valuenodes/valuenode_compare.cpp:176
 msgid "When checked, returns true if LHS = RHS"
-msgstr ""
+msgstr "체크하면 LHS = RHS 일때 참을 반환합니다"
 
 #: ../src/synfig/valuenodes/valuenode_compare.cpp:180
 msgid "Less"
-msgstr "פחות"
+msgstr "작을 때"
 
 #: ../src/synfig/valuenodes/valuenode_compare.cpp:181
 msgid "When checked, returns true if LHS < RHS"
-msgstr ""
+msgstr "체크하면 LHS < RHS 일때 참을 반환합니다"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:320
 msgid "Bad type for composite"
-msgstr ""
+msgstr "합성물에 대한 잘못된 유형"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:639
 msgid "Red"
-msgstr "אדום"
+msgstr "빨간색"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:640
 msgid "The red component of the color"
-msgstr ""
+msgstr "색상의 빨간색 구성 요소"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:643
 msgid "Green"
-msgstr "ירוק"
+msgstr "초록색"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:644
 msgid "The green component of the color"
-msgstr ""
+msgstr "색상의 초록색 구성 요소"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:647
 msgid "Blue"
-msgstr "כחול"
+msgstr "파란색"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:648
 msgid "The blue component of the color"
-msgstr ""
+msgstr "색상의 파란색 구성 요소"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:652
 msgid "The alpha of the color"
-msgstr "האלפא של הצבע"
+msgstr "색상의 알파"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:660
 msgid "Vertex 1"
-msgstr ""
+msgstr "정점 1"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:661
 msgid "The first vertex of the segment"
-msgstr ""
+msgstr "세그먼트의 첫번째 정점"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:664
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:714
 msgid "Tangent 1"
-msgstr ""
+msgstr "접선 1"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:665
 msgid "The first tangent of the segment"
-msgstr ""
+msgstr "세그먼트의 첫번째 접선"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:668
 msgid "Vertex 2"
-msgstr ""
+msgstr "정점 2"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:669
 msgid "The second vertex of the segment"
-msgstr ""
+msgstr "세그먼트의 두번째 정점 "
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:672
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:718
 msgid "Tangent 2"
-msgstr ""
+msgstr "접선 2"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:673
 msgid "The second tangent of the segment"
-msgstr ""
+msgstr "세그먼트의 두번째 접선"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:681
 msgid "X-Axis"
-msgstr "ציר-X"
+msgstr "X-축"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:682
 msgid "The X-Axis component of the vector"
-msgstr ""
+msgstr "벡터의 X-축 구성요소"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:685
 msgid "Y-Axis"
-msgstr "ציר-Y"
+msgstr "Y-축"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:686
 msgid "The Y-Axis component of the vector"
-msgstr ""
+msgstr "벡터의 Y-축 구성요소"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:694
 msgid "Vertex"
-msgstr ""
+msgstr "정점 "
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:695
 msgid "The vertex of the Spline Point"
-msgstr ""
+msgstr "스플라인 포인트의 정점 "
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:700
 msgid "The width of the Spline Point"
-msgstr ""
+msgstr "스플라인 포인트의 너비"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:705
 msgid "Defines the Off and On position relative to neighbours"
-msgstr ""
+msgstr "이웃에 상대적인 닫기 및 열기 위치를 정의합니다"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:709
 msgid "Split"
-msgstr ""
+msgstr "분할"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:710
 msgid "When checked, tangents are independent"
-msgstr ""
+msgstr "체크하면 접선이 독립적입니다"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:715
 msgid "The first tangent of the Spline Point"
-msgstr ""
+msgstr "스플라인 포인트의 첫번째 접선"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:719
 msgid "The second tangent of the Spline Point"
-msgstr ""
+msgstr "스플라인 포인트의 두번째 접선"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:722
 msgid "Radius Split"
-msgstr ""
+msgstr "반지름 분할"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:723
 msgid "When checked, tangent's radii are independent"
-msgstr ""
+msgstr "체크하면 접선의 반지름이 독립적입니다"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:726
 msgid "Angle Split"
-msgstr ""
+msgstr "각도 분할"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:727
 msgid "When checked, tangent's angles are independent"
-msgstr ""
+msgstr "체크하면 접선의 각도가 독립적입니다"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:736
 msgid "The [0,1] position of the Width Point over the Spline"
-msgstr ""
+msgstr "스플라인 상의 너비 포인트의 [0,1] 위치"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:740
 msgid "The width of the Width Point"
-msgstr ""
+msgstr "너비 포인트의 너비"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:743
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:790
 msgid "Side Type Before"
-msgstr ""
+msgstr "이전 사이드 유형"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:744
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:757
 msgid "Defines the interpolation type of the width point"
-msgstr ""
+msgstr "너비 포인트의 보간 유형을 정의합니다"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:747
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:760
 msgid "Interpolate"
-msgstr ""
+msgstr "보간"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:756
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:801
 msgid "Side Type After"
-msgstr ""
+msgstr "이후 사이드 유형"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:769
 msgid "Lower Boundary"
-msgstr ""
+msgstr "하한"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:770
 msgid "Defines the position at start of the Spline"
-msgstr ""
+msgstr "스플라인의 시작 위치를 정의합니다"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:773
 msgid "Upper Boundary"
-msgstr ""
+msgstr "상한"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:774
 msgid "Defines the position at end of the Spline"
-msgstr ""
+msgstr "스플라인의 끝 위치를 ​​정의합니다"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:783
 msgid "The offset length of the Dash Item over the Spline"
-msgstr ""
+msgstr "스플라인 상의 파선 아이템 오프셋 길이"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:786
 #: ../src/synfig/valuenodes/valuenode_timedswap.cpp:267
 msgid "Length"
-msgstr ""
+msgstr "길이"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:787
 msgid "The length of the Dash Item"
-msgstr ""
+msgstr "파선 아이템의 길이"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:791
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:802
 msgid "Defines the side type of the dash item"
-msgstr ""
+msgstr "파선 아이템의 측면 유형을 정의합니다\n "
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:818
 msgid "The Offset component of the transformation"
-msgstr ""
+msgstr "변형의 오프셋 구성 요소"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:823
 msgid "The Angle component of the transformation"
-msgstr ""
+msgstr "변형의 각도 구성 요소"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:826
 msgid "Skew Angle"
-msgstr ""
+msgstr "기울이기 각도"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:827
 msgid "The Skew Angle component of the transformation"
-msgstr ""
+msgstr "변형의 기울이기 각도 구성 요소"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:831
 msgid "The Scale component of the transformation"
-msgstr ""
+msgstr "변형의 스케일 구성 요소"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:840
 msgid "The Weight of the value"
-msgstr ""
+msgstr "값의 가중치"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:843
 msgid "Value"
-msgstr ""
+msgstr "값"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:844
 msgid "The Value"
-msgstr ""
+msgstr "값"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:852
 msgid "First"
-msgstr ""
+msgstr "첫번째"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:853
 msgid "The First Value"
-msgstr ""
+msgstr "첫번째 값"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:856
 msgid "Second"
-msgstr ""
+msgstr "두번째"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:857
 msgid "The Second Value"
-msgstr ""
+msgstr "두번째 값"
 
 #: ../src/synfig/valuenodes/valuenode_cos.cpp:149
 msgid "Value to calculate the cosine"
-msgstr ""
+msgstr "코사인을 계산할 값"
 
 #: ../src/synfig/valuenodes/valuenode_cos.cpp:153
 #: ../src/synfig/valuenodes/valuenode_sine.cpp:153
 msgid "Amplitude"
-msgstr ""
+msgstr "진폭"
 
 #: ../src/synfig/valuenodes/valuenode_cos.cpp:154
 msgid "Multiplier of the resulting cosine"
-msgstr ""
+msgstr "결과 코사인의 승수"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:363
 msgid "Value to calculate the derivative"
-msgstr ""
+msgstr "미분을 계산할 값"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:366
 msgid "Interval"
-msgstr ""
+msgstr "간격"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:367
 msgid "Interval of time to calculate the finite differences"
-msgstr ""
+msgstr "유한 차분을 계산하는 시간 간격"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:370
 msgid "Accuracy"
-msgstr ""
+msgstr "정확도"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:371
 msgid "Accuracy of the derivative"
-msgstr ""
+msgstr "미분의 정확도"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:373
 msgid "Rough"
-msgstr ""
+msgstr "거칠게"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:375
 msgid "Fine"
-msgstr ""
+msgstr "세밀하게"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:376
 msgid "Extreme"
-msgstr ""
+msgstr "극도로"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:379
 msgid "Order"
-msgstr ""
+msgstr "순서"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:380
 msgid "Order of the derivative"
-msgstr ""
+msgstr "미분의 순서"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:382
 msgid "First Derivative"
-msgstr ""
+msgstr "첫번째 미분"
 
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:383
 msgid "Second Derivative"
-msgstr ""
+msgstr "두번째 미분"
 
 #: ../src/synfig/valuenodes/valuenode_dilist.cpp:172
 #, c-format
 msgid "DashItem %03d"
-msgstr ""
+msgstr "파선아이템 %03d"
 
 #: ../src/synfig/valuenodes/valuenode_dotproduct.cpp:162
 msgid "The left side of the dot product"
-msgstr ""
+msgstr "스칼라곱의 왼쪽"
 
 #: ../src/synfig/valuenodes/valuenode_dotproduct.cpp:167
 msgid "The right side of the dot product"
-msgstr ""
+msgstr "스칼라곱의 오른쪽"
 
 #: ../src/synfig/valuenodes/valuenode_duplicate.cpp:188
 msgid "From"
-msgstr ""
+msgstr "시작"
 
 #: ../src/synfig/valuenodes/valuenode_duplicate.cpp:189
 msgid "Initial value of the index "
-msgstr ""
+msgstr "인덱스의 초기 값"
 
 #: ../src/synfig/valuenodes/valuenode_duplicate.cpp:193
 msgid "To"
-msgstr ""
+msgstr "종료"
 
 #: ../src/synfig/valuenodes/valuenode_duplicate.cpp:194
 msgid "Final value of the index"
-msgstr ""
+msgstr "인덱스의 마지막 값"
 
 #: ../src/synfig/valuenodes/valuenode_duplicate.cpp:199
 msgid "Amount increment of the index"
-msgstr ""
+msgstr "인덱스 증가량"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:232
 msgid "Tip static"
-msgstr ""
+msgstr "팁 스태틱"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:233
 msgid "Equilibrium tip position without external forces"
-msgstr ""
+msgstr "외부 힘이 없는 평형 팁 위치"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:237
 msgid "Basement of the dynamic system"
-msgstr ""
+msgstr "동적 시스템의 최하부"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:241
 msgid "Force"
-msgstr ""
+msgstr "힘"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:242
 msgid "External force applied on the mass center of gravity"
-msgstr ""
+msgstr "질량 중심에 적용되는 외부의 힘"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:245
 msgid "Torque"
-msgstr ""
+msgstr "토크"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:246
 msgid "External momentum applied at the center of inertia"
-msgstr ""
+msgstr "관성 중심에 적용되는 외부의 운동량"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:249
 msgid "Damping coefficient"
-msgstr ""
+msgstr "감쇠 계수"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:250
 msgid "Radial damping coefficient of the dynamic system"
-msgstr ""
+msgstr "동적 시스템의 방사형 감쇠 계수"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:253
 msgid "Friction coefficient"
-msgstr ""
+msgstr "마찰 계수"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:254
 msgid "Rotational friction coefficient of the dynamic system"
-msgstr ""
+msgstr "동적 시스템의 회전 마찰 계수"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:257
 msgid "Spring coefficient"
-msgstr ""
+msgstr "스프링 계수"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:258
 msgid "Radial spring coefficient of the dynamic system"
-msgstr ""
+msgstr "동적 시스템의 방사형 스프링 계수"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:261
 msgid "Torsion coefficient"
-msgstr ""
+msgstr "비틀림 계수"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:262
 msgid "Torsion coefficient of the dynamic system"
-msgstr ""
+msgstr "동적 시스템의 비틀림 계수"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:265
 msgid "Mass"
-msgstr ""
+msgstr "질량"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:266
 msgid "Mass of the dynamic system"
-msgstr ""
+msgstr "동적 시스템의 질량"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:269
 msgid "Moment of Inertia"
-msgstr ""
+msgstr "관성 모멘트"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:270
 msgid "Moment of inertia of the dynamic system"
-msgstr ""
+msgstr "동적 시스템의 관성 모멘트"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:273
 msgid "Spring rigid"
-msgstr ""
+msgstr "스프링 고정"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:274
 msgid "When checked, linear spring is rigid"
-msgstr ""
+msgstr "체크하면 선형 스프링이 고정됩니다"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:277
 msgid "Torsion rigid"
-msgstr ""
+msgstr "비틀림 고정"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:278
 msgid "When checked, torsion spring is rigid"
@@ -4283,7 +4283,7 @@ msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:281
 msgid "Origin drags tip"
-msgstr ""
+msgstr "원점 드래그 팁"
 
 #: ../src/synfig/valuenodes/valuenode_dynamic.cpp:282
 msgid "When checked, result is origin + tip otherwise result is just tip"
@@ -4292,7 +4292,7 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_dynamiclist.cpp:672
 #: ../src/synfig/valuenodes/valuenode_staticlist.cpp:355
 msgid "List type/item type mismatch, throwing away mismatch"
-msgstr ""
+msgstr "목록 유형 / 아이템 유형 불일치, 불일치 제거"
 
 #: ../src/synfig/valuenodes/valuenode_dynamiclist.cpp:720
 #: ../src/synfig/valuenodes/valuenode_dynamiclist.cpp:972
@@ -4300,116 +4300,116 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_staticlist.cpp:486
 #, c-format
 msgid "Item %03d"
-msgstr ""
+msgstr "아이템 %03d"
 
 #: ../src/synfig/valuenodes/valuenode_exp.cpp:143
 msgid "Exponent"
-msgstr ""
+msgstr "지수"
 
 #: ../src/synfig/valuenodes/valuenode_exp.cpp:144
 msgid "The value to raise the constant 'e'"
-msgstr ""
+msgstr "상수 'e'를 올리는 값"
 
 #: ../src/synfig/valuenodes/valuenode_exp.cpp:149
 msgid "Multiplier of the resulting exponent"
-msgstr ""
+msgstr "결과 지수의 승수"
 
 #: ../src/synfig/valuenodes/valuenode_gradientcolor.cpp:152
 msgid "The gradient where the color is picked from"
-msgstr ""
+msgstr "색상이 선택되는 그라데이션"
 
 #: ../src/synfig/valuenodes/valuenode_gradientcolor.cpp:157
 msgid "The position of the color at the gradient (0,1]"
-msgstr ""
+msgstr "그라데이션에서 색상의 위치 (0,1]"
 
 #: ../src/synfig/valuenodes/valuenode_gradientcolor.cpp:162
 msgid "When checked, the index would loop"
-msgstr ""
+msgstr "체크하면 인덱스가 반복됩니다"
 
 #: ../src/synfig/valuenodes/valuenode_gradientrotate.cpp:82
 msgid "Gradient Rotate"
-msgstr ""
+msgstr "그라데이션 회전"
 
 #: ../src/synfig/valuenodes/valuenode_gradientrotate.cpp:159
 msgid "The source gradient to rotate"
-msgstr ""
+msgstr "회전시킬 원본 그라데이션"
 
 #: ../src/synfig/valuenodes/valuenode_gradientrotate.cpp:164
 msgid "The amount to offset the gradient"
-msgstr ""
+msgstr "그라데이션을 오프셋하는 양"
 
 #: ../src/synfig/valuenodes/valuenode_greyed.cpp:93
 msgid "The greyed value"
-msgstr ""
+msgstr "회색 값"
 
 #: ../src/synfig/valuenodes/valuenode_integer.cpp:197
 msgid "The integer value to be converted"
-msgstr ""
+msgstr "변환할 정수 값"
 
 #: ../src/synfig/valuenodes/valuenode_intstring.cpp:159
 msgid "Int"
-msgstr ""
+msgstr "정수"
 
 #: ../src/synfig/valuenodes/valuenode_join.cpp:181
 msgid "Strings"
-msgstr ""
+msgstr "문자열"
 
 #: ../src/synfig/valuenodes/valuenode_join.cpp:182
 msgid "The List of strings to join"
-msgstr ""
+msgstr "결합할 문자열 목록"
 
 #: ../src/synfig/valuenodes/valuenode_join.cpp:186
 #: ../src/synfig/valuenodes/valuenode_timedswap.cpp:252
 msgid "Before"
-msgstr ""
+msgstr "앞"
 
 #: ../src/synfig/valuenodes/valuenode_join.cpp:187
 msgid "The string to place before the joined strings"
-msgstr ""
+msgstr "결합된 문자열 앞에 배치할 문자열"
 
 #: ../src/synfig/valuenodes/valuenode_join.cpp:191
 msgid "Separator"
-msgstr ""
+msgstr "분리자"
 
 #: ../src/synfig/valuenodes/valuenode_join.cpp:192
 msgid "The string to place between each string joined"
-msgstr ""
+msgstr "결합된 각 문자열 사이에 배치할 문자열"
 
 #: ../src/synfig/valuenodes/valuenode_join.cpp:196
 #: ../src/synfig/valuenodes/valuenode_timedswap.cpp:257
 msgid "After"
-msgstr ""
+msgstr "뒤"
 
 #: ../src/synfig/valuenodes/valuenode_join.cpp:197
 msgid "The string to place after the joined strings"
-msgstr ""
+msgstr "결합된 문자열 뒤에 배치할 문자열"
 
 #: ../src/synfig/valuenodes/valuenode_linear.cpp:202
 msgid "Rate"
-msgstr ""
+msgstr "속도"
 
 #: ../src/synfig/valuenodes/valuenode_linear.cpp:203
 #: ../src/synfig/valuenodes/valuenode_linear.cpp:210
 msgid "Value that is multiplied by the current time (in seconds)"
-msgstr ""
+msgstr "현재 시간 (초)을 곱한 값"
 
 #: ../src/synfig/valuenodes/valuenode_linear.cpp:209
 msgid "Slope"
-msgstr ""
+msgstr "경사도"
 
 #: ../src/synfig/valuenodes/valuenode_linear.cpp:216
 msgid "Returned value when the current time is zero"
-msgstr ""
+msgstr "현재 시간이 0 일 때 반환되는 값"
 
 #: ../src/synfig/valuenodes/valuenode_log.cpp:154
 msgid "Value node used to calculate the Neperian logarithm"
-msgstr ""
+msgstr "네페리안 로그를 계산하는 데 사용되는 값 노드"
 
 #: ../src/synfig/valuenodes/valuenode_log.cpp:158
 #: ../src/synfig/valuenodes/valuenode_pow.cpp:184
 #: ../src/synfig/valuenodes/valuenode_reciprocal.cpp:164
 msgid "Epsilon"
-msgstr ""
+msgstr "엡실론"
 
 #: ../src/synfig/valuenodes/valuenode_log.cpp:159
 msgid "Value used to compare 'Link' with zero "
@@ -4419,669 +4419,669 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_pow.cpp:189
 #: ../src/synfig/valuenodes/valuenode_reciprocal.cpp:169
 msgid "Infinite"
-msgstr ""
+msgstr "무한"
 
 #: ../src/synfig/valuenodes/valuenode_log.cpp:164
 #: ../src/synfig/valuenodes/valuenode_pow.cpp:190
 msgid "Returned value when result tends to infinite"
-msgstr ""
+msgstr "결과가 무한할 때 반환되는 값"
 
 #: ../src/synfig/valuenodes/valuenode_not.cpp:136
 msgid "Value node used to do the NOT operation"
-msgstr ""
+msgstr "NOT 연산을 수행하는 데 사용되는 값 노드"
 
 #: ../src/synfig/valuenodes/valuenode_or.cpp:142
 #: ../src/synfig/valuenodes/valuenode_or.cpp:147
 msgid "Value node used for the OR boolean operation"
-msgstr ""
+msgstr "OR 부울 연산에 사용되는 값 노드"
 
 #: ../src/synfig/valuenodes/valuenode_pow.cpp:174
 msgid "Base"
-msgstr ""
+msgstr "베이스"
 
 #: ../src/synfig/valuenodes/valuenode_pow.cpp:175
 msgid "The base to be raised to the power"
-msgstr ""
+msgstr "힘으로 올려 지는 베이스"
 
 #: ../src/synfig/valuenodes/valuenode_pow.cpp:179
 msgid "Power"
-msgstr ""
+msgstr "파워"
 
 #: ../src/synfig/valuenodes/valuenode_pow.cpp:180
 msgid "The power used to raise the base"
-msgstr ""
+msgstr "베이스를 올리는 데 사용되는 힘"
 
 #: ../src/synfig/valuenodes/valuenode_pow.cpp:185
 msgid "Value used to compare base or power with zero "
-msgstr ""
+msgstr "베이스 와 0의 힘을 비교하는 데 사용되는 값"
 
 #: ../src/synfig/valuenodes/valuenode_radialcomposite.cpp:132
 msgid "Bad type for radialcomposite"
-msgstr ""
+msgstr "방사형 합성물에 대한 잘못된 유형"
 
 #: ../src/synfig/valuenodes/valuenode_radialcomposite.cpp:249
 msgid "Luma"
-msgstr ""
+msgstr "루마"
 
 #: ../src/synfig/valuenodes/valuenode_radialcomposite.cpp:267
 msgid "The length of the vector"
-msgstr ""
+msgstr "벡터의 길이"
 
 #: ../src/synfig/valuenodes/valuenode_radialcomposite.cpp:270
 msgid "Theta"
-msgstr "תטא"
+msgstr "세타"
 
 #: ../src/synfig/valuenodes/valuenode_radialcomposite.cpp:271
 msgid "The angle of the vector with the X axis"
-msgstr ""
+msgstr "X 축과 벡터의 각도"
 
 #: ../src/synfig/valuenodes/valuenode_range.cpp:135
 msgid "Some of my parameters aren't set!"
-msgstr ""
+msgstr "파라미터 중 일부가 설정되지 않았습니다!"
 
 #: ../src/synfig/valuenodes/valuenode_range.cpp:302
 msgid "Min"
-msgstr ""
+msgstr "최소"
 
 #: ../src/synfig/valuenodes/valuenode_range.cpp:303
 msgid "Returned value when 'Link' is smaller"
-msgstr ""
+msgstr "'링크'가 더 작을 때 반환되는 값"
 
 #: ../src/synfig/valuenodes/valuenode_range.cpp:307
 msgid "Max"
-msgstr ""
+msgstr "최대"
 
 #: ../src/synfig/valuenodes/valuenode_range.cpp:308
 msgid "Returned value when 'Link' is greater"
-msgstr ""
+msgstr "'링크'가 더 클 때 반환되는 값"
 
 #: ../src/synfig/valuenodes/valuenode_range.cpp:313
 msgid "The value node to limit its range"
-msgstr ""
+msgstr "범위를 제한하는 값 노드"
 
 #: ../src/synfig/valuenodes/valuenode_real.cpp:195
 msgid "The real value to be converted"
-msgstr ""
+msgstr "변환할 실수 값"
 
 #: ../src/synfig/valuenodes/valuenode_realstring.cpp:164
 msgid "Real"
-msgstr "אמיתי"
+msgstr "실수"
 
 #: ../src/synfig/valuenodes/valuenode_reciprocal.cpp:160
 msgid "The value node used to calculate its reciprocal"
-msgstr ""
+msgstr "역수를 계산하는 데 사용되는 값 노드"
 
 #: ../src/synfig/valuenodes/valuenode_reciprocal.cpp:165
 msgid ""
 "The value used to decide whether 'Link' is too small to obtain its "
 "reciprocal"
-msgstr ""
+msgstr "'링크'가 역수를 얻기에는 너무 작은 지 여부를 결정하는 데 사용되는 값"
 
 #: ../src/synfig/valuenodes/valuenode_reciprocal.cpp:170
 msgid "The resulting value when 'Link' < 'Epsilon'"
-msgstr ""
+msgstr "'링크' < '엡실론' 일 때 결과 값"
 
 #: ../src/synfig/valuenodes/valuenode_reference.cpp:138
 msgid "The referenced value"
-msgstr ""
+msgstr "참조 값"
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:88
 msgid "Repeat Gradient"
-msgstr ""
+msgstr "그라데이션 반복"
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:198
 msgid "The source gradient to repeat"
-msgstr ""
+msgstr "반복할 원본 그라데이션"
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:202
 msgid "Count"
-msgstr ""
+msgstr "횟수"
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:203
 msgid "The number of repetition of the gradient"
-msgstr ""
+msgstr "그라데이션의 반복 횟수"
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:208
 msgid ""
 "Specifies how much biased is the source gradient in the repetition [0,1]"
-msgstr ""
+msgstr "반복에서 원본 그라데이션이 얼마나 편향되었는지 지정합니다 [0,1]"
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:212
 msgid "Specify Start"
-msgstr "ציין התחלה"
+msgstr "시작 지정"
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:213
 msgid ""
 "When checked, 'Start Color' is used as the start of the resulting gradient"
-msgstr ""
+msgstr "체크하면 '시작 색상'이 결과 그라데이션의 시작으로 사용됩니다"
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:217
 msgid "Specify End"
-msgstr "ציין סיום"
+msgstr "종료 지정"
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:218
 msgid ""
 "When checked, 'End Color' is used as the start of the resulting gradient"
-msgstr ""
+msgstr "체크하면 '종료 색상'이 결과 그라데이션의 시작으로 사용됩니다"
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:222
 msgid "Start Color"
-msgstr "התחלת הצבע"
+msgstr "시작 색상"
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:223
 msgid "Used as the start of the resulting gradient"
-msgstr ""
+msgstr "결과 그라데이션의 시작으로 사용됩니다"
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:227
 msgid "End Color"
-msgstr "סיום הצבע"
+msgstr "종료 색상"
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:228
 msgid "Used as the end of the resulting gradient"
-msgstr ""
+msgstr "결과 그라데이션의 끝으로 사용됩니다"
 
 #: ../src/synfig/valuenodes/valuenode_reverse.cpp:302
 msgid "The value to be reversed"
-msgstr ""
+msgstr "반전되는 값"
 
 #: ../src/synfig/valuenodes/valuenode_scale.cpp:243
 msgid "The value node used to scale"
-msgstr ""
+msgstr "스케일에 사용되는 값 노드"
 
 #: ../src/synfig/valuenodes/valuenode_scale.cpp:248
 msgid "Value that multiplies the value node"
-msgstr ""
+msgstr "값 노드에 곱하는 값"
 
 #: ../src/synfig/valuenodes/valuenode_segcalctangent.cpp:150
 #: ../src/synfig/valuenodes/valuenode_segcalcvertex.cpp:148
 msgid "Segment"
-msgstr ""
+msgstr "세그먼트"
 
 #: ../src/synfig/valuenodes/valuenode_segcalctangent.cpp:151
 msgid "The Segment where the tangent is linked to"
-msgstr ""
+msgstr "접선이 연결된 세그먼트"
 
 #: ../src/synfig/valuenodes/valuenode_segcalctangent.cpp:156
 msgid "The position of the linked tangent on the Segment (0,1]"
-msgstr ""
+msgstr "세그먼트 (0,1]에서 링크 된 접선의 위치"
 
 #: ../src/synfig/valuenodes/valuenode_segcalcvertex.cpp:149
 msgid "The Segment where the vertex is linked to"
-msgstr ""
+msgstr "정점이 연결된 세그먼트"
 
 #: ../src/synfig/valuenodes/valuenode_segcalcvertex.cpp:154
 msgid "The position of the linked vertex on the Segment (0,1]"
-msgstr ""
+msgstr "세그먼트 (0,1]에서 연결된 정점의 위치"
 
 #: ../src/synfig/valuenodes/valuenode_sine.cpp:149
 msgid "The angle where the sine is calculated from"
-msgstr ""
+msgstr "사인이 계산되는 각도"
 
 #: ../src/synfig/valuenodes/valuenode_sine.cpp:154
 msgid "The value that multiplies the resulting sine"
-msgstr ""
+msgstr "결과 사인을 곱하는 값"
 
 #: ../src/synfig/valuenodes/valuenode_step.cpp:187
 msgid "The value node used to make the step"
-msgstr ""
+msgstr "스탭을 만드는 데 사용되는 값 노드"
 
 #: ../src/synfig/valuenodes/valuenode_step.cpp:192
 msgid "The duration of the step"
-msgstr ""
+msgstr "스탭의 기간"
 
 #: ../src/synfig/valuenodes/valuenode_step.cpp:196
 #: ../src/tool/printing_functions.cpp:75
 msgid "Start Time"
-msgstr ""
+msgstr "시작 시간"
 
 #: ../src/synfig/valuenodes/valuenode_step.cpp:197
 msgid "The time when the step conversion starts"
-msgstr ""
+msgstr "스탭 변환이 시작되는 시간"
 
 #: ../src/synfig/valuenodes/valuenode_step.cpp:201
 msgid "Intersection"
-msgstr ""
+msgstr "교차 지점"
 
 #: ../src/synfig/valuenodes/valuenode_step.cpp:202
 msgid "Value that define whether the step is centered on the value [0,1]"
-msgstr ""
+msgstr "스탭이 [0,1] 값의 중심에 있는지 여부를 정의하는 값"
 
 #: ../src/synfig/valuenodes/valuenode_stripes.cpp:85
 msgid "Stripes"
-msgstr ""
+msgstr "줄무늬"
 
 #: ../src/synfig/valuenodes/valuenode_stripes.cpp:183
 #: ../src/synfig/valuenodes/valuenode_twotone.cpp:147
 msgid "Color 1"
-msgstr "צבע 1"
+msgstr "색상 1"
 
 #: ../src/synfig/valuenodes/valuenode_stripes.cpp:184
 msgid "One color of the gradient stripes"
-msgstr ""
+msgstr "그라데이션 줄무늬의 한 색상"
 
 #: ../src/synfig/valuenodes/valuenode_stripes.cpp:188
 #: ../src/synfig/valuenodes/valuenode_twotone.cpp:152
 msgid "Color 2"
-msgstr "צבע 2"
+msgstr "색상 2"
 
 #: ../src/synfig/valuenodes/valuenode_stripes.cpp:189
 msgid "Other color of the gradient stripes"
-msgstr ""
+msgstr "그라데이션 줄무늬의 다른 색상"
 
 #: ../src/synfig/valuenodes/valuenode_stripes.cpp:193
 msgid "Stripe Count"
-msgstr ""
+msgstr "줄무늬 개수"
 
 #: ../src/synfig/valuenodes/valuenode_stripes.cpp:194
 msgid "Number of stripes in the gradient"
-msgstr ""
+msgstr "그라데이션 줄무늬 개수 "
 
 #: ../src/synfig/valuenodes/valuenode_stripes.cpp:199
 msgid "Width of stripes in the gradient between [0,1]"
-msgstr ""
+msgstr "[0,1] 사이의 그라데이션에서 줄무늬 너비"
 
 #: ../src/synfig/valuenodes/valuenode_subtract.cpp:223
 msgid "Left Hand Side of the subtraction"
-msgstr ""
+msgstr "뺄셈의 왼쪽"
 
 #: ../src/synfig/valuenodes/valuenode_subtract.cpp:228
 msgid "Right Hand Side of the subtraction"
-msgstr ""
+msgstr "뺄셈의 오른쪽"
 
 #: ../src/synfig/valuenodes/valuenode_subtract.cpp:233
 msgid "Value that multiplies the subtraction"
-msgstr ""
+msgstr "뺄셈을 곱하는 값"
 
 #: ../src/synfig/valuenodes/valuenode_switch.cpp:147
 msgid "Link Off"
-msgstr ""
+msgstr "링크안됨"
 
 #: ../src/synfig/valuenodes/valuenode_switch.cpp:148
 msgid "The value node returned when the switch is off"
-msgstr ""
+msgstr "스위치가 꺼져있을 때 반환되는 값 노드"
 
 #: ../src/synfig/valuenodes/valuenode_switch.cpp:152
 msgid "Link On"
-msgstr ""
+msgstr "링크됨"
 
 #: ../src/synfig/valuenodes/valuenode_switch.cpp:153
 msgid "The value node returned when the switch is on"
-msgstr ""
+msgstr "스위치가 켜져 있을 때 반환되는 값 노드"
 
 #: ../src/synfig/valuenodes/valuenode_switch.cpp:158
 msgid "When checked, returns 'Link On', otherwise returns 'Link Off'"
-msgstr ""
+msgstr "체크하면 '링크됨'을 반환하고, 아니면 '링크안됨'을 반환합니다"
 
 #: ../src/synfig/valuenodes/valuenode_timedswap.cpp:253
 msgid "The value node returned when current time is before 'time' - 'length'"
-msgstr ""
+msgstr "현재 시간이 '시간' - '길이' 보다 이전일 때 반환되는 값 노드"
 
 #: ../src/synfig/valuenodes/valuenode_timedswap.cpp:258
 msgid "The value node returned when current time is after 'time'"
-msgstr ""
+msgstr "현재 시간이 '시간' - '길이' 보다 이후일 때 반환되는 값 노드"
 
 #: ../src/synfig/valuenodes/valuenode_timedswap.cpp:263
 msgid "The time when the linear interpolation ends"
-msgstr ""
+msgstr "선형 보간이 끝나는 시간"
 
 #: ../src/synfig/valuenodes/valuenode_timedswap.cpp:268
 msgid ""
 "The length of time when the linear interpolation between 'Before' and "
 "'After' is made"
-msgstr ""
+msgstr "'이전'과 '이후'사이의 선형 보간이 이루어진 시간"
 
 #: ../src/synfig/valuenodes/valuenode_timeloop.cpp:169
 msgid "The value node to time loop"
-msgstr ""
+msgstr "시간 반복에 대한 값 노드"
 
 #: ../src/synfig/valuenodes/valuenode_timeloop.cpp:174
 msgid "Start time of the loop for the value node Timeline"
-msgstr ""
+msgstr "타임라인 값 노드에 대한 반복의 시작 시간"
 
 #: ../src/synfig/valuenodes/valuenode_timestring.cpp:151
 msgid "The time that is converted to string"
-msgstr ""
+msgstr "문자열로 변환되는 시간"
 
 #: ../src/synfig/valuenodes/valuenode_twotone.cpp:148
 msgid "The start color of the gradient"
-msgstr ""
+msgstr "그라데이션 시작 색상"
 
 #: ../src/synfig/valuenodes/valuenode_twotone.cpp:153
 msgid "The end color of the gradient"
-msgstr ""
+msgstr "그라데이션 끝 색상"
 
 #: ../src/synfig/valuenodes/valuenode_vectorangle.cpp:138
 #: ../src/synfig/valuenodes/valuenode_vectorlength.cpp:136
 #: ../src/synfig/valuenodes/valuenode_vectorx.cpp:136
 #: ../src/synfig/valuenodes/valuenode_vectory.cpp:136
 msgid "Vector"
-msgstr "וקטור"
+msgstr "벡터"
 
 #: ../src/synfig/valuenodes/valuenode_vectorangle.cpp:139
 msgid "The vector where the angle is calculated from"
-msgstr ""
+msgstr "각도가 계산되는 벡터"
 
 #: ../src/synfig/valuenodes/valuenode_vectorlength.cpp:137
 msgid "The vector where the length is calculated from"
-msgstr ""
+msgstr "길이가 계산되는 벡터"
 
 #: ../src/synfig/valuenodes/valuenode_vectorx.cpp:137
 msgid "The vector where the X coordinate is extracted from"
-msgstr ""
+msgstr "X 좌표가 추출되는 벡터"
 
 #: ../src/synfig/valuenodes/valuenode_vectory.cpp:137
 msgid "The vector where the Y coordinate is extracted from"
-msgstr ""
+msgstr "Y 좌표가 추출되는 벡터"
 
 #: ../src/synfig/valuenodes/valuenode_wplist.cpp:352
 #, c-format
 msgid "WidthPoint %03d"
-msgstr ""
+msgstr "너비포인트 %03d"
 
 #: ../src/tool/definitions.cpp:45
 msgid "Uninitialized Synfig tool general options singleton."
-msgstr ""
+msgstr "초기화되지 않은 Synfig 툴 일반 옵션 싱글톤"
 
 #: ../src/tool/main.cpp:108
 msgid "FATAL: Synfig Version Mismatch"
-msgstr ""
+msgstr "치명적 : Synfig 버전 불일치"
 
 #: ../src/tool/joblistprocessor.cpp:70
 msgid "Nothing to do!"
-msgstr ""
+msgstr "할 것이 없습니다!"
 
 #: ../src/tool/joblistprocessor.cpp:102
 msgid "Attempting to determine target/outfile..."
-msgstr ""
+msgstr "타겟 / 아웃 파일을 확인하는 중 ..."
 
 #: ../src/tool/joblistprocessor.cpp:108
 msgid "Target name undefined, attempting to figure it out"
-msgstr ""
+msgstr "대상 이름이 정의되지 않았습니다. 알아 내려고합니다"
 
 #: ../src/tool/joblistprocessor.cpp:139
 msgid "Defaulting to PNG target..."
-msgstr ""
+msgstr "PNG 타겟으로 기본값 설정 중 ..."
 
 #: ../src/tool/joblistprocessor.cpp:170
 #, c-format
 msgid "Unable to create output for \"%s\": %s"
-msgstr ""
+msgstr "\"%s\" : %s 에 대한 출력을 생성할 수 없습니다"
 
 #: ../src/tool/joblistprocessor.cpp:171 ../src/tool/joblistprocessor.cpp:193
 msgid "Throwing out job..."
-msgstr ""
+msgstr "Job 을 버리는 중..."
 
 #: ../src/tool/joblistprocessor.cpp:175
 msgid "Creating the target..."
-msgstr ""
+msgstr "타겟 생성 중 ..."
 
 #: ../src/tool/joblistprocessor.cpp:192
 #, c-format
 msgid "Unknown target for \"%s\": %s"
-msgstr ""
+msgstr "\"%s\": %s 에 대한 알 수 없는 타겟"
 
 #: ../src/tool/joblistprocessor.cpp:203
 msgid "Setting the canvas on the target..."
-msgstr ""
+msgstr "타겟의 캔버스 설정 중 ..."
 
 #: ../src/tool/joblistprocessor.cpp:206
 msgid "Setting the quality of the target..."
-msgstr ""
+msgstr "타겟의 품질 설정 중 ..."
 
 #: ../src/tool/joblistprocessor.cpp:211
 msgid "Setting the alpha mode of the target..."
-msgstr ""
+msgstr "타겟의 알파 모드 설정 중..."
 
 #: ../src/tool/joblistprocessor.cpp:262 ../src/tool/joblistprocessor.cpp:272
 msgid "Render Failure."
-msgstr ""
+msgstr "렌더링 실패."
 
 #: ../src/tool/joblistprocessor.cpp:266
 msgid "Rendering..."
-msgstr ""
+msgstr "렌더링..."
 
 #: ../src/tool/joblistprocessor.cpp:280
 msgid ": Rendered in "
-msgstr ""
+msgstr ": 렌더링"
 
 #: ../src/tool/joblistprocessor.cpp:282
 msgid " seconds."
-msgstr "שניות."
+msgstr "초"
 
 #: ../src/tool/joblistprocessor.cpp:286
 msgid "Done."
-msgstr ""
+msgstr "완료"
 
 #: ../src/tool/optionsprocessor.cpp:84
 msgid "Settings"
-msgstr "הגדרות"
+msgstr "설정"
 
 #: ../src/tool/optionsprocessor.cpp:84
 msgid "Show settings help"
-msgstr ""
+msgstr "설정 도움말 보기"
 
 #: ../src/tool/optionsprocessor.cpp:85
 msgid "Switch options"
-msgstr ""
+msgstr "스위치 옵션"
 
 #: ../src/tool/optionsprocessor.cpp:85
 msgid "Show switch help"
-msgstr ""
+msgstr "스위치 도움말 보기"
 
 #: ../src/tool/optionsprocessor.cpp:86
 msgid "Misc options"
-msgstr ""
+msgstr "기타 옵션"
 
 #: ../src/tool/optionsprocessor.cpp:86
 msgid "Show Misc options help"
-msgstr ""
+msgstr "기타 옵션 도움말 보기"
 
 #: ../src/tool/optionsprocessor.cpp:87
 msgid "FFMPEG target options"
-msgstr ""
+msgstr "FFMPEG 타겟 옵션"
 
 #: ../src/tool/optionsprocessor.cpp:87
 msgid "Show FFMPEG target options help"
-msgstr ""
+msgstr "FFMPEG 타겟 옵션 도움말 보기"
 
 #: ../src/tool/optionsprocessor.cpp:88
 msgid "Synfig info options"
-msgstr ""
+msgstr "Synfig 정보 옵션"
 
 #: ../src/tool/optionsprocessor.cpp:88
 msgid "Show Synfig info options help"
-msgstr ""
+msgstr "Synfig 정보 옵션 도움말 보기"
 
 #: ../src/tool/optionsprocessor.cpp:90
 msgid "Synfig debug flags"
-msgstr ""
+msgstr "Synfig 디버그 플래그"
 
 #: ../src/tool/optionsprocessor.cpp:90
 msgid "Show Synfig debug flags help"
-msgstr ""
+msgstr "Synfig 디버그 플래그 도움말 보기"
 
 #: ../src/tool/optionsprocessor.cpp:150
 msgid "Specify output target (Default: PNG)"
-msgstr ""
+msgstr "출력 대상 지정 (기본값 : PNG)"
 
 #: ../src/tool/optionsprocessor.cpp:151
 msgid "Set the image width in pixels (Use zero for file default)"
-msgstr ""
+msgstr "이미지 너비를 픽셀 단위로 설정합니다 (파일 기본값에 0 사용)"
 
 #: ../src/tool/optionsprocessor.cpp:152
 msgid "Set the image height in pixels (Use zero for file default)"
-msgstr ""
+msgstr "이미지 높이를 픽셀 단위로 설정합니다 (파일 기본값에 0 사용)"
 
 #: ../src/tool/optionsprocessor.cpp:153
 msgid "Set the diagonal size of image window (Span)"
-msgstr ""
+msgstr "이미지 창의 대각선 크기 설정 (Span)"
 
 #: ../src/tool/optionsprocessor.cpp:154
 msgid "Set antialias amount for parametric renderer."
-msgstr ""
+msgstr "파라메트릭 렌더러의 앤티앨리어싱 수치를 설정합니다."
 
 #: ../src/tool/optionsprocessor.cpp:156
 msgid "Enable multithreaded renderer using the specified number of threads"
-msgstr ""
+msgstr "지정된 수의 스레드를 사용하여 다중 스레드 렌더러 활성화"
 
 #: ../src/tool/optionsprocessor.cpp:157
 msgid "Specify input filename"
-msgstr ""
+msgstr "입력 파일 이름 지정"
 
 #: ../src/tool/optionsprocessor.cpp:158
 msgid "Specify output filename"
-msgstr ""
+msgstr "출력 파일 이름 지정"
 
 #: ../src/tool/optionsprocessor.cpp:159
 msgid ""
 "Output file sequence separator string (Use double quotes if you want to use "
 "spaces)"
-msgstr ""
+msgstr "출력 파일 시퀀스 구분자 문자열 (공백을 사용하려면 큰 따옴표 사용)"
 
 #: ../src/tool/optionsprocessor.cpp:160
 msgid "Render the canvas with the given id instead of the root."
-msgstr ""
+msgstr "루트 대신 주어진 ID로 캔버스를 렌더링하십시오."
 
 #: ../src/tool/optionsprocessor.cpp:161
 msgid "Set the frame rate"
-msgstr ""
+msgstr "프레임 속도 설정"
 
 #: ../src/tool/optionsprocessor.cpp:162
 msgid "Render a single frame at <seconds>"
-msgstr ""
+msgstr "<seconds> 에서 싱글 프레임 렌더링"
 
 #: ../src/tool/optionsprocessor.cpp:163 ../src/tool/optionsprocessor.cpp:164
 msgid "Set the starting time"
-msgstr ""
+msgstr "시작 시간 설정"
 
 #: ../src/tool/optionsprocessor.cpp:165
 msgid "Set the ending time"
-msgstr ""
+msgstr "종료 시간 설정"
 
 #: ../src/tool/optionsprocessor.cpp:166
 msgid "Set the physical resolution (Dots-per-inch)"
-msgstr ""
+msgstr "물리적 해상도 설정 (Dot-per-inch)"
 
 #: ../src/tool/optionsprocessor.cpp:167
 msgid "Set the physical X resolution (Dots-per-inch)"
-msgstr ""
+msgstr "물리적 X 해상도 설정 (Dot-per-inch)"
 
 #: ../src/tool/optionsprocessor.cpp:168
 msgid "Set the physical Y resolution (Dots-per-inch)"
-msgstr ""
+msgstr "물리적 Y 해상도 설정 (Dot-per-inch)"
 
 #: ../src/tool/optionsprocessor.cpp:172
 msgid "Output verbosity level"
-msgstr ""
+msgstr "출력 상세 수준"
 
 #: ../src/tool/optionsprocessor.cpp:173
 msgid "Quiet mode (No progress/time-remaining display)"
-msgstr ""
+msgstr "저소음 모드 (진행 없음 / 남은 시간 표시)"
 
 #: ../src/tool/optionsprocessor.cpp:174
 msgid "Print benchmarks"
-msgstr ""
+msgstr "벤치마크 인쇄"
 
 #: ../src/tool/optionsprocessor.cpp:175
 msgid "Extract alpha"
-msgstr ""
+msgstr "알파 추출"
 
 #: ../src/tool/optionsprocessor.cpp:178
 msgid "Append layers in <filename> to composition"
-msgstr ""
+msgstr "<filename>의 레이어를 구성에 추가"
 
 #: ../src/tool/optionsprocessor.cpp:178
 msgid "filename"
-msgstr ""
+msgstr "파일 이름"
 
 #: ../src/tool/optionsprocessor.cpp:179
 msgid "Print out specified details of the root canvas"
-msgstr ""
+msgstr "루트 캔버스의 지정된 세부 정보 인쇄"
 
 #: ../src/tool/optionsprocessor.cpp:179
 msgid "fields"
-msgstr ""
+msgstr "필드"
 
 #: ../src/tool/optionsprocessor.cpp:180
 msgid "Print out the list of exported canvases in the composition"
-msgstr ""
+msgstr "구성에서 내보낸 캔버스 목록 인쇄"
 
 #: ../src/tool/optionsprocessor.cpp:183
 msgid "Set the codec for the video. See --target-video-codecs"
-msgstr ""
+msgstr "비디오 코덱을 설정합니다. --target-video-codecs 참조"
 
 #: ../src/tool/optionsprocessor.cpp:183
 msgid "codec"
-msgstr ""
+msgstr "코덱"
 
 #: ../src/tool/optionsprocessor.cpp:184
 msgid "Set the bitrate for the output video"
-msgstr ""
+msgstr "출력 비디오의 비트레이트 설정"
 
 #: ../src/tool/optionsprocessor.cpp:184
 msgid "bitrate"
-msgstr ""
+msgstr "비트레이트"
 
 #: ../src/tool/optionsprocessor.cpp:187
 msgid "Produce this help message"
-msgstr ""
+msgstr "이 도움말 메시지 생성"
 
 #: ../src/tool/optionsprocessor.cpp:188
 msgid "Print out the list of available importers"
-msgstr ""
+msgstr "사용 가능한 임포터 목록 인쇄"
 
 #: ../src/tool/optionsprocessor.cpp:189
 msgid "Print out misc build information"
-msgstr ""
+msgstr "기타 빌드 정보 인쇄"
 
 #: ../src/tool/optionsprocessor.cpp:190
 msgid "Print out the list of available layers"
-msgstr ""
+msgstr "사용 가능한 레이어 목록 인쇄"
 
 #: ../src/tool/optionsprocessor.cpp:191
 msgid "Print out layer's description, parameter info, etc."
-msgstr ""
+msgstr "레이어 설명, 매개 변수 정보 등 인쇄"
 
 #: ../src/tool/optionsprocessor.cpp:191
 msgid "layer-name"
-msgstr ""
+msgstr "레이어-이름"
 
 #: ../src/tool/optionsprocessor.cpp:192
 msgid "Print out license information"
-msgstr ""
+msgstr "라이센스 정보 인쇄"
 
 #: ../src/tool/optionsprocessor.cpp:193
 msgid "Print out the list of loaded modules"
-msgstr ""
+msgstr "로드 된 모듈 목록 인쇄"
 
 #: ../src/tool/optionsprocessor.cpp:194
 msgid "Print out the list of available targets"
-msgstr ""
+msgstr "사용 가능한 타겟 목록 인쇄"
 
 #: ../src/tool/optionsprocessor.cpp:195
 msgid ""
 "Print out the list of available video codecs when encoding through FFMPEG"
-msgstr ""
+msgstr "FFMPEG를 통해 인코딩할 때 사용 가능한 비디오 코덱 목록 인쇄"
 
 #: ../src/tool/optionsprocessor.cpp:196
 msgid "Print out the list of available ValueNodes"
-msgstr ""
+msgstr "사용 가능한 값노드 목록 인쇄"
 
 #: ../src/tool/optionsprocessor.cpp:197
 msgid "Print out version information"
-msgstr ""
+msgstr "버전 정보 인쇄"
 
 #: ../src/tool/optionsprocessor.cpp:201
 msgid "Test GUID generation"
-msgstr ""
+msgstr "GUID 생성 테스트"
 
 #: ../src/tool/optionsprocessor.cpp:202
 msgid "Test signal implementation"
-msgstr ""
+msgstr "신호 구현 테스트"
 
 #: ../src/tool/optionsprocessor.cpp:321
 msgid "Unrecognised canvas variable: "
-msgstr ""
+msgstr "인식할 수 없는 캔버스 변수 :"
 
 #: ../src/tool/optionsprocessor.cpp:322
 msgid "Recognized variables are:\n"
@@ -5089,53 +5089,53 @@ msgstr ""
 
 #: ../src/tool/optionsprocessor.cpp:339
 msgid "verbosity set to "
-msgstr ""
+msgstr "자세한 정보 설정"
 
 #: ../src/tool/optionsprocessor.cpp:359
 msgid "Threads set to "
-msgstr ""
+msgstr "스레드 설정"
 
 #: ../src/tool/optionsprocessor.cpp:438
 msgid "Layer Name: "
-msgstr ""
+msgstr "레이어 이름:"
 
 #: ../src/tool/optionsprocessor.cpp:439
 msgid "Localized Layer Name: "
-msgstr ""
+msgstr "현지화 된 레이어 이름 :"
 
 #: ../src/tool/optionsprocessor.cpp:441
 msgid "Version: "
-msgstr "גרסה:"
+msgstr "버전:"
 
 #: ../src/tool/optionsprocessor.cpp:446
 msgid "param - "
-msgstr ""
+msgstr "param-"
 
 #: ../src/tool/optionsprocessor.cpp:448
 msgid " (not critical)"
-msgstr ""
+msgstr "(중요하지 않음)"
 
 #: ../src/tool/optionsprocessor.cpp:449
 msgid "\tLocalized Name: "
-msgstr ""
+msgstr "\t현지화된 이름:"
 
 #: ../src/tool/optionsprocessor.cpp:453
 msgid "\tDescription: "
-msgstr "\tתאור: "
+msgstr "\t설명:"
 
 #: ../src/tool/optionsprocessor.cpp:457
 msgid "\tHint: "
-msgstr "\tרמז: "
+msgstr "\t힌트:"
 
 #: ../src/tool/optionsprocessor.cpp:509
 #, c-format
 msgid "Antialiasing set to %d, (%d samples per pixel)"
-msgstr ""
+msgstr "%d로 안티앨리어싱 설정 (픽셀 당 %d샘플)"
 
 #: ../src/tool/optionsprocessor.cpp:514
 #, c-format
 msgid "Span set to %d units"
-msgstr ""
+msgstr "%d 단위로 범위 설정"
 
 #: ../src/tool/optionsprocessor.cpp:520
 #, c-format
@@ -5145,197 +5145,197 @@ msgstr ""
 #: ../src/tool/optionsprocessor.cpp:528
 #, c-format
 msgid "Physical resolution set to %f dpi"
-msgstr ""
+msgstr "%f dpi 로 물리적 해상도 설정"
 
 #: ../src/tool/optionsprocessor.cpp:535
 #, c-format
 msgid "Physical X resolution set to %f dpi"
-msgstr ""
+msgstr "%f dpi 로 물리적 X 해상도 설정"
 
 #: ../src/tool/optionsprocessor.cpp:542
 #, c-format
 msgid "Physical Y resolution set to %f dpi"
-msgstr ""
+msgstr "%f dpi 로 물리적 Y 해상도 설정"
 
 #: ../src/tool/optionsprocessor.cpp:561
 msgid "Rendering frame at "
-msgstr ""
+msgstr "프레임 렌더링"
 
 #: ../src/tool/optionsprocessor.cpp:575
 #, c-format
 msgid "Resolution set to %dx%d."
-msgstr ""
+msgstr "해상도를 %dx%d 로 설정"
 
 #: ../src/tool/optionsprocessor.cpp:593
 msgid "Both video codec and bitrate parameters are necessary."
-msgstr ""
+msgstr "비디오 코덱 및 비트 전송률 매개 변수가 모두 필요합니다."
 
 #: ../src/tool/optionsprocessor.cpp:619
 #, c-format
 msgid "Video codec \"%s\" is not supported."
-msgstr ""
+msgstr "비디오 코덱 \"%s\"는 지원하지 않습니다."
 
 #: ../src/tool/optionsprocessor.cpp:622
 msgid "Target video codec set to: "
-msgstr ""
+msgstr "타겟 비디오 코덱 설정: "
 
 #: ../src/tool/optionsprocessor.cpp:627
 msgid "Target bitrate set to: "
-msgstr ""
+msgstr "타겟 비트레이트 설정:"
 
 #: ../src/tool/optionsprocessor.cpp:633
 msgid "Output file sequence separator set to: '"
-msgstr ""
+msgstr "출력 파일 시퀀스 구분자 설정: '"
 
 #: ../src/tool/optionsprocessor.cpp:678
 #, c-format
 msgid "Unable to load file '%s'."
-msgstr ""
+msgstr "파일 '%s' 를 로드할 수 없습니다."
 
 #: ../src/tool/optionsprocessor.cpp:686
 msgid "No input file provided."
-msgstr ""
+msgstr "입력 파일이 제공되지 않았습니다."
 
 #: ../src/tool/optionsprocessor.cpp:692
 msgid "Target set to "
-msgstr ""
+msgstr "타겟 설정"
 
 #: ../src/tool/optionsprocessor.cpp:711
 msgid "Quality set to "
-msgstr ""
+msgstr "품질 설정"
 
 #: ../src/tool/optionsprocessor.cpp:729
 #, c-format
 msgid ""
 "Unable to find canvas with ID \"%s\" in %s.\n"
 "Throwing out job..."
-msgstr ""
+msgstr "ID 가 \"%s\" 인 캔버스를 %s 에서 찾을 수 없습니다.\n작업을 버리는 중..."
 
 #: ../src/tool/optionsprocessor.cpp:736
 #, c-format
 msgid ""
 "Invalid canvas name \"%s\" in %s.\n"
 "Throwing out job..."
-msgstr ""
+msgstr "이름이 \"%s\" 인 캔버스를 %s 에서 찾을 수 없습니다.\n작업을 버리는 중..."
 
 #: ../src/tool/optionsprocessor.cpp:765
 msgid "Unable to append '"
-msgstr ""
+msgstr "추가할 수 없음 '"
 
 #: ../src/tool/optionsprocessor.cpp:779
 msgid "Appended contents of "
-msgstr ""
+msgstr "내용 추가"
 
 #: ../src/tool/printing_functions.cpp:82
 msgid "End Time"
-msgstr ""
+msgstr "종료 시간"
 
 #: ../src/tool/printing_functions.cpp:89
 msgid "Frame Rate"
-msgstr ""
+msgstr "프레임레이트"
 
 #: ../src/tool/printing_functions.cpp:96
 msgid "Start Frame"
-msgstr ""
+msgstr "시작 프레임"
 
 #: ../src/tool/printing_functions.cpp:103
 msgid "End Frame"
-msgstr ""
+msgstr "종료 프레임"
 
 #: ../src/tool/printing_functions.cpp:125
 msgid "Image Aspect Ratio"
-msgstr ""
+msgstr "이미지 가로세로비"
 
 #: ../src/tool/printing_functions.cpp:135
 msgid "Pixel Width"
-msgstr ""
+msgstr "픽셀 너비"
 
 #: ../src/tool/printing_functions.cpp:142
 msgid "Pixel Height"
-msgstr "גובה פיקסל"
+msgstr "픽셀 높이"
 
 #: ../src/tool/printing_functions.cpp:149
 msgid "Pixel Aspect Ratio"
-msgstr ""
+msgstr "픽셀 가로세로비"
 
 #: ../src/tool/printing_functions.cpp:159
 msgid "Top Left"
-msgstr ""
+msgstr "상단 좌측"
 
 #: ../src/tool/printing_functions.cpp:166
 msgid "Bottom Right"
-msgstr ""
+msgstr "하단 우측"
 
 #: ../src/tool/printing_functions.cpp:173
 msgid "Physical Width"
-msgstr ""
+msgstr "물리적 너비"
 
 #: ../src/tool/printing_functions.cpp:180
 msgid "Physical Height"
-msgstr ""
+msgstr "물리적 높이"
 
 #: ../src/tool/printing_functions.cpp:187
 msgid "X Resolution"
-msgstr ""
+msgstr "X 해상도"
 
 #: ../src/tool/printing_functions.cpp:193
 msgid "Y Resolution"
-msgstr ""
+msgstr "Y 해상도"
 
 #: ../src/tool/printing_functions.cpp:199
 msgid "Diagonal Image Span"
-msgstr ""
+msgstr "대각선 이미지 스팬"
 
 #: ../src/tool/printing_functions.cpp:208
 msgid "Interlaced"
-msgstr ""
+msgstr "인터레이스"
 
 #: ../src/tool/printing_functions.cpp:215
 msgid "Antialias"
-msgstr ""
+msgstr "안티앨리어스"
 
 #: ../src/tool/printing_functions.cpp:229
 msgid "Flags"
-msgstr ""
+msgstr "플래그"
 
 #: ../src/tool/printing_functions.cpp:236
 msgid "Focus"
-msgstr ""
+msgstr "초점"
 
 #: ../src/tool/printing_functions.cpp:243
 msgid "Background Color"
-msgstr ""
+msgstr "배경색상"
 
 #: ../src/tool/printing_functions.cpp:254
 msgid "Metadata"
-msgstr ""
+msgstr "메타데이터"
 
 #: ../src/tool/renderprogress.cpp:77
 #, c-format
 msgid "%s: Frame %d of %d (%d%%). Remaining time: "
-msgstr ""
+msgstr "%s : 프레임 %d of %d (%d%%). 남은 시간:"
 
 #. TRANSLATORS This "w" stands for weeks
 #: ../src/tool/renderprogress.cpp:140
 msgid "w "
-msgstr ""
+msgstr "w"
 
 #. TRANSLATORS This "d" stands for days
 #: ../src/tool/renderprogress.cpp:145
 msgid "d "
-msgstr ""
+msgstr "d"
 
 #. TRANSLATORS This "h" stands for hours
 #: ../src/tool/renderprogress.cpp:150
 msgid "h "
-msgstr ""
+msgstr "h"
 
 #. TRANSLATORS This "m" stands for minutes
 #: ../src/tool/renderprogress.cpp:155
 msgid "m "
-msgstr ""
+msgstr "m"
 
 #. TRANSLATORS This "s" stands for seconds
 #: ../src/tool/renderprogress.cpp:158
 msgid "s "
-msgstr ""
+msgstr "s"
