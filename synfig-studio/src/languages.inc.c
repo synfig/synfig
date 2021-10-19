@@ -32,7 +32,6 @@
 { "fr",          "French",                           },
 { "gl",          "Galician",                         },
 { "he",          "Hebrew",                           },
-{ "hi_IN",       "Hindi (India)",                    },
 { "hu",          "Hungarian",                        },
 { "it",          "Italian",                          },
 { "ja",          "Japanese",                         },
