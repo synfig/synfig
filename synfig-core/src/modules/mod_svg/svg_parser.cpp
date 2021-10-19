@@ -1746,7 +1746,7 @@ get_tokens_path(const String& path) //mini path lexico-parser
 					else if(a=='-' || a=='.' || a=='e' || a=='E' || isdigit (a)){ e=18;}
 					else if(a=='s'){ e=19; i++;}
 					else if(a=='S'){ e=20; i++;}
-					else if(a==',' || a==' '){ i++;}
+					else if(a==',' || a==' ' || a==0x09 || a==0x0a || a==0x0d){ i++;}
 					else {
 						synfig::warning("SVG Parser: unknown token in SVG path '%c'", a);
 						i++;
