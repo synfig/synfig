@@ -28,12 +28,6 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfigapp/action.h>
-#include <synfigapp/value_desc.h>
-#include <synfig/valuenode.h>
-#include <synfig/valuenodes/valuenode_dynamiclist.h>
-#include <synfig/layers/layer_skeleton.h>
-#include <synfig/canvas.h>
-#include <list>
 
 /* === M A C R O S ========================================================= */
 

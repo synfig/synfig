@@ -664,71 +664,67 @@ Action::ValueDescSet::prepare()
 	// (Code copied from BLineCalcVertex above)
 	if (value_desc.parent_is_linkable_value_node() && value_desc.get_parent_value_node()->get_type() == type_list)
 	{
-		if(ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node())->get_contained_type() == type_width_point)
+		if(ValueNode_WPList::Handle wplist = ValueNode_WPList::Handle::cast_dynamic(value_desc.get_parent_value_node()))
 		{
-			ValueNode_WPList::Handle wplist=ValueNode_WPList::Handle::cast_dynamic(value_desc.get_parent_value_node());
-			if(wplist)
+			bool wplistloop(wplist->get_loop());
+			ValueNode_BLine::Handle bline(ValueNode_BLine::Handle::cast_dynamic(wplist->get_bline()));
+			ValueNode_Composite::Handle wpoint_composite = composite_value_node;
+			if(bline && wpoint_composite)
 			{
-				bool wplistloop(wplist->get_loop());
-				ValueNode_BLine::Handle bline(ValueNode_BLine::Handle::cast_dynamic(wplist->get_bline()));
-				ValueNode_Composite::Handle wpoint_composite = composite_value_node;
-				if(bline && wpoint_composite)
-				{
-					bool blineloop(bline->get_loop());
-					// Retrieve the homogeneous layer parameter
-					bool homogeneous=false;
-					Layer::Handle layer_parent;
-					std::set<Node*>::iterator iter;
-					for(iter=wplist->parent_set.begin();iter!=wplist->parent_set.end();++iter)
+				bool blineloop(bline->get_loop());
+				// Retrieve the homogeneous layer parameter
+				bool homogeneous=false;
+				Layer::Handle layer_parent;
+				std::set<Node*>::iterator iter;
+				for(iter=wplist->parent_set.begin();iter!=wplist->parent_set.end();++iter)
+					{
+						Layer::Handle layer;
+						layer=Layer::Handle::cast_dynamic(*iter);
+						if(layer && layer->get_name() == "advanced_outline")
 						{
-							Layer::Handle layer;
-							layer=Layer::Handle::cast_dynamic(*iter);
-							if(layer && layer->get_name() == "advanced_outline")
-							{
-								homogeneous=layer->get_param("homogeneous").get(bool());
-								break;
-							}
+							homogeneous=layer->get_param("homogeneous").get(bool());
+							break;
 						}
-					Real radius = 0.0;
-					Real new_amount;
-					WidthPoint wp((*wpoint_composite)(time).get(WidthPoint()));
-					if (wplistloop)
-					{
-						// The wplist is looped. Animation may require a position parameter
-						// outside the range of 0-1, so make sure that the position doesn't
-						// change drastically.
-						Real amount_old(wp.get_norm_position(wplistloop));
-						Real amount_old_b(wp.get_bound_position(wplistloop));
-						// If it is homogeneous then convert it to standard
-						amount_old=homogeneous?hom_to_std((*bline)(time), amount_old, wplistloop, blineloop):amount_old;
-						// grab a new position given by duck's position on the bline
-						Real amount_new = synfig::find_closest_point((*bline)(time), value.get(Vector()), radius, blineloop);
-						// calculate the difference between old and new amounts
-						Real difference = fmod( fmod(amount_new - amount_old, 1.0) + 1.0 , 1.0);
-						//fmod is called twice to avoid negative values
-						if (difference > 0.5)
-							difference=difference-1.0;
-						// calculate a new value for the position
-						new_amount=amount_old+difference;
-						// restore the homogeneous value if needed
-						new_amount = homogeneous ? std_to_hom((*bline)(time), new_amount, wplistloop, blineloop) : new_amount;
-						// this is the difference between the new amount and the old amount inside the boundaries
-						Real bound_diff((wp.get_lower_bound() + new_amount*(wp.get_upper_bound()-wp.get_lower_bound()))-amount_old_b);
-						// add the new diff to the current amount
-						new_amount = wp.get_position() + bound_diff;
 					}
-					else
-					{
-						// grab a new amount given by duck's position on the bline
-						new_amount = synfig::find_closest_point((*bline)(time), value.get(Vector()), radius, blineloop);
-						// if it is homogeneous then convert to it
-						new_amount = homogeneous ? std_to_hom((*bline)(time), new_amount, wplistloop, blineloop) : new_amount;
-						// convert the value inside the boundaries
-						new_amount = wp.get_lower_bound()+new_amount*(wp.get_upper_bound()-wp.get_lower_bound());
-					}
-					add_action_valuedescset(new_amount,ValueDesc(wpoint_composite, wpoint_composite->get_link_index_from_name("position")));
-					return;
+				Real radius = 0.0;
+				Real new_amount;
+				WidthPoint wp((*wpoint_composite)(time).get(WidthPoint()));
+				if (wplistloop)
+				{
+					// The wplist is looped. Animation may require a position parameter
+					// outside the range of 0-1, so make sure that the position doesn't
+					// change drastically.
+					Real amount_old(wp.get_norm_position(wplistloop));
+					Real amount_old_b(wp.get_bound_position(wplistloop));
+					// If it is homogeneous then convert it to standard
+					amount_old=homogeneous?hom_to_std((*bline)(time), amount_old, wplistloop, blineloop):amount_old;
+					// grab a new position given by duck's position on the bline
+					Real amount_new = synfig::find_closest_point((*bline)(time), value.get(Vector()), radius, blineloop);
+					// calculate the difference between old and new amounts
+					Real difference = fmod( fmod(amount_new - amount_old, 1.0) + 1.0 , 1.0);
+					//fmod is called twice to avoid negative values
+					if (difference > 0.5)
+						difference=difference-1.0;
+					// calculate a new value for the position
+					new_amount=amount_old+difference;
+					// restore the homogeneous value if needed
+					new_amount = homogeneous ? std_to_hom((*bline)(time), new_amount, wplistloop, blineloop) : new_amount;
+					// this is the difference between the new amount and the old amount inside the boundaries
+					Real bound_diff((wp.get_lower_bound() + new_amount*(wp.get_upper_bound()-wp.get_lower_bound()))-amount_old_b);
+					// add the new diff to the current amount
+					new_amount = wp.get_position() + bound_diff;
 				}
+				else
+				{
+					// grab a new amount given by duck's position on the bline
+					new_amount = synfig::find_closest_point((*bline)(time), value.get(Vector()), radius, blineloop);
+					// if it is homogeneous then convert to it
+					new_amount = homogeneous ? std_to_hom((*bline)(time), new_amount, wplistloop, blineloop) : new_amount;
+					// convert the value inside the boundaries
+					new_amount = wp.get_lower_bound()+new_amount*(wp.get_upper_bound()-wp.get_lower_bound());
+				}
+				add_action_valuedescset(new_amount,ValueDesc(wpoint_composite, wpoint_composite->get_link_index_from_name("position")));
+				return;
 			}
 		}
 	}

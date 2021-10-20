@@ -49,6 +49,9 @@ private:
 	ValueBase param_name;
 
 public:
+	typedef etl::handle<Layer_Skeleton> Handle;
+	typedef etl::handle<const Layer_Skeleton> ConstHandle;
+	typedef etl::loose_handle<Layer_Skeleton> LooseHandle;
 
 	Layer_Skeleton();
 

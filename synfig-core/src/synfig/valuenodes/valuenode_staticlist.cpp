@@ -49,7 +49,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -304,9 +303,9 @@ ValueNode_StaticList::create_on_canvas(Type &type, Canvas::LooseHandle canvas)
 ValueNode_StaticList*
 ValueNode_StaticList::create(const ValueBase &value)
 {
-	vector<ValueBase> value_list(value.get_list());
+	std::vector<ValueBase> value_list(value.get_list());
 
-	vector<ValueBase>::iterator iter;
+	std::vector<ValueBase>::iterator iter;
 
 	if(value_list.empty())
 		return 0;
@@ -352,13 +351,13 @@ ValueNode_StaticList::operator()(Time t)const // line 596
 		if((*iter)->get_type()==*container_type)
 			ret_list.push_back((**iter)(t));
 		else
-			synfig::warning(string("ValueNode_StaticList::operator()():")+_("List type/item type mismatch, throwing away mismatch"));
+			synfig::warning(std::string("ValueNode_StaticList::operator()():")+_("List type/item type mismatch, throwing away mismatch"));
 
 	if(list.empty())
-		synfig::warning(string("ValueNode_StaticList::operator()():")+_("No entries in list"));
+		synfig::warning(std::string("ValueNode_StaticList::operator()():")+_("No entries in list"));
 	else
 	if(ret_list.empty())
-		synfig::warning(string("ValueNode_StaticList::operator()():")+_("No entries in ret_list"));
+		synfig::warning(std::string("ValueNode_StaticList::operator()():")+_("No entries in ret_list"));
 
 	return ret_list;
 }
@@ -493,7 +492,7 @@ ValueNode_StaticList::get_children_vocab_vfunc() const
 void
 ValueNode_StaticList::set_member_canvas(etl::loose_handle<Canvas> canvas) // line 723
 {
-	for (vector<ReplaceableListEntry>::iterator iter = list.begin(); iter != list.end(); iter++)
+	for (std::vector<ReplaceableListEntry>::iterator iter = list.begin(); iter != list.end(); iter++)
 	{
 		if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
 			printf("%s:%d set parent canvas of member (%p) to (%p)\n", __FILE__, __LINE__, iter->get(), canvas.get());

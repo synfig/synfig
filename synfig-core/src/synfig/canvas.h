@@ -117,18 +117,18 @@
  * 1.0: git 06a75a5
  *
  *      Added a canvas component called
- * 
+ *
  * 1.1: git a4bbdd7
  *
  *      Added gamma into a canvas rend_desc.
- * 
- *      Looped outline now uses different order 
+ *
+ *      Looped outline now uses different order
  *      for calculating positions of widthpoints (see #1284).
- * 
+ *
  * 1.2: git e2adcad
  *
  *      Added 'alpha' blend method
- * 
+ *
  */
 
 #define CURRENT_CANVAS_VERSION "1.2"
@@ -146,21 +146,18 @@ class GUID;
 class Canvas;
 class SoundProcessor;
 
-typedef        etl::handle<Canvas>     CanvasHandle;
-
-//! Optimize layers based on its calculated Z depth to perform a quick
-//! render of the layers to the output.
-void optimize_layers(Time, Context, CanvasHandle, bool seen_motion_blur=false);
-
 /*!	\class Canvas
-**	\brief Canvas is a double ended queue of Layers. It is the base class
-* for a Synfig document.
+**	\brief Canvas is a list of Layers. It is the base class for a Synfig
+* document.
 *
-* As a node it inherits all the parent child relationship and the GUID
-* methods. As a double queue it allows insertion and deletion of Layers
-* and can access to the layers on the queue easily.
+* As a node, it inherits all the parent child relationship and the GUID
+* methods. As a list, it allows insertion and deletion of Layers and can
+* access to the layers on the list easily.
+*
+* Note: the last list element is always a null Layer. It helps iterative
+* methods to know when it reaches end of layer list.
 */
-class Canvas : public CanvasBase, public Node
+class Canvas : private CanvasBase, public Node
 {
 	/*
  --	** -- T Y P E S -----------------------------------------------------------
@@ -173,7 +170,10 @@ public:
 
 	typedef std::list<Handle> Children;
 
-	friend void synfig::optimize_layers(Time, Context, Canvas::Handle, bool seen_motion_blur);
+	typedef CanvasBase::iterator               iterator;
+	typedef CanvasBase::const_iterator         const_iterator;
+	typedef CanvasBase::reverse_iterator       reverse_iterator;
+	typedef CanvasBase::const_reverse_iterator const_reverse_iterator;
 
 	/*
  --	** -- D A T A -------------------------------------------------------------
@@ -200,10 +200,6 @@ private:
 	//! Contains the author's name
 	/*!	\see set_author(), get_author() */
 	String author_;
-
-	//! Contains the author's email address
-	/*!	\todo This private parameter has no binding, so it's unusable at the moment */
-	String email_;
 
 	//! File name of Canvas
 	/*! \see get_file_name(), set_file_name() */
@@ -237,7 +233,7 @@ private:
 
 	//! Render Description for Canvas
 	/*!	\see rend_desc() */
-    RendDesc desc_;
+	RendDesc desc_;
 
 	//! Contains the value of the last call to set_time()
 	Time cur_time_;
@@ -251,13 +247,12 @@ private:
 	//! True if the Canvas properties has changed
 	mutable bool is_dirty_;
 
-	//! It is set to true when synfig::optimize_layers is called
-	bool op_flag_;
-
 	//! Layer Group database
 	std::map<String,std::set<etl::handle<Layer> > > group_db_;
 
-	//! Layer Signal Connection database. Seems to be unused.
+	//! Layer Signal Connection database.
+	//! Required to properly disconnect them when a layer is removed from canvas
+	//! (and not necessarily deleted).
 	std::map<etl::loose_handle<Layer>,std::vector<sigc::connection> > connections_;
 
 	//! Value to store temporarily the grow value for the child outline type layers
@@ -282,9 +277,6 @@ private:
 
 	sigc::signal<void,String,etl::handle<synfig::Layer> > signal_group_pair_added_;
 	sigc::signal<void,String,etl::handle<synfig::Layer> > signal_group_pair_removed_;
-
-	//!	Layers Reordered
-	sigc::signal<void,int*> signal_layers_reordered_;
 
 	//!	RendDesc Changed
 	sigc::signal<void> signal_rend_desc_changed_;
@@ -331,9 +323,6 @@ public:
 
 	//! Group Changed
 	sigc::signal<void,String>& signal_group_changed() { return signal_group_changed_; }
-
-	//!	Layers Reordered
-	sigc::signal<void,int*>& signal_layers_reordered() { return signal_layers_reordered_; }
 
 	//!	RendDesc Changed
 	sigc::signal<void>& signal_rend_desc_changed() { return signal_rend_desc_changed_; }
@@ -465,6 +454,7 @@ public:
 	//! Returns a handle to the root Canvas
 	LooseHandle get_root()const;
 
+	//! Starting from itself, search for first non-inline canvas in parent-tree
 	LooseHandle get_non_inline_ancestor()const;
 
 	//! Returns a list of all child canvases in this canvas
@@ -478,7 +468,7 @@ public:
 
 	//! Sets the time for all the layers in the canvas
 	void set_time(Time t)const;
-	
+
 	//! Loads resources (frames) for all the external layers in the canvas
 	void load_resources(Time t)const;
 
@@ -486,13 +476,13 @@ public:
 	Time get_time()const { return cur_time_; }
 
 	//! Returns the number of layers in the canvas
-	int size()const;
+	int size() const noexcept;
 
 	//! Removes all the layers from the canvas
-	void clear();
+	void clear() noexcept;
 
 	//! Returns true if the canvas has no layers
-	bool empty()const;
+	bool empty() const noexcept;
 
 	//! Returns a reference to the ValueNodeList for this Canvas
 	// ValueNodeList &value_node_list() { return value_node_list_; }
@@ -593,44 +583,64 @@ public:
 	//! Gets the depth of a particular Layer by its handle
 	int get_depth(etl::handle<Layer>)const;
 
-	//! Retireves the first layer of the double queue of Layers
+	//! Retrieves the first layer of the list of Layers
 	IndependentContext get_independent_context()const;
 
-	//! Retireves the first layer of the double queue of Layers assigned with rendering parameters
+	//! Retrieves the first layer of the list of Layers assigned with rendering parameters
 	Context get_context(const ContextParams &params)const;
 
-	//! Retireves the first layer of the double queue of Layers assigned with rendering parameters
+	//! Retrieves the first layer of the list of Layers assigned with rendering parameters
 	Context get_context(const Context &parent_context)const;
 
-	//! Retireves sorted double queue of Layers and Context of the first layer with rendering parameters
-	Context get_context_sorted(const ContextParams &params, CanvasBase &out_queue) const;
+	//! Retrieves sorted list of Layers and Context of the first layer with rendering parameters
+	Context get_context_sorted(const ContextParams &params, CanvasBase &out_list) const;
 
 	//! Creates sorted context and builds task for rendering based on it with applied gamma
 	rendering::Task::Handle build_rendering_task(const ContextParams &context_params) const;
-	
+
 	int indexof(const const_iterator &iter) const;
 	iterator byindex(int index);
 	const_iterator byindex(int index) const;
-	
+
 	iterator find_index(const etl::handle<Layer> &layer, int &index);
 	const_iterator find_index(const etl::handle<Layer> &layer, int &index) const;
-	
-	//! Returns the last Canvas layer queue iterator. Notice that it
+
+	//! Return the first Canvas layer list iterator.
+	/*! It is just a wrap to std::begin() for CanvasBase. */
+	iterator begin() noexcept;
+	//! Return the first Canvas layer list const_iterator.
+	/*! It is just a wrap to std::begin() for CanvasBase. */
+	const_iterator begin() const noexcept;
+	const_iterator cbegin() const noexcept;
+	//! Returns the last Canvas layer list iterator. Notice that it
 	/*! overrides the std::end() member that would return an iterator
-	 * just past the last element of the queue.*/
-	iterator end();
-	//! Returns the last Canvas layer queue const_iterator. Notice that it
+	 * just past the last element of the list.*/
+	iterator end() noexcept;
+	//! Returns the last Canvas layer list const_iterator. Notice that it
 	/*! overrides the std::end() member that would return an iterator
-	 * just past the last element of the queue.*/
-	const_iterator end()const;
-	//! Returns the last Canvas layer queue reverse iterator. Notice that it
+	 * just past the last element of the list.*/
+	const_iterator end() const noexcept;
+	const_iterator cend() const noexcept;
+	//! Returns the last Canvas layer list reverse iterator. Notice that it
 	/*! overrides the std::rbegin() member that would return an iterator
-	 * just past the last element of the queue.*/
-	reverse_iterator rbegin();
-	//! Returns the last Canvas layer queue reverse const iterator. Notice that it
+	 * just past the last element of the list.*/
+	reverse_iterator rbegin() noexcept;
+	//! Returns the last Canvas layer list reverse const iterator. Notice that it
 	/*! overrides the std::rbegin() member that would return an iterator
-	 * just past the last element of the queue.*/
-	const_reverse_iterator rbegin()const;
+	 * just past the last element of the list.*/
+	const_reverse_iterator rbegin() const noexcept;
+	const_reverse_iterator crbegin() const noexcept;
+	//! Returns the first Canvas layer list reverse iterator.
+	/*! It is just a wrap to std::rend() for CanvasBase.*/
+	reverse_iterator rend() noexcept;
+	//! Returns the first Canvas layer list reverse const iterator.
+	/*! It is just a wrap to std::rend() for CanvasBase.*/
+	const_reverse_iterator rend() const noexcept;
+	const_reverse_iterator crend() const noexcept;
+	//! Returns first layer in Canvas layer stack
+	etl::handle<Layer> &front();
+	//! Returns first layer in Canvas layer stack
+	const etl::handle<Layer> &front()const;
 	//! Returns last layer in Canvas layer stack
 	etl::handle<Layer> &back();
 	//! Returns last layer in Canvas layer stack
@@ -638,17 +648,18 @@ public:
 	//! Inserts a layer just before the last layer.
 	//! \see end(), insert(iterator iter,etl::handle<Layer> x)
 	void push_back(etl::handle<Layer> x);
-	//! Inserts a layer just at the beginning of the Canvas layer dqueue
+	//! Inserts a layer just at the beginning of the Canvas layer list
 	void push_front(etl::handle<Layer> x);
-	//! Inserts a layer in the last position of the Canvas layer dqueue
+	//! Inserts a layer in the last position of the Canvas layer list
 	//! Uses the standard methods and doesn't perform any parentship
 	//! or signal update
 	void push_back_simple(etl::handle<Layer> x);
 	//! Inserts a layer before the given position by \iter and performs
 	//! the proper child parent relationships and signals update
 	void insert(iterator iter,etl::handle<Layer> x);
-	//! Removes a layer from the Canvas layer dqueue and its group and parent
-	//! relatioship. Although it is not already used, it clears the connections
+	//! Removes a layer from the Canvas layer list and its group and parent
+	//! relatioship.
+	//! It also clears the connections this canvas made on that layer.
 	//! see connections_
 	void erase(iterator iter);
 	//! Sets to be a inline canvas of a given Canvas \parent. The inline
@@ -689,10 +700,11 @@ private:
 	//! Removes a \layer from a group given by its \group string to the group
 	//! database
 	void remove_group_pair(String group, etl::handle<Layer> layer);
-	//! Seems to be used to add the stored signals connections of the layers.
+	//! Connect layer signals related to layer groups and register these
+	//! connections.
 	//! \see connections_
-	void add_connection(etl::loose_handle<Layer> layer, sigc::connection connection);
-	//! Seems to be used to disconnect the stored signals connections of the layers.
+	void add_connections(etl::loose_handle<Layer> layer);
+	//! Disconnect the stored signals connections of the layer.
 	//! \see connections_
 	void disconnect_connections(etl::loose_handle<Layer> layer);
 

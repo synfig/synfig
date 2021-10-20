@@ -32,7 +32,6 @@
 /* === M A C R O S ========================================================= */
 
 #define NUMBER_OF_OBJECTS	40000
-using namespace std;
 
 /* === C L A S S E S ======================================================= */
 
@@ -79,9 +78,9 @@ int my_other_test_obj::instance_count=0;
 typedef etl::handle<my_test_obj> obj_handle;
 typedef etl::rhandle<my_test_obj> robj_handle;
 typedef etl::handle<my_other_test_obj> other_obj_handle;
-typedef list< obj_handle > obj_list;
-typedef list< other_obj_handle > other_obj_list;
-typedef list< robj_handle > robj_list;
+typedef std::list< obj_handle > obj_list;
+typedef std::list< other_obj_handle > other_obj_list;
+typedef std::list< robj_handle > robj_list;
 
 int handle_basic_test()
 {
@@ -106,7 +105,7 @@ int handle_basic_test()
 	}
 
 	{
-		map<string,etl::handle<my_test_obj> > my_map;
+		std::map<std::string, etl::handle<my_test_obj> > my_map;
 		etl::handle<my_test_obj> obj_handle(new my_test_obj(rand()));
 		my_map["bleh"]=obj_handle;
 	}

@@ -34,7 +34,6 @@
 /* === M A C R O S ========================================================= */
 
 #define NUMBER_OF_OBJECTS	40000
-using namespace std;
 
 
 /* === C L A S S E S ======================================================= */
@@ -81,8 +80,8 @@ int my_other_test_obj::instance_count=0;
 
 typedef etl::smart_ptr<my_test_obj> obj_smart_ptr;
 typedef etl::smart_ptr<my_other_test_obj> other_obj_smart_ptr;
-typedef list< obj_smart_ptr > obj_list;
-typedef list< other_obj_smart_ptr > other_obj_list;
+typedef std::list< obj_smart_ptr > obj_list;
+typedef std::list< other_obj_smart_ptr > other_obj_list;
 
 int smart_ptr_basic_test(void)
 {
@@ -106,7 +105,7 @@ int smart_ptr_basic_test(void)
 
 	{
 		DEBUGPOINT();
-		map<string,etl::smart_ptr<my_test_obj> > my_map;
+		std::map<std::string, etl::smart_ptr<my_test_obj> > my_map;
 		DEBUGPOINT();
 		//etl::smart_ptr<my_test_obj> obj_smart_ptr(new my_test_obj(rand()));
 		etl::smart_ptr<my_test_obj> temp;

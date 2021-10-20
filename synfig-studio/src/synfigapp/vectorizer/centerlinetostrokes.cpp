@@ -59,7 +59,7 @@ const double Polyg_eps_mul = 0.75;  // Sequence simple thickness-multiplier erro
 const double Quad_eps_max =  infinity;  // As above, for sequence conversion into strokes
 synfig::Point bottomleft(0,0);
 bool max_thickness_zero = false;
-synfig::CanvasHandle canvas;
+synfig::Canvas::Handle canvas;
 float unit_size;
 float h_factor = 1;
 float w_factor = 1;

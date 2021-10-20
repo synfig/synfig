@@ -239,7 +239,7 @@ void synfigapp::recurse_valuedesc(synfigapp::ValueDesc h, const std::set<Time> &
 				//synfig::info("\ttpair match(%.4lg) - %.4lg (diff = %lg",it,jt,diff);
 
 				//
-				if(abs(diff) < (double)Time::epsilon())
+				if(std::fabs(diff) < (double)Time::epsilon())
 				{
 					//synfig::info("\tActivepoint to add being referenced (%x,%s,%.4lg)",
 					//				(int)j->get_uid(),j->state?"true":"false", (double)j->time);

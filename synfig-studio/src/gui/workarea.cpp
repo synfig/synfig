@@ -66,7 +66,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;
@@ -152,6 +151,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	dirty_trap_count(0),
 	dirty_trap_queued(0),
 	onion_skin(false),
+	onion_skin_keyframes(true),
 	background_rendering(false),
 	allow_duck_clicks(true),
 	allow_bezier_clicks(true),
@@ -272,7 +272,6 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 
 
 	// Attach signals
-
 	drawing_area->signal_draw().connect(sigc::mem_fun(*this, &WorkArea::refresh));
 	drawing_area->signal_event().connect(sigc::mem_fun(*this, &WorkArea::on_drawing_area_event));
 	drawing_area->signal_size_allocate().connect(sigc::hide(sigc::mem_fun(*this, &WorkArea::refresh_dimension_info)));
@@ -292,9 +291,11 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	get_canvas()->signal_meta_data_changed("guide_show").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_x").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_y").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
+	get_canvas()->signal_meta_data_changed("background_rendering").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("onion_skin").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("onion_skin_past").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("onion_skin_future").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
+	get_canvas()->signal_meta_data_changed("onion_skin_keyframes").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_snap").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_color").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("sketch").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
@@ -369,6 +370,7 @@ WorkArea::save_meta_data()
 	canvas_interface->set_meta_data("onion_skin", onion_skin ? "1" : "0");
 	canvas_interface->set_meta_data("onion_skin_past", strprintf("%d", onion_skins[0]));
 	canvas_interface->set_meta_data("onion_skin_future", strprintf("%d", onion_skins[1]));
+	canvas_interface->set_meta_data("onion_skin_keyframes", get_onion_skin_keyframes() ? "1" : "0");
 	canvas_interface->set_meta_data("background_rendering", background_rendering ? "1" : "0");
 
 	s = get_background_size();
@@ -485,7 +487,7 @@ WorkArea::load_meta_data()
 
 		String tmp;
 		// Insert the string into a stream
-		stringstream ss(data);
+		std::stringstream ss(data);
 		// Create vector to hold our colors
 		std::vector<String> tokens;
 
@@ -516,7 +518,7 @@ WorkArea::load_meta_data()
 
 		String tmp;
 		// Insert the string into a stream
-		stringstream ss(data);
+		std::stringstream ss(data);
 		// Create vector to hold our colors
 		std::vector<String> tokens;
 
@@ -603,6 +605,13 @@ WorkArea::load_meta_data()
 			render_required = true;
 		}
 	}
+
+	data=canvas->get_meta_data("onion_skin_keyframes");
+	if(data.size() && (data=="1" || data[0]=='t' || data[0]=='T'))
+		set_onion_skin_keyframes(true);
+	if(data.size() && (data=="0" || data[0]=='f' || data[0]=='F'))
+		set_onion_skin_keyframes(false);
+
 	// Update the canvas
 	if (onion_skin && render_required) queue_render();
 
@@ -688,7 +697,7 @@ WorkArea::load_meta_data()
 
 		String tmp;
 		// Insert the string into a stream
-		stringstream ss(data);
+		std::stringstream ss(data);
 		// Create vector to hold our colors
 		std::vector<String> tokens;
 
@@ -719,7 +728,7 @@ WorkArea::load_meta_data()
 
 		String tmp;
 		// Insert the string into a stream
-		stringstream ss(data);
+		std::stringstream ss(data);
 		// Create vector to hold our colors
 		std::vector<String> tokens;
 
@@ -758,10 +767,22 @@ WorkArea::set_onion_skin(bool x)
 	queue_draw();
 }
 
-void WorkArea::set_onion_skins(int *onions)
+void
+WorkArea::set_onion_skins(int *onions)
 {
 	onion_skins[0] = onions[0];
 	onion_skins[1] = onions[1];
+	if (onion_skin)
+		queue_draw();
+	save_meta_data();
+}
+
+void
+WorkArea::set_onion_skin_keyframes(bool x)
+{
+	if (onion_skin_keyframes == x)
+		return;
+	onion_skin_keyframes = x;
 	if (onion_skin)
 		queue_draw();
 	save_meta_data();
@@ -1024,7 +1045,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	synfig::Point mouse_pos;
     float bezier_click_pos(0);
-	const float radius((abs(pw)+abs(ph))*4);
+	const float radius((std::fabs(pw)+std::fabs(ph))*4);
 	int button_pressed(0);
 	float pressure(0);
 	Gdk::ModifierType modifier(Gdk::ModifierType(0));
@@ -1181,8 +1202,18 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 	switch(event->type) {
 	case GDK_2BUTTON_PRESS: {
 		if (event->button.button == 1) {
-			if (canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_2BUTTON_DOWN,BUTTON_LEFT,mouse_pos,pressure,modifier))==Smach::RESULT_ACCEPT) {
+			auto event_result = canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_2BUTTON_DOWN,BUTTON_LEFT,mouse_pos,pressure,modifier));
+			if (event_result == Smach::RESULT_ACCEPT) {
 				return true;
+			} else if (event_result == Smach::RESULT_OK) {
+				set_drag_mode(DRAG_NONE);
+
+				if (etl::handle<Bezier> bezier = find_bezier(mouse_pos, radius, &bezier_click_pos)) {
+					if (selected_bezier == bezier) {
+						bezier->signal_user_doubleclick(1)(bezier_click_pos);
+						return true;
+					}
+				}
 			}
 		}
 		break;
@@ -2069,7 +2100,7 @@ studio::WorkArea::zoom_out()
 void
 studio::WorkArea::zoom_fit()
 {
-	float new_zoom(min(drawing_area->get_width() * zoom / w,
+	float new_zoom(std::min(drawing_area->get_width() * zoom / w,
 					   drawing_area->get_height() * zoom / h) * 0.995);
 	if (zoom / new_zoom > 0.995 && new_zoom / zoom > 0.995)
 	{
@@ -2176,7 +2207,7 @@ studio::WorkArea::reset_cursor()
 void
 studio::WorkArea::set_zoom(float z)
 {
-	z=max(1.0f/128.0f,min(128.0f,z));
+	z=std::max(1.0f/128.0f,std::min(128.0f,z));
 	zoomdial->set_zoom(z);
 	if(z==zoom)
 		return;
@@ -2204,8 +2235,10 @@ WorkArea::set_selected_value_node(etl::loose_handle<synfig::ValueNode> x)
 void
 WorkArea::set_active_bone_value_node(etl::loose_handle<synfig::ValueNode> x)
 {
-	if(x!=active_bone_ && etl::handle<synfig::ValueNode_Bone>::cast_dynamic(x))
+	if(x!=active_bone_)
 	{
+		if (x && !synfig::ValueNode_Bone::Handle::cast_dynamic(x))
+			return;
 		active_bone_=x;
 		queue_draw();
 	}

@@ -33,12 +33,11 @@
 #include <synfig/general.h>
 
 #include "valuedesccreatechildbone.h"
-#include "valuenodestaticlistinsertsmart.h"
-#include "valuenodestaticlistinsert.h"
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/localization.h>
 #include <synfig/valuenodes/valuenode_bone.h>
 #include <synfig/valuenodes/valuenode_composite.h>
+#include <synfig/valuenodes/valuenode_staticlist.h>
 
 #endif
 
@@ -216,7 +215,9 @@ Action::ValueDescCreateChildBone::prepare()
 
 	Action::Handle action;
 
-	action = ValueNodeStaticListInsert::create();
+	action = Action::create("ValueNodeStaticListInsert");
+	if (!action)
+		throw Error(Error::TYPE_BUG, "ValueDescCreateChildBone: action 'ValueNodeStaticListInsert' not found");
 	action->set_param("canvas", get_canvas());
 	action->set_param("canvas_interface", get_canvas_interface());
 	action->set_param("time", time);
@@ -250,7 +251,10 @@ Action::ValueDescCreateChildBone::prepare()
 		action->set_param("value_desc",ValueDesc(value_node,index));
 
 		if(c_active_bone){
-			Action::Handle setActiveBone(Action::Handle(Action::create("ValueNodeSetActiveBone")));
+			Action::Handle setActiveBone(Action::create("ValueNodeSetActiveBone"));
+			if (!setActiveBone)
+				throw Error(Error::TYPE_BUG, "ValueDescCreateChildBone: action 'ValueNodeSetActiveBone' not found");
+
 			setActiveBone->set_param("canvas",get_canvas());
 			setActiveBone->set_param("canvas_interface",get_canvas_interface());
 
@@ -265,7 +269,6 @@ Action::ValueDescCreateChildBone::prepare()
 	} else {
 		ValueNode_StaticList::Handle value_node=ValueNode_StaticList::Handle::cast_dynamic(parent_desc.get_parent_desc().get_parent_value_node());
 		if(!value_node){
-			cout<<"Error"<<endl;
 			throw Error(Error::TYPE_NOTREADY, "ValueDescCreateChildBone: parent value node is not a static list");
 		}
 		int index=parent_desc.get_parent_desc().get_index();
@@ -297,7 +300,9 @@ Action::ValueDescCreateChildBone::prepare()
 
 		action->set_param("item",ValueNode::Handle::cast_dynamic(bone_pair));
 		if(c_active_bone){
-			Action::Handle setActiveBone(Action::Handle(Action::create("ValueNodeSetActiveBone")));
+			Action::Handle setActiveBone(Action::create("ValueNodeSetActiveBone"));
+			if (!setActiveBone)
+				throw Error(Error::TYPE_BUG, "ValueDescCreateChildBone: action 'ValueNodeSetActiveBone' not found");
 			setActiveBone->set_param("canvas",get_canvas());
 			setActiveBone->set_param("canvas_interface",get_canvas_interface());
 

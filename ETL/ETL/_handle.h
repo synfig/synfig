@@ -63,10 +63,11 @@ class shared_object
 private:
 	mutable std::atomic<int> refcount;
 
+public:
+	shared_object(const shared_object&) = delete;
+	shared_object& operator= (const shared_object&) = delete;
 protected:
 	shared_object():refcount(0) { }
-	shared_object(const shared_object&):refcount(0) { }
-	shared_object& operator= (const shared_object&) { return *this; }
 
 #ifdef ETL_SELF_DELETING_SHARED_OBJECT
 	virtual ~shared_object() { }
@@ -112,9 +113,9 @@ class virtual_shared_object
 {
 protected:
 	virtual_shared_object() { }
-	virtual_shared_object(const virtual_shared_object&) { }
-	virtual_shared_object& operator= (const virtual_shared_object&) { return *this; }
 public:
+	virtual_shared_object(const virtual_shared_object&) = delete;
+	virtual_shared_object& operator= (const virtual_shared_object&) = delete;
 	virtual ~virtual_shared_object() { }
 	virtual void ref()const=0;
 	virtual bool unref()const=0;
@@ -333,10 +334,11 @@ public:
 
 protected:
 	rshared_object():rrefcount(0),front_(0),back_(0) { }
-	rshared_object(const rshared_object &other): shared_object(other), rrefcount(0),front_(0),back_(0) { }
-	rshared_object& operator= (const rshared_object&) { return *this; }
 
 public:
+	rshared_object(const rshared_object &other) = delete;
+	rshared_object& operator= (const rshared_object&) = delete;
+
 	virtual void rref()const
 		{ rrefcount++; }
 

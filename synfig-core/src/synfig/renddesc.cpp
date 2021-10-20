@@ -593,12 +593,12 @@ RendDesc::set_tl(const Point &x)
 	if(FLAGS(flags,PX_ASPECT)) // "Pixel Aspect"
 	{
 		Vector new_size(x-br_);
-		new_size[0]=abs(new_size[0]);
-		new_size[1]=abs(new_size[1]);
+		new_size[0]=std::fabs(new_size[0]);
+		new_size[1]=std::fabs(new_size[1]);
 
 		Vector old_size(tl_-br_);
-		old_size[0]=abs(old_size[0]);
-		old_size[1]=abs(old_size[1]);
+		old_size[0]=std::fabs(old_size[0]);
+		old_size[1]=std::fabs(old_size[1]);
 
 		if(new_size[0]!=old_size[0])
 			w_=round_to_int(new_size[0]*w_/old_size[0]);
@@ -616,12 +616,12 @@ RendDesc::set_br(const Point &x)
 	if(FLAGS(flags,PX_ASPECT)) // "Pixel Aspect"
 	{
 		Vector new_size(x-tl_);
-		new_size[0]=abs(new_size[0]);
-		new_size[1]=abs(new_size[1]);
+		new_size[0]=std::fabs(new_size[0]);
+		new_size[1]=std::fabs(new_size[1]);
 
 		Vector old_size(tl_-br_);
-		old_size[0]=abs(old_size[0]);
-		old_size[1]=abs(old_size[1]);
+		old_size[0]=std::fabs(old_size[0]);
+		old_size[1]=std::fabs(old_size[1]);
 
 		if(new_size[0]!=old_size[0])
 			w_=round_to_int(new_size[0]*w_/old_size[0]);
@@ -638,12 +638,12 @@ RendDesc::set_tl_br(const Point &x, const Point &y)
 	if(FLAGS(flags, PX_ASPECT))
 	{
 		Vector new_size(y-x);
-		new_size[0]=abs(new_size[0]);
-		new_size[1]=abs(new_size[1]);
+		new_size[0]=std::fabs(new_size[0]);
+		new_size[1]=std::fabs(new_size[1]);
 		
 		Vector old_size(tl_-br_);
-		old_size[0]=abs(old_size[0]);
-		old_size[1]=abs(old_size[1]);
+		old_size[0]=std::fabs(old_size[0]);
+		old_size[1]=std::fabs(old_size[1]);
 		
 		if(new_size[0]!=old_size[0])
 			w_=round_to_int(new_size[0]*w_/old_size[0]);

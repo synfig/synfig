@@ -194,17 +194,17 @@ Layer_Bevel::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
 	//expand the working surface to accommodate the blur
 
 	//the expanded size = 1/2 the size in each direction rounded up
-	int	halfsizex = (int) (abs(size[0]*.5/pw) + 3),
-		halfsizey = (int) (abs(size[1]*.5/ph) + 3);
+	int	halfsizex = (int) (std::fabs(size[0]*.5/pw) + 3),
+		halfsizey = (int) (std::fabs(size[1]*.5/ph) + 3);
 
 	int offset_u(round_to_int(offset[0]/pw)),offset_v(round_to_int(offset[1]/ph));
-	int offset_w(w+abs(offset_u)*2),offset_h(h+abs(offset_v)*2);
+	int offset_w(w+std::abs(offset_u)*2),offset_h(h+std::abs(offset_v)*2);
 
 	workdesc.set_subwindow(
-		-abs(offset_u),
-		-abs(offset_v),
-		w+abs(offset_u),
-		h+abs(offset_v)
+		-std::abs(offset_u),
+		-std::abs(offset_v),
+		w+std::abs(offset_u),
+		h+std::abs(offset_v)
 	);
 
 	//expand by 1/2 size in each direction on either side
@@ -231,8 +231,8 @@ Layer_Bevel::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
 			pw=pw*pw;
 			ph=ph*ph;
 
-			halfsizex = (int)(abs(pw)*size[0]*GAUSSIAN_ADJUSTMENT+0.5);
-			halfsizey = (int)(abs(ph)*size[1]*GAUSSIAN_ADJUSTMENT+0.5);
+			halfsizex = (int)(std::fabs(pw)*size[0]*GAUSSIAN_ADJUSTMENT+0.5);
+			halfsizey = (int)(std::fabs(ph)*size[1]*GAUSSIAN_ADJUSTMENT+0.5);
 
 			halfsizex = (halfsizex + 1)/2;
 			halfsizey = (halfsizey + 1)/2;
@@ -269,8 +269,8 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 				ph = renddesc.get_ph();
 	const Vector size(softness,softness);
 
-	int	halfsizex = (int) (abs(size[0]*.5/pw) + 3),
-		halfsizey = (int) (abs(size[1]*.5/ph) + 3);
+	int	halfsizex = (int) (std::fabs(size[0]*.5/pw) + 3),
+		halfsizey = (int) (std::fabs(size[1]*.5/ph) + 3);
 
 	int offset_u(round_to_int(offset[0]/pw)),offset_v(round_to_int(offset[1]/ph));
 
@@ -304,8 +304,8 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 			pw=pw*pw;
 			ph=ph*ph;
 
-			halfsizex = (int)(abs(pw)*size[0]*GAUSSIAN_ADJUSTMENT+0.5);
-			halfsizey = (int)(abs(ph)*size[1]*GAUSSIAN_ADJUSTMENT+0.5);
+			halfsizex = (int)(std::fabs(pw)*size[0]*GAUSSIAN_ADJUSTMENT+0.5);
+			halfsizey = (int)(std::fabs(ph)*size[1]*GAUSSIAN_ADJUSTMENT+0.5);
 
 			halfsizex = (halfsizex + 1)/2;
 			halfsizey = (halfsizey + 1)/2;
@@ -343,10 +343,10 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 	//be sure the surface is of the correct size
 	surface->set_wh(renddesc.get_w(),renddesc.get_h());
 
-	int v = halfsizey+abs(offset_v);
+	int v = halfsizey+std::abs(offset_v);
 	for(y=0;y<renddesc.get_h();y++,v++)
 	{
-		int u = halfsizex+abs(offset_u);
+		int u = halfsizex+std::abs(offset_u);
 		for(x=0;x<renddesc.get_w();x++,u++)
 		{
 			Real alpha(0);
@@ -473,8 +473,8 @@ Layer_Bevel::get_full_bounding_rect(Context context)const
 		return under;
 
 	Rect bounds(under.expand(softness));
-	bounds.expand_x(abs(depth));
-	bounds.expand_y(abs(depth));
+	bounds.expand_x(std::fabs(depth));
+	bounds.expand_y(std::fabs(depth));
 
 	return bounds;
 }

@@ -359,7 +359,10 @@ public:
 		dialog.set_default_response(dflt);
 
 		dialog.show_all();
-		return (Response) dialog.run();
+		int response = dialog.run();
+		if (response != RESPONSE_OK)
+			return RESPONSE_CANCEL;
+		return RESPONSE_OK;
 	}
 
 
@@ -387,7 +390,10 @@ public:
 
 		dialog.set_default_response(dflt);
 		dialog.show();
-		return (Response)dialog.run();
+		int response = dialog.run();
+		if (response != RESPONSE_YES && response != RESPONSE_NO)
+			return RESPONSE_CANCEL;
+		return Response(response);
 	}
 
 
@@ -950,6 +956,7 @@ DEFINE_ACTION("decrease-low-res-pixel-size", _("Decrease Low-Res Pixel Size"))
 DEFINE_ACTION("increase-low-res-pixel-size", _("Increase Low-Res Pixel Size"))
 DEFINE_ACTION("toggle-background-rendering", _("Toggle Background Rendering"))
 DEFINE_ACTION("toggle-onion-skin",           _("Toggle Onion Skin"))
+DEFINE_ACTION("toggle-onion-skin-keyframes", _("Toggle Onion Skin on Keyframes"))
 DEFINE_ACTION("canvas-zoom-in",              Gtk::StockID("gtk-zoom-in"))
 DEFINE_ACTION("canvas-zoom-out",             Gtk::StockID("gtk-zoom-out"))
 DEFINE_ACTION("canvas-zoom-fit",             Gtk::StockID("gtk-zoom-fit"))
@@ -1097,6 +1104,7 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 "		<menuitem action='toggle-low-res'/>"
 "		<menuitem action='toggle-background-rendering'/>"
 "		<menuitem action='toggle-onion-skin'/>"
+"		<menuitem action='toggle-onion-skin-keyframes'/>"
 "		<separator name='sep-view2'/>"
 "		<menuitem action='canvas-zoom-in'/>"
 "		<menuitem action='canvas-zoom-out'/>"
@@ -2034,7 +2042,6 @@ App::load_file_window_size()
 			while(file)
 			{
 				std::string recent_file;
-				std::string recent_file_window_size;
 				getline(file,recent_file);
 				if(!recent_file.empty() && FileSystemNative::instance()->is_file(recent_file))
 					add_recent_file(recent_file, false);
@@ -2204,7 +2211,7 @@ void App::save_custom_workspace()
 	dialog.show_all();
 
 	int response = dialog.run();
-	if (response == Gtk::RESPONSE_CANCEL)
+	if (response != Gtk::RESPONSE_OK)
 		return;
 
 	std::string name = synfig::trim(name_entry->get_text());
@@ -2214,7 +2221,7 @@ void App::save_custom_workspace()
 		workspaces->add_workspace(name, tpl);
 	else {
 		Gtk::MessageDialog confirm_dlg(dialog, _("Do you want to overwrite this workspace?"), false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL);
-		if (confirm_dlg.run() == Gtk::RESPONSE_CANCEL)
+		if (confirm_dlg.run() != Gtk::RESPONSE_OK)
 			return;
 		workspaces->set_workspace(name, tpl);
 	}
@@ -2499,7 +2506,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 	else
 		dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
 
-	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
 		filename = dialog->get_filename();
 		// info("Saving preference %s = '%s' in App::dialog_open_file()", preference.c_str(), dirname(filename).c_str());
 		_preferences.set_value(preference, dirname(filename));
@@ -2554,7 +2561,7 @@ App::dialog_open_file_spal(const std::string &title, std::string &filename, std:
 	else
 	dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
 
-	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
 		filename = dialog->get_filename();
 		_preferences.set_value(preference, dirname(filename));
 		delete dialog;
@@ -2595,7 +2602,7 @@ App::dialog_open_file_sketch(const std::string &title, std::string &filename, st
 	else
 	dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
 
-	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
 		filename = dialog->get_filename();
 		_preferences.set_value(preference, dirname(filename));
 		delete dialog;
@@ -2656,7 +2663,7 @@ App::dialog_open_file_image(const std::string &title, std::string &filename, std
 	else
 		dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
 
-	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
 		filename = dialog->get_filename();
 		_preferences.set_value(preference, dirname(filename));
 		delete dialog;
@@ -2710,7 +2717,7 @@ App::dialog_open_file_audio(const std::string &title, std::string &filename, std
 	else
 	dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
 
-	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
 		filename = dialog->get_filename();
 		_preferences.set_value(preference, dirname(filename));
 		delete dialog;
@@ -2771,7 +2778,7 @@ App::dialog_open_file_image_sequence(const std::string &title, std::set<synfig::
 		dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
 
 	filenames.clear();
-	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
 		std::vector<std::string> files = dialog->get_filenames();
 		filenames.insert(files.begin(), files.end());
 		_preferences.set_value(preference, dirname(dialog->get_filename()));
@@ -2972,7 +2979,7 @@ App::dialog_open_folder(const std::string &title, std::string &foldername, std::
 	dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
 	dialog->add_button(_("Open"),   Gtk::RESPONSE_ACCEPT)->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
 
-	if(dialog->run() == GTK_RESPONSE_ACCEPT)
+	if(dialog->run() == Gtk::RESPONSE_ACCEPT)
 	{
 		foldername = dialog->get_filename();
 		delete dialog;
@@ -3131,7 +3138,7 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 	// we are going to save changes while changing file filter each time.
 	dialog->set_current_name(basename(filename));
 
-	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
 
 		if (preference == ANIMATION_DIR_PREFERENCE)
 			set_file_version(synfig::ReleaseVersion(file_type_enum->get_value()));
@@ -3202,7 +3209,7 @@ App::dialog_export_file(const std::string &title, std::string &filename, std::st
 	// set focus to the file name entry(box) of dialog instead to avoid the name
 	// we are going to save changes while changing file filter each time.
 
-	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
 
 		filename = dialog->get_filename();
 
@@ -3273,7 +3280,7 @@ App::dialog_save_file_spal(const std::string &title, std::string &filename, std:
 	// we are going to save changes while changing file filter each time.
 	dialog->set_current_name(basename(filename));
 
-	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
 
 		// add file extension according to file filter selected by user
 		filename = dialog->get_filename();
@@ -3335,7 +3342,7 @@ App::dialog_save_file_sketch(const std::string &title, std::string &filename, st
 	// we are going to save changes while changing file filter each time.
 	dialog->set_current_name(basename(filename));
 
-	if(dialog->run() == GTK_RESPONSE_ACCEPT) {
+	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
 
 		// add file extension according to file filter selected by user
 		filename = dialog->get_filename();
@@ -3385,7 +3392,7 @@ App::dialog_save_file_render(const std::string &title, std::string &filename, st
 
 	}
 
-	if(dialog->run() == GTK_RESPONSE_ACCEPT)
+	if(dialog->run() == Gtk::RESPONSE_ACCEPT)
 	{
 		filename = dialog->get_filename();
 
@@ -3448,12 +3455,11 @@ App::dialog_select_list_item(const std::string &title, const std::string &messag
 	dialog.set_default_size(300, 450);
 	dialog.show_all();
 
-	if (dialog.run() == Gtk::RESPONSE_ACCEPT) {
-		item_index = tree->get_selection()->get_selected()->get_value(model_columns.column_index);
-		return true;
-	}
+	if (dialog.run() != Gtk::RESPONSE_ACCEPT)
+		return false;
 
-	return false;
+	item_index = tree->get_selection()->get_selected()->get_value(model_columns.column_index);
+	return true;
 }
 
 

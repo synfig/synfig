@@ -62,14 +62,14 @@ std::ostream& operator<<(std::ostream& os, const Vector& v)
 }
 
 #define ASSERT_APPROX_EQUAL_MICRO(expected, value) {\
-	if (std::abs(expected - value) > 1e-6) { \
+	if (std::fabs(expected - value) > 1e-6) { \
 		ERROR_MESSAGE_TWO_VALUES(expected, value) \
 		return true; \
 	} \
 }
 
 #define ASSERT_VECTOR_APPROX_EQUAL_MICRO(expected, value) {\
-	if (std::abs(expected[0] - value[0]) > 2e-6 || std::abs(expected[1] - value[1]) > 2e-6) { \
+	if (std::fabs(expected[0] - value[0]) > 2e-6 || std::fabs(expected[1] - value[1]) > 2e-6) { \
 		ERROR_MESSAGE_TWO_VALUES(expected, value) \
 		return true; \
 	} \

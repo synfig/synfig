@@ -41,7 +41,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -53,7 +52,7 @@ using namespace synfig;
 #define CENTIMETERS_PER_METER (100.0)
 #define MILLIMETERS_PER_METER (1000.0)
 
-#define METERS_PER_UNIT		  (rend_desc.get_physical_w()/abs(rend_desc.get_tl()[0]-rend_desc.get_br()[0]))
+#define METERS_PER_UNIT		  (rend_desc.get_physical_w()/std::abs(rend_desc.get_tl()[0]-rend_desc.get_br()[0]))
 
 /* === G L O B A L S ======================================================= */
 
@@ -113,7 +112,7 @@ Distance::operator=(const synfig::String& str)
 synfig::String
 Distance::get_string(int digits)const
 {
-	digits=min(9,max(0,digits));
+	digits=std::min(9, std::max(0,digits));
 	String fmt(strprintf("%%.%01df",digits));
 	String str(strprintf(fmt.c_str(),value_));
 	return strprintf("%s%s",str.c_str(),system_name(system_).c_str());

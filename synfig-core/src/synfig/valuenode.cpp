@@ -42,7 +42,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -204,9 +203,9 @@ ValueNode::is_descendant(ValueNode::Handle value_node_dest)
         return true;
 
     //! loop through the parents of each node in current_nodes
-    set<Node*> node_parents(value_node_dest->parent_set);
+	std::set<Node*> node_parents(value_node_dest->parent_set);
     ValueNode::Handle value_node_parent;
-    for (set<Node*>::iterator iter = node_parents.begin(); iter != node_parents.end(); iter++)
+    for (std::set<Node*>::iterator iter = node_parents.begin(); iter != node_parents.end(); iter++)
     {
         value_node_parent = ValueNode::Handle::cast_dynamic(*iter);
         if(Handle(this) == value_node_parent)
@@ -273,9 +272,9 @@ ValueNode::canvas_time_bounds(const Canvas &canvas, bool &found, Time &begin, Ti
 	}
 	else
 	{
-		begin = min(begin, canvas.rend_desc().get_time_start());
-		end = min(end, canvas.rend_desc().get_time_end());
-		fps = max(fps, (Real)canvas.rend_desc().get_frame_rate());
+		begin = std::min(begin, canvas.rend_desc().get_time_start());
+		end = std::min(end, canvas.rend_desc().get_time_end());
+		fps = std::max(fps, (Real)canvas.rend_desc().get_frame_rate());
 	}
 }
 

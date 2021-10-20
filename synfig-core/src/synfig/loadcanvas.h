@@ -245,7 +245,8 @@ extern Canvas::Handle open_canvas_as(const FileSystem::Identifier &identifier,co
 
 //! Returns the Open Canvases Map.
 //! \see open_canvas_map_
-std::map<String, etl::loose_handle<Canvas> >& get_open_canvas_map();
+using OpenCanvasMap = std::map<Canvas::LooseHandle, std::string>;
+OpenCanvasMap& get_open_canvas_map();
 
 }; // END of namespace synfig
 

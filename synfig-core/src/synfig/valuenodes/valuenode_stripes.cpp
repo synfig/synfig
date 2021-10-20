@@ -44,7 +44,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -82,7 +81,7 @@ ValueNode_Stripes::create(const ValueBase& x)
 	if(type!=type_gradient)
 	{
 		assert(0);
-		throw runtime_error(String(_("Stripes"))+_(":Bad type ")+type.description.local_name);
+		throw std::runtime_error(String(_("Stripes"))+_(":Bad type ")+type.description.local_name);
 	}
 
 	ValueNode_Stripes* value_node=new ValueNode_Stripes();
@@ -112,7 +111,7 @@ synfig::ValueNode_Stripes::operator()(Time t)const
 
 	const Color color1((*color1_)(t).get(Color()));
 	const Color color2((*color2_)(t).get(Color()));
-	const float width(max(0.0,min(1.0,(*width_)(t).get(Real()))));
+	const float width(std::max(0.0,std::min(1.0,(*width_)(t).get(Real()))));
 
 	const float stripe_width_a(width/total);
 	const float stripe_width_b((1.0-width)/total);

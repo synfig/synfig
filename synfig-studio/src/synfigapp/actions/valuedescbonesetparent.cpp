@@ -29,17 +29,14 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include "valuedescbonesetparent.h"
-#include "valuenodestaticlistinsertsmart.h"
+
+#include <synfig/valuenodes/valuenode_bone.h>
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/localization.h>
-#include <synfig/valuenodes/valuenode_bone.h>
 
 #endif
 
-using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
 using namespace Action;
@@ -60,8 +57,7 @@ ACTION_SET_VERSION(Action::ValueDescBoneSetParent,"0.0");
 
 /* === M E T H O D S ======================================================= */
 
-Action::ValueDescBoneSetParent::ValueDescBoneSetParent():
-	time(0)
+Action::ValueDescBoneSetParent::ValueDescBoneSetParent()
 {
 }
 
@@ -71,14 +67,14 @@ Action::ValueDescBoneSetParent::get_param_vocab()
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
 
 	ret.push_back(ParamDesc("value_desc",Param::TYPE_VALUEDESC)
-		.set_local_name(_("ValueDesc on parent Bone"))
+		.set_local_name(_("ValueDesc of new parent Bone"))
 	);
 	ret.push_back(ParamDesc("time",Param::TYPE_TIME)
 		.set_local_name(_("Time"))
 		.set_optional()
 	);
 	ret.push_back(ParamDesc("child",Param::TYPE_VALUENODE)
-						  .set_local_name(_("ValueNode of Active Bone"))
+		.set_local_name(_("ValueNode of Bone to be reparented"))
 	);
 
 	return ret;
@@ -93,7 +89,6 @@ Action::ValueDescBoneSetParent::is_candidate(const ParamList &x)
 	if (i == x.end()) return false;
 
 	ValueDesc value_desc(i->second.get_value_desc());
-	//ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
 	i=x.find("child");
 	if(i==x.end()) return false;
 
@@ -178,12 +173,12 @@ Action::ValueDescBoneSetParent::perform()
 				child_bone->set_link("origin",ValueNode_Const::create(origin));
 				child_bone->set_link("angle",ValueNode_Const::create(angle));
 			}else{
-				get_canvas_interface()->get_ui_interface()->error("Can't make it the parent to the current active bone.");
+				get_canvas_interface()->get_ui_interface()->error(_("Can't make it the parent to the current active bone"));
 			}
 
 		}
 	}else{
-		get_canvas_interface()->get_ui_interface()->error("Please set an active bone");
+		get_canvas_interface()->get_ui_interface()->error(_("Please set an active bone"));
 	}
 
 }
@@ -218,6 +213,6 @@ Action::ValueDescBoneSetParent::undo() {
 			child_bone->set_link("angle",ValueNode_Const::create(angle));
 		}
 	}else{
-		get_canvas_interface()->get_ui_interface()->error("Couldn't find parent to active bone");
+		get_canvas_interface()->get_ui_interface()->error(_("Couldn't find parent to active bone"));
 	}
 }

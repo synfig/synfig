@@ -110,8 +110,8 @@ NoiseDistort::point_func(const Point &point)const
 		
 		if(turbulent)
 		{
-			vect[0]=abs(vect[0]);
-			vect[1]=abs(vect[1]);
+			vect[0]=std::fabs(vect[0]);
+			vect[1]=std::fabs(vect[1]);
 		}
 		
 		x/=2.0f;

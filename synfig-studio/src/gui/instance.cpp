@@ -290,7 +290,6 @@ studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vec
 		if (!stream_in)
 		{
 			synfig::error(strprintf("run_plugin(): Unable to open file for reading - %s", temporary_filesystem->get_real_uri("#project"+filename_ext).c_str()));
-			String previous_canvas_filename = canvas->get_file_name();
 			FileSystemTemporary::Identifier identifier(temporary_filesystem, filename_processed);
 			if ( !save_canvas(identifier, get_canvas(), true) )
 			{
@@ -1368,11 +1367,11 @@ edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp:
 
 	dialog.get_content_area()->pack_start(widget_waypoint_model);
 
-	dialog.add_button(_("Cancel"), 0);
-	dialog.add_button(_("Apply"), 1);
+	dialog.add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
+	dialog.add_button(_("Apply"), Gtk::RESPONSE_APPLY);
 	dialog.show();
 
-	if(dialog.run()==0 || widget_waypoint_model.get_waypoint_model().is_trivial())
+	if(dialog.run()!=Gtk::RESPONSE_APPLY || widget_waypoint_model.get_waypoint_model().is_trivial())
 		return;
 	synfigapp::Action::PassiveGrouper group(canvas_interface->get_instance().get(),_("Set Waypoints"));
 

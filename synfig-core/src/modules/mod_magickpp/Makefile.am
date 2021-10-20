@@ -25,7 +25,6 @@ libmod_magickpp_la_SOURCES = \
 
 libmod_magickpp_la_LDFLAGS = \
 	-module \
-	@MAGICKPP_LIBS@ \
 	-no-undefined \
 	-avoid-version
 
@@ -35,6 +34,7 @@ libmod_magickpp_la_CXXFLAGS = \
 
 libmod_magickpp_la_LIBADD = \
 	../../synfig/libsynfig.la \
+	@MAGICKPP_LIBS@ \
 	@SYNFIG_LIBS@
 
 endif

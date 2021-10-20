@@ -44,7 +44,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -324,7 +323,7 @@ static void GaussianBlur_nxn(etl::surface<T,AT,VP> &surface,int n)
 		SC[i]=new AT[w_half_n];
 		if(!SC[i])
 		{
-			throw(runtime_error(strprintf(__FILE__":%d:Malloc failure",__LINE__)));
+			throw(std::runtime_error(strprintf(__FILE__":%d:Malloc failure",__LINE__)));
 			return;
 		}
 	}
@@ -487,8 +486,8 @@ bool Blur::operator()(const Surface &surface,
 	const Real	pw = resolution[0]/w,
 				ph = resolution[1]/h;
 
-	int	halfsizex = (int) (abs(size[0]*.5/pw) + 1),
-		halfsizey = (int) (abs(size[1]*.5/ph) + 1);
+	int	halfsizex = (int) (std::fabs(size[0]*.5/pw) + 1),
+		halfsizey = (int) (std::fabs(size[1]*.5/ph) + 1);
 
 	int x,y;
 
@@ -644,7 +643,7 @@ bool Blur::operator()(const Surface &surface,
 			//horizontal part
 			if(size[0])
 			{
-				Real length=abs((float)w/(resolution[0]))*size[0]*0.5+1;
+				Real length=std::fabs((float)w/(resolution[0]))*size[0]*0.5+1;
 				length=std::max(1.0,length);
 
 				//two box blurs produces: 1 2 1
@@ -656,7 +655,7 @@ bool Blur::operator()(const Surface &surface,
 			//vertical part
 			if(size[1])
 			{
-				Real length=abs((float)h/(resolution[1]))*size[1]*0.5+1;
+				Real length=std::fabs((float)h/(resolution[1]))*size[1]*0.5+1;
 				length=std::max(1.0,length);
 
 				//two box blurs produces: 1 2 1 on the horizontal 1 2 1
@@ -751,8 +750,8 @@ bool Blur::operator()(const Surface &surface,
 			pw=pw*pw;
 			ph=ph*ph;
 
-			int bw = (int)(abs(pw)*size[0]*GAUSSIAN_ADJUSTMENT+0.5);
-			int bh = (int)(abs(ph)*size[1]*GAUSSIAN_ADJUSTMENT+0.5);
+			int bw = (int)(std::fabs(pw)*size[0]*GAUSSIAN_ADJUSTMENT+0.5);
+			int bh = (int)(std::fabs(ph)*size[1]*GAUSSIAN_ADJUSTMENT+0.5);
 			int max=bw+bh;
 
 			ColorAccumulator *SC0=new ColorAccumulator[w+2];
@@ -902,8 +901,8 @@ bool Blur::operator()(const etl::surface<float> &surface,
 	const Real	pw = resolution[0]/w,
 				ph = resolution[1]/h;
 
-	int	halfsizex = (int) (abs(size[0]*.5/pw) + 1),
-		halfsizey = (int) (abs(size[1]*.5/ph) + 1);
+	int	halfsizex = (int) (std::fabs(size[0]*.5/pw) + 1),
+		halfsizey = (int) (std::fabs(size[1]*.5/ph) + 1);
 	int x,y;
 
 	SuperCallback blurcall(cb,0,5000,5000);
@@ -1037,7 +1036,7 @@ bool Blur::operator()(const etl::surface<float> &surface,
 			//horizontal part
 			if(size[0])
 			{
-				Real length=abs((float)w/(resolution[0]))*size[0]*0.5+1;
+				Real length=std::fabs((float)w/(resolution[0]))*size[0]*0.5+1;
 				length=std::max(1.0,length);
 
 				//two box blurs produces: 1 2 1
@@ -1049,7 +1048,7 @@ bool Blur::operator()(const etl::surface<float> &surface,
 			//vertical part
 			if(size[1])
 			{
-				Real length=abs((float)h/(resolution[1]))*size[1]*0.5+1;
+				Real length=std::fabs((float)h/(resolution[1]))*size[1]*0.5+1;
 				length=std::max(1.0,length);
 
 				//two box blurs produces: 1 2 1 on the horizontal 1 2 1
@@ -1142,8 +1141,8 @@ bool Blur::operator()(const etl::surface<float> &surface,
 			pw=pw*pw;
 			ph=ph*ph;
 
-			int bw = (int)(abs(pw)*size[0]*GAUSSIAN_ADJUSTMENT+0.5);
-			int bh = (int)(abs(ph)*size[1]*GAUSSIAN_ADJUSTMENT+0.5);
+			int bw = (int)(std::fabs(pw)*size[0]*GAUSSIAN_ADJUSTMENT+0.5);
+			int bh = (int)(std::fabs(ph)*size[1]*GAUSSIAN_ADJUSTMENT+0.5);
 			int max=bw+bh;
 
 			float *SC0=new float[w+2];

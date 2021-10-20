@@ -77,7 +77,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;
@@ -816,7 +815,7 @@ Duckmatic::find_guide_x(synfig::Point pos, float radius)
 	float dist(radius);
 	for(iter=guide_list_x_.begin();iter!=guide_list_x_.end();++iter)
 	{
-		float amount(abs(*iter-pos[0]));
+		float amount(std::fabs(*iter-pos[0]));
 		if(amount<dist)
 		{
 			dist=amount;
@@ -833,7 +832,7 @@ Duckmatic::find_guide_y(synfig::Point pos, float radius)
 	float dist(radius);
 	for(iter=guide_list_y_.begin();iter!=guide_list_y_.end();++iter)
 	{
-		float amount(abs(*iter-pos[1]));
+		float amount(std::fabs(*iter-pos[1]));
 		if(amount<=dist)
 		{
 			dist=amount;
@@ -866,9 +865,9 @@ Duckmatic::snap_point_to_grid(const synfig::Point& x)const
 			floor(ret[0]/get_grid_size()[0]+0.5)*get_grid_size()[0],
 			floor(ret[1]/get_grid_size()[1]+0.5)*get_grid_size()[1]);
 
-		if(abs(snap[0]-ret[0])<=radius && (!has_guide_x || abs(snap[0]-ret[0])<=abs(*guide_x-ret[0])))
+		if(std::fabs(snap[0]-ret[0])<=radius && (!has_guide_x || std::fabs(snap[0]-ret[0])<=std::fabs(*guide_x-ret[0])))
 			ret[0]=snap[0],has_guide_x=false;
-		if(abs(snap[1]-ret[1])<=radius && (!has_guide_y || abs(snap[1]-ret[1])<=abs(*guide_y-ret[1])))
+		if(std::fabs(snap[1]-ret[1])<=radius && (!has_guide_y || std::fabs(snap[1]-ret[1])<=std::fabs(*guide_y-ret[1])))
 			ret[1]=snap[1],has_guide_y=false;
 	}
 
@@ -883,7 +882,7 @@ Duckmatic::snap_point_to_grid(const synfig::Point& x)const
 	if(axis_lock)
 	{
 		ret-=drag_offset_;
-		if(abs(ret[0])<abs(ret[1]))
+		if(std::fabs(ret[0])<std::fabs(ret[1]))
 			ret[0]=0;
 		else
 			ret[1]=0;
@@ -1446,8 +1445,8 @@ Duckmatic::find_bezier(synfig::Point pos, synfig::Real scale, synfig::Real radiu
 
 		step = d/(2*scale); //want to make the distance between lines happy
 
-		step = max(step,0.01); //100 samples should be plenty
-		step = min(step,0.1); //10 is minimum
+		step = std::max(step,0.01); //100 samples should be plenty
+		step = std::min(step,0.1); //10 is minimum
 
 		d = find_closest(curve,pos,step,&closest,&time);
 #endif
@@ -1483,7 +1482,7 @@ Duckmatic::save_sketch(const synfig::String& filename)const
 
 	if(!file)return false;
 
-	file<<"SKETCH"<<endl;
+	file<<"SKETCH"<<std::endl;
 
 	std::list<etl::handle<Stroke> >::const_iterator iter;
 
@@ -1493,14 +1492,14 @@ Duckmatic::save_sketch(const synfig::String& filename)const
 			<<(*iter)->color.get_r()<<' '
 			<<(*iter)->color.get_g()<<' '
 			<<(*iter)->color.get_b()
-		<<endl;
+		<< std::endl;
 		std::list<synfig::Point>::const_iterator viter;
 		for(viter=(*iter)->stroke_data->begin();viter!=(*iter)->stroke_data->end();++viter)
 		{
 			file<<"V "
 				<<(*viter)[0]<<' '
 				<<(*viter)[1]
-			<<endl;
+			<< std::endl;
 		}
 	}
 	if(!file)return false;
@@ -2368,6 +2367,13 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 								&studio::CanvasView::popup_param_menu_bezier),
 							synfigapp::ValueDesc(value_node,i)));
 
+					bezier->signal_user_doubleclick(1).connect(
+						sigc::bind(
+							sigc::mem_fun(
+								*canvas_view,
+								&studio::CanvasView::create_new_vertex_on_bline),
+							synfigapp::ValueDesc(value_node,i)));
+
 					add_bezier(bezier);
 					bezier=0;
 					tangent1_duck = duck;
@@ -2491,6 +2497,13 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 						sigc::mem_fun(
 							*canvas_view,
 							&studio::CanvasView::popup_param_menu_bezier),
+						synfigapp::ValueDesc(value_node,first)));
+
+				bezier->signal_user_doubleclick(1).connect(
+					sigc::bind(
+						sigc::mem_fun(
+							*canvas_view,
+							&studio::CanvasView::create_new_vertex_on_bline),
 						synfigapp::ValueDesc(value_node,first)));
 
 				add_bezier(bezier);

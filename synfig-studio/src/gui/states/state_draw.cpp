@@ -61,7 +61,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;
@@ -94,7 +93,7 @@ class studio::StateDraw_Context : public sigc::trackable
 	typedef etl::smart_ptr<std::list<synfig::Point> > StrokeData;
 	typedef etl::smart_ptr<std::list<synfig::Real> > WidthData;
 
-	typedef list< pair<StrokeData,WidthData> > StrokeQueue;
+	typedef std::list< std::pair<StrokeData,WidthData> > StrokeQueue;
 
 	StrokeQueue stroke_queue;
 
@@ -1000,7 +999,7 @@ StateDraw_Context::event_stroke(const Smach::event& x)
 		return result;
 	}
 
-	stroke_queue.push_back(pair<StrokeData,WidthData>(event.stroke_data,event.width_data));
+	stroke_queue.push_back(std::pair<StrokeData,WidthData>(event.stroke_data,event.width_data));
 
 	return Smach::RESULT_ACCEPT;
 }
@@ -1014,7 +1013,7 @@ StateDraw_Context::process_queue()
 	DepthCounter depth_counter(nested);
 	while(!stroke_queue.empty())
 	{
-		pair<StrokeData,WidthData> front(stroke_queue.front());
+		std::pair<StrokeData,WidthData> front(stroke_queue.front());
 		process_stroke(front.first,front.second);
 		stroke_queue.pop_front();
 	}
@@ -1030,7 +1029,7 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 	const float radius(
 		// synfigapp::Main::get_bline_width().units(get_canvas()->rend_desc()) +
 		get_bline_width() +
-		(abs(get_work_area()->get_pw())+ abs(get_work_area()->get_ph()))*5);
+		(std::fabs(get_work_area()->get_pw())+ std::fabs(get_work_area()->get_ph()))*5);
 
 	// If we aren't using pressure width,
 	// then set all the width to 1
@@ -1120,7 +1119,7 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 					iter->set_position(iter->get_position()+1/(size-1));
 		}
 
-		if(abs(bline.front().get_tangent1().norm()*tangent.norm().perp())>SIMILAR_TANGENT_THRESHOLD)
+		if(std::fabs(bline.front().get_tangent1().norm()*tangent.norm().perp())>SIMILAR_TANGENT_THRESHOLD)
 		{
 			// If the tangents are not similar, then
 			// split the tangents

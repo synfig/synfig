@@ -53,7 +53,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -905,10 +904,10 @@ ValueNode_BLine::operator()(Time t)const
 */
 
 	if(list.empty())
-		synfig::warning(string("ValueNode_BLine::operator()():")+_("No entries in list"));
+		synfig::warning(std::string("ValueNode_BLine::operator()():")+_("No entries in list"));
 	else
 	if(ret_list.empty())
-		synfig::warning(string("ValueNode_BLine::operator()():")+_("No entries in ret_list"));
+		synfig::warning(std::string("ValueNode_BLine::operator()():")+_("No entries in ret_list"));
 
 	return ValueBase(ValueBase::List(ret_list.begin(), ret_list.end()),get_loop());
 }

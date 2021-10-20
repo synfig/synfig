@@ -204,7 +204,6 @@ Rectangle::get_param_vocab()const
 	ret.push_back(ParamDesc("bevel")
 		.set_local_name(_("Bevel"))
 		.set_description(_("Use Bevel for the corners"))
-		.set_is_distance()
 	);
 	ret.push_back(ParamDesc("bevCircle")
 		.set_local_name(_("Keep Bevel Circular"))

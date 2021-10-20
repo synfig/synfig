@@ -378,8 +378,6 @@ Dock_History::set_selected_instance(etl::loose_handle<studio::Instance> x)
 	if (x==selected_instance)
 		return;
 
-	std::list<etl::handle<studio::Instance> >::iterator iter;
-
 	set_selected_instance_(x);
 }
 

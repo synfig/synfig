@@ -49,7 +49,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -115,7 +114,7 @@ synfig::ValueNode_Subtract::ValueNode_Subtract(const ValueBase &value):
 	else
 	{
 		assert(0);
-		throw runtime_error(get_local_name()+_(":Bad type ")+type.description.local_name);
+		throw std::runtime_error(get_local_name()+_(":Bad type ")+type.description.local_name);
 	}
 
 	assert(ref_a->get_type()==type);
@@ -147,7 +146,7 @@ synfig::ValueNode_Subtract::operator()(Time t)const
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	if(!ref_a || !ref_b)
-		throw runtime_error(strprintf("ValueNode_Subtract: %s",_("One or both of my parameters aren't set!")));
+		throw std::runtime_error(strprintf("ValueNode_Subtract: %s",_("One or both of my parameters aren't set!")));
 	Type &type(get_type());
 	if (type == type_angle)
 		return ((*ref_a)(t).get(Angle())-(*ref_b)(t).get(Angle()))*(*scalar)(t).get(Real());

@@ -533,6 +533,15 @@ void Widget_Timetrack::on_size_allocate(Gtk::Allocation& allocation)
 void Widget_Timetrack::on_canvas_interface_changed()
 {
 	waypoint_sd.set_canvas_interface(canvas_interface);
+
+	// Update time track area when keyframe is changed from keyframe_list
+	keyframe_changed_connection_.disconnect();
+
+	if (!canvas_interface) return;
+	
+	keyframe_changed_connection_ = canvas_interface->signal_keyframe_changed().connect([this](synfig::Keyframe) {
+		this->queue_draw();
+	});
 }
 
 void Widget_Timetrack::displace_selected_waypoint_items(const synfig::Time& offset)
@@ -833,24 +842,48 @@ void Widget_Timetrack::draw_selected_background(const Cairo::RefPtr<Cairo::Conte
 	}
 }
 
+bool Widget_Timetrack::fetch_waypoints(const WaypointItem &wi, std::set<synfig::Waypoint, std::less<synfig::UniqueID>>& waypoint_set) const
+{
+	try {
+		const synfigapp::ValueDesc &value_desc = param_info_map.at(wi.path.to_string()).get_value_desc();
+
+		etl::handle<synfig::Node> node;
+		if (value_desc.is_value_node())
+			node = value_desc.get_value_node() ;
+		else if (value_desc.parent_is_layer() && value_desc.get_layer()->get_param(value_desc.get_param_name()).get_type() == synfig::type_canvas)
+			node = value_desc.get_canvas();
+
+		if (node)
+			synfig::waypoint_collect(waypoint_set, wi.time_point.get_time(), node);
+
+		return node;
+	} catch (std::out_of_range& ex) {
+		synfig::error(_("Timetrack: trying to fetch waypoints of not-mapped parameter: %s [%f]"), wi.path.to_string().c_str(), wi.time_point.get_time());
+	} catch (...) {
+		synfig::error(_("Timetrack: Unknown error"));
+	}
+
+	return false;
+}
+
 void Widget_Timetrack::on_waypoint_clicked(const Widget_Timetrack::WaypointItem& wi, unsigned int button, Gdk::Point)
 {
 	std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set;
-	const synfigapp::ValueDesc &value_desc = param_info_map[wi.path.to_string()].get_value_desc();
-	if (value_desc.is_value_node())
-		synfig::waypoint_collect(waypoint_set, wi.time_point.get_time(), value_desc.get_value_node());
-	if (waypoint_set.size() > 0)
+	fetch_waypoints(wi, waypoint_set);
+	if (waypoint_set.size() > 0) {
+		const synfigapp::ValueDesc &value_desc = param_info_map.at(wi.path.to_string()).get_value_desc();
 		signal_waypoint_clicked().emit(value_desc, waypoint_set, button);
+	}
 }
 
 void Widget_Timetrack::on_waypoint_double_clicked(const Widget_Timetrack::WaypointItem& wi, unsigned int button, Gdk::Point)
 {
 	std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set;
-	const synfigapp::ValueDesc &value_desc = param_info_map[wi.path.to_string()].get_value_desc();
-	if (value_desc.is_value_node())
-		synfig::waypoint_collect(waypoint_set, wi.time_point.get_time(), value_desc.get_value_node());
-	if (waypoint_set.size() > 0)
-	signal_waypoint_double_clicked().emit(value_desc, waypoint_set, button);
+	fetch_waypoints(wi, waypoint_set);
+	if (waypoint_set.size() > 0) {
+		const synfigapp::ValueDesc &value_desc = param_info_map.at(wi.path.to_string()).get_value_desc();
+		signal_waypoint_double_clicked().emit(value_desc, waypoint_set, button);
+	}
 }
 
 Widget_Timetrack::WaypointScaleInfo Widget_Timetrack::compute_scale_params() const

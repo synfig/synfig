@@ -210,6 +210,8 @@ private:
 	bool onion_skin;
 	//! stores the future [1] and past [0] onion skins based on keyframes
 	int onion_skins[2];
+	// Onion Skin on Keyframes or Frames
+	bool onion_skin_keyframes;
 
 	// render future and past frames in background
 	bool background_rendering;
@@ -272,6 +274,8 @@ private:
 
 	void set_drag_mode(DragMode mode);
 
+	void set_active_bone_value_node(etl::loose_handle<synfig::ValueNode> x);
+
 public:
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -306,6 +310,8 @@ public:
 	bool get_onion_skin() const { return onion_skin; }
 	void set_onion_skins(int *onions);
 	int const * get_onion_skins() const { return onion_skins; }
+	void set_onion_skin_keyframes(bool x);
+	bool get_onion_skin_keyframes() const { return onion_skin_keyframes; }
 
 	void set_background_rendering(bool x);
 	bool get_background_rendering() const { return background_rendering; }
@@ -313,7 +319,6 @@ public:
 	void set_selected_value_node(etl::loose_handle<synfig::ValueNode> x);
 
 	const etl::loose_handle<synfig::ValueNode>& get_active_bone_value_node(){return active_bone_;}
-	void set_active_bone_value_node(etl::loose_handle<synfig::ValueNode> x);
 	bool get_active_bone_display(){return highlight_active_bone;}
 	void set_active_bone_display(bool x){highlight_active_bone=x;}
 

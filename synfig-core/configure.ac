@@ -247,6 +247,37 @@ if test $with_fontconfig = "yes" ; then {
 	AM_CONDITIONAL(WITH_FONTCONFIG,false)
 } ; fi
 
+# HARFBUZZ CHECK--------------------
+
+AC_ARG_WITH([harfbuzz],
+	[AS_HELP_STRING([--without-harfbuzz], [disable support text rendering for non-latin scripts])],
+	[],
+	[with_harfbuzz=yes]
+)
+
+AS_IF([test "x$with_harfbuzz" != xno],
+	[
+		AS_IF([test "x$with_freetype" != xyes],
+			AC_MSG_FAILURE(
+				[--with-harfbuzz was given, but it depends on --with-freetype])
+		)
+	]
+)
+
+AS_IF([test "x$with_harfbuzz" != xno],
+	[PKG_CHECK_MODULES(HARFBUZZ, [harfbuzz fribidi],
+		[
+			with_harfbuzz="yes"
+			AC_DEFINE(HAVE_HARFBUZZ, [1],[Enable harfbuzz support])
+		],[
+			AC_MSG_FAILURE(
+				[--with-harfbuzz was given, but harfbuzz or fribidi development files were not found])
+		]
+	)]
+)
+
+AM_CONDITIONAL(WITH_HARFBUZZ, test $with_harfbuzz = yes)
+
 
 # OPENEXR CHECK------------------------
 AC_ARG_WITH(openexr,
@@ -386,10 +417,15 @@ PKG_CHECK_MODULES(LIBFFTW, fftw3,,[
 ])
 CONFIG_DEPS="$CONFIG_DEPS fftw3"
 
-PKG_CHECK_MODULES(MLTPP, mlt++,,[
-	AC_MSG_ERROR([ ** You need to install mlt++.])
+PKG_CHECK_MODULES(MLTPP, mlt++-7,[
+	CONFIG_DEPS="$CONFIG_DEPS mlt++-7"
+],[
+	PKG_CHECK_MODULES(MLTPP, mlt++,[
+		CONFIG_DEPS="$CONFIG_DEPS mlt++"
+	],[
+		AC_MSG_ERROR([ ** You need to install mlt++.])
+	])
 ])
-CONFIG_DEPS="$CONFIG_DEPS mlt++"
 
 AX_BOOST_BASE([1.53.0],,AC_MSG_ERROR([ ** You need to install Boost >= 1.53.0]))
 #AX_BOOST_SYSTEM

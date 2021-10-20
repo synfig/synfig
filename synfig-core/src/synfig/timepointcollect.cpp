@@ -41,7 +41,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -55,7 +54,7 @@ using namespace synfig;
 
 //! \writeme
 int
-synfig::waypoint_collect(set<Waypoint, std::less<UniqueID> >	&waypoint_set,
+synfig::waypoint_collect(std::set<Waypoint, std::less<UniqueID> >	&waypoint_set,
 						 const Time								&time,
 						 const etl::handle<Node>				&node)
 {
@@ -211,7 +210,7 @@ synfig::waypoint_search(Waypoint& waypoint, const UniqueID &uid, const etl::hand
 
 //! \writeme
 int
-synfig::activepoint_collect(set<Activepoint, std::less<UniqueID> >& /*activepoint_set*/,const Time& time, const etl::handle<Node>& node)
+synfig::activepoint_collect(std::set<Activepoint, std::less<UniqueID> >& /*activepoint_set*/,const Time& time, const etl::handle<Node>& node)
 {
 	const TimePointSet& timepoint_set(node->get_times());
 

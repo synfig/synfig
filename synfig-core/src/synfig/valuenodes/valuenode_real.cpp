@@ -44,7 +44,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -83,7 +82,7 @@ ValueNode_Real::ValueNode_Real(const ValueBase &x):
 	else
 	{
 		assert(0);
-		throw runtime_error(get_local_name()+_(":Bad type ")+x.get_type().description.local_name);
+		throw std::runtime_error(get_local_name()+_(":Bad type ")+x.get_type().description.local_name);
 	}
 }
 
@@ -145,7 +144,7 @@ ValueNode_Real::operator()(Time t)const
 		return Time(real);
 
 	assert(0);
-	throw runtime_error(get_local_name()+_(":Bad type ")+get_type().description.local_name);
+	throw std::runtime_error(get_local_name()+_(":Bad type ")+get_type().description.local_name);
 }
 
 LinkableValueNode::InvertibleStatus
@@ -169,7 +168,7 @@ synfig::ValueNode_Real::get_inverse(const Time& /*t*/, const synfig::ValueBase &
 	const Type& target_type = target_value.get_type();
 	if (target_type == type_angle)
 		return Angle::deg(target_value.get(Angle())).get();
-	throw runtime_error(strprintf("ValueNode_%s: %s: %s",get_name().c_str(),_("Attempting to get the inverse of a non invertible Valuenode"),_("Invalid value type")));
+	throw std::runtime_error(strprintf("ValueNode_%s: %s: %s",get_name().c_str(),_("Attempting to get the inverse of a non invertible Valuenode"),_("Invalid value type")));
 }
 
 bool

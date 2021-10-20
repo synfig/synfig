@@ -93,7 +93,6 @@ Canvas::Canvas(const String &id):
 	cur_time_	(0),
 	is_inline_	(false),
 	is_dirty_	(true),
-	op_flag_	(false),
 	outline_grow(0.0)
 {
 	identifier_.file_system = FileSystemNative::instance();
@@ -186,66 +185,122 @@ Canvas::find_index(const etl::handle<Layer> &layer, int &index) const
 }
 
 Canvas::iterator
-Canvas::end()
+Canvas::begin() noexcept
+{
+	return CanvasBase::begin();
+}
+
+Canvas::const_iterator
+Canvas::begin() const noexcept
+{
+	return CanvasBase::begin();
+}
+
+Canvas::const_iterator
+Canvas::cbegin() const noexcept
+{
+	return CanvasBase::begin();
+}
+
+Canvas::iterator
+Canvas::end() noexcept
 {
 	Canvas::iterator i = CanvasBase::end();
 	return --i;
 }
 
 Canvas::const_iterator
-Canvas::end() const
+Canvas::end() const noexcept
 {
-	Canvas::const_iterator i = CanvasBase::end();
+	Canvas::const_iterator i = CanvasBase::cend();
 	return --i;
 }
 
+Canvas::const_iterator
+Canvas::cend() const noexcept
+{
+	return end();
+}
+
 Canvas::reverse_iterator
-Canvas::rbegin()
+Canvas::rbegin() noexcept
 {
 	Canvas::reverse_iterator i = CanvasBase::rbegin();
 	return ++i;
 }
 
 Canvas::const_reverse_iterator
-Canvas::rbegin()const
+Canvas::rbegin() const noexcept
 {
 	Canvas::const_reverse_iterator i = CanvasBase::rbegin();
 	return ++i;
 }
 
+Canvas::const_reverse_iterator
+Canvas::crbegin() const noexcept
+{
+	return rbegin();
+}
+
+Canvas::reverse_iterator
+Canvas::rend() noexcept
+{
+	return CanvasBase::rend();
+}
+
+Canvas::const_reverse_iterator
+Canvas::rend() const noexcept
+{
+	return CanvasBase::rend();
+}
+
+Canvas::const_reverse_iterator
+Canvas::crend() const noexcept
+{
+	return CanvasBase::rend();
+}
+
 int
-Canvas::size()const
+Canvas::size() const noexcept
 {
 	return CanvasBase::size()-1;
 }
 
 void
-Canvas::clear()
+Canvas::clear() noexcept
 {
-	while(!empty())
+	while (!empty())
 	{
-		Layer::Handle layer(front());
-		//if(layer->count()>2)synfig::info("before layer->count()=%d",layer->count());
-
 		erase(begin());
-		//if(layer->count()>1)synfig::info("after layer->count()=%d",layer->count());
 	}
-	//CanvasBase::clear();
 
 	// We need to keep a blank handle at the
 	// end of the image list, and acts at
 	// the bottom. Without it, the layers
 	// would just continue going when polled
 	// for a color.
-	CanvasBase::push_back(Layer::Handle());
+	if (CanvasBase::empty())
+		CanvasBase::push_back(Layer::Handle());
 
 	changed();
 }
 
 bool
-Canvas::empty()const
+Canvas::empty() const noexcept
 {
 	return CanvasBase::size()<=1;
+}
+
+Layer::Handle &
+Canvas::front()
+{
+	return CanvasBase::front();
+}
+
+const Layer::Handle &
+Canvas::front() const
+{
+	return CanvasBase::front();
 }
 
 Layer::Handle &
@@ -281,7 +336,7 @@ Canvas::get_context(const Context &parent_context)const
 }
 
 Context
-Canvas::get_context_sorted(const ContextParams &params, CanvasBase &out_queue) const
+Canvas::get_context_sorted(const ContextParams &params, CanvasBase &out_list) const
 {
 	multimap<Real, Layer::Handle> layers;
 	int index = 0;
@@ -293,19 +348,19 @@ Canvas::get_context_sorted(const ContextParams &params, CanvasBase &out_queue) c
 		layers.insert(pair<Real, Layer::Handle>(depth, *i));
 	}
 
-	out_queue.clear();
+	out_list.clear();
 	for(multimap<Real, Layer::Handle>::const_iterator i = layers.begin(); i != layers.end(); ++i)
-		out_queue.push_back(i->second);
-	out_queue.push_back(Layer::Handle());
+		out_list.push_back(i->second);
+	out_list.push_back(Layer::Handle());
 
-	return Context(out_queue.begin(), params);
+	return Context(out_list.begin(), params);
 }
 
 rendering::Task::Handle
 Canvas::build_rendering_task(const ContextParams &context_params) const
 {
-	CanvasBase sub_queue;
-	Context context = get_context_sorted(context_params, sub_queue);
+	CanvasBase sub_list;
+	Context context = get_context_sorted(context_params, sub_list);
 	rendering::Task::Handle task = context.build_rendering_task();
 	
 	rendering::TaskPixelGamma::Handle task_gamma(new rendering::TaskPixelGamma());
@@ -883,26 +938,7 @@ Canvas::insert(iterator iter,etl::handle<Layer> x)
 
 	add_child(x.get());
 
-	LooseHandle correct_canvas(this);
-	//while(correct_canvas->is_inline())correct_canvas=correct_canvas->parent();
-	Layer::LooseHandle loose_layer(x);
-
-	add_connection(loose_layer,
-				   sigc::connection(
-					   x->signal_added_to_group().connect(
-						   sigc::bind(
-							   sigc::mem_fun(
-								   *correct_canvas,
-								   &Canvas::add_group_pair),
-							   loose_layer))));
-	add_connection(loose_layer,
-				   sigc::connection(
-					   x->signal_removed_from_group().connect(
-						   sigc::bind(
-							   sigc::mem_fun(
-								   *correct_canvas,
-								   &Canvas::remove_group_pair),
-							   loose_layer))));
+	add_connections(x);
 
 	if(!x->get_group().empty())
 		add_group_pair(x->get_group(),x);
@@ -937,10 +973,10 @@ Canvas::erase(iterator iter)
 	// - dooglus 09-21-2007
 	disconnect_connections(*iter);
 
-	if(!op_flag_)remove_child(iter->get());
+	remove_child(iter->get());
 
 	CanvasBase::erase(iter);
-	if(!op_flag_)changed();
+	changed();
 }
 
 Canvas::Handle
@@ -1141,11 +1177,11 @@ Canvas::on_parent_set()
 void
 Canvas::set_file_name(const String &file_name_orig)
 {
-	String file_name = FileSystem::fix_slashes(file_name_orig);
 	if(parent())
-		parent()->set_file_name(file_name);
+		parent()->set_file_name(file_name_orig);
 	else
 	{
+		String file_name = FileSystem::fix_slashes(file_name_orig);
 		if (file_name_ == file_name)
 			return;
 		String old_name(file_name_);
@@ -1156,11 +1192,8 @@ Canvas::set_file_name(const String &file_name_orig)
 		// we don't want to register the canvas' filename in the canvas map until it gets a real filename
 		if (old_name != "")
 		{
-			std::map<synfig::String, etl::loose_handle<Canvas> >::iterator iter;
-			for(iter=get_open_canvas_map().begin();iter!=get_open_canvas_map().end();++iter)
-				if(iter->second==this)
-					break;
-			if (iter == get_open_canvas_map().end())
+			const auto& canvas_map = get_open_canvas_map();
+			if (canvas_map.find(this) == canvas_map.end())
 				CanvasParser::register_canvas_in_map(this, file_name);
 			else
 				signal_file_name_changed_();
@@ -1254,262 +1287,6 @@ Canvas::get_meta_data_keys()const
 	return ret;
 }
 
-/* note - the "Motion Blur" and "Duplicate" layers need the dynamic
-		  parameters of any PasteCanvas layers they loop over to be
-		  maintained.  When the variables in the following function
-		  refer to "motion blur", they mean either of these two
-		  layers. */
-void
-synfig::optimize_layers(Time time, Context context, Canvas::Handle op_canvas, bool seen_motion_blur_in_parent)
-{
-	Context iter;
-
-	std::vector< std::pair<float,Layer::Handle> > sort_list;
-	int i, motion_blur_i=0;	// motion_blur_i is for resolving which layer comes first in the event of a z_depth tie
-	float motion_blur_z_depth=0; // the z_depth of the least deep motion blur layer in this context
-	bool seen_motion_blur_locally = false;
-	bool motion_blurred; // the final result - is this layer blurred or not?
-
-	// If the parent didn't cause us to already be motion blurred,
-	// check whether there's a motion blur in this context,
-	// and if so, calculate its z_depth.
-	if (!seen_motion_blur_in_parent)
-		for(iter=context,i=0;*iter;iter++,i++)
-		{
-			Layer::Handle layer=*iter;
-			
-			const float layer_visibility=context.z_depth_visibility(*layer);
-
-			// If the layer isn't active, don't worry about it
-			if(!context.active(*layer) || layer_visibility==0.0)
-				continue;
-
-			// Any layer with an amount of zero is implicitly disabled.
-			ValueBase value(layer->get_param("amount"));
-			if(value.get_type()==type_real && value.get(Real())==0)
-				continue;
-
-			if(layer->get_name()=="MotionBlur" || layer->get_name()=="duplicate")
-			{
-				float z_depth(layer->get_true_z_depth(time));
-
-				// If we've seen a motion blur before in this context...
-				if (seen_motion_blur_locally)
-				{
-					// ... then we're only interested in this one if it's less deep...
-					if (z_depth < motion_blur_z_depth)
-					{
-						motion_blur_z_depth = z_depth;
-						motion_blur_i = i;
-					}
-				}
-				// ... otherwise we're always interested in it.
-				else
-				{
-					motion_blur_z_depth = z_depth;
-					motion_blur_i = i;
-					seen_motion_blur_locally = true;
-				}
-			}
-		}
-
-	// Go ahead and start romping through the canvas to paste
-	for(iter=context,i=0;*iter;iter++,i++)
-	{
-		Layer::Handle layer=*iter;
-		float z_depth(layer->get_true_z_depth(time));
-		const float layer_visibility=context.z_depth_visibility(*layer);
-		//synfig::info("Visibility of %s called %s = %f", layer->get_name().c_str(), layer->get_description().c_str(), layer_visibility);
-
-		// If the layer isn't active or isn't visible in its z depth range,
-		// don't worry about it
-		if(!context.active(*layer) || layer_visibility==0.0)
-			continue;
-
-		// Any layer with an amount of zero is implicitly disabled.
-		ValueBase value(layer->get_param("amount"));
-		if(value.get_type()==type_real && value.get(Real())==0)
-			continue;
-
-		// note: this used to include "&& paste_canvas->get_time_offset()==0", but then
-		//		 time-shifted layers weren't being sorted by z-depth (bug #1806852)
-		Layer_PasteCanvas* paste_canvas(dynamic_cast<Layer_PasteCanvas*>(layer.get()));
-		if(paste_canvas)
-		{
-			// we need to blur the sub canvas if:
-			// our parent is blurred,
-			// or the child is lower than a local blur,
-			// or the child is at the same z_depth as a local blur, but later in the context
-
-#if 0 // DEBUG
-			if (seen_motion_blur_in_parent)					synfig::info("seen BLUR in parent\n");
-			else if (seen_motion_blur_locally)
-				if (z_depth > motion_blur_z_depth)			synfig::info("paste is deeper than BLUR\n");
-				else if (z_depth == motion_blur_z_depth) {	synfig::info("paste is same depth as BLUR\n");
-					if (i > motion_blur_i)					synfig::info("paste is physically deeper than BLUR\n");
-					else									synfig::info("paste is less physically deep than BLUR\n");
-				} else										synfig::info("paste is less deep than BLUR\n");
-			else											synfig::info("no BLUR at all\n");
-#endif	// DEBUG
-
-			motion_blurred = (seen_motion_blur_in_parent ||
-							  (seen_motion_blur_locally &&
-							   (z_depth > motion_blur_z_depth ||
-								(z_depth == motion_blur_z_depth && i > motion_blur_i))));
-
-			Canvas::Handle sub_canvas(Canvas::create_inline(op_canvas));
-			Canvas::Handle paste_sub_canvas = paste_canvas->get_sub_canvas();
-			if(paste_sub_canvas)
-			{
-				ContextParams params=context.get_params();
-				paste_canvas->apply_z_range_to_params(params);
-				optimize_layers(time, paste_sub_canvas->get_context(params),sub_canvas,motion_blurred);
-			}
-
-// \todo: uncommenting the following breaks the rendering of at least examples/backdrop.sif quite severely
-// #define SYNFIG_OPTIMIZE_PASTE_CANVAS
-#ifdef SYNFIG_OPTIMIZE_PASTE_CANVAS
-			Canvas::iterator sub_iter;
-
-			// Determine if we can just remove the paste canvas altogether
-			if (paste_canvas->get_blend_method()	== Color::BLEND_COMPOSITE	&&
-				paste_canvas->get_amount()			== 1.0f						&&
-				paste_canvas->get_zoom()			== 0						&&
-				paste_canvas->get_time_offset()		== 0						&&
-				paste_canvas->get_origin()			== Point(0,0)				&&
-				//paste_canvas->get_param("outline_grow").get(Real()) == 0.0
-				)
-				try {
-					//synfig::info("outline grow is 0.0----------------");
-					for(sub_iter=sub_canvas->begin();sub_iter!=sub_canvas->end();++sub_iter)
-					{
-						Layer* layer=sub_iter->get();
-
-						// any layers that deform end up breaking things
-						// so do things the old way if we run into anything like this
-						if(!dynamic_cast<Layer_NoDeform*>(layer))
-							throw int();
-
-						ValueBase value(layer->get_param("blend_method"));
-						if(value.get_type()!=type_integer || value.get(int())!=(int)Color::BLEND_COMPOSITE)
-							throw int();
-					}
-
-					// It has turned out that we don't need a paste canvas
-					// layer, so just go ahead and add all the layers onto
-					// the current stack and be done with it
-					while(sub_canvas->size())
-					{
-						sort_list.push_back(std::pair<float,Layer::Handle>(z_depth,sub_canvas->front()));
-						//op_canvas->push_back_simple(sub_canvas->front());
-						sub_canvas->pop_front();
-					}
-					continue;
-				}
-				catch(int)
-				{ }
-#endif	// SYNFIG_OPTIMIZE_PASTE_CANVAS
-
-			etl::handle<Layer_PasteCanvas> new_layer =
-				etl::handle<Layer_PasteCanvas>::cast_dynamic( Layer::create(paste_canvas->get_name()) );
-			new_layer->set_optimized(true);
-			if (motion_blurred)
-			{
-				Layer::DynamicParamList dynamic_param_list(paste_canvas->dynamic_param_list());
-				for(Layer::DynamicParamList::const_iterator iter(dynamic_param_list.begin()); iter != dynamic_param_list.end(); ++iter)
-					new_layer->connect_dynamic_param(iter->first, iter->second);
-			}
-			Layer::ParamList param_list(paste_canvas->get_param_list());
-			//param_list.erase("canvas");
-			new_layer->set_param_list(param_list);
-			new_layer->set_sub_canvas(sub_canvas);
-			layer=new_layer;
-		}
-		else					// not a PasteCanvas - does it use blend method 'Straight'?
-		{
-			/* when we use the 'straight' blend method, every pixel on the layer affects the layers underneath,
-			 * not just the non-transparent pixels; the following workarea wraps non-pastecanvas layers in a
-			 * new pastecanvas to ensure that the straight blend affects the full plane, not just the area
-			 * within the layer's bounding box
-			 */
-
-			// \todo: this code probably needs modification to work properly with motionblur and duplicate
-//			etl::handle<Layer_Composite> composite = etl::handle<Layer_Composite>::cast_dynamic(layer);
-
-			/* some layers (such as circle) don't touch pixels that aren't
-			 * part of the circle, so they don't get blended correctly when
-			 * using a straight blend.  so we encapsulate the circle, and the
-			 * encapsulation layer takes care of the transparent pixels
-			 * for us.  if we do that for all layers, however, then the
-			 * distortion layers no longer work, since they have no
-			 * context to work on.  the Layer::reads_context() method
-			 * returns true for layers which need to be able to see
-			 * their context.  we can't encapsulate those.
-			 */
-
-			/*
-			if (composite &&
-				Color::is_straight(composite->get_blend_method()) &&
-				!composite->reads_context())
-			{
-				Canvas::Handle sub_canvas(Canvas::create_inline(op_canvas));
-				// don't use clone() because it re-randomizes the seeds of any random valuenodes
-				sub_canvas->push_back(composite = composite->simple_clone());
-				layer = Layer::create("group");
-				composite->set_description(strprintf("Wrapped clone of '%s'", composite->get_non_empty_description().c_str()));
-				layer->set_description(strprintf("Group wrapper for '%s'", composite->get_non_empty_description().c_str()));
-				Layer_PasteCanvas* paste_canvas(static_cast<Layer_PasteCanvas*>(layer.get()));
-				paste_canvas->set_blend_method(composite->get_blend_method());
-				paste_canvas->set_amount(composite->get_amount());
-				sub_canvas->set_time(time); // region and outline don't calculate their bounding rects until their time is set
-				composite->set_blend_method(Color::BLEND_STRAIGHT); // do this before calling set_sub_canvas(), but after set_time()
-				composite->set_amount(1.0f); // after set_time()
-				paste_canvas->set_sub_canvas(sub_canvas);
-			}
-			*/
-		}
-		// Alright, the layer is included in the sorted list
-		// let's look if it is a composite and if it is partially visible
-		etl::handle<Layer_Composite> composite = etl::handle<Layer_Composite>::cast_dynamic(layer);
-		if(composite && layer_visibility < 1.0)
-		{
-			// Let's clone the composite layer if it is not a Paste Canvas
-			// (because paste will always be new layer)
-			// Oops... not always...
-			//if(dynamic_cast<Layer_PasteCanvas*>(layer.get()) != NULL)
-				composite = etl::handle<Layer_Composite>::cast_dynamic(composite->simple_clone());
-			// Let's scale the amount parameter by the z depth visibility
-			ValueNode::Handle amount;
-			// First look if amount is dynamic:
-			if(composite->dynamic_param_list().count("amount"))
-			{
-				amount=composite->dynamic_param_list().find("amount")->second;
-			}
-			else
-			// It is normal constant parameter
-			{
-				amount=ValueNode_Const::create(layer->get_param("amount").get(Real()));
-			}
-			// Connect a ValueNode_Scale to the amount parameter with the right sub-parameters
-			ValueNode::Handle value_node=ValueNodeRegistry::create("scale", ValueBase(Real()));
-			ValueNode_Scale::Handle scale=ValueNode_Scale::Handle::cast_dynamic(value_node);
-			scale->set_link("link", amount);
-			scale->set_link("scalar", ValueNode_Const::create(layer_visibility));
-			composite->connect_dynamic_param("amount", value_node);
-			layer=composite;
-		}
-		sort_list.push_back(std::pair<float,Layer::Handle>(z_depth,layer));
-		//op_canvas->push_back_simple(layer);
-	}
-
-	//sort_list.sort();
-	stable_sort(sort_list.begin(),sort_list.end());
-	std::vector< std::pair<float,Layer::Handle> >::iterator iter2;
-	for(iter2=sort_list.begin();iter2!=sort_list.end();++iter2)
-		op_canvas->push_back_simple(iter2->second);
-	op_canvas->op_flag_=true;
-}
-
 void
 Canvas::get_times_vfunc(Node::time_set &set) const
 {
@@ -1591,17 +1368,33 @@ Canvas::remove_group_pair(String group, etl::handle<Layer> layer)
 }
 
 void
-Canvas::add_connection(etl::loose_handle<Layer> layer, sigc::connection connection)
+Canvas::add_connections(etl::loose_handle<Layer> layer)
 {
-	connections_[layer].push_back(connection);
+	LooseHandle correct_canvas(this);
+	//while(correct_canvas->is_inline())correct_canvas=correct_canvas->parent();
+	std::vector<sigc::connection>& layer_connections = connections_[layer];
+
+	layer_connections.push_back(
+					   layer->signal_added_to_group().connect(
+						   sigc::bind(
+							   sigc::mem_fun(
+								   *correct_canvas,
+								   &Canvas::add_group_pair),
+							   layer)));
+	layer_connections.push_back(
+					   layer->signal_removed_from_group().connect(
+						   sigc::bind(
+							   sigc::mem_fun(
+								   *correct_canvas,
+								   &Canvas::remove_group_pair),
+							   layer)));
 }
 
 void
 Canvas::disconnect_connections(etl::loose_handle<Layer> layer)
 {
-	std::vector<sigc::connection>::iterator iter;
-	for(iter=connections_[layer].begin();iter!=connections_[layer].end();++iter)
-		iter->disconnect();
+	for(sigc::connection& connection : connections_[layer])
+		connection.disconnect();
 	connections_[layer].clear();
 }
 

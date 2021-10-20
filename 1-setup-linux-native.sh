@@ -69,6 +69,7 @@ if ([ "$ID_LIKE" == "fedora" ] && [ VERSION_ID > 22 ]); then
             libjpeg-devel \
             fftw-devel \
             freetype-devel \
+            fribidi-devel \
             fontconfig-devel \
             atk-devel \
             pango-devel \
@@ -114,6 +115,7 @@ elif ([ "$ID_LIKE" == "fedora" ] && [ VERSION_ID <= 22]); then
             libjpeg-devel \
             fftw-devel \
             freetype-devel \
+            fribidi-devel \
             fontconfig-devel \
             atk-devel \
             pango-devel \
@@ -209,6 +211,7 @@ elif [ "$ID_LIKE" == "debian" ] || [ "$ID_LIKE" == "ubuntu" ] || [ "$ID_LIKE" ==
                 libfftw3-dev \
                 fontconfig \
                 libfreetype6-dev \
+                libfribidi-dev \
                 libfontconfig1-dev \
                 libxml2-dev \
                 libtiff5-dev \
@@ -243,6 +246,7 @@ elif [ "$ID_LIKE" == "debian" ] || [ "$ID_LIKE" == "ubuntu" ] || [ "$ID_LIKE" ==
                 libjpeg-devel \
                 fontconfig \
                 libfreetype-devel \
+                libfribidi-devel \
                 fontconfig-devel \
                 libxml2-devel \
                 libtiff-devel \

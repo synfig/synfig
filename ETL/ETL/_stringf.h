@@ -278,8 +278,6 @@ remove_root_from_path(std::string path)
 inline std::string
 cleanup_path(std::string path)
 {
-    std::string ret;
-
     // remove '.'
     for(int i = 0; i < (int)path.size();)
     {

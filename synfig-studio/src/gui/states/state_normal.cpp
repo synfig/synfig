@@ -51,7 +51,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;
@@ -369,10 +368,10 @@ DuckDrag_Combo::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& offs
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
 	{
 		Point p((*iter)->get_trans_point());
-		vmin[0]=min(vmin[0],p[0]);
-		vmin[1]=min(vmin[1],p[1]);
-		vmax[0]=max(vmax[0],p[0]);
-		vmax[1]=max(vmax[1],p[1]);
+		vmin[0]=std::min(vmin[0],p[0]);
+		vmin[1]=std::min(vmin[1],p[1]);
+		vmax[0]=std::max(vmax[0],p[0]);
+		vmax[1]=std::max(vmax[1],p[1]);
 		positions.push_back(p);
 	}
 	center=(vmin+vmax)*0.5;
@@ -472,11 +471,11 @@ DuckDrag_Combo::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 	{
 		if(!constrain)
 		{
-			if(abs(drag_offset[0]-center[0])>EPSILON)
+			if(std::fabs(drag_offset[0]-center[0])>EPSILON)
 				vect[0]/=drag_offset[0]-center[0];
 			else
 				vect[0]=1;
-			if(abs(drag_offset[1]-center[1])>EPSILON)
+			if(std::fabs(drag_offset[1]-center[1])>EPSILON)
 				vect[1]/=drag_offset[1]-center[1];
 			else
 				vect[1]=1;

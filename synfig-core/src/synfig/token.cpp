@@ -128,7 +128,7 @@ Token::prepare()
 	if (prepared_) return;
 	if (in_process_)
 	{
-		error(String(_("Loop detected while tokens preparing")));
+		error(String(_("Loop detected while preparing tokens")));
 		assert(false);
 		return;
 	}

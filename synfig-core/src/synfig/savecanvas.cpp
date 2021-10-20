@@ -69,7 +69,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -540,7 +539,7 @@ xmlpp::Element* encode_static_list(xmlpp::Element* root,ValueNode_StaticList::Co
 
 	root->set_attribute("type",value_node->get_contained_type().description.name);
 
-	vector<ValueNode::RHandle>::const_iterator iter;
+	std::vector<ValueNode::RHandle>::const_iterator iter;
 
 	for(iter=value_node->list.begin();iter!=value_node->list.end();++iter)
 	{
@@ -568,7 +567,7 @@ xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::
 
 	root->set_attribute("type",value_node->get_contained_type().description.name);
 
-	vector<ValueNode_DynamicList::ListEntry>::const_iterator iter;
+	std::vector<ValueNode_DynamicList::ListEntry>::const_iterator iter;
 
 	bool must_rotate_point_list = false;
 
@@ -687,7 +686,7 @@ xmlpp::Element* encode_linkable_value_node(xmlpp::Element* root,LinkableValueNod
 		// printf("saving link %d : %s\n", i, value_node->link_local_name(i).c_str());
 		ValueNode::ConstHandle link=value_node->get_link(i).constant();
 		if(!link)
-			throw runtime_error("Bad link");
+			throw std::runtime_error("Bad link");
 		if(link->is_exported())
 			root->set_attribute(value_node->link_name(i),link->get_relative_id(canvas));
 		else if(iter->get_critical())

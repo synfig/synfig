@@ -30,7 +30,6 @@
 #endif
 
 #include <iostream>
-#include <list>
 #include <algorithm>
 #include <errno.h>
 #include <cstring>
@@ -42,12 +41,10 @@
 #include <synfig/localization.h>
 #include <synfig/target.h>
 #include <synfig/target_scanline.h>
-#include <synfig/importer.h>
 #include <synfig/savecanvas.h>
 #include <synfig/filesystemnative.h>
 
 #include "definitions.h"
-#include "job.h"
 #include "synfigtoolexception.h"
 #include "renderprogress.h"
 #include "joblistprocessor.h"

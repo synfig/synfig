@@ -38,7 +38,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -372,11 +371,11 @@ int intersect(const BezHull &bh, const Point &p, const Vector &v)
 		//going OUT
 		if(nv > ERR)
 		{
-			maxt = min(maxt,(float)((n*(p-last))/nv));
+			maxt = std::min(maxt,(float)((n*(p-last))/nv));
 		}else
 		if( nv < -ERR) //going IN
 		{
-			mint = max(mint,(float)((n*(p-last))/nv));
+			mint = std::max(mint,(float)((n*(p-last))/nv));
 		}else
 		{
 			if( n*(p-last) > 0 ) //outside entirely
@@ -415,12 +414,12 @@ int Clip(const Rect &r, const Point &p1, const Point &p2, Point *op1, Point *op2
 		//line in positive direction (normal comparisons
 		if(tt1 < tt2)
 		{
-			t1 = max(t1,tt1);
-			t2 = min(t2,tt2);
+			t1 = std::max(t1,tt1);
+			t2 = std::min(t2,tt2);
 		}else
 		{
-			t1 = max(t1,tt2);
-			t2 = min(t2,tt1);
+			t1 = std::max(t1,tt2);
+			t2 = std::min(t2,tt1);
 		}
 	}else
 	{
@@ -438,12 +437,12 @@ int Clip(const Rect &r, const Point &p1, const Point &p2, Point *op1, Point *op2
 		//line in positive direction (normal comparisons
 		if(tt1 < tt2)
 		{
-			t1 = max(t1,tt1);
-			t2 = min(t2,tt2);
+			t1 = std::max(t1,tt1);
+			t2 = std::min(t2,tt2);
 		}else
 		{
-			t1 = max(t1,tt2);
-			t2 = min(t2,tt1);
+			t1 = std::max(t1,tt2);
+			t2 = std::min(t2,tt1);
 		}
 	}else
 	{

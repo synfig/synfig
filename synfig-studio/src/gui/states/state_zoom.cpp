@@ -45,7 +45,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace synfig;
 using namespace studio;
 
@@ -169,7 +168,7 @@ StateZoom_Context::event_mouse_click_handler(const Smach::event& x)
 			if(event.modifier & Gdk::CONTROL_MASK) //zoom out...
 			{
 				if (window_span[0] == 0 || window_span[1] == 0) zoom = 1;
-				else zoom = max(abs(box_span[0]/window_span[0]), abs(box_span[1]/window_span[1]));
+				else zoom = std::max(std::fabs(box_span[0]/window_span[0]), std::fabs(box_span[1]/window_span[1]));
 
 				// focus_point is -1 times the real position for some reason...
 				// center the window so the old contents fill the drawn box
@@ -178,7 +177,7 @@ StateZoom_Context::event_mouse_click_handler(const Smach::event& x)
 			else				// zoom in
 			{
 				if (box_span[0] == 0 || box_span[1] == 0) zoom = 1;
-				else zoom = min(abs(window_span[0]/box_span[0]), abs(window_span[1]/box_span[1]));
+				else zoom = std::min(std::fabs(window_span[0]/box_span[0]), std::fabs(window_span[1]/box_span[1]));
 
 				// center the window at the center of the box
 				newpos = -(-get_work_area()->get_focus_point() + (box_middle - window_middle));

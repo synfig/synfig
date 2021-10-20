@@ -401,7 +401,7 @@ Mandelbrot::get_color(Context context, const Point &pos)const
 		}
 	}
 
-	ColorReal amount(abs(mag+gradient_offset_inside));
+	ColorReal amount(std::fabs(mag+gradient_offset_inside));
 	if(gradient_loop_inside)
 		amount-=floor(amount);
 

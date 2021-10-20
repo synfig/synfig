@@ -237,7 +237,7 @@ Plant::sync()const
 
 	etl::hermite<Vector> curve;
 
-	Real step(abs(step_));
+	Real step(std::fabs(step_));
 
 	int seg(0);
 
@@ -556,7 +556,7 @@ Plant::draw_particles(Surface *dest_surface, const RendDesc &renddesc)const
 		std::vector<Particle>::iterator iter;
 		Particle *particle;
 		
-		float radius(size*sqrt(1.0f/(abs(pw)*abs(ph))));
+		float radius(size*sqrt(1.0f/(std::fabs(pw)*std::fabs(ph))));
 		
 		int x1,y1,x2,y2;
 		

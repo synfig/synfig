@@ -90,7 +90,7 @@ Widget_Time::refresh_text()
 void
 Widget_Time::set_value(const synfig::Time &data)
 {
-	if (abs(data - time_) >= 0.001) {
+	if (std::fabs(data - time_) >= 0.001) {
 		time_=data;
 		refresh_text();
 		signal_value_changed()();
@@ -116,7 +116,7 @@ Widget_Time::refresh_value()
 	try
 	{
 		Time newtime(get_text(),fps_);
-		if(abs(newtime-time_)>=0.001)
+		if(std::fabs(newtime-time_)>=0.001)
 		{
 			time_=newtime;
 			refresh_text();

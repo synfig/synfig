@@ -34,10 +34,13 @@ else()
 		pkg_check_modules(SIGCPP REQUIRED sigc++-2.0)
 		pkg_check_modules(GTKMM REQUIRED gtkmm-3.0)
 		pkg_check_modules(LIBXML REQUIRED libxml++-2.6)
+		pkg_check_modules(PANGO REQUIRED pango) # used in TimeTrackView, OneMoment, etc.
+		pkg_check_modules(CAIRO REQUIRED cairo)
+		pkg_check_modules(PANGOCAIRO REQUIRED pangocairo)
 		pkg_check_modules(MLT mlt++) # required for widget_soundwave
 	endif()
 
-	foreach(pkg_config_lib SIGCPP GTKMM LIBXML MLT FFTW)
+	foreach(pkg_config_lib SIGCPP GTKMM LIBXML MLT FFTW PANGO CAIRO PANGOCAIRO)
 		include_directories(${${pkg_config_lib}_INCLUDE_DIRS})
 		link_directories(${${pkg_config_lib}_LIBRARY_DIRS})
 	endforeach()

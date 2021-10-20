@@ -67,7 +67,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;
@@ -497,7 +496,7 @@ void
 RenderSettings::submit_next_render_pass()
 {
 	if (render_passes.size()>0) {
-		pair<TargetAlphaMode,String> pass_info = render_passes.back();
+		std::pair<TargetAlphaMode,String> pass_info = render_passes.back();
 		render_passes.pop_back();
 
 		App::dock_info_->set_n_passes_pending(render_passes.size()); //! Decrease until 0

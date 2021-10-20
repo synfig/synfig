@@ -248,7 +248,7 @@ Renderer_Ducks::render_vfunc(
 	const DuckList duck_list(get_work_area()->get_duck_list());
 
 	std::list<ScreenDuck> screen_duck_list;
-	const float radius((abs(pw)+abs(ph))*4);
+	const float radius((std::fabs(pw)+std::fabs(ph))*4);
 
 	etl::handle<Duck> hover_duck(get_work_area()->find_duck(get_work_area()->get_cursor_pos(),radius, get_work_area()->get_type_mask()));
 
@@ -363,8 +363,8 @@ Renderer_Ducks::render_vfunc(
 				cr->rectangle(
 					round_to_int(tl[0]),
 					round_to_int(tl[1]),
-					round_to_int(std::abs(boxpoint[0]-point[0])),
-					round_to_int(std::abs(boxpoint[1]-point[1]))
+					round_to_int(std::fabs(boxpoint[0]-point[0])),
+					round_to_int(std::fabs(boxpoint[1]-point[1]))
 					);
 
 				// Solid white box

@@ -38,7 +38,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -76,7 +75,7 @@ bool KeyMapSettings::get_key(const char *path, Gtk::AccelKey *key)
 	GtkAccelKey	ac;
 	if(gtk_accel_map_lookup_entry(path,&ac))
 	{
-		*key = Gtk::AccelKey(ac.accel_key,(Gdk::ModifierType)ac.accel_mods,string(path));
+		*key = Gtk::AccelKey(ac.accel_key,(Gdk::ModifierType)ac.accel_mods, std::string(path));
 		return true;
 	}
 
@@ -85,7 +84,7 @@ bool KeyMapSettings::get_key(const char *path, Gtk::AccelKey *key)
 
 bool KeyMapSettings::load(const char *filename)
 {
-	string n(filename);
+	std::string n(filename);
 	n += ".skm";
 
 	Gtk::AccelMap::load(filename);
@@ -95,7 +94,7 @@ bool KeyMapSettings::load(const char *filename)
 
 bool KeyMapSettings::save(const char *filename)
 {
-	string n(filename);
+	std::string n(filename);
 	n += ".skm";
 
 	Gtk::AccelMap::save(filename);

@@ -56,7 +56,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
@@ -82,7 +81,7 @@ class studio::StateWidth_Context : public sigc::trackable
 	handle<Duck> radius;
 	handle<Duck> closestpoint;
 
-	map<handle<Duck>,Real>	changetable;
+	std::map<handle<Duck>,Real>	changetable;
 
 	etl::clock	clocktime;
 	// Real		lastt; // unused
@@ -553,7 +552,7 @@ StateWidth_Context::event_mouse_handler(const Smach::event& x)
 		//if we're dragging get the difference in time between now and then
 		if(event.key == EVENT_WORKAREA_MOUSE_BUTTON_DRAG)
 		{
-			dtime = min((float)(1/15.0),(float)(clocktime()));
+			dtime = std::min((float)(1/15.0),(float)(clocktime()));
 		}
 		clocktime.reset();
 
@@ -609,7 +608,7 @@ StateWidth_Context::event_mouse_handler(const Smach::event& x)
 			added = false;
 		}
 		//Affect the width changes here...
-		map<handle<Duck>,Real>::iterator i = changetable.begin();
+		std::map<handle<Duck>,Real>::iterator i = changetable.begin();
 		synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Sketch Width"));
 		for(; i != changetable.end(); ++i)
 		{

@@ -185,6 +185,21 @@ software::Contour::render_polyspan(
 					p.put_hline(window.maxx - x);
 				}
 
+				// fill any empty line until next mark
+				if (++y != cur_mark->y)
+				{
+					if (simple_fill)
+					{
+						sp.move_to(window.minx, y);
+						sp.put_block(cur_mark->y - y, window.maxx - window.minx);
+					}
+					else
+					{
+						p.move_to(window.minx, y);
+						p.put_block(cur_mark->y - y, window.maxx - window.minx);
+					}
+				}
+
 				// fill area at the beginning of the next line
 				if (simple_fill)
 				{

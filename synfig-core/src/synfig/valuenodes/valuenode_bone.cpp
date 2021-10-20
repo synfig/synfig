@@ -163,7 +163,7 @@ ValueNode_Bone::get_ordered_bones(etl::handle<const Canvas> canvas)
 	}
 
 	BoneList ret;
-	BoneSet seen;
+	//BoneSet seen;
 	BoneList new_list;
 
 	while (current_list.size())
@@ -589,6 +589,7 @@ ValueNode_Bone::get_children_vocab_vfunc() const
 	ret.push_back(ParamDesc(ValueBase(),"parent")
 		.set_local_name(_("Parent"))
 		.set_description(_("The parent bone of the bone"))
+		.set_static(true)
 	);
 
 	ret.push_back(ParamDesc(ValueBase(),"origin")
@@ -949,7 +950,6 @@ ValueNode_Bone::get_root_bone()
 void
 ValueNode_Bone::fix_bones_referenced_by(ValueNode::Handle value_node, ValueNode::Handle cloned_value_node, bool recursive, const std::map<const ValueNode*, ValueNode::Handle>& clone_map)
 {
-	BoneSet ret;
 	if (!value_node)
 	{
 		synfig::warning("%s:%d failed?\n", __FILE__, __LINE__);

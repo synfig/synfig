@@ -48,7 +48,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -99,7 +98,7 @@ synfig::ValueNode_Range::ValueNode_Range(const ValueBase &value):
 	else
 	{
 		assert(0);
-		throw runtime_error(get_local_name()+_(":Bad type ")+type.description.local_name);
+		throw std::runtime_error(get_local_name()+_(":Bad type ")+type.description.local_name);
 	}
 
 	assert(min_->get_type()==type);
@@ -132,7 +131,7 @@ synfig::ValueNode_Range::operator()(Time t)const
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	if(!min_ || !max_ || !link_)
-		throw runtime_error(strprintf("ValueNode_Range: %s",_("Some of my parameters aren't set!")));
+		throw std::runtime_error(strprintf("ValueNode_Range: %s",_("Some of my parameters aren't set!")));
 
 	Type &type(get_type());
 	if (type == type_angle)
@@ -196,7 +195,7 @@ ValueNode_Range::get_inverse(const Time& t, const ValueBase& target_value) const
 		return get_inverse(t, target_value.get(Angle()));
 	if (type == type_vector)
 		return get_inverse(t, target_value.get(Vector()));
-	throw runtime_error(strprintf("ValueNode_%s: %s: %s",get_name().c_str(),_("Attempting to get the inverse of a non invertible Valuenode"),_("Invalid value type")));
+	throw std::runtime_error(strprintf("ValueNode_%s: %s: %s",get_name().c_str(),_("Attempting to get the inverse of a non invertible Valuenode"),_("Invalid value type")));
 }
 
 synfig::ValueBase

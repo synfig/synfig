@@ -178,7 +178,10 @@ public:
 		dialog.set_default_response(dflt);
 
 		dialog.show_all();
-		return (Response) dialog.run();
+		int response = dialog.run();
+		if (response != RESPONSE_OK)
+			return RESPONSE_CANCEL;
+		return RESPONSE_OK;
 	}
 
 	virtual Response yes_no_cancel(
@@ -207,7 +210,10 @@ public:
 
 		dialog.set_default_response(dflt);
 		dialog.show();
-		return (Response)dialog.run();
+		int response = dialog.run();
+		if (response != RESPONSE_YES && response != RESPONSE_NO)
+			return RESPONSE_CANCEL;
+		return Response(response);
 	}
 
 	virtual bool
@@ -561,6 +567,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	toggling_show_guides=false;
 	toggling_snap_guides=false;
 	toggling_onion_skin=false;
+	toggling_onion_skin_keyframes=false;
 	toggling_background_rendering=false;
 
 	set_use_scrolled(false);
@@ -1255,6 +1262,7 @@ CanvasView::create_top_toolbar()
 
 	{ // Past onion skin spin button
 		past_onion_spin=Gtk::manage(new class Gtk::SpinButton(past_onion_adjustment_));
+		past_onion_spin->set_value(work_area->get_onion_skins()[0]);
 		past_onion_spin->signal_value_changed().connect(
 			sigc::mem_fun(*this, &CanvasView::set_onion_skins));
 		past_onion_spin->set_tooltip_text(_("Past Onion Skins"));
@@ -1270,6 +1278,7 @@ CanvasView::create_top_toolbar()
 
 	{ // Future onion skin spin button
 		future_onion_spin=Gtk::manage(new class Gtk::SpinButton(future_onion_adjustment_));
+		future_onion_spin->set_value(work_area->get_onion_skins()[1]);
 		future_onion_spin->signal_value_changed().connect(
 			sigc::mem_fun(*this, &CanvasView::set_onion_skins));
 		future_onion_spin->set_tooltip_text(_("Future Onion Skins"));
@@ -1281,6 +1290,22 @@ CanvasView::create_top_toolbar()
 		toolitem->show();
 
 		displaybar->append(*toolitem);
+	}
+
+	{ // Onion skin on Keyframes/Frames toggle button
+		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-keyframes"), iconsize));
+		icon->show();
+
+		onion_skin_keyframes = Gtk::manage(new class Gtk::ToggleToolButton());
+		onion_skin_keyframes->set_active(work_area->get_onion_skin_keyframes());
+		onion_skin_keyframes->set_icon_widget(*icon);
+		onion_skin_keyframes->signal_toggled().connect(
+			sigc::mem_fun(*this, &CanvasView::toggle_onion_skin_keyframes));
+		onion_skin_keyframes->set_label(_("Keyframes"));
+		onion_skin_keyframes->set_tooltip_text(_("Show Onion Skin on Keyframes when enabled, on Frames when disabled"));
+		onion_skin_keyframes->show();
+
+		displaybar->append(*onion_skin_keyframes);
 	}
 
 	if(App::enable_mainwin_toolbar)
@@ -1592,6 +1617,10 @@ CanvasView::init_menus()
 		onion_skin_toggle = Gtk::ToggleAction::create("toggle-onion-skin", _("Show Onion Skin"));
 		onion_skin_toggle->set_active(work_area->get_onion_skin());
 		action_group->add(onion_skin_toggle, sigc::mem_fun(*this, &CanvasView::toggle_onion_skin));
+
+		onion_skin_keyframes_toggle = Gtk::ToggleAction::create("toggle-onion-skin-keyframes", _("Onion Skin on Keyframes"));
+		onion_skin_keyframes_toggle->set_active(work_area->get_onion_skin_keyframes());
+		action_group->add(onion_skin_keyframes_toggle, sigc::mem_fun(*this, &CanvasView::toggle_onion_skin_keyframes));
 	}
 
 	action_group->add(
@@ -1703,6 +1732,7 @@ CanvasView::add_layer(String x)
 	Canvas::Handle canvas;
 	SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
 	int target_depth(0);
+	Layer::Handle layer;
 
 	if (layer_list.empty()) {
 		canvas = get_canvas();
@@ -1715,29 +1745,33 @@ CanvasView::add_layer(String x)
 	// check if import or sound layer then show an input dialog window
 	if(x=="import"||x=="sound")
 	{
-		String filename="";
+		String filename;
 		bool selected = false;
-		x == "sound" ? selected = App::dialog_open_file_audio(_("Please choose an audio file"), filename, ANIMATION_DIR_PREFERENCE): 
-		selected = App::dialog_open_file_image(_("Please choose an image file"), filename, IMAGE_DIR_PREFERENCE);
+		if (x == "sound") {
+			selected = App::dialog_open_file_audio(_("Please choose an audio file"), filename, ANIMATION_DIR_PREFERENCE);
+		} else {
+			selected = App::dialog_open_file_image(_("Please choose an image file"), filename, IMAGE_DIR_PREFERENCE);
+		}
 		if (selected)
 		{
 			String errors, warnings;
-			canvas_interface()->import(filename, errors, warnings, App::resize_imported_images);
-			if (warnings != "")
-			App::dialog_message_1b("WARNING", etl::strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
-				"details",	_("Close"));
+			layer = canvas_interface()->import(filename, errors, warnings, App::resize_imported_images);
+			if (!warnings.empty()) {
+				App::dialog_message_1b("WARNING", etl::strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
+					"details",	_("Close"));
+			}
 		}		
 	}
 	else
 	{
-		Layer::Handle layer(canvas_interface()->add_layer_to(x,canvas,target_depth));
-		if(layer)
-		{
-			get_selection_manager()->clear_selected_layers();
-			get_selection_manager()->set_selected_layer(layer);
-		}
+		layer = canvas_interface()->add_layer_to(x,canvas,target_depth);
 	}
-	
+
+	if(layer)
+	{
+		get_selection_manager()->clear_selected_layers();
+		get_selection_manager()->set_selected_layer(layer);
+	}
 }
 
 void
@@ -1755,7 +1789,12 @@ CanvasView::popup_layer_menu(Layer::Handle layer)
 	param_list.add("time",canvas_interface()->get_time());
 	param_list.add("canvas",Canvas::Handle(layer->get_canvas()));
 	param_list.add("canvas_interface",canvas_interface());
-	param_list.add("layer",layer);
+
+	SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
+	SelectionManager::LayerList::iterator iter;
+
+	for(iter=layer_list.begin();iter!=layer_list.end();++iter)
+		param_list.add("layer",Layer::Handle(*iter));
 
 	//Gtk::Menu *newlayers(manage(new Gtk::Menu()));
 	//build_new_layer_menu(*newlayers);
@@ -2101,6 +2140,17 @@ CanvasView::popup_param_menu(ValueDesc value_desc, float location, bool bezier)
 		parammenu.remove(**i);
 	get_instance()->make_param_menu(&parammenu,get_canvas(),value_desc,location,bezier);
 	parammenu.popup(3,gtk_get_current_event_time());
+}
+
+void
+CanvasView::create_new_vertex_on_bline(float location, synfigapp::ValueDesc value_desc)
+{
+	synfigapp::Action::Handle action = synfigapp::Action::create("ValueNodeDynamicListInsertSmartKeepShape");
+	auto param_list = canvas_interface()->generate_param_list(value_desc);
+	param_list.add("origin", location);
+	action->set_param_list(param_list);
+	if (action->is_ready())
+		canvas_interface()->get_instance()->perform_action(action);
 }
 
 void
@@ -2713,6 +2763,18 @@ CanvasView::toggle_onion_skin()
 	// Update the toggle onion skin button
 	onion_skin->set_active(work_area->get_onion_skin());
 	toggling_onion_skin=false;
+}
+
+void
+CanvasView::toggle_onion_skin_keyframes()
+{
+	if(toggling_onion_skin_keyframes)
+		return;
+	toggling_onion_skin_keyframes=true;
+	work_area->set_onion_skin_keyframes(!work_area->get_onion_skin_keyframes());
+	set_onion_skin_keyframes_toggle(work_area->get_onion_skin_keyframes());
+	onion_skin_keyframes->set_active(work_area->get_onion_skin_keyframes());
+	toggling_onion_skin_keyframes=false;
 }
 
 void
@@ -3450,13 +3512,18 @@ CanvasView::on_meta_data_changed()
 	toggling_show_guides=true;
 	toggling_snap_guides=true;
 	toggling_onion_skin=true;
+	toggling_onion_skin_keyframes=true;
 	toggling_background_rendering=true;
 	try
 	{
 		// Update the toggle ducks actions
 		Glib::RefPtr<Gtk::ToggleAction> action;
+		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-background-rendering"));
+		action->set_active((bool)(work_area->get_background_rendering()));
 		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-onion-skin"));
 		action->set_active((bool)(work_area->get_onion_skin()));
+		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-onion-skin-keyframes"));
+		action->set_active((bool)(work_area->get_onion_skin_keyframes()));
 		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-grid-show"));
 		action->set_active((bool)(work_area->grid_status()));
 		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-grid-snap"));
@@ -3466,7 +3533,9 @@ CanvasView::on_meta_data_changed()
 		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-guide-snap"));
 		action->set_active((bool)(work_area->get_guide_snap()));
 		// Update the toggle buttons
+		background_rendering_button->set_active(work_area->get_background_rendering());
 		onion_skin->set_active(work_area->get_onion_skin());
+		onion_skin_keyframes->set_active(work_area->get_onion_skin_keyframes());
 		snap_grid->set_active(work_area->get_grid_snap());
 		show_grid->set_active(work_area->grid_status());
 		snap_guides->set_active(work_area->get_guide_snap());
@@ -3482,6 +3551,7 @@ CanvasView::on_meta_data_changed()
 		toggling_show_guides=false;
 		toggling_snap_guides=false;
 		toggling_onion_skin=false;
+		toggling_onion_skin_keyframes=false;
 		toggling_background_rendering=false;
 	}
 	toggling_show_grid=false;
@@ -3489,6 +3559,7 @@ CanvasView::on_meta_data_changed()
 	toggling_show_guides=false;
 	toggling_snap_guides=false;
 	toggling_onion_skin=false;
+	toggling_onion_skin_keyframes=false;
 	toggling_background_rendering=false;
 }
 
@@ -3532,7 +3603,7 @@ CanvasView::import_file()
 		}
 
 		// Import
-		canvas_interface()->import(filename, errors, warnings, App::resize_imported_images);
+		Layer::Handle layer = canvas_interface()->import(filename, errors, warnings, App::resize_imported_images);
 		if (!errors.empty())
 			App::dialog_message_1b(
 				"ERROR",
@@ -3545,6 +3616,11 @@ CanvasView::import_file()
 				etl::strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
 				"details",
 				_("Close"));
+
+		if (layer) {
+			get_selection_manager()->clear_selected_layers();
+			get_selection_manager()->set_selected_layer(layer);
+		}
 	}
 }
 
