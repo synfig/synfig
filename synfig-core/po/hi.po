@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the Synfig Core package.
 # 
 # Translators:
-# Kunda, 2013-2014
+# Nihaal Moktan Tamang <nihaalmoktan18@gmail.com>, 2021
 msgid ""
 msgstr ""
 "Project-Id-Version: Synfig UI\n"
@@ -11,17 +11,17 @@ msgstr ""
 "POT-Creation-Date: 2021-08-23 11:23+0700\n"
 "PO-Revision-Date: 2021-08-23 04:23+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
-"Language-Team: Hebrew (http://www.transifex.com/morevnaproject/synfig/language/he/)\n"
+"Language-Team: Hindi (http://www.transifex.com/morevnaproject/synfig/language/hi/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: he\n"
-"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % 1 == 0) ? 1: (n % 10 == 0 && n % 1 == 0 && n > 10) ? 2 : 3;\n"
+"Language: hi\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:105
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:864
 msgid "Text"
-msgstr ""
+msgstr "टेक्स्ट "
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:106
 #: ../src/modules/lyr_std/import.cpp:69
@@ -35,19 +35,19 @@ msgstr ""
 #: ../src/synfig/layers/layer_sound.cpp:58
 #: ../src/synfig/layers/layer_switch.cpp:62
 msgid "Other"
-msgstr ""
+msgstr "अन्य"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:439
 msgid "Text Layer"
-msgstr ""
+msgstr " टेक्स्ट तह"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:574
 msgid "unable to initialize"
-msgstr ""
+msgstr "प्रारंभ करनेमे असक्षम  "
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:615
 msgid "empty font set"
-msgstr ""
+msgstr "खाली फॉन्टका संग्रह "
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:746
 msgid "Unable to open font face."
@@ -55,7 +55,7 @@ msgstr ""
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:865
 msgid "Text to Render"
-msgstr ""
+msgstr "रेंडर करनेके लिए टेक्स्ट "
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:870
 #: ../src/modules/lyr_std/shade.cpp:177
@@ -64,39 +64,39 @@ msgstr ""
 #: ../src/synfig/layers/layer_solidcolor.cpp:113
 #: ../src/synfig/paramdesc.cpp:87
 msgid "Color"
-msgstr "צבע"
+msgstr "रंग "
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:871
 msgid "Color of the text"
-msgstr ""
+msgstr "टेक्स्टका रंग "
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:875
 msgid "Font Family"
-msgstr ""
+msgstr "टेस्टका समूह "
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:880
 msgid "Style"
-msgstr ""
+msgstr "शैली "
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:883
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:896
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:374
 msgid "Normal"
-msgstr ""
+msgstr "सामान्य "
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:884
 msgid "Oblique"
-msgstr ""
+msgstr "तिरछा "
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:885
 msgid "Italic"
-msgstr ""
+msgstr "तिरछे अक्षर "
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:889
 #: ../src/synfig/valuenodes/valuenode_boneweightpair.cpp:160
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:839
 msgid "Weight"
-msgstr ""
+msgstr "भार"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:892
 msgid "Thin"
@@ -104,7 +104,7 @@ msgstr ""
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:893
 msgid "Ultralight"
-msgstr ""
+msgstr "अत्यंत हल्का "
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:894
 msgid "Light"
@@ -120,15 +120,15 @@ msgstr ""
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:898
 msgid "Bold"
-msgstr ""
+msgstr "गाढ़ा"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:899
 msgid "Ultrabold"
-msgstr ""
+msgstr "अत्यंत गाढ़ा "
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:900
 msgid "Heavy"
-msgstr ""
+msgstr "भारी "
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:901
 msgid "Ultraheavy"
@@ -136,7 +136,7 @@ msgstr ""
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:904
 msgid "Horizontal Spacing"
-msgstr ""
+msgstr "अनुप्रस्थ अंतरालन"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:905
 msgid "Defines how close the glyphs are horizontally"
@@ -198,7 +198,7 @@ msgstr ""
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:934
 msgid "Font"
-msgstr "גופן"
+msgstr ""
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:935
 msgid "Filename of the font to use"
@@ -495,16 +495,16 @@ msgstr ""
 
 #: ../src/modules/lyr_std/julia.cpp:61
 msgid "Julia Set"
-msgstr "קבוצת ג'וליה"
+msgstr ""
 
 #: ../src/modules/lyr_std/julia.cpp:62
 #: ../src/modules/lyr_std/mandelbrot.cpp:61
 msgid "Fractals"
-msgstr "פרקטלים"
+msgstr ""
 
 #: ../src/modules/lyr_std/julia.cpp:349
 msgid "Inside Color"
-msgstr "צבע פנימי"
+msgstr ""
 
 #: ../src/modules/lyr_std/julia.cpp:350
 msgid "Color of the Set"
@@ -512,7 +512,7 @@ msgstr ""
 
 #: ../src/modules/lyr_std/julia.cpp:353
 msgid "Outside Color"
-msgstr "צבע חיצוני"
+msgstr ""
 
 #: ../src/modules/lyr_std/julia.cpp:354
 msgid "Color outside the Set"
@@ -611,7 +611,7 @@ msgstr ""
 
 #: ../src/modules/lyr_std/mandelbrot.cpp:60
 msgid "Mandelbrot Set"
-msgstr "קבוצת מנדלברוט"
+msgstr ""
 
 #: ../src/modules/lyr_std/mandelbrot.cpp:236
 #: ../src/modules/lyr_std/mandelbrot.cpp:240
@@ -722,7 +722,7 @@ msgstr ""
 #: ../src/modules/mod_noise/valuenode_random.cpp:248
 #: ../src/synfig/valuenodes/valuenode_radialcomposite.cpp:266
 msgid "Radius"
-msgstr "רדיוס"
+msgstr ""
 
 #: ../src/modules/lyr_std/sphere_distort.cpp:151
 msgid "Size of the sphere distortion"
@@ -800,7 +800,7 @@ msgstr ""
 #: ../src/modules/lyr_std/supersample.cpp:128
 #: ../src/tool/printing_functions.cpp:119
 msgid "Height"
-msgstr "גובה"
+msgstr ""
 
 #: ../src/modules/lyr_std/supersample.cpp:129
 msgid "Height of the sample area (In pixels)"
@@ -1044,7 +1044,7 @@ msgstr ""
 #: ../src/modules/mod_ppm/mptr_ppm.cpp:67
 #, c-format
 msgid "Unable to open %s"
-msgstr "לא ניתן לפתוח את %s"
+msgstr ""
 
 #: ../src/modules/mod_bmp/mptr_bmp.cpp:143
 #: ../src/modules/mod_bmp/mptr_bmp.cpp:144
@@ -1090,7 +1090,7 @@ msgstr ""
 #: ../src/modules/mod_bmp/trgt_bmp.cpp:232
 #: ../src/modules/mod_bmp/trgt_bmp.cpp:233
 msgid "Unable to open file"
-msgstr "לא ניתן לפתוח את הקובץ"
+msgstr ""
 
 #: ../src/modules/mod_bmp/trgt_bmp.cpp:264
 #: ../src/modules/mod_bmp/trgt_bmp.cpp:265
@@ -1117,7 +1117,7 @@ msgstr ""
 #: ../src/modules/mod_example/metaballs.cpp:56
 #: ../src/modules/mod_example/simplecircle.cpp:59
 msgid "Example"
-msgstr "דוגמא"
+msgstr ""
 
 #: ../src/modules/mod_example/metaballs.cpp:126
 #: ../src/modules/mod_gradient/conicalgradient.cpp:107
@@ -1292,7 +1292,7 @@ msgstr ""
 
 #: ../src/modules/mod_filter/halftone3.cpp:348
 msgid " Color"
-msgstr "צבע"
+msgstr ""
 
 #: ../src/modules/mod_filter/halftone3.cpp:352
 msgid " Mask Origin"
@@ -1332,7 +1332,7 @@ msgstr ""
 #: ../src/synfig/layers/layer_polygon.cpp:58
 #: ../src/synfig/layers/layer_solidcolor.cpp:57
 msgid "Geometry"
-msgstr "גיאומטריה"
+msgstr ""
 
 #: ../src/modules/mod_geometry/advanced_outline.cpp:729
 #: ../src/modules/mod_geometry/outline.cpp:274
@@ -1554,7 +1554,7 @@ msgstr ""
 
 #: ../src/modules/mod_geometry/rectangle.cpp:51
 msgid "Rectangle"
-msgstr "מלבן"
+msgstr ""
 
 #: ../src/modules/mod_geometry/rectangle.cpp:181
 #: ../src/modules/mod_gradient/lineargradient.cpp:158
@@ -1606,7 +1606,7 @@ msgstr ""
 
 #: ../src/modules/mod_geometry/star.cpp:58
 msgid "Star"
-msgstr "כוכב"
+msgstr ""
 
 #: ../src/modules/mod_geometry/star.cpp:153
 msgid "Outer Radius"
@@ -1633,7 +1633,7 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_cos.cpp:148
 #: ../src/synfig/valuenodes/valuenode_sine.cpp:148
 msgid "Angle"
-msgstr "זוית"
+msgstr ""
 
 #: ../src/modules/mod_geometry/star.cpp:168
 msgid "The orientation of the star"
@@ -1793,7 +1793,7 @@ msgstr ""
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:180
 #: ../src/synfig/listimporter.cpp:177 ../src/synfig/listimporter.cpp:178
 msgid "Unable to open "
-msgstr "לא ניתן לפתוח"
+msgstr ""
 
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:186
 #: ../src/modules/mod_imagemagick/mptr_imagemagick.cpp:187
@@ -1967,7 +1967,7 @@ msgstr ""
 #: ../src/modules/mod_noise/valuenode_random.cpp:258
 #: ../src/synfig/layers/layer_pastecanvas.cpp:143
 msgid "Speed"
-msgstr "מהירות"
+msgstr ""
 
 #: ../src/modules/mod_noise/valuenode_random.cpp:259
 msgid ""
@@ -2148,23 +2148,23 @@ msgstr ""
 
 #: ../src/synfig/base_types.cpp:127
 msgid "angle"
-msgstr "זוית"
+msgstr ""
 
 #: ../src/synfig/base_types.cpp:173 ../src/synfig/base_types.cpp:174
 msgid "real"
-msgstr "אמיתי"
+msgstr ""
 
 #: ../src/synfig/base_types.cpp:204 ../src/synfig/base_types.cpp:205
 msgid "time"
-msgstr "זמן"
+msgstr ""
 
 #: ../src/synfig/base_types.cpp:231
 msgid "vector"
-msgstr "וקטור"
+msgstr ""
 
 #: ../src/synfig/base_types.cpp:250
 msgid "color"
-msgstr "צבע"
+msgstr ""
 
 #: ../src/synfig/base_types.cpp:269
 msgid "segment"
@@ -2225,11 +2225,11 @@ msgstr ""
 
 #: ../src/synfig/distance.cpp:249
 msgid "Units"
-msgstr "יחידות"
+msgstr ""
 
 #: ../src/synfig/distance.cpp:250
 msgid "Pixels"
-msgstr "פיקסלים"
+msgstr ""
 
 #: ../src/synfig/distance.cpp:252
 msgid "Inches"
@@ -2237,15 +2237,15 @@ msgstr ""
 
 #: ../src/synfig/distance.cpp:253
 msgid "Meters"
-msgstr "מטר"
+msgstr ""
 
 #: ../src/synfig/distance.cpp:254
 msgid "Millimeters"
-msgstr "מילימטרים"
+msgstr ""
 
 #: ../src/synfig/distance.cpp:255
 msgid "Centimeters"
-msgstr "סנטימטרים"
+msgstr ""
 
 #: ../src/synfig/importer.cpp:100
 msgid "Importer::open(): Cannot open empty filename"
@@ -2395,7 +2395,7 @@ msgstr ""
 #: ../src/synfig/layers/layer_motionblur.cpp:134
 #: ../src/synfig/valuenodes/valuenode_const.cpp:168
 msgid "Constant"
-msgstr "קבוע"
+msgstr ""
 
 #: ../src/synfig/layers/layer_motionblur.cpp:136
 msgid "Hyperbolic"
@@ -2520,7 +2520,7 @@ msgstr ""
 #: ../src/synfig/layers/layer_skeleton.cpp:142
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:585
 msgid "Name"
-msgstr "שם"
+msgstr ""
 
 #: ../src/synfig/layers/layer_skeleton.cpp:145
 #: ../src/synfig/layers/layer_skeletondeformation.cpp:99
@@ -2642,7 +2642,7 @@ msgstr ""
 
 #: ../src/synfig/loadcanvas.cpp:218
 msgid "Too many warnings"
-msgstr "יותר מדי אזהרות"
+msgstr ""
 
 #: ../src/synfig/loadcanvas.cpp:249
 #, c-format
@@ -3040,16 +3040,16 @@ msgstr ""
 #: ../src/synfig/main.cpp:440 ../src/tool/progress.h:48
 #: ../src/tool/renderprogress.cpp:40
 msgid "error"
-msgstr "שגיאה"
+msgstr ""
 
 #: ../src/synfig/main.cpp:457 ../src/tool/progress.h:55
 #: ../src/tool/renderprogress.cpp:46
 msgid "warning"
-msgstr "אזהרה"
+msgstr ""
 
 #: ../src/synfig/main.cpp:477
 msgid "info"
-msgstr "מידע"
+msgstr ""
 
 #: ../src/synfig/module.cpp:65
 msgid "Errors on lt_dlinit()"
@@ -3087,11 +3087,11 @@ msgstr ""
 #: ../src/synfig/module.cpp:192
 #, c-format
 msgid "Success for \"%s\""
-msgstr "הצלחה עבור \"%s\""
+msgstr ""
 
 #: ../src/synfig/palette.cpp:80
 msgid "Unnamed"
-msgstr "ללא שם"
+msgstr ""
 
 #: ../src/synfig/palette.cpp:97
 msgid "Surface Palette"
@@ -3100,7 +3100,7 @@ msgstr ""
 #: ../src/synfig/palette.cpp:294
 #, c-format
 msgid "%0.2f%% Gray"
-msgstr "%0.2f%% אפור"
+msgstr ""
 
 #: ../src/synfig/palette.cpp:305
 #, c-format
@@ -3128,19 +3128,19 @@ msgstr ""
 
 #: ../src/synfig/paramdesc.cpp:73
 msgid "Straight"
-msgstr "ישר"
+msgstr ""
 
 #: ../src/synfig/paramdesc.cpp:74
 msgid "Onto"
-msgstr "על גבי"
+msgstr ""
 
 #: ../src/synfig/paramdesc.cpp:75
 msgid "Straight Onto"
-msgstr "ישר על גבי"
+msgstr ""
 
 #: ../src/synfig/paramdesc.cpp:76
 msgid "Behind"
-msgstr "מאחור"
+msgstr ""
 
 #: ../src/synfig/paramdesc.cpp:77
 msgid "Screen"
@@ -3156,11 +3156,11 @@ msgstr ""
 
 #: ../src/synfig/paramdesc.cpp:80
 msgid "Multiply"
-msgstr "להכפיל"
+msgstr ""
 
 #: ../src/synfig/paramdesc.cpp:81
 msgid "Divide"
-msgstr "לחלק"
+msgstr ""
 
 #: ../src/synfig/paramdesc.cpp:82
 msgid "Add"
@@ -3212,7 +3212,7 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:651
 #: ../src/synfig/valuenodes/valuenode_radialcomposite.cpp:258
 msgid "Alpha"
-msgstr "אלפא"
+msgstr ""
 
 #: ../src/synfig/render.cpp:121 ../src/synfig/render.cpp:122
 #: ../src/synfig/render.cpp:176 ../src/synfig/render.cpp:177
@@ -3554,7 +3554,7 @@ msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_atan2.cpp:141
 msgid "X"
-msgstr "X"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_atan2.cpp:142
 msgid "Cosine of the angle"
@@ -3833,7 +3833,7 @@ msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_compare.cpp:170
 msgid "Greater"
-msgstr "רב"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_compare.cpp:171
 msgid "When checked, returns true if LHS > RHS"
@@ -3841,7 +3841,7 @@ msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_compare.cpp:175
 msgid "Equal"
-msgstr "שווה"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_compare.cpp:176
 msgid "When checked, returns true if LHS = RHS"
@@ -3849,7 +3849,7 @@ msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_compare.cpp:180
 msgid "Less"
-msgstr "פחות"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_compare.cpp:181
 msgid "When checked, returns true if LHS < RHS"
@@ -3861,7 +3861,7 @@ msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:639
 msgid "Red"
-msgstr "אדום"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:640
 msgid "The red component of the color"
@@ -3869,7 +3869,7 @@ msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:643
 msgid "Green"
-msgstr "ירוק"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:644
 msgid "The green component of the color"
@@ -3877,7 +3877,7 @@ msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:647
 msgid "Blue"
-msgstr "כחול"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:648
 msgid "The blue component of the color"
@@ -3885,7 +3885,7 @@ msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:652
 msgid "The alpha of the color"
-msgstr "האלפא של הצבע"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:660
 msgid "Vertex 1"
@@ -3923,7 +3923,7 @@ msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:681
 msgid "X-Axis"
-msgstr "ציר-X"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:682
 msgid "The X-Axis component of the vector"
@@ -3931,7 +3931,7 @@ msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:685
 msgid "Y-Axis"
-msgstr "ציר-Y"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:686
 msgid "The Y-Axis component of the vector"
@@ -4469,7 +4469,7 @@ msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_radialcomposite.cpp:270
 msgid "Theta"
-msgstr "תטא"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_radialcomposite.cpp:271
 msgid "The angle of the vector with the X axis"
@@ -4505,7 +4505,7 @@ msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_realstring.cpp:164
 msgid "Real"
-msgstr "אמיתי"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_reciprocal.cpp:160
 msgid "The value node used to calculate its reciprocal"
@@ -4548,7 +4548,7 @@ msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:212
 msgid "Specify Start"
-msgstr "ציין התחלה"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:213
 msgid ""
@@ -4557,7 +4557,7 @@ msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:217
 msgid "Specify End"
-msgstr "ציין סיום"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:218
 msgid ""
@@ -4566,7 +4566,7 @@ msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:222
 msgid "Start Color"
-msgstr "התחלת הצבע"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:223
 msgid "Used as the start of the resulting gradient"
@@ -4574,7 +4574,7 @@ msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:227
 msgid "End Color"
-msgstr "סיום הצבע"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_repeat_gradient.cpp:228
 msgid "Used as the end of the resulting gradient"
@@ -4653,7 +4653,7 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_stripes.cpp:183
 #: ../src/synfig/valuenodes/valuenode_twotone.cpp:147
 msgid "Color 1"
-msgstr "צבע 1"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_stripes.cpp:184
 msgid "One color of the gradient stripes"
@@ -4662,7 +4662,7 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_stripes.cpp:188
 #: ../src/synfig/valuenodes/valuenode_twotone.cpp:152
 msgid "Color 2"
-msgstr "צבע 2"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_stripes.cpp:189
 msgid "Other color of the gradient stripes"
@@ -4755,7 +4755,7 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_vectorx.cpp:136
 #: ../src/synfig/valuenodes/valuenode_vectory.cpp:136
 msgid "Vector"
-msgstr "וקטור"
+msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_vectorangle.cpp:139
 msgid "The vector where the angle is calculated from"
@@ -4846,7 +4846,7 @@ msgstr ""
 
 #: ../src/tool/joblistprocessor.cpp:282
 msgid " seconds."
-msgstr "שניות."
+msgstr ""
 
 #: ../src/tool/joblistprocessor.cpp:286
 msgid "Done."
@@ -4854,7 +4854,7 @@ msgstr ""
 
 #: ../src/tool/optionsprocessor.cpp:84
 msgid "Settings"
-msgstr "הגדרות"
+msgstr ""
 
 #: ../src/tool/optionsprocessor.cpp:84
 msgid "Show settings help"
@@ -5105,7 +5105,7 @@ msgstr ""
 
 #: ../src/tool/optionsprocessor.cpp:441
 msgid "Version: "
-msgstr "גרסה:"
+msgstr ""
 
 #: ../src/tool/optionsprocessor.cpp:446
 msgid "param - "
@@ -5121,11 +5121,11 @@ msgstr ""
 
 #: ../src/tool/optionsprocessor.cpp:453
 msgid "\tDescription: "
-msgstr "\tתאור: "
+msgstr ""
 
 #: ../src/tool/optionsprocessor.cpp:457
 msgid "\tHint: "
-msgstr "\tרמז: "
+msgstr ""
 
 #: ../src/tool/optionsprocessor.cpp:509
 #, c-format
@@ -5252,7 +5252,7 @@ msgstr ""
 
 #: ../src/tool/printing_functions.cpp:142
 msgid "Pixel Height"
-msgstr "גובה פיקסל"
+msgstr ""
 
 #: ../src/tool/printing_functions.cpp:149
 msgid "Pixel Aspect Ratio"

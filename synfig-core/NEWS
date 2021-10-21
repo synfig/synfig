@@ -1,6 +1,33 @@
+## Version 1.4.2
+- [`6b0d418`](https://github.com/synfig/synfig/commit/6b0d4185255cc534940709c9001227d1ef52ba68) [Autotools] Fixed problem with missing \*.glsl files in distribution ([#1982](https://github.com/synfig/synfig/issues/1982))
+- [`4ddd22d`](https://github.com/synfig/synfig/commit/4ddd22d8de1f4729c83fe0b0e8cde5b46fd84e87) Merge PR [#1995](https://github.com/synfig/synfig/issues/1995): [Core] create stringhelper
+- [`885f3ac`](https://github.com/synfig/synfig/commit/885f3ac6ebb87252439df7bbb2eec2eb8b29e2c4) [Core] Fix missing is_distance hint for vertex coordinates ([#2000](https://github.com/synfig/synfig/issues/2000))
+- [`b660807`](https://github.com/synfig/synfig/commit/b6608075a87fe17e3615947b08a73ad91be05726) [Core/Studio] Fix missing const qualifier for some relational operators overrides ([#2001](https://github.com/synfig/synfig/issues/2001))
+- [`0f7fb39`](https://github.com/synfig/synfig/commit/0f7fb391fb4c682515aaa94098ae85c180a92dbb) [Core] LinkableValueNode now provides methods for inverse manipulation ([#2057](https://github.com/synfig/synfig/issues/2057))
+- [`b1468c7`](https://github.com/synfig/synfig/commit/b1468c7dead6f12e0882ac4cd364c445074d4cf7) [Synfig Studio] make TimeLoop valuenode editable via workspace ([#2066](https://github.com/synfig/synfig/issues/2066))
+- [`65f50eb`](https://github.com/synfig/synfig/commit/65f50eb4e4c180243b58425620a0905ae0f7c01b) [Synfig Studio] fix skeleton deformation duplication ([#2071](https://github.com/synfig/synfig/issues/2071))
+- [`fd1e5ec`](https://github.com/synfig/synfig/commit/fd1e5ecdc3cf2cf9cb2ee642ca7f7b89aa04b40b) sometimes Widget_Vector didn't use locale for decimal separator ([#2102](https://github.com/synfig/synfig/issues/2102))
+- [`3c0f04d`](https://github.com/synfig/synfig/commit/3c0f04d55e54459e36b7872812a07772989e74d0) Fixed 'locale::facet::_S_create_c_locale name not valid' error when compiling with MinGW compiler ([#2157](https://github.com/synfig/synfig/issues/2157))
+- [`9a2187c`](https://github.com/synfig/synfig/commit/9a2187cdb250c958f46c9d9357b53d6606bccf1d) Merge PR [#1260](https://github.com/synfig/synfig/issues/1260): Fixed exception throwing by mistake in dot-product valuenode creation
+- [`4789a5b`](https://github.com/synfig/synfig/commit/4789a5b864a290caf1d3081c84c17b79869f7a4c) [Core] A little refactoring of loadcanvas.cpp ([#1956](https://github.com/synfig/synfig/issues/1956))
+- [`d76d77f`](https://github.com/synfig/synfig/commit/d76d77fc4d58a847e5883915ecca0c362b62a648) Fixed issue with saving `loop` flag in some dynamic lists ([#2165](https://github.com/synfig/synfig/issues/2165))
+- [`93365c5`](https://github.com/synfig/synfig/commit/93365c51a509d6d013d7c0f76c7be64693c8fd75) Merge PR [#2137](https://github.com/synfig/synfig/issues/2137): Fix memory leaks on SVG parser/importer
+- [`d3906ca`](https://github.com/synfig/synfig/commit/d3906ca969de15df00776353d13387317e08ca38) Merge PR [#1853](https://github.com/synfig/synfig/issues/1853): `etl::clock` refactored to use `std::chrono`
+- [`71de9ff`](https://github.com/synfig/synfig/commit/71de9ff60b337c952abd983563cc7736a00ad714) Fix various typos ([#2061](https://github.com/synfig/synfig/issues/2061))
+- [`5718557`](https://github.com/synfig/synfig/commit/571855713add1c0bf6ac5a1df357a4f47e7f53c3) Fixed incorrect background redrawing on animated GIFs with transparent background ([#2134](https://github.com/synfig/synfig/issues/2134))
 ## Version 1.4.1
+- [`2f18910`](https://github.com/synfig/synfig/commit/2f18910f4dc1657300574cec93db60a429755d9b) assure uniqueness for new node guid ([#2029](https://github.com/synfig/synfig/issues/2029))
+- [`349810e`](https://github.com/synfig/synfig/commit/349810e2f9a25af3297b776ee88c6c035abdb717) Fixed issue with rendering to file when using non-Latin filenames ([#1940](https://github.com/synfig/synfig/issues/1940))
+- [`8809482`](https://github.com/synfig/synfig/commit/8809482a2f4485155324b6b49481fb8303094bb9) Added support for loading `average` values ([#1955](https://github.com/synfig/synfig/issues/1955))
+- [`7d68380`](https://github.com/synfig/synfig/commit/7d683807d8141e1269f8acb40454d62d1c5c254a) Fixed incorrect import of `lst` files when path contains non-Latin characters ([#1924](https://github.com/synfig/synfig/issues/1924))
+- [`0bd6fd5`](https://github.com/synfig/synfig/commit/0bd6fd5bde72abe358f841c8a06cc56f3c1f8f86) Merge PR [#1889](https://github.com/synfig/synfig/issues/1889): [Synfig Studio/Windows] Fixed load/save operations for Palette editor
+- [`f8de319`](https://github.com/synfig/synfig/commit/f8de31931c1de367f70f46c839a518ea8d4012d2) Fix crash in Spline Tangent converter ([#1836](https://github.com/synfig/synfig/issues/1836))
+- [`03ab84d`](https://github.com/synfig/synfig/commit/03ab84debd51a23d430c8e214ed799ab6ef4a59f) Fixed error when output to MPEG-1 format with audio ([#1830](https://github.com/synfig/synfig/issues/1830))
+- [`23bf66a`](https://github.com/synfig/synfig/commit/23bf66ab53aa7bd3ef3a70fb4488a97b005da3da) Fix animation interpolation for boolean values ([#1826](https://github.com/synfig/synfig/issues/1826))
+- [`985afc4`](https://github.com/synfig/synfig/commit/985afc44935778396406150c130b9653b977def3) fix Duplicate layer ignoring all layers but the first one ([#1829](https://github.com/synfig/synfig/issues/1829))
+- [`a583e73`](https://github.com/synfig/synfig/commit/a583e73d4c47914284b15f4a8d7719eafddfe1b4) autotools: pango and imagemagick c++ flags and libs have been moved to their respective modules ([#1688](https://github.com/synfig/synfig/issues/1688))
 - [`383fcf8`](https://github.com/synfig/synfig/commit/383fcf8) [Autotools] remove support for broken OpenGL renderering ([#2055](https://github.com/synfig/synfig/issues/2055))
-- [`19112f1`](https://github.com/synfig/synfig/commit/19112f10adf3b25aad93057d7a0ed03d35b0b2de) Fix crash in Spline Vertex converter (https://github.com/synfig/synfig/issues/1731)
+- [`19112f1`](https://github.com/synfig/synfig/commit/19112f10adf3b25aad93057d7a0ed03d35b0b2de) Fix crash in Spline Vertex converter ([#1802](https://github.com/synfig/synfig/issues/1802))
 - [`99a1cde`](https://github.com/synfig/synfig/commit/99a1cde2b1e54540857925e6899deb708e17f305) Export video files with sound ([#1623](https://github.com/synfig/synfig/issues/1623))
 
 --------------------------

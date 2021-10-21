@@ -33,6 +33,7 @@ ccache \
 cmake \
 fftw \
 fontconfig \
+fribidi \
 gettext \
 glibmm \
 gtkmm3 \
@@ -66,6 +67,7 @@ if [ $OS -lt 15 ] && [ -z "$TRAVIS_BUILD_DIR" ]; then # For OSX < 10.11
     cd /usr/local/Homebrew/
     git checkout 1.4.1
     brew info gobject-introspection | grep >/dev/null 'Not installed' && brew install ${WORKDIR}/autobuild/osx/gobject-introspection.rb
+    brew info fribidi | grep >/dev/null 'Not installed' && brew install ${WORKDIR}/autobuild/osx/fribidi.rb # broken url in original formula
 fi
 
 for pkg in $PACKAGES;
