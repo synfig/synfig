@@ -409,7 +409,10 @@ C blendfunc_ALPHA_INTERSECTION(C& fg, C& bg, float amount)
 
 	if (bg_transparent || fg_transparent)
 		return blendfunc_COMPOSITE(fg, bg, amount);
-	return blendfunc_ALPHA_OVER(fg, bg, amount);
+
+	C rm(bg);
+	rm.set_a((C::ceil - amount) * bg.get_a());
+	return rm;
 }
 
 } // synfig namespace
