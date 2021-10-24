@@ -64,11 +64,14 @@ Widget_Keyframe_List::get_keyframe_around(Time t, bool ignore_disabled)
 
 	Time p_t, n_t;
 	kf_list->find_prev_next(t, p_t, n_t, ignore_disabled);
+
+	const Time keyframe_mark_time_length = time_plot_data.get_delta_t_from_delta_pixel_coord(keyframe_width);
+
 	Time delta_to_previous = t - p_t;
 	Time delta_to_next = n_t - t;
 
 	// near to previous keyframe?
-	if (delta_to_previous < time_ratio) {
+	if (delta_to_previous < keyframe_mark_time_length/2) {
 		// is it nearest to previous one than to next one?
 		if (delta_to_previous < delta_to_next) {
 			if (kf_list->find(p_t, ret))
@@ -76,7 +79,7 @@ Widget_Keyframe_List::get_keyframe_around(Time t, bool ignore_disabled)
 		}
 	}
 
-	if (!kf && delta_to_next < time_ratio) {
+	if (!kf && delta_to_next < keyframe_mark_time_length/2) {
 		if (kf_list->find(n_t, ret))
 			kf = &*ret;
 	}
@@ -90,7 +93,9 @@ Widget_Keyframe_List::Widget_Keyframe_List():
 	dragging(),
 	changed(),
 	selected(),
-	moving_tooltip(Gtk::WINDOW_POPUP)
+	moving_tooltip(Gtk::WINDOW_POPUP),
+	time_plot_data(*this),
+	keyframe_width(4)
 	//moving_tooltip_y()
 {
 	set_size_request(-1, 10);
@@ -144,7 +149,7 @@ bool
 Widget_Keyframe_List::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 {
 	// Check if the window we want draw is ready
-	if (!time_model)
+	if (!time_plot_data.time_model)
 		return false;
 
 	// TODO: hardcoded colors
@@ -168,17 +173,10 @@ Widget_Keyframe_List::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	const double ah(h - 4);
 	const double aw(2*ah);
 
+	keyframe_width = aw;
+
 	if (w <= 0 || h <= 0)
 		return false;
-
-	// Boundaries of the drawing area in time units.
-	Time lower(time_model->get_visible_lower());
-	Time upper(time_model->get_visible_upper());
-
-	time_ratio = (upper - lower)*(0.5*(double)aw/(double)w);
-	Time lower_ex = lower - time_ratio;
-	Time upper_ex = upper + time_ratio;
-	double k = (double)w/(double)(upper - lower);
 
 	// Draw a background
 	cr->save();
@@ -193,11 +191,11 @@ Widget_Keyframe_List::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	// draw all keyframes
 	Time selected_time = Time::end();
 	for(KeyframeList::const_iterator i = kf_list->begin(); i != kf_list->end(); ++i)
-		if (lower_ex < i->get_time() && i->get_time() < upper_ex) {
+		if (time_plot_data.is_time_visible_extra(i->get_time())) {
 			if (*i == selected_kf) {
 				selected_time = i->get_time();
 			} else {
-				const double x = k*(double)(i->get_time() - lower);
+				const double x = time_plot_data.get_pixel_t_coord(i->get_time());
 				draw_arrow(cr, x, y, aw, ah, i->active(), normal);
 			}
 		}
@@ -205,9 +203,9 @@ Widget_Keyframe_List::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	// we do this so that we can be sure that
 	// the selected keyframe is shown on top
 	if (selected_time != Time::end()) {
-		const double x = k*(double)(selected_time - lower);
+		const double x = time_plot_data.get_pixel_t_coord(selected_time);
 		if (dragging) {
-			const double new_x = k*(double)(dragging_kf_time - lower);
+			const double new_x = time_plot_data.get_pixel_t_coord(dragging_kf_time);
 			draw_arrow(cr, x, y, aw, ah, selected_kf.active(), drag_old_position);
 			draw_arrow(cr, new_x, y, aw, ah, selected_kf.active(), drag_new_position);
 		} else {
@@ -329,8 +327,10 @@ bool
 Widget_Keyframe_List::on_event(GdkEvent *event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
-	if (!time_model || get_width() <= 0 || !kf_list || !editable)
+	if (!time_plot_data.time_model || get_width() <= 0 || !kf_list || !editable)
 		return false;
+
+	etl::handle<TimeModel> time_model = time_plot_data.time_model;
 
 	const int x = (int)event->button.x;
 
@@ -339,7 +339,7 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 	Time upper(time_model->get_visible_upper());
 
 	// The time where the event x is
-	Time t = lower + (upper - lower)*((double)x/(double)get_width());
+	Time t = time_plot_data.get_t_from_pixel_coord(x);
 	t = std::max(lower, std::min(upper, t));
 
 	// here the guts of the event
@@ -439,12 +439,9 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 
 void Widget_Keyframe_List::set_time_model(const etl::handle<TimeModel> &x)
 {
-	if (time_model == x) return;
-	time_model_change.disconnect();
-	time_model = x;
-	if (time_model)
-		time_model_change = x->signal_visible_changed().connect(
-			sigc::mem_fun(*this, &Widget_Keyframe_List::queue_draw) );
+	time_plot_data.set_time_model(x);
+//		time_model_change = x->signal_visible_changed().connect(
+//			sigc::mem_fun(*this, &Widget_Keyframe_List::queue_draw) );
 }
 
 void

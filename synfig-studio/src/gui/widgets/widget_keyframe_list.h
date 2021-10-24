@@ -33,7 +33,7 @@
 #include <gtkmm/label.h>
 #include <gtkmm/window.h>
 
-#include <gui/timemodel.h>
+#include <gui/timeplotdata.h>
 
 #include <synfig/keyframe.h>
 
@@ -55,9 +55,6 @@ class Widget_Keyframe_List : public Gtk::DrawingArea
 	//! The canvas interface being watched
 	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface;
 
-	//! Time model
-	etl::handle<TimeModel> time_model;
-
 	//! True if it is editable. Keyframes can be moved.
 	bool editable;
 
@@ -66,8 +63,6 @@ class Widget_Keyframe_List : public Gtk::DrawingArea
 
 	//! True if a keyframe has been moved
 	bool changed;
-
-	synfig::Time time_ratio;
 
 	//! Holds the selected keyframe of the keyframe list
 	synfig::Keyframe selected_kf;
@@ -85,6 +80,12 @@ class Widget_Keyframe_List : public Gtk::DrawingArea
 	Gtk::Label moving_tooltip_label;
 	//! The Moving handmade tooltip y fixed coordinate
 	//int moving_tooltip_y;
+
+	//! Helper to map time to pixel
+	TimePlotData time_plot_data;
+
+	//! Keyframe mark width
+	int keyframe_width;
 
 	//! Connectors for handling the signal of the time model
 	sigc::connection time_model_change;
@@ -114,7 +115,7 @@ public:
 
 	//! Set the time model and proper connects its change signals
 	void set_time_model(const etl::handle<TimeModel> &x);
-	const etl::handle<TimeModel>& get_time_model() const { return time_model; }
+	const etl::handle<TimeModel>& get_time_model() const { return time_plot_data.time_model; }
 
 	void set_editable(bool x = true) { editable = x; }
 	bool get_editable() const { return editable; }
