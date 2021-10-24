@@ -94,11 +94,7 @@ Action::KeyframeSet::set_param(const synfig::String& name, const Action::Param &
 {
 	if(name=="keyframe" && param.get_type()==Param::TYPE_KEYFRAME)
 	{
-		synfig::info("KeyframeSet::set_param():old_time: %s",keyframe.get_time().get_string().c_str());
 		keyframe=param.get_keyframe();
-		synfig::info("KeyframeSet::set_param():new_time: %s",keyframe.get_time().get_string().c_str());
-		synfig::info("KeyframeSet::set_param():get_keyframe(): %s",param.get_keyframe().get_time().get_string().c_str());
-
 		return true;
 	}
 
