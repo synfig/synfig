@@ -15,7 +15,7 @@ export BUILDROOT_VERSION=1
 #fi
 
 export SCRIPTPATH=$(cd `dirname "$0"`; pwd)
-export MACPORTS="/usr/local/opt" # dictated by HomeBrew defaults
+export MACPORTS="$(brew --prefix)/opt" # dictated by HomeBrew defaults
 
 
 
@@ -62,6 +62,8 @@ mkapp()
 	mkdir -p "${APPCONTENTS}/etc"
 	mkdir -p "${APPCONTENTS}/share"
 
+	#FontConfig
+	cp -R "${MACPORTS}/../etc/fonts"  "${APPCONTENTS}/etc"
 	# Synfig
 	"$SCRIPTPATH/autobuild/osx/relocate-binary.sh" "`smart_find ${SCRIPTPATH}/_production/build/bin/synfig`" "${SCRIPTPATH}/_production/build" "$APPCONTENTS"
 
