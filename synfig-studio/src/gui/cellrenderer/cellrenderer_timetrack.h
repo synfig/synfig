@@ -40,7 +40,7 @@
 #include <synfigapp/value_desc.h>
 #include <synfigapp/canvasinterface.h>
 
-#include <gui/timemodel.h>
+#include <gui/timeplotdata.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -63,7 +63,7 @@ class CellRenderer_TimeTrack :
 private:
 
 	//! Time model
-	etl::handle<TimeModel> time_model;
+	TimePlotData time_plot_data;
 
 	synfig::UniqueID selected;
 
@@ -122,7 +122,7 @@ public:
 	CellRenderer_TimeTrack();
     ~CellRenderer_TimeTrack();
 
-	const etl::handle<TimeModel>& get_time_model() const { return time_model; }
+	const etl::handle<TimeModel>& get_time_model() const { return time_plot_data.time_model; }
 	void set_time_model(const etl::handle<TimeModel> &x);
 
 	const etl::loose_handle<synfigapp::CanvasInterface>& get_canvas_interface() const { return canvas_interface; }

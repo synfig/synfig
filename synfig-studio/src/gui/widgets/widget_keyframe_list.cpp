@@ -94,7 +94,7 @@ Widget_Keyframe_List::Widget_Keyframe_List():
 	changed(),
 	selected(),
 	moving_tooltip(Gtk::WINDOW_POPUP),
-	time_plot_data(*this),
+	time_plot_data(this),
 	keyframe_width(4)
 	//moving_tooltip_y()
 {

@@ -162,7 +162,7 @@ Widget_Timeslider::Widget_Timeslider():
 		play_bounds_pattern->set_extend(Cairo::EXTEND_REPEAT);
 	}
 
-	time_plot_data = new TimePlotData(*this);
+	time_plot_data = new TimePlotData(this);
 	time_plot_data->set_extra_time_margin(get_height());
 
 	// click / scroll / zoom
