@@ -1,3 +1,4 @@
+- [`f6b3f24`](https://github.com/synfig/synfig/commit/f6b3f24e9048a0eb1fd8b0061d8cf612a2b6d767) Merge PR ([#2382](https://github.com/synfig/synfig/issues/2382)): Widget_Keyframe_List: clean up (and make use of TimePlotData) [studio]
 
 ## Version 1.5.1 [ETL] [core] [studio]
 
