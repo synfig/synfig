@@ -1,3 +1,6 @@
+
+## Version 1.5.1 [ETL] [core] [studio]
+
 - [`17b5212`](https://github.com/synfig/synfig/commit/17b52129e04f721e6c26229f15f22fd534c1f3aa) Merge PR ([#2362](https://github.com/synfig/synfig/issues/2362)): Text Layer ported to Cobra render engine [core]
 - [`1d38aea`](https://github.com/synfig/synfig/commit/1d38aeaa472c1dd4fbd7867e9834c050b6f27b76) fix rendering of empty rows inside contour when Invert is on ([#2367](https://github.com/synfig/synfig/issues/2367)) [core]
 - [`876ed89`](https://github.com/synfig/synfig/commit/876ed89d9c6602d9cf1acc12a9a72bdd060e8884) Merge PR ([#2376](https://github.com/synfig/synfig/issues/2376)): Remove dead/dummy translations [core] [studio]
