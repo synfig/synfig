@@ -95,6 +95,10 @@ class Widget_Keyframe_List : public Gtk::DrawingArea
 	sigc::connection keyframe_removed;
 	sigc::connection keyframe_selected;
 
+	//! Return the nearest keyframe around the horizontal pixel position
+	//! \return nullptr if none is near
+	synfig::Keyframe* get_keyframe_around(synfig::Time t, bool ignore_disabled = true);
+
 public:
 	Widget_Keyframe_List();
 	~Widget_Keyframe_List();

@@ -56,6 +56,34 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
+Keyframe*
+Widget_Keyframe_List::get_keyframe_around(Time t, bool ignore_disabled)
+{
+	KeyframeList::iterator ret(kf_list->end());
+	Keyframe* kf = nullptr;
+
+	Time p_t, n_t;
+	kf_list->find_prev_next(t, p_t, n_t, ignore_disabled);
+	Time delta_to_previous = t - p_t;
+	Time delta_to_next = n_t - t;
+
+	// near to previous keyframe?
+	if (delta_to_previous < time_ratio) {
+		// is it nearest to previous one than to next one?
+		if (delta_to_previous < delta_to_next) {
+			if (kf_list->find(p_t, ret))
+				kf = &*ret;
+		}
+	}
+
+	if (!kf && delta_to_next < time_ratio) {
+		if (kf_list->find(n_t, ret))
+			kf = &*ret;
+	}
+
+	return kf;
+}
+
 Widget_Keyframe_List::Widget_Keyframe_List():
 	kf_list(),
 	editable(true),
@@ -349,32 +377,11 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 			// here is captured mouse motion
 			// AND NOT left or right mouse button pressed
 			String ttip;
-			Time p_t, n_t;
-			kf_list->find_prev_next(t, p_t, n_t);
-			if ( (p_t == Time::begin() && n_t == Time::end())
-			  || (t - p_t > time_ratio && n_t - t > time_ratio) )
-			{
+			Keyframe* kf = get_keyframe_around(t);
+			if (!kf)
 				ttip = _("Click and drag keyframes");
-			} else
-			if (t - p_t < n_t - t) {
-				//Keyframe kf = *kf_list->find_prev(t);
-				//ttip = kf.get_description().empty() ? String(_("No name")) : kf.get_description();
-				KeyframeList::iterator iter;
-				if (kf_list->find_prev(t, iter)) {
-					Keyframe kf(*iter);
-					ttip = kf.get_description().empty() ? String(_("No name")) : kf.get_description();
-				}
-					
-				
-			} else {
-				//Keyframe kf(*kf_list->find_next(t));
-				//ttip = kf.get_description().empty() ? String(_("No name")) : kf.get_description();
-				KeyframeList::iterator iter;
-				if (kf_list->find_next(t, iter)) {
-					Keyframe kf(*iter);
-					ttip = kf.get_description().empty() ? String(_("No name")) : kf.get_description();
-				}
-			}
+			else
+				ttip = kf->get_description().empty() ? String(_("No name")) : kf->get_description();
 			set_tooltip_text(ttip);
 			dragging = false;
 		}
@@ -385,24 +392,7 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 		changed = false;
 		dragging = false;
 
-		const Keyframe *kf = NULL;
-		Time prev_t, next_t;
-		kf_list->find_prev_next(t, prev_t, next_t, false);
-		if (t - prev_t < next_t - t) {
-			if (t - prev_t <= time_ratio) {
-				//kf = &*kf_list->find_prev(t, false);
-				KeyframeList::iterator iter;
-				if (kf_list->find_prev(t, iter, false))
-					kf = &*iter;
-			}
-		} else {
-			if (next_t - t <= time_ratio) {
-				//kf = &*kf_list->find_next(t, false);
-				KeyframeList::iterator iter;
-				if (kf_list->find_next(t, iter, false))
-					kf = &*iter;
-			}
-		}
+		const Keyframe *kf = get_keyframe_around(t, false);
 
 		switch(event->button.button) {
 		case 1:
