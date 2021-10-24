@@ -60,7 +60,6 @@ Widget_Timetrack::Widget_Timetrack()
 {
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::SCROLL_MASK | Gdk::POINTER_MOTION_MASK | Gdk::KEY_PRESS_MASK | Gdk::KEY_RELEASE_MASK);
 	set_can_focus(true);
-	time_plot_data->set_extra_time_margin(16/2);
 	setup_mouse_handler();
 
 	setup_adjustment();
