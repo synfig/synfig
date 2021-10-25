@@ -413,6 +413,8 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		const bool is_user_moving_waypoints = is_dragging && waypoint_sd.get_action() == MOVE;
 		const bool is_user_scaling_waypoints = is_dragging && waypoint_sd.get_action() == SCALE;
 
+		draw_discrete_animated_times(cr, row_info);
+
 		std::vector<std::pair<synfig::TimePoint, synfig::Time>> visible_waypoints;
 		WaypointRenderer::foreach_visible_waypoint(row_info.get_value_desc(), *time_plot_data,
 			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *) -> bool
@@ -770,6 +772,27 @@ void Widget_Timetrack::draw_static_intervals_for_row(const Cairo::RefPtr<Cairo::
 		previous_value = value;
 		previous_time = t;
 
+	}
+}
+
+void
+Widget_Timetrack::draw_discrete_animated_times(const Cairo::RefPtr<Cairo::Context> &cr, const RowInfo &row_info) const
+{
+	const synfigapp::ValueDesc &value_desc = row_info.get_value_desc();
+	std::set<synfig::Time> times;
+	if (value_desc.is_value_node()) {
+		const synfig::Type & value_type = value_desc.get_value_type();
+		if (value_type == synfig::type_string
+			|| value_type == synfig::type_bool
+			|| value_type == synfig::type_canvas)
+		{
+			value_desc.get_value_node()->get_value_change_times(times);
+		}
+	}
+	const double yc = row_info.get_geometry().y + row_info.get_geometry().h/2.;
+	for(std::set<synfig::Time>::const_iterator i = times.begin(); i != times.end(); ++i) {
+		cr->arc(1+time_plot_data->get_pixel_t_coord(*i), yc, 2, 0, 2*3.1415);
+		cr->fill();
 	}
 }
 

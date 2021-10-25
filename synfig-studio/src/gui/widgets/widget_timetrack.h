@@ -214,6 +214,7 @@ private:
 	void update_param_list_geometries();
 
 	void draw_static_intervals_for_row(const Cairo::RefPtr<Cairo::Context> &cr, const RowInfo &row_info, const std::vector<std::pair<synfig::TimePoint, synfig::Time>> &waypoints) const;
+	void draw_discrete_animated_times(const Cairo::RefPtr<Cairo::Context> &cr, const RowInfo &row_info) const;
 	void draw_waypoints(const Cairo::RefPtr<Cairo::Context> &cr, const Gtk::TreePath &path, const RowInfo &row_info, const std::vector<std::pair<synfig::TimePoint, synfig::Time>> &waypoints) const;
 	void draw_selected_background(const Cairo::RefPtr<Cairo::Context> &cr, const Gtk::TreePath &path, const RowInfo &row_info) const;
 
