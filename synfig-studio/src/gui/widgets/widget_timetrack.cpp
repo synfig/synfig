@@ -39,6 +39,7 @@
 
 #include <synfig/general.h>
 #include <synfig/timepointcollect.h>
+#include <synfig/valuenodes/valuenode_dynamiclist.h>
 
 #endif
 
@@ -431,6 +432,8 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 			draw_static_intervals_for_row(cr, row_info, visible_waypoints);
 
 		draw_waypoints(cr, path, row_info, visible_waypoints);
+
+		draw_active_point_status(cr, row_info, value_desc);
 
 		return false;
 	});
@@ -841,6 +844,32 @@ void Widget_Timetrack::draw_selected_background(const Cairo::RefPtr<Cairo::Conte
 		foreign_context->render_background(cr, 0, geometry.y, get_width(), geometry.h);
 		foreign_context->set_state(old_state);
 		n_drawn_selected_rows++;
+	}
+}
+
+void Widget_Timetrack::draw_active_point_status(const Cairo::RefPtr<Cairo::Context> &cr, const RowInfo &row_info, const synfigapp::ValueDesc &value_desc)
+{
+	if (!value_desc.parent_is_value_node())
+		return;
+	synfig::ValueNode_DynamicList::Handle dynamic_list = synfig::ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node());
+	if (!dynamic_list)
+		return;
+
+	const synfig::ValueNode_DynamicList::ListEntry& list_entry = dynamic_list->list[ value_desc.get_index() ];
+	const synfig::ValueNode_DynamicList::ListEntry::ActivepointList& activepoint_list = list_entry.timing_info;
+
+	const Gdk::RGBA activepoint_color[] = {
+	    Gdk::RGBA("#ff0000"),
+	    Gdk::RGBA("#00ff00")
+	};
+
+	const double w = 2;
+
+	for (const auto& activepoint : activepoint_list) {
+		const Gdk::RGBA& color = activepoint_color[activepoint.get_state() ? 1 : 0];
+		cr->set_source_rgb(color.get_red(), color.get_green(), color.get_blue());
+		cr->rectangle(-w/2+time_plot_data->get_pixel_t_coord(activepoint.get_time()), row_info.get_geometry().y, w, row_info.get_geometry().h);
+		cr->fill();
 	}
 }
 
