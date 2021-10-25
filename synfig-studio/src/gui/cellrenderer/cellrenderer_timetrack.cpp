@@ -167,10 +167,7 @@ get_change_times_from_vdesc(const ValueDesc &v, std::set<Time> &out_times)
 		  || v.get_value_type() == type_bool
 		  || v.get_value_type() == type_canvas )
 		{
-			std::map<Time, ValueBase> x;
-			v.get_value_node()->get_values(x);
-			for(std::map<Time, ValueBase>::const_iterator i = x.begin(); i != x.end(); ++i)
-				out_times.insert(i->first);
+			v.get_value_node()->get_value_change_times(out_times);
 		}
 	}
 }

@@ -416,7 +416,7 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		draw_discrete_animated_times(cr, row_info);
 
 		std::vector<std::pair<synfig::TimePoint, synfig::Time>> visible_waypoints;
-		WaypointRenderer::foreach_visible_waypoint(row_info.get_value_desc(), *time_plot_data,
+		WaypointRenderer::foreach_visible_waypoint(value_desc, *time_plot_data,
 			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *) -> bool
 		{
 			// Don't draw it if it's being moved by user
