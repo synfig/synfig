@@ -124,7 +124,6 @@ Widget_Keyframe_List::Widget_Keyframe_List():
 
 Widget_Keyframe_List::~Widget_Keyframe_List()
 {
-	set_time_model(etl::handle<TimeModel>());
 	set_kf_list(NULL);
 	set_canvas_interface(etl::loose_handle<CanvasInterface>());
 }
