@@ -255,10 +255,16 @@ public:
 	Glib::Threads::RWLock& get_rw_lock()const { return rw_lock_; }
 
 	virtual String get_string()const = 0;
-protected:
 
+protected:
 	void begin_delete();
 
+private:
+	//! Add a new parent Node to parent_set
+	void add_parent(Node* new_parent);
+	//! Remove a Node from parent_set.
+	//! No error is reported if it is not a parent node
+	void remove_parent(Node* parent);
 	/*
  --	** -- V I R T U A L   F U N C T I O N S -----------------------------------
 	*/

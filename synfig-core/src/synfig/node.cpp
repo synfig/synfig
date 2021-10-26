@@ -34,10 +34,11 @@
 #endif
 
 #include <cstdlib>
-#include <cstdio>
 #include "node.h"
 
 #include <map>
+
+#include "synfig/general.h"
 
 #endif
 
@@ -242,43 +243,61 @@ Node::get_time_last_changed()const
 }
 
 void
-Node::add_child(Node*x)
+Node::add_parent(Node* new_parent)
 {
 	if (getenv("SYNFIG_DEBUG_NODE_PARENT_SET"))
-		printf("%s:%d adding %p (%s) as parent of %p (%s) (%zd -> ", __FILE__, __LINE__,
+		printf("%s:%d adding %p (%s) as parent of %p (%s) (%zu -> ", __FILE__, __LINE__,
+			   new_parent, new_parent->get_string().c_str(),
 			   this, get_string().c_str(),
-			   x, x->get_string().c_str(),
-			   x->parent_set.size());
+			   parent_set.size());
 
-	x->parent_set.insert(this);
+	parent_set.insert(new_parent);
 
 	if (getenv("SYNFIG_DEBUG_NODE_PARENT_SET"))
-		printf("%zd)\n", x->parent_set.size());
+		printf("%zu)\n", parent_set.size());
 }
 
 void
-Node::remove_child(Node*x)
+Node::add_child(Node*x)
 {
-	if(x->parent_set.count(this) == 0)
+	if (!x)
+		error("Adding a null child node?!");
+	else
+		x->add_parent(this);
+}
+
+void
+Node::remove_parent(Node* parent)
+{
+	if(parent_set.count(parent) == 0)
 	{
 		if (getenv("SYNFIG_DEBUG_NODE_PARENT_SET"))
-			printf("%s:%d %p (%s) isn't in parent set of %p (%s)\n", __FILE__, __LINE__,
-				   this, get_string().c_str(),
-				   x, x->get_string().c_str());
+			warning("%s:%d %p (%s) isn't in parent set of %p (%s)\n", __FILE__, __LINE__,
+				   parent, parent->get_string().c_str(),
+				   this, get_string().c_str());
 
 		return;
 	}
 
 	if (getenv("SYNFIG_DEBUG_NODE_PARENT_SET"))
-		printf("%s:%d removing %p (%s) from parent set of %p (%s) (%zd -> ", __FILE__, __LINE__,
+		printf("%s:%d removing %p (%s) from parent set of %p (%s) (%zu -> ", __FILE__, __LINE__,
+			   parent, parent->get_string().c_str(),
 			   this, get_string().c_str(),
-			   x, x->get_string().c_str(),
-			   x->parent_set.size());
+			   parent_set.size());
 
-	x->parent_set.erase(this);
+	parent_set.erase(parent);
 
 	if (getenv("SYNFIG_DEBUG_NODE_PARENT_SET"))
-		printf("%zd)\n", x->parent_set.size());
+		printf("%zu)\n", parent_set.size());
+}
+
+void
+Node::remove_child(Node*x)
+{
+	if (!x)
+		error("Internal error: Removing a null child node?!");
+	else
+		x->remove_parent(this);
 }
 
 int
