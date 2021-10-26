@@ -797,6 +797,38 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			current_x+=atof(tokens.at(i).data());
 			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
 			current_y+=atof(tokens.at(i).data());
+
+			// According to section F.6.2 of SVG 1.1 specs and section 9.5.1 of SVG 2 specs
+			//    ("Out-of-range elliptical arc parameters")
+			{
+				if (approximate_equal(current_x, old_x) && approximate_equal(current_y, old_y)) {
+					// If endpoint == current point, ignore arc segment entirely
+					break;
+				}
+				if (approximate_zero(radius_x) || approximate_zero(radius_y)) {
+					// If either rx or ry is 0, then this arc is treated as a straight line segment (a "lineto") joining the endpoints.
+					// (copied from line_to above)
+					ax=current_x;
+					ay=current_y;
+					//mtx
+					mtx.transformPoint2D(ax,ay);
+					//adjust
+					coor2vect(&ax,&ay);
+					//save
+					k1.back().setTg2(k1.back().x,k1.back().y);
+					if(k1.front().isFirst(ax,ay)){
+						k1.front().setTg1(k1.front().x,k1.front().y);
+					}else{
+						k1.push_back(Vertex(ax,ay));
+						k1.back().setTg1(k1.back().x,k1.back().y);
+					}
+					break;
+				}
+				// If either rx or ry have negative signs, these are dropped; the absolute value is used instead.
+				radius_x = std::fabs(radius_x);
+				radius_y = std::fabs(radius_y);
+			}
+
 			//how to draw?
 			if(!large && !sweep){
 				//points
