@@ -1,5 +1,3 @@
-# $Id$
-
 MAINTAINERCLEANFILES=Makefile.in
 AM_CXXFLAGS=@CXXFLAGS@ @ETL_CFLAGS@ @SYNFIG_CFLAGS@ -I$(top_builddir) -I$(top_srcdir)/src
 AM_LDFLAGS = \

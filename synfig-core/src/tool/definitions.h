@@ -2,22 +2,25 @@
 /*!	\file tool/definitions.h
 **	\brief Definitions for synfig tool
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **  Copyright (c) 2012, 2014 Diego Barrios Romero
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -48,10 +51,10 @@
 #define VERBOSE_OUT(x) if (SynfigToolGeneralOptions::instance()->get_verbosity() >= (x)) std::cerr
 
 #define SYNFIG_LICENSE "\
-**	This package is free software; you can redistribute it and/or\n\
-**	modify it under the terms of the GNU General Public License as\n\
-**	published by the Free Software Foundation; either version 2 of\n\
-**	the License, or (at your option) any later version.\n\
+**	Synfig is free software: you can redistribute it and/or modify\n\
+**	it under the terms of the GNU General Public License as published by\n\
+**	the Free Software Foundation, either version 2 of the License, or\n\
+**	(at your option) any later version.\n\
 **\n\
 **	"
 

@@ -1,5 +1,3 @@
-# $Id$
-
 BRUSHPACK = CD_concept
 
 brushpackdir = ${datadir}/synfig/brushes/$(BRUSHPACK)
