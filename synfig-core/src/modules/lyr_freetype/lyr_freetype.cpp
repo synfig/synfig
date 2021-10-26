@@ -678,7 +678,11 @@ Layer_Freetype::get_possible_font_directories(const std::string& canvas_path)
 
 #ifdef __APPLE__
 	std::string userdir = Glib::getenv("HOME");
-	possible_font_directories.push_back(userdir + "/Library/Fonts/");
+	if (userdir.empty()) {
+		synfig::error(strprintf("Layer_Freetype: %s", _("Cannot retrieve user home folder")));
+	} else {
+		possible_font_directories.push_back(userdir+"/Library/Fonts/");
+	}
 	possible_font_directories.push_back("/Library/Fonts/");
 #endif
 
