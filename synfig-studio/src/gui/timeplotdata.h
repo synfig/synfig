@@ -93,7 +93,10 @@ private:
 	sigc::connection vertical_changed;
 	sigc::connection vertical_value_changed;
 
-	Gtk::Widget &widget;
+	sigc::signal<void> signal_redraw_requested_;
+
+	Gtk::Widget* widget;
+	Gdk::Point size;
 	Glib::RefPtr<Gtk::Adjustment> vertical_adjustment;
 
 public:
@@ -101,13 +104,15 @@ public:
 	 * \param widget The widget that must zoom and scroll in sync with the timeline
 	 * \param vertical_adjustment If widget displays info in another axis that can be scrolled/zoomed
 	 */
-	TimePlotData(Gtk::Widget & widget, Glib::RefPtr<Gtk::Adjustment> vertical_adjustment = Glib::RefPtr<Gtk::Adjustment>());
+	TimePlotData(Gtk::Widget* widget, Glib::RefPtr<Gtk::Adjustment> vertical_adjustment = Glib::RefPtr<Gtk::Adjustment>());
 	virtual ~TimePlotData();
 
 	void set_time_model(const etl::handle<TimeModel> &time_model);
 
 	/// Sets an extra margin, creating a new and wider range. \sa is_time_visible_extra()
 	void set_extra_time_margin(double margin);
+
+	void set_dimensions(const Gdk::Point& size);
 
 	/// Checks whether this data is valid (it has valid size and valid time info)
 	bool is_invalid() const;
@@ -141,6 +146,8 @@ public:
 
 	int get_delta_pixel_from_delta_y_coord(double delta_y) const;
 
+	sigc::signal<void>& signal_redraw_requested() {return signal_redraw_requested_; }
+
 private:
 	bool on_widget_resize(GdkEventConfigure * /*configure*/);
 
@@ -148,6 +155,8 @@ private:
 	void recompute_geometry_data();
 	void recompute_extra_time();
 	void recompute_vertical();
+
+	void queue_draw();
 }; // END of class TimePlotData
 
 }; // END of namespace studio

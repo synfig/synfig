@@ -234,6 +234,7 @@ find_editable_waypoint(const ValueDesc &v, const Time &t, const Time& scope = Ti
 
 CellRenderer_TimeTrack::CellRenderer_TimeTrack():
 	Glib::ObjectBase	(typeid(CellRenderer_TimeTrack)),
+	time_plot_data		(nullptr),
 	mode				(),
 	dragging			(false),
 	property_valuedesc_	(*this, "value_desc", ValueDesc()),
@@ -245,7 +246,7 @@ CellRenderer_TimeTrack::~CellRenderer_TimeTrack()
 
 void
 CellRenderer_TimeTrack::set_time_model(const etl::handle<TimeModel> &x)
-	{ time_model = x; }
+	{ time_plot_data.set_time_model(x); }
 
 void
 CellRenderer_TimeTrack::set_canvas_interface(const etl::loose_handle<CanvasInterface> &x)
@@ -271,7 +272,7 @@ CellRenderer_TimeTrack::render_vfunc(
 	const Gdk::Rectangle& cell_area,
 	Gtk::CellRendererState /* flags */)
 {
-	if (!cr || cell_area.get_width() <= 0 || cell_area.get_height() <= 0 || !time_model)
+	if (!cr || cell_area.get_width() <= 0 || cell_area.get_height() <= 0 || !time_plot_data.time_model)
 		return;
 
 	Gdk::Color change_time_color("#008800");
@@ -282,16 +283,11 @@ CellRenderer_TimeTrack::render_vfunc(
 		Gdk::Color("#ff0000"),
 		Gdk::Color("#00ff00") };
 
-	Time time = time_model->get_time();
-	Time lower = time_model->get_visible_lower();
-	Time upper = time_model->get_visible_upper();
-	if (lower >= upper)
+	Time time = time_plot_data.time_model->get_time();
+	if (time_plot_data.is_invalid())
 		return;
 
-	double k = (double)cell_area.get_width()/(double)(upper - lower);
-	Time extra_time = (double)cell_area.get_height()*0.5/k;
-	Time lower_ex = lower - extra_time;
-	Time upper_ex = upper + extra_time;
+	time_plot_data.set_dimensions(Gdk::Point(cell_area.get_width(), cell_area.get_height()));
 
 	Canvas::Handle canvas = property_canvas().get_value();
 	ValueDesc value_desc = property_value_desc().get_value();
@@ -304,8 +300,8 @@ CellRenderer_TimeTrack::render_vfunc(
 	// If the canvas is defined, then load up the keyframes
 	if (canvas)
 		for(KeyframeList::const_iterator i = canvas->keyframe_list().begin(); i != canvas->keyframe_list().end(); ++i)
-			if (i->get_time() >= lower_ex && i->get_time() < upper_ex) {
-				int x = (int)round((double)((i->get_time() - lower)*k));
+			if (time_plot_data.is_time_visible_extra(i->get_time())) {
+				int x = time_plot_data.get_pixel_t_coord(i->get_time());
 				Gdk::Cairo::set_source_color(cr, keyframe_color);
 				cr->rectangle(cell_area.get_x() + x, cell_area.get_y(), 1, cell_area.get_height());
 				cr->fill();
@@ -322,10 +318,10 @@ CellRenderer_TimeTrack::render_vfunc(
 		for(std::set<Time>::const_iterator i = times.begin(); i != times.end(); ++i) {
 			//find the coordinate in the drawable space...
 			Time t = (*i - time_offset)*time_k;
-			if (t >= lower_ex && t <= upper_ex) {
+			if (time_plot_data.is_time_visible_extra(t)) {
 				const int w = 1;
 				const int h = (cell_area.get_height() - 2)/2;
-				const int x = cell_area.get_x() + (int)((t-lower)*k);
+				const int x = cell_area.get_x() + time_plot_data.get_pixel_t_coord(t);
 				const int y = cell_area.get_y() + (cell_area.get_height() - h)/2;
 				cr->rectangle(x, y, w, h);
 				cr->set_source_rgb(
@@ -351,7 +347,7 @@ CellRenderer_TimeTrack::render_vfunc(
 		for(Node::time_set::const_iterator i = tset->begin(); i != tset->end(); ++i) {
 			// find the coordinate in the drawable space...
 			Time t = (i->get_time() - time_offset)*time_k;
-			if (t >= lower_ex || t <= upper_ex) {
+			if (time_plot_data.is_time_visible_extra(t)) {
 				// if it found it... (might want to change comparison, and optimize
 				//                    sel_times.find to not produce an overall nlogn solution)
 
@@ -380,7 +376,7 @@ CellRenderer_TimeTrack::render_vfunc(
 				}
 
 				// should draw me a grey filled circle...
-				int x = (int)round((double)(t - lower)*k);
+				int x = time_plot_data.get_pixel_t_coord(t);
 				Gdk::Rectangle area(
 					cell_area.get_x() - cell_area.get_height()/2 + x + 1,
 					cell_area.get_y() + 1,
@@ -393,7 +389,7 @@ CellRenderer_TimeTrack::render_vfunc(
 		}
 
 		for(std::vector<TimePoint>::iterator i = drawredafter.begin(); i != drawredafter.end(); ++i) {
-			int x = (int)round((double)(i->get_time() - lower)*k);
+			int x = time_plot_data.get_pixel_t_coord(i->get_time());
 			Gdk::Rectangle area(
 				cell_area.get_x() - cell_area.get_height()/2 + x + 1,
 				cell_area.get_y() + 1,
@@ -415,7 +411,7 @@ CellRenderer_TimeTrack::render_vfunc(
 		for(ValueNode_DynamicList::ListEntry::ActivepointList::const_iterator i = activepoint_list.begin(); i != activepoint_list.end(); ++i) {
 			ValueNode_DynamicList::ListEntry::ActivepointList::const_iterator j = i; ++j;
 
-			int x = (int)round((double)(i->time - lower)*k);
+			int x = time_plot_data.get_pixel_t_coord(i->time);
 			x = std::max(0, std::min(cell_area.get_width(), x));
 
 			bool status_at_time = !list_entry.status_at_time(
@@ -438,7 +434,7 @@ CellRenderer_TimeTrack::render_vfunc(
 				is_off = false;
 			}
 
-			if (i->time >= lower_ex && i->time <= upper_ex) {
+			if (time_plot_data.is_time_visible_extra(i->time)) {
 				int w = selected == *i ? 3 : 1;
 				Gdk::Cairo::set_source_color(cr, activepoint_color[i->state ? 1 : 0]);
 				cr->rectangle(
@@ -464,8 +460,8 @@ CellRenderer_TimeTrack::render_vfunc(
 	}
 
 	// Render a line that defines the current tick in time
-	if (time >= lower_ex && time <= upper_ex) {
-		int x = (int)round((double)(time - lower)*k);
+	if (time_plot_data.is_time_visible_extra(time)) {
+		int x = time_plot_data.get_pixel_t_coord(time);
 		Gdk::Cairo::set_source_color(cr, curr_time_color);
 		cr->rectangle(cell_area.get_x() + x, cell_area.get_y(), 1, cell_area.get_height());
 		cr->fill();
@@ -486,25 +482,23 @@ CellRenderer_TimeTrack::activate_vfunc(
 	if (!event)
 		return true; // On tab key press, Focus go to next panel. If return false, focus goes to canvas
 
-	if (cell_area.get_width() <= 0 || cell_area.get_height() <= 0 || !time_model)
+	if (cell_area.get_width() <= 0 || cell_area.get_height() <= 0 || !time_plot_data.time_model)
 		return false;
 
-	Time lower = time_model->get_visible_lower();
-	Time upper = time_model->get_visible_upper();
-	if (lower >= upper)
+	if (time_plot_data.is_invalid())
 		return false;
 
-	double k = (double)(upper - lower)/(double)cell_area.get_width();
-	Time extra_time = (double)cell_area.get_height()*0.5*k;
+	const int waypoint_width = cell_area.get_height();
+	const Time waypoint_width_time = time_plot_data.get_delta_t_from_delta_pixel_coord(waypoint_width);
 
 	switch(event->type) {
 	case GDK_MOTION_NOTIFY:
-		actual_time = ((double)event->motion.x - (double)cell_area.get_x())*k + (double)lower;
+		actual_time = time_plot_data.get_t_from_pixel_coord(event->motion.x - (double)cell_area.get_x());
 		break;
 	case GDK_2BUTTON_PRESS:
 	case GDK_BUTTON_PRESS:
 	case GDK_BUTTON_RELEASE:
-		actual_time = ((double)event->button.x - (double)cell_area.get_x())*k + (double)lower;
+		actual_time = time_plot_data.get_t_from_pixel_coord(event->button.x - (double)cell_area.get_x());
 		break;
 	default:
 		return false;
@@ -535,9 +529,9 @@ CellRenderer_TimeTrack::activate_vfunc(
 		//Deal with time point selection, but only if they aren't involved in the insanity...
 		Time stime;
 		const Node::time_set *tset = get_times_from_vdesc(value_desc);
-		bool clickfound = tset && get_closest_time(*tset, actual_time*time_dilation + time_offset, extra_time, stime);
+		bool clickfound = tset && get_closest_time(*tset, actual_time*time_dilation + time_offset, waypoint_width_time, stime);
 
-		selected = find_editable_waypoint(value_desc, selected_time, extra_time);
+		selected = find_editable_waypoint(value_desc, selected_time, waypoint_width_time);
 
 		if (event->button.button == 1) {
 			//  UI specification:

@@ -51,7 +51,7 @@ Widget_TimeGraphBase::Widget_TimeGraphBase()
 	  zoom_changing_factor(DEFAULT_ZOOM_CHANGING_FACTOR),
 	  default_page_size(DEFAULT_PAGE_SIZE)
 {
-	time_plot_data = new TimePlotData(*this, range_adjustment);
+	time_plot_data = new TimePlotData(this, range_adjustment);
 }
 
 Widget_TimeGraphBase::~Widget_TimeGraphBase()

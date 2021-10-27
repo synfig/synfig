@@ -50,7 +50,7 @@
 
 namespace studio {
 
-TimePlotData::TimePlotData(Gtk::Widget& widget, Glib::RefPtr<Gtk::Adjustment> vertical_adjustment) :
+TimePlotData::TimePlotData(Gtk::Widget* widget, Glib::RefPtr<Gtk::Adjustment> vertical_adjustment) :
 	invalid(true),
 	k(0),
 	extra_margin(0),
@@ -58,8 +58,9 @@ TimePlotData::TimePlotData(Gtk::Widget& widget, Glib::RefPtr<Gtk::Adjustment> ve
 	widget(widget),
 	vertical_adjustment(vertical_adjustment)
 {
-	widget_resized = widget.signal_configure_event().connect(
-				sigc::mem_fun(*this, &TimePlotData::on_widget_resize) );
+	if (widget)
+		widget_resized = widget->signal_configure_event().connect(
+					sigc::mem_fun(*this, &TimePlotData::on_widget_resize) );
 
 	if (vertical_adjustment) {
 		vertical_changed = vertical_adjustment->signal_changed().connect(
@@ -111,9 +112,23 @@ TimePlotData::set_extra_time_margin(double margin)
 	recompute_extra_time();
 }
 
+void
+TimePlotData::set_dimensions(const Gdk::Point &size)
+{
+	if (this->size != size) {
+		this->size.set_x(size.get_x());
+		this->size.set_y(size.get_y());
+
+		recompute_geometry_data();
+	}
+}
+
 bool
 TimePlotData::on_widget_resize(GdkEventConfigure*)
 {
+	size.set_x(widget->get_width());
+	size.set_y(widget->get_height());
+
 	recompute_geometry_data();
 	return false;
 }
@@ -124,7 +139,7 @@ TimePlotData::recompute_time_bounds()
 	if (!time_model) {
 		time = lower = upper = 0;
 		invalid = true;
-		widget.queue_draw();
+		queue_draw();
 		return;
 	}
 	time  = time_model->get_time();
@@ -133,7 +148,7 @@ TimePlotData::recompute_time_bounds()
 
 	if (lower >= upper) {
 		invalid = true;
-		widget.queue_draw();
+		queue_draw();
 		return;
 	}
 
@@ -144,11 +159,11 @@ TimePlotData::recompute_time_bounds()
 void
 TimePlotData::recompute_geometry_data()
 {
-	k = widget.get_width()/(upper - lower);
+	k = size.get_x()/(upper - lower);
 	dt = 1.0/k;
 
 	if (has_vertical) {
-		range_k = widget.get_height()/(range_upper - range_lower);
+		range_k = size.get_y()/(range_upper - range_lower);
 	}
 
 	recompute_extra_time(); // k (and lower and upper) changes extra_time
@@ -161,7 +176,7 @@ TimePlotData::recompute_extra_time()
 	lower_ex = lower - extra_time;
 	upper_ex = upper + extra_time;
 
-	widget.queue_draw();
+	queue_draw();
 }
 
 void
@@ -182,9 +197,18 @@ TimePlotData::recompute_vertical()
 	}
 	range_lower = vertical_adjustment->get_value();
 	range_upper = range_lower + vertical_adjustment->get_page_size();
-	range_k = widget.get_height()/(range_upper - range_lower);
+	range_k = size.get_y()/(range_upper - range_lower);
 	has_vertical = true;
-	widget.queue_draw();
+	queue_draw();
+}
+
+void
+TimePlotData::queue_draw()
+{
+	if (widget)
+		widget->queue_draw();
+	else
+		signal_redraw_requested().emit();
 }
 
 bool
