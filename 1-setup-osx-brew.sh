@@ -28,7 +28,6 @@ adwaita-icon-theme \
 autoconf \
 automake \
 boost \
-cairo \
 ccache \
 cmake \
 fftw \
@@ -45,7 +44,6 @@ libxml2 \
 libxslt \
 mlt \
 ninja \
-pango \
 pkg-config \
 python \
 sdl2 \

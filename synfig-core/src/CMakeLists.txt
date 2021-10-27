@@ -25,11 +25,9 @@ if(VCPKG_TOOLCHAIN)
     message(STATUS "Building with vcpkg...")
 
 	set(GLIB_LIB_SUFFIX 2.0)
-	set(PANGO_LIB_SUFFIX 1.0)
 	set(ATK_LIB_SUFFIX 1.0)
 	set(GDK_PIXBUF_LIB_SUFFIX 2.0)
 	if(CMAKE_BUILD_TYPE STREQUAL Debug)
-	    set(CAIRO_LIB_SUFFIX d)
 	    set(LIB_PNG_SUFFIX d)
 	endif()
 
@@ -45,26 +43,12 @@ if(VCPKG_TOOLCHAIN)
 	find_library(GLIB_GOBJECT_LIBRARY gobject-${GLIB_LIB_SUFFIX})
 	set(GLIB_LIBRARIES ${GLIB_GLIB_LIBRARY} ${GLIB_GIO_LIBRARY} ${GLIB_GMODULE_LIBRARY} ${GLIB_GOBJECT_LIBRARY} CACHE INTERNAL "")
 
-	# pango
-	find_path(PANGO_INCLUDE_DIR pango/pango.h)
-	find_library(PANGO_LIBRARY pango-${PANGO_LIB_SUFFIX})
-	find_library(PANGO_CAIRO_LIBRARY pangocairo-${PANGO_LIB_SUFFIX})
-	find_library(PANGO_WIN32_LIBRARY pangowin32-${PANGO_LIB_SUFFIX})
-	set(PANGO_LIBRARIES ${PANGO_LIBRARY} ${PANGO_CAIRO_LIBRARY} ${PANGO_WIN32_LIBRARY})
-
 	# atk
 	find_path(ATK_INCLUDE_DIR atk/atk.h)
 	find_library(ATK_LIBRARY atk-${ATK_LIB_SUFFIX})
 
 	# atkmm (required for gtkmm)
 	find_library(ATKMM_LIBRARY atkmm)
-
-	# cairo
-	find_path(CAIRO_INCLUDE_DIR cairo.h)
-	find_library(CAIRO_LIBRARY cairo${CAIRO_LIB_SUFFIX})
-	find_library(CAIRO_GOBJECT_LIBRARY cairo-gobject${CAIRO_LIB_SUFFIX})
-	find_library(CAIROMM_LIBRARY cairomm-1.0)
-	set(CAIRO_LIBRARIES ${CAIRO_LIBRARY} ${CAIRO_GOBJECT_LIBRARY})
 
 	# fftw3
 	find_path(FFTW_INCLUDE_DIR fftw3.h)
@@ -81,14 +65,12 @@ if(VCPKG_TOOLCHAIN)
 	find_library(GLIBMM_LIBRARY glibmm-2.0)
 	find_library(GTK_LIBRARY gtk-3.0)
 	find_library(GTKMM_LIBRARY gtkmm)
-	find_library(PANGOFT2_LIBRARY pangoft2-${PANGO_LIB_SUFFIX})
-	find_library(PANGOMM_LIBRARY pangomm)
 	find_library(SIGC_LIBRARY sigc-2.0)
 	#find_library(SIGCPP_LIBRARY sigc++-2.0)
 
     find_library(LIBXML_LIBRARY libxml2)
     find_library(XMLPP_LIBRARY xml++)
-	find_library(ZLIB_LIBRARY zlib${CAIRO_LIB_SUFFIX})
+	find_library(ZLIB_LIBRARY zlib${LIB_PNG_SUFFIX})
 	find_library(LTDL_LIBRARY ltdl)
 
     #libpng, libjpeg, freetype
@@ -107,11 +89,11 @@ if(VCPKG_TOOLCHAIN)
 
 	# pkg-config --libs gtkmm-3.0
     #-LC:/msys64/mingw64/lib -lgtkmm-3.0 -latkmm-1.6 -lgdkmm-3.0 -lgiomm-2.4
-    # -lpangomm-1.4 -lglibmm-2.4 -lgtk-3 -lgdk-3 -lz -lgdi32 -limm32 -lshell32
-    # -lpangowin32-1.0 -lpangocairo-1.0 -lpango-1.0 -lharfbuzz -latk-1.0
-    #-lcairo-gobject -lgio-2.0 -lcairomm-1.0 -lcairo -lsigc-2.0 -lgdk_pixbuf-2.0 -lgobject-2.0 -lglib-2.0 -lintl
+    # -lglibmm-2.4 -lgtk-3 -lgdk-3 -lz -lgdi32 -limm32 -lshell32
+    # -lharfbuzz -latk-1.0
+    # -lgio-2.0 -lsigc-2.0 -lgdk_pixbuf-2.0 -lgobject-2.0 -lglib-2.0 -lintl
 
-    set(GTKMM_LIBRARIES ${ATK_LIBRARY} ${ATKMM_LIBRARY} ${GDKMM_LIBRARY} ${GIOMM_LIBRARY} ${PANGOMM_LIBRARY} ${GLIBMM_LIBRARY} ${GTKMM_LIBRARY})
+    set(GTKMM_LIBRARIES ${ATK_LIBRARY} ${ATKMM_LIBRARY} ${GDKMM_LIBRARY} ${GIOMM_LIBRARY} ${GLIBMM_LIBRARY} ${GTKMM_LIBRARY})
 
     message(STATUS "+++++++++++++++++++++++ ${GTKMM_LIBRARIES} +++++++++++++++++++++++++++++++")
 
@@ -133,9 +115,6 @@ if(VCPKG_TOOLCHAIN)
 	foreach(REQUIRED_LIB
 			ATK_LIBRARY
 			ATKMM_LIBRARY
-			CAIRO_GOBJECT_LIBRARY
-			CAIRO_LIBRARY
-			CAIROMM_LIBRARY
 			GLIB_GLIB_LIBRARY
 			FFTW3_LIBRARY
 			FFTW3f_LIBRARY
@@ -146,8 +125,6 @@ if(VCPKG_TOOLCHAIN)
 			GLIBMM_LIBRARY
 			GTK_LIBRARY
 			GTKMM_LIBRARY
-			PANGOFT2_LIBRARY
-			PANGOMM_LIBRARY
 			SIGC_LIBRARY
 			XMLPP_LIBRARY
 			ZLIB_LIBRARY

@@ -15,7 +15,6 @@ endforeach(CONFIG_TYPE CMAKE_CONFIGURATION_TYPES)
 include_directories(
     SYSTEM
         ${SIGCPP_INCLUDE_DIRS}
-        ${CAIRO_INCLUDE_DIRS}
         ${GLIBMM_INCLUDE_DIRS}
         ${GIOMM_INCLUDE_DIRS}
 )
