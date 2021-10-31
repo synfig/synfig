@@ -73,6 +73,8 @@
 #include <synfig/widthpoint.h>
 #include <synfig/zstreambuf.h>
 
+#include <synfigapp/main.h>
+
 #include <sys/stat.h>
 
 #endif
@@ -101,6 +103,8 @@ Instance::Instance(synfig::Canvas::Handle canvas, synfig::FileSystem::Handle con
 	redo_status_(false)
 {
 	id_=instance_count_++;
+
+	set_clear_redo_stack_on_new_action(true);
 
 	// Connect up all the signals
 	signal_filename_changed().connect(sigc::mem_fun(*this,&studio::Instance::update_all_titles));
@@ -160,6 +164,12 @@ Instance::create(synfig::Canvas::Handle canvas, synfig::FileSystem::Handle conta
 {
 	// Construct a new instance
 	handle<Instance> instance(new Instance(canvas, container));
+
+	// Set the user preference regarding redo-history behavior
+	{
+		bool active = synfigapp::Main::settings().get_value("pref.clear_redo_stack_on_new_action", true);
+		instance->set_clear_redo_stack_on_new_action(active);
+	}
 
 	// Add the new instance to the application's instance list
 	App::instance_list.push_back(instance);

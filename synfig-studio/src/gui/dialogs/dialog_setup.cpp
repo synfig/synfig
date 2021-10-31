@@ -233,6 +233,12 @@ Dialog_Setup::create_system_page(PageInfo pi)
 	toggle_enable_experimental_features.set_halign(Gtk::ALIGN_START);
 	toggle_enable_experimental_features.set_hexpand(false);
 
+	// System - clear_redo_stack_on_new_action
+	attach_label_section(pi.grid, _("Clear redo history on new action"), ++row);
+	pi.grid->attach(toggle_clear_redo_stack_on_new_action, 1, row, 1, 1);
+	toggle_clear_redo_stack_on_new_action.set_halign(Gtk::ALIGN_START);
+	toggle_clear_redo_stack_on_new_action.set_hexpand(false);
+
 	// signal for change resume
 	auto_backup_interval.signal_changed().connect(
 			sigc::bind<int>(sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_AUTOBACKUP));
@@ -845,6 +851,7 @@ Dialog_Setup::on_restore_pressed()
 		toggle_restrict_radius_ducks.set_active(true);
 		toggle_animation_thumbnail_preview.set_active(true);
 		toggle_enable_experimental_features.set_active(false);
+		toggle_clear_redo_stack_on_new_action.set_active(true);
 		toggle_use_dark_theme.set_active(false);
 		toggle_show_file_toolbar.set_active(true);
 		listviewtext_brushes_path->clear_items();
@@ -932,6 +939,9 @@ Dialog_Setup::on_apply_pressed()
 
 	// Set the experimental features flag
 	App::enable_experimental_features = toggle_enable_experimental_features.get_active();
+
+	// Set the advanced and risky flag that keeps the Redo stack on new action, instead of clear it
+	synfigapp::Main::settings().set_value("pref.clear_redo_stack_on_new_action", toggle_clear_redo_stack_on_new_action.get_active());
 
 	// Set the dark theme flag
 	App::use_dark_theme               = toggle_use_dark_theme.get_active();
@@ -1212,6 +1222,12 @@ Dialog_Setup::refresh()
 
 	// Refresh the status of the experimental features flag
 	toggle_enable_experimental_features.set_active(App::enable_experimental_features);
+
+	// Refresh the status of the experimental features flag
+	{
+		bool active = synfigapp::Main::settings().get_value("pref.clear_redo_stack_on_new_action", true);
+		toggle_clear_redo_stack_on_new_action.set_active(active);
+	}
 
 	// Refresh the status of the theme flag
 	toggle_use_dark_theme.set_active(App::use_dark_theme);

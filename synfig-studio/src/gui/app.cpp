@@ -803,6 +803,11 @@ public:
 				App::image_editor_path=value;
 				return true;
 			}
+			if(key=="clear_redo_stack_on_new_action")
+			{
+				for (auto instance : App::instance_list)
+					instance->set_clear_redo_stack_on_new_action(value != "0");
+			}
 		}
 		catch(...)
 		{
