@@ -162,8 +162,10 @@ private:
 	//! Variable used to remember that a signal_deleted has been thrown
 	bool deleting_;
 
-public:
+	//! Mutex for parent_set protection
+	mutable std::mutex parent_set_mutex_;
 
+public:
 	//! A set of pointers to parent nodes
 	//! \todo This should really be private
 	std::set<Node*> parent_set;

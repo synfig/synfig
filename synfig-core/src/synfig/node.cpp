@@ -237,6 +237,8 @@ Node::get_time_last_changed()const
 void
 Node::add_parent(Node* new_parent)
 {
+	std::lock_guard<std::mutex> lock(parent_set_mutex_);
+
 	if (getenv("SYNFIG_DEBUG_NODE_PARENT_SET"))
 		printf("%s:%d adding %p (%s) as parent of %p (%s) (%zu -> ", __FILE__, __LINE__,
 			   new_parent, new_parent->get_string().c_str(),
@@ -261,6 +263,8 @@ Node::add_child(Node*x)
 void
 Node::remove_parent(Node* parent)
 {
+	std::lock_guard<std::mutex> lock(parent_set_mutex_);
+
 	if(parent_set.count(parent) == 0)
 	{
 		if (getenv("SYNFIG_DEBUG_NODE_PARENT_SET"))
@@ -300,6 +304,7 @@ Node::parent_count()const
 
 void Node::foreach_parent(const ConstForeachFunc &func) const
 {
+	std::lock_guard<std::mutex> lock(parent_set_mutex_);
 	for (const Node* node : parent_set)
 		if (func(node))
 			return;
@@ -307,6 +312,7 @@ void Node::foreach_parent(const ConstForeachFunc &func) const
 
 void Node::foreach_parent(const ForeachFunc &func)
 {
+	std::lock_guard<std::mutex> lock(parent_set_mutex_);
 	for (Node* node : parent_set)
 		if (func(node))
 			return;
@@ -340,6 +346,7 @@ Node::on_changed()
 {
 	if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
 	{
+		std::lock_guard<std::mutex> lock(parent_set_mutex_);
 		printf("%s:%d Node::on_changed() for %p (%s); signalling these %zd parents:\n", __FILE__, __LINE__, this, get_string().c_str(), parent_set.size());
 		for (std::set<Node*>::iterator iter = parent_set.begin(); iter != parent_set.end(); ++iter) printf(" %p (%s)\n", *iter, (*iter)->get_string().c_str());
 		printf("\n");
@@ -348,6 +355,7 @@ Node::on_changed()
 	bchanged = true;
 	signal_changed()();
 
+	std::lock_guard<std::mutex> lock(parent_set_mutex_);
 	std::set<Node*>::iterator iter;
 	for(iter=parent_set.begin();iter!=parent_set.end();++iter)
 	{
