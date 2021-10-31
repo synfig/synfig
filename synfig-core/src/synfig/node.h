@@ -242,7 +242,7 @@ public:
 	void remove_child(Node*x);
 
 	//!Returns how many parents has the current Node
-	int parent_count()const;
+	std::size_t parent_count() const;
 
 	//! Returns the cached times values for all the children
 	const time_set &get_times() const;

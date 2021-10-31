@@ -292,7 +292,7 @@ Node::remove_child(Node*x)
 		x->remove_parent(this);
 }
 
-int
+std::size_t
 Node::parent_count()const
 {
 	return parent_set.size();

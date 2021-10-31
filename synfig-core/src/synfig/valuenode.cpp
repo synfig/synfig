@@ -160,7 +160,7 @@ ValueNode::replace(etl::handle<ValueNode> x)
 	if(x.get()==this)
 		return 0;
 
-	while(parent_set.size())
+	while(parent_count())
 	{
 		(*parent_set.begin())->add_child(x.get());
 		(*parent_set.begin())->remove_child(this);
@@ -703,7 +703,7 @@ LinkableValueNode::get_description(int index, bool show_exported_name)const
 	LinkableValueNode::ConstHandle parent_linkable_vn;
 
 	// walk up through the valuenodes trying to find the layer at the top
-	while (!node->parent_set.empty() && !dynamic_cast<const Layer*>(node))
+	while (node->parent_count() && !dynamic_cast<const Layer*>(node))
 	{
 		LinkableValueNode::ConstHandle linkable_value_node(dynamic_cast<const LinkableValueNode*>(node));
 		if (linkable_value_node)

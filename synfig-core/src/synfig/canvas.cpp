@@ -1517,7 +1517,7 @@ Canvas::invoke_signal_value_node_child_removed(etl::handle<ValueNode> container,
 	signal_value_node_child_removed()(container, content);
 	Canvas::Handle canvas(this);
 #ifdef DEBUG_INVOKE_SVNCR
-	printf("%s:%d removed stuff from a canvas %lx with %zd parents\n", __FILE__, __LINE__, uintptr_t(canvas.get()), canvas->parent_set.size());
+	printf("%s:%d removed stuff from a canvas %lx with %zu parents\n", __FILE__, __LINE__, uintptr_t(canvas.get()), canvas->parent_count());
 #endif
 	for (std::set<Node*>::iterator iter = canvas->parent_set.begin(); iter != canvas->parent_set.end(); iter++)
 	{
@@ -1525,7 +1525,7 @@ Canvas::invoke_signal_value_node_child_removed(etl::handle<ValueNode> container,
 		{
 #ifdef DEBUG_INVOKE_SVNCR
 			printf("it's a layer %lx\n", uintptr_t(layer));
-			printf("%s:%d it's a layer with %zd parents\n", __FILE__, __LINE__, layer->parent_set.size());
+			printf("%s:%d it's a layer with %zu parents\n", __FILE__, __LINE__, layer->parent_count());
 #endif
 			for (std::set<Node*>::iterator iter = layer->parent_set.begin(); iter != layer->parent_set.end(); iter++)
 				if (Canvas* canvas = dynamic_cast<Canvas*>(*iter))
@@ -1569,8 +1569,8 @@ void
 Canvas::show_canvas_ancestry()const
 {
 	String layer;
-	// printf("%s:%d parent set size = %zd\n", __FILE__, __LINE__, parent_set.size());
-	if (parent_set.size() == 1)
+	// printf("%s:%d parent set size = %zu\n", __FILE__, __LINE__, parent_count());
+	if (parent_count() == 1)
 	{
 		Node* node(*(parent_set.begin()));
 		if (dynamic_cast<Layer*>(node))
