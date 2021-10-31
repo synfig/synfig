@@ -106,7 +106,7 @@
 - [`bbd7a85`](https://github.com/synfig/synfig/commit/bbd7a85b1f65d2ac02397853b79c19d0f8b672e0) Return true only if id=1 (accept) is clicked ([#1573](https://github.com/synfig/synfig/issues/1573)) [studio]
 - [`9ad7d22`](https://github.com/synfig/synfig/commit/9ad7d22d857c42b49bde109af298c77d661a68b4) Merge PR [#1386](https://github.com/synfig/synfig/issues/1386): Toolbar menu [studio]
 - [`053841b`](https://github.com/synfig/synfig/commit/053841be1bb8b6c75a1dd098c40948d74c22bd46) Year is fixed in About dialog ([#1238](https://github.com/synfig/synfig/issues/1238)) [studio]
-- [`383fcf8`](https://github.com/synfig/synfig/commit/383fcf8) [Autotools] remove support for broken OpenGL renderering ([#2055](https://github.com/synfig/synfig/issues/2055)) [core]
+- [`383fcf8`](https://github.com/synfig/synfig/commit/383fcf8) [Autotools] remove support for broken OpenGL rendering ([#2055](https://github.com/synfig/synfig/issues/2055)) [core]
 - [`19112f1`](https://github.com/synfig/synfig/commit/19112f10adf3b25aad93057d7a0ed03d35b0b2de) Fix crash in Spline Vertex converter ([#1802](https://github.com/synfig/synfig/issues/1802)) [core]
 - [`fb03700`](https://github.com/synfig/synfig/commit/fb037008607153b239cbe7d56fa378cc50655330) Fix crash on unsuccessful action with a clean undo history ([#1643](https://github.com/synfig/synfig/issues/1643)) [studio]
 - [`99a1cde`](https://github.com/synfig/synfig/commit/99a1cde2b1e54540857925e6899deb708e17f305) Export video files with sound ([#1623](https://github.com/synfig/synfig/issues/1623)) [core]

@@ -69,7 +69,7 @@
 - [`798bfbf`](https://github.com/synfig/synfig/commit/798bfbf95983ff6c01ca019ac72b390fbc259eab) Fixed a crash when trying to import a file into yourself ([#2239](https://github.com/synfig/synfig/issues/2239)) [studio]
 - [`247909c`](https://github.com/synfig/synfig/commit/247909c2cd07a4121192f8ee8eddeb31c800fb86) [Core] ValueNode_AnimatedFile now supports more data types ([#2240](https://github.com/synfig/synfig/issues/2240)) [core]
 - [`4b26b30`](https://github.com/synfig/synfig/commit/4b26b30a6ae4f76bbc3ce8ac21f915f9c1f14b9e) Refresh rend_desc of canvas interface when end time is changed from toolbar ([#2213](https://github.com/synfig/synfig/issues/2213)) [studio]
-- [`101a5aa`](https://github.com/synfig/synfig/commit/101a5aa178019fddcaadf6436ea0c37cc1f5162f) Merge PR [#2236](https://github.com/synfig/synfig/issues/2236): [Lottie exporter] Add animation to addtion/deletion of Bline points [studio]
+- [`101a5aa`](https://github.com/synfig/synfig/commit/101a5aa178019fddcaadf6436ea0c37cc1f5162f) Merge PR [#2236](https://github.com/synfig/synfig/issues/2236): [Lottie exporter] Add animation to addition/deletion of Bline points [studio]
 - [`fb80f27`](https://github.com/synfig/synfig/commit/fb80f27e956d5a8dcc0b1b03db9262bd76388d24) Added Synfig tests to Github CI workflow ([#2238](https://github.com/synfig/synfig/issues/2238))
 - [`4717669`](https://github.com/synfig/synfig/commit/4717669e5b5f8aabe272a8013607c060adcd9409) Disabled some Travis CI build jobs ([#2237](https://github.com/synfig/synfig/issues/2237))
 - [`f32ae7f`](https://github.com/synfig/synfig/commit/f32ae7fbb91f037b0203e1709c32261ee749ee92) [Lottie exporter] Add animation to addition/deletion of Width points and Dash items in advanced outline ([#2233](https://github.com/synfig/synfig/issues/2233)) [studio]
@@ -439,7 +439,7 @@
 - [`e222ce6`](https://github.com/synfig/synfig/commit/e222ce647dc94d4dc332ddd4f969b1844ee18c8c) Fixed travis-ci warnings
 - [`1f08cfc`](https://github.com/synfig/synfig/commit/1f08cfca9c70ea940609324520ecab5559eea885) Remove references to missing translation files ([#1239](https://github.com/synfig/synfig/issues/1239)) [studio]
 - [`eb99ee6`](https://github.com/synfig/synfig/commit/eb99ee6b4847b4b4c575ed576aa55fba5a149ba7) New job for running "autobuild/transifex-push-template.sh" ([#1234](https://github.com/synfig/synfig/issues/1234))
-- [`b380d8a`](https://github.com/synfig/synfig/commit/b380d8a35d882f5d5d839b396a7d3912b8488c9f) keep undo history clean when deleteing multiple curve waypoints ([#1134](https://github.com/synfig/synfig/issues/1134)) [studio]
+- [`b380d8a`](https://github.com/synfig/synfig/commit/b380d8a35d882f5d5d839b396a7d3912b8488c9f) keep undo history clean when deleting multiple curve waypoints ([#1134](https://github.com/synfig/synfig/issues/1134)) [studio]
 - [`c3054c4`](https://github.com/synfig/synfig/commit/c3054c4d648783a1877e42801f97d435ba184303) Merge PR [#1228](https://github.com/synfig/synfig/issues/1228): [CMake] Update CMake script for /share and /etc. [studio]
 - [`50bab45`](https://github.com/synfig/synfig/commit/50bab454ff238af0a286f7a5a81bb7ef45eca914) Merge PR [#1224](https://github.com/synfig/synfig/issues/1224): [CMake] Updated CMake script to change layout of build files. [core]
 - [`9210f30`](https://github.com/synfig/synfig/commit/9210f307e3cf24be53070cc739f52fd8b5e6d48d) Fix typo [studio]

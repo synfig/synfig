@@ -26,7 +26,7 @@
 - [`23bf66a`](https://github.com/synfig/synfig/commit/23bf66ab53aa7bd3ef3a70fb4488a97b005da3da) Fix animation interpolation for boolean values ([#1826](https://github.com/synfig/synfig/issues/1826))
 - [`985afc4`](https://github.com/synfig/synfig/commit/985afc44935778396406150c130b9653b977def3) fix Duplicate layer ignoring all layers but the first one ([#1829](https://github.com/synfig/synfig/issues/1829))
 - [`a583e73`](https://github.com/synfig/synfig/commit/a583e73d4c47914284b15f4a8d7719eafddfe1b4) autotools: pango and imagemagick c++ flags and libs have been moved to their respective modules ([#1688](https://github.com/synfig/synfig/issues/1688))
-- [`383fcf8`](https://github.com/synfig/synfig/commit/383fcf8) [Autotools] remove support for broken OpenGL renderering ([#2055](https://github.com/synfig/synfig/issues/2055))
+- [`383fcf8`](https://github.com/synfig/synfig/commit/383fcf8) [Autotools] remove support for broken OpenGL rendering ([#2055](https://github.com/synfig/synfig/issues/2055))
 - [`19112f1`](https://github.com/synfig/synfig/commit/19112f10adf3b25aad93057d7a0ed03d35b0b2de) Fix crash in Spline Vertex converter ([#1802](https://github.com/synfig/synfig/issues/1802))
 - [`99a1cde`](https://github.com/synfig/synfig/commit/99a1cde2b1e54540857925e6899deb708e17f305) Export video files with sound ([#1623](https://github.com/synfig/synfig/issues/1623))
 
@@ -467,11 +467,11 @@
 2004-01-05 (darco) : Increased threshold for cusp cut-off of tangents are too sharp
 2003-12-29 (darco) : Added support for sharp cusp points (on by default now)
 2003-12-24 (darco) : Adjusted Copyright Notice
-2003-12-24 (darco) : Improved the horizontal placement consistancy of the Text layer.
+2003-12-24 (darco) : Improved the horizontal placement consistency of the Text layer.
 2003-12-24 (darco) : Fix for obscure bug in scale valuenode that would cause a failure to load a saved file
 2003-11-25 (darco) : Improved the Text layer again. *sigh*
-2003-11-20 (darco) : Improved the consistancy of the Text layer again. :P
-2003-11-18 (darco) : Improved the consistancy of the Text layer. You should be able to use it without worrying about the layout going weird anymore.
+2003-11-20 (darco) : Improved the consistency of the Text layer again. :P
+2003-11-18 (darco) : Improved the consistency of the Text layer. You should be able to use it without worrying about the layout going weird anymore.
 2003-11-12 (darco) : Added "--dpi", "--dpi-x", and "--dpi-y" arguments to the SINFG command line tool.  these allow you to change the DPI of what you are rendering.
 2003-11-10 (darco) : Fixed odd animation behavior
 2003-11-10 (darco) : Fixed a bug in the PasteCanvas layer where mouse clicks wouldn't match up if the "origin" was changed from 0,0.
@@ -512,7 +512,7 @@
 2003-05-05 (darco) : The Animated Value Node can now use exported values in waypoints.
 2003-04-23 (darco) : Added "stretch" layer. (Allows distortions to things like circles)
 2003-04-18 (darco) : Added "exposure" parameter to color correct layer
-2003-04-17 (darco) : Added native suport for JPEG files
+2003-04-17 (darco) : Added native support for JPEG files
 2003-04-15 (darco) : The parametric renderer is now multi-threaded, meaning it can take advantage of multiple processors. Doesn't work in Win32.
 2003-04-14 (darco) : Added "ColorCorrect" layer
 2003-04-14 (darco) : Added "bailout" parameter to Mandelbrot and Julia layers. Use larger values to improve smoothing.
@@ -540,7 +540,7 @@
 2003-03-25 (darco) : Added support for linking to DataNodes/Canvases in other Compositions.
 2003-03-24 (darco) : Added support for linking to DataNodes in different Canvases.
 
-2003-03-23 (darco) : Fixed a small bug in circle layer that caused inconsistant results when the feather was set to zero and the parametric renderer used.
+2003-03-23 (darco) : Fixed a small bug in circle layer that caused inconsistent results when the feather was set to zero and the parametric renderer used.
 2003-03-23 (darco) : Added "zoom" parameter to PasteCanvas layer
 
 2003-03-22 (darco) : Fixed color-order bug in ImageMagick importer
