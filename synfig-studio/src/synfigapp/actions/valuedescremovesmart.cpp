@@ -110,15 +110,8 @@ Action::ValueDescRemoveSmart::is_candidate(const ParamList &x)
 				ValueNode::Handle compo(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_value_node()));
 				if(compo)
 				{
-					ValueNode_DynamicList::Handle parent_list=NULL;
-					std::set<Node*>::iterator iter;
 					// and if the composite parent is a dynamic list type
-					for(iter=compo->parent_set.begin();iter!=compo->parent_set.end();++iter)
-						{
-							parent_list=ValueNode_DynamicList::Handle::cast_dynamic(*iter);
-							if(parent_list)
-								break;
-						}
+					ValueNode_DynamicList::Handle parent_list = compo->find_first_parent_of_type<ValueNode_DynamicList>();
 					if(parent_list)
 						continue;
 				}

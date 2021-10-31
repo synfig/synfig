@@ -298,6 +298,20 @@ Node::parent_count()const
 	return parent_set.size();
 }
 
+void Node::foreach_parent(const ConstForeachFunc &func) const
+{
+	for (const Node* node : parent_set)
+		if (func(node))
+			return;
+}
+
+void Node::foreach_parent(const ForeachFunc &func)
+{
+	for (Node* node : parent_set)
+		if (func(node))
+			return;
+}
+
 const Node::time_set &
 Node::get_times() const
 {
