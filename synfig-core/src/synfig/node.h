@@ -77,10 +77,6 @@ public:
 	{
 	}
 
-#ifdef _DEBUG
-	const char *c_str()const;
-#endif
-
 	const GUID& get_guid()const { return guid; }
 	const Time& get_time()const { return time; }
 	Interpolation get_before()const { return before; }
@@ -137,7 +133,7 @@ class Node : public etl::rshared_object
 public:
 
 	//! \writeme
-	typedef	TimePointSet	time_set;
+	typedef	TimePointSet time_set;
 
 	/*
  --	** -- D A T A -------------------------------------------------------------
@@ -145,15 +141,15 @@ public:
 
 private:
 
-	//! \ The GUID of the node
 	mutable std::mutex guid_mutex_;
+	//! \ The GUID of the node
 	mutable GUID guid_;
 
 	//! cached time values for all the children
-	mutable time_set	times;
+	mutable time_set times;
 
 	//! \writeme
-	mutable bool		bchanged;
+	mutable bool bchanged;
 
 	//! The last time the node was modified since the program started
 	//! \see __sys_clock
@@ -169,7 +165,7 @@ public:
 
 	//! A set of pointers to parent nodes
 	//! \todo This should really be private
-	std::set<Node*> 	parent_set;
+	std::set<Node*> parent_set;
 
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
@@ -245,7 +241,7 @@ public:
 	//! Removes the parameter \x as a child of the current Node
 	void remove_child(Node*x);
 
-	//!Returns how many parenst has the current Node
+	//!Returns how many parents has the current Node
 	int parent_count()const;
 
 	//! Returns the cached times values for all the children
@@ -300,32 +296,6 @@ guid_cast(const synfig::GUID& guid)
 {
 	return etl::handle<T>::cast_dynamic(synfig::find_node(guid));
 }
-
-#ifdef _DEBUG
-template <typename T>
-synfig::String set_string(T start, T end)
-{
-	synfig::String ret("[");
-	bool started = false;
-
-	while (start != end)
-	{
-		if (started)	ret += ", ";
-		else			started = true;
-
-		ret += synfig::String((*start).c_str());
-		start++;
-	}
-
-	return ret + "]";
-}
-
-template <typename T>
-synfig::String set_string(T set)
-{
-	return set_string(set.begin(), set.end());
-}
-#endif // _DEBUG
 
 typedef etl::handle<Node> NodeHandle;
 

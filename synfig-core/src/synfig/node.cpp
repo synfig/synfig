@@ -122,14 +122,6 @@ Node* synfig::find_node(const GUID &guid) {
 
 /* === M E T H O D S ======================================================= */
 
-#ifdef _DEBUG
-const char *
-TimePoint::c_str()const
-{
-	return get_time().get_string().c_str();
-}
-#endif
-
 void
 TimePoint::absorb(const TimePoint& x)
 {
