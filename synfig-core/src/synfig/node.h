@@ -286,6 +286,20 @@ public:
 		return parent;
 	}
 
+	//! Return the first parent of a given type with an additional match condition
+	//! The CompareFunc should return true when match is satisfied
+	//! Example: node->find_first_parent_of_type<MyType>([](MyType::Handle v) -> bool { return v.prop == 1;});
+	template<typename T> etl::handle<T> find_first_parent_of_type(const sigc::slot<bool(const etl::handle<T>&)> &CompareFunc) const {
+		T* parent = nullptr;
+		foreach_parent([&parent, CompareFunc](const Node* node) -> bool {
+			if (auto item = dynamic_cast<T*>(const_cast<Node*>(node)))
+				if (CompareFunc(item))
+					parent = item;
+			return parent;
+		});
+		return parent;
+	}
+
 	//! Returns the cached times values for all the children
 	const time_set &get_times() const;
 
