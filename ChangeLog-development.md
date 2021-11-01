@@ -1,3 +1,10 @@
+- [`78e045f`](https://github.com/synfig/synfig/commit/78e045f940364f2754a09956c7990b5d270db833) CMake/Brew removed cairo/pango requirements ([#2387](https://github.com/synfig/synfig/issues/2387)) [core] [studio]
+- [`65850b9`](https://github.com/synfig/synfig/commit/65850b9ffa24dc048e6b3acd9e9dd29230f558bc) CellRenderer_TimeTrack now uses TimePlotData too ([#2384](https://github.com/synfig/synfig/issues/2384)) [studio]
+- [`71a3455`](https://github.com/synfig/synfig/commit/71a34552401999d1fa7083b38301e4b40865c08a) fix Gtk warning "'GTK_IS_WIDGET (widget)' failed" ([#2388](https://github.com/synfig/synfig/issues/2388)) [studio]
+- [`cf1c176`](https://github.com/synfig/synfig/commit/cf1c1769ea16e51385a1e82cf6c6c3784da68293) Merge PR ([#2327](https://github.com/synfig/synfig/issues/2327)): SVG: fix parser for <path> element (except for A commands) [core]
+- [`2fe4a82`](https://github.com/synfig/synfig/commit/2fe4a8267bfa29bee1ea2be5a6b1a84305cb0a6e) Layer_Freetype: Added check if HOME environment is set on MacOS ([#2295](https://github.com/synfig/synfig/issues/2295)) [core]
+- [`333182e`](https://github.com/synfig/synfig/commit/333182e6d904251d6788da9f9c92b1f5eb79bec4) Merge PR ([#1793](https://github.com/synfig/synfig/issues/1793)): 'Update' file headers: license notices, \file and other minor changes [ETL] [core] [studio]
+- [`7b8f9c7`](https://github.com/synfig/synfig/commit/7b8f9c76bc569a3095ff130093bd0e719874070f) Added fontconfig.conf to MacOS .app ([#2380](https://github.com/synfig/synfig/issues/2380))
 - [`f6b3f24`](https://github.com/synfig/synfig/commit/f6b3f24e9048a0eb1fd8b0061d8cf612a2b6d767) Merge PR ([#2382](https://github.com/synfig/synfig/issues/2382)): Widget_Keyframe_List: clean up (and make use of TimePlotData) [studio]
 
 ## Version 1.5.1 [ETL] [core] [studio]
