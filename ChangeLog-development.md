@@ -4,11 +4,11 @@
 - [`cf1c176`](https://github.com/synfig/synfig/commit/cf1c1769ea16e51385a1e82cf6c6c3784da68293) Merge PR ([#2327](https://github.com/synfig/synfig/issues/2327)): SVG: fix parser for `<path>` element (except for A commands) [core]
 - [`2fe4a82`](https://github.com/synfig/synfig/commit/2fe4a8267bfa29bee1ea2be5a6b1a84305cb0a6e) Layer_Freetype: Added check if HOME environment is set on MacOS ([#2295](https://github.com/synfig/synfig/issues/2295)) [core]
 - [`333182e`](https://github.com/synfig/synfig/commit/333182e6d904251d6788da9f9c92b1f5eb79bec4) Merge PR ([#1793](https://github.com/synfig/synfig/issues/1793)): 'Update' file headers: license notices, \file and other minor changes [ETL] [core] [studio]
-- [`7b8f9c7`](https://github.com/synfig/synfig/commit/7b8f9c76bc569a3095ff130093bd0e719874070f) Added fontconfig.conf to MacOS .app ([#2380](https://github.com/synfig/synfig/issues/2380))
 - [`f6b3f24`](https://github.com/synfig/synfig/commit/f6b3f24e9048a0eb1fd8b0061d8cf612a2b6d767) Merge PR ([#2382](https://github.com/synfig/synfig/issues/2382)): Widget_Keyframe_List: clean up (and make use of TimePlotData) [studio]
 
 ## Version 1.5.1 [ETL] [core] [studio]
 
+- [`7b8f9c7`](https://github.com/synfig/synfig/commit/7b8f9c76bc569a3095ff130093bd0e719874070f) Fixed issue with Text Tool not working on MacOS because of missing "fonts.conf" file ([#2380](https://github.com/synfig/synfig/issues/2380))
 - [`17b5212`](https://github.com/synfig/synfig/commit/17b52129e04f721e6c26229f15f22fd534c1f3aa) Merge PR ([#2362](https://github.com/synfig/synfig/issues/2362)): Text Layer ported to Cobra render engine [core]
 - [`1d38aea`](https://github.com/synfig/synfig/commit/1d38aeaa472c1dd4fbd7867e9834c050b6f27b76) fix rendering of empty rows inside contour when Invert is on ([#2367](https://github.com/synfig/synfig/issues/2367)) [core]
 - [`876ed89`](https://github.com/synfig/synfig/commit/876ed89d9c6602d9cf1acc12a9a72bdd060e8884) Merge PR ([#2376](https://github.com/synfig/synfig/issues/2376)): Remove dead/dummy translations [core] [studio]
