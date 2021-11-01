@@ -25,12 +25,6 @@
 */
 #endif
 
-#ifdef __GNUG__
-#define ETL_DEPRECATED_FUNCTION		__attribute__ ((deprecated))
-#else
-#define ETL_DEPRECATED_FUNCTION
-#endif
-
 #ifndef NULL
 #define NULL	0
 #endif

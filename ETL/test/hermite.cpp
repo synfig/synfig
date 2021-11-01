@@ -99,11 +99,11 @@ int angle_test(void)
 	angle tmp;
 	double t;
 
-	Hermie.p1()=angle::degrees(0);
-	Hermie.t1()=angle::degrees(45);
+	Hermie.p1()=angle::deg(0);
+	Hermie.t1()=angle::deg(45);
 
-	Hermie.p2()=angle::degrees(-45);
-	Hermie.t2()=angle::degrees(180);
+	Hermie.p2()=angle::deg(-45);
+	Hermie.t2()=angle::deg(180);
 
 	Hermie.sync();
 
@@ -180,11 +180,11 @@ int anglefixed_test(void)
 	angle tmp;
 	double t;
 
-	Hermie.p1()=angle::degrees(0);
-	Hermie.t1()=angle::degrees(45);
+	Hermie.p1()=angle::deg(0);
+	Hermie.t1()=angle::deg(45);
 
-	Hermie.p2()=angle::degrees(-45);
-	Hermie.t2()=angle::degrees(180);
+	Hermie.p2()=angle::deg(-45);
+	Hermie.t2()=angle::deg(180);
 
 	Hermie.sync();
 
