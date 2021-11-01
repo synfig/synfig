@@ -126,7 +126,7 @@ LinkableValueNode::unlink_all()
 	{
 		ValueNode::LooseHandle value_node(get_link(i));
 		if(value_node)
-			value_node->parent_set.erase(this);
+			remove_child(value_node.get());
 	}
 }
 
@@ -290,19 +290,20 @@ ValueNode::canvas_time_bounds(const Canvas &canvas, bool &found, Time &begin, Ti
 void
 ValueNode::find_time_bounds(const Node &node, bool &found, Time &begin, Time &end, Real &fps)
 {
-	for(std::set<Node*>::const_iterator i = node.parent_set.begin(); i != node.parent_set.end(); ++i)
+	auto find_func = [&found, &begin, &end, &fps] (const Node* node) -> bool
 	{
-		if (!*i) continue;
-		if (Layer *layer = dynamic_cast<Layer*>(*i))
+		if (const Layer *layer = dynamic_cast<const Layer*>(node))
 		{
 			if (Canvas::Handle canvas = layer->get_canvas())
 				canvas_time_bounds(*canvas->get_root(), found, begin, end, fps);
 		}
 		else
 		{
-			find_time_bounds(**i, found, begin, end, fps);
+			find_time_bounds(*node, found, begin, end, fps);
 		}
-	}
+		return false;
+	};
+	node.foreach_parent(find_func);
 }
 
 void

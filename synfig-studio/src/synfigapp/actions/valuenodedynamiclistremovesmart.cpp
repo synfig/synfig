@@ -136,34 +136,27 @@ Action::ValueNodeDynamicListRemoveSmart::set_param(const synfig::String& name, c
 			ValueNode::Handle compo(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_value_node()));
 			if(compo)
 			{
-				ValueNode_DynamicList::Handle parent_list=NULL;
-				std::set<Node*>::iterator iter;
+				ValueNode_DynamicList::Handle parent_list;
 				// now check if the composite's parent is a dynamic list type
-				for(iter=compo->parent_set.begin();iter!=compo->parent_set.end();++iter)
-					{
-						parent_list=ValueNode_DynamicList::Handle::cast_dynamic(*iter);
-						if(parent_list)
-						{
-							value_node=parent_list;
-							// Now we need to find the index of this composite item
-							// on the dynamic list
-							int i;
-							for(i=0;i<value_node->link_count();i++)
-								if(compo->get_guid()==value_node->get_link(i)->get_guid())
-									break;
-							if(i<value_node->link_count())
-								value_desc=synfigapp::ValueDesc(value_node, i);
-							else
-								return false;
+				parent_list = compo->find_first_parent_of_type<ValueNode_DynamicList>();
+				if(parent_list)
+				{
+					value_node=parent_list;
+					// Now we need to find the index of this composite item
+					// on the dynamic list
+					int i;
+					for(i=0;i<value_node->link_count();i++)
+						if(compo->get_guid()==value_node->get_link(i)->get_guid())
 							break;
-						}
-					}
-				if(!value_node)
+					if(i<value_node->link_count())
+						value_desc=synfigapp::ValueDesc(value_node, i);
+					else
+						return false;
+				}
+				else
 					return false;
 			}
 			else
-				return false;
-			if(!value_node)
 				return false;
 		}
 		index=value_desc.get_index();

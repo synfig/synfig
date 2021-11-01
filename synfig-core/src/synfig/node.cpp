@@ -302,6 +302,13 @@ Node::parent_count()const
 	return parent_set.size();
 }
 
+bool
+Node::is_child_of(const Node *x) const
+{
+	std::lock_guard<std::mutex> lock(parent_set_mutex_);
+	return parent_set.count(const_cast<Node*>(x)) != 0;
+}
+
 Node*
 Node::get_first_parent() const
 {

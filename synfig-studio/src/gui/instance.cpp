@@ -462,10 +462,9 @@ studio::Instance::dialog_save_as()
 
 	{
 		OneMoment one_moment;
-		std::set<Node*>::iterator iter;
-		for(iter=canvas->parent_set.begin();iter!=canvas->parent_set.end();++iter)
+		bool problematic = false;
+		canvas->foreach_parent([=, &problematic](Node* node)
 		{
-			synfig::Node* node(*iter);
 			for(;node->parent_count();node=node->get_first_parent())
 			{
 				Layer::Handle parent_layer(dynamic_cast<Layer*>(node));
@@ -482,12 +481,16 @@ studio::Instance::dialog_save_as()
 							"details",
 							_("Close"));
 
-					return false;
+					problematic = true;
+					return true;
 				}
 				if(parent_layer)
 					break;
 			}
-		}
+			return false;
+		});
+		if (problematic)
+			return false;
 	}
 
 	if (has_real_filename())

@@ -165,9 +165,7 @@ private:
 	//! Mutex for parent_set protection
 	mutable std::mutex parent_set_mutex_;
 
-public:
 	//! A set of pointers to parent nodes
-	//! \todo This should really be private
 	std::set<Node*> parent_set;
 
 	/*
@@ -246,6 +244,9 @@ public:
 
 	//!Returns how many parents has the current Node
 	std::size_t parent_count() const;
+
+	//! Checks if node \p x is parent of this node
+	bool is_child_of(const Node* x) const;
 
 	Node* get_first_parent() const;
 
