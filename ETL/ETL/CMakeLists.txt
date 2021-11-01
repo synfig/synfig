@@ -26,7 +26,6 @@ set(ETL_HEADERS
         "${CMAKE_CURRENT_LIST_DIR}/_surface.h"
         "${CMAKE_CURRENT_LIST_DIR}/_smart_ptr.h"
         "${CMAKE_CURRENT_LIST_DIR}/_pen.h"
-        "${CMAKE_CURRENT_LIST_DIR}/_bezier_angle.h"
         "${CMAKE_CURRENT_LIST_DIR}/_boxblur.h"
         "${CMAKE_CURRENT_LIST_DIR}/_angle.h"
         "${CMAKE_CURRENT_LIST_DIR}/etl_config.h"

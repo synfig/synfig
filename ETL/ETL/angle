@@ -32,18 +32,7 @@
 #include "etl_config.h"
 #include "_curve_func.h"
 
-#ifdef ETL_FASTANGLE
-#include "_fastangle.h"
-namespace etl {
-typedef fastangle angle;
-};
-#else
-# include "_angle.h"
-#endif
-
-#ifdef __BEZIER__
-#include "_bezier_angle.h"
-#endif
+#include "_angle.h"
 
 /* === E N D =============================================================== */
 

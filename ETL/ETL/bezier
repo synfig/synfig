@@ -33,10 +33,6 @@
 
 #include "_bezier.h"
 
-#ifdef __ETL_ANGLE__
-#include "_bezier_angle.h"
-#endif
-
 /* === E N D =============================================================== */
 
 #endif
