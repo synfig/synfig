@@ -14,7 +14,6 @@ etl_HEADERS = \
 	_ref_count.h \
 	angle \
 	handle \
-	fixed \
 	clock \
 	hermite \
 	calculus \
@@ -25,7 +24,6 @@ etl_HEADERS = \
 	_curve_func.h \
 	_angle.h \
 	_handle.h \
-	_fixed.h \
 	etl_config.h \
 	$(top_builddir)/ETL/etl_profile.h \
 	bezier \
