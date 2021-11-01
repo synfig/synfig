@@ -227,7 +227,7 @@ public:
 	bool is_exported()const { return !get_id().empty(); }
 
 	//! Check recursively if \value_node_dest is a descendant of the Value Node
-	bool is_descendant(ValueNode::Handle value_node_dest);
+	bool is_descendant(ValueNode::Handle value_node_dest) const;
 
 	//! Returns the type of the ValueNode
 	Type& get_type()const { return *type; }

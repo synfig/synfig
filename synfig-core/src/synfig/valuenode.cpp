@@ -200,24 +200,28 @@ ValueNode::get_description(bool show_exported_name)const
 }
 
 bool
-ValueNode::is_descendant(ValueNode::Handle value_node_dest)
+ValueNode::is_descendant(ValueNode::Handle value_node_dest) const
 {
-    if(!value_node_dest)
-        return false;
-    if(Handle(this) == value_node_dest)
-        return true;
+	if(!value_node_dest)
+		return false;
+	if(!value_node_dest->parent_count())
+		return false;
+	if(this == value_node_dest)
+		return true;
 
-    //! loop through the parents of each node in current_nodes
-	std::set<Node*> node_parents(value_node_dest->parent_set);
-    ValueNode::Handle value_node_parent;
-    for (std::set<Node*>::iterator iter = node_parents.begin(); iter != node_parents.end(); iter++)
-    {
-        value_node_parent = ValueNode::Handle::cast_dynamic(*iter);
-        if(Handle(this) == value_node_parent)
-            break;
-    }
+	ValueNode::Handle value_node_parent;
+	value_node_parent = value_node_dest->find_first_parent_of_type<ValueNode>([=](ValueNode::Handle node) {
+		return this == node;
+	});
 
-    return value_node_dest->parent_count() ? is_descendant(value_node_parent) : false;
+	if (!value_node_parent) {
+		// search for grand-parents (and grand-grand-parents and so on)
+		value_node_parent = value_node_dest->find_first_parent_of_type<ValueNode>([=](ValueNode::Handle node) {
+			return node->is_descendant(value_node_dest);
+		});
+	}
+
+	return value_node_parent? true : false;
 }
 
 void
