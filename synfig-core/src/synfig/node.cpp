@@ -302,6 +302,15 @@ Node::parent_count()const
 	return parent_set.size();
 }
 
+Node*
+Node::get_first_parent() const
+{
+	std::lock_guard<std::mutex> lock(parent_set_mutex_);
+	if (parent_set.empty())
+		return nullptr;
+	return *parent_set.begin();
+}
+
 void Node::foreach_parent(const ConstForeachFunc &func) const
 {
 	std::lock_guard<std::mutex> lock(parent_set_mutex_);

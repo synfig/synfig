@@ -247,6 +247,8 @@ public:
 	//!Returns how many parents has the current Node
 	std::size_t parent_count() const;
 
+	Node* get_first_parent() const;
+
 	//! Callback function for a foreach method.
 	//! If it returns true, the foreach iteration is halted.
 	using ForeachFunc = sigc::slot<bool(Node*)>;

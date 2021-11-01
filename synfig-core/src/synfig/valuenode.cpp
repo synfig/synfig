@@ -162,8 +162,8 @@ ValueNode::replace(etl::handle<ValueNode> x)
 
 	while(parent_count())
 	{
-		(*parent_set.begin())->add_child(x.get());
-		(*parent_set.begin())->remove_child(this);
+		get_first_parent()->add_child(x.get());
+		get_first_parent()->remove_child(this);
 		//x->parent_set.insert(*parent_set.begin());
 		//parent_set.erase(parent_set.begin());
 	}
@@ -719,7 +719,7 @@ LinkableValueNode::get_description(int index, bool show_exported_name)const
 
 			description = linkable_value_node->get_local_name() + link + (parent_linkable_vn?">":"") + description;
 		}
-		node = *node->parent_set.begin();
+		node = node->get_first_parent();
 		parent_linkable_vn = linkable_value_node;
 	}
 

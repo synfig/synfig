@@ -1571,7 +1571,7 @@ Canvas::show_canvas_ancestry()const
 	// printf("%s:%d parent set size = %zu\n", __FILE__, __LINE__, parent_count());
 	if (parent_count() == 1)
 	{
-		Node* node(*(parent_set.begin()));
+		Node* node(get_first_parent()));
 		if (dynamic_cast<Layer*>(node))
 		{
 			layer = (dynamic_cast<Layer*>(node))->get_description();
