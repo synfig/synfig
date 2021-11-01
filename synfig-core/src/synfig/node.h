@@ -34,16 +34,18 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <sigc++/signal.h>
-#include <set>
 #include <ctime>
-#include "time.h"
-#include "guid.h"
-#include <ETL/handle>
-#include "interpolation.h"
 #include <mutex>
-#include <glibmm/threads.h>
+#include <set>
 #include <vector>
+
+#include <glibmm/threads.h>
+#include <sigc++/signal.h>
+
+#include <ETL/handle>
+#include "guid.h"
+#include "interpolation.h"
+#include "time.h"
 
 /* === M A C R O S ========================================================= */
 

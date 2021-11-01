@@ -33,9 +33,9 @@
 #	include <config.h>
 #endif
 
-#include <cstdlib>
 #include "node.h"
 
+#include <cstdlib>
 #include <map>
 
 #include "synfig/general.h"
