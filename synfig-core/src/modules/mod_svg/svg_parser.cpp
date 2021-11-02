@@ -273,8 +273,12 @@ void
 Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style style, const SVGMatrix& mtx_parent)
 {
 	if(const xmlpp::Element* nodeElement = dynamic_cast<const xmlpp::Element*>(node)){
-		Glib::ustring nodename = node->get_name();
-		if (nodename.compare("g")==0 || nodename.compare("path")==0 || nodename.compare("polygon")==0 || nodename.compare("rect")==0){} else return;
+		const Glib::ustring nodename = node->get_name();
+
+		// Is element known ?
+		const std::vector<const char*> valid_elements = {"g", "path", "polygon", "rect"};
+		if (valid_elements.end() == std::find(valid_elements.begin(), valid_elements.end(), nodename))
+			return;
 
 		enum FillType {FILL_TYPE_NONE, FILL_TYPE_SIMPLE, FILL_TYPE_GRADIENT};
 
