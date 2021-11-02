@@ -363,35 +363,29 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 			}
 		}
 
+		// We will create a non-primitive shape
+
 		if ((!SVG_RESOLVE_BLINE) || typeFill == FILL_TYPE_GRADIENT || typeStroke == FILL_TYPE_GRADIENT)
 			child_layer = nodeStartBasicLayer(root->add_child("layer"), id);
 		child_fill=child_layer;
 		child_stroke=child_layer;
 
-		//=======================================================================
-
+		// bline list
 		std::list<BLine> k;
-		//if we are creating a bline
+		// transformation matrix for bline vertices
+		const SVGMatrix& bline_matrix = SVG_RESOLVE_BLINE ? mtx : SVGMatrix::identity;
 
-		//First, create the list of Verteces
-		if (SVG_RESOLVE_BLINE) {
-			if(nodename.compare("path")==0){
-				k = parser_path_d(nodeElement->get_attribute_value("d"),mtx);
-			} else if(nodename.compare("polygon")==0){
-				k = parser_path_polygon(nodeElement->get_attribute_value("points"),mtx);
-			}
-		} else {
-			if(nodename.compare("path")==0){
-				k = parser_path_d(nodeElement->get_attribute_value("d"),SVGMatrix::identity);
-			} else if(nodename.compare("polygon")==0){
-				k = parser_path_polygon(nodeElement->get_attribute_value("points"),SVGMatrix::identity);
-			}
-		}
-		
-		if(typeFill!=FILL_TYPE_NONE){//region layer
-			/*if(typeFill==FILL_TYPE_GRADIENT){
-				child_fill=nodeStartBasicLayer(child_fill->add_child("layer"));
-			}*/
+		//First, create the list of vertices
+		if(nodename.compare("path")==0)
+			k = parser_path_d(nodeElement->get_attribute_value("d"), bline_matrix);
+		else if(nodename.compare("polygon")==0)
+			k = parser_path_polygon(nodeElement->get_attribute_value("points"), bline_matrix);
+
+		if (k.empty())
+			return;
+
+		// Region layer
+		if(typeFill!=FILL_TYPE_NONE){
 			for (const BLine& bline : k) {
 				xmlpp::Element *child_region=child_fill->add_child("layer");
 				child_region->set_attribute("type","region");
@@ -413,14 +407,12 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 				build_bline(child_region->add_child("param"), bline.points, bline.loop, bline.bline_id);
 			}
 			if(typeFill==FILL_TYPE_GRADIENT){ //gradient in onto mode (fill)
-				if (SVG_RESOLVE_BLINE)
-					build_fill(child_fill,fill,mtx);
-				else
-					build_fill(child_fill,fill,SVGMatrix::identity);
+				build_fill(child_fill, fill, bline_matrix);
 			}
 		}
 
-		if(typeStroke!=FILL_TYPE_NONE){//outline layer
+		// Outline layer
+		if(typeStroke!=FILL_TYPE_NONE){
 			if(typeStroke==FILL_TYPE_GRADIENT){
 				child_stroke=nodeStartBasicLayer(child_stroke->add_child("layer"),"stroke");
 			}
@@ -462,11 +454,8 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 			}
 
 			if(typeStroke==FILL_TYPE_GRADIENT){ //gradient in onto mode (stroke)
-				if (SVG_RESOLVE_BLINE)
-					build_fill(child_stroke,stroke,mtx);
-				else
-					build_fill(child_stroke,stroke,SVGMatrix::identity);
-			}	
+				build_fill(child_stroke, stroke, bline_matrix);
+			}
 		}
 
 		if (SVG_RESOLVE_BLINE)
