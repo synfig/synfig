@@ -322,23 +322,28 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 
 		if(fill.compare("none")!=0){
 			typeFill = FILL_TYPE_SIMPLE;
+
+			if(fill.compare(0,3,"url")==0)
+				typeFill = FILL_TYPE_GRADIENT;
 		}
-		if(typeFill==FILL_TYPE_SIMPLE && fill.compare(0,3,"url")==0){
-			typeFill = FILL_TYPE_GRADIENT;
-		}
+
 		//Stroke
 		int typeStroke = FILL_TYPE_NONE;
 
 		if(stroke.compare("none")!=0){
 			typeStroke = FILL_TYPE_SIMPLE;
+
+			if (stroke.compare(0,3,"url")==0)
+				typeStroke = FILL_TYPE_GRADIENT;
 		}
-		if(typeStroke==FILL_TYPE_SIMPLE && stroke.compare(0,3,"url")==0){
-			typeStroke = FILL_TYPE_GRADIENT;
-		}
-		
+
+		// What?
+		if (typeFill == FILL_TYPE_NONE && typeStroke == FILL_TYPE_NONE)
+			return;
+
 		xmlpp::Element* child_layer = root;
-		xmlpp::Element* child_fill;
-		xmlpp::Element* child_stroke;
+		xmlpp::Element* child_fill = nullptr;
+		xmlpp::Element* child_stroke = nullptr;
 
 		//make simple fills
 		if(nodename.compare("rect")==0 && typeFill!=FILL_TYPE_NONE){
@@ -401,12 +406,12 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 
 				build_bline(child_region->add_child("param"), bline.points, bline.loop, bline.bline_id);
 			}
-		}
-		if(typeFill==FILL_TYPE_GRADIENT){ //gradient in onto mode (fill)
-			if (SVG_RESOLVE_BLINE)
-				build_fill(child_fill,fill,mtx);
-			else
-				build_fill(child_fill,fill,SVGMatrix::identity);
+			if(typeFill==FILL_TYPE_GRADIENT){ //gradient in onto mode (fill)
+				if (SVG_RESOLVE_BLINE)
+					build_fill(child_fill,fill,mtx);
+				else
+					build_fill(child_fill,fill,SVGMatrix::identity);
+			}
 		}
 
 		if(typeStroke!=FILL_TYPE_NONE){//outline layer
