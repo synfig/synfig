@@ -308,97 +308,53 @@ StateCircle_Context::load_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		String value;
-
 		//parse the arguments yargh!
-		if(settings.get_value("circle.id",value))
-			set_id(value);
-		else
-			set_id("Circle");
+		set_id(settings.get_value("circle.id", "Circle"));
 
-		if(settings.get_value("circle.blend",value) && value != "")
-			set_blend(atoi(value.c_str()));
-		else
-			set_blend(0);//(int)Color::BLEND_COMPOSITE); //0 should be blend composites value
+		set_blend(settings.get_value("circle.blend", int(Color::BLEND_COMPOSITE)));
 
-		if(settings.get_value("circle.opacity",value))
-			set_opacity(atof(value.c_str()));
-		else
-			set_opacity(1);
+		set_opacity(settings.get_value("circle.opacity", 1.0));
 
-		if(settings.get_value("circle.bline_width",value) && value != "")
-			set_bline_width(Distance(atof(value.c_str()), App::distance_system));
-		else
-			set_bline_width(Distance(1, App::distance_system)); // default width
+		set_bline_width(Distance(
+							settings.get_value("circle.bline_width", 1.0),
+							App::distance_system)
+						);
 
-		if(settings.get_value("circle.feather",value))
-			set_feather_size(Distance(atof(value.c_str()), App::distance_system));
-		else
-			set_feather_size(Distance(0, App::distance_system)); // default feather
+		set_feather_size(Distance(
+							settings.get_value("circle.feather", 0.0),
+							App::distance_system)
+						);
 
-		if(settings.get_value("circle.number_of_bline_points",value))
-			set_number_of_bline_points(atof(value.c_str()));
-		else
-			set_number_of_bline_points(4);
 
-		if(settings.get_value("circle.bline_point_angle_offset",value))
-			set_bline_point_angle_offset(atof(value.c_str()));
-		else
-			set_bline_point_angle_offset(0);
+		set_number_of_bline_points(settings.get_value("circle.number_of_bline_points", 4));
 
-		if(settings.get_value("circle.invert",value) && value != "0")
-			set_invert(true);
-		else
-			set_invert(false);
+		set_bline_point_angle_offset(settings.get_value("circle.bline_point_angle_offset", 0.0));
 
-		if(settings.get_value("circle.layer_circle",value) && value=="0")
-			set_layer_circle_flag(false);
-		else
-			set_layer_circle_flag(true);
+		set_invert(settings.get_value("circle.invert", false));
 
-		if(settings.get_value("circle.layer_region",value) && value=="1")
-			set_layer_region_flag(true);
-		else
-			set_layer_region_flag(false);
+		set_layer_circle_flag(settings.get_value("circle.layer_circle", true));
 
-		if(settings.get_value("circle.layer_outline",value) && value=="1")
-			set_layer_outline_flag(true);
-		else
-			set_layer_outline_flag(false);
+		set_layer_region_flag(settings.get_value("circle.layer_region", false));
 
-		if(settings.get_value("circle.layer_advanced_outline",value) && value=="1")
-			set_layer_advanced_outline_flag(true);
-		else
-			set_layer_advanced_outline_flag(false);
+		set_layer_outline_flag(settings.get_value("circle.layer_outline", false));
 
-		if(settings.get_value("circle.layer_curve_gradient",value) && value=="1")
-			set_layer_curve_gradient_flag(true);
-		else
-			set_layer_curve_gradient_flag(false);
+		set_layer_advanced_outline_flag(settings.get_value("circle.layer_advanced_outline", false));
 
-		if(settings.get_value("circle.layer_plant",value) && value=="1")
-			set_layer_plant_flag(true);
-		else
-			set_layer_plant_flag(false);
+		set_layer_curve_gradient_flag(settings.get_value("circle.layer_curve_gradient", false));
 
-		if(settings.get_value("circle.layer_link_origins",value) && value=="0")
-			set_layer_link_origins_flag(false);
-		else
-			set_layer_link_origins_flag(true);
+		set_layer_plant_flag(settings.get_value("circle.layer_plant", false));
 
-		if(settings.get_value("circle.layer_origins_at_center",value) && value=="0")
-			set_layer_origins_at_center_flag(false);
-		else
-			set_layer_origins_at_center_flag(true);
+		set_layer_link_origins_flag(settings.get_value("circle.layer_link_origins", true));
 
-  // determine layer flags
-	layer_circle_flag = get_layer_circle_flag();
-  layer_region_flag = get_layer_region_flag();
-  layer_outline_flag = get_layer_outline_flag();
-  layer_advanced_outline_flag = get_layer_outline_flag();
-  layer_curve_gradient_flag = get_layer_curve_gradient_flag();
-  layer_plant_flag = get_layer_plant_flag();
+		set_layer_origins_at_center_flag(settings.get_value("circle.layer_origins_at_center", true));
+
+		// determine layer flags
+		layer_circle_flag = get_layer_circle_flag();
+		layer_region_flag = get_layer_region_flag();
+		layer_outline_flag = get_layer_outline_flag();
+		layer_advanced_outline_flag = get_layer_outline_flag();
+		layer_curve_gradient_flag = get_layer_curve_gradient_flag();
+		layer_plant_flag = get_layer_plant_flag();
 
 	}
 	catch(...)
@@ -412,23 +368,22 @@ StateCircle_Context::save_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		settings.set_value("circle.id",get_id());
-		settings.set_value("circle.blend",strprintf("%d",get_blend()));
-		settings.set_value("circle.opacity",strprintf("%f",(float)get_opacity()));
+		settings.set_value("circle.blend",get_blend());
+		settings.set_value("circle.opacity",get_opacity());
 		settings.set_value("circle.bline_width", bline_width_dist.get_value().get_string());
 		settings.set_value("circle.feather", feather_dist.get_value().get_string());
-		settings.set_value("circle.number_of_bline_points",strprintf("%d",(int)(get_number_of_bline_points() + 0.5)));
-		settings.set_value("circle.bline_point_angle_offset",strprintf("%f",(float)get_bline_point_angle_offset()));
-		settings.set_value("circle.invert",get_invert()?"1":"0");
-		settings.set_value("circle.layer_circle",get_layer_circle_flag()?"1":"0");
-		settings.set_value("circle.layer_outline",get_layer_outline_flag()?"1":"0");
-		settings.set_value("circle.layer_advanced_outline",get_layer_advanced_outline_flag()?"1":"0");
-		settings.set_value("circle.layer_region",get_layer_region_flag()?"1":"0");
-		settings.set_value("circle.layer_curve_gradient",get_layer_curve_gradient_flag()?"1":"0");
-		settings.set_value("circle.layer_plant",get_layer_plant_flag()?"1":"0");
-		settings.set_value("circle.layer_link_origins",get_layer_link_origins_flag()?"1":"0");
-		settings.set_value("circle.layer_origins_at_center",get_layer_origins_at_center_flag()?"1":"0");
+		settings.set_value("circle.number_of_bline_points",(int)(get_number_of_bline_points() + 0.5));
+		settings.set_value("circle.bline_point_angle_offset",get_bline_point_angle_offset());
+		settings.set_value("circle.invert",get_invert());
+		settings.set_value("circle.layer_circle",get_layer_circle_flag());
+		settings.set_value("circle.layer_outline",get_layer_outline_flag());
+		settings.set_value("circle.layer_advanced_outline",get_layer_advanced_outline_flag());
+		settings.set_value("circle.layer_region",get_layer_region_flag());
+		settings.set_value("circle.layer_curve_gradient",get_layer_curve_gradient_flag());
+		settings.set_value("circle.layer_plant",get_layer_plant_flag());
+		settings.set_value("circle.layer_link_origins",get_layer_link_origins_flag());
+		settings.set_value("circle.layer_origins_at_center",get_layer_origins_at_center_flag());
 	}
 	catch(...)
 	{

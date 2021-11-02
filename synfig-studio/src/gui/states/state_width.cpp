@@ -178,25 +178,15 @@ StateWidth_Context::load_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		String value;
-
 		//parse the arguments yargh!
-		if(settings.get_value("width.delta",value))
-			set_delta(atof(value.c_str()));
-		else
-			set_delta(6);
+		set_delta(settings.get_value("width.delta", 6.0));
 
-		if(settings.get_value("width.radius",value))
-			set_radius(Distance(atof(value.c_str()), App::distance_system));
-		else
-			set_radius(Distance(60, App::distance_system));
+		set_radius(Distance(
+							settings.get_value("width.radius", 60.0),
+							App::distance_system)
+						);
 
-		//defaults to false
-		if(settings.get_value("width.relative",value) && value == "1")
-			set_relative(true);
-		else
-			set_relative(false);
+		set_relative(settings.get_value("width.relative", false));
 	}
 	catch(...)
 	{
@@ -209,10 +199,9 @@ StateWidth_Context::save_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		settings.set_value("width.delta",strprintf("%f",get_delta()));
+		settings.set_value("width.delta",get_delta());
 		settings.set_value("width.radius",influence_radius->get_value().get_string());
-		settings.set_value("width.relative",get_relative()?"1":"0");
+		settings.set_value("width.relative",get_relative());
 	}
 	catch(...)
 	{

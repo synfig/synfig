@@ -61,7 +61,7 @@ public:
 		input_device(input_device) { }
 
 
-	virtual bool get_value(const synfig::String& key, synfig::String& value)const
+	virtual bool get_raw_value(const synfig::String& key, synfig::String& value)const override
 	{
 		try
 		{
@@ -73,7 +73,7 @@ public:
 			}
 			if(key=="bline_width")
 			{
-				value=strprintf("%s",input_device->get_bline_width().get_string().c_str());
+				value=input_device->get_bline_width().get_string();
 				return true;
 			}
 			if(key=="opacity")
@@ -115,7 +115,7 @@ public:
 		{
 			synfig::warning("DeviceSettings: Caught exception when attempting to get value.");
 		}
-		return Settings::get_value(key, value);
+		return Settings::get_raw_value(key, value);
 	}
 
 	void get_mode_value(synfig::String & value) const
@@ -146,7 +146,7 @@ public:
 			value += strprintf(" %u %u", itr->keyval, itr->modifiers);
 	}
 
-	virtual bool set_value(const synfig::String& key,const synfig::String& value)
+	virtual bool set_value(const synfig::String& key,const synfig::String& value) override
 	{
 		try
 		{
@@ -259,7 +259,7 @@ public:
 		input_device->set_keys(keys);
 	}
 
-	virtual KeyList get_key_list()const
+	virtual KeyList get_key_list()const override
 	{
 		KeyList ret(Settings::get_key_list());
 		ret.push_back("outline_color");

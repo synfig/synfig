@@ -138,7 +138,7 @@ public:
 		synfigapp::Main::settings().remove_domain("workspace");
 	}
 
-	virtual bool get_value(const synfig::String& key_, synfig::String& value)const
+	virtual bool get_raw_value(const synfig::String& key_, synfig::String& value)const override
 	{
 		try
 		{
@@ -148,10 +148,10 @@ public:
 				return true;
 			}
 		}catch (...) { return false; }
-		return synfigapp::Settings::get_value(key_,value);
+		return synfigapp::Settings::get_raw_value(key_,value);
 	}
 
-	virtual bool set_value(const synfig::String& key_,const synfig::String& value)
+	virtual bool set_value(const synfig::String& key_,const synfig::String& value) override
 	{
 		try
 		{
@@ -164,7 +164,7 @@ public:
 		return synfigapp::Settings::set_value(key_,value);
 	}
 
-	virtual KeyList get_key_list()const
+	virtual KeyList get_key_list()const override
 	{
 		synfigapp::Settings::KeyList ret(synfigapp::Settings::get_key_list());
 		ret.push_back("layout");

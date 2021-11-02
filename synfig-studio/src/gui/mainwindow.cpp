@@ -61,14 +61,6 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
-#define GRAB_HINT_DATA(y)	{ \
-		String x; \
-		if(synfigapp::Main::settings().get_value(String("pref.")+y+"_hints",x)) \
-		{ \
-			set_type_hint((Gdk::WindowTypeHint)atoi(x.c_str()));	\
-		} \
-	}
-
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
@@ -140,7 +132,7 @@ MainWindow::MainWindow() :
 	App::dock_manager->signal_dockable_unregistered().connect(
 		sigc::mem_fun(*this,&MainWindow::on_dockable_unregistered) );
 
-	GRAB_HINT_DATA("mainwindow");
+	set_type_hint(Gdk::WindowTypeHint(synfigapp::Main::settings().get_value("pref.mainwindow_hints", Gdk::WindowTypeHint())));
 }
 
 MainWindow::~MainWindow() = default;

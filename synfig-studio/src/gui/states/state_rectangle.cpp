@@ -288,87 +288,51 @@ StateRectangle_Context::load_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		String value;
-
 		//parse the arguments yargh!
-		if(settings.get_value("rectangle.id",value))
-			set_id(value);
-		else
-			set_id("Rectangle");
+		set_id(settings.get_value("rectangle.id", "Rectangle"));
 
-		if(settings.get_value("rectangle.blend",value) && value != "")
-			set_blend(atoi(value.c_str()));
-		else
-			set_blend(0);//(int)Color::BLEND_COMPOSITE); //0 should be blend composites value
+		set_blend(settings.get_value("rectangle.blend", int(Color::BLEND_COMPOSITE)));
 
-		if(settings.get_value("rectangle.opacity",value))
-			set_opacity(atof(value.c_str()));
-		else
-			set_opacity(1);
+		set_opacity(settings.get_value("rectangle.opacity", 1.0));
 
-		if(settings.get_value("rectangle.bline_width",value) && value != "")
-			set_bline_width(Distance(atof(value.c_str()), App::distance_system));
-		else
-			set_bline_width(Distance(1, App::distance_system)); // default width
+		set_bline_width(Distance(
+							settings.get_value("rectangle.bline_width", 1.0),
+							App::distance_system)
+						);
 
-		if(settings.get_value("rectangle.expand",value))
-			set_expand_size(Distance(atof(value.c_str()), App::distance_system));
-		else
-			set_expand_size(Distance(0, App::distance_system)); // default expansion
+		set_expand_size(Distance(
+							settings.get_value("rectangle.expand", 0.0),
+							App::distance_system)
+						);
 
-		if(settings.get_value("rectangle.feather",value))
-			set_feather_size(Distance(atof(value.c_str()), App::distance_system));
-		else
-			set_feather_size(Distance(0, App::distance_system)); // default feather
+		set_feather_size(Distance(
+							settings.get_value("rectangle.feather", 0.0),
+							App::distance_system)
+						);
 
-		if(settings.get_value("rectangle.invert",value) && value != "0")
-			set_invert(true);
-		else
-			set_invert(false);
+		set_invert(settings.get_value("rectangle.invert", false));
 
-		if(settings.get_value("rectangle.layer_rectangle",value) && value=="0")
-			set_layer_rectangle_flag(false);
-		else
-			set_layer_rectangle_flag(true);
+		set_layer_rectangle_flag(settings.get_value("rectangle.layer_rectangle", true));
 
-		if(settings.get_value("rectangle.layer_region",value) && value=="1")
-			set_layer_region_flag(true);
-		else
-			set_layer_region_flag(false);
+		set_layer_region_flag(settings.get_value("rectangle.layer_region", false));
 
-		if(settings.get_value("rectangle.layer_outline",value) && value=="1")
-			set_layer_outline_flag(true);
-		else
-			set_layer_outline_flag(false);
+		set_layer_outline_flag(settings.get_value("rectangle.layer_outline", false));
 
-		if(settings.get_value("rectangle.layer_advanced_outline",value) && value=="1")
-			set_layer_advanced_outline_flag(true);
-		else
-			set_layer_advanced_outline_flag(false);
+		set_layer_advanced_outline_flag(settings.get_value("rectangle.layer_advanced_outline", false));
 
-		if(settings.get_value("rectangle.layer_curve_gradient",value) && value=="1")
-			set_layer_curve_gradient_flag(true);
-		else
-			set_layer_curve_gradient_flag(false);
+		set_layer_curve_gradient_flag(settings.get_value("rectangle.layer_curve_gradient", false));
 
-		if(settings.get_value("rectangle.layer_plant",value) && value=="1")
-			set_layer_plant_flag(true);
-		else
-			set_layer_plant_flag(false);
+		set_layer_plant_flag(settings.get_value("rectangle.layer_plant", false));
 
-		if(settings.get_value("rectangle.layer_link_origins",value) && value=="0")
-			set_layer_link_origins_flag(false);
-		else
-			set_layer_link_origins_flag(true);
+		set_layer_link_origins_flag(settings.get_value("rectangle.layer_link_origins", true));
 
-	  // determine layer flags
+		// determine layer flags
 		layer_rectangle_flag = get_layer_rectangle_flag();
-	  layer_region_flag = get_layer_region_flag();
-	  layer_outline_flag = get_layer_outline_flag();
-	  layer_advanced_outline_flag = get_layer_outline_flag();
-	  layer_curve_gradient_flag = get_layer_curve_gradient_flag();
-	  layer_plant_flag = get_layer_plant_flag();
+		layer_region_flag = get_layer_region_flag();
+		layer_outline_flag = get_layer_outline_flag();
+		layer_advanced_outline_flag = get_layer_outline_flag();
+		layer_curve_gradient_flag = get_layer_curve_gradient_flag();
+		layer_plant_flag = get_layer_plant_flag();
 	}
 	catch(...)
 	{
@@ -381,21 +345,20 @@ StateRectangle_Context::save_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		settings.set_value("rectangle.id",get_id().c_str());
-		settings.set_value("rectangle.blend",strprintf("%d",get_blend()));
-		settings.set_value("rectangle.opacity",strprintf("%f",(float)get_opacity()));
+		settings.set_value("rectangle.id",get_id());
+		settings.set_value("rectangle.blend",get_blend());
+		settings.set_value("rectangle.opacity",get_opacity());
 		settings.set_value("rectangle.bline_width", bline_width_dist.get_value().get_string());
 		settings.set_value("rectangle.expand",expand_dist.get_value().get_string());
 		settings.set_value("rectangle.feather", feather_dist.get_value().get_string());
-		settings.set_value("rectangle.invert",get_invert()?"1":"0");
-		settings.set_value("rectangle.layer_rectangle",get_layer_rectangle_flag()?"1":"0");
-		settings.set_value("rectangle.layer_outline",get_layer_outline_flag()?"1":"0");
-		settings.set_value("rectangle.layer_advanced_outline",get_layer_advanced_outline_flag()?"1":"0");
-		settings.set_value("rectangle.layer_region",get_layer_region_flag()?"1":"0");
-		settings.set_value("rectangle.layer_curve_gradient",get_layer_curve_gradient_flag()?"1":"0");
-		settings.set_value("rectangle.layer_plant",get_layer_plant_flag()?"1":"0");
-		settings.set_value("rectangle.layer_link_origins",get_layer_link_origins_flag()?"1":"0");
+		settings.set_value("rectangle.invert",get_invert());
+		settings.set_value("rectangle.layer_rectangle",get_layer_rectangle_flag());
+		settings.set_value("rectangle.layer_outline",get_layer_outline_flag());
+		settings.set_value("rectangle.layer_advanced_outline",get_layer_advanced_outline_flag());
+		settings.set_value("rectangle.layer_region",get_layer_region_flag());
+		settings.set_value("rectangle.layer_curve_gradient",get_layer_curve_gradient_flag());
+		settings.set_value("rectangle.layer_plant",get_layer_plant_flag());
+		settings.set_value("rectangle.layer_link_origins",get_layer_link_origins_flag());
 	}
 	catch(...)
 	{

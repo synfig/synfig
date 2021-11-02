@@ -378,101 +378,43 @@ StateLasso_Context::load_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		String value;
+		set_id(settings.get_value("lasso.id", "NewDrawing"));
 
-		if(settings.get_value("lasso.id",value))
-			set_id(value);
-		else
-			set_id("NewDrawing");
+		set_opacity(settings.get_value("lasso.opacity", 1.0));
 
+		set_bline_width(Distance(
+							settings.get_value("lasso.bline_width", 1.0),
+							App::distance_system)
+						);
 
-		if(settings.get_value("lasso.opacity",value))
-			set_opacity(atof(value.c_str()));
-		else
-			set_opacity(1);
+		set_pressure_width_flag(settings.get_value("lasso.pressure_width", true));
 
-		if(settings.get_value("lasso.bline_width",value) && value != "")
-			set_bline_width(Distance(atof(value.c_str()), App::distance_system));
-		else
-			set_bline_width(Distance(1, App::distance_system)); // default width
+		set_auto_loop_flag(settings.get_value("lasso.auto_loop", true));
 
-		if(settings.get_value("lasso.pressure_width",value) && value=="0")
-			set_pressure_width_flag(false);
-		else
-			set_pressure_width_flag(true);
+		set_auto_extend_flag(settings.get_value("lasso.auto_extend", true));
 
-		if(settings.get_value("lasso.auto_loop",value) && value=="0")
-			set_auto_loop_flag(false);
-		else
-			set_auto_loop_flag(true);
+		set_auto_link_flag(settings.get_value("lasso.auto_link", true));
 
-		if(settings.get_value("lasso.auto_extend",value) && value=="0")
-			set_auto_extend_flag(false);
-		else
-			set_auto_extend_flag(true);
+		set_layer_region_flag(settings.get_value("lasso.region", true));
 
-		if(settings.get_value("lasso.auto_link",value) && value=="0")
-			set_auto_link_flag(false);
-		else
-			set_auto_link_flag(true);
+		set_auto_export_flag(settings.get_value("lasso.auto_export", false));
 
-		if(settings.get_value("lasso.region",value) && value=="0")
-			set_layer_region_flag(false);
-		else
-			set_layer_region_flag(true);
+		set_min_pressure_flag(settings.get_value("lasso.min_pressure_on", true));
 
-		//if(settings.get_value("lasso.outline",value) && value=="0")
-		//	set_layer_outline_flag(false);
-		//else
-		//	set_layer_outline_flag(true);
+		set_min_pressure(settings.get_value("lasso.min_pressure", 0.0));
 
-		//if(settings.get_value("lasso.advanced_outline",value) && value=="0")
-		//	set_layer_advanced_outline_flag(false);
-		///else
-		//	set_layer_advanced_outline_flag(true);
+		set_feather_size(Distance(
+							settings.get_value("lasso.feather", 0.0),
+							App::distance_system)
+						);
 
-		if(settings.get_value("lasso.auto_export",value) && value=="1")
-			set_auto_export_flag(true);
-		else
-			set_auto_export_flag(false);
+		set_gthres(settings.get_value("lasso.gthreshold", 0.7));
 
-		if(settings.get_value("lasso.min_pressure_on",value) && value=="0")
-			set_min_pressure_flag(false);
-		else
-			set_min_pressure_flag(true);
+		set_width_max_error(settings.get_value("lasso.widthmaxerror", 1.0));
 
-		if(settings.get_value("lasso.min_pressure",value))
-		{
-			Real n = atof(value.c_str());
-			set_min_pressure(n);
-		}else
-			set_min_pressure(0);
+		set_lthres(settings.get_value("lasso.lthreshold", 20.0));
 
-		if(settings.get_value("lasso.feather",value))
-			set_feather_size(Distance(atof(value.c_str()), App::distance_system));
-		else
-			set_feather_size(Distance(0, App::distance_system));
-
-		if(settings.get_value("lasso.gthreshold",value))
-		{
-			Real n = atof(value.c_str());
-			set_gthres(n);
-		}
-
-		if(settings.get_value("lasso.widthmaxerror",value))
-		{
-			Real n = atof(value.c_str());
-			set_width_max_error(n);
-		}
-
-		if(settings.get_value("lasso.lthreshold",value))
-		{
-			Real n = atof(value.c_str());
-			set_lthres(n);
-		}
-
-		if(settings.get_value("lasso.localize",value) && value == "1")
+		if(settings.get_value("lasso.localize",false))
 			//set_local_error_flag(true);
 			set_local_threshold_flag(true);
 		else
@@ -480,15 +422,12 @@ StateLasso_Context::load_settings()
 			//set_local_threshold_flag(false);
 			set_global_threshold_flag(true);
 
-		if(settings.get_value("lasso.round_ends", value) && value == "1")
-			set_round_ends_flag(true);
-		else
-			set_round_ends_flag(false);
+		set_round_ends_flag(settings.get_value("lasso.round_ends", false));
 
-	  // determine layer flags
-	  layer_region_flag = get_layer_region_flag();
-	  layer_outline_flag = get_layer_outline_flag();
-	  layer_advanced_outline_flag = get_layer_advanced_outline_flag();
+		// determine layer flags
+		layer_region_flag = get_layer_region_flag();
+		layer_outline_flag = get_layer_outline_flag();
+		layer_advanced_outline_flag = get_layer_advanced_outline_flag();
 	}
 	catch(...)
 	{
@@ -501,27 +440,26 @@ StateLasso_Context::save_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		settings.set_value("lasso.id",get_id().c_str());
-		settings.set_value("lasso.blend",strprintf("%d",19));
-		settings.set_value("lasso.opacity",strprintf("%f",(float)get_opacity()));
+		settings.set_value("lasso.id",get_id());
+		settings.set_value("lasso.blend",int(Color::BLEND_ALPHA_OVER));
+		settings.set_value("lasso.opacity",get_opacity());
 		settings.set_value("lasso.bline_width", bline_width_dist.get_value().get_string());
-		settings.set_value("lasso.pressure_width",get_pressure_width_flag()?"1":"0");
-		settings.set_value("lasso.auto_loop",get_auto_loop_flag()?"1":"0");
-		settings.set_value("lasso.auto_extend",get_auto_extend_flag()?"1":"0");
-		settings.set_value("lasso.auto_link",get_auto_link_flag()?"1":"0");
-		settings.set_value("lasso.region",get_layer_region_flag()?"1":"0");
-		settings.set_value("lasso.outline",get_layer_outline_flag()?"1":"0");
-		settings.set_value("lasso.advanced_outline",get_layer_advanced_outline_flag()?"1":"0");
-		settings.set_value("lasso.auto_export",get_auto_export_flag()?"1":"0");
-		settings.set_value("lasso.min_pressure",strprintf("%f",get_min_pressure()));
+		settings.set_value("lasso.pressure_width",get_pressure_width_flag());
+		settings.set_value("lasso.auto_loop",get_auto_loop_flag());
+		settings.set_value("lasso.auto_extend",get_auto_extend_flag());
+		settings.set_value("lasso.auto_link",get_auto_link_flag());
+		settings.set_value("lasso.region",get_layer_region_flag());
+		settings.set_value("lasso.outline",get_layer_outline_flag());
+		settings.set_value("lasso.advanced_outline",get_layer_advanced_outline_flag());
+		settings.set_value("lasso.auto_export",get_auto_export_flag());
+		settings.set_value("lasso.min_pressure",get_min_pressure());
 		settings.set_value("lasso.feather",feather_dist.get_value().get_string());
-		settings.set_value("lasso.min_pressure_on",get_min_pressure_flag()?"1":"0");
-		settings.set_value("lasso.gthreshold",strprintf("%f",get_gthres()));
-		settings.set_value("lasso.widthmaxerror",strprintf("%f",get_width_max_error()));
-		settings.set_value("lasso.lthreshold",strprintf("%f",get_lthres()));
-		settings.set_value("lasso.localize",get_local_threshold_flag()?"1":"0");
-		settings.set_value("lasso.round_ends", get_round_ends_flag()?"1":"0");
+		settings.set_value("lasso.min_pressure_on",get_min_pressure_flag());
+		settings.set_value("lasso.gthreshold",get_gthres());
+		settings.set_value("lasso.widthmaxerror",get_width_max_error());
+		settings.set_value("lasso.lthreshold",get_lthres());
+		settings.set_value("lasso.localize",get_local_threshold_flag());
+		settings.set_value("lasso.round_ends", get_round_ends_flag());
 	}
 	catch(...)
 	{

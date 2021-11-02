@@ -59,16 +59,6 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
-#define GRAB_HINT_DATA(y,default)	{ \
-		String x; \
-		if(synfigapp::Main::settings().get_value(String("pref.")+y+"_hints",x)) \
-		{ \
-			set_type_hint((Gdk::WindowTypeHint)atoi(x.c_str()));	\
-		} else {\
-			set_type_hint(default); \
-		} \
-	}
-
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
@@ -84,11 +74,14 @@ DockDialog::DockDialog():
 	set_id(synfig::UniqueID().get_uid()^reinterpret_cast<intptr_t>(this));
 
 	set_role(strprintf("dock_dialog_%d",get_id()));
+	{
 #ifdef __APPLE__
-	GRAB_HINT_DATA("dock_dialog", Gdk::WINDOW_TYPE_HINT_NORMAL);
+		const int default_hint = Gdk::WINDOW_TYPE_HINT_NORMAL;
 #else
-	GRAB_HINT_DATA("dock_dialog", Gdk::WINDOW_TYPE_HINT_UTILITY);
+		const int default_hint = Gdk::WINDOW_TYPE_HINT_UTILITY;
 #endif
+		set_type_hint(Gdk::WindowTypeHint(synfigapp::Main::settings().get_value("pref.dock_dialog_hints", default_hint)));
+	}
 	set_keep_above(false);
 
 	//! \todo can we set dialog windows transient for all normal windows, not just the toolbox?
