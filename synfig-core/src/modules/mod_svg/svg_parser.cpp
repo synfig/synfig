@@ -345,18 +345,24 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 		xmlpp::Element* child_fill = nullptr;
 		xmlpp::Element* child_stroke = nullptr;
 
-		//make simple fills
-		if(nodename.compare("rect")==0 && typeFill!=FILL_TYPE_NONE){
-			if (!mtx.is_identity())
-				child_layer = nodeStartBasicLayer(root->add_child("layer"), id);
-			child_fill=child_layer;
-			parser_rect(nodeElement,child_fill,style);
-			if(typeFill == FILL_TYPE_GRADIENT){
-				build_fill (child_fill,fill,SVGMatrix::identity);
+		// Only fill and a simple geometric shape? Render as Synfig primitive.
+		// If it has stroke, render as a region, instead of standard shape, to be able to link to outline
+		if(typeFill != FILL_TYPE_NONE && typeStroke == FILL_TYPE_NONE) {
+			if (nodename.compare("rect") == 0) {
+				if (!mtx.is_identity())
+					child_layer = nodeStartBasicLayer(root->add_child("layer"), id);
+				child_fill=child_layer;
+
+				parser_rect(nodeElement,child_fill,style);
+
+				if(typeFill == FILL_TYPE_GRADIENT){
+					build_fill (child_fill,fill,SVGMatrix::identity);
+				}
+				parser_effects(nodeElement,child_layer,style,mtx);
+				return;
 			}
-			parser_effects(nodeElement,child_layer,style,mtx);
-			return;
 		}
+
 		if ((!SVG_RESOLVE_BLINE) || typeFill == FILL_TYPE_GRADIENT || typeStroke == FILL_TYPE_GRADIENT)
 			child_layer = nodeStartBasicLayer(root->add_child("layer"), id);
 		child_fill=child_layer;
