@@ -280,26 +280,31 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 		if (valid_elements.end() == std::find(valid_elements.begin(), valid_elements.end(), nodename))
 			return;
 
-		enum FillType {FILL_TYPE_NONE, FILL_TYPE_SIMPLE, FILL_TYPE_GRADIENT};
-
-		//load sub-attributes
-		Glib::ustring id			=nodeElement->get_attribute_value("id");
-		Glib::ustring transform	=nodeElement->get_attribute_value("transform");
-
-		//resolve transformations
+		// Resolve transformations
 		SVGMatrix mtx;
-		if(!transform.empty())
-			mtx.parser_transform(transform);
-		if (SVG_SEP_TRANSFORMS)
 		{
-			mtx.compose(mtx_parent, mtx);
+			Glib::ustring transform	= nodeElement->get_attribute_value("transform");
+			if(!transform.empty())
+				mtx.parser_transform(transform);
+			if (SVG_SEP_TRANSFORMS)
+				mtx.compose(mtx_parent, mtx);
 		}
+
+		// Resolve styles
+		style.merge(nodeElement);
+
+		// Is it a group element?
 		if(nodename.compare("g")==0){
 			parser_layer(node,root->add_child("layer"),style,mtx);
 			return;
 		}
 
-		style.merge(nodeElement);
+		// Shape elements
+
+		enum FillType {FILL_TYPE_NONE, FILL_TYPE_SIMPLE, FILL_TYPE_GRADIENT};
+
+		//load sub-attributes
+		Glib::ustring id        = nodeElement->get_attribute_value("id");
 
 		//style
 		String fill			    = style.get("fill", "none");
