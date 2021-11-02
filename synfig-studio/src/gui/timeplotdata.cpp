@@ -53,7 +53,7 @@ namespace studio {
 TimePlotData::TimePlotData(Gtk::Widget* widget, Glib::RefPtr<Gtk::Adjustment> vertical_adjustment) :
 	invalid(true),
 	k(0),
-	extra_margin(0),
+	extra_margin(3),
 	has_vertical(false),
 	widget(widget),
 	vertical_adjustment(vertical_adjustment)
@@ -109,7 +109,7 @@ TimePlotData::set_extra_time_margin(double margin)
 {
 	extra_margin = margin;
 
-	recompute_extra_time();
+	recompute_geometry_data();
 }
 
 void
@@ -159,19 +159,14 @@ TimePlotData::recompute_time_bounds()
 void
 TimePlotData::recompute_geometry_data()
 {
-	k = size.get_x()/(upper - lower);
+	k = (size.get_x()-2*extra_margin)/(upper - lower);
 	dt = 1.0/k;
 
 	if (has_vertical) {
 		range_k = size.get_y()/(range_upper - range_lower);
 	}
 
-	recompute_extra_time(); // k (and lower and upper) changes extra_time
-}
-
-void
-TimePlotData::recompute_extra_time()
-{
+//	recompute_extra_time(); // k (and lower and upper) changes extra_time
 	extra_time = extra_margin/k;
 	lower_ex = lower - extra_time;
 	upper_ex = upper + extra_time;
@@ -238,13 +233,13 @@ TimePlotData::is_y_visible(synfig::Real y) const
 int
 TimePlotData::get_pixel_t_coord(const synfig::Time& t) const
 {
-	return etl::round_to_int((t - lower) * k);
+	return etl::round_to_int((t - lower_ex) * k);
 }
 
 double
 TimePlotData::get_double_pixel_t_coord(const synfig::Time& t) const
 {
-	return round((t - lower) * k);
+	return round((t - lower_ex) * k);
 }
 
 int
@@ -256,7 +251,7 @@ TimePlotData::get_pixel_y_coord(synfig::Real y) const
 synfig::Time
 TimePlotData::get_t_from_pixel_coord(double pixel) const
 {
-	return lower + synfig::Time(pixel/k);
+	return lower_ex + synfig::Time(pixel/k);
 }
 
 double TimePlotData::get_y_from_pixel_coord(double pixel) const

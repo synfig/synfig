@@ -166,16 +166,12 @@ Widget_Timeslider::Widget_Timeslider():
 	}
 
 	time_plot_data = new TimePlotData(this);
-	time_plot_data->set_extra_time_margin(get_height());
 
 	// click / scroll / zoom
 	add_events( Gdk::BUTTON_PRESS_MASK
 			  | Gdk::BUTTON_RELEASE_MASK
 			  | Gdk::BUTTON_MOTION_MASK
 			  | Gdk::SCROLL_MASK );
-
-	signal_configure_event().connect(
-		sigc::mem_fun(*this, &Widget_Timeslider::on_configure_event));
 }
 
 Widget_Timeslider::~Widget_Timeslider()
@@ -206,14 +202,6 @@ Widget_Timeslider::draw_background(const Cairo::RefPtr<Cairo::Context> &cr)
 	cr->rectangle(0.0, 0.0, (double)get_width(), (double)get_height());
 	cr->fill();
 	cr->restore();
-}
-
-bool Widget_Timeslider::on_configure_event(GdkEventConfigure* configure)
-{
-	SYNFIG_EXCEPTION_GUARD_BEGIN()
-	time_plot_data->set_extra_time_margin(configure->height);
-	return false;
-	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool

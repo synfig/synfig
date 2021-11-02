@@ -75,8 +75,6 @@ protected: // implementation that other interfaces can see
 
 	virtual void draw_background(const Cairo::RefPtr<Cairo::Context> &cr);
 
-	virtual bool on_configure_event(GdkEventConfigure * configure);
-
 public:
 	Widget_Timeslider();
 	~Widget_Timeslider();

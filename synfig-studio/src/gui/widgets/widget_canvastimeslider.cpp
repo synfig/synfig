@@ -72,8 +72,6 @@ Widget_CanvasTimeslider::Widget_CanvasTimeslider():
 	tooltip.add(thumb);
 
 	add_events(Gdk::POINTER_MOTION_MASK | Gdk::LEAVE_NOTIFY_MASK);
-
-	time_plot_data->set_extra_time_margin(2.0);
 }
 
 Widget_CanvasTimeslider::~Widget_CanvasTimeslider()
@@ -242,6 +240,7 @@ Widget_CanvasTimeslider::draw_background(const Cairo::RefPtr<Cairo::Context> &cr
 	Widget_Timeslider::draw_background(cr);
 
 	if (!time_plot_data->time_model || !canvas_view || !canvas_view->get_work_area()) return;
+
 	Renderer_Canvas::Handle renderer_canvas = canvas_view->get_work_area()->get_renderer_canvas();
 	if (!renderer_canvas) return;
 

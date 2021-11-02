@@ -499,8 +499,6 @@ Widget_Curves::Widget_Curves()
 
 	set_can_focus(true);
 
-	time_plot_data->set_extra_time_margin(16/2);
-
 	channel_point_sd.set_pan_enabled(true);
 	channel_point_sd.set_zoom_enabled(true);
 	channel_point_sd.set_scroll_enabled(true);

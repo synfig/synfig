@@ -153,7 +153,6 @@ private:
 
 	void recompute_time_bounds();
 	void recompute_geometry_data();
-	void recompute_extra_time();
 	void recompute_vertical();
 
 	void queue_draw();
