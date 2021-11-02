@@ -26,7 +26,6 @@
 #include <ETL/clock>
 #include <ETL/hermite>
 #include <ETL/angle>
-#include <ETL/fixed>
 #include <ETL/surface>
 #include <ETL/gaussian>
 #include <ETL/calculus>
@@ -276,48 +275,6 @@ int hermite_double_test(void)
 	return ret;
 }
 
-int hermite_fixed_test(void)
-{
-	int ret=0;
-    int i;
-	hermite<fixed> Hermie;
-	hermite<fixed>::time_type f;
-	hermite<fixed>::time_type inc(0.0005f), inc2(1.10);
-	fixed sum(0);
-
-	etl::clock timer;
-	double t;
-
-	Hermie.p1()=0;
-	Hermie.t1()=1;
-	Hermie.p2()=0;
-	Hermie.t2()=1;
-
-	Hermie.sync();
-
-	{fixed t;
-	for(i=0,f=0,timer.reset();i<HERMITE_TEST_ITERATIONS;i++,f+=inc)
-	{
-		sum+=Hermie(f)+Hermie(f+inc2);
-		sum+=Hermie(f)+Hermie(f+inc2);
-		sum+=Hermie(f)+Hermie(f+inc2);
-		sum+=Hermie(f)+Hermie(f+inc2);
-		sum+=Hermie(f)+Hermie(f+inc2);
-		sum+=Hermie(f)+Hermie(f+inc2);
-		sum+=Hermie(f)+Hermie(f+inc2);
-		sum+=Hermie(f)+Hermie(f+inc2);
-		sum+=Hermie(f)+Hermie(f+inc2);
-		sum+=Hermie(f)+Hermie(f+inc2);
-		sum+=Hermie(f)+Hermie(f+inc2);
-		sum+=Hermie(f)+Hermie(f+inc2);
-	}
-	}
-	t=timer();
-
-	printf("hermite<fixed>:time=%f milliseconds\n",t*1000);
-	return ret;
-}
-
 int hermite_angle_test(void)
 {
 	int ret=0,i;
@@ -328,11 +285,11 @@ int hermite_angle_test(void)
 	angle tmp;
 	double t;
 
-	Hermie.p1()=angle::degrees(0);
-	Hermie.t1()=angle::degrees(45);
+	Hermie.p1()=angle::deg(0);
+	Hermie.t1()=angle::deg(45);
 
-	Hermie.p2()=angle::degrees(-45);
-	Hermie.t2()=angle::degrees(180);
+	Hermie.p2()=angle::deg(-45);
+	Hermie.t2()=angle::deg(180);
 
 	Hermie.sync();
 
