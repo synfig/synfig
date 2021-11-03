@@ -251,7 +251,7 @@ file(MAKE_DIRECTORY ${PIXMAPS_DIR})
 # Implement icon sizes after Synfig Studio uses Gtk::IconTheme
 # For now just render to the default document size like Autotools does
 #
-# Note to protential future contributors:
+# Note to potential future contributors:
 # Not all icons are of aspect 1:1, eg- toggle button chain link
 # so the below code is faulty and needs to be corrected
 #

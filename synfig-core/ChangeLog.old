@@ -433,11 +433,11 @@
 2004-01-05 (darco) : Increased threshold for cusp cut-off of tangents are too sharp
 2003-12-29 (darco) : Added support for sharp cusp points (on by default now)
 2003-12-24 (darco) : Adjusted Copyright Notice
-2003-12-24 (darco) : Improved the horizontal placement consistancy of the Text layer.
+2003-12-24 (darco) : Improved the horizontal placement consistency of the Text layer.
 2003-12-24 (darco) : Fix for obscure bug in scale valuenode that would cause a failure to load a saved file
 2003-11-25 (darco) : Improved the Text layer again. *sigh*
-2003-11-20 (darco) : Improved the consistancy of the Text layer again. :P
-2003-11-18 (darco) : Improved the consistancy of the Text layer. You should be able to use it without worrying about the layout going weird anymore.
+2003-11-20 (darco) : Improved the consistency of the Text layer again. :P
+2003-11-18 (darco) : Improved the consistency of the Text layer. You should be able to use it without worrying about the layout going weird anymore.
 2003-11-12 (darco) : Added "--dpi", "--dpi-x", and "--dpi-y" arguments to the SINFG command line tool.  these allow you to change the DPI of what you are rendering.
 2003-11-10 (darco) : Fixed odd animation behavior
 2003-11-10 (darco) : Fixed a bug in the PasteCanvas layer where mouse clicks wouldn't match up if the "origin" was changed from 0,0.
@@ -478,7 +478,7 @@
 2003-05-05 (darco) : The Animated Value Node can now use exported values in waypoints.
 2003-04-23 (darco) : Added "stretch" layer. (Allows distortions to things like circles)
 2003-04-18 (darco) : Added "exposure" parameter to color correct layer
-2003-04-17 (darco) : Added native suport for JPEG files
+2003-04-17 (darco) : Added native support for JPEG files
 2003-04-15 (darco) : The parametric renderer is now multi-threaded, meaning it can take advantage of multiple processors. Doesn't work in Win32.
 2003-04-14 (darco) : Added "ColorCorrect" layer
 2003-04-14 (darco) : Added "bailout" parameter to Mandelbrot and Julia layers. Use larger values to improve smoothing.
@@ -506,7 +506,7 @@
 2003-03-25 (darco) : Added support for linking to DataNodes/Canvases in other Compositions.
 2003-03-24 (darco) : Added support for linking to DataNodes in different Canvases.
 
-2003-03-23 (darco) : Fixed a small bug in circle layer that caused inconsistant results when the feather was set to zero and the parametric renderer used.
+2003-03-23 (darco) : Fixed a small bug in circle layer that caused inconsistent results when the feather was set to zero and the parametric renderer used.
 2003-03-23 (darco) : Added "zoom" parameter to PasteCanvas layer
 
 2003-03-22 (darco) : Fixed color-order bug in ImageMagick importer
