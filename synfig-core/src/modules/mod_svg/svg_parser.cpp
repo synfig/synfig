@@ -358,7 +358,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 
 		// We will create a non-primitive shape
 
-		if ((!SVG_RESOLVE_BLINE) || typeFill == FILL_TYPE_GRADIENT || typeStroke == FILL_TYPE_GRADIENT)
+		if (!SVG_RESOLVE_BLINE)
 			child_layer = nodeStartBasicLayer(root->add_child("layer"), id);
 		child_fill=child_layer;
 		child_stroke=child_layer;
@@ -381,6 +381,10 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 		auto build_region_func = [&]() {
 			if (typeFill == FILL_TYPE_NONE)
 				return;
+
+			if(typeFill==FILL_TYPE_GRADIENT){
+				child_fill=nodeStartBasicLayer(child_fill->add_child("layer"),"fill");
+			}
 
 			build_region(child_fill, style, k, id);
 
