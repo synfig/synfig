@@ -378,16 +378,22 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 			return;
 
 		// Region layer
-		if(typeFill!=FILL_TYPE_NONE){
+		auto build_region_func = [&]() {
+			if (typeFill == FILL_TYPE_NONE)
+				return;
+
 			build_region(child_fill, style, k, id);
 
 			if(typeFill==FILL_TYPE_GRADIENT){ //gradient in onto mode (fill)
 				build_fill(child_fill, fill, bline_matrix);
 			}
-		}
+		};
 
 		// Outline layer
-		if(typeStroke!=FILL_TYPE_NONE){
+		auto build_outline_func = [&]() {
+			if (typeStroke == FILL_TYPE_NONE)
+				return;
+
 			if(typeStroke==FILL_TYPE_GRADIENT){
 				child_stroke=nodeStartBasicLayer(child_stroke->add_child("layer"),"stroke");
 			}
@@ -397,6 +403,29 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 			if(typeStroke==FILL_TYPE_GRADIENT){ //gradient in onto mode (stroke)
 				build_fill(child_stroke, stroke, bline_matrix);
 			}
+		};
+
+		bool fill_under_stroke = true;
+		if (typeFill != FILL_TYPE_NONE && typeStroke != FILL_TYPE_NONE) {
+			std::vector<std::string> paint_order_tokens = {"fill", "stroke", "markers"};
+			std::string paint_order_str = style.get("paint-order", "normal");
+			if (paint_order_str != "normal")
+				paint_order_tokens = tokenize(paint_order_str, ", \x09\x0a\x0d");
+
+			// if any element is missing they are appended at end in the default order after the specified ones
+			auto fill_iter = std::find(paint_order_tokens.begin(), paint_order_tokens.end(), "fill");
+			auto stroke_iter = std::find(paint_order_tokens.begin(), paint_order_tokens.end(), "stroke");
+//			auto markers_iter = std::find(paint_order_tokens.begin(), paint_order_tokens.end(), "markers");
+
+			fill_under_stroke = (fill_iter == paint_order_tokens.end() && stroke_iter == paint_order_tokens.end()) || fill_iter < stroke_iter;
+		}
+
+		if (fill_under_stroke) {
+			build_region_func();
+			build_outline_func();
+		} else {
+			build_outline_func();
+			build_region_func();
 		}
 
 		if (SVG_RESOLVE_BLINE)
