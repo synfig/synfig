@@ -777,138 +777,215 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			//this curve have 6 parameters
 			//radius
 			float radius_x,radius_y;
-			// todo: why 'angle' never used?
-			//float angle;
-			bool sweep,large;
+			//angle
+			Angle angle;
+			// flags (larger or smaller arc) (clockwise sweep or not)
+			bool large,sweep;
 			//radius
 			radius_x=atof(tokens.at(i).data());
 			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
 			radius_y=atof(tokens.at(i).data());
 			//angle
-			// todo: why 'angle' never used?
-			i++; if (i >= tokens.size()) { report_incomplete(command); break; } // angle=atof(tokens.at(i).data());
+			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
+			angle=Angle::deg(atof(tokens.at(i).data()));
 			//flags
 			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
-			large=atoi(tokens.at(i).data());
+			large=atoi(tokens.at(i).data()) ? 1 : 0;
 			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
-			sweep=atoi(tokens.at(i).data());
+			sweep=atoi(tokens.at(i).data()) ? 1 : 0;
 			//point
 			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
 			current_x+=atof(tokens.at(i).data());
 			i++; if (i >= tokens.size()) { report_incomplete(command); break; }
 			current_y+=atof(tokens.at(i).data());
-			//how to draw?
-			if(!large && !sweep){
-				//points
-				tgx2 = old_x + radius_x*0.5;
-				tgy2 = old_y ;
-				tgx  = current_x;
-				tgy  = current_y + radius_y*0.5;
 
-				ax=current_x;
-				ay=current_y;
-				//transformations
-				if(!mtx.is_identity()){
-					mtx.transformPoint2D(tgx2,tgy2);
+			// According to section F.6.2 of SVG 1.1 specs and section 9.5.1 of SVG 2 specs
+			//    ("Out-of-range elliptical arc parameters")
+			{
+				if (approximate_equal(current_x, old_x) && approximate_equal(current_y, old_y)) {
+					// If endpoint == current point, ignore arc segment entirely
+					break;
+				}
+				if (approximate_zero(radius_x) || approximate_zero(radius_y)) {
+					// If either rx or ry is 0, then this arc is treated as a straight line segment (a "lineto") joining the endpoints.
+					// (copied from line_to above)
+
+					ax=current_x;
+					ay=current_y;
+					//mtx
 					mtx.transformPoint2D(ax,ay);
-					mtx.transformPoint2D(tgx,tgy);
+					//adjust
+					coor2vect(&ax,&ay);
+					//save
+					k1.back().setTg2(k1.back().x,k1.back().y);
+					if(k1.front().isFirst(ax,ay)){
+						k1.front().setTg1(k1.front().x,k1.front().y);
+					}else{
+						k1.push_back(Vertex(ax,ay));
+						k1.back().setTg1(k1.back().x,k1.back().y);
+					}
+					break;
 				}
+				// If either rx or ry have negative signs, these are dropped; the absolute value is used instead.
+				radius_x = std::fabs(radius_x);
+				radius_y = std::fabs(radius_y);
+			}
+
+			// convert from endpoint to center parameterization
+			// Based on description in SVG 1.1 spec (F.6.5) and SVG 2 spec (B.2.4)
+			const Point p1_ = Matrix2().set_rotate(-angle) * Point((old_x - current_x)/2., (old_y - current_y)/2.);
+
+			// Ensure radius is large enough
+			// Step 3 of Section F.6.6 (SVG 1.1) or B.2.5 (SVG 2)
+			bool radius_enlarged = false;
+			const Real el = p1_[0]*p1_[0]/(radius_x*radius_x) + p1_[1]*p1_[1]/(radius_y*radius_y);
+			{
+				if (el > 1.) {
+					radius_enlarged = true;
+					Real sqrt_el = sqrt(el);
+					radius_x *= sqrt_el;
+					radius_y *= sqrt_el;
+				}
+			}
+
+			Point c_;
+			if (!radius_enlarged)  {
+				c_ = Point(radius_x/radius_y*p1_[1], -radius_y/radius_x*p1_[0]) * sqrt(1./el  - 1.);
+				if (large == sweep)
+					c_ = -c_;
+			}
+			Point c = Matrix2().set_rotate(angle) * c_ + Point((old_x + current_x)/2., (old_y + current_y)/2.);
+
+			const Point v0(1,0);
+			const Point v1((p1_[0]-c_[0])/(radius_x), (p1_[1]-c_[1])/(radius_y));
+			const Point v2((-p1_[0]-c_[0])/(radius_x), (-p1_[1]-c_[1])/(radius_y));
+
+			auto calc_angle = [] (const Point& p, const Point& q) -> Angle {
+				Real num = p[0]*q[0] + p[1]*q[1];
+				Real den = p.mag() * q.mag();
+				bool negative = p[0]*q[1] < p[1]*q[0];
+				Real a = num / den;
+				// avoid precision error
+				a = synfig::clamp(a, -1., 1.);
+				a = acos(a);
+				if ((a < 0 && !negative) || (a > 0 && negative))
+					a = -a;
+				return Angle::rad(a);
+			};
+
+			Angle theta1 = calc_angle(v0, v1);
+
+			Angle delta_theta = calc_angle(v1, v2);
+			if (!sweep && delta_theta > Angle::zero()) // clockwise
+				delta_theta -= Angle::one();
+			else if (sweep && delta_theta < Angle::zero()) // anti-clockwise
+				delta_theta += Angle::one();
+
+			Angle theta2 = theta1 + delta_theta;
+
+			// From here on, it is based on the paper "Drawing an elliptical arc using polylines, quadraticor cubic Bezier curves"
+			// by L. Maisonobe, initially available on https://www.spaceroots.org/documents/ellipse/elliptical-arc.pdf
+			// but now can be retrieved from https://web.archive.org/web/20210414175418/https://www.spaceroots.org/documents/ellipse/elliptical-arc.pdf
+			// Thanks to him, I was able to derive the approximate cubic Bezier curve control points for any ellipsis arc.
+
+			auto calc_eta = [] (const Angle& theta, float radius_x, float radius_y) -> Angle {
+				return Angle::rad(atan2(Angle::sin(theta).get()/radius_y, Angle::cos(theta).get()/radius_x));
+			};
+			auto approx_greater = [] (const Angle& a, const Angle& b) {
+				return approximate_greater_custom(Angle::deg(a).get(), Angle::deg(b).get(), 4.f);
+			};
+			auto approx_less = [] (const Angle& a, const Angle& b) {
+				return approximate_less_custom(Angle::deg(a).get(), Angle::deg(b).get(), 4.f);
+			};
+
+			// Calculate the theoretical angles eta (for point and tangent computation)
+			// Split great arcs at vertices multiples of 90 degrees
+			std::vector<Angle> etas;
+			etas.push_back(calc_eta(theta1, radius_x, radius_y));
+			if (theta2 > theta1) {
+				for (Angle a = -Angle::one()*3./4.; approx_less(a, theta2); a += Angle::half()/2)
+					if (approx_greater(a, theta1))
+						etas.push_back(calc_eta(a, radius_x, radius_y));
+			} else {
+				for (Angle a = Angle::one()*3./4.; approx_greater(a, theta2); a -= Angle::half()/2)
+					if (approx_less(a, theta1))
+						etas.push_back(calc_eta(a, radius_x, radius_y));
+			}
+			etas.push_back(calc_eta(theta2, radius_x, radius_y));
+
+			std::vector<Point> points;
+			points.push_back(Point(old_x, old_y));
+			std::vector<std::pair<float,float>> tangents;
+			for (size_t i = 1; i < etas.size(); i++) {
+				const Angle &eta1 = etas[i-1];
+				const Angle &eta2 = etas[i];
+
+				Real x = c[0] +radius_x*Angle::cos(angle).get()*Angle::cos(eta2).get()-radius_y*Angle::sin(angle).get()*Angle::sin(eta2).get();
+				Real y = c[1] +radius_x*Angle::sin(angle).get()*Angle::cos(eta2).get()+radius_y*Angle::cos(angle).get()*Angle::sin(eta2).get();
+				points.push_back(Point(x, y));
+
+				const Real alpha = Angle::sin(eta2 - eta1).get() * (sqrt(4+3*Angle::tan((eta2-eta1)/2.).get()*Angle::tan((eta2-eta1)/2.).get()) - 1) / 3.;
+
+				if (i == 1) {
+					Real tgx = old_x +alpha*(-radius_x*Angle::cos(angle).get()*Angle::sin(eta1).get()-radius_y*Angle::sin(angle).get()*Angle::cos(eta1).get());
+					Real tgy = old_y +alpha*(-radius_x*Angle::sin(angle).get()*Angle::sin(eta1).get()+radius_y*Angle::cos(angle).get()*Angle::cos(eta1).get());
+					tangents.push_back(std::pair<float,float>(tgx, tgy));
+				}
+
+				Real tgx = x -alpha*(-radius_x*Angle::cos(angle).get()*Angle::sin(eta2).get()-radius_y*Angle::sin(angle).get()*Angle::cos(eta2).get());
+				Real tgy = y -alpha*(-radius_x*Angle::sin(angle).get()*Angle::sin(eta2).get()+radius_y*Angle::cos(angle).get()*Angle::cos(eta2).get());
+				tangents.push_back(std::pair<float,float>(tgx, tgy));
+			}
+
+			// converting everything to Synfig coordinates
+			for (auto &p : points) {
+				float x = p[0];
+				float y = p[1];
+				//mtx
+				mtx.transformPoint2D(x, y);
 				//adjust
-				coor2vect(&tgx2,&tgy2);
-				coor2vect(&ax,&ay);
-				coor2vect(&tgx,&tgy);
-				//save
-				k1.back().setTg2(tgx2,tgy2);
-				if(k1.front().isFirst(ax,ay)){
-					k1.front().setTg1(tgx,tgy);
-				}else{
-					k1.push_back(Vertex (ax,ay));
-					k1.back().setTg1(tgx,tgy);
-					k1.back().setSplit(true);
-				}
-			}else if(!large &&  sweep){
-				//points
-				tgx2 = old_x;
-				tgy2 = old_y + radius_y*0.5;
-				tgx  = current_x + radius_x*0.5;
-				tgy  = current_y ;
-
-				ax=current_x;
-				ay=current_y;
-				//transformations
-				if(!mtx.is_identity()){
-					mtx.transformPoint2D(tgx2,tgy2);
-					mtx.transformPoint2D(ax,ay);
-					mtx.transformPoint2D(tgx,tgy);
-				}
+				coor2vect(&x,&y);
+				p[0] = x;
+				p[1] = y;
+			}
+			for (auto &p : tangents) {
+				float x = p.first;
+				float y = p.second;
+				//mtx
+				mtx.transformPoint2D(x, y);
 				//adjust
-				coor2vect(&tgx2,&tgy2);
-				coor2vect(&ax,&ay);
-				coor2vect(&tgx,&tgy);
-				//save
-				k1.back().setTg2(tgx2,tgy2);
-				if(k1.front().isFirst(ax,ay)){
-					k1.front().setTg1(tgx,tgy);
-				}else{
-					k1.push_back(Vertex(ax,ay));
-					k1.back().setTg1(tgx,tgy);
-					k1.back().setSplit(true);
-				}
-			}else if( large && !sweep){//rare
-				//this need more than one vertex
-			}else if( large &&  sweep){//circles in inkscape are made with this kind of arc
-				//intermediate point
-				int sense=1;
-				if(old_x>current_x) sense =-1;
-				float in_x,in_y,in_tgx1,in_tgy1,in_tgx2,in_tgy2;
-				in_x = (old_x+current_x)/2;
-				in_y = old_y - sense*radius_y;
-				in_tgx1 = in_x - sense*(radius_x*0.5);
-				in_tgx2 = in_x + sense*(radius_x*0.5);
-				in_tgy1 = in_y;
-				in_tgy2 = in_y;
-				//start/end points
-				tgx2=old_x;
-				tgy2=current_y - sense*(radius_y*0.5);
-				tgx =current_x;
-				tgy =current_y - sense*(radius_y*0.5);
+				coor2vect(&x,&y);
+				p.first = x;
+				p.second = y;
+			}
 
-				ax=current_x;
-				ay=current_y;
-				//transformations
-				if(!mtx.is_identity()){
-					mtx.transformPoint2D(tgx2,tgy2);
-					mtx.transformPoint2D(tgx ,tgy );
-					mtx.transformPoint2D(ax,ay);
+			// Explicit for end point, for avoiding precision error
+			ax = current_x;
+			ay = current_y;
+			//mtx
+			mtx.transformPoint2D(ax, ay);
+			//adjust
+			coor2vect(&ax,&ay);
 
-					mtx.transformPoint2D(in_tgx2,in_tgy2);
-					mtx.transformPoint2D(in_tgx1,in_tgy1);
-					mtx.transformPoint2D(in_x,in_y);
-				}
-				//adjust
-				coor2vect(&tgx2 , &tgy2);
-				coor2vect(&ax   , &ay  );
-				coor2vect(&tgx  , &tgy );
+			// Create Bline. First and last point are specially handled.
 
-				coor2vect(&in_tgx2 , &in_tgy2);
-				coor2vect(&in_tgx1 , &in_tgy1);
-				coor2vect(&in_x    , &in_y   );
+			// First arc point
+			k1.back().setTg2(tangents.front().first, tangents.front().second);
+			k1.back().setSplit(true);
 
-				//save the last tg2
-				k1.back().setTg2(tgx2,tgy2);
-				//save the intermediate point
-				k1.push_back(Vertex(in_x,in_y));
-				k1.back().setTg1( in_tgx1 , in_tgy1);
-				k1.back().setTg2( in_tgx2 , in_tgy2);
-				k1.back().setSplit(true); //this could be changed
-				//save the new point
-				if(k1.front().isFirst(ax,ay)){
-					k1.front().setTg1(tgx,tgy);
-				}else{
-					k1.push_back(Vertex(ax,ay));
-					k1.back().setTg1(tgx,tgy);
-					k1.back().setSplit(true);
-				}
+			// Intermediate arc points
+			for (size_t i = 1; i < tangents.size()-1; i++) {
+				k1.push_back(Vertex(points[i][0], points[i][1]));
+				k1.back().setTg1(tangents[i].first, tangents[i].second);
+			}
+
+			// Last arc point
+			if(k1.front().isFirst(ax,ay)){
+				k1.front().setTg1(tangents.back().first, tangents.back().second);
+			}else{
+				k1.push_back(Vertex(ax, ay));
+				k1.back().setTg1(tangents.back().first, tangents.back().second);
+				k1.back().setSplit(true);
 			}
 			break;
 		}
