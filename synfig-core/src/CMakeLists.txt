@@ -145,7 +145,7 @@ else()
 		pkg_check_modules(GLIBMM REQUIRED glibmm-2.4)
 		pkg_check_modules(GIOMM REQUIRED giomm-2.4)
 		pkg_check_modules(LIBXML REQUIRED libxml++-2.6)
-		pkg_check_modules(MLT mlt++)
+		pkg_search_module(MLT mlt++-7 mlt++)
 		pkg_check_modules(FFTW REQUIRED fftw3)
 		pkg_check_modules(LIBPNG REQUIRED libpng) # for mod_png
 		#TODO(ice0): find solution for libmng

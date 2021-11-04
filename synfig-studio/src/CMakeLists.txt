@@ -32,7 +32,7 @@ else()
 		pkg_check_modules(SIGCPP REQUIRED sigc++-2.0)
 		pkg_check_modules(GTKMM REQUIRED gtkmm-3.0)
 		pkg_check_modules(LIBXML REQUIRED libxml++-2.6)
-		pkg_check_modules(MLT mlt++) # required for widget_soundwave
+		pkg_search_module(MLT mlt++-7 mlt++) # required for widget_soundwave
 	endif()
 
 	foreach(pkg_config_lib SIGCPP GTKMM LIBXML MLT FFTW)
