@@ -402,7 +402,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 				child_stroke=nodeStartBasicLayer(child_stroke->add_child("layer"),"stroke");
 			}
 
-			build_outline(child_stroke, style, k, id);
+			build_outline(child_stroke, style, k, id, bline_matrix);
 
 			if(typeStroke==FILL_TYPE_GRADIENT){ //gradient in onto mode (stroke)
 				build_fill(child_stroke, stroke, bline_matrix);
@@ -471,7 +471,7 @@ Svg_parser::build_region(xmlpp::Node* root, Style style, const std::list<BLine>&
 }
 
 void
-Svg_parser::build_outline(xmlpp::Node* root, Style style, const std::list<BLine>& k, const String& desc)
+Svg_parser::build_outline(xmlpp::Node* root, Style style, const std::list<BLine>& k, const String& desc, const SVGMatrix& mtx)
 {
 	String stroke           = style.get("stroke", "none");
 	String stroke_width     = style.get("stroke-width", "1px");
@@ -480,7 +480,8 @@ Svg_parser::build_outline(xmlpp::Node* root, Style style, const std::list<BLine>
 	String stroke_opacity   = style.get("stroke-opacity", "1");
 	String opacity          = style.get("opacity", "1");
 
-	stroke_width=etl::strprintf("%f",getDimension(stroke_width)/kux);
+	const float scale_factor = sqrt(mtx.a*mtx.a + mtx.b*mtx.b);
+	stroke_width=etl::strprintf("%f",getDimension(stroke_width)/kux * scale_factor);
 
 	for (const BLine& bline : k) {
 		xmlpp::Element *child_outline=root->add_child("layer");

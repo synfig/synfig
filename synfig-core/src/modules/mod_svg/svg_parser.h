@@ -208,7 +208,7 @@ private:
 
 		/* === BUILDS ===================================== */
 		void build_region(xmlpp::Node* root, Style style, const std::list<BLine>& k, const String& desc);
-		void build_outline(xmlpp::Node* root, Style style, const std::list<BLine>& k, const String& desc);
+		void build_outline(xmlpp::Node* root, Style style, const std::list<BLine>& k, const String& desc, const SVGMatrix& mtx);
 		void build_transform(xmlpp::Element* root, const SVGMatrix& mtx);
 		std::list<ColorStop> get_colorStop(String name);
 		void build_fill(xmlpp::Element* root, String name, const SVGMatrix& mtx);
