@@ -34,7 +34,7 @@
 #include <map>
 
 #include <ETL/stringf>
-#include <synfig/general.h>
+#include <synfig/distance.h>
 #include <synfig/string.h>
 
 /* === M A C R O S ========================================================= */
@@ -70,12 +70,14 @@ public:
 	double get_value(const synfig::String& key, double default_value) const;
 	int get_value(const synfig::String& key, int default_value) const;
 	bool get_value(const synfig::String& key, bool default_value) const;
+	synfig::Distance get_value(const synfig::String& key, const synfig::Distance& default_value) const;
 	synfig::String get_value(const synfig::String& key, const synfig::String& default_value) const;
 	synfig::String get_value(const synfig::String& key, const char* default_value) const;
 
 	bool set_value(const synfig::String& key, double value);
 	bool set_value(const synfig::String& key, int value);
 	bool set_value(const synfig::String& key, bool value);
+	bool set_value(const synfig::String& key, const synfig::Distance& value);
 	bool set_value(const synfig::String& key, const char* value);
 	// avoid implicit conversion
 	template <typename T> bool set_value(const synfig::String& key, T value) = delete;

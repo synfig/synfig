@@ -68,7 +68,7 @@ using namespace synfigapp;
 /* === M A C R O S ========================================================= */
 
 #define GAP	(3)
-#define DEFAULT_WIDTH (0.1)
+#define DEFAULT_WIDTH ("0.1u")
 
 /* === G L O B A L S ======================================================= */
 
@@ -158,7 +158,10 @@ public:
 		}else if(skel_deform_bone_width_dist.is_visible()){
 			return get_skel_deform_bone_width();
 		}else{
-			return DEFAULT_WIDTH;
+			if (canvas)
+				return Distance(DEFAULT_WIDTH).get(Distance::SYSTEM_UNITS, get_canvas_view()->get_canvas()->rend_desc());
+			else
+				return Distance(DEFAULT_WIDTH).get();
 		}
 	}
 
@@ -238,15 +241,9 @@ StateBone_Context::load_settings()
 			set_id(settings.get_value("bone.skel_deform_id", _("NewSkeletonDeformation")));
 		}
 
-		set_skel_bone_width(Distance(
-							settings.get_value("bone.skel_bone_width", DEFAULT_WIDTH),
-							Distance::SYSTEM_UNITS)
-						);
+		set_skel_bone_width(settings.get_value("bone.skel_bone_width", Distance(DEFAULT_WIDTH)));
 
-		set_skel_deform_bone_width(Distance(
-							settings.get_value("bone.skel_deform_bone_width", DEFAULT_WIDTH),
-							Distance::SYSTEM_UNITS)
-						);
+		set_skel_deform_bone_width(settings.get_value("bone.skel_deform_bone_width", Distance(DEFAULT_WIDTH)));
 	}
 	catch(...)
 	{
@@ -264,8 +261,8 @@ StateBone_Context::save_settings()
 		else
 			settings.set_value("bone.skel_deform_id",get_id());
 
-		settings.set_value("bone.skel_bone_width",skel_bone_width_dist.get_value().get_string());
-		settings.set_value("bone.skel_deform_bone_width",skel_deform_bone_width_dist.get_value().get_string());
+		settings.set_value("bone.skel_bone_width",skel_bone_width_dist.get_value());
+		settings.set_value("bone.skel_deform_bone_width",skel_deform_bone_width_dist.get_value());
 	}
 	catch (...)
 	{
@@ -278,8 +275,8 @@ StateBone_Context::reset()
 {
 	active_bone = nullptr;
 	set_id(_("NewSkeleton"));
-	set_skel_bone_width(Distance(DEFAULT_WIDTH,Distance::SYSTEM_UNITS)); // default width
-	set_skel_deform_bone_width(Distance(DEFAULT_WIDTH,Distance::SYSTEM_UNITS)); // default width
+	set_skel_bone_width(Distance(DEFAULT_WIDTH)); // default width
+	set_skel_deform_bone_width(Distance(DEFAULT_WIDTH)); // default width
 }
 
 void

@@ -295,20 +295,11 @@ StateRectangle_Context::load_settings()
 
 		set_opacity(settings.get_value("rectangle.opacity", 1.0));
 
-		set_bline_width(Distance(
-							settings.get_value("rectangle.bline_width", 1.0),
-							App::distance_system)
-						);
+		set_bline_width(settings.get_value("rectangle.bline_width", Distance("1.0px")));
 
-		set_expand_size(Distance(
-							settings.get_value("rectangle.expand", 0.0),
-							App::distance_system)
-						);
+		set_expand_size(settings.get_value("rectangle.expand", Distance("0.0px")));
 
-		set_feather_size(Distance(
-							settings.get_value("rectangle.feather", 0.0),
-							App::distance_system)
-						);
+		set_feather_size(settings.get_value("rectangle.feather", Distance("0.0px")));
 
 		set_invert(settings.get_value("rectangle.invert", false));
 
@@ -348,9 +339,9 @@ StateRectangle_Context::save_settings()
 		settings.set_value("rectangle.id",get_id());
 		settings.set_value("rectangle.blend",get_blend());
 		settings.set_value("rectangle.opacity",get_opacity());
-		settings.set_value("rectangle.bline_width", bline_width_dist.get_value().get_string());
-		settings.set_value("rectangle.expand",expand_dist.get_value().get_string());
-		settings.set_value("rectangle.feather", feather_dist.get_value().get_string());
+		settings.set_value("rectangle.bline_width", bline_width_dist.get_value());
+		settings.set_value("rectangle.expand",expand_dist.get_value());
+		settings.set_value("rectangle.feather", feather_dist.get_value());
 		settings.set_value("rectangle.invert",get_invert());
 		settings.set_value("rectangle.layer_rectangle",get_layer_rectangle_flag());
 		settings.set_value("rectangle.layer_outline",get_layer_outline_flag());

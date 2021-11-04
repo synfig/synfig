@@ -315,16 +315,9 @@ StateCircle_Context::load_settings()
 
 		set_opacity(settings.get_value("circle.opacity", 1.0));
 
-		set_bline_width(Distance(
-							settings.get_value("circle.bline_width", 1.0),
-							App::distance_system)
-						);
+		set_bline_width(settings.get_value("circle.bline_width", Distance("1.0px")));
 
-		set_feather_size(Distance(
-							settings.get_value("circle.feather", 0.0),
-							App::distance_system)
-						);
-
+		set_feather_size(settings.get_value("circle.feather", Distance("0.0px")));
 
 		set_number_of_bline_points(settings.get_value("circle.number_of_bline_points", 4));
 
@@ -371,8 +364,8 @@ StateCircle_Context::save_settings()
 		settings.set_value("circle.id",get_id());
 		settings.set_value("circle.blend",get_blend());
 		settings.set_value("circle.opacity",get_opacity());
-		settings.set_value("circle.bline_width", bline_width_dist.get_value().get_string());
-		settings.set_value("circle.feather", feather_dist.get_value().get_string());
+		settings.set_value("circle.bline_width", bline_width_dist.get_value());
+		settings.set_value("circle.feather", feather_dist.get_value());
 		settings.set_value("circle.number_of_bline_points",(int)(get_number_of_bline_points() + 0.5));
 		settings.set_value("circle.bline_point_angle_offset",get_bline_point_angle_offset());
 		settings.set_value("circle.invert",get_invert());
