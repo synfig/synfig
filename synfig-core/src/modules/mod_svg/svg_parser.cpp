@@ -1142,7 +1142,6 @@ Svg_parser::build_transform(xmlpp::Element* root, const SVGMatrix& mtx)
 		build_vector (child_transform->add_child("param"),"dest_bl",x,y);
 
 		build_param (child_transform->add_child("param"),"clip","bool","false");
-		build_param (child_transform->add_child("param"),"horizon","real","4.0");
 	}
 }
 
