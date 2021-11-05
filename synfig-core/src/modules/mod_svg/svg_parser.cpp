@@ -273,186 +273,248 @@ void
 Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style style, const SVGMatrix& mtx_parent)
 {
 	if(const xmlpp::Element* nodeElement = dynamic_cast<const xmlpp::Element*>(node)){
-		Glib::ustring nodename = node->get_name();
-		if (nodename.compare("g")==0 || nodename.compare("path")==0 || nodename.compare("polygon")==0 || nodename.compare("rect")==0){} else return;
+		const Glib::ustring nodename = node->get_name();
 
-		enum FillType {FILL_TYPE_NONE, FILL_TYPE_SIMPLE, FILL_TYPE_GRADIENT};
+		// Is element known ?
+		const std::vector<const char*> valid_elements = {"g", "path", "polygon", "rect"};
+		if (valid_elements.end() == std::find(valid_elements.begin(), valid_elements.end(), nodename))
+			return;
 
-		//load sub-attributes
-		Glib::ustring id			=nodeElement->get_attribute_value("id");
-		Glib::ustring transform	=nodeElement->get_attribute_value("transform");
-
-		//resolve transformations
+		// Resolve transformations
 		SVGMatrix mtx;
-		if(!transform.empty())
-			mtx.parser_transform(transform);
-		if (SVG_SEP_TRANSFORMS)
 		{
-			mtx.compose(mtx_parent, mtx);
+			Glib::ustring transform	= nodeElement->get_attribute_value("transform");
+			if(!transform.empty())
+				mtx.parser_transform(transform);
+			if (SVG_SEP_TRANSFORMS)
+				mtx.compose(mtx_parent, mtx);
 		}
+
+		// Resolve styles
+		style.merge(nodeElement);
+
+		// Is it a group element?
 		if(nodename.compare("g")==0){
 			parser_layer(node,root->add_child("layer"),style,mtx);
 			return;
 		}
 
-		style.merge(nodeElement);
+		// Shape elements
+
+		enum FillType {FILL_TYPE_NONE, FILL_TYPE_SIMPLE, FILL_TYPE_GRADIENT};
+
+		//load sub-attributes
+		Glib::ustring id  = nodeElement->get_attribute_value("id");
 
 		//style
-		String fill			    = style.get("fill", "none");
-		String fill_rule		= style.get("fill-rule", "evenodd");
-		String stroke			= style.get("stroke", "none");
-		String stroke_width		= style.get("stroke-width", "1px");
-		String stroke_linecap	= style.get("stroke-linecap", "butt");
-		String stroke_linejoin	= style.get("stroke-linejoin", "miter");
-		String stroke_opacity	= style.get("stroke-opacity", "1");
-		String fill_opacity		= style.get("fill-opacity", "1");
-		String opacity			= style.get("opacity", "1");
+		String fill       = style.get("fill", "none");
+		String stroke     = style.get("stroke", "none");
 
 		//Fill
 		FillType typeFill = FILL_TYPE_NONE;
 
 		if(fill.compare("none")!=0){
 			typeFill = FILL_TYPE_SIMPLE;
+
+			if(fill.compare(0,3,"url")==0)
+				typeFill = FILL_TYPE_GRADIENT;
 		}
-		if(typeFill==FILL_TYPE_SIMPLE && fill.compare(0,3,"url")==0){
-			typeFill = FILL_TYPE_GRADIENT;
-		}
+
 		//Stroke
 		int typeStroke = FILL_TYPE_NONE;
 
 		if(stroke.compare("none")!=0){
 			typeStroke = FILL_TYPE_SIMPLE;
-		}
-		if(typeStroke==FILL_TYPE_SIMPLE && stroke.compare(0,3,"url")==0){
-			typeStroke = FILL_TYPE_GRADIENT;
-		}
-		
-		xmlpp::Element* child_layer = root;
-		xmlpp::Element* child_fill;
-		xmlpp::Element* child_stroke;
 
-		//make simple fills
-		if(nodename.compare("rect")==0 && typeFill!=FILL_TYPE_NONE){
-			if (!mtx.is_identity())
-				child_layer = nodeStartBasicLayer(root->add_child("layer"), id);
-			child_fill=child_layer;
-			parser_rect(nodeElement,child_fill,style);
-			if(typeFill == FILL_TYPE_GRADIENT){
-				build_fill (child_fill,fill,SVGMatrix::identity);
-			}
-			parser_effects(nodeElement,child_layer,style,mtx);
-			return;
+			if (stroke.compare(0,3,"url")==0)
+				typeStroke = FILL_TYPE_GRADIENT;
 		}
-		if ((!SVG_RESOLVE_BLINE) || typeFill == FILL_TYPE_GRADIENT || typeStroke == FILL_TYPE_GRADIENT)
+
+		// What?
+		if (typeFill == FILL_TYPE_NONE && typeStroke == FILL_TYPE_NONE)
+			return;
+
+		xmlpp::Element* child_layer = root;
+		xmlpp::Element* child_fill = nullptr;
+		xmlpp::Element* child_stroke = nullptr;
+
+		// Only fill and a simple geometric shape? Render as Synfig primitive.
+		// If it has stroke, render as a region, instead of standard shape, to be able to link to outline
+		if(typeFill != FILL_TYPE_NONE && typeStroke == FILL_TYPE_NONE) {
+			if (nodename.compare("rect") == 0) {
+				if (!mtx.is_identity())
+					child_layer = nodeStartBasicLayer(root->add_child("layer"), id);
+				child_fill=child_layer;
+
+				parser_rect(nodeElement,child_fill,style);
+
+				if(typeFill == FILL_TYPE_GRADIENT){
+					build_fill (child_fill,fill,SVGMatrix::identity);
+				}
+				parser_effects(nodeElement,child_layer,style,mtx);
+				return;
+			}
+		}
+
+		// We will create a non-primitive shape
+
+		if (!SVG_RESOLVE_BLINE)
 			child_layer = nodeStartBasicLayer(root->add_child("layer"), id);
 		child_fill=child_layer;
 		child_stroke=child_layer;
 
-		//=======================================================================
-
+		// bline list
 		std::list<BLine> k;
-		//if we are creating a bline
+		// transformation matrix for bline vertices
+		const SVGMatrix& bline_matrix = SVG_RESOLVE_BLINE ? mtx : SVGMatrix::identity;
 
-		//First, create the list of Verteces
-		if (SVG_RESOLVE_BLINE) {
-			if(nodename.compare("path")==0){
-				k = parser_path_d(nodeElement->get_attribute_value("d"),mtx);
-			} else if(nodename.compare("polygon")==0){
-				k = parser_path_polygon(nodeElement->get_attribute_value("points"),mtx);
-			}
-		} else {
-			if(nodename.compare("path")==0){
-				k = parser_path_d(nodeElement->get_attribute_value("d"),SVGMatrix::identity);
-			} else if(nodename.compare("polygon")==0){
-				k = parser_path_polygon(nodeElement->get_attribute_value("points"),SVGMatrix::identity);
-			}
-		}
-		
-		if(typeFill!=FILL_TYPE_NONE){//region layer
-			/*if(typeFill==FILL_TYPE_GRADIENT){
-				child_fill=nodeStartBasicLayer(child_fill->add_child("layer"));
-			}*/
-			for (const BLine& bline : k) {
-				xmlpp::Element *child_region=child_fill->add_child("layer");
-				child_region->set_attribute("type","region");
-				child_region->set_attribute("active","true");
-				child_region->set_attribute("version","0.1");
-				child_region->set_attribute("desc",id);
-				build_param (child_region->add_child("param"),"z_depth","real","0.0000000000");
-				build_param (child_region->add_child("param"),"amount","real","1.0000000000");
-				build_param (child_region->add_child("param"),"blend_method","integer","0");
-				build_color (child_region->add_child("param"),getRed(fill),getGreen(fill),getBlue(fill),atof(fill_opacity.data())*atof(opacity.data()));
-				build_vector (child_region->add_child("param"),"offset",0,0, bline.offset_id );
-				build_param (child_region->add_child("param"),"invert","bool","false");
-				build_param (child_region->add_child("param"),"antialias","bool","true");
-				build_param (child_region->add_child("param"),"feather","real","0.0000000000");
-				build_param (child_region->add_child("param"),"blurtype","integer","1");
-				if(fill_rule.compare("evenodd")==0) build_param (child_region->add_child("param"),"winding_style","integer","1");
-				else build_param (child_region->add_child("param"),"winding_style","integer","0");
+		//First, create the list of vertices
+		if(nodename.compare("path")==0)
+			k = parser_path_d(nodeElement->get_attribute_value("d"), bline_matrix);
+		else if(nodename.compare("polygon")==0)
+			k = parser_path_polygon(nodeElement->get_attribute_value("points"), bline_matrix);
 
-				build_bline(child_region->add_child("param"), bline.points, bline.loop, bline.bline_id);
-			}
-		}
-		if(typeFill==FILL_TYPE_GRADIENT){ //gradient in onto mode (fill)
-			if (SVG_RESOLVE_BLINE)
-				build_fill(child_fill,fill,mtx);
-			else
-				build_fill(child_fill,fill,SVGMatrix::identity);
-		}
+		if (k.empty())
+			return;
 
-		if(typeStroke!=FILL_TYPE_NONE){//outline layer
+		// Region layer
+		auto build_region_func = [&]() {
+			if (typeFill == FILL_TYPE_NONE)
+				return;
+
+			if(typeFill==FILL_TYPE_GRADIENT){
+				child_fill=nodeStartBasicLayer(child_fill->add_child("layer"),"fill");
+			}
+
+			build_region(child_fill, style, k, id);
+
+			if(typeFill==FILL_TYPE_GRADIENT){ //gradient in onto mode (fill)
+				build_fill(child_fill, fill, bline_matrix);
+			}
+		};
+
+		// Outline layer
+		auto build_outline_func = [&]() {
+			if (typeStroke == FILL_TYPE_NONE)
+				return;
+
 			if(typeStroke==FILL_TYPE_GRADIENT){
 				child_stroke=nodeStartBasicLayer(child_stroke->add_child("layer"),"stroke");
 			}
 
-			stroke_width=etl::strprintf("%f",getDimension(stroke_width)/kux);
-
-			for (const BLine& bline : k) {
-				xmlpp::Element *child_outline=child_stroke->add_child("layer");
-				child_outline->set_attribute("type","outline");
-				child_outline->set_attribute("active","true");
-				child_outline->set_attribute("version","0.3");
-				child_outline->set_attribute("desc",id);
-				build_param (child_outline->add_child("param"),"z_depth","real","0.0000000000");
-				build_param (child_outline->add_child("param"),"amount","real","1.0000000000");
-				build_param (child_outline->add_child("param"),"blend_method","integer","0");
-				build_color (child_outline->add_child("param"),getRed(stroke),getGreen(stroke),getBlue(stroke),atof(stroke_opacity.data())*atof(opacity.data()));
-				build_vector (child_outline->add_child("param"),"offset",0,0,bline.offset_id);
-				build_param (child_outline->add_child("param"),"invert","bool","false");
-				build_param (child_outline->add_child("param"),"antialias","bool","true");
-				build_param (child_outline->add_child("param"),"feather","real","0.0000000000");
-				build_param (child_outline->add_child("param"),"blurtype","integer","1");
-				//outline in nonzero
-				build_param (child_outline->add_child("param"),"winding_style","integer","0");
-
-				build_bline(child_outline->add_child("param"), bline.points, bline.loop, bline.bline_id);
-
-				build_param (child_outline->add_child("param"),"width","real",stroke_width);
-				build_param (child_outline->add_child("param"),"expand","real","0.0000000000");
-				if(stroke_linejoin.compare("miter")==0) build_param (child_outline->add_child("param"),"sharp_cusps","bool","true");
-				else build_param (child_outline->add_child("param"),"sharp_cusps","bool","false");
-				if(stroke_linecap.compare("butt")==0){
-					build_param (child_outline->add_child("param"),"round_tip[0]","bool","false");
-					build_param (child_outline->add_child("param"),"round_tip[1]","bool","false");
-				}else{
-					build_param (child_outline->add_child("param"),"round_tip[0]","bool","true");
-					build_param (child_outline->add_child("param"),"round_tip[1]","bool","true");
-				}
-				build_param (child_outline->add_child("param"),"homogeneous_width","bool","true");
-			}
+			build_outline(child_stroke, style, k, id, bline_matrix);
 
 			if(typeStroke==FILL_TYPE_GRADIENT){ //gradient in onto mode (stroke)
-				if (SVG_RESOLVE_BLINE)
-					build_fill(child_stroke,stroke,mtx);
-				else
-					build_fill(child_stroke,stroke,SVGMatrix::identity);
-			}	
+				build_fill(child_stroke, stroke, bline_matrix);
+			}
+		};
+
+		bool fill_under_stroke = true;
+		if (typeFill != FILL_TYPE_NONE && typeStroke != FILL_TYPE_NONE) {
+			std::vector<std::string> paint_order_tokens = {"fill", "stroke", "markers"};
+			std::string paint_order_str = style.get("paint-order", "normal");
+			if (paint_order_str != "normal")
+				paint_order_tokens = tokenize(paint_order_str, ", \x09\x0a\x0d");
+
+			// if any element is missing they are appended at end in the default order after the specified ones
+			auto fill_iter = std::find(paint_order_tokens.begin(), paint_order_tokens.end(), "fill");
+			auto stroke_iter = std::find(paint_order_tokens.begin(), paint_order_tokens.end(), "stroke");
+//			auto markers_iter = std::find(paint_order_tokens.begin(), paint_order_tokens.end(), "markers");
+
+			fill_under_stroke = (fill_iter == paint_order_tokens.end() && stroke_iter == paint_order_tokens.end()) || fill_iter < stroke_iter;
+		}
+
+		if (fill_under_stroke) {
+			build_region_func();
+			build_outline_func();
+		} else {
+			build_outline_func();
+			build_region_func();
 		}
 
 		if (SVG_RESOLVE_BLINE)
 			parser_effects(nodeElement,child_layer,style,SVGMatrix::identity);
 		else
 			parser_effects(nodeElement,child_layer,style,mtx);
+	}
+}
+
+
+void
+Svg_parser::build_region(xmlpp::Node* root, Style style, const std::list<BLine>& k, const String& desc)
+{
+	String fill          = style.get("fill", "none");
+	String fill_rule     = style.get("fill-rule", "evenodd");
+	String fill_opacity  = style.get("fill-opacity", "1");
+	String opacity       = style.get("opacity", "1");
+
+	for (const BLine& bline : k) {
+		xmlpp::Element *child_region=root->add_child("layer");
+		child_region->set_attribute("type","region");
+		child_region->set_attribute("active","true");
+		child_region->set_attribute("version","0.1");
+		child_region->set_attribute("desc",desc);
+		build_param (child_region->add_child("param"),"z_depth","real","0.0000000000");
+		build_param (child_region->add_child("param"),"amount","real","1.0000000000");
+		build_param (child_region->add_child("param"),"blend_method","integer","0");
+		build_color (child_region->add_child("param"),getRed(fill),getGreen(fill),getBlue(fill),atof(fill_opacity.data())*atof(opacity.data()));
+		build_vector (child_region->add_child("param"),"offset",0,0, bline.offset_id );
+		build_param (child_region->add_child("param"),"invert","bool","false");
+		build_param (child_region->add_child("param"),"antialias","bool","true");
+		build_param (child_region->add_child("param"),"feather","real","0.0000000000");
+		build_param (child_region->add_child("param"),"blurtype","integer","1");
+		if(fill_rule.compare("evenodd")==0) build_param (child_region->add_child("param"),"winding_style","integer","1");
+		else build_param (child_region->add_child("param"),"winding_style","integer","0");
+
+		build_bline(child_region->add_child("param"), bline.points, bline.loop, bline.bline_id);
+	}
+}
+
+void
+Svg_parser::build_outline(xmlpp::Node* root, Style style, const std::list<BLine>& k, const String& desc, const SVGMatrix& mtx)
+{
+	String stroke           = style.get("stroke", "none");
+	String stroke_width     = style.get("stroke-width", "1px");
+	String stroke_linecap   = style.get("stroke-linecap", "butt");
+	String stroke_linejoin  = style.get("stroke-linejoin", "miter");
+	String stroke_opacity   = style.get("stroke-opacity", "1");
+	String opacity          = style.get("opacity", "1");
+
+	const float scale_factor = sqrt(mtx.a*mtx.a + mtx.b*mtx.b);
+	stroke_width=etl::strprintf("%f",getDimension(stroke_width)/kux * scale_factor);
+
+	for (const BLine& bline : k) {
+		xmlpp::Element *child_outline=root->add_child("layer");
+		child_outline->set_attribute("type","outline");
+		child_outline->set_attribute("active","true");
+		child_outline->set_attribute("version","0.3");
+		child_outline->set_attribute("desc",desc);
+		build_param (child_outline->add_child("param"),"z_depth","real","0.0000000000");
+		build_param (child_outline->add_child("param"),"amount","real","1.0000000000");
+		build_param (child_outline->add_child("param"),"blend_method","integer","0");
+		build_color (child_outline->add_child("param"),getRed(stroke),getGreen(stroke),getBlue(stroke),atof(stroke_opacity.data())*atof(opacity.data()));
+		build_vector (child_outline->add_child("param"),"offset",0,0,bline.offset_id);
+		build_param (child_outline->add_child("param"),"invert","bool","false");
+		build_param (child_outline->add_child("param"),"antialias","bool","true");
+		build_param (child_outline->add_child("param"),"feather","real","0.0000000000");
+		build_param (child_outline->add_child("param"),"blurtype","integer","1");
+		//outline in nonzero
+		build_param (child_outline->add_child("param"),"winding_style","integer","0");
+
+		build_bline(child_outline->add_child("param"), bline.points, bline.loop, bline.bline_id);
+
+		build_param (child_outline->add_child("param"),"width","real",stroke_width);
+		build_param (child_outline->add_child("param"),"expand","real","0.0000000000");
+		if(stroke_linejoin.compare("miter")==0) build_param (child_outline->add_child("param"),"sharp_cusps","bool","true");
+		else build_param (child_outline->add_child("param"),"sharp_cusps","bool","false");
+		if(stroke_linecap.compare("butt")==0){
+			build_param (child_outline->add_child("param"),"round_tip[0]","bool","false");
+			build_param (child_outline->add_child("param"),"round_tip[1]","bool","false");
+		}else{
+			build_param (child_outline->add_child("param"),"round_tip[0]","bool","true");
+			build_param (child_outline->add_child("param"),"round_tip[1]","bool","true");
+		}
+		build_param (child_outline->add_child("param"),"homogeneous_width","bool","true");
 	}
 }
 
@@ -1081,7 +1143,6 @@ Svg_parser::build_transform(xmlpp::Element* root, const SVGMatrix& mtx)
 		build_vector (child_transform->add_child("param"),"dest_bl",x,y);
 
 		build_param (child_transform->add_child("param"),"clip","bool","false");
-		build_param (child_transform->add_child("param"),"horizon","real","4.0");
 	}
 }
 
