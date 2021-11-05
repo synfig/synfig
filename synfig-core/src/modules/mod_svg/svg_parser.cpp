@@ -40,6 +40,7 @@
 
 #include <cstring>
 
+#include <synfig/valuenodes/valuenode_bline.h>
 #include <synfig/general.h>
 #include <synfig/loadcanvas.h>
 #include <synfig/localization.h>
@@ -477,23 +478,29 @@ Svg_parser::build_outline(xmlpp::Node* root, Style style, const std::list<BLine>
 	String stroke_width     = style.get("stroke-width", "1px");
 	String stroke_linecap   = style.get("stroke-linecap", "butt");
 	String stroke_linejoin  = style.get("stroke-linejoin", "miter");
+	String stroke_dasharray = style.get("stroke-dasharray", "none");
+	String stroke_dashoffset= style.get("stroke-dashoffset", "0");
 	String stroke_opacity   = style.get("stroke-opacity", "1");
 	String opacity          = style.get("opacity", "1");
 
 	const float scale_factor = sqrt(mtx.a*mtx.a + mtx.b*mtx.b);
 	stroke_width=etl::strprintf("%f",getDimension(stroke_width)/kux * scale_factor);
 
-	for (const BLine& bline : k) {
+	const float total_opacity = atof(stroke_opacity.data())*atof(opacity.data());
+
+	const bool is_advanced_outline = stroke_linecap == "square" || stroke_linejoin == "bevel" || stroke_dasharray != "none";
+
+	auto create_layer_node_with_common_info = [=] (const BLine& bline) -> xmlpp::Element*
+	{
 		xmlpp::Element *child_outline=root->add_child("layer");
-		child_outline->set_attribute("type","outline");
 		child_outline->set_attribute("active","true");
 		child_outline->set_attribute("version","0.3");
 		child_outline->set_attribute("desc",desc);
 		build_param (child_outline->add_child("param"),"z_depth","real","0.0000000000");
 		build_param (child_outline->add_child("param"),"amount","real","1.0000000000");
 		build_param (child_outline->add_child("param"),"blend_method","integer","0");
-		build_color (child_outline->add_child("param"),getRed(stroke),getGreen(stroke),getBlue(stroke),atof(stroke_opacity.data())*atof(opacity.data()));
-		build_vector (child_outline->add_child("param"),"offset",0,0,bline.offset_id);
+		build_color (child_outline->add_child("param"),getRed(stroke),getGreen(stroke),getBlue(stroke),total_opacity);
+		build_vector (child_outline->add_child("param"),"origin",0,0,bline.offset_id);
 		build_param (child_outline->add_child("param"),"invert","bool","false");
 		build_param (child_outline->add_child("param"),"antialias","bool","true");
 		build_param (child_outline->add_child("param"),"feather","real","0.0000000000");
@@ -505,16 +512,134 @@ Svg_parser::build_outline(xmlpp::Node* root, Style style, const std::list<BLine>
 
 		build_param (child_outline->add_child("param"),"width","real",stroke_width);
 		build_param (child_outline->add_child("param"),"expand","real","0.0000000000");
-		if(stroke_linejoin.compare("miter")==0) build_param (child_outline->add_child("param"),"sharp_cusps","bool","true");
-		else build_param (child_outline->add_child("param"),"sharp_cusps","bool","false");
-		if(stroke_linecap.compare("butt")==0){
-			build_param (child_outline->add_child("param"),"round_tip[0]","bool","false");
-			build_param (child_outline->add_child("param"),"round_tip[1]","bool","false");
-		}else{
-			build_param (child_outline->add_child("param"),"round_tip[0]","bool","true");
-			build_param (child_outline->add_child("param"),"round_tip[1]","bool","true");
+		return child_outline;
+	};
+	if (!is_advanced_outline) {
+		for (const BLine& bline : k) {
+			xmlpp::Element *child_outline = create_layer_node_with_common_info(bline);
+			child_outline->set_attribute("type","outline");
+			if(stroke_linejoin.compare("miter")==0) build_param (child_outline->add_child("param"),"sharp_cusps","bool","true");
+			else build_param (child_outline->add_child("param"),"sharp_cusps","bool","false");
+			if(stroke_linecap.compare("butt")==0){
+				build_param (child_outline->add_child("param"),"round_tip[0]","bool","false");
+				build_param (child_outline->add_child("param"),"round_tip[1]","bool","false");
+			}else{
+				build_param (child_outline->add_child("param"),"round_tip[0]","bool","true");
+				build_param (child_outline->add_child("param"),"round_tip[1]","bool","true");
+			}
+			build_param (child_outline->add_child("param"),"homogeneous_width","bool","true");
 		}
-		build_param (child_outline->add_child("param"),"homogeneous_width","bool","true");
+	} else {
+		const std::map<std::string, int> linejoin_map = {
+			{"miter", 0}, // Advanced_Outline::CuspType::TYPE_SHARP
+			{"round", 1}, // Advanced_Outline::CuspType::TYPE_ROUNDED
+			{"bevel", 2}, // Advanced_Outline::CuspType::TYPE_BEVEL
+			{"arcs", 0},       // not equivalent
+			{"miter-clip", 0}, // not equivalent
+		};
+		const std::map<std::string, int> linecap_map = {
+			{"round", 1}, // WidthPoint::TYPE_ROUNDED
+			{"square", 2},// WidthPoint::TYPE_SQUARED
+			{"butt", 4}   // WidthPoint::TYPE_FLAT
+		};
+		int linejoin_value = linejoin_map.at("miter");
+		{
+			auto iter = linejoin_map.find(stroke_linejoin);
+			if (iter != linejoin_map.end())
+				linejoin_value = iter->second;
+		}
+		int linecap_value = linecap_map.at("butt");
+		{
+			auto iter = linecap_map.find(stroke_linecap);
+			if (iter != linecap_map.end())
+				linecap_value = iter->second;
+		}
+
+		float path_length = 0.f;
+		if (!k.empty())
+		{
+			std::vector<synfig::BLinePoint> v;
+			for (const auto& point : k.front().points) {
+				v.push_back(BLinePoint());
+				v.back().set_vertex(synfig::Point(point.x, point.y));
+				v.back().set_tangent1(synfig::Point(point.radius1, point.angle1));
+				v.back().set_tangent2(synfig::Point(point.radius2, point.angle2));
+				v.back().set_split_tangent_angle(point.split_angle);
+				v.back().set_split_tangent_radius(point.split_radius);
+			}
+
+			path_length = scale_factor * bline_length(v, k.front().loop, nullptr);
+		}
+
+		std::vector<float> dashes;
+
+		float dash_sum = 0.f;
+		for (String token : tokenize(stroke_dasharray, " ,\x09\x0a\x0d"))
+		{
+			if (token.empty())
+				continue;
+
+			float value = atof(token.c_str());
+			if (value < 0.f) {
+				// According to 13.5.6 of SVG2 specs, it leads to invalidate the dasharray
+				// Section 11.4 of SVG 1.1 specs says it is an 'error'.
+				// I'll follow SVG 2
+				dashes.clear();
+				break;
+			}
+
+			value *= scale_factor;
+
+			// parse '%'
+			// How to get pathLength attribute of <path> ?
+			if (token.back() == '%') {
+				value *= 0.01f * path_length;
+			}
+
+			dash_sum += value;
+			dashes.push_back(value);
+		}
+
+		if (approximate_zero(dash_sum)) {
+			// 'If all of the values in the list are zero, then the stroke is rendered as a solid line without any dashing.'
+			dashes.clear();
+		}
+
+		if (dashes.size() % 2 == 1) {
+			// 'If the list has an odd number of values, then it is repeated to yield an even number of values'
+			dashes.insert(dashes.end(), dashes.begin(), dashes.end());
+		}
+
+		float dash_offset = atof(stroke_dashoffset.c_str());
+		if (stroke_dashoffset.back() == '%') {
+			// How to get pathLength attribute of <path> ?
+			dash_offset *= 0.01f * path_length;
+		}
+		if (dash_offset < 0.f) {
+			dash_offset = dash_sum - std::fabs(dash_offset);
+		}
+		dash_offset = std::fmod(dash_offset, dash_sum);
+		if (stroke_dashoffset.back() != '%') {
+			dash_offset /= kux;
+		}
+
+		for (const BLine& bline : k) {
+			xmlpp::Element *child_outline = create_layer_node_with_common_info(bline);
+			child_outline->set_attribute("type","advanced_outline");
+			build_param (child_outline->add_child("param"),"cusp_type","integer",linejoin_value);
+			build_param (child_outline->add_child("param"),"start_tip","integer",linecap_value);
+			build_param (child_outline->add_child("param"),"end_tip","integer",linecap_value);
+
+			// dash
+
+			build_param (child_outline->add_child("param"),"dash_enabled","bool", dashes.empty() ? "false" : "true");
+			if (!dashes.empty()) {
+				build_dilist( child_outline->add_child("param"), dashes, linecap_value);
+			}
+			build_param (child_outline->add_child("param"),"dash_offset","real", dash_offset);
+
+			build_param (child_outline->add_child("param"),"homogeneous","bool","true");
+		}
 	}
 }
 
@@ -1530,6 +1655,23 @@ Svg_parser::build_bline(xmlpp::Element* root, const std::list<Vertex>& p, bool l
 	if(!blineguid.empty())	child->set_attribute("guid",blineguid);
 	for (const Vertex& vertex : p){
 		build_vertex (child->add_child("entry"), vertex);
+	}
+}
+
+void
+Svg_parser::build_dilist(xmlpp::Element *root, const std::vector<float>& p, int linecap)
+{
+	root->set_attribute("name","dilist");
+	xmlpp::Element *child=root->add_child("dilist");
+	child->set_attribute("type","dash_item");
+	child->set_attribute("loop", "false");
+	for (int i = 0; i < p.size(); i++){
+		xmlpp::Element *entry = child->add_child("entry")->add_child("composite");
+		entry->set_attribute("type","dash_item");
+		build_integer( entry->add_child("side_before"), "", linecap);
+		build_integer( entry->add_child("side_after"), "", linecap);
+		build_real( entry->add_child("length"), "", p[i]/kux);
+		build_real( entry->add_child("offset"), "", p[++i]/kux);
 	}
 }
 

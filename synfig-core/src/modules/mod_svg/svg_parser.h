@@ -230,6 +230,7 @@ private:
 		void build_real (xmlpp::Element* root, const String& name, float value);
 		void build_vector (xmlpp::Element* root, const String& name, float x, float y);
 		void build_vector (xmlpp::Element* root, const String& name, float x, float y, const String& guid);
+		void build_dilist(xmlpp::Element* root, const std::vector<float>& p, int linecap);
 		void build_color(xmlpp::Element* root,float r,float g,float b,float a);
 		xmlpp::Element* nodeStartBasicLayer(xmlpp::Element* root, const String& name);
 
