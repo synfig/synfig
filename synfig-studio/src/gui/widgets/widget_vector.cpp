@@ -318,24 +318,29 @@ Widget_Vector::show_all_vfunc()
 
 bool Widget_Vector::on_key_press_event(GdkEventKey* key_event)
 {
-  if(key_event->keyval == GDK_KEY_Tab)
-  { 
-    if(entry_x->is_focus()) { 
-		entry_y->grab_focus() ;
-	} 
-	else { 
-		Widget_Vector::activate() ;
+	if(key_event->keyval == GDK_KEY_Tab) 
+	{ 
+		if(entry_x->is_focus()) { 
+			entry_y->grab_focus() ;
+		} 
+		else 
+		{ 
+			Widget_Vector::activate() ;
+		}
+		return true;
 	}
-  }
-  if((key_event->keyval == GDK_KEY_ISO_Left_Tab)) {
-	  if(entry_y->is_focus()){
-		  entry_x->grab_focus();
-	  }
-	  else {
-		  Widget_Vector::activate();
-	  }
-  }
-  return Gtk::Box::on_key_press_event(key_event);
+	if((key_event->keyval == GDK_KEY_ISO_Left_Tab)) // for Shift+Tab 
+	{ 
+		if(entry_y->is_focus()){
+			entry_x->grab_focus();
+		}
+		else 
+		{
+			Widget_Vector::activate();
+		}
+		return true;
+	}
+	return Gtk::Box::on_key_press_event(key_event);
 }
 
 
