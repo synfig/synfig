@@ -307,7 +307,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 		Glib::ustring id  = nodeElement->get_attribute_value("id");
 
 		//style
-		String fill       = style.get("fill", "none");
+		String fill       = style.get("fill", "#000");
 		String stroke     = style.get("stroke", "none");
 
 		//Fill
