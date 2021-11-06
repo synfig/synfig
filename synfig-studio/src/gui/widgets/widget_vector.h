@@ -106,6 +106,7 @@ public:
 	static Glib::ObjectBase* wrap_new(GObject* o);
 	static void register_type();
 private:
+	bool on_key_press_event(GdkEventKey* event) override;
 	static GType gtype;
 }; // END of class Widget_Vector
 

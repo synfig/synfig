@@ -35,12 +35,10 @@
 #include <gui/widgets/widget_vector.h>
 
 #include <gtkmm/spinbutton.h>
-
 #include <gui/app.h>
 #include <gui/widgets/widget_distance.h>
 #include <synfig/general.h>
 #include <synfig/string_helper.h>
-
 #endif
 
 /* === U S I N G =========================================================== */
@@ -118,6 +116,9 @@ void Widget_Vector::init() {
 	distance_y->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_Vector::on_value_changed));
 	//distance_y->signal_activate().connect(sigc::mem_fun(*this,&studio::Widget_Vector::activate));
 	pack_start(*distance_y, Gtk::PACK_EXPAND_WIDGET);
+
+
+	add_events(Gdk::KEY_PRESS_MASK);
 
 	//spinbutton_x->show();
 	//spinbutton_y->show();
@@ -314,6 +315,29 @@ Widget_Vector::show_all_vfunc()
 	entry_y->show();
 	show();
 }
+
+bool Widget_Vector::on_key_press_event(GdkEventKey* key_event)
+{
+  if(key_event->keyval == GDK_KEY_Tab)
+  { 
+    if(entry_x->is_focus()) { 
+		entry_y->grab_focus() ;
+	} 
+	else { 
+		Widget_Vector::activate() ;
+	}
+  }
+  if((key_event->keyval == GDK_KEY_ISO_Left_Tab)) {
+	  if(entry_y->is_focus()){
+		  entry_x->grab_focus();
+	  }
+	  else {
+		  Widget_Vector::activate();
+	  }
+  }
+  return Gtk::Box::on_key_press_event(key_event);
+}
+
 
 GType Widget_Vector::gtype = 0;
 
