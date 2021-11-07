@@ -275,7 +275,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 		const Glib::ustring nodename = node->get_name();
 
 		// Is element known ?
-		const std::vector<const char*> valid_elements = {"g", "path", "polygon", "rect", "circle", "line"};
+		const std::vector<const char*> valid_elements = {"g", "path", "polygon", "rect", "circle", "line", "polyline"};
 		if (valid_elements.end() == std::find(valid_elements.begin(), valid_elements.end(), nodename))
 			return;
 
@@ -384,6 +384,8 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 			k = parser_path_circle(nodeElement, style, mtx);
 		else if(nodename.compare("line")==0)
 			k = parser_line(nodeElement, style, mtx);
+		else if(nodename.compare("polyline")==0)
+			k = parser_polyline(nodeElement, style, mtx);
 
 		if (k.empty())
 			return;
@@ -1257,6 +1259,35 @@ Svg_parser::parser_line(const xmlpp::Element *nodeElement, const Style &style, c
 	}
 
 	std::string path = etl::strprintf("M %lf %lf L %lf %lf", x1, y1, x2, y2);
+	k = parser_path_d(path,mtx);
+
+	return k;
+}
+
+std::list<BLine>
+Svg_parser::parser_polyline(const xmlpp::Element *nodeElement, const Style &style, const SVGMatrix &mtx)
+{
+	std::list<BLine> k;
+	if (!nodeElement)
+		return k;
+
+	std::string points_str = trim(nodeElement->get_attribute_value("points"));
+	if (points_str.empty() || points_str == "none")
+		return k;
+
+	std::vector<String> points = tokenize(points_str, ", \x09\x0a\x0d");
+
+	if (points.size() % 2 == 1) {
+		error("SVG Parser: incomplete <polyline> element: points have an odd number of coordinate components %zu! Ignoring last number", points.size());
+		points.pop_back();
+	}
+
+	std::string path = etl::strprintf("M %lf %lf", atof(points[0].c_str()), atof(points[1].c_str()));
+
+	for (size_t i = 2; i < points.size(); i+=2)	 {
+		path.append(etl::strprintf(" %lf %lf", atof(points[i].c_str()), atof(points[i+1].c_str())));
+	}
+
 	k = parser_path_d(path,mtx);
 
 	return k;
