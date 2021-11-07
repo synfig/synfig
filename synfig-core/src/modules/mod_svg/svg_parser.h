@@ -191,7 +191,7 @@ private:
 		void parser_canvas(const xmlpp::Node* node);
 		void parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style style, const SVGMatrix& mtx_parent);
 
-		void parser_rxry_property(const Style &style, double width_reference, double height_reference, double &rx, double &ry);
+		bool parser_rxry_property(const Style &style, double width_reference, double height_reference, double &rx, double &ry);
 
 		/* === LAYER PARSERS ============================== */
 		void parser_layer(const xmlpp::Node* node, xmlpp::Element* root, Style style, const SVGMatrix& mtx);

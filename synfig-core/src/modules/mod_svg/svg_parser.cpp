@@ -454,7 +454,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 	}
 }
 
-void
+bool
 Svg_parser::parser_rxry_property(const Style& style, double width_reference, double height_reference, double &rx, double &ry)
 {
 	rx = 0.;
@@ -465,19 +465,33 @@ Svg_parser::parser_rxry_property(const Style& style, double width_reference, dou
 
 	if (rx_str != "auto" || ry_str != "auto") {
 
-		if (rx_str == "auto")
-			rx_str = ry_str;
-		else if (ry_str == "auto")
-			ry_str = rx_str;
+		if (rx_str != "auto" && !rx_str.empty()) {
+			rx = std::stod(rx_str);
+			if (rx < 0) {
+				synfig::error("SVG Parser: Invalid rx value: it cannot be negative!");
+				return false;
+			}
+			if (rx_str.back() == '%')
+				rx *= 0.01 * width_reference;
+		}
 
-		rx = std::stod(rx_str);
-		ry = std::stod(ry_str);
+		if (ry_str == "auto") {
+			ry = rx;
+		} else if (!ry_str.empty()){
+			ry = std::stod(ry_str);
+			if (ry < 0) {
+				synfig::error("SVG Parser: Invalid ry value: it cannot be negative!");
+				return false;
+			}
+			if (ry_str.back() == '%')
+				ry *= 0.01 * height_reference;
+		}
 
-		if (rx_str.back() == '%')
-			rx *= 0.01 * width_reference;
-		if (ry_str.back() == '%')
-			ry *= 0.01 * height_reference;
+		if (rx_str == "auto") {
+			rx = ry;
+		}
 	}
+	return true;
 }
 
 
@@ -1246,8 +1260,10 @@ Svg_parser::parser_path_ellipse(const xmlpp::Element *nodeElement, const Style &
 		return k;
 	float ellipse_x = style.compute("cx", "0", style.compute("width", "0"));
 	float ellipse_y = style.compute("cy", "0", style.compute("height", "0"));;
-	double ellipse_rx = -1, ellipse_ry = -1;
-	parser_rxry_property(style, style.compute("width", "0"), style.compute("height", "0"), ellipse_rx, ellipse_ry);
+
+	double ellipse_rx = 0, ellipse_ry = 0;
+	if (!parser_rxry_property(style, style.compute("width", "0"), style.compute("height", "0"), ellipse_rx, ellipse_ry))
+		return k;
 
 	if (approximate_zero(ellipse_rx) || approximate_zero(ellipse_ry))
 		return k;
