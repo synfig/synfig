@@ -275,7 +275,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 		const Glib::ustring nodename = node->get_name();
 
 		// Is element known ?
-		const std::vector<const char*> valid_elements = {"g", "path", "polygon", "rect", "circle", "line", "polyline"};
+		const std::vector<const char*> valid_elements = {"g", "path", "polygon", "rect", "circle", "ellipse", "line", "polyline"};
 		if (valid_elements.end() == std::find(valid_elements.begin(), valid_elements.end(), nodename))
 			return;
 
@@ -382,6 +382,8 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 			k = parser_path_rect(nodeElement, style, mtx);
 		else if(nodename.compare("circle")==0)
 			k = parser_path_circle(nodeElement, style, mtx);
+		else if(nodename.compare("ellipse")==0)
+			k = parser_path_ellipse(nodeElement, style, mtx);
 		else if(nodename.compare("line")==0)
 			k = parser_line(nodeElement, style, mtx);
 		else if(nodename.compare("polyline")==0)
@@ -1230,6 +1232,32 @@ Svg_parser::parser_path_circle(const xmlpp::Element* nodeElement, const Style& s
 							  circle_radius, circle_radius, circle_x - circle_radius, circle_y,
 							  circle_radius, circle_radius, circle_x, circle_y - circle_radius,
 							  circle_radius, circle_radius, circle_x + circle_radius, circle_y
+							  );
+	k = parser_path_d(path,mtx);
+
+	return k;
+}
+
+std::list<BLine>
+Svg_parser::parser_path_ellipse(const xmlpp::Element *nodeElement, const Style &style, const SVGMatrix &mtx)
+{
+	std::list<BLine> k;
+	if (!nodeElement)
+		return k;
+	float ellipse_x = style.compute("cx", "0", style.compute("width", "0"));
+	float ellipse_y = style.compute("cy", "0", style.compute("height", "0"));;
+	double ellipse_rx = -1, ellipse_ry = -1;
+	parser_rxry_property(style, style.compute("width", "0"), style.compute("height", "0"), ellipse_rx, ellipse_ry);
+
+	if (approximate_zero(ellipse_rx) || approximate_zero(ellipse_ry))
+		return k;
+	std::string path = etl::strprintf("M %lf %lf A %lf %lf 0 0,1 %lf %lf A %lf %lf 0 0,1 %lf %lf "
+												"A %lf %lf 0 0,1 %lf %lf A %lf %lf 0 0,1 %lf %lf z",
+							  ellipse_x + ellipse_rx, ellipse_y,
+							  ellipse_rx, ellipse_ry, ellipse_x, ellipse_y + ellipse_ry,
+							  ellipse_rx, ellipse_ry, ellipse_x - ellipse_rx, ellipse_y,
+							  ellipse_rx, ellipse_ry, ellipse_x, ellipse_y - ellipse_ry,
+							  ellipse_rx, ellipse_ry, ellipse_x + ellipse_rx, ellipse_y
 							  );
 	k = parser_path_d(path,mtx);
 

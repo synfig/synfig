@@ -202,6 +202,7 @@ private:
 		std::list<BLine> parser_path_d(const String& path_d, const SVGMatrix& mtx);
 		std::list<BLine> parser_path_rect(const xmlpp::Element* nodeElement, const Style& style, const SVGMatrix& mtx);
 		std::list<BLine> parser_path_circle(const xmlpp::Element* nodeElement, const Style& style, const SVGMatrix& mtx);
+		std::list<BLine> parser_path_ellipse(const xmlpp::Element* nodeElement, const Style& style, const SVGMatrix& mtx);
 		std::list<BLine> parser_line(const xmlpp::Element* nodeElement, const Style& style, const SVGMatrix& mtx);
 		std::list<BLine> parser_polyline(const xmlpp::Element* nodeElement, const Style& style, const SVGMatrix& mtx);
 
