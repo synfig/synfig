@@ -75,7 +75,6 @@ static int getColor(const String& name, int position);
 static double getDimension(const String& ac, bool use_90_ppi = false);
 static float getRadian(float sexa);
 //string functions
-static void removeIntoS(String& input);
 static std::vector<String> tokenize(const String& str,const String& delimiters);
 
 static float get_inkscape_version(const xmlpp::Element* svgNodeElement);
@@ -1728,18 +1727,24 @@ SVGMatrix::parser_transform(String transform)
 	bool first_iteration = true;
 	SVGMatrix a;
 
-	String tf(transform);
-	removeIntoS(tf);
-	std::vector<String> tokens=tokenize(tf," ");
-	for (const String& token : tokens) {
+	transform = trim(transform);
+
+	if (transform.empty() || transform == "none") {
+		*this = a;
+		return;
+	}
+
+	std::vector<String> tokens=tokenize(transform,")");
+	for (String token : tokens) {
+		token = trim(token);
 		if(token.compare(0,9,"translate")==0){
 			float dx,dy;
 			int start,end;
 			start	=token.find_first_of("(")+1;
-			end		=token.find_first_of(",");
+			end		=token.find_first_of(", ", start);
 			dx		=atof(token.substr(start,end-start).data());
-			start	=token.find_first_of(",")+1;
-			end		=token.size()-1;
+			start	=token.find_first_not_of(", ", end);
+			end		=token.size();
 			dy		=atof(token.substr(start,end-start).data());
 			if (first_iteration)
 				a = SVGMatrix(1,0,0,1,dx,dy);
@@ -1752,17 +1757,19 @@ SVGMatrix::parser_transform(String transform)
 			float angle,seno,coseno;
 			int start,end;
 			start	=token.find_first_of("(")+1;
-			end		=token.size()-1;
+			end		=token.size();
 			angle=getRadian (atof(token.substr(start,end-start).data()));
 			seno   =sin(angle);
 			coseno =cos(angle);
 			if (first_iteration)
-				a = SVGMatrix(coseno,seno,-1*seno,coseno,0,0);
+				a = SVGMatrix(coseno,seno,-seno,coseno,0,0);
 			else
-				a.multiply(SVGMatrix(coseno,seno,-1*seno,coseno,0,0));
+				a.multiply(SVGMatrix(coseno,seno,-seno,coseno,0,0));
 		}else if(token.compare(0,6,"matrix")==0){
 			int start	=token.find_first_of('(')+1;
 			int end		=token.find_first_of(')');
+			if (end == -1)
+				end = token.size();
 			if (first_iteration)
 				a = SVGMatrix(token.substr(start,end-start));
 			else
@@ -2058,20 +2065,6 @@ getRadian(float sexa){
 	return (sexa*2*PI)/360;
 }
 
-static void
-removeIntoS(String& input){
-	bool into=false;
-	for(unsigned int i=0;i<input.size();i++){
-		if(input.at(i)=='('){
-			into=true;
-		}else if(input.at(i)==')'){
-			into=false;
-		}else if(into && input.at(i)==' '){
-			input.erase(i,1);
-			i--;
-		}
-	}
-}
 static std::vector<String>
 tokenize(const String& str,const String& delimiters){
 	std::vector<String> tokens;
