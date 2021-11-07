@@ -275,7 +275,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 		const Glib::ustring nodename = node->get_name();
 
 		// Is element known ?
-		const std::vector<const char*> valid_elements = {"g", "path", "polygon", "rect", "circle"};
+		const std::vector<const char*> valid_elements = {"g", "path", "polygon", "rect", "circle", "line"};
 		if (valid_elements.end() == std::find(valid_elements.begin(), valid_elements.end(), nodename))
 			return;
 
@@ -311,6 +311,9 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 
 		//Fill
 		FillType typeFill = FILL_TYPE_NONE;
+
+		if (nodename.compare("line") == 0)
+			fill = "none";
 
 		if(fill.compare("none")!=0){
 			typeFill = FILL_TYPE_SIMPLE;
@@ -379,6 +382,8 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 			k = parser_path_rect(nodeElement, style, mtx);
 		else if(nodename.compare("circle")==0)
 			k = parser_path_circle(nodeElement, style, mtx);
+		else if(nodename.compare("line")==0)
+			k = parser_line(nodeElement, style, mtx);
 
 		if (k.empty())
 			return;
@@ -1224,6 +1229,34 @@ Svg_parser::parser_path_circle(const xmlpp::Element* nodeElement, const Style& s
 							  circle_radius, circle_radius, circle_x, circle_y - circle_radius,
 							  circle_radius, circle_radius, circle_x + circle_radius, circle_y
 							  );
+	k = parser_path_d(path,mtx);
+
+	return k;
+}
+
+std::list<BLine>
+Svg_parser::parser_line(const xmlpp::Element *nodeElement, const Style &style, const SVGMatrix &mtx)
+{
+	std::list<BLine> k;
+	if (!nodeElement)
+		return k;
+
+	double x1 = 0;
+	double x2 = 0;
+	double y1 = 0;
+	double y2 = 0;
+
+	try {
+		x1 = std::stod(nodeElement->get_attribute_value("x1"));
+		x2 = std::stod(nodeElement->get_attribute_value("x2"));
+		y1 = std::stod(nodeElement->get_attribute_value("y1"));
+		y2 = std::stod(nodeElement->get_attribute_value("y2"));
+	} catch (...) {
+		synfig::error("SVG Parser: Invalid <line> attribute: x1,y1,x2,y2 should be real values or percentages!");
+		return k;
+	}
+
+	std::string path = etl::strprintf("M %lf %lf L %lf %lf", x1, y1, x2, y2);
 	k = parser_path_d(path,mtx);
 
 	return k;
