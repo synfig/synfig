@@ -742,7 +742,7 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			coor2vect(&tgx,&tgy);
 			//save
 			k1.back().setTg2(tgx2,tgy2);
-			if(k1.front().isFirst(ax,ay)){
+			if(k1.front().isEqualTo(ax,ay)){
 				k1.front().setTg1(tgx,tgy);
 			}else{
 				k1.push_back(Vertex(ax,ay));
@@ -824,7 +824,7 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			coor2vect(&ax,&ay);
 			//save
 			k1.back().setTg2(k1.back().x,k1.back().y);
-			if(k1.front().isFirst(ax,ay)){
+			if(k1.front().isEqualTo(ax,ay)){
 				k1.front().setTg1(k1.front().x,k1.front().y);
 			}else{
 				k1.push_back(Vertex(ax,ay));
@@ -880,7 +880,7 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 					coor2vect(&ax,&ay);
 					//save
 					k1.back().setTg2(k1.back().x,k1.back().y);
-					if(k1.front().isFirst(ax,ay)){
+					if(k1.front().isEqualTo(ax,ay)){
 						k1.front().setTg1(k1.front().x,k1.front().y);
 					}else{
 						k1.push_back(Vertex(ax,ay));
@@ -1042,7 +1042,7 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			}
 
 			// Last arc point
-			if(k1.front().isFirst(ax,ay)){
+			if(k1.front().isEqualTo(ax,ay)){
 				k1.front().setTg1(tangents.back().first, tangents.back().second);
 			}else{
 				k1.push_back(Vertex(ax, ay));
@@ -1707,7 +1707,7 @@ void Vertex::setSplitAngle(bool val)
 }
 
 bool
-Vertex::isFirst(float a, float b) const
+Vertex::isEqualTo(float a, float b) const
 {
 	return approximate_equal(x, a) && approximate_equal(y, b);
 }
