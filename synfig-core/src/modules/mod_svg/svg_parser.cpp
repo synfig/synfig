@@ -342,7 +342,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 		if(typeFill != FILL_TYPE_NONE && typeStroke == FILL_TYPE_NONE) {
 			if (nodename.compare("rect") == 0) {
 				if (!mtx.is_identity())
-					child_layer = nodeStartBasicLayer(root->add_child("layer"), id);
+					child_layer = initializeGroupLayerNode(root->add_child("layer"), id);
 				child_fill=child_layer;
 
 				parser_rect(nodeElement,child_fill,style);
@@ -358,7 +358,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 		// We will create a non-primitive shape
 
 		if (!SVG_RESOLVE_BLINE)
-			child_layer = nodeStartBasicLayer(root->add_child("layer"), id);
+			child_layer = initializeGroupLayerNode(root->add_child("layer"), id);
 		child_fill=child_layer;
 		child_stroke=child_layer;
 
@@ -382,7 +382,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 				return;
 
 			if(typeFill==FILL_TYPE_GRADIENT){
-				child_fill=nodeStartBasicLayer(child_fill->add_child("layer"),"fill");
+				child_fill=initializeGroupLayerNode(child_fill->add_child("layer"),"fill");
 			}
 
 			build_region(child_fill, style, k, id);
@@ -398,7 +398,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 				return;
 
 			if(typeStroke==FILL_TYPE_GRADIENT){
-				child_stroke=nodeStartBasicLayer(child_stroke->add_child("layer"),"stroke");
+				child_stroke=initializeGroupLayerNode(child_stroke->add_child("layer"),"stroke");
 			}
 
 			build_outline(child_stroke, style, k, id, bline_matrix);
@@ -1622,7 +1622,7 @@ Svg_parser::build_vector (xmlpp::Element* root, const String& name, float x, flo
 }
 
 xmlpp::Element*
-Svg_parser::nodeStartBasicLayer(xmlpp::Element* root, const String& name)
+Svg_parser::initializeGroupLayerNode(xmlpp::Element* root, const String& name)
 {
 	root->set_attribute("type","group");
 	root->set_attribute("active","true");
