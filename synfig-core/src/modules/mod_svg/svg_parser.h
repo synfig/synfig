@@ -231,7 +231,7 @@ private:
 		void build_vector (xmlpp::Element* root, const String& name, float x, float y);
 		void build_vector (xmlpp::Element* root, const String& name, float x, float y, const String& guid);
 		void build_color(xmlpp::Element* root,float r,float g,float b,float a);
-		xmlpp::Element* nodeStartBasicLayer(xmlpp::Element* root, const String& name);
+		xmlpp::Element* initializeGroupLayerNode(xmlpp::Element* root, const String& name);
 
 		/* === COORDINATES & TRANSFORMATIONS ============== */
 
