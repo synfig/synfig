@@ -1738,42 +1738,93 @@ SVGMatrix::parser_transform(String transform)
 	for (String token : tokens) {
 		token = trim(token);
 		if(token.compare(0,9,"translate")==0){
-			float dx,dy;
-			int start,end;
-			start	=token.find_first_of("(")+1;
-			end		=token.find_first_of(", ", start);
-			dx		=atof(token.substr(start,end-start).data());
-			start	=token.find_first_not_of(", ", end);
-			end		=token.size();
-			dy		=atof(token.substr(start,end-start).data());
+			int start = token.find_first_of("(")+1;
+			std::vector<String> args = tokenize(token.substr(start), ", \x09\x0a\x0d");
+
+			float dx = 0, dy = 0;
+			if (args.size() > 0) {
+				dx = atof(args[0].c_str());
+				if (args.size() > 1)
+					dy = atof(args[1].c_str());
+			}
+
+			const SVGMatrix translation_matrix = SVGMatrix(1,0,0,1,dx,dy);
 			if (first_iteration)
-				a = SVGMatrix(1,0,0,1,dx,dy);
+				a = translation_matrix;
 			else
-				a.multiply(SVGMatrix(1,0,0,1,dx,dy));
+				a.multiply(translation_matrix);
 		}else if(token.compare(0,5,"scale")==0){
+			int start = token.find_first_of("(")+1;
+			std::vector<String> args = tokenize(token.substr(start), ", \x09\x0a\x0d");
+
+			float sx = 1, sy = 1;
+			if (args.size() > 0) {
+				sx = atof(args[0].c_str());
+				if (args.size() > 1)
+					sy = atof(args[1].c_str());
+				else
+					sy = sx;
+			}
+
+			const SVGMatrix scale_matrix = SVGMatrix(sx,0,0,sy,0,0);
 			if (first_iteration)
-				a = SVGMatrix(1,0,0,1,0,0);
+				a = scale_matrix;
+			else
+				a.multiply(scale_matrix);
 		}else if(token.compare(0,6,"rotate")==0){
-			float angle,seno,coseno;
-			int start,end;
-			start	=token.find_first_of("(")+1;
-			end		=token.size();
-			angle=getRadian (atof(token.substr(start,end-start).data()));
-			seno   =sin(angle);
-			coseno =cos(angle);
-			if (first_iteration)
-				a = SVGMatrix(coseno,seno,-seno,coseno,0,0);
-			else
-				a.multiply(SVGMatrix(coseno,seno,-seno,coseno,0,0));
+			int start = token.find_first_of("(")+1;
+			std::vector<String> args = tokenize(token.substr(start), ", \x09\x0a\x0d");
+
+			float angle = 0, cx = 0, cy = 0;
+			if (args.size() > 0) {
+				angle = getRadian(atof(args[0].c_str()));
+				if (args.size() == 3) {
+					cx = atof(args[1].c_str());
+					cy = atof(args[2].c_str());
+				}
+			}
+
+			const float seno   = sin(angle);
+			const float coseno = cos(angle);
+
+			const SVGMatrix rot_matrix = SVGMatrix(coseno,seno,-seno,coseno,0,0);
+			if (approximate_zero(cx) && approximate_zero(cy)) {
+				if (first_iteration)
+					a = rot_matrix;
+				else
+					a.multiply(rot_matrix);
+			} else {
+				SVGMatrix aux(1,0,0,1,cx,cy);
+				aux.multiply(rot_matrix);
+				aux.multiply(SVGMatrix(1,0,0,1,-cx,-cy));
+				if (first_iteration)
+					a = aux;
+				else
+					a.multiply(aux);
+			}
 		}else if(token.compare(0,6,"matrix")==0){
-			int start	=token.find_first_of('(')+1;
-			int end		=token.find_first_of(')');
-			if (end == -1)
-				end = token.size();
+			int start = token.find_first_of('(')+1;
 			if (first_iteration)
-				a = SVGMatrix(token.substr(start,end-start));
+				a = SVGMatrix(token.substr(start));
 			else
-				a.multiply(SVGMatrix(token.substr(start,end-start)));
+				a.multiply(SVGMatrix(token.substr(start)));
+		}else if(token.compare(0,4,"skew")==0){
+			int start = token.find_first_of("(")+1;
+			std::vector<String> args = tokenize(token.substr(start), ", \x09\x0a\x0d");
+
+			float angle = 0;
+			if (args.size() > 0) {
+				angle = getRadian(atof(args[0].c_str()));
+			}
+
+			const float tgx = token[4] == 'X' ? tan(angle) : 0;
+			const float tgy = token[4] == 'Y' ? tan(angle) : 0;
+
+			const SVGMatrix skew_matrix = SVGMatrix(1,tgy,tgx,1,0,0);
+			if (first_iteration)
+				a = skew_matrix;
+			else
+				a.multiply(skew_matrix);
 		}else{
 			a = SVGMatrix(1,0,0,1,0,0);
 		}
