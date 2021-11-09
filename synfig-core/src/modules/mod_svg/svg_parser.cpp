@@ -275,7 +275,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 		const Glib::ustring nodename = node->get_name();
 
 		// Is element known ?
-		const std::vector<const char*> valid_elements = {"g", "path", "polygon", "rect"};
+		const std::vector<const char*> valid_elements = {"g", "path", "polygon", "rect", "circle", "ellipse", "line", "polyline"};
 		if (valid_elements.end() == std::find(valid_elements.begin(), valid_elements.end(), nodename))
 			return;
 
@@ -312,6 +312,9 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 		//Fill
 		FillType typeFill = FILL_TYPE_NONE;
 
+		if (nodename.compare("line") == 0)
+			fill = "none";
+
 		if(fill.compare("none")!=0){
 			typeFill = FILL_TYPE_SIMPLE;
 
@@ -340,12 +343,15 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 		// Only fill and a simple geometric shape? Render as Synfig primitive.
 		// If it has stroke, render as a region, instead of standard shape, to be able to link to outline
 		if(typeFill != FILL_TYPE_NONE && typeStroke == FILL_TYPE_NONE) {
-			if (nodename.compare("rect") == 0) {
+			if (nodename.compare("rect") == 0 || nodename.compare("circle") == 0) {
 				if (!mtx.is_identity())
 					child_layer = initializeGroupLayerNode(root->add_child("layer"), id);
 				child_fill=child_layer;
 
-				parser_rect(nodeElement,child_fill,style);
+				if (nodename.compare("rect") == 0)
+					parser_rect(nodeElement,child_fill,style);
+				else if (nodename.compare("circle") == 0)
+					parser_circle(nodeElement,child_fill,style);
 
 				if(typeFill == FILL_TYPE_GRADIENT){
 					build_fill (child_fill,fill,SVGMatrix::identity);
@@ -372,6 +378,16 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 			k = parser_path_d(nodeElement->get_attribute_value("d"), bline_matrix);
 		else if(nodename.compare("polygon")==0)
 			k = parser_path_polygon(nodeElement->get_attribute_value("points"), bline_matrix);
+		else if(nodename.compare("rect")==0)
+			k = parser_path_rect(nodeElement, style, mtx);
+		else if(nodename.compare("circle")==0)
+			k = parser_path_circle(nodeElement, style, mtx);
+		else if(nodename.compare("ellipse")==0)
+			k = parser_path_ellipse(nodeElement, style, mtx);
+		else if(nodename.compare("line")==0)
+			k = parser_line(nodeElement, style, mtx);
+		else if(nodename.compare("polyline")==0)
+			k = parser_polyline(nodeElement, style, mtx);
 
 		if (k.empty())
 			return;
@@ -436,6 +452,46 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 		else
 			parser_effects(nodeElement,child_layer,style,mtx);
 	}
+}
+
+bool
+Svg_parser::parser_rxry_property(const Style& style, double width_reference, double height_reference, double &rx, double &ry)
+{
+	rx = 0.;
+	ry = 0.;
+
+	String rx_str = style.get("rx", "auto");
+	String ry_str = style.get("ry", "auto");
+
+	if (rx_str != "auto" || ry_str != "auto") {
+
+		if (rx_str != "auto" && !rx_str.empty()) {
+			rx = std::stod(rx_str);
+			if (rx < 0) {
+				synfig::error("SVG Parser: Invalid rx value: it cannot be negative!");
+				return false;
+			}
+			if (rx_str.back() == '%')
+				rx *= 0.01 * width_reference;
+		}
+
+		if (ry_str == "auto") {
+			ry = rx;
+		} else if (!ry_str.empty()){
+			ry = std::stod(ry_str);
+			if (ry < 0) {
+				synfig::error("SVG Parser: Invalid ry value: it cannot be negative!");
+				return false;
+			}
+			if (ry_str.back() == '%')
+				ry *= 0.01 * height_reference;
+		}
+
+		if (rx_str == "auto") {
+			rx = ry;
+		}
+	}
+	return true;
 }
 
 
@@ -590,7 +646,39 @@ Svg_parser::parser_rect(const xmlpp::Element* nodeElement,xmlpp::Element* root, 
 
 }
 
-/* === CONVERT TO PATH PARSERS ============================================= */       
+void
+Svg_parser::parser_circle(const xmlpp::Element* nodeElement, xmlpp::Element* root, const Style& style)
+{
+	Glib::ustring circle_id = nodeElement->get_attribute_value("id");
+	float circle_x      = style.compute("cx", "0", style.compute("width", "0"));
+	float circle_y      = style.compute("cy", "0", style.compute("height", "0"));
+	float circle_radius = atof(style.get("r", "0").c_str()); // FIXME compute for %
+
+	Glib::ustring fill  = style.get("fill", "#000");
+	float fill_opacity  = style.compute("fill_opacity", "1");
+	float opacity       = style.compute("opacity", "1");
+
+	xmlpp::Element *child_circle=root->add_child("layer");
+	child_circle->set_attribute("type","circle");
+	child_circle->set_attribute("active","true");
+	child_circle->set_attribute("version","0.2");
+	child_circle->set_attribute("desc",circle_id);
+
+	build_real(child_circle->add_child("param"),"z_depth",0.0);
+	build_real(child_circle->add_child("param"),"amount",1.0);
+	build_integer(child_circle->add_child("param"),"blend_method",0);
+	build_color(child_circle->add_child("param"),getRed (fill),getGreen (fill),getBlue(fill),opacity*fill_opacity);
+
+	float cx = circle_x;
+	float cy = circle_y;
+	coor2vect(&cx,&cy);
+	build_vector (child_circle->add_child("param"),"origin",cx,cy);
+	float r = circle_radius;
+	r /= kux;
+	build_real(child_circle->add_child("param"),"radius",r);
+}
+
+/* === CONVERT TO PATH PARSERS ============================================= */
 
 std::list<BLine>
 Svg_parser::parser_path_polygon(const Glib::ustring& polygon_points, const SVGMatrix& mtx)
@@ -1075,6 +1163,177 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 	if(!k1.empty()) {
 		k.push_front(BLine(k1, false)); //last element
 	}
+	return k;
+}
+
+std::list<BLine>
+Svg_parser::parser_path_rect(const xmlpp::Element* nodeElement, const Style& style, const SVGMatrix& mtx)
+{
+	std::list<BLine> k;
+	if (!nodeElement)
+		return k;
+	try {
+		double rect_x      = style.compute("x", "0");
+		double rect_y      = style.compute("y", "0");
+		double rect_width  = style.compute("width", "0");
+		double rect_height = style.compute("height", "0");
+
+		if (approximate_zero(rect_width) || approximate_zero(rect_height))
+			return k;
+
+		if (rect_width < 0 || rect_height < 0) {
+			synfig::error("SVG Parser: Invalid width or height value for <rect>: it cannot be negative!");
+			return k;
+		}
+
+		double rect_rx = 0.;
+		double rect_ry = 0.;
+		parser_rxry_property(style, rect_width, rect_height, rect_rx, rect_ry);
+		{
+			if (rect_rx > rect_width/2)
+				rect_rx = rect_width/2;
+			if (rect_ry > rect_height/2)
+				rect_ry = rect_height/2;
+		}
+
+		std::string path;
+		if (rect_rx > 0 && rect_ry > 0)
+			path = etl::strprintf("M %lf %lf H %lf A %lf %lf 0 0,1 %lf %lf V %lf A %lf %lf 0 0,1 %lf %lf H %lf "
+												  "A %lf %lf 0 0,1 %lf %lf V %lf A %lf %lf 0 0,1 %lf %lf z",
+								  rect_x + rect_rx, rect_y, rect_x + rect_width - rect_rx,
+								  rect_rx, rect_ry, rect_x + rect_width, rect_y + rect_ry,
+								  rect_y + rect_height - rect_ry,
+								  rect_rx, rect_ry, rect_x + rect_width - rect_rx, rect_y + rect_height,
+								  rect_x + rect_rx,
+								  rect_rx, rect_ry, rect_x, rect_y + rect_height - rect_ry,
+								  rect_y + rect_ry,
+								  rect_rx, rect_ry, rect_x + rect_rx, rect_y
+								  );
+		else
+			path = etl::strprintf("M %lf %lf h %lf v %lf h %lf z",
+								  rect_x, rect_y, rect_width, rect_height, -rect_width
+								  );
+		k = parser_path_d(path,mtx);
+	} catch(...) {
+		synfig::error("SVG Parser: Invalid coordinate value: it should be a real value!");
+	}
+	return k;
+}
+
+std::list<BLine>
+Svg_parser::parser_path_circle(const xmlpp::Element* nodeElement, const Style& style, const SVGMatrix& mtx)
+{
+	std::list<BLine> k;
+	if (!nodeElement)
+		return k;
+	float circle_x = style.compute("cx", "0", style.compute("width", "0"));
+	float circle_y = style.compute("cy", "0", style.compute("height", "0"));
+	float circle_radius = atof(style.get("r", "0").c_str()); // FIXME compute for %
+
+	if (approximate_less(circle_radius, 0.f)) {
+		synfig::error("SVG Parser: Invalid circle r value: it cannot be negative!");
+		return k;
+	}
+
+	if (approximate_zero(circle_radius)) {
+		return k;
+	}
+
+	std::string path = etl::strprintf("M %lf %lf A %lf %lf 0 0,1 %lf %lf A %lf %lf 0 0,1 %lf %lf "
+												"A %lf %lf 0 0,1 %lf %lf A %lf %lf 0 0,1 %lf %lf z",
+							  circle_x + circle_radius, circle_y,
+							  circle_radius, circle_radius, circle_x, circle_y + circle_radius,
+							  circle_radius, circle_radius, circle_x - circle_radius, circle_y,
+							  circle_radius, circle_radius, circle_x, circle_y - circle_radius,
+							  circle_radius, circle_radius, circle_x + circle_radius, circle_y
+							  );
+	k = parser_path_d(path,mtx);
+
+	return k;
+}
+
+std::list<BLine>
+Svg_parser::parser_path_ellipse(const xmlpp::Element *nodeElement, const Style &style, const SVGMatrix &mtx)
+{
+	std::list<BLine> k;
+	if (!nodeElement)
+		return k;
+	float ellipse_x = style.compute("cx", "0", style.compute("width", "0"));
+	float ellipse_y = style.compute("cy", "0", style.compute("height", "0"));;
+
+	double ellipse_rx = 0, ellipse_ry = 0;
+	if (!parser_rxry_property(style, style.compute("width", "0"), style.compute("height", "0"), ellipse_rx, ellipse_ry))
+		return k;
+
+	if (approximate_zero(ellipse_rx) || approximate_zero(ellipse_ry))
+		return k;
+	std::string path = etl::strprintf("M %lf %lf A %lf %lf 0 0,1 %lf %lf A %lf %lf 0 0,1 %lf %lf "
+												"A %lf %lf 0 0,1 %lf %lf A %lf %lf 0 0,1 %lf %lf z",
+							  ellipse_x + ellipse_rx, ellipse_y,
+							  ellipse_rx, ellipse_ry, ellipse_x, ellipse_y + ellipse_ry,
+							  ellipse_rx, ellipse_ry, ellipse_x - ellipse_rx, ellipse_y,
+							  ellipse_rx, ellipse_ry, ellipse_x, ellipse_y - ellipse_ry,
+							  ellipse_rx, ellipse_ry, ellipse_x + ellipse_rx, ellipse_y
+							  );
+	k = parser_path_d(path,mtx);
+
+	return k;
+}
+
+std::list<BLine>
+Svg_parser::parser_line(const xmlpp::Element *nodeElement, const Style &style, const SVGMatrix &mtx)
+{
+	std::list<BLine> k;
+	if (!nodeElement)
+		return k;
+
+	double x1 = 0;
+	double x2 = 0;
+	double y1 = 0;
+	double y2 = 0;
+
+	try {
+		x1 = std::stod(nodeElement->get_attribute_value("x1"));
+		x2 = std::stod(nodeElement->get_attribute_value("x2"));
+		y1 = std::stod(nodeElement->get_attribute_value("y1"));
+		y2 = std::stod(nodeElement->get_attribute_value("y2"));
+	} catch (...) {
+		synfig::error("SVG Parser: Invalid <line> attribute: x1,y1,x2,y2 should be real values or percentages!");
+		return k;
+	}
+
+	std::string path = etl::strprintf("M %lf %lf L %lf %lf", x1, y1, x2, y2);
+	k = parser_path_d(path,mtx);
+
+	return k;
+}
+
+std::list<BLine>
+Svg_parser::parser_polyline(const xmlpp::Element *nodeElement, const Style &style, const SVGMatrix &mtx)
+{
+	std::list<BLine> k;
+	if (!nodeElement)
+		return k;
+
+	std::string points_str = trim(nodeElement->get_attribute_value("points"));
+	if (points_str.empty() || points_str == "none")
+		return k;
+
+	std::vector<String> points = tokenize(points_str, ", \x09\x0a\x0d");
+
+	if (points.size() % 2 == 1) {
+		error("SVG Parser: incomplete <polyline> element: points have an odd number of coordinate components %zu! Ignoring last number", points.size());
+		points.pop_back();
+	}
+
+	std::string path = etl::strprintf("M %lf %lf", atof(points[0].c_str()), atof(points[1].c_str()));
+
+	for (size_t i = 2; i < points.size(); i+=2)	 {
+		path.append(etl::strprintf(" %lf %lf", atof(points[i].c_str()), atof(points[i+1].c_str())));
+	}
+
+	k = parser_path_d(path,mtx);
+
 	return k;
 }
 
@@ -2389,14 +2648,20 @@ Style::compute(const std::string &property, std::string default_value, double re
 
 	double d_value;
 	if (parse_number_or_percent(value, d_value)) {
-		return d_value * reference_value;
+		if (!value.empty() && value.back() == '%')
+			return d_value * reference_value;
+		else
+			return d_value;
 	}
 
 	warning("Layer_Svg: %s",
 		etl::strprintf(_("Invalid number for '%s': %s. Trying default value..."), property.c_str(), value.c_str()).c_str());
 
 	if (parse_number_or_percent(default_value, d_value)) {
-		return d_value * reference_value;
+		if (!value.empty() && value.back() == '%')
+			return d_value * reference_value;
+		else
+			return d_value;
 	}
 
 	error("Layer_Svg: %s", etl::strprintf(_("... No, invalid number for '%s': %s"), property.c_str(), default_value.c_str()).c_str());

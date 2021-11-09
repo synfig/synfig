@@ -191,12 +191,20 @@ private:
 		void parser_canvas(const xmlpp::Node* node);
 		void parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style style, const SVGMatrix& mtx_parent);
 
+		bool parser_rxry_property(const Style &style, double width_reference, double height_reference, double &rx, double &ry);
+
 		/* === LAYER PARSERS ============================== */
 		void parser_layer(const xmlpp::Node* node, xmlpp::Element* root, Style style, const SVGMatrix& mtx);
 		void parser_rect(const xmlpp::Element* nodeElement, xmlpp::Element* root, const Style& style);
+		void parser_circle(const xmlpp::Element* nodeElement, xmlpp::Element* root, const Style& style);
 		/* === CONVERT TO PATH PARSERS ==================== */
 		std::list<BLine> parser_path_polygon(const Glib::ustring& polygon_points, const SVGMatrix& mtx);
 		std::list<BLine> parser_path_d(const String& path_d, const SVGMatrix& mtx);
+		std::list<BLine> parser_path_rect(const xmlpp::Element* nodeElement, const Style& style, const SVGMatrix& mtx);
+		std::list<BLine> parser_path_circle(const xmlpp::Element* nodeElement, const Style& style, const SVGMatrix& mtx);
+		std::list<BLine> parser_path_ellipse(const xmlpp::Element* nodeElement, const Style& style, const SVGMatrix& mtx);
+		std::list<BLine> parser_line(const xmlpp::Element* nodeElement, const Style& style, const SVGMatrix& mtx);
+		std::list<BLine> parser_polyline(const xmlpp::Element* nodeElement, const Style& style, const SVGMatrix& mtx);
 
 		/* === EFFECTS PARSERS ============================ */
 		void parser_effects(const xmlpp::Element* nodeElement, xmlpp::Element* root, const Style& parent_style, const SVGMatrix& mtx);
