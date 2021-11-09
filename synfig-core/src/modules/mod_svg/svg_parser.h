@@ -113,7 +113,7 @@ struct Vertex{
 	void setSplit(bool val);
 	void setSplitRadius(bool val);
 	void setSplitAngle(bool val);
-	bool isFirst(float a, float b) const;
+	bool isEqualTo(float a, float b) const;
 	Vertex(float x,float y);
 };
 
