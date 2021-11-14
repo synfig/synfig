@@ -152,8 +152,16 @@ Widget_FontFamily::Widget_FontFamily()
 	set_model(enum_TreeModel);
 	set_wrap_width(1); // https://github.com/synfig/synfig/issues/650
 
-	if (get_has_entry())
-		static_cast<Gtk::Entry*>(get_child())->signal_activate().connect(sigc::mem_fun(signal_activate(), &sigc::signal<void>::emit));
+	if (get_has_entry()) {
+		Gtk::Entry* entry = static_cast<Gtk::Entry*>(get_child());
+		entry->signal_activate().connect(sigc::mem_fun(signal_activate(), &sigc::signal<void>::emit));
+
+		Glib::RefPtr<Gtk::EntryCompletion> completion = Gtk::EntryCompletion::create();
+		completion->set_model(enum_TreeModel);
+		completion->set_text_column(0);
+
+		entry->set_completion(completion);
+	}
 }
 
 Widget_FontFamily::~Widget_FontFamily()
