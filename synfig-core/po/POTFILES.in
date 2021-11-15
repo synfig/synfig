@@ -288,6 +288,8 @@ src/synfig/string.h
 src/synfig/surface.cpp
 src/synfig/surface.h
 src/synfig/synfig.h
+src/synfig/synfig_iterations.cpp
+src/synfig/synfig_iterations.h
 src/synfig/target.cpp
 src/synfig/target.h
 src/synfig/target_multi.cpp

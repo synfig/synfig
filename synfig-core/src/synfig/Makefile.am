@@ -106,6 +106,7 @@ SYNFIGHEADERS = \
 	render.h \
 	savecanvas.h \
 	surface.h \
+	synfig_iterations.h \
 	target.h \
 	time.h \
 	timepointcollect.h \
@@ -157,6 +158,7 @@ SYNFIGSOURCES = \
 	savecanvas.cpp \
 	string_helper.cpp \
 	surface.cpp \
+	synfig_iterations.cpp \
 	target.cpp \
 	time.cpp \
 	timepointcollect.cpp \
