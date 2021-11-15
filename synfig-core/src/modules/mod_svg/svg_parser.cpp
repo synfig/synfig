@@ -98,15 +98,15 @@ synfig::open_svg(std::string _filepath, String &errors, String &warnings)
 }
 
 Canvas::Handle
-Svg_parser::load_svg_canvas(std::string _filepath, String &errors, String &warnings)
+Svg_parser::load_svg_canvas(const std::string& filepath, String &errors, String &warnings)
 {
 	ChangeLocale locale(LC_NUMERIC, "C");
 
-	filepath = _filepath;
 	#ifdef LIBXMLCPP_EXCEPTIONS_ENABLED
   	try{
   	#endif //LIBXMLCPP_EXCEPTIONS_ENABLED
 		//load parser
+		xmlpp::DomParser parser;
 		parser.set_substitute_entities();
 		parser.parse_file(filepath);
 		//set_id(filepath);
@@ -132,7 +132,6 @@ Svg_parser::Svg_parser(const Gamma &gamma):
 	nodeRoot(NULL),
 	width(0),
 	height(0),
-	uid(0),
 	kux(60),
 	set_canvas(false), //we must run parser_canvas method
 	ox(0),
@@ -211,7 +210,6 @@ Svg_parser::parser_svg(const xmlpp::Node* node)
 
 		width = getDimension(nodeElement->get_attribute_value("width"), inkscape_version < 0.92f && approximate_not_zero(inkscape_version));
 		height = getDimension(nodeElement->get_attribute_value("height"), inkscape_version < 0.92f && approximate_not_zero(inkscape_version));
-		docname=nodeElement->get_attribute_value("docname","");
 	}
 }
 
@@ -2529,12 +2527,6 @@ tokenize(const String& str,const String& delimiters){
 	}
 	return tokens;
 }
-String
-Svg_parser::new_guid(){
-	uid++;
-	return GUID::hasher(uid).get_string();
-}
-
 
 #define COLOR_NAME(color, r, g, b) {color, {r, g, b}},
 
