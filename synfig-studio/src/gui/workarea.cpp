@@ -2161,7 +2161,7 @@ studio::WorkArea::queue_render(bool refresh)
 		{ dirty_trap_queued++; return; }
 	dirty_trap_queued = 0;
 	// avoiding dead-lock : github#1071
-	Glib::signal_idle().connect_once([=] () {
+	Glib::signal_idle().connect_once(sigc::track_obj([=] () {
 		if (refresh) {
 			renderer_canvas->clear_render();
 			Glib::signal_idle().connect_once(
@@ -2170,7 +2170,7 @@ studio::WorkArea::queue_render(bool refresh)
 		} else {
 			renderer_canvas->enqueue_render();
 		}
-	});
+	}, *this));
 }
 
 void

@@ -64,11 +64,7 @@ Widget_Timetrack::Widget_Timetrack()
 
 	setup_adjustment();
 
-	waypoint_sd.signal_action_changed().connect([=](){
-		update_cursor();
-		action_state = waypoint_sd.get_action();
-		signal_action_state_changed().emit();
-	});
+	waypoint_sd.signal_action_changed().connect(sigc::mem_fun(*this, &Widget_Timetrack::on_waypoint_action_changed));
 }
 
 Widget_Timetrack::~Widget_Timetrack()
@@ -605,28 +601,16 @@ void Widget_Timetrack::setup_params_store()
 {
 	sigc::connection conn;
 
-	conn = params_store->signal_row_inserted().connect([&](const Gtk::TreeModel::Path&, const Gtk::TreeModel::iterator&){
-		queue_rebuild_param_info_list();
-	});
+	conn = params_store->signal_row_inserted().connect(sigc::mem_fun(*this, &Widget_Timetrack::on_params_store_row_inserted));
 	treestore_connections.push_back(conn);
 
-	conn = params_store->signal_row_deleted().connect([&](const Gtk::TreeModel::Path&){
-		queue_rebuild_param_info_list();
-	});
+	conn = params_store->signal_row_deleted().connect(sigc::mem_fun(*this, &Widget_Timetrack::on_params_store_row_deleted));
 	treestore_connections.push_back(conn);
 
-	conn = params_store->signal_rows_reordered().connect([&](const Gtk::TreeModel::Path&, const Gtk::TreeModel::iterator&, int*){
-		queue_rebuild_param_info_list();
-	});
+	conn = params_store->signal_rows_reordered().connect(sigc::mem_fun(*this, &Widget_Timetrack::on_params_store_rows_reordered));
 	treestore_connections.push_back(conn);
 
-	conn = params_store->signal_row_changed().connect([&](const Gtk::TreeModel::Path &p, const Gtk::TreeModel::iterator&){
-		// this is the way I found out how to redraw when a new value node is created by editor
-		// Instead of on every row change, it should be called only when a value node is created...
-		RowInfo &row_info = param_info_map[p.to_string()];
-		if (row_info.is_valid())
-			row_info.recheck_for_value_nodes();
-	});
+	conn = params_store->signal_row_changed().connect(sigc::mem_fun(*this, &Widget_Timetrack::on_params_store_row_changed));
 	treestore_connections.push_back(conn);
 }
 
@@ -639,15 +623,14 @@ void Widget_Timetrack::teardown_params_store()
 
 void Widget_Timetrack::setup_params_view()
 {
+	sigc::slot<void,const Gtk::TreeModel::iterator&,const Gtk::TreeModel::Path&> slot_on_row_collapse_or_expand =
+			sigc::hide(sigc::hide(sigc::mem_fun(*this, &Widget_Timetrack::queue_update_param_list_geometries)));
+
 	sigc::connection conn;
-	conn = params_treeview->signal_row_expanded().connect([&](const Gtk::TreeModel::iterator&,const Gtk::TreeModel::Path&) {
-		queue_update_param_list_geometries();
-	});
+	conn = params_treeview->signal_row_expanded().connect(slot_on_row_collapse_or_expand);
 	treeview_connections.push_back(conn);
 
-	conn = params_treeview->signal_row_collapsed().connect([&](const Gtk::TreeModel::iterator&,const Gtk::TreeModel::Path&) {
-		queue_update_param_list_geometries();
-	});
+	conn = params_treeview->signal_row_collapsed().connect(slot_on_row_collapse_or_expand);
 	treeview_connections.push_back(conn);
 
 	conn = params_treeview->signal_style_updated().connect(sigc::mem_fun(*this, &Widget_Timetrack::queue_update_param_list_geometries));
@@ -666,14 +649,8 @@ void Widget_Timetrack::teardown_params_view()
 
 void Widget_Timetrack::setup_adjustment()
 {
-	range_adjustment->signal_value_changed().connect([&](){
-		// wait for all members of Adjustment group to synchronize
-		queue_update_param_list_geometries();
-	});
-	range_adjustment->signal_changed().connect([&](){
-		set_default_page_size(range_adjustment->get_page_size());
-		queue_update_param_list_geometries();
-	});
+	range_adjustment->signal_value_changed().connect(sigc::mem_fun(*this, &Widget_Timetrack::on_range_adjustment_value_changed));
+	range_adjustment->signal_changed().connect(sigc::mem_fun(*this, &Widget_Timetrack::on_range_adjustment_changed));
 }
 
 void Widget_Timetrack::queue_rebuild_param_info_list()
@@ -888,6 +865,49 @@ void Widget_Timetrack::on_waypoint_double_clicked(const Widget_Timetrack::Waypoi
 	}
 }
 
+void Widget_Timetrack::on_waypoint_action_changed()
+{
+	update_cursor();
+	action_state = waypoint_sd.get_action();
+	signal_action_state_changed().emit();
+}
+
+void Widget_Timetrack::on_params_store_row_inserted(const Gtk::TreeModel::Path &, const Gtk::TreeModel::iterator &)
+{
+	queue_rebuild_param_info_list();
+}
+
+void Widget_Timetrack::on_params_store_row_deleted(const Gtk::TreeModel::Path &)
+{
+	queue_rebuild_param_info_list();
+}
+
+void Widget_Timetrack::on_params_store_rows_reordered(const Gtk::TreeModel::Path &, const Gtk::TreeModel::iterator &, int *)
+{
+	queue_rebuild_param_info_list();
+}
+
+void Widget_Timetrack::on_params_store_row_changed(const Gtk::TreeModel::Path &path, const Gtk::TreeModel::iterator &)
+{
+	// this is the way I found out how to redraw when a new value node is created by editor
+	// Instead of on every row change, it should be called only when a value node is created...
+	RowInfo &row_info = param_info_map[path.to_string()];
+	if (row_info.is_valid())
+		row_info.recheck_for_value_nodes();
+}
+
+void Widget_Timetrack::on_range_adjustment_value_changed()
+{
+	// wait for all members of Adjustment group to synchronize
+	queue_update_param_list_geometries();
+}
+
+void Widget_Timetrack::on_range_adjustment_changed()
+{
+	set_default_page_size(range_adjustment->get_page_size());
+	queue_update_param_list_geometries();
+}
+
 Widget_Timetrack::WaypointScaleInfo Widget_Timetrack::compute_scale_params() const
 {
 	WaypointScaleInfo info;
@@ -1013,10 +1033,10 @@ Widget_Timetrack::WaypointSD::WaypointSD(Widget_Timetrack& widget)
 	  action(ActionState::NONE),
 	  is_action_set_before_drag(false)
 {
-	signal_drag_started().connect([&]() {on_drag_started();});
-	signal_drag_canceled().connect([&]() {on_drag_canceled();});
-	signal_drag_finished().connect([&](bool started_by_keys) {on_drag_finish(started_by_keys);});
-	signal_modifier_keys_changed().connect([&]() {on_modifier_keys_changed();});
+	signal_drag_started().connect(sigc::mem_fun(*this, &Widget_Timetrack::WaypointSD::on_drag_started));
+	signal_drag_canceled().connect(sigc::mem_fun(*this, &Widget_Timetrack::WaypointSD::on_drag_canceled));
+	signal_drag_finished().connect(sigc::mem_fun(*this, &Widget_Timetrack::WaypointSD::on_drag_finish));
+	signal_modifier_keys_changed().connect(sigc::mem_fun(*this, &Widget_Timetrack::WaypointSD::on_modifier_keys_changed));
 }
 
 Widget_Timetrack::WaypointSD::~WaypointSD()

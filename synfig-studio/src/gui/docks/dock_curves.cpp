@@ -132,19 +132,9 @@ Dock_Curves::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 	tree_layer->signal_param_tree_header_height_changed().connect(
 		sigc::mem_fun(*this, &studio::Dock_Curves::on_update_header_height) );
 
-	curves->signal_waypoint_clicked().connect([=](synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint,std::less<synfig::UniqueID>> waypoint_set, int button) {
-		if (button != 3)
-			return;
-		button = 2;
-		canvas_view->on_waypoint_clicked_canvasview(value_desc, waypoint_set, button);
-	});
+	curves->signal_waypoint_clicked().connect(sigc::mem_fun(*this, &Dock_Curves::on_curves_waypoint_clicked));
 
-	curves->signal_waypoint_double_clicked().connect([=](synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint,std::less<synfig::UniqueID>> waypoint_set, int button) {
-		if (button != 1)
-			return;
-		button = -1;
-		canvas_view->on_waypoint_clicked_canvasview(value_desc, waypoint_set, button);
-	});
+	curves->signal_waypoint_double_clicked().connect(sigc::mem_fun(*this, &Dock_Curves::on_curves_waypoint_double_clicked));
 
 	canvas_view->set_ext_widget(get_name(),curves);
 }
@@ -224,4 +214,26 @@ Dock_Curves::on_update_header_height(int height)
 	widget_timeslider_.get_size_request(w, h);
 	if (h != ts_height)
 		widget_timeslider_.set_size_request(-1, ts_height);
+}
+
+void
+Dock_Curves::on_curves_waypoint_clicked(synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set, int button)
+{
+	if (button != 3)
+		return;
+	button = 2;
+	CanvasView::LooseHandle canvas_view = get_canvas_view();
+	if (canvas_view)
+		canvas_view->on_waypoint_clicked_canvasview(value_desc, waypoint_set, button);
+}
+
+void
+Dock_Curves::on_curves_waypoint_double_clicked(synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set, int button)
+{
+	if (button != 1)
+		return;
+	button = -1;
+	CanvasView::LooseHandle canvas_view = get_canvas_view();
+	if (canvas_view)
+		canvas_view->on_waypoint_clicked_canvasview(value_desc, waypoint_set, button);
 }

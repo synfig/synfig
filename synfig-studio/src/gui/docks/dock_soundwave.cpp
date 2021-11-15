@@ -154,98 +154,17 @@ private:
 		widget_sound.set_size_request(100, 100);
 		widget_sound.set_hexpand(true);
 		widget_sound.set_vexpand(true);
-		widget_sound.signal_file_loaded().connect([=](const std::string &filename) {
-			if (!filename.empty()) {
-//				file_button.set_uri(filename);
-			} else {
-				if (file_combo.get_active_id() != item_no_audio_id)
-					file_combo.set_active_id(item_no_audio_id);
-			}
-			file_settings_box.set_visible(!filename.empty());
-		});
+		widget_sound.signal_file_loaded().connect(sigc::mem_fun(*this, &Grid_SoundWave::on_file_loaded));
 
 		fill_sound_layer_combo(canvas_view->get_canvas());
 
 	}
 
 	void setup_canvas_layer_signals(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface) {
-		canvas_interface->signal_layer_inserted().connect([&](synfig::Layer::Handle layer, int /*pos*/) {
-			etl::handle<synfig::Layer_Sound> layer_sound = etl::handle<synfig::Layer_Sound>::cast_dynamic(layer);
-			if (!layer_sound)
-				return;
-
-			add_layer_to_combo(layer_sound);
-
-			if (file_combo.get_active_id() == item_audio_file_id) {
-				const std::string guid = layer->get_guid().get_string();
-				file_combo.set_active_id(guid);
-			}
-		});
-
-		canvas_interface->signal_layer_removed().connect([&](synfig::Layer::Handle layer) {
-			etl::handle<synfig::Layer_Sound> layer_sound = etl::handle<synfig::Layer_Sound>::cast_dynamic(layer);
-			if (!layer_sound)
-				return;
-			std::string guid = layer_sound->get_guid().get_string();
-			bool found = false;
-			int index = -1;
-			file_combo.get_model()->foreach_iter([guid, &found, &index](const Gtk::TreeModel::iterator& iter) -> bool {
-				index++;
-				Glib::ustring row_guid;
-				iter->get_value(1, row_guid);
-				if (row_guid == guid) {
-					found = true;
-					return true;
-				}
-				return false;
-			});
-			if (found) {
-				const int active_index = file_combo.get_active_row_number();
-				if (index == active_index)
-					file_combo.set_active_id(item_no_audio_id);
-
-				file_combo.remove_text(index);
-				layer_map.erase(layer->get_guid().get_string());
-			} else
-				synfig::warning(_("Couldn't remove deleted layer sound from Sound Panel list"));
-		});
-
-		canvas_interface->signal_layer_param_changed().connect([&](synfig::Layer::Handle layer, std::string param_name) {
-			if (param_name != "filename" && param_name != "delay")
-				return;
-			etl::handle<synfig::Layer_Sound> layer_sound = etl::handle<synfig::Layer_Sound>::cast_dynamic(layer);
-			if (!layer_sound)
-				return;
-			Gtk::TreeModel::iterator found_iter = find_layer_iter(layer_sound);
-			if (found_iter) {
-				std::string guid = layer_sound->get_guid().get_string();
-				if (param_name == "filename") {
-					std::string filename = layer_sound->get_param("filename").get(std::string());
-					found_iter->set_value(0, create_layer_item_label(layer_sound));
-					if (guid == file_combo.get_active_id()) {
-						load_sound_file(filename);
-					}
-				} else if (param_name == "delay") {
-					if (guid == file_combo.get_active_id()) {
-						synfig::Time delay = layer_sound->get_param("delay").get(synfig::Time::zero());
-						delay_widget.set_value(delay);
-						delay_widget.activate();
-					}
-				}
-			}
-			else
-				synfig::warning(_("Couldn't set new layer sound parameter values to Sound Panel list"));
-		});
-
-		canvas_interface->signal_layer_new_description().connect([&](synfig::Layer::Handle layer, std::string new_description) {
-			etl::handle<synfig::Layer_Sound> layer_sound = etl::handle<synfig::Layer_Sound>::cast_dynamic(layer);
-			if (!layer_sound)
-				return;
-			Gtk::TreeModel::iterator found_iter = find_layer_iter(layer_sound);
-			if (found_iter) {
-				found_iter->set_value(0, create_layer_item_label(layer_sound));
-			}
-		});
+		canvas_interface->signal_layer_inserted().connect(sigc::mem_fun(*this, &Grid_SoundWave::on_canvas_layer_inserted));
+		canvas_interface->signal_layer_removed().connect(sigc::mem_fun(*this, &Grid_SoundWave::on_canvas_layer_removed));
+		canvas_interface->signal_layer_param_changed().connect(sigc::mem_fun(*this, &Grid_SoundWave::on_canvas_layer_param_changed));
+		canvas_interface->signal_layer_new_description().connect(sigc::mem_fun(*this, &Grid_SoundWave::on_canvas_layer_new_description));
 	}
 
 	void setup_file_setting_data()
@@ -433,6 +352,99 @@ private:
 
 		return found_iter;
 	}
+
+	void on_file_loaded(const std::string &filename)
+	{
+		if (!filename.empty()) {
+//				file_button.set_uri(filename);
+		} else {
+			if (file_combo.get_active_id() != item_no_audio_id)
+				file_combo.set_active_id(item_no_audio_id);
+		}
+		file_settings_box.set_visible(!filename.empty());
+	}
+
+	void on_canvas_layer_inserted(synfig::Layer::Handle layer, int pos)
+	{
+		etl::handle<synfig::Layer_Sound> layer_sound = etl::handle<synfig::Layer_Sound>::cast_dynamic(layer);
+		if (!layer_sound)
+			return;
+
+		add_layer_to_combo(layer_sound);
+
+		if (file_combo.get_active_id() == item_audio_file_id) {
+			const std::string guid = layer->get_guid().get_string();
+			file_combo.set_active_id(guid);
+		}
+	}
+
+	void on_canvas_layer_removed(synfig::Layer::Handle layer)
+	{
+		etl::handle<synfig::Layer_Sound> layer_sound = etl::handle<synfig::Layer_Sound>::cast_dynamic(layer);
+		if (!layer_sound)
+			return;
+		std::string guid = layer_sound->get_guid().get_string();
+		bool found = false;
+		int index = -1;
+		file_combo.get_model()->foreach_iter([guid, &found, &index](const Gtk::TreeModel::iterator& iter) -> bool {
+			index++;
+			Glib::ustring row_guid;
+			iter->get_value(1, row_guid);
+			if (row_guid == guid) {
+				found = true;
+				return true;
+			}
+			return false;
+		});
+		if (found) {
+			const int active_index = file_combo.get_active_row_number();
+			if (index == active_index)
+				file_combo.set_active_id(item_no_audio_id);
+
+			file_combo.remove_text(index);
+			layer_map.erase(layer->get_guid().get_string());
+		} else
+			synfig::warning(_("Couldn't remove deleted layer sound from Sound Panel list"));
+	}
+
+	void on_canvas_layer_param_changed(synfig::Layer::Handle layer, std::string param_name)
+	{
+		if (param_name != "filename" && param_name != "delay")
+			return;
+		etl::handle<synfig::Layer_Sound> layer_sound = etl::handle<synfig::Layer_Sound>::cast_dynamic(layer);
+		if (!layer_sound)
+			return;
+		Gtk::TreeModel::iterator found_iter = find_layer_iter(layer_sound);
+		if (found_iter) {
+			std::string guid = layer_sound->get_guid().get_string();
+			if (param_name == "filename") {
+				std::string filename = layer_sound->get_param("filename").get(std::string());
+				found_iter->set_value(0, create_layer_item_label(layer_sound));
+				if (guid == file_combo.get_active_id()) {
+					load_sound_file(filename);
+				}
+			} else if (param_name == "delay") {
+				if (guid == file_combo.get_active_id()) {
+					synfig::Time delay = layer_sound->get_param("delay").get(synfig::Time::zero());
+					delay_widget.set_value(delay);
+					delay_widget.activate();
+				}
+			}
+		}
+		else
+			synfig::warning(_("Couldn't set new layer sound parameter values to Sound Panel list"));
+	}
+
+	void on_canvas_layer_new_description(synfig::Layer::Handle layer, std::string new_description)
+	{
+		etl::handle<synfig::Layer_Sound> layer_sound = etl::handle<synfig::Layer_Sound>::cast_dynamic(layer);
+		if (!layer_sound)
+			return;
+		Gtk::TreeModel::iterator found_iter = find_layer_iter(layer_sound);
+		if (found_iter) {
+			found_iter->set_value(0, create_layer_item_label(layer_sound));
+		}
+	}
 };
 
 }
@@ -572,4 +584,3 @@ void Dock_SoundWave::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragCont
 	}
 	context->drag_finish(success, false, time);
 }
-

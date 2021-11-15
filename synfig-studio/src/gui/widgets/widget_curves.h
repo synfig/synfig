@@ -124,6 +124,10 @@ protected:
 	bool on_event(GdkEvent *event);
 	bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 
+	void on_channel_point_drag_canceled();
+	void on_channel_point_drag_finished(bool /*started_by_keys*/);
+	void on_channel_point_selection_changed();
+
 	void delete_selected();
 	bool add_waypoint_to(int point_x, int point_y);
 }; // END of class Widget_Curves

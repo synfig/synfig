@@ -94,23 +94,11 @@ void Dock_Timetrack2::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canva
 		sigc::mem_fun(*this, &studio::Dock_Timetrack2::on_update_header_height)
 	);
 
-	widget_timetrack->signal_waypoint_clicked().connect([=](synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint,std::less<synfig::UniqueID>> waypoint_set, int button) {
-		if (button != 3)
-			return;
-		button = 2;
-		canvas_view->on_waypoint_clicked_canvasview(value_desc, waypoint_set, button);
-	});
+	widget_timetrack->signal_waypoint_clicked().connect(sigc::mem_fun(*this, &Dock_Timetrack2::on_widget_timetrack_waypoint_clicked));
 
-	widget_timetrack->signal_waypoint_double_clicked().connect([=](synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint,std::less<synfig::UniqueID>> waypoint_set, int button) {
-		if (button != 1)
-			return;
-		button = -1;
-		canvas_view->on_waypoint_clicked_canvasview(value_desc, waypoint_set, button);
-	});
+	widget_timetrack->signal_waypoint_double_clicked().connect(sigc::mem_fun(*this, &Dock_Timetrack2::on_widget_timetrack_waypoint_double_clicked));
 
-	widget_timetrack->signal_action_state_changed().connect([=](){
-		update_tool_palette_action();
-	});
+	widget_timetrack->signal_action_state_changed().connect(sigc::mem_fun(*this, &Dock_Timetrack2::update_tool_palette_action));
 }
 
 void Dock_Timetrack2::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
@@ -170,6 +158,26 @@ void Dock_Timetrack2::on_update_header_height(int height)
 		widget_timeslider.set_size_request(-1, ts_height);
 }
 
+void Dock_Timetrack2::on_widget_timetrack_waypoint_clicked(synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set, int button)
+{
+	if (button != 3)
+		return;
+	button = 2;
+	CanvasView::LooseHandle canvas_view = get_canvas_view();
+	if (canvas_view)
+		canvas_view->on_waypoint_clicked_canvasview(value_desc, waypoint_set, button);
+}
+
+void Dock_Timetrack2::on_widget_timetrack_waypoint_double_clicked(synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set, int button)
+{
+	if (button != 1)
+		return;
+	button = -1;
+	CanvasView::LooseHandle canvas_view = get_canvas_view();
+	if (canvas_view)
+		canvas_view->on_waypoint_clicked_canvasview(value_desc, waypoint_set, button);
+}
+
 void Dock_Timetrack2::setup_tool_palette()
 {
 	Gtk::ToolItemGroup *tool_item_group = Gtk::manage(new Gtk::ToolItemGroup());
@@ -218,10 +226,10 @@ void Dock_Timetrack2::setup_tool_palette()
 		}
 		tool_button->set_tooltip_text(tooltip);
 		tool_button->set_group(button_group);
-		tool_button->signal_toggled().connect([this, tool_button, action_state](){
+		tool_button->signal_toggled().connect(sigc::track_obj([this, tool_button, action_state](){
 			if (tool_button->get_active())
 				current_widget_timetrack->set_action_state(action_state);
-		});
+		}, *this));
 		action_button_map[tool_button->get_name()] = tool_button;
 		tool_item_group->add(*tool_button);
 	}

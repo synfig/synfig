@@ -74,6 +74,9 @@ private:
 	//! Signal handler for studio::LayerTree::signal_param_tree_header_height_changed
 	/* \see studio::LayerTree::signal_param_tree_header_height_changed */
 	void on_update_header_height(int height);
+
+	void on_curves_waypoint_clicked(synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint,std::less<synfig::UniqueID>> waypoint_set, int button);
+	void on_curves_waypoint_double_clicked(synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint,std::less<synfig::UniqueID>> waypoint_set, int button);
 }; // END of Dock_Curves
 
 }; // END of namespace studio

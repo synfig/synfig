@@ -220,6 +220,15 @@ private:
 	bool fetch_waypoints(const WaypointItem &wi, std::set<synfig::Waypoint, std::less<synfig::UniqueID> > &waypoint_set) const;
 	void on_waypoint_clicked(const WaypointItem &wi, unsigned int button, Gdk::Point /*point*/);
 	void on_waypoint_double_clicked(const WaypointItem &wi, unsigned int button, Gdk::Point /*point*/);
+	void on_waypoint_action_changed();
+
+	void on_params_store_row_inserted(const Gtk::TreeModel::Path&, const Gtk::TreeModel::iterator&);
+	void on_params_store_row_deleted(const Gtk::TreeModel::Path&);
+	void on_params_store_rows_reordered(const Gtk::TreeModel::Path&, const Gtk::TreeModel::iterator&, int*);
+	void on_params_store_row_changed(const Gtk::TreeModel::Path& path, const Gtk::TreeModel::iterator&);
+
+	void on_range_adjustment_value_changed();
+	void on_range_adjustment_changed();
 
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int> signal_waypoint_clicked_;
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int> signal_waypoint_double_clicked_;

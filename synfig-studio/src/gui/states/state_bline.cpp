@@ -118,6 +118,7 @@ class studio::StateBLine_Context : public sigc::trackable
 	bool on_vertex_change(const studio::Duck &duck, synfig::ValueNode_Const::Handle value_node);
 	bool on_tangent1_change(const studio::Duck &duck, handle<WorkArea::Duck> other_duck, synfig::ValueNode_Const::Handle value_node);
 	bool on_tangent2_change(const studio::Duck &duck, handle<WorkArea::Duck> other_duck, synfig::ValueNode_Const::Handle value_node);
+	void on_first_duck_clicked();
 
 	void popup_handle_menu(synfig::ValueNode_Const::Handle value_node);
 	void popup_vertex_menu(synfig::ValueNode_Const::Handle value_node);
@@ -1338,10 +1339,7 @@ StateBLine_Context::refresh_ducks(bool button_down)
 #endif
 		// Loop it and finish if user clicked on the first vertex
 		if (iter == bline_point_list.begin()) {
-			duck->signal_user_click(0).connect([&](){
-				loop_=true;
-				run();
-			});
+			duck->signal_user_click(0).connect(sigc::mem_fun(*this, &StateBLine_Context::on_first_duck_clicked));
 		}
 
 		duck->set_name(strprintf("%p-vertex",value_node.get()));
@@ -1577,6 +1575,13 @@ StateBLine_Context::on_tangent2_change(const studio::Duck &duck, handle<WorkArea
 		get_work_area()->queue_draw();
 	}
 	return true;
+}
+
+void
+StateBLine_Context::on_first_duck_clicked()
+{
+	loop_=true;
+	run();
 }
 
 void

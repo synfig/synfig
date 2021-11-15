@@ -503,18 +503,11 @@ Widget_Curves::Widget_Curves()
 	channel_point_sd.set_zoom_enabled(true);
 	channel_point_sd.set_scroll_enabled(true);
 	channel_point_sd.set_canvas_interface(canvas_interface);
-	channel_point_sd.signal_drag_canceled().connect([&]() {
-		overlapped_waypoints.clear();
-	});
-	channel_point_sd.signal_drag_finished().connect([&](bool /*started_by_keys*/) {
-//		overlapped_waypoints.clear();
-	});
+	channel_point_sd.signal_drag_canceled().connect(sigc::mem_fun(*this, &Widget_Curves::on_channel_point_drag_canceled));
+	channel_point_sd.signal_drag_finished().connect(sigc::mem_fun(*this, &Widget_Curves::on_channel_point_drag_finished));
 	channel_point_sd.signal_redraw_needed().connect(sigc::mem_fun(*this, &Gtk::Widget::queue_draw));
 	channel_point_sd.signal_focus_requested().connect(sigc::mem_fun(*this, &Gtk::Widget::grab_focus));
-	channel_point_sd.signal_selection_changed().connect([=](){
-		overlapped_waypoints.clear();
-		queue_draw();
-	});
+	channel_point_sd.signal_selection_changed().connect(sigc::mem_fun(*this, &Widget_Curves::on_channel_point_selection_changed));
 	channel_point_sd.signal_zoom_in_requested().connect(sigc::mem_fun(*this, &Widget_Curves::zoom_in));
 	channel_point_sd.signal_zoom_out_requested().connect(sigc::mem_fun(*this, &Widget_Curves::zoom_out));
 	channel_point_sd.signal_zoom_horizontal_in_requested().connect(sigc::mem_fun(*this, &Widget_Curves::zoom_horizontal_in));
@@ -876,6 +869,24 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	cr->restore();
 
 	return true;
+}
+
+void
+Widget_Curves::on_channel_point_drag_canceled()
+{
+	overlapped_waypoints.clear();
+}
+
+void
+Widget_Curves::on_channel_point_drag_finished(bool /*started_by_keys*/)
+{
+}
+
+void
+Widget_Curves::on_channel_point_selection_changed()
+{
+	overlapped_waypoints.clear();
+	queue_draw();
 }
 
 void
