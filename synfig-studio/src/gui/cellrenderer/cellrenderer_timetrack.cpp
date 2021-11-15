@@ -488,9 +488,6 @@ CellRenderer_TimeTrack::activate_vfunc(
 	if (time_plot_data.is_invalid())
 		return false;
 
-	const int waypoint_width = cell_area.get_height();
-	const Time waypoint_width_time = time_plot_data.get_delta_t_from_delta_pixel_coord(waypoint_width);
-
 	switch(event->type) {
 	case GDK_MOTION_NOTIFY:
 		actual_time = time_plot_data.get_t_from_pixel_coord(event->motion.x - (double)cell_area.get_x());
@@ -529,9 +526,13 @@ CellRenderer_TimeTrack::activate_vfunc(
 		//Deal with time point selection, but only if they aren't involved in the insanity...
 		Time stime;
 		const Node::time_set *tset = get_times_from_vdesc(value_desc);
-		bool clickfound = tset && get_closest_time(*tset, actual_time*time_dilation + time_offset, waypoint_width_time, stime);
+		const int waypoint_half_width = cell_area.get_height()/2;
+		// the time span a waypoint image "lasts"
+		const Time waypoint_half_width_time = time_plot_data.get_delta_t_from_delta_pixel_coord(waypoint_half_width);
 
-		selected = find_editable_waypoint(value_desc, selected_time, waypoint_width_time);
+		bool clickfound = tset && get_closest_time(*tset, actual_time*time_dilation + time_offset, waypoint_half_width_time, stime);
+
+		selected = find_editable_waypoint(value_desc, selected_time, waypoint_half_width_time);
 
 		if (event->button.button == 1) {
 			//  UI specification:
