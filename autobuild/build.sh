@@ -51,7 +51,12 @@ if [ -z "$PREFIX" ]; then
 PREFIX=`pwd`/build
 fi
 
-MAKE_THREADS=2					#count of threads for make
+#count of threads for make
+if ( which nproc > /dev/null ); then
+MAKE_THREADS=`nproc`
+else
+MAKE_THREADS=2
+fi
 
 # Allow overriding PREFIX and other settings
 if [ -f "./build.conf" ] ; then
