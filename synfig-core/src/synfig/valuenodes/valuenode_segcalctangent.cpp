@@ -75,7 +75,7 @@ ValueNode_SegCalcTangent::ValueNode_SegCalcTangent(Type &x):
 }
 
 ValueNode_SegCalcTangent*
-ValueNode_SegCalcTangent::create(const ValueBase &x)
+ValueNode_SegCalcTangent::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_SegCalcTangent(x.get_type());
 }

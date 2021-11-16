@@ -91,7 +91,7 @@ ValueNode_BoneWeightPair::create_new()const
 }
 
 ValueNode_BoneWeightPair*
-ValueNode_BoneWeightPair::create(const ValueBase &x, Canvas::LooseHandle canvas)
+ValueNode_BoneWeightPair::create(const ValueBase& x, Canvas::LooseHandle canvas, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_BoneWeightPair(x, canvas);
 }

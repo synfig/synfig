@@ -47,31 +47,25 @@ class ValueNode_VectorLength : public LinkableValueNode
 	ValueNode_VectorLength(const ValueBase &value);
 
 public:
-
 	typedef etl::handle<ValueNode_VectorLength> Handle;
 	typedef etl::handle<const ValueNode_VectorLength> ConstHandle;
 
-
-	virtual ValueBase operator()(Time t)const;
-
+	static ValueNode_VectorLength* create(const ValueBase& x, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_VectorLength();
 
-	virtual String get_name()const;
-	virtual String get_local_name()const;
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
+	static bool check_type(Type &type);
 
-	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
+	virtual ValueBase operator()(Time t) const override;
 
 protected:
-	LinkableValueNode* create_new()const;
-	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
+	LinkableValueNode* create_new() const override;
 
-public:
-	using synfig::LinkableValueNode::get_link_vfunc;
+	virtual bool set_link_vfunc(int i,ValueNode::Handle x) override;
+	virtual ValueNode::LooseHandle get_link_vfunc(int i) const override;
 
-	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(Type &type);
-	static ValueNode_VectorLength* create(const ValueBase &x);
-	virtual Vocab get_children_vocab_vfunc()const;
+	virtual Vocab get_children_vocab_vfunc() const override;
 }; // END of class ValueNode_VectorLength
 
 }; // END of namespace synfig

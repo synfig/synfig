@@ -40,6 +40,7 @@
 #include <synfig/segment.h>
 #include <synfig/gradient.h>
 #include <synfig/blinepoint.h>
+#include <synfig/dashitem.h>
 
 #include "valuenode_bline.h"
 #include "valuenode_dilist.h"
@@ -110,7 +111,7 @@ ValueNode_Reverse::ValueNode_Reverse(const ValueBase &x):
 }
 
 ValueNode_Reverse*
-ValueNode_Reverse::create(const ValueBase &x)
+ValueNode_Reverse::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Reverse(x);
 }

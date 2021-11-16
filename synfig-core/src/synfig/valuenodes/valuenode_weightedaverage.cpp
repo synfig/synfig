@@ -82,7 +82,7 @@ ValueNode_WeightedAverage::ValueNode_WeightedAverage(Type &type, Canvas::LooseHa
 ValueNode_WeightedAverage::~ValueNode_WeightedAverage() { }
 
 ValueNode_WeightedAverage*
-ValueNode_WeightedAverage::create(const ValueBase &value, Canvas::LooseHandle canvas)
+ValueNode_WeightedAverage::create(const ValueBase& value, Canvas::LooseHandle canvas)
 { 
 	ValueNode_WeightedAverage* value_node(new ValueNode_WeightedAverage(value, canvas));
 	

@@ -47,39 +47,36 @@ class ValueNode_Range : public LinkableValueNode
 
 	ValueNode_Range(const ValueBase &value);
 
-	ValueBase get_inverse(const Time& t, const synfig::Vector &target_value) const;
-	ValueBase get_inverse(const Time& t, const synfig::Angle &target_value) const;
-
 public:
-
 	typedef etl::handle<ValueNode_Range> Handle;
 	typedef etl::handle<const ValueNode_Range> ConstHandle;
 
-	virtual ValueBase operator()(Time t)const;
-
+	static ValueNode_Range* create(const ValueBase& value=ValueBase(), etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_Range();
 
-	virtual String get_name()const;
-	virtual String get_local_name()const;
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
+	static bool check_type(Type &type);
+
+	virtual ValueBase operator()(Time t) const override;
 
 	//! Checks if it is possible to call get_inverse() for target_value at time t.
 	//! If so, return the link_index related to the return value provided by get_inverse()
-	virtual InvertibleStatus is_invertible(const Time& t, const ValueBase& target_value, int* link_index = nullptr) const;
+	virtual InvertibleStatus is_invertible(const Time& t, const ValueBase& target_value, int* link_index = nullptr) const override;
 	//! Returns the modified Link to match the target value at time t
-	virtual ValueBase get_inverse(const Time& t, const synfig::ValueBase &target_value) const;
-
-	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
+	virtual ValueBase get_inverse(const Time& t, const synfig::ValueBase &target_value) const override;
 
 protected:
-	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
-	LinkableValueNode* create_new()const;
+	LinkableValueNode* create_new() const override;
 
-public:
-	using synfig::LinkableValueNode::get_link_vfunc;
-	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(Type &type);
-	static ValueNode_Range* create(const ValueBase &value=ValueBase());
-	virtual Vocab get_children_vocab_vfunc()const;
+	virtual bool set_link_vfunc(int i,ValueNode::Handle x) override;
+	virtual ValueNode::LooseHandle get_link_vfunc(int i) const override;
+
+	virtual Vocab get_children_vocab_vfunc() const override;
+
+private:
+	ValueBase get_inverse(const Time& t, const synfig::Vector &target_value) const;
+	ValueBase get_inverse(const Time& t, const synfig::Angle &target_value) const;
 }; // END of class ValueNode_Range
 
 }; // END of namespace synfig

@@ -48,34 +48,33 @@ class ValueNode_BoneLink : public LinkableValueNode
 	ValueNode::RHandle scale_x_;
 	ValueNode::RHandle scale_y_;
 
+	ValueNode_BoneLink(const ValueBase &x);
+
 public:
 	typedef etl::handle<ValueNode_BoneLink> Handle;
 	typedef etl::handle<const ValueNode_BoneLink> ConstHandle;
 
-	ValueNode_BoneLink(const ValueBase &x);
-
-	Transformation get_bone_transformation(Time t)const;
-	virtual ValueBase operator()(Time t)const;
-
+	static ValueNode_BoneLink* create(const ValueBase& x, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_BoneLink();
 
-	virtual String get_name()const;
-	virtual String get_local_name()const;
+	virtual ValueBase operator()(Time t) const override;
 
-	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
+	static bool check_type(Type &type);
+
+	virtual void set_root_canvas(etl::loose_handle<Canvas> canvas) override;
 
 protected:
-	LinkableValueNode* create_new()const;
-	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
+	LinkableValueNode* create_new() const override;
+
+	virtual bool set_link_vfunc(int i,ValueNode::Handle x) override;
+	virtual ValueNode::LooseHandle get_link_vfunc(int i) const override;
+
+	virtual Vocab get_children_vocab_vfunc() const override;
 
 public:
-	using synfig::LinkableValueNode::get_link_vfunc;
-
-	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(Type &type);
-	static ValueNode_BoneLink* create(const ValueBase &x);
-	virtual Vocab get_children_vocab_vfunc()const;
-	virtual void set_root_canvas(etl::loose_handle<Canvas> canvas);
+	Transformation get_bone_transformation(Time t) const;
 }; // END of class ValueNode_Pow
 
 }; // END of namespace synfig

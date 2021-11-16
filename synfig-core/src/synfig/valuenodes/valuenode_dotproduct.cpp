@@ -86,7 +86,7 @@ ValueNode_DotProduct::create_new()const
 }
 
 ValueNode_DotProduct*
-ValueNode_DotProduct::create(const ValueBase &x)
+ValueNode_DotProduct::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_DotProduct(x);
 }

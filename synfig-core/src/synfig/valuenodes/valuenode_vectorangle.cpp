@@ -76,7 +76,7 @@ ValueNode_VectorAngle::create_new()const
 }
 
 ValueNode_VectorAngle*
-ValueNode_VectorAngle::create(const ValueBase &x)
+ValueNode_VectorAngle::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_VectorAngle(x);
 }

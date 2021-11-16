@@ -76,7 +76,7 @@ ValueNode_DIList::~ValueNode_DIList()
 }
 
 ValueNode_DIList*
-ValueNode_DIList::create(const ValueBase &value)
+ValueNode_DIList::create(const ValueBase& value, etl::loose_handle<Canvas>)
 {
 	// if the parameter is not a list type, return null
 	if(value.get_type()!=type_list)

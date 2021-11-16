@@ -40,27 +40,24 @@ namespace synfig {
 
 class ValueNode_Average : public ValueNode_DynamicList
 {
-public:
+	ValueNode_Average(const ValueBase &value, etl::loose_handle<Canvas> canvas);
 
+public:
 	typedef etl::handle<ValueNode_Average> Handle;
 	typedef etl::handle<const ValueNode_Average> ConstHandle;
 
-
-	ValueNode_Average(const ValueBase &value, etl::loose_handle<Canvas> canvas);
 	ValueNode_Average(Type &type, etl::loose_handle<Canvas> canvas);
+	static ValueNode_Average* create(const ValueBase& value, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_Average();
 
- 	virtual ValueBase operator()(Time t)const;
+	virtual ValueBase operator()(Time t) const override;
 
-	virtual String get_name()const;
-	virtual String get_local_name()const;
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
+	static bool check_type(Type &type);
 
 protected:
-	LinkableValueNode* create_new()const;
-
-public:
-	static bool check_type(Type &type);
-	static ValueNode_Average* create(const ValueBase &value, etl::loose_handle<Canvas> canvas = 0);
+	LinkableValueNode* create_new() const override;
 }; // END of class ValueNode_Average
 
 }; // END of namespace synfig

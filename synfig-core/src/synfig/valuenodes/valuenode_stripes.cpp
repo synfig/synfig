@@ -77,7 +77,7 @@ ValueNode_Stripes::create_new()const
 }
 
 ValueNode_Stripes*
-ValueNode_Stripes::create(const ValueBase& x)
+ValueNode_Stripes::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	Type &type(x.get_type());
 

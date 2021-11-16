@@ -82,7 +82,7 @@ ValueNode_GradientColor::create_new()const
 }
 
 ValueNode_GradientColor*
-ValueNode_GradientColor::create(const ValueBase &x)
+ValueNode_GradientColor::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_GradientColor(x);
 }

@@ -95,7 +95,7 @@ ValueNode_Step::create_new()const
 }
 
 ValueNode_Step*
-ValueNode_Step::create(const ValueBase &x)
+ValueNode_Step::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Step(x);
 }

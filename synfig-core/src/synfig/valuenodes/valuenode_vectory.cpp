@@ -75,7 +75,7 @@ ValueNode_VectorY::create_new()const
 }
 
 ValueNode_VectorY*
-ValueNode_VectorY::create(const ValueBase &x)
+ValueNode_VectorY::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_VectorY(x);
 }

@@ -73,7 +73,7 @@ ValueNode_BoneLink::ValueNode_BoneLink(const ValueBase &x):
 }
 
 ValueNode_BoneLink*
-ValueNode_BoneLink::create(const ValueBase &x)
+ValueNode_BoneLink::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_BoneLink(x);
 }

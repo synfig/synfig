@@ -95,7 +95,7 @@ ValueNode_BoneInfluence::ValueNode_BoneInfluence(const ValueNode::Handle &x, Can
 }
 
 ValueNode_BoneInfluence*
-ValueNode_BoneInfluence::create(const ValueBase &x, Canvas::LooseHandle canvas)
+ValueNode_BoneInfluence::create(const ValueBase& x, Canvas::LooseHandle canvas, etl::loose_handle<Canvas>)
 {
 	if (x.get_type() == type_bline_point)
 		return new ValueNode_BoneInfluence(ValueNode_Composite::create(x, canvas), canvas);

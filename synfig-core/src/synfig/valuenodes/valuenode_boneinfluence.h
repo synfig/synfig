@@ -47,45 +47,36 @@ class ValueNode_BoneInfluence : public LinkableValueNode
 	mutable Matrix transform_, inverse_transform_;
 	mutable bool checked_inverse_, has_inverse_;
 
+	ValueNode_BoneInfluence(Type &x);
+	ValueNode_BoneInfluence(const ValueNode::Handle &x, etl::loose_handle<Canvas> canvas);
+
 public:
 	typedef etl::handle<ValueNode_BoneInfluence> Handle;
 	typedef etl::handle<const ValueNode_BoneInfluence> ConstHandle;
 
-	ValueNode_BoneInfluence(Type &x);
-
-	ValueNode_BoneInfluence(const ValueNode::Handle &x, etl::loose_handle<Canvas> canvas);
-
-//	static Handle create(Type &x);
-//	static Handle create(const ValueNode::Handle &x);
-
-
-	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
-
-	virtual ValueBase operator()(Time t)const;
-
+	static ValueNode_BoneInfluence* create(const ValueBase& x, etl::loose_handle<Canvas>, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_BoneInfluence();
 
-	virtual String get_name()const;
+	virtual ValueBase operator()(Time t) const override;
 
-	virtual String get_local_name()const;
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
+	static bool check_type(Type &type);
 
 protected:
-	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
+	LinkableValueNode* create_new() const override;
 
-	LinkableValueNode* create_new()const;
+	virtual bool set_link_vfunc(int i,ValueNode::Handle x) override;
+	virtual ValueNode::LooseHandle get_link_vfunc(int i) const override;
+
+	virtual Vocab get_children_vocab_vfunc() const override;
 
 public:
-	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(Type &type);
-	virtual Vocab get_children_vocab_vfunc()const;
-	static ValueNode_BoneInfluence* create(const ValueBase &x, etl::loose_handle<Canvas>);
-
 	Matrix calculate_transform(Time t)const;
 	Matrix& get_transform(bool rebuild=false, Time t=0)const;
 	void set_transform(Matrix transform)const { transform_ = transform; checked_inverse_ = false; }
 	bool has_inverse_transform()const;
 	Matrix& get_inverse_transform()const;
-
 }; // END of class ValueNode_BoneInfluence
 
 }; // END of namespace synfig

@@ -47,32 +47,25 @@ class ValueNode_SegCalcTangent : public LinkableValueNode
 	ValueNode_SegCalcTangent(Type &x=type_vector);
 
 public:
-
 	typedef etl::handle<ValueNode_SegCalcTangent> Handle;
 	typedef etl::handle<const ValueNode_SegCalcTangent> ConstHandle;
 
-	//static Handle create(Type &x=type_vector);
-
-
-	virtual ValueBase operator()(Time t)const;
-
+	static ValueNode_SegCalcTangent* create(const ValueBase& x=type_vector, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_SegCalcTangent();
 
-	virtual String get_name()const;
-	virtual String get_local_name()const;
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
+	static bool check_type(Type &type);
 
-	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
+	virtual ValueBase operator()(Time t) const override;
 
 protected:
-	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
-	LinkableValueNode* create_new()const;
+	LinkableValueNode* create_new() const override;
 
-public:
-	using synfig::LinkableValueNode::get_link_vfunc;
-	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(Type &type);
-	static ValueNode_SegCalcTangent* create(const ValueBase &x=type_vector);
-	virtual Vocab get_children_vocab_vfunc()const;
+	virtual bool set_link_vfunc(int i,ValueNode::Handle x) override;
+	virtual ValueNode::LooseHandle get_link_vfunc(int i) const override;
+
+	virtual Vocab get_children_vocab_vfunc() const override;
 }; // END of class ValueNode_SegCalcTangent
 
 }; // END of namespace synfig

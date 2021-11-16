@@ -79,7 +79,7 @@ ValueNode_Sine::create_new()const
 }
 
 ValueNode_Sine*
-ValueNode_Sine::create(const ValueBase &x)
+ValueNode_Sine::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Sine(x);
 }

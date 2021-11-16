@@ -74,7 +74,7 @@ ValueNode_SegCalcVertex::ValueNode_SegCalcVertex(Type &x):
 }
 
 ValueNode_SegCalcVertex*
-ValueNode_SegCalcVertex::create(const ValueBase &x)
+ValueNode_SegCalcVertex::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_SegCalcVertex(x.get_type());
 }

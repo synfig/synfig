@@ -77,7 +77,7 @@ ValueNode_Reciprocal::ValueNode_Reciprocal(const ValueBase &x):
 }
 
 ValueNode_Reciprocal*
-ValueNode_Reciprocal::create(const ValueBase &x)
+ValueNode_Reciprocal::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Reciprocal(x);
 }

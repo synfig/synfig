@@ -69,7 +69,7 @@ ValueNode_Not::ValueNode_Not(const ValueBase &x):
 }
 
 ValueNode_Not*
-ValueNode_Not::create(const ValueBase &x)
+ValueNode_Not::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Not(x);
 }

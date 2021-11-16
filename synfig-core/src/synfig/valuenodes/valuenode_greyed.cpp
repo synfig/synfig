@@ -70,7 +70,7 @@ ValueNode_Greyed::ValueNode_Greyed(const ValueNode::Handle &x):
 }
 
 ValueNode_Greyed*
-ValueNode_Greyed::create(const ValueBase &x)
+ValueNode_Greyed::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Greyed(ValueNode_Const::create(x));
 }

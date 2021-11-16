@@ -73,7 +73,7 @@ ValueNode_Switch::ValueNode_Switch(const ValueBase &x):
 }
 
 ValueNode_Switch*
-ValueNode_Switch::create(const ValueBase &x)
+ValueNode_Switch::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Switch(x);
 }

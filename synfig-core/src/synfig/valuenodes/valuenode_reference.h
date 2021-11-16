@@ -42,38 +42,31 @@ namespace synfig {
 class ValueNode_Reference : public LinkableValueNode
 {
 	ValueNode::RHandle link_;
+
+protected:
+	ValueNode_Reference(Type &x);
+	ValueNode_Reference(const ValueNode::Handle &x);
+
 public:
 	typedef etl::handle<ValueNode_Reference> Handle;
 	typedef etl::handle<const ValueNode_Reference> ConstHandle;
 
-	ValueNode_Reference(Type &x);
-
-	ValueNode_Reference(const ValueNode::Handle &x);
-
-//	static Handle create(Type &x);
-//	static Handle create(const ValueNode::Handle &x);
-
-
-	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
-
-	virtual ValueBase operator()(Time t)const;
-
+	static ValueNode_Reference* create(const ValueBase& x, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_Reference();
 
-	virtual String get_name()const;
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
+	static bool check_type(Type &type);
 
-	virtual String get_local_name()const;
+	virtual ValueBase operator()(Time t) const override;
 
 protected:
-	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
+	LinkableValueNode* create_new() const override;
 
-	LinkableValueNode* create_new()const;
+	virtual bool set_link_vfunc(int i,ValueNode::Handle x) override;
+	virtual ValueNode::LooseHandle get_link_vfunc(int i) const override;
 
-public:
-	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(Type &type);
-	static ValueNode_Reference* create(const ValueBase &x);
-	virtual Vocab get_children_vocab_vfunc()const;
+	virtual Vocab get_children_vocab_vfunc() const override;
 }; // END of class ValueNode_Reference
 
 }; // END of namespace synfig

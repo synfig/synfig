@@ -132,7 +132,7 @@ ValueNode_Subtract::create_new()const
 }
 
 ValueNode_Subtract*
-ValueNode_Subtract::create(const ValueBase& value)
+ValueNode_Subtract::create(const ValueBase& value, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Subtract(value);
 }

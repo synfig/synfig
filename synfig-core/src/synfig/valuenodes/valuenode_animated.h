@@ -66,8 +66,6 @@ public:
 	static Handle create(ValueNode::Handle value_node, const Time& time);
 
 	virtual ValueBase operator()(Time t) const;
-	virtual void get_values_vfunc(std::map<Time, ValueBase> &x) const;
-
 	virtual Interpolation get_interpolation()const
 		{ return ValueNode_AnimatedInterfaceConst::get_interpolation(); }
 	virtual void set_interpolation(Interpolation i)
@@ -78,6 +76,7 @@ protected:
 
 	virtual void on_changed();
 	virtual void get_times_vfunc(Node::time_set &set) const;
+	virtual void get_values_vfunc(std::map<Time, ValueBase> &x) const;
 };
 
 }; // END of namespace synfig

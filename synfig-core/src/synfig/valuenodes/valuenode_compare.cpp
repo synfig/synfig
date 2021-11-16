@@ -76,7 +76,7 @@ ValueNode_Compare::ValueNode_Compare(const ValueBase &x):
 }
 
 ValueNode_Compare*
-ValueNode_Compare::create(const ValueBase &x)
+ValueNode_Compare::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Compare(x);
 }

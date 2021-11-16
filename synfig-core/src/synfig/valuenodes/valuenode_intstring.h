@@ -49,30 +49,24 @@ class ValueNode_IntString : public LinkableValueNode
 	ValueNode_IntString(const ValueBase &value);
 
 public:
-
 	typedef etl::handle<ValueNode_IntString> Handle;
 	typedef etl::handle<const ValueNode_IntString> ConstHandle;
 
-
-	virtual ValueBase operator()(Time t)const;
-
+	static ValueNode_IntString* create(const ValueBase& x, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_IntString();
 
 	virtual String get_name()const;
 	virtual String get_local_name()const;
+	static bool check_type(Type &type);
 
-	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
+	virtual ValueBase operator()(Time t)const;
 
 protected:
 	LinkableValueNode* create_new()const;
+
 	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
+	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
 
-public:
-	using synfig::LinkableValueNode::get_link_vfunc;
-
-	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(Type &type);
-	static ValueNode_IntString* create(const ValueBase &x);
 	virtual Vocab get_children_vocab_vfunc()const;
 }; // END of class ValueNode_IntString
 

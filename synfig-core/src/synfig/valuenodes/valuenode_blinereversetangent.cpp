@@ -80,7 +80,7 @@ ValueNode_BLineRevTangent::ValueNode_BLineRevTangent(const ValueNode::Handle &x)
 }
 
 ValueNode_BLineRevTangent*
-ValueNode_BLineRevTangent::create(const ValueBase &x)
+ValueNode_BLineRevTangent::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_BLineRevTangent(ValueNode_Const::create(x));
 }

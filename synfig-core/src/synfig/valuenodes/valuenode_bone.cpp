@@ -307,7 +307,7 @@ ValueNode_Bone::create_new()const
 }
 
 ValueNode_Bone*
-ValueNode_Bone::create(const ValueBase &x, Canvas::LooseHandle canvas)
+ValueNode_Bone::create(const ValueBase& x, Canvas::LooseHandle canvas)
 {
 	return new ValueNode_Bone(x, canvas);
 }
@@ -426,7 +426,7 @@ ValueNode_Bone::get_parent(Time t)const
 		return parent;
 	}
 	assert(0);
-	return ValueNode_Bone::ConstHandle::cast_dynamic(new ValueNode_Bone_Root);
+	return new ValueNode_Bone_Root();
 }
 
 ValueBase
@@ -1032,7 +1032,7 @@ ValueNode_Bone_Root::set_root_canvas(etl::loose_handle<Canvas> canvas)
 }
 
 ValueNode_Bone*
-ValueNode_Bone_Root::create(const ValueBase &x)
+ValueNode_Bone_Root::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return get_root_bone().get();
 }

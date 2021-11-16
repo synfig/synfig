@@ -70,7 +70,7 @@ ValueNode_BLineCalcWidth::ValueNode_BLineCalcWidth(Type &x):
 	if(x!=type_real)
 		throw Exception::BadType(x.description.local_name);
 
-	ValueNode_BLine* value_node(new ValueNode_BLine());
+	ValueNode_BLine* value_node(ValueNode_BLine::create());
 	set_link("bline",value_node);
 	set_link("loop",ValueNode_Const::create(bool(false)));
 	set_link("amount",ValueNode_Const::create(Real(0.5)));
@@ -85,7 +85,7 @@ ValueNode_BLineCalcWidth::create_new()const
 }
 
 ValueNode_BLineCalcWidth*
-ValueNode_BLineCalcWidth::create(const ValueBase &x)
+ValueNode_BLineCalcWidth::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_BLineCalcWidth(x.get_type());
 }

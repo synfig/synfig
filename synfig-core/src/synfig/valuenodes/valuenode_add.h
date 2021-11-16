@@ -42,36 +42,38 @@ namespace synfig {
 
 class ValueNode_Add : public LinkableValueNode
 {
-public:
-	typedef etl::handle<ValueNode_Add> Handle;
-	typedef etl::handle<const ValueNode_Add> ConstHandle;
-
-protected:
-	ValueNode_Add(const ValueBase &value);
-
-private:
 	ValueNode::RHandle ref_a;
 	ValueNode::RHandle ref_b;
 	ValueNode::RHandle scalar;
 
+	ValueNode_Add(const ValueBase &value);
+
 public:
-	LinkableValueNode* create_new()const;
-	static ValueNode_Add* create(const ValueBase &value=ValueBase());
+	typedef etl::handle<ValueNode_Add> Handle;
+	typedef etl::handle<const ValueNode_Add> ConstHandle;
+
+	static ValueNode_Add* create(const ValueBase& value=ValueBase(), etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_Add();
-	virtual ValueBase operator()(Time t)const;
-	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
-	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
-	virtual String get_name()const;
-	virtual String get_local_name()const;
+
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
 	static bool check_type(Type &type);
-	virtual Vocab get_children_vocab_vfunc()const;
+
+	virtual ValueBase operator()(Time t) const override;
 
 	//! Checks if it is possible to call get_inverse() for target_value at time t.
 	//! If so, return the link_index related to the return value provided by get_inverse()
-	virtual InvertibleStatus is_invertible(const Time& t, const ValueBase& target_value, int* link_index = nullptr) const;
+	virtual InvertibleStatus is_invertible(const Time& t, const ValueBase& target_value, int* link_index = nullptr) const override;
 	//! Returns the modified Link to match the target value at time t
-	virtual ValueBase get_inverse(const Time& t, const synfig::ValueBase &target_value) const;
-	
+	virtual ValueBase get_inverse(const Time& t, const synfig::ValueBase &target_value) const override;
+
+protected:
+	virtual LinkableValueNode* create_new() const override;
+
+	virtual bool set_link_vfunc(int i,ValueNode::Handle x) override;
+	virtual ValueNode::LooseHandle get_link_vfunc(int i) const override;
+
+	virtual Vocab get_children_vocab_vfunc() const override;
 }; // END of class ValueNode_Add
 
 }; // END of namespace synfig

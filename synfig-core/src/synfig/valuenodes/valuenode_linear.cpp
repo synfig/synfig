@@ -116,7 +116,7 @@ ValueNode_Linear::create_new()const
 }
 
 ValueNode_Linear*
-ValueNode_Linear::create(const ValueBase &x)
+ValueNode_Linear::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Linear(x);
 }

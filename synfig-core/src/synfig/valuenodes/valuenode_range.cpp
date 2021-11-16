@@ -117,7 +117,7 @@ ValueNode_Range::create_new()const
 }
 
 ValueNode_Range*
-ValueNode_Range::create(const ValueBase& value)
+ValueNode_Range::create(const ValueBase& value, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Range(value);
 }

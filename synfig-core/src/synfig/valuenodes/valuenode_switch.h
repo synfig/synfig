@@ -45,38 +45,30 @@ class ValueNode_Switch : public LinkableValueNode
 	ValueNode::RHandle link_off_;
 	ValueNode::RHandle link_on_;
 	ValueNode::RHandle switch_;
+
+	ValueNode_Switch(Type &x);
+	ValueNode_Switch(const ValueBase &x);
+
 public:
 	typedef etl::handle<ValueNode_Switch> Handle;
 	typedef etl::handle<const ValueNode_Switch> ConstHandle;
 
-	ValueNode_Switch(Type &x);
-
-	ValueNode_Switch(const ValueBase &x);
-
-//	static Handle create(Type &x);
-//	static Handle create(const ValueNode::Handle &x);
-
-
-	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
-
-	virtual ValueBase operator()(Time t)const;
-
+	static ValueNode_Switch* create(const ValueBase& x, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_Switch();
 
-	virtual String get_name()const;
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
+	static bool check_type(Type &type);
 
-	virtual String get_local_name()const;
+	virtual ValueBase operator()(Time t) const override;
 
 protected:
-	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
+	LinkableValueNode* create_new() const override;
 
-	LinkableValueNode* create_new()const;
+	virtual bool set_link_vfunc(int i,ValueNode::Handle x) override;
+	virtual ValueNode::LooseHandle get_link_vfunc(int i) const override;
 
-public:
-	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(Type &type);
-	static ValueNode_Switch* create(const ValueBase &x);
-	virtual Vocab get_children_vocab_vfunc()const;
+	virtual Vocab get_children_vocab_vfunc() const override;
 }; // END of class ValueNode_Switch
 
 }; // END of namespace synfig

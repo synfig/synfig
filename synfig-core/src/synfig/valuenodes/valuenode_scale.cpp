@@ -107,7 +107,7 @@ ValueNode_Scale::create_new()const
 }
 
 ValueNode_Scale*
-ValueNode_Scale::create(const ValueBase& value)
+ValueNode_Scale::create(const ValueBase& value, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Scale(value);
 }

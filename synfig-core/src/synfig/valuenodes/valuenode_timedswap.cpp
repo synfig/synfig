@@ -113,7 +113,7 @@ ValueNode_TimedSwap::ValueNode_TimedSwap(const ValueBase &value):
 }
 
 ValueNode_TimedSwap*
-ValueNode_TimedSwap::create(const ValueBase& x)
+ValueNode_TimedSwap::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_TimedSwap(x);
 }

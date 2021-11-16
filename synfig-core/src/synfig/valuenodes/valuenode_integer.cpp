@@ -90,7 +90,7 @@ ValueNode_Integer::ValueNode_Integer(const ValueBase &x):
 }
 
 ValueNode_Integer*
-ValueNode_Integer::create(const ValueBase &x)
+ValueNode_Integer::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Integer(x);
 }

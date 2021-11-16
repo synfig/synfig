@@ -75,7 +75,7 @@ ValueNode_Duplicate::ValueNode_Duplicate(const ValueBase &x):
 }
 
 ValueNode_Duplicate*
-ValueNode_Duplicate::create(const ValueBase &x)
+ValueNode_Duplicate::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Duplicate(x);
 }

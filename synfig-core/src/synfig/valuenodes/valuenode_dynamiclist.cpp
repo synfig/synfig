@@ -623,7 +623,7 @@ ValueNode_DynamicList::~ValueNode_DynamicList()
 }
 
 ValueNode_DynamicList*
-ValueNode_DynamicList::create(const ValueBase &value)
+ValueNode_DynamicList::create(const ValueBase& value, etl::loose_handle<Canvas>)
 {
 	//vector<ValueBase> value_list(value.operator vector<ValueBase>());
 	std::vector<ValueBase> value_list(value.get_list());

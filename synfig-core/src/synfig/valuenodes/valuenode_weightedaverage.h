@@ -42,25 +42,23 @@ namespace types_namespace { class TypeWeightedValueBase; }
 
 class ValueNode_WeightedAverage : public ValueNode_DynamicList
 {
+	ValueNode_WeightedAverage(const ValueBase &value, etl::loose_handle<Canvas> canvas = 0);
 public:
 	typedef etl::handle<ValueNode_WeightedAverage> Handle;
 	typedef etl::handle<const ValueNode_WeightedAverage> ConstHandle;
 
-	ValueNode_WeightedAverage(const ValueBase &value, etl::loose_handle<Canvas> canvas = 0);
 	ValueNode_WeightedAverage(Type &type, etl::loose_handle<Canvas> canvas = 0);
+	static ValueNode_WeightedAverage* create(const ValueBase& value, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_WeightedAverage();
 
- 	virtual ValueBase operator()(Time t)const;
+	virtual ValueBase operator()(Time t) const override;
 
-	virtual String get_name()const;
-	virtual String get_local_name()const;
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
+	static bool check_type(Type &type);
 
 protected:
-	LinkableValueNode* create_new()const;
-
-public:
-	static bool check_type(Type &type);
-	static ValueNode_WeightedAverage* create(const ValueBase &value, etl::loose_handle<Canvas> canvas = 0);
+	LinkableValueNode* create_new() const override;
 }; // END of class ValueNode_WeightedAverage
 
 }; // END of namespace synfig

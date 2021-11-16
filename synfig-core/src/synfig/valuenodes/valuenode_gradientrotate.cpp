@@ -75,7 +75,7 @@ ValueNode_GradientRotate::create_new()const
 }
 
 ValueNode_GradientRotate*
-ValueNode_GradientRotate::create(const ValueBase& x)
+ValueNode_GradientRotate::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	Type &type(x.get_type());
 	if(type!=type_gradient)

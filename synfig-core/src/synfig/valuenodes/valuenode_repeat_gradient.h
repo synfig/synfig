@@ -42,16 +42,6 @@ namespace synfig {
 
 class ValueNode_Repeat_Gradient : public LinkableValueNode
 {
-public:
-	typedef etl::handle<ValueNode_Repeat_Gradient> Handle;
-	typedef etl::handle<const ValueNode_Repeat_Gradient> ConstHandle;
-
-protected:
-
-	ValueNode_Repeat_Gradient(const Gradient& x);
-
-private:
-
 	ValueNode::RHandle gradient_;
 	ValueNode::RHandle count_;
 	ValueNode::RHandle width_;
@@ -60,29 +50,28 @@ private:
 	ValueNode::RHandle start_color_;
 	ValueNode::RHandle end_color_;
 
-public:
+	ValueNode_Repeat_Gradient(const Gradient& x);
 
+public:
+	typedef etl::handle<ValueNode_Repeat_Gradient> Handle;
+	typedef etl::handle<const ValueNode_Repeat_Gradient> ConstHandle;
+
+	static ValueNode_Repeat_Gradient* create(const ValueBase& x=type_gradient, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_Repeat_Gradient();
 
-	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
-
-	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
-
-	virtual ValueBase operator()(Time t)const;
-
-	virtual String get_name()const;
-	virtual String get_local_name()const;
-
-//	static bool check_type(Type &type);
-
-	LinkableValueNode* create_new()const;
-
-public:
-	using synfig::LinkableValueNode::get_link_vfunc;
-	using synfig::LinkableValueNode::set_link_vfunc;
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
 	static bool check_type(Type &type);
-	static ValueNode_Repeat_Gradient* create(const ValueBase &x=type_gradient);
-	virtual Vocab get_children_vocab_vfunc()const;
+
+	virtual ValueBase operator()(Time t) const override;
+
+protected:
+	LinkableValueNode* create_new() const override;
+
+	virtual bool set_link_vfunc(int i,ValueNode::Handle x) override;
+	virtual ValueNode::LooseHandle get_link_vfunc(int i) const override;
+
+	virtual Vocab get_children_vocab_vfunc() const override;
 }; // END of class ValueNode_Repeat_Gradient
 
 }; // END of namespace synfig

@@ -42,10 +42,6 @@
 #include <synfig/localization.h>
 #include <synfig/valuenode_registry.h>
 #include <synfig/exception.h>
-#include <synfig/blinepoint.h>
-#include <vector>
-#include <list>
-#include <algorithm>
 #include <ETL/hermite>
 #include <ETL/calculus>
 #include <synfig/segment.h>
@@ -397,7 +393,7 @@ ValueNode_BLine::~ValueNode_BLine()
 }
 
 ValueNode_BLine*
-ValueNode_BLine::create(const ValueBase &value, Canvas::LooseHandle canvas)
+ValueNode_BLine::create(const ValueBase& value, Canvas::LooseHandle canvas)
 {
 	if(value.get_type()!=type_list)
 		return 0;
