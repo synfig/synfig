@@ -1155,8 +1155,11 @@ void Widget_Curves::ChannelPointSD::delta_drag(int total_dx, int total_dy, bool 
 	std::vector<std::pair<const ValueDesc&, Time>> times_to_move;
 
 	const float fps = widget.canvas_interface->get_canvas()->rend_desc().get_frame_rate();
+	const TimePlotData* time_plot_data = widget.time_plot_data;
 	const Time base_time = get_active_item()->time_point.get_time();
-	const Time next_time = widget.time_plot_data->get_t_from_pixel_coord(widget.time_plot_data->get_pixel_t_coord(base_time) + dx).round(fps);
+	const Time next_time = std::max(time_plot_data->time_model->get_lower(),
+									time_plot_data->get_t_from_pixel_coord(time_plot_data->get_pixel_t_coord(base_time) + dx).round(fps));
+
 	const Time deltatime = next_time - base_time;
 
 	if (deltatime != 0) {

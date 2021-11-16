@@ -1181,8 +1181,10 @@ void Widget_Timetrack::WaypointSD::delta_drag(int total_dx, int /*total_dy*/, bo
 	const float fps = widget.canvas_interface->get_canvas()->rend_desc().get_frame_rate();
 	int x0, y0;
 	get_active_item_initial_point(x0, y0);
-	const synfig::Time base_time = widget.time_plot_data->get_t_from_pixel_coord(x0);
-	const synfig::Time next_time = widget.time_plot_data->get_t_from_pixel_coord(widget.time_plot_data->get_pixel_t_coord(base_time) + dx).round(fps);
+	const TimePlotData* time_plot_data = widget.time_plot_data;
+	const synfig::Time base_time = time_plot_data->get_t_from_pixel_coord(x0);
+	const synfig::Time next_time = std::max(time_plot_data->time_model->get_lower(),
+											time_plot_data->get_t_from_pixel_coord(time_plot_data->get_pixel_t_coord(base_time) + dx).round(fps));
 
 	deltatime = next_time - base_time;
 
