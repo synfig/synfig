@@ -161,15 +161,11 @@ public:
 
 private:
 		Gamma gamma;
-	 	String filepath;
 	 	String id_name;
-		xmlpp::DomParser parser;
 		xmlpp::Document document;
 		xmlpp::Element* nodeRoot;//output
 		double width;
 		double height;
-		Glib::ustring docname;
-		int uid;
 		int kux;
 		bool set_canvas;
 		double ox,oy;
@@ -179,7 +175,7 @@ private:
 
 public:
 		explicit Svg_parser(const Gamma &gamma = Gamma());
-		Canvas::Handle load_svg_canvas(std::string _filepath,String &errors, String &warnings);
+		Canvas::Handle load_svg_canvas(const std::string& filepath,String &errors, String &warnings);
 		//String get_id();
 		//void set_id(String source);
 
