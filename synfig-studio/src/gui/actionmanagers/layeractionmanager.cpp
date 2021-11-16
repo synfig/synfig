@@ -141,7 +141,7 @@ search_for_foreign_exported_value_nodes(Canvas::LooseHandle canvas, std::list<La
 static void
 replace_exported_value_nodes(Layer::LooseHandle layer, const std::map<ValueNode::Handle,std::pair<ValueNode::Handle, std::string>>& valuenode_replacements)
 {
-	auto get_correspondent_clone = [valuenode_replacements](ValueNode::LooseHandle vn) -> ValueNode::LooseHandle {
+	auto get_correspondent_clone = [valuenode_replacements](const ValueNode::LooseHandle& vn) -> ValueNode::LooseHandle {
 		auto iter = valuenode_replacements.find(vn);
 		if (iter != valuenode_replacements.end()) {
 			auto replacement = iter->second.first;
