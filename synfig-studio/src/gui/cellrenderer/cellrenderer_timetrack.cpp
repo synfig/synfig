@@ -500,6 +500,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 	default:
 		return false;
 	}
+	actual_time = std::max(actual_time, time_plot_data.time_model->get_lower());
 
 	Gdk::ModifierType gdk_mode;
 	Gdk::Event(event).get_state(gdk_mode);
