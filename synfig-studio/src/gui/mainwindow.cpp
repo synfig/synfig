@@ -212,9 +212,9 @@ MainWindow::init_menus()
 	);
 
 	// TRANSLATORS:         | Help menu entry:              | A wiki page:          |
-	WIKI("help-tutorials",	_("Tutorials"),					_("/Category:Tutorials"));
-	WIKI("help-reference",	_("Reference"),					_("/Category:Reference"));
-	WIKI("help-faq",		_("Frequently Asked Questions"),_("/FAQ")				);
+	URL("help-tutorials",	_("Tutorials"),					_("https://synfig.readthedocs.io/en/latest/tutorials.html"));
+	WIKI("help-reference",	_("Reference"),					_("Category:Reference"));
+	URL("help-faq",		_("Frequently Asked Questions"),	_("https://wiki.synfig.org/FAQ")				);
 	URL("help-support",		_("Get Support"),				_("https://forums.synfig.org/")	);
 
 	action_group->add( Gtk::Action::create(

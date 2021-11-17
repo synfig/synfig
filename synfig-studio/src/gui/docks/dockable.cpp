@@ -244,7 +244,7 @@ Dockable::reset_container()
 	container->show();
 	set_use_scrolled(use_scrolled);
 	attach(*container, 0, 0, 1, 1);
-	
+
 	// to avoid GTK warning:
 	//   Allocating size to widget without calling gtk_widget_get_preferred_width/height().
 	//   How does the code know the size to allocate?
@@ -285,7 +285,7 @@ Dockable::present()
 		DockBook* book = manage(new DockBook());
 		book->add(*this);
 		book->show();
-		
+
 		DockDialog* dock_dialog(new DockDialog());
 		dock_dialog->add(*book);
 		dock_dialog->present();
@@ -296,8 +296,8 @@ Dockable::present()
 Gtk::Widget*
 Dockable::create_tab_label()
 {
-	Gtk::EventBox *event_box = manage(new Gtk::EventBox());
-	attach_dnd_to(*event_box);
+	Gtk::Box *box = manage(new Gtk::Box());
+	attach_dnd_to(*box);
 
 	// Check to make sure the icon is valid
 	Gtk::StockItem stock_item;
@@ -306,16 +306,21 @@ Dockable::create_tab_label()
 		Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
 		Gtk::Image* icon(manage(new Gtk::Image(get_stock_id(), iconsize)));
 		icon->show();
-		event_box->set_tooltip_text(get_local_name());
-		event_box->add(*icon);
+		box->set_tooltip_text(get_local_name());
+		box->add(*icon);
+		// add label
+		Gtk::Label* label = manage(new Gtk::Label(get_local_name()));
+		label->show();
+		box->add(*label);
+
 	} else {
 		// bad icon, add label
 		Gtk::Label* label = manage(new Gtk::Label(get_local_name()));
 		label->show();
-		event_box->add(*label);
+		box->add(*label);
 	}
 
-	return event_box;
+	return box;
 }
 
 void Dockable::write_layout_string(std::string& /*params*/) const
