@@ -590,6 +590,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	Gtk::Widget *widget_work_area = create_work_area();
 	widget_work_area->set_margin_top(4);
 	init_menus();
+	init_builder_menus();
 	Gtk::Widget *widget_top_bar = create_top_toolbar();
 	Gtk::Widget *widget_stopbutton = create_stop_button();
 	Gtk::Widget *widget_right_bar = create_right_toolbar();
@@ -1465,6 +1466,26 @@ CanvasView::on_set_end_time_widget_changed()
 	RendDesc rend_desc = get_canvas()->rend_desc();
 	rend_desc.set_time_end(framedial->get_end_time());
 	canvas_interface()->set_rend_desc(rend_desc);
+}
+
+void
+CanvasView::init_builder_menus()
+{
+	// simple_action_group = Gio::SimpleActionGroup::create();
+
+	// simple_action_group->add_action("save",hide_return(sigc::mem_fun(*get_instance().get(), &Instance::save)));
+	// simple_action_group->add_action("save_as",sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::dialog_save_as)));
+	// simple_action_group->add_action("export",sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::dialog_export)));
+	// simple_action_group->add_action("revert",sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::safe_revert)));
+	// simple_action_group->add_action("import",sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_file)));
+	// simple_action_group->add_action("import-sequence",sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_sequence)));
+	// simple_action_group->add_action("render",sigc::mem_fun0(render_settings,&RenderSettings::present));
+	// simple_action_group->add_action("preview",sigc::mem_fun(*this,&CanvasView::on_preview_option));
+	// simple_action_group->add_action("close-document",sigc::hide_return(sigc::mem_fun(*this,&CanvasView::close_instance)));
+	// simple_action_group->add_action("quit",sigc::hide_return(sigc::ptr_fun(&App::quit)));
+
+	// App::main_window->insert_action_group("canvas",simple_action_group);
+
 }
 
 void

@@ -35,8 +35,10 @@
 #include <ETL/smart_ptr>
 
 #include <gtkmm/box.h>
-#include <gtkmm/main.h>
 #include <gtkmm/uimanager.h>
+#include <giomm/simpleaction.h>
+#include <giomm/simpleactiongroup.h>
+#include <gtkmm/builder.h>
 
 #include <gui/iconcontroller.h>
 #include <gui/mainwindow.h>
@@ -85,6 +87,7 @@ class Preferences;
 namespace studio {
 
 typedef Gtk::UIManager UIManager;
+typedef Gtk::Builder Builder;
 
 class About;
 class MainWindow;
@@ -123,7 +126,7 @@ class StateManager;
 
 class WorkspaceHandler;
 
-class App : public Gtk::Main, private IconController
+class App : public Gtk::Application, private IconController
 {
 	friend class Preferences;
 	friend class Dialog_Setup;
@@ -133,6 +136,8 @@ class App : public Gtk::Main, private IconController
 	*/
 
 public:
+	static Glib::RefPtr<App> instance();
+	void init(const synfig::String& basepath, int *argc, char ***argv);
 
 	struct Busy
 	{
@@ -177,6 +182,7 @@ private:
 	static etl::handle<CanvasView> selected_canvas_view;
 
 	static Glib::RefPtr<UIManager>	ui_manager_;
+	static Glib::RefPtr<Builder> builder_;
 
 	static int jack_locks_;
 
@@ -307,14 +313,8 @@ public:
 
 private:
 	static void add_recent_file(const std::string &filename, bool emit_signal);
-
-	/*
- -- ** -- P U B L I C   M E T H O D S -----------------------------------------
-	*/
-
-public:
-
-	App(const synfig::String& basepath, int *argc, char ***argv);
+	
+	App();
 	virtual ~App();
 
 	/*
@@ -326,6 +326,7 @@ public:
 	static StateManager* get_state_manager();
 
 	static Glib::RefPtr<UIManager>& ui_manager() { return ui_manager_; }
+	static Glib::RefPtr<Builder>& builder() { return builder_; }
 
 	static void add_recent_file(const etl::handle<Instance> instance);
 

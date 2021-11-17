@@ -57,6 +57,9 @@
 #include <gtkmm/toolbar.h>
 #include <gtkmm/toolbutton.h>
 #include <gtkmm/uimanager.h>
+#include <gtkmm/builder.h>
+#include <giomm/simpleaction.h>
+#include <giomm/simpleactiongroup.h>
 
 #include <ETL/clock>
 
@@ -352,6 +355,7 @@ private:
 	Gtk::RadioButtonGroup low_res_pixel_size_group;
 
 	Glib::RefPtr<Gtk::ActionGroup> action_group;
+	Glib::RefPtr<Gio::SimpleActionGroup> simple_action_group;
 	bool _action_group_removed;
 
 	etl::handle<synfigapp::UIInterface> ui_interface_;
@@ -424,6 +428,8 @@ private:
 
 	//! Constructor Helper - Initializes all of the menus
 	void init_menus();
+
+	void init_builder_menus();
 
 	bool duck_change_param(const synfig::Point &value,synfig::Layer::Handle layer, synfig::String param_name);
 

@@ -64,6 +64,8 @@ compile
 
 # ------------------------------------------------------------------------
 
+cmake-build
+
 ETL/ETL.pc.in
 ETL/ETL/etl_profile.h
 ETL/ETL/etl_profile_.h

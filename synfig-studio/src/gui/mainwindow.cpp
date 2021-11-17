@@ -37,6 +37,7 @@
 #include <gtkmm/box.h>
 #include <gtkmm/stock.h>
 #include <gtkmm/textview.h>
+#include <gtkmm/menubar.h>
 
 #include <gui/app.h>
 #include <gui/canvasview.h>
@@ -112,7 +113,7 @@ MainWindow::MainWindow() :
 	if(!App::enable_mainwin_menubar && visible_menubar) visible_menubar->hide();
 
 	add(*visible_vbox);
-
+	// init_builder_menus();
 	init_menus();
 	window_action_group = Gtk::ActionGroup::create("mainwindow-window");
 	App::ui_manager()->insert_action_group(window_action_group);
@@ -138,10 +139,41 @@ MainWindow::MainWindow() :
 MainWindow::~MainWindow() = default;
 
 void
+MainWindow::create_builder_menu()
+{
+
+	auto builder_box = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
+	
+	auto builder_menubar = App::builder()->get_object("menubar");
+	auto gmenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder_menubar);
+
+	if(gmenu)
+	{
+		auto menuBar = Gtk::manage(new Gtk::MenuBar(gmenu));
+		builder_box->add(*menuBar);
+		builder_box->pack_start(*menuBar, false, false, 0);
+	}
+
+	builder_box->show();
+	App::main_window->add(*builder_box);
+	
+}
+
+void
 MainWindow::show_dialog_input()
 {
 	App::dialog_input->reset();
 	App::dialog_input->present();
+}
+
+void
+MainWindow::init_builder_menus()
+{
+	Glib::RefPtr<Gio::SimpleActionGroup> action_group = Gio::SimpleActionGroup::create();
+	action_group->add_action("new",sigc::hide_return(sigc::ptr_fun(&studio::App::new_instance)));
+	action_group->add_action("open",sigc::hide_return(sigc::bind(sigc::ptr_fun(&studio::App::dialog_open), "")));
+	action_group->add_action("quit",sigc::hide_return(sigc::ptr_fun(&studio::App::quit)));
+	App::main_window->insert_action_group("mainwindow",action_group);
 }
 
 void
@@ -419,10 +451,10 @@ MainWindow::on_recent_files_changed()
 		);
 	}
 
-	std::string ui_info =
-		"<menu action='menu-file'><menu action='menu-open-recent'>"
-	  + menu_items
-	  + "</menu></menu>";
+	std::string ui_info = "";
+	// 	"<menu action='menu-file'><menu action='menu-open-recent'>"
+	//   + menu_items
+	//   + "</menu></menu>";
 	std::string ui_info_popup =
 		"<ui><popup action='menu-main'>" + ui_info + "</popup></ui>";
 	std::string ui_info_menubar =

@@ -67,6 +67,7 @@
 #endif
 #include <gtkmm/stock.h>
 #include <gtkmm/textview.h>
+#include <gtkmm/menu.h>
 
 #include <gui/app.h>
 #include <gui/autorecover.h>
@@ -100,7 +101,7 @@
 #include <gui/docks/dock_toolbox.h>
 
 #include <gui/instance.h>
-#include <gui/ipc.h>
+// #include <gui/ipc.h>
 #include <gui/localization.h>
 #include <gui/modules/mod_palette/mod_palette.h>
 #include <gui/onemoment.h>
@@ -226,6 +227,7 @@ int	 App::Busy::count;
 bool App::shutdown_in_progress;
 
 Glib::RefPtr<studio::UIManager>	App::ui_manager_;
+Glib::RefPtr<studio::Builder> App::builder_;
 
 int        App::jack_locks_ = 0;
 synfig::Distance::System  App::distance_system;
@@ -241,7 +243,7 @@ etl::handle<CanvasView> App::selected_canvas_view;
 studio::About              *studio::App::about          = nullptr;
 studio::AutoRecover        *studio::App::auto_recover   = nullptr;
 studio::DeviceTracker      *studio::App::device_tracker = nullptr;
-static studio::IPC         *ipc                         = nullptr;
+// static studio::IPC         *ipc                         = nullptr;
 studio::MainWindow         *studio::App::main_window    = nullptr;
 
 studio::Dialog_Color       *studio::App::dialog_color;
@@ -859,13 +861,140 @@ public:
 static ::Preferences _preferences;
 
 void
+init_builder()
+{
+	
+	Glib::RefPtr<Gio::SimpleActionGroup> simple_action_group = Gio::SimpleActionGroup::create();
+
+	simple_action_group->add_action("menu-file");
+	// simple_action_group->add_action("new");
+	// simple_action_group->add_action("open");
+	// simple_action_group->add_action("save");
+	// simple_action_group->add_action("save-as");
+	// simple_action_group->add_action("save-all");
+	// simple_action_group->add_action("export");
+	// simple_action_group->add_action("revert");
+	// simple_action_group->add_action("import");
+	// simple_action_group->add_action("import-sequence");
+	// simple_action_group->add_action("render");
+	// simple_action_group->add_action("preview");
+	// simple_action_group->add_action("close-document");
+	simple_action_group->add_action("quit");
+
+	// try
+	// {
+	// 	App::main_window->insert_action_group("actions",simple_action_group);
+	// }
+	// catch(Glib::Error& error)
+	// {
+	// 	std::cerr << "Error while inserting in the main_window : " << error.what() << std::endl;
+	// }
+
+	// Glib::ustring ui_info = 
+	// 	"<interface>"
+	// 	"  <menu id='menubar'>"
+	// 	"    <submenu>"
+	// 	"      <attribute name='label' translatable='yes'>_File</attribute>"
+	// 	"      <attribute name='action'>actions.menu-file</attribute>"
+	// 	"      <section>"
+	// 	"        <item>"
+	// 	"          <attribute name='action'>actions.new</attribute>"
+	// 	"          <attribute name='label' translatable='yes'>_New</attribute>"
+	// 	"        </item>"
+	// 	"        <item>"
+	// 	"          <attribute name='action'>actions.open</attribute>"
+	// 	"          <attribute name='label' translatable='yes'>_Open</attribute>"
+	// 	"        </item>"
+	// 	"        <item>"
+	// 	"          <attribute name='action'>actions.save</attribute>"
+	// 	"          <attribute name='label' translatable='yes'>_Save</attribute>"
+	// 	"        </item>"
+	// 	"        <item>"
+	// 	"          <attribute name='action'>actions.save-as</attribute>"
+	// 	"          <attribute name='label' translatable='yes'>_Save _As...</attribute>"
+	// 	"        </item>"
+	// 	"        <item>"
+	// 	"          <attribute name='action'>actions.save-all</attribute>"
+	// 	"          <attribute name='label' translatable='yes'>_Save _All</attribute>"
+	// 	"        </item>"
+	// 	"        <item>"
+	// 	"          <attribute name='action'>actions.export</attribute>"
+	// 	"          <attribute name='label' translatable='yes'>_Export...</attribute>"
+	// 	"        </item>"
+	// 	"        <item>"
+	// 	"          <attribute name='action'>actions.revert</attribute>"
+	// 	"          <attribute name='label' translatable='yes'>_Revert</attribute>"
+	// 	"        </item>"
+	// 	"        <item>"
+	// 	"          <attribute name='action'>actions.import</attribute>"
+	// 	"          <attribute name='label' translatable='yes'>_Import...</attribute>"
+	// 	"        </item>"
+	// 	"        <item>"
+	// 	"          <attribute name='action'>actions.import-sequence</attribute>"
+	// 	"          <attribute name='label' translatable='yes'>_Import Sequence...</attribute>"
+	// 	"        </item>"
+	// 	"        <item>"
+	// 	"          <attribute name='action'>actions.render</attribute>"
+	// 	"          <attribute name='label' translatable='yes'>_Render...</attribute>"
+	// 	"        </item>"
+	// 	"        <item>"
+	// 	"          <attribute name='action'>actions.preview</attribute>"
+	// 	"          <attribute name='label' translatable='yes'>_Preview...</attribute>"
+	// 	"        </item>"
+	// 	"        <item>"
+	// 	"          <attribute name='action'>actions.close-document</attribute>"	
+	// 	"          <attribute name='label' translatable='yes'>_Close</attribute>"
+	// 	"        </item>"
+	// 	"        <item>"
+	// 	"          <attribute name='action'>actions.quit</attribute>"
+	// 	"          <attribute name='label' translatable='yes'>_Quit</attribute>"
+	// 	"        </item>"
+	// 	"      </section>"
+	// 	"    </submenu>"
+	// 	"  </menu>"
+	// 	"</interface>";
+
+	Glib::ustring ui_info = 
+		"<interface>"
+		"  <menu id='menubar'>"
+		"    <submenu>"
+		"      <attribute name='label' translatable='yes'>_File</attribute>"
+		"      <attribute name='action'>actions.menu-file</attribute>"
+		"      <section>"
+		"        <item>"
+		"          <attribute name='action'>actions.quit</attribute>"
+		"          <attribute name='label' translatable='yes'>_Quit</attribute>"
+		"        </item>"
+		"      </section>"
+		"    </submenu>"
+		"  </menu>"
+		"</interface>";
+
+	try
+	{
+		App::builder()->add_from_string(ui_info);	
+	}
+	catch(const Glib::Error& error)
+    {
+        std::cerr << "ExampleApplication::on_startup(): " << error.what() << std::endl;
+    }
+
+	auto object = App::builder()->get_object("menubar");
+	auto gmenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(object);
+
+	if(gmenu)
+		App::instance()->set_app_menu(gmenu);
+
+}
+
+void
 init_ui_manager()
 {
 	Glib::RefPtr<Gtk::ActionGroup> menus_action_group = Gtk::ActionGroup::create("menus");
 
 	Glib::RefPtr<Gtk::ActionGroup> actions_action_group = Gtk::ActionGroup::create("actions");
 
-	menus_action_group->add( Gtk::Action::create("menu-file",            _("_File")));
+	// menus_action_group->add( Gtk::Action::create("menu-file",            _("_File")));
 	menus_action_group->add( Gtk::Action::create("menu-open-recent",     _("Open Recent")));
 
 	menus_action_group->add( Gtk::Action::create("menu-edit",            _("_Edit")));
@@ -908,19 +1037,19 @@ init_ui_manager()
 #define DEFINE_ACTION(x,stock) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock) ); actions_action_group->add(action); }
 
 // actions in File menu
-DEFINE_ACTION("new",            Gtk::StockID("synfig-new"))
-DEFINE_ACTION("open",           Gtk::StockID("synfig-open"))
-DEFINE_ACTION("save",           Gtk::StockID("synfig-save"))
-DEFINE_ACTION("save-as",        Gtk::StockID("synfig-save_as"))
-DEFINE_ACTION("save-all",       Gtk::StockID("synfig-save_all"))
-DEFINE_ACTION("export",         Gtk::StockID("synfig-export"))
-DEFINE_ACTION("revert",         Gtk::Stock::REVERT_TO_SAVED)
-DEFINE_ACTION("import",         _("Import..."))
-DEFINE_ACTION("import-sequence",_("Import Sequence..."))
-DEFINE_ACTION("render",         _("Render..."))
-DEFINE_ACTION("preview",        _("Preview..."))
-DEFINE_ACTION("close-document", _("Close Document"))
-DEFINE_ACTION("quit",           Gtk::Stock::QUIT)
+// DEFINE_ACTION("new",            Gtk::StockID("synfig-new"))
+// DEFINE_ACTION("open",           Gtk::StockID("synfig-open"))
+// DEFINE_ACTION("save",           Gtk::StockID("synfig-save"))
+// DEFINE_ACTION("save-as",        Gtk::StockID("synfig-save_as"))
+// DEFINE_ACTION("save-all",       Gtk::StockID("synfig-save_all"))
+// DEFINE_ACTION("export",         Gtk::StockID("synfig-export"))
+// DEFINE_ACTION("revert",         Gtk::Stock::REVERT_TO_SAVED)
+// DEFINE_ACTION("import",         _("Import..."))
+// DEFINE_ACTION("import-sequence",_("Import Sequence..."))
+// DEFINE_ACTION("render",         _("Render..."))
+// DEFINE_ACTION("preview",        _("Preview..."))
+// DEFINE_ACTION("close-document", _("Close Document"))
+// DEFINE_ACTION("quit",           Gtk::Stock::QUIT)
 
 // actions in Edit menu
 DEFINE_ACTION("undo",                     Gtk::StockID("synfig-undo"))
@@ -1039,27 +1168,27 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 
 //Layout the actions in the main menu (caret menu, right click on canvas menu) and toolbar:
 	Glib::ustring ui_info_menu =
-"	<menu action='menu-file'>"
-"		<menuitem action='new' />"
-"		<menuitem action='open' />"
-"		<menu action='menu-open-recent' />"
-"		<separator name='sep-file1'/>"
-"		<menuitem action='save' />"
-"		<menuitem action='save-as' />"
-"		<menuitem action='save-all' />"
-"		<menuitem action='export' />"
-"		<menuitem action='revert' />"
-"		<separator name='sep-file2'/>"
-"		<menuitem action='import' />"
-"		<menuitem action='import-sequence' />"
-"		<separator name='sep-file4'/>"
-"		<menuitem action='preview' />"
-"		<menuitem action='render' />"
-"		<separator name='sep-file5'/>"
-"		<menuitem action='close-document' />"
-"		<separator name='sep-file6'/>"
-"		<menuitem action='quit' />"
-"	</menu>"
+// "	<menu action='menu-file'>"
+// "		<menuitem action='new' />"
+// "		<menuitem action='open' />"
+// "		<menu action='menu-open-recent' />"
+// "		<separator name='sep-file1'/>"
+// "		<menuitem action='save' />"
+// "		<menuitem action='save-as' />"
+// "		<menuitem action='save-all' />"
+// "		<menuitem action='export' />"
+// "		<menuitem action='revert' />"
+// "		<separator name='sep-file2'/>"
+// "		<menuitem action='import' />"
+// "		<menuitem action='import-sequence' />"
+// "		<separator name='sep-file4'/>"
+// "		<menuitem action='preview' />"
+// "		<menuitem action='render' />"
+// "		<separator name='sep-file5'/>"
+// "		<menuitem action='close-document' />"
+// "		<separator name='sep-file6'/>"
+// "		<menuitem action='quit' />"
+// "	</menu>"
 "	<menu action='menu-edit'>"
 "		<menuitem action='undo'/>"
 "		<menuitem action='redo'/>"
@@ -1194,15 +1323,15 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 	Glib::ustring ui_info_main_tool =
 "		<toolitem action='new'/>"
 "		<toolitem action='open'/>"
-"		<toolitem action='save'/>"
-"		<toolitem action='save-as'/>"
-"		<toolitem action='save-all'/>"
+// "		<toolitem action='save'/>"
+// "		<toolitem action='save-as'/>"
+// "		<toolitem action='save-all'/>"
 "		<separator />"
 "		<toolitem action='undo'/>"
 "		<toolitem action='redo'/>"
-"		<separator />"
-"		<toolitem action='render'/>"
-"		<toolitem action='preview'/>";
+"		<separator />";
+// "		<toolitem action='render'/>"
+// "		<toolitem action='preview'/>";
 
 	Glib::ustring hidden_ui_info_menu =
 "	<menu action='menu-navigation'>"
@@ -1229,8 +1358,8 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 	Glib::ustring ui_info =
 "<ui>"
 "   <popup name='menu-toolbox' action='menu-toolbox'>"
-"	<menu action='menu-file'>"
-"	</menu>"
+// "	<menu action='menu-file'>"
+// "	</menu>"
 "	</popup>"
 "	<popup name='menu-main' action='menu-main'>" + ui_info_menu + "</popup>"
 "	<menubar name='menubar-main' action='menubar-main'>" + ui_info_menu + "</menubar>"
@@ -1362,11 +1491,16 @@ App::get_default_accel_map()
 
 	return default_accel_map;
 }
+Glib::RefPtr<App> App::instance() {
+	static Glib::RefPtr<studio::App> app_reference = Glib::RefPtr<App>(new App());
+	return app_reference;
+}
 
 /* === M E T H O D S ======================================================= */
+App::App() :
+	Gtk::Application("org.synfig.SynfigStudio") {}
 
-App::App(const synfig::String& basepath, int *argc, char ***argv):
-	Gtk::Main(argc,argv)
+void App::init(const synfig::String& basepath, int *argc, char ***argv)
 {
 
 	Glib::init(); // need to use Gio functions before app is started
@@ -1413,7 +1547,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 	}
 
 
-	ipc=new IPC();
+	// ipc=new IPC();
 
 	if(!SYNFIG_CHECK_VERSION())
 	{
@@ -1496,6 +1630,11 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		studio_init_cb.task(_("Init Main Window..."));
 		main_window=new studio::MainWindow();
 		main_window->add_accel_group(App::ui_manager_->get_accel_group());
+
+		studio_init_cb.task(_("Init Builder..."));
+		App::builder_=studio::Builder::create();
+		init_builder();
+		// main_window->create_builder_menu();
 
 		studio_init_cb.task(_("Init Toolbox..."));
 		dock_toolbox=new studio::Dock_Toolbox();
@@ -1777,6 +1916,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		SoundProcessor::Sound(ResourceHelper::get_sound_path("renderdone.wav")));
 
 	App::dock_info_ = dock_info;
+	add_window(*main_window);
 }
 
 StateManager* App::get_state_manager() { return state_manager; }
@@ -1798,7 +1938,7 @@ App::~App()
 
 	delete state_manager;
 
-	delete ipc;
+	// delete ipc;
 
 	delete auto_recover;
 
@@ -2327,7 +2467,8 @@ App::quit()
 			return;
 	process_all_events();
 
-	Gtk::Main::quit();
+	// Gtk::Main::quit();
+	App::instance()->remove_window(*main_window);
 
 	get_ui_interface()->task(_("Quit Request sent"));
 }
@@ -4363,12 +4504,12 @@ studio::App::setup_changed()
 void
 studio::App::process_all_events(long unsigned int us)
 {
-	Glib::usleep(us);
+	/*Glib::usleep(us);
 	while(studio::App::events_pending()) {
 		while(studio::App::events_pending())
 			studio::App::iteration(false);
 		Glib::usleep(us);
-	}
+	}*/
 }
 
 bool
