@@ -293,10 +293,6 @@ CellRenderer_TimeTrack::render_vfunc(
 	ValueDesc value_desc = property_value_desc().get_value();
 	ValueNode::Handle base_value = value_desc.get_value_node();
 
-	ValueNode_DynamicList::Handle parent_value_node;
-	if (value_desc.parent_is_value_node())
-		parent_value_node = ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node());
-
 	// If the canvas is defined, then load up the keyframes
 	if (canvas)
 		for(KeyframeList::const_iterator i = canvas->keyframe_list().begin(); i != canvas->keyframe_list().end(); ++i)
@@ -401,8 +397,11 @@ CellRenderer_TimeTrack::render_vfunc(
 
 	// If the parent of this value node is a dynamic list, then
 	// render the on and off times
-	if (parent_value_node) {
-		const ValueNode_DynamicList::ListEntry& list_entry = parent_value_node->list[ value_desc.get_index() ];
+	ValueNode_DynamicList::Handle parent_dynamic_list_value_node;
+	if (value_desc.parent_is_value_node())
+		parent_dynamic_list_value_node = ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node());
+	if (parent_dynamic_list_value_node) {
+		const ValueNode_DynamicList::ListEntry& list_entry = parent_dynamic_list_value_node->list[ value_desc.get_index() ];
 		const ValueNode_DynamicList::ListEntry::ActivepointList& activepoint_list = list_entry.timing_info;
 
 		bool is_off = !activepoint_list.empty() && !activepoint_list.front().state;
