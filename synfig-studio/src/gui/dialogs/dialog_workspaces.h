@@ -38,7 +38,7 @@ namespace studio
 
 class Dialog_Workspaces : public Gtk::Dialog
 {
-	const Glib::RefPtr<Gtk::Builder>& builder;
+	const Glib::RefPtr<Gtk::Builder> builder;
 
 	Gtk::Button * rename_button;
 	Gtk::Button * delete_button;

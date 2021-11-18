@@ -329,7 +329,7 @@ bool Widget_Vector::on_key_press_event(GdkEventKey* key_event)
 		}
 		return true;
 	}
-	if((key_event->keyval == GDK_KEY_ISO_Left_Tab)) // for Shift+Tab 
+	if (key_event->keyval == GDK_KEY_ISO_Left_Tab) // for Shift+Tab
 	{ 
 		if(entry_y->is_focus()){
 			entry_x->grab_focus();

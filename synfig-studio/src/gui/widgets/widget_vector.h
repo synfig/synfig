@@ -87,7 +87,7 @@ public:
 	void on_value_changed();
 	void on_entry_x_changed();
 	void on_entry_y_changed();
-	void on_grab_focus();
+	void on_grab_focus() override;
 
 	void set_value(const synfig::Vector &data);
 	const synfig::Vector &get_value();
@@ -98,7 +98,7 @@ public:
 	~Widget_Vector();
 
 protected:
-	void show_all_vfunc();
+	void show_all_vfunc() override;
 
 // Glade & GtkBuilder related
 public:

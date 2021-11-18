@@ -112,7 +112,7 @@ synfig::ValueNode_RadialComposite::operator()(Time t)const
 	Type &type(get_type());
 	if (type == type_vector)
 	{
-		Real mag;
+		Real mag = 0.f;
 		Angle angle;
 		assert(components[0] && components[1]);
 		mag=(*components[0])(t).get(mag);

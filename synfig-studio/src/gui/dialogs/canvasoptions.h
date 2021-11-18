@@ -62,7 +62,7 @@ class CanvasOptions  :  public Gtk::Dialog
 
 	Gtk::CheckButton * toggle_time_snap;
 
-	const Glib::RefPtr<Gtk::Builder>& builder;
+	const Glib::RefPtr<Gtk::Builder> builder;
 	void set_canvas_view(CanvasView* canvas_view);
 public:
 	CanvasOptions(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade);

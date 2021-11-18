@@ -83,7 +83,7 @@ Target_Multi::set_rend_desc(RendDesc *d)
 }
 
 bool
-Target_Multi::init()
+Target_Multi::init(ProgressCallback*)
 {
 	return a->init() && b->init();
 }
