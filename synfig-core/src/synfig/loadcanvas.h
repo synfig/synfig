@@ -87,6 +87,8 @@ private:
 	String warnings_text;
 	//! Seems not to be used
 	GUID guid_;
+	//
+	bool in_bones_section;
 
 	/*
  --	** -- C O N S T R U C T O R S ---------------------------------------------
@@ -98,7 +100,8 @@ public:
 		max_warnings_	(1000),
 		total_warnings_	(0),
 		total_errors_	(0),
-		allow_errors_	(false)
+		allow_errors_	(false),
+		in_bones_section(false)
 	{ }
 
 	/*
