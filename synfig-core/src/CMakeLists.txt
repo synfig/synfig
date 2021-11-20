@@ -166,22 +166,6 @@ if (NOT MLT_FOUND)
 	add_definitions(-DWITHOUT_MLT) # disable MLT if not found
 endif()
 
-foreach(pkg_config_lib 
-  SIGCPP 
-  GLIBMM 
-  GIOMM 
-  LIBXML
-  MLT 
-  FFTW 
-  LIBPNG
-  LIBMNG
-  LIBJPEG
-  OPENEXR
-  MAGICKCORE)
-    include_directories(${${pkg_config_lib}_INCLUDE_DIRS})
-    link_directories(${${pkg_config_lib}_LIBRARY_DIRS})
-endforeach()
-
 ## TODO: should we keep it here?
 find_package(ImageMagick COMPONENTS Magick++)
 

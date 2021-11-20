@@ -130,14 +130,14 @@ include(debug/CMakeLists.txt)
 
 target_link_libraries(synfig
     PUBLIC
-        ${SIGCPP_LIBRARIES}
-        ${GLIBMM_LIBRARIES}
-        ${GIOMM_LIBRARIES}
-        ${LIBXML_LIBRARIES}
+        ${SIGCPP_LINK_LIBRARIES}
+        ${GLIBMM_LINK_LIBRARIES}
+        ${GIOMM_LINK_LIBRARIES}
+        ${LIBXML_LINK_LIBRARIES}
         ${XMLPP_LIBRARIES}
-        ${MLT_LIBRARIES}
+        ${MLT_LINK_LIBRARIES}
         ${ZLIB_LIBRARIES}
-        ${FFTW_LIBRARIES}
+        ${FFTW_LINK_LIBRARIES}
         ${LTDL_LIBRARIES}
         ${CMAKE_THREAD_LIBS_INIT}
 )

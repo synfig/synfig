@@ -69,6 +69,7 @@ target_sources(synfig
 )
 
 file(GLOB VALUENODES_HEADERS "${CMAKE_CURRENT_LIST_DIR}/*.h")
+target_include_directories(synfig PRIVATE ${Boost_INCLUDE_DIRS})
 
 install(
     FILES ${VALUENODES_HEADERS}
