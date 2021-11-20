@@ -384,9 +384,9 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 		else if(nodename.compare("ellipse")==0)
 			k = parser_path_ellipse(nodeElement, style, mtx);
 		else if(nodename.compare("line")==0)
-			k = parser_line(nodeElement, style, mtx);
+			k = parser_line(nodeElement, mtx);
 		else if(nodename.compare("polyline")==0)
-			k = parser_polyline(nodeElement, style, mtx);
+			k = parser_polyline(nodeElement, mtx);
 
 		if (k.empty())
 			return;
@@ -1404,7 +1404,7 @@ Svg_parser::parser_path_ellipse(const xmlpp::Element *nodeElement, const Style &
 }
 
 std::list<BLine>
-Svg_parser::parser_line(const xmlpp::Element *nodeElement, const Style &style, const SVGMatrix &mtx)
+Svg_parser::parser_line(const xmlpp::Element *nodeElement, const SVGMatrix &mtx)
 {
 	std::list<BLine> k;
 	if (!nodeElement)
@@ -1432,7 +1432,7 @@ Svg_parser::parser_line(const xmlpp::Element *nodeElement, const Style &style, c
 }
 
 std::list<BLine>
-Svg_parser::parser_polyline(const xmlpp::Element *nodeElement, const Style &style, const SVGMatrix &mtx)
+Svg_parser::parser_polyline(const xmlpp::Element *nodeElement, const SVGMatrix &mtx)
 {
 	std::list<BLine> k;
 	if (!nodeElement)
@@ -1921,7 +1921,7 @@ Svg_parser::build_dilist(xmlpp::Element *root, const std::vector<float>& p, int 
 	xmlpp::Element *child=root->add_child("dilist");
 	child->set_attribute("type","dash_item");
 	child->set_attribute("loop", "false");
-	for (int i = 0; i < p.size(); i++){
+	for (size_t i = 0; i < p.size(); i++){
 		xmlpp::Element *entry = child->add_child("entry")->add_child("composite");
 		entry->set_attribute("type","dash_item");
 		build_integer( entry->add_child("side_before"), "", linecap);
