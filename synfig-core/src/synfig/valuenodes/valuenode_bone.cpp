@@ -1007,7 +1007,7 @@ ValueNode_Bone_Root::~ValueNode_Bone_Root()
 }
 
 ValueBase
-ValueNode_Bone_Root::operator()(Time t)const
+ValueNode_Bone_Root::operator()(Time /*t*/)const
 {
 	Bone ret;
 	ret.set_name			(get_local_name());
@@ -1032,7 +1032,7 @@ ValueNode_Bone_Root::set_root_canvas(etl::loose_handle<Canvas> canvas)
 }
 
 ValueNode_Bone*
-ValueNode_Bone_Root::create(const ValueBase& x, etl::loose_handle<Canvas>)
+ValueNode_Bone_Root::create(const ValueBase& /*x*/, etl::loose_handle<Canvas>)
 {
 	return get_root_bone().get();
 }
@@ -1040,7 +1040,7 @@ ValueNode_Bone_Root::create(const ValueBase& x, etl::loose_handle<Canvas>)
 
 
 String
-ValueNode_Bone_Root::get_bone_name(Time t)const
+ValueNode_Bone_Root::get_bone_name(Time /*t*/)const
 {
 	return get_local_name();
 }
@@ -1059,13 +1059,13 @@ ValueNode_Bone_Root::create_new()const
 }
 
 Matrix
-ValueNode_Bone_Root::get_animated_matrix(Time t, Point child_origin)const
+ValueNode_Bone_Root::get_animated_matrix(Time /*t*/, Point child_origin)const
 {
 	return Matrix().set_translate(child_origin);
 }
 
 bool
-ValueNode_Bone_Root::check_type(Type &type)
+ValueNode_Bone_Root::check_type(Type &/*type*/)
 {
 	return false;
 }
