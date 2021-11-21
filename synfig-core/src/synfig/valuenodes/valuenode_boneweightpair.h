@@ -51,7 +51,7 @@ public:
 	typedef etl::handle<ValueNode_BoneWeightPair> Handle;
 	typedef etl::handle<const ValueNode_BoneWeightPair> ConstHandle;
 
-	static ValueNode_BoneWeightPair* create(const ValueBase& x, etl::loose_handle<Canvas>, etl::loose_handle<Canvas> canvas=nullptr);
+	static ValueNode_BoneWeightPair* create(const ValueBase& x, etl::loose_handle<Canvas> canvas);
 	virtual ~ValueNode_BoneWeightPair();
 
 	virtual ValueBase operator()(Time t) const override;

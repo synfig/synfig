@@ -54,7 +54,7 @@ public:
 	typedef etl::handle<ValueNode_BoneInfluence> Handle;
 	typedef etl::handle<const ValueNode_BoneInfluence> ConstHandle;
 
-	static ValueNode_BoneInfluence* create(const ValueBase& x, etl::loose_handle<Canvas>, etl::loose_handle<Canvas> canvas=nullptr);
+	static ValueNode_BoneInfluence* create(const ValueBase& x, etl::loose_handle<Canvas> canvas);
 	virtual ~ValueNode_BoneInfluence();
 
 	virtual ValueBase operator()(Time t) const override;
