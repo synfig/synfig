@@ -1945,9 +1945,13 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 				}
 				int placeholders(canvas->value_node_list().placeholder_count());
 				c[index] = canvas->surefind_value_node(id);
-				if(placeholders == canvas->value_node_list().placeholder_count())
-					if(PlaceholderValueNode::Handle::cast_dynamic(c[index]) )
-						throw Exception::IDNotFound("parse_linkable_value_noode()");
+				// Don't accept links for unsolved exported Value Nodes.
+				// Except if it is parsing <bones>, as this section is defined before <defs>
+				if (!in_bones_section) {
+					if(placeholders == canvas->value_node_list().placeholder_count())
+						if(PlaceholderValueNode::Handle::cast_dynamic(c[index]) )
+							throw Exception::IDNotFound("parse_linkable_value_noode()");
+				}
 
 				if (!c[index])
 				{
@@ -2741,6 +2745,7 @@ CanvasParser::parse_canvas_bones(xmlpp::Element *element,Canvas::Handle canvas)
 	assert(element->get_name()=="bones");
 	xmlpp::Element::NodeList list = element->get_children();
 	std::list<ValueNode::Handle> bone_list;
+	in_bones_section = true;
 	for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
 	{
 		xmlpp::Element *child(dynamic_cast<xmlpp::Element*>(*iter));
@@ -2749,6 +2754,7 @@ CanvasParser::parse_canvas_bones(xmlpp::Element *element,Canvas::Handle canvas)
 		else
 			bone_list.push_back(parse_value_node(child,canvas));
 	}
+	in_bones_section = false;
 	if (getenv("SYNFIG_DEBUG_LOAD_CANVAS")) printf("%s:%d parse_canvas_bones done\n", __FILE__, __LINE__);
 	return bone_list;
 }
