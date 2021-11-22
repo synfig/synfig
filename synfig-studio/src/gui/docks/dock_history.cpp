@@ -68,9 +68,6 @@ Dock_History::Dock_History():
 	Dock_CanvasSpecific("history",_("History"),Gtk::StockID("synfig-history")),
 	action_group(Gtk::ActionGroup::create("action_group_dock_history"))
 {
-	// Make History toolbar small for space efficiency
-	get_style_context()->add_class("synfigstudio-efficient-workspace");
-
 	App::signal_instance_deleted().connect(sigc::mem_fun(*this,&studio::Dock_History::delete_instance));
 	App::signal_instance_selected().connect(sigc::mem_fun(*this,&studio::Dock_History::set_selected_instance_signal));
 
@@ -143,7 +140,10 @@ Dock_History::Dock_History():
 
 	action_group->set_sensitive(false);
 
-	set_toolbar(*dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-history")));
+	auto toolbar = dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-history"));
+	toolbar->get_style_context()->add_class("synfigstudio-efficient-workspace");
+	set_toolbar(*toolbar);
+
 	add(*create_action_tree());
 }
 
