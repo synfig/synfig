@@ -99,18 +99,11 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 		render_str(_("Render")),
 		system_str(_("System")),
 		shortcuts_str(_("Shortcuts"));
-	// WARNING FIXED ORDER : the page added to notebook same has treeview
-	// Interface
 	create_interface_page(add_page(interface_str));
-	// Document
 	create_document_page(add_page(document_str));
-	// Editing
 	create_editing_page(add_page(editing_str));
-	// Render
 	create_render_page(add_page(render_str));
-	// System
 	create_system_page(add_page(system_str));
-	// Keyboard shortcuts
 	create_shortcuts_page(add_page(shortcuts_str));
 
 	show_all_children();
@@ -123,24 +116,12 @@ Dialog_Setup::~Dialog_Setup()
 void
 Dialog_Setup::create_system_page(PageInfo pi)
 {
-	/*---------System--------------------*\
-	 * UNITS
-	 *  Timestamp  [_____________________]
-	 *  UnitSystem [_____________________]
-	 * RECENTFILE  [_____________________]
-	 * AUTOBACKUP  [x| ]
-	 *  Interval   [_____________________]
-	 * BROWSER     [_____________________]
-	 * BRUSH       [_____________________]
-	 */
-
 	int row(1);
-	// System _ Units section
+
 	attach_label_section(pi.grid, _("Units"), row);
-	// System - 0 Timestamp
+
 	attach_label(pi.grid, _("Timestamp"), ++row);
 	pi.grid->attach(timestamp_comboboxtext, 1, row, 1, 1);
-	timestamp_comboboxtext.set_hexpand(true);
 
 	#define ADD_TIMESTAMP(desc,x) {				\
 		timestamp_comboboxtext.append(desc);	\
@@ -156,11 +137,13 @@ Dialog_Setup::create_system_page(PageInfo pi)
 
 	#undef ADD_TIMESTAMP
 
+	timestamp_comboboxtext.set_hexpand(true);
 	timestamp_comboboxtext.signal_changed().connect(
 		sigc::mem_fun(*this, &Dialog_Setup::on_time_format_changed) );
 
-	// System - 1 Unit system
 	{
+		attach_label(pi.grid, _("Unit System"), ++row);
+
 		ParamDesc param_desc;
 		param_desc
 			.set_hint("enum")
@@ -173,19 +156,16 @@ Dialog_Setup::create_system_page(PageInfo pi)
 			.add_enum_value(Distance::SYSTEM_MILLIMETERS,"mm",_("Millimeters"));
 
 		widget_enum=manage(new Widget_Enum());
+		widget_enum->set_hexpand(true);
 		widget_enum->set_param_desc(param_desc);
 
-		attach_label(pi.grid, _("Unit System"), ++row);
 		pi.grid->attach(*widget_enum, 1, row, 1, 1);
-		widget_enum->set_hexpand(true);
 	}
 
-	// System - Recent files
 	attach_label_section(pi.grid, _("Recent Files"), ++row);
 	Gtk::SpinButton* recent_files_spinbutton(manage(new Gtk::SpinButton(adj_recent_files,1,0)));
 	pi.grid->attach(*recent_files_spinbutton, 1, row, 1, 1);
 
-	// System - Auto backup interval
 	attach_label_section(pi.grid, _("Autosave"), ++row);
 	pi.grid->attach(toggle_autobackup, 1, row, 1, 1);
 	toggle_autobackup.set_hexpand(false);
@@ -197,7 +177,6 @@ Dialog_Setup::create_system_page(PageInfo pi)
 	pi.grid->attach(auto_backup_interval, 1, row, 1, 1);
 	auto_backup_interval.set_hexpand(false);
 
-	// System - Brushes path
 	{
 		attach_label_section(pi.grid, _("Brush Presets Path"), ++row);
 		// TODO Check if Gtk::ListStore::create need something like manage
@@ -227,13 +206,12 @@ Dialog_Setup::create_system_page(PageInfo pi)
 		brush_path_btn_grid->set_halign(Gtk::ALIGN_END);
 		++row;
 	}
-	// System - 11 enable_experimental_features
+
 	attach_label_section(pi.grid, _("Experimental features (requires restart)"), ++row);
 	pi.grid->attach(toggle_enable_experimental_features, 1, row, 1, 1);
 	toggle_enable_experimental_features.set_halign(Gtk::ALIGN_START);
 	toggle_enable_experimental_features.set_hexpand(false);
 
-	// System - clear_redo_stack_on_new_action
 	attach_label_section(pi.grid, _("Clear redo history on new action"), ++row);
 	pi.grid->attach(toggle_clear_redo_stack_on_new_action, 1, row, 1, 1);
 	toggle_clear_redo_stack_on_new_action.set_halign(Gtk::ALIGN_START);
@@ -249,42 +227,28 @@ Dialog_Setup::create_system_page(PageInfo pi)
 void
 Dialog_Setup::create_document_page(PageInfo pi)
 {
-	/*---------Document------------------*\
-	 * NEW CANVAS
-	 *  prefix  ___________________
-	 *  fps   [_]                    [FPS]
-	 *  size  H[_]xW[_]      [resolutions]
-	 * DEFAULT BACKGROUND
-	 * (*) None (Transparent)
-	 * ( ) Solid Color         [colorbutton]
-	 * ( ) Image               [file path  ]
-	 *
-	 *
-	 *
-	 */
-
 	int row(1);
+
 	attach_label_section(pi.grid, _("New Canvas"), row);
-	// Document - Preferred file name prefix
+
 	attach_label(pi.grid, _("Name prefix"), ++row);
 	pi.grid->attach(textbox_custom_filename_prefix, 1, row, 2, 1);
 	textbox_custom_filename_prefix.set_tooltip_text( _("File name prefix for the new created document"));
 	textbox_custom_filename_prefix.set_hexpand(true);
 
 	// TODO add label with some FPS description ( ex : 23.976 FPS->NTSC television , 25 PAL, 48->Film Industrie, 30->cinematic-like appearance ...)
-	// Document - New Document FPS
 	attach_label(pi.grid,_("FPS"), ++row);
 	pref_fps_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_pref_fps, 1, 3));
 	pi.grid->attach(*pref_fps_spinbutton, 1, row, 1, 1);
 	pref_fps_spinbutton->set_tooltip_text(_("Frames per second of the new created document"));
 	pref_fps_spinbutton->set_hexpand(true);
 
-	//Document - Template for predefined fps
+	// Template for predefined fps
 	fps_template_combo = Gtk::manage(new Gtk::ComboBoxText());
 	pi.grid->attach(*fps_template_combo, 2, row, 1 ,1);
 	fps_template_combo->set_halign(Gtk::ALIGN_END);
 	fps_template_combo->signal_changed().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_fps_template_combo_change));
-	//Document - Fill the FPS combo box with proper strings (not localised)
+	// Fill the FPS combo box with proper strings (not localised)
 	float f[8];
 	f[0] = 60;
 	f[1] = 50;
@@ -297,10 +261,8 @@ Dialog_Setup::create_document_page(PageInfo pi)
 	for (int i=0; i<8; i++)
 		fps_template_combo->prepend(strprintf("%5.3f", f[i]));
 
-	//Document - Size
 	attach_label(pi.grid, _("Size"),++row);
 	// TODO chain icon for ratio / ratio indication (see Widget_RendDesc)
-	// Document - New Document X size
 	Gtk::Grid *grid_size(manage (new Gtk::Grid()));
 
 	Gtk::Label* label = attach_label(grid_size,_("Width"), 0, 0);
@@ -318,7 +280,6 @@ Dialog_Setup::create_document_page(PageInfo pi)
 	label->set_margin_end(3);
 	label->set_halign(Gtk::ALIGN_CENTER);
 
-	// Document - New Document Y size
 	attach_label(grid_size,_("Height"), 0, 3);
 	pref_y_size_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_pref_y_size, 1, 0));
 	grid_size->attach(*pref_y_size_spinbutton, 4, 0, 1, 1);
@@ -326,7 +287,7 @@ Dialog_Setup::create_document_page(PageInfo pi)
 	pref_y_size_spinbutton->set_hexpand(true);
 	pi.grid->attach(*grid_size, 1, row, 1,1);
 
-	//Document - Template for predefined sizes of canvases.
+	// Template for predefined sizes of canvases
 	size_template_combo = Gtk::manage(new Gtk::ComboBoxText());
 	pi.grid->attach(*size_template_combo, 2, row, 1 ,1);
 	size_template_combo->set_halign(Gtk::ALIGN_END);
@@ -350,12 +311,7 @@ Dialog_Setup::create_document_page(PageInfo pi)
 	fps_template_combo->prepend(DEFAULT_PREDEFINED_FPS);
 
 	attach_label_section(pi.grid, _("Default Background"), ++row);
-	//attach_label(pi.grid, _("Name prefix"), ++row);
-	//pi.grid->attach(textbox_custom_filename_prefix, 1, row, 2, 1);
-	//textbox_custom_filename_prefix.set_tooltip_text( _("File name prefix for the new created document"));
-	//textbox_custom_filename_prefix.set_hexpand(true);
 
-	//Gtk::RadioButton::Group group_def_background;
 	def_background_none.set_label(_("None (Transparent)"));
 	def_background_none.set_group(group_def_background);
 	pi.grid->attach(def_background_none,  0, ++row, 1, 1);
@@ -413,33 +369,18 @@ Dialog_Setup::create_document_page(PageInfo pi)
 void
 Dialog_Setup::create_editing_page(PageInfo pi)
 {
-	/*---------Editing------------------*\
-	 * ANIMATION
-	 *  [x] Thumbnail preview
-	 * OTHER
-	 *  [x] Linear color
-	 *  [x] Restrict radius
-	 * EDIT IN EXTERNAL
-	 * 	Preferred image editor [image_editor_path] (choose..)
-	 *
-	 */
-
 	int row(1);
 	
-	// Editing Animation section
 	attach_label_section(pi.grid, _("Animation"), row);
 
-	// Editing - Show animation thumbnail preview
 	attach_label(pi.grid, _("Thumbnail preview"), ++row);
 	pi.grid->attach(toggle_animation_thumbnail_preview, 1, row, 1, 1);
 	toggle_animation_thumbnail_preview.set_tooltip_text(_("Turn on/off animation thumbnail preview when you hover your mouse over the timetrack panel."));
 	toggle_animation_thumbnail_preview.set_halign(Gtk::ALIGN_START);
 	toggle_animation_thumbnail_preview.set_hexpand(false);
 
-	// Editing Other section
 	attach_label_section(pi.grid, _("Other"), ++row);
 
-	// Editing - Restrict Real-value Handles to Top Right Quadrant
 	attach_label(pi.grid,_("Restrict real value handles to top right quadrant"), ++row);
 	pi.grid->attach(toggle_restrict_radius_ducks, 1, row, 1, 1);
 	toggle_restrict_radius_ducks.set_halign(Gtk::ALIGN_START);
@@ -453,18 +394,15 @@ dragging the handle to the left bottom part of your 2D space."));
 
 	attach_label(pi.grid,_("Preferred image editor"), ++row);
 
-	//create a button that will open the filechooserdialog to select image editor
 	Gtk::Button *choose_button(manage(new class Gtk::Button(Gtk::StockID(_("Choose...")))));
 	choose_button->show();
 	choose_button->set_tooltip_text(_("Choose the preferred Image editor for Edit in external tool option"));
 	
-	//create a function to launch the dialog
 	choose_button->signal_clicked().connect(sigc::mem_fun(*this,&Dialog_Setup::on_choose_editor_pressed));
 	pi.grid->attach(image_editor_path_entry, 1, row, 1, 1);
 	pi.grid->attach(*choose_button, 2,row,1,1);
 	image_editor_path_entry.set_hexpand(true);
 	image_editor_path_entry.set_text(App::image_editor_path);
-	
 }
 
 void
@@ -511,7 +449,7 @@ Dialog_Setup::create_shortcuts_page(Dialog_Template::PageInfo pi)
 
 	auto map = App::get_default_accel_map();
 
-	// sort by action path
+	// Sort by action path
 	std::map<std::string,std::string> action_map;
 	for (const auto& pair : map)
 		action_map[pair.second] = pair.first;
@@ -608,7 +546,7 @@ void
 Dialog_Setup::on_restore_default_accels_pressed()
 {
 	std::string message = _("Do you really want to restore the default shortcuts?");
-	bool accepted = App::dialog_message_2b(_("Restore Default Shortcuts"), message, Gtk::MESSAGE_QUESTION, _("Cancel"), _("OK"));
+	bool accepted = App::dialog_message_2b(_("Restore default shortcuts"), message, Gtk::MESSAGE_QUESTION, _("Cancel"), _("OK"));
 	if (!accepted)
 		return;
 
@@ -618,7 +556,6 @@ Dialog_Setup::on_restore_default_accels_pressed()
 void
 Dialog_Setup::on_choose_editor_pressed()
 {
-	//set the image editor path = filepath from dialog
 	String filepath = image_editor_path_entry.get_text();
 	if (select_path_dialog(_("Select Editor"), filepath)) {
 		image_editor_path_entry.set_text(filepath);
@@ -656,29 +593,21 @@ Dialog_Setup::select_path_dialog(const std::string &title, std::string &filepath
 void
 Dialog_Setup::create_render_page(PageInfo pi)
 {
-	/*---------Render------------------*\
-	 *
-	 *  sequence separator _________
-	 *   workarea  [ Legacy ]
-	 *   play sound on render done  [x| ]
-	 *
-	 */
-
 	int row(1);
-	// Render - Number of threads used
+
 	attach_label(pi.grid, _("Number of threads used"), row);
 	number_of_threads_select = Gtk::manage(new Gtk::SpinButton(adj_number_of_threads,0,0));
 	pi.grid->attach(*number_of_threads_select, 1, row, 1, 1);
 	number_of_threads_select->signal_changed().connect(sigc::mem_fun(*this, &Dialog_Setup::on_number_of_thread_changed) );
 	number_of_threads_select->set_hexpand(true);
-	// Render - Image sequence separator
+
 	attach_label(pi.grid, _("Image Sequence Separator String"), ++row);
 	pi.grid->attach(image_sequence_separator, 1, row, 1, 1);
 	image_sequence_separator.set_hexpand(true);
-	// Render - WorkArea
+
 	attach_label(pi.grid, _("WorkArea renderer"), ++row);
 	pi.grid->attach(workarea_renderer_combo, 1, row, 1, 1);
-	// Render - Render Done sound
+
 	attach_label(pi.grid, _("Chime on render done"), ++row);
 	pi.grid->attach(toggle_play_sound_on_render_done, 1, row, 1, 1);
 	toggle_play_sound_on_render_done.set_halign(Gtk::ALIGN_START);
@@ -714,20 +643,7 @@ Dialog_Setup::create_render_page(PageInfo pi)
 void
 Dialog_Setup::create_interface_page(PageInfo pi)
 {
-	/*---------Interface------------------*\
-	 * LANGUAGE
-	 *  [________________________________]
-	 * COLORTHEME
-	 *  DarkUI          [x]
-	 * HANDLETOOLTIP
-	 *  Widthpoint      [x| ]
-	 *  Radius          [x| ]
-	 *  Transformation  [x| ]
-	 *        [x] Name
-	 *        [x] Value
-	 */
-
-	// Interface - UI Language
+	int row = 1;
 
 	static const char* languages[][2] = {
 		#include <languages.inc.c>
@@ -743,43 +659,37 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 	ui_language_combo.set_active_id(App::ui_language);
 	ui_language_combo.signal_changed().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_ui_language_combo_change));
 
-	int row = 1;
-
-	// Interface - Language section
 	attach_label_section(pi.grid, _("Language"), row);
 	pi.grid->attach(ui_language_combo, 0, ++row, 4, 1);
 	ui_language_combo.set_hexpand(true);
 	ui_language_combo.set_margin_start(10);
 
-	// Interface - Color Theme section
 	attach_label_section(pi.grid, _("Color Theme"), ++row);
-	// Interface - Dark UI theme
+
 	attach_label(pi.grid, _("Dark UI theme (if available)"), ++row);
 	pi.grid->attach(toggle_use_dark_theme, 1, row, 1, 1);
 	toggle_use_dark_theme.set_halign(Gtk::ALIGN_START);
 	toggle_use_dark_theme.set_hexpand(false);
 
-	// Interface - Toolbars section
 	attach_label_section(pi.grid, _("Toolbars"), ++row);
-	// Interface - File Toolbar
+
 	attach_label(pi.grid, _("Show file toolbar (requires restart)"), ++row);
 	pi.grid->attach(toggle_show_file_toolbar, 1, row, 1, 1);
 	toggle_show_file_toolbar.set_halign(Gtk::ALIGN_START);
 	toggle_show_file_toolbar.set_hexpand(false);
 
-	// Interface - Handle tooltip section
 	attach_label_section(pi.grid, _("Handle Tooltips"), ++row);
-	// Interface - width point tooltip
+
 	attach_label(pi.grid, _("Width point"), ++row);
 	pi.grid->attach(toggle_handle_tooltip_widthpoint, 1, row, 1, 1);
 	toggle_handle_tooltip_widthpoint.set_halign(Gtk::ALIGN_START);
 	toggle_handle_tooltip_widthpoint.set_hexpand(false);
-	// Interface - radius tooltip
+
 	attach_label(pi.grid, _("Radius"), ++row);
 	pi.grid->attach(toggle_handle_tooltip_radius, 1, row, 1, 1);
 	toggle_handle_tooltip_radius.set_halign(Gtk::ALIGN_START);
 	toggle_handle_tooltip_radius.set_hexpand(false);
-	// Interface - transformation widget tooltip
+
 	attach_label_section(pi.grid, _("Transformation widget tooltips"), ++row);
 	pi.grid->attach(toggle_handle_tooltip_transformation, 1, row, 1, 1);
 	toggle_handle_tooltip_transformation.set_halign(Gtk::ALIGN_START);
@@ -787,11 +697,12 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 	toggle_handle_tooltip_transformation.property_active().signal_changed().connect(
 		sigc::mem_fun(*this, &Dialog_Setup::on_tooltip_transformation_changed));
 
-	attach_label(pi.grid, _("Name"), ++row);// HANDLE_TOOLTIP_TRANSFO_NAME
+	attach_label(pi.grid, _("Name"), ++row);
 	pi.grid->attach(toggle_handle_tooltip_transfo_name, 1, row, 1, 1);
 	toggle_handle_tooltip_transfo_name.set_halign(Gtk::ALIGN_START);
 	toggle_handle_tooltip_transfo_name.set_hexpand(false);
-	attach_label(pi.grid, _("Value"), ++row);// HANDLE_TOOLTIP_TRANSFO_VALUE
+
+	attach_label(pi.grid, _("Value"), ++row);
 	pi.grid->attach(toggle_handle_tooltip_transfo_value, 1, row, 1, 1);
 	toggle_handle_tooltip_transfo_value.set_halign(Gtk::ALIGN_START);
 	toggle_handle_tooltip_transfo_value.set_hexpand(false);
@@ -872,38 +783,24 @@ void
 Dialog_Setup::on_apply_pressed()
 {
 	App::set_max_recent_files((int)adj_recent_files->get_value());
-
-	// Set the time format
 	App::set_time_format(get_time_format());
 
 	//if(pref_modification_flag&CHANGE_AUTOBACKUP)
 	// TODO catch change event on auto_backup_interval before use CHANGE_AUTOBACKUP
 	{
-		// Set the auto backup status
 		App::auto_recover->set_enabled(toggle_autobackup.get_active());
-		// Set the auto backup interval
 		App::auto_recover->set_timeout_ms(auto_backup_interval.get_value() * 1000);
 	}
 
 	App::distance_system              = Distance::System(widget_enum->get_value());
-
-	// Set the restrict_radius_ducks flag
 	App::restrict_radius_ducks        = toggle_restrict_radius_ducks.get_active();
-
-	// Set the animation_thumbnail_preview flag
 	App::animation_thumbnail_preview  = toggle_animation_thumbnail_preview.get_active();
-
-	// Set the experimental features flag
 	App::enable_experimental_features = toggle_enable_experimental_features.get_active();
 
-	// Set the advanced and risky flag that keeps the Redo stack on new action, instead of clear it
 	synfigapp::Main::settings().set_value("pref.clear_redo_stack_on_new_action", toggle_clear_redo_stack_on_new_action.get_active());
 
-	// Set the dark theme flag
 	App::use_dark_theme               = toggle_use_dark_theme.get_active();
 	App::apply_gtk_settings();
-
-	// Set file toolbar flag
 	App::show_file_toolbar=toggle_show_file_toolbar.get_active();
 
 	//! TODO Create Change mechanism has Class for being used elsewhere
@@ -928,28 +825,14 @@ Dialog_Setup::on_apply_pressed()
 		input_settings.set_value("brush.path_count", path_count);
 	}
 
-	// Set the preferred file name prefix
 	App::custom_filename_prefix = textbox_custom_filename_prefix.get_text();
-
-	// Set the preferred image editor
 	App::image_editor_path		= image_editor_path_entry.get_text();
-
-	// Set the preferred new Document X dimension
 	App::preferred_x_size       = int(adj_pref_x_size->get_value());
-
-	// Set the preferred new Document Y dimension
 	App::preferred_y_size       = int(adj_pref_y_size->get_value());
-
-	// Set the preferred Predefined size
 	App::predefined_size        = size_template_combo->get_active_text();
-
-	// Set the preferred Predefined fps
 	App::predefined_fps         = fps_template_combo->get_active_text();
-
-	// Set the preferred FPS
 	App::preferred_fps          = Real(adj_pref_fps->get_value());
 
-	// Set the background color
 	Gdk::RGBA m_color = def_background_color_button.get_rgba();
 
 	App::default_background_layer_color = synfig::Color(m_color.get_red(),
@@ -964,40 +847,27 @@ Dialog_Setup::on_apply_pressed()
 	if (def_background_image.get_active())
 		App::default_background_layer_type = "image";
 	
-	// Set the background image
 	App::default_background_layer_image = fcbutton_image.get_filename();
-	
-	// Set the preferred image sequence separator
 	App::sequence_separator     = image_sequence_separator.get_text();
-
-	// Set the number of threads
 	App::number_of_threads = int(adj_number_of_threads->get_value());
 
-	// Set the workarea render and navigator render flag
 	App::navigator_renderer = App::workarea_renderer  = workarea_renderer_combo.get_active_id();
-
-	// Set the use of a render done sound
 	App::use_render_done_sound  = toggle_play_sound_on_render_done.get_active();
 	
-	// Set the preview background color
 	m_color = preview_background_color_button.get_rgba();
-
 	App::preview_background_color = synfig::Color(m_color.get_red(),
 												  m_color.get_green(),
 												  m_color.get_blue(),
 												  m_color.get_alpha());
 
-	// Set ui language
 	if (pref_modification_flag & CHANGE_UI_LANGUAGE)
 		App::ui_language = ui_language_combo.get_active_id().c_str();
 
 	if (pref_modification_flag & CHANGE_UI_HANDLE_TOOLTIP)
 	{
-		// Set ui tooltip on width point
 		App::ui_handle_tooltip_flag=toggle_handle_tooltip_widthpoint.get_active()?Duck::STRUCT_WIDTHPOINT:Duck::STRUCT_NONE;
-		// Set ui tooltip on radius
 		App::ui_handle_tooltip_flag |= toggle_handle_tooltip_radius.get_active()?Duck::STRUCT_RADIUS:Duck::STRUCT_NONE;
-		// Set ui tooltip on transformation
+
 		if(toggle_handle_tooltip_transformation.get_active())
 		{
 			if(toggle_handle_tooltip_transfo_name.get_active())
@@ -1142,26 +1012,20 @@ Dialog_Setup::refresh()
 	
 	adj_recent_files->set_value(App::get_max_recent_files());
 
-	// Refresh the ui language
 	ui_language_combo.set_active_id(App::ui_language);
 	
-	// Refresh the time format
 	set_time_format(App::get_time_format());
 
 	widget_enum->set_value(App::distance_system);
 
 	toggle_autobackup.set_active(App::auto_recover->get_enabled());
-	// Refresh the value of the auto backup interval
 	auto_backup_interval.set_value(App::auto_recover->get_timeout_ms() / 1000);
 	auto_backup_interval.set_sensitive(App::auto_recover->get_enabled());
 
-	// Refresh the status of the restrict_radius_ducks flag
 	toggle_restrict_radius_ducks.set_active(App::restrict_radius_ducks);
 
-	// Refresh the status of animation_thumbnail_preview flag
 	toggle_animation_thumbnail_preview.set_active(App::animation_thumbnail_preview);
 
-	// Refresh the status of the experimental features flag
 	toggle_enable_experimental_features.set_active(App::enable_experimental_features);
 
 	// Refresh the status of the experimental features flag
@@ -1170,13 +1034,10 @@ Dialog_Setup::refresh()
 		toggle_clear_redo_stack_on_new_action.set_active(active);
 	}
 
-	// Refresh the status of the theme flag
 	toggle_use_dark_theme.set_active(App::use_dark_theme);
 
-	// Refresh the status of the render done sound flag
 	toggle_play_sound_on_render_done.set_active(App::use_render_done_sound);
 	
-	// Refresh the default background
 	if (App::default_background_layer_type == "none")
 		def_background_none.set_active();
 	if (App::default_background_layer_type == "solid_color")
@@ -1186,7 +1047,6 @@ Dialog_Setup::refresh()
 	
 	fcbutton_image.set_filename(App::default_background_layer_image);
 	
-	// Refresh the colors of background and preview background buttons
 	Gdk::RGBA m_color;
 	m_color.set_rgba( App::default_background_layer_color.get_r(),
 					  App::default_background_layer_color.get_g(),
@@ -1200,10 +1060,7 @@ Dialog_Setup::refresh()
 					  App::preview_background_color.get_a());
 	preview_background_color_button.set_rgba(m_color);
 
-	// Refresh the status of file toolbar flag
 	toggle_show_file_toolbar.set_active(App::show_file_toolbar);
-
-	// Refresh the preferred image editor path
 	image_editor_path_entry.set_text(App::image_editor_path);
 
 	// Refresh the brush path(s)
@@ -1244,35 +1101,25 @@ Dialog_Setup::refresh()
 	// Refresh the preferred filename prefix
 	textbox_custom_filename_prefix.set_text(App::custom_filename_prefix);
 
-	// Refresh the preferred new Document X dimension
 	adj_pref_x_size->set_value(App::preferred_x_size);
 
-	// Refresh the preferred new Document Y dimension
 	adj_pref_y_size->set_value(App::preferred_y_size);
 
-	// Refresh the preferred Predefined size
 	size_template_combo->set_active_text(App::predefined_size);
 
-	// Refresh the preferred FPS
 	adj_pref_fps->set_value(App::preferred_fps);
 
-	// Refresh the predefined FPS
 	fps_template_combo->set_active_text(App::predefined_fps);
 
-	// Refresh the sequence separator
 	image_sequence_separator.set_text(App::sequence_separator);
 
-	// Refresh the number of threads
 	number_of_threads_select->set_value(App::number_of_threads);
 
-	// Refresh the status of the workarea_renderer
 	workarea_renderer_combo.set_active_id(App::workarea_renderer);
 
-	// Refresh ui tooltip handle info
 	toggle_handle_tooltip_widthpoint.set_active(App::ui_handle_tooltip_flag&Duck::STRUCT_WIDTHPOINT);
 	toggle_handle_tooltip_radius.set_active(App::ui_handle_tooltip_flag&Duck::STRUCT_RADIUS);
 	
-	// Refresh widget tooltip
 	if((App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFORMATION) ||
 			(App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFO_BY_VALUE))
 	{

@@ -199,6 +199,7 @@ class Dialog_Setup : public Dialog_Template
 	void apply_current_accels();
 	void refresh_accels();
 	void restore_default_accels();
+
 public:
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
@@ -217,7 +218,7 @@ public:
 	void set_time_format(synfig::Time::Format time_format);
 	const synfig::Time::Format& get_time_format()const { return time_format; }
 
-    void refresh();
+	void refresh();
 }; // END of Dialog_Setup
 
 }; // END of namespace studio
