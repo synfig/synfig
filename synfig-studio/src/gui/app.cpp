@@ -2691,16 +2691,6 @@ App::dialog_open_file(const std::string &title, std::vector<std::string> &filena
 	
 	dialog->set_extra_widget(*scale_imported_box());
 
-		//std::cout<<filename<<std::endl;
-		/*
-		if (filename.empty())
-			dialog->set_filename(prev_path);
-		else if (is_absolute_path(filename))
-			dialog->set_filename(filename);
-		else
-			dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
-		*/
-
 	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
 		filenames = dialog->get_filenames();
 		for(std::string filename : filenames){
