@@ -9,7 +9,7 @@ add_library(mod_geometry MODULE
         "${CMAKE_CURRENT_LIST_DIR}/star.cpp"
 )
 
-target_link_libraries(mod_geometry synfig ${GLIBMM_LIBRARIES})
+target_link_libraries(mod_geometry synfig)
 
 install (
     TARGETS mod_geometry

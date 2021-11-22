@@ -6,7 +6,7 @@ add_library(mod_noise MODULE
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_random.cpp"
 )
 
-target_link_libraries(mod_noise synfig ${SIGCPP_LIBRARIES})
+target_link_libraries(mod_noise PRIVATE synfig)
 
 install (
     TARGETS mod_noise

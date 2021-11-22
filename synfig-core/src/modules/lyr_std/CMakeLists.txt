@@ -23,7 +23,7 @@ add_library(lyr_std MODULE
         "${CMAKE_CURRENT_LIST_DIR}/zoom.cpp"
 )
 
-target_link_libraries(lyr_std synfig ${GLIBMM_LIBRARIES})
+target_link_libraries(lyr_std synfig ${GLIBMM_LINK_LIBRARIES})
 
 install (
     TARGETS lyr_std
