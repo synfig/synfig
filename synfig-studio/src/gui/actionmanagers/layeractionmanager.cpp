@@ -77,7 +77,7 @@ remove_layers_inside_included_pastelayers(const std::list<Layer::Handle>& layer_
 	}
 
 	std::list<Layer::Handle> clean_layer_list;
-	for (const Layer::Handle layer : layer_list) {
+	for (const Layer::Handle& layer : layer_list) {
 		bool is_inside_a_selected_pastecanvas = false;
 		auto parent_paste_canvas = layer->get_parent_paste_canvas_layer();
 		while (parent_paste_canvas) {

@@ -41,7 +41,7 @@
 
 #include "blurtemplates.h"
 #include "fft.h"
-#include "blur_iir_coefficients.cpp"
+//#include "blur_iir_coefficients.cpp"
 #endif
 
 using namespace std;
@@ -544,7 +544,7 @@ software::Blur::blur_box(const Params &params)
 		params.blend_method,
 		params.amount );
 }
-
+/*
 software::Blur::IIRCoefficients
 software::Blur::get_iir_coefficients(Real radius)
 {
@@ -707,7 +707,7 @@ software::Blur::blur_iir(const Params &params)
 		params.blend,
 		params.blend_method,
 		params.amount );
-}
+}*/
 
 void
 software::Blur::blur(Params params)

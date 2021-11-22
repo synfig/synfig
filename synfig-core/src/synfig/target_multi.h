@@ -54,14 +54,14 @@ public:
 	Target_Multi(Target_Scanline::Handle a,Target_Scanline::Handle b);
 	virtual ~Target_Multi();
 	virtual bool add_frame(const synfig::Surface *surface, ProgressCallback *cb);
-	virtual bool start_frame(ProgressCallback *cb=NULL);
-	virtual void end_frame();
-	virtual Color * start_scanline(int scanline);
-	virtual bool end_scanline();
+	bool start_frame(ProgressCallback *cb = nullptr) override;
+	void end_frame() override;
+	Color * start_scanline(int scanline) override;
+	bool end_scanline() override;
 
-	virtual void set_canvas(etl::handle<Canvas> c);
-	virtual bool set_rend_desc(RendDesc *d);
-	virtual bool init();
+	void set_canvas(etl::handle<Canvas> c) override;
+	bool set_rend_desc(RendDesc* d) override;
+	bool init(ProgressCallback* cb = nullptr) override;
 }; // END of class Target_Multi
 
 }; // END of namespace synfig
