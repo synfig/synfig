@@ -739,12 +739,15 @@ Svg_parser::parser_layer(const xmlpp::Node* node, xmlpp::Element* root, Style st
 void
 Svg_parser::parser_rect(const xmlpp::Element* nodeElement,xmlpp::Element* root, const Style& style)
 {
-	Glib::ustring rect_id		=nodeElement->get_attribute_value("id");
-	Glib::ustring rect_x		=nodeElement->get_attribute_value("x");
-	Glib::ustring rect_y		=nodeElement->get_attribute_value("y");
-	Glib::ustring rect_width	=nodeElement->get_attribute_value("width");
-	Glib::ustring rect_height	=nodeElement->get_attribute_value("height");
-	Glib::ustring fill       	= style.get("fill", "#000");
+	Glib::ustring rect_id = nodeElement->get_attribute_value("id");
+	double rect_x         = style.compute("x", "0");
+	double rect_y         = style.compute("y", "0");
+	double rect_width     = style.compute("width", "0");
+	double rect_height    = style.compute("height", "0");
+
+	Glib::ustring fill    = style.get("fill", "#000");
+	float fill_opacity    = style.compute("fill_opacity", "1");
+	float opacity         = style.compute("opacity", "1");
 
 	xmlpp::Element *child_rect=root->add_child("layer");
 	child_rect->set_attribute("type","rectangle");
@@ -755,18 +758,16 @@ Svg_parser::parser_rect(const xmlpp::Element* nodeElement,xmlpp::Element* root, 
 	build_real(child_rect->add_child("param"),"z_depth",0.0);
 	build_real(child_rect->add_child("param"),"amount",1.0);
 	build_integer(child_rect->add_child("param"),"blend_method",0);
-	build_color(child_rect->add_child("param"),getRed(fill),getGreen(fill),getBlue(fill),style.compute("opacity", "1")*style.compute("fill_opacity", "1"));
+	build_color(child_rect->add_child("param"),getRed(fill),getGreen(fill),getBlue(fill),opacity*fill_opacity);
 
-	float auxx=atof(rect_x.c_str());
-	float auxy=atof(rect_y.c_str());
+	float auxx=rect_x;
+	float auxy=rect_y;
 	coor2vect(&auxx,&auxy);
 	build_vector (child_rect->add_child("param"),"point1",auxx,auxy);
-	auxx= atof(rect_x.c_str()) + atof(rect_width.c_str());
-	auxy= atof(rect_y.c_str()) + atof(rect_height.c_str());
+	auxx= rect_x + rect_width;
+	auxy= rect_y + rect_height;
 	coor2vect(&auxx,&auxy);
 	build_vector (child_rect->add_child("param"),"point2",auxx,auxy);
-
-
 }
 
 void
