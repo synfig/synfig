@@ -292,8 +292,8 @@ Dockable::present()
 Gtk::Widget*
 Dockable::create_tab_label()
 {
-	Gtk::Box *box = manage(new Gtk::Box());
-	attach_dnd_to(*box);
+	Gtk::EventBox *event_box = manage(new Gtk::EventBox());
+	attach_dnd_to(*event_box);
 
 	// Check to make sure the icon is valid
 	Gtk::StockItem stock_item;
@@ -302,21 +302,17 @@ Dockable::create_tab_label()
 		Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
 		Gtk::Image* icon(manage(new Gtk::Image(get_stock_id(), iconsize)));
 		icon->show();
-		box->set_tooltip_text(get_local_name());
-		box->add(*icon);
-		// add label
-		Gtk::Label* label = manage(new Gtk::Label(get_local_name()));
-		label->show();
-		box->add(*label);
+		event_box->set_tooltip_text(get_local_name());
+		event_box->add(*icon);
 
 	} else {
 		// bad icon, add label
 		Gtk::Label* label = manage(new Gtk::Label(get_local_name()));
 		label->show();
-		box->add(*label);
+		event_box->add(*label);
 	}
 
-	return box;
+	return event_box;
 }
 
 void Dockable::write_layout_string(std::string& /*params*/) const
