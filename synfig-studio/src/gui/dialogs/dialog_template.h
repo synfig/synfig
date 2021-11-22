@@ -116,7 +116,7 @@ public:
 
 private:
 
-	void on_treeviewselection_changed ();
+	void on_treeviewselection_changed();
 
 	/*
  -- ** -- P R O T E C T E D   M E T H O D S ---------------------------------------
