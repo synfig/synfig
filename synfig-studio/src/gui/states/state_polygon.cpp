@@ -283,15 +283,9 @@ StatePolygon_Context::load_settings()
 
 		set_opacity(settings.get_value("polygon.opacity", 1.0));
 
-		set_bline_width(Distance(
-							settings.get_value("polygon.bline_width", 1.0),
-							App::distance_system)
-						);
+		set_bline_width(settings.get_value("polygon.bline_width", Distance("1.0px")));
 
-		set_feather_size(Distance(
-							settings.get_value("polygon.feather", 0.0),
-							App::distance_system)
-						);
+		set_feather_size(settings.get_value("polygon.feather", Distance("0.0px")));
 
 		set_invert(settings.get_value("polygon.invert", false));
 
@@ -331,8 +325,8 @@ StatePolygon_Context::save_settings()
 		settings.set_value("polygon.id",get_id());
 		settings.set_value("polygon.blend",get_blend());
 		settings.set_value("polygon.opacity",get_opacity());
-		settings.set_value("polygon.bline_width", bline_width_dist.get_value().get_string());
-		settings.set_value("polygon.feather", feather_dist.get_value().get_string());
+		settings.set_value("polygon.bline_width", bline_width_dist.get_value());
+		settings.set_value("polygon.feather", feather_dist.get_value());
 		settings.set_value("polygon.invert",get_invert());
 		settings.set_value("polygon.layer_polygon",get_layer_polygon_flag());
 		settings.set_value("polygon.layer_outline",get_layer_outline_flag());

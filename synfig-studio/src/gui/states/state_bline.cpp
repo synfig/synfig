@@ -328,10 +328,7 @@ StateBLine_Context::load_settings()
 
 		set_opacity(settings.get_value("bline.opacity", 1.0));
 
-		set_bline_width(Distance(
-							settings.get_value("bline.bline_width", 1.0),
-							App::distance_system)
-						);
+		set_bline_width(settings.get_value("bline.bline_width", Distance("1.0px")));
 
 		set_layer_region_flag(settings.get_value("bline.layer_region", true));
 
@@ -347,10 +344,7 @@ StateBLine_Context::load_settings()
 
 		set_auto_export_flag(settings.get_value("bline.auto_export", false));
 
-		set_feather_size(Distance(
-							settings.get_value("bline.feather", 0.0),
-							App::distance_system)
-						);
+		set_feather_size(settings.get_value("bline.feather", Distance("0.0px")));
 
 		// determine layer flags
 		layer_region_flag = get_layer_region_flag();
@@ -382,8 +376,8 @@ StateBLine_Context::save_settings()
 		settings.set_value("bline.layer_link_origins",get_layer_link_origins_flag());
 		settings.set_value("bline.blend",get_blend());
 		settings.set_value("bline.opacity",get_opacity());
-		settings.set_value("bline.bline_width", bline_width_dist.get_value().get_string());
-		settings.set_value("bline.feather", feather_dist.get_value().get_string());
+		settings.set_value("bline.bline_width", bline_width_dist.get_value());
+		settings.set_value("bline.feather", feather_dist.get_value());
 		settings.set_value("bline.auto_export",get_auto_export_flag());
 
 	}

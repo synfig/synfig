@@ -317,6 +317,13 @@ Settings::get_value(const synfig::String& key, bool default_value) const {
 	return value == "1" || value == "true";
 }
 
+synfig::Distance
+Settings::get_value(const synfig::String &key, const synfig::Distance &default_value) const
+{
+	synfig::String value;
+	return get_raw_value(key, value) ? Distance(value) : default_value;
+}
+
 synfig::String
 Settings::get_value(const synfig::String& key, const synfig::String& default_value) const {
 	synfig::String value;
@@ -350,6 +357,13 @@ bool
 Settings::set_value(const synfig::String &key, bool value)
 {
 	return set_value(key, value? "1" : "0");
+}
+
+bool
+Settings::set_value(const synfig::String &key, const synfig::Distance &value)
+{
+	ChangeLocale(LC_NUMERIC, "C");
+	return set_value(key, value.get_string());
 }
 
 bool

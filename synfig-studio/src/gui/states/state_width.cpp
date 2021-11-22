@@ -181,10 +181,7 @@ StateWidth_Context::load_settings()
 		//parse the arguments yargh!
 		set_delta(settings.get_value("width.delta", 6.0));
 
-		set_radius(Distance(
-							settings.get_value("width.radius", 60.0),
-							App::distance_system)
-						);
+		set_radius(settings.get_value("width.radius", Distance("60.0px")));
 
 		set_relative(settings.get_value("width.relative", false));
 	}
@@ -200,7 +197,7 @@ StateWidth_Context::save_settings()
 	try
 	{
 		settings.set_value("width.delta",get_delta());
-		settings.set_value("width.radius",influence_radius->get_value().get_string());
+		settings.set_value("width.radius",influence_radius->get_value());
 		settings.set_value("width.relative",get_relative());
 	}
 	catch(...)

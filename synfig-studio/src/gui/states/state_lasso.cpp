@@ -382,10 +382,7 @@ StateLasso_Context::load_settings()
 
 		set_opacity(settings.get_value("lasso.opacity", 1.0));
 
-		set_bline_width(Distance(
-							settings.get_value("lasso.bline_width", 1.0),
-							App::distance_system)
-						);
+		set_bline_width(settings.get_value("lasso.bline_width", Distance("1.0px")));
 
 		set_pressure_width_flag(settings.get_value("lasso.pressure_width", true));
 
@@ -403,10 +400,7 @@ StateLasso_Context::load_settings()
 
 		set_min_pressure(settings.get_value("lasso.min_pressure", 0.0));
 
-		set_feather_size(Distance(
-							settings.get_value("lasso.feather", 0.0),
-							App::distance_system)
-						);
+		set_feather_size(settings.get_value("lasso.feather", Distance("0.0px")));
 
 		set_gthres(settings.get_value("lasso.gthreshold", 0.7));
 
@@ -443,7 +437,7 @@ StateLasso_Context::save_settings()
 		settings.set_value("lasso.id",get_id());
 		settings.set_value("lasso.blend",int(Color::BLEND_ALPHA_OVER));
 		settings.set_value("lasso.opacity",get_opacity());
-		settings.set_value("lasso.bline_width", bline_width_dist.get_value().get_string());
+		settings.set_value("lasso.bline_width", bline_width_dist.get_value());
 		settings.set_value("lasso.pressure_width",get_pressure_width_flag());
 		settings.set_value("lasso.auto_loop",get_auto_loop_flag());
 		settings.set_value("lasso.auto_extend",get_auto_extend_flag());
@@ -453,7 +447,7 @@ StateLasso_Context::save_settings()
 		settings.set_value("lasso.advanced_outline",get_layer_advanced_outline_flag());
 		settings.set_value("lasso.auto_export",get_auto_export_flag());
 		settings.set_value("lasso.min_pressure",get_min_pressure());
-		settings.set_value("lasso.feather",feather_dist.get_value().get_string());
+		settings.set_value("lasso.feather",feather_dist.get_value());
 		settings.set_value("lasso.min_pressure_on",get_min_pressure_flag());
 		settings.set_value("lasso.gthreshold",get_gthres());
 		settings.set_value("lasso.widthmaxerror",get_width_max_error());

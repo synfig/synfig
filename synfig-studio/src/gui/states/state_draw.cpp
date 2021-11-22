@@ -379,10 +379,7 @@ StateDraw_Context::load_settings()
 
 		set_opacity(settings.get_value("draw.opacity", 1.0));
 
-		set_bline_width(Distance(
-							settings.get_value("draw.bline_width", 1.0),
-							App::distance_system)
-						);
+		set_bline_width(settings.get_value("draw.bline_width", Distance("1.0px")));
 
 		set_pressure_width_flag(settings.get_value("draw.pressure_width", true));
 
@@ -406,10 +403,7 @@ StateDraw_Context::load_settings()
 
 		set_min_pressure(settings.get_value("draw.min_pressure", 0.0));
 
-		set_feather_size(Distance(
-							settings.get_value("draw.feather", 0.0),
-							App::distance_system)
-						);
+		set_feather_size(settings.get_value("draw.feather", Distance("0.0px")));
 
 		set_gthres(settings.get_value("draw.gthreshold", 0.7));
 
@@ -440,7 +434,7 @@ StateDraw_Context::save_settings()
 		settings.set_value("draw.id",get_id());
 		settings.set_value("draw.blend",get_blend());
 		settings.set_value("draw.opacity",get_opacity());
-		settings.set_value("draw.bline_width", bline_width_dist.get_value().get_string());
+		settings.set_value("draw.bline_width", bline_width_dist.get_value());
 		settings.set_value("draw.pressure_width",get_pressure_width_flag());
 		settings.set_value("draw.auto_loop",get_auto_loop_flag());
 		settings.set_value("draw.auto_extend",get_auto_extend_flag());
@@ -451,7 +445,7 @@ StateDraw_Context::save_settings()
 		settings.set_value("draw.layer_link_origins",get_layer_link_origins_flag());
 		settings.set_value("draw.auto_export",get_auto_export_flag());
 		settings.set_value("draw.min_pressure",get_min_pressure());
-		settings.set_value("draw.feather",feather_dist.get_value().get_string());
+		settings.set_value("draw.feather",feather_dist.get_value());
 		settings.set_value("draw.min_pressure_on",get_min_pressure_flag());
 		settings.set_value("draw.gthreshold",get_gthres());
 		settings.set_value("draw.widthmaxerror",get_width_max_error());
