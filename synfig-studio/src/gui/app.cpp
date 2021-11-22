@@ -2527,6 +2527,195 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 }
 
 bool
+App::dialog_open_file(const std::string &title, std::vector<std::string> &filenames, std::string preference)
+{
+	// info("App::dialog_open_file('%s', '%s', '%s')", title.c_str(), filename.c_str(), preference.c_str());
+	// TODO: Win32 native dialod not ready yet
+#ifdef USE_WIN32_FILE_DIALOGS
+	static TCHAR szFilter[] = TEXT (_("All Files (*.*)\0*.*\0\0")) ;
+
+	GdkWindow *gdkWinPtr=toolbox->get_window()->gobj();
+	HINSTANCE hInstance=static_cast<HINSTANCE>(GetModuleHandle(NULL));
+	HWND hWnd=static_cast<HWND>(GDK_WINDOW_HWND(gdkWinPtr));
+
+	ofn.lStructSize=sizeof(OPENFILENAME);
+	ofn.hwndOwner = hWnd;
+	ofn.hInstance = hInstance;
+	ofn.lpstrFilter = szFilter;
+//	ofn.lpstrCustomFilter=NULL;
+//	ofn.nMaxCustFilter=0;
+//	ofn.nFilterIndex=0;
+//	ofn.lpstrFile=NULL;
+	ofn.nMaxFile=MAX_PATH;
+//	ofn.lpstrFileTitle=NULL;
+//	ofn.lpstrInitialDir=NULL;
+//	ofn.lpstrTitle=NULL;
+	ofn.Flags=OFN_HIDEREADONLY;
+//	ofn.nFileOffset=0;
+//	ofn.nFileExtension=0;
+	ofn.lpstrDefExt=TEXT("sif");
+//	ofn.lCustData = 0l;
+	ofn.lpfnHook=NULL;
+//	ofn.lpTemplateName=NULL;
+
+	CHAR szFilename[MAX_PATH];
+	CHAR szTitle[500];
+	strcpy(szFilename,filename.c_str());
+	strcpy(szTitle,title.c_str());
+
+	ofn.lpstrFile=szFilename;
+	ofn.lpstrFileTitle=szTitle;
+
+	if(GetOpenFileName(&ofn))
+	{
+		filename=szFilename;
+		return true;
+	}
+	return false;
+
+#else   // not USE_WIN32_FILE_DIALOGS
+	synfig::String prev_path;
+
+	prev_path = _preferences.get_value(preference, Glib::get_home_dir());
+	prev_path = absolute_path(prev_path);
+
+	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,
+				title, Gtk::FILE_CHOOSER_ACTION_OPEN);
+
+	dialog->set_transient_for(*App::main_window);
+	dialog->set_current_folder(prev_path);
+	dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
+	dialog->add_button(_("Import"), Gtk::RESPONSE_ACCEPT)->set_image_from_icon_name("gtk-open",   Gtk::ICON_SIZE_BUTTON);
+	dialog->set_select_multiple(true);
+
+	// 0 All supported files
+	// 0.1 Synfig documents. sfg is not supported to import
+	Glib::RefPtr<Gtk::FileFilter> filter_supported = Gtk::FileFilter::create();
+	filter_supported->set_name(_("All supported files"));
+	filter_supported->add_mime_type("application/x-sif");
+	filter_supported->add_pattern("*.sif");
+	filter_supported->add_pattern("*.sifz");
+	// 0.2 Image files
+	filter_supported->add_mime_type("image/png");
+	filter_supported->add_mime_type("image/jpeg");
+	filter_supported->add_mime_type("image/jpg");
+	filter_supported->add_mime_type("image/bmp");
+	filter_supported->add_mime_type("image/svg+xml");
+	filter_supported->add_pattern("*.png");
+	filter_supported->add_pattern("*.jpeg");
+	filter_supported->add_pattern("*.jpg");
+	filter_supported->add_pattern("*.bmp");
+	filter_supported->add_pattern("*.svg");
+	filter_supported->add_pattern("*.lst");
+	// 0.3 Audio files
+	filter_supported->add_mime_type("audio/x-vorbis+ogg");
+	filter_supported->add_mime_type("audio/mpeg");
+	filter_supported->add_mime_type("audio/x-wav");
+	filter_supported->add_pattern("*.ogg");
+	filter_supported->add_pattern("*.mp3");
+	filter_supported->add_pattern("*.wav");
+	// 0.4 Video files
+	filter_supported->add_pattern("*.avi");
+	filter_supported->add_pattern("*.mp4");
+	filter_supported->add_pattern("*.gif");
+	// 0.5 lipsync files
+	filter_supported->add_pattern("*.pgo");
+	filter_supported->add_pattern("*.tsv");
+	filter_supported->add_pattern("*.xml");
+
+	// Sub fileters
+	// 1 Synfig documents. sfg is not supported to import
+	Glib::RefPtr<Gtk::FileFilter> filter_synfig = Gtk::FileFilter::create();
+	filter_synfig->set_name(_("Synfig files (*.sif, *.sifz)"));
+	filter_synfig->add_mime_type("application/x-sif");
+	filter_synfig->add_pattern("*.sif");
+	filter_synfig->add_pattern("*.sifz");
+
+	// 2.1 Image files
+	Glib::RefPtr<Gtk::FileFilter> filter_image = Gtk::FileFilter::create();
+	filter_image->set_name(_("Images (*.png, *.jpeg, *.bmp, *.svg)"));
+	filter_image->add_mime_type("image/png");
+	filter_image->add_mime_type("image/jpeg");
+	filter_image->add_mime_type("image/jpg");
+	filter_image->add_mime_type("image/bmp");
+	filter_image->add_mime_type("image/svg+xml");
+	filter_image->add_pattern("*.png");
+	filter_image->add_pattern("*.jpeg");
+	filter_image->add_pattern("*.jpg");
+	filter_image->add_pattern("*.bmp");
+	filter_image->add_pattern("*.svg");
+
+	// 2.2 Image sequence/list files
+	Glib::RefPtr<Gtk::FileFilter> filter_image_list = Gtk::FileFilter::create();
+	filter_image_list->set_name(_("Image sequence files (*.lst)"));
+	filter_image_list->add_pattern("*.lst");
+
+	// 3 Audio files
+	Glib::RefPtr<Gtk::FileFilter> filter_audio = Gtk::FileFilter::create();
+	filter_audio->set_name(_("Audio (*.ogg, *.mp3, *.wav)"));
+	filter_audio->add_mime_type("audio/x-vorbis+ogg");
+	filter_audio->add_mime_type("audio/mpeg");
+	filter_audio->add_mime_type("audio/x-wav");
+	filter_audio->add_pattern("*.ogg");
+	filter_audio->add_pattern("*.mp3");
+	filter_audio->add_pattern("*.wav");
+
+	// 4 Video files
+	Glib::RefPtr<Gtk::FileFilter> filter_video = Gtk::FileFilter::create();
+	filter_video->set_name(_("Video (*.avi, *.mp4)"));
+	filter_video->add_mime_type("video/x-msvideo");
+	filter_video->add_mime_type("video/mp4");
+	filter_video->add_pattern("*.avi");
+	filter_video->add_pattern("*.mp4");
+
+	// 5 Lipsync files
+	Glib::RefPtr<Gtk::FileFilter> filter_lipsync = Gtk::FileFilter::create();
+	filter_lipsync->set_name(_("Lipsync (*.pgo, *.tsv, *.xml)"));
+	filter_lipsync->add_pattern("*.pgo");
+	filter_lipsync->add_pattern("*.tsv");
+	filter_lipsync->add_pattern("*.xml");
+
+	// 6 Any files
+	Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
+	filter_any->set_name(_("Any files"));
+	filter_any->add_pattern("*");
+
+	dialog->add_filter(filter_supported);
+	dialog->add_filter(filter_synfig);
+	dialog->add_filter(filter_image);
+	dialog->add_filter(filter_image_list);
+	dialog->add_filter(filter_audio);
+	dialog->add_filter(filter_video);
+	dialog->add_filter(filter_lipsync);
+	dialog->add_filter(filter_any);
+	
+	dialog->set_extra_widget(*scale_imported_box());
+
+		//std::cout<<filename<<std::endl;
+		/*
+		if (filename.empty())
+			dialog->set_filename(prev_path);
+		else if (is_absolute_path(filename))
+			dialog->set_filename(filename);
+		else
+			dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
+		*/
+
+	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
+		filenames = dialog->get_filenames();
+		for(std::string filename : filenames){
+			// info("Saving preference %s = '%s' in App::dialog_open_file()", preference.c_str(), dirname(filename).c_str());
+			_preferences.set_value(preference, dirname(filename));
+		}
+		delete dialog;
+		return true;
+	}
+	delete dialog;
+	return false;
+#endif   // not USE_WIN32_FILE_DIALOGS
+}
+
+bool
 App::dialog_open_file_spal(const std::string &title, std::string &filename, std::string preference)
 {
 	synfig::String prev_path = _preferences.get_value(preference, Glib::get_home_dir());

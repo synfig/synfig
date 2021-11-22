@@ -3570,10 +3570,12 @@ void
 CanvasView::import_file()
 {
 	// String filename(dirname(get_canvas()->get_file_name()));
-	String filename("*.*");
+	//String filename("*.*");
+	std::vector<std::string> filenames;
 	String errors, warnings;
-	if(App::dialog_open_file(_("Please select files"), filename, IMAGE_DIR_PREFERENCE))
+	if(App::dialog_open_file(_("Please select files"), filenames, IMAGE_DIR_PREFERENCE))
 	{
+		for(std::string filename : filenames){
 		// Don't let user import a file to itself
 		// Check if it's the same file of this canvas
 		{
@@ -3624,6 +3626,7 @@ CanvasView::import_file()
 			get_selection_manager()->clear_selected_layers();
 			get_selection_manager()->set_selected_layer(layer);
 		}
+	}
 	}
 }
 
