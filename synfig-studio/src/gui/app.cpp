@@ -2402,7 +2402,7 @@ App::dialog_open_file_ext(const std::string &title, std::vector<std::string> &fi
 	dialog->set_current_folder(prev_path);
 	dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
 	dialog->add_button(_("Import"), Gtk::RESPONSE_ACCEPT)->set_image_from_icon_name("gtk-open",   Gtk::ICON_SIZE_BUTTON);
-	dialog->set_select_multiple(true);
+	dialog->set_select_multiple(allow_multiple_selection);
 
 	// 0 All supported files
 	// 0.1 Synfig documents. sfg is not supported to import
@@ -2509,9 +2509,9 @@ App::dialog_open_file_ext(const std::string &title, std::vector<std::string> &fi
 
 	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
 		filenames = dialog->get_filenames();
-		for(std::string filename : filenames){
+		if(!filenames.empty()){
 			// info("Saving preference %s = '%s' in App::dialog_open_file()", preference.c_str(), dirname(filename).c_str());
-			_preferences.set_value(preference, dirname(filename));
+			_preferences.set_value(preference, dirname(filenames.front()));
 		}
 		delete dialog;
 		return true;
