@@ -39,7 +39,7 @@
 #include FT_GLYPH_H
 
 #if HAVE_HARFBUZZ
-#include <harfbuzz/hb.h>
+#include <hb.h>
 #endif
 
 /* === M A C R O S ========================================================= */
