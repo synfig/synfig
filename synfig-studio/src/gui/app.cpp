@@ -2507,6 +2507,13 @@ App::dialog_open_file_ext(const std::string &title, std::vector<std::string> &fi
 
 	dialog->set_extra_widget(*scale_imported_box());
 
+	if (filenames.empty())
+		dialog->set_filename(prev_path);
+	else if (is_absolute_path(filenames.front()))
+		dialog->set_filename(filenames.front());
+	else
+		dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filenames.front());
+
 	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
 		filenames = dialog->get_filenames();
 		if(!filenames.empty()){
@@ -2525,6 +2532,8 @@ bool
 App::dialog_open_file(const std::string &title, std::string &filename, std::string preference)
 {
 	std::vector<std::string> filenames;
+	if (!filename.empty())
+        filenames.push_back(filename);
 	if(dialog_open_file_ext(title, filenames, preference, false)) {
 		filename = filenames.front();
 		return true;
