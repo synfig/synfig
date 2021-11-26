@@ -57,7 +57,7 @@ if(MSVC)
 	set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 else()
 	set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -fno-inline-functions -fno-inline -g -O0 -Wall")
-	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-inline-functions -fno-inline -g -O0 -Wall")
+	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-inline-functions -fno-inline -g -O0 -Wall -D_GLIBCXX_ASSERTIONS -U_GLIBCXX_USE_DEPRECATED")
 endif(MSVC)
 
 # This can be enabled once the address sanitization related errors are resolved.
