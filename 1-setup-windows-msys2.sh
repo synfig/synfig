@@ -10,7 +10,7 @@
 # in an MSYS shell
 # -------------------------------------------------------------------------------
 
-SCRIPT_DIR=`dirname "$0"`
+SCRIPT_DIR=$(dirname "$0")
 
 echo "Selected ARCH: ${MINGW_PACKAGE_PREFIX}"
 
@@ -53,4 +53,9 @@ bash ${SCRIPT_DIR}/autobuild/msys2/build_mlt.sh
 # and std::sprintf is stop working. But std::sprintf is used by Boost::Odeint library
 # so we need it.
 
-patch $MINGW_PREFIX/include/libintl.h < ${SCRIPT_DIR}/autobuild/msys2/libintl.h.patch
+# Try to reverse the patch first, to check if the patch is already applied
+if patch -R -p0 -s -f --dry-run "${MINGW_PREFIX}/include/libintl.h" < "${SCRIPT_DIR}/autobuild/msys2/libintl.h.patch"; then
+  echo "Patch is already applied"
+else
+  patch -p0 "${MINGW_PREFIX}/include/libintl.h" < "${SCRIPT_DIR}/autobuild/msys2/libintl.h.patch"
+fi
