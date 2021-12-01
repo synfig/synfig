@@ -50,7 +50,7 @@ fi
 
 if [[ `uname` == "MINGW"* ]]; then # MacOS doesn't support `uname -o` flag
 	PATH="${MINGW_PREFIX}/lib/ccache/bin:${PATH}"
-	PKG_CONFIG_PATH="/opt/mlt-6.16.0/lib/pkgconfig:${PKG_CONFIG_PATH}"
+	PKG_CONFIG_PATH="/opt/mlt-7.2.0/lib/pkgconfig:${PKG_CONFIG_PATH}"
 	echo "ccache enabled"
 fi
 
