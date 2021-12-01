@@ -53,7 +53,7 @@ namespace studio {
 TimePlotData::TimePlotData(Gtk::Widget* widget, Glib::RefPtr<Gtk::Adjustment> vertical_adjustment) :
 	invalid(true),
 	k(0),
-	extra_margin(3),
+	extra_margin(10),
 	has_vertical(false),
 	widget(widget),
 	vertical_adjustment(vertical_adjustment)

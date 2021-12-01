@@ -438,37 +438,14 @@ AX_BOOST_BASE([1.53.0],,AC_MSG_ERROR([ ** You need to install Boost >= 1.53.0]))
 TARGET_PNG="yes"
 TARGET_MNG="yes"
 
-AC_CHECK_LIB(png16, png_write_row,[
-	PNG_LIBS="-lpng16"
+PKG_CHECK_MODULES(PNG, [libpng],[
 	AC_DEFINE(HAVE_LIBPNG,[], [ Define if PNG library is available ])
-	AC_SUBST(PNG_LIBS)
 	AM_CONDITIONAL(HAVE_LIBPNG,true)
 ],[
-	AC_CHECK_LIB(png14, png_write_row,[
-		PNG_LIBS="-lpng14"
-		AC_DEFINE(HAVE_LIBPNG,[], [ Define if PNG library is available ])
-		AC_SUBST(PNG_LIBS)
-		AM_CONDITIONAL(HAVE_LIBPNG,true)
-	],[
-		AC_CHECK_LIB(png12, png_write_row,[
-		PNG_LIBS="-lpng12"
-		AC_DEFINE(HAVE_LIBPNG,[])
-		AC_SUBST(PNG_LIBS)
-		AM_CONDITIONAL(HAVE_LIBPNG,true)
-		],[
-			AC_CHECK_LIB(png, png_write_row,[
-			PNG_LIBS="-lpng"
-			AC_DEFINE(HAVE_LIBPNG,[])
-			AC_SUBST(PNG_LIBS)
-			AM_CONDITIONAL(HAVE_LIBPNG,true)
-			],[
-				AC_MSG_RESULT([ *** PNG Output target disabled])
-				TARGET_PNG="no"
-				AM_CONDITIONAL(HAVE_LIBPNG,false)
-			],[-lz -L${exec_prefix}/lib])
-		],[-lz -L${exec_prefix}/lib])
-	],[-lz -L${exec_prefix}/lib])
-],[-lz -L${exec_prefix}/lib])
+	AC_MSG_RESULT([ *** PNG Output target disabled])
+	TARGET_PNG="no"
+	AM_CONDITIONAL(HAVE_LIBPNG,false)
+])
 
 AC_CHECK_LIB(mng, mng_initialize,[
 	MNG_LIBS="-lmng -lz"
@@ -542,12 +519,6 @@ AC_SUBST(CFLAGS)
 AC_SUBST(CXXFLAGS)
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
-
-# AC_CONFIG_SUBDIRS(libltdl) is required for libtool 1.5.26 but must not be present for
-# libtool 2.2.4. Problem seems to be that AC_LIB_LTDL (above) now calls AC_CONFIG_SUBDIRS
-# itself, through LTDL_INIT, _LTDL_SETUP, _LTDL_MODE_DISPATCH. We need to check the
-# condition that libltdl has already been registered with AC_CONFIG_SUBDIRS:
-m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])
 
 CONFIG_LIBS="-lsynfig"
 CONFIG_CFLAGS="$CONFIG_CFLAGS"

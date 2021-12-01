@@ -4,7 +4,7 @@ add_library(mod_mng MODULE
 )
 
 target_compile_options(mod_mng PRIVATE ${LIBMNG_CFLAGS})
-target_link_libraries(mod_mng synfig ${LIBMNG_LIBRARIES})
+target_link_libraries(mod_mng PRIVATE synfig ${LIBMNG_LINK_LIBRARIES})
 
 install (
     TARGETS mod_mng
