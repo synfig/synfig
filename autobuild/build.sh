@@ -94,7 +94,7 @@ if [[ `uname` == "MINGW"* ]]; then # MacOS doesn't support `uname -o` flag
 	# copy MLT
 	MLT_REV=1   # Change this when something is changed inside of if block below
 	if [ ! -f "${PREFIX}/mlt-${VERSION_MLT}-${MLT_REV}.done" ]; then
-		VERSION_MLT="6.16.0"
+		VERSION_MLT="7.2.0"
 		cp -rf /opt/mlt-${VERSION_MLT}/*.dll "${PREFIX}/bin/"
 		cp -rf /opt/mlt-${VERSION_MLT}/*.exe "${PREFIX}/bin/"
 		cp -rf /opt/mlt-${VERSION_MLT}/share "${PREFIX}/bin/"

@@ -4,10 +4,10 @@
 # -------------------------------------------------------------------------------
 set -e # exit on error
 
-SCRIPT_DIR=`dirname "$0"`
-
-VERSION_MLT="6.16.0"
-PATH="${MINGW_PREFIX}/lib/ccache/bin:${PATH}"
+VERSION_MLT="7.2.0"
+# CMake cannot invoke `ccache` binaries in MSYS2 because they are just
+# bash scripts so it ends up with "invalid Win32 application" error
+# PATH="${MINGW_PREFIX}/lib/ccache/bin:${PATH}"
 MLT_PATH="/opt/mlt-${VERSION_MLT}"
 
 if [ ! -f ${MLT_PATH}/done ] || [ ! -f ${MLT_PATH}/lib/mlt/libmltavformat.dll ]; then
@@ -21,12 +21,14 @@ wget "https://github.com/mltframework/mlt/releases/download/v${VERSION_MLT}/mlt-
 tar xzf ./mlt-${VERSION_MLT}.tar.gz
 
 pushd mlt-${VERSION_MLT}/
-FIXED_MLT_PATH=`cygpath -m ${MLT_PATH}`
+FIXED_MLT_PATH=$(cygpath -m ${MLT_PATH})
 echo "Install path: ${MLT_PATH}"
 echo "Fixed MLT Path: ${FIXED_MLT_PATH}"
-./configure --prefix=${FIXED_MLT_PATH} --target-arch=$MSYSTEM_CARCH --disable-gtk2 --enable-avformat --disable-lumas
-make -j2 --silent
-make install
+mkdir -p build && pushd build
+cmake -G"Ninja" -DMOD_GDK=OFF -DMOD_QT=OFF -DMOD_KDENLIVE=OFF -DCMAKE_INSTALL_PREFIX=${FIXED_MLT_PATH} ..
+cmake --build .
+cmake --install .
+popd
 popd
 
 touch ${MLT_PATH}/done
