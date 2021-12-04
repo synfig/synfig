@@ -3575,7 +3575,7 @@ CanvasView::import_file()
 	String errors, warnings;
 	if(App::dialog_open_file(_("Please select files"), filenames, IMAGE_DIR_PREFERENCE))
 	{
-		for(std::string filename : filenames){
+		for(const std::string filename : filenames){
 		// Don't let user import a file to itself
 		// Check if it's the same file of this canvas
 		{
