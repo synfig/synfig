@@ -46,8 +46,8 @@
 #include <glibmm.h>
 
 #if HAVE_HARFBUZZ
-#include <fribidi/fribidi.h>
-#include <harfbuzz/hb-ft.h>
+#include <fribidi.h>
+#include <hb-ft.h>
 #endif
 
 #include <synfig/canvasfilenaming.h>
