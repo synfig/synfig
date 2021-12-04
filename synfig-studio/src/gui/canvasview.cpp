@@ -3571,6 +3571,7 @@ CanvasView::import_file()
 {
 	// String filename(dirname(get_canvas()->get_file_name()));
 	std::vector<std::string> filenames;
+	LayerTree::LayerList layers;
 	filenames.push_back("*.*");
 	String errors, warnings;
 	if(App::dialog_open_file(_("Please select files"), filenames, IMAGE_DIR_PREFERENCE))
@@ -3623,10 +3624,11 @@ CanvasView::import_file()
 				_("Close"));
 
 		if (layer) {
-			get_selection_manager()->clear_selected_layers();
-			get_selection_manager()->set_selected_layer(layer);
+			layers.push_back(layer);
 		}
 	}
+	get_selection_manager()->clear_selected_layers();
+	get_selection_manager()->set_selected_layers(layers);
 	}
 }
 
