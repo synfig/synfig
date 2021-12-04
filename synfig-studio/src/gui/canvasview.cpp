@@ -3616,7 +3616,7 @@ CanvasView::import_file()
 }
 
 bool
-CanvasView::is_same_file(std::string filename)
+CanvasView::is_same_file(const std::string &filename)
 {
 	bool is_same_file = get_canvas()->get_file_name() == filename;
 	if (!is_same_file) {

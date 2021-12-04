@@ -490,7 +490,7 @@ private:
 	static void save_all();
 
 	//helper function for import_file()
-	bool is_same_file(std::string filename);
+	bool is_same_file(const std::string &filename);
 	
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
