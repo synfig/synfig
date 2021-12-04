@@ -3610,7 +3610,8 @@ CanvasView::import_file()
 			layers.push_back(layer);
 		}
 	}
-<<<<<<< HEAD
+	get_selection_manager()->clear_selected_layers();
+	get_selection_manager()->set_selected_layers(layers);
 	}
 }
 
@@ -3636,11 +3637,6 @@ CanvasView::is_same_file(std::string filename)
 		}
 	}
 	return is_same_file;
-=======
-	get_selection_manager()->clear_selected_layers();
-	get_selection_manager()->set_selected_layers(layers);
-	}
->>>>>>> master
 }
 
 void
