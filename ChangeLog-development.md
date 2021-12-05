@@ -1,3 +1,7 @@
+- [`d37e72a`](https://github.com/synfig/synfig/commit/d37e72ac3dcb42bbf64deb0ae6b9d1c90649f229) Refactored import file: added is_same_file method ([#2451](https://github.com/synfig/synfig/issues/2451)) [studio]
+- [`55d09c2`](https://github.com/synfig/synfig/commit/55d09c27f3dd81bdf79c9d43303f5412280938f9) Added ability to import multiple files ([#2439](https://github.com/synfig/synfig/issues/2439)) [studio]
+- [`9c2796c`](https://github.com/synfig/synfig/commit/9c2796c2bde9d33dca7ac6524b93e6dc256c96da) Fixed includes for harfbuzz and fribidi libraries ([#2442](https://github.com/synfig/synfig/issues/2442)) [core]
+- [`32808d9`](https://github.com/synfig/synfig/commit/32808d9f80505505958aea012cae4d771bde48a1) Merge PR [#2449](https://github.com/synfig/synfig/issues/2449): Fix MSYS2 build
 - [`0ab9d69`](https://github.com/synfig/synfig/commit/0ab9d69e4ce0b923d22185b2f6508b71ea7162cd) Merge PR ([#2445](https://github.com/synfig/synfig/issues/2445)): Fixed crash when using Draw tool (Fedora/Flatpak) [studio]
 - [`943ca1e`](https://github.com/synfig/synfig/commit/943ca1e9aa835935111ff53acaef703de5591158) Autotools: detects libpng via pkg-config ([#2443](https://github.com/synfig/synfig/issues/2443)) [core]
 - [`ed40cc0`](https://github.com/synfig/synfig/commit/ed40cc08f0bc9b1e421d7285ec784351dbcc0569) Autotools: remove code for very old libtool versions ([#2444](https://github.com/synfig/synfig/issues/2444)) [core]
