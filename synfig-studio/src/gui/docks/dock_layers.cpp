@@ -181,7 +181,9 @@ Dock_Layers::Dock_Layers():
 
 	action_group_new_layers->set_sensitive(false);
 
-	set_toolbar(*dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-layer")));
+	if (Gtk::Toolbar* toolbar = dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-layer"))) {
+		set_toolbar(*toolbar);
+	}
 }
 
 
