@@ -2343,7 +2343,7 @@ gint Signal_Open_Ok    (GtkWidget */*widget*/, int *val){*val=1; return 0;}
 gint Signal_Open_Cancel(GtkWidget */*widget*/, int *val){*val=2; return 0;}
 
 bool
-App::dialog_open_file(const std::string &title, std::string &filename, std::string preference)
+App::dialog_open_file_ext(const std::string &title, std::vector<std::string> &filenames, std::string preference, bool allow_multiple_selection)
 {
 	// info("App::dialog_open_file('%s', '%s', '%s')", title.c_str(), filename.c_str(), preference.c_str());
 	// TODO: Win32 native dialod not ready yet
@@ -2402,6 +2402,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 	dialog->set_current_folder(prev_path);
 	dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
 	dialog->add_button(_("Import"), Gtk::RESPONSE_ACCEPT)->set_image_from_icon_name("gtk-open",   Gtk::ICON_SIZE_BUTTON);
+	dialog->set_select_multiple(allow_multiple_selection);
 
 	// 0 All supported files
 	// 0.1 Synfig documents. sfg is not supported to import
@@ -2503,27 +2504,46 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 	dialog->add_filter(filter_video);
 	dialog->add_filter(filter_lipsync);
 	dialog->add_filter(filter_any);
-	
+
 	dialog->set_extra_widget(*scale_imported_box());
 
-	if (filename.empty())
+	if (filenames.empty())
 		dialog->set_filename(prev_path);
-	else if (is_absolute_path(filename))
-		dialog->set_filename(filename);
+	else if (is_absolute_path(filenames.front()))
+		dialog->set_filename(filenames.front());
 	else
-		dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
+		dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filenames.front());
 
 	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
-		filename = dialog->get_filename();
-		// info("Saving preference %s = '%s' in App::dialog_open_file()", preference.c_str(), dirname(filename).c_str());
-		_preferences.set_value(preference, dirname(filename));
+		filenames = dialog->get_filenames();
+		if(!filenames.empty()){
+			// info("Saving preference %s = '%s' in App::dialog_open_file()", preference.c_str(), dirname(filename).c_str());
+			_preferences.set_value(preference, dirname(filenames.front()));
+		}
 		delete dialog;
 		return true;
 	}
-
 	delete dialog;
 	return false;
 #endif   // not USE_WIN32_FILE_DIALOGS
+}
+
+bool
+App::dialog_open_file(const std::string &title, std::string &filename, std::string preference)
+{
+	std::vector<std::string> filenames;
+	if (!filename.empty())
+        filenames.push_back(filename);
+	if(dialog_open_file_ext(title, filenames, preference, false)) {
+		filename = filenames.front();
+		return true;
+	}
+	return false;
+}
+
+bool App::dialog_open_file(const std::string &title, std::vector<std::string> &filenames, std::string preference)
+{
+	return dialog_open_file_ext(title, filenames, preference, true);
 }
 
 bool
