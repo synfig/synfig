@@ -113,19 +113,16 @@ public:
 	}
 
 	bool on_key_release_event(GdkEventKey* key_event)
-{
-	SYNFIG_EXCEPTION_GUARD_BEGIN()
-	std::cout<<"IN KEY_RELEASE_EVENT"<<std::endl;
-	if(key_event->keyval == GDK_KEY_Escape) 
-	{ 
-		std::cout<<"*********IN GDK_KEY_Escape**********"<<std::endl;
-		on_editing_done();
-		return false;//TODO: SHOULD THIS BE FALSE OR TRUE??
+	{
+		SYNFIG_EXCEPTION_GUARD_BEGIN()
+		if(key_event->keyval == GDK_KEY_Escape) 
+		{ 
+			on_editing_done();
+			return true;
+		}
+		return Gtk::EventBox::on_key_release_event(key_event);
+		SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 	}
-		
-	return Gtk::EventBox::on_key_release_event(key_event);
-	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
-}
 
 	void set_parent(Gtk::Widget* x) { parent = x; }
 
@@ -142,6 +139,7 @@ public:
 		SYNFIG_EXCEPTION_GUARD_BEGIN()
 		valuewidget->signal_activate().connect(sigc::mem_fun(*this,
 			&studio::ValueBase_Entry::editing_done));
+		valuewidget->signal_key_press_event().connect(sigc::mem_fun(*this, &studio::ValueBase_Entry::on_key_release_event));
 
 		// popup combobox menu if its is a enum editor
 		if (event && event->type == GDK_BUTTON_PRESS && valuewidget) {
@@ -174,17 +172,7 @@ public:
 
 	bool on_event(GdkEvent *event)
 	{
-		std::cout<<event->any.type<<std::endl;
-		//TODO: CHECK THIS FUNCTION
-		SYNFIG_EXCEPTION_GUARD_BEGIN()
-		
-		if(event->any.type == GDK_KEY_RELEASE){ //&& ((GdkEventKey*)event)->keyval == GDK_KEY_Escape ){
-		//	if(event->any.type == ((GdkEventKey*)event)->keyval)
-			std::cout<<((GdkEventKey*)event)->keyval<<std::endl;
-			//on_editing_done();
-			return false;
-		}
-				
+		SYNFIG_EXCEPTION_GUARD_BEGIN()		
 		if (event->any.type == GDK_BUTTON_PRESS
 		 || event->any.type == GDK_2BUTTON_PRESS
 		 || event->any.type == GDK_KEY_PRESS
@@ -608,7 +596,6 @@ CellRenderer_ValueBase::start_editing_vfunc(
 	const Gdk::Rectangle&  /*cell_area*/,
 	Gtk::CellRendererState /*flags*/)
 {
-		std::cout<<"in CellRenderer_ValueBase::start_editing_vfunc L583"<<std::endl;
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	edit_value_done_called = false;
 	// If we aren't editable, then there is nothing to do
