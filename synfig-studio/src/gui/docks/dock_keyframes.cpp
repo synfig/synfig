@@ -88,7 +88,9 @@ Dock_Keyframes::Dock_Keyframes():
 
 	App::ui_manager()->add_ui_from_string(ui_info);
 
-	set_toolbar(*dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-keyframe")));
+	if (Gtk::Toolbar* toolbar = dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-keyframe"))) {
+		set_toolbar(*toolbar);
+	}
 }
 
 Dock_Keyframes::~Dock_Keyframes()

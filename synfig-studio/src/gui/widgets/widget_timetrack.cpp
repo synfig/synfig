@@ -117,15 +117,15 @@ bool Widget_Timetrack::use_canvas_view(etl::loose_handle<CanvasView> canvas_view
 	}
 	Gtk::TreeView* params_treeview = dynamic_cast<Gtk::TreeView*>(canvas_view->get_ext_widget("params"));
 
-	// This parameter dock is connected to timetrack
-	// We have to set padding to this widget to achieve our intended padding
-	// behavior for our timetrack
-	params_treeview->set_name("timetrack");
-
 	if (!params_treeview) {
 		synfig::error(_("Params treeview widget doesn't exist"));
 		return false;
 	}
+
+	// This parameter dock is connected to timetrack
+	// We have to set padding to this widget to achieve our intended padding
+	// behavior for our timetrack
+	params_treeview->set_name("timetrack");
 
 	set_time_model(canvas_view->time_model());
 	set_canvas_interface(canvas_view->canvas_interface());

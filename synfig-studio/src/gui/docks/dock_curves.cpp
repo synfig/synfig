@@ -128,9 +128,10 @@ Dock_Curves::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 		)
 	);
 
-	studio::LayerTree* tree_layer(dynamic_cast<studio::LayerTree*>(canvas_view->get_ext_widget("layers_cmp")));
-	tree_layer->signal_param_tree_header_height_changed().connect(
-		sigc::mem_fun(*this, &studio::Dock_Curves::on_update_header_height) );
+	if (studio::LayerTree* tree_layer = dynamic_cast<studio::LayerTree*>(canvas_view->get_ext_widget("layers_cmp"))) {
+		tree_layer->signal_param_tree_header_height_changed().connect(
+				sigc::mem_fun(*this, &studio::Dock_Curves::on_update_header_height) );
+	}
 
 	curves->signal_waypoint_clicked().connect(sigc::mem_fun(*this, &Dock_Curves::on_curves_waypoint_clicked));
 
@@ -184,6 +185,9 @@ Dock_Curves::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 	if(canvas_view)
 	{
 		last_widget_curves_=dynamic_cast<Widget_Curves*>( canvas_view->get_ext_widget(get_name()) );
+		if (!last_widget_curves_) {
+			return;
+		}
 
 		vscrollbar_.set_adjustment(last_widget_curves_->get_range_adjustment());
 		hscrollbar_.set_adjustment(canvas_view->time_model()->scroll_time_adjustment());

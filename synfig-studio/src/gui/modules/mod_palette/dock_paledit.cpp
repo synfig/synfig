@@ -189,7 +189,9 @@ Dock_PalEdit::Dock_PalEdit():
 
 	App::ui_manager()->add_ui_from_string(ui_info);
 
-	set_toolbar(*dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-palette")));
+	if (Gtk::Toolbar* toolbar = dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-palette"))) {
+		set_toolbar(*toolbar);
+	}
 
 	/*
 	add_button(

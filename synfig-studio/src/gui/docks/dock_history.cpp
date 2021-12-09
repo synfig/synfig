@@ -143,7 +143,9 @@ Dock_History::Dock_History():
 
 	action_group->set_sensitive(false);
 
-	set_toolbar(*dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-history")));
+	if (Gtk::Toolbar* toolbar = dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-history"))) {
+		set_toolbar(*toolbar);
+	}
 	add(*create_action_tree());
 }
 
