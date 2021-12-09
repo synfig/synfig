@@ -112,7 +112,7 @@ public:
 		}
 	}
 
-	bool on_key_release_event(GdkEventKey* key_event)
+	bool on_key_press_event(GdkEventKey* key_event)
 	{
 		SYNFIG_EXCEPTION_GUARD_BEGIN()
 		if(key_event->keyval == GDK_KEY_Escape) 
@@ -139,7 +139,7 @@ public:
 		SYNFIG_EXCEPTION_GUARD_BEGIN()
 		valuewidget->signal_activate().connect(sigc::mem_fun(*this,
 			&studio::ValueBase_Entry::editing_done));
-		valuewidget->signal_key_press_event().connect(sigc::mem_fun(*this, &studio::ValueBase_Entry::on_key_release_event));
+		valuewidget->signal_key_press_event().connect(sigc::mem_fun(*this, &studio::ValueBase_Entry::on_key_press_event));
 
 		// popup combobox menu if its is a enum editor
 		if (event && event->type == GDK_BUTTON_PRESS && valuewidget) {
@@ -172,7 +172,7 @@ public:
 
 	bool on_event(GdkEvent *event)
 	{
-		SYNFIG_EXCEPTION_GUARD_BEGIN()		
+		SYNFIG_EXCEPTION_GUARD_BEGIN()
 		if (event->any.type == GDK_BUTTON_PRESS
 		 || event->any.type == GDK_2BUTTON_PRESS
 		 || event->any.type == GDK_KEY_PRESS
