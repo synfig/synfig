@@ -112,18 +112,6 @@ public:
 		}
 	}
 
-	bool on_key_press_event(GdkEventKey* key_event)
-	{
-		SYNFIG_EXCEPTION_GUARD_BEGIN()
-		if(key_event->keyval == GDK_KEY_Escape) 
-		{ 
-			on_editing_done();
-			return true;
-		}
-		return Gtk::EventBox::on_key_release_event(key_event);
-		SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
-	}
-
 	void set_parent(Gtk::Widget* x) { parent = x; }
 
 	void on_remove_widget()
@@ -182,6 +170,18 @@ public:
 		 || event->any.type == GDK_3BUTTON_PRESS )
 			return true;
 		return Gtk::EventBox::on_event(event);
+		SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
+	}
+
+	bool on_key_press_event(GdkEventKey* key_event)
+	{
+		SYNFIG_EXCEPTION_GUARD_BEGIN()
+		if(key_event->keyval == GDK_KEY_Escape)
+		{
+			on_editing_done();
+			return true;
+		}
+		return Gtk::EventBox::on_key_release_event(key_event);
 		SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 	}
 
