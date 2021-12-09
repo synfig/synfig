@@ -88,7 +88,9 @@ Dock_LayerGroups::Dock_LayerGroups():
 
 	App::ui_manager()->add_ui_from_string(ui_info);
 
-	set_toolbar(*dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-groups")));
+	if (Gtk::Toolbar* toolbar = dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-groups"))) {
+		set_toolbar(*toolbar);
+	}
 }
 
 Dock_LayerGroups::~Dock_LayerGroups()

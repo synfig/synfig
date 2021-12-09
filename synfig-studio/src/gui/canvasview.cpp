@@ -3580,25 +3580,8 @@ CanvasView::import_file()
 		// Don't let user import a file to itself
 		// Check if it's the same file of this canvas
 		{
-			bool is_same_file = get_canvas()->get_file_name() == filename;
-			if (!is_same_file) {
-				Glib::RefPtr<Gio::File> current_file;
-				try {
-					current_file = Gio::File::create_for_path(get_canvas()->get_file_name());
-					if (current_file) {
-						Glib::RefPtr<Gio::File> import_file = Gio::File::create_for_path(filename);
-						is_same_file = current_file->equal(import_file);
-						if (!is_same_file && import_file) {
-							// One more sanity check
-							Glib::RefPtr<Gio::FileInfo> current_file_info = current_file->query_info(G_FILE_ATTRIBUTE_ID_FILE);
-							Glib::RefPtr<Gio::FileInfo> import_file_info = import_file->query_info(G_FILE_ATTRIBUTE_ID_FILE);
-							is_same_file = current_file_info->get_attribute_string(G_FILE_ATTRIBUTE_ID_FILE) == import_file_info->get_attribute_string(G_FILE_ATTRIBUTE_ID_FILE);
-						}
-					}
-				} catch (...) {
-				}
-			}
-			if (is_same_file) {
+			bool same_file = is_same_file(filename);
+			if (same_file) {
 				App::dialog_message_1b(
 					"ERROR",
 					_("You cannot import a file to itself"),
@@ -3630,6 +3613,30 @@ CanvasView::import_file()
 	get_selection_manager()->clear_selected_layers();
 	get_selection_manager()->set_selected_layers(layers);
 	}
+}
+
+bool
+CanvasView::is_same_file(const std::string &filename)
+{
+	bool is_same_file = get_canvas()->get_file_name() == filename;
+	if (!is_same_file) {
+		Glib::RefPtr<Gio::File> current_file;
+		try {
+			current_file = Gio::File::create_for_path(get_canvas()->get_file_name());
+			if (current_file) {
+				Glib::RefPtr<Gio::File> import_file = Gio::File::create_for_path(filename);
+				is_same_file = current_file->equal(import_file);
+				if (!is_same_file && import_file) {
+					// One more sanity check
+					Glib::RefPtr<Gio::FileInfo> current_file_info = current_file->query_info(G_FILE_ATTRIBUTE_ID_FILE);
+					Glib::RefPtr<Gio::FileInfo> import_file_info = import_file->query_info(G_FILE_ATTRIBUTE_ID_FILE);
+					is_same_file = current_file_info->get_attribute_string(G_FILE_ATTRIBUTE_ID_FILE) == import_file_info->get_attribute_string(G_FILE_ATTRIBUTE_ID_FILE);
+				}
+			}
+		} catch (...) {
+		}
+	}
+	return is_same_file;
 }
 
 void
@@ -3793,19 +3800,21 @@ CanvasView::set_ext_widget(const String& x, Gtk::Widget* y, bool own)
 	ext_widget_book_[x].set(y, own);
 	if(x=="layers_cmp")
 	{
-		layer_tree=dynamic_cast<LayerTree*>(y);
-		layer_tree->get_selection()->signal_changed().connect(SLOT_EVENT(EVENT_LAYER_SELECTION_CHANGED));
-		layer_tree->get_selection()->signal_changed().connect(SLOT_EVENT(EVENT_REFRESH_DUCKS));
-		layer_tree->signal_layer_user_click().connect(sigc::mem_fun(*this, &CanvasView::on_layer_user_click));
-//		layer_tree->signal_param_user_click().connect(sigc::mem_fun(*this, &CanvasView::on_param_user_click));
-		layer_tree->signal_waypoint_clicked_layertree().connect(sigc::mem_fun(*this, &CanvasView::on_waypoint_clicked_canvasview));
+		if (layer_tree=dynamic_cast<LayerTree*>(y)) {
+			layer_tree->get_selection()->signal_changed().connect(SLOT_EVENT(EVENT_LAYER_SELECTION_CHANGED));
+			layer_tree->get_selection()->signal_changed().connect(SLOT_EVENT(EVENT_REFRESH_DUCKS));
+			layer_tree->signal_layer_user_click().connect(sigc::mem_fun(*this, &CanvasView::on_layer_user_click));
+	//		layer_tree->signal_param_user_click().connect(sigc::mem_fun(*this, &CanvasView::on_param_user_click));
+			layer_tree->signal_waypoint_clicked_layertree().connect(sigc::mem_fun(*this, &CanvasView::on_waypoint_clicked_canvasview));
+		}
 	}
 	if(x=="children")
 	{
-		children_tree=dynamic_cast<ChildrenTree*>(y);
-		if(children_tree)children_tree->signal_user_click().connect(sigc::mem_fun(*this, &CanvasView::on_children_user_click));
-		if(children_tree)children_tree->signal_waypoint_clicked_childrentree().connect(sigc::mem_fun(*this, &CanvasView::on_waypoint_clicked_canvasview));
-		if(children_tree)children_tree->get_selection()->signal_changed().connect(SLOT_EVENT(EVENT_REFRESH_DUCKS));
+		if (children_tree=dynamic_cast<ChildrenTree*>(y)) {
+			children_tree->signal_user_click().connect(sigc::mem_fun(*this, &CanvasView::on_children_user_click));
+			children_tree->signal_waypoint_clicked_childrentree().connect(sigc::mem_fun(*this, &CanvasView::on_waypoint_clicked_canvasview));
+			children_tree->get_selection()->signal_changed().connect(SLOT_EVENT(EVENT_REFRESH_DUCKS));
+		}
 	}
 	if(x=="keyframes")
 		keyframe_tree=dynamic_cast<KeyframeTree*>(y);

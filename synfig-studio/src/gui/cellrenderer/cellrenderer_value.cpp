@@ -137,9 +137,10 @@ public:
 	void start_editing_vfunc(GdkEvent *event)
 	{
 		SYNFIG_EXCEPTION_GUARD_BEGIN()
-		valuewidget->signal_activate().connect(sigc::mem_fun(*this,
-			&studio::ValueBase_Entry::editing_done));
-		valuewidget->signal_key_press_event().connect(sigc::mem_fun(*this, &studio::ValueBase_Entry::on_key_press_event));
+		if (valuewidget) {
+			valuewidget->signal_activate().connect(sigc::mem_fun(*this, &studio::ValueBase_Entry::editing_done));
+			valuewidget->signal_key_press_event().connect(sigc::mem_fun(*this, &studio::ValueBase_Entry::on_key_press_event));
+		}
 
 		// popup combobox menu if its is a enum editor
 		if (event && event->type == GDK_BUTTON_PRESS && valuewidget) {

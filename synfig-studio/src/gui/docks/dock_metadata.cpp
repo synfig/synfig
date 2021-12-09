@@ -105,7 +105,9 @@ Dock_MetaData::Dock_MetaData():
 
 	action_group->set_sensitive(false);
 
-	set_toolbar(*dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-meta_data")));
+	if (Gtk::Toolbar* toolbar = dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-meta_data"))) {
+		set_toolbar(*toolbar);
+	}
 }
 
 Dock_MetaData::~Dock_MetaData()
