@@ -75,12 +75,14 @@ class studio::ValueBase_Entry : public Gtk::CellEditable, public Gtk::EventBox
 	Widget_ValueBase *valuewidget;
 	Gtk::Widget      *parent;
 	bool              edit_done_called;
+	bool			  edit_canceled_called;
 public:
 	ValueBase_Entry():
 		Glib::ObjectBase(typeid(ValueBase_Entry))
 	{
 		parent           = nullptr;
 		edit_done_called = false;
+		edit_canceled_called = false;
 
 		valuewidget = manage(new class Widget_ValueBase());
 		valuewidget->inside_cellrenderer();
@@ -109,6 +111,21 @@ public:
 		else
 		{
 			synfig::error("on_editing_done(): Called twice!");
+		}
+	}
+
+	void on_editing_canceled()
+	{
+		hide();
+		if (parent) parent->grab_focus();
+		if (!edit_done_called)
+		{
+			edit_done_called = true;
+			Gtk::CellEditable::on_editing_done();
+		}
+		else
+		{
+			synfig::error("on_editing_cancelled(): Called twice!");
 		}
 	}
 
@@ -178,7 +195,7 @@ public:
 		SYNFIG_EXCEPTION_GUARD_BEGIN()
 		if(key_event->keyval == GDK_KEY_Escape)
 		{
-			on_editing_done();
+			on_editing_canceled();
 			return true;
 		}
 		return Gtk::EventBox::on_key_press_event(key_event);
@@ -262,6 +279,7 @@ CellRenderer_ValueBase::CellRenderer_ValueBase():
 	property_value_desc_      (*this, "value_desc",           synfigapp::ValueDesc()),
 	property_child_param_desc_(*this, "child_param_desc",        synfig::ParamDesc()),
 	edit_value_done_called    (false),
+	edit_value_canceled_called(false),
 	value_entry()
 {
 	CellRendererText::signal_edited().connect(sigc::mem_fun(*this,
@@ -599,6 +617,7 @@ CellRenderer_ValueBase::start_editing_vfunc(
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	edit_value_done_called = false;
+	edit_value_canceled_called = false;
 	// If we aren't editable, then there is nothing to do
 	if (!property_editable())
 		return nullptr;
@@ -675,6 +694,8 @@ CellRenderer_ValueBase::start_editing_vfunc(
 		value_entry->set_parent(&widget);
 		value_entry->show(); // in order to enable "instant"/"single-click" pop-up for enum comboboxes
 		value_entry->signal_editing_done().connect(sigc::mem_fun(*this, &CellRenderer_ValueBase::on_value_editing_done));
+		CellRenderer::signal_editing_canceled().connect(sigc::mem_fun(*this, &CellRenderer_ValueBase::on_value_editing_canceled));
+
 		return value_entry;
 	}
 
@@ -700,4 +721,15 @@ CellRenderer_ValueBase::on_value_editing_done()
 		if (saved_data != value)
 			signal_edited_(value_entry->get_path(), value);
 	}
+}
+
+void
+CellRenderer_ValueBase::on_value_editing_canceled()
+{
+	if (edit_value_canceled_called)
+	{
+		synfig::error("on_value_editing_canceled(): Called twice!");
+	}
+
+	edit_value_canceled_called = true;
 }

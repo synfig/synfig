@@ -66,6 +66,7 @@ class CellRenderer_ValueBase : public Gtk::CellRendererText
 	void color_edited   (synfig::Color    color,     Glib::ustring path);
 
 	bool edit_value_done_called;
+	bool edit_value_canceled_called;
 
 	synfig::ValueBase saved_data; //Issues 659, 526, 520
 public:
@@ -93,6 +94,7 @@ public:
 	ValueBase_Entry *value_entry;
 
 	void on_value_editing_done();
+	void on_value_editing_canceled();
 
 protected:
 	virtual void
