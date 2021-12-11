@@ -120,8 +120,8 @@ public:
 		if (parent) parent->grab_focus();
 		if (!edit_done_called)
 		{
-			edit_done_called = true;
-			Gtk::CellEditable::on_editing_done();
+			edit_canceled_called = true;
+			//Gtk::CellEditable::on_editing_canceled();
 		}
 		else
 		{
