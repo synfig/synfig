@@ -181,7 +181,7 @@ public:
 			on_editing_done();
 			return true;
 		}
-		return Gtk::EventBox::on_key_release_event(key_event);
+		return Gtk::EventBox::on_key_press_event(key_event);
 		SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 	}
 
