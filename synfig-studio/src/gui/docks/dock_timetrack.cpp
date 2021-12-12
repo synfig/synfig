@@ -350,6 +350,15 @@ public:
 					)
 			))
 		);
+		param_tree_view->get_selection()->signal_changed().connect(
+			sigc::bind(
+				sigc::mem_fun(
+					*this,
+					&TimeTrackView::on_external_selection_changed
+				),
+				param_tree_view->get_selection()
+			)
+		);
 		mimic_resync();
 	}
 
@@ -401,6 +410,14 @@ public:
 
 		if (!waypoint_set.empty())
 			signal_waypoint_clicked_timetrackview(value_desc,waypoint_set,button);
+	}
+	
+	void
+	on_external_selection_changed(Glib::RefPtr<TreeView::Selection> tree_view_selection)
+	{
+		Glib::RefPtr<TreeView::Selection> selection = get_selection();
+		for (const auto& path : tree_view_selection->get_selected_rows())
+			selection->select(path);
 	}
 };
 
