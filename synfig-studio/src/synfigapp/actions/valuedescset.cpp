@@ -239,33 +239,10 @@ Action::ValueDescSet::prepare()
 
 					if(index==origin_index) {
 						Point p = value.get(Point());
-						ValueBase parentBone_vb = (*bone->get_link("parent"))(time);
-						ValueBase parentBone_vb1 = (*bone1->get_link("parent"))(time);
-
-						Bone parentBone;
-						Bone parentBone1;
-
-						if (parentBone_vb.get_type() == type_bone_valuenode) {
-							parentBone = (*parentBone_vb.get(ValueNode_Bone::Handle()))(time).get(Bone());
-						} else if (parentBone_vb.get_type() == type_bone_object) {
-							parentBone = parentBone_vb.get(Bone());
-						} else {
-							throw Error(_("Parent bone type not supported"));
-						}
-						if (parentBone_vb1.get_type() == type_bone_valuenode) {
-							parentBone1 = (*parentBone_vb1.get(ValueNode_Bone::Handle()))(time).get(Bone());
-						} else if (parentBone_vb1.get_type() == type_bone_object) {
-							parentBone1 = parentBone_vb1.get(Bone());
-						} else {
-							throw Error(_("Parent bone type not supported"));
-						}
-
-						Matrix parentAnimMatrix = parentBone.get_animated_matrix();
-						Matrix parentAnimMatrix1 = parentBone1.get_animated_matrix();
-
-						p += parentAnimMatrix.get_transformed(bone->get_link(index)->operator()(time).get(Point()));
-						p -= parentAnimMatrix1.get_transformed(-bone1->get_link(index)->operator()(time).get(Point()));
-						svalue = ValueBase(parentAnimMatrix.get_inverted().get_transformed(p));
+						// Let's find how much origin of "first" bone was shifted
+						Point p_delta = p - bone1->get_link(index)->operator()(time).get(Point());
+						// Now apply same offset value to "second" bone
+						svalue = ValueBase(bone->get_link(index)->operator()(time).get(Point()) + p_delta);
 					}else if(index==angle_index){
 						Angle a = value.get(Angle());
 						a+=bone->get_link(index)->operator()(time).get(Angle());
