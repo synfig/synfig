@@ -1,3 +1,5 @@
+- [`c5fbb27`](https://github.com/synfig/synfig/commit/c5fbb27b3e817a1fb0e846e1dd98d9bdf7a6bb17) [Studio] Bone Tool: fix how to check for skeleton deformation ([#2217](https://github.com/synfig/synfig/issues/2217)) [studio]
+- [`bea6969`](https://github.com/synfig/synfig/commit/bea6969f273a6bd2716a6c36c2dafde46a94df1a) Fixed potential null pointer dereferencing ([#2454](https://github.com/synfig/synfig/issues/2454)) [studio]
 - [`d37e72a`](https://github.com/synfig/synfig/commit/d37e72ac3dcb42bbf64deb0ae6b9d1c90649f229) Refactored import file: added is_same_file method ([#2451](https://github.com/synfig/synfig/issues/2451)) [studio]
 - [`55d09c2`](https://github.com/synfig/synfig/commit/55d09c27f3dd81bdf79c9d43303f5412280938f9) Added ability to import multiple files ([#2439](https://github.com/synfig/synfig/issues/2439)) [studio]
 - [`9c2796c`](https://github.com/synfig/synfig/commit/9c2796c2bde9d33dca7ac6524b93e6dc256c96da) Fixed includes for harfbuzz and fribidi libraries ([#2442](https://github.com/synfig/synfig/issues/2442)) [core]
