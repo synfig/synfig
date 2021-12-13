@@ -111,25 +111,7 @@ public:
 			synfig::error("on_editing_done(): Called twice!");
 		}
 	}
-
-<<<<<<< HEAD
-=======
-	void on_editing_canceled()
-	{
-		hide();
-		if (parent) parent->grab_focus();
-		if (!edit_done_called)
-		{
-			edit_done_called = true;
-			Gtk::CellEditable::on_editing_done();
-		}
-		else
-		{
-			synfig::error("on_editing_cancelled(): Called twice!");
-		}
-	}
-
->>>>>>> parent of 17e6817e4 (changed L123 and L124)
+	
 	void set_parent(Gtk::Widget* x) { parent = x; }
 
 	void on_remove_widget()
