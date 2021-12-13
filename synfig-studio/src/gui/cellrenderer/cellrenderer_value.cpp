@@ -111,7 +111,7 @@ public:
 			synfig::error("on_editing_done(): Called twice!");
 		}
 	}
-	
+
 	void set_parent(Gtk::Widget* x) { parent = x; }
 
 	void on_remove_widget()
