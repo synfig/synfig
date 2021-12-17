@@ -687,8 +687,6 @@ CellRenderer_ValueBase::start_editing_vfunc(
 void
 CellRenderer_ValueBase::on_value_editing_done()
 {
-	std::cout<<"in on_value_editing_done()"<<std::endl;
-	std::cout<<value_entry->property_editing_canceled()<<std::endl;
 	if(value_entry->property_editing_canceled()){
 		CellRenderer::stop_editing(true);
 	}
