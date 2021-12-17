@@ -676,7 +676,6 @@ CellRenderer_ValueBase::start_editing_vfunc(
 		value_entry->set_parent(&widget);
 		value_entry->show(); // in order to enable "instant"/"single-click" pop-up for enum comboboxes
 		value_entry->signal_editing_done().connect(sigc::mem_fun(*this, &CellRenderer_ValueBase::on_value_editing_done));
-		CellRenderer::signal_editing_canceled().connect(sigc::mem_fun(*this, &CellRenderer_ValueBase::on_value_editing_done));
 		return value_entry;
 	}
 
