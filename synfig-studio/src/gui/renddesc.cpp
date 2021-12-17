@@ -236,9 +236,8 @@ void Widget_RendDesc::set_rend_desc(const synfig::RendDesc &rend_desc)
 	if(update_lock)return;
 	rend_desc_=rend_desc;
 
-	// Activate link width and height by default
-	activate_ratio_wh();
 	refresh();
+	activate_ratio_wh();
 }
 
 void
@@ -514,15 +513,9 @@ Widget_RendDesc::on_ratio_wh_toggled()
 	UpdateLock lock(update_lock);
 
 	if(toggle_wh_ratio->get_active())
-	{
 		activate_ratio_wh();
-	}
 	else
-	{
-		rend_desc_.set_flags(rend_desc_.get_flags()&~RendDesc::LINK_IM_ASPECT);
-		rend_desc_.set_flags(rend_desc_.get_flags()|RendDesc::PX_ASPECT);
-	}
-	refresh();
+		deactivate_ratio_wh();
 }
 
 void
@@ -531,6 +524,15 @@ Widget_RendDesc::activate_ratio_wh()
 	rend_desc_.set_pixel_ratio(adjustment_width->get_value(), adjustment_height->get_value());
 	rend_desc_.set_flags(rend_desc_.get_flags()|RendDesc::LINK_IM_ASPECT);
 	rend_desc_.set_flags(rend_desc_.get_flags()&~RendDesc::PX_ASPECT);
+	refresh();
+}
+
+void
+Widget_RendDesc::deactivate_ratio_wh()
+{
+	rend_desc_.set_flags(rend_desc_.get_flags()&~RendDesc::LINK_IM_ASPECT);
+	rend_desc_.set_flags(rend_desc_.get_flags()|RendDesc::PX_ASPECT);
+	refresh();
 }
 
 void
@@ -645,7 +647,6 @@ Widget_RendDesc::connect_signals()
 Gtk::Widget *
 Widget_RendDesc::create_image_tab()
 {
-
 	Gtk::Box *panelBox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 12));
 	panelBox->set_hexpand(true);
 	panelBox->set_vexpand(true);
@@ -655,7 +656,6 @@ Widget_RendDesc::create_image_tab()
 	Gtk::Frame *imageSizeFrame = manage(new Gtk::Frame(_("Image Size")));
 	imageSizeFrame->set_shadow_type(Gtk::SHADOW_NONE);
 	((Gtk::Label *) imageSizeFrame->get_label_widget())->set_markup(_("<b>Image Size</b>"));
-//	panelBox->pack_start(*imageSizeFrame, false, false, 0);
 	panelBox->pack_start(*imageSizeFrame, Gtk::PACK_SHRINK);
 
 	Gtk::Grid *imageSizeGrid = manage(new Gtk::Grid());
@@ -754,7 +754,6 @@ Widget_RendDesc::create_image_tab()
 Gtk::Widget *
 Widget_RendDesc::create_time_tab()
 {
-	
 	Gtk::Box *panelBox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 12));  // for future widgets
 	panelBox->get_style_context()->add_class("dialog-main-content");
 	panelBox->set_vexpand(true);
@@ -814,7 +813,6 @@ Widget_RendDesc::create_time_tab()
 Gtk::Widget *
 Widget_RendDesc::create_gamma_tab()
 {
-
 	Gtk::Box *panelBox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 12));
 	panelBox->get_style_context()->add_class("dialog-main-content");
 	panelBox->set_vexpand(true);
@@ -899,7 +897,6 @@ Widget_RendDesc::create_gamma_tab()
 Gtk::Widget *
 Widget_RendDesc::create_other_tab()
 {
-
 	Gtk::Box *panelBox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 12));
 	panelBox->get_style_context()->add_class("dialog-main-content");
 	panelBox->set_vexpand(true);
