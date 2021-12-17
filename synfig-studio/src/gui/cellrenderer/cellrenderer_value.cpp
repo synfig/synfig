@@ -178,6 +178,7 @@ public:
 		SYNFIG_EXCEPTION_GUARD_BEGIN()
 		if(key_event->keyval == GDK_KEY_Escape)
 		{
+			property_editing_canceled() = true;
 			on_editing_done();
 			return true;
 		}
@@ -675,6 +676,7 @@ CellRenderer_ValueBase::start_editing_vfunc(
 		value_entry->set_parent(&widget);
 		value_entry->show(); // in order to enable "instant"/"single-click" pop-up for enum comboboxes
 		value_entry->signal_editing_done().connect(sigc::mem_fun(*this, &CellRenderer_ValueBase::on_value_editing_done));
+		CellRenderer::signal_editing_canceled().connect(sigc::mem_fun(*this, &CellRenderer_ValueBase::on_value_editing_done));
 		return value_entry;
 	}
 
@@ -685,19 +687,27 @@ CellRenderer_ValueBase::start_editing_vfunc(
 void
 CellRenderer_ValueBase::on_value_editing_done()
 {
+	std::cout<<"in on_value_editing_done()"<<std::endl;
+	std::cout<<value_entry->property_editing_canceled()<<std::endl;
+	if(value_entry->property_editing_canceled()){
+		CellRenderer::stop_editing(true);
+	}
+
 	if (edit_value_done_called)
 	{
 		synfig::error("on_value_editing_done(): Called twice!");
-//		return;
+		//return;
 	}
 
 	edit_value_done_called = true;
 
-	if (value_entry)
-	{
-		ValueBase value(value_entry->get_value());
+	if(!value_entry->property_editing_canceled()){
+		if (value_entry)
+		{
+			ValueBase value(value_entry->get_value());
 
-		if (saved_data != value)
-			signal_edited_(value_entry->get_path(), value);
+			if (saved_data != value)
+				signal_edited_(value_entry->get_path(), value);
+		}
 	}
 }
