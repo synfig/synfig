@@ -183,7 +183,7 @@ public:
 			if(!property_editing_canceled())
 			{
 				property_editing_canceled() = true;
-				Gtk::CellEditable::editing_done();	
+				Gtk::CellEditable::editing_done();
 			}
 			else
 			{
