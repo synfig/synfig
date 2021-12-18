@@ -152,8 +152,13 @@ Action::ValueDescBoneSetParent::prepare()
 
 	ValueNode_Bone::Handle child_bone = active_bone_;
 
-	if (child_bone) {
-		if (auto new_parent_bone_valuenode = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_parent_value_node())) {
+	if(child_bone) {
+		if(auto new_parent_bone_valuenode = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_parent_value_node())){
+			ValueNode_Bone::BoneSet possible_parents = child_bone->get_possible_parent_bones(child_bone);
+			if (possible_parents.count(new_parent_bone_valuenode) <= 0) {
+				get_canvas_interface()->get_ui_interface()->error(_("This bone can't be parent of the active one"));
+				return;
+			}
 
 			ValueDesc new_parent_bone_desc = value_desc.get_parent_desc();
 			Bone new_parent_bone = new_parent_bone_desc.get_value(time).get(Bone());
