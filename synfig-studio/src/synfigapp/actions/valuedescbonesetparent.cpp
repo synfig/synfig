@@ -99,10 +99,19 @@ Action::ValueDescBoneSetParent::is_candidate(const ParamList &x)
 	if (!candidate_check(get_param_vocab(),x))
 		return false;
 
-	return value_desc.parent_is_value_node()
-		&& ValueNode_Bone::Handle::cast_dynamic(value_desc.get_parent_value_node())
-		&& child
-		&& ValueNode_Bone::Handle::cast_dynamic(child);
+	if (value_desc.parent_is_value_node() && child) {
+		if (auto valuenode_bone = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_parent_value_node())) {
+			if (auto child_bone = ValueNode_Bone::Handle::cast_dynamic(child)) {
+				i = x.find("time");
+				Time time = i == x.end() ? Time(0) : i->second.get_time();
+				if ((*child_bone->get_link("parent"))(time).get(ValueNode_Bone::Handle()) == valuenode_bone)
+					return false;
+				ValueNode_Bone::BoneSet possible_parents = ValueNode_Bone::get_possible_parent_bones(child_bone);
+				return possible_parents.count(valuenode_bone) > 0;
+			}
+		}
+	}
+	return false;
 }
 
 bool
