@@ -703,9 +703,9 @@ CellRenderer_ValueBase::on_value_editing_done()
 
 	edit_value_done_called = true;
 
-	if(!value_entry->property_editing_canceled())
+	if (value_entry)
 	{
-		if (value_entry)
+		if (!value_entry->property_editing_canceled())
 		{
 			ValueBase value(value_entry->get_value());
 
