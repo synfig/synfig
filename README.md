@@ -13,7 +13,7 @@ MacOS.
 
 https://synfig.org/
 
-[![Build Status](https://travis-ci.com/synfig/synfig.svg?branch=master)](https://travis-ci.com/synfig/synfig)
+[![Build Status](https://travis-ci.com/synfig/synfig.svg?branch=master)](https://app.travis-ci.com/synfig/synfig)
 [![GitHub Actions](https://github.com/synfig/synfig/workflows/Synfig%20CI/badge.svg?branch=master)](https://github.com/synfig/synfig/actions)
 [![Windows Build status](https://img.shields.io/appveyor/ci/synfig/synfig/master.svg?label=Windows%20build)](https://ci.appveyor.com/project/Synfig/synfig/branch/master)
 
