@@ -134,7 +134,7 @@ class studio::StateBone_Context : public sigc::trackable
 public:
 
 	synfig::String get_id() const { return id_entry.get_text();}
-	void set_id(const synfig::String& x){ return id_entry.set_text(x);}
+	void set_id(const synfig::String& x){ id_entry.set_text(x);}
 
 	Real get_skel_bone_width() const {
 		return skel_bone_width_dist.get_value().get(
@@ -142,7 +142,7 @@ public:
 				get_canvas_view()->get_canvas()->rend_desc()
 		);
 	}
-	void set_skel_bone_width(Distance x){return skel_bone_width_dist.set_value(x);}
+	void set_skel_bone_width(Distance x){ skel_bone_width_dist.set_value(x);}
 
 	Real get_skel_deform_bone_width() const {
 		return skel_deform_bone_width_dist.get_value().get(
@@ -150,7 +150,7 @@ public:
 				get_canvas_view()->get_canvas()->rend_desc()
 		);
 	}
-	void set_skel_deform_bone_width(Distance x){return skel_deform_bone_width_dist.set_value(x);}
+	void set_skel_deform_bone_width(Distance x){ skel_deform_bone_width_dist.set_value(x);}
 
 	Real get_bone_width() const{
 		if(skel_bone_width_dist.is_visible()){
