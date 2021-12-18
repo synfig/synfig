@@ -45,6 +45,7 @@
 
 #include "valuedescset.h"
 #include <synfigapp/canvasinterface.h>
+#include <synfig/layers/layer_skeletondeformation.h>
 #include <synfig/valuenodes/valuenode_add.h>
 #include <synfig/valuenodes/valuenode_bline.h>
 #include <synfig/valuenodes/valuenode_wplist.h>
@@ -202,13 +203,30 @@ Action::ValueDescSet::prepare()
 
 	get_canvas_interface()->signal_value_desc_set()(value_desc,value);
 
-	// If the tool is state_bone
-	// then both bones in a ValueNode_Composite
-	// should follow each other
-	ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_desc().get_parent_desc().get_value_node());
-	if(comp && get_canvas_interface()->get_state()=="bone"){
+	// If current tool is Bone Tool, changing a bone of a Skeleton Deformation
+	// Layer should affect its pair too. One follow each other with Bone Tool.
+	// Just remembering: Skeleton Deformation a list of bone pairs:
+	//   * the first element of every pair compounds the resting pose
+	//   * the second element of every pair compounds the current animated pose
+	if(get_canvas_interface()->get_state()=="bone") {
+		ValueNode_Composite::Handle comp;
 
-		if(value_desc.get_parent_value_node() == comp->get_link("first")){
+		// Skeleton Deformation layer > Bone pair list > Bone pair item > Bone
+		const ValueDesc grand_parent = value_desc.get_parent_desc().get_parent_desc();
+		if (grand_parent.get_parent_desc().parent_is_layer()) {
+			if (dynamic_cast<Layer_SkeletonDeformation*>(grand_parent.get_parent_desc().get_layer().get())) {
+				types_namespace::TypePair<Bone,Bone> type_bone_pair;
+				type_bone_pair.initialize();
+				if (grand_parent.parent_is_value_node() && grand_parent.get_parent_value_node()->get_type() == type_list)
+					if (value_desc.get_parent_desc().parent_is_value_node()
+						&& value_desc.get_parent_desc().get_parent_value_node()->get_type() == type_bone_pair)
+					{
+						comp = ValueNode_Composite::Handle::cast_dynamic(grand_parent.get_value_node());
+					}
+			}
+		}
+
+		if(comp && value_desc.get_parent_value_node() == comp->get_link("first")){
 			ValueNode_Bone::Handle bone = ValueNode_Bone::Handle::cast_dynamic(comp->get_link("second"));
 			ValueNode_Bone::Handle bone1 = 	ValueNode_Bone::Handle::cast_dynamic(comp->get_link("first"));
 			if(bone){
@@ -221,33 +239,10 @@ Action::ValueDescSet::prepare()
 
 					if(index==origin_index) {
 						Point p = value.get(Point());
-						ValueBase parentBone_vb = (*bone->get_link("parent"))(time);
-						ValueBase parentBone_vb1 = (*bone1->get_link("parent"))(time);
-
-						Bone parentBone;
-						Bone parentBone1;
-
-						if (parentBone_vb.get_type() == type_bone_valuenode) {
-							parentBone = (*parentBone_vb.get(ValueNode_Bone::Handle()))(time).get(Bone());
-						} else if (parentBone_vb.get_type() == type_bone_object) {
-							parentBone = parentBone_vb.get(Bone());
-						} else {
-							throw Error(_("Parent bone type not supported"));
-						}
-						if (parentBone_vb1.get_type() == type_bone_valuenode) {
-							parentBone1 = (*parentBone_vb1.get(ValueNode_Bone::Handle()))(time).get(Bone());
-						} else if (parentBone_vb1.get_type() == type_bone_object) {
-							parentBone1 = parentBone_vb1.get(Bone());
-						} else {
-							throw Error(_("Parent bone type not supported"));
-						}
-
-						Matrix parentAnimMatrix = parentBone.get_animated_matrix();
-						Matrix parentAnimMatrix1 = parentBone1.get_animated_matrix();
-
-						p += parentAnimMatrix.get_transformed(bone->get_link(index)->operator()(time).get(Point()));
-						p -= parentAnimMatrix1.get_transformed(-bone1->get_link(index)->operator()(time).get(Point()));
-						svalue = ValueBase(parentAnimMatrix.get_inverted().get_transformed(p));
+						// Let's find how much origin of "first" bone was shifted
+						Point p_delta = p - bone1->get_link(index)->operator()(time).get(Point());
+						// Now apply same offset value to "second" bone
+						svalue = ValueBase(bone->get_link(index)->operator()(time).get(Point()) + p_delta);
 					}else if(index==angle_index){
 						Angle a = value.get(Angle());
 						a+=bone->get_link(index)->operator()(time).get(Angle());

@@ -77,16 +77,20 @@
 //! Marks the start of a module's inventory
 #define MODULE_INVENTORY_BEGIN(x)  extern "C" {		\
 	synfig::Module* _##x##_LTX_new_instance(synfig::ProgressCallback *cb) \
-	{ if(SYNFIG_CHECK_VERSION()){x##_modclass *mod=new x##_modclass(cb); mod->constructor_(cb); return mod; }\
-	if(cb)cb->error(#x": Unable to load module due to version mismatch."); return nullptr; } \
-	}; x##_modclass::x##_modclass(synfig::ProgressCallback */*cb*/) {
+	{ if(SYNFIG_CHECK_VERSION()) { x##_modclass *mod=new x##_modclass(cb); mod->constructor_(cb); return mod; }\
+	  if(cb) { cb->error(#x": Unable to load module due to version mismatch."); } \
+	  return nullptr; \
+	} \
+}; x##_modclass::x##_modclass(synfig::ProgressCallback */*cb*/) {
 #else
 //! Marks the start of a module's inventory
 #define MODULE_INVENTORY_BEGIN(x)  extern "C" {		\
 	SYNFIG_API_EXPORT synfig::Module* x##_LTX_new_instance(synfig::ProgressCallback *cb) \
-	{ if(SYNFIG_CHECK_VERSION()){x##_modclass *mod=new x##_modclass(cb); mod->constructor_(cb); return mod; }\
-	if(cb)cb->error(#x": Unable to load module due to version mismatch."); return nullptr; } \
-	}; x##_modclass::x##_modclass(synfig::ProgressCallback */*cb*/) {
+	{ if(SYNFIG_CHECK_VERSION()) { x##_modclass *mod=new x##_modclass(cb); mod->constructor_(cb); return mod; }\
+	  if(cb) { cb->error(#x": Unable to load module due to version mismatch."); } \
+	  return nullptr; \
+	} \
+}; x##_modclass::x##_modclass(synfig::ProgressCallback */*cb*/) {
 #endif
 
 //! Marks the start of the layers in the module's inventory
