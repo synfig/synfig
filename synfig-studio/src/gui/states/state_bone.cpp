@@ -428,13 +428,13 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
 
 	if(Layer_SkeletonDeformation::Handle::cast_dynamic(layer)){
-		get_work_area()->set_type_mask(get_work_area()->get_type_mask() - (Duck::TYPE_TANGENT | Duck::TYPE_WIDTH));
+		get_work_area()->set_type_mask(get_work_area()->get_type_mask() - Duck::TYPE_TANGENT | (Duck::TYPE_WIDTH | Duck::TYPE_WIDTHPOINT_POSITION));
 		get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
 		layer->disable();
 		get_canvas_interface()->signal_layer_status_changed()(layer,false);
 		update_tool_options(SKELETON_DEFORMATION_TYPE);
 	}else{
-		get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
+		get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH-Duck::TYPE_WIDTHPOINT_POSITION);
 		get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
 		update_tool_options(SKELETON_TYPE);
 	}
@@ -853,15 +853,15 @@ StateBone_Context::event_layer_selection_changed_handler(const Smach::event& /*x
 	if(skel_layer){
 		set_id(settings.get_value("bone.skel_id", _("NewSkeleton")));
 		update_tool_options(SKELETON_TYPE);
-		get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
+		get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH-Duck::TYPE_WIDTHPOINT_POSITION);
 	}else if(deform_layer){
 		set_id(settings.get_value("bone.skel_deform_id", _("NewSkeletonDeformation")));
 		update_tool_options(SKELETON_DEFORMATION_TYPE);
-		get_work_area()->set_type_mask(get_work_area()->get_type_mask() - (Duck::TYPE_TANGENT | Duck::TYPE_WIDTH));
+		get_work_area()->set_type_mask(get_work_area()->get_type_mask() - (Duck::TYPE_TANGENT | Duck::TYPE_WIDTH | Duck::TYPE_WIDTHPOINT_POSITION));
 		layer->disable();
 		get_canvas_interface()->signal_layer_status_changed()(layer,false);
 	}else{
-		get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
+		get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH-Duck::TYPE_WIDTHPOINT_POSITION);
 		get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
 	}
 
@@ -960,6 +960,7 @@ StateBone_Context::update_width_duck_status(SkeletonLayerType type)
 	bool is_width_duck_currently_on(get_work_area()->get_type_mask()&Duck::TYPE_WIDTH);
 	if ((type == SKELETON_TYPE && is_width_duck_currently_on)
 		|| (type == SKELETON_DEFORMATION_TYPE && !is_width_duck_currently_on)) {
+		get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_WIDTH-Duck::TYPE_WIDTHPOINT_POSITION);
 		get_canvas_view()->toggle_duck_mask(Duck::TYPE_WIDTH);
 	}
 }
