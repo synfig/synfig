@@ -178,8 +178,17 @@ public:
 		SYNFIG_EXCEPTION_GUARD_BEGIN()
 		if(key_event->keyval == GDK_KEY_Escape)
 		{
-			property_editing_canceled() = true;
-			on_editing_done();
+			hide();
+			if (parent) parent->grab_focus();
+			if(!property_editing_canceled())
+			{
+				property_editing_canceled() = true;
+				Gtk::CellEditable::editing_done();	
+			}
+			else
+			{
+				synfig::error("property_editing_canceled(): Called twice!");
+			}
 			return true;
 		}
 		return Gtk::EventBox::on_key_press_event(key_event);
@@ -686,10 +695,6 @@ CellRenderer_ValueBase::start_editing_vfunc(
 void
 CellRenderer_ValueBase::on_value_editing_done()
 {
-	if(value_entry->property_editing_canceled()){
-		CellRenderer::stop_editing(true);
-	}
-
 	if (edit_value_done_called)
 	{
 		synfig::error("on_value_editing_done(): Called twice!");
@@ -698,7 +703,8 @@ CellRenderer_ValueBase::on_value_editing_done()
 
 	edit_value_done_called = true;
 
-	if(!value_entry->property_editing_canceled()){
+	if(!value_entry->property_editing_canceled())
+	{
 		if (value_entry)
 		{
 			ValueBase value(value_entry->get_value());
