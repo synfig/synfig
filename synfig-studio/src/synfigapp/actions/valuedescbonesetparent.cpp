@@ -169,7 +169,7 @@ Action::ValueDescBoneSetParent::prepare()
 
 			Matrix old_parent_matrix = old_parent_bone->operator()(time).get(Bone()).get_animated_matrix();
 			Angle old_parent_angle = Angle::rad(std::atan2(old_parent_matrix.axis(0)[1],old_parent_matrix.axis(0)[0]));
-			Real old_parent_scale = old_parent_bone->get_link("scalelx")->operator()(time).get(Real());
+			Real old_parent_scale = old_parent_bone->is_root()? 1. : old_parent_bone->get_link("scalelx")->operator()(time).get(Real());
 
 			Point origin = child_bone->get_link("origin")->operator()(time).get(Point());
 			Angle angle = child_bone->get_link("angle")->operator()(time).get(Angle());
