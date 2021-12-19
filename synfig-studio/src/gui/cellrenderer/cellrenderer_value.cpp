@@ -690,7 +690,7 @@ CellRenderer_ValueBase::on_value_editing_done()
 {
 	if (value_entry && value_entry->property_editing_canceled())
 		return;
-		
+
 	if (edit_value_done_called)
 	{
 		synfig::error("on_value_editing_done(): Called twice!");
