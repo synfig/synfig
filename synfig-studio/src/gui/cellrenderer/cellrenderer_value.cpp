@@ -180,15 +180,8 @@ public:
 		{
 			hide();
 			if (parent) parent->grab_focus();
-			if(!property_editing_canceled())
-			{
-				property_editing_canceled() = true;
-				Gtk::CellEditable::editing_done();
-			}
-			else
-			{
-				synfig::error("property_editing_canceled(): Called twice!");
-			}
+			property_editing_canceled() = true;
+			Gtk::CellEditable::editing_done();
 			return true;
 		}
 		return Gtk::EventBox::on_key_press_event(key_event);
@@ -695,22 +688,22 @@ CellRenderer_ValueBase::start_editing_vfunc(
 void
 CellRenderer_ValueBase::on_value_editing_done()
 {
+	if (value_entry && value_entry->property_editing_canceled())
+		return;
+		
 	if (edit_value_done_called)
 	{
 		synfig::error("on_value_editing_done(): Called twice!");
-		//return;
+//		return;
 	}
 
 	edit_value_done_called = true;
 
 	if (value_entry)
 	{
-		if (!value_entry->property_editing_canceled())
-		{
-			ValueBase value(value_entry->get_value());
+		ValueBase value(value_entry->get_value());
 
-			if (saved_data != value)
-				signal_edited_(value_entry->get_path(), value);
-		}
+		if (saved_data != value)
+			signal_edited_(value_entry->get_path(), value);
 	}
 }
