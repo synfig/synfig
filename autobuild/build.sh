@@ -51,12 +51,8 @@ if [ -z "$PREFIX" ]; then
 PREFIX=`pwd`/build
 fi
 
-#count of threads for make
-if ( which nproc > /dev/null ); then
-MAKE_THREADS=`nproc`
-else
-MAKE_THREADS=2
-fi
+# detect number of threads for make (this can be overridden by build.conf)
+MAKE_THREADS="$(which nproc >/dev/null && nproc || sysctl -n hw.ncpu || getconf _NPROCESSORS_ONLN || echo 2 2>/dev/null)"
 
 # Allow overriding PREFIX and other settings
 if [ -f "./build.conf" ] ; then
@@ -107,12 +103,16 @@ fi
 if [[ `uname` == "Darwin" ]]; then
 	# autopoint is not in PATH after install via brew (conflicting with system gettext https://github.com/Homebrew/legacy-homebrew/issues/24070)
 	# so we can do `brew link --force gettext` or just add it to PATH before configuring which is preferable because we need it only for compiling
-	export PATH="/usr/local/opt/ccache/libexec:/usr/local/opt/gettext/bin:${PATH}"
-	export LDFLAGS="-L/usr/local/opt/gettext/lib ${LDFLAGS}"
-	export LDFLAGS="-L$(brew --prefix libomp)/lib ${LDFLAGS}"
-	export LDFLAGS="-L$(brew --prefix libtool)/lib ${LDFLAGS}"
-	export CPPFLAGS="-I/usr/local/opt/gettext/include ${CPPFLAGS}"
-	export PKG_CONFIG_PATH="/usr/local/opt/libffi/lib/pkgconfig:${PKG_CONFIG_PATH}"
+	export PATH="$(brew --prefix ccache)/libexec:$(brew --prefix gettext)/bin:${PATH}"
+	# `lib` is required to correctly detect libmng/libjpeg in autotools. Current `configure.ac` script doesn't use
+	# `pkg-config` to get library flags (libmng provides pkg-config (.pc) file from 2.0.3, but Debian still using 1.0.1).
+	export LDFLAGS="-L$(brew --prefix)/lib ${LDFLAGS}"
+
+	#export LDFLAGS="-L$(brew --prefix gettext)/lib ${LDFLAGS}"
+	#export LDFLAGS="-L$(brew --prefix libomp)/lib ${LDFLAGS}"
+	#export LDFLAGS="-L$(brew --prefix libtool)/lib ${LDFLAGS}"
+	#export CPPFLAGS="-I$(brew --prefix gettext)/include ${CPPFLAGS}"
+	#export PKG_CONFIG_PATH="$(brew --prefix libffi)/lib/pkgconfig:${PKG_CONFIG_PATH}"
 
 	# Force use system perl, see https://github.com/synfig/synfig/issues/794
 	cat > "${PREFIX}/bin/perl" <<EOF
@@ -237,6 +237,7 @@ if [[ `uname` == "Darwin" ]]; then
 		# Currently there is an error when building with imagemack on OSX >= High Sierra
 		export CONFIGURE_OPTIONS="$CONFIGURE_OPTIONS --without-imagemagick --without-magickpp"
 	fi
+	export BOOST_CONFIGURE_OPTIONS="--with-boost=$(brew --prefix boost)"
 fi
 /bin/bash "${REPO_DIR}/synfig-core/configure" --prefix="${PREFIX}" \
 	--includedir="${PREFIX}/include" \
