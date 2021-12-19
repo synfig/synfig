@@ -90,9 +90,9 @@ int main(int argc, char* argv[])
 	} argv_guard(&argv);
  #endif
 
-	SynfigToolGeneralOptions::create_singleton_instance(argv[0]);
+	SynfigToolGeneralOptions::instance()->set_binary_path(argv[0]);
 
-	std::string binary_path =
+	const std::string binary_path =
 		SynfigToolGeneralOptions::instance()->get_binary_path();
 
 #ifdef ENABLE_NLS

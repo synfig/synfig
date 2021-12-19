@@ -76,17 +76,16 @@ enum exit_code
 };
 
 #include <string>
-#include <memory>
 
 class SynfigToolGeneralOptions
 {
 public:
-	//! \throw exception in case the instance already existed
-	static void create_singleton_instance(const char* argv0);
 
 	static SynfigToolGeneralOptions* instance();
 
 	std::string get_binary_path() const;
+
+	void set_binary_path(const std::string& path);
 
 	size_t get_threads() const;
 
@@ -105,15 +104,12 @@ public:
 	void set_should_print_benchmarks(bool print_benchmarks);
 
 private:
-	SynfigToolGeneralOptions(const char* argv0);
-
+	SynfigToolGeneralOptions();
 	std::string _binary_path;
 	int _verbosity;
 	size_t _threads;
 	bool _should_be_quiet,
 		 _should_print_benchmarks;
-
-	static std::shared_ptr<SynfigToolGeneralOptions> _instance;
 };
 
 #endif
