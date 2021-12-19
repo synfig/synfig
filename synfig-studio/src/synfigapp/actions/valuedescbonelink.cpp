@@ -192,6 +192,28 @@ Action::ValueDescBoneLink::prepare()
 		if (value_desc.parent_is_value_node() && bone_value_node == value_desc.get_parent_value_node())
 			continue;
 
+		if (value_desc.parent_is_layer() && value_desc.get_param_name() == "origin") {
+			Layer::ConstHandle layer = value_desc.get_layer();
+			bool has_transformation = layer->get_param("transformation").is_valid()
+									  || layer->dynamic_param_list().count("transformation") > 0;
+			if (has_transformation) {
+				// Propose to user to change to "transformation" parameter
+				if ( get_canvas_interface()
+				  && get_canvas_interface()->get_ui_interface()
+				  && UIInterface::RESPONSE_OK == get_canvas_interface()->get_ui_interface()->confirmation(
+						 _("Possible Wrong Bone Link"),
+						 etl::strprintf(_("You are trying to link \"origin\" of layer '%s' to a bone.\n\n"
+							"Maybe you intended to link \"transformation\" parameter instead?"),
+							 layer->get_description().c_str()),
+						 _("No"),
+						 _("Yes"),
+						 synfigapp::UIInterface::RESPONSE_OK ))
+				{
+					value_desc = ValueDesc(value_desc.get_layer(), "transformation", value_desc.get_parent_desc());
+				}
+			}
+		}
+
 		/*
 		if (value_desc.is_value_node())
 		{
