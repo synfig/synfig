@@ -1,3 +1,10 @@
+- [`310aaad`](https://github.com/synfig/synfig/commit/310aaad378224b6db22cc0639e66e36dfc45368c) ValueDescSet for Skeleton Deformation bone: Minor refactoring and add return ([#2458](https://github.com/synfig/synfig/issues/2458)) [studio]
+- [`0bff94e`](https://github.com/synfig/synfig/commit/0bff94eac5844b2784b7b0a60a15c79fb8ef95ef) [MacOS M1] Fixed autotools build ([#2424](https://github.com/synfig/synfig/issues/2424))
+- [`f1938c9`](https://github.com/synfig/synfig/commit/f1938c9cfc0ac60a529dcf04d38480891336b93f) Refactored SynfigToolGeneralOptions singleton ([#2453](https://github.com/synfig/synfig/issues/2453)) [core]
+- [`1d97e5a`](https://github.com/synfig/synfig/commit/1d97e5abb19260ac4175898e29768a2b466cf41e) Fixed Travis-CI broken link ([#2461](https://github.com/synfig/synfig/issues/2461))
+- [`15e75dc`](https://github.com/synfig/synfig/commit/15e75dc3000ee1db7c4bf3bcb37ef6bef5394b69) Fixed appdata.xml check CI ([#2464](https://github.com/synfig/synfig/issues/2464))
+- [`98b2bab`](https://github.com/synfig/synfig/commit/98b2babfd41319c0d06380251408e6a67c716830) Bone Tool: Correctly apply offset to Second bone when First bone of Skeleton Deformation Layer changed ([#2457](https://github.com/synfig/synfig/issues/2457)) [studio]
+- [`ec35bd8`](https://github.com/synfig/synfig/commit/ec35bd850a913b0c6e99660850cc4a771decd99a) Fixed warning on MODULE_INVENTORY_BEGIN: misleading indentation ([#2430](https://github.com/synfig/synfig/issues/2430)) [core]
 - [`c5fbb27`](https://github.com/synfig/synfig/commit/c5fbb27b3e817a1fb0e846e1dd98d9bdf7a6bb17) [Studio] Bone Tool: fix how to check for skeleton deformation ([#2217](https://github.com/synfig/synfig/issues/2217)) [studio]
 - [`bea6969`](https://github.com/synfig/synfig/commit/bea6969f273a6bd2716a6c36c2dafde46a94df1a) Fixed potential null pointer dereferencing ([#2454](https://github.com/synfig/synfig/issues/2454)) [studio]
 - [`d37e72a`](https://github.com/synfig/synfig/commit/d37e72ac3dcb42bbf64deb0ae6b9d1c90649f229) Refactored import file: added is_same_file method ([#2451](https://github.com/synfig/synfig/issues/2451)) [studio]
