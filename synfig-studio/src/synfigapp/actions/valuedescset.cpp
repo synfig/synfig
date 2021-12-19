@@ -209,52 +209,53 @@ Action::ValueDescSet::prepare()
 	//   * the first element of every pair compounds the resting pose
 	//   * the second element of every pair compounds the current animated pose
 	if(get_canvas_interface()->get_state()=="bone") {
-		ValueNode_Composite::Handle comp;
+		ValueNode_Composite::Handle deformation_bone_pair_composite;
 
 		// Skeleton Deformation layer > Bone pair list > Bone pair item > Bone
 		const ValueDesc grand_parent = value_desc.get_parent_desc().get_parent_desc();
 		if (grand_parent.get_parent_desc().parent_is_layer()) {
-			if (dynamic_cast<Layer_SkeletonDeformation*>(grand_parent.get_parent_desc().get_layer().get())) {
+			if (Layer_SkeletonDeformation::Handle::cast_dynamic(grand_parent.get_parent_desc().get_layer())) {
 				types_namespace::TypePair<Bone,Bone> type_bone_pair;
 				type_bone_pair.initialize();
 				if (grand_parent.parent_is_value_node() && grand_parent.get_parent_value_node()->get_type() == type_list)
 					if (value_desc.get_parent_desc().parent_is_value_node()
 						&& value_desc.get_parent_desc().get_parent_value_node()->get_type() == type_bone_pair)
 					{
-						comp = ValueNode_Composite::Handle::cast_dynamic(grand_parent.get_value_node());
+						deformation_bone_pair_composite = ValueNode_Composite::Handle::cast_dynamic(grand_parent.get_value_node());
 					}
 			}
 		}
 
-		if(comp && value_desc.get_parent_value_node() == comp->get_link("first")){
-			ValueNode_Bone::Handle bone = ValueNode_Bone::Handle::cast_dynamic(comp->get_link("second"));
-			ValueNode_Bone::Handle bone1 = 	ValueNode_Bone::Handle::cast_dynamic(comp->get_link("first"));
-			if(bone){
+		if(deformation_bone_pair_composite && value_desc.get_parent_value_node() == deformation_bone_pair_composite->get_link("first")){
+			ValueNode_Bone::Handle pose_bone = ValueNode_Bone::Handle::cast_dynamic(deformation_bone_pair_composite->get_link("second"));
+			ValueNode_Bone::Handle rest_bone = ValueNode_Bone::Handle::cast_dynamic(deformation_bone_pair_composite->get_link("first"));
+			if(pose_bone){
 				const int index = value_desc.get_index();
-				const int origin_index = bone->get_link_index_from_name("origin");
-				const int angle_index = bone->get_link_index_from_name("angle");
-				const int scalelx_index = bone->get_link_index_from_name("scalelx");
+				const int origin_index = pose_bone->get_link_index_from_name("origin");
+				const int angle_index = pose_bone->get_link_index_from_name("angle");
+				const int scalelx_index = pose_bone->get_link_index_from_name("scalelx");
 				if(index==origin_index || index==angle_index || index==scalelx_index){
 					ValueBase svalue(0);
 
 					if(index==origin_index) {
 						Point p = value.get(Point());
 						// Let's find how much origin of "first" bone was shifted
-						Point p_delta = p - bone1->get_link(index)->operator()(time).get(Point());
+						Point p_delta = p - rest_bone->get_link(index)->operator()(time).get(Point());
 						// Now apply same offset value to "second" bone
-						svalue = ValueBase(bone->get_link(index)->operator()(time).get(Point()) + p_delta);
+						svalue = ValueBase(pose_bone->get_link(index)->operator()(time).get(Point()) + p_delta);
 					}else if(index==angle_index){
 						Angle a = value.get(Angle());
-						a+=bone->get_link(index)->operator()(time).get(Angle());
-						a-=bone1->get_link(index)->operator()(time).get(Angle());
+						a -= rest_bone->get_link(index)->operator()(time).get(Angle());
+						a += pose_bone->get_link(index)->operator()(time).get(Angle());
 						svalue = ValueBase(a);
 					}else if(index==scalelx_index){
 						Real r = value.get(Real());
-						r+= bone->get_link(index)->operator()(time).get(Real());
-						r-=bone1->get_link(index)->operator()(time).get(Real());
+						r -= rest_bone->get_link(index)->operator()(time).get(Real());
+						r += pose_bone->get_link(index)->operator()(time).get(Real());
 						svalue = ValueBase(r);
 					}
-					add_action_valuedescset(svalue,ValueDesc(bone,index));
+					add_action_valuedescset(svalue,ValueDesc(pose_bone,index));
+					return;
 				}
 			}
 		}
