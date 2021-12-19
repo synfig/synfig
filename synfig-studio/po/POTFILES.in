@@ -228,6 +228,8 @@ src/gui/workarearenderer/renderer_background.cpp
 src/gui/workarearenderer/renderer_background.h
 src/gui/workarearenderer/renderer_bbox.cpp
 src/gui/workarearenderer/renderer_bbox.h
+src/gui/workarearenderer/renderer_bonedeformarea.cpp
+src/gui/workarearenderer/renderer_bonedeformarea.h
 src/gui/workarearenderer/renderer_bonesetup.cpp
 src/gui/workarearenderer/renderer_canvas.cpp
 src/gui/workarearenderer/renderer_canvas.h
