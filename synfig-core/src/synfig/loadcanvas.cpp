@@ -129,7 +129,7 @@ static void _canvas_file_name_changed(Canvas *x)
 }
 
 Canvas::Handle
-synfig::open_canvas_as(const FileSystem::Identifier &identifier, const String &as, String &errors, String &warnings, std::map<String, String> *broken_links)
+synfig::open_canvas_as(const FileSystem::Identifier &identifier, const String &as, String &errors, String &warnings, CanvasParser::BrokenUseIdMap *broken_links)
 {
 	String filename = FileSystem::fix_slashes(as);
 	if (CanvasParser::loading_.count(identifier))
@@ -1703,7 +1703,7 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 					else
 						waypoint_value_node=canvas->surefind_value_node(use_id);
 				} catch (Exception::IDNotFound&) {
-					register_broken_use_id(use_id);
+					register_broken_use_id(use_id, type.description.name);
 				}
 
 				if(PlaceholderValueNode::Handle::cast_dynamic(waypoint_value_node))
@@ -1936,15 +1936,15 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 								throw Exception::IDNotFound("parse_linkable_value_node()");
 					}
 				} catch (Exception::IDNotFound&) {
-					register_broken_use_id(id);
+					register_broken_use_id(id, type.description.name);
 				} catch(...) {
-					register_broken_use_id(id);
+					register_broken_use_id(id, type.description.name);
 				}
 
 				if(placeholders == canvas->value_node_list().placeholder_count()) {
 					if(PlaceholderValueNode::Handle::cast_dynamic(c[index]) ) {
 						synfig::error("broken value node link 2");
-						register_broken_use_id(id);
+						register_broken_use_id(id, type.description.name);
 						throw Exception::IDNotFound("parse_linkable_value_node()");
 					}
 				}
@@ -2264,7 +2264,7 @@ CanvasParser::parse_static_list(xmlpp::Element *element,Canvas::Handle canvas)
 				catch(Exception::IDNotFound&)
 				{
 					error(child,"\"use\" attribute in <entry> references unknown ID -- "+use_id);
-					register_broken_use_id(use_id);
+					register_broken_use_id(use_id, type.description.name);
 					continue;
 				}
 			}
@@ -2526,7 +2526,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 				catch(Exception::IDNotFound&)
 				{
 					error(child,"\"use\" attribute in <entry> references unknown ID -- "+use_id);
-					register_broken_use_id(use_id);
+					register_broken_use_id(use_id, type.description.name);
 					continue;
 				}
 			}
@@ -2889,7 +2889,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 						layer->set_param(param_name, v);
 					} catch (Exception::IDNotFound& ex) {
 						error(child,strprintf(_("Failed to load subcanvas '%s' referenced in parameter \"%s\""), use_id.c_str(), param_name.c_str()));
-						register_broken_use_id(use_id);
+						register_broken_use_id(use_id, layer->get_param(param_name).get_type().description.name);
 					}
 				}
 				else
@@ -2940,7 +2940,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 				catch(Exception::IDNotFound&)
 				{
 					error(child,strprintf(_("Unknown ID (%s) referenced in parameter \"%s\""),use_id.c_str(), param_name.c_str()));
-					register_broken_use_id(use_id);
+					register_broken_use_id(use_id, layer->get_param(param_name).get_type().description.name);
 				}
 
 				continue;
@@ -3557,6 +3557,7 @@ CanvasParser::parse_from_file_as(const FileSystem::Identifier &identifier,const 
 				return canvas;
 			}
 		} else {
+			register_broken_use_id(as, "file");
 			throw std::runtime_error(String("  * ") + _("Can't find linked file") + " \"" + identifier.filename.u8string() + "\"");
 		}
 	}
@@ -3667,14 +3668,14 @@ synfig::open_canvas(xmlpp::Element* node,String &errors,String &warnings){
 	return canvas;
 }
 
-const std::map<std::string, std::string>&
+const CanvasParser::BrokenUseIdMap&
 CanvasParser::get_broken_use_ids() const
 {
 	return filepath_fix_map;
 }
 
 void
-CanvasParser::set_broken_use_ids(const std::map<std::string, std::string>& map)
+CanvasParser::set_broken_use_ids(const BrokenUseIdMap& map)
 {
 	filepath_fix_map = map;
 }
@@ -3688,7 +3689,7 @@ CanvasParser::fix_broken_use_id(std::string &use_id) const
 
 	try {
 		std::string filepath = use_id.substr(0, pos);
-		filepath = filepath_fix_map.at(filepath);
+		filepath = filepath_fix_map.at(filepath).first;
 		use_id = filepath + use_id.substr(pos);
 		return true;
 	} catch (...) {
@@ -3697,12 +3698,12 @@ CanvasParser::fix_broken_use_id(std::string &use_id) const
 }
 
 bool
-CanvasParser::register_broken_use_id(const std::string &use_id)
+CanvasParser::register_broken_use_id(const std::string &use_id, const std::string &type)
 {
 	auto pos = use_id.find('#');
 	if (pos == std::string::npos || pos == 0)
 		return false;
 
-	filepath_fix_map[use_id.substr(0, pos)] = "";
+	filepath_fix_map[use_id.substr(0, pos)] = {"", {{use_id.substr(pos+1), type}}};
 	return true;
 }
