@@ -2,8 +2,9 @@ MAINTAINERCLEANFILES = Makefile.in
 
 UIFILES     = \
   canvas_options.glade \
-  preview_options.glade \
+  dialog_canvasdependencies.glade \
   dialog_workspaces.glade \
+  preview_options.glade \
   shortcuts_window.glade \
   history_toolbar.glade \
   right_toolbar.glade \

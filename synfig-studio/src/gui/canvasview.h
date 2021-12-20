@@ -719,6 +719,8 @@ private:
 	void set_jack_offset(const synfig::Time &value);
 	static int jack_sync_callback(jack_transport_state_t state, jack_position_t *pos, void *arg);
 	#endif
+
+	void show_dependencies() const;
 }; // END of class CanvasView
 
 

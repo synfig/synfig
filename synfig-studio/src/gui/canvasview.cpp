@@ -61,6 +61,7 @@
 #include <ETL/stringf>
 
 #include <gui/app.h>
+#include <gui/dialogs/dialog_canvasdependencies.h>
 #include <gui/dials/keyframedial.h>
 #include <gui/dials/resolutiondial.h>
 #include <gui/docks/dockbook.h>
@@ -1394,6 +1395,9 @@ CanvasView::init_menus()
 	);
 	action_group->add( Gtk::Action::create("close-document", Gtk::StockID("gtk-close"), _("Close Document")),
 		sigc::hide_return(sigc::mem_fun(*this,&CanvasView::close_instance))
+	);
+	action_group->add( Gtk::Action::create("show-dependencies", _("Show Dependencies")),
+		sigc::hide_return(sigc::mem_fun(*this,&CanvasView::show_dependencies))
 	);
 	action_group->add( Gtk::Action::create("quit", Gtk::StockID("gtk-quit"), _("Quit")),
 		sigc::hide_return(sigc::ptr_fun(&App::quit))
@@ -3855,7 +3859,25 @@ CanvasView::jack_sync_callback(jack_transport_state_t /* state */, jack_position
 	canvasView->jack_dispatcher.emit();
 	return 1;
 }
+
 #endif
+
+void
+CanvasView::show_dependencies() const
+{
+	Canvas::ConstHandle canvas = get_canvas();
+	if (!canvas)
+		return;
+
+	Dialog_CanvasDependencies* dialog = Dialog_CanvasDependencies::create(*App::main_window);
+	if (!dialog) {
+		synfig::warning("Can't load Dialog_CanvasDependencies");
+		return;
+	}
+	dialog->set_canvas(get_canvas());
+	dialog->run();
+	delete dialog;
+}
 
 void
 CanvasView::interpolation_refresh()

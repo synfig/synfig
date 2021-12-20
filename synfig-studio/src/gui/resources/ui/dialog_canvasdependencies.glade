@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.38.2 
+
+Copyright (C) Synfig Contributors
+
+This file is part of Synfig Studio.
+
+Synfig Studio is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Synfig Studio is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Synfig Studio.  If not, see <http://www.gnu.org/licenses/>.
+
+Author: Rodolfo Ribeiro Gomes
+
+-->
+<interface>
+  <requires lib="gtk+" version="3.18"/>
+  <!-- interface-license-type gplv3 -->
+  <!-- interface-name Synfig Studio -->
+  <!-- interface-copyright Synfig Contributors -->
+  <!-- interface-authors Rodolfo Ribeiro Gomes -->
+  <object class="GtkTreeStore" id="dependencies_treestore">
+    <columns>
+      <!-- column-name File -->
+      <column type="gchararray"/>
+      <!-- column-name Dependency_Number -->
+      <column type="gint"/>
+      <!-- column-name Type_Icon -->
+      <column type="GdkPixbuf"/>
+    </columns>
+  </object>
+  <object class="GtkTreeStore" id="external_resources_treestore">
+    <columns>
+      <!-- column-name File -->
+      <column type="gchararray"/>
+      <!-- column-name Usage_Number -->
+      <column type="gint"/>
+      <!-- column-name Type_Icon -->
+      <column type="GdkPixbuf"/>
+    </columns>
+  </object>
+  <object class="GtkDialog" id="dialog_canvasdependencies">
+    <property name="width-request">600</property>
+    <property name="height-request">400</property>
+    <property name="can-focus">False</property>
+    <property name="title" translatable="yes">Canvas External Dependencies</property>
+    <property name="default-width">320</property>
+    <property name="type-hint">dialog</property>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="can-focus">False</property>
+        <property name="margin-start">12</property>
+        <property name="margin-end">12</property>
+        <property name="margin-top">12</property>
+        <property name="margin-bottom">12</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">6</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="can-focus">False</property>
+            <property name="layout-style">end</property>
+            <child>
+              <object class="GtkButton" id="dependencies_close_button">
+                <property name="label" translatable="yes">Close</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="dependencies_canvas_filepath_label">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="ellipsize">start</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">Exported Values/Value Nodes</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow">
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="shadow-type">in</property>
+            <child>
+              <object class="GtkTreeView" id="dependencies_treeview">
+                <property name="width-request">400</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="model">dependencies_treestore</property>
+                <child internal-child="selection">
+                  <object class="GtkTreeSelection"/>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn">
+                    <property name="resizable">True</property>
+                    <property name="title" translatable="yes">Filename</property>
+                    <property name="expand">True</property>
+                    <property name="alignment">0.5</property>
+                    <property name="reorderable">True</property>
+                    <property name="sort-indicator">True</property>
+                    <property name="sort-column-id">0</property>
+                    <child>
+                      <object class="GtkCellRendererPixbuf"/>
+                      <attributes>
+                        <attribute name="pixbuf">2</attribute>
+                      </attributes>
+                    </child>
+                    <child>
+                      <object class="GtkCellRendererText">
+                        <property name="ellipsize">start</property>
+                      </object>
+                      <attributes>
+                        <attribute name="text">0</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn">
+                    <property name="sizing">fixed</property>
+                    <property name="title" translatable="yes">Usage</property>
+                    <property name="alignment">0.5</property>
+                    <property name="reorderable">True</property>
+                    <property name="sort-indicator">True</property>
+                    <property name="sort-column-id">1</property>
+                    <child>
+                      <object class="GtkCellRendererText"/>
+                      <attributes>
+                        <attribute name="text">1</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="label" translatable="yes">External Resources</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow">
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="shadow-type">in</property>
+            <child>
+              <object class="GtkTreeView" id="external_resources_treeview">
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="model">external_resources_treestore</property>
+                <child internal-child="selection">
+                  <object class="GtkTreeSelection"/>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="filename_column">
+                    <property name="resizable">True</property>
+                    <property name="title" translatable="yes">Filename</property>
+                    <property name="expand">True</property>
+                    <property name="alignment">0.5</property>
+                    <property name="reorderable">True</property>
+                    <property name="sort-indicator">True</property>
+                    <property name="sort-column-id">0</property>
+                    <child>
+                      <object class="GtkCellRendererPixbuf"/>
+                      <attributes>
+                        <attribute name="pixbuf">2</attribute>
+                      </attributes>
+                    </child>
+                    <child>
+                      <object class="GtkCellRendererText">
+                        <property name="ellipsize">start</property>
+                      </object>
+                      <attributes>
+                        <attribute name="text">0</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn">
+                    <property name="sizing">fixed</property>
+                    <property name="title" translatable="yes">Usage</property>
+                    <property name="alignment">0.5</property>
+                    <property name="reorderable">True</property>
+                    <property name="sort-indicator">True</property>
+                    <property name="sort-column-id">1</property>
+                    <child>
+                      <object class="GtkCellRendererText"/>
+                      <attributes>
+                        <attribute name="text">1</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">5</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

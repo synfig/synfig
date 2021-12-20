@@ -952,6 +952,7 @@ DEFINE_ACTION("import-sequence",_("Import Sequence..."))
 DEFINE_ACTION("render",         _("Render..."))
 DEFINE_ACTION("preview",        _("Preview..."))
 DEFINE_ACTION("close-document", _("Close Document"))
+DEFINE_ACTION("show-dependencies", _("View Document Dependencies..."))
 DEFINE_ACTION("quit",           Gtk::Stock::QUIT)
 
 // actions in Edit menu
@@ -1092,6 +1093,8 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 "		<separator name='sep-file5'/>"
 "		<menuitem action='close-document' />"
 "		<separator name='sep-file6'/>"
+"		<menuitem action='show-dependencies' />"
+"		<separator name='sep-file7'/>"
 "		<menuitem action='quit' />"
 "	</menu>"
 "	<menu action='menu-edit'>"
