@@ -181,7 +181,7 @@ public:
 			hide();
 			if (parent) parent->grab_focus();
 			property_editing_canceled() = true;
-			Gtk::CellEditable::editing_done();
+			editing_done();
 			return true;
 		}
 		return Gtk::EventBox::on_key_press_event(key_event);
