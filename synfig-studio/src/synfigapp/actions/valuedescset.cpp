@@ -255,7 +255,8 @@ Action::ValueDescSet::prepare()
 						svalue = ValueBase(r);
 					}
 					add_action_valuedescset(svalue,ValueDesc(pose_bone,index));
-					return;
+
+					// don't return here: continue in this method to apply changes set to first bone as defined for this action
 				}
 			}
 		}
