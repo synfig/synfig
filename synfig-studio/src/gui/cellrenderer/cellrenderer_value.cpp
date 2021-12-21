@@ -127,6 +127,7 @@ public:
 		SYNFIG_EXCEPTION_GUARD_BEGIN()
 		if (valuewidget) {
 			valuewidget->signal_activate().connect(sigc::mem_fun(*this, &studio::ValueBase_Entry::editing_done));
+			valuewidget->signal_key_press_event().connect(sigc::mem_fun(*this, &studio::ValueBase_Entry::on_key_press_event));
 		}
 
 		// popup combobox menu if its is a enum editor
@@ -169,6 +170,21 @@ public:
 		 || event->any.type == GDK_3BUTTON_PRESS )
 			return true;
 		return Gtk::EventBox::on_event(event);
+		SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
+	}
+
+	bool on_key_press_event(GdkEventKey* key_event)
+	{
+		SYNFIG_EXCEPTION_GUARD_BEGIN()
+		if(key_event->keyval == GDK_KEY_Escape)
+		{
+			hide();
+			if (parent) parent->grab_focus();
+			property_editing_canceled() = true;
+			editing_done();
+			return true;
+		}
+		return Gtk::EventBox::on_key_press_event(key_event);
 		SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 	}
 
@@ -672,6 +688,9 @@ CellRenderer_ValueBase::start_editing_vfunc(
 void
 CellRenderer_ValueBase::on_value_editing_done()
 {
+	if (value_entry && value_entry->property_editing_canceled())
+		return;
+
 	if (edit_value_done_called)
 	{
 		synfig::error("on_value_editing_done(): Called twice!");
