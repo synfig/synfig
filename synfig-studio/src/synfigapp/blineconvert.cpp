@@ -560,13 +560,14 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 
 		cum_dist.resize(point_cache.size()); this_dist.resize(point_cache.size());
 		Real d = 0;
-		for(unsigned int i = 0; i < point_cache.size() - 1;)
+		for(unsigned int i = 0; i < point_cache.size(); i++)
 		{
+			p2=point_cache[i];
+
 			d += (this_dist[i] = (p2-p1).mag());
 			cum_dist[i] = d;
 
 			p1=p2;
-			p2=point_cache[++i];
 		}
 	}
 	//disteval = timer();
