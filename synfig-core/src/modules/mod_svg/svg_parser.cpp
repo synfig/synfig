@@ -953,13 +953,11 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			coor2vect(&tgx,&tgy);
 			//save
 			k1.back().setTg2(tgx2,tgy2);
-			if(k1.front().isEqualTo(ax,ay)){
-				k1.front().setTg1(tgx,tgy);
-			}else{
-				k1.push_back(Vertex(ax,ay));
-				k1.back().setTg1(tgx,tgy);
-				k1.back().setSplit(true);
-			}
+
+			k1.push_back(Vertex(ax,ay));
+			k1.back().setTg1(tgx,tgy);
+			k1.back().setSplit(true);
+
 			break;
 		}
 		case 'q':
