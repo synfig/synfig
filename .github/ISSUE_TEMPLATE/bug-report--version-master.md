@@ -1,6 +1,6 @@
 ---
-name: 'Bug report: Development version (master branch)'
-about: Report an issue for latest development version built from source code
+name: 'Bug report: Master branch'
+about: Report an issue for master branch, built from source code
 title: ''
 labels: ''
 assignees: ''

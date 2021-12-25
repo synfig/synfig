@@ -1,6 +1,6 @@
 ---
-name: 'Bug report: Version 1.4.x'
-about: Create a report to help us improve stable version
+name: 'Bug report: Development version (1.5.x)'
+about: Report an issue for official development releases
 title: ''
 labels: ''
 assignees: ''
@@ -26,7 +26,7 @@ If applicable, add screenshots to help explain your problem.
 **System information:**
  - OS: [Windows, Linux or Mac. If Linux, please tell us your distro]
  - OS version:
- - Synfig version: 1.4.2
+ - Synfig version: 1.5.1
 
 **Additional comments**
 Add any other context about the problem here.
