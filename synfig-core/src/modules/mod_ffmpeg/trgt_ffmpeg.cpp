@@ -34,31 +34,20 @@
 #	include <config.h>
 #endif
 
+#include "trgt_ffmpeg.h"
+
+#include <ETL/stringf>
+
 #include <synfig/filesystemnative.h>
 #include <synfig/general.h>
 #include <synfig/localization.h>
 #include <synfig/soundprocessor.h>
-
-#include <ETL/stringf>
-
-#include "trgt_ffmpeg.h"
-
-#if HAVE_SYS_WAIT_H
- #include <sys/wait.h>
-#endif
 
 #endif
 
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
-
-#if defined(HAVE_FORK) && defined(HAVE_PIPE) && defined(HAVE_WAITPID)
- #define UNIX_PIPE_TO_PROCESSES
- #include <unistd.h> // for popen
-#else
- #define WIN32_PIPE_TO_PROCESSES
-#endif
 
 /* === G L O B A L S ======================================================= */
 
@@ -81,7 +70,7 @@ ffmpeg_trgt::does_video_codec_support_alpha_channel(const synfig::String &video_
 ffmpeg_trgt::ffmpeg_trgt(const char *Filename, const synfig::TargetParam &params):
 	imagecount(0),
 	multi_image(false),
-	file(nullptr),
+	pipe(nullptr),
 	filename(Filename),
 	sound_filename(""),
 	bitrate()
@@ -105,17 +94,11 @@ ffmpeg_trgt::ffmpeg_trgt(const char *Filename, const synfig::TargetParam &params
 
 ffmpeg_trgt::~ffmpeg_trgt()
 {
-	if(file)
+	if(pipe)
 	{
-#if defined(WIN32_PIPE_TO_PROCESSES)
-		_pclose(file);
-#elif defined(UNIX_PIPE_TO_PROCESSES)
-		fclose(file);
-		int status;
-		waitpid(pid,&status,0);
-#endif
+		pipe->close();
 	}
-	file=nullptr;
+	pipe = nullptr;
 
 	// Remove temporary sound file
 	if (FileSystemNative::instance()->is_file(sound_filename.c_str())) {
@@ -155,7 +138,7 @@ ffmpeg_trgt::set_rend_desc(RendDesc *given_desc)
 		given_desc->set_frame_rate(50);
 	if(fps>=59.94)
 		given_desc->set_frame_rate(59.94);
-    */
+	*/
 
 	desc=*given_desc;
 
@@ -189,33 +172,28 @@ ffmpeg_trgt::init(ProgressCallback* cb = nullptr)
 	}
 
 	String ffmpeg_binary_path;
-#if defined(WIN32_PIPE_TO_PROCESSES)
+#ifdef _WIN32
 	// Windows always have ffmpeg
-	std::string binary_path = etl::dirname(synfig::get_binary_path(".")) + "/ffmpeg.exe";
-	if (FileSystemNative::instance()->is_file(binary_path)) {
-		ffmpeg_binary_path = "\"" + binary_path + "\"";
+	ffmpeg_binary_path = etl::dirname(synfig::get_binary_path(".")) + "/ffmpeg.exe";
+	if (!FileSystemNative::instance()->is_file(ffmpeg_binary_path)) {
+		synfig::error("Expected FFmpeg binary not found: %s", ffmpeg_binary_path.c_str());
+		ffmpeg_binary_path.clear();
 	}
 #else
 	// Some Linux OS may have `avconv` instead of `ffmpeg`, so let's check both
 	const std::vector<std::string> binary_choices = {"ffmpeg", "avconv"};
 	for (const auto& bin_name : binary_choices) {
-		std::string command = "which " + bin_name;
-		String result;
-		FILE* pipe = popen(command.c_str(), "r");
+		OS::RunArgs args;
+		args.push_filename(bin_name);
+		OS::RunPipe::Handle pipe = OS::run_async("which", args, OS::RUN_MODE_READ);
 		if (!pipe) {
+			synfig::error(_("%s: Internal error: couldn't run 'which' async"), "trgt_ffmpeg");
 			continue;
 		}
-		char buf[128];
-		while(!feof(pipe)) {
-			if(fgets(buf, 128, pipe))
-				result += buf;
-		}
-		/* `which` exit status
-		 * 0      if all specified commands are found and executable
-		 * 1      if one or more specified commands is nonexistent or not executable
-		 * 2      if an invalid option is specified */
-		synfig::info("\"%s\" --> %s", command.c_str(), result.c_str());
-		if (pclose(pipe) == 0) { // If we need to check non-zero exit code we should use `WEXITSTATUS` for this
+		std::string result = pipe->read_contents();
+		int status = pipe->close();
+		synfig::info("which %s -> [%i] %s", args.get_string().c_str(), status, result.c_str());
+		if (status == 0) {
 			ffmpeg_binary_path = bin_name; // we can use `result` value here, but in this case we need to remove trailing `\n`
 			break;
 		}
@@ -226,156 +204,84 @@ ffmpeg_trgt::init(ProgressCallback* cb = nullptr)
 		if (cb) cb->error(_("Error: No FFmpeg binary found.\n\nPlease install \"ffmpeg\" or \"avconv\" (libav-tools package)."));
 		return false;
 	}
-	
+
 	imagecount=desc.get_frame_start();
 	if(desc.get_frame_end()-desc.get_frame_start()>0)
 		multi_image=true;
 
 	const bool use_alpha = get_alpha_mode() == TARGET_ALPHA_MODE_KEEP;
 
-	// this should avoid conflicts with locale settings
-	synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-	
 	std::string video_codec_real = (video_codec == "libx264-lossless" ? "libx264" : video_codec);
 
-	std::vector<std::string> vargs;
-	vargs.emplace_back(ffmpeg_binary_path);
+	OS::RunArgs vargs;
 	if (with_sound) {
-		vargs.emplace_back("-i");
-#if defined(WIN32_PIPE_TO_PROCESSES)
-		vargs.emplace_back("\"" + sound_filename + "\"");
-#else
-		vargs.emplace_back(sound_filename);
-#endif
+		vargs.push("-i");
+		vargs.push_filename(sound_filename);
 	}
-	vargs.emplace_back("-f");
-	vargs.emplace_back("image2pipe");
-	vargs.emplace_back("-vcodec");
-	vargs.emplace_back(use_alpha ? "pam" : "ppm");
-	vargs.emplace_back("-r");
-	vargs.emplace_back(strprintf("%f", desc.get_frame_rate()));
-	vargs.emplace_back("-i");
-	vargs.emplace_back("pipe:");
-	vargs.emplace_back("-metadata");
-	vargs.emplace_back(strprintf("title=\"%s\"", get_canvas()->get_name().c_str()));
-	vargs.emplace_back("-vcodec");
-	vargs.emplace_back(video_codec_real);
-	vargs.emplace_back("-b:v");
-	vargs.emplace_back(strprintf("%ik", bitrate));
+	vargs.push("-f");
+	vargs.push("image2pipe");
+	vargs.push("-vcodec");
+	vargs.push(use_alpha ? "pam" : "ppm");
+	vargs.push("-r");
+	{
+		// this should avoid conflicts with locale settings
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+		vargs.push("%f", desc.get_frame_rate());
+	}
+	vargs.push("-i");
+	vargs.push("pipe:");
+	vargs.push("-metadata");
+	vargs.push("title=\"%s\"", get_canvas()->get_name().c_str());
+	vargs.push("-vcodec");
+	vargs.push(video_codec_real);
+	vargs.push("-b:v");
+	vargs.push("%ik", bitrate);
 	if (video_codec == "libx264-lossless") {
-		vargs.emplace_back("-tune");
-		vargs.emplace_back("fastdecode");
-		vargs.emplace_back("-pix_fmt");
-		vargs.emplace_back(use_alpha ? "yuva420p" : "yuv420p");
-		vargs.emplace_back("-qp");
-		vargs.emplace_back("0");
+		vargs.push("-tune");
+		vargs.push("fastdecode");
+		vargs.push("-pix_fmt");
+		vargs.push(use_alpha ? "yuva420p" : "yuv420p");
+		vargs.push("-qp");
+		vargs.push("0");
 	} else if (use_alpha){
 		if (video_codec == "hap") {
-			vargs.emplace_back("-format");
-			vargs.emplace_back("hap_alpha");
+			vargs.push("-format");
+			vargs.push("hap_alpha");
 		}
-		vargs.emplace_back("-pix_fmt");
-		vargs.emplace_back("yuva420p");
+		vargs.push("-pix_fmt");
+		vargs.push("yuva420p");
 	}
-	vargs.emplace_back("-acodec");
-	// MPEG-1 cannot work with 'le' audio, it requires 'be'
-	vargs.emplace_back(video_codec == "mpeg1video" ? "pcm_s16be" : "pcm_s16le");
-	vargs.emplace_back("-y");
-	vargs.emplace_back("-t");
-	vargs.emplace_back((desc.get_time_end()-desc.get_time_start()).get_string(Time::Format::FORMAT_VIDEO));
+	if (with_sound) {
+		vargs.push("-acodec");
+		// MPEG-1 cannot work with 'le' audio, it requires 'be'
+		vargs.push(video_codec == "mpeg1video" ? "pcm_s16be" : "pcm_s16le");
+	}
+	vargs.push("-y");
+	vargs.push("-t");
+	{
+		// this should avoid conflicts with locale settings
+		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+		vargs.push((desc.get_time_end()-desc.get_time_start()).get_string(Time::Format::FORMAT_VIDEO));
+	}
 	// We need "--" to separate filename from arguments (for the case when filename starts with "-")
 	if ( filename.substr(0,1) == "-" )
-		vargs.emplace_back("--");
+		vargs.push("--");
 
-#if defined(WIN32_PIPE_TO_PROCESSES)
-	vargs.emplace_back("\"" + filename + "\"");
-#else
-	vargs.emplace_back(filename);
-#endif
+	vargs.push_filename(filename);
 
-#if defined(WIN32_PIPE_TO_PROCESSES)
+	pipe = OS::run_async(ffmpeg_binary_path, vargs, OS::RUN_MODE_WRITE);
 
-	String command;
-	for( std::vector<std::string>::size_type i = 0; i != vargs.size(); i++ )
-	{
-		command+=" "+vargs[i];
-	}
-	command+="\n";
-
-	// This covers the dumb cmd.exe behavior.
-	// See: http://eli.thegreenplace.net/2011/01/28/on-spaces-in-the-paths-of-programs-and-files-on-windows/
-	command = "\"" + command + "\"";
-	
-	const wchar_t* wcommand = reinterpret_cast<const wchar_t*>(g_utf8_to_utf16(command.c_str(), -1, nullptr, nullptr, nullptr));
-	const wchar_t* wmode = reinterpret_cast<const wchar_t*>(g_utf8_to_utf16(POPEN_BINARY_WRITE_TYPE, -1, nullptr, nullptr, nullptr));
-	
-	file=_wpopen(wcommand, wmode);
-
-#elif defined(UNIX_PIPE_TO_PROCESSES)
-
-	int p[2];
-
-	if (pipe(p)) {
-		synfig::error(_("Unable to open pipe to ffmpeg (no pipe)"));
-		return false;
-	}
-
-	pid = fork();
-
-	if (pid == -1) {
-		synfig::error(_("Unable to open pipe to ffmpeg (pid == -1)"));
-		return false;
-	}
-
-	if (pid == 0){
-		// Child process
-		// Close pipeout, not needed
-		close(p[1]);
-		// Dup pipeout to stdin
-		if( dup2( p[0], STDIN_FILENO ) == -1 ){
-			synfig::error(_("Unable to open pipe to ffmpeg (dup2( p[0], STDIN_FILENO ) == -1)"));
-			return false;
-		}
-		// Close the unneeded pipeout
-		close(p[0]);
-		
-		char *args[vargs.size()+1];
-		size_t idx = 0;
-		for( std::vector<std::string>::size_type i = 0; i != vargs.size(); i++ )
-		{
-			//std::vector<char> writable(vargs[i].begin(), vargs[i].end());
-			//writable.push_back('\0');
-			//args[idx++] = &writable[0];
-			//args[idx++] = strdup(vargs[i].c_str());
-			args[idx++] = &vargs[i][0];
-			//synfig::info(&vargs[i][0]);
-		}
-		args[idx++] = (char*)nullptr;
-		
-		execvp(ffmpeg_binary_path.c_str(), args);
-
-		// We should never reach here unless the exec failed
-		synfig::error(_("Unable to open pipe to ffmpeg (exec failed)"));
-		return false;
-	} else {
-		// Parent process
-		// Close pipein, not needed
-		close(p[0]);
-		// Save pipeout to file handle, will write to it later
-		file = fdopen(p[1], "wb");
-	}
-
-#else
-	#error There are no known APIs for creating child processes
-#endif
-
-	// etl::yield();
-
-	if(!file)
+	if(!pipe || !pipe->is_writable())
 	{
 		synfig::error(_("Unable to open pipe to ffmpeg (no file)"));
+		if (pipe) {
+			pipe->close();
+			pipe = nullptr;
+		}
 		return false;
 	}
+
+	synfig::info(_("Running async command: %s"), pipe->get_command().c_str());
 
 	return true;
 }
@@ -383,8 +289,8 @@ ffmpeg_trgt::init(ProgressCallback* cb = nullptr)
 void
 ffmpeg_trgt::end_frame()
 {
-	//fprintf(file, " ");
-	fflush(file);
+	//pipe->print(" ");
+	pipe->flush();
 	imagecount++;
 }
 
@@ -393,23 +299,23 @@ ffmpeg_trgt::start_frame(synfig::ProgressCallback */*callback*/)
 {
 	std::size_t w=desc.get_w(),h=desc.get_h();
 
-	if(!file)
+	if(!pipe || !pipe->is_writable())
 		return false;
 
 	const bool use_alpha = get_alpha_mode() == TARGET_ALPHA_MODE_KEEP;
 
 	if (!use_alpha) {
-		fprintf(file, "P6\n");
-		fprintf(file, "%zu %zu\n", w, h);
-		fprintf(file, "%d\n", 255);
+		pipe->printf("P6\n");
+		pipe->printf("%zu %zu\n", w, h);
+		pipe->printf("%d\n", 255);
 	} else {
-		fprintf(file, "P7\n");
-		fprintf(file, "WIDTH %zu\n", w);
-		fprintf(file, "HEIGHT %zu\n", h);
-		fprintf(file, "DEPTH 4\n");
-		fprintf(file, "MAXVAL %d\n", 255);
-		fprintf(file, "TUPLTYPE RGB_ALPHA\n");
-		fprintf(file, "ENDHDR\n");
+		pipe->printf("P7\n");
+		pipe->printf("WIDTH %zu\n", w);
+		pipe->printf("HEIGHT %zu\n", h);
+		pipe->printf("DEPTH 4\n");
+		pipe->printf("MAXVAL %d\n", 255);
+		pipe->printf("TUPLTYPE RGB_ALPHA\n");
+		pipe->printf("ENDHDR\n");
 	}
 
 	buffer.resize(w * (use_alpha ? 4 : 3));
@@ -427,7 +333,7 @@ ffmpeg_trgt::start_scanline(int /*scanline*/)
 bool
 ffmpeg_trgt::end_scanline()
 {
-	if(!file)
+	if(!pipe)
 		return false;
 
 	PixelFormat format = PF_RGB;
@@ -436,7 +342,7 @@ ffmpeg_trgt::end_scanline()
 
 	color_to_pixelformat(buffer.data(), color_buffer.data(), format, 0, desc.get_w());
 
-	if(!fwrite(buffer.data(),1,buffer.size(),file))
+	if(!pipe->write(buffer.data(),1,buffer.size()))
 		return false;
 
 	return true;

@@ -34,15 +34,12 @@
 #endif
 
 #include "mptr_ffmpeg.h"
-#include <cstdio>
 
 #include <ETL/stringf>
 
 #include <synfig/general.h>
 #include <synfig/localization.h>
-#if HAVE_SYS_WAIT_H
- #include <sys/wait.h>
-#endif
+
 #if HAVE_IO_H
  #include <io.h>
 #endif
@@ -59,13 +56,6 @@
 
 using namespace synfig;
 using namespace etl;
-
-#if defined(HAVE_FORK) && defined(HAVE_PIPE) && defined(HAVE_WAITPID)
- #include <unistd.h> // for popen
- #define UNIX_PIPE_TO_PROCESSES
-#else
- #define WIN32_PIPE_TO_PROCESSES
-#endif
 
 /* === G L O B A L S ======================================================= */
 
@@ -87,87 +77,35 @@ ffmpeg_mptr::seek_to(const Time& time)
 {
 	//if(frame<cur_frame || !file)
 	//{
-		if(file)
-		{
-#if defined(WIN32_PIPE_TO_PROCESSES)
-			_pclose(file);
-#elif defined(UNIX_PIPE_TO_PROCESSES)
-			fclose(file);
-			int status;
-			waitpid(pid,&status,0);
-#endif
-		}
+		pipe = nullptr;
 		
 		// FIXME: 24 fps is hardcoded now, but in fact we have to get it from canvas
 		//float position = (frame+1)/24; // ffmpeg didn't work with 0 frame
 		//float position = 1000/24; // ffmpeg didn't work with 0 frame
 		const std::string position = time.get_string(Time::FORMAT_NORMAL);
 
-#if defined(WIN32_PIPE_TO_PROCESSES)
+		OS::RunArgs args;
+		args.push_pair("-ss", position);
+		args.push_pair_filename("-i", identifier.filename);
+		args.push_pair("-vframes", "1");
+		args.push("-an");
+		args.push_pair("-f", "image2pipe");
+		args.push_pair("-vcodec", "ppm");
+		args.push("-");
 
-		std::string command;
-		
+#ifdef _WIN32
 		String binary_path = synfig::get_binary_path("");
 		if (binary_path != "")
 			binary_path = etl::dirname(binary_path)+ETL_DIRECTORY_SEPARATOR;
 		binary_path += "ffmpeg.exe";
-
-		command=strprintf("\"%s\" -ss %s -i \"%s\" -vframes 1 -an -f image2pipe -vcodec ppm -\n", binary_path.c_str(), position.c_str(), identifier.filename.c_str());
-		
-		// This covers the dumb cmd.exe behavior.
-		// See: http://eli.thegreenplace.net/2011/01/28/on-spaces-in-the-paths-of-programs-and-files-on-windows/
-		command = "\"" + command + "\"";
-
-		file=_popen(command.c_str(),POPEN_BINARY_READ_TYPE);
-
-#elif defined(UNIX_PIPE_TO_PROCESSES)
-
-		int p[2];
-
-		if (pipe(p)) {
-			std::cerr<<"Unable to open pipe to ffmpeg (no pipe)"<<std::endl;
-			return false;
-		};
-
-		pid = fork();
-
-		if (pid == -1) {
-			std::cerr<<"Unable to open pipe to ffmpeg (pid == -1)"<<std::endl;
-			return false;
-		}
-
-		if (pid == 0){
-			// Child process
-			// Close pipein, not needed
-			close(p[0]);
-			// Dup pipein to stdout
-			if( dup2( p[1], STDOUT_FILENO ) == -1 ){
-				std::cerr<<"Unable to open pipe to ffmpeg (dup2( p[1], STDOUT_FILENO ) == -1)"<<std::endl;
-				return false;
-			}
-			// Close the unneeded pipein
-			close(p[1]);
-			/*std::string command = strprintf("\"%s\" -ss '%s' -i \"%s\" -vframes 1 -an -f image2pipe -vcodec ppm -\n", "ffmpeg", position2, identifier.filename.c_str());
-			synfig::warning("ffmpeg command: '%s'", command.c_str());*/
-			execlp("ffmpeg", "ffmpeg", "-ss", position.c_str(), "-i", identifier.filename.c_str(), "-vframes", "1","-an", "-f", "image2pipe", "-vcodec", "ppm", "-", (const char*)nullptr);
-			// We should never reach here unless the exec failed
-			std::cerr<<"Unable to open pipe to ffmpeg (exec failed)"<<std::endl;
-			_exit(1);
-		} else {
-			// Parent process
-			// Close pipeout, not needed
-			close(p[1]);
-			// Save pipein to file handle, will read from it later
-			file = fdopen(p[0], "rb");
-		}
-
 #else
-	#error There are no known APIs for creating child processes
+		String binary_path = "ffmpeg";
 #endif
+		pipe = OS::run_async(binary_path, args, OS::RUN_MODE_READ);
 
-		if(!file)
+		if(!pipe)
 		{
-			std::cerr<<"Unable to open pipe to ffmpeg"<<std::endl;
+			synfig::error(_("Unable to open pipe to ffmpeg"));
 			return false;
 		}
 		cur_frame=-1;
@@ -185,33 +123,33 @@ ffmpeg_mptr::seek_to(const Time& time)
 bool
 ffmpeg_mptr::grab_frame(void)
 {
-	if(!file)
+	if(!pipe)
 	{
-		std::cerr<<"unable to open "<<identifier.filename.c_str()<<std::endl;
+		synfig::error(_("unable to open %s"), identifier.filename.c_str());
 		return false;
 	}
 	int w,h;
 	float divisor;
 	char cookie[2];
-	cookie[0]=fgetc(file);
+	cookie[0]=pipe->getc();
 
-	if(feof(file))
+	if(pipe->eof())
 		return false;
 
-	cookie[1]=fgetc(file);
+	cookie[1]=pipe->getc();
 
 	if(cookie[0]!='P' || cookie[1]!='6')
 	{
-		std::cerr<<"stream not in PPM format \""<<cookie[0]<<cookie[1]<<'"'<<std::endl;
+		synfig::error(_("stream not in PPM format \"%c%c\""), cookie[0], cookie[1]);
 		return false;
 	}
 
-	fgetc(file);
-	fscanf(file,"%d %d\n",&w,&h);
-	fscanf(file,"%f",&divisor);
-	fgetc(file);
+	pipe->getc();
+	pipe->scanf("%d %d\n",&w,&h);
+	pipe->scanf("%f",&divisor);
+	pipe->getc();
 
-	if(feof(file))
+	if(pipe->eof())
 		return false;
 
 	frame.set_wh(w, h);
@@ -219,11 +157,11 @@ ffmpeg_mptr::grab_frame(void)
 	for(int y = 0; y < frame.get_h(); ++y)
 		for(int x = 0; x < frame.get_w(); ++x)
 		{
-			if(feof(file))
+			if(pipe->eof())
 				return false;
-			ColorReal r = k*(unsigned char)fgetc(file);
-			ColorReal g = k*(unsigned char)fgetc(file);
-			ColorReal b = k*(unsigned char)fgetc(file);
+			ColorReal r = k*(unsigned char)pipe->getc();
+			ColorReal g = k*(unsigned char)pipe->getc();
+			ColorReal b = k*(unsigned char)pipe->getc();
 			frame[y][x] = Color(r, g, b);
 		}
 	cur_frame++;
@@ -236,23 +174,14 @@ ffmpeg_mptr::ffmpeg_mptr(const synfig::FileSystem::Identifier &identifier):
 #ifdef HAVE_TERMIOS_H
 	tcgetattr (0, &oldtty);
 #endif
-	file=nullptr;
+	pipe=nullptr;
 	fps=23.98;
 	cur_frame=-1;
 }
 
 ffmpeg_mptr::~ffmpeg_mptr()
 {
-	if(file)
-	{
-#if defined(WIN32_PIPE_TO_PROCESSES)
-		_pclose(file);
-#elif defined(UNIX_PIPE_TO_PROCESSES)
-		fclose(file);
-		int status;
-		waitpid(pid,&status,0);
-#endif
-	}
+	pipe = nullptr;
 #ifdef HAVE_TERMIOS_H
 	tcsetattr(0,TCSANOW,&oldtty);
 #endif

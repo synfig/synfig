@@ -144,6 +144,7 @@
 #include <synfig/general.h>
 #include <synfig/layer.h>
 #include <synfig/loadcanvas.h>
+#include <synfig/os.h>
 #include <synfig/savecanvas.h>
 #include <synfig/soundprocessor.h>
 #include <synfig/string_helper.h>

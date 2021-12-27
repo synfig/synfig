@@ -30,10 +30,8 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <synfig/os.h>
 #include <synfig/target_scanline.h>
-#include <synfig/string.h>
-#include <sys/types.h>
-#include <cstdio>
 
 /* === M A C R O S ========================================================= */
 
@@ -47,13 +45,9 @@ class imagemagick_trgt : public synfig::Target_Scanline
 	SYNFIG_TARGET_MODULE_EXT
 
 private:
-
-#ifdef HAVE_FORK
-	pid_t pid = -1;
-#endif
 	int imagecount;
 	bool multi_image;
-	FILE *file;
+	synfig::OS::RunPipe::Handle pipe;
 	synfig::String filename;
 	unsigned char *buffer;
 	synfig::Color *color_buffer;
