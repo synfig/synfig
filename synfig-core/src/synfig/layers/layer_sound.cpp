@@ -68,7 +68,7 @@ SYNFIG_LAYER_SET_VERSION(Layer_Sound,"0.1");
 /* === E N T R Y P O I N T ================================================= */
 
 Layer_Sound::Layer_Sound():
-	Layer_Composite(0.0),
+	Layer_Invisible(),
 	param_filename(String()),
 	param_delay(Time()),
 	param_volume(Real(1.0))
@@ -143,10 +143,4 @@ Layer_Sound::fill_sound_processor(SoundProcessor &soundProcessor) const
 	Time delay = param_delay.get(Time());
 	Real volume = param_volume.get(Real());
 	soundProcessor.addSound(SoundProcessor::PlayOptions(delay, volume), SoundProcessor::Sound(filename));
-}
-
-rendering::Task::Handle
-Layer_Sound::build_rendering_task_vfunc(Context context)const
-{
-	return context.build_rendering_task();
 }
