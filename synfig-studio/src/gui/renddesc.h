@@ -165,6 +165,7 @@ private:
 
 	void on_ratio_wh_toggled();
 	void activate_ratio_wh();
+	void deactivate_ratio_wh();
 	void on_ratio_res_toggled();
 
 	void create_widgets();
