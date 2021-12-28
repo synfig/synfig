@@ -1332,7 +1332,8 @@ Layer_Freetype::convert_outline_to_contours(const FT_OutlineGlyphRec* glyph, ren
 			continue;
 
 		const short first_p = p;
-		const short last_p = std::min(glyph->outline.contours[nc], glyph->outline.n_points);
+		const short max_p = std::min(glyph->outline.contours[nc], glyph->outline.n_points);
+		short last_p = max_p;
 
 		{
 			const Vector v = get_vector(glyph, p);
@@ -1343,11 +1344,12 @@ Layer_Freetype::convert_outline_to_contours(const FT_OutlineGlyphRec* glyph, ren
 				contour.move_to(v);
 				break;
 			case FT_CURVE_TAG_CONIC: {
-				char last_tag = FT_CURVE_TAG(glyph->outline.tags[last_p]);
-				Vector last_v = get_vector(glyph, last_p);
+				char last_tag = FT_CURVE_TAG(glyph->outline.tags[max_p]);
+				Vector last_v = get_vector(glyph, max_p);
 				switch (last_tag) {
 				case FT_CURVE_TAG_ON:
 					contour.move_to(last_v);
+					last_p--;
 					break;
 				case FT_CURVE_TAG_CONIC:
 					last_v = (v + last_v)/2;
@@ -1373,10 +1375,10 @@ Layer_Freetype::convert_outline_to_contours(const FT_OutlineGlyphRec* glyph, ren
 
 		while (p <= last_p) {
 			short next_p = p + 1;
-			if (next_p > last_p)
+			if (next_p > max_p)
 				next_p = first_p;
 			short next2_p = next_p + 1;
-			if (next2_p > last_p)
+			if (next2_p > max_p)
 				next2_p = first_p;
 
 			const Vector v = get_vector(glyph, p);
@@ -1399,7 +1401,7 @@ Layer_Freetype::convert_outline_to_contours(const FT_OutlineGlyphRec* glyph, ren
 				p += 2;
 			} else if (tag == FT_CURVE_TAG_ON && next_tag == FT_CURVE_TAG_CUBIC && next2_tag == FT_CURVE_TAG_CUBIC) {
 				short next3_p = next2_p + 1;
-				if (next3_p > last_p)
+				if (next3_p > max_p)
 					next3_p = first_p;
 
 				const char next3_tag = FT_CURVE_TAG(glyph->outline.tags[next3_p]);
