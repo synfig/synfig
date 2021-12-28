@@ -30,8 +30,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "layer_composite.h"
-#include <synfig/color.h>
+#include "layer_invisible.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -41,7 +40,7 @@
 
 namespace synfig {
 
-class Layer_Sound : public Layer_Composite, public Layer_NoDeform
+class Layer_Sound : public Layer_Invisible
 {
 	SYNFIG_LAYER_MODULE_EXT
 private:
@@ -55,8 +54,7 @@ public:
 	virtual ValueBase get_param(const String & param)const;
 	virtual Vocab get_param_vocab()const;
 	virtual void fill_sound_processor(SoundProcessor &soundProcessor) const;
-	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context)const;
-}; // END of class Layer_SolidColor
+}; // END of class Layer_Sound
 
 }; // END of namespace synfig
 
