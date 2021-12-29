@@ -45,6 +45,9 @@
 #include <algorithm>
 #include <glibmm.h>
 
+#include FT_IMAGE_H
+#include FT_OUTLINE_H
+
 #if HAVE_HARFBUZZ
 #include <fribidi.h>
 #include <hb-ft.h>
@@ -1308,11 +1311,6 @@ Layer_Freetype::fetch_text_lines(const std::string& text, int direction)
 void
 Layer_Freetype::convert_outline_to_contours(const FT_OutlineGlyphRec* glyph, rendering::Contour::ChunkList& chunks)
 {
-	auto get_vector = [] (const FT_OutlineGlyphRec* glyph, short index) -> Vector {
-		const FT_Vector& ft_v = glyph->outline.points[index];
-		return Vector(ft_v.x, ft_v.y);
-	};
-
 	chunks.clear();
 
 	if (!glyph) {
@@ -1325,106 +1323,30 @@ Layer_Freetype::convert_outline_to_contours(const FT_OutlineGlyphRec* glyph, ren
 		return;
 	}
 
-	short p = 0;
 	rendering::Contour contour;
-	for (int nc = 0; nc < glyph->outline.n_contours; nc++) {
-		if (glyph->outline.n_points == 0)
-			continue;
-
-		const short first_p = p;
-		const short last_p = std::min(glyph->outline.contours[nc], glyph->outline.n_points);
-
-		{
-			const Vector v = get_vector(glyph, p);
-			const char tag = FT_CURVE_TAG(glyph->outline.tags[p]);
-
-			switch (tag) {
-			case FT_CURVE_TAG_ON:
-				contour.move_to(v);
-				break;
-			case FT_CURVE_TAG_CONIC: {
-				char last_tag = FT_CURVE_TAG(glyph->outline.tags[last_p]);
-				Vector last_v = get_vector(glyph, last_p);
-				switch (last_tag) {
-				case FT_CURVE_TAG_ON:
-					contour.move_to(last_v);
-					break;
-				case FT_CURVE_TAG_CONIC:
-					last_v = (v + last_v)/2;
-					contour.move_to(last_v);
-					break;
-				case FT_CURVE_TAG_CUBIC:
-					synfig::error("Layer_Freetype: %s", _("the glyph outline contour cannot end with cubic bezier control point"));
-					continue;
-				default:
-					synfig::error("Layer_Freetype: %s", _("unknown previous tag for the glyph outline contour"));
-					continue;
-				}
-				break;
-			}
-			case FT_CURVE_TAG_CUBIC:
-				synfig::error("Layer_Freetype: %s", _("the glyph outline contour cannot start with cubic bezier control point"));
-				continue;
-			default:
-				synfig::error("Layer_Freetype: %s", _("unknown tag for the glyph outline contour"));
-				continue;
-			}
-		}
-
-		while (p <= last_p) {
-			short next_p = p + 1;
-			if (next_p > last_p)
-				next_p = first_p;
-			short next2_p = next_p + 1;
-			if (next2_p > last_p)
-				next2_p = first_p;
-
-			const Vector v = get_vector(glyph, p);
-			const Vector next_v = get_vector(glyph, next_p);
-			const Vector next2_v = get_vector(glyph, next2_p);
-
-			const char tag = FT_CURVE_TAG(glyph->outline.tags[p]);
-			const char next_tag = FT_CURVE_TAG(glyph->outline.tags[next_p]);
-			const char next2_tag = FT_CURVE_TAG(glyph->outline.tags[next2_p]);
-
-			if (tag == FT_CURVE_TAG_ON && next_tag == FT_CURVE_TAG_ON) {
-				contour.line_to(next_v);
-				p += 1;
-			} else if (tag == FT_CURVE_TAG_ON && next_tag == FT_CURVE_TAG_CONIC && next2_tag == FT_CURVE_TAG_ON) {
-				contour.conic_to(next2_v, next_v);
-				p += 2;
-			} else if (tag == FT_CURVE_TAG_ON && next_tag == FT_CURVE_TAG_CONIC && next2_tag == FT_CURVE_TAG_CONIC) {
-				Vector target_v = (next_v + next2_v)/2;
-				contour.conic_to(target_v, next_v);
-				p += 2;
-			} else if (tag == FT_CURVE_TAG_ON && next_tag == FT_CURVE_TAG_CUBIC && next2_tag == FT_CURVE_TAG_CUBIC) {
-				short next3_p = next2_p + 1;
-				if (next3_p > last_p)
-					next3_p = first_p;
-
-				const char next3_tag = FT_CURVE_TAG(glyph->outline.tags[next3_p]);
-				if (next3_tag == FT_CURVE_TAG_ON) {
-					const Vector next3_v = get_vector(glyph, next3_p);
-					contour.cubic_to(next3_v, next_v, next2_v);
-				}
-				p += 3;
-			} else if (tag == FT_CURVE_TAG_CONIC && next_tag == FT_CURVE_TAG_ON) {
-				contour.conic_to(next_v, v);
-				p += 1;
-			} else if (tag == FT_CURVE_TAG_CONIC && next_tag == FT_CURVE_TAG_CONIC) {
-				Vector middle = (v + next_v)/2;
-				contour.conic_to(middle, v);
-				p += 1;
-			} else { // cuBIC?!
-				synfig::warning("Layer_Freetype: %s", _("strange glyph vertex component... Aborting"));
-				break;
-			}
-		}
-
-		contour.close();
-
-		chunks = contour.get_chunks();
-	}
+	FT_Outline outline = glyph->outline;
+	FT_Outline_Funcs outline_funcs;
+	outline_funcs.move_to = [](const FT_Vector* to, void* contour) -> int {
+		((rendering::Contour*)contour)->move_to(Vector(to->x, to->y));
+		return 0;
+	};
+	outline_funcs.line_to = [](const FT_Vector* to, void* contour) -> int {
+		((rendering::Contour*)contour)->line_to(Vector(to->x, to->y));
+		return 0;
+	};
+	outline_funcs.conic_to = [](const FT_Vector* control, const FT_Vector* to, void* contour) -> int {
+		((rendering::Contour*)contour)->conic_to(Vector(to->x, to->y), Vector(control->x, control->y));
+		return 0;
+	};
+	outline_funcs.cubic_to = [](const FT_Vector* control1, const FT_Vector* control2, const FT_Vector* to, void* contour) -> int {
+		((rendering::Contour*)contour)->cubic_to(Vector(to->x, to->y), Vector(control1->x, control1->y), Vector(control2->x, control2->y));
+		return 0;
+	};
+	outline_funcs.delta = FT_Pos(0);
+	outline_funcs.shift = 0;
+	FT_Outline_Decompose(&outline, &outline_funcs, &contour);
+	contour.close();
+	chunks = contour.get_chunks();
 }
 
 void
