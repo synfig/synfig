@@ -1056,9 +1056,6 @@ Duckmatic::on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& 
 		else
 		{
 			Transformation transformation = value_desc.get_value(get_time()).get(Transformation());
-			Point axis_x_one(1, transformation.angle);
-			Point axis_y_one(1, transformation.angle + Angle::deg(90.f) + transformation.skew_angle);
-
 			switch(duck.get_type()) {
 			case Duck::TYPE_POSITION:
 				transformation.offset = value;
