@@ -1067,6 +1067,7 @@ CanvasParser::parse_width_point(xmlpp::Element *element)
 			}
 			ret.set_side_type_after(parse_integer(dynamic_cast<xmlpp::Element*>(*iter)));
 		}
+		else
 		// Lower Boundary
 		if(child->get_name()=="lower_bound")
 		{
@@ -1092,6 +1093,7 @@ CanvasParser::parse_width_point(xmlpp::Element *element)
 			ret.set_lower_bound(parse_real(dynamic_cast<xmlpp::Element*>(*iter)));
 		}
 		// Upper Boundary
+		else
 		if(child->get_name()=="upper_bound")
 		{
 			xmlpp::Element::NodeList list = child->get_children();
