@@ -1052,15 +1052,18 @@ StateBone_Context::_on_signal_change_active_bone(ValueNode::Handle node){
 
 void
 StateBone_Context::_on_signal_value_desc_set(ValueDesc value_desc,ValueBase value) {
-	if (ValueNode_Bone::Handle bone_valuenode = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node())) {
+	if (ValueNode_Bone::Handle bone_valuenode = ValueNode_Bone::Handle::cast_dynamic(value_desc.get_parent_desc().get_value_node())) {
 		const int index = value_desc.get_index();
 		static const int width_index = bone_valuenode->get_link_index_from_name("width");
 		static const int tip_width_index = bone_valuenode->get_link_index_from_name("tipwidth");
 		if(index==tip_width_index || index==width_index){
+			Distance new_width(value.get(Real()),synfig::Distance::SYSTEM_UNITS);
+			if (get_canvas())
+				new_width.convert(App::distance_system, get_canvas()->rend_desc());
 			if(skel_bone_width_dist.is_visible())
-				set_skel_bone_width(Distance(value.get(Real()),synfig::Distance::SYSTEM_UNITS));
+				set_skel_bone_width(new_width);
 			if(skel_deform_bone_width_dist.is_visible())
-				set_skel_deform_bone_width(Distance(value.get(Real()),synfig::Distance::SYSTEM_UNITS));
+				set_skel_deform_bone_width(new_width);
 		}
 	}
 }
