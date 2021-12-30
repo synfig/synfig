@@ -351,16 +351,13 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
 	title_label.set_attributes(list);
-	title_label.set_alignment(Gtk::ALIGN_START,Gtk::ALIGN_CENTER);
 
 	// 1, layer name label and entry
 	id_label.set_label(_("Name:"));
-	id_label.set_alignment(Gtk::ALIGN_START,Gtk::ALIGN_CENTER);
 
 
 	// 2, Bone width
 	bone_width_label.set_label(_("Bone Width:"));
-	bone_width_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	skel_bone_width_dist.set_digits(2);
 	skel_bone_width_dist.set_range(0,10000000);
 	skel_bone_width_dist.set_sensitive(true);
@@ -372,12 +369,10 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 
 	// 4, Layer choice
 	layer_label.set_label(_("Layer to Create:"));
-	layer_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 	layer_label.set_attributes(list);
 	layer_label.set_sensitive(true);
 	
 	create_layer.set_label(_("Create Layer"));
-	create_layer.set_alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_CENTER);
 	create_layer.set_sensitive(true);
 
 
