@@ -320,6 +320,7 @@ Settings::get_value(const synfig::String& key, bool default_value) const {
 synfig::Distance
 Settings::get_value(const synfig::String &key, const synfig::Distance &default_value) const
 {
+	ChangeLocale change_locale(LC_NUMERIC, "C");
 	synfig::String value;
 	return get_raw_value(key, value) ? Distance(value) : default_value;
 }
@@ -362,7 +363,7 @@ Settings::set_value(const synfig::String &key, bool value)
 bool
 Settings::set_value(const synfig::String &key, const synfig::Distance &value)
 {
-	ChangeLocale(LC_NUMERIC, "C");
+	ChangeLocale change_locale(LC_NUMERIC, "C");
 	return set_value(key, value.get_string());
 }
 
