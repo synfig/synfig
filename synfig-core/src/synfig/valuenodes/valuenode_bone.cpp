@@ -641,13 +641,18 @@ ValueNode_Bone::get_children_vocab_vfunc() const
 	return ret;
 }
 
+ValueNode_Bone::LooseHandle
+ValueNode_Bone::find(const String& name)const
+{
+	return find(name, get_root_canvas());
+}
 
 ValueNode_Bone::LooseHandle
-ValueNode_Bone::find(String name)const
+ValueNode_Bone::find(const String& name, etl::loose_handle<Canvas> canvas)
 {
 	// printf("%s:%d finding '%s' : ", __FILE__, __LINE__, name.c_str());
 
-	BoneMap bone_map(canvas_map[get_root_canvas()]);
+	BoneMap bone_map(canvas_map[canvas]);
 
 	for (ValueNode_Bone::BoneMap::iterator iter =  bone_map.begin(); iter != bone_map.end(); iter++)
 		if ((*iter->second->get_link("name"))(0).get(String()) == name)
