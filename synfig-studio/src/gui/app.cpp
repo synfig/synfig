@@ -341,8 +341,8 @@ public:
 	virtual Response confirmation(
 			const std::string &message,
 			const std::string &details,
-			const std::string &cancel,
 			const std::string &confirm,
+			const std::string &cancel,
 			Response dflt
 	)
 	{
@@ -1661,8 +1661,8 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 			if (get_ui_interface()->confirmation(
 					_("Auto recovery file(s) found. Do you want to recover unsaved changes?"),
 					_("Synfig Studio seems to have crashed before you could save all your files."),
-					_("Ignore"),
-					_("Recover")
+					_("Recover"),
+					_("Ignore")
 				) == synfigapp::UIInterface::RESPONSE_OK)
 			{
 				int number_recovered;

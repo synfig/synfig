@@ -246,8 +246,8 @@ studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vec
 		int answer = uim->confirmation(
 					message,
 					details,
-					_("Cancel"),
 					_("Proceed"),
+					_("Cancel"),
 					synfigapp::UIInterface::RESPONSE_OK);
 
 		if(answer != synfigapp::UIInterface::RESPONSE_OK)
