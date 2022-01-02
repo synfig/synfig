@@ -68,7 +68,7 @@ using namespace synfigapp;
 /* === M A C R O S ========================================================= */
 
 #define GAP	(3)
-#define DEFAULT_WIDTH ("0.1u")
+#define DEFAULT_WIDTH ("6px")
 
 /* === G L O B A L S ======================================================= */
 
