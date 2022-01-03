@@ -215,8 +215,7 @@ Action::ValueDescSet::prepare()
 		const ValueDesc grand_parent = value_desc.get_parent_desc().get_parent_desc();
 		if (grand_parent.get_parent_desc().parent_is_layer()) {
 			if (Layer_SkeletonDeformation::Handle::cast_dynamic(grand_parent.get_parent_desc().get_layer())) {
-				types_namespace::TypePair<Bone,Bone> type_bone_pair;
-				type_bone_pair.initialize();
+				const types_namespace::TypePair<Bone,Bone>& type_bone_pair = types_namespace::TypePair<Bone,Bone>::instance;
 				if (grand_parent.parent_is_value_node() && grand_parent.get_parent_value_node()->get_type() == type_list)
 					if (value_desc.get_parent_desc().parent_is_value_node()
 						&& value_desc.get_parent_desc().get_parent_value_node()->get_type() == type_bone_pair)
