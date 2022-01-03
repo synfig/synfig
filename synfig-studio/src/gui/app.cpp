@@ -2406,7 +2406,7 @@ App::dialog_open_file_ext(const std::string &title, std::vector<std::string> &fi
 	button->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
 	Glib::RefPtr<Gtk::StyleContext> context = button->get_style_context();
 	context->add_class("destructive-action");
-	
+
 	button = dialog->add_button(_("Import"), Gtk::RESPONSE_ACCEPT);//->set_image_from_icon_name("gtk-open",   Gtk::ICON_SIZE_BUTTON);
 	button->set_image_from_icon_name("gtk-open",   Gtk::ICON_SIZE_BUTTON);
 	context = button->get_style_context();
@@ -3091,8 +3091,13 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 	filter_sfg->add_pattern("*.sfg");
 
 	dialog->set_current_folder(prev_path);
-	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-	dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
+	//add color action buttons
+	Gtk::Button* button = dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	Glib::RefPtr<Gtk::StyleContext> context = button->get_style_context();
+	context->add_class("destructive-action");
+	button = dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
+	context = button->get_style_context();
+	context->add_class("suggested-action");
 
 	dialog->add_filter(filter_sifz);
 	dialog->add_filter(filter_sif);
