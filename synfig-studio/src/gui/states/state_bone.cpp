@@ -656,6 +656,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 						deform_layer = Layer_SkeletonDeformation::Handle::cast_static(layer);
 						deform_layer->disable();
 					}
+					increment_id();
 					get_canvas_interface()->get_selection_manager()->clear_selected_layers();
 					get_canvas_interface()->get_selection_manager()->set_selected_layer(layer);
 				}
@@ -817,11 +818,9 @@ StateBone_Context::event_layer_selection_changed_handler(const Smach::event& /*x
 
 
 	if(skel_layer){
-		set_id(settings.get_value("bone.skel_id", _("NewSkeleton")));
 		update_tool_options(SKELETON_TYPE);
 		get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH-Duck::TYPE_WIDTHPOINT_POSITION);
 	}else if(deform_layer){
-		set_id(settings.get_value("bone.skel_deform_id", _("NewSkeletonDeformation")));
 		update_tool_options(SKELETON_DEFORMATION_TYPE);
 		get_work_area()->set_type_mask(get_work_area()->get_type_mask() - (Duck::TYPE_TANGENT | Duck::TYPE_WIDTH | Duck::TYPE_WIDTHPOINT_POSITION));
 		layer->disable();
