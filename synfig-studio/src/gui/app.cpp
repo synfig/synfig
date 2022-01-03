@@ -2400,8 +2400,18 @@ App::dialog_open_file_ext(const std::string &title, std::vector<std::string> &fi
 
 	dialog->set_transient_for(*App::main_window);
 	dialog->set_current_folder(prev_path);
-	dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
-	dialog->add_button(_("Import"), Gtk::RESPONSE_ACCEPT)->set_image_from_icon_name("gtk-open",   Gtk::ICON_SIZE_BUTTON);
+
+	//Add action button colors
+	Gtk::Button *button = dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);//->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
+	button->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
+	Glib::RefPtr<Gtk::StyleContext> context = button->get_style_context();
+	context->add_class("destructive-action");
+	
+	button = dialog->add_button(_("Import"), Gtk::RESPONSE_ACCEPT);//->set_image_from_icon_name("gtk-open",   Gtk::ICON_SIZE_BUTTON);
+	button->set_image_from_icon_name("gtk-open",   Gtk::ICON_SIZE_BUTTON);
+	context = button->get_style_context();
+	context->add_class("suggested-action");
+
 	dialog->set_select_multiple(allow_multiple_selection);
 
 	// 0 All supported files
@@ -2557,8 +2567,17 @@ App::dialog_open_file_spal(const std::string &title, std::string &filename, std:
 
 	dialog->set_transient_for(*App::main_window);
 	dialog->set_current_folder(prev_path);
-	dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
-	dialog->add_button(_("Load"),   Gtk::RESPONSE_ACCEPT)->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
+
+	//add color action buttons
+	Gtk::Button *button = dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
+	button->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
+	Glib::RefPtr<Gtk::StyleContext> context = button->get_style_context();
+	context->add_class("destructive-action");
+	button = dialog->add_button(_("Load"),   Gtk::RESPONSE_ACCEPT);
+	button->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
+	context = button->get_style_context();
+	context->add_class("suggested-action");
+
 
 	Glib::RefPtr<Gtk::FileFilter> filter_supported = Gtk::FileFilter::create();
 	filter_supported->set_name(_("Palette files (*.spal, *.gpl)"));
@@ -2875,11 +2894,20 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 
 	dialog->set_transient_for(*App::main_window);
 	dialog->set_current_folder(prev_path);
+
+	//add buttons
 	Gtk::Button* history_button = dialog->add_button(_("Open history"), RESPONSE_ACCEPT_WITH_HISTORY);
 	// TODO: the Open history button should be file type sensitive one.
 	dialog->set_response_sensitive(RESPONSE_ACCEPT_WITH_HISTORY, true);
-	dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
-	dialog->add_button(_("Open"),   Gtk::RESPONSE_ACCEPT)->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
+	//add color action buttons
+	Gtk::Button* button = dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
+	button->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
+	Glib::RefPtr<Gtk::StyleContext> context = button->get_style_context();
+	context->add_class("destructive-action");
+	button = dialog->add_button(_("Open"),   Gtk::RESPONSE_ACCEPT);
+	button->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
+	context = button->get_style_context();
+	context->add_class("suggested-action");
 
 	// File filters
 	// Synfig Documents
