@@ -2404,13 +2404,11 @@ App::dialog_open_file_ext(const std::string &title, std::vector<std::string> &fi
 	//Add action button colors
 	Gtk::Button *button = dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);//->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
 	button->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
-	Glib::RefPtr<Gtk::StyleContext> context = button->get_style_context();
-	context->add_class("destructive-action");
+	button->get_style_context()->add_class("destructive-action");
 
 	button = dialog->add_button(_("Import"), Gtk::RESPONSE_ACCEPT);//->set_image_from_icon_name("gtk-open",   Gtk::ICON_SIZE_BUTTON);
 	button->set_image_from_icon_name("gtk-open",   Gtk::ICON_SIZE_BUTTON);
-	context = button->get_style_context();
-	context->add_class("suggested-action");
+	button->get_style_context()->add_class("suggested-action");
 
 	dialog->set_select_multiple(allow_multiple_selection);
 
@@ -2571,12 +2569,11 @@ App::dialog_open_file_spal(const std::string &title, std::string &filename, std:
 	//add color action buttons
 	Gtk::Button *button = dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
 	button->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
-	Glib::RefPtr<Gtk::StyleContext> context = button->get_style_context();
-	context->add_class("destructive-action");
+	button->get_style_context()->add_class("destructive-action");
+
 	button = dialog->add_button(_("Load"),   Gtk::RESPONSE_ACCEPT);
 	button->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
-	context = button->get_style_context();
-	context->add_class("suggested-action");
+	button->get_style_context()->add_class("suggested-action");
 
 
 	Glib::RefPtr<Gtk::FileFilter> filter_supported = Gtk::FileFilter::create();
@@ -2626,8 +2623,15 @@ App::dialog_open_file_sketch(const std::string &title, std::string &filename, st
 
 	dialog->set_transient_for(*App::main_window);
 	dialog->set_current_folder(prev_path);
-	dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
-	dialog->add_button(_("Load"),   Gtk::RESPONSE_ACCEPT)->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
+
+	//add color action buttons
+	Gtk::Button* button = dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
+	button->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
+	button->get_style_context()->add_class("destructive-action");
+
+	button = dialog->add_button(_("Load"),   Gtk::RESPONSE_ACCEPT);
+	button->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
+	button->get_style_context()->add_class("suggested-action");
 
 	// show only Synfig sketch file (*.sketch)
 	Glib::RefPtr<Gtk::FileFilter> filter_sketch = Gtk::FileFilter::create();
@@ -2665,8 +2669,15 @@ App::dialog_open_file_image(const std::string &title, std::string &filename, std
 
 	dialog->set_transient_for(*App::main_window);
 	dialog->set_current_folder(prev_path);
-	dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
-	dialog->add_button(_("Load"),   Gtk::RESPONSE_ACCEPT)->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
+
+	//add color action buttons
+	Gtk::Button* button = dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
+	button->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
+	button->get_style_context()->add_class("destructive-action");
+
+	button = dialog->add_button(_("Load"),   Gtk::RESPONSE_ACCEPT);
+	button->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
+	button->get_style_context()->add_class("suggested-action");
 
 	// show only images
 	Glib::RefPtr<Gtk::FileFilter> filter_image = Gtk::FileFilter::create();
@@ -2722,8 +2733,15 @@ App::dialog_open_file_audio(const std::string &title, std::string &filename, std
 
 	dialog->set_transient_for(*App::main_window);
 	dialog->set_current_folder(prev_path);
-	dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
-	dialog->add_button(_("Load"),   Gtk::RESPONSE_ACCEPT)->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
+
+	//add color action buttons
+	Gtk::Button* button = dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
+	button->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
+	button->get_style_context()->add_class("destructive-action");
+
+	button = dialog->add_button(_("Load"),   Gtk::RESPONSE_ACCEPT);
+	button->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
+	button->get_style_context()->add_class("suggested-action");
 
 	// Audio files
 	Glib::RefPtr<Gtk::FileFilter> filter_audio = Gtk::FileFilter::create();
@@ -2772,8 +2790,15 @@ App::dialog_open_file_image_sequence(const std::string &title, std::set<synfig::
 	dialog->set_transient_for(*App::main_window);
 	dialog->set_current_folder(prev_path);
 	dialog->set_select_multiple(true);
-	dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
-	dialog->add_button(_("Load"),   Gtk::RESPONSE_ACCEPT)->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
+
+	//add color action buttons
+	Gtk::Button* button = dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
+	button->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
+	button->get_style_context()->add_class("destructive-action");
+
+	button = dialog->add_button(_("Load"),   Gtk::RESPONSE_ACCEPT);
+	button->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
+	button->get_style_context()->add_class("suggested-action");
 
 	// show only images
 	Glib::RefPtr<Gtk::FileFilter> filter_image = Gtk::FileFilter::create();
@@ -2902,12 +2927,11 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 	//add color action buttons
 	Gtk::Button* button = dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
 	button->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
-	Glib::RefPtr<Gtk::StyleContext> context = button->get_style_context();
-	context->add_class("destructive-action");
+	button->get_style_context()->add_class("destructive-action");
+
 	button = dialog->add_button(_("Open"),   Gtk::RESPONSE_ACCEPT);
 	button->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
-	context = button->get_style_context();
-	context->add_class("suggested-action");
+	button->get_style_context()->add_class("suggested-action");
 
 	// File filters
 	// Synfig Documents
@@ -3006,8 +3030,15 @@ App::dialog_open_folder(const std::string &title, std::string &foldername, std::
 
 	dialog->set_transient_for(transientwind);
 	dialog->set_current_folder(prev_path);
-	dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
-	dialog->add_button(_("Open"),   Gtk::RESPONSE_ACCEPT)->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
+
+	//add color action buttons
+	Gtk::Button* button = dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
+	button->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
+	button->get_style_context()->add_class("destructive-action");
+
+	button = dialog->add_button(_("Open"),   Gtk::RESPONSE_ACCEPT);
+	button->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
+	button->get_style_context()->add_class("suggested-action");
 
 	if(dialog->run() == Gtk::RESPONSE_ACCEPT)
 	{
@@ -3091,13 +3122,12 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 	filter_sfg->add_pattern("*.sfg");
 
 	dialog->set_current_folder(prev_path);
+
 	//add color action buttons
 	Gtk::Button* button = dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-	Glib::RefPtr<Gtk::StyleContext> context = button->get_style_context();
-	context->add_class("destructive-action");
+	button->get_style_context()->add_class("destructive-action");
 	button = dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
-	context = button->get_style_context();
-	context->add_class("suggested-action");
+	button->get_style_context()->add_class("suggested-action");
 
 	dialog->add_filter(filter_sifz);
 	dialog->add_filter(filter_sif);
@@ -3223,8 +3253,11 @@ App::dialog_export_file(const std::string &title, std::string &filename, std::st
 	}
 
 	dialog->set_current_folder(prev_path);
-	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-	dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
+	//add color action buttons
+	Gtk::Button* button = dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	button->get_style_context()->add_class("destructive-action");
+	button = dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
+	button->get_style_context()->add_class("suggested-action");
 
 	if (filename.empty()) {
 		dialog->set_filename(prev_path);
@@ -3274,8 +3307,11 @@ App::dialog_save_file_spal(const std::string &title, std::string &filename, std:
 	filter_spal->add_pattern("*.spal");
 
 	dialog->set_current_folder(prev_path);
-	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-	dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
+	//add color action buttons
+	Gtk::Button* button = dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	button->get_style_context()->add_class("destructive-action");
+	button = dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
+	button->get_style_context()->add_class("suggested-action");
 
 	dialog->add_filter(filter_spal);
 
@@ -3334,8 +3370,11 @@ App::dialog_save_file_sketch(const std::string &title, std::string &filename, st
 	filter_sketch->add_pattern("*.sketch");
 
 	dialog->set_current_folder(prev_path);
-	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-	dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
+	//add color action buttons
+	Gtk::Button* button = dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	button->get_style_context()->add_class("destructive-action");
+	button = dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
+	button->get_style_context()->add_class("suggested-action");
 
 	dialog->add_filter(filter_sketch);
 
@@ -3390,8 +3429,11 @@ App::dialog_save_file_render(const std::string &title, std::string &filename, st
 	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window, title, Gtk::FILE_CHOOSER_ACTION_SAVE);
 
 	dialog->set_current_folder(prev_path);
-	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-	dialog->add_button(Gtk::Stock::OK,   Gtk::RESPONSE_ACCEPT);
+	//add color action buttons
+	Gtk::Button* button = dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	button->get_style_context()->add_class("destructive-action");
+	button = dialog->add_button(Gtk::Stock::OK,   Gtk::RESPONSE_ACCEPT);
+	button->get_style_context()->add_class("suggested-action");
 
 	if (filename.empty()) {
 		dialog->set_filename(prev_path);
