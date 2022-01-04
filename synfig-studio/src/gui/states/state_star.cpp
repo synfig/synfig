@@ -347,9 +347,9 @@ StateStar_Context::load_settings()
 
 		set_opacity(settings.get_value("star.opacity", 1.0));
 
-		set_bline_width(settings.get_value("star.bline_width", Distance("1.0px")));
+		set_bline_width(settings.get_value("star.bline_width", Distance("1px")));
 
-		set_feather_size(settings.get_value("star.feather", Distance("0.0px")));
+		set_feather_size(settings.get_value("star.feather", Distance("0px")));
 
 		set_number_of_points(settings.get_value("star.number_of_points", 5));
 

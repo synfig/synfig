@@ -922,8 +922,8 @@ Action::ValueDescSet::prepare()
 						  || UIInterface::RESPONSE_OK != get_canvas_interface()->get_ui_interface()->confirmation(
 								 _("You are trying to edit animated parameter while Animation Mode is off.\n\nDo you want to apply offset to this animation?" ),
 								 _("Hint: You can hold Spacebar key while editing parameter to avoid this confirmation dialog."),
-								 _("No"),
 								 _("Yes"),
+								 _("No"),
 								 synfigapp::UIInterface::RESPONSE_OK ))
 						{
 							throw Error(Error::TYPE_UNABLE); // Issue  #693

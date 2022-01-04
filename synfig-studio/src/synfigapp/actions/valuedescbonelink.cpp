@@ -205,8 +205,8 @@ Action::ValueDescBoneLink::prepare()
 						 etl::strprintf(_("You are trying to link \"origin\" of layer '%s' to a bone.\n\n"
 							"Maybe you intended to link \"transformation\" parameter instead?"),
 							 layer->get_description().c_str()),
-						 _("No"),
 						 _("Yes"),
+						 _("No"),
 						 synfigapp::UIInterface::RESPONSE_OK ))
 				{
 					value_desc = ValueDesc(value_desc.get_layer(), "transformation", value_desc.get_parent_desc());

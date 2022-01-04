@@ -158,8 +158,8 @@ public:
 	virtual Response confirmation(
 			const std::string &message,
 			const std::string &details,
-			const std::string &cancel,
 			const std::string &confirm,
+			const std::string &cancel,
 			Response dflt = RESPONSE_OK )
 	{
 		view->present();
@@ -3928,8 +3928,8 @@ CanvasView::toggle_jack_button()
 		UIInterface::Response answer = get_ui_interface()->confirmation(
 			message,
 			details,
-			_("No"),
 			_("Yes"),
+			_("No"),
 			UIInterface::RESPONSE_OK );
 		if (answer == UIInterface::RESPONSE_OK)
 			set_jack_enabled(!get_jack_enabled());
