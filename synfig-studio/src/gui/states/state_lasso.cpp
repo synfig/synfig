@@ -382,7 +382,7 @@ StateLasso_Context::load_settings()
 
 		set_opacity(settings.get_value("lasso.opacity", 1.0));
 
-		set_bline_width(settings.get_value("lasso.bline_width", Distance("1.0px")));
+		set_bline_width(settings.get_value("lasso.bline_width", Distance("1px")));
 
 		set_pressure_width_flag(settings.get_value("lasso.pressure_width", true));
 
@@ -400,7 +400,7 @@ StateLasso_Context::load_settings()
 
 		set_min_pressure(settings.get_value("lasso.min_pressure", 0.0));
 
-		set_feather_size(settings.get_value("lasso.feather", Distance("0.0px")));
+		set_feather_size(settings.get_value("lasso.feather", Distance("0px")));
 
 		set_gthres(settings.get_value("lasso.gthreshold", 0.7));
 

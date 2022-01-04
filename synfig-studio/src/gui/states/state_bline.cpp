@@ -328,7 +328,7 @@ StateBLine_Context::load_settings()
 
 		set_opacity(settings.get_value("bline.opacity", 1.0));
 
-		set_bline_width(settings.get_value("bline.bline_width", Distance("1.0px")));
+		set_bline_width(settings.get_value("bline.bline_width", Distance("1px")));
 
 		set_layer_region_flag(settings.get_value("bline.layer_region", true));
 
@@ -344,7 +344,7 @@ StateBLine_Context::load_settings()
 
 		set_auto_export_flag(settings.get_value("bline.auto_export", false));
 
-		set_feather_size(settings.get_value("bline.feather", Distance("0.0px")));
+		set_feather_size(settings.get_value("bline.feather", Distance("0px")));
 
 		// determine layer flags
 		layer_region_flag = get_layer_region_flag();

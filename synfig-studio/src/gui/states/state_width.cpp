@@ -181,7 +181,7 @@ StateWidth_Context::load_settings()
 		//parse the arguments yargh!
 		set_delta(settings.get_value("width.delta", 6.0));
 
-		set_radius(settings.get_value("width.radius", Distance("60.0px")));
+		set_radius(settings.get_value("width.radius", Distance("60px")));
 
 		set_relative(settings.get_value("width.relative", false));
 	}
