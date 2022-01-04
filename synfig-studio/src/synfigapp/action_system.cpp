@@ -119,8 +119,8 @@ Action::System::perform_action(etl::handle<Action::Base> action)
 		UIInterface::Response response = uim->confirmation(
 			message,
 			details,
-			_("Cancel"),
 			_("Continue"),
+			_("Cancel"),
 			UIInterface::RESPONSE_CANCEL );
 		if (response == UIInterface::RESPONSE_CANCEL)
 			return false;
