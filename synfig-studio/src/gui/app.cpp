@@ -309,8 +309,6 @@ static int max_recent_files_=25;
 int    studio::App::get_max_recent_files()      { return max_recent_files_; }
 void   studio::App::set_max_recent_files(int x) {        max_recent_files_ = x; }
 
-static synfig::String app_base_path_;
-
 SoundProcessor *App::sound_render_done = nullptr;
 bool App::use_render_done_sound = true;
 
@@ -1370,7 +1368,6 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 {
 
 	Glib::init(); // need to use Gio functions before app is started
-	app_base_path_=etl::dirname(basepath);
 
 	// Set ui language
 	load_language_settings();
@@ -4328,12 +4325,6 @@ studio::App::scale_imported_box()
 	box->show_all();
 	
 	return box;
-}
-
-synfig::String
-studio::App::get_base_path()
-{
-	return FileSystem::fix_slashes(app_base_path_);
 }
 
 void
