@@ -1720,35 +1720,6 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 		main_window->present();
 
 		splash_screen.hide();
-
-		String message;
-		String details;
-		/*
-		if (App::enable_experimental_features) {
-			message = _("Following experimental features are enabled: ");
-			message += ("Skeleton Layer");
-			detials = _("The experimental features are NOT intended for production use. "
-					"It is quite posiible their functionality will change in the "
-					"future versions, which can break compatibility for your "
-					"files. Use for testing purposes only. You can disable "
-					"experimental features on the \"Misc\" tab of Setup dialog.");
-		}
-		*/
-#ifdef _WIN32
-		if (message!=""){
-			message = _("There is a bug, which can cause computer to hang/freeze when "
-					"resizing the canvas window.");
-			details = _("If you got affected by this issue, consider pressing ALT+TAB "
-					"to unfreeze your system and get it back to the working "
-					"state. Please accept our apologies for inconvenience, we "
-					"hope to get this issue resolved in the future versions.");
-		}
-#endif
-		if (message!="")
-			dialog_message_1b("WARNING",
-					message,
-					details,
-					_("Got it"));
 	}
 	catch(String &x)
 	{
