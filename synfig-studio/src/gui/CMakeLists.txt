@@ -51,7 +51,6 @@ target_sources(synfigstudio
 		"${CMAKE_CURRENT_LIST_DIR}/duckmatic.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/iconcontroller.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/instance.cpp"
-		"${CMAKE_CURRENT_LIST_DIR}/ipc.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/keymapsettings.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/onemoment.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/pluginmanager.cpp"

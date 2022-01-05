@@ -100,7 +100,6 @@
 #include <gui/docks/dock_toolbox.h>
 
 #include <gui/instance.h>
-// #include <gui/ipc.h>
 #include <gui/localization.h>
 #include <gui/modules/mod_palette/mod_palette.h>
 #include <gui/onemoment.h>
@@ -241,7 +240,6 @@ etl::handle<CanvasView> App::selected_canvas_view;
 studio::About              *studio::App::about          = nullptr;
 studio::AutoRecover        *studio::App::auto_recover   = nullptr;
 studio::DeviceTracker      *studio::App::device_tracker = nullptr;
-// static studio::IPC         *ipc                         = nullptr;
 studio::MainWindow         *studio::App::main_window    = nullptr;
 
 studio::Dialog_Color       *studio::App::dialog_color;
@@ -1418,8 +1416,6 @@ void App::init(const synfig::String& basepath, int *argc, char ***argv)
 	}
 
 
-	// ipc=new IPC();
-
 	if(!SYNFIG_CHECK_VERSION())
 	{
 		std::cerr << "FATAL: Synfig Version Mismatch" << std::endl;
@@ -1774,8 +1770,6 @@ App::~App()
 		module_list_.back()->stop();
 
 	delete state_manager;
-
-	// delete ipc;
 
 	delete auto_recover;
 
