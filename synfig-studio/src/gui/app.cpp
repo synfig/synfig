@@ -1415,10 +1415,10 @@ void App::on_open(const type_vec_files &files, const Glib::ustring &hint)
 	}
 }
 
-void App::init(const synfig::String& basepath)
+void App::init(const synfig::String& rootpath)
 {
 	Glib::init(); // need to use Gio functions before app is started
-	app_base_path_=etl::dirname(basepath);
+	app_base_path_=rootpath;
 
 	// Set ui language
 	load_language_settings();
@@ -1486,7 +1486,7 @@ void App::init(const synfig::String& basepath)
 	SuperCallback studio_init_cb(splash_screen.get_callback(),9000,10000,10000);
 
 	// Initialize the Synfig library
-	try { synfigapp_main=etl::smart_ptr<synfigapp::Main>(new synfigapp::Main(basepath,&synfig_init_cb)); }
+	try { synfigapp_main=etl::smart_ptr<synfigapp::Main>(new synfigapp::Main(rootpath,&synfig_init_cb)); }
 	catch(std::runtime_error &x)
 	{
 		get_ui_interface()->error(strprintf("%s\n\n%s", _("Failed to initialize synfig!"), x.what()));

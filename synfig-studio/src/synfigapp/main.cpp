@@ -97,8 +97,8 @@ static synfig::Waypoint::Interpolation interpolation_;
 
 /* === M E T H O D S ======================================================= */
 
-synfigapp::Main::Main(const synfig::String &basepath, synfig::ProgressCallback *cb):
-	synfig::Main(basepath,cb),
+synfigapp::Main::Main(const synfig::String &rootpath, synfig::ProgressCallback *cb):
+	synfig::Main(rootpath,cb),
 	ref_count_(synfigapp_ref_count_)
 {
 	if(ref_count_.count())
@@ -111,7 +111,7 @@ synfigapp::Main::Main(const synfig::String &basepath, synfig::ProgressCallback *
 
 #ifdef ENABLE_NLS
 	String locale_dir;
-	locale_dir = etl::dirname(basepath)+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"locale";
+	locale_dir = rootpath+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"locale";
 	
 	bindtextdomain(GETTEXT_PACKAGE, Glib::locale_from_utf8(locale_dir).c_str() );
 	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");

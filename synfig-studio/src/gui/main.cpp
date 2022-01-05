@@ -63,11 +63,12 @@ using namespace studio;
 int main(int argc, char **argv)
 {
 
-	String binary_path = synfig::get_binary_path(String(argv[0]));
+	const String binary_path = synfig::get_binary_path(String(argv[0]));
+	const String rootpath = etl::dirname(etl::dirname(binary_path));
 	
 #ifdef ENABLE_NLS
 	String locale_dir;
-	locale_dir = etl::dirname(etl::dirname(binary_path))+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"locale";
+	locale_dir = rootpath+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"locale";
 	setlocale(LC_ALL, "");
 	bindtextdomain(GETTEXT_PACKAGE,  Glib::locale_from_utf8(locale_dir).c_str() );
 	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
@@ -81,8 +82,8 @@ int main(int argc, char **argv)
 	
 	Glib::RefPtr<studio::App> app = studio::App::instance();
 
-	app->signal_startup().connect([app, binary_path]() {
-		app->init(etl::dirname(binary_path));
+	app->signal_startup().connect([app, rootpath]() {
+		app->init(rootpath);
 	});
 
 	app->register_application();

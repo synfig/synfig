@@ -62,7 +62,7 @@ class Main : public synfig::Main
 {
 	etl::reference_counter ref_count_;
 public:
-	Main(const synfig::String &basepath,synfig::ProgressCallback *cb=0);
+	Main(const synfig::String &rootpath,synfig::ProgressCallback *cb=nullptr);
 	~Main();
 
 	const etl::reference_counter& ref_count()const { return ref_count_; }

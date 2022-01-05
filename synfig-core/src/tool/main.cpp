@@ -94,13 +94,10 @@ int main(int argc, char* argv[])
 
 	const std::string binary_path =
 		SynfigToolGeneralOptions::instance()->get_binary_path();
+	const std::string root_path = get_absolute_path(binary_path + "/../../");
 
 #ifdef ENABLE_NLS
-	/*bst::filesystem::path locale_path =
-		binary_path.parent_path().parent_path();*/
-	std::string locale_path = get_absolute_path(binary_path + "../../share/locale");
-	//locale_path = locale_path/"share"/"locale";
-	//bindtextdomain("synfig", Glib::locale_from_utf8(locale_path.string()).c_str() );
+	std::string locale_path = root_path + "/share/locale";
 	bindtextdomain("synfig", Glib::locale_from_utf8(locale_path).c_str() );
 	bind_textdomain_codeset("synfig", "UTF-8");
 	textdomain("synfig");
@@ -272,8 +269,7 @@ int main(int argc, char* argv[])
 		// Synfig Main initialization needs to be after verbose and
 		// before any other where it's used
 		Progress p(binary_path.c_str());
-		//synfig::Main synfig_main(binary_path.parent_path().string(), &p);
-		synfig::Main synfig_main(get_absolute_path(binary_path + "/.."), &p);
+		synfig::Main synfig_main(root_path, &p);
 
 		// Info options -----------------------------------------------
 		parser.process_info_options();
