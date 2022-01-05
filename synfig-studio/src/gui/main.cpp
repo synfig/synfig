@@ -93,11 +93,11 @@ int main(int argc, char **argv)
 		std::cout << "   " << _("the existing process will be used") << std::endl << std::endl;
 	}
 
-	app->run(argc, argv);
+	int exit_code = app->run(argc, argv);
 
 	std::cerr << "Application appears to have terminated successfully" << std::endl;
 
-	return 0;
+	return exit_code;
 
 	SYNFIG_EXCEPTION_GUARD_END_INT(0)
 }
