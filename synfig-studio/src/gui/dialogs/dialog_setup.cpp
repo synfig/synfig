@@ -660,8 +660,11 @@ Dialog_Setup::select_path_dialog(const std::string &title, std::string &filepath
 	#endif
 
 	//Add response buttons the the dialog:
-	dialog->add_button(_("_Cancel"), Gtk::RESPONSE_CANCEL);
-	dialog->add_button(_("Select"), Gtk::RESPONSE_OK);
+	Gtk::Button* button = dialog->add_button(_("_Cancel"), Gtk::RESPONSE_CANCEL);
+	button->get_style_context()->add_class("destructive-action");
+	button = dialog->add_button(_("Select"), Gtk::RESPONSE_OK);
+	button->get_style_context()->add_class("suggested-action");
+	
   	if(dialog->run() == Gtk::RESPONSE_OK) {
 		filepath = dialog->get_filename();
 		filepath = absolute_path(filepath);	//get the absolute path
