@@ -2335,9 +2335,6 @@ App::show_setup()
 	dialog_setup->show();
 }
 
-gint Signal_Open_Ok    (GtkWidget */*widget*/, int *val){*val=1; return 0;}
-gint Signal_Open_Cancel(GtkWidget */*widget*/, int *val){*val=2; return 0;}
-
 bool
 App::dialog_open_file_ext(const std::string &title, std::vector<std::string> &filenames, std::string preference, bool allow_multiple_selection)
 {
