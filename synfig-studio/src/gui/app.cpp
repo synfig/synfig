@@ -1418,7 +1418,6 @@ void App::on_open(const type_vec_files &files, const Glib::ustring &hint)
 
 void App::init(const synfig::String& rootpath)
 {
-	Glib::init(); // need to use Gio functions before app is started
 	app_base_path_=rootpath;
 
 	// Set ui language
