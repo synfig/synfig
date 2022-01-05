@@ -2323,7 +2323,6 @@ App::quit()
 			return;
 	process_all_events();
 
-	// Gtk::Main::quit();
 	App::instance()->remove_window(*main_window);
 
 	get_ui_interface()->task(_("Quit Request sent"));
