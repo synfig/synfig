@@ -1101,16 +1101,6 @@ Layer_Freetype::sync_vfunc()
 	}
 }
 
-inline Color
-Layer_Freetype::color_func(const Point &/*point_*/, int /*quality*/, ColorReal /*supersample*/)const
-{
-	bool invert=param_invert.get(bool());
-	if (invert)
-		return param_color.get(Color());
-	else
-		return Color::alpha();
-}
-
 bool
 Layer_Freetype::is_inside_contour(const Point& p, bool ignore_feather) const
 {

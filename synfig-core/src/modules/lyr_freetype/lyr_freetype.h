@@ -98,8 +98,6 @@ private:
 
 	void sync_vfunc() override;
 
-	synfig::Color color_func(const synfig::Point &x, int quality=10, synfig::ColorReal supersample=0)const;
-
 	mutable std::mutex mutex;
 	mutable std::mutex sync_mtx;
 
