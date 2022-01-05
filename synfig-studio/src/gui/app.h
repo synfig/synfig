@@ -482,7 +482,7 @@ public:
 	// This fixes bug 1890020
 	static void setup_changed();
 
-	static void process_all_events(long unsigned int us = 1);
+	static void process_all_events();
 	static bool check_python_version( std::string path);
 }; // END of class App
 

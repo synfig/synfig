@@ -50,6 +50,7 @@
 #include <giomm/file.h>
 #include <glibmm/convert.h>
 #include <glibmm/init.h>
+#include <glibmm/main.h>
 #include <glibmm/miscutils.h>
 #include <glibmm/timer.h>
 #include <glibmm/spawn.h>
@@ -4374,14 +4375,12 @@ studio::App::setup_changed()
 }
 
 void
-studio::App::process_all_events(long unsigned int us)
+studio::App::process_all_events()
 {
-	/*Glib::usleep(us);
-	while(studio::App::events_pending()) {
-		while(studio::App::events_pending())
-			studio::App::iteration(false);
-		Glib::usleep(us);
-	}*/
+	const auto& ctx = Glib::MainContext::get_default();
+	while(ctx->pending()) {
+		ctx->iteration(false);
+	}
 }
 
 bool
