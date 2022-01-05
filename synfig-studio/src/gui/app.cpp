@@ -151,6 +151,9 @@
 #include <thread>
 
 #ifdef _WIN32
+
+#include <gui/main_win32.h>
+
 #define WINVER 0x0500
 #include <windows.h>
 #include <gdk/gdkwin32.h>
@@ -1369,6 +1372,24 @@ Glib::RefPtr<App> App::instance() {
 App::App()
 	: Gtk::Application("org.synfig.SynfigStudio", Gio::APPLICATION_HANDLES_OPEN)
 {
+	add_main_option_entry(Gio::Application::OPTION_TYPE_BOOL, "console", 'c', N_("Opens a console that shows some Synfig Studio output"));
+	signal_handle_local_options().connect(sigc::mem_fun(*this, &App::on_handle_local_options));
+}
+
+int App::on_handle_local_options(const Glib::RefPtr<Glib::VariantDict> &options)
+{
+	// To continue, return -1 to let the default option processing continue.
+	// https://developer-old.gnome.org/glibmm/unstable/classGio_1_1Application.html#a46b21ab9629b123b7524fe906290d32b
+	if (!options)
+		return -1;
+	if (options->contains("console")) {
+#ifdef _WIN32
+		redirectIOToConsole();
+#else
+		warning(_("Option --console is valid on MS Windows only"));
+#endif
+	}
+	return -1;
 }
 
 void App::on_activate()

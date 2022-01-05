@@ -309,6 +309,7 @@ private:
 	App();
 
 protected:
+	int on_handle_local_options(const Glib::RefPtr<Glib::VariantDict>& options);
 	void on_activate() override;
 	void on_open(const type_vec_files& files, const Glib::ustring& hint) override;
 

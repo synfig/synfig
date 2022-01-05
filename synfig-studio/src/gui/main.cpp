@@ -39,10 +39,6 @@
 #include <gui/exception_guard.h>
 #include <gui/localization.h>
 
-#ifdef _WIN32
-#include <gui/main_win32.h>
-#endif
-
 #include <iostream>
 
 #endif
@@ -66,21 +62,6 @@ using namespace studio;
 
 int main(int argc, char **argv)
 {
-
-#ifdef _WIN32
-	if (consoleOptionEnabled(argc, argv))
-	{
-		redirectIOToConsole();
-	}
-	else
-	{
-		// QuickHack: to avoid strange bug with stderr
-		freopen("NUL", "w", stdout);
-		freopen("NUL", "w", stderr);
-		freopen("NUL", "r", stdin);
-		ios::sync_with_stdio();
-	}
-#endif
 
 	String binary_path = synfig::get_binary_path(String(argv[0]));
 	
