@@ -1366,12 +1366,36 @@ Glib::RefPtr<App> App::instance() {
 }
 
 /* === M E T H O D S ======================================================= */
-App::App() :
-	Gtk::Application("org.synfig.SynfigStudio") {}
-
-void App::init(const synfig::String& basepath, int *argc, char ***argv)
+App::App()
+	: Gtk::Application("org.synfig.SynfigStudio", Gio::APPLICATION_HANDLES_OPEN)
 {
+}
 
+void App::on_activate()
+{
+	if (!getenv("SYNFIG_DISABLE_AUTOMATIC_DOCUMENT_CREATION") && !get_selected_instance())
+		new_instance();
+
+	if (get_windows().size() == 0) {
+		add_window(*main_window);
+	} else {
+		main_window->present();
+	}
+}
+
+void App::on_open(const type_vec_files &files, const Glib::ustring &hint)
+{
+	if (get_windows().size() == 0)
+		add_window(*main_window);
+
+	OneMoment one_moment;
+	for (const auto& file : files) {
+		open(file->get_path());
+	}
+}
+
+void App::init(const synfig::String& basepath)
+{
 	Glib::init(); // need to use Gio functions before app is started
 	app_base_path_=etl::dirname(basepath);
 
@@ -1655,7 +1679,6 @@ void App::init(const synfig::String& basepath, int *argc, char ***argv)
 
 		studio_init_cb.amount_complete(9900,10000);
 
-		bool opened_any = false;
 		if (!getenv("SYNFIG_DISABLE_AUTO_RECOVERY") && auto_recover->recovery_needed())
 		{
 			splash_screen.hide();
@@ -1679,9 +1702,6 @@ void App::init(const synfig::String& basepath, int *argc, char ***argv)
 						_("Synfig Studio has attempted to recover from a previous crash. "
 						"The files just recovered are NOT YET SAVED."),
 						_("Thanks"));
-
-				if (number_recovered)
-					opened_any = true;
 			}
 			else
 			{
@@ -1689,22 +1709,6 @@ void App::init(const synfig::String& basepath, int *argc, char ***argv)
 			}
 			splash_screen.show();
 		}
-
-		// Look for any files given on the command line,
-		// and load them if found.
-		for(;*argc>=1;(*argc)--)
-			if((*argv)[*argc] && (*argv)[*argc][0]!='-')
-			{
-				studio_init_cb.task(_("Loading files..."));
-				splash_screen.hide();
-				open((*argv)[*argc]);
-				opened_any = true;
-				splash_screen.show();
-			}
-
-		// if no file was specified to be opened, create a new document to help new users get started more easily
-		if (!opened_any && !getenv("SYNFIG_DISABLE_AUTOMATIC_DOCUMENT_CREATION"))
-			new_instance();
 
 		studio_init_cb.task(_("Done."));
 		studio_init_cb.amount_complete(10000,10000);
@@ -1749,7 +1753,6 @@ void App::init(const synfig::String& basepath, int *argc, char ***argv)
 		SoundProcessor::Sound(ResourceHelper::get_sound_path("renderdone.wav")));
 
 	App::dock_info_ = dock_info;
-	add_window(*main_window);
 }
 
 StateManager* App::get_state_manager() { return state_manager; }

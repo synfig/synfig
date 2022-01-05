@@ -68,16 +68,6 @@ int main(int argc, char **argv)
 {
 
 #ifdef _WIN32
-	// to be able to open files whose name is not latin (eg. arabic)
-	class ArgVGuard {
-		char **modified_argv;
-	public:
-		ArgVGuard(char ***argv) { modified_argv = *argv = g_win32_get_command_line(); }
-		~ArgVGuard() { g_strfreev(modified_argv); }
-	} argv_guard(&argv);
- #endif
-
-#ifdef _WIN32
 	if (consoleOptionEnabled(argc, argv))
 	{
 		redirectIOToConsole();
@@ -110,8 +100,8 @@ int main(int argc, char **argv)
 	
 	Glib::RefPtr<studio::App> app = studio::App::instance();
 
-	app->signal_startup().connect([app, binary_path, argc, argv]() {
-		app->init(etl::dirname(binary_path), const_cast<int *>(&argc), const_cast<char ***>(&argv));
+	app->signal_startup().connect([app, binary_path]() {
+		app->init(etl::dirname(binary_path));
 	});
 
 	app->register_application();
@@ -121,7 +111,7 @@ int main(int argc, char **argv)
 		std::cout << "   " << _("the existing process will be used") << std::endl << std::endl;
 	}
 
-	app->run();
+	app->run(argc, argv);
 
 	std::cerr << "Application appears to have terminated successfully" << std::endl;
 

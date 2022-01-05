@@ -131,7 +131,7 @@ class App : public Gtk::Application, private IconController
 
 public:
 	static Glib::RefPtr<App> instance();
-	void init(const synfig::String& basepath, int *argc, char ***argv);
+	void init(const synfig::String& basepath);
 
 	struct Busy
 	{
@@ -307,6 +307,10 @@ private:
 	static bool dialog_open_file_ext(const std::string &title, std::vector<std::string> &filenames, std::string preference, bool allow_multiple_selection);
 
 	App();
+
+protected:
+	void on_activate() override;
+	void on_open(const type_vec_files& files, const Glib::ustring& hint) override;
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
