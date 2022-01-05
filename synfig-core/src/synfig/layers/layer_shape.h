@@ -131,6 +131,8 @@ protected:
 	virtual void set_time_vfunc(IndependentContext context, Time time)const;
 	virtual rendering::Task::Handle build_composite_task_vfunc(ContextParams context_params)const;
 
+	virtual bool is_inside_contour(const Point& p, bool ignore_feather) const;
+
 private:
 	bool render_shape(Surface *surface, bool useblend, const RendDesc &renddesc) const;
 }; // END of Layer_Shape
