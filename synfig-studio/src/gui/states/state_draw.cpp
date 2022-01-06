@@ -84,6 +84,7 @@ const int GAP = 3;
 /* === G L O B A L S ======================================================= */
 
 StateDraw studio::state_draw;
+static StateStroke state_symmetrical_stroke;
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
@@ -215,6 +216,11 @@ class studio::StateDraw_Context : public sigc::trackable
 	Gtk::CheckButton auto_export_checkbutton;
 	Gtk::Box auto_export_box;
 
+	Gtk::Label symmetrical_drawing_type_label;
+	Gtk::ComboBoxText symmetrical_drawing_type_combobox;
+	Gtk::Label symmetrical_drawing_reference_label;
+	Widget_Vector symmetrical_drawing_reference_widget;
+
 	Gtk::Button fill_last_stroke_button;
 
 
@@ -300,6 +306,51 @@ public:
 
 	bool get_round_ends_flag()const { return round_ends_checkbutton.get_active();}
 	void set_round_ends_flag(bool x) {round_ends_checkbutton.set_active(x);}
+
+	StateStroke::SymmetricalDrawingType get_symmetrical_drawing_type() const {
+		std::string type_id = symmetrical_drawing_type_combobox.get_active_id();
+		return type_id == "horizontal"? StateStroke::SYMMETRICAL_HORIZONTAL_MIRROR :
+			   type_id == "vertical"? StateStroke::SYMMETRICAL_VERTICAL_MIRROR :
+			   type_id == "point"? StateStroke::SYMMETRICAL_POINT_MIRROR :
+			   StateStroke::SYMMETRICAL_NONE;
+	}
+
+	void set_symmetrical_drawing_type(StateStroke::SymmetricalDrawingType type) {
+		std::string type_id;
+		switch (type) {
+		case studio::StateStroke::SYMMETRICAL_NONE:
+			type_id = "none";
+			break;
+		case studio::StateStroke::SYMMETRICAL_HORIZONTAL_MIRROR:
+			type_id = "horizontal";
+			break;
+		case studio::StateStroke::SYMMETRICAL_VERTICAL_MIRROR:
+			type_id = "vertical";
+			break;
+		case studio::StateStroke::SYMMETRICAL_POINT_MIRROR:
+			type_id = "point";
+			break;
+		}
+		symmetrical_drawing_type_combobox.set_active_id(type_id);
+	}
+	void set_symmetrical_drawing_type_id(const std::string& type_id) {
+		if (!symmetrical_drawing_type_combobox.set_active_id(type_id)) {
+			warning(_("Invalid symmetrical drawing type: %s"), type_id.c_str());
+			symmetrical_drawing_type_combobox.set_active_id("none");
+		}
+	}
+
+	std::string get_symmetrical_drawing_type_id() const {
+		return symmetrical_drawing_type_combobox.get_active_id();
+	}
+
+	void set_symmetrical_drawing_reference(const Point& reference) {
+		symmetrical_drawing_reference_widget.set_value(reference);
+	}
+
+	Point get_symmetrical_drawing_reference() {
+		return symmetrical_drawing_reference_widget.get_value();
+	}
 
   bool layer_region_flag;
   bool layer_outline_flag;
@@ -415,6 +466,12 @@ StateDraw_Context::load_settings()
 		layer_region_flag = get_layer_region_flag();
 		layer_outline_flag = get_layer_outline_flag();
 		layer_advanced_outline_flag = get_layer_advanced_outline_flag();
+
+		set_symmetrical_drawing_type_id(settings.get_value("draw.symmetrical_drawing_type", "none"));
+		Point p;
+		p[0] = settings.get_value("draw.symmetrical_drawing_reference_x", 0.0);
+		p[1] = settings.get_value("draw.symmetrical_drawing_reference_y", 0.0);
+		set_symmetrical_drawing_reference(p);
 	}
 	catch(...)
 	{
@@ -448,6 +505,11 @@ StateDraw_Context::save_settings()
 		settings.set_value("draw.lthreshold",get_lthres());
 		settings.set_value("draw.localize",get_local_threshold_flag());
 		settings.set_value("draw.round_ends", get_round_ends_flag());
+
+		settings.set_value("draw.symmetrical_drawing_type", get_symmetrical_drawing_type_id());
+		Point p = get_symmetrical_drawing_reference();
+		settings.set_value("draw.symmetrical_drawing_reference_x", p[0]);
+		settings.set_value("draw.symmetrical_drawing_reference_y", p[1]);
 	}
 	catch(...)
 	{
@@ -666,6 +728,22 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	auto_export_box.pack_start(auto_export_label, true, true, 0);
 	auto_export_box.pack_start(auto_export_checkbutton, false, false, 0);
 
+	symmetrical_drawing_type_label.set_label(_("Symmetrical Drawing"));
+	symmetrical_drawing_type_label.set_halign(Gtk::ALIGN_START);
+	symmetrical_drawing_type_label.set_valign(Gtk::ALIGN_CENTER);
+
+	symmetrical_drawing_type_combobox.append("none", _("None"));
+	symmetrical_drawing_type_combobox.append("horizontal", _("Horizontal"));
+	symmetrical_drawing_type_combobox.append("vertical", _("Vertical"));
+	symmetrical_drawing_type_combobox.append("point", _("Point"));
+
+	symmetrical_drawing_reference_label.set_label(_("Symmetry Reference Point"));
+	symmetrical_drawing_reference_label.set_halign(Gtk::ALIGN_START);
+	symmetrical_drawing_reference_label.set_valign(Gtk::ALIGN_CENTER);
+
+	symmetrical_drawing_reference_widget.set_canvas(get_canvas());
+	symmetrical_drawing_reference_widget.set_digits(2);
+
 	nested=0;
 	load_settings();
 
@@ -730,6 +808,14 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 		0, 18, 2, 1);
 	options_grid.attach(auto_export_box,
 		0, 19, 2, 1);
+	options_grid.attach(symmetrical_drawing_type_label,
+		0, 20, 1, 1);
+	options_grid.attach(symmetrical_drawing_type_combobox,
+		1, 20, 1, 1);
+	options_grid.attach(symmetrical_drawing_reference_label,
+		0, 21, 1, 1);
+	options_grid.attach(symmetrical_drawing_reference_widget,
+		1, 21, 1, 1);
 
 	options_grid.set_vexpand(false);
 	options_grid.set_border_width(GAP*2);
@@ -774,6 +860,8 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	get_work_area()->set_cursor(Gdk::PENCIL);
 
 	App::dock_toolbox->refresh();
+
+	canvas_view->canvas_interface()->get_selection_manager()->clear_selected_layers();
 
 	refresh_ducks();
 }
@@ -872,7 +960,9 @@ StateDraw_Context::event_mouse_down_handler(const Smach::event& x)
 	case BUTTON_LEFT:
 		{
 			// Enter the stroke state to get the stroke
-			get_canvas_view()->get_smach().push_state(&state_stroke);
+			state_symmetrical_stroke.symmetrical_drawing_type = get_symmetrical_drawing_type();
+			state_symmetrical_stroke.symmetrical_drawing_reference_point = symmetrical_drawing_reference_widget.get_value();
+			get_canvas_view()->get_smach().push_state(&state_symmetrical_stroke);
 			return Smach::RESULT_ACCEPT;
 		}
 
@@ -914,15 +1004,36 @@ StateDraw_Context::event_stroke(const Smach::event& x)
 
 	get_work_area()->add_stroke(event.stroke_data,synfigapp::Main::get_outline_color());
 
+	bool is_mirror_data_valid = false;
+	if (event.mirrored_stroke_data && event.mirrored_stroke_data->size() > 1) {
+		// If source stroke and its mirror have their ends close enough to each other, 'glue' them in one single stroke
+		// If so, the event.mirrored_stroke_data is now 'invalid' and should not create a second outline
+		const Real squared_max_acceptable_distance = 1/40.;
+		if ((event.stroke_data->front()-event.mirrored_stroke_data->front()).mag_squared() < squared_max_acceptable_distance) {
+			event.stroke_data->insert(event.stroke_data->begin(), event.mirrored_stroke_data->rbegin(), event.mirrored_stroke_data->rend());
+		} else if ((event.stroke_data->front()-event.mirrored_stroke_data->back()).mag_squared() < squared_max_acceptable_distance) {
+			event.stroke_data->insert(event.stroke_data->begin(), event.mirrored_stroke_data->begin(), event.mirrored_stroke_data->end());
+		} else if ((event.stroke_data->back()-event.mirrored_stroke_data->front()).mag_squared() < squared_max_acceptable_distance) {
+			event.stroke_data->insert(event.stroke_data->end(), event.mirrored_stroke_data->begin(), event.mirrored_stroke_data->end());
+		} else if ((event.stroke_data->back()-event.mirrored_stroke_data->back()).mag_squared() < squared_max_acceptable_distance) {
+			event.stroke_data->insert(event.stroke_data->end(), event.mirrored_stroke_data->rbegin(), event.mirrored_stroke_data->rend());
+		} else {
+			is_mirror_data_valid = true;
+		}
+	}
 	if(nested==0)
 	{
 		WorkArea::DirtyTrap dirty_trap(*get_work_area());
 		Smach::event_result result;
+		if (is_mirror_data_valid)
+			process_stroke(event.mirrored_stroke_data, event.width_data, (event.modifier&Gdk::CONTROL_MASK) || (event.modifier&Gdk::BUTTON2_MASK));
 		result = process_stroke(event.stroke_data, event.width_data, (event.modifier&Gdk::CONTROL_MASK) || (event.modifier&Gdk::BUTTON2_MASK));
 		process_queue();
 		return result;
 	}
 
+	if (is_mirror_data_valid)
+		stroke_queue.push_back(std::pair<StrokeData,WidthData>(event.mirrored_stroke_data,event.width_data));
 	stroke_queue.push_back(std::pair<StrokeData,WidthData>(event.stroke_data,event.width_data));
 
 	return Smach::RESULT_ACCEPT;
@@ -1099,7 +1210,7 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 Smach::event_result
 StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfig::WidthPoint> wplist,bool loop_bline_flag,float radius,ValueNode::Handle &value_node_origin)
 {
-	synfigapp::SelectionManager::LayerList layer_list;
+	synfigapp::SelectionManager::LayerList layer_list = get_canvas_view()->get_selection_manager()->get_selected_layers();
 
 	// Create the action group
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Sketch Spline"));

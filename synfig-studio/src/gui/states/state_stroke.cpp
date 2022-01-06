@@ -73,6 +73,10 @@ class studio::StateStroke_Context : public sigc::trackable
 
 	Gdk::ModifierType modifier;
 
+	StateStroke::SymmetricalDrawingType symmetrical_drawing_type;
+	synfig::Point symmetrical_drawing_reference_point;
+	std::shared_ptr<std::list<synfig::Point>> mirrored_stroke_data;
+
 public:
 
 	Smach::event_result event_stop_handler(const Smach::event& x);
@@ -92,6 +96,9 @@ public:
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
+
+	void set_symmetrical_drawing_type(StateStroke::SymmetricalDrawingType symmetrical_drawing_type);
+	void set_symmetrical_drawing_reference_point(synfig::Point p) {	symmetrical_drawing_reference_point = p; }
 
 };	// END of class StateStroke_Context
 
@@ -115,17 +122,22 @@ StateStroke::~StateStroke()
 
 void* StateStroke::enter_state(studio::CanvasView* machine_context) const
 {
-	return new StateStroke_Context(machine_context);
+	auto context = new StateStroke_Context(machine_context);
+	context->set_symmetrical_drawing_type(symmetrical_drawing_type);
+	context->set_symmetrical_drawing_reference_point(symmetrical_drawing_reference_point);
+	return context;
 }
 
 StateStroke_Context::StateStroke_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
 	duckmatic_push(get_work_area()),
-	modifier()
+	modifier(),
+	symmetrical_drawing_type(StateStroke::SYMMETRICAL_NONE)
 {
 	width_data = std::make_shared<std::list<synfig::Real>>();
 	stroke_data = std::make_shared<std::list<synfig::Point>>();
+	mirrored_stroke_data = std::make_shared<std::list<synfig::Point>>();
 
 	get_work_area()->add_stroke(stroke_data, synfigapp::Main::get_outline_color());
 }
@@ -138,8 +150,12 @@ StateStroke_Context::~StateStroke_Context()
 
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	// Send the stroke data to whatever previously called this state.
-	if(stroke_data->size()>=2)
-		get_canvas_view()->get_smach().process_event(EventStroke(stroke_data,width_data,modifier));
+	if(stroke_data->size()>=2) {
+		EventStroke stroke(stroke_data,width_data,modifier);
+		if (symmetrical_drawing_type != StateStroke::SYMMETRICAL_NONE)
+			stroke.mirrored_stroke_data = mirrored_stroke_data;
+		get_canvas_view()->get_smach().process_event(stroke);
+	}
 	SYNFIG_EXCEPTION_GUARD_END_NO_RETURN()
 }
 
@@ -187,6 +203,18 @@ StateStroke_Context::event_mouse_draw_handler(const Smach::event& x)
 	case BUTTON_LEFT:
 		{
 			stroke_data->push_back(event.pos);
+			switch (symmetrical_drawing_type) {
+			case StateStroke::SYMMETRICAL_HORIZONTAL_MIRROR:
+				mirrored_stroke_data->push_front(synfig::Point( event.pos[0], 2*symmetrical_drawing_reference_point[1]-event.pos[1]));
+				break;
+			case StateStroke::SYMMETRICAL_VERTICAL_MIRROR:
+				mirrored_stroke_data->push_front(synfig::Point(2*symmetrical_drawing_reference_point[0]-event.pos[0], event.pos[1]));
+				break;
+			case StateStroke::SYMMETRICAL_POINT_MIRROR:
+				mirrored_stroke_data->push_front(synfig::Point(2*symmetrical_drawing_reference_point[0]-event.pos[0], 2*symmetrical_drawing_reference_point[1]-event.pos[1]));
+				break;
+			default:;
+			}
 			width_data->push_back(event.pressure);
 			get_work_area()->queue_draw();
 			return Smach::RESULT_ACCEPT;
@@ -194,5 +222,18 @@ StateStroke_Context::event_mouse_draw_handler(const Smach::event& x)
 
 	default:
 		return Smach::RESULT_OK;
+	}
+}
+
+void StateStroke_Context::set_symmetrical_drawing_type(StateStroke::SymmetricalDrawingType symmetrical_drawing_type)
+{
+	this->symmetrical_drawing_type = symmetrical_drawing_type;
+	if (symmetrical_drawing_type != StateStroke::SYMMETRICAL_NONE) {
+		if (!mirrored_stroke_data)
+			mirrored_stroke_data = std::make_shared<std::list<synfig::Point>>();
+		get_work_area()->add_stroke(mirrored_stroke_data, synfigapp::Main::get_outline_color());
+	} else {
+		if (mirrored_stroke_data)
+			mirrored_stroke_data->clear();
 	}
 }
