@@ -37,6 +37,7 @@
 #include <gtkmm/box.h>
 #include <gtkmm/main.h>
 #include <gtkmm/uimanager.h>
+#include <gtkmm/button.h>
 
 #include <gui/iconcontroller.h>
 #include <gui/mainwindow.h>
@@ -441,6 +442,9 @@ public:
 	static void dialog_not_implemented();
 
 	static void dialog_help();
+
+	static void set_button_style_destructive(Gtk::Button* button, const Glib::ustring& icon_name);
+	static void set_button_style_suggested(Gtk::Button* button, const Glib::ustring& icon_name);
 
 #if GTK_CHECK_VERSION(3, 20, 0)
 	static void window_shortcuts();
