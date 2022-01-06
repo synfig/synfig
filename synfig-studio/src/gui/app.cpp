@@ -157,11 +157,10 @@
 
 #define WINVER 0x0500
 #include <windows.h>
-#include <gdk/gdkwin32.h>
-#define mkdir(x,y) mkdir(x)
 
 //#define USE_WIN32_FILE_DIALOGS 1
 #ifdef USE_WIN32_FILE_DIALOGS
+ #include <gdk/gdkwin32.h>
  #include <cstring>
  static OPENFILENAME ofn={};
 #endif // USE_WIN32_FILE_DIALOGS
