@@ -201,6 +201,26 @@ Layer_Shape::get_param_vocab()const
 	return ret;
 }
 
+bool
+Layer_Shape::is_inside_contour(const Point& p, bool ignore_feather) const
+{
+	bool invert = param_invert.get(bool(true));
+	Point origin = param_origin.get(Point());
+	rendering::Contour::WindingStyle winding_style = (rendering::Contour::WindingStyle)param_winding_style.get(int());
+
+	Point point = p;
+
+	if (!ignore_feather) {
+		int blurtype = param_blurtype.get(int());
+		Real feather = param_feather.get(Real());
+
+		if (feather)
+			point = Blur(feather,feather,blurtype)(p);
+	}
+
+	return contour->is_inside(point - origin, winding_style, invert);
+}
+
 synfig::Layer::Handle
 Layer_Shape::hit_check(synfig::Context context, const synfig::Point &point) const
 {
@@ -208,13 +228,10 @@ Layer_Shape::hit_check(synfig::Context context, const synfig::Point &point) cons
 
 	Color::BlendMethod blend_method = get_blend_method();
 	Color color = param_color.get(Color());
-	bool invert = param_invert.get(bool(true));
-	Point origin = param_origin.get(Point());
-	rendering::Contour::WindingStyle winding_style = (rendering::Contour::WindingStyle)param_winding_style.get(int());
 
 	bool inside = false;
 	if (get_amount() && blend_method != Color::BLEND_ALPHA_OVER)
-		inside = contour->is_inside(point - origin, winding_style, invert);
+		inside = is_inside_contour(point, false);
 
 	if (inside) {
 		if (blend_method == Color::BLEND_BEHIND) {
@@ -247,19 +264,9 @@ Layer_Shape::get_color(Context context, const Point &p)const
 	sync();
 
 	Color color = param_color.get(Color());
-	Point origin = param_origin.get(Point());
-	bool invert = param_invert.get(bool(true));
-	int blurtype = param_blurtype.get(int());
-	Real feather = param_feather.get(Real());
-	rendering::Contour::WindingStyle winding_style = (rendering::Contour::WindingStyle)param_winding_style.get(int());
-
-	Point pp = p;
-	if (feather)
-		pp = Blur(feather,feather,blurtype)(p);
-
-	bool inside = contour->is_inside(pp - origin, winding_style, invert);
+	bool inside = is_inside_contour(p, true);
 	if (!inside)
-		return Color::blend(Color::alpha(), context.get_color(pp), get_amount(), get_blend_method());
+		return Color::blend(Color::alpha(), context.get_color(p), get_amount(), get_blend_method());
 
 	//Ok, we're inside... bummmm ba bum buM...
 	if (get_blend_method() == Color::BLEND_STRAIGHT && get_amount() == 1)

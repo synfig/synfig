@@ -1101,29 +1101,14 @@ Layer_Freetype::sync_vfunc()
 	}
 }
 
-inline Color
-Layer_Freetype::color_func(const Point &/*point_*/, int /*quality*/, ColorReal /*supersample*/)const
-{
-	bool invert=param_invert.get(bool());
-	if (invert)
-		return param_color.get(Color());
-	else
-		return Color::alpha();
-}
-
-Color
-Layer_Freetype::get_color(Context context, const Point &pos)const
-{
-	return Layer_Shape::get_color(context, pos);
-}
-
-Layer::Handle
-Layer_Freetype::hit_check(Context context, const Point &point) const
+bool
+Layer_Freetype::is_inside_contour(const Point& p, bool ignore_feather) const
 {
 	sync();
 
-	Point new_point = world_to_contour(point);
-	return Layer_Shape::hit_check(context, new_point);
+	const Point point_in_contour = world_to_contour(p);
+
+	return Layer_Shape::is_inside_contour(point_in_contour, ignore_feather);
 }
 
 Rect

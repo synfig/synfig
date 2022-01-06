@@ -98,8 +98,6 @@ private:
 
 	void sync_vfunc() override;
 
-	synfig::Color color_func(const synfig::Point &x, int quality=10, synfig::ColorReal supersample=0)const;
-
 	mutable std::mutex mutex;
 	mutable std::mutex sync_mtx;
 
@@ -114,8 +112,6 @@ public:
 	bool set_param(const synfig::String & param, const synfig::ValueBase &value) override;
 	synfig::ValueBase get_param(const synfig::String & param) const override;
 
-	synfig::Color get_color(synfig::Context context, const synfig::Point &pos) const override;
-	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point) const override;
 	synfig::Rect get_bounding_rect() const override;
 
 	Vocab get_param_vocab() const override;
@@ -125,6 +121,8 @@ public:
 
 protected:
 	synfig::rendering::Task::Handle build_composite_task_vfunc(synfig::ContextParams) const override;
+
+	bool is_inside_contour(const synfig::Point& p, bool ignore_feather) const override;
 
 private:
 	/*! The new_font() function try to load a font file
