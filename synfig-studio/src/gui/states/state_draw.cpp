@@ -104,7 +104,6 @@ class studio::StateDraw_Context : public sigc::trackable
 	WorkArea::PushState push_state;
 
 	bool prev_table_status;
-	//bool loop_;
 
 	int nested;
 	sigc::connection process_queue_connection;
@@ -112,8 +111,6 @@ class studio::StateDraw_Context : public sigc::trackable
 	ValueNode_BLine::Handle last_stroke;
 	synfig::String last_stroke_id;
 	ValueNode::Handle last_value_node_origin;
-
-	Gtk::Menu menu;
 
 	std::list<std::shared_ptr<std::list<synfig::Point>>> stroke_list;
 
@@ -574,7 +571,6 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
 	push_state(*get_work_area()),
-	//loop_(false),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	opacity_hscl(Gtk::Adjustment::create(1.0, 0.0, 1.0, 0.01, 0.1)),
 	min_pressure_adj(Gtk::Adjustment::create(0,0,1,0.01,0.1)),
@@ -837,10 +833,10 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 		sigc::mem_fun(*this, &StateDraw_Context::UpdateUsePressure));
 	layer_advanced_outline_togglebutton.signal_toggled().connect(
 		sigc::mem_fun(*this, &StateDraw_Context::UpdateCreateAdvancedOutline));
-	localthres_spin.signal_value_changed().connect(sigc::mem_fun(*this,
-		&StateDraw_Context::UpdateSmoothness));
-	globalthres_spin.signal_value_changed().connect(sigc::mem_fun(*this,
-		&StateDraw_Context::UpdateSmoothness));
+	localthres_spin.signal_value_changed().connect(
+		sigc::mem_fun(*this, &StateDraw_Context::UpdateSmoothness));
+	globalthres_spin.signal_value_changed().connect(
+		sigc::mem_fun(*this, &StateDraw_Context::UpdateSmoothness));
 	symmetrical_drawing_reference_widget.signal_value_changed().connect(
 		sigc::mem_fun(*this, &StateDraw_Context::UpdateSymmetryReference));
 	symmetrical_drawing_type_combobox.signal_changed().connect(
@@ -878,7 +874,6 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	refresh_ducks();
 }
 
-
 void
 StateDraw_Context::UpdateUsePressure()
 {
@@ -894,7 +889,6 @@ StateDraw_Context::UpdateCreateAdvancedOutline()
 	width_max_error_label.set_sensitive(get_layer_advanced_outline_flag());
 	width_max_error_spin.set_sensitive(get_layer_advanced_outline_flag());
 }
-
 
 void
 StateDraw_Context::UpdateSmoothness()
