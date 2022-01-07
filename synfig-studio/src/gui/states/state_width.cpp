@@ -445,7 +445,7 @@ StateWidth_Context::AdjustWidth(handle<Duckmatic::Bezier> c, float t, Real mult,
 	synfig::ValueNode::Handle p1pvn(p1->get_value_desc().get_parent_value_node());
 	synfig::ValueNode::Handle p2pvn(p2->get_value_desc().get_parent_value_node());
 	// if the bezier position ducks are linkable valuenode children
-	if(p1pvn && p2pvn && p1pvn==p2pvn)
+	if(p1pvn && p1pvn->get_type() == type_list && p2pvn && p1pvn==p2pvn)
 	{
 		// we guess that the parent value node is a bline value node
 		synfig::ValueNode::Handle bezier_bline=p1pvn;
@@ -558,7 +558,10 @@ StateWidth_Context::event_mouse_handler(const Smach::event& x)
 		if(event.pressure >= threshold)
 			c = get_work_area()->find_bezier(event.pos,scale*8,rad,&t);
 		//run algorithm on event.pos to get 2nd placement
-		if(!c.empty())
+		if(!c.empty()
+			&& c->p1
+			&& c->p1->get_value_desc().parent_is_value_node()
+			&& c->p1->get_value_desc().get_parent_value_node()->get_type() == type_list) // avoid Beziers for Bone Parenting
 		{
 			bezier<Point> curve;
 			Point p;
