@@ -117,6 +117,12 @@ class studio::StateDraw_Context : public sigc::trackable
 
 	std::list<std::shared_ptr<std::list<synfig::Point>>> stroke_list;
 
+	std::vector<float> symmetrical_drawing_guides_x;
+	std::vector<float> symmetrical_drawing_guides_y;
+	std::mutex symmetrical_drawing_guides_mutex;
+	void add_symmetrical_drawing_guide(const Point& reference, StateStroke::SymmetricalDrawingType type);
+	void remove_symmetrical_drawing_guides();
+
 	void refresh_ducks();
 
 	void fill_last_stroke();
@@ -227,6 +233,7 @@ class studio::StateDraw_Context : public sigc::trackable
 	void UpdateUsePressure();
 	void UpdateCreateAdvancedOutline();
 	void UpdateSmoothness();
+	void UpdateSymmetryReference();
 
 	//Added by Adrian - data drive HOOOOO
 	synfigapp::BLineConverter blineconv;
@@ -750,6 +757,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	UpdateUsePressure();
 	UpdateCreateAdvancedOutline();
 	UpdateSmoothness();
+	UpdateSymmetryReference();
 
 	// Toolbox layout
 	options_grid.attach(title_label,
@@ -833,6 +841,10 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 		&StateDraw_Context::UpdateSmoothness));
 	globalthres_spin.signal_value_changed().connect(sigc::mem_fun(*this,
 		&StateDraw_Context::UpdateSmoothness));
+	symmetrical_drawing_reference_widget.signal_value_changed().connect(
+		sigc::mem_fun(*this, &StateDraw_Context::UpdateSymmetryReference));
+	symmetrical_drawing_type_combobox.signal_changed().connect(
+		sigc::mem_fun(*this, &StateDraw_Context::UpdateSymmetryReference));
 
 	refresh_tool_options();
 	App::dialog_tool_options->present();
@@ -891,6 +903,74 @@ StateDraw_Context::UpdateSmoothness()
 	globalthres_radiobutton.set_active(globalthres_spin.is_focus());
 }
 
+void
+StateDraw_Context::UpdateSymmetryReference()
+{
+	if (!get_work_area()) {
+		symmetrical_drawing_guides_x.clear();
+		symmetrical_drawing_guides_y.clear();
+		return;
+	}
+
+	remove_symmetrical_drawing_guides();
+
+	Point reference = symmetrical_drawing_reference_widget.get_value();
+	auto symmetry_type = get_symmetrical_drawing_type();
+
+	add_symmetrical_drawing_guide(reference, symmetry_type);
+}
+
+void
+StateDraw_Context::remove_symmetrical_drawing_guides()
+{
+	if (!get_work_area())
+		return;
+
+	std::lock_guard<std::mutex> lock(symmetrical_drawing_guides_mutex);
+
+	{
+		auto& existent_guides_x = get_work_area()->get_guide_list_x();
+		for (float x : symmetrical_drawing_guides_x) {
+			auto it = std::find(existent_guides_x.begin(), existent_guides_x.end(), x);
+			if (it != existent_guides_x.end())
+				existent_guides_x.erase(it);
+		}
+		symmetrical_drawing_guides_x.clear();
+	}
+
+	{
+		auto& existent_guides_y = get_work_area()->get_guide_list_y();
+		for (float y : symmetrical_drawing_guides_y) {
+			auto it = std::find(existent_guides_y.begin(), existent_guides_y.end(), y);
+			if (it != existent_guides_y.end())
+				existent_guides_y.erase(it);
+		}
+		symmetrical_drawing_guides_y.clear();
+	}
+
+	get_work_area()->queue_draw();
+}
+
+void
+StateDraw_Context::add_symmetrical_drawing_guide(const Point& reference, StateStroke::SymmetricalDrawingType type)
+{
+	if (!get_work_area())
+		return;
+	if (type == StateStroke::SYMMETRICAL_NONE)
+		return;
+
+	std::lock_guard<std::mutex> lock(symmetrical_drawing_guides_mutex);
+
+	if (type != StateStroke::SYMMETRICAL_VERTICAL_MIRROR) {
+		symmetrical_drawing_guides_y.push_back(reference[1]);
+		get_work_area()->get_guide_list_y().push_front(reference[1]);
+	}
+	if (type != StateStroke::SYMMETRICAL_HORIZONTAL_MIRROR) {
+		symmetrical_drawing_guides_x.push_back(reference[0]);
+		get_work_area()->get_guide_list_x().push_front(reference[0]);
+	}
+	get_work_area()->queue_draw();
+}
 
 void
 StateDraw_Context::refresh_tool_options()
@@ -923,6 +1003,8 @@ StateDraw_Context::~StateDraw_Context()
 	App::dialog_tool_options->clear();
 
 	get_work_area()->reset_cursor();
+
+	remove_symmetrical_drawing_guides();
 
 	// Enable the time bar
 	get_canvas_view()->set_sensitive_timebar(true);
