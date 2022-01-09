@@ -35,21 +35,16 @@
 #include <giomm.h>
 #include <glibmm.h>
 #include <glib/gstdio.h>
-#include <sys/stat.h>
 
 #include <ETL/stringf>
-#include "general.h"
-#include <synfig/localization.h>
 
 #include "filesystemnative.h"
-#include "guid.h"
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
-using namespace synfig;
+namespace synfig {
 
 /* === M A C R O S ========================================================= */
 
@@ -136,7 +131,7 @@ bool FileSystemNative::file_rename(const String &from_filename, const String &to
 FileSystem::ReadStream::Handle FileSystemNative::get_read_stream(const String &filename)
 {
 	FILE *f = g_fopen(fix_slashes(filename).c_str(), "rb");
-	return f == NULL
+	return f == nullptr
 	     ? FileSystem::ReadStream::Handle()
 	     : FileSystem::ReadStream::Handle(new ReadStream(this, f));
 }
@@ -144,7 +139,7 @@ FileSystem::ReadStream::Handle FileSystemNative::get_read_stream(const String &f
 FileSystem::WriteStream::Handle FileSystemNative::get_write_stream(const String &filename)
 {
 	FILE *f = g_fopen(fix_slashes(filename).c_str(), "wb");
-	return f == NULL
+	return f == nullptr
 	     ? FileSystem::WriteStream::Handle()
 	     : FileSystem::WriteStream::Handle(new WriteStream(this, f));
 }
@@ -156,6 +151,4 @@ String FileSystemNative::get_real_uri(const String &filename)
 }
 
 
-/* === E N T R Y P O I N T ================================================= */
-
-
+}
