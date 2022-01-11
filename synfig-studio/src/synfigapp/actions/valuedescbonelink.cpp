@@ -191,6 +191,7 @@ Action::ValueDescBoneLink::prepare()
 		if (value_desc.parent_is_value_node() && bone_value_node == value_desc.get_parent_value_node())
 			continue;
 
+		// Check if user selected "origin" instead of "transformation" parameter
 		if (value_desc.parent_is_layer() && value_desc.get_param_name() == "origin") {
 			Layer::ConstHandle layer = value_desc.get_layer();
 			bool has_transformation = layer->get_param("transformation").is_valid()
@@ -210,6 +211,23 @@ Action::ValueDescBoneLink::prepare()
 				{
 					value_desc = ValueDesc(value_desc.get_layer(), "transformation", value_desc.get_parent_desc());
 				}
+			}
+		}
+
+		// Check if user selected layer from a different canvas of Skeleton (Deformation) Layer
+		if (this->value_desc.get_canvas() != value_desc.get_canvas()) {
+			if ( get_canvas_interface()
+			  && get_canvas_interface()->get_ui_interface()
+			  && UIInterface::RESPONSE_OK == get_canvas_interface()->get_ui_interface()->confirmation(
+					 _("Possible Wrong Bone Link"),
+					 synfig::strprintf(_("You are trying to link a layer to a bone that is not in the same group.\n\n"
+						"Do you want to ignore it?"),
+						 ""),//layer->get_description().c_str()),
+					 _("Yes"),
+					 _("No"),
+					 synfigapp::UIInterface::RESPONSE_OK ))
+			{
+				continue;
 			}
 		}
 
