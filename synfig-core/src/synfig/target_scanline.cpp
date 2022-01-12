@@ -193,9 +193,9 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 					// loop through all the full rows
 					if(!start_frame())
 					{
-//						throw(string("add_frame(): target panic on start_frame()"));
+//						throw(string("render(): target panic on start_frame()"));
 						if(cb)
-							cb->error(_("add_frame(): target panic on start_frame()"));
+							cb->error(_("render(): target panic on start_frame()"));
 						return false;
 					}
 
@@ -272,9 +272,9 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 
 								if(!end_scanline())
 								{
-//									throw(string("add_frame(): target panic on end_scanline()"));
+//									throw(string("render(): target panic on end_scanline()"));
 									if(cb)
-										cb->error(_("add_frame(): target panic on end_scanline()"));
+										cb->error(_("render(): target panic on end_scanline()"));
 									return false;
 								}
 							}
@@ -346,9 +346,9 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 				// loop through all the full rows
 				if(!start_frame())
 				{
-//					throw(string("add_frame(): target panic on start_frame()"));
+//					throw(string("render(): target panic on start_frame()"));
 					if(cb)
-						cb->error(_("add_frame(): target panic on start_frame()"));
+						cb->error(_("render(): target panic on start_frame()"));
 					return false;
 				}
 
@@ -428,9 +428,9 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 
 						if(!end_scanline())
 						{
-//							throw(string("add_frame(): target panic on end_scanline()"));
+//							throw(string("render(): target panic on end_scanline()"));
 							if(cb)
-								cb->error(_("add_frame(): target panic on end_scanline()"));
+								cb->error(_("render(): target panic on end_scanline()"));
 							return false;
 						}
 					}
