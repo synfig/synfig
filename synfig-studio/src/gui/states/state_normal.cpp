@@ -718,7 +718,7 @@ StateNormal_Context::event_key_down_handler(const Smach::event& x)
 		set_shift_pressed(event.modifier&GDK_SHIFT_MASK);
 		break;
 	}
-	return Smach::RESULT_REJECT;
+	return Smach::RESULT_OK;
 }
 
 Smach::event_result
@@ -747,7 +747,7 @@ StateNormal_Context::event_key_up_handler(const Smach::event& x)
 	default:
 		break;
 	}
-	return Smach::RESULT_REJECT;
+	return Smach::RESULT_OK;
 }
 
 Smach::event_result

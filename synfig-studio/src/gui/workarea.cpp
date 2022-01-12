@@ -982,9 +982,13 @@ bool
 WorkArea::on_key_press_event(GdkEventKey* event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
-	if (Smach::RESULT_OK == canvas_view->get_smach().process_event(
-		EventKeyboard(EVENT_WORKAREA_KEY_DOWN, event->keyval, Gdk::ModifierType(event->state))))
-			return true;
+	auto event_result = canvas_view->get_smach().process_event(
+		EventKeyboard(EVENT_WORKAREA_KEY_DOWN, event->keyval, Gdk::ModifierType(event->state)));
+	if (event_result != Smach::RESULT_OK)
+		return true;
+
+	// Other possible actions if current state doesn't accept the event but not forbids it
+	// - Nudge selected ducks
 
 	if(get_selected_ducks().empty())
 		return false;
@@ -1039,8 +1043,14 @@ bool
 WorkArea::on_key_release_event(GdkEventKey* event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
-	return Smach::RESULT_OK == canvas_view->get_smach().process_event(
+	auto event_result = canvas_view->get_smach().process_event(
 		EventKeyboard(EVENT_WORKAREA_KEY_UP, event->keyval, Gdk::ModifierType(event->state)) );
+	if (event_result != Smach::RESULT_OK)
+		return true;
+
+	// Other possible actions if current state doesn't accept the event but not forbids it
+	// - currently none
+
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 

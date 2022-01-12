@@ -73,10 +73,10 @@ public:
 	{
 		// These values are returned by the event
 		// handlers cast to state pointers.
-		RESULT_ERROR,		//!< General error or malfunction
-		RESULT_OK,			//!< Event has been processed
-		RESULT_ACCEPT,		//!< The event has been explicitly accepted.
-		RESULT_REJECT,		//!< The event has been explicitly rejected.
+		RESULT_ERROR,		//!< Tool/state processed the event and found a general error or malfunction
+		RESULT_OK,			//!< Tool/state processed the event or not, but let it be processed (too) by other handlers in the event pipeline (WorkArea, Gtk App, etc)
+		RESULT_ACCEPT,		//!< Tool/state processed the event and consumed the event
+		RESULT_REJECT,		//!< Tool/state processed the event and/or forbid the event
 
 		RESULT_END			//!< Not a valid result
 	};
