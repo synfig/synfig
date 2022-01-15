@@ -56,7 +56,7 @@ ACTION_INIT(Action::ValueDescCreateChildBone);
 ACTION_SET_NAME(Action::ValueDescCreateChildBone,"ValueDescCreateChildBone");
 ACTION_SET_LOCAL_NAME(Action::ValueDescCreateChildBone,N_("Create Child Bone"));
 ACTION_SET_TASK(Action::ValueDescCreateChildBone,"create_child_bone");
-ACTION_SET_CATEGORY(Action::ValueDescCreateChildBone,Action::CATEGORY_HIDDEN);
+ACTION_SET_CATEGORY(Action::ValueDescCreateChildBone,Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::ValueDescCreateChildBone,0);
 ACTION_SET_VERSION(Action::ValueDescCreateChildBone,"0.0");
 
