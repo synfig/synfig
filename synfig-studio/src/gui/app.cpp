@@ -2404,12 +2404,16 @@ App::dialog_open_file_ext(const std::string &title, std::vector<std::string> &fi
 	filter_supported->add_mime_type("image/jpg");
 	filter_supported->add_mime_type("image/bmp");
 	filter_supported->add_mime_type("image/svg+xml");
+	filter_supported->add_mime_type("application/x-krita");
+	filter_supported->add_mime_type("image/openraster");
 	filter_supported->add_pattern("*.png");
 	filter_supported->add_pattern("*.jpeg");
 	filter_supported->add_pattern("*.jpg");
 	filter_supported->add_pattern("*.bmp");
 	filter_supported->add_pattern("*.svg");
 	filter_supported->add_pattern("*.lst");
+	filter_supported->add_pattern("*.kra");
+	filter_supported->add_pattern("*.ora");
 	// 0.3 Audio files
 	filter_supported->add_mime_type("audio/x-vorbis+ogg");
 	filter_supported->add_mime_type("audio/mpeg");
