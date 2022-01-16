@@ -1,3 +1,6 @@
+- [`14b3ce6`](https://github.com/synfig/synfig/commit/14b3ce6b5c25a164534f53df0bd71f9f080f293d) Merge PR [#2514](https://github.com/synfig/synfig/issues/2514): Fix text layer hit check for Text Layer (issue when size was too small). Closes [#2508](https://github.com/synfig/synfig/issues/2508). [core]
+- [`7ae9d4a`](https://github.com/synfig/synfig/commit/7ae9d4a900ee8cadcf44606f9b050c96cde4bdb7) Re-enable "Create Child Bone" action ([#2507](https://github.com/synfig/synfig/issues/2507)) [studio]
+- [`d581517`](https://github.com/synfig/synfig/commit/d581517237410a685ac24dd86ee35a019294d7f5) Remove unused variables ([#2502](https://github.com/synfig/synfig/issues/2502)) [studio]
 - [`db959bf`](https://github.com/synfig/synfig/commit/db959bf7d062bdb0eb658ddabb2735385a8872aa) Merge PR [#2505](https://github.com/synfig/synfig/issues/2505): Fixed issue with opening a file from a network folder on Windows [core]
 - [`65303bc`](https://github.com/synfig/synfig/commit/65303bc518cef3381bb537b0e29d61d1f3849e31) fix crash when using Width Tool on Skeleton Layer ([#2500](https://github.com/synfig/synfig/issues/2500)) [studio]
 - [`e3ba578`](https://github.com/synfig/synfig/commit/e3ba5788d727b3497c0441d71799727af2412bab) Bone Tool: Fixed issue where skeleton "name" wasn't updated as new Layers are created ([#2493](https://github.com/synfig/synfig/issues/2493)) [studio]
