@@ -1351,11 +1351,16 @@ Layer_Freetype::world_to_contour(const synfig::Point &p) const
 		return p;
 	Vector size = param_size.get(Vector()) * 2;
 
-	Matrix matrix = Matrix().set_translate(param_origin.get(Vector()))
-					* Matrix().set_scale(size/(face->units_per_EM))
-					* Matrix().set_translate(param_origin.get(Vector()));
+	// Multiplies by face->units_per_EM to avoid rounding errors due to matrix inversion
+	// (face->units_per_EM is usually higher than 2000)
+	const Vector& t = param_origin.get(Vector()) * face->units_per_EM;
 
-	return matrix.get_inverted().get_transformed(p);
+	Matrix matrix(
+			size[0], 0,       0,
+			0,       size[1], 0,
+			t[0],    t[1],    face->units_per_EM);
+
+	return (matrix.get_inverted()*face->units_per_EM).get_transformed(p);
 }
 
 Point Layer_Freetype::contour_to_world(const synfig::Point &p) const
@@ -1365,8 +1370,7 @@ Point Layer_Freetype::contour_to_world(const synfig::Point &p) const
 	Vector size = param_size.get(Vector()) * 2;
 
 	Matrix matrix = Matrix().set_translate(param_origin.get(Vector()))
-					* Matrix().set_scale(size/(face->units_per_EM))
-					* Matrix().set_translate(param_origin.get(Vector()));
+					* Matrix().set_scale(size/(face->units_per_EM));
 
 	return matrix.get_transformed(p);
 }
