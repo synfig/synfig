@@ -4034,7 +4034,7 @@ App::new_instance()
 			action_LayerSetDesc->set_param("canvas",           canvas);
 			action_LayerSetDesc->set_param("canvas_interface", instance->find_canvas_interface(canvas));
 			action_LayerSetDesc->set_param("layer",            layer);
-			action_LayerSetDesc->set_param("new_description",  "Background");
+			action_LayerSetDesc->set_param("new_description",  _("Background"));
 			App::get_selected_canvas_view()->canvas_interface()->get_instance()->perform_action(action_LayerSetDesc);
 		}
 
@@ -4066,7 +4066,7 @@ App::new_instance()
 			action_LayerSetDesc->set_param("canvas",           canvas);
 			action_LayerSetDesc->set_param("canvas_interface", instance->find_canvas_interface(canvas));
 			action_LayerSetDesc->set_param("layer",            layer);
-			action_LayerSetDesc->set_param("new_description",  "Background");
+			action_LayerSetDesc->set_param("new_description",  _("Background"));
 			App::get_selected_canvas_view()->canvas_interface()->get_instance()->perform_action(action_LayerSetDesc);
 		}
 
