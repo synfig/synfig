@@ -615,7 +615,7 @@ public:
 
       tilt_ascension = 180.0*atan2(-xtilt, ytilt)/M_PI;
       float e;
-      if (abs(xtilt) > abs(ytilt)) {
+	  if (std::fabs(xtilt) > std::fabs(ytilt)) {
         e = sqrt(1+ytilt*ytilt);
       } else {
         e = sqrt(1+xtilt*xtilt);
