@@ -132,7 +132,7 @@ namespace synfig
 			Identifier(const FileSystem::Handle &file_system, const String &filename):
 				file_system(file_system), filename(filename) { }
 
-			bool empty() const { return file_system; }
+			bool empty() const { return !file_system; }
 			operator bool () const { return !empty(); }
 
 			bool operator < (const Identifier &other) const
