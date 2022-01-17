@@ -162,8 +162,6 @@ bool zstreambuf::inflate_buf()
     if (!inflate_initialized)
     {
     	memset(&inflate_stream_, 0, sizeof(inflate_stream_));
-    	if (Z_OK != inflateInit2(&inflate_stream_, option_window_bits)) return false;
-    	inflate_initialized = true;
     }
 
     // read and inflate new chunk of data
@@ -171,14 +169,24 @@ bool zstreambuf::inflate_buf()
     inflate_stream_.avail_in = buf_->sgetn(in_buf, sizeof(in_buf));
     inflate_stream_.next_in = (Bytef*)in_buf;
 	read_buffer_.resize(0);
+
+	if (!inflate_initialized)
+	{
+		if (Z_OK != inflateInit2(&inflate_stream_, -MAX_WBITS)) return false;
+		inflate_initialized = true;
+	}
+
 	do
 	{
 		inflate_stream_.avail_out = option_bufsize;
 		read_buffer_.resize(read_buffer_.size() + inflate_stream_.avail_out);
 		inflate_stream_.next_out = (Bytef*)(&read_buffer_.back() + 1 - inflate_stream_.avail_out);
 		int ret = ::inflate(&inflate_stream_, Z_NO_FLUSH);
+		if (ret != Z_OK && ret != Z_STREAM_END) {
+			//std::cerr << "Error: " << ret << ": " << inflate_stream_.msg << std::endl;
+			break;
+		}
 		read_buffer_.resize(read_buffer_.size() - inflate_stream_.avail_out);
-		if (ret != Z_OK) break;
 	} while (inflate_stream_.avail_out == 0);
 	assert(inflate_stream_.avail_in == 0);
 
