@@ -1049,7 +1049,7 @@ Duckmatic::on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& 
 			Point delta_offset = duck.get_origin_duck()->get_point() - transformation.offset;
 			Point delta_origin = transformation.back_transform(delta_offset, false);
 			transformation.offset += delta_offset;
-			origin += delta_origin;
+			origin -= delta_origin;
 			return canvas_interface->change_value(duck.get_value_desc(), origin, lock_animation)
 				&& canvas_interface->change_value(duck.get_origin_duck()->get_value_desc(), transformation, lock_animation);
 		}
