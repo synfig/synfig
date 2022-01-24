@@ -1,3 +1,7 @@
+- [`ad03efe`](https://github.com/synfig/synfig/commit/ad03efe3b70e507a4632fe14a55acd149be60477) FileSystem::Identifier::empty() returned wrong value ([#2510](https://github.com/synfig/synfig/issues/2510)) [core]
+- [`78081fd`](https://github.com/synfig/synfig/commit/78081fd256b6a4a095f7240dd9875e6f82028415) make "Background" (layer description) string translatable ([#2515](https://github.com/synfig/synfig/issues/2515)) [studio]
+- [`cb9abcf`](https://github.com/synfig/synfig/commit/cb9abcf7ddd8f9a51dde5c5ede47a25486fbacda) fix error message on Target_Scanline ([#2511](https://github.com/synfig/synfig/issues/2511)) [core]
+- [`938cfc0`](https://github.com/synfig/synfig/commit/938cfc08f9453464f0ea78bbb7ccfb2ea0850263) fix Debian 9 building ([#2517](https://github.com/synfig/synfig/issues/2517)) [studio]
 - [`14b3ce6`](https://github.com/synfig/synfig/commit/14b3ce6b5c25a164534f53df0bd71f9f080f293d) Merge PR [#2514](https://github.com/synfig/synfig/issues/2514): Fix text layer hit check for Text Layer (issue when size was too small). Closes [#2508](https://github.com/synfig/synfig/issues/2508). [core]
 - [`7ae9d4a`](https://github.com/synfig/synfig/commit/7ae9d4a900ee8cadcf44606f9b050c96cde4bdb7) Re-enable "Create Child Bone" action ([#2507](https://github.com/synfig/synfig/issues/2507)) [studio]
 - [`d581517`](https://github.com/synfig/synfig/commit/d581517237410a685ac24dd86ee35a019294d7f5) Remove unused variables ([#2502](https://github.com/synfig/synfig/issues/2502)) [studio]
