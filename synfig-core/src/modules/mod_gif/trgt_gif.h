@@ -57,7 +57,7 @@ private:
 		char curr_bit;
 		bitstream():pool(0),curr_bit(0),curr_pos(0) {}
 		bitstream(synfig::SmartFILE file):file(file),pool(0),curr_bit(0),curr_pos(0) {}
-		unsigned char buffer[256];
+		unsigned char buffer[256]; //-V730_NOINIT
 		int curr_pos;
 
 		// Pushes a single bit onto the bit

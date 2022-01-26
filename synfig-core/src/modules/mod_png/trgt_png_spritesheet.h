@@ -61,8 +61,8 @@ private:
 		unsigned int height;
 		png_byte color_type;
 		png_byte bit_depth;
-		png_structp png_ptr;
-		png_infop info_ptr;
+		png_structp png_ptr = nullptr;
+		png_infop info_ptr = nullptr;
 	};
 
 	static void png_out_error(png_struct *png,const char *msg);

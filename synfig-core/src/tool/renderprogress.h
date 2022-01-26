@@ -58,7 +58,7 @@ private:
     typedef std::chrono::duration<double> Duration;
     Clock::time_point start_timepoint_;
     Clock::time_point last_timepoint_;
-    double remaining_rendered_proportion_;
+    double remaining_rendered_proportion_ = 0.l;
 
     void printRemainingTime(std::ostream& os, double remaining_seconds) const;
 

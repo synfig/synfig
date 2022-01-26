@@ -330,7 +330,7 @@ public:
 private:
 	static int last_id;
 
-	int id;
+	int id = 0;
 	int width;
 	int height;
 	bool blank;

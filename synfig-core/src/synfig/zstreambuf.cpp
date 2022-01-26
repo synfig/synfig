@@ -52,6 +52,7 @@ using namespace synfig;
 zstreambuf::zstreambuf(std::streambuf *buf):
 	buf_(buf),
 	inflate_initialized(false),
+	inflate_stream_{},
 	deflate_initialized(false),
 	deflate_stream_{}
 {

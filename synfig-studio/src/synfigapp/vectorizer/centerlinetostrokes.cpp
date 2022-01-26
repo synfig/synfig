@@ -200,7 +200,7 @@ private:
   public:
     int n;
     double l;
-    UINT firstNode, secondNode;
+    UINT firstNode = 0, secondNode = 0;
 
     Length() : n(0), l(0) {}
     Length(int n_, double l_) : n(n_), l(l_) {}
@@ -357,7 +357,7 @@ class SequenceConverter
 
 public:
   // Length construction globals (see 'lengthOf' method)
-  unsigned int middle;
+  unsigned int middle = 0;
   std::vector<double> pars;
 
   class Length 
@@ -405,7 +405,7 @@ public:
 
   // Intermediate Sequence form
   std::vector<synfig::Point3> middleAddedSequence;
-  std::vector<unsigned int> *inputIndices;
+  std::vector<unsigned int> *inputIndices = nullptr;
 
   // Methods
   SequenceConverter(const Sequence *s, double penalty)

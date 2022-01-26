@@ -298,7 +298,7 @@ struct VectorizationContext {
   //'Linear Axis-added' *pseudo-original* nodes and edges
   std::vector<ContourNode> m_linearNodesHeap;
   std::vector<ContourEdge> m_linearEdgesHeap;
-  unsigned int m_linearNodesHeapCount;
+  unsigned int m_linearNodesHeapCount = 0;
 
 public:
   VectorizationContext(VectorizerCoreGlobals *globals) : m_globals(globals) {}
@@ -598,8 +598,8 @@ inline void ContourNode::buildNodeInfos(bool forceConvex) {
 
 class RandomizedNode {
 public:
-  ContourNode *m_node;
-  int m_number;
+  ContourNode *m_node = nullptr;
+  int m_number = 0;
 
   RandomizedNode() {}
   RandomizedNode(ContourNode *node) : m_node(node), m_number(rand()) {}

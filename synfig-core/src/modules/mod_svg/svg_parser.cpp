@@ -1809,20 +1809,16 @@ Svg_parser::adjustGamma(float r, float g, float b, float a)
 	return gamma.apply(Color(r,g,b,a));
 }
 
-LinearGradient::LinearGradient(const String& name, float x1, float y1, float x2, float y2, std::list<ColorStop> stops, SVGMatrix transform)
-	: x1(x1), x2(x2),
+LinearGradient::LinearGradient(const String& gradient_name, float x1, float y1, float x2, float y2, std::list<ColorStop> stops, SVGMatrix transform)
+	: name(gradient_name), x1(x1), x2(x2),
 	  y1(y1), y2(y2),
 	  stops(stops), transform(transform)
-{
-	sprintf(this->name,"%s",name.data());
-}
+{}
 
-RadialGradient::RadialGradient(const String& name, float cx, float cy, float r, std::list<ColorStop> stops, SVGMatrix transform)
-	: cx(cx), cy(cy), r(r),
+RadialGradient::RadialGradient(const String& gradient_name, float cx, float cy, float r, std::list<ColorStop> stops, SVGMatrix transform)
+	: name(gradient_name), cx(cx), cy(cy), r(r),
 	  stops(stops), transform(transform)
-{
-	sprintf(this->name,"%s",name.data());
-}
+{}
 
 BLine::BLine(std::list<Vertex> points, bool loop)
 	: points(points), loop(loop),

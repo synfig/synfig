@@ -196,7 +196,7 @@ private:
 	mutable synfig::String sketch_filename_;
 
 	synfig::TransformStack curr_transform_stack;
-	bool curr_transform_stack_set;
+	bool curr_transform_stack_set = false;
 	std::list<sigc::connection> duck_changed_connections;
 
 	bool alternative_mode_;

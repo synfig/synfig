@@ -73,7 +73,7 @@ private:
 	Vector feather;
 
 	mutable Time last_sync_time;
-	mutable Real last_sync_outline_grow;
+	mutable Real last_sync_outline_grow = 0.l;
 
 protected:
 	Layer_Shape(const Real &a = 1.0, const Color::BlendMethod m = Color::BLEND_COMPOSITE);

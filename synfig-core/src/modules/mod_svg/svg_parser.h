@@ -77,7 +77,7 @@ struct ColorStop {
 };
 
 struct LinearGradient{
-	char name[80];
+	std::string name;
 	float x1,x2,y1,y2;
 	std::list<ColorStop> stops;
 	SVGMatrix transform;
@@ -86,7 +86,7 @@ struct LinearGradient{
 };
 
 struct RadialGradient{
-	char name[80];
+	std::string name;
 	float cx,cy;//center point
 	//float fx,fy; //not supported by Synfig
 	float r; //radius

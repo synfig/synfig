@@ -82,7 +82,7 @@ template <typename NodeContentType, typename ArcType>
 class Graph {
 public:
   class Link {
-    UINT m_next;    //!< Index of the node pointed by this link.
+    UINT m_next = 0;    //!< Index of the node pointed by this link.
     ArcType m_arc;  //!< Edge data associated to this link.
     int m_access;   //!< Whether access to a node is allowed
                     //!  through this link.
