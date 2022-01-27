@@ -307,7 +307,7 @@ StatePolygon_Context::load_settings()
 		layer_polygon_flag = get_layer_polygon_flag();
 		layer_region_flag = get_layer_region_flag();
 		layer_outline_flag = get_layer_outline_flag();
-		layer_advanced_outline_flag = get_layer_outline_flag();
+		layer_advanced_outline_flag = get_layer_advanced_outline_flag();
 		layer_curve_gradient_flag = get_layer_curve_gradient_flag();
 		layer_plant_flag = get_layer_plant_flag();
 	}
