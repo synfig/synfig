@@ -3360,7 +3360,7 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 					size_t index = 0;
 					while (true) {
 					     /* Locate the substring to replace. */
-					     index = content.find(",", index);
+					     index = content.find(',', index);
 					     if (index == string::npos) break;
 
 					     /* Make the replacement. */

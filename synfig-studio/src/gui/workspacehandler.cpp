@@ -51,7 +51,7 @@ bool
 WorkspaceHandler::is_valid_name(const std::string& name)
 {
 	std::string valid_name = synfig::trim(name);
-	return !valid_name.empty() && valid_name.find("=") == std::string::npos;
+	return !valid_name.empty() && valid_name.find('=') == std::string::npos;
 }
 
 bool
@@ -144,7 +144,7 @@ WorkspaceHandler::load(const std::string& filename)
 		if (line.empty())
 			continue;
 
-		auto pos = line.find("=");
+		const auto pos = line.find('=');
 		if (pos == std::string::npos) {
 			synfig::warning(_("ignoring malformed workspace line: %s"), line.c_str());
 			continue;

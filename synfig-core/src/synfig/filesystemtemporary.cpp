@@ -569,8 +569,8 @@ FileSystemTemporary::open_temporary(const String &filename)
 	String temporary_directory = etl::dirname(filename);
 	String temporary_filename_base = etl::basename(filename);
 
-	size_t tag_begin = temporary_filename_base.find_first_of("_");
-	size_t tag_end   = temporary_filename_base.find_last_of("_");
+	size_t tag_begin = temporary_filename_base.find_first_of('_');
+	size_t tag_end   = temporary_filename_base.find_last_of('_');
 	if (tag_begin != String::npos && tag_end != String::npos && tag_end - tag_begin > 1)
 		tag = temporary_filename_base.substr(tag_begin + 1, tag_end - tag_begin - 1);
 

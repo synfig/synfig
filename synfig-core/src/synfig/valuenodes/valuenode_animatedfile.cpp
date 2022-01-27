@@ -311,7 +311,7 @@ from_string(const Type &t, const std::string& str) {
 	else if (t == type_time)
 		v = Time(str);
 	else if (t == type_vector) {
-		const auto comma1_pos = str.find(",");
+		const auto comma1_pos = str.find(',');
 		if (comma1_pos != std::string::npos) {
 			std::string x_str, y_str;
 			x_str = str.substr(0, comma1_pos);

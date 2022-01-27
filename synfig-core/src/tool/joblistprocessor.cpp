@@ -78,7 +78,7 @@ void process_job_list(std::list<Job>& job_list, const TargetParam& target_params
 
 std::string get_extension(const std::string &filename)
 {
-	std::size_t found = filename.rfind(".");
+	std::size_t found = filename.rfind('.');
 	if (found == std::string::npos) return ""; // extension not found
 
 	return filename.substr(found);
@@ -86,7 +86,7 @@ std::string get_extension(const std::string &filename)
 
 std::string replace_extension(const std::string &filename, const std::string &new_extension)
 {
-	std::size_t found = filename.rfind(".");
+	std::size_t found = filename.rfind('.');
 	if (found == std::string::npos) return filename + "." + new_extension; // extension not found
 	
 	return filename.substr(0, found) + "." + new_extension;

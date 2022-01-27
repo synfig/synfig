@@ -1551,8 +1551,8 @@ void
 Svg_parser::build_fill(xmlpp::Element* root, String name, const SVGMatrix& mtx)
 {
 	if(!name.empty()){
-		int start=name.find_first_of("#")+1;
-		int end=name.find_first_of(")");
+		int start=name.find_first_of('#')+1;
+		int end=name.find_first_of(')');
 		String target_name = name.substr(start,end-start);
 
 		for (const LinearGradient& linear_gradient : lg) {
@@ -2136,7 +2136,7 @@ SVGMatrix::parser_transform(String transform)
 	for (String token : tokens) {
 		token = trim(token);
 		if(token.compare(0,9,"translate")==0){
-			int start = token.find_first_of("(")+1;
+			int start = token.find_first_of('(')+1;
 			std::vector<String> args = tokenize(token.substr(start), ", \x09\x0a\x0d");
 
 			float dx = 0, dy = 0;
@@ -2152,7 +2152,7 @@ SVGMatrix::parser_transform(String transform)
 			else
 				a.multiply(translation_matrix);
 		}else if(token.compare(0,5,"scale")==0){
-			int start = token.find_first_of("(")+1;
+			int start = token.find_first_of('(')+1;
 			std::vector<String> args = tokenize(token.substr(start), ", \x09\x0a\x0d");
 
 			float sx = 1, sy = 1;
@@ -2170,7 +2170,7 @@ SVGMatrix::parser_transform(String transform)
 			else
 				a.multiply(scale_matrix);
 		}else if(token.compare(0,6,"rotate")==0){
-			int start = token.find_first_of("(")+1;
+			int start = token.find_first_of('(')+1;
 			std::vector<String> args = tokenize(token.substr(start), ", \x09\x0a\x0d");
 
 			float angle = 0, cx = 0, cy = 0;
@@ -2207,7 +2207,7 @@ SVGMatrix::parser_transform(String transform)
 			else
 				a.multiply(SVGMatrix(token.substr(start)));
 		}else if(token.compare(0,4,"skew")==0){
-			int start = token.find_first_of("(")+1;
+			int start = token.find_first_of('(')+1;
 			std::vector<String> args = tokenize(token.substr(start), ", \x09\x0a\x0d");
 
 			float angle = 0;
@@ -2415,8 +2415,8 @@ getRed(const String& hex)
 		if (hex.length()<7) return (16+1) * hextodec(hex.substr(1,1));
 		return hextodec(hex.substr(1,2));
 	}else if(hex.compare(0,3,"rgb")==0 || hex.compare(0,3,"RGB")==0){
-		int start=hex.find_first_of("(")+1;
-		int end	=hex.find_last_of(")");
+		int start=hex.find_first_of('(')+1;
+		int end	=hex.find_last_of(')');
 		String aux=tokenize(hex.substr(start,end-start),",").at(0);
 		return atoi(aux.data());
 	}
@@ -2429,8 +2429,8 @@ getGreen(const String& hex)
 		if (hex.length()<7) return (16+1) * hextodec(hex.substr(2,1));
 		return hextodec(hex.substr(3,2));
 	}else if(hex.compare(0,3,"rgb")==0 || hex.compare(0,3,"RGB")==0){
-		int start=hex.find_first_of("(")+1;
-		int end	=hex.find_last_of(")");
+		int start=hex.find_first_of('(')+1;
+		int end	=hex.find_last_of(')');
 		String aux=tokenize(hex.substr(start,end-start),",").at(1);
 		return atoi(aux.data());
 	}
@@ -2443,8 +2443,8 @@ getBlue(const String& hex)
 		if (hex.length()<7) return (16+1) * hextodec(hex.substr(3,1));
 		return hextodec(hex.substr(5,2));
 	}else if(hex.compare(0,3,"rgb")==0 || hex.compare(0,3,"RGB")==0){
-		int start=hex.find_first_of("(")+1;
-		int end	=hex.find_last_of(")");
+		int start=hex.find_first_of('(')+1;
+		int end	=hex.find_last_of(')');
 		String aux=tokenize(hex.substr(start,end-start),",").at(2);
 		return atoi(aux.data());
 	}
