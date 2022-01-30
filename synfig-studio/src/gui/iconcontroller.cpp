@@ -61,10 +61,12 @@ using namespace synfig;
 #	define IMAGE_EXT	"png"
 #endif
 
+#define NUM_INTERPOLATION_TYPES (int(INTERPOLATION_CLAMPED)+1)
+
 /* === M E T H O D S ======================================================= */
 
 static std::map< int, Glib::RefPtr<Gdk::Pixbuf> > _tree_pixbuf_table_value_type;
-static Glib::RefPtr<Gdk::Pixbuf> _tree_pixbuf_table_interpolation[(int)INTERPOLATION_CLAMPED+1];
+static Glib::RefPtr<Gdk::Pixbuf> _tree_pixbuf_table_interpolation[NUM_INTERPOLATION_TYPES];
 
 IconController::IconController()
 {
@@ -339,7 +341,7 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	for(Type *type = Type::get_first(); type != NULL; type = type->get_next())
 		_tree_pixbuf_table_value_type[type->identifier]=Gtk::Button().render_icon_pixbuf(value_icon(*type),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 
-	for(int i(0);i<((int)INTERPOLATION_CLAMPED+1);i++)
+	for(int i(0); i<NUM_INTERPOLATION_TYPES; i++)
 		_tree_pixbuf_table_interpolation[i]=Gtk::Button().render_icon_pixbuf(interpolation_icon(Interpolation(i)),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 }
 
