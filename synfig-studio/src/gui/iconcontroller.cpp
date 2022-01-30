@@ -234,7 +234,6 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	// Ghost Layers
 	// TODO: icon for ghost group
 	INIT_STOCK_ICON(layer_ghost_group, "layer_other_group_icon." IMAGE_EXT, _("Group Ghost"));
-	//INIT_STOCK_ICON(layer_ghost_group, "layer_ghost_group_icon." IMAGE_EXT, _("Group Ghost"));
 
 	INIT_STOCK_ICON(info, "info_icon." IMAGE_EXT, _("Info Tool"));
 	INIT_STOCK_ICON(group, "set_icon." IMAGE_EXT, _("Set"));
