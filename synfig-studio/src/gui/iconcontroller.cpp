@@ -96,16 +96,6 @@ IconController::init_icon(const synfig::String &name, const synfig::String &icon
 }
 
 void
-IconController::init_icon_clone(const synfig::String &name, const synfig::String& desc)
-{
-	Gtk::StockItem stockitem(Gtk::StockID("synfig-" + name), desc);
-	Gtk::Stock::add(stockitem);
-	Glib::RefPtr<Gtk::IconSet> icon_set = Gtk::IconSet::create();
-	if (Gtk::Stock::lookup(stockitem.get_stock_id(), icon_set))
-		icon_factory->add(stockitem.get_stock_id(), icon_set);
-}
-
-void
 IconController::init_icons(const synfig::String& path_to_icons)
 {
 	try{
@@ -117,13 +107,6 @@ IconController::init_icons(const synfig::String& path_to_icons)
 
 #define INIT_STOCK_ICON(name,iconfile,desc) \
 	init_icon(#name, (path_to_icons) + (iconfile), (desc));
-
-#define INIT_STOCK_ICON_CLONE(name,desc) \
-	init_icon_clone(#name, (desc));
-
-#define INIT_STOCK_ITEM(name,desc) \
-	stock_##name = Gtk::StockItem(Gtk::StockID("synfig-" #name),desc); \
-	Gtk::Stock::add(stock_##name);
 
 	// Types
 	INIT_STOCK_ICON(type_bool, "type_bool_icon." IMAGE_EXT, _("Bool"));
@@ -346,8 +329,6 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	INIT_STOCK_ICON(utils_timetrack_align, "utils_timetrack_align_icon." IMAGE_EXT, _("Utils Timetrack align"));
 
 #undef INIT_STOCK_ICON
-#undef INIT_STOCK_ICON_CLONE
-#undef INIT_STOCK_ITEM
 
 	icon_factory->add_default();
 
