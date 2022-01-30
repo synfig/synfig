@@ -273,8 +273,6 @@ src/gui/iconcontroller.cpp
 src/gui/iconcontroller.h
 src/gui/instance.cpp
 src/gui/instance.h
-src/gui/ipc.cpp
-src/gui/ipc.h
 src/gui/keymapsettings.cpp
 src/gui/keymapsettings.h
 src/gui/main.cpp

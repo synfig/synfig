@@ -37,12 +37,7 @@
 
 #include <gui/app.h>
 #include <gui/exception_guard.h>
-#include <gui/ipc.h>
 #include <gui/localization.h>
-
-#ifdef _WIN32
-#include <gui/main_win32.h>
-#endif
 
 #include <iostream>
 
@@ -68,75 +63,41 @@ using namespace studio;
 int main(int argc, char **argv)
 {
 
-#ifdef _WIN32
-	// to be able to open files whose name is not latin (eg. arabic)
-	class ArgVGuard {
-		char **modified_argv;
-	public:
-		ArgVGuard(char ***argv) { modified_argv = *argv = g_win32_get_command_line(); }
-		~ArgVGuard() { g_strfreev(modified_argv); }
-	} argv_guard(&argv);
- #endif
-
-#ifdef _WIN32
-	if (consoleOptionEnabled(argc, argv))
-	{
-		redirectIOToConsole();
-	}
-	else
-	{
-		// QuickHack: to avoid strange bug with stderr
-		freopen("NUL", "w", stdout);
-		freopen("NUL", "w", stderr);
-		freopen("NUL", "r", stdin);
-		ios::sync_with_stdio();
-	}
-#endif
-
-	String binary_path = synfig::get_binary_path(String(argv[0]));
+	const String binary_path = synfig::get_binary_path(String(argv[0]));
+	const String rootpath = etl::dirname(etl::dirname(binary_path));
 	
 #ifdef ENABLE_NLS
 	String locale_dir;
-	locale_dir = etl::dirname(etl::dirname(binary_path))+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"locale";
+	locale_dir = rootpath+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"locale";
 	setlocale(LC_ALL, "");
 	bindtextdomain(GETTEXT_PACKAGE,  Glib::locale_from_utf8(locale_dir).c_str() );
 	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
 	textdomain(GETTEXT_PACKAGE);
 #endif
 	
-	{
-		SmartFILE file(IPC::make_connection());
-		if(file)
-		{
-			cout << endl;
-			cout << "   " << _("synfig studio is already running") << endl << endl;
-			cout << "   " << _("the existing process will be used") << endl << endl;
-
-			// Hey, another copy of us is open!
-			// don't bother opening us, just go ahead and
-			// tell the other copy to load it all up
-			if (argc>1)
-				fprintf(file.get(),"F\n");
-
-			while(--argc)
-				if((argv)[argc] && (argv)[argc][0]!='-')
-					fprintf(file.get(),"O %s\n",etl::absolute_path((argv)[argc]).c_str());
-
-			fprintf(file.get(),"F\n");
-
-			return 0;
-		}
-	}
-
-	cout << endl;
-	cout << "   " << _("synfig studio -- starting up application...") << endl << endl;
+	std::cout << std::endl;
+	std::cout << "   " << _("synfig studio -- starting up application...") << std::endl << std::endl;
 
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
-	studio::App app(etl::dirname(binary_path), &argc, &argv);
+	
+	Glib::RefPtr<studio::App> app = studio::App::instance();
 
-	app.run();
-	std::cerr<<"Application appears to have terminated successfully"<<std::endl;
+	app->signal_startup().connect([app, rootpath]() {
+		app->init(rootpath);
+	});
 
-	return 0;
+	app->register_application();
+	if (app->is_remote()) {
+		std::cout << std::endl;
+		std::cout << "   " << _("synfig studio is already running") << std::endl << std::endl;
+		std::cout << "   " << _("the existing process will be used") << std::endl << std::endl;
+	}
+
+	int exit_code = app->run(argc, argv);
+
+	std::cerr << "Application appears to have terminated successfully" << std::endl;
+
+	return exit_code;
+
 	SYNFIG_EXCEPTION_GUARD_END_INT(0)
 }

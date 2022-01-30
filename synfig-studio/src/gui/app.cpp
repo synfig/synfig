@@ -50,6 +50,7 @@
 #include <giomm/file.h>
 #include <glibmm/convert.h>
 #include <glibmm/init.h>
+#include <glibmm/main.h>
 #include <glibmm/miscutils.h>
 #include <glibmm/timer.h>
 #include <glibmm/spawn.h>
@@ -100,7 +101,6 @@
 #include <gui/docks/dock_toolbox.h>
 
 #include <gui/instance.h>
-#include <gui/ipc.h>
 #include <gui/localization.h>
 #include <gui/modules/mod_palette/mod_palette.h>
 #include <gui/onemoment.h>
@@ -152,13 +152,15 @@
 #include <thread>
 
 #ifdef _WIN32
+
+#include <gui/main_win32.h>
+
 #define WINVER 0x0500
 #include <windows.h>
-#include <gdk/gdkwin32.h>
-#define mkdir(x,y) mkdir(x)
 
 //#define USE_WIN32_FILE_DIALOGS 1
 #ifdef USE_WIN32_FILE_DIALOGS
+ #include <gdk/gdkwin32.h>
  #include <cstring>
  static OPENFILENAME ofn={};
 #endif // USE_WIN32_FILE_DIALOGS
@@ -241,7 +243,6 @@ etl::handle<CanvasView> App::selected_canvas_view;
 studio::About              *studio::App::about          = nullptr;
 studio::AutoRecover        *studio::App::auto_recover   = nullptr;
 studio::DeviceTracker      *studio::App::device_tracker = nullptr;
-static studio::IPC         *ipc                         = nullptr;
 studio::MainWindow         *studio::App::main_window    = nullptr;
 
 studio::Dialog_Color       *studio::App::dialog_color;
@@ -1362,15 +1363,61 @@ App::get_default_accel_map()
 
 	return default_accel_map;
 }
+Glib::RefPtr<App> App::instance() {
+	static Glib::RefPtr<studio::App> app_reference = Glib::RefPtr<App>(new App());
+	return app_reference;
+}
 
 /* === M E T H O D S ======================================================= */
-
-App::App(const synfig::String& basepath, int *argc, char ***argv):
-	Gtk::Main(argc,argv)
+App::App()
+	: Gtk::Application("org.synfig.SynfigStudio", Gio::APPLICATION_HANDLES_OPEN)
 {
+	add_main_option_entry(Gio::Application::OPTION_TYPE_BOOL, "console", 'c', N_("Opens a console that shows some Synfig Studio output"));
+	signal_handle_local_options().connect(sigc::mem_fun(*this, &App::on_handle_local_options));
+}
 
-	Glib::init(); // need to use Gio functions before app is started
-	app_base_path_=etl::dirname(basepath);
+int App::on_handle_local_options(const Glib::RefPtr<Glib::VariantDict> &options)
+{
+	// To continue, return -1 to let the default option processing continue.
+	// https://developer-old.gnome.org/glibmm/unstable/classGio_1_1Application.html#a46b21ab9629b123b7524fe906290d32b
+	if (!options)
+		return -1;
+	if (options->contains("console")) {
+#ifdef _WIN32
+		redirectIOToConsole();
+#else
+		warning(_("Option --console is valid on MS Windows only"));
+#endif
+	}
+	return -1;
+}
+
+void App::on_activate()
+{
+	if (!getenv("SYNFIG_DISABLE_AUTOMATIC_DOCUMENT_CREATION") && !get_selected_instance())
+		new_instance();
+
+	if (get_windows().size() == 0) {
+		add_window(*main_window);
+	} else {
+		main_window->present();
+	}
+}
+
+void App::on_open(const type_vec_files &files, const Glib::ustring &hint)
+{
+	if (get_windows().size() == 0)
+		add_window(*main_window);
+
+	OneMoment one_moment;
+	for (const auto& file : files) {
+		open(file->get_path());
+	}
+}
+
+void App::init(const synfig::String& rootpath)
+{
+	app_base_path_=rootpath;
 
 	// Set ui language
 	load_language_settings();
@@ -1413,8 +1460,6 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 	}
 
 
-	ipc=new IPC();
-
 	if(!SYNFIG_CHECK_VERSION())
 	{
 		std::cerr << "FATAL: Synfig Version Mismatch" << std::endl;
@@ -1440,7 +1485,7 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 	SuperCallback studio_init_cb(splash_screen.get_callback(),9000,10000,10000);
 
 	// Initialize the Synfig library
-	try { synfigapp_main=etl::smart_ptr<synfigapp::Main>(new synfigapp::Main(basepath,&synfig_init_cb)); }
+	try { synfigapp_main=etl::smart_ptr<synfigapp::Main>(new synfigapp::Main(rootpath,&synfig_init_cb)); }
 	catch(std::runtime_error &x)
 	{
 		get_ui_interface()->error(strprintf("%s\n\n%s", _("Failed to initialize synfig!"), x.what()));
@@ -1654,7 +1699,6 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 
 		studio_init_cb.amount_complete(9900,10000);
 
-		bool opened_any = false;
 		if (!getenv("SYNFIG_DISABLE_AUTO_RECOVERY") && auto_recover->recovery_needed())
 		{
 			splash_screen.hide();
@@ -1678,9 +1722,6 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 						_("Synfig Studio has attempted to recover from a previous crash. "
 						"The files just recovered are NOT YET SAVED."),
 						_("Thanks"));
-
-				if (number_recovered)
-					opened_any = true;
 			}
 			else
 			{
@@ -1688,22 +1729,6 @@ App::App(const synfig::String& basepath, int *argc, char ***argv):
 			}
 			splash_screen.show();
 		}
-
-		// Look for any files given on the command line,
-		// and load them if found.
-		for(;*argc>=1;(*argc)--)
-			if((*argv)[*argc] && (*argv)[*argc][0]!='-')
-			{
-				studio_init_cb.task(_("Loading files..."));
-				splash_screen.hide();
-				open((*argv)[*argc]);
-				opened_any = true;
-				splash_screen.show();
-			}
-
-		// if no file was specified to be opened, create a new document to help new users get started more easily
-		if (!opened_any && !getenv("SYNFIG_DISABLE_AUTOMATIC_DOCUMENT_CREATION"))
-			new_instance();
 
 		studio_init_cb.task(_("Done."));
 		studio_init_cb.amount_complete(10000,10000);
@@ -1768,8 +1793,6 @@ App::~App()
 		module_list_.back()->stop();
 
 	delete state_manager;
-
-	delete ipc;
 
 	delete auto_recover;
 
@@ -2298,7 +2321,7 @@ App::quit()
 			return;
 	process_all_events();
 
-	Gtk::Main::quit();
+	App::instance()->remove_window(*main_window);
 
 	get_ui_interface()->task(_("Quit Request sent"));
 }
@@ -2309,9 +2332,6 @@ App::show_setup()
 	dialog_setup->refresh();
 	dialog_setup->show();
 }
-
-gint Signal_Open_Ok    (GtkWidget */*widget*/, int *val){*val=1; return 0;}
-gint Signal_Open_Cancel(GtkWidget */*widget*/, int *val){*val=2; return 0;}
 
 bool
 App::dialog_open_file_ext(const std::string &title, std::vector<std::string> &filenames, std::string preference, bool allow_multiple_selection)
@@ -4352,13 +4372,11 @@ studio::App::setup_changed()
 }
 
 void
-studio::App::process_all_events(long unsigned int us)
+studio::App::process_all_events()
 {
-	Glib::usleep(us);
-	while(studio::App::events_pending()) {
-		while(studio::App::events_pending())
-			studio::App::iteration(false);
-		Glib::usleep(us);
+	const auto& ctx = Glib::MainContext::get_default();
+	while(ctx->pending()) {
+		ctx->iteration(false);
 	}
 }
 

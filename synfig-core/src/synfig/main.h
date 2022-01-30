@@ -64,7 +64,7 @@ public:
 	synfig::String lib_path;
 	synfig::String lib_synfig_path;
 
-	Main(const synfig::String& basepath,ProgressCallback *cb=0);
+	Main(const synfig::String& rootpath,ProgressCallback *cb=nullptr);
 	~Main();
 
 	const etl::reference_counter& ref_count()const { return ref_count_; }

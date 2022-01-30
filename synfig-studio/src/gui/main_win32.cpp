@@ -39,21 +39,6 @@ using namespace std;
 #include <windows.h>
 #include <wincon.h>
 
-bool consoleOptionEnabled(int argc, char* argv[])
-{
-	bool value = false;
-	for (int i = 0; i < argc; i++)
-	{
-		if (strcmp(argv[i], "--console") == 0 ||
-			strcmp(argv[i], "-c") == 0)
-		{
-			value = true;
-			break;
-		}
-	}
-	return value;
-}
-
 void redirectIOToConsole()
 {
 	int hConHandle;

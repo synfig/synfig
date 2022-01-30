@@ -188,7 +188,7 @@ bool retrieve_modules_to_load(String filename,std::list<String> &modules_to_load
 	return true;
 }
 
-synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
+synfig::Main::Main(const synfig::String& rootpath,ProgressCallback *cb):
 	ref_count_(synfig_ref_count_)
 {
 	if(ref_count_.count())
@@ -202,7 +202,7 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 
 	// Paths
 
-	root_path       = etl::dirname(basepath);
+	root_path       = rootpath;
 	bin_path        = root_path  + ETL_DIRECTORY_SEPARATOR + "bin";
 	share_path      = root_path  + ETL_DIRECTORY_SEPARATOR + "share";
 	locale_path     = share_path + ETL_DIRECTORY_SEPARATOR + "locale";

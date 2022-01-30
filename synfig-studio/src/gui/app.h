@@ -35,7 +35,6 @@
 #include <ETL/smart_ptr>
 
 #include <gtkmm/box.h>
-#include <gtkmm/main.h>
 #include <gtkmm/uimanager.h>
 
 #include <gui/iconcontroller.h>
@@ -115,15 +114,13 @@ class Dock_Navigator;
 class Dock_LayerGroups;
 class Dock_SoundWave;
 
-class IPC;
-
 class Module;
 
 class StateManager;
 
 class WorkspaceHandler;
 
-class App : public Gtk::Main, private IconController
+class App : public Gtk::Application, private IconController
 {
 	friend class Preferences;
 	friend class Dialog_Setup;
@@ -133,6 +130,8 @@ class App : public Gtk::Main, private IconController
 	*/
 
 public:
+	static Glib::RefPtr<App> instance();
+	void init(const synfig::String& basepath);
 
 	struct Busy
 	{
@@ -166,8 +165,6 @@ private:
 	static Dock_History *dock_history;
 	static Dock_Canvases *dock_canvases;
 	static Dock_LayerGroups *dock_layer_groups;
-
-	static IPC *ipc;
 */
 
 	etl::smart_ptr<synfigapp::Main> synfigapp_main;
@@ -309,13 +306,19 @@ private:
 	static void add_recent_file(const std::string &filename, bool emit_signal);
 	static bool dialog_open_file_ext(const std::string &title, std::vector<std::string> &filenames, std::string preference, bool allow_multiple_selection);
 
+	App();
+
+protected:
+	int on_handle_local_options(const Glib::RefPtr<Glib::VariantDict>& options);
+	void on_activate() override;
+	void on_open(const type_vec_files& files, const Glib::ustring& hint) override;
+
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
 	*/
 
 public:
 
-	App(const synfig::String& basepath, int *argc, char ***argv);
 	virtual ~App();
 
 	/*
@@ -479,7 +482,7 @@ public:
 	// This fixes bug 1890020
 	static void setup_changed();
 
-	static void process_all_events(long unsigned int us = 1);
+	static void process_all_events();
 	static bool check_python_version( std::string path);
 }; // END of class App
 
