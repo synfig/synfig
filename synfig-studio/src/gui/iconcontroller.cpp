@@ -251,15 +251,9 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	INIT_STOCK_ICON(layer_ghost_group, "layer_other_group_icon." IMAGE_EXT, _("Group Ghost"));
 	//INIT_STOCK_ICON(layer_ghost_group, "layer_ghost_group_icon." IMAGE_EXT, _("Group Ghost"));
 
-	INIT_STOCK_ICON(layer_new, "grid_enable_icon." IMAGE_EXT, _("Show Grid"));
-
 	INIT_STOCK_ICON(info, "info_icon." IMAGE_EXT, _("Info Tool"));
 	INIT_STOCK_ICON(group, "set_icon." IMAGE_EXT, _("Set"));
 
-	INIT_STOCK_ICON(grid_enable, "grid_enable_icon." IMAGE_EXT, _("Show Grid"));
-	INIT_STOCK_ICON(grid_disable, "grid_disable_icon." IMAGE_EXT, _("Hide Grid"));
-	INIT_STOCK_ICON(grid_snap_enable, "grid_snap_enable_icon." IMAGE_EXT, _("Enable Grid Snap"));
-	INIT_STOCK_ICON(grid_snap_disable, "grid_snap_disable_icon." IMAGE_EXT, _("Disable Grid Snap"));
 	INIT_STOCK_ICON(duplicate, "duplicate_icon." IMAGE_EXT, _("Duplicate"));
 	INIT_STOCK_ICON(encapsulate, "group_icon." IMAGE_EXT, _("Group"));
 	// TODO: icon for 'Group Layer into Switch' action
