@@ -2198,7 +2198,7 @@ void App::save_custom_workspace()
 	name_entry->set_margin_end(16);
 	name_entry->signal_changed().connect(sigc::track_obj([&](){
 		std::string name = synfig::trim(name_entry->get_text());
-		bool has_equal_sign = name.find("=") != std::string::npos;
+		bool has_equal_sign = name.find('=') != std::string::npos;
 		ok_button->set_sensitive(!name.empty() && !has_equal_sign);
 		if (ok_button->is_sensitive())
 			ok_button->grab_default();
@@ -2284,7 +2284,7 @@ App::get_synfig_icon_theme()
 		std::string icon_theme(env_theme);
 		if (!icon_theme.empty()) {
 			// SYNFIG_ICON_THEME is not a path!
-			if (icon_theme.find("/") == icon_theme.npos && icon_theme.find("\\") == icon_theme.npos )
+			if (icon_theme.find('/') == icon_theme.npos && icon_theme.find('\\') == icon_theme.npos )
 				return icon_theme;
 		}
 	}

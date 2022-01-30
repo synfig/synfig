@@ -1093,8 +1093,8 @@ Dialog_Setup::on_size_template_combo_change()
 		pref_x_size_spinbutton->set_sensitive(true);
 		return;
 	}
-	String::size_type locx=selection.find_first_of("x"); // here should be some comparison with string::npos
-	String::size_type locspace=selection.find_first_of(" ");
+	String::size_type locx=selection.find_first_of('x'); // here should be some comparison with string::npos
+	String::size_type locspace=selection.find_first_of(' ');
 	String x_size(selection.substr(0,locx));
 	String y_size(selection.substr(locx+1,locspace));
 	int x=atoi(x_size.c_str());

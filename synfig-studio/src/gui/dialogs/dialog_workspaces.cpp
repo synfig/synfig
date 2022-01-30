@@ -185,7 +185,7 @@ void Dialog_Workspaces::on_rename_clicked()
 	name_entry->signal_changed().connect(sigc::track_obj([&](){
 		std::string name = name_entry->get_text();
 		synfig::trim(name);
-		bool has_equal_sign = name.find("=") != std::string::npos;
+		bool has_equal_sign = name.find('=') != std::string::npos;
 		ok_button->set_sensitive(!name.empty() && !has_equal_sign);
 		if (ok_button->is_sensitive())
 			ok_button->grab_default();

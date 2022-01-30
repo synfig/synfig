@@ -64,7 +64,7 @@
 std::string _appendAlphaToFilename(std::string input_filename)
 {
 
-	std::size_t found = input_filename.rfind(".");
+	std::size_t found = input_filename.rfind('.');
 	if (found == std::string::npos) return input_filename + "-alpha"; // extension not found, just add to the end
 	
 	return input_filename.substr(0, found) + "-alpha" + input_filename.substr(found);

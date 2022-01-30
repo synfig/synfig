@@ -407,7 +407,7 @@ std::string DockManager::read_string(std::string &x)
 
 std::string DockManager::extract_dockable_name(std::string &x) const
 {
-	size_t pos = x.find(",");
+	size_t pos = x.find(',');
 	std::string res = x.substr(0, pos);
 	if (pos == std::string::npos)
 		x.clear();
@@ -786,7 +786,7 @@ std::string DockManager::layout_from_template(const std::string &tpl, float dx, 
 	size_t pos_end = 0;
 	while(true)
 	{
-		pos_begin = tpl.find_first_of("%", pos_end);
+		pos_begin = tpl.find_first_of('%', pos_end);
 		if (pos_begin == std::string::npos)
 			{ res+=tpl.substr(pos_end); break; }
 		res+=tpl.substr(pos_end, pos_begin-pos_end);
