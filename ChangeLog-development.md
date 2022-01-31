@@ -1,3 +1,5 @@
+- [`efe9326`](https://github.com/synfig/synfig/commit/efe9326992418f9fbc1c9a654fa0050c35c2641e) Fixed PVS-Studio warning v817 ([#2523](https://github.com/synfig/synfig/issues/2523)) [core] [studio]
+- [`61eba07`](https://github.com/synfig/synfig/commit/61eba079c983db043f787d3c318bac3b60796673) Merge PR [#2497](https://github.com/synfig/synfig/issues/2497): Porting to Gtk::Application - part 1 [core] [studio]
 - [`ad03efe`](https://github.com/synfig/synfig/commit/ad03efe3b70e507a4632fe14a55acd149be60477) FileSystem::Identifier::empty() returned wrong value ([#2510](https://github.com/synfig/synfig/issues/2510)) [core]
 - [`78081fd`](https://github.com/synfig/synfig/commit/78081fd256b6a4a095f7240dd9875e6f82028415) make "Background" (layer description) string translatable ([#2515](https://github.com/synfig/synfig/issues/2515)) [studio]
 - [`cb9abcf`](https://github.com/synfig/synfig/commit/cb9abcf7ddd8f9a51dde5c5ede47a25486fbacda) fix error message on Target_Scanline ([#2511](https://github.com/synfig/synfig/issues/2511)) [core]
