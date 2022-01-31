@@ -201,6 +201,7 @@ public:
 	ValueNode_Bone::Handle find_bone(Point point, Layer::Handle layer) const;
 	void _on_signal_change_active_bone(ValueNode::Handle node);
 	void _on_signal_value_desc_set(ValueDesc value_desc,ValueBase value);
+	void _on_signal_duck_selection_single(const Duck::Handle& duck);
 
 	void load_settings();
 	void save_settings();
@@ -440,6 +441,7 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	//signals
 	get_canvas_interface()->signal_active_bone_changed().connect(sigc::mem_fun(*this,&studio::StateBone_Context::_on_signal_change_active_bone));
 	get_canvas_interface()->signal_value_desc_set().connect(sigc::mem_fun(*this,&studio::StateBone_Context::_on_signal_value_desc_set));
+	get_work_area()->signal_duck_selection_single().connect(sigc::mem_fun(*this,&studio::StateBone_Context::_on_signal_duck_selection_single));
 
 	// Refresh the work area
 	get_work_area()->queue_draw();
@@ -620,7 +622,9 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 		{
 			clickOrigin = transform.unperform(clickOrigin);
 			releaseOrigin = transform.unperform(releaseOrigin);
-			if(drawing){ // if the user was not modifying a duck
+			if(!drawing){ // user clicked on a duck. Is it a bone? Checked by _on_signal_duck_selection_single()
+				return Smach::RESULT_OK;
+			} else { // if the user was not modifying a duck
 				const bool must_create_layer = !skel_layer && !deform_layer;
 
 				// if bone found around the release point, then set it as active bone
@@ -784,17 +788,6 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 					egress_on_selection_change=true;
 
 				drawing = false;
-			}
-			else{ // user clicked on a duck. Is it a bone?
-				Duck::Handle duck(get_work_area()->find_duck(releaseOrigin,0.1));
-				if(duck){
-					if(duck->get_value_desc().is_parent_desc_declared()) {
-						ValueNode::Handle parent = duck->get_value_desc().get_parent_desc().get_value_node();
-						if (ValueNode_Bone::Handle::cast_dynamic(parent)){
-							set_active_bone(parent);
-						}
-					}
-				}
 			}
 			return Smach::RESULT_ACCEPT;
 		}
@@ -1058,6 +1051,17 @@ StateBone_Context::_on_signal_value_desc_set(ValueDesc value_desc,ValueBase valu
 				set_skel_bone_width(new_width);
 			if(skel_deform_bone_width_dist.is_visible())
 				set_skel_deform_bone_width(new_width);
+		}
+	}
+}
+
+void
+StateBone_Context::_on_signal_duck_selection_single(const Duck::Handle &duck)
+{
+	if(duck->get_value_desc().is_parent_desc_declared()) {
+		ValueNode::Handle parent = duck->get_value_desc().get_parent_desc().get_value_node();
+		if (ValueNode_Bone::Handle::cast_dynamic(parent)){
+			set_active_bone(parent);
 		}
 	}
 }
