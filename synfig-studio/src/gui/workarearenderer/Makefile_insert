@@ -9,6 +9,7 @@ WORKAREARENDERER_HH = \
 	workarearenderer/renderer_guides.h \
 	workarearenderer/renderer_timecode.h \
 	workarearenderer/renderer_bonesetup.h \
+	workarearenderer/renderer_bonedeformarea.h \
 	workarearenderer/workarearenderer.h
 
 WORKAREARENDERER_CC = \
@@ -22,6 +23,7 @@ WORKAREARENDERER_CC = \
 	workarearenderer/renderer_guides.cpp \
 	workarearenderer/renderer_timecode.cpp \
 	workarearenderer/renderer_bonesetup.cpp \
+	workarearenderer/renderer_bonedeformarea.cpp \
 	workarearenderer/workarearenderer.cpp
 
 synfigstudio_src += \

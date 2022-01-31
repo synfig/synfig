@@ -52,6 +52,7 @@
 #include <gui/workarearenderer/workarearenderer.h>
 #include <gui/workarearenderer/renderer_background.h>
 #include <gui/workarearenderer/renderer_bbox.h>
+#include <gui/workarearenderer/renderer_bonedeformarea.h>
 #include <gui/workarearenderer/renderer_bonesetup.h>
 #include <gui/workarearenderer/renderer_canvas.h>
 #include <gui/workarearenderer/renderer_dragbox.h>
@@ -175,6 +176,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	insert_renderer(renderer_canvas,          10);
 	insert_renderer(new Renderer_Grid,       100);
 	insert_renderer(new Renderer_Guides,     200);
+	insert_renderer(new Renderer_BoneDeformArea, 299);
 	insert_renderer(new Renderer_Ducks,      300);
 	insert_renderer(new Renderer_BBox,       399);
 	insert_renderer(new Renderer_Dragbox,    400);
@@ -1909,10 +1911,14 @@ WorkArea::screen_to_comp_coords(synfig::Point pos)const
 }
 
 synfig::Point
-WorkArea::comp_to_screen_coords(synfig::Point /*pos*/)const
+WorkArea::comp_to_screen_coords(synfig::Point pos)const
 {
-	synfig::warning("WorkArea::comp_to_screen_coords: Not yet implemented");
-	return synfig::Point();
+	synfig::RendDesc &rend_desc(get_canvas()->rend_desc());
+	Vector focus_point=get_focus_point();
+	synfig::Vector::value_type x=focus_point[0]/pw+drawing_area->get_width()/2-w/2;
+	synfig::Vector::value_type y=focus_point[1]/ph+drawing_area->get_height()/2-h/2;
+
+	return -rend_desc.get_tl().multiply_coords(Point(1./pw,1./ph))+synfig::Point(x,y)+synfig::Point(pos[0]/pw,pos[1]/ph);
 }
 
 synfig::VectorInt
