@@ -156,7 +156,7 @@ ValueNode_BoneLink::get_bone_transformation(Time t)const
 		Bone bone      = (*bone_node) (t).get(Bone());
 		bool translate = (*translate_)(t).get(true);
 		bool rotate    = (*rotate_)   (t).get(true);
-		bool skew      = (*rotate_)   (t).get(true);
+		bool skew      = (*skew_)     (t).get(true);
 		bool scale_x   = (*scale_x_)  (t).get(true);
 		bool scale_y   = (*scale_y_)  (t).get(true);
 
