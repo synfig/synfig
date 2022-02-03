@@ -45,7 +45,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -103,13 +102,13 @@ ValueNode_Bone::show_bone_map(Canvas::LooseHandle canvas, const char *file, int 
 
 	BoneMap bone_map(canvas_map[canvas]);
 
-	set<ValueNode_Bone::LooseHandle, compare_bones> bone_set;
+	std::set<ValueNode_Bone::LooseHandle, compare_bones> bone_set;
 	for (ValueNode_Bone::BoneMap::iterator iter = bone_map.begin(); iter != bone_map.end(); iter++)
 		bone_set.insert(iter->second);
 
 	printf("\n  %s:%d (canvas %p) %s we now have %d bones (%d unreachable):\n", file, line, canvas.get(), text.c_str(), int(bone_map.size()), int(bone_map.size() - bone_set.size()));
 
-	for (set<ValueNode_Bone::LooseHandle>::iterator iter = bone_set.begin(); iter != bone_set.end(); iter++)
+	for (std::set<ValueNode_Bone::LooseHandle>::iterator iter = bone_set.begin(); iter != bone_set.end(); iter++)
 	{
 		ValueNode_Bone::LooseHandle bone(*iter);
 		//GUID guid(bone->get_guid());
@@ -159,8 +158,8 @@ ValueNode_Bone::get_ordered_bones(etl::handle<const Canvas> canvas)
 					if (getenv("SYNFIG_DEBUG_ORDER_BONES_FOR_SAVE_CANVAS")) printf("%s:%d %s is used by %s\n", __FILE__, __LINE__,
 																				   used->get_bone_name(0).c_str(),
 																				   user->get_bone_name(0).c_str());
-					is_used_by.insert(make_pair(used, user));
-					uses.insert(make_pair(user, used));
+					is_used_by.insert(std::make_pair(used, user));
+					uses.insert(std::make_pair(user, used));
 				}
 		}
 	}
@@ -721,7 +720,7 @@ ValueNode_Bone::ConstHandle
 ValueNode_Bone::is_ancestor_of(ValueNode_Bone::ConstHandle bone, Time t)const
 {
 	ValueNode_Bone::ConstHandle ancestor(this);
-	set<ValueNode_Bone::ConstHandle> seen;
+	std::set<ValueNode_Bone::ConstHandle> seen;
 
 	if (getenv("SYNFIG_DEBUG_ANCESTOR_CHECK"))
 		printf("%s:%d checking whether %s is ancestor of %s\n", __FILE__, __LINE__, GET_NODE_DESC_CSTR(ancestor,t), GET_NODE_DESC_CSTR(bone,t));
@@ -831,7 +830,7 @@ ValueNode_Bone::BoneSet
 ValueNode_Bone::get_bones_affected_by(ValueNode::Handle value_node)
 {
 	BoneSet ret;
-	set<const Node*> seen, current_nodes, new_nodes;
+	std::set<const Node*> seen, current_nodes, new_nodes;
 	int generation = 0;
 	bool debug(false);
 
@@ -849,14 +848,14 @@ ValueNode_Bone::get_bones_affected_by(ValueNode::Handle value_node)
 
 		int count = 0;
 		// loop through current_nodes
-		for (set<const Node*>::iterator iter = current_nodes.begin(); iter != current_nodes.end(); iter++, count++)
+		for (std::set<const Node*>::iterator iter = current_nodes.begin(); iter != current_nodes.end(); iter++, count++)
 		{
 			// loop through the parents of each node in current_nodes
-			set<Node*> node_parents((*iter)->parent_set);
+			std::set<Node*> node_parents((*iter)->parent_set);
 			if (debug) printf("%s:%d node %d %p (%s) has %zd parents\n",
 							  __FILE__, __LINE__, count, *iter, (*iter)->get_string().c_str(), node_parents.size());
 			int count2 = 0;
-			for (set<Node*>::iterator iter2 = node_parents.begin(); iter2 != node_parents.end(); iter2++, count2++)
+			for (std::set<Node*>::iterator iter2 = node_parents.begin(); iter2 != node_parents.end(); iter2++, count2++)
 			{
 				Node* node(*iter2);
 				// if (debug) printf("%s:%d parent %d: %lx (%s)\n", __FILE__, __LINE__, count2, uintptr_t(node), node->get_string().c_str());

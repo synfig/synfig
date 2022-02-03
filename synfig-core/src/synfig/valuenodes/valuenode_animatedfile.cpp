@@ -53,7 +53,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -86,7 +85,7 @@ public:
 	/// \param[out] values the map of time -> value (phoneme/layer name if lipsync file format)
 	/// \param[out] fields the map of metafield name -> metafield value
 	/// \return true if successful. There is no guarantee about stream offset in case of failure
-	typedef bool (*ParserFunction)(istream &, map<Time, String> &, map<String, String> &);
+	typedef bool (*ParserFunction)(std::istream &, std::map<Time, String> &, std::map<String, String> &);
 
 	/// A parser
 	struct BookEntry {
@@ -95,7 +94,7 @@ public:
 	};
 
 	/// maps file extension -> parser entry
-	typedef std::map<const string, BookEntry> Book;
+	typedef std::map<const std::string, BookEntry> Book;
 
 	/// Book of all implemented parsers
 	static const Book book;
@@ -114,7 +113,7 @@ public:
 	/// \param[out] value the map of time -> layer name
 	/// \param[out] fields the map of metafield -> value
 	/// \return true if successful. There is no guarantee about stream offset in case of failure
-	static bool parse_pgo(istream &s, map<Time, String> &values, map<String, String> &fields)
+	static bool parse_pgo(std::istream &s, std::map<Time, String> &values, std::map<String, String> &fields)
 	{
 		String word;
 		bool unexpected_end = false;
@@ -171,7 +170,7 @@ public:
 						if (s)
 						{
 							s >> frame >> phoneme;
-							first_frame = min(frame, first_frame);
+							first_frame = std::min(frame, first_frame);
 							getline(s, word);
 							values[Time(frame*fk)] = phoneme;
 						} else unexpected_end = true;
@@ -194,7 +193,7 @@ public:
 	/// \param[out] value the map of time -> layer name
 	/// \param[out] fields the map of metafield -> value
 	/// \return true if successful. There is no guarantee about stream offset in case of failure
-	static bool parse_tsv(istream &s, map<Time, String> &values, map<String, String> &/*fields*/)
+	static bool parse_tsv(std::istream &s, std::map<Time, String> &values, std::map<String, String> &/*fields*/)
 	{
 		try {
 			size_t line_num = 0;
@@ -231,7 +230,7 @@ public:
 	/// \param[out] value the map of time -> layer name
 	/// \param[out] fields the map of metafield -> value
 	/// \return true if successful. There is no guarantee about stream offset in case of failure
-	static bool parse_xml(istream &s, map<Time, String> &values, map<String, String> &fields)
+	static bool parse_xml(std::istream &s, std::map<Time, String> &values, std::map<String, String> &fields)
 	{
 		try {
 			xmlpp::DomParser parser;
@@ -400,12 +399,12 @@ ValueNode_AnimatedFile::load_file(const String &filename, bool force)
 			if (!rs)
 				FileSystem::ReadStream::Handle rs = get_parent_canvas()->get_file_system()->get_read_stream(local_filename);
 
-			map<Time, String> values; // phonemes for lipsync file formats
+			std::map<Time, String> values; // phonemes for lipsync file formats
 			if (!rs)
 				error(_("Cannot open .%s file: %s"), file_extension.c_str(), full_filename.c_str());
 			else
 			if (Parser::book.at(file_extension).parse(*rs, values, filefields)) {
-				for(map<Time, String>::const_iterator i = values.begin(); i != values.end(); ++i) {
+				for (std::map<Time, String>::const_iterator i = values.begin(); i != values.end(); ++i) {
 					ValueBase v = from_string(get_type(), i->second);
 					if (!v.is_valid() || v.get_type() == type_nil) {
 						warning(_("Invalid value for type %s: %s at time %s, or value type is currently not supported"),

@@ -62,7 +62,6 @@
 
 using namespace synfig;
 using namespace etl;
-using namespace std;
 
 namespace synfig { extern Canvas::Handle open_canvas_as(const FileSystem::Identifier &identifier, const String &as, String &errors, String &warnings); };
 
@@ -341,18 +340,18 @@ Canvas::get_context(const Context &parent_context)const
 Context
 Canvas::get_context_sorted(const ContextParams &params, CanvasBase &out_list) const
 {
-	multimap<Real, Layer::Handle> layers;
+	std::multimap<Real, Layer::Handle> layers;
 	int index = 0;
 	for(const_iterator i = begin(); i != end(); ++i, ++index)
 	{
 		assert(*i);
 		// TODO: the 1.0001 constant should be somehow user defined
 		Real depth = (*i)->get_z_depth()*1.0001 + (Real)index;
-		layers.insert(pair<Real, Layer::Handle>(depth, *i));
+		layers.insert(std::pair<Real, Layer::Handle>(depth, *i));
 	}
 
 	out_list.clear();
-	for(multimap<Real, Layer::Handle>::const_iterator i = layers.begin(); i != layers.end(); ++i)
+	for (std::multimap<Real, Layer::Handle>::const_iterator i = layers.begin(); i != layers.end(); ++i)
 		out_list.push_back(i->second);
 	out_list.push_back(Layer::Handle());
 
@@ -416,7 +415,7 @@ valid_id(const String &x)
 		return false;
 
 	for(i=0;i<sizeof(bad_chars);i++)
-		if(x.find_first_of(bad_chars[i])!=string::npos)
+		if(x.find_first_of(bad_chars[i])!=std::string::npos)
 			return false;
 
 	return true;
@@ -426,10 +425,10 @@ void
 Canvas::set_id(const String &x)
 {
 	if(is_inline() && parent_)
-		throw runtime_error("Inline Canvas cannot have an ID");
+		throw std::runtime_error("Inline Canvas cannot have an ID");
 
 	if(!valid_id(x))
-		throw runtime_error("Invalid ID");
+		throw std::runtime_error("Invalid ID");
 	id_=x;
 	signal_id_changed_();
 }
@@ -613,7 +612,7 @@ Canvas::find_value_node(const String &id, bool might_fail)const
 
 	// If we do not have any resolution, then we assume that the
 	// request is for this immediate canvas
-	if(id.find_first_of(':')==string::npos && id.find_first_of('#')==string::npos)
+	if(id.find_first_of(':')==std::string::npos && id.find_first_of('#')==std::string::npos)
 		return value_node_list_.find(id, might_fail);
 
 	String canvas_id(id,0,id.rfind(':'));
@@ -638,7 +637,7 @@ Canvas::surefind_value_node(const String &id)
 
 	// If we do not have any resolution, then we assume that the
 	// request is for this immediate canvas
-	if(id.find_first_of(':')==string::npos && id.find_first_of('#')==string::npos)
+	if(id.find_first_of(':')==std::string::npos && id.find_first_of('#')==std::string::npos)
 		return value_node_list_.surefind(id);
 
 	String canvas_id(id,0,id.rfind(':'));
@@ -658,12 +657,12 @@ Canvas::add_value_node(ValueNode::Handle x, const String &id)
 //		throw runtime_error("You cannot add a ValueNode to an inline Canvas");
 
 	if(x->is_exported())
-		throw runtime_error("ValueNode is already exported");
+		throw std::runtime_error("ValueNode is already exported");
 
 	if(id.empty())
 		throw Exception::BadLinkName("Empty ID");
 
-	if(id.find_first_of(':',0)!=string::npos)
+	if(id.find_first_of(':',0)!=std::string::npos)
 		throw Exception::BadLinkName("Bad character");
 
 	try
@@ -749,7 +748,7 @@ Canvas::surefind_canvas(const String &id, String &warnings)
 
 	// If the ID contains a "#" character, then a filename is
 	// expected on the left side.
-	if(id.find_first_of('#')!=string::npos)
+	if(id.find_first_of('#')!=std::string::npos)
 	{
 		// If '#' is the first character, remove it
 		// and attempt to parse the ID again.
@@ -778,7 +777,7 @@ Canvas::surefind_canvas(const String &id, String &warnings)
 			String errors;
 			external_canvas=open_canvas_as(get_identifier().file_system->get_identifier(file_name), file_name, errors, warnings);
 			if(!external_canvas)
-				throw runtime_error(errors);
+				throw std::runtime_error(errors);
 			externals_[file_name]=external_canvas;
 		}
 
@@ -787,7 +786,7 @@ Canvas::surefind_canvas(const String &id, String &warnings)
 
 	// If we do not have any resolution, then we assume that the
 	// request is for this immediate canvas
-	if(id.find_first_of(':')==string::npos)
+	if(id.find_first_of(':')==std::string::npos)
 	{
 		Children::iterator iter;
 
@@ -805,17 +804,17 @@ Canvas::surefind_canvas(const String &id, String &warnings)
 	// If the first character is the separator, then
 	// this references the root canvas.
 	if(id[0]==':')
-		return get_root()->surefind_canvas(string(id,1),warnings);
+		return get_root()->surefind_canvas(std::string(id,1),warnings);
 
 	// Now we know that the requested Canvas is in a child
 	// of this canvas. We have to find that canvas and
 	// call "find_canvas" on it, and return the result.
 
-	String canvas_name=string(id,0,id.find_first_of(':'));
+	String canvas_name=std::string(id,0,id.find_first_of(':'));
 
 	Canvas::Handle child_canvas=surefind_canvas(canvas_name,warnings);
 
-	return child_canvas->surefind_canvas(string(id,id.find_first_of(':')+1),warnings);
+	return child_canvas->surefind_canvas(std::string(id,id.find_first_of(':')+1),warnings);
 }
 
 Canvas::Handle
@@ -838,7 +837,7 @@ Canvas::find_canvas(const String &id, String &warnings)const
 
 	// If the ID contains a "#" character, then a filename is
 	// expected on the left side.
-	if(id.find_first_of('#')!=string::npos)
+	if(id.find_first_of('#')!=std::string::npos)
 	{
 		// If '#' is the first character, remove it
 		// and attempt to parse the ID again.
@@ -864,7 +863,7 @@ Canvas::find_canvas(const String &id, String &warnings)const
 			String errors, warnings;
 			external_canvas=open_canvas_as(get_identifier().file_system->get_identifier(file_name), file_name, errors, warnings);
 			if(!external_canvas)
-				throw runtime_error(errors);
+				throw std::runtime_error(errors);
 			externals_[file_name]=external_canvas;
 		}
 
@@ -873,7 +872,7 @@ Canvas::find_canvas(const String &id, String &warnings)const
 
 	// If we do not have any resolution, then we assume that the
 	// request is for this immediate canvas
-	if(id.find_first_of(':')==string::npos)
+	if(id.find_first_of(':')==std::string::npos)
 	{
 		Children::const_iterator iter;
 
@@ -889,17 +888,17 @@ Canvas::find_canvas(const String &id, String &warnings)const
 	// If the first character is the separator, then
 	// this references the root canvas.
 	if(id[0]==':')
-		return get_root()->find_canvas(string(id,1), warnings);
+		return get_root()->find_canvas(std::string(id,1), warnings);
 
 	// Now we know that the requested Canvas is in a child
 	// of this canvas. We have to find that canvas and
 	// call "find_canvas" on it, and return the result.
 
-	String canvas_name=string(id,0,id.find_first_of(':'));
+	String canvas_name=std::string(id,0,id.find_first_of(':'));
 
 	Canvas::ConstHandle child_canvas=find_canvas(canvas_name, warnings);
 
-	return child_canvas->find_canvas(string(id,id.find_first_of(':')+1), warnings);
+	return child_canvas->find_canvas(std::string(id,id.find_first_of(':')+1), warnings);
 }
 
 Canvas::Handle
@@ -1121,7 +1120,7 @@ Canvas::add_child_canvas(Canvas::Handle child_canvas, const synfig::String& id)
 		throw std::runtime_error("Cannot add child canvas because it belongs to someone else!");
 
 	if(!valid_id(id))
-		throw runtime_error("Invalid ID");
+		throw std::runtime_error("Invalid ID");
 	
 	try
 	{
@@ -1148,7 +1147,7 @@ Canvas::remove_child_canvas(Canvas::Handle child_canvas)
 		return parent_->remove_child_canvas(child_canvas);
 
 	if(child_canvas->parent_!=this)
-		throw runtime_error("Given child does not belong to me");
+		throw std::runtime_error("Given child does not belong to me");
 
 	if(find(children().begin(),children().end(),child_canvas)==children().end())
 		throw Exception::IDNotFound(child_canvas->get_id());
@@ -1416,7 +1415,7 @@ Canvas::rename_group(const String&old_name,const String&new_name)
 	// A.B
 	{
 		size_t pos = 0;
-		while ((pos = new_name.find(GROUP_NEST_CHAR, pos)) != string::npos) {
+		while ((pos = new_name.find(GROUP_NEST_CHAR, pos)) != std::string::npos) {
 			std::map<String,std::set<etl::handle<Layer> > >::iterator iter;
 			String name(new_name, 0, pos);
 			iter=group_db_.find(name);
@@ -1430,7 +1429,7 @@ Canvas::rename_group(const String&old_name,const String&new_name)
 
 	// rename itermediate layer sets
 	{
-		const string old_name_prefix = old_name + GROUP_NEST_CHAR;
+		const std::string old_name_prefix = old_name + GROUP_NEST_CHAR;
 
 		std::map<String,std::set<etl::handle<Layer> > >::iterator iter;
 

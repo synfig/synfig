@@ -50,7 +50,6 @@
 
 #endif
 
-using namespace std;
 using namespace synfig;
 using namespace studio;
 
@@ -212,8 +211,8 @@ void Widget_ValueBase::popup_combobox()
 	Gtk::ComboBox * combobox = nullptr;
 	Type &type(get_value().get_type());
 	if (type == type_integer) {
-		string param_hint = get_param_desc().get_hint();
-		string child_param_hint = get_child_param_desc().get_hint();
+		const std::string& param_hint = get_param_desc().get_hint();
+		const std::string& child_param_hint = get_child_param_desc().get_hint();
 		if ( param_hint == "enum" || child_param_hint == "enum" )
 			combobox = enum_widget;
 	} else if (type == type_canvas) {
@@ -221,8 +220,8 @@ void Widget_ValueBase::popup_combobox()
 	} else if (type == type_bone_valuenode) {
 		combobox = bone_widget;
 	} else if (type == type_string) {
-		string param_hint = get_param_desc().get_hint();
-		string child_param_hint = get_child_param_desc().get_hint();
+		const std::string& param_hint = get_param_desc().get_hint();
+		const std::string& child_param_hint = get_child_param_desc().get_hint();
 		if( param_hint == "sublayer_name" || child_param_hint == "sublayer_name")
 			combobox = sublayer_widget;
 		else if( param_hint == "font_family" || child_param_hint == "font_family")
@@ -340,23 +339,23 @@ Widget_ValueBase::set_value(const synfig::ValueBase &data)
 		{
 			if(child_param_desc.get_hint()=="filename" || param_desc.get_hint()=="filename")
 			{
-				filename_widget->set_value(value.get(string()));
+				filename_widget->set_value(value.get(std::string()));
 				filename_widget->show();
 			}
 			else if(child_param_desc.get_hint()=="sublayer_name" || param_desc.get_hint()=="sublayer_name")
 			{
 				sublayer_widget->set_value_desc(value_desc);
-				sublayer_widget->set_value(value.get(string()));
+				sublayer_widget->set_value(value.get(std::string()));
 				sublayer_widget->show();
 			}
 			else if(child_param_desc.get_hint()=="font_family" || param_desc.get_hint()=="font_family")
 			{
-				fontfamily_widget->set_value(value.get(string()));
+				fontfamily_widget->set_value(value.get(std::string()));
 				fontfamily_widget->show();
 			}
 			else
 			{
-				string_widget->set_text(value.get(string()));
+				string_widget->set_text(value.get(std::string()));
 				string_widget->show();
 			}
 		}
@@ -427,17 +426,17 @@ Widget_ValueBase::get_value()
 	{
 		if(child_param_desc.get_hint()=="filename" || param_desc.get_hint()=="filename")
 		{
-			value=string(filename_widget->get_value());
+			value=std::string(filename_widget->get_value());
 		}
 		else if(child_param_desc.get_hint()=="sublayer_name" || param_desc.get_hint()=="sublayer_name") {
-			value=string(sublayer_widget->get_value());
+			value=std::string(sublayer_widget->get_value());
 		}
 		else if(child_param_desc.get_hint()=="font_family" || param_desc.get_hint()=="font_family") {
-			value=string(fontfamily_widget->get_value());
+			value=std::string(fontfamily_widget->get_value());
 		}
 		else
 		{
-			value=string(string_widget->get_text());
+			value=std::string(string_widget->get_text());
 		}
 	}
 	else

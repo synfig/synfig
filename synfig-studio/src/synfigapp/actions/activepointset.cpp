@@ -42,7 +42,6 @@
 
 #endif
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
@@ -145,8 +144,8 @@ Action::ActivepointSet::perform()
 	typedef ValueNode_DynamicList::ListEntry::ActivepointList AList;
 
 #if 1
-	vector<AList::iterator>	iters;
-	vector<Activepoint>::iterator i = activepoints.begin(), end = activepoints.end();
+	std::vector<AList::iterator>	iters;
+	std::vector<Activepoint>::iterator i = activepoints.begin(), end = activepoints.end();
 
 	for(; i != end; ++i)
 	{
@@ -169,7 +168,7 @@ Action::ActivepointSet::perform()
 		//we only want to track overwrites (not activepoints that are also being modified)
 		if(candelete)
 		{
-			for(vector<AList::iterator>::iterator ii = iters.begin(); ii != iters.end(); ++ii)
+			for (std::vector<AList::iterator>::iterator ii = iters.begin(); ii != iters.end(); ++ii)
 			{
 				if(timeiter.first == *ii)
 				{
@@ -190,7 +189,7 @@ Action::ActivepointSet::perform()
 	//overwrite all the valuenodes we're supposed to set
 	{
 		i = activepoints.begin();
-		for(vector<AList::iterator>::iterator ii = iters.begin(); ii != iters.end() && i != end; ++ii, ++i)
+		for (std::vector<AList::iterator>::iterator ii = iters.begin(); ii != iters.end() && i != end; ++ii, ++i)
 		{
 			old_activepoints.push_back(**ii);
 			**ii = *i; //set the point to the corresponding point in the normal waypoint list
@@ -199,7 +198,7 @@ Action::ActivepointSet::perform()
 
 	//remove all the points we're supposed to be overwriting
 	{
-		vector<Activepoint>::iterator 	oi = overwritten_activepoints.begin(),
+		std::vector<Activepoint>::iterator 	oi = overwritten_activepoints.begin(),
 										oend = overwritten_activepoints.end();
 		for(; oi != oend; ++oi)
 		{
@@ -251,7 +250,7 @@ Action::ActivepointSet::undo()
 	ValueNode_DynamicList::ListEntry::ActivepointList::iterator iter;
 
 #if 1
-	vector<Activepoint>::iterator i = old_activepoints.begin(), end = old_activepoints.end();
+	std::vector<Activepoint>::iterator i = old_activepoints.begin(), end = old_activepoints.end();
 
 	for(; i != end; ++i)
 	{
@@ -267,7 +266,7 @@ Action::ActivepointSet::undo()
 
 	//add back in all the points that we removed before...
 	{
-		vector<Activepoint>::iterator 	oi = overwritten_activepoints.begin(),
+		std::vector<Activepoint>::iterator 	oi = overwritten_activepoints.begin(),
 										oend = overwritten_activepoints.end();
 		for(; oi != oend; ++oi)
 		{

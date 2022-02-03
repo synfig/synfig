@@ -52,7 +52,6 @@
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
-using namespace std;
 using namespace etl;
 
 /* === G L O B A L S ======================================================= */
@@ -85,7 +84,7 @@ bool png_trgt_spritesheet::is_final_image_size_acceptable() const
 	return !(sheet_width * sheet_height > 5000 * 2000);
 }
 
-string png_trgt_spritesheet::get_image_size_error_message() const
+std::string png_trgt_spritesheet::get_image_size_error_message() const
 {
 	return strprintf(
 				_("The image is too large. It's size must be not more than 5000*2000=10000000 px. Currently it's %d*%d=%d px."),
@@ -112,12 +111,12 @@ png_trgt_spritesheet::png_trgt_spritesheet(const char *Filename, const synfig::T
 	sequence_separator(params.sequence_separator),
 	overflow_buff(0)
 {
-	cout << "png_trgt_spritesheet() " << params.offset_x << " " << params.offset_y << endl;
+	std::cout << "png_trgt_spritesheet() " << params.offset_x << " " << params.offset_y << std::endl;
 }
 
 png_trgt_spritesheet::~png_trgt_spritesheet()
 {
-	cout << "~png_trgt_spritesheet()" << endl;
+	std::cout << "~png_trgt_spritesheet()" << std::endl;
 	if (ready)
 		write_png_file ();
 	if (color_data)
@@ -133,7 +132,7 @@ png_trgt_spritesheet::~png_trgt_spritesheet()
 bool
 png_trgt_spritesheet::set_rend_desc(RendDesc *given_desc)
 {
-	cout << "set_rend_desc()" << endl;
+	std::cout << "set_rend_desc()" << std::endl;
     //given_desc->set_pixel_format(PixelFormat((int)PF_RGB|(int)PF_A));
     desc=*given_desc;
     imagecount=desc.get_frame_start();
@@ -145,7 +144,7 @@ png_trgt_spritesheet::set_rend_desc(RendDesc *given_desc)
 	//Reset on uninitialized values
 	if ((params.columns == 0) || (params.rows == 0))
 	{
-		cout << "Uninitialized sheet parameters. Reset parameters." << endl;
+		std::cout << "Uninitialized sheet parameters. Reset parameters." << std::endl;
 		params.columns = numimages;
 		params.rows = 1;
 		params.append = true;
@@ -155,12 +154,12 @@ png_trgt_spritesheet::set_rend_desc(RendDesc *given_desc)
 	//Break on overflow
 	if (params.columns * params.rows < numimages)
 	{
-		cout << "Sheet overflow. Break." << endl;
+		std::cout << "Sheet overflow. Break." << std::endl;
 		synfig::error("Bad sheet parameters. Sheet overflow.");
 		return false;
 	}
-	
-	cout << "Frame count" << numimages << endl;
+
+	std::cout << "Frame count" << numimages << std::endl;
 
 	bool is_loaded = false;
 
@@ -188,10 +187,10 @@ png_trgt_spritesheet::set_rend_desc(RendDesc *given_desc)
 		synfig::error(get_image_size_error_message());
 		return false;
 	}
-	
-	cout << "Sheet size: " << sheet_width << "x" << sheet_height << endl;
 
-	cout << "Color size: " << sizeof(Color) << endl;
+	std::cout << "Sheet size: " << sheet_width << "x" << sheet_height << std::endl;
+
+	std::cout << "Color size: " << sizeof(Color) << std::endl;
 	
 	color_data = new Color*[sheet_height];
 	if (color_data)
@@ -209,7 +208,7 @@ png_trgt_spritesheet::set_rend_desc(RendDesc *given_desc)
 void
 png_trgt_spritesheet::end_frame()
 {
-	cout << "end_frame()" << endl;
+	std::cout << "end_frame()" << std::endl;
 		
     imagecount++;
 	cur_y = 0;
@@ -258,7 +257,7 @@ png_trgt_spritesheet::start_scanline(int /*scanline*/)
 	unsigned int x = cur_col * desc.get_w() + params.offset_x;
 	if ((x + desc.get_w() > sheet_width) || (y > sheet_height) || !color_data)
 	{
-		cout << "Buffer overflow. x: " << x << " y: " << y << endl; 
+		std::cout << "Buffer overflow. x: " << x << " y: " << y << std::endl;
 		//TODO: Fix exception processing outside the module.
 		return overflow_buff; //Spike. Bad exception processing
 	}
@@ -276,7 +275,7 @@ png_trgt_spritesheet::end_scanline()
 bool
 png_trgt_spritesheet::load_png_file()
 {
-	cout << "load_png_file()" << endl;
+	std::cout << "load_png_file()" << std::endl;
 
     char header[8];    // 8 is the maximum size that can be checked
 
@@ -317,7 +316,7 @@ png_trgt_spritesheet::load_png_file()
 
     in_image.width = png_get_image_width(in_image.png_ptr, in_image.info_ptr);
     in_image.height = png_get_image_height(in_image.png_ptr, in_image.info_ptr);
-	cout << "Img size: " << in_image.width << "x" << in_image.height << endl;
+	std::cout << "Img size: " << in_image.width << "x" << in_image.height << std::endl;
     in_image.color_type = png_get_color_type(in_image.png_ptr, in_image.info_ptr);
     in_image.bit_depth = png_get_bit_depth(in_image.png_ptr, in_image.info_ptr);
 
@@ -337,16 +336,16 @@ png_trgt_spritesheet::load_png_file()
 bool 
 png_trgt_spritesheet::read_png_file()
 {
-	cout << "read_png_file()" << endl;
+	std::cout << "read_png_file()" << std::endl;
 	//Byte buffer for png data
 	png_bytep * row_pointers;
     row_pointers = new png_bytep[in_image.height];
     for (unsigned int y = 0; y < in_image.height; y++)
             row_pointers[y] = new png_byte[png_get_rowbytes(in_image.png_ptr,in_image.info_ptr)];
-	cout << "row_pointers created" << endl;
+	std::cout << "row_pointers created" << std::endl;
 	
 	png_read_image(in_image.png_ptr, row_pointers);
-	cout << "image read" << endl;
+	std::cout << "image read" << std::endl;
 	
     if (png_get_color_type(in_image.png_ptr, in_image.info_ptr) == PNG_COLOR_TYPE_RGB)
 	{
@@ -362,7 +361,7 @@ png_trgt_spritesheet::read_png_file()
 		return false;
 	}
 
-	cout << "colors checked" << endl;
+	std::cout << "colors checked" << std::endl;
 
 	//From png bytes to synfig::Color conversion
 	const ColorReal k = 1/255.0;
@@ -379,20 +378,20 @@ png_trgt_spritesheet::read_png_file()
         }
     }
 
-	cout << "colors converted" << endl;
+	std::cout << "colors converted" << std::endl;
 	
     for (unsigned int y = 0; y < in_image.height; y++)
             delete []row_pointers[y];
     
 	delete[] row_pointers;
-	cout << "row_pointers deleted" << endl;
+	std::cout << "row_pointers deleted" << std::endl;
 	return true;
 }
 
 bool 
 png_trgt_spritesheet::write_png_file()
 {
-	cout << "write_png_file()" << endl;
+	std::cout << "write_png_file()" << std::endl;
 	png_structp png_ptr;
 	png_infop info_ptr;
 

@@ -41,7 +41,6 @@
 
 #endif
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
@@ -126,8 +125,8 @@ Action::WaypointSet::perform()
 	//WaypointList::iterator iter;
 
 #if 1
-	vector<WaypointList::iterator>	iters;
-	vector<Waypoint>::iterator i = waypoints.begin(), end = waypoints.end();
+	std::vector<WaypointList::iterator>	iters;
+	std::vector<Waypoint>::iterator i = waypoints.begin(), end = waypoints.end();
 
 	for(; i != end; ++i)
 	{
@@ -150,7 +149,7 @@ Action::WaypointSet::perform()
 		//we only want to track overwrites (not waypoints that are also being modified)
 		if(candelete)
 		{
-			for(vector<WaypointList::iterator>::iterator ii = iters.begin(); ii != iters.end(); ++ii)
+			for (std::vector<WaypointList::iterator>::iterator ii = iters.begin(); ii != iters.end(); ++ii)
 			{
 				if(timeiter.first == *ii)
 				{
@@ -171,7 +170,7 @@ Action::WaypointSet::perform()
 	//overwrite all the valuenodes we're supposed to set
 	{
 		i = waypoints.begin();
-		for(vector<WaypointList::iterator>::iterator ii = iters.begin(); ii != iters.end() && i != end; ++ii, ++i)
+		for (std::vector<WaypointList::iterator>::iterator ii = iters.begin(); ii != iters.end() && i != end; ++ii, ++i)
 		{
 			old_waypoints.push_back(**ii);
 			**ii = *i; //set the point to the corresponding point in the normal waypoint list
@@ -180,7 +179,7 @@ Action::WaypointSet::perform()
 
 	//remove all the points we're supposed to be overwriting
 	{
-		vector<Waypoint>::iterator 	oi = overwritten_waypoints.begin(),
+		std::vector<Waypoint>::iterator 	oi = overwritten_waypoints.begin(),
 									oend = overwritten_waypoints.end();
 		for(; oi != oend; ++oi)
 		{
@@ -232,7 +231,7 @@ Action::WaypointSet::undo()
 	WaypointList::iterator iter;
 
 #if 1
-	vector<Waypoint>::iterator i = old_waypoints.begin(), end = old_waypoints.end();
+	std::vector<Waypoint>::iterator i = old_waypoints.begin(), end = old_waypoints.end();
 
 	for(; i != end; ++i)
 	{
@@ -248,7 +247,7 @@ Action::WaypointSet::undo()
 
 	//add back in all the points that we removed before...
 	{
-		vector<Waypoint>::iterator 	oi = overwritten_waypoints.begin(),
+		std::vector<Waypoint>::iterator 	oi = overwritten_waypoints.begin(),
 									oend = overwritten_waypoints.end();
 		for(; oi != oend; ++oi)
 		{

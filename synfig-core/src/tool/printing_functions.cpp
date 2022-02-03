@@ -45,7 +45,6 @@
 #include <libintl.h>
 #endif
 
-using namespace std;
 using namespace synfig;
 
 void print_usage()
@@ -75,189 +74,189 @@ void print_canvas_info(const Job& job)
 
 	if (job.canvas_info_all || job.canvas_info_time_start)
 	{
-		cout << endl << "# " << _("Start Time") << endl;
-		cout << "time_start" << "="
-			 << rend_desc.get_time_start().get_string().c_str() << endl;
+		std::cout << std::endl << "# " << _("Start Time") << std::endl;
+		std::cout << "time_start" << "="
+			 << rend_desc.get_time_start().get_string().c_str() << std::endl;
 	}
 
 	if (job.canvas_info_all || job.canvas_info_time_end)
 	{
-		cout << endl << "# " << _("End Time") << endl;
-		cout << "time_end" << "="
-			 << rend_desc.get_time_end().get_string().c_str() << endl;
+		std::cout << std::endl << "# " << _("End Time") << std::endl;
+		std::cout << "time_end" << "="
+			 << rend_desc.get_time_end().get_string().c_str() << std::endl;
 	}
 
 	if (job.canvas_info_all || job.canvas_info_frame_rate)
 	{
-		cout << endl << "# " << _("Frame Rate") << endl;
-		cout << "frame_rate" << "="
-			 << rend_desc.get_frame_rate() << endl;
+		std::cout << std::endl << "# " << _("Frame Rate") << std::endl;
+		std::cout << "frame_rate" << "="
+			 << rend_desc.get_frame_rate() << std::endl;
 	}
 
 	if (job.canvas_info_all || job.canvas_info_frame_start)
 	{
-		cout << endl << "# " << _("Start Frame") << endl;
-		cout << "frame_start" << "="
-			 << rend_desc.get_frame_start() << endl;
+		std::cout << std::endl << "# " << _("Start Frame") << std::endl;
+		std::cout << "frame_start" << "="
+			 << rend_desc.get_frame_start() << std::endl;
 	}
 
 	if (job.canvas_info_all || job.canvas_info_frame_end)
 	{
-		cout << endl << "# " << _("End Frame") << endl;
-		cout << "frame_end"	<< "="
-			 << rend_desc.get_frame_end() << endl;
+		std::cout << std::endl << "# " << _("End Frame") << std::endl;
+		std::cout << "frame_end"	<< "="
+			 << rend_desc.get_frame_end() << std::endl;
 	}
 
 	if (job.canvas_info_all)
-		cout << endl;
+		std::cout << std::endl;
 
 	if (job.canvas_info_all || job.canvas_info_w)
 	{
-		cout << endl << "# " << _("Width") << endl;
-		cout << "w"	<< "=" << rend_desc.get_w() << endl;
+		std::cout << std::endl << "# " << _("Width") << std::endl;
+		std::cout << "w"	<< "=" << rend_desc.get_w() << std::endl;
 	}
 
 	if (job.canvas_info_all || job.canvas_info_h)
 	{
-		cout << endl << "# " << _("Height") << endl;
-		cout << "h"	<< "=" << rend_desc.get_h() << endl;
+		std::cout << std::endl << "# " << _("Height") << std::endl;
+		std::cout << "h"	<< "=" << rend_desc.get_h() << std::endl;
 	}
 
 	if (job.canvas_info_all || job.canvas_info_image_aspect)
 	{
-		cout << endl << "# " << _("Image Aspect Ratio") << endl;
-		cout << "image_aspect" << "="
-			 << rend_desc.get_image_aspect() << endl;
+		std::cout << std::endl << "# " << _("Image Aspect Ratio") << std::endl;
+		std::cout << "image_aspect" << "="
+			 << rend_desc.get_image_aspect() << std::endl;
 	}
 
 	if (job.canvas_info_all)
-		cout << endl;
+		std::cout << std::endl;
 
 	if (job.canvas_info_all || job.canvas_info_pw)
 	{
-		cout << endl << "# " << _("Pixel Width") << endl;
-		cout << "pw" << "="
-			 << rend_desc.get_pw() << endl;
+		std::cout << std::endl << "# " << _("Pixel Width") << std::endl;
+		std::cout << "pw" << "="
+			 << rend_desc.get_pw() << std::endl;
 	}
 
 	if (job.canvas_info_all || job.canvas_info_ph)
 	{
-		cout << endl << "# " << _("Pixel Height") << endl;
-		cout << "ph" << "="
-			 << rend_desc.get_ph() << endl;
+		std::cout << std::endl << "# " << _("Pixel Height") << std::endl;
+		std::cout << "ph" << "="
+			 << rend_desc.get_ph() << std::endl;
 	}
 
 	if (job.canvas_info_all || job.canvas_info_pixel_aspect)
 	{
-		cout << endl << "# " << _("Pixel Aspect Ratio") << endl;
-		cout << "pixel_aspect" << "="
-			 << rend_desc.get_pixel_aspect() << endl;
+		std::cout << std::endl << "# " << _("Pixel Aspect Ratio") << std::endl;
+		std::cout << "pixel_aspect" << "="
+			 << rend_desc.get_pixel_aspect() << std::endl;
 	}
 
 	if (job.canvas_info_all)
-		cout << endl;
+		std::cout << std::endl;
 
 	if (job.canvas_info_all || job.canvas_info_tl)
 	{
-		cout << endl << "# " << _("Top Left") << endl;
-		cout << "tl" << "=" << rend_desc.get_tl()[0]
-			 << " " << rend_desc.get_tl()[1] << endl;
+		std::cout << std::endl << "# " << _("Top Left") << std::endl;
+		std::cout << "tl" << "=" << rend_desc.get_tl()[0]
+			 << " " << rend_desc.get_tl()[1] << std::endl;
 	}
 
 	if (job.canvas_info_all || job.canvas_info_br)
 	{
-		cout << endl << "# " << _("Bottom Right") << endl;
-		cout << "br" << "=" << rend_desc.get_br()[0]
-			 << " " << rend_desc.get_br()[1] << endl;
+		std::cout << std::endl << "# " << _("Bottom Right") << std::endl;
+		std::cout << "br" << "=" << rend_desc.get_br()[0]
+			 << " " << rend_desc.get_br()[1] << std::endl;
 	}
 
 	if (job.canvas_info_all || job.canvas_info_physical_w)
 	{
-		cout << endl << "# " << _("Physical Width") << endl;
-		cout << "physical_w" << "="
-			 << rend_desc.get_physical_w() << endl;
+		std::cout << std::endl << "# " << _("Physical Width") << std::endl;
+		std::cout << "physical_w" << "="
+			 << rend_desc.get_physical_w() << std::endl;
 	}
 
 	if (job.canvas_info_all || job.canvas_info_physical_h)
 	{
-		cout << endl << "# " << _("Physical Height") << endl;
-		cout << "physical_h" << "="
-			 << rend_desc.get_physical_h() << endl;
+		std::cout << std::endl << "# " << _("Physical Height") << std::endl;
+		std::cout << "physical_h" << "="
+			 << rend_desc.get_physical_h() << std::endl;
 	}
 
 	if (job.canvas_info_all || job.canvas_info_x_res)
 	{
-		cout << endl << "# " << _("X Resolution") << endl;
-		cout << "x_res"	<< "=" << rend_desc.get_x_res() << endl;
+		std::cout << std::endl << "# " << _("X Resolution") << std::endl;
+		std::cout << "x_res"	<< "=" << rend_desc.get_x_res() << std::endl;
 	}
 
 	if (job.canvas_info_all || job.canvas_info_y_res)
 	{
-		cout << endl << "# " << _("Y Resolution") << endl;
-		cout << "y_res"	<< "=" << rend_desc.get_y_res() << endl;
+		std::cout << std::endl << "# " << _("Y Resolution") << std::endl;
+		std::cout << "y_res"	<< "=" << rend_desc.get_y_res() << std::endl;
 	}
 
 	if (job.canvas_info_all || job.canvas_info_span)
 	{
-		cout << endl << "# " << _("Diagonal Image Span") << endl;
-		cout << "span" << "=" << rend_desc.get_span() << endl;
+		std::cout << std::endl << "# " << _("Diagonal Image Span") << std::endl;
+		std::cout << "span" << "=" << rend_desc.get_span() << std::endl;
 	}
 
 	if (job.canvas_info_all)
-		cout << endl;
+		std::cout << std::endl;
 
 	if (job.canvas_info_all || job.canvas_info_interlaced)
 	{
-		cout << endl << "# " << _("Interlaced") << endl;
-		cout << "interlaced" << "="
-			 << rend_desc.get_interlaced() << endl;
+		std::cout << std::endl << "# " << _("Interlaced") << std::endl;
+		std::cout << "interlaced" << "="
+			 << rend_desc.get_interlaced() << std::endl;
 	}
 
 	if (job.canvas_info_all || job.canvas_info_antialias)
 	{
-		cout << endl << "# " << _("Antialias") << endl;
-		cout << "antialias"	<< "="
-			 << rend_desc.get_antialias() << endl;
+		std::cout << std::endl << "# " << _("Antialias") << std::endl;
+		std::cout << "antialias"	<< "="
+			 << rend_desc.get_antialias() << std::endl;
 	}
 
 	if (job.canvas_info_all || job.canvas_info_clamp)
 	{
-		cout << endl << "# " << _("Clamp") << endl;
-		cout << "clamp"
-			 << "=" << rend_desc.get_clamp() << endl;
+		std::cout << std::endl << "# " << _("Clamp") << std::endl;
+		std::cout << "clamp"
+			 << "=" << rend_desc.get_clamp() << std::endl;
 	}
 
 	if (job.canvas_info_all || job.canvas_info_flags)
 	{
-		cout << endl << "# " << _("Flags") << endl;
-		cout << "flags"
-			 << "=" << rend_desc.get_flags() << endl;
+		std::cout << std::endl << "# " << _("Flags") << std::endl;
+		std::cout << "flags"
+			 << "=" << rend_desc.get_flags() << std::endl;
 	}
 
 	if (job.canvas_info_all || job.canvas_info_focus)
 	{
-		cout << endl << "# " << _("Focus") << endl;
-		cout << "focus"	<< "=" << rend_desc.get_focus()[0]
-			 << " " << rend_desc.get_focus()[1] << endl;
+		std::cout << std::endl << "# " << _("Focus") << std::endl;
+		std::cout << "focus"	<< "=" << rend_desc.get_focus()[0]
+			 << " " << rend_desc.get_focus()[1] << std::endl;
 	}
 
 	if (job.canvas_info_all || job.canvas_info_bg_color)
 	{
-		cout << endl << "# " << _("Background Color") << endl;
-		cout << "bg_color" << "="
-			 << rend_desc.get_bg_color().get_string().c_str() << endl;
+		std::cout << std::endl << "# " << _("Background Color") << std::endl;
+		std::cout << "bg_color" << "="
+			 << rend_desc.get_bg_color().get_string().c_str() << std::endl;
 	}
 
 	if (job.canvas_info_all)
-		cout << endl;
+		std::cout << std::endl;
 
 	if (job.canvas_info_all || job.canvas_info_metadata)
 	{
 		std::list<String> keys(canvas->get_meta_data_keys());
-		cout << endl << "# " << _("Metadata") << endl;
+		std::cout << std::endl << "# " << _("Metadata") << std::endl;
 
 		for (std::list<String>::iterator key = keys.begin();
 			 key != keys.end(); key++)
-			cout << (*key).c_str() << "=" << canvas->get_meta_data(*key).c_str()<< endl;
+			std::cout << (*key).c_str() << "=" << canvas->get_meta_data(*key).c_str()<< std::endl;
 	}
 }

@@ -32,7 +32,6 @@ for which a new license (GPL+exception) is in place.
 #include <stdio.h>
 #include <fcntl.h>
 #include <io.h>
-using namespace std;
 
 #define MAX_LINES 500
 
@@ -73,7 +72,7 @@ void redirectIOToConsole()
 	setvbuf( stderr, NULL, _IONBF, 0 );
 	// make cout, wcout, cin, wcin, wcerr, cerr, wclog and clog 
 	// point to console as well
-	ios::sync_with_stdio();
+	std::ios::sync_with_stdio();
 }
 
 #endif /* WIN32 */

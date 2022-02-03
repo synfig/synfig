@@ -44,7 +44,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -185,10 +184,10 @@ enum SetOp
 class PolygonClipper
 {
 public:
-	typedef vector<ipoint *>	CurveInts; //in no particular order
+	typedef std::vector<ipoint *>	CurveInts; //in no particular order
 
-	vector<CurveInts>	c1ints;
-	vector<CurveInts>	c2ints;
+	std::vector<CurveInts>	c1ints;
+	std::vector<CurveInts>	c2ints;
 
 	//get the intersections
 	void GetIntersections(const CurveSet &lhs, const CurveSet &rhs)
@@ -347,7 +346,7 @@ public:
 		//traverse path based on inside flags
 
 		//fill all the paths of native stuff
-		set<ipoint *>	ipset;
+		std::set<ipoint *>	ipset;
 		for(int ci=0; ci<(int)c1ints.size(); ++ci)
 		{
 			for(int i=0; i < (int)c1ints[ci].size(); ++i)
@@ -368,7 +367,7 @@ public:
 			bool curin, otherin;
 			bool delcur = true;
 
-			set<ipoint *>::iterator deliter;
+			std::set<ipoint *>::iterator deliter;
 
 			//int ci,i1,i2,size;
 			//float t1,t2;
@@ -403,8 +402,8 @@ public:
 
 				//transition curves...
 				iter = iter->neighbor;
-				swap(cur,other);
-				swap(curin,otherin);
+				std::swap(cur,other);
+				std::swap(curin,otherin);
 				delcur = !delcur;
 			}while(iter != start); //I hope THIS isn't an infinite loop
 		}
@@ -469,7 +468,7 @@ int CurveSet::intersect(const Point &p) const
 
 	for(ci=0; ci < (int)set.size(); ++ci)
 	{
-		const vector<CurvePoint> &curve = set[ci];
+		const std::vector<CurvePoint> &curve = set[ci];
 		s = curve.size();
 		for(j=s-1,i=0; i < s; j = i++)
 		{
