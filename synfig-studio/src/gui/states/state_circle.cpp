@@ -210,7 +210,6 @@ public:
 	bool get_invert()const { return invert_checkbutton.get_active(); }
 	void set_invert(bool i) { invert_checkbutton.set_active(i); }
 
-  bool pre_layer_circle_flag();
 	bool get_layer_circle_flag()const { return layer_circle_togglebutton.get_active(); }
 	void set_layer_circle_flag(bool x) { return layer_circle_togglebutton.set_active(x); }
 
