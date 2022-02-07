@@ -55,7 +55,6 @@
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
-using namespace std;
 using namespace etl;
 
 #if defined(HAVE_FORK) && defined(HAVE_PIPE) && defined(HAVE_WAITPID)
@@ -103,7 +102,7 @@ ffmpeg_mptr::seek_to(const Time& time)
 
 #if defined(WIN32_PIPE_TO_PROCESSES)
 
-		string command;
+		std::string command;
 		
 		String binary_path = synfig::get_binary_path("");
 		if (binary_path != "")
@@ -123,14 +122,14 @@ ffmpeg_mptr::seek_to(const Time& time)
 		int p[2];
 
 		if (pipe(p)) {
-			cerr<<"Unable to open pipe to ffmpeg (no pipe)"<<endl;
+			std::cerr<<"Unable to open pipe to ffmpeg (no pipe)"<<std::endl;
 			return false;
 		};
 
 		pid = fork();
 
 		if (pid == -1) {
-			cerr<<"Unable to open pipe to ffmpeg (pid == -1)"<<endl;
+			std::cerr<<"Unable to open pipe to ffmpeg (pid == -1)"<<std::endl;
 			return false;
 		}
 
@@ -140,7 +139,7 @@ ffmpeg_mptr::seek_to(const Time& time)
 			close(p[0]);
 			// Dup pipein to stdout
 			if( dup2( p[1], STDOUT_FILENO ) == -1 ){
-				cerr<<"Unable to open pipe to ffmpeg (dup2( p[1], STDOUT_FILENO ) == -1)"<<endl;
+				std::cerr<<"Unable to open pipe to ffmpeg (dup2( p[1], STDOUT_FILENO ) == -1)"<<std::endl;
 				return false;
 			}
 			// Close the unneeded pipein
@@ -149,7 +148,7 @@ ffmpeg_mptr::seek_to(const Time& time)
 			synfig::warning("ffmpeg command: '%s'", command.c_str());*/
 			execlp("ffmpeg", "ffmpeg", "-ss", position.c_str(), "-i", identifier.filename.c_str(), "-vframes", "1","-an", "-f", "image2pipe", "-vcodec", "ppm", "-", (const char *)NULL);
 			// We should never reach here unless the exec failed
-			cerr<<"Unable to open pipe to ffmpeg (exec failed)"<<endl;
+			std::cerr<<"Unable to open pipe to ffmpeg (exec failed)"<<std::endl;
 			_exit(1);
 		} else {
 			// Parent process
@@ -165,7 +164,7 @@ ffmpeg_mptr::seek_to(const Time& time)
 
 		if(!file)
 		{
-			cerr<<"Unable to open pipe to ffmpeg"<<endl;
+			std::cerr<<"Unable to open pipe to ffmpeg"<<std::endl;
 			return false;
 		}
 		cur_frame=-1;
@@ -185,7 +184,7 @@ ffmpeg_mptr::grab_frame(void)
 {
 	if(!file)
 	{
-		cerr<<"unable to open "<<identifier.filename.c_str()<<endl;
+		std::cerr<<"unable to open "<<identifier.filename.c_str()<<std::endl;
 		return false;
 	}
 	int w,h;
@@ -200,7 +199,7 @@ ffmpeg_mptr::grab_frame(void)
 
 	if(cookie[0]!='P' || cookie[1]!='6')
 	{
-		cerr<<"stream not in PPM format \""<<cookie[0]<<cookie[1]<<'"'<<endl;
+		std::cerr<<"stream not in PPM format \""<<cookie[0]<<cookie[1]<<'"'<<std::endl;
 		return false;
 	}
 

@@ -55,7 +55,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace synfig;
 using namespace studio;
 
@@ -315,8 +314,8 @@ MainWindow::make_short_filenames(
 	}
 
 	const int count = (int)fullnames.size();
-	vector< vector<String> > dirs(count);
-	vector< vector<bool> > dirflags(count);
+	std::vector< std::vector<String> > dirs(count);
+	std::vector< std::vector<bool> > dirflags(count);
 	shortnames.clear();
 	shortnames.resize(count);
 
@@ -329,8 +328,8 @@ MainWindow::make_short_filenames(
 		while(j < (int)fullname.size())
 		{
 			size_t k = fullname.find_first_of(ETL_DIRECTORY_SEPARATORS, j);
-			if (k == string::npos) k = fullname.size();
-			string sub = fullname.substr(j, k - j);
+			if (k == std::string::npos) k = fullname.size();
+			std::string sub = fullname.substr(j, k - j);
 			if (!sub.empty() && sub != "...")
 				dirs[i].insert(dirs[i].begin(), sub);
 			j = (int)k + 1;
@@ -394,8 +393,8 @@ MainWindow::on_recent_files_changed()
 	// TODO(ice0): switch to GtkRecentChooserMenu?
 	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create("mainwindow-recentfiles");
 
-	vector<String> fullnames(App::get_recent_files().begin(), App::get_recent_files().end());
-	vector<String> shortnames;
+	std::vector<String> fullnames(App::get_recent_files().begin(), App::get_recent_files().end());
+	std::vector<String> shortnames;
 	make_short_filenames(fullnames, shortnames);
 
 	std::string menu_items;
@@ -406,7 +405,7 @@ MainWindow::on_recent_files_changed()
 		size_t pos = 0, last_pos = 0;
 
 		// replace _ in filenames by __ or it won't show up in the menu
-		for (pos = last_pos = 0; (pos = raw.find('_', pos)) != string::npos; last_pos = pos)
+		for (pos = last_pos = 0; (pos = raw.find('_', pos)) != std::string::npos; last_pos = pos)
 			quoted += raw.substr(last_pos, ++pos - last_pos) + '_';
 		quoted += raw.substr(last_pos);
 
@@ -446,7 +445,7 @@ MainWindow::on_custom_workspaces_changed()
 {
 	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create("mainwindow-customworkspaces");
 
-	vector<string> workspaces = App::get_workspaces();
+	std::vector<std::string> workspaces = App::get_workspaces();
 
 	std::string menu_items;
 	unsigned int num_custom_workspaces = 0;
@@ -456,7 +455,7 @@ MainWindow::on_custom_workspaces_changed()
 		size_t pos = 0, last_pos = 0;
 
 		// replace _ in names by __ or it won't show up in the menu
-		for (pos = last_pos = 0; (pos = raw.find('_', pos)) != string::npos; last_pos = pos)
+		for (pos = last_pos = 0; (pos = raw.find('_', pos)) != std::string::npos; last_pos = pos)
 			quoted += raw.substr(last_pos, ++pos - last_pos) + '_';
 		quoted += raw.substr(last_pos);
 
@@ -509,7 +508,7 @@ MainWindow::on_dockable_registered(Dockable* dockable)
 	std::string raw = dockable->get_local_name();
 	std::string quoted;
 	size_t pos = 0, last_pos = 0;
-	for (pos = last_pos = 0; (pos = raw.find('_', pos)) != string::npos; last_pos = pos)
+	for (pos = last_pos = 0; (pos = raw.find('_', pos)) != std::string::npos; last_pos = pos)
 		quoted += raw.substr(last_pos, ++pos - last_pos) + '_';
 	quoted += raw.substr(last_pos);
 

@@ -44,7 +44,6 @@
 
 #endif
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
@@ -230,7 +229,7 @@ Action::ValueDescCreateChildBone::prepare()
 	{
 		ValueNode_StaticList::Handle value_node=ValueNode_StaticList::Handle::cast_dynamic(parent_desc.get_parent_value_node());
 		if(!value_node){
-			cout<<"Error"<<endl;
+			std::cout<<"Error"<<std::endl;
 			throw Error(Error::TYPE_NOTREADY, "ValueDescCreateChildBone: not a static list");
 		}
 

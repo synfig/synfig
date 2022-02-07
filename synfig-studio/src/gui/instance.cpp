@@ -79,7 +79,6 @@
 
 #endif
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;
@@ -383,7 +382,7 @@ studio::Instance::save_as(const synfig::String &file_name)
 	if(synfigapp::Instance::save_as(file_name))
 	{
 		// after changing the filename, update the render settings with the new filename
-		for(list<handle<CanvasView> >::iterator iter = canvas_view_list().begin(); iter!=canvas_view_list().end(); iter++)
+		for (std::list<handle<CanvasView> >::iterator iter = canvas_view_list().begin(); iter!=canvas_view_list().end(); iter++)
 			(*iter)->render_settings.set_entry_filename();
 		App::add_recent_file(etl::handle<Instance>(this));
 
@@ -434,7 +433,7 @@ studio::Instance::save()
 
 	if (!save_as(get_canvas()->get_file_name()))
 	{
-		string msg(strprintf(_("Unable to save to '%s'"), get_file_name().c_str()));
+		std::string msg(strprintf(_("Unable to save to '%s'"), get_file_name().c_str()));
 		App::dialog_message_1b(
 				"ERROR",
 				msg.c_str(),
@@ -458,7 +457,7 @@ studio::Instance::has_real_filename()
 bool
 studio::Instance::dialog_save_as()
 {
-	string filename = get_file_name();
+	std::string filename = get_file_name();
 	Canvas::Handle canvas(get_canvas());
 
 	{
@@ -473,7 +472,7 @@ studio::Instance::dialog_save_as()
 				if(parent_layer && parent_layer->get_canvas()->get_root()!=get_canvas())
 				{
 					//! \todo Fix big involving "Save As" with referenced compositions
-					string msg(strprintf(_("There is currently a bug when using \"SaveAs\"\n"
+					std::string msg(strprintf(_("There is currently a bug when using \"SaveAs\"\n"
 						"on a composition that is being referenced by other\n"
 						"files that are currently open. Close these\n"
 						"other files first before trying to use \"SaveAs\".")));
@@ -503,7 +502,7 @@ studio::Instance::dialog_save_as()
 	{
 		// If the filename still has wildcards, then we should
 		// continue looking for the file we want
-		string base_filename = basename(filename);
+		std::string base_filename = basename(filename);
 		if (find(base_filename.begin(),base_filename.end(),'*')!=base_filename.end())
 			continue;
 
@@ -541,7 +540,7 @@ studio::Instance::dialog_save_as()
 			if (stat_return == -1 && errno != ENOENT)
 			{
 				perror(filename.c_str());
-				string msg(strprintf(_("Unable to check whether '%s' exists."), filename.c_str()));
+				std::string msg(strprintf(_("Unable to check whether '%s' exists."), filename.c_str()));
 				App::dialog_message_1b(
 						"ERROR",
 						msg.c_str(),
@@ -552,11 +551,11 @@ studio::Instance::dialog_save_as()
 			}
 
 			// If the file exists and the user doesn't want to overwrite it, keep prompting for a filename
-			string message = strprintf(_("A file named \"%s\" already exists. "
+			std::string message = strprintf(_("A file named \"%s\" already exists. "
 							"Do you want to replace it?"),
 							basename(filename).c_str());
 
-			string details = strprintf(_("The file already exists in \"%s\". "
+			std::string details = strprintf(_("The file already exists in \"%s\". "
 							"Replacing it will overwrite its contents."),
 							dirname(filename).c_str());
 
@@ -575,7 +574,7 @@ studio::Instance::dialog_save_as()
 			synfig::set_file_version(ReleaseVersion(RELEASE_VERSION_END-1));
 			return true;
 		}
-		string msg(strprintf(_("Unable to save to '%s'"), filename.c_str()));
+		std::string msg(strprintf(_("Unable to save to '%s'"), filename.c_str()));
 		App::dialog_message_1b(
 				"ERROR",
 				msg.c_str(),
@@ -590,7 +589,7 @@ studio::Instance::dialog_save_as()
 bool
 studio::Instance::dialog_export()
 {
-	string filename = get_file_name();
+	std::string filename = get_file_name();
 	Canvas::Handle canvas(get_canvas());
 
 	if (has_real_filename())
@@ -616,7 +615,7 @@ studio::Instance::dialog_export()
 void
 Instance::update_all_titles()
 {
-	list<handle<CanvasView> >::iterator iter;
+	std::list<handle<CanvasView> >::iterator iter;
 	for(iter=canvas_view_list().begin();iter!=canvas_view_list().end();iter++)
 		(*iter)->update_title();
 }
@@ -802,10 +801,10 @@ Instance::safe_close()
 	if(get_action_count())
 		do
 		{
-			string message = strprintf(_("Save changes to document \"%s\" before closing?"),
+			std::string message = strprintf(_("Save changes to document \"%s\" before closing?"),
 					basename(get_file_name()).c_str() );
 
-			string details = (_("If you don't save, changes from the last time you saved "
+			std::string details = (_("If you don't save, changes from the last time you saved "
 					"will be permanently lost."));
 
 			int answer=uim->yes_no_cancel(
