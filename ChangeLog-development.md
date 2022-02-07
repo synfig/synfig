@@ -1,3 +1,7 @@
+- [`a5ec91d`](https://github.com/synfig/synfig/commit/a5ec91db5b751dc12e4400ccfb5c063fd6d2d928) Removed "using namespace std;" ([#2520](https://github.com/synfig/synfig/issues/2520)) [ETL] [core] [studio]
+- [`668e8c4`](https://github.com/synfig/synfig/commit/668e8c410f9bedd7f4faa7abba61da16163ed305) Fixed PVS-Studio warning v656 ([#2524](https://github.com/synfig/synfig/issues/2524)) [core] [studio]
+- [`f71cdee`](https://github.com/synfig/synfig/commit/f71cdee789baa73e1e8978bcb53dd060b96494a3) Bone Tool: Fix selection of active bone when clicking on a bone control point ([#2488](https://github.com/synfig/synfig/issues/2488)) [studio]
+- [`62743b7`](https://github.com/synfig/synfig/commit/62743b7de5647ed3a6939493af764fd565383dd8) Show bone shape when Skeleton Deformation layer is disabled ([#2467](https://github.com/synfig/synfig/issues/2467)). Closes [#1625](https://github.com/synfig/synfig/issues/1625). [studio]
 - [`efe9326`](https://github.com/synfig/synfig/commit/efe9326992418f9fbc1c9a654fa0050c35c2641e) Fixed PVS-Studio warning v817 ([#2523](https://github.com/synfig/synfig/issues/2523)) [core] [studio]
 - [`61eba07`](https://github.com/synfig/synfig/commit/61eba079c983db043f787d3c318bac3b60796673) Merge PR [#2497](https://github.com/synfig/synfig/issues/2497): Porting to Gtk::Application - part 1 [core] [studio]
 - [`ad03efe`](https://github.com/synfig/synfig/commit/ad03efe3b70e507a4632fe14a55acd149be60477) FileSystem::Identifier::empty() returned wrong value ([#2510](https://github.com/synfig/synfig/issues/2510)) [core]
