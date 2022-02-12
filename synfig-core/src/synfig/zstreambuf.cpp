@@ -52,6 +52,7 @@ using namespace synfig;
 zstreambuf::zstreambuf(std::streambuf *buf):
 	buf_(buf),
 	inflate_initialized(false),
+	inflate_stream_{},
 	deflate_initialized(false),
 	deflate_stream_{}
 {
@@ -158,12 +159,6 @@ size_t zstreambuf::unpack(void *dest, size_t dest_size, const void *src, size_t 
 
 bool zstreambuf::inflate_buf()
 {
-    // initialize inflate if need
-    if (!inflate_initialized)
-    {
-    	memset(&inflate_stream_, 0, sizeof(inflate_stream_));
-    }
-
     // read and inflate new chunk of data
     char in_buf[option_bufsize];
     inflate_stream_.avail_in = buf_->sgetn(in_buf, sizeof(in_buf));
@@ -186,15 +181,16 @@ bool zstreambuf::inflate_buf()
 			//std::cerr << "Error: " << ret << ": " << inflate_stream_.msg << std::endl;
 			break;
 		}
-		read_buffer_.resize(read_buffer_.size() - inflate_stream_.avail_out);
 	} while (inflate_stream_.avail_out == 0);
+	read_buffer_.resize(read_buffer_.size() - inflate_stream_.avail_out);
+	inflate_stream_.next_in = nullptr;
 	assert(inflate_stream_.avail_in == 0);
 
 	// nothing to read
 	if (read_buffer_.empty()) return false;
 
 	// set new read buffer
-	char *pointer = &read_buffer_.front();
+	char *pointer = read_buffer_.data();
     setg(pointer, pointer, pointer + read_buffer_.size());
     return true;
 }
