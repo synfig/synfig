@@ -58,7 +58,6 @@
 
 using namespace synfig;
 using namespace types_namespace;
-using namespace etl;
 
 /* === M A C R O S ========================================================= */
 

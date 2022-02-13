@@ -49,7 +49,6 @@
 #endif
 
 using namespace synfig;
-using namespace etl;
 
 #define COLOR_EPSILON	(0.000001f)
 
