@@ -48,8 +48,17 @@ namespace synfig {
 	class zstreambuf : public std::streambuf
 	{
 	public:
+		// From zlib documentation (https://zlib.net/manual.html):
+		// windowBits can also be greater than 15 for optional gzip decoding.
+		// Add 32 to windowBits to enable zlib and gzip decoding with automatic
+		// header detection, or add 16 to decode only the gzip format
+		enum compression : int {
+			gzip        = 16+MAX_WBITS,
+			zip_or_gzip = 32+MAX_WBITS,
+			deflate     = -MAX_WBITS
+		};
 		enum {
-			option_bufsize				= 4096,
+			option_bufsize				= 32*1024,
 			option_method				= Z_DEFLATED,
 			option_compression_level	= Z_BEST_COMPRESSION,
 			option_window_bits			= 16+MAX_WBITS,
@@ -63,6 +72,7 @@ namespace synfig {
 
 	private:
 		std::streambuf *buf_;
+		zstreambuf::compression compression_;
 
 		bool inflate_initialized;
 		z_stream inflate_stream_;
@@ -76,7 +86,7 @@ namespace synfig {
 		bool deflate_buf(bool flush);
 
 	public:
-		explicit zstreambuf(std::streambuf *buf);
+		zstreambuf(std::streambuf *buf, zstreambuf::compression compression);
 		virtual ~zstreambuf();
 
 	protected:
@@ -106,10 +116,10 @@ namespace synfig {
 			{ return (size_t)istream_.read((char*)buffer, size).gcount(); }
 
 	public:
-		ZReadStream(FileSystem::ReadStream::Handle stream):
+		ZReadStream(FileSystem::ReadStream::Handle stream, zstreambuf::compression compression):
 			FileSystem::ReadStream(stream->file_system()),
 			stream_(stream),
-			buf_(stream_->rdbuf()),
+			buf_(stream_->rdbuf(), compression),
 			istream_(&buf_)
 		{ }
 
@@ -138,7 +148,7 @@ namespace synfig {
 		ZWriteStream(FileSystem::WriteStream::Handle stream):
 			FileSystem::WriteStream(stream->file_system()),
 			stream_(stream),
-			buf_(stream_->rdbuf()),
+			buf_(stream_->rdbuf(), zstreambuf::compression::gzip),
 			ostream_(&buf_)
 		{ }
 	};

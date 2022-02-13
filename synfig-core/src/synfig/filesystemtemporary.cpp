@@ -576,7 +576,7 @@ FileSystemTemporary::open_temporary(const String &filename)
 
 	FileSystem::ReadStream::Handle stream = file_system->get_read_stream(filename);
 	if (!stream) return false;
-	stream = new ZReadStream(stream);
+	stream = new ZReadStream(stream, zstreambuf::compression::gzip);
 
 	xmlpp::DomParser parser;
 	parser.parse_stream(*stream);

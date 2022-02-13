@@ -3498,7 +3498,7 @@ CanvasParser::parse_from_file_as(const FileSystem::Identifier &identifier,const 
 		if (stream)
 		{
 			if (filename_extension(identifier.filename) == ".sifz")
-				stream = FileSystem::ReadStream::Handle(new ZReadStream(stream));
+				stream = FileSystem::ReadStream::Handle(new ZReadStream(stream, zstreambuf::compression::gzip));
 
 			xmlpp::DomParser parser;
 			parser.parse_stream(*stream);
