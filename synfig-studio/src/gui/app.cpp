@@ -63,6 +63,7 @@
 #include <gtkmm/filefilter.h>
 #include <gtkmm/label.h>
 #include <gtkmm/messagedialog.h>
+#include <gtkmm/settings.h>
 #if GTK_CHECK_VERSION(3, 20, 0)
 #include <gtkmm/shortcutswindow.h>
 #endif
@@ -2243,29 +2244,24 @@ void App::edit_custom_workspace_list()
 void
 App::apply_gtk_settings()
 {
-	GtkSettings *gtk_settings;
-	gtk_settings = gtk_settings_get_default ();
+	Glib::RefPtr<Gtk::Settings> gtk_settings = Gtk::Settings::get_default();
 
-	gchar *theme_name=getenv("SYNFIG_GTK_THEME");
-	if(theme_name) {
-		g_object_set (G_OBJECT (gtk_settings), "gtk-theme-name", theme_name, NULL);
-	}
+	if (const char *theme_name = getenv("SYNFIG_GTK_THEME"))
+		gtk_settings->property_gtk_theme_name() = theme_name;
 
 	// dark theme
-	g_object_set (G_OBJECT (gtk_settings), "gtk-application-prefer-dark-theme", App::use_dark_theme, NULL);
+	gtk_settings->property_gtk_application_prefer_dark_theme() = App::use_dark_theme;
 
 	// enable menu icons
-	g_object_set (G_OBJECT (gtk_settings), "gtk-menu-images", TRUE, NULL);
+	gtk_settings->property_gtk_menu_images() = true;
 
 	auto provider = Gtk::CssProvider::create();
 	auto screen   = Gdk::Screen::get_default();
 	auto css_file = Gio::File::create_for_path(ResourceHelper::get_css_path("synfig.css"));
 
 #ifdef __APPLE__
-		g_object_get (G_OBJECT (gtk_settings), "gtk-theme-name", &theme_name, NULL);
-		if ( String(theme_name) == "Adwaita" )
+		if ( gtk_settings->property_gtk_theme_name() == "Adwaita" )
 			css_file = Gio::File::create_for_path(ResourceHelper::get_css_path("synfig.mac.css"));
-		g_free(theme_name);
 #endif
 
 	try {
