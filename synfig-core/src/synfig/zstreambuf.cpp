@@ -49,8 +49,9 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-zstreambuf::zstreambuf(std::streambuf *buf):
+zstreambuf::zstreambuf(std::streambuf *buf, zstreambuf::compression compression):
 	buf_(buf),
+	compression_(compression),
 	inflate_initialized(false),
 	inflate_stream_{},
 	deflate_initialized(false),
@@ -71,7 +72,7 @@ bool zstreambuf::pack(std::vector<char> &dest, const void *src, size_t size, boo
 	if (Z_OK != deflateInit2(&stream,
 			fast ? fast_option_compression_level : option_compression_level,
 			option_method,
-			option_window_bits,
+			compression::gzip,
 			fast ? fast_option_mem_level : option_mem_level,
 			fast ? fast_option_strategy : option_strategy
 	)) return false;
@@ -167,7 +168,7 @@ bool zstreambuf::inflate_buf()
 
 	if (!inflate_initialized)
 	{
-		if (Z_OK != inflateInit2(&inflate_stream_, -MAX_WBITS)) return false;
+		if (Z_OK != inflateInit2(&inflate_stream_, compression_)) return false;
 		inflate_initialized = true;
 	}
 
@@ -177,7 +178,10 @@ bool zstreambuf::inflate_buf()
 		read_buffer_.resize(read_buffer_.size() + inflate_stream_.avail_out);
 		inflate_stream_.next_out = (Bytef*)(&read_buffer_.back() + 1 - inflate_stream_.avail_out);
 		int ret = ::inflate(&inflate_stream_, Z_NO_FLUSH);
-		if (ret != Z_OK && ret != Z_STREAM_END) {
+		// From zlib docs(https://zlib.net/manual.html):
+		// Note that Z_BUF_ERROR is not fatal, and deflate() can be called again
+		// with more input and more output space to continue compressing.
+		if (ret != Z_OK && ret != Z_STREAM_END && ret != Z_BUF_ERROR) {
 			//std::cerr << "Error: " << ret << ": " << inflate_stream_.msg << std::endl;
 			break;
 		}
@@ -223,7 +227,7 @@ bool zstreambuf::deflate_buf(bool flush)
 		{
 			deflate_stream_.avail_out = sizeof(out_buf);
 			deflate_stream_.next_out = (Bytef*)out_buf;
-			if (Z_STREAM_ERROR == deflate(&deflate_stream_, flush ? Z_FINISH : Z_NO_FLUSH))
+			if (Z_STREAM_ERROR == ::deflate(&deflate_stream_, flush ? Z_FINISH : Z_NO_FLUSH))
 				return false;
 			if (deflate_stream_.avail_out < sizeof(out_buf))
 				buf_->sputn(out_buf, sizeof(out_buf) - deflate_stream_.avail_out);

@@ -317,7 +317,7 @@ studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vec
 		else
 		{
 			if (filename_ext == ".sifz")
-				stream_in = new ZReadStream(stream_in);
+				stream_in = new ZReadStream(stream_in, synfig::zstreambuf::gzip);
 
 			FileSystem::WriteStream::Handle outfile = FileSystemNative::instance()->get_write_stream(filename_processed);
 			*outfile << stream_in->rdbuf();
