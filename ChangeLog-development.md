@@ -1,3 +1,9 @@
+- [`e054801`](https://github.com/synfig/synfig/commit/e0548010697637acc2c5a187434a937b262f94d2) remove not-implemented and unused method ([#2533](https://github.com/synfig/synfig/issues/2533)) [studio]
+- [`0c47007`](https://github.com/synfig/synfig/commit/0c470076473be12a5ea00c12858fbe3284ce945c) Merge PR [#2534](https://github.com/synfig/synfig/issues/2534): Minor icon cleanup [studio]
+- [`c7a9167`](https://github.com/synfig/synfig/commit/c7a91678022226e1e645f4b61a586fdd4d1e1b04) Use gtkmm Gtk::Settings instead of plain GtkSettings ([#2532](https://github.com/synfig/synfig/issues/2532)) [studio]
+- [`462ea80`](https://github.com/synfig/synfig/commit/462ea802524e9e13bfa2aefdd213a7fc03c5adcb) Merge PR [#2518](https://github.com/synfig/synfig/issues/2518):  Added the ability to select a compression method for zstreambuf [core] [studio]
+- [`9b80219`](https://github.com/synfig/synfig/commit/9b8021936d2e00d5823055fe21037d30a79e9edc) Removed unused `using namespace etl;` ([#2530](https://github.com/synfig/synfig/issues/2530)) [ETL] [core]
+- [`7408ab5`](https://github.com/synfig/synfig/commit/7408ab5158ffbce5f17fa198d6bca7d8dba1fbef) Update Installation section ([#2531](https://github.com/synfig/synfig/issues/2531))
 - [`a5ec91d`](https://github.com/synfig/synfig/commit/a5ec91db5b751dc12e4400ccfb5c063fd6d2d928) Removed "using namespace std;" ([#2520](https://github.com/synfig/synfig/issues/2520)) [ETL] [core] [studio]
 - [`668e8c4`](https://github.com/synfig/synfig/commit/668e8c410f9bedd7f4faa7abba61da16163ed305) Fixed PVS-Studio warning v656 ([#2524](https://github.com/synfig/synfig/issues/2524)) [core] [studio]
 - [`f71cdee`](https://github.com/synfig/synfig/commit/f71cdee789baa73e1e8978bcb53dd060b96494a3) Bone Tool: Fix selection of active bone when clicking on a bone control point ([#2488](https://github.com/synfig/synfig/issues/2488)) [studio]
