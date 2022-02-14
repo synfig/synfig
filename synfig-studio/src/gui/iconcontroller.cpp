@@ -61,10 +61,12 @@ using namespace synfig;
 #	define IMAGE_EXT	"png"
 #endif
 
+#define NUM_INTERPOLATION_TYPES (int(INTERPOLATION_CLAMPED)+1)
+
 /* === M E T H O D S ======================================================= */
 
 static std::map< int, Glib::RefPtr<Gdk::Pixbuf> > _tree_pixbuf_table_value_type;
-static Glib::RefPtr<Gdk::Pixbuf> _tree_pixbuf_table_interpolation[(int)INTERPOLATION_CLAMPED+1];
+static Glib::RefPtr<Gdk::Pixbuf> _tree_pixbuf_table_interpolation[NUM_INTERPOLATION_TYPES];
 
 IconController::IconController()
 {
@@ -96,16 +98,6 @@ IconController::init_icon(const synfig::String &name, const synfig::String &icon
 }
 
 void
-IconController::init_icon_clone(const synfig::String &name, const synfig::String& desc)
-{
-	Gtk::StockItem stockitem(Gtk::StockID("synfig-" + name), desc);
-	Gtk::Stock::add(stockitem);
-	Glib::RefPtr<Gtk::IconSet> icon_set = Gtk::IconSet::create();
-	if (Gtk::Stock::lookup(stockitem.get_stock_id(), icon_set))
-		icon_factory->add(stockitem.get_stock_id(), icon_set);
-}
-
-void
 IconController::init_icons(const synfig::String& path_to_icons)
 {
 	try{
@@ -117,13 +109,6 @@ IconController::init_icons(const synfig::String& path_to_icons)
 
 #define INIT_STOCK_ICON(name,iconfile,desc) \
 	init_icon(#name, (path_to_icons) + (iconfile), (desc));
-
-#define INIT_STOCK_ICON_CLONE(name,desc) \
-	init_icon_clone(#name, (desc));
-
-#define INIT_STOCK_ITEM(name,desc) \
-	stock_##name = Gtk::StockItem(Gtk::StockID("synfig-" #name),desc); \
-	Gtk::Stock::add(stock_##name);
 
 	// Types
 	INIT_STOCK_ICON(type_bool, "type_bool_icon." IMAGE_EXT, _("Bool"));
@@ -249,17 +234,10 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	// Ghost Layers
 	// TODO: icon for ghost group
 	INIT_STOCK_ICON(layer_ghost_group, "layer_other_group_icon." IMAGE_EXT, _("Group Ghost"));
-	//INIT_STOCK_ICON(layer_ghost_group, "layer_ghost_group_icon." IMAGE_EXT, _("Group Ghost"));
-
-	INIT_STOCK_ICON(layer_new, "grid_enable_icon." IMAGE_EXT, _("Show Grid"));
 
 	INIT_STOCK_ICON(info, "info_icon." IMAGE_EXT, _("Info Tool"));
 	INIT_STOCK_ICON(group, "set_icon." IMAGE_EXT, _("Set"));
 
-	INIT_STOCK_ICON(grid_enable, "grid_enable_icon." IMAGE_EXT, _("Show Grid"));
-	INIT_STOCK_ICON(grid_disable, "grid_disable_icon." IMAGE_EXT, _("Hide Grid"));
-	INIT_STOCK_ICON(grid_snap_enable, "grid_snap_enable_icon." IMAGE_EXT, _("Enable Grid Snap"));
-	INIT_STOCK_ICON(grid_snap_disable, "grid_snap_disable_icon." IMAGE_EXT, _("Disable Grid Snap"));
 	INIT_STOCK_ICON(duplicate, "duplicate_icon." IMAGE_EXT, _("Duplicate"));
 	INIT_STOCK_ICON(encapsulate, "group_icon." IMAGE_EXT, _("Group"));
 	// TODO: icon for 'Group Layer into Switch' action
@@ -352,8 +330,6 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	INIT_STOCK_ICON(utils_timetrack_align, "utils_timetrack_align_icon." IMAGE_EXT, _("Utils Timetrack align"));
 
 #undef INIT_STOCK_ICON
-#undef INIT_STOCK_ICON_CLONE
-#undef INIT_STOCK_ITEM
 
 	icon_factory->add_default();
 
@@ -364,7 +340,7 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	for(Type *type = Type::get_first(); type != NULL; type = type->get_next())
 		_tree_pixbuf_table_value_type[type->identifier]=Gtk::Button().render_icon_pixbuf(value_icon(*type),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 
-	for(int i(0);i<((int)INTERPOLATION_CLAMPED+1);i++)
+	for(int i(0); i<NUM_INTERPOLATION_TYPES; i++)
 		_tree_pixbuf_table_interpolation[i]=Gtk::Button().render_icon_pixbuf(interpolation_icon(Interpolation(i)),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 }
 
