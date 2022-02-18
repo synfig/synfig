@@ -80,6 +80,10 @@ static synfig::Distance bline_width_;
 //static Color::BlendMethod blend_method_;
 //static Real opacity_;
 
+// Settings should be initialized before input_devices_ because
+// input_devices_ uses `Main::settings()` to store settings
+static Settings settings_;
+
 static synfigapp::InputDevice::Handle selected_input_device_;
 static std::list<synfigapp::InputDevice::Handle> input_devices_;
 
@@ -88,8 +92,6 @@ sigc::signal<void> signal_fill_color_changed_;
 sigc::signal<void> signal_gradient_changed_;
 sigc::signal<void> signal_bline_width_changed_;
 sigc::signal<void> signal_interpolation_changed_;
-
-Settings settings_;
 
 static synfig::Waypoint::Interpolation interpolation_;
 
