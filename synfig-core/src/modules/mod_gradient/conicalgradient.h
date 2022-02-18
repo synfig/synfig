@@ -45,7 +45,6 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 using namespace synfig;
-using namespace etl;
 
 class ConicalGradient : public Layer_Composite, public Layer_NoDeform
 {

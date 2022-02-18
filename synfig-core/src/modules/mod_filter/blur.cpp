@@ -53,7 +53,6 @@
 #endif
 
 using namespace synfig;
-using namespace etl;
 
 /*#define TYPE_BOX			0
 #define TYPE_FASTGUASSIAN	1

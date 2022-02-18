@@ -43,7 +43,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace studio;
 using namespace synfig;
 

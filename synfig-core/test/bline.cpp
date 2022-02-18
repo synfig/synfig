@@ -37,7 +37,6 @@
 
 #include <iostream>
 
-using namespace etl;
 using namespace synfig;
 
 std::ostream& operator<<(std::ostream& os, const Vector& v)
