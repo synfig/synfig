@@ -119,7 +119,7 @@ Dialog_FFmpegParam::Dialog_FFmpegParam(Gtk::Window &parent):
 
 	//Bitrate Spin Button
 	bitrate = Gtk::manage(new Gtk::SpinButton(Gtk::Adjustment::create(0.0, 10.0,100000.0)));
-	Gtk::Label* label2(manage(new Gtk::Label(_("Video Bit Rate:"))));
+	Gtk::Label* label2(manage(new Gtk::Label(_("Video Bit Rate (kbps):"))));
 	label2->set_halign(Gtk::ALIGN_START);
 	label2->set_valign(Gtk::ALIGN_CENTER);
 	get_content_area()->pack_start(*label2, true, true, 0);
