@@ -69,7 +69,7 @@
 #include <gui/preview.h>
 #include <gui/states/state_normal.h>
 #include <gui/widgets/widget_canvastimeslider.h>
-#include <gui/widgets/widget_enum.h>
+#include <gui/widgets/widget_interpolation.h>
 #include <gui/workarea.h>
 
 #include <pangomm.h>
@@ -887,21 +887,7 @@ CanvasView::create_time_bar()
 	timetrack->hide();
 
 	// Interpolation widget
-	widget_interpolation = manage(new Widget_Enum());
-	widget_interpolation->set_param_desc(
-		ParamDesc("interpolation")
-			.set_hint("enum")
-			.add_enum_value(INTERPOLATION_CLAMPED,"clamped",_("Clamped"))
-			.add_enum_value(INTERPOLATION_TCB,"auto",_("TCB"))
-			.add_enum_value(INTERPOLATION_CONSTANT,"constant",_("Constant"))
-			.add_enum_value(INTERPOLATION_HALT,"ease",_("Ease In/Out"))
-			.add_enum_value(INTERPOLATION_LINEAR,"linear",_("Linear"))
-	);
-	widget_interpolation->set_icon(0, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_clamped"), Gtk::ICON_SIZE_MENU));
-	widget_interpolation->set_icon(1, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_tcb"), Gtk::ICON_SIZE_MENU));
-	widget_interpolation->set_icon(2, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_const"), Gtk::ICON_SIZE_MENU));
-	widget_interpolation->set_icon(3, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_ease"), Gtk::ICON_SIZE_MENU));
-	widget_interpolation->set_icon(4, Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-interpolation_type_linear"), Gtk::ICON_SIZE_MENU));
+	widget_interpolation = manage(new Widget_Interpolation(Widget_Interpolation::SIDE_BOTH));
 	widget_interpolation->set_tooltip_text(_("Default Interpolation"));
 	widget_interpolation->set_popup_fixed_width(false);
 	widget_interpolation->set_hexpand(false);
