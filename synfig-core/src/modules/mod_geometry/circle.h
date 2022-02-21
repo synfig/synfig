@@ -35,7 +35,6 @@
 #include <synfig/layers/layer_polygon.h>
 
 using namespace synfig;
-using namespace etl;
 
 /* -- M A C R O S ----------------------------------------------------------- */
 
