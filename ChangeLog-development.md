@@ -1,3 +1,4 @@
+- [`86d3434`](https://github.com/synfig/synfig/commit/86d3434b9356064015d4dfe4fffd57ef25a1f9c8) Fixed Synfig Studio crash on exit (MacOS) ([#2540](https://github.com/synfig/synfig/issues/2540)) [studio]
 - [`e054801`](https://github.com/synfig/synfig/commit/e0548010697637acc2c5a187434a937b262f94d2) remove not-implemented and unused method ([#2533](https://github.com/synfig/synfig/issues/2533)) [studio]
 - [`0c47007`](https://github.com/synfig/synfig/commit/0c470076473be12a5ea00c12858fbe3284ce945c) Merge PR [#2534](https://github.com/synfig/synfig/issues/2534): Minor icon cleanup [studio]
 - [`c7a9167`](https://github.com/synfig/synfig/commit/c7a91678022226e1e645f4b61a586fdd4d1e1b04) Use gtkmm Gtk::Settings instead of plain GtkSettings ([#2532](https://github.com/synfig/synfig/issues/2532)) [studio]
