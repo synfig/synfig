@@ -45,47 +45,30 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
-#define CUSTOM_VCODEC_DESCRIPTION _("Custom Video Codec")
-#define CUSTOM_VCODEC _("write your video codec here")
-
 /* === G L O B A L S ======================================================= */
-//! Allowed video codecs
-/*! \warning This variable is linked to allowed_video_codecs_description,
- *  if you change this you must change the other accordingly.
- *  \warning These codecs are linked to the filename extensions for
- *  mod_ffmpeg. If you change this you must change the others accordingly.
- */
-const char* allowed_video_codecs[] =
-{
-	"flv", "h263p", "huffyuv", "libtheora", "libx264", "libx264-lossless",
-	"mjpeg", "mpeg1video", "mpeg2video", "mpeg4", "msmpeg4",
-	"msmpeg4v1", "msmpeg4v2", "wmv1", "wmv2", CUSTOM_VCODEC, NULL
+
+static const char* CUSTOM_VCODEC_DESCRIPTION = _("Custom Video Codec");
+static const char* CUSTOM_VCODEC = _("write your video codec here");
+
+/// FFMPEG video-codec name -> user-readable name / description
+static const std::map<const char*, const char*> known_video_codecs = {
+	{"flv",              _("Flash Video (FLV) / Sorenson Spark / Sorenson H.263")},
+	{"h263p",            _("H.263+ / H.263-1998 / H.263 version 2")},
+	{"huffyuv",          _("Huffyuv / HuffYUV")},
+	{"libtheora",        _("libtheora Theora")},
+	{"libx264",          _("H.264 / AVC / MPEG-4 AVC")},
+	{"libx264-lossless", _("H.264 / AVC / MPEG-4 AVC (LossLess)")},
+	{"mjpeg",            _("MJPEG (Motion JPEG)")},
+	{"mpeg1video",       _("raw MPEG-1 video")},
+	{"mpeg2video",       _("raw MPEG-2 video")},
+	{"mpeg4",            _("MPEG-4 part 2. (XviD/DivX)")},
+	{"msmpeg4",          _("MPEG-4 part 2 Microsoft variant version 3")},
+	{"msmpeg4v1",        _("MPEG-4 part 2 Microsoft variant version 1")},
+	{"msmpeg4v2",        _("MPEG-4 part 2 Microsoft variant version 2")},
+	{"wmv1",             _("Windows Media Video 7")},
+	{"wmv2",             _("Windows Media Video 8")},
 };
 
-//! Allowed video codecs description.
-/*! \warning This variable is linked to allowed_video_codecs,
- *  if you change this you must change the other accordingly.
- */
-const char* allowed_video_codecs_description[] =
-{
-	_("Flash Video (FLV) / Sorenson Spark / Sorenson H.263"),
-	_("H.263+ / H.263-1998 / H.263 version 2"),
-	_("Huffyuv / HuffYUV"),
-	_("libtheora Theora"),
-	_("H.264 / AVC / MPEG-4 AVC"),
-	_("H.264 / AVC / MPEG-4 AVC (LossLess)"),
-	_("MJPEG (Motion JPEG)"),
-	_("raw MPEG-1 video"),
-	_("raw MPEG-2 video"),
-	_("MPEG-4 part 2. (XviD/DivX)"),
-	_("MPEG-4 part 2 Microsoft variant version 3"),
-	_("MPEG-4 part 2 Microsoft variant version 1"),
-	_("MPEG-4 part 2 Microsoft variant version 2"),
-	_("Windows Media Video 7"),
-	_("Windows Media Video 8"),
-	CUSTOM_VCODEC_DESCRIPTION,
-	NULL
-};
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
@@ -99,15 +82,16 @@ Dialog_FFmpegParam::Dialog_FFmpegParam(Gtk::Window &parent):
 	custom_label->set_halign(Gtk::ALIGN_START);
 	custom_label->set_valign(Gtk::ALIGN_CENTER);
 	customvcodec=Gtk::manage(new Gtk::Entry());
+	customvcodec->set_placeholder_text(CUSTOM_VCODEC);
 	// Available Video Codecs Combo Box Text.
 	Gtk::Label* label(manage(new Gtk::Label(_("Available Video Codecs:"))));
 	label->set_halign(Gtk::ALIGN_START);
 	label->set_valign(Gtk::ALIGN_CENTER);
 	vcodec = Gtk::manage(new Gtk::ComboBoxText());
 	// Appends the codec descriptions to the Combo Box
-	for (int i = 0; allowed_video_codecs[i] != NULL &&
-					allowed_video_codecs_description[i] != NULL; i++)
-		vcodec->append(allowed_video_codecs_description[i]);
+	for (const auto& item : known_video_codecs)
+		vcodec->append(item.first, item.second);
+	vcodec->append(CUSTOM_VCODEC, CUSTOM_VCODEC_DESCRIPTION);
 	//Adds the Combo Box and the Custom Video Codec entry to the box
 	get_content_area()->pack_start(*label, true, true, 0);
 	get_content_area()->pack_start(*vcodec, true, true, 0);
@@ -128,22 +112,25 @@ Dialog_FFmpegParam::Dialog_FFmpegParam(Gtk::Window &parent):
 	get_content_area()->show_all();
 }
 
-
+Dialog_FFmpegParam::~Dialog_FFmpegParam()
+{
+}
 
 void
 Dialog_FFmpegParam::init()
 {
 	// By default, set the active text to the Custom Video Codec
-	vcodec->set_active_text(CUSTOM_VCODEC_DESCRIPTION);
-	customvcodec->set_text(CUSTOM_VCODEC);
+	vcodec->set_active_id(CUSTOM_VCODEC);
+	customvcodec->set_text(get_tparam().video_codec);
 	//Compare the passed vcodec to the available and set it active if found
-	for (int i = 0; allowed_video_codecs[i] != NULL &&
-					allowed_video_codecs_description[i] != NULL; i++)
-		if(!get_tparam().video_codec.compare(allowed_video_codecs[i]))
+	for (const auto& item : known_video_codecs) {
+		if(get_tparam().video_codec.compare(item.first) == 0)
 		{
-			vcodec->set_active_text(allowed_video_codecs_description[i]);
-			customvcodec->set_text(allowed_video_codecs[i]);
+			vcodec->set_active_id(item.first);
+			customvcodec->set_text(item.first);
+			break;
 		}
+	}
 	//Bitrate
 	bitrate->set_value(double(get_tparam().bitrate));
 }
@@ -151,26 +138,16 @@ Dialog_FFmpegParam::init()
 void
 Dialog_FFmpegParam::write_tparam(synfig::TargetParam & tparam_)
 {
-	tparam_.video_codec = customvcodec->get_text().c_str();
+	tparam_.video_codec = customvcodec->get_text();
 	tparam_.bitrate = bitrate->get_value();
 }
 
 void
 Dialog_FFmpegParam::on_vcodec_change()
 {
-	std::string codecnamed = vcodec->get_active_text();
-	customvcodec->set_sensitive(false);
-	for (int i = 0; allowed_video_codecs[i] != NULL &&
-					allowed_video_codecs_description[i] != NULL; i++)
-		if(!codecnamed.compare(allowed_video_codecs_description[i]))
-		{
-			if(!codecnamed.compare(CUSTOM_VCODEC_DESCRIPTION))
-				customvcodec->set_sensitive(true);
-			else
-				customvcodec->set_text(allowed_video_codecs[i]);
-		}
-}
-
-Dialog_FFmpegParam::~Dialog_FFmpegParam()
-{
+	std::string codecname = vcodec->get_active_id();
+	bool is_custom_codec = codecname == CUSTOM_VCODEC;
+	customvcodec->set_sensitive(is_custom_codec);
+	if (!is_custom_codec)
+		customvcodec->set_text(codecname);
 }
