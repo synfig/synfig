@@ -48,7 +48,7 @@ class ValueDescBoneSetParent :
 {
 private:
 	ValueDesc value_desc;
-	synfig::ValueNode::Handle child;
+	synfig::ValueNode::Handle active_bone_;
 	synfig::Time time;
 	synfig::ValueNode::Handle prev_parent;
 

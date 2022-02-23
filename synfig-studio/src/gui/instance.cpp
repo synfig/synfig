@@ -1230,7 +1230,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 	}
 
 	if (std::string("bone") == canvas_view->get_smach().get_state_name()) {
-		param_list.add("child",canvas_view->get_work_area()->get_active_bone_value_node());
+		param_list.add("active_bone", canvas_view->get_work_area()->get_active_bone_value_node());
 	}
 
 	if(param_list2.empty())
