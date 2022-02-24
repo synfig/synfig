@@ -28,7 +28,6 @@
 #include <ETL/angle>
 #include <ETL/clock>
 #include <ETL/calculus>
-#include <ETL/fixed>
 #include <stdio.h>
 
 /* === M A C R O S ========================================================= */
@@ -130,87 +129,6 @@ int angle_test(void)
 	return ret;
 }
 
-int fixed_test(void)
-{
-	int ret=0;
-	float f;
-
-	hermite<float,fixed> Hermie;
-	etl::clock timer;
-	double t;
-
-	Hermie.p1()=0;
-	Hermie.t1()=1;
-	Hermie.p2()=0;
-	Hermie.t2()=1;
-
-	Hermie.sync();
-
-
-
-	for(f=0.0f,timer.reset();f<1.001f;f+=0.005f)
-	{
-		t+=Hermie(f)+Hermie(f+0.1f);
-		t+=Hermie(f)+Hermie(f+0.1f);
-		t+=Hermie(f)+Hermie(f+0.1f);
-		t+=Hermie(f)+Hermie(f+0.1f);
-		t+=Hermie(f)+Hermie(f+0.1f);
-		t+=Hermie(f)+Hermie(f+0.1f);
-		t+=Hermie(f)+Hermie(f+0.1f);
-		t+=Hermie(f)+Hermie(f+0.1f);
-		t+=Hermie(f)+Hermie(f+0.1f);
-		t+=Hermie(f)+Hermie(f+0.1f);
-		t+=Hermie(f)+Hermie(f+0.1f);
-		t+=Hermie(f)+Hermie(f+0.1f);
-	}
-	t=timer();
-
-	fprintf(stderr,"time=%f milliseconds\n",t*1000);
-	return ret;
-}
-
-
-int anglefixed_test(void)
-{
-	int ret=0;
-	float f;
-
-	hermite<angle,fixed> Hermie;
-	etl::clock timer;
-	angle tmp;
-	double t;
-
-	Hermie.p1()=angle::deg(0);
-	Hermie.t1()=angle::deg(45);
-
-	Hermie.p2()=angle::deg(-45);
-	Hermie.t2()=angle::deg(180);
-
-	Hermie.sync();
-
-
-	for(f=0.0f,timer.reset();f<1.001f;f+=0.0005f)
-	{
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-	}
-	t=timer();
-
-	fprintf(stderr,"angle fixed time=%f milliseconds\n",t*1000);
-
-	return ret;
-}
-
 int float_intersection_test()
 {
 	int ret=0;
@@ -244,7 +162,6 @@ int main()
 
 	error+=basic_test();
 	error+=angle_test();
-	error+=fixed_test();
 	error+=float_intersection_test();
 	return error;
 }

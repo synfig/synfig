@@ -147,15 +147,6 @@ int surface_and_gaussian_blur_test()
 		printf("surface_and_gaussian_blur_test<double>: %f seconds\n",endtime);
 	}
 
-	{
-		surface<fixed> my_surface(1000,1000);
-
-		MyTimer.reset();
-		gaussian_blur(my_surface.begin(),my_surface.end(),30,30);
-		endtime=MyTimer();
-		printf("surface_and_gaussian_blur_test<fixed>: %f seconds\n",endtime);
-	}
-
 	return ret;
 }
 
@@ -326,7 +317,6 @@ int main()
 	error+=hermite_float_test();
 	error+=hermite_double_test();
 	error+=hermite_int_test();
-	error+=hermite_fixed_test();
 	error+=hermite_angle_test();
 
 	return error;
