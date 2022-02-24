@@ -16,7 +16,15 @@ add_test(NAME test_handle COMMAND handle)
 add_executable(hermite hermite.cpp)
 add_test(NAME test_hermite COMMAND hermite)
 
+# temporary dependency for `etl::current_working_directory()`
+include(FindPkgConfig)
+if(PKG_CONFIG_FOUND)
+	pkg_check_modules(GLIBMM REQUIRED glibmm-2.4)
+endif()
+
 add_executable(stringf stringf.cpp)
+target_include_directories(stringf PRIVATE ${GLIBMM_INCLUDE_DIRS})
+target_link_libraries(stringf PRIVATE ${GLIBMM_LDFLAGS})
 add_test(NAME test_stringf COMMAND stringf)
 
 add_executable(pen pen.cpp)
