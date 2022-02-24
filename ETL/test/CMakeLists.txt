@@ -7,9 +7,6 @@ include_directories(${PROJECT_SOURCE_DIR})
 add_executable(angle angle.cpp)
 add_test(NAME test_angle COMMAND angle)
 
-add_executable(fixed fixed.cpp)
-add_test(NAME test_fixed COMMAND fixed)
-
 add_executable(clock clock.cpp)
 add_test(NAME test_clock COMMAND clock)
 
@@ -35,7 +32,7 @@ add_executable(benchmark benchmark.cpp)
 add_test(NAME test_benchmark COMMAND benchmark)
 
 set_target_properties(
-		angle fixed clock handle hermite stringf pen surface smart_ptr benchmark
+		angle clock handle hermite stringf pen surface smart_ptr benchmark
 		PROPERTIES
 		RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test
 )
