@@ -341,15 +341,6 @@ public:
 	friend class cos;
 	friend class tan;
 
-	/*
-	** Deprecated
-	*/
-
-#ifndef ETL_NO_DEPRECATED
-	typedef rad		radians;
-	typedef deg		degrees;
-	typedef rot		rotations;
-#endif
 }; // END of class angle
 
 // ========================================================================
@@ -366,9 +357,6 @@ public:
 	rad	mod()const { return angle::mod(); }
 	rad dist(const angle &rhs)const { return angle::dist(rhs); }
 	value_type get()const { return v; }
-#ifndef ETL_NO_DEPRECATED
-	// operator value_type()const ETL_DEPRECATED_FUNCTION;
-#endif
 }; // END of class angle::radians
 // inline angle::rad::operator angle::value_type()const { return get(); }
 
@@ -386,9 +374,6 @@ public:
 	deg	mod()const { return angle::mod(); }
 	deg dist(const angle &rhs)const { return angle::dist(rhs); }
 	value_type get()const { return v*360/(PI*2); }
-#ifndef ETL_NO_DEPRECATED
-	// operator value_type()const ETL_DEPRECATED_FUNCTION;
-#endif
 }; // END of class angle::degrees
 // inline angle::deg::operator angle::value_type()const { return get(); }
 
@@ -406,9 +391,6 @@ public:
 	rot mod()const { return angle::mod(); }
 	rot dist(const angle &rhs)const { return angle::dist(rhs); }
 	value_type get()const { return v/(PI*2); }
-#ifndef ETL_NO_DEPRECATED
-	// operator value_type()const ETL_DEPRECATED_FUNCTION;
-#endif
 }; // END of class angle::rotations
 // inline angle::rot::operator angle::value_type()const { return get(); }
 
@@ -426,9 +408,6 @@ public:
 	sin	mod()const { return angle::mod(); }
 	sin dist(const angle &rhs)const { return angle::dist(rhs); }
 	value_type get()const { return static_cast<value_type>(std::sin(v)); }
-#ifndef ETL_NO_DEPRECATED
-	// operator value_type()const ETL_DEPRECATED_FUNCTION;
-#endif
 }; // END of class angle::sin
 // inline angle::sin::operator angle::value_type()const { return get(); }
 
@@ -446,9 +425,6 @@ public:
 	cos	mod()const { return angle::mod(); }
 	cos dist(const angle &rhs)const { return angle::dist(rhs); }
 	value_type get()const { return (value_type)std::cos(v); }
-#ifndef ETL_NO_DEPRECATED
-	// operator value_type()const ETL_DEPRECATED_FUNCTION;
-#endif
 }; // END of class angle::cos
 // inline angle::cos::operator angle::value_type()const { return get(); }
 
@@ -467,9 +443,6 @@ public:
 	tan	mod()const { return angle::mod(); }
 	tan dist(const angle &rhs)const { return angle::dist(rhs); }
 	value_type get()const { return (value_type)std::tan(v); }
-#ifndef ETL_NO_DEPRECATED
-	// operator value_type()const ETL_DEPRECATED_FUNCTION;
-#endif
 }; // END of class angle::tan
 // inline angle::tan::operator angle::value_type()const { return get(); }
 
