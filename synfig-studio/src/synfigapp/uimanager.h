@@ -70,6 +70,7 @@ public:
 				const std::string &button1,
 				const std::string &button2,
 				const std::string &button3,
+				bool hasDestructiveAction,
 				Response dflt=RESPONSE_YES
 	) = 0;
 };
@@ -93,6 +94,7 @@ public:
 			const std::string &/*button1*/,
 			const std::string &/*button2*/,
 			const std::string &/*button3*/,
+			bool hasDestructiveAction,
 			Response dflt
 	)
 	{ return dflt; }
@@ -127,6 +129,7 @@ public:
 			const std::string &/*button1*/,
 			const std::string &/*button2*/,
 			const std::string &/*button3*/,
+			bool hasDestructiveAction,
 			Response /*dflt*/
 	)
 	{ return RESPONSE_YES; }
@@ -160,6 +163,7 @@ public:
 			const std::string &button1,
 			const std::string &button2,
 			const std::string &button3,
+			bool hasDestructiveAction,
 			Response dflt
 	);
 
