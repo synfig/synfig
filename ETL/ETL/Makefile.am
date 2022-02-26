@@ -40,7 +40,6 @@ etl_HEADERS = \
 	$(top_builddir)/ETL/etl_profile.h \
 	bezier \
 	_bezier.h \
-	_bezier_angle.h \
 	pen \
 	_pen.h \
 	boxblur \
