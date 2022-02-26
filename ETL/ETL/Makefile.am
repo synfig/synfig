@@ -18,7 +18,6 @@ etl_HEADERS = \
 	_ref_count.h \
 	angle \
 	handle \
-	fixed \
 	clock \
 	hermite \
 	calculus \
@@ -35,7 +34,6 @@ etl_HEADERS = \
 	smach \
 	_smach.h \
 	_trivial.h \
-	_fixed.h \
 	etl_config.h \
 	$(top_builddir)/ETL/etl_profile.h \
 	bezier \
