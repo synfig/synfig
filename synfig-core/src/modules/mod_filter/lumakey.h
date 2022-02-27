@@ -33,6 +33,8 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfig/layer.h>
+#include <synfig/rendering/common/task/taskpixelprocessor.h>
+#include <synfig/rendering/software/task/tasksw.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -41,6 +43,35 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 using namespace synfig;
+
+/// The pixel luma (Y) changes its alpha channel
+/// In other words, LumaKey converts a [r g b a] pixel into [r' g' b' a*y]
+class TaskLumaKey: public rendering::TaskPixelProcessor
+{
+public:
+	typedef etl::handle<TaskLumaKey> Handle;
+	static Token token;
+	virtual Token::Handle get_token() const { return token.handle(); }
+
+	TaskLumaKey();
+
+protected:
+	/// An intermediate matrix to help computation
+	/// matrix * pixel results in [r' g' b' a Y]
+	/// Implementations must perform the a*Y computation
+	ColorMatrix matrix;
+};
+
+
+class TaskLumaKeySW: public TaskLumaKey, public rendering::TaskSW
+{
+public:
+	typedef etl::handle<TaskLumaKeySW> Handle;
+	static Token token;
+	virtual Token::Handle get_token() const { return token.handle(); }
+
+	virtual bool run(RunParams &params) const;
+};
 
 class LumaKey : public Layer
 {
@@ -56,7 +87,6 @@ public:
 
 	virtual Rect get_bounding_rect(Context context)const;
 
-	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual bool reads_context()const { return true; }
 
 protected:

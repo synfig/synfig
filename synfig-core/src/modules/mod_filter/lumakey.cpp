@@ -65,6 +65,74 @@ SYNFIG_LAYER_SET_VERSION(LumaKey,"0.1");
 
 /* === M E T H O D S ======================================================= */
 
+rendering::Task::Token TaskLumaKey::token(
+	DescAbstract<TaskLumaKey>("LumaKey") );
+rendering::Task::Token TaskLumaKeySW::token(
+	DescReal<TaskLumaKeySW, TaskLumaKey>("LumaKeySW") );
+
+TaskLumaKey::TaskLumaKey()
+{
+	// Sadly, LumaKey is not a linear transformation
+	// we use a matrix just to save some intermadiate computations
+
+	// final color must be: [ r' g' b' a*y 1 ]
+	// matrix makes [ r g b a 1 ] -> [ r' g' b' a y ]
+	// so we need to force later a final operation to make alpha = a*y
+
+	matrix.set_encode_yuv();
+	// makes W = Y and then Y = 1
+	matrix *= ColorMatrix(
+				0.,0.,0.,0.,1.,
+				0.,1.,0.,0.,0.,
+				0.,0.,1.,0.,0.,
+				0.,0.,0.,1.,0.,
+				1.,0.,0.,0.,0.
+				);
+	matrix *= ColorMatrix().set_decode_yuv();
+}
+
+bool
+TaskLumaKeySW::run(RunParams&) const
+{
+	RectInt r = target_rect;
+	if (r.valid())
+	{
+		VectorInt offset = get_offset();
+		RectInt ra = sub_task()->target_rect + r.get_min() + get_offset();
+		if (ra.valid())
+		{
+			rect_set_intersect(ra, ra, r);
+			if (ra.valid())
+			{
+				LockWrite ldst(this);
+				if (!ldst) return false;
+				LockRead lsrc(sub_task());
+				if (!lsrc) return false;
+
+				const synfig::Surface &a = lsrc->get_surface();
+				synfig::Surface &c = ldst->get_surface();
+				for(int y = ra.miny; y < ra.maxy; ++y)
+				{
+					const Color *ca = &a[y - r.miny + offset[1]][ra.minx - r.minx + offset[0]];
+					Color *cc = &c[y][ra.minx];
+					for(int x = ra.minx; x < ra.maxx; ++x, ++ca, ++cc) {
+						// maybe these computations may be simplified
+						cc->set_r( ca->get_r()*matrix.m00 + ca->get_g()*matrix.m10 + ca->get_b()*matrix.m20 + ca->get_a()*matrix.m30 + matrix.m40 );
+						cc->set_g( ca->get_r()*matrix.m01 + ca->get_g()*matrix.m11 + ca->get_b()*matrix.m21 + ca->get_a()*matrix.m31 + matrix.m41 );
+						cc->set_b( ca->get_r()*matrix.m02 + ca->get_g()*matrix.m12 + ca->get_b()*matrix.m22 + ca->get_a()*matrix.m32 + matrix.m42 );
+
+						// set alpha := original alpha * original luma
+						Real w   = ca->get_r()*matrix.m04 + ca->get_g()*matrix.m14 + ca->get_b()*matrix.m24 + ca->get_a()*matrix.m34 + matrix.m44;
+						cc->set_a((ca->get_r()*matrix.m03 + ca->get_g()*matrix.m13 + ca->get_b()*matrix.m23 + ca->get_a()*matrix.m33 + matrix.m43)*w );
+					}
+				}
+			}
+		}
+	}
+
+	return true;
+}
+
 LumaKey::LumaKey()
 {
 }
@@ -91,41 +159,6 @@ LumaKey::get_color(Context context, const Point &getpos)const
 	return color;
 }
 
-bool
-LumaKey::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
-
-	SuperCallback supercb(cb,0,9500,10000);
-
-	if(!context.accelerated_render(surface,quality,renddesc,&supercb))
-		return false;
-
-	int x,y;
-
-	Surface::pen pen(surface->begin());
-
-	for(y=0;y<renddesc.get_h();y++,pen.inc_y(),pen.dec_x(x))
-		for(x=0;x<renddesc.get_w();x++,pen.inc_x())
-		{
-			Color tmp(pen.get_value());
-			tmp.set_a(tmp.get_y()*tmp.get_a());
-			tmp.set_y(1);
-			pen.put_value(tmp);
-		}
-
-	// Mark our progress as finished
-	if(cb && !cb->amount_complete(10000,10000))
-		return false;
-
-	return true;
-}
-
-
-
-////
-
-
 Rect
 LumaKey::get_bounding_rect(Context context)const
 {
@@ -137,4 +170,13 @@ LumaKey::get_bounding_rect(Context context)const
 
 rendering::Task::Handle
 LumaKey::build_rendering_task_vfunc(Context context) const
-	{ return Layer::build_rendering_task_vfunc(context); }
+{
+	rendering::Task::Handle task = context.build_rendering_task();
+
+	TaskLumaKey::Handle task_lumakey(new TaskLumaKey());
+	task_lumakey->sub_task() = task;
+
+	task = task_lumakey;
+
+	return task;
+}
