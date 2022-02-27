@@ -101,6 +101,7 @@ EXTRA_DIST = \
 	layer_distortion_warp_icon.sif \
 	layer_example_metaballs_icon.sif \
 	layer_example_simplecircle_icon.sif \
+	layer_filter_chromakey_icon.sif \
 	layer_filter_clamp_icon.sif \
 	layer_filter_colorcorrect_icon.sif \
 	layer_filter_halftone2_icon.sif \
@@ -309,6 +310,7 @@ ICONS = \
 	layer_distortion_warp_icon.$(EXT) \
 	layer_example_metaballs_icon.$(EXT) \
 	layer_example_simplecircle_icon.$(EXT) \
+	layer_filter_chromakey_icon.$(EXT) \
 	layer_filter_clamp_icon.$(EXT) \
 	layer_filter_colorcorrect_icon.$(EXT) \
 	layer_filter_halftone2_icon.$(EXT) \

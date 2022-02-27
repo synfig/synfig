@@ -64,6 +64,8 @@ src/modules/mod_ffmpeg/trgt_ffmpeg.cpp
 src/modules/mod_ffmpeg/trgt_ffmpeg.h
 src/modules/mod_filter/blur.cpp
 src/modules/mod_filter/blur.h
+src/modules/mod_filter/chromakey.cpp
+src/modules/mod_filter/chromakey.h
 src/modules/mod_filter/colorcorrect.cpp
 src/modules/mod_filter/colorcorrect.h
 src/modules/mod_filter/halftone.cpp
