@@ -706,7 +706,6 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 		ret.push_back(ParamDesc(ValueBase(),"origin")
 			.set_local_name(_("Origin"))
 			.set_description(_("Defines the Off and On position relative to neighbours"))
-			.set_is_distance()
 		);
 		ret.push_back(ParamDesc(ValueBase(),"split")
 			.set_local_name(_("Split"))
