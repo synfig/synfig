@@ -13,7 +13,6 @@ AM_CPPFLAGS = \
 	-I$(top_builddir)/ETL
 
 TESTS = \
-	fixed \
 	clock \
 	handle \
 	angle \
@@ -26,7 +25,6 @@ TESTS = \
 	spline
 
 check_PROGRAMS = \
-	fixed \
 	handle \
 	clock \
 	angle \
@@ -45,7 +43,6 @@ surface_SOURCES=surface.cpp
 pen_SOURCES=pen.cpp
 handle_SOURCES=handle.cpp
 angle_SOURCES=angle.cpp
-fixed_SOURCES=fixed.cpp
 smach_SOURCES=smach.cpp
 clock_SOURCES=clock.cpp
 hermite_SOURCES=hermite.cpp

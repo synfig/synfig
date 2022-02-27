@@ -98,7 +98,7 @@ Point Blur::operator()(const Point &pos) const
 
 	case DISC:
 		{
-			Angle theta=Angle::rotations((float)rand()/(float)RAND_MAX);
+			Angle theta=angle::rot((float)rand()/(float)RAND_MAX);
 			Vector::value_type mag=(float)rand()/(float)RAND_MAX;
 			Vector vect((float)Angle::cos(theta).get()*mag,(float)Angle::sin(theta).get()*mag);
 

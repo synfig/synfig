@@ -32,7 +32,6 @@
 
 #include "_curve_func.h"
 #include <cmath>				// for ldexp
-// #include <ETL/fixed>			// not used
 
 /* === M A C R O S ========================================================= */
 
@@ -380,91 +379,6 @@ public:
 	operator[](int i) const
 	{ return (&a)[i]; }
 };
-
-//#ifdef __FIXED__
-
-// Fast double implementation of a cubic bezier curve
-/*
-template <>
-template <class T,unsigned int FIXED_BITS>
-class bezier_base<fixed_base<T,FIXED_BITS> > : std::unary_function<fixed_base<T,FIXED_BITS>,fixed_base<T,FIXED_BITS> >
-{
-public:
-	typedef fixed_base<T,FIXED_BITS> value_type;
-	typedef fixed_base<T,FIXED_BITS> time_type;
-
-private:
-	affine_combo<value_type,time_type> affine_func;
-	value_type a,b,c,d;
-	time_type r,s;
-
-	value_type _coeff[4];
-	time_type drs; // reciprocal of (s-r)
-public:
-	bezier_base():r(0.0),s(1.0),drs(1.0) { }
-	bezier_base(
-		const value_type &a, const value_type &b, const value_type &c, const value_type &d,
-		const time_type &r=0, const time_type &s=1):
-		a(a),b(b),c(c),d(d),r(r),s(s),drs(1.0/(s-r)) { sync(); }
-
-	void sync()
-	{
-		drs=time_type(1)/(s-r);
-		_coeff[0]=                 a;
-		_coeff[1]=           b*3 - a*3;
-		_coeff[2]=     c*3 - b*6 + a*3;
-		_coeff[3]= d - c*3 + b*3 - a;
-	}
-
-	// 4 products, 3 sums, and 1 difference.
-	inline value_type
-	operator()(time_type t)const
-	{ t-=r; t*=drs; return _coeff[0]+(_coeff[1]+(_coeff[2]+(_coeff[3])*t)*t)*t; }
-
-	void set_rs(time_type new_r, time_type new_s) { r=new_r; s=new_s; drs=time_type(1)/(s-r); }
-	void set_r(time_type new_r) { r=new_r; drs=time_type(1)/(s-r); }
-	void set_s(time_type new_s) { s=new_s; drs=time_type(1)/(s-r); }
-	const time_type &get_r()const { return r; }
-	const time_type &get_s()const { return s; }
-	time_type get_dt()const { return s-r; }
-
-	//! Bezier curve intersection function
-	//! Calculates the time of intersection
-	//	for the calling curve.
-	//
-	time_type intersect(const bezier_base<value_type,time_type> &x, time_type t=0,int i=15)const
-	{
-		value_type system[4];
-		system[0]=_coeff[0]-x._coeff[0];
-		system[1]=_coeff[1]-x._coeff[1];
-		system[2]=_coeff[2]-x._coeff[2];
-		system[3]=_coeff[3]-x._coeff[3];
-
-		t-=r;
-		t*=drs;
-
-		// Newton's method
-		// Inner loop: 7 products, 5 sums, 1 difference
-		for(;i;i--)
-			t-=(time_type) ( (system[0]+(system[1]+(system[2]+(system[3])*t)*t)*t)/
-				(system[1]+(system[2]*2+(system[3]*3)*t)*t) );
-
-		t*=(s-r);
-		t+=r;
-
-		return t;
-	}
-
-	value_type &
-	operator[](int i)
-	{ return (&a)[i]; }
-
-	const value_type &
-	operator[](int i) const
-	{ return (&a)[i]; }
-};
-*/
-//#endif
 
 #endif
 
