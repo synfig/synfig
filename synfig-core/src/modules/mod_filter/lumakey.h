@@ -32,9 +32,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/layers/layer_composite_fork.h>
-#include <synfig/color.h>
-#include <synfig/vector.h>
+#include <synfig/layer.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -44,7 +42,7 @@
 
 using namespace synfig;
 
-class LumaKey : public Layer_CompositeFork, public Layer_NoDeform
+class LumaKey : public Layer
 {
 	SYNFIG_LAYER_MODULE_EXT
 private:
@@ -52,16 +50,10 @@ private:
 public:
 	LumaKey();
 
-	virtual bool set_param(const String & param, const ValueBase &value);
-
 	virtual ValueBase get_param(const String & param)const;
 
 	virtual Color get_color(Context context, const Point &pos)const;
 
-	virtual Vocab get_param_vocab()const;
-
-	Layer::Handle hit_check(Context context, const Point &point)const;
-	using Layer::get_bounding_rect;
 	virtual Rect get_bounding_rect(Context context)const;
 
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;

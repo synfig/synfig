@@ -65,18 +65,8 @@ SYNFIG_LAYER_SET_VERSION(LumaKey,"0.1");
 
 /* === M E T H O D S ======================================================= */
 
-LumaKey::LumaKey():
-	Layer_CompositeFork(1.0,Color::BLEND_STRAIGHT)
+LumaKey::LumaKey()
 {
-	set_blend_method(Color::BLEND_STRAIGHT);
-
-}
-
-
-bool
-LumaKey::set_param(const String &param, const ValueBase &value)
-{
-	return Layer_Composite::set_param(param,value);
 }
 
 ValueBase
@@ -85,52 +75,20 @@ LumaKey::get_param(const String &param)const
 	EXPORT_NAME();
 	EXPORT_VERSION();
 
-	return Layer_Composite::get_param(param);
-}
-
-Layer::Vocab
-LumaKey::get_param_vocab()const
-{
-	Layer::Vocab ret(Layer_Composite::get_param_vocab());
-
-/*	ret.push_back(ParamDesc("color")
-		.set_local_name(_("Color"))
-		.set_description(_("Color of checkers"))
-	);
-	ret.push_back(ParamDesc("pos")
-		.set_local_name(_("Offset"))
-	);
-	ret.push_back(ParamDesc("size")
-		.set_local_name(_("Size"))
-		.set_description(_("Size of checkers"))
-		.set_origin("pos")
-	);
-*/
-	return ret;
-}
-
-synfig::Layer::Handle
-LumaKey::hit_check(synfig::Context context, const synfig::Point &getpos)const
-{
-	return context.hit_check(getpos);
+	return Layer::get_param(param);
 }
 
 Color
 LumaKey::get_color(Context context, const Point &getpos)const
 {
-	const Color color(context.get_color(getpos));
+	Color color(context.get_color(getpos));
 
-	if(get_amount()==0.0)
-		return color;
+	if (active()) {
+		color.set_a(color.get_y()*color.get_a());
+		color.set_y(1);
+	}
 
-	Color ret(color);
-	ret.set_a(ret.get_y()*ret.get_a());
-	ret.set_y(1);
-
-	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
-		return ret;
-
-	return Color::blend(ret,color,get_amount(),get_blend_method());
+	return color;
 }
 
 bool
@@ -171,7 +129,7 @@ LumaKey::accelerated_render(Context context,Surface *surface,int quality, const 
 Rect
 LumaKey::get_bounding_rect(Context context)const
 {
-	if(is_disabled())
+	if(!active())
 		return Rect::zero();
 
 	return context.get_full_bounding_rect();
