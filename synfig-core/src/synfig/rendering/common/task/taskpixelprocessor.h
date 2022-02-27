@@ -79,8 +79,10 @@ public:
 
 	virtual bool is_zero() const
 		{ return false; }
+	/// It does not do/affect anything. Every pixel keeps the same after running this task
 	virtual bool is_transparent() const
 		{ return false; }
+	/// It produces the same color for each pixel
 	virtual bool is_constant() const
 		{ return false; }
 	virtual bool is_affects_transparent() const
