@@ -116,14 +116,22 @@ TaskLumaKeySW::run(RunParams&) const
 					const Color *ca = &a[y - r.miny + offset[1]][ra.minx - r.minx + offset[0]];
 					Color *cc = &c[y][ra.minx];
 					for(int x = ra.minx; x < ra.maxx; ++x, ++ca, ++cc) {
-						// maybe these computations may be simplified
-						cc->set_r( ca->get_r()*matrix.m00 + ca->get_g()*matrix.m10 + ca->get_b()*matrix.m20 + ca->get_a()*matrix.m30 + matrix.m40 );
-						cc->set_g( ca->get_r()*matrix.m01 + ca->get_g()*matrix.m11 + ca->get_b()*matrix.m21 + ca->get_a()*matrix.m31 + matrix.m41 );
-						cc->set_b( ca->get_r()*matrix.m02 + ca->get_g()*matrix.m12 + ca->get_b()*matrix.m22 + ca->get_a()*matrix.m32 + matrix.m42 );
+						// new pixel value = matrix * pixel
+						//    (pixel alpha does not affect and is not affected by the matrix)
+						// matrix layout:
+						//    [ a b c 0 d]
+						//    [ e f g 0 h]
+						//    [ i j k 0 l]
+						//    [ 0 0 0 1 0]
+						//    [ m n p 0 0]
+						cc->set_r( ca->get_r()*matrix.m00 + ca->get_g()*matrix.m10 + ca->get_b()*matrix.m20 /*+ ca->get_a()*matrix.m30*/ + matrix.m40 );
+						cc->set_g( ca->get_r()*matrix.m01 + ca->get_g()*matrix.m11 + ca->get_b()*matrix.m21 /*+ ca->get_a()*matrix.m31*/ + matrix.m41 );
+						cc->set_b( ca->get_r()*matrix.m02 + ca->get_g()*matrix.m12 + ca->get_b()*matrix.m22 /*+ ca->get_a()*matrix.m32*/ + matrix.m42 );
 
+						// bogus pixel w component is actually Luma (see Task_LumaKey)
 						// set alpha := original alpha * original luma
-						Real w   = ca->get_r()*matrix.m04 + ca->get_g()*matrix.m14 + ca->get_b()*matrix.m24 + ca->get_a()*matrix.m34 + matrix.m44;
-						cc->set_a((ca->get_r()*matrix.m03 + ca->get_g()*matrix.m13 + ca->get_b()*matrix.m23 + ca->get_a()*matrix.m33 + matrix.m43)*w );
+						Real w   = ca->get_r()*matrix.m04 + ca->get_g()*matrix.m14 + ca->get_b()*matrix.m24 /*+ ca->get_a()*matrix.m34 + matrix.m44*/;
+						cc->set_a( ca->get_a()/**matrix.m33*/ * w );
 					}
 				}
 			}
