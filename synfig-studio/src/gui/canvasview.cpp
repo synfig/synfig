@@ -1092,19 +1092,7 @@ CanvasView::create_tool_separator()
 
 void CanvasView::toggle_render_combobox()
 {
-	//get row number for value of render_combobox
-	int toggled = this->render_combobox->get_active_row_number();
-	// std::cout<<toggled<<" this is the value\n";
-	if (toggled == 0) {
-
-		App::navigator_renderer = App::workarea_renderer = "software-draft";
-	}
-	if (toggled == 1) {
-		App::navigator_renderer = App::workarea_renderer = "software-preview";
-	}
-	if (toggled == 2) {
-		App::navigator_renderer = App::workarea_renderer = "software";
-	}
+	App::navigator_renderer = App::workarea_renderer = render_combobox->get_active_id();
 
 	App::save_settings();
 	App::setup_changed();
@@ -1185,11 +1173,14 @@ CanvasView::create_top_toolbar()
 		displaybar->append(*refreshbutton);
 	}
 
-	{ // Draft rendering mode button
+	{ // Rendering mode ComboBox
 		render_combobox = Gtk::manage(new class Gtk::ComboBoxText());
-		render_combobox->append(_("Draft"));
-		render_combobox->append(_("Preview"));
-		render_combobox->append(_("Final"));
+		render_combobox->append("software-draft", _("Draft"));
+#ifdef WITH_OPENGL
+		render_combobox->append("gl", _("GL"));
+#endif
+		render_combobox->append("software-preview", _("Preview"));
+		render_combobox->append("software", _("Final"));
 		render_combobox->signal_changed().connect(sigc::mem_fun(*this, &CanvasView::toggle_render_combobox));
 		render_combobox->set_tooltip_text(_("Select rendering mode"));
 		render_combobox->set_active(1);
@@ -1198,7 +1189,7 @@ CanvasView::create_top_toolbar()
 		container->add(*render_combobox);
 
 		container->show();
-		displaybar->add(*container);// container pointer
+		displaybar->add(*container);
 	}
 
 	{ // Background rendering button
