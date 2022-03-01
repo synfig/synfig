@@ -253,39 +253,48 @@ Widget_Defaults::Widget_Defaults():
 
 	}
 
-	// widget brush
-	widget_brush = manage(new Widget_Brush());
-	widget_brush->set_size_request(56, 48);
-	widget_brush->set_tooltip_text(_("Brush Preview"));
+	const bool is_brush_enabled = App::enable_experimental_features && !getenv("SYNFIG_DISABLE_BRUSH");
+	Gtk::Grid* brush_layout = nullptr;
 
-	brush_increase = Gtk::manage(new class Gtk::Button("+"));
-	brush_increase->set_tooltip_text(_("Increase brush size"));
-	brush_increase->set_relief(Gtk::RELIEF_NONE);
-	brush_increase->set_border_width(0);
-	brush_increase->signal_clicked().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_brush_increase_clicked));
+	if (!is_brush_enabled) {
+		widget_brush = nullptr;
+		brush_increase = nullptr;
+		brush_decrease = nullptr;
+		brush_entry = nullptr;
+	} else {
+		widget_brush = manage(new Widget_Brush());
+		widget_brush->set_size_request(56, 48);
+		widget_brush->set_tooltip_text(_("Brush Preview"));
 
-	brush_decrease = Gtk::manage(new class Gtk::Button("-"));
-	brush_decrease->set_tooltip_text(_("Decrease brush size"));
-	brush_decrease->set_relief(Gtk::RELIEF_NONE);
-	brush_decrease->set_border_width(0);
-	brush_decrease->signal_clicked().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_brush_decrease_clicked));
+		brush_increase = Gtk::manage(new class Gtk::Button("+"));
+		brush_increase->set_tooltip_text(_("Increase brush size"));
+		brush_increase->set_relief(Gtk::RELIEF_NONE);
+		brush_increase->set_border_width(0);
+		brush_increase->signal_clicked().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_brush_increase_clicked));
 
-	brush_entry = Gtk::manage(new class Gtk::Entry());
-	brush_entry->set_width_chars(4);
-	brush_entry->set_has_frame(false);
-	brush_entry->signal_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_brush_entry_changed));
-	brush_entry->set_tooltip_text(_("Brush Size"));
+		brush_decrease = Gtk::manage(new class Gtk::Button("-"));
+		brush_decrease->set_tooltip_text(_("Decrease brush size"));
+		brush_decrease->set_relief(Gtk::RELIEF_NONE);
+		brush_decrease->set_border_width(0);
+		brush_decrease->signal_clicked().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_brush_decrease_clicked));
 
-	auto brush_layout = Gtk::manage(new class Gtk::Grid());
-	brush_layout->attach(*widget_brush,  0, 0, 2, 1);
-	brush_layout->attach(*brush_decrease, 0, 1, 1, 1);
-	brush_layout->attach(*brush_increase, 1, 1, 1, 1);
-	brush_layout->attach(*brush_entry,    0, 2, 2, 1);
-	brush_layout->show_all();
+		brush_entry = Gtk::manage(new class Gtk::Entry());
+		brush_entry->set_width_chars(4);
+		brush_entry->set_has_frame(false);
+		brush_entry->signal_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_brush_entry_changed));
+		brush_entry->set_tooltip_text(_("Brush Size"));
 
-	// fixed brush widget size
-	brush_layout->set_valign(Gtk::ALIGN_CENTER);
-	brush_layout->set_halign(Gtk::ALIGN_CENTER);
+		brush_layout = Gtk::manage(new class Gtk::Grid());
+		brush_layout->attach(*widget_brush,  0, 0, 2, 1);
+		brush_layout->attach(*brush_decrease, 0, 1, 1, 1);
+		brush_layout->attach(*brush_increase, 1, 1, 1, 1);
+		brush_layout->attach(*brush_entry,    0, 2, 2, 1);
+		brush_layout->show_all();
+
+		// fixed brush widget size
+		brush_layout->set_valign(Gtk::ALIGN_CENTER);
+		brush_layout->set_halign(Gtk::ALIGN_CENTER);
+	}
 
 	// widget bline width
 	widget_bline_width = manage(new Widget_Distance());
@@ -372,10 +381,12 @@ Widget_Defaults::Widget_Defaults():
 		tool_item1->add(*widget_colors_gradient);
 		tool_item_group->insert(*tool_item1);
 		tool_item1->show();
-		Gtk::ToolItem *tool_item2 = manage(new class Gtk::ToolItem());
-		tool_item2->add(*brush_layout);
-		tool_item_group->insert(*tool_item2);
-		tool_item2->show();
+		if (is_brush_enabled) {
+			Gtk::ToolItem *tool_item2 = manage(new class Gtk::ToolItem());
+			tool_item2->add(*brush_layout);
+			tool_item_group->insert(*tool_item2);
+			tool_item2->show();
+		}
 
 		tool_item_group->show_all();
 
@@ -430,7 +441,8 @@ void
 Widget_Defaults::bline_width_refresh()
 {
 	widget_bline_width->set_value(synfigapp::Main::get_bline_width());
-	brush_entry->set_text(widget_bline_width->get_value().get_string(widget_bline_width->get_digits()));
+	if (brush_entry)
+		brush_entry->set_text(widget_bline_width->get_value().get_string(widget_bline_width->get_digits()));
 }
 
 /*
