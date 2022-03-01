@@ -31,51 +31,11 @@
 #include <synfig/valuenodes/valuenode_blinecalcvertex.h>
 #include <synfig/valuenodes/valuenode_const.h>
 
-#include<synfig/general.h>
-
 #include <vector>
 
-#include <iostream>
+#include "test_base.h"
 
 using namespace synfig;
-
-std::ostream& operator<<(std::ostream& os, const Vector& v)
-{
-    os << '(' << v[0] << ',' << v[1] << ')';
-    return os;
-}
-
-#define ERROR_MESSAGE_TWO_VALUES(a, b) \
-	std::cerr.precision(8); \
-	std::cerr << __FUNCTION__ << ":" << __LINE__ << " - expected " << a << ", but got " << b << std::endl;
-
-#define ASSERT_EQUAL(expected, value) {\
-	if (expected != value) { \
-		ERROR_MESSAGE_TWO_VALUES(expected, value) \
-		return true; \
-	} \
-}
-
-#define ASSERT_APPROX_EQUAL(expected, value) {\
-	if (!synfig::approximate_equal(expected, value)) { \
-		ERROR_MESSAGE_TWO_VALUES(expected, value) \
-		return true; \
-	} \
-}
-
-#define ASSERT_APPROX_EQUAL_MICRO(expected, value) {\
-	if (std::fabs(expected - value) > 1e-6) { \
-		ERROR_MESSAGE_TWO_VALUES(expected, value) \
-		return true; \
-	} \
-}
-
-#define ASSERT_VECTOR_APPROX_EQUAL_MICRO(expected, value) {\
-	if (std::fabs(expected[0] - value[0]) > 2e-6 || std::fabs(expected[1] - value[1]) > 2e-6) { \
-		ERROR_MESSAGE_TWO_VALUES(expected, value) \
-		return true; \
-	} \
-}
 
 void fill_list(std::vector<ValueBase> &list) {
 	BLinePoint p;
@@ -286,39 +246,19 @@ bool test_calc_vertex() {
 }
 
 
-#define TEST_FUNCTION(function_name) {\
-	fail = function_name(); \
-	if (fail) { \
-		error("%s FAILED", #function_name); \
-		failures++; \
-	} \
-}
-
 int main() {
 	Type::subsys_init();
 
-	int failures = 0;
-	bool fail;
-	bool exception_thrown = false;
-
-	try {
+	TEST_SUITE_BEGIN()
 		TEST_FUNCTION(test_bline_length)
 		TEST_FUNCTION(test_bline_std_to_hom_without_loop)
 		TEST_FUNCTION(test_bline_std_to_hom_with_loop)
 		TEST_FUNCTION(test_bline_hom_to_std_without_loop)
 		TEST_FUNCTION(test_bline_hom_to_std_with_loop)
 		TEST_FUNCTION(test_calc_vertex)
-	} catch (...) {
-		error("Some exception has been thrown.");
-		exception_thrown = true;
-	}
-
-	if (failures || exception_thrown)
-		error("Test finished with %i errors and %i exception", failures, exception_thrown);
-	else
-		info("Success");
+	TEST_SUITE_END()
 
 	Type::subsys_stop();
 
-	return (failures || exception_thrown)? 1 : 0;
+	return tst_exit_status;
 }

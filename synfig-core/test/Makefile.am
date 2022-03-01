@@ -6,9 +6,14 @@ AM_LDFLAGS = \
 
 check_PROGRAMS=$(TESTS)
 
-TESTS=bone bline
+TESTS = \
+	bline \
+	bone \
+	node
 
 bone_SOURCES=bone.cpp
 
 bline_SOURCES=bline.cpp
 
+
+node_SOURCES=node.cpp
