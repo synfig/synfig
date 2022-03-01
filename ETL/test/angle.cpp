@@ -201,7 +201,7 @@ int angle_test()
 
 		affine_combo<angle> combo;
 
-		hermite<angle> hermie(a,b,b.dist(a),b.dist(a));
+		etl::hermite<angle> hermie(a,b,b.dist(a),b.dist(a));
 
 		for(f=0;f<1.001;f+=0.1)
 		{
