@@ -204,6 +204,8 @@ src/gui/widgets/widget_fontfamily.cpp
 src/gui/widgets/widget_fontfamily.h
 src/gui/widgets/widget_gradient.cpp
 src/gui/widgets/widget_gradient.h
+src/gui/widgets/widget_interpolation.cpp
+src/gui/widgets/widget_interpolation.h
 src/gui/widgets/widget_keyframe_list.cpp
 src/gui/widgets/widget_keyframe_list.h
 src/gui/widgets/widget_link.h
