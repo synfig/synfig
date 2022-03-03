@@ -262,6 +262,13 @@ ccache_show_stats
 
 }
 
+core_check()
+{
+cd synfig-core
+make check
+cd ..
+}
+
 core_build()
 {
 core_configure
@@ -331,6 +338,13 @@ fi
 
 cd ..
 msg_done
+}
+
+studio_check()
+{
+cd synfig-studio
+make check
+cd ..
 }
 
 studio_build()
