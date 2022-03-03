@@ -129,7 +129,7 @@ bool
 TaskClampSW::run(RunParams&) const
 {
 	RectInt r = target_rect;
-	if (!r.valid())
+	if (r.valid())
 	{
 		VectorInt offset = get_offset();
 		RectInt ra = sub_task()->target_rect + r.get_min() + get_offset();
