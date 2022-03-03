@@ -193,6 +193,7 @@ public:
 				const std::string &button1,
 				const std::string &button2,
 				const std::string &button3,
+				bool hasDestructiveAction,
 				Response dflt=RESPONSE_YES )
 	{
 		view->present();
@@ -207,10 +208,12 @@ public:
 		);
 
 		dialog.set_secondary_text(details);
-		dialog.add_button(button1, RESPONSE_NO);
+		Gtk::Button* no_button = dialog.add_button(button1, RESPONSE_NO);
 		dialog.add_button(button2, RESPONSE_CANCEL);
 		dialog.add_button(button3, RESPONSE_YES);
-
+		//add destructive-action colored button if closed without saving
+		if (hasDestructiveAction)
+			no_button->get_style_context()->add_class("destructive-action");
 		dialog.set_default_response(dflt);
 		dialog.show();
 		int response = dialog.run();
@@ -3638,6 +3641,7 @@ CanvasView::import_sequence()
 				_("No"),
 				_("Cancel"),
 				_("Yes"),
+				false,
 				UIInterface::RESPONSE_NO);
 		if(answer!=UIInterface::RESPONSE_CANCEL){
 			canvas_interface()->import_sequence(filenames, errors, warnings, App::resize_imported_images,answer);
