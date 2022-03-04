@@ -107,7 +107,7 @@ namespace {
 	};
 }
 
-//! A map to store all the GUIDs with a pointer to the Node.
+// A map to store all the GUIDs with a pointer to the Node.
 static GlobalNodeMap& global_node_map()
 {
 	static GlobalNodeMap map;
@@ -125,20 +125,20 @@ Node* synfig::find_node(const GUID &guid) {
 void
 TimePoint::absorb(const TimePoint& x)
 {
-	//! If the Time Point to absorb is itself then bail out
+	// If the Time Point to absorb is itself then bail out
 	if(get_guid()==x.get_guid())
 		return;
-	//! Creates a new GUID with the old and the new one using XOR operator
+	// Creates a new GUID with the old and the new one using XOR operator
 	set_guid(get_guid()^x.get_guid());
-	//! If the current before/after interpolation is NIL use the interpolation
-	//! provided by the TimePoint to absorb
+	// If the current before/after interpolation is NIL use the interpolation
+	// provided by the TimePoint to absorb
 	if(get_after()==INTERPOLATION_NIL)
 		set_after(x.get_after());
 	if(get_before()==INTERPOLATION_NIL)
 		set_before(x.get_before());
-	//! If the interpolation of the Time Point to absorb is not the same
-	//! than the interpolation from the Time Point to absorb then
-	//! use UNDEFINED interpolation
+	// If the interpolation of the Time Point to absorb is not the same
+	// than the interpolation from the Time Point to absorb then
+	// use UNDEFINED interpolation
 	if(get_after()!=x.get_after() && x.get_after()!=INTERPOLATION_NIL)
 		set_after(INTERPOLATION_UNDEFINED);
 	if(get_before()!=x.get_before() && x.get_before()!=INTERPOLATION_NIL)
@@ -148,17 +148,17 @@ TimePoint::absorb(const TimePoint& x)
 TimePointSet::iterator
 TimePointSet::insert(const TimePoint& x)
 {
-	//! finds a iterator to a Time Point with the same time
-	//! \see inline bool operator==(const TimePoint& lhs,const TimePoint& rhs)
+	// finds a iterator to a Time Point with the same time
+	// \see inline bool operator==(const TimePoint& lhs,const TimePoint& rhs)
 	iterator iter(find(x));
-	//! If iter is not a the end of the set (we found one Time Point)
+	// If iter is not a the end of the set (we found one Time Point)
 	if(iter!=end())
 	{
-		//! Absorb the time point
+		// Absorb the time point
 		const_cast<TimePoint&>(*iter).absorb(x);
 		return iter;
 	}
-	//! Else, insert it at the first of the set
+	// Else, insert it at the first of the set
 	return std::set<TimePoint>::insert(x).first;
 }
 
@@ -191,8 +191,6 @@ Node::child_changed(const Node *x)
 	on_child_changed(x);
 }
 
-
-//! Gets the GUID for this value node
 const synfig::GUID&
 Node::get_guid()const
 {
@@ -208,7 +206,6 @@ Node::get_guid()const
 	return guid_;
 }
 
-//! Sets the GUID for this value node
 void
 Node::set_guid(const synfig::GUID& x)
 {

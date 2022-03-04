@@ -127,6 +127,9 @@ public:
 
 }; // END of class TimePointSet
 
+
+//! Base class for dealing with parent-child relationship, time points and basic signals
+//! Historically, it was designed primarily for handling ValueNodes and their link features
 class Node : public etl::rshared_object
 {
 	/*
@@ -135,7 +138,6 @@ class Node : public etl::rshared_object
 
 public:
 
-	//! \writeme
 	typedef	TimePointSet time_set;
 
 	/*
@@ -145,17 +147,16 @@ public:
 private:
 
 	mutable std::mutex guid_mutex_;
-	//! \ The GUID of the node
+	//! The GUID of the node
 	mutable GUID guid_;
 
-	//! cached time values for all the children
+	//! Cached time values for this node and all the children
 	mutable time_set times;
 
-	//! \writeme
+	//! Indicates if \p times cache is not updated since last changed() call
 	mutable bool bchanged;
 
 	//! The last time the node was modified since the program started
-	//! \see __sys_clock
 	mutable clock_t time_last_changed_;
 
 	//! \writeme
@@ -182,11 +183,11 @@ private:
 	//! Child node changed signal
 	sigc::signal<void, const Node*> signal_child_changed_;
 
-	//!	GUID changed signal
-	/*! \note The second parameter is the *OLD* guid! */
+	//! GUID changed signal
+	/*! \note The parameter is the *OLD* guid! */
 	sigc::signal<void,GUID> signal_guid_changed_;
 
-	//!	Node deleted signal
+	//! Node deleted signal
 	sigc::signal<void> signal_deleted_;
 
 	/*
@@ -195,14 +196,17 @@ private:
 
 public:
 
+	//! Signal emitted when node is about to be deleted
 	sigc::signal<void>& signal_deleted() { return signal_deleted_; }
 
+	//! Signal emitted when node is flagged as changed via changed() or child_changed()
 	sigc::signal<void>& signal_changed() { return signal_changed_; }
 
+	//! Signal emitted when a child node is flagged as changed via child_changed()
 	sigc::signal<void, const Node*>& signal_child_changed() { return signal_child_changed_; }
 
-	//!	GUID Changed
-	/*! \note The second parameter is the *OLD* guid! */
+	//! Signal emitted when GUID changes
+	/*! \note The parameter is the *OLD* guid! */
 	sigc::signal<void,GUID>& signal_guid_changed() { return signal_guid_changed_; }
 
 	/*
@@ -213,9 +217,7 @@ protected:
 
 	Node();
 
-	// This class cannot be copied -- use clone() if necessary
-private:
-	Node(const Node &x);
+	Node(const Node &x) = delete;
 
 public:
 	virtual ~Node();
@@ -226,7 +228,13 @@ public:
 
 public:
 
+	//! Flag this node has changed.
+	//! This way programmer can batch its changes and call it only once
+	//! It emmits signal_changed()
 	void changed();
+	//! Flag the child node \p x has changed.
+	//! This way programmer can batch its changes and call it only once
+	//! It emmits signal_child_changed() and signal_changed()
 	void child_changed(const Node *x);
 
 	//! Gets the GUID for this Node
@@ -238,18 +246,20 @@ public:
 	//! Gets the time when the Node was changed
 	int get_time_last_changed()const;
 
-	//! Adds the parameter \x as the child of the current Node
-	void add_child(Node*x);
+	//! Adds the parameter \p x as the child of the current Node
+	void add_child(Node *x);
 
-	//! Removes the parameter \x as a child of the current Node
-	void remove_child(Node*x);
+	//! Removes the parameter \p x as a child of the current Node
+	void remove_child(Node *x);
 
-	//!Returns how many parents has the current Node
+	//! Returns how many parents has the current Node
 	std::size_t parent_count() const;
 
 	//! Checks if node \p x is parent of this node
 	bool is_child_of(const Node* x) const;
 
+	//! Returns the first parent Node.
+	//! Note that parents are stored as a FIFO. Do not rely on parent order!
 	Node* get_first_parent() const;
 
 	//! Callback function for a foreach method.
@@ -340,7 +350,7 @@ protected:
 	//! the GUI can be connected to.
 	virtual void on_guid_changed(GUID guid);
 
-	//!	Function to be overloaded that fills the Time Point Set with
+	//! Function to be overloaded that fills the Time Point Set with
 	//! all the children Time Points.
 	virtual void get_times_vfunc(time_set &set) const = 0;
 }; // End of Node class
