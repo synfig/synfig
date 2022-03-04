@@ -31,12 +31,10 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <cstdio>
-
 #include <ETL/handle>
 
-#include "time.h"
-#include "uniqueid.h"
+#include <synfig/time.h>
+#include <synfig/uniqueid.h>
 
 /* === M A C R O S ========================================================= */
 

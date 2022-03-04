@@ -38,8 +38,6 @@
 
 #include <sigc++/bind.h>
 
-#include "time.h"
-
 #include "general.h"
 #include <synfig/localization.h>
 

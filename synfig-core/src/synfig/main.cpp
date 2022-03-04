@@ -61,7 +61,7 @@
 #include "color.h"
 #include "vector.h"
 #include <fstream>
-#include <time.h>
+#include <ctime>
 #include "layer.h"
 #include "soundprocessor.h"
 #include "threadpool.h"
