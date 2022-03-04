@@ -44,7 +44,7 @@
 #include <synfig/paramdesc.h>
 #include <synfig/renddesc.h>
 #include <synfig/value.h>
-#include <time.h>
+#include <ctime>
 
 #endif
 

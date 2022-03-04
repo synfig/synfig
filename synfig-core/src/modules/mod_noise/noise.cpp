@@ -45,7 +45,7 @@
 #include <synfig/renddesc.h>
 #include <synfig/surface.h>
 #include <synfig/value.h>
-#include <time.h>
+#include <ctime>
 
 #endif
 

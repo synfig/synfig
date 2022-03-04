@@ -30,9 +30,8 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "string.h"
-#include <stdint.h>
-#include <cassert>
+#include <cstdint>
+#include "synfig/string.h"
 
 /* === M A C R O S ========================================================= */
 

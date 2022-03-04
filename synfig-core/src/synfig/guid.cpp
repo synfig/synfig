@@ -37,6 +37,7 @@
 #include "quick_rng.h"
 #include <ETL/stringf>
 
+#include <cassert>
 #include <cstring>
 
 #ifdef _WIN32
@@ -66,7 +67,7 @@ using namespace synfig;
 
 
 #ifdef MANUAL_GUID_CALC
-#include <time.h>
+#include <ctime>
 static GUID_RNG _a, _b;
 static void _set_up_rand_long_long(uint64_t &x);
 static void _get_rand_long_long(uint64_t &x);
