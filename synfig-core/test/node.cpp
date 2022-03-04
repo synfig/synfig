@@ -38,11 +38,14 @@ struct NodeX : public Node
 	{
 		return "NodeX";
 	}
+
+	// used for testing get_times()
+	time_set x_times;
 	
 protected:
 	void get_times_vfunc(time_set &set) const override
 	{
-		set.insert(TimePoint());
+		set = x_times;
 	}
 };
 
@@ -77,12 +80,35 @@ bool set_node_guid_works() {
 	return false;
 }
 
-bool set_node_guid_emits_signal_guid_changed() {
+bool set_node_guid_first_time_does_not_emit_signal_guid_changed() {
 	NodeX node;
-	
+
 	GUID new_guid;
 
-	ASSERT_SIGNAL_EMITTED((&node),signal_guid_changed,,GUID,void, node.set_guid(new_guid));
+	ASSERT_SIGNAL_NOT_EMITTED((&node),signal_guid_changed,,GUID,void, node.set_guid(new_guid));
+
+	return false;
+}
+
+bool set_node_guid_emits_signal_guid_changed() {
+	NodeX node;
+
+	GUID new_guid1, new_guid2;
+
+	node.set_guid(new_guid1);
+
+	ASSERT_SIGNAL_EMITTED((&node),signal_guid_changed,,GUID,void, node.set_guid(new_guid2));
+
+	return false;
+}
+
+bool set_same_node_guid_does_not_emit_signal_guid_changed() {
+	NodeX node;
+
+	GUID new_guid;
+	node.set_guid(new_guid);
+
+	ASSERT_SIGNAL_NOT_EMITTED((&node),signal_guid_changed,,GUID,void, node.set_guid(new_guid));
 
 	return false;
 }
@@ -251,8 +277,73 @@ bool deleting_node_removes_it_as_parent_from_its_children() {
 	return false;
 }
 
+bool marking_node_as_changed_changes_the_last_time_changed() {
+	NodeX node;
 
+	auto last_time = node.get_time_last_changed();
+	node.changed();
 
+	ASSERT(last_time < node.get_time_last_changed());
+
+	return false;
+}
+
+bool marking_node_as_changed_emits_signal_changed() {
+	NodeX node;
+
+	ASSERT_SIGNAL_EMITTED((&node),signal_changed,,,void, node.changed());
+
+	return false;
+}
+
+bool marking_child_node_as_changed_emits_signal_changed() {
+	NodeX parent_node, child_node;
+
+	parent_node.add_child(&child_node);
+
+	ASSERT_SIGNAL_EMITTED((&parent_node),signal_changed,,,void, child_node.changed());
+
+	return false;
+}
+
+bool marking_child_node_as_changed_emits_signal_child_changed() {
+	NodeX parent_node, child_node;
+
+	parent_node.add_child(&child_node);
+
+	ASSERT_SIGNAL_EMITTED((&parent_node),signal_child_changed,,const Node*,void, child_node.changed());
+
+	return false;
+}
+
+bool get_times_is_cached() {
+	NodeX node;
+
+	node.x_times.insert(TimePoint(Time(3)));
+
+	ASSERT_EQUAL(1, node.get_times().size());
+
+	node.x_times.insert(TimePoint(Time(4)));
+
+	ASSERT_EQUAL(1, node.get_times().size());
+
+	return false;
+}
+
+bool marking_node_as_changed_updates_times_cache() {
+	NodeX node;
+
+	node.x_times.insert(TimePoint(Time(3)));
+
+	ASSERT_EQUAL(1, node.get_times().size());
+
+	node.x_times.insert(TimePoint(Time(4)));
+
+	node.changed();
+	ASSERT_EQUAL(2, node.get_times().size());
+
+	return false;
+}
 
 int main() {
 
@@ -260,7 +351,9 @@ int main() {
 		TEST_FUNCTION(initial_node_guid_is_not_zero);
 		TEST_FUNCTION(non_initialized_nodes_have_different_guid);
 		TEST_FUNCTION(set_node_guid_works);
+		TEST_FUNCTION(set_node_guid_first_time_does_not_emit_signal_guid_changed);
 		TEST_FUNCTION(set_node_guid_emits_signal_guid_changed);
+		TEST_FUNCTION(set_same_node_guid_does_not_emit_signal_guid_changed);
 		TEST_FUNCTION(set_node_guid_does_not_emit_signal_changed);
 
 		TEST_FUNCTION(find_node_works);
@@ -278,6 +371,14 @@ int main() {
 		TEST_FUNCTION(removing_child_node_removes_itself_as_parent_from_child);
 		TEST_FUNCTION(removing_child_node_does_not_decrease_its_parent_count_if_not_its_parent);
 		TEST_FUNCTION(deleting_node_removes_it_as_parent_from_its_children);
+
+		TEST_FUNCTION(marking_node_as_changed_changes_the_last_time_changed);
+		TEST_FUNCTION(marking_node_as_changed_emits_signal_changed);
+		TEST_FUNCTION(marking_child_node_as_changed_emits_signal_changed);
+		TEST_FUNCTION(marking_child_node_as_changed_emits_signal_child_changed);
+
+		TEST_FUNCTION(get_times_is_cached);
+		TEST_FUNCTION(marking_node_as_changed_updates_times_cache);
 	TEST_SUITE_END()
 
 	return tst_exit_status;
