@@ -129,8 +129,10 @@ static void _get_rand_long_long(uint64_t &x){	read(rand_fd,&x,sizeof(x));}
 void
 synfig::GUID::make_unique()
 {
-	get_rand_long_long(data.u_64.a);
-	get_rand_long_long(data.u_64.b);
+	do {
+		get_rand_long_long(data.u_64.a);
+		get_rand_long_long(data.u_64.b);
+	} while (data.u_64.a == 0 && data.u_64.b == 0);
 }
 
 synfig::GUID
