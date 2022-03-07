@@ -142,10 +142,17 @@ public:
 
 	class Token;
 
+	/// Special values for OptimizerPass
+	///   For optimzation purposes, some tasks may not be run itself,
+	///   but delegates to (a single) one of its subtasks.
+	/// These values indicates no delegation to a subtask: they are special cases
+	/// \sa get_pass_subtask_index()
+	/// \sa synfig::rendering::OptimizerPass::run()
+	/// \sa synfig::rendering::Renderer::call_optimizers()
 	enum {
-		PASSTO_THIS_TASK                  = -1,
-		PASSTO_THIS_TASK_WITHOUT_SUBTASKS = -2,
-		PASSTO_NO_TASK                    = -3
+		PASSTO_THIS_TASK                  = -1, //< Run the task itself (No subtask delegation)
+		PASSTO_THIS_TASK_WITHOUT_SUBTASKS = -2, //< The task itself run, but clear its subtasks before (No subtask delegation)
+		PASSTO_NO_TASK                    = -3  //< Ignore the task and its subtasks
 	};
 
 	class DescBase {
@@ -360,7 +367,9 @@ private:
 	mutable Rect bounds;
 
 public:
+	/// The vectorial surface coordinates (in synfig unit)
 	Rect source_rect;
+	/// The raster surface coordinates (in pixel unit)
 	RectInt target_rect;
 	SurfaceResource::Handle target_surface;
 	List sub_tasks;
@@ -426,8 +435,13 @@ public:
 	Vector get_pixels_per_unit() const;
 	Vector get_units_per_pixel() const;
 
+	/// Both target and source rectangles are now invalid
 	void trunc_to_zero();
+	/// Truncate (vectorial) source surface according to (vectorial) rect param
+	/// It truncates the (raster) target surface is truncate
 	void trunc_source_rect(const Rect &rect);
+	/// Truncate (raster) target surface according to (raster) rect param
+	/// It truncates the (vectorial) source surface is truncate
 	void trunc_target_rect(const RectInt &rect);
 	void trunc_by_bounds();
 	void move_target_rect(const VectorInt &offset);
@@ -448,6 +462,8 @@ public:
 
 	bool allow_run_before(Task &other) const;
 
+	/// Check if a task delegates the job to one of its subtasks
+	/// \return the index of the useful subtask or one of PASSTO_* enum values
 	virtual int get_pass_subtask_index() const
 		{ return PASSTO_THIS_TASK; }
 
