@@ -31,11 +31,12 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <cstdio> // FILE*
+#include <vector>
+
 #include <synfig/target_scanline.h>
 #include <synfig/string.h>
 #include <synfig/targetparam.h>
-#include <sys/types.h>
-#include <cstdio>
 
 /* === M A C R O S ========================================================= */
 
@@ -57,10 +58,13 @@ private:
 	FILE *file;
 	synfig::String filename;
 	synfig::String sound_filename;
-	unsigned char *buffer;
-	synfig::Color *color_buffer;
+	std::vector<unsigned char> buffer;
+	std::vector<synfig::Color> color_buffer;
 	std::string video_codec;
 	int bitrate;
+
+	bool does_video_codec_support_alpha_channel(const synfig::String& video_codec) const;
+
 public:
 	ffmpeg_trgt(const char *filename,
 				const synfig::TargetParam& params);
