@@ -148,7 +148,7 @@ public:
 
 
 public:
-	hermite() { }
+	hermite() : P1{}, P2{}, T1{}, T2{} { }
 	hermite(const value_type &p1, const value_type &p2, const value_type &t1, const value_type &t2):
     	P1(p1),P2(p2),T1(t1),T2(t2) { sync(); }
 	hermite(const value_type &p1, const value_type &p2):

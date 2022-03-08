@@ -243,7 +243,7 @@ private:
 	value_type _coeff[4];
 	time_type drs; // reciprocal of (s-r)
 public:
-	bezier_base():r(0.0),s(1.0),drs(1.0) { }
+	bezier_base(): a{0.f}, b{0.f}, c{0.f}, d{0.f}, r(0.0),s(1.0),drs(1.0) { }
 	bezier_base(
 		const value_type &a, const value_type &b, const value_type &c, const value_type &d,
 		const time_type &r=0.0, const time_type &s=1.0):
@@ -323,7 +323,7 @@ private:
 	value_type _coeff[4];
 	time_type drs; // reciprocal of (s-r)
 public:
-	bezier_base():r(0.0),s(1.0),drs(1.0) { }
+	bezier_base(): a{0.l}, b{0.l}, c{0.l}, d{0.l}, r(0.0),s(1.0),drs(1.0) { }
 	bezier_base(
 		const value_type &a, const value_type &b, const value_type &c, const value_type &d,
 		const time_type &r=0.0, const time_type &s=1.0):

@@ -148,12 +148,12 @@ public:
 	};
 
 protected:
-	int x_,y_;
-	int w_,h_;
+	int x_ = 0, y_ = 0;
+	int w_ = 0, h_ = 0;
 private:
-	int pitch_;
+	int pitch_ = 0;
 	value_type value_;
-	value_type *data_;
+	value_type *data_ = nullptr;
 
 	typedef generic_pen<T,AT> self_type;
 
@@ -175,6 +175,7 @@ public:
 		w_(w),
 		h_(h),
 		pitch_(pitch),
+		value_{},
 		data_(data)
 	{
 	}
@@ -185,11 +186,12 @@ public:
 		w_(w),
 		h_(h),
 		pitch_(sizeof(value_type)*w),
+		value_{},
 		data_(data)
 	{
 	}
 
-	generic_pen():data_(NULL) { }
+	generic_pen(): value_{}, data_(nullptr) { }
 
 	self_type& move(int a, int b)
 	{

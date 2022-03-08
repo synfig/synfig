@@ -61,7 +61,7 @@ public:
 		const synfig::Surface *src;
 		VectorInt src_offset;
 		RectInt src_rect;
-		rendering::Blur::Type type;
+		rendering::Blur::Type type = rendering::Blur::BOX;
 		Vector size;
 		Vector amplified_size;
 		VectorInt extra_size;
