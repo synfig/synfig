@@ -1138,7 +1138,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		{
 			if(iter->second.check_type(value_desc.get_value_type()))
 			{
-				item = Gtk::manage(new Gtk::MenuItem(iter->second.local_name));
+				item = Gtk::manage(new Gtk::MenuItem(iter->second.get_local_name()));
 				item->signal_activate().connect(
 					sigc::hide_return(
 						sigc::bind(

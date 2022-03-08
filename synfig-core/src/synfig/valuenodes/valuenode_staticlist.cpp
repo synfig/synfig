@@ -60,7 +60,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_StaticList, RELEASE_VERSION_0_62_00, "static_list", "Static List")
+REGISTER_VALUENODE(ValueNode_StaticList, RELEASE_VERSION_0_62_00, "static_list", N_("Static List"))
 
 /* === P R O C E D U R E S ================================================= */
 

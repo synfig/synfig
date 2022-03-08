@@ -50,7 +50,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Reciprocal, RELEASE_VERSION_0_61_08, "reciprocal", "Reciprocal")
+REGISTER_VALUENODE(ValueNode_Reciprocal, RELEASE_VERSION_0_61_08, "reciprocal", N_("Reciprocal"))
 
 /* === P R O C E D U R E S ================================================= */
 

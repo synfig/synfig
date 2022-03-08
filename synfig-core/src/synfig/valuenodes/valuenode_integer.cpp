@@ -54,7 +54,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Integer, RELEASE_VERSION_0_61_08, "fromint", "Integer")
+REGISTER_VALUENODE(ValueNode_Integer, RELEASE_VERSION_0_61_08, "fromint", N_("Integer"))
 
 /* === P R O C E D U R E S ================================================= */
 

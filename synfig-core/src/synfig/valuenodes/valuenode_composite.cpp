@@ -64,7 +64,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Composite, RELEASE_VERSION_0_61_06, "composite", "Composite")
+REGISTER_VALUENODE(ValueNode_Composite, RELEASE_VERSION_0_61_06, "composite", N_("Composite"))
 
 /* === P R O C E D U R E S ================================================= */
 

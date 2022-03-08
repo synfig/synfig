@@ -85,7 +85,7 @@ Action::ValueDescConvert::get_local_name()const
 	// TRANSLATORS: This is used in the 'history' dialog when a ValueNode is converted.  The first %s is what is converted, the 2nd is the local name of the ValueNode's type.
 	return strprintf(_("Convert '%s' to ValueNode type '%s'"),
 					 value_desc.get_description().c_str(),
-					 ValueNodeRegistry::book()[type].local_name.c_str());
+					 ValueNodeRegistry::book().at(type).get_local_name().c_str());
 }
 
 Action::ParamVocab

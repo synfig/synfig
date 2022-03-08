@@ -59,7 +59,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Subtract, RELEASE_VERSION_0_61_06, "subtract", "Subtract")
+REGISTER_VALUENODE(ValueNode_Subtract, RELEASE_VERSION_0_61_06, "subtract", N_("Subtract"))
 
 /* === P R O C E D U R E S ================================================= */
 

@@ -55,7 +55,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_SegCalcTangent, RELEASE_VERSION_0_61_06, "segcalctangent", "Segment Tangent")
+REGISTER_VALUENODE(ValueNode_SegCalcTangent, RELEASE_VERSION_0_61_06, "segcalctangent", N_("Segment Tangent"))
 
 /* === P R O C E D U R E S ================================================= */
 

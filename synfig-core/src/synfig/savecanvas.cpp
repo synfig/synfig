@@ -664,7 +664,7 @@ xmlpp::Element* encode_linkable_value_node(xmlpp::Element* root,LinkableValueNod
 
 	String name(value_node->get_name());
 	ReleaseVersion saving_version(get_file_version());
-	ReleaseVersion feature_version(ValueNodeRegistry::book()[name].release_version);
+	ReleaseVersion feature_version(ValueNodeRegistry::book().at(name).release_version);
 
 	if (saving_version < feature_version)
 	{

@@ -69,8 +69,8 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Bone, RELEASE_VERSION_0_62_00, "bone", "Bone")
-REGISTER_VALUENODE(ValueNode_Bone_Root, RELEASE_VERSION_0_62_00, "bone_root", "Root Bone")
+REGISTER_VALUENODE(ValueNode_Bone, RELEASE_VERSION_0_62_00, "bone", N_("Bone"))
+REGISTER_VALUENODE(ValueNode_Bone_Root, RELEASE_VERSION_0_62_00, "bone_root", N_("Root Bone"))
 
 static ValueNode_Bone::CanvasMap canvas_map;
 static int bone_counter;

@@ -50,7 +50,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Switch, RELEASE_VERSION_0_61_08, "switch", "Switch")
+REGISTER_VALUENODE(ValueNode_Switch, RELEASE_VERSION_0_61_08, "switch", N_("Switch"))
 
 /* === P R O C E D U R E S ================================================= */
 

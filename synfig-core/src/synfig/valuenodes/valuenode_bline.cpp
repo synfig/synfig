@@ -61,7 +61,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_BLine, RELEASE_VERSION_0_61_06, "bline", "Spline")
+REGISTER_VALUENODE(ValueNode_BLine, RELEASE_VERSION_0_61_06, "bline", N_("Spline"))
 
 /* === P R O C E D U R E S ================================================= */
 

@@ -51,7 +51,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_VectorY, RELEASE_VERSION_0_61_09, "vectory", "Vector Y")
+REGISTER_VALUENODE(ValueNode_VectorY, RELEASE_VERSION_0_61_09, "vectory", N_("Vector Y"))
 
 /* === P R O C E D U R E S ================================================= */
 

@@ -53,7 +53,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_BoneWeightPair, RELEASE_VERSION_0_62_00, "boneweightpair", "Bone Weight Pair")
+REGISTER_VALUENODE(ValueNode_BoneWeightPair, RELEASE_VERSION_0_62_00, "boneweightpair", N_("Bone Weight Pair"))
 
 /* === P R O C E D U R E S ================================================= */
 
