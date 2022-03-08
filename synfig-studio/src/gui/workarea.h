@@ -227,6 +227,7 @@ private:
 	bool curr_guide_is_x;
 
 	etl::handle<LockDucks> lock_ducks;
+	Glib::RefPtr<Gdk::Cursor> previous_cursor;
 
 public:
 	/*

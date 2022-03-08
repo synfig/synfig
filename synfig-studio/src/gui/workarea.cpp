@@ -343,7 +343,16 @@ WorkArea::set_drag_mode(DragMode mode)
 {
 	if (drag_mode == mode) return;
 
+	// change cursor in drag window mode
+	if (mode == DRAG_WINDOW)
+		set_cursor(Gdk::FLEUR);
+
+	DragMode old_mode = drag_mode;
 	drag_mode = mode;
+
+	// reset cursor to previous cursor after finishing drag window mode
+	if (old_mode == DRAG_WINDOW)
+		set_cursor(previous_cursor);
 
 	if (lock_ducks && drag_mode == DRAG_NONE)
 		lock_ducks.reset();
@@ -2185,15 +2194,22 @@ studio::WorkArea::set_cursor(const Glib::RefPtr<Gdk::Cursor> &x)
 	//!Check if the window we want draw is ready
 	Glib::RefPtr<Gdk::Window> draw_area_window = drawing_area->get_window();
 	if (!draw_area_window) return;
-	draw_area_window->set_cursor(x);
+
+	// do not change cursor in drag window mode
+	if (drag_mode == DRAG_WINDOW) {
+		previous_cursor = x;
+	}
+	else
+	{
+		Glib::RefPtr<Gdk::Cursor> current_cursor = draw_area_window->get_cursor();
+		draw_area_window->set_cursor(x);
+		previous_cursor = current_cursor;
+	}
 }
 void
 studio::WorkArea::set_cursor(Gdk::CursorType x)
 {
-	//!Check if the window we want draw is ready
-	Glib::RefPtr<Gdk::Window> draw_area_window = drawing_area->get_window();
-	if(!draw_area_window) return;
-	draw_area_window->set_cursor(Gdk::Cursor::create(x));
+	set_cursor(Gdk::Cursor::create(x));
 }
 
 void
