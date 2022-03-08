@@ -32,7 +32,6 @@
 
 #include <png.h>
 #include <synfig/importer.h>
-#include <synfig/string.h>
 #include <synfig/surface.h>
 
 /* === M A C R O S ========================================================= */
@@ -41,6 +40,10 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
+namespace synfig {
+	class FileContainerZip;
+}
+
 class png_mptr : public synfig::Importer
 {
 	SYNFIG_IMPORTER_MODULE_EXT
@@ -48,6 +51,9 @@ private:
 	static void png_out_error(png_struct *png_data,const char *msg);
 	static void png_out_warning(png_struct *png_data,const char *msg);
 	static void read_callback(png_structp png_ptr, png_bytep out_bytes, png_size_t bytes_count_to_read);
+
+	etl::handle<synfig::FileContainerZip> zip_fs;
+	synfig::FileSystem::Identifier zipped_file;
 
 public:
 	png_mptr(const synfig::FileSystem::Identifier &identifier);

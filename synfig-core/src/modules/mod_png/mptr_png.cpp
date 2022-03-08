@@ -39,12 +39,10 @@
 #endif
 
 #include "mptr_png.h"
-#include <synfig/importer.h>
+
+#include <synfig/filecontainerzip.h>
 #include <synfig/general.h>
 
-
-#include <cstdio>
-#include <algorithm>
 #endif
 
 /* === M A C R O S ========================================================= */
@@ -59,7 +57,7 @@ using namespace etl;
 SYNFIG_IMPORTER_INIT(png_mptr);
 SYNFIG_IMPORTER_SET_NAME(png_mptr,"png");
 SYNFIG_IMPORTER_SET_EXT(png_mptr,"png");
-SYNFIG_IMPORTER_SET_VERSION(png_mptr,"0.1");
+SYNFIG_IMPORTER_SET_VERSION(png_mptr,"0.2");
 SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(png_mptr, true);
 
 /* === M E T H O D S ======================================================= */
@@ -104,6 +102,15 @@ png_mptr::read_callback(png_structp png_ptr, png_bytep out_bytes, png_size_t byt
 png_mptr::png_mptr(const synfig::FileSystem::Identifier &identifier):
 	Importer(identifier)
 {
+	std::string file_ext = etl::filename_extension(identifier.filename);
+	if (file_ext == ".kra" || file_ext == ".ora") {
+		zip_fs = new FileContainerZip();
+		if (!zip_fs->open(identifier.filename)) {
+			synfig::error("Can't find the file %s", identifier.filename.c_str());
+			return;
+		}
+		zipped_file = FileSystem::Identifier(zip_fs, "mergedimage.png");
+	}
 }
 
 png_mptr::~png_mptr()
@@ -113,8 +120,13 @@ png_mptr::~png_mptr()
 bool
 png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc*/, Time, synfig::ProgressCallback */*cb*/)
 {
+	if (zip_fs && zipped_file.empty()) {
+		//! \todo THROW SOMETHING
+		throw strprintf("Unable to physically open %s: missing internal 'mergedimage.png'",identifier.filename.c_str());
+		return false;
+	}
 	/* Open the file pointer */
-	FileSystem::ReadStream::Handle stream = identifier.get_read_stream();
+	FileSystem::ReadStream::Handle stream = zip_fs? zipped_file.get_read_stream() : identifier.get_read_stream();
     if (!stream)
     {
         //! \todo THROW SOMETHING
