@@ -69,24 +69,30 @@ ACTION_SET_VERSION(Action::LayerDuplicate,"0.0");
 /// Get value nodes that are special cases when duplicating
 /// Attention: The order of returned value nodes MUST be deterministic!
 /// \param layer where to search for special value nodes
-/// \param canvas the Layer Duplicate action canvas
 /// \param src_layer_canvas the canvas of layer that is being duplicated/cloned
 static std::vector<ValueNode::RHandle>
-get_special_layer_valuenodes(synfig::Layer::Handle layer, synfig::Canvas::Handle canvas, synfig::Canvas::Handle src_layer_canvas)
+get_special_layer_valuenodes(synfig::Layer::Handle layer, synfig::Canvas::Handle src_layer_canvas)
 {
 	std::vector<ValueNode::RHandle> valuenodes;
 	if (layer->get_name() == "duplicate") {
 		valuenodes.push_back(layer->dynamic_param_list().find("index")->second);
 	} else if (layer->get_name() == "skeleton") {
-		if (layer->get_canvas() != src_layer_canvas) {
-			// I don't know why, but it's needed for updating cloned skeleton layer bone names
-			layer->set_time(canvas->get_independent_context(), canvas->get_time());
+		std::set<ValueBase> bones_valuebase_set;
+		auto bones_dynamic_param = layer->dynamic_param_list().find("bones");
+		if (bones_dynamic_param != layer->dynamic_param_list().end()) {
+			bones_dynamic_param->second->get_values(bones_valuebase_set);
+		} else {
+			ValueBase param_bones = layer->get_param("bones");
+			if (param_bones.is_valid())
+				bones_valuebase_set.insert(param_bones);
 		}
 
-		ValueBase param_bones = layer->get_param("bones");
-		if (!param_bones.is_valid()) {
+		if (bones_valuebase_set.empty()) {
 			error(_("Skeleton layer without 'bones' parameter!"));
-		} else {
+			return valuenodes;
+		}
+
+		for (const ValueBase& param_bones : bones_valuebase_set) {
 			std::vector<Bone> bone_list = param_bones.get_list_of(Bone());
 			const size_t num_bones = bone_list.size();
 
@@ -276,8 +282,8 @@ Action::LayerDuplicate::prepare()
 	// - Bone list of Skeleton Layer
 	for (auto& layer_pair : cloned_layer_map) {
 		Canvas::LooseHandle src_layer_canvas = layer_pair.first->get_canvas();
-		std::vector<ValueNode::RHandle> src_valuenodes = get_special_layer_valuenodes(layer_pair.first, get_canvas(), src_layer_canvas);
-		std::vector<ValueNode::RHandle> cloned_valuenodes = get_special_layer_valuenodes(layer_pair.second, get_canvas(), src_layer_canvas);
+		std::vector<ValueNode::RHandle> src_valuenodes = get_special_layer_valuenodes(layer_pair.first, src_layer_canvas);
+		std::vector<ValueNode::RHandle> cloned_valuenodes = get_special_layer_valuenodes(layer_pair.second, src_layer_canvas);
 		const size_t num_valuenodes = src_valuenodes.size();
 		if (num_valuenodes != cloned_valuenodes.size()) {
 			error(_("Internal error: get_special_valuenodes doesn't return same number of valuenodes: %zu x %zu"),
