@@ -74,18 +74,23 @@ SYNFIG_TARGET_SET_VERSION(ffmpeg_trgt,"0.1");
 
 /* === M E T H O D S ======================================================= */
 
+bool
+ffmpeg_trgt::does_video_codec_support_alpha_channel(const synfig::String &video_codec) const
+{
+	const std::vector<const char*> valid_codecs = {
+		"libvpx-vp8", "libvpx-vp9", "hap"
+	};
+	return std::find(valid_codecs.begin(), valid_codecs.end(), video_codec) != valid_codecs.end();
+}
+
 ffmpeg_trgt::ffmpeg_trgt(const char *Filename, const synfig::TargetParam &params):
 	imagecount(0),
 	multi_image(false),
 	file(NULL),
 	filename(Filename),
 	sound_filename(""),
-	buffer(NULL),
-	color_buffer(NULL),
 	bitrate()
 {
-	set_alpha_mode(TARGET_ALPHA_MODE_FILL);
-
 	// Set default video codec and bitrate if they weren't given.
 	if (params.video_codec == "none")
 		video_codec = "mpeg1video";
@@ -96,6 +101,11 @@ ffmpeg_trgt::ffmpeg_trgt(const char *Filename, const synfig::TargetParam &params
 		bitrate = 200;
 	else
 		bitrate = params.bitrate;
+
+	if (does_video_codec_support_alpha_channel(video_codec))
+		set_alpha_mode(TARGET_ALPHA_MODE_KEEP);
+	else
+		set_alpha_mode(TARGET_ALPHA_MODE_FILL);
 }
 
 ffmpeg_trgt::~ffmpeg_trgt()
@@ -111,8 +121,6 @@ ffmpeg_trgt::~ffmpeg_trgt()
 #endif
 	}
 	file=NULL;
-	delete [] buffer;
-	delete [] color_buffer;
 
 	// Remove temporary sound file
 	if (g_file_test(sound_filename.c_str(), G_FILE_TEST_EXISTS)) {
@@ -226,6 +234,9 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 	imagecount=desc.get_frame_start();
 	if(desc.get_frame_end()-desc.get_frame_start()>0)
 		multi_image=true;
+
+	const bool use_alpha = get_alpha_mode() == TARGET_ALPHA_MODE_KEEP;
+
 	// this should avoid conflicts with locale settings
 	synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 	
@@ -244,7 +255,7 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 	vargs.emplace_back("-f");
 	vargs.emplace_back("image2pipe");
 	vargs.emplace_back("-vcodec");
-	vargs.emplace_back("ppm");
+	vargs.emplace_back(use_alpha ? "pam" : "ppm");
 	vargs.emplace_back("-r");
 	vargs.emplace_back(etl::strprintf("%f", desc.get_frame_rate()));
 	vargs.emplace_back("-i");
@@ -259,9 +270,16 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 		vargs.emplace_back("-tune");
 		vargs.emplace_back("fastdecode");
 		vargs.emplace_back("-pix_fmt");
-		vargs.emplace_back("yuv420p");
+		vargs.emplace_back(use_alpha ? "yuva420p" : "yuv420p");
 		vargs.emplace_back("-qp");
 		vargs.emplace_back("0");
+	} else if (use_alpha){
+		if (video_codec == "hap") {
+			vargs.emplace_back("-format");
+			vargs.emplace_back("hap_alpha");
+		}
+		vargs.emplace_back("-pix_fmt");
+		vargs.emplace_back("yuva420p");
 	}
 	vargs.emplace_back("-acodec");
 	// MPEG-1 cannot work with 'le' audio, it requires 'be'
@@ -377,19 +395,29 @@ ffmpeg_trgt::end_frame()
 bool
 ffmpeg_trgt::start_frame(synfig::ProgressCallback */*callback*/)
 {
-	int w=desc.get_w(),h=desc.get_h();
+	std::size_t w=desc.get_w(),h=desc.get_h();
 
 	if(!file)
 		return false;
 
-	fprintf(file, "P6\n");
-	fprintf(file, "%d %d\n", w, h);
-	fprintf(file, "%d\n", 255);
+	const bool use_alpha = get_alpha_mode() == TARGET_ALPHA_MODE_KEEP;
 
-	delete [] buffer;
-	buffer=new unsigned char[3*w];
-	delete [] color_buffer;
-	color_buffer=new Color[w];
+	if (!use_alpha) {
+		fprintf(file, "P6\n");
+		fprintf(file, "%zu %zu\n", w, h);
+		fprintf(file, "%d\n", 255);
+	} else {
+		fprintf(file, "P7\n");
+		fprintf(file, "WIDTH %zu\n", w);
+		fprintf(file, "HEIGHT %zu\n", h);
+		fprintf(file, "DEPTH 4\n");
+		fprintf(file, "MAXVAL %d\n", 255);
+		fprintf(file, "TUPLTYPE RGB_ALPHA\n");
+		fprintf(file, "ENDHDR\n");
+	}
+
+	buffer.resize(w * (use_alpha ? 4 : 3));
+	color_buffer.resize(w);
 
 	return true;
 }
@@ -397,7 +425,7 @@ ffmpeg_trgt::start_frame(synfig::ProgressCallback */*callback*/)
 Color *
 ffmpeg_trgt::start_scanline(int /*scanline*/)
 {
-	return color_buffer;
+	return color_buffer.data();
 }
 
 bool
@@ -406,9 +434,13 @@ ffmpeg_trgt::end_scanline()
 	if(!file)
 		return false;
 
-	color_to_pixelformat(buffer, color_buffer, PF_RGB, 0, desc.get_w());
+	PixelFormat format = PF_RGB;
+	if(get_alpha_mode() == TARGET_ALPHA_MODE_KEEP)
+		format |= PF_A;
 
-	if(!fwrite(buffer,1,desc.get_w()*3,file))
+	color_to_pixelformat(buffer.data(), color_buffer.data(), format, 0, desc.get_w());
+
+	if(!fwrite(buffer.data(),1,buffer.size(),file))
 		return false;
 
 	return true;
