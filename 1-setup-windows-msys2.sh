@@ -24,13 +24,14 @@ pacman -S --needed --noconfirm --color=auto \
 autoconf \
 automake-wrapper \
 intltool \
+libtool \
 make \
 patch \
 tar \
 $MINGW_PACKAGE_PREFIX-gcc \
 $MINGW_PACKAGE_PREFIX-ccache \
 $MINGW_PACKAGE_PREFIX-cmake \
-$MINGW_PACKAGE_PREFIX-libtool \
+$MINGW_PACKAGE_PREFIX-libltdl \
 $MINGW_PACKAGE_PREFIX-make \
 $MINGW_PACKAGE_PREFIX-pkgconf \
 $MINGW_PACKAGE_PREFIX-dlfcn \
