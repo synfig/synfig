@@ -1,10 +1,12 @@
---- libintl.h	2019-05-14 10:23:44.000000000 +0000
-+++ libintl.h.fixed	2019-06-01 12:43:18.365057100 +0000
-@@ -359,6 +359,7 @@
- #undef sprintf
+--- ./libintl.h	2022-01-13 00:36:51.000000000 +0200
++++ ./libintl.h.fixed	2022-03-12 23:16:01.028005800 +0200
+@@ -404,7 +404,8 @@
  #define sprintf libintl_sprintf
  extern int sprintf (char *, const char *, ...);
+ #  if defined __cplusplus && !defined _INTL_CXX_NO_CLOBBER_STD_NAMESPACE
+-namespace std { using ::libintl_sprintf; }
++#namespace std { using ::libintl_sprintf; }
 +namespace std { using ::sprintf; }
+ #  endif
  #endif
  #if !(defined vsprintf && defined _GL_STDIO_H) /* don't override gnulib */
- #undef vsprintf
