@@ -2,13 +2,22 @@
 
 export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:/opt/mlt-7.2.0/lib/pkgconfig"
 mkdir -p cmake-build-msys && cd cmake-build-msys
-if [[ $1 = debug ]]
-then 
-cmake -GNinja -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_BUILD_TYPE=Debug ..
+mode="Release"
+if [[ -n $1 ]] 
+then
+ for ((;;)); do
+   if [[ $1 = Debug ]]
+   then
+   mode=$1
+   else 
+   echo type Debug for debug build
+   read mode
+   fi
+   if [[ $mode = Debug ]]
+   then break
+   fi
+done
+fi
+cmake -GNinja -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_BUILD_TYPE=${mode} ..
 cmake --build .
 cmake --install . >/dev/null
-else 
-cmake -GNinja -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_BUILD_TYPE=Release ..
-cmake --build .
-cmake --install . >/dev/null
-fi 
