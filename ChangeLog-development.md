@@ -1,3 +1,8 @@
+- [`ef30ad6`](https://github.com/synfig/synfig/commit/ef30ad6f2bd2b12f1200bfa753dd6ad3345e807c) [MSYS2] Updated packages list ([#2566](https://github.com/synfig/synfig/issues/2566))
+- [`17a48a4`](https://github.com/synfig/synfig/commit/17a48a42d5263012c7019749dc40ccf72d9050b5) FFmpeg targets: allow to render alpha channel for webm and hap videos ([#2563](https://github.com/synfig/synfig/issues/2563)) [core]
+- [`e5afcb5`](https://github.com/synfig/synfig/commit/e5afcb56c565eefd32838998a2247fe91e1c2a5b) eliminate the need to set_time() on the search for bones ([#2504](https://github.com/synfig/synfig/issues/2504)) [studio]
+- [`dbbdd87`](https://github.com/synfig/synfig/commit/dbbdd87373d629c7370bebb5f5959c00cba57c28) WIP - basic support for importing .kra (Krita) and .ora (OpenRaster) ([#2513](https://github.com/synfig/synfig/issues/2513)) [core] [studio]
+- [`1344831`](https://github.com/synfig/synfig/commit/1344831a0043b67ddc4e13051b67a43b60991dcd) Fixed PVS-Studio warning v730 ([#2522](https://github.com/synfig/synfig/issues/2522)) [ETL] [core] [studio]
 - [`b618efd`](https://github.com/synfig/synfig/commit/b618efd13447c12e6a1700029a2933b5cecad5c3) Simplify "Render Mode ComboBox Changed" callback & add GL if available ([#2552](https://github.com/synfig/synfig/issues/2552)) [studio]
 - [`630b036`](https://github.com/synfig/synfig/commit/630b0362b94d6ecb296106950ad43df2fb75f02e) add documentation to some synfig::rendering stuff ([#2549](https://github.com/synfig/synfig/issues/2549)) [core]
 - [`b23b68f`](https://github.com/synfig/synfig/commit/b23b68fd58ac7a4e07373cb4f86c6f50b873406e) make some cleanup on headers of synfig-core ([#2561](https://github.com/synfig/synfig/issues/2561)) [core]
