@@ -1264,4 +1264,13 @@ StateRectangle_Context::toggle_layer_creation()
   layer_advanced_outline_flag = get_layer_advanced_outline_flag();
   layer_curve_gradient_flag = get_layer_curve_gradient_flag();
   layer_plant_flag = get_layer_plant_flag();
+   
+  // disable focus for buttons where focus makes active/inactive states confusing
+  layer_rectangle_togglebutton.set_can_focus(false);
+  layer_region_togglebutton.set_can_focus(false);
+  layer_outline_togglebutton.set_can_focus(false);
+  layer_advanced_outline_togglebutton.set_can_focus(false);
+  layer_curve_gradient_togglebutton.set_can_focus(false);
+  layer_plant_togglebutton.set_can_focus(false);
+
 }
