@@ -40,6 +40,7 @@
 #include <gui/iconcontroller.h>
 #include <gui/mainwindow.h>
 #include <gui/pluginmanager.h>
+#include <gui/docks/dockmanager.h>
 
 #include <list>
 #include <set>

@@ -39,7 +39,6 @@
 #include <gtkmm/button.h>
 
 #include <gui/app.h>
-#include <gui/docks/dockmanager.h>
 #include <gui/docks/dockable.h>
 #include <gui/localization.h>
 
