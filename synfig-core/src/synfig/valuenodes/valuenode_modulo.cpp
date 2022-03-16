@@ -59,7 +59,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Modulo, RELEASE_VERSION_1_4_0, "modulo", N_("Modulo"))
+REGISTER_VALUENODE(ValueNode_Modulo, RELEASE_VERSION_1_6_0, "modulo", N_("Modulo"))
 
 /* === P R O C E D U R E S ================================================= */
 
