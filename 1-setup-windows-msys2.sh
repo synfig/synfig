@@ -50,14 +50,3 @@ $MINGW_PACKAGE_PREFIX-libmng
 
 # build mlt
 bash "${SCRIPT_DIR}/autobuild/msys2/build_mlt.sh"
-
-# Apply patch to libintl.h. This required because libintl.h redefines sprintf
-# and std::sprintf is stop working. But std::sprintf is used by Boost::Odeint library
-# so we need it.
-
-# Try to reverse the patch first, to check if the patch is already applied
-if patch -R -p0 -s -f --dry-run "${MINGW_PREFIX}/include/libintl.h" < "${SCRIPT_DIR}/autobuild/msys2/libintl.h.patch"; then
-  echo "Patch is already applied"
-else
-  patch -p0 "${MINGW_PREFIX}/include/libintl.h" < "${SCRIPT_DIR}/autobuild/msys2/libintl.h.patch"
-fi
