@@ -31,9 +31,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/combobox.h>
-#include <gtkmm/liststore.h>
-#include <string>
+#include <gtkmm/comboboxtext.h>
 #include <synfigapp/value_desc.h>
 
 /* === M A C R O S ========================================================= */
@@ -43,35 +41,24 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace studio {
-class Widget_Sublayer : public Gtk::ComboBox
+class Widget_Sublayer : public Gtk::ComboBoxText
 {
 	synfigapp::ValueDesc value_desc;
 	std::string value;
-protected:
-class Model : public Gtk::TreeModel::ColumnRecord
-	{
-		public:
-
-		Model()
-		{ add(value); add(name); }
-
-		Gtk::TreeModelColumn<std::string> value;
-		Gtk::TreeModelColumn<Glib::ustring> name;
-	};
-	Model enum_model;
-	Glib::RefPtr<Gtk::ListStore> enum_TreeModel;
 
 public:
 
-	Widget_Sublayer();
-	~Widget_Sublayer();
+	Widget_Sublayer() = default;
+	~Widget_Sublayer() = default;
 
 	void set_value_desc(const synfigapp::ValueDesc &x);
-	void refresh();
 
-	void set_value(std::string data);
+	void set_value(const std::string &data);
 	std::string get_value() const;
-	virtual void on_changed();
+
+protected:
+	void refresh();
+	void on_changed() override;
 }; // END of class Widget_Sublayer
 }; // END of namespace studio
 

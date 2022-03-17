@@ -56,41 +56,24 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-Widget_Sublayer::Widget_Sublayer():
-	value()
-{
-	enum_TreeModel = Gtk::ListStore::create(enum_model);
-	set_model(enum_TreeModel);
-	pack_start(enum_model.name);
-}
-
-Widget_Sublayer::~Widget_Sublayer()
-{
-}
-
 void
 Widget_Sublayer::set_value_desc(const synfigapp::ValueDesc &x)
 {
-	value_desc=x;
-	// First clear the current items in the ComboBox
-	enum_TreeModel->clear();
-	std::cout << value_desc.get_layer() << std::endl;
-	etl::handle<synfig::Layer_PasteCanvas> p = etl::handle<synfig::Layer_PasteCanvas>::cast_dynamic(value_desc.get_layer());
-	if(p)
+	value_desc = x;
+
+	remove_all();
+
+	if(etl::handle<synfig::Layer_PasteCanvas> p = etl::handle<synfig::Layer_PasteCanvas>::cast_dynamic(value_desc.get_layer()))
 	{
 		synfig::Canvas::Handle canvas = p->get_sub_canvas();
 		if(canvas)
 		{
 			// Fill the combo with the layers' descriptions
-			Gtk::TreeModel::Row row = *(enum_TreeModel->append());
-			row[enum_model.value] = "";
-			row[enum_model.name] = _("<empty>");
-			for(IndependentContext i = canvas->get_independent_context(); *i; i++)
+			append("", _("<empty>"));
+			for(IndependentContext i = canvas->get_independent_context(); *i; ++i)
 			{
-				Gtk::TreeModel::Row row = *(enum_TreeModel->append());
 				std::string desc = (*i)->get_description();
-				row[enum_model.value] = desc;
-				row[enum_model.name] = desc;
+				append(desc, desc);
 			}
 		}
 	}
@@ -100,24 +83,13 @@ Widget_Sublayer::set_value_desc(const synfigapp::ValueDesc &x)
 void
 Widget_Sublayer::refresh()
 {
-	typedef Gtk::TreeModel::Children type_children;
-	type_children children = enum_TreeModel->children();
-	for(type_children::iterator iter = children.begin();
-		iter != children.end(); ++iter)
-	{
-		Gtk::TreeModel::Row row = *iter;
-		if(row.get_value(enum_model.value) == value)
-		{
-			set_active(iter);
-			return;
-		}
-	}
+	set_active_id(value);
 }
 
 void
-Widget_Sublayer::set_value(std::string data)
+Widget_Sublayer::set_value(const std::string& data)
 {
-	value=data;
+	value = data;
 	refresh();
 }
 
@@ -130,10 +102,5 @@ Widget_Sublayer::get_value() const
 void
 Widget_Sublayer::on_changed()
 {
-	Gtk::TreeModel::iterator iter = get_active();
-	if(iter)
-	{
-		Gtk::TreeModel::Row row = *iter;
-		value = row.get_value(enum_model.value);
-	}
+	value = get_active_id();
 }
