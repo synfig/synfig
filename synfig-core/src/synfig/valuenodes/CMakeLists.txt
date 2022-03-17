@@ -29,6 +29,7 @@ target_sources(synfig
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_join.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_linear.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_log.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/valuenode_modulo.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_not.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_or.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_pow.cpp"
