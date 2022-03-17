@@ -53,8 +53,6 @@ class SuperSample : public Layer
 private:
 	//!Parameter (int)
 	ValueBase param_width, param_height;
-	//!Parameter (bool)
-	ValueBase param_scanline, param_alpha_aware;
 
 public:
 	SuperSample();
