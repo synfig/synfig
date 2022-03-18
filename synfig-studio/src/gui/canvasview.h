@@ -667,6 +667,7 @@ public:
 protected:
 	void on_select_layers();
 	void on_unselect_layers();
+	void on_select_parent_layer();
 	void on_input_device_changed(GdkDevice*);
 	void on_hide();
 	bool on_button_press_event(GdkEventButton *event);

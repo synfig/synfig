@@ -57,7 +57,7 @@ SYNFIG_LAYER_INIT(SuperSample);
 SYNFIG_LAYER_SET_NAME(SuperSample,"super_sample");
 SYNFIG_LAYER_SET_LOCAL_NAME(SuperSample,N_("Super Sample"));
 SYNFIG_LAYER_SET_CATEGORY(SuperSample,N_("Other"));
-SYNFIG_LAYER_SET_VERSION(SuperSample,"0.1");
+SYNFIG_LAYER_SET_VERSION(SuperSample,"0.2");
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -67,8 +67,6 @@ SuperSample::SuperSample():
 param_width(ValueBase(int(2))),
 param_height(ValueBase(int(2)))
 {
-	param_scanline=ValueBase(false);
-	param_alpha_aware=ValueBase(true);
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
 
@@ -79,24 +77,18 @@ SuperSample::set_param(const String & param, const ValueBase &value)
 {
 	IMPORT_VALUE_PLUS(param_width,
 		{
-			int width=param_width.get(int());
-			if(value.get(int()) < 1) width = 1;
-			else width=value.get(int());
+			int width = std::max(1, value.get(int()));
 			param_width.set(width);
 			return true;
 		}
 		);
 	IMPORT_VALUE_PLUS(param_height,
 		{
-			int height=param_height.get(int());
-			if(value.get(int()) < 1) height = 1;
-			else height=value.get(int());
+			int height = std::max(1, value.get(int()));
 			param_height.set(height);
 			return true;
 		}
 		);
-	IMPORT_VALUE(param_scanline);
-	IMPORT_VALUE(param_alpha_aware);
 
 	return false;
 }
@@ -106,8 +98,6 @@ SuperSample::get_param(const String& param)const
 {
 	EXPORT_VALUE(param_width);
 	EXPORT_VALUE(param_height);
-    EXPORT_VALUE(param_scanline);
-    EXPORT_VALUE(param_alpha_aware);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -127,14 +117,6 @@ SuperSample::get_param_vocab(void)const
 	ret.push_back(ParamDesc("height")
 		.set_local_name(_("Height"))
 		.set_description(_("Height of the sample area (In pixels)"))
-	);
-	ret.push_back(ParamDesc("scanline")
-		.set_local_name(_("Use Parametric"))
-		.set_description(_("When checked, uses the Parametric Renderer"))
-	);
-	ret.push_back(ParamDesc("alpha_aware")
-		.set_local_name(_("Be Alpha Safe"))
-		.set_description(_("When checked, avoids alpha artifacts"))
 	);
 
 	return ret;
