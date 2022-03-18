@@ -59,7 +59,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_AnimatedFile, RELEASE_VERSION_1_4_0, "animated_file", "Animation from File")
+REGISTER_VALUENODE(ValueNode_AnimatedFile, RELEASE_VERSION_1_6_0, "animated_file", "Animation from File")
 
 /* === C L A S S E S ======================================================= */
 class ValueNode_AnimatedFile::Internal

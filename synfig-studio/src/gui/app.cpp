@@ -935,6 +935,7 @@ DEFINE_ACTION("select-all-ducks",         _("Select All Handles"))
 DEFINE_ACTION("unselect-all-ducks",       _("Unselect All Handles"))
 DEFINE_ACTION("select-all-layers",        _("Select All Layers"))
 DEFINE_ACTION("unselect-all-layers",      _("Unselect All Layers"))
+DEFINE_ACTION("select-parent-layer",      _("Select Parent Layer"))
 DEFINE_ACTION("input-devices",            _("Input Devices..."))
 DEFINE_ACTION("setup",                    _("Preferences..."))
 
@@ -1075,6 +1076,7 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 "		<menuitem action='unselect-all-layers'/>"
 "		<menuitem action='select-all-ducks'/>"
 "		<menuitem action='unselect-all-ducks'/>"
+"		<menuitem action='select-parent-layer'/>"
 "		<separator name='sep-edit3'/>"
 "		<menuitem action='input-devices' />"
 "		<menuitem action='setup' />"
@@ -1304,12 +1306,13 @@ App::get_default_accel_map()
 		{"<Control>d",              "<Actions>/canvasview/unselect-all-ducks"},
 		{"<Control><Shift>a",       "<Actions>/canvasview/select-all-layers"},
 		{"<Control><Shift>d",       "<Actions>/canvasview/unselect-all-layers"},
+		{"<Mod1>Page_Up",           "<Actions>/canvasview/select-parent-layer"},
 		{"F9",                      "<Actions>/canvasview/render"},
 		{"F11",                     "<Actions>/canvasview/preview"},
 		{"F8",                      "<Actions>/canvasview/properties"},
 		{"F12",                     "<Actions>/canvasview/options"},
 		{"<control>i",              "<Actions>/canvasview/import"},
-		{"<Control>g",              "<Actions>/canvasview/toggle-grid-show"},
+		{"numbersign",              "<Actions>/canvasview/toggle-grid-show"},
 		{"<Control>l",              "<Actions>/canvasview/toggle-grid-snap"},
 		{"<Control>n",              "<Actions>/mainwindow/new"},
 		{"<Control>o",              "<Actions>/mainwindow/open"},
@@ -1339,6 +1342,7 @@ App::get_default_accel_map()
 		{"Delete",                  "<Actions>/action_group_layer_action_manager/action-LayerRemove"},
 		{"<Control>parenleft" ,     "<Actions>/canvasview/decrease-low-res-pixel-size"},
 		{"<Control>parenright" ,    "<Actions>/canvasview/increase-low-res-pixel-size"},
+		{"<Primary>g",              "<Actions>/action_group_layer_action_manager/action-LayerEncapsulate"},
 		{"<Control><Mod1>parenleft",  "<Actions>/action_group_layer_action_manager/amount-dec"},
 		{"<Control><Mod1>parenright", "<Actions>/action_group_layer_action_manager/amount-inc"},
 		{"equal",                   "<Actions>/canvasview/canvas-zoom-in"},

@@ -1516,6 +1516,10 @@ CanvasView::init_menus()
 		sigc::mem_fun(*this,&CanvasView::on_unselect_layers)
 	);
 
+	action_group->add( Gtk::Action::create("select-parent-layer", _("Select Parent Layer")),
+		sigc::mem_fun(*this,&CanvasView::on_select_parent_layer)
+	);
+
 	action_group->add( Gtk::Action::create("pause", Gtk::StockID("synfig-animate_pause")),
 		sigc::mem_fun(*this, &CanvasView::stop_async)
 	);
@@ -1707,6 +1711,21 @@ void
 CanvasView::on_unselect_layers()
 {
 	layer_tree->clear_selected_layers();
+}
+
+void
+CanvasView::on_select_parent_layer()
+{
+	Layer::Handle layer = get_selection_manager()->get_selected_layer();
+	if (!layer)
+		return;
+
+	Layer::Handle parent_layer = layer->get_parent_paste_canvas_layer();
+	if (!parent_layer)
+		return;
+
+	get_selection_manager()->clear_selected_layers();
+	get_selection_manager()->set_selected_layer(parent_layer);
 }
 
 void
