@@ -5,18 +5,7 @@ mkdir -p cmake-build-msys && cd cmake-build-msys
 mode="Release"
 if [[ -n $1 ]] 
 then
- for ((;;)); do
-   if [[ $1 = Debug ]]
-   then
-   mode=$1
-   else 
-   echo type Debug for debug build
-   read mode
-   fi
-   if [[ $mode = Debug ]]
-   then break
-   fi
-done
+mode=$1
 fi
 cmake -GNinja -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_BUILD_TYPE=${mode} ..
 cmake --build .
