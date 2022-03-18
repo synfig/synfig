@@ -43,6 +43,7 @@
 #include <gui/dialogs/dialog_input.h>
 #include <gui/docks/dockable.h>
 #include <gui/docks/dockbook.h>
+#include <gui/docks/dockmanager.h>
 #include <gui/exception_guard.h>
 #include <gui/localization.h>
 #include <gui/widgets/widget_time.h>

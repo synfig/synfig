@@ -50,6 +50,7 @@
 #include <gui/asyncrenderer.h>
 #include <gui/dialogs/dialog_ffmpegparam.h>
 #include <gui/dialogs/dialog_spritesheetparam.h>
+#include <gui/docks/dockmanager.h>
 #include <gui/docks/dock_info.h>
 #include <gui/localization.h>
 #include <gui/progresslogger.h>

@@ -37,6 +37,7 @@
 #include "dock_palbrowse.h"
 
 #include <gui/app.h>
+#include <gui/docks/dockmanager.h>
 
 #endif
 

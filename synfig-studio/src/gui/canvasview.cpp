@@ -61,6 +61,7 @@
 #include <gui/app.h>
 #include <gui/dials/keyframedial.h>
 #include <gui/docks/dockbook.h>
+#include <gui/docks/dockmanager.h>
 #include <gui/docks/dock_toolbox.h>
 #include <gui/eventkey.h>
 #include <gui/exception_guard.h>
