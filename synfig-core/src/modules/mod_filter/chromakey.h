@@ -82,6 +82,8 @@ private:
 	ValueBase param_lower_bound;
 	//!Parameter: (Real) above this value, the color is kept as it is
 	ValueBase param_upper_bound;
+	//!Parameter (int)
+	ValueBase param_supersample_width, param_supersample_height;
 
 public:
 	ChromaKey();

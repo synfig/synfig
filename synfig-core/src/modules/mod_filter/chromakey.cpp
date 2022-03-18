@@ -127,7 +127,9 @@ ChromaKey::ChromaKey():
 	Layer(),
 	param_key_color(Color(0.,1.,0.)),
 	param_lower_bound(0.001),
-	param_upper_bound(0.001)
+	param_upper_bound(0.001),
+	param_supersample_width(int(2)),
+	param_supersample_height(int(2))
 {
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
@@ -139,6 +141,20 @@ ChromaKey::set_param(const String &param, const ValueBase &value)
 	IMPORT_VALUE(param_key_color);
 	IMPORT_VALUE(param_lower_bound);
 	IMPORT_VALUE(param_upper_bound);
+	IMPORT_VALUE_PLUS(param_supersample_width,
+		{
+			int width = std::max(1, value.get(int()));
+			param_supersample_width.set(width);
+			return true;
+		}
+		);
+	IMPORT_VALUE_PLUS(param_supersample_height,
+		{
+			int height = std::max(1, value.get(int()));
+			param_supersample_height.set(height);
+			return true;
+		}
+		);
 
 	return Layer::set_param(param,value);
 }
@@ -149,6 +165,8 @@ ChromaKey::get_param(const String &param) const
 	EXPORT_VALUE(param_key_color);
 	EXPORT_VALUE(param_lower_bound);
 	EXPORT_VALUE(param_upper_bound);
+	EXPORT_VALUE(param_supersample_width);
+	EXPORT_VALUE(param_supersample_height);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -174,6 +192,15 @@ ChromaKey::get_param_vocab() const
 	ret.push_back(ParamDesc("upper_bound")
 		.set_local_name(_("Upper Bound"))
 		.set_description(_("If chroma difference between pixel and key color is above this value, this pixel doesn't change.\nRange: 0.0 ~ 1.0"))
+	);
+
+	ret.push_back(ParamDesc("supersample_width")
+		.set_local_name(_("Sample Width"))
+		.set_description(_("Width of the sample area (In pixels).\n1 disables it"))
+	);
+	ret.push_back(ParamDesc("supersample_height")
+		.set_local_name(_("Sample Height"))
+		.set_description(_("Height of the sample area (In pixels)\n1 disables it"))
 	);
 
 	return ret;
@@ -227,8 +254,19 @@ ChromaKey::build_rendering_task_vfunc(Context context) const
 	task_chromakey->lower_bound = param_lower_bound.get(Real());
 	task_chromakey->upper_bound = param_upper_bound.get(Real());
 	task_chromakey->sub_task() = task;
-
 	task = task_chromakey;
+
+	int width = param_supersample_width.get(int());
+	int height = param_supersample_height.get(int());
+
+	if (width == 1 && height == 1)
+		return task;
+
+	rendering::TaskTransformationAffine::Handle task_transformation(new rendering::TaskTransformationAffine());
+	task_transformation->supersample[0] = width;
+	task_transformation->supersample[1] = height;
+	task_transformation->sub_task() = task;
+	task = task_transformation;
 
 	return task;
 }
