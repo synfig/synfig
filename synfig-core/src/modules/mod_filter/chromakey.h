@@ -54,6 +54,7 @@ public:
 	Color key_color;
 	Real lower_bound;
 	Real upper_bound;
+	bool desaturate;
 
 	TaskChromaKey();
 
@@ -84,6 +85,8 @@ private:
 	ValueBase param_upper_bound;
 	//!Parameter (int)
 	ValueBase param_supersample_width, param_supersample_height;
+	//!Parameter (bool) dessaturate the color between lower and upper bound
+	ValueBase param_desaturate;
 
 public:
 	ChromaKey();
