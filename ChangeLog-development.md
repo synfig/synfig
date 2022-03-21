@@ -1,3 +1,11 @@
+- [`f64f99f`](https://github.com/synfig/synfig/commit/f64f99f020f0689fb006969a7c649c101c52d066) Added hotkey for grouping layers (Ctrl+G). Grid toggle hotkey changed to #. ([#2581](https://github.com/synfig/synfig/issues/2581)) [studio]
+- [`8459f46`](https://github.com/synfig/synfig/commit/8459f46b6def28d14373d4550448b384fb5e669c) Fixed MSYS2 dependencies ([#2575](https://github.com/synfig/synfig/issues/2575))
+- [`0dbad45`](https://github.com/synfig/synfig/commit/0dbad4502e861f4433afd989f338224966692d0f) Added the ability to select the parent layer through the keyboard shortcut Alt+Page Up.  ([#2567](https://github.com/synfig/synfig/issues/2567)) [studio]
+- [`a113b35`](https://github.com/synfig/synfig/commit/a113b35235bd35b6ae1aa8999f9fe9d6d0136c8e) Layer SuperSample: remove unused parameters and minor cleanup ([#2580](https://github.com/synfig/synfig/issues/2580)) [core]
+- [`4fd97a8`](https://github.com/synfig/synfig/commit/4fd97a849ef6fc2941c04b10471138acb4b0becd) simplify Widget_Sublayer by using Gtk::ComboBoxText ([#2578](https://github.com/synfig/synfig/issues/2578)) [studio]
+- [`0bcb812`](https://github.com/synfig/synfig/commit/0bcb812027ca334fdcc38b6627c4ac1a47a0feec) Merge PR [#2568](https://github.com/synfig/synfig/issues/2568): add new ValueNode "Modulo" for modulo operation [core]
+- [`1d1a2eb`](https://github.com/synfig/synfig/commit/1d1a2ebef9ceec4c67b0d98012445f827dee4d90) fix RendDesc::get_pixels_to_world_matrix() contents ([#2574](https://github.com/synfig/synfig/issues/2574)) [core]
+- [`1f702df`](https://github.com/synfig/synfig/commit/1f702dfdcf9deb71eff5691e922dbb8803037b33) [MSYS2] Removed patch for libintl ([#2576](https://github.com/synfig/synfig/issues/2576))
 - [`ef30ad6`](https://github.com/synfig/synfig/commit/ef30ad6f2bd2b12f1200bfa753dd6ad3345e807c) [MSYS2] Updated packages list ([#2566](https://github.com/synfig/synfig/issues/2566))
 - [`17a48a4`](https://github.com/synfig/synfig/commit/17a48a42d5263012c7019749dc40ccf72d9050b5) FFmpeg targets: allow to render alpha channel for webm and hap videos ([#2563](https://github.com/synfig/synfig/issues/2563)) [core]
 - [`e5afcb5`](https://github.com/synfig/synfig/commit/e5afcb56c565eefd32838998a2247fe91e1c2a5b) eliminate the need to set_time() on the search for bones ([#2504](https://github.com/synfig/synfig/issues/2504)) [studio]
