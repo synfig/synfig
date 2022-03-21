@@ -36,6 +36,7 @@
 
 #include <gtkmm/box.h>
 #include <gtkmm/uimanager.h>
+#include <gtkmm/builder.h>
 
 #include <gui/iconcontroller.h>
 #include <gui/mainwindow.h>
@@ -84,6 +85,7 @@ class Preferences;
 namespace studio {
 
 typedef Gtk::UIManager UIManager;
+typedef Gtk::Builder Builder;
 
 class About;
 class MainWindow;
@@ -174,6 +176,11 @@ private:
 	static etl::handle<CanvasView> selected_canvas_view;
 
 	static Glib::RefPtr<UIManager>	ui_manager_;
+
+	//switch deprecated ui_manager to builder for menubar creation
+	//static inline Glib::RefPtr<Gtk::Builder> menu_builder_  = Gtk::Builder::create();
+	static  Glib::RefPtr<Builder> menu_builder_;//= Gtk::Builder::create();
+	//static Glib::RefPtr<Gio::Menu> menu_model_;
 
 	static int jack_locks_;
 
@@ -330,6 +337,11 @@ public:
 	static StateManager* get_state_manager();
 
 	static Glib::RefPtr<UIManager>& ui_manager() { return ui_manager_; }
+
+	//builder to replace deprecated ui_manager for menubar creation
+	static Glib::RefPtr<Builder>& menu_builder() { return menu_builder_; }
+	//static Glib::RefPtr<Gio::Menu>& menu_model() { return menu_model_; }
+	static void init_menu_builder();
 
 	static void add_recent_file(const etl::handle<Instance> instance);
 

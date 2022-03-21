@@ -48,6 +48,7 @@
 #endif
 
 #include <giomm/file.h>
+#include <giomm/simpleactiongroup.h>
 #include <glibmm/convert.h>
 #include <glibmm/init.h>
 #include <glibmm/main.h>
@@ -56,7 +57,6 @@
 #include <glibmm/spawn.h>
 
 #include <gtkmm/accelmap.h>
-#include <gtkmm/builder.h>
 #include <gtkmm/cssprovider.h>
 #include <gtkmm/dialog.h>
 #include <gtkmm/filechooserdialog.h>
@@ -229,6 +229,7 @@ int	 App::Busy::count;
 bool App::shutdown_in_progress;
 
 Glib::RefPtr<studio::UIManager>	App::ui_manager_;
+Glib::RefPtr<studio::Builder> App::menu_builder_;
 
 int        App::jack_locks_ = 0;
 synfig::Distance::System  App::distance_system;
@@ -861,6 +862,36 @@ public:
 
 static ::Preferences _preferences;
 
+void
+App::init_menu_builder()
+{
+	//File menu:
+	
+	//*this > App::instance() ??
+	//Gio::ActionMap ??
+	//Glib::RefPtr<Gio::SimpleActionGroup> refActionGroup = Gio::SimpleActionGroup::create();
+ 	refActionGroup->add_action("quit", sigc::mem_fun(*this, &App::shutdown_request));
+	//App::add_action("quit", sigc::mem_fun(*this, &App::shutdown_request));
+  
+	Glib::ustring ui_info = 
+	"<interface>"
+    "  <!-- menubar -->"
+    "  <menu id='SynfigStudio'>"
+    "    <submenu>"
+	"      <attribute name='label' translatable='yes'>_File</attribute>"
+	"      <section>"
+    "        <item>"
+    "          <attribute name='label' translatable='yes'>_Quit</attribute>"
+    "          <attribute name='action'>app.quit</attribute>"
+    "          <attribute name='accel'>&lt;Primary&gt;q</attribute>"
+	"          <attribute name='icon'>application-exit</attribute>"
+    "        </item>"
+    "      </section>"
+    "    </submenu>"
+	"  </menu>"
+    "</interface>";
+	App::menu_builder()->add_from_string(ui_info);
+}
 void
 init_ui_manager()
 {
@@ -1532,6 +1563,7 @@ void App::init(const synfig::String& rootpath)
 
 		studio_init_cb.task(_("Init UI Manager..."));
 		App::ui_manager_=studio::UIManager::create();
+		App::menu_builder_ = studio::Builder::create();
 		init_ui_manager();
 
 		studio_init_cb.task(_("Init Dock Manager..."));
