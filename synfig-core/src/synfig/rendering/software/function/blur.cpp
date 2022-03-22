@@ -71,11 +71,12 @@ software::Blur::Params::validate()
 	amplified_size[0] = fabs(amplified_size[0]);
 	amplified_size[1] = fabs(amplified_size[1]);
 
+	VectorInt offset = src_offset - dest_rect.get_min();
+
 	extra_size = get_extra_size(type, size);
 	rect_set_intersect(dest_rect, dest_rect, RectInt(0, 0, dest->get_w(), dest->get_h()));
 	if (!dest_rect.valid()) return false;
 
-	VectorInt offset = src_offset - dest_rect.get_min();
 	src_rect = dest_rect + offset;
 	src_rect.minx -= extra_size[0];
 	src_rect.miny -= extra_size[1];
@@ -92,6 +93,8 @@ software::Blur::Params::validate()
 	dest_rect.maxy -= extra_size[1];
 	if (!dest_rect.valid()) return false;
 	if (!rect_contains(RectInt(0, 0, dest->get_w(), dest->get_h()), dest_rect)) return false;
+
+	src_offset = src_rect.get_min() + extra_size;
 
 	return true;
 }
