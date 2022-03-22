@@ -3835,7 +3835,27 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
 	dialog.add_button(_("_OK"),   Gtk::RESPONSE_OK)->set_image_from_icon_name("gtk-ok", Gtk::ICON_SIZE_BUTTON);
 	dialog.set_default_response(Gtk::RESPONSE_OK);
 
-	//text_entry.signal_activate().connect(sigc::bind(sigc::mem_fun(dialog,&Gtk::Dialog::response),Gtk::RESPONSE_OK));
+    bool on_key_pressed(GdkEventKey*);  //f dec hbd
+
+    signal_key_press_event().connect(sigc::ptr_fun(&on_key_pressed)); //hbd
+
+
+    on_key_pressed(GdkEventKey* ev)
+   {
+       SYNFIG_EXCEPTION_GUARD_BEGIN()
+       if (ev->keyval == gdk_keyval_from_name("Enter")  )
+       {
+           Gtk::RESPONSE_OK ;
+           return true;
+       }
+
+       return false;
+       SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
+  }
+
+
+
+    //text_entry.signal_activate().connect(sigc::bind(sigc::mem_fun(dialog,&Gtk::Dialog::response),Gtk::RESPONSE_OK));
 	dialog.show();
 
 	if(dialog.run()!=Gtk::RESPONSE_OK)
@@ -3845,6 +3865,8 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
 
 	return true;
 }
+
+
 
 std::string
 App::get_temporary_directory()
