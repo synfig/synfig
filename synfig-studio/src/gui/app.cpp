@@ -864,8 +864,12 @@ static ::Preferences _preferences;
 void
 init_menu_builder()
 {
+	//HOW SHOULD I BE ADDING ACCELERATORS? AND HOW SHOULD I BE ADDING ICONS?
+	//HARDCODING THEM INTO ui_info string??
+
+	//initalize menu actions
  	App::instance().get()->add_action("quit", sigc::ptr_fun(&App::quit));
-  
+	App::instance().get()->add_action("new", sigc::ptr_fun(&App::new_instance));
   	//File menu:
 	Glib::ustring ui_info = 
 	"<interface>"
@@ -873,6 +877,14 @@ init_menu_builder()
     "  <menu id='studio_menubar'>"
     "    <submenu>"
 	"      <attribute name='label' translatable='yes'>_File</attribute>"
+	"      <section>"
+	"        <item>"
+    "          <attribute name='label' translatable='yes'>_New</attribute>"
+    "          <attribute name='action'>app.new</attribute>"
+    "          <attribute name='accel'>&lt;Control&gt;n</attribute>"
+    "          <attribute name='icon'>document-new</attribute>"
+    "        </item>"
+	"      </section>"
 	"      <section>"
     "        <item>"
     "          <attribute name='label' translatable='yes'>_Quit</attribute>"
