@@ -48,7 +48,6 @@
 #endif
 
 #include <giomm/file.h>
-#include <giomm/simpleactiongroup.h>
 #include <glibmm/convert.h>
 #include <glibmm/init.h>
 #include <glibmm/main.h>
@@ -863,20 +862,15 @@ public:
 static ::Preferences _preferences;
 
 void
-App::init_menu_builder()
+init_menu_builder()
 {
-	//File menu:
-	
-	//*this > App::instance() ??
-	//Gio::ActionMap ??
-	//Glib::RefPtr<Gio::SimpleActionGroup> refActionGroup = Gio::SimpleActionGroup::create();
- 	refActionGroup->add_action("quit", sigc::mem_fun(*this, &App::shutdown_request));
-	//App::add_action("quit", sigc::mem_fun(*this, &App::shutdown_request));
+ 	App::instance().get()->add_action("quit", sigc::ptr_fun(&App::quit));
   
+  	//File menu:
 	Glib::ustring ui_info = 
 	"<interface>"
     "  <!-- menubar -->"
-    "  <menu id='SynfigStudio'>"
+    "  <menu id='studio_menubar'>"
     "    <submenu>"
 	"      <attribute name='label' translatable='yes'>_File</attribute>"
 	"      <section>"
@@ -890,7 +884,19 @@ App::init_menu_builder()
     "    </submenu>"
 	"  </menu>"
     "</interface>";
-	App::menu_builder()->add_from_string(ui_info);
+
+	try {
+		App::menu_builder()->add_from_string(ui_info);
+	} catch (const Glib::Error& ex) {
+    	std::cerr << "Building menus failed: " << ex.what();
+  	}
+	auto menu_object = App::menu_builder()->get_object("studio_menubar");
+	auto menu_bar = Glib::RefPtr<Gio::Menu>::cast_dynamic(menu_object);
+	if ( !menu_bar ) {
+    	g_warning("menu_bar not found!");
+  	} else {
+    	App::instance().get()->set_menubar(menu_bar);
+  	}
 }
 void
 init_ui_manager()
@@ -1565,6 +1571,7 @@ void App::init(const synfig::String& rootpath)
 		App::ui_manager_=studio::UIManager::create();
 		App::menu_builder_ = studio::Builder::create();
 		init_ui_manager();
+		init_menu_builder();
 
 		studio_init_cb.task(_("Init Dock Manager..."));
 		dock_manager=new studio::DockManager();

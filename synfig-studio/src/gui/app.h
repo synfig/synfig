@@ -178,9 +178,7 @@ private:
 	static Glib::RefPtr<UIManager>	ui_manager_;
 
 	//switch deprecated ui_manager to builder for menubar creation
-	//static inline Glib::RefPtr<Gtk::Builder> menu_builder_  = Gtk::Builder::create();
-	static  Glib::RefPtr<Builder> menu_builder_;//= Gtk::Builder::create();
-	//static Glib::RefPtr<Gio::Menu> menu_model_;
+	static  Glib::RefPtr<Builder> menu_builder_;
 
 	static int jack_locks_;
 
@@ -340,8 +338,6 @@ public:
 
 	//builder to replace deprecated ui_manager for menubar creation
 	static Glib::RefPtr<Builder>& menu_builder() { return menu_builder_; }
-	//static Glib::RefPtr<Gio::Menu>& menu_model() { return menu_model_; }
-	static void init_menu_builder();
 
 	static void add_recent_file(const etl::handle<Instance> instance);
 
