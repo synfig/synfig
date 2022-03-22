@@ -76,6 +76,7 @@ using namespace studio;
 		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), \
 			Gtk::ICON_SIZE_SMALL_TOOLBAR)); \
 		button.add(*icon); \
+        button.set_focus_on_click(false);\
 	} \
 	button.set_relief(Gtk::RELIEF_NONE); \
 	button.set_tooltip_text(tooltip); \
