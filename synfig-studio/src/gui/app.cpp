@@ -866,10 +866,12 @@ init_menu_builder()
 {
 	//HOW SHOULD I BE ADDING ACCELERATORS? AND HOW SHOULD I BE ADDING ICONS?
 	//HARDCODING THEM INTO ui_info string??
+	#define SET_ACTION(x,cb) { App::instance().get()->add_action(x, sigc::ptr_fun(cb)); }
 
 	//initalize menu actions
- 	App::instance().get()->add_action("quit", sigc::ptr_fun(&App::quit));
-	App::instance().get()->add_action("new", sigc::ptr_fun(&App::new_instance));
+	SET_ACTION("new", &App::new_instance)
+	App::instance().get()->add_action("open", sigc::bind(sigc::ptr_fun(&App::dialog_open), ""));
+	SET_ACTION("quit", &App::quit)
   	//File menu:
 	Glib::ustring ui_info = 
 	"<interface>"
@@ -883,6 +885,12 @@ init_menu_builder()
     "          <attribute name='action'>app.new</attribute>"
     "          <attribute name='accel'>&lt;Control&gt;n</attribute>"
     "          <attribute name='icon'>document-new</attribute>"
+    "        </item>"
+	"        <item>"
+    "          <attribute name='label' translatable='yes'>_Open</attribute>"
+    "          <attribute name='action'>app.open</attribute>"
+    "          <attribute name='accel'>&lt;Control&gt;o</attribute>"
+    "          <attribute name='icon'>folder-open</attribute>"
     "        </item>"
 	"      </section>"
 	"      <section>"
@@ -4240,6 +4248,7 @@ App::open_recent(const std::string& filename)
 void
 App::dialog_open(std::string filename)
 {
+	std::cout<<"DIALOG_OPEN !!!!!!!!"<<std::endl;
 	if (filename.empty()) {
 		filename = selected_instance ? selected_instance->get_file_name() : "*.sif";
 	}
