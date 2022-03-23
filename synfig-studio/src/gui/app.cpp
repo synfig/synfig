@@ -53,7 +53,6 @@
 #include <glibmm/main.h>
 #include <glibmm/miscutils.h>
 #include <glibmm/timer.h>
-#include <glibmm/shell.h>
 #include <glibmm/spawn.h>
 
 #include <gtkmm/accelmap.h>
@@ -145,6 +144,8 @@
 #include <synfig/soundprocessor.h>
 #include <synfig/string_helper.h>
 #include <synfig/version.h>
+#include <gui/exception_guard.h>
+
 
 #include <synfigapp/action.h>
 #include <synfigapp/canvasinterface.h>
@@ -152,7 +153,6 @@
 #include <synfigapp/settings.h>
 
 #include <thread>
-#include <gtkmm/icontheme.h>
 
 #ifdef _WIN32
 
@@ -170,7 +170,6 @@
 
 #endif // _WIN32
 
-
 #endif
 
 /* === U S I N G =========================================================== */
@@ -181,7 +180,6 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
-#define DEFAULT_ICON_THEME_NAME "classic"
 /* === S I G N A L S ======================================================= */
 
 static sigc::signal<void> signal_present_all_;
@@ -283,7 +281,6 @@ bool   studio::App::resize_imported_images       = false;
 bool   studio::App::animation_thumbnail_preview  = true;
 bool   studio::App::enable_experimental_features = false;
 bool   studio::App::use_dark_theme               = false;
-String studio::App::icon_theme_name              = "";
 bool   studio::App::show_file_toolbar            = true;
 String studio::App::custom_filename_prefix       (DEFAULT_FILENAME_PREFIX);
 int    studio::App::preferred_x_size             = 480;
@@ -454,7 +451,7 @@ class SetsModel : public Gtk::TreeModel::ColumnRecord
 
 /* === P R O C E D U R E S ================================================= */
 
-class App::Preferences : public synfigapp::Settings
+class Preferences : public synfigapp::Settings
 {
 public:
 	virtual bool get_raw_value(const synfig::String& key, synfig::String& value)const override
@@ -510,11 +507,6 @@ public:
 			if(key=="use_dark_theme")
 			{
 				value=strprintf("%i",(int)App::use_dark_theme);
-				return true;
-			}
-			if(key=="icon_theme_name")
-			{
-				value=strprintf("%s", App::get_raw_icon_theme_name().c_str());
 				return true;
 			}
 			if(key=="show_file_toolbar")
@@ -703,11 +695,6 @@ public:
 				App::use_dark_theme=i;
 				return true;
 			}
-			if(key=="icon_theme_name")
-			{
-				App::icon_theme_name = value;
-				return true;
-			}
 			if(key=="show_file_toolbar")
 			{
 				int i(atoi(value.c_str()));
@@ -847,7 +834,6 @@ public:
 		ret.push_back("animation_thumbnail_preview");
 		ret.push_back("enable_experimental_features");
 		ret.push_back("use_dark_theme");
-		ret.push_back("icon_theme_name");
 		ret.push_back("show_file_toolbar");
 		ret.push_back("brushes_path");
 		ret.push_back("custom_filename_prefix");
@@ -875,7 +861,7 @@ public:
 	}
 };
 
-App::Preferences App::_preferences;
+static ::Preferences _preferences;
 
 void
 init_ui_manager()
@@ -1456,6 +1442,9 @@ void App::init(const synfig::String& rootpath)
 	String path_to_user_plugins = synfigapp::Main::get_user_app_directory()
 		+ ETL_DIRECTORY_SEPARATOR + "plugins";
 	
+	// icons
+	init_icons(path_to_icons + ETL_DIRECTORY_SEPARATOR);
+
 	ui_interface_=new GlobalUIInterface();
 
 	// don't call thread_init() if threads are already initialized
@@ -1520,10 +1509,6 @@ void App::init(const synfig::String& rootpath)
 	// add the preferences to the settings
 	synfigapp::Main::settings().add_domain(&_preferences,"pref");
 
-	// icons
-	init_icon_themes();
-	init_icons(path_to_icons + ETL_DIRECTORY_SEPARATOR);
-
 	try
 	{
 		// Try to load settings early to get access to some important
@@ -1531,7 +1516,6 @@ void App::init(const synfig::String& rootpath)
 		studio_init_cb.task(_("Loading Basic Settings..."));
 
 		load_settings("pref.use_dark_theme");
-
 		App::apply_gtk_settings();
 
 		load_settings("pref.show_file_toolbar");
@@ -2269,8 +2253,7 @@ App::apply_gtk_settings()
 {
 	Glib::RefPtr<Gtk::Settings> gtk_settings = Gtk::Settings::get_default();
 
-	const std::string theme_name = Glib::getenv("SYNFIG_GTK_THEME");
-	if (!theme_name.empty())
+	if (const char *theme_name = getenv("SYNFIG_GTK_THEME"))
 		gtk_settings->property_gtk_theme_name() = theme_name;
 
 	// dark theme
@@ -2297,57 +2280,18 @@ App::apply_gtk_settings()
 	Gtk::StyleContext::add_provider_for_screen(screen, provider, GTK_STYLE_PROVIDER_PRIORITY_USER);
 }
 
-void
-App::init_icon_themes()
-{
-	// If environment is not set then read theme name from preferences
-	if (Glib::getenv("SYNFIG_ICON_THEME").empty()) {
-		load_settings("pref.icon_theme_name");
-	}
-	auto icon_theme = Gtk::IconTheme::get_default();
-	icon_theme->prepend_search_path(ResourceHelper::get_themes_path());
-
-	set_icon_theme(App::icon_theme_name);
-}
-
 std::string
-App::get_icon_theme_name()
+App::get_synfig_icon_theme()
 {
-	// If not explicitly set at runtime, environment variable has priority
-	if (!icon_theme_name.empty())
-		return icon_theme_name;
-
-	auto env_icon_theme = Glib::getenv("SYNFIG_ICON_THEME");
-	if (!env_icon_theme.empty()) {
-		return env_icon_theme;
+	if (const char *env_theme = getenv("SYNFIG_ICON_THEME")) {
+		std::string icon_theme(env_theme);
+		if (!icon_theme.empty()) {
+			// SYNFIG_ICON_THEME is not a path!
+			if (icon_theme.find('/') == icon_theme.npos && icon_theme.find('\\') == icon_theme.npos )
+				return icon_theme;
+		}
 	}
-
-	return DEFAULT_ICON_THEME_NAME;
-}
-
-std::string App::get_raw_icon_theme_name()
-{
-	return icon_theme_name;
-}
-
-// Almost all GTK methods using icons from the default GTK theme.
-// Unfortunately, we can't change the IconTheme name if we get it
-// from the default screen with the `Gtk::IconTheme::get_default()`
-// method.
-// https://docs.gtk.org/gtk3/method.IconTheme.set_custom_theme.html
-// > Sets the name of the icon theme that the GtkIconTheme object uses
-// > overriding system configuration. This function cannot be called on
-// > the icon theme objects returned from gtk_icon_theme_get_default()
-// > and gtk_icon_theme_get_for_screen().
-//
-// Also, I didn't find a way to change the app IconTheme to a custom
-// one. However, we can change the IconTheme for the default screen
-// using the `Gtk::Settings` object.
-void
-App::set_icon_theme(const std::string &theme_name)
-{
-	icon_theme_name = theme_name;
-	Gtk::Settings::get_default()->property_gtk_icon_theme_name() = get_icon_theme_name();
+	return "classic";
 }
 
 bool
@@ -3811,6 +3755,26 @@ App::dialog_sets_entry(const std::string &action, const std::string &content, st
 	return true;
 }
 
+//gdk_keyval_from_name("Return")
+
+bool
+App::on_key_pressed(GdkEventKey *ev)
+  {
+
+    SYNFIG_EXCEPTION_GUARD_BEGIN()
+      if (  (ev->type == GDK_KEY_PRESS) &&
+           (ev->keyval == (0xff8d)||(0xfe34)||(0xfd1e)) &&
+           (ev->state == GDK_CONTROL_MASK) )  //pressing control and enter
+      {
+        ok_button->clicked();
+        std::cout << "hey";
+        return true;
+      }
+
+      return false;
+      SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
+ }
+
 bool
 App::dialog_paragraph(const std::string &title, const std::string &message,std::string &text)
 {
@@ -3831,8 +3795,9 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
 
 	dialog.get_content_area()->pack_start(text_view);
 
-	dialog.add_button(_("_Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
-	dialog.add_button(_("_OK"),   Gtk::RESPONSE_OK)->set_image_from_icon_name("gtk-ok", Gtk::ICON_SIZE_BUTTON);
+	dialog.add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
+    dialog.add_button(_("OK"),   Gtk::RESPONSE_OK)->set_image_from_icon_name("gtk-ok", Gtk::ICON_SIZE_BUTTON);
+    Gtk::Button* ok_button = dialog.add_button(_("Ok"), Gtk::RESPONSE_OK);
 	dialog.set_default_response(Gtk::RESPONSE_OK);
 
     bool on_key_pressed(GdkEventKey*);  //f dec hbd
@@ -3857,6 +3822,13 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
 
     //text_entry.signal_activate().connect(sigc::bind(sigc::mem_fun(dialog,&Gtk::Dialog::response),Gtk::RESPONSE_OK));
 	dialog.show();
+
+    dialog.signal_key_press_event().connect(sigc::ptr_fun(&on_key_pressed)); //hbd
+
+   // GdkEventKey *ev ;
+
+   // on_key_pressed(ev);
+
 
 	if(dialog.run()!=Gtk::RESPONSE_OK)
 		return false;
@@ -4466,26 +4438,28 @@ studio::App::process_all_events()
 }
 
 bool
-studio::App::check_python_version(const std::string& path)
+studio::App::check_python_version(String path)
 {
-	std::string working_directory, std_out, std_err;
-	int exit_status;
-	const char* err_msg = _("Failed to detect Python 3 executable:\n Error: %s");
-	const std::vector<std::string> argv = {path, "--version"};
-	try {
-		Glib::spawn_sync(working_directory, argv, Glib::SPAWN_SEARCH_PATH, Glib::SlotSpawnChildSetup(), &std_out, &std_err, &exit_status);
-	} catch (const Glib::SpawnError& e) {
-		synfig::error(err_msg, e.what().c_str());
-		return false;
-	} catch (const Glib::ShellError& e) {
-		synfig::error(err_msg, e.what().c_str());
+#ifndef _MSC_VER	
+	String command;
+	String result;
+	command = path + " --version 2>&1";
+	FILE* pipe = popen(command.c_str(), "r");
+	if (!pipe) {
 		return false;
 	}
-
+	char buffer[128];
+	while(!feof(pipe)) {
+		if(fgets(buffer, 128, pipe) != nullptr)
+				result += buffer;
+	}
+	pclose(pipe);
 	// Output is like: "Python 3.3.0"
-	if (!exit_status && std_out.find("Python 3") != std::string::npos) {
-		return true;
+	if (result.substr(7,1) != "3"){
+		return false;
 	}
-	synfig::warning(err_msg, (std_out + '\n' + std_err).c_str());
+	return true;
+#else
 	return false;
+#endif
 }
