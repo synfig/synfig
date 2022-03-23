@@ -3766,7 +3766,7 @@ App::on_key_pressed(GdkEventKey *ev)
            (ev->keyval == (0xff8d)||(0xfe34)||(0xfd1e)) &&
            (ev->state == GDK_CONTROL_MASK) )  //pressing control and enter
       {
-        ok_button->clicked();
+        //ok_button->clicked();
         std::cout << "hey";
         return true;
       }
