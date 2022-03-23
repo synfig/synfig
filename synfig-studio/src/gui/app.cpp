@@ -873,8 +873,8 @@ init_menu_builder()
 	SET_ACTION("quit", App::quit())
 	SET_ACTION("save-as", App::get_selected_instance()->dialog_save_as())
 	SET_ACTION("export", App::get_selected_instance()->dialog_export())
-  	//File menu:
-	Glib::ustring ui_info = 
+	//File menu:
+	Glib::ustring ui_info =
 	"<interface>"
     "  <!-- menubar -->"
     "  <menu id='studio_menubar'>"
@@ -939,15 +939,15 @@ init_menu_builder()
 	try {
 		App::menu_builder()->add_from_string(ui_info);
 	} catch (const Glib::Error& ex) {
-    	std::cerr << "Building menus failed: " << ex.what();
-  	}
+		std::cerr << "Building menus failed: " << ex.what();
+	}
 	auto menu_object = App::menu_builder()->get_object("studio_menubar");
 	auto menu_bar = Glib::RefPtr<Gio::Menu>::cast_dynamic(menu_object);
 	if ( !menu_bar ) {
-    	g_warning("menu_bar not found!");
-  	} else {
-    	App::instance().get()->set_menubar(menu_bar);
-  	}
+		g_warning("menu_bar not found!");
+	} else {
+		App::instance().get()->set_menubar(menu_bar);
+	}
 }
 void
 init_ui_manager()
