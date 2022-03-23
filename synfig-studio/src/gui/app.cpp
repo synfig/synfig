@@ -864,14 +864,15 @@ static ::Preferences _preferences;
 void
 init_menu_builder()
 {
-	//HOW SHOULD I BE ADDING ACCELERATORS? AND HOW SHOULD I BE ADDING ICONS?
-	//HARDCODING THEM INTO ui_info string??
-	#define SET_ACTION(x,cb) { App::instance().get()->add_action(x, sigc::ptr_fun(cb)); }
+	#define SET_ACTION(x,cb) { App::instance()->add_action(x, []() {cb;});}
 
 	//initalize menu actions
-	SET_ACTION("new", &App::new_instance)
-	App::instance().get()->add_action("open", sigc::bind(sigc::ptr_fun(&App::dialog_open), ""));
-	SET_ACTION("quit", &App::quit)
+	SET_ACTION("new", App::new_instance())
+	SET_ACTION("open", App::dialog_open(""))
+	SET_ACTION("save", App::get_selected_instance()->save())
+	SET_ACTION("quit", App::quit())
+	SET_ACTION("save-as", App::get_selected_instance()->dialog_save_as())
+	SET_ACTION("export", App::get_selected_instance()->dialog_export())
   	//File menu:
 	Glib::ustring ui_info = 
 	"<interface>"
@@ -893,6 +894,36 @@ init_menu_builder()
     "          <attribute name='icon'>folder-open</attribute>"
     "        </item>"
 	"      </section>"
+	"      <section>"
+    "        <item>"
+    "          <attribute name='label' translatable='yes'>_Save</attribute>"
+    "          <attribute name='action'>app.save</attribute>"
+    "          <attribute name='accel'>&lt;Control&gt;s</attribute>"
+    "          <attribute name='icon'>document-save</attribute>"
+    "        </item>"
+    "        <item>"
+    "          <attribute name='label' translatable='yes'>_Save As...</attribute>"
+    "          <attribute name='action'>app.save-as</attribute>"
+    "          <attribute name='accel'>&lt;Control&gt;&lt;Shift&gt;s</attribute>"
+    "          <attribute name='icon'>document-save-as</attribute>"
+    "        </item>"
+    "        <item>"
+    "          <attribute name='label' translatable='yes'>_Save All...</attribute>"
+    "          <attribute name='action'>app.save-all</attribute>"
+    "          <attribute name='accel'>&lt;Control&gt;e</attribute>"
+    //"          <attribute name='icon'>document-save-as</attribute>"
+    "        </item>"
+    "        <item>"
+    "          <attribute name='label' translatable='yes'>_Export...</attribute>"
+    "          <attribute name='action'>app.export</attribute>"
+    //"          <attribute name='icon'>document-save-as</attribute>"
+    "        </item>"
+    "        <item>"
+    "          <attribute name='label' translatable='yes'>_Revert...</attribute>"
+    "          <attribute name='action'>app.revert</attribute>"
+    //"          <attribute name='icon'>document-save-as</attribute>"
+    "        </item>"
+    "      </section>"
 	"      <section>"
     "        <item>"
     "          <attribute name='label' translatable='yes'>_Quit</attribute>"
@@ -4248,7 +4279,6 @@ App::open_recent(const std::string& filename)
 void
 App::dialog_open(std::string filename)
 {
-	std::cout<<"DIALOG_OPEN !!!!!!!!"<<std::endl;
 	if (filename.empty()) {
 		filename = selected_instance ? selected_instance->get_file_name() : "*.sif";
 	}
