@@ -3800,34 +3800,10 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
     Gtk::Button* ok_button = dialog.add_button(_("Ok"), Gtk::RESPONSE_OK);
 	dialog.set_default_response(Gtk::RESPONSE_OK);
 
-    bool on_key_pressed(GdkEventKey*);  //f dec hbd
-
-    signal_key_press_event().connect(sigc::ptr_fun(&on_key_pressed)); //hbd
-
-
-    on_key_pressed(GdkEventKey* ev)
-   {
-       SYNFIG_EXCEPTION_GUARD_BEGIN()
-       if (ev->keyval == gdk_keyval_from_name("Enter")  )
-       {
-           Gtk::RESPONSE_OK ;
-           return true;
-       }
-
-       return false;
-       SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
-  }
-
-
-
     //text_entry.signal_activate().connect(sigc::bind(sigc::mem_fun(dialog,&Gtk::Dialog::response),Gtk::RESPONSE_OK));
 	dialog.show();
 
-    dialog.signal_key_press_event().connect(sigc::ptr_fun(&on_key_pressed)); //hbd
-
-   // GdkEventKey *ev ;
-
-   // on_key_pressed(ev);
+    dialog.signal_key_press_event().connect(sigc::ptr_fun(&on_key_pressed)); //catching key-press event
 
 
 	if(dialog.run()!=Gtk::RESPONSE_OK)
