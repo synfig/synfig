@@ -864,7 +864,7 @@ static ::Preferences _preferences;
 void
 init_menu_builder()
 {
-	#define SET_ACTION(x,cb) { App::instance()->add_action(x, []() {cb;});}
+	#define SET_ACTION(x,cb) { App::instance()->add_action(x, [&]() {cb;});}
 
 	//File menu: ACTIONS
 	SET_ACTION("new", App::new_instance())
@@ -874,17 +874,13 @@ init_menu_builder()
 
 	SET_ACTION("save", App::get_selected_instance()->save())
 	SET_ACTION("save-as", App::get_selected_instance()->dialog_save_as())
-
-	//TODO2: need to find cb for save-all
-
+	SET_ACTION("save-all", App::get_selected_canvas_view()->save_all())
 	SET_ACTION("export", App::get_selected_instance()->dialog_export())
 	SET_ACTION("revert", App::get_selected_instance()->safe_revert())
 	SET_ACTION("import", App::get_selected_canvas_view()->import_file())
 	SET_ACTION("import-sequence", App::get_selected_canvas_view()->import_sequence())
 	SET_ACTION("preview", App::get_selected_canvas_view()->preview_option())
-
-	//TODO3: need to find cb for render
-
+	SET_ACTION("render", App::get_selected_canvas_view()->render_settings.present())
 	SET_ACTION("quit", App::quit())
 
 	//menbuar XML string
@@ -909,7 +905,12 @@ init_menu_builder()
     "          <attribute name='accel'>&lt;Control&gt;o</attribute>"
     "          <attribute name='icon'>folder-open</attribute>"
     "        </item>"
-	"      </section>"
+	"	<submenu>"
+    "      <attribute name='label' translatable='yes'>_Open Recent</attribute>"
+	"		<section>"
+	"		</section>"
+	"	</submenu>"
+	"		</section>"
 	"      <section>"
     "        <item>"
     "          <attribute name='label' translatable='yes'>_Save</attribute>"
@@ -962,7 +963,7 @@ init_menu_builder()
     "        </item>"
 	"        <item>"
     "          <attribute name='label' translatable='yes'>_Render...</attribute>"
-    //"          <attribute name='action'>app.render</attribute>"
+    "          <attribute name='action'>app.render</attribute>"
 	"          <attribute name='accel'>F9</attribute>"
     //"          <attribute name='icon'>document-save-as</attribute>"
     "        </item>"
@@ -989,7 +990,7 @@ init_menu_builder()
 	if ( !menu_bar ) {
 		g_warning("menu_bar not found!");
 	} else {
-		App::instance().get()->set_menubar(menu_bar);
+		App::instance()->set_menubar(menu_bar);
 	}
 }
 void

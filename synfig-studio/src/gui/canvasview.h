@@ -487,8 +487,6 @@ private:
 	void interpolation_refresh();
 	void on_interpolation_changed();
 
-	static void save_all();
-
 	//helper function for import_file()
 	bool is_same_file(const std::string &filename);
 	
@@ -709,6 +707,7 @@ protected:
 public:
 	static etl::handle<studio::CanvasView> create(etl::loose_handle<Instance> instance,etl::handle<synfig::Canvas> canvas);
 	static std::list<int>& get_pixel_sizes();
+	static void save_all();
 
 private:
 	#ifdef WITH_JACK
