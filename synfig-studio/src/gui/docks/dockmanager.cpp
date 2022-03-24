@@ -447,12 +447,24 @@ static void check_and_fix_window_position(int &x, int &y, int &width, int &heigh
 	const Gdk::Rectangle window_rect(x,y,width,height);
 	Gdk::Rectangle window_visible_rect;
 
+	Gdk::Rectangle monitor_rect;
+
 #if GTK_CHECK_VERSION(3,22,0)
 	int n_monitors = display->get_n_monitors();
+	auto monitor_at_topleft = display->get_monitor_at_point(x, y);
+	monitor_at_topleft->get_geometry(monitor_rect);
 #else
 	auto screen = display->get_default_screen();
-	int n_monitors = display->get_default_screen()->get_n_monitors();
+	int n_monitors = screen->get_n_monitors();
+	auto monitor_at_topleft_idx = screen->get_monitor_at_point(x, y);
+	screen->get_monitor_geometry(monitor_at_topleft_idx, monitor_rect);
 #endif
+
+	// adjust topleft point to lie in the monitor
+	if (x < monitor_rect.get_x() || x > monitor_rect.get_x() + monitor_rect.get_width())
+		x = monitor_rect.get_x();
+	if (y < monitor_rect.get_y() || y > monitor_rect.get_y() + monitor_rect.get_height())
+		y = monitor_rect.get_y();
 
 	for (int i = 0; i < n_monitors; i++) {
 		Gdk::Rectangle rect;
@@ -475,13 +487,6 @@ static void check_and_fix_window_position(int &x, int &y, int &width, int &heigh
 	bool bad_visible_height = window_visible_rect.get_height() < magic_mininum_length;
 	bool bad_visible_width = window_visible_rect.get_width() < magic_mininum_length;
 	if (bad_visible_height || bad_visible_width) {
-		Gdk::Rectangle monitor_rect;
-#if GTK_CHECK_VERSION(3,22,0)
-		display->get_monitor_at_point(x,y)->get_geometry(monitor_rect);
-#else
-		int monitor_idx = screen->get_monitor_at_point(x,y);
-		screen->get_monitor_geometry(monitor_idx, monitor_rect);
-#endif
 		if (bad_visible_height)
 			y = monitor_rect.get_y();
 		if (bad_visible_width)
@@ -579,13 +584,9 @@ Gtk::Widget* DockManager::read_widget(std::string &x)
 
 		DockDialog *dialog = new DockDialog();
 		dialog->add(*widget);
-		// FIXME(ice0): hack to fix incorrect positioning https://github.com/synfig/synfig/issues/1975
-		if (dialog->is_visible())
-			dialog->hide();
 		dialog->move(left, top);
 		dialog->set_default_size(width, height);
 		dialog->resize(width, height);
-		dialog->present();
 
 		return NULL;
 	}
@@ -618,13 +619,9 @@ Gtk::Widget* DockManager::read_widget(std::string &x)
 			delete child;
 		App::main_window->root().add(*widget);
 
-		// FIXME(ice0): hack to fix incorrect positioning https://github.com/synfig/synfig/issues/1975
-		if (App::main_window->is_visible())
-			App::main_window->hide();
 		App::main_window->move(left, top);
 		App::main_window->set_default_size(width, height);
 		App::main_window->resize(width, height);
-		App::main_window->present();
 
 		return NULL;
 	}
