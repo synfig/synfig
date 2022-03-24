@@ -866,18 +866,34 @@ init_menu_builder()
 {
 	#define SET_ACTION(x,cb) { App::instance()->add_action(x, []() {cb;});}
 
-	//initalize menu actions
+	//File menu: ACTIONS
 	SET_ACTION("new", App::new_instance())
 	SET_ACTION("open", App::dialog_open(""))
+
+	//TODO1: ADD Open Recent Actions
+
 	SET_ACTION("save", App::get_selected_instance()->save())
-	SET_ACTION("quit", App::quit())
 	SET_ACTION("save-as", App::get_selected_instance()->dialog_save_as())
+
+	//TODO2: need to find cb for save-all
+
 	SET_ACTION("export", App::get_selected_instance()->dialog_export())
-	//File menu:
+	SET_ACTION("revert", App::get_selected_instance()->safe_revert())
+	SET_ACTION("import", App::get_selected_canvas_view()->import_file())
+	SET_ACTION("import-sequence", App::get_selected_canvas_view()->import_sequence())
+	SET_ACTION("preview", App::get_selected_canvas_view()->preview_option())
+
+	//TODO3: need to find cb for render
+
+	SET_ACTION("quit", App::quit())
+
+	//menbuar XML string
 	Glib::ustring ui_info =
 	"<interface>"
     "  <!-- menubar -->"
     "  <menu id='studio_menubar'>"
+
+	//File menu
     "    <submenu>"
 	"      <attribute name='label' translatable='yes'>_File</attribute>"
 	"      <section>"
@@ -921,6 +937,33 @@ init_menu_builder()
     "        <item>"
     "          <attribute name='label' translatable='yes'>_Revert...</attribute>"
     "          <attribute name='action'>app.revert</attribute>"
+    //"          <attribute name='icon'>document-save-as</attribute>"
+    "        </item>"
+    "      </section>"
+	"      <section>"
+	"        <item>"
+    "          <attribute name='label' translatable='yes'>_Import...</attribute>"
+    "          <attribute name='action'>app.import</attribute>"
+	"          <attribute name='accel'>&lt;Control&gt;i</attribute>"
+    //"          <attribute name='icon'>document-save-as</attribute>"
+    "        </item>"
+	"        <item>"
+    "          <attribute name='label' translatable='yes'>_Import Sequence...</attribute>"
+    "          <attribute name='action'>app.import-sequence</attribute>"
+    //"          <attribute name='icon'>document-save-as</attribute>"
+    "        </item>"
+    "      </section>"
+	"      <section>"
+	"        <item>"
+    "          <attribute name='label' translatable='yes'>_Preview...</attribute>"
+    "          <attribute name='action'>app.preview</attribute>"
+	 "          <attribute name='accel'>F11</attribute>"
+    //"          <attribute name='icon'>document-save-as</attribute>"
+    "        </item>"
+	"        <item>"
+    "          <attribute name='label' translatable='yes'>_Render...</attribute>"
+    //"          <attribute name='action'>app.render</attribute>"
+	"          <attribute name='accel'>F9</attribute>"
     //"          <attribute name='icon'>document-save-as</attribute>"
     "        </item>"
     "      </section>"
