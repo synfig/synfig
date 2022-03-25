@@ -881,6 +881,7 @@ init_menu_builder()
 	SET_ACTION("import-sequence", App::get_selected_canvas_view()->import_sequence())
 	SET_ACTION("preview", App::get_selected_canvas_view()->preview_option())
 	SET_ACTION("render", App::get_selected_canvas_view()->render_settings.present())
+	SET_ACTION("close-document", App::get_selected_canvas_view()->close_instance())
 	SET_ACTION("quit", App::quit())
 
 	//menbuar XML string
@@ -905,10 +906,15 @@ init_menu_builder()
     "          <attribute name='accel'>&lt;Control&gt;o</attribute>"
     "          <attribute name='icon'>folder-open</attribute>"
     "        </item>"
-	"	<submenu>"
+
+	//Open Recent menu
+	"	<submenu id='recent'>"
     "      <attribute name='label' translatable='yes'>_Open Recent</attribute>"
-	"		<section>"
-	"		</section>"
+	"<item>"
+	"<attribute name='label'>something</attribute>"
+	"</item>"
+	//"		<section>"
+	//"		</section>"
 	"	</submenu>"
 	"		</section>"
 	"      <section>"
@@ -968,6 +974,14 @@ init_menu_builder()
     //"          <attribute name='icon'>document-save-as</attribute>"
     "        </item>"
     "      </section>"
+	"		<section>"
+	"			<item>"
+	"				<attribute name='label' translatable='yes'>_Close Document</attribute>"
+	"				<attribute name='action'>app.close-document</attribute>"
+    "          		<attribute name='accel'>&lt;Primary&gt;w</attribute>"
+	//"          		<attribute name='icon'>close-document</attribute>"
+	"			</item>"
+	"		</section>"
 	"      <section>"
     "        <item>"
     "          <attribute name='label' translatable='yes'>_Quit</attribute>"
@@ -980,8 +994,18 @@ init_menu_builder()
 	"  </menu>"
     "</interface>";
 
+	//TODO2: trying to merge this xml string into existing xml string for a test
+	//jump to line 1008
+	Glib::ustring recent = "<menu id='studio_menubar'><submenu id='recent'>"
+	"<item>"
+	"<attribute name='label'>something else</attribute>"
+	"</item>"
+	"</submenu></menu>";
+
 	try {
 		App::menu_builder()->add_from_string(ui_info);
+		//testing adding additional elements to xml string in the open-rect submenu
+		App::menu_builder()->add_from_string(recent);
 	} catch (const Glib::Error& ex) {
 		std::cerr << "Building menus failed: " << ex.what();
 	}
