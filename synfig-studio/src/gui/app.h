@@ -177,7 +177,6 @@ private:
 
 	static Glib::RefPtr<UIManager>	ui_manager_;
 
-	//switch deprecated ui_manager to builder for menubar creation
 	static  Glib::RefPtr<Builder> menu_builder_;
 
 	static int jack_locks_;
@@ -336,7 +335,6 @@ public:
 
 	static Glib::RefPtr<UIManager>& ui_manager() { return ui_manager_; }
 
-	//builder to replace deprecated ui_manager for menubar creation
 	static Glib::RefPtr<Builder>& menu_builder() { return menu_builder_; }
 
 	static void add_recent_file(const etl::handle<Instance> instance);

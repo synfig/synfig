@@ -416,6 +416,15 @@ MainWindow::on_recent_files_changed()
 		action_group->add( Gtk::Action::create(action_name, quoted, fullnames[i]),
 			[filename](){App::open_recent(filename);}
 		);
+
+		auto menu_object = App::menu_builder()->get_object("recent-file");
+		auto recent_file_menu = Glib::RefPtr<Gio::Menu>::cast_dynamic(menu_object);
+		if ( !recent_file_menu ) {
+			g_warning("menu not found!");
+		} else {
+			recent_file_menu->insert(0, filename, "app.open-recent");
+			App::instance()->add_action("open-recent", [filename](){App::open_recent(filename);});
+		}
 	}
 
 	std::string ui_info =

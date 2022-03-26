@@ -869,9 +869,6 @@ init_menu_builder()
 	//File menu: ACTIONS
 	SET_ACTION("new", App::new_instance())
 	SET_ACTION("open", App::dialog_open(""))
-
-	//TODO1: ADD Open Recent Actions
-
 	SET_ACTION("save", App::get_selected_instance()->save())
 	SET_ACTION("save-as", App::get_selected_instance()->dialog_save_as())
 	SET_ACTION("save-all", App::get_selected_canvas_view()->save_all())
@@ -907,15 +904,12 @@ init_menu_builder()
     "          <attribute name='icon'>folder-open</attribute>"
     "        </item>"
 
-	//Open Recent menu
-	"	<submenu id='recent'>"
+	//Open Recent submenu
+	"	<submenu id='recent-file'>"
     "      <attribute name='label' translatable='yes'>_Open Recent</attribute>"
-	"<item>"
-	"<attribute name='label'>something</attribute>"
-	"</item>"
-	//"		<section>"
-	//"		</section>"
 	"	</submenu>"
+
+	//File menu cont
 	"		</section>"
 	"      <section>"
     "        <item>"
@@ -994,25 +988,15 @@ init_menu_builder()
 	"  </menu>"
     "</interface>";
 
-	//TODO2: trying to merge this xml string into existing xml string for a test
-	//jump to line 1008
-	Glib::ustring recent = "<menu id='studio_menubar'><submenu id='recent'>"
-	"<item>"
-	"<attribute name='label'>something else</attribute>"
-	"</item>"
-	"</submenu></menu>";
-
 	try {
 		App::menu_builder()->add_from_string(ui_info);
-		//testing adding additional elements to xml string in the open-rect submenu
-		App::menu_builder()->add_from_string(recent);
 	} catch (const Glib::Error& ex) {
 		std::cerr << "Building menus failed: " << ex.what();
 	}
 	auto menu_object = App::menu_builder()->get_object("studio_menubar");
 	auto menu_bar = Glib::RefPtr<Gio::Menu>::cast_dynamic(menu_object);
-	if ( !menu_bar ) {
-		g_warning("menu_bar not found!");
+	if ( !menu_bar ) {//|| !recent_menu) {
+		g_warning("menu not found!");
 	} else {
 		App::instance()->set_menubar(menu_bar);
 	}
