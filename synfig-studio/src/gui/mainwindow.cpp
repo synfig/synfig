@@ -397,6 +397,9 @@ MainWindow::on_recent_files_changed()
 	std::vector<String> shortnames;
 	make_short_filenames(fullnames, shortnames);
 
+	auto menu_object = App::menu_builder()->get_object("recent-file");
+	auto recent_file_menu = Glib::RefPtr<Gio::Menu>::cast_dynamic(menu_object);
+
 	std::string menu_items;
 	for(int i = 0; i < (int)fullnames.size(); ++i)
 	{
@@ -417,14 +420,8 @@ MainWindow::on_recent_files_changed()
 			[filename](){App::open_recent(filename);}
 		);
 
-		auto menu_object = App::menu_builder()->get_object("recent-file");
-		auto recent_file_menu = Glib::RefPtr<Gio::Menu>::cast_dynamic(menu_object);
-		if ( !recent_file_menu ) {
-			g_warning("menu not found!");
-		} else {
-			recent_file_menu->insert(0, filename, "app.open-recent");
-			App::instance()->add_action("open-recent", [filename](){App::open_recent(filename);});
-		}
+		recent_file_menu->prepend(raw, "app.open-recent");
+		App::instance()->add_action("open-recent", [filename](){App::open_recent(filename);});
 	}
 
 	std::string ui_info =
