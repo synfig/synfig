@@ -878,7 +878,6 @@ init_menu_builder()
 	SET_ACTION("import-sequence", App::get_selected_canvas_view()->import_sequence())
 	SET_ACTION("preview", App::get_selected_canvas_view()->preview_option())
 	SET_ACTION("render", App::get_selected_canvas_view()->render_settings.present())
-	SET_ACTION("close-document", App::get_selected_canvas_view()->close_instance())
 	SET_ACTION("quit", App::quit())
 
 	//menbuar XML string

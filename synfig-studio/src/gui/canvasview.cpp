@@ -736,7 +736,9 @@ void CanvasView::activate()
 	activation_index_.activate();
 	get_smach().process_event(EVENT_REFRESH_TOOL_OPTIONS);
 	App::ui_manager()->insert_action_group(action_group);
+	App::instance()->add_action("close-document", [&](){this->close_instance();});
 	this->_action_group_removed = false;
+	this->_close_doc_action_removed = false;
 	update_title();
 	present();
 	grab_focus();
@@ -746,7 +748,9 @@ void CanvasView::deactivate()
 {
 	get_smach().process_event(EVENT_YIELD_TOOL_OPTIONS);
 	App::ui_manager()->remove_action_group(action_group);
+	App::instance()->remove_action("close-document");
 	this->_action_group_removed = true;
+	this->_close_doc_action_removed = true;
 	update_title();
 }
 
