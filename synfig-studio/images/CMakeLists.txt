@@ -188,6 +188,7 @@ set(ICONS
 	resize_transparent_icon
 	select_all_child_layers_icon
 	set_fill_color
+	invert_icon
 	set_icon
 	set_outline_color
 	show_grid_icon
