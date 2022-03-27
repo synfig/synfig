@@ -329,6 +329,14 @@ Dock_PalEdit::show_menu(int i)
 	item->show_all();
 	menu->append(*item);
 
+	item = manage(new Gtk::ImageMenuItem(Gtk::StockID("synfig-invert")));
+	item->signal_activate().connect(
+		sigc::bind(
+			sigc::mem_fun(*this,&studio::Dock_PalEdit::invert_color),
+			i ));
+	item->show_all();
+	menu->append(*item);
+
 	item = manage(new Gtk::ImageMenuItem(Gtk::StockID("gtk-delete")));
 	item->signal_activate().connect(
 		sigc::bind(
@@ -367,6 +375,16 @@ void
 Dock_PalEdit::erase_color(int i)
 {
 	palette_.erase(palette_.begin()+i);
+	signal_changed()();
+	refresh();
+}
+
+void
+Dock_PalEdit::invert_color(int i)
+{
+	palette_[i].color.set_r(1.00f-palette_[i].color.get_r());
+	palette_[i].color.set_g(1.00f-palette_[i].color.get_g());
+	palette_[i].color.set_b(1.00f-palette_[i].color.get_b());
 	signal_changed()();
 	refresh();
 }

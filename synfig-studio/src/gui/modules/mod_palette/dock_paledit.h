@@ -77,6 +77,7 @@ private:
 	int add_color(const synfig::Color& x);
 	void set_color(synfig::Color x, int i);
 	void erase_color(int i);
+	void invert_color(int i);
 
 	void select_fill_color(int i);
 	void select_outline_color(int i);
