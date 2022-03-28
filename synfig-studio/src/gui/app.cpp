@@ -146,7 +146,6 @@
 #include <synfig/version.h>
 #include <gui/exception_guard.h>
 
-
 #include <synfigapp/action.h>
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/main.h>
@@ -3755,7 +3754,7 @@ App::dialog_sets_entry(const std::string &action, const std::string &content, st
 	return true;
 }
 
-//gdk_keyval_from_name("Return")
+bool App::response_ok_activate_check = 0 ;
 
 bool
 App::on_key_pressed(GdkEventKey *ev)
@@ -3766,15 +3765,15 @@ App::on_key_pressed(GdkEventKey *ev)
            (ev->keyval == (gdk_keyval_from_name("s"))) &&
            (ev->state == GDK_CONTROL_MASK) )  //pressing control and enter
       {
-     // dialog.Gtk::Dialog::response(-5) ;
         response_ok_activate_check =1 ;
-         std::cout << "hey";
+       //  std::cout << "hey";
         return true;
       }
 
       return false;
       SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
  }
+
 
 bool
 App::dialog_paragraph(const std::string &title, const std::string &message,std::string &text)
@@ -3797,34 +3796,31 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
 	dialog.get_content_area()->pack_start(text_view);
 
 	dialog.add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
-    dialog.add_button(_("OK"),   Gtk::RESPONSE_OK)->set_image_from_icon_name("gtk-ok", Gtk::ICON_SIZE_BUTTON);
+	dialog.add_button(_("OK"),   Gtk::RESPONSE_OK)->set_image_from_icon_name("gtk-ok", Gtk::ICON_SIZE_BUTTON);
     //Gtk::Button* ok_button = dialog.add_button(_("Ok"), Gtk::RESPONSE_OK);
+	dialog.set_default_response(Gtk::RESPONSE_OK);
 
-    dialog.set_default_response(Gtk::RESPONSE_OK);
+     dialog.signal_key_press_event().connect(sigc::ptr_fun(&on_key_pressed)); //catching key-press event
 
-    //text_entry.signal_activate().connect(sigc::bind(sigc::mem_fun(dialog,&Gtk::Dialog::response),Gtk::RESPONSE_OK));
+	//text_entry.signal_activate().connect(sigc::bind(sigc::mem_fun(dialog,&Gtk::Dialog::response),Gtk::RESPONSE_OK));
 	dialog.show();
 
-    dialog.signal_key_press_event().connect(sigc::ptr_fun(&on_key_pressed)); //catching key-press event
     if (response_ok_activate_check == 1)
-     {
-      // ok_button->clicked();
-       dialog.response(Gtk::RESPONSE_OK ) ;
-        std::cout<<" response emitted ";
-     }
-
+         {
+          // ok_button->clicked();
+           dialog.response(Gtk::RESPONSE_OK ) ;
+         //   std::cout<<" response emitted ";
+         }
 
 	if(dialog.run()!=Gtk::RESPONSE_OK)
 		return false;
 
 	text=text_buffer->get_text();
-	
-	response_ok_activate_check = 0 ;
+
+    response_ok_activate_check = 0 ;
 
 	return true;
 }
-
-
 
 std::string
 App::get_temporary_directory()
