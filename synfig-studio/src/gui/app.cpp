@@ -3818,9 +3818,10 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
 		return false;
 
 	text=text_buffer->get_text();
+	
+	response_ok_activate_check = 0 ;
 
 	return true;
-    response_ok_activate_check = 0 ;
 }
 
 
