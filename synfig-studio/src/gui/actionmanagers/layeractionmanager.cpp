@@ -45,6 +45,7 @@
 #include <synfig/layers/layer_pastecanvas.h>
 #include <synfig/layers/layer_skeleton.h>
 #include <synfigapp/selectionmanager.h>
+#include <gui/app.h>
 
 #endif
 
@@ -112,6 +113,12 @@ LayerActionManager::LayerActionManager():
 			&LayerActionManager::cut
 		)
 	);
+	
+	//TODO2: how to activate and deactivate cut, copy, paste
+	//simp_action_cut_=App::instance()->add_action("cut", [&]() {this->cut();});
+	simp_action_cut_=App::instance()->add_action("cut", sigc::mem_fun(*this, &LayerActionManager::cut));
+	simp_action_cut_->signal_activate();
+
 	action_copy_=Gtk::Action::create(
 		"copy",
 		Gtk::StockID("gtk-copy")
@@ -122,6 +129,10 @@ LayerActionManager::LayerActionManager():
 			&LayerActionManager::copy
 		)
 	);
+
+	simp_action_copy_=App::instance()->add_action("copy", sigc::mem_fun(*this, &LayerActionManager::copy));
+	simp_action_copy_->signal_activate();
+
 	action_paste_=Gtk::Action::create(
 		"paste",
 		Gtk::StockID("gtk-paste")
@@ -132,6 +143,9 @@ LayerActionManager::LayerActionManager():
 			&LayerActionManager::paste
 		)
 	);
+
+	simp_action_paste_=App::instance()->add_action("paste", sigc::mem_fun(*this, &LayerActionManager::paste));
+	simp_action_paste_->signal_activate();
 
 
 	action_amount_inc_=Gtk::Action::create(

@@ -31,6 +31,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/uimanager.h>
+#include <giomm/simpleaction.h>
 #include <synfigapp/canvasinterface.h>
 
 /* === M A C R O S ========================================================= */
@@ -59,6 +60,11 @@ class LayerActionManager
 	Glib::RefPtr<Gtk::Action>	action_cut_;
 	Glib::RefPtr<Gtk::Action>	action_copy_;
 	Glib::RefPtr<Gtk::Action>	action_paste_;
+
+	Glib::RefPtr<Gio::SimpleAction> simp_action_cut_;
+	Glib::RefPtr<Gio::SimpleAction> simp_action_copy_;
+	Glib::RefPtr<Gio::SimpleAction> simp_action_paste_;
+
 
 	Glib::RefPtr<Gtk::Action>	action_amount_inc_;
 	Glib::RefPtr<Gtk::Action>	action_amount_dec_;

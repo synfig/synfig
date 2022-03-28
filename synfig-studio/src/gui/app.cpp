@@ -880,6 +880,15 @@ init_menu_builder()
 	SET_ACTION("render", App::get_selected_canvas_view()->render_settings.present())
 	SET_ACTION("quit", App::quit())
 
+	//Edit menu: ACTIONS
+
+	//TODO1: need to find where to activate/deactivate:
+	// undo, redo, cut, copy, paste
+	SET_ACTION("undo", studio::App::undo())
+	SET_ACTION("redo", studio::App::redo())
+
+	Glib::ustring icon_path = "../../images";
+
 	//menbuar XML string
 	Glib::ustring ui_info =
 	"<interface>"
@@ -957,8 +966,8 @@ init_menu_builder()
 	"        <item>"
     "          <attribute name='label' translatable='yes'>_Preview...</attribute>"
     "          <attribute name='action'>app.preview</attribute>"
-	 "          <attribute name='accel'>F11</attribute>"
-    //"          <attribute name='icon'>document-save-as</attribute>"
+	"          <attribute name='accel'>F11</attribute>"
+    "          <attribute name='icon'>"+icon_path+"preview_options_icon.sif</attribute>"
     "        </item>"
 	"        <item>"
     "          <attribute name='label' translatable='yes'>_Render...</attribute>"
@@ -984,6 +993,45 @@ init_menu_builder()
     "        </item>"
     "      </section>"
     "    </submenu>"
+
+	//Edit menu
+	"	<submenu>"
+	"		<attribute name='label' translatable='yes'>_Edit</attribute>"
+	"		<section>"
+	"			<item>"
+	"				<attribute name='label' translatable='yes'>_Undo</attribute>"
+	"				<attribute name='action'>app.undo</attribute>"
+	"				<attribute name='accel'>&lt;Primary&gt;z</attribute>"
+	//"				<attribute name='icon'>		</attribute>"
+	"			</item>"
+	"			<item>"
+	"				<attribute name='label' translatable='yes'>_Redo</attribute>"
+	"				<attribute name='action'>app.redo</attribute>"
+	"				<attribute name='accel'>&lt;Shift&gt;&lt;Primary&gt;z</attribute>"
+	//"				<attribute name='icon'>		</attribute>"
+	"			</item>"
+	"		</section>"
+	"		<section>"
+	"			<item>"
+	"				<attribute name='label' translatable='yes'>_Cut</attribute>"
+	"				<attribute name='action'>app.cut</attribute>"
+	"				<attribute name='accel'>&lt;Primary&gt;x</attribute>"
+	//"				<attribute name='icon'>		</attribute>"
+	"			</item>"
+	"			<item>"
+	"				<attribute name='label' translatable='yes'>_Copy</attribute>"
+	"				<attribute name='action'>app.copy</attribute>"
+	"				<attribute name='accel'>&lt;Primary&gt;c</attribute>"
+	//"				<attribute name='icon'>		</attribute>"
+	"			</item>"
+	"			<item>"
+	"				<attribute name='label' translatable='yes'>_Paste</attribute>"
+	"				<attribute name='action'>app.paste</attribute>"
+	"				<attribute name='accel'>&lt;Primary&gt;v</attribute>"
+	//"				<attribute name='icon'>		</attribute>"
+	"			</item>"
+	"		</section>"				
+	"	</submenu>"
 	"  </menu>"
     "</interface>";
 
