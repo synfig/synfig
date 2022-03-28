@@ -3763,11 +3763,12 @@ App::on_key_pressed(GdkEventKey *ev)
 
     SYNFIG_EXCEPTION_GUARD_BEGIN()
       if (  (ev->type == GDK_KEY_PRESS) &&
-           (ev->keyval == (0xff8d)||(0xfe34)||(0xfd1e)) &&
+           (ev->keyval == (gdk_keyval_from_name("s"))) &&
            (ev->state == GDK_CONTROL_MASK) )  //pressing control and enter
       {
-        //ok_button->clicked();
-        std::cout << "hey";
+     // dialog.Gtk::Dialog::response(-5) ;
+        response_ok_activate_check =1 ;
+         std::cout << "hey";
         return true;
       }
 
@@ -3797,13 +3798,20 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
 
 	dialog.add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
     dialog.add_button(_("OK"),   Gtk::RESPONSE_OK)->set_image_from_icon_name("gtk-ok", Gtk::ICON_SIZE_BUTTON);
-    Gtk::Button* ok_button = dialog.add_button(_("Ok"), Gtk::RESPONSE_OK);
-	dialog.set_default_response(Gtk::RESPONSE_OK);
+    //Gtk::Button* ok_button = dialog.add_button(_("Ok"), Gtk::RESPONSE_OK);
+
+    dialog.set_default_response(Gtk::RESPONSE_OK);
 
     //text_entry.signal_activate().connect(sigc::bind(sigc::mem_fun(dialog,&Gtk::Dialog::response),Gtk::RESPONSE_OK));
 	dialog.show();
 
     dialog.signal_key_press_event().connect(sigc::ptr_fun(&on_key_pressed)); //catching key-press event
+    if (response_ok_activate_check == 1)
+     {
+      // ok_button->clicked();
+       dialog.response(Gtk::RESPONSE_OK ) ;
+        std::cout<<" response emitted ";
+     }
 
 
 	if(dialog.run()!=Gtk::RESPONSE_OK)
@@ -3812,6 +3820,7 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
 	text=text_buffer->get_text();
 
 	return true;
+    response_ok_activate_check = 0 ;
 }
 
 
