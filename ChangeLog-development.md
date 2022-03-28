@@ -1,3 +1,6 @@
+- [`c42885f`](https://github.com/synfig/synfig/commit/c42885f91faebc63fa1a8b5149dcc3da7f6ff067) Added the ability to set the build type from the command line to the 2-build-msys-cmake.sh script ([#2573](https://github.com/synfig/synfig/issues/2573))
+- [`113dc73`](https://github.com/synfig/synfig/commit/113dc73784273e7a358c6c41004920dad51483c9) Allow to call regression test script outside of Travis ([#2585](https://github.com/synfig/synfig/issues/2585))
+- [`042c737`](https://github.com/synfig/synfig/commit/042c7378917c32af4354bac5d35283a63a7b828c) Fix bug with src offset in blur sw task ([#2570](https://github.com/synfig/synfig/issues/2570)) [core]
 - [`f64f99f`](https://github.com/synfig/synfig/commit/f64f99f020f0689fb006969a7c649c101c52d066) Added hotkey for grouping layers (Ctrl+G). Grid toggle hotkey changed to #. ([#2581](https://github.com/synfig/synfig/issues/2581)) [studio]
 - [`8459f46`](https://github.com/synfig/synfig/commit/8459f46b6def28d14373d4550448b384fb5e669c) Fixed MSYS2 dependencies ([#2575](https://github.com/synfig/synfig/issues/2575))
 - [`0dbad45`](https://github.com/synfig/synfig/commit/0dbad4502e861f4433afd989f338224966692d0f) Added the ability to select the parent layer through the keyboard shortcut Alt+Page Up.  ([#2567](https://github.com/synfig/synfig/issues/2567)) [studio]
