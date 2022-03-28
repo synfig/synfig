@@ -382,9 +382,7 @@ Dock_PalEdit::erase_color(int i)
 void
 Dock_PalEdit::invert_color(int i)
 {
-	palette_[i].color.set_r(1.00f-palette_[i].color.get_r());
-	palette_[i].color.set_g(1.00f-palette_[i].color.get_g());
-	palette_[i].color.set_b(1.00f-palette_[i].color.get_b());
+	palette_[i].color = ~palette_[i].color;
 	signal_changed()();
 	refresh();
 }
