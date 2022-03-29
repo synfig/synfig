@@ -3774,7 +3774,6 @@ App::on_key_pressed(GdkEventKey *ev)
       SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
  }
 
-
 bool
 App::dialog_paragraph(const std::string &title, const std::string &message,std::string &text)
 {
@@ -3800,17 +3799,18 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
     //Gtk::Button* ok_button = dialog.add_button(_("Ok"), Gtk::RESPONSE_OK);
 	dialog.set_default_response(Gtk::RESPONSE_OK);
 
-     dialog.signal_key_press_event().connect(sigc::ptr_fun(&on_key_pressed)); //catching key-press event
+    dialog.signal_key_press_event().connect(sigc::ptr_fun(&on_key_pressed)); //catching key-press event
 
 	//text_entry.signal_activate().connect(sigc::bind(sigc::mem_fun(dialog,&Gtk::Dialog::response),Gtk::RESPONSE_OK));
 	dialog.show();
 
     if (response_ok_activate_check == 1)
-         {
-          // ok_button->clicked();
-           dialog.response(Gtk::RESPONSE_OK ) ;
-         //   std::cout<<" response emitted ";
-         }
+             {
+              // ok_button->clicked();
+               dialog.response(Gtk::RESPONSE_OK ) ;
+             //   std::cout<<" response emitted ";
+             }
+
 
 	if(dialog.run()!=Gtk::RESPONSE_OK)
 		return false;
