@@ -3,7 +3,7 @@
 export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:/opt/mlt-7.2.0/lib/pkgconfig"
 mkdir -p cmake-build-msys && cd cmake-build-msys
 mode="Release"
-if [[ -n $1 ]] 
+if [[ -n $1 ]]
 then
 mode=$1
 fi
