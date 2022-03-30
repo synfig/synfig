@@ -1728,6 +1728,7 @@ CanvasView::unselect_all_layers()
 	CanvasView::on_unselect_layers();
 }
 
+void
 CanvasView::on_select_parent_layer()
 {
 	Layer::Handle layer = get_selection_manager()->get_selected_layer();
