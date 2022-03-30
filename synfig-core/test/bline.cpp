@@ -46,7 +46,7 @@ void fill_list(std::vector<ValueBase> &list) {
 	list.push_back(p);
 }
 
-bool test_bline_length() {
+void test_bline_length() {
 	std::vector<ValueBase> list;
 	fill_list(list);
 	
@@ -84,11 +84,9 @@ bool test_bline_length() {
 	l = bline_length(list, loop, &lengths);
 	ASSERT_EQUAL(1, lengths.size());
 	ASSERT_APPROX_EQUAL_MICRO(0.349854, l);
-
-	return false;
 }
 
-bool test_bline_std_to_hom_without_loop() {
+void test_bline_std_to_hom_without_loop() {
 	std::vector<ValueBase> list;
 	fill_list(list);
 
@@ -111,11 +109,9 @@ bool test_bline_std_to_hom_without_loop() {
 		Real value = synfig::std_to_hom(list, positions[i] + index_offset, true, false);
 		ASSERT_APPROX_EQUAL_MICRO(expected[i] + index_offset, value);
 	}
-
-	return false;
 }
 
-bool test_bline_std_to_hom_with_loop() {
+void test_bline_std_to_hom_with_loop() {
 	std::vector<ValueBase> list;
 	fill_list(list);
 
@@ -138,11 +134,9 @@ bool test_bline_std_to_hom_with_loop() {
 		Real value = synfig::std_to_hom(list, positions[i] + index_offset, true, true);
 		ASSERT_APPROX_EQUAL_MICRO(expected[i] + index_offset, value);
 	}
-
-	return false;
 }
 
-bool test_bline_hom_to_std_without_loop() {
+void test_bline_hom_to_std_without_loop() {
 	std::vector<ValueBase> list;
 	fill_list(list);
 
@@ -165,11 +159,9 @@ bool test_bline_hom_to_std_without_loop() {
 		Real value = synfig::hom_to_std(list, positions[i] + index_offset, true, false);
 		ASSERT_APPROX_EQUAL_MICRO(expected[i] + index_offset, value);
 	}
-
-	return false;
 }
 
-bool test_bline_hom_to_std_with_loop() {
+void test_bline_hom_to_std_with_loop() {
 	std::vector<ValueBase> list;
 	fill_list(list);
 
@@ -192,11 +184,9 @@ bool test_bline_hom_to_std_with_loop() {
 		Real value = synfig::hom_to_std(list, positions[i] + index_offset, true, true);
 		ASSERT_APPROX_EQUAL_MICRO(expected[i] + index_offset, value);
 	}
-
-	return false;
 }
 
-bool test_calc_vertex() {
+void test_calc_vertex() {
 	std::vector<ValueBase> list;
 	BLinePoint p;
 	p.set_vertex(Point(-2.342526, -1.151789));
@@ -241,8 +231,6 @@ bool test_calc_vertex() {
 	bline_calc_vertex->set_link("amount", ValueNode_Const::create(0.507960));
 	vertex = (*bline_calc_vertex)(Time()).get(Vector());
 	ASSERT_VECTOR_APPROX_EQUAL_MICRO(Vector(-0.260716, 0.341317), vertex)
-
-	return false;
 }
 
 
