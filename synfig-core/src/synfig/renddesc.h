@@ -361,8 +361,8 @@ public:
 	Matrix get_pixels_to_world_matrix() const
 	{
 		return Matrix(
-			(get_w() > 0 ? 0.0 : 1.0/Real(get_w())*(get_br()[0] - get_tl()[0])), 0.0, 0.0,
-			0.0, (get_h() > 0 ? 0.0 : 1.0/Real(get_h())*(get_br()[1] - get_tl()[1])), 0.0,
+			(get_w() < 0 ? 0.0 : 1.0/Real(get_w())*(get_br()[0] - get_tl()[0])), 0.0, 0.0,
+			0.0, (get_h() < 0 ? 0.0 : 1.0/Real(get_h())*(get_br()[1] - get_tl()[1])), 0.0,
 			get_tl()[0], get_tl()[1], 1.0 );
 	}
 
