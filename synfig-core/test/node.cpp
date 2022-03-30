@@ -49,23 +49,19 @@ protected:
 	}
 };
 
-bool initial_node_guid_is_not_zero() {
+void initial_node_guid_is_not_zero() {
 	NodeX node;
 
 	ASSERT_NOT_EQUAL(GUID::zero(), node.get_guid());
-
-	return false;
 }
 
-bool non_initialized_nodes_have_different_guid() {
+void non_initialized_nodes_have_different_guid() {
 	NodeX node1, node2;
 
 	ASSERT(node1.get_guid() != node2.get_guid());
-
-	return false;
 }
 
-bool set_node_guid_works() {
+void set_node_guid_works() {
 	NodeX node;
 	
 	const GUID initial_guid = node.get_guid();
@@ -76,21 +72,17 @@ bool set_node_guid_works() {
 	node.set_guid(new_guid);
 
 	ASSERT(node.get_guid() == new_guid);
-
-	return false;
 }
 
-bool set_node_guid_first_time_does_not_emit_signal_guid_changed() {
+void set_node_guid_first_time_does_not_emit_signal_guid_changed() {
 	NodeX node;
 
 	GUID new_guid;
 
 	ASSERT_SIGNAL_NOT_EMITTED((&node),signal_guid_changed,,GUID,void, node.set_guid(new_guid));
-
-	return false;
 }
 
-bool set_node_guid_emits_signal_guid_changed() {
+void set_node_guid_emits_signal_guid_changed() {
 	NodeX node;
 
 	GUID new_guid1, new_guid2;
@@ -98,51 +90,41 @@ bool set_node_guid_emits_signal_guid_changed() {
 	node.set_guid(new_guid1);
 
 	ASSERT_SIGNAL_EMITTED((&node),signal_guid_changed,,GUID,void, node.set_guid(new_guid2));
-
-	return false;
 }
 
-bool set_same_node_guid_does_not_emit_signal_guid_changed() {
+void set_same_node_guid_does_not_emit_signal_guid_changed() {
 	NodeX node;
 
 	GUID new_guid;
 	node.set_guid(new_guid);
 
 	ASSERT_SIGNAL_NOT_EMITTED((&node),signal_guid_changed,,GUID,void, node.set_guid(new_guid));
-
-	return false;
 }
 
-bool set_node_guid_does_not_emit_signal_changed() {
+void set_node_guid_does_not_emit_signal_changed() {
 	NodeX node;
 	
 	GUID new_guid;
 
 	ASSERT_SIGNAL_NOT_EMITTED((&node),signal_changed,,,void, node.set_guid(new_guid));
-
-	return false;
 }
 
-bool find_node_works() {
+void find_node_works() {
 	NodeX node;
 	
 	ASSERT(&node == find_node(node.get_guid()));
-	
-	return false;
 }
 
-bool find_node_works_when_node_have_new_guid() {
+void find_node_works_when_node_have_new_guid() {
 	NodeX node;
 	
 	GUID new_guid;
 	node.set_guid(new_guid);
 	
 	ASSERT(&node == find_node(new_guid));
-	
-	return false;
 }
 
-bool find_node_returns_null_on_not_found() {
+void find_node_returns_null_on_not_found() {
 	NodeX node;
 	
 	ASSERT_EQUAL(nullptr, find_node(GUID::zero()));
@@ -150,35 +132,27 @@ bool find_node_returns_null_on_not_found() {
 	GUID not_used_guid;
 
 	ASSERT_EQUAL(nullptr, find_node(not_used_guid));
-
-	return false;
 }
 
-bool deleting_node_emits_signal() {
+void deleting_node_emits_signal() {
 	NodeX *node = new NodeX();
 	
 	ASSERT_SIGNAL_EMITTED(node,signal_deleted,,,void, delete node);
-
-	return false;
 }
 
-bool deleting_node_does_not_emit_signal_changed() {
+void deleting_node_does_not_emit_signal_changed() {
 	NodeX *node = new NodeX();
 	
 	ASSERT_SIGNAL_NOT_EMITTED(node,signal_changed,,,void, delete node);
-
-	return false;
 }
 
-bool initial_node_has_no_parent() {
+void initial_node_has_no_parent() {
 	NodeX node;
 	
 	ASSERT_EQUAL(0, node.parent_count());
-
-	return false;
 }
 
-bool adding_child_node_increases_its_parent_count() {
+void adding_child_node_increases_its_parent_count() {
 	NodeX parent_node1, parent_node2, child_node;
 	
 	parent_node1.add_child(&child_node);
@@ -188,21 +162,17 @@ bool adding_child_node_increases_its_parent_count() {
 	parent_node2.add_child(&child_node);
 	
 	ASSERT_EQUAL(2, child_node.parent_count());
-
-	return false;
 }
 
-bool adding_child_node_adds_itself_as_parent_to_child() {
+void adding_child_node_adds_itself_as_parent_to_child() {
 	NodeX parent_node, child_node;
 	
 	parent_node.add_child(&child_node);
 	
 	ASSERT_EQUAL(1, child_node.parent_set.count(&parent_node));
-
-	return false;
 }
 
-bool adding_child_node_does_not_increase_its_parent_count_if_already_its_parent() {
+void adding_child_node_does_not_increase_its_parent_count_if_already_its_parent() {
 	NodeX parent_node, child_node;
 	
 	parent_node.add_child(&child_node);
@@ -211,11 +181,9 @@ bool adding_child_node_does_not_increase_its_parent_count_if_already_its_parent(
 	
 	ASSERT_EQUAL(1, child_node.parent_count());
 	ASSERT_EQUAL(1, child_node.parent_set.count(&parent_node));
-
-	return false;
 }
 
-bool removing_child_node_decreases_its_parent_count() {
+void removing_child_node_decreases_its_parent_count() {
 	NodeX parent_node1, parent_node2, child_node;
 	
 	parent_node1.add_child(&child_node);
@@ -234,11 +202,9 @@ bool removing_child_node_decreases_its_parent_count() {
 	parent_node2.remove_child(&child_node);
 
 	ASSERT_EQUAL(0, child_node.parent_count());
-
-	return false;
 }
 
-bool removing_child_node_removes_itself_as_parent_from_child() {
+void removing_child_node_removes_itself_as_parent_from_child() {
 	NodeX parent_node, child_node;
 	
 	parent_node.add_child(&child_node);
@@ -246,21 +212,17 @@ bool removing_child_node_removes_itself_as_parent_from_child() {
 	parent_node.remove_child(&child_node);
 
 	ASSERT_EQUAL(0, child_node.parent_set.count(&parent_node));
-
-	return false;
 }
 
-bool removing_child_node_does_not_decrease_its_parent_count_if_not_its_parent() {
+void removing_child_node_does_not_decrease_its_parent_count_if_not_its_parent() {
 	NodeX parent_node, child_node;
 	
 	parent_node.remove_child(&child_node);
 
 	ASSERT_EQUAL(0, child_node.parent_count());
-
-	return false;
 }
 
-bool deleting_node_removes_it_as_parent_from_its_children() {
+void deleting_node_removes_it_as_parent_from_its_children() {
 	NodeX *parent_node = new NodeX();
 	
 	NodeX child_node;
@@ -273,50 +235,40 @@ bool deleting_node_removes_it_as_parent_from_its_children() {
 
 	ASSERT_EQUAL(0, child_node.parent_count());
 	ASSERT_EQUAL(0, child_node.parent_set.count(parent_node));
-
-	return false;
 }
 
-bool marking_node_as_changed_changes_the_last_time_changed() {
+void marking_node_as_changed_changes_the_last_time_changed() {
 	NodeX node;
 
 	auto last_time = node.get_time_last_changed();
 	node.changed();
 
 	ASSERT(last_time < node.get_time_last_changed());
-
-	return false;
 }
 
-bool marking_node_as_changed_emits_signal_changed() {
+void marking_node_as_changed_emits_signal_changed() {
 	NodeX node;
 
 	ASSERT_SIGNAL_EMITTED((&node),signal_changed,,,void, node.changed());
-
-	return false;
 }
 
-bool marking_child_node_as_changed_emits_signal_changed() {
+void marking_child_node_as_changed_emits_signal_changed() {
 	NodeX parent_node, child_node;
 
 	parent_node.add_child(&child_node);
 
 	ASSERT_SIGNAL_EMITTED((&parent_node),signal_changed,,,void, child_node.changed());
-
-	return false;
 }
 
-bool marking_child_node_as_changed_emits_signal_child_changed() {
+void marking_child_node_as_changed_emits_signal_child_changed() {
 	NodeX parent_node, child_node;
 
 	parent_node.add_child(&child_node);
 
 	ASSERT_SIGNAL_EMITTED((&parent_node),signal_child_changed,,const Node*,void, child_node.changed());
-
-	return false;
 }
 
-bool get_times_is_cached() {
+void get_times_is_cached() {
 	NodeX node;
 
 	node.x_times.insert(TimePoint(Time(3)));
@@ -326,11 +278,9 @@ bool get_times_is_cached() {
 	node.x_times.insert(TimePoint(Time(4)));
 
 	ASSERT_EQUAL(1, node.get_times().size());
-
-	return false;
 }
 
-bool marking_node_as_changed_updates_times_cache() {
+void marking_node_as_changed_updates_times_cache() {
 	NodeX node;
 
 	node.x_times.insert(TimePoint(Time(3)));
@@ -341,8 +291,6 @@ bool marking_node_as_changed_updates_times_cache() {
 
 	node.changed();
 	ASSERT_EQUAL(2, node.get_times().size());
-
-	return false;
 }
 
 int main() {
