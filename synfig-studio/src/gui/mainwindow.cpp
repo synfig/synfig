@@ -400,6 +400,7 @@ MainWindow::on_recent_files_changed()
 	auto menu_object = App::menu_builder()->get_object("recent-file");
 	auto recent_file_menu = Glib::RefPtr<Gio::Menu>::cast_dynamic(menu_object);
 	recent_file_menu->remove_all();
+	App::instance()->remove_action("open-recent");
 
 	std::string menu_items;
 	for(int i = 0; i < (int)fullnames.size(); ++i)

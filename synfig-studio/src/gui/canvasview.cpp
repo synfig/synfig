@@ -1706,11 +1706,22 @@ CanvasView::on_select_layers()
 	for (CanvasBase::iterator iter = canvas->begin(); iter != canvas->end(); iter++)
 		layer_tree->select_all_children_layers(*iter);
 }
+void
+CanvasView::select_all_layers()
+{
+	CanvasView::on_select_layers();
+}
 
 void
 CanvasView::on_unselect_layers()
 {
 	layer_tree->clear_selected_layers();
+}
+
+void
+CanvasView::unselect_all_layers()
+{
+	CanvasView::on_unselect_layers();
 }
 
 void

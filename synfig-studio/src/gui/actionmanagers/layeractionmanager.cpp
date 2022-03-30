@@ -115,7 +115,6 @@ LayerActionManager::LayerActionManager():
 	);
 	
 	//TODO2: how to activate and deactivate cut, copy, paste
-	//simp_action_cut_=App::instance()->add_action("cut", [&]() {this->cut();});
 	simp_action_cut_=App::instance()->add_action("cut", sigc::mem_fun(*this, &LayerActionManager::cut));
 	simp_action_cut_->signal_activate();
 
@@ -146,7 +145,6 @@ LayerActionManager::LayerActionManager():
 
 	simp_action_paste_=App::instance()->add_action("paste", sigc::mem_fun(*this, &LayerActionManager::paste));
 	simp_action_paste_->signal_activate();
-
 
 	action_amount_inc_=Gtk::Action::create(
 		"amount-inc",
@@ -286,6 +284,7 @@ LayerActionManager::refresh()
 
 	action_paste_->set_sensitive(!clipboard_.empty());
 	action_group_->add(action_paste_);
+	simp_action_paste_->set_enabled(!clipboard_.empty());
 
 	if(layer_tree_->get_selection()->count_selected_rows()!=0)
 	{
@@ -303,6 +302,10 @@ LayerActionManager::refresh()
 				synfigapp::SelectionManager::LayerList::iterator iter;
 				action_copy_->set_sensitive(!layer_list.empty());
 				action_cut_->set_sensitive(!layer_list.empty());
+
+				simp_action_copy_->set_enabled(!layer_list.empty());
+				simp_action_cut_->set_enabled(!layer_list.empty());
+
 				action_group_->add(action_copy_);
 				action_group_->add(action_cut_);
 
@@ -427,6 +430,7 @@ LayerActionManager::copy()
 	}
 
 	action_paste_->set_sensitive(!clipboard_.empty());
+	simp_action_paste_->set_enabled(!clipboard_.empty());
 
 	//queue_refresh();
 }

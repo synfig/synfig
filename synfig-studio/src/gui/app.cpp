@@ -150,6 +150,7 @@
 #include <synfigapp/settings.h>
 
 #include <thread>
+#include <filesystem>
 
 #ifdef _WIN32
 
@@ -881,13 +882,19 @@ init_menu_builder()
 	SET_ACTION("quit", App::quit())
 
 	//Edit menu: ACTIONS
+	SET_ACTION("select-all-layers", App::get_selected_canvas_view()->select_all_layers())
+	SET_ACTION("unselect-all-layers", App::get_selected_canvas_view()->unselect_all_layers())
 
 	//TODO1: need to find where to activate/deactivate:
 	// undo, redo, cut, copy, paste
 	SET_ACTION("undo", studio::App::undo())
 	SET_ACTION("redo", studio::App::redo())
 
-	Glib::ustring icon_path = "../../images";
+	//icon path
+	//this will only work if executing program from cmake-build
+	//this needs to be fixed
+	std::string icon_path = std::__fs::filesystem::current_path();
+	icon_path+="/output/Debug/share/synfig/icons/classic/";
 
 	//menbuar XML string
 	Glib::ustring ui_info =
@@ -903,13 +910,13 @@ init_menu_builder()
     "          <attribute name='label' translatable='yes'>_New</attribute>"
     "          <attribute name='action'>app.new</attribute>"
     "          <attribute name='accel'>&lt;Control&gt;n</attribute>"
-    "          <attribute name='icon'>document-new</attribute>"
+    "          <attribute name='icon'>"+icon_path+"action_doc_new_icon.png</attribute>"
     "        </item>"
 	"        <item>"
     "          <attribute name='label' translatable='yes'>_Open</attribute>"
     "          <attribute name='action'>app.open</attribute>"
     "          <attribute name='accel'>&lt;Control&gt;o</attribute>"
-    "          <attribute name='icon'>folder-open</attribute>"
+    "          <attribute name='icon'>"+icon_path+"action_doc_open_icon.png</attribute>"
     "        </item>"
 
 	//Open Recent submenu
@@ -924,24 +931,24 @@ init_menu_builder()
     "          <attribute name='label' translatable='yes'>_Save</attribute>"
     "          <attribute name='action'>app.save</attribute>"
     "          <attribute name='accel'>&lt;Control&gt;s</attribute>"
-    "          <attribute name='icon'>document-save</attribute>"
+    "          <attribute name='icon'>"+icon_path+"action_doc_save_icon.png</attribute>"
     "        </item>"
     "        <item>"
     "          <attribute name='label' translatable='yes'>_Save As...</attribute>"
     "          <attribute name='action'>app.save-as</attribute>"
     "          <attribute name='accel'>&lt;Control&gt;&lt;Shift&gt;s</attribute>"
-    "          <attribute name='icon'>document-save-as</attribute>"
+    "          <attribute name='icon'>"+icon_path+"action_doc_saveas_icon.png</attribute>"
     "        </item>"
     "        <item>"
     "          <attribute name='label' translatable='yes'>_Save All...</attribute>"
     "          <attribute name='action'>app.save-all</attribute>"
     "          <attribute name='accel'>&lt;Control&gt;e</attribute>"
-    //"          <attribute name='icon'>document-save-as</attribute>"
+    "          <attribute name='icon'>"+icon_path+"action_doc_saveall_icon.png</attribute>"
     "        </item>"
     "        <item>"
     "          <attribute name='label' translatable='yes'>_Export...</attribute>"
     "          <attribute name='action'>app.export</attribute>"
-    //"          <attribute name='icon'>document-save-as</attribute>"
+    "          <attribute name='icon'>"+icon_path+"action_export_icon.png</attribute>"
     "        </item>"
     "        <item>"
     "          <attribute name='label' translatable='yes'>_Revert...</attribute>"
@@ -954,12 +961,10 @@ init_menu_builder()
     "          <attribute name='label' translatable='yes'>_Import...</attribute>"
     "          <attribute name='action'>app.import</attribute>"
 	"          <attribute name='accel'>&lt;Control&gt;i</attribute>"
-    //"          <attribute name='icon'>document-save-as</attribute>"
     "        </item>"
 	"        <item>"
     "          <attribute name='label' translatable='yes'>_Import Sequence...</attribute>"
     "          <attribute name='action'>app.import-sequence</attribute>"
-    //"          <attribute name='icon'>document-save-as</attribute>"
     "        </item>"
     "      </section>"
 	"      <section>"
@@ -967,13 +972,13 @@ init_menu_builder()
     "          <attribute name='label' translatable='yes'>_Preview...</attribute>"
     "          <attribute name='action'>app.preview</attribute>"
 	"          <attribute name='accel'>F11</attribute>"
-    "          <attribute name='icon'>"+icon_path+"preview_options_icon.sif</attribute>"
+    "          <attribute name='icon'>"+icon_path+"preview_options_icon.png</attribute>"
     "        </item>"
 	"        <item>"
     "          <attribute name='label' translatable='yes'>_Render...</attribute>"
     "          <attribute name='action'>app.render</attribute>"
 	"          <attribute name='accel'>F9</attribute>"
-    //"          <attribute name='icon'>document-save-as</attribute>"
+    "          <attribute name='icon'>"+icon_path+"render_options_icon.png</attribute>"
     "        </item>"
     "      </section>"
 	"		<section>"
@@ -1002,13 +1007,14 @@ init_menu_builder()
 	"				<attribute name='label' translatable='yes'>_Undo</attribute>"
 	"				<attribute name='action'>app.undo</attribute>"
 	"				<attribute name='accel'>&lt;Primary&gt;z</attribute>"
-	//"				<attribute name='icon'>		</attribute>"
+	"				<attribute name='sensitive'>True</attribute>"
+	"				<attribute name='icon'>"+icon_path+"action_doc_undo_icon.png</attribute>"
 	"			</item>"
 	"			<item>"
 	"				<attribute name='label' translatable='yes'>_Redo</attribute>"
 	"				<attribute name='action'>app.redo</attribute>"
 	"				<attribute name='accel'>&lt;Shift&gt;&lt;Primary&gt;z</attribute>"
-	//"				<attribute name='icon'>		</attribute>"
+	"				<attribute name='icon'>"+icon_path+"action_doc_redo_icon.png</attribute>"
 	"			</item>"
 	"		</section>"
 	"		<section>"
@@ -1030,7 +1036,19 @@ init_menu_builder()
 	"				<attribute name='accel'>&lt;Primary&gt;v</attribute>"
 	//"				<attribute name='icon'>		</attribute>"
 	"			</item>"
-	"		</section>"				
+	"		</section>"
+	"		<section>"
+	"			<item>"
+	"				<attribute name='label' translatable='yes'>_Select All Layers</attribute>"
+	"				<attribute name='action'>app.select-all-layers</attribute>"
+	"				<attribute name='accel'>&lt;Control&gt;&lt;Shift&gt;a</attribute>"
+	"			</item>"
+	"			<item>"
+	"				<attribute name='label' translatable='yes'>_Unselect All Layers</attribute>"
+	"				<attribute name='action'>app.unselect-all-layers</attribute>"
+	"				<attribute name='accel'>&lt;Control&gt;&lt;Shift&gt;d</attribute>"
+	"			</item>"
+	"		</section>"
 	"	</submenu>"
 	"  </menu>"
     "</interface>";
