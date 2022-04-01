@@ -230,6 +230,7 @@ bool App::shutdown_in_progress;
 
 Glib::RefPtr<studio::UIManager>	App::ui_manager_;
 Glib::RefPtr<studio::Builder> App::menu_builder_;
+studio::SimpActionGroup App::canvas_action_group_;
 
 int        App::jack_locks_ = 0;
 synfig::Distance::System  App::distance_system;
@@ -863,32 +864,40 @@ public:
 static ::Preferences _preferences;
 
 void
+App::enable_action_group(bool isEnabled){
+	for(auto action : App::canvas_action_group())
+		action->set_enabled(isEnabled);
+}
+void
 init_menu_builder()
 {
-	#define SET_ACTION(x,cb) { App::instance()->add_action(x, [&]() {cb;});}
+	#define SET_CANVAS_ACTION(x,cb) { App::canvas_action_group().push_back(App::instance()->add_action(x, [&]() {cb;})); }
 
 	//File menu: ACTIONS
-	SET_ACTION("new", App::new_instance())
-	SET_ACTION("open", App::dialog_open(""))
-	SET_ACTION("save", App::get_selected_instance()->save())
-	SET_ACTION("save-as", App::get_selected_instance()->dialog_save_as())
-	SET_ACTION("save-all", App::get_selected_canvas_view()->save_all())
-	SET_ACTION("export", App::get_selected_instance()->dialog_export())
-	SET_ACTION("revert", App::get_selected_instance()->safe_revert())
-	SET_ACTION("import", App::get_selected_canvas_view()->import_file())
-	SET_ACTION("import-sequence", App::get_selected_canvas_view()->import_sequence())
-	SET_ACTION("preview", App::get_selected_canvas_view()->preview_option())
-	SET_ACTION("render", App::get_selected_canvas_view()->render_settings.present())
-	SET_ACTION("quit", App::quit())
+	App::instance()->add_action("new", [&]() {App::new_instance();});
+	//SET_ACTION("new", App::new_instance())
+	//SET_CANVAS_ACTION("open", App::dialog_open(""))
+	App::instance()->add_action("open", [&]() {App::dialog_open("");});
+	SET_CANVAS_ACTION("save", App::get_selected_instance()->save())
+	SET_CANVAS_ACTION("save-as", App::get_selected_instance()->dialog_save_as())
+	SET_CANVAS_ACTION("save-all", App::get_selected_canvas_view()->save_all())
+	SET_CANVAS_ACTION("export", App::get_selected_instance()->dialog_export())
+	SET_CANVAS_ACTION("revert", App::get_selected_instance()->safe_revert())
+	SET_CANVAS_ACTION("import", App::get_selected_canvas_view()->import_file())
+	SET_CANVAS_ACTION("import-sequence", App::get_selected_canvas_view()->import_sequence())
+	SET_CANVAS_ACTION("preview", App::get_selected_canvas_view()->preview_option())
+	SET_CANVAS_ACTION("render", App::get_selected_canvas_view()->render_settings.present())
+	//SET_ACTION("quit", App::quit())
+	App::instance()->add_action("quit", [&]() {App::quit();});
 
 	//Edit menu: ACTIONS
-	SET_ACTION("select-all-layers", App::get_selected_canvas_view()->select_all_layers())
-	SET_ACTION("unselect-all-layers", App::get_selected_canvas_view()->unselect_all_layers())
+	SET_CANVAS_ACTION("select-all-layers", App::get_selected_canvas_view()->select_all_layers())
+	SET_CANVAS_ACTION("unselect-all-layers", App::get_selected_canvas_view()->unselect_all_layers())
 
 	//TODO1: need to find where to activate/deactivate:
 	// undo, redo, cut, copy, paste
-	SET_ACTION("undo", studio::App::undo())
-	SET_ACTION("redo", studio::App::redo())
+	SET_CANVAS_ACTION("undo", studio::App::undo())
+	SET_CANVAS_ACTION("redo", studio::App::redo())
 
 	//icon path
 	//this will only work if executing program from cmake-build

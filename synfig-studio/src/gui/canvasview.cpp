@@ -738,7 +738,8 @@ void CanvasView::activate()
 	App::ui_manager()->insert_action_group(action_group);
 	App::instance()->add_action("close-document", [&](){this->close_instance();});
 	this->_action_group_removed = false;
-	this->_close_doc_action_removed = false;
+	this->_canvas_action_group_enabled = true;
+	App::instance()->enable_action_group(_canvas_action_group_enabled);
 	update_title();
 	present();
 	grab_focus();
@@ -750,7 +751,8 @@ void CanvasView::deactivate()
 	App::ui_manager()->remove_action_group(action_group);
 	App::instance()->remove_action("close-document");
 	this->_action_group_removed = true;
-	this->_close_doc_action_removed = true;
+	this->_canvas_action_group_enabled = false;
+	App::instance()->enable_action_group(_canvas_action_group_enabled);
 	update_title();
 }
 

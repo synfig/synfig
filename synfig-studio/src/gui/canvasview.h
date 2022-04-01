@@ -353,7 +353,7 @@ private:
 
 	Glib::RefPtr<Gtk::ActionGroup> action_group;
 	bool _action_group_removed;
-	bool _close_doc_action_removed;
+	bool _canvas_action_group_enabled;
 
 	etl::handle<synfigapp::UIInterface> ui_interface_;
 	etl::handle<synfigapp::SelectionManager> selection_manager_;
