@@ -141,6 +141,17 @@ Dock_PalEdit::Dock_PalEdit():
 		)
 	);
 	action_group->add(Gtk::Action::create_with_icon_name(
+		"palette-add-from-clipboard",
+		"hex_icon",
+		_("Add clipboard color"),
+		_("Add hex color from clipboard")
+	),
+		sigc::mem_fun(
+			*this,
+			&Dock_PalEdit::add_from_clipboard
+		)
+	);
+	action_group->add(Gtk::Action::create_with_icon_name(
 		"palette-save",
 		"document-save",
 		_("Save palette"),
@@ -181,6 +192,7 @@ Dock_PalEdit::Dock_PalEdit():
 	"<ui>"
 	"	<toolbar action='toolbar-palette'>"
 	"	<toolitem action='palette-add-color' />"
+	"	<toolitem action='palette-add-from-clipboard' />"
 	"	<toolitem action='palette-save' />"
 	"	<toolitem action='palette-load' />"
 	"	<toolitem action='palette-set-default' />"
@@ -343,6 +355,14 @@ Dock_PalEdit::show_menu(int i)
 			i ));
 	menu->append(*item);
 
+	item = image_menu_item("hex_icon", _("Add clipboard color"));
+	item->signal_activate().connect(
+		sigc::bind(
+			sigc::mem_fun(*this,&studio::Dock_PalEdit::copy_color),
+			i ));
+	item->show_all();
+	menu->append(*item);
+
 	item = image_menu_item("edit-delete", _("_Delete"), true);
 	item->signal_activate().connect(
 		sigc::bind(
@@ -360,6 +380,60 @@ Dock_PalEdit::add_color(const synfig::Color& x)
 	signal_changed()();
 	refresh();
 	return size()-1;
+}
+
+bool
+Dock_PalEdit::check_hex_format(const std::string& hexcolor)
+{
+	int strsize = hexcolor.size();
+
+	//Check size is correct for the format: #ffffff or #fff or #f
+	//these are the sizes supported by the Color::set_hex() function 
+	if(strsize!=7&&strsize!=4&&strsize!=2)
+		return false;
+
+	//Check if first character is a # for the correct format
+	if(hexcolor[0]!='#')
+		return false;
+
+	//Checking if all characters are between 0-F uppercase or lowercase in ascii
+	for(int i=1;i<strsize;i++)
+		if(!std::isxdigit(hexcolor[i]))
+			return false;
+
+	return true;
+}
+
+void
+Dock_PalEdit::add_from_clipboard()
+{
+	Glib::RefPtr<Gtk::Clipboard> refClipboard = Gtk::Clipboard::get();
+	std::string hexcolor = refClipboard->wait_for_text();
+
+	//Clipboard is in hexformat. Add the color.
+	if(check_hex_format(hexcolor)){
+		hexcolor = hexcolor.substr(1,6);
+		
+		synfig::Color col;
+		col.set_hex(hexcolor);
+		col.set_a(1.0f);
+
+		palette_.push_back(col);
+	}
+
+	signal_changed()();
+	refresh();
+}
+
+void
+Dock_PalEdit::copy_color(int i)
+{
+	//Taking first 7 characters of the color string as they contain the formated #hexadecimal color
+	Glib::RefPtr<Gtk::Clipboard> refClipboard = Gtk::Clipboard::get();
+	refClipboard->set_text(palette_[i].color.get_string().substr(0,7));
+
+	signal_changed()();
+	refresh();
 }
 
 void
