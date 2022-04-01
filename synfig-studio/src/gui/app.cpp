@@ -231,6 +231,7 @@ bool App::shutdown_in_progress;
 Glib::RefPtr<studio::UIManager>	App::ui_manager_;
 Glib::RefPtr<studio::Builder> App::menu_builder_;
 studio::SimpActionGroup App::canvas_action_group_;
+studio::MenuActionMap App::undo_redo_action_group_;
 
 int        App::jack_locks_ = 0;
 synfig::Distance::System  App::distance_system;
@@ -875,8 +876,6 @@ init_menu_builder()
 
 	//File menu: ACTIONS
 	App::instance()->add_action("new", [&]() {App::new_instance();});
-	//SET_ACTION("new", App::new_instance())
-	//SET_CANVAS_ACTION("open", App::dialog_open(""))
 	App::instance()->add_action("open", [&]() {App::dialog_open("");});
 	SET_CANVAS_ACTION("save", App::get_selected_instance()->save())
 	SET_CANVAS_ACTION("save-as", App::get_selected_instance()->dialog_save_as())
@@ -887,17 +886,15 @@ init_menu_builder()
 	SET_CANVAS_ACTION("import-sequence", App::get_selected_canvas_view()->import_sequence())
 	SET_CANVAS_ACTION("preview", App::get_selected_canvas_view()->preview_option())
 	SET_CANVAS_ACTION("render", App::get_selected_canvas_view()->render_settings.present())
-	//SET_ACTION("quit", App::quit())
 	App::instance()->add_action("quit", [&]() {App::quit();});
 
 	//Edit menu: ACTIONS
 	SET_CANVAS_ACTION("select-all-layers", App::get_selected_canvas_view()->select_all_layers())
 	SET_CANVAS_ACTION("unselect-all-layers", App::get_selected_canvas_view()->unselect_all_layers())
 
-	//TODO1: need to find where to activate/deactivate:
 	// undo, redo, cut, copy, paste
-	SET_CANVAS_ACTION("undo", studio::App::undo())
-	SET_CANVAS_ACTION("redo", studio::App::redo())
+	//SET_CANVAS_ACTION("undo", studio::App::undo())
+	//SET_CANVAS_ACTION("redo", studio::App::redo())
 
 	//icon path
 	//this will only work if executing program from cmake-build

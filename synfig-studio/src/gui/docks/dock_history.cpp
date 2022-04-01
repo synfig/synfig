@@ -115,6 +115,7 @@ Dock_History::Dock_History():
 	),
 		sigc::ptr_fun(studio::App::undo)
 	);
+	App::undo_redo_action_group()["undo"] = App::instance()->add_action("undo", sigc::ptr_fun(studio::App::undo));
 	action_group->add(Gtk::Action::create(
 		"redo",
 		Gtk::StockID("synfig-redo"),
@@ -123,6 +124,7 @@ Dock_History::Dock_History():
 	),
 		sigc::ptr_fun(studio::App::redo)
 	);
+	App::undo_redo_action_group()["redo"] = App::instance()->add_action("redo", sigc::ptr_fun(studio::App::redo));
 
 	action_group->add( Gtk::Action::create("toolbar-history", _("History")) );
 	App::ui_manager()->insert_action_group(action_group);
@@ -142,6 +144,8 @@ Dock_History::Dock_History():
 	App::ui_manager()->add_ui_from_string(ui_info);
 
 	action_group->set_sensitive(false);
+	for(auto action : App::undo_redo_action_group())
+		action.second->set_enabled(false);
 
 	if (Gtk::Toolbar* toolbar = dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-history"))) {
 		set_toolbar(*toolbar);
@@ -308,6 +312,9 @@ Dock_History::update_undo_redo()
 		action_group->get_action("redo")->set_sensitive(instance->get_redo_status());
 		action_group->get_action("clear-redo")->set_sensitive(instance->get_redo_status());
 		action_group->get_action("clear-undo-and-redo")->set_sensitive(instance->get_undo_status() || instance->get_redo_status());
+
+		App::undo_redo_action_group()["undo"]->set_enabled(instance->get_undo_status());
+		App::undo_redo_action_group()["redo"]->set_enabled(instance->get_redo_status());
 	}
 }
 
