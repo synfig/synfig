@@ -117,6 +117,7 @@ LayerActionManager::LayerActionManager():
 	//TODO2: how to activate and deactivate cut, copy, paste
 	simp_action_cut_=App::instance()->add_action("cut", sigc::mem_fun(*this, &LayerActionManager::cut));
 	simp_action_cut_->signal_activate();
+	simp_action_cut_->set_enabled(false);
 
 	action_copy_=Gtk::Action::create(
 		"copy",
@@ -131,6 +132,7 @@ LayerActionManager::LayerActionManager():
 
 	simp_action_copy_=App::instance()->add_action("copy", sigc::mem_fun(*this, &LayerActionManager::copy));
 	simp_action_copy_->signal_activate();
+	simp_action_copy_->set_enabled(false);
 
 	action_paste_=Gtk::Action::create(
 		"paste",

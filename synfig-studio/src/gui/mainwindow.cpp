@@ -400,7 +400,6 @@ MainWindow::on_recent_files_changed()
 	auto menu_object = App::menu_builder()->get_object("recent-file");
 	auto recent_file_menu = Glib::RefPtr<Gio::Menu>::cast_dynamic(menu_object);
 	recent_file_menu->remove_all();
-	App::instance()->remove_action("open-recent");
 
 	std::string menu_items;
 	for(int i = 0; i < (int)fullnames.size(); ++i)
@@ -421,9 +420,10 @@ MainWindow::on_recent_files_changed()
 		action_group->add( Gtk::Action::create(action_name, quoted, fullnames[i]),
 			[filename](){App::open_recent(filename);}
 		);
-
-		recent_file_menu->append(raw, "app.open-recent");
-		App::instance()->add_action("open-recent", [filename](){App::open_recent(filename);});
+		
+		replace(raw.begin(), raw.end(), ' ', '-');
+		recent_file_menu->append(raw, "app.open-recent-"+raw);
+		App::instance()->add_action("open-recent-"+raw, [filename](){App::open_recent(filename);});
 	}
 
 	std::string ui_info =
