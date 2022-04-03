@@ -880,6 +880,7 @@ init_menu_builder()
 	App::instance()->add_action("open", [&]() {App::dialog_open("");});
 	SET_CANVAS_ACTION("save", App::get_selected_instance()->save())
 	SET_CANVAS_ACTION("save-as", App::get_selected_instance()->dialog_save_as())
+	SET_CANVAS_ACTION("save-all", App::get_selected_canvas_view()->save_all())
 	SET_CANVAS_ACTION("export", App::get_selected_instance()->dialog_export())
 	SET_CANVAS_ACTION("revert", App::get_selected_instance()->safe_revert())
 	SET_CANVAS_ACTION("import", App::get_selected_canvas_view()->import_file())
@@ -887,6 +888,14 @@ init_menu_builder()
 	SET_CANVAS_ACTION("preview", App::get_selected_canvas_view()->preview_option())
 	SET_CANVAS_ACTION("render", App::get_selected_canvas_view()->render_settings.present())
 	App::instance()->add_action("quit", [&]() {App::quit();});
+
+	//Edit menu: ACTIONS
+	SET_CANVAS_ACTION("select-all-layers", App::get_selected_canvas_view()->select_all_layers())
+	SET_CANVAS_ACTION("unselect-all-layers", App::get_selected_canvas_view()->unselect_all_layers())
+
+	//TODO: how to call select_all_ducks(), getting err: member access into incomplete type 'studio::WorkArea'
+	//SET_CANVAS_ACTION("select-all-ducks", App::get_selected_canvas_view()->get_work_area()->select_all_ducks())
+	SET_CANVAS_ACTION("select-parent-layer", App::get_selected_canvas_view()->select_parent_layer())
 
 	//icon path
 	//this will only work if executing program from cmake-build

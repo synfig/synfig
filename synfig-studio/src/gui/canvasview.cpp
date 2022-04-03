@@ -1539,23 +1539,12 @@ CanvasView::init_menus()
 	);
 
 	//Edit Menu actions -> Gtk::Builder
-	App::canvas_action_group().push_back(App::instance()->add_action("save-all",
-		sigc::ptr_fun(save_all)
-	));
-	App::canvas_action_group().push_back(App::instance()->add_action("select-all-layers",
-		sigc::mem_fun(*this,&CanvasView::on_select_layers)
-	));
-	App::canvas_action_group().push_back(App::instance()->add_action("unselect-all-layers",
-		sigc::mem_fun(*this,&CanvasView::on_unselect_layers)
-	));
+	//TODO: move these actions to init_menu_builder function in App.cpp
 	App::canvas_action_group().push_back(App::instance()->add_action("select-all-ducks",
 		sigc::mem_fun(*work_area, &WorkArea::select_all_ducks)
 	));
 	App::canvas_action_group().push_back(App::instance()->add_action("unselect-all-ducks",
 		sigc::mem_fun(*work_area, &WorkArea::unselect_all_ducks)
-	));
-	App::canvas_action_group().push_back(App::instance()->add_action("select-parent-layer",
-		sigc::mem_fun(*this, &CanvasView::on_select_parent_layer)
 	));
 
     auto instance = get_instance().get();
@@ -1734,9 +1723,21 @@ CanvasView::on_select_layers()
 }
 
 void
+CanvasView::select_all_layers()
+{
+	CanvasView::on_select_layers();
+}
+
+void
 CanvasView::on_unselect_layers()
 {
 	layer_tree->clear_selected_layers();
+}
+
+void
+CanvasView::unselect_all_layers()
+{
+	CanvasView::on_unselect_layers();
 }
 
 void
@@ -1752,6 +1753,12 @@ CanvasView::on_select_parent_layer()
 
 	get_selection_manager()->clear_selected_layers();
 	get_selection_manager()->set_selected_layer(parent_layer);
+}
+
+void
+CanvasView::select_parent_layer()
+{
+	CanvasView::on_select_parent_layer();
 }
 
 void

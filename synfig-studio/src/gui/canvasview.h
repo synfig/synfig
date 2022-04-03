@@ -488,8 +488,6 @@ private:
 	void interpolation_refresh();
 	void on_interpolation_changed();
 
-	static void save_all();
-
 	//helper function for import_file()
 	bool is_same_file(const std::string &filename);
 	
@@ -660,6 +658,10 @@ public:
 	void toggle_duck_mask_all();
 	// Toggle displaybar according to App::enable_mainwin_toolbar
 	void toggle_show_toolbar();
+	static void save_all();
+	void select_all_layers();
+	void unselect_all_layers();
+	void select_parent_layer();
 
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------

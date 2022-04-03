@@ -114,7 +114,7 @@ LayerActionManager::LayerActionManager():
 		)
 	);
 	
-	//TODO2: how to activate and deactivate cut, copy, paste
+	//TODO2: CUT IS NOT WORKING CORRECTLY!
 	simp_action_cut_=App::instance()->add_action("cut", sigc::mem_fun(*this, &LayerActionManager::cut));
 	simp_action_cut_->signal_activate();
 	simp_action_cut_->set_enabled(false);
