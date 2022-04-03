@@ -19,6 +19,9 @@ target_sources(synfig_bin
 )
 
 target_link_libraries(synfig_bin PRIVATE synfig)
+if(TCMALLOC_LIBRARY)
+    target_link_libraries(synfig_bin PRIVATE ${TCMALLOC_LIBRARY})
+endif()
 
 install (
     TARGETS synfig_bin
