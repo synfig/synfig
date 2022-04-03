@@ -892,10 +892,6 @@ init_menu_builder()
 	SET_CANVAS_ACTION("select-all-layers", App::get_selected_canvas_view()->select_all_layers())
 	SET_CANVAS_ACTION("unselect-all-layers", App::get_selected_canvas_view()->unselect_all_layers())
 
-	// undo, redo, cut, copy, paste
-	//SET_CANVAS_ACTION("undo", studio::App::undo())
-	//SET_CANVAS_ACTION("redo", studio::App::redo())
-
 	//icon path
 	//this will only work if executing program from cmake-build
 	//this needs to be fixed
@@ -1053,6 +1049,16 @@ init_menu_builder()
 	"				<attribute name='label' translatable='yes'>_Unselect All Layers</attribute>"
 	"				<attribute name='action'>app.unselect-all-layers</attribute>"
 	"				<attribute name='accel'>&lt;Control&gt;&lt;Shift&gt;d</attribute>"
+	"			</item>"
+	"			<item>"
+	"				<attribute name='label' translatable='yes'>_Select All Handles</attribute>"
+	"				<attribute name='action'>app.select-all-ducks</attribute>"
+	"				<attribute name='accel'>&lt;Control&gt;a</attribute>"
+	"			</item>"
+	"			<item>"
+	"				<attribute name='label' translatable='yes'>_Unselect All Handles</attribute>"
+	"				<attribute name='action'>app.unselect-all-ducks</attribute>"
+	"				<attribute name='accel'>&lt;Control&gt;d</attribute>"
 	"			</item>"
 	"		</section>"
 	"	</submenu>"

@@ -86,7 +86,7 @@ namespace studio {
 
 typedef Gtk::UIManager UIManager;
 typedef Gtk::Builder Builder;
-typedef std::vector< Glib::RefPtr<Gio::SimpleAction> > SimpActionGroup;
+typedef std::list< Glib::RefPtr<Gio::SimpleAction> > SimpActionGroup;
 typedef std::unordered_map < std::string, Glib::RefPtr< Gio::SimpleAction > > MenuActionMap;
 
 class About;

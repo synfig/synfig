@@ -1538,6 +1538,14 @@ CanvasView::init_menus()
 		sigc::mem_fun0(canvas_properties,&CanvasProperties::present)
 	);
 
+	//Edit Menu actions
+	App::canvas_action_group().push_back(App::instance()->add_action("select-all-ducks",
+		sigc::mem_fun(*work_area, &WorkArea::select_all_ducks)
+	));
+	App::canvas_action_group().push_back(App::instance()->add_action("unselect-all-ducks",
+		sigc::mem_fun(*work_area, &WorkArea::unselect_all_ducks)
+	));
+
     auto instance = get_instance().get();
 	for ( const auto& plugin : App::plugin_manager.plugins() )
     {
