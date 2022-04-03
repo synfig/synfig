@@ -230,8 +230,9 @@ bool App::shutdown_in_progress;
 
 Glib::RefPtr<studio::UIManager>	App::ui_manager_;
 Glib::RefPtr<studio::Builder> App::menu_builder_;
-studio::SimpActionGroup App::canvas_action_group_;
+studio::MenuActionGroup App::canvas_action_group_;
 studio::MenuActionMap App::undo_redo_action_group_;
+studio::MenuActionMap App::toggle_action_group_;
 
 int        App::jack_locks_ = 0;
 synfig::Distance::System  App::distance_system;
@@ -879,7 +880,6 @@ init_menu_builder()
 	App::instance()->add_action("open", [&]() {App::dialog_open("");});
 	SET_CANVAS_ACTION("save", App::get_selected_instance()->save())
 	SET_CANVAS_ACTION("save-as", App::get_selected_instance()->dialog_save_as())
-	SET_CANVAS_ACTION("save-all", App::get_selected_canvas_view()->save_all())
 	SET_CANVAS_ACTION("export", App::get_selected_instance()->dialog_export())
 	SET_CANVAS_ACTION("revert", App::get_selected_instance()->safe_revert())
 	SET_CANVAS_ACTION("import", App::get_selected_canvas_view()->import_file())
@@ -1060,6 +1060,33 @@ init_menu_builder()
 	"				<attribute name='action'>app.unselect-all-ducks</attribute>"
 	"				<attribute name='accel'>&lt;Control&gt;d</attribute>"
 	"			</item>"
+	"			<item>"
+	"				<attribute name='label' translatable='yes'>_Select Parent Layer</attribute>"
+	"				<attribute name='action'>app.select-parent-layer</attribute>"
+	//TODO: need to find accellerator for up arrow with two lines through it
+	"				<attribute name='accel'>&lt;Alt&gt;Up</attribute>"
+	"			</item>"
+	"		</section>"
+	"		<section>"
+	"			<item>"
+	"				<attribute name='label' translatable='yes'>_Input Devices...</attribute>"
+	"				<attribute name='action'>app.input-devices</attribute>"
+	"			</item>"
+	"			<item>"
+	"				<attribute name='label' translatable='yes'>_Preferences...</attribute>"
+	"				<attribute name='action'>app.setup</attribute>"
+	"			</item>"
+	"		</section>"
+	"	</submenu>"
+
+	//View submenu
+	"	<submenu>"
+	"		<attribute name='label' translatable='yes'>_View</attribute>"
+	"		<section>"
+	"			<item>"
+	"				<attribute name='label' translatable='yes'>_Show Menubar</attribute>"
+	"				<attribute name='action'>app.show-menubar</attribute>"
+	"			</item>"
 	"		</section>"
 	"	</submenu>"
 	"  </menu>"
@@ -1077,6 +1104,11 @@ init_menu_builder()
 	} else {
 		App::instance()->set_menubar(menu_bar);
 	}
+}
+
+void 
+App::on_menu_toggled(bool isActive){
+
 }
 void
 init_ui_manager()

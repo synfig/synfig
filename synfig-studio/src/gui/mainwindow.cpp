@@ -166,11 +166,20 @@ MainWindow::init_menus()
 	action_group->add( Gtk::Action::create("setup", _("Preferences...")),
 		sigc::ptr_fun(&studio::App::show_setup)
 	);
+	//Gtk::Builder
+	App::canvas_action_group().push_back(App::instance()->add_action("input-devices",
+		sigc::ptr_fun(&MainWindow::show_dialog_input)
+	));
+	App::canvas_action_group().push_back(App::instance()->add_action("setup",
+		sigc::ptr_fun(&studio::App::show_setup)
+	));
 
 	// View menu
 	Glib::RefPtr<Gtk::ToggleAction> toggle_menubar = Gtk::ToggleAction::create("toggle-mainwin-menubar", _("Show Menubar"));
 	toggle_menubar->set_active(App::enable_mainwin_menubar);
 	action_group->add(toggle_menubar, sigc::mem_fun(*this, &studio::MainWindow::toggle_show_menubar));
+	App::toggle_action_group()["show-menubar"] = App::instance()->add_action_bool("show-menubar", 
+		sigc::mem_fun(*this, &studio::MainWindow::appmenu_toggle_show_menubar), true);
 
 	Glib::RefPtr<Gtk::ToggleAction> toggle_toolbar = Gtk::ToggleAction::create("toggle-mainwin-toolbar", _("Toolbar"));
 	toggle_toolbar->set_active(App::enable_mainwin_toolbar);
@@ -248,6 +257,15 @@ MainWindow::toggle_show_menubar()
 		menubar->show();
 	else
 		menubar->hide();
+}
+void
+MainWindow::appmenu_toggle_show_menubar()
+{
+	bool isActive = false;
+	App::toggle_action_group()["show-menubar"]->get_state(isActive);
+	isActive = !isActive;
+	App::toggle_action_group()["show-menubar"]->change_state(isActive);
+	MainWindow::toggle_show_menubar();
 }
 
 void

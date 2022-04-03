@@ -86,7 +86,7 @@ namespace studio {
 
 typedef Gtk::UIManager UIManager;
 typedef Gtk::Builder Builder;
-typedef std::list< Glib::RefPtr<Gio::SimpleAction> > SimpActionGroup;
+typedef std::list< Glib::RefPtr<Gio::SimpleAction> > MenuActionGroup;
 typedef std::unordered_map < std::string, Glib::RefPtr< Gio::SimpleAction > > MenuActionMap;
 
 class About;
@@ -179,8 +179,9 @@ private:
 
 	static Glib::RefPtr<UIManager>	ui_manager_;
 	static  Glib::RefPtr<Builder> menu_builder_;
-	static SimpActionGroup canvas_action_group_;
+	static MenuActionGroup canvas_action_group_;
 	static MenuActionMap undo_redo_action_group_;
+	static MenuActionMap toggle_action_group_;
 
 	static int jack_locks_;
 
@@ -338,9 +339,12 @@ public:
 
 	static Glib::RefPtr<UIManager>& ui_manager() { return ui_manager_; }
 	static Glib::RefPtr<Builder>& menu_builder() { return menu_builder_; }
-	static SimpActionGroup& canvas_action_group() { return canvas_action_group_; }
+	static MenuActionGroup& canvas_action_group() { return canvas_action_group_; }
 	static MenuActionMap& undo_redo_action_group() { return undo_redo_action_group_; }
+	static MenuActionMap& toggle_action_group() { return toggle_action_group_; }
+
 	static void enable_action_group(bool isEnabled);
+	static void on_menu_toggled(bool isActive);
 
 	static void add_recent_file(const etl::handle<Instance> instance);
 

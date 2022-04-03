@@ -1538,12 +1538,18 @@ CanvasView::init_menus()
 		sigc::mem_fun0(canvas_properties,&CanvasProperties::present)
 	);
 
-	//Edit Menu actions
+	//Edit Menu actions -> Gtk::Builder
+	App::canvas_action_group().push_back(App::instance()->add_action("save-all",
+		sigc::ptr_fun(save_all)
+	));
 	App::canvas_action_group().push_back(App::instance()->add_action("select-all-ducks",
 		sigc::mem_fun(*work_area, &WorkArea::select_all_ducks)
 	));
 	App::canvas_action_group().push_back(App::instance()->add_action("unselect-all-ducks",
 		sigc::mem_fun(*work_area, &WorkArea::unselect_all_ducks)
+	));
+	App::canvas_action_group().push_back(App::instance()->add_action("select-parent-layer",
+		sigc::mem_fun(*this, &CanvasView::on_select_parent_layer)
 	));
 
     auto instance = get_instance().get();
