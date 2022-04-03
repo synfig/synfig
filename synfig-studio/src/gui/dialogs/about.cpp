@@ -105,48 +105,96 @@ About::About()
 	set_license(license);
 	set_wrap_license(true);
 
-	std::vector<Glib::ustring> authors;
-	authors.push_back(_("Original developers:"));
-	authors.push_back("");
-	authors.push_back("Robert B. Quattlebaum Jr (darco)");
-	authors.push_back("Adrian Bentley");
-	authors.push_back("");
-	authors.push_back(_("Contributors:"));
-	authors.push_back("");
-	authors.push_back("Adrian Winchell (SnapSilverlight)");
-	authors.push_back("Andreas Jochens");
-	authors.push_back("Brendon Higgins");
-	authors.push_back("Carlos López González (genete)");
-	authors.push_back("Carlos A. Sosa Navarro");
-	authors.push_back("caryoscelus");
-	authors.push_back("Chris Moore (dooglus)");
-	authors.push_back("Chris Norman (pixelgeek)");
-	authors.push_back("Cyril Brulebois (KiBi)");
-	authors.push_back("Daniel Fort");
-	authors.push_back("Daniel Hornung (rubikcube)");
-	authors.push_back("David Roden (Bombe)");
-	authors.push_back("Denis Zdorovtsov (trizer)");
-	authors.push_back("Dmitriy Pomerantsev (Atrus)");
-	authors.push_back("Douglas Lau");
-	authors.push_back("Evgenij Katunov");
-	authors.push_back("Gerald Young (Yoyobuae)");
-	authors.push_back("Gerco Ballintijn");
-	authors.push_back("IL'dar AKHmetgaleev (AkhIL)");
-	authors.push_back("Ivan Mahonin");
-	authors.push_back("Jerome Blanchi (d.j.a.y.)");
-	authors.push_back("Konstantin Dmitriev (zelgadis)");
-	authors.push_back("Luka Pravica");
-	authors.push_back("Nikita Kitaev (nikitakit)");
-	authors.push_back("Martin Michlmayr (tbm)");
-	authors.push_back("Max May (Permutatrix)");
-	authors.push_back("Miguel Gea Milvaques (xerakko)");
-	authors.push_back("Paul Wise (pabs)");
-	authors.push_back("Ralf Corsepius");
-	authors.push_back("Ramon Miranda");
-	authors.push_back("Ray Frederikson");
-	authors.push_back("Timo Paulssen (timonator)");
-	authors.push_back("Yu Chen (jcome)");
-	authors.push_back("Yue Shi Lai");
+	std::vector<Glib::ustring> authors = {
+		{_("Original developers:")},
+		{""},
+		{"Robert B. Quattlebaum Jr (darco)"},
+		{"Adrian Bentley"},
+		{""},
+		{_("Contributors:")},
+		{""},
+		{"Abhay Raj Singh"},
+		{"Adrian Winchell (SnapSilverlight)"},
+		{"Alexandre Prokoudine"},
+		{"Alyssa Rosenzweig"},
+		{"Andreas Jochens"},
+		{"Androbin"},
+		{"Anish Gulati"},
+		{"Ankit Kumar Dwivedi"},
+		{"Anshita Vishwa"},
+		{"Artem Konoplin (ice0)"},
+		{"Arya Bhardwaj"},
+		{"Badri Sunderarajan (Hippo)"},
+		{"Binyamin Aron Green"},
+		{"BobSynfig"},
+		{"Brendon Higgins"},
+		{"bth"},
+		{"Carl Kruk"},
+		{"Carlos A. Sosa Navarro"},
+		{"Carlos López González (genete)"},
+		{"caryoscelus"},
+		{"Charlie Murphy"},
+		{"Chris London"},
+		{"Chris Moore (dooglus)"},
+		{"Chris Norman (pixelgeek)"},
+		{"Cillian de Róiste"},
+		{"Cyril Brulebois (KiBi)"},
+		{"Daniel Fort"},
+		{"Daniel Hornung (rubikcube)"},
+		{"David Roden (Bombe)"},
+		{"Denis Zdorovtsov (trizer)"},
+		{"DhairyaBahl"},
+		{"Diego Barrios Romero (eldruin)"},
+		{"Dmitriy Pomerantsev (Atrus)"},
+		{"Dmitry Razumovsky"},
+		{"Dmitry Smirnov"},
+		{"Douglas Lau"},
+		{"eroen"},
+		{"eszlari"},
+		{"Evgenij Katunov"},
+		{"Firas Hanife (FirasH)"},
+		{"flurick"},
+		{"frijol"},
+		{"Gerald Young (Yoyobuae)"},
+		{"Gerco Ballintijn"},
+		{"GinPachi"},
+		{"Igor Montagner"},
+		{"IL'dar AKHmetgaleev (AkhIL)"},
+		{"Ivan Mahonin (blackwarthog)"},
+		{"Jerome Blanchi (d.j.a.y.)"},
+		{"Keyikedalube Ndang"},
+		{"Konstantin Dmitriev (zelgadis)"},
+		{"Kristi Isakog"},
+		{"lenixlobo"},
+		{"Luka Pravica"},
+		{"luz.paz"},
+		{"Marc Weber"},
+		{"Martin Michlmayr (tbm)"},
+		{"Matthew White"},
+		{"Max May (Permutatrix)"},
+		{"Maxwell Paul Brickner"},
+		{"Miguel Gea Milvaques (xerakko)"},
+		{"Moritz Grosch (LittleFox)"},
+		{"Nikita Kitaev (nikitakit)"},
+		{"Pascal Schmid"},
+		{"Paul Wise (pabs)"},
+		{"Peter Eszlari"},
+		{"Ralf Corsepius"},
+		{"Ramon Miranda"},
+		{"Ray Frederikson"},
+		{"Reshabh Sharma"},
+		{"rockyhandsome1"},
+		{"Rodolfo Ribeiro Gomes (rodolforg)"},
+		{"Sylvain Leroux"},
+		{"Timo Paulssen (timonator)"},
+		{"Tommy Nguyen"},
+		{"Voldracarno Draconor"},
+		{"wstaelens"},
+		{"xerakko"},
+		{"Yash Kapoor"},
+		{"Yu Chen (jcome)"},
+		{"Yue Shi Lai"},
+	};
 	set_authors(authors);
 
 	std::vector<Glib::ustring> artists;
