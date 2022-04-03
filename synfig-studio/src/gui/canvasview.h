@@ -660,8 +660,6 @@ public:
 	void toggle_duck_mask_all();
 	// Toggle displaybar according to App::enable_mainwin_toolbar
 	void toggle_show_toolbar();
-	void select_all_layers();
-	void unselect_all_layers();
 
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------

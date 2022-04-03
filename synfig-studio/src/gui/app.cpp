@@ -888,10 +888,6 @@ init_menu_builder()
 	SET_CANVAS_ACTION("render", App::get_selected_canvas_view()->render_settings.present())
 	App::instance()->add_action("quit", [&]() {App::quit();});
 
-	//Edit menu: ACTIONS
-	SET_CANVAS_ACTION("select-all-layers", App::get_selected_canvas_view()->select_all_layers())
-	SET_CANVAS_ACTION("unselect-all-layers", App::get_selected_canvas_view()->unselect_all_layers())
-
 	//icon path
 	//this will only work if executing program from cmake-build
 	//this needs to be fixed
