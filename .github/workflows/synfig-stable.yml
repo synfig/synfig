@@ -26,9 +26,9 @@ jobs:
           name: MacOS 10.15 Catalina (Autotools)
           toolchain: autotools-release
           allow_failures: true
-        - os: ubuntu-16.04
-          name: Ubuntu 16.04 Xenial (Autotools)
-          allow_failures: true
+        - os: ubuntu-18.04
+          name: Ubuntu 18.04 Bionic (Autotools)
+          allow_failures: false
           toolchain: autotools-release
 
     # Steps represent a sequence of tasks that will be executed as part of the job
