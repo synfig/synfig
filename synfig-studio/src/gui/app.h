@@ -178,7 +178,7 @@ private:
 	static etl::handle<CanvasView> selected_canvas_view;
 
 	static Glib::RefPtr<UIManager>	ui_manager_;
-	static  Glib::RefPtr<Builder> menu_builder_;
+	static  Glib::RefPtr<Builder> builder_;
 	static MenuActionGroup canvas_action_group_;
 	static MenuActionMap undo_redo_action_group_;
 	static MenuActionMap toggle_action_group_;
@@ -338,13 +338,12 @@ public:
 	static StateManager* get_state_manager();
 
 	static Glib::RefPtr<UIManager>& ui_manager() { return ui_manager_; }
-	static Glib::RefPtr<Builder>& menu_builder() { return menu_builder_; }
+	static Glib::RefPtr<Builder>& builder() { return builder_; }
 	static MenuActionGroup& canvas_action_group() { return canvas_action_group_; }
 	static MenuActionMap& undo_redo_action_group() { return undo_redo_action_group_; }
 	static MenuActionMap& toggle_action_group() { return toggle_action_group_; }
 
 	static void enable_action_group(bool isEnabled);
-	static void on_menu_toggled(bool isActive);
 
 	static void add_recent_file(const etl::handle<Instance> instance);
 

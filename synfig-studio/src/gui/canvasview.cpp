@@ -3524,6 +3524,16 @@ CanvasView::toggle_duck_mask_all()
 }
 
 void
+CanvasView::appmenu_toggle_duck_mask_all()
+{
+	bool isActive = false;
+	App::toggle_action_group()["mask-none-ducks"]->get_state(isActive);
+	isActive = !isActive;
+	App::toggle_action_group()["mask-none-ducks"]->change_state(isActive);
+	CanvasView::toggle_duck_mask_all();
+}
+
+void
 CanvasView::mask_bone_ducks()
 {
 	Duck::Type mask(work_area->get_type_mask());

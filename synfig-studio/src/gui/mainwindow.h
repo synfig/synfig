@@ -65,6 +65,7 @@ namespace studio {
 		void toggle_show_menubar();
 		void toggle_show_toolbar();
 		void appmenu_toggle_show_menubar();
+		void appmenu_toggle_show_toolbar();
 
 		guint save_workspace_merge_id;
 		guint custom_workspaces_merge_id;

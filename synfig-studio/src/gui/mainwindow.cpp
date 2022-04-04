@@ -184,6 +184,8 @@ MainWindow::init_menus()
 	Glib::RefPtr<Gtk::ToggleAction> toggle_toolbar = Gtk::ToggleAction::create("toggle-mainwin-toolbar", _("Toolbar"));
 	toggle_toolbar->set_active(App::enable_mainwin_toolbar);
 	action_group->add(toggle_toolbar, sigc::mem_fun(*this, &studio::MainWindow::toggle_show_toolbar));
+	App::toggle_action_group()["show-toolbar"] = App::instance()->add_action_bool("show-toolbar", 
+		sigc::mem_fun(*this, &studio::MainWindow::appmenu_toggle_show_toolbar), true);
 	
 	// pre defined workspace (window ui layout)
 	action_group->add( Gtk::Action::create("workspace-compositing", _("Compositing")),
@@ -258,6 +260,7 @@ MainWindow::toggle_show_menubar()
 	else
 		menubar->hide();
 }
+
 void
 MainWindow::appmenu_toggle_show_menubar()
 {
@@ -278,6 +281,16 @@ MainWindow::toggle_show_toolbar()
 			for(Instance::CanvasViewList::const_iterator iter2 = views.begin(); iter2 != views.end(); ++iter2)
 				(*iter2)->toggle_show_toolbar();
 	}
+}
+
+void
+MainWindow::appmenu_toggle_show_toolbar()
+{
+	bool isActive = false;
+	App::toggle_action_group()["show-toolbar"]->get_state(isActive);
+	isActive = !isActive;
+	App::toggle_action_group()["show-toolbar"]->change_state(isActive);
+	MainWindow::toggle_show_toolbar();
 }
 
 void MainWindow::add_custom_workspace_menu_item_handlers()
@@ -415,7 +428,7 @@ MainWindow::on_recent_files_changed()
 	std::vector<String> shortnames;
 	make_short_filenames(fullnames, shortnames);
 
-	auto menu_object = App::menu_builder()->get_object("recent-file");
+	auto menu_object = App::builder()->get_object("recent-file");
 	auto recent_file_menu = Glib::RefPtr<Gio::Menu>::cast_dynamic(menu_object);
 	recent_file_menu->remove_all();
 

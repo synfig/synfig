@@ -229,7 +229,7 @@ int	 App::Busy::count;
 bool App::shutdown_in_progress;
 
 Glib::RefPtr<studio::UIManager>	App::ui_manager_;
-Glib::RefPtr<studio::Builder> App::menu_builder_;
+Glib::RefPtr<studio::Builder> App::builder_;
 studio::MenuActionGroup App::canvas_action_group_;
 studio::MenuActionMap App::undo_redo_action_group_;
 studio::MenuActionMap App::toggle_action_group_;
@@ -873,7 +873,11 @@ App::enable_action_group(bool isEnabled){
 void
 init_menu_builder()
 {
-	#define SET_CANVAS_ACTION(x,cb) { App::canvas_action_group().push_back(App::instance()->add_action(x, [&]() {cb;})); }
+	#define SET_CANVAS_ACTION(x,cb) { App::canvas_action_group().push_back(\
+		App::instance()->add_action(x, [&]() {cb;})); }
+	#define SET_TOGGLE_CANVAS_ACTION(x, cb, isactive) { App::canvas_action_group().push_back(\
+		App::instance()->add_action_bool(x, [&]() {cb;}, isactive));\
+		App::toggle_action_group()[x] = App::canvas_action_group().back(); }
 
 	//File menu: ACTIONS
 	App::instance()->add_action("new", [&]() {App::new_instance();});
@@ -896,6 +900,9 @@ init_menu_builder()
 	//TODO: how to call select_all_ducks(), getting err: member access into incomplete type 'studio::WorkArea'
 	//SET_CANVAS_ACTION("select-all-ducks", App::get_selected_canvas_view()->get_work_area()->select_all_ducks())
 	SET_CANVAS_ACTION("select-parent-layer", App::get_selected_canvas_view()->select_parent_layer())
+
+	//View menu: ACTIONS
+	SET_TOGGLE_CANVAS_ACTION("mask-none-ducks", App::get_selected_canvas_view()->appmenu_toggle_duck_mask_all(), false)
 
 	//icon path
 	//this will only work if executing program from cmake-build
@@ -1069,7 +1076,7 @@ init_menu_builder()
 	"				<attribute name='label' translatable='yes'>_Select Parent Layer</attribute>"
 	"				<attribute name='action'>app.select-parent-layer</attribute>"
 	//TODO: need to find accellerator for up arrow with two lines through it
-	"				<attribute name='accel'>&lt;Alt&gt;Up</attribute>"
+	"				<attribute name='accel'>&lt;Alt&gt;&lt;Mod1&gt;Page_Up</attribute>"
 	"			</item>"
 	"		</section>"
 	"		<section>"
@@ -1092,17 +1099,32 @@ init_menu_builder()
 	"				<attribute name='label' translatable='yes'>_Show Menubar</attribute>"
 	"				<attribute name='action'>app.show-menubar</attribute>"
 	"			</item>"
+	"			<item>"
+	"				<attribute name='label' translatable='yes'>_Toolbar</attribute>"
+	"				<attribute name='action'>app.show-toolbar</attribute>"
+	"			</item>"
+	"		</section>"
+	"		<section>"
+	//Show/Hide Handles submenu
+	"			<submenu>"
+	"				<attribute name='label' translatable='yes'>_Show/Hide Handles</attribute>"
+	"					<item>"
+	"						<attribute name='label' translatable='yes'>_Toggle None/Last visible Handles</attribute>"
+	"						<attribute name='action'>app.mask-none-ducks</attribute>"
+	"						<attribute name='accel'>&lt;Alt&gt;0</attribute>"
+	"					</item>"
+	"			</submenu>"
 	"		</section>"
 	"	</submenu>"
 	"  </menu>"
     "</interface>";
 
 	try {
-		App::menu_builder()->add_from_string(ui_info);
+		App::builder()->add_from_string(ui_info);
 	} catch (const Glib::Error& ex) {
 		std::cerr << "Building menus failed: " << ex.what();
 	}
-	auto menu_object = App::menu_builder()->get_object("studio_menubar");
+	auto menu_object = App::builder()->get_object("studio_menubar");
 	auto menu_bar = Glib::RefPtr<Gio::Menu>::cast_dynamic(menu_object);
 	if ( !menu_bar ) {//|| !recent_menu) {
 		g_warning("menu not found!");
@@ -1111,10 +1133,6 @@ init_menu_builder()
 	}
 }
 
-void 
-App::on_menu_toggled(bool isActive){
-
-}
 void
 init_ui_manager()
 {
@@ -1790,8 +1808,9 @@ void App::init(const synfig::String& rootpath)
 
 		studio_init_cb.task(_("Init UI Manager..."));
 		App::ui_manager_=studio::UIManager::create();
-		App::menu_builder_ = studio::Builder::create();
 		init_ui_manager();
+		studio_init_cb.task(_("Init Builder..."));
+		App::builder_ = studio::Builder::create();
 		init_menu_builder();
 
 		studio_init_cb.task(_("Init Dock Manager..."));

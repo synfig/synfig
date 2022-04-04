@@ -115,7 +115,8 @@ LayerActionManager::LayerActionManager():
 	);
 	
 	//TODO2: CUT IS NOT WORKING CORRECTLY!
-	simp_action_cut_=App::instance()->add_action("cut", sigc::mem_fun(*this, &LayerActionManager::cut));
+	//simp_action_cut_=App::instance()->add_action("cut", sigc::mem_fun(*this, &LayerActionManager::cut));
+	simp_action_cut_=App::instance()->add_action("cut", [&](){this->cut();});
 	simp_action_cut_->signal_activate();
 	simp_action_cut_->set_enabled(false);
 
@@ -130,7 +131,8 @@ LayerActionManager::LayerActionManager():
 		)
 	);
 
-	simp_action_copy_=App::instance()->add_action("copy", sigc::mem_fun(*this, &LayerActionManager::copy));
+	//simp_action_copy_=App::instance()->add_action("copy", sigc::mem_fun(*this, &LayerActionManager::copy));
+	simp_action_copy_=App::instance()->add_action("copy", [&](){this->copy();});
 	simp_action_copy_->signal_activate();
 	simp_action_copy_->set_enabled(false);
 
@@ -145,7 +147,8 @@ LayerActionManager::LayerActionManager():
 		)
 	);
 
-	simp_action_paste_=App::instance()->add_action("paste", sigc::mem_fun(*this, &LayerActionManager::paste));
+	//simp_action_paste_=App::instance()->add_action("paste", sigc::mem_fun(*this, &LayerActionManager::paste));
+	simp_action_paste_=App::instance()->add_action("paste", [&](){this->paste();});
 	simp_action_paste_->signal_activate();
 
 	action_amount_inc_=Gtk::Action::create(
