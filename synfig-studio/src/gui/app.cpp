@@ -230,9 +230,7 @@ bool App::shutdown_in_progress;
 
 Glib::RefPtr<studio::UIManager>	App::ui_manager_;
 Glib::RefPtr<studio::Builder> App::builder_;
-studio::MenuActionGroup App::canvas_action_group_;
-studio::MenuActionMap App::undo_redo_action_group_;
-studio::MenuActionMap App::toggle_action_group_;
+Glib::RefPtr<Gio::SimpleActionGroup> App::canvas_action_group_;
 
 int        App::jack_locks_ = 0;
 synfig::Distance::System  App::distance_system;
@@ -866,18 +864,22 @@ public:
 static ::Preferences _preferences;
 
 void
-App::enable_action_group(bool isEnabled){
-	for(auto action : App::canvas_action_group())
-		action->set_enabled(isEnabled);
+App::enable_action_group(Glib::RefPtr<Gio::SimpleActionGroup>& group, bool isEnabled){
+	for (const auto& action_name : group->list_actions()) {
+		auto action = group->lookup_action(action_name);
+		if (auto simpleAction = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(action)) {
+			simpleAction->set_enabled(isEnabled);
+		}		
+	}
 }
+
 void
 init_menu_builder()
 {
-	#define SET_CANVAS_ACTION(x,cb) { App::canvas_action_group().push_back(\
+	#define SET_CANVAS_ACTION(x,cb) { App::canvas_action_group()->add_action(\
 		App::instance()->add_action(x, [&]() {cb;})); }
-	#define SET_TOGGLE_CANVAS_ACTION(x, cb, isactive) { App::canvas_action_group().push_back(\
-		App::instance()->add_action_bool(x, [&]() {cb;}, isactive));\
-		App::toggle_action_group()[x] = App::canvas_action_group().back(); }
+	#define SET_TOGGLE_CANVAS_ACTION(x, cb, isactive) { App::canvas_action_group()->add_action(\
+		App::instance()->add_action_bool(x, [&]() {cb;}, isactive)); }
 
 	//File menu: ACTIONS
 	App::instance()->add_action("new", [&]() {App::new_instance();});
@@ -1806,6 +1808,7 @@ void App::init(const synfig::String& rootpath)
 		App::ui_manager_=studio::UIManager::create();
 		init_ui_manager();
 		studio_init_cb.task(_("Init Builder..."));
+		App::canvas_action_group_ = Gio::SimpleActionGroup::create();
 		App::builder_ = studio::Builder::create();
 		init_menu_builder();
 

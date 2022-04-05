@@ -739,7 +739,7 @@ void CanvasView::activate()
 	App::instance()->add_action("close-document", [&](){this->close_instance();});
 	this->_action_group_removed = false;
 	this->_canvas_action_group_enabled = true;
-	App::instance()->enable_action_group(_canvas_action_group_enabled);
+	App::instance()->enable_action_group(App::canvas_action_group(), _canvas_action_group_enabled);
 	update_title();
 	present();
 	grab_focus();
@@ -752,7 +752,7 @@ void CanvasView::deactivate()
 	App::instance()->remove_action("close-document");
 	this->_action_group_removed = true;
 	this->_canvas_action_group_enabled = false;
-	App::instance()->enable_action_group(_canvas_action_group_enabled);
+	App::instance()->enable_action_group(App::canvas_action_group(), _canvas_action_group_enabled);
 	update_title();
 }
 
@@ -1548,10 +1548,10 @@ CanvasView::init_menus()
 			This error happens: error: member access into incomplete type 'studio::WorkArea' , 
 			forward declaration of 'studio::WorkArea'
 	*/
-	App::canvas_action_group().push_back(App::instance()->add_action("select-all-ducks",
+	App::canvas_action_group()->add_action(App::instance()->add_action("select-all-ducks",
 		sigc::mem_fun(*work_area, &WorkArea::select_all_ducks)
 	));
-	App::canvas_action_group().push_back(App::instance()->add_action("unselect-all-ducks",
+	App::canvas_action_group()->add_action(App::instance()->add_action("unselect-all-ducks",
 		sigc::mem_fun(*work_area, &WorkArea::unselect_all_ducks)
 	));
 
@@ -3535,10 +3535,13 @@ void
 CanvasView::appmenu_toggle_duck_mask_all()
 {
 	bool isActive = false;
-	App::toggle_action_group()["mask-none-ducks"]->get_state(isActive);
-	isActive = !isActive;
-	App::toggle_action_group()["mask-none-ducks"]->change_state(isActive);
-	CanvasView::toggle_duck_mask_all();
+	auto toggle_action = App::instance()->lookup_action("mask-none-ducks");
+	if (auto action = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(toggle_action)) {
+		action->get_state(isActive);
+		isActive = !isActive;
+		action->change_state(isActive);
+		CanvasView::toggle_duck_mask_all();
+	}
 }
 
 void

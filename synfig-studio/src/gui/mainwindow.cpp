@@ -167,10 +167,10 @@ MainWindow::init_menus()
 		sigc::ptr_fun(&studio::App::show_setup)
 	);
 	//Gtk::Builder
-	App::canvas_action_group().push_back(App::instance()->add_action("input-devices",
+	App::canvas_action_group()->add_action(App::instance()->add_action("input-devices",
 		sigc::ptr_fun(&MainWindow::show_dialog_input)
 	));
-	App::canvas_action_group().push_back(App::instance()->add_action("setup",
+	App::canvas_action_group()->add_action(App::instance()->add_action("setup",
 		sigc::ptr_fun(&studio::App::show_setup)
 	));
 
@@ -178,13 +178,13 @@ MainWindow::init_menus()
 	Glib::RefPtr<Gtk::ToggleAction> toggle_menubar = Gtk::ToggleAction::create("toggle-mainwin-menubar", _("Show Menubar"));
 	toggle_menubar->set_active(App::enable_mainwin_menubar);
 	action_group->add(toggle_menubar, sigc::mem_fun(*this, &studio::MainWindow::toggle_show_menubar));
-	App::toggle_action_group()["show-menubar"] = App::instance()->add_action_bool("show-menubar", 
+	App::instance()->add_action_bool("show-menubar", 
 		sigc::mem_fun(*this, &studio::MainWindow::appmenu_toggle_show_menubar), true);
 
 	Glib::RefPtr<Gtk::ToggleAction> toggle_toolbar = Gtk::ToggleAction::create("toggle-mainwin-toolbar", _("Toolbar"));
 	toggle_toolbar->set_active(App::enable_mainwin_toolbar);
 	action_group->add(toggle_toolbar, sigc::mem_fun(*this, &studio::MainWindow::toggle_show_toolbar));
-	App::toggle_action_group()["show-toolbar"] = App::instance()->add_action_bool("show-toolbar", 
+	App::instance()->add_action_bool("show-toolbar", 
 		sigc::mem_fun(*this, &studio::MainWindow::appmenu_toggle_show_toolbar), true);
 	
 	// pre defined workspace (window ui layout)
@@ -265,10 +265,13 @@ void
 MainWindow::appmenu_toggle_show_menubar()
 {
 	bool isActive = false;
-	App::toggle_action_group()["show-menubar"]->get_state(isActive);
-	isActive = !isActive;
-	App::toggle_action_group()["show-menubar"]->change_state(isActive);
-	MainWindow::toggle_show_menubar();
+	auto toggle_action = App::instance()->lookup_action("show-menubar");
+	if (auto action = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(toggle_action)) {
+		action->get_state(isActive);
+		isActive = !isActive;
+		action->change_state(isActive);
+		MainWindow::toggle_show_menubar();
+	}
 }
 
 void
@@ -287,10 +290,13 @@ void
 MainWindow::appmenu_toggle_show_toolbar()
 {
 	bool isActive = false;
-	App::toggle_action_group()["show-toolbar"]->get_state(isActive);
-	isActive = !isActive;
-	App::toggle_action_group()["show-toolbar"]->change_state(isActive);
-	MainWindow::toggle_show_toolbar();
+	auto toggle_action = App::instance()->lookup_action("show-toolbar");
+	if (auto action = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(toggle_action)) {
+		action->get_state(isActive);
+		isActive = !isActive;
+		action->change_state(isActive);
+		MainWindow::toggle_show_toolbar();
+	}
 }
 
 void MainWindow::add_custom_workspace_menu_item_handlers()
