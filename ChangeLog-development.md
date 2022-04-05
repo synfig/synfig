@@ -1,3 +1,5 @@
+- [`e54c25d`](https://github.com/synfig/synfig/commit/e54c25dc051f6ad38f8ec2ed8ca95371be4a3cd4) Update contributor name list ([#2600](https://github.com/synfig/synfig/issues/2600)) [studio]
+- [`473af1c`](https://github.com/synfig/synfig/commit/473af1c1b1a3b990812825c7e01ea46ec3728fd9) improve output readability of unit tests with test_base.h ([#2583](https://github.com/synfig/synfig/issues/2583)) [core]
 - [`c42885f`](https://github.com/synfig/synfig/commit/c42885f91faebc63fa1a8b5149dcc3da7f6ff067) Added the ability to set the build type from the command line to the 2-build-msys-cmake.sh script ([#2573](https://github.com/synfig/synfig/issues/2573))
 - [`113dc73`](https://github.com/synfig/synfig/commit/113dc73784273e7a358c6c41004920dad51483c9) Allow to call regression test script outside of Travis ([#2585](https://github.com/synfig/synfig/issues/2585))
 - [`042c737`](https://github.com/synfig/synfig/commit/042c7378917c32af4354bac5d35283a63a7b828c) Fix bug with src offset in blur sw task ([#2570](https://github.com/synfig/synfig/issues/2570)) [core]
