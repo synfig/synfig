@@ -150,7 +150,6 @@
 #include <synfigapp/settings.h>
 
 #include <thread>
-#include <filesystem>
 
 #ifdef _WIN32
 
@@ -904,7 +903,10 @@ init_menu_builder()
 	SET_CANVAS_ACTION("select-parent-layer", App::get_selected_canvas_view()->select_parent_layer())
 
 	//View menu: ACTIONS
-	SET_TOGGLE_CANVAS_ACTION("mask-none-ducks", App::get_selected_canvas_view()->appmenu_toggle_duck_mask_all(), false)
+	SET_TOGGLE_CANVAS_ACTION("mask-none-ducks", App::get_selected_canvas_view()->toggle_duck_mask_all(), false)
+	SET_TOGGLE_CANVAS_ACTION("mask-position-ducks", App::get_selected_canvas_view()->toggle_duck_mask(Duck::TYPE_POSITION), true)
+	SET_TOGGLE_CANVAS_ACTION("mask-vertex-ducks", App::get_selected_canvas_view()->toggle_duck_mask(Duck::TYPE_VERTEX), true)
+	SET_TOGGLE_CANVAS_ACTION("mask-tangent-ducks", App::get_selected_canvas_view()->toggle_duck_mask(Duck::TYPE_TANGENT), true)
 
 	std::string icon_path = ResourceHelper::get_icon_path();
 
@@ -1110,6 +1112,21 @@ init_menu_builder()
 	"						<attribute name='label' translatable='yes'>_Toggle None/Last visible Handles</attribute>"
 	"						<attribute name='action'>app.mask-none-ducks</attribute>"
 	"						<attribute name='accel'>&lt;Alt&gt;0</attribute>"
+	"					</item>"
+	"					<item>"
+	"						<attribute name='label' translatable='yes'>_Show Position Handles</attribute>"
+	"						<attribute name='action'>app.mask-position-ducks</attribute>"
+	"						<attribute name='accel'>&lt;Alt&gt;1</attribute>"
+	"					</item>"
+	"					<item>"
+	"						<attribute name='label' translatable='yes'>_Show Vertex Handles</attribute>"
+	"						<attribute name='action'>app.mask-vertex-ducks</attribute>"
+	"						<attribute name='accel'>&lt;Alt&gt;2</attribute>"
+	"					</item>"
+	"					<item>"
+	"						<attribute name='label' translatable='yes'>_Show Tangent Handles</attribute>"
+	"						<attribute name='action'>app.mask-tangent-ducks</attribute>"
+	"						<attribute name='accel'>&lt;Alt&gt;3</attribute>"
 	"					</item>"
 	"			</submenu>"
 	"		</section>"

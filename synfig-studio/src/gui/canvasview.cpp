@@ -3503,6 +3503,31 @@ CanvasView::toggle_duck_mask(Duckmatic::Type type)
 		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_WIDTH));
 		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-angle-ducks"));
 		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_ANGLE));
+
+		//GtkBuilder Actions
+		auto toggle_action = App::instance()->lookup_action("mask-position-ducks");
+		auto duck_action = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(toggle_action);
+		if ( duck_action )
+			duck_action->change_state((bool)(work_area->get_type_mask()&Duck::TYPE_POSITION));
+		toggle_action = App::instance()->lookup_action("mask-vertex-ducks");
+		if ( duck_action = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(toggle_action) )
+			duck_action->change_state((bool)(work_area->get_type_mask()&Duck::TYPE_VERTEX));
+		toggle_action = App::instance()->lookup_action("mask-tangent-ducks");
+		if ( duck_action = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(toggle_action) )
+			duck_action->change_state((bool)(work_area->get_type_mask()&Duck::TYPE_TANGENT));
+	
+		toggle_action = App::instance()->lookup_action("mask-none-ducks");
+		if ( duck_action = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(toggle_action) ) {
+			if ( type == Duck::TYPE_NONE){
+				bool isActive = false;
+				duck_action->get_state(isActive);
+				isActive = !isActive;
+				duck_action->change_state(isActive);
+			}else{
+				duck_action->change_state(false);
+			}
+		}
+		
 		// Update toggle ducks buttons
 		action->get_active();
 		toggleducksdial.update_toggles(work_area->get_type_mask());
@@ -3529,19 +3554,6 @@ CanvasView::toggle_duck_mask_all()
         work_area->set_type_mask_state ( Duck::TYPE_NONE);
         toggle_duck_mask(Duck::TYPE_NONE);
     }
-}
-
-void
-CanvasView::appmenu_toggle_duck_mask_all()
-{
-	bool isActive = false;
-	auto toggle_action = App::instance()->lookup_action("mask-none-ducks");
-	if (auto action = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(toggle_action)) {
-		action->get_state(isActive);
-		isActive = !isActive;
-		action->change_state(isActive);
-		CanvasView::toggle_duck_mask_all();
-	}
 }
 
 void

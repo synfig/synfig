@@ -657,7 +657,6 @@ public:
 	//! \Sa             DuckMatic::set_type_mask_state(), DuckMatic::get_type_mask_state()
 	void toggle_duck_mask_all();
 	// Toggle displaybar according to App::enable_mainwin_toolbar
-	void appmenu_toggle_duck_mask_all();
 	void toggle_show_toolbar();
 	static void save_all();
 	void select_all_layers();
