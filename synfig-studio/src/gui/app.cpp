@@ -904,11 +904,7 @@ init_menu_builder()
 	//View menu: ACTIONS
 	SET_TOGGLE_CANVAS_ACTION("mask-none-ducks", App::get_selected_canvas_view()->appmenu_toggle_duck_mask_all(), false)
 
-	//icon path
-	//this will only work if executing program from cmake-build
-	//this needs to be fixed
-	std::string icon_path = std::__fs::filesystem::current_path();
-	icon_path+="/output/Debug/share/synfig/icons/classic/";
+	std::string icon_path = ResourceHelper::get_icon_path();
 
 	//menbuar XML string
 	Glib::ustring ui_info =
@@ -924,13 +920,13 @@ init_menu_builder()
     "          <attribute name='label' translatable='yes'>_New</attribute>"
     "          <attribute name='action'>app.new</attribute>"
     "          <attribute name='accel'>&lt;Control&gt;n</attribute>"
-    "          <attribute name='icon'>"+icon_path+"action_doc_new_icon.png</attribute>"
+    "          <attribute name='icon'>"+icon_path+"/action_doc_new_icon.png</attribute>"
     "        </item>"
 	"        <item>"
     "          <attribute name='label' translatable='yes'>_Open</attribute>"
     "          <attribute name='action'>app.open</attribute>"
     "          <attribute name='accel'>&lt;Control&gt;o</attribute>"
-    "          <attribute name='icon'>"+icon_path+"action_doc_open_icon.png</attribute>"
+    "          <attribute name='icon'>"+icon_path+"/action_doc_open_icon.png</attribute>"
     "        </item>"
 
 	//Open Recent submenu
@@ -945,24 +941,24 @@ init_menu_builder()
     "          <attribute name='label' translatable='yes'>_Save</attribute>"
     "          <attribute name='action'>app.save</attribute>"
     "          <attribute name='accel'>&lt;Control&gt;s</attribute>"
-    "          <attribute name='icon'>"+icon_path+"action_doc_save_icon.png</attribute>"
+    "          <attribute name='icon'>"+icon_path+"/action_doc_save_icon.png</attribute>"
     "        </item>"
     "        <item>"
     "          <attribute name='label' translatable='yes'>_Save As...</attribute>"
     "          <attribute name='action'>app.save-as</attribute>"
     "          <attribute name='accel'>&lt;Control&gt;&lt;Shift&gt;s</attribute>"
-    "          <attribute name='icon'>"+icon_path+"action_doc_saveas_icon.png</attribute>"
+    "          <attribute name='icon'>"+icon_path+"/action_doc_saveas_icon.png</attribute>"
     "        </item>"
     "        <item>"
     "          <attribute name='label' translatable='yes'>_Save All...</attribute>"
     "          <attribute name='action'>app.save-all</attribute>"
     "          <attribute name='accel'>&lt;Control&gt;e</attribute>"
-    "          <attribute name='icon'>"+icon_path+"action_doc_saveall_icon.png</attribute>"
+    "          <attribute name='icon'>"+icon_path+"/action_doc_saveall_icon.png</attribute>"
     "        </item>"
     "        <item>"
     "          <attribute name='label' translatable='yes'>_Export...</attribute>"
     "          <attribute name='action'>app.export</attribute>"
-    "          <attribute name='icon'>"+icon_path+"action_export_icon.png</attribute>"
+    "          <attribute name='icon'>"+icon_path+"/action_export_icon.png</attribute>"
     "        </item>"
     "        <item>"
     "          <attribute name='label' translatable='yes'>_Revert...</attribute>"
@@ -986,13 +982,13 @@ init_menu_builder()
     "          <attribute name='label' translatable='yes'>_Preview...</attribute>"
     "          <attribute name='action'>app.preview</attribute>"
 	"          <attribute name='accel'>F11</attribute>"
-    "          <attribute name='icon'>"+icon_path+"preview_options_icon.png</attribute>"
+    "          <attribute name='icon'>"+icon_path+"/preview_options_icon.png</attribute>"
     "        </item>"
 	"        <item>"
     "          <attribute name='label' translatable='yes'>_Render...</attribute>"
     "          <attribute name='action'>app.render</attribute>"
 	"          <attribute name='accel'>F9</attribute>"
-    "          <attribute name='icon'>"+icon_path+"render_options_icon.png</attribute>"
+    "          <attribute name='icon'>"+icon_path+"/render_options_icon.png</attribute>"
     "        </item>"
     "      </section>"
 	"		<section>"
@@ -1022,13 +1018,13 @@ init_menu_builder()
 	"				<attribute name='action'>app.undo</attribute>"
 	"				<attribute name='accel'>&lt;Primary&gt;z</attribute>"
 	"				<attribute name='sensitive'>True</attribute>"
-	"				<attribute name='icon'>"+icon_path+"action_doc_undo_icon.png</attribute>"
+	"				<attribute name='icon'>"+icon_path+"/action_doc_undo_icon.png</attribute>"
 	"			</item>"
 	"			<item>"
 	"				<attribute name='label' translatable='yes'>_Redo</attribute>"
 	"				<attribute name='action'>app.redo</attribute>"
 	"				<attribute name='accel'>&lt;Shift&gt;&lt;Primary&gt;z</attribute>"
-	"				<attribute name='icon'>"+icon_path+"action_doc_redo_icon.png</attribute>"
+	"				<attribute name='icon'>"+icon_path+"/action_doc_redo_icon.png</attribute>"
 	"			</item>"
 	"		</section>"
 	"		<section>"
