@@ -1537,9 +1537,17 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("properties", Gtk::StockID("gtk-properties"), _("Properties...")),
 		sigc::mem_fun0(canvas_properties,&CanvasProperties::present)
 	);
+	/*
+		Edit Menu actions -> Gtk::Builder
 
-	//Edit Menu actions -> Gtk::Builder
-	//TODO: move these actions to init_menu_builder function in App.cpp
+		TODO: move these actions to init_builder function in App.cpp
+			Will this replace the action in action map everytime a new canvas instance is made?
+			When i try to put this in App.cpp as:
+			App::instance()->add("select-all-ducks", [&]() { 
+				App::get_selected_canvas_view()->get_work_area()->select_all_ducks();})
+			This error happens: error: member access into incomplete type 'studio::WorkArea' , 
+			forward declaration of 'studio::WorkArea'
+	*/
 	App::canvas_action_group().push_back(App::instance()->add_action("select-all-ducks",
 		sigc::mem_fun(*work_area, &WorkArea::select_all_ducks)
 	));
