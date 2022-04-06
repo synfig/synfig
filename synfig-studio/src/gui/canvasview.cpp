@@ -1475,12 +1475,15 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("save-as", Gtk::StockID("synfig-save_as"), _("Save As..."), _("Save As")),
 		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::dialog_save_as))
 	);
+	/*
 	action_group->add( Gtk::Action::create("export", Gtk::StockID("synfig-export"), _("Export..."), _("Export")),
 		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::dialog_export))
 	);
+	*/
 	action_group->add( Gtk::Action::create("save-all", Gtk::StockID("synfig-save_all"), _("Save All"), _("Save all opened documents")),
 		sigc::ptr_fun(save_all)
 	);
+	/*
 	action_group->add( Gtk::Action::create("revert", Gtk::Stock::REVERT_TO_SAVED),
 		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::safe_revert))
 	);
@@ -1490,6 +1493,7 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("import-sequence", _("Import Sequence...")),
 		sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_sequence))
 	);
+	*/
 	action_group->add( Gtk::Action::create("render", Gtk::StockID("synfig-render_options"), _("Render...")),
 		sigc::mem_fun0(render_settings,&RenderSettings::present)
 	);
@@ -1499,6 +1503,7 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("options", _("Options...")),
 		sigc::mem_fun0(canvas_options,&CanvasOptions::present)
 	);
+	/*
 	action_group->add( Gtk::Action::create("close-document", Gtk::StockID("gtk-close"), _("Close Document")),
 		sigc::hide_return(sigc::mem_fun(*this,&CanvasView::close_instance))
 	);
@@ -1525,6 +1530,7 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("select-parent-layer", _("Select Parent Layer")),
 		sigc::mem_fun(*this,&CanvasView::on_select_parent_layer)
 	);
+	*/
 
 	action_group->add( Gtk::Action::create("pause", Gtk::StockID("synfig-animate_pause")),
 		sigc::mem_fun(*this, &CanvasView::stop_async)
@@ -1537,23 +1543,6 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("properties", Gtk::StockID("gtk-properties"), _("Properties...")),
 		sigc::mem_fun0(canvas_properties,&CanvasProperties::present)
 	);
-	/*
-		Edit Menu actions -> Gtk::Builder
-
-		TODO: move these actions to init_builder function in App.cpp
-			Will this replace the action in action map everytime a new canvas instance is made?
-			When i try to put this in App.cpp as:
-			App::instance()->add("select-all-ducks", [&]() { 
-				App::get_selected_canvas_view()->get_work_area()->select_all_ducks();})
-			This error happens: error: member access into incomplete type 'studio::WorkArea' , 
-			forward declaration of 'studio::WorkArea'
-	*/
-	App::canvas_action_group()->add_action(App::instance()->add_action("select-all-ducks",
-		sigc::mem_fun(*work_area, &WorkArea::select_all_ducks)
-	));
-	App::canvas_action_group()->add_action(App::instance()->add_action("unselect-all-ducks",
-		sigc::mem_fun(*work_area, &WorkArea::unselect_all_ducks)
-	));
 
     auto instance = get_instance().get();
 	for ( const auto& plugin : App::plugin_manager.plugins() )

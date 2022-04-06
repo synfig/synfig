@@ -160,12 +160,14 @@ MainWindow::init_menus()
 	);
 
 	// Edit menu
+	/*
 	action_group->add( Gtk::Action::create("input-devices", _("Input Devices...")),
 		sigc::ptr_fun(&MainWindow::show_dialog_input)
 	);
 	action_group->add( Gtk::Action::create("setup", _("Preferences...")),
 		sigc::ptr_fun(&studio::App::show_setup)
 	);
+	*/
 	//Gtk::Builder
 	App::canvas_action_group()->add_action(App::instance()->add_action("input-devices",
 		sigc::ptr_fun(&MainWindow::show_dialog_input)
@@ -428,7 +430,7 @@ void
 MainWindow::on_recent_files_changed()
 {
 	// TODO(ice0): switch to GtkRecentChooserMenu?
-	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create("mainwindow-recentfiles");
+	//Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create("mainwindow-recentfiles");
 
 	std::vector<String> fullnames(App::get_recent_files().begin(), App::get_recent_files().end());
 	std::vector<String> shortnames;
@@ -450,19 +452,22 @@ MainWindow::on_recent_files_changed()
 			quoted += raw.substr(last_pos, ++pos - last_pos) + '_';
 		quoted += raw.substr(last_pos);
 
-		const std::string action_name = etl::strprintf("file-recent-%d", i);
-		menu_items += "<menuitem action='" + action_name +"' />";
+		//const std::string action_name = etl::strprintf("file-recent-%d", i);
+		//menu_items += "<menuitem action='" + action_name +"' />";
 
 		std::string filename = fullnames[i];
+		/*
 		action_group->add( Gtk::Action::create(action_name, quoted, fullnames[i]),
 			[filename](){App::open_recent(filename);}
 		);
+		*/
 		
 		replace(raw.begin(), raw.end(), ' ', '-');
 		recent_file_menu->append(raw, "app.open-recent-"+raw);
 		App::instance()->add_action("open-recent-"+raw, [filename](){App::open_recent(filename);});
 	}
 
+/*
 	std::string ui_info =
 		"<menu action='menu-file'><menu action='menu-open-recent'>"
 	  + menu_items
@@ -483,6 +488,7 @@ MainWindow::on_recent_files_changed()
 	App::ui_manager()->insert_action_group(action_group);
 	App::ui_manager()->add_ui_from_string(ui_info_popup);
 	App::ui_manager()->add_ui_from_string(ui_info_menubar);
+	*/
 }
 
 void

@@ -132,6 +132,7 @@
 
 #include <gui/widgets/widget_enum.h>
 #include <gui/workspacehandler.h>
+#include <gui/workarea.h>
 
 #include <synfig/canvasfilenaming.h>
 #include <synfig/color.h>
@@ -897,9 +898,8 @@ init_menu_builder()
 	//Edit menu: ACTIONS
 	SET_CANVAS_ACTION("select-all-layers", App::get_selected_canvas_view()->select_all_layers())
 	SET_CANVAS_ACTION("unselect-all-layers", App::get_selected_canvas_view()->unselect_all_layers())
-
-	//TODO: how to call select_all_ducks(), getting err: member access into incomplete type 'studio::WorkArea'
-	//SET_CANVAS_ACTION("select-all-ducks", App::get_selected_canvas_view()->get_work_area()->select_all_ducks())
+	SET_CANVAS_ACTION("select-all-ducks", App::get_selected_canvas_view()->get_work_area()->select_all_ducks())
+	SET_CANVAS_ACTION("unselect-all-ducks", App::get_selected_canvas_view()->get_work_area()->unselect_all_ducks())
 	SET_CANVAS_ACTION("select-parent-layer", App::get_selected_canvas_view()->select_parent_layer())
 
 	//View menu: ACTIONS
@@ -1075,7 +1075,7 @@ init_menu_builder()
 	"			<item>"
 	"				<attribute name='label' translatable='yes'>_Select Parent Layer</attribute>"
 	"				<attribute name='action'>app.select-parent-layer</attribute>"
-	//TODO: need to find accellerator for up arrow with two lines through it
+	//TODO: need to find accellerator for up arrow with two lines through it for Select Parent Layer
 	"				<attribute name='accel'>&lt;Alt&gt;&lt;Mod1&gt;Page_Up</attribute>"
 	"			</item>"
 	"		</section>"
@@ -1156,7 +1156,7 @@ init_ui_manager()
 	Glib::RefPtr<Gtk::ActionGroup> actions_action_group = Gtk::ActionGroup::create("actions");
 
 	menus_action_group->add( Gtk::Action::create("menu-file",            _("_File")));
-	menus_action_group->add( Gtk::Action::create("menu-open-recent",     _("Open Recent")));
+	//menus_action_group->add( Gtk::Action::create("menu-open-recent",     _("Open Recent")));
 
 	menus_action_group->add( Gtk::Action::create("menu-edit",            _("_Edit")));
 
@@ -1203,14 +1203,14 @@ DEFINE_ACTION("open",           Gtk::StockID("synfig-open"))
 DEFINE_ACTION("save",           Gtk::StockID("synfig-save"))
 DEFINE_ACTION("save-as",        Gtk::StockID("synfig-save_as"))
 DEFINE_ACTION("save-all",       Gtk::StockID("synfig-save_all"))
-DEFINE_ACTION("export",         Gtk::StockID("synfig-export"))
-DEFINE_ACTION("revert",         Gtk::Stock::REVERT_TO_SAVED)
-DEFINE_ACTION("import",         _("Import..."))
-DEFINE_ACTION("import-sequence",_("Import Sequence..."))
+//DEFINE_ACTION("export",         Gtk::StockID("synfig-export"))
+//DEFINE_ACTION("revert",         Gtk::Stock::REVERT_TO_SAVED)
+//DEFINE_ACTION("import",         _("Import..."))
+//DEFINE_ACTION("import-sequence",_("Import Sequence..."))
 DEFINE_ACTION("render",         _("Render..."))
 DEFINE_ACTION("preview",        _("Preview..."))
-DEFINE_ACTION("close-document", _("Close Document"))
-DEFINE_ACTION("quit",           Gtk::Stock::QUIT)
+//DEFINE_ACTION("close-document", _("Close Document"))
+//DEFINE_ACTION("quit",           Gtk::Stock::QUIT)
 
 // actions in Edit menu
 DEFINE_ACTION("undo",                     Gtk::StockID("synfig-undo"))
@@ -1331,25 +1331,25 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 //Layout the actions in the main menu (caret menu, right click on canvas menu) and toolbar:
 	Glib::ustring ui_info_menu =
 "	<menu action='menu-file'>"
-"		<menuitem action='new' />"
-"		<menuitem action='open' />"
-"		<menu action='menu-open-recent' />"
-"		<separator name='sep-file1'/>"
+//"		<menuitem action='new' />"
+//"		<menuitem action='open' />"
+//"		<menu action='menu-open-recent' />"
+//"		<separator name='sep-file1'/>"
 "		<menuitem action='save' />"
 "		<menuitem action='save-as' />"
 "		<menuitem action='save-all' />"
-"		<menuitem action='export' />"
-"		<menuitem action='revert' />"
-"		<separator name='sep-file2'/>"
-"		<menuitem action='import' />"
-"		<menuitem action='import-sequence' />"
-"		<separator name='sep-file4'/>"
+//"		<menuitem action='export' />"
+//"		<menuitem action='revert' />"
+//"		<separator name='sep-file2'/>"
+//"		<menuitem action='import' />"
+//"		<menuitem action='import-sequence' />"
+//"		<separator name='sep-file4'/>"
 "		<menuitem action='preview' />"
 "		<menuitem action='render' />"
-"		<separator name='sep-file5'/>"
-"		<menuitem action='close-document' />"
-"		<separator name='sep-file6'/>"
-"		<menuitem action='quit' />"
+//"		<separator name='sep-file5'/>"
+//"		<menuitem action='close-document' />"
+//"		<separator name='sep-file6'/>"
+//"		<menuitem action='quit' />"
 "	</menu>"
 "	<menu action='menu-edit'>"
 "		<menuitem action='undo'/>"
