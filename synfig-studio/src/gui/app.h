@@ -339,6 +339,8 @@ public:
 	static Glib::RefPtr<Gio::SimpleActionGroup>& canvas_action_group() { return canvas_action_group_; }
 
 	static void enable_action_group(Glib::RefPtr<Gio::SimpleActionGroup>& group, bool isEnabled);
+	static void add_action_group(Glib::RefPtr<Gio::SimpleActionGroup>& group);
+	static void remove_action_group(Glib::RefPtr<Gio::SimpleActionGroup>& group);
 
 	static void add_recent_file(const etl::handle<Instance> instance);
 

@@ -872,14 +872,34 @@ App::enable_action_group(Glib::RefPtr<Gio::SimpleActionGroup>& group, bool isEna
 		}		
 	}
 }
+void
+App::add_action_group(Glib::RefPtr<Gio::SimpleActionGroup>& group)
+{
+	for(const auto& action_name : group->list_actions()){
+		auto action = group->lookup_action(action_name);
+		if (auto simpleAction = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(action)) {
+			App::instance()->add_action(simpleAction);
+		}	
+	}
+}
+
+void
+App::remove_action_group(Glib::RefPtr<Gio::SimpleActionGroup>& group)
+{
+	for(const auto& action_name : group->list_actions()){
+		App::instance()->remove_action(action_name);
+	}	
+}
 
 void
 init_menu_builder()
 {
-	#define SET_CANVAS_ACTION(x,cb) { App::canvas_action_group()->add_action(\
+#define SET_CANVAS_ACTION(x,cb) { App::canvas_action_group()->add_action(\
 		App::instance()->add_action(x, [&]() {cb;})); }
+	/*
 	#define SET_TOGGLE_CANVAS_ACTION(x, cb, isactive) { App::canvas_action_group()->add_action(\
 		App::instance()->add_action_bool(x, [&]() {cb;}, isactive)); }
+*/
 
 	//File menu: ACTIONS
 	App::instance()->add_action("new", [&]() {App::new_instance();});
@@ -893,6 +913,7 @@ init_menu_builder()
 	SET_CANVAS_ACTION("import-sequence", App::get_selected_canvas_view()->import_sequence())
 	SET_CANVAS_ACTION("preview", App::get_selected_canvas_view()->preview_option())
 	SET_CANVAS_ACTION("render", App::get_selected_canvas_view()->render_settings.present())
+	SET_CANVAS_ACTION("close-document", App::get_selected_canvas_view()->close_instance())
 	App::instance()->add_action("quit", [&]() {App::quit();});
 
 	//Edit menu: ACTIONS
@@ -902,11 +923,7 @@ init_menu_builder()
 	SET_CANVAS_ACTION("unselect-all-ducks", App::get_selected_canvas_view()->get_work_area()->unselect_all_ducks())
 	SET_CANVAS_ACTION("select-parent-layer", App::get_selected_canvas_view()->select_parent_layer())
 
-	//View menu: ACTIONS
-	SET_TOGGLE_CANVAS_ACTION("mask-none-ducks", App::get_selected_canvas_view()->toggle_duck_mask_all(), false)
-	SET_TOGGLE_CANVAS_ACTION("mask-position-ducks", App::get_selected_canvas_view()->toggle_duck_mask(Duck::TYPE_POSITION), true)
-	SET_TOGGLE_CANVAS_ACTION("mask-vertex-ducks", App::get_selected_canvas_view()->toggle_duck_mask(Duck::TYPE_VERTEX), true)
-	SET_TOGGLE_CANVAS_ACTION("mask-tangent-ducks", App::get_selected_canvas_view()->toggle_duck_mask(Duck::TYPE_TANGENT), true)
+#undef SET_CANVAS_ACTION
 
 	std::string icon_path = ResourceHelper::get_icon_path();
 

@@ -548,6 +548,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	ducks_locks              (0),
 	ducks_rebuild_requested  (false),
 	ducks_rebuild_queue_requested(false),
+	//view_toggles(false),
 
 	working_depth            (0),
 	cancel                   (false),
@@ -736,10 +737,11 @@ void CanvasView::activate()
 	activation_index_.activate();
 	get_smach().process_event(EVENT_REFRESH_TOOL_OPTIONS);
 	App::ui_manager()->insert_action_group(action_group);
-	App::instance()->add_action("close-document", [&](){this->close_instance();});
 	this->_action_group_removed = false;
 	this->_canvas_action_group_enabled = true;
 	App::instance()->enable_action_group(App::canvas_action_group(), _canvas_action_group_enabled);
+	//add toggle group
+	App::instance()->add_action_group(toggle_action_group);
 	update_title();
 	present();
 	grab_focus();
@@ -749,10 +751,11 @@ void CanvasView::deactivate()
 {
 	get_smach().process_event(EVENT_YIELD_TOOL_OPTIONS);
 	App::ui_manager()->remove_action_group(action_group);
-	App::instance()->remove_action("close-document");
 	this->_action_group_removed = true;
 	this->_canvas_action_group_enabled = false;
 	App::instance()->enable_action_group(App::canvas_action_group(), _canvas_action_group_enabled);
+	//remove toggle action group
+	App::instance()->remove_action_group(toggle_action_group);
 	update_title();
 }
 
@@ -1467,6 +1470,7 @@ CanvasView::init_menus()
 	- canvasmenu
 	- viewmenu
 	*/
+	toggle_action_group = Gio::SimpleActionGroup::create();
 	action_group = Gtk::ActionGroup::create("canvasview");
 
 	action_group->add( Gtk::Action::create("save", Gtk::StockID("synfig-save"), _("Save"), _("Save")),
@@ -1683,6 +1687,19 @@ CanvasView::init_menus()
 		action= Gtk::ToggleAction::create("mask-none-ducks", _("Toggle None/Last visible Handles"));
 		action->set_active(false);
 		action_group->add(action,  sigc::mem_fun(*this,&CanvasView::toggle_duck_mask_all));
+
+		//GtkBuilder show/hide toggles
+		toggle_action_group->add_action_bool("mask-none-ducks", sigc::mem_fun(*this,&CanvasView::toggle_duck_mask_all), false);
+#define DUCK_ACTIONS(name, duck_type)\
+		toggle_action_group->add_action_bool(name, sigc::bind(\
+			sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),\
+				Duck::TYPE_##duck_type), (bool)(work_area->get_type_mask()&Duck::TYPE_##duck_type))
+
+		DUCK_ACTIONS("mask-position-ducks", POSITION);
+		DUCK_ACTIONS("mask-vertex-ducks", VERTEX);
+		DUCK_ACTIONS("mask-tangent-ducks", TANGENT);
+#undef DUCK_ACTIONS
+		//end GtkBuilder show/hide toggles
 
 #define DUCK_MASK(lower,upper,string)												\
 		action=Gtk::ToggleAction::create("mask-" #lower "-ducks", string);			\

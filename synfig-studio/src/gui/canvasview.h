@@ -44,6 +44,8 @@
 
 #include <glibmm/dispatcher.h>
 
+#include <giomm/simpleactiongroup.h>
+
 #include <gtkmm/button.h>
 #include <gtkmm/grid.h>
 #include <gtkmm/menu.h>
@@ -386,6 +388,7 @@ private:
 	int ducks_locks;
 	bool ducks_rebuild_requested;
 	bool ducks_rebuild_queue_requested;
+	Glib::RefPtr<Gio::SimpleActionGroup> toggle_action_group;
 
 	/*
  -- ** -- P U B L I C   D A T A -----------------------------------------------
