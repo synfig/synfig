@@ -1563,6 +1563,8 @@ CanvasView::init_menus()
 	// Low-Res Quality Menu
 	auto menu_object = App::builder()->get_object("pixel-size");
 	auto lowres_menu = Glib::RefPtr<Gio::Menu>::cast_dynamic(menu_object);
+	if(!lowres_menu)
+		g_warning("Could not get low-res menu");
 	radio_action_group = Gio::SimpleActionGroup::create();
 	for(std::list<int>::iterator i = get_pixel_sizes().begin(); i != get_pixel_sizes().end(); ++i) {
 		Glib::RefPtr<Gtk::RadioAction> action = Gtk::RadioAction::create(
@@ -1578,11 +1580,21 @@ CanvasView::init_menus()
 			sigc::bind(sigc::mem_fun(*work_area, &WorkArea::set_low_res_pixel_size), *i) );
 
 		//TODO: RADIO ACTION GROUP NOT WORKING.
+		//need to create a helper function to change states on_radio_clicked...
 		//GtkBuilder simple action
-		lowres_menu->append( etl::strprintf(_("Set Low-Res pixel size to %d")), etl::strprintf("lowres-pixel-%d", *i) );
+		//lowres_menu->append_item( etl::strprintf(_("Set Low-Res pixel size to %d")), etl::strprintf("app.lowres-pixel-%d", *i) );
 		auto s_action = radio_action_group->add_action_radio_integer(etl::strprintf("lowres-pixel-%d", *i),
-			sigc::mem_fun(*work_area, &WorkArea::set_low_res_pixel_size), 
-			*i);
+			sigc::mem_fun(*work_area, &WorkArea::set_low_res_pixel_size), *i);
+		auto menu_item = Gio::MenuItem::create(etl::strprintf(_("Set Low-Res pixel size to %d")), "app."+s_action->get_name());
+		auto v = s_action->get_state_variant();
+		if ( !v )//need to unref v
+			g_warning("could not get variant type");
+		//need to add target to lowres_menu aka Gio::Menu :
+		//    "          <attribute name='target' type='i'>1</attribute>"
+		//is this the method to do that dynamically?
+		menu_item->set_action_and_target(s_action->get_name(), v);
+		lowres_menu->append_item( menu_item );
+		//Glib::variant_unref(v); how to unref v??
 		if (*i == 2) { // default pixel size
 			s_action->change_state(*i);
 			work_area->set_low_res_pixel_size(*i);
