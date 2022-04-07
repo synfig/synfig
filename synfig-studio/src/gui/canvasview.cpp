@@ -1689,16 +1689,27 @@ CanvasView::init_menus()
 		action_group->add(action,  sigc::mem_fun(*this,&CanvasView::toggle_duck_mask_all));
 
 		//GtkBuilder show/hide toggles
-		toggle_action_group->add_action_bool("mask-none-ducks", sigc::mem_fun(*this,&CanvasView::toggle_duck_mask_all), false);
+		auto s_action = toggle_action_group->add_action_bool("mask-none-ducks", sigc::mem_fun(*this,&CanvasView::toggle_duck_mask_all), false);
 #define DUCK_ACTIONS(name, duck_type)\
-		toggle_action_group->add_action_bool(name, sigc::bind(\
+		s_action = toggle_action_group->add_action_bool(name, sigc::bind(\
 			sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),\
 				Duck::TYPE_##duck_type), (bool)(work_area->get_type_mask()&Duck::TYPE_##duck_type))
 
 		DUCK_ACTIONS("mask-position-ducks", POSITION);
 		DUCK_ACTIONS("mask-vertex-ducks", VERTEX);
 		DUCK_ACTIONS("mask-tangent-ducks", TANGENT);
+		DUCK_ACTIONS("mask-radius-ducks", RADIUS);
+		DUCK_ACTIONS("mask-width-ducks", WIDTH);
+		DUCK_ACTIONS("mask-widthpoint-position-ducks", WIDTHPOINT_POSITION);
+		DUCK_ACTIONS("mask-angle-ducks", ANGLE);
+
+		//WHAT DOES THIS DO ?? 
+		//s_action_mask_bone_setup_ducks = s_action;
+		DUCK_ACTIONS("mask-bone-recursive-ducks", BONE_RECURSIVE);
+		s_action_mask_bone_recursive_ducks = s_action;
+
 #undef DUCK_ACTIONS
+		toggle_action_group->add_action("mask-bone-ducks", sigc::mem_fun(*this,&CanvasView::mask_bone_ducks));
 		//end GtkBuilder show/hide toggles
 
 #define DUCK_MASK(lower,upper,string)												\
@@ -3510,27 +3521,28 @@ CanvasView::toggle_duck_mask(Duckmatic::Type type)
 		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-angle-ducks"));
 		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_ANGLE));
 
-		//GtkBuilder Actions
-		auto toggle_action = App::instance()->lookup_action("mask-position-ducks");
-		auto duck_action = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(toggle_action);
-		if ( duck_action )
-			duck_action->change_state((bool)(work_area->get_type_mask()&Duck::TYPE_POSITION));
-		toggle_action = App::instance()->lookup_action("mask-vertex-ducks");
-		if ( duck_action = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(toggle_action) )
-			duck_action->change_state((bool)(work_area->get_type_mask()&Duck::TYPE_VERTEX));
-		toggle_action = App::instance()->lookup_action("mask-tangent-ducks");
-		if ( duck_action = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(toggle_action) )
-			duck_action->change_state((bool)(work_area->get_type_mask()&Duck::TYPE_TANGENT));
-	
-		toggle_action = App::instance()->lookup_action("mask-none-ducks");
-		if ( duck_action = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(toggle_action) ) {
+		//GtkBuilder toggle ducks actions
+#define TOGGLE_DUCKS(type, TYPE){ \
+			auto toggle_action = App::instance()->lookup_action("mask-"#type"-ducks"); \
+			if ( auto s_action = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(toggle_action) ) \
+				s_action->change_state((bool)(work_area->get_type_mask()&Duck::TYPE_##TYPE)); }
+		TOGGLE_DUCKS(position, POSITION)
+		TOGGLE_DUCKS(tangent, TANGENT)
+		TOGGLE_DUCKS(vertex, VERTEX)
+		TOGGLE_DUCKS(radius, RADIUS)
+		TOGGLE_DUCKS(width, WIDTH)
+		TOGGLE_DUCKS(angle, ANGLE)
+
+#undef	TOGGLE_DUCKS
+		auto toggle_action = App::instance()->lookup_action("mask-none-ducks");
+		if ( auto s_action = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(toggle_action) ) {
 			if ( type == Duck::TYPE_NONE){
 				bool isActive = false;
-				duck_action->get_state(isActive);
+				s_action->get_state(isActive);
 				isActive = !isActive;
-				duck_action->change_state(isActive);
+				s_action->change_state(isActive);
 			}else{
-				duck_action->change_state(false);
+				s_action->change_state(false);
 			}
 		}
 		
@@ -3572,9 +3584,15 @@ CanvasView::mask_bone_ducks()
 	{
 		action_mask_bone_setup_ducks->set_active(true);
 		action_mask_bone_recursive_ducks->set_active(false);
+		//WHAT DOES THIS DO ??
+		//s_action_mask_bone_setup_ducks->change_state(true);
+		s_action_mask_bone_recursive_ducks->change_state(false);
 	}
 	else
+	{
 		action_mask_bone_recursive_ducks->set_active(true);
+		s_action_mask_bone_recursive_ducks->change_state(true);
+	}
 }
 
 void

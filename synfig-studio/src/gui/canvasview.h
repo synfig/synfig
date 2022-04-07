@@ -384,6 +384,7 @@ private:
 	#endif
 
 	Glib::RefPtr<Gtk::ToggleAction> action_mask_bone_setup_ducks, action_mask_bone_recursive_ducks;
+	Glib::RefPtr<Gio::SimpleAction> s_action_mask_bone_setup_ducks, s_action_mask_bone_recursive_ducks;
 
 	int ducks_locks;
 	bool ducks_rebuild_requested;
