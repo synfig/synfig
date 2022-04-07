@@ -390,6 +390,7 @@ private:
 	bool ducks_rebuild_requested;
 	bool ducks_rebuild_queue_requested;
 	Glib::RefPtr<Gio::SimpleActionGroup> toggle_action_group;
+	Glib::RefPtr<Gio::SimpleActionGroup> radio_action_group;
 
 	/*
  -- ** -- P U B L I C   D A T A -----------------------------------------------

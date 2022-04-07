@@ -742,6 +742,7 @@ void CanvasView::activate()
 	App::instance()->enable_action_group(App::canvas_action_group(), _canvas_action_group_enabled);
 	//add toggle group
 	App::instance()->add_action_group(toggle_action_group);
+	App::instance()->add_action_group(radio_action_group);
 	update_title();
 	present();
 	grab_focus();
@@ -756,6 +757,7 @@ void CanvasView::deactivate()
 	App::instance()->enable_action_group(App::canvas_action_group(), _canvas_action_group_enabled);
 	//remove toggle action group
 	App::instance()->remove_action_group(toggle_action_group);
+	App::instance()->remove_action_group(radio_action_group);
 	update_title();
 }
 
@@ -1559,6 +1561,9 @@ CanvasView::init_menus()
     }
 
 	// Low-Res Quality Menu
+	auto menu_object = App::builder()->get_object("pixel-size");
+	auto lowres_menu = Glib::RefPtr<Gio::Menu>::cast_dynamic(menu_object);
+	radio_action_group = Gio::SimpleActionGroup::create();
 	for(std::list<int>::iterator i = get_pixel_sizes().begin(); i != get_pixel_sizes().end(); ++i) {
 		Glib::RefPtr<Gtk::RadioAction> action = Gtk::RadioAction::create(
 			low_res_pixel_size_group,
@@ -1571,6 +1576,17 @@ CanvasView::init_menus()
 		action_group->add(
 			action,
 			sigc::bind(sigc::mem_fun(*work_area, &WorkArea::set_low_res_pixel_size), *i) );
+
+		//TODO: RADIO ACTION GROUP NOT WORKING.
+		//GtkBuilder simple action
+		lowres_menu->append( etl::strprintf(_("Set Low-Res pixel size to %d")), etl::strprintf("lowres-pixel-%d", *i) );
+		auto s_action = radio_action_group->add_action_radio_integer(etl::strprintf("lowres-pixel-%d", *i),
+			sigc::mem_fun(*work_area, &WorkArea::set_low_res_pixel_size), 
+			*i);
+		if (*i == 2) { // default pixel size
+			s_action->change_state(*i);
+			work_area->set_low_res_pixel_size(*i);
+		}
 	}
 	action_group->add(
 		Gtk::Action::create("decrease-low-res-pixel-size", _("Decrease Low-Res Pixel Size")),
@@ -1691,9 +1707,9 @@ CanvasView::init_menus()
 		//GtkBuilder show/hide toggles
 		auto s_action = toggle_action_group->add_action_bool("mask-none-ducks", sigc::mem_fun(*this,&CanvasView::toggle_duck_mask_all), false);
 #define DUCK_ACTIONS(name, duck_type)\
-		s_action = toggle_action_group->add_action_bool(name, sigc::bind(\
-			sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),\
-				Duck::TYPE_##duck_type), (bool)(work_area->get_type_mask()&Duck::TYPE_##duck_type))
+		s_action = toggle_action_group->add_action_bool(name, \
+			sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),\
+					Duck::TYPE_##duck_type), (bool)(work_area->get_type_mask()&Duck::TYPE_##duck_type))
 
 		DUCK_ACTIONS("mask-position-ducks", POSITION);
 		DUCK_ACTIONS("mask-vertex-ducks", VERTEX);
@@ -1705,6 +1721,7 @@ CanvasView::init_menus()
 
 		//WHAT DOES THIS DO ?? 
 		//s_action_mask_bone_setup_ducks = s_action;
+
 		DUCK_ACTIONS("mask-bone-recursive-ducks", BONE_RECURSIVE);
 		s_action_mask_bone_recursive_ducks = s_action;
 
@@ -3534,15 +3551,31 @@ CanvasView::toggle_duck_mask(Duckmatic::Type type)
 		TOGGLE_DUCKS(angle, ANGLE)
 
 #undef	TOGGLE_DUCKS
-		auto toggle_action = App::instance()->lookup_action("mask-none-ducks");
-		if ( auto s_action = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(toggle_action) ) {
-			if ( type == Duck::TYPE_NONE){
+		if ( type == Duck::TYPE_WIDTHPOINT_POSITION ){
+			auto toggle_action = App::instance()->lookup_action("mask-widthpoint-position-ducks");
+			if( auto s_action = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(toggle_action )){
 				bool isActive = false;
 				s_action->get_state(isActive);
 				isActive = !isActive;
 				s_action->change_state(isActive);
-			}else{
-				s_action->change_state(false);
+			}
+		}
+		if ( type == Duck::TYPE_BONE_RECURSIVE ){
+			auto toggle_action = App::instance()->lookup_action("mask-bone-recursive-ducks");
+			if( auto s_action = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(toggle_action )){
+				bool isActive = false;
+				s_action->get_state(isActive);
+				isActive = !isActive;
+				s_action->change_state(isActive);
+			}
+		}
+		if ( type == Duck::TYPE_NONE ){
+			auto toggle_action = App::instance()->lookup_action("mask-none-ducks");
+			if ( auto s_action = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(toggle_action) ){
+				bool isActive = false;
+				s_action->get_state(isActive);
+				isActive = !isActive;
+				s_action->change_state(isActive);
 			}
 		}
 		
