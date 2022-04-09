@@ -390,7 +390,7 @@ private:
 	bool ducks_rebuild_requested;
 	bool ducks_rebuild_queue_requested;
 	Glib::RefPtr<Gio::SimpleActionGroup> toggle_action_group;
-	Glib::RefPtr<Gio::SimpleActionGroup> radio_action_group;
+	Glib::RefPtr<Gio::SimpleAction> pixel_radio_actions;
 
 	/*
  -- ** -- P U B L I C   D A T A -----------------------------------------------
@@ -705,6 +705,7 @@ protected:
 	void on_meta_data_changed();
 	bool on_key_press_event(GdkEventKey* event); //!< Keyboard event dispatcher following window priority
 	bool on_delete_event(GdkEventAny* event);
+	void on_set_low_res_pixel_size(int size);
 
 	Gtk::Widget* create_tab_label();
 	void toggle_past_keyframe_button();

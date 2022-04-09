@@ -267,8 +267,7 @@ void
 MainWindow::appmenu_toggle_show_menubar()
 {
 	bool isActive = false;
-	auto toggle_action = App::instance()->lookup_action("show-menubar");
-	if (auto action = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(toggle_action)) {
+	if (auto action = App::instance()->lookup_action("show-menubar") ) {
 		action->get_state(isActive);
 		isActive = !isActive;
 		action->change_state(isActive);
@@ -292,8 +291,7 @@ void
 MainWindow::appmenu_toggle_show_toolbar()
 {
 	bool isActive = false;
-	auto toggle_action = App::instance()->lookup_action("show-toolbar");
-	if (auto action = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(toggle_action)) {
+	if (auto action = App::instance()->lookup_action("show-toolbar") ) {
 		action->get_state(isActive);
 		isActive = !isActive;
 		action->change_state(isActive);
