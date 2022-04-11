@@ -1561,7 +1561,7 @@ CanvasView::init_menus()
 	// Low-Res Quality Menu
 	pixel_radio_actions = toggle_action_group->add_action_radio_integer("lowres-pixel",
 			sigc::mem_fun(*this, &CanvasView::on_set_low_res_pixel_size), get_pixel_sizes().front());
-
+/*
 	for(std::list<int>::iterator i = get_pixel_sizes().begin(); i != get_pixel_sizes().end(); ++i) {
 		Glib::RefPtr<Gtk::RadioAction> action = Gtk::RadioAction::create(
 			low_res_pixel_size_group,
@@ -1581,7 +1581,7 @@ CanvasView::init_menus()
 	action_group->add(
 		Gtk::Action::create("increase-low-res-pixel-size",  _("Increase Low-Res Pixel Size")),
 		sigc::mem_fun(this, &CanvasView::increase_low_res_pixel_size) );
-
+	*/
 
 	action_group->add(
 		Gtk::Action::create("play", Gtk::Stock::MEDIA_PLAY),
@@ -1599,18 +1599,26 @@ CanvasView::init_menus()
 		grid_show_toggle = Gtk::ToggleAction::create("toggle-grid-show", _("Show Grid"));
 		grid_show_toggle->set_active(work_area->grid_status());
 		action_group->add(grid_show_toggle, sigc::mem_fun(*this, &CanvasView::toggle_show_grid));
+		toggle_action_group->add_action_bool("show-grid",sigc::mem_fun(*this, &CanvasView::toggle_show_grid), 
+			work_area->grid_status());
 
 		grid_snap_toggle = Gtk::ToggleAction::create("toggle-grid-snap", _("Snap to Grid"));
 		grid_snap_toggle->set_active(work_area->get_grid_snap());
 		action_group->add(grid_snap_toggle, sigc::mem_fun(*this, &CanvasView::toggle_snap_grid));
+		toggle_action_group->add_action_bool("snap-grid",sigc::mem_fun(*this, &CanvasView::toggle_snap_grid), 
+			work_area->get_grid_snap());
 
 		guides_show_toggle = Gtk::ToggleAction::create("toggle-guide-show", _("Show Guides"));
 		guides_show_toggle->set_active(work_area->get_show_guides());
 		action_group->add(guides_show_toggle, sigc::mem_fun(*this, &CanvasView::toggle_show_guides));
+		toggle_action_group->add_action_bool("show-guides",sigc::mem_fun(*this, &CanvasView::toggle_show_guides), 
+			work_area->get_show_guides());
 
 		guides_snap_toggle = Gtk::ToggleAction::create("toggle-guide-snap", _("Snap to Guides"));
 		guides_snap_toggle->set_active(work_area->get_guide_snap());
 		action_group->add(guides_snap_toggle, sigc::mem_fun(*this, &CanvasView::toggle_snap_guides));
+		toggle_action_group->add_action_bool("snap-guides",sigc::mem_fun(*this, &CanvasView::toggle_snap_guides), 
+			work_area->get_guide_snap());
 
 		action = Gtk::ToggleAction::create("toggle-low-res", _("Use Low-Res"));
 		action->set_active(work_area->get_low_resolution_flag());
@@ -2692,9 +2700,12 @@ CanvasView::decrease_low_res_pixel_size()
 				work_area->set_low_resolution_flag(false);
 			} else {
 				--iter;
-				Glib::RefPtr<Gtk::Action> action = action_group->get_action(etl::strprintf("lowres-pixel-%d", *iter));
-				assert(action);
-				action->activate(); // to make sure the radiobutton in the menu is updated too
+				//Glib::RefPtr<Gtk::Action> action = action_group->get_action(etl::strprintf("lowres-pixel-%d", *iter));
+				auto radio_action = toggle_action_group->lookup_action("lowres-pixel");
+				//assert(action);
+				assert(radio_action);
+				//action->activate(); // to make sure the radiobutton in the menu is updated too
+				on_set_low_res_pixel_size(*iter);
 				work_area->set_low_resolution_flag(true);
 			}
 			break;
@@ -2731,9 +2742,12 @@ CanvasView::increase_low_res_pixel_size()
 	for (std::list<int>::iterator iter = sizes.begin(); iter != sizes.end(); iter++)
 		if (*iter == pixel_size) {
 			if (++iter != sizes.end()) {
-				Glib::RefPtr<Gtk::Action> action = action_group->get_action(etl::strprintf("lowres-pixel-%d", *iter));
-				assert(action);
-				action->activate(); // to make sure the radiobutton in the menu is updated too
+				//Glib::RefPtr<Gtk::Action> action = action_group->get_action(etl::strprintf("lowres-pixel-%d", *iter));
+				auto radio_action = toggle_action_group->lookup_action("lowres-pixel");
+				//ssert(action);
+				assert(radio_action);
+				//action->activate(); // to make sure the radiobutton in the menu is updated too
+				on_set_low_res_pixel_size(*iter);
 				work_area->set_low_resolution_flag(true);
 			}
 			break;
@@ -2782,6 +2796,13 @@ CanvasView::toggle_show_grid()
 	// Update the toggle grid show action
 	set_grid_show_toggle(work_area->grid_status());
 	// Update the toggle grid show check button
+	if( auto toggle_action = toggle_action_group->lookup_action("show-grid") )
+	{
+		bool isActive = false;
+		toggle_action->get_state(isActive);
+		isActive = !isActive;
+		toggle_action->change_state(isActive);
+	}
 	show_grid->set_active(work_area->grid_status());
 	toggling_show_grid=false;
 }
@@ -2796,6 +2817,13 @@ CanvasView::toggle_snap_grid()
 	// Update the toggle grid snap action
 	set_grid_snap_toggle(work_area->get_grid_snap());
 	// Update the toggle grid snap check button
+	if( auto toggle_action = toggle_action_group->lookup_action("snap-grid") )
+	{
+		bool isActive = false;
+		toggle_action->get_state(isActive);
+		isActive = !isActive;
+		toggle_action->change_state(isActive);
+	}
 	snap_grid->set_active(work_area->get_grid_snap());
 	toggling_snap_grid=false;
 }
@@ -2808,6 +2836,13 @@ CanvasView::toggle_show_guides()
 	toggling_show_guides=true;
 	work_area->toggle_show_guides();
 	set_guides_show_toggle(work_area->get_show_guides());
+	if( auto toggle_action = toggle_action_group->lookup_action("show-guides") )
+	{
+		bool isActive = false;
+		toggle_action->get_state(isActive);
+		isActive = !isActive;
+		toggle_action->change_state(isActive);
+	}
 	show_guides->set_active(work_area->get_show_guides());
 	toggling_show_guides=false;
 }
@@ -2820,6 +2855,13 @@ CanvasView::toggle_snap_guides()
 	toggling_snap_guides=true;
 	work_area->toggle_guide_snap();
 	set_guides_snap_toggle(work_area->get_guide_snap());
+	if( auto toggle_action = toggle_action_group->lookup_action("snap-guides") )
+	{
+		bool isActive = false;
+		toggle_action->get_state(isActive);
+		isActive = !isActive;
+		toggle_action->change_state(isActive);
+	}
 	snap_guides->set_active(work_area->get_guide_snap());
 	toggling_snap_guides=false;
 }

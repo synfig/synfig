@@ -471,8 +471,6 @@ private:
 	//! Rebuilds the "new layer" menu
 	void build_new_layer_menu(Gtk::Menu &menu);
 
-	void decrease_low_res_pixel_size();
-	void increase_low_res_pixel_size();
 	void toggle_low_res_pixel_flag();
 	void set_onion_skins();
 	void toggle_show_grid();
@@ -667,6 +665,8 @@ public:
 	void select_all_layers();
 	void unselect_all_layers();
 	void select_parent_layer();
+	void decrease_low_res_pixel_size();
+	void increase_low_res_pixel_size();
 
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------
