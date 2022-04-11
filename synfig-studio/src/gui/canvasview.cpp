@@ -2035,6 +2035,10 @@ static bool _close_instance(etl::handle<studio::Instance> instance)
 bool
 CanvasView::close_instance()
 {
+	//disable close action to prevent double click (with accelerator)
+	auto action = App::instance()->lookup_action("close-document");
+	if(auto s_action =  Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(action) )
+		s_action->set_enabled(false);
 	Glib::signal_timeout().connect(
 		sigc::bind(
 			sigc::ptr_fun(_close_instance),
