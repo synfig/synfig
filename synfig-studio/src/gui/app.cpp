@@ -3774,8 +3774,8 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
 
 	dialog.get_content_area()->pack_start(text_view);
 
-	dialog.add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
-	dialog.add_button(_("OK"),   Gtk::RESPONSE_OK)->set_image_from_icon_name("gtk-ok", Gtk::ICON_SIZE_BUTTON);
+	dialog.add_button(_("_Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
+	dialog.add_button(_("_OK"),   Gtk::RESPONSE_OK)->set_image_from_icon_name("gtk-ok", Gtk::ICON_SIZE_BUTTON);
 	dialog.set_default_response(Gtk::RESPONSE_OK);
 
 	text_view.signal_key_press_event().connect(( [&](GdkEventKey *ev) {
@@ -3785,7 +3785,7 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
 				(ev->keyval == (GDK_KEY_Return) || ev->keyval == (GDK_KEY_KP_Enter) ) &&
 				(ev->state == GDK_CONTROL_MASK) )
 			{
-			dialog.response(-5);
+			dialog.response(Gtk::RESPONSE_OK);
 			return true;
 			}
 			return false;
