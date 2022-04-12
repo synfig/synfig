@@ -452,9 +452,6 @@ public:
 
 	static bool dialog_paragraph(const std::string &title, const std::string &message,std::string &text);
 
-
-
-
 	static void dialog_not_implemented();
 
 	static void dialog_help();

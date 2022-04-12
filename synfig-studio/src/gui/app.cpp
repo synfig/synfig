@@ -3754,8 +3754,6 @@ App::dialog_sets_entry(const std::string &action, const std::string &content, st
 	return true;
 }
 
-
-
 bool
 App::dialog_paragraph(const std::string &title, const std::string &message,std::string &text)
 {
@@ -3780,29 +3778,28 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
 	dialog.add_button(_("OK"),   Gtk::RESPONSE_OK)->set_image_from_icon_name("gtk-ok", Gtk::ICON_SIZE_BUTTON);
     dialog.set_default_response(Gtk::RESPONSE_OK);
 
+	text_view.signal_key_press_event().connect(( [&](GdkEventKey *ev) {
 
-    text_view.signal_key_press_event().connect( [&](GdkEventKey *ev) {
-        SYNFIG_EXCEPTION_GUARD_BEGIN()
-          if (  (ev->type == GDK_KEY_PRESS) &&
-               (ev->keyval == (GDK_KEY_Return) || ev->keyval == (GDK_KEY_KP_Enter) || ev->keyval == (gdk_keyval_from_name("s")) ) &&
-               (ev->state == GDK_CONTROL_MASK) )  //pressing control and enter
-          {
-            dialog.response(-5);
-            return true;
-          }
+		SYNFIG_EXCEPTION_GUARD_BEGIN()
+		if (	(ev->type == GDK_KEY_PRESS) &&
+				(ev->keyval == (GDK_KEY_Return) || ev->keyval == (GDK_KEY_KP_Enter) ) &&
+				(ev->state == GDK_CONTROL_MASK) )
+			{
+			dialog.response(-5);
+			return true;
+			}
+			return false;
+		SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
+	}), false );
 
-            return false;
-          SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
-    } );
 
 	//text_entry.signal_activate().connect(sigc::bind(sigc::mem_fun(dialog,&Gtk::Dialog::response),Gtk::RESPONSE_OK));
 	dialog.show();
 
-
 	if(dialog.run()!=Gtk::RESPONSE_OK)
 		return false;
 
-    text=text_buffer->get_text();
+	text=text_buffer->get_text();
 
 	return true;
 }
