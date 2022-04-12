@@ -3790,6 +3790,7 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
 			}
 			return false;
 		SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
+
 	}), false );
 
 
