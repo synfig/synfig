@@ -1,3 +1,4 @@
+- [`368a50f`](https://github.com/synfig/synfig/commit/368a50f9f322bf0083067af9b4aaf113816b063b) Fix crash when switching workspaces ([#2591](https://github.com/synfig/synfig/issues/2591)) [studio]
 - [`e54c25d`](https://github.com/synfig/synfig/commit/e54c25dc051f6ad38f8ec2ed8ca95371be4a3cd4) Update contributor name list ([#2600](https://github.com/synfig/synfig/issues/2600)) [studio]
 - [`473af1c`](https://github.com/synfig/synfig/commit/473af1c1b1a3b990812825c7e01ea46ec3728fd9) improve output readability of unit tests with test_base.h ([#2583](https://github.com/synfig/synfig/issues/2583)) [core]
 - [`c42885f`](https://github.com/synfig/synfig/commit/c42885f91faebc63fa1a8b5149dcc3da7f6ff067) Added the ability to set the build type from the command line to the 2-build-msys-cmake.sh script ([#2573](https://github.com/synfig/synfig/issues/2573))
