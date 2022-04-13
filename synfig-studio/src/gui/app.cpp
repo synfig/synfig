@@ -926,6 +926,12 @@ init_menu_builder()
 	//View menu: ACTIONS
 	SET_CANVAS_ACTION("dec-lowres-pixel", App::get_selected_canvas_view()->decrease_low_res_pixel_size())
 	SET_CANVAS_ACTION("inc-lowres-pixel", App::get_selected_canvas_view()->increase_low_res_pixel_size())
+	SET_CANVAS_ACTION("zoom-in", App::get_selected_canvas_view()->get_work_area()->zoom_in())
+	SET_CANVAS_ACTION("zoom-out", App::get_selected_canvas_view()->get_work_area()->zoom_out())
+	SET_CANVAS_ACTION("zoom-fit", App::get_selected_canvas_view()->get_work_area()->zoom_fit())
+	SET_CANVAS_ACTION("zoom-norm", App::get_selected_canvas_view()->get_work_area()->zoom_norm())
+	SET_CANVAS_ACTION("time-zoom-in", App::get_selected_canvas_view()->time_zoom_in())
+	SET_CANVAS_ACTION("time-zoom-out", App::get_selected_canvas_view()->time_zoom_out())
 
 #undef SET_CANVAS_ACTION
 
@@ -1265,6 +1271,49 @@ init_menu_builder()
 	"						<attribute name='action'>app.onion-skin-keyframes</attribute>"
 	"					</item>"
 	"			</section>"
+	"			<section>"
+	"			<item>"
+	"				<attribute name='label' translatable='yes'>_Zoom In</attribute>"
+	"				<attribute name='action'>app.zoom-in</attribute>"
+	//TODO: '=' acclerator not working
+	"				<attribute name='accel'>=</attribute>"
+	"				<attribute name='icon'>zoom-in</attribute>"
+	"			</item>"
+	"			<item>"
+	"				<attribute name='label' translatable='yes'>_Zoom Out</attribute>"
+	"				<attribute name='action'>app.zoom-out</attribute>"
+	//TODO: '-' accelerator not working
+	"				<attribute name='accel'>-</attribute>"
+	"				<attribute name='icon'>zoom-out</attribute>"
+	"			</item>"
+	"			<item>"
+	"				<attribute name='label' translatable='yes'>_Best Fit</attribute>"
+	"				<attribute name='action'>app.zoom-fit</attribute>"
+	"				<attribute name='accel'>0</attribute>"
+	"				<attribute name='icon'>zoom-fit-best</attribute>"
+	"			</item>"
+	"			<item>"
+	"				<attribute name='label' translatable='yes'>_Normal Size</attribute>"
+	"				<attribute name='action'>app.zoom-norm</attribute>"
+	"				<attribute name='icon'>zoom-original</attribute>"
+	"			</item>"
+	"			</section>"
+	"		<section>"
+	"			<item>"
+	"				<attribute name='label' translatable='yes'>_Zoom In on Timeline</attribute>"
+	"				<attribute name='action'>app.time-zoom-in</attribute>"
+	//todo: accelerator not working
+	"				<attribute name='accel'>&lt;Control&gt;+</attribute>"
+	"				<attribute name='icon'>zoom-in</attribute>"
+	"			</item>"
+	"			<item>"
+	"				<attribute name='label' translatable='yes'>_Zoom Out on Timeline</attribute>"
+	"				<attribute name='action'>app.time-zoom-out</attribute>"
+	//todo: accelerator not working
+	//"				<attribute name='accel'>&lt;Control&;-</attribute>"
+	"				<attribute name='icon'>zoom-out</attribute>"
+	"			</item>"
+	"		</section>"
 	"	</submenu>"
 	"  </menu>"
     "</interface>";
@@ -1465,27 +1514,6 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 
 //Layout the actions in the main menu (caret menu, right click on canvas menu) and toolbar:
 	Glib::ustring ui_info_menu =
-//"	<menu action='menu-file'>"
-//"		<menuitem action='new' />"
-//"		<menuitem action='open' />"
-//"		<menu action='menu-open-recent' />"
-//"		<separator name='sep-file1'/>"
-//"		<menuitem action='save' />"
-//"		<menuitem action='save-as' />"
-//"		<menuitem action='save-all' />"
-//"		<menuitem action='export' />"
-//"		<menuitem action='revert' />"
-//"		<separator name='sep-file2'/>"
-//"		<menuitem action='import' />"
-//"		<menuitem action='import-sequence' />"
-//"		<separator name='sep-file4'/>"
-//"		<menuitem action='preview' />"
-//"		<menuitem action='render' />"
-//"		<separator name='sep-file5'/>"
-//"		<menuitem action='close-document' />"
-//"		<separator name='sep-file6'/>"
-//"		<menuitem action='quit' />"
-//"	</menu>"
 "	<menu action='menu-edit'>"
 "		<menuitem action='undo'/>"
 "		<menuitem action='redo'/>"
@@ -1493,17 +1521,6 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 "		<menuitem action='cut'/>"
 "		<menuitem action='copy'/>"
 "		<menuitem action='paste'/>"
-/*
-"		<separator name='sep-edit2'/>"
-"		<menuitem action='select-all-layers'/>"
-"		<menuitem action='unselect-all-layers'/>"
-"		<menuitem action='select-all-ducks'/>"
-"		<menuitem action='unselect-all-ducks'/>"
-"		<menuitem action='select-parent-layer'/>"
-"		<separator name='sep-edit3'/>"
-"		<menuitem action='input-devices' />"
-"		<menuitem action='setup' />"
-*/
 "	</menu>"
 "	<menu action='menu-view'>"
 "		<menuitem action='toggle-mainwin-menubar' />"

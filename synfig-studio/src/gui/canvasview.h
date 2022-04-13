@@ -230,13 +230,6 @@ public:
 												{ toggle_action->change_state(flag); } }
 	void set_grid_show_toggle(bool flag) { 	if( auto toggle_action = toggle_action_group->lookup_action("show-grid") )
 												{ toggle_action->change_state(flag); } }
-	/*
-	void set_guides_snap_toggle(bool flag) { guides_snap_toggle->set_active(flag); }
-	void set_guides_show_toggle(bool flag) { guides_show_toggle->set_active(flag); }
-	void set_onion_skin_toggle(bool flag) { onion_skin_toggle->set_active(flag); }
-	void set_onion_skin_keyframes_toggle(bool flag) { onion_skin_keyframes_toggle->set_active(flag); }
-	void set_background_rendering_toggle(bool flag) { background_rendering_toggle->set_active(flag); }
-	*/
 
 	void grab_focus();
 
@@ -390,7 +383,8 @@ private:
 	bool toggling_jack;
 	#endif
 
-	Glib::RefPtr<Gtk::ToggleAction> action_mask_bone_setup_ducks, action_mask_bone_recursive_ducks;
+	//what does action_mask_bone_setup_ducks do??
+	//Glib::RefPtr<Gtk::ToggleAction> action_mask_bone_setup_ducks, action_mask_bone_recursive_ducks;
 	Glib::RefPtr<Gio::SimpleAction> s_action_mask_bone_setup_ducks, s_action_mask_bone_recursive_ducks;
 
 	int ducks_locks;
