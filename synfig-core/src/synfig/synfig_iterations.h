@@ -58,7 +58,7 @@ typedef std::function<void(Layer::LooseHandle, const TraverseLayerStatus&)> Trav
 /// Search for layers listed/pointed by another (via Canvas-type parameters)
 /// Normally used for Layer_PasteCanvas, but another ones may have canvases
 ///
-/// \param layer The starting point to scannning
+/// \param layer The starting point to scanning
 /// \param callback A functor called at each layer found
 void traverse_layers(Layer::Handle layer, TraverseLayerCallback callback);
 

@@ -142,7 +142,7 @@ SETUP AND ANIMATED SKELETONS
 
 By using the ALT-7 keyboard combintation the user sees the setup or the
 non setup skeletons.
-When the user is creating the skeleton and is modifiying it in non
+When the user is creating the skeleton and is modifying it in non
 animation mode then the setuo and the non setup skeletons should be the
 same. In this way the workflow for this creation of the skeleton will be:
 
