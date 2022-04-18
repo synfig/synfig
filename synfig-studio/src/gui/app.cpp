@@ -932,6 +932,8 @@ init_menu_builder()
 	SET_CANVAS_ACTION("zoom-norm", App::get_selected_canvas_view()->get_work_area()->zoom_norm())
 	SET_CANVAS_ACTION("time-zoom-in", App::get_selected_canvas_view()->time_zoom_in())
 	SET_CANVAS_ACTION("time-zoom-out", App::get_selected_canvas_view()->time_zoom_out())
+	SET_CANVAS_ACTION("properties", App::get_selected_canvas_view()->canvas_properties.present())
+	SET_CANVAS_ACTION("options", App::get_selected_canvas_view()->canvas_options->present())
 
 #undef SET_CANVAS_ACTION
 
@@ -1314,6 +1316,28 @@ init_menu_builder()
 	"				<attribute name='icon'>zoom-out</attribute>"
 	"			</item>"
 	"		</section>"
+	"	</submenu>"
+	"	<submenu>"
+	"		<attribute name='label' translatable='yes'>_Canvas</attribute>"
+	"			<item>"
+	"				<attribute name='label' translatable='yes'>_Properties...</attribute>"
+	"				<attribute name='action'>app.properties</attribute>"
+	"				<attribute name='accel'>F8</attribute>"
+	"				<attribute name='icon'>document-properties</attribute>"
+	"			</item>"
+	"			<item>"
+	"				<attribute name='label' translatable='yes'>_Options...</attribute>"
+	"				<attribute name='action'>app.options</attribute>"
+	"				<attribute name='accel'>F12</attribute>"
+	"			</item>"
+	"	</submenu>"
+	"	<submenu>"
+	"		<attribute name='label' translatable='yes'>_Toolbox</attribute>"
+	"		<item>"
+	"			<attribute name='label' translatable='yes'>_Transform Tool</attribute>"
+	"			<attribute name='action'>app.state-normal</attribute>"
+	"			<attribute name='icon'>"+icon_path+"/tool_normal_icon.png</attribute>"
+	"		</item>"
 	"	</submenu>"
 	"  </menu>"
     "</interface>";

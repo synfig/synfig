@@ -1110,6 +1110,7 @@ void CanvasView::toggle_render_combobox()
 	App::setup_changed();
 }
 
+//TODO: this method needs to be updated to work with gtk::builder instead of gtk::ui_manager
 Gtk::Widget*
 CanvasView::create_top_toolbar()
 {
@@ -1120,6 +1121,7 @@ CanvasView::create_top_toolbar()
 	displaybar->set_toolbar_style(Gtk::TOOLBAR_BOTH_HORIZ);
 
 	// File buttons
+	//TODO: need to update these buttons to work without gtk::actions
 	if (App::show_file_toolbar) {
 		displaybar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/new")));
 		displaybar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/open")));
@@ -1483,6 +1485,7 @@ CanvasView::init_menus()
 		sigc::ptr_fun(save_all)
 	);
 
+	/*
 	action_group->add( Gtk::Action::create("render", Gtk::StockID("synfig-render_options"), _("Render...")),
 		sigc::mem_fun0(render_settings,&RenderSettings::present)
 	);
@@ -1492,6 +1495,7 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("options", _("Options...")),
 		sigc::mem_fun0(canvas_options,&CanvasOptions::present)
 	);
+	*/
 
 	action_group->add( Gtk::Action::create("pause", Gtk::StockID("synfig-animate_pause")),
 		sigc::mem_fun(*this, &CanvasView::stop_async)
@@ -1501,9 +1505,9 @@ CanvasView::init_menus()
 		SLOT_EVENT(EVENT_REFRESH)
 	);
 
-	action_group->add( Gtk::Action::create("properties", Gtk::StockID("gtk-properties"), _("Properties...")),
-		sigc::mem_fun0(canvas_properties,&CanvasProperties::present)
-	);
+	//action_group->add( Gtk::Action::create("properties", Gtk::StockID("gtk-properties"), _("Properties...")),
+	//	sigc::mem_fun0(canvas_properties,&CanvasProperties::present)
+	//);
 
     auto instance = get_instance().get();
 	for ( const auto& plugin : App::plugin_manager.plugins() )

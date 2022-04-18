@@ -341,16 +341,6 @@ private:
 	Gtk::UIManager::ui_merge_id merge_id_popup_;
 	Gtk::UIManager::ui_merge_id merge_id_toolbar_;
 
-	/*
-	Glib::RefPtr<Gtk::ToggleAction> grid_snap_toggle;
-	Glib::RefPtr<Gtk::ToggleAction> grid_show_toggle;
-	Glib::RefPtr<Gtk::ToggleAction> guides_snap_toggle;
-	Glib::RefPtr<Gtk::ToggleAction> guides_show_toggle;
-	Glib::RefPtr<Gtk::ToggleAction> onion_skin_toggle;
-	Glib::RefPtr<Gtk::ToggleAction> onion_skin_keyframes_toggle;
-	Glib::RefPtr<Gtk::ToggleAction> background_rendering_toggle;
-	*/
-
 	Gtk::RadioButtonGroup low_res_pixel_size_group;
 
 	Glib::RefPtr<Gtk::ActionGroup> action_group;

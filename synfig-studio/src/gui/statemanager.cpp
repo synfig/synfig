@@ -39,6 +39,8 @@
 #include <gtkmm/actiongroup.h>
 #include <gtkmm/stock.h>
 
+#include <giomm/simpleaction.h>
+
 #include <gui/app.h>
 #include <gui/docks/dock_toolbox.h>
 
@@ -82,7 +84,6 @@ void
 StateManager::add_state(const Smach::state_base *state)
 {
 	String name(state->get_name());
-
 	Gtk::StockItem stock_item;
 	Gtk::Stock::lookup(Gtk::StockID("synfig-"+name),stock_item);
 
@@ -113,6 +114,13 @@ StateManager::add_state(const Smach::state_base *state)
 	App::ui_manager()->ensure_update();
 
 	App::dock_toolbox->add_state(state);
+
+	//Gtk Builder and Gio SimpleAction
+	App::instance()->add_action("state-"+name,
+		sigc::bind(
+			sigc::mem_fun(*this,&studio::StateManager::change_state_),
+				state)
+	);
 }
 
 Glib::RefPtr<Gtk::ActionGroup>
