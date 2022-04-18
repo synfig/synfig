@@ -103,7 +103,7 @@ class studio::StateBone_Context : public sigc::trackable
 	// Toolbox settings
 	synfigapp::Settings& settings;
 
-	// holder of optons
+	// holder of options
 	Gtk::Grid options_table;
 
 	// title

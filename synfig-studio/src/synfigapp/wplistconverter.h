@@ -54,9 +54,9 @@ private:
 	std::vector<synfig::Real> widths;
 	//! The processed result of the widthpoints
 	std::vector<synfig::WidthPoint> work_out;
-	//! Calculated cummulated distances to origin
+	//! Calculated cumulated distances to origin
 	std::vector<synfig::Real> distances;
-	//! Calculated cummulated distances to origin normalized
+	//! Calculated cumulated distances to origin normalized
 	std::vector<synfig::Real> norm_distances;
 	//! The error value at each position: ek[k]=w[k]-wp_out.width[k]
 	std::vector<synfig::Real> ek;

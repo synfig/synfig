@@ -356,7 +356,7 @@ protected:
 *
 * 	This Value Node is calculated based on a math calculation or a time
 * 	evaluation of the linked Value Nodes. It is commonly known as
-* 	Converted Value Nodes. The derived clases defines the behavior.
+* 	Converted Value Nodes. The derived classes defines the behavior.
 */
 class LinkableValueNode : public ValueNode
 {
