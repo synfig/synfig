@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file vector.h
-**	\brief Various discreet type definitions
+**	\brief Various discrete type definitions
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
