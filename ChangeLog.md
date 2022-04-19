@@ -1,3 +1,7 @@
+## Version 1.4.3 [ETL] [core] [studio]
+- [`ead44ed`](https://github.com/morevnaproject/morevna-builds/commit/ead44ed5a5e8ac6fb20815b3cc37a452c0953acf) Fix issue [#2410](https://github.com/synfig/synfig/issues/2410) - Can't import file into a saved SIF animation (if both are on the same disk) [studio]
+
+
 ## Version 1.4.2 [ETL] [core] [studio]
 - [`b7305a9`](https://github.com/synfig/synfig/commit/b7305a9a3893caefffc1c36118e67f2f0610a1d5) Merge pull request [#1173](https://github.com/synfig/synfig/issues/1173) from rodolforg/fix-sound-dock-scroll
 - [`ba211ba`](https://github.com/synfig/synfig/commit/ba211bafbe5963bc863ad4e99d38e73a3d96fe92) remove some unneeded headers ([#1963](https://github.com/synfig/synfig/issues/1963)) [studio]

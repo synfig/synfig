@@ -1,3 +1,4 @@
+- [`05f5108`](https://github.com/synfig/synfig/commit/05f51084218d75c4317a7c9533dcc0a756b052b7) Fix various typos ([#2614](https://github.com/synfig/synfig/issues/2614)) [core] [studio]
 - [`368a50f`](https://github.com/synfig/synfig/commit/368a50f9f322bf0083067af9b4aaf113816b063b) Fix crash when switching workspaces ([#2591](https://github.com/synfig/synfig/issues/2591)) [studio]
 - [`e54c25d`](https://github.com/synfig/synfig/commit/e54c25dc051f6ad38f8ec2ed8ca95371be4a3cd4) Update contributor name list ([#2600](https://github.com/synfig/synfig/issues/2600)) [studio]
 - [`473af1c`](https://github.com/synfig/synfig/commit/473af1c1b1a3b990812825c7e01ea46ec3728fd9) improve output readability of unit tests with test_base.h ([#2583](https://github.com/synfig/synfig/issues/2583)) [core]
