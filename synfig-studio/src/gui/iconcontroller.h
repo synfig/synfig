@@ -32,6 +32,7 @@
 
 #include <gdkmm/cursor.h>
 #include <gtkmm/iconfactory.h>
+#include <gtkmm/icontheme.h>
 
 #include <synfig/interpolation.h>
 #include <synfig/type.h>
@@ -52,6 +53,7 @@ namespace studio {
 class IconController
 {
 	Glib::RefPtr<Gtk::IconFactory> icon_factory;
+	Glib::RefPtr<Gtk::IconTheme> icon_theme;
 	void init_icon(const synfig::String &name, const synfig::String &iconfile, const synfig::String& desc);
 
 public:

@@ -1418,12 +1418,6 @@ init_menu_builder()
 	"			<attribute name='accel'>U</attribute>"
 	"		</item>"
 	"		<item>"
-	"			<attribute name='label' translatable='yes'>_Fill Tool</attribute>"
-	"			<attribute name='action'>app.state-fill</attribute>"
-	"			<attribute name='icon'>"+icon_path+"/tool_fill_icon.png</attribute>"
-	"			<attribute name='accel'>U</attribute>"
-	"		</item>"
-	"		<item>"
 	"			<attribute name='label' translatable='yes'>_Eyedrop Tool</attribute>"
 	"			<attribute name='action'>app.state-eyedrop</attribute>"
 	"			<attribute name='icon'>"+icon_path+"/tool_eyedrop_icon.png</attribute>"
@@ -1434,12 +1428,6 @@ init_menu_builder()
 	"			<attribute name='action'>app.state-bone</attribute>"
 	"			<attribute name='icon'>"+icon_path+"/tool_skeleton_icon.png</attribute>"
 	"			<attribute name='accel'>D</attribute>"
-	"		</item>"
-	"		<item>"
-	"			<attribute name='label' translatable='yes'>_Skeleton Tool</attribute>"
-	"			<attribute name='action'>app.state-bone</attribute>"
-	"			<attribute name='icon'>"+icon_path+"/tool_skeleton_icon.png</attribute>"
-	"			<attribute name='accel'>N</attribute>"
 	"		</item>"
 	"		<item>"
 	"			<attribute name='label' translatable='yes'>_Text Tool</attribute>"
@@ -1459,6 +1447,42 @@ init_menu_builder()
 	"			<attribute name='icon'>"+icon_path+"/tool_zoom_icon.png</attribute>"
 	"			<attribute name='accel'>Z</attribute>"
 	"		</item>"
+	"	</submenu>"
+	"	<submenu id='menu-layer'>"
+	"	<attribute name='label' translatable='yes'>_Layer</attribute>"
+	"		<submenu id='Blurs'>"
+	"		<attribute name='label' translatable='yes'>_Blurs</attribute>"
+	"		</submenu>"
+	"		<submenu id='Distortions'>"
+	"		<attribute name='label' translatable='yes'>_Distortions</attribute>"
+	"		</submenu>"
+	"		<submenu id='Example'>"
+	"		<attribute name='label' translatable='yes'>_Example</attribute>"
+	"		</submenu>"
+	"		<submenu id='Filters'>"
+	"		<attribute name='label' translatable='yes'>_Filters</attribute>"
+	"		</submenu>"
+	"		<submenu id='Fractals'>"
+	"		<attribute name='label' translatable='yes'>_Fractals</attribute>"
+	"		</submenu>"
+	"		<submenu id='Geometry'>"
+	"		<attribute name='label' translatable='yes'>_Geometry</attribute>"
+	"		</submenu>"
+	"		<submenu id='Gradients'>"
+	"		<attribute name='label' translatable='yes'>_Gradients</attribute>"
+	"		</submenu>"
+	"		<submenu id='Other'>"
+	"		<attribute name='label' translatable='yes'>_Other</attribute>"
+	"		</submenu>"
+	"		<submenu id='Stylize'>"
+	"		<attribute name='label' translatable='yes'>_Stylize</attribute>"
+	"		</submenu>"
+	"		<submenu id='Time'>"
+	"		<attribute name='label' translatable='yes'>_Time</attribute>"
+	"		</submenu>"
+	"		<submenu id='Transform'>"
+	"		<attribute name='label' translatable='yes'>_Transform</attribute>"
+	"		</submenu>"
 	"	</submenu>"
 	"  </menu>"
     "</interface>";
@@ -1484,16 +1508,16 @@ init_ui_manager()
 
 	Glib::RefPtr<Gtk::ActionGroup> actions_action_group = Gtk::ActionGroup::create("actions");
 
-	menus_action_group->add( Gtk::Action::create("menu-file",            _("_File")));
+	//menus_action_group->add( Gtk::Action::create("menu-file",            _("_File")));
 	//menus_action_group->add( Gtk::Action::create("menu-open-recent",     _("Open Recent")));
 
-	menus_action_group->add( Gtk::Action::create("menu-edit",            _("_Edit")));
+	//menus_action_group->add( Gtk::Action::create("menu-edit",            _("_Edit")));
 
 	menus_action_group->add( Gtk::Action::create("menu-view",            _("_View")));
-	menus_action_group->add( Gtk::Action::create("menu-duck-mask",       _("Show/Hide Handles")));
-	menus_action_group->add( Gtk::Action::create("menu-lowres-pixel",    _("Low-Res Pixel Size")));
+	//menus_action_group->add( Gtk::Action::create("menu-duck-mask",       _("Show/Hide Handles")));
+	//menus_action_group->add( Gtk::Action::create("menu-lowres-pixel",    _("Low-Res Pixel Size")));
 
-	menus_action_group->add( Gtk::Action::create("menu-canvas",          _("_Canvas")));
+	//menus_action_group->add( Gtk::Action::create("menu-canvas",          _("_Canvas")));
 
 	menus_action_group->add( Gtk::Action::create("menu-layer",           _("_Layer")));
 	menus_action_group->add( Gtk::Action::create("menu-layer-new",       _("New Layer")));
@@ -1748,8 +1772,8 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 	Glib::ustring ui_info =
 "<ui>"
 "   <popup name='menu-toolbox' action='menu-toolbox'>"
-"	<menu action='menu-file'>"
-"	</menu>"
+//"	<menu action='menu-file'>"
+//"	</menu>"
 "	</popup>"
 "	<popup name='menu-main' action='menu-main'>" + ui_info_menu + "</popup>"
 "	<menubar name='menubar-main' action='menubar-main'>" + ui_info_menu + "</menubar>"

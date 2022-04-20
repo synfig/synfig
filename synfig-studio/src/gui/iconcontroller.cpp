@@ -46,6 +46,7 @@
 #include <synfig/general.h>
 #include <synfig/valuenodes/valuenode_const.h>
 #include <synfigapp/action.h>
+#include <gui/resourcehelper.h>
 
 #endif
 
@@ -71,6 +72,14 @@ static Glib::RefPtr<Gdk::Pixbuf> _tree_pixbuf_table_interpolation[NUM_INTERPOLAT
 IconController::IconController()
 {
 	icon_factory=Gtk::IconFactory::create();
+	icon_theme = Gtk::IconTheme::create();
+	icon_theme->append_search_path(ResourceHelper::get_icon_path());
+	auto icon = icon_theme->lookup_icon("action_doc_saveas_icon", 128);
+	if (icon) {
+		std::cout << "Found " << icon.get_filename() << "\n";
+	} else {
+		std::cout << "Not found\n";
+	}
 }
 
 IconController::~IconController()

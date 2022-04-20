@@ -98,6 +98,28 @@ Dock_Layers::Dock_Layers():
 			)
 		);
 
+	//Gtk::Builder
+		App::instance()->add_action(strprintf("layer-new-%s",lyr.first.c_str()),
+			sigc::hide_return(
+				sigc::bind(
+					sigc::mem_fun(*this,&studio::Dock_Layers::add_layer),
+					lyr.first
+				)
+			)
+		);
+		auto menu_object = App::builder()->get_object(lyr.second.category);
+		auto layer_submenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(menu_object);
+		auto menu_item = Gio::MenuItem::create(_(lyr.first.c_str()), strprintf("app.layer-new-%s",lyr.first.c_str()));
+		if(!layer_submenu){
+			g_warning("could not get layer submenu!");
+		}else{
+			//TODO: Set Icon to menu item
+			//menu_item->set_icon (const Glib::RefPtr< Icon >& icon)
+			layer_submenu->append_item(menu_item);
+		}
+		std::cout<<lyr.first.c_str()<<std::endl;
+		std::cout<<lyr.second.category<<std::endl;
+		std::cout<<std::endl;
 		category_map[lyr.second.category]+=strprintf("<menuitem action='layer-new-%s' />",lyr.first.c_str());
 
 		//(*category_map)[lyr.second.category]->items().push_back(Gtk::Menu_Helpers::MenuElem(lyr.second.local_name,
