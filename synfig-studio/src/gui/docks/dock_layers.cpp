@@ -111,7 +111,8 @@ Dock_Layers::Dock_Layers():
 		);
 		auto menu_object = App::builder()->get_object(lyr.second.category);
 		auto layer_submenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(menu_object);
-		auto menu_item = Gio::MenuItem::create(_(lyr.first.c_str()), strprintf("app.layer-new-%s",lyr.first.c_str()));
+		auto menu_item = Gio::MenuItem::create(_(layer_name(lyr.first).c_str()),
+			strprintf("app.layer-new-%s",lyr.first.c_str()));
 		if(!layer_submenu){
 			g_warning("could not get layer submenu!");
 		}else{
