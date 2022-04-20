@@ -233,6 +233,49 @@ void Dock_Timetrack2::setup_tool_palette()
 		action_button_map[tool_button->get_name()] = tool_button;
 		tool_item_group->add(*tool_button);
 	}
+    Gtk::RadioButtonGroup interpolation_group;
+    //button1
+    Gtk::RadioToolButton *clamped_button = manage(new Gtk::RadioToolButton(
+                                                    *manage(new Gtk::Image(
+                                                                Gtk::StockID("synfig-interpolation_type_clamped"),
+                                                                Gtk::IconSize::from_name("synfig-small_icon_16x16") )),
+                                                                "_Clamped" ));
+    clamped_button->set_group(interpolation_group);
+    tool_item_group->add(*clamped_button);
+    //button2
+    Gtk::RadioToolButton *tcb_button = manage(new Gtk::RadioToolButton(
+                                                    *manage(new Gtk::Image(
+                                                                Gtk::StockID("synfig-interpolation_type_tcb"),
+                                                                Gtk::IconSize::from_name("synfig-small_icon_16x16") )),
+                                                                "_Clamped" ));
+    tcb_button->set_group(interpolation_group);
+    tool_item_group->add(*tcb_button);
+    //button3
+    Gtk::RadioToolButton *const_button = manage(new Gtk::RadioToolButton(
+                                                    *manage(new Gtk::Image(
+                                                                Gtk::StockID("synfig-interpolation_type_const"),
+                                                                Gtk::IconSize::from_name("synfig-small_icon_16x16") )),
+                                                                "_Clamped" ));
+    const_button->set_group(interpolation_group);
+    tool_item_group->add(*const_button);
+    //button4
+    Gtk::RadioToolButton *ease_button = manage(new Gtk::RadioToolButton(
+                                                    *manage(new Gtk::Image(
+                                                                Gtk::StockID("synfig-interpolation_type_ease"),
+                                                                Gtk::IconSize::from_name("synfig-small_icon_16x16") )),
+                                                                "_Clamped" ));
+    ease_button->set_group(interpolation_group);
+    tool_item_group->add(*ease_button);
+    //button5
+    Gtk::RadioToolButton *linear_button = manage(new Gtk::RadioToolButton(
+                                                    *manage(new Gtk::Image(
+                                                                Gtk::StockID("synfig-interpolation_type_linear"),
+                                                                Gtk::IconSize::from_name("synfig-small_icon_16x16") )),
+                                                                "_Clamped" ));
+    linear_button->set_group(interpolation_group);
+    tool_item_group->add(*linear_button);
+
+   // Gtk::RadioToolButton::RadioToolButton(Gtk::RadioToolButton::Group&, const Gtk::StockID&)
 	tool_palette.add(*tool_item_group);
 	tool_palette.set_sensitive(true);
 }
