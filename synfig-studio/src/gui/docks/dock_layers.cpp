@@ -37,6 +37,7 @@
 
 #include <glibmm/markup.h>
 #include <gtkmm/stylecontext.h>
+#include <giomm/icon.h>
 
 #include <gui/actionmanagers/layeractionmanager.h>
 #include <gui/app.h>
@@ -45,6 +46,7 @@
 #include <gui/localization.h>
 #include <gui/trees/layertreestore.h>
 #include <gui/trees/layertree.h>
+#include <gui/resourcehelper.h>
 
 #endif
 
@@ -98,7 +100,7 @@ Dock_Layers::Dock_Layers():
 			)
 		);
 
-	//Gtk::Builder
+		//Gtk::Builder
 		App::instance()->add_action(strprintf("layer-new-%s",lyr.first.c_str()),
 			sigc::hide_return(
 				sigc::bind(
@@ -113,13 +115,14 @@ Dock_Layers::Dock_Layers():
 		if(!layer_submenu){
 			g_warning("could not get layer submenu!");
 		}else{
-			//TODO: Set Icon to menu item
-			//menu_item->set_icon (const Glib::RefPtr< Icon >& icon)
+
+			std::string icon_name(ResourceHelper::get_icon_path()+"/"+layer_icon_name(lyr.first.c_str()));
+			auto icon = Gio::Icon::create(icon_name);
+			menu_item->set_icon (icon);
 			layer_submenu->append_item(menu_item);
 		}
-		std::cout<<lyr.first.c_str()<<std::endl;
-		std::cout<<lyr.second.category<<std::endl;
-		std::cout<<std::endl;
+		//end Gtk::Builder
+
 		category_map[lyr.second.category]+=strprintf("<menuitem action='layer-new-%s' />",lyr.first.c_str());
 
 		//(*category_map)[lyr.second.category]->items().push_back(Gtk::Menu_Helpers::MenuElem(lyr.second.local_name,

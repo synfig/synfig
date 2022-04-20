@@ -1450,6 +1450,8 @@ init_menu_builder()
 	"	</submenu>"
 	"	<submenu id='menu-layer'>"
 	"	<attribute name='label' translatable='yes'>_Layer</attribute>"
+	"	<submenu>"
+		"	<attribute name='label' translatable='yes'>_New Layer</attribute>"
 	"		<submenu id='Blurs'>"
 	"		<attribute name='label' translatable='yes'>_Blurs</attribute>"
 	"		</submenu>"
@@ -1483,6 +1485,7 @@ init_menu_builder()
 	"		<submenu id='Transform'>"
 	"		<attribute name='label' translatable='yes'>_Transform</attribute>"
 	"		</submenu>"
+	"	</submenu>"
 	"	</submenu>"
 	"  </menu>"
     "</interface>";

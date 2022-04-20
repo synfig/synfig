@@ -66,6 +66,7 @@ public:
 };
 
 Gtk::StockID layer_icon(const synfig::String &layer);
+std::string layer_icon_name(const synfig::String &layer);
 Glib::RefPtr<Gdk::Pixbuf> get_tree_pixbuf_layer(const synfig::String &layer);
 
 Gtk::StockID value_icon(synfig::Type &type);
