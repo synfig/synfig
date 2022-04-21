@@ -53,7 +53,6 @@ namespace studio {
 class IconController
 {
 	Glib::RefPtr<Gtk::IconFactory> icon_factory;
-	Glib::RefPtr<Gtk::IconTheme> icon_theme;
 	void init_icon(const synfig::String &name, const synfig::String &iconfile, const synfig::String& desc);
 
 public:
@@ -75,6 +74,7 @@ Gtk::StockID valuenode_icon(etl::handle<synfig::ValueNode> value_node);
 Glib::RefPtr<Gdk::Pixbuf> get_tree_pixbuf(synfig::Type &type);
 Glib::RefPtr<Gdk::Pixbuf> get_interpolation_pixbuf(synfig::Interpolation itype);
 Gtk::StockID get_action_stock_id(const synfigapp::Action::BookEntry& action);
+std::string get_action_icon_name(const synfigapp::Action::BookEntry& action);
 
 }; // END of namespace studio
 

@@ -179,6 +179,7 @@ private:
 	static Glib::RefPtr<UIManager>	ui_manager_;
 	static  Glib::RefPtr<Builder> builder_;
 	static Glib::RefPtr<Gio::SimpleActionGroup> canvas_action_group_;
+	static 	Glib::RefPtr<Gtk::IconTheme> icon_theme_;
 
 	static int jack_locks_;
 
@@ -337,6 +338,7 @@ public:
 	static Glib::RefPtr<UIManager>& ui_manager() { return ui_manager_; }
 	static Glib::RefPtr<Builder>& builder() { return builder_; }
 	static Glib::RefPtr<Gio::SimpleActionGroup>& canvas_action_group() { return canvas_action_group_; }
+	static Glib::RefPtr<Gtk::IconTheme>&  icon_theme() { return icon_theme_; }
 
 	static void enable_action_group(Glib::RefPtr<Gio::SimpleActionGroup>& group, bool isEnabled);
 	static void add_action_group(Glib::RefPtr<Gio::SimpleActionGroup>& group);

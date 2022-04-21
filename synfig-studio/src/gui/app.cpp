@@ -231,6 +231,7 @@ bool App::shutdown_in_progress;
 Glib::RefPtr<studio::UIManager>	App::ui_manager_;
 Glib::RefPtr<studio::Builder> App::builder_;
 Glib::RefPtr<Gio::SimpleActionGroup> App::canvas_action_group_;
+Glib::RefPtr<Gtk::IconTheme> App::icon_theme_;
 
 int        App::jack_locks_ = 0;
 synfig::Distance::System  App::distance_system;
@@ -938,7 +939,6 @@ init_menu_builder()
 #undef SET_CANVAS_ACTION
 
 	std::string icon_path = ResourceHelper::get_icon_path();
-
 	//menbuar XML string
 	Glib::ustring ui_info =
 	"<interface>"
@@ -1450,6 +1450,7 @@ init_menu_builder()
 	"	</submenu>"
 	"	<submenu id='menu-layer'>"
 	"	<attribute name='label' translatable='yes'>_Layer</attribute>"
+	"	<section>"
 	"	<submenu>"
 		"	<attribute name='label' translatable='yes'>_New Layer</attribute>"
 	"		<submenu id='Blurs'>"
@@ -1486,6 +1487,9 @@ init_menu_builder()
 	"		<attribute name='label' translatable='yes'>_Transform</attribute>"
 	"		</submenu>"
 	"	</submenu>"
+	"	</section>"
+	"	<section id='instance-layers'>"
+	"	</section>"
 	"	</submenu>"
 	"  </menu>"
     "</interface>";
@@ -1624,10 +1628,6 @@ DEFINE_ACTION("seek-end",           _("Seek to End"))
 DEFINE_ACTION("canvas-zoom-in-2",   Gtk::StockID("gtk-zoom-in"))
 DEFINE_ACTION("canvas-zoom-out-2",  Gtk::StockID("gtk-zoom-out"))
 DEFINE_ACTION("canvas-zoom-fit-2",  Gtk::StockID("gtk-zoom-fit"))
-
-// actions in Canvas menu
-DEFINE_ACTION("properties", _("Properties..."))
-DEFINE_ACTION("options",    _("Options..."))
 
 // actions in Layer menu
 DEFINE_ACTION("amount-inc", _("Increase Layer Amount"))
@@ -1821,6 +1821,7 @@ App::get_default_accel_map()
 	// Add default keyboard accelerators
 	static const std::map<const char*, const char*> default_accel_map = {
 		// Toolbox
+		/*
 		{"s",             "<Actions>/action_group_state_manager/state-normal"},
 		{"m",             "<Actions>/action_group_state_manager/state-smooth_move"},
 		{"l",             "<Actions>/action_group_state_manager/state-scale"},
@@ -1841,17 +1842,17 @@ App::get_default_accel_map()
 		{"p",             "<Actions>/action_group_state_manager/state-draw"},
 		{"k",             "<Actions>/action_group_state_manager/state-sketch"},
 		{"w",             "<Actions>/action_group_state_manager/state-width"},
-
+*/
 		// Everything else
+		/*
 		{"<Control>a",              "<Actions>/canvasview/select-all-ducks"},
 		{"<Control>d",              "<Actions>/canvasview/unselect-all-ducks"},
 		{"<Control><Shift>a",       "<Actions>/canvasview/select-all-layers"},
 		{"<Control><Shift>d",       "<Actions>/canvasview/unselect-all-layers"},
 		{"<Mod1>Page_Up",           "<Actions>/canvasview/select-parent-layer"},
+		*/
 		{"F9",                      "<Actions>/canvasview/render"},
 		{"F11",                     "<Actions>/canvasview/preview"},
-		{"F8",                      "<Actions>/canvasview/properties"},
-		{"F12",                     "<Actions>/canvasview/options"},
 		{"<control>i",              "<Actions>/canvasview/import"},
 		{"numbersign",              "<Actions>/canvasview/toggle-grid-show"},
 		{"<Control>l",              "<Actions>/canvasview/toggle-grid-snap"},
@@ -2075,9 +2076,14 @@ void App::init(const synfig::String& rootpath)
 		plugin_manager.load_dir(path_to_plugins);
 		plugin_manager.load_dir(path_to_user_plugins);
 
+		studio_init_cb.task(_("Init IconTheme..."));
+		App::icon_theme_=Gtk::IconTheme::create();
+		App::icon_theme()->append_search_path(ResourceHelper::get_icon_path());
+
 		studio_init_cb.task(_("Init UI Manager..."));
 		App::ui_manager_=studio::UIManager::create();
 		init_ui_manager();
+		
 		studio_init_cb.task(_("Init Builder..."));
 		App::canvas_action_group_ = Gio::SimpleActionGroup::create();
 		App::builder_ = studio::Builder::create();

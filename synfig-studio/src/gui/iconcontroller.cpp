@@ -72,14 +72,6 @@ static Glib::RefPtr<Gdk::Pixbuf> _tree_pixbuf_table_interpolation[NUM_INTERPOLAT
 IconController::IconController()
 {
 	icon_factory=Gtk::IconFactory::create();
-	icon_theme = Gtk::IconTheme::create();
-	icon_theme->append_search_path(ResourceHelper::get_icon_path());
-	auto icon = icon_theme->lookup_icon("action_doc_saveas_icon", 128);
-	if (icon) {
-		std::cout << "Found " << icon.get_filename() << "\n";
-	} else {
-		std::cout << "Not found\n";
-	}
 }
 
 IconController::~IconController()
@@ -612,120 +604,145 @@ studio::layer_icon_name(const synfig::String &layer)
 {
 	// Blur Layers
 	if(layer=="blur")
-		return "layer_blur_blur_icon.png";
+		return "layer_blur_blur_icon";
 	else if(layer=="MotionBlur") // in the future should be "motion_blur"
-		return "layer_blur_motion_icon.png";
+		return "layer_blur_motion_icon";
 	else if(layer=="radial_blur")
-		return "layer_blur_radial_icon.png";
+		return "layer_blur_radial_icon";
 	// Distortion Layers
 	else if(layer=="curve_warp")
-		return "layer_distortion_curvewarp_icon.png";
+		return "layer_distortion_curvewarp_icon";
 	else if(layer=="inside_out")
-		return "layer_distortion_insideout_icon.png";
+		return "layer_distortion_insideout_icon";
 	else if(layer=="noise_distort")
-		return "layer_distortion_noise_icon.png";
+		return "layer_distortion_noise_icon";
 	else if(layer=="spherize")
-		return "layer_distortion_spherize_icon.png";
+		return "layer_distortion_spherize_icon";
 	else if(layer=="stretch")
-		return "layer_distortion_stretch_icon.png";
+		return "layer_distortion_stretch_icon";
 	else if(layer=="twirl")
-		return "layer_distortion_twirl_icon.png";
+		return "layer_distortion_twirl_icon";
 	else if(layer=="warp")
-		return "layer_distortion_warp_icon.png";
+		return "layer_distortion_warp_icon";
 	// Example Layers
 	else if(layer=="metaballs")
-		return "layer_example_metaballs_icon.png";
+		return "layer_example_metaballs_icon";
 	else if(layer=="simple_circle")
-		return "layer_example_simplecircle_icon.png";
+		return "layer_example_simplecircle_icon";
 	// Filter Layers
 	else if(layer=="clamp")
-		return "layer_filter_clamp_icon.png";
+		return "layer_filter_clamp_icon";
 	else if(layer=="colorcorrect")
-		return "layer_filter_colorcorrect_icon.png";
+		return "layer_filter_colorcorrect_icon";
 	else if(layer=="halftone2")
-		return "layer_filter_halftone2_icon.png";
+		return "layer_filter_halftone2_icon";
 	else if(layer=="halftone3")
-		return "layer_filter_halftone3_icon.png";
+		return "layer_filter_halftone3_icon";
 	else if(layer=="lumakey")
-		return "layer_filter_lumakey_icon.png";
+		return "layer_filter_lumakey_icon";
 	// Fractal Layers
 	else if(layer=="mandelbrot")
-		return "layer_fractal_mandelbrot_icon.png";
+		return "layer_fractal_mandelbrot_icon";
 	else if(layer=="julia")
-		return "layer_fractal_julia_icon.png";
+		return "layer_fractal_julia_icon";
 	// Geometry Layers
 	else if(layer=="checker_board")
-		return "layer_geometry_checkerboard_icon.png";
+		return "layer_geometry_checkerboard_icon";
 	else if(layer=="circle")
-		return "layer_geometry_circle_icon.png";
+		return "layer_geometry_circle_icon";
 	else if(layer=="outline")
-		return "layer_geometry_outline_icon.png";
+		return "layer_geometry_outline_icon";
 	else if(layer=="advanced_outline")
-		return "layer_geometry_advanced_outline_icon.png";
+		return "layer_geometry_advanced_outline_icon";
 	else if(layer=="polygon")
-		return "layer_geometry_polygon_icon.png";
+		return "layer_geometry_polygon_icon";
 	else if(layer=="rectangle")
-		return "layer_geometry_rectangle_icon.png";
+		return "layer_geometry_rectangle_icon";
 	else if(layer=="region")
-		return "layer_geometry_region_icon.png";
+		return "layer_geometry_region_icon";
 	else if(layer=="solid_color" || layer=="SolidColor")
-		return "layer_geometry_solidcolor_icon.png";
+		return "layer_geometry_solidcolor_icon";
 	else if(layer=="star")
-		return "layer_geometry_star_icon.png";
+		return "layer_geometry_star_icon";
 	// Gradient Layers
 	else if(layer=="conical_gradient")
-		return "layer_gradient_conical_icon.png";
+		return "layer_gradient_conical_icon";
 	else if(layer=="curve_gradient")
-		return "layer_gradient_curve_icon.png";
+		return "layer_gradient_curve_icon";
 	else if(layer=="noise")
-		return "layer_gradient_noise_icon.png";
+		return "layer_gradient_noise_icon";
 	else if(layer=="linear_gradient")
-		return "layer_gradient_linear_icon.png";
+		return "layer_gradient_linear_icon";
 	else if(layer=="radial_gradient")
-		return "layer_gradient_radial_icon.png";
+		return "layer_gradient_radial_icon";
 	else if(layer=="spiral_gradient")
-		return "layer_gradient_spiral_icon.png";
+		return "layer_gradient_spiral_icon";
 	// Other Layers
 	else if(layer=="duplicate")
-		return "layer_other_duplicate_icon.png";
+		return "layer_other_duplicate_icon";
 	else if(layer=="importimage" || layer=="import")
-		return "layer_other_importimage_icon.png";
+		return "layer_other_importimage_icon";
 	else if(layer=="group" || layer=="PasteCanvas" || layer=="pastecanvas" || layer=="paste_canvas")
-		return "layer_other_group_icon.png";
+		return "layer_other_group_icon";
 	else if(layer=="plant")
-		return "layer_other_plant_icon.png";
+		return "layer_other_plant_icon";
 	else if(layer=="stroboscope")
-		return "layer_other_stroboscope_icon.png";
+		return "layer_other_stroboscope_icon";
 	else if(layer=="skeleton")
-		return "layer_other_skeleton_icon.png";
+		return "layer_other_skeleton_icon";
 	else if(layer=="super_sample")
-		return "layer_other_supersample_icon.png";
+		return "layer_other_supersample_icon";
 	else if(layer=="switch")
-		return "layer_other_switch_icon.png";
+		return "layer_other_switch_icon";
 	else if(layer=="text")
-		return "layer_other_text_icon.png";
+		return "layer_other_text_icon";
 	else if(layer=="sound")
-		return "layer_other_sound_icon.png";
+		return "layer_other_sound_icon";
 	else if(layer=="timeloop")
-		return "layer_other_timeloop_icon.png";
+		return "layer_other_timeloop_icon";
 	else if(layer=="xor_pattern")
-		return "layer_other_xorpattern_icon.png";
+		return "layer_other_xorpattern_icon";
 	// Stylize Layers
 	else if(layer=="bevel")
-		return "layer_stylize_bevel_icon.png";
+		return "layer_stylize_bevel_icon";
 	else if(layer=="shade")
-		return "layer_stylize_shade_icon.png";
+		return "layer_stylize_shade_icon";
 	// Transform Layers
 	else if(layer=="rotate")
-		return "layer_transform_rotate_icon.png";
+		return "layer_transform_rotate_icon";
 	else if(layer=="translate")
-		return "layer_transform_translate_icon.png";
+		return "layer_transform_translate_icon";
 	else if(layer=="zoom")
-		return "layer_transform_scale_icon.png";
+		return "layer_transform_scale_icon";
 	else if(layer=="ghost_group")
-		return "layer_ghost_group_icon.png";
+		return "layer_ghost_group_icon";
 	else
-		return "layer_icon.png";
+		return "layer_icon";
+}
+
+//TODO
+std::string
+studio::get_action_icon_name(const synfigapp::Action::BookEntry& action)
+{
+	//Todo:
+	//1. else if statement checking action.task
+	//2. return corresponding .png
+	std::cout<<action.task<<std::endl;
+	if(action.task == "add_to_group")
+		return "action_add_to_set_icon";
+	else if(action.task == "remove_from_group")
+		return "action_remove_from_set_icon";
+	else if(action.task == "duplicate")
+		return "duplicate_icon";
+	else if (action.task == "encapsulate")
+		return "layer_other_group_icon";
+	else if (action.task == "encapsulate_filter")
+		return "layer_icon";
+	else if (action.task == "encapsulate_switch")
+		return "layer_other_switch_icon";
+	else if (action.task == "remove")
+		return "edit-delete";
+	return "";
 }
 
 Glib::RefPtr<Gdk::Pixbuf>

@@ -58,6 +58,7 @@
 #include <gui/iconcontroller.h>
 #include <gui/localization.h>
 #include <gui/onemoment.h>
+#include <gui/resourcehelper.h>
 #include <gui/widgets/widget_waypointmodel.h>
 #include <gui/workarea.h>
 
@@ -846,6 +847,10 @@ Instance::add_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_grou
 	// if(candidate_list.empty())
 	// 	synfig::warning("%s:%d Action CandidateList is empty!", __FILE__, __LINE__);
 
+	//Gtk Builder
+	auto menu_object = App::builder()->get_object("instance-layers");
+	auto layer_submenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(menu_object);
+
 	for(iter=candidate_list.begin();iter!=candidate_list.end();++iter)
 	{
 		Gtk::StockID stock_id(get_action_stock_id(*iter));
@@ -869,6 +874,35 @@ Instance::add_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_grou
 				)
 			);
 			ui_info+=strprintf("<menuitem action='action-%s' />",iter->name.c_str());
+
+			//Gtk Builder
+			App::instance()->add_action("action-"+iter->name,
+				sigc::bind(
+					sigc::bind(
+						sigc::mem_fun(
+							*const_cast<studio::Instance*>(this),
+							&studio::Instance::process_action
+						),
+						param_list
+					),
+					iter->name
+				)
+			);
+			auto menu_item = Gio::MenuItem::create(iter->local_name,
+				"app.action-"+iter->name);
+			if(!layer_submenu){
+				g_warning("could not get layer submenu!");
+			}else{
+				auto icon_info = App::icon_theme()->lookup_icon(
+					get_action_icon_name(*iter), 128
+				);
+				if(icon_info){
+					std::string icon_name(icon_info.get_filename());
+					auto icon = Gio::Icon::create(icon_name);
+					menu_item->set_icon (icon);
+				}
+				layer_submenu->append_item(menu_item);
+			}
 		}
 	}
 }

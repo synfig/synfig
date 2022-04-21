@@ -111,13 +111,17 @@ Dock_Layers::Dock_Layers():
 		);
 		auto menu_object = App::builder()->get_object(lyr.second.category);
 		auto layer_submenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(menu_object);
-		auto menu_item = Gio::MenuItem::create(_(lyr.second.local_name.c_str()),
+		auto menu_item = Gio::MenuItem::create(lyr.second.local_name,
 			strprintf("app.layer-new-%s",lyr.first.c_str()));
 		if(!layer_submenu){
 			g_warning("could not get layer submenu!");
 		}else{
 
-			std::string icon_name(ResourceHelper::get_icon_path()+"/"+layer_icon_name(lyr.first.c_str()));
+			std::string icon_name(
+				App::icon_theme()->lookup_icon(
+					layer_icon_name(lyr.first), 128
+				).get_filename()
+			);
 			auto icon = Gio::Icon::create(icon_name);
 			menu_item->set_icon (icon);
 			layer_submenu->append_item(menu_item);
