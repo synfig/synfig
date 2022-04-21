@@ -223,6 +223,13 @@ LayerActionManager::set_canvas_interface(const etl::handle<synfigapp::CanvasInte
 void
 LayerActionManager::clear()
 {
+	auto menu_object = App::builder()->get_object("instance-layers");
+	auto layer_submenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(menu_object);
+	if (!layer_submenu)
+		g_warning("Could not get sub menu!");
+	else
+		layer_submenu->remove_all();
+
 	if(ui_manager_)
 	{
 		// Clear out old stuff
@@ -275,7 +282,6 @@ LayerActionManager::refresh()
 		//queue_refresh_connection.disconnect();
 	}
 
-	std::cout<<"in layeractionmanager::refresh()"<<std::endl;
 	clear();
 
 	// Make sure we are ready
@@ -286,13 +292,6 @@ LayerActionManager::refresh()
 	}
 
 	String ui_info;
-
-	auto menu_object = App::builder()->get_object("instance-layers");
-	auto layer_submenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(menu_object);
-	if (!layer_submenu)
-		g_warning("Could not get sub menu!");
-	else
-		layer_submenu->remove_all();
 
 	action_paste_->set_sensitive(!clipboard_.empty());
 	action_group_->add(action_paste_);

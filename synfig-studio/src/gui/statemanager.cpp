@@ -115,6 +115,9 @@ StateManager::add_state(const Smach::state_base *state)
 			sigc::mem_fun(*this,&studio::StateManager::change_state_),
 				state)
 	);
+	App::canvas_action_group()->add_action(
+		App::instance()->lookup_action("state-"+name)
+	);
 }
 
 Glib::RefPtr<Gtk::ActionGroup>

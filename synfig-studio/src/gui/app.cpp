@@ -1850,7 +1850,6 @@ App::get_default_accel_map()
 		{"<Control><Shift>a",       "<Actions>/canvasview/select-all-layers"},
 		{"<Control><Shift>d",       "<Actions>/canvasview/unselect-all-layers"},
 		{"<Mod1>Page_Up",           "<Actions>/canvasview/select-parent-layer"},
-		*/
 		{"F9",                      "<Actions>/canvasview/render"},
 		{"F11",                     "<Actions>/canvasview/preview"},
 		{"<control>i",              "<Actions>/canvasview/import"},
@@ -1876,6 +1875,7 @@ App::get_default_accel_map()
 		{"<Shift>Page_Up",          "<Actions>/action_group_layer_action_manager/action-LayerRaise"},
 		{"<Shift>Page_Down",        "<Actions>/action_group_layer_action_manager/action-LayerLower"},
 		{"<Primary>z",              "<Actions>/action_group_dock_history/undo"},
+		*/
 #ifdef _WIN32
 		{"<Control>y",              "<Actions>/action_group_dock_history/redo"},
 #else

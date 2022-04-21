@@ -1485,18 +1485,6 @@ CanvasView::init_menus()
 		sigc::ptr_fun(save_all)
 	);
 
-	/*
-	action_group->add( Gtk::Action::create("render", Gtk::StockID("synfig-render_options"), _("Render...")),
-		sigc::mem_fun0(render_settings,&RenderSettings::present)
-	);
-	action_group->add( Gtk::Action::create("preview", Gtk::StockID("synfig-preview_options"), _("Preview...")),
-		sigc::mem_fun(*this,&CanvasView::on_preview_option)
-	);
-	action_group->add( Gtk::Action::create("options", _("Options...")),
-		sigc::mem_fun0(canvas_options,&CanvasOptions::present)
-	);
-	*/
-
 	action_group->add( Gtk::Action::create("pause", Gtk::StockID("synfig-animate_pause")),
 		sigc::mem_fun(*this, &CanvasView::stop_async)
 	);
@@ -1504,10 +1492,6 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("refresh", Gtk::StockID("gtk-refresh")),
 		SLOT_EVENT(EVENT_REFRESH)
 	);
-
-	//action_group->add( Gtk::Action::create("properties", Gtk::StockID("gtk-properties"), _("Properties...")),
-	//	sigc::mem_fun0(canvas_properties,&CanvasProperties::present)
-	//);
 
     auto instance = get_instance().get();
 	for ( const auto& plugin : App::plugin_manager.plugins() )

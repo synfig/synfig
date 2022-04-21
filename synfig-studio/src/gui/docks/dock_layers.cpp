@@ -76,6 +76,8 @@ Dock_Layers::Dock_Layers():
 	action_group_new_layers=Gtk::ActionGroup::create("action_group_new_layers");
 	action_group_layer_ops=Gtk::ActionGroup::create("action_group_layer_ops");
 
+	s_action_group_new_layers=Gio::SimpleActionGroup::create();
+
 	std::map<synfig::String,synfig::String> category_map;
 
 	// Build layer creation actions
@@ -107,6 +109,11 @@ Dock_Layers::Dock_Layers():
 					sigc::mem_fun(*this,&studio::Dock_Layers::add_layer),
 					lyr.first
 				)
+			)
+		);
+		s_action_group_new_layers->add_action(
+			App::instance()->lookup_action(
+				strprintf("layer-new-%s",lyr.first.c_str())
 			)
 		);
 		auto menu_object = App::builder()->get_object(lyr.second.category);
@@ -287,6 +294,8 @@ Dock_Layers::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 		tree_view->show();
 		action_group_new_layers->set_sensitive(true);
 		action_new_layer->set_sensitive(true);
+
+		App::enable_action_group(s_action_group_new_layers, true);
 		if(layer_action_manager)
 		{
 			layer_action_manager->set_layer_tree(dynamic_cast<LayerTree*>(canvas_view->get_ext_widget(get_name()+"_cmp")));
@@ -298,6 +307,8 @@ Dock_Layers::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 	{
 		action_group_new_layers->set_sensitive(false);
 		action_new_layer->set_sensitive(false);
+
+		App::enable_action_group(s_action_group_new_layers, false);
 		if(layer_action_manager)
 		{
 			layer_action_manager->clear();
