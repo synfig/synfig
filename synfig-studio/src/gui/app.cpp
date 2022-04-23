@@ -938,7 +938,6 @@ init_menu_builder()
 
 #undef SET_CANVAS_ACTION
 
-	std::string icon_path = ResourceHelper::get_icon_path();
 	//menbuar XML string
 	Glib::ustring ui_info =
 	"<interface>"
@@ -953,13 +952,13 @@ init_menu_builder()
     "          <attribute name='label' translatable='yes'>_New</attribute>"
     "          <attribute name='action'>app.new</attribute>"
     "          <attribute name='accel'>&lt;Control&gt;n</attribute>"
-    "          <attribute name='icon'>"+icon_path+"/action_doc_new_icon.png</attribute>"
+    "          <attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("new"), 128).get_filename()+"</attribute>"
     "        </item>"
 	"        <item>"
     "          <attribute name='label' translatable='yes'>_Open</attribute>"
     "          <attribute name='action'>app.open</attribute>"
     "          <attribute name='accel'>&lt;Control&gt;o</attribute>"
-    "          <attribute name='icon'>"+icon_path+"/action_doc_open_icon.png</attribute>"
+    "          <attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("open"), 128).get_filename()+"</attribute>"
     "        </item>"
 
 	//Open Recent submenu
@@ -974,29 +973,29 @@ init_menu_builder()
     "          <attribute name='label' translatable='yes'>_Save</attribute>"
     "          <attribute name='action'>app.save</attribute>"
     "          <attribute name='accel'>&lt;Control&gt;s</attribute>"
-    "          <attribute name='icon'>"+icon_path+"/action_doc_save_icon.png</attribute>"
+    "          <attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("save"), 128).get_filename()+"</attribute>"
     "        </item>"
     "        <item>"
     "          <attribute name='label' translatable='yes'>_Save As...</attribute>"
     "          <attribute name='action'>app.save-as</attribute>"
     "          <attribute name='accel'>&lt;Control&gt;&lt;Shift&gt;s</attribute>"
-    "          <attribute name='icon'>"+icon_path+"/action_doc_saveas_icon.png</attribute>"
+    "          <attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("save-as"), 128).get_filename()+"</attribute>"
     "        </item>"
     "        <item>"
     "          <attribute name='label' translatable='yes'>_Save All...</attribute>"
     "          <attribute name='action'>app.save-all</attribute>"
     "          <attribute name='accel'>&lt;Control&gt;e</attribute>"
-    "          <attribute name='icon'>"+icon_path+"/action_doc_saveall_icon.png</attribute>"
+    "          <attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("save-all"), 128).get_filename()+"</attribute>"
     "        </item>"
     "        <item>"
     "          <attribute name='label' translatable='yes'>_Export...</attribute>"
     "          <attribute name='action'>app.export</attribute>"
-    "          <attribute name='icon'>"+icon_path+"/action_export_icon.png</attribute>"
+    "          <attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("export"), 128).get_filename()+"</attribute>"
     "        </item>"
     "        <item>"
     "          <attribute name='label' translatable='yes'>_Revert...</attribute>"
     "          <attribute name='action'>app.revert</attribute>"
-    "          <attribute name='icon'>document-revert</attribute>"
+    "          <attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("revert"), 128).get_filename()+"</attribute>"
     "        </item>"
     "      </section>"
 	"      <section>"
@@ -1015,13 +1014,13 @@ init_menu_builder()
     "          <attribute name='label' translatable='yes'>_Preview...</attribute>"
     "          <attribute name='action'>app.preview</attribute>"
 	"          <attribute name='accel'>F11</attribute>"
-    "          <attribute name='icon'>"+icon_path+"/preview_options_icon.png</attribute>"
+    "          <attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("preview"), 128).get_filename()+"</attribute>"
     "        </item>"
 	"        <item>"
     "          <attribute name='label' translatable='yes'>_Render...</attribute>"
     "          <attribute name='action'>app.render</attribute>"
 	"          <attribute name='accel'>F9</attribute>"
-    "          <attribute name='icon'>"+icon_path+"/render_options_icon.png</attribute>"
+    "          <attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("render"), 128).get_filename()+"</attribute>"
     "        </item>"
     "      </section>"
 	"		<section>"
@@ -1029,7 +1028,7 @@ init_menu_builder()
 	"				<attribute name='label' translatable='yes'>_Close Document</attribute>"
 	"				<attribute name='action'>app.close-document</attribute>"
     "          		<attribute name='accel'>&lt;Primary&gt;w</attribute>"
-	"          		<attribute name='icon'>window-close</attribute>"
+	"          		<attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("close-document"), 128).get_filename()+"</attribute>"
 	"			</item>"
 	"		</section>"
 	"      <section>"
@@ -1037,7 +1036,7 @@ init_menu_builder()
     "          <attribute name='label' translatable='yes'>_Quit</attribute>"
     "          <attribute name='action'>app.quit</attribute>"
     "          <attribute name='accel'>&lt;Primary&gt;q</attribute>"
-	"          <attribute name='icon'>application-exit</attribute>"
+	"          <attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("quit"), 128).get_filename()+"</attribute>"
     "        </item>"
     "      </section>"
     "    </submenu>"
@@ -1051,13 +1050,13 @@ init_menu_builder()
 	"				<attribute name='action'>app.undo</attribute>"
 	"				<attribute name='accel'>&lt;Primary&gt;z</attribute>"
 	"				<attribute name='sensitive'>True</attribute>"
-	"				<attribute name='icon'>"+icon_path+"/action_doc_undo_icon.png</attribute>"
+	"				<attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("undo"), 128).get_filename()+"</attribute>"
 	"			</item>"
 	"			<item>"
 	"				<attribute name='label' translatable='yes'>_Redo</attribute>"
 	"				<attribute name='action'>app.redo</attribute>"
 	"				<attribute name='accel'>&lt;Shift&gt;&lt;Primary&gt;z</attribute>"
-	"				<attribute name='icon'>"+icon_path+"/action_doc_redo_icon.png</attribute>"
+	"				<attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("redo"), 128).get_filename()+"</attribute>"
 	"			</item>"
 	"		</section>"
 	"		<section>"
@@ -1323,12 +1322,13 @@ init_menu_builder()
 	"				<attribute name='accel'>F12</attribute>"
 	"			</item>"
 	"	</submenu>"
-	"	<submenu>"
+	//toolbox
+	"	<submenu id='toolbox'>"
 	"		<attribute name='label' translatable='yes'>_Toolbox</attribute>"
 	"		<item>"
 	"			<attribute name='label' translatable='yes'>_Transform Tool</attribute>"
 	"			<attribute name='action'>app.state-normal</attribute>"
-	"			<attribute name='icon'>"+icon_path+"/tool_normal_icon.png</attribute>"
+	"			<attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("state-normal"), 128).get_filename()+"</attribute>"
 	"			<attribute name='accel'>S</attribute>"
 	"		</item>"
 	"		<item>"
@@ -1336,118 +1336,119 @@ init_menu_builder()
 	//TODO: the 'action' attribute is causing an error at runtime
 	//GLib-GIO-CRITICAL **: 22:58:31.602: g_action_print_detailed_name: assertion 'g_action_name_is_valid (action_name)' failed
 	"			<attribute name='action'>app.state-smooth_move</attribute>"
-	"			<attribute name='icon'>"+icon_path+"/tool_smooth_move_icon.png</attribute>"
+	"			<attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("state-smooth_move"), 128).get_filename()+"</attribute>"
 	"			<attribute name='accel'>M</attribute>"
 	"		</item>"
 	"		<item>"
 	"			<attribute name='label' translatable='yes'>_Scale Tool</attribute>"
 	"			<attribute name='action'>app.state-scale</attribute>"
-	"			<attribute name='icon'>"+icon_path+"/tool_scale_icon.png</attribute>"
+	"			<attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("state-scale"), 128).get_filename()+"</attribute>"
 	"			<attribute name='accel'>L</attribute>"
 	"		</item>"
 	"		<item>"
 	"			<attribute name='label' translatable='yes'>_Rotate Tool</attribute>"
 	"			<attribute name='action'>app.state-rotate</attribute>"
-	"			<attribute name='icon'>"+icon_path+"/tool_rotate_icon.png</attribute>"
+	"			<attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("state-rotate"), 128).get_filename()+"</attribute>"
 	"			<attribute name='accel'>A</attribute>"
 	"		</item>"
 	"		<item>"
 	"			<attribute name='label' translatable='yes'>_Mirror Tool</attribute>"
 	"			<attribute name='action'>app.state-mirror</attribute>"
-	"			<attribute name='icon'>"+icon_path+"/tool_mirror_icon.png</attribute>"
+	"			<attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("state-mirror"), 128).get_filename()+"</attribute>"
 	"			<attribute name='accel'>I</attribute>"
 	"		</item>"
 	"		<item>"
 	"			<attribute name='label' translatable='yes'>_Circle Tool</attribute>"
 	"			<attribute name='action'>app.state-circle</attribute>"
-	"			<attribute name='icon'>"+icon_path+"/tool_circle_icon.png</attribute>"
+	"			<attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("state-circle"), 128).get_filename()+"</attribute>"
 	"			<attribute name='accel'>E</attribute>"
 	"		</item>"
 	"		<item>"
 	"			<attribute name='label' translatable='yes'>_Rectangle Tool</attribute>"
 	"			<attribute name='action'>app.state-rectangle</attribute>"
-	"			<attribute name='icon'>"+icon_path+"/tool_rectangle_icon.png</attribute>"
+	"			<attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("state-rectangle"), 128).get_filename()+"</attribute>"
 	"			<attribute name='accel'>R</attribute>"
 	"		</item>"
 	"		<item>"
 	"			<attribute name='label' translatable='yes'>_Star Tool</attribute>"
 	"			<attribute name='action'>app.state-star</attribute>"
-	"			<attribute name='icon'>"+icon_path+"/tool_star_icon.png</attribute>"
+	"			<attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("state-star"), 128).get_filename()+"</attribute>"
 	"			<attribute name='accel'>asterisk</attribute>"
 	"		</item>"
 	"		<item>"
 	"			<attribute name='label' translatable='yes'>_Polygon Tool</attribute>"
 	"			<attribute name='action'>app.state-polygon</attribute>"
-	"			<attribute name='icon'>"+icon_path+"/tool_polyline_icon.png</attribute>"
+	"			<attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("state-polygon"), 128).get_filename()+"</attribute>"
 	"			<attribute name='accel'>O</attribute>"
 	"		</item>"
 	"		<item>"
 	"			<attribute name='label' translatable='yes'>_Gradient Tool</attribute>"
 	"			<attribute name='action'>app.state-gradient</attribute>"
-	"			<attribute name='icon'>"+icon_path+"/tool_gradient_icon.png</attribute>"
+	"			<attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("state-gradient"), 128).get_filename()+"</attribute>"
 	"			<attribute name='accel'>G</attribute>"
 	"		</item>"
 	"		<item>"
 	"			<attribute name='label' translatable='yes'>_Spline Tool</attribute>"
 	"			<attribute name='action'>app.state-bline</attribute>"
-	"			<attribute name='icon'>"+icon_path+"/tool_spline_icon.png</attribute>"
+	"			<attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("state-bline"), 128).get_filename()+"</attribute>"
 	"			<attribute name='accel'>B</attribute>"
 	"		</item>"
 	"		<item>"
 	"			<attribute name='label' translatable='yes'>_Draw Tool</attribute>"
 	"			<attribute name='action'>app.state-draw</attribute>"
-	"			<attribute name='icon'>"+icon_path+"/tool_draw_icon.png</attribute>"
+	"			<attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("state-draw"), 128).get_filename()+"</attribute>"
 	"			<attribute name='accel'>P</attribute>"
 	"		</item>"
 	"		<item>"
 	"			<attribute name='label' translatable='yes'>_Cutout Tool</attribute>"
 	"			<attribute name='action'>app.state-lasso</attribute>"
-	"			<attribute name='icon'>"+icon_path+"/tool_cutout_icon.png</attribute>"
+	"			<attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("state-lasso"), 128).get_filename()+"</attribute>"
 	"			<attribute name='accel'>C</attribute>"
 	"		</item>"
 	"		<item>"
 	"			<attribute name='label' translatable='yes'>_Width Tool</attribute>"
 	"			<attribute name='action'>app.state-width</attribute>"
-	"			<attribute name='icon'>"+icon_path+"/tool_width_icon.png</attribute>"
+	"			<attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("state-width"), 128).get_filename()+"</attribute>"
 	"			<attribute name='accel'>W</attribute>"
 	"		</item>"
 	"		<item>"
 	"			<attribute name='label' translatable='yes'>_Fill Tool</attribute>"
 	"			<attribute name='action'>app.state-fill</attribute>"
-	"			<attribute name='icon'>"+icon_path+"/tool_fill_icon.png</attribute>"
+	"			<attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("state-fill"), 128).get_filename()+"</attribute>"
 	"			<attribute name='accel'>U</attribute>"
 	"		</item>"
 	"		<item>"
 	"			<attribute name='label' translatable='yes'>_Eyedrop Tool</attribute>"
 	"			<attribute name='action'>app.state-eyedrop</attribute>"
-	"			<attribute name='icon'>"+icon_path+"/tool_eyedrop_icon.png</attribute>"
+	"			<attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("state-eyedrop"), 128).get_filename()+"</attribute>"
 	"			<attribute name='accel'>D</attribute>"
 	"		</item>"
 	"		<item>"
 	"			<attribute name='label' translatable='yes'>_Skeleton Tool</attribute>"
 	"			<attribute name='action'>app.state-bone</attribute>"
-	"			<attribute name='icon'>"+icon_path+"/tool_skeleton_icon.png</attribute>"
+	"			<attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("state-bone"), 128).get_filename()+"</attribute>"
 	"			<attribute name='accel'>D</attribute>"
 	"		</item>"
 	"		<item>"
 	"			<attribute name='label' translatable='yes'>_Text Tool</attribute>"
 	"			<attribute name='action'>app.state-text</attribute>"
-	"			<attribute name='icon'>"+icon_path+"/tool_text_icon.png</attribute>"
+	"			<attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("state-text"), 128).get_filename()+"</attribute>"
 	"			<attribute name='accel'>T</attribute>"
 	"		</item>"
 	"		<item>"
 	"			<attribute name='label' translatable='yes'>_Sketch Tool</attribute>"
 	"			<attribute name='action'>app.state-sketch</attribute>"
-	"			<attribute name='icon'>"+icon_path+"/tool_sketch_icon.png</attribute>"
+	"			<attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("state-sketch"), 128).get_filename()+"</attribute>"
 	"			<attribute name='accel'>K</attribute>"
 	"		</item>"
 	"		<item>"
 	"			<attribute name='label' translatable='yes'>_Zoom Tool</attribute>"
 	"			<attribute name='action'>app.state-zoom</attribute>"
-	"			<attribute name='icon'>"+icon_path+"/tool_zoom_icon.png</attribute>"
+	"			<attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("state-zoom"), 128).get_filename()+"</attribute>"
 	"			<attribute name='accel'>Z</attribute>"
 	"		</item>"
 	"	</submenu>"
+	//Layers menu
 	"	<submenu id='menu-layer'>"
 	"	<attribute name='label' translatable='yes'>_Layer</attribute>"
 	"	<section>"
@@ -1515,17 +1516,7 @@ init_ui_manager()
 
 	Glib::RefPtr<Gtk::ActionGroup> actions_action_group = Gtk::ActionGroup::create("actions");
 
-	//menus_action_group->add( Gtk::Action::create("menu-file",            _("_File")));
-	//menus_action_group->add( Gtk::Action::create("menu-open-recent",     _("Open Recent")));
-
-	//menus_action_group->add( Gtk::Action::create("menu-edit",            _("_Edit")));
-
 	menus_action_group->add( Gtk::Action::create("menu-view",            _("_View")));
-	//menus_action_group->add( Gtk::Action::create("menu-duck-mask",       _("Show/Hide Handles")));
-	//menus_action_group->add( Gtk::Action::create("menu-lowres-pixel",    _("Low-Res Pixel Size")));
-
-	//menus_action_group->add( Gtk::Action::create("menu-canvas",          _("_Canvas")));
-
 	menus_action_group->add( Gtk::Action::create("menu-layer",           _("_Layer")));
 	menus_action_group->add( Gtk::Action::create("menu-layer-new",       _("New Layer")));
 	menus_action_group->add( Gtk::Action::create("menu-toolbox",         _("Toolbox")));
@@ -1550,6 +1541,7 @@ init_ui_manager()
 			get_action_stock_id(iter->second),
 			iter->second.local_name,iter->second.local_name
 		));
+		std::cout<<iter->second.local_name<<std::endl;
 	}
 
 // predefined actions to initial menu items, so that there is all menu items listing
@@ -1821,7 +1813,6 @@ App::get_default_accel_map()
 	// Add default keyboard accelerators
 	static const std::map<const char*, const char*> default_accel_map = {
 		// Toolbox
-		/*
 		{"s",             "<Actions>/action_group_state_manager/state-normal"},
 		{"m",             "<Actions>/action_group_state_manager/state-smooth_move"},
 		{"l",             "<Actions>/action_group_state_manager/state-scale"},
@@ -1842,9 +1833,7 @@ App::get_default_accel_map()
 		{"p",             "<Actions>/action_group_state_manager/state-draw"},
 		{"k",             "<Actions>/action_group_state_manager/state-sketch"},
 		{"w",             "<Actions>/action_group_state_manager/state-width"},
-*/
 		// Everything else
-		/*
 		{"<Control>a",              "<Actions>/canvasview/select-all-ducks"},
 		{"<Control>d",              "<Actions>/canvasview/unselect-all-ducks"},
 		{"<Control><Shift>a",       "<Actions>/canvasview/select-all-layers"},
@@ -1875,7 +1864,6 @@ App::get_default_accel_map()
 		{"<Shift>Page_Up",          "<Actions>/action_group_layer_action_manager/action-LayerRaise"},
 		{"<Shift>Page_Down",        "<Actions>/action_group_layer_action_manager/action-LayerLower"},
 		{"<Primary>z",              "<Actions>/action_group_dock_history/undo"},
-		*/
 #ifdef _WIN32
 		{"<Control>y",              "<Actions>/action_group_dock_history/redo"},
 #else

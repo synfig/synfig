@@ -31,6 +31,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <glibmm/refptr.h>
+#include <giomm/simpleactiongroup.h>
 #include <gui/smach.h>
 #include <vector>
 
@@ -48,10 +49,7 @@ namespace studio {
 	class StateManager
 {
 private:
-	Glib::RefPtr<Gtk::ActionGroup> state_group;
-
-	guint merge_id;
-	std::vector<guint> merge_id_list;
+	Glib::RefPtr<Gio::SimpleActionGroup> state_group;
 
 	void change_state_(const Smach::state_base *state);
 
@@ -62,7 +60,7 @@ public:
 
 	void add_state(const Smach::state_base *state);
 
-	Glib::RefPtr<Gtk::ActionGroup> get_action_group();
+	Glib::RefPtr<Gio::SimpleActionGroup>& get_action_group();
 };
 
 }; // END of namespace studio

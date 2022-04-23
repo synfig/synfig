@@ -234,16 +234,18 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 	assert(state);
 
 	String name=state->get_name();
+	String local_name=get_local_label_name(name);
 
-	Gtk::StockItem stock_item;
-	Gtk::Stock::lookup(Gtk::StockID("synfig-"+name),stock_item);
-
-	Gtk::ToggleToolButton *tool_button = manage(new class Gtk::ToggleToolButton(
-		*manage(new Gtk::Image(
-			stock_item.get_stock_id(),
-			Gtk::IconSize::from_name("synfig-small_icon_16x16") )),
-		stock_item.get_label() ));
-
+	Gtk::ToggleToolButton *tool_button = manage( 
+		new class Gtk::ToggleToolButton(
+			*manage(
+				new Gtk::Image(
+					App::icon_theme()->lookup_icon(get_icon_name("state-"+name), 16).load_icon()
+				)
+			)
+		, local_name )
+	);
+	/* TODO: NEED TO SET ACCEL FOR THE TOOLTIP IN TOOLBOX BUTTONS
 	Gtk::AccelKey key;
 	//Have a look to global function init_ui_manager() from app.cpp for "accel_path" definition
 	Gtk::AccelMap::lookup_entry ("<Actions>/action_group_state_manager/state-"+name, key);
@@ -251,6 +253,8 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 	Glib::ustring accel_path = key.is_null() ? "" : gtk_accelerator_get_label(key.get_key(), GdkModifierType(key.get_mod()));
 	
 	tool_button->set_tooltip_text(stock_item.get_label()+"  "+accel_path);
+	*/
+	tool_button->set_tooltip_text(local_name); //TODO: need to figure how to set accel path+"  "+accel_path);
 	tool_button->show();
 
 	tool_item_group->insert(*tool_button);
@@ -264,8 +268,8 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 			state
 		)
 	);
-
 	refresh();
+	
 }
 
 

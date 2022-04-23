@@ -68,6 +68,7 @@
 #include <gui/localization.h>
 #include <gui/preview.h>
 #include <gui/states/state_normal.h>
+#include <gui/statemanager.h>
 #include <gui/widgets/widget_canvastimeslider.h>
 #include <gui/widgets/widget_interpolation.h>
 #include <gui/workarea.h>
@@ -740,6 +741,7 @@ void CanvasView::activate()
 	this->_action_group_removed = false;
 	this->_canvas_action_group_enabled = true;
 	App::instance()->enable_action_group(App::canvas_action_group(), _canvas_action_group_enabled);
+	App::instance()->enable_action_group(App::get_state_manager()->get_action_group(), _canvas_action_group_enabled);
 	//add toggle group
 	App::instance()->add_action_group(toggle_action_group);
 	update_title();
@@ -754,6 +756,7 @@ void CanvasView::deactivate()
 	this->_action_group_removed = true;
 	this->_canvas_action_group_enabled = false;
 	App::instance()->enable_action_group(App::canvas_action_group(), _canvas_action_group_enabled);
+	App::instance()->enable_action_group(App::get_state_manager()->get_action_group(), _canvas_action_group_enabled);
 	//remove toggle action group
 	App::instance()->remove_action_group(toggle_action_group);
 	update_title();

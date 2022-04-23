@@ -60,18 +60,12 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 StateManager::StateManager():
-	state_group(Gtk::ActionGroup::create("action_group_state_manager")),
-	merge_id(App::ui_manager()->new_merge_id())
+	state_group(Gio::SimpleActionGroup::create())
 {
-	App::ui_manager()->insert_action_group(get_action_group());
 }
 
 StateManager::~StateManager()
 {
-	App::ui_manager()->remove_ui(merge_id);
-
-	for(;!merge_id_list.empty();merge_id_list.pop_back())
-		App::ui_manager()->remove_ui(merge_id_list.back());
 }
 
 void
@@ -84,43 +78,18 @@ void
 StateManager::add_state(const Smach::state_base *state)
 {
 	String name(state->get_name());
-	Gtk::StockItem stock_item;
-	Gtk::Stock::lookup(Gtk::StockID("synfig-"+name),stock_item);
-
-	Glib::RefPtr<Gtk::Action> action(
-		Gtk::Action::create(
-			"state-"+name,
-			stock_item.get_stock_id(),
-			stock_item.get_label(),
-			stock_item.get_label()
-		)
-	);
-	/*action->set_sensitive(false);*/
-	state_group->add(action);
-
-	action->signal_activate().connect(
-		sigc::bind(
-			sigc::mem_fun(*this,&studio::StateManager::change_state_),
-			state
-		)
-	);
-
-	App::ui_manager()->ensure_update();
-
 	App::dock_toolbox->add_state(state);
 
 	//Gtk Builder and Gio SimpleAction
-	App::instance()->add_action("state-"+name,
+	auto action = App::instance()->add_action("state-"+name,
 		sigc::bind(
 			sigc::mem_fun(*this,&studio::StateManager::change_state_),
 				state)
 	);
-	App::canvas_action_group()->add_action(
-		App::instance()->lookup_action("state-"+name)
-	);
+	state_group->add_action(action);
 }
 
-Glib::RefPtr<Gtk::ActionGroup>
+Glib::RefPtr<Gio::SimpleActionGroup>&
 StateManager::get_action_group()
 {
 	return state_group;

@@ -30,6 +30,8 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <unordered_map>
+
 #include <gdkmm/cursor.h>
 #include <gtkmm/iconfactory.h>
 #include <gtkmm/icontheme.h>
@@ -62,6 +64,8 @@ public:
 	void init_icons(const synfig::String& path_to_icons);
 	static Glib::RefPtr<Gdk::Cursor> get_normal_cursor();
 	static Glib::RefPtr<Gdk::Cursor> get_tool_cursor(const Glib::ustring& name,const Glib::RefPtr<Gdk::Window>& window);
+	static std::unordered_map<std::string, std::string> action_icon_map;
+	static std::unordered_map<std::string, std::string> local_label_map;
 };
 
 Gtk::StockID layer_icon(const synfig::String &layer);
@@ -75,6 +79,8 @@ Glib::RefPtr<Gdk::Pixbuf> get_tree_pixbuf(synfig::Type &type);
 Glib::RefPtr<Gdk::Pixbuf> get_interpolation_pixbuf(synfig::Interpolation itype);
 Gtk::StockID get_action_stock_id(const synfigapp::Action::BookEntry& action);
 std::string get_action_icon_name(const synfigapp::Action::BookEntry& action);
+std::string get_icon_name(const std::string& action_name);
+std::string get_local_label_name(const std::string& action_name);
 
 }; // END of namespace studio
 

@@ -68,6 +68,8 @@ using namespace synfig;
 
 static std::map< int, Glib::RefPtr<Gdk::Pixbuf> > _tree_pixbuf_table_value_type;
 static Glib::RefPtr<Gdk::Pixbuf> _tree_pixbuf_table_interpolation[NUM_INTERPOLATION_TYPES];
+std::unordered_map<std::string, std::string> IconController::action_icon_map;
+std::unordered_map<std::string, std::string> IconController::local_label_map;
 
 IconController::IconController()
 {
@@ -343,6 +345,71 @@ IconController::init_icons(const synfig::String& path_to_icons)
 
 	for(int i(0); i<NUM_INTERPOLATION_TYPES; i++)
 		_tree_pixbuf_table_interpolation[i]=Gtk::Button().render_icon_pixbuf(interpolation_icon(Interpolation(i)),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+
+	//gtk builder
+	IconController::action_icon_map = {
+		//file actions
+		{"new" , "action_doc_new_icon"},
+		{"open" , "action_doc_open_icon"},
+		{"save" , "action_doc_save_icon"},
+		{"save-as", "action_doc_saveas_icon"},
+		{"save-all" , "action_doc_saveall_icon"},
+		{"export" , "action_export_icon"},
+		{"revert", "document-revert"},
+		{"preview" , "preview_options_icon"},
+		{"render", "render_options_icon"},
+		{"close-document", "window-close"},
+		{"quit" , "application-exit"},
+		//Edit
+		{"undo" , "action_doc_undo_icon"},
+		{"redo" , "action_doc_redo_icon"},
+		{"cut" , "edit-cut"},
+		{"copy" , "edit-copy"},
+		{"paste" , "edit-paste"},
+		//toolbox
+		{"state-normal" , "tool_normal_icon"},
+		{"state-smooth_move" , "tool_smooth_move_icon"},
+		{"state-scale" , "tool_scale_icon"},
+		{"state-rotate" , "tool_rotate_icon"},
+		{"state-mirror" , "tool_mirror_icon"},
+		{"state-circle" , "tool_circle_icon"},
+		{"state-rectangle" , "tool_rectangle_icon"},
+		{"state-star" , "tool_star_icon"},
+		{"state-polygon" , "tool_polyline_icon"},
+		{"state-gradient" , "tool_gradient_icon"},
+		{"state-bline" , "tool_spline_icon"},
+		{"state-draw" , "tool_draw_icon"},
+		{"state-lasso" , "tool_cutout_icon"},
+		{"state-width" , "tool_width_icon"},
+		{"state-fill", "tool_fill_icon"},
+		{"state-eyedrop", "tool_eyedrop_icon"},
+		{"state-bone" , "tool_skeleton_icon"},
+		{"state-text" , "tool_text_icon"},
+		{"state-sketch" , "tool_sketch_icon"},
+		{"state-zoom" , "tool_zoom_icon"},
+		};
+		IconController::local_label_map = {
+			{"normal" , _("Transform Tool")},
+			{"smooth_move" , _("SmoothMove Tool")},
+			{"scale" , _("Scale Tool")},
+			{"rotate" , _("Rotate Tool")},
+			{"mirror" , _("Mirror Tool")},
+			{"circle" , _("Circle Tool")},
+			{"rectangle" , _("Rectangle Tool")},
+			{"star" ,  _("Star Tool")},
+			{"polygon" , _("Polygon Tool")},
+			{"gradient" , _("Gradient Tool")},
+			{"bline" , _("Spline Tool")},
+			{"draw" , _("Draw Tool")},
+			{"lasso" , _("Cutout Tool")},
+			{"width" , _("Width Tool")},
+			{"fill" , _("Fill Tool")},
+			{"eyedrop" , _("Eyedrop Tool")},
+			{"bone" , _("Skeleton Tool")},
+			{"text" , _("Text Tool")},
+			{"sketch" , _("Sketch Tool")},
+			{"zoom" , _("Zoom Tool")}
+		};
 }
 
 Glib::RefPtr<Gdk::Cursor>
@@ -599,6 +666,7 @@ studio::layer_icon(const synfig::String &layer)
 		return Gtk::StockID("synfig-layer");
 }
 
+//TODO: Need to add these to action_icon_map
 std::string
 studio::layer_icon_name(const synfig::String &layer)
 {
@@ -743,6 +811,17 @@ studio::get_action_icon_name(const synfigapp::Action::BookEntry& action)
 	else if (action.task == "remove")
 		return "edit-delete";
 	return "";
+}
+
+std::string
+studio::get_icon_name(const std::string& action_name)
+{
+	return IconController::action_icon_map[action_name];
+}
+std::string
+studio::get_local_label_name(const std::string& action_name)
+{
+	return IconController::local_label_map[action_name];
 }
 
 Glib::RefPtr<Gdk::Pixbuf>
