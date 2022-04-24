@@ -93,17 +93,17 @@ bool test_bline_length() {
 
 	Real l = bline_length(list, loop, &lengths);
 	ASSERT_EQUAL(2, lengths.size());
-	ASSERT_APPROX_EQUAL(1.0, lengths[0]);
-	ASSERT_APPROX_EQUAL(1.0, lengths[1]);
-	ASSERT_APPROX_EQUAL(2.0, l);
+	ASSERT_APPROX_EQUAL_MICRO(1.0, lengths[0]);
+	ASSERT_APPROX_EQUAL_MICRO(1.0, lengths[1]);
+	ASSERT_APPROX_EQUAL_MICRO(2.0, l);
 
 	loop = true;
 	l = bline_length(list, loop, &lengths);
 	ASSERT_EQUAL(3, lengths.size());
-	ASSERT_APPROX_EQUAL(1.0, lengths[0]);
-	ASSERT_APPROX_EQUAL(1.0, lengths[1]);
-	ASSERT_APPROX_EQUAL(2.0, lengths[2]);
-	ASSERT_APPROX_EQUAL(4.0, l);
+	ASSERT_APPROX_EQUAL_MICRO(1.0, lengths[0]);
+	ASSERT_APPROX_EQUAL_MICRO(1.0, lengths[1]);
+	ASSERT_APPROX_EQUAL_MICRO(2.0, lengths[2]);
+	ASSERT_APPROX_EQUAL_MICRO(4.0, l);
 
 	BLinePoint p1;
 	p1.set_tangent1(Point(-1,0));
