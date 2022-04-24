@@ -1089,10 +1089,19 @@ CanvasView::create_work_area()
 }
 
 Gtk::ToolButton*
-CanvasView::create_action_toolbutton(const Glib::RefPtr<Gtk::Action> &action)
+CanvasView::create_action_toolbutton(const std::string& action_name)
 {
 	Gtk::ToolButton *button = Gtk::manage(new Gtk::ToolButton());
-	button->set_related_action(action);
+	Gtk::Image *icon =	manage( new Gtk::Image(
+			App::icon_theme()->lookup_icon(get_icon_name(action_name), 16).load_icon()
+		)
+	);
+	if(icon){
+		icon->show();
+		button->set_icon_widget(*icon);
+	}else{
+		g_warning("icon not found");
+	}
 	button->show();
 	return button;
 }
@@ -1124,25 +1133,41 @@ CanvasView::create_top_toolbar()
 	displaybar->set_toolbar_style(Gtk::TOOLBAR_BOTH_HORIZ);
 
 	// File buttons
-	//TODO: need to update these buttons to work without gtk::actions
+	//TODO: need to add tooltip text
 	if (App::show_file_toolbar) {
-		displaybar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/new")));
-		displaybar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/open")));
-		displaybar->append(*create_action_toolbutton(action_group->get_action("save")));
-		displaybar->append(*create_action_toolbutton(action_group->get_action("save-as")));
-		displaybar->append(*create_action_toolbutton(action_group->get_action("save-all")));
+		Gtk::ToolButton *button;
+		button =create_action_toolbutton("new");
+		button->signal_clicked().connect(sigc::ptr_fun(&App::new_instance));
+		displaybar->append(*button);
+		button=create_action_toolbutton("open");
+		button->signal_clicked().connect(sigc::bind(sigc::ptr_fun(&App::dialog_open), ""));
+		displaybar->append(*button);
+		button=create_action_toolbutton("save");
+		button->signal_clicked().connect(sigc::mem_fun(*App::get_selected_instance(),&Instance::save));
+		displaybar->append(*button);
+		button=create_action_toolbutton("save-as");
+		button->signal_clicked().connect(sigc::mem_fun(*App::get_selected_instance(),&Instance::dialog_save_as));
+		displaybar->append(*button);
+		button=create_action_toolbutton("save-all");
+		button->signal_clicked().connect(sigc::ptr_fun(&CanvasView::save_all));
+		displaybar->append(*button);
 
 		// Separator
 		displaybar->append( *create_tool_separator() );
 	}
 
-	// Undo/Redo buttons
-	displaybar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/undo")));
-	displaybar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/redo")));
+		// Undo/Redo buttons
+		//TODO: need to make buttons sensitive
+		CanvasView::undobutton=create_action_toolbutton("undo");
+		CanvasView::undobutton->signal_clicked().connect(sigc::ptr_fun(studio::App::undo));
+		displaybar->append(*CanvasView::undobutton);
+		CanvasView::redobutton=create_action_toolbutton("redo");
+		CanvasView::redobutton->signal_clicked().connect(sigc::ptr_fun(studio::App::redo));
+		displaybar->append(*CanvasView::redobutton);
 
-	// Separator
-	displaybar->append(*create_tool_separator());
-
+		// Separator
+		displaybar->append(*create_tool_separator());
+	
 	{ // Preview Settings dialog button
 		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("synfig-preview_options"), iconsize));
 		icon->show();
@@ -1477,16 +1502,6 @@ CanvasView::init_menus()
 	*/
 	toggle_action_group = Gio::SimpleActionGroup::create();
 	action_group = Gtk::ActionGroup::create("canvasview");
-
-	action_group->add( Gtk::Action::create("save", Gtk::StockID("synfig-save"), _("Save"), _("Save")),
-		hide_return(sigc::mem_fun(*get_instance().get(), &Instance::save))
-	);
-	action_group->add( Gtk::Action::create("save-as", Gtk::StockID("synfig-save_as"), _("Save As..."), _("Save As")),
-		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::dialog_save_as))
-	);
-	action_group->add( Gtk::Action::create("save-all", Gtk::StockID("synfig-save_all"), _("Save All"), _("Save all opened documents")),
-		sigc::ptr_fun(save_all)
-	);
 
 	action_group->add( Gtk::Action::create("pause", Gtk::StockID("synfig-animate_pause")),
 		sigc::mem_fun(*this, &CanvasView::stop_async)

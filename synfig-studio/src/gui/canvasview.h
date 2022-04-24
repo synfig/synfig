@@ -238,7 +238,8 @@ public:
 	*/
 public:
 	WorkArea* get_work_area() const { return work_area; }
-
+	Gtk::ToolButton* get_undo_button() const { return undobutton; }
+	Gtk::ToolButton* get_redo_button() const { return redobutton; }
 private:
 	WorkArea *work_area;
 
@@ -278,6 +279,8 @@ private:
 	Gtk::Statusbar *statusbar;
 	Gtk::ProgressBar *progressbar;
 
+	Gtk::ToolButton *undobutton;
+	Gtk::ToolButton *redobutton;
 	Gtk::Button *closebutton;
 	Gtk::Button *stopbutton;
 	Gtk::ToggleToolButton *background_rendering_button;
@@ -438,7 +441,7 @@ private:
 
 	Gtk::Widget *create_time_bar();
 
-	Gtk::ToolButton* create_action_toolbutton(const Glib::RefPtr<Gtk::Action> &action);
+	Gtk::ToolButton* create_action_toolbutton(const std::string&  action_name);
 	Gtk::SeparatorToolItem* create_tool_separator();
 	Gtk::Widget* create_top_toolbar();
 	Gtk::Widget* create_stop_button();

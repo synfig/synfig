@@ -161,14 +161,7 @@ IconController::init_icons(const synfig::String& path_to_icons)
 
 	// Document Related Actions
 	INIT_STOCK_ICON(about, "about_icon." IMAGE_EXT, _("About"));
-	INIT_STOCK_ICON(new_doc, "action_doc_new_icon." IMAGE_EXT, _("New"));
-	INIT_STOCK_ICON(open, "action_doc_open_icon." IMAGE_EXT, _("Open"));
-	INIT_STOCK_ICON(save, "action_doc_save_icon." IMAGE_EXT, _("Save"));
-	INIT_STOCK_ICON(save_as, "action_doc_saveas_icon." IMAGE_EXT, _("Save As"));
 	INIT_STOCK_ICON(export, "action_doc_saveas_icon." IMAGE_EXT, _("Export"));
-	INIT_STOCK_ICON(save_all, "action_doc_saveall_icon." IMAGE_EXT, _("Save All"));
-	INIT_STOCK_ICON(redo, "action_doc_redo_icon." IMAGE_EXT, _("Redo"));
-	INIT_STOCK_ICON(undo, "action_doc_undo_icon." IMAGE_EXT, _("Undo"));
 
 	// Layers
 	INIT_STOCK_ICON(layer, "layer_icon." IMAGE_EXT, _("Layer"));
@@ -389,6 +382,15 @@ IconController::init_icons(const synfig::String& path_to_icons)
 		{"state-zoom" , "tool_zoom_icon"},
 		};
 		IconController::local_label_map = {
+			//file menu
+			{"new", _("New")},
+			{"open", _("Open")},
+			{"save", _("Save")},
+			{"save-all", _("Save All")},
+			{"save-as", _("Save As")},
+			{"undo", _("Undo")},
+			{"redo", _("Redo")},
+			//toolbox states
 			{"normal" , _("Transform Tool")},
 			{"smooth_move" , _("SmoothMove Tool")},
 			{"scale" , _("Scale Tool")},

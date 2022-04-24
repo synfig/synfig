@@ -40,6 +40,7 @@
 #include <gtkmm/stylecontext.h>
 
 #include <gui/app.h>
+#include <gui/canvasview.h>
 #include <gui/exception_guard.h>
 #include <gui/localization.h>
 #include <gui/trees/historytreestore.h>
@@ -323,6 +324,14 @@ Dock_History::update_undo_redo()
 		action = App::instance()->lookup_action("redo");
 		if (auto redo_action = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(action))
 			redo_action ->set_enabled(instance->get_redo_status());
+		//TODO: Need to make buttons in toolbar sensitive
+		//This code is cuasing Assertion failed: (obj), function operator->, file _handle.h, line 740.
+		/*
+		if(auto *button = App::get_selected_canvas_view()->get_undo_button())
+			button->set_sensitive(instance->get_undo_status());
+		if(auto *button = App::get_selected_canvas_view()->get_redo_button())
+			button->set_sensitive(instance->get_redo_status());
+		*/
 	}
 }
 

@@ -1549,19 +1549,10 @@ init_ui_manager()
 // the menu items (action names) should be named consistently with those in canvasview.cpp and others.
 #define DEFINE_ACTION(x,stock) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock) ); actions_action_group->add(action); }
 
-// actions in File menu
-DEFINE_ACTION("new",            Gtk::StockID("synfig-new"))
-DEFINE_ACTION("open",           Gtk::StockID("synfig-open"))
-DEFINE_ACTION("save",           Gtk::StockID("synfig-save"))
-DEFINE_ACTION("save-as",        Gtk::StockID("synfig-save_as"))
-DEFINE_ACTION("save-all",       Gtk::StockID("synfig-save_all"))
-
 DEFINE_ACTION("render",         _("Render..."))
 DEFINE_ACTION("preview",        _("Preview..."))
 
 // actions in Edit menu
-DEFINE_ACTION("undo",                     Gtk::StockID("synfig-undo"))
-DEFINE_ACTION("redo",                     Gtk::StockID("synfig-redo"))
 DEFINE_ACTION("copy",                     Gtk::Stock::COPY)
 DEFINE_ACTION("cut",                      Gtk::Stock::CUT)
 DEFINE_ACTION("paste",                    Gtk::Stock::PASTE)
@@ -1730,15 +1721,6 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 "	</menu>";
 
 	Glib::ustring ui_info_main_tool =
-"		<toolitem action='new'/>"
-"		<toolitem action='open'/>"
-"		<toolitem action='save'/>"
-"		<toolitem action='save-as'/>"
-"		<toolitem action='save-all'/>"
-"		<separator />"
-"		<toolitem action='undo'/>"
-"		<toolitem action='redo'/>"
-"		<separator />"
 "		<toolitem action='render'/>"
 "		<toolitem action='preview'/>";
 
