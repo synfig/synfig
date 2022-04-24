@@ -1494,11 +1494,53 @@ init_menu_builder()
 	"	</submenu>"
 	"  </menu>"
     "</interface>";
+	Glib::ustring toolbar_info =
+    "<!-- Generated with glade 3.18.3 -->"
+    "<interface>"
+    "  <requires lib='gtk+' version='3.4'/>"
+    "  <object class='GtkToolbar' id='top-toolbar'>"
+    "    <property name='visible'>True</property>"
+    "    <property name='can_focus'>False</property>"
+    "    <child>"
+    "      <object class='GtkToolButton' id='toolbutton_new'>"
+    "        <property name='visible'>True</property>"
+    "        <property name='can_focus'>False</property>"
+    "        <property name='tooltip_text' translatable='yes'>New Document</property>"
+    "        <property name='action_name'>app.new</property>"
+    "        <property name='icon_name'>"+App::icon_theme()->lookup_icon(get_icon_name("new"), 16).get_filename()+"</property>"
+    "      </object>"
+    "      <packing>"
+    "        <property name='expand'>False</property>"
+    "        <property name='homogeneous'>True</property>"
+    "      </packing>"
+    "    </child>"
+	/*
+    "    <child>"
+    "      <object class='GtkToolButton' id='toolbutton_quit'>"
+    "        <property name='visible'>True</property>"
+    "        <property name='can_focus'>False</property>"
+    "        <property name='tooltip_text' translatable='yes'>Quit</property>"
+    "        <property name='action_name'>app.quit</property>"
+    "        <property name='icon_name'>application-exit</property>"
+    "      </object>"
+    "      <packing>"
+    "        <property name='expand'>False</property>"
+    "        <property name='homogeneous'>True</property>"
+    "      </packing>"
+    "    </child>"
+	*/
+    "  </object>"
+    "</interface>";
 
 	try {
 		App::builder()->add_from_string(ui_info);
 	} catch (const Glib::Error& ex) {
 		std::cerr << "Building menus failed: " << ex.what();
+	}
+	try {
+		App::builder()->add_from_string(toolbar_info);
+	} catch (const Glib::Error& ex) {
+		std::cerr << "Building toolbars failed: " << ex.what();
 	}
 	auto menu_object = App::builder()->get_object("studio_menubar");
 	auto menu_bar = Glib::RefPtr<Gio::Menu>::cast_dynamic(menu_object);

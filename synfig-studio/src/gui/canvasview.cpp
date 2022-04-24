@@ -1127,8 +1127,17 @@ Gtk::Widget*
 CanvasView::create_top_toolbar()
 {
 	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
-
-	displaybar = manage(new class Gtk::Toolbar());
+	//Gtk::IconSize iconsize = Gtk::IconSize(16);
+	
+	//This doesn't work with App::builder()
+	//It only works on initial canvasview
+	Gtk::Toolbar *toolbar;
+	App::builder()->get_widget("top-toolbar", toolbar);
+	if(!toolbar)
+		g_warning("Could not get top toolbar!");
+	displaybar=manage(toolbar);
+	
+	//displaybar = manage(new class Gtk::Toolbar());
 	displaybar->set_icon_size(iconsize);
 	displaybar->set_toolbar_style(Gtk::TOOLBAR_BOTH_HORIZ);
 
