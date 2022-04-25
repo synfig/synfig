@@ -1102,6 +1102,7 @@ CanvasView::create_action_toolbutton(const std::string& action_name)
 	}else{
 		g_warning("icon not found");
 	}
+	button->set_tooltip_text(get_local_label_name(action_name));
 	button->show();
 	return button;
 }
@@ -1129,31 +1130,13 @@ CanvasView::create_top_toolbar()
 	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
 	//Gtk::IconSize iconsize = Gtk::IconSize(16);
 	
-	//This doesn't work with App::builder()
-	//It only works on initial canvasview
-	Gtk::Toolbar *toolbar;
-	App::builder()->get_widget("top-toolbar", toolbar);
-	if(!toolbar)
-		g_warning("Could not get top toolbar!");
-	displaybar=manage(toolbar);
-	
-	//displaybar = manage(new class Gtk::Toolbar());
+	displaybar = manage(new class Gtk::Toolbar());
 	displaybar->set_icon_size(iconsize);
 	displaybar->set_toolbar_style(Gtk::TOOLBAR_BOTH_HORIZ);
 
 	// File buttons
-	//TODO: need to add tooltip text
 	if (App::show_file_toolbar) {
 		Gtk::ToolButton *button;
-		/*
-		App::builder()->get_widget("toolbutton_new", button);
-		Gtk::Image *icon =	manage( new Gtk::Image(
-			App::icon_theme()->lookup_icon(get_icon_name("new"), 16).load_icon()
-		)
-	);
-		icon->show();
-		button->set_icon_widget(*icon);
-		*/
 		button =create_action_toolbutton("new");
 		button->signal_clicked().connect(sigc::ptr_fun(&App::new_instance));
 		displaybar->append(*button);
