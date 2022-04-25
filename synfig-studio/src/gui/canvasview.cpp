@@ -1145,6 +1145,15 @@ CanvasView::create_top_toolbar()
 	//TODO: need to add tooltip text
 	if (App::show_file_toolbar) {
 		Gtk::ToolButton *button;
+		/*
+		App::builder()->get_widget("toolbutton_new", button);
+		Gtk::Image *icon =	manage( new Gtk::Image(
+			App::icon_theme()->lookup_icon(get_icon_name("new"), 16).load_icon()
+		)
+	);
+		icon->show();
+		button->set_icon_widget(*icon);
+		*/
 		button =create_action_toolbutton("new");
 		button->signal_clicked().connect(sigc::ptr_fun(&App::new_instance));
 		displaybar->append(*button);

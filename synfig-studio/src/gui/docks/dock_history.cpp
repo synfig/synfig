@@ -75,67 +75,83 @@ Dock_History::Dock_History():
 	App::signal_instance_deleted().connect(sigc::mem_fun(*this,&studio::Dock_History::delete_instance));
 	App::signal_instance_selected().connect(sigc::mem_fun(*this,&studio::Dock_History::set_selected_instance_signal));
 
-	action_group->add(Gtk::Action::create(
-		"clear-undo",
-		Gtk::StockID("synfig-clear_undo"),
-		_("Clear Undo Stack"),
-		_("Clear the undo stack")
-	),
-		sigc::mem_fun(
-			*this,
-			&Dock_History::clear_undo
-		)
-	);
-	action_group->add(Gtk::Action::create(
-		"clear-redo",
-		Gtk::StockID("synfig-clear_redo"),
-		_("Clear Redo Stack"),
-		_("Clear the redo stack")
-	),
-		sigc::mem_fun(
-			*this,
-			&Dock_History::clear_redo
-		)
-	);
-	action_group->add(Gtk::Action::create(
-		"clear-undo-and-redo",
-		Gtk::Stock::CLEAR,
-		_("Clear Undo and Redo Stacks"),
-		_("Clear the undo and redo stacks")
-	),
-		sigc::mem_fun(
-			*this,
-			&Dock_History::clear_undo_and_redo
-		)
-	);
 	history_action_group->add_action(
 		App::instance()->add_action("undo", sigc::ptr_fun(studio::App::undo))
 	);
 	history_action_group->add_action(
 		App::instance()->add_action("redo", sigc::ptr_fun(studio::App::redo))
 	);
-
+	history_action_group->add_action(
+		App::instance()->add_action("clear-undo", sigc::mem_fun(*this,&Dock_History::clear_undo))
+	);
+	history_action_group->add_action(
+		App::instance()->add_action("clear-redo", sigc::mem_fun(*this,&Dock_History::clear_redo))
+	);
+	history_action_group->add_action(
+		App::instance()->add_action("clear-undo-redo", sigc::mem_fun(*this,&Dock_History::clear_undo_and_redo))
+	);
+	//Todo: Need to make history button in builder to replace this
+	//not sure how to make history button and place it?
 	action_group->add( Gtk::Action::create("toolbar-history", _("History")) );
 	App::ui_manager()->insert_action_group(action_group);
 
 	Glib::ustring ui_info =
 	"<ui>"
 	"	<toolbar action='toolbar-history'>"
-	"	<toolitem action='clear-undo' />"
-	"	<toolitem action='clear-redo' />"
-	"	<toolitem action='clear-undo-and-redo' />"
 	"	</toolbar>"
 	"</ui>"
 	;
 
 	App::ui_manager()->add_ui_from_string(ui_info);
 
-	action_group->set_sensitive(false);
+	Gtk::ToolButton *button;
+	App::builder()->get_widget("toolbutton_undo", button);
+	Gtk::Image *icon = manage(
+		new Gtk::Image(
+			App::icon_theme()->lookup_icon(get_icon_name("undo"), 16).load_icon()
+		)
+	);
+	icon->show();
+	button->set_icon_widget(*icon);
+	App::builder()->get_widget("toolbutton_redo", button);
+	icon = manage(
+		new Gtk::Image(
+			App::icon_theme()->lookup_icon(get_icon_name("redo"), 16).load_icon()
+		)
+	);
+	icon->show();
+	button->set_icon_widget(*icon);
+	App::builder()->get_widget("toolbutton_clearundo", button);
+	icon = manage(
+		new Gtk::Image(
+			App::icon_theme()->lookup_icon(get_icon_name("clear-undo"), 16).load_icon()
+		)
+	);
+	icon->show();
+	button->set_icon_widget(*icon);
+	App::builder()->get_widget("toolbutton_clearredo", button);
+	icon = manage(
+		new Gtk::Image(
+			App::icon_theme()->lookup_icon(get_icon_name("clear-redo"), 16).load_icon()
+		)
+	);
+	icon->show();
+	button->set_icon_widget(*icon);
+	App::builder()->get_widget("toolbutton_clearundoredo", button);
+	icon = manage(
+		new Gtk::Image(
+			App::icon_theme()->lookup_icon(get_icon_name("clear-undo-redo"), 16).load_icon()
+		)
+	);
+	icon->show();
+	button->set_icon_widget(*icon);
 	App::enable_action_group(history_action_group, false);
-	
-	if (Gtk::Toolbar* toolbar = dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-history"))) {
+	Gtk::Toolbar* toolbar;
+	App::builder()->get_widget("history_toolbar", toolbar);
+	if (toolbar) {
 		set_toolbar(*toolbar);
 	}
+
 	add(*create_action_tree());
 }
 
@@ -293,18 +309,21 @@ Dock_History::update_undo_redo()
 	etl::handle<Instance> instance=App::get_selected_instance();
 	if(instance)
 	{
-		//action_group->get_action("undo")->set_sensitive(instance->get_undo_status());
-		action_group->get_action("clear-undo")->set_sensitive(instance->get_undo_status());
-		//action_group->get_action("redo")->set_sensitive(instance->get_redo_status());
-		action_group->get_action("clear-redo")->set_sensitive(instance->get_redo_status());
-		action_group->get_action("clear-undo-and-redo")->set_sensitive(instance->get_undo_status() || instance->get_redo_status());
-
 		auto action = App::instance()->lookup_action("undo");
 		if (auto undo_action = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(action))
 			undo_action->set_enabled(instance->get_undo_status());
 		action = App::instance()->lookup_action("redo");
 		if (auto redo_action = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(action))
 			redo_action ->set_enabled(instance->get_redo_status());
+		action = App::instance()->lookup_action("clear-undo");
+		if (auto clear_undo = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(action))
+			clear_undo ->set_enabled(instance->get_undo_status());
+		action = App::instance()->lookup_action("clear-redo");
+		if (auto clear_redo = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(action))
+			clear_redo ->set_enabled(instance->get_redo_status());
+		action = App::instance()->lookup_action("clear-undo-redo");	
+		if (auto clear_undo_redo = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(action))
+			clear_undo_redo ->set_enabled(instance->get_undo_status() || instance->get_redo_status());
 		//TODO: Need to make buttons in toolbar sensitive
 		//This code is cuasing Assertion failed: (obj), function operator->, file _handle.h, line 740.
 		/*
@@ -362,14 +381,16 @@ Dock_History::set_selected_instance_(etl::handle<studio::Instance> instance)
 		action_tree->set_model(instance->history_tree_store());
 		action_tree->show();
 		update_undo_redo();
-		action_group->set_sensitive(true);
+		//action_group->set_sensitive(true);
+		//Todo: not sure if this is needed?
 		//App::enable_action_group(history_action_group, true);
 	}
 	else
 	{
 		action_tree->set_model(Glib::RefPtr< Gtk::TreeModel >());
 		action_tree->hide();
-		action_group->set_sensitive(false);
+		//action_group->set_sensitive(false);
+		//Todo: not sure if this is needed?
 		//App::enable_action_group(history_action_group, false);
 	}
 }

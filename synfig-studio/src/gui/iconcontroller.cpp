@@ -242,9 +242,6 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	INIT_STOCK_ICON(encapsulate_filter, "layer_icon." IMAGE_EXT, _("Group into Filter"));
 	INIT_STOCK_ICON(select_all_child_layers, "select_all_child_layers_icon." IMAGE_EXT, _("Select All Child Layers"));
 
-	INIT_STOCK_ICON(clear_undo, "clear_undo_icon." IMAGE_EXT, _("Clear Undo Stack"));
-	INIT_STOCK_ICON(clear_redo, "clear_redo_icon." IMAGE_EXT, _("Clear Redo Stack"));
-
 	INIT_STOCK_ICON(children, "library_icon." IMAGE_EXT, _("Library"));
 	INIT_STOCK_ICON(curves, "graphs_icon." IMAGE_EXT, _("Graphs"));
 	INIT_STOCK_ICON(keyframes, "keyframe_icon." IMAGE_EXT, _("Keyframes"));
@@ -356,9 +353,13 @@ IconController::init_icons(const synfig::String& path_to_icons)
 		//Edit
 		{"undo" , "action_doc_undo_icon"},
 		{"redo" , "action_doc_redo_icon"},
+		{"clear-undo", "clear_undo_icon"},
+		{"clear-redo", "clear_redo_icon"},
+		{"clear-undo-redo", "edit-clear"},
 		{"cut" , "edit-cut"},
 		{"copy" , "edit-copy"},
 		{"paste" , "edit-paste"},
+		{"history", "history_icon"},
 		//toolbox
 		{"state-normal" , "tool_normal_icon"},
 		{"state-smooth_move" , "tool_smooth_move_icon"},
