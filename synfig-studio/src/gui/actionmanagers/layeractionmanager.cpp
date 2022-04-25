@@ -114,10 +114,12 @@ LayerActionManager::LayerActionManager():
 		)
 	);
 	
-	//TODO2: CUT IS NOT WORKING CORRECTLY!
-	//simp_action_cut_=App::instance()->add_action("cut", sigc::mem_fun(*this, &LayerActionManager::cut));
-	simp_action_cut_=App::instance()->add_action("cut", [&](){this->cut();});
-	simp_action_cut_->signal_activate();
+	simp_action_cut_=App::instance()->add_action("cut", 
+		sigc::mem_fun(
+			*this,
+			&LayerActionManager::cut
+		)
+	);
 	simp_action_cut_->set_enabled(false);
 
 	action_copy_=Gtk::Action::create(
@@ -132,8 +134,12 @@ LayerActionManager::LayerActionManager():
 	);
 
 	//simp_action_copy_=App::instance()->add_action("copy", sigc::mem_fun(*this, &LayerActionManager::copy));
-	simp_action_copy_=App::instance()->add_action("copy", [&](){this->copy();});
-	simp_action_copy_->signal_activate();
+	simp_action_copy_=App::instance()->add_action("copy",
+		sigc::mem_fun(
+			*this,
+			&LayerActionManager::copy
+		)
+	);
 	simp_action_copy_->set_enabled(false);
 
 	action_paste_=Gtk::Action::create(
@@ -148,8 +154,12 @@ LayerActionManager::LayerActionManager():
 	);
 
 	//simp_action_paste_=App::instance()->add_action("paste", sigc::mem_fun(*this, &LayerActionManager::paste));
-	simp_action_paste_=App::instance()->add_action("paste", [&](){this->paste();});
-	simp_action_paste_->signal_activate();
+	simp_action_paste_=App::instance()->add_action("paste",
+		sigc::mem_fun(
+			*this,
+			&LayerActionManager::paste
+		)
+	);
 
 	action_amount_inc_=Gtk::Action::create(
 		"amount-inc",
@@ -163,6 +173,13 @@ LayerActionManager::LayerActionManager():
 		)
 	);
 
+	simp_action_amount_inc_=App::instance()->add_action("amount-inc",
+		sigc::mem_fun(
+			*this,
+			&LayerActionManager::amount_inc
+		)
+	);
+	simp_action_amount_inc_->set_enabled(false);
 	action_amount_dec_=Gtk::Action::create(
 		"amount-dec",
 		Gtk::StockID("gtk-remove"),
@@ -174,7 +191,13 @@ LayerActionManager::LayerActionManager():
 			&LayerActionManager::amount_dec
 		)
 	);
-
+	simp_action_amount_dec_=App::instance()->add_action("amount-dec",
+		sigc::mem_fun(
+			*this,
+			&LayerActionManager::amount_dec
+		)
+	);
+	simp_action_amount_dec_->set_enabled(false);
 	action_select_all_child_layers_=Gtk::Action::create(
 		"select-all-child-layers",
 		Gtk::StockID("synfig-select_all_child_layers"),
@@ -322,10 +345,27 @@ LayerActionManager::refresh()
 
 				action_amount_inc_->set_sensitive(!layer_list.empty());
 				action_amount_dec_->set_sensitive(!layer_list.empty());
+
+				simp_action_amount_inc_->set_enabled(!layer_list.empty());
+				simp_action_amount_dec_->set_enabled(!layer_list.empty());
+				auto object=App::builder()->get_object("layer-inc-dec");
+				auto inc_dec_section=Glib::RefPtr<Gio::Menu>::cast_dynamic(object);
 				if (Layer_Skeleton::Handle::cast_dynamic(layer) || etl::handle<Layer_Composite>::cast_dynamic(layer)) {
+					//TODO: need to add icons and accelerators
+					inc_dec_section->remove_all();
+					if(auto menu_item = Gio::MenuItem::create(_("Increase Opacity"),"app.amount-inc"))
+						inc_dec_section->append_item(menu_item);
+					if(auto menu_item = Gio::MenuItem::create(_("Decrease Opacity"),"app.amount-dec"))
+						inc_dec_section->append_item(menu_item);
 					action_amount_inc_->set_label(_("Increase Opacity"));
 					action_amount_dec_->set_label(_("Decrease Opacity"));
 				} else {
+					inc_dec_section->remove_all();
+					inc_dec_section->remove_all();
+					if(auto menu_item = Gio::MenuItem::create(_("Increase Amount"),"app.amount-inc"))
+						inc_dec_section->append_item(menu_item);
+					if(auto menu_item = Gio::MenuItem::create(_("Decrease Amount"),"app.amount-dec"))
+						inc_dec_section->append_item(menu_item);
 					action_amount_inc_->set_label(_("Increase Amount"));
 					action_amount_dec_->set_label(_("Decrease Amount"));
 				}

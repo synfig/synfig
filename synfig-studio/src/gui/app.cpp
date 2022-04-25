@@ -1489,6 +1489,8 @@ init_menu_builder()
 	"		</submenu>"
 	"	</submenu>"
 	"	</section>"
+	"	<section id='layer-inc-dec'>"
+	"	</section>"
 	"	<section id='instance-layers'>"
 	"	</section>"
 	"	</submenu>"

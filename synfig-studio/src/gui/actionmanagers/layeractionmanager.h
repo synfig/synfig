@@ -65,9 +65,11 @@ class LayerActionManager
 	Glib::RefPtr<Gio::SimpleAction> simp_action_copy_;
 	Glib::RefPtr<Gio::SimpleAction> simp_action_paste_;
 
-
 	Glib::RefPtr<Gtk::Action>	action_amount_inc_;
 	Glib::RefPtr<Gtk::Action>	action_amount_dec_;
+
+	Glib::RefPtr<Gio::SimpleAction> simp_action_amount_inc_;
+	Glib::RefPtr<Gio::SimpleAction> simp_action_amount_dec_;
 
 	Glib::RefPtr<Gtk::Action>	action_select_all_child_layers_;
 	sigc::connection			select_all_child_layers_connection;
