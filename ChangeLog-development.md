@@ -1,3 +1,5 @@
+- [`08202f4`](https://github.com/synfig/synfig/commit/08202f400bffb75031b907c7eab02f517ad99fef) Removed old .cvsignore files ([#2616](https://github.com/synfig/synfig/issues/2616))
+- [`ead44ed`](https://github.com/morevnaproject/morevna-builds/commit/ead44ed5a5e8ac6fb20815b3cc37a452c0953acf) Fix issue [#2410](https://github.com/synfig/synfig/issues/2410) - Can't import file into a saved SIF animation (if both are on the same disk) [studio]
 - [`05f5108`](https://github.com/synfig/synfig/commit/05f51084218d75c4317a7c9533dcc0a756b052b7) Fix various typos ([#2614](https://github.com/synfig/synfig/issues/2614)) [core] [studio]
 - [`368a50f`](https://github.com/synfig/synfig/commit/368a50f9f322bf0083067af9b4aaf113816b063b) Fix crash when switching workspaces ([#2591](https://github.com/synfig/synfig/issues/2591)) [studio]
 - [`e54c25d`](https://github.com/synfig/synfig/commit/e54c25dc051f6ad38f8ec2ed8ca95371be4a3cd4) Update contributor name list ([#2600](https://github.com/synfig/synfig/issues/2600)) [studio]
