@@ -724,6 +724,10 @@ private:
 
 
 }; // END of namespace studio
+void
+set_waypoint_model(std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoints,
+                   synfig::Waypoint::Model model,
+                   etl::loose_handle<synfigapp::CanvasInterface> canvas_interface) ;
 
 /* === E N D =============================================================== */
 

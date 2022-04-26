@@ -31,6 +31,8 @@
 #endif
 
 #include "dock_timetrack2.h"
+#include <synfigapp/canvasinterface.h>
+
 
 #include <gtkmm/stock.h>
 
@@ -160,6 +162,7 @@ void Dock_Timetrack2::on_update_header_height(int height)
 
 void Dock_Timetrack2::on_widget_timetrack_waypoint_clicked(synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set, int button)
 {
+    waypoint_set_g = waypoint_set;
 	if (button != 3)
 		return;
 	button = 2;
@@ -247,15 +250,22 @@ void Dock_Timetrack2::setup_tool_palette()
                                                     *manage(new Gtk::Image(
                                                                 Gtk::StockID("synfig-interpolation_type_tcb"),
                                                                 Gtk::IconSize::from_name("synfig-small_icon_16x16") )),
-                                                                "_Clamped" ));
+                                                                "_TCB" ));
     tcb_button->set_group(interpolation_group);
+    synfig::Waypoint::Model model;
+
+    if ( tcb_button->signal_toggled().connect(sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set_g, model, CanvasView::canvas_interface())) )
+            {
+                model.set_before(synfig::INTERPOLATION_TCB);
+                 model.set_after(synfig::INTERPOLATION_TCB);
+             }
     tool_item_group->add(*tcb_button);
     //button3
     Gtk::RadioToolButton *const_button = manage(new Gtk::RadioToolButton(
                                                     *manage(new Gtk::Image(
                                                                 Gtk::StockID("synfig-interpolation_type_const"),
                                                                 Gtk::IconSize::from_name("synfig-small_icon_16x16") )),
-                                                                "_Clamped" ));
+                                                                "_Constant" ));
     const_button->set_group(interpolation_group);
     tool_item_group->add(*const_button);
     //button4
@@ -263,7 +273,7 @@ void Dock_Timetrack2::setup_tool_palette()
                                                     *manage(new Gtk::Image(
                                                                 Gtk::StockID("synfig-interpolation_type_ease"),
                                                                 Gtk::IconSize::from_name("synfig-small_icon_16x16") )),
-                                                                "_Clamped" ));
+                                                                "_Ease In/Out" ));
     ease_button->set_group(interpolation_group);
     tool_item_group->add(*ease_button);
     //button5
@@ -271,7 +281,7 @@ void Dock_Timetrack2::setup_tool_palette()
                                                     *manage(new Gtk::Image(
                                                                 Gtk::StockID("synfig-interpolation_type_linear"),
                                                                 Gtk::IconSize::from_name("synfig-small_icon_16x16") )),
-                                                                "_Clamped" ));
+                                                                "_Linear" ));
     linear_button->set_group(interpolation_group);
     tool_item_group->add(*linear_button);
 
