@@ -354,18 +354,36 @@ LayerActionManager::refresh()
 					//TODO: need to add icons and accelerators
 					inc_dec_section->remove_all();
 					if(auto menu_item = Gio::MenuItem::create(_("Increase Opacity"),"app.amount-inc"))
+					{
+						//TODO: cant set accelerators to menu items dynamically???
+						//menu_item->set_attribute_value("accel", Glib::Variant<std::string>::create("&lt;Control&gt;minus"));
+						if(auto icon = App::icon_theme()->lookup_icon("list-add", 128).load_icon())
+							menu_item->set_icon(icon);
 						inc_dec_section->append_item(menu_item);
+					}
 					if(auto menu_item = Gio::MenuItem::create(_("Decrease Opacity"),"app.amount-dec"))
+					{	
+						if(auto icon = App::icon_theme()->lookup_icon("list-remove", 128).load_icon())
+							menu_item->set_icon(icon);
 						inc_dec_section->append_item(menu_item);
+					}
 					action_amount_inc_->set_label(_("Increase Opacity"));
 					action_amount_dec_->set_label(_("Decrease Opacity"));
 				} else {
 					inc_dec_section->remove_all();
 					inc_dec_section->remove_all();
 					if(auto menu_item = Gio::MenuItem::create(_("Increase Amount"),"app.amount-inc"))
+					{
+						if(auto icon = App::icon_theme()->lookup_icon("list-add", 128).load_icon())
+							menu_item->set_icon(icon);
 						inc_dec_section->append_item(menu_item);
+					}
 					if(auto menu_item = Gio::MenuItem::create(_("Decrease Amount"),"app.amount-dec"))
+					{	
+						if(auto icon = App::icon_theme()->lookup_icon("list-remove", 128).load_icon())
+							menu_item->set_icon(icon);
 						inc_dec_section->append_item(menu_item);
+					}
 					action_amount_inc_->set_label(_("Increase Amount"));
 					action_amount_dec_->set_label(_("Decrease Amount"));
 				}

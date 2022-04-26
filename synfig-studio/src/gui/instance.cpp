@@ -893,8 +893,9 @@ Instance::add_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_grou
 			if(!layer_submenu){
 				g_warning("could not get layer submenu!");
 			}else{
+				std::cout<<iter->task<<std::endl;
 				auto icon_info = App::icon_theme()->lookup_icon(
-					get_action_icon_name(*iter), 128
+					get_icon_name(iter->task), 128
 				);
 				if(icon_info){
 					std::string icon_name(icon_info.get_filename());
