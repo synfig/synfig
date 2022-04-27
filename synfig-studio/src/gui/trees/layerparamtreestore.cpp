@@ -477,7 +477,7 @@ LayerParamTreeStore::queue_rebuild()
 			sigc::mem_fun(*this,&LayerParamTreeStore::rebuild),
 			false
 		)
-	,150);
+	,20);
 
 }
 

@@ -805,6 +805,23 @@ LayerTree::on_layer_tree_event(GdkEvent *event)
 		}
 		break;
 	case GDK_BUTTON_RELEASE:
+		{
+			// Transformation parameter property is in 5th row
+			// Row is expanded only once and not recursively to avoid lengthy tree
+			auto transform_row   = param_tree_view().get_model()->children()[4];
+			auto layer_rows_path = layer_tree_view().get_selection()->get_selected_rows();
+			bool is_group_layer  = true;
+
+			for (auto path : layer_rows_path) {
+				if (!layer_tree_view().get_model()->get_iter(path)->children()) {
+					is_group_layer = false;
+					break;
+				}
+			}
+
+			if (is_group_layer && transform_row.children())
+				param_tree_view().expand_row(Gtk::TreePath("4"), false);
+		}
 		break;
 	default:
 		break;
