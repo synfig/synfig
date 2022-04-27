@@ -744,6 +744,7 @@ void CanvasView::activate()
 	App::instance()->enable_action_group(App::get_state_manager()->get_action_group(), _canvas_action_group_enabled);
 	//add toggle group
 	App::instance()->add_action_group(toggle_action_group);
+	App::instance()->add_action_group(plugin_action_group);
 	update_title();
 	present();
 	grab_focus();
@@ -759,6 +760,7 @@ void CanvasView::deactivate()
 	App::instance()->enable_action_group(App::get_state_manager()->get_action_group(), _canvas_action_group_enabled);
 	//remove toggle action group
 	App::instance()->remove_action_group(toggle_action_group);
+	App::instance()->remove_action_group(plugin_action_group);
 	update_title();
 }
 
@@ -1502,6 +1504,7 @@ CanvasView::init_menus()
 	- viewmenu
 	*/
 	toggle_action_group = Gio::SimpleActionGroup::create();
+	plugin_action_group=Gio::SimpleActionGroup::create();
 	action_group = Gtk::ActionGroup::create("canvasview");
 
 	action_group->add( Gtk::Action::create("pause", Gtk::StockID("synfig-animate_pause")),
@@ -1520,6 +1523,9 @@ CanvasView::init_menus()
 			Gtk::Action::create(id, plugin.name.get()),
 			[instance, id](){instance->run_plugin(id, true);}
         );
+		App::instance()->add_action( plugin.id, 
+			[instance, id](){instance->run_plugin(id, true);}
+		);
     }
 
 	// Low-Res Quality Menu

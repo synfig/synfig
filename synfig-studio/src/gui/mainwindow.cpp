@@ -149,6 +149,7 @@ MainWindow::init_menus()
 	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create("mainwindow");
 
 	// file
+	/*
 	action_group->add( Gtk::Action::create("new", Gtk::StockID("synfig-new_doc"), _("New"), _("Create a new document")),
 		sigc::hide_return(sigc::ptr_fun(&studio::App::new_instance))
 	);
@@ -158,6 +159,7 @@ MainWindow::init_menus()
 	action_group->add( Gtk::Action::create("quit", Gtk::StockID("gtk-quit"), _("Quit")),
 		sigc::hide_return(sigc::ptr_fun(&studio::App::quit))
 	);
+	*/
 
 	// Edit menu
 	/*

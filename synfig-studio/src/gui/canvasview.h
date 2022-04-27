@@ -384,6 +384,7 @@ private:
 	bool ducks_rebuild_requested;
 	bool ducks_rebuild_queue_requested;
 	Glib::RefPtr<Gio::SimpleActionGroup> toggle_action_group;
+	Glib::RefPtr<Gio::SimpleActionGroup> plugin_action_group;
 	Glib::RefPtr<Gio::SimpleAction> pixel_radio_actions;
 
 	/*

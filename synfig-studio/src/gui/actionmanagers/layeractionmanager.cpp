@@ -252,7 +252,18 @@ LayerActionManager::clear()
 		g_warning("Could not get sub menu!");
 	else
 		layer_submenu->remove_all();
-
+	menu_object=App::builder()->get_object("special-layer-actions");
+	menu_object=App::builder()->get_object("layer-inc-dec");
+	auto inc_dec_menu=Glib::RefPtr<Gio::Menu>::cast_dynamic(menu_object);
+	if (!inc_dec_menu)
+		g_warning("Could not get sub menu!");
+	else
+		inc_dec_menu->remove_all();
+	auto special_action_menu=Glib::RefPtr<Gio::Menu>::cast_dynamic(menu_object);
+	if (!special_action_menu)
+		g_warning("Could not get sub menu!");
+	else
+		special_action_menu->remove_all();
 	if(ui_manager_)
 	{
 		// Clear out old stuff
@@ -319,7 +330,8 @@ LayerActionManager::refresh()
 	action_paste_->set_sensitive(!clipboard_.empty());
 	action_group_->add(action_paste_);
 	simp_action_paste_->set_enabled(!clipboard_.empty());
-
+	auto object=App::builder()->get_object("layer-inc-dec");
+	auto inc_dec_section=Glib::RefPtr<Gio::Menu>::cast_dynamic(object);
 	if(layer_tree_->get_selection()->count_selected_rows()!=0)
 	{
 		bool multiple_selected(layer_tree_->get_selection()->count_selected_rows()>1);
@@ -348,42 +360,16 @@ LayerActionManager::refresh()
 
 				simp_action_amount_inc_->set_enabled(!layer_list.empty());
 				simp_action_amount_dec_->set_enabled(!layer_list.empty());
-				auto object=App::builder()->get_object("layer-inc-dec");
-				auto inc_dec_section=Glib::RefPtr<Gio::Menu>::cast_dynamic(object);
+
 				if (Layer_Skeleton::Handle::cast_dynamic(layer) || etl::handle<Layer_Composite>::cast_dynamic(layer)) {
-					//TODO: need to add icons and accelerators
+					//TODO: need to add accelerators
 					inc_dec_section->remove_all();
-					if(auto menu_item = Gio::MenuItem::create(_("Increase Opacity"),"app.amount-inc"))
-					{
-						//TODO: cant set accelerators to menu items dynamically???
-						//menu_item->set_attribute_value("accel", Glib::Variant<std::string>::create("&lt;Control&gt;minus"));
-						if(auto icon = App::icon_theme()->lookup_icon("list-add", 128).load_icon())
-							menu_item->set_icon(icon);
-						inc_dec_section->append_item(menu_item);
-					}
-					if(auto menu_item = Gio::MenuItem::create(_("Decrease Opacity"),"app.amount-dec"))
-					{	
-						if(auto icon = App::icon_theme()->lookup_icon("list-remove", 128).load_icon())
-							menu_item->set_icon(icon);
-						inc_dec_section->append_item(menu_item);
-					}
+					set_action_inc_dec_menu(inc_dec_section, "Increase Opacity", "Decrease Opacity", true);
 					action_amount_inc_->set_label(_("Increase Opacity"));
 					action_amount_dec_->set_label(_("Decrease Opacity"));
 				} else {
 					inc_dec_section->remove_all();
-					inc_dec_section->remove_all();
-					if(auto menu_item = Gio::MenuItem::create(_("Increase Amount"),"app.amount-inc"))
-					{
-						if(auto icon = App::icon_theme()->lookup_icon("list-add", 128).load_icon())
-							menu_item->set_icon(icon);
-						inc_dec_section->append_item(menu_item);
-					}
-					if(auto menu_item = Gio::MenuItem::create(_("Decrease Amount"),"app.amount-dec"))
-					{	
-						if(auto icon = App::icon_theme()->lookup_icon("list-remove", 128).load_icon())
-							menu_item->set_icon(icon);
-						inc_dec_section->append_item(menu_item);
-					}
+					set_action_inc_dec_menu(inc_dec_section, "Increase Layer Amount", "Decrease Layer Amount", true);
 					action_amount_inc_->set_label(_("Increase Amount"));
 					action_amount_dec_->set_label(_("Decrease Amount"));
 				}
@@ -412,6 +398,7 @@ LayerActionManager::refresh()
 				}
 			}
 
+			//TODO: need to update this to gio::simpleaction ??
 			if(!multiple_selected && etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
 			{
 				if (select_all_child_layers_connection)
@@ -436,6 +423,8 @@ LayerActionManager::refresh()
 			handle<studio::Instance>::cast_static(get_canvas_interface()->get_instance())->
 				add_special_layer_actions_to_group(action_group_, ui_info, layer_list);
 		}
+	}else{
+		set_action_inc_dec_menu(inc_dec_section, "Increase Layer Amount", "Decrease Layer Amount", false);
 	}
 
 	String full_ui_info;
@@ -473,6 +462,30 @@ LayerActionManager::refresh()
 #endif
 }
 
+void
+LayerActionManager::set_action_inc_dec_menu(Glib::RefPtr<Gio::Menu>& menu, const char* name_inc, const char* name_dec, bool isActive)
+{
+	//TODO: cant set accelerators to menu items dynamically???
+	//menu_item->set_attribute_value("accel", Glib::Variant<std::string>::create("&lt;Control&gt;minus"));
+	if(auto menu_item = Gio::MenuItem::create(_(name_inc),"app.amount-inc"))
+	{
+		if(auto icon = App::icon_theme()->lookup_icon("list-add", 128).load_icon())
+			menu_item->set_icon(icon);
+		menu->append_item(menu_item);
+	}
+	if(auto menu_item = Gio::MenuItem::create(_(name_dec),"app.amount-dec"))
+	{	
+		if(auto icon = App::icon_theme()->lookup_icon("list-remove", 128).load_icon())
+			menu_item->set_icon(icon);
+		menu->append_item(menu_item);
+	}
+	auto action = App::instance()->lookup_action("amount-inc");
+	if (auto s_action = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(action))
+		s_action->set_enabled(isActive);
+	action = App::instance()->lookup_action("amount-dec");
+	if (auto s_action = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(action))
+		s_action->set_enabled(isActive);
+}
 void
 LayerActionManager::cut()
 {

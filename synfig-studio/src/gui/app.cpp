@@ -1493,6 +1493,8 @@ init_menu_builder()
 	"	</section>"
 	"	<section id='instance-layers'>"
 	"	</section>"
+	"	<section id='special-layer-actions'>"
+	"	</section>"
 	"		<section>"
 	"			<item>"
 	"				<attribute name='label' translatable='yes'>_Cut</attribute>"
@@ -1513,6 +1515,9 @@ init_menu_builder()
 	"				<attribute name='icon'>edit-paste</attribute>"
 	"			</item>"
 	"		</section>"
+	"	</submenu>"
+	"	<submenu id='plugins'>"
+	"		<attribute name='label' translatable='yes'>_Plug-Ins</attribute>"
 	"	</submenu>"
 	"  </menu>"
     "</interface>";
@@ -1597,8 +1602,30 @@ init_menu_builder()
 	} catch (const Glib::Error& ex) {
 		std::cerr << "Building toolbars failed: " << ex.what();
 	}
-	auto menu_object = App::builder()->get_object("studio_menubar");
-	auto menu_bar = Glib::RefPtr<Gio::Menu>::cast_dynamic(menu_object);
+	/* TODO: PLUGIN MENU
+	for ( const auto& plugin : studio::App::plugin_manager.plugins() ) {
+		// TODO: (Plugins) Arrange menu items into groups
+		std::cout<< plugin.name.get() <<std::endl;
+		DEFINE_ACTION(plugin.id, plugin.name.get())
+		ui_info_menu += strprintf("	<menuitem action='%s'/>", plugin.id.c_str());
+	}
+	*/
+	auto object = App::builder()->get_object("plugins");
+	auto plugin_menu = Glib::RefPtr<Gio::Menu>::cast_dynamic(object);
+	for ( const auto& plugin : App::plugin_manager.plugins() )
+    {
+		/*
+		auto instance = App::get_selected_canvas_view()->get_instance().get();
+		auto id = plugin.id;
+		App::instance()->add_action( plugin.id, 
+			[instance, id](){instance->run_plugin(id, true);}
+		);
+		*/
+		auto item = Gio::MenuItem::create(_(plugin.name.get().c_str()), "app."+plugin.id );
+		plugin_menu->append_item(item);
+    }
+	object = App::builder()->get_object("studio_menubar");
+	auto menu_bar = Glib::RefPtr<Gio::Menu>::cast_dynamic(object);
 	if ( !menu_bar ) {//|| !recent_menu) {
 		g_warning("menu not found!");
 	} else {
@@ -1638,7 +1665,6 @@ init_ui_manager()
 			get_action_stock_id(iter->second),
 			iter->second.local_name,iter->second.local_name
 		));
-		std::cout<<iter->second.local_name<<std::endl;
 	}
 
 // predefined actions to initial menu items, so that there is all menu items listing
@@ -1764,7 +1790,7 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 
 	for ( const auto& plugin : studio::App::plugin_manager.plugins() ) {
 		// TODO: (Plugins) Arrange menu items into groups
-
+		std::cout<< plugin.name.get() <<std::endl;
 		DEFINE_ACTION(plugin.id, plugin.name.get())
 		ui_info_menu += strprintf("	<menuitem action='%s'/>", plugin.id.c_str());
 	}

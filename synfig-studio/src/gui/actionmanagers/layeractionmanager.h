@@ -32,6 +32,7 @@
 
 #include <gtkmm/uimanager.h>
 #include <giomm/simpleaction.h>
+#include <giomm/menu.h>
 #include <synfigapp/canvasinterface.h>
 
 /* === M A C R O S ========================================================= */
@@ -90,6 +91,7 @@ class LayerActionManager
 
 	void amount_inc();
 	void amount_dec();
+	void set_action_inc_dec_menu(Glib::RefPtr<Gio::Menu>& menu, const char* name_inc, const char* name_dec, bool isActive);
 
 public:
 	void queue_refresh();

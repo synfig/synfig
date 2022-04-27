@@ -893,7 +893,6 @@ Instance::add_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_grou
 			if(!layer_submenu){
 				g_warning("could not get layer submenu!");
 			}else{
-				std::cout<<iter->task<<std::endl;
 				auto icon_info = App::icon_theme()->lookup_icon(
 					get_icon_name(iter->task), 128
 				);
@@ -1708,7 +1707,7 @@ Instance::add_special_layer_actions_to_menu(Gtk::Menu *menu, const synfigapp::Se
 			item->signal_activate().connect(
 				sigc::bind(sigc::ptr_fun(&App::open_uri), i->second) );
 			item->show();
-			menu->append(*item);	
+			menu->append(*item);
 		}
 	}
 	if(layers.size()==1)
@@ -1746,6 +1745,15 @@ Instance::add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup
 	std::map<String, String> uris;
 	gather_uri(uris, layers);
 	int index = 0;
+
+	//Gtk Builder menu
+	auto menu_object = App::builder()->get_object("special-layer-actions");
+	auto gmenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(menu_object);
+	if(gmenu)
+		gmenu->remove_all();
+	else
+		g_warning("Could not get 'special-layer-actions' menu object!");
+	
 	for(std::map<String, String>::const_iterator i = uris.begin(); i != uris.end(); ++i, ++index)
 	{
 		String action_name = etl::strprintf("special-action-open-file-%d", index);
@@ -1760,6 +1768,14 @@ Instance::add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup
 					local_name, local_name ),
 				sigc::bind(sigc::ptr_fun(&App::open_img_in_external), i->second) ); 
 			ui_info += strprintf("<menuitem action='%s' />", action_name.c_str());
+
+			//GtkBuilder
+			App::instance()->add_action( action_name,
+				sigc::bind(sigc::ptr_fun(&App::open_img_in_external), i->second)
+			);
+			auto menu_item = Gio::MenuItem::create( local_name, "app." + action_name );
+			menu_item->set_icon( App::icon_theme()->lookup_icon("document-open", 128).load_icon() );
+			gmenu->append_item(menu_item);
 		}
 		else
 		{
@@ -1771,6 +1787,14 @@ Instance::add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup
 					local_name, local_name ),
 				sigc::bind(sigc::ptr_fun(&App::open_uri), i->second) );
 			ui_info += strprintf("<menuitem action='%s' />", action_name.c_str());
+
+			//GtkBuilder
+			App::instance()->add_action( action_name,
+				sigc::bind(sigc::ptr_fun(&App::open_uri), i->second)
+			);
+			auto menu_item = Gio::MenuItem::create( local_name, "app." + action_name );
+			menu_item->set_icon( App::icon_theme()->lookup_icon("document-open", 128).load_icon() );
+			gmenu->append_item(menu_item);
 		}
 	}
 	if(layers.size()==1)
@@ -1789,7 +1813,13 @@ Instance::add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup
 			 		local_name2, local_name2 ),
 			 	sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), my_layer_bitmap,layers.front()) );
 				 			ui_info += strprintf("<menuitem action='%s' />", action_name2.c_str());
-
+				//GtkBuilder
+				App::instance()->add_action( action_name2,
+					sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), my_layer_bitmap,layers.front())
+				);
+				auto menu_item = Gio::MenuItem::create( local_name2, "app." + action_name2 );
+				menu_item->set_icon( App::icon_theme()->lookup_icon("document-open", 128).load_icon() );
+				gmenu->append_item(menu_item);
 			} 
 		}
 		if(etl::handle<Layer_Bitmap> my_layer_bitmap = etl::handle<Layer_Bitmap>::cast_dynamic(layers.front()))
@@ -1801,6 +1831,13 @@ Instance::add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup
 			 		local_name2, local_name2 ),
 			 	sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), my_layer_bitmap,layers.front()) );
 				 			ui_info += strprintf("<menuitem action='%s' />", action_name2.c_str());
+				//GtkBuilder
+				App::instance()->add_action( action_name2,
+					sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), my_layer_bitmap,layers.front())
+				);
+				auto menu_item = Gio::MenuItem::create( local_name2, "app." + action_name2 );
+				menu_item->set_icon( App::icon_theme()->lookup_icon("document-open", 128).load_icon() );
+				gmenu->append_item(menu_item);
 
 
 		}
