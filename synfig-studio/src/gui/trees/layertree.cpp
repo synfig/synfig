@@ -737,8 +737,8 @@ bool
 LayerTree::on_layer_tree_event(GdkEvent *event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
-    switch(event->type)
-    {
+	switch(event->type)
+	{
 	case GDK_BUTTON_PRESS:
 		{
 			Gtk::TreeModel::Path path;
