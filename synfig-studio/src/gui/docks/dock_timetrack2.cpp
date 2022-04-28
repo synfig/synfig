@@ -254,11 +254,34 @@ void Dock_Timetrack2::setup_tool_palette()
     tcb_button->set_group(interpolation_group);
     synfig::Waypoint::Model model;
 
-    if ( tcb_button->signal_toggled().connect(sigc::bind(sigc::ptr_fun(set_waypoint_model), waypoint_set_g, model, CanvasView::canvas_interface())) )
+    tcb_button->signal_toggled().connect( ( [&]() {
+        std::set<synfig::Waypoint, std::less<synfig::UniqueID> >::const_iterator iter;
+        model.set_before(synfig::INTERPOLATION_TCB);
+         model.set_after(synfig::INTERPOLATION_TCB);
+        for(iter=waypoint_set_g.begin();iter!=waypoint_set_g.end();++iter)
+        {
+            synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Change Waypoint Group"));
+
+            synfig::Waypoint waypoint(*iter);
+            waypoint.apply_model(model);
+            synfigapp::Action::Handle action(synfigapp::Action::create("WaypointSet"));
+
+            assert(action);
+
+            action->set_param("canvas",get_canvas_interface()->get_canvas());
+            action->set_param("canvas_interface",get_canvas_interface());
+
+            action->set_param("waypoint",waypoint);
+            action->set_param("value_node",waypoint.get_parent_value_node());
+
+            if(!get_canvas_interface()->get_instance()->perform_action(action))
             {
-                model.set_before(synfig::INTERPOLATION_TCB);
-                 model.set_after(synfig::INTERPOLATION_TCB);
-             }
+                group.cancel();
+                return;
+            }
+        }
+                                          }));
+
     tool_item_group->add(*tcb_button);
     //button3
     Gtk::RadioToolButton *const_button = manage(new Gtk::RadioToolButton(
@@ -267,6 +290,34 @@ void Dock_Timetrack2::setup_tool_palette()
                                                                 Gtk::IconSize::from_name("synfig-small_icon_16x16") )),
                                                                 "_Constant" ));
     const_button->set_group(interpolation_group);
+
+    const_button->signal_toggled().connect( ( [&]() {
+        std::set<synfig::Waypoint, std::less<synfig::UniqueID> >::const_iterator iter;
+        model.set_before(synfig::INTERPOLATION_CONSTANT);
+         model.set_after(synfig::INTERPOLATION_CONSTANT);
+        for(iter=waypoint_set_g.begin();iter!=waypoint_set_g.end();++iter)
+        {
+            synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Change Waypoint Group"));
+
+            synfig::Waypoint waypoint(*iter);
+            waypoint.apply_model(model);
+            synfigapp::Action::Handle action(synfigapp::Action::create("WaypointSet"));
+
+            assert(action);
+
+            action->set_param("canvas",get_canvas_interface()->get_canvas());
+            action->set_param("canvas_interface",get_canvas_interface());
+
+            action->set_param("waypoint",waypoint);
+            action->set_param("value_node",waypoint.get_parent_value_node());
+
+            if(!get_canvas_interface()->get_instance()->perform_action(action))
+            {
+                group.cancel();
+                return;
+            }
+        }
+                                          }));
     tool_item_group->add(*const_button);
     //button4
     Gtk::RadioToolButton *ease_button = manage(new Gtk::RadioToolButton(
