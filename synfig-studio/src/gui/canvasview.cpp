@@ -1519,10 +1519,6 @@ CanvasView::init_menus()
 	for ( const auto& plugin : App::plugin_manager.plugins() )
     {
 		std::string id = plugin.id;
-		action_group->add(
-			Gtk::Action::create(id, plugin.name.get()),
-			[instance, id](){instance->run_plugin(id, true);}
-        );
 		App::instance()->add_action( plugin.id, 
 			[instance, id](){instance->run_plugin(id, true);}
 		);
@@ -1535,12 +1531,15 @@ CanvasView::init_menus()
 	action_group->add(
 		Gtk::Action::create("play", Gtk::Stock::MEDIA_PLAY),
 		sigc::mem_fun(*this, &CanvasView::on_play_pause_pressed) );
-	action_group->add(
-		Gtk::Action::create("dialog-flipbook", _("Preview Window")),
-		sigc::mem_fun0(preview_dialog, &Dialog_Preview::present) );
 
+
+	App::instance()->add_action(
+			"dialog-flipbook", sigc::mem_fun0(preview_dialog, &Dialog_Preview::present)
+	);
+	auto action = App::instance()->lookup_action("dialog-flipbook");
 	// Prevent call to preview window before preview option has created the preview window
-	action_group->get_action("dialog-flipbook")->set_sensitive(false);
+	if(auto s_action = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(action))
+		s_action->set_enabled(false);
 
 	{
 		toggle_action_group->add_action_bool("show-grid", sigc::mem_fun(*this, &CanvasView::toggle_show_grid), 
@@ -3814,8 +3813,9 @@ CanvasView::on_preview_create(const PreviewInfo &info)
 
 	// Preview Window created, the action can be enabled
 	{
-		Glib::RefPtr< Gtk::Action > action = action_group->get_action("dialog-flipbook");
-		action->set_sensitive(true);
+		auto action = App::instance()->lookup_action("dialog-flipbook");
+		if(auto s_action = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(action))
+			s_action->set_enabled(true);
 	}
 
 }

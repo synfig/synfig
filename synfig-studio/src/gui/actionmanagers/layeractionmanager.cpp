@@ -370,6 +370,7 @@ LayerActionManager::refresh()
 			   "</popup>" +
 			 "</ui>";
 	menu_popup_id_=get_ui_manager()->add_ui_from_string(full_ui_info);
+	/*
 	full_ui_info=
 			 "<ui>"
 			   "<menubar action='menubar-main'>"
@@ -384,6 +385,7 @@ LayerActionManager::refresh()
 			   "</menubar>" +
 			 "</ui>";
 	menu_main_id_=get_ui_manager()->add_ui_from_string(full_ui_info);
+	*/
 #ifdef ONE_ACTION_GROUP
 #else
 	get_ui_manager()->insert_action_group(action_group_);

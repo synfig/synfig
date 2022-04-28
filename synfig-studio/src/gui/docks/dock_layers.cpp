@@ -136,10 +136,12 @@ Dock_Layers::Dock_Layers():
 			        + layer_ui_info
 			        + "</menu></menu></popup></ui>";
 			App::ui_manager()->add_ui_from_string(ui_info);
+			/*
 			ui_info = "<ui><menubar action='menubar-main'><menu action='menu-layer'><menu action='menu-layer-new'>"
 			        + layer_ui_info
 			        + "</menu></menu></menubar></ui>";
 			App::ui_manager()->add_ui_from_string(ui_info);
+			*/
 			ui_info = "<ui><popup action='popup-layer-new'>"
 					+ layer_ui_info
 			        + "</popup></ui>";

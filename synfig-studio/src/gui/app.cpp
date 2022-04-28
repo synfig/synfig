@@ -1523,35 +1523,39 @@ init_menu_builder()
 	"		<attribute name='label' translatable='yes'>_Window</attribute>"
 	"		<section>"
 	"			<submenu>"
-	"		<attribute name='label' translatable='yes'>_Workspace</attribute>"
+	"				<attribute name='label' translatable='yes'>_Workspace</attribute>"
 	"				<section>"
-	"			<item>"
-	"				<attribute name='label' translatable='yes'>_Default</attribute>"
-	"				<attribute name='action'>app.workspace-default</attribute>"
-	"			</item>"
-	"			<item>"
-	"				<attribute name='label' translatable='yes'>_Composting</attribute>"
-	"				<attribute name='action'>app.workspace-composting</attribute>"
-	"			</item>"
-	"			<item>"
-	"				<attribute name='label' translatable='yes'>_Animating</attribute>"
-	"				<attribute name='action'>app.workspace-animating</attribute>"
-	"			</item>"
+	"					<item>"
+	"					<attribute name='label' translatable='yes'>_Default</attribute>"
+	"					<attribute name='action'>app.workspace-default</attribute>"
+	"					</item>"
+	"					<item>"
+	"					<attribute name='label' translatable='yes'>_Composting</attribute>"
+	"					<attribute name='action'>app.workspace-composting</attribute>"
+	"					</item>"
+	"					<item>"
+	"					<attribute name='label' translatable='yes'>_Animating</attribute>"
+	"					<attribute name='action'>app.workspace-animating</attribute>"
+	"					</item>"
 	"				</section>"
 	"				<section>"
-	"			<item>"
-	"				<attribute name='label' translatable='yes'>_Save Workspace...</attribute>"
-	"				<attribute name='action'>app.save-workspace</attribute>"
-	"			<attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("save-as"), 128).get_filename()+"</attribute>"
-	"			</item>"
-	"			<item>"
-	"				<attribute name='label' translatable='yes'>_Edit Workspaces...</attribute>"
-	"				<attribute name='action'>app.edit-workspacelist</attribute>"
-	"			</item>"
+	"					<item>"
+	"					<attribute name='label' translatable='yes'>_Save Workspace...</attribute>"
+	"					<attribute name='action'>app.save-workspace</attribute>"
+	"					<attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("save-as"), 128).get_filename()+"</attribute>"
+	"					</item>"
+	"					<item>"
+	"					<attribute name='label' translatable='yes'>_Edit Workspaces...</attribute>"
+	"					<attribute name='action'>app.edit-workspacelist</attribute>"
+	"					</item>"
 	"				</section>"
 	"			</submenu>"
 	"		</section>"
 	"		<section id='menu-window-docks'>"
+	"					<item>"
+	"					<attribute name='label' translatable='yes'>_Preview Window</attribute>"
+	"					<attribute name='action'>app.dialog-flipbook</attribute>"
+	"					</item>"
 	"		</section>"
 	"		<section id='menu-window-canvas'>"
 	"		</section>"
@@ -1639,14 +1643,6 @@ init_menu_builder()
 	} catch (const Glib::Error& ex) {
 		std::cerr << "Building toolbars failed: " << ex.what();
 	}
-	/* TODO: PLUGIN MENU
-	for ( const auto& plugin : studio::App::plugin_manager.plugins() ) {
-		// TODO: (Plugins) Arrange menu items into groups
-		std::cout<< plugin.name.get() <<std::endl;
-		DEFINE_ACTION(plugin.id, plugin.name.get())
-		ui_info_menu += strprintf("	<menuitem action='%s'/>", plugin.id.c_str());
-	}
-	*/
 	auto object = App::builder()->get_object("plugins");
 	auto plugin_menu = Glib::RefPtr<Gio::Menu>::cast_dynamic(object);
 	for ( const auto& plugin : App::plugin_manager.plugins() )
@@ -1812,22 +1808,6 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 
 //Layout the actions in the main menu (caret menu, right click on canvas menu) and toolbar:
 	Glib::ustring ui_info_menu =
-"	<menu action='menu-layer'>"
-"		<menu action='menu-layer-new'></menu>"
-"		<menuitem action='amount-inc'/>"
-"		<menuitem action='amount-dec'/>"
-"	</menu>"
-"	<menu action='menu-plugins'>"
-;
-
-	for ( const auto& plugin : studio::App::plugin_manager.plugins() ) {
-		// TODO: (Plugins) Arrange menu items into groups
-		DEFINE_ACTION(plugin.id, plugin.name.get())
-		ui_info_menu += strprintf("	<menuitem action='%s'/>", plugin.id.c_str());
-	}
-
-	ui_info_menu +=
-"	</menu>"
 "	<menu action='menu-window'>"
 "		<menu action='menu-arrange'> </menu>"
 "		<menu action='menu-workspace'>"
