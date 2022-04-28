@@ -234,6 +234,7 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 	assert(state);
 
 	String name=state->get_name();
+	std::replace(name.begin(), name.end(), '_', '-');
 	String local_name=get_local_label_name(name);
 
 	Gtk::ToggleToolButton *tool_button = manage( 

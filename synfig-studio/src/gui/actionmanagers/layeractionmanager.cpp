@@ -100,8 +100,21 @@ LayerActionManager::LayerActionManager():
 	action_group_(Gtk::ActionGroup::create("action_group_layer_action_manager")),
 	menu_popup_id_(no_prev_popup),
 	menu_main_id_(no_prev_popup),
+	action_group_copy_paste(Gtk::ActionGroup::create("action_group_copy_paste")),
 	queued(false)
 {	
+	//cut
+	action_cut_=Gtk::Action::create(
+		"cut",
+		Gtk::StockID("gtk-cut")
+	);
+	action_cut_->signal_activate().connect(
+		sigc::mem_fun(
+			*this,
+			&LayerActionManager::cut
+		)
+	);
+
 	simp_action_cut_=App::instance()->add_action("cut", 
 		sigc::mem_fun(
 			*this,
@@ -109,6 +122,18 @@ LayerActionManager::LayerActionManager():
 		)
 	);
 	simp_action_cut_->set_enabled(false);
+
+	//copy
+	action_copy_=Gtk::Action::create(
+		"copy",
+		Gtk::StockID("gtk-copy")
+	);
+	action_copy_->signal_activate().connect(
+		sigc::mem_fun(
+			*this,
+			&LayerActionManager::copy
+		)
+	);
 
 	simp_action_copy_=App::instance()->add_action("copy",
 		sigc::mem_fun(
@@ -118,6 +143,18 @@ LayerActionManager::LayerActionManager():
 	);
 	simp_action_copy_->set_enabled(false);
 
+	//paste
+	action_paste_=Gtk::Action::create(
+		"paste",
+		Gtk::StockID("gtk-paste")
+	);
+	action_paste_->signal_activate().connect(
+		sigc::mem_fun(
+			*this,
+			&LayerActionManager::paste
+		)
+	);
+	
 	simp_action_paste_=App::instance()->add_action("paste",
 		sigc::mem_fun(
 			*this,
@@ -125,6 +162,18 @@ LayerActionManager::LayerActionManager():
 		)
 	);
 
+	//amount increase
+	action_amount_inc_=Gtk::Action::create(
+		"amount-inc",
+		Gtk::StockID("gtk-add"),
+		_("Increase Amount"),_("Increase Amount")
+	);
+	action_amount_inc_->signal_activate().connect(
+		sigc::mem_fun(
+			*this,
+			&LayerActionManager::amount_inc
+		)
+	);
 
 	simp_action_amount_inc_=App::instance()->add_action("amount-inc",
 		sigc::mem_fun(
@@ -133,6 +182,19 @@ LayerActionManager::LayerActionManager():
 		)
 	);
 	simp_action_amount_inc_->set_enabled(false);
+
+	//amount decrease
+	action_amount_dec_=Gtk::Action::create(
+		"amount-dec",
+		Gtk::StockID("gtk-remove"),
+		_("Decrease Amount"),_("Decrease Amount")
+	);
+	action_amount_dec_->signal_activate().connect(
+	sigc::mem_fun(
+			*this,
+			&LayerActionManager::amount_dec
+		)
+	);
 
 	simp_action_amount_dec_=App::instance()->add_action("amount-dec",
 		sigc::mem_fun(
@@ -271,6 +333,9 @@ LayerActionManager::refresh()
 
 	String ui_info;
 
+	action_paste_->set_sensitive(!clipboard_.empty());
+	action_group_->add(action_paste_);
+
 	simp_action_paste_->set_enabled(!clipboard_.empty());
 	auto object=App::builder()->get_object("layer-inc-dec");
 	auto inc_dec_section=Glib::RefPtr<Gio::Menu>::cast_dynamic(object);
@@ -288,7 +353,13 @@ LayerActionManager::refresh()
 			{
 				layer_list = layer_tree_->get_selected_layers();
 				synfigapp::SelectionManager::LayerList::iterator iter;
+				action_copy_->set_sensitive(!layer_list.empty());
+				action_cut_->set_sensitive(!layer_list.empty());
+				action_group_->add(action_copy_);
+				action_group_->add(action_cut_);
 
+				action_amount_inc_->set_sensitive(!layer_list.empty());
+				action_amount_dec_->set_sensitive(!layer_list.empty());
 				simp_action_copy_->set_enabled(!layer_list.empty());
 				simp_action_cut_->set_enabled(!layer_list.empty());
 
@@ -296,14 +367,19 @@ LayerActionManager::refresh()
 				simp_action_amount_dec_->set_enabled(!layer_list.empty());
 
 				if (Layer_Skeleton::Handle::cast_dynamic(layer) || etl::handle<Layer_Composite>::cast_dynamic(layer)) {
+					action_amount_inc_->set_label(_("Increase Opacity"));
+					action_amount_dec_->set_label(_("Decrease Opacity"));
 					//TODO: need to add accelerators
 					inc_dec_section->remove_all();
 					set_action_inc_dec_menu(inc_dec_section, "Increase Opacity", "Decrease Opacity", true);
 				} else {
+					action_amount_inc_->set_label(_("Increase Amount"));
+					action_amount_dec_->set_label(_("Decrease Amount"));
 					inc_dec_section->remove_all();
 					set_action_inc_dec_menu(inc_dec_section, "Increase Layer Amount", "Decrease Layer Amount", true);
 				}
-
+				action_group_->add(action_amount_inc_);
+				action_group_->add(action_amount_dec_);
 				for(iter=layer_list.begin();iter!=layer_list.end();++iter)
 				{
 					update_connection_list.push_back(
@@ -370,7 +446,7 @@ LayerActionManager::refresh()
 			   "</popup>" +
 			 "</ui>";
 	menu_popup_id_=get_ui_manager()->add_ui_from_string(full_ui_info);
-	/*
+
 	full_ui_info=
 			 "<ui>"
 			   "<menubar action='menubar-main'>"
@@ -385,7 +461,7 @@ LayerActionManager::refresh()
 			   "</menubar>" +
 			 "</ui>";
 	menu_main_id_=get_ui_manager()->add_ui_from_string(full_ui_info);
-	*/
+
 #ifdef ONE_ACTION_GROUP
 #else
 	get_ui_manager()->insert_action_group(action_group_);
@@ -440,7 +516,7 @@ LayerActionManager::copy()
 		clipboard_.push_back(layer_list.front()->clone(0, guid));
 		layer_list.pop_front();
 	}
-
+	action_paste_->set_sensitive(!clipboard_.empty());
 	simp_action_paste_->set_enabled(!clipboard_.empty());
 
 	//queue_refresh();

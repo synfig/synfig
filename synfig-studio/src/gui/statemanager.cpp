@@ -78,6 +78,9 @@ void
 StateManager::add_state(const Smach::state_base *state)
 {
 	String name(state->get_name());
+	//replace underscore for gio::action name because
+	//because at runtime smooth_move causes an error
+	std::replace(name.begin(), name.end(), '_', '-');
 	App::dock_toolbox->add_state(state);
 
 	//Gtk Builder and Gio SimpleAction

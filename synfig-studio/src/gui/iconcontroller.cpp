@@ -362,7 +362,7 @@ IconController::init_icons(const synfig::String& path_to_icons)
 			{"history", "history_icon"},
 			//toolbox
 			{"state-normal" , "tool_normal_icon"},
-			{"state-smooth_move" , "tool_smooth_move_icon"},
+			{"state-smooth-move" , "tool_smooth_move_icon"},
 			{"state-scale" , "tool_scale_icon"},
 			{"state-rotate" , "tool_rotate_icon"},
 			{"state-mirror" , "tool_mirror_icon"},
@@ -403,7 +403,7 @@ IconController::init_icons(const synfig::String& path_to_icons)
 			{"redo", _("Redo")},
 			//toolbox states
 			{"normal" , _("Transform Tool")},
-			{"smooth_move" , _("SmoothMove Tool")},
+			{"smooth-move" , _("SmoothMove Tool")},
 			{"scale" , _("Scale Tool")},
 			{"rotate" , _("Rotate Tool")},
 			{"mirror" , _("Mirror Tool")},

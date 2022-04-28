@@ -73,11 +73,12 @@ Dock_Layers::Dock_Layers():
 
 	if(layer_action_manager)layer_action_manager->set_ui_manager(App::ui_manager());
 
+	action_group_new_layers=Gtk::ActionGroup::create("action_group_new_layers");
 	action_group_layer_ops=Gtk::ActionGroup::create("action_group_layer_ops");
 
 	s_action_group_new_layers=Gio::SimpleActionGroup::create();
 
-	//std::map<synfig::String,synfig::String> category_map;
+	std::map<synfig::String,synfig::String> category_map;
 
 	// Build layer creation actions
 	synfig::Layer::Book::iterator iter;
@@ -87,6 +88,18 @@ Dock_Layers::Dock_Layers():
 
 		if(lyr.second.category==CATEGORY_DO_NOT_USE)
 			continue;
+
+		action_group_new_layers->add(Gtk::Action::create(
+			strprintf("layer-new-%s",lyr.first.c_str()),
+				layer_icon(lyr.first.c_str()),
+					lyr.second.local_name,lyr.second.local_name),			
+			sigc::hide_return(
+				sigc::bind(
+					sigc::mem_fun(*this,&studio::Dock_Layers::add_layer),
+					lyr.first
+				)
+			)
+		);
 
 		//Gtk::Builder
 		App::instance()->add_action(strprintf("layer-new-%s",lyr.first.c_str()),
@@ -121,14 +134,30 @@ Dock_Layers::Dock_Layers():
 		}
 		//end Gtk::Builder
 
-		//category_map[lyr.second.category]+=strprintf("<menuitem action='layer-new-%s' />",lyr.first.c_str());
+		category_map[lyr.second.category]+=strprintf("<menuitem action='layer-new-%s' />",lyr.first.c_str());
 
 		//(*category_map)[lyr.second.category]->items().push_back(Gtk::Menu_Helpers::MenuElem(lyr.second.local_name,
 		//));
 	}
 
 	{
+		Glib::RefPtr<Gtk::ActionGroup> action_group_categories(Gtk::ActionGroup::create("layer-category"));
 		synfig::String layer_ui_info;
+
+		std::map<synfig::String,synfig::String>::iterator iter;
+		for(iter=category_map.begin();iter!=category_map.end();++iter)
+		{
+			layer_ui_info+=strprintf("<menu action='%s'>%s</menu>",iter->first.c_str(),iter->second.c_str());
+			#ifdef ENABLE_NLS
+				action_group_categories->add(Gtk::Action::create(iter->first.c_str(), dgettext("synfig", iter->first.c_str())));
+			#else
+				action_group_categories->add(Gtk::Action::create(iter->first.c_str(), iter->first.c_str()));
+			#endif
+		}
+
+		App::ui_manager()->insert_action_group(action_group_categories);
+		App::ui_manager()->insert_action_group(action_group_new_layers);
+
 		try
 		{
 			synfig::String ui_info;
@@ -187,6 +216,8 @@ Dock_Layers::Dock_Layers():
 	;
 
 	App::ui_manager()->add_ui_from_string(ui_info);
+
+	action_group_new_layers->set_sensitive(false);
 
 	if (Gtk::Toolbar* toolbar = dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-layer"))) {
 		set_toolbar(*toolbar);
@@ -262,6 +293,7 @@ Dock_Layers::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 
 		add(*tree_view);
 		tree_view->show();
+		action_group_new_layers->set_sensitive(true);
 		action_new_layer->set_sensitive(true);
 
 		App::enable_action_group(s_action_group_new_layers, true);
@@ -274,6 +306,7 @@ Dock_Layers::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 	}
 	else
 	{
+		action_group_new_layers->set_sensitive(false);
 		action_new_layer->set_sensitive(false);
 
 		App::enable_action_group(s_action_group_new_layers, false);

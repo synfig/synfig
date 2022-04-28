@@ -1878,12 +1878,15 @@ CanvasView::build_new_layer_menu(Gtk::Menu &/*menu*/)
 void
 CanvasView::popup_main_menu()
 {
-	Gtk::Menu* menu = dynamic_cast<Gtk::Menu*>(App::ui_manager()->get_widget("/menu-main"));
+	auto object =  App::builder()->get_object("studio_menubar");
+	auto gmenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(object);
+	Gtk::Menu* menu = manage( new Gtk::Menu(gmenu) );
 	if(menu)
 	{
-		//menu->set_accel_group(App::ui_manager()->get_accel_group());
-		//menu->accelerate(*this);
+		menu->attach_to_widget(*App::main_window);
 		menu->popup(0,gtk_get_current_event_time());
+	}else{
+		g_warning("could not get menu");
 	}
 }
 
@@ -2173,6 +2176,8 @@ CanvasView::on_layer_user_click(int button, Gtk::TreeRow /*row*/, LayerTree::Col
 	{
 	case 3:
 		{
+			//auto object = App::builder()->get_object("menu-layer");
+			//auto gmenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(object);
 			Gtk::MenuItem* menu = dynamic_cast<Gtk::MenuItem*>(App::ui_manager()->get_widget("/menu-main/menu-layer"));
 			if(menu && menu->get_submenu())
 			{

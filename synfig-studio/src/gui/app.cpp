@@ -1335,8 +1335,8 @@ init_menu_builder()
 	"			<attribute name='label' translatable='yes'>_SmoothMove Tool</attribute>"
 	//TODO: the 'action' attribute is causing an error at runtime
 	//GLib-GIO-CRITICAL **: 22:58:31.602: g_action_print_detailed_name: assertion 'g_action_name_is_valid (action_name)' failed
-	"			<attribute name='action'>app.state-smooth_move</attribute>"
-	"			<attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("state-smooth_move"), 128).get_filename()+"</attribute>"
+	"			<attribute name='action'>app.state-smooth-move</attribute>"
+	"			<attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("state-smooth-move"), 128).get_filename()+"</attribute>"
 	"			<attribute name='accel'>M</attribute>"
 	"		</item>"
 	"		<item>"
@@ -1559,6 +1559,9 @@ init_menu_builder()
 	"		</section>"
 	"		<section id='menu-window-canvas'>"
 	"		</section>"
+	"	</submenu>"
+	"	<submenu>"
+	"		<attribute name='label' translatable='yes'>_Help</attribute>"
 	"	</submenu>"
 	"  </menu>"
     "</interface>";
