@@ -148,28 +148,6 @@ MainWindow::init_menus()
 {
 	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create("mainwindow");
 
-	// file
-	/*
-	action_group->add( Gtk::Action::create("new", Gtk::StockID("synfig-new_doc"), _("New"), _("Create a new document")),
-		sigc::hide_return(sigc::ptr_fun(&studio::App::new_instance))
-	);
-	action_group->add( Gtk::Action::create("open", Gtk::StockID("synfig-open"), _("Open"), _("Open an existing document")),
-		sigc::hide_return(sigc::bind(sigc::ptr_fun(&studio::App::dialog_open), ""))
-	);
-	action_group->add( Gtk::Action::create("quit", Gtk::StockID("gtk-quit"), _("Quit")),
-		sigc::hide_return(sigc::ptr_fun(&studio::App::quit))
-	);
-	*/
-
-	// Edit menu
-	/*
-	action_group->add( Gtk::Action::create("input-devices", _("Input Devices...")),
-		sigc::ptr_fun(&MainWindow::show_dialog_input)
-	);
-	action_group->add( Gtk::Action::create("setup", _("Preferences...")),
-		sigc::ptr_fun(&studio::App::show_setup)
-	);
-	*/
 	//Gtk::Builder
 	App::canvas_action_group()->add_action(App::instance()->add_action("input-devices",
 		sigc::ptr_fun(&MainWindow::show_dialog_input)
@@ -179,18 +157,21 @@ MainWindow::init_menus()
 	));
 
 	// View menu
+	/*
 	Glib::RefPtr<Gtk::ToggleAction> toggle_menubar = Gtk::ToggleAction::create("toggle-mainwin-menubar", _("Show Menubar"));
 	toggle_menubar->set_active(App::enable_mainwin_menubar);
 	action_group->add(toggle_menubar, sigc::mem_fun(*this, &studio::MainWindow::toggle_show_menubar));
+	*/
 	App::instance()->add_action_bool("show-menubar", 
 		sigc::mem_fun(*this, &studio::MainWindow::appmenu_toggle_show_menubar), true);
-
+/*
 	Glib::RefPtr<Gtk::ToggleAction> toggle_toolbar = Gtk::ToggleAction::create("toggle-mainwin-toolbar", _("Toolbar"));
 	toggle_toolbar->set_active(App::enable_mainwin_toolbar);
 	action_group->add(toggle_toolbar, sigc::mem_fun(*this, &studio::MainWindow::toggle_show_toolbar));
+*/
 	App::instance()->add_action_bool("show-toolbar", 
 		sigc::mem_fun(*this, &studio::MainWindow::appmenu_toggle_show_toolbar), true);
-	
+	/*
 	// pre defined workspace (window ui layout)
 	action_group->add( Gtk::Action::create("workspace-compositing", _("Compositing")),
 		sigc::ptr_fun(App::set_workspace_compositing)
@@ -204,11 +185,27 @@ MainWindow::init_menus()
 	action_group->add( Gtk::Action::create("save-workspace", Gtk::StockID("synfig-save_as"), _("Save workspace...")),
 		sigc::ptr_fun(App::save_custom_workspace)
 	);
-
+*/
 	action_group->add( Gtk::Action::create("edit-workspacelist", _("Edit workspaces...")),
 		sigc::ptr_fun(App::edit_custom_workspace_list)
 	);
 
+	//gtk builder  pre defined workspace (window workspace)
+	App::instance()->add_action("workspace-default",
+		sigc::ptr_fun(App::set_workspace_default)
+	);
+	App::instance()->add_action("workspace-composting",
+		sigc::ptr_fun(App::set_workspace_compositing)
+	);
+	App::instance()->add_action("workspace-animating",
+		sigc::ptr_fun(App::set_workspace_animating)
+	);
+	App::instance()->add_action("save-workspace",
+		sigc::ptr_fun(App::save_custom_workspace)
+	);
+	App::instance()->add_action("edit-workspacelist",
+		sigc::ptr_fun(App::edit_custom_workspace_list)
+	);
 	// help
 	#define URL(action_name,title,url) \
 		action_group->add( Gtk::Action::create(action_name, title), \
@@ -530,7 +527,6 @@ MainWindow::on_custom_workspaces_changed()
 void
 MainWindow::on_dockable_registered(Dockable* dockable)
 {
-
 	// replace _ in panel names (filenames) by __ or it won't show up in the menu,
 	// this block code is just a copy from MainWindow::on_recent_files_changed().
 	std::string raw = dockable->get_local_name();
@@ -556,12 +552,31 @@ MainWindow::on_dockable_registered(Dockable* dockable)
 	Gtk::UIManager::ui_merge_id merge_id_popup = App::ui_manager()->add_ui_from_string(ui_info_popup);
 	Gtk::UIManager::ui_merge_id merge_id_menubar = App::ui_manager()->add_ui_from_string(ui_info_menubar);
 
+	//Gtk Builder
+	App::instance()->add_action("panel-" + dockable->get_name(),
+		sigc::mem_fun(*dockable, &Dockable::present)
+	);
+
 	// record CanvasView toolbar and popup id's
 	CanvasView *canvas_view = dynamic_cast<CanvasView*>(dockable);
 	if(canvas_view)
 	{
 		canvas_view->set_popup_id(merge_id_popup);
 		canvas_view->set_toolbar_id(merge_id_menubar);
+		//builder
+		auto object = App::builder()->get_object("menu-window-canvas");
+		auto menu = Glib::RefPtr<Gio::Menu>::cast_dynamic(object);
+		if(menu){
+			auto item = Gio::MenuItem::create(raw, "app.panel-" + dockable->get_name());
+			menu->append_item(item);
+		}
+	}else{
+		auto object = App::builder()->get_object("menu-window-docks");
+		auto menu = Glib::RefPtr<Gio::Menu>::cast_dynamic(object);
+		if(menu){
+			auto item = Gio::MenuItem::create(raw, "app.panel-" + dockable->get_name());
+			menu->append_item(item);
+		}
 	}
 }
 

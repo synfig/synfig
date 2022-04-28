@@ -1519,6 +1519,43 @@ init_menu_builder()
 	"	<submenu id='plugins'>"
 	"		<attribute name='label' translatable='yes'>_Plug-Ins</attribute>"
 	"	</submenu>"
+	"	<submenu id='menu-window'>"
+	"		<attribute name='label' translatable='yes'>_Window</attribute>"
+	"		<section>"
+	"			<submenu>"
+	"		<attribute name='label' translatable='yes'>_Workspace</attribute>"
+	"				<section>"
+	"			<item>"
+	"				<attribute name='label' translatable='yes'>_Default</attribute>"
+	"				<attribute name='action'>app.workspace-default</attribute>"
+	"			</item>"
+	"			<item>"
+	"				<attribute name='label' translatable='yes'>_Composting</attribute>"
+	"				<attribute name='action'>app.workspace-composting</attribute>"
+	"			</item>"
+	"			<item>"
+	"				<attribute name='label' translatable='yes'>_Animating</attribute>"
+	"				<attribute name='action'>app.workspace-animating</attribute>"
+	"			</item>"
+	"				</section>"
+	"				<section>"
+	"			<item>"
+	"				<attribute name='label' translatable='yes'>_Save Workspace...</attribute>"
+	"				<attribute name='action'>app.save-workspace</attribute>"
+	"			<attribute name='icon'>"+App::icon_theme()->lookup_icon(get_icon_name("save-as"), 128).get_filename()+"</attribute>"
+	"			</item>"
+	"			<item>"
+	"				<attribute name='label' translatable='yes'>_Edit Workspaces...</attribute>"
+	"				<attribute name='action'>app.edit-workspacelist</attribute>"
+	"			</item>"
+	"				</section>"
+	"			</submenu>"
+	"		</section>"
+	"		<section id='menu-window-docks'>"
+	"		</section>"
+	"		<section id='menu-window-canvas'>"
+	"		</section>"
+	"	</submenu>"
 	"  </menu>"
     "</interface>";
 	Glib::ustring toolbar_info =
@@ -1614,13 +1651,6 @@ init_menu_builder()
 	auto plugin_menu = Glib::RefPtr<Gio::Menu>::cast_dynamic(object);
 	for ( const auto& plugin : App::plugin_manager.plugins() )
     {
-		/*
-		auto instance = App::get_selected_canvas_view()->get_instance().get();
-		auto id = plugin.id;
-		App::instance()->add_action( plugin.id, 
-			[instance, id](){instance->run_plugin(id, true);}
-		);
-		*/
 		auto item = Gio::MenuItem::create(_(plugin.name.get().c_str()), "app."+plugin.id );
 		plugin_menu->append_item(item);
     }
@@ -1665,6 +1695,8 @@ init_ui_manager()
 			get_action_stock_id(iter->second),
 			iter->second.local_name,iter->second.local_name
 		));
+		//gtk builder
+		App::instance()->add_action("action-"+iter->second.name);
 	}
 
 // predefined actions to initial menu items, so that there is all menu items listing
@@ -1790,7 +1822,6 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 
 	for ( const auto& plugin : studio::App::plugin_manager.plugins() ) {
 		// TODO: (Plugins) Arrange menu items into groups
-		std::cout<< plugin.name.get() <<std::endl;
 		DEFINE_ACTION(plugin.id, plugin.name.get())
 		ui_info_menu += strprintf("	<menuitem action='%s'/>", plugin.id.c_str());
 	}
