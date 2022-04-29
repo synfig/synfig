@@ -1880,7 +1880,7 @@ CanvasView::popup_main_menu()
 {
 	auto object =  App::builder()->get_object("studio_menubar");
 	auto gmenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(object);
-	Gtk::Menu* menu = manage( new Gtk::Menu(gmenu) );
+	Glib::RefPtr<Gtk::Menu> menu ( new Gtk::Menu(gmenu) );
 	if(menu)
 	{
 		menu->attach_to_widget(*App::main_window);
