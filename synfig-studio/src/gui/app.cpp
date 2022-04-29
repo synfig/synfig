@@ -1562,6 +1562,52 @@ init_menu_builder()
 	"	</submenu>"
 	"	<submenu>"
 	"		<attribute name='label' translatable='yes'>_Help</attribute>"
+	"		<section>"
+	"					<item>"
+	"					<attribute name='label' translatable='yes'>_Help</attribute>"
+	"					<attribute name='action'>app.help</attribute>"
+	"					<attribute name='icon'>help-browser</attribute>"
+	"					<attribute name='accel'>F1</attribute>"
+	"					</item>"
+	"		</section>"
+	"		<section>"
+	#if GTK_CHECK_VERSION(3, 20, 0)
+	"					<item>"
+	"					<attribute name='label' translatable='yes'>_Keyboard Shortcuts</attribute>"
+	"					<attribute name='action'>app.help-shortcuts</attribute>"
+	"					<attribute name='icon'>preferences-desktop-keyboard</attribute>"
+	"					</item>"
+	#endif
+	"					<item>"
+	"					<attribute name='label' translatable='yes'>_Tutorials</attribute>"
+	"					<attribute name='action'>app.help-tutorials</attribute>"
+	"					<attribute name='icon'>help-browser</attribute>"
+	"					</item>"
+	"					<item>"
+	"					<attribute name='label' translatable='yes'>_Reference</attribute>"
+	"					<attribute name='action'>app.help-reference</attribute>"
+	"					<attribute name='icon'>help-browser</attribute>"
+	"					</item>"
+	"					<item>"
+	"					<attribute name='label' translatable='yes'>_Frequently Asked Questions</attribute>"
+	"					<attribute name='action'>app.help-faq</attribute>"
+	"					<attribute name='icon'>help-browser</attribute>"
+	"					</item>"
+	"		</section>"
+	"		<section>"
+	"					<item>"
+	"					<attribute name='label' translatable='yes'>_Get Support</attribute>"
+	"					<attribute name='action'>app.help-support</attribute>"
+	"					<attribute name='icon'>help-browser</attribute>"
+	"					</item>"
+	"		</section>"
+	"		<section>"
+	"					<item>"
+	"					<attribute name='label' translatable='yes'>_About Synfig Studio</attribute>"
+	"					<attribute name='action'>app.help-about</attribute>"
+	"					<attribute name='icon'>"+App::icon_theme()->lookup_icon("synfig_icon", 128).get_filename()+"</attribute>"
+	"					</item>"
+	"		</section>"
 	"	</submenu>"
 	"  </menu>"
     "</interface>";
@@ -1810,53 +1856,6 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 
 
 //Layout the actions in the main menu (caret menu, right click on canvas menu) and toolbar:
-	Glib::ustring ui_info_menu =
-"	<menu action='menu-window'>"
-"		<menu action='menu-arrange'> </menu>"
-"		<menu action='menu-workspace'>"
-"			<menuitem action='workspace-default' />"
-"			<menuitem action='workspace-compositing' />"
-"			<menuitem action='workspace-animating' />"
-"		</menu>"
-"		<separator />"
-"		<menuitem action='dialog-flipbook'/>"
-"		<menuitem action='panel-toolbox' />"
-"		<menuitem action='panel-tool_options' />"
-"		<menuitem action='panel-history' />"
-"		<menuitem action='panel-canvases' />"
-"		<menuitem action='panel-keyframes' />"
-"		<menuitem action='panel-layers' />"
-"		<menuitem action='panel-params' />"
-"		<menuitem action='panel-meta_data' />"
-"		<menuitem action='panel-children' />"
-"		<menuitem action='panel-info' />"
-"		<menuitem action='panel-navigator' />"
-"		<menuitem action='panel-timetrack-old' />"
-"		<menuitem action='panel-timetrack' />"
-"		<menuitem action='panel-curves' />"
-"		<menuitem action='panel-groups' />"
-"		<menuitem action='panel-pal_edit' />"
-"		<menuitem action='panel-soundwave' />"
-"		<separator />"
-// opened documents will be listed here below the above separator.
-"	</menu>"
-"	<menu action='menu-help'>"
-"		<menuitem action='help'/>"
-"		<separator name='sep-help1'/>";
-#if GTK_CHECK_VERSION(3, 20, 0)
-	ui_info_menu +=
-"		<menuitem action='help-shortcuts'/>";
-#endif
-	ui_info_menu +=
-"		<menuitem action='help-tutorials'/>"
-"		<menuitem action='help-reference'/>"
-"		<menuitem action='help-faq'/>"
-"		<separator name='sep-help2'/>"
-"		<menuitem action='help-support'/>"
-"		<separator name='sep-help3'/>"
-"		<menuitem action='help-about'/>"
-"	</menu>";
-
 	Glib::ustring ui_info_main_tool =
 "		<toolitem action='render'/>"
 "		<toolitem action='preview'/>";
@@ -1886,11 +1885,9 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 	Glib::ustring ui_info =
 "<ui>"
 "   <popup name='menu-toolbox' action='menu-toolbox'>"
-//"	<menu action='menu-file'>"
-//"	</menu>"
 "	</popup>"
-"	<popup name='menu-main' action='menu-main'>" + ui_info_menu + "</popup>"
-"	<menubar name='menubar-main' action='menubar-main'>" + ui_info_menu + "</menubar>"
+"	<popup name='menu-main' action='menu-main'></popup>"
+"	<menubar name='menubar-main' action='menubar-main'></menubar>"
 "	<toolbar name='toolbar-main'>" + ui_info_main_tool + "</toolbar>"
 "</ui>";
 

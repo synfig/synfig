@@ -1104,7 +1104,7 @@ CanvasView::create_action_toolbutton(const std::string& action_name)
 	}else{
 		g_warning("icon not found");
 	}
-	button->set_tooltip_text(get_local_label_name(action_name));
+	button->set_tooltip_text(get_local_tooltip_text(action_name));
 	button->show();
 	return button;
 }
@@ -1884,7 +1884,7 @@ CanvasView::popup_main_menu()
 	if(menu)
 	{
 		menu->attach_to_widget(*App::main_window);
-		menu->popup(0,gtk_get_current_event_time());
+		menu->popup_at_pointer(0);
 	}else{
 		g_warning("could not get menu");
 	}

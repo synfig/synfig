@@ -157,35 +157,12 @@ MainWindow::init_menus()
 	));
 
 	// View menu
-	/*
-	Glib::RefPtr<Gtk::ToggleAction> toggle_menubar = Gtk::ToggleAction::create("toggle-mainwin-menubar", _("Show Menubar"));
-	toggle_menubar->set_active(App::enable_mainwin_menubar);
-	action_group->add(toggle_menubar, sigc::mem_fun(*this, &studio::MainWindow::toggle_show_menubar));
-	*/
 	App::instance()->add_action_bool("show-menubar", 
 		sigc::mem_fun(*this, &studio::MainWindow::appmenu_toggle_show_menubar), true);
-/*
-	Glib::RefPtr<Gtk::ToggleAction> toggle_toolbar = Gtk::ToggleAction::create("toggle-mainwin-toolbar", _("Toolbar"));
-	toggle_toolbar->set_active(App::enable_mainwin_toolbar);
-	action_group->add(toggle_toolbar, sigc::mem_fun(*this, &studio::MainWindow::toggle_show_toolbar));
-*/
+
 	App::instance()->add_action_bool("show-toolbar", 
 		sigc::mem_fun(*this, &studio::MainWindow::appmenu_toggle_show_toolbar), true);
-	/*
-	// pre defined workspace (window ui layout)
-	action_group->add( Gtk::Action::create("workspace-compositing", _("Compositing")),
-		sigc::ptr_fun(App::set_workspace_compositing)
-	);
-	action_group->add( Gtk::Action::create("workspace-animating", _("Animating")),
-		sigc::ptr_fun(App::set_workspace_animating)
-	);
-	action_group->add( Gtk::Action::create("workspace-default", _("Default")),
-		sigc::ptr_fun(App::set_workspace_default)
-	);
-	action_group->add( Gtk::Action::create("save-workspace", Gtk::StockID("synfig-save_as"), _("Save workspace...")),
-		sigc::ptr_fun(App::save_custom_workspace)
-	);
-*/
+
 	action_group->add( Gtk::Action::create("edit-workspacelist", _("Edit workspaces...")),
 		sigc::ptr_fun(App::edit_custom_workspace_list)
 	);
@@ -205,15 +182,20 @@ MainWindow::init_menus()
 	);
 	App::instance()->add_action("edit-workspacelist",
 		sigc::ptr_fun(App::edit_custom_workspace_list)
-	);
+	);	
+	
 	// help
-	#define URL(action_name,title,url) \
-		action_group->add( Gtk::Action::create(action_name, title), \
+	#define URL(action_name,url) \
+		App::instance()->add_action( action_name, \
 			sigc::bind(sigc::ptr_fun(&studio::App::open_uri),url))
-	#define WIKI(action_name,title,page) \
-		URL(action_name,title, "https://wiki.synfig.org/" + String(page))
+	#define WIKI(action_name,page) \
+		URL(action_name, "https://wiki.synfig.org/" + String(page))
+
 
 	action_group->add( Gtk::Action::create("help", Gtk::Stock::HELP),
+		sigc::ptr_fun(studio::App::dialog_help)
+	);
+	App::instance()->add_action( "help",
 		sigc::ptr_fun(studio::App::dialog_help)
 	);
 
@@ -222,16 +204,22 @@ MainWindow::init_menus()
 			"help-shortcuts", _("Keyboard Shortcuts")),
 		sigc::ptr_fun(studio::App::window_shortcuts)
 	);
+	App::instance()->add_action("help-shortcuts",
+		sigc::ptr_fun(studio::App::window_shortcuts)
+	);
 #endif
 
-	// TRANSLATORS:         | Help menu entry:              | A wiki page:          |
-	URL("help-tutorials",	_("Tutorials"),					_("https://synfig.readthedocs.io/en/latest/tutorials.html"));
-	WIKI("help-reference",	_("Reference"),					_("Category:Reference"));
-	URL("help-faq",		_("Frequently Asked Questions"),	_("https://wiki.synfig.org/FAQ")				);
-	URL("help-support",		_("Get Support"),				_("https://forums.synfig.org/")	);
+	// TRANSLATORS:         | Help menu entry:              |
+	URL("help-tutorials",	_("https://synfig.readthedocs.io/en/latest/tutorials.html"));
+	WIKI("help-reference",	_("Category:Reference"));
+	URL("help-faq",			_("https://wiki.synfig.org/FAQ"));
+	URL("help-support",		_("https://forums.synfig.org/"));
 
 	action_group->add( Gtk::Action::create(
 			"help-about", Gtk::StockID("synfig-about"), _("About Synfig Studio")),
+		sigc::ptr_fun(studio::App::dialog_about)
+	);
+	App::instance()->add_action("help-about",
 		sigc::ptr_fun(studio::App::dialog_about)
 	);
 
@@ -312,7 +300,6 @@ void MainWindow::add_custom_workspace_menu_item_handlers()
 	std::string ui_info =
 			"<ui>"
 			"  <popup name='menu-main' action='menu-main'>" + ui_info_menu + "</popup>"
-			"  <menubar name='menubar-main' action='menubar-main'>" + ui_info_menu + "</menubar>"
 			"</ui>";
 
 	save_workspace_merge_id = App::ui_manager()->add_ui_from_string(ui_info);
@@ -504,8 +491,6 @@ MainWindow::on_custom_workspaces_changed()
 	  + "</menu></menu>";
 	std::string ui_info_popup =
 		"<popup action='menu-main'>" + ui_info + "</popup>";
-	std::string ui_info_menubar =
-		"<menubar action='menubar-main'>" + ui_info + "</menubar>";
 
 	// remove group if exists
 	typedef std::vector< Glib::RefPtr<Gtk::ActionGroup> > ActionGroupList;
@@ -519,7 +504,7 @@ MainWindow::on_custom_workspaces_changed()
 	App::ui_manager()->ensure_update();
 
 	App::ui_manager()->insert_action_group(action_group);
-	custom_workspaces_merge_id = App::ui_manager()->add_ui_from_string("<ui>" + ui_info_popup + ui_info_menubar + "</ui>");
+	custom_workspaces_merge_id = App::ui_manager()->add_ui_from_string("<ui>" + ui_info_popup + "</ui>");
 
 	add_custom_workspace_menu_item_handlers();
 }
@@ -546,11 +531,9 @@ MainWindow::on_dockable_registered(Dockable* dockable)
 	    "</menu>";
 	const std::string ui_info_popup =
 		"<ui><popup action='menu-main'>" + ui_info + "</popup></ui>";
-	const std::string ui_info_menubar =
-		"<ui><menubar action='menubar-main'>" + ui_info + "</menubar></ui>";
 
 	Gtk::UIManager::ui_merge_id merge_id_popup = App::ui_manager()->add_ui_from_string(ui_info_popup);
-	Gtk::UIManager::ui_merge_id merge_id_menubar = App::ui_manager()->add_ui_from_string(ui_info_menubar);
+	//Gtk::UIManager::ui_merge_id merge_id_menubar = App::ui_manager()->add_ui_from_string(ui_info_menubar);
 
 	//Gtk Builder
 	App::instance()->add_action("panel-" + dockable->get_name(),
@@ -562,7 +545,7 @@ MainWindow::on_dockable_registered(Dockable* dockable)
 	if(canvas_view)
 	{
 		canvas_view->set_popup_id(merge_id_popup);
-		canvas_view->set_toolbar_id(merge_id_menubar);
+		//canvas_view->set_toolbar_id(merge_id_menubar);
 		//builder
 		auto object = App::builder()->get_object("menu-window-canvas");
 		auto menu = Glib::RefPtr<Gio::Menu>::cast_dynamic(object);

@@ -78,8 +78,9 @@ Gtk::StockID valuenode_icon(etl::handle<synfig::ValueNode> value_node);
 Glib::RefPtr<Gdk::Pixbuf> get_tree_pixbuf(synfig::Type &type);
 Glib::RefPtr<Gdk::Pixbuf> get_interpolation_pixbuf(synfig::Interpolation itype);
 Gtk::StockID get_action_stock_id(const synfigapp::Action::BookEntry& action);
-std::string get_icon_name(const std::string& action_name);
-std::string get_local_label_name(const std::string& action_name);
+const std::string& get_icon_name(const std::string& action_name);
+const std::string& get_local_label_name(const std::string& action_name);
+const char* get_local_tooltip_text(const std::string& action_name);
 
 }; // END of namespace studio
 

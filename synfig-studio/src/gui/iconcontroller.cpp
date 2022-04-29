@@ -801,7 +801,7 @@ studio::layer_icon_name(const synfig::String &layer)
 		return "layer_icon";
 }
 
-std::string
+const std::string&
 studio::get_icon_name(const std::string& action_name)
 {
 	if ( IconController::action_icon_map.find(action_name) != IconController::action_icon_map.end())
@@ -809,10 +809,31 @@ studio::get_icon_name(const std::string& action_name)
 	else
 		return "";
 }
-std::string
+const std::string&
 studio::get_local_label_name(const std::string& action_name)
 {
 	return IconController::local_label_map[action_name];
+}
+
+const char*
+studio::get_local_tooltip_text(const std::string& action_name)
+{
+	if( action_name == "new" )
+		return _("Create new document");
+	else if( action_name == "open" )
+		return _("Open an existing document");
+	else if( action_name == "save")
+		return _("Save");
+	else if( action_name == "save-all" )
+		return  _("Save all opened documents");
+	else if ( action_name == "save-as")
+		return _("Save As");
+	else if ( action_name == "undo")
+		return _("Undo the previous action");
+	else if( action_name == "redo")
+		return _("Undo the previously undone action");
+	else
+		return _("");
 }
 
 Glib::RefPtr<Gdk::Pixbuf>
