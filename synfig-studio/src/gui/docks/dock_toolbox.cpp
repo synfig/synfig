@@ -247,7 +247,6 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 		, local_name )
 	);
 	
-	// TODO: NEED TO SET ACCEL FOR THE TOOLTIP IN TOOLBOX BUTTONS
 	Gtk::AccelKey key;
 	//Have a look to global function init_ui_manager() from app.cpp for "accel_path" definition
 	Gtk::AccelMap::lookup_entry ("<Actions>/action_group_state_manager/state-"+name, key);
@@ -256,7 +255,6 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 	
 	tool_button->set_tooltip_text(local_name+"  "+accel_path);
 	
-	tool_button->set_tooltip_text(local_name); //TODO: need to figure how to set accel path+"  "+accel_path);
 	tool_button->show();
 
 	tool_item_group->insert(*tool_button);
