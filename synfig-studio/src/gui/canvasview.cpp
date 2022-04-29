@@ -3586,21 +3586,19 @@ CanvasView::on_meta_data_changed()
 	try
 	{
 		// Update the toggle ducks actions
-		//TODO: need to change to Gio::SimpleAction::change_state in the try block
-		Glib::RefPtr<Gio::Action> action;
-		if ( action = toggle_action_group->lookup_action("background-rendering") )
+		if ( auto action = toggle_action_group->lookup_action("background-rendering") )
 			action->change_state((bool)(work_area->get_background_rendering()));
-		if ( action = toggle_action_group->lookup_action("onion-skin"))
+		if ( auto action = toggle_action_group->lookup_action("onion-skin"))
 			action->change_state((bool)(work_area->get_onion_skin()));
-		if ( action = toggle_action_group->lookup_action("onion-skin-keyframes") )		
+		if ( auto action = toggle_action_group->lookup_action("onion-skin-keyframes") )		
 			action->change_state((bool)(work_area->get_onion_skin_keyframes()));
-		if ( action = toggle_action_group->lookup_action("show-grid"))
+		if ( auto action = toggle_action_group->lookup_action("show-grid"))
 			action->change_state((bool)(work_area->grid_status()));
-		if ( action = toggle_action_group->lookup_action("snap-grid"))
+		if ( auto action = toggle_action_group->lookup_action("snap-grid"))
 			action->change_state((bool)(work_area->get_grid_snap()));
-		if ( action = toggle_action_group->lookup_action("show-guides"))
+		if ( auto action = toggle_action_group->lookup_action("show-guides"))
 			action->change_state((bool)(work_area->get_show_guides()));
-		if ( action = toggle_action_group->lookup_action("snap-guides"));
+		if ( auto action = toggle_action_group->lookup_action("snap-guides"))
 			action->change_state((bool)(work_area->get_guide_snap()));
 		// Update the toggle buttons
 		background_rendering_button->set_active(work_area->get_background_rendering());
