@@ -196,6 +196,10 @@ class Dialog_Setup : public Dialog_Template
 	void on_accel_edited(const Glib::ustring& path_string, guint accel_key, Gdk::ModifierType accel_mods, guint hardware_keycode);
 	void on_accel_cleared(const Glib::ustring& path_string);
 	void on_restore_default_accels_pressed();
+	void apply_current_accels();
+	void refresh_accels();
+	void restore_default_accels();
+
 public:
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
@@ -214,7 +218,7 @@ public:
 	void set_time_format(synfig::Time::Format time_format);
 	const synfig::Time::Format& get_time_format()const { return time_format; }
 
-    void refresh();
+	void refresh();
 }; // END of Dialog_Setup
 
 }; // END of namespace studio
