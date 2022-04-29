@@ -1146,10 +1146,10 @@ CanvasView::create_top_toolbar()
 		button->signal_clicked().connect(sigc::bind(sigc::ptr_fun(&App::dialog_open), ""));
 		displaybar->append(*button);
 		button=create_action_toolbutton("save");
-		button->signal_clicked().connect(sigc::mem_fun(*App::get_selected_instance(),&Instance::save));
+		button->signal_clicked().connect(sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::save)));
 		displaybar->append(*button);
 		button=create_action_toolbutton("save-as");
-		button->signal_clicked().connect(sigc::mem_fun(*App::get_selected_instance(),&Instance::dialog_save_as));
+		button->signal_clicked().connect(sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::dialog_save_as)));
 		displaybar->append(*button);
 		button=create_action_toolbutton("save-all");
 		button->signal_clicked().connect(sigc::ptr_fun(&CanvasView::save_all));
