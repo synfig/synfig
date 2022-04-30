@@ -259,12 +259,6 @@ LayerActionManager::clear()
 	else
 		layer_submenu->remove_all();
 	menu_object=App::builder()->get_object("special-layer-actions");
-	menu_object=App::builder()->get_object("layer-inc-dec");
-	auto inc_dec_menu=Glib::RefPtr<Gio::Menu>::cast_dynamic(menu_object);
-	if (!inc_dec_menu)
-		g_warning("Could not get sub menu!");
-	else
-		inc_dec_menu->remove_all();
 	auto special_action_menu=Glib::RefPtr<Gio::Menu>::cast_dynamic(menu_object);
 	if (!special_action_menu)
 		g_warning("Could not get sub menu!");
@@ -337,7 +331,7 @@ LayerActionManager::refresh()
 	action_group_->add(action_paste_);
 
 	simp_action_paste_->set_enabled(!clipboard_.empty());
-	auto object=App::builder()->get_object("layer-inc-dec");
+	auto object=App::builder()->get_object("instance-layers");
 	auto inc_dec_section=Glib::RefPtr<Gio::Menu>::cast_dynamic(object);
 	if(layer_tree_->get_selection()->count_selected_rows()!=0)
 	{
