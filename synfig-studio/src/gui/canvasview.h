@@ -442,7 +442,7 @@ private:
 
 	Gtk::Widget *create_time_bar();
 
-	Gtk::ToolButton* create_action_toolbutton(const std::string&  action_name);
+	void create_action_toolbutton(const std::string&  action_name);
 	Gtk::SeparatorToolItem* create_tool_separator();
 	Gtk::Widget* create_top_toolbar();
 	Gtk::Widget* create_stop_button();

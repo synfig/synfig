@@ -1090,10 +1090,13 @@ CanvasView::create_work_area()
 	return work_area;
 }
 
-Gtk::ToolButton*
+void
 CanvasView::create_action_toolbutton(const std::string& action_name)
 {
-	Gtk::ToolButton *button = Gtk::manage(new Gtk::ToolButton());
+	//method adds images to gtk::builder toolbuttons
+	//could not get images to render from .glade string
+	auto object = App::builder()->get_object(action_name);
+	auto button = Glib::RefPtr<Gtk::ToolButton>::cast_dynamic(object);
 	Gtk::Image *icon =	manage( new Gtk::Image(
 			App::icon_theme()->lookup_icon(get_icon_name(action_name), 16).load_icon()
 		)
@@ -1104,9 +1107,6 @@ CanvasView::create_action_toolbutton(const std::string& action_name)
 	}else{
 		g_warning("icon not found");
 	}
-	button->set_tooltip_text(get_local_tooltip_text(action_name));
-	button->show();
-	return button;
 }
 
 Gtk::SeparatorToolItem*
@@ -1129,44 +1129,150 @@ void CanvasView::toggle_render_combobox()
 Gtk::Widget*
 CanvasView::create_top_toolbar()
 {
+	//TODO: this toolbar needs to be finished being updated to use gtk::builder
+	//This .glade string needs to be finished for the entire toolbar
+
+	//toolbar_name needs to a number attached because only one instance can be used per canvas
+	String toolbar_name("top-toolbar-%d", Instance::get_count()+1);
+	Glib::ustring toolbar_info =
+    "<!-- Generated with glade 3.18.3 -->"
+    "<interface>"
+    "  <requires lib='gtk+' version='3.4'/>"
+    "  <object class='GtkToolbar' id='"+toolbar_name+"'>"
+    "    <property name='visible'>True</property>"
+    "    <property name='can_focus'>False</property>"
+	;
+	Glib::ustring file_toolbar_info =
+	"    <child>"
+    "      <object class='GtkToolButton' id='new'>"
+    "        <property name='visible'>True</property>"
+    "        <property name='can_focus'>False</property>"
+    "        <property name='tooltip_text' translatable='yes'>Create a new document</property>"
+    "        <property name='action_name'>app.new</property>"
+    "      </object>"
+    "      <packing>"
+    "        <property name='expand'>False</property>"
+    "        <property name='homogeneous'>True</property>"
+    "      </packing>"
+    "    </child>"
+	"	<child>"
+	"      <object class='GtkToolButton' id='open'>"
+    "        <property name='visible'>True</property>"
+    "        <property name='can_focus'>False</property>"
+    "        <property name='tooltip_text' translatable='yes'>Open an existing document</property>"
+    "        <property name='action_name'>app.open</property>"
+    "      </object>"
+    "      <packing>"
+    "        <property name='expand'>False</property>"
+    "        <property name='homogeneous'>True</property>"
+    "      </packing>"
+    "    </child>"
+	"	<child>"
+	"      <object class='GtkToolButton' id='save'>"
+    "        <property name='visible'>True</property>"
+    "        <property name='can_focus'>False</property>"
+    "        <property name='tooltip_text' translatable='yes'>Save</property>"
+    "        <property name='action_name'>app.save</property>"
+    "      </object>"
+    "      <packing>"
+    "        <property name='expand'>False</property>"
+    "        <property name='homogeneous'>True</property>"
+    "      </packing>"
+    "    </child>"
+	"	<child>"
+	"      <object class='GtkToolButton' id='save-as'>"
+    "        <property name='visible'>True</property>"
+    "        <property name='can_focus'>False</property>"
+    "        <property name='tooltip_text' translatable='yes'>Save As</property>"
+    "        <property name='action_name'>app.save-as</property>"
+    "      </object>"
+    "      <packing>"
+    "        <property name='expand'>False</property>"
+    "        <property name='homogeneous'>True</property>"
+    "      </packing>"
+    "    </child>"
+	"	<child>"
+	"      <object class='GtkToolButton' id='save-all'>"
+    "        <property name='visible'>True</property>"
+    "        <property name='can_focus'>False</property>"
+    "        <property name='tooltip_text' translatable='yes'>Save all opened documents</property>"
+    "        <property name='action_name'>app.save-all</property>"
+    "      </object>"
+    "      <packing>"
+    "        <property name='expand'>False</property>"
+    "        <property name='homogeneous'>True</property>"
+    "      </packing>"
+    "    </child>"
+	"	<child>"
+	"		<object class='GtkSeparatorToolItem' id='sep-1'>"
+    "			<property name='visible'>True</property>"
+    "			<property name='can-focus'>False</property>"
+ 	"		</object>"
+	"      <packing>"
+    "        <property name='expand'>False</property>"
+    "        <property name='homogeneous'>True</property>"
+    "      </packing>"
+	"	</child>"
+	;
+	if (App::show_file_toolbar)
+		toolbar_info += file_toolbar_info;
+	toolbar_info +=
+	"	<child>"
+	"      <object class='GtkToolButton' id='undo'>"
+    "        <property name='visible'>True</property>"
+    "        <property name='can_focus'>False</property>"
+    "        <property name='tooltip_text' translatable='yes'>Undo the previous action</property>"
+    "        <property name='action_name'>app.undo</property>"
+    "      </object>"
+    "      <packing>"
+    "        <property name='expand'>False</property>"
+    "        <property name='homogeneous'>True</property>"
+    "      </packing>"
+    "    </child>"
+	"	<child>"
+	"      <object class='GtkToolButton' id='redo'>"
+    "        <property name='visible'>True</property>"
+    "        <property name='can_focus'>False</property>"
+    "        <property name='tooltip_text' translatable='yes'>Redo the previously undone action</property>"
+    "        <property name='action_name'>app.redo</property>"
+    "      </object>"
+    "      <packing>"
+    "        <property name='expand'>False</property>"
+    "        <property name='homogeneous'>True</property>"
+    "      </packing>"
+    "    </child>"
+	"	</object>"
+	"</interface>"
+	;
+	try {
+		App::builder()->add_from_string(toolbar_info);
+	} catch (const Glib::Error& ex) {
+		std::cerr << "Building toolbar failed: " << ex.what();
+	}
+
 	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
 	//Gtk::IconSize iconsize = Gtk::IconSize(16);
-	
-	displaybar = manage(new class Gtk::Toolbar());
+	Gtk::Toolbar *toolbar;
+	App::builder()->get_widget(toolbar_name, toolbar);
+	if(!toolbar)
+		g_warning("Could not get top toolbar!");
+	displaybar=manage(toolbar);
+	//displaybar = manage(new class Gtk::Toolbar());
 	displaybar->set_icon_size(iconsize);
 	displaybar->set_toolbar_style(Gtk::TOOLBAR_BOTH_HORIZ);
 
 	// File buttons
 	if (App::show_file_toolbar) {
-		Gtk::ToolButton *button;
-		button =create_action_toolbutton("new");
-		button->signal_clicked().connect(sigc::ptr_fun(&App::new_instance));
-		displaybar->append(*button);
-		button=create_action_toolbutton("open");
-		button->signal_clicked().connect(sigc::bind(sigc::ptr_fun(&App::dialog_open), ""));
-		displaybar->append(*button);
-		button=create_action_toolbutton("save");
-		button->signal_clicked().connect(sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::save)));
-		displaybar->append(*button);
-		button=create_action_toolbutton("save-as");
-		button->signal_clicked().connect(sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::dialog_save_as)));
-		displaybar->append(*button);
-		button=create_action_toolbutton("save-all");
-		button->signal_clicked().connect(sigc::ptr_fun(&CanvasView::save_all));
-		displaybar->append(*button);
-
-		// Separator
-		displaybar->append( *create_tool_separator() );
+		create_action_toolbutton("new");
+		create_action_toolbutton("open");
+		create_action_toolbutton("save");
+		create_action_toolbutton("save-as");
+		create_action_toolbutton("save-all");
 	}
 
 		// Undo/Redo buttons
-		//TODO: need to make buttons sensitive
-		CanvasView::undobutton=create_action_toolbutton("undo");
-		CanvasView::undobutton->signal_clicked().connect(sigc::ptr_fun(studio::App::undo));
-		displaybar->append(*CanvasView::undobutton);
-		CanvasView::redobutton=create_action_toolbutton("redo");
-		CanvasView::redobutton->signal_clicked().connect(sigc::ptr_fun(studio::App::redo));
-		displaybar->append(*CanvasView::redobutton);
+		create_action_toolbutton("undo");
+		create_action_toolbutton("redo");
 
 		// Separator
 		displaybar->append(*create_tool_separator());
