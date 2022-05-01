@@ -238,8 +238,7 @@ public:
 	*/
 public:
 	WorkArea* get_work_area() const { return work_area; }
-	Gtk::ToolButton* get_undo_button() const { return undobutton; }
-	Gtk::ToolButton* get_redo_button() const { return redobutton; }
+
 private:
 	WorkArea *work_area;
 
@@ -279,8 +278,6 @@ private:
 	Gtk::Statusbar *statusbar;
 	Gtk::ProgressBar *progressbar;
 
-	Gtk::ToolButton *undobutton;
-	Gtk::ToolButton *redobutton;
 	Gtk::Button *closebutton;
 	Gtk::Button *stopbutton;
 	Gtk::ToggleToolButton *background_rendering_button;

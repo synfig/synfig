@@ -1625,7 +1625,7 @@ CanvasView::init_menus()
 	for ( const auto& plugin : App::plugin_manager.plugins() )
     {
 		std::string id = plugin.id;
-		App::instance()->add_action( plugin.id, 
+		plugin_action_group->add_action( plugin.id, 
 			[instance, id](){instance->run_plugin(id, true);}
 		);
     }
