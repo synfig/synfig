@@ -8,9 +8,12 @@ output  : FILE_NAME.json
 
 Supported Layers are mentioned below
 """
+
 import os
-import json
 import sys
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))
+
+import json
 import logging
 from lxml import etree
 from canvas import gen_canvas
