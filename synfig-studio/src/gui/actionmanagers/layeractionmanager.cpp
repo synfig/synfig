@@ -450,19 +450,19 @@ LayerActionManager::refresh()
 void
 LayerActionManager::set_action_inc_dec_menu(Glib::RefPtr<Gio::Menu>& menu, const char* name_inc, const char* name_dec, bool isActive)
 {
-	//TODO: cant set accelerators to menu items dynamically???
-	//menu_item->set_attribute_value("accel", Glib::Variant<std::string>::create("&lt;Control&gt;minus"));
 	if(auto menu_item = Gio::MenuItem::create(_(name_inc),"app.amount-inc"))
 	{
 		if(auto icon = App::icon_theme()->lookup_icon("list-add", 128).load_icon())
 			menu_item->set_icon(icon);
 		menu->append_item(menu_item);
+		App::instance()->set_accel_for_action("app.amount-inc","<Control><Mod1>parenright");
 	}
 	if(auto menu_item = Gio::MenuItem::create(_(name_dec),"app.amount-dec"))
 	{	
 		if(auto icon = App::icon_theme()->lookup_icon("list-remove", 128).load_icon())
 			menu_item->set_icon(icon);
 		menu->append_item(menu_item);
+		App::instance()->set_accel_for_action("app.amount-dec","<Control><Mod1>parenleft");
 	}
 	auto action = App::instance()->lookup_action("amount-inc");
 	if (auto s_action = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(action))
