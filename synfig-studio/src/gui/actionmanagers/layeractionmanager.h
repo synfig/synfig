@@ -32,6 +32,7 @@
 
 #include <gtkmm/uimanager.h>
 #include <giomm/simpleaction.h>
+#include <giomm/simpleactiongroup.h>
 #include <giomm/menu.h>
 #include <synfigapp/canvasinterface.h>
 
@@ -55,6 +56,7 @@ class LayerActionManager
 	Gtk::UIManager::ui_merge_id 	menu_popup_id_;
 	Gtk::UIManager::ui_merge_id 	menu_main_id_;
 	Glib::RefPtr<Gtk::ActionGroup> action_group_copy_paste;
+	Glib::RefPtr<Gio::SimpleActionGroup> s_action_group_copy_paste;
 
 	Glib::RefPtr<Gtk::Action>	action_cut_;
 	Glib::RefPtr<Gtk::Action>	action_copy_;

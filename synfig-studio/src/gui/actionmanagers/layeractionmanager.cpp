@@ -101,6 +101,7 @@ LayerActionManager::LayerActionManager():
 	menu_popup_id_(no_prev_popup),
 	menu_main_id_(no_prev_popup),
 	action_group_copy_paste(Gtk::ActionGroup::create("action_group_copy_paste")),
+	s_action_group_copy_paste(Gio::SimpleActionGroup::create()),
 	queued(false)
 {	
 	//cut
@@ -121,6 +122,7 @@ LayerActionManager::LayerActionManager():
 			&LayerActionManager::cut
 		)
 	);
+	s_action_group_copy_paste->add_action(simp_action_cut_);
 	simp_action_cut_->set_enabled(false);
 
 	//copy
@@ -141,6 +143,7 @@ LayerActionManager::LayerActionManager():
 			&LayerActionManager::copy
 		)
 	);
+	s_action_group_copy_paste->add_action(simp_action_copy_);
 	simp_action_copy_->set_enabled(false);
 
 	//paste
@@ -161,6 +164,7 @@ LayerActionManager::LayerActionManager():
 			&LayerActionManager::paste
 		)
 	);
+	s_action_group_copy_paste->add_action(simp_action_paste_);
 
 	//amount increase
 	action_amount_inc_=Gtk::Action::create(
@@ -252,6 +256,7 @@ LayerActionManager::set_canvas_interface(const etl::handle<synfigapp::CanvasInte
 void
 LayerActionManager::clear()
 {
+	App::instance()->enable_action_group(s_action_group_copy_paste, false);
 	auto menu_object = App::builder()->get_object("instance-layers");
 	auto layer_submenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(menu_object);
 	if (!layer_submenu)
