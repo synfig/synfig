@@ -1392,6 +1392,10 @@ CanvasView::create_top_toolbar()
 
 	{ // Background rendering button
 		create_action_toolbutton("background-rendering");
+		auto object = App::builder()->get_object("background-rendering");
+		background_rendering_button = Glib::RefPtr<Gtk::ToggleToolButton>::cast_dynamic(object);
+		if(!background_rendering_button)
+			g_warning("Could not get background_rendering_button");
 	}
 
 	// ResolutionDial widget
@@ -2946,6 +2950,8 @@ CanvasView::toggle_background_rendering()
 	// Update the toggle background rendering action
 	if( auto toggle_action = toggle_action_group->lookup_action("background-rendering") )
 		toggle_action->change_state(work_area->get_background_rendering());
+	// Update the toggle background rendering button
+	background_rendering_button->set_active(work_area->get_background_rendering());
 	toggling_background_rendering=false;
 }
 
@@ -3737,6 +3743,7 @@ CanvasView::on_meta_data_changed()
 		if ( auto action = toggle_action_group->lookup_action("snap-guides"))
 			action->change_state((bool)(work_area->get_guide_snap()));
 		// Update the toggle buttons
+		background_rendering_button->set_active(work_area->get_background_rendering());
 		onion_skin->set_active(work_area->get_onion_skin());
 		onion_skin_keyframes->set_active(work_area->get_onion_skin_keyframes());
 		snap_grid->set_active(work_area->get_grid_snap());

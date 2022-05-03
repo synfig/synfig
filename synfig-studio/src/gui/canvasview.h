@@ -309,6 +309,7 @@ private:
 	Gtk::ToggleToolButton *snap_guides;
 	Gtk::ToggleToolButton *onion_skin;
 	Gtk::ToggleToolButton *onion_skin_keyframes;
+	Glib::RefPtr<Gtk::ToggleToolButton> background_rendering_button;
 	bool toggling_show_grid;
 	bool toggling_snap_grid;
 	bool toggling_show_guides;
