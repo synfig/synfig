@@ -1,3 +1,5 @@
+- [`61c6f49`](https://github.com/synfig/synfig/commit/61c6f49d79f1cc562e1171fe3638664d846508e0) Bumped year ([#2623](https://github.com/synfig/synfig/issues/2623)) [studio]
+- [`9ef1c59`](https://github.com/synfig/synfig/commit/9ef1c59fc345350461dfa3fef8f45d0dc091a177) Fix module search path for Lottie Exporter ([#2621](https://github.com/synfig/synfig/issues/2621)) [studio]
 - [`08202f4`](https://github.com/synfig/synfig/commit/08202f400bffb75031b907c7eab02f517ad99fef) Removed old .cvsignore files ([#2616](https://github.com/synfig/synfig/issues/2616))
 - [`ead44ed`](https://github.com/morevnaproject/morevna-builds/commit/ead44ed5a5e8ac6fb20815b3cc37a452c0953acf) Fix issue [#2410](https://github.com/synfig/synfig/issues/2410) - Can't import file into a saved SIF animation (if both are on the same disk) [studio]
 - [`05f5108`](https://github.com/synfig/synfig/commit/05f51084218d75c4317a7c9533dcc0a756b052b7) Fix various typos ([#2614](https://github.com/synfig/synfig/issues/2614)) [core] [studio]
