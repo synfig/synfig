@@ -309,9 +309,6 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	INIT_STOCK_ICON(increase_resolution, "incr_resolution_icon." IMAGE_EXT, _("Increase resolution"));
 	INIT_STOCK_ICON(decrease_resolution, "decr_resolution_icon." IMAGE_EXT, _("Decrease resolution"));
 
-	INIT_STOCK_ICON(preview_options, "preview_options_icon." IMAGE_EXT, _("Preview Options Dialog"));
-	INIT_STOCK_ICON(render_options, "render_options_icon." IMAGE_EXT, _("Render Options Dialog"));
-
 	INIT_STOCK_ICON(interpolation_type_clamped, "interpolation_type_clamped_icon." IMAGE_EXT, _("Clamped interpolation"));
 	INIT_STOCK_ICON(interpolation_type_tcb, "interpolation_type_tcb_icon." IMAGE_EXT, _("TCB interpolation"));
 	INIT_STOCK_ICON(interpolation_type_const, "interpolation_type_const_icon." IMAGE_EXT, _("Const interpolation"));
