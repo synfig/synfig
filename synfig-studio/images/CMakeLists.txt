@@ -242,7 +242,8 @@ set(IMAGES
 	${ICONS}
 )
 
-set(PIXMAPS_DIR ${SYNFIG_BUILD_ROOT}/share/synfig/icons/classic)
+set(THEME_DIR ${SYNFIG_BUILD_ROOT}/share/synfig/icons/classic)
+set(PIXMAPS_DIR ${THEME_DIR}/128x128)
 
 file(MAKE_DIRECTORY ${PIXMAPS_DIR})
 
@@ -287,7 +288,7 @@ foreach (IMAGE IN ITEMS ${IMAGES})
 	list(APPEND PIXMAPS ${PIXMAPS_DIR}/${IMAGE}.png)
 	install(
 		FILES ${PIXMAPS_DIR}/${IMAGE}.png
-		DESTINATION share/synfig/icons/classic
+		DESTINATION share/synfig/icons/classic/128x128
 	)
 endforeach()
 
@@ -301,6 +302,10 @@ install(
 	FILES ${CMAKE_CURRENT_SOURCE_DIR}/org.synfig.SynfigStudio.svg
 	DESTINATION share/icons/hicolor/scalable/apps
 )
+
+# index.theme
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/index.theme ${SYNFIG_BUILD_ROOT}/share/synfig/icons/classic/index.theme COPYONLY)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/index.theme DESTINATION share/synfig/icons/classic)
 
 # Synfig Splash Screen
 if(${CMAKE_BUILD_TYPE} MATCHES Debug)
@@ -334,14 +339,14 @@ install(
 # WIN32 Icon
 if(WIN32)
 	add_custom_command(
-		OUTPUT ${PIXMAPS_DIR}/synfig_icon.ico
-		COMMAND synfig_bin ${CMAKE_CURRENT_SOURCE_DIR}/synfig_icon.sif -o ${PIXMAPS_DIR}/synfig_icon.ico --time 0f --quiet
+		OUTPUT ${THEME_DIR}/synfig_icon.ico
+		COMMAND synfig_bin ${CMAKE_CURRENT_SOURCE_DIR}/synfig_icon.sif -o ${THEME_DIR}/synfig_icon.ico --time 0f --quiet
 		DEPENDS ${SYNFIG_SPLASH_SCREEN} synfig_bin
 	)
 
-	list(APPEND PIXMAPS ${PIXMAPS_DIR}/synfig_icon.ico)
+	list(APPEND PIXMAPS ${THEME_DIR}/synfig_icon.ico)
 	install(
-		FILES ${PIXMAPS_DIR}/synfig_icon.ico
+		FILES ${THEME_DIR}/synfig_icon.ico
 		DESTINATION share/pixmaps/synfigstudio
 	)
 endif()

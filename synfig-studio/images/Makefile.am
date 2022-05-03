@@ -198,7 +198,8 @@ EXTRA_DIST = \
 	time_track_icon.sif \
 	\
 	utils_chain_link_icons.sif \
-	utils_timetrack_align_icon.sif
+	utils_timetrack_align_icon.sif \
+	index.theme
 
 IMAGES = \
 	installer_logo.bmp \
@@ -442,7 +443,10 @@ appicondir= $(datadir)/icons/hicolor
 imagedir = $(synfig_datadir)/images
 image_DATA = $(IMAGES)
 
-iconsdir = $(synfig_datadir)/icons/classic
+themedir = $(synfig_datadir)/icons/classic
+theme_DATA = index.theme
+
+iconsdir = $(themedir)/128x128
 icons_DATA = $(ICONS)
 
 win32iconsdir = $(datadir)/pixmaps

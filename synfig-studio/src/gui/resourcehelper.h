@@ -39,6 +39,7 @@ public:
 
 	static synfig::String get_synfig_data_path();
 
+	static std::string get_theme_path();
 	static synfig::String get_icon_path();
 	static synfig::String get_icon_path(const synfig::String& icon_filename);
 

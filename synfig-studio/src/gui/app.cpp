@@ -151,6 +151,7 @@
 #include <synfigapp/settings.h>
 
 #include <thread>
+#include <gtkmm/icontheme.h>
 
 #ifdef _WIN32
 
@@ -1439,7 +1440,12 @@ void App::init(const synfig::String& rootpath)
 
 	String path_to_user_plugins = synfigapp::Main::get_user_app_directory()
 		+ ETL_DIRECTORY_SEPARATOR + "plugins";
-	
+
+	// Add Synfig theme path to IconTheme
+	auto icon_theme = Gtk::IconTheme::get_default();
+	icon_theme->append_search_path(ResourceHelper::get_theme_path());
+	App::set_icon_theme("classic");
+
 	// icons
 	init_icons(path_to_icons + ETL_DIRECTORY_SEPARATOR);
 
@@ -4410,4 +4416,22 @@ studio::App::check_python_version(String path)
 #else
 	return false;
 #endif
+}
+
+// Almost all GTK methods using icons from the default GTK theme.
+// Unfortunately, we can't change the IconTheme name if we get it
+// from the default screen with the `Gtk::IconTheme::get_default()`
+// method.
+// https://docs.gtk.org/gtk3/method.IconTheme.set_custom_theme.html
+// > Sets the name of the icon theme that the GtkIconTheme object uses
+// > overriding system configuration. This function cannot be called on
+// > the icon theme objects returned from gtk_icon_theme_get_default()
+// > and gtk_icon_theme_get_for_screen().
+//
+// Also, I didn't find a way to change the app IconTheme to a custom
+// one. However, we can change the IconTheme for the default screen
+// using the `Gtk::Settings` object.
+void studio::App::set_icon_theme(const std::string& name) {
+	auto settings = Gtk::Settings::get_default();
+	settings->property_gtk_icon_theme_name() = name;
 }
