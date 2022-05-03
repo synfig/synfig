@@ -1365,7 +1365,7 @@ CanvasView::create_top_toolbar()
 	}
 
 	{ // Refresh button
-		App::canvas_action_group()->add_action(
+		toggle_action_group->add_action(
 			App::instance()->add_action("refresh", SLOT_EVENT(EVENT_REFRESH)
 			)
 		);
