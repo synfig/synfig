@@ -1241,6 +1241,90 @@ CanvasView::create_top_toolbar()
     "        <property name='homogeneous'>True</property>"
     "      </packing>"
     "    </child>"
+	"	<child>"
+	"		<object class='GtkSeparatorToolItem' id='sep-2'>"
+    "			<property name='visible'>True</property>"
+    "			<property name='can-focus'>False</property>"
+ 	"		</object>"
+	"      <packing>"
+    "        <property name='expand'>False</property>"
+    "        <property name='homogeneous'>True</property>"
+    "      </packing>"
+	"	</child>"
+	"	<child>"
+	"      <object class='GtkToolButton' id='preview'>"
+    "        <property name='visible'>True</property>"
+    "        <property name='can_focus'>False</property>"
+    "        <property name='tooltip_text' translatable='yes'>Shows the Preview Settings Dialog</property>"
+    "        <property name='action_name'>app.preview</property>"
+    "      </object>"
+    "      <packing>"
+    "        <property name='expand'>False</property>"
+    "        <property name='homogeneous'>True</property>"
+    "      </packing>"
+    "    </child>"
+	"	<child>"
+	"      <object class='GtkToolButton' id='render'>"
+    "        <property name='visible'>True</property>"
+    "        <property name='can_focus'>False</property>"
+    "        <property name='tooltip_text' translatable='yes'>Shows the Render Settings Dialog</property>"
+    "        <property name='action_name'>app.render</property>"
+    "      </object>"
+    "      <packing>"
+    "        <property name='expand'>False</property>"
+    "        <property name='homogeneous'>True</property>"
+    "      </packing>"
+    "    </child>"
+	"	<child>"
+	"		<object class='GtkSeparatorToolItem' id='sep-3'>"
+    "			<property name='visible'>True</property>"
+    "			<property name='can-focus'>False</property>"
+ 	"		</object>"
+	"      <packing>"
+    "        <property name='expand'>False</property>"
+    "        <property name='homogeneous'>True</property>"
+    "      </packing>"
+	"	</child>"
+	"	<child>"
+	"      <object class='GtkToolButton' id='refresh'>"
+    "        <property name='visible'>True</property>"
+    "        <property name='can_focus'>False</property>"
+    "        <property name='tooltip_text' translatable='yes'>Refresh workarea</property>"
+    "        <property name='action_name'>app.refresh</property>"
+    "      </object>"
+    "      <packing>"
+    "        <property name='expand'>False</property>"
+    "        <property name='homogeneous'>True</property>"
+    "      </packing>"
+    "    </child>"
+	"	<child>"
+	"		<object class='GtkToolItem' id='combobox-container'>"
+	"    		<property name='visible'>True</property>"
+    "    		<property name='can_focus'>False</property>"
+	"		</object>"
+	"	</child>"
+	"	<child>"
+	"      <object class='GtkToggleToolButton' id='background-rendering'>"
+    "        <property name='visible'>True</property>"
+    "        <property name='can_focus'>False</property>"
+    "        <property name='tooltip_text' translatable='yes'>Render future and past frames in background when enabled</property>"
+    "        <property name='action_name'>app.background-rendering</property>"
+    "      </object>"
+    "      <packing>"
+    "        <property name='expand'>False</property>"
+    "        <property name='homogeneous'>True</property>"
+    "      </packing>"
+    "    </child>"
+	"	<child>"
+	"		<object class='GtkSeparatorToolItem' id='sep-4'>"
+    "			<property name='visible'>True</property>"
+    "			<property name='can-focus'>False</property>"
+ 	"		</object>"
+	"      <packing>"
+    "        <property name='expand'>False</property>"
+    "        <property name='homogeneous'>True</property>"
+    "      </packing>"
+	"	</child>"
 	"	</object>"
 	"</interface>"
 	;
@@ -1270,61 +1354,27 @@ CanvasView::create_top_toolbar()
 		create_action_toolbutton("save-all");
 	}
 
+	{
 		// Undo/Redo buttons
 		create_action_toolbutton("undo");
 		create_action_toolbutton("redo");
-
-		// Separator
-		displaybar->append(*create_tool_separator());
-	
-	{ // Preview Settings dialog button
-		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("synfig-preview_options"), iconsize));
-		icon->show();
-
-		preview_options_button = Gtk::manage(new class Gtk::ToolButton());
-		preview_options_button->set_icon_widget(*icon);
-		preview_options_button->signal_clicked().connect(
-			sigc::mem_fun(*this,&CanvasView::on_preview_option));
-		preview_options_button->set_label(_("Preview"));
-		preview_options_button->set_tooltip_text(_("Shows the Preview Settings Dialog"));
-		preview_options_button->show();
-
-		displaybar->append(*preview_options_button);
+		// Preview Settings dialog button
+		create_action_toolbutton("preview");
+		// Render Settings dialog button
+		create_action_toolbutton("render");
 	}
-
-	{ // Render Settings dialog button
-		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("synfig-render_options"), iconsize));
-		icon->show();
-
-		render_options_button = Gtk::manage(new class Gtk::ToolButton());
-		render_options_button->set_icon_widget(*icon);
-		render_options_button->signal_clicked().connect(
-			sigc::mem_fun0(render_settings,&RenderSettings::present));
-		render_options_button->set_label(_("Render"));
-		render_options_button->set_tooltip_text(_("Shows the Render Settings Dialog"));
-		render_options_button->show();
-
-		displaybar->append(*render_options_button);
-	}
-
-	// Separator
-	displaybar->append(*create_tool_separator());
 
 	{ // Refresh button
-		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("gtk-refresh"), iconsize));
-		icon->show();
-
-		refreshbutton = Gtk::manage(new class Gtk::ToolButton());
-		refreshbutton->set_icon_widget(*icon);
-		refreshbutton->signal_clicked().connect(SLOT_EVENT(EVENT_REFRESH));
-		refreshbutton->set_label(_("Refresh"));
-		refreshbutton->set_tooltip_text( _("Refresh workarea"));
-		refreshbutton->show();
-
-		displaybar->append(*refreshbutton);
+		App::canvas_action_group()->add_action(
+			App::instance()->add_action("refresh", SLOT_EVENT(EVENT_REFRESH)
+			)
+		);
+		create_action_toolbutton("refresh");
 	}
 
 	{ // Rendering mode ComboBox
+		auto container = Gtk::manage(new class Gtk::ToolItem());
+		App::builder()->get_widget("combobox-container", container);
 		render_combobox = Gtk::manage(new class Gtk::ComboBoxText());
 		render_combobox->append("software-draft", _("Draft"));
 #ifdef WITH_OPENGL
@@ -1336,31 +1386,13 @@ CanvasView::create_top_toolbar()
 		render_combobox->set_tooltip_text(_("Select rendering mode"));
 		render_combobox->set_active(1);
 		render_combobox->show();
-		auto container = Gtk::manage(new class Gtk::ToolItem());
 		container->add(*render_combobox);
-
 		container->show();
-		displaybar->add(*container);
 	}
 
 	{ // Background rendering button
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_background_rendering"), iconsize));
-		icon->show();
-
-		background_rendering_button = Gtk::manage(new class Gtk::ToggleToolButton());
-		background_rendering_button->set_active(work_area->get_background_rendering());
-		background_rendering_button->set_icon_widget(*icon);
-		background_rendering_button->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_background_rendering));
-		background_rendering_button->set_label(_("Background rendering"));
-		background_rendering_button->set_tooltip_text(_("Render future and past frames in background when enabled"));
-		background_rendering_button->show();
-
-		displaybar->append(*background_rendering_button);
+		create_action_toolbutton("background-rendering");
 	}
-
-	// Separator
-	displaybar->append(*create_tool_separator());
 
 	// ResolutionDial widget
 	resolutiondial.update_lowres(work_area->get_low_resolution_flag());
@@ -2914,8 +2946,6 @@ CanvasView::toggle_background_rendering()
 	// Update the toggle background rendering action
 	if( auto toggle_action = toggle_action_group->lookup_action("background-rendering") )
 		toggle_action->change_state(work_area->get_background_rendering());
-	// Update the toggle background rendering button
-	background_rendering_button->set_active(work_area->get_background_rendering());
 	toggling_background_rendering=false;
 }
 
@@ -3707,7 +3737,6 @@ CanvasView::on_meta_data_changed()
 		if ( auto action = toggle_action_group->lookup_action("snap-guides"))
 			action->change_state((bool)(work_area->get_guide_snap()));
 		// Update the toggle buttons
-		background_rendering_button->set_active(work_area->get_background_rendering());
 		onion_skin->set_active(work_area->get_onion_skin());
 		onion_skin_keyframes->set_active(work_area->get_onion_skin_keyframes());
 		snap_grid->set_active(work_area->get_grid_snap());

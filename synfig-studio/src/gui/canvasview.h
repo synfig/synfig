@@ -280,8 +280,6 @@ private:
 
 	Gtk::Button *closebutton;
 	Gtk::Button *stopbutton;
-	Gtk::ToggleToolButton *background_rendering_button;
-	Gtk::ToolButton *refreshbutton;
 	Gtk::ComboBoxText *render_combobox;
 	Gtk::Grid *timebar;
 	Gtk::Toolbar *displaybar;
@@ -310,8 +308,6 @@ private:
 	Gtk::ToggleToolButton *show_guides;
 	Gtk::ToggleToolButton *snap_guides;
 	Gtk::ToggleToolButton *onion_skin;
-	Gtk::ToolButton *render_options_button;
-	Gtk::ToolButton *preview_options_button;
 	Gtk::ToggleToolButton *onion_skin_keyframes;
 	bool toggling_show_grid;
 	bool toggling_snap_grid;
