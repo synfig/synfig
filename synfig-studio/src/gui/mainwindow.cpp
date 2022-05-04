@@ -236,6 +236,15 @@ void MainWindow::register_custom_widget_types()
 	Widget_Vector::register_type();
 	Widget_Time::register_type();
 }
+void
+MainWindow::change_action_state(const std::string& name) {
+	bool isActive = false;
+	if (auto action = App::instance()->lookup_action(name)) {
+		action->get_state(isActive);
+		isActive = !isActive;
+		action->change_state(isActive);
+	}
+}
 
 void
 MainWindow::toggle_show_menubar()
@@ -253,13 +262,8 @@ MainWindow::toggle_show_menubar()
 void
 MainWindow::appmenu_toggle_show_menubar()
 {
-	bool isActive = false;
-	if (auto action = App::instance()->lookup_action("show-menubar") ) {
-		action->get_state(isActive);
-		isActive = !isActive;
-		action->change_state(isActive);
-		MainWindow::toggle_show_menubar();
-	}
+	change_action_state("show-menubar");
+	MainWindow::toggle_show_menubar();
 }
 
 void
@@ -277,13 +281,8 @@ MainWindow::toggle_show_toolbar()
 void
 MainWindow::appmenu_toggle_show_toolbar()
 {
-	bool isActive = false;
-	if (auto action = App::instance()->lookup_action("show-toolbar") ) {
-		action->get_state(isActive);
-		isActive = !isActive;
-		action->change_state(isActive);
-		MainWindow::toggle_show_toolbar();
-	}
+	change_action_state("show-toolbar");
+	MainWindow::toggle_show_toolbar();
 }
 
 void MainWindow::add_custom_workspace_menu_item_handlers()

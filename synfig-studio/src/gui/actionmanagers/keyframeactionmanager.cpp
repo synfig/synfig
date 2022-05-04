@@ -64,6 +64,7 @@ static const guint no_prev_popup((guint)-1);
 
 KeyframeActionManager::KeyframeActionManager():
 	keyframe_tree_(),
+	//TODO: need to switch to Gio::SimpleActionGroup
 	action_group_(Gtk::ActionGroup::create("action_group_keyframe_action_manager")),
 	popup_id_(no_prev_popup),
 	queued(false)
@@ -297,6 +298,7 @@ KeyframeActionManager::refresh()
 		}
 	}
 
+	//TODO: need to add Gio::Menu / Gtk::Builder
 	// this popup menu is used from widget_keyframe_list
 	String full_ui_info;
 	full_ui_info=

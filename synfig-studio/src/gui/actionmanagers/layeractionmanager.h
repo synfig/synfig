@@ -57,7 +57,8 @@ class LayerActionManager
 	Gtk::UIManager::ui_merge_id 	menu_main_id_;
 	Glib::RefPtr<Gtk::ActionGroup> action_group_copy_paste;
 	Glib::RefPtr<Gio::SimpleActionGroup> s_action_group_copy_paste;
-
+	Glib::RefPtr<Gio::SimpleActionGroup> s_action_group_;
+	
 	Glib::RefPtr<Gtk::Action>	action_cut_;
 	Glib::RefPtr<Gtk::Action>	action_copy_;
 	Glib::RefPtr<Gtk::Action>	action_paste_;

@@ -33,6 +33,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <ETL/handle>
+#include <giomm/simpleactiongroup.h>
 #include <gtkmm/treestore.h>
 #include <gui/trees/historytreestore.h>
 #include <sigc++/sigc++.h>
@@ -223,6 +224,7 @@ public:
 	void add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamList &param_list1,const synfigapp::Action::ParamList &param_list2, synfigapp::Action::Category category=synfigapp::Action::CATEGORY_ALL)const;
 
 	void add_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_group, synfig::String& ui_info,   const synfigapp::Action::ParamList &param_list, synfigapp::Action::Category category=synfigapp::Action::CATEGORY_ALL)const;
+	void add_actions_to_group(const Glib::RefPtr<Gio::SimpleActionGroup>& action_group, synfig::String& menu_info,   const synfigapp::Action::ParamList &param_list, synfigapp::Action::Category category)const;
 
 	void add_special_layer_actions_to_menu(Gtk::Menu *menu, const synfig::Layer::Handle &layer) const;
 	void add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_group, synfig::String& ui_info, const synfig::Layer::Handle &layer) const;

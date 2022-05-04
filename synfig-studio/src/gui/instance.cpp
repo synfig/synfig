@@ -847,10 +847,6 @@ Instance::add_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_grou
 	// if(candidate_list.empty())
 	// 	synfig::warning("%s:%d Action CandidateList is empty!", __FILE__, __LINE__);
 
-	//Gtk Builder
-	auto menu_object = App::builder()->get_object("instance-layers");
-	auto layer_submenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(menu_object);
-
 	for(iter=candidate_list.begin();iter!=candidate_list.end();++iter)
 	{
 		Gtk::StockID stock_id(get_action_stock_id(*iter));
@@ -874,7 +870,31 @@ Instance::add_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_grou
 				)
 			);
 			ui_info+=strprintf("<menuitem action='action-%s' />",iter->name.c_str());
+		}
+	}
+}
 
+void
+Instance::add_actions_to_group(const Glib::RefPtr<Gio::SimpleActionGroup>& action_group, synfig::String& menu_info,   const synfigapp::Action::ParamList &param_list, synfigapp::Action::Category category)const
+{
+	synfigapp::Action::CandidateList candidate_list;
+	synfigapp::Action::CandidateList::iterator iter;
+
+	candidate_list=compile_candidate_list(param_list,category);
+
+	candidate_list.sort();
+
+	// if(candidate_list.empty())
+	// 	synfig::warning("%s:%d Action CandidateList is empty!", __FILE__, __LINE__);
+
+	//Gtk Builder
+	auto menu_object = App::builder()->get_object(menu_info);
+	auto submenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(menu_object);
+
+	for(iter=candidate_list.begin();iter!=candidate_list.end();++iter)
+	{
+		if(!(iter->category&synfigapp::Action::CATEGORY_HIDDEN))
+		{
 			//Gtk Builder
 			App::instance()->add_action("action-"+iter->name,
 				sigc::bind(
@@ -890,8 +910,8 @@ Instance::add_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_grou
 			);
 			auto menu_item = Gio::MenuItem::create(iter->local_name,
 				"app.action-"+iter->name);
-			if(!layer_submenu){
-				g_warning("could not get layer submenu!");
+			if(!submenu){
+				g_warning("could not get submenu!");
 			}else{
 				auto icon_info = App::icon_theme()->lookup_icon(
 					get_icon_name(iter->task), 128
@@ -901,7 +921,7 @@ Instance::add_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_grou
 					auto icon = Gio::Icon::create(icon_name);
 					menu_item->set_icon (icon);
 				}
-				layer_submenu->append_item(menu_item);
+				submenu->append_item(menu_item);
 			}
 		}
 	}

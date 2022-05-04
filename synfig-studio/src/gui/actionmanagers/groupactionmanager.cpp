@@ -65,6 +65,7 @@ static const guint no_prev_popup((guint)-1);
 
 GroupActionManager::GroupActionManager():
 	group_tree_(),
+	//TODO: need to switch to simple action group
 	action_group_(Gtk::ActionGroup::create("action_group_group_action_manager")),
 	popup_id_(no_prev_popup),
 	queued(false)
@@ -171,6 +172,7 @@ GroupActionManager::refresh()
 
 	{
 		{
+			//TODO: need to add Gio::SimpleAction
 			action_group_->add(
 				Gtk::Action::create(
 					"action-group_add",
@@ -232,6 +234,7 @@ GroupActionManager::refresh()
 
 	if(true)
 	{
+		//TODO: neeed to add menus to Gtk::Builder
 		String full_ui_info;
 		full_ui_info="<ui><popup action='menu-main'><menu action='menu-group'>"+ui_info+"</menu></popup></ui>";
 		popup_id_=get_ui_manager()->add_ui_from_string(full_ui_info);

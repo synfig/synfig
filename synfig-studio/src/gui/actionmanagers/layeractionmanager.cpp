@@ -102,6 +102,7 @@ LayerActionManager::LayerActionManager():
 	menu_main_id_(no_prev_popup),
 	action_group_copy_paste(Gtk::ActionGroup::create("action_group_copy_paste")),
 	s_action_group_copy_paste(Gio::SimpleActionGroup::create()),
+	s_action_group_(Gio::SimpleActionGroup::create()),
 	queued(false)
 {	
 	//cut
@@ -256,6 +257,11 @@ LayerActionManager::set_canvas_interface(const etl::handle<synfigapp::CanvasInte
 void
 LayerActionManager::clear()
 {
+	for(auto action : s_action_group_->list_actions())
+	{
+		App::instance()->remove_action(action);
+		s_action_group_->remove_action(action);
+	}
 	App::instance()->enable_action_group(s_action_group_copy_paste, false);
 	auto menu_object = App::builder()->get_object("instance-layers");
 	auto layer_submenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(menu_object);
@@ -368,7 +374,6 @@ LayerActionManager::refresh()
 				if (Layer_Skeleton::Handle::cast_dynamic(layer) || etl::handle<Layer_Composite>::cast_dynamic(layer)) {
 					action_amount_inc_->set_label(_("Increase Opacity"));
 					action_amount_dec_->set_label(_("Decrease Opacity"));
-					//TODO: need to add accelerators
 					inc_dec_section->remove_all();
 					set_action_inc_dec_menu(inc_dec_section, "Increase Opacity", "Decrease Opacity", true);
 				} else {
@@ -422,6 +427,11 @@ LayerActionManager::refresh()
 			handle<studio::Instance>::cast_static(get_canvas_interface()->get_instance())->
 				add_actions_to_group(action_group_, ui_info, param_list, synfigapp::Action::CATEGORY_LAYER);
 
+			//Gtk Builder menu
+			String menu_info("instance-layers");
+			handle<studio::Instance>::cast_static(get_canvas_interface()->get_instance())->
+				add_actions_to_group(s_action_group_, menu_info, param_list, synfigapp::Action::CATEGORY_LAYER);
+
 			ui_info+="<separator/>";
 			handle<studio::Instance>::cast_static(get_canvas_interface()->get_instance())->
 				add_special_layer_actions_to_group(action_group_, ui_info, layer_list);
@@ -460,14 +470,12 @@ LayerActionManager::set_action_inc_dec_menu(Glib::RefPtr<Gio::Menu>& menu, const
 		if(auto icon = App::icon_theme()->lookup_icon("list-add", 128).load_icon())
 			menu_item->set_icon(icon);
 		menu->append_item(menu_item);
-		App::instance()->set_accel_for_action("app.amount-inc","<Control><Mod1>parenright");
 	}
 	if(auto menu_item = Gio::MenuItem::create(_(name_dec),"app.amount-dec"))
 	{	
 		if(auto icon = App::icon_theme()->lookup_icon("list-remove", 128).load_icon())
 			menu_item->set_icon(icon);
 		menu->append_item(menu_item);
-		App::instance()->set_accel_for_action("app.amount-dec","<Control><Mod1>parenleft");
 	}
 	auto action = App::instance()->lookup_action("amount-inc");
 	if (auto s_action = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(action))

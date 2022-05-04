@@ -64,6 +64,7 @@ namespace studio {
 		void on_dockable_unregistered(Dockable* dockable);
 		void toggle_show_menubar();
 		void toggle_show_toolbar();
+		void change_action_state(const std::string& name);
 		void appmenu_toggle_show_menubar();
 		void appmenu_toggle_show_toolbar();
 

@@ -938,6 +938,12 @@ init_menu_builder()
 
 #undef SET_CANVAS_ACTION
 
+	//set accelerators that are not in ui_info
+	App::instance()->set_accel_for_action("app.amount-inc","<Control><Mod1>parenright");
+	App::instance()->set_accel_for_action("app.amount-dec","<Control><Mod1>parenleft");
+	App::instance()->set_accel_for_action("app.action-LayerEncapsulate", "<Primary>g");
+	App::instance()->set_accel_for_action("app.action-LayerRemove", "Delete");
+	
 	//menbuar XML string
 	Glib::ustring ui_info =
 	"<interface>"
