@@ -896,16 +896,18 @@ Instance::add_actions_to_group(const Glib::RefPtr<Gio::SimpleActionGroup>& actio
 		if(!(iter->category&synfigapp::Action::CATEGORY_HIDDEN))
 		{
 			//Gtk Builder
-			App::instance()->add_action("action-"+iter->name,
-				sigc::bind(
+			action_group->add_action(
+				App::instance()->add_action("action-"+iter->name,
 					sigc::bind(
-						sigc::mem_fun(
-							*const_cast<studio::Instance*>(this),
-							&studio::Instance::process_action
+						sigc::bind(
+							sigc::mem_fun(
+								*const_cast<studio::Instance*>(this),
+								&studio::Instance::process_action
+							),
+							param_list
 						),
-						param_list
-					),
-					iter->name
+						iter->name
+					)
 				)
 			);
 			auto menu_item = Gio::MenuItem::create(iter->local_name,
