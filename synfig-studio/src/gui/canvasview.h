@@ -482,6 +482,8 @@ private:
 
 	//helper function for import_file()
 	bool is_same_file(const std::string &filename);
+	void change_state(const std::string &action_name);
+	void change_state(const std::string &action_name, bool isActive);
 	
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------

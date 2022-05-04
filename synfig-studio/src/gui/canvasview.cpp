@@ -2781,9 +2781,7 @@ CanvasView::decrease_low_res_pixel_size()
 			break;
 		}
 	// Update the "toggle-low-res" action
-	Glib::RefPtr<Gio::Action> action = toggle_action_group->lookup_action("toggle-low-res");
-	if( action )
-		action->change_state(work_area->get_low_resolution_flag());
+	change_state("toggle-low-res", work_area->get_low_resolution_flag());
 	// Update toggle low res button
 	resolutiondial.update_lowres(work_area->get_low_resolution_flag());
 	changing_resolution_=false;
@@ -2823,9 +2821,7 @@ CanvasView::increase_low_res_pixel_size()
 			break;
 		}
 	// Update the "toggle-low-res" action
-	Glib::RefPtr<Gio::Action> action = toggle_action_group->lookup_action("toggle-low-res");
-	if( action )
-		action->change_state(work_area->get_low_resolution_flag());
+	change_state("toggle-low-res", work_area->get_low_resolution_flag());
 	// Update toggle low res button
 	resolutiondial.update_lowres(work_area->get_low_resolution_flag());
 	changing_resolution_=false;
@@ -2841,8 +2837,7 @@ CanvasView::toggle_low_res_pixel_flag()
 	// Update the toggle low res button
 	resolutiondial.update_lowres(work_area->get_low_resolution_flag());
 	// Update the "toggle-low-res" action
-	if( auto toggle_action = toggle_action_group->lookup_action("toggle-low-res") )
-		toggle_action->change_state(work_area->get_low_resolution_flag());
+	change_state("toggle-low-res", work_area->get_low_resolution_flag());
 	changing_resolution_=false;
 }
 
@@ -2892,8 +2887,7 @@ CanvasView::toggle_show_guides()
 		return;
 	toggling_show_guides=true;
 	work_area->toggle_show_guides();
-	if( auto toggle_action = toggle_action_group->lookup_action("show-guides") )
-		toggle_action->change_state(work_area->get_show_guides());
+	change_state("show-guides", work_area->get_show_guides());
 	show_guides->set_active(work_area->get_show_guides());
 	toggling_show_guides=false;
 }
@@ -2905,8 +2899,7 @@ CanvasView::toggle_snap_guides()
 		return;
 	toggling_snap_guides=true;
 	work_area->toggle_guide_snap();
-	if( auto toggle_action = toggle_action_group->lookup_action("snap-guides") )
-		toggle_action->change_state(work_area->get_guide_snap());
+	change_state("snap-guides", work_area->get_guide_snap());
 	snap_guides->set_active(work_area->get_guide_snap());
 	toggling_snap_guides=false;
 }
@@ -2919,8 +2912,7 @@ CanvasView::toggle_onion_skin()
 	toggling_onion_skin=true;
 	work_area->set_onion_skin(!work_area->get_onion_skin());
 	// Update the toggle onion skin action
-	if( auto toggle_action = toggle_action_group->lookup_action("onion-skin") )
-		toggle_action->change_state(work_area->get_onion_skin());
+	change_state("onion-skin", work_area->get_onion_skin());
 	// Update the toggle onion skin button
 	onion_skin->set_active(work_area->get_onion_skin());
 	toggling_onion_skin=false;
@@ -2935,8 +2927,7 @@ CanvasView::toggle_onion_skin_keyframes()
 	work_area->set_onion_skin_keyframes(!work_area->get_onion_skin_keyframes());
 	//set_onion_skin_keyframes_toggle(work_area->get_onion_skin_keyframes());
 	onion_skin_keyframes->set_active(work_area->get_onion_skin_keyframes());
-	if( auto toggle_action = toggle_action_group->lookup_action("onion-skin-keyframes") )
-		toggle_action->change_state(work_area->get_onion_skin_keyframes());
+	change_state("onion-skin-keyframes", work_area->get_onion_skin_keyframes());
 	toggling_onion_skin_keyframes=false;
 }
 
@@ -2948,8 +2939,7 @@ CanvasView::toggle_background_rendering()
 	toggling_background_rendering=true;
 	work_area->set_background_rendering(!work_area->get_background_rendering());
 	// Update the toggle background rendering action
-	if( auto toggle_action = toggle_action_group->lookup_action("background-rendering") )
-		toggle_action->change_state(work_area->get_background_rendering());
+	change_state("background-rendering", work_area->get_background_rendering());
 	// Update the toggle background rendering button
 	background_rendering_button->set_active(work_area->get_background_rendering());
 	toggling_background_rendering=false;
@@ -3639,30 +3629,12 @@ CanvasView::toggle_duck_mask(Duckmatic::Type type)
 		TOGGLE_DUCKS(angle, ANGLE)
 
 #undef	TOGGLE_DUCKS
-		if ( type == Duck::TYPE_WIDTHPOINT_POSITION ){
-			if( auto s_action = App::instance()->lookup_action("mask-widthpoint-position-ducks") ){
-				bool isActive = false;
-				s_action->get_state(isActive);
-				isActive = !isActive;
-				s_action->change_state(isActive);
-			}
-		}
-		if ( type == Duck::TYPE_BONE_RECURSIVE ){
-			if( auto s_action = App::instance()->lookup_action("mask-bone-recursive-ducks") ){
-				bool isActive = false;
-				s_action->get_state(isActive);
-				isActive = !isActive;
-				s_action->change_state(isActive);
-			}
-		}
-		if ( type == Duck::TYPE_NONE ){
-			if ( auto s_action =App::instance()->lookup_action("mask-none-ducks") ){
-				bool isActive = false;
-				s_action->get_state(isActive);
-				isActive = !isActive;
-				s_action->change_state(isActive);
-			}
-		}
+		if ( type == Duck::TYPE_WIDTHPOINT_POSITION )
+			change_state("mask-widthpoint-position-ducks");
+		if ( type == Duck::TYPE_BONE_RECURSIVE )
+			change_state("mask-bone-recursive-ducks");
+		if ( type == Duck::TYPE_NONE )
+			change_state("mask-none-ducks");
 		
 		// Update toggle ducks buttons
 		//action->get_active();
@@ -3728,20 +3700,13 @@ CanvasView::on_meta_data_changed()
 	try
 	{
 		// Update the toggle ducks actions
-		if ( auto action = toggle_action_group->lookup_action("background-rendering") )
-			action->change_state((bool)(work_area->get_background_rendering()));
-		if ( auto action = toggle_action_group->lookup_action("onion-skin"))
-			action->change_state((bool)(work_area->get_onion_skin()));
-		if ( auto action = toggle_action_group->lookup_action("onion-skin-keyframes") )		
-			action->change_state((bool)(work_area->get_onion_skin_keyframes()));
-		if ( auto action = toggle_action_group->lookup_action("show-grid"))
-			action->change_state((bool)(work_area->grid_status()));
-		if ( auto action = toggle_action_group->lookup_action("snap-grid"))
-			action->change_state((bool)(work_area->get_grid_snap()));
-		if ( auto action = toggle_action_group->lookup_action("show-guides"))
-			action->change_state((bool)(work_area->get_show_guides()));
-		if ( auto action = toggle_action_group->lookup_action("snap-guides"))
-			action->change_state((bool)(work_area->get_guide_snap()));
+		change_state("background-rendering", (bool)(work_area->get_background_rendering()) );
+		change_state("onion-skin", (bool)(work_area->get_onion_skin()) );
+		change_state("onion-skin-keyframes", (bool)(work_area->get_onion_skin_keyframes()) );		
+		change_state("show-grid", (bool)(work_area->grid_status()) );
+		change_state("snap-grid", (bool)(work_area->get_grid_snap()) );
+		change_state("show-guides", (bool)(work_area->get_show_guides()) );
+		change_state("snap-guides", (bool)(work_area->get_guide_snap()) );
 		// Update the toggle buttons
 		background_rendering_button->set_active(work_area->get_background_rendering());
 		onion_skin->set_active(work_area->get_onion_skin());
@@ -4213,3 +4178,22 @@ CanvasView::toggle_show_toolbar(){
 	else
 		displaybar->hide();
 };
+
+void
+CanvasView::change_state(const std::string &action_name)
+{
+	bool isActive = false;
+	if (auto action = App::instance()->lookup_action(action_name)) {
+		action->get_state(isActive);
+		isActive = !isActive;
+		action->change_state(isActive);
+	}
+}
+
+void
+CanvasView::change_state(const std::string &action_name, bool isActive)
+{
+	if (auto action = App::instance()->lookup_action(action_name)) {
+		action->change_state(isActive);
+	}
+}
