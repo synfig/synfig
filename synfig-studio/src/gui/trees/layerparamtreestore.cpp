@@ -470,14 +470,21 @@ LayerParamTreeStore::queue_rebuild()
 {
 	if(queued==2)
 		return;
+	auto old_queue = queued;
 	queued=2;
-	queue_connection.disconnect();
-	queue_connection=Glib::signal_timeout().connect(
-		sigc::bind_return(
-			sigc::mem_fun(*this,&LayerParamTreeStore::rebuild),
-			false
-		)
-	,20);
+
+	// If our object is not being refreshed skip delay
+	if (!old_queue) {
+		rebuild();
+	} else {
+		queue_connection.disconnect();
+		queue_connection=Glib::signal_timeout().connect(
+			sigc::bind_return(
+				sigc::mem_fun(*this,&LayerParamTreeStore::rebuild),
+				false
+			)
+		,150);
+	}
 
 }
 
