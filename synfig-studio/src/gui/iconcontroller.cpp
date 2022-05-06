@@ -360,6 +360,7 @@ IconController::init_icons(const synfig::String& path_to_icons)
 			//top toolbar
 			{"refresh", "view-refresh"},
 			{"background-rendering", "background_rendering_icon"},
+			{"onion-skin", "onion_skin_icon"},
 			//toolbox
 			{"state-normal" , "tool_normal_icon"},
 			{"state-smooth-move" , "tool_smooth_move_icon"},
