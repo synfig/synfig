@@ -1125,15 +1125,11 @@ void CanvasView::toggle_render_combobox()
 	App::setup_changed();
 }
 
-//TODO: this method needs to be updated to work with gtk::builder instead of gtk::ui_manager
 Gtk::Widget*
 CanvasView::create_top_toolbar()
 {
-	//TODO: this toolbar needs to be finished being updated to use gtk::builder
-	//This .glade string needs to be finished for the entire toolbar
-
 	//toolbar_name needs to a number attached because only one instance can be used per canvas
-	String toolbar_name("top-toolbar-%d", Instance::get_count()+1);
+	String toolbar_name("top-toolbar-%d", Instance::get_count());
 	Glib::ustring toolbar_info =
     "<!-- Generated with glade 3.18.3 -->"
     "<interface>"
@@ -1347,6 +1343,30 @@ CanvasView::create_top_toolbar()
     "        <property name='homogeneous'>True</property>"
     "      </packing>"
     "    </child>"
+	"	<child>"
+	"		<object class='GtkToolItem' id='pastonionskin-container'>"
+	"    		<property name='visible'>True</property>"
+    "    		<property name='can_focus'>False</property>"
+	"		</object>"
+	"	</child>"
+	"	<child>"
+	"		<object class='GtkToolItem' id='futureonionskin-container'>"
+	"    		<property name='visible'>True</property>"
+    "    		<property name='can_focus'>False</property>"
+	"		</object>"
+	"	</child>"
+	"	<child>"
+	"      <object class='GtkToggleToolButton' id='onion-skin-keyframes'>"
+    "        <property name='visible'>True</property>"
+    "        <property name='can_focus'>False</property>"
+    "        <property name='tooltip_text' translatable='yes'>Show Onion Skin on Keyframes when enabled, on Frames when disabled</property>"
+    "        <property name='action_name'>app.onion-skin-keyframes</property>"
+    "      </object>"
+    "      <packing>"
+    "        <property name='expand'>False</property>"
+    "        <property name='homogeneous'>True</property>"
+    "      </packing>"
+    "    </child>"
 	"	</object>"
 	"</interface>"
 	;
@@ -1361,7 +1381,10 @@ CanvasView::create_top_toolbar()
 	Gtk::Toolbar *toolbar;
 	App::builder()->get_widget(toolbar_name, toolbar);
 	if(!toolbar)
+	{
 		g_warning("Could not get top toolbar!");
+		return nullptr;
+	}
 	displaybar=manage(toolbar);
 	//displaybar = manage(new class Gtk::Toolbar());
 	displaybar->set_icon_size(iconsize);
@@ -1376,15 +1399,13 @@ CanvasView::create_top_toolbar()
 		create_action_toolbutton("save-all");
 	}
 
-	{
-		// Undo/Redo buttons
-		create_action_toolbutton("undo");
-		create_action_toolbutton("redo");
-		// Preview Settings dialog button
-		create_action_toolbutton("preview");
-		// Render Settings dialog button
-		create_action_toolbutton("render");
-	}
+	// Undo/Redo buttons
+	create_action_toolbutton("undo");
+	create_action_toolbutton("redo");
+	// Preview Settings dialog button
+	create_action_toolbutton("preview");
+	// Render Settings dialog button
+	create_action_toolbutton("render");
 
 	{ // Refresh button
 		toggle_action_group->add_action(
@@ -1395,21 +1416,22 @@ CanvasView::create_top_toolbar()
 	}
 
 	{ // Rendering mode ComboBox
+		render_combobox = Gtk::manage(new class Gtk::ComboBoxText());
+		render_combobox->append("software-draft", _("Draft"));
+#ifdef WITH_OPENGL
+		render_combobox->append("gl", _("GL"));
+#endif
+		render_combobox->append("software-preview", _("Preview"));
+		render_combobox->append("software", _("Final"));
+		render_combobox->signal_changed().connect(sigc::mem_fun(*this, &CanvasView::toggle_render_combobox));
+		render_combobox->set_tooltip_text(_("Select rendering mode"));
+		render_combobox->set_active(1);
+		render_combobox->show();
+
 		auto object = App::builder()->get_object("combobox-container");
 		auto container = Glib::RefPtr<Gtk::ToolItem>::cast_dynamic(object);
 		if(container)
 		{
-			render_combobox = Gtk::manage(new class Gtk::ComboBoxText());
-			render_combobox->append("software-draft", _("Draft"));
-	#ifdef WITH_OPENGL
-			render_combobox->append("gl", _("GL"));
-	#endif
-			render_combobox->append("software-preview", _("Preview"));
-			render_combobox->append("software", _("Final"));
-			render_combobox->signal_changed().connect(sigc::mem_fun(*this, &CanvasView::toggle_render_combobox));
-			render_combobox->set_tooltip_text(_("Select rendering mode"));
-			render_combobox->set_active(1);
-			render_combobox->show();
 			container->add(*render_combobox);
 			container->show();
 		}else{
@@ -1417,35 +1439,30 @@ CanvasView::create_top_toolbar()
 		}
 	}
 
-	{ // Background rendering button
-		create_action_toolbutton("background-rendering");
-		auto object = App::builder()->get_object("background-rendering");
-		background_rendering_button = Glib::RefPtr<Gtk::ToggleToolButton>::cast_dynamic(object);
-		if(!background_rendering_button)
-			g_warning("Could not get background_rendering_button");
-	}
+	// Background rendering button
+	create_action_toolbutton("background-rendering");
 
 	{// ResolutionDial widget
+		resolutiondial.update_lowres(work_area->get_low_resolution_flag());
+		resolutiondial.signal_increase_resolution().connect(
+			sigc::mem_fun(*this, &CanvasView::decrease_low_res_pixel_size));
+		resolutiondial.signal_decrease_resolution().connect(
+			sigc::mem_fun(*this, &CanvasView::increase_low_res_pixel_size));
+		resolutiondial.signal_use_low_resolution().connect(
+			sigc::mem_fun(*this, &CanvasView::toggle_low_res_pixel_flag));
+		
 		const Gtk::ToolItem *toolitem;
 		App::builder()->get_widget("sep-5", toolitem);
 		if(toolitem)
 		{
-			resolutiondial.update_lowres(work_area->get_low_resolution_flag());
-			resolutiondial.signal_increase_resolution().connect(
-				sigc::mem_fun(*this, &CanvasView::decrease_low_res_pixel_size));
-			resolutiondial.signal_decrease_resolution().connect(
-				sigc::mem_fun(*this, &CanvasView::increase_low_res_pixel_size));
-			resolutiondial.signal_use_low_resolution().connect(
-				sigc::mem_fun(*this, &CanvasView::toggle_low_res_pixel_flag));
 			resolutiondial.insert_to_toolbar(*displaybar, displaybar->get_item_index(*toolitem));
 		}else{
-			g_warning("Could not get resolutiondial container!");
+			g_warning("Could not get index to insert resolutiondial!");
 		}
 	}
 
-	{ // Onion skin toggle button
-		create_action_toolbutton("onion-skin");
-	}
+	// Onion skin toggle button
+	create_action_toolbutton("onion-skin");
 
 	{ // Past onion skin spin button
 		past_onion_spin=Gtk::manage(new class Gtk::SpinButton(past_onion_adjustment_));
@@ -1455,12 +1472,14 @@ CanvasView::create_top_toolbar()
 		past_onion_spin->set_tooltip_text(_("Past Onion Skins"));
 		past_onion_spin->show();
 
-		Gtk::ToolItem *toolitem = Gtk::manage(new Gtk::ToolItem());
-		toolitem->add(*past_onion_spin);
-		toolitem->set_is_important(true);
-		toolitem->show();
-
-		displaybar->append(*toolitem);
+		auto object = App::builder()->get_object("pastonionskin-container");
+		auto container = Glib::RefPtr<Gtk::ToolItem>::cast_dynamic(object);
+		if(container){
+			container->add(*past_onion_spin);
+			container->set_is_important(true);
+		}else{
+			g_warning("Could not get past onion skin container!");
+		}
 	}
 
 	{ // Future onion skin spin button
@@ -1471,30 +1490,20 @@ CanvasView::create_top_toolbar()
 		future_onion_spin->set_tooltip_text(_("Future Onion Skins"));
 		future_onion_spin->show();
 
-		Gtk::ToolItem *toolitem = Gtk::manage(new Gtk::ToolItem());
-		toolitem->add(*future_onion_spin);
-		toolitem->set_is_important(true);
-		toolitem->show();
-
-		displaybar->append(*toolitem);
+		auto object = App::builder()->get_object("futureonionskin-container");
+		auto container = Glib::RefPtr<Gtk::ToolItem>::cast_dynamic(object);
+		//Gtk::ToolItem *toolitem = Gtk::manage(new Gtk::ToolItem());
+		if(container){
+			container->add(*future_onion_spin);
+			container->set_is_important(true);
+		}else{
+			g_warning("Could not get future onion skin container!");
+		}
 	}
 
-	{ // Onion skin on Keyframes/Frames toggle button
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-keyframes"), iconsize));
-		icon->show();
-
-		onion_skin_keyframes = Gtk::manage(new class Gtk::ToggleToolButton());
-		onion_skin_keyframes->set_active(work_area->get_onion_skin_keyframes());
-		onion_skin_keyframes->set_icon_widget(*icon);
-		onion_skin_keyframes->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_onion_skin_keyframes));
-		onion_skin_keyframes->set_label(_("Keyframes"));
-		onion_skin_keyframes->set_tooltip_text(_("Show Onion Skin on Keyframes when enabled, on Frames when disabled"));
-		onion_skin_keyframes->show();
-
-		displaybar->append(*onion_skin_keyframes);
-	}
-
+	// Onion skin on Keyframes/Frames toggle button
+	create_action_toolbutton("onion-skin-keyframes");
+	
 	if(App::enable_mainwin_toolbar)
 		displaybar->show();
 	else
@@ -2943,8 +2952,7 @@ CanvasView::toggle_onion_skin_keyframes()
 		return;
 	toggling_onion_skin_keyframes=true;
 	work_area->set_onion_skin_keyframes(!work_area->get_onion_skin_keyframes());
-	//set_onion_skin_keyframes_toggle(work_area->get_onion_skin_keyframes());
-	onion_skin_keyframes->set_active(work_area->get_onion_skin_keyframes());
+	// Update the toggle onion skin keyframes action
 	change_state("onion-skin-keyframes", work_area->get_onion_skin_keyframes());
 	toggling_onion_skin_keyframes=false;
 }
@@ -2958,8 +2966,6 @@ CanvasView::toggle_background_rendering()
 	work_area->set_background_rendering(!work_area->get_background_rendering());
 	// Update the toggle background rendering action
 	change_state("background-rendering", work_area->get_background_rendering());
-	// Update the toggle background rendering button
-	background_rendering_button->set_active(work_area->get_background_rendering());
 	toggling_background_rendering=false;
 }
 
@@ -3726,8 +3732,6 @@ CanvasView::on_meta_data_changed()
 		change_state("show-guides", (bool)(work_area->get_show_guides()) );
 		change_state("snap-guides", (bool)(work_area->get_guide_snap()) );
 		// Update the toggle buttons
-		background_rendering_button->set_active(work_area->get_background_rendering());
-		onion_skin_keyframes->set_active(work_area->get_onion_skin_keyframes());
 		snap_grid->set_active(work_area->get_grid_snap());
 		show_grid->set_active(work_area->grid_status());
 		snap_guides->set_active(work_area->get_guide_snap());

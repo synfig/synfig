@@ -361,6 +361,7 @@ IconController::init_icons(const synfig::String& path_to_icons)
 			{"refresh", "view-refresh"},
 			{"background-rendering", "background_rendering_icon"},
 			{"onion-skin", "onion_skin_icon"},
+			{"onion-skin-keyframes", "keyframe_icon"},
 			//toolbox
 			{"state-normal" , "tool_normal_icon"},
 			{"state-smooth-move" , "tool_smooth_move_icon"},
