@@ -87,7 +87,7 @@ target_include_directories(synfigstudio PRIVATE ${MLT_INCLUDE_DIRS}) # required 
 
 # on MacOS/Brew FontConfig located in non-standard folder
 # so we need to add it's path to target
-target_link_libraries(synfigstudio
+target_link_libraries(synfigstudio PRIVATE
 	${FONT_CONFIG_LDFLAGS}
 	${GTKMM_LIBRARIES}
 	${Gettext_LIBRARIES}
@@ -97,6 +97,10 @@ target_link_libraries(synfigstudio
 	synfig
 	synfigapp
 )
+
+if(TCMALLOC_LIBRARY)
+	target_link_libraries(synfigstudio PRIVATE ${TCMALLOC_LIBRARY})
+endif()
 
 install(
 	TARGETS synfigstudio
