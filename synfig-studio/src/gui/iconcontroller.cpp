@@ -362,6 +362,11 @@ IconController::init_icons(const synfig::String& path_to_icons)
 			{"background-rendering", "background_rendering_icon"},
 			{"onion-skin", "onion_skin_icon"},
 			{"onion-skin-keyframes", "keyframe_icon"},
+			//right toolbar
+			{"show-grid", "show_grid_icon"},
+			{"snap-grid", "snap_grid_icon"},
+			{"show-guides", "show_guideline_icon"},
+			{"snap-guides", "snap_guideline_icon"},
 			//toolbox
 			{"state-normal" , "tool_normal_icon"},
 			{"state-smooth-move" , "tool_smooth_move_icon"},

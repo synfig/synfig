@@ -1373,7 +1373,7 @@ CanvasView::create_top_toolbar()
 	try {
 		App::builder()->add_from_string(toolbar_info);
 	} catch (const Glib::Error& ex) {
-		std::cerr << "Building toolbar failed: " << ex.what();
+		std::cerr << "Building top toolbar failed: " << ex.what();
 	}
 
 	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
@@ -1535,79 +1535,99 @@ CanvasView::create_stop_button()
 Gtk::Widget*
 CanvasView::create_right_toolbar()
 {
+	//toolbar_name needs to a number attached because only one instance can be used per canvas
+	String toolbar_name("right-toolbar-%d", Instance::get_count());
+	Glib::ustring toolbar_info =
+    "<!-- Generated with glade 3.18.3 -->"
+    "<interface>"
+    "  <requires lib='gtk+' version='3.4'/>"
+    "  <object class='GtkToolbar' id='"+toolbar_name+"'>"
+    "    <property name='visible'>True</property>"
+    "    <property name='can_focus'>False</property>"
+	"    <child>"
+    "      <object class='GtkToggleToolButton' id='show-grid'>"
+    "        <property name='visible'>True</property>"
+    "        <property name='can_focus'>False</property>"
+    "        <property name='tooltip_text' translatable='yes'>Show Grid when enabled</property>"
+    "        <property name='action_name'>app.show-grid</property>"
+    "      </object>"
+    "      <packing>"
+    "        <property name='expand'>False</property>"
+    "        <property name='homogeneous'>True</property>"
+    "      </packing>"
+    "    </child>"
+	"    <child>"
+    "      <object class='GtkToggleToolButton' id='snap-grid'>"
+    "        <property name='visible'>True</property>"
+    "        <property name='can_focus'>False</property>"
+    "        <property name='tooltip_text' translatable='yes'>Snap to Grid when enabled</property>"
+    "        <property name='action_name'>app.snap-grid</property>"
+    "      </object>"
+    "      <packing>"
+    "        <property name='expand'>False</property>"
+    "        <property name='homogeneous'>True</property>"
+    "      </packing>"
+    "    </child>"
+	"    <child>"
+    "      <object class='GtkToggleToolButton' id='show-guides'>"
+    "        <property name='visible'>True</property>"
+    "        <property name='can_focus'>False</property>"
+    "        <property name='tooltip_text' translatable='yes'>Show Guides when enabled</property>"
+    "        <property name='action_name'>app.show-guides</property>"
+    "      </object>"
+    "      <packing>"
+    "        <property name='expand'>False</property>"
+    "        <property name='homogeneous'>True</property>"
+    "      </packing>"
+    "    </child>"
+	"    <child>"
+    "      <object class='GtkToggleToolButton' id='snap-guides'>"
+    "        <property name='visible'>True</property>"
+    "        <property name='can_focus'>False</property>"
+    "        <property name='tooltip_text' translatable='yes'>Snap to Guides when enabled</property>"
+    "        <property name='action_name'>app.snap-guides</property>"
+    "      </object>"
+    "      <packing>"
+    "        <property name='expand'>False</property>"
+    "        <property name='homogeneous'>True</property>"
+    "      </packing>"
+    "    </child>"
+	"	<child>"
+	"		<object class='GtkSeparatorToolItem' id='sep-0'>"
+    "			<property name='visible'>True</property>"
+    "			<property name='can-focus'>False</property>"
+ 	"		</object>"
+	"      <packing>"
+    "        <property name='expand'>False</property>"
+    "        <property name='homogeneous'>True</property>"
+    "      </packing>"
+	"	</child>"
+	"	</object>"
+	"</interface>"
+	;
+	try {
+		App::builder()->add_from_string(toolbar_info);
+	} catch (const Glib::Error& ex) {
+		std::cerr << "Building right toolbar failed: " << ex.what();
+	}
+	Gtk::Toolbar *toolbar;
+	App::builder()->get_widget(toolbar_name, toolbar);
+	if(!toolbar)
+	{
+		g_warning("Could not get right toolbar!");
+		return nullptr;
+	}
+	displaybar=manage(toolbar);
+	
 	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
-
-	displaybar = manage(new class Gtk::Toolbar());
 	displaybar->set_icon_size(iconsize);
 	displaybar->set_toolbar_style(Gtk::TOOLBAR_ICONS);
 	displaybar->set_property("orientation", Gtk::ORIENTATION_VERTICAL);
 
-	{ // Show grid toggle button
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_show_grid"), iconsize));
-		icon->show();
-
-		show_grid = Gtk::manage(new class Gtk::ToggleToolButton());
-		show_grid->set_active(work_area->grid_status());
-		show_grid->set_icon_widget(*icon);
-		show_grid->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_show_grid));
-		show_grid->set_label(_("Show Grid"));
-		show_grid->set_tooltip_text(_("Show Grid when enabled"));
-		show_grid->show();
-
-		displaybar->append(*show_grid);
-	}
-
-	{ // Snap to grid toggle button
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_snap_grid"), iconsize));
-		icon->show();
-
-		snap_grid = Gtk::manage(new class Gtk::ToggleToolButton());
-		snap_grid->set_active(work_area->grid_status());
-		snap_grid->set_icon_widget(*icon);
-		snap_grid->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_snap_grid));
-		snap_grid->set_label(_("Snap to Grid"));
-		snap_grid->set_tooltip_text(_("Snap to Grid when enabled"));
-		snap_grid->show();
-
-		displaybar->append(*snap_grid);
-	}
-
-	{ // Show guide toggle button
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_show_guide"), iconsize));
-		icon->show();
-
-		show_guides = Gtk::manage(new class Gtk::ToggleToolButton());
-		show_guides->set_active(work_area->get_show_guides());
-		show_guides->set_icon_widget(*icon);
-		show_guides->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_show_guides));
-		show_guides->set_label(_("Show Guides"));
-		show_guides->set_tooltip_text(_("Show Guides when enabled"));
-		show_guides->show();
-
-		displaybar->append(*show_guides);
-	}
-
-	{ // Snap to guides toggle button
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_snap_guide"), iconsize));
-		icon->show();
-
-		snap_guides = Gtk::manage(new class Gtk::ToggleToolButton());
-		snap_guides->set_active(work_area->get_guide_snap());
-		snap_guides->set_icon_widget(*icon);
-		snap_guides->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_snap_guides));
-		snap_guides->set_label(_("Snap to Guides"));
-		snap_guides->set_tooltip_text(_("Snap to Guides when enabled"));
-		snap_guides->show();
-
-		displaybar->append(*snap_guides);
-	}
-
-	// Separator
-	displaybar->append(*create_tool_separator());
+	create_action_toolbutton("show-grid");
+	create_action_toolbutton("snap-grid");
+	create_action_toolbutton("show-guides");
+	create_action_toolbutton("snap-guides");
 
 	// ToggleDuckDial widget
 	Duck::Type m = work_area->get_type_mask();
@@ -2890,8 +2910,6 @@ CanvasView::toggle_show_grid()
 	work_area->toggle_grid();
 	// Update the toggle grid show action
 	set_grid_show_toggle(work_area->grid_status());
-	// Update the toggle grid show check button
-	show_grid->set_active(work_area->grid_status());
 	toggling_show_grid=false;
 }
 
@@ -2904,8 +2922,6 @@ CanvasView::toggle_snap_grid()
 	work_area->toggle_grid_snap();
 	// Update the toggle grid snap action
 	set_grid_snap_toggle(work_area->get_grid_snap());
-	// Update the toggle grid snap check button
-	snap_grid->set_active(work_area->get_grid_snap());
 	toggling_snap_grid=false;
 }
 
@@ -2917,7 +2933,6 @@ CanvasView::toggle_show_guides()
 	toggling_show_guides=true;
 	work_area->toggle_show_guides();
 	change_state("show-guides", work_area->get_show_guides());
-	show_guides->set_active(work_area->get_show_guides());
 	toggling_show_guides=false;
 }
 
@@ -2929,7 +2944,6 @@ CanvasView::toggle_snap_guides()
 	toggling_snap_guides=true;
 	work_area->toggle_guide_snap();
 	change_state("snap-guides", work_area->get_guide_snap());
-	snap_guides->set_active(work_area->get_guide_snap());
 	toggling_snap_guides=false;
 }
 
@@ -3731,11 +3745,6 @@ CanvasView::on_meta_data_changed()
 		change_state("snap-grid", (bool)(work_area->get_grid_snap()) );
 		change_state("show-guides", (bool)(work_area->get_show_guides()) );
 		change_state("snap-guides", (bool)(work_area->get_guide_snap()) );
-		// Update the toggle buttons
-		snap_grid->set_active(work_area->get_grid_snap());
-		show_grid->set_active(work_area->grid_status());
-		snap_guides->set_active(work_area->get_guide_snap());
-		show_guides->set_active(work_area->get_show_guides());
 		// Update the onion skin spins
 		past_onion_spin->set_value(work_area->get_onion_skins()[0]);
 		future_onion_spin->set_value(work_area->get_onion_skins()[1]);

@@ -303,10 +303,6 @@ private:
 	Glib::RefPtr<Gtk::Adjustment> past_onion_adjustment_;
 	Gtk::SpinButton *past_onion_spin;
 	Gtk::SpinButton *future_onion_spin;
-	Gtk::ToggleToolButton *show_grid;
-	Gtk::ToggleToolButton *snap_grid;
-	Gtk::ToggleToolButton *show_guides;
-	Gtk::ToggleToolButton *snap_guides;
 	bool toggling_show_grid;
 	bool toggling_snap_grid;
 	bool toggling_show_guides;
