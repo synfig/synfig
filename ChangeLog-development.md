@@ -1,3 +1,4 @@
+- [`78f08a4`](https://github.com/synfig/synfig/commit/78f08a426835a98dcc40c4cc458218b05710b939) [CMake] Added option to link with tcmalloc library ([#2602](https://github.com/synfig/synfig/issues/2602)) [core] [studio]
 - [`61c6f49`](https://github.com/synfig/synfig/commit/61c6f49d79f1cc562e1171fe3638664d846508e0) Bumped year ([#2623](https://github.com/synfig/synfig/issues/2623)) [studio]
 - [`9ef1c59`](https://github.com/synfig/synfig/commit/9ef1c59fc345350461dfa3fef8f45d0dc091a177) Fix module search path for Lottie Exporter ([#2621](https://github.com/synfig/synfig/issues/2621)) [studio]
 - [`08202f4`](https://github.com/synfig/synfig/commit/08202f400bffb75031b907c7eab02f517ad99fef) Removed old .cvsignore files ([#2616](https://github.com/synfig/synfig/issues/2616))
