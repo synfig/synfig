@@ -57,7 +57,11 @@ SYNFIGAPP_EXPORT const ValueDesc ValueDesc::blank;
 void ValueDesc::on_id_changed()
 {
 	try {
-		name = get_value_node()->get_id();
+		synfig::ValueNode::Handle value_node = get_value_node();
+		if (value_node)
+				name = value_node->get_id();
+		else
+				name.clear();
 	} catch (Exception::IDNotFound &) {
 		name.clear();
 	}

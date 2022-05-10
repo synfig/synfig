@@ -130,7 +130,7 @@ public:
 
 		if (id_changed_connection.connected())
 			id_changed_connection.disconnect();
-		if (other.id_changed_connection.connected())
+		if (other.id_changed_connection.connected() && is_valid())
 			id_changed_connection = get_value_node()->signal_id_changed().connect(sigc::mem_fun(*this, &ValueDesc::on_id_changed));
 
 		return *this;
@@ -212,7 +212,7 @@ public:
 		parent_desc(other.parent_desc),
 		links_count(0)
 	{
-		if (other.id_changed_connection.connected())
+		if (other.id_changed_connection.connected() && is_valid())
 			id_changed_connection = get_value_node()->signal_id_changed().connect(sigc::mem_fun(*this, &ValueDesc::on_id_changed));
 		if (parent_desc) parent_desc->links_count++;
 	}
@@ -260,9 +260,10 @@ public:
 
 	bool
 	is_value_node()const
-		{ return parent_is_value_node()
+		{ return (parent_is_value_node()
 		      || parent_is_canvas()
-			  || (parent_is_layer() && layer->dynamic_param_list().count(name) > 0);
+			  || (parent_is_layer() && layer->dynamic_param_list().count(name) > 0))
+              && is_valid();
 		}
 	bool
 	is_const()const
@@ -355,6 +356,8 @@ public:
 	synfig::ValueNode::Handle
 	get_value_node()const
 	{
+		if (!is_value_node()) return nullptr;
+
 		if(parent_is_canvas())
 			return canvas->find_value_node(name,false);
 		if(parent_is_layer() && layer->dynamic_param_list().count(name))
