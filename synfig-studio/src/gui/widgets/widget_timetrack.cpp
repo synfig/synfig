@@ -847,12 +847,76 @@ bool Widget_Timetrack::fetch_waypoints(const WaypointItem &wi, std::set<synfig::
 
 void Widget_Timetrack::on_waypoint_clicked(const Widget_Timetrack::WaypointItem& wi, unsigned int button, Gdk::Point)
 {
-	std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set;
-	fetch_waypoints(wi, waypoint_set);
-	if (waypoint_set.size() > 0) {
+//    std::vector<WaypointItem*> selection = waypoint_sd.get_selected_items(); //getting the slected items and doing what is done here
+                                                                                //to them then also storing in a vector
+//    std::vector<std::set<synfig::Waypoint, std::less<synfig::UniqueID> >> selection_set; //the vector
+//    for (WaypointItem *wis /*pointer called wis*/: selection){
+    std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set;  //og defines a set
+    fetch_waypoints(wi, waypoint_set); //og fetches ?! waypoints
+
+//    std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set_g2 = waypoint_set ;
+
+    if (waypoint_set.size() > 0) {
 		const synfigapp::ValueDesc &value_desc = param_info_map.at(wi.path.to_string()).get_value_desc();
-		signal_waypoint_clicked().emit(value_desc, waypoint_set, button);
+        signal_waypoint_clicked().emit(value_desc, waypoint_set, button);
+    //now store the waypoint_set in a vector
+//        selection_set.push_back(waypoint_set); //put the waypoint_set to the vector
+//        selection_set.insert(selection_set.begin(), waypoint_set); //adds waypoint set to the vector
+//        accumilated_selection_set.push_back(waypoint_set);
+//        std::cout<<accumilated_selection_set.size() <<"      ";
+
+//    }
+
+    //test to set waypoint model of selected after one waypoint is clicked
+
 	}
+
+    //test loop to  set wwaypoint model
+    //also yea we can just sent to the function instead
+    // ok so it sucessfully sets it
+    synfig::Waypoint::Model model;
+    std::vector<WaypointItem*> selection = waypoint_sd.get_selected_items(); //storing selected waypoint items
+//    accumilated_selection_set = *selection;
+//    for(int i =0 ; i<selection.size() ; i++)
+//    {
+//    fetch_waypoints(*selection[i], waypoint_set);
+//    }
+
+
+
+
+    for(int i =0 ; i<selection.size() ; i++) //iteratre through selection size
+    {
+       std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set_new; //declaration
+       fetch_waypoints(*selection[i], waypoint_set_new); //setting up waypoint_set_new
+        std::set<synfig::Waypoint, std::less<synfig::UniqueID> >::const_iterator iter;
+        model.set_before(synfig::INTERPOLATION_CONSTANT);
+         model.set_after(synfig::INTERPOLATION_CONSTANT);
+         accumilated_selection_set.push_back(waypoint_set_new);
+        for(iter=accumilated_selection_set[i].begin();iter!=accumilated_selection_set[i].end();++iter)
+        {
+            synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Change Waypoint Group"));
+
+            synfig::Waypoint waypoint(*iter);
+            waypoint.apply_model(model);
+            synfigapp::Action::Handle action(synfigapp::Action::create("WaypointSet"));
+
+            assert(action);
+
+            action->set_param("canvas",get_canvas_interface()->get_canvas());
+            action->set_param("canvas_interface",get_canvas_interface());
+
+            action->set_param("waypoint",waypoint);
+            action->set_param("value_node",waypoint.get_parent_value_node());
+
+            if(!get_canvas_interface()->get_instance()->perform_action(action))
+            {
+                group.cancel();
+                return;
+            }
+        }
+       }
+    std::cout<<accumilated_selection_set.size();
 }
 
 void Widget_Timetrack::on_waypoint_double_clicked(const Widget_Timetrack::WaypointItem& wi, unsigned int button, Gdk::Point)

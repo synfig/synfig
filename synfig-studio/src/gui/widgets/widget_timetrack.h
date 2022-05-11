@@ -62,6 +62,9 @@ class LayerParamTreeStore;
 class Widget_Timetrack : public Widget_TimeGraphBase
 {
 public:
+    std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set_g2 ;
+    std::vector<std::set<synfig::Waypoint, std::less<synfig::UniqueID> >> accumilated_selection_set;
+
 	Widget_Timetrack();
 	virtual ~Widget_Timetrack() override;
 
