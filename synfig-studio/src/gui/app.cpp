@@ -1129,10 +1129,12 @@ init_menu_builder()
 	"	<submenu>"
 	"		<attribute name='label' translatable='yes'>_View</attribute>"
 	"		<section>"
+#if !defined(__APPLE__)
 	"			<item>"
 	"				<attribute name='label' translatable='yes'>_Show Menubar</attribute>"
 	"				<attribute name='action'>app.show-menubar</attribute>"
 	"			</item>"
+#endif
 	"			<item>"
 	"				<attribute name='label' translatable='yes'>_Toolbar</attribute>"
 	"				<attribute name='action'>app.show-toolbar</attribute>"
