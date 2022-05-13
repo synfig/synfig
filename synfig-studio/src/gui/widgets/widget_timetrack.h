@@ -158,9 +158,6 @@ private:
         sigc::signal<void> signal_action_changed_;
     } waypoint_sd;
 
-		void update_action();
-		sigc::signal<void> signal_action_changed_;
-	} waypoint_sd;
 	void setup_mouse_handler();
 
 	//! the treeview to synch with
