@@ -237,29 +237,27 @@ void Dock_Timetrack2::setup_tool_palette()
 	}
     Gtk::RadioButtonGroup interpolation_group;
     //button1
-    Gtk::RadioToolButton *clamped_button = manage(new Gtk::RadioToolButton(
+    Gtk::ToolButton *clamped_button = manage(new Gtk::ToolButton(
                                                     *manage(new Gtk::Image(
                                                                 Gtk::StockID("synfig-interpolation_type_clamped"),
                                                                 Gtk::IconSize::from_name("synfig-small_icon_16x16") )),
                                                                 "_Clamped" ));
-    clamped_button->set_group(interpolation_group);
-    clamped_button->signal_toggled().connect( [this](){
+//    clamped_button->set_group(interpolation_group);
+    clamped_button->signal_clicked().connect( [this](){
 
         current_widget_timetrack->set_interpolation("clamped");
 
     } );
     tool_item_group->add(*clamped_button);
     //button2
-    Gtk::RadioToolButton *tcb_button = manage(new Gtk::RadioToolButton(
+    Gtk::ToolButton *tcb_button = manage(new Gtk::ToolButton(
                                                     *manage(new Gtk::Image(
                                                                 Gtk::StockID("synfig-interpolation_type_tcb"),
                                                                 Gtk::IconSize::from_name("synfig-small_icon_16x16") )),
                                                                 "_TCB" ));
-    tcb_button->set_group(interpolation_group);
+//    tcb_button->set_group(interpolation_group);
 
-    synfig::Waypoint::Model model;
-
-    tcb_button->signal_toggled().connect( [this](){
+    tcb_button->signal_clicked().connect( [this](){
 
         current_widget_timetrack->set_interpolation("tcb");
 
@@ -267,41 +265,41 @@ void Dock_Timetrack2::setup_tool_palette()
 
     tool_item_group->add(*tcb_button);
     //button3
-    Gtk::RadioToolButton *const_button = manage(new Gtk::RadioToolButton(
+    Gtk::ToolButton *const_button = manage(new Gtk::ToolButton(
                                                     *manage(new Gtk::Image(
                                                                 Gtk::StockID("synfig-interpolation_type_const"),
                                                                 Gtk::IconSize::from_name("synfig-small_icon_16x16") )),
                                                                 "_Constant" ));
-    const_button->set_group(interpolation_group);
+//    const_button->set_group(interpolation_group);
 
         // needed are of course waypoinbt_set and thats it
-    const_button->signal_toggled().connect( [this](){
+    const_button->signal_clicked().connect( [this](){
 
         current_widget_timetrack->set_interpolation("constant");
 
     } );
     tool_item_group->add(*const_button);
     //button4
-    Gtk::RadioToolButton *ease_button = manage(new Gtk::RadioToolButton(
+    Gtk::ToolButton *ease_button = manage(new Gtk::ToolButton(
                                                     *manage(new Gtk::Image(
                                                                 Gtk::StockID("synfig-interpolation_type_ease"),
                                                                 Gtk::IconSize::from_name("synfig-small_icon_16x16") )),
                                                                 "_Ease In/Out" ));
-    ease_button->set_group(interpolation_group);
-    ease_button->signal_toggled().connect( [this](){
+//    ease_button->set_group(interpolation_group);
+    ease_button->signal_clicked().connect( [this](){
 
             current_widget_timetrack->set_interpolation("ease");
     } );
     tool_item_group->add(*ease_button);
     //button5
-    Gtk::RadioToolButton *linear_button = manage(new Gtk::RadioToolButton(
+    Gtk::ToolButton *linear_button = manage(new Gtk::ToolButton(
                                                     *manage(new Gtk::Image(
                                                                 Gtk::StockID("synfig-interpolation_type_linear"),
                                                                 Gtk::IconSize::from_name("synfig-small_icon_16x16") )),
                                                                 "_Linear" ));
-    linear_button->set_group(interpolation_group);
+//    linear_button->set_group(interpolation_group);
     tool_item_group->add(*linear_button);
-    linear_button->signal_toggled().connect( [this](){
+    linear_button->signal_clicked().connect( [this](){
 
         current_widget_timetrack->set_interpolation("linear");
 
