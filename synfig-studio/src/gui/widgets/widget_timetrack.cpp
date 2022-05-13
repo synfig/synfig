@@ -1280,6 +1280,7 @@ void Widget_Timetrack::WaypointSD::set_action(Widget_Timetrack::ActionState acti
 	action = action_state;
 }
 
+void Widget_Timetrack::WaypointSD::set_widget_interp(std::string type)
 {
     widget.interpolate_selected(type);
 }
