@@ -43,7 +43,6 @@ class Dock_Timetrack2 : public Dock_CanvasSpecific
 {
 public:
 	Dock_Timetrack2();
-    std::set<synfig::Waypoint,std::less<synfig::UniqueID>> waypoint_set_g;
 protected:
 	virtual void init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
 	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);

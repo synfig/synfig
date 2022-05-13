@@ -162,7 +162,6 @@ void Dock_Timetrack2::on_update_header_height(int height)
 
 void Dock_Timetrack2::on_widget_timetrack_waypoint_clicked(synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set, int button)
 {
-    waypoint_set_g = waypoint_set;
 	if (button != 3)
 		return;
 	button = 2;

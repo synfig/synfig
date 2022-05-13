@@ -2939,9 +2939,9 @@ CanvasView::set_sensitive_timebar(bool sensitive)
 }
 
 void
-set_waypoint_model(std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoints,
-                   synfig::Waypoint::Model model,
-                   etl::loose_handle<synfigapp::CanvasInterface> canvas_interface)
+set_waypoint_model(std::set<Waypoint, std::less<UniqueID> > waypoints,
+                   Waypoint::Model model,
+                   etl::loose_handle<CanvasInterface> canvas_interface)
 {
 	// Create the action group
 	Action::PassiveGrouper group(canvas_interface->get_instance().get(),_("Change Waypoint Group"));
