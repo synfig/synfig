@@ -2938,10 +2938,10 @@ CanvasView::set_sensitive_timebar(bool sensitive)
 		children_tree->set_sensitive(sensitive);
 }
 
-void
+static void
 set_waypoint_model(std::set<Waypoint, std::less<UniqueID> > waypoints,
-                   Waypoint::Model model,
-                   etl::loose_handle<CanvasInterface> canvas_interface)
+                            Waypoint::Model model,
+                            etl::loose_handle<CanvasInterface> canvas_interface)
 {
 	// Create the action group
 	Action::PassiveGrouper group(canvas_interface->get_instance().get(),_("Change Waypoint Group"));
