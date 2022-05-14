@@ -72,7 +72,7 @@ public:
 	bool use_canvas_view(etl::loose_handle<CanvasView> canvas_view);
 
 	void delete_selected();
-    void interpolate_selected(std::string type);
+	void interpolate_selected(std::string type);
 	bool move_selected(synfig::Time delta_time);
 	//! Duplicate selected waypoints and move them delta_time
 	bool copy_selected(synfig::Time delta_time);
@@ -95,7 +95,7 @@ public:
 	static std::string get_action_state_name(ActionState action_state);
 	ActionState get_action_state() const;
 	void set_action_state(ActionState action_state);
-    void set_interpolation(std::string type);
+	void set_interpolation(std::string type);
 	sigc::signal<void>& signal_action_state_changed() { return signal_action_state_changed_; }
 
 protected:
@@ -122,7 +122,7 @@ private:
 		bool operator !=(const WaypointItem &b) const {return !operator==(b);}
 	};
 
-    //! Handle mouse actions for panning/zooming/scrolling and waypoint selection
+		//! Handle mouse actions for panning/zooming/scrolling and waypoint selection
 	struct WaypointSD : SelectDragHelper<WaypointItem>
 	{
 	protected:
@@ -156,7 +156,6 @@ private:
 		void update_action();
 		sigc::signal<void> signal_action_changed_;
 	} waypoint_sd;
-
 	void setup_mouse_handler();
 
 	//! the treeview to synch with
