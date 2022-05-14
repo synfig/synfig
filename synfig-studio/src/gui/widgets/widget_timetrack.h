@@ -123,39 +123,39 @@ private:
 	};
 
     //! Handle mouse actions for panning/zooming/scrolling and waypoint selection
-    struct WaypointSD : SelectDragHelper<WaypointItem>
-    {
-    protected:
-        Widget_Timetrack &widget;
-        ActionState action;
+	struct WaypointSD : SelectDragHelper<WaypointItem>
+	{
+	protected:
+		Widget_Timetrack &widget;
+		ActionState action;
 
-    public:
-        WaypointSD(Widget_Timetrack &widget);
-        virtual ~WaypointSD() override;
-        virtual void get_item_position(const WaypointItem& item, Gdk::Point& p) override;
-        virtual bool find_item_at_position(int pos_x, int pos_y, WaypointItem& item) override;
-        virtual bool find_items_in_rect(Gdk::Rectangle rect, std::vector<WaypointItem>&list) override;
-        virtual void get_all_items(std::vector<WaypointItem>&) override {}
-        virtual void delta_drag(int total_dx, int total_dy, bool by_keys) override;
+	public:
+		WaypointSD(Widget_Timetrack &widget);
+		virtual ~WaypointSD() override;
+		virtual void get_item_position(const WaypointItem& item, Gdk::Point& p) override;
+		virtual bool find_item_at_position(int pos_x, int pos_y, WaypointItem& item) override;
+		virtual bool find_items_in_rect(Gdk::Rectangle rect, std::vector<WaypointItem>&list) override;
+		virtual void get_all_items(std::vector<WaypointItem>&) override {}
+		virtual void delta_drag(int total_dx, int total_dy, bool by_keys) override;
 
-        const synfig::Time& get_deltatime() const;
-        ActionState get_action() const;
-        void set_action(ActionState action_state);
-        void set_widget_interp(std::string type); //not patched yet
-        sigc::signal<void>& signal_action_changed();
-    protected:
-        synfig::Time deltatime;
-        bool is_action_set_before_drag;
+		const synfig::Time& get_deltatime() const;
+		ActionState get_action() const;
+		void set_action(ActionState action_state);
+		void set_widget_interp(std::string type); //not patched yet
+		sigc::signal<void>& signal_action_changed();
+	protected:
+		synfig::Time deltatime;
+		bool is_action_set_before_drag;
 
-        void on_drag_started();
-        void on_drag_canceled();
-        void on_drag_finish(bool started_by_keys);
+		void on_drag_started();
+		void on_drag_canceled();
+		void on_drag_finish(bool started_by_keys);
 
-        void on_modifier_keys_changed();
+		void on_modifier_keys_changed();
 
-        void update_action();
-        sigc::signal<void> signal_action_changed_;
-    } waypoint_sd;
+		void update_action();
+		sigc::signal<void> signal_action_changed_;
+	} waypoint_sd;
 
 	void setup_mouse_handler();
 
