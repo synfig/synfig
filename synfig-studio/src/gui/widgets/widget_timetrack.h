@@ -109,18 +109,18 @@ private:
 
 	void update_cursor();
 
-    struct WaypointItem {
-        synfig::TimePoint time_point;
-        Gtk::TreePath path;
+	struct WaypointItem {
+		synfig::TimePoint time_point;
+		Gtk::TreePath path;
 
-        WaypointItem() {}
-        WaypointItem(const synfig::TimePoint time_point, const Gtk::TreePath &path);
+		WaypointItem() {}
+		WaypointItem(const synfig::TimePoint time_point, const Gtk::TreePath &path);
 
-        bool is_draggable() const;
+		bool is_draggable() const;
 
-        bool operator ==(const WaypointItem &b) const;
-        bool operator !=(const WaypointItem &b) const {return !operator==(b);}
-    };
+		bool operator ==(const WaypointItem &b) const;
+		bool operator !=(const WaypointItem &b) const {return !operator==(b);}
+	};
 
     //! Handle mouse actions for panning/zooming/scrolling and waypoint selection
     struct WaypointSD : SelectDragHelper<WaypointItem>
