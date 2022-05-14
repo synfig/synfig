@@ -31,8 +31,6 @@
 #endif
 
 #include "dock_timetrack2.h"
-#include <synfigapp/canvasinterface.h>
-
 
 #include <gtkmm/stock.h>
 

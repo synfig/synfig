@@ -62,7 +62,6 @@ class LayerParamTreeStore;
 class Widget_Timetrack : public Widget_TimeGraphBase
 {
 public:
-
 	Widget_Timetrack();
 	virtual ~Widget_Timetrack() override;
 

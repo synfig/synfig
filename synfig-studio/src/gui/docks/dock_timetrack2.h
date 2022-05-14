@@ -43,6 +43,7 @@ class Dock_Timetrack2 : public Dock_CanvasSpecific
 {
 public:
 	Dock_Timetrack2();
+
 protected:
 	virtual void init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
 	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
@@ -59,7 +60,7 @@ private:
 
 	void on_update_header_height(int height);
 
-    void on_widget_timetrack_waypoint_clicked(synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint,std::less<synfig::UniqueID>> waypoint_set, int button);
+	void on_widget_timetrack_waypoint_clicked(synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint,std::less<synfig::UniqueID>> waypoint_set, int button);
 	void on_widget_timetrack_waypoint_double_clicked(synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint,std::less<synfig::UniqueID>> waypoint_set, int button);
 
 	void setup_tool_palette();
