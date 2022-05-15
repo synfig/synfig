@@ -1261,7 +1261,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 				sigc::bind(
 					sigc::bind(
 						sigc::bind(
-								sigc::mem_fun(*find_canvas_view(canvas),&studio::CanvasView::on_waypoint_clicked_canvasview), //from the param
+							sigc::mem_fun(*find_canvas_view(canvas),&studio::CanvasView::on_waypoint_clicked_canvasview), //from the param
 							-1 ),
 						waypoint_set ),
 					value_desc2 ));
