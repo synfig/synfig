@@ -198,72 +198,45 @@ bool Widget_Timetrack::move_selected(synfig::Time delta_time)
 	return ok;
 }
 
- void Widget_Timetrack::interpolate_selected(std::string type)
+ void Widget_Timetrack::interpolate_selected(synfig::Interpolation type)
 {
-    std::cout<<type;
-    synfig::Waypoint::Model model;
-
-    if (type == "ease")
-    {
-        model.set_before(synfig::INTERPOLATION_HALT);
-         model.set_after(synfig::INTERPOLATION_HALT);
-    }
-    else if (type == "constant")
-    {
-        model.set_before(synfig::INTERPOLATION_CONSTANT);
-         model.set_after(synfig::INTERPOLATION_CONSTANT);
-    }
-    else if (type == "linear")
-    {
-        model.set_before(synfig::INTERPOLATION_LINEAR);
-         model.set_after(synfig::INTERPOLATION_LINEAR);
-    }
-    else if (type == "tcb")
-    {
-        model.set_before(synfig::INTERPOLATION_TCB);
-         model.set_after(synfig::INTERPOLATION_TCB);
-    }
-    else if ( type == "clamped")
-    {
-        model.set_before(synfig::INTERPOLATION_CLAMPED);
-         model.set_after(synfig::INTERPOLATION_CLAMPED);
-    }
-    std::vector<WaypointItem*> selection = waypoint_sd.get_selected_items(); //storing selected waypoint items
-    std::vector<std::set<synfig::Waypoint, std::less<synfig::UniqueID> >> accumilated_selection_set;
-    accumilated_selection_set.clear();
+	synfig::Waypoint::Model model;
+	model.set_before(type);
+	model.set_after(type);
+	std::vector<WaypointItem*> selection = waypoint_sd.get_selected_items(); //storing selected waypoint items
+	std::vector<std::set<synfig::Waypoint, std::less<synfig::UniqueID> >> accumilated_selection_set;
+	accumilated_selection_set.clear();
 
     for(int i =0 ; i<selection.size() ; i++) //iteratre through selection size
     {
-       std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set_new; //declaration
-       fetch_waypoints(*selection[i], waypoint_set_new); //setting up waypoint_set_new
-        std::set<synfig::Waypoint, std::less<synfig::UniqueID> >::const_iterator iter;
-//        model.set_before(synfig::INTERPOLATION_CONSTANT);
-//         model.set_after(synfig::INTERPOLATION_CONSTANT);
-         accumilated_selection_set.push_back(waypoint_set_new);
-        for(iter=accumilated_selection_set[i].begin();iter!=accumilated_selection_set[i].end();++iter)
+		std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set_new; //declaration
+		fetch_waypoints(*selection[i], waypoint_set_new); //setting up waypoint_set_new
+		std::set<synfig::Waypoint, std::less<synfig::UniqueID> >::const_iterator iter;
+		accumilated_selection_set.push_back(waypoint_set_new);
+
+		for(iter=accumilated_selection_set[i].begin();iter!=accumilated_selection_set[i].end();++iter)
         {
-            synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Change Waypoint Group"));
+			synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Change Waypoint Group"));
 
-            synfig::Waypoint waypoint(*iter);
-            waypoint.apply_model(model);
-            synfigapp::Action::Handle action(synfigapp::Action::create("WaypointSet"));
+			synfig::Waypoint waypoint(*iter);
+			waypoint.apply_model(model);
+			synfigapp::Action::Handle action(synfigapp::Action::create("WaypointSet"));
 
-            assert(action);
+			assert(action);
 
-            action->set_param("canvas",get_canvas_interface()->get_canvas());
-            action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("canvas",get_canvas_interface()->get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
 
-            action->set_param("waypoint",waypoint);
-            action->set_param("value_node",waypoint.get_parent_value_node());
+			action->set_param("waypoint",waypoint);
+			action->set_param("value_node",waypoint.get_parent_value_node());
 
-            if(!get_canvas_interface()->get_instance()->perform_action(action))
-            {
-                group.cancel();
-                return;
-            }
-        }
-       }
-    std::cout<< accumilated_selection_set.size();
+			if(!get_canvas_interface()->get_instance()->perform_action(action))
+			{
+				group.cancel();
+				return;
+			}
+		}
+	}
 }
 
 bool Widget_Timetrack::copy_selected(synfig::Time delta_time)

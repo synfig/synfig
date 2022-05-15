@@ -72,7 +72,7 @@ public:
 	bool use_canvas_view(etl::loose_handle<CanvasView> canvas_view);
 
 	void delete_selected();
-	void interpolate_selected(std::string type);
+	void interpolate_selected(synfig::Interpolation type);
 	bool move_selected(synfig::Time delta_time);
 	//! Duplicate selected waypoints and move them delta_time
 	bool copy_selected(synfig::Time delta_time);
@@ -95,7 +95,7 @@ public:
 	static std::string get_action_state_name(ActionState action_state);
 	ActionState get_action_state() const;
 	void set_action_state(ActionState action_state);
-	void set_interpolation(std::string type);
+	void set_interpolation(synfig::Interpolation type);
 	sigc::signal<void>& signal_action_state_changed() { return signal_action_state_changed_; }
 
 protected:
@@ -141,7 +141,7 @@ private:
 		const synfig::Time& get_deltatime() const;
 		ActionState get_action() const;
 		void set_action(ActionState action_state);
-		void set_widget_interp(std::string type); //not patched yet
+		void set_widget_interp(synfig::Interpolation type); //not patched yet
 		sigc::signal<void>& signal_action_changed();
 	protected:
 		synfig::Time deltatime;
