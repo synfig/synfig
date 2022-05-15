@@ -122,7 +122,7 @@ private:
 		bool operator !=(const WaypointItem &b) const {return !operator==(b);}
 	};
 
-		//! Handle mouse actions for panning/zooming/scrolling and waypoint selection
+	//! Handle mouse actions for panning/zooming/scrolling and waypoint selection
 	struct WaypointSD : SelectDragHelper<WaypointItem>
 	{
 	protected:
