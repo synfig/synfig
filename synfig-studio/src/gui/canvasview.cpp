@@ -1466,7 +1466,7 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("save", Gtk::StockID("synfig-save"), _("Save"), _("Save")),
 		hide_return(sigc::mem_fun(*get_instance().get(), &Instance::save))
 	);
-	action_group->add( Gtk::Action::create("save-as", Gtk::StockID("synfig-save_as"), _("Save As..."), _("Save As")),
+	action_group->add( Gtk::Action::create_with_icon_name("save-as", "action_doc_saveas_icon", _("Save As..."), _("Save As")),
 		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::dialog_save_as))
 	);
 	action_group->add( Gtk::Action::create("export", Gtk::StockID("synfig-export"), _("Export..."), _("Export")),

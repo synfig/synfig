@@ -151,6 +151,7 @@
 #include <synfigapp/settings.h>
 
 #include <thread>
+#include <gtkmm/icontheme.h>
 
 #ifdef _WIN32
 
@@ -168,7 +169,6 @@
 
 #endif // _WIN32
 
-#include <synfigapp/main.h>
 
 #endif
 
@@ -1520,7 +1520,7 @@ void App::init(const synfig::String& rootpath)
 	synfigapp::Main::settings().add_domain(&_preferences,"pref");
 
 	// icons
-	init_icon_theme_name();
+	init_icon_themes();
 	init_icons(path_to_icons + ETL_DIRECTORY_SEPARATOR);
 
 	try
@@ -2268,7 +2268,6 @@ App::apply_gtk_settings()
 {
 	Glib::RefPtr<Gtk::Settings> gtk_settings = Gtk::Settings::get_default();
 
-	gtk_settings->property_gtk_icon_theme_name() = App::get_icon_theme_name();
 	// dark theme
 	gtk_settings->property_gtk_application_prefer_dark_theme() = App::use_dark_theme;
 
@@ -2294,15 +2293,16 @@ App::apply_gtk_settings()
 }
 
 void
-App::init_icon_theme_name()
+App::init_icon_themes()
 {
-	// Environment variable has priority.
-	if (char * env_icon_theme = getenv("SYNFIG_ICON_THEME")) {
-		// do nothing
-	} else {
+	// If environment is not set then read theme name from preferences
+	if (Glib::getenv("SYNFIG_ICON_THEME").empty()) {
 		load_settings("pref.icon_theme_name");
 	}
-	set_icon_theme_name(App::icon_theme_name);
+	auto icon_theme = Gtk::IconTheme::get_default();
+	icon_theme->prepend_search_path(ResourceHelper::get_themes_path());
+
+	set_icon_theme(App::icon_theme_name);
 }
 
 std::string
@@ -2312,11 +2312,12 @@ App::get_icon_theme_name()
 	if (!icon_theme_name.empty())
 		return icon_theme_name;
 
-	if (char * env_icon_theme = getenv("SYNFIG_ICON_THEME")) {
+	auto env_icon_theme = Glib::getenv("SYNFIG_ICON_THEME");
+	if (!env_icon_theme.empty()) {
 		return env_icon_theme;
-	} else {
-		return DEFAULT_ICON_THEME_NAME;
 	}
+
+	return DEFAULT_ICON_THEME_NAME;
 }
 
 std::string App::get_raw_icon_theme_name()
@@ -2324,8 +2325,21 @@ std::string App::get_raw_icon_theme_name()
 	return icon_theme_name;
 }
 
+// Almost all GTK methods using icons from the default GTK theme.
+// Unfortunately, we can't change the IconTheme name if we get it
+// from the default screen with the `Gtk::IconTheme::get_default()`
+// method.
+// https://docs.gtk.org/gtk3/method.IconTheme.set_custom_theme.html
+// > Sets the name of the icon theme that the GtkIconTheme object uses
+// > overriding system configuration. This function cannot be called on
+// > the icon theme objects returned from gtk_icon_theme_get_default()
+// > and gtk_icon_theme_get_for_screen().
+//
+// Also, I didn't find a way to change the app IconTheme to a custom
+// one. However, we can change the IconTheme for the default screen
+// using the `Gtk::Settings` object.
 void
-App::set_icon_theme_name(const std::string &theme_name)
+App::set_icon_theme(const std::string &theme_name)
 {
 	icon_theme_name = theme_name;
 	Gtk::Settings::get_default()->property_gtk_icon_theme_name() = get_icon_theme_name();

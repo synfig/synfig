@@ -102,24 +102,17 @@ IconController::init_icon(const synfig::String &name, const synfig::String &icon
 }
 
 void
-void
-IconController::init_icons(const synfig::String& path_to_icons_)
+IconController::init_icons(const synfig::String& path_to_icons)
 {
-	Gtk::IconTheme::get_default()->prepend_search_path(path_to_icons_);
-
-	std::string old_path_to_icons = path_to_icons_ + App::get_icon_theme_name() + "/";
-	if (App::get_icon_theme_name() == "classic")
-		old_path_to_icons += "128x128/";
-
 	try{
-	Gtk::Window::set_default_icon_from_file(old_path_to_icons+"synfig_icon."+IMAGE_EXT);
+		Gtk::Window::set_default_icon_from_file(path_to_icons+"synfig_icon."+IMAGE_EXT);
 	} catch(...)
 	{
-		synfig::warning("Unable to open "+old_path_to_icons+"synfig_icon."+IMAGE_EXT);
+		synfig::warning("Unable to open "+path_to_icons+"synfig_icon."+IMAGE_EXT);
 	}
 
 #define INIT_STOCK_ICON(name,iconfile,desc) \
-	init_icon(#name, (old_path_to_icons) + (iconfile), (desc));
+	init_icon(#name, (path_to_icons) + (iconfile), (desc));
 
 	// Types
 	INIT_STOCK_ICON(type_bool, "type_bool_icon." IMAGE_EXT, _("Bool"));

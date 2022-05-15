@@ -318,7 +318,7 @@ protected:
 	void on_activate() override;
 	void on_open(const type_vec_files& files, const Glib::ustring& hint) override;
 
-	static void init_icon_theme_name();
+	static void init_icon_themes();
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -365,7 +365,7 @@ public:
 	static std::string get_icon_theme_name();
 	// Get the icon theme name explicitly set by user preferences
 	static std::string get_raw_icon_theme_name();
-	static void set_icon_theme_name(const std::string &theme_name);
+	static void set_icon_theme(const std::string &theme_name);
 
 	static const std::list<std::string>& get_recent_files();
 

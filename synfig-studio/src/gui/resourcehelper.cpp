@@ -71,10 +71,13 @@ synfig::String studio::ResourceHelper::get_synfig_data_path()
 	return synfig_datadir;
 }
 
+std::string studio::ResourceHelper::get_themes_path() {
+	return get_synfig_data_path() + "/icons/" ;
+}
+
 synfig::String studio::ResourceHelper::get_icon_path()
 {
-	std::string iconpath = get_synfig_data_path() + ETL_DIRECTORY_SEPARATOR + "icons";
-	return iconpath;
+	return get_themes_path() + App::get_icon_theme_name() + "/128x128";
 }
 
 synfig::String studio::ResourceHelper::get_plugin_path()

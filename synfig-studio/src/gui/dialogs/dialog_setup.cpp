@@ -784,7 +784,7 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 
 	{
 	FileSystem::FileList files;
-	FileSystemNative::instance()->directory_scan(ResourceHelper::get_icon_path(), files);
+	FileSystemNative::instance()->directory_scan(ResourceHelper::get_themes_path(), files);
 	for (auto dir : files)
 		icon_theme_combo.append(dir);
 	icon_theme_combo.set_active_text(App::get_raw_icon_theme_name());
@@ -964,7 +964,7 @@ Dialog_Setup::on_apply_pressed()
 	// Set the dark theme flag
 	App::use_dark_theme               = toggle_use_dark_theme.get_active();
 	// Set the icon theme
-	App::set_icon_theme_name(icon_theme_combo.get_active_text());
+	App::set_icon_theme(icon_theme_combo.get_active_text());
 	App::apply_gtk_settings();
 
 	// Set file toolbar flag
