@@ -378,9 +378,9 @@ void Widget_Timetrack::set_action_state(Widget_Timetrack::ActionState action_sta
 {
 	waypoint_sd.set_action(action_state);
 }
-void Widget_Timetrack::set_interpolation(std::string type)
+void Widget_Timetrack::set_interpolation(synfig::Interpolation type)
 {
-    waypoint_sd.set_widget_interp(type);
+	waypoint_sd.set_widget_interp(type);
 }
 
 bool Widget_Timetrack::on_event(GdkEvent* event)
@@ -1251,9 +1251,9 @@ void Widget_Timetrack::WaypointSD::set_action(Widget_Timetrack::ActionState acti
 	action = action_state;
 }
 
-void Widget_Timetrack::WaypointSD::set_widget_interp(std::string type)
+void Widget_Timetrack::WaypointSD::set_widget_interp(synfig::Interpolation type)
 {
-    widget.interpolate_selected(type);
+	widget.interpolate_selected(type);
 }
 // mod adham
 sigc::signal<void>& Widget_Timetrack::WaypointSD::signal_action_changed()
