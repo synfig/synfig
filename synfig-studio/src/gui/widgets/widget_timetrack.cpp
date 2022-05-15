@@ -895,8 +895,8 @@ void Widget_Timetrack::on_waypoint_clicked(const Widget_Timetrack::WaypointItem&
 	std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set;
 	fetch_waypoints(wi, waypoint_set);
 	if (waypoint_set.size() > 0) {
-			const synfigapp::ValueDesc &value_desc = param_info_map.at(wi.path.to_string()).get_value_desc();
-			signal_waypoint_clicked().emit(value_desc, waypoint_set, button);
+		const synfigapp::ValueDesc &value_desc = param_info_map.at(wi.path.to_string()).get_value_desc();
+		signal_waypoint_clicked().emit(value_desc, waypoint_set, button);
 	}
 }
 
