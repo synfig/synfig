@@ -353,7 +353,6 @@ public:
 	void enable_grid();
 	//! Disables showing of the grid
 	void disable_grid();
-
 	//! Toggles the showing of the grid
 	void toggle_grid();
 	//! Returns the state of the show_grid flag
