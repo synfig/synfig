@@ -376,6 +376,11 @@ Dock_PalEdit::refresh()
 {
 	const int width(12);
 
+	// Free table children from memory
+	std::vector<Widget*> children = table.get_children();
+	for(Widget* child : children)
+		delete child;
+
 	// Clear the table
 	table.foreach(sigc::mem_fun(table,&Gtk::Table::remove));
 
