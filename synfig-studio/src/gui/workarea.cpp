@@ -804,6 +804,39 @@ WorkArea::set_background_rendering(bool x)
 }
 
 void
+WorkArea::show_ruler()
+{
+	if (ruler_status == true)
+		{
+			remove(*hruler);
+			remove(*vruler);
+			remove_row(0);
+			ruler_status= false;
+			std::cout<<"hide";
+		}
+		else {
+			insert_row(0);
+			Gtk::Arrow *menubutton = manage(new Gtk::Arrow(Gtk::ARROW_RIGHT, Gtk::SHADOW_OUT));
+			menubutton->set_size_request(18, 18);
+			Gtk::EventBox *menubutton_box = manage(new Gtk::EventBox());
+			menubutton_box->add(*menubutton);
+			menubutton_box->add_events(Gdk::BUTTON_RELEASE_MASK);
+			menubutton_box->signal_button_release_event().connect(
+				sigc::bind_return(
+					sigc::hide(
+						sigc::mem_fun(*this, &WorkArea::popup_menu) ), true));
+			menubutton_box->set_hexpand(false);
+			menubutton_box->show_all();
+			//insert back the menubutton box and rulers
+			attach(*menubutton_box, 0, 0, 1, 1);
+			attach_next_to(*hruler, *menubutton_box, Gtk::POS_RIGHT, 1, 1);
+			attach_next_to(*vruler, *menubutton_box, Gtk::POS_BOTTOM, 1, 1);
+
+			ruler_status= true;
+			}
+}
+
+void
 WorkArea::enable_grid()
 {
 	show_grid=true;

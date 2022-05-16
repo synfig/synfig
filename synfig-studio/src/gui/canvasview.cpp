@@ -1361,6 +1361,16 @@ CanvasView::create_right_toolbar()
 		displaybar->append(*snap_grid);
 	}
 
+	{
+		Gtk::ToggleToolButton *show_ruler = Gtk::manage(new Gtk::ToggleToolButton());
+		show_ruler->signal_toggled().connect( [this](){
+			work_area->show_ruler();
+		} );
+		show_ruler->show();
+		displaybar->append(*show_ruler);
+
+	}
+
 	{ // Show guide toggle button
 		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_show_guide"), iconsize));
 		icon->show();
