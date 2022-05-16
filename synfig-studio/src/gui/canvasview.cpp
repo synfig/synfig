@@ -1698,63 +1698,6 @@ CanvasView::init_menus()
 	plugin_action_group=Gio::SimpleActionGroup::create();
 	action_group = Gtk::ActionGroup::create("canvasview");
 
-	action_group->add( Gtk::Action::create("save", Gtk::StockID("synfig-save"), _("Save"), _("Save")),
-		hide_return(sigc::mem_fun(*get_instance().get(), &Instance::save))
-	);
-	action_group->add( Gtk::Action::create_with_icon_name("save-as", "action_doc_saveas_icon", _("Save As..."), _("Save As")),
-		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::dialog_save_as))
-	);
-	action_group->add( Gtk::Action::create("export", Gtk::StockID("synfig-export"), _("Export..."), _("Export")),
-		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::dialog_export))
-	);
-	action_group->add( Gtk::Action::create("save-all", Gtk::StockID("synfig-save_all"), _("Save All"), _("Save all opened documents")),
-		sigc::ptr_fun(save_all)
-	);
-	action_group->add( Gtk::Action::create("revert", Gtk::Stock::REVERT_TO_SAVED),
-		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::safe_revert))
-	);
-	action_group->add( Gtk::Action::create("import", _("Import...")),
-		sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_file))
-	);
-	action_group->add( Gtk::Action::create("import-sequence", _("Import Sequence...")),
-		sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_sequence))
-	);
-	action_group->add( Gtk::Action::create("render", Gtk::StockID("synfig-render_options"), _("Render...")),
-		sigc::mem_fun0(render_settings,&RenderSettings::present)
-	);
-	action_group->add( Gtk::Action::create("preview", Gtk::StockID("synfig-preview_options"), _("Preview...")),
-		sigc::mem_fun(*this,&CanvasView::on_preview_option)
-	);
-	action_group->add( Gtk::Action::create("options", _("Options...")),
-		sigc::mem_fun0(canvas_options,&CanvasOptions::present)
-	);
-	action_group->add( Gtk::Action::create("close-document", Gtk::StockID("gtk-close"), _("Close Document")),
-		sigc::hide_return(sigc::mem_fun(*this,&CanvasView::close_instance))
-	);
-	action_group->add( Gtk::Action::create("quit", Gtk::StockID("gtk-quit"), _("Quit")),
-		sigc::hide_return(sigc::ptr_fun(&App::quit))
-	);
-
-	action_group->add( Gtk::Action::create("select-all-ducks", _("Select All Handles")),
-		sigc::mem_fun(*work_area,&WorkArea::select_all_ducks)
-	);
-
-	action_group->add( Gtk::Action::create("unselect-all-ducks", _("Unselect All Handles")),
-		sigc::mem_fun(*work_area,&WorkArea::unselect_all_ducks)
-	);
-
-	action_group->add( Gtk::Action::create("select-all-layers", _("Select All Layers")),
-		sigc::mem_fun(*this,&CanvasView::on_select_layers)
-	);
-
-	action_group->add( Gtk::Action::create("unselect-all-layers", _("Unselect All Layers")),
-		sigc::mem_fun(*this,&CanvasView::on_unselect_layers)
-	);
-
-	action_group->add( Gtk::Action::create("select-parent-layer", _("Select Parent Layer")),
-		sigc::mem_fun(*this,&CanvasView::on_select_parent_layer)
-	);
-
 	action_group->add( Gtk::Action::create("pause", Gtk::StockID("synfig-animate_pause")),
 		sigc::mem_fun(*this, &CanvasView::stop_async)
 	);
