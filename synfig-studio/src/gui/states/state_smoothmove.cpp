@@ -243,7 +243,7 @@ StateSmoothMove_Context::refresh_tool_options()
 	App::dialog_tool_options->clear();
 	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Smooth Move"));
-	App::dialog_tool_options->set_name("smooth_move");
+	App::dialog_tool_options->set_icon("tool_smooth_move_icon");
 }
 
 Smach::event_result

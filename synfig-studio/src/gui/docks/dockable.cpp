@@ -46,6 +46,8 @@
 #include <gui/docks/dockbook.h>
 #include <gui/docks/dockdialog.h>
 
+#include <gtkmm/icontheme.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -64,10 +66,10 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-Dockable::Dockable(const synfig::String& name, const synfig::String& local_name, Gtk::StockID stock_id):
+Dockable::Dockable(const synfig::String& name, const synfig::String& local_name, std::string icon_name_):
 	name_(name),
 	local_name_(local_name),
-	stock_id_(stock_id),
+	icon_name(icon_name_),
 	use_scrolled(true),
 	container(),
 	toolbar_container(),
@@ -145,7 +147,7 @@ void
 Dockable::set_local_name(const synfig::String& local_name)
 {
 	local_name_ = local_name;
-	signal_stock_id_changed()();
+	signal_icon_changed()();
 }
 
 void
@@ -153,11 +155,10 @@ Dockable::attach_dnd_to(Gtk::Widget& widget)
 {
 	std::vector<Gtk::TargetEntry> listTargets;
 	listTargets.push_back( Gtk::TargetEntry("SYNFIG_DOCK") );
-	Gtk::StockItem stock_item;
 
 	widget.drag_source_set(listTargets);
-	if (Gtk::Stock::lookup(get_stock_id(), stock_item))
-		widget.drag_source_set_icon(get_stock_id());
+	if (Gtk::IconTheme::get_default()->has_icon(icon_name))
+		widget.drag_source_set_icon(icon_name);
 	widget.drag_dest_set(listTargets);
 	widget.signal_drag_data_get().connect( sigc::mem_fun(*this, &Dockable::on_drag_data_get ));
 	widget.signal_drag_end().connect( sigc::mem_fun(*this, &Dockable::on_drag_end ));
@@ -203,7 +204,7 @@ void
 Dockable::set_toolbar(Gtk::Toolbar& toolbar)
 {
 	reset_toolbar();
-	toolbar.set_icon_size(Gtk::IconSize(1) /*GTK::ICON_SIZE_MENU*/);
+	toolbar.set_icon_size(Gtk::BuiltinIconSize::ICON_SIZE_MENU);
 	toolbar.set_toolbar_style(Gtk::TOOLBAR_ICONS);
 	toolbar.set_hexpand(true);
 	toolbar.set_vexpand(false);
@@ -296,11 +297,16 @@ Dockable::create_tab_label()
 	attach_dnd_to(*event_box);
 
 	// Check to make sure the icon is valid
-	Gtk::StockItem stock_item;
-	if (Gtk::Stock::lookup(get_stock_id(), stock_item)) {
+	if (Gtk::IconTheme::get_default()->has_icon(icon_name)) {
 		// add icon
 		Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
-		Gtk::Image* icon(manage(new Gtk::Image(get_stock_id(), iconsize)));
+
+#if GTK_CHECK_VERSION(3,24,0)
+		Gtk::Image* icon(manage(new Gtk::Image(icon_name, iconsize)));
+#else
+		Gtk::Image* icon(manage(new Gtk::Image()));
+		icon->set_from_icon_name(icon_name, iconsize);
+#endif
 		icon->show();
 		event_box->set_tooltip_text(get_local_name());
 		event_box->add(*icon);

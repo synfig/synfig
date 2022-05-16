@@ -2,7 +2,9 @@
 
 Name=Classic
 Comment=Synfig classic icon theme
+Hidden=true
 Directories=128x128
+Example=synfig_icon
 
 [128x128]
 Size=128

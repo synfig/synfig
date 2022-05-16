@@ -48,6 +48,10 @@
 #include <synfigapp/action.h>
 #include <gui/resourcehelper.h>
 
+#include <gtkmm/icontheme.h>
+
+#include "app.h" // temporary while we use StockID here
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -104,7 +108,7 @@ void
 IconController::init_icons(const synfig::String& path_to_icons)
 {
 	try{
-	Gtk::Window::set_default_icon_from_file(path_to_icons+"synfig_icon."+IMAGE_EXT);
+		Gtk::Window::set_default_icon_from_file(path_to_icons+"synfig_icon."+IMAGE_EXT);
 	} catch(...)
 	{
 		synfig::warning("Unable to open "+path_to_icons+"synfig_icon."+IMAGE_EXT);
@@ -161,71 +165,14 @@ IconController::init_icons(const synfig::String& path_to_icons)
 
 	// Document Related Actions
 	INIT_STOCK_ICON(about, "about_icon." IMAGE_EXT, _("About"));
+	INIT_STOCK_ICON(new_doc, "action_doc_new_icon." IMAGE_EXT, _("New"));
+	INIT_STOCK_ICON(open, "action_doc_open_icon." IMAGE_EXT, _("Open"));
+	INIT_STOCK_ICON(save, "action_doc_save_icon." IMAGE_EXT, _("Save"));
+	INIT_STOCK_ICON(save_as, "action_doc_saveas_icon." IMAGE_EXT, _("Save As"));
 	INIT_STOCK_ICON(export, "action_doc_saveas_icon." IMAGE_EXT, _("Export"));
-
-	// Layers
-	INIT_STOCK_ICON(layer, "layer_icon." IMAGE_EXT, _("Layer"));
-	// Blur Layers
-	INIT_STOCK_ICON(layer_blur_blur, "layer_blur_blur_icon." IMAGE_EXT, _("Blur Layer"));
-	INIT_STOCK_ICON(layer_blur_motion, "layer_blur_motion_icon." IMAGE_EXT, _("Motion Blur Layer"));
-	INIT_STOCK_ICON(layer_blur_radial, "layer_blur_radial_icon." IMAGE_EXT, _("Radial Blur Layer"));
-	// Distortion Layers
-	INIT_STOCK_ICON(layer_distortion_curvewarp, "layer_distortion_curvewarp_icon." IMAGE_EXT, _("Curve Warp Layer"));
-	INIT_STOCK_ICON(layer_distortion_insideout, "layer_distortion_insideout_icon." IMAGE_EXT, _("Inside Out Layer"));
-	INIT_STOCK_ICON(layer_distortion_noise, "layer_distortion_noise_icon." IMAGE_EXT, _("Noise Distort Layer"));
-	INIT_STOCK_ICON(layer_distortion_spherize, "layer_distortion_spherize_icon." IMAGE_EXT, _("Spherize Layer"));
-	INIT_STOCK_ICON(layer_distortion_stretch, "layer_distortion_stretch_icon." IMAGE_EXT, _("Stretch Layer"));
-	INIT_STOCK_ICON(layer_distortion_twirl, "layer_distortion_twirl_icon." IMAGE_EXT, _("Twirl Layer"));
-	INIT_STOCK_ICON(layer_distortion_warp, "layer_distortion_warp_icon." IMAGE_EXT, _("Warp Layer"));
-	// Example Layers
-	INIT_STOCK_ICON(layer_example_metaballs, "layer_example_metaballs_icon." IMAGE_EXT, _("Metaballs Layer"));
-	INIT_STOCK_ICON(layer_example_simplecircle, "layer_example_simplecircle_icon." IMAGE_EXT, _("Simple Circle Layer"));
-	// Filter Layers
-	INIT_STOCK_ICON(layer_filter_clamp, "layer_filter_clamp_icon." IMAGE_EXT, _("Clamp Layer"));
-	INIT_STOCK_ICON(layer_filter_colorcorrect, "layer_filter_colorcorrect_icon." IMAGE_EXT, _("Color Correct Layer"));
-	INIT_STOCK_ICON(layer_filter_halftone2, "layer_filter_halftone2_icon." IMAGE_EXT, _("Halftone 2 Layer"));
-	INIT_STOCK_ICON(layer_filter_halftone3, "layer_filter_halftone3_icon." IMAGE_EXT, _("Halftone 3 Layer"));
-	INIT_STOCK_ICON(layer_filter_lumakey, "layer_filter_lumakey_icon." IMAGE_EXT, _("Luma Key Layer"));
-	// Fractal Layers
-	INIT_STOCK_ICON(layer_fractal_julia, "layer_fractal_julia_icon." IMAGE_EXT, _("Julia Set Layer"));
-	INIT_STOCK_ICON(layer_fractal_mandelbrot, "layer_fractal_mandelbrot_icon." IMAGE_EXT, _("Mandelbrot Set Layer"));
-	// Geometry Layers
-	INIT_STOCK_ICON(layer_geometry_checkerboard, "layer_geometry_checkerboard_icon." IMAGE_EXT, _("Checkerboard Layer"));
-	INIT_STOCK_ICON(layer_geometry_circle, "layer_geometry_circle_icon." IMAGE_EXT, _("Circle Layer"));
-	INIT_STOCK_ICON(layer_geometry_outline, "layer_geometry_outline_icon." IMAGE_EXT, _("Outline Layer"));
-	INIT_STOCK_ICON(layer_geometry_advanced_outline, "layer_geometry_advanced_outline_icon." IMAGE_EXT, _("Advanced Outline Layer"));
-	INIT_STOCK_ICON(layer_geometry_polygon, "layer_geometry_polygon_icon." IMAGE_EXT, _("Polygon Layer"));
-	INIT_STOCK_ICON(layer_geometry_rectangle, "layer_geometry_rectangle_icon." IMAGE_EXT, _("Rectangle Layer"));
-	INIT_STOCK_ICON(layer_geometry_region, "layer_geometry_region_icon." IMAGE_EXT, _("Region Layer"));
-	INIT_STOCK_ICON(layer_geometry_solidcolor, "layer_geometry_solidcolor_icon." IMAGE_EXT, _("Solid Color Layer"));
-	INIT_STOCK_ICON(layer_geometry_star, "layer_geometry_star_icon." IMAGE_EXT, _("Star Layer"));
-	// Gradient Layers
-	INIT_STOCK_ICON(layer_gradient_conical, "layer_gradient_conical_icon." IMAGE_EXT, _("Conical Gradient Layer"));
-	INIT_STOCK_ICON(layer_gradient_curve, "layer_gradient_curve_icon." IMAGE_EXT, _("Curve Gradient Layer"));
-	INIT_STOCK_ICON(layer_gradient_noise, "layer_gradient_noise_icon." IMAGE_EXT, _("Noise Gradient Layer"));
-	INIT_STOCK_ICON(layer_gradient_linear, "layer_gradient_linear_icon." IMAGE_EXT, _("Linear Gradient Layer"));
-	INIT_STOCK_ICON(layer_gradient_radial, "layer_gradient_radial_icon." IMAGE_EXT, _("Radial Gradient Layer"));
-	INIT_STOCK_ICON(layer_gradient_spiral, "layer_gradient_spiral_icon." IMAGE_EXT, _("Spiral Gradient Layer"));
-	// Other Layers
-	INIT_STOCK_ICON(layer_other_duplicate, "layer_other_duplicate_icon." IMAGE_EXT, _("Duplicate Layer"));
-	INIT_STOCK_ICON(layer_other_importimage, "layer_other_importimage_icon." IMAGE_EXT, _("Import Image Layer"));
-	INIT_STOCK_ICON(layer_other_pastecanvas, "layer_other_group_icon." IMAGE_EXT, _("Group Layer"));
-	INIT_STOCK_ICON(layer_other_plant, "layer_other_plant_icon." IMAGE_EXT, _("Plant Layer"));
-	INIT_STOCK_ICON(layer_other_stroboscope, "layer_other_stroboscope_icon." IMAGE_EXT, _("Stroboscope Layer"));
-	INIT_STOCK_ICON(layer_other_supersample, "layer_other_supersample_icon." IMAGE_EXT, _("Super Sample Layer"));
-	INIT_STOCK_ICON(layer_other_sound, "layer_other_sound_icon." IMAGE_EXT, _("Sound Layer"));
-	INIT_STOCK_ICON(layer_other_switch, "layer_other_switch_icon." IMAGE_EXT, _("Switch Layer"));
-	INIT_STOCK_ICON(layer_other_skeleton, "layer_other_skeleton_icon." IMAGE_EXT, _("Skeleton Layer"));
-	INIT_STOCK_ICON(layer_other_text, "layer_other_text_icon." IMAGE_EXT, _("Text Layer"));
-	INIT_STOCK_ICON(layer_other_timeloop, "layer_other_timeloop_icon." IMAGE_EXT, _("Time Loop Layer"));
-	INIT_STOCK_ICON(layer_other_xorpattern, "layer_other_xorpattern_icon." IMAGE_EXT, _("XOR Pattern Layer"));
-	// Stylize Layers
-	INIT_STOCK_ICON(layer_stylize_bevel, "layer_stylize_bevel_icon." IMAGE_EXT, _("Bevel Layer"));
-	INIT_STOCK_ICON(layer_stylize_shade, "layer_stylize_shade_icon." IMAGE_EXT, _("Shade Layer"));
-	// Transform Layers
-	INIT_STOCK_ICON(layer_transform_rotate, "layer_transform_rotate_icon." IMAGE_EXT, _("Rotate Layer"));
-	INIT_STOCK_ICON(layer_transform_translate, "layer_transform_translate_icon." IMAGE_EXT, _("Translate Layer"));
-	INIT_STOCK_ICON(layer_transform_scale, "layer_transform_scale_icon." IMAGE_EXT, _("Scale Layer"));
+	INIT_STOCK_ICON(save_all, "action_doc_saveall_icon." IMAGE_EXT, _("Save All"));
+	INIT_STOCK_ICON(redo, "action_doc_redo_icon." IMAGE_EXT, _("Redo"));
+	INIT_STOCK_ICON(undo, "action_doc_undo_icon." IMAGE_EXT, _("Undo"));
 
 	// Ghost Layers
 	// TODO: icon for ghost group
@@ -241,6 +188,9 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	// TODO: icon for 'Group Layer into Filter' action
 	INIT_STOCK_ICON(encapsulate_filter, "layer_icon." IMAGE_EXT, _("Group into Filter"));
 	INIT_STOCK_ICON(select_all_child_layers, "select_all_child_layers_icon." IMAGE_EXT, _("Select All Child Layers"));
+
+	INIT_STOCK_ICON(clear_undo, "clear_undo_icon." IMAGE_EXT, _("Clear Undo Stack"));
+	INIT_STOCK_ICON(clear_redo, "clear_redo_icon." IMAGE_EXT, _("Clear Redo Stack"));
 
 	INIT_STOCK_ICON(children, "library_icon." IMAGE_EXT, _("Library"));
 	INIT_STOCK_ICON(curves, "graphs_icon." IMAGE_EXT, _("Graphs"));
@@ -309,11 +259,8 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	INIT_STOCK_ICON(increase_resolution, "incr_resolution_icon." IMAGE_EXT, _("Increase resolution"));
 	INIT_STOCK_ICON(decrease_resolution, "decr_resolution_icon." IMAGE_EXT, _("Decrease resolution"));
 
-	INIT_STOCK_ICON(interpolation_type_clamped, "interpolation_type_clamped_icon." IMAGE_EXT, _("Clamped interpolation"));
-	INIT_STOCK_ICON(interpolation_type_tcb, "interpolation_type_tcb_icon." IMAGE_EXT, _("TCB interpolation"));
-	INIT_STOCK_ICON(interpolation_type_const, "interpolation_type_const_icon." IMAGE_EXT, _("Const interpolation"));
-	INIT_STOCK_ICON(interpolation_type_ease, "interpolation_type_ease_icon." IMAGE_EXT, _("Ease In/Out interpolation"));
-	INIT_STOCK_ICON(interpolation_type_linear, "interpolation_type_linear_icon." IMAGE_EXT, _("Linear interpolation"));
+	INIT_STOCK_ICON(preview_options, "preview_options_icon." IMAGE_EXT, _("Preview Options Dialog"));
+	INIT_STOCK_ICON(render_options, "render_options_icon." IMAGE_EXT, _("Render Options Dialog"));
 
 	INIT_STOCK_ICON(utils_chain_link_on, "utils_chain_link_on_icon." IMAGE_EXT, _("Linked"));
 	INIT_STOCK_ICON(utils_chain_link_off, "utils_chain_link_off_icon." IMAGE_EXT, _("Unlinked"));
@@ -327,12 +274,20 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	Gtk::IconSize::register_new("synfig-small_icon",12,12);
 	Gtk::IconSize::register_new("synfig-small_icon_16x16",16,16);
 
-	for(Type *type = Type::get_first(); type != NULL; type = type->get_next())
-		_tree_pixbuf_table_value_type[type->identifier]=Gtk::Button().render_icon_pixbuf(value_icon(*type),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+	int width_small_toolbar, height_small_toolbar;
+	Gtk::IconSize::lookup(Gtk::ICON_SIZE_SMALL_TOOLBAR, width_small_toolbar, height_small_toolbar);
 
-	for(int i(0); i<NUM_INTERPOLATION_TYPES; i++)
-		_tree_pixbuf_table_interpolation[i]=Gtk::Button().render_icon_pixbuf(interpolation_icon(Interpolation(i)),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+	for(Type *type = Type::get_first(); type != nullptr; type = type->get_next()) {
+		Glib::RefPtr<Gdk::Pixbuf> icon = Gtk::IconTheme::get_default()->load_icon(value_icon_name(*type), height_small_toolbar, Gtk::ICON_LOOKUP_FORCE_SIZE);
+		if (!icon)
+			icon = Gtk::IconTheme::get_default()->load_icon("image-missing", height_small_toolbar, Gtk::ICON_LOOKUP_FORCE_SIZE);
+		_tree_pixbuf_table_value_type[type->identifier] = icon;
+	}
 
+	for(int i(0);i<((int)INTERPOLATION_CLAMPED+1);i++) {
+		Glib::RefPtr<Gdk::Pixbuf> icon = Gtk::IconTheme::get_default()->load_icon(interpolation_icon_name(Interpolation(i)), height_small_toolbar, Gtk::ICON_LOOKUP_FORCE_SIZE);
+		_tree_pixbuf_table_interpolation[i] = icon;
+	}
 	//gtk builder
 	IconController::action_icon_map = {
 			//file actions
@@ -430,6 +385,17 @@ IconController::init_icons(const synfig::String& path_to_icons)
 			{"sketch" , _("Sketch Tool")},
 			{"zoom" , _("Zoom Tool")}
 		};
+	for(Type *type = Type::get_first(); type != nullptr; type = type->get_next()) {
+		Glib::RefPtr<Gdk::Pixbuf> icon = Gtk::IconTheme::get_default()->load_icon(value_icon_name(*type), height_small_toolbar, Gtk::ICON_LOOKUP_FORCE_SIZE);
+		if (!icon)
+			icon = Gtk::IconTheme::get_default()->load_icon("image-missing", height_small_toolbar, Gtk::ICON_LOOKUP_FORCE_SIZE);
+		_tree_pixbuf_table_value_type[type->identifier] = icon;
+	}
+
+	for(int i(0);i<((int)INTERPOLATION_CLAMPED+1);i++) {
+		Glib::RefPtr<Gdk::Pixbuf> icon = Gtk::IconTheme::get_default()->load_icon(interpolation_icon_name(Interpolation(i)), height_small_toolbar, Gtk::ICON_LOOKUP_FORCE_SIZE);
+		_tree_pixbuf_table_interpolation[i] = icon;
+	}
 }
 
 Glib::RefPtr<Gdk::Cursor>
@@ -451,74 +417,75 @@ IconController::get_tool_cursor(const Glib::ustring& name,const Glib::RefPtr<Gdk
   	return Gdk::Cursor::create(window->get_display(), pixbuf, 0, 0);
 }
 
-Gtk::StockID
-studio::value_icon(Type &type)
+std::string
+studio::value_icon_name(Type &type)
 {
 	if (type == type_bool)
-		return Gtk::StockID("synfig-type_bool");
+		return "type_bool_icon";
 	if (type == type_integer)
-		return Gtk::StockID("synfig-type_integer");
+		return "type_integer_icon";
 	if (type == type_angle)
-		return Gtk::StockID("synfig-type_angle");
+		return "type_angle_icon";
 	if (type == type_time)
-		return Gtk::StockID("synfig-type_time");
+		return "type_time_icon";
 	if (type == type_real)
-		return Gtk::StockID("synfig-type_real");
+		return "type_real_icon";
 	if (type == type_vector)
-		return Gtk::StockID("synfig-type_vector");
+		return "type_vector_icon";
 	if (type == type_color)
-		return Gtk::StockID("synfig-type_color");
+		return "type_color_icon";
 	if (type == type_segment)
-		return Gtk::StockID("synfig-type_segment");
+		return "type_segment_icon";
 	if (type == type_bline_point)
-		return Gtk::StockID("synfig-type_blinepoint");
+		return "type_splinepoint_icon";
 	if (type == type_list)
-		return Gtk::StockID("synfig-type_list");
+		return "type_list_icon";
 	if (type == type_canvas)
-		return Gtk::StockID("synfig-type_canvas");
+		return "type_canvas_icon";
 	if (type == type_string)
-		return Gtk::StockID("synfig-type_string");
+		return "type_string_icon";
 	if (type == type_gradient)
-		return Gtk::StockID("synfig-type_gradient");
-
-	return Gtk::StockID("synfig-unknown");
+		return "type_gradient_icon";
+	if (!type.description.name.empty())
+		synfig::warning(_("no icon for value type: \"%s\""), type.description.name.c_str());
+	return "image-missing";
 }
 
-Gtk::StockID
-studio::interpolation_icon(synfig::Interpolation type)
+std::string
+studio::interpolation_icon_name(synfig::Interpolation type)
 {
 	switch(type)
 	{
 		case INTERPOLATION_CLAMPED:
-			return Gtk::StockID("synfig-interpolation_type_clamped");
+			return "interpolation_type_clamped_icon";
 		case INTERPOLATION_TCB:
-			return Gtk::StockID("synfig-interpolation_type_tcb");
+			return "interpolation_type_tcb_icon";
 		case INTERPOLATION_CONSTANT:
-			return Gtk::StockID("synfig-interpolation_type_const");
+			return "interpolation_type_const_icon";
 		case INTERPOLATION_HALT:
-			return Gtk::StockID("synfig-interpolation_type_ease");
+			return "interpolation_type_ease_icon";
 		case INTERPOLATION_LINEAR:
-			return Gtk::StockID("synfig-interpolation_type_linear");
+			return "interpolation_type_linear_icon";
 		case INTERPOLATION_MANUAL:
 		case INTERPOLATION_UNDEFINED:
 		case INTERPOLATION_NIL:
 		default:
 			break;
 	}
-	return Gtk::StockID();
+	return "image-missing";
 }
 
 
-Gtk::StockID
-studio::valuenode_icon(etl::handle<synfig::ValueNode> value_node)
+std::string
+studio::valuenode_icon_name(etl::handle<synfig::ValueNode> value_node)
 {
 	if(handle<ValueNode_Const>::cast_dynamic(value_node))
 	{
-		return value_icon(value_node->get_type());
+		return value_icon_name(value_node->get_type());
 	}
 	else
 	{
-		return Gtk::StockID("synfig-value_node");
+		return "value_node_icon";
 	}
 }
 
@@ -560,133 +527,6 @@ studio::get_action_stock_id(const synfigapp::Action::BookEntry& action)
 	return stock_id;
 }
 
-#ifdef _WIN32
-#define DELETE TEMPORARY_DELETE_MACRO
-#undef TEMPORARY_DELETE_MACRO
-#endif
-
-Gtk::StockID
-studio::layer_icon(const synfig::String &layer)
-{
-	// Blur Layers
-	if(layer=="blur")
-		return Gtk::StockID("synfig-layer_blur_blur");
-	else if(layer=="MotionBlur") // in the future should be "motion_blur"
-		return Gtk::StockID("synfig-layer_blur_motion");
-	else if(layer=="radial_blur")
-		return Gtk::StockID("synfig-layer_blur_radial");
-	// Distortion Layers
-	else if(layer=="curve_warp")
-		return Gtk::StockID("synfig-layer_distortion_curvewarp");
-	else if(layer=="inside_out")
-		return Gtk::StockID("synfig-layer_distortion_insideout");
-	else if(layer=="noise_distort")
-		return Gtk::StockID("synfig-layer_distortion_noise");
-	else if(layer=="spherize")
-		return Gtk::StockID("synfig-layer_distortion_spherize");
-	else if(layer=="stretch")
-		return Gtk::StockID("synfig-layer_distortion_stretch");
-	else if(layer=="twirl")
-		return Gtk::StockID("synfig-layer_distortion_twirl");
-	else if(layer=="warp")
-		return Gtk::StockID("synfig-layer_distortion_warp");
-	// Example Layers
-	else if(layer=="metaballs")
-		return Gtk::StockID("synfig-layer_example_metaballs");
-	else if(layer=="simple_circle")
-		return Gtk::StockID("synfig-layer_example_simplecircle");
-	// Filter Layers
-	else if(layer=="clamp")
-		return Gtk::StockID("synfig-layer_filter_clamp");
-	else if(layer=="colorcorrect")
-		return Gtk::StockID("synfig-layer_filter_colorcorrect");
-	else if(layer=="halftone2")
-		return Gtk::StockID("synfig-layer_filter_halftone2");
-	else if(layer=="halftone3")
-		return Gtk::StockID("synfig-layer_filter_halftone3");
-	else if(layer=="lumakey")
-		return Gtk::StockID("synfig-layer_filter_lumakey");
-	// Fractal Layers
-	else if(layer=="mandelbrot")
-		return Gtk::StockID("synfig-layer_fractal_mandelbrot");
-	else if(layer=="julia")
-		return Gtk::StockID("synfig-layer_fractal_julia");
-	// Geometry Layers
-	else if(layer=="checker_board")
-		return Gtk::StockID("synfig-layer_geometry_checkerboard");
-	else if(layer=="circle")
-		return Gtk::StockID("synfig-layer_geometry_circle");
-	else if(layer=="outline")
-		return Gtk::StockID("synfig-layer_geometry_outline");
-	else if(layer=="advanced_outline")
-		return Gtk::StockID("synfig-layer_geometry_advanced_outline");
-	else if(layer=="polygon")
-		return Gtk::StockID("synfig-layer_geometry_polygon");
-	else if(layer=="rectangle")
-		return Gtk::StockID("synfig-layer_geometry_rectangle");
-	else if(layer=="region")
-		return Gtk::StockID("synfig-layer_geometry_region");
-	else if(layer=="solid_color" || layer=="SolidColor")
-		return Gtk::StockID("synfig-layer_geometry_solidcolor");
-	else if(layer=="star")
-		return Gtk::StockID("synfig-layer_geometry_star");
-	// Gradient Layers
-	else if(layer=="conical_gradient")
-		return Gtk::StockID("synfig-layer_gradient_conical");
-	else if(layer=="curve_gradient")
-		return Gtk::StockID("synfig-layer_gradient_curve");
-	else if(layer=="noise")
-		return Gtk::StockID("synfig-layer_gradient_noise");
-	else if(layer=="linear_gradient")
-		return Gtk::StockID("synfig-layer_gradient_linear");
-	else if(layer=="radial_gradient")
-		return Gtk::StockID("synfig-layer_gradient_radial");
-	else if(layer=="spiral_gradient")
-		return Gtk::StockID("synfig-layer_gradient_spiral");
-	// Other Layers
-	else if(layer=="duplicate")
-		return Gtk::StockID("synfig-layer_other_duplicate");
-	else if(layer=="importimage" || layer=="import")
-		return Gtk::StockID("synfig-layer_other_importimage");
-	else if(layer=="group" || layer=="PasteCanvas" || layer=="pastecanvas" || layer=="paste_canvas")
-		return Gtk::StockID("synfig-layer_other_pastecanvas");
-	else if(layer=="plant")
-		return Gtk::StockID("synfig-layer_other_plant");
-	else if(layer=="stroboscope")
-		return Gtk::StockID("synfig-layer_other_stroboscope");
-	else if(layer=="skeleton")
-		return Gtk::StockID("synfig-layer_other_skeleton");
-	else if(layer=="super_sample")
-		return Gtk::StockID("synfig-layer_other_supersample");
-	else if(layer=="switch")
-		return Gtk::StockID("synfig-layer_other_switch");
-	else if(layer=="text")
-		return Gtk::StockID("synfig-layer_other_text");
-	else if(layer=="sound")
-		return Gtk::StockID("synfig-layer_other_sound");
-	else if(layer=="timeloop")
-		return Gtk::StockID("synfig-layer_other_timeloop");
-	else if(layer=="xor_pattern")
-		return Gtk::StockID("synfig-layer_other_xorpattern");
-	// Stylize Layers
-	else if(layer=="bevel")
-		return Gtk::StockID("synfig-layer_stylize_bevel");
-	else if(layer=="shade")
-		return Gtk::StockID("synfig-layer_stylize_shade");
-	// Transform Layers
-	else if(layer=="rotate")
-		return Gtk::StockID("synfig-layer_transform_rotate");
-	else if(layer=="translate")
-		return Gtk::StockID("synfig-layer_transform_translate");
-	else if(layer=="zoom")
-		return Gtk::StockID("synfig-layer_transform_scale");
-	else if(layer=="ghost_group")
-		return Gtk::StockID("synfig-layer_ghost_group");
-	else
-		return Gtk::StockID("synfig-layer");
-}
-
-//TODO: Need to add these to action_icon_map
 std::string
 studio::layer_icon_name(const synfig::String &layer)
 {
@@ -803,7 +643,8 @@ studio::layer_icon_name(const synfig::String &layer)
 	else if(layer=="zoom")
 		return "layer_transform_scale_icon";
 	else if(layer=="ghost_group")
-		return "layer_ghost_group_icon";
+		return "layer_other_group_icon";
+//		return "layer_ghost_group_icon"; // missing icon!
 	else
 		return "layer_icon";
 }
@@ -825,6 +666,11 @@ studio::get_local_label_name(const std::string& action_name)
 Glib::RefPtr<Gdk::Pixbuf>
 studio::get_tree_pixbuf_layer(const synfig::String &layer)
 {
-	return Gtk::Button().render_icon_pixbuf(layer_icon(layer),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+	int width, height;
+	Gtk::IconSize::lookup(Gtk::ICON_SIZE_SMALL_TOOLBAR, width, height);
+	Glib::RefPtr<Gdk::Pixbuf> icon = Gtk::IconTheme::get_default()->load_icon(layer_icon_name(layer), height, Gtk::ICON_LOOKUP_FORCE_SIZE);
+	if (!icon)
+		icon = Gtk::IconTheme::get_default()->load_icon("image-missing", height, Gtk::ICON_LOOKUP_FORCE_SIZE);
+	return icon;
 }
 

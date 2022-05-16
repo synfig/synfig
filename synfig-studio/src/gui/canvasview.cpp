@@ -1698,6 +1698,63 @@ CanvasView::init_menus()
 	plugin_action_group=Gio::SimpleActionGroup::create();
 	action_group = Gtk::ActionGroup::create("canvasview");
 
+	action_group->add( Gtk::Action::create("save", Gtk::StockID("synfig-save"), _("Save"), _("Save")),
+		hide_return(sigc::mem_fun(*get_instance().get(), &Instance::save))
+	);
+	action_group->add( Gtk::Action::create_with_icon_name("save-as", "action_doc_saveas_icon", _("Save As..."), _("Save As")),
+		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::dialog_save_as))
+	);
+	action_group->add( Gtk::Action::create("export", Gtk::StockID("synfig-export"), _("Export..."), _("Export")),
+		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::dialog_export))
+	);
+	action_group->add( Gtk::Action::create("save-all", Gtk::StockID("synfig-save_all"), _("Save All"), _("Save all opened documents")),
+		sigc::ptr_fun(save_all)
+	);
+	action_group->add( Gtk::Action::create("revert", Gtk::Stock::REVERT_TO_SAVED),
+		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::safe_revert))
+	);
+	action_group->add( Gtk::Action::create("import", _("Import...")),
+		sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_file))
+	);
+	action_group->add( Gtk::Action::create("import-sequence", _("Import Sequence...")),
+		sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_sequence))
+	);
+	action_group->add( Gtk::Action::create("render", Gtk::StockID("synfig-render_options"), _("Render...")),
+		sigc::mem_fun0(render_settings,&RenderSettings::present)
+	);
+	action_group->add( Gtk::Action::create("preview", Gtk::StockID("synfig-preview_options"), _("Preview...")),
+		sigc::mem_fun(*this,&CanvasView::on_preview_option)
+	);
+	action_group->add( Gtk::Action::create("options", _("Options...")),
+		sigc::mem_fun0(canvas_options,&CanvasOptions::present)
+	);
+	action_group->add( Gtk::Action::create("close-document", Gtk::StockID("gtk-close"), _("Close Document")),
+		sigc::hide_return(sigc::mem_fun(*this,&CanvasView::close_instance))
+	);
+	action_group->add( Gtk::Action::create("quit", Gtk::StockID("gtk-quit"), _("Quit")),
+		sigc::hide_return(sigc::ptr_fun(&App::quit))
+	);
+
+	action_group->add( Gtk::Action::create("select-all-ducks", _("Select All Handles")),
+		sigc::mem_fun(*work_area,&WorkArea::select_all_ducks)
+	);
+
+	action_group->add( Gtk::Action::create("unselect-all-ducks", _("Unselect All Handles")),
+		sigc::mem_fun(*work_area,&WorkArea::unselect_all_ducks)
+	);
+
+	action_group->add( Gtk::Action::create("select-all-layers", _("Select All Layers")),
+		sigc::mem_fun(*this,&CanvasView::on_select_layers)
+	);
+
+	action_group->add( Gtk::Action::create("unselect-all-layers", _("Unselect All Layers")),
+		sigc::mem_fun(*this,&CanvasView::on_unselect_layers)
+	);
+
+	action_group->add( Gtk::Action::create("select-parent-layer", _("Select Parent Layer")),
+		sigc::mem_fun(*this,&CanvasView::on_select_parent_layer)
+	);
+
 	action_group->add( Gtk::Action::create("pause", Gtk::StockID("synfig-animate_pause")),
 		sigc::mem_fun(*this, &CanvasView::stop_async)
 	);
@@ -3296,10 +3353,21 @@ CanvasView::on_waypoint_clicked_canvasview(ValueDesc value_desc,
 		
 		{
 			Waypoint::Model model;
+			Gtk::Image *image;
 
-			#define APPEND_MENU_ITEM(menu, StockId, Text) \
+#if GTK_CHECK_VERSION(3,24,0)
+			#define CREATE_IMAGE(ImageVar, IconName, IconSize) \
+					ImageVar = manage(new Gtk::Image(IconName, IconSize));
+#else
+			#define CREATE_IMAGE(ImageVar, IconName, IconSize) \
+					ImageVar = manage(new Gtk::Image()); \
+					ImageVar->set_from_icon_name(IconName, IconSize);
+#endif
+
+			#define APPEND_MENU_ITEM(menu, IconName, Text) \
+				CREATE_IMAGE(image, IconName, Gtk::IconSize::from_name("synfig-small_icon")); \
 				item = manage(new Gtk::ImageMenuItem( \
-					*manage(new Gtk::Image(Gtk::StockID(StockId),Gtk::IconSize::from_name("synfig-small_icon"))), \
+					*image, \
 					_(Text) )); \
 				item->set_use_underline(true); \
 				item->signal_activate().connect( \
@@ -3307,25 +3375,26 @@ CanvasView::on_waypoint_clicked_canvasview(ValueDesc value_desc,
 				item->show_all(); \
 				menu->append(*item);
 
-			#define APPEND_ITEMS_TO_ALL_MENUS3(Interpolation, StockId, TextIn, TextOut, TextBoth) \
+			#define APPEND_ITEMS_TO_ALL_MENUS3(Interpolation, IconName, TextIn, TextOut, TextBoth) \
 				model.reset(); \
 				model.set_before(Interpolation); \
-				APPEND_MENU_ITEM(interp_menu_in, StockId, TextIn) \
+				APPEND_MENU_ITEM(interp_menu_in, IconName, TextIn) \
 				model.reset(); \
 				model.set_after(Interpolation); \
-				APPEND_MENU_ITEM(interp_menu_out, StockId, TextOut) \
+				APPEND_MENU_ITEM(interp_menu_out, IconName, TextOut) \
 				model.set_before(Interpolation); \
-				APPEND_MENU_ITEM(waypoint_menu, StockId, TextBoth)
+				APPEND_MENU_ITEM(waypoint_menu, IconName, TextBoth)
 
-			#define APPEND_ITEMS_TO_ALL_MENUS(Interpolation, StockId, Text) \
-				APPEND_ITEMS_TO_ALL_MENUS3(Interpolation, StockId, Text, Text, Text)
+			#define APPEND_ITEMS_TO_ALL_MENUS(Interpolation, IconName, Text) \
+				APPEND_ITEMS_TO_ALL_MENUS3(Interpolation, IconName, Text, Text, Text)
 
-			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_CLAMPED, "synfig-interpolation_type_clamped", _("_Clamped"))
-			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_TCB, "synfig-interpolation_type_tcb", _("_TCB"))
-			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_CONSTANT, "synfig-interpolation_type_const", _("_Constant"))
-			APPEND_ITEMS_TO_ALL_MENUS3(INTERPOLATION_HALT, "synfig-interpolation_type_ease", _("_Ease In"), _("_Ease Out"), _("_Ease In/Out"))
-			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_LINEAR, "synfig-interpolation_type_linear", _("_Linear"))
+			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_CLAMPED, "interpolation_type_clamped_icon", _("_Clamped"))
+			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_TCB, "interpolation_type_tcb_icon", _("_TCB"))
+			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_CONSTANT, "interpolation_type_const_icon", _("_Constant"))
+			APPEND_ITEMS_TO_ALL_MENUS3(INTERPOLATION_HALT, "interpolation_type_ease_icon", _("_Ease In"), _("_Ease Out"), _("_Ease In/Out"))
+			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_LINEAR, "interpolation_type_linear_icon", _("_Linear"))
 
+			#undef CREATE_IMAGE
 			#undef APPEND_ITEMS_TO_ALL_MENUS
 			#undef APPEND_ITEMS_TO_ALL_MENUS3
 			#undef APPEND_MENU_ITEM

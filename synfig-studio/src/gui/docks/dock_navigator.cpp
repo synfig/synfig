@@ -305,7 +305,7 @@ studio::Widget_NavView::on_mouse_event(GdkEvent * e)
 // Navigator Dock Definitions
 
 Dock_Navigator::Dock_Navigator():
-	Dock_CanvasSpecific("navigator", _("Navigator"),Gtk::StockID("synfig-navigator"))
+	Dock_CanvasSpecific("navigator", _("Navigator"),"navigator_icon")
 {
 	add(navview);
 }

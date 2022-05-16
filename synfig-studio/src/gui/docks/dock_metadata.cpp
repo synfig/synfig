@@ -59,7 +59,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dock_MetaData::Dock_MetaData():
-	Dock_CanvasSpecific("meta_data",_("Canvas MetaData"),Gtk::StockID("synfig-meta_data")),
+	Dock_CanvasSpecific("meta_data",_("Canvas MetaData"),"meta_data_icon"),
 	action_group(Gtk::ActionGroup::create("action_group_dock_meta_data"))
 {
 	// Make Canvas MetaData toolbar small for space efficiency

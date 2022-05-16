@@ -120,7 +120,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 Dock_PalEdit::Dock_PalEdit():
-	Dockable("pal_edit",_("Palette Editor"),Gtk::StockID("synfig-palette")),
+	Dockable("pal_edit",_("Palette Editor"),"palette_icon"),
 	//palette_settings(new PaletteSettings(this,"colors")),
 	table(2,2,false)
 {

@@ -68,13 +68,12 @@ public:
 	static std::unordered_map<std::string, std::string> local_label_map;
 };
 
-Gtk::StockID layer_icon(const synfig::String &layer);
 std::string layer_icon_name(const synfig::String &layer);
 Glib::RefPtr<Gdk::Pixbuf> get_tree_pixbuf_layer(const synfig::String &layer);
 
-Gtk::StockID value_icon(synfig::Type &type);
-Gtk::StockID interpolation_icon(synfig::Interpolation type);
-Gtk::StockID valuenode_icon(etl::handle<synfig::ValueNode> value_node);
+std::string value_icon_name(synfig::Type &type);
+std::string interpolation_icon_name(synfig::Interpolation type);
+std::string valuenode_icon_name(etl::handle<synfig::ValueNode> value_node);
 Glib::RefPtr<Gdk::Pixbuf> get_tree_pixbuf(synfig::Type &type);
 Glib::RefPtr<Gdk::Pixbuf> get_interpolation_pixbuf(synfig::Interpolation itype);
 Gtk::StockID get_action_stock_id(const synfigapp::Action::BookEntry& action);

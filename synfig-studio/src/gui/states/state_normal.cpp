@@ -317,7 +317,7 @@ StateNormal_Context::refresh_tool_options()
 	App::dialog_tool_options->clear();
 	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Transform Tool"));
-	App::dialog_tool_options->set_name("normal");
+	App::dialog_tool_options->set_icon("tool_normal_icon");
 }
 
 

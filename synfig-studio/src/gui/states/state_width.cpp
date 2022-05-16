@@ -322,7 +322,7 @@ StateWidth_Context::refresh_tool_options()
 	App::dialog_tool_options->clear();
 	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Width Tool"));
-	App::dialog_tool_options->set_name("width");
+	App::dialog_tool_options->set_icon("tool_width_icon");
 }
 
 Smach::event_result

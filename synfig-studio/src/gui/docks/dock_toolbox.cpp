@@ -68,7 +68,7 @@ using namespace studio;
 
 
 Dock_Toolbox::Dock_Toolbox():
-	Dockable("toolbox",_("Toolbox"),Gtk::StockID("synfig-about"))
+	Dockable("toolbox",_("Toolbox"),"about_icon")
 {
 	set_use_scrolled(false);
 	set_size_request(-1,-1);

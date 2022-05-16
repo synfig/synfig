@@ -286,8 +286,8 @@ get_possible_font_filenames(synfig::String family, int style, int weight, std::v
 
 	struct FontFileNameEntry {
 		const char *alias;
-		const char *preffix;
-		const char *alternative_preffix;
+		const char *prefix;
+		const char *alternative_prefix;
 		FontSuffixStyle suffix_style;
 		FontClassification classification;
 
@@ -398,11 +398,11 @@ get_possible_font_filenames(synfig::String family, int style, int weight, std::v
 		for (int i = 0; font_filename_db[i].alias; i++) {
 			const FontFileNameEntry &entry = font_filename_db[i];
 			if (possible_family == entry.alias) {
-				std::string filename = entry.preffix;
+				std::string filename = entry.prefix;
 				filename += entry.get_suffix(style, weight);
 				list.push_back(filename);
 
-				filename = entry.preffix;
+				filename = entry.prefix;
 				filename += FontFileNameEntry::get_alternative_suffix(style, weight);
 				list.push_back(filename);
 			}
