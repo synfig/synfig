@@ -741,7 +741,7 @@ StateLasso_Context::refresh_tool_options()
 	App::dialog_tool_options->clear();
 	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Cutout Tool"));
-	App::dialog_tool_options->set_name("lasso");
+	App::dialog_tool_options->set_icon("tool_cutout_icon");
 
 	//App::dialog_tool_options->add_button(
 	//	Gtk::StockID("synfig-fill"),

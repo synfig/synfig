@@ -456,7 +456,7 @@ const std::string studio::Grid_SoundWave::item_audio_file_str = _("Select an aud
 
 
 Dock_SoundWave::Dock_SoundWave()
-	: Dock_CanvasSpecific("soundwave", _("Sound"), Gtk::StockID("synfig-layer_other_sound")),
+	: Dock_CanvasSpecific("soundwave", _("Sound"), "layer_other_sound_icon"),
 	  current_grid_sound(nullptr)
 {
 	// Make Sound toolbar buttons small for space efficiency

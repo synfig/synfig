@@ -442,7 +442,10 @@ appicondir= $(datadir)/icons/hicolor
 imagedir = $(synfig_datadir)/images
 image_DATA = $(IMAGES)
 
-iconsdir = $(synfig_datadir)/icons/classic
+classicthemedir="${synfig_datadir}/icons/classic"
+dist_classictheme_DATA=index.theme
+
+iconsdir="${classicthemedir}/128x128"
 icons_DATA = $(ICONS)
 
 win32iconsdir = $(datadir)/pixmaps

@@ -122,6 +122,7 @@ class WorkspaceHandler;
 
 class App : public Gtk::Application, private IconController
 {
+	class Preferences;
 	friend class Preferences;
 	friend class Dialog_Setup;
 
@@ -180,6 +181,10 @@ private:
 //	static std::list< etl::handle< Module > > module_list_;
 
 	static WorkspaceHandler *workspaces;
+
+	static std::string icon_theme_name;
+
+	static Preferences _preferences;
 
 	/*
  -- ** -- P U B L I C   D A T A -----------------------------------------------
@@ -313,6 +318,8 @@ protected:
 	void on_activate() override;
 	void on_open(const type_vec_files& files, const Glib::ustring& hint) override;
 
+	static void init_icon_themes();
+
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
 	*/
@@ -354,7 +361,11 @@ public:
 	static void edit_custom_workspace_list();
 	static void apply_gtk_settings();
 
-	static std::string get_synfig_icon_theme();
+	// Get the currently used icon theme name
+	static std::string get_icon_theme_name();
+	// Get the icon theme name explicitly set by user preferences
+	static std::string get_raw_icon_theme_name();
+	static void set_icon_theme(const std::string &theme_name);
 
 	static const std::list<std::string>& get_recent_files();
 
