@@ -288,6 +288,7 @@ IconController::init_icons(const synfig::String& path_to_icons)
 		Glib::RefPtr<Gdk::Pixbuf> icon = Gtk::IconTheme::get_default()->load_icon(interpolation_icon_name(Interpolation(i)), height_small_toolbar, Gtk::ICON_LOOKUP_FORCE_SIZE);
 		_tree_pixbuf_table_interpolation[i] = icon;
 	}
+	
 	//gtk builder
 	IconController::action_icon_map = {
 			//file actions
@@ -385,17 +386,6 @@ IconController::init_icons(const synfig::String& path_to_icons)
 			{"sketch" , _("Sketch Tool")},
 			{"zoom" , _("Zoom Tool")}
 		};
-	for(Type *type = Type::get_first(); type != nullptr; type = type->get_next()) {
-		Glib::RefPtr<Gdk::Pixbuf> icon = Gtk::IconTheme::get_default()->load_icon(value_icon_name(*type), height_small_toolbar, Gtk::ICON_LOOKUP_FORCE_SIZE);
-		if (!icon)
-			icon = Gtk::IconTheme::get_default()->load_icon("image-missing", height_small_toolbar, Gtk::ICON_LOOKUP_FORCE_SIZE);
-		_tree_pixbuf_table_value_type[type->identifier] = icon;
-	}
-
-	for(int i(0);i<((int)INTERPOLATION_CLAMPED+1);i++) {
-		Glib::RefPtr<Gdk::Pixbuf> icon = Gtk::IconTheme::get_default()->load_icon(interpolation_icon_name(Interpolation(i)), height_small_toolbar, Gtk::ICON_LOOKUP_FORCE_SIZE);
-		_tree_pixbuf_table_interpolation[i] = icon;
-	}
 }
 
 Glib::RefPtr<Gdk::Cursor>
