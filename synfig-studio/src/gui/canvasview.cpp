@@ -1090,33 +1090,6 @@ CanvasView::create_work_area()
 	return work_area;
 }
 
-void
-CanvasView::create_action_toolbutton(const std::string& action_name)
-{
-	//method adds images to gtk::builder toolbuttons
-	//could not get images to render from .glade string
-	auto object = App::builder()->get_object(action_name);
-	auto button = Glib::RefPtr<Gtk::ToolButton>::cast_dynamic(object);
-	Gtk::Image *icon =	manage( new Gtk::Image(
-			App::icon_theme()->lookup_icon(get_icon_name(action_name), 16).load_icon()
-		)
-	);
-	if(icon){
-		icon->show();
-		button->set_icon_widget(*icon);
-	}else{
-		g_warning("icon not found");
-	}
-}
-
-Gtk::SeparatorToolItem*
-CanvasView::create_tool_separator()
-{
-	Gtk::SeparatorToolItem *separator = Gtk::manage(new Gtk::SeparatorToolItem());
-	separator->show();
-	return separator;
-}
-
 void CanvasView::toggle_render_combobox()
 {
 	App::navigator_renderer = App::workarea_renderer = render_combobox->get_active_id();
@@ -1145,6 +1118,7 @@ CanvasView::create_top_toolbar()
     "        <property name='can_focus'>False</property>"
     "        <property name='tooltip_text' translatable='yes'>Create a new document</property>"
     "        <property name='action_name'>app.new</property>"
+	"        <property name='icon_name'>action_doc_new_icon</property>"
     "      </object>"
     "      <packing>"
     "        <property name='expand'>False</property>"
@@ -1157,6 +1131,7 @@ CanvasView::create_top_toolbar()
     "        <property name='can_focus'>False</property>"
     "        <property name='tooltip_text' translatable='yes'>Open an existing document</property>"
     "        <property name='action_name'>app.open</property>"
+	"        <property name='icon_name'>action_doc_open_icon</property>"
     "      </object>"
     "      <packing>"
     "        <property name='expand'>False</property>"
@@ -1169,6 +1144,7 @@ CanvasView::create_top_toolbar()
     "        <property name='can_focus'>False</property>"
     "        <property name='tooltip_text' translatable='yes'>Save</property>"
     "        <property name='action_name'>app.save</property>"
+	"        <property name='icon_name'>action_doc_save_icon</property>"
     "      </object>"
     "      <packing>"
     "        <property name='expand'>False</property>"
@@ -1181,6 +1157,7 @@ CanvasView::create_top_toolbar()
     "        <property name='can_focus'>False</property>"
     "        <property name='tooltip_text' translatable='yes'>Save As</property>"
     "        <property name='action_name'>app.save-as</property>"
+	"        <property name='icon_name'>action_doc_saveas_icon</property>"
     "      </object>"
     "      <packing>"
     "        <property name='expand'>False</property>"
@@ -1193,6 +1170,7 @@ CanvasView::create_top_toolbar()
     "        <property name='can_focus'>False</property>"
     "        <property name='tooltip_text' translatable='yes'>Save all opened documents</property>"
     "        <property name='action_name'>app.save-all</property>"
+	"        <property name='icon_name'>action_doc_saveall_icon</property>"
     "      </object>"
     "      <packing>"
     "        <property name='expand'>False</property>"
@@ -1219,6 +1197,7 @@ CanvasView::create_top_toolbar()
     "        <property name='can_focus'>False</property>"
     "        <property name='tooltip_text' translatable='yes'>Undo the previous action</property>"
     "        <property name='action_name'>app.undo</property>"
+	"        <property name='icon_name'>action_doc_undo_icon</property>"
     "      </object>"
     "      <packing>"
     "        <property name='expand'>False</property>"
@@ -1231,6 +1210,7 @@ CanvasView::create_top_toolbar()
     "        <property name='can_focus'>False</property>"
     "        <property name='tooltip_text' translatable='yes'>Redo the previously undone action</property>"
     "        <property name='action_name'>app.redo</property>"
+	"        <property name='icon_name'>action_doc_redo_icon</property>"
     "      </object>"
     "      <packing>"
     "        <property name='expand'>False</property>"
@@ -1253,6 +1233,7 @@ CanvasView::create_top_toolbar()
     "        <property name='can_focus'>False</property>"
     "        <property name='tooltip_text' translatable='yes'>Shows the Preview Settings Dialog</property>"
     "        <property name='action_name'>app.preview</property>"
+	"        <property name='icon_name'>preview_options_icon</property>"
     "      </object>"
     "      <packing>"
     "        <property name='expand'>False</property>"
@@ -1265,6 +1246,7 @@ CanvasView::create_top_toolbar()
     "        <property name='can_focus'>False</property>"
     "        <property name='tooltip_text' translatable='yes'>Shows the Render Settings Dialog</property>"
     "        <property name='action_name'>app.render</property>"
+	"        <property name='icon_name'>render_options_icon</property>"
     "      </object>"
     "      <packing>"
     "        <property name='expand'>False</property>"
@@ -1287,6 +1269,7 @@ CanvasView::create_top_toolbar()
     "        <property name='can_focus'>False</property>"
     "        <property name='tooltip_text' translatable='yes'>Refresh workarea</property>"
     "        <property name='action_name'>app.refresh</property>"
+	"        <property name='icon_name'>view-refresh</property>"
     "      </object>"
     "      <packing>"
     "        <property name='expand'>False</property>"
@@ -1305,6 +1288,7 @@ CanvasView::create_top_toolbar()
     "        <property name='can_focus'>False</property>"
     "        <property name='tooltip_text' translatable='yes'>Render future and past frames in background when enabled</property>"
     "        <property name='action_name'>app.background-rendering</property>"
+	"        <property name='icon_name'>background_rendering_icon</property>"
     "      </object>"
     "      <packing>"
     "        <property name='expand'>False</property>"
@@ -1337,6 +1321,7 @@ CanvasView::create_top_toolbar()
     "        <property name='can_focus'>False</property>"
     "        <property name='tooltip_text' translatable='yes'>Show Onion Skin when enabled</property>"
     "        <property name='action_name'>app.onion-skin</property>"
+	"        <property name='icon_name'>onion_skin_icon</property>"
     "      </object>"
     "      <packing>"
     "        <property name='expand'>False</property>"
@@ -1361,6 +1346,7 @@ CanvasView::create_top_toolbar()
     "        <property name='can_focus'>False</property>"
     "        <property name='tooltip_text' translatable='yes'>Show Onion Skin on Keyframes when enabled, on Frames when disabled</property>"
     "        <property name='action_name'>app.onion-skin-keyframes</property>"
+	"        <property name='icon_name'>keyframe_icon</property>"
     "      </object>"
     "      <packing>"
     "        <property name='expand'>False</property>"
@@ -1390,29 +1376,11 @@ CanvasView::create_top_toolbar()
 	displaybar->set_icon_size(iconsize);
 	displaybar->set_toolbar_style(Gtk::TOOLBAR_BOTH_HORIZ);
 
-	// File buttons
-	if (App::show_file_toolbar) {
-		create_action_toolbutton("new");
-		create_action_toolbutton("open");
-		create_action_toolbutton("save");
-		create_action_toolbutton("save-as");
-		create_action_toolbutton("save-all");
-	}
-
-	// Undo/Redo buttons
-	create_action_toolbutton("undo");
-	create_action_toolbutton("redo");
-	// Preview Settings dialog button
-	create_action_toolbutton("preview");
-	// Render Settings dialog button
-	create_action_toolbutton("render");
-
 	{ // Refresh button
 		toggle_action_group->add_action(
 			App::instance()->add_action("refresh", SLOT_EVENT(EVENT_REFRESH)
 			)
 		);
-		create_action_toolbutton("refresh");
 	}
 
 	{ // Rendering mode ComboBox
@@ -1439,9 +1407,6 @@ CanvasView::create_top_toolbar()
 		}
 	}
 
-	// Background rendering button
-	create_action_toolbutton("background-rendering");
-
 	{// ResolutionDial widget
 		resolutiondial.update_lowres(work_area->get_low_resolution_flag());
 		resolutiondial.signal_increase_resolution().connect(
@@ -1460,9 +1425,6 @@ CanvasView::create_top_toolbar()
 			g_warning("Could not get index to insert resolutiondial!");
 		}
 	}
-
-	// Onion skin toggle button
-	create_action_toolbutton("onion-skin");
 
 	{ // Past onion skin spin button
 		past_onion_spin=Gtk::manage(new class Gtk::SpinButton(past_onion_adjustment_));
@@ -1500,9 +1462,6 @@ CanvasView::create_top_toolbar()
 			g_warning("Could not get future onion skin container!");
 		}
 	}
-
-	// Onion skin on Keyframes/Frames toggle button
-	create_action_toolbutton("onion-skin-keyframes");
 	
 	if(App::enable_mainwin_toolbar)
 		displaybar->show();
@@ -1550,6 +1509,7 @@ CanvasView::create_right_toolbar()
     "        <property name='can_focus'>False</property>"
     "        <property name='tooltip_text' translatable='yes'>Show Grid when enabled</property>"
     "        <property name='action_name'>app.show-grid</property>"
+	"        <property name='icon_name'>show_grid_icon</property>"
     "      </object>"
     "      <packing>"
     "        <property name='expand'>False</property>"
@@ -1562,6 +1522,7 @@ CanvasView::create_right_toolbar()
     "        <property name='can_focus'>False</property>"
     "        <property name='tooltip_text' translatable='yes'>Snap to Grid when enabled</property>"
     "        <property name='action_name'>app.snap-grid</property>"
+	"        <property name='icon_name'>snap_grid_icon</property>"
     "      </object>"
     "      <packing>"
     "        <property name='expand'>False</property>"
@@ -1574,6 +1535,7 @@ CanvasView::create_right_toolbar()
     "        <property name='can_focus'>False</property>"
     "        <property name='tooltip_text' translatable='yes'>Show Guides when enabled</property>"
     "        <property name='action_name'>app.show-guides</property>"
+	"        <property name='icon_name'>show_guideline_icon</property>"
     "      </object>"
     "      <packing>"
     "        <property name='expand'>False</property>"
@@ -1586,6 +1548,7 @@ CanvasView::create_right_toolbar()
     "        <property name='can_focus'>False</property>"
     "        <property name='tooltip_text' translatable='yes'>Snap to Guides when enabled</property>"
     "        <property name='action_name'>app.snap-guides</property>"
+	"        <property name='icon_name'>snap_guideline_icon</property>"
     "      </object>"
     "      <packing>"
     "        <property name='expand'>False</property>"
@@ -1623,11 +1586,6 @@ CanvasView::create_right_toolbar()
 	displaybar->set_icon_size(iconsize);
 	displaybar->set_toolbar_style(Gtk::TOOLBAR_ICONS);
 	displaybar->set_property("orientation", Gtk::ORIENTATION_VERTICAL);
-
-	create_action_toolbutton("show-grid");
-	create_action_toolbutton("snap-grid");
-	create_action_toolbutton("show-guides");
-	create_action_toolbutton("snap-guides");
 
 	// ToggleDuckDial widget
 	Duck::Type m = work_area->get_type_mask();

@@ -105,47 +105,7 @@ Dock_History::Dock_History():
 
 	App::ui_manager()->add_ui_from_string(ui_info);
 
-	Gtk::ToolButton *button;
-	App::builder()->get_widget("toolbutton_undo", button);
-	Gtk::Image *icon = manage(
-		new Gtk::Image(
-			App::icon_theme()->lookup_icon(get_icon_name("undo"), 16).load_icon()
-		)
-	);
-	icon->show();
-	button->set_icon_widget(*icon);
-	App::builder()->get_widget("toolbutton_redo", button);
-	icon = manage(
-		new Gtk::Image(
-			App::icon_theme()->lookup_icon(get_icon_name("redo"), 16).load_icon()
-		)
-	);
-	icon->show();
-	button->set_icon_widget(*icon);
-	App::builder()->get_widget("toolbutton_clearundo", button);
-	icon = manage(
-		new Gtk::Image(
-			App::icon_theme()->lookup_icon(get_icon_name("clear-undo"), 16).load_icon()
-		)
-	);
-	icon->show();
-	button->set_icon_widget(*icon);
-	App::builder()->get_widget("toolbutton_clearredo", button);
-	icon = manage(
-		new Gtk::Image(
-			App::icon_theme()->lookup_icon(get_icon_name("clear-redo"), 16).load_icon()
-		)
-	);
-	icon->show();
-	button->set_icon_widget(*icon);
-	App::builder()->get_widget("toolbutton_clearundoredo", button);
-	icon = manage(
-		new Gtk::Image(
-			App::icon_theme()->lookup_icon(get_icon_name("clear-undo-redo"), 16).load_icon()
-		)
-	);
-	icon->show();
-	button->set_icon_widget(*icon);
+	//gtk builder
 	App::enable_action_group(history_action_group, false);
 	Gtk::Toolbar* toolbar;
 	App::builder()->get_widget("history_toolbar", toolbar);
