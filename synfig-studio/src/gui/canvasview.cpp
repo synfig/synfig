@@ -66,6 +66,7 @@
 #include <gui/eventkey.h>
 #include <gui/exception_guard.h>
 #include <gui/localization.h>
+#include <gui/resourcehelper.h>
 #include <gui/preview.h>
 #include <gui/states/state_normal.h>
 #include <gui/statemanager.h>
@@ -595,6 +596,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	Gtk::Widget *widget_work_area = create_work_area();
 	widget_work_area->set_margin_top(4);
 	init_menus();
+	canvas_builder = Gtk::Builder::create();
 	Gtk::Widget *widget_top_bar = create_top_toolbar();
 	Gtk::Widget *widget_stopbutton = create_stop_button();
 	Gtk::Widget *widget_right_bar = create_right_toolbar();
@@ -1494,87 +1496,13 @@ CanvasView::create_stop_button()
 Gtk::Widget*
 CanvasView::create_right_toolbar()
 {
-	//toolbar_name needs to a number attached because only one instance can be used per canvas
-	String toolbar_name("right-toolbar-%d", Instance::get_count());
-	Glib::ustring toolbar_info =
-    "<!-- Generated with glade 3.18.3 -->"
-    "<interface>"
-    "  <requires lib='gtk+' version='3.4'/>"
-    "  <object class='GtkToolbar' id='"+toolbar_name+"'>"
-    "    <property name='visible'>True</property>"
-    "    <property name='can_focus'>False</property>"
-	"    <child>"
-    "      <object class='GtkToggleToolButton' id='show-grid'>"
-    "        <property name='visible'>True</property>"
-    "        <property name='can_focus'>False</property>"
-    "        <property name='tooltip_text' translatable='yes'>Show Grid when enabled</property>"
-    "        <property name='action_name'>app.show-grid</property>"
-	"        <property name='icon_name'>show_grid_icon</property>"
-    "      </object>"
-    "      <packing>"
-    "        <property name='expand'>False</property>"
-    "        <property name='homogeneous'>True</property>"
-    "      </packing>"
-    "    </child>"
-	"    <child>"
-    "      <object class='GtkToggleToolButton' id='snap-grid'>"
-    "        <property name='visible'>True</property>"
-    "        <property name='can_focus'>False</property>"
-    "        <property name='tooltip_text' translatable='yes'>Snap to Grid when enabled</property>"
-    "        <property name='action_name'>app.snap-grid</property>"
-	"        <property name='icon_name'>snap_grid_icon</property>"
-    "      </object>"
-    "      <packing>"
-    "        <property name='expand'>False</property>"
-    "        <property name='homogeneous'>True</property>"
-    "      </packing>"
-    "    </child>"
-	"    <child>"
-    "      <object class='GtkToggleToolButton' id='show-guides'>"
-    "        <property name='visible'>True</property>"
-    "        <property name='can_focus'>False</property>"
-    "        <property name='tooltip_text' translatable='yes'>Show Guides when enabled</property>"
-    "        <property name='action_name'>app.show-guides</property>"
-	"        <property name='icon_name'>show_guideline_icon</property>"
-    "      </object>"
-    "      <packing>"
-    "        <property name='expand'>False</property>"
-    "        <property name='homogeneous'>True</property>"
-    "      </packing>"
-    "    </child>"
-	"    <child>"
-    "      <object class='GtkToggleToolButton' id='snap-guides'>"
-    "        <property name='visible'>True</property>"
-    "        <property name='can_focus'>False</property>"
-    "        <property name='tooltip_text' translatable='yes'>Snap to Guides when enabled</property>"
-    "        <property name='action_name'>app.snap-guides</property>"
-	"        <property name='icon_name'>snap_guideline_icon</property>"
-    "      </object>"
-    "      <packing>"
-    "        <property name='expand'>False</property>"
-    "        <property name='homogeneous'>True</property>"
-    "      </packing>"
-    "    </child>"
-	"	<child>"
-	"		<object class='GtkSeparatorToolItem' id='sep-0'>"
-    "			<property name='visible'>True</property>"
-    "			<property name='can-focus'>False</property>"
- 	"		</object>"
-	"      <packing>"
-    "        <property name='expand'>False</property>"
-    "        <property name='homogeneous'>True</property>"
-    "      </packing>"
-	"	</child>"
-	"	</object>"
-	"</interface>"
-	;
 	try {
-		App::builder()->add_from_string(toolbar_info);
+		canvas_builder->add_from_file(ResourceHelper::get_ui_path("right_toolbar.glade"));
 	} catch (const Glib::Error& ex) {
 		std::cerr << "Building right toolbar failed: " << ex.what();
 	}
 	Gtk::Toolbar *toolbar;
-	App::builder()->get_widget(toolbar_name, toolbar);
+	canvas_builder->get_widget("right-toolbar", toolbar);
 	if(!toolbar)
 	{
 		g_warning("Could not get right toolbar!");

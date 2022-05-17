@@ -326,6 +326,7 @@ private:
 	std::list<sigc::connection> duck_changed_connections;
 
 	//! Menu members
+	Glib::RefPtr<Gtk::Builder> canvas_builder;
 	Gtk::Menu parammenu;
 
 	Gtk::UIManager::ui_merge_id merge_id_popup_;

@@ -4,8 +4,9 @@ set(UI_FILES
 	preview_options.glade
 	dialog_workspaces.glade
 	shortcuts_window.glade
-	studio_menubar.xml
 	history_toolbar.glade
+	right_toolbar.glade
+	studio_menubar.xml
 )
 
 foreach(UI_FILE ${UI_FILES})
