@@ -1,0 +1,74 @@
+ <!-- Generated with glade 3.18.3 -->
+    <interface>
+      <requires lib="gtk+" version="3.4"/>
+	  <object class="GtkToolbar" id="history_toolbar">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="tooltip_text" translatable="yes">History</property>
+	    <child>
+          <object class="GtkToolButton" id="toolbutton_undo">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="tooltip_text" translatable="yes">Undo the previous action</property>
+            <property name="action_name">app.undo</property>
+	        <property name="icon_name">action_doc_undo_icon</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkToolButton" id="toolbutton_redo">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="tooltip_text" translatable="yes">Redo the previously undone action</property>
+            <property name="action_name">app.redo</property>
+	        <property name="icon_name">action_doc_redo_icon</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+	    <child>
+          <object class="GtkToolButton" id="toolbutton_clearundo">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="tooltip_text" translatable="yes">Clear the undo stack</property>
+            <property name="action_name">app.clear-undo</property>
+	        <property name="icon_name">clear_undo_icon</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+	    <child>
+          <object class="GtkToolButton" id="toolbutton_clearredo">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="tooltip_text" translatable="yes">Clear the redo stack</property>
+            <property name="action_name">app.clear-redo</property>
+	        <property name="icon_name">clear_redo_icon</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+	    <child>
+          <object class="GtkToolButton" id="toolbutton_clearundoredo">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="tooltip_text" translatable="yes">Clear the undo and redo stack</property>
+            <property name="action_name">app.clear-undo-redo</property>
+	        <property name="icon_name">edit-clear</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+      </object>
+    </interface>
