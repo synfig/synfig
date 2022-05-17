@@ -1,3 +1,7 @@
+- [`865f197`](https://github.com/synfig/synfig/commit/865f1977d0a3e4129a1031cc39d7ea7514bc7158) Merge PR [#2632](https://github.com/synfig/synfig/issues/2632): Added basic support for Gtk theme [studio]
+- [`9b5140f`](https://github.com/synfig/synfig/commit/9b5140ffb49b6ec64a4c729e8862b9c87cb791e0) Fix typo in source ([#2631](https://github.com/synfig/synfig/issues/2631)) [core]
+- [`34b9c43`](https://github.com/synfig/synfig/commit/34b9c43c5c5a69816543478f0e77acf3708f88aa) Fixed video render with ffmpeg 3.x ([#2628](https://github.com/synfig/synfig/issues/2628)) [core]
+- [`68d8a25`](https://github.com/synfig/synfig/commit/68d8a25c1e10905acd2b28ab23f255c08ed4615d) Fixed crash when deleting last waypoint ([#2587](https://github.com/synfig/synfig/issues/2587)) [studio]
 - [`78f08a4`](https://github.com/synfig/synfig/commit/78f08a426835a98dcc40c4cc458218b05710b939) [CMake] Added option to link with tcmalloc library ([#2602](https://github.com/synfig/synfig/issues/2602)) [core] [studio]
 - [`61c6f49`](https://github.com/synfig/synfig/commit/61c6f49d79f1cc562e1171fe3638664d846508e0) Bumped year ([#2623](https://github.com/synfig/synfig/issues/2623)) [studio]
 - [`9ef1c59`](https://github.com/synfig/synfig/commit/9ef1c59fc345350461dfa3fef8f45d0dc091a177) Fix module search path for Lottie Exporter ([#2621](https://github.com/synfig/synfig/issues/2621)) [studio]
