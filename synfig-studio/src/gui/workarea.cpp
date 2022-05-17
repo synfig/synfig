@@ -228,7 +228,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 
 	Gtk::Arrow *menubutton = manage(new Gtk::Arrow(Gtk::ARROW_RIGHT, Gtk::SHADOW_OUT));
 	menubutton->set_size_request(18, 18);
-	Gtk::EventBox *menubutton_box = manage(new Gtk::EventBox());
+	menubutton_box = manage(new Gtk::EventBox());
 	menubutton_box->add(*menubutton);
 	menubutton_box->add_events(Gdk::BUTTON_RELEASE_MASK);
 	menubutton_box->signal_button_release_event().connect(
@@ -808,19 +808,15 @@ WorkArea::show_ruler()
 {
 	if (ruler_status == true)
 		{
-			remove(*hruler);
-			remove(*vruler);
-			remove(*menubutton_box);
-			remove_row(0);
+			hruler->hide();
+			vruler->hide();
+			menubutton_box->hide();
 			ruler_status= false;
-			std::cout<<"hide";
 		}
 		else {
-			insert_row(0);
-			//reattach menubutton box and rulers
-			attach(*menubutton_box, 0, 0, 1, 1);
-			attach_next_to(*hruler, *menubutton_box, Gtk::POS_RIGHT, 1, 1);
-			attach_next_to(*vruler, *menubutton_box, Gtk::POS_BOTTOM, 1, 1);
+			hruler->show();
+			vruler->show();
+			menubutton_box->show();
 
 			ruler_status= true;
 			}
