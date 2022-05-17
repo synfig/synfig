@@ -40,6 +40,7 @@
 #include <gtkmm/adjustment.h>
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/grid.h>
+#include <gtkmm/eventbox.h>
 
 #include <gui/dials/zoomdial.h>
 #include <gui/duckmatic.h>
@@ -134,6 +135,7 @@ private:
 	etl::handle<Renderer_Canvas> renderer_canvas;
 
 	// Widgets
+	Gtk::EventBox *menubutton_box;
 	Gtk::DrawingArea *drawing_area;
 	Gtk::Frame *drawing_frame;
 	Widget_Ruler *hruler;
