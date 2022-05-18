@@ -845,7 +845,9 @@ LayerTreeStore::set_row_layer(Gtk::TreeRow &row, const synfig::Layer::Handle &ha
 			layer_paste->signal_subcanvas_changed().connect(
 				sigc::mem_fun(*this,&studio::LayerTreeStore::queue_rebuild) );
 	}
-	if (etl::handle<Layer_Switch> layer_switch = etl::handle<Layer_Switch>::cast_dynamic(handle))
+
+	etl::handle<Layer_Switch> layer_switch = etl::handle<Layer_Switch>::cast_dynamic(handle);
+	if (layer_switch)
 	{
 		switch_changed_connections[layer_switch].disconnect();
 		switch_changed_connections[layer_switch] =
@@ -872,10 +874,12 @@ LayerTreeStore::set_row_layer(Gtk::TreeRow &row, const synfig::Layer::Handle &ha
 	//row[model.canvas] = handle->get_canvas();
 	//row[model.icon] = layer_icon;
 
-	synfig::Layer::Vocab vocab=handle->get_param_vocab();
-	synfig::Layer::Vocab::iterator iter;
+	// Does this layer have a parameter of canvas type?
+	// List this canvas layers as this layer children
 
-	for(iter=vocab.begin();iter!=vocab.end();++iter)
+	const synfig::Layer::Vocab vocab=handle->get_param_vocab();
+
+	for(auto iter=vocab.begin();iter!=vocab.end();++iter)
 	{
 		if(iter->get_hidden())
 			continue;
@@ -892,13 +896,10 @@ LayerTreeStore::set_row_layer(Gtk::TreeRow &row, const synfig::Layer::Handle &ha
 
 			std::set<String> possible_new_layers;
 			std::set<String> impossible_existant_layers;
-			if (etl::handle<Layer_Switch> layer_switch = etl::handle<Layer_Switch>::cast_dynamic(handle))
+			if (layer_switch)
 			{
-				if (!layer_switch->get_param("layer_name").get(String()).empty())
-				{
-					layer_switch->get_possible_new_layers(possible_new_layers);
-					layer_switch->get_impossible_existant_layers(impossible_existant_layers);
-				}
+				layer_switch->get_possible_new_layers(possible_new_layers);
+				layer_switch->get_impossible_existant_layers(impossible_existant_layers);
 			}
 
 			int index = canvas->size() + possible_new_layers.size();
