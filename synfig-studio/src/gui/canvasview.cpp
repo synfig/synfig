@@ -1104,16 +1104,13 @@ Gtk::Widget*
 CanvasView::create_top_toolbar()
 {
 	//toolbar_name needs to a number attached because only one instance can be used per canvas
-	String toolbar_name("top-toolbar-%d", Instance::get_count());
 	Glib::ustring toolbar_info =
     "<!-- Generated with glade 3.18.3 -->"
     "<interface>"
     "  <requires lib='gtk+' version='3.4'/>"
-    "  <object class='GtkToolbar' id='"+toolbar_name+"'>"
+    "  <object class='GtkToolbar' id='top-toolbar'>"
     "    <property name='visible'>True</property>"
     "    <property name='can_focus'>False</property>"
-	;
-	Glib::ustring file_toolbar_info =
 	"    <child>"
     "      <object class='GtkToolButton' id='new'>"
     "        <property name='visible'>True</property>"
@@ -1191,7 +1188,7 @@ CanvasView::create_top_toolbar()
 	"	</child>"
 	;
 	if (App::show_file_toolbar)
-		toolbar_info += file_toolbar_info;
+	//	toolbar_info += file_toolbar_info;
 	toolbar_info +=
 	"	<child>"
 	"      <object class='GtkToolButton' id='undo'>"
@@ -1359,7 +1356,10 @@ CanvasView::create_top_toolbar()
 	"</interface>"
 	;
 	try {
-		App::builder()->add_from_string(toolbar_info);
+		if (App::show_file_toolbar)
+			canvas_builder->add_from_file(ResourceHelper::get_ui_path("file_top_toolbar.glade"));
+		else
+			canvas_builder->add_from_file(ResourceHelper::get_ui_path("top_toolbar.glade"));
 	} catch (const Glib::Error& ex) {
 		std::cerr << "Building top toolbar failed: " << ex.what();
 	}
@@ -1367,14 +1367,13 @@ CanvasView::create_top_toolbar()
 	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
 	//Gtk::IconSize iconsize = Gtk::IconSize(16);
 	Gtk::Toolbar *toolbar;
-	App::builder()->get_widget(toolbar_name, toolbar);
+	canvas_builder->get_widget("top-toolbar", toolbar);
 	if(!toolbar)
 	{
 		g_warning("Could not get top toolbar!");
 		return nullptr;
 	}
 	displaybar=manage(toolbar);
-	//displaybar = manage(new class Gtk::Toolbar());
 	displaybar->set_icon_size(iconsize);
 	displaybar->set_toolbar_style(Gtk::TOOLBAR_BOTH_HORIZ);
 
@@ -1398,7 +1397,7 @@ CanvasView::create_top_toolbar()
 		render_combobox->set_active(1);
 		render_combobox->show();
 
-		auto object = App::builder()->get_object("combobox-container");
+		auto object = canvas_builder->get_object("combobox-container");
 		auto container = Glib::RefPtr<Gtk::ToolItem>::cast_dynamic(object);
 		if(container)
 		{
@@ -1419,7 +1418,7 @@ CanvasView::create_top_toolbar()
 			sigc::mem_fun(*this, &CanvasView::toggle_low_res_pixel_flag));
 		
 		const Gtk::ToolItem *toolitem;
-		App::builder()->get_widget("sep-5", toolitem);
+		canvas_builder->get_widget("sep-5", toolitem);
 		if(toolitem)
 		{
 			resolutiondial.insert_to_toolbar(*displaybar, displaybar->get_item_index(*toolitem));
@@ -1436,7 +1435,7 @@ CanvasView::create_top_toolbar()
 		past_onion_spin->set_tooltip_text(_("Past Onion Skins"));
 		past_onion_spin->show();
 
-		auto object = App::builder()->get_object("pastonionskin-container");
+		auto object = canvas_builder->get_object("pastonionskin-container");
 		auto container = Glib::RefPtr<Gtk::ToolItem>::cast_dynamic(object);
 		if(container){
 			container->add(*past_onion_spin);
@@ -1454,9 +1453,8 @@ CanvasView::create_top_toolbar()
 		future_onion_spin->set_tooltip_text(_("Future Onion Skins"));
 		future_onion_spin->show();
 
-		auto object = App::builder()->get_object("futureonionskin-container");
+		auto object = canvas_builder->get_object("futureonionskin-container");
 		auto container = Glib::RefPtr<Gtk::ToolItem>::cast_dynamic(object);
-		//Gtk::ToolItem *toolitem = Gtk::manage(new Gtk::ToolItem());
 		if(container){
 			container->add(*future_onion_spin);
 			container->set_is_important(true);
