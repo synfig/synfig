@@ -352,7 +352,7 @@ public:
 
 	void refresh_dimension_info();
 
-	void show_ruler();
+	void show_hide_ruler();
 	//! Enables showing of the grid
 	void enable_grid();
 	//! Disables showing of the grid

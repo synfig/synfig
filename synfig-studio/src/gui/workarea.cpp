@@ -804,22 +804,12 @@ WorkArea::set_background_rendering(bool x)
 }
 
 void
-WorkArea::show_ruler()
+WorkArea::show_hide_ruler()
 {
-	if (ruler_status == true)
-		{
-			hruler->hide();
-			vruler->hide();
-			menubutton_box->hide();
-			ruler_status= false;
-		}
-		else {
-			hruler->show();
-			vruler->show();
-			menubutton_box->show();
-
-			ruler_status= true;
-			}
+	ruler_status = !ruler_status;
+	hruler->set_visible(ruler_status);
+	vruler->set_visible(ruler_status);
+	menubutton_box->set_visible(ruler_status);
 }
 
 void

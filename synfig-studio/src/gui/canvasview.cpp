@@ -1364,7 +1364,7 @@ CanvasView::create_right_toolbar()
 	{
 		Gtk::ToggleToolButton *show_ruler = Gtk::manage(new Gtk::ToggleToolButton());
 		show_ruler->signal_toggled().connect( [this](){
-			work_area->show_ruler();
+			work_area->show_hide_ruler();
 		} );
 		show_ruler->show();
 		displaybar->append(*show_ruler);
