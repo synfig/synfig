@@ -144,6 +144,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	highlight_active_bone(false),
 	show_grid(false),
 	show_guides(true),
+	ruler_status(true),
 	background_size(15,15),
 	background_first_color(0.88, 0.88, 0.88),  /* light gray */
 	background_second_color(0.65, 0.65, 0.65),  /* dark gray */
@@ -293,6 +294,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	get_canvas()->signal_meta_data_changed("grid_color").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("grid_snap").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("grid_show").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
+	get_canvas()->signal_meta_data_changed("status_ruler").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_show").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_x").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_y").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
@@ -371,6 +373,7 @@ WorkArea::save_meta_data()
 	canvas_interface->set_meta_data("guide_snap", get_guide_snap() ? "1" : "0");
 	canvas_interface->set_meta_data("guide_show", get_show_guides() ? "1" : "0");
 	canvas_interface->set_meta_data("grid_show", show_grid ? "1" : "0");
+	canvas_interface->set_meta_data("status_ruler", ruler_status ? "1" : "0");
 	canvas_interface->set_meta_data("jack_offset", strprintf("%f", (double)jack_offset));
 	canvas_interface->set_meta_data("onion_skin", onion_skin ? "1" : "0");
 	canvas_interface->set_meta_data("onion_skin_past", strprintf("%d", onion_skins[0]));
@@ -546,6 +549,12 @@ WorkArea::load_meta_data()
 
 		set_guides_color(synfig::Color(gr,gg,gb));
 	}
+
+	data=canvas->get_meta_data("status_ruler");
+	if(data.size() && (data=="1" || data[0]=='t' || data[0]=='T'))
+		ruler_status=true;
+	if(data.size() && (data=="0" || data[0]=='f' || data[0]=='F'))
+		ruler_status=false;
 
 	data=canvas->get_meta_data("grid_show");
 	if(data.size() && (data=="1" || data[0]=='t' || data[0]=='T'))
@@ -804,12 +813,18 @@ WorkArea::set_background_rendering(bool x)
 }
 
 void
-WorkArea::show_hide_ruler()
+WorkArea::set_ruler_visible(bool visible)
+{
+	hruler->set_visible(visible);
+	vruler->set_visible(visible);
+	menubutton_box->set_visible(visible);
+}
+void
+WorkArea::toggle_ruler()
 {
 	ruler_status = !ruler_status;
-	hruler->set_visible(ruler_status);
-	vruler->set_visible(ruler_status);
-	menubutton_box->set_visible(ruler_status);
+	set_ruler_visible(ruler_status);
+	save_meta_data();
 }
 
 void

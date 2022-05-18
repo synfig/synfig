@@ -1362,12 +1362,17 @@ CanvasView::create_right_toolbar()
 	}
 
 	{
-		Gtk::ToggleToolButton *show_ruler = Gtk::manage(new Gtk::ToggleToolButton());
-		show_ruler->signal_toggled().connect( [this](){
-			work_area->show_hide_ruler();
+		Gtk::ToggleToolButton *toggle_ruler = Gtk::manage(new Gtk::ToggleToolButton());
+
+		//to have the saved ruler state applied on reopening canvas
+		toggle_ruler->set_active((work_area->get_ruler_status()));
+		work_area->set_ruler_visible(work_area->get_ruler_status());
+
+		toggle_ruler->signal_toggled().connect( [this](){
+			work_area->toggle_ruler();
 		} );
-		show_ruler->show();
-		displaybar->append(*show_ruler);
+		toggle_ruler->show();
+		displaybar->append(*toggle_ruler);
 
 	}
 

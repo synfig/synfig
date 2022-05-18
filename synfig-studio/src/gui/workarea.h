@@ -182,6 +182,8 @@ private:
 	etl::loose_handle<synfig::ValueNode> active_bone_;
 	bool highlight_active_bone;
 
+	//! This state is true if ruler should be shown
+	bool ruler_status;
 	//! This flag is set if the grid should be drawn
 	bool show_grid;
 
@@ -235,7 +237,6 @@ public:
  -- ** -- P U B L I C   D A T A -----------------------------------------------
 	*/
 
-	bool ruler_status= true;
 	// used in renderer_ducks.cpp
 	bool solid_lines;
 
@@ -352,7 +353,9 @@ public:
 
 	void refresh_dimension_info();
 
-	void show_hide_ruler();
+	void toggle_ruler();
+	void set_ruler_visible(bool visible);
+
 	//! Enables showing of the grid
 	void enable_grid();
 	//! Disables showing of the grid
@@ -370,6 +373,7 @@ public:
 	//! Returns the color of the grid
 	const synfig::Color &get_grid_color()const { return Duckmatic::get_grid_color();}
 
+	bool get_ruler_status()const { return ruler_status; }
 	//! Returns the state of the show_guides flag
 	bool get_show_guides()const { return show_guides; }
 	//! Sets the showing of the grid
