@@ -225,8 +225,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	vruler->set_vexpand(true);
 
 	// Create the menu button
-
-	Gtk::Arrow *menubutton = manage(new Gtk::Arrow(Gtk::ARROW_RIGHT, Gtk::SHADOW_OUT));
+	Gtk::Image *menubutton = manage(new Gtk::Image(Gtk::StockID("synfig-right_arrow"), Gtk::IconSize::from_name("synfig-small_icon")));
 	menubutton->set_size_request(18, 18);
 	Gtk::EventBox *menubutton_box = manage(new Gtk::EventBox());
 	menubutton_box->add(*menubutton);
