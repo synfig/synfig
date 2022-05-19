@@ -65,12 +65,8 @@ using namespace studio;
 /* === M A C R O S ========================================================= */
 
 #ifndef LAYER_CREATION
-#define LAYER_CREATION(button, stockid, tooltip)	\
-	{ \
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), \
-			Gtk::ICON_SIZE_SMALL_TOOLBAR)); \
-		button.add(*icon); \
-	} \
+#define LAYER_CREATION(button, icon_name, tooltip)	\
+	button.set_image_from_icon_name(icon_name, Gtk::BuiltinIconSize::ICON_SIZE_SMALL_TOOLBAR); \
 	button.set_relief(Gtk::RELIEF_NONE); \
 	button.set_tooltip_text(tooltip) ;\
 	button.signal_toggled().connect(sigc::mem_fun(*this, \
@@ -531,17 +527,17 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	layer_types_label.set_valign(Gtk::ALIGN_CENTER);
 
 	LAYER_CREATION(layer_star_togglebutton,
-		("synfig-layer_geometry_star"), _("Create a star layer"));
+		"layer_geometry_star_icon", _("Create a star layer"));
 	LAYER_CREATION(layer_region_togglebutton,
-		("synfig-layer_geometry_region"), _("Create a region layer"));
+		"layer_geometry_region_icon", _("Create a region layer"));
 	LAYER_CREATION(layer_outline_togglebutton,
-		("synfig-layer_geometry_outline"), _("Create an outline layer"));
+		"layer_geometry_outline_icon", _("Create an outline layer"));
 	LAYER_CREATION(layer_advanced_outline_togglebutton,
-		("synfig-layer_geometry_advanced_outline"), _("Create an advanced outline layer"));
+		"layer_geometry_advanced_outline_icon", _("Create an advanced outline layer"));
 	LAYER_CREATION(layer_plant_togglebutton,
-		("synfig-layer_other_plant"), _("Create a plant layer"));
+		"layer_other_plant_icon", _("Create a plant layer"));
 	LAYER_CREATION(layer_curve_gradient_togglebutton,
-		("synfig-layer_gradient_curve"), _("Create a gradient layer"));
+		"layer_gradient_curve_icon", _("Create a gradient layer"));
 
 	layer_star_togglebutton.get_style_context()->add_class("indentation");
 	layer_types_box.pack_start(layer_star_togglebutton, false, false, 0);
