@@ -64,12 +64,8 @@ using namespace studio;
 /* === M A C R O S ========================================================= */
 
 #ifndef LAYER_CREATION
-#define LAYER_CREATION(button, stockid, tooltip)	\
-	{ \
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), \
-			Gtk::ICON_SIZE_SMALL_TOOLBAR)); \
-		button.add(*icon); \
-	} \
+#define LAYER_CREATION(button, icon_name, tooltip)	\
+	button.set_image_from_icon_name(icon_name, Gtk::BuiltinIconSize::ICON_SIZE_SMALL_TOOLBAR); \
 	button.set_relief(Gtk::RELIEF_NONE); \
 	button.set_tooltip_text(tooltip); \
 	button.signal_toggled().connect(sigc::mem_fun(*this, \
@@ -361,7 +357,7 @@ StateText_Context::StateText_Context(CanvasView *canvasView):
 	layer_types_label.set_valign(Gtk::ALIGN_CENTER);
 
 	LAYER_CREATION(layer_text_togglebutton,
-		("synfig-layer_other_text"), _("Create a text layer"));
+		"layer_other_text_icon", _("Create a text layer"));
 
 	layer_text_togglebutton.get_style_context()->add_class("indentation");
 	layer_types_box.pack_start(layer_text_togglebutton, false, false, 0);
