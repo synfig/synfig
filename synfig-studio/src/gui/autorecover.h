@@ -42,8 +42,8 @@ namespace studio {
 
 class AutoRecover
 {
-	bool enabled;
-	int timeout_ms;
+	bool enabled = false;
+	int timeout_ms = 0;
 	sigc::connection connection;
 
 	void set_timer(bool enabled, int timeout_ms);
