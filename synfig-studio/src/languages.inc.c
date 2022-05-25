@@ -11,7 +11,8 @@
 //
 
 { "aa_DJ",       "Afar",                             },
-{ "ar",          "Arabick",                          },
+{ "ar",          "Arabic",                           },
+{ "ar_EG",       "Arabic (Egypt)",                   },
 { "bs",          "Bosnian",                          },
 { "ca",          "Catalan",                          },
 { "ca@valencia", "Catalan (Valencian)",              },
