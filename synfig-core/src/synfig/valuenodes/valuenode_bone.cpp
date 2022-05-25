@@ -851,13 +851,12 @@ ValueNode_Bone::get_bones_affected_by(ValueNode::Handle value_node)
 		for (std::set<const Node*>::iterator iter = current_nodes.begin(); iter != current_nodes.end(); iter++, count++)
 		{
 			// loop through the parents of each node in current_nodes
-			std::set<Node*> node_parents((*iter)->parent_set);
 			if (debug) printf("%s:%d node %d %p (%s) has %zd parents\n",
-							  __FILE__, __LINE__, count, *iter, (*iter)->get_string().c_str(), node_parents.size());
-			int count2 = 0;
-			for (std::set<Node*>::iterator iter2 = node_parents.begin(); iter2 != node_parents.end(); iter2++, count2++)
+							  __FILE__, __LINE__, count, *iter, (*iter)->get_string().c_str(), (*iter)->parent_count());
+			auto bones = (*iter)->find_all_parents_of_type<ValueNode_Bone>();
+			for (ValueNode_Bone::Handle& bone : bones)
 			{
-				Node* node(*iter2);
+				const Node* node = bone.get();
 				// if (debug) printf("%s:%d parent %d: %lx (%s)\n", __FILE__, __LINE__, count2, uintptr_t(node), node->get_string().c_str());
 				// for each parent we've not already seen
 				if (!seen.count(node))
@@ -867,10 +866,9 @@ ValueNode_Bone::get_bones_affected_by(ValueNode::Handle value_node)
 					// add it to the list of new nodes to loop though in the next iteration
 					new_nodes.insert(node);
 					// and if it's a ValueNode_Bone, add it to the set to be returned
-					if (dynamic_cast<ValueNode_Bone*>(node))
-						ret.insert(dynamic_cast<ValueNode_Bone*>(node));
+					ret.insert(bone);
 				}
-			}
+			};
 		}
 		current_nodes = new_nodes;
 		new_nodes.clear();

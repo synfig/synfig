@@ -709,17 +709,11 @@ Renderer_Ducks::render_vfunc(
 						bool blineloop(bline->get_loop());
 						bool homogeneous=false;
 						// Retrieve the homogeneous layer parameter
-						std::set<Node*>::iterator iter;
-						for(iter=wplist->parent_set.begin();iter!=wplist->parent_set.end();++iter)
-							{
-								Layer::Handle layer;
-								layer=Layer::Handle::cast_dynamic(*iter);
-								if(layer && layer->get_name() == "advanced_outline")
-								{
-									homogeneous=layer->get_param("homogeneous").get(bool());
-									break;
-								}
-							}
+						Layer::Handle layer = wplist->find_first_parent_of_type<Layer>([](const Layer::Handle& layer) -> bool {
+							return layer->get_name() == "advanced_outline";
+						});
+						if(layer)
+							homogeneous=layer->get_param("homogeneous").get(bool());
 						WidthPoint wp((*wpoint_composite)(time).get(WidthPoint()));
 						if(wplistloop)
 						{

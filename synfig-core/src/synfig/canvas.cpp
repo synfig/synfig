@@ -121,16 +121,11 @@ Canvas::~Canvas()
 	// which deletes the current element from the set we're iterating
 	// through, so we have to make sure we've incremented the iterator
 	// before we mess with the pastecanvas
-	std::set<Node*>::iterator iter = parent_set.begin();
-	while (iter != parent_set.end())
-	{
-		Layer_PasteCanvas* paste_canvas = dynamic_cast<Layer_PasteCanvas*>(*iter);
-		iter++;
-		if(paste_canvas)
-			paste_canvas->set_sub_canvas(nullptr);
-		else
-			warning("destroyed canvas has a parent that is not a pastecanvas - please report if repeatable");
-	}
+	std::vector<Layer_PasteCanvas::Handle> special_parents = find_all_parents_of_type<Layer_PasteCanvas>();
+	for (Layer_PasteCanvas::Handle& paste_canvas : special_parents)
+		paste_canvas->set_sub_canvas(nullptr);
+	if (parent_count() > 0)
+		warning("destroyed canvas has a parent that is not a pastecanvas - please report if repeatable [total %zu]", parent_count());
 
 	//if(is_inline() && parent_) assert(0);
 	_CanvasCounter::counter--;
@@ -1517,18 +1512,17 @@ Canvas::invoke_signal_value_node_child_removed(etl::handle<ValueNode> container,
 	signal_value_node_child_removed()(container, content);
 	Canvas::Handle canvas(this);
 #ifdef DEBUG_INVOKE_SVNCR
-	printf("%s:%d removed stuff from a canvas %lx with %zd parents\n", __FILE__, __LINE__, uintptr_t(canvas.get()), canvas->parent_set.size());
+	printf("%s:%d removed stuff from a canvas %lx with %zu parents\n", __FILE__, __LINE__, uintptr_t(canvas.get()), canvas->parent_count());
 #endif
-	for (std::set<Node*>::iterator iter = canvas->parent_set.begin(); iter != canvas->parent_set.end(); iter++)
-	{
-		if (Layer* layer = dynamic_cast<Layer*>(*iter))
+	auto find_layers_to_invoke_signals = [container, content] (Node* canvas_parent) -> bool {
+		if (Layer* layer = dynamic_cast<Layer*>(canvas_parent))
 		{
 #ifdef DEBUG_INVOKE_SVNCR
 			printf("it's a layer %lx\n", uintptr_t(layer));
-			printf("%s:%d it's a layer with %zd parents\n", __FILE__, __LINE__, layer->parent_set.size());
+			printf("%s:%d it's a layer with %zu parents\n", __FILE__, __LINE__, layer->parent_count());
 #endif
-			for (std::set<Node*>::iterator iter = layer->parent_set.begin(); iter != layer->parent_set.end(); iter++)
-				if (Canvas* canvas = dynamic_cast<Canvas*>(*iter))
+			auto invoke_signal = [container, content] (Node* layer_parent) -> bool {
+				if (Canvas* canvas = dynamic_cast<Canvas*>(layer_parent))
 				{
 #ifdef DEBUG_INVOKE_SVNCR
 					printf("it's a canvas %lx\n", uintptr_t(canvas));
@@ -1549,12 +1543,17 @@ Canvas::invoke_signal_value_node_child_removed(etl::handle<ValueNode> container,
 				else
 					printf("not a canvas\n");
 #endif
+				return false;
+			};
+			layer->foreach_parent(invoke_signal);
 		}
 #ifdef DEBUG_INVOKE_SVNCR
 		else
 			printf("not a layer\n");
 #endif
-	}
+		return false;
+	};
+	canvas->foreach_parent(find_layers_to_invoke_signals);
 }
 
 #if 0
@@ -1569,10 +1568,10 @@ void
 Canvas::show_canvas_ancestry()const
 {
 	String layer;
-	// printf("%s:%d parent set size = %zd\n", __FILE__, __LINE__, parent_set.size());
-	if (parent_set.size() == 1)
+	// printf("%s:%d parent set size = %zu\n", __FILE__, __LINE__, parent_count());
+	if (parent_count() == 1)
 	{
-		Node* node(*(parent_set.begin()));
+		Node* node(get_first_parent()));
 		if (dynamic_cast<Layer*>(node))
 		{
 			layer = (dynamic_cast<Layer*>(node))->get_description();

@@ -102,7 +102,7 @@ Layer_PasteCanvas::Layer_PasteCanvas(Real amount, Color::BlendMethod blend_metho
 Layer_PasteCanvas::~Layer_PasteCanvas()
 {
 /*	if(sub_canvas)
-		sub_canvas->parent_set.erase(this);
+		remove_child(sub_canvas.get());
 */
 
 	set_sub_canvas(0);

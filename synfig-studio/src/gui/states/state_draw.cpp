@@ -2355,18 +2355,10 @@ StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,st
 	Real inserted_length(bline_length(ValueBase::List(inserted_bline.begin(), inserted_bline.end()), false, NULL));
 	int inserted_size(inserted_bline.size());
 	// Determine if the bline that the layer belongs to is a Advanced Outline
-	bool is_advanced_outline(false);
-	Layer::Handle layer_parent;
-	std::set<Node*>::iterator niter;
-	for(niter=value_node->parent_set.begin();niter!=value_node->parent_set.end();++niter)
-	{
-		layer_parent=Layer::Handle::cast_dynamic(*niter);
-		if(layer_parent && layer_parent->get_name() == "advanced_outline")
-		{
-			is_advanced_outline=true;
-			break;
-		}
-	}
+	Layer::Handle layer_parent = value_node->find_first_parent_of_type<Layer>([](const Layer::Handle& layer) -> bool {
+		return layer->get_name() == "advanced_outline";
+	});
+	bool is_advanced_outline(layer_parent);
 
 	// Create the action group
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Extend Spline"));
@@ -2546,18 +2538,10 @@ StateDraw_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std:
 	Real inserted_length(bline_length(ValueBase::List(inserted_bline.begin(), inserted_bline.end()), false, NULL));
 	int inserted_size(inserted_bline.size());
 	// Determine if the bline that the layer belongs to is a Advanced Outline
-	bool is_advanced_outline(false);
-	Layer::Handle layer_parent;
-	std::set<Node*>::iterator niter;
-	for(niter=value_node->parent_set.begin();niter!=value_node->parent_set.end();++niter)
-	{
-		layer_parent=Layer::Handle::cast_dynamic(*niter);
-		if(layer_parent && layer_parent->get_name() == "advanced_outline")
-		{
-			is_advanced_outline=true;
-			break;
-		}
-	}
+	Layer::Handle layer_parent = value_node->find_first_parent_of_type<Layer>([](const Layer::Handle& layer) -> bool {
+		return layer->get_name() == "advanced_outline";
+	});
+	bool is_advanced_outline(layer_parent);
 
 	// Create the action group
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Extend Spline"));
