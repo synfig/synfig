@@ -57,7 +57,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_DynamicList, RELEASE_VERSION_0_61_06, "dynamic_list", "Dynamic List")
+REGISTER_VALUENODE(ValueNode_DynamicList, RELEASE_VERSION_0_61_06, "dynamic_list", N_("Dynamic List"))
 
 /* === P R O C E D U R E S ================================================= */
 

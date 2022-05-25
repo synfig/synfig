@@ -52,7 +52,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_GradientRotate, RELEASE_VERSION_0_61_06, "gradient_rotate", "Gradient Rotate")
+REGISTER_VALUENODE(ValueNode_GradientRotate, RELEASE_VERSION_0_61_06, "gradient_rotate", N_("Gradient Rotate"))
 
 /* === P R O C E D U R E S ================================================= */
 

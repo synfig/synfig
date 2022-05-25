@@ -55,7 +55,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Random, RELEASE_VERSION_0_61_08, "random", "Random")
+REGISTER_VALUENODE(ValueNode_Random, RELEASE_VERSION_0_61_08, "random", N_("Random"))
 
 /* === P R O C E D U R E S ================================================= */
 

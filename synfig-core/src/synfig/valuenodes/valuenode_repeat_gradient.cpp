@@ -53,7 +53,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Repeat_Gradient, RELEASE_VERSION_0_61_07, "repeat_gradient", "Repeat Gradient")
+REGISTER_VALUENODE(ValueNode_Repeat_Gradient, RELEASE_VERSION_0_61_07, "repeat_gradient", N_("Repeat Gradient"))
 
 /* === P R O C E D U R E S ================================================= */
 

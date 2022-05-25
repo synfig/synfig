@@ -55,7 +55,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_BLineCalcWidth, RELEASE_VERSION_0_61_08, "blinecalcwidth", "Spline Width")
+REGISTER_VALUENODE(ValueNode_BLineCalcWidth, RELEASE_VERSION_0_61_08, "blinecalcwidth", N_("Spline Width"))
 
 /* === P R O C E D U R E S ================================================= */
 

@@ -54,7 +54,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Real, RELEASE_VERSION_0_64_0, "fromreal", "Real")
+REGISTER_VALUENODE(ValueNode_Real, RELEASE_VERSION_0_64_0, "fromreal", N_("Real"))
 
 /* === P R O C E D U R E S ================================================= */
 

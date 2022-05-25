@@ -53,7 +53,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_WeightedAverage, RELEASE_VERSION_1_0, "weighted_average", "Weighted Average")
+REGISTER_VALUENODE(ValueNode_WeightedAverage, RELEASE_VERSION_1_0, "weighted_average", N_("Weighted Average"))
 
 /* === P R O C E D U R E S ================================================= */
 

@@ -81,10 +81,15 @@ public:
 
 	struct BookEntry
 	{
+	private:
 		String local_name;
+	public:
 		Factory factory;
 		CheckType check_type;
 		ReleaseVersion release_version; // which version of synfig introduced this valuenode type
+
+		BookEntry(String local_name, Factory factory, CheckType check_type, ReleaseVersion release_version);
+		String get_local_name() const { return localize_name(local_name); }
 	};
 
 	typedef std::map<String,BookEntry> Book;
