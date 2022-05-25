@@ -31,6 +31,12 @@
 /* === H E A D E R S ======================================================= */
 
 #include "filesystem.h"
+#include "general.h" // synfig::error(...)
+
+#ifdef _WIN32
+#include <codecvt>
+#include <locale>
+#endif
 
 /* === M A C R O S ========================================================= */
 
@@ -95,6 +101,23 @@ namespace synfig
 		virtual FileSystem::ReadStream::Handle get_read_stream(const String &filename);
 		virtual FileSystem::WriteStream::Handle get_write_stream(const String &filename);
 		virtual String get_real_uri(const String &filename);
+#ifdef _WIN32
+		// Windows uses UTF-16 for filenames, so we need to convert it from UTF-8 before using it.
+		static std::wstring path(const std::string& path) {
+			try {
+				std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> wcu8;
+				return wcu8.from_bytes(path);
+			} catch (const std::range_error& exception) {
+				synfig::error("Failed to convert path (%s)", path.c_str());
+				throw;
+			}
+		}
+#else
+		// For other OS, just return the file name as is
+		static std::string path(const std::string& path) {
+			return path;
+		}
+#endif
 	};
 
 }

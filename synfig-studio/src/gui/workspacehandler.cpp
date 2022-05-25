@@ -33,6 +33,7 @@
 # endif
 
 #include "workspacehandler.h"
+#include "synfig/filesystemnative.h"
 
 #include <fstream>
 
@@ -122,7 +123,7 @@ WorkspaceHandler::get_name_list(std::vector<std::string>& list)
 bool
 WorkspaceHandler::save(const std::string& filename)
 {
-	std::ofstream ofs(filename);
+	std::ofstream ofs(synfig::FileSystemNative::path(filename).c_str());
 	if (!ofs) {
 		synfig::error(_("Can't save custom workspaces"));
 		return false;
@@ -136,7 +137,7 @@ WorkspaceHandler::save(const std::string& filename)
 void
 WorkspaceHandler::load(const std::string& filename)
 {
-	std::ifstream ifs(filename);
+	std::ifstream ifs(synfig::FileSystemNative::path(filename).c_str());
 	std::string line;
 	int count = 0;
 	while (ifs && !ifs.eof()) {

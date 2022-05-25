@@ -38,10 +38,12 @@
 #include <algorithm>
 #include <sys/stat.h>
 #include "settings.h"
+#include "synfig/filesystemnative.h"
 #include <synfig/general.h>
 #include <synfig/guid.h>
 
 #include <synfigapp/localization.h>
+#include <glib/gstdio.h> // for g_rename(...)
 
 #endif
 
@@ -190,9 +192,12 @@ Settings::save_to_file(const synfig::String& filename)const
 
 	try
 	{
-		std::ofstream file(tmp_filename.c_str());
+		std::ofstream file(FileSystemNative::path(tmp_filename).c_str());
 
-		if(!file)return false;
+		if(!file) {
+			synfig::warning(_("Can't save settings to file %s!"), filename.c_str());
+			return false;
+		}
 
 		KeyList key_list(get_key_list());
 
@@ -211,29 +216,8 @@ Settings::save_to_file(const synfig::String& filename)const
 			return false;
 	}catch(...) { return false; }
 
-#ifdef _WIN32
-
-	// On Win32 platforms, rename() has bad behavior. Work around it.
-
-	// Make random filename and ensure there's no file with such name exist
-	struct stat buf;
-	String old_file;
-	do {
-		synfig::GUID guid;
-		old_file = filename+"."+guid.get_string().substr(0,8);
-	} while (stat(old_file.c_str(), &buf) != -1);
-
-	rename(filename.c_str(),old_file.c_str());
-	if(rename(tmp_filename.c_str(),filename.c_str())!=0)
-	{
-		rename(old_file.c_str(),filename.c_str());
+	if (g_rename(tmp_filename.c_str(),filename.c_str())!=0)
 		return false;
-	}
-	remove(old_file.c_str());
-#else
-	if(rename(tmp_filename.c_str(),filename.c_str())!=0)
-		return false;
-#endif
 
 	return true;
 }
@@ -241,9 +225,13 @@ Settings::save_to_file(const synfig::String& filename)const
 bool
 Settings::load_from_file(const synfig::String& filename, const synfig::String& key_filter )
 {
-	std::ifstream file(filename.c_str());
-	if(!file)
+	std::ifstream file(FileSystemNative::path(filename).c_str());
+
+	if(!file) {
+		synfig::warning(_("Can't load settings from file %s!"), filename.c_str());
 		return false;
+	}
+
 	bool loaded_filter = false;
 	while(file)
 	{
