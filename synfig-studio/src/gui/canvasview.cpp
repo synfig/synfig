@@ -569,6 +569,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	toggling_animate_mode_=false;
 	changing_resolution_=false;
 	toggling_show_grid=false;
+	toggling_show_ruler=false;
 	toggling_snap_grid=false;
 	toggling_show_guides=false;
 	toggling_snap_guides=false;
@@ -1362,15 +1363,18 @@ CanvasView::create_right_toolbar()
 	}
 
 	{
-		Gtk::ToggleToolButton *toggle_ruler = Gtk::manage(new Gtk::ToggleToolButton());
+		toggle_ruler = Gtk::manage(new Gtk::ToggleToolButton());
 
 		//to have the saved ruler state applied on reopening canvas
 		toggle_ruler->set_active((work_area->get_ruler_status()));
 		work_area->set_ruler_visible(work_area->get_ruler_status());
 
-		toggle_ruler->signal_toggled().connect( [this](){
-			work_area->toggle_ruler();
-		} );
+		toggle_ruler->signal_toggled().connect(
+			sigc::mem_fun(*this, &CanvasView::toggle_show_ruler));
+
+//		toggle_ruler->signal_toggled().connect( [this](){
+//			work_area->toggle_ruler();
+//		} );
 		toggle_ruler->show();
 		displaybar->append(*toggle_ruler);
 
@@ -1591,6 +1595,10 @@ CanvasView::init_menus()
 
 	{
 		Glib::RefPtr<Gtk::ToggleAction> action;
+		//the checkbutton
+		ruler_show_toggle = Gtk::ToggleAction::create("toggle-ruler-show", _("Show Ruler")); //also this
+		ruler_show_toggle->set_active(work_area->get_ruler_status()); //of course set the status the correct way
+		action_group->add(ruler_show_toggle, sigc::mem_fun(*this, &CanvasView::toggle_show_ruler));
 
 		grid_show_toggle = Gtk::ToggleAction::create("toggle-grid-show", _("Show Grid"));
 		grid_show_toggle->set_active(work_area->grid_status());
@@ -2714,6 +2722,21 @@ CanvasView::set_onion_skins()
 	onion_skins[0]=past_onion_spin->get_value();
 	onion_skins[1]=future_onion_spin->get_value();
 	work_area->set_onion_skins(onion_skins);
+}
+
+void
+CanvasView::toggle_show_ruler()
+{
+	if(toggling_show_ruler)
+		return;
+	toggling_show_ruler=true;
+	work_area->toggle_ruler();
+	// Update the toggle ruler show action
+	set_ruler_show_toggle(work_area->get_ruler_status());
+	// Update the toggle grid show toggle button
+	toggle_ruler->set_active(work_area->get_ruler_status());
+	toggling_show_ruler=false;
+
 }
 
 void
