@@ -90,6 +90,7 @@ private:
 	bool is_distance_;
 	bool animation_only_;
 	bool static_;
+    bool row_expanded_;     //! Expand/collapse status of parameter row having children rows
 	Interpolation interpolation_;
 
 	std::list<EnumData> enum_list_;
@@ -111,6 +112,7 @@ public:
 		is_distance_    (false),
 		animation_only_ (false),
 		static_         (false),
+        row_expanded_   (false),
 		interpolation_  (INTERPOLATION_UNDEFINED)
 	{ }
 
@@ -230,6 +232,9 @@ public:
 	
 	bool get_static()const { return static_; }
 	ParamDesc &set_static(bool s) { static_=s; return *this; }
+
+    bool get_row_expanded()const { return row_expanded_; };
+    ParamDesc& set_row_expanded(bool r=true) { row_expanded_=r; return *this; }
 
 	Interpolation get_interpolation()const { return interpolation_; }
 	ParamDesc &set_interpolation(Interpolation i) { interpolation_=i; return *this; }

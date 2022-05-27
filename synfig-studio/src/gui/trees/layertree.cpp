@@ -378,6 +378,8 @@ LayerTree::create_param_tree()
 
 	param_tree_view().signal_event().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_tree_event));
 	param_tree_view().signal_query_tooltip().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_tree_view_query_tooltip));
+	param_tree_view().signal_row_expanded().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_row_expanded));
+	param_tree_view().signal_row_collapsed().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_row_collapsed));
 	// Column widget label event used to retrieve column size
 	Gtk::Widget* columnzero_label = param_tree_view().get_column(0)->get_widget ();
 	columnzero_label->signal_style_updated().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_column_label_tree_style_updated));
@@ -1026,6 +1028,18 @@ LayerTree::on_param_column_label_tree_draw(const ::Cairo::RefPtr< ::Cairo::Conte
 		param_tree_style_changed = false;
 	}
 	return true;
+}
+
+void
+LayerTree::on_param_row_expanded(const Gtk::TreeModel::iterator& iter, const Gtk::TreeModel::Path& path)
+{
+	// WIP
+}
+
+void
+LayerTree::on_param_row_collapsed(const Gtk::TreeModel::iterator& iter, const Gtk::TreeModel::Path& path)
+{
+	// WIP
 }
 
 void
