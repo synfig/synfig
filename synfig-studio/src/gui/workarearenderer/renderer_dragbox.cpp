@@ -50,7 +50,7 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
-#define DRAGBOX_COLOR_OUTLINE      Gdk::Color("#000000")
+#define DRAGBOX_COLOR_OUTLINE      Gdk::RGBA("#000000")
 
 /* === G L O B A L S ======================================================= */
 

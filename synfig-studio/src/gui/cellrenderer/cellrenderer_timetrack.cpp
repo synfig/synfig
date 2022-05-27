@@ -73,7 +73,7 @@ namespace {
 static void
 draw_activepoint_off(
 	const Cairo::RefPtr<Cairo::Context> &cr,
-	Gdk::Color inactive_color,
+	Gdk::RGBA inactive_color,
 	int line_width,
 	int from_x,
 	int from_y,
@@ -85,7 +85,7 @@ draw_activepoint_off(
 	activepoint_off_dashes[1] = 2.0;
 
 	cr->set_dash(activepoint_off_dashes, 0.0);
-	Gdk::Cairo::set_source_color(cr, inactive_color);
+	Gdk::Cairo::set_source_rgba(cr, inactive_color);
 	cr->set_line_width(line_width);
 	cr->move_to(from_x, from_y);
 	cr->line_to(to_x, to_y);
@@ -275,13 +275,13 @@ CellRenderer_TimeTrack::render_vfunc(
 	if (!cr || cell_area.get_width() <= 0 || cell_area.get_height() <= 0 || !time_plot_data.time_model)
 		return;
 
-	Gdk::Color change_time_color("#008800");
-	Gdk::Color curr_time_color("#0000ff");
-	Gdk::Color inactive_color("#000000");
-	Gdk::Color keyframe_color("#a07f7f");
-	Gdk::Color activepoint_color[] = {
-		Gdk::Color("#ff0000"),
-		Gdk::Color("#00ff00") };
+	Gdk::RGBA change_time_color("#008800");
+	Gdk::RGBA curr_time_color("#0000ff");
+	Gdk::RGBA inactive_color("#000000");
+	Gdk::RGBA keyframe_color("#a07f7f");
+	Gdk::RGBA activepoint_color[] = {
+		Gdk::RGBA("#ff0000"),
+		Gdk::RGBA("#00ff00") };
 
 	Time time = time_plot_data.time_model->get_time();
 	if (time_plot_data.is_invalid())
@@ -298,7 +298,7 @@ CellRenderer_TimeTrack::render_vfunc(
 		for(KeyframeList::const_iterator i = canvas->keyframe_list().begin(); i != canvas->keyframe_list().end(); ++i)
 			if (time_plot_data.is_time_visible_extra(i->get_time())) {
 				int x = time_plot_data.get_pixel_t_coord(i->get_time());
-				Gdk::Cairo::set_source_color(cr, keyframe_color);
+				Gdk::Cairo::set_source_rgba(cr, keyframe_color);
 				cr->rectangle(cell_area.get_x() + x, cell_area.get_y(), 1, cell_area.get_height());
 				cr->fill();
 			}
@@ -321,9 +321,9 @@ CellRenderer_TimeTrack::render_vfunc(
 				const int y = cell_area.get_y() + (cell_area.get_height() - h)/2;
 				cr->rectangle(x, y, w, h);
 				cr->set_source_rgb(
-					change_time_color.get_red_p(),
-					change_time_color.get_green_p(),
-					change_time_color.get_blue_p() );
+					change_time_color.get_red(),
+					change_time_color.get_green(),
+					change_time_color.get_blue() );
 				cr->fill();
 			}
 		}
@@ -435,7 +435,7 @@ CellRenderer_TimeTrack::render_vfunc(
 
 			if (time_plot_data.is_time_visible_extra(i->time)) {
 				int w = selected == *i ? 3 : 1;
-				Gdk::Cairo::set_source_color(cr, activepoint_color[i->state ? 1 : 0]);
+				Gdk::Cairo::set_source_rgba(cr, activepoint_color[i->state ? 1 : 0]);
 				cr->rectangle(
 					cell_area.get_x() + x - w/2,
 					cell_area.get_y(),
@@ -461,7 +461,7 @@ CellRenderer_TimeTrack::render_vfunc(
 	// Render a line that defines the current tick in time
 	if (time_plot_data.is_time_visible_extra(time)) {
 		int x = time_plot_data.get_pixel_t_coord(time);
-		Gdk::Cairo::set_source_color(cr, curr_time_color);
+		Gdk::Cairo::set_source_rgba(cr, curr_time_color);
 		cr->rectangle(cell_area.get_x() + x, cell_area.get_y(), 1, cell_area.get_height());
 		cr->fill();
 	}
