@@ -712,7 +712,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 			points[c].reserve(w);
 		}
 
-		Time t = time_plot_data->lower;
+		Time t = time_plot_data->lower_ex;
 		for(int j = 0; j < w; ++j, t += time_plot_data->dt) {
 			for(size_t c = 0; c < channels; ++c) {
 				Real y = curve_it->get_value(c, t, time_plot_data->dt);
