@@ -53,6 +53,7 @@
 #include <glibmm/main.h>
 #include <glibmm/miscutils.h>
 #include <glibmm/timer.h>
+#include <glibmm/shell.h>
 #include <glibmm/spawn.h>
 
 #include <gtkmm/accelmap.h>
@@ -4443,28 +4444,26 @@ studio::App::process_all_events()
 }
 
 bool
-studio::App::check_python_version(String path)
+studio::App::check_python_version(const std::string& path)
 {
-#ifndef _MSC_VER	
-	String command;
-	String result;
-	command = path + " --version 2>&1";
-	FILE* pipe = popen(command.c_str(), "r");
-	if (!pipe) {
+	std::string working_directory, std_out, std_err;
+	int exit_status;
+	const char* err_msg = _("Failed to check python version:\n Error: %s");
+	const std::vector<std::string> argv = {path, "--version"};
+	try {
+		Glib::spawn_sync(working_directory, argv, Glib::SPAWN_DEFAULT, Glib::SlotSpawnChildSetup(), &std_out, &std_err, &exit_status);
+	} catch (const Glib::SpawnError& e) {
+		synfig::error(err_msg, e.what().c_str());
+		return false;
+	} catch (const Glib::ShellError& e) {
+		synfig::error(err_msg, e.what().c_str());
 		return false;
 	}
-	char buffer[128];
-	while(!feof(pipe)) {
-		if(fgets(buffer, 128, pipe) != nullptr)
-				result += buffer;
-	}
-	pclose(pipe);
+
 	// Output is like: "Python 3.3.0"
-	if (result.substr(7,1) != "3"){
-		return false;
+	if (!exit_status && std_out.substr(7,1) == "3") {
+		return true;
 	}
-	return true;
-#else
+	synfig::error(err_msg, (std_out + '\n' + std_err).c_str());
 	return false;
-#endif
 }
