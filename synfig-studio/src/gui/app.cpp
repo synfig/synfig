@@ -4448,10 +4448,10 @@ studio::App::check_python_version(const std::string& path)
 {
 	std::string working_directory, std_out, std_err;
 	int exit_status;
-	const char* err_msg = _("Failed to check python version:\n Error: %s");
+	const char* err_msg = _("Failed to detect Python 3 executable:\n Error: %s");
 	const std::vector<std::string> argv = {path, "--version"};
 	try {
-		Glib::spawn_sync(working_directory, argv, Glib::SPAWN_DEFAULT, Glib::SlotSpawnChildSetup(), &std_out, &std_err, &exit_status);
+		Glib::spawn_sync(working_directory, argv, Glib::SPAWN_SEARCH_PATH, Glib::SlotSpawnChildSetup(), &std_out, &std_err, &exit_status);
 	} catch (const Glib::SpawnError& e) {
 		synfig::error(err_msg, e.what().c_str());
 		return false;
@@ -4461,9 +4461,9 @@ studio::App::check_python_version(const std::string& path)
 	}
 
 	// Output is like: "Python 3.3.0"
-	if (!exit_status && std_out.substr(7,1) == "3") {
+	if (!exit_status && std_out.find("Python 3") != std::string::npos) {
 		return true;
 	}
-	synfig::error(err_msg, (std_out + '\n' + std_err).c_str());
+	synfig::warning(err_msg, (std_out + '\n' + std_err).c_str());
 	return false;
 }
