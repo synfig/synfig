@@ -265,29 +265,25 @@ std::string studio::PluginManager::interpreter_executable(const std::string& int
 
 	if ( interpreter == "python" )
 	{
-		const char* custom_python_binary = getenv("SYNFIG_PYTHON_BINARY");
-		if(custom_python_binary) {
-			command = custom_python_binary;
-			if ( !studio::App::check_python_version(command) ) {
-				command = "";
-			}
+		std::vector<std::string> search_paths;
+		std::string custom_python_binary = Glib::getenv("SYNFIG_PYTHON_BINARY");
+		if (!custom_python_binary.empty()) {
+			search_paths.emplace_back(custom_python_binary);
 		} else {
 			// Set path to python binary depending on the os type.
 			// For Windows case Python binary is expected
 			// at INSTALL_PREFIX/python/python.exe
-			for ( std::string iter : {"python", "python3"} )
-			{
-				std::string python_path;
+			for (std::string python_bin : {"python3", "python"} ) {
 #ifdef _WIN32
-				python_path = App::get_base_path() + "/python/" + iter + ".exe";
-#else
-				python_path = iter;
+				search_paths.emplace_back(App::get_base_path() + "/python/" + python_bin + ".exe");
 #endif
-				if ( studio::App::check_python_version(python_path) )
-				{
-					command = python_path;
-					break;
-				}
+				search_paths.emplace_back(python_bin);
+			}
+		}
+		for (const auto& path : search_paths) {
+			if (studio::App::check_python_version(path)) {
+				command = path;
+				break;
 			}
 		}
 
