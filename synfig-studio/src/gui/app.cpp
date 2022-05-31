@@ -3781,14 +3781,13 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
 	text_view.signal_key_press_event().connect(( [&](GdkEventKey *ev) {
 
 		SYNFIG_EXCEPTION_GUARD_BEGIN()
-		if (	(ev->type == GDK_KEY_PRESS) &&
-				(ev->keyval == (GDK_KEY_Return) || ev->keyval == (GDK_KEY_KP_Enter) ) &&
-				(ev->state == GDK_CONTROL_MASK) )
-			{
-			dialog.response(Gtk::RESPONSE_OK);
-			return true;
-			}
-			return false;
+		if ((ev->type == GDK_KEY_PRESS) &&
+		    (ev->keyval == (GDK_KEY_Return) || ev->keyval == (GDK_KEY_KP_Enter)) &&
+		    (ev->state == GDK_CONTROL_MASK)){
+				dialog.response(Gtk::RESPONSE_OK);
+				return true;
+		}
+		return false;
 		SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 
 	}), false );
