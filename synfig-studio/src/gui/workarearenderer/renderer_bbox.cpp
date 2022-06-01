@@ -47,8 +47,8 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
-#define BBOX_COLOR_OUTLINE      Gdk::Color("#ffffff")
-#define BBOX_COLOR_FAILBACK     Gdk::Color("#000000")
+#define BBOX_COLOR_OUTLINE      Gdk::RGBA("#ffffff")
+#define BBOX_COLOR_FAILBACK     Gdk::RGBA("#000000")
 
 /* === G L O B A L S ======================================================= */
 

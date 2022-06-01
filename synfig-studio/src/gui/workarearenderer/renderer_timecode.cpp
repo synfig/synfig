@@ -48,7 +48,7 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
-#define TIMECODE_COLOR_TEXT     Gdk::Color("#5f0000")
+#define TIMECODE_COLOR_TEXT     Gdk::RGBA("#5f0000")
 
 /* === G L O B A L S ======================================================= */
 
