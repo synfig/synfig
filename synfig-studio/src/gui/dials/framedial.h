@@ -67,10 +67,10 @@ private:
 	sigc::signal<void, bool> signal_repeat_;
 	sigc::signal<void, bool> signal_bounds_enable_;
 
-	void init_button(Gtk::Button &button, const char *stockid, const char *tooltip);
+	void init_button(Gtk::Button &button, const std::string& icon_name, const std::string& tooltip);
 	void create_separator();
-	Gtk::Button *create_button(const char *stockid, const char *tooltip, bool separator = false);
-	Gtk::ToggleButton *create_toggle(const char *stockid, const char *tooltip, bool separator = false);
+	Gtk::Button* create_button(const std::string& icon_name, const std::string& tooltip, bool separator = false);
+	Gtk::ToggleButton* create_toggle(const std::string& icon_name, const std::string& tooltip, bool separator = false);
 
 	void on_repeat_toggled();
 	void on_bounds_toggled();
