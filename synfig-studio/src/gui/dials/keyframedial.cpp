@@ -36,9 +36,6 @@
 
 #include "keyframedial.h"
 
-#include <gtkmm/image.h>
-#include <gtkmm/stock.h>
-
 #include <gui/localization.h>
 
 #endif
@@ -55,31 +52,51 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-KeyFrameDial::KeyFrameDial(): Gtk::Grid()
+static Gtk::ToggleButton*
+create_toggle_button(const std::string& icon_name, const std::string& tooltip)
 {
-	toggle_keyframe_past = create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-keyframe_lock_past_on",_("Unlock past keyframe"));
-	toggle_keyframe_future = create_icon(Gtk::ICON_SIZE_BUTTON, "synfig-keyframe_lock_future_on",_("Unlock future keyframe"));
-	attach(*toggle_keyframe_past, 0, 0, 1, 1);
-	attach(*toggle_keyframe_future, 1, 0, 1, 1);
-}
-
-Gtk::ToggleButton *
-KeyFrameDial::create_icon(Gtk::IconSize iconsize, const char * stockid,
-		const char * tooltip)
-{
-	iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
-	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), iconsize));
 	Gtk::ToggleButton *button = manage(new class Gtk::ToggleButton());
-	button->add(*icon);
 	button->set_tooltip_text(tooltip);
-	icon->set_margin_start(0);
-	icon->set_margin_end(0);
-	icon->set_margin_top(0);
-	icon->set_margin_bottom(0);
-	icon->show();
+	button->set_image_from_icon_name(icon_name);
 	button->set_relief(Gtk::RELIEF_NONE);
 	button->set_active();
 	button->show();
 
 	return button;
+}
+
+void KeyFrameDial::on_mode_changed(synfigapp::EditMode mode)
+{
+	if (mode & synfigapp::EditMode::MODE_ANIMATE_FUTURE)
+	{
+		toggle_keyframe_future->set_image_from_icon_name("keyframe_lock_future_on_icon");
+		toggle_keyframe_future->set_tooltip_text(_("Unlock future keyframes"));
+		toggle_keyframe_future->set_active(true);
+	}
+	else
+	{
+		toggle_keyframe_future->set_image_from_icon_name("keyframe_lock_future_off_icon");
+		toggle_keyframe_future->set_tooltip_text(_("Lock future keyframes"));
+		toggle_keyframe_future->set_active(false);
+	}
+
+	if (mode & synfigapp::EditMode::MODE_ANIMATE_PAST)
+	{
+		toggle_keyframe_past->set_image_from_icon_name("keyframe_lock_past_on_icon");
+		toggle_keyframe_past->set_tooltip_text(_("Unlock past keyframes"));
+		toggle_keyframe_past->set_active(true);
+	}
+	else
+	{
+		toggle_keyframe_past->set_image_from_icon_name("keyframe_lock_past_off_icon");
+		toggle_keyframe_past->set_tooltip_text(_("Lock past keyframes"));
+		toggle_keyframe_past->set_active(false);
+	}
+}
+KeyFrameDial::KeyFrameDial(): Gtk::Box(Gtk::Orientation::ORIENTATION_HORIZONTAL, 1)
+{
+	toggle_keyframe_past = create_toggle_button("keyframe_lock_past_on_icon",_("Unlock past keyframe"));
+	toggle_keyframe_future = create_toggle_button("keyframe_lock_future_on_icon",_("Unlock future keyframe"));
+	add(*toggle_keyframe_past);
+	add(*toggle_keyframe_future);
 }

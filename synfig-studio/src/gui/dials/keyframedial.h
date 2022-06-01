@@ -33,8 +33,9 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/grid.h>
+#include <gtkmm/box.h>
 #include <gtkmm/togglebutton.h>
+#include <synfigapp/editmode.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -45,24 +46,21 @@
 namespace studio
 {
 
-class KeyFrameDial : public Gtk::Grid
+class KeyFrameDial : public Gtk::Box
 {
 	Gtk::ToggleButton *toggle_keyframe_past;
 	Gtk::ToggleButton *toggle_keyframe_future;
 
-	Gtk::ToggleButton *create_icon(Gtk::IconSize iconsize, const char * stockid, const char * tooltip);
-
 public:
 
 	KeyFrameDial();
-	Glib::SignalProxy0<void> signal_toggle_keyframe_past() { return toggle_keyframe_past->signal_toggled(); }
-	Glib::SignalProxy0<void> signal_toggle_keyframe_future() { return toggle_keyframe_future->signal_toggled(); }
-	Gtk::ToggleButton *get_toggle_pastbutton() { return toggle_keyframe_past; }
-	Gtk::ToggleButton *get_toggle_futurebutton() { return toggle_keyframe_future; }
+	void on_mode_changed(synfigapp::EditMode mode); // Updates button icons/state
+	Glib::SignalProxy<void> signal_toggle_keyframe_past() { return toggle_keyframe_past->signal_toggled(); }
+	Glib::SignalProxy<void> signal_toggle_keyframe_future() { return toggle_keyframe_future->signal_toggled(); }
 
 }; // END of class KeyFrameDial
 
-}; // END of namespace studio
+} // END of namespace studio
 
 
 /* === E N D =============================================================== */

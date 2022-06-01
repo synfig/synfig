@@ -984,13 +984,12 @@ CanvasView::create_time_bar()
 	separator->show();
 
 	//Setup the KeyFrameDial widget
-	KeyFrameDial *keyframedial = Gtk::manage(new class KeyFrameDial());
+	keyframedial = Gtk::manage(new KeyFrameDial());
 	keyframedial->signal_toggle_keyframe_past().connect(sigc::mem_fun(*this, &CanvasView::toggle_past_keyframe_button));
 	keyframedial->signal_toggle_keyframe_future().connect(sigc::mem_fun(*this, &CanvasView::toggle_future_keyframe_button));
+	keyframedial->set_margin_start(4);
 	keyframedial->set_margin_end(4);
 	keyframedial->show();
-	pastkeyframebutton=keyframedial->get_toggle_pastbutton();
-	futurekeyframebutton=keyframedial->get_toggle_futurebutton();
 
 	//Adjust both widgets to be the same as the
 	int header_height = 0;
@@ -2443,46 +2442,7 @@ CanvasView::on_mode_changed(CanvasInterface::Mode mode)
 		animatebutton->set_active(false);
 	}
 	//Keyframe lock icons
-	if(mode&MODE_ANIMATE_FUTURE)
-	{
-		Gtk::Image *icon;
-		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_future_on"),iconsize));
-		futurekeyframebutton->remove();
-		futurekeyframebutton->add(*icon);
-		futurekeyframebutton->set_tooltip_text(_("Unlock future keyframes"));
-		icon->show();
-		futurekeyframebutton->set_active(true);
-	}
-	else
-	{
-		Gtk::Image *icon;
-		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_future_off"),iconsize));
-		futurekeyframebutton->remove();
-		futurekeyframebutton->add(*icon);
-		futurekeyframebutton->set_tooltip_text(_("Lock future keyframes"));
-		icon->show();
-		futurekeyframebutton->set_active(false);
-	}
-	if(mode&MODE_ANIMATE_PAST)
-	{
-		Gtk::Image *icon;
-		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_past_on"),iconsize));
-		pastkeyframebutton->remove();
-		pastkeyframebutton->add(*icon);
-		pastkeyframebutton->set_tooltip_text(_("Unlock past keyframes"));
-		icon->show();
-		pastkeyframebutton->set_active(true);
-	}
-	else
-	{
-		Gtk::Image *icon;
-		icon=manage(new Gtk::Image(Gtk::StockID("synfig-keyframe_lock_past_off"),iconsize));
-		pastkeyframebutton->remove();
-		pastkeyframebutton->add(*icon);
-		pastkeyframebutton->set_tooltip_text(_("Lock past keyframes"));
-		icon->show();
-		pastkeyframebutton->set_active(false);
-	}
+	keyframedial->on_mode_changed(mode);
 
 	work_area->queue_draw();
 	toggling_animate_mode_=false;

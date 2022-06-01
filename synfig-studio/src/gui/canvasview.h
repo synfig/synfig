@@ -125,6 +125,7 @@ class Widget_Time;
 class Dock_Layers;
 class Dock_Children;
 class Dock_Keyframes;
+class KeyFrameDial;
 
 class LockDucks: public etl::shared_object {
 private:
@@ -290,8 +291,7 @@ private:
 	Gtk::ToggleButton *timetrackbutton;
 	Gtk::Grid *timetrack;
 	Gtk::Button *keyframebutton;
-	Gtk::ToggleButton *pastkeyframebutton;
-	Gtk::ToggleButton *futurekeyframebutton;
+	KeyFrameDial *keyframedial;
 	bool toggling_animate_mode_;
 	FrameDial *framedial;
 	JackDial *jackdial;
