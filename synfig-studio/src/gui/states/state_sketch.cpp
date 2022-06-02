@@ -324,7 +324,7 @@ StateSketch_Context::refresh_tool_options()
 	App::dialog_tool_options->set_icon("tool_sketch_icon");
 
 	App::dialog_tool_options->add_button(
-		Gtk::StockID("gtk-undo"),
+		"edit-undo",
 		_("Undo Last Stroke")
 	)->signal_clicked().connect(
 		sigc::mem_fun(
@@ -333,7 +333,7 @@ StateSketch_Context::refresh_tool_options()
 		)
 	);
 	App::dialog_tool_options->add_button(
-		Gtk::StockID("gtk-clear"),
+		"edit-clear",
 		_("Clear Sketch")
 	)->signal_clicked().connect(
 		sigc::mem_fun(
@@ -342,7 +342,7 @@ StateSketch_Context::refresh_tool_options()
 		)
 	);
 	App::dialog_tool_options->add_button(
-		Gtk::StockID("gtk-save-as"),
+		"document-save-as",
 		_("Save Sketch As...")
 	)->signal_clicked().connect(
 		sigc::mem_fun(
@@ -352,7 +352,7 @@ StateSketch_Context::refresh_tool_options()
 	);
 
 	App::dialog_tool_options->add_button(
-		Gtk::StockID("gtk-open"),
+		"document-open",
 		_("Open a Sketch")
 	)->signal_clicked().connect(
 		sigc::mem_fun(

@@ -612,7 +612,7 @@ StateBLine_Context::refresh_tool_options()
 	App::dialog_tool_options->set_icon("tool_spline_icon");
 
 	App::dialog_tool_options->add_button(
-		Gtk::StockID("gtk-execute"),
+		"system-run",
 		_("Make Spline")
 	)->signal_clicked().connect(
 		sigc::hide_return(sigc::mem_fun(
@@ -622,7 +622,7 @@ StateBLine_Context::refresh_tool_options()
 	);
 
 	App::dialog_tool_options->add_button(
-		Gtk::StockID("gtk-clear"),
+		"edit-clear",
 		_("Clear current Spline")
 	)->signal_clicked().connect(
 		sigc::mem_fun(

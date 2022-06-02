@@ -470,7 +470,7 @@ StateBone_Context::refresh_tool_options()
 	App::dialog_tool_options->set_name("bone");
 
 	App::dialog_tool_options->add_button(
-			Gtk::StockID("gtk-clear"),
+			"edit-clear",
 			_("Clear current Skeleton")
 	)->signal_clicked().connect(
 			sigc::mem_fun(
