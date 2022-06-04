@@ -740,7 +740,7 @@ StateLasso_Context::refresh_tool_options()
 	App::dialog_tool_options->set_icon("tool_cutout_icon");
 
 	//App::dialog_tool_options->add_button(
-	//	Gtk::StockID("synfig-fill"),
+	//	("synfig-fill"),
 	//	_("Fill Last Stroke")
 	//)->signal_clicked().connect(
 	//	sigc::mem_fun(

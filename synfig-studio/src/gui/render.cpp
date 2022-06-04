@@ -121,11 +121,11 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	dialogGrid->set_hexpand(true);
 	get_content_area()->pack_start(*dialogGrid,false,false,0);
 
-	Gtk::Button *choose_button(manage(new class Gtk::Button(Gtk::StockID(_("Choose...")))));
+	Gtk::Button *choose_button(manage(new Gtk::Button(_("Choose..."))));
 	choose_button->show();
 	choose_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::RenderSettings::on_choose_pressed));
 
-	tparam_button=manage(new class Gtk::Button(Gtk::StockID(_("Parameters..."))));
+	tparam_button=manage(new Gtk::Button(_("Parameters...")));
 	tparam_button->show();
 	tparam_button->set_sensitive(false);
 	tparam_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::RenderSettings::on_targetparam_pressed));
@@ -205,12 +205,12 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	dialogGrid->attach(widget_rend_desc, 0, 2, 1, 1);
 
 
-	Gtk::Button *cancel_button(manage(new class Gtk::Button(Gtk::StockID("gtk-cancel"))));
+	Gtk::Button *cancel_button(manage(new Gtk::Button(_("_Cancel"), true)));
 	cancel_button->show();
 	add_action_widget(*cancel_button,0);
 	cancel_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::RenderSettings::on_cancel_pressed));
 
-	Gtk::Button *render_button(manage(new class Gtk::Button(Gtk::StockID(_("Render")))));
+	Gtk::Button *render_button(manage(new Gtk::Button(_("Render"))));
 	render_button->show();
 	add_action_widget(*render_button,1);
 	render_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::RenderSettings::on_render_pressed));
