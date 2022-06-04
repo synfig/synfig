@@ -652,13 +652,13 @@ ValueNode_Bone::find(const String& name, etl::loose_handle<Canvas> canvas)
 {
 	// printf("%s:%d finding '%s' : ", __FILE__, __LINE__, name.c_str());
 
-	BoneMap bone_map(canvas_map[canvas]);
+	const BoneMap& bone_map(canvas_map[canvas]);
 
-	for (ValueNode_Bone::BoneMap::iterator iter =  bone_map.begin(); iter != bone_map.end(); iter++)
-		if ((*iter->second->get_link("name"))(0).get(String()) == name)
+	for (const auto& item : bone_map)
+		if ((*item.second->get_link("name"))(0).get(String()) == name)
 		{
 			// printf("yes\n");
-			return iter->second;
+			return item.second;
 		}
 
 	// printf("no\n");
