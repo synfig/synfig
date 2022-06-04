@@ -567,7 +567,7 @@ StatePolygon_Context::refresh_tool_options()
 	App::dialog_tool_options->set_icon("tool_polyline_icon");
 
 	App::dialog_tool_options->add_button(
-		Gtk::StockID("gtk-execute"),
+		"system-run",
 		_("Make Polygon")
 	)->signal_clicked().connect(
 		sigc::mem_fun(
@@ -577,7 +577,7 @@ StatePolygon_Context::refresh_tool_options()
 	);
 
 	App::dialog_tool_options->add_button(
-		Gtk::StockID("gtk-clear"),
+		"edit-clear",
 		_("Clear current Polygon")
 	)->signal_clicked().connect(
 		sigc::mem_fun(

@@ -213,7 +213,7 @@ Dockable::set_toolbar(Gtk::Toolbar& toolbar)
 }
 
 Gtk::ToolButton*
-Dockable::add_button(const Gtk::StockID& stock_id, const synfig::String& tooltip)
+Dockable::add_button(const std::string& icon_name, const synfig::String& tooltip)
 {
 	if (!toolbar_container) reset_toolbar();
 	Gtk::Toolbar *toolbar = dynamic_cast<Gtk::Toolbar*>(toolbar_container->get_child());
@@ -222,7 +222,8 @@ Dockable::add_button(const Gtk::StockID& stock_id, const synfig::String& tooltip
 		set_toolbar(*toolbar);
 	}
 
-	Gtk::ToolButton* ret(manage(new Gtk::ToolButton(stock_id)));
+	Gtk::ToolButton* ret(manage(new Gtk::ToolButton()));
+	ret->set_icon_name(icon_name);
 	ret->set_tooltip_text(tooltip);
 	ret->show();
 	toolbar->set_has_tooltip();

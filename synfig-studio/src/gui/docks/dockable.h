@@ -87,7 +87,7 @@ public:
 
 	void add(Gtk::Widget& x);
 	void set_toolbar(Gtk::Toolbar& toolbar);
-	Gtk::ToolButton* add_button(const Gtk::StockID& stock_id, const synfig::String& tooltip = synfig::String());
+	Gtk::ToolButton* add_button(const std::string& icon_name, const synfig::String& tooltip = synfig::String());
 
 	void reset_container();
 	void reset_toolbar();
