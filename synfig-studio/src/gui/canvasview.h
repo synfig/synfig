@@ -295,8 +295,6 @@ private:
 	bool toggling_animate_mode_;
 	FrameDial *framedial;
 	JackDial *jackdial;
-	Gtk::ToggleButton *jackbutton;
-	Widget_Time *offset_widget;
 	ToggleDucksDial toggleducksdial;
 	bool toggling_ducks_;
 	ResolutionDial resolutiondial;

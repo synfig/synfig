@@ -320,8 +320,6 @@ private:
 	void set_jack_enabled(bool value);
 
 #ifdef WITH_JACK
-	Gtk::ToggleButton *jackbutton;
-	Widget_Time *offset_widget;
 	void toggle_jack_button();
 	void on_jack_offset_changed();
 

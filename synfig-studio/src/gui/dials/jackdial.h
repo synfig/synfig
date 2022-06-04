@@ -33,7 +33,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/grid.h>
+#include <gtkmm/box.h>
 #include <gtkmm/togglebutton.h>
 
 #include <gui/widgets/widget_time.h>
@@ -47,24 +47,21 @@
 namespace studio
 {
 
-class JackDial : public Gtk::Grid
+class JackDial : public Gtk::Box
 {
-	Gtk::ToggleButton *toggle_jack;
-	Widget_Time *offset;
-
-	Gtk::ToggleButton *create_icon(Gtk::IconSize iconsize, const char * stockid, const char * tooltip);
+	Gtk::ToggleButton* toggle_jack_button;
+	Widget_Time* offset_widget;
 
 public:
 	JackDial();
-	Glib::SignalProxy0<void> signal_toggle_jack() { return toggle_jack->signal_toggled(); }
-	Gtk::ToggleButton *get_toggle_jackbutton() { return toggle_jack; }
-	Widget_Time *get_offsetwidget() { return offset; }
+	void set_state(bool enabled);
+	Glib::SignalProxy<void> signal_toggle_jack() { return toggle_jack_button->signal_toggled(); }
 
-	sigc::signal<void>& signal_offset_changed()      { return offset->signal_value_changed(); }
+	sigc::signal<void>& signal_offset_changed()      { return offset_widget->signal_value_changed(); }
 
-	void set_offset(const synfig::Time &value)       { offset->set_value(value); }
-	synfig::Time get_offset() const                  { return offset->get_value(); }
-	void set_fps(float value)                        { offset->set_fps(value); }
+	void set_offset(const synfig::Time &value)       { offset_widget->set_value(value); }
+	synfig::Time get_offset() const                  { return offset_widget->get_value(); }
+	void set_fps(float value)                        { offset_widget->set_fps(value); }
 }; // END of class JackDial
 
 }; // END of namespace studio

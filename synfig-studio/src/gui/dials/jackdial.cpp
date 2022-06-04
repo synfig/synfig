@@ -36,11 +36,6 @@
 #endif
 
 #include "jackdial.h"
-
-#include <gtkmm/image.h>
-#include <gtkmm/stock.h>
-#include <gtkmm/alignment.h>
-
 #include <gui/localization.h>
 #endif
 
@@ -56,40 +51,51 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-JackDial::JackDial(): Gtk::Grid()
+// TODO(ice0): duplicated code
+static Gtk::ToggleButton*
+create_toggle_button(const std::string& icon_name, const std::string& tooltip)
 {
-	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
-	toggle_jack = create_icon(iconsize, "synfig-jack",_("Disable JACK"));
-	offset = manage(new Widget_Time());
-	offset->set_value(synfig::Time(0.0));
-	offset->set_size_request(0,-1); // request horizontal shrink
-	offset->set_width_chars(6);
-	offset->set_tooltip_text(_("JACK Offset"));
-
-	attach(*toggle_jack, 0, 0, 1, 1);
-	attach(*offset, 1, 0, 1, 1);
-
-	offset->hide();
-#ifndef WITH_JACK
-	offset->set_sensitive(false);
-#endif
-}
-
-Gtk::ToggleButton *
-JackDial::create_icon(Gtk::IconSize iconsize, const char *stockid, const char *tooltip)
-{
-	iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
-	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), iconsize));
 	Gtk::ToggleButton *button = manage(new class Gtk::ToggleButton());
-	button->add(*icon);
 	button->set_tooltip_text(tooltip);
-	icon->set_margin_start(0);
-	icon->set_margin_end(0);
-	icon->set_margin_top(0);
-	icon->set_margin_bottom(0);
-	icon->show();
+	button->set_image_from_icon_name(icon_name);
 	button->set_relief(Gtk::RELIEF_NONE);
+	button->set_active();
 	button->show();
 
 	return button;
+}
+
+void
+JackDial::set_state(bool enabled)
+{
+	// start
+	if (enabled) {
+		toggle_jack_button->set_tooltip_text(_("Disable JACK"));
+	} else {
+		toggle_jack_button->set_tooltip_text(_("Enable JACK"));
+	}
+	toggle_jack_button->set_active(enabled);
+	offset_widget->set_visible(enabled);
+}
+
+JackDial::JackDial(): Gtk::Box()
+{
+	offset_widget = manage(new Widget_Time());
+	offset_widget->set_value(synfig::Time(0.0));
+	//offset_widget->set_size_request(0,-1); // request horizontal shrink
+	offset_widget->set_width_chars(6);
+	offset_widget->set_tooltip_text(_("JACK Offset"));
+
+	toggle_jack_button = create_toggle_button("jack_icon", "");
+	set_state(false);
+
+	add(*toggle_jack_button);
+	add(*offset_widget);
+	toggle_jack_button->set_margin_start(8);
+	toggle_jack_button->set_margin_end(4);
+
+	offset_widget->hide();
+#ifndef WITH_JACK
+	offset_widget->set_sensitive(false);
+#endif
 }
