@@ -194,7 +194,7 @@ class Widget_Preview : public Gtk::Table
 	Gtk::DrawingArea	draw_area;
 	Glib::RefPtr<Gtk::Adjustment> adj_time_scrub; //the adjustment for the managed scrollbar
 	Gtk::Scale		scr_time_scrub;
-	Gtk::ToggleButton	b_loop;
+	Gtk::ToggleButton*	b_loop;
 	Gtk::ScrolledWindow	preview_window;
 	//Glib::RefPtr<Gdk::GC>		gc_area;
 	Glib::RefPtr<Gdk::Pixbuf>	currentbuf;
@@ -272,8 +272,8 @@ public:
 
 	void stoprender();
 
-	bool get_loop_flag() const {return b_loop.get_active();}
-	void set_loop_flag(bool b) {return b_loop.set_active(b);}
+	bool get_loop_flag() const {return b_loop->get_active();}
+	void set_loop_flag(bool b) {return b_loop->set_active(b);}
 
 	void on_dialog_show();
 	void on_dialog_hide();
