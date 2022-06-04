@@ -69,7 +69,7 @@ ChildrenTree::ChildrenTree()
 		// Set up the icon cell-renderer
 		Gtk::CellRendererPixbuf* icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
 		column->pack_start(*icon_cellrenderer,false);
-		column->add_attribute(icon_cellrenderer->property_pixbuf(), model.icon);
+		column->add_attribute(*icon_cellrenderer, "icon_name", model.icon_name);
 
 		// Pack the label into the column
 		column->pack_start(model.label,true);

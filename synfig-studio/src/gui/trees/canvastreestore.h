@@ -69,7 +69,7 @@ public:
 	class Model : public Gtk::TreeModel::ColumnRecord
 	{
 	public:
-		Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf> > icon;
+		Gtk::TreeModelColumn<Glib::ustring> icon_name;
 		Gtk::TreeModelColumn<Glib::ustring> label;
 		Gtk::TreeModelColumn<Glib::ustring> name;
 		Gtk::TreeModelColumn<Glib::ustring> id;
@@ -94,7 +94,7 @@ public:
 
 		Gtk::TreeModelColumn<Glib::ustring> tooltip;
 		
-		Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf> > interpolation_icon;
+		Gtk::TreeModelColumn<Glib::ustring> interpolation_icon_name;
 		Gtk::TreeModelColumn<bool> is_static;
 		Gtk::TreeModelColumn<bool> interpolation_icon_visible;
 
@@ -103,7 +103,7 @@ public:
 			add(value);
 			add(name);
 			add(label);
-			add(icon);
+			add(icon_name);
 			add(type);
 			add(id);
 			add(canvas);
@@ -120,7 +120,7 @@ public:
 			add(link_id);
 
 			add(tooltip);
-			add(interpolation_icon);
+			add(interpolation_icon_name);
 			add(is_static);
 			add(interpolation_icon_visible);
 		}
