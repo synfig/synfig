@@ -88,15 +88,19 @@ target_include_directories(synfigstudio PRIVATE ${MLT_INCLUDE_DIRS}) # required 
 # on MacOS/Brew FontConfig located in non-standard folder
 # so we need to add it's path to target
 target_link_libraries(synfigstudio PRIVATE
-	${FONT_CONFIG_LDFLAGS}
-	${GTKMM_LIBRARIES}
-	${Gettext_LIBRARIES}
-	${MLT_LIBRARIES} # required for widget_soundwave
-	${LIBXML_LIBRARIES} # required for gui/pluginmanager
-	${FONT_CONFIG_LIBRARIES}
-	synfig
-	synfigapp
+  PkgConfig::GTKMM
+  PkgConfig::XMLPP
+  synfig
+  synfigapp
 )
+
+if (FONT_CONFIG_FOUND)
+  target_link_libraries(synfigstudio PRIVATE PkgConfig::FONT_CONFIG)
+endif ()
+
+if (MLT_FOUND)
+  target_link_libraries(synfigstudio PRIVATE PkgConfig::MLT)
+endif ()
 
 if(TCMALLOC_LIBRARY)
 	target_link_libraries(synfigstudio PRIVATE ${TCMALLOC_LIBRARY})
