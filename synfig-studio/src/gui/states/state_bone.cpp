@@ -675,7 +675,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 				const int item_index = must_create_layer ? 0 : find_bone_index(skel_layer? SKELETON_TYPE : SKELETON_DEFORMATION_TYPE, list_node, active_bone);
 				ValueDesc value_desc = ValueDesc(list_node,item_index,list_desc);
 
-				if(active_bone && item_index >= 0 && !list_node->list.empty()){
+				if(active_bone && !must_create_layer && item_index >= 0 && !list_node->list.empty()) {
 					// if active bone is already set
 					ValueNode_Bone::Handle bone_node = ValueNode_Bone::Handle::cast_dynamic(active_bone);
 					if (deform_layer) {
