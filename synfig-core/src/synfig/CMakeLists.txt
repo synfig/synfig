@@ -14,6 +14,7 @@ message(STATUS "MLT DIR: ${MLT_INCLUDE_DIRS}")
 # compiler automatically finds ltdl.h header. But on MacOS, CMake overrides the system directory
 # using the `-sysroot` flag, and this header cannot be found. (https://gitlab.kitware.com/cmake/cmake/-/issues/19120)
 # So, we need to manually find it.
+
 if(APPLE OR VCPKG_TOOLCHAIN)
     find_path(LTDL_INCLUDE_DIRS ltdl.h)
     find_library(LTDL_LIBRARIES ltdl)
@@ -116,20 +117,19 @@ include(valuenodes/CMakeLists.txt)
 ## TODO: check if we need this for release build
 include(debug/CMakeLists.txt)
 
-target_link_libraries(synfig
-    PUBLIC
-        PkgConfig::SIGCPP
-        PkgConfig::GLIBMM
-        PkgConfig::GIOMM
-        PkgConfig::XMLPP
-        PkgConfig::FFTW
-        ZLIB::ZLIB
-        ${LTDL_LIBRARIES}
-        ${CMAKE_THREAD_LIBS_INIT}
+target_link_libraries(synfig PUBLIC
+	PkgConfig::SIGCPP
+	PkgConfig::GLIBMM
+	PkgConfig::GIOMM
+	PkgConfig::XMLPP
+	PkgConfig::FFTW
+	ZLIB::ZLIB
+	${LTDL_LIBRARIES}
+	${CMAKE_THREAD_LIBS_INIT}
 )
 
 if (MLT_FOUND)
-  target_link_libraries(synfig PUBLIC PkgConfig::MLT)
+	target_link_libraries(synfig PUBLIC PkgConfig::MLT)
 endif ()
 
 ## Install headers

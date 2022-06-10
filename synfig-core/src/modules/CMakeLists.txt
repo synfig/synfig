@@ -30,6 +30,7 @@ set(MODS_ENABLED
     mod_geometry
     mod_gif
     mod_gradient
+    mod_imagemagick
     mod_jpeg
 #    mod_libavcodec # - build failure
 #    mod_magickpp # - made optional
@@ -54,6 +55,7 @@ if(MSVC)
 			mod_geometry
 			mod_gif
 			mod_gradient
+			mod_imagemagick
 			mod_jpeg
 			#    mod_libavcodec # - build failure
 			#    mod_magickpp # - made optional
@@ -66,11 +68,6 @@ if(MSVC)
 			mod_yuv420p
 	)
 endif()
-
-if (MAGICKCORE_FOUND)
-  set(MODS_ENABLED ${MODS_ENABLED}  mod_imagemagick)
-endif()
-
 if(LIBMNG_FOUND)
   list(APPEND MODS_ENABLED mod_mng)
 else()

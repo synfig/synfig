@@ -4,22 +4,22 @@ add_library(lyr_freetype MODULE
 )
 
 if(FONT_CONFIG_FOUND)
-  add_definitions(-DWITH_FONTCONFIG)
-  target_link_libraries(lyr_freetype PkgConfig::FONT_CONFIG)
+	add_definitions(-DWITH_FONTCONFIG)
+	target_link_libraries(lyr_freetype PkgConfig::FONT_CONFIG)
 endif()
 
 if (HARFBUZZ_FOUND)
-  target_compile_definitions(lyr_freetype PUBLIC -DHAVE_HARFBUZZ=1)
-  target_link_libraries(lyr_freetype PkgConfig::HARFBUZZ)
+	target_compile_definitions(lyr_freetype PUBLIC -DHAVE_HARFBUZZ=1)
+	target_link_libraries(lyr_freetype PkgConfig::HARFBUZZ)
 endif()
 
 if (FRIBIDI_STATIC_LIBRARIES)
-  target_compile_definitions(lyr_freetype PRIVATE -DFRIBIDI_LIB_STATIC)
+	target_compile_definitions(lyr_freetype PRIVATE -DFRIBIDI_LIB_STATIC)
 endif()
 
 target_link_libraries(lyr_freetype synfig
-  PkgConfig::FT
-  PkgConfig::FRIBIDI
+	PkgConfig::FT
+	PkgConfig::FRIBIDI
 )
 
 install (
