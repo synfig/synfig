@@ -57,10 +57,11 @@ String
 ValueNodeRegistry::localize_name(const String &local_name)
 	{ return _(local_name.c_str()); }
 
-void
+bool
 ValueNodeRegistry::register_node_type(const String &name, const String &local_name, ReleaseVersion version, Factory factory, CheckType check_type)
 {
 	book().insert({name, {local_name, factory, check_type, version}});
+	return true;
 }
 
 bool
