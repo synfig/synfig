@@ -24,18 +24,7 @@ else()
     set(LTDL_LIBRARIES ltdl)
 endif()
 
-target_include_directories(synfig
-#    SYSTEM BEFORE PUBLIC
-SYSTEM PUBLIC
-        ${LIBXML_INCLUDE_DIRS}
-PUBLIC
-        ${SIGCPP_INCLUDE_DIRS}
-        ${GLIBMM_INCLUDE_DIRS}
-        ${GIOMM_INCLUDE_DIRS}
-        ${MLT_INCLUDE_DIRS}
-        ${FFTW_INCLUDE_DIRS}
-        ${LTDL_INCLUDE_DIRS}
-)
+target_include_directories(synfig PUBLIC ${LTDL_INCLUDE_DIRS})
 
 target_sources(synfig
     PRIVATE
@@ -128,19 +117,20 @@ include(valuenodes/CMakeLists.txt)
 ## TODO: check if we need this for release build
 include(debug/CMakeLists.txt)
 
-target_link_libraries(synfig
-    PUBLIC
-        ${SIGCPP_LINK_LIBRARIES}
-        ${GLIBMM_LINK_LIBRARIES}
-        ${GIOMM_LINK_LIBRARIES}
-        ${LIBXML_LINK_LIBRARIES}
-        ${XMLPP_LIBRARIES}
-        ${MLT_LINK_LIBRARIES}
-        ${ZLIB_LIBRARIES}
-        ${FFTW_LINK_LIBRARIES}
-        ${LTDL_LIBRARIES}
-        ${CMAKE_THREAD_LIBS_INIT}
+target_link_libraries(synfig PUBLIC
+	PkgConfig::SIGCPP
+	PkgConfig::GLIBMM
+	PkgConfig::GIOMM
+	PkgConfig::XMLPP
+	PkgConfig::FFTW
+	ZLIB::ZLIB
+	${LTDL_LIBRARIES}
+	${CMAKE_THREAD_LIBS_INIT}
 )
+
+if (MLT_FOUND)
+	target_link_libraries(synfig PUBLIC PkgConfig::MLT)
+endif ()
 
 ## Install headers
 ## TODO: find a better way to do that, maybe?

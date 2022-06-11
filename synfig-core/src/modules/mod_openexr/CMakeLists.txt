@@ -5,9 +5,7 @@ add_library(mod_openexr MODULE
 )
 
 message(STATUS "OpenEXR include: ${OPENEXR_INCLUDE_DIRS}")
-
-target_compile_options(mod_openexr PRIVATE ${OPENEXR_CFLAGS})
-target_link_libraries(mod_openexr PRIVATE synfig ${OPENEXR_LINK_LIBRARIES})
+target_link_libraries(mod_openexr PRIVATE synfig PkgConfig::OPENEXR)
 
 install (
     TARGETS mod_openexr
