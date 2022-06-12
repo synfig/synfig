@@ -446,7 +446,7 @@ StateBrush_Context::load_settings()
 		{
 			String value;
 			App::brushes_path.clear();
-			int count = atoi(value.c_str());
+			//int count = atoi(value.c_str());
 			for(int i = 0; i < brush_path_count; ++i)
 				if(settings.get_raw_value(strprintf("brush.path_%d", i),value))
 					App::brushes_path.insert(value);

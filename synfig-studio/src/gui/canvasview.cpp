@@ -3772,7 +3772,7 @@ CanvasView::set_ext_widget(const String& x, Gtk::Widget* y, bool own)
 	ext_widget_book_[x].set(y, own);
 	if(x=="layers_cmp")
 	{
-		if (layer_tree=dynamic_cast<LayerTree*>(y)) {
+		if ((layer_tree=dynamic_cast<LayerTree*>(y))) {
 			layer_tree->get_selection()->signal_changed().connect(SLOT_EVENT(EVENT_LAYER_SELECTION_CHANGED));
 			layer_tree->get_selection()->signal_changed().connect(SLOT_EVENT(EVENT_REFRESH_DUCKS));
 			layer_tree->signal_layer_user_click().connect(sigc::mem_fun(*this, &CanvasView::on_layer_user_click));
@@ -3782,7 +3782,7 @@ CanvasView::set_ext_widget(const String& x, Gtk::Widget* y, bool own)
 	}
 	if(x=="children")
 	{
-		if (children_tree=dynamic_cast<ChildrenTree*>(y)) {
+		if ((children_tree=dynamic_cast<ChildrenTree*>(y))) {
 			children_tree->signal_user_click().connect(sigc::mem_fun(*this, &CanvasView::on_children_user_click));
 			children_tree->signal_waypoint_clicked_childrentree().connect(sigc::mem_fun(*this, &CanvasView::on_waypoint_clicked_canvasview));
 			children_tree->get_selection()->signal_changed().connect(SLOT_EVENT(EVENT_REFRESH_DUCKS));
