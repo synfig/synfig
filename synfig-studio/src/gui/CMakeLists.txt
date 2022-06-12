@@ -98,6 +98,11 @@ if (FONT_CONFIG_FOUND)
 	target_link_libraries(synfigstudio PRIVATE PkgConfig::FONT_CONFIG)
 endif ()
 
+if (JACK_FOUND)
+	target_compile_definitions(synfigstudio PRIVATE WITH_JACK)
+	target_link_libraries(synfigstudio PRIVATE PkgConfig::JACK)
+endif ()
+
 if (MLT_FOUND)
 	target_link_libraries(synfigstudio PRIVATE PkgConfig::MLT)
 endif ()
