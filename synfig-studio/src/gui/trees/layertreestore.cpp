@@ -83,9 +83,8 @@ retrieve_layers_from_dragging(const Gtk::SelectionData &selection_data, synfigap
 
 static LayerTreeStore::Model& ModelHack()
 {
-	static LayerTreeStore::Model* model(0);
-	if(!model)model=new LayerTreeStore::Model;
-	return *model;
+	static LayerTreeStore::Model model;
+	return model;
 }
 
 LayerTreeStore::LayerTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_):
@@ -93,7 +92,6 @@ LayerTreeStore::LayerTreeStore(etl::loose_handle<synfigapp::CanvasInterface> can
 	queued					(false),
 	canvas_interface_		(canvas_interface_)
 {
-	layer_icon=Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-layer"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 
 	// Connect Signals to Terminals
 	canvas_interface()->signal_layer_status_changed().connect(sigc::mem_fun(*this,&studio::LayerTreeStore::on_layer_status_changed));
@@ -274,8 +272,8 @@ LayerTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int column
 			if (column == model.strikethrough.index())
 				set_gvalue_tpl<bool>(value, false);
 			else
-			if (column == model.icon.index())
-				set_gvalue_tpl< Glib::RefPtr<Gdk::Pixbuf> >(value, get_tree_pixbuf_layer(layer->get_name()));
+			if (column == model.icon_name.index())
+				set_gvalue_tpl<Glib::ustring>(value, layer_icon_name(layer->get_name()), true);
 			else
 				Gtk::TreeStore::get_value_vfunc(iter,column,value);
 
@@ -309,8 +307,8 @@ LayerTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int column
 				set_gvalue_tpl<Pango::Weight>(value, weight);
 			}
 			else
-			if (column == model.icon.index())
-				set_gvalue_tpl< Glib::RefPtr<Gdk::Pixbuf> >(value, get_tree_pixbuf_layer("ghost_group"));
+			if (column == model.icon_name.index())
+				set_gvalue_tpl<Glib::ustring>(value, layer_icon_name("ghost_group"), true);
 			else
 				Gtk::TreeStore::get_value_vfunc(iter,column,value);
 

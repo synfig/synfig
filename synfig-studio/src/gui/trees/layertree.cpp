@@ -165,10 +165,11 @@ LayerTree::create_layer_tree()
 	}
 
 	{	// --- I C O N --------------------------------------------------------
-		int index;
 		// Set up the icon cell-renderer
-		index=layer_tree_view().append_column(_("Icon"),layer_model.icon);
-		Gtk::TreeView::Column* column = layer_tree_view().get_column(index-1);
+		Gtk::CellRendererPixbuf* pixbuf_cell_renderer = manage(new Gtk::CellRendererPixbuf());
+		Gtk::TreeViewColumn* column = manage(new Gtk::TreeViewColumn(_("Icon"), *pixbuf_cell_renderer));
+		layer_tree_view().append_column(*column);
+		column->add_attribute(*pixbuf_cell_renderer, "icon_name", layer_model.icon_name);
 		layer_tree_view().set_expander_column(*column);
 	}
 	{	// --- N A M E --------------------------------------------------------
