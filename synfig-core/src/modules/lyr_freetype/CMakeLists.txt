@@ -3,9 +3,9 @@ add_library(lyr_freetype MODULE
         "${CMAKE_CURRENT_LIST_DIR}/lyr_freetype.cpp"
 )
 
-if(FONT_CONFIG_FOUND)
+if(FONTCONFIG_FOUND)
 	add_definitions(-DWITH_FONTCONFIG)
-	target_link_libraries(lyr_freetype PkgConfig::FONT_CONFIG)
+	target_link_libraries(lyr_freetype PkgConfig::FONTCONFIG)
 endif()
 
 if (HARFBUZZ_FOUND)
@@ -18,7 +18,7 @@ if (FRIBIDI_STATIC_LIBRARIES)
 endif()
 
 target_link_libraries(lyr_freetype synfig
-	PkgConfig::FT
+	PkgConfig::FREETYPE2
 	PkgConfig::FRIBIDI
 )
 
