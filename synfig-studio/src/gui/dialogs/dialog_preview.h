@@ -33,6 +33,7 @@
 #include <gtkmm/builder.h>
 #include <gtkmm/checkbutton.h>
 #include <gtkmm/dialog.h>
+#include <gtkmm/grid.h>
 
 #include <gui/dialogsettings.h>
 #include <gui/preview.h>

@@ -519,8 +519,6 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	time_model_              (new TimeModel()),
 	statusbar                (manage(new class Gtk::Statusbar())),
 	progressbar              (manage(new class Gtk::ProgressBar())),
-	jackbutton               (NULL),
-	offset_widget            (NULL),
 	toggleducksdial          (Gtk::IconSize::from_name("synfig-small_icon_16x16")),
 	resolutiondial           (Gtk::IconSize::from_name("synfig-small_icon_16x16")),
 	future_onion_adjustment_ (Gtk::Adjustment::create(0,0,ONION_SKIN_FUTURE,1,1,0)),
@@ -806,47 +804,12 @@ void CanvasView::set_jack_enabled(bool value)
 			jack_client_close(jack_client);
 			jack_client = NULL;
 		}
-
-		jackbutton->set_sensitive(!jack_is_locked());
 	}
 
 	if (jack_enabled != value)
 	{
 		jack_enabled = value;
-
-		Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
-		Gtk::Image *icon;
-		offset_widget = jackdial->get_offsetwidget();
-
-		if (jackbutton->get_active() != jack_enabled)
-			jackbutton->set_active(jack_enabled);
-
-		if (jack_enabled)
-		{
-			icon = manage(new Gtk::Image(Gtk::StockID("synfig-jack"),iconsize));
-			jackbutton->remove();
-			jackbutton->add(*icon);
-			jackbutton->set_tooltip_text(_("Disable JACK"));
-			icon->set_margin_start(0);
-			icon->set_margin_end(0);
-			icon->set_margin_top(0);
-			icon->set_margin_bottom(0);
-			icon->show();
-			offset_widget->show();
-		}
-		else
-		{
-			icon = manage(new Gtk::Image(Gtk::StockID("synfig-jack"),iconsize));
-			jackbutton->remove();
-			jackbutton->add(*icon);
-			jackbutton->set_tooltip_text(_("Enable JACK"));
-			icon->set_margin_start(0);
-			icon->set_margin_end(0);
-			icon->set_margin_top(0);
-			icon->set_margin_bottom(0);
-			icon->show();
-			offset_widget->hide();
-		}
+		jackdial->set_state(jack_enabled);
 	}
 }
 #endif
@@ -1003,7 +966,6 @@ CanvasView::create_time_bar()
 	jackdial = manage(new class JackDial());
 
 	#ifdef WITH_JACK
-	jackbutton = jackdial->get_toggle_jackbutton();
 	jackdial->signal_toggle_jack().connect(sigc::mem_fun(*this, &CanvasView::toggle_jack_button));
 	jackdial->signal_offset_changed().connect(sigc::mem_fun(*this, &CanvasView::on_jack_offset_changed));
 	jackdial->set_fps(get_canvas()->rend_desc().get_frame_rate());
@@ -3908,7 +3870,7 @@ CanvasView::toggle_jack_button()
 
 		// Update button state
 		toggling_jack = true;
-		jackdial->get_toggle_jackbutton()->set_active(get_jack_enabled());
+		jackdial->set_state(get_jack_enabled());
 		toggling_jack = false;
 	}
 }
