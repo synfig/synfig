@@ -35,9 +35,7 @@ etl_HEADERS = \
 	gaussian \
 	_gaussian.h \
 	surface \
-	_surface.h \
-	smart_ptr \
-	_smart_ptr.h
+	_surface.h
 
 
 $(top_builddir)/ETL/etl_profile.h:$(top_builddir)/ETL/etl_profile_.h

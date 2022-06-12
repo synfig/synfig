@@ -18,7 +18,6 @@ TESTS = \
 	stringf \
 	pen \
 	surface \
-	smart_ptr \
 	benchmark
 
 check_PROGRAMS = \
@@ -29,11 +28,9 @@ check_PROGRAMS = \
 	stringf \
 	pen \
 	surface \
-	smart_ptr \
 	benchmark
 
 benchmark_SOURCES=benchmark.cpp
-smart_ptr_SOURCES=smart_ptr.cpp
 surface_SOURCES=surface.cpp
 pen_SOURCES=pen.cpp
 handle_SOURCES=handle.cpp

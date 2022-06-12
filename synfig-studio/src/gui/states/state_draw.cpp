@@ -89,10 +89,10 @@ StateDraw studio::state_draw;
 
 class studio::StateDraw_Context : public sigc::trackable
 {
-	typedef etl::smart_ptr<std::list<synfig::Point> > StrokeData;
-	typedef etl::smart_ptr<std::list<synfig::Real> > WidthData;
+	typedef std::shared_ptr<std::list<synfig::Point>> StrokeData;
+	typedef std::shared_ptr<std::list<synfig::Real>> WidthData;
 
-	typedef std::list< std::pair<StrokeData,WidthData> > StrokeQueue;
+	typedef std::list< std::pair<StrokeData,WidthData>> StrokeQueue;
 
 	StrokeQueue stroke_queue;
 
@@ -114,7 +114,7 @@ class studio::StateDraw_Context : public sigc::trackable
 
 	Gtk::Menu menu;
 
-	std::list< etl::smart_ptr<std::list<synfig::Point> > > stroke_list;
+	std::list<std::shared_ptr<std::list<synfig::Point>>> stroke_list;
 
 	void refresh_ducks();
 
@@ -2326,7 +2326,7 @@ StateDraw_Context::refresh_ducks()
 	get_work_area()->clear_ducks();
 
 
-	std::list< etl::smart_ptr<std::list<synfig::Point> > >::iterator iter;
+	std::list<std::shared_ptr<std::list<synfig::Point>>>::iterator iter;
 
 	for(iter=stroke_list.begin();iter!=stroke_list.end();++iter)
 	{

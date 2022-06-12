@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file smartfile.h
-**	\brief Template Header
+**	\brief A shared pointer for a tradition C FILE handler
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -25,13 +25,13 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_SMARTFILE_H
-#define __SYNFIG_SMARTFILE_H
+#ifndef SYNFIG_SMARTFILE_H
+#define SYNFIG_SMARTFILE_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <cstdio>
-#include <ETL/smart_ptr>
+#include <memory>
 
 /* === M A C R O S ========================================================= */
 
@@ -41,12 +41,25 @@
 
 namespace synfig {
 
-struct _FILE_deleter
+/**
+ * Makes traditional C FILE pointer auto closes itself on deletion
+ */
+class SmartFILE : public std::shared_ptr<FILE>
 {
-	void operator()(FILE* x)const { if(x!=stdout && x!=stdin) fclose(x); }
-};
+public:
+	SmartFILE() : std::shared_ptr<FILE>(nullptr, _FILE_deleter()) {}
+	SmartFILE(FILE* f) : std::shared_ptr<FILE>(f, _FILE_deleter()) {}
 
-typedef etl::smart_ptr<FILE,_FILE_deleter> SmartFILE;
+private:
+	struct _FILE_deleter
+	{
+		void operator()(FILE* x) const
+		{
+			if (x && (x != stdout && x != stdin))
+				fclose(x);
+		}
+	};
+};
 
 }; // END of namespace synfig
 

@@ -13,7 +13,6 @@ set(ETL_HEADERS
         "${CMAKE_CURRENT_LIST_DIR}/clock"
         "${CMAKE_CURRENT_LIST_DIR}/stringf"
         "${CMAKE_CURRENT_LIST_DIR}/boxblur"
-        "${CMAKE_CURRENT_LIST_DIR}/smart_ptr"
         "${CMAKE_CURRENT_LIST_DIR}/ref_count"
         "${CMAKE_CURRENT_LIST_DIR}/pen"
         "${CMAKE_CURRENT_LIST_DIR}/angle"
@@ -23,7 +22,6 @@ set(ETL_HEADERS
 #     PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/_ref_count.h"
         "${CMAKE_CURRENT_LIST_DIR}/_surface.h"
-        "${CMAKE_CURRENT_LIST_DIR}/_smart_ptr.h"
         "${CMAKE_CURRENT_LIST_DIR}/_pen.h"
         "${CMAKE_CURRENT_LIST_DIR}/_boxblur.h"
         "${CMAKE_CURRENT_LIST_DIR}/_angle.h"

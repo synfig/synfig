@@ -32,7 +32,6 @@
 #define __SYNFIG_STUDIO_APP_H
 
 /* === H E A D E R S ======================================================= */
-#include <ETL/smart_ptr>
 
 #include <gtkmm/box.h>
 #include <gtkmm/uimanager.h>
@@ -42,6 +41,7 @@
 #include <gui/pluginmanager.h>
 
 #include <list>
+#include <memory>
 #include <set>
 #include <string>
 
@@ -168,7 +168,7 @@ private:
 	static Dock_LayerGroups *dock_layer_groups;
 */
 
-	etl::smart_ptr<synfigapp::Main> synfigapp_main;
+	std::shared_ptr<synfigapp::Main> synfigapp_main;
 
 
 	static etl::handle<Instance> selected_instance;

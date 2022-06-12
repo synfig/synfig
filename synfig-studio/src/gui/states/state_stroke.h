@@ -30,10 +30,11 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/smart_ptr>
+#include <list>
+#include <memory>
+
 #include <gui/canvasview.h>
 #include <gui/smach.h>
-#include <list>
 
 /* === M A C R O S ========================================================= */
 
@@ -57,13 +58,13 @@ extern StateStroke state_stroke;
 
 struct EventStroke : public Smach::event
 {
-	etl::smart_ptr<std::list<synfig::Point> > stroke_data;
-	etl::smart_ptr<std::list<synfig::Real> > width_data;
+	std::shared_ptr<std::list<synfig::Point>> stroke_data;
+	std::shared_ptr<std::list<synfig::Real>> width_data;
 	Gdk::ModifierType modifier;
 
-	EventStroke(etl::smart_ptr<std::list<synfig::Point> > stroke_data,
-			etl::smart_ptr<std::list<synfig::Real> > width_data,
-			Gdk::ModifierType modifier=Gdk::ModifierType(0)
+	EventStroke(std::shared_ptr<std::list<synfig::Point>> stroke_data,
+	            std::shared_ptr<std::list<synfig::Real>> width_data,
+	            Gdk::ModifierType modifier = Gdk::ModifierType(0)
 	):
 		Smach::event(EVENT_WORKAREA_STROKE),
 		stroke_data(stroke_data),
