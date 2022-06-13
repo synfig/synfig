@@ -37,8 +37,6 @@
 // This is generated at make time from .git or autorevision.conf
 #include <autorevision.h>
 
-#include <ctime>
-
 #include <gtkmm/image.h>
 
 #include <gui/app.h>
@@ -314,25 +312,7 @@ About::About()
 	#endif
 
 	extra_info += "\n";
-	{
-		const int max_date_length = 50;
-		char date_str[max_date_length];
-
-		// https://reproducible-builds.org/specs/source-date-epoch/
-		if (char* source_date_epoch = getenv("SOURCE_DATE_EPOCH")) {
-			std::istringstream iss(source_date_epoch);
-			std::time_t t;
-			iss >> t;
-			if (iss.fail()
-			    || !iss.eof()
-			    || !std::strftime(date_str, sizeof(date_str), "%x", std::localtime(&t))) {
-				    std::strncpy(date_str, _("Unknown build date"), max_date_length-1);
-			}
-		} else
-			std::strncpy(date_str, __DATE__, max_date_length-1);
-
-		extra_info += etl::strprintf(_("Built on %s\n\n"), date_str );
-	}
+	extra_info += etl::strprintf(_("Built on %s\n\n"), synfig::get_build_date() );
 
 	extra_info += etl::strprintf(_("Built with:\n"));
 	extra_info += etl::strprintf(_("ETL %s\n"), ETL_VERSION);
