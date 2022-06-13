@@ -70,7 +70,6 @@ using namespace synfig;
 /* === M E T H O D S ======================================================= */
 
 static std::map< int, Glib::RefPtr<Gdk::Pixbuf> > _tree_pixbuf_table_value_type;
-static Glib::RefPtr<Gdk::Pixbuf> _tree_pixbuf_table_interpolation[NUM_INTERPOLATION_TYPES];
 
 IconController::IconController()
 {
@@ -80,8 +79,6 @@ IconController::IconController()
 IconController::~IconController()
 {
 	_tree_pixbuf_table_value_type.clear();
-	for(int i(0);i<((int)INTERPOLATION_CLAMPED+1);i++)
-		_tree_pixbuf_table_interpolation[i]=Glib::RefPtr<Gdk::Pixbuf>();
 
 	icon_factory->remove_default();
 }
@@ -280,11 +277,6 @@ IconController::init_icons(const synfig::String& path_to_icons)
 			icon = Gtk::IconTheme::get_default()->load_icon("image-missing", height_small_toolbar, Gtk::ICON_LOOKUP_FORCE_SIZE);
 		_tree_pixbuf_table_value_type[type->identifier] = icon;
 	}
-
-	for(int i(0);i<((int)INTERPOLATION_CLAMPED+1);i++) {
-		Glib::RefPtr<Gdk::Pixbuf> icon = Gtk::IconTheme::get_default()->load_icon(interpolation_icon_name(Interpolation(i)), height_small_toolbar, Gtk::ICON_LOOKUP_FORCE_SIZE);
-		_tree_pixbuf_table_interpolation[i] = icon;
-	}
 }
 
 Glib::RefPtr<Gdk::Cursor>
@@ -383,12 +375,6 @@ studio::get_tree_pixbuf(Type &type)
 {
 	//return Gtk::Button().render_icon_pixbuf(value_icon(type),Gtk::ICON_SIZE_SMALL_TOOLBAR);
 	return _tree_pixbuf_table_value_type[type.identifier];
-}
-
-Glib::RefPtr<Gdk::Pixbuf>
-studio::get_interpolation_pixbuf(synfig::Interpolation type)
-{
-	return _tree_pixbuf_table_interpolation[int(type)];
 }
 
 #ifdef _WIN32
