@@ -33,6 +33,7 @@
 
 #include "widget_interpolation.h"
 
+#include <gui/iconcontroller.h>
 #include <gui/localization.h>
 
 #include <synfig/paramdesc.h>
@@ -44,32 +45,19 @@ using namespace studio;
 
 Widget_Interpolation::Widget_Interpolation(Side side)
 {
-	set_param_desc(
-		ParamDesc("interpolation")
-			.set_hint("enum")
-			.add_enum_value(INTERPOLATION_CLAMPED,"clamped",_("Clamped"))
-			.add_enum_value(INTERPOLATION_TCB,"auto",_("TCB"))
-			.add_enum_value(INTERPOLATION_CONSTANT,"constant",_("Constant"))
-			.add_enum_value(INTERPOLATION_HALT,"ease",
-							side == SIDE_BOTH? _("Ease In/Out") : (
-							side == SIDE_BEFORE? _("Ease In") :
-												 _("Ease Out")))
-			.add_enum_value(INTERPOLATION_LINEAR,"linear",_("Linear"))
-	);
-	set_icons();
-}
+	const auto interpolation = ParamDesc("interpolation")
+		.set_hint("enum")
+		.add_enum_value(INTERPOLATION_CLAMPED,  "clamped",  _("Clamped"))
+		.add_enum_value(INTERPOLATION_TCB,      "auto",     _("TCB"))
+		.add_enum_value(INTERPOLATION_CONSTANT, "constant", _("Constant"))
+		.add_enum_value(INTERPOLATION_HALT,     "ease",
+						side == SIDE_BOTH? _("Ease In/Out") : (
+						side == SIDE_BEFORE? _("Ease In") : _("Ease Out")))
+		.add_enum_value(INTERPOLATION_LINEAR,   "linear",   _("Linear"));
 
-void Widget_Interpolation::set_icons()
-{
-	const unsigned int num_interpolations = 5;
-	// Must follow the same order of ParamDesc "interpolation" enum:
-	const char* interpolation_icons[num_interpolations] = {
-		"synfig-interpolation_type_clamped",
-		"synfig-interpolation_type_tcb",
-		"synfig-interpolation_type_const",
-		"synfig-interpolation_type_ease",
-		"synfig-interpolation_type_linear"
-	};
-	for (auto i = 0; i < num_interpolations; ++i)
-		set_icon(i, Gtk::Button().render_icon_pixbuf(Gtk::StockID(interpolation_icons[i]),Gtk::ICON_SIZE_MENU));
+	set_param_desc(interpolation);
+	int i = 0;
+	for (const auto& item : interpolation.get_enum_list()) {
+		set_icon(i++, interpolation_icon_name(static_cast<synfig::Interpolation>(item.value)));
+	}
 }

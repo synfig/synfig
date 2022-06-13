@@ -43,8 +43,6 @@ public:
 	/// \param side What side of waypoint the interpolation affects
 	Widget_Interpolation(Side side);
 
-protected:
-	void set_icons();
 };
 
 }
