@@ -155,8 +155,8 @@ else()
 		pkg_check_modules(MAGICKCORE IMPORTED_TARGET MagickCore) # for Magick++
 
 		## TODO: move to module where it is actually required
-		pkg_check_modules(FT REQUIRED IMPORTED_TARGET freetype2) # for lyr_freetype
-		pkg_check_modules(FONT_CONFIG IMPORTED_TARGET fontconfig) # for FontConfig
+		pkg_check_modules(FREETYPE2 REQUIRED IMPORTED_TARGET freetype2) # for lyr_freetype
+		pkg_check_modules(FONTCONFIG IMPORTED_TARGET fontconfig) # for FontConfig
 		pkg_check_modules(FRIBIDI REQUIRED IMPORTED_TARGET fribidi)
 		pkg_check_modules(HARFBUZZ REQUIRED IMPORTED_TARGET harfbuzz)
 	endif()

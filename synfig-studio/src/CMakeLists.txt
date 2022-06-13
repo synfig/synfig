@@ -30,15 +30,15 @@ else()
 	include(FindPkgConfig)
 	if(PKG_CONFIG_FOUND)
 		pkg_check_modules(SIGCPP REQUIRED IMPORTED_TARGET sigc++-2.0)
-		pkg_check_modules(GTKMM REQUIRED IMPORTED_TARGET gtkmm-3.0)
+		pkg_check_modules(GTKMM3 REQUIRED IMPORTED_TARGET gtkmm-3.0)
 		pkg_check_modules(XMLPP REQUIRED IMPORTED_TARGET libxml++-2.6)
-		pkg_check_modules(FONT_CONFIG IMPORTED_TARGET fontconfig) # for FontConfig
+		pkg_check_modules(FONTCONFIG IMPORTED_TARGET fontconfig) # for FontConfig
 		pkg_check_modules(JACK IMPORTED_TARGET jack)
 		pkg_search_module(MLT IMPORTED_TARGET mlt++-7 mlt++) # required for widget_soundwave
 	endif()
 endif()
 
-if(FONT_CONFIG_FOUND)
+if(FONTCONFIG_FOUND)
 	add_definitions(-DWITH_FONTCONFIG)
 endif()
 
@@ -50,10 +50,6 @@ endif()
 ## Config
 ##
 
-if(FONT_CONFIG_FOUND)
-add_definitions(-DWITH_FONTCONFIG)
-endif()
-
 add_definitions(-DHAVE_CONFIG_H)
 configure_file(config.h.cmake.in config.h)
 
@@ -63,11 +59,6 @@ configure_file(config.h.cmake.in config.h)
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-
-##
-## Search path for libs (needed to link with libsynfig)
-##
-link_directories(${CMAKE_PREFIX_PATH}/lib)
 
 ##
 ## Sub-directories
