@@ -375,15 +375,15 @@ void SynfigCommandLineParser::process_trivial_info_options()
 #ifdef DEVEL_VERSION
 		std::cout << std::endl << DEVEL_VERSION << std::endl << std::endl;
 #endif
-		std::cout << "Compiled on " __DATE__ /* " at "__TIME__ */;
+		std::cout << "Compiled on " << get_build_date();
 #ifdef __GNUC__
 		std::cout << " with GCC " << __VERSION__;
-#endif
-#ifdef _MSC_VER
+#elif defined(__clang__)
+		std::cout << " with Clang " << __VERSION__;
+#elif defined(_MSC_VER)
 		std::cout << " with Microsoft Visual C++ "
 			 << (_MSC_VER>>8) << '.' << (_MSC_VER&255);
-#endif
-#ifdef __TCPLUSPLUS__
+#elif defined(__TCPLUSPLUS__)
 		std::cout << " with Borland Turbo C++ "
 			 << (__TCPLUSPLUS__>>8) << '.'
 			 << ((__TCPLUSPLUS__&255)>>4) << '.'
