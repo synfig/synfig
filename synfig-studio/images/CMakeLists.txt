@@ -189,6 +189,7 @@ set(ICONS
 	select_all_child_layers_icon
 	set_fill_color
 	set_icon
+	hex_icon
 	set_outline_color
 	show_grid_icon
 	show_guideline_icon
