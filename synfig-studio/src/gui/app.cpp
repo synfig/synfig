@@ -145,6 +145,7 @@
 #include <synfig/soundprocessor.h>
 #include <synfig/string_helper.h>
 #include <synfig/version.h>
+#include <gui/exception_guard.h>
 
 #include <synfigapp/action.h>
 #include <synfigapp/canvasinterface.h>
