@@ -3835,6 +3835,19 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
 	dialog.add_button(_("_OK"),   Gtk::RESPONSE_OK)->set_image_from_icon_name("gtk-ok", Gtk::ICON_SIZE_BUTTON);
 	dialog.set_default_response(Gtk::RESPONSE_OK);
 
+	text_view.signal_key_press_event().connect(( [&dialog](GdkEventKey *ev) {
+
+		SYNFIG_EXCEPTION_GUARD_BEGIN()
+		if ((ev->type == GDK_KEY_PRESS) &&
+			(ev->keyval == (GDK_KEY_Return) || ev->keyval == (GDK_KEY_KP_Enter)) &&
+			(ev->state == GDK_CONTROL_MASK)){
+				dialog.response(Gtk::RESPONSE_OK);
+				return true;
+		}
+		return false;
+		SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
+
+	}), false );
 	//text_entry.signal_activate().connect(sigc::bind(sigc::mem_fun(dialog,&Gtk::Dialog::response),Gtk::RESPONSE_OK));
 	dialog.show();
 
