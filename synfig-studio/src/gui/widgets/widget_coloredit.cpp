@@ -465,25 +465,23 @@ Widget_ColorEdit::~Widget_ColorEdit()
 {
 }
 
-#define CLIP_VALUE(value, min, max) (value <= min ? min : (value > max ? max : value))
-
 bool are_close_colors(Gdk::RGBA const& a, Gdk::RGBA const& b) {
-	static const int eps = 1;
+	constexpr float epsilon = 0.000001f;
 	if (a == b)
 		return true;
-	return std::fabs(a.get_red()-b.get_red()) <= eps
-		&& std::fabs(a.get_green()-b.get_green()) <= eps
-		&& std::fabs(a.get_blue()-b.get_blue()) <= eps;
+	return std::fabs(a.get_red()-b.get_red()) <= epsilon
+		   && std::fabs(a.get_green()-b.get_green()) <= epsilon
+		   && std::fabs(a.get_blue()-b.get_blue()) <= epsilon;
 }
 
-void Widget_ColorEdit::setHVSColor(synfig::Color color)
+void Widget_ColorEdit::setHVSColor(const synfig::Color& color)
 {
 	Color c = App::get_selected_canvas_gamma().get_inverted().apply(color).clamped();
-	Gdk::RGBA gtkColor;
-	gtkColor.set_rgba(c.get_r(), c.get_g(), c.get_b());
-	if (!are_close_colors(hvsColorWidget->get_current_rgba(), gtkColor)) {
+	Gdk::RGBA gdkColor;
+	gdkColor.set_rgba(c.get_r(), c.get_g(), c.get_b(), c.get_a());
+	if (!are_close_colors(hvsColorWidget->get_current_rgba(), gdkColor)) {
 		colorHVSChanged = true;
-		hvsColorWidget->set_current_rgba(gtkColor);
+		hvsColorWidget->set_current_rgba(gdkColor);
 	}
 	hvsColorWidget->set_previous_color(hvsColorWidget->get_current_color()); //We can't use it there, cause color changes in realtime.
 	colorHVSChanged = false;
