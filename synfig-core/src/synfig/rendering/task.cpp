@@ -373,7 +373,7 @@ void
 TaskLockSurface::unlock() {
 	if (lock_) {
 		delete lock_;
-		lock_ = NULL;
+		lock_ = nullptr;
 	}
 }
 

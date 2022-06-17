@@ -54,7 +54,7 @@ public:
 
 	~Target_Null() { delete[] buffer; }
 
-	virtual bool start_frame(ProgressCallback */*cb*/=NULL) {
+	virtual bool start_frame(ProgressCallback* /*cb*/ = nullptr) {
 	    if (buffer) delete[] buffer;
 	    buffer = new Color[desc.get_w()*sizeof(Color)];
 	    return true;
@@ -62,7 +62,7 @@ public:
 
 	virtual void end_frame() {
 	    if (buffer) delete[] buffer;
-	    buffer = nullptr;
+		buffer = nullptr;
 	    return;
 	}
 

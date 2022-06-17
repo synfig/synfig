@@ -89,7 +89,7 @@ public:
 
 		void open(const PackedSurface &surface);
 		void close();
-		bool is_opened() const { return surface != NULL; }
+		bool is_opened() const { return surface != nullptr; }
 
 		Color get_pixel(int x, int y) const;
 

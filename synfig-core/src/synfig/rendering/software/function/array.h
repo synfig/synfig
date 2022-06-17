@@ -216,7 +216,7 @@ public:
 			(TT*)Parent::pointer,
 			count,
 			(sizeof(T)/sizeof(TT))*stride,
-			Parent::split_items_ptr((TT*)NULL) );
+			Parent::split_items_ptr((TT*)nullptr) );
 	}
 
 	template<typename TT>
@@ -228,7 +228,7 @@ public:
 			(TT*)Parent::pointer,
 			count,
 			stride / (sizeof(TT)/sizeof(T)),
-			Parent::group_items_ptr((TT*)NULL) );
+			Parent::group_items_ptr((TT*)nullptr) );
 	}
 
 	Array get_range(int r, int begin, int end) const

@@ -342,7 +342,7 @@ public:
 		Operation::GenericFuncs<T>::GetFunc func =
 			Type::get_operation<Operation::GenericFuncs<T>::GetFunc>(
 				Operation::Description::get_get(t.identifier) );
-		assert(func != NULL);
+		assert(func);
 		return func(data);
 	}
 	*/
@@ -395,10 +395,10 @@ private:
 			Type::get_operation<typename Operation::GenericFuncs<TT>::GetFunc>(
 				Operation::Description::get_get(type->identifier) );
 #ifdef _DEBUG
-		if (func == NULL)
-			printf("%s:%d %s get_func == NULL\n", __FILE__, __LINE__, type->description.name.c_str());
+		if (!func)
+			printf("%s:%d %s get_func == nullptr\n", __FILE__, __LINE__, type->description.name.c_str());
 #endif
-		assert(func !=  NULL);
+		assert(func);
 		return func(data);
 	}
 
@@ -410,7 +410,7 @@ private:
 		typename Operation::GenericFuncs<TT>::PutFunc func =
 			Type::get_operation<typename Operation::GenericFuncs<TT>::PutFunc>(
 				Operation::Description::get_put(type->identifier) );
-		assert(func !=  NULL);
+		assert(func);
 		func(*x, data);
 	}
 
@@ -428,7 +428,7 @@ private:
 			typename Operation::GenericFuncs<TT>::SetFunc func =
 				Type::get_operation<typename Operation::GenericFuncs<TT>::SetFunc>(
 					Operation::Description::get_set(current_type.identifier) );
-			if (func != NULL)
+			if (func)
 			{
 				if (!ref_count.unique()) create(current_type);
 				func(data, x);
@@ -443,7 +443,7 @@ private:
 		typename Operation::GenericFuncs<TT>::SetFunc func =
 			Type::get_operation<typename Operation::GenericFuncs<TT>::SetFunc>(
 				Operation::Description::get_set(new_type.identifier) );
-		assert(func != NULL);
+		assert(func);
 
 		create(new_type);
 		assert(*type != type_nil);

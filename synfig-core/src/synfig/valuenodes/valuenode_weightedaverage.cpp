@@ -87,7 +87,7 @@ ValueNode_WeightedAverage::create(const ValueBase& value, Canvas::LooseHandle ca
 	ValueNode_WeightedAverage* value_node(new ValueNode_WeightedAverage(value, canvas));
 	
 	types_namespace::TypeWeightedValueBase *t = ValueAverage::get_weighted_type_for(value_node->get_type());
-	assert(t != NULL);
+	assert(t);
 
 	value_node->ref();
 	value_node->add(ValueNode::Handle(ValueNode_Const::create(t->create_weighted_value(1, value), canvas)));

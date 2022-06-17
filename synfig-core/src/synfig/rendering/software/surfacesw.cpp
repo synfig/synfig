@@ -70,7 +70,7 @@ SurfaceSW::~SurfaceSW()
 {
 	if (own_surface)
 		{ assert(surface); delete surface; }
-	surface = NULL;
+	surface = nullptr;
 	set_desc(0, 0, true);
 }
 

@@ -180,7 +180,7 @@ public:
 		const RunParams* get_parent(int index) const
 		{
 			return index == 0 ? this
-				 : index < 0 || !parent ? NULL
+				 : index < 0 || !parent ? nullptr
 				 : parent->get_parent(index - 1);
 		}
 		const RunParams* get_level(int index) const

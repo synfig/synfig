@@ -79,7 +79,7 @@ ValueNode_DIList::create(const ValueBase& value, etl::loose_handle<Canvas>)
 {
 	// if the parameter is not a list type, return null
 	if(value.get_type()!=type_list)
-		return NULL;
+		return nullptr;
 	// create an empty list
 	ValueNode_DIList* value_node(new ValueNode_DIList());
 	// If the value parameter is not empty
@@ -101,7 +101,7 @@ ValueNode_DIList::create(const ValueBase& value, etl::loose_handle<Canvas>)
 		{
 			// We got a list of who-knows-what. We don't have any idea
 			// what to do with it.
-			return NULL;
+			return nullptr;
 		}
 	}
 

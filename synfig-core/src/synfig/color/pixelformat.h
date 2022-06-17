@@ -73,7 +73,7 @@ color_to_pixelformat(
 	unsigned char *dst,
 	const Color *src,
 	PixelFormat pf,
-	const Gamma *gamma = NULL,
+	const Gamma* gamma = nullptr,
 	int width = 1,
 	int height = 1,
 	int dst_stride = 0,
