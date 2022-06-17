@@ -71,7 +71,7 @@ vstrprintf(const char *format, va_list args)
 	// determine the length
 	va_list args_copy;
 	va_copy(args_copy, args);
-	int size = vsnprintf(NULL, 0, format, args_copy);
+	int size = vsnprintf(nullptr, 0, format, args_copy);
 	va_end(args_copy);
 	if (size < 0) size = 0;
 	++size;
