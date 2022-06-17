@@ -1492,9 +1492,8 @@ Canvas::show_structure(int i) const
 		else
 			printf(": no composite");
 		printf("\n");
-		if(dynamic_cast<Layer_PasteCanvas*>(layer.get()) != NULL)
+		if(Layer_PasteCanvas* paste_canvas = dynamic_cast<Layer_PasteCanvas*>(layer.get()))
 		{
-			Layer_PasteCanvas* paste_canvas(static_cast<Layer_PasteCanvas*>(layer.get()));
 			paste_canvas->get_sub_canvas()->show_structure(i+1);
 		}
 	}

@@ -359,7 +359,7 @@ private:
 	inline static bool _can_get(const TypeId type, const T &)
 	{
 		typedef typename T::AliasedType TT;
-		return NULL !=
+		return nullptr !=
 			Type::get_operation<typename Operation::GenericFuncs<TT>::GetFunc>(
 				Operation::Description::get_get(type) );
 	}
@@ -368,7 +368,7 @@ private:
 	inline static bool _can_put(const TypeId type, const T &)
 	{
 		typedef typename T::AliasedType TT;
-		return NULL !=
+		return nullptr !=
 			Type::get_operation<typename Operation::GenericFuncs<TT>::PutFunc>(
 				Operation::Description::get_put(type) );
 	}
@@ -377,7 +377,7 @@ private:
 	inline static bool _can_set(const TypeId type, const T &)
 	{
 		typedef typename T::AliasedType TT;
-		return NULL !=
+		return nullptr !=
 			Type::get_operation<typename Operation::GenericFuncs<TT>::SetFunc>(
 				Operation::Description::get_set(type) );
 	}

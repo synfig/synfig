@@ -68,8 +68,8 @@ public:
 
 	void clear() {
 #ifndef WITHOUT_MLT
-		if (last_track != NULL) { delete last_track; last_track = NULL; }
-		if (consumer != NULL) { consumer->stop(); delete consumer; consumer = NULL; }
+		if (last_track) { delete last_track; last_track = nullptr; }
+		if (consumer) { consumer->stop(); delete consumer; consumer = nullptr; }
 		stack.clear();
 		stack.push_back(PlayOptions());
 #endif
@@ -123,10 +123,10 @@ void SoundProcessor::addSound(const PlayOptions &playOptions, const Sound &sound
 
 	// Create track
 	Mlt::Producer *track = new Mlt::Producer(internal->profile, (String("avformat:") + sound.filename).c_str());
-	if (track->get_producer() == NULL || track->get_length() <= 0) {
+	if (!track->get_producer() || track->get_length() <= 0) {
 		delete track;
 		track = new Mlt::Producer(internal->profile, (String("vorbis:") + sound.filename).c_str());
-		if (track->get_producer() == NULL || track->get_length() <= 0) { delete track; return; }
+		if (!track->get_producer() || track->get_length() <= 0) { delete track; return; }
 	}
 
 	int delay = (int)round(options.delay*internal->profile.fps());
@@ -152,7 +152,7 @@ void SoundProcessor::addSound(const PlayOptions &playOptions, const Sound &sound
 		track = playlist;
 	}
 
-	if (internal->last_track == NULL) {
+	if (!internal->last_track) {
 
 		if (!infinite) {
 			internal->last_track = track;
@@ -176,7 +176,7 @@ void SoundProcessor::addSound(const PlayOptions &playOptions, const Sound &sound
 			error("SoundProcessor: cannot mute the 'tone' MLT producer for fake infinite track");
 		}
 		
-		if (infinite_track->get_producer() == NULL) {
+		if (!infinite_track->get_producer()) {
 			delete infinite_track;
 			internal->last_track = track;
 			return;
@@ -213,7 +213,7 @@ void SoundProcessor::set_infinite(bool value)
 Time SoundProcessor::get_position() const
 {
 #ifndef WITHOUT_MLT
-	return Time(internal->last_track == NULL ? 0.0 :
+	return Time(!internal->last_track ? 0.0 :
 				(double)internal->last_track->position()/internal->profile.fps() );
 #else
 	return Time();
@@ -226,7 +226,7 @@ void SoundProcessor::set_position(Time value)
 	Time dt = value - get_position();
 	if (dt >= Time(-0.01) && dt <= Time(0.01))
 		return;
-	if (internal->last_track != NULL) {
+	if (internal->last_track) {
 		bool restart = internal->playing && internal->consumer;
 		if (restart) set_playing(false);
 		internal->last_track->seek( (int)round(value*internal->profile.fps()) );
@@ -244,7 +244,7 @@ void SoundProcessor::set_playing(bool value)
 	if (value == internal->playing) return;
 	internal->playing = value;
 	if (internal->playing) {
-		if (internal->last_track != NULL) {
+		if (internal->last_track) {
 			internal->last_track->set_speed(1.0);
 			internal->consumer = new Mlt::Consumer(internal->profile, "sdl_audio");
 			internal->consumer->connect(*internal->last_track);
@@ -254,7 +254,7 @@ void SoundProcessor::set_playing(bool value)
 		if (internal->consumer) {
 			internal->consumer->stop();
 			delete internal->consumer;
-			internal->consumer = NULL;
+			internal->consumer = nullptr;
 		}
 	}
 #endif
@@ -263,7 +263,7 @@ void SoundProcessor::set_playing(bool value)
 void SoundProcessor::do_export(String path)
 {
 #ifndef WITHOUT_MLT
-	if (internal->last_track != NULL) {
+	if (internal->last_track) {
 		internal->last_track->set_speed(1.0);
 		internal->consumer = new Mlt::Consumer(internal->profile, "avformat");
 		internal->consumer->connect(*internal->last_track);

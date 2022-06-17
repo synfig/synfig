@@ -202,7 +202,7 @@ ListImporter::get_frame(Surface &surface, const RendDesc &renddesc, Time time, P
 rendering::Surface::Handle
 ListImporter::get_frame(const RendDesc &renddesc, const Time &time)
 {
-	Importer::Handle importer = get_sub_importer(renddesc, time, NULL);
+	Importer::Handle importer = get_sub_importer(renddesc, time, nullptr);
 	return importer ? importer->get_frame(renddesc, 0) : new rendering::SurfaceSW();
 }
 

@@ -81,7 +81,7 @@ SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(imagemagick_mptr, false);
 
 imagemagick_mptr::imagemagick_mptr(const synfig::FileSystem::Identifier &identifier):
 synfig::Importer(identifier),
-file(NULL)
+file(nullptr)
 //cur_frame(0)
 { }
 
@@ -154,9 +154,9 @@ imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &re
 	if (pid == 0){
 		// Child process
 		if(identifier.filename.find("psd")!=String::npos)
-			execlp("convert", "convert", filename.c_str(), "-flatten", output.c_str(), (const char *)NULL);
+			execlp("convert", "convert", filename.c_str(), "-flatten", output.c_str(), (const char*)nullptr);
 		else
-			execlp("convert", "convert", filename.c_str(), output.c_str(), (const char *)NULL);
+			execlp("convert", "convert", filename.c_str(), output.c_str(), (const char*)nullptr);
 		// We should never reach here unless the exec failed
 		return false;
 	}

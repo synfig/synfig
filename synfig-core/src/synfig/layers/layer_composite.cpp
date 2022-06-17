@@ -126,7 +126,7 @@ Layer_Composite::set_param(const String & param, const ValueBase &value)
 
 				if (version == "0.1" || version == "0.2")
 				{
-					if (dynamic_cast<Layer_PasteCanvas*>(this) != NULL)
+					if (dynamic_cast<Layer_PasteCanvas*>(this))
 						warning("loaded a version %s canvas with a 'Straight' blended PasteCanvas (%s) - check it renders OK",
 								version.c_str(), get_non_empty_description().c_str());
 					else
@@ -165,7 +165,7 @@ Layer_Composite::build_composite_task_vfunc(ContextParams /*context_params*/)con
 	return new rendering::TaskLayer();
 	//rendering::TaskLayer::Handle task = new rendering::TaskLayer();
 	//// TODO: This is not thread-safe
-	//task->layer = const_cast<Layer_Composite*>(this);//clone(NULL);
+	//task->layer = const_cast<Layer_Composite*>(this);//clone(nullptr);
 	//return task;
 }
 

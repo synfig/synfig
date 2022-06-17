@@ -154,7 +154,7 @@ Layer_Duplicate::get_duplicate_param()const
 {
 	const DynamicParamList &dpl = dynamic_param_list();
 	DynamicParamList::const_iterator iter = dpl.find("index");
-	if (iter == dpl.end()) return NULL;
+	if (iter == dpl.end()) return nullptr;
 	etl::rhandle<ValueNode> param(iter->second);
 	return ValueNode_Duplicate::Handle::cast_dynamic(param);
 }

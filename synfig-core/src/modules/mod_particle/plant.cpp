@@ -100,7 +100,7 @@ Plant::Plant():
 {
 	bounding_rect=Rect::zero();
 	Random random;
-	random.set_seed(time(NULL));
+	random.set_seed(time(nullptr));
 	param_random.set(random.get_seed());
 	
 	std::vector<BLinePoint> bline;

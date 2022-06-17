@@ -82,10 +82,10 @@ SYNFIG_TARGET_SET_VERSION(dv_trgt,"0.1");
 dv_trgt::dv_trgt(const char *Filename, const synfig::TargetParam & /* params */):
 	imagecount(0),
 	wide_aspect(false),
-	file(NULL),
+	file(nullptr),
 	filename(Filename),
-	buffer(NULL),
-	color_buffer(NULL)
+	buffer(nullptr),
+	color_buffer(nullptr)
 {
 	set_alpha_mode(TARGET_ALPHA_MODE_FILL);
 }
@@ -101,7 +101,7 @@ dv_trgt::~dv_trgt()
 		waitpid(pid,&status,0);
 #endif
 	}
-	file=NULL;
+	file=nullptr;
 	delete [] buffer;
 	delete [] color_buffer;
 }
@@ -194,7 +194,7 @@ dv_trgt::init(synfig::ProgressCallback * /* cb */)
 		close(p[0]);
 		// Open filename to stdout
 		FILE* outfile = g_fopen(filename.c_str(),"wb");
-		if( outfile == NULL ){
+		if(!outfile){
 			synfig::error(_("Unable to open pipe to encodedv"));
 			return false;
 		}
@@ -209,9 +209,9 @@ dv_trgt::init(synfig::ProgressCallback * /* cb */)
 		}
 
 		if(wide_aspect)
-			execlp("encodedv", "encodedv", "-w", "1", "-", (const char *)NULL);
+			execlp("encodedv", "encodedv", "-w", "1", "-", (const char*)nullptr);
 		else
-			execlp("encodedv", "encodedv", "-", (const char *)NULL);
+			execlp("encodedv", "encodedv", "-", (const char*)nullptr);
 		// We should never reach here unless the exec failed
 		synfig::error(_("Unable to open pipe to encodedv"));
 		return false;
@@ -221,7 +221,7 @@ dv_trgt::init(synfig::ProgressCallback * /* cb */)
 		close(p[0]);
 		// Save pipeout to file handle, will write to it later
 		file = fdopen(p[1], "wb");
-		if (file == NULL) {
+		if (!file) {
 			synfig::error(_("Unable to open pipe to encodedv"));
 			return false;
 		}
