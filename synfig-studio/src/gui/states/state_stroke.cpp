@@ -67,9 +67,9 @@ class studio::StateStroke_Context : public sigc::trackable
 
 	Duckmatic::Push duckmatic_push;
 
-	etl::smart_ptr<std::list<synfig::Point> > stroke_data;
+	std::shared_ptr<std::list<synfig::Point>> stroke_data;
 
-	etl::smart_ptr<std::list<synfig::Real> > width_data;
+	std::shared_ptr<std::list<synfig::Real>> width_data;
 
 	Gdk::ModifierType modifier;
 
@@ -124,8 +124,8 @@ StateStroke_Context::StateStroke_Context(CanvasView* canvas_view):
 	duckmatic_push(get_work_area()),
 	modifier()
 {
-	width_data.spawn();
-	stroke_data.spawn();
+	width_data = std::make_shared<std::list<synfig::Real>>();
+	stroke_data = std::make_shared<std::list<synfig::Point>>();
 
 	get_work_area()->add_stroke(stroke_data, synfigapp::Main::get_outline_color());
 }

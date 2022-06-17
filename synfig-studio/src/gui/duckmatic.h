@@ -32,13 +32,13 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/smart_ptr>
 #include <ETL/handle>
 
 #include <gui/duck.h>
 
 #include <list>
 #include <map>
+#include <memory>
 #include <set>
 #include <sigc++/sigc++.h>
 
@@ -132,7 +132,7 @@ class Duckmatic
 
 public:
 
-	typedef std::map<synfig::GUID,etl::smart_ptr<synfig::Point> > DuckDataMap;
+	typedef std::map<synfig::GUID,std::shared_ptr<synfig::Point>> DuckDataMap;
 
 	typedef studio::DuckMap DuckMap;
 
@@ -445,9 +445,9 @@ public:
 	etl::handle<Duck> find_similar_duck(etl::handle<Duck> duck);
 	etl::handle<Duck> add_similar_duck(etl::handle<Duck> duck);
 
-	void add_stroke(etl::smart_ptr<std::list<synfig::Point> > stroke_point_list, const synfig::Color& color=synfig::Color(0,0,0));
+	void add_stroke(std::shared_ptr<std::list<synfig::Point>> stroke_point_list, const synfig::Color& color=synfig::Color(0,0,0));
 
-	void add_persistent_stroke(etl::smart_ptr<std::list<synfig::Point> > stroke_point_list, const synfig::Color& color=synfig::Color(0,0,0));
+	void add_persistent_stroke(std::shared_ptr<std::list<synfig::Point>> stroke_point_list, const synfig::Color& color=synfig::Color(0,0,0));
 
 	void clear_persistent_strokes();
 
@@ -567,7 +567,7 @@ private:
 	sigc::signal<void,float> signal_user_click_[5];
 public:
 
-	etl::smart_ptr<std::list<synfig::Point> > stroke_data;
+	std::shared_ptr<std::list<synfig::Point>> stroke_data;
 
 	synfig::Color color;
 

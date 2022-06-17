@@ -32,11 +32,11 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <map>
-#include <set>
 #include <list>
+#include <map>
+#include <memory>
+#include <set>
 
-#include <ETL/smart_ptr>
 #include <ETL/handle>
 
 #include <sigc++/sigc++.h>
@@ -162,9 +162,9 @@ private:
 	// value
 
 	synfig::Point point_;
-	etl::smart_ptr<synfig::Point> shared_point_;
-	etl::smart_ptr<synfig::Angle> shared_angle_;
-	etl::smart_ptr<synfig::Real> shared_mag_;
+	std::shared_ptr<synfig::Point> shared_point_;
+	std::shared_ptr<synfig::Angle> shared_angle_;
+	std::shared_ptr<synfig::Real> shared_mag_;
 	synfig::Angle rotations_;
 	synfig::Point aspect_point_;
 
@@ -401,19 +401,19 @@ public:
 	//! Returns the location of the duck
 	synfig::Point get_point()const;
 
-	void set_shared_point(const etl::smart_ptr<synfig::Point>&x)
+	void set_shared_point(const std::shared_ptr<synfig::Point>& x)
 		{ shared_point_=x; }
-	const etl::smart_ptr<synfig::Point>& get_shared_point()const
+	const std::shared_ptr<synfig::Point>& get_shared_point() const
 		{ return shared_point_; }
 
-	void set_shared_angle(const etl::smart_ptr<synfig::Angle>&x)
+	void set_shared_angle(const std::shared_ptr<synfig::Angle>& x)
 		{ shared_angle_=x; }
-	const etl::smart_ptr<synfig::Angle>& get_shared_angle()const
+	const std::shared_ptr<synfig::Angle>& get_shared_angle() const
 		{ return shared_angle_; }
 
-	void set_shared_mag(const etl::smart_ptr<synfig::Real>&x)
+	void set_shared_mag(const std::shared_ptr<synfig::Real>& x)
 		{ shared_mag_=x; }
-	const etl::smart_ptr<synfig::Real>& get_shared_mag()const
+	const std::shared_ptr<synfig::Real>& get_shared_mag() const
 		{ return shared_mag_; }
 
 	//! Returns the rotations of the duck
