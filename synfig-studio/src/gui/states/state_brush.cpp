@@ -399,7 +399,7 @@ StateBrush_Context::BrushConfig::load(const String &filename)
 {
 	clear();
 
-	char *buffer = NULL;
+	char* buffer = nullptr;
 	{
 		Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(filename);
 		goffset s = file->query_info()->get_size();
@@ -414,7 +414,7 @@ StateBrush_Context::BrushConfig::load(const String &filename)
 	}
 
 	const char *pos = buffer;
-	if (pos != NULL) while(read_row(&pos)) { }
+	if (pos) while(read_row(&pos)) { }
 	if (buffer) delete[] buffer;
 	this->filename = filename;
 }
@@ -494,7 +494,7 @@ StateBrush_Context::StateBrush_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
 	push_state(*get_work_area()),
-	selected_brush_button(NULL),
+	selected_brush_button(nullptr),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	eraser_checkbox(_("Eraser"))
 {
@@ -524,14 +524,14 @@ StateBrush_Context::~StateBrush_Context()
 	if (action)
 	{
 		get_canvas_interface()->get_instance()->perform_action(action);
-		action = NULL;
+		action = nullptr;
 		transform_stack.clear();
 	}
 
 	save_settings();
 
 	brush_buttons.clear();
-	selected_brush_button = NULL;
+	selected_brush_button = nullptr;
 	App::dialog_tool_options->clear();
 
 	get_work_area()->reset_cursor();
@@ -585,7 +585,7 @@ StateBrush_Context::refresh_tool_options()
 
 	// create brushes scrollable palette
 	Gtk::ToolItemGroup *tool_item_group = manage(new class Gtk::ToolItemGroup());
-	gtk_tool_item_group_set_label(tool_item_group->gobj(), NULL);
+	gtk_tool_item_group_set_label(tool_item_group->gobj(), nullptr);
 
 	Gtk::ToolPalette *palette = manage(new Gtk::ToolPalette());
 	palette->add(*tool_item_group);
@@ -607,7 +607,7 @@ StateBrush_Context::refresh_tool_options()
 		scan_directory(*i, 1, files);
 
 	// run through brush definition and assign a button
-	Gtk::ToggleToolButton *first_button = NULL;
+	Gtk::ToggleToolButton* first_button = nullptr;
 	for(std::set<String>::const_iterator i = files.begin(); i != files.end(); ++i)
 	{
 		if (!brush_buttons.count(*i) && filename_extension(*i) == ".myb")
@@ -634,7 +634,8 @@ StateBrush_Context::refresh_tool_options()
 				tool_item_group->insert(*brush_button);
 
 				// keep the first brush
-				if (first_button == NULL) first_button = brush_button;
+				if (!first_button)
+					first_button = brush_button;
 			}
 		}
 	}
@@ -645,19 +646,19 @@ StateBrush_Context::refresh_tool_options()
 	App::dialog_tool_options->add(*brush_option_grid);
 
 	// select first brush
-	if (first_button != NULL)
-		{
+	if (first_button) {
 		first_button->set_active(true);
 		selected_brush_button = first_button;
-		}
+	}
 }
 
 void
 StateBrush_Context::select_brush(Gtk::ToggleToolButton *button, String filename)
 {
-	if (button != NULL && button->get_active())
+	if (button && button->get_active())
 	{
-		if (selected_brush_button != NULL) selected_brush_button->set_active(false);
+		if (selected_brush_button)
+			selected_brush_button->set_active(false);
 		selected_brush_config.load(filename);
 		eraser_checkbox.set_active(selected_brush_config.settings[BRUSH_ERASER].base > 0.0);
 		selected_brush_button = button;
@@ -677,7 +678,7 @@ StateBrush_Context::event_stop_handler(const Smach::event& /*x*/)
 	if (action)
 	{
 		get_canvas_interface()->get_instance()->perform_action(action);
-		action = NULL;
+		action = nullptr;
 	}
 
 	throw &state_normal;
@@ -845,7 +846,7 @@ StateBrush_Context::event_mouse_up_handler(const Smach::event& x)
 			if (action)
 			{
 				get_canvas_interface()->get_instance()->perform_action(action);
-				action = NULL;
+				action = nullptr;
 				transform_stack.clear();
 				return Smach::RESULT_ACCEPT;
 			}

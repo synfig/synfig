@@ -182,8 +182,8 @@ public:
 	public:
 
 		//! Constructor
-		state(const char *n, smach* nest=0):
-			nested(nest),name(n),default_handler(NULL)
+		state(const char* n, smach* nest = nullptr)
+		    : nested(nest), name(n), default_handler(nullptr)
 		{ }
 
 		virtual ~state() { }

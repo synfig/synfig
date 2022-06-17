@@ -124,7 +124,7 @@ Widget_Keyframe_List::Widget_Keyframe_List():
 
 Widget_Keyframe_List::~Widget_Keyframe_List()
 {
-	set_kf_list(NULL);
+	set_kf_list(nullptr);
 	set_canvas_interface(etl::loose_handle<CanvasInterface>());
 }
 
@@ -457,7 +457,7 @@ Widget_Keyframe_List::set_canvas_interface(const etl::loose_handle<CanvasInterfa
 	keyframe_selected.disconnect();
 
 	canvas_interface = x;
-	set_kf_list(canvas_interface ? &canvas_interface->get_canvas()->keyframe_list() : NULL);
+	set_kf_list(canvas_interface ? &canvas_interface->get_canvas()->keyframe_list() : nullptr);
 
 	if (canvas_interface) {
 		keyframe_added = canvas_interface->signal_keyframe_added().connect(

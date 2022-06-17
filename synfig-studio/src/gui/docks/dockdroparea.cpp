@@ -94,7 +94,7 @@ DockDropArea::DockDropArea(Gtk::Widget *target):
 void
 DockDropArea::drop_on(bool vertical, bool first, const Glib::RefPtr<Gdk::DragContext>& context, const Gtk::SelectionData& selection_data, guint time)
 {
-	if (target != NULL && (selection_data.get_length() >= 0) && (selection_data.get_format() == 8))
+	if (target && (selection_data.get_length() >= 0) && (selection_data.get_format() == 8))
 	{
 		Dockable& dockable(**reinterpret_cast<Dockable**>(const_cast<guint8*>(selection_data.get_data())));
 		if (DockManager::add_dockable(*target, dockable, vertical, first))

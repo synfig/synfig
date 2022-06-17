@@ -105,7 +105,7 @@ Dialog_Input::Dialog_Input(Gtk::Window& parent):
 	Gtk::Dialog(_("Input Dialog"), parent),
 	dialog_settings(this, "input"),
 	options(new DeviceOptions()),
-	scrolled_window(NULL)
+	scrolled_window(nullptr)
 {
 	set_type_hint(Gdk::WINDOW_TYPE_HINT_UTILITY);
 	add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
@@ -159,9 +159,9 @@ void Dialog_Input::take_options()
 
 void Dialog_Input::create_widgets()
 {
-	if (scrolled_window != NULL) {
+	if (scrolled_window) {
 		get_content_area()->remove(*scrolled_window);
-		scrolled_window = NULL;
+		scrolled_window = nullptr;
 	}
 
 	// Devices

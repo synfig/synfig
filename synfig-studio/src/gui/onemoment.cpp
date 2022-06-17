@@ -54,7 +54,7 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-Gtk::Window *OneMoment::wnd = NULL;
+Gtk::Window* OneMoment::wnd = nullptr;
 
 OneMoment::OneMoment()//:
 	//Gtk::Window(Gtk::WINDOW_TOPLEVEL)

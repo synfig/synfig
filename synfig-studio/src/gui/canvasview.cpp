@@ -535,13 +535,13 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	jack_locks               (0),
 	jack_enabled_in_preview  (false),
 
-	#ifdef WITH_JACK
-	jack_client              (NULL),
+#ifdef WITH_JACK
+	jack_client              (nullptr),
 	jack_synchronizing       (true),
 	jack_is_playing          (false),
 	jack_time                (0),
 	toggling_jack            (false),
-	#endif
+#endif
 
 	ducks_locks              (0),
 	ducks_rebuild_requested  (false),
@@ -790,7 +790,7 @@ void CanvasView::set_jack_enabled(bool value)
 			if (jack_activate(jack_client) != 0)
 			{
 				jack_client_close(jack_client);
-				jack_client = NULL;
+				jack_client = nullptr;
 				jack_actual_enabled = false;
 				// make conditions to update button
 				jack_enabled = true;
@@ -802,7 +802,7 @@ void CanvasView::set_jack_enabled(bool value)
 			// deinitialize jack
 			jack_deactivate(jack_client);
 			jack_client_close(jack_client);
-			jack_client = NULL;
+			jack_client = nullptr;
 		}
 	}
 
@@ -981,7 +981,7 @@ CanvasView::create_time_bar()
 	while(Gtk::Container *container = dynamic_cast<Gtk::Container*>(widget)) {
 		widget->set_margin_top(0);
 		widget->set_margin_bottom(0);
-		widget = container->get_children().empty() ? NULL : container->get_children().front();
+		widget = container->get_children().empty() ? nullptr : container->get_children().front();
 	}
 	statusbar->show();
 
@@ -2952,7 +2952,7 @@ CanvasView::on_waypoint_clicked_canvasview(ValueDesc value_desc,
 
 		Gtk::Menu* interp_menu_in(manage(new Gtk::Menu()));
 		Gtk::Menu* interp_menu_out(manage(new Gtk::Menu()));
-		Gtk::MenuItem *item = NULL;
+		Gtk::MenuItem *item = nullptr;
 
 		// ------------------------------------------------------------------------
 		if (size == 1)

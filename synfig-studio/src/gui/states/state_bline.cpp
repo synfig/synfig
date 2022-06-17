@@ -1597,8 +1597,8 @@ StateBLine_Context::popup_vertex_menu(synfig::ValueNode_Const::Handle value_node
 	for(std::vector<Gtk::Widget*>::iterator i = children.begin(); i != children.end(); ++i)
 		menu.remove(**i);
 
-	Gtk::MenuItem *item = NULL;
-	Gtk::ImageMenuItem *item2 = NULL;
+	Gtk::MenuItem* item = nullptr;
+	Gtk::ImageMenuItem* item2 = nullptr;
 
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
 	#define STATE_BLINE_ADD_MENU_ITEM(title, split_angle, split_radius, icon) \
@@ -1691,7 +1691,7 @@ StateBLine_Context::popup_bezier_menu(float location, synfig::ValueNode_Const::H
 	for(std::vector<Gtk::Widget*>::iterator i = children.begin(); i != children.end(); ++i)
 		menu.remove(**i);
 
-	Gtk::MenuItem *item = NULL;
+	Gtk::MenuItem* item = nullptr;
 	item = manage(new Gtk::MenuItem(_("Insert Vertex")));
 	item->signal_activate().connect(
 		sigc::bind(
@@ -1801,8 +1801,8 @@ StateBLine_Context::popup_handle_menu(synfig::ValueNode_Const::Handle value_node
 
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
 
-	Gtk::MenuItem *item = NULL;
-	Gtk::ImageMenuItem *item2 = NULL;
+	Gtk::MenuItem* item = nullptr;
+	Gtk::ImageMenuItem* item2 = nullptr;
 	#define STATE_BLINE_ADD_MENU_ITEM(title, split_angle, split_radius, icon)	\
 	do {                                                                \
 		item2 = manage(new Gtk::ImageMenuItem(                       \

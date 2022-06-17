@@ -50,9 +50,9 @@ protected:
 	void drop_on_bottom(const Glib::RefPtr<Gdk::DragContext>& context, int, int, const Gtk::SelectionData& selection_data, guint, guint time);
 
 public:
-	Gtk::Widget *target;
+	Gtk::Widget* target;
 
-	DockDropArea(Gtk::Widget *target = NULL);
+	DockDropArea(Gtk::Widget* target = nullptr);
 }; // END of studio::DockDropArea
 
 }; // END of namespace studio
