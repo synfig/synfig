@@ -60,7 +60,7 @@ gl::Buffers::Buffer::Buffer(Context &context, GLenum target, GLenum usage, int s
 	Context::Lock lock(context);
 	glGenBuffers(1, &id);
 	glBindBuffer(target, id);
-	glBufferData(target, size, NULL, usage);
+	glBufferData(target, size, nullptr, usage);
 	glBindBuffer(target, 0);
 }
 

@@ -427,7 +427,7 @@ synfig::Main::~Main()
 #endif
 
 	assert(instance);
-	instance = NULL;
+	instance = nullptr;
 }
 
 static const String
@@ -511,8 +511,8 @@ synfig::get_binary_path(const String &fallback_path)
 #ifdef _WIN32
 
 	wchar_t module_file_name[MAX_PATH];
-	if (GetModuleFileNameW(NULL, module_file_name, MAX_PATH)) {
-		result = String(g_utf16_to_utf8((gunichar2 *)module_file_name, -1, NULL, NULL, NULL));
+	if (GetModuleFileNameW(nullptr, module_file_name, MAX_PATH)) {
+		result = String(g_utf16_to_utf8((gunichar2 *)module_file_name, -1, nullptr, nullptr, nullptr));
 	}
 
 
@@ -595,14 +595,14 @@ synfig::get_binary_path(const String &fallback_path)
 		char* line = (char*)malloc(buf_size);
 
 		f = fopen("/proc/self/maps", "r");
-		if (f == NULL) {
+		if (!f) {
 			synfig::error("Cannot open /proc/self/maps.");
 		}
 
 		/* The first entry should be the executable name. */
 		char *r;
 		r = fgets(line, (int) buf_size, f);
-		if (r == NULL) {
+		if (!r) {
 			synfig::error("Cannot read /proc/self/maps.");
 		}
 
@@ -619,7 +619,7 @@ synfig::get_binary_path(const String &fallback_path)
 		path = strchr(line, '/');
 
 		/* Sanity check. */
-		if (strstr(line, " r-xp ") == NULL || path == NULL) {
+		if (strstr(line, " r-xp ") == nullptr || !path) {
 			synfig::error("Invalid /proc/self/maps.");
 		}
 
