@@ -234,7 +234,7 @@ void FileContainerZip::FileInfo::split_name()
 }
 
 FileContainerZip::FileContainerZip():
-storage_file_(NULL),
+storage_file_(nullptr),
 prev_storage_size_(0),
 file_reading_whole_container_(false),
 file_reading_(false),
@@ -320,7 +320,7 @@ FileContainerZip::HistoryRecord FileContainerZip::decode_history(const String &c
 					for(xmlpp::Element::NodeList::iterator j = list.begin(); j != list.end(); j++)
 						if (dynamic_cast<xmlpp::TextNode*>(*j))
 							s += dynamic_cast<xmlpp::TextNode*>(*j)->get_content();
-					history_record.prev_storage_size = strtoll(s.c_str(), NULL, 10);
+					history_record.prev_storage_size = strtoll(s.c_str(), nullptr, 10);
 					if (history_record.prev_storage_size < 0)
 						history_record.prev_storage_size = 0;
 				}
@@ -379,7 +379,7 @@ std::list<FileContainerZip::HistoryRecord> FileContainerZip::read_history(const 
 	std::list<HistoryRecord> list;
 	
 	FILE *f = g_fopen(fix_slashes(container_filename).c_str(), "rb");
-	if (f == NULL) return list;
+	if (!f) return list;
 
 	fseek(f, 0, SEEK_END);
 	long int size = ftell(f);
@@ -406,7 +406,7 @@ bool FileContainerZip::open_from_history(const String &container_filename, file_
 	if (is_opened()) return false;
 	FILE *f = g_fopen(fix_slashes(container_filename).c_str(), "r+b");
 
-	if (f == NULL) return false;
+	if (!f) return false;
 
 	// check size of file
 	fseek(f, 0, SEEK_END);
@@ -491,7 +491,7 @@ bool FileContainerZip::open_from_history(const String &container_filename, file_
 			FileInfo info;
 			info.name = i->second.name_part_directory;
 			info.is_directory = true;
-			info.time = time(NULL);
+			info.time = time(nullptr);
 			info.split_name();
 			files[ info.name ] = info;
 			i = files.begin();
@@ -612,7 +612,7 @@ void FileContainerZip::close()
 
 	// close storage file and clead variables
 	fclose(storage_file_);
-	storage_file_ = NULL;
+	storage_file_ = nullptr;
 	files_.clear();
 	prev_storage_size_ = 0;
 	file_reading_ = false;
@@ -622,7 +622,7 @@ void FileContainerZip::close()
 
 bool FileContainerZip::is_opened()
 {
-	return storage_file_ != NULL;
+	return storage_file_ != nullptr;
 }
 
 bool FileContainerZip::is_file(const String &filename)
@@ -656,7 +656,7 @@ bool FileContainerZip::directory_create(const String &dirname)
 	info.name = fix_slashes(dirname);
 	info.split_name();
 	info.is_directory = true;
-	info.time = time(NULL);
+	info.time = time(nullptr);
 	if (info.name_part_localname.empty()
 	 || !is_directory(info.name_part_directory)) return false;
 
@@ -756,7 +756,7 @@ bool FileContainerZip::file_open_write(const String &filename)
 
 	// write header
 	LocalFileHeader lfh;
-	time_t t = time(NULL);
+	time_t t = time(nullptr);
 	lfh.version = 20;
 	lfh.filename_length = info.name.size();
 	DOSTimestamp dos_timestamp(t);

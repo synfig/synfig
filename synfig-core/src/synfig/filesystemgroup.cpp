@@ -83,7 +83,7 @@ const FileSystemGroup::Entry* FileSystemGroup::find_system(const String &filenam
 
 	out_file_system.reset();
 	out_filename.clear();
-	return NULL;
+	return nullptr;
 }
 
 void FileSystemGroup::register_system(const String &prefix, const FileSystem::Handle &sub_file_system, const String &sub_prefix, bool is_separator)

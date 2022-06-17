@@ -155,11 +155,11 @@ private:
     }
 
 	bool open_video_stream() {
-		if (avcodec_open2(video_context, NULL, NULL) < 0) {
+		if (avcodec_open2(video_context, nullptr, nullptr) < 0) {
 			synfig::error("Target_LibAVCodec: could not open video codec");
 			// seems the calling of avcodec_free_context after error will cause crash
 			// so just forget about this context
-			video_context = NULL;
+			video_context = nullptr;
 			close();
 			return false;
         }
@@ -197,7 +197,7 @@ private:
 				video_frame->width,
 				video_frame->height,
 				(AVPixelFormat)video_frame->format,
-				SWS_BICUBIC, NULL, NULL, NULL );
+				SWS_BICUBIC, nullptr, nullptr, nullptr );
 			if (!video_swscale_context) {
 				synfig::error("Target_LibAVCodec: cannot initialize the conversion context");
 				close();
@@ -239,10 +239,10 @@ public:
 		}
 
 		// guess format
-		AVOutputFormat *format = av_guess_format(NULL, filename.c_str(), NULL);
+		AVOutputFormat *format = av_guess_format(nullptr, filename.c_str(), nullptr);
 		if (!format) {
 			synfig::warning("Target_LibAVCodec: unable to guess the output format, defaulting to MPEG");
-			format = av_guess_format("mpeg", NULL, NULL);
+			format = av_guess_format("mpeg", nullptr, nullptr);
 		}
 		if (!format) {
 			synfig::error("Target_LibAVCodec: unable to find 'mpeg' output format");
@@ -294,7 +294,7 @@ public:
 		}
 
 		// write the stream header, if any.
-		if (avformat_write_header(context, NULL) < 0) {
+		if (avformat_write_header(context, nullptr) < 0) {
 			synfig::error("Target_LibAVCodec: could not write header");
 			close();
             return false;
@@ -392,21 +392,21 @@ public:
 		if (video_context) avcodec_free_context(&video_context);
 		if (video_swscale_context) {
 			sws_freeContext(video_swscale_context);
-			video_swscale_context = NULL;
+			video_swscale_context = nullptr;
 		}
 		if (video_frame) av_frame_free(&video_frame);
 		if (video_frame_rgb) av_frame_free(&video_frame_rgb);
-		video_stream = NULL;
-		video_codec = NULL;
+		video_stream = nullptr;
+		video_codec = nullptr;
 
 		if (context) {
 			if (file_opened) {
 				avio_close(context->pb);
-				context->pb = NULL;
+				context->pb = nullptr;
 				file_opened = false;
 			}
 			avformat_free_context(context);
-			context = NULL;
+			context = nullptr;
 		}
 	}
 };

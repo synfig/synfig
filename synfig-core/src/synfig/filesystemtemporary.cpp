@@ -81,9 +81,9 @@ String
 FileSystemTemporary::get_system_temporary_directory()
 {
     const char *tmpdir;
-    if ((tmpdir = getenv("TEMP")) == NULL)
-    if ((tmpdir = getenv("TMP")) == NULL)
-    if ((tmpdir = getenv("TMPDIR")) == NULL)
+	if (!(tmpdir = getenv("TEMP")))
+	if (!(tmpdir = getenv("TMP")))
+	if (!(tmpdir = getenv("TMPDIR")))
     	 tmpdir = "/tmp";
     return String(tmpdir);
 }
@@ -549,7 +549,7 @@ String
 FileSystemTemporary::get_xml_node_text(xmlpp::Node *node)
 {
 	String s;
-	if (node != NULL)
+	if (node)
 	{
 		xmlpp::Element::NodeList list = node->get_children();
 		for(xmlpp::Element::NodeList::iterator i = list.begin(); i != list.end(); i++)

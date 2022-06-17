@@ -97,13 +97,13 @@ gl::Context::ContextInfo::get_current(Display *default_display)
 }
 
 gl::Context::Context():
-	display(NULL),
+	display(nullptr),
 	config(None),
 	pbuffer(None),
-	context(NULL)
+	context(nullptr)
 {
 	// open display (we will use default display and screen 0)
-	display = XOpenDisplay(NULL);
+	display = XOpenDisplay(nullptr);
 	context_info.display = display;
 
 	// choose config
@@ -126,7 +126,7 @@ gl::Context::Context():
 			None };
 		int nelements = 0;
 		GLXFBConfig *configs = glXChooseFBConfig(display, 0, config_attribs, &nelements);
-		if (configs != NULL && nelements > 0)
+		if (configs && nelements > 0)
 			config = configs[0];
 	}
 
@@ -152,7 +152,7 @@ gl::Context::Context():
 			GLX_CONTEXT_MINOR_VERSION_ARB, 3,
 			None };
 		GLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribsARB = (GLXCREATECONTEXTATTRIBSARBPROC) glXGetProcAddress((const GLubyte*)"glXCreateContextAttribsARB");
-		context = glXCreateContextAttribsARB(display, config, NULL, True, context_attribs);
+		context = glXCreateContextAttribsARB(display, config, nullptr, True, context_attribs);
 		context_info.context = context;
 	}
 
@@ -166,8 +166,8 @@ gl::Context::~Context()
 {
 	if (context)
 		glXDestroyContext(display, context);
-	context = NULL;
-	context_info.context = NULL;
+	context = nullptr;
+	context_info.context = nullptr;
 	if (pbuffer)
 		glXDestroyPbuffer(display, pbuffer);
 	pbuffer = None;
@@ -176,7 +176,7 @@ gl::Context::~Context()
 	config = None;
 	if (display)
 		XCloseDisplay(display);
-	display = NULL;
+	display = nullptr;
 	context_info.display = None;
 }
 
