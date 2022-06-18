@@ -59,7 +59,12 @@ Widget_Enum::Widget_Enum():
 
 	enum_TreeModel = Gtk::ListStore::create(enum_model);
 	set_model(enum_TreeModel);
-	pack_start(enum_model.icon, false);
+
+	Gtk::CellRendererPixbuf* pixbuf_cell_renderer = manage(new Gtk::CellRendererPixbuf());
+
+	pack_start(*pixbuf_cell_renderer, true);
+	add_attribute(pixbuf_cell_renderer->property_icon_name(), enum_model.icon_name);
+
 	pack_start(enum_model.local_name, true);
 	this->set_wrap_width(1); // https://github.com/synfig/synfig/issues/650
 
@@ -75,7 +80,7 @@ void
 Widget_Enum::set_param_desc(const synfig::ParamDesc &x)
 {
 	param_desc=x;
-	// First clear the current items in the ComobBox
+	// First clear the current items in the ComboBox
 	enum_TreeModel->clear();
 	std::list<synfig::ParamDesc::EnumData> enum_list=param_desc.get_enum_list();
 	std::list<synfig::ParamDesc::EnumData>::iterator iter;
@@ -90,14 +95,14 @@ Widget_Enum::set_param_desc(const synfig::ParamDesc &x)
 }
 
 void
-Widget_Enum::set_icon(Gtk::TreeNodeChildren::size_type index, const Glib::RefPtr<Gdk::Pixbuf> &icon)
+Widget_Enum::set_icon(Gtk::TreeNodeChildren::size_type index, const std::string& icon_name)
 {
 	// check if the index is valid
 	if(index > enum_TreeModel->children().size()-1 )
 		return;
 	Glib::ustring path(strprintf("%d", index).c_str());
 	Gtk::TreeModel::Row row = *(enum_TreeModel->get_iter(path));
-	row[enum_model.icon]=icon;
+	row[enum_model.icon_name] = icon_name;
 }
 
 void
