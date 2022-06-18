@@ -132,8 +132,8 @@ Action::ValueDescConnect::is_candidate(const ParamList &x)
 
 		if(x.count("src"))
 		{
-			if(value_desc.get_value_type()==value_node->get_type())
-				return true;
+			if (value_desc.get_value_type() != value_node->get_type())
+				return false;
 		}
 		return true;
 	}
