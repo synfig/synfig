@@ -623,7 +623,7 @@ CurveWarp::accelerated_render(Context context,Surface *surface,int quality, cons
 				if(u<0 || v<0 || u>=src_w || v>=src_h || std::isnan(u) || std::isnan(v))
 					(*surface)[y][x]=context.get_color(tmp);
 				else
-					(*surface)[y][x]=source[floor_to_int(v)][floor_to_int(u)];
+					(*surface)[y][x]=source[static_cast<int>(v)][static_cast<int>(u)]; // u >= 0 and v >= 0, so we can cast them to int
 			}
 			if((y&31)==0 && cb && !stagetwo.amount_complete(y,h)) return false;
 		}
