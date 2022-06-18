@@ -475,7 +475,7 @@ struct affine_combo<etl::angle, T>
 };
 
 template <>
-struct distance_func<etl::angle> : public std::binary_function<etl::angle, etl::angle, etl::angle>
+struct distance_func<etl::angle>
 {
 	etl::angle operator()(const etl::angle &a,const etl::angle &b)const
 	{

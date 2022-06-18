@@ -48,7 +48,7 @@ namespace etl {
 
 /*
 template <typename T>
-class hermite_base : std::unary_function<float,T>
+class hermite_base
 {
 public:
 	typedef T value_type;

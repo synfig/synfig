@@ -190,7 +190,7 @@ inline T approximate_ceil_hp(const T &a)
 	{ return approximate_ceil_custom(a, real_high_precision<T>()); }
 
 template<typename T, bool func(const T&, const T&)>
-struct RealFunctionWrapper : public std::binary_function<T,T,bool>
+struct RealFunctionWrapper
 	{ bool operator() (const T &a, const T &b) const { return func(a, b); } };
 
 
