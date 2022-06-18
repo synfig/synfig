@@ -97,7 +97,7 @@ MainWindow::MainWindow() :
 
 	auto visible_menubar = App::ui_manager()->get_widget("/menubar-main");
 	auto hidden_menubar  = App::ui_manager()->get_widget("/menubar-hidden");
-	if (visible_menubar != NULL)
+	if (visible_menubar)
 	{
 		hidden_box->add(*hidden_menubar);
 		hidden_box->hide();

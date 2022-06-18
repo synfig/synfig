@@ -490,7 +490,7 @@ LayerTreeStore::drag_data_get_vfunc(const TreeModel::Path& path, Gtk::SelectionD
 	{
 		Layer* layer = (RecordType)row[model.record_type] == RECORD_TYPE_LAYER
 				     ? ((Layer::Handle)row[model.layer]).get()
-		             : NULL;
+		             : nullptr;
 		bool included(false);
 
 		std::vector<Layer*> layers;

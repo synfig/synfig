@@ -63,7 +63,7 @@ KeyMapSettings::~KeyMapSettings()
 
 bool KeyMapSettings::set_key(const char *path, guint key, Gdk::ModifierType mod, bool replace)
 {
-	if(gtk_accel_map_lookup_entry(path,NULL))
+	if(gtk_accel_map_lookup_entry(path, nullptr))
 	{
 		return Gtk::AccelMap::change_entry(path,key,mod,replace);
 	}else

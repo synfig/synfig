@@ -2401,28 +2401,28 @@ App::dialog_open_file_ext(const std::string &title, std::vector<std::string> &fi
 	static TCHAR szFilter[] = TEXT (_("All Files (*.*)\0*.*\0\0")) ;
 
 	GdkWindow *gdkWinPtr=toolbox->get_window()->gobj();
-	HINSTANCE hInstance=static_cast<HINSTANCE>(GetModuleHandle(NULL));
+	HINSTANCE hInstance=static_cast<HINSTANCE>(GetModuleHandle(nullptr));
 	HWND hWnd=static_cast<HWND>(GDK_WINDOW_HWND(gdkWinPtr));
 
 	ofn.lStructSize=sizeof(OPENFILENAME);
 	ofn.hwndOwner = hWnd;
 	ofn.hInstance = hInstance;
 	ofn.lpstrFilter = szFilter;
-//	ofn.lpstrCustomFilter=NULL;
+//	ofn.lpstrCustomFilter=nullptr;
 //	ofn.nMaxCustFilter=0;
 //	ofn.nFilterIndex=0;
-//	ofn.lpstrFile=NULL;
+//	ofn.lpstrFile=nullptr;
 	ofn.nMaxFile=MAX_PATH;
-//	ofn.lpstrFileTitle=NULL;
-//	ofn.lpstrInitialDir=NULL;
-//	ofn.lpstrTitle=NULL;
+//	ofn.lpstrFileTitle=nullptr;
+//	ofn.lpstrInitialDir=nullptr;
+//	ofn.lpstrTitle=nullptr;
 	ofn.Flags=OFN_HIDEREADONLY;
 //	ofn.nFileOffset=0;
 //	ofn.nFileExtension=0;
 	ofn.lpstrDefExt=TEXT("sif");
 //	ofn.lCustData = 0l;
-	ofn.lpfnHook=NULL;
-//	ofn.lpTemplateName=NULL;
+	ofn.lpfnHook=nullptr;
+//	ofn.lpTemplateName=nullptr;
 
 	CHAR szFilename[MAX_PATH];
 	CHAR szTitle[500];
@@ -3055,28 +3055,28 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 	static TCHAR szFilter[] = TEXT (_("All Files (*.*)\0*.*\0\0")) ;
 
 	GdkWindow *gdkWinPtr=toolbox->get_window()->gobj();
-	HINSTANCE hInstance=static_cast<HINSTANCE>(GetModuleHandle(NULL));
+	HINSTANCE hInstance=static_cast<HINSTANCE>(GetModuleHandle(nullptr));
 	HWND hWnd=static_cast<HWND>(GDK_WINDOW_HWND(gdkWinPtr));
 
 	ofn.lStructSize=sizeof(OPENFILENAME);
 	ofn.hwndOwner = hWnd;
 	ofn.hInstance = hInstance;
 	ofn.lpstrFilter = szFilter;
-//	ofn.lpstrCustomFilter=NULL;
+//	ofn.lpstrCustomFilter=nullptr;
 //	ofn.nMaxCustFilter=0;
 //	ofn.nFilterIndex=0;
-//	ofn.lpstrFile=NULL;
+//	ofn.lpstrFile=nullptr;
 	ofn.nMaxFile=MAX_PATH;
-//	ofn.lpstrFileTitle=NULL;
-//	ofn.lpstrInitialDir=NULL;
-//	ofn.lpstrTitle=NULL;
+//	ofn.lpstrFileTitle=nullptr;
+//	ofn.lpstrInitialDir=nullptr;
+//	ofn.lpstrTitle=nullptr;
 	ofn.Flags=OFN_OVERWRITEPROMPT;
 //	ofn.nFileOffset=0;
 //	ofn.nFileExtension=0;
 	ofn.lpstrDefExt=TEXT("sif");
 //	ofn.lCustData = 0l;
-	ofn.lpfnHook=NULL;
-//	ofn.lpTemplateName=NULL;
+	ofn.lpfnHook=nullptr;
+//	ofn.lpTemplateName=nullptr;
 
 	CHAR szFilename[MAX_PATH];
 	CHAR szTitle[500];
@@ -3624,7 +3624,7 @@ try_open_uri(const std::string &uri)
 		App::main_window ? App::main_window->gobj() : nullptr,
 		uri.c_str(), GDK_CURRENT_TIME, nullptr );
 #else
-	return gtk_show_uri(NULL, uri.c_str(), GDK_CURRENT_TIME, NULL);
+	return gtk_show_uri(nullptr, uri.c_str(), GDK_CURRENT_TIME, nullptr);
 #endif
 }
 

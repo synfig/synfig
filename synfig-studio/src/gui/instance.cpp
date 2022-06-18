@@ -1099,7 +1099,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 	if(!canvas_interface)
 		return;
 
-	Gtk::MenuItem *item = NULL;
+	Gtk::MenuItem* item = nullptr;
 
 	synfigapp::Action::ParamList param_list,param_list2;
 	param_list=canvas_interface->generate_param_list(value_desc);

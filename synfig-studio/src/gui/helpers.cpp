@@ -52,7 +52,7 @@ using namespace studio;
 
 static bool
 is_old_gtk_adjustment() {
-	static bool is_old = gtk_check_version(3, 18, 0) != NULL;
+	static bool is_old = gtk_check_version(3, 18, 0) != nullptr;
 	return is_old;
 }
 

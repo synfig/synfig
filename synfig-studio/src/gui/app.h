@@ -425,7 +425,7 @@ public:
 	static synfig::Time::Format get_time_format();
 	static void set_time_format(synfig::Time::Format x);
 
-	static bool shutdown_request(GdkEventAny*bleh=NULL);
+	static bool shutdown_request(GdkEventAny* bleh = nullptr);
 
 //	static bool dialog_file(const std::string &title, std::string &filename);
 

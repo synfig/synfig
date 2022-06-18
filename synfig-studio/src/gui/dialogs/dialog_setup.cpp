@@ -754,7 +754,7 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 
 	static const char* languages[][2] = {
 		#include <languages.inc.c>
-		{ NULL, NULL } // final entry without comma to avoid misunderstanding
+		{ nullptr, nullptr } // final entry without comma to avoid misunderstanding
 	};
 
 	ui_language_combo.append("os_LANG", Glib::ustring("(") + _("System Language") + ")");

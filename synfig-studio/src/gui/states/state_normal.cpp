@@ -338,7 +338,7 @@ DuckDrag_Combo::DuckDrag_Combo():
 	bad_drag(),
 	move_only(),
 	is_moving(false),
-	canvas_view_(NULL),
+	canvas_view_(nullptr),
 	scale(false),
 	rotate(false),
 	constrain(false) // Lock aspect for scale

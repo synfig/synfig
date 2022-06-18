@@ -358,7 +358,7 @@ Widget_Defaults::Widget_Defaults():
 		//widget_brush_bline_width->show_all();
 
 		Gtk::ToolItemGroup *tool_item_group = manage(new class Gtk::ToolItemGroup());
-		gtk_tool_item_group_set_label(tool_item_group->gobj(), NULL);
+		gtk_tool_item_group_set_label(tool_item_group->gobj(), nullptr);
 
 		Gtk::ToolPalette *palette = manage(new Gtk::ToolPalette());
 		palette->add(*tool_item_group);

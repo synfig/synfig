@@ -620,11 +620,11 @@ private:
 				Vtemp[i][j][1] = (1.0 - t) * Vtemp[i-1][j][1] + t * Vtemp[i-1][j+1][1];
 			}
 
-		if (Left != NULL)
+		if (Left)
 			for (j = 0; j <= degree; j++)
 				Left[j]  = Vtemp[j][0];
 
-		if (Right != NULL)
+		if (Right)
 			for (j = 0; j <= degree; j++)
 				Right[j] = Vtemp[degree-j][j];
 
@@ -882,7 +882,7 @@ private:
 			/* Find distances for candidate points	*/
 			for (i = 0; i < n_solutions; i++)
 			{
-				p = Bezier(VT, DEGREE, t_candidate[i], (value_type *)NULL, (value_type *)NULL);
+				p = Bezier(VT, DEGREE, t_candidate[i], nullptr, nullptr);
 				new_dist = (P - p).mag_squared();
 				if (new_dist < dist)
 				{

@@ -141,7 +141,7 @@ Splash::Splash():
 	// Create the splash image
 	Gtk::Image* splash_image = manage(new class Gtk::Image());
 	/* Dual-splash code:
-	srand(time(NULL));
+	srand(time(nullptr));
 	const float ran = rand()/float(RAND_MAX);
 	int number = 1;
 	if(ran >0.499999)

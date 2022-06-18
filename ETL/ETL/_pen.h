@@ -116,7 +116,7 @@ public:
 	bool operator!()const { return !data_; }
 
 	generic_pen_row_iterator(pointer data, int pitch):data_(data), pitch_(pitch) { }
-	generic_pen_row_iterator():data_(NULL), pitch_(0) { }
+	generic_pen_row_iterator():data_(nullptr), pitch_(0) { }
 };
 
 template<typename T, typename AT=T>

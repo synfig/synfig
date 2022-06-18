@@ -1962,7 +1962,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 	else
 	if (type == type_transformation)
 	{
-		if (value_desc.parent_is_layer() && param_desc != NULL)
+		if (value_desc.parent_is_layer() && param_desc)
 		{
 			etl::handle<Layer_PasteCanvas> layer = etl::handle<Layer_PasteCanvas>::cast_dynamic(value_desc.get_layer());
 			if (layer)

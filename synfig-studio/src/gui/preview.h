@@ -76,7 +76,7 @@ public:
 		float t;
 		Glib::RefPtr<Gdk::Pixbuf> buf; //at whatever resolution they are rendered at (resized at run time)
 		cairo_surface_t* surface;
-		FlipbookElem(): t(), surface(NULL) { }
+		FlipbookElem(): t(), surface(nullptr) { }
 		//Copy constructor
 		FlipbookElem(const FlipbookElem& other): t(other.t) ,buf(other.buf), surface(cairo_surface_reference(other.surface))
 		{

@@ -1032,7 +1032,7 @@ StateLasso_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synf
 	bool extend_start_join_same=false,extend_start_join_different=false;
 	bool extend_finish_join_same=false,extend_finish_join_different=false;
 	int start_duck_index = 0,finish_duck_index = 0; // initialized to keep the compiler happy; shouldn't be needed though
-	ValueNode_BLine::Handle start_duck_value_node_bline=NULL,finish_duck_value_node_bline=NULL;
+	ValueNode_BLine::Handle start_duck_value_node_bline=nullptr,finish_duck_value_node_bline=nullptr;
 
 	// Find any ducks at the start or end that we might attach to
 	// (this used to only run if we didn't just draw a loop - ie. !loop_bline_flag
@@ -2263,7 +2263,7 @@ StateLasso_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,s
 	if(complete_loop)
 		inserted_bline.push_front((*value_node)(get_canvas()->get_time()).get_list().back().get(BLinePoint()));
 	// store the length of the inserted bline and the number of segments
-	Real inserted_length(bline_length(ValueBase::List(inserted_bline.begin(), inserted_bline.end()), false, NULL));
+	Real inserted_length(bline_length(ValueBase::List(inserted_bline.begin(), inserted_bline.end()), false, nullptr));
 	int inserted_size(inserted_bline.size());
 	// Determine if the bline that the layer belongs to is a Advanced Outline
 	Layer::Handle layer_parent = value_node->find_first_parent_of_type<Layer>([](const Layer::Handle& layer) -> bool {
@@ -2282,7 +2282,7 @@ StateLasso_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,s
 			// Calculate the number of blinepoints of the original bline
 			int value_node_size((*value_node)(get_canvas()->get_time()).get_list().size());
 			// Calculate the length of the original bline
-			Real value_node_length(bline_length(ValueBase((*value_node)(get_canvas()->get_time()).get_list()), false, NULL));
+			Real value_node_length(bline_length(ValueBase((*value_node)(get_canvas()->get_time()).get_list()), false, nullptr));
 			// Retrieve the homogeneous parameter value form the layer
 			bool homogeneous(layer_parent->get_param("homogeneous").get(bool()));
 			//
@@ -2446,7 +2446,7 @@ StateLasso_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std
 	if(complete_loop)
 		inserted_bline.push_back((*value_node)(get_canvas()->get_time()).get_list().front().get(BLinePoint()));
 	// store the length of the inserted bline and the number of segments
-	Real inserted_length(bline_length(ValueBase::List(inserted_bline.begin(), inserted_bline.end()), false, NULL));
+	Real inserted_length(bline_length(ValueBase::List(inserted_bline.begin(), inserted_bline.end()), false, nullptr));
 	int inserted_size(inserted_bline.size());
 	// Determine if the bline that the layer belongs to is a Advanced Outline
 	Layer::Handle layer_parent = value_node->find_first_parent_of_type<Layer>([](const Layer::Handle& layer) -> bool {
@@ -2465,7 +2465,7 @@ StateLasso_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std
 			// Calculate the number of blinepoints of the original bline
 			int value_node_size((*value_node)(get_canvas()->get_time()).get_list().size());
 			// Calculate the length of the original bline
-			Real value_node_length(bline_length(ValueBase((*value_node)(get_canvas()->get_time()).get_list()), false, NULL));
+			Real value_node_length(bline_length(ValueBase((*value_node)(get_canvas()->get_time()).get_list()), false, nullptr));
 			// Retrieve the homogeneous parameter value form the layer
 			bool homogeneous(layer_parent->get_param("homogeneous").get(bool()));
 			//

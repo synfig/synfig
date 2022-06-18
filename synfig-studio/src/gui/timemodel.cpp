@@ -201,7 +201,7 @@ TimeModel::set_bounds_silent(Time lower, Time upper, float fps)
 
 	set_visible_bounds_silent(visible_lower, visible_upper);
 	set_play_bounds_silent(play_bounds_lower, play_bounds_upper, play_bounds_enabled, play_repeat);
-	set_time_silent(time, NULL);
+	set_time_silent(time, nullptr);
 	return true;
 }
 
@@ -256,7 +256,7 @@ TimeModel::set_play_bounds_silent(Time lower, Time upper, bool enabled, bool rep
 	play_bounds_upper = upper;
 	play_bounds_enabled = enabled;
 	play_repeat = repeat;
-	set_time_silent(time, NULL);
+	set_time_silent(time, nullptr);
 	return true;
 }
 

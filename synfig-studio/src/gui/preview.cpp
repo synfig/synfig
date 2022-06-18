@@ -115,7 +115,7 @@ public:
 		return false;
 	}
 
-	virtual bool start_frame(ProgressCallback */*cb*/=NULL)
+	virtual bool start_frame(ProgressCallback* /*cb*/=nullptr)
 	{
 		return true;
 	}
@@ -355,7 +355,7 @@ Widget_Preview::Widget_Preview():
 	toolbar(),
 	play_button(),
 	pause_button(),
-	jackdial(NULL),
+	jackdial(nullptr),
 	jack_enabled(false),
 	jack_time(0),
 	jack_offset(0),
@@ -1253,7 +1253,7 @@ void Widget_Preview::set_jack_enabled(bool value) {
 		if (jack_activate(jack_client) != 0)
 		{
 			jack_client_close(jack_client);
-			jack_client = NULL;
+			jack_client = nullptr;
 			jack_enabled = false;
 			App::jack_unlock();
 		} else {
@@ -1272,7 +1272,7 @@ void Widget_Preview::set_jack_enabled(bool value) {
 		// deinitialize jack
 		jack_deactivate(jack_client);
 		jack_client_close(jack_client);
-		jack_client = NULL;
+		jack_client = nullptr;
 
 		// unlock jack in canvas views
 		App::jack_unlock();

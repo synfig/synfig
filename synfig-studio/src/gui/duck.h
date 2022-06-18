@@ -311,7 +311,7 @@ public:
 
 	//! Sets the origin point.
 	void set_origin(const synfig::Point &x)
-		{ origin_=x; origin_duck_=NULL; }
+		{ origin_=x; origin_duck_=nullptr; }
 	//! Sets the origin point as another duck
 	void set_origin(const Handle &x)
 		{ origin_duck_=x; }
@@ -323,7 +323,7 @@ public:
 		{ return origin_duck_; }
 
 	void set_axis_x_angle(const synfig::Angle &a)
-		{ axis_x_angle_=a; axis_x_angle_duck_=NULL; }
+		{ axis_x_angle_=a; axis_x_angle_duck_=nullptr; }
 	void set_axis_x_angle(const Handle &duck, const synfig::Angle angle = synfig::Angle::zero())
 		{ axis_x_angle_duck_=duck; axis_x_angle_=angle; }
 	synfig::Angle get_axis_x_angle()const
@@ -332,7 +332,7 @@ public:
 		{ return axis_x_angle_duck_; }
 
 	void set_axis_x_mag(const synfig::Real &m)
-		{ axis_x_mag_=m; axis_x_mag_duck_=NULL; }
+		{ axis_x_mag_=m; axis_x_mag_duck_=nullptr; }
 	void set_axis_x_mag(const Handle &duck)
 		{ axis_x_mag_duck_=duck; }
 	synfig::Real get_axis_x_mag()const
@@ -344,7 +344,7 @@ public:
 		{ return synfig::Point(get_axis_x_mag(), get_axis_x_angle()); }
 
 	void set_axis_y_angle(const synfig::Angle &a)
-		{ axis_y_angle_=a; axis_y_angle_duck_=NULL; }
+		{ axis_y_angle_=a; axis_y_angle_duck_=nullptr; }
 	void set_axis_y_angle(const Handle &duck, const synfig::Angle angle = synfig::Angle::zero())
 		{ axis_y_angle_duck_=duck; axis_y_angle_=angle; }
 	synfig::Angle get_axis_y_angle()const
@@ -353,7 +353,7 @@ public:
 		{ return axis_y_angle_duck_; }
 
 	void set_axis_y_mag(const synfig::Real &m)
-		{ axis_y_mag_=m; axis_y_mag_duck_=NULL; }
+		{ axis_y_mag_=m; axis_y_mag_duck_=nullptr; }
 	void set_axis_y_mag(const Handle &duck)
 		{ axis_y_mag_duck_=duck; }
 	synfig::Real get_axis_y_mag()const
