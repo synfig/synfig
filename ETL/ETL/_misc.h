@@ -92,9 +92,6 @@ inline int round_to_int(const double x) {
     else      return static_cast<int>(x - 0.5);
 }
 
-inline int ceil_to_int(const float x) { return static_cast<int>(ceil(x)); }
-inline int ceil_to_int(const double x) { return static_cast<int>(ceil(x)); }
-
 inline int floor_to_int(const float x) { return static_cast<int>(floor(x)); }
 inline int floor_to_int(const double x) { return static_cast<int>(floor(x)); }
 
