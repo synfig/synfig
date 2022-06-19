@@ -202,24 +202,17 @@ ValueNode::get_description(bool show_exported_name)const
 bool
 ValueNode::is_descendant(ValueNode::Handle value_node_dest) const
 {
-	if(!value_node_dest)
-		return false;
-	if(!value_node_dest->parent_count())
-		return false;
-	if(this == value_node_dest)
+	if (this == value_node_dest)
 		return true;
+	if (!value_node_dest)
+		return false;
+	if (!value_node_dest->parent_count())
+		return false;
 
 	ValueNode::Handle value_node_parent;
 	value_node_parent = value_node_dest->find_first_parent_of_type<ValueNode>([=](ValueNode::Handle node) {
-		return this == node;
+		return is_descendant(node);
 	});
-
-	if (!value_node_parent) {
-		// search for grand-parents (and grand-grand-parents and so on)
-		value_node_parent = value_node_dest->find_first_parent_of_type<ValueNode>([=](ValueNode::Handle node) {
-			return node->is_descendant(value_node_dest);
-		});
-	}
 
 	return value_node_parent? true : false;
 }
