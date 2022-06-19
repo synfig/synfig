@@ -50,50 +50,50 @@
 namespace etl {
 
 template <typename T>
-class derivative : public std::unary_function<typename T::argument_type,typename T::result_type>
+class derivative
 {
 	T func;
-	typename T::argument_type epsilon;
+	typename T::time_type epsilon;
 public:
-	explicit derivative(const T &x, const typename T::argument_type &epsilon=0.000001):func(x),epsilon(epsilon) { }
+	explicit derivative(const T &x, const typename T::time_type& epsilon=0.000001):func(x),epsilon(epsilon) { }
 
-	typename T::result_type
-	operator()(const typename T::argument_type &x)const
+	typename T::value_type
+	operator()(const typename T::time_type &x)const
 	{
 		return (func(x+epsilon)-func(x))/epsilon;
 	}
 };
 
 template <typename T>
-class derivative<hermite<T> > : public std::unary_function<typename hermite<T>::argument_type,typename hermite<T>::result_type>
+class derivative<hermite<T> >
 {
 	hermite<T> func;
 public:
 	explicit derivative(const hermite<T> &x):func(x) { }
 
-	typename hermite<T>::result_type
-	operator()(const typename hermite<T>::argument_type &x)const
+	typename hermite<T>::value_type
+	operator()(const typename hermite<T>::time_type &x)const
 	{
 		T a = func[0], b = func[1], c = func[2], d = func[3];
-		typename hermite<T>::argument_type y(1-x);
+		typename hermite<T>::time_type y(1-x);
 		return ((b-a)*y*y + (c-b)*x*y*2 + (d-c)*x*x) * 3;
 	}
 };
 
 template <typename T>
-class integral : public std::binary_function<typename T::argument_type,typename T::argument_type,typename T::result_type>
+class integral
 {
 	T func;
 	int samples;
 public:
 	explicit integral(const T &x, const int &samples=500):func(x),samples(samples) { }
 
-	typename T::result_type
-	operator()(typename T::argument_type x,typename T::argument_type y)const
+	typename T::value_type
+	operator()(typename T::time_type x,typename T::time_type y)const
 	{
-		typename T::result_type ret=0;
+		typename T::value_type ret=0;
 		int i=samples;
-		const typename T::argument_type increment=(y-x)/i;
+		const typename T::time_type increment=(y-x)/i;
 
 		for(;i;i--,x+=increment)
 			ret+=(func(x)+func(x+increment))*increment/2;
