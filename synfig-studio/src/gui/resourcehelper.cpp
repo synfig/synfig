@@ -40,7 +40,7 @@
 
 synfig::String studio::ResourceHelper::get_image_path()
 {
-	std::string imagepath = get_synfig_data_path() + ETL_DIRECTORY_SEPARATOR + "images";
+	std::string imagepath = get_synfig_data_path() + "/images";
 	return imagepath;
 }
 
@@ -57,12 +57,10 @@ synfig::String studio::ResourceHelper::get_synfig_data_path()
 {
 	std::string synfig_datadir;
 	if (char* synfig_root = getenv("SYNFIG_ROOT")) {
-		synfig_datadir = std::string(synfig_root)
-			+ ETL_DIRECTORY_SEPARATOR + "share/synfig";
+		synfig_datadir = std::string(synfig_root) + "/share/synfig";
 	} else {
 #if defined CMAKE_BUILD || defined _WIN32
-		synfig_datadir = App::get_base_path()
-             + ETL_DIRECTORY_SEPARATOR + "share/synfig";
+		synfig_datadir = App::get_base_path() + "/share/synfig";
 #else
 		synfig_datadir = SYNFIG_DATADIR;
 #endif
@@ -82,7 +80,7 @@ synfig::String studio::ResourceHelper::get_icon_path()
 
 synfig::String studio::ResourceHelper::get_plugin_path()
 {
-	std::string pluginpath = get_synfig_data_path() + ETL_DIRECTORY_SEPARATOR + "plugins";
+	std::string pluginpath = get_synfig_data_path() + "/plugins";
 	return pluginpath;
 }
 
@@ -93,7 +91,7 @@ synfig::String studio::ResourceHelper::get_plugin_path(const synfig::String& plu
 
 synfig::String studio::ResourceHelper::get_sound_path()
 {
-	std::string soundpath = get_synfig_data_path() + ETL_DIRECTORY_SEPARATOR + "sounds";
+	std::string soundpath = get_synfig_data_path() + "/sounds";
 	return soundpath;
 }
 
@@ -104,7 +102,7 @@ synfig::String studio::ResourceHelper::get_sound_path(const synfig::String& soun
 
 synfig::String studio::ResourceHelper::get_ui_path()
 {
-	std::string uipath = get_synfig_data_path() + ETL_DIRECTORY_SEPARATOR + "ui";
+	std::string uipath = get_synfig_data_path() + "/ui";
 	return uipath;
 }
 
@@ -115,7 +113,7 @@ synfig::String studio::ResourceHelper::get_ui_path(const synfig::String& ui_file
 
 synfig::String studio::ResourceHelper::get_brush_path()
 {
-	std::string brushpath = get_synfig_data_path() + ETL_DIRECTORY_SEPARATOR + "brushes";
+	std::string brushpath = get_synfig_data_path() + "/brushes";
 	return brushpath;
 }
 
@@ -126,7 +124,7 @@ synfig::String studio::ResourceHelper::get_brush_path(const synfig::String& brus
 
 synfig::String studio::ResourceHelper::get_css_path()
 {
-	std::string csspath = get_synfig_data_path() + ETL_DIRECTORY_SEPARATOR + "css";
+	std::string csspath = get_synfig_data_path() + "/css";
 	return csspath;
 }
 

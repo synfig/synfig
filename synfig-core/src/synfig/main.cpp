@@ -223,11 +223,11 @@ synfig::Main::Main(const synfig::String& rootpath,ProgressCallback *cb):
 	// Paths
 
 	root_path       = rootpath;
-	bin_path        = root_path  + ETL_DIRECTORY_SEPARATOR + "bin";
-	share_path      = root_path  + ETL_DIRECTORY_SEPARATOR + "share";
-	locale_path     = share_path + ETL_DIRECTORY_SEPARATOR + "locale";
-	lib_path        = root_path  + ETL_DIRECTORY_SEPARATOR + "lib";
-	lib_synfig_path = lib_path   + ETL_DIRECTORY_SEPARATOR + "synfig";
+	bin_path        = root_path  + "/bin";
+	share_path      = root_path  + "/share";
+	locale_path     = share_path + "/locale";
+	lib_path        = root_path  + "/lib";
+	lib_synfig_path = lib_path   + "/synfig";
 
 	// Add initialization after this point
 
@@ -340,7 +340,7 @@ synfig::Main::Main(const synfig::String& rootpath,ProgressCallback *cb):
 	#ifdef SYSCONFDIR
 		locations.push_back(SYSCONFDIR"/" MODULE_LIST_FILENAME);
 	#endif
-		locations.push_back(root_path + ETL_DIRECTORY_SEPARATOR + "etc" + ETL_DIRECTORY_SEPARATOR + MODULE_LIST_FILENAME);
+		locations.push_back(root_path + "/etc/" + MODULE_LIST_FILENAME);
 	#ifndef _WIN32
 		locations.push_back("/usr/local/etc/" MODULE_LIST_FILENAME);
 	#endif

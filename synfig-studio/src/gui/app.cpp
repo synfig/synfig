@@ -1454,8 +1454,7 @@ void App::init(const synfig::String& rootpath)
 
 	String path_to_plugins = ResourceHelper::get_plugin_path();
 
-	String path_to_user_plugins = synfigapp::Main::get_user_app_directory()
-		+ ETL_DIRECTORY_SEPARATOR + "plugins";
+	String path_to_user_plugins = synfigapp::Main::get_user_app_directory() + "/plugins";
 	
 	ui_interface_=new GlobalUIInterface();
 
@@ -3863,7 +3862,7 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
 std::string
 App::get_temporary_directory()
 {
-	return synfigapp::Main::get_user_app_directory() + ETL_DIRECTORY_SEPARATOR + "tmp";
+	return synfigapp::Main::get_user_app_directory() + "/tmp";
 }
 
 synfig::FileSystemTemporary::Handle
@@ -4194,7 +4193,7 @@ App::new_instance()
 void
 App::open_from_plugin(const std::string& filename, const std::string& importer_id)
 {
-	String tmp_filename = get_temporary_directory() + ETL_DIRECTORY_SEPARATOR + "synfig";
+	String tmp_filename = get_temporary_directory() + "/synfig";
 
 	String filename_processed;
 	struct stat buf;

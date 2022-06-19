@@ -171,9 +171,7 @@ gl::Shaders::~Shaders()
 String
 gl::Shaders::get_shader_path()
 {
-	return Main::get_instance().lib_synfig_path
-		 + ETL_DIRECTORY_SEPARATOR
-		 + "glsl";
+	return Main::get_instance().lib_synfig_path + "/glsl";
 }
 
 String
