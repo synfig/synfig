@@ -80,7 +80,7 @@ static synfig::Point3 firstInkChangePosition(
 {
   double dist = (end - start).mag();
 
-  int sampleMax = ceil_to_int(dist), sampleCount = sampleMax + 1;
+  int sampleMax = std::ceil(dist), sampleCount = sampleMax + 1;
   double sampleMaxD = double(sampleMax);
 
   // Get first ink color

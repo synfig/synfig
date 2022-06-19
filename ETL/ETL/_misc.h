@@ -32,7 +32,6 @@
 #define __ETL__MISC_H_
 
 /* === H E A D E R S ======================================================= */
-#include <cmath>
 
 /* === M A C R O S ========================================================= */
 
@@ -91,12 +90,6 @@ inline int round_to_int(const double x) {
 	if (x>=0) return static_cast<int>(x + 0.5);
     else      return static_cast<int>(x - 0.5);
 }
-
-inline int ceil_to_int(const float x) { return static_cast<int>(ceil(x)); }
-inline int ceil_to_int(const double x) { return static_cast<int>(ceil(x)); }
-
-inline int floor_to_int(const float x) { return static_cast<int>(floor(x)); }
-inline int floor_to_int(const double x) { return static_cast<int>(floor(x)); }
 
 };
 
