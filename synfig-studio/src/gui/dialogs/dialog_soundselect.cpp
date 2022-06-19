@@ -92,7 +92,7 @@ canvas_interface(ci)
 	table->attach(*offsetLabel, 0, 1, 1, 2, Gtk::SHRINK | Gtk::FILL, Gtk::SHRINK | Gtk::FILL, 0, 0);
 	table->attach(offset, 1, 2, 1, 2, Gtk::EXPAND | Gtk::FILL, Gtk::SHRINK | Gtk::FILL, 0, 0);
 
-	okbutton = manage(new Gtk::Button(Gtk::StockID("gtk-ok")));
+	okbutton = manage(new Gtk::Button(_("_OK"), true));
 	add_action_widget(*okbutton, 0);
 
 	get_content_area()->show_all();

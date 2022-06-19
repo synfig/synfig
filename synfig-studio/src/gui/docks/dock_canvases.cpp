@@ -66,7 +66,7 @@ Dock_Canvases::Dock_Canvases():
 
 /*  // \todo Implement canvas management in canvas browser
 	add_button(
-		Gtk::StockID("synfig-canvas_new"),
+		("synfig-canvas_new"),
 		_("Insert a new canvas")
 	)->signal_clicked().connect(
 		sigc::mem_fun(
@@ -76,7 +76,7 @@ Dock_Canvases::Dock_Canvases():
 	);
 
 	add_button(
-		Gtk::StockID("gtk-delete"),
+		("_Delete"),
 		_("Remove selected canvas")
 	)->signal_clicked().connect(
 		sigc::mem_fun(
@@ -86,7 +86,7 @@ Dock_Canvases::Dock_Canvases():
 	);
 
 	add_button(
-		Gtk::StockID("synfig-rename"),
+		("synfig-rename"),
 		_("Rename selected canvas")
 	)->signal_clicked().connect(
 		sigc::mem_fun(
