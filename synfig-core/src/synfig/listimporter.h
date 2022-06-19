@@ -62,7 +62,7 @@ public:
 
 	~ListImporter();
 
-	virtual bool get_frame(Surface &surface, const RendDesc &renddesc, Time time, ProgressCallback *cb=NULL);
+	virtual bool get_frame(Surface &surface, const RendDesc &renddesc, Time time, ProgressCallback* cb = nullptr);
 	virtual rendering::Surface::Handle get_frame(const RendDesc &renddesc, const Time &time);
 	virtual bool is_animated();
 

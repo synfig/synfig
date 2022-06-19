@@ -68,7 +68,7 @@ SYNFIG_LAYER_SET_VERSION(Noise,"0.0");
 Noise::Noise():
 	Layer_Composite(1.0,Color::BLEND_COMPOSITE),
 	param_gradient(ValueBase(Gradient(Color::black(), Color::white()))),
-	param_random(ValueBase(int(time(NULL)))),
+	param_random(ValueBase(int(time(nullptr)))),
 	param_size(ValueBase(Vector(1,1))),
 	param_smooth(ValueBase(int(RandomNoise::SMOOTH_COSINE))),
 	param_detail(ValueBase(int(4))),

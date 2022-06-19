@@ -53,7 +53,7 @@ public:
 	~Target_Null_Tile() {  }
 	virtual bool add_tile(const synfig::Surface &/*surface*/, int /*x*/, int /*y*/) { return true; }
 
-	virtual bool start_frame(ProgressCallback */*cb*/=NULL)
+	virtual bool start_frame(ProgressCallback* /*cb*/ = nullptr)
 		{ return true; }
 
 	virtual void end_frame() { return; }

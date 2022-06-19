@@ -150,10 +150,10 @@ bmp::bmp(const char *Filename, const synfig::TargetParam& params):
 	rowspan(),
 	imagecount(),
 	multi_image(false),
-	file(NULL),
+	file(nullptr),
 	filename(Filename),
-	buffer(NULL),
-	color_buffer(NULL),
+	buffer(nullptr),
+	color_buffer(nullptr),
 	pf()
 {
 	set_alpha_mode(TARGET_ALPHA_MODE_FILL);
@@ -164,7 +164,7 @@ bmp::~bmp()
 {
 	if(file)
 		fclose(file);
-	file=NULL;
+	file = nullptr;
 	delete [] buffer;
 	delete [] color_buffer;
 }
@@ -205,7 +205,7 @@ bmp::end_frame()
 		fclose(file);
 	delete [] color_buffer;
 	color_buffer=0;
-	file=NULL;
+	file = nullptr;
 	imagecount++;
 }
 

@@ -129,7 +129,7 @@ Svg_parser::load_svg_canvas(const std::string& filepath, String &errors, String 
 
 Svg_parser::Svg_parser(const Gamma &gamma):
 	gamma(gamma),
-	nodeRoot(NULL),
+	nodeRoot(nullptr),
 	width(0),
 	height(0),
 	kux(60),

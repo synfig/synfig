@@ -588,8 +588,8 @@ Renderer::optimize(Task::List &list) const
 		std::atomic<int> calls_count(0), *calls_count_ptr = &calls_count;
 		std::atomic<int> optimizations_count(0), *optimizations_count_ptr = &optimizations_count;
 		#else
-		std::atomic<int> *calls_count_ptr = NULL;
-		std::atomic<int> *optimizations_count_ptr = NULL;
+		std::atomic<int>* calls_count_ptr = nullptr;
+		std::atomic<int>* optimizations_count_ptr = nullptr;
 		#endif
 
 		if (for_list)
@@ -879,7 +879,7 @@ Renderer::log(
 	int level ) const
 {
 	bool use_stack = false;
-	const Optimizer::RunParams* p = optimization_stack ? optimization_stack->get_level(level) : NULL;
+	const Optimizer::RunParams* p = optimization_stack ? optimization_stack->get_level(level) : nullptr;
 	Task::Handle t = task;
 	if (p && p->orig_task == t)
 		{ use_stack = true; t = p->ref_task; }
@@ -949,14 +949,14 @@ Renderer::log(
 				t->target_surface->get_id() )
 		      : "" ));
 		for(Task::List::const_iterator i = t->sub_tasks.begin(); i != t->sub_tasks.end(); ++i)
-			log(logfile, *i, use_stack ? optimization_stack : NULL, level+1);
+			log(logfile, *i, use_stack ? optimization_stack : nullptr, level+1);
 	}
 	else
 	{
 		debug::Log::info(logfile,
 			String(level*2, ' ')
 			+ (use_stack ? "*" : "")
-			+ "NULL" );
+			+ "nullptr" );
 	}
 }
 
@@ -981,7 +981,7 @@ Renderer::log(
 void
 Renderer::initialize()
 {
-	if (renderers != NULL || queue != NULL)
+	if (renderers || queue)
 		synfig::error("rendering::Renderer already initialized");
 
 	// init debug options
@@ -1001,7 +1001,7 @@ Renderer::initialize()
 void
 Renderer::deinitialize()
 {
-	if (renderers == NULL || queue == NULL)
+	if (!renderers || !queue)
 		synfig::error("rendering::Renderer not initialized");
 
 	while(!get_renderers().empty())
@@ -1010,7 +1010,9 @@ Renderer::deinitialize()
 	deinitialize_renderers();
 
 	delete renderers;
+	renderers = nullptr;
 	delete queue;
+	queue = nullptr;
 }
 
 void
@@ -1041,7 +1043,7 @@ Renderer::get_renderer(const String &name)
 const std::map<String, Renderer::Handle>&
 Renderer::get_renderers()
 {
-	if (renderers == NULL)
+	if (!renderers)
 		synfig::error("rendering::Renderer not initialized");
 	return *renderers;
 }

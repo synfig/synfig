@@ -78,15 +78,15 @@ png_trgt::png_out_warning(png_struct *png_data,const char *msg)
 //Target *png_trgt::New(const char *filename){	return new png_trgt(filename);}
 
 png_trgt::png_trgt(const char *Filename, const synfig::TargetParam &params):
-	file(NULL),
-	png_ptr(NULL),
-	info_ptr(NULL),
+	file(nullptr),
+	png_ptr(nullptr),
+	info_ptr(nullptr),
 	multi_image(),
 	ready(false),
 	imagecount(),
 	filename(Filename),
-	buffer(NULL),
-	color_buffer(NULL),
+	buffer(nullptr),
+	color_buffer(nullptr),
 	sequence_separator(params.sequence_separator)
 { }
 
@@ -94,7 +94,7 @@ png_trgt::~png_trgt()
 {
 	if(file)
 		fclose(file);
-	file=NULL;
+	file=nullptr;
 	delete [] buffer;
 	delete [] color_buffer;
 }
@@ -123,7 +123,7 @@ png_trgt::end_frame()
 
 	if(file && file!=stdout)
 		fclose(file);
-	file=NULL;
+	file=nullptr;
 	imagecount++;
 	ready=false;
 }
@@ -177,7 +177,7 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 	{
 		synfig::error("Unable to setup PNG info struct");
 		fclose(file);
-		png_destroy_write_struct(&png_ptr,(png_infopp)NULL);
+		png_destroy_write_struct(&png_ptr, nullptr);
 		return false;
 	}
 

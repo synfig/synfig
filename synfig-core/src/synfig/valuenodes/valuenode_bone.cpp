@@ -718,7 +718,7 @@ ValueNode_Bone::unique_name(String name)const
 }
 
 // checks whether the current object is an ancestor of the supplied bone
-// returns a handle to NULL if it isn't
+// returns a handle to nullptr if it isn't
 // if there's a loop in the ancestry it returns a handle to the valuenode where the loop is detected
 // otherwise it returns the current object
 ValueNode_Bone::ConstHandle

@@ -486,7 +486,7 @@ public:
 	//! Returns the localised version of the given layer parameter
 	const String get_param_local_name(const String &param_name)const;
 
-	//! Returns a handle to the Parent PasteCanvas layer or NULL if layer belongs to root canvas
+	//! Returns a handle to the Parent PasteCanvas layer or nullptr if layer belongs to root canvas
 	/*! Notice that it could return the wrong handle to PasteCanvas if the layer */
 	/*! belongs to a exported canvas (canvas can be referenced multiple times)*/
 	Layer::LooseHandle get_parent_paste_canvas_layer()const;
@@ -597,7 +597,7 @@ public:
 	**	\param surface		Pointer to Surface to render to.
 	**	\param quality		The requested quality-level to render at.
 	**	\param renddesc		The associated RendDesc.
-	**	\param cb			Pointer to callback object. May be NULL if there is no callback.
+	**	\param cb			Pointer to callback object. May be nullptr if there is no callback.
 	**	\return \c true on success, \c false on failure
 	**	\see Context::accelerated_render()
 	*/

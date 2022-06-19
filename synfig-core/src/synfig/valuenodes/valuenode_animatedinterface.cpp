@@ -862,7 +862,7 @@ public:
 ValueNode_AnimatedInterfaceConst::ValueNode_AnimatedInterfaceConst(ValueNode &node):
 	ValueNode_Interface(node),
 	interpolation_(INTERPOLATION_UNDEFINED),
-	interpolator_(NULL)
+	interpolator_(nullptr)
 {
 	interpolator_ = new Internal::Constant<ValueBase>(*this);
 }

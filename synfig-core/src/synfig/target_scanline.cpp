@@ -241,9 +241,9 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 								Color *colordata= start_scanline(y + yoff);
 								if(!colordata)
 								{
-//									throw(string("add_frame(): call to start_scanline(y) returned NULL"));
+//									throw(string("add_frame(): call to start_scanline(y) returned nullptr"));
 									if(cb)
-										cb->error(_("add_frame(): call to start_scanline(y) returned NULL"));
+										cb->error(_("add_frame(): call to start_scanline(y) returned nullptr"));
 									return false;
 								}
 
@@ -397,9 +397,9 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 						Color *colordata= start_scanline(y + yoff);
 						if(!colordata)
 						{
-//							throw(string("add_frame(): call to start_scanline(y) returned NULL"));
+//							throw(string("add_frame(): call to start_scanline(y) returned nullptr"));
 							if(cb)
-								cb->error(_("add_frame(): call to start_scanline(y) returned NULL"));
+								cb->error(_("add_frame(): call to start_scanline(y) returned nullptr"));
 							return false;
 						}
 
@@ -515,9 +515,9 @@ Target_Scanline::add_frame(const synfig::Surface *surface, ProgressCallback *cb)
 		Color *colordata= start_scanline(y);
 		if(!colordata)
 		{
-//			throw(string("add_frame(): call to start_scanline(y) returned NULL"));
+//			throw(string("add_frame(): call to start_scanline(y) returned nullptr"));
 			if (cb)
-				cb->error(_("add_frame(): call to start_scanline(y) returned NULL"));
+				cb->error(_("add_frame(): call to start_scanline(y) returned nullptr"));
 			return false;
 		}
 

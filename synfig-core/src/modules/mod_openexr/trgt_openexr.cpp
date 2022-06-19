@@ -62,9 +62,9 @@ exr_trgt::exr_trgt(const char *Filename, const synfig::TargetParam &params):
 	imagecount(0),
 	scanline(),
 	filename(Filename),
-	exr_file(NULL),
-	buffer(NULL),
-	buffer_color(NULL)
+	exr_file(nullptr),
+	buffer(nullptr),
+	buffer_color(nullptr)
 {
 	// OpenEXR uses linear gamma
 	sequence_separator = params.sequence_separator;

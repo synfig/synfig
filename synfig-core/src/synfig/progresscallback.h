@@ -73,7 +73,7 @@ public:
 	{
 		//make sure we don't "inherit" if our subcallback is invalid
 		if(!cb || !cb->valid())
-			cb = NULL;
+			cb = nullptr;
 	}
 	virtual bool task(const String &task) { if(cb)return cb->task(task); return true; }
 	virtual bool error(const String &task) { if(cb)return cb->error(task); return true; }

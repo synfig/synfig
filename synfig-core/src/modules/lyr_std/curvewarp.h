@@ -78,7 +78,7 @@ public:
 
 	virtual bool set_param(const String &param, const ValueBase &value);
 	virtual ValueBase get_param(const String &param)const;
-	virtual Point transform(const Point &point_, Real *dist=NULL, Real *along=0, int quality=10)const;
+	virtual Point transform(const Point &point_, Real *dist=nullptr, Real *along=nullptr, int quality=10)const;
 	virtual Color get_color(Context context, const Point &pos)const;
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	Layer::Handle hit_check(Context context, const Point &point)const;

@@ -113,7 +113,7 @@ public:
 		BufferLock(const BufferLock &other): chunk()
 			{ *this = other; }
 		~BufferLock()
-			{ set(NULL); }
+			{ set(nullptr); }
 		BufferLock& operator = (const BufferLock &other)
 			{ set(other.chunk); return *this; }
 		GLuint get_id() const
@@ -152,7 +152,7 @@ public:
 		VertexArrayLock(const VertexArrayLock &other): vertex_array()
 			{ *this = other; }
 		~VertexArrayLock()
-			{ set(NULL); }
+			{ set(nullptr); }
 		VertexArrayLock& operator = (const VertexArrayLock &other)
 			{ set(other.vertex_array); return *this; }
 		GLuint get_id() const

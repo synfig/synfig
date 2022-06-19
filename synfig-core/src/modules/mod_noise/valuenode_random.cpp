@@ -66,7 +66,7 @@ ValueNode_Random::ValueNode_Random(const ValueBase &value):
 {
 	Vocab ret(get_children_vocab());
 	set_children_vocab(ret);
-	random.set_seed(time(NULL));
+	random.set_seed(time(nullptr));
 
 	set_link("radius",ValueNode_Const::create(Real(1)));
 	set_link("seed",ValueNode_Const::create(random.get_seed()));
@@ -227,7 +227,7 @@ ValueNode_Random::randomize_seed()
 	ValueNode::Handle link = get_link_vfunc(i);
 	if(!link->is_exported() && link->get_name() == "constant")
 	{
-		int seed = time(NULL) + rand();
+		int seed = time(nullptr) + rand();
 		if (seed < 0) seed = -seed;
 		random.set_seed(seed);
 		set_link(i, ValueNode_Const::create(seed));

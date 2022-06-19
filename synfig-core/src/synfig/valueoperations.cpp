@@ -227,7 +227,7 @@ types_namespace::TypeWeightedValueBase* ValueAverage::get_weighted_type_for(Type
 	for(unsigned int i = 0; i < sizeof(allowed_types)/sizeof(allowed_types[0]); ++i)
 		if (allowed_types[i]->get_contained_type() == type)
 			return allowed_types[i];
-	return NULL;
+	return nullptr;
 }
 
 Type& ValueAverage::get_type_from_weighted(Type& type)
@@ -241,7 +241,7 @@ Type& ValueAverage::get_type_from_weighted(Type& type)
 Type& ValueAverage::convert_to_weighted_type(Type &type)
 {
 	Type* t = get_weighted_type_for(type);
-	return t == NULL ? type_nil : *t;
+	return t? *t : type_nil;
 }
 
 bool ValueAverage::check_weighted_type(Type& type) {
@@ -263,7 +263,7 @@ ValueBase ValueAverage::average_weighted(const ValueBase &weighted_list, const V
 	for(ValueBase::List::const_iterator i = list.begin(); i != list.end(); ++i) {
 		types_namespace::TypeWeightedValueBase *t =
 			dynamic_cast<types_namespace::TypeWeightedValueBase *>(&(i->get_type()));
-		if (t == NULL) continue;
+		if (!t) continue;
 		if (!check_weighted_type(*t)) continue;
 		weights_list.push_back( t->extract_weight(*i) );
 		values_list.push_back( t->extract_value(*i) );
@@ -282,7 +282,7 @@ void ValueAverage::set_average_value_weighted(ValueBase &weighted_list, const Va
 	if (list.empty()) return;
 	types_namespace::TypeWeightedValueBase *t =
 		dynamic_cast<types_namespace::TypeWeightedValueBase *>(&(list.front().get_type()));
-	if (t == NULL) return;
+	if (!t) return;
 	if (!check_weighted_type(*t)) return;
 
 	ValueBase::List values_list;

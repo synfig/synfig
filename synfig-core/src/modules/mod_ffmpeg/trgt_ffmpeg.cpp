@@ -86,7 +86,7 @@ ffmpeg_trgt::does_video_codec_support_alpha_channel(const synfig::String &video_
 ffmpeg_trgt::ffmpeg_trgt(const char *Filename, const synfig::TargetParam &params):
 	imagecount(0),
 	multi_image(false),
-	file(NULL),
+	file(nullptr),
 	filename(Filename),
 	sound_filename(""),
 	bitrate()
@@ -120,7 +120,7 @@ ffmpeg_trgt::~ffmpeg_trgt()
 		waitpid(pid,&status,0);
 #endif
 	}
-	file=NULL;
+	file=nullptr;
 
 	// Remove temporary sound file
 	if (g_file_test(sound_filename.c_str(), G_FILE_TEST_EXISTS)) {
@@ -168,7 +168,7 @@ ffmpeg_trgt::set_rend_desc(RendDesc *given_desc)
 }
 
 bool
-ffmpeg_trgt::init(ProgressCallback *cb=NULL)
+ffmpeg_trgt::init(ProgressCallback* cb = nullptr)
 {
 
 	bool with_sound = true;
@@ -211,7 +211,7 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 		}
 		char buf[128];
 		while(!feof(pipe)) {
-			if(fgets(buf, 128, pipe) != NULL)
+			if(fgets(buf, 128, pipe))
 				result += buf;
 		}
 		/* `which` exit status
@@ -310,8 +310,8 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 	// See: http://eli.thegreenplace.net/2011/01/28/on-spaces-in-the-paths-of-programs-and-files-on-windows/
 	command = "\"" + command + "\"";
 	
-	const wchar_t* wcommand = reinterpret_cast<const wchar_t*>(g_utf8_to_utf16(command.c_str(), -1, NULL, NULL, NULL));
-	const wchar_t* wmode = reinterpret_cast<const wchar_t*>(g_utf8_to_utf16(POPEN_BINARY_WRITE_TYPE, -1, NULL, NULL, NULL));
+	const wchar_t* wcommand = reinterpret_cast<const wchar_t*>(g_utf8_to_utf16(command.c_str(), -1, nullptr, nullptr, nullptr));
+	const wchar_t* wmode = reinterpret_cast<const wchar_t*>(g_utf8_to_utf16(POPEN_BINARY_WRITE_TYPE, -1, nullptr, nullptr, nullptr));
 	
 	file=_wpopen(wcommand, wmode);
 
@@ -354,7 +354,7 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 			args[idx++] = &vargs[i][0];
 			//synfig::info(&vargs[i][0]);
 		}
-		args[idx++] = (char *)NULL;
+		args[idx++] = (char*)nullptr;
 		
 		execvp(ffmpeg_binary_path.c_str(), args);
 

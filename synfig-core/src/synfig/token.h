@@ -75,7 +75,7 @@ public:
 	}
 
 	inline void reset()
-		{ *pointer = NULL; }
+		{ *pointer = nullptr; }
 	inline bool is_valid() const
 		{ return pointer; }
 

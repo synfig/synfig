@@ -411,10 +411,10 @@ class TypeCanvas: public Type
 		etl::loose_handle<Canvas> lh;
 		mutable CanvasPtr p;
 #ifdef TRY_FIX_FOR_BUG_27
-		Inner(): fake_handle(false), p(NULL) { }
+		Inner(): fake_handle(false), p(nullptr) { }
 		~Inner() { if (fake_handle) h->ref(); }
 #else
-		Inner(): p(NULL) { }
+		Inner(): p(nullptr) { }
 #endif
 		Inner& operator= (const etl::loose_handle<Canvas> &other)
 		{
@@ -541,7 +541,7 @@ class TypeBoneValueNode: public Type
 		mutable etl::loose_handle<ValueNode_Bone> lh;
 		mutable ValueNode_BonePtr p;
 
-		Inner(): p(NULL) { }
+		Inner(): p(nullptr) { }
 		Inner& operator= (const etl::handle<ValueNode_Bone> &other) { h = other; return *this; }
 		Inner& operator= (const etl::loose_handle<ValueNode_Bone> &other) { h = other; return *this; }
 		Inner& operator= (const ValueNode_BonePtr &other) { h = other; return *this; }

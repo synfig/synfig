@@ -56,8 +56,8 @@ ppm::ppm(const char *Filename, const synfig::TargetParam &params):
 	multi_image(false),
 	file(),
 	filename(Filename),
-	color_buffer(NULL),
-	buffer(NULL),
+	color_buffer(nullptr),
+	buffer(nullptr),
 	sequence_separator(params.sequence_separator)
 {
 	set_alpha_mode(TARGET_ALPHA_MODE_FILL);

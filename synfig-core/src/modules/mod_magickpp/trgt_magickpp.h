@@ -71,13 +71,13 @@ public:
 		width(),
 		height(),
 		filename(filename),
-		buffer1(NULL),
-		start_pointer(NULL),
-		buffer_pointer(NULL),
-		buffer2(NULL),
-		previous_buffer_pointer(NULL),
+		buffer1(nullptr),
+		start_pointer(nullptr),
+		buffer_pointer(nullptr),
+		buffer2(nullptr),
+		previous_buffer_pointer(nullptr),
 		transparent(),
-		color_buffer(NULL),
+		color_buffer(nullptr),
 		sequence_separator(params.sequence_separator)
 	{ }
 	virtual ~magickpp_trgt();

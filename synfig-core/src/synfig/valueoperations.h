@@ -115,7 +115,7 @@ public:
 
 	static bool check_weighted_type(Type& type);
 	static bool check_type(Type& type)
-		{ return get_weighted_type_for(type) != NULL; }
+		{ return get_weighted_type_for(type); }
 	static bool check_type(const ValueBase &value)
 		{ return check_type(value.get_type()); }
 
@@ -181,7 +181,7 @@ public:
 
 	template<typename ConstIterator>
 	static ValueBase average_generic(ConstIterator begin, ConstIterator end, const ValueBase &default_value = ValueBase())
-		{ return average_generic(begin, end, (Real*)NULL, (Real*)NULL, default_value); }
+		{ return average_generic(begin, end, (Real*)nullptr, (Real*)nullptr, default_value); }
 
 	static ValueBase average(const ValueBase &list, const ValueBase &weights, const ValueBase &default_value)
 	{
@@ -245,7 +245,7 @@ public:
 
 	template<typename Iterator>
 	static void set_average_value_generic(Iterator begin, Iterator end, const ValueBase &value)
-		{ set_average_value_generic(begin, end, (Real*)NULL, (Real*)NULL, value); }
+		{ set_average_value_generic(begin, end, (Real*)nullptr, (Real*)nullptr, value); }
 
 	static void set_average_value(ValueBase &list, const ValueBase &weights, const ValueBase &value)
 	{

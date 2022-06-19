@@ -61,7 +61,7 @@ public:
 		// Compile-time checks
 
 		// Type gl::Identifier should be identical to GLuint
-		Identifier **id = (GLuint**)NULL;
+		Identifier **id = (GLuint**)nullptr;
 
 		return id;
 	}
