@@ -122,7 +122,7 @@ inline double stratoi(const std::string &str)
 
 inline bool is_separator(char c)
 {
-	return c == ETL_DIRECTORY_SEPARATOR0 || c == ETL_DIRECTORY_SEPARATOR1;
+	return c == '/' || c == '\\';
 }
 
 inline std::string

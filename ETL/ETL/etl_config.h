@@ -4,9 +4,7 @@
 #include <ETL/etl_profile.h>
 
 #define ETL_DIRECTORY_SEPARATORS	"/\\"
-#define ETL_DIRECTORY_SEPARATOR0	'/'
-#define ETL_DIRECTORY_SEPARATOR1	'\\'
 
-#define ETL_DIRECTORY_SEPARATOR		ETL_DIRECTORY_SEPARATOR0
+#define ETL_DIRECTORY_SEPARATOR		'/'
 
 #endif
