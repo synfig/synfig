@@ -60,6 +60,7 @@
 
 #include <gui/app.h>
 #include <gui/dials/keyframedial.h>
+#include <gui/dials/resolutiondial.h>
 #include <gui/docks/dockbook.h>
 #include <gui/docks/dockmanager.h>
 #include <gui/docks/dock_toolbox.h>
@@ -520,7 +521,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	statusbar                (manage(new class Gtk::Statusbar())),
 	progressbar              (manage(new class Gtk::ProgressBar())),
 	toggleducksdial          (Gtk::IconSize::from_name("synfig-small_icon_16x16")),
-	resolutiondial           (Gtk::IconSize::from_name("synfig-small_icon_16x16")),
+	resolutiondial_          (new studio::ResolutionDial()),
 	future_onion_adjustment_ (Gtk::Adjustment::create(0,0,ONION_SKIN_FUTURE,1,1,0)),
 	past_onion_adjustment_   (Gtk::Adjustment::create(1,0,ONION_SKIN_PAST,1,1,0)),
 
@@ -715,6 +716,7 @@ CanvasView::~CanvasView()
 	canvas_interface()->signal_dirty_preview().clear();
 
 	delete canvas_options;
+	delete resolutiondial_;
 
 	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
 		info("CanvasView::~CanvasView(): Deleted");
@@ -1176,14 +1178,14 @@ CanvasView::create_top_toolbar()
 	displaybar->append(*create_tool_separator());
 
 	// ResolutionDial widget
-	resolutiondial.update_lowres(work_area->get_low_resolution_flag());
-	resolutiondial.signal_increase_resolution().connect(
+	resolutiondial_->update_lowres(work_area->get_low_resolution_flag());
+	resolutiondial_->signal_increase_resolution().connect(
 		sigc::mem_fun(*this, &CanvasView::decrease_low_res_pixel_size));
-	resolutiondial.signal_decrease_resolution().connect(
+	resolutiondial_->signal_decrease_resolution().connect(
 		sigc::mem_fun(*this, &CanvasView::increase_low_res_pixel_size));
-	resolutiondial.signal_use_low_resolution().connect(
+	resolutiondial_->signal_use_low_resolution().connect(
 		sigc::mem_fun(*this, &CanvasView::toggle_low_res_pixel_flag));
-	resolutiondial.insert_to_toolbar(*displaybar);
+	resolutiondial_->insert_to_toolbar(*displaybar);
 
 	// Separator
 	displaybar->append(*create_tool_separator());
@@ -2554,7 +2556,7 @@ CanvasView::decrease_low_res_pixel_size()
 	Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
 	action->set_active(work_area->get_low_resolution_flag());
 	// Update toggle low res button
-	resolutiondial.update_lowres(work_area->get_low_resolution_flag());
+	resolutiondial_->update_lowres(work_area->get_low_resolution_flag());
 	changing_resolution_=false;
 }
 
@@ -2574,7 +2576,7 @@ CanvasView::increase_low_res_pixel_size()
 		Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
 		action->set_active(true);
 		// Update the toggle low res button
-		resolutiondial.update_lowres(true);
+		resolutiondial_->update_lowres(true);
 		changing_resolution_=false;
 		return;
 	}
@@ -2593,7 +2595,7 @@ CanvasView::increase_low_res_pixel_size()
 	Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
 	action->set_active(work_area->get_low_resolution_flag());
 	// Update toggle low res button
-	resolutiondial.update_lowres(work_area->get_low_resolution_flag());
+	resolutiondial_->update_lowres(work_area->get_low_resolution_flag());
 	changing_resolution_=false;
 }
 
@@ -2605,7 +2607,7 @@ CanvasView::toggle_low_res_pixel_flag()
 	changing_resolution_=true;
 	work_area->toggle_low_resolution_flag();
 	// Update the toggle low res button
-	resolutiondial.update_lowres(work_area->get_low_resolution_flag());
+	resolutiondial_->update_lowres(work_area->get_low_resolution_flag());
 	// Update the "toggle-low-res" action
 	Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
 	action->set_active(work_area->get_low_resolution_flag());

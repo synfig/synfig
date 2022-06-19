@@ -77,7 +77,6 @@
 #include "dialogs/dialog_waypoint.h"
 #include "dials/framedial.h"
 #include "dials/jackdial.h"
-#include "dials/resolutiondial.h"
 #include "dials/toggleducksdial.h"
 #include "docks/dockable.h"
 #include "helpers.h"
@@ -120,6 +119,7 @@ class WorkArea;
 class Widget_Enum;
 class Preview;
 struct PreviewInfo;
+class ResolutionDial;
 class Widget_CanvasTimeslider;
 class Widget_Time;
 class Dock_Layers;
@@ -297,7 +297,7 @@ private:
 	JackDial *jackdial;
 	ToggleDucksDial toggleducksdial;
 	bool toggling_ducks_;
-	ResolutionDial resolutiondial;
+	ResolutionDial* resolutiondial_;
 	bool changing_resolution_;
 	Glib::RefPtr<Gtk::Adjustment> future_onion_adjustment_;
 	Glib::RefPtr<Gtk::Adjustment> past_onion_adjustment_;
