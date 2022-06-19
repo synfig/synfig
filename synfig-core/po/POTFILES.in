@@ -265,7 +265,6 @@ src/synfig/paramdesc.h
 src/synfig/pch.h
 src/synfig/polynomial_root.cpp
 src/synfig/polynomial_root.h
-src/synfig/protocol.h
 src/synfig/quick_rng.h
 src/synfig/real.h
 src/synfig/rect.cpp

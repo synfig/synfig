@@ -65,7 +65,6 @@ SYNFIGHEADERS = \
 	progresscallback.h \
 	guidset.h \
 	interpolation.h \
-	protocol.h \
 	quick_rng.h \
 	real.h \
 	complex.h \
