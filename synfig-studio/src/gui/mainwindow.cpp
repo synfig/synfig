@@ -327,12 +327,12 @@ MainWindow::make_short_filenames(
 			fullname = fullname.substr(7);
 		while(j < (int)fullname.size())
 		{
-			size_t k = fullname.find_first_of(ETL_DIRECTORY_SEPARATORS, j);
-			if (k == std::string::npos) k = fullname.size();
-			std::string sub = fullname.substr(j, k - j);
+			size_t dir_separator_pos = fullname.find_first_of("/\\", j);
+			if (dir_separator_pos == std::string::npos) dir_separator_pos = fullname.size();
+			std::string sub = fullname.substr(j, dir_separator_pos - j);
 			if (!sub.empty() && sub != "...")
 				dirs[i].insert(dirs[i].begin(), sub);
-			j = (int)k + 1;
+			j = (int)dir_separator_pos + 1;
 		}
 
 		dirflags[i].resize(dirs[i].size(), false);

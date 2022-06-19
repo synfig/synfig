@@ -332,15 +332,15 @@ cleanup_path(std::string path)
 				// path[i-1] is not a separator (double separators removed already),
 				// so path[i-1] is part of valid directory entry,
 				// also is not a special entry ('.' or '..'), see previous case and stage "remove '.'"
-				size_t pos = path.find_last_of(ETL_DIRECTORY_SEPARATORS, i-1);
-				if (pos == std::string::npos) {
+				size_t dir_separator_pos = path.find_last_of("/\\", i-1);
+				if (dir_separator_pos == std::string::npos) {
 					path.erase(0, i+3 >= (int)path.size() ? i+3 : i+4);
 					i = 0;
 				}
 				else
 				{
-					path.erase(pos + 1, (i+3 >= (int)path.size() ? i+3 : i+4) - (int)pos - 1);
-					i = (int)pos;
+					path.erase(dir_separator_pos + 1, (i+3 >= (int)path.size() ? i+3 : i+4) - (int)dir_separator_pos - 1);
+					i = (int)dir_separator_pos;
 				}
 			}
         }
