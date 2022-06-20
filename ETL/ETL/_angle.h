@@ -75,19 +75,19 @@ public:
 	** Arithmetic Operators
 	*/
 
-	const angle	&
+	angle&
 	operator+=(const angle &rhs)
 	{ v+=rhs.v; return *this; }
 
-	const angle	&
+	angle&
 	operator-=(const angle &rhs)
 	{ v-=rhs.v; return *this; }
 
-	const angle	&
+	angle&
 	operator*=(const unit &rhs)
 	{ v*=rhs; return *this; }
 
-	const angle	&
+	angle&
 	operator/=(const unit &rhs)
 	{ v/=rhs; return *this; }
 
