@@ -51,12 +51,10 @@
 
 namespace etl {
 
-// ========================================================================
-/*!	\class	angle	_angle.h	ETL/angle
-**	\brief	Abstraction of the concept of an angle
-**  \see angle::deg, angle::rad, angle::rot, angle::sin, angle::cos, angle::tan, fastangle
-**	\writeme
-*/
+/**
+ * Abstraction of the concept of an angle
+ * @see angle::deg, angle::rad, angle::rot, angle::sin, angle::cos, angle::tan
+ */
 class angle
 {
 public:
@@ -65,13 +63,9 @@ public:
 protected:
 	typedef value_type unit;
 
-	unit v;	//! Stored in radians; positive values indicate counter-clockwise.
+	unit v;	//*< Stored in radians; positive values indicate counter-clockwise. */
 
 public:
-
-	/*
-	** Arithmetic Operators
-	*/
 
 	angle&
 	operator+=(const angle &rhs)
@@ -89,20 +83,18 @@ public:
 	operator/=(const unit &rhs)
 	{ v/=rhs; return *this; }
 
-	//! Angle Addition Operator
 	angle
 	operator+(const angle &rhs)const
 	{ return angle(*this)+=rhs; }
 
-	//! Angle Subtraction Operator
-	/*! \sa angle dist(const angle &) */
+	/**
+	 * Angle Subtraction Operator
+	 * @see angle dist(const angle &)
+	 */
 	angle
 	operator-(const angle &rhs)const
 	{ return angle(*this)-=rhs; }
 
-	//! Angle Scalar Multiplication Operator
-	/*! This operator will multiply the given
-		angle by the given scalar value. */
 	angle
 	operator*(const unit &rhs)const
 	{ return angle(*this)*=rhs; }
@@ -111,7 +103,7 @@ public:
 	operator/(const unit &rhs)const
 	{ return angle(*this)/=rhs; }
 
-	//! Angle Negation
+	/** Angle Negation */
 	angle
 	operator-()const
 	{
@@ -167,50 +159,35 @@ public:
 	operator!=(const angle &rhs)const
 	{ return std::abs(dist(rhs).v)>ANGLE_EPSILON; }
 #else // ETL_WRAP_ANGLES
-	/*! Returns true if the left-hand
-		side is less than the
-		right-hand side */
 	bool
 	operator<(const angle &rhs)const
 	{ return v < rhs.v; }
 
-	/*! Returns true if the left-hand
-		side is greater than the
-		right-hand side */
 	bool
 	operator>(const angle &rhs)const
 	{ return v > rhs.v; }
 
-	/*! Returns true if the left-hand
-		side is less or equal to the
-		right-hand side */
 	bool
 	operator<=(const angle &rhs)const
 	{ return v <= rhs.v; }
 
-	/*! Returns true if the left-hand
-		side is greater than or equal
-		to the right-hand side */
 	bool
 	operator>=(const angle &rhs)const
 	{ return v >= rhs.v; }
 
-	/*! Returns true if the angles
-		are the same, or close */
 	bool
 	operator==(const angle &rhs)const
 	{ return std::abs(v - rhs.v)<ANGLE_EPSILON; }
 
-	/*! Returns false if the angles
-		are different */
 	bool
 	operator!=(const angle &rhs)const
 		{ return std::abs(v - rhs.v)>ANGLE_EPSILON; }
 #endif // ETL_WRAP_ANGLES
 
-	//! Absolute Angle Function
-	/*! This function will return the
-		absolute value of the angle. */
+	/**
+	 * Absolute Angle Function.
+	 * This function will return the absolute value of the angle
+	 */
 	angle
 	abs()const
 	{
@@ -245,18 +222,19 @@ public:
 		return ret;
 	}
 #else // ETL_WRAP_ANGLES
-	//! Angle Difference Function
-	/*! This function will return the
-		difference between
-		two angles, just like
-		\sa angle operator-(const angle &) */
+	/**
+	 * Angle Difference Function.
+	 * This function will return the difference between
+	 * two angles, just like @see angle operator-(const angle &)
+	 */
 	angle
 	dist(const angle &rhs)const
 	{ return angle(*this)-=rhs; }
 
-	//! Rotation Modulus
-	/*! This function will return the
-		value of the angle */
+	/**
+	 * Rotation Modulus.
+	 * This function will return the value of the angle
+	 */
 	angle
 	mod()const
 	{
@@ -265,7 +243,7 @@ public:
 	}
 #endif // ETL_WRAP_ANGLES
 
-	//! Zero Rotation (0 degrees)
+	/** Zero Rotation (0 degrees) */
 	static angle
 	zero()
 	{
@@ -274,7 +252,7 @@ public:
 		return ret;
 	}
 
-	//! One Complete Rotation (360 degrees)
+	/** One Complete Rotation (360 degrees) */
 	static angle
 	one()
 	{
@@ -283,7 +261,7 @@ public:
 		return ret;
 	}
 
-	//! One Half Rotation (180 degrees)
+	/** One Half Rotation (180 degrees) */
 	static angle
 	half()
 	{
@@ -304,25 +282,19 @@ private:
 #endif // ETL_WRAP_ANGLES
 
 public:
-	/*
-	** Conversion Classes
-	*/
+	// Conversion Classes
 
 	class rad;
 	class deg;
 	class rot;
 
-	/*
-	** Trigonometric Classes
-	*/
+	// Trigonometric Classes
 
 	class sin;
 	class cos;
 	class tan;
 
-	/*
-	** Friend classes
-	*/
+	// Friend classes
 
 	friend class rad;
 	friend class deg;
@@ -333,11 +305,9 @@ public:
 
 }; // END of class angle
 
-// ========================================================================
-/*!	\class	angle::rad	_angle.h	ETL/angle
-**	\brief	Angle representation in radians
-**	\see angle
-**	\writeme
+/**	
+ * Angle representation in radians
+ * @see angle
 */
 class angle::rad : public angle
 {
@@ -349,11 +319,9 @@ public:
 	value_type get()const { return v; }
 }; // END of class angle::radians
 
-// ========================================================================
-/*!	\class	angle::deg	_angle.h	ETL/angle
-**	\brief	Angle representation in degrees
-**	\see angle
-**	\writeme
+/**	
+ * Angle representation in degrees
+ * @see angle
 */
 class angle::deg : public angle
 {
@@ -365,11 +333,9 @@ public:
 	value_type get()const { return v*360/(PI*2); }
 }; // END of class angle::degrees
 
-// ========================================================================
-/*!	\class	angle::rot	_angle.h	ETL/angle
-**	\brief	Angle representation in rotations
-**	\see angle
-**	\writeme
+/**	
+ * Angle representation in rotations
+ * @see angle
 */
 class angle::rot : public angle
 {
@@ -381,11 +347,9 @@ public:
 	value_type get()const { return v/(PI*2); }
 }; // END of class angle::rotations
 
-// ========================================================================
-/*!	\class	angle::sin	_angle.h	ETL/angle
-**	\brief	Angle representation as a sine function
-**	\see angle
-**	\writeme
+/**	
+ * Angle representation as a sine function
+ * @see angle
 */
 class angle::sin : public angle
 {
@@ -397,11 +361,9 @@ public:
 	value_type get()const { return static_cast<value_type>(std::sin(v)); }
 }; // END of class angle::sin
 
-// ========================================================================
-/*!	\class	angle::cos	_angle.h	ETL/angle
-**	\brief	Angle representation as a cosine function
-**	\see angle
-**	\writeme
+/**	
+ * Angle representation as a cosine function
+ * @see angle
 */
 class angle::cos : public angle
 {
@@ -413,11 +375,9 @@ public:
 	value_type get()const { return (value_type)std::cos(v); }
 }; // END of class angle::cos
 
-// ========================================================================
-/*!	\class	angle::tan	_angle.h	ETL/angle
-**	\brief	Angle representation as a tangent function
-**	\see angle
-**	\writeme
+/**	
+ * Angle representation as a tangent function
+ * @see angle
 */
 class angle::tan : public angle
 {
