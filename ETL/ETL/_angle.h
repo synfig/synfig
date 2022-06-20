@@ -43,7 +43,6 @@
 
 #ifndef PI
 # define PI (3.1415926535897932384626433832795029L)
-# define HALF_PI (PI/2)
 #endif
 
 #define ANGLE_EPSILON (1.0e-6)
