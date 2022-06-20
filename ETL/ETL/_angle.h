@@ -120,20 +120,6 @@ public:
 		return ret;
 	}
 
-#ifdef ETL_NOT_USED
-	//! 180 degree rotation operator
-	/*! Returns the angle directly opposite of
-		the given angle, and will yield a result
-		between 0 and 2PI */
-	angle
-	operator~()const
-	{
-		angle ret;
-		ret.v = v+PI;
-		return ret.mod();
-	}
-#endif // ETL_NOT_USED
-
 #ifdef ETL_WRAP_ANGLES
 	/*! Returns true if the shortest
 		angle from the left-hand to the
