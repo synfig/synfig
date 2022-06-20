@@ -66,7 +66,7 @@ int main(int argc, char **argv)
 	
 #ifdef ENABLE_NLS
 	String locale_dir;
-	locale_dir = rootpath+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"locale";
+	locale_dir = rootpath + "/share/locale";
 	setlocale(LC_ALL, "");
 	bindtextdomain(GETTEXT_PACKAGE,  Glib::locale_from_utf8(locale_dir).c_str() );
 	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");

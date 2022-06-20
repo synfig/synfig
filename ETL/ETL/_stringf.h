@@ -405,7 +405,7 @@ relative_path(std::string curr_path,std::string dest_path)
 
 	while(!curr_path.empty())
 	{
-		dest_path=std::string("..")+ETL_DIRECTORY_SEPARATOR+dest_path;
+		dest_path="../"+dest_path;
 		curr_path=remove_root_from_path(curr_path);
 	}
 
