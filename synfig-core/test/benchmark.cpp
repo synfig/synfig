@@ -27,11 +27,11 @@
 #include <cstdio>
 
 #include <ETL/hermite>
-#include <ETL/angle>
 #include <ETL/surface>
 #include <ETL/gaussian>
 #include <ETL/calculus>
 
+#include <synfig/angle.h>
 #include <synfig/clock.h>
 
 /* === M A C R O S ========================================================= */
@@ -271,19 +271,21 @@ int hermite_double_test(void)
 
 int hermite_angle_test(void)
 {
+	using namespace synfig;
+
 	int ret=0,i;
 	float f;
 
-	hermite<angle> Hermie;
+	hermite<Angle> Hermie;
 	synfig::clock timer;
-	angle tmp;
+	Angle tmp;
 	double t;
 
-	Hermie.p1()=angle::deg(0);
-	Hermie.t1()=angle::deg(45);
+	Hermie.p1()=Angle::deg(0);
+	Hermie.t1()=Angle::deg(45);
 
-	Hermie.p2()=angle::deg(-45);
-	Hermie.t2()=angle::deg(180);
+	Hermie.p2()=Angle::deg(-45);
+	Hermie.t2()=Angle::deg(180);
 
 	Hermie.sync();
 

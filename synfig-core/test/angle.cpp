@@ -25,7 +25,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <stdio.h>
-#include <ETL/angle>
+#include <synfig/angle.h>
 #include <ETL/hermite>
 
 /* === M A C R O S ========================================================= */
@@ -39,7 +39,7 @@ int angle_test()
 	int ret=0;
 	float dist;
 
-	dist=angle::deg(angle::deg(330).dist(angle::deg(30))).get();
+	dist=synfig::Angle::deg(synfig::Angle::deg(330).dist(synfig::Angle::deg(30))).get();
 	printf("angle: angular difference between 330deg and 30deg is %0.1fdeg\n",dist);
 	if(floor(dist+0.5)!=300)
 	{
@@ -47,7 +47,7 @@ int angle_test()
 		ret++;
 	}
 
-	dist=angle::deg(angle::deg(30).dist(angle::deg(330))).get();
+	dist=synfig::Angle::deg(synfig::Angle::deg(30).dist(synfig::Angle::deg(330))).get();
 	printf("angle: angular difference between 30deg and 330deg is %0.1fdeg\n",dist);
 	if(floor(dist+0.5)!=-300)
 	{
@@ -55,7 +55,7 @@ int angle_test()
 		ret++;
 	}
 
-	dist=angle::deg(angle::deg(30).dist(angle::deg(-30))).get();
+	dist=synfig::Angle::deg(synfig::Angle::deg(30).dist(synfig::Angle::deg(-30))).get();
 	printf("angle: angular difference between 30deg and -30deg is %0.1fdeg\n",dist);
 	if(floor(dist+0.5)!=60)
 	{
@@ -63,7 +63,7 @@ int angle_test()
 		ret++;
 	}
 
-	dist=angle::deg(angle::deg(-30).dist(angle::deg(30))).get();
+	dist=synfig::Angle::deg(synfig::Angle::deg(-30).dist(synfig::Angle::deg(30))).get();
 	printf("angle: angular difference between -30deg and 30deg is %0.1fdeg\n",dist);
 	if(floor(dist+0.5)!=-60)
 	{
@@ -71,7 +71,7 @@ int angle_test()
 		ret++;
 	}
 
-	dist=angle::deg(angle::deg(20).dist(angle::deg(195))).get();
+	dist=synfig::Angle::deg(synfig::Angle::deg(20).dist(synfig::Angle::deg(195))).get();
 	printf("angle: angular difference between 20deg and 195deg is %0.1fdeg\n",dist);
 	if(floor(dist+0.5)!=-175)
 	{
@@ -79,7 +79,7 @@ int angle_test()
 		ret++;
 	}
 
-	dist=angle::deg(angle::deg(20).dist(angle::deg(205))).get();
+	dist=synfig::Angle::deg(synfig::Angle::deg(20).dist(synfig::Angle::deg(205))).get();
 	printf("angle: angular difference between 20deg and 205deg is %0.1fdeg\n",dist);
 	if(floor(dist+0.5)!=-185)
 	{
@@ -91,7 +91,7 @@ int angle_test()
 
 	for(i=-1000;i<1000;i++)
 	{
-		dist=angle::deg(angle::deg(20+i+360).dist(angle::deg(205+i-360))).get();
+		dist=synfig::Angle::deg(synfig::Angle::deg(20+i+360).dist(synfig::Angle::deg(205+i-360))).get();
 		if(floor(dist+0.5)!=535)
 		{
 			printf("angle: error: Badness at %d!\n",i);
@@ -102,7 +102,7 @@ int angle_test()
 
 	for(i=-1000;i<1000;i++)
 	{
-		dist=angle::deg(angle::deg(20+i-360).dist(angle::deg(195+i+360))).get();
+		dist=synfig::Angle::deg(synfig::Angle::deg(20+i-360).dist(synfig::Angle::deg(195+i+360))).get();
 		if(floor(dist+0.5)!=-895)
 		{
 			printf("angle: error: Badness at %d!\n",i);
@@ -115,16 +115,16 @@ int angle_test()
 
 	{
 		float f;
-		angle a(angle::deg(-2005));
-		angle b(angle::deg(200));
+		synfig::Angle a(synfig::Angle::deg(-2005));
+		synfig::Angle b(synfig::Angle::deg(200));
 
-		affine_combo<angle> combo;
+		affine_combo<synfig::Angle> combo;
 
-		etl::hermite<angle> hermie(a,b,b.dist(a),b.dist(a));
+		etl::hermite<synfig::Angle> hermie(a,b,b.dist(a),b.dist(a));
 
 		for(f=0;f<1.001;f+=0.1)
 		{
-			printf("@%f--affine_combo: %f hermie: %f\n",angle::deg(f).get(),angle::deg(combo(a,b,f)).get(),angle::deg(hermie(f)).get());
+			printf("@%f--affine_combo: %f hermie: %f\n",synfig::Angle::deg(f).get(),synfig::Angle::deg(combo(a,b,f)).get(),synfig::Angle::deg(hermie(f)).get());
 		}
 
 	}
