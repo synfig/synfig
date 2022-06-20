@@ -35,13 +35,13 @@
 
 #include <gui/trees/childrentreestore.h>
 
-#include <ETL/clock>
 #include <glibmm/main.h>
 #include <gtkmm/button.h>
 #include <gui/localization.h>
+#include <synfig/clock.h>
 #include <synfig/general.h>
 
-class Profiler : private etl::clock
+class Profiler : private synfig::clock
 {
 	const std::string name;
 public:
@@ -244,7 +244,7 @@ ChildrenTreeStore::execute_changed_value_nodes()
 	if(!replaced_set_.empty())
 		rebuild_value_nodes();
 
-	etl::clock timer;
+	synfig::clock timer;
 	timer.reset();
 
 	while(!changed_set_.empty())

@@ -10,7 +10,6 @@ set(ETL_HEADERS
         "${CMAKE_CURRENT_LIST_DIR}/misc"
         "${CMAKE_CURRENT_LIST_DIR}/hermite"
         "${CMAKE_CURRENT_LIST_DIR}/surface"
-        "${CMAKE_CURRENT_LIST_DIR}/clock"
         "${CMAKE_CURRENT_LIST_DIR}/stringf"
         "${CMAKE_CURRENT_LIST_DIR}/boxblur"
         "${CMAKE_CURRENT_LIST_DIR}/ref_count"

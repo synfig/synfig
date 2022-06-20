@@ -29,7 +29,6 @@
 #define __SYNFIG_PREVIEW_H
 
 /* === H E A D E R S ======================================================= */
-#include <ETL/clock> /* indirectly includes winnt.h on WIN32 - needs to be included before gtkmm headers, which fix this */
 #include <ETL/handle>
 
 #include <gdkmm/pixbuf.h>
@@ -52,6 +51,7 @@
 #endif
 
 #include <synfig/canvas.h>
+#include <synfig/clock.h>
 #include <synfig/soundprocessor.h>
 #include <synfig/time.h>
 
@@ -218,7 +218,7 @@ class Widget_Preview : public Gtk::Table
 	bool	toolbarisshown;
 
 	//for accurate time tracking
-	etl::clock	timer;
+	synfig::clock timer;
 
 	//int		curindex; //for later
 	sigc::connection	timecon;

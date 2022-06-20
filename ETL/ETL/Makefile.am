@@ -14,7 +14,6 @@ etl_HEADERS = \
 	_ref_count.h \
 	angle \
 	handle \
-	clock \
 	hermite \
 	calculus \
 	stringf \

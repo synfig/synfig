@@ -58,9 +58,8 @@
 #include <gtkmm/toolbutton.h>
 #include <gtkmm/uimanager.h>
 
-#include <ETL/clock>
-
 #include <synfig/canvas.h>
+#include <synfig/clock.h>
 #include <synfig/context.h>
 #include <synfig/rect.h>
 #include <synfig/soundprocessor.h>
@@ -357,7 +356,7 @@ private:
 
 	etl::handle<LockDucks> ducks_playing_lock;
 	sigc::connection playing_connection;
-	etl::clock playing_timer;
+	synfig::clock playing_timer;
 	synfig::Time playing_time;
 
 	sigc::signal<void> signal_deleted_;

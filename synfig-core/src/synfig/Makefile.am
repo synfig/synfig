@@ -60,6 +60,7 @@ VALUESOURCES = \
 SYNFIGHEADERS = \
 	angle.h \
 	canvasbase.h \
+	clock.h \
 	general.h \
 	localization.h \
 	progresscallback.h \
