@@ -45,8 +45,6 @@
 # define PI (3.1415926535897932384626433832795029L)
 #endif
 
-#define ANGLE_EPSILON (1.0e-6)
-
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
@@ -311,6 +309,8 @@ public:
 	bool operator!()const { return std::abs(mod().v) < ANGLE_EPSILON; }
 
 private:
+
+	static constexpr value_type ANGLE_EPSILON = 1.0e-6;
 
 #ifdef ETL_WRAP_ANGLES
 	static value_type rot_floor(value_type x)
