@@ -200,7 +200,7 @@ ValueNode::get_description(bool show_exported_name)const
 }
 
 bool
-ValueNode::is_descendant(ValueNode::Handle value_node_dest) const
+ValueNode::is_ancestor_of(ValueNode::Handle value_node_dest) const
 {
 	if (this == value_node_dest)
 		return true;
@@ -211,7 +211,7 @@ ValueNode::is_descendant(ValueNode::Handle value_node_dest) const
 
 	ValueNode::Handle value_node_parent;
 	value_node_parent = value_node_dest->find_first_parent_of_type<ValueNode>([=](ValueNode::Handle node) {
-		return is_descendant(node);
+		return is_ancestor_of(node);
 	});
 
 	return value_node_parent? true : false;
