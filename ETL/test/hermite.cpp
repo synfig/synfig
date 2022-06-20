@@ -25,8 +25,6 @@
 /* === H E A D E R S ======================================================= */
 
 #include <ETL/hermite>
-#include <ETL/angle>
-#include <ETL/clock>
 #include <ETL/calculus>
 #include <stdio.h>
 
@@ -42,11 +40,8 @@ using namespace etl;
 int basic_test(void)
 {
 	int ret=0;
-	float f;
 
 	hermite<float> Hermie;
-	etl::clock timer;
-	double t;
 
 	Hermie.p1()=0;
 	Hermie.t1()=1;
@@ -57,7 +52,6 @@ int basic_test(void)
 
 	integral<hermite<float> > inte(Hermie);
 
-
 	fprintf(stderr,"integral of curve() on [0,1] = %f\n",inte(0,1.0));
 	fprintf(stderr,"integral of curve() on [-1,3] = %f\n",inte(-1.0,3.0));
 	Hermie.set_rs(-1.0,7.0);
@@ -65,66 +59,6 @@ int basic_test(void)
 	fprintf(stderr,"integral of curve()[%f,%f] on [-1,7] = %f\n",Hermie.get_r(),Hermie.get_s(),inte(-1.0,7.0));
 	fprintf(stderr,"integral of curve()[%f,%f] on [0,1] = %f\n",Hermie.get_r(),Hermie.get_s(),inte(0,1.0));
 	Hermie.set_rs(0.0,1.0);
-
-
-	for(f=0.0f,timer.reset();f<1.001f;f+=0.000005f)
-	{
-		t+=Hermie(f)+Hermie(f+0.1f);
-		t+=Hermie(f)+Hermie(f+0.1f);
-		t+=Hermie(f)+Hermie(f+0.1f);
-		t+=Hermie(f)+Hermie(f+0.1f);
-		t+=Hermie(f)+Hermie(f+0.1f);
-		t+=Hermie(f)+Hermie(f+0.1f);
-		t+=Hermie(f)+Hermie(f+0.1f);
-		t+=Hermie(f)+Hermie(f+0.1f);
-		t+=Hermie(f)+Hermie(f+0.1f);
-		t+=Hermie(f)+Hermie(f+0.1f);
-		t+=Hermie(f)+Hermie(f+0.1f);
-		t+=Hermie(f)+Hermie(f+0.1f);
-	}
-	t=timer();
-
-	fprintf(stderr,"time=%f milliseconds\n",t*1000);
-	return ret;
-}
-
-int angle_test(void)
-{
-	int ret=0;
-	float f;
-
-	hermite<angle> Hermie;
-	etl::clock timer;
-	angle tmp;
-	double t;
-
-	Hermie.p1()=angle::deg(0);
-	Hermie.t1()=angle::deg(45);
-
-	Hermie.p2()=angle::deg(-45);
-	Hermie.t2()=angle::deg(180);
-
-	Hermie.sync();
-
-
-	for(f=0.0f,timer.reset();f<1.001f;f+=0.000005f)
-	{
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-		tmp+=Hermie(f)+Hermie(f+0.1f);
-	}
-	t=timer();
-
-	fprintf(stderr,"angle time=%f milliseconds\n",t*1000);
 
 	return ret;
 }
@@ -161,7 +95,6 @@ int main()
 	int error=0;
 
 	error+=basic_test();
-	error+=angle_test();
 	error+=float_intersection_test();
 	return error;
 }
