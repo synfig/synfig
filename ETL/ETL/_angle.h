@@ -363,7 +363,6 @@ public:
 	rad dist(const angle &rhs)const { return angle::dist(rhs); }
 	value_type get()const { return v; }
 }; // END of class angle::radians
-// inline angle::rad::operator angle::value_type()const { return get(); }
 
 // ========================================================================
 /*!	\class	angle::deg	_angle.h	ETL/angle
@@ -380,7 +379,6 @@ public:
 	deg dist(const angle &rhs)const { return angle::dist(rhs); }
 	value_type get()const { return v*360/(PI*2); }
 }; // END of class angle::degrees
-// inline angle::deg::operator angle::value_type()const { return get(); }
 
 // ========================================================================
 /*!	\class	angle::rot	_angle.h	ETL/angle
@@ -397,7 +395,6 @@ public:
 	rot dist(const angle &rhs)const { return angle::dist(rhs); }
 	value_type get()const { return v/(PI*2); }
 }; // END of class angle::rotations
-// inline angle::rot::operator angle::value_type()const { return get(); }
 
 // ========================================================================
 /*!	\class	angle::sin	_angle.h	ETL/angle
@@ -414,7 +411,6 @@ public:
 	sin dist(const angle &rhs)const { return angle::dist(rhs); }
 	value_type get()const { return static_cast<value_type>(std::sin(v)); }
 }; // END of class angle::sin
-// inline angle::sin::operator angle::value_type()const { return get(); }
 
 // ========================================================================
 /*!	\class	angle::cos	_angle.h	ETL/angle
@@ -431,7 +427,6 @@ public:
 	cos dist(const angle &rhs)const { return angle::dist(rhs); }
 	value_type get()const { return (value_type)std::cos(v); }
 }; // END of class angle::cos
-// inline angle::cos::operator angle::value_type()const { return get(); }
 
 // ========================================================================
 /*!	\class	angle::tan	_angle.h	ETL/angle
@@ -449,19 +444,13 @@ public:
 	tan dist(const angle &rhs)const { return angle::dist(rhs); }
 	value_type get()const { return (value_type)std::tan(v); }
 }; // END of class angle::tan
-// inline angle::tan::operator angle::value_type()const { return get(); }
 
 };
-
-//#include <iostream>
 
 template <typename T>
 struct affine_combo<etl::angle, T>
 {
 	typedef T time_type;
-
-	//affine_combo() { std::cerr<<"affine_combo<etl::angle,float>: I was created!"<<std::endl; }
-	//~affine_combo() { std::cerr<<"affine_combo<etl::angle,float>: I was DELETED!"<<std::endl; }
 
 	etl::angle operator()(const etl::angle &a,const etl::angle &b,const time_type &t)const
 	{
@@ -480,8 +469,6 @@ struct distance_func<etl::angle>
 	etl::angle operator()(const etl::angle &a,const etl::angle &b)const
 	{
 		etl::angle delta=b.dist(a);
-		//if(delta<etl::angle::zero())
-		//	return delta+etl::angle::one();
 		return delta;
 	}
 
