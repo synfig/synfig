@@ -112,53 +112,6 @@ public:
 		return ret;
 	}
 
-#ifdef ETL_WRAP_ANGLES
-	/*! Returns true if the shortest
-		angle from the left-hand to the
-		right-hand side is counter-clockwise */
-	bool
-	operator<(const angle &rhs)const
-	{ return dist(rhs).v<(value_type)0.0; }
-
-	/*! Returns true if the shortest
-		angle from the left-hand to the
-		right-hand side is clockwise */
-	bool
-	operator>(const angle &rhs)const
-	{ return dist(rhs).v>(value_type)0.0; }
-
-	/*! Returns true if the shortest
-		angle from the left-hand to the
-		right-hand side is counter-clockwise,
-		or if the angles are refer to the same
-		point on the unit circle. */
-	bool
-	operator<=(const angle &rhs)const
-	{ return dist(rhs).v<=(value_type)0.0; }
-
-	/*! Returns true if the shortest
-		angle from the left-hand to the
-		right-hand side is clockwise,
-		or if the angles are refer to the same
-		point on the unit circle. */
-	bool
-	operator>=(const angle &rhs)const
-	{ return dist(rhs).v>=(value_type)0.0; }
-
-	/*! Returns true if the angles
-		are refer to the same point
-		on the unit circle. */
-	bool
-	operator==(const angle &rhs)const
-	{ return std::abs(dist(rhs).v)<ANGLE_EPSILON; }
-
-	/*! Returns false if the angles
-		are refer to the same point
-		on the unit circle. */
-	bool
-	operator!=(const angle &rhs)const
-	{ return std::abs(dist(rhs).v)>ANGLE_EPSILON; }
-#else // ETL_WRAP_ANGLES
 	bool
 	operator<(const angle &rhs)const
 	{ return v < rhs.v; }
@@ -182,7 +135,6 @@ public:
 	bool
 	operator!=(const angle &rhs)const
 		{ return std::abs(v - rhs.v)>ANGLE_EPSILON; }
-#endif // ETL_WRAP_ANGLES
 
 	/**
 	 * Absolute Angle Function.
@@ -196,36 +148,13 @@ public:
 		return ret;
 	}
 
-#ifdef ETL_WRAP_ANGLES
-	//! Angle Difference Function
-	/*! This function will return the
-		shortest physical distance between
-		two angles, from -PI/2 to PI/2
-		\sa angle operator-(const angle &) */
-	angle
-	dist(const angle &rhs)const
-	{
-		angle ret;
-		ret.v=v-rhs.v;
-		ret.v-=rot_floor(ret.v+PI);
-		return ret;
-	}
-
-	//! Rotation Modulus
-	/*! This function will return the
-		value of the angle between 0 and 2PI */
-	angle
-	mod()const
-	{
-		angle ret(*this);
-		ret.v-=rot_floor(ret.v);
-		return ret;
-	}
-#else // ETL_WRAP_ANGLES
 	/**
 	 * Angle Difference Function.
 	 * This function will return the difference between
 	 * two angles, just like @see angle operator-(const angle &)
+	 *
+	 * It was originally intended to compute the shortest arc angle
+	 * between this angle and \c rhs in the interval [-PI/2, PI/2)
 	 */
 	angle
 	dist(const angle &rhs)const
@@ -234,6 +163,9 @@ public:
 	/**
 	 * Rotation Modulus.
 	 * This function will return the value of the angle
+	 *
+	 * It was originally intended to return the value of the angle
+	 * in the interval [0, PI/2)
 	 */
 	angle
 	mod()const
@@ -241,7 +173,6 @@ public:
 		angle ret(*this);
 		return ret;
 	}
-#endif // ETL_WRAP_ANGLES
 
 	/** Zero Rotation (0 degrees) */
 	static angle
@@ -275,11 +206,6 @@ public:
 private:
 
 	static constexpr value_type ANGLE_EPSILON = 1.0e-6;
-
-#ifdef ETL_WRAP_ANGLES
-	static value_type rot_floor(value_type x)
-	{ return static_cast<value_type>(std::floor(x/(PI*2))*PI*2); }
-#endif // ETL_WRAP_ANGLES
 
 public:
 	// Conversion Classes
