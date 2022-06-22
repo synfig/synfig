@@ -26,7 +26,6 @@
 
 #include <stdio.h>
 #include <ETL/angle>
-#include <ETL/bezier>
 #include <ETL/hermite>
 
 /* === M A C R O S ========================================================= */
@@ -34,87 +33,6 @@
 using namespace etl;
 
 /* === C L A S S E S ======================================================= */
-
-template <class Angle>
-void angle_cos_speed_test(void)
-{
-	Angle a,b,c,d;
-	float tmp,tmp2;
-
-	for(tmp=-1.0;tmp<1.0;tmp+=0.000002)
-	{
-		a=(typename Angle::cos)(tmp);
-		b=(typename Angle::cos)(tmp);
-		c=(typename Angle::cos)(tmp);
-		d=(typename Angle::cos)(tmp);
-		tmp2=((typename Angle::cos)(a)).get();
-		tmp2=((typename Angle::cos)(b)).get();
-		tmp2=((typename Angle::cos)(c)).get();
-		tmp2=((typename Angle::cos)(d)).get();
-	}
-	if (tmp2 == 0) return; // disable unused warning
-}
-template <class Angle>
-void angle_sin_speed_test(void)
-{
-	Angle a,b,c,d;
-	float tmp,tmp2;
-
-	for(tmp=-1.0;tmp<1.0;tmp+=0.000002)
-	{
-		a=(typename Angle::sin)(tmp);
-		b=(typename Angle::sin)(tmp);
-		c=(typename Angle::sin)(tmp);
-		d=(typename Angle::sin)(tmp);
-		tmp2=((typename Angle::sin)(a)).get();
-		tmp2=((typename Angle::sin)(b)).get();
-		tmp2=((typename Angle::sin)(c)).get();
-		tmp2=((typename Angle::sin)(d)).get();
-	}
-	if (tmp2 == 0) return; // disable unused warning
-}
-template <class Angle>
-void angle_tan_speed_test(void)
-{
-	Angle a,b,c,d;
-	float tmp,tmp2;
-
-	for(tmp=-1.0;tmp<1.0;tmp+=0.000002)
-	{
-		a=(typename Angle::tan)(tmp);
-		b=(typename Angle::tan)(tmp);
-		c=(typename Angle::tan)(tmp);
-		d=(typename Angle::tan)(tmp);
-		tmp2=((typename Angle::tan)(a)).get();
-		tmp2=((typename Angle::tan)(b)).get();
-		tmp2=((typename Angle::tan)(c)).get();
-		tmp2=((typename Angle::tan)(d)).get();
-	}
-	if (tmp2 == 0) return; // disable unused warning
-}
-template <class Angle, class mytan>
-void angle_atan2_speed_test(void)
-{
-	Angle a,b,c;
-	float x,y;
-
-	for(y=-10.0;y<10.0;y+=0.05)
-		for(x=-10.0;x<10.0;x+=0.05)
-		{
-			a=mytan(y,x);
-			a=mytan(x,y);
-			b=mytan(y,x);
-			b=mytan(x,y);
-			c=mytan(y,x);
-			c=mytan(x,y);
-			a=mytan(y,x);
-			a=mytan(x,y);
-			b=mytan(y,x);
-			b=mytan(x,y);
-			c=mytan(y,x);
-			c=mytan(x,y);
-		}
-}
 
 int angle_test()
 {
