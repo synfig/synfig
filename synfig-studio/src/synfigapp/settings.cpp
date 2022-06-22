@@ -38,7 +38,7 @@
 #include <algorithm>
 #include <sys/stat.h>
 #include "settings.h"
-#include "synfig/filesystemnative.h"
+#include <synfig/filesystem.h>
 #include <synfig/general.h>
 #include <synfig/guid.h>
 
@@ -192,7 +192,7 @@ Settings::save_to_file(const synfig::String& filename)const
 
 	try
 	{
-		std::ofstream file(FileSystemNative::path(tmp_filename).c_str());
+		std::ofstream file(synfig::filesystem::Path(tmp_filename).c_str());
 
 		if(!file) {
 			synfig::warning(_("Can't save settings to file %s!"), filename.c_str());
@@ -225,7 +225,7 @@ Settings::save_to_file(const synfig::String& filename)const
 bool
 Settings::load_from_file(const synfig::String& filename, const synfig::String& key_filter )
 {
-	std::ifstream file(FileSystemNative::path(filename).c_str());
+	std::ifstream file(synfig::filesystem::Path(filename).c_str());
 
 	if(!file) {
 		synfig::warning(_("Can't load settings from file %s!"), filename.c_str());

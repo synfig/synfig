@@ -37,9 +37,9 @@
 #include <fstream>
 
 #include "log.h"
-#include "synfig/filesystemnative.h"
 
 #include <ETL/stringf>
+#include <synfig/filesystem.h>
 #include <synfig/general.h>
 
 #endif
@@ -63,7 +63,7 @@ std::mutex Log::mutex;
 void Log::append_line_to_file(const String &logfile, const String &str)
 {
 	std::lock_guard<std::mutex> lock(mutex);
-	std::ofstream f(FileSystemNative::path(logfile).c_str(), std::ios_base::app);
+	std::ofstream f(synfig::filesystem::Path(logfile).c_str(), std::ios_base::app);
 	f << str << std::endl;
 }
 

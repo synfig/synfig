@@ -190,7 +190,7 @@ static void broken_pipe_signal (int /*sig*/)  {
 
 bool retrieve_modules_to_load(String filename,std::list<String> &modules_to_load)
 {
-	std::ifstream file(FileSystemNative::path(filename).c_str());
+	std::ifstream file(synfig::filesystem::Path(filename).c_str());
 
 	if(!file)
 	{
