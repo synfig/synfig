@@ -31,6 +31,11 @@
 #ifdef HAVE_CONFIG_H
 #	include <config.h>
 #endif
+#ifdef _WIN32
+#include <codecvt>
+#include <locale>
+#include "general.h" // synfig::error(...)
+#endif
 
 #include <glibmm.h>
 #include <cstdio>
@@ -236,6 +241,28 @@ String FileSystem::get_real_filename(const String &filename) {
 	return Glib::filename_from_uri(get_real_uri(filename));
 }
 
+filesystem::Path::Path(const std::string& path)
+{
+#ifdef _WIN32
+	// Windows uses UTF-16 for filenames, so we need to convert it from UTF-8 before using it.
+	try {
+		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> wcu8;
+		path_ = wcu8.from_bytes(path);
+	} catch (const std::range_error& exception) {
+		synfig::error("Failed to convert path (%s)", path.c_str());
+		throw;
+	}
+#else
+	// For other OS, just return the file name as is
+	path_ = path;
+#endif
+}
+
+const filesystem::Path::value_type*
+filesystem::Path::c_str() const noexcept
+{
+	return path_.c_str();
+}
 
 /* === E N T R Y P O I N T ================================================= */
 

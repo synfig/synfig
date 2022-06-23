@@ -415,11 +415,9 @@ synfigapp::Main::set_state(synfig::String state)
 synfig::String
 synfigapp::Main::get_user_app_directory()
 {
-	String dir;
-	if (char* synfig_user_settings_dir = getenv("SYNFIG_USER_SETTINGS")) {
-		dir =  Glib::locale_to_utf8(String(synfig_user_settings_dir));
-	} else {
-		dir = Glib::get_home_dir()+ETL_DIRECTORY_SEPARATOR+SYNFIG_USER_APP_DIR;
+	std::string dir = Glib::getenv("SYNFIG_USER_SETTINGS");
+	if (!dir.empty()) {
+		return dir;
 	}
-	return dir;
+	return Glib::get_home_dir()+ETL_DIRECTORY_SEPARATOR+SYNFIG_USER_APP_DIR;
 }

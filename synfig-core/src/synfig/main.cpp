@@ -190,7 +190,7 @@ static void broken_pipe_signal (int /*sig*/)  {
 
 bool retrieve_modules_to_load(String filename,std::list<String> &modules_to_load)
 {
-	std::ifstream file(Glib::locale_from_utf8(filename).c_str());
+	std::ifstream file(synfig::filesystem::Path(filename).c_str());
 
 	if(!file)
 	{
@@ -335,8 +335,11 @@ synfig::Main::Main(const synfig::String& rootpath,ProgressCallback *cb):
 	else
 	{
 		locations.push_back("./" MODULE_LIST_FILENAME);
-		if(getenv("HOME"))
-			locations.push_back(strprintf("%s/.local/share/synfig/%s", getenv("HOME"), MODULE_LIST_FILENAME));
+		const std::string home = Glib::getenv("HOME");
+		if (!home.empty()) {
+			locations.push_back(strprintf("%s/.local/share/synfig/%s", home.c_str(), MODULE_LIST_FILENAME));
+		}
+
 	#ifdef SYSCONFDIR
 		locations.push_back(SYSCONFDIR"/" MODULE_LIST_FILENAME);
 	#endif

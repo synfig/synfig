@@ -1478,7 +1478,7 @@ bool
 Duckmatic::save_sketch(const synfig::String& filename)const
 {
 	ChangeLocale change_locale(LC_NUMERIC, "C");
-	std::ofstream file(filename.c_str());
+	std::ofstream file(synfig::filesystem::Path(filename).c_str());
 
 	if(!file)return false;
 
@@ -1512,7 +1512,7 @@ bool
 Duckmatic::load_sketch(const synfig::String& filename)
 {
 	ChangeLocale change_locale(LC_NUMERIC, "C");
-	std::ifstream file(filename.c_str());
+	std::ifstream file(synfig::filesystem::Path(filename).c_str());
 
 	if(!file)
 		return false;
