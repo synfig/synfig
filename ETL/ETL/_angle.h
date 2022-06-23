@@ -43,10 +43,7 @@
 
 #ifndef PI
 # define PI (3.1415926535897932384626433832795029L)
-# define HALF_PI (PI/2)
 #endif
-
-#define ANGLE_EPSILON (1.0e-6)
 
 /* === T Y P E D E F S ===================================================== */
 
@@ -54,12 +51,10 @@
 
 namespace etl {
 
-// ========================================================================
-/*!	\class	angle	_angle.h	ETL/angle
-**	\brief	Abstraction of the concept of an angle
-**  \see angle::deg, angle::rad, angle::rot, angle::sin, angle::cos, angle::tan, fastangle
-**	\writeme
-*/
+/**
+ * Abstraction of the concept of an angle
+ * @see angle::deg, angle::rad, angle::rot, angle::sin, angle::cos, angle::tan
+ */
 class angle
 {
 public:
@@ -68,44 +63,38 @@ public:
 protected:
 	typedef value_type unit;
 
-	unit v;	//! Stored in radians; positive values indicate counter-clockwise.
+	unit v;	//*< Stored in radians; positive values indicate counter-clockwise. */
 
 public:
 
-	/*
-	** Arithmetic Operators
-	*/
-
-	const angle	&
+	angle&
 	operator+=(const angle &rhs)
 	{ v+=rhs.v; return *this; }
 
-	const angle	&
+	angle&
 	operator-=(const angle &rhs)
 	{ v-=rhs.v; return *this; }
 
-	const angle	&
+	angle&
 	operator*=(const unit &rhs)
 	{ v*=rhs; return *this; }
 
-	const angle	&
+	angle&
 	operator/=(const unit &rhs)
 	{ v/=rhs; return *this; }
 
-	//! Angle Addition Operator
 	angle
 	operator+(const angle &rhs)const
 	{ return angle(*this)+=rhs; }
 
-	//! Angle Subtraction Operator
-	/*! \sa angle dist(const angle &) */
+	/**
+	 * Angle Subtraction Operator
+	 * @see angle dist(const angle &)
+	 */
 	angle
 	operator-(const angle &rhs)const
 	{ return angle(*this)-=rhs; }
 
-	//! Angle Scalar Multiplication Operator
-	/*! This operator will multiply the given
-		angle by the given scalar value. */
 	angle
 	operator*(const unit &rhs)const
 	{ return angle(*this)*=rhs; }
@@ -114,7 +103,7 @@ public:
 	operator/(const unit &rhs)const
 	{ return angle(*this)/=rhs; }
 
-	//! Angle Negation
+	/** Angle Negation */
 	angle
 	operator-()const
 	{
@@ -123,111 +112,34 @@ public:
 		return ret;
 	}
 
-#ifdef ETL_NOT_USED
-	//! 180 degree rotation operator
-	/*! Returns the angle directly opposite of
-		the given angle, and will yield a result
-		between 0 and 2PI */
-	angle
-	operator~()const
-	{
-		angle ret;
-		ret.v = v+PI;
-		return ret.mod();
-	}
-#endif // ETL_NOT_USED
-
-#ifdef ETL_WRAP_ANGLES
-	/*! Returns true if the shortest
-		angle from the left-hand to the
-		right-hand side is counter-clockwise */
-	bool
-	operator<(const angle &rhs)const
-	{ return dist(rhs).v<(value_type)0.0; }
-
-	/*! Returns true if the shortest
-		angle from the left-hand to the
-		right-hand side is clockwise */
-	bool
-	operator>(const angle &rhs)const
-	{ return dist(rhs).v>(value_type)0.0; }
-
-	/*! Returns true if the shortest
-		angle from the left-hand to the
-		right-hand side is counter-clockwise,
-		or if the angles are refer to the same
-		point on the unit circle. */
-	bool
-	operator<=(const angle &rhs)const
-	{ return dist(rhs).v<=(value_type)0.0; }
-
-	/*! Returns true if the shortest
-		angle from the left-hand to the
-		right-hand side is clockwise,
-		or if the angles are refer to the same
-		point on the unit circle. */
-	bool
-	operator>=(const angle &rhs)const
-	{ return dist(rhs).v>=(value_type)0.0; }
-
-	/*! Returns true if the angles
-		are refer to the same point
-		on the unit circle. */
-	bool
-	operator==(const angle &rhs)const
-	{ return std::abs(dist(rhs).v)<ANGLE_EPSILON; }
-
-	/*! Returns false if the angles
-		are refer to the same point
-		on the unit circle. */
-	bool
-	operator!=(const angle &rhs)const
-	{ return std::abs(dist(rhs).v)>ANGLE_EPSILON; }
-#else // ETL_WRAP_ANGLES
-	/*! Returns true if the left-hand
-		side is less than the
-		right-hand side */
 	bool
 	operator<(const angle &rhs)const
 	{ return v < rhs.v; }
 
-	/*! Returns true if the left-hand
-		side is greater than the
-		right-hand side */
 	bool
 	operator>(const angle &rhs)const
 	{ return v > rhs.v; }
 
-	/*! Returns true if the left-hand
-		side is less or equal to the
-		right-hand side */
 	bool
 	operator<=(const angle &rhs)const
 	{ return v <= rhs.v; }
 
-	/*! Returns true if the left-hand
-		side is greater than or equal
-		to the right-hand side */
 	bool
 	operator>=(const angle &rhs)const
 	{ return v >= rhs.v; }
 
-	/*! Returns true if the angles
-		are the same, or close */
 	bool
 	operator==(const angle &rhs)const
 	{ return std::abs(v - rhs.v)<ANGLE_EPSILON; }
 
-	/*! Returns false if the angles
-		are different */
 	bool
 	operator!=(const angle &rhs)const
 		{ return std::abs(v - rhs.v)>ANGLE_EPSILON; }
-#endif // ETL_WRAP_ANGLES
 
-	//! Absolute Angle Function
-	/*! This function will return the
-		absolute value of the angle. */
+	/**
+	 * Absolute Angle Function.
+	 * This function will return the absolute value of the angle
+	 */
 	angle
 	abs()const
 	{
@@ -236,53 +148,33 @@ public:
 		return ret;
 	}
 
-#ifdef ETL_WRAP_ANGLES
-	//! Angle Difference Function
-	/*! This function will return the
-		shortest physical distance between
-		two angles, from -PI/2 to PI/2
-		\sa angle operator-(const angle &) */
-	angle
-	dist(const angle &rhs)const
-	{
-		angle ret;
-		ret.v=v-rhs.v;
-		ret.v-=rot_floor(ret.v+PI);
-		return ret;
-	}
-
-	//! Rotation Modulus
-	/*! This function will return the
-		value of the angle between 0 and 2PI */
-	angle
-	mod()const
-	{
-		angle ret(*this);
-		ret.v-=rot_floor(ret.v);
-		return ret;
-	}
-#else // ETL_WRAP_ANGLES
-	//! Angle Difference Function
-	/*! This function will return the
-		difference between
-		two angles, just like
-		\sa angle operator-(const angle &) */
+	/**
+	 * Angle Difference Function.
+	 * This function will return the difference between
+	 * two angles, just like @see angle operator-(const angle &)
+	 *
+	 * It was originally intended to compute the shortest arc angle
+	 * between this angle and \c rhs in the interval [-PI/2, PI/2)
+	 */
 	angle
 	dist(const angle &rhs)const
 	{ return angle(*this)-=rhs; }
 
-	//! Rotation Modulus
-	/*! This function will return the
-		value of the angle */
+	/**
+	 * Rotation Modulus.
+	 * This function will return the value of the angle
+	 *
+	 * It was originally intended to return the value of the angle
+	 * in the interval [0, PI/2)
+	 */
 	angle
 	mod()const
 	{
 		angle ret(*this);
 		return ret;
 	}
-#endif // ETL_WRAP_ANGLES
 
-	//! Zero Rotation (0 degrees)
+	/** Zero Rotation (0 degrees) */
 	static angle
 	zero()
 	{
@@ -291,7 +183,7 @@ public:
 		return ret;
 	}
 
-	//! One Complete Rotation (360 degrees)
+	/** One Complete Rotation (360 degrees) */
 	static angle
 	one()
 	{
@@ -300,7 +192,7 @@ public:
 		return ret;
 	}
 
-	//! One Half Rotation (180 degrees)
+	/** One Half Rotation (180 degrees) */
 	static angle
 	half()
 	{
@@ -313,31 +205,22 @@ public:
 
 private:
 
-#ifdef ETL_WRAP_ANGLES
-	static value_type rot_floor(value_type x)
-	{ return static_cast<value_type>(std::floor(x/(PI*2))*PI*2); }
-#endif // ETL_WRAP_ANGLES
+	static constexpr value_type ANGLE_EPSILON = 1.0e-6;
 
 public:
-	/*
-	** Conversion Classes
-	*/
+	// Conversion Classes
 
 	class rad;
 	class deg;
 	class rot;
 
-	/*
-	** Trigonometric Classes
-	*/
+	// Trigonometric Classes
 
 	class sin;
 	class cos;
 	class tan;
 
-	/*
-	** Friend classes
-	*/
+	// Friend classes
 
 	friend class rad;
 	friend class deg;
@@ -348,11 +231,9 @@ public:
 
 }; // END of class angle
 
-// ========================================================================
-/*!	\class	angle::rad	_angle.h	ETL/angle
-**	\brief	Angle representation in radians
-**	\see angle
-**	\writeme
+/**	
+ * Angle representation in radians
+ * @see angle
 */
 class angle::rad : public angle
 {
@@ -363,13 +244,10 @@ public:
 	rad dist(const angle &rhs)const { return angle::dist(rhs); }
 	value_type get()const { return v; }
 }; // END of class angle::radians
-// inline angle::rad::operator angle::value_type()const { return get(); }
 
-// ========================================================================
-/*!	\class	angle::deg	_angle.h	ETL/angle
-**	\brief	Angle representation in degrees
-**	\see angle
-**	\writeme
+/**	
+ * Angle representation in degrees
+ * @see angle
 */
 class angle::deg : public angle
 {
@@ -380,13 +258,10 @@ public:
 	deg dist(const angle &rhs)const { return angle::dist(rhs); }
 	value_type get()const { return v*360/(PI*2); }
 }; // END of class angle::degrees
-// inline angle::deg::operator angle::value_type()const { return get(); }
 
-// ========================================================================
-/*!	\class	angle::rot	_angle.h	ETL/angle
-**	\brief	Angle representation in rotations
-**	\see angle
-**	\writeme
+/**	
+ * Angle representation in rotations
+ * @see angle
 */
 class angle::rot : public angle
 {
@@ -397,13 +272,10 @@ public:
 	rot dist(const angle &rhs)const { return angle::dist(rhs); }
 	value_type get()const { return v/(PI*2); }
 }; // END of class angle::rotations
-// inline angle::rot::operator angle::value_type()const { return get(); }
 
-// ========================================================================
-/*!	\class	angle::sin	_angle.h	ETL/angle
-**	\brief	Angle representation as a sine function
-**	\see angle
-**	\writeme
+/**	
+ * Angle representation as a sine function
+ * @see angle
 */
 class angle::sin : public angle
 {
@@ -414,13 +286,10 @@ public:
 	sin dist(const angle &rhs)const { return angle::dist(rhs); }
 	value_type get()const { return static_cast<value_type>(std::sin(v)); }
 }; // END of class angle::sin
-// inline angle::sin::operator angle::value_type()const { return get(); }
 
-// ========================================================================
-/*!	\class	angle::cos	_angle.h	ETL/angle
-**	\brief	Angle representation as a cosine function
-**	\see angle
-**	\writeme
+/**	
+ * Angle representation as a cosine function
+ * @see angle
 */
 class angle::cos : public angle
 {
@@ -431,13 +300,10 @@ public:
 	cos dist(const angle &rhs)const { return angle::dist(rhs); }
 	value_type get()const { return (value_type)std::cos(v); }
 }; // END of class angle::cos
-// inline angle::cos::operator angle::value_type()const { return get(); }
 
-// ========================================================================
-/*!	\class	angle::tan	_angle.h	ETL/angle
-**	\brief	Angle representation as a tangent function
-**	\see angle
-**	\writeme
+/**	
+ * Angle representation as a tangent function
+ * @see angle
 */
 class angle::tan : public angle
 {
@@ -449,19 +315,13 @@ public:
 	tan dist(const angle &rhs)const { return angle::dist(rhs); }
 	value_type get()const { return (value_type)std::tan(v); }
 }; // END of class angle::tan
-// inline angle::tan::operator angle::value_type()const { return get(); }
 
 };
-
-//#include <iostream>
 
 template <typename T>
 struct affine_combo<etl::angle, T>
 {
 	typedef T time_type;
-
-	//affine_combo() { std::cerr<<"affine_combo<etl::angle,float>: I was created!"<<std::endl; }
-	//~affine_combo() { std::cerr<<"affine_combo<etl::angle,float>: I was DELETED!"<<std::endl; }
 
 	etl::angle operator()(const etl::angle &a,const etl::angle &b,const time_type &t)const
 	{
@@ -480,8 +340,6 @@ struct distance_func<etl::angle>
 	etl::angle operator()(const etl::angle &a,const etl::angle &b)const
 	{
 		etl::angle delta=b.dist(a);
-		//if(delta<etl::angle::zero())
-		//	return delta+etl::angle::one();
 		return delta;
 	}
 
