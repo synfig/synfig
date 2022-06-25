@@ -123,7 +123,7 @@ KeyframeList::add(const Keyframe &x)
 {
 	push_back(x);
 	iterator ret(end());
-	ret--;
+	--ret;
 	assert(x==*ret);
 	sync();
 	return ret;

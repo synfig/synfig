@@ -31,12 +31,12 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/handle>
 #include <vector>
+
+#include "guid.h"
 #include "string.h"
 #include "time.h"
 #include "uniqueid.h"
-#include "guid.h"
 #include "waypoint.h"
 
 /* === M A C R O S ========================================================= */
@@ -76,20 +76,17 @@ private:
 public:
 
 	Keyframe();
-
 	Keyframe(const Time &time);
 
 	~Keyframe();
 
 	void set_time(Time x) { time_=x; }
-
-	Time get_time()const { return time_; }
+	Time get_time() const { return time_; }
 
 	void set_description(String x) { desc_=x; }
+	String get_description() const { return desc_; }
 
-	String get_description()const { return desc_; }
-
-	const GUID& get_guid()const { return guid_; }
+	const GUID& get_guid() const { return guid_; }
 	void set_guid(const GUID& x) { guid_=x; }
 
 	/** Enables the keyframe, by making it @em active) */
