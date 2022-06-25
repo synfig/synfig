@@ -114,10 +114,8 @@ public:
 	bool operator<(const Keyframe &rhs)const { return time_<rhs.time_; }
 	bool operator<(const Time &rhs)const { return time_<rhs; }
 
-//	bool operator==(const Keyframe &rhs)const { return id_==rhs.id_; }
 	bool operator==(const Time &rhs)const { return time_==rhs; }
 
-//	bool operator!=(const Keyframe &rhs)const { return id_!=rhs.id_; }
 	bool operator!=(const Time &rhs)const { return time_!=rhs; }
 
 	const Waypoint::Model &get_waypoint_model()const { return waypoint_model_; }
@@ -138,8 +136,6 @@ public:
 
 	bool find(const UniqueID &x, KeyframeList::iterator &out);
 
-	//const_iterator find(const UniqueID &x)const;
-
 	//! Finds the keyframe at an exact point in time
 	bool find(const Time &x, KeyframeList::iterator &out);
 
@@ -149,19 +145,10 @@ public:
 	//! Finds the keyframe before that point in time
 	bool find_prev(const Time &x, KeyframeList::iterator &out, bool ignore_disabled = true);
 
-/*	const_iterator find(const Time &x)const;
-	const_iterator find_next(const Time &x, bool ignore_disabled = true)const;
-	const_iterator find_prev(const Time &x, bool ignore_disabled = true)const;*/
-
 	void find_prev_next(const Time& time, Time &prev, Time &next, bool ignore_disabled = true);
 
-	void insert_time(const Time& location, const Time& delta);
-
-	void dump()const;
 	void sync();
 };
-
-//typedef std::list<Keyframe> KeyframeList;
 
 }; // END of namespace synfig
 
