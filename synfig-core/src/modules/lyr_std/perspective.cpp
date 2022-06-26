@@ -34,8 +34,6 @@
 #	include <config.h>
 #endif
 
-#include <ETL/misc>
-
 #include <synfig/localization.h>
 
 #include <synfig/string.h>

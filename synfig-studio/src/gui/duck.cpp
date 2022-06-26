@@ -37,8 +37,6 @@
 
 #include "duck.h"
 
-#include <ETL/misc>
-
 #include <gui/localization.h>
 
 #include <synfig/general.h>

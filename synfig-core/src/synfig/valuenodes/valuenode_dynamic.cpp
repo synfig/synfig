@@ -39,8 +39,6 @@
 #include <synfig/valuenode_registry.h>
 #include <synfig/vector.h>
 
-#include <ETL/misc>
-
 #include <boost/numeric/odeint/integrate/integrate.hpp>
 #endif
 

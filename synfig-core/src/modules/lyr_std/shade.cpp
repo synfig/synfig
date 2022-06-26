@@ -36,8 +36,6 @@
 
 #include <cstring>
 
-#include <ETL/misc>
-
 #include "shade.h"
 
 #include <synfig/localization.h>
