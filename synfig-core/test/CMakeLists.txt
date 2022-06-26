@@ -21,6 +21,10 @@ add_executable(test_synfig_clock clock.cpp)
 target_link_libraries(test_synfig_clock PRIVATE synfig)
 add_test(NAME test_synfig_clock COMMAND test_synfig_clock)
 
+add_executable(test_synfig_keyframe keyframe.cpp)
+target_link_libraries(test_synfig_keyframe PRIVATE synfig)
+add_test(NAME test_synfig_keyframe COMMAND test_synfig_keyframe)
+
 #add_executable(test_synfig_node node.cpp)
 #target_link_libraries(test_synfig_node PRIVATE synfig)
 #add_test(NAME test_synfig_node COMMAND test_synfig_node)
