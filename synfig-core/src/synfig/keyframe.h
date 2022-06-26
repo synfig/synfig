@@ -136,7 +136,7 @@ class KeyframeList : public std::vector<Keyframe>
 public:
 
 	/** Add a new keyframe and sort the list */
-	iterator add(const Keyframe &x);
+	void add(const Keyframe &x);
 
 	/**
 	 * Remove the keyframe with the given UniqueID @c x.

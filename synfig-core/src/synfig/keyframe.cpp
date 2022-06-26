@@ -118,15 +118,11 @@ KeyframeList::find(const UniqueID &x, KeyframeList::iterator &out)
 	return out != end();
 }
 
-KeyframeList::iterator
+void
 KeyframeList::add(const Keyframe &x)
 {
 	push_back(x);
-	iterator ret(end());
-	--ret;
-	assert(x==*ret);
 	sync();
-	return ret;
 }
 
 void
