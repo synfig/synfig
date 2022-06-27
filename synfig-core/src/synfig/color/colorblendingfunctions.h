@@ -32,6 +32,7 @@
 #define COLOR_EPSILON	(0.000001f)
 
 #include <synfig/color.h>
+#include <synfig/real.h>
 #include <algorithm>
 
 namespace synfig {
@@ -177,7 +178,7 @@ C blendfunc_ADD_COMPOSITE(C &a,C &b,float amount)
 {
 	float ba(b.get_a());
 	float aa(a.get_a()*amount);
-	const float alpha(std::max(0.f, std::min(1.f, ba + aa)));
+	const float alpha(synfig::clamp(ba + aa, 0.f, 1.f));
 	const float k = fabs(alpha) > 1e-8 ? 1.0/alpha : 0.0;
 	aa *= k; ba *= k;
 

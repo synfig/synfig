@@ -115,7 +115,7 @@ synfig::ValueNode_Repeat_Gradient::operator()(Time t)const
 		return ret;
 
 	const Gradient gradient((*gradient_)(t).get(Gradient()));
-	const float width(std::max(0.0, std::min(1.0,(*width_)(t).get(Real()))));
+	const float width(synfig::clamp((*width_)(t).get(Real()), 0.0, 1.0));
 	const bool specify_start((*specify_start_)(t).get(bool()));
 	const bool specify_end((*specify_end_)(t).get(bool()));
 

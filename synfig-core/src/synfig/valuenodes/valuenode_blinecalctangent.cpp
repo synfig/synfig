@@ -130,7 +130,7 @@ ValueNode_BLineCalcTangent::operator()(Time t, Real amount)const
 	if (amount > 1) amount = 1;
 	amount *= count;
 
-	int i0 = std::max(0, std::min(size-1, (int)floor(amount)));
+	int i0 = synfig::clamp((int)floor(amount), 0, size-1);
 	int i1 = (i0 + 1) % size;
 	Real part = amount - i0;
 

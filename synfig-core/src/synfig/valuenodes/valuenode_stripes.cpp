@@ -113,7 +113,7 @@ synfig::ValueNode_Stripes::operator()(Time t)const
 
 	const Color color1((*color1_)(t).get(Color()));
 	const Color color2((*color2_)(t).get(Color()));
-	const float width(std::max(0.0,std::min(1.0,(*width_)(t).get(Real()))));
+	const float width(synfig::clamp((*width_)(t).get(Real()), 0., 1.));
 
 	const float stripe_width_a(width/total);
 	const float stripe_width_b((1.0-width)/total);

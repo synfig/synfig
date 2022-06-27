@@ -342,7 +342,7 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 
 	// The time where the event x is
 	Time t = time_plot_data.get_t_from_pixel_coord(x);
-	t = std::max(lower, std::min(upper, t));
+	t = synfig::clamp(t, lower, upper);
 
 	// here the guts of the event
 	switch(event->type) {

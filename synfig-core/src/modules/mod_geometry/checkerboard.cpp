@@ -159,7 +159,7 @@ public:
 
 					ColorReal a = std::min(px, py);
 					if ((p[0] < 0.5) != (p[1] < 0.5)) a = -a;
-					a = std::max(ColorReal(0), std::min(ColorReal(1), a + ColorReal(0.5)));
+					a = synfig::clamp(a + ColorReal(0.5), ColorReal(0), ColorReal(1));
 
 					c.set_a(color.get_a()*a);
 					apen.put_value(c, amount);

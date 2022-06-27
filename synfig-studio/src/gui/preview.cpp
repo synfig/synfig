@@ -1213,8 +1213,8 @@ Widget_Preview::is_time_equal_to_current_frame(const synfig::Time &time)
 		t1 = t1.round(fps);
 	}
 
-	t0 = std::max(starttime, std::min(endtime, t0));
-	t1 = std::max(starttime, std::min(endtime, t1));
+	t0 = synfig::clamp(t0, starttime, endtime);
+	t1 = synfig::clamp(t1, starttime, endtime);
 
 	return t0.is_equal(t1);
 }

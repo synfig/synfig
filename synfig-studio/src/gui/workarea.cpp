@@ -937,8 +937,8 @@ const Cairo::RefPtr<Cairo::SurfacePattern>&
 WorkArea::get_background_pattern() const
 {
 	if (!background_pattern) {
-		int w = std::max(1, std::min(1000, (int)round(background_size[0])));
-		int h = std::max(1, std::min(1000, (int)round(background_size[1])));
+		int w = synfig::clamp(round_to_int(background_size[0]), 1, 1000);
+		int h = synfig::clamp(round_to_int(background_size[1]), 1, 1000);
 	    Cairo::RefPtr<Cairo::ImageSurface> surface = Cairo::ImageSurface::create(Cairo::FORMAT_RGB24, w*2, h*2);
 	    Cairo::RefPtr<Cairo::Context> context = Cairo::Context::create(surface);
 	    context->set_source_rgb(background_first_color.get_r(), background_first_color.get_g(), background_first_color.get_b());
@@ -2226,7 +2226,7 @@ studio::WorkArea::reset_cursor()
 void
 studio::WorkArea::set_zoom(float z)
 {
-	z=std::max(1.0f/128.0f,std::min(128.0f,z));
+	z=synfig::clamp(z,1.0f/128.0f,128.0f);
 	zoomdial->set_zoom(z);
 	if(z==zoom)
 		return;

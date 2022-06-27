@@ -318,8 +318,8 @@ synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
 				case 0:	// Nearest Neighbor
 				default:
 					{
-						int x(std::min(w-1,std::max(0,round_to_int(surface_pos[0]))));
-						int y(std::min(h-1,std::max(0,round_to_int(surface_pos[1]))));
+						int x(synfig::clamp(round_to_int(surface_pos[0]), 0, w-1));
+						int y(synfig::clamp(round_to_int(surface_pos[1]), 0, h-1));
 						ret= surface[y][x];
 					}
 				break;

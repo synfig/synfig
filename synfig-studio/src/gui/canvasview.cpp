@@ -2796,7 +2796,7 @@ CanvasView::on_play_timeout()
 				jack_transport_locate(jack_client, nframes);
 			}
 		}
-		time = std::max(lower, std::min(upper, time));
+		time = synfig::clamp(time, lower, upper);
 		#endif
 	} else {
 		time = time_model()->round_time(playing_time + playing_timer());
