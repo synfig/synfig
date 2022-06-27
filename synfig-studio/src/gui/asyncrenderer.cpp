@@ -35,8 +35,7 @@
 
 #include "asyncrenderer.h"
 
-#include <ETL/clock>
-
+#include <synfig/clock.h>
 #include <synfig/context.h>
 #include <synfig/general.h>
 #include <synfig/target_scanline.h>

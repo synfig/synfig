@@ -11,31 +11,25 @@ AM_CPPFLAGS = \
 	-I$(top_builddir)/ETL
 
 TESTS = \
-	clock \
 	handle \
 	angle \
 	hermite \
 	stringf \
 	pen \
-	surface \
-	benchmark
+	surface
 
 check_PROGRAMS = \
 	handle \
-	clock \
 	angle \
 	hermite \
 	stringf \
 	pen \
-	surface \
-	benchmark
+	surface
 
-benchmark_SOURCES=benchmark.cpp
 surface_SOURCES=surface.cpp
 pen_SOURCES=pen.cpp
 handle_SOURCES=handle.cpp
 angle_SOURCES=angle.cpp
-clock_SOURCES=clock.cpp
 hermite_SOURCES=hermite.cpp
 stringf_SOURCES=stringf.cpp
 

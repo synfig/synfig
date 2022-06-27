@@ -1,6 +1,6 @@
-/*! ========================================================================
-** Extended Template and Library Test Suite
-** Clock Test
+/* === S Y N F I G ========================================================= */
+/*!	\file clock.cpp
+**	\brief Clock Test
 **
 ** Copyright (c) 2002 Robert B. Quattlebaum Jr.
 **
@@ -23,8 +23,9 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/clock>
-#include <stdio.h>
+#include <synfig/clock.h>
+
+#include <cstdio>
 #include <chrono>
 #include <thread>
 
@@ -40,7 +41,7 @@ int basic_test(void)
 {
 	int ret=0;
 
-	etl::clock timer;
+	synfig::clock timer;
 	float amount, total;
 
 	for(amount=3.0;amount>=0.00015;amount/=2.0)
