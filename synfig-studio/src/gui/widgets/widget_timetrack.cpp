@@ -39,6 +39,7 @@
 
 #include <synfig/general.h>
 #include <synfig/timepointcollect.h>
+#include <synfig/valuenodes/valuenode_dynamiclist.h>
 
 #endif
 
@@ -413,8 +414,10 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		const bool is_user_moving_waypoints = is_dragging && waypoint_sd.get_action() == MOVE;
 		const bool is_user_scaling_waypoints = is_dragging && waypoint_sd.get_action() == SCALE;
 
+		draw_discrete_animated_times(cr, row_info);
+
 		std::vector<std::pair<synfig::TimePoint, synfig::Time>> visible_waypoints;
-		WaypointRenderer::foreach_visible_waypoint(row_info.get_value_desc(), *time_plot_data,
+		WaypointRenderer::foreach_visible_waypoint(value_desc, *time_plot_data,
 			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *) -> bool
 		{
 			// Don't draw it if it's being moved by user
@@ -429,6 +432,8 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 			draw_static_intervals_for_row(cr, row_info, visible_waypoints);
 
 		draw_waypoints(cr, path, row_info, visible_waypoints);
+
+		draw_active_point_status(cr, row_info, value_desc);
 
 		return false;
 	});
@@ -773,6 +778,27 @@ void Widget_Timetrack::draw_static_intervals_for_row(const Cairo::RefPtr<Cairo::
 	}
 }
 
+void
+Widget_Timetrack::draw_discrete_animated_times(const Cairo::RefPtr<Cairo::Context> &cr, const RowInfo &row_info) const
+{
+	const synfigapp::ValueDesc &value_desc = row_info.get_value_desc();
+	std::set<synfig::Time> times;
+	if (value_desc.is_value_node()) {
+		const synfig::Type & value_type = value_desc.get_value_type();
+		if (value_type == synfig::type_string
+			|| value_type == synfig::type_bool
+			|| value_type == synfig::type_canvas)
+		{
+			value_desc.get_value_node()->get_value_change_times(times);
+		}
+	}
+	const double yc = row_info.get_geometry().y + row_info.get_geometry().h/2.;
+	for(std::set<synfig::Time>::const_iterator i = times.begin(); i != times.end(); ++i) {
+		cr->arc(1+time_plot_data->get_pixel_t_coord(*i), yc, 2, 0, 2*3.1415);
+		cr->fill();
+	}
+}
+
 void Widget_Timetrack::draw_waypoints(const Cairo::RefPtr<Cairo::Context>& cr, const Gtk::TreePath &path, const RowInfo &row_info, const std::vector<std::pair<synfig::TimePoint, synfig::Time> >& waypoints) const
 {
 	const int margin = 1;
@@ -818,6 +844,32 @@ void Widget_Timetrack::draw_selected_background(const Cairo::RefPtr<Cairo::Conte
 		foreign_context->render_background(cr, 0, geometry.y, get_width(), geometry.h);
 		foreign_context->set_state(old_state);
 		n_drawn_selected_rows++;
+	}
+}
+
+void Widget_Timetrack::draw_active_point_status(const Cairo::RefPtr<Cairo::Context> &cr, const RowInfo &row_info, const synfigapp::ValueDesc &value_desc)
+{
+	if (!value_desc.parent_is_value_node())
+		return;
+	synfig::ValueNode_DynamicList::Handle dynamic_list = synfig::ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node());
+	if (!dynamic_list)
+		return;
+
+	const synfig::ValueNode_DynamicList::ListEntry& list_entry = dynamic_list->list[ value_desc.get_index() ];
+	const synfig::ValueNode_DynamicList::ListEntry::ActivepointList& activepoint_list = list_entry.timing_info;
+
+	const Gdk::RGBA activepoint_color[] = {
+	    Gdk::RGBA("#ff0000"),
+	    Gdk::RGBA("#00ff00")
+	};
+
+	const double w = 2;
+
+	for (const auto& activepoint : activepoint_list) {
+		const Gdk::RGBA& color = activepoint_color[activepoint.get_state() ? 1 : 0];
+		cr->set_source_rgb(color.get_red(), color.get_green(), color.get_blue());
+		cr->rectangle(-w/2+time_plot_data->get_pixel_t_coord(activepoint.get_time()), row_info.get_geometry().y, w, row_info.get_geometry().h);
+		cr->fill();
 	}
 }
 
