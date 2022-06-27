@@ -39,8 +39,6 @@
 #include <algorithm>
 #include <stdexcept>
 
-#include <ETL/misc>
-
 #include "general.h"
 #include <synfig/localization.h>
 #include <synfig/real.h>
