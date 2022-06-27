@@ -219,21 +219,21 @@ ValueNode_Modulo::get_inverse(const Time& t, const ValueBase& target_value) cons
 	if (type == type_angle) {
 		int int_target = etl::round_to_int(Angle::deg(target_value.get(Angle())).get()) / scalar_value;
 		Angle::deg ret = Angle::deg(int_target / scalar_value);
-		return std::min(Angle::deg(max_value), std::max(Angle::deg(-max_value), ret));
+		return synfig::clamp(ret, Angle::deg(-max_value), Angle::deg(max_value));
 	}
 	if (type == type_integer) {
 		int ret = target_value.get(int()) / scalar_value;
-		return std::min(max_value, std::max(-max_value, ret));
+		return synfig::clamp(ret, -max_value, max_value);
 	}
 	if (type == type_real) {
 		int int_target = etl::round_to_int(target_value.get(Real()));
 		Real ret = int_target / scalar_value;
-		return std::min(Real(max_value), std::max(Real(-max_value), ret));
+		return synfig::clamp(ret, Real(-max_value), Real(max_value));
 	}
 	if (type == type_time) {
 		int int_target = etl::round_to_int(target_value.get(Time()));
 		Time ret = int_target / scalar_value;
-		return std::min(Time(max_value), std::max(Time(-max_value), ret));
+		return synfig::clamp(ret, Time(-max_value), Time(-max_value));
 	}
 	throw std::runtime_error(strprintf("ValueNode_%s: %s: %s",get_name().c_str(),_("Attempting to get the inverse of a non invertible Valuenode"),_("Invalid value type")));
 }

@@ -411,7 +411,7 @@ CellRenderer_TimeTrack::render_vfunc(
 			ValueNode_DynamicList::ListEntry::ActivepointList::const_iterator j = i; ++j;
 
 			int x = time_plot_data.get_pixel_t_coord(i->time);
-			x = std::max(0, std::min(cell_area.get_width(), x));
+			x = synfig::clamp(x, 0, cell_area.get_width());
 
 			bool status_at_time = !list_entry.status_at_time(
 				j == activepoint_list.end() ? Time::end() : (i->time + j->time)*0.5 );

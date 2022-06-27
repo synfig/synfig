@@ -450,8 +450,8 @@ namespace {
 
 					int sw = src_bounds.get_width();
 					int sh = src_bounds.get_height();
-					int w = std::min( sw, std::max(1, (int)ceil((Real)sw * bounds.resolution[0])) );
-					int h = std::min( sh, std::max(1, (int)ceil((Real)sh * bounds.resolution[1])) );
+					int w = synfig::clamp((int)ceil((Real)sw * bounds.resolution[0]), 1, sw);
+					int h = synfig::clamp((int)ceil((Real)sh * bounds.resolution[1]), 1, sh);
 
 					if (w < sw || h < sh) {
 						synfig::Surface new_src(w, h);

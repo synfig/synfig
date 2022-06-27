@@ -107,13 +107,13 @@ private:
 	static inline ColorReal clamp(const ColorReal &x)
 	{
 		const ColorReal max = ColorReal(1.0)/real_low_precision<ColorReal>();
-		return std::max(-max, std::min(max, x));
+		return synfig::clamp(x, -max, max);
 	}
 
 	static inline ColorReal clamp_positive(const ColorReal &x)
 	{
 		const ColorReal max = ColorReal(1.0)/real_low_precision<ColorReal>();
-		return std::max(real_low_precision<ColorReal>(), std::min(max, x));
+		return synfig::clamp(x, real_low_precision<ColorReal>(), max);
 	}
 
 	static inline void func_none(ColorReal&, const ColorReal&, const ColorReal&) { }

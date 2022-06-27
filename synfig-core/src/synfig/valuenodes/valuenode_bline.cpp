@@ -208,7 +208,7 @@ synfig::find_closest_point(const ValueBase &bline, const Point &pos, Real radius
 				 + (curve[3] - curve[2]).mag();
 		
 		// want to make the distance between lines happy
-		Real step = std::max(minstep, std::min(maxstep, len/(2*radius))); 
+		Real step = synfig::clamp(len/(2*radius), minstep, maxstep);
 		float time = 0;
 		Real c = find_closest(curve, pos, step, &closest, &time);
 		if(c < closest) {

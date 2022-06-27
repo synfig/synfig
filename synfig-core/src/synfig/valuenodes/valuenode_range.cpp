@@ -163,13 +163,13 @@ synfig::ValueNode_Range::operator()(Time t)const
 	}
 	else
 	if (type == type_integer)
-		return std::max((*min_)(t).get(int()),  std::min((*max_)(t).get(int()),  (*link_)(t).get(int())));
+		return synfig::clamp((*link_)(t).get(int()), (*min_)(t).get(int()), (*max_)(t).get(int()));
 	else
 	if (type == type_real)
-		return std::max((*min_)(t).get(Real()), std::min((*max_)(t).get(Real()), (*link_)(t).get(Real())));
+		return synfig::clamp((*link_)(t).get(Real()), (*min_)(t).get(Real()), (*max_)(t).get(Real()));
 	else
 	if (type == type_time)
-		return std::max((*min_)(t).get(Time()), std::min((*max_)(t).get(Time()), (*link_)(t).get(Time())));
+		return synfig::clamp((*link_)(t).get(Time()), (*min_)(t).get(Time()), (*max_)(t).get(Time()));
 
 	assert(0);
 	return ValueBase();
@@ -209,14 +209,14 @@ synfig::ValueNode_Range::get_inverse(const Time& t, const synfig::Vector &target
 	{
 		int max_value((*max_)(t).get(int()));
 		int min_value((*min_)(t).get(int()));
-		return std::max(min_value, std::min(max_value, int(target_value.mag())));
+		return synfig::clamp(int(target_value.mag()), min_value, max_value);
 	}
 	else
 	if (type == type_real)
 	{
 		Real max_value((*max_)(t).get(Real()));
 		Real min_value((*min_)(t).get(Real()));
-		return std::max(min_value, std::min(max_value, target_value.mag()));
+		return synfig::clamp(target_value.mag(), min_value, max_value);
 	}
 	else
 	if (type == type_angle)
@@ -224,14 +224,14 @@ synfig::ValueNode_Range::get_inverse(const Time& t, const synfig::Vector &target
 		Angle max_value((*max_)(t).get(Angle()));
 		Angle min_value((*min_)(t).get(Angle()));
 		Angle target_angle(Angle::tan(target_value[1],target_value[0]));
-		return target_angle>max_value?max_value:target_angle<min_value?min_value:target_angle;
+		return synfig::clamp(target_angle, min_value, max_value);
 	}
 	else
 	if (type == type_time)
 	{
 		Real max_value((*max_)(t).get(Time()));
 		Real min_value((*min_)(t).get(Time()));
-		return std::max(min_value, std::min(max_value, target_value.mag()));
+		return synfig::clamp(target_value.mag(), min_value, max_value);
 	}
 
 	return target_value;

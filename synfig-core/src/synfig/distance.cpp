@@ -115,7 +115,7 @@ Distance::operator=(const synfig::String& str)
 synfig::String
 Distance::get_string(int digits)const
 {
-	digits=std::min(9, std::max(0,digits));
+	digits=synfig::clamp(digits,0,9);
 	String fmt(strprintf("%%.%01df",digits));
 	String str(strprintf(fmt.c_str(),value_));
 	return strprintf("%s%s",str.c_str(),system_name(system_).c_str());
