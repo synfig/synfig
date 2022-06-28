@@ -125,6 +125,7 @@ LayerTree::LayerTree()
 {
 	layer_tree_view().signal_key_press_event().connect(sigc::mem_fun(*this, &LayerTree::on_key_press_event));
 
+
 	create_layer_tree();
 	create_param_tree();
 
@@ -137,9 +138,17 @@ LayerTree::LayerTree()
 	//param_tree_view().get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
 	layer_tree_view().show();
 	param_tree_view().show();
-
+	//gets the selection object at first
+	selected_param_object = param_tree_view().get_selection(); //hbd
+	// getting the selected row
+	iter = selected_param_object->get_selected();
+	row = *iter;
 	param_tree_view().set_has_tooltip();
 	layer_tree_view().set_has_tooltip();
+
+	param_tree_view().signal_button_press_event().connect(sigc::mem_fun(*this, &LayerTree::on_button_press_event), false);
+	param_tree_view().signal_button_release_event().connect(sigc::mem_fun(*this, &LayerTree::on_button_release_event), false);
+	selected_param_object->signal_changed().connect(sigc::mem_fun(*this, &LayerTree::change_selection_param), false);
 
 	disable_single_click_for_param_editing = false;
 }
@@ -223,6 +232,47 @@ LayerTree::create_layer_tree()
 	layer_tree_view().signal_event().connect(sigc::mem_fun(*this, &studio::LayerTree::on_layer_tree_event));
 	layer_tree_view().signal_query_tooltip().connect(sigc::mem_fun(*this, &studio::LayerTree::on_layer_tree_view_query_tooltip));
 	layer_tree_view().show();
+}
+
+bool
+LayerTree::on_button_press_event(GdkEventButton* event)
+{
+	iter = selected_param_object->get_selected();
+	std::cout<<*iter;
+	// if the same selected row is once again clicked then work starts
+	if(iter){
+	if(row == *iter){
+	std::cout<<"selection works";
+	//const Glib::RefPtr< Gdk::Cursor >& cursor	= Gdk::CROSSHAIR;
+	const char * cursor_name = "move";
+	param_tree_view().get_window()->set_cursor(Gdk::Cursor::create(get_display(), cursor_name));
+	return false ;}}
+
+	return false;
+}
+
+bool
+LayerTree::on_button_release_event(GdkEventButton* event)
+{
+
+	std::cout<<"button release";
+	//const Glib::RefPtr< Gdk::Cursor >& cursor	= Gdk::CROSSHAIR;
+	const char * cursor_name = "default";
+	param_tree_view().get_window()->set_cursor(Gdk::Cursor::create(get_display(), cursor_name));
+	return true ;
+}
+
+void
+LayerTree::change_selection_param()
+{
+	//gets the selection object at first
+	selected_param_object = param_tree_view().get_selection(); //hbd
+	// getting the selected row
+	iter = selected_param_object->get_selected();
+	row = *iter;
+	std::cout<<*iter;
+	if(iter)
+		std::cout<<"switch selection";
 }
 
 void

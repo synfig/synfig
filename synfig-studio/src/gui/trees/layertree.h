@@ -227,6 +227,14 @@ private:
 	void get_expanded_layers(LayerList &list, const Gtk::TreeNodeChildren &rows)const;
 
 	bool on_key_press_event(GdkEventKey* event);
+	bool on_button_press_event(GdkEventButton* event);
+	bool on_button_release_event(GdkEventButton* event);
+	//all the row selection hbd
+	Glib::RefPtr<Gtk::TreeSelection> selected_param_object;
+	Gtk::TreeModel::iterator iter;
+	Gtk::TreeModel::Row row ; //shel el assignment = *iter an dassign in the constructor then when slection changed change it and then itll be ready for conditional use
+	void change_selection_param();
+
 
 }; // END of LayerTree
 
