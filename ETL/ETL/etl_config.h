@@ -3,6 +3,4 @@
 
 #include <ETL/etl_profile.h>
 
-#define ETL_DIRECTORY_SEPARATOR		'/'
-
 #endif

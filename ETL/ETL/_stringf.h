@@ -48,6 +48,8 @@
 
 /* === M A C R O S ========================================================= */
 
+#define ETL_DIRECTORY_SEPARATOR		'/'
+
 #ifdef _WIN32
 #define POPEN_BINARY_READ_TYPE "rb"
 #define POPEN_BINARY_WRITE_TYPE "wb"
