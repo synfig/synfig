@@ -21,7 +21,6 @@ etl_HEADERS = \
 	_hermite.h \
 	_curve_func.h \
 	_handle.h \
-	etl_config.h \
 	$(top_builddir)/ETL/etl_profile.h \
 	bezier \
 	_bezier.h \
