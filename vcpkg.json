@@ -13,6 +13,7 @@
     "boost-odeint",
     "zlib",
     "libpng",
-    "libjpeg-turbo"
+    "libjpeg-turbo",
+    "pkgconf"
   ]
 }
