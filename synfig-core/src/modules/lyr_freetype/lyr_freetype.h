@@ -147,7 +147,7 @@ private:
 	synfig::Point contour_to_world(const synfig::Point& p) const;
 
 	enum SyncFlags {
-		SYNC_FONT,
+		SYNC_FONT = 1,
 		SYNC_TEXT,
 		SYNC_DIRECTION,
 		SYNC_COMPRESS,
