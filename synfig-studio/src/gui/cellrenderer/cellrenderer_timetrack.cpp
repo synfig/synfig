@@ -250,7 +250,7 @@ CellRenderer_TimeTrack::render_vfunc(
 	if (!cr || cell_area.get_width() <= 0 || cell_area.get_height() <= 0 || !time_plot_data.time_model)
 		return;
 
-	Gdk::RGBA change_time_color("#008800");
+	Gdk::RGBA change_time_color("#888888");
 	Gdk::RGBA curr_time_color("#0000ff");
 	Gdk::RGBA inactive_color("rgba(0.,0.,0.,0.5)");
 	Gdk::RGBA keyframe_color("#a07f7f");
@@ -286,19 +286,16 @@ CellRenderer_TimeTrack::render_vfunc(
 	{
 		std::set<Time> times;
 		get_change_times_from_vdesc(value_desc, times);
+		const double yc = cell_area.get_y() + cell_area.get_height()/2.;
+		cr->set_source_rgb(
+		    change_time_color.get_red(),
+		    change_time_color.get_green(),
+		    change_time_color.get_blue() );
 		for(std::set<Time>::const_iterator i = times.begin(); i != times.end(); ++i) {
 			//find the coordinate in the drawable space...
 			Time t = (*i - time_offset)*time_k;
 			if (time_plot_data.is_time_visible_extra(t)) {
-				const int w = 1;
-				const int h = (cell_area.get_height() - 2)/2;
-				const int x = cell_area.get_x() + time_plot_data.get_pixel_t_coord(t);
-				const int y = cell_area.get_y() + (cell_area.get_height() - h)/2;
-				cr->rectangle(x, y, w, h);
-				cr->set_source_rgb(
-					change_time_color.get_red(),
-					change_time_color.get_green(),
-					change_time_color.get_blue() );
+				cr->arc(cell_area.get_x()+1+time_plot_data.get_pixel_t_coord(*i), yc, 2, 0, 2*3.1415);
 				cr->fill();
 			}
 		}
