@@ -70,28 +70,6 @@ namespace {
 
 /* === P R O C E D U R E S ================================================= */
 
-static void
-draw_activepoint_off(
-	const Cairo::RefPtr<Cairo::Context> &cr,
-	Gdk::RGBA inactive_color,
-	int line_width,
-	int from_x,
-	int from_y,
-	int to_x,
-	int to_y )
-{
-	std::valarray<double> activepoint_off_dashes(2);
-	activepoint_off_dashes[0] = 1.0;
-	activepoint_off_dashes[1] = 2.0;
-
-	cr->set_dash(activepoint_off_dashes, 0.0);
-	Gdk::Cairo::set_source_rgba(cr, inactive_color);
-	cr->set_line_width(line_width);
-	cr->move_to(from_x, from_y);
-	cr->line_to(to_x, to_y);
-	cr->stroke();
-}
-
 static Time
 get_time_offset_from_vdesc(const ValueDesc &v)
 {
@@ -274,7 +252,7 @@ CellRenderer_TimeTrack::render_vfunc(
 
 	Gdk::RGBA change_time_color("#008800");
 	Gdk::RGBA curr_time_color("#0000ff");
-	Gdk::RGBA inactive_color("#000000");
+	Gdk::RGBA inactive_color("rgba(0.,0.,0.,0.5)");
 	Gdk::RGBA keyframe_color("#a07f7f");
 	Gdk::RGBA activepoint_color[] = {
 		Gdk::RGBA("#ff0000"),
@@ -401,57 +379,42 @@ CellRenderer_TimeTrack::render_vfunc(
 		const ValueNode_DynamicList::ListEntry& list_entry = parent_dynamic_list_value_node->list[ value_desc.get_index() ];
 		const ValueNode_DynamicList::ListEntry::ActivepointList& activepoint_list = list_entry.timing_info;
 
-		bool is_off = !activepoint_list.empty() && !activepoint_list.front().state;
-		int xstart = 0;
+		synfig::Time previous_activepoint_time = synfig::Time::begin();
+		synfig::Time initial_off_time = list_entry.status_at_time(previous_activepoint_time) ? synfig::Time::end() : synfig::Time::begin();
 
-		for(ValueNode_DynamicList::ListEntry::ActivepointList::const_iterator i = activepoint_list.begin(); i != activepoint_list.end(); ++i) {
-			ValueNode_DynamicList::ListEntry::ActivepointList::const_iterator j = i; ++j;
+		for (const auto& activepoint : activepoint_list) {
+			const int w = selected == activepoint ? 3 : 1;
 
-			int x = time_plot_data.get_pixel_t_coord(i->time);
-			x = synfig::clamp(x, 0, cell_area.get_width());
-
-			bool status_at_time = !list_entry.status_at_time(
-				j == activepoint_list.end() ? Time::end() : (i->time + j->time)*0.5 );
-
-			if (!is_off && status_at_time) {
-				xstart = x;
-				is_off = true;
-			} else
-			if (is_off && !status_at_time) {
-				// render the off time has a dashed line
-				draw_activepoint_off(
-					cr,
-					inactive_color,
-					cell_area.get_height()*2,
-					cell_area.get_x() + xstart,
-					cell_area.get_y(),
-					cell_area.get_x() + x,
-					cell_area.get_y() );
-				is_off = false;
+			if (!list_entry.status_at_time(0.5*(previous_activepoint_time + activepoint.get_time()))) {
+				if (initial_off_time == synfig::Time::end())
+					initial_off_time = previous_activepoint_time;
+			} else {
+				if (initial_off_time != synfig::Time::end()) {
+					cr->set_source_rgba(inactive_color.get_red(), inactive_color.get_green(), inactive_color.get_blue(), inactive_color.get_alpha());
+					cr->rectangle(cell_area.get_x() + w/2+time_plot_data.get_pixel_t_coord(initial_off_time), cell_area.get_y(), -w+time_plot_data.get_delta_pixel_from_delta_t_coord(previous_activepoint_time - initial_off_time), cell_area.get_height());
+					cr->fill();
+					initial_off_time = synfig::Time::end();
+				}
 			}
+			previous_activepoint_time = activepoint.get_time();
 
-			if (time_plot_data.is_time_visible_extra(i->time)) {
-				int w = selected == *i ? 3 : 1;
-				Gdk::Cairo::set_source_rgba(cr, activepoint_color[i->state ? 1 : 0]);
+			if (time_plot_data.is_time_visible_extra(activepoint.get_time())) {
+				Gdk::Cairo::set_source_rgba(cr, activepoint_color[activepoint.get_state() ? 1 : 0]);
 				cr->rectangle(
-					cell_area.get_x() + x - w/2,
-					cell_area.get_y(),
-					w,
-					cell_area.get_height() );
+				    cell_area.get_x() + time_plot_data.get_pixel_t_coord(activepoint.get_time()) - w/2,
+				    cell_area.get_y(),
+				    w,
+				    cell_area.get_height() );
 				cr->fill();
 			}
 		}
 
-		if (is_off) {
-			// render the off time has a dashed line
-			draw_activepoint_off(
-				cr,
-				inactive_color,
-				cell_area.get_height()*2,
-				cell_area.get_x() + xstart,
-				cell_area.get_y(),
-				cell_area.get_width(),
-				cell_area.get_y() );
+		if (initial_off_time != synfig::Time::end() || !list_entry.status_at_time(synfig::Time::end())) {
+			initial_off_time = synfig::clamp(initial_off_time, time_plot_data.lower, previous_activepoint_time);
+			int initial_pixel_index = cell_area.get_x() + /*+w/2*/+time_plot_data.get_pixel_t_coord(initial_off_time);
+			cr->set_source_rgba(inactive_color.get_red(), inactive_color.get_green(), inactive_color.get_blue(), inactive_color.get_alpha());
+			cr->rectangle(initial_pixel_index, cell_area.get_y(), cell_area.get_width()/* - initial_pixel_index*/, cell_area.get_height());
+			cr->fill();
 		}
 	}
 
