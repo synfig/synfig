@@ -336,20 +336,21 @@ Palette::load_from_file(const synfig::String& filename)
 
 		getline(*file, ret.name_);
 
-		while(!file->eof())	{
+		std::string line_trail;
+
+		while(file->good())	{
 			PaletteItem item;
 			String n;
 			float r, g, b, a;
 			getline(*file, item.name);
 			*file >> r >> g >> b >> a;
-			item.color.set_r(r);
-			item.color.set_g(g);
-			item.color.set_b(b);
-			item.color.set_a(a);
+			item.color.set_r(r).set_g(g).set_b(b).set_a(a);
 
 			// file ends in new line
-			if (!file->eof())
+			if (file->good())
 				ret.push_back(item);
+
+			getline(*file, line_trail);
 		}
 	}
 	else if (ext==PALETTE_GIMP_EXT)
