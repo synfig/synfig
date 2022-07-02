@@ -730,7 +730,8 @@ Layer_Freetype::set_shape_param(const String & param, const ValueBase &value)
 */
 	IMPORT_VALUE_PLUS(param_family,
 		{
-			synfig::String family=param_family.get(synfig::String());
+			synfig::String family = FileSystem::fix_slashes(value.get(synfig::String()));
+			param_family.set(family);
 			int style=param_style.get(int());
 			int weight=param_weight.get(int());
 			new_font(family,style,weight);
