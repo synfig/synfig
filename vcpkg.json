@@ -1,0 +1,18 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
+  "name": "synfig",
+  "version": "1.5.1",
+  "dependencies": [
+    "gtkmm3",
+    "libxmlpp",
+    "gettext",
+    "fftw3",
+    "freetype",
+    "libtool",
+    "boost-config",
+    "boost-odeint",
+    "zlib",
+    "libpng",
+    "libjpeg-turbo"
+  ]
+}

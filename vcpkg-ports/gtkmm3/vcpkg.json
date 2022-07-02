@@ -1,0 +1,23 @@
+{
+  "name": "gtkmm3",
+  "version": "3.24.34",
+  "description": "gtkmm is a GUI toolkit and nothing more, and it strives to be the best C++ GUI toolkit.",
+  "homepage": "https://www.gtkmm.org/",
+  "license": "LGPL-2.1",
+  "dependencies": [
+    "gtk3",
+    "glibmm",
+    "cairomm",
+    "pangomm",
+    "gdk-pixbuf",
+    {
+      "name": "gdk-pixbuf",
+      "host": true
+    },
+
+    {
+      "name": "vcpkg-tool-meson",
+      "host": true
+    }
+  ]
+}
