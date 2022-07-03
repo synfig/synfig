@@ -54,6 +54,9 @@
 #include <synfigapp/actions/layerremove.h>
 #include <synfigapp/instance.h>
 
+#include <thread>
+#include <chrono>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -233,20 +236,70 @@ LayerTree::create_layer_tree()
 	layer_tree_view().signal_query_tooltip().connect(sigc::mem_fun(*this, &studio::LayerTree::on_layer_tree_view_query_tooltip));
 	layer_tree_view().show();
 }
+bool loop_on= true ; // To Do: move to header
 
 bool
 LayerTree::on_button_press_event(GdkEventButton* event)
 {
-	iter = selected_param_object->get_selected();
-	std::cout<<*iter;
-	// if the same selected row is once again clicked then work starts
-	if(iter){
-	if(row == *iter){
-	std::cout<<"selection works";
-	//const Glib::RefPtr< Gdk::Cursor >& cursor	= Gdk::CROSSHAIR;
+	std::cout<<std::endl<<"hi from event";
+	loop_on = true;
+	//store the position of first button press
+	double x_position = event->x ;
+	gint x_position_window;
+
+	// getting iter of selected row
+	//std::cout<<std::endl<<"initial x position:"<<x_position;
+	selected_param_object_event = param_tree_view().get_selection(); //hbd
+	iter_event = selected_param_object_event->get_selected();
+	row_event= *iter_event;
+	std::cout<<std::endl<<*row_event;
+
+	if(iter){ //to make sure there is already a treeview i.e. not empty
+	/*if(row == row_event){*/ //supposedly this is so that this feature only works if you have the needed row selected however something is off
+
+	synfig::ValueBase value_base = row[param_model.value]; //getting the valuebase selected and storing it
+
+	if(value_base.get_type() == type_real){ //this feature so far is only for types real
+
+	//change mouse cursor to indicate the process
 	const char * cursor_name = "move";
 	param_tree_view().get_window()->set_cursor(Gdk::Cursor::create(get_display(), cursor_name));
-	return false ;}}
+
+
+	Value<float> val(value_base); // value object -val- constructed using valuebase as argument
+	float value_float = val.get(); //the float which gets data and then sets also
+
+	do{
+
+		//code to get new position
+		GdkDisplay* display = gdk_display_get_default();
+		GdkSeat* seat = gdk_display_get_default_seat(display);
+		GdkDevice* pointer = gdk_seat_get_pointer(seat);
+		gdk_window_get_device_position(gtk_tree_view_get_bin_window (param_tree_view().gobj()),
+								   pointer, &x_position_window, NULL, NULL);
+		//whether to add or subtract
+		if(x_position_window > x_position)
+		value_float += 0.1 ;
+		else if(x_position_window < x_position)
+		value_float -= 0.1 ;
+
+		//setting the new value
+		value_base.set<float>(value_float);
+		//std::cout<<std::endl<<"x position:"<<x_position;
+		//std::cout<<std::endl<<"x position gded"<<x_position_window<<std::endl;
+		row[param_model.value] = value_base ;
+
+		//to delay looping a bit
+		std::this_thread::sleep_for (std::chrono::milliseconds(10));
+
+		// Check for all pending events
+		while(gtk_events_pending()){
+		 gtk_main_iteration(); // Handle the events
+		}
+
+	}while(loop_on == true);
+
+	return false ;/*}*/}}
 
 	return false;
 }
@@ -255,11 +308,9 @@ bool
 LayerTree::on_button_release_event(GdkEventButton* event)
 {
 
-	std::cout<<"button release";
-	//const Glib::RefPtr< Gdk::Cursor >& cursor	= Gdk::CROSSHAIR;
-	const char * cursor_name = "default";
-	param_tree_view().get_window()->set_cursor(Gdk::Cursor::create(get_display(), cursor_name));
-	return true ;
+	param_tree_view().get_window()->set_cursor(default_cursor);
+	loop_on = false;
+	return false ;
 }
 
 void
@@ -270,9 +321,10 @@ LayerTree::change_selection_param()
 	// getting the selected row
 	iter = selected_param_object->get_selected();
 	row = *iter;
-	std::cout<<*iter;
-	if(iter)
-		std::cout<<"switch selection";
+	std::cout<<std::endl<<"hi from change selection";
+	std::cout<<std::endl<<row;
+//	if(iter)
+//		std::cout<<"switch selection";
 }
 
 void

@@ -233,7 +233,11 @@ private:
 	Glib::RefPtr<Gtk::TreeSelection> selected_param_object;
 	Gtk::TreeModel::iterator iter;
 	Gtk::TreeModel::Row row ; //shel el assignment = *iter an dassign in the constructor then when slection changed change it and then itll be ready for conditional use
+	Glib::RefPtr<Gtk::TreeSelection> selected_param_object_event;
+	Gtk::TreeModel::iterator iter_event ;
+	Gtk::TreeModel::Row row_event;
 	void change_selection_param();
+	Glib::RefPtr<Gdk::Cursor> default_cursor = Gdk::Cursor::create(get_display(), "default");
 
 
 }; // END of LayerTree
