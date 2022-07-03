@@ -79,7 +79,11 @@ Layer_Sound::Layer_Sound():
 bool
 Layer_Sound::set_param(const String &param, const ValueBase &value)
 {
-	IMPORT_VALUE(param_filename);
+	IMPORT_VALUE_PLUS(param_filename,
+		{
+			param_filename = FileSystem::fix_slashes(value.get(""));
+		}
+		);
 	IMPORT_VALUE(param_delay);
 	IMPORT_VALUE(param_volume);
 

@@ -1056,7 +1056,7 @@ bool Layer::monitor(const std::string& path) { // append file monitor (returns t
 	RefPtr<Gio::File> file = Gio::File::create_for_path(path);
 	file_monitor = file->monitor_file(); // defaults to Gio::FileMonitorFlags::FILE_MONITOR_NONE
 	monitor_connection = file_monitor->signal_changed().connect(sigc::mem_fun(*this, &Layer::on_file_changed));
-	monitored_path = path;
+	monitored_path = FileSystem::fix_slashes(path);
 	synfig::info("File monitor attached to file: (" + path + ")");
 
 	return true;

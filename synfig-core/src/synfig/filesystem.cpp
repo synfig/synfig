@@ -191,8 +191,16 @@ bool FileSystem::copy_recursive(Handle from_file_system, const String &from_file
 String FileSystem::fix_slashes(const String &filename)
 {
 	String fixed = etl::cleanup_path(filename);
-	if (fixed == ".") fixed = "";
-	for(size_t i = 0; i < fixed.size(); ++i)
+	if (fixed == ".")
+		return String();
+
+	String::size_type i = 0;
+	// For MS Windows shared folder paths like \\host\folder\file,
+	// we keep \\ for now
+	if (fixed.size() > 2 && fixed.substr(0, 2) == "\\\\")
+		i = 2;
+	// All other backslashes \ are replaced with slashes /
+	for(; i < fixed.size(); ++i)
 		if (fixed[i] == '\\') fixed[i] = '/';
 	return fixed;
 }
