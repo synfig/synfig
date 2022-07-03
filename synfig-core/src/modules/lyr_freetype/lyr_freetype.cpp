@@ -467,6 +467,8 @@ Layer_Freetype::on_canvas_set()
 	int style=param_style.get(int());
 	int weight=param_weight.get(int());
 	new_font(family,style,weight);
+
+	sync(true);
 }
 
 void
