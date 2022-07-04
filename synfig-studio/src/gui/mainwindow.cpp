@@ -76,6 +76,7 @@ MainWindow::MainWindow() :
 	main_dock_book_ = manage(new DockBook());
 	main_dock_book_->allow_empty = true;
 	main_dock_book_->show();
+	main_dock_book().signal_key_press_event().connect(sigc::mem_fun(*this, &MainWindow::on_key_press_event_mod));
 
 	class Bin : public Gtk::Bin {
 	public:
@@ -229,6 +230,59 @@ MainWindow::init_menus()
 	App::ui_manager()->insert_action_group(action_group);
 
 	add_custom_workspace_menu_item_handlers();
+}
+
+bool
+MainWindow::on_key_press_event_mod(GdkEventKey* event)
+{
+	if ((event->type == GDK_KEY_PRESS) && (event->state == GDK_CONTROL_MASK) ) {
+	switch (event->keyval) {
+	case GDK_KEY_KP_1:
+	case GDK_KEY_1:
+	main_dock_book().set_current_page(0);
+	break;
+
+	case GDK_KEY_KP_2:
+	case GDK_KEY_2:
+	main_dock_book().set_current_page(1);
+	break;
+
+	case GDK_KEY_KP_3:
+	case GDK_KEY_3:
+	main_dock_book().set_current_page(2);
+	break;
+
+	case GDK_KEY_KP_4:
+	case GDK_KEY_4:
+	main_dock_book().set_current_page(3);
+	break;
+
+	case GDK_KEY_KP_5:
+	case GDK_KEY_5:
+	main_dock_book().set_current_page(4);
+	break;
+
+	case GDK_KEY_KP_6:
+	case GDK_KEY_6:
+	main_dock_book().set_current_page(5);
+	break;
+
+	case GDK_KEY_KP_7:
+	case GDK_KEY_7:
+	main_dock_book().set_current_page(6);
+	break;
+
+	case GDK_KEY_KP_8:
+	case GDK_KEY_8:
+	main_dock_book().set_current_page(7);
+	break;
+
+	case GDK_KEY_KP_9:
+	case GDK_KEY_9:
+	main_dock_book().set_current_page(-1); //negative moves to last page
+	break;
+	}}
+	return false;
 }
 
 void MainWindow::register_custom_widget_types()
