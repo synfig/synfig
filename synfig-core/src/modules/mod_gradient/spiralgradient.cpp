@@ -154,9 +154,8 @@ SpiralGradient::color_func(const Point &pos, Real supersample)const
 	bool clockwise=param_clockwise.get(bool());
 	
 	const Point centered(pos-center);
-	Angle a;
-	a=Angle::tan(-centered[1],centered[0]).mod();
-	a=a+angle;
+	Angle a(angle);
+	a += Angle::tan(-centered[1],centered[0]).mod();
 
 	if(supersample<0.00001)supersample=0.00001;
 
