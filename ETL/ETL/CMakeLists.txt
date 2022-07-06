@@ -22,7 +22,6 @@ set(ETL_HEADERS
         "${CMAKE_CURRENT_LIST_DIR}/_surface.h"
         "${CMAKE_CURRENT_LIST_DIR}/_pen.h"
         "${CMAKE_CURRENT_LIST_DIR}/_boxblur.h"
-        "${CMAKE_CURRENT_LIST_DIR}/etl_config.h"
         "${CMAKE_CURRENT_LIST_DIR}/_stringf.h"
         "${CMAKE_CURRENT_LIST_DIR}/_calculus.h"
         "${CMAKE_CURRENT_LIST_DIR}/_misc.h"
