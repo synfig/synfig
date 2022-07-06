@@ -1967,7 +1967,7 @@ WorkArea::refresh(const Cairo::RefPtr<Cairo::Context> &/*cr*/)
 
 	assert(get_canvas());
 
-	//!Check if the window we want draw is ready
+	// Check if the window we want draw is ready
 	Glib::RefPtr<Gdk::Window> draw_area_window = drawing_area->get_window();
 	if (!draw_area_window) return false;
 
