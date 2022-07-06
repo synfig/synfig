@@ -1731,7 +1731,7 @@ Instance::add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup
 	int index = 0;
 	for(std::map<String, String>::const_iterator i = uris.begin(); i != uris.end(); ++i, ++index)
 	{
-		String action_name = etl::strprintf("special-action-open-file-%d", index);
+		String action_name = synfig::strprintf("special-action-open-file-%d", index);
 		//if the import layer is type image 
 		if(is_img(filename_extension(i->second)))
 		{
@@ -1759,7 +1759,7 @@ Instance::add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup
 	if(layers.size()==1)
 	{
 		String local_name2 = String(_("Convert to Vector"));
-		String action_name2 = etl::strprintf("special-action-open-file-vectorizer-%d",index);
+		String action_name2 = synfig::strprintf("special-action-open-file-vectorizer-%d",index);
 		if(etl::handle<Layer_Switch> reference_layer = etl::handle<Layer_Switch>::cast_dynamic(layers.front()))
 		{
 			//the layer selected is a switch group

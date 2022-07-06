@@ -452,7 +452,7 @@ RenderSettings::check_target_destination()
 			{
 				if(Glib::file_test(filename_sans_extension(filename) +
 					tparam.sequence_separator +
-					etl::strprintf("%04d", n_frame) +
+					synfig::strprintf("%04d", n_frame) +
 					extension, Glib::FILE_TEST_EXISTS))
 					n_frames_overwrite++;
 			}

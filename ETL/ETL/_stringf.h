@@ -42,8 +42,6 @@
 #endif
 
 #include <string>
-#include <cstdarg>
-#include <cstdlib>
 #include <glibmm/miscutils.h>
 
 /* === M A C R O S ========================================================= */
@@ -63,64 +61,6 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace etl {
-
-inline std::string
-vstrprintf(const char *format, va_list args)
-{
-#ifdef _MSC_VER
-	const int size = 8192; // MSVC doesn't support dynamic allocation, so make it static
-#else
-	// determine the length
-	va_list args_copy;
-	va_copy(args_copy, args);
-	int size = vsnprintf(nullptr, 0, format, args_copy);
-	va_end(args_copy);
-	if (size < 0) size = 0;
-	++size;
-#endif
-	// allocate buffer in stack (c99/c++11 only) and call vsnprintf again
-	char buffer[size + 1]; // +space for trailing zero
-	vsnprintf(buffer, size, format, args);
-	return buffer;
-}
-
-inline std::string
-strprintf(const char *format, ...)
-{
-	va_list args;
-	va_start(args,format);
-	const std::string buf = vstrprintf(format, args);
-	va_end(args);
-	return buf;
-}
-
-inline int
-vstrscanf(const std::string &data, const char*format, va_list args)
-{
-    return vsscanf(data.c_str(),format,args);
-}
-
-inline int
-strscanf(const std::string &data, const char*format, ...)
-{
-	va_list args;
-	va_start(args,format);
-	const int buf = vstrscanf(data, format, args);
-	va_end(args);
-	return buf;
-}
-
-
-inline double stratof(const std::string &str)
-{
-	return atof(str.c_str());
-}
-
-inline double stratoi(const std::string &str)
-{
-	return atoi(str.c_str());
-}
-
 
 inline bool is_separator(char c)
 {

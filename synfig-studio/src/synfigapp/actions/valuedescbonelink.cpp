@@ -201,7 +201,7 @@ Action::ValueDescBoneLink::prepare()
 				  && get_canvas_interface()->get_ui_interface()
 				  && UIInterface::RESPONSE_OK == get_canvas_interface()->get_ui_interface()->confirmation(
 						 _("Possible Wrong Bone Link"),
-						 etl::strprintf(_("You are trying to link \"origin\" of layer '%s' to a bone.\n\n"
+						 synfig::strprintf(_("You are trying to link \"origin\" of layer '%s' to a bone.\n\n"
 							"Maybe you intended to link \"transformation\" parameter instead?"),
 							 layer->get_description().c_str()),
 						 _("Yes"),

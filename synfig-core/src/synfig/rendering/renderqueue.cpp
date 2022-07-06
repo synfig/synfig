@@ -161,7 +161,7 @@ RenderQueue::process(int thread_index)
 		#ifdef DEBUG_TASK_SURFACE
 		debug::DebugSurface::save_to_file(
 			task->target_surface,
-			etl::strprintf(
+			strprintf(
 				"task-%05d-%04d-%05d",
 				task->renderer_data.batch_index,
 				task->renderer_data.index,

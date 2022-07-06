@@ -340,7 +340,7 @@ bool studio::PluginManager::run(const studio::PluginScript& script, std::vector<
 			&exit_status
 		);
 	} catch ( const Glib::SpawnError& err ) {
-		studio::App::dialog_message_1b("Error", etl::strprintf(_("Plugin execution failed: %s"), err.what().c_str()), "details", _("Close"));
+		studio::App::dialog_message_1b("Error", synfig::strprintf(_("Plugin execution failed: %s"), err.what().c_str()), "details", _("Close"));
 		return false;
 	}
 

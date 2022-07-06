@@ -147,6 +147,35 @@ test_trim_keeps_string_unmodified_if_no_leading_or_trailing_whitespace()
 	ASSERT_EQUAL("Something", trim("Something"))
 }
 
+void
+test_strprintf()
+{
+	char mystring[80]{"My formatted string!"};
+
+	ASSERT_EQUAL("This is a test of >>My formatted string!<<.", strprintf("This is a test of >>%s<<.", mystring));
+}
+
+void
+test_strscanf()
+{
+	std::string myinputstring{"5 6.75 George 7"};
+	int i,i2;
+	float f;
+	char mystring[80];
+
+	ASSERT_EQUAL(4, strscanf(myinputstring,"%d %f %s %d",&i, &f, mystring, &i2));
+	ASSERT_EQUAL(5, i);
+	ASSERT_EQUAL(6.75, f);
+	ASSERT_EQUAL(std::string("George"), mystring);
+	ASSERT_EQUAL(7, i2);
+}
+
+void
+test_stratof()
+{
+	ASSERT_EQUAL(32.5849, stratof(std::string("32.5849")));
+}
+
 /* === E N T R Y P O I N T ================================================= */
 
 int main() {
@@ -174,6 +203,10 @@ int main() {
 	TEST_FUNCTION(test_trim_does_remove_all_leading_or_trailing_whitespaces)
 	TEST_FUNCTION(test_trim_does_not_remove_any_intermediate_whitespaces)
 	TEST_FUNCTION(test_trim_keeps_string_unmodified_if_no_leading_or_trailing_whitespace)
+
+	TEST_FUNCTION(test_strprintf)
+	TEST_FUNCTION(test_strscanf)
+	TEST_FUNCTION(test_stratof)
 
 	TEST_SUITE_END()
 

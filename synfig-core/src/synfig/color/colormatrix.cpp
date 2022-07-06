@@ -582,7 +582,7 @@ ColorMatrix::operator*=(const value_type &rhs)
 String
 ColorMatrix::get_string(int spaces, String before, String after)const
 {
-	return etl::strprintf(
+	return strprintf(
 		"%*s [%7.2f %7.2f %7.2f %7.2f %7.2f] %s\n"
 		"%*s [%7.2f %7.2f %7.2f %7.2f %7.2f] %s\n"
 		"%*s [%7.2f %7.2f %7.2f %7.2f %7.2f] %s\n"

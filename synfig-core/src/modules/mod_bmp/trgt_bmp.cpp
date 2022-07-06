@@ -219,7 +219,7 @@ bmp::start_frame(synfig::ProgressCallback *callback)
 	{
 		String newfilename(filename_sans_extension(filename) +
 						   sequence_separator +
-						   etl::strprintf("%04d",imagecount) +
+						   strprintf("%04d",imagecount) +
 						   filename_extension(filename));
 		file=g_fopen(newfilename.c_str(),POPEN_BINARY_WRITE_TYPE);
 		if(callback)callback->task(newfilename+_(" (animated)"));

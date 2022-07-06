@@ -216,8 +216,8 @@ Widget_Ruler::on_draw(const ::Cairo::RefPtr< ::Cairo::Context>& cr)
 		if (i%sub_divisions_count == 0)
 		{
 			draw_line(cr, screen_pos, mark_1_size, color, width, height);
-			String format = etl::strprintf("%%.%df", text_degree < 0 ? -text_degree : 0);
-			String text = etl::strprintf(format.c_str(), pos);
+			String format = synfig::strprintf("%%.%df", text_degree < 0 ? -text_degree : 0);
+			String text = synfig::strprintf(format.c_str(), pos);
 			draw_text(cr, screen_pos, text, text_size, color, text_offset, width, height);
 		}
 		else
@@ -225,8 +225,8 @@ Widget_Ruler::on_draw(const ::Cairo::RefPtr< ::Cairo::Context>& cr)
 		  || (mode == 2 && i%10 == 0) )
 		{
 			draw_line(cr, screen_pos, mark_2_size, color, width, height);
-			String format = etl::strprintf("%%.%df", text_degree < 1 ? 1-text_degree : 0);
-			String text = etl::strprintf(format.c_str(), pos);
+			String format = synfig::strprintf("%%.%df", text_degree < 1 ? 1-text_degree : 0);
+			String text = synfig::strprintf(format.c_str(), pos);
 			draw_text(cr, screen_pos, text, text_size, color, text_offset, width, height);
 		}
 		else

@@ -257,15 +257,15 @@ ffmpeg_trgt::init(ProgressCallback* cb = nullptr)
 	vargs.emplace_back("-vcodec");
 	vargs.emplace_back(use_alpha ? "pam" : "ppm");
 	vargs.emplace_back("-r");
-	vargs.emplace_back(etl::strprintf("%f", desc.get_frame_rate()));
+	vargs.emplace_back(strprintf("%f", desc.get_frame_rate()));
 	vargs.emplace_back("-i");
 	vargs.emplace_back("pipe:");
 	vargs.emplace_back("-metadata");
-	vargs.emplace_back(etl::strprintf("title=\"%s\"", get_canvas()->get_name().c_str()));
+	vargs.emplace_back(strprintf("title=\"%s\"", get_canvas()->get_name().c_str()));
 	vargs.emplace_back("-vcodec");
 	vargs.emplace_back(video_codec_real);
 	vargs.emplace_back("-b:v");
-	vargs.emplace_back(etl::strprintf("%ik", bitrate));
+	vargs.emplace_back(strprintf("%ik", bitrate));
 	if (video_codec == "libx264-lossless") {
 		vargs.emplace_back("-tune");
 		vargs.emplace_back("fastdecode");

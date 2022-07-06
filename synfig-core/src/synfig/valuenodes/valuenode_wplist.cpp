@@ -350,7 +350,7 @@ String
 ValueNode_WPList::link_local_name(int i)const
 {
 	assert(i>=0 && (unsigned)i<list.size());
-	return etl::strprintf(_("WidthPoint %03d"),i+1);
+	return strprintf(_("WidthPoint %03d"),i+1);
 }
 
 

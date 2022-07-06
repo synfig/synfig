@@ -584,7 +584,7 @@ Dialog_Setup::on_accel_edited(const Glib::ustring& path_string, guint accel_key,
 		problematic_iter->get_value(SHORTCUT_COLUMN_ID_ACTION_NAME, accel_path);
 
 		std::string message = _("This shortcut is already set for\n\t%s\n\nAre you sure? It will unset for previously bound action.");
-		message = etl::strprintf(message.c_str(), accel_path.c_str());
+		message = synfig::strprintf(message.c_str(), accel_path.c_str());
 		bool accepted = App::dialog_message_2b(_("Shortcut In Use"), message, Gtk::MESSAGE_QUESTION, _("Cancel"), _("OK"));
 		if (!accepted)
 			return;
