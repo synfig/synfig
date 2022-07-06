@@ -12,7 +12,6 @@ AM_CPPFLAGS = \
 
 TESTS = \
 	handle \
-	angle \
 	hermite \
 	stringf \
 	pen \
@@ -20,7 +19,6 @@ TESTS = \
 
 check_PROGRAMS = \
 	handle \
-	angle \
 	hermite \
 	stringf \
 	pen \
@@ -29,8 +27,6 @@ check_PROGRAMS = \
 surface_SOURCES=surface.cpp
 pen_SOURCES=pen.cpp
 handle_SOURCES=handle.cpp
-angle_SOURCES=angle.cpp
-hermite_SOURCES=hermite.cpp
 stringf_SOURCES=stringf.cpp
 
 stringf_CXXFLAGS = @GLIBMM_CFLAGS@

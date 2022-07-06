@@ -7,11 +7,14 @@ AM_LDFLAGS = \
 check_PROGRAMS=$(TESTS)
 
 TESTS = \
+	angle \
 	benchmark \
 	bline \
 	bone \
 	clock \
 	node
+
+angle_SOURCES=angle.cpp
 
 benchmark_SOURCES=benchmark.cpp
 
