@@ -1,5 +1,5 @@
+/* === S Y N F I G ========================================================= */
 /*! ========================================================================
-** Extended Template and Library
 ** \file _smach.h
 ** \brief State Machine Abstraction Class Implementation
 ** \internal
@@ -28,15 +28,18 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __ETL__SMACH_H_
-#define __ETL__SMACH_H_
+#ifndef SYNFIG_GUI__SMACH_H
+#define SYNFIG_GUI__SMACH_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <cassert>
-#include <vector>
+
 #include <algorithm>
 #include <stdexcept>
+#include <vector>
+
+#include <ETL/misc>
 
 /* === M A C R O S ========================================================= */
 
@@ -47,7 +50,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace etl {
+namespace studio {
 
 /*! ========================================================================
 ** \class	smach
@@ -218,8 +221,8 @@ public:
 				high=x.id;
 		}
 
-		typename std::vector<event_def>::iterator find(const event_key &x) { return binary_find(event_list.begin(),event_list.end(),x); }
-		typename std::vector<event_def>::const_iterator find(const event_key &x)const { return binary_find(event_list.begin(),event_list.end(),x); }
+		typename std::vector<event_def>::iterator find(const event_key &x) { return etl::binary_find(event_list.begin(),event_list.end(),x); }
+		typename std::vector<event_def>::const_iterator find(const event_key &x)const { return etl::binary_find(event_list.begin(),event_list.end(),x); }
 
 	protected:
 

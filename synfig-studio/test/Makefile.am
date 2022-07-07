@@ -6,7 +6,9 @@ AM_LDFLAGS = \
 
 check_PROGRAMS=$(TESTS)
 
-TESTS=app_layerduplicate
+TESTS=app_layerduplicate smach
 
 app_layerduplicate_SOURCES=app_layerduplicate.cpp
+
+smach_SOURCES=smach.cpp
 

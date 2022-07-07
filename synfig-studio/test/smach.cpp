@@ -23,12 +23,12 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/smach>
 #include <cstdio>
+#include "gui/_smach.h"
 
 /* === M A C R O S ========================================================= */
 
-using namespace etl;
+using namespace studio;
 
 /* === C L A S S E S ======================================================= */
 
@@ -82,6 +82,10 @@ public:
 		insert(event_def(EVENT_1,&DefaultStateContext::event1_handler));
 	}
 
+
+	// state_base interface
+public:
+	void* enter_state(Smach::context_type* machine_context) const override { return new DefaultStateContext(machine_context); };
 } default_state;
 
 
@@ -115,6 +119,9 @@ public:
 		insert(event_def(EVENT_3,&State1Context::event3_handler));
 	}
 
+	// state_base interface
+public:
+	void* enter_state(Smach::context_type* machine_context) const override { return new State1Context(machine_context); };
 } state_1;
 
 
@@ -154,6 +161,9 @@ public:
 		insert(event_def(EVENT_3,&State2Context::event3_handler));
 	}
 
+	// state_base interface
+public:
+	void* enter_state(Smach::context_type* machine_context) const override { return new State2Context(machine_context); };
 } state_2;
 
 Smach::event_result
