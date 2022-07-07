@@ -32,7 +32,6 @@ set(MODS_ENABLED
     mod_gradient
     mod_imagemagick
     mod_jpeg
-#    mod_libavcodec # - build failure
 #    mod_magickpp # - made optional
     mod_noise
     mod_openexr
@@ -72,6 +71,10 @@ if(LIBMNG_FOUND)
   list(APPEND MODS_ENABLED mod_mng)
 else()
   message(STATUS "mod_mng: Disabled")
+endif()
+
+if (LIBAVFORMAT_FOUND)
+	list(APPEND MODS_ENABLED mod_libavcodec)
 endif()
 
 ## Magick++ support

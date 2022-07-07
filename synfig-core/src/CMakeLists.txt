@@ -159,6 +159,7 @@ else()
 		pkg_check_modules(FONTCONFIG IMPORTED_TARGET fontconfig) # for FontConfig
 		pkg_check_modules(FRIBIDI REQUIRED IMPORTED_TARGET fribidi)
 		pkg_check_modules(HARFBUZZ REQUIRED IMPORTED_TARGET harfbuzz)
+		pkg_check_modules(LIBAVFORMAT IMPORTED_TARGET libavcodec libavformat libavutil libswresample libswscale)
 	endif()
 endif()
 
