@@ -76,7 +76,6 @@ MainWindow::MainWindow() :
 	main_dock_book_ = manage(new DockBook());
 	main_dock_book_->allow_empty = true;
 	main_dock_book_->show();
-	main_dock_book().signal_key_press_event().connect(sigc::mem_fun(*this, &MainWindow::on_key_press_event_mod));
 
 	class Bin : public Gtk::Bin {
 	public:
@@ -195,6 +194,35 @@ MainWindow::init_menus()
 		sigc::ptr_fun(App::edit_custom_workspace_list)
 	);
 
+	//animation tabs
+	action_group->add( Gtk::Action::create("move-to-tab-1", Gtk::StockID("synfig-move-to-tab-1"), _("Move to Tab 1"), _("")),
+		sigc::bind<int>(sigc::mem_fun(*this, &MainWindow::move_tab),1)
+	);
+	action_group->add( Gtk::Action::create("move-to-tab-2", Gtk::StockID("synfig-move-to-tab-2"), _("Move to Tab 2"), _("")),
+		sigc::bind<int>(sigc::mem_fun(*this, &MainWindow::move_tab),2)
+	);
+	action_group->add( Gtk::Action::create("move-to-tab-3", Gtk::StockID("synfig-move-to-tab-3"), _("Move to Tab 3"), _("")),
+		sigc::bind<int>(sigc::mem_fun(*this, &MainWindow::move_tab),3)
+	);
+	action_group->add( Gtk::Action::create("move-to-tab-4", Gtk::StockID("synfig-move-to-tab-4"), _("Move to Tab 4"), _("")),
+		sigc::bind<int>(sigc::mem_fun(*this, &MainWindow::move_tab),4)
+	);
+	action_group->add( Gtk::Action::create("move-to-tab-5", Gtk::StockID("synfig-move-to-tab-5"), _("Move to Tab 5"), _("")),
+		sigc::bind<int>(sigc::mem_fun(*this, &MainWindow::move_tab),5)
+	);
+	action_group->add( Gtk::Action::create("move-to-tab-6", Gtk::StockID("synfig-move-to-tab-6"), _("Move to Tab 6"), _("")),
+		sigc::bind<int>(sigc::mem_fun(*this, &MainWindow::move_tab),6)
+	);
+	action_group->add( Gtk::Action::create("move-to-tab-7", Gtk::StockID("synfig-move-to-tab-7"), _("Move to Tab 7"), _("")),
+		sigc::bind<int>(sigc::mem_fun(*this, &MainWindow::move_tab),7)
+	);
+	action_group->add( Gtk::Action::create("move-to-tab-8", Gtk::StockID("synfig-move-to-tab-8"), _("Move to Tab 8"), _("")),
+		sigc::bind<int>(sigc::mem_fun(*this, &MainWindow::move_tab),8)
+	);
+	action_group->add( Gtk::Action::create("move-to-tab-last", Gtk::StockID("synfig-move-to-tab-last"), _("Move to Tab last"), _("")),
+		sigc::bind<int>(sigc::mem_fun(*this, &MainWindow::move_tab),-1)
+	);
+
 	// help
 	#define URL(action_name,title,url) \
 		action_group->add( Gtk::Action::create(action_name, title), \
@@ -232,57 +260,10 @@ MainWindow::init_menus()
 	add_custom_workspace_menu_item_handlers();
 }
 
-bool
-MainWindow::on_key_press_event_mod(GdkEventKey* event)
+void
+MainWindow::move_tab(int page)
 {
-	if ((event->type == GDK_KEY_PRESS) && (event->state == GDK_CONTROL_MASK) ) {
-	switch (event->keyval) {
-	case GDK_KEY_KP_1:
-	case GDK_KEY_1:
-	main_dock_book().set_current_page(0);
-	break;
-
-	case GDK_KEY_KP_2:
-	case GDK_KEY_2:
-	main_dock_book().set_current_page(1);
-	break;
-
-	case GDK_KEY_KP_3:
-	case GDK_KEY_3:
-	main_dock_book().set_current_page(2);
-	break;
-
-	case GDK_KEY_KP_4:
-	case GDK_KEY_4:
-	main_dock_book().set_current_page(3);
-	break;
-
-	case GDK_KEY_KP_5:
-	case GDK_KEY_5:
-	main_dock_book().set_current_page(4);
-	break;
-
-	case GDK_KEY_KP_6:
-	case GDK_KEY_6:
-	main_dock_book().set_current_page(5);
-	break;
-
-	case GDK_KEY_KP_7:
-	case GDK_KEY_7:
-	main_dock_book().set_current_page(6);
-	break;
-
-	case GDK_KEY_KP_8:
-	case GDK_KEY_8:
-	main_dock_book().set_current_page(7);
-	break;
-
-	case GDK_KEY_KP_9:
-	case GDK_KEY_9:
-	main_dock_book().set_current_page(-1); //negative moves to last page
-	break;
-	}}
-	return false;
+	main_dock_book().set_current_page(page-1);
 }
 
 void MainWindow::register_custom_widget_types()

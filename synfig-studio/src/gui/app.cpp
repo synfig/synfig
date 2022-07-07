@@ -1057,6 +1057,16 @@ DEFINE_ACTION("help-about",     Gtk::StockID("synfig-about"))
 // actions: Keyframe
 DEFINE_ACTION("keyframe-properties", _("Properties"))
 
+// actions: move to tab
+DEFINE_ACTION("move-to-tab-1",  Gtk::StockID("synfig-move-to-tab-1"))
+DEFINE_ACTION("move-to-tab-2",  Gtk::StockID("synfig-move-to-tab-2"))
+DEFINE_ACTION("move-to-tab-3",  Gtk::StockID("synfig-move-to-tab-3"))
+DEFINE_ACTION("move-to-tab-4",  Gtk::StockID("synfig-move-to-tab-4"))
+DEFINE_ACTION("move-to-tab-5",  Gtk::StockID("synfig-move-to-tab-5"))
+DEFINE_ACTION("move-to-tab-6",  Gtk::StockID("synfig-move-to-tab-6"))
+DEFINE_ACTION("move-to-tab-7",  Gtk::StockID("synfig-move-to-tab-7"))
+DEFINE_ACTION("move-to-tab-8",  Gtk::StockID("synfig-move-to-tab-8"))
+DEFINE_ACTION("move-to-tab-last",  Gtk::StockID("synfig-move-to-tab-last"))
 
 //Layout the actions in the main menu (caret menu, right click on canvas menu) and toolbar:
 	Glib::ustring ui_info_menu =
@@ -1064,6 +1074,15 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 "		<menuitem action='new' />"
 "		<menuitem action='open' />"
 "		<menu action='menu-open-recent' />"
+"		<menu action='move-to-tab-1' />"
+"		<menu action='move-to-tab-2' />"
+"		<menu action='move-to-tab-3' />"
+"		<menu action='move-to-tab-4' />"
+"		<menu action='move-to-tab-5' />"
+"		<menu action='move-to-tab-6' />"
+"		<menu action='move-to-tab-7' />"
+"		<menu action='move-to-tab-8' />"
+"		<menu action='move-to-tab-last' />"
 "		<separator name='sep-file1'/>"
 "		<menuitem action='save' />"
 "		<menuitem action='save-as' />"
@@ -1333,6 +1352,15 @@ App::get_default_accel_map()
 		{"<Control>l",              "<Actions>/canvasview/toggle-grid-snap"},
 		{"<Control>n",              "<Actions>/mainwindow/new"},
 		{"<Control>o",              "<Actions>/mainwindow/open"},
+		{"<Control>1",              "<Actions>/mainwindow/move-to-tab-1"},
+		{"<Control>2",              "<Actions>/mainwindow/move-to-tab-2"},
+		{"<Control>3",              "<Actions>/mainwindow/move-to-tab-3"},
+		{"<Control>4",              "<Actions>/mainwindow/move-to-tab-4"},
+		{"<Control>5",              "<Actions>/mainwindow/move-to-tab-5"},
+		{"<Control>6",              "<Actions>/mainwindow/move-to-tab-6"},
+		{"<Control>7",              "<Actions>/mainwindow/move-to-tab-7"},
+		{"<Control>8",              "<Actions>/mainwindow/move-to-tab-8"},
+		{"<Control>9",              "<Actions>/mainwindow/move-to-tab-last"},
 		{"<Control>s",              "<Actions>/canvasview/save"},
 		{"<Control><Shift>s",       "<Actions>/canvasview/save-as"},
 		{"<Control>e",              "<Actions>/canvasview/save-all"},
