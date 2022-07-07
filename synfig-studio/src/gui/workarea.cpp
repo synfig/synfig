@@ -42,6 +42,8 @@
 #include <gtkmm/arrow.h>
 #include <gtkmm/scrollbar.h>
 
+#include <ETL/stringf>
+
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/event_keyboard.h>
@@ -62,6 +64,7 @@
 #include <gui/workarearenderer/renderer_guides.h>
 #include <gui/workarearenderer/renderer_timecode.h>
 
+#include <ETL/stringf>
 #include <synfig/blinepoint.h>
 #include <synfig/valuenodes/valuenode_bone.h>
 #include <synfig/valuenodes/valuenode_composite.h>

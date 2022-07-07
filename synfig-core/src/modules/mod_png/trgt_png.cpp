@@ -40,6 +40,7 @@
 #include <png.h>
 #include <cstdio>
 #include <ETL/misc>
+#include <ETL/stringf>
 #include <string.h>
 
 #endif

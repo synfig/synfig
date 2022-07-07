@@ -38,6 +38,8 @@
 #include <glibmm/fileutils.h>
 #include <glibmm/spawn.h>
 
+#include <ETL/stringf>
+
 #include <gui/app.h>
 #include <gui/localization.h>
 #include <gui/onemoment.h>

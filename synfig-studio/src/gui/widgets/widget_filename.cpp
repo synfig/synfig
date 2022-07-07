@@ -41,6 +41,8 @@
 #include <gui/canvasview.h>
 #include <gui/localization.h>
 
+#include <ETL/stringf>
+
 #include <synfig/canvasfilenaming.h>
 
 #endif

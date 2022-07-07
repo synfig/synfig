@@ -43,8 +43,6 @@
 #include <synfig/exception.h>
 #include <synfig/dashitem.h>
 
-#include <ETL/stringf>
-
 #include <vector>
 #include <list>
 

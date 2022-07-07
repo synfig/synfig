@@ -58,6 +58,8 @@
 #include <gtkmm/toolbutton.h>
 #include <gtkmm/toolitem.h>
 
+#include <ETL/stringf>
+
 #include <gui/app.h>
 #include <gui/dials/keyframedial.h>
 #include <gui/dials/resolutiondial.h>

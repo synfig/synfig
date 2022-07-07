@@ -135,6 +135,8 @@
 #include <gui/widgets/widget_enum.h>
 #include <gui/workspacehandler.h>
 
+#include <ETL/stringf>
+
 #include <synfig/canvasfilenaming.h>
 #include <synfig/color.h>
 #include <synfig/filesystemnative.h>

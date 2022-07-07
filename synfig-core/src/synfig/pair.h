@@ -30,7 +30,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/stringf>
 #include <utility>
 #include "type.h"
 #include "value.h"

@@ -24,9 +24,9 @@
 #ifndef SYNFIG_EXCEPTION_GUARD_H
 #define SYNFIG_EXCEPTION_GUARD_H
 
-#include <ETL/stringf>
 #include <synfig/exception.h> // for synfig::Exception
 #include <synfig/general.h> // for synfig::error()
+#include <synfig/string_helper.h>
 #include <synfigapp/action.h> // for synfigapp::Action::Error
 
 #ifdef _MSC_VER

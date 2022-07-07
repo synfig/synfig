@@ -35,6 +35,9 @@
 #endif
 
 #include "palette.h"
+
+#include <ETL/stringf>
+
 #include "surface.h"
 #include "general.h"
 #include "filesystemnative.h"

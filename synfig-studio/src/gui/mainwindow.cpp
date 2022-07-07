@@ -38,6 +38,8 @@
 #include <gtkmm/stock.h>
 #include <gtkmm/textview.h>
 
+#include <ETL/stringf>
+
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/dialogs/dialog_input.h>

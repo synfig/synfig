@@ -34,7 +34,6 @@
 
 #include <cassert>
 #include <cstring>
-#include <ETL/stringf>
 #include <synfig/real.h>
 
 #include "colormatrix.h"

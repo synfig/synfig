@@ -35,6 +35,9 @@
 
 #include <glib/gstdio.h>
 #include "trgt_yuv.h"
+
+#include <ETL/stringf>
+
 #endif
 
 using namespace synfig;

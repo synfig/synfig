@@ -49,6 +49,8 @@
 #include <gui/localization.h>
 #include <gui/widgets/widget_color.h>
 
+#include <ETL/stringf>
+
 #include <synfig/general.h>
 #include <synfigapp/main.h>
 #include <synfigapp/uimanager.h>

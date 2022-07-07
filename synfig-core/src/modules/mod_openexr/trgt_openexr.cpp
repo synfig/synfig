@@ -35,6 +35,8 @@
 
 #include "trgt_openexr.h"
 #include <cstdio>
+#include <ETL/stringf>
+
 #endif
 
 /* === M A C R O S ========================================================= */

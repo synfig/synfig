@@ -38,6 +38,8 @@
 
 #include <sigc++/bind.h>
 
+#include <ETL/stringf>
+
 #include "general.h"
 #include <synfig/localization.h>
 

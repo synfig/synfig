@@ -52,6 +52,7 @@
  #include <fcntl.h>
 #endif
 #include <ETL/misc>
+#include <ETL/stringf>
 
 #endif
 

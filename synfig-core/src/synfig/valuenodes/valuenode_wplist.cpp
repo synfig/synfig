@@ -43,8 +43,6 @@
 #include <synfig/exception.h>
 #include <synfig/widthpoint.h>
 
-#include <ETL/stringf>
-
 #include <vector>
 #include <list>
 

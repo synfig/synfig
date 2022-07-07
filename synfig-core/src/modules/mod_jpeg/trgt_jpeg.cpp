@@ -33,6 +33,8 @@
 #	include <config.h>
 #endif
 
+#include <ETL/stringf>
+
 #include <glib/gstdio.h>
 #include "trgt_jpeg.h"
 #endif

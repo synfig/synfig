@@ -34,13 +34,12 @@
 
 #include <gui/widgets/widget_enum.h>
 
-#include <ETL/stringf>
+#include <synfig/string_helper.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 

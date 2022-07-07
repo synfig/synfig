@@ -34,8 +34,6 @@
 
 #include <gui/widgets/widget_ruler.h>
 
-#include <ETL/stringf>
-
 #endif
 
 /* === U S I N G =========================================================== */

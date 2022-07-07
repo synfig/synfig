@@ -41,6 +41,8 @@
 #include <cstdio>
 #include <glib/gstdio.h>
 
+#include <ETL/stringf>
+
 #include "trgt_ffmpeg.h"
 
 #if HAVE_SYS_WAIT_H

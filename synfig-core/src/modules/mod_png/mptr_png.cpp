@@ -40,6 +40,7 @@
 
 #include "mptr_png.h"
 
+#include <ETL/stringf>
 #include <synfig/filecontainerzip.h>
 #include <synfig/general.h>
 

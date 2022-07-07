@@ -50,6 +50,8 @@
 #include <gui/autorecover.h>
 #include <synfig/threadpool.h>
 
+#include <ETL/stringf>
+
 #include <synfig/rendering/renderer.h>
 
 #include <synfigapp/main.h>
