@@ -44,7 +44,6 @@ get_locale_decimal_point()
 {
 	// TODO(ice0): move all the locale related code to the initialization part
 	// MinGW C++ std::locale accepts "C" and "POSIX" it does not support other locales.
-	synfig::ChangeLocale changeLocale(LC_NUMERIC, "");
 	#ifdef __MINGW32__
 		struct lconv *locale_info = localeconv();
 		const char decimal_point = *locale_info->decimal_point;
