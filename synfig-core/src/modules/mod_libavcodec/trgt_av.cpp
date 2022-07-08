@@ -233,14 +233,18 @@ public:
 		close();
 
 		if (!av_registered) {
-#if LIBAVCODEC_VERSION_MAJOR < 59 // FFMPEG < 5.0
+#if LIBAVCODEC_VERSION_MAJOR < 58 // FFMPEG < 4.0
 			av_register_all();
 #endif
 			av_registered = true;
 		}
 
 		// guess format
-		const AVOutputFormat *format = av_guess_format(nullptr, filename.c_str(), nullptr);
+#if LIBAVCODEC_VERSION_MAJOR < 59 // FFMPEG < 5.0
+		AVOutputFormat* format = av_guess_format(nullptr, filename.c_str(), nullptr);
+#else
+		const AVOutputFormat* format = av_guess_format(nullptr, filename.c_str(), nullptr);
+#endif
 		if (!format) {
 			synfig::warning("Target_LibAVCodec: unable to guess the output format, defaulting to MPEG");
 			format = av_guess_format("mpeg", NULL, NULL);
@@ -255,7 +259,7 @@ public:
 		context = avformat_alloc_context();
 		assert(context);
 		context->oformat = format;
-#if LIBAVCODEC_VERSION_MAJOR < 59 // FFMPEG < 5.0
+#if LIBAVCODEC_VERSION_MAJOR < 58 // FFMPEG < 4.0
 		if (filename.size() + 1 > sizeof(context->filename)) {
 			synfig::error(
 				"Target_LibAVCodec: filename too long, max length is %d, filename is '%s'",
