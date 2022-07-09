@@ -878,6 +878,14 @@ public:
 
 App::Preferences App::_preferences;
 
+static void add_ui_from_string(const std::string& ui_info) {
+	try	{
+		App::ui_manager()->add_ui_from_string(ui_info);
+	} catch(const Glib::Error& ex) {
+		synfig::error("building menus and toolbars failed: " + ex.what() + "\n\n" + ui_info);
+	}
+}
+
 void
 init_ui_manager()
 {
@@ -1266,21 +1274,12 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 
 	#undef DEFINE_ACTION
 
-	try
-	{
-		actions_action_group->set_sensitive(false);
-		App::ui_manager()->set_add_tearoffs(false);
-		App::ui_manager()->insert_action_group(menus_action_group,1);
-		App::ui_manager()->insert_action_group(actions_action_group,1);
-		App::ui_manager()->add_ui_from_string(ui_info);
-		App::ui_manager()->add_ui_from_string(hidden_ui_info);
-
-		//App::ui_manager()->get_accel_group()->unlock();
-	}
-	catch(const Glib::Error& ex)
-	{
-		synfig::error("building menus and toolbars failed: " + ex.what());
-	}
+	actions_action_group->set_sensitive(false);
+	App::ui_manager()->set_add_tearoffs(false);
+	App::ui_manager()->insert_action_group(menus_action_group,1);
+	App::ui_manager()->insert_action_group(actions_action_group,1);
+	add_ui_from_string(ui_info);
+	add_ui_from_string(hidden_ui_info);
 
 	auto default_accel_map = App::get_default_accel_map();
 	for (const auto& accel_item : default_accel_map) {
