@@ -195,33 +195,20 @@ MainWindow::init_menus()
 	);
 
 	//animation tabs
-	action_group->add( Gtk::Action::create("move-to-tab-1", Gtk::StockID("synfig-move-to-tab-1"), _("Move to Tab 1"), _("")),
-		sigc::bind<int>(sigc::mem_fun(*this, &MainWindow::move_tab),1)
-	);
-	action_group->add( Gtk::Action::create("move-to-tab-2", Gtk::StockID("synfig-move-to-tab-2"), _("Move to Tab 2"), _("")),
-		sigc::bind<int>(sigc::mem_fun(*this, &MainWindow::move_tab),2)
-	);
-	action_group->add( Gtk::Action::create("move-to-tab-3", Gtk::StockID("synfig-move-to-tab-3"), _("Move to Tab 3"), _("")),
-		sigc::bind<int>(sigc::mem_fun(*this, &MainWindow::move_tab),3)
-	);
-	action_group->add( Gtk::Action::create("move-to-tab-4", Gtk::StockID("synfig-move-to-tab-4"), _("Move to Tab 4"), _("")),
-		sigc::bind<int>(sigc::mem_fun(*this, &MainWindow::move_tab),4)
-	);
-	action_group->add( Gtk::Action::create("move-to-tab-5", Gtk::StockID("synfig-move-to-tab-5"), _("Move to Tab 5"), _("")),
-		sigc::bind<int>(sigc::mem_fun(*this, &MainWindow::move_tab),5)
-	);
-	action_group->add( Gtk::Action::create("move-to-tab-6", Gtk::StockID("synfig-move-to-tab-6"), _("Move to Tab 6"), _("")),
-		sigc::bind<int>(sigc::mem_fun(*this, &MainWindow::move_tab),6)
-	);
-	action_group->add( Gtk::Action::create("move-to-tab-7", Gtk::StockID("synfig-move-to-tab-7"), _("Move to Tab 7"), _("")),
-		sigc::bind<int>(sigc::mem_fun(*this, &MainWindow::move_tab),7)
-	);
-	action_group->add( Gtk::Action::create("move-to-tab-8", Gtk::StockID("synfig-move-to-tab-8"), _("Move to Tab 8"), _("")),
-		sigc::bind<int>(sigc::mem_fun(*this, &MainWindow::move_tab),8)
-	);
-	action_group->add( Gtk::Action::create("move-to-tab-last", Gtk::StockID("synfig-move-to-tab-last"), _("Move to Tab last"), _("")),
-		sigc::bind<int>(sigc::mem_fun(*this, &MainWindow::move_tab),-1)
-	);
+	std::string arg_1[9] = {"move-to-tab-last","move-to-tab-1","move-to-tab-2","move-to-tab-3",
+						 "move-to-tab-4","move-to-tab-5","move-to-tab-6","move-to-tab-7","move-to-tab-8"};
+	std::string arg_2[9] = {"_(synfig-move-to-tab-last)","_(synfig-move-to-tab-1)","_(synfig-move-to-tab-2)","_(synfig-move-to-tab-3)",
+							"_(synfig-move-to-tab-4)","_(synfig-move-to-tab-5)","_(synfig-move-to-tab-6)","_(synfig-move-to-tab-7)","_(synfig-move-to-tab-8)"};
+	int index=0;
+
+	for(int i=-1;i<=8;i++){
+		if(i==0)
+			continue;
+		action_group->add( Gtk::Action::create(arg_1[index], arg_2[index]),
+			sigc::bind<int>(sigc::mem_fun(*this, &MainWindow::move_tab),i)
+		);
+		index++;
+	}
 
 	// help
 	#define URL(action_name,title,url) \
