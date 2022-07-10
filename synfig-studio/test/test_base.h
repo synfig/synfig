@@ -52,6 +52,12 @@ std::ostream& operator<<(std::ostream& os, const synfig::Vector& v)
 	return os;
 }
 
+std::ostream& operator<<(std::ostream& os, std::nullptr_t)
+{
+	os << "null";
+	return os;
+}
+
 #define ERROR_MESSAGE_TWO_VALUES(a, b) \
 	std::ostringstream oss; \
 	oss.precision(8); \
