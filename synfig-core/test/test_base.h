@@ -52,6 +52,7 @@ std::ostream& operator<<(std::ostream& os, const synfig::Vector& v)
 	return os;
 }
 
+// remove this operator after switch to c++17 (it is already implemented in c++17)
 std::ostream& operator<<(std::ostream& os, std::nullptr_t)
 {
 	os << "null";
