@@ -197,14 +197,14 @@ MainWindow::init_menus()
 	//animation tabs
 	std::string arg_1[9] = {"move-to-tab-last","move-to-tab-1","move-to-tab-2","move-to-tab-3",
 						 "move-to-tab-4","move-to-tab-5","move-to-tab-6","move-to-tab-7","move-to-tab-8"};
-	std::string arg_2[9] = {"_(synfig-move-to-tab-last)","_(synfig-move-to-tab-1)","_(synfig-move-to-tab-2)","_(synfig-move-to-tab-3)",
-							"_(synfig-move-to-tab-4)","_(synfig-move-to-tab-5)","_(synfig-move-to-tab-6)","_(synfig-move-to-tab-7)","_(synfig-move-to-tab-8)"};
+	std::string arg_2[9] = {"synfig-move-to-tab-last","synfig-move-to-tab-1","synfig-move-to-tab-2","synfig-move-to-tab-3",
+							"synfig-move-to-tab-4","synfig-move-to-tab-5","synfig-move-to-tab-6","synfig-move-to-tab-7","synfig-move-to-tab-8"};
 	int index=0;
 
 	for(int i=-1;i<=8;i++){
 		if(i==0)
 			continue;
-		action_group->add( Gtk::Action::create(arg_1[index], arg_2[index]),
+		action_group->add( Gtk::Action::create(arg_1[index], _(arg_2[index].c_str())),
 			sigc::bind<int>(sigc::mem_fun(*this, &MainWindow::move_tab),i)
 		);
 		index++;
