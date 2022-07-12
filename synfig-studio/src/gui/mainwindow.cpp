@@ -197,8 +197,8 @@ MainWindow::init_menus()
 	//animation tabs
 	std::string arg_1[9] = {"move-to-tab-last","move-to-tab-1","move-to-tab-2","move-to-tab-3",
 						 "move-to-tab-4","move-to-tab-5","move-to-tab-6","move-to-tab-7","move-to-tab-8"};
-	std::string arg_2[9] = {"synfig-move-to-tab-last","synfig-move-to-tab-1","synfig-move-to-tab-2","synfig-move-to-tab-3",
-							"synfig-move-to-tab-4","synfig-move-to-tab-5","synfig-move-to-tab-6","synfig-move-to-tab-7","synfig-move-to-tab-8"};
+	std::string arg_2[9] = {"Move to Last Tab","Move to Tab 1","Move to Tab 2","Move to Tab 3",
+							"Move to Tab 4","Move to Tab 5","Move to Tab 6","Move to Tab 7","Move to Tab 8"};
 	int index=0;
 
 	for(int i=-1;i<=8;i++){

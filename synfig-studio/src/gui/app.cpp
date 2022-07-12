@@ -1058,15 +1058,15 @@ DEFINE_ACTION("help-about",     Gtk::StockID("synfig-about"))
 DEFINE_ACTION("keyframe-properties", _("Properties"))
 
 // actions: move to tab
-DEFINE_ACTION("move-to-tab-1",  _("synfig-move-to-tab-1"))
-DEFINE_ACTION("move-to-tab-2",  _("synfig-move-to-tab-2"))
-DEFINE_ACTION("move-to-tab-3",  _("synfig-move-to-tab-3"))
-DEFINE_ACTION("move-to-tab-4",  _("synfig-move-to-tab-4"))
-DEFINE_ACTION("move-to-tab-5",  _("synfig-move-to-tab-5"))
-DEFINE_ACTION("move-to-tab-6",  _("synfig-move-to-tab-6"))
-DEFINE_ACTION("move-to-tab-7",  _("synfig-move-to-tab-7"))
-DEFINE_ACTION("move-to-tab-8",  _("synfig-move-to-tab-8"))
-DEFINE_ACTION("move-to-tab-last",  _("synfig-move-to-tab-last"))
+DEFINE_ACTION("move-to-tab-1",  _("Move to Tab 1"))
+DEFINE_ACTION("move-to-tab-2",  _("Move to Tab 2"))
+DEFINE_ACTION("move-to-tab-3",  _("Move to Tab 3"))
+DEFINE_ACTION("move-to-tab-4",  _("Move to Tab 4"))
+DEFINE_ACTION("move-to-tab-5",  _("Move to Tab 5"))
+DEFINE_ACTION("move-to-tab-6",  _("Move to Tab 6"))
+DEFINE_ACTION("move-to-tab-7",  _("Move to Tab 7"))
+DEFINE_ACTION("move-to-tab-8",  _("Move to Tab 8"))
+DEFINE_ACTION("move-to-tab-last",  _("Move to Last Tab"))
 
 //Layout the actions in the main menu (caret menu, right click on canvas menu) and toolbar:
 	Glib::ustring ui_info_menu =
