@@ -301,7 +301,7 @@ DockBook::tab_button_pressed(GdkEventButton* event, Dockable* dockable)
 void
 DockBook::on_switch_page(Gtk::Widget* page, guint page_num)
 {
-	if (page && this->page_num(*page)+1) {
+	if (page && this->page_num(*page) != -1) {
 		CanvasView *canvas_view = dynamic_cast<CanvasView*>(page);
 		if (canvas_view && canvas_view != App::get_selected_canvas_view())
 			App::set_selected_canvas_view(canvas_view);
