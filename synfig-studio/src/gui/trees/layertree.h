@@ -77,6 +77,7 @@ public:
 
 	LayerTreeStore::Model layer_model;
 	LayerParamTreeStore::Model param_model;
+	static bool moving_while_press ;
 
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
@@ -240,6 +241,7 @@ private:
 //	Gtk::TreeModel::Row row_event;
 	void change_selection_param();
 	Glib::RefPtr<Gdk::Cursor> default_cursor = Gdk::Cursor::create(get_display(), "default");
+	synfig::ValueBase value_base;
 
 
 }; // END of LayerTree

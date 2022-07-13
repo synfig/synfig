@@ -40,6 +40,7 @@
 
 #include <synfig/general.h>
 #include <synfig/valuenode.h>
+#include <gui/trees/layertree.h>
 
 #endif
 
@@ -209,6 +210,7 @@ HistoryTreeStore::on_redo_stack_cleared()
 void
 HistoryTreeStore::on_new_action(etl::handle<synfigapp::Action::Undoable> action)
 {
+ if (!LayerTree::moving_while_press){ /*if change isn't due to mouse movement show history normally*/
 	Gtk::TreeRow row;
 
 	row=*insert(next_action_iter);
@@ -218,7 +220,7 @@ HistoryTreeStore::on_new_action(etl::handle<synfigapp::Action::Undoable> action)
 	next_action_iter = row;
 	++next_action_iter;
 
-	signal_undo_tree_changed()();
+	signal_undo_tree_changed()();}
 }
 
 void
