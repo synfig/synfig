@@ -71,8 +71,6 @@ namespace studio {
 		void add_custom_workspace_menu_item_handlers();
 		void remove_custom_workspace_menu_item_handlers();
 
-		void move_tab(int page);
-
 	protected:
 		virtual bool on_key_press_event(GdkEventKey *key_event);
 

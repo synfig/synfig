@@ -195,20 +195,15 @@ MainWindow::init_menus()
 	);
 
 	//animation tabs
-	std::string arg_1[9] = {"move-to-tab-last","move-to-tab-1","move-to-tab-2","move-to-tab-3",
-						 "move-to-tab-4","move-to-tab-5","move-to-tab-6","move-to-tab-7","move-to-tab-8"};
-	std::string arg_2[9] = {"Move to Last Tab","Move to Tab 1","Move to Tab 2","Move to Tab 3",
-							"Move to Tab 4","Move to Tab 5","Move to Tab 6","Move to Tab 7","Move to Tab 8"};
-	int index=0;
-
-	for(int i=-1;i<=8;i++){
-		if(i==0)
-			continue;
-		action_group->add( Gtk::Action::create(arg_1[index], _(arg_2[index].c_str())),
-			sigc::bind<int>(sigc::mem_fun(*this, &MainWindow::move_tab),i)
+	for (int i = 1; i <= 8; ++i) {
+		const std::string tab = std::to_string(i);
+		action_group->add(Gtk::Action::create("move-to-tab-" + tab, _("Move to Tab ") + tab),
+			[this, i]() { main_dock_book().set_current_page(i-1); }
 		);
-		index++;
 	}
+	action_group->add(Gtk::Action::create("move-to-tab-last", _("Move to Last Tab")),
+		[this]() { main_dock_book().set_current_page(-1); }
+	);
 
 	// help
 	#define URL(action_name,title,url) \
@@ -245,12 +240,6 @@ MainWindow::init_menus()
 	App::ui_manager()->insert_action_group(action_group);
 
 	add_custom_workspace_menu_item_handlers();
-}
-
-void
-MainWindow::move_tab(int page)
-{
-	main_dock_book().set_current_page(page-1);
 }
 
 void MainWindow::register_custom_widget_types()
