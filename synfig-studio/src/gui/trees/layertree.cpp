@@ -53,6 +53,10 @@
 
 #include <synfigapp/actions/layerremove.h>
 #include <synfigapp/instance.h>
+#include <gui/trees/historytreestore.h>
+
+#include <thread>
+#include <chrono>
 
 #endif
 
@@ -125,6 +129,7 @@ LayerTree::LayerTree()
 {
 	layer_tree_view().signal_key_press_event().connect(sigc::mem_fun(*this, &LayerTree::on_key_press_event));
 
+
 	create_layer_tree();
 	create_param_tree();
 
@@ -137,9 +142,18 @@ LayerTree::LayerTree()
 	//param_tree_view().get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
 	layer_tree_view().show();
 	param_tree_view().show();
-
+	//gets the selection object at first
+	selected_param_object = param_tree_view().get_selection(); //hbd
+	// getting the selected row
+	iter = selected_param_object->get_selected();
+	row = *iter;
 	param_tree_view().set_has_tooltip();
 	layer_tree_view().set_has_tooltip();
+
+	param_tree_view().signal_motion_notify_event().connect(sigc::mem_fun(*this, &LayerTree::on_motion_notify_event), false);
+	param_tree_view().signal_button_press_event().connect(sigc::mem_fun(*this, &LayerTree::on_button_press_or_release_event), false);
+	param_tree_view().signal_button_release_event().connect(sigc::mem_fun(*this, &LayerTree::on_button_press_or_release_event), false);
+	selected_param_object->signal_changed().connect(sigc::mem_fun(*this, &LayerTree::change_selection_param), false);
 
 	disable_single_click_for_param_editing = false;
 }
@@ -223,6 +237,98 @@ LayerTree::create_layer_tree()
 	layer_tree_view().signal_event().connect(sigc::mem_fun(*this, &studio::LayerTree::on_layer_tree_event));
 	layer_tree_view().signal_query_tooltip().connect(sigc::mem_fun(*this, &studio::LayerTree::on_layer_tree_view_query_tooltip));
 	layer_tree_view().show();
+}
+
+//To Do:move to header
+int first_cord_x ;
+int second_cord_x ;
+float value_float ;
+bool just_finished = false;
+
+bool
+LayerTree::on_motion_notify_event(GdkEventMotion* event)
+{
+
+	if(HistoryTreeStore::block_new_history)
+	{
+
+	second_cord_x= event->x;
+
+	if(iter){ //to make sure there is already a treeview i.e. not empty
+	/*if(row == row_event){*/ //supposedly this is so that this feature only works if you have the needed row selected however something is off
+
+	synfig::ValueBase value_base_mod = row[param_model.value]; //getting the valuebase selected and storing it
+
+	if(value_base_mod.get_type() == type_real){ //this feature so far is only for types real
+
+	//change mouse cursor to indicate the process
+	const char * cursor_name = "move";
+	param_tree_view().get_window()->set_cursor(Gdk::Cursor::create(get_display(), cursor_name));
+
+
+	Value<float> val(value_base_mod); // value object -val- constructed using valuebase as argument
+	value_float = val.get(); //the float which gets data and then sets also
+
+
+	//whether to add or subtract //with the new conditions
+	if(second_cord_x > first_cord_x)
+	value_float += 0.1 ;
+	else if(second_cord_x < first_cord_x)
+	value_float -= 0.1 ;
+
+	//setting the new value
+	value_base_mod.set<float>(value_float);
+	row[param_model.value] = value_base_mod ;
+
+
+	std::this_thread::sleep_for (std::chrono::milliseconds(10));
+	first_cord_x= second_cord_x;
+	value_base = value_base_mod;
+	just_finished = true;
+	}}}
+
+
+	return false;
+}
+
+bool
+LayerTree::on_button_press_or_release_event(GdkEventButton* event)
+{
+	if(event->type == GDK_BUTTON_PRESS ){
+
+		HistoryTreeStore::block_new_history = true ;
+		first_cord_x = event->x;
+	}
+
+
+	if(event->type == GDK_BUTTON_RELEASE)
+	{
+		//change value without history recording i.e while flag is false
+		if(just_finished){std::cout<<std::endl<<"increase"<<std::endl;
+			value_base.set<float>(value_float+(value_float/10000000)); row[param_model.value] = value_base;}
+
+		HistoryTreeStore::block_new_history = false;
+
+		//revert changes to keep last value while having history show it
+		if(just_finished){
+			std::cout<<std::endl<<"revert"<<std::endl;
+		value_base.set<float>(value_float-(value_float/10000000)); row[param_model.value] = value_base;
+		}
+		param_tree_view().get_window()->set_cursor(default_cursor);
+		just_finished = false;
+	}
+
+	return false;
+}
+
+void
+LayerTree::change_selection_param()
+{
+	//gets the selection object at first
+	selected_param_object = param_tree_view().get_selection(); //hbd
+	// getting the selected row
+	iter = selected_param_object->get_selected();
+	row = *iter;
 }
 
 void

@@ -56,6 +56,8 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
+bool HistoryTreeStore::block_new_history = false;
+
 static HistoryTreeStore::Model& ModelHack()
 {
 	static HistoryTreeStore::Model* model(nullptr);
@@ -209,6 +211,7 @@ HistoryTreeStore::on_redo_stack_cleared()
 void
 HistoryTreeStore::on_new_action(etl::handle<synfigapp::Action::Undoable> action)
 {
+ if (!block_new_history){ /*if change isn't due to rapid repeated actions show history normally*/
 	Gtk::TreeRow row;
 
 	row=*insert(next_action_iter);
@@ -218,7 +221,7 @@ HistoryTreeStore::on_new_action(etl::handle<synfigapp::Action::Undoable> action)
 	next_action_iter = row;
 	++next_action_iter;
 
-	signal_undo_tree_changed()();
+	signal_undo_tree_changed()();}
 }
 
 void
