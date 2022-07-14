@@ -233,6 +233,12 @@ synfig::Main::Main(const synfig::String& rootpath,ProgressCallback *cb):
 
 	// Add initialization after this point
 
+#ifdef _MSC_VER
+	String module_location = get_binary_path("");
+	_putenv(strprintf("FONTCONFIG_PATH=%s/../../etc/fonts", module_location.c_str()).c_str());
+	_putenv("FONTCONFIG_FILE=fonts.conf");
+#endif
+
 #ifdef ENABLE_NLS
 	bindtextdomain("synfig", Glib::locale_from_utf8(locale_path).c_str() );
 	bind_textdomain_codeset("synfig", "UTF-8");

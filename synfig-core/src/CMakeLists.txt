@@ -33,7 +33,7 @@ pkg_check_modules(LIBMNG IMPORTED_TARGET libmng) # for mod_mng (set as optional 
 pkg_check_modules(LIBJPEG REQUIRED IMPORTED_TARGET libjpeg) # for mod_mng
 pkg_check_modules(OPENEXR IMPORTED_TARGET OpenEXR) # for mod_openexr
 pkg_check_modules(MAGICKCORE IMPORTED_TARGET MagickCore) # for Magick++
-## TODO: move to module where it is actually required
+pkg_check_modules(MAGICKPP IMPORTED_TARGET Magick++)
 pkg_check_modules(FREETYPE2 REQUIRED IMPORTED_TARGET freetype2) # for lyr_freetype
 pkg_check_modules(FONTCONFIG IMPORTED_TARGET fontconfig) # for FontConfig
 pkg_check_modules(FRIBIDI REQUIRED IMPORTED_TARGET fribidi)
@@ -43,9 +43,6 @@ pkg_check_modules(LIBAVFORMAT IMPORTED_TARGET libavcodec libavformat libavutil l
 if (NOT MLT_FOUND)
 	add_definitions(-DWITHOUT_MLT) # disable MLT if not found
 endif()
-
-## TODO: should we keep it here?
-find_package(ImageMagick COMPONENTS Magick++)
 
 ##
 ## Configure
