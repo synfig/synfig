@@ -77,7 +77,6 @@ public:
 
 	LayerTreeStore::Model layer_model;
 	LayerParamTreeStore::Model param_model;
-	static bool moving_while_press ;
 
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------

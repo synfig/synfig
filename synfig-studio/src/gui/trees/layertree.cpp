@@ -53,6 +53,7 @@
 
 #include <synfigapp/actions/layerremove.h>
 #include <synfigapp/instance.h>
+#include <gui/trees/historytreestore.h>
 
 #include <thread>
 #include <chrono>
@@ -72,7 +73,6 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-bool LayerTree::moving_while_press=false ;
 /*
 	Return true if we process event,
 	False to pass it
@@ -249,7 +249,7 @@ bool
 LayerTree::on_motion_notify_event(GdkEventMotion* event)
 {
 
-	if(moving_while_press)
+	if(HistoryTreeStore::block_new_history)
 	{
 
 	second_cord_x= event->x;
@@ -296,7 +296,7 @@ LayerTree::on_button_press_or_release_event(GdkEventButton* event)
 {
 	if(event->type == GDK_BUTTON_PRESS ){
 
-		moving_while_press = true ;
+		HistoryTreeStore::block_new_history = true ;
 		first_cord_x = event->x;
 	}
 
@@ -307,7 +307,7 @@ LayerTree::on_button_press_or_release_event(GdkEventButton* event)
 		if(just_finished){std::cout<<std::endl<<"increase"<<std::endl;
 			value_base.set<float>(value_float+(value_float/10000000)); row[param_model.value] = value_base;}
 
-		moving_while_press = false;
+		HistoryTreeStore::block_new_history = false;
 
 		//revert changes to keep last value while having history show it
 		if(just_finished){
