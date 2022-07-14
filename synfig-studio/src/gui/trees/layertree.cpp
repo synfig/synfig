@@ -137,9 +137,9 @@ LayerTree::LayerTree()
 	//param_tree_view().get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
 	layer_tree_view().show();
 	param_tree_view().show();
+
 	param_tree_view().set_has_tooltip();
 	layer_tree_view().set_has_tooltip();
-
 
 	disable_single_click_for_param_editing = false;
 }
