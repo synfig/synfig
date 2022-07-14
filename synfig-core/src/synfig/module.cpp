@@ -59,17 +59,10 @@ Module::Book *synfig::Module::book_;
 
 static void add_search_dir(const char* dir) {
 	lt_dladdsearchdir(dir);
+#ifdef _MSC_VER
 	const char* path = getenv("PATH");
-#ifdef _WIN32
-	const char separator = ';';
-#else
-	const char separator = ':';
-#endif
-	std::string new_path = strprintf("PATH=%s%c%s", path, separator, dir);
-#ifdef _WIN32
+	std::string new_path = strprintf("PATH=%s;%s", path, dir);
 	_putenv(new_path.c_str());
-#else
-	putenv(new_path.c_str());
 #endif
 }
 
