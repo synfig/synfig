@@ -34,9 +34,6 @@
 #	include <config.h>
 #endif
 
-#include <cstring>
-#include <ctime>
-
 #include <synfig/localization.h>
 #include <synfig/general.h>
 
@@ -64,7 +61,6 @@
 #include "color.h"
 #include "vector.h"
 #include <fstream>
-#include <ctime>
 #include "layer.h"
 #include "soundprocessor.h"
 #include "threadpool.h"
@@ -128,24 +124,11 @@ synfig::get_version()
 const char *
 synfig::get_build_date()
 {
-	const int max_date_length = 50;
-	static char date_str[max_date_length] = {0};
+	// https://reproducible-builds.org/specs/source-date-epoch/
+	if (char* source_date_epoch = getenv("SOURCE_DATE_EPOCH"))
+		return source_date_epoch;
 
-	if (date_str[0] == 0) {
-		// https://reproducible-builds.org/specs/source-date-epoch/
-		if (char* source_date_epoch = getenv("SOURCE_DATE_EPOCH")) {
-			std::istringstream iss(source_date_epoch);
-			std::time_t t;
-			iss >> t;
-			if (iss.fail()
-			    || !iss.eof()
-			    || !std::strftime(date_str, sizeof(date_str), "%x", std::localtime(&t))) {
-				    std::strncpy(date_str, _("Unknown build date"), max_date_length-1);
-			}
-		} else
-			return __DATE__;
-	}
-	return date_str;
+	return __DATE__;
 }
 
 bool
