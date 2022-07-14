@@ -304,15 +304,15 @@ LayerTree::on_button_press_or_release_event(GdkEventButton* event)
 	if(event->type == GDK_BUTTON_RELEASE)
 	{
 		//change value without history recording i.e while flag is false
-		if(just_finished){std::cout<<std::endl<<"increase";
-			value_base.set<float>(value_float+0.0000001); row[param_model.value] = value_base;}
+		if(just_finished){std::cout<<std::endl<<"increase"<<std::endl;
+			value_base.set<float>(value_float+(value_float/10000000)); row[param_model.value] = value_base;}
 
 		moving_while_press = false;
 
 		//revert changes to keep last value while having history show it
 		if(just_finished){
-			std::cout<<std::endl<<"revert";
-		value_base.set<float>(value_float-0.0000001); row[param_model.value] = value_base;
+			std::cout<<std::endl<<"revert"<<std::endl;
+		value_base.set<float>(value_float-(value_float/10000000)); row[param_model.value] = value_base;
 		}
 		param_tree_view().get_window()->set_cursor(default_cursor);
 		just_finished = false;
