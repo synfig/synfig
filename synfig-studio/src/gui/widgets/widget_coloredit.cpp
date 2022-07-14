@@ -436,7 +436,7 @@ Widget_ColorEdit::Widget_ColorEdit():
 		Gtk::Box* box_cast_2 = static_cast<Gtk::Box*>( internal_child_2[0] );
 		std::vector<Widget*> internal_child_3 = box_cast_2->get_children(); //internal_child_3[0] is the color wheel widget
 		internal_child_3[0]->signal_button_release_event().connect([&](GdkEventButton *ev){ was_released=true;on_color_changed();return false;},false);
-		internal_child_3[0]->signal_key_release_event().connect([&](GdkEventButton *ev){ was_released=true;on_color_changed();return false;},false);
+		internal_child_3[0]->signal_key_release_event().connect([&](GdkEventKey *ev){ was_released=true;on_color_changed();return false;},false);
 
 		hvsColorWidget->signal_color_changed().connect(sigc::mem_fun(*this, &studio::Widget_ColorEdit::on_color_changed));
 		//TODO: Anybody knows how to set min size for this widget? I've tried use set_size_request(..). But it doesn't works.
