@@ -10,6 +10,8 @@ vcpkg_extract_source_archive_ex(
     PATCHES
       disable_complex_fftw.patch
       dont_include_win32config.patch
+      fix_make_dependency.patch
+      fix_ssize_t_undefined.patch
 )
 
 set (OPTIONS
@@ -36,89 +38,6 @@ vcpkg_configure_make(
   OPTIONS
     ${OPTIONS}
 )
-
-set(buildtypes)
-if(NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "debug")
-    set(buildname "DEBUG")
-    vcpkg_list(APPEND buildtypes ${buildname})
-    set(path_suffix_${buildname} "debug/")
-    set(suffix_${buildname} "dbg")
-endif()
-if(NOT DEFINED VCPKG_BUILD_TYPE OR VCPKG_BUILD_TYPE STREQUAL "release")
-    set(buildname "RELEASE")
-    vcpkg_list(APPEND buildtypes ${buildname})
-    set(path_suffix_${buildname} "")
-    set(suffix_${buildname} "rel")
-endif()
-
-# this patch is adapted from VisualMagick
-set(SSIZE_T_PATCH
-" \
-/* \n \
-  Visual C++ does not define double_t, float_t, or ssize_t by default. \n \
-*/ \n \
-#ifndef _MAGICKCORE_MAGICK_BASECONFIG_H_2
-#define _MAGICKCORE_MAGICK_BASECONFIG_H_2
-#ifdef _MSC_VER
-  #if !defined(double_t) \n \
-    #define MAGICKCORE_HAVE_DOUBLE_T \n \
-    #if !defined(__MINGW32__) \n \
-      typedef double double_t; \n \
-    #endif \n \
-  #endif \n \
-  #if !defined(float_t) \n \
-    #define MAGICKCORE_HAVE_FLOAT_T \n \
-    #if !defined(__MINGW32__) \n \
-      typedef float float_t; \n \
-    #endif \n \
-  #endif \n \
-  #if !defined(ssize_t) && !defined(__MINGW32__) \n \
-    #if defined(_WIN64) \n \
-    typedef __int64 ssize_t; \n \
-    #else \n \
-    typedef long ssize_t; \n \
-    #endif \n \
-  #endif \n \
-#endif \n \
-#endif \n"
-)
-
-foreach(buildtype IN LISTS buildtypes)
-  file(READ "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-${suffix_${buildtype}}/Makefile" FILE_CONTENTS)
-
-  # the target "install-exec-local-utilities" depends on "install-binPROGRAMS"
-  # it happens to work when using one job (make install -j1), as it executes
-  # "install-binPROGRAMS" first, but it isn't guaranteed when using multiple jobs
-  # TODO: fix this properly in the automake files
-  string(REPLACE
-    "install-exec-local-utilities:" "install-exec-local-utilities: install-binPROGRAMS"
-    FILE_CONTENTS ${FILE_CONTENTS})
-
-  # for some reason the Makefile generated uses incorrect sed command
-  # specifically:
-  # am__base_list = \
-  #   sed '$$!N$$!N$$!N$$!N$$!N$$!N$$!Ns/\n/ /g' | \
-  #   sed '$$!N$$!N$$!N$$!Ns/\n/ /g'
-  #
-  # this is incorrect format. it should be
-  # am__base_list = \
-  #   sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
-  #   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
-  #
-  # it might work on different version of sed than the one provided by msys though
-  #
-  # I really hate autotools!
-  string(REPLACE "$$!N" "$$!N;" FILE_CONTENTS ${FILE_CONTENTS})
-
-
-  file(WRITE "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-${suffix_${buildtype}}/Makefile" "${FILE_CONTENTS}")
-
-  file(APPEND
-    "${CURRENT_BUILDTREES_DIR}/${TARGET_TRIPLET}-${suffix_${buildtype}}/MagickCore/magick-baseconfig.h"
-    "${SSIZE_T_PATCH}"
-  )
-endforeach()
-
 
 vcpkg_install_make()
 vcpkg_fixup_pkgconfig()
