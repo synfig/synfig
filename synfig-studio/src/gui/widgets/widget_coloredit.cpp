@@ -509,7 +509,6 @@ Widget_ColorEdit::on_color_changed()
 		Gdk::RGBA newColor = hvsColorWidget->get_current_rgba();
 		Color synfigColor;
 		if(was_released){// if there was a release means drag is over and record this final color in history panel
-		std::cout<<std::endl<<"block history before action ="<<HistoryTreeStore::block_new_history<<std::endl;
 		Color synfigColorTemp(
 				newColor.get_red()+0.00001,//slight increase doesnt affect colors value but enough to trigger new action signal
 				newColor.get_green(),
