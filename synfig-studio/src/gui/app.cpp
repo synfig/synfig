@@ -135,6 +135,8 @@
 #include <gui/widgets/widget_enum.h>
 #include <gui/workspacehandler.h>
 
+#include <ETL/stringf>
+
 #include <synfig/canvasfilenaming.h>
 #include <synfig/color.h>
 #include <synfig/filesystemnative.h>
@@ -3676,7 +3678,7 @@ void App::open_img_in_external(const std::string &uri)
 		// Glib::spawn_* needs `gspawn-win??-helper.exe` for Windows
 		Glib::spawn_async("", args);
 	} catch (const Glib::SpawnError& e) {
-		ui_interface_->error(etl::strprintf(_("Failed to run command: %s (%s)"), App::image_editor_path.c_str(), e.what().c_str()));
+		ui_interface_->error(synfig::strprintf(_("Failed to run command: %s (%s)"), App::image_editor_path.c_str(), e.what().c_str()));
 	}
 }
 
@@ -3874,7 +3876,7 @@ App::wrap_into_temporary_filesystem(
 	FileSystemTemporary::Handle temporary_file_system = new FileSystemTemporary("instance", get_temporary_directory(), canvas_file_system);
 	temporary_file_system->set_meta("filename", filename);
 	temporary_file_system->set_meta("as", as);
-	temporary_file_system->set_meta("truncate", etl::strprintf("%lld", truncate_storage_size));
+	temporary_file_system->set_meta("truncate", synfig::strprintf("%lld", truncate_storage_size));
 	return temporary_file_system;
 }
 
@@ -4168,13 +4170,13 @@ App::new_instance()
 		if (warnings != "")
 			App::dialog_message_1b(
 				"WARNING",
-				etl::strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
+				synfig::strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
 				"details",
 				_("Close"));
 		if (errors != "")
 			App::dialog_message_1b(
 				"ERROR",
-				etl::strprintf("%s:\n\n%s", _("Error"), errors.c_str()),
+				synfig::strprintf("%s:\n\n%s", _("Error"), errors.c_str()),
 				"details",
 				_("Close"));
 	}

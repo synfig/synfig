@@ -719,7 +719,7 @@ ValueNode_DynamicList::link_local_name(int i)const
 {
 	assert(i>=0 && i<link_count());
 
-	return etl::strprintf(_("Item %03d"),i+1);
+	return strprintf(_("Item %03d"),i+1);
 }
 
 ValueNode::Handle
@@ -971,7 +971,7 @@ ValueNode_DynamicList::get_children_vocab_vfunc()const
 	for(unsigned int i=0; i<list.size();i++)
 	{
 		ret.push_back(ParamDesc(ValueBase(),strprintf("item%04d",i))
-			.set_local_name(etl::strprintf(_("Item %03d"),i+1))
+			.set_local_name(strprintf(_("Item %03d"),i+1))
 		);
 	}
 

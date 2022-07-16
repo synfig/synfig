@@ -34,8 +34,6 @@
 
 #include <glib.h>
 
-#include <ETL/stringf>
-
 #include <synfig/general.h>
 #include <synfig/localization.h>
 
@@ -45,7 +43,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace debug;
 

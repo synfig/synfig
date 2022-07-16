@@ -642,7 +642,7 @@ void DockManager::write_string(std::string &x, const std::string &str)
 void DockManager::write_separator(std::string &x, bool continue_)
 	{ write_string(x, continue_ ? "|" : "]"); }
 void DockManager::write_int(std::string &x, int i)
-	{ write_string(x, strprintf("%d", i)); }
+	{ write_string(x, synfig::strprintf("%d", i)); }
 void DockManager::write_bool(std::string &x, bool b)
 	{ write_string(x, b ? "true" : "false"); }
 
@@ -790,10 +790,10 @@ std::string DockManager::layout_from_template(const std::string &tpl, float dx, 
 		pos_end = tpl.find_first_of("xyXY", pos_begin);
 		if (pos_end == std::string::npos) break;
 		float f = (float)strtol(tpl.c_str()+pos_begin+1, nullptr, 10);
-		if (tpl[pos_end] == 'X') res += strprintf("%d", (int)roundf(dx+f*sx/100.f));
-		if (tpl[pos_end] == 'Y') res += strprintf("%d", (int)roundf(dy+f*sy/100.f));
-		if (tpl[pos_end] == 'x') res += strprintf("%d", (int)roundf(f*sx/100.f));
-		if (tpl[pos_end] == 'y') res += strprintf("%d", (int)roundf(f*sy/100.f));
+		if (tpl[pos_end] == 'X') res += synfig::strprintf("%d", (int)roundf(dx+f*sx/100.f));
+		if (tpl[pos_end] == 'Y') res += synfig::strprintf("%d", (int)roundf(dy+f*sy/100.f));
+		if (tpl[pos_end] == 'x') res += synfig::strprintf("%d", (int)roundf(f*sx/100.f));
+		if (tpl[pos_end] == 'y') res += synfig::strprintf("%d", (int)roundf(f*sy/100.f));
 		pos_end++;
 	}
 	return res;

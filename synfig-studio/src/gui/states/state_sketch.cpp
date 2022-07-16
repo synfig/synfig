@@ -50,6 +50,8 @@
 #include <gui/states/state_stroke.h>
 #include <gui/workarea.h>
 
+#include <ETL/stringf>
+
 #include <synfigapp/main.h>
 
 #endif

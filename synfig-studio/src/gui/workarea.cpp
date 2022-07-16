@@ -42,6 +42,8 @@
 #include <gtkmm/arrow.h>
 #include <gtkmm/scrollbar.h>
 
+#include <ETL/stringf>
+
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/event_keyboard.h>
@@ -62,6 +64,7 @@
 #include <gui/workarearenderer/renderer_guides.h>
 #include <gui/workarearenderer/renderer_timecode.h>
 
+#include <ETL/stringf>
 #include <synfig/blinepoint.h>
 #include <synfig/valuenodes/valuenode_bone.h>
 #include <synfig/valuenodes/valuenode_composite.h>
@@ -1078,10 +1081,10 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		int n_axes = gdk_device_get_n_axes(device);
 		for (int i=0; i < n_axes; i++)
 		{
-			axes_str += etl::strprintf(" %f", event->motion.axes[i]);
+			axes_str += synfig::strprintf(" %f", event->motion.axes[i]);
 		}
 		synfig::warning("axes info: %s", axes_str.c_str());*/
-		//for(...) axesstr += etl::strprintf(" %f", event->motion.axes[i])
+		//for(...) axesstr += synfig::strprintf(" %f", event->motion.axes[i])
 
 		double x = 0.0, y = 0.0, p = 0.0;
 		int ox = 0, oy = 0;
@@ -2017,7 +2020,7 @@ WorkArea::get_renderer() const
 {
 	if (get_low_resolution_flag())
 	{
-		String renderer = etl::strprintf("software-low%d", get_low_res_pixel_size());
+		String renderer = synfig::strprintf("software-low%d", get_low_res_pixel_size());
 		if (synfig::rendering::Renderer::get_renderers().count(renderer))
 			return renderer;
 	}

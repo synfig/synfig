@@ -52,6 +52,7 @@
  #include <fcntl.h>
 #endif
 #include <ETL/misc>
+#include <ETL/stringf>
 
 #endif
 
@@ -158,7 +159,7 @@ imagemagick_trgt::start_frame(synfig::ProgressCallback *cb)
 	if (multi_image)
 		newfilename = (filename_sans_extension(filename) +
 					   sequence_separator +
-					   etl::strprintf("%04d",imagecount) +
+					   strprintf("%04d",imagecount) +
 					   filename_extension(filename));
 	else
 		newfilename = filename;

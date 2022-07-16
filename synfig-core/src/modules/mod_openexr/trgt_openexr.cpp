@@ -35,6 +35,8 @@
 
 #include "trgt_openexr.h"
 #include <cstdio>
+#include <ETL/stringf>
+
 #endif
 
 /* === M A C R O S ========================================================= */
@@ -103,7 +105,7 @@ exr_trgt::start_frame(synfig::ProgressCallback *cb)
 	{
 		frame_name = (filename_sans_extension(filename) +
 					  sequence_separator +
-					  etl::strprintf("%04d",imagecount) +
+					  strprintf("%04d",imagecount) +
 					  filename_extension(filename));
 		if(cb)cb->task(frame_name);
 	}

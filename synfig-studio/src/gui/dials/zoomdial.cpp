@@ -134,7 +134,7 @@ ZoomDial::create_icon(Gtk::IconSize size, const Gtk::BuiltinStockID & stockid,
 void
 ZoomDial::set_zoom(synfig::Real value)
 {
-	current_zoom->set_text(etl::strprintf("%.1lf%%", value*100.0));
+	current_zoom->set_text(synfig::strprintf("%.1lf%%", value*100.0));
 }
 
 synfig::Real

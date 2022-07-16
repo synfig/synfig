@@ -37,6 +37,8 @@
 #include <gui/app.h>
 #include <gui/localization.h>
 
+#include <ETL/stringf>
+
 #include <synfig/general.h>
 #include <synfig/valuenode.h>
 

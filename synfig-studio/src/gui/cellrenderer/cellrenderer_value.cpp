@@ -40,8 +40,6 @@
 #include <gtkmm/celleditable.h>
 #include <gtkmm/eventbox.h>
 
-#include <ETL/stringf>
-
 #include <synfig/general.h>
 #include <synfig/transformation.h>
 #include <synfig/valuenodes/valuenode_bone.h>

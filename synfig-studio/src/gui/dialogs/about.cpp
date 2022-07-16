@@ -310,7 +310,7 @@ About::About()
 	std::string extra_info = get_comments() + "\n";
 
 	#ifdef DEVEL_VERSION
-		extra_info += etl::strprintf(_("\nDevelopment version:\n%s\n"),DEVEL_VERSION);
+		extra_info += synfig::strprintf(_("\nDevelopment version:\n%s\n"),DEVEL_VERSION);
 	#endif
 
 	extra_info += "\n";
@@ -331,27 +331,27 @@ About::About()
 		} else
 			std::strncpy(date_str, __DATE__, max_date_length-1);
 
-		extra_info += etl::strprintf(_("Built on %s\n\n"), date_str );
+		extra_info += synfig::strprintf(_("Built on %s\n\n"), date_str );
 	}
 
-	extra_info += etl::strprintf(_("Built with:\n"));
-	extra_info += etl::strprintf(_("ETL %s\n"), ETL_VERSION);
-	extra_info += etl::strprintf(_("Synfig API %s\n"), SYNFIG_VERSION);
-	extra_info += etl::strprintf(_("Synfig library %d\n"), SYNFIG_LIBRARY_VERSION);
-	extra_info += etl::strprintf(_("GTK+ %d.%d.%d\n"), GTK_MAJOR_VERSION, GTK_MINOR_VERSION, GTK_MICRO_VERSION);
+	extra_info += synfig::strprintf(_("Built with:\n"));
+	extra_info += synfig::strprintf(_("ETL %s\n"), ETL_VERSION);
+	extra_info += synfig::strprintf(_("Synfig API %s\n"), SYNFIG_VERSION);
+	extra_info += synfig::strprintf(_("Synfig library %d\n"), SYNFIG_LIBRARY_VERSION);
+	extra_info += synfig::strprintf(_("GTK+ %d.%d.%d\n"), GTK_MAJOR_VERSION, GTK_MINOR_VERSION, GTK_MICRO_VERSION);
 	#if defined(__clang__)
-		extra_info += etl::strprintf(_("Apple LLVM version %s\n"), __clang_version__);
+		extra_info += synfig::strprintf(_("Apple LLVM version %s\n"), __clang_version__);
 	#elif defined(__GNUC__) || defined(__GNUG__)
-		extra_info += etl::strprintf(_("GNU G++ %d.%d.%d\n"),__GNUC__,__GNUC_MINOR__,__GNUC_PATCHLEVEL__);
+		extra_info += synfig::strprintf(_("GNU G++ %d.%d.%d\n"),__GNUC__,__GNUC_MINOR__,__GNUC_PATCHLEVEL__);
 	#elif defined(_MSC_VER)
-		extra_info += etl::strprintf("Microsoft Visual C/C++ (%d)\n", _MSC_VER);
+		extra_info += synfig::strprintf("Microsoft Visual C/C++ (%d)\n", _MSC_VER);
 	#endif
 
 	extra_info += "\n";
 
-	extra_info += etl::strprintf(_("Using:\n"));
-	extra_info += etl::strprintf(_("Synfig %s\n"), synfig::get_version());
-	extra_info += etl::strprintf(_("GTK+ %d.%d.%d"),gtk_major_version,gtk_minor_version,gtk_micro_version);
+	extra_info += synfig::strprintf(_("Using:\n"));
+	extra_info += synfig::strprintf(_("Synfig %s\n"), synfig::get_version());
+	extra_info += synfig::strprintf(_("GTK+ %d.%d.%d"),gtk_major_version,gtk_minor_version,gtk_micro_version);
 
 	#ifdef _DEBUG
 		extra_info += "\n\nDEBUG BUILD";

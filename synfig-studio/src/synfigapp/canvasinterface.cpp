@@ -35,6 +35,8 @@
 #	include <config.h>
 #endif
 
+#include <ETL/stringf>
+
 #include <synfig/general.h>
 
 #include <synfig/canvasfilenaming.h>
@@ -993,13 +995,13 @@ CanvasInterface::import_sequence(
 			
 			if (ext.empty())
 			{
-				errors += etl::strprintf(_("Cannot import file without extension: %s\n"), filename.c_str());
+				errors += synfig::strprintf(_("Cannot import file without extension: %s\n"), filename.c_str());
 				continue;
 			}
 			
 			if(!Importer::book().count(ext))
 			{
-				errors += etl::strprintf(_("Cannot import file of type '%s': %s\n"), ext.c_str(), filename.c_str());
+				errors += synfig::strprintf(_("Cannot import file of type '%s': %s\n"), ext.c_str(), filename.c_str());
 				continue;
 			}
 			
@@ -1052,7 +1054,7 @@ CanvasInterface::import_sequence(
 				prev_surface=cur_surface;
 				advance(c2,1);
 			} catch(...) {
-				errors += etl::strprintf(_("Unable to import file: %s"), filename.c_str());
+				errors += synfig::strprintf(_("Unable to import file: %s"), filename.c_str());
 				group.cancel();
 				return false;
 			}

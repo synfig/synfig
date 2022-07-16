@@ -243,8 +243,8 @@ Svg_parser::parser_canvas(const xmlpp::Node* node)
 		//build
 		nodeRoot=document.create_root_node("canvas", "", "");
 		nodeRoot->set_attribute("version","0.5");
-		nodeRoot->set_attribute("width",etl::strprintf("%lf", width));
-		nodeRoot->set_attribute("height",etl::strprintf("%lf", height));
+		nodeRoot->set_attribute("width",strprintf("%lf", width));
+		nodeRoot->set_attribute("height",strprintf("%lf", height));
 		nodeRoot->set_attribute("xres","2834.645752");
 		nodeRoot->set_attribute("yres","2834.645752");
 		double view_x = width/kux;
@@ -537,7 +537,7 @@ Svg_parser::build_outline(xmlpp::Node* root, Style style, const std::list<BLine>
 	String opacity          = style.get("opacity", "1");
 
 	const float scale_factor = sqrt(mtx.a*mtx.a + mtx.b*mtx.b);
-	stroke_width=etl::strprintf("%f",getDimension(stroke_width)/kux * scale_factor);
+	stroke_width=strprintf("%f",getDimension(stroke_width)/kux * scale_factor);
 
 	const float total_opacity = atof(stroke_opacity.data())*atof(opacity.data());
 
@@ -1320,7 +1320,7 @@ Svg_parser::parser_path_rect(const xmlpp::Element* nodeElement, const Style& sty
 
 		std::string path;
 		if (rect_rx > 0 && rect_ry > 0)
-			path = etl::strprintf("M %lf %lf H %lf A %lf %lf 0 0,1 %lf %lf V %lf A %lf %lf 0 0,1 %lf %lf H %lf "
+			path = strprintf("M %lf %lf H %lf A %lf %lf 0 0,1 %lf %lf V %lf A %lf %lf 0 0,1 %lf %lf H %lf "
 												  "A %lf %lf 0 0,1 %lf %lf V %lf A %lf %lf 0 0,1 %lf %lf z",
 								  rect_x + rect_rx, rect_y, rect_x + rect_width - rect_rx,
 								  rect_rx, rect_ry, rect_x + rect_width, rect_y + rect_ry,
@@ -1332,7 +1332,7 @@ Svg_parser::parser_path_rect(const xmlpp::Element* nodeElement, const Style& sty
 								  rect_rx, rect_ry, rect_x + rect_rx, rect_y
 								  );
 		else
-			path = etl::strprintf("M %lf %lf h %lf v %lf h %lf z",
+			path = strprintf("M %lf %lf h %lf v %lf h %lf z",
 								  rect_x, rect_y, rect_width, rect_height, -rect_width
 								  );
 		k = parser_path_d(path,mtx);
@@ -1361,7 +1361,7 @@ Svg_parser::parser_path_circle(const xmlpp::Element* nodeElement, const Style& s
 		return k;
 	}
 
-	std::string path = etl::strprintf("M %lf %lf A %lf %lf 0 0,1 %lf %lf A %lf %lf 0 0,1 %lf %lf "
+	std::string path = strprintf("M %lf %lf A %lf %lf 0 0,1 %lf %lf A %lf %lf 0 0,1 %lf %lf "
 												"A %lf %lf 0 0,1 %lf %lf A %lf %lf 0 0,1 %lf %lf z",
 							  circle_x + circle_radius, circle_y,
 							  circle_radius, circle_radius, circle_x, circle_y + circle_radius,
@@ -1389,7 +1389,7 @@ Svg_parser::parser_path_ellipse(const xmlpp::Element *nodeElement, const Style &
 
 	if (approximate_zero(ellipse_rx) || approximate_zero(ellipse_ry))
 		return k;
-	std::string path = etl::strprintf("M %lf %lf A %lf %lf 0 0,1 %lf %lf A %lf %lf 0 0,1 %lf %lf "
+	std::string path = strprintf("M %lf %lf A %lf %lf 0 0,1 %lf %lf A %lf %lf 0 0,1 %lf %lf "
 												"A %lf %lf 0 0,1 %lf %lf A %lf %lf 0 0,1 %lf %lf z",
 							  ellipse_x + ellipse_rx, ellipse_y,
 							  ellipse_rx, ellipse_ry, ellipse_x, ellipse_y + ellipse_ry,
@@ -1424,7 +1424,7 @@ Svg_parser::parser_line(const xmlpp::Element *nodeElement, const SVGMatrix &mtx)
 		return k;
 	}
 
-	std::string path = etl::strprintf("M %lf %lf L %lf %lf", x1, y1, x2, y2);
+	std::string path = strprintf("M %lf %lf L %lf %lf", x1, y1, x2, y2);
 	k = parser_path_d(path,mtx);
 
 	return k;
@@ -1448,10 +1448,10 @@ Svg_parser::parser_polyline(const xmlpp::Element *nodeElement, const SVGMatrix &
 		points.pop_back();
 	}
 
-	std::string path = etl::strprintf("M %lf %lf", atof(points[0].c_str()), atof(points[1].c_str()));
+	std::string path = strprintf("M %lf %lf", atof(points[0].c_str()), atof(points[1].c_str()));
 
 	for (size_t i = 2; i < points.size(); i+=2)	 {
-		path.append(etl::strprintf(" %lf %lf", atof(points[i].c_str()), atof(points[i+1].c_str())));
+		path.append(strprintf(" %lf %lf", atof(points[i].c_str()), atof(points[i+1].c_str())));
 	}
 
 	k = parser_path_d(path,mtx);
@@ -1576,11 +1576,11 @@ Svg_parser::build_stop_color(xmlpp::Element* root, const std::list<ColorStop>& s
 {
 	for (const auto& aux_stop : stops) {
 		xmlpp::Element *child=root->add_child("color");
-		child->set_attribute("pos",etl::strprintf("%f",aux_stop.pos));
-		child->add_child("r")->set_child_text(etl::strprintf("%f",aux_stop.r));
-		child->add_child("g")->set_child_text(etl::strprintf("%f",aux_stop.g));
-		child->add_child("b")->set_child_text(etl::strprintf("%f",aux_stop.b));
-		child->add_child("a")->set_child_text(etl::strprintf("%f",aux_stop.a));
+		child->set_attribute("pos",strprintf("%f",aux_stop.pos));
+		child->add_child("r")->set_child_text(strprintf("%f",aux_stop.r));
+		child->add_child("g")->set_child_text(strprintf("%f",aux_stop.g));
+		child->add_child("b")->set_child_text(strprintf("%f",aux_stop.b));
+		child->add_child("a")->set_child_text(strprintf("%f",aux_stop.a));
 	}
 }
 
@@ -1864,8 +1864,8 @@ Svg_parser::build_points(xmlpp::Element* root, const std::list<Vertex>& p)
 	for (const Vertex& vertex : p){
 		xmlpp::Element *child_entry=child->add_child("entry");
 		xmlpp::Element *child_vector=child_entry->add_child("vector");
-		child_vector->add_child("x")->set_child_text(etl::strprintf("%f",vertex.x));
-		child_vector->add_child("y")->set_child_text(etl::strprintf("%f",vertex.y));
+		child_vector->add_child("x")->set_child_text(strprintf("%f",vertex.x));
+		child_vector->add_child("y")->set_child_text(strprintf("%f",vertex.y));
 	}
 }
 
@@ -1944,7 +1944,7 @@ Svg_parser::build_param(xmlpp::Element* root, const String& name, const String& 
 	if(!type.empty()){
 		if(!name.empty()) root->set_attribute("name",name);
 		xmlpp::Element *child=root->add_child(type);
-		child->set_attribute("value", etl::strprintf("%f",value));
+		child->set_attribute("value", strprintf("%f",value));
 	}else{
 		root->get_parent()->remove_child(root);
 	}
@@ -1956,7 +1956,7 @@ Svg_parser::build_param(xmlpp::Element* root, const String& name, const String& 
 	if(!type.empty()){
 			if(!name.empty()) root->set_attribute("name",name);
 			xmlpp::Element *child=root->add_child(type);
-			child->set_attribute("value", etl::strprintf("%d", value));
+			child->set_attribute("value", strprintf("%d", value));
 	}else{
 		root->get_parent()->remove_child(root);
 	}
@@ -1967,7 +1967,7 @@ Svg_parser::build_integer(xmlpp::Element* root, const String& name, int value)
 {
 	if(!name.empty()) root->set_attribute("name",name);
 	xmlpp::Element *child=root->add_child("integer");
-	child->set_attribute("value",etl::strprintf("%d", value));
+	child->set_attribute("value",strprintf("%d", value));
 }
 
 void
@@ -1975,7 +1975,7 @@ Svg_parser::build_real(xmlpp::Element* root, const String& name, float value)
 {
 	if(!name.empty()) root->set_attribute("name",name);
 	xmlpp::Element *child=root->add_child("real");
-	child->set_attribute("value",etl::strprintf("%f", value));
+	child->set_attribute("value",strprintf("%f", value));
 }
 
 void
@@ -1990,10 +1990,10 @@ Svg_parser::build_color(xmlpp::Element* root, float r, float g, float b, float a
 
 	root->set_attribute("name","color");
 	xmlpp::Element *child=root->add_child("color");
-	child->add_child("r")->set_child_text(etl::strprintf("%f",ret.get_r()));
-	child->add_child("g")->set_child_text(etl::strprintf("%f",ret.get_g()));
-	child->add_child("b")->set_child_text(etl::strprintf("%f",ret.get_b()));
-	child->add_child("a")->set_child_text(etl::strprintf("%f",ret.get_a()));
+	child->add_child("r")->set_child_text(strprintf("%f",ret.get_r()));
+	child->add_child("g")->set_child_text(strprintf("%f",ret.get_g()));
+	child->add_child("b")->set_child_text(strprintf("%f",ret.get_b()));
+	child->add_child("a")->set_child_text(strprintf("%f",ret.get_a()));
 }
 
 void
@@ -2001,8 +2001,8 @@ Svg_parser::build_vector(xmlpp::Element* root, const String& name, float x, floa
 {
 	if(!name.empty()) root->set_attribute("name",name);
 	xmlpp::Element *child=root->add_child("vector");
-	child->add_child("x")->set_child_text(etl::strprintf("%f",x));
-	child->add_child("y")->set_child_text(etl::strprintf("%f",y));
+	child->add_child("x")->set_child_text(strprintf("%f",x));
+	child->add_child("y")->set_child_text(strprintf("%f",y));
 }
 
 void
@@ -2011,8 +2011,8 @@ Svg_parser::build_vector (xmlpp::Element* root, const String& name, float x, flo
 	if(!name.empty()) root->set_attribute("name",name);
 	xmlpp::Element *child=root->add_child("vector");
 	if(!guid.empty()) child->set_attribute("guid",guid);
-	child->add_child("x")->set_child_text(etl::strprintf("%f",x));
-	child->add_child("y")->set_child_text(etl::strprintf("%f",y));
+	child->add_child("x")->set_child_text(strprintf("%f",x));
+	child->add_child("y")->set_child_text(strprintf("%f",y));
 }
 
 xmlpp::Element*
@@ -2784,7 +2784,7 @@ Style::compute(const std::string &property, std::string default_value, double re
 	}
 
 	warning("Layer_Svg: %s",
-		etl::strprintf(_("Invalid number for '%s': %s. Trying default value..."), property.c_str(), value.c_str()).c_str());
+		strprintf(_("Invalid number for '%s': %s. Trying default value..."), property.c_str(), value.c_str()).c_str());
 
 	if (parse_number_or_percent(default_value, d_value)) {
 		if (!value.empty() && value.back() == '%')
@@ -2793,7 +2793,7 @@ Style::compute(const std::string &property, std::string default_value, double re
 			return d_value;
 	}
 
-	error("Layer_Svg: %s", etl::strprintf(_("... No, invalid number for '%s': %s"), property.c_str(), default_value.c_str()).c_str());
+	error("Layer_Svg: %s", strprintf(_("... No, invalid number for '%s': %s"), property.c_str(), default_value.c_str()).c_str());
 	return 0;
 }
 

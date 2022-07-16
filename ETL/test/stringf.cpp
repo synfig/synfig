@@ -36,31 +36,6 @@ using namespace etl;
 
 /* === P R O C E D U R E S ================================================= */
 
-int basic_test(void)
-{
-	int ret=0;
-	char mystring[80]="My formatted string!";
-	std::string myotherstring="my other string!";
-
-	std::cout<<strprintf("This is a test of >>%s<<.",mystring)<<std::endl;
-
-	myotherstring="5 6.75 George 7";
-	int i,i2;
-	float f;
-
-#ifndef ETL_NO_STRSCANF
-	strscanf(myotherstring,"%d %f %s %d",&i, &f, mystring, &i2);
-#else
-	cout<<"warning: strscanf() disabled at compile time..."<<endl;
-	i=5;f=6.75;i2=7;
-#endif
-
-	std::cout<<myotherstring+"=="+strprintf("%d %f %s %d",i, f, mystring, i2)<<std::endl;
-
-	std::cout<<stratof(strprintf("32.5849"))<<"==32.5849"<<std::endl;
-	return ret;
-}
-
 int base_and_dir_name_test(void)
 {
 	int ret=0;
@@ -145,7 +120,6 @@ int main()
 {
 	int error=0;
 
-	error+=basic_test();
 	error+=base_and_dir_name_test();
 	error+=relative_path_test();
 

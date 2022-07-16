@@ -37,6 +37,8 @@
 #include <cstring>
 #include <ctime>
 
+#include <ETL/stringf>
+
 #include <synfig/localization.h>
 #include <synfig/general.h>
 

@@ -515,7 +515,7 @@ Renderer_Canvas::enqueue_render_frame(
 		loading_error_msg = _("Unknown reason");
 	}
 	if (!loading_error_msg.empty()) {
-		std::string full_error_msg = etl::strprintf(_("Error loading canvas resources at %s (%s):\n\t%s"), id.time.get_string().c_str(), canvas->get_name().c_str(), loading_error_msg.c_str());
+		std::string full_error_msg = synfig::strprintf(_("Error loading canvas resources at %s (%s):\n\t%s"), id.time.get_string().c_str(), canvas->get_name().c_str(), loading_error_msg.c_str());
 		rendering_error_msg_map[id.time].insert(full_error_msg);
 		synfig::error(full_error_msg);
 		return false;
