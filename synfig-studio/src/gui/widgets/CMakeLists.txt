@@ -4,7 +4,6 @@ target_sources(synfigstudio
         "${CMAKE_CURRENT_LIST_DIR}/widget_canvastimeslider.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/widget_color.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/widget_coloredit.cpp"
-        "${CMAKE_CURRENT_LIST_DIR}/widget_compselect.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/widget_curves.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/widget_defaults.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/widget_distance.cpp"

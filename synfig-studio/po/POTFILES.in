@@ -188,8 +188,6 @@ src/gui/widgets/widget_color.cpp
 src/gui/widgets/widget_color.h
 src/gui/widgets/widget_coloredit.cpp
 src/gui/widgets/widget_coloredit.h
-src/gui/widgets/widget_compselect.cpp
-src/gui/widgets/widget_compselect.h
 src/gui/widgets/widget_curves.cpp
 src/gui/widgets/widget_curves.h
 src/gui/widgets/widget_defaults.cpp
