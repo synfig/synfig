@@ -147,22 +147,11 @@ XORPattern::get_param_vocab()const
 Layer::Handle
 XORPattern::hit_check(Context context, const Point &getpos)const
 {
-	// if we have a zero amount
-	if(get_amount()==0.0)
-		// then the click passes down to our context
-		return context.hit_check(getpos);
+	bool check_myself_first;
+	auto layer = basic_hit_check(context, getpos, check_myself_first);
 
-	Layer::Handle tmp;
-	// if we are behind the context, and the click hits something in the context
-	if(get_blend_method()==Color::BLEND_BEHIND && (tmp=context.hit_check(getpos)))
-		// then return the thing it hit in the context
-		return tmp;
+	if (!check_myself_first)
+		return layer;
 
-	// if we're using an 'onto' blend method and the click missed the context
-	if(Color::is_onto(get_blend_method()) && !(tmp=context.hit_check(getpos)))
-		// then it misses everything
-		return 0;
-
-	// otherwise the click hit us, since we're the size of the whole plane
 	return const_cast<XORPattern*>(this);
 }

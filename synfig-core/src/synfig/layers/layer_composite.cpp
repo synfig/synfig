@@ -76,6 +76,32 @@ Layer_Composite::Layer_Composite(Real a, Color::BlendMethod bm):
 		SET_STATIC_DEFAULTS();
 	}
 
+Layer::Handle
+Layer_Composite::basic_hit_check(synfig::Context context, const synfig::Point &point, bool& check_myself_first) const
+{
+	check_myself_first = false;
+
+	// if we have a zero amount
+	if (get_amount() == 0.0)
+		// then the click passes down to our context
+		return context.hit_check(point);
+
+	Layer::Handle tmp;
+	// if we are behind the context, and the click hits something in the context
+	if (get_blend_method() == Color::BLEND_BEHIND && (tmp = context.hit_check(point)))
+		// then return the thing it hit in the context
+		return tmp;
+
+	// if we're using an 'onto' blend method and the click missed the context
+	if (Color::is_onto(get_blend_method()) && !(tmp = context.hit_check(point)))
+		// then it misses everything
+		return nullptr;
+
+	// otherwise the click may hit us: caller function must check if it does it me or not
+	check_myself_first = true;
+	return nullptr;
+}
+
 Rect
 Layer_Composite::get_full_bounding_rect(Context context)const
 {
