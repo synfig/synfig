@@ -81,6 +81,9 @@ Layer_Composite::basic_hit_check(synfig::Context context, const synfig::Point &p
 {
 	check_myself_first = false;
 
+	if (is_hit_locked())
+		return context.hit_check(point);
+
 	// if we have a zero amount
 	if (get_amount() == 0.0)
 		// then the click passes down to our context
