@@ -59,6 +59,7 @@ public:
 	static bool initialized;
 	std::vector<PlayOptions> stack;
 #ifndef WITHOUT_MLT
+	static Mlt::Repository* repository;
 	Mlt::Profile profile;
 	Mlt::Producer *last_track;
 	Mlt::Consumer *consumer;
@@ -84,6 +85,7 @@ public:
 };
 
 bool SoundProcessor::Internal::initialized = false;
+Mlt::Repository* SoundProcessor::Internal::repository = nullptr;
 
 SoundProcessor::SoundProcessor()
 {
@@ -274,18 +276,21 @@ void SoundProcessor::do_export(String path)
 }
 
 bool SoundProcessor::subsys_init() {
-	if (!Internal::initialized)
+	if (!Internal::initialized) {
 #ifndef WITHOUT_MLT
-		Internal::initialized = Mlt::Factory::init();
+		Internal::repository = Mlt::Factory::init();
+		Internal::initialized = Internal::repository;
 #else
 		Internal::initialized = true;
 #endif
+	}
 	return Internal::initialized;
 }
 
 bool SoundProcessor::subsys_stop()
 {
 #ifndef WITHOUT_MLT
+	delete Internal::repository;
 	Mlt::Factory::close();
 #endif
 	return true;
