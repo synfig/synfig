@@ -150,9 +150,6 @@ LayerTree::LayerTree()
 	param_tree_view().set_has_tooltip();
 	layer_tree_view().set_has_tooltip();
 
-	param_tree_view().signal_motion_notify_event().connect(sigc::mem_fun(*this, &LayerTree::on_motion_notify_event), false);
-	param_tree_view().signal_button_press_event().connect(sigc::mem_fun(*this, &LayerTree::on_button_press_or_release_event), false);
-	param_tree_view().signal_button_release_event().connect(sigc::mem_fun(*this, &LayerTree::on_button_press_or_release_event), false);
 	selected_param_object->signal_changed().connect(sigc::mem_fun(*this, &LayerTree::change_selection_param), false);
 
 	disable_single_click_for_param_editing = false;
@@ -244,81 +241,141 @@ int first_cord_x ;
 int second_cord_x ;
 float value_float ;
 bool just_finished = false;
+bool LayerTree::signal_handled= true; //was false
+bool param_mouse_edit=false;
+auto t_start=std::chrono::high_resolution_clock::now();
+auto t_end=std::chrono::high_resolution_clock::now();
 
 bool
 LayerTree::on_motion_notify_event(GdkEventMotion* event)
 {
-
-	if(HistoryTreeStore::block_new_history)
-	{
-
-	second_cord_x= event->x;
-
+	auto t_now = std::chrono::high_resolution_clock::now();
+	double elapsed_time_ms = std::chrono::duration<double, std::milli>(t_now-t_start).count();
+	if(elapsed_time_ms>65){
+	if(HistoryTreeStore::block_new_history){//block new history is set to true when there is motion/and in general in rapid action movements such as color wheel drag
+		second_cord_x= event->x;
 	if(iter){ //to make sure there is already a treeview i.e. not empty
-	/*if(row == row_event){*/ //supposedly this is so that this feature only works if you have the needed row selected however something is off
-
-	synfig::ValueBase value_base_mod = row[param_model.value]; //getting the valuebase selected and storing it
+		synfig::ValueBase value_base_mod = row[param_model.value]; //getting the valuebase selected and storing it
 
 	if(value_base_mod.get_type() == type_real){ //this feature so far is only for types real
 
-	//change mouse cursor to indicate the process
-	const char * cursor_name = "move";
-	param_tree_view().get_window()->set_cursor(Gdk::Cursor::create(get_display(), cursor_name));
+		//change mouse cursor to indicate the process
+		const char * cursor_name = "ew-resize";
+		param_tree_view().get_window()->set_cursor(Gdk::Cursor::create(get_display(), cursor_name));
 
 
-	Value<float> val(value_base_mod); // value object -val- constructed using valuebase as argument
-	value_float = val.get(); //the float which gets data and then sets also
+		Value<float> val(value_base_mod); // value object -val- constructed using valuebase as argument
+		value_float = val.get(); //the float which gets data and then sets also
 
 
-	//whether to add or subtract //with the new conditions
-	if(second_cord_x > first_cord_x)
-	value_float += 0.1 ;
-	else if(second_cord_x < first_cord_x)
-	value_float -= 0.1 ;
+		//whether to add or subtract //with the new conditions
+		if(second_cord_x > first_cord_x)
+		value_float += 0.1 ;
+		else if(second_cord_x < first_cord_x)
+		value_float -= 0.1 ;
 
-	//setting the new value
-	value_base_mod.set<float>(value_float);
-	row[param_model.value] = value_base_mod ;
+		//setting the new value
+		value_base_mod.set<float>(value_float);
+		row[param_model.value] = value_base_mod ;
 
 
-	std::this_thread::sleep_for (std::chrono::milliseconds(10));
-	first_cord_x= second_cord_x;
-	value_base = value_base_mod;
-	just_finished = true;
-	}}}
+		first_cord_x= second_cord_x;
+		value_base = value_base_mod;
+		just_finished = true;
+	}}}}
 
 
 	return false;
 }
 
 bool
-LayerTree::on_button_press_or_release_event(GdkEventButton* event)
+LayerTree::on_button_press_or_release_event(GdkEventButton* event)//To DO change name to on_button_press_or_release_event_mouse_edit
 {
+		//iter to check should porbably be replaced by other check
+//	if(iter && event->button==1){//to avoid segmentation errors when there is no rows also button one only 3 and 2 handled in on_param_tree_event
+
+	//to be able to know the slected column
+	Gtk::TreeModel::Path path;
+	Gtk::TreeViewColumn *column;
+	int cell_x, cell_y;
+	if(((param_tree_view().get_path_at_pos(
+					int(event->x),int(event->y),
+					path,
+					column,
+					cell_x,cell_y)) && (event->button==1)) || ((event->type == GDK_BUTTON_RELEASE))){ //if no row or not button one and at same time not release event then dont handle
+
+
+
 	if(event->type == GDK_BUTTON_PRESS ){
 
+//		std::cout<<std::endl<<"HI FROM PRESS"<<std::endl;
+
+		if(column->get_title() != "Value"){//return false on the press so regular processing happens
+			param_mouse_edit=false;
+			return false;}
+		else
+			param_mouse_edit=true;
+
+
+		t_start = std::chrono::high_resolution_clock::now();
+
 		HistoryTreeStore::block_new_history = true ;
+		signal_handled=false;
+
 		first_cord_x = event->x;
 	}
 
-
-	if(event->type == GDK_BUTTON_RELEASE)
+	if((event->type == GDK_BUTTON_RELEASE) && (param_mouse_edit))//if release and not param mouse edit return false and move on to on_param_tree_event //RELEASE SHOULD BE POSSIBLE EVERYWHERE
 	{
+//		std::cout<<std::endl<<"HI FROM RELEASE"<<std::endl;
+		//time based approach of knowing click
+		t_end = std::chrono::high_resolution_clock::now();
+		double elapsed_time_ms = std::chrono::duration<double, std::milli>(t_end-t_start).count();
+		if(elapsed_time_ms <65){//its a click
+			std::cout<<std::endl<<"condition true"<<std::endl;
+			signal_handled=true;
+			param_tree_view().set_cursor(path, *column, true);
+			grab_focus();
+			param_tree_view().get_window()->set_cursor(default_cursor);
+			HistoryTreeStore::block_new_history = false;
+			param_mouse_edit=false;
+			return false;
+		}
+		signal_handled=true; //from here till end should be possible
+
+		//swapped out coordinate based approach of knowing click as it had few complications regarding ux
+//		if((((int)std::abs((float)(press_cord-release_cord)))<3)){//if press and release at almost same pos
+//			std::cout<<std::endl<<"condition true"<<std::endl;
+//			signal_handled=true;
+//			param_tree_view().set_cursor(path, *column, true);
+//			grab_focus();
+//			signal_handled=false;
+//			param_tree_view().get_window()->set_cursor(default_cursor);
+//			HistoryTreeStore::block_new_history = false;
+//			return false;}
+
+//		std::cout<<std::endl<<"release"<<event->x;
+//		release_cord= event->x;
+
+
 		//change value without history recording i.e while flag is false
-		if(just_finished){std::cout<<std::endl<<"increase"<<std::endl;
+		if(just_finished){/*std::cout<<std::endl<<"increase";*/
 			value_base.set<float>(value_float+(value_float/10000000)); row[param_model.value] = value_base;}
 
 		HistoryTreeStore::block_new_history = false;
 
 		//revert changes to keep last value while having history show it
 		if(just_finished){
-			std::cout<<std::endl<<"revert"<<std::endl;
+//			std::cout<<std::endl<<"revert"<<std::endl;
 		value_base.set<float>(value_float-(value_float/10000000)); row[param_model.value] = value_base;
 		}
 		param_tree_view().get_window()->set_cursor(default_cursor);
 		just_finished = false;
+		param_mouse_edit=false;
 	}
-
+	return false;}
 	return false;
+
 }
 
 void
@@ -482,6 +539,10 @@ LayerTree::create_param_tree()
 
 	// Make us more sensitive to several events
 	param_tree_view().add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK|Gdk::POINTER_MOTION_MASK);
+
+	param_tree_view().signal_motion_notify_event().connect(sigc::mem_fun(*this, &LayerTree::on_motion_notify_event), false);
+	param_tree_view().signal_button_press_event().connect(sigc::mem_fun(*this, &LayerTree::on_button_press_or_release_event), false);
+	param_tree_view().signal_button_release_event().connect(sigc::mem_fun(*this, &LayerTree::on_button_press_or_release_event), false);
 
 	param_tree_view().signal_event().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_tree_event));
 	param_tree_view().signal_query_tooltip().connect(sigc::mem_fun(*this, &studio::LayerTree::on_param_tree_view_query_tooltip));
@@ -923,6 +984,12 @@ LayerTree::on_layer_tree_event(GdkEvent *event)
 bool
 LayerTree::on_param_tree_event(GdkEvent *event)
 {
+	if((event->type == GDK_MOTION_NOTIFY) && (param_mouse_edit)) //if editing params by mouse motion notify here isnt needed
+		return false;
+	if( (event->type != GDK_BUTTON_PRESS) && (event->type != GDK_BUTTON_RELEASE) && (event->type !=GDK_MOTION_NOTIFY ))//if its not a press & not release & not motion its something we dont want so return
+		return false;
+//	std::cout<<std::endl<<"from event"<<std::endl;
+
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
     switch(event->type)
     {
@@ -984,12 +1051,12 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 						if (!disable_single_click_for_param_editing) {
 							param_tree_view().set_cursor(path, *column, true);
 							grab_focus();
-							ok = true;
+							ok = false;
 						}
 						ok |= signal_param_user_click()(event->button.button,row,COLUMNID_VALUE);
 						return ok;
-					} else
-						return signal_param_user_click()(event->button.button,row,COLUMNID_NAME);
+					} else   //To Do check to see if this change is necessary
+						return /*signal_param_user_click()(event->button.button,row,COLUMNID_NAME)*/false;
 				}
 			}
 		}
@@ -1056,8 +1123,8 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 				cellrenderer_time_track->activate(event,*this,path.to_string(),rect,rect,Gtk::CellRendererState());
 				param_tree_view().queue_draw();
 				param_tree_view().queue_draw_area(rect.get_x(),rect.get_y(),rect.get_width(),rect.get_height());
-				return true;
-
+				if(!param_mouse_edit)
+				return true;//hbd mny
 			}
 #endif	// TIMETRACK_IN_PARAMS_PANEL
 		}
