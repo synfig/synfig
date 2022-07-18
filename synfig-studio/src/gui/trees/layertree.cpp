@@ -41,6 +41,7 @@
 #include <gtkmm/treemodelsort.h>
 
 #include <gui/app.h>
+#include <gui/cellrenderer/cellrenderer_icontoggle.h>
 #include <gui/cellrenderer/cellrenderer_value.h>
 #include <gui/cellrenderer/cellrenderer_timetrack.h>
 #include <gui/exception_guard.h>
@@ -161,6 +162,14 @@ LayerTree::create_layer_tree()
 		cellrenderer->signal_toggled().connect(sigc::mem_fun(*this, &studio::LayerTree::on_layer_toggle));
 		column->pack_start(*cellrenderer,false);
 		column->add_attribute(cellrenderer->property_active(), layer_model.active);
+
+		CellRenderer_IconToggle* cellrenderer_lock = Gtk::manage( new CellRenderer_IconToggle() );
+		cellrenderer_lock->property_active_icon_name() = "layer_lock_on_icon";
+		cellrenderer_lock->property_inactive_icon_name() = "layer_lock_off_icon";
+		cellrenderer_lock->signal_toggled().connect(sigc::mem_fun(*this, &studio::LayerTree::on_layer_hitlocked_toggle));
+		column->pack_start(*cellrenderer_lock, false);
+		column->add_attribute(cellrenderer_lock->property_active(), layer_model.hit_locked);
+
 		layer_tree_view().append_column(*column);
 	}
 
@@ -710,6 +719,21 @@ LayerTree::on_layer_toggle(const Glib::ustring& path_string)
 		return;
 	bool active=static_cast<bool>(row[layer_model.active]);
 	row[layer_model.active]=!active;
+}
+
+void
+LayerTree::on_layer_hitlocked_toggle(const Glib::ustring& path_string)
+{
+	Gtk::TreePath path(path_string);
+
+	const Gtk::TreeIter iter = layer_tree_view().get_model()->get_iter(path);
+	if (!iter)
+		return;
+	const Gtk::TreeRow& row = *iter;
+	if (!row)
+		return;
+	bool hit_locked = static_cast<bool>(row[layer_model.hit_locked]);
+	row[layer_model.hit_locked] = !hit_locked;
 }
 
 #ifdef TIMETRACK_IN_PARAMS_PANEL

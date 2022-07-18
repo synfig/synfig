@@ -827,6 +827,7 @@ xmlpp::Element* encode_layer(xmlpp::Element* root,Layer::ConstHandle layer)
 	root->set_attribute("type",layer->get_name());
 	root->set_attribute("active",layer->active()?"true":"false");
 	root->set_attribute("exclude_from_rendering",layer->get_exclude_from_rendering()?"true":"false");
+	root->set_attribute("hit_locked",layer->is_hit_locked()?"true":"false");
 
 	if(!layer->get_version().empty())
 		root->set_attribute("version",layer->get_version());

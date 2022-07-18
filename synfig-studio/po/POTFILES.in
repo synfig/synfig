@@ -14,6 +14,8 @@ src/gui/actionmanagers/layeractionmanager.cpp
 src/gui/actionmanagers/layeractionmanager.h
 src/gui/cellrenderer/cellrenderer_gradient.cpp
 src/gui/cellrenderer/cellrenderer_gradient.h
+src/gui/cellrenderer/cellrenderer_icontoggle.cpp
+src/gui/cellrenderer/cellrenderer_icontoggle.h
 src/gui/cellrenderer/cellrenderer_time.cpp
 src/gui/cellrenderer/cellrenderer_time.h
 src/gui/cellrenderer/cellrenderer_timetrack.cpp
@@ -409,6 +411,7 @@ src/synfigapp/actions/layerresetpose.cpp
 src/synfigapp/actions/layersetdesc.cpp
 src/synfigapp/actions/layersetdesc.h
 src/synfigapp/actions/layersetexcludefromrendering.cpp
+src/synfigapp/actions/layersethitlocked.cpp
 src/synfigapp/actions/layerzdepthrangeset.cpp
 src/synfigapp/actions/timepointscopy.cpp
 src/synfigapp/actions/timepointscopy.h

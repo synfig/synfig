@@ -60,6 +60,7 @@
 #include "actions/layerduplicate.h"
 #include "actions/layersetdesc.h"
 #include "actions/layersetexcludefromrendering.h"
+#include "actions/layersethitlocked.h"
 #include "actions/layerzdepthrangeset.h"
 #include "actions/layerembed.h"
 #include "actions/layerextract.h"
@@ -223,6 +224,8 @@ Action::Main::Main()
 	ADD_ACTION(Action::LayerExtract);
 	ADD_ACTION(Action::LayerSetExcludeFromRenderingOn);
 	ADD_ACTION(Action::LayerSetExcludeFromRenderingOff);
+	ADD_ACTION(Action::LayerSetHitLockedOn);
+	ADD_ACTION(Action::LayerSetHitLockedOff);
 	ADD_ACTION(Action::LayerAddFrame);
 	ADD_ACTION(Action::LayerCopy);
 	ADD_ACTION(Action::LayerResetPose);

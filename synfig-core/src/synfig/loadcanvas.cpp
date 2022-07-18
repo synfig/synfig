@@ -2785,6 +2785,9 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 	if(element->get_attribute("exclude_from_rendering"))
 		layer->set_exclude_from_rendering(!is_false(element->get_attribute("exclude_from_rendering")->get_value()));
 
+	if(element->get_attribute("hit_locked"))
+		layer->set_hit_locked(is_true(element->get_attribute("hit_locked")->get_value()));
+
 	// Load old groups
 	etl::handle<Layer_PasteCanvas> layer_pastecanvas = etl::handle<Layer_Group>::cast_dynamic(layer);
 	bool old_pastecanvas = layer_pastecanvas && version=="0.1";

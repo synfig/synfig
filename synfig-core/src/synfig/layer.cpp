@@ -166,6 +166,7 @@ Layer::Layer():
 	active_(true),
 	optimized_(false),
 	exclude_from_rendering_(false),
+	hit_locked_(false),
 	param_z_depth(Real(0.0f)),
 	time_mark(Time::end()),
 	outline_grow_mark(0.0)
@@ -448,6 +449,7 @@ Layer::simple_clone()const
 	ret->set_active(active());
 	ret->set_optimized(optimized());
 	ret->set_exclude_from_rendering(get_exclude_from_rendering());
+	ret->set_hit_locked(is_hit_locked());
 	ret->set_param_list(get_param_list());
 	for(DynamicParamList::const_iterator iter=dynamic_param_list().begin();iter!=dynamic_param_list().end();++iter)
 		ret->connect_dynamic_param(iter->first, iter->second);
@@ -468,6 +470,7 @@ Layer::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid) const
 	ret->set_active(active());
 	ret->set_optimized(optimized());
 	ret->set_exclude_from_rendering(get_exclude_from_rendering());
+	ret->set_hit_locked(is_hit_locked());
 	ret->set_guid(get_guid()^deriv_guid);
 
 	ret->set_time_mark(get_time_mark());
@@ -664,6 +667,15 @@ synfig::Layer::Handle
 Layer::hit_check(synfig::Context context, const synfig::Point &pos)const
 {
 	return context.hit_check(pos);
+}
+
+void
+Layer::set_hit_locked(bool x)
+{
+	if (hit_locked_ != x) {
+		hit_locked_ = x;
+//		signal_status_changed_();
+	}
 }
 
 // Temporary function to render transformed layer for layers which yet not support transformed rendering
