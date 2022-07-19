@@ -62,6 +62,11 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
+bool DockBook::switch_tab_action_initialized=false;
+std::vector<DockBook*> DockBook::books;
+std::vector<Gtk::Widget*> DockBook::books_widget;
+bool switch_page = false;
+
 DockBook::DockBook():
 	allow_empty(false)
 {
@@ -81,6 +86,19 @@ DockBook::DockBook():
 	dock_area = manage(new DockDropArea(this));
 	dock_area->hide();
 	set_action_widget(dock_area, Gtk::PACK_END);
+
+	books.push_back(this);
+	books_widget.push_back(static_cast<Gtk::Widget*>(this));
+
+	if(!switch_tab_action_initialized){
+		Glib::RefPtr<Gtk::ActionGroup> action_group_mod = Gtk::ActionGroup::create("tab_actions");
+		action_group_mod->add(Gtk::Action::create("switch-tab", _("switch tab")),
+						  sigc::mem_fun(*this, &DockBook::on_switch_tab_action));
+
+		App::ui_manager()->insert_action_group(action_group_mod);
+		switch_tab_action_initialized=true;
+	}
+
 }
 
 DockBook::~DockBook()
@@ -316,3 +334,33 @@ void DockBook::set_dock_area_visibility(bool visible, DockBook* source)
 
 	dock_area->set_visible(visible);
 }
+
+void DockBook::on_switch_tab_action()
+{
+	GtkWidget *toplevel = gtk_widget_get_toplevel ((static_cast<Gtk::Widget*>(this))->gobj());
+
+	if (GTK_IS_WINDOW(toplevel)){
+			Gtk::Widget* focused_widget =Glib::wrap(gtk_window_get_focus(GTK_WINDOW(toplevel)));
+				while(focused_widget->get_name() != "gtkmm__GtkNotebook")
+				{
+					if(focused_widget->get_parent() != nullptr)
+						focused_widget = focused_widget->get_parent();
+					else
+						break;
+				}
+				if(focused_widget->get_name() == "gtkmm__GtkNotebook"){
+					for(int i=0; books_widget[i] ; i++)
+					{
+						if( books_widget[i] == focused_widget ){
+							if (books[i]->get_current_page()+1 != books[i]->get_n_pages())
+								books[i]->next_page();
+							else
+								books[i]->set_current_page(0);
+						}
+					}
+				}
+				else
+					synfig::error(_("Could Not Switch Tabs"));
+		}
+ }
+
