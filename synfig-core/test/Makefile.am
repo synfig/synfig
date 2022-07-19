@@ -12,6 +12,7 @@ TESTS = \
 	bline \
 	bone \
 	clock \
+	keyframe \
 	node \
 	string
 
@@ -24,6 +25,8 @@ bone_SOURCES=bone.cpp
 bline_SOURCES=bline.cpp
 
 clock_SOURCES=clock.cpp
+
+keyframe_SOURCES=keyframe.cpp
 
 node_SOURCES=node.cpp
 
