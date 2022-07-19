@@ -99,10 +99,10 @@ protected:
 
 protected:
 	DockDropArea *dock_area;
-
 }; // END of studio::DockBook
 
 }; // END of namespace studio
+
 /* === E N D =============================================================== */
 
 #endif
