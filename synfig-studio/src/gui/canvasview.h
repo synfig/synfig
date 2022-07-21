@@ -308,7 +308,6 @@ private:
 	Gtk::SpinButton *future_onion_spin;
 	Gtk::ToggleToolButton *show_grid;
 	Gtk::ToggleToolButton *snap_grid;
-	Gtk::ToggleToolButton *toggle_ruler;
 	Gtk::ToggleToolButton *show_guides;
 	Gtk::ToggleToolButton *snap_guides;
 	Gtk::ToggleToolButton *onion_skin;

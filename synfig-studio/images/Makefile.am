@@ -62,7 +62,6 @@ EXTRA_DIST = \
 	duck_width_icon.sif \
 	duck_angle_icon.sif \
 	show_grid_icon.sif \
-	show_ruler_icon.sif\
 	snap_grid_icon.sif \
 	show_guideline_icon.sif \
 	snap_guideline_icon.sif \
@@ -251,7 +250,6 @@ ICONS = \
 	duck_width_icon.$(EXT) \
 	duck_angle_icon.$(EXT) \
 	show_grid_icon.$(EXT) \
-	show_ruler_icon.$(EXT) \
 	snap_grid_icon.$(EXT) \
 	show_guideline_icon.$(EXT) \
 	snap_guideline_icon.$(EXT) \

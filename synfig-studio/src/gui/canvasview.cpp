@@ -1362,25 +1362,6 @@ CanvasView::create_right_toolbar()
 		displaybar->append(*snap_grid);
 	}
 
-	{
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_show_ruler"), iconsize));
-		icon->show();
-
-		toggle_ruler = Gtk::manage(new Gtk::ToggleToolButton());
-
-		//to have the saved ruler state applied on reopening canvas
-		toggle_ruler->set_active((work_area->get_ruler_status()));
-		work_area->set_ruler_visible(work_area->get_ruler_status());
-
-		toggle_ruler->set_icon_widget(*icon);
-		toggle_ruler->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_show_ruler));
-		toggle_ruler->set_tooltip_text(_("Show Ruler when enabled"));
-		toggle_ruler->show();
-		displaybar->append(*toggle_ruler);
-
-	}
-
 	{ // Show guide toggle button
 		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_show_guide"), iconsize));
 		icon->show();
@@ -1596,9 +1577,10 @@ CanvasView::init_menus()
 
 	{
 		Glib::RefPtr<Gtk::ToggleAction> action;
-		//the checkbutton
+
 		ruler_show_toggle = Gtk::ToggleAction::create("toggle-ruler-show", _("Show Ruler")); //also this
 		ruler_show_toggle->set_active(work_area->get_ruler_status()); //of course set the status the correct way
+		work_area->set_ruler_visible(work_area->get_ruler_status());
 		action_group->add(ruler_show_toggle, sigc::mem_fun(*this, &CanvasView::toggle_show_ruler));
 
 		grid_show_toggle = Gtk::ToggleAction::create("toggle-grid-show", _("Show Grid"));
@@ -2734,10 +2716,7 @@ CanvasView::toggle_show_ruler()
 	work_area->toggle_ruler();
 	// Update the toggle ruler show action
 	set_ruler_show_toggle(work_area->get_ruler_status());
-	// Update the toggle grid show toggle button
-	toggle_ruler->set_active(work_area->get_ruler_status());
 	toggling_show_ruler=false;
-
 }
 
 void

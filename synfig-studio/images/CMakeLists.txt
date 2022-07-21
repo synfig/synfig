@@ -191,7 +191,6 @@ set(ICONS
 	set_icon
 	set_outline_color
 	show_grid_icon
-	show_ruler_icon
 	show_guideline_icon
 	sif_icon
 	snap_grid_icon
