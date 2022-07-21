@@ -52,6 +52,7 @@ using namespace synfigapp;
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
+bool Action::System::block_new_history = false;
 
 namespace {
 	class Lock {
@@ -158,6 +159,13 @@ Action::System::perform_action(etl::handle<Action::Base> action)
 	// Clear the redo stack
 	if (clear_redo_stack_on_new_action_)
 		clear_redo_stack();
+
+	if(Action::System::block_new_history) /*for rapid repeated actions we only need the last action to be registered and the middle ones just performed*/
+	{
+		if (canvas_specific && canvas_specific->is_dirty())
+			request_redraw(canvas_specific->get_canvas_interface());
+
+		return true;}
 
 	if (!group_stack_.empty())
 		group_stack_.front()->inc_depth();

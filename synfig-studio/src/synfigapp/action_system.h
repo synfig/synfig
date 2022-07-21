@@ -105,6 +105,7 @@ class System : public etl::shared_object, public sigc::trackable
 	*/
 
 public:
+		static bool block_new_history;
 
 	/*
  -- ** -- P U B L I C  D A T A ------------------------------------------------

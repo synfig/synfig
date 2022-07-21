@@ -47,7 +47,7 @@
 #include <gui/exception_guard.h>
 #include <gui/localization.h>
 
-#include <gui/trees/historytreestore.h>
+#include <synfigapp/action_system.h>
 
 #endif
 
@@ -332,7 +332,6 @@ Widget_ColorEdit::SliderRow(int left, int top, ColorSlider* color_widget, std::s
 	grid->attach(*label,        left,   top, 1, 1);
 	grid->attach(*color_widget, left+1, top, 1, 1);
 }
-bool was_released=false;
 
 void
 Widget_ColorEdit::AttachSpinButton(int left, int top, Gtk::SpinButton *spin_button, Gtk::Grid *grid)
@@ -436,8 +435,9 @@ Widget_ColorEdit::Widget_ColorEdit():
 		std::vector<Widget*> internal_child_2 = box_cast->get_children();
 		Gtk::Box* box_cast_2 = static_cast<Gtk::Box*>( internal_child_2[0] );
 		std::vector<Widget*> internal_child_3 = box_cast_2->get_children(); //internal_child_3[0] is the color wheel widget
-		internal_child_3[0]->signal_button_release_event().connect([&](GdkEventButton *ev){ was_released=true;return false;},false);
-		internal_child_3[0]->signal_key_release_event().connect([&](GdkEventKey *ev){was_released=true;on_color_changed();return false;},false);
+
+		internal_child_3[0]->signal_button_press_event().connect([&](GdkEventButton *ev){ wheel_pressed=true;return false;},false);
+		internal_child_3[0]->signal_button_release_event().connect([&](GdkEventButton *ev){ if(wheel_pressed)wheel_released=true;return false;},false);
 
 		hvsColorWidget->signal_color_changed().connect(sigc::mem_fun(*this, &studio::Widget_ColorEdit::on_color_changed));
 		//TODO: Anybody knows how to set min size for this widget? I've tried use set_size_request(..). But it doesn't works.
@@ -504,30 +504,69 @@ Widget_ColorEdit::on_color_changed()
 {
 	//Spike! Gtk::ColorSelection emits this signal when I use
 	//set_current_color(...). It calls recursion. Used a flag to fix it.
-	if (!colorHVSChanged)
+
+	if (!colorHVSChanged && wheel_pressed) //color change is from a wheel drag
 	{
 		Gdk::RGBA newColor = hvsColorWidget->get_current_rgba();
+		Gdk::RGBA prevColor = hvsColorWidget->get_previous_rgba();
 		Color synfigColor;
-		if(was_released){// if there was a release means drag is over and record this final color in history panel
-		Color synfigColorTemp(
-				newColor.get_red()+0.00001,//slight increase doesnt affect colors value but enough to trigger new action signal
+
+			//drag ended
+		if(!(hvsColorWidget->is_adjusting())){//drag over
+			Color synfigColorTemp(
+					newColor.get_red(),
+					newColor.get_green(),
+					newColor.get_blue() );
+				synfigColor=synfigColorTemp;
+				get_initial_color= true;
+				wheel_pressed=false;}
+		else{//drag did not end
+			synfigapp::Action::System::block_new_history=true;
+			Color synfigColorTemp(
+				newColor.get_red(),
 				newColor.get_green(),
 				newColor.get_blue() );
-		synfigColor=synfigColorTemp;}
-		else{
-		HistoryTreeStore::block_new_history=true; //drag therefore block history
-		Color synfigColorTemp(
-			newColor.get_red(),
-			newColor.get_green(),
-			newColor.get_blue() );
-		synfigColor=synfigColorTemp;}
+			synfigColor=synfigColorTemp;
+			Color previousecolortemp(
+						prevColor.get_red(),
+						prevColor.get_green(),
+						prevColor.get_blue() );
+
+			if(get_initial_color)
+				initial_color=previousecolortemp;
+
+			get_initial_color= false;
+		}
+
+		//set og real quick while its the last iteration
+		if(get_initial_color){//last time now
+			synfigapp::Action::System::block_new_history=true;
+			initial_color = App::get_selected_canvas_gamma().apply(initial_color); //want to set it while not sending action		//volor setting
+			set_value(initial_color);
+			colorHVSChanged = false;
+			on_value_changed();
+			synfigapp::Action::System::block_new_history=false;
+		}
 		synfigColor = App::get_selected_canvas_gamma().apply(synfigColor);
 		set_value(synfigColor);
-		colorHVSChanged = true; //I reset the flag in setHVSColor(..)
+		colorHVSChanged = true;
 		on_value_changed();
+		wheel_released=false;
+		synfigapp::Action::System::block_new_history=false;//default is no block unless drag then block
 	}
-	was_released=false;
-	HistoryTreeStore::block_new_history=false;//default is no block unless drag then block
+
+	if (!colorHVSChanged) //color change is not from a wheel drag
+		{
+			Gdk::RGBA newColor = hvsColorWidget->get_current_rgba();
+			Color synfigColor(
+				newColor.get_red(),
+				newColor.get_green(),
+				newColor.get_blue() );
+			synfigColor = App::get_selected_canvas_gamma().apply(synfigColor);
+			set_value(synfigColor);
+			colorHVSChanged = true; //I reset the flag in setHVSColor(..)
+			on_value_changed();
+		}
 }
 
 void

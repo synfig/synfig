@@ -41,6 +41,8 @@
 #include <synfig/general.h>
 #include <synfig/valuenode.h>
 
+#include <synfigapp/action_system.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -56,7 +58,6 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-bool HistoryTreeStore::block_new_history = false;
 
 static HistoryTreeStore::Model& ModelHack()
 {
@@ -211,7 +212,7 @@ HistoryTreeStore::on_redo_stack_cleared()
 void
 HistoryTreeStore::on_new_action(etl::handle<synfigapp::Action::Undoable> action)
 {
- if (!block_new_history){ /*if change isn't due to rapid repeated actions show history normally*/
+ if (!synfigapp::Action::System::block_new_history){ /*if change isn't due to rapid repeated actions show history normally*/
 	Gtk::TreeRow row;
 
 	row=*insert(next_action_iter);
