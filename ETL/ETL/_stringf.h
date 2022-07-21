@@ -160,6 +160,8 @@ is_absolute_path(const std::string &path)
 #ifdef _WIN32
 	if(path.size()>=3 && path[1]==':' && is_separator(path[2]))
 		return true;
+	else if(path.size()==2 && path[1] == ':')
+		return true;
 #endif
 	if(!path.empty() && is_separator(path[0]))
 		return true;
