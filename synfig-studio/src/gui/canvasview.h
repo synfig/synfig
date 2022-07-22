@@ -316,7 +316,6 @@ private:
 	Gtk::ToggleToolButton *onion_skin_keyframes;
 	bool toggling_show_grid;
 	bool toggling_snap_grid;
-	bool toggling_show_ruler;
 	bool toggling_show_guides;
 	bool toggling_snap_guides;
 	bool toggling_onion_skin;

@@ -569,7 +569,6 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	toggling_animate_mode_=false;
 	changing_resolution_=false;
 	toggling_show_grid=false;
-	toggling_show_ruler=false;
 	toggling_snap_grid=false;
 	toggling_show_guides=false;
 	toggling_snap_guides=false;
@@ -2710,13 +2709,9 @@ CanvasView::set_onion_skins()
 void
 CanvasView::toggle_show_ruler()
 {
-	if(toggling_show_ruler)
-		return;
-	toggling_show_ruler=true;
 	work_area->toggle_ruler();
 	// Update the toggle ruler show action
 	set_ruler_show_toggle(work_area->get_ruler_status());
-	toggling_show_ruler=false;
 }
 
 void
