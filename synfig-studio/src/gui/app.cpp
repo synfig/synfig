@@ -1058,14 +1058,9 @@ DEFINE_ACTION("help-about",     Gtk::StockID("synfig-about"))
 DEFINE_ACTION("keyframe-properties", _("Properties"))
 
 // actions: move to tab
-DEFINE_ACTION("move-to-tab-1",  _("Move to Tab 1"))
-DEFINE_ACTION("move-to-tab-2",  _("Move to Tab 2"))
-DEFINE_ACTION("move-to-tab-3",  _("Move to Tab 3"))
-DEFINE_ACTION("move-to-tab-4",  _("Move to Tab 4"))
-DEFINE_ACTION("move-to-tab-5",  _("Move to Tab 5"))
-DEFINE_ACTION("move-to-tab-6",  _("Move to Tab 6"))
-DEFINE_ACTION("move-to-tab-7",  _("Move to Tab 7"))
-DEFINE_ACTION("move-to-tab-8",  _("Move to Tab 8"))
+for (int i = 1; i <= 8; ++i) {
+	const std::string tab = std::to_string(i);
+	DEFINE_ACTION("move-to-tab-" + tab, _("Move to Tab ") + tab)}
 DEFINE_ACTION("move-to-tab-last",  _("Move to Last Tab"))
 
 //Layout the actions in the main menu (caret menu, right click on canvas menu) and toolbar:
