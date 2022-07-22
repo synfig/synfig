@@ -47,7 +47,6 @@
 #include <gui/exception_guard.h>
 #include <gui/localization.h>
 
-#include <gui/trees/historytreestore.h>
 
 #endif
 
@@ -332,7 +331,7 @@ Widget_ColorEdit::SliderRow(int left, int top, ColorSlider* color_widget, std::s
 	grid->attach(*label,        left,   top, 1, 1);
 	grid->attach(*color_widget, left+1, top, 1, 1);
 }
-bool was_released=false;
+
 void
 Widget_ColorEdit::AttachSpinButton(int left, int top, Gtk::SpinButton *spin_button, Gtk::Grid *grid)
 {
@@ -429,14 +428,6 @@ Widget_ColorEdit::Widget_ColorEdit():
 		hvsColorWidget = manage(new Gtk::ColorSelection());
 		setHVSColor(get_value());
 
-		//navigating to inner implementation color wheel widget
-		std::vector<Widget*> internal_child = hvsColorWidget->get_children();
-		Gtk::Box* box_cast = static_cast<Gtk::Box*>( internal_child[0] );
-		std::vector<Widget*> internal_child_2 = box_cast->get_children();
-		Gtk::Box* box_cast_2 = static_cast<Gtk::Box*>( internal_child_2[0] );
-		std::vector<Widget*> internal_child_3 = box_cast_2->get_children(); //internal_child_3[0] is the color wheel widget
-		internal_child_3[0]->signal_button_release_event().connect([&](GdkEventButton *ev){ was_released=true;on_color_changed();return false;},false);
-
 		hvsColorWidget->signal_color_changed().connect(sigc::mem_fun(*this, &studio::Widget_ColorEdit::on_color_changed));
 		//TODO: Anybody knows how to set min size for this widget? I've tried use set_size_request(..). But it doesn't works.
 		hvs_grid->attach(*(hvsColorWidget), 0, 4, 1, 1);
@@ -505,27 +496,14 @@ Widget_ColorEdit::on_color_changed()
 	if (!colorHVSChanged)
 	{
 		Gdk::RGBA newColor = hvsColorWidget->get_current_rgba();
-		Color synfigColor;
-		if(was_released){// if there was a button release record this final color in history panel
-		HistoryTreeStore::block_new_history=false;
-		Color synfigColorTemp(
-				newColor.get_red()+0.00001,//slight increase doesnt affect colors value but enough to trigger new action signal
-				newColor.get_green(),
-				newColor.get_blue() );
-		synfigColor=synfigColorTemp;}
-		else{
-		HistoryTreeStore::block_new_history=true;
-		Color synfigColorTemp(
-			newColor.get_red(),
-			newColor.get_green(),
-			newColor.get_blue() );
-		synfigColor=synfigColorTemp;}
+		Color synfigColor(newColor.get_red(),
+						  newColor.get_green(),
+						  newColor.get_blue() );
 		synfigColor = App::get_selected_canvas_gamma().apply(synfigColor);
-		set_value(synfigColor);
-		colorHVSChanged = true; //I reset the flag in setHVSColor(..)
-		on_value_changed();
+				set_value(synfigColor);
+				colorHVSChanged = true; //I reset the flag in setHVSColor(..)
+				on_value_changed();
 	}
-	was_released=false;
 }
 
 void

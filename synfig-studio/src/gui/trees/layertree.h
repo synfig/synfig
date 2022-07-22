@@ -229,6 +229,7 @@ private:
 	void get_expanded_layers(LayerList &list, const Gtk::TreeNodeChildren &rows)const;
 
 	bool on_key_press_event(GdkEventKey* event);
+	bool on_param_tree_view_key_press_event(GdkEventKey* event);
 //	bool on_button_press_event(GdkEventButton* event);
 //	bool on_button_release_event(GdkEventButton* event);
 	bool on_button_press_or_release_event(GdkEventButton* event);
@@ -243,6 +244,13 @@ private:
 	void change_selection_param();
 	Glib::RefPtr<Gdk::Cursor> default_cursor = Gdk::Cursor::create(get_display(), "default");
 	synfig::ValueBase value_base;
+	int first_cord_x ;
+	int second_cord_x ;
+	float value_float ;
+	bool first_iteration=false;
+	float initial_value;
+	bool just_finished = false;
+	bool param_mouse_edit=false;
 
 
 }; // END of LayerTree

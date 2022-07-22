@@ -87,8 +87,6 @@ public:
 
 	const Model model;
 
-	static bool block_new_history;
-
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
 	*/
