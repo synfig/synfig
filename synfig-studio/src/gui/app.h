@@ -318,6 +318,8 @@ protected:
 	void on_activate() override;
 	void on_open(const type_vec_files& files, const Glib::ustring& hint) override;
 
+	void on_shutdown();
+
 	static void init_icon_themes();
 
 	/*
@@ -326,7 +328,7 @@ protected:
 
 public:
 
-	virtual ~App();
+	virtual ~App() = default;
 
 	/*
  -- ** -- S T A T I C   P U B L I C   M E T H O D S ---------------------------

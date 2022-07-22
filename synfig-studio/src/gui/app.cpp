@@ -1398,6 +1398,7 @@ App::App()
 {
 	add_main_option_entry(Gio::Application::OPTION_TYPE_BOOL, "console", 'c', N_("Opens a console that shows some Synfig Studio output"));
 	signal_handle_local_options().connect(sigc::mem_fun(*this, &App::on_handle_local_options));
+	signal_shutdown().connect(sigc::mem_fun(*this, &App::on_shutdown));
 }
 
 int App::on_handle_local_options(const Glib::RefPtr<Glib::VariantDict> &options)
@@ -1802,7 +1803,8 @@ void App::init(const synfig::String& rootpath)
 
 StateManager* App::get_state_manager() { return state_manager; }
 
-App::~App()
+void
+App::on_shutdown()
 {
 	shutdown_in_progress=true;
 
@@ -1825,8 +1827,6 @@ App::~App()
 
 	main_window->hide();
 
-	delete main_window;
-
 	delete dialog_setup;
 
 	delete dialog_gradient;
@@ -1843,6 +1843,9 @@ App::~App()
 
 	if (sound_render_done) delete sound_render_done;
 	sound_render_done = nullptr;
+	
+	process_all_events();
+	delete main_window;
 }
 
 synfig::String
