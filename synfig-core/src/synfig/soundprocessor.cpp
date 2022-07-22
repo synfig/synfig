@@ -85,7 +85,9 @@ public:
 };
 
 bool SoundProcessor::Internal::initialized = false;
+#ifndef WITHOUT_MLT
 Mlt::Repository* SoundProcessor::Internal::repository = nullptr;
+#endif
 
 SoundProcessor::SoundProcessor()
 {
