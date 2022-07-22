@@ -1,5 +1,4 @@
 {
-  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
   "name": "synfig",
   "version": "1.5.1",
   "dependencies": [
@@ -15,6 +14,9 @@
     "libpng",
     "libjpeg-turbo",
     "imagemagick",
-    "pkgconf"
+    "pkgconf",
+    "librsvg",
+    "hicolor-icon-theme",
+    "adwaita-icon-theme"
   ]
 }
