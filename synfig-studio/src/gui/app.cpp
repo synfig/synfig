@@ -1060,7 +1060,8 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 // actions: move to tab
 for (int i = 1; i <= 8; ++i) {
 	const std::string tab = std::to_string(i);
-	DEFINE_ACTION("move-to-tab-" + tab, _("Move to Tab ") + tab)}
+	DEFINE_ACTION("move-to-tab-" + tab, _("Move to Tab ") + tab)
+}
 DEFINE_ACTION("move-to-tab-last",  _("Move to Last Tab"))
 
 //Layout the actions in the main menu (caret menu, right click on canvas menu) and toolbar:
