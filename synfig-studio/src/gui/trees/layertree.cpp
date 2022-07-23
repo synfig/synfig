@@ -408,11 +408,11 @@ LayerTree::search_param_tree(const Glib::RefPtr<Gtk::TreeModel>& one,int two,con
 		Gtk::TreeModel::Children children = row.children();
 //		Gtk::TreePath path(iter);
 
-	for( Gtk::TreeModel::Children::iterator iter = children.begin(); iter != children.end(); ++iter ){//iterating through children of iter if(present) to see if they are a match
-		  Gtk::TreeModel::Row row = *iter;
-		  Gtk::TreePath path(iter);
+	for( Gtk::TreeModel::Children::iterator iter_child = children.begin(); iter_child != children.end(); ++iter_child ){//iterating through children of iter if(present) to see if they are a match
+		  Gtk::TreeModel::Row row_child = *iter_child;
+		  Gtk::TreePath path(iter_child);
 		  Glib::ustring substr(x.uppercase());
-		  Glib::ustring label((*iter)[param_model.label]);
+		  Glib::ustring label((*iter_child)[param_model.label]);
 		  label=label.uppercase();
 		  std::cout<<std::endl<<label<<std::endl;
 		  if(label.find(substr)!=Glib::ustring::npos){
@@ -421,7 +421,7 @@ LayerTree::search_param_tree(const Glib::RefPtr<Gtk::TreeModel>& one,int two,con
 			  return true;	//to prevent further expansion unless needed which is signalled by the user cliccking the down button or scrolling down
 		  }
 		  else//if in this row there were no matches
-			  search_param_tree(one,two,x, iter);//if not found inc search depth if possible on row
+			  search_param_tree(one,two,x, iter_child);//if not found inc search depth if possible on row
 	}
 
 	Glib::ustring substr(x.uppercase()); //constructs a string called substr as a copy of x in upper case
