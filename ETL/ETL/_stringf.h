@@ -130,8 +130,8 @@ dirname(const std::string &str)
 	}
 
 #ifdef _WIN32
-	// leaving trailing separator after windows drive name
-	if (std::distance(str.begin(), iter) == 2 && str[1] == ':')
+	// leave the trailing separator after windows drive name
+	if (std::distance(str.begin(), iter) == 2 && str.size() >= 3 && str[1] == ':' && is_separator(str[2]))
 		iter++;
 #endif
 
