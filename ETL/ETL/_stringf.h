@@ -129,6 +129,12 @@ dirname(const std::string &str)
 		   return ".";
 	}
 
+#ifdef _WIN32
+	// leaving trailing separator after windows drive name
+	if (std::distance(str.begin(), iter) == 2 && str[1] == ':')
+		iter++;
+#endif
+
 	return std::string(str.begin(),iter);
 }
 
