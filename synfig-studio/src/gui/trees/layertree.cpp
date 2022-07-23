@@ -371,6 +371,12 @@ LayerTree::create_param_tree()
 	}
 #endif	// TIMETRACK_IN_PARAMS_PANEL
 
+
+	param_tree_view().set_enable_search(true);//mod adham //enable_search	true, if the user can search interactively.
+	param_tree_view().set_search_column(param_model.label);//mod adham //column	The column of the model to search in, or -1 to disable searching.
+	param_tree_view().set_search_equal_func(sigc::mem_fun(*this, &LayerTree::search_param_tree));//mod adham
+
+
 	// This makes things easier to read.
 	param_tree_view().set_rules_hint();
 
@@ -390,6 +396,39 @@ LayerTree::create_param_tree()
 	param_tree_header_height = 0;
 
 	//column_time_track->set_visible(false);
+}
+
+bool increase_search_depth;
+
+bool
+LayerTree::search_param_tree(const Glib::RefPtr<Gtk::TreeModel>& one,int two,const Glib::ustring& x,const Gtk::TreeModel::iterator& iter)
+{
+		//	param_tree_view().expand_all();
+		Gtk::TreeModel::Row row = *iter;
+		Gtk::TreeModel::Children children = row.children();
+//		Gtk::TreePath path(iter);
+
+	for( Gtk::TreeModel::Children::iterator iter = children.begin(); iter != children.end(); ++iter ){//iterating through children of iter if(present) to see if they are a match
+		  Gtk::TreeModel::Row row = *iter;
+		  Gtk::TreePath path(iter);
+		  Glib::ustring substr(x.uppercase());
+		  Glib::ustring label((*iter)[param_model.label]);
+		  label=label.uppercase();
+		  std::cout<<std::endl<<label<<std::endl;
+		  if(label.find(substr)!=Glib::ustring::npos){
+			  std::cout<<std::endl<<label<<std::endl<<std::endl;
+			  param_tree_view().expand_to_path(path);
+			  return true;	//to prevent further expansion unless needed which is signalled by the user cliccking the down button or scrolling down
+		  }
+		  else//if in this row there were no matches
+			  search_param_tree(one,two,x, iter);//if not found inc search depth if possible on row
+	}
+
+	Glib::ustring substr(x.uppercase()); //constructs a string called substr as a copy of x in upper case
+	Glib::ustring label((*iter)[param_model.label]); //constructs a string called label of the row models label
+	label=label.uppercase();
+	std::cout<<std::endl<<label<<std::endl; //ok so basically it searches all the open child rows
+	return label.find(substr)==Glib::ustring::npos; //rhs returns -1 almost y3ny if not found
 }
 
 void
