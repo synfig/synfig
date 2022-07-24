@@ -14,6 +14,7 @@
     "libpng",
     "libjpeg-turbo",
     "imagemagick",
+    "openexr",
     "pkgconf",
     "librsvg",
     "hicolor-icon-theme",
