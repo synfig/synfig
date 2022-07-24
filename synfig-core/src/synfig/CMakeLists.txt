@@ -67,6 +67,7 @@ target_sources(libsynfig
         "${CMAKE_CURRENT_LIST_DIR}/waypoint.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/matrix.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/filesystem.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/filesystem_path.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/filesystemnative.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/filesystemgroup.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/filesystemtemporary.cpp"

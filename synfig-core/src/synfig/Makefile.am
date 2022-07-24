@@ -123,6 +123,7 @@ SYNFIGHEADERS = \
 	waypoint.h \
 	matrix.h \
 	filesystem.h \
+	filesystem_path.h \
 	filesystemnative.h \
 	filesystemgroup.h \
 	filesystemtemporary.h \
@@ -176,6 +177,7 @@ SYNFIGSOURCES = \
 	waypoint.cpp \
 	matrix.cpp \
 	filesystem.cpp \
+	filesystem_path.cpp \
 	filesystemnative.cpp \
 	filesystemgroup.cpp \
 	filesystemtemporary.cpp \

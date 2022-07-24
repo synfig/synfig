@@ -25,7 +25,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/filesystem.h>
+#include <synfig/filesystem_path.h>
 
 #include "test_base.h"
 

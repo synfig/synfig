@@ -37,6 +37,7 @@
 
 #include <ETL/handle>
 
+#include "filesystem_path.h"
 #include "string.h"
 
 /* === M A C R O S ========================================================= */
@@ -235,75 +236,6 @@ namespace synfig
 		virtual FileSystem::WriteStream::Handle get_write_stream(const String &/*filename*/)
 			{ return WriteStream::Handle(); }
 	};
-
-	namespace filesystem {
-		class Path {
-		public:
-#ifdef _WIN32
-			typedef wchar_t	value_type;
-#else
-			typedef char value_type;
-#endif
-			typedef std::basic_string<value_type> string_type;
-
-			/**
-			 * An empty file system path
-			 */
-			Path();
-
-			/**
-			 * Store a file system path
-			 * @param path the path in UTF-8 encoding
-			 */
-			Path(const std::string& path);
-
-			// Format observers ------------------
-
-			/** Path as a character string in native encoding */
-			const value_type* c_str() const noexcept;
-			/** Path as a character string in native encoding */
-			const string_type& native() const noexcept;
-			/** Path as a character string in UTF-8 encoding */
-			const std::string& u8string() const;
-
-			// Decomposition ---------------------
-
-			/** Last component of path.
-			 *  filename stem + extension
-			 */
-			Path filename() const;
-			/** File name stem.
-			 *  @return the substring from the beginning of filename() up to the beginning of extension().
-			 *  Dot character of extension is not included.
-			 */
-			Path stem() const;
-			/** File name extension (includes its initial dot if file has extension) */
-			Path extension() const;
-
-			// Queries ---------------------------
-
-			bool empty() const noexcept;
-
-			bool has_filename() const;
-			bool has_stem() const;
-			bool has_extension() const;
-
-		private:
-			/** Path in the native encoding */
-			string_type native_path_;
-			/** Path in UTF-8 encoding */
-			std::string path_;
-
-			std::size_t get_filename_pos() const;
-			std::size_t get_extension_pos() const;
-
-			/** Convert a UTF-8 encoded string into a native-encoded string
-			 *  @param utf8 the string to be converted
-			 *  @return a string in native encoding
-			 */
-			static string_type utf8_to_native(const std::string& utf8);
-		};
-	}
 }
 
 /* === E N D =============================================================== */
