@@ -84,6 +84,64 @@ filesystem::Path::u8string() const
 }
 
 filesystem::Path
+filesystem::Path::root_name() const
+{
+	return path_.substr(0, get_root_name_length());
+}
+
+filesystem::Path
+filesystem::Path::root_directory() const
+{
+	auto root_name_length = get_root_name_length();
+	if (root_name_length < path_.size() && is_separator(path_[root_name_length]))
+		return path_.substr(root_name_length, 1);
+	return Path();
+}
+
+filesystem::Path
+filesystem::Path::root_path() const
+{
+	return root_name().u8string() + root_directory().u8string();
+}
+
+filesystem::Path
+filesystem::Path::relative_path() const
+{
+	if (path_.empty())
+		return Path();
+
+	auto relative_path_pos = get_relative_path_pos();
+	if (relative_path_pos == std::string::npos)
+		return Path();
+
+	return path_.substr(relative_path_pos);
+}
+
+filesystem::Path
+filesystem::Path::parent_path() const
+{
+	auto relative_path_pos = get_relative_path_pos();
+	if (relative_path_pos == std::string::npos)
+		return *this;
+
+	auto previous_component_end_pos = path_.find_last_of("/\\");
+
+	// no directory separator? single component without root dir
+	if (previous_component_end_pos == std::string::npos)
+		return Path();
+
+	// skip consecutive directory-separator /
+	while (previous_component_end_pos > relative_path_pos && is_separator(path_[previous_component_end_pos - 1]))
+		--previous_component_end_pos;
+
+	auto root_name_pos = get_root_name_length();
+	if (previous_component_end_pos <= root_name_pos)
+		previous_component_end_pos = root_name_pos + 1;
+
+	return path_.substr(0, previous_component_end_pos);
+}
+
+filesystem::Path
 filesystem::Path::filename() const
 {
 	auto filename_pos = get_filename_pos();
@@ -126,6 +184,46 @@ filesystem::Path::empty() const noexcept
 }
 
 bool
+filesystem::Path::has_root_name() const
+{
+	return get_root_name_length() > 0;
+}
+
+bool
+filesystem::Path::has_root_directory() const
+{
+	auto root_name_length = get_root_name_length();
+	return root_name_length < path_.length() && is_separator(path_[root_name_length]);
+}
+
+bool
+filesystem::Path::has_root_path() const
+{
+	return has_root_directory() || has_root_name();
+}
+
+bool
+filesystem::Path::has_relative_path() const
+{
+	auto relative_path_pos = get_relative_path_pos();
+	return relative_path_pos != std::string::npos && relative_path_pos < path_.length();
+}
+
+bool
+filesystem::Path::has_parent_path() const
+{
+	if (path_.empty())
+		return false;
+	if (has_root_directory())
+		return true; // the parent path of root directory is its own parent path
+	auto relative_path_pos = get_relative_path_pos();
+	if (relative_path_pos == std::string::npos)
+		return true; // it has a root name, but not a root directory
+	auto previous_slash_pos = path_.find_first_of("/\\", relative_path_pos);
+	return previous_slash_pos != std::string::npos;
+}
+
+bool
 filesystem::Path::has_filename() const
 {
 	return get_filename_pos() != std::string::npos;
@@ -143,6 +241,53 @@ bool
 filesystem::Path::has_extension() const
 {
 	return get_extension_pos() != std::string::npos;
+}
+
+bool
+filesystem::Path::is_absolute() const
+{
+#ifdef _WIN32
+	return has_root_name() && has_root_directory();
+#endif
+	return has_root_directory();
+}
+
+bool
+filesystem::Path::is_relative() const
+{
+#ifdef _WIN32
+	return !has_root_name() || !has_root_directory();
+#endif
+	return !has_root_directory();
+}
+
+std::size_t
+filesystem::Path::get_root_name_length() const
+{
+#ifdef _WIN32
+	if (path_.size() >= 2 && path_[1]==':')
+		return 2;
+	if (path_.size() >= 3 && path_[0] == '\\' && path_[1] == '\\' && path_[2] != '\\') {
+		auto root_name_end_pos = path_.find_first_of("/\\", 3);
+		if (root_name_end_pos == std::string::npos)
+			return path_.length();
+		return root_name_end_pos;
+	}
+#endif
+	return 0;
+}
+
+std::size_t
+filesystem::Path::get_relative_path_pos() const
+{
+	auto root_end_pos = root_path().path_.length();
+	if (root_end_pos == 0)
+		return 0;
+	for (; root_end_pos < path_.length(); ++root_end_pos) {
+		if (!is_separator(path_[root_end_pos]))
+			return root_end_pos;
+	}
+	return std::string::npos;
 }
 
 std::size_t
@@ -202,4 +347,10 @@ filesystem::Path::utf8_to_native(const std::string& utf8)
 	// For other OS, it's the file name as it is
 	return utf8;
 #endif
+}
+
+inline bool
+filesystem::Path::is_separator(std::string::value_type c)
+{
+	return c == '/' || c == '\\';
 }

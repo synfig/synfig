@@ -79,6 +79,26 @@ public:
 	// Decomposition ---------------------
 
 	/**
+	 * The root name (MS Windows only), if present
+	 * Example: "C:", "E:", "\\host", etc.
+	 */
+	Path root_name() const;
+	/**
+	 * The root directory, if present.
+	 * This is the first component of an absolute path.
+	 * Empty data if it is a relative path.
+	 */
+	Path root_directory() const;
+	/**
+	 * The root path of the path, if present.
+	 * @return root_name() followed by root_directory()
+	 */
+	Path root_path() const;
+	/** The path relative to (i.e. after) root path. */
+	Path relative_path() const;
+	/** The path to the parent directory. */
+	Path parent_path() const;
+	/**
 	 * Last component of path.
 	 * filename stem + extension
 	 */
@@ -96,9 +116,19 @@ public:
 
 	bool empty() const noexcept;
 
+	bool has_root_name() const;
+	bool has_root_directory() const;
+	bool has_root_path() const;
+	bool has_relative_path() const;
+	bool has_parent_path() const;
 	bool has_filename() const;
 	bool has_stem() const;
 	bool has_extension() const;
+
+	/** Checks whether the path is absolute or relative. */
+	bool is_absolute() const;
+	/** Checks whether the path is absolute or relative. */
+	bool is_relative() const;
 
 private:
 	/** Path in the native encoding */
@@ -106,6 +136,8 @@ private:
 	/** Path in UTF-8 encoding */
 	std::string path_;
 
+	std::size_t get_root_name_length() const;
+	std::size_t get_relative_path_pos() const;
 	std::size_t get_filename_pos() const;
 	std::size_t get_extension_pos() const;
 
@@ -115,6 +147,8 @@ private:
 	 * @return a string in native encoding
 	 */
 	static string_type utf8_to_native(const std::string& utf8);
+
+	static inline bool is_separator(std::string::value_type c);
 }; // END of class Path
 
 } // END of namespace filesystem
