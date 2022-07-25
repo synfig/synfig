@@ -103,6 +103,14 @@ test_fetch_path_filename_when_path_does_not_have_any_extension()
 }
 
 void
+test_does_not_fetch_path_filename_when_path_ends_with_slash()
+{
+	Path p1("/foo/bar/");
+	ASSERT_FALSE(p1.has_filename())
+	ASSERT_EQUAL("", p1.filename().u8string());
+}
+
+void
 test_fetch_path_filename_when_path_filename_starts_with_dot_char()
 {
 	Path p1("/foo/.bar");
@@ -187,6 +195,14 @@ test_fetch_path_stem_when_path_does_not_have_any_extension()
 	Path p2("foo/bar");
 	ASSERT(p2.has_stem())
 	ASSERT_EQUAL("bar", p2.stem().u8string());
+}
+
+void
+test_does_not_fetch_path_stem_when_path_ends_with_slash()
+{
+	Path p1("/foo/bar/");
+	ASSERT_FALSE(p1.has_stem())
+	ASSERT_EQUAL("", p1.stem().u8string());
 }
 
 void
@@ -297,6 +313,14 @@ test_does_not_fetch_path_extension_when_path_does_not_have_any_extension()
 }
 
 void
+test_does_not_fetch_path_extension_when_path_ends_with_slash()
+{
+	Path p("/foo/bar/");
+	ASSERT_FALSE(p.has_extension())
+	ASSERT_EQUAL("", p.extension().u8string());
+}
+
+void
 test_does_not_fetch_path_extension_when_path_filename_starts_with_dot_char()
 {
 	Path p("/foo/.bar");
@@ -378,6 +402,7 @@ int main() {
 	TEST_FUNCTION(test_does_not_fetch_path_filename_when_path_is_empty)
 	TEST_FUNCTION(test_does_not_fetch_path_filename_when_path_is_root)
 	TEST_FUNCTION(test_fetch_path_filename_when_path_does_not_have_any_extension)
+	TEST_FUNCTION(test_does_not_fetch_path_filename_when_path_ends_with_slash)
 	TEST_FUNCTION(test_fetch_path_filename_when_path_filename_starts_with_dot_char)
 	TEST_FUNCTION(test_fetch_path_filename_when_path_filename_ends_with_dot_char)
 	TEST_FUNCTION(test_fetch_path_filename_when_is_dot_filename)
@@ -387,6 +412,7 @@ int main() {
 	TEST_FUNCTION(test_does_not_fetch_path_stem_when_path_is_empty)
 	TEST_FUNCTION(test_does_not_fetch_path_stem_when_path_is_root)
 	TEST_FUNCTION(test_fetch_path_stem_when_path_does_not_have_any_extension)
+	TEST_FUNCTION(test_does_not_fetch_path_stem_when_path_ends_with_slash)
 	TEST_FUNCTION(test_fetch_path_stem_when_path_filename_starts_with_dot_char)
 	TEST_FUNCTION(test_fetch_path_stem_when_path_filename_ends_with_dot_char)
 	TEST_FUNCTION(test_fetch_path_stem_when_is_dot_filename)
@@ -398,6 +424,7 @@ int main() {
 	TEST_FUNCTION(test_does_not_fetch_path_extension_when_path_is_empty)
 	TEST_FUNCTION(test_does_not_fetch_path_extension_when_path_is_root)
 	TEST_FUNCTION(test_does_not_fetch_path_extension_when_path_does_not_have_any_extension)
+	TEST_FUNCTION(test_does_not_fetch_path_extension_when_path_ends_with_slash)
 	TEST_FUNCTION(test_does_not_fetch_path_extension_when_path_filename_starts_with_dot_char)
 	TEST_FUNCTION(test_fetch_path_extension_when_path_filename_ends_with_dot_char)
 	TEST_FUNCTION(test_does_not_fetch_path_extension_when_is_dot_filename)
