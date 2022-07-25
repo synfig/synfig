@@ -83,6 +83,41 @@ filesystem::Path::u8string() const
 	return path_;
 }
 
+int
+filesystem::Path::compare(const Path& p) const noexcept
+{
+	int root_cmp = root_name().u8string().compare(p.root_name().u8string());
+	if (root_cmp != 0)
+		return root_cmp;
+	bool has_root_dir = has_root_directory();
+	if (has_root_dir != p.has_root_directory())
+		return has_root_dir ? -1 : 1;
+
+	auto rel_path_pos = get_relative_path_pos();
+	auto p_rel_path_pos = p.get_relative_path_pos();
+
+	while (rel_path_pos != std::string::npos && p_rel_path_pos != std::string::npos) {
+		auto   next_separator_pos =   path_.find_first_of("/\\",   rel_path_pos);
+		auto p_next_separator_pos = p.path_.find_first_of("/\\", p_rel_path_pos);
+
+		auto   cur_length =   next_separator_pos != std::string::npos ?   next_separator_pos -   rel_path_pos : std::string::npos;
+		auto p_cur_length = p_next_separator_pos != std::string::npos ? p_next_separator_pos - p_rel_path_pos : std::string::npos;
+
+		auto diff = path_.compare(rel_path_pos, cur_length, p.path_, p_rel_path_pos, p_cur_length);
+		if (diff != 0) {
+			return diff;
+		} else {
+			  rel_path_pos =   path_.find_first_not_of("/\\",   next_separator_pos);
+			p_rel_path_pos = p.path_.find_first_not_of("/\\", p_next_separator_pos);
+		}
+	}
+	if (rel_path_pos == p_rel_path_pos) // == std::string::npos;
+		return 0;
+	if (rel_path_pos == std::string::npos)
+		return -1;
+	return 1;
+}
+
 filesystem::Path
 filesystem::Path::root_name() const
 {

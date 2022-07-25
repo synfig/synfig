@@ -55,6 +55,89 @@ test_path_with_non_empty_string_is_not_empty()
 }
 
 void
+test_compare_path_both_empty()
+{
+	Path p1, p2;
+	ASSERT_EQUAL(0, p1.compare(p2))
+}
+
+void
+test_compare_path_different_root_name()
+{
+#ifdef _WIN32
+	Path p1("C:");
+	Path p2("C:");
+	ASSERT_EQUAL(0, p1.compare(p2))
+
+	Path p3("D:");
+	ASSERT(0 > p1.compare(p3))
+	ASSERT(0 < p3.compare(p1))
+
+	Path p4("A:");
+	ASSERT(0 < p1.compare(p4))
+	ASSERT(0 > p4.compare(p1))
+#endif
+}
+
+void
+test_compare_path_different_root_directory()
+{
+	Path q1("/");
+	Path q2("/");
+	ASSERT_EQUAL(0, q1.compare(q2))
+
+	Path q3("a");
+	ASSERT(0 > q1.compare(q3))
+	ASSERT(0 < q3.compare(q1))
+#ifdef _WIN32
+	Path p1("C:/");
+	Path p2("C:/");
+	ASSERT_EQUAL(0, p1.compare(p2))
+
+	Path p3("C:");
+	ASSERT(0 > p1.compare(p3))
+	ASSERT(0 < p3.compare(p1))
+#endif
+}
+
+void
+test_compare_path_with_different_relative_path_size()
+{
+	Path q1("/a/b");
+	Path q2("/a/b/c");
+	ASSERT(0 > q1.compare(q2))
+	ASSERT(0 < q2.compare(q1))
+
+	ASSERT(0 > Path("/aa/ab/").compare(Path("/aa/ac/dd")))
+	ASSERT(0 < Path("/aa/ac/dd").compare(Path("/aa/ab/")))
+
+	ASSERT(0 > Path("/aa/ac/dd").compare(Path("/d")))
+	ASSERT(0 < Path("/d").compare(Path("/aa/ac/dd")))
+
+	ASSERT(0 > Path("aa/abb").compare(Path("aa/ac/dd")))
+	ASSERT(0 < Path("aa/ac/dd").compare(Path("aa/abb")))
+}
+
+void
+test_compare_path_both_has_same_relative_path_size()
+{
+	Path q1("/a/b");
+	Path q2("/a/c");
+	ASSERT_EQUAL(0, q1.compare(q1))
+	ASSERT_EQUAL(-1, q1.compare(q2))
+	ASSERT_EQUAL(1, q2.compare(q1))
+
+	ASSERT(0 > Path("/aa/").compare(Path("/ac/")))
+	ASSERT(0 < Path("/ac").compare(Path("/aa")))
+
+	ASSERT(0 > Path("aa/abb").compare(Path("aa/c")))
+	ASSERT(0 < Path("aa/c").compare(Path("aa/abb")))
+
+	ASSERT(0 > Path("aa").compare(Path("ac")))
+	ASSERT(0 < Path("ac").compare(Path("aa")))
+}
+
+void
 test_fetch_path_root_name_regular_drive_on_windows()
 {
 #ifdef _WIN32
@@ -946,6 +1029,12 @@ int main() {
 	TEST_FUNCTION(test_default_path_constructor_is_empty)
 	TEST_FUNCTION(test_path_with_empty_string_is_empty)
 	TEST_FUNCTION(test_path_with_non_empty_string_is_not_empty)
+
+	TEST_FUNCTION(test_compare_path_both_empty)
+	TEST_FUNCTION(test_compare_path_different_root_name)
+	TEST_FUNCTION(test_compare_path_different_root_directory)
+	TEST_FUNCTION(test_compare_path_with_different_relative_path_size)
+	TEST_FUNCTION(test_compare_path_both_has_same_relative_path_size)
 
 	TEST_FUNCTION(test_fetch_path_root_name_regular_drive_on_windows)
 	TEST_FUNCTION(test_fetch_path_root_name_network_samba_folder_on_windows)

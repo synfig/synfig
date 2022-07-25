@@ -76,6 +76,10 @@ public:
 	/** Path as a character string in UTF-8 encoding */
 	const std::string& u8string() const;
 
+	// Compare ---------------------------
+
+	int compare(const Path& p) const noexcept;
+
 	// Decomposition ---------------------
 
 	/**
@@ -150,6 +154,26 @@ private:
 
 	static inline bool is_separator(std::string::value_type c);
 }; // END of class Path
+
+// Non-member functions --------------
+
+inline bool operator==(const Path& lhs, const Path& rhs) noexcept
+	{ return lhs.compare(rhs) == 0; }
+
+inline bool operator!=(const Path& lhs, const Path& rhs) noexcept
+	{ return !(lhs == rhs); }
+
+inline bool operator<(const Path& lhs, const Path& rhs) noexcept
+	{ return lhs.compare(rhs) < 0; }
+
+inline bool operator<=(const Path& lhs, const Path& rhs) noexcept
+	{ return !(rhs < lhs); }
+
+inline bool operator>(const Path& lhs, const Path& rhs) noexcept
+	{ return rhs < lhs; }
+
+inline bool operator>=(const Path& lhs, const Path& rhs) noexcept
+	{ return !(lhs < rhs); }
 
 } // END of namespace filesystem
 
