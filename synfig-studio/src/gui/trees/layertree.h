@@ -102,6 +102,9 @@ private:
 
 	CellRenderer_ValueBase *cellrenderer_value;
 
+	bool match_found=false;
+	Gtk::TreePath match_path;
+
 	sigc::signal<void,synfig::Layer::Handle> signal_layer_toggle_;
 
 	sigc::signal<void,synfigapp::ValueDesc,synfig::ValueBase> signal_edited_value_;

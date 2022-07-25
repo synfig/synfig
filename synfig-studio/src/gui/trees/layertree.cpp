@@ -398,37 +398,37 @@ LayerTree::create_param_tree()
 	//column_time_track->set_visible(false);
 }
 
-bool increase_search_depth;
-
 bool
 LayerTree::search_param_tree(const Glib::RefPtr<Gtk::TreeModel>& one,int two,const Glib::ustring& x,const Gtk::TreeModel::iterator& iter)
 {
-		//	param_tree_view().expand_all();
+	Gtk::TreePath path(iter);
+		if(match_found && (path != match_path))// when match is found dont bother with others
+			return true;
+
 		Gtk::TreeModel::Row row = *iter;
 		Gtk::TreeModel::Children children = row.children();
-//		Gtk::TreePath path(iter);
+		Glib::ustring substr(x.uppercase());
+		Glib::ustring label((*iter)[param_model.label]);
+		label=label.uppercase();
+		if(label.find(substr)!=Glib::ustring::npos){//i.e. match found
+			match_found=false;
+			return false;}
 
-	for( Gtk::TreeModel::Children::iterator iter_child = children.begin(); iter_child != children.end(); ++iter_child ){//iterating through children of iter if(present) to see if they are a match
-		  Gtk::TreeModel::Row row_child = *iter_child;
-		  Gtk::TreePath path(iter_child);
-		  Glib::ustring substr(x.uppercase());
-		  Glib::ustring label((*iter_child)[param_model.label]);
-		  label=label.uppercase();
-		  std::cout<<std::endl<<label<<std::endl;
-		  if(label.find(substr)!=Glib::ustring::npos){
-			  std::cout<<std::endl<<label<<std::endl<<std::endl;
-			  param_tree_view().expand_to_path(path);
-			  return true;	//to prevent further expansion unless needed which is signalled by the user cliccking the down button or scrolling down
-		  }
-		  else//if in this row there were no matches
-			  search_param_tree(one,two,x, iter_child);//if not found inc search depth if possible on row
-	}
-
-	Glib::ustring substr(x.uppercase()); //constructs a string called substr as a copy of x in upper case
-	Glib::ustring label((*iter)[param_model.label]); //constructs a string called label of the row models label
-	label=label.uppercase();
-	std::cout<<std::endl<<label<<std::endl; //ok so basically it searches all the open child rows
-	return label.find(substr)==Glib::ustring::npos; //rhs returns -1 almost y3ny if not found
+			for( Gtk::TreeModel::Children::iterator iter_child = children.begin(); iter_child != children.end(); ++iter_child ){//looking for a match in rows children
+				  Gtk::TreePath path_child(iter_child);
+				  Glib::ustring substr(x.uppercase());
+				  Glib::ustring label_child((*iter_child)[param_model.label]);
+				  label_child=label_child.uppercase();
+				  if(label_child.find(substr)!=Glib::ustring::npos){
+						param_tree_view().expand_to_path(path_child);//this way expands matched row if its expandable, if not desired replace with previous path
+						match_found=true;
+						match_path=path_child;
+						break;
+				  }
+				  else
+					 search_param_tree(one,two,x, iter_child);//if not found inc search depth if possible on row
+		}
+			return (label.find(substr)==Glib::ustring::npos);
 }
 
 void
