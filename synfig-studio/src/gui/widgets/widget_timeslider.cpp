@@ -305,21 +305,46 @@ Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 				double x1 = time_plot_data->get_double_pixel_t_coord(bounds[i][1]);
 				double w = x1 - x0;
 
+				double boundary_dimension=4;
+				double background_adjust;
+
+				if(i==0)
+					background_adjust=0;
+				else
+					background_adjust=4;
+
 				cr->save();
-				cr->rectangle(x0, 0.0, w, (double)get_height());
+				cr->rectangle(x0 + background_adjust, 0.0, w-4, (double)get_height());
 				cr->clip();
 				cr->translate(offset, 0.0);
 				cr->set_source(play_bounds_pattern);
 				cr->paint();
 				cr->restore();
 
+				if(i == 0)
+					boundary_dimension=-4;
+				else
+					boundary_dimension=-w;
+
+				//boundary button: last bit of 4 width in the boundary
+				cr->save();
+				cr->rectangle(x0+w+boundary_dimension,0.0,4.0,(double)get_height());
+				cr->set_source_rgba(0.0, 0.0, 1.0, 0.8);
+				cr->fill();
+				cr->restore();
+
+				if(i == 0)
+					boundary_dimension=0;
+				else
+					boundary_dimension=4;
+
 				cr->save();
 				cr->set_line_width(1.0);
-				cr->set_source_rgba(0.0, 0.0, 0.0, 0.25);
-				cr->rectangle(x0 + 1.0, 1.0, w - 2.0, (double)get_height() - 2.0);
+				cr->set_source_rgba(0.0, 0.0, 0.0, 0.25);//inner border
+				cr->rectangle(x0 + 1.0 + boundary_dimension, 1.0, w - 2 - 4, (double)get_height() - 2.0);
 				cr->stroke();
-				cr->set_source_rgba(0.0, 0.0, 0.0, 0.3);
-				cr->rectangle(x0 + 0.5, 0.5, w - 1.0, (double)get_height() - 1.0);
+				cr->set_source_rgba(0.0, 0.0, 0.0, 0.3);//outer border
+				cr->rectangle(x0 + 0.5 + boundary_dimension, 0.5, w - 1 - 4, (double)get_height() - 1.0);
 				cr->stroke();
 				cr->restore();
 			}
@@ -340,8 +365,22 @@ Widget_Timeslider::on_button_press_event(GdkEventButton *event) //for clicking
 
 	if (event->button == 1) {
 		Time time = time_plot_data->get_t_from_pixel_coord(event->x);
-		time_plot_data->time_model->set_time(time);
+		time_plot_data->time_model->set_time(time);//setting the time which is in time model
 	}
+
+	double x0 = time_plot_data->get_double_pixel_t_coord(time_plot_data->lower_ex);
+	double x1 = time_plot_data->get_double_pixel_t_coord(time_plot_data->time_model->get_play_bounds_lower());
+	double w = x1 - x0;
+	double z0= time_plot_data->get_double_pixel_t_coord(time_plot_data->time_model->get_play_bounds_upper());
+	double z1= time_plot_data->get_double_pixel_t_coord(time_plot_data->upper_ex);
+	double width= z1 - z0;
+	double current= time_plot_data->get_double_pixel_t_coord(time_plot_data->get_t_from_pixel_coord(event->x));
+
+	if((current <= (x0+w))  && (current >= (x0 + w - 4) ))
+		move_boundary_button_lower= true;
+	else if((current <= (z0 + 4))  && (current >= (z0)))
+		move_boundary_button_upper=true;
+
 
 	return event->button == 1 || event->button == 2;
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
@@ -351,6 +390,8 @@ bool
 Widget_Timeslider::on_button_release_event(GdkEventButton *event){
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	lastx = (double)event->x;
+	move_boundary_button_lower=false;
+	move_boundary_button_upper=false;
 	return event->button == 1 || event->button == 2;
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
@@ -365,7 +406,14 @@ Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for dragging
 	if (!time_plot_data->time_model || get_width() <= 0 || get_height() <= 0)
 		return false;
 
-	Gdk::ModifierType mod = Gdk::ModifierType(event->state);
+	Gdk::ModifierType mod = Gdk::ModifierType(event->state);//mouse buttons are also modifiers
+
+	if(move_boundary_button_lower)
+		time_plot_data->time_model->set_play_bounds_lower(time_plot_data->get_t_from_pixel_coord(event->x));
+	else if(move_boundary_button_upper)
+		time_plot_data->time_model->set_play_bounds_upper(time_plot_data->get_t_from_pixel_coord(event->x));
+
+
 	if (mod & Gdk::BUTTON1_MASK) {
 		// scrubbing
 		Time time = time_plot_data->get_t_from_pixel_coord(event->x);
