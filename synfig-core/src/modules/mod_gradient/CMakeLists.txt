@@ -7,7 +7,7 @@ add_library(mod_gradient MODULE
         "${CMAKE_CURRENT_LIST_DIR}/spiralgradient.cpp"
 )
 
-target_link_libraries(mod_gradient synfig)
+target_link_libraries(mod_gradient libsynfig)
 
 install (
     TARGETS mod_gradient

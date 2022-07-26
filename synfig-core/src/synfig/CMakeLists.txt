@@ -4,7 +4,8 @@
 
 ## Main target: libsynfig
 ## TODO: optional static linking?
-add_library(synfig SHARED "")
+add_library(libsynfig SHARED "")
+set_target_properties(libsynfig PROPERTIES PREFIX "")
 
 add_definitions(-DVERSION="${STUDIO_VERSION_MAJOR}.${STUDIO_VERSION_MINOR}.${STUDIO_VERSION_PATCH}")
 
@@ -24,9 +25,9 @@ else()
     set(LTDL_LIBRARIES ltdl)
 endif()
 
-target_include_directories(synfig PUBLIC ${LTDL_INCLUDE_DIRS})
+target_include_directories(libsynfig PUBLIC ${LTDL_INCLUDE_DIRS})
 
-target_sources(synfig
+target_sources(libsynfig
     PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/activepoint.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/bone.cpp"
@@ -81,17 +82,17 @@ target_sources(synfig
 
 ## these were added seprately in autotools build, preserving this for now
 ## TODO: either merge with main list or create new target
-target_sources(synfig
+target_sources(libsynfig
     PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/target_multi.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/target_scanline.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/target_tile.cpp"
 )
-target_sources(synfig
+target_sources(libsynfig
     PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/listimporter.cpp"
 )
-target_sources(synfig
+target_sources(libsynfig
     PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/blinepoint.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/widthpoint.cpp"
@@ -115,7 +116,7 @@ include(valuenodes/CMakeLists.txt)
 ## TODO: check if we need this for release build
 include(debug/CMakeLists.txt)
 
-target_link_libraries(synfig PUBLIC
+target_link_libraries(libsynfig PUBLIC
 	PkgConfig::SIGCPP
 	PkgConfig::GLIBMM
 	PkgConfig::GIOMM
@@ -127,7 +128,7 @@ target_link_libraries(synfig PUBLIC
 )
 
 if (MLT_FOUND)
-	target_link_libraries(synfig PUBLIC PkgConfig::MLT)
+	target_link_libraries(libsynfig PUBLIC PkgConfig::MLT)
 endif ()
 
 ## Install headers
@@ -140,18 +141,18 @@ install(
 )
 
 install(
-    TARGETS synfig
-    EXPORT synfig
+    TARGETS libsynfig
+    EXPORT libsynfig
     LIBRARY DESTINATION lib
 )
 
 export(
-    EXPORT synfig
+    EXPORT libsynfig
     FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/${PROJECT_NAME}-config.cmake"
 )
 
 install(
-    EXPORT synfig
+    EXPORT libsynfig
     FILE "${PROJECT_NAME}-config.cmake"
     DESTINATION "lib/cmake/${PROJECT_NAME}"
 )

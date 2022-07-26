@@ -1,4 +1,4 @@
-target_sources(synfig
+target_sources(libsynfig
     PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/optimizerblendassociative.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/optimizerblendmerge.cpp"

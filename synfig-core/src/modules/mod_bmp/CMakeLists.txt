@@ -4,7 +4,7 @@ add_library(mod_bmp MODULE
         "${CMAKE_CURRENT_LIST_DIR}/trgt_bmp.cpp"
 )
 
-target_link_libraries(mod_bmp synfig)
+target_link_libraries(mod_bmp libsynfig)
 
 install (
     TARGETS mod_bmp

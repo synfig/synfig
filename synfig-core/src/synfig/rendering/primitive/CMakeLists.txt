@@ -1,4 +1,4 @@
-target_sources(synfig
+target_sources(libsynfig
     PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/bend.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/contour.cpp"
