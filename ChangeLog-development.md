@@ -1,3 +1,9 @@
+- [`61fc780`](https://github.com/synfig/synfig/commit/61fc7801ae12f15c6f76d2409fb33acfc095606d) fix: fixed build when MLT library not found ([#2760](https://github.com/synfig/synfig/issues/2760)) [core]
+- [`6fb0596`](https://github.com/synfig/synfig/commit/6fb0596575c2755b594e38b76ce9b819e3b8b8e3) fix: synfig studio was not saving synfigapp settings on quit ([#2751](https://github.com/synfig/synfig/issues/2751)) [studio]
+- [`19bbb77`](https://github.com/synfig/synfig/commit/19bbb770be6ca20a48f0424ce622633653451291) ci: bump macOS version ([#2761](https://github.com/synfig/synfig/issues/2761))
+- [`2363d73`](https://github.com/synfig/synfig/commit/2363d73a95a586f6200daea3666f395a1063c28e) fix!: for some layers hit_check() missed some blend method influence ([#2754](https://github.com/synfig/synfig/issues/2754)) [core]
+- [`c5e6833`](https://github.com/synfig/synfig/commit/c5e6833f7d1b1da385ceba57c7809773b9aad600) fix: setting filename parameter of Layer Sound corrupts file ([#2758](https://github.com/synfig/synfig/issues/2758)) [core]
+- [`d1192e1`](https://github.com/synfig/synfig/commit/d1192e1d4685b0e4db9d1a0b94423fdcd0b0d90b) Merge PR [#2712](https://github.com/synfig/synfig/issues/2712): refactor!: clean `synfig::Keyframe` [core]
 - [`77c13ef`](https://github.com/synfig/synfig/commit/77c13ef64ac70e813aefdd9f2687a0bb89fbebf0) fix: small memory leak with Mlt++ ([#2752](https://github.com/synfig/synfig/issues/2752)) [core]
 - [`7656b65`](https://github.com/synfig/synfig/commit/7656b65b2dff182e0114b17dce1dbcc529c28901) refactor: removed unused Widget_CompSelect ([#2753](https://github.com/synfig/synfig/issues/2753)) [studio]
 - [`c6075b3`](https://github.com/synfig/synfig/commit/c6075b308b9717c7591ed4b1f1afe4992d131406) Merge PR [#2735](https://github.com/synfig/synfig/issues/2735): refactor!: move strprintf(), strscan(), etc from etl to synfig namespace [ETL] [core] [studio]
