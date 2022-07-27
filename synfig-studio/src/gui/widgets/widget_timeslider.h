@@ -59,6 +59,9 @@ protected: // implementation that other interfaces can see
 	Glib::RefPtr<Gdk::Cursor> bounds_cursor = Gdk::Cursor::create(get_display(), "ew-resize");
 	Glib::RefPtr<Gdk::Cursor> default_cursor = Gdk::Cursor::create(get_display(), "default");
 
+	Glib::RefPtr<Gdk::Pixbuf> lower_boundary_pixbuf;
+	Glib::RefPtr<Gdk::Pixbuf> upper_boundary_pixbuf;
+
 	// last mouse position for dragging
 	double lastx;
 
