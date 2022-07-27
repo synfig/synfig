@@ -56,6 +56,9 @@ protected: // implementation that other interfaces can see
 
 	Cairo::RefPtr<Cairo::SurfacePattern> play_bounds_pattern;
 
+	Glib::RefPtr<Gdk::Cursor> bounds_cursor = Gdk::Cursor::create(get_display(), "ew-resize");
+	Glib::RefPtr<Gdk::Cursor> default_cursor = Gdk::Cursor::create(get_display(), "default");
+
 	// last mouse position for dragging
 	double lastx;
 
@@ -77,6 +80,8 @@ protected: // implementation that other interfaces can see
 	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 
 	virtual void draw_background(const Cairo::RefPtr<Cairo::Context> &cr);
+
+	void get_bounds_rectangle_dimensions(double& x0, double& x1, double& w ,bool lower);
 
 public:
 	Widget_Timeslider();
