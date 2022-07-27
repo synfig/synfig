@@ -368,13 +368,10 @@ Widget_Timeslider::on_button_press_event(GdkEventButton *event) //for clicking
 		time_plot_data->time_model->set_time(time);//setting the time which is in time model
 	}
 
-	double x0 = time_plot_data->get_double_pixel_t_coord(time_plot_data->lower_ex);
-	double x1 = time_plot_data->get_double_pixel_t_coord(time_plot_data->time_model->get_play_bounds_lower());
-	double w = x1 - x0;
-	double z0= time_plot_data->get_double_pixel_t_coord(time_plot_data->time_model->get_play_bounds_upper());
-	double z1= time_plot_data->get_double_pixel_t_coord(time_plot_data->upper_ex);
-	double width= z1 - z0;
 	double current= time_plot_data->get_double_pixel_t_coord(time_plot_data->get_t_from_pixel_coord(event->x));
+	double x0,x1,w,z0,z1,width;
+	get_bounds_rectangle_dimensions(x0,x1,w,true);
+	get_bounds_rectangle_dimensions(z0,z1,width,false);
 
 	if((current <= (x0+w))  && (current >= (x0 + w - 4) ))
 		move_boundary_button_lower= true;
@@ -396,10 +393,45 @@ Widget_Timeslider::on_button_release_event(GdkEventButton *event){
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
+void
+Widget_Timeslider::get_bounds_rectangle_dimensions(double& x0, double& x1, double& w ,bool lower)
+{
+	if(lower){
+		 x0 = time_plot_data->get_double_pixel_t_coord(time_plot_data->lower_ex);
+		 x1 = time_plot_data->get_double_pixel_t_coord(time_plot_data->time_model->get_play_bounds_lower());
+		 w = x1 - x0;
+	}
+	else {
+		 x0= time_plot_data->get_double_pixel_t_coord(time_plot_data->time_model->get_play_bounds_upper());
+		 x1= time_plot_data->get_double_pixel_t_coord(time_plot_data->upper_ex);
+		 w= x1 - x0;
+	}
+}
+
 bool
 Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for dragging
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
+
+	double current= time_plot_data->get_double_pixel_t_coord(time_plot_data->get_t_from_pixel_coord(event->x));
+	double x0,x1,w,z0,z1,width;
+	get_bounds_rectangle_dimensions(x0,x1,w,true);
+	get_bounds_rectangle_dimensions(z0,z1,width,false);
+
+	if((((current <= (x0+w))  && (current >= (x0 + w - 4)) && !move_boundary_button_lower) || (move_boundary_button_lower))){
+		if((get_window()->get_cursor() != bounds_cursor))
+		   get_window()->set_cursor(bounds_cursor);
+	}
+	else if((((current <= (z0 + 4))  && (current >= (z0)) && !move_boundary_button_upper) || (move_boundary_button_upper))){
+		if((get_window()->get_cursor() != bounds_cursor))
+		   get_window()->set_cursor(bounds_cursor);
+	}
+	else {
+		if((get_window()->get_cursor() != default_cursor))
+		   get_window()->set_cursor(default_cursor);
+	}
+
+
 	double dx = (double)event->x - lastx;
 	lastx = (double)event->x;
 
