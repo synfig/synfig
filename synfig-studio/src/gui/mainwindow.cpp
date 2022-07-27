@@ -197,11 +197,11 @@ MainWindow::init_menus()
 	//animation tabs
 	for (int i = 1; i <= 8; ++i) {
 		const std::string tab = std::to_string(i);
-		action_group->add(Gtk::Action::create("move-to-tab-" + tab, _("Move to Tab ") + tab),
+		action_group->add(Gtk::Action::create("switch-to-tab-" + tab, _("Switch to Tab ") + tab),
 			[this, i]() { main_dock_book().set_current_page(i-1); }
 		);
 	}
-	action_group->add(Gtk::Action::create("move-to-tab-last", _("Move to Last Tab")),
+	action_group->add(Gtk::Action::create("switch-to-rightmost-tab", _("Switch to Rightmost Tab")),
 		[this]() { main_dock_book().set_current_page(-1); }
 	);
 
