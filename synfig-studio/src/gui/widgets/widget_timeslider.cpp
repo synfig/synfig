@@ -174,6 +174,20 @@ Widget_Timeslider::Widget_Timeslider():
 			  | Gdk::BUTTON_RELEASE_MASK
 			  | Gdk::BUTTON_MOTION_MASK
 			  | Gdk::SCROLL_MASK );
+
+
+	GdkPixbuf *lower_boundary_pixbuf_c = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
+																   "bound_button_icon_lower", // icon name
+																   1, // icon size
+																   GTK_ICON_LOOKUP_NO_SVG,  // flags
+																   NULL);
+	lower_boundary_pixbuf =  Glib::wrap(lower_boundary_pixbuf_c);
+	GdkPixbuf *upper_boundary_pixbuf_c = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
+																   "bound_button_icon_upper", // icon name
+																   1, // icon size
+																   GTK_ICON_LOOKUP_NO_SVG,  // flags
+																   NULL);
+	upper_boundary_pixbuf =  Glib::wrap(upper_boundary_pixbuf_c);
 }
 
 Widget_Timeslider::~Widget_Timeslider()
@@ -305,46 +319,51 @@ Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 				double x1 = time_plot_data->get_double_pixel_t_coord(bounds[i][1]);
 				double w = x1 - x0;
 
-				double boundary_dimension=4;
+				double boundary_dimension=8;
 				double background_adjust;
 
 				if(i==0)
 					background_adjust=0;
 				else
-					background_adjust=4;
+					background_adjust=8;
 
 				cr->save();
-				cr->rectangle(x0 + background_adjust, 0.0, w-4, (double)get_height());
+				cr->rectangle(x0 + background_adjust, 0.0, w-8, (double)get_height());
 				cr->clip();
 				cr->translate(offset, 0.0);
 				cr->set_source(play_bounds_pattern);
 				cr->paint();
 				cr->restore();
 
-				if(i == 0)
-					boundary_dimension=-4;
-				else
+				Glib::RefPtr<Gdk::Pixbuf> icon;
+				if(i == 0){
+					boundary_dimension=-8;
+					icon = lower_boundary_pixbuf;
+				}
+				else{
 					boundary_dimension=-w;
+					icon = upper_boundary_pixbuf;
+				}
 
-				//boundary button: last bit of 4 width in the boundary
 				cr->save();
-				cr->rectangle(x0+w+boundary_dimension,0.0,4.0,(double)get_height());
-				cr->set_source_rgba(0.0, 0.0, 1.0, 0.8);
+				Gdk::Cairo::set_source_pixbuf(cr, icon, x0+w+boundary_dimension, 0);
+				cr->rectangle(x0+w+boundary_dimension,0.0,8.0,(double)get_height());
+//				cr->set_source_rgba(0.0, 0.0, 1.0, 0.8);
 				cr->fill();
 				cr->restore();
 
 				if(i == 0)
 					boundary_dimension=0;
 				else
-					boundary_dimension=4;
+					boundary_dimension=8;
 
 				cr->save();
 				cr->set_line_width(1.0);
 				cr->set_source_rgba(0.0, 0.0, 0.0, 0.25);//inner border
-				cr->rectangle(x0 + 1.0 + boundary_dimension, 1.0, w - 2 - 4, (double)get_height() - 2.0);
+				cr->rectangle(x0 + 1.0 + boundary_dimension, 1.0, w - 2 - 8, (double)get_height() - 2.0);
 				cr->stroke();
 				cr->set_source_rgba(0.0, 0.0, 0.0, 0.3);//outer border
-				cr->rectangle(x0 + 0.5 + boundary_dimension, 0.5, w - 1 - 4, (double)get_height() - 1.0);
+				cr->rectangle(x0 + 0.5 + boundary_dimension, 0.5, w - 1 - 8, (double)get_height() - 1.0);
 				cr->stroke();
 				cr->restore();
 			}
