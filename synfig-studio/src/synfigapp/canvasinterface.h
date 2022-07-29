@@ -344,6 +344,8 @@ public:
 	void waypoint_remove(synfigapp::ValueDesc value_desc,synfig::Waypoint waypoint);
 	void waypoint_remove(synfig::ValueNode::Handle value_node,synfig::Waypoint waypoint);
 
+	void waypoint_paste(synfig::ValueNode::Handle value_node,synfig::Waypoint waypoint,synfig::Time time);
+
 	bool change_value(synfigapp::ValueDesc value_desc,synfig::ValueBase new_value,bool lock_animation = false);
 	bool change_value_at_time(synfigapp::ValueDesc value_desc,synfig::ValueBase new_value,const synfig::Time &time,bool lock_animation = false);
 

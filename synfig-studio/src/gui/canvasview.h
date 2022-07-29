@@ -383,6 +383,10 @@ private:
 	bool ducks_rebuild_requested;
 	bool ducks_rebuild_queue_requested;
 
+	std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoints_copied;
+	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_copied;
+
+
 	/*
  -- ** -- P U B L I C   D A T A -----------------------------------------------
 	*/
@@ -390,6 +394,8 @@ private:
 public:
 	void queue_rebuild_ducks();
 	sigc::signal<void>& signal_deleted() { return signal_deleted_; }
+	bool menu_present = false;//remove
+	bool waypoint_copied=false;
 
 private:
 	//! This is for the IsWorking class.
@@ -642,6 +648,10 @@ public:
 	void import_sequence();
 
 	void on_waypoint_clicked_canvasview(synfigapp::ValueDesc,std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int button);
+
+	void copy_waypoints(std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoints, etl::loose_handle<synfigapp::CanvasInterface> canvas_interface);
+
+	void paste_waypoints(synfig::Time time);
 
 	void preview_option() {on_preview_option();}
 
