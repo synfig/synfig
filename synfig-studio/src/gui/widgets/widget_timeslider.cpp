@@ -40,6 +40,8 @@
 #include <cmath>
 
 #include <gdkmm/general.h>
+#include <gtkmm/icontheme.h>
+
 
 #include <gui/app.h>
 #include <gui/exception_guard.h>
@@ -175,19 +177,9 @@ Widget_Timeslider::Widget_Timeslider():
 			  | Gdk::BUTTON_MOTION_MASK
 			  | Gdk::SCROLL_MASK );
 
-
-	GdkPixbuf *lower_boundary_pixbuf_c = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
-																   "bound_button_icon_lower", // icon name
-																   1, // icon size
-																   GTK_ICON_LOOKUP_NO_SVG,  // flags
-																   NULL);
-	lower_boundary_pixbuf =  Glib::wrap(lower_boundary_pixbuf_c);
-	GdkPixbuf *upper_boundary_pixbuf_c = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
-																   "bound_button_icon_upper", // icon name
-																   1, // icon size
-																   GTK_ICON_LOOKUP_NO_SVG,  // flags
-																   NULL);
-	upper_boundary_pixbuf =  Glib::wrap(upper_boundary_pixbuf_c);
+	auto icon_theme = Gtk::IconTheme::get_default();
+	lower_boundary_pixbuf = icon_theme->load_icon("bound_button_icon_lower", 1);
+	upper_boundary_pixbuf = icon_theme->load_icon("bound_button_icon_upper", 1);
 }
 
 Widget_Timeslider::~Widget_Timeslider()
@@ -335,23 +327,6 @@ Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 				cr->paint();
 				cr->restore();
 
-				Glib::RefPtr<Gdk::Pixbuf> icon;
-				if(i == 0){
-					boundary_dimension=-8;
-					icon = lower_boundary_pixbuf;
-				}
-				else{
-					boundary_dimension=-w;
-					icon = upper_boundary_pixbuf;
-				}
-
-				cr->save();
-				Gdk::Cairo::set_source_pixbuf(cr, icon, x0+w+boundary_dimension, 0);
-				cr->rectangle(x0+w+boundary_dimension,0.0,8.0,(double)get_height());
-//				cr->set_source_rgba(0.0, 0.0, 1.0, 0.8);
-				cr->fill();
-				cr->restore();
-
 				if(i == 0)
 					boundary_dimension=0;
 				else
@@ -365,6 +340,22 @@ Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 				cr->set_source_rgba(0.0, 0.0, 0.0, 0.3);//outer border
 				cr->rectangle(x0 + 0.5 + boundary_dimension, 0.5, w - 1 - 8, (double)get_height() - 1.0);
 				cr->stroke();
+				cr->restore();
+
+				Glib::RefPtr<Gdk::Pixbuf> icon;
+				if(i == 0){
+					boundary_dimension=-8;
+					icon = lower_boundary_pixbuf;
+				}
+				else{
+					boundary_dimension=-w;
+					icon = upper_boundary_pixbuf;
+				}
+
+				cr->save();
+				Gdk::Cairo::set_source_pixbuf(cr, icon, x0+w+boundary_dimension, 0);
+				cr->rectangle(x0+w+boundary_dimension,0.0,10,(double)get_height());
+				cr->fill();
 				cr->restore();
 			}
 		}
