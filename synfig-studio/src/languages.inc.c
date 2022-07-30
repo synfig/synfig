@@ -10,7 +10,7 @@
 //
 //
 
-{ "ar",          "Arabic",                          },
+{ "ar",          "Arabic",                           },
 { "bs",          "Bosnian",                          },
 { "ca",          "Catalan",                          },
 { "ca@valencia", "Catalan (Valencian)",              },
