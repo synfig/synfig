@@ -1333,7 +1333,7 @@ void Widget_Timetrack::WaypointSD::on_drag_finish(bool /*started_by_keys*/)
 	if (action == MOVE)
 		widget.move_selected(deltatime);
 	else if (action == COPY)
-		widget.copy_selected(deltatime);//this is intresting part adham mod
+		widget.copy_selected(deltatime);
 	else if (action == SCALE)
 		widget.scale_selected();
 
