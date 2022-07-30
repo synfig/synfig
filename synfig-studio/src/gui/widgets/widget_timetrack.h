@@ -74,7 +74,7 @@ public:
 	void delete_selected();
 	bool move_selected(synfig::Time delta_time);
 	//! Duplicate selected waypoints and move them delta_time
-	bool copy_selected(synfig::Time delta_time);
+	bool copy_selected(synfig::Time delta_time,  bool from_menu=false);
 	//! Scale selected waypoints based on current time
 	void scale_selected();
 	//! \param n : how many waypoints to skip

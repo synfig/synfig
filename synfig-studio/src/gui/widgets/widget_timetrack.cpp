@@ -199,33 +199,45 @@ bool Widget_Timetrack::move_selected(synfig::Time delta_time)
 	return ok;
 }
 
-bool Widget_Timetrack::copy_selected(synfig::Time delta_time)
+bool Widget_Timetrack::copy_selected(synfig::Time delta_time, bool from_menu) //goal is to use this function
 {
 	std::lock_guard<std::mutex> lock(param_list_mutex);
 
 	std::vector<WaypointItem*> selection = waypoint_sd.get_selected_items();
-	if (selection.size() == 0)
+	if ((selection.size() == 0) && !from_menu)
 		return true;
+	else if (from_menu){//if copied waypoint is among multiple selected paste all, if not then only paste the copied waypoint
+		if(waypoint_sd.is_selected(waypoint_sd.get_hovered_item())){
+		selection = waypoint_sd.get_selected_items();
+		}
+		else{
+			for(WaypointItem *wi : selection)
+				waypoint_sd.deselect(*wi);
+			waypoint_sd.select(waypoint_sd.get_hovered_item());
+			selection = waypoint_sd.get_selected_items();
+		}
+	}
+
 
 	// From CellRenderer_TimeTrack
 	synfigapp::Action::Handle action(synfigapp::Action::create("TimepointsCopy"));
 	if (!action)
 		return false;
 
-	synfigapp::Action::ParamList param_list;
+	synfigapp::Action::ParamList param_list;//this easy
 	for (WaypointItem *wi : selection) {
-		param_list.add("canvas", canvas_interface->get_canvas());
-		param_list.add("canvas_interface", canvas_interface);
+		param_list.add("canvas", canvas_interface->get_canvas());//easy
+		param_list.add("canvas_interface", canvas_interface);//easy
 
-		const synfigapp::ValueDesc &value_desc = param_info_map[wi->path.to_string()].get_value_desc();
-		if (value_desc.get_value_type() == synfig::type_canvas && !getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")) {
+		const synfigapp::ValueDesc &value_desc = param_info_map[wi->path.to_string()].get_value_desc();//hmm could be possible
+		if (value_desc.get_value_type() == synfig::type_canvas && !getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")) {//all these depend on prev
 			param_list.add("addcanvas", value_desc.get_value().get(synfig::Canvas::Handle()));
 		} else {
 			param_list.add("addvaluedesc", value_desc);
 		}
 
-		param_list.add("addtime", wi->time_point.get_time());
-		param_list.add("deltatime", delta_time);
+		param_list.add("addtime", wi->time_point.get_time());//this is no problem
+		param_list.add("deltatime", delta_time);//if time can be subtracted then this would be no problem //seems like yes possible
 	}
 	action->set_param_list(param_list);
 	bool ok = canvas_interface->get_instance()->perform_action(action);
@@ -1321,7 +1333,7 @@ void Widget_Timetrack::WaypointSD::on_drag_finish(bool /*started_by_keys*/)
 	if (action == MOVE)
 		widget.move_selected(deltatime);
 	else if (action == COPY)
-		widget.copy_selected(deltatime);
+		widget.copy_selected(deltatime);//this is intresting part adham mod
 	else if (action == SCALE)
 		widget.scale_selected();
 

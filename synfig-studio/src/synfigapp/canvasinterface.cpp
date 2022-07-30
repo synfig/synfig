@@ -1172,29 +1172,6 @@ CanvasInterface::waypoint_duplicate(ValueNode::Handle value_node,synfig::Waypoin
 }
 
 void
-CanvasInterface::waypoint_paste(synfig::ValueNode::Handle value_node, synfig::Waypoint waypoint, synfig::Time time)//sent here first and seems that everything is also done here, basically the whole thing is done throuh actions
-{
-	Action::Handle 	action(Action::create("WaypointSetSmart"));
-
-	assert(action);
-	if(!action)
-		return;
-
-	waypoint.make_unique();
-	waypoint.set_time(time);//time not this
-
-	action->set_param("canvas",get_canvas());
-	action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
-	action->set_param("waypoint",waypoint);
-	action->set_param("time",time);
-	action->set_param("value_node",value_node);
-
-	if(!get_instance()->perform_action(action))
-		get_ui_interface()->error(_("Action Failed."));
-}
-
-
-void
 CanvasInterface::waypoint_remove(synfigapp::ValueDesc value_desc,synfig::Waypoint waypoint)
 {
 	//ValueNode::Handle value_node();

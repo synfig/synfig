@@ -340,7 +340,7 @@ really_delete_widget(Gtk::Widget *widget)
 // so schedule the real delete to happen in 50ms, giving the action a chance to run
 void
 studio::delete_widget(Gtk::Widget *widget)
-{	std::cout<<std::endl<<"delted"<<std::endl;
+{
 	App::get_selected_canvas_view()->menu_present=false;
 	Glib::signal_timeout().connect(sigc::bind(sigc::ptr_fun(&really_delete_widget), widget), 50);
 }

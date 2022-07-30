@@ -133,24 +133,20 @@ void Dock_Timetrack2::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> ca
 		current_widget_timetrack->set_vexpand(true);
 
 		current_widget_timetrack->signal_button_press_event().connect([&](GdkEventButton* ev){
-			if((ev->button == 3) && ( !(get_canvas_view()->menu_present)) && (get_canvas_view()->waypoint_copied)){//use get canvas view instead of static bool
+			if((ev->button == 3) && ( !(get_canvas_view()->menu_present)) && (get_canvas_view()->waypoint_copied)){
 			//getting time of press
-			//goal is to be able to use get_t_from_pixel_cords which is in timeplotdata
 			synfig::Time time= widget_timeslider.get_time_plot_data()->get_t_from_pixel_coord(ev->x);
 
 			Gtk::Menu* waypoint_menu(manage(new Gtk::Menu()));//like this we make
 			waypoint_menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), waypoint_menu));//just take as is
-			Gtk::MenuItem *item = nullptr;//this needed if we wish to have multiple menu items
-			item = manage(new Gtk::MenuItem(_("_Paste")));
+			Gtk::MenuItem *item = manage(new Gtk::MenuItem(_("_Paste")));
 			item->set_use_underline(true);
-			item->signal_activate().connect(sigc::bind(sigc::mem_fun(*get_canvas_view(),&CanvasView::paste_waypoints),time));//bind the time as an argument
 			item->show();
+			item->signal_activate().connect(sigc::bind(sigc::mem_fun(*get_canvas_view(),&CanvasView::paste_waypoints), time,current_widget_timetrack));
 			waypoint_menu->append(*item);
-			waypoint_menu->popup(3,gtk_get_current_event_time());//ok but dont appear if there is already a menu
-			std::cout<<std::endl<<"caught press"<<ev->button<<std::endl;
+			waypoint_menu->popup(3,gtk_get_current_event_time());
 			}
 
-			std::cout<<std::endl<<"caught press"<<ev->button<<std::endl;
 			return true;
 		});//get the popup menu
 

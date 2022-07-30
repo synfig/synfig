@@ -73,6 +73,7 @@
 #include <gui/states/state_normal.h>
 #include <gui/widgets/widget_canvastimeslider.h>
 #include <gui/widgets/widget_interpolation.h>
+#include <gui/widgets/widget_timetrack.h>
 #include <gui/workarea.h>
 
 #include <pangomm.h>
@@ -2930,26 +2931,19 @@ remove_waypoints(std::set<Waypoint, std::less<UniqueID> > waypoints,
 
 
 void
-CanvasView::copy_waypoints(std::set<Waypoint, std::less<UniqueID> > waypoints,etl::loose_handle<CanvasInterface> canvas_interface)
+CanvasView::copy_waypoints(std::set<Waypoint, std::less<UniqueID> > waypoints)
 {
-	//first make it work as needed for one waypoint entity then we look on to how it could be done for multiple... probably using get_selelcted from select drag helper
 	waypoint_copied=true;
 	waypoints_copied= waypoints;
-	canvas_interface_copied= canvas_interface;
 }
 
-void CanvasView::paste_waypoints(synfig::Time time)
-{//make susre there was a copy before this
-	// Create the action group
-	Action::PassiveGrouper group(canvas_interface_copied->get_instance().get(),_("Paste Waypoints"));
-
+void CanvasView::paste_waypoints(synfig::Time time, Widget_Timetrack* current_widget_timetrack)
+{
 	std::set<Waypoint, std::less<UniqueID> >::const_iterator iter;
-	for (iter = waypoints_copied.begin(); iter != waypoints_copied.end(); iter++)
-	{
-		Waypoint waypoint(*iter);
-		ValueNode::Handle value_node(iter->get_parent_value_node());
-		canvas_interface_copied->waypoint_paste(value_node, waypoint, time);//send to the other function
-	}
+	iter = waypoints_copied.begin();
+	Waypoint waypoint(*iter);
+	synfig::Time initial_time = waypoint.get_time();
+	current_widget_timetrack->copy_selected(time-initial_time, true);
 	waypoint_copied=false;
 }
 
@@ -2976,7 +2970,7 @@ CanvasView::on_waypoint_clicked_canvasview(ValueDesc value_desc,
 		break;
 	case 2:
 	{
-		Gtk::Menu* waypoint_menu(manage(new Gtk::Menu()));//like this we make
+		Gtk::Menu* waypoint_menu(manage(new Gtk::Menu()));
 		menu_present= true;
 		waypoint_menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), waypoint_menu));//just take as is
 
@@ -3004,7 +2998,7 @@ CanvasView::on_waypoint_clicked_canvasview(ValueDesc value_desc,
 		item->show();
 		waypoint_menu->append(*item);
 
-		item = manage(new Gtk::MenuItem(_("_Duplicate")));//mod adham: goal is to see the process
+		item = manage(new Gtk::MenuItem(_("_Duplicate")));
 		item->set_use_underline(true);
 		item->signal_activate().connect(
 			sigc::bind(sigc::ptr_fun(duplicate_waypoints), waypoint_set, canvas_interface()));
@@ -3014,25 +3008,18 @@ CanvasView::on_waypoint_clicked_canvasview(ValueDesc value_desc,
 		item = manage(new Gtk::MenuItem(size == 1 ? _("_Remove") : synfig::strprintf(_("_Remove %d Waypoints"), size)));
 		item->set_use_underline(true);
 		item->signal_activate().connect(
-			sigc::bind(sigc::ptr_fun(remove_waypoints), waypoint_set, canvas_interface()));//see how the action is set here
+			sigc::bind(sigc::ptr_fun(remove_waypoints), waypoint_set, canvas_interface()));
 		item->show();
 		waypoint_menu->append(*item);
 
 		item = manage(new Gtk::MenuItem(_("_Copy")));
 		item->set_use_underline(true);
 		item->signal_activate().connect(
-		sigc::bind(sigc::mem_fun(*this, &CanvasView::copy_waypoints), waypoint_set, //add the functions responsible for copying and pastign
-		canvas_interface()));
+		sigc::bind(sigc::mem_fun(*this, &CanvasView::copy_waypoints), waypoint_set));
 		item->show();
 		waypoint_menu->append(*item);
 
-//		if(waypoint_copied){
-//			item = manage(new Gtk::MenuItem(_("_Paste")));
-//			item->set_use_underline(true);
-//			item->signal_activate().connect(sigc::mem_fun(*this, &CanvasView::paste_waypoints));//get time as well here, but is this really needed?
-//			item->show();
-//			waypoint_menu->append(*item);
-//		}
+		//is a paste here necessary?
 
 
 		if (size == 1 && value_desc.is_valid())
