@@ -42,31 +42,7 @@ set(MODS_ENABLED
     mod_yuv420p
 #    mptr_mplayer # - "This code has vulnerabilities"
 )
-if(MSVC)
-	set(MODS_ENABLED
-			lyr_freetype
-			lyr_std
-			mod_bmp
-			#mod_dv
-			mod_example
-			mod_ffmpeg
-			mod_filter
-			mod_geometry
-			mod_gif
-			mod_gradient
-			mod_imagemagick
-			mod_jpeg
-			#    mod_libavcodec # - build failure
-			#    mod_magickpp # - made optional
-			mod_noise
-			#mod_openexr
-			mod_particle
-			mod_png
-			mod_ppm
-			mod_svg
-			mod_yuv420p
-	)
-endif()
+
 if(LIBMNG_FOUND)
   list(APPEND MODS_ENABLED mod_mng)
 else()
