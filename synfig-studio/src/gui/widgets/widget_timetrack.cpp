@@ -224,20 +224,20 @@ bool Widget_Timetrack::copy_selected(synfig::Time delta_time, bool from_menu) //
 	if (!action)
 		return false;
 
-	synfigapp::Action::ParamList param_list;//this easy
+	synfigapp::Action::ParamList param_list;
 	for (WaypointItem *wi : selection) {
-		param_list.add("canvas", canvas_interface->get_canvas());//easy
-		param_list.add("canvas_interface", canvas_interface);//easy
+		param_list.add("canvas", canvas_interface->get_canvas());
+		param_list.add("canvas_interface", canvas_interface);
 
-		const synfigapp::ValueDesc &value_desc = param_info_map[wi->path.to_string()].get_value_desc();//hmm could be possible
-		if (value_desc.get_value_type() == synfig::type_canvas && !getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")) {//all these depend on prev
+		const synfigapp::ValueDesc &value_desc = param_info_map[wi->path.to_string()].get_value_desc();
+		if (value_desc.get_value_type() == synfig::type_canvas && !getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")) {
 			param_list.add("addcanvas", value_desc.get_value().get(synfig::Canvas::Handle()));
 		} else {
 			param_list.add("addvaluedesc", value_desc);
 		}
 
-		param_list.add("addtime", wi->time_point.get_time());//this is no problem
-		param_list.add("deltatime", delta_time);//if time can be subtracted then this would be no problem //seems like yes possible
+		param_list.add("addtime", wi->time_point.get_time());
+		param_list.add("deltatime", delta_time);
 	}
 	action->set_param_list(param_list);
 	bool ok = canvas_interface->get_instance()->perform_action(action);
