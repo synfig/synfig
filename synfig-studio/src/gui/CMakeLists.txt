@@ -135,9 +135,8 @@ if (MSVC)
 		set(SYNFIG_PIXBUF_LOADERS "${SYNFIG_BUILD_ROOT}/lib/gdk-pixbuf-2.0/2.10.0/loaders/")
 		file(MAKE_DIRECTORY "${SYNFIG_PIXBUF_LOADERS}")
 		file(
-			COPY_FILE
-				"${GDKPIXBUF_QUERYLOADERS}.exe"
-				"${SYNFIG_BUILD_ROOT}/bin/gdk-pixbuf-query-loaders.exe"
+			COPY "${GDKPIXBUF_QUERYLOADERS}.exe"
+			DESTINATION "${SYNFIG_BUILD_ROOT}/bin"
 		)
 
 		file(GLOB GDKPIXBUF_MODULES "${GDKPIXBUF_LOADERS_DIR}/*.dll")

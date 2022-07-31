@@ -4,8 +4,8 @@
 
 # TODO: check if we really need all of them
 find_package(Boost REQUIRED)
-
 find_package(ZLIB REQUIRED)
+find_package(Intl REQUIRED)
 
 ## ETL doesn't install a package configuration so find package will fail
 # find_package(ETL REQUIRED)

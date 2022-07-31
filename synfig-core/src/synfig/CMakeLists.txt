@@ -125,6 +125,7 @@ target_link_libraries(libsynfig PUBLIC
 	ZLIB::ZLIB
 	${LTDL_LIBRARIES}
 	${CMAKE_THREAD_LIBS_INIT}
+	${Intl_LIBRARIES}
 )
 
 if (MLT_FOUND)
@@ -144,6 +145,7 @@ install(
     TARGETS libsynfig
     EXPORT libsynfig
     LIBRARY DESTINATION lib
+		RUNTIME DESTINATION bin
 )
 
 export(
