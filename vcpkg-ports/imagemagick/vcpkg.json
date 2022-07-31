@@ -14,7 +14,8 @@
     "zstd",
     "libjpeg-turbo",
     "liblzma",
-    "libxml2"
+    "libxml2",
+    "openexr"
   ]
 }
 
