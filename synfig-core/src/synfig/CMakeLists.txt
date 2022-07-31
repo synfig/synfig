@@ -145,7 +145,7 @@ install(
     TARGETS libsynfig
     EXPORT libsynfig
     LIBRARY DESTINATION lib
-		RUNTIME DESTINATION bin
+    RUNTIME DESTINATION bin
 )
 
 export(
