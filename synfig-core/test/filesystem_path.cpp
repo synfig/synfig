@@ -1020,6 +1020,125 @@ test_is_absolute_on_windows_with_network_samba_folder()
 #endif
 }
 
+void
+test_normalize_empty_path_keeps_empty()
+{
+	ASSERT(Path().lexically_normal().empty())
+}
+
+void
+test_normalize_path_converts_backlash_to_slash()
+{
+	ASSERT_EQUAL("/a/b/c", Path("\\a\\b\\c").lexically_normal().u8string())
+	ASSERT_EQUAL("/a/b/c/", Path("\\a\\b\\c\\").lexically_normal().u8string())
+	ASSERT_EQUAL("a/b/c", Path("a\\b\\c").lexically_normal().u8string())
+	ASSERT_EQUAL("a/b/c/", Path("a\\b\\c\\").lexically_normal().u8string())
+	ASSERT_EQUAL("/", Path("\\").lexically_normal().u8string())
+	ASSERT_EQUAL("C:/", Path("C:\\").lexically_normal().u8string())
+}
+
+void
+test_normalize_does_not_change_double_slash_of_windows_samba_network_shared_host()
+{
+	ASSERT_EQUAL("\\\\host", Path("\\\\host").lexically_normal().u8string())
+	ASSERT_EQUAL("\\\\host/", Path("\\\\host\\").lexically_normal().u8string())
+}
+
+void
+test_normalize_dot_path_is_dot_without_trailing_slash()
+{
+	ASSERT_EQUAL(".", Path("./").lexically_normal().u8string())
+}
+
+void
+test_normalize_path_with_trailing_dot_dot_slash_removes_slash()
+{
+	ASSERT_EQUAL("..", Path("../").lexically_normal().u8string())
+}
+
+void
+test_normalize_removes_double_slashes()
+{
+	ASSERT_EQUAL("a/b", Path("a//b").lexically_normal().u8string())
+	ASSERT_EQUAL("/a/b", Path("//a//b").lexically_normal().u8string())
+	ASSERT_EQUAL("a/b/", Path("a//b//").lexically_normal().u8string())
+	ASSERT_EQUAL("a/b", Path("a//b").lexically_normal().u8string())
+}
+
+void
+test_normalize_removes_intermediate_special_dot_folder()
+{
+	ASSERT_EQUAL("a/b", Path("a/./b").lexically_normal().u8string())
+	ASSERT_EQUAL("a", Path("./././a").lexically_normal().u8string())
+	ASSERT_EQUAL("b", Path("./b").lexically_normal().u8string())
+	ASSERT_EQUAL("/a/b", Path("/./a/./b").lexically_normal().u8string())
+	ASSERT_EQUAL("/a", Path("/./././a").lexically_normal().u8string())
+	ASSERT_EQUAL("/b", Path("/./b").lexically_normal().u8string())
+	ASSERT_EQUAL("a/", Path("a/.").lexically_normal().u8string())
+	ASSERT_EQUAL("a/", Path("a/././.").lexically_normal().u8string())
+	ASSERT_EQUAL("a/", Path("a/./").lexically_normal().u8string())
+}
+
+void
+test_normalize_removes_intermediate_special_dot_dot_folder()
+{
+	ASSERT_EQUAL("/b", Path("/a/../b").lexically_normal().u8string())
+	ASSERT_EQUAL("/a/", Path("/a/b/..").lexically_normal().u8string())
+	ASSERT_EQUAL("/a/", Path("/a/b/../").lexically_normal().u8string())
+	ASSERT_EQUAL("/b", Path("/a/../../b").lexically_normal().u8string())
+	ASSERT_EQUAL("/c", Path("/a/b/../../c").lexically_normal().u8string())
+	ASSERT_EQUAL("/c", Path("/a/../b/../c").lexically_normal().u8string())
+
+	ASSERT_EQUAL("b", Path("a/../b").lexically_normal().u8string())
+	ASSERT_EQUAL("a/", Path("a/b/..").lexically_normal().u8string())
+	ASSERT_EQUAL("a/", Path("a/b/../").lexically_normal().u8string())
+	ASSERT_EQUAL("../b", Path("a/../../b").lexically_normal().u8string())
+	ASSERT_EQUAL("c", Path("a/b/../../c").lexically_normal().u8string())
+	ASSERT_EQUAL("../../a", Path("../../a").lexically_normal().u8string())
+}
+
+void
+test_normalize_does_not_remove_component_with_prepended_dot()
+{
+	ASSERT_EQUAL(".foo", Path(".foo").lexically_normal().u8string())
+	ASSERT_EQUAL("/.foo", Path("/.foo").lexically_normal().u8string())
+	ASSERT_EQUAL(".a", Path(".a").lexically_normal().u8string())
+	ASSERT_EQUAL("foo/.bar", Path("foo/.bar").lexically_normal().u8string())
+	ASSERT_EQUAL(".bar", Path(".foo/../.bar").lexically_normal().u8string())
+	ASSERT_EQUAL(".foo/.bar/", Path(".foo/./.bar/.").lexically_normal().u8string())
+	ASSERT_EQUAL("foo/.b", Path("foo/.b").lexically_normal().u8string())
+	ASSERT_EQUAL("foo/.bar/end", Path("foo/.bar/end").lexically_normal().u8string())
+}
+
+void
+test_normalize_does_not_remove_component_with_prepended_dot_dot()
+{
+	ASSERT_EQUAL("..foo", Path("..foo").lexically_normal().u8string())
+	ASSERT_EQUAL("/..foo", Path("/..foo").lexically_normal().u8string())
+	ASSERT_EQUAL("..a", Path("..a").lexically_normal().u8string())
+	ASSERT_EQUAL("foo/..bar", Path("foo/..bar").lexically_normal().u8string())
+	ASSERT_EQUAL("..bar", Path(".foo/../..bar").lexically_normal().u8string())
+	ASSERT_EQUAL(".foo/..bar/", Path(".foo/./..bar/.").lexically_normal().u8string())
+	ASSERT_EQUAL("foo/..b", Path("foo/..b").lexically_normal().u8string())
+	ASSERT_EQUAL("foo/..bar/end", Path("foo/..bar/end").lexically_normal().u8string())
+}
+
+void
+test_normalize_remove_special_dot_dot_right_after_root()
+{
+	ASSERT_EQUAL("/", Path("/..").lexically_normal().u8string())
+	ASSERT_EQUAL("/a", Path("/../../a").lexically_normal().u8string())
+	ASSERT_EQUAL("/c", Path("/../b/../c").lexically_normal().u8string())
+}
+
+void
+test_normalize_examples_from_cpp_reference_dot_com()
+{
+	// https://en.cppreference.com/w/cpp/filesystem/path/lexically_normal
+	ASSERT_EQUAL("a/", Path("a/./b/..").lexically_normal().u8string());
+	ASSERT_EQUAL("a/", Path("a/.///b/../").lexically_normal().u8string());
+}
+
 /* === E N T R Y P O I N T ================================================= */
 
 int main() {
@@ -1105,8 +1224,20 @@ int main() {
 	TEST_FUNCTION(test_is_absolute_on_windows_with_drive)
 	TEST_FUNCTION(test_is_absolute_on_windows_with_network_samba_folder)
 
+	TEST_FUNCTION(test_normalize_empty_path_keeps_empty)
+	TEST_FUNCTION(test_normalize_path_converts_backlash_to_slash)
+	TEST_FUNCTION(test_normalize_does_not_change_double_slash_of_windows_samba_network_shared_host)
+	TEST_FUNCTION(test_normalize_dot_path_is_dot_without_trailing_slash)
+	TEST_FUNCTION(test_normalize_path_with_trailing_dot_dot_slash_removes_slash)
+	TEST_FUNCTION(test_normalize_removes_double_slashes)
+	TEST_FUNCTION(test_normalize_removes_intermediate_special_dot_folder)
+	TEST_FUNCTION(test_normalize_removes_intermediate_special_dot_dot_folder)
+	TEST_FUNCTION(test_normalize_does_not_remove_component_with_prepended_dot)
+	TEST_FUNCTION(test_normalize_does_not_remove_component_with_prepended_dot_dot)
+	TEST_FUNCTION(test_normalize_remove_special_dot_dot_right_after_root)
+	TEST_FUNCTION(test_normalize_examples_from_cpp_reference_dot_com)
+
 	TEST_SUITE_END()
 
 	return tst_exit_status;
 }
-

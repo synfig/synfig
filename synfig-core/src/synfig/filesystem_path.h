@@ -80,6 +80,20 @@ public:
 
 	int compare(const Path& p) const noexcept;
 
+	// Generation ------------------------
+
+	/**
+	 * Returns the the normal form of the path.
+	 *
+	 * It does not access the file system, just
+	 * handles the path string itself:
+	 * - remove directory separator duplicates, e.g. ///
+	 * - 'parse' special dot path component: .
+	 * - 'parse' special dot-dot path component: ..
+	 * - use slash as directory separator: /
+	 */
+	Path lexically_normal() const;
+
 	// Decomposition ---------------------
 
 	/**
@@ -151,6 +165,12 @@ private:
 	 * @return a string in native encoding
 	 */
 	static string_type utf8_to_native(const std::string& utf8);
+	/**
+	 * Converts a path to its normal form
+	 * @param utf8 the path in UTF-8 encoding
+	 * @return the normalized path in UTF-8 encoding
+	 */
+	static std::string normalize(std::string path);
 
 	static inline bool is_separator(std::string::value_type c);
 }; // END of class Path

@@ -35,6 +35,9 @@
 
 # include "filesystem_path.h"
 
+# include <algorithm>
+# include <vector>
+
 # ifdef _WIN32
 #  include <codecvt>
 #  include <locale>
@@ -116,6 +119,12 @@ filesystem::Path::compare(const Path& p) const noexcept
 	if (rel_path_pos == std::string::npos)
 		return -1;
 	return 1;
+}
+
+filesystem::Path
+filesystem::Path::lexically_normal() const
+{
+	return normalize(path_);
 }
 
 filesystem::Path
@@ -382,6 +391,122 @@ filesystem::Path::utf8_to_native(const std::string& utf8)
 	// For other OS, it's the file name as it is
 	return utf8;
 #endif
+}
+
+std::string
+filesystem::Path::normalize(std::string path)
+{
+	// Algorithm described in https://en.cppreference.com/w/cpp/filesystem/path
+
+	// 1. If the path is empty, stop (normal form of an empty path is an empty path)
+	if (path.empty())
+		return path;
+
+	// 2. Replace each directory-separator (which may consist of multiple slashes) with a single path::preferred_separator.
+	// 3. Replace each slash character in the root-name with path::preferred_separator.
+	// Both steps above were modified to:
+	// 2-3. (modified) a. convert backslashes to slashes, except initial double slashes (\\host)
+	{
+		std::string::size_type i = 0;
+		// For MS Windows shared folder paths like \\host\folder\file,
+		// we keep \\ for now
+		if (path.size() > 2 && path[0] == '\\' && path[1] == '\\')
+			i = 2;
+		// All other backslashes \ are replaced with slashes /
+		std::replace(path.begin() + i, path.end(), '\\', '/');
+	}
+
+	// 2-3. (modified) b. replace double separators with single one
+	std::string::size_type double_slash_pos = 0;
+	while (true) {
+		double_slash_pos = path.find("//", double_slash_pos);
+		if (double_slash_pos == std::string::npos)
+			break;
+		++double_slash_pos;
+		auto end_pos = double_slash_pos + 1;
+		const auto length = path.length();
+		while (end_pos < length && path[end_pos] == '/')
+			++end_pos;
+		path.erase(double_slash_pos, end_pos - double_slash_pos);
+	}
+
+	// 4. Remove each dot and any immediately following directory-separator.
+	// 5. Remove each non-dot-dot filename immediately followed by a directory-separator and
+	// a dot-dot, along with any immediately following directory-separator.
+
+	auto relative_path_pos = Path(path).get_relative_path_pos();
+
+	if (relative_path_pos != std::string::npos) {
+		typedef std::pair<std::string::size_type, std::string::size_type> ComponentBounds;
+		struct ComponentMeta {
+			ComponentBounds bounds;
+			bool is_dot_dot;
+			bool has_slash;
+		};
+
+		std::vector<ComponentMeta> components;
+		auto is_dot = [] (const std::string& p, const ComponentBounds& bounds) -> bool {
+			return bounds.second == 1 && p[bounds.first] == '.';
+		};
+		auto is_dot_dot = [] (const std::string& p, const ComponentBounds& bounds) -> bool {
+			return bounds.second == 2 && p[bounds.first] == '.' && p[bounds.first + 1] == '.';
+		};
+		bool has_removed_components = false;
+		for (auto pos = relative_path_pos; pos < path.size(); ) {
+			auto end = path.find('/', pos);
+			if (end == std::string::npos)
+				end = path.length();
+			ComponentMeta compo{{pos, end - pos}, false, end != path.length()};
+			compo.is_dot_dot = is_dot_dot(path, compo.bounds);
+
+			pos = end + 1;
+
+			const bool is_current_dot = !compo.is_dot_dot && is_dot(path, compo.bounds);
+			has_removed_components |= compo.is_dot_dot || is_current_dot;
+
+			// ignore special dot .
+			if (is_current_dot)
+				continue;
+
+			// ignore heading special dot-dot if there is a root path
+			if (components.empty() && compo.is_dot_dot && relative_path_pos > 0)
+				continue;
+
+			if (!components.empty() && compo.is_dot_dot) {
+				if (!components.back().is_dot_dot) {
+					components.pop_back();
+					continue;
+				}
+			}
+
+			components.push_back(compo);
+		}
+
+		if (has_removed_components) {
+			std::string new_path;
+			for (const auto& component : components) {
+				new_path.append(path.substr(component.bounds.first, component.bounds.second));
+				if (component.has_slash)
+					new_path.push_back('/');
+			}
+			path = path.replace(relative_path_pos, path.length() - relative_path_pos, new_path);
+		}
+	}
+
+	// 6. If there is root-directory, remove all dot-dots and any directory-separators immediately following them.
+
+	// 7. If the last filename is dot-dot, remove any trailing directory-separator.
+	if (path.length() >= 3 && path.back() == '/') {
+		const std::string::size_type len = path.length();
+		if (path[len - 2] == '.' && path[len - 3] == '.')
+			path.erase(len - 1);
+	}
+
+	// 8. If the path is empty, add a dot (normal form of ./ is .)
+	if (path.empty())
+		path = '.';
+
+	return path;
 }
 
 inline bool
