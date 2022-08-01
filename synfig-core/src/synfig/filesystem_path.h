@@ -67,6 +67,46 @@ public:
 	 */
 	Path(const std::string& path);
 
+	// Concatenation ---------------------
+
+	/** Equivalent to append() */
+	Path& operator/=(const Path& p);
+	/**
+	 * Append path_str as file path subcomponents to this path.
+	 * Example: Path('one').append('two') -> Path('one/two')
+	 */
+	Path& append(const std::string& path_str);
+
+	// Modifiers -------------------------
+
+	/**
+	 * Clears the stored pathname.
+	 * empty() is true after the call.
+	 */
+	void clear() noexcept;
+	/**
+	 * Removes filename path component
+	 * @return @c *this
+	 */
+	Path& remove_filename();
+	/**
+	 * Replaces the last path component with another path
+	 * @param replacement the new filename component
+	 * @return @c *this
+	 */
+	Path& replace_filename(const Path& replacement);
+	/**
+	 * Replaces the extension.
+	 * @param replacement the new extension or let it blank to remove the current one
+	 * @return @c *this
+	 */
+	Path& replace_extension(const Path& replacement = Path());
+	/**
+	 * Swaps two paths
+	 * @param other
+	 */
+	void swap(Path& other) noexcept;
+
 	// Format observers ------------------
 
 	/** Path as a character string in native encoding */
@@ -148,11 +188,17 @@ public:
 	/** Checks whether the path is absolute or relative. */
 	bool is_relative() const;
 
+	friend Path operator/(const Path& lhs, const Path& rhs)
+		{ return Path(lhs) /= rhs; }
+
 private:
 	/** Path in the native encoding */
 	string_type native_path_;
 	/** Path in UTF-8 encoding */
 	std::string path_;
+
+	bool native_path_dirty_;
+	void sync_native_path();
 
 	std::size_t get_root_name_length() const;
 	std::size_t get_relative_path_pos() const;
@@ -176,6 +222,8 @@ private:
 }; // END of class Path
 
 // Non-member functions --------------
+
+void swap(synfig::filesystem::Path& lhs, synfig::filesystem::Path& rhs) noexcept;
 
 inline bool operator==(const Path& lhs, const Path& rhs) noexcept
 	{ return lhs.compare(rhs) == 0; }

@@ -55,6 +55,87 @@ test_path_with_non_empty_string_is_not_empty()
 }
 
 void
+test_append_path_simple_case()
+{
+	ASSERT_EQUAL("a/b", (Path("a") / Path("b")).u8string())
+	ASSERT_EQUAL("/foo/bar/", (Path("/foo") / Path("bar/")).u8string())
+}
+
+void
+test_append_path_does_not_duplicate_slash()
+{
+	ASSERT_EQUAL("a/b", (Path("a/") / Path("b")).u8string())
+	ASSERT_EQUAL("/bar/", (Path("/") / Path("bar/")).u8string())
+}
+
+void
+test_append_path_with_root_path_replaces()
+{
+	ASSERT_EQUAL("/b", (Path("a") / Path("/b")).u8string())
+	ASSERT_EQUAL("/bar/", (Path("/foo") / Path("/bar/")).u8string())
+}
+
+void
+test_append_path_cppreference_examples()
+{
+	// https://en.cppreference.com/w/cpp/filesystem/path/append
+	ASSERT_EQUAL("\\\\host/foo", (Path("\\\\host")  / Path("foo")).u8string())
+	ASSERT_EQUAL("\\\\host/foo", (Path("\\\\host/") / Path("foo")).u8string())
+
+	// On POSIX,
+	ASSERT_EQUAL("foo/", (Path("foo") / Path("")).u8string())
+	ASSERT_EQUAL("/bar", (Path("foo") / Path("/bar")).u8string())
+
+#ifdef _WIN32
+	// On Windows,
+	ASSERT_EQUAL("C:/bar", (Path("foo") / Path("C:/bar")).u8string())
+	ASSERT_EQUAL("C:", (Path("foo") / Path("C:")).u8string())
+	ASSERT_EQUAL("C:", (Path("C:") / Path("")).u8string())
+	ASSERT_EQUAL("C:/bar", (Path("C:foo") / Path("/bar")).u8string())
+	ASSERT_EQUAL("C:foo/bar", (Path("C:foo") / Path("C:bar")).u8string())
+#endif
+}
+
+void
+test_remove_filename()
+{
+	ASSERT_EQUAL("foo/", Path("foo/bar").remove_filename().u8string())
+	ASSERT_EQUAL("foo/", Path("foo/").remove_filename().u8string())
+	ASSERT_EQUAL("/", Path("/foo").remove_filename().u8string())
+	ASSERT_EQUAL("/", Path("/").remove_filename().u8string())
+}
+
+void
+test_replace_filename()
+{
+	ASSERT_EQUAL("/bar", Path("/foo").replace_filename(Path("bar")).u8string())
+	ASSERT_EQUAL("/bar", Path("/").replace_filename(Path("bar")).u8string())
+	ASSERT_EQUAL("bar", Path("foo").replace_filename(Path("bar")).u8string())
+	ASSERT_EQUAL("pub", Path("").replace_filename(Path("pub")).u8string())
+}
+
+void
+test_replace_extension()
+{
+	// examples from https://en.cppreference.com/w/cpp/filesystem/path/replace_extension
+	ASSERT_EQUAL("/foo/bar.png", Path("/foo/bar.jpg").replace_extension(Path(".png")).u8string())
+	ASSERT_EQUAL("/foo/bar.png", Path("/foo/bar.jpg").replace_extension(Path("png")).u8string())
+	ASSERT_EQUAL("/foo/bar.",    Path("/foo/bar.jpg").replace_extension(Path(".")).u8string())
+	ASSERT_EQUAL("/foo/bar",     Path("/foo/bar.jpg").replace_extension(Path("")).u8string())
+	ASSERT_EQUAL("/foo/bar.png", Path("/foo/bar.").replace_extension(Path("png")).u8string())
+	ASSERT_EQUAL("/foo/bar.png", Path("/foo/bar").replace_extension(Path(".png")).u8string())
+	ASSERT_EQUAL("/foo/bar.png", Path("/foo/bar").replace_extension(Path("png")).u8string())
+	ASSERT_EQUAL("/foo/bar.",    Path("/foo/bar").replace_extension(Path(".")).u8string())
+	ASSERT_EQUAL("/foo/bar",     Path("/foo/bar").replace_extension(Path("")).u8string())
+	ASSERT_EQUAL("/foo/..png",   Path("/foo/.").replace_extension(Path(".png")).u8string())
+	ASSERT_EQUAL("/foo/..png",   Path("/foo/.").replace_extension(Path("png")).u8string())
+	ASSERT_EQUAL("/foo/..",      Path("/foo/.").replace_extension(Path(".")).u8string())
+	ASSERT_EQUAL("/foo/.",       Path("/foo/.").replace_extension(Path("")).u8string())
+	ASSERT_EQUAL("/foo/.png",    Path("/foo/").replace_extension(Path(".png")).u8string())
+	ASSERT_EQUAL("/foo/.png",    Path("/foo/").replace_extension(Path("png")).u8string())
+}
+
+void
 test_compare_path_both_empty()
 {
 	Path p1, p2;
@@ -1148,6 +1229,17 @@ int main() {
 	TEST_FUNCTION(test_default_path_constructor_is_empty)
 	TEST_FUNCTION(test_path_with_empty_string_is_empty)
 	TEST_FUNCTION(test_path_with_non_empty_string_is_not_empty)
+
+	TEST_FUNCTION(test_append_path_simple_case)
+	TEST_FUNCTION(test_append_path_does_not_duplicate_slash)
+	TEST_FUNCTION(test_append_path_with_root_path_replaces)
+	TEST_FUNCTION(test_append_path_cppreference_examples)
+
+	TEST_FUNCTION(test_remove_filename)
+
+	TEST_FUNCTION(test_replace_filename)
+
+	TEST_FUNCTION(test_replace_extension)
 
 	TEST_FUNCTION(test_compare_path_both_empty)
 	TEST_FUNCTION(test_compare_path_different_root_name)

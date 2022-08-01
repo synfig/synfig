@@ -68,6 +68,83 @@ filesystem::Path::Path(const std::string& path)
 {
 }
 
+filesystem::Path&
+filesystem::Path::operator/=(const Path& p)
+{
+	if (p.is_absolute() || (p.has_root_name() && p.root_name() != root_name())) {
+		*this = p;
+		return *this;
+	}
+
+	if (p.has_root_directory())
+		path_.erase(get_root_name_length());
+	else if (has_filename() || (!has_root_directory() && is_absolute()))
+		path_.push_back('/');
+	path_.append(p.path_, p.get_root_name_length());
+	native_path_dirty_ = true;
+	return *this;
+}
+
+filesystem::Path&
+filesystem::Path::append(const std::string& path_str)
+{
+	return *this /= Path(path_str);
+}
+
+void
+filesystem::Path::clear() noexcept
+{
+	path_.clear();
+	native_path_.clear();
+	native_path_dirty_ = false;
+}
+
+filesystem::Path&
+filesystem::Path::remove_filename()
+{
+	auto pos = get_filename_pos();
+	if (pos != std::string::npos) {
+		path_.erase(pos);
+		native_path_dirty_ = true;
+	}
+	return *this;
+}
+
+filesystem::Path&
+filesystem::Path::replace_filename(const Path& replacement)
+{
+	remove_filename();
+	return operator/=(replacement);
+}
+
+filesystem::Path&
+filesystem::Path::replace_extension(const Path& replacement)
+{
+	auto pos = get_extension_pos();
+	if (pos != std::string::npos) {
+		path_.erase(pos);
+		native_path_dirty_ = true;
+	}
+	if (!replacement.empty()) {
+		if (replacement.u8string()[0] != '.') {
+			path_.push_back('.');
+		}
+		path_.append(replacement.u8string());
+		native_path_dirty_ = true;
+	}
+	return *this;
+}
+
+void
+filesystem::Path::swap(Path& other) noexcept
+{
+	path_.swap(other.path_);
+	if (!native_path_dirty_ || !other.native_path_dirty_) {
+		native_path_.swap(other.native_path_);
+		std::swap(native_path_dirty_, other.native_path_dirty_);
+	}
+}
+
 const filesystem::Path::value_type*
 filesystem::Path::c_str() const noexcept
 {
@@ -77,6 +154,7 @@ filesystem::Path::c_str() const noexcept
 const filesystem::Path::string_type&
 filesystem::Path::native() const noexcept
 {
+	const_cast<Path*>(this)->sync_native_path();
 	return native_path_;
 }
 
@@ -305,6 +383,15 @@ filesystem::Path::is_relative() const
 	return !has_root_directory();
 }
 
+void
+filesystem::Path::sync_native_path()
+{
+	if (!native_path_dirty_)
+		return;
+	native_path_dirty_ = false;
+	native_path_ = utf8_to_native(path_);
+}
+
 std::size_t
 filesystem::Path::get_root_name_length() const
 {
@@ -513,4 +600,10 @@ inline bool
 filesystem::Path::is_separator(std::string::value_type c)
 {
 	return c == '/' || c == '\\';
+}
+
+void
+filesystem::swap(Path& lhs, Path& rhs) noexcept
+{
+	return lhs.swap(rhs);
 }
