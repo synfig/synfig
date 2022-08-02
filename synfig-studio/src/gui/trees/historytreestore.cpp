@@ -41,8 +41,6 @@
 #include <synfig/general.h>
 #include <synfig/valuenode.h>
 
-#include <synfigapp/action_system.h>
-
 #endif
 
 /* === U S I N G =========================================================== */
@@ -57,7 +55,6 @@ using namespace studio;
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
-
 
 static HistoryTreeStore::Model& ModelHack()
 {

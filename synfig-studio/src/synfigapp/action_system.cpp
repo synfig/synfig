@@ -165,7 +165,8 @@ Action::System::perform_action(etl::handle<Action::Base> action)
 		if (canvas_specific && canvas_specific->is_dirty())
 			request_redraw(canvas_specific->get_canvas_interface());
 
-		return true;}
+		return true;
+	}
 
 	if (!group_stack_.empty())
 		group_stack_.front()->inc_depth();

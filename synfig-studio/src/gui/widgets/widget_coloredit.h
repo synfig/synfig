@@ -208,7 +208,6 @@ private:
 	///@brief The function adds spin button into the grid.
 	void AttachSpinButton(int left, int top, Gtk::SpinButton *spin_button, Gtk::Grid *grid);
 
-
 }; // END of class Widget_ColorEdit
 
 }; // END of namespace studio
