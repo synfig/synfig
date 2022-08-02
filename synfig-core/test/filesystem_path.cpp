@@ -1220,6 +1220,18 @@ test_normalize_examples_from_cpp_reference_dot_com()
 	ASSERT_EQUAL("a/", Path("a/.///b/../").lexically_normal().u8string());
 }
 
+void
+test_relative()
+{
+	ASSERT_EQUAL("../../d", Path("/a/d").lexically_relative(Path("/a/b/c")).u8string());
+	ASSERT_EQUAL("../b/c", Path("/a/b/c").lexically_relative(Path("/a/d")).u8string());
+	ASSERT_EQUAL("b/c", Path("a/b/c").lexically_relative(Path("a")).u8string());
+	ASSERT_EQUAL("../..", Path("a/b/c").lexically_relative(Path("a/b/c/x/y")).u8string());
+	ASSERT_EQUAL(".", Path("a/b/c").lexically_relative(Path("a/b/c")).u8string());
+	ASSERT_EQUAL("../../a/b", Path("a/b").lexically_relative(Path("c/d")).u8string());
+	ASSERT_EQUAL("", Path("a/b").lexically_relative(Path("/a/b")).u8string());
+}
+
 /* === E N T R Y P O I N T ================================================= */
 
 int main() {
@@ -1328,6 +1340,8 @@ int main() {
 	TEST_FUNCTION(test_normalize_does_not_remove_component_with_prepended_dot_dot)
 	TEST_FUNCTION(test_normalize_remove_special_dot_dot_right_after_root)
 	TEST_FUNCTION(test_normalize_examples_from_cpp_reference_dot_com)
+
+	TEST_FUNCTION(test_relative)
 
 	TEST_SUITE_END()
 

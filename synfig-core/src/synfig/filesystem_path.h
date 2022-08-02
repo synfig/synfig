@@ -134,6 +134,13 @@ public:
 	 */
 	Path lexically_normal() const;
 
+	/**
+	 * Returns @c *this made relative to @a base.
+	 * @param base the reference path
+	 * @return the path relative to base
+	 */
+	Path lexically_relative(const Path& base) const;
+
 	// Decomposition ---------------------
 
 	/**

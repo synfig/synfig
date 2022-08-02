@@ -206,6 +206,102 @@ filesystem::Path::lexically_normal() const
 }
 
 filesystem::Path
+filesystem::Path::lexically_relative(const Path& base) const
+{
+	if (root_name() != base.root_name()
+		|| is_absolute() != base.is_absolute()
+		|| (!has_root_directory() && base.has_root_directory()))
+	{
+		return Path();
+	}
+
+	auto a_pos = get_relative_path_pos();
+	auto b_pos = base.get_relative_path_pos();
+	auto a_end = std::string::npos;
+	bool different = false;
+	while (a_pos != std::string::npos
+		   && a_pos < path_.length()
+		   && b_pos != std::string::npos
+		   && b_pos < base.path_.length())
+	{
+		a_end = path_.find_first_of("/\\", a_pos);
+		auto b_end = base.path_.find_first_of("/\\", b_pos);
+		if (a_end == std::string::npos)
+			a_end = path_.length();
+		if (b_end == std::string::npos)
+			b_end = base.path_.length();
+		if (a_end - a_pos != b_end - b_pos
+			|| path_.compare(a_pos, a_end - a_pos, base.path_, b_pos, b_end - b_pos) != 0)
+		{
+			different = true;
+			break;
+		}
+		a_pos = path_.find_first_not_of("/\\", a_end + 1);
+		b_pos = base.path_.find_first_not_of("/\\", b_end + 1);
+	}
+	if (!different) {
+		bool a_ended = a_pos == std::string::npos;
+		bool b_ended = b_pos == std::string::npos;
+		if (a_ended ^ b_ended) {
+			different = true;
+		} else {
+			// check last component
+			a_pos = path_.find_last_not_of("/\\");
+			b_pos = base.path_.find_last_not_of("/\\");
+			if (path_.compare(a_pos, path_.length() - a_pos, base.path_, b_pos, base.path_.length() - b_pos) != 0) {
+				different = true;
+				a_end = path_.length();
+			}
+		}
+	}
+
+	if (!different)
+		return Path(".");
+
+	int b_N = 0;
+	while (b_pos != std::string::npos
+		   && b_pos < base.path_.length())
+	{
+		auto b_end = base.path_.find_first_of("/\\", b_pos);
+		if (b_end == std::string::npos)
+			b_end = base.path_.length();
+		const auto b_length = b_end - b_pos;
+		if (b_length == 2
+			&& base.path_[b_pos] == '.'
+			&& base.path_[b_pos + 1] == '.')
+		{
+			--b_N;
+		}
+		if (b_length != 1
+			|| base.path_[b_pos] != '.')
+		{
+			++b_N;
+		}
+		b_pos = base.path_.find_first_not_of("/\\", b_end + 1);
+	}
+
+	if (b_N < 0)
+		return Path();
+	if (b_N == 0
+		&& (a_pos == std::string::npos
+			|| a_pos == path_.length()
+			|| a_end == a_pos + 1))
+	{
+		return Path(".");
+	}
+	std::string p;
+	if (b_N > 0)
+		p = "..";
+	for (auto i = b_N - 1; i > 0; --i)
+		p += "/..";
+	if (!p.empty() && a_pos < path_.length())
+		p += '/';
+	if (a_pos != std::string::npos)
+		p.append(path_, a_pos);
+	return Path(p);
+}
+
+filesystem::Path
 filesystem::Path::root_name() const
 {
 	return path_.substr(0, get_root_name_length());
