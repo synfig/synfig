@@ -84,8 +84,6 @@ target_sources(synfig
 target_sources(synfig
     PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/target_multi.cpp"
-        "${CMAKE_CURRENT_LIST_DIR}/target_null.cpp"
-        "${CMAKE_CURRENT_LIST_DIR}/target_null_tile.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/target_scanline.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/target_tile.cpp"
 )
