@@ -173,27 +173,6 @@ is_absolute_path(const std::string &path)
 }
 
 inline std::string
-unix_to_local_path(const std::string &path)
-{
-	std::string ret;
-	std::string::const_iterator iter;
-	for(iter=path.begin();iter!=path.end();iter++)
-		if (is_separator(*iter))
-			ret+=ETL_DIRECTORY_SEPARATOR;
-		else
-		switch(*iter)
-		{
-		case '~':
-			ret+='~';
-			break;
-		default:
-			ret+=*iter;
-			break;
-		}
-	return ret;
-}
-
-inline std::string
 current_working_directory() {
 	return Glib::get_current_dir();
 }

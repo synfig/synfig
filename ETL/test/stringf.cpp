@@ -40,23 +40,23 @@ int base_and_dir_name_test(void)
 {
 	int ret=0;
 
-	std::string str(unix_to_local_path("/usr/bin/bleh.exe"));
+	std::string str("/usr/bin/bleh.exe");
 	std::cout<<"Test Case 1 -> "<<str<<std::endl;
 	std::cout<<"basename -> "<<basename(str)<<std::endl;
 	if(basename(str)!="bleh.exe")
 		std::cerr<<"error:Bad basename"<<std::endl,ret++;
 	std::cout<<"dirname -> "<<dirname(str)<<std::endl;
-	if(dirname(str)!=unix_to_local_path("/usr/bin"))
+	if(dirname(str)!="/usr/bin")
 		std::cerr<<"error:Bad dirname"<<std::endl,ret++;
 	std::cout<<std::endl;
 
-	str=unix_to_local_path("/usr/bin/");
+	str="/usr/bin/";
 	std::cout<<"Test Case 2 -> "<<str<<std::endl;
 	std::cout<<"basename -> "<<basename(str)<<std::endl;
 	if(basename(str)!="bin")
 		std::cerr<<"error:Bad basename"<<std::endl,ret++;
 	std::cout<<"dirname -> "<<dirname(str)<<std::endl;
-	if(dirname(str)!=unix_to_local_path("/usr"))
+	if(dirname(str)!="/usr")
 		std::cerr<<"error:Bad dirname"<<std::endl,ret++;
 	std::cout<<std::endl;
 
@@ -66,7 +66,7 @@ int base_and_dir_name_test(void)
 	if(basename(str)!="bleh.exe")
 		std::cerr<<"error:Bad basename"<<std::endl,ret++;
 	std::cout<<"dirname -> "<<dirname(str)<<std::endl;
-	if(dirname(str)!=unix_to_local_path("."))
+	if(dirname(str)!=".")
 		std::cerr<<"error:Bad dirname"<<std::endl,ret++;
 	std::cout<<std::endl;
 
@@ -77,35 +77,35 @@ int relative_path_test()
 {
 	int ret=0;
 
-	std::string curr_path=unix_to_local_path("/usr/local/bin/.");
-	std::string dest_path=unix_to_local_path("/usr/share");
+	std::string curr_path="/usr/local/bin/.";
+	std::string dest_path="/usr/share";
 
 	std::cout<<"curr_path="<<curr_path<<" dest_path="<<dest_path<<std::endl;
 	std::cout<<"relative_path="<<relative_path(curr_path,dest_path)<<std::endl;
-	if(relative_path(curr_path,dest_path)!=unix_to_local_path("../../share"))
+	if(relative_path(curr_path,dest_path)!="../../share")
 		std::cerr<<"Bad relative path"<<std::endl,ret++;
 
 	std::cout<<std::endl;
 
-	curr_path=unix_to_local_path("/home/darco/projects/voria");
-	dest_path=unix_to_local_path("/home/darco/projects/voria/myfile.txt");
+	curr_path="/home/darco/projects/voria";
+	dest_path="/home/darco/projects/voria/myfile.txt";
 	std::cout<<"curr_path="<<curr_path<<" dest_path="<<dest_path<<std::endl;
 	std::cout<<"relative_path="<<relative_path(curr_path,dest_path)<<std::endl;
-	if(relative_path(curr_path,dest_path)!=unix_to_local_path("myfile.txt"))
+	if(relative_path(curr_path,dest_path)!="myfile.txt")
 		std::cerr<<"Bad relative path"<<std::endl,ret++;
 
 	std::cout<<std::endl;
 
-	curr_path=unix_to_local_path("/home/darco/projects/voria");
-	dest_path=unix_to_local_path("/home/darco/projects/voria/files/myfile.txt");
+	curr_path="/home/darco/projects/voria";
+	dest_path="/home/darco/projects/voria/files/myfile.txt";
 	std::cout<<"curr_path="<<curr_path<<" dest_path="<<dest_path<<std::endl;
 	std::cout<<"relative_path="<<relative_path(curr_path,dest_path)<<std::endl;
-	if(relative_path(curr_path,dest_path)!=unix_to_local_path("files/myfile.txt"))
+	if(relative_path(curr_path,dest_path)!="files/myfile.txt")
 		std::cerr<<"Bad relative path"<<std::endl,ret++;
 
 	std::cout<<std::endl;
 
-	curr_path=unix_to_local_path("/usr/local/../include/sys/../linux/linux.h");
+	curr_path="/usr/local/../include/sys/../linux/linux.h";
 	std::cout<<"dirty_path="<<curr_path<<std::endl;
 	std::cout<<"clean_path="<<cleanup_path(curr_path)<<std::endl;
 
