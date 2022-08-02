@@ -1,3 +1,9 @@
+- [`f4d73a0`](https://github.com/synfig/synfig/commit/f4d73a08d5d4e6abaca4934d7121b6d6a7666d2a) chore: Fixed a typo in Preferences->Language dropdown ([#2770](https://github.com/synfig/synfig/issues/2770)) [studio]
+- [`4f42a90`](https://github.com/synfig/synfig/commit/4f42a902e5bf5304a71b0afa843560db81f9cfd3) fix: Fix cross-compilation with MinGW on Debian 11 ([#2772](https://github.com/synfig/synfig/issues/2772)) [ETL] [core] [studio]
+- [`53c5984`](https://github.com/synfig/synfig/commit/53c5984cfcfbc4e73a6c1dd7656f9badf147264f) revert: eliminate the need to set_time() on the search for bones ([#2771](https://github.com/synfig/synfig/issues/2771)) [studio]
+- [`fc4c3b3`](https://github.com/synfig/synfig/commit/fc4c3b390062d3e45c5451bc75b100dc56b6802e) fix: fixed a bug when saving a file to a Windows drive root path and then reusing the file dialog ([#2762](https://github.com/synfig/synfig/issues/2762)) [ETL]
+- [`ac8b5e0`](https://github.com/synfig/synfig/commit/ac8b5e02e3ab36fd0f49708086837cc36be9de62) chore: Enabled some strings for translation ([#2768](https://github.com/synfig/synfig/issues/2768)) [studio]
+- [`f43ba68`](https://github.com/synfig/synfig/commit/f43ba68d4bdd0e7bda2abe84d5cfc68837e275c5) test: Disabled failing test of `synfig::Node` class for now ([#2769](https://github.com/synfig/synfig/issues/2769)) [core]
 - [`61fc780`](https://github.com/synfig/synfig/commit/61fc7801ae12f15c6f76d2409fb33acfc095606d) fix: fixed build when MLT library not found ([#2760](https://github.com/synfig/synfig/issues/2760)) [core]
 - [`6fb0596`](https://github.com/synfig/synfig/commit/6fb0596575c2755b594e38b76ce9b819e3b8b8e3) fix: synfig studio was not saving synfigapp settings on quit ([#2751](https://github.com/synfig/synfig/issues/2751)) [studio]
 - [`19bbb77`](https://github.com/synfig/synfig/commit/19bbb770be6ca20a48f0424ce622633653451291) ci: bump macOS version ([#2761](https://github.com/synfig/synfig/issues/2761))
