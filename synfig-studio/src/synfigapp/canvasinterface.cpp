@@ -794,7 +794,7 @@ CanvasInterface::import(
 		String soundfile = animatedfile_node->get_file_field(0, "sound");
 		if (!soundfile.empty())
 		{
-			soundfile = etl::solve_relative_path(etl::dirname(full_filename), soundfile);
+			soundfile = filesystem::Path(full_filename).append(soundfile).u8string();
 			String short_soundfile = CanvasFileNaming::make_short_filename(get_canvas()->get_file_name(), soundfile);
 			//String full_soundfile = CanvasFileNaming::make_full_filename(get_canvas()->get_file_name(), short_soundfile);
 

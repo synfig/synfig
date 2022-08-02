@@ -337,17 +337,6 @@ inline std::string
 relative_path(std::string path)
 	{ return relative_path(current_working_directory(), path); }
 
-inline std::string
-solve_relative_path(std::string curr_path,std::string dest_path)
-{
-	if(is_absolute_path(dest_path))
-		return cleanup_path(dest_path);
-	if(dest_path.empty())
-		return cleanup_path(curr_path);
-	return cleanup_path(curr_path + ETL_DIRECTORY_SEPARATOR + dest_path);
-}
-
-
 };
 
 /* === E N D =============================================================== */
