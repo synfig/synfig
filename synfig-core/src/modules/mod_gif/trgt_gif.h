@@ -45,7 +45,9 @@
 class gif : public synfig::Target_Scanline
 {
 	SYNFIG_TARGET_MODULE_EXT
+
 private:
+
 	// Class for abstracting the
 	// output of the codes
 	struct bitstream
@@ -161,7 +163,7 @@ private:
 		}
 	};
 
-private:
+
 	bitstream bs;
 	synfig::String filename;
 	synfig::SmartFILE file;
@@ -195,16 +197,16 @@ private:
 public:
 	gif(const char *filename, const synfig::TargetParam& /* params */);
 
-	virtual bool set_rend_desc(synfig::RendDesc *desc);
-	virtual bool init(synfig::ProgressCallback *cb);
-	virtual bool start_frame(synfig::ProgressCallback *cb);
-	virtual void end_frame();
-
 	virtual ~gif();
 
-	virtual synfig::Color * start_scanline(int scanline);
-	virtual bool end_scanline(void);
+	bool set_rend_desc(synfig::RendDesc* desc) override;
+	bool init(synfig::ProgressCallback* cb) override;
 
+	bool start_frame(synfig::ProgressCallback* cb) override;
+	void end_frame() override;
+
+	synfig::Color* start_scanline(int scanline) override;
+	bool end_scanline() override;
 };
 
 /* === E N D =============================================================== */

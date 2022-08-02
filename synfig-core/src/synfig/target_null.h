@@ -54,21 +54,21 @@ public:
 
 	~Target_Null() { delete[] buffer; }
 
-	virtual bool start_frame(ProgressCallback* /*cb*/ = nullptr) {
+	bool start_frame(ProgressCallback* /*cb*/ = nullptr) override {
 	    if (buffer) delete[] buffer;
 	    buffer = new Color[desc.get_w()*sizeof(Color)];
 	    return true;
 	}
 
-	virtual void end_frame() {
+	void end_frame() override {
 	    if (buffer) delete[] buffer;
 		buffer = nullptr;
 	    return;
 	}
 
-	virtual Color * start_scanline(int /*scanline*/) { return buffer; }
+	Color* start_scanline(int /*scanline*/) override { return buffer; }
 
-	virtual bool end_scanline() { return true; }
+	bool end_scanline() override { return true; }
 
 	static Target* create(const char* /*filename*/, const synfig::TargetParam&) { return new Target_Null(); }
 }; // END of class Target_Null

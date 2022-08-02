@@ -45,7 +45,9 @@
 class imagemagick_trgt : public synfig::Target_Scanline
 {
 	SYNFIG_TARGET_MODULE_EXT
+
 private:
+
 #ifdef HAVE_FORK
 	pid_t pid = -1;
 #endif
@@ -57,17 +59,21 @@ private:
 	synfig::Color *color_buffer;
 	synfig::PixelFormat pf;
 	synfig::String sequence_separator;
+
 public:
+
 	imagemagick_trgt(const char *filename,
 					 const synfig::TargetParam& /* params */);
 	virtual ~imagemagick_trgt();
 
-	virtual bool set_rend_desc(synfig::RendDesc *desc);
-	virtual bool init(synfig::ProgressCallback *cb);
-	virtual bool start_frame(synfig::ProgressCallback *cb);
-	virtual void end_frame();
-	virtual synfig::Color * start_scanline(int scanline);
-	virtual bool end_scanline();
+	bool set_rend_desc(synfig::RendDesc* desc) override;
+	bool init(synfig::ProgressCallback* cb) override;
+
+	bool start_frame(synfig::ProgressCallback* cb) override;
+	void end_frame() override;
+
+	synfig::Color* start_scanline(int scanline) override;
+	bool end_scanline() override;
 };
 
 /* === E N D =============================================================== */

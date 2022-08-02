@@ -47,7 +47,9 @@ extern "C" {
 class jpeg_trgt : public synfig::Target_Scanline
 {
 	SYNFIG_TARGET_MODULE_EXT
+
 private:
+
 	FILE *file;
 	int /*w,h,*/quality;
 	struct jpeg_compress_struct cinfo;
@@ -64,12 +66,13 @@ public:
 	jpeg_trgt(const char *filename, const synfig::TargetParam& /* params */);
 	virtual ~jpeg_trgt();
 
-	virtual bool set_rend_desc(synfig::RendDesc *desc);
-	virtual bool start_frame(synfig::ProgressCallback *cb);
-	virtual void end_frame();
+	bool set_rend_desc(synfig::RendDesc* desc) override;
 
-	virtual synfig::Color * start_scanline(int scanline);
-	virtual bool end_scanline();
+	bool start_frame(synfig::ProgressCallback* cb) override;
+	void end_frame() override;
+
+	synfig::Color* start_scanline(int scanline) override;
+	bool end_scanline() override;
 };
 
 /* === E N D =============================================================== */

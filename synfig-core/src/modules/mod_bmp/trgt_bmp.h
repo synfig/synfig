@@ -43,7 +43,9 @@
 class bmp : public synfig::Target_Scanline
 {
 	SYNFIG_TARGET_MODULE_EXT
+
 private:
+
 	int rowspan;
 	int imagecount;
 	bool multi_image;
@@ -58,12 +60,13 @@ public:
 	bmp(const char *filename, const synfig::TargetParam& /* params */);
 	virtual ~bmp();
 
-	virtual bool set_rend_desc(synfig::RendDesc *desc);
-	virtual bool start_frame(synfig::ProgressCallback *cb);
-	virtual void end_frame();
-	virtual synfig::Color * start_scanline(int scanline);
-	virtual bool end_scanline();
+	bool set_rend_desc(synfig::RendDesc* desc) override;
 
+	bool start_frame(synfig::ProgressCallback* cb) override;
+	void end_frame() override;
+
+	synfig::Color* start_scanline(int scanline) override;
+	bool end_scanline() override;
 };
 
 /* === E N D =============================================================== */
