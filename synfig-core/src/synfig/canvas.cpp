@@ -754,7 +754,7 @@ Canvas::surefind_canvas(const String &id, String &warnings)
 		String file_name(id,0,id.find_first_of('#'));
 		String external_id(id,id.find_first_of('#')+1);
 
-		file_name=unix_to_local_path(file_name);
+		file_name=FileSystem::fix_slashes(file_name);
 
 		Canvas::Handle external_canvas;
 
@@ -843,7 +843,7 @@ Canvas::find_canvas(const String &id, String &warnings)const
 		String file_name(id,0,id.find_first_of('#'));
 		String external_id(id,id.find_first_of('#')+1);
 
-		file_name=unix_to_local_path(file_name);
+		file_name=FileSystem::fix_slashes(file_name);
 
 		Canvas::Handle external_canvas;
 
