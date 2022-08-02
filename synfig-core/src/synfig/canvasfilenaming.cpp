@@ -111,7 +111,7 @@ CanvasFileNaming::make_short_filename(const String &canvas_filename, const Strin
 	String canvas_path = etl::dirname(canvas_absolute_filename);
 	String canvas_basename = filename_base(canvas_absolute_filename);
 	String absolute_filename = etl::absolute_path(canvas_path, clean_filename);
-	String relative_filename = etl::relative_path(canvas_path, absolute_filename);
+	String relative_filename = filesystem::Path(absolute_filename).relative_to(canvas_path).u8string();
 
 	// convert "mycanvas.sfg#images/filename.png" to "#filename.png"
 	String prefix = canvas_basename + container_prefix;

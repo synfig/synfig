@@ -77,35 +77,7 @@ int relative_path_test()
 {
 	int ret=0;
 
-	std::string curr_path="/usr/local/bin/.";
-	std::string dest_path="/usr/share";
-
-	std::cout<<"curr_path="<<curr_path<<" dest_path="<<dest_path<<std::endl;
-	std::cout<<"relative_path="<<relative_path(curr_path,dest_path)<<std::endl;
-	if(relative_path(curr_path,dest_path)!="../../share")
-		std::cerr<<"Bad relative path"<<std::endl,ret++;
-
-	std::cout<<std::endl;
-
-	curr_path="/home/darco/projects/voria";
-	dest_path="/home/darco/projects/voria/myfile.txt";
-	std::cout<<"curr_path="<<curr_path<<" dest_path="<<dest_path<<std::endl;
-	std::cout<<"relative_path="<<relative_path(curr_path,dest_path)<<std::endl;
-	if(relative_path(curr_path,dest_path)!="myfile.txt")
-		std::cerr<<"Bad relative path"<<std::endl,ret++;
-
-	std::cout<<std::endl;
-
-	curr_path="/home/darco/projects/voria";
-	dest_path="/home/darco/projects/voria/files/myfile.txt";
-	std::cout<<"curr_path="<<curr_path<<" dest_path="<<dest_path<<std::endl;
-	std::cout<<"relative_path="<<relative_path(curr_path,dest_path)<<std::endl;
-	if(relative_path(curr_path,dest_path)!="files/myfile.txt")
-		std::cerr<<"Bad relative path"<<std::endl,ret++;
-
-	std::cout<<std::endl;
-
-	curr_path="/usr/local/../include/sys/../linux/linux.h";
+	std::string curr_path="/usr/local/../include/sys/../linux/linux.h";
 	std::cout<<"dirty_path="<<curr_path<<std::endl;
 	std::cout<<"clean_path="<<cleanup_path(curr_path)<<std::endl;
 

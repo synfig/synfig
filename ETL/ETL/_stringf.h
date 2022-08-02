@@ -172,38 +172,6 @@ current_working_directory() {
 }
 
 inline std::string
-get_root_from_path(std::string path)
-{
-	std::string ret;
-	std::string::const_iterator iter;
-
-	for(iter=path.begin();iter!=path.end();++iter)
-	{
-		if(is_separator(*iter))
-			break;
-		ret+=*iter;
-	}
-	//if(iter!=path.end())
-		ret+=ETL_DIRECTORY_SEPARATOR;
-	return ret;
-}
-
-inline std::string
-remove_root_from_path(std::string path)
-{
-	while(!path.empty())
-	{
-		if(is_separator(path[0]))
-		{
-			path.erase(path.begin());
-			return path;
-		}
-		path.erase(path.begin());
-	}
-	return path;
-}
-
-inline std::string
 cleanup_path(std::string path)
 {
     // remove '.'
@@ -292,50 +260,6 @@ absolute_path(std::string curr_path, std::string path)
 inline std::string
 absolute_path(std::string path)
 	{ return absolute_path(current_working_directory(), path); }
-
-inline std::string
-relative_path(std::string curr_path,std::string dest_path)
-{
-	// If dest_path is already a relative path,
-	// then there is no need to do anything.
-	if(!is_absolute_path(dest_path))
-		dest_path=absolute_path(dest_path);
-	else
-		dest_path=cleanup_path(dest_path);
-
-	if(!is_absolute_path(curr_path))
-		curr_path=absolute_path(curr_path);
-	else
-		curr_path=cleanup_path(curr_path);
-
-#ifdef _WIN32
-	// If we are on windows and the dest path is on a different drive,
-	// then there is no way to make a relative path to it.
-	if(dest_path.size()>=3 && dest_path[1]==':' && dest_path[0]!=curr_path[0])
-		return dest_path;
-#endif
-
-	if(curr_path==dirname(dest_path))
-		return basename(dest_path);
-
-	while(!dest_path.empty() && !curr_path.empty() && get_root_from_path(dest_path)==get_root_from_path(curr_path))
-	{
-		dest_path=remove_root_from_path(dest_path);
-		curr_path=remove_root_from_path(curr_path);
-	}
-
-	while(!curr_path.empty())
-	{
-		dest_path="../"+dest_path;
-		curr_path=remove_root_from_path(curr_path);
-	}
-
-	return dest_path;
-}
-
-inline std::string
-relative_path(std::string path)
-	{ return relative_path(current_working_directory(), path); }
 
 };
 

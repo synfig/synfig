@@ -1297,6 +1297,16 @@ test_relative()
 	ASSERT_EQUAL("", Path("a/b").lexically_relative(Path("/a/b")).u8string());
 }
 
+void
+test_relative_ported_from_old_etl_stringf()
+{
+	ASSERT_EQUAL("myfile.txt", Path("/home/darco/projects/voria/myfile.txt").lexically_relative(Path("/home/darco/projects/voria")).u8string())
+
+	ASSERT_EQUAL("files/myfile.txt", Path("/home/darco/projects/voria/files/myfile.txt").lexically_relative(Path("/home/darco/projects/voria")).u8string())
+
+	ASSERT_EQUAL("../../share", Path("/usr/share").lexically_relative(Path("/usr/local/bin/.")).u8string())
+}
+
 /* === E N T R Y P O I N T ================================================= */
 
 int main() {
@@ -1414,6 +1424,7 @@ int main() {
 	TEST_FUNCTION(test_normalize_examples_from_cpp_reference_dot_com)
 
 	TEST_FUNCTION(test_relative)
+	TEST_FUNCTION(test_relative_ported_from_old_etl_stringf)
 
 	TEST_SUITE_END()
 
