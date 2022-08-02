@@ -511,7 +511,6 @@ Widget_ColorEdit::on_color_changed()
 		Gdk::RGBA prevColor = hvsColorWidget->get_previous_rgba();
 		Color synfigColor;
 
-			//drag ended
 		if(!(hvsColorWidget->is_adjusting())){//drag over
 			Color synfigColorTemp(
 					newColor.get_red(),
@@ -519,7 +518,8 @@ Widget_ColorEdit::on_color_changed()
 					newColor.get_blue() );
 				synfigColor=synfigColorTemp;
 				get_initial_color= true;
-				wheel_pressed=false;}
+				wheel_pressed=false;
+		}
 		else{//drag did not end
 			synfigapp::Action::System::block_new_history=true;
 			Color synfigColorTemp(
@@ -538,10 +538,10 @@ Widget_ColorEdit::on_color_changed()
 			get_initial_color= false;
 		}
 
-		//set og real quick while its the last iteration
+
 		if(get_initial_color){//last time now
 			synfigapp::Action::System::block_new_history=true;
-			initial_color = App::get_selected_canvas_gamma().apply(initial_color); //want to set it while not sending action		//volor setting
+			initial_color = App::get_selected_canvas_gamma().apply(initial_color); //set original color while not sending action
 			set_value(initial_color);
 			colorHVSChanged = false;
 			on_value_changed();
