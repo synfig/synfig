@@ -33,7 +33,6 @@
 #include <synfig/target_scanline.h>
 #include <synfig/string.h>
 #include <synfig/surface.h>
-#include <synfig/targetparam.h>
 #include <OpenEXR/ImfArray.h>
 #include <OpenEXR/ImfRgbaFile.h>
 

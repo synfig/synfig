@@ -32,8 +32,6 @@
 
 #include <synfig/target_scanline.h>
 #include <synfig/string.h>
-#include <synfig/targetparam.h>
-#include <cstdio>
 
 #include <vector>
 

@@ -33,7 +33,6 @@
 #include <synfig/target_scanline.h>
 #include <synfig/string.h>
 #include <synfig/smartfile.h>
-#include <synfig/targetparam.h>
 
 /* === M A C R O S ========================================================= */
 

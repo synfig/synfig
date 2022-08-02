@@ -32,7 +32,6 @@
 
 #include <png.h>
 #include <synfig/target_scanline.h>
-#include <synfig/targetparam.h>
 #include <cstdio>
 
 /* === M A C R O S ========================================================= */
