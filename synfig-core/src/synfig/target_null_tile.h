@@ -58,7 +58,7 @@ public:
 
 	virtual void end_frame() { return; }
 
-	static Target* create(const char */*filename*/=0) { return new Target_Null_Tile(); }
+	static Target* create(const char* /*filename*/, const synfig::TargetParam&) { return new Target_Null_Tile(); }
 }; // END of class Target_Null_Tile
 
 }; // END of namespace synfig
