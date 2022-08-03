@@ -332,6 +332,7 @@ Widget_ColorEdit::SliderRow(int left, int top, ColorSlider* color_widget, std::s
 	grid->attach(*label,        left,   top, 1, 1);
 	grid->attach(*color_widget, left+1, top, 1, 1);
 }
+bool escape_cancel=false;
 
 void
 Widget_ColorEdit::AttachSpinButton(int left, int top, Gtk::SpinButton *spin_button, Gtk::Grid *grid)
@@ -436,8 +437,9 @@ Widget_ColorEdit::Widget_ColorEdit():
 		Gtk::Box* box_cast_2 = static_cast<Gtk::Box*>( internal_child_2[0] );
 		std::vector<Widget*> internal_child_3 = box_cast_2->get_children(); //internal_child_3[0] is the color wheel widget
 
-		internal_child_3[0]->signal_button_press_event().connect([&](GdkEventButton *ev){ wheel_pressed=true;return false;},false);
+		internal_child_3[0]->signal_button_press_event().connect([&](GdkEventButton *ev){ wheel_pressed=true; escape_cancel=false; return false;},false);
 		internal_child_3[0]->signal_button_release_event().connect([&](GdkEventButton *ev){ if(wheel_pressed)wheel_released=true;return false;},false);
+		internal_child_3[0]->signal_key_press_event().connect([&](GdkEventKey *ev){if(ev->keyval == GDK_KEY_Escape)escape_cancel=true;return true;},false);
 
 		hvsColorWidget->signal_color_changed().connect(sigc::mem_fun(*this, &studio::Widget_ColorEdit::on_color_changed));
 		//TODO: Anybody knows how to set min size for this widget? I've tried use set_size_request(..). But it doesn't works.
@@ -539,7 +541,7 @@ Widget_ColorEdit::on_color_changed()
 		}
 
 
-		if(get_initial_color){//last time now
+		if(get_initial_color || escape_cancel){//last time now
 			synfigapp::Action::System::block_new_history=true;
 			initial_color = App::get_selected_canvas_gamma().apply(initial_color); //set original color while not sending action
 			set_value(initial_color);
@@ -547,12 +549,14 @@ Widget_ColorEdit::on_color_changed()
 			on_value_changed();
 			synfigapp::Action::System::block_new_history=false;
 		}
-		synfigColor = App::get_selected_canvas_gamma().apply(synfigColor);
-		set_value(synfigColor);
-		colorHVSChanged = true;
-		on_value_changed();
-		wheel_released=false;
-		synfigapp::Action::System::block_new_history=false;//default is no block unless drag then block
+		if(!escape_cancel){
+			synfigColor = App::get_selected_canvas_gamma().apply(synfigColor);
+			set_value(synfigColor);
+			colorHVSChanged = true;
+			on_value_changed();
+			wheel_released=false;
+			synfigapp::Action::System::block_new_history=false;//default is no block unless drag then block
+		}
 	}
 
 	if (!colorHVSChanged) //color change is not from a wheel drag
