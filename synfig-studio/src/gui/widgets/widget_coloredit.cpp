@@ -498,7 +498,8 @@ Widget_ColorEdit::on_color_changed()
 		Color synfigColor(
 			newColor.get_red(),
 			newColor.get_green(),
-			newColor.get_blue() );
+			newColor.get_blue(),
+			A_adjustment->get_value()/100);
 		synfigColor = App::get_selected_canvas_gamma().apply(synfigColor);
 		set_value(synfigColor);
 		colorHVSChanged = true; //I reset the flag in setHVSColor(..)
