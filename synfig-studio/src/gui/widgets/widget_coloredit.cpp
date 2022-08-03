@@ -439,7 +439,12 @@ Widget_ColorEdit::Widget_ColorEdit():
 
 		internal_child_3[0]->signal_button_press_event().connect([&](GdkEventButton *ev){ wheel_pressed=true; escape_cancel=false; return false;},false);
 		internal_child_3[0]->signal_button_release_event().connect([&](GdkEventButton *ev){ if(wheel_pressed)wheel_released=true;return false;},false);
-		internal_child_3[0]->signal_key_press_event().connect([&](GdkEventKey *ev){if(ev->keyval == GDK_KEY_Escape)escape_cancel=true;return true;},false);
+		internal_child_3[0]->signal_key_press_event().connect([&](GdkEventKey *ev){
+			if((ev->keyval == GDK_KEY_Escape) && (wheel_pressed)){
+				escape_cancel=true;on_color_changed();
+				return true;
+			}
+			return false;},false);
 
 		hvsColorWidget->signal_color_changed().connect(sigc::mem_fun(*this, &studio::Widget_ColorEdit::on_color_changed));
 		//TODO: Anybody knows how to set min size for this widget? I've tried use set_size_request(..). But it doesn't works.
