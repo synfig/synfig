@@ -981,10 +981,17 @@ WorkArea::get_focus_point()const
 	return synfig::Point(get_scrollx_adjustment()->get_value()*x_factor, get_scrolly_adjustment()->get_value()*y_factor);
 }
 
+bool rotate=false;
+
 bool
 WorkArea::on_key_press_event(GdkEventKey* event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
+	std::cout<<"key press event"<<std::endl;
+	if((event->state == GDK_CONTROL_MASK) /*&&*/ /*(event->type == GDK_KEY_PRESS)*/){ // not working properly
+			rotate=true;
+			std::cout<<"rotate flag true"<<std::endl;
+	}
 	auto event_result = canvas_view->get_smach().process_event(
 		EventKeyboard(EVENT_WORKAREA_KEY_DOWN, event->keyval, Gdk::ModifierType(event->state)));
 	if (event_result != Smach::RESULT_OK)
@@ -1046,6 +1053,7 @@ bool
 WorkArea::on_key_release_event(GdkEventKey* event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
+	rotate=false;
 	auto event_result = canvas_view->get_smach().process_event(
 		EventKeyboard(EVENT_WORKAREA_KEY_UP, event->keyval, Gdk::ModifierType(event->state)) );
 	if (event_result != Smach::RESULT_OK)
@@ -1347,19 +1355,20 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				//}
 
 				// Check for a guide click
-				if (show_guides) {
-					GuideList::iterator iter = find_guide_x(mouse_pos,radius);
-					if (iter == get_guide_list_x().end()) {
+				if (show_guides) { // ok here is intresting part  //this is whn the ruler is already in the canvas and we move it but fr the initia ruler getting and moving its in the other event first
+					std::cout<<std::endl<<"from draw event"<<std::endl;
+					GuideList::iterator iter = find_guide_x(mouse_pos,radius); //we get the iterator to the found guide
+					if (iter == get_guide_list_x().end()) { //this means then its not found
 						curr_guide_is_x = false;
-						iter = find_guide_y(mouse_pos,radius);
+						iter = find_guide_y(mouse_pos,radius); // maes much snese
 					} else {
 						curr_guide_is_x = true;
-					}
+					}//till here purpose is to set flags of which hor or vert ruler
 
-					if (iter != get_guide_list_x().end() && iter != get_guide_list_y().end()) {
-						set_drag_mode(DRAG_GUIDE);
-						curr_guide = iter;
-						return true;
+					if (iter != get_guide_list_x().end() && iter != get_guide_list_y().end()) {//meaning if its sure we found a guide
+						set_drag_mode(DRAG_GUIDE);// drag mode becomes guide
+						curr_guide = iter;// curr_guide iter is updated with the current guide
+						return true; //so basically this all is just work done on press to determine which guide we are working with then placing it in curr_guide
 					}
 				}
 
@@ -1492,11 +1501,33 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 	        break;
 		}
 		case DRAG_GUIDE: {
-			if(curr_guide_is_x)
-				*curr_guide = mouse_pos[0];
-			else
+			if(curr_guide_is_x){// Mod adham: this is where the postion is inserted but what is curr_guide
+				if(!rotate){//to keep initial value unchanged if rotated
+				*curr_guide = mouse_pos[0]; // so basically curr_guide is iterator to the correct elemtn so we here set the element itselfs value.
+				std::cout<<"we changing the og cord"<<std::endl<<std::endl;
+				}
+				if(rotate){
+					std::cout<<"we changing the rotate cords"<<std::endl<<std::endl;
+				*curr_guide_accomp_duckamtic = mouse_pos[1]; //accoomp guide only has a value when it was moved while control pressed.
+				*curr_guide_accomp_duckamtic_other= mouse_pos[0];
+
+//				std::array<float,2> accomp_cords_garb = { mouse_pos[0] , mouse_pos[1] };
+//				*curr_accomp_guide = accomp_cords_garb;
+				}
+			}
+			else{
+				if(!rotate)
 				*curr_guide = mouse_pos[1];
-			drawing_area->queue_draw();
+				if(rotate){
+				std::cout<<"blablalbl"<<std::endl;
+				*curr_guide_accomp_duckamtic = mouse_pos[0];
+				*curr_guide_accomp_duckamtic_other= mouse_pos[1];
+//				std::array<float,2> accomp_cords_garb = { mouse_pos[0] , mouse_pos[1] };
+//				*curr_accomp_guide = accomp_cords_garb;
+				}
+			}
+
+			drawing_area->queue_draw(); //drawing
 	        break;
 		}
 		default: break;
@@ -1779,11 +1810,17 @@ WorkArea::on_hruler_event(GdkEvent *event)
 	case GDK_BUTTON_PRESS:
 		if (get_drag_mode() == DRAG_NONE && show_guides) {
 			set_drag_mode(DRAG_GUIDE);
-			curr_guide = get_guide_list_y().insert(get_guide_list_y().begin(), 0.0);
+			//mod adham: starting point here we insert the guides_list_y accompanying event point but with a value which wed know as basically none
+			curr_guide = get_guide_list_y().insert(get_guide_list_y().begin(), 0.0);//inserted at the beginning i.e. before prev begin
+			get_y_list_accomp_cord().insert(get_y_list_accomp_cord().begin(), -1000); //insert with garbage value and only enter real value in draw event when control is pressed
+			get_y_list_accomp_cord_other().insert(get_y_list_accomp_cord_other().begin(), -1000);
+//			std::array<float,2> accomp_cords_garb = { -1000 , -1000 };
+//			get_accomp_list_y().insert(get_accomp_list_y().begin(), accomp_cords_garb);
 			curr_guide_is_x = false;
 		}
 		return true;
 	case GDK_MOTION_NOTIFY:
+			std::cout<<std::endl<<"from hruler event event"<<std::endl;
 		// Guide movement
 		if (get_drag_mode() == DRAG_GUIDE && !curr_guide_is_x) {
 			// Event is in the hruler, which has a slightly different
@@ -1791,7 +1828,7 @@ WorkArea::on_hruler_event(GdkEvent *event)
 			event->motion.y -= hruler->get_height()+2;
 
 			// call the on drawing area event to refresh everything.
-			return on_drawing_area_event(event);
+			return on_drawing_area_event(event); //see what this does
 		}
 		return true;
 	case GDK_BUTTON_RELEASE:
@@ -1817,6 +1854,10 @@ WorkArea::on_vruler_event(GdkEvent *event)
 		if (get_drag_mode() == DRAG_NONE && show_guides) {
 			set_drag_mode(DRAG_GUIDE);
 			curr_guide=get_guide_list_x().insert(get_guide_list_x().begin(),0.0);
+			get_x_list_accomp_cord().insert(get_x_list_accomp_cord().begin(), -1000); //insert with garbage value and only enter real value in draw event when control is pressed
+			get_x_list_accomp_cord_other().insert(get_x_list_accomp_cord_other().begin(), -1000);
+//			std::array<float,2> accomp_cords_garb = { -1000 , -1000 };
+//			get_accomp_list_x().insert(get_accomp_list_x().begin(), accomp_cords_garb);
 			curr_guide_is_x=true;
 		}
 		return true;

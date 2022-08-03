@@ -238,6 +238,8 @@ public:
 
 	// used in renderer_guides.cpp
 	GuideList::iterator curr_guide;
+	GuideList::iterator curr_guide_accomp; //this need to point to correct accompanying element so we can set its value
+//	AccompGuideList::iterator curr_accomp_guide;
 
 	// used in renderer_timecode.cpp
 	int timecode_width, timecode_height;

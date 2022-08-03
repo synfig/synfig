@@ -812,26 +812,39 @@ Duckmatic::set_guides_color(const synfig::Color &c)
 }
 
 Duckmatic::GuideList::iterator
-Duckmatic::find_guide_x(synfig::Point pos, float radius)
+Duckmatic::find_guide_x(synfig::Point pos, float radius) // returns found guide iterator which is actually just implied from its name
 {
-	GuideList::iterator iter,best(guide_list_x_.end());
+	GuideList::iterator iter,best(guide_list_x_.end()); // defining two iterators iter and best.--- best being the iterator following the elast element of the list
+	GuideList::iterator iter_accomp = list_x_accomp_cord_.begin();
+	GuideList::iterator iter_accomp_other = list_x_accomp_cord_other_.begin();
+//	AccompGuideList::iterator accomp_iter = accomp_list_x_.begin();
 	float dist(radius);
 	for(iter=guide_list_x_.begin();iter!=guide_list_x_.end();++iter)
 	{
-		float amount(std::fabs(*iter-pos[0]));
-		if(amount<dist)
+		float amount(std::fabs(*iter-pos[0])); // Abs[x val of list elemnt - x value of mouse]
+		if(amount<dist) // ?? what exactly is radius but ok
 		{
 			dist=amount;
-			best=iter;
+			best=iter; //best is now the found iter
+			curr_guide_accomp_duckamtic= iter_accomp;
+			curr_guide_accomp_duckamtic_other= iter_accomp_other;
+//			curr_accomp_guide= accomp_iter;
 		}
+		iter_accomp++;
+//		accomp_iter++;
+		iter_accomp_other++;
 	}
-	return best;
+	return best; //we return the found iter but if not found we return the iterator to the end
 }
 
 Duckmatic::GuideList::iterator
 Duckmatic::find_guide_y(synfig::Point pos, float radius)
 {
 	GuideList::iterator iter,best(guide_list_y_.end());
+	GuideList::iterator iter_accomp = list_y_accomp_cord_.begin();
+	GuideList::iterator iter_accomp_other = list_y_accomp_cord_other_.begin();
+//	AccompGuideList::iterator accomp_iter = accomp_list_y_.begin();
+
 	float dist(radius);
 	for(iter=guide_list_y_.begin();iter!=guide_list_y_.end();++iter)
 	{
@@ -840,7 +853,13 @@ Duckmatic::find_guide_y(synfig::Point pos, float radius)
 		{
 			dist=amount;
 			best=iter;
+			curr_guide_accomp_duckamtic= iter_accomp;
+			curr_guide_accomp_duckamtic_other= iter_accomp_other;
+//			curr_accomp_guide= accomp_iter;
 		}
+		iter_accomp++;
+//		accomp_iter++;
+		iter_accomp_other++;
 	}
 	return best;
 }

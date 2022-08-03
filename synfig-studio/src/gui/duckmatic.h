@@ -148,7 +148,9 @@ public:
 
 	typedef Duck::Type Type;
 
-	typedef std::list<float> GuideList;
+	typedef std::list<float> GuideList; //ok so typedef its a float list, ard btw chance to learn more about lists
+
+//	typedef std::list<std::array<float, 2>> AccompGuideList;
 
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
@@ -190,8 +192,16 @@ private:
 
 	mutable sigc::signal<void> signal_sketch_saved_;
 
-	GuideList guide_list_x_;
+	GuideList guide_list_x_; // basically this is a list containing the x cordinate of each vertical ruler
+	GuideList list_x_accomp_cord_;
+	GuideList list_x_accomp_cord_other_;
+//	AccompGuideList accomp_list_x_;
+
 	GuideList guide_list_y_;
+	GuideList list_y_accomp_cord_;
+	GuideList list_y_accomp_cord_other_;
+
+//	AccompGuideList accomp_list_y_;
 
 	mutable synfig::String sketch_filename_;
 
@@ -211,6 +221,10 @@ protected:
 	etl::handle<Bezier> selected_bezier;
 
 	synfig::Time cur_time;
+
+	GuideList::iterator curr_guide_accomp_duckamtic;
+	GuideList::iterator curr_guide_accomp_duckamtic_other;
+//	AccompGuideList::iterator curr_accomp_guide;
 
 	//! This flag is set if operations should snap to the grid
 	/*! \todo perhaps there should be two of these flags, one for each axis?
@@ -269,9 +283,26 @@ public:
 	sigc::signal<void>& signal_sketch_saved() { return signal_sketch_saved_; }
 
 	GuideList& get_guide_list_x() { return guide_list_x_; }
+	GuideList& get_x_list_accomp_cord() { return list_x_accomp_cord_; }
+	GuideList& get_x_list_accomp_cord_other() { return list_x_accomp_cord_other_; }
+
+//	AccompGuideList& get_accomp_list_x()  {return accomp_list_x_;}
+
 	GuideList& get_guide_list_y() { return guide_list_y_; }
+	GuideList& get_y_list_accomp_cord() { return list_y_accomp_cord_; }
+	GuideList& get_y_list_accomp_cord_other() { return list_y_accomp_cord_other_; }
+
+//	AccompGuideList& get_accomp_list_y()  {return accomp_list_y_;}
+
 	const GuideList& get_guide_list_x()const { return guide_list_x_; }
+	const GuideList& get_x_list_accomp_cord()const { return list_x_accomp_cord_; }
+	const GuideList& get_x_list_accomp_cord_other()const { return list_x_accomp_cord_other_; }
+//	const AccompGuideList& get_accomp_list_x()const {return accomp_list_x_;}
 	const GuideList& get_guide_list_y()const { return guide_list_y_; }
+	const GuideList& get_y_list_accomp_cord()const { return list_y_accomp_cord_; }
+	const GuideList& get_y_list_accomp_cord_other()const { return list_y_accomp_cord_other_; }
+//	const AccompGuideList& get_accomp_list_y()const {return accomp_list_y_;}
+
 
 	void set_guide_snap(bool x=true);
 	bool get_guide_snap()const { return guide_snap; }
