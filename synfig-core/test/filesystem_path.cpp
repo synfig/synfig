@@ -97,6 +97,18 @@ test_append_path_cppreference_examples()
 }
 
 void
+test_concat_path_cppreference_examples()
+{
+	Path p1; // an empty path
+	p1 += std::string("var"); // does not insert a separator
+	ASSERT_EQUAL("var", p1.u8string())
+	ASSERT_EQUAL("varlib", (p1 + std::string("lib")).u8string())
+	p1 += std::string("lib");
+	p1.concat("123456");
+	ASSERT_EQUAL("varlib123456", p1.u8string())
+}
+
+void
 test_remove_filename()
 {
 	ASSERT_EQUAL("foo/", Path("foo/bar").remove_filename().u8string())
@@ -1246,6 +1258,8 @@ int main() {
 	TEST_FUNCTION(test_append_path_does_not_duplicate_slash)
 	TEST_FUNCTION(test_append_path_with_root_path_replaces)
 	TEST_FUNCTION(test_append_path_cppreference_examples)
+
+	TEST_FUNCTION(test_concat_path_cppreference_examples)
 
 	TEST_FUNCTION(test_remove_filename)
 

@@ -91,6 +91,22 @@ filesystem::Path::append(const std::string& path_str)
 	return *this /= Path(path_str);
 }
 
+filesystem::Path&
+filesystem::Path::operator+=(const Path& p)
+{
+	return concat(p.path_);
+}
+
+filesystem::Path&
+filesystem::Path::concat(const std::string& path_str)
+{
+	if (!path_str.empty()) {
+		path_.append(path_str);
+		native_path_dirty_ = true;
+	}
+	return *this;
+}
+
 void
 filesystem::Path::clear() noexcept
 {

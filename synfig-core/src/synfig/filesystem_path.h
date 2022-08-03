@@ -77,6 +77,14 @@ public:
 	 */
 	Path& append(const std::string& path_str);
 
+	/** Equivalent to concat() */
+	Path& operator+=(const Path& p);
+	/**
+	 * Simple string concatenation
+	 * Example: Path('one').concat('two') -> Path('onetwo')
+	 */
+	Path& concat(const std::string& path_str);
+
 	// Modifiers -------------------------
 
 	/**
@@ -197,6 +205,9 @@ public:
 
 	friend Path operator/(const Path& lhs, const Path& rhs)
 		{ return Path(lhs) /= rhs; }
+
+	friend Path operator+(const Path& lhs, const Path& rhs)
+		{ return Path(lhs) += rhs; }
 
 private:
 	/** Path in the native encoding */
