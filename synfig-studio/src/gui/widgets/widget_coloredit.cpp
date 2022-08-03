@@ -332,7 +332,6 @@ Widget_ColorEdit::SliderRow(int left, int top, ColorSlider* color_widget, std::s
 	grid->attach(*label,        left,   top, 1, 1);
 	grid->attach(*color_widget, left+1, top, 1, 1);
 }
-bool escape_cancel=false;
 
 void
 Widget_ColorEdit::AttachSpinButton(int left, int top, Gtk::SpinButton *spin_button, Gtk::Grid *grid)

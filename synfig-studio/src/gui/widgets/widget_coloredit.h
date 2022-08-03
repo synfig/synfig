@@ -164,6 +164,7 @@ class Widget_ColorEdit : public Gtk::Grid
 
 	Gtk::Notebook* notebook;
 
+	bool escape_cancel=false;
 	bool wheel_released=false;
 	bool wheel_pressed=false;
 	bool get_initial_color= true;
