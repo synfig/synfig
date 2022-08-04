@@ -2940,7 +2940,7 @@ CanvasView::copy_waypoints(synfig::Time time)
 
 void CanvasView::paste_waypoints(synfig::Time time, Widget_Timetrack* current_widget_timetrack)
 {
-	current_widget_timetrack->copy_selected(time-copied_waypoint_time, true);//if it returns false then somethign is wrong
+	current_widget_timetrack->copy_selected(time-copied_waypoint_time);
 	waypoint_copied=false;
 }
 
@@ -2968,7 +2968,7 @@ CanvasView::on_waypoint_clicked_canvasview(ValueDesc value_desc,
 	case 2:
 	{
 		Gtk::Menu* waypoint_menu(manage(new Gtk::Menu()));
-		waypoint_menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), waypoint_menu));//just take as is
+		waypoint_menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), waypoint_menu));
 
 		Gtk::Menu* interp_menu_in(manage(new Gtk::Menu()));
 		Gtk::Menu* interp_menu_out(manage(new Gtk::Menu()));

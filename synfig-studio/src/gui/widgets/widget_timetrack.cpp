@@ -199,26 +199,13 @@ bool Widget_Timetrack::move_selected(synfig::Time delta_time)
 	return ok;
 }
 
-bool Widget_Timetrack::copy_selected(synfig::Time delta_time, bool from_menu) //remove the boolean
+bool Widget_Timetrack::copy_selected(synfig::Time delta_time)
 {
 	std::lock_guard<std::mutex> lock(param_list_mutex);
 
 	std::vector<WaypointItem*> selection = waypoint_sd.get_selected_items();
 	if (selection.size() == 0)
 		return true;
-//	else if ((selection.size() == 0) && from_menu){ //ok actually this is better handled in copy function check if pointed to waypoint is selected if yes then ok good else select it
-//		if(waypoint_sd.is_selected(waypoint_sd.get_hovered_item())){
-//		selection = waypoint_sd.get_selected_items();
-//		}
-//		else{
-//			for(WaypointItem *wi : selection)
-//				waypoint_sd.deselect(*wi);
-//			waypoint_sd.select(waypoint_sd.get_hovered_item());
-//			selection = waypoint_sd.get_selected_items();
-//		}
-//	}
-	//ok so commented code is important for handling the selection stuf but this was whats messing wth the waypoint clickeds paste
-
 
 	// From CellRenderer_TimeTrack
 	synfigapp::Action::Handle action(synfigapp::Action::create("TimepointsCopy"));
