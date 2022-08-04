@@ -376,7 +376,6 @@ LayerTree::create_param_tree()
 	param_tree_view().set_search_column(param_model.label);
 	param_tree_view().set_search_equal_func(sigc::mem_fun(*this, &LayerTree::search_param_tree));
 
-
 	// This makes things easier to read.
 	param_tree_view().set_rules_hint();
 
