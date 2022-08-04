@@ -37,7 +37,6 @@
 #include <gui/widgets/widget_timetrack.h>
 #include <gui/canvasview.h>
 #include <gui/localization.h>
-#include <gui/app.h>
 
 #endif
 
@@ -77,6 +76,7 @@ void Dock_Timetrack2::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canva
 {
 	Widget_Timetrack *widget_timetrack = new Widget_Timetrack();
 	widget_timetrack->use_canvas_view(canvas_view);
+	canvas_view->set_current_widget_timetrack(widget_timetrack);
 	widget_timetrack->show();
 	widget_timetrack->set_hexpand(true);
 	widget_timetrack->set_vexpand(true);
@@ -98,6 +98,8 @@ void Dock_Timetrack2::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canva
 	widget_timetrack->signal_waypoint_clicked().connect(sigc::mem_fun(*this, &Dock_Timetrack2::on_widget_timetrack_waypoint_clicked));
 
 	widget_timetrack->signal_waypoint_double_clicked().connect(sigc::mem_fun(*this, &Dock_Timetrack2::on_widget_timetrack_waypoint_double_clicked));
+
+	widget_timetrack->signal_no_waypoint_clicked().connect(sigc::mem_fun(*this, &Dock_Timetrack2::on_widget_timetrack_no_wapoint_clicked));
 
 	widget_timetrack->signal_action_state_changed().connect(sigc::mem_fun(*this, &Dock_Timetrack2::update_tool_palette_action));
 }
@@ -131,24 +133,6 @@ void Dock_Timetrack2::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> ca
 		current_widget_timetrack->set_size_request(100, 100);
 		current_widget_timetrack->set_hexpand(true);
 		current_widget_timetrack->set_vexpand(true);
-
-		current_widget_timetrack->signal_button_press_event().connect([&](GdkEventButton* ev){
-			if((ev->button == 3) && ( !(get_canvas_view()->menu_present)) && (get_canvas_view()->waypoint_copied)){
-			//getting time of press
-			synfig::Time time= widget_timeslider.get_time_plot_data()->get_t_from_pixel_coord(ev->x);
-
-			Gtk::Menu* waypoint_menu(manage(new Gtk::Menu()));//like this we make
-			waypoint_menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), waypoint_menu));//just take as is
-			Gtk::MenuItem *item = manage(new Gtk::MenuItem(_("_Paste")));
-			item->set_use_underline(true);
-			item->show();
-			item->signal_activate().connect(sigc::bind(sigc::mem_fun(*get_canvas_view(),&CanvasView::paste_waypoints), time,current_widget_timetrack));
-			waypoint_menu->append(*item);
-			waypoint_menu->popup(3,gtk_get_current_event_time());
-			}
-
-			return true;
-		});//get the popup menu
 
 		hscrollbar.set_adjustment(canvas_view->time_model()->scroll_time_adjustment());
 
@@ -195,6 +179,14 @@ void Dock_Timetrack2::on_widget_timetrack_waypoint_double_clicked(synfigapp::Val
 	CanvasView::LooseHandle canvas_view = get_canvas_view();
 	if (canvas_view)
 		canvas_view->on_waypoint_clicked_canvasview(value_desc, waypoint_set, button);
+}
+
+void Dock_Timetrack2::on_widget_timetrack_no_wapoint_clicked(double x_cord, unsigned int button)
+{
+	synfig::Time time= widget_timeslider.get_time_plot_data()->get_t_from_pixel_coord(x_cord);
+	CanvasView::LooseHandle canvas_view = get_canvas_view();
+	if (canvas_view)
+		canvas_view->on_no_waypoint_clicked_canvasview(time, button);
 }
 
 void Dock_Timetrack2::setup_tool_palette()

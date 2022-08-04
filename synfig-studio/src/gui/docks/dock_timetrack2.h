@@ -62,6 +62,7 @@ private:
 
 	void on_widget_timetrack_waypoint_clicked(synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint,std::less<synfig::UniqueID>> waypoint_set, int button);
 	void on_widget_timetrack_waypoint_double_clicked(synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint,std::less<synfig::UniqueID>> waypoint_set, int button);
+	void on_widget_timetrack_no_wapoint_clicked(double x_cord, unsigned int button);
 
 	void setup_tool_palette();
 	void update_tool_palette_action();

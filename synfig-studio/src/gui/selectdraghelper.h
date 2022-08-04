@@ -114,6 +114,7 @@ private:
 
 	sigc::signal<void, const T&, unsigned int, Gdk::Point> signal_item_clicked_;
 	sigc::signal<void, const T&, unsigned int, Gdk::Point> signal_item_double_clicked_;
+	sigc::signal<void, double, unsigned int > signal_no_item_clicked_;
 
 	sigc::signal<void> signal_modifier_keys_changed_;
 
@@ -245,6 +246,7 @@ public:
 
 	sigc::signal<void, const T&, unsigned int, Gdk::Point>& signal_item_clicked() { return signal_item_clicked_; }
 	sigc::signal<void, const T&, unsigned int, Gdk::Point>& signal_item_double_clicked() { return signal_item_double_clicked_; }
+	sigc::signal<void, double, unsigned int>& signal_no_item_clicked() { return signal_no_item_clicked_; }
 
 	sigc::signal<void>& signal_modifier_keys_changed() { return signal_modifier_keys_changed_; }
 };
@@ -599,6 +601,11 @@ bool SelectDragHelper<T>::process_button_press_event(GdkEventButton* event)
 			int pointer_x = std::trunc(event->x);
 			int pointer_y = std::trunc(event->y);
 			signal_item_clicked().emit(pointed_item, event->button, Gdk::Point(pointer_x, pointer_y));
+		}//can send the signal_no_item_clicked here but firs see fi we have to //we can send pointer position which could be used to get the time and thats all wee need
+		else
+		{
+			double pointer_x= event->x ;
+			signal_no_item_clicked().emit(pointer_x, event->button);
 		}
 	}
 	return some_action_done;

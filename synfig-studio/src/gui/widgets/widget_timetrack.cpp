@@ -199,24 +199,25 @@ bool Widget_Timetrack::move_selected(synfig::Time delta_time)
 	return ok;
 }
 
-bool Widget_Timetrack::copy_selected(synfig::Time delta_time, bool from_menu) //goal is to use this function
+bool Widget_Timetrack::copy_selected(synfig::Time delta_time, bool from_menu) //remove the boolean
 {
 	std::lock_guard<std::mutex> lock(param_list_mutex);
 
 	std::vector<WaypointItem*> selection = waypoint_sd.get_selected_items();
-	if ((selection.size() == 0) && !from_menu)
+	if (selection.size() == 0)
 		return true;
-	else if (from_menu){//if copied waypoint is among multiple selected paste all, if not then only paste the copied waypoint
-		if(waypoint_sd.is_selected(waypoint_sd.get_hovered_item())){
-		selection = waypoint_sd.get_selected_items();
-		}
-		else{
-			for(WaypointItem *wi : selection)
-				waypoint_sd.deselect(*wi);
-			waypoint_sd.select(waypoint_sd.get_hovered_item());
-			selection = waypoint_sd.get_selected_items();
-		}
-	}
+//	else if ((selection.size() == 0) && from_menu){ //ok actually this is better handled in copy function check if pointed to waypoint is selected if yes then ok good else select it
+//		if(waypoint_sd.is_selected(waypoint_sd.get_hovered_item())){
+//		selection = waypoint_sd.get_selected_items();
+//		}
+//		else{
+//			for(WaypointItem *wi : selection)
+//				waypoint_sd.deselect(*wi);
+//			waypoint_sd.select(waypoint_sd.get_hovered_item());
+//			selection = waypoint_sd.get_selected_items();
+//		}
+//	}
+	//ok so commented code is important for handling the selection stuf but this was whats messing wth the waypoint clickeds paste
 
 
 	// From CellRenderer_TimeTrack
@@ -244,6 +245,16 @@ bool Widget_Timetrack::copy_selected(synfig::Time delta_time, bool from_menu) //
 	if (ok)
 		displace_selected_waypoint_items(delta_time);
 	return ok;
+}
+
+void Widget_Timetrack::handle_copied_waypoints_selection()
+{
+	if (!waypoint_sd.is_selected(waypoint_sd.get_hovered_item())){ //if copied waypoint isnt selected select it and deselect any other waypoints
+		std::vector<WaypointItem*> selection = waypoint_sd.get_selected_items();
+		for(WaypointItem *wi : selection)
+			waypoint_sd.deselect(*wi);
+		waypoint_sd.select(waypoint_sd.get_hovered_item());
+	}
 }
 
 void Widget_Timetrack::scale_selected()
@@ -612,6 +623,7 @@ void Widget_Timetrack::setup_mouse_handler()
 	waypoint_sd.signal_selection_changed().connect(sigc::mem_fun(*this, &Gtk::Widget::queue_draw));
 	waypoint_sd.signal_item_clicked().connect(sigc::mem_fun(*this, &Widget_Timetrack::on_waypoint_clicked));
 	waypoint_sd.signal_item_double_clicked().connect(sigc::mem_fun(*this, &Widget_Timetrack::on_waypoint_double_clicked));
+	waypoint_sd.signal_no_item_clicked().connect(sigc::mem_fun(*this, &Widget_Timetrack::on_no_waypoint_clicked));
 }
 
 void Widget_Timetrack::setup_params_store()
@@ -959,6 +971,11 @@ void Widget_Timetrack::on_waypoint_double_clicked(const Widget_Timetrack::Waypoi
 		const synfigapp::ValueDesc &value_desc = param_info_map.at(wi.path.to_string()).get_value_desc();
 		signal_waypoint_double_clicked().emit(value_desc, waypoint_set, button);
 	}
+}
+
+void Widget_Timetrack::on_no_waypoint_clicked (double x_cord , unsigned int button)
+{
+	signal_no_waypoint_clicked().emit(x_cord, button);
 }
 
 void Widget_Timetrack::on_waypoint_action_changed()

@@ -243,6 +243,8 @@ public:
 private:
 	WorkArea *work_area;
 
+	Widget_Timetrack* current_widget_timetrack;
+
 	synfig::SoundProcessor soundProcessor;
 
 	ActivationIndex activation_index_;
@@ -384,7 +386,7 @@ private:
 	bool ducks_rebuild_requested;
 	bool ducks_rebuild_queue_requested;
 
-	std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoints_copied;
+	synfig::Time copied_waypoint_time;
 
 	/*
  -- ** -- P U B L I C   D A T A -----------------------------------------------
@@ -393,7 +395,6 @@ private:
 public:
 	void queue_rebuild_ducks();
 	sigc::signal<void>& signal_deleted() { return signal_deleted_; }
-	bool menu_present = false;
 	bool waypoint_copied=false;
 
 private:
@@ -648,7 +649,9 @@ public:
 
 	void on_waypoint_clicked_canvasview(synfigapp::ValueDesc,std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int button);
 
-	void copy_waypoints(std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoints);
+	void on_no_waypoint_clicked_canvasview(synfig::Time time , unsigned int button);
+
+	void copy_waypoints(synfig::Time time);
 
 	void paste_waypoints(synfig::Time time, Widget_Timetrack* current_widget_timetrack);
 
@@ -665,6 +668,8 @@ public:
 	void toggle_duck_mask_all();
 	// Toggle displaybar according to App::enable_mainwin_toolbar
 	void toggle_show_toolbar();
+
+	void set_current_widget_timetrack(Widget_Timetrack* widget_timetrack) {current_widget_timetrack = widget_timetrack; }
 
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------

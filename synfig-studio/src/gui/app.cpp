@@ -341,7 +341,6 @@ really_delete_widget(Gtk::Widget *widget)
 void
 studio::delete_widget(Gtk::Widget *widget)
 {
-	App::get_selected_canvas_view()->menu_present=false;
 	Glib::signal_timeout().connect(sigc::bind(sigc::ptr_fun(&really_delete_widget), widget), 50);
 }
 
