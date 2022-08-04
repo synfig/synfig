@@ -2915,6 +2915,28 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			return false;
 		}
 
+		bool do_not_show_bone_width = false;
+		{
+			bool is_skeleton_deformation_layer_in_pose_mode = false;
+			bool is_skeleton_layer = false;
+
+			const synfig::Node* node = bone_value_node.get();
+			Layer::ConstHandle parent_layer;
+			while (node->parent_count() && !(parent_layer = dynamic_cast<const Layer*>(node)))
+			{
+				node = node->get_first_parent();
+			}
+			if (parent_layer) {
+				if (parent_layer->get_name() == "skeleton") {
+					is_skeleton_layer = true;
+				} else if (parent_layer->get_name() == "skeleton_deformation") {
+					if (parent_layer->active())
+						is_skeleton_deformation_layer_in_pose_mode = true;
+				}
+			}
+			do_not_show_bone_width = is_skeleton_layer || is_skeleton_deformation_layer_in_pose_mode;
+		}
+
 		synfig::GUID guid(bone_value_node->get_guid());
 		Time time(get_time());
 		Bone bone((*bone_value_node)(time).get(Bone()));
@@ -3115,6 +3137,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		}
 
 		// origin width
+		if (!do_not_show_bone_width)
 		{
 
 			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name("width"), orig_value_desc);
@@ -3143,6 +3166,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		}
 
 		// tip width
+		if (!do_not_show_bone_width)
 		{
 
 			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name("tipwidth"), orig_value_desc);
