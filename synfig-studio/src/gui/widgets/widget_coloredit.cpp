@@ -561,6 +561,7 @@ Widget_ColorEdit::on_color_changed()
 			wheel_released=false;
 			synfigapp::Action::System::block_new_history=false;//default is no block unless drag then block
 		}
+		return;
 	}
 
 	if (!colorHVSChanged) //color change is not from a wheel drag
