@@ -17,7 +17,7 @@ if (FRIBIDI_STATIC_LIBRARIES)
 	target_compile_definitions(lyr_freetype PRIVATE -DFRIBIDI_LIB_STATIC)
 endif()
 
-target_link_libraries(lyr_freetype synfig
+target_link_libraries(lyr_freetype libsynfig
 	PkgConfig::FREETYPE2
 	PkgConfig::FRIBIDI
 )

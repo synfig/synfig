@@ -86,7 +86,7 @@ add_subdirectory(resources)
 target_link_libraries(synfigstudio PRIVATE
 	PkgConfig::GTKMM3
 	PkgConfig::XMLPP
-	synfig
+	libsynfig
 	synfigapp
 )
 

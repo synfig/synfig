@@ -4,7 +4,7 @@ add_library(mod_jpeg MODULE
         "${CMAKE_CURRENT_LIST_DIR}/trgt_jpeg.cpp"
 )
 
-target_link_libraries(mod_jpeg synfig PkgConfig::LIBJPEG)
+target_link_libraries(mod_jpeg libsynfig PkgConfig::LIBJPEG)
 
 install (
     TARGETS mod_jpeg

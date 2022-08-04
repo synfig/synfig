@@ -9,7 +9,7 @@ add_library(mod_filter MODULE
         "${CMAKE_CURRENT_LIST_DIR}/radialblur.cpp"
 )
 
-target_link_libraries(mod_filter synfig)
+target_link_libraries(mod_filter libsynfig)
 
 install (
     TARGETS mod_filter

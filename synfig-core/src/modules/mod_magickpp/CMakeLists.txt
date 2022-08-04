@@ -4,7 +4,7 @@ add_library(mod_magickpp MODULE
 )
 
 target_compile_options(mod_magickpp PRIVATE ${MAGICKCORE_CFLAGS})
-target_link_libraries(mod_magickpp synfig ${MAGICKCORE_LINK_LIBRARIES} ${ImageMagick_LIBRARIES})
+target_link_libraries(mod_magickpp libsynfig ${MAGICKCORE_LINK_LIBRARIES} ${ImageMagick_LIBRARIES})
 
 install (
     TARGETS mod_magickpp
