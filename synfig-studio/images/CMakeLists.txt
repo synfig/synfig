@@ -187,9 +187,9 @@ set(ICONS
 	resize_down_right_icon
 	resize_transparent_icon
 	select_all_child_layers_icon
-	set_fill_color
+	set_fill_color_icon
 	set_icon
-	set_outline_color
+	set_outline_color_icon
 	show_grid_icon
 	show_guideline_icon
 	sif_icon

@@ -206,8 +206,8 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	
 	INIT_STOCK_ICON(jack, "jack_icon." IMAGE_EXT, _("JACK"));
 
-	INIT_STOCK_ICON(set_outline_color, "set_outline_color." IMAGE_EXT, _("Set as Outline"));
-	INIT_STOCK_ICON(set_fill_color, "set_fill_color." IMAGE_EXT, _("Set as Fill"));
+	INIT_STOCK_ICON(set_outline_color, "set_outline_color_icon." IMAGE_EXT, _("Set as Outline"));
+	INIT_STOCK_ICON(set_fill_color, "set_fill_color_icon." IMAGE_EXT, _("Set as Fill"));
 
 	INIT_STOCK_ICON(animate_seek_begin, "animate_seek_begin_icon." IMAGE_EXT, _("Seek to Begin"));
 	INIT_STOCK_ICON(animate_seek_prev_keyframe, "animate_seek_prev_keyframe_icon." IMAGE_EXT, _("Seek to Previous Keyframe"));

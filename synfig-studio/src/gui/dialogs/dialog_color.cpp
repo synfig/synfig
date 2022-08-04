@@ -65,9 +65,9 @@ Dialog_Color::Dialog_Color():
 
 	create_color_edit_widget();
 	create_close_button();
-	create_set_color_button("set_outline_color", _("Set as Outline"), 0,
+	create_set_color_button("set_outline_color_icon", _("Set as Outline"), 0,
 			sigc::mem_fun(*this, &Dialog_Color::on_set_oc_pressed));
-	create_set_color_button("set_fill_color", _("Set as Fill"), 1,
+	create_set_color_button("set_fill_color_icon", _("Set as Fill"), 1,
 			sigc::mem_fun(*this, &Dialog_Color::on_set_fc_pressed));
 
 	// Turn off resizability

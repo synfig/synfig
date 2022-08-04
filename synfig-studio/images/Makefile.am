@@ -53,8 +53,8 @@ EXTRA_DIST = \
 	valuenode_icon.sif \
 	wallpaper.sif \
 	rename_icon.sif \
-	set_fill_color.sif \
-	set_outline_color.sif \
+	set_fill_color_icon.sif \
+	set_outline_color_icon.sif \
 	duck_position_icon.sif \
 	duck_vertex_icon.sif \
 	duck_tangent_icon.sif \
@@ -241,8 +241,8 @@ ICONS = \
 	animate_mode_on_icon.$(EXT) \
 	\
 	rename_icon.$(EXT) \
-	set_fill_color.$(EXT) \
-	set_outline_color.$(EXT) \
+	set_fill_color_icon.$(EXT) \
+	set_outline_color_icon.$(EXT) \
 	duck_position_icon.$(EXT) \
 	duck_vertex_icon.$(EXT) \
 	duck_tangent_icon.$(EXT) \
