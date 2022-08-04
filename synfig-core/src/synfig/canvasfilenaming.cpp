@@ -35,6 +35,8 @@
 #include <algorithm> // std::transform
 #include "canvasfilenaming.h"
 
+#include <ETL/stringf>
+
 #include "filecontainerzip.h"
 #include "filesystemnative.h"
 #include "filesystemgroup.h"
@@ -324,10 +326,10 @@ CanvasFileNaming::generate_container_filename(const FileSystem::Handle &canvas_f
 	{
 		String short_filename = i <= 1
 				              ? container_prefix + base + "." + ext
-				              : etl::strprintf("%s%s_%d.%s", container_prefix.c_str(), base.c_str(), i, ext.c_str());
+				              : strprintf("%s%s_%d.%s", container_prefix.c_str(), base.c_str(), i, ext.c_str());
 		String full_filename = i <= 1
 				             ? container_prefix + base + "." + ext
-				             : etl::strprintf("%s%s%s_%d.%s", container_prefix.c_str(), content_prefix.c_str(), base.c_str(), i, ext.c_str());
+				             : strprintf("%s%s%s_%d.%s", container_prefix.c_str(), content_prefix.c_str(), base.c_str(), i, ext.c_str());
 		if (!canvas_filesystem->is_exists(full_filename))
 			return short_filename;
 	}

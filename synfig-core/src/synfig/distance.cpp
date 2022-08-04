@@ -33,8 +33,6 @@
 #	include <config.h>
 #endif
 
-#include <ETL/stringf>
-
 #include "distance.h"
 #include "renddesc.h"
 #include "general.h"

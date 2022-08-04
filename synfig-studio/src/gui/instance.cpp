@@ -51,6 +51,8 @@
 #include <gtkmm/separatormenuitem.h>
 #include <gtkmm/stock.h>
 
+#include <ETL/stringf>
+
 #include <gui/app.h>
 #include <gui/autorecover.h>
 #include <gui/canvasview.h>
@@ -1322,13 +1324,13 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		////// Before //////////////////
 		param_list.add("value_desc",synfigapp::ValueDesc(wpoint_composite, wpoint_composite->get_link_index_from_name("side_before")));
 
-		ADD_IMAGE_MENU_ITEM(TYPE_INTERPOLATE, "synfig-interpolate_interpolation", "Cusp Before: Interpolate")
-		ADD_IMAGE_MENU_ITEM(TYPE_ROUNDED, "synfig-rounded_interpolation", "Cusp Before: Rounded")
-		ADD_IMAGE_MENU_ITEM(TYPE_SQUARED, "synfig-squared_interpolation", "Cusp Before: Squared")
-		ADD_IMAGE_MENU_ITEM(TYPE_PEAK, "synfig-peak_interpolation", "Cusp Before: Peak")
-		ADD_IMAGE_MENU_ITEM(TYPE_FLAT, "synfig-flat_interpolation", "Cusp Before: Flat")
-		ADD_IMAGE_MENU_ITEM(TYPE_INNER_ROUNDED, "synfig-rounded_interpolation", "Cusp Before: Inner Rounded")
-		ADD_IMAGE_MENU_ITEM(TYPE_INNER_PEAK, "synfig-peak_interpolation", "Cusp Before: Off-Peak")
+		ADD_IMAGE_MENU_ITEM(TYPE_INTERPOLATE, "synfig-interpolate_interpolation", _("Cusp Before: Interpolate"))
+		ADD_IMAGE_MENU_ITEM(TYPE_ROUNDED, "synfig-rounded_interpolation", _("Cusp Before: Rounded"))
+		ADD_IMAGE_MENU_ITEM(TYPE_SQUARED, "synfig-squared_interpolation", _("Cusp Before: Squared"))
+		ADD_IMAGE_MENU_ITEM(TYPE_PEAK, "synfig-peak_interpolation", _("Cusp Before: Peak"))
+		ADD_IMAGE_MENU_ITEM(TYPE_FLAT, "synfig-flat_interpolation", _("Cusp Before: Flat"))
+		ADD_IMAGE_MENU_ITEM(TYPE_INNER_ROUNDED, "synfig-rounded_interpolation", _("Cusp Before: Inner Rounded"))
+		ADD_IMAGE_MENU_ITEM(TYPE_INNER_PEAK, "synfig-peak_interpolation", _("Cusp Before: Off-Peak"))
 
 		///////
 		item = Gtk::manage(new Gtk::SeparatorMenuItem());
@@ -1339,13 +1341,13 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		param_list.erase("value_desc");
 		param_list.add("value_desc",synfigapp::ValueDesc(wpoint_composite, wpoint_composite->get_link_index_from_name("side_after")));
 
-		ADD_IMAGE_MENU_ITEM(TYPE_INTERPOLATE, "synfig-interpolate_interpolation", "Cusp After: Interpolate")
-		ADD_IMAGE_MENU_ITEM(TYPE_ROUNDED, "synfig-rounded_interpolation", "Cusp After: Rounded")
-		ADD_IMAGE_MENU_ITEM(TYPE_SQUARED, "synfig-squared_interpolation", "Cusp After: Squared")
-		ADD_IMAGE_MENU_ITEM(TYPE_PEAK, "synfig-peak_interpolation", "Cusp After: Peak")
-		ADD_IMAGE_MENU_ITEM(TYPE_FLAT, "synfig-flat_interpolation", "Cusp After: Flat")
-		ADD_IMAGE_MENU_ITEM(TYPE_INNER_ROUNDED, "synfig-rounded_interpolation", "Cusp After: Inner Rounded")
-		ADD_IMAGE_MENU_ITEM(TYPE_INNER_PEAK, "synfig-peak_interpolation", "Cusp After: Off-Peak")
+		ADD_IMAGE_MENU_ITEM(TYPE_INTERPOLATE, "synfig-interpolate_interpolation", _("Cusp After: Interpolate"))
+		ADD_IMAGE_MENU_ITEM(TYPE_ROUNDED, "synfig-rounded_interpolation", _("Cusp After: Rounded"))
+		ADD_IMAGE_MENU_ITEM(TYPE_SQUARED, "synfig-squared_interpolation", _("Cusp After: Squared"))
+		ADD_IMAGE_MENU_ITEM(TYPE_PEAK, "synfig-peak_interpolation", _("Cusp After: Peak"))
+		ADD_IMAGE_MENU_ITEM(TYPE_FLAT, "synfig-flat_interpolation", _("Cusp After: Flat"))
+		ADD_IMAGE_MENU_ITEM(TYPE_INNER_ROUNDED, "synfig-rounded_interpolation", _("Cusp After: Inner Rounded"))
+		ADD_IMAGE_MENU_ITEM(TYPE_INNER_PEAK, "synfig-peak_interpolation", _("Cusp After: Off-Peak"))
 
 		///////
 		item = Gtk::manage(new Gtk::SeparatorMenuItem());
@@ -1731,7 +1733,7 @@ Instance::add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup
 	int index = 0;
 	for(std::map<String, String>::const_iterator i = uris.begin(); i != uris.end(); ++i, ++index)
 	{
-		String action_name = etl::strprintf("special-action-open-file-%d", index);
+		String action_name = synfig::strprintf("special-action-open-file-%d", index);
 		//if the import layer is type image 
 		if(is_img(filename_extension(i->second)))
 		{
@@ -1759,7 +1761,7 @@ Instance::add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup
 	if(layers.size()==1)
 	{
 		String local_name2 = String(_("Convert to Vector"));
-		String action_name2 = etl::strprintf("special-action-open-file-vectorizer-%d",index);
+		String action_name2 = synfig::strprintf("special-action-open-file-vectorizer-%d",index);
 		if(etl::handle<Layer_Switch> reference_layer = etl::handle<Layer_Switch>::cast_dynamic(layers.front()))
 		{
 			//the layer selected is a switch group

@@ -81,7 +81,7 @@ RendererLowResSW::RendererLowResSW(int level):
 
 String RendererLowResSW::get_name() const
 {
-	return _("Cobra LowRes (software)") + etl::strprintf(" x%d", level);
+	return _("Cobra LowRes (software)") + strprintf(" x%d", level);
 }
 
 /* === E N T R Y P O I N T ================================================= */

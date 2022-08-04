@@ -106,26 +106,9 @@ Keyframe::~Keyframe()
 }
 
 void
-KeyframeList::dump()const
-{
-	const_iterator iter;
-	int i;
-	synfig::info(">>>>>>>>BEGIN KEYFRAME DUMP");
-	for(iter=begin(),i=0;iter!=end();++iter,i++)
-	{
-		synfig::info("#%d, time: %s, desc: %s",i,iter->get_time().get_string().c_str(),iter->get_description().c_str());
-	}
-	synfig::info("<<<<<<<<END KEYFRAME DUMP");
-}
-
-void
 KeyframeList::sync()
 {
-	//synfig::info("PRE-SORT:");
-	//dump();
 	sort(begin(),end());
-	//synfig::info("POST-SORT:");
-	//dump();
 }
 
 bool
@@ -133,32 +116,13 @@ KeyframeList::find(const UniqueID &x, KeyframeList::iterator &out)
 {
 	out = std::find(begin(), end(), x);
 	return out != end();
-	/*KeyframeList::iterator iter;
-	iter=std::find(begin(),end(),x);
-	if(iter==end())
-		throw Exception::NotFound(strprintf("KeyframeList::find(): Can't find UniqueID %d",x.get_uid()));
-	return iter;*/
 }
 
-/*KeyframeList::const_iterator
-KeyframeList::find(const UniqueID &x)const
-{
-	KeyframeList::const_iterator iter;
-	iter=std::find(begin(),end(),x);
-	if(iter==end())
-		throw Exception::NotFound(strprintf("KeyframeList::find(): Can't find UniqueID %d",x.get_uid()));
-	return iter;
-}*/
-
-KeyframeList::iterator
+void
 KeyframeList::add(const Keyframe &x)
 {
 	push_back(x);
-	iterator ret(end());
-	ret--;
-	assert(x==*ret);
 	sync();
-	return ret;
 }
 
 void
@@ -178,7 +142,6 @@ KeyframeList::find(const Time &x, KeyframeList::iterator &out)
 		return true;
 	}
 
-	//throw Exception::NotFound(strprintf("KeyframeList::find(): Can't find Keyframe %s",x.get_string().c_str()));
 	return false;
 }
 
@@ -201,7 +164,6 @@ KeyframeList::find_next(const Time &x, KeyframeList::iterator &out, bool ignore_
 		++iter;
 	}
 
-	//throw Exception::NotFound(strprintf("KeyframeList::find(): Can't find next Keyframe %s",x.get_string().c_str()));
 	return false;
 }
 
@@ -238,33 +200,7 @@ KeyframeList::find_prev(const Time &x, KeyframeList::iterator &out, bool ignore_
 	}
 
 	return false;
-	//throw Exception::NotFound(strprintf("KeyframeList::find(): Can't find prev Keyframe %s",x.get_string().c_str()));
-
 }
-
-
-
-/*KeyframeList::const_iterator
-KeyframeList::find(const Time &x)const
-{
-	return const_cast<KeyframeList*>(this)->find(x);
-}
-
-
-KeyframeList::const_iterator
-KeyframeList::find_next(const Time &x, bool ignore_disabled)const
-{
-	return const_cast<KeyframeList*>(this)->find_next(x, ignore_disabled);
-
-}
-
-
-KeyframeList::const_iterator
-KeyframeList::find_prev(const Time &x, bool ignore_disabled)const
-{
-	return const_cast<KeyframeList*>(this)->find_prev(x, ignore_disabled);
-
-}*/
 
 void
 KeyframeList::find_prev_next(const Time& time, Time &prev, Time &next, bool ignore_disabled)
@@ -279,21 +215,4 @@ KeyframeList::find_prev_next(const Time& time, Time &prev, Time &next, bool igno
 		next = iter->get_time();
 	else
 		next=Time::end();
-}
-
-void
-KeyframeList::insert_time(const Time& location, const Time& delta)
-{
-//	synfig::info("KeyframeList::insert_time(): loc=%s, delta=%s",location.get_string().c_str(),delta.get_string().c_str());
-	if(!delta)
-		return;
-
-	KeyframeList::iterator iter;
-	if (find_next(location, iter, false)) {
-		for(;iter!=end();++iter)
-		{
-			iter->set_time(iter->get_time()+delta);
-		}
-		sync();
-	}
 }

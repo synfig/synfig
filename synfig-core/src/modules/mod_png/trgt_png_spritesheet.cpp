@@ -45,6 +45,7 @@
 #include <cstdio>
 #include <cstring> 
 #include <ETL/misc>
+#include <ETL/stringf>
 #include <iostream>
 
 #endif

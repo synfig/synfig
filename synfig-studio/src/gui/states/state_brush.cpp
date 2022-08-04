@@ -50,6 +50,8 @@
 #include <gui/states/state_normal.h>
 #include <gui/workarea.h>
 
+#include <ETL/stringf>
+
 #include <synfig/general.h>
 
 #include <synfigapp/main.h>

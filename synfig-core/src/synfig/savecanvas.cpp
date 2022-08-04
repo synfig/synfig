@@ -35,6 +35,9 @@
 #endif
 
 #include "savecanvas.h"
+
+#include <ETL/stringf>
+
 #include "general.h"
 #include <synfig/localization.h>
 #include "valuenode.h"

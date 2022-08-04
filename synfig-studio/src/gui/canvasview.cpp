@@ -58,6 +58,8 @@
 #include <gtkmm/toolbutton.h>
 #include <gtkmm/toolitem.h>
 
+#include <ETL/stringf>
+
 #include <gui/app.h>
 #include <gui/dials/keyframedial.h>
 #include <gui/dials/resolutiondial.h>
@@ -1509,8 +1511,8 @@ CanvasView::init_menus()
 	for(std::list<int>::iterator i = get_pixel_sizes().begin(); i != get_pixel_sizes().end(); ++i) {
 		Glib::RefPtr<Gtk::RadioAction> action = Gtk::RadioAction::create(
 			low_res_pixel_size_group,
-			etl::strprintf("lowres-pixel-%d", *i),
-			etl::strprintf(_("Set Low-Res pixel size to %d"), *i) );
+			synfig::strprintf("lowres-pixel-%d", *i),
+			synfig::strprintf(_("Set Low-Res pixel size to %d"), *i) );
 		if (*i == 2) { // default pixel size
 			action->set_active();
 			work_area->set_low_res_pixel_size(*i);
@@ -1722,7 +1724,7 @@ CanvasView::add_layer(String x)
 			String errors, warnings;
 			layer = canvas_interface()->import(filename, errors, warnings, App::resize_imported_images);
 			if (!warnings.empty()) {
-				App::dialog_message_1b("WARNING", etl::strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
+				App::dialog_message_1b("WARNING", synfig::strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
 					"details",	_("Close"));
 			}
 		}		
@@ -2545,7 +2547,7 @@ CanvasView::decrease_low_res_pixel_size()
 				work_area->set_low_resolution_flag(false);
 			} else {
 				--iter;
-				Glib::RefPtr<Gtk::Action> action = action_group->get_action(etl::strprintf("lowres-pixel-%d", *iter));
+				Glib::RefPtr<Gtk::Action> action = action_group->get_action(synfig::strprintf("lowres-pixel-%d", *iter));
 				assert(action);
 				action->activate(); // to make sure the radiobutton in the menu is updated too
 				work_area->set_low_resolution_flag(true);
@@ -2584,7 +2586,7 @@ CanvasView::increase_low_res_pixel_size()
 	for (std::list<int>::iterator iter = sizes.begin(); iter != sizes.end(); iter++)
 		if (*iter == pixel_size) {
 			if (++iter != sizes.end()) {
-				Glib::RefPtr<Gtk::Action> action = action_group->get_action(etl::strprintf("lowres-pixel-%d", *iter));
+				Glib::RefPtr<Gtk::Action> action = action_group->get_action(synfig::strprintf("lowres-pixel-%d", *iter));
 				assert(action);
 				action->activate(); // to make sure the radiobutton in the menu is updated too
 				work_area->set_low_resolution_flag(true);
@@ -2983,7 +2985,7 @@ CanvasView::on_waypoint_clicked_canvasview(ValueDesc value_desc,
 		item->show();
 		waypoint_menu->append(*item);
 
-		item = manage(new Gtk::MenuItem(size == 1 ? _("_Remove") : etl::strprintf(_("_Remove %d Waypoints"), size)));
+		item = manage(new Gtk::MenuItem(size == 1 ? _("_Remove") : synfig::strprintf(_("_Remove %d Waypoints"), size)));
 		item->set_use_underline(true);
 		item->signal_activate().connect(
 			sigc::bind(sigc::ptr_fun(remove_waypoints), waypoint_set, canvas_interface()));
@@ -3200,7 +3202,7 @@ CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& con
 					if (warnings != "")
 						App::dialog_message_1b(
 							"WARNING",
-							etl::strprintf("%s:\n\n%s",_("Warning"),warnings.c_str()),
+							synfig::strprintf("%s:\n\n%s",_("Warning"),warnings.c_str()),
 							"details",
 							_("Close") );
 				}
@@ -3531,13 +3533,13 @@ CanvasView::import_file()
 		if (!errors.empty())
 			App::dialog_message_1b(
 				"ERROR",
-				etl::strprintf("%s:\n\n%s", _("Error"), errors.c_str()),
+				synfig::strprintf("%s:\n\n%s", _("Error"), errors.c_str()),
 				"details",
 				_("Close"));
 		if (!warnings.empty())
 			App::dialog_message_1b(
 				"WARNING",
-				etl::strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
+				synfig::strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
 				"details",
 				_("Close"));
 
@@ -3594,13 +3596,13 @@ CanvasView::import_sequence()
 			if (!errors.empty())
 				App::dialog_message_1b(
 						"ERROR",
-						etl::strprintf("%s:\n\n%s", _("Error"), errors.c_str()),
+						synfig::strprintf("%s:\n\n%s", _("Error"), errors.c_str()),
 						"details",
 						_("Close"));
 			if (!warnings.empty())
 				App::dialog_message_1b(
 						"WARNING",
-						etl::strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
+						synfig::strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
 						"details",
 						_("Close"));
 		}
@@ -3854,11 +3856,11 @@ CanvasView::toggle_jack_button()
 		String details;
 		if (get_jack_enabled())
 		{
-			message = etl::strprintf(_("Are you sure you want to disable JACK synchronization?" ));
-			details = etl::strprintf(_("The JACK server will remain running."));
+			message = synfig::strprintf(_("Are you sure you want to disable JACK synchronization?" ));
+			details = synfig::strprintf(_("The JACK server will remain running."));
 		} else {
-			message = etl::strprintf(_("Are you sure you want to enable JACK synchronization?" ));
-			details = etl::strprintf(_("This operation will launch a JACK server, if it isn't started yet."));
+			message = synfig::strprintf(_("Are you sure you want to enable JACK synchronization?" ));
+			details = synfig::strprintf(_("This operation will launch a JACK server, if it isn't started yet."));
 		}
 
 		UIInterface::Response answer = get_ui_interface()->confirmation(

@@ -45,7 +45,9 @@
 class Target_LibAVCodec : public synfig::Target_Scanline
 {
 	SYNFIG_TARGET_MODULE_EXT
+
 private:
+
 	class Internal;
 	Internal *internal;
 
@@ -53,18 +55,20 @@ private:
 	synfig::Surface	surface;
 
 public:
+
 	Target_LibAVCodec(
 		const char *filename,
 		const synfig::TargetParam &params );
 	virtual ~Target_LibAVCodec();
 
-	virtual bool init(synfig::ProgressCallback *cb);
+	bool set_rend_desc(synfig::RendDesc* desc) override;
+	bool init(synfig::ProgressCallback* cb) override;
 
-	virtual bool set_rend_desc(synfig::RendDesc *desc);
-	virtual bool start_frame(synfig::ProgressCallback *cb);
-	virtual void end_frame();
-	virtual synfig::Color * start_scanline(int scanline);
-	virtual bool end_scanline();
+	bool start_frame(synfig::ProgressCallback* cb) override;
+	void end_frame() override;
+
+	synfig::Color* start_scanline(int scanline) override;
+	bool end_scanline() override;
 };
 
 /* === E N D =============================================================== */

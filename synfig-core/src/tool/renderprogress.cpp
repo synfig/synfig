@@ -24,7 +24,6 @@
 #include <cmath>
 #include <iostream>
 #include "renderprogress.h"
-#include <ETL/stringf>
 #include <sstream>
 
 RenderProgress::RenderProgress()
@@ -77,7 +76,7 @@ bool RenderProgress::amount_complete(int current_frame, int frames_count)
         }
 
         outputStream << "\r"
-                     << etl::strprintf(_("%s: Frame %d of %d (%d%%). Remaining time: "), 
+					 << synfig::strprintf(_("%s: Frame %d of %d (%d%%). Remaining time: "),
                         taskname_.c_str(), current_frame, frames_count, percentage_completed);
 
         if (current_frame != last_frame_)
