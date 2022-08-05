@@ -39,6 +39,9 @@ set(IMG_SOURCE_keyframe_lock_past_off_icon keyframe_lock_icons 1)
 set(IMG_SOURCE_keyframe_lock_future_on_icon keyframe_lock_icons 2)
 set(IMG_SOURCE_keyframe_lock_future_off_icon keyframe_lock_icons 3)
 
+set(IMG_SOURCE_tangent_merge_icon tangent_merge_split_icons 0)
+set(IMG_SOURCE_tangent_split_icon tangent_merge_split_icons 1)
+
 set(IMG_SOURCE_utils_chain_link_on_icon utils_chain_link_icons 0)
 set(IMG_SOURCE_utils_chain_link_off_icon utils_chain_link_icons 1)
 
@@ -81,6 +84,9 @@ set(ICONS
 	keyframe_lock_past_off_icon
 	keyframe_lock_future_on_icon
 	keyframe_lock_future_off_icon
+
+	tangent_merge_icon
+	tangent_split_icon
 
 	utils_chain_link_on_icon
 	utils_chain_link_off_icon
@@ -187,9 +193,9 @@ set(ICONS
 	resize_down_right_icon
 	resize_transparent_icon
 	select_all_child_layers_icon
-	set_fill_color
+	set_fill_color_icon
 	set_icon
-	set_outline_color
+	set_outline_color_icon
 	show_grid_icon
 	show_guideline_icon
 	sif_icon

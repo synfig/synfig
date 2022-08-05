@@ -65,9 +65,9 @@ Dialog_Color::Dialog_Color():
 
 	create_color_edit_widget();
 	create_close_button();
-	create_set_color_button("synfig-set_outline_color", _("Set as Outline"), 0,
+	create_set_color_button("set_outline_color_icon", _("Set as Outline"), 0,
 			sigc::mem_fun(*this, &Dialog_Color::on_set_oc_pressed));
-	create_set_color_button("synfig-set_fill_color", _("Set as Fill"), 1,
+	create_set_color_button("set_fill_color_icon", _("Set as Fill"), 1,
 			sigc::mem_fun(*this, &Dialog_Color::on_set_fc_pressed));
 
 	// Turn off resizability
@@ -102,15 +102,12 @@ Dialog_Color::create_color_edit_widget()
 }
 
 void
-Dialog_Color::create_set_color_button(const char *stock_id,
+Dialog_Color::create_set_color_button(const char *icon_name,
 		const Glib::ustring& tip_text, int index,
 		const sigc::slot0<void>& callback)
 {
 	Gtk::Button *set_color_button = manage(new Gtk::Button());
-	Gtk::Image *set_color_icon = manage(new Gtk::Image(Gtk::StockID(stock_id),
-			Gtk::IconSize(Gtk::ICON_SIZE_BUTTON)));
-	set_color_button->add(*set_color_icon);
-	set_color_icon->show();
+	set_color_button->set_image_from_icon_name(icon_name, Gtk::IconSize(Gtk::ICON_SIZE_BUTTON));
 	set_color_button->set_tooltip_text(tip_text);
 	set_color_button->show();
 	add_action_widget(*set_color_button, index);
@@ -120,7 +117,7 @@ Dialog_Color::create_set_color_button(const char *stock_id,
 void
 Dialog_Color::create_close_button()
 {
-	Gtk::Button *close_button(manage(new Gtk::Button(Gtk::StockID("gtk-close"))));
+	Gtk::Button* close_button(manage(new Gtk::Button(_("_Close"), true)));
 	close_button->show();
 	add_action_widget(*close_button, 2);
 	close_button->signal_clicked().connect(sigc::hide_return(sigc::mem_fun(*this,

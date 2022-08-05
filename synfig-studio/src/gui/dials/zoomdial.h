@@ -55,7 +55,7 @@ class ZoomDial : public Gtk::Grid
 	Gtk::Button *zoom_norm;
 	Gtk::Entry *current_zoom;
 
-	Gtk::Button *create_icon(Gtk::IconSize size, const Gtk::BuiltinStockID & stockid,
+	Gtk::Button *create_icon(Gtk::IconSize size, const std::string& icon_name,
 			const char * tooltip);
 	void after_event(GdkEvent *event);
 	bool current_zoom_event(GdkEvent* event);
