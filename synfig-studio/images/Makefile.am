@@ -148,6 +148,8 @@ EXTRA_DIST = \
 	resize_down_right_icon.sif \
 	resize_transparent_icon.sif \
 	\
+	tangent_merge_split_icons.sif \
+	\
 	tool_brush_icon.sif \
 	tool_cutout_icon.sif \
 	tool_spline_icon.sif \
@@ -347,6 +349,9 @@ ICONS = \
 	resize_down_icon.$(EXT) \
 	resize_down_right_icon.$(EXT) \
 	resize_transparent_icon.$(EXT) \
+	\
+	tangent_merge_icon.$(EXT) \
+	tangent_split_icon.$(EXT) \
 	\
 	tool_brush_icon.$(EXT) \
 	tool_cutout_icon.$(EXT) \
@@ -617,6 +622,16 @@ canvas_icon.$(EXT): $(srcdir)/canvas_and_importimage_icons.sif
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 layer_other_importimage_icon.$(EXT): $(srcdir)/canvas_and_importimage_icons.sif
+	$(SYNFIG) --quiet $< -o $@ --time 1f
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+tangent_merge_icon.$(EXT): $(srcdir)/tangent_merge_split_icons.sif
+	$(SYNFIG) --quiet $< -o $@ --time 0f
+	echo " File \"images\\$@\"" >>./images.nsh
+	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+tangent_split_icon.$(EXT): $(srcdir)/tangent_merge_split_icons.sif
 	$(SYNFIG) --quiet $< -o $@ --time 1f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh

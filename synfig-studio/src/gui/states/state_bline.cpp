@@ -1620,18 +1620,18 @@ StateBLine_Context::popup_vertex_menu(synfig::ValueNode_Const::Handle value_node
 	bool split_radius = bline_point.get_split_tangent_radius();
 	
 	if (split_angle && split_radius)
-		menu.append(*create_split_merge_menu_item(_("Merge Tangents"), false, false, "gtk-connect", value_node));
+		menu.append(*create_split_merge_menu_item(_("Merge Tangents"), false, false, "tangent_merge_icon", value_node));
 	else if (!split_angle && !split_radius)
-		menu.append(*create_split_merge_menu_item(_("Split Tangents"), true, true, "gtk-disconnect", value_node));
+		menu.append(*create_split_merge_menu_item(_("Split Tangents"), true, true, "tangent_split_icon", value_node));
 	else if (!split_angle && split_radius)
 	{
-		menu.append(*create_split_merge_menu_item(_("Split Tangents"), true, true, "gtk-disconnect", value_node));
-		menu.append(*create_split_merge_menu_item(_("Merge Tangents"), false, false, "gtk-connect", value_node));
+		menu.append(*create_split_merge_menu_item(_("Split Tangents"), true, true, "tangent_split_icon", value_node));
+		menu.append(*create_split_merge_menu_item(_("Merge Tangents"), false, false, "tangent_merge_icon", value_node));
 	}
 	else if (split_angle && !split_radius)
 	{
-		menu.append(*create_split_merge_menu_item(_("Merge Tangents"), false, false, "gtk-connect", value_node));
-		menu.append(*create_split_merge_menu_item(_("Split Tangents"), true, true, "gtk-disconnect", value_node));
+		menu.append(*create_split_merge_menu_item(_("Merge Tangents"), false, false, "tangent_merge_icon", value_node));
+		menu.append(*create_split_merge_menu_item(_("Split Tangents"), true, true, "tangent_split_icon", value_node));
 	}
 	
 	item = manage(new Gtk::SeparatorMenuItem());
@@ -1819,18 +1819,18 @@ StateBLine_Context::popup_handle_menu(synfig::ValueNode_Const::Handle value_node
 	bool split_radius = bline_point.get_split_tangent_radius();
 	
 	if (split_angle && split_radius)
-		menu.append(*create_split_merge_menu_item(_("Merge Tangents"), false, false, "gtk-connect", value_node));
+		menu.append(*create_split_merge_menu_item(_("Merge Tangents"), false, false, "tangent_merge_icon", value_node));
 	else if (!split_angle && !split_radius)
-		menu.append(*create_split_merge_menu_item(_("Split Tangents"), true, true, "gtk-disconnect", value_node));
+		menu.append(*create_split_merge_menu_item(_("Split Tangents"), true, true, "tangent_split_icon", value_node));
 	else if (!split_angle && split_radius)
 	{
-		menu.append(*create_split_merge_menu_item(_("Split Tangents"), true, true, "gtk-disconnect", value_node));
-		menu.append(*create_split_merge_menu_item(_("Merge Tangents"), false, false, "gtk-connect", value_node));
+		menu.append(*create_split_merge_menu_item(_("Split Tangents"), true, true, "tangent_split_icon", value_node));
+		menu.append(*create_split_merge_menu_item(_("Merge Tangents"), false, false, "tangent_merge_icon", value_node));
 	}
 	else if (split_angle && !split_radius)
 	{
-		menu.append(*create_split_merge_menu_item(_("Merge Tangents"), false, false, "gtk-connect", value_node));
-		menu.append(*create_split_merge_menu_item(_("Split Tangents"), true, true, "gtk-disconnect", value_node));
+		menu.append(*create_split_merge_menu_item(_("Merge Tangents"), false, false, "tangent_merge_icon", value_node));
+		menu.append(*create_split_merge_menu_item(_("Split Tangents"), true, true, "tangent_split_icon", value_node));
 	}
 
 	item = manage(new Gtk::SeparatorMenuItem());
