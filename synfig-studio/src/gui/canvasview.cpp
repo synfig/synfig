@@ -2944,8 +2944,6 @@ void CanvasView::paste_waypoints(synfig::Time time, Widget_Timetrack* current_wi
 	current_widget_timetrack->copy_selected(time-copied_waypoint_time);
 	//update time of copied waypoint to allow multiple pastes
 	copied_waypoint_time= time;
-//	waypoint_copied=false; //theoretically this should be false when there was no copy.. how to know if there was no copy but still alow multiple pastes... maybe check and see if selection was changed
-	//ok so what makes most sense is checking to see if selection is changed and if it is then no longer copy is present
 }
 
 void
