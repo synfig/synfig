@@ -91,6 +91,7 @@ private:
 
 	sigc::signal<void> signal_selection_changed_;
 	sigc::signal<void> signal_hovered_item_changed_;
+
 	sigc::signal<void> signal_zoom_in_requested_;
 	sigc::signal<void> signal_zoom_out_requested_;
 	sigc::signal<void> signal_zoom_horizontal_in_requested_;
