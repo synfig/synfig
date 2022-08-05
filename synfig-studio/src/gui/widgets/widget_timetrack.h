@@ -81,11 +81,10 @@ public:
 	void goto_next_waypoint(long n);
 	//! \param n : how many waypoints to skip back
 	void goto_previous_waypoint(long n);
-	void handle_copied_waypoints_selection();
+	void handle_copied_waypoints_selection(bool selection_changed=false);
 
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int>& signal_waypoint_clicked() { return signal_waypoint_clicked_; }
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int>& signal_waypoint_double_clicked() { return signal_waypoint_double_clicked_; }
-	sigc::signal<void, double, unsigned int>& signal_no_waypoint_clicked() { return signal_no_waypoint_clicked_; }//emit form on no waypiint click
 
 	enum ActionState {
 		NONE,
@@ -224,7 +223,7 @@ private:
 	bool fetch_waypoints(const WaypointItem &wi, std::set<synfig::Waypoint, std::less<synfig::UniqueID> > &waypoint_set) const;
 	void on_waypoint_clicked(const WaypointItem &wi, unsigned int button, Gdk::Point /*point*/);
 	void on_waypoint_double_clicked(const WaypointItem &wi, unsigned int button, Gdk::Point /*point*/);
-	void on_no_waypoint_clicked (double x_cord, unsigned int button);
+	void on_no_waypoint_clicked (unsigned int button, Gdk::Point button_cord);
 	void on_waypoint_action_changed();
 
 	void on_params_store_row_inserted(const Gtk::TreeModel::Path&, const Gtk::TreeModel::iterator&);
@@ -237,7 +236,6 @@ private:
 
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int> signal_waypoint_clicked_;
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int> signal_waypoint_double_clicked_;
-	sigc::signal<void, double, unsigned int> signal_no_waypoint_clicked_;
 
 	sigc::signal<void> signal_action_state_changed_;
 
@@ -252,6 +250,7 @@ private:
 	WaypointScaleInfo compute_scale_params() const;
 	synfig::Time compute_scaled_time(const WaypointItem &item, const WaypointScaleInfo &scale_info) const;
 	sigc::connection keyframe_changed_connection_;
+	etl::loose_handle<CanvasView> current_canvas_view;
 };
 
 }

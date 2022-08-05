@@ -2933,15 +2933,19 @@ remove_waypoints(std::set<Waypoint, std::less<UniqueID> > waypoints,
 void
 CanvasView::copy_waypoints(synfig::Time time)
 {
-	waypoint_copied=true;
-	copied_waypoint_time = time;
 	current_widget_timetrack->handle_copied_waypoints_selection();
+	copied_waypoint_time = time;
+	waypoint_copied=true;
+
 }
 
 void CanvasView::paste_waypoints(synfig::Time time, Widget_Timetrack* current_widget_timetrack)
 {
 	current_widget_timetrack->copy_selected(time-copied_waypoint_time);
-	waypoint_copied=false;
+	//update time of copied waypoint to allow multiple pastes
+	copied_waypoint_time= time;
+//	waypoint_copied=false; //theoretically this should be false when there was no copy.. how to know if there was no copy but still alow multiple pastes... maybe check and see if selection was changed
+	//ok so what makes most sense is checking to see if selection is changed and if it is then no longer copy is present
 }
 
 void

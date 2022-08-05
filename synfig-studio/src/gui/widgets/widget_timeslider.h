@@ -80,7 +80,6 @@ public:
 	~Widget_Timeslider();
 
 	const etl::handle<TimeModel>& get_time_model() const;
-	TimePlotData* get_time_plot_data(){return time_plot_data; }
 	void set_time_model(const etl::handle<TimeModel> &x);
 };
 

@@ -91,7 +91,6 @@ private:
 
 	sigc::signal<void> signal_selection_changed_;
 	sigc::signal<void> signal_hovered_item_changed_;
-
 	sigc::signal<void> signal_zoom_in_requested_;
 	sigc::signal<void> signal_zoom_out_requested_;
 	sigc::signal<void> signal_zoom_horizontal_in_requested_;
@@ -114,7 +113,7 @@ private:
 
 	sigc::signal<void, const T&, unsigned int, Gdk::Point> signal_item_clicked_;
 	sigc::signal<void, const T&, unsigned int, Gdk::Point> signal_item_double_clicked_;
-	sigc::signal<void, double, unsigned int > signal_no_item_clicked_;
+	sigc::signal<void,  unsigned int, Gdk::Point> signal_no_item_clicked_;
 
 	sigc::signal<void> signal_modifier_keys_changed_;
 
@@ -147,6 +146,8 @@ public:
 	void select(const T& item);
 	/// Remove the provided item from selection: only if user isn't dragging
 	void deselect(const T& item);
+	/// Remove all items from selection: only if user isn't dragging
+	void deselect_all();
 	/// The selected item user started to drag
 	const T* get_active_item() const;
 
@@ -246,7 +247,7 @@ public:
 
 	sigc::signal<void, const T&, unsigned int, Gdk::Point>& signal_item_clicked() { return signal_item_clicked_; }
 	sigc::signal<void, const T&, unsigned int, Gdk::Point>& signal_item_double_clicked() { return signal_item_double_clicked_; }
-	sigc::signal<void, double, unsigned int>& signal_no_item_clicked() { return signal_no_item_clicked_; }
+	sigc::signal<void, unsigned int, Gdk::Point>& signal_no_item_clicked() { return signal_no_item_clicked_; }
 
 	sigc::signal<void>& signal_modifier_keys_changed() { return signal_modifier_keys_changed_; }
 };
@@ -322,6 +323,20 @@ void SelectDragHelper<T>::deselect(const T& item)
 		return;
 
 	selected_items.erase(iter);
+	signal_selection_changed().emit();
+}
+
+template<class T>
+void SelectDragHelper<T>::deselect_all()
+{
+	if (pointer_state == POINTER_DRAGGING)
+		return;
+
+	if (selected_items.size() == 0)
+		return;
+
+	selected_items.clear();
+
 	signal_selection_changed().emit();
 }
 
@@ -597,15 +612,13 @@ bool SelectDragHelper<T>::process_button_press_event(GdkEventButton* event)
 	{
 		T pointed_item;
 		bool found = find_item_at_position(event->x, event->y, pointed_item);
-		if (found) {
-			int pointer_x = std::trunc(event->x);
-			int pointer_y = std::trunc(event->y);
+		int pointer_x = std::trunc(event->x);
+		int pointer_y = std::trunc(event->y);
+
+		if (found)
 			signal_item_clicked().emit(pointed_item, event->button, Gdk::Point(pointer_x, pointer_y));
-		}
-		else{
-			double pointer_x= event->x ;
-			signal_no_item_clicked().emit(pointer_x, event->button);
-		}
+		else
+			signal_no_item_clicked().emit(event->button, Gdk::Point(pointer_x, pointer_y));
 	}
 	return some_action_done;
 }

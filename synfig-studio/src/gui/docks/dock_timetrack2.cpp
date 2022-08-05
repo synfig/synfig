@@ -99,8 +99,6 @@ void Dock_Timetrack2::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canva
 
 	widget_timetrack->signal_waypoint_double_clicked().connect(sigc::mem_fun(*this, &Dock_Timetrack2::on_widget_timetrack_waypoint_double_clicked));
 
-	widget_timetrack->signal_no_waypoint_clicked().connect(sigc::mem_fun(*this, &Dock_Timetrack2::on_widget_timetrack_no_wapoint_clicked));
-
 	widget_timetrack->signal_action_state_changed().connect(sigc::mem_fun(*this, &Dock_Timetrack2::update_tool_palette_action));
 }
 
@@ -179,14 +177,6 @@ void Dock_Timetrack2::on_widget_timetrack_waypoint_double_clicked(synfigapp::Val
 	CanvasView::LooseHandle canvas_view = get_canvas_view();
 	if (canvas_view)
 		canvas_view->on_waypoint_clicked_canvasview(value_desc, waypoint_set, button);
-}
-
-void Dock_Timetrack2::on_widget_timetrack_no_wapoint_clicked(double x_cord, unsigned int button)
-{
-	synfig::Time time= widget_timeslider.get_time_plot_data()->get_t_from_pixel_coord(x_cord);
-	CanvasView::LooseHandle canvas_view = get_canvas_view();
-	if (canvas_view)
-		canvas_view->on_no_waypoint_clicked_canvasview(time, button);
 }
 
 void Dock_Timetrack2::setup_tool_palette()
