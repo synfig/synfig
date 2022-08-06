@@ -178,8 +178,8 @@ Widget_Timeslider::Widget_Timeslider():
 			  | Gdk::SCROLL_MASK );
 
 	auto icon_theme = Gtk::IconTheme::get_default();
-	lower_boundary_pixbuf = icon_theme->load_icon("bound_button_icon_lower", 1);
-	upper_boundary_pixbuf = icon_theme->load_icon("bound_button_icon_upper", 1);
+	lower_bound_pixbuf = icon_theme->load_icon("lower_bound_button_icon", 1);
+	upper_bound_pixbuf = icon_theme->load_icon("upper_bound_button_icon", 1);
 }
 
 Widget_Timeslider::~Widget_Timeslider()
@@ -311,50 +311,43 @@ Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 				double x1 = time_plot_data->get_double_pixel_t_coord(bounds[i][1]);
 				double w = x1 - x0;
 
-				double boundary_dimension=8;
-				double background_adjust;
-
-				if(i==0)
-					background_adjust=0;
-				else
-					background_adjust=8;
+				const double boundary_dimension =8;
+				double boundary_adjust = boundary_dimension;
+				double background_adjust = (i == 0) ? 0 : boundary_dimension;
 
 				cr->save();
-				cr->rectangle(x0 + background_adjust, 0.0, w-8, (double)get_height());
+				cr->rectangle(x0 + background_adjust, 0.0, w - boundary_dimension, (double)get_height());
 				cr->clip();
 				cr->translate(offset, 0.0);
 				cr->set_source(play_bounds_pattern);
 				cr->paint();
 				cr->restore();
 
-				if(i == 0)
-					boundary_dimension=0;
-				else
-					boundary_dimension=8;
+				boundary_adjust = (i == 0) ? 0 : boundary_dimension;
 
 				cr->save();
 				cr->set_line_width(1.0);
 				cr->set_source_rgba(0.0, 0.0, 0.0, 0.25);//inner border
-				cr->rectangle(x0 + 1.0 + boundary_dimension, 1.0, w - 2 - 8, (double)get_height() - 2.0);
+				cr->rectangle(x0 + 1.0 + boundary_adjust, 1.0, w - 2 - boundary_dimension, (double)get_height() - 2.0);
 				cr->stroke();
 				cr->set_source_rgba(0.0, 0.0, 0.0, 0.3);//outer border
-				cr->rectangle(x0 + 0.5 + boundary_dimension, 0.5, w - 1 - 8, (double)get_height() - 1.0);
+				cr->rectangle(x0 + 0.5 + boundary_adjust, 0.5, w - 1 - boundary_dimension, (double)get_height() - 1.0);
 				cr->stroke();
 				cr->restore();
 
 				Glib::RefPtr<Gdk::Pixbuf> icon;
 				if(i == 0){
-					boundary_dimension=-8;
-					icon = lower_boundary_pixbuf;
+					boundary_adjust=-boundary_dimension;
+					icon = lower_bound_pixbuf;
 				}
 				else{
-					boundary_dimension=-w;
-					icon = upper_boundary_pixbuf;
+					boundary_adjust=-w;
+					icon = upper_bound_pixbuf;
 				}
 
 				cr->save();
-				Gdk::Cairo::set_source_pixbuf(cr, icon, x0+w+boundary_dimension, 0);
-				cr->rectangle(x0+w+boundary_dimension,0.0,10,(double)get_height());
+				Gdk::Cairo::set_source_pixbuf(cr, icon, x0+w+boundary_adjust, 0);
+				cr->rectangle(x0+w+boundary_adjust,0.0,10,(double)get_height());
 				cr->fill();
 				cr->restore();
 			}
@@ -384,9 +377,9 @@ Widget_Timeslider::on_button_press_event(GdkEventButton *event) //for clicking
 	get_bounds_rectangle_dimensions(z0,z1,width,false);
 
 	if((current <= (x0+w))  && (current >= (x0 + w - 4) ))
-		move_boundary_button_lower= true;
+		move_lower_bound_button = true;
 	else if((current <= (z0 + 4))  && (current >= (z0)))
-		move_boundary_button_upper=true;
+		move_upper_bound_button = true;
 
 
 	return event->button == 1 || event->button == 2;
@@ -397,8 +390,8 @@ bool
 Widget_Timeslider::on_button_release_event(GdkEventButton *event){
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	lastx = (double)event->x;
-	move_boundary_button_lower=false;
-	move_boundary_button_upper=false;
+	move_lower_bound_button = false;
+	move_upper_bound_button = false;
 	return event->button == 1 || event->button == 2;
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
@@ -428,11 +421,11 @@ Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for dragging
 	get_bounds_rectangle_dimensions(x0,x1,w,true);
 	get_bounds_rectangle_dimensions(z0,z1,width,false);
 
-	if((((current <= (x0+w))  && (current >= (x0 + w - 4)) && !move_boundary_button_lower) || (move_boundary_button_lower))){
+	if((((current <= (x0+w))  && (current >= (x0 + w - 4)) && !move_lower_bound_button) || (move_lower_bound_button))){
 		if((get_window()->get_cursor() != bounds_cursor))
 		   get_window()->set_cursor(bounds_cursor);
 	}
-	else if((((current <= (z0 + 4))  && (current >= (z0)) && !move_boundary_button_upper) || (move_boundary_button_upper))){
+	else if((((current <= (z0 + 4))  && (current >= (z0)) && !move_upper_bound_button) || (move_upper_bound_button))){
 		if((get_window()->get_cursor() != bounds_cursor))
 		   get_window()->set_cursor(bounds_cursor);
 	}
@@ -450,9 +443,9 @@ Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for dragging
 
 	Gdk::ModifierType mod = Gdk::ModifierType(event->state);//mouse buttons are also modifiers
 
-	if(move_boundary_button_lower)
+	if (move_lower_bound_button)
 		time_plot_data->time_model->set_play_bounds_lower(time_plot_data->get_t_from_pixel_coord(event->x));
-	else if(move_boundary_button_upper)
+	else if (move_upper_bound_button)
 		time_plot_data->time_model->set_play_bounds_upper(time_plot_data->get_t_from_pixel_coord(event->x));
 
 

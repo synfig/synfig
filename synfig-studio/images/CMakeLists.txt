@@ -205,8 +205,8 @@ set(ICONS
 	set_outline_color_icon
 	show_grid_icon
 	show_guideline_icon
-	bound_button_icon_lower
-	bound_button_icon_upper
+	lower_bound_button_icon
+	upper_bound_button_icon
 	sif_icon
 	snap_grid_icon
 	snap_guideline_icon
