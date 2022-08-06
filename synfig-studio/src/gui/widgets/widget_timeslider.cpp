@@ -347,7 +347,7 @@ Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 
 				cr->save();
 				Gdk::Cairo::set_source_pixbuf(cr, icon, x0+w+boundary_adjust, 0);
-				cr->rectangle(x0+w+boundary_adjust,0.0,10,(double)get_height());
+				cr->rectangle(x0 + w + boundary_adjust, 0.0, 10, (double)get_height());
 				cr->fill();
 				cr->restore();
 			}
