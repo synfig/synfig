@@ -264,8 +264,8 @@ ICONS = \
 	show_grid_icon.$(EXT) \
 	snap_grid_icon.$(EXT) \
 	show_guideline_icon.$(EXT) \
-	bound_button_icon_lower.$(EXT) \
-	bound_button_icon_upper.$(EXT) \
+	lower_bound_button_icon.$(EXT) \
+	upper_bound_button_icon.$(EXT) \
 	snap_guideline_icon.$(EXT) \
 	onion_skin_icon.$(EXT) \
 	incr_resolution_icon.$(EXT) \
