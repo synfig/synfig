@@ -59,14 +59,14 @@ protected: // implementation that other interfaces can see
 	Glib::RefPtr<Gdk::Cursor> bounds_cursor = Gdk::Cursor::create(get_display(), "ew-resize");
 	Glib::RefPtr<Gdk::Cursor> default_cursor = Gdk::Cursor::create(get_display(), "default");
 
-	Glib::RefPtr<Gdk::Pixbuf> lower_boundary_pixbuf;
-	Glib::RefPtr<Gdk::Pixbuf> upper_boundary_pixbuf;
+	Glib::RefPtr<Gdk::Pixbuf> lower_bound_pixbuf;
+	Glib::RefPtr<Gdk::Pixbuf> upper_bound_pixbuf;
 
 	// last mouse position for dragging
 	double lastx;
 
-	bool move_boundary_button_lower=false;
-	bool move_boundary_button_upper=false;
+	bool move_lower_bound_button = false;
+	bool move_upper_bound_button = false;
 
 	// distance between two small marks, also uses for left/right scroll
 	synfig::Time step;
@@ -84,7 +84,7 @@ protected: // implementation that other interfaces can see
 
 	virtual void draw_background(const Cairo::RefPtr<Cairo::Context> &cr);
 
-	void get_bounds_rectangle_dimensions(double& x0, double& x1, double& w ,bool lower);
+	void get_bounds_rectangle_dimensions(double& x0, double& x1, double& w , bool lower);
 
 public:
 	Widget_Timeslider();
