@@ -76,7 +76,6 @@ void Dock_Timetrack2::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canva
 {
 	Widget_Timetrack *widget_timetrack = new Widget_Timetrack();
 	widget_timetrack->use_canvas_view(canvas_view);
-	canvas_view->set_current_widget_timetrack(widget_timetrack);
 	widget_timetrack->show();
 	widget_timetrack->set_hexpand(true);
 	widget_timetrack->set_vexpand(true);

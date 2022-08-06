@@ -236,12 +236,12 @@ bool Widget_Timetrack::copy_selected(synfig::Time delta_time)
 
 void Widget_Timetrack::handle_copied_waypoints_selection(bool selection_changed)
 {
-	if(selection_changed){//when the copied waypoints selection is altered then copy is over and paste menu item should not show
+	if (selection_changed) {//when the copied waypoints selection is altered then copy is over and paste menu item should not show
 		waypoint_mouse_copy=false;
 		return;
 	}
 
-	if (!waypoint_sd.is_selected(waypoint_sd.get_hovered_item())){ //if copied waypoint isnt selected select it and deselect any other waypoints
+	if (!waypoint_sd.is_selected(waypoint_sd.get_hovered_item())) { //if copied waypoint isnt selected select it and deselect any other waypoints
 		waypoint_sd.deselect_all();
 		waypoint_sd.select(waypoint_sd.get_hovered_item());
 	}
@@ -964,9 +964,9 @@ void Widget_Timetrack::on_waypoint_double_clicked(const Widget_Timetrack::Waypoi
 	}
 }
 
-void Widget_Timetrack::on_no_waypoint_clicked(unsigned int button, Gdk::Point button_cord)
+void Widget_Timetrack::on_no_waypoint_clicked(unsigned int button, Gdk::Point button_coord)
 {
-	synfig::Time time= time_plot_data->get_t_from_pixel_coord(button_cord.get_x());
+	synfig::Time time = time_plot_data->get_t_from_pixel_coord(button_coord.get_x());
 	signal_no_waypoint_click().emit(time, button);
 }
 

@@ -243,8 +243,6 @@ public:
 private:
 	WorkArea *work_area;
 
-	Widget_Timetrack* current_widget_timetrack;
-
 	synfig::SoundProcessor soundProcessor;
 
 	ActivationIndex activation_index_;
@@ -652,7 +650,7 @@ public:
 
 	void copy_waypoints(synfig::Time time);
 
-	void paste_waypoints(synfig::Time time, Widget_Timetrack* current_widget_timetrack);
+	void paste_waypoints(synfig::Time time);
 
 	void preview_option() {on_preview_option();}
 
@@ -667,8 +665,6 @@ public:
 	void toggle_duck_mask_all();
 	// Toggle displaybar according to App::enable_mainwin_toolbar
 	void toggle_show_toolbar();
-
-	void set_current_widget_timetrack(Widget_Timetrack* widget_timetrack) {current_widget_timetrack = widget_timetrack; }
 
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------
