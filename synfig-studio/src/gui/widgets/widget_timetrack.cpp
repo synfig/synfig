@@ -116,7 +116,6 @@ bool Widget_Timetrack::use_canvas_view(etl::loose_handle<CanvasView> canvas_view
 		synfig::error(_("No canvas_view for timetrack"));
 		return false;
 	}
-	current_canvas_view=canvas_view;
 	Gtk::TreeView* params_treeview = dynamic_cast<Gtk::TreeView*>(canvas_view->get_ext_widget("params"));
 
 	if (!params_treeview) {
@@ -238,7 +237,7 @@ bool Widget_Timetrack::copy_selected(synfig::Time delta_time)
 void Widget_Timetrack::handle_copied_waypoints_selection(bool selection_changed)
 {
 	if(selection_changed){//when the copied waypoints selection is altered then copy is over and paste menu item should not show
-		current_canvas_view->waypoint_copied=false;
+		waypoint_mouse_copy=false;
 		return;
 	}
 
@@ -968,9 +967,7 @@ void Widget_Timetrack::on_waypoint_double_clicked(const Widget_Timetrack::Waypoi
 void Widget_Timetrack::on_no_waypoint_clicked(unsigned int button, Gdk::Point button_cord)
 {
 	synfig::Time time= time_plot_data->get_t_from_pixel_coord(button_cord.get_x());
-	CanvasView::LooseHandle canvas_view = current_canvas_view; //alterntively we can include app.h to use get_selected_canvas_view() but I dont think its worth including just for this
-	if (canvas_view)
-		canvas_view->on_no_waypoint_clicked_canvasview(time, button);
+	signal_no_waypoint_click().emit(time, button);
 }
 
 void Widget_Timetrack::on_waypoint_action_changed()

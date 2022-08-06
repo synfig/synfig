@@ -2935,7 +2935,7 @@ CanvasView::copy_waypoints(synfig::Time time)
 {
 	current_widget_timetrack->handle_copied_waypoints_selection();
 	copied_waypoint_time = time;
-	waypoint_copied=true;
+	current_widget_timetrack->waypoint_mouse_copy=true;
 
 }
 
@@ -3017,7 +3017,7 @@ CanvasView::on_waypoint_clicked_canvasview(ValueDesc value_desc,
 		item->show();
 		waypoint_menu->append(*item);
 
-		if(waypoint_copied){
+		if (current_widget_timetrack->waypoint_mouse_copy){
 		item = manage(new Gtk::MenuItem(_("_Paste")));
 		item->set_use_underline(true);
 		item->signal_activate().connect(
@@ -3127,7 +3127,7 @@ CanvasView::on_waypoint_clicked_canvasview(ValueDesc value_desc,
 void
 CanvasView::on_no_waypoint_clicked_canvasview( synfig::Time time, unsigned int button )
 {
-	if((button == 3) && (waypoint_copied))
+	if((button == 3) && (current_widget_timetrack->waypoint_mouse_copy))
 	{
 		Gtk::Menu* waypoint_menu(manage(new Gtk::Menu()));
 		waypoint_menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), waypoint_menu));

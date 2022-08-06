@@ -85,6 +85,7 @@ public:
 
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int>& signal_waypoint_clicked() { return signal_waypoint_clicked_; }
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int>& signal_waypoint_double_clicked() { return signal_waypoint_double_clicked_; }
+	sigc::signal<void, synfig::Time, unsigned int>& signal_no_waypoint_click() { return signal_no_waypoint_click_; }
 
 	enum ActionState {
 		NONE,
@@ -96,6 +97,7 @@ public:
 	ActionState get_action_state() const;
 	void set_action_state(ActionState action_state);
 	sigc::signal<void>& signal_action_state_changed() { return signal_action_state_changed_; }
+	bool waypoint_mouse_copy=false;
 
 protected:
 	virtual bool on_event(GdkEvent* event) override;
@@ -223,7 +225,7 @@ private:
 	bool fetch_waypoints(const WaypointItem &wi, std::set<synfig::Waypoint, std::less<synfig::UniqueID> > &waypoint_set) const;
 	void on_waypoint_clicked(const WaypointItem &wi, unsigned int button, Gdk::Point /*point*/);
 	void on_waypoint_double_clicked(const WaypointItem &wi, unsigned int button, Gdk::Point /*point*/);
-	void on_no_waypoint_clicked (unsigned int button, Gdk::Point button_cord);
+	void on_no_waypoint_clicked(unsigned int button, Gdk::Point button_cord);
 	void on_waypoint_action_changed();
 
 	void on_params_store_row_inserted(const Gtk::TreeModel::Path&, const Gtk::TreeModel::iterator&);
@@ -236,6 +238,7 @@ private:
 
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int> signal_waypoint_clicked_;
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int> signal_waypoint_double_clicked_;
+	sigc::signal<void, synfig::Time, unsigned int> signal_no_waypoint_click_;
 
 	sigc::signal<void> signal_action_state_changed_;
 
@@ -250,7 +253,6 @@ private:
 	WaypointScaleInfo compute_scale_params() const;
 	synfig::Time compute_scaled_time(const WaypointItem &item, const WaypointScaleInfo &scale_info) const;
 	sigc::connection keyframe_changed_connection_;
-	etl::loose_handle<CanvasView> current_canvas_view;
 };
 
 }

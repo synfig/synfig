@@ -395,7 +395,6 @@ private:
 public:
 	void queue_rebuild_ducks();
 	sigc::signal<void>& signal_deleted() { return signal_deleted_; }
-	bool waypoint_copied=false;
 
 private:
 	//! This is for the IsWorking class.
