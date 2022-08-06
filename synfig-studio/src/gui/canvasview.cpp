@@ -3026,7 +3026,6 @@ CanvasView::on_waypoint_clicked_canvasview(ValueDesc value_desc,
 		waypoint_menu->append(*item);
 		}
 
-
 		if (size == 1 && value_desc.is_valid())
 		{
 			item = manage(new Gtk::MenuItem(_("_Edit")));
