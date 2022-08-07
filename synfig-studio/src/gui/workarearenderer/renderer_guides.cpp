@@ -136,8 +136,8 @@ Renderer_Guides::render_vfunc(
 			const float x((*iter-window_startx)/pw); // iter: the x cord    window_startx: x cordinate of the top left    pw: pixel width  / ok so makes sense and div by pw to know how many pixels to right of edge
 			const float x_rotate((*accomp_iter_other-window_startx)/pw);
 			const float y((*accomp_iter-window_starty)/ph);
-			std::cout<<"ruler number"<<ruler_num<<std::endl;
-			std::cout<<" x, x_rotate, y_rotate "<<x<<" ,"<<x_rotate<<" ,"<<y<<std::endl;
+//			std::cout<<"ruler number"<<ruler_num<<std::endl;
+//			std::cout<<" x, x_rotate, y_rotate: "<<x<<" ,"<<x_rotate<<" ,"<<y<<std::endl;
 
 			float x_kda_kda = x_rotate;
 			float y_kda_kda = y;
@@ -153,8 +153,8 @@ Renderer_Guides::render_vfunc(
 
 			if(*accomp_iter > -900){ //meaning this is a rotated ruler render it diffrently
 
-				std::cout<<" rotated \n"<<std::endl;
-				std::cout<<"old "<<*accomp_iter<<std::endl;
+//				std::cout<<" rotated \n"<<std::endl;
+//				std::cout<<"old "<<*accomp_iter<<std::endl;
 //				std::cout<<"new "<<(*accomp_iter_list)[1]<<std::endl;  now its working so just use it instead of two lists
 
 //				if(first_time){
@@ -163,8 +163,14 @@ Renderer_Guides::render_vfunc(
 //				}
 
 				//first we move the point to the center of rotation which for vert. is 1/2 drawable_height and x before rotate for nows sake lets just consider case of one ruler
-				int center_x = x; //this has to be x_before rotation which I think would be so much easier to disable x when rotate and have sep x rotate
-				int center_y = (1.0/2.0)*(drawable_h);
+				float center_x = x; //this has to be x_before rotation which I think would be so much easier to disable x when rotate and have sep x rotate
+				float center_y = (1.0/2.0)*(drawable_h);
+
+//				std::cout<<" center x from render"<<x<<std::endl;//why is it giving out a seg error
+
+//				//draw the draggable center //probably not a good idea
+//				cr->arc(center_x, center_y, 1.0, 0, 6.82); //probably make 2 pi more accurate
+//				cr->fill();
 
 				//then we get the point where the mouse is which is (x , y)
 				//determine cordinate of point relative to center
@@ -183,6 +189,22 @@ Renderer_Guides::render_vfunc(
 				}
 				//determine slope
 				float slope= (y-center_y)/(x_rotate-center_x);
+				//if slope is greter than 300 absoulute then its just vertical and should be drawn as such
+				if ( std::fabs(slope) > 300 ) {
+
+					cr->move_to(
+						x,
+						0
+						); //now the point is x,0
+					cr->line_to(
+						x,
+						drawable_h
+					);
+					cr->stroke();
+					accomp_iter++;
+					accomp_iter_other++;
+					continue;
+				}
 				float y_inc= slope;
 				//x_inc=1 kda kda
 
@@ -259,7 +281,7 @@ Renderer_Guides::render_vfunc(
 				first_time=false;
 			}
 			else{
-			std::cout<<"not being rotated \n"<<std::endl;
+//			std::cout<<"not being rotated \n"<<std::endl;
 			cr->move_to(
 				x,
 				0
@@ -288,8 +310,8 @@ Renderer_Guides::render_vfunc(
 			const float x((*accomp_iter-window_startx)/pw);
 			const float y((*iter-window_starty)/ph);
 			const float y_rotate((*accomp_iter_other-window_starty)/ph);
-			std::cout<<"ruler number"<<ruler_num<<std::endl;
-			std::cout<<" x_rotate, y, y_rotate "<<x<<" ,"<<y<<" ,"<<y_rotate<<std::endl;
+//			std::cout<<"ruler number"<<ruler_num<<std::endl;
+//			std::cout<<" x_rotate, y, y_rotate "<<x<<" ,"<<y<<" ,"<<y_rotate<<std::endl;
 
 			float x_kda_kda = x;
 			float y_kda_kda = y_rotate;
@@ -301,8 +323,8 @@ Renderer_Guides::render_vfunc(
 
 			if(*accomp_iter > -1000){
 
-				int center_x = (1.0/2.0)*(drawable_w);
-				int center_y = y;
+				float center_x = (1.0/2.0)*(drawable_w);
+				float center_y = y;
 
 				//then we get the point where the mouse is which is (x , y)
 				//determine cordinate of point relative to center
@@ -321,6 +343,21 @@ Renderer_Guides::render_vfunc(
 				}
 				//determine slope
 				float slope= (y_rotate-center_y)/(x-center_x);
+				if ( std::fabs(slope) > 300 ) {
+
+					cr->move_to(
+						x,
+						0
+						); //now the point is x,0
+					cr->line_to(
+						x,
+						drawable_h
+					);
+					cr->stroke();
+					accomp_iter++;
+					accomp_iter_other++;
+					continue;
+				}
 				float y_inc= slope;
 				//x_inc=1 kda kda
 

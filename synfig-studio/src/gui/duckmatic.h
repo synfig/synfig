@@ -148,7 +148,14 @@ public:
 
 	typedef Duck::Type Type;
 
-	typedef std::list<float> GuideList; //ok so typedef its a float list, ard btw chance to learn more about lists
+	typedef std::list<float> GuideList;
+
+	// for finding current rotated guide
+	int drawing_area_width;
+	int drawing_area_height;
+	float pwidth,pheight;
+	synfig::Vector::value_type window_startx,window_starty;
+	float current_slope=0, current_c=0;
 
 //	typedef std::list<std::array<float, 2>> AccompGuideList;
 
@@ -247,6 +254,8 @@ protected:
 	bool show_persistent_strokes;
 
 	bool axis_lock;
+
+	bool current_ruler_rotated = false;
 
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------

@@ -296,9 +296,13 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	get_canvas()->signal_meta_data_changed("grid_color").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("grid_snap").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("grid_show").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
-	get_canvas()->signal_meta_data_changed("guide_show").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
+	get_canvas()->signal_meta_data_changed("guide_show").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));//meta data mod
 	get_canvas()->signal_meta_data_changed("guide_x").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
+	get_canvas()->signal_meta_data_changed("guide_x_accomp").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
+	get_canvas()->signal_meta_data_changed("guide_x_accomp_other").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_y").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
+	get_canvas()->signal_meta_data_changed("guide_y_accomp").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
+	get_canvas()->signal_meta_data_changed("guide_y_accomp_other").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("background_rendering").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("onion_skin").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("onion_skin_past").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
@@ -403,6 +407,30 @@ WorkArea::save_meta_data()
 			canvas_interface->erase_meta_data("guide_x");
 
 		data.clear();
+		for(iter=get_x_list_accomp_cord().begin();iter!=get_x_list_accomp_cord().end();++iter)
+		{
+			if(!data.empty())
+				data+=' ';
+			data+=strprintf("%f",*iter);
+		}
+		if(!data.empty())
+			canvas_interface->set_meta_data("guide_x_accomp",data);
+		else if (!canvas->get_meta_data("guide_x_accomp").empty())
+			canvas_interface->erase_meta_data("guide_x_accomp");
+
+		data.clear();
+		for(iter=get_x_list_accomp_cord_other().begin();iter!=get_x_list_accomp_cord_other().end();++iter)
+		{
+			if(!data.empty())
+				data+=' ';
+			data+=strprintf("%f",*iter);
+		}
+		if(!data.empty())
+			canvas_interface->set_meta_data("guide_x_accomp_other",data);
+		else if (!canvas->get_meta_data("guide_x_accomp_other").empty())
+			canvas_interface->erase_meta_data("guide_x_accomp_other");
+
+		data.clear();
 		for(iter=get_guide_list_y().begin();iter!=get_guide_list_y().end();++iter)
 		{
 			if(!data.empty())
@@ -413,6 +441,32 @@ WorkArea::save_meta_data()
 			canvas_interface->set_meta_data("guide_y",data);
 		else if (!canvas->get_meta_data("guide_y").empty())
 			canvas_interface->erase_meta_data("guide_y");
+
+		data.clear();
+		for(iter=get_y_list_accomp_cord().begin();iter!=get_y_list_accomp_cord().end();++iter)
+		{
+			if(!data.empty())
+				data+=' ';
+			data+=strprintf("%f",*iter);
+		}
+		if(!data.empty())
+			canvas_interface->set_meta_data("guide_y_accomp",data);
+		else if (!canvas->get_meta_data("guide_y_accomp").empty())
+			canvas_interface->erase_meta_data("guide_y_accomp");
+
+		data.clear();
+		for(iter=get_y_list_accomp_cord_other().begin();iter!=get_y_list_accomp_cord_other().end();++iter)
+		{
+			if(!data.empty())
+				data+=' ';
+			data+=strprintf("%f",*iter);
+		}
+		if(!data.empty())
+			canvas_interface->set_meta_data("guide_y_accomp_other",data);
+		else if (!canvas->get_meta_data("guide_y_accomp_other").empty())
+			canvas_interface->erase_meta_data("guide_y_accomp_other");
+
+		// probably need to do the exact same for guide_list_x_accomp + other and same for y //metadata mod adham
 	}
 
 	if(get_sketch_filename().size())
@@ -647,6 +701,40 @@ WorkArea::load_meta_data()
 	}
 	//sort(get_guide_list_x());
 
+	data=canvas->get_meta_data("guide_x_accomp");
+	get_x_list_accomp_cord().clear();
+	while(!data.empty())
+	{
+		String::iterator iter(find(data.begin(),data.end(),' '));
+		String guide(data.begin(),iter);
+		ChangeLocale change_locale(LC_NUMERIC, "C");
+
+		if(!guide.empty())
+			get_x_list_accomp_cord().push_back(stratof(guide));
+
+		if(iter==data.end())
+			data.clear();
+		else
+			data=String(iter+1,data.end());
+	}
+
+	data=canvas->get_meta_data("guide_x_accomp_other");
+	get_x_list_accomp_cord_other().clear();
+	while(!data.empty())
+	{
+		String::iterator iter(find(data.begin(),data.end(),' '));
+		String guide(data.begin(),iter);
+		ChangeLocale change_locale(LC_NUMERIC, "C");
+
+		if(!guide.empty())
+			get_x_list_accomp_cord_other().push_back(stratof(guide));
+
+		if(iter==data.end())
+			data.clear();
+		else
+			data=String(iter+1,data.end());
+	}
+
 	data=canvas->get_meta_data("guide_y");
 	get_guide_list_y().clear();
 	while(!data.empty())
@@ -664,6 +752,42 @@ WorkArea::load_meta_data()
 			data=String(iter+1,data.end());
 	}
 	//sort(get_guide_list_y());
+
+	data=canvas->get_meta_data("guide_y_accomp");
+	get_y_list_accomp_cord().clear();
+	while(!data.empty())
+	{
+		String::iterator iter(find(data.begin(),data.end(),' '));
+		String guide(data.begin(),iter);
+		ChangeLocale change_locale(LC_NUMERIC, "C");
+
+		if(!guide.empty())
+			get_y_list_accomp_cord().push_back(stratof(guide));
+
+		if(iter==data.end())
+			data.clear();
+		else
+			data=String(iter+1,data.end());
+	}
+
+	data=canvas->get_meta_data("guide_y_accomp_other");
+	get_y_list_accomp_cord_other().clear();
+	while(!data.empty())
+	{
+		String::iterator iter(find(data.begin(),data.end(),' '));
+		String guide(data.begin(),iter);
+		ChangeLocale change_locale(LC_NUMERIC, "C");
+
+		if(!guide.empty())
+			get_y_list_accomp_cord_other().push_back(stratof(guide));
+
+		if(iter==data.end())
+			data.clear();
+		else
+			data=String(iter+1,data.end());
+	}
+
+	//mod adham here also
 
 	data = canvas->get_meta_data("jack_offset");
 	if (!data.empty())
@@ -981,16 +1105,12 @@ WorkArea::get_focus_point()const
 	return synfig::Point(get_scrollx_adjustment()->get_value()*x_factor, get_scrolly_adjustment()->get_value()*y_factor);
 }
 
-bool rotate=false;
-
 bool
 WorkArea::on_key_press_event(GdkEventKey* event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
-	std::cout<<"key press event"<<std::endl;
 	if((event->state == GDK_CONTROL_MASK) /*&&*/ /*(event->type == GDK_KEY_PRESS)*/){ // not working properly
-			rotate=true;
-			std::cout<<"rotate flag true"<<std::endl;
+			rotate_guide=true;
 	}
 	auto event_result = canvas_view->get_smach().process_event(
 		EventKeyboard(EVENT_WORKAREA_KEY_DOWN, event->keyval, Gdk::ModifierType(event->state)));
@@ -1053,7 +1173,7 @@ bool
 WorkArea::on_key_release_event(GdkEventKey* event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
-	rotate=false;
+	rotate_guide=false;
 	auto event_result = canvas_view->get_smach().process_event(
 		EventKeyboard(EVENT_WORKAREA_KEY_UP, event->keyval, Gdk::ModifierType(event->state)) );
 	if (event_result != Smach::RESULT_OK)
@@ -1356,7 +1476,17 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 				// Check for a guide click
 				if (show_guides) { // ok here is intresting part  //this is whn the ruler is already in the canvas and we move it but fr the initia ruler getting and moving its in the other event first
-					std::cout<<std::endl<<"from draw event"<<std::endl;
+					//not both are needed here but ok
+					drawing_area_width= drawing_area->get_window()->get_width();
+					drawing_area_height= drawing_area->get_window()->get_height();
+					const synfig::Vector::value_type window_start_x(get_window_tl()[0]);//this is probably whats causing the nan
+					const synfig::Vector::value_type window_start_y(get_window_tl()[1]);
+					const float pw_(get_pw()),ph_(get_ph());
+					pwidth= pw_;
+					pheight= ph_;
+					window_startx= window_start_x;
+					window_starty= window_start_y;
+
 					GuideList::iterator iter = find_guide_x(mouse_pos,radius); //we get the iterator to the found guide
 					if (iter == get_guide_list_x().end()) { //this means then its not found
 						curr_guide_is_x = false;
@@ -1501,29 +1631,51 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 	        break;
 		}
 		case DRAG_GUIDE: {
-			if(curr_guide_is_x){// Mod adham: this is where the postion is inserted but what is curr_guide
-				if(!rotate){//to keep initial value unchanged if rotated
+			if(curr_guide_is_x){
+				if(!rotate_guide && ((*curr_guide_accomp_duckamtic) < -900)){//to keep initial value unchanged if rotated			//if its a rotated ruler then change also x_rotate_guide
 				*curr_guide = mouse_pos[0]; // so basically curr_guide is iterator to the correct elemtn so we here set the element itselfs value.
-				std::cout<<"we changing the og cord"<<std::endl<<std::endl;
 				}
-				if(rotate){
-					std::cout<<"we changing the rotate cords"<<std::endl<<std::endl;
+				else if( !from_ruler_event && !rotate_guide && ((*curr_guide_accomp_duckamtic) > -900) && current_c && current_slope){ //for some weird reason clicking on the ruler without canvas click first gives seg errors
+																										   // also test more because something are off anf btw remember the off thing when rotting "quadrant boundaries"
+					*curr_guide_accomp_duckamtic = mouse_pos[1];
+					*curr_guide_accomp_duckamtic_other= mouse_pos[0];
+
+					float center_y = ((1.0/2.0)*(drawing_area_height)*pheight)+ window_starty;
+					float center_x_new= (mouse_pos[0])-((mouse_pos[1]-center_y)/(-current_slope));//current slope is slope of the line on it being founds
+					*curr_guide = center_x_new;
+				}
+				if(rotate_guide && !from_ruler_event){
+				std::cout<<"rotating the ruler"<<std::endl;
 				*curr_guide_accomp_duckamtic = mouse_pos[1]; //accoomp guide only has a value when it was moved while control pressed.
 				*curr_guide_accomp_duckamtic_other= mouse_pos[0];
-
+				//we could calculate slope here while turining to allow a move right after a turn but we have to make sure slope here is same as slope there
+				float center_y = ((1.0/2.0)*(drawing_area_height)*pheight)+ window_starty;
+				float slope = (mouse_pos[1] - center_y)/(mouse_pos[0] - *curr_guide);
+				current_slope = -slope;
 //				std::array<float,2> accomp_cords_garb = { mouse_pos[0] , mouse_pos[1] };
 //				*curr_accomp_guide = accomp_cords_garb;
 				}
 			}
 			else{
-				if(!rotate)
+				if( (!rotate_guide) && ((*curr_guide_accomp_duckamtic) < -900) )
 				*curr_guide = mouse_pos[1];
-				if(rotate){
-				std::cout<<"blablalbl"<<std::endl;
-				*curr_guide_accomp_duckamtic = mouse_pos[0];
-				*curr_guide_accomp_duckamtic_other= mouse_pos[1];
-//				std::array<float,2> accomp_cords_garb = { mouse_pos[0] , mouse_pos[1] };
-//				*curr_accomp_guide = accomp_cords_garb;
+				else if ( !rotate_guide && ((*curr_guide_accomp_duckamtic) > -900) && current_c && current_slope ){
+					*curr_guide_accomp_duckamtic = mouse_pos[0];
+					*curr_guide_accomp_duckamtic_other= mouse_pos[1];
+
+					float center_x_new = ((1.0/2.0)*(drawing_area_width)*pwidth)+ window_startx; //current slope is slope of the line on it being founds
+					float center_y = (mouse_pos[1])-((mouse_pos[0]-center_x_new)*(-current_slope));
+					*curr_guide = center_y; //rename the y her to new
+
+				}
+				if(rotate_guide && !from_ruler_event){
+					*curr_guide_accomp_duckamtic = mouse_pos[0];
+					*curr_guide_accomp_duckamtic_other= mouse_pos[1];
+					float center_x_new = ((1.0/2.0)*(drawing_area_width)*pwidth)+ window_startx;
+					float slope = (mouse_pos[1] - *curr_guide)/(mouse_pos[0] - center_x_new );
+					current_slope = -slope;
+//					std::array<float,2> accomp_cords_garb = { mouse_pos[0] , mouse_pos[1] };
+//					*curr_accomp_guide = accomp_cords_garb;
 				}
 			}
 
@@ -1808,19 +1960,20 @@ WorkArea::on_hruler_event(GdkEvent *event)
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	switch(event->type) {
 	case GDK_BUTTON_PRESS:
+			from_ruler_event=true;
 		if (get_drag_mode() == DRAG_NONE && show_guides) {
 			set_drag_mode(DRAG_GUIDE);
 			//mod adham: starting point here we insert the guides_list_y accompanying event point but with a value which wed know as basically none
 			curr_guide = get_guide_list_y().insert(get_guide_list_y().begin(), 0.0);//inserted at the beginning i.e. before prev begin
-			get_y_list_accomp_cord().insert(get_y_list_accomp_cord().begin(), -1000); //insert with garbage value and only enter real value in draw event when control is pressed
-			get_y_list_accomp_cord_other().insert(get_y_list_accomp_cord_other().begin(), -1000);
+			curr_guide_accomp_duckamtic = get_y_list_accomp_cord().insert(get_y_list_accomp_cord().begin(), -1000); //insert with garbage value and only enter real value in draw event when control is pressed
+			curr_guide_accomp_duckamtic_other = get_y_list_accomp_cord_other().insert(get_y_list_accomp_cord_other().begin(), -1000);
+
 //			std::array<float,2> accomp_cords_garb = { -1000 , -1000 };
 //			get_accomp_list_y().insert(get_accomp_list_y().begin(), accomp_cords_garb);
 			curr_guide_is_x = false;
 		}
 		return true;
 	case GDK_MOTION_NOTIFY:
-			std::cout<<std::endl<<"from hruler event event"<<std::endl;
 		// Guide movement
 		if (get_drag_mode() == DRAG_GUIDE && !curr_guide_is_x) {
 			// Event is in the hruler, which has a slightly different
@@ -1832,6 +1985,7 @@ WorkArea::on_hruler_event(GdkEvent *event)
 		}
 		return true;
 	case GDK_BUTTON_RELEASE:
+			from_ruler_event=false;
 		if (get_drag_mode() == DRAG_GUIDE && !curr_guide_is_x) {
 			set_drag_mode(DRAG_NONE);
 			save_meta_data();
@@ -1851,11 +2005,12 @@ WorkArea::on_vruler_event(GdkEvent *event)
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	switch(event->type) {
 	case GDK_BUTTON_PRESS:
+		from_ruler_event=true;
 		if (get_drag_mode() == DRAG_NONE && show_guides) {
 			set_drag_mode(DRAG_GUIDE);
 			curr_guide=get_guide_list_x().insert(get_guide_list_x().begin(),0.0);
-			get_x_list_accomp_cord().insert(get_x_list_accomp_cord().begin(), -1000); //insert with garbage value and only enter real value in draw event when control is pressed
-			get_x_list_accomp_cord_other().insert(get_x_list_accomp_cord_other().begin(), -1000);
+			curr_guide_accomp_duckamtic= get_x_list_accomp_cord().insert(get_x_list_accomp_cord().begin(), -1000); //insert with garbage value and only enter real value in draw event when control is pressed
+			curr_guide_accomp_duckamtic_other = get_x_list_accomp_cord_other().insert(get_x_list_accomp_cord_other().begin(), -1000);
 //			std::array<float,2> accomp_cords_garb = { -1000 , -1000 };
 //			get_accomp_list_x().insert(get_accomp_list_x().begin(), accomp_cords_garb);
 			curr_guide_is_x=true;
@@ -1867,12 +2022,12 @@ WorkArea::on_vruler_event(GdkEvent *event)
 			// Event is in the vruler, which has a slightly different
 			// coordinate system from the canvas.
 			event->motion.x -= vruler->get_width()+2;
-
 			// call the on drawing area event to refresh everything.
 			return on_drawing_area_event(event);
 		}
 		return true;
 	case GDK_BUTTON_RELEASE:
+			from_ruler_event=false;
 		if (get_drag_mode() == DRAG_GUIDE && curr_guide_is_x) {
 			set_drag_mode(DRAG_NONE);
 			save_meta_data();

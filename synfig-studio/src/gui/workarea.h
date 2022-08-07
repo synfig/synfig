@@ -228,6 +228,9 @@ private:
 
 	etl::handle<LockDucks> lock_ducks;
 
+	bool rotate_guide=false;//move to header neccessary gdn
+	bool from_ruler_event=false;//failed bool
+
 public:
 	/*
  -- ** -- P U B L I C   D A T A -----------------------------------------------

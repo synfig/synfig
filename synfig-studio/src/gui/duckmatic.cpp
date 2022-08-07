@@ -821,10 +821,48 @@ Duckmatic::find_guide_x(synfig::Point pos, float radius) // returns found guide 
 	float dist(radius);
 	for(iter=guide_list_x_.begin();iter!=guide_list_x_.end();++iter)
 	{
-		float amount(std::fabs(*iter-pos[0])); // Abs[x val of list elemnt - x value of mouse]
-		if(amount<dist) // ?? what exactly is radius but ok
+		float slope=0,c=0,num=0,denom=0,amount_rotate=0;
+		bool ruler_rotated;
+
+		if(*iter_accomp > -900)
+			ruler_rotated = true;
+		else
+			ruler_rotated = false;
+
+		if (ruler_rotated) {
+		float center_x((*iter-window_startx)/pwidth);//center position
+		float center_y = (1.0/2.0)*(drawing_area_height);
+		float x2((*iter_accomp_other-window_startx)/pwidth);//rotate position i.e. move with ctr
+		float y2((*iter_accomp-window_starty)/pheight);
+		float y((pos[1]-window_starty)/pheight);//live mouse position
+		float x((pos[0]-window_startx)/pwidth);
+		slope= (y2 - center_y)/(x2 - center_x);
+		c = (-(slope*center_x)+center_y);
+		//now we have the equation of the rotated straight line y = slope*x + c, we now calc the perpindicular/shortest distnace from the line
+		num= std::fabs((slope*x)-y-(slope*center_x)+center_y);
+		denom= std::sqrt(1 + (slope)*(slope));
+		amount_rotate= num/denom; //perp distance
+		}
+
+
+		float amount(std::fabs(*iter-pos[0]));
+			//if distace of this iterations ruler is less than dist which is preinitialized but then becomes amount then this is close and update dist
+		if( ((amount<dist) && (!ruler_rotated)) || ((amount_rotate) && amount_rotate < (dist + 3)) )
 		{
-			dist=amount;
+			if (ruler_rotated) {
+			current_ruler_rotated = true;
+			current_slope = slope;
+			current_c = c;
+			}
+			else
+				current_ruler_rotated = false;
+
+
+			if(amount<amount_rotate)
+				dist=amount;
+			else{
+				dist=amount_rotate;//here maybe we could add the + 3 ?
+			}
 			best=iter; //best is now the found iter
 			curr_guide_accomp_duckamtic= iter_accomp;
 			curr_guide_accomp_duckamtic_other= iter_accomp_other;
@@ -834,7 +872,7 @@ Duckmatic::find_guide_x(synfig::Point pos, float radius) // returns found guide 
 //		accomp_iter++;
 		iter_accomp_other++;
 	}
-	return best; //we return the found iter but if not found we return the iterator to the end
+	return best;
 }
 
 Duckmatic::GuideList::iterator
@@ -848,9 +886,47 @@ Duckmatic::find_guide_y(synfig::Point pos, float radius)
 	float dist(radius);
 	for(iter=guide_list_y_.begin();iter!=guide_list_y_.end();++iter)
 	{
+		float slope=0,c=0,num=0,denom=0,amount_rotate=0;
+		bool ruler_rotated;
+
+		if(*iter_accomp > -900){
+			ruler_rotated = true;
+			current_ruler_rotated = true;
+		}
+		else{
+			ruler_rotated = false;
+			current_ruler_rotated = false; //really bad way of doing this fix later
+		}
+
+		if (ruler_rotated) {
+			float center_x = (1.0/2.0)*(drawing_area_width);//center position
+			float center_y = ((*iter-window_starty)/pheight) ;
+			float x2((*iter_accomp-window_startx)/pwidth);//rotate position i.e. move with ctr
+			float y2((*iter_accomp_other-window_starty)/pheight);
+			float y((pos[1]-window_starty)/pheight);//live mouse position
+			float x((pos[0]-window_startx)/pwidth);
+			slope= (y2 - center_y)/(x2 - center_x);
+			c = (-(slope*center_x)+center_y);
+			//now we have the equation of the rotated straight line y = slope*x + c, we now calc the perpindicular/shortest distnace from the line
+			num= std::fabs((slope*x)-y-(slope*center_x)+center_y);
+			denom= std::sqrt(1 + (slope)*(slope));
+			amount_rotate= num/denom; //perp distance
+		}
+
 		float amount(std::fabs(*iter-pos[1]));
-		if(amount<=dist)
+		if( ((amount<=dist) && (!ruler_rotated)) || ((amount_rotate) && amount_rotate < (dist + 3)) )
 		{
+			if (ruler_rotated) {
+			current_slope= slope;
+			current_c = c;
+			}
+
+			if(amount<amount_rotate)
+				dist=amount;
+			else{
+				dist=amount_rotate;//here maybe we could add the + 3 ?
+			}
+
 			dist=amount;
 			best=iter;
 			curr_guide_accomp_duckamtic= iter_accomp;
