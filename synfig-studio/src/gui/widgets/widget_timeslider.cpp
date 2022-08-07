@@ -420,19 +420,12 @@ Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for dragging
 	get_bounds_rectangle_dimensions(x0,x1,w,true);
 	get_bounds_rectangle_dimensions(z0,z1,width,false);
 
-	if(move_lower_bound_button || (current_x <= x1 && current_x >= x1 - boundary_dimension)){
-		if((get_window()->get_cursor() != bounds_cursor))
+	if(move_lower_bound_button || (current_x <= x1 && current_x >= x1 - boundary_dimension))
 		   get_window()->set_cursor(bounds_cursor);
-	}
-	else if(move_upper_bound_button || ((current_x <= (z0 + boundary_dimension))  && (current_x >= (z0)))){
-		if((get_window()->get_cursor() != bounds_cursor))
+	else if(move_upper_bound_button || ((current_x <= (z0 + boundary_dimension))  && (current_x >= (z0))))
 		   get_window()->set_cursor(bounds_cursor);
-	}
-	else {
-		if((get_window()->get_cursor() != default_cursor))
+	else
 		   get_window()->set_cursor(default_cursor);
-	}
-
 
 	double dx = (double)event->x - lastx;
 	lastx = (double)event->x;
