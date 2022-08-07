@@ -311,7 +311,6 @@ Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 				double x1 = time_plot_data->get_double_pixel_t_coord(bounds[i][1]);
 				double w = x1 - x0;
 
-				const double boundary_dimension =8;
 				double boundary_adjust = boundary_dimension;
 				double background_adjust = (i == 0) ? 0 : boundary_dimension;
 
@@ -376,9 +375,9 @@ Widget_Timeslider::on_button_press_event(GdkEventButton *event) //for clicking
 	get_bounds_rectangle_dimensions(x0,x1,w,true);
 	get_bounds_rectangle_dimensions(z0,z1,width,false);
 
-	if((current <= (x0+w))  && (current >= (x0 + w - 4) ))
+	if((current <= (x0+w))  && (current >= (x0 + w - boundary_dimension) ))
 		move_lower_bound_button = true;
-	else if((current <= (z0 + 4))  && (current >= (z0)))
+	else if((current <= (z0 + boundary_dimension))  && (current >= (z0)))
 		move_upper_bound_button = true;
 
 
@@ -416,16 +415,16 @@ Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for dragging
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 
-	double current= time_plot_data->get_double_pixel_t_coord(time_plot_data->get_t_from_pixel_coord(event->x));
+	double current_x = event->x;
 	double x0,x1,w,z0,z1,width;
 	get_bounds_rectangle_dimensions(x0,x1,w,true);
 	get_bounds_rectangle_dimensions(z0,z1,width,false);
 
-	if((((current <= (x0+w))  && (current >= (x0 + w - 4)) && !move_lower_bound_button) || (move_lower_bound_button))){
+	if(move_lower_bound_button || (current_x <= x1 && current_x >= x1 - boundary_dimension)){
 		if((get_window()->get_cursor() != bounds_cursor))
 		   get_window()->set_cursor(bounds_cursor);
 	}
-	else if((((current <= (z0 + 4))  && (current >= (z0)) && !move_upper_bound_button) || (move_upper_bound_button))){
+	else if(move_upper_bound_button || ((current_x <= (z0 + boundary_dimension))  && (current_x >= (z0)))){
 		if((get_window()->get_cursor() != bounds_cursor))
 		   get_window()->set_cursor(bounds_cursor);
 	}
