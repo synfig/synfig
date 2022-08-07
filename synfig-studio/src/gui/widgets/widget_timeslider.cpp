@@ -396,7 +396,7 @@ Widget_Timeslider::on_button_release_event(GdkEventButton *event){
 }
 
 void
-Widget_Timeslider::get_bounds_rectangle_dimensions(double& x0, double& x1, double& w ,bool lower)
+Widget_Timeslider::get_bounds_rectangle_dimensions(double& x0, double& x1, double& w , bool lower)
 {
 	if(lower){
 		 x0 = time_plot_data->get_double_pixel_t_coord(time_plot_data->lower_ex);
