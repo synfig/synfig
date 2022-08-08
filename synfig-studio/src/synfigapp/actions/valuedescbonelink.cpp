@@ -246,6 +246,10 @@ Action::ValueDescBoneLink::prepare()
 		++iter;
 	}
 
+	// Avoid this empty action in action history
+	if (value_desc_list.empty())
+		throw Error(Error::TYPE_UNABLE, _("Nothing to link to bone"));
+
 	for (ValueDesc& value_desc : value_desc_list)
 	{
 		/*
