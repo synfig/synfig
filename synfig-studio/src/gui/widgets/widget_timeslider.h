@@ -65,8 +65,8 @@ protected: // implementation that other interfaces can see
 	// last mouse position for dragging
 	double lastx;
 
-	bool move_lower_bound_button = false;
-	bool move_upper_bound_button = false;
+	bool moving_lower_bound_button = false;
+	bool moving_upper_bound_button = false;
 
 	// distance between two small marks, also uses for left/right scroll
 	synfig::Time step;
@@ -84,7 +84,7 @@ protected: // implementation that other interfaces can see
 
 	virtual void draw_background(const Cairo::RefPtr<Cairo::Context> &cr);
 
-	void get_bounds_rectangle_dimensions(double& x0, double& x1, double& w , bool lower);
+	void get_bounds_rectangle_dimensions(double& x0, double& x1, bool lower);
 	const double boundary_dimension =8;
 
 public:

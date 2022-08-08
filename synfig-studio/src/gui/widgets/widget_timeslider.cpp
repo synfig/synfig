@@ -345,7 +345,7 @@ Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 				}
 
 				cr->save();
-				Gdk::Cairo::set_source_pixbuf(cr, icon, x0+w+boundary_adjust, 0);
+				Gdk::Cairo::set_source_pixbuf(cr, icon, x0 + w + boundary_adjust, 0);
 				cr->rectangle(x0 + w + boundary_adjust, 0.0, 10, (double)get_height());
 				cr->fill();
 				cr->restore();
@@ -367,18 +367,18 @@ Widget_Timeslider::on_button_press_event(GdkEventButton *event) //for clicking
 
 	if (event->button == 1) {
 		Time time = time_plot_data->get_t_from_pixel_coord(event->x);
-		time_plot_data->time_model->set_time(time);//setting the time which is in time model
+		time_plot_data->time_model->set_time(time);
 	}
 
-	double current= time_plot_data->get_double_pixel_t_coord(time_plot_data->get_t_from_pixel_coord(event->x));
-	double x0,x1,w,z0,z1,width;
-	get_bounds_rectangle_dimensions(x0,x1,w,true);
-	get_bounds_rectangle_dimensions(z0,z1,width,false);
+	double current_x = event->x;
+	double x0, x1, z0, z1;
+	get_bounds_rectangle_dimensions(x0, x1, true);
+	get_bounds_rectangle_dimensions(z0, z1, false);
 
-	if((current <= (x0+w))  && (current >= (x0 + w - boundary_dimension) ))
-		move_lower_bound_button = true;
-	else if((current <= (z0 + boundary_dimension))  && (current >= (z0)))
-		move_upper_bound_button = true;
+	if(current_x <= x1 && current_x >= x1 - boundary_dimension)
+		moving_lower_bound_button = true;
+	else if(current_x <= (z0 + boundary_dimension)  && current_x >= z0)
+		moving_upper_bound_button = true;
 
 
 	return event->button == 1 || event->button == 2;
@@ -389,24 +389,22 @@ bool
 Widget_Timeslider::on_button_release_event(GdkEventButton *event){
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	lastx = (double)event->x;
-	move_lower_bound_button = false;
-	move_upper_bound_button = false;
+	moving_lower_bound_button = false;
+	moving_upper_bound_button = false;
 	return event->button == 1 || event->button == 2;
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 void
-Widget_Timeslider::get_bounds_rectangle_dimensions(double& x0, double& x1, double& w , bool lower)
+Widget_Timeslider::get_bounds_rectangle_dimensions(double& x0, double& x1, bool lower)
 {
 	if(lower){
 		 x0 = time_plot_data->get_double_pixel_t_coord(time_plot_data->lower_ex);
 		 x1 = time_plot_data->get_double_pixel_t_coord(time_plot_data->time_model->get_play_bounds_lower());
-		 w = x1 - x0;
 	}
 	else {
-		 x0= time_plot_data->get_double_pixel_t_coord(time_plot_data->time_model->get_play_bounds_upper());
-		 x1= time_plot_data->get_double_pixel_t_coord(time_plot_data->upper_ex);
-		 w= x1 - x0;
+		 x0 = time_plot_data->get_double_pixel_t_coord(time_plot_data->time_model->get_play_bounds_upper());
+		 x1 = time_plot_data->get_double_pixel_t_coord(time_plot_data->upper_ex);
 	}
 }
 
@@ -416,13 +414,13 @@ Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for dragging
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 
 	double current_x = event->x;
-	double x0,x1,w,z0,z1,width;
-	get_bounds_rectangle_dimensions(x0,x1,w,true);
-	get_bounds_rectangle_dimensions(z0,z1,width,false);
+	double x0, x1, w, z0, z1;
+	get_bounds_rectangle_dimensions(x0, x1, true);
+	get_bounds_rectangle_dimensions(z0, z1, false);
 
-	if(move_lower_bound_button || (current_x <= x1 && current_x >= x1 - boundary_dimension))
+	if(moving_lower_bound_button || (current_x <= x1 && current_x >= x1 - boundary_dimension))
 		   get_window()->set_cursor(bounds_cursor);
-	else if(move_upper_bound_button || ((current_x <= (z0 + boundary_dimension))  && (current_x >= (z0))))
+	else if(moving_upper_bound_button || ((current_x <= (z0 + boundary_dimension))  && (current_x >= (z0))))
 		   get_window()->set_cursor(bounds_cursor);
 	else
 		   get_window()->set_cursor(default_cursor);
@@ -433,11 +431,11 @@ Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for dragging
 	if (!time_plot_data->time_model || get_width() <= 0 || get_height() <= 0)
 		return false;
 
-	Gdk::ModifierType mod = Gdk::ModifierType(event->state);//mouse buttons are also modifiers
+	Gdk::ModifierType mod = Gdk::ModifierType(event->state);
 
-	if (move_lower_bound_button)
+	if (moving_lower_bound_button)
 		time_plot_data->time_model->set_play_bounds_lower(time_plot_data->get_t_from_pixel_coord(event->x));
-	else if (move_upper_bound_button)
+	else if (moving_upper_bound_button)
 		time_plot_data->time_model->set_play_bounds_upper(time_plot_data->get_t_from_pixel_coord(event->x));
 
 
