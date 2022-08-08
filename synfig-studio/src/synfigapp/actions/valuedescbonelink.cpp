@@ -197,19 +197,26 @@ Action::ValueDescBoneLink::prepare()
 			bool has_transformation = layer->get_param("transformation").is_valid()
 									  || layer->dynamic_param_list().count("transformation") > 0;
 			if (has_transformation) {
-				// Propose to user to change to "transformation" parameter
-				if ( get_canvas_interface()
-				  && get_canvas_interface()->get_ui_interface()
-				  && UIInterface::RESPONSE_OK == get_canvas_interface()->get_ui_interface()->confirmation(
-						 _("Possible Wrong Bone Link"),
-						 synfig::strprintf(_("You are trying to link \"origin\" of layer '%s' to a bone.\n\n"
-							"Maybe you intended to link \"transformation\" parameter instead?"),
-							 layer->get_description().c_str()),
-						 _("Yes"),
-						 _("No"),
-						 synfigapp::UIInterface::RESPONSE_OK ))
-				{
-					value_desc = ValueDesc(value_desc.get_layer(), "transformation", value_desc.get_parent_desc());
+				ValueDesc value_desc_transformation_param(value_desc.get_layer(), "transformation", value_desc.get_parent_desc());
+				auto it = std::find(value_desc_list.begin(), value_desc_list.end(), value_desc_transformation_param);
+				if (it != value_desc_list.end()) {
+					// Silently ignore "origin" if user select both "origin" and "transformation" parameter of same layer
+					continue;
+				} else {
+					// Propose to user to change to "transformation" parameter
+					if ( get_canvas_interface()
+					  && get_canvas_interface()->get_ui_interface()
+					  && UIInterface::RESPONSE_OK == get_canvas_interface()->get_ui_interface()->confirmation(
+							 _("Possible Wrong Bone Link"),
+							 synfig::strprintf(_("You are trying to link \"origin\" of layer '%s' to a bone.\n\n"
+								"Maybe you intended to link \"transformation\" parameter instead?"),
+								 layer->get_description().c_str()),
+							 _("Yes"),
+							 _("No"),
+							 synfigapp::UIInterface::RESPONSE_OK ))
+					{
+						value_desc = ValueDesc(value_desc.get_layer(), "transformation", value_desc.get_parent_desc());
+					}
 				}
 			}
 		}
