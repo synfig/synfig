@@ -47,6 +47,8 @@ src/gui/dialogs/dialog_template.cpp
 src/gui/dialogs/dialog_template.h
 src/gui/dialogs/dialog_waypoint.cpp
 src/gui/dialogs/dialog_waypoint.h
+src/gui/dialogs/dialog_guide.cpp
+src/gui/dialogs/dialog_guide.h
 src/gui/dialogs/dialog_workspaces.cpp
 src/gui/dialogs/dialog_workspaces.h
 src/gui/dialogs/vectorizersettings.cpp

@@ -844,11 +844,14 @@ Duckmatic::find_guide_x(synfig::Point pos, float radius) // returns found guide 
 		amount_rotate= num/denom; //perp distance
 		}
 
+		if( std::fabs(slope) > 400 )
+			ruler_rotated = false;
 
 		float amount(std::fabs(*iter-pos[0]));
 			//if distace of this iterations ruler is less than dist which is preinitialized but then becomes amount then this is close and update dist
-		if( ((amount<dist) && (!ruler_rotated)) || ((amount_rotate) && amount_rotate < (dist + 3)) )
+		if( ((amount<dist) && (!ruler_rotated)) || ((ruler_rotated) && amount_rotate < (dist + 3)) )
 		{
+
 			if (ruler_rotated) {
 			current_ruler_rotated = true;
 			current_slope = slope;
@@ -912,6 +915,9 @@ Duckmatic::find_guide_y(synfig::Point pos, float radius)
 			denom= std::sqrt(1 + (slope)*(slope));
 			amount_rotate= num/denom; //perp distance
 		}
+
+		if( (std::fabs(slope) < 0.09) || (std::fabs(slope) > 400) )
+			ruler_rotated = false;
 
 		float amount(std::fabs(*iter-pos[1]));
 		if( ((amount<=dist) && (!ruler_rotated)) || ((amount_rotate) && amount_rotate < (dist + 3)) )

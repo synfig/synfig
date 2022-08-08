@@ -141,14 +141,14 @@ Renderer_Guides::render_vfunc(
 
 			float x_kda_kda = x_rotate;
 			float y_kda_kda = y;
-			bool current=false;
+			bool current_guide = false;
 			if(iter==get_work_area()->curr_guide){
 				cr->set_source_rgb(GDK_COLOR_TO_RGB(GUIDE_COLOR_CURRENT));
-				current = true;
+				current_guide = true;
 			}
 			else{
 				cr->set_source_rgb(guides_color.get_r(),guides_color.get_g(),guides_color.get_b());
-				current=false;
+				current_guide = false;
 			}
 
 			if(*accomp_iter > -900){ //meaning this is a rotated ruler render it diffrently
@@ -168,9 +168,22 @@ Renderer_Guides::render_vfunc(
 
 //				std::cout<<" center x from render"<<x<<std::endl;//why is it giving out a seg error
 
-//				//draw the draggable center //probably not a good idea
-//				cr->arc(center_x, center_y, 1.0, 0, 6.82); //probably make 2 pi more accurate
-//				cr->fill();
+				//draw the center of rotation for the selected guide
+				if(current_guide) {//actually this is better drawn if only the guide is being dragged
+					cr->save();
+					cr->unset_dash();
+					cr->set_source_rgb(0,0,1.0);
+					cr->set_line_width(1.0);
+					cr->move_to(center_x + 6.0, center_y);//make a var for the four and name it center_label_width and have it be 8
+					cr->line_to(center_x - 6.0, center_y);
+					cr->stroke();
+					cr->move_to(center_x, center_y + 6.0);
+					cr->line_to(center_x, center_y - 6.0);
+//					cr->set_source_rgb(0,1,0); //should it instead be a circle ?
+//					cr->arc(center_x, center_y, 3.0, 0, 6.82); //make a pi const or use one
+					cr->stroke();
+					cr->restore();
+				}
 
 				//then we get the point where the mouse is which is (x , y)
 				//determine cordinate of point relative to center
@@ -316,15 +329,36 @@ Renderer_Guides::render_vfunc(
 			float x_kda_kda = x;
 			float y_kda_kda = y_rotate;
 
-			if(iter==get_work_area()->curr_guide)
+			bool current_guide = false; //unnecessaryy just move center def higher up
+			if(iter==get_work_area()->curr_guide){
 				cr->set_source_rgb(GDK_COLOR_TO_RGB(GUIDE_COLOR_CURRENT));
-			else
+				current_guide = true;
+			}
+			else{
 				cr->set_source_rgb(guides_color.get_r(),guides_color.get_g(),guides_color.get_b());
+				current_guide = false;
+			}
 
 			if(*accomp_iter > -1000){
 
 				float center_x = (1.0/2.0)*(drawable_w);
 				float center_y = y;
+
+				if(current_guide) {
+					cr->save();
+					cr->unset_dash();
+					cr->set_source_rgb(0,0,1.0);
+					cr->set_line_width(1.0);
+					cr->move_to(center_x + 6.0, center_y);//make a var for the four and name it center_label_width and have it be 8
+					cr->line_to(center_x - 6.0, center_y);
+					cr->stroke();
+					cr->move_to(center_x, center_y + 6.0);
+					cr->line_to(center_x, center_y - 6.0);
+//					cr->set_source_rgb(0,1,0); //should it instead be a circle ?
+//					cr->arc(center_x, center_y, 3.0, 0, 6.82); //make a pi const or use one
+					cr->stroke();
+					cr->restore();
+				}
 
 				//then we get the point where the mouse is which is (x , y)
 				//determine cordinate of point relative to center

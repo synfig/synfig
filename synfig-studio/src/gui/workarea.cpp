@@ -168,7 +168,8 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	timecode_width(0),
 	timecode_height(0),
 	bonesetup_width(0),
-	bonesetup_height(0)
+	bonesetup_height(0),
+	guide_dialog          (*App::main_window,canvas_interface->get_canvas())
 {
 	// default onion
 	onion_skins[0] = 1;
@@ -1111,6 +1112,7 @@ WorkArea::on_key_press_event(GdkEventKey* event)
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	if((event->state == GDK_CONTROL_MASK) /*&&*/ /*(event->type == GDK_KEY_PRESS)*/){ // not working properly
 			rotate_guide=true;
+			std::cout<<"rotat guide = true"<<std::endl;
 	}
 	auto event_result = canvas_view->get_smach().process_event(
 		EventKeyboard(EVENT_WORKAREA_KEY_DOWN, event->keyval, Gdk::ModifierType(event->state)));
@@ -1168,6 +1170,8 @@ WorkArea::on_key_press_event(GdkEventKey* event)
 	return true;
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
+
+bool guide_highlighted = false;
 
 bool
 WorkArea::on_key_release_event(GdkEventKey* event)
@@ -1343,7 +1347,6 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				}
 		}
 	}
-
 	// Event hasn't been handled, pass it down
 	switch(event->type) {
 	case GDK_2BUTTON_PRESS: {
@@ -1544,6 +1547,19 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				return true;
 			}
 
+			if(guide_highlighted){
+				Gtk::Menu* waypoint_menu(manage(new Gtk::Menu()));
+				waypoint_menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), waypoint_menu));
+				Gtk::MenuItem *item = manage(new Gtk::MenuItem(_("_Edit Guide")));
+				item->set_use_underline(true);
+				item->show();
+				item->signal_activate().connect(//DONT COMMIT YET
+						sigc::mem_fun(guide_dialog,&Gtk::Widget::show));//DONT COMMIT YET
+				waypoint_menu->append(*item);
+				waypoint_menu->popup(3, gtk_get_current_event_time());
+				return true;
+			}
+
 			if (Layer::Handle layer = get_canvas()->find_layer(get_canvas_view()->get_context_params(), mouse_pos)) {
 				if (canvas_view->get_smach().process_event(EventLayerClick(layer, BUTTON_RIGHT, mouse_pos)) == Smach::RESULT_OK)
 					return false;
@@ -1587,7 +1603,13 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
             if (iter != curr_guide) {
                 curr_guide = iter;
                 drawing_area->queue_draw();
+				guide_highlighted = !guide_highlighted;
             }
+
+			if( (iter == get_guide_list_x().end()) || (iter == get_guide_list_y().end()) )
+				guide_highlighted = false;
+			else
+				guide_highlighted = true;
 
             etl::handle<Duck> duck = find_duck(mouse_pos, radius);
             if (duck != hover_duck) {
@@ -1632,11 +1654,14 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		}
 		case DRAG_GUIDE: {
 			if(curr_guide_is_x){
-				if(!rotate_guide && ((*curr_guide_accomp_duckamtic) < -900)){//to keep initial value unchanged if rotated			//if its a rotated ruler then change also x_rotate_guide
+				float upper_limit_x = ((drawing_area_width)*pwidth)+ window_startx - 0.25; //this should proably be calculate before these ifs
+				float lower_limit_x = window_startx + 0.25;
+
+				if((!rotate_guide && ((*curr_guide_accomp_duckamtic) < -900)) || from_ruler_event ){// case 1: unrotated ruler
 				*curr_guide = mouse_pos[0]; // so basically curr_guide is iterator to the correct elemtn so we here set the element itselfs value.
 				}
-				else if( !from_ruler_event && !rotate_guide && ((*curr_guide_accomp_duckamtic) > -900) && current_c && current_slope){ //for some weird reason clicking on the ruler without canvas click first gives seg errors
-																										   // also test more because something are off anf btw remember the off thing when rotting "quadrant boundaries"
+				else if(!rotate_guide && ((*curr_guide_accomp_duckamtic) > -900) /*&& current_slope*/){ //case 2: rotated ruler being moved
+					// also test more because something are off anf btw remember the off thing when rotting "quadrant boundaries"
 					*curr_guide_accomp_duckamtic = mouse_pos[1];
 					*curr_guide_accomp_duckamtic_other= mouse_pos[0];
 
@@ -1644,22 +1669,26 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 					float center_x_new= (mouse_pos[0])-((mouse_pos[1]-center_y)/(-current_slope));//current slope is slope of the line on it being founds
 					*curr_guide = center_x_new;
 				}
-				if(rotate_guide && !from_ruler_event){
-				std::cout<<"rotating the ruler"<<std::endl;
+				else if(rotate_guide && (!from_ruler_event) && ((*curr_guide > lower_limit_x) && (*curr_guide < upper_limit_x)) ) {// case: 3 ruler being rotated   ---- dont rotate if center of rotation isnt in screen
+
 				*curr_guide_accomp_duckamtic = mouse_pos[1]; //accoomp guide only has a value when it was moved while control pressed.
 				*curr_guide_accomp_duckamtic_other= mouse_pos[0];
-				//we could calculate slope here while turining to allow a move right after a turn but we have to make sure slope here is same as slope there
+				//we could calculate slope here while turining to allow a move right after a turn before mouse release... should the same be allowed for rotate ?
 				float center_y = ((1.0/2.0)*(drawing_area_height)*pheight)+ window_starty;
 				float slope = (mouse_pos[1] - center_y)/(mouse_pos[0] - *curr_guide);
 				current_slope = -slope;
+				std::cout<<"slope: "<<current_slope<<std::endl;
 //				std::array<float,2> accomp_cords_garb = { mouse_pos[0] , mouse_pos[1] };
 //				*curr_accomp_guide = accomp_cords_garb;
 				}
 			}
 			else{
-				if( (!rotate_guide) && ((*curr_guide_accomp_duckamtic) < -900) )
+				float lower_limit_y = ((drawing_area_height) * pheight) + window_starty;
+				float upper_limit_y = window_starty;
+				if( ((!rotate_guide) && ((*curr_guide_accomp_duckamtic) < -900)) || from_ruler_event )
 				*curr_guide = mouse_pos[1];
-				else if ( !rotate_guide && ((*curr_guide_accomp_duckamtic) > -900) && current_c && current_slope ){
+				else if ( !rotate_guide && ((*curr_guide_accomp_duckamtic) > -900) && current_slope ){
+
 					*curr_guide_accomp_duckamtic = mouse_pos[0];
 					*curr_guide_accomp_duckamtic_other= mouse_pos[1];
 
@@ -1668,7 +1697,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 					*curr_guide = center_y; //rename the y her to new
 
 				}
-				if(rotate_guide && !from_ruler_event){
+				if(rotate_guide && (!from_ruler_event) && ((*curr_guide > lower_limit_y) && (*curr_guide < upper_limit_y))){
 					*curr_guide_accomp_duckamtic = mouse_pos[0];
 					*curr_guide_accomp_duckamtic_other= mouse_pos[1];
 					float center_x_new = ((1.0/2.0)*(drawing_area_width)*pwidth)+ window_startx;
@@ -1954,20 +1983,26 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
+void
+WorkArea::edit_guide_from_menu()
+{
+	std::cout<<"edit guide bro"<<std::endl;
+}
+
 bool
 WorkArea::on_hruler_event(GdkEvent *event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	switch(event->type) {
 	case GDK_BUTTON_PRESS:
-			from_ruler_event=true;
+		from_ruler_event = true;
 		if (get_drag_mode() == DRAG_NONE && show_guides) {
 			set_drag_mode(DRAG_GUIDE);
 			//mod adham: starting point here we insert the guides_list_y accompanying event point but with a value which wed know as basically none
 			curr_guide = get_guide_list_y().insert(get_guide_list_y().begin(), 0.0);//inserted at the beginning i.e. before prev begin
 			curr_guide_accomp_duckamtic = get_y_list_accomp_cord().insert(get_y_list_accomp_cord().begin(), -1000); //insert with garbage value and only enter real value in draw event when control is pressed
 			curr_guide_accomp_duckamtic_other = get_y_list_accomp_cord_other().insert(get_y_list_accomp_cord_other().begin(), -1000);
-
+//			current_slope = 0 ;
 //			std::array<float,2> accomp_cords_garb = { -1000 , -1000 };
 //			get_accomp_list_y().insert(get_accomp_list_y().begin(), accomp_cords_garb);
 			curr_guide_is_x = false;
@@ -1985,7 +2020,7 @@ WorkArea::on_hruler_event(GdkEvent *event)
 		}
 		return true;
 	case GDK_BUTTON_RELEASE:
-			from_ruler_event=false;
+		from_ruler_event = false;
 		if (get_drag_mode() == DRAG_GUIDE && !curr_guide_is_x) {
 			set_drag_mode(DRAG_NONE);
 			save_meta_data();
@@ -2005,12 +2040,13 @@ WorkArea::on_vruler_event(GdkEvent *event)
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	switch(event->type) {
 	case GDK_BUTTON_PRESS:
-		from_ruler_event=true;
+		from_ruler_event = true;
 		if (get_drag_mode() == DRAG_NONE && show_guides) {
 			set_drag_mode(DRAG_GUIDE);
 			curr_guide=get_guide_list_x().insert(get_guide_list_x().begin(),0.0);
 			curr_guide_accomp_duckamtic= get_x_list_accomp_cord().insert(get_x_list_accomp_cord().begin(), -1000); //insert with garbage value and only enter real value in draw event when control is pressed
 			curr_guide_accomp_duckamtic_other = get_x_list_accomp_cord_other().insert(get_x_list_accomp_cord_other().begin(), -1000);
+//			current_slope = 1000; //in fact for vertical ruler it reaches something like infinity so it isnt usable so this is functioning more like a flag
 //			std::array<float,2> accomp_cords_garb = { -1000 , -1000 };
 //			get_accomp_list_x().insert(get_accomp_list_x().begin(), accomp_cords_garb);
 			curr_guide_is_x=true;
@@ -2027,7 +2063,7 @@ WorkArea::on_vruler_event(GdkEvent *event)
 		}
 		return true;
 	case GDK_BUTTON_RELEASE:
-			from_ruler_event=false;
+		from_ruler_event = false;
 		if (get_drag_mode() == DRAG_GUIDE && curr_guide_is_x) {
 			set_drag_mode(DRAG_NONE);
 			save_meta_data();

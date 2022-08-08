@@ -52,6 +52,9 @@
 #include <synfig/time.h>
 #include <synfig/vector.h>
 
+#include "dialogs/dialog_guide.h"
+
+
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -69,6 +72,7 @@ class CanvasView;
 class WorkAreaRenderer;
 class Renderer_Canvas;
 class LockDucks;
+class Dialog_Guide;
 
 
 class WorkArea : public Gtk::Grid, public Duckmatic
@@ -119,6 +123,8 @@ public:
 	friend class DirtyTrap;
 	friend class WorkAreaRenderer;
 	friend class WorkAreaProgress;
+
+	Dialog_Guide guide_dialog;//set up properly
 
 private:
 	/*
@@ -229,7 +235,7 @@ private:
 	etl::handle<LockDucks> lock_ducks;
 
 	bool rotate_guide=false;//move to header neccessary gdn
-	bool from_ruler_event=false;//failed bool
+	bool from_ruler_event = false;
 
 public:
 	/*
@@ -477,6 +483,7 @@ private:
 	bool on_hruler_event(GdkEvent* event);
 	bool on_vruler_event(GdkEvent* event);
 	void on_duck_selection_single(const etl::handle<Duck>& duck_guid);
+	void edit_guide_from_menu();
 }; // END of class WorkArea
 
 
