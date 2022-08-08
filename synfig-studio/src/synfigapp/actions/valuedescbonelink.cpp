@@ -182,14 +182,18 @@ Action::ValueDescBoneLink::prepare()
 	if (!bone_value_node)
 		throw Error(Error::TYPE_NOTREADY);
 
-	for (std::list<ValueDesc>::iterator iter = value_desc_list.begin(); iter != value_desc_list.end(); ++iter)
+	auto is_valuedesc_invalid_to_link = [bone_value_node](ValueDesc& value_desc) {
+		if (!ValueNode_BoneLink::check_type(value_desc.get_value_type()))
+			return true;
+		if (value_desc.parent_is_value_node() && bone_value_node == value_desc.get_parent_value_node())
+			return true;
+		return false;
+	};
+	value_desc_list.erase(std::remove_if(value_desc_list.begin(), value_desc_list.end(), is_valuedesc_invalid_to_link), value_desc_list.end());
+
+	for (std::list<ValueDesc>::iterator iter = value_desc_list.begin(); iter != value_desc_list.end();)
 	{
 		ValueDesc& value_desc(*iter);
-
-		if (!ValueNode_BoneLink::check_type(value_desc.get_value_type()))
-			continue;
-		if (value_desc.parent_is_value_node() && bone_value_node == value_desc.get_parent_value_node())
-			continue;
 
 		// Check if user selected "origin" instead of "transformation" parameter
 		if (value_desc.parent_is_layer() && value_desc.get_param_name() == "origin") {
@@ -201,6 +205,7 @@ Action::ValueDescBoneLink::prepare()
 				auto it = std::find(value_desc_list.begin(), value_desc_list.end(), value_desc_transformation_param);
 				if (it != value_desc_list.end()) {
 					// Silently ignore "origin" if user select both "origin" and "transformation" parameter of same layer
+					iter = value_desc_list.erase(iter);
 					continue;
 				} else {
 					// Propose to user to change to "transformation" parameter
@@ -234,10 +239,15 @@ Action::ValueDescBoneLink::prepare()
 					 _("No"),
 					 synfigapp::UIInterface::RESPONSE_OK ))
 			{
+				iter = value_desc_list.erase(iter);
 				continue;
 			}
 		}
+		++iter;
+	}
 
+	for (ValueDesc& value_desc : value_desc_list)
+	{
 		/*
 		if (value_desc.is_value_node())
 		{
