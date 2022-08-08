@@ -42,7 +42,6 @@
 #include <gdkmm/general.h>
 #include <gtkmm/icontheme.h>
 
-
 #include <gui/app.h>
 #include <gui/exception_guard.h>
 #include <gui/timeplotdata.h>
@@ -379,7 +378,6 @@ Widget_Timeslider::on_button_press_event(GdkEventButton *event) //for clicking
 		moving_lower_bound_button = true;
 	else if(current_x <= (z0 + boundary_dimension)  && current_x >= z0)
 		moving_upper_bound_button = true;
-
 
 	return event->button == 1 || event->button == 2;
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
