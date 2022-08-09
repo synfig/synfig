@@ -64,8 +64,8 @@ EXTRA_DIST = \
 	show_grid_icon.sif \
 	snap_grid_icon.sif \
 	show_guideline_icon.sif \
-	lower_bound_button_icon.sif \
-	upper_bound_button_icon.sif \
+	lower_bound_handle_icon.sif \
+	upper_bound_handle_icon.sif \
 	snap_guideline_icon.sif \
 	onion_skin_icon.sif \
 	incr_resolution_icon.sif \
