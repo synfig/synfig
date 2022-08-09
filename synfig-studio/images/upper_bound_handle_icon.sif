@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<canvas version="1.2" width="100" height="200" xres="2834.645669" yres="2834.645669" gamma-r="1.000000" gamma-g="1.000000" gamma-b="1.000000" view-box="-2.063362 4.099395 2.063362 -4.099395" antialias="1" fps="24.000" begin-time="0f" end-time="5s" bgcolor="0.500000 0.500000 0.500000 1.000000">
-  <name>bound_button_icon_upper.sif</name>
+<canvas version="1.2" width="85" height="200" xres="2834.645669" yres="2834.645669" gamma-r="1.000000" gamma-g="1.000000" gamma-b="1.000000" view-box="-1.769158 4.234687 1.769158 -4.234687" antialias="1" fps="24.000" begin-time="0f" end-time="5s" bgcolor="0.500000 0.500000 0.500000 1.000000">
+  <name>upper_bound_handle_icon.sif</name>
   <meta name="background_first_color" content="0.880000 0.880000 0.880000"/>
   <meta name="background_rendering" content="0"/>
   <meta name="background_second_color" content="0.650000 0.650000 0.650000"/>
@@ -12,6 +12,7 @@
   <meta name="guide_color" content="0.435294 0.435294 1.000000"/>
   <meta name="guide_show" content="1"/>
   <meta name="guide_snap" content="0"/>
+  <meta name="guide_x" content="-5.854461"/>
   <meta name="jack_offset" content="0.000000"/>
   <meta name="onion_skin" content="0"/>
   <meta name="onion_skin_future" content="0"/>
@@ -38,19 +39,19 @@
       <composite type="transformation">
         <offset>
           <vector>
-            <x>-0.0793600753</x>
+            <x>0.0000000000</x>
             <y>0.0000000000</y>
           </vector>
         </offset>
         <angle>
-          <angle value="180.000000"/>
+          <angle value="180.000107"/>
         </angle>
         <skew_angle>
           <angle value="0.000000"/>
         </skew_angle>
         <scale>
           <vector>
-            <x>1.0152982473</x>
+            <x>1.0000000000</x>
             <y>1.0000000000</y>
           </vector>
         </scale>
@@ -58,7 +59,7 @@
     </param>
     <param name="canvas">
       <canvas>
-        <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle200">
+        <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle233">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -70,29 +71,29 @@
           </param>
           <param name="color">
             <color>
-              <r>0.000000</r>
+              <r>0.011765</r>
               <g>0.505882</g>
-              <b>1.000000</b>
+              <b>0.988235</b>
               <a>1.000000</a>
             </color>
           </param>
           <param name="radius">
-            <real value="1.7988283590"/>
+            <real value="1.4569538979"/>
           </param>
           <param name="feather">
             <real value="0.0000000000"/>
           </param>
           <param name="origin">
             <vector>
-              <x>-0.2645336688</x>
-              <y>-2.2494113445</y>
+              <x>-0.3162264824</x>
+              <y>-2.8289101124</y>
             </vector>
           </param>
           <param name="invert">
             <bool value="false"/>
           </param>
         </layer>
-        <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle200">
+        <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle233">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -104,29 +105,29 @@
           </param>
           <param name="color">
             <color>
-              <r>0.000000</r>
+              <r>0.011765</r>
               <g>0.505882</g>
-              <b>1.000000</b>
+              <b>0.988235</b>
               <a>1.000000</a>
             </color>
           </param>
           <param name="radius">
-            <real value="1.7988283590"/>
+            <real value="1.4569538979"/>
           </param>
           <param name="feather">
             <real value="0.0000000000"/>
           </param>
           <param name="origin">
             <vector>
-              <x>-0.2433708012</x>
-              <y>2.2704339027</y>
+              <x>-0.3162262440</x>
+              <y>2.8289101124</y>
             </vector>
           </param>
           <param name="invert">
             <bool value="false"/>
           </param>
         </layer>
-        <layer type="rectangle" active="true" exclude_from_rendering="false" version="0.2" desc="test055">
+        <layer type="rectangle" active="true" exclude_from_rendering="false" version="0.2" desc="test072">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -138,22 +139,22 @@
           </param>
           <param name="color">
             <color>
-              <r>0.000000</r>
+              <r>0.011765</r>
               <g>0.505882</g>
-              <b>1.000000</b>
+              <b>0.988235</b>
               <a>1.000000</a>
             </color>
           </param>
           <param name="point1">
             <vector>
-              <x>-2.0210366249</x>
-              <y>2.2914564610</y>
+              <x>-1.7691581249</x>
+              <y>2.9503970146</y>
             </vector>
           </param>
           <param name="point2">
             <vector>
-              <x>1.2803425789</x>
-              <y>-2.3965692520</y>
+              <x>-0.4358797073</x>
+              <y>-2.8462653160</y>
             </vector>
           </param>
           <param name="expand">
@@ -175,7 +176,7 @@
             <bool value="true"/>
           </param>
         </layer>
-        <layer type="rectangle" active="true" exclude_from_rendering="false" version="0.2" desc="test056">
+        <layer type="rectangle" active="true" exclude_from_rendering="false" version="0.2" desc="test074">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -187,22 +188,22 @@
           </param>
           <param name="color">
             <color>
-              <r>0.000000</r>
+              <r>0.011765</r>
               <g>0.505882</g>
-              <b>1.000000</b>
+              <b>0.988235</b>
               <a>1.000000</a>
             </color>
           </param>
           <param name="point1">
             <vector>
-              <x>-0.3068589568</x>
-              <y>4.0573496819</y>
+              <x>-0.6068125963</x>
+              <y>4.2346873283</y>
             </vector>
           </param>
           <param name="point2">
             <vector>
-              <x>2.0421993732</x>
-              <y>-4.0573496819</y>
+              <x>1.8375315666</x>
+              <y>-4.2867531776</y>
             </vector>
           </param>
           <param name="expand">

@@ -180,6 +180,9 @@ Widget_Timeslider::Widget_Timeslider():
 	auto icon_theme = Gtk::IconTheme::get_default();
 	lower_bound_pixbuf = icon_theme->load_icon("lower_bound_handle_icon", 1);
 	upper_bound_pixbuf = icon_theme->load_icon("upper_bound_handle_icon", 1);
+
+	bounds_cursor = Gdk::Cursor::create(get_display(), "ew-resize");
+	default_cursor = Gdk::Cursor::create(get_display(), "default");
 }
 
 Widget_Timeslider::~Widget_Timeslider()
@@ -346,7 +349,7 @@ Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 
 				cr->save();
 				Gdk::Cairo::set_source_pixbuf(cr, icon, x0 + w + boundary_adjust, 0);
-				cr->rectangle(x0 + w + boundary_adjust, 0.0, boundary_dimension /*+ boundary_dimension/4*/, (double)get_height());
+				cr->rectangle(x0 + w + boundary_adjust, 0.0, boundary_dimension, (double)get_height());
 				cr->fill();
 				cr->restore();
 			}
