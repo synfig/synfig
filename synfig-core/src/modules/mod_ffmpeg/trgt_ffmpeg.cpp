@@ -34,12 +34,10 @@
 #	include <config.h>
 #endif
 
-#include <synfig/localization.h>
+#include <synfig/filesystemnative.h>
 #include <synfig/general.h>
+#include <synfig/localization.h>
 #include <synfig/soundprocessor.h>
-
-#include <cstdio>
-#include <glib/gstdio.h>
 
 #include <ETL/stringf>
 
@@ -49,11 +47,6 @@
  #include <sys/wait.h>
 #endif
 
-#endif
-
-// MSVC
-#ifndef F_OK
-#define F_OK 0
 #endif
 
 /* === M A C R O S ========================================================= */
@@ -125,8 +118,8 @@ ffmpeg_trgt::~ffmpeg_trgt()
 	file=nullptr;
 
 	// Remove temporary sound file
-	if (g_file_test(sound_filename.c_str(), G_FILE_TEST_EXISTS)) {
-		if( g_remove(sound_filename.c_str()) != 0 ) {
+	if (FileSystemNative::instance()->is_file(sound_filename.c_str())) {
+		if(FileSystemNative::instance()->remove_recursive(sound_filename.c_str())) {
 			synfig::warning("Error deleting temporary sound file (%s).", sound_filename.c_str());
 		}
 	}
@@ -178,6 +171,7 @@ ffmpeg_trgt::init(ProgressCallback* cb = nullptr)
 		if (cb) cb->error(_("Unable to initialize Sound subsystem"));
 		with_sound = false;
 	} else {
+		auto& fs = FileSystemNative::instance();
 		synfig::SoundProcessor soundProcessor;
 		soundProcessor.set_infinite(false);
 		get_canvas()->fill_sound_processor(soundProcessor);
@@ -185,11 +179,11 @@ ffmpeg_trgt::init(ProgressCallback* cb = nullptr)
 		do {
 			synfig::GUID guid;
 			sound_filename = String(filename)+"."+guid.get_string().substr(0,8)+".wav";
-		} while (g_file_test(sound_filename.c_str(), G_FILE_TEST_EXISTS));
+		} while (fs->is_exists(sound_filename));
 
 		soundProcessor.do_export(sound_filename);
 
-		if (!g_file_test(sound_filename.c_str(), G_FILE_TEST_EXISTS)) {
+		if (!fs->is_exists(sound_filename)) {
 			with_sound = false;
 		}
 	}
@@ -198,7 +192,7 @@ ffmpeg_trgt::init(ProgressCallback* cb = nullptr)
 #if defined(WIN32_PIPE_TO_PROCESSES)
 	// Windows always have ffmpeg
 	std::string binary_path = etl::dirname(synfig::get_binary_path(".")) + "/ffmpeg.exe";
-	if (g_access(binary_path.c_str(), F_OK ) != -1 ) { // File found
+	if (FileSystemNative::instance()->is_file(ffmpeg_binary_path.c_str())) {
 		ffmpeg_binary_path = "\"" + binary_path + "\"";
 	}
 #else
