@@ -60,7 +60,7 @@ using namespace studio;
 const double zoominfactor = 1.25;
 const double zoomoutfactor = 1/zoominfactor;
 const int fullheight = 20;
-const double boundary_dimension = 80;
+const double boundary_dimension = 8;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -178,8 +178,6 @@ Widget_Timeslider::Widget_Timeslider():
 			  | Gdk::SCROLL_MASK );
 
 	auto icon_theme = Gtk::IconTheme::get_default();
-	lower_bound_pixbuf = icon_theme->load_icon("lower_bound_button_icon", 1);
-	upper_bound_pixbuf = icon_theme->load_icon("upper_bound_button_icon", 1);
 }
 
 Widget_Timeslider::~Widget_Timeslider()
@@ -346,7 +344,7 @@ Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 
 				cr->save();
 				Gdk::Cairo::set_source_pixbuf(cr, icon, x0 + w + boundary_adjust, 0);
-				cr->rectangle(x0 + w + boundary_adjust, 0.0, 10, (double)get_height());
+				cr->rectangle(x0 + w + boundary_adjust, 0.0, boundary_dimension /*+ boundary_dimension/4*/, (double)get_height());
 				cr->fill();
 				cr->restore();
 			}
@@ -376,9 +374,9 @@ Widget_Timeslider::on_button_press_event(GdkEventButton *event) //for clicking
 	get_bounds_rectangle_dimensions(z0, z1, false);
 
 	if(current_x <= x1 && current_x >= x1 - boundary_dimension)
-		moving_lower_bound_button = true;
+		moving_lower_bound_handle = true;
 	else if(current_x <= (z0 + boundary_dimension)  && current_x >= z0)
-		moving_upper_bound_button = true;
+		moving_upper_bound_handle = true;
 
 	return event->button == 1 || event->button == 2;
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
@@ -388,8 +386,8 @@ bool
 Widget_Timeslider::on_button_release_event(GdkEventButton *event){
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	lastx = (double)event->x;
-	moving_lower_bound_button = false;
-	moving_upper_bound_button = false;
+	moving_lower_bound_handle = false;
+	moving_upper_bound_handle = false;
 	return event->button == 1 || event->button == 2;
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
@@ -417,9 +415,9 @@ Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for dragging
 	get_bounds_rectangle_dimensions(x0, x1, true);
 	get_bounds_rectangle_dimensions(z0, z1, false);
 
-	if(moving_lower_bound_button || (current_x <= x1 && current_x >= x1 - boundary_dimension))
+	if(moving_lower_bound_handle || (current_x <= x1 && current_x >= x1 - boundary_dimension))
 		   get_window()->set_cursor(bounds_cursor);
-	else if(moving_upper_bound_button || ((current_x <= (z0 + boundary_dimension))  && (current_x >= (z0))))
+	else if(moving_upper_bound_handle || ((current_x <= (z0 + boundary_dimension))  && (current_x >= (z0))))
 		   get_window()->set_cursor(bounds_cursor);
 	else
 		   get_window()->set_cursor(default_cursor);
@@ -432,9 +430,9 @@ Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for dragging
 
 	Gdk::ModifierType mod = Gdk::ModifierType(event->state);
 
-	if (moving_lower_bound_button)
+	if (moving_lower_bound_handle)
 		time_plot_data->time_model->set_play_bounds_lower(time_plot_data->get_t_from_pixel_coord(event->x));
-	else if (moving_upper_bound_button)
+	else if (moving_upper_bound_handle)
 		time_plot_data->time_model->set_play_bounds_upper(time_plot_data->get_t_from_pixel_coord(event->x));
 
 

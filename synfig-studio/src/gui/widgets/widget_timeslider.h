@@ -65,8 +65,8 @@ protected: // implementation that other interfaces can see
 	// last mouse position for dragging
 	double lastx;
 
-	bool moving_lower_bound_button = false;
-	bool moving_upper_bound_button = false;
+	bool moving_lower_bound_handle = false;
+	bool moving_upper_bound_handle = false;
 
 	// distance between two small marks, also uses for left/right scroll
 	synfig::Time step;
