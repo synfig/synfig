@@ -56,8 +56,8 @@ protected: // implementation that other interfaces can see
 
 	Cairo::RefPtr<Cairo::SurfacePattern> play_bounds_pattern;
 
-	Glib::RefPtr<Gdk::Cursor> bounds_cursor = Gdk::Cursor::create(get_display(), "ew-resize");
-	Glib::RefPtr<Gdk::Cursor> default_cursor = Gdk::Cursor::create(get_display(), "default");
+	Glib::RefPtr<Gdk::Cursor> bounds_cursor;
+	Glib::RefPtr<Gdk::Cursor> default_cursor;
 
 	Glib::RefPtr<Gdk::Pixbuf> lower_bound_pixbuf;
 	Glib::RefPtr<Gdk::Pixbuf> upper_bound_pixbuf;
