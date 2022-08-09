@@ -60,6 +60,7 @@ using namespace studio;
 const double zoominfactor = 1.25;
 const double zoomoutfactor = 1/zoominfactor;
 const int fullheight = 20;
+const double boundary_dimension = 80;
 
 /* === P R O C E D U R E S ================================================= */
 
