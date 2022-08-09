@@ -85,7 +85,6 @@ protected: // implementation that other interfaces can see
 	virtual void draw_background(const Cairo::RefPtr<Cairo::Context> &cr);
 
 	void get_bounds_rectangle_dimensions(double& x0, double& x1, bool lower);
-	const double boundary_dimension =8;
 
 public:
 	Widget_Timeslider();
