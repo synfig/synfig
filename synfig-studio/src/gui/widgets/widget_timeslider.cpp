@@ -178,6 +178,8 @@ Widget_Timeslider::Widget_Timeslider():
 			  | Gdk::SCROLL_MASK );
 
 	auto icon_theme = Gtk::IconTheme::get_default();
+	lower_bound_pixbuf = icon_theme->load_icon("lower_bound_handle_icon", 1);
+	upper_bound_pixbuf = icon_theme->load_icon("upper_bound_handle_icon", 1);
 }
 
 Widget_Timeslider::~Widget_Timeslider()
