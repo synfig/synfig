@@ -32,6 +32,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/dialog.h>
+#include <gtkmm/spinbutton.h>
 
 
 #include <synfigapp/value_desc.h>
@@ -47,18 +48,63 @@
 namespace studio {
 
 class Widget_Waypoint;
+class Widget_ValueBase;
+class WorkArea;
 
 class Dialog_Guide : public Gtk::Dialog
 {
-	Widget_Waypoint *waypointwidget;//what is this
+	typedef std::list<float> GuideList;
+
+	Widget_ValueBase *value_widget;//box stuff
+
+	Gtk::SpinButton *angle_widget;
+	Glib::RefPtr<Gtk::Adjustment> angle_adjustment;
+
+	Glib::RefPtr<Gtk::Adjustment> coordinate_adjustment;
+
+	Gtk::SpinButton *center_x_widget;
+
+	Gtk::SpinButton *center_y_widget;
+
+	Gtk::SpinButton *point_x_widget;
+
+	Gtk::SpinButton *point_y_widget;
+
+
+	WorkArea *current_work_area;
+
 	etl::handle<synfig::Canvas> canvas;
 
 	void on_ok_pressed();
+	void rotate_ruler();
+	void set_new_coordinates();
+
+	sigc::signal<void> signal_changed_;
+
+	GuideList::iterator curr_guide;
+	GuideList::iterator curr_guide_accomp_duckamtic;
+	GuideList::iterator curr_guide_accomp_duckamtic_other;
+
+	float angle_rad;
+	float angle_deg;//this isnt necessary
+
+	synfig::ValueBase test_value;
+
+	bool menu_guide_is_x;
+
 
 public:
-	Dialog_Guide(Gtk::Window& parent,etl::handle<synfig::Canvas> canvas);
+	Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canvas, WorkArea *work_area);
 	~Dialog_Guide();
 
+	void set_current_guide_iterators(GuideList::iterator curr_guide_workarea,
+									 GuideList::iterator curr_guide_accomp_duckamtic_workarea,
+									 GuideList::iterator curr_guide_accomp_duckamtic_other_workarea);
+
+
+	sigc::signal<void> &signal_changed() {return signal_changed_; }
+
+	void set_rotation_angle(bool curr_guide_is_x);//must be called after set_current_guide_iterators()
 
 }; // END of Dialog_Guide
 

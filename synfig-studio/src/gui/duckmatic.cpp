@@ -867,8 +867,9 @@ Duckmatic::find_guide_x(synfig::Point pos, float radius) // returns found guide 
 				dist=amount_rotate;//here maybe we could add the + 3 ?
 			}
 			best=iter; //best is now the found iter
-			curr_guide_accomp_duckamtic= iter_accomp;
-			curr_guide_accomp_duckamtic_other= iter_accomp_other;
+			curr_guide_accomp_duckamtic = iter_accomp;
+			curr_guide_accomp_duckamtic_other = iter_accomp_other;
+			std::cout<<"initialized"<<std::endl;
 //			curr_accomp_guide= accomp_iter;
 		}
 		iter_accomp++;

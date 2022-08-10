@@ -247,7 +247,7 @@ public:
 
 	// used in renderer_guides.cpp
 	GuideList::iterator curr_guide;
-	GuideList::iterator curr_guide_accomp; //this need to point to correct accompanying element so we can set its value
+	GuideList::iterator curr_guide_accomp; //this need to point to correct accompanying element so we can set its value   //is this used??
 //	AccompGuideList::iterator curr_accomp_guide;
 
 	// used in renderer_timecode.cpp
@@ -484,6 +484,7 @@ private:
 	bool on_vruler_event(GdkEvent* event);
 	void on_duck_selection_single(const etl::handle<Duck>& duck_guid);
 	void edit_guide_from_menu();
+	void set_ruler_angle();
 }; // END of class WorkArea
 
 

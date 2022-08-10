@@ -169,7 +169,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	timecode_height(0),
 	bonesetup_width(0),
 	bonesetup_height(0),
-	guide_dialog          (*App::main_window,canvas_interface->get_canvas())
+	guide_dialog          (*App::main_window,canvas_interface->get_canvas(),this)
 {
 	// default onion
 	onion_skins[0] = 1;
@@ -284,6 +284,9 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	drawing_area->signal_draw().connect(sigc::mem_fun(*this, &WorkArea::refresh));
 	drawing_area->signal_event().connect(sigc::mem_fun(*this, &WorkArea::on_drawing_area_event));
 	drawing_area->signal_size_allocate().connect(sigc::hide(sigc::mem_fun(*this, &WorkArea::refresh_dimension_info)));
+
+//	guide_dialog.signal_changed().connect(sigc::mem_fun(*this, &WorkArea::set_ruler_angle));
+
 
 	canvas_interface->signal_rend_desc_changed().connect(sigc::mem_fun(*this, &WorkArea::refresh_dimension_info));
 	canvas_interface->signal_time_changed().connect(sigc::mem_fun(*this, &WorkArea::queue_draw));
@@ -1493,9 +1496,11 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 					GuideList::iterator iter = find_guide_x(mouse_pos,radius); //we get the iterator to the found guide
 					if (iter == get_guide_list_x().end()) { //this means then its not found
 						curr_guide_is_x = false;
+						std::cout<<"0"<<std::endl;
 						iter = find_guide_y(mouse_pos,radius); // maes much snese
 					} else {
 						curr_guide_is_x = true;
+						std::cout<<"1"<<std::endl;
 					}//till here purpose is to set flags of which hor or vert ruler
 
 					if (iter != get_guide_list_x().end() && iter != get_guide_list_y().end()) {//meaning if its sure we found a guide
@@ -1557,6 +1562,21 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 						sigc::mem_fun(guide_dialog,&Gtk::Widget::show));//DONT COMMIT YET
 				waypoint_menu->append(*item);
 				waypoint_menu->popup(3, gtk_get_current_event_time());
+
+				//determine the curr_guide
+				GuideList::iterator iter = find_guide_x(mouse_pos,radius); //we get the iterator to the found guide
+				bool curr_guide_is_x_temp;
+				if (iter == get_guide_list_x().end()) { //this means then its not found
+					curr_guide_is_x_temp = false;
+					std::cout<<"0"<<std::endl;
+					iter = find_guide_y(mouse_pos,radius); // maes much snese
+				} else {
+					curr_guide_is_x_temp = true;
+					std::cout<<"1"<<std::endl;
+				}//till here purpose is to set flags of which hor or vert ruler
+
+				guide_dialog.set_current_guide_iterators(curr_guide, curr_guide_accomp_duckamtic, curr_guide_accomp_duckamtic_other);
+				guide_dialog.set_rotation_angle(curr_guide_is_x_temp);
 				return true;
 			}
 
@@ -1603,7 +1623,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
             if (iter != curr_guide) {
                 curr_guide = iter;
                 drawing_area->queue_draw();
-				guide_highlighted = !guide_highlighted;
+				guide_highlighted = !guide_highlighted;//remove ??
             }
 
 			if( (iter == get_guide_list_x().end()) || (iter == get_guide_list_y().end()) )
@@ -1659,6 +1679,8 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 				if((!rotate_guide && ((*curr_guide_accomp_duckamtic) < -900)) || from_ruler_event ){// case 1: unrotated ruler
 				*curr_guide = mouse_pos[0]; // so basically curr_guide is iterator to the correct elemtn so we here set the element itselfs value.
+
+					std::cout<<mouse_pos[0]<<" , "<< mouse_pos[1]<<std::endl;
 				}
 				else if(!rotate_guide && ((*curr_guide_accomp_duckamtic) > -900) /*&& current_slope*/){ //case 2: rotated ruler being moved
 					// also test more because something are off anf btw remember the off thing when rotting "quadrant boundaries"
@@ -1677,7 +1699,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				float center_y = ((1.0/2.0)*(drawing_area_height)*pheight)+ window_starty;
 				float slope = (mouse_pos[1] - center_y)/(mouse_pos[0] - *curr_guide);
 				current_slope = -slope;
-				std::cout<<"slope: "<<current_slope<<std::endl;
+//				std::cout<<"slope: "<<current_slope<<std::endl;
 //				std::array<float,2> accomp_cords_garb = { mouse_pos[0] , mouse_pos[1] };
 //				*curr_accomp_guide = accomp_cords_garb;
 				}
@@ -1989,6 +2011,19 @@ WorkArea::edit_guide_from_menu()
 	std::cout<<"edit guide bro"<<std::endl;
 }
 
+void
+WorkArea::set_ruler_angle() //not used
+{
+	std::cout<<"connect correctly"<<std::endl;
+
+	std::cout<<*curr_guide<<std::endl;
+	//ok so the iters need to be passed
+	*curr_guide += 10;
+	std::cout<<*curr_guide<<std::endl;
+	//here we can edit the current guides points to set the angle
+	//for test purposes now we can move to random point ok im practising typong without looking
+}
+
 bool
 WorkArea::on_hruler_event(GdkEvent *event)
 {
@@ -2006,6 +2041,7 @@ WorkArea::on_hruler_event(GdkEvent *event)
 //			std::array<float,2> accomp_cords_garb = { -1000 , -1000 };
 //			get_accomp_list_y().insert(get_accomp_list_y().begin(), accomp_cords_garb);
 			curr_guide_is_x = false;
+			std::cout<<" 0 from ruler"<<std::endl;
 		}
 		return true;
 	case GDK_MOTION_NOTIFY:
@@ -2043,13 +2079,15 @@ WorkArea::on_vruler_event(GdkEvent *event)
 		from_ruler_event = true;
 		if (get_drag_mode() == DRAG_NONE && show_guides) {
 			set_drag_mode(DRAG_GUIDE);
-			curr_guide=get_guide_list_x().insert(get_guide_list_x().begin(),0.0);
-			curr_guide_accomp_duckamtic= get_x_list_accomp_cord().insert(get_x_list_accomp_cord().begin(), -1000); //insert with garbage value and only enter real value in draw event when control is pressed
+			curr_guide =get_guide_list_x().insert(get_guide_list_x().begin(),0.0);
+			curr_guide_accomp_duckamtic = get_x_list_accomp_cord().insert(get_x_list_accomp_cord().begin(), -1000); //insert with garbage value and only enter real value in draw event when control is pressed
 			curr_guide_accomp_duckamtic_other = get_x_list_accomp_cord_other().insert(get_x_list_accomp_cord_other().begin(), -1000);
+			std::cout<<" initialized form ruler event"<<std::endl;
 //			current_slope = 1000; //in fact for vertical ruler it reaches something like infinity so it isnt usable so this is functioning more like a flag
 //			std::array<float,2> accomp_cords_garb = { -1000 , -1000 };
 //			get_accomp_list_x().insert(get_accomp_list_x().begin(), accomp_cords_garb);
 			curr_guide_is_x=true;
+			std::cout<<" 1 from ruler"<<std::endl;
 		}
 		return true;
 	case GDK_MOTION_NOTIFY:
