@@ -111,11 +111,13 @@ imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &re
 
 	bool is_temporary_file = false;
 	std::string filename=identifier.file_system->get_real_filename(identifier.filename);
-	std::string target_filename=FileSystemTemporary::generate_system_temporary_filename("imagemagick");
+	std::string target_filename=FileSystemTemporary::generate_system_temporary_filename("imagemagick", ".png");
+
+	std::string filename_extension = etl::filename_extension(identifier.filename);
 
 	if (filename.empty()) {
 		is_temporary_file = true;
-		filename = FileSystemTemporary::generate_system_temporary_filename("imagemagick");
+		filename = FileSystemTemporary::generate_system_temporary_filename("imagemagick", filename_extension);
 
 		// try to copy file to a temp file
 		if (!FileSystem::copy(identifier.file_system, identifier.filename, identifier.file_system, filename))
