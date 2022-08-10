@@ -31,7 +31,6 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfig/importer.h>
-#include <cstdio>
 #include <synfig/surface.h>
 
 /* === M A C R O S ========================================================= */
@@ -44,8 +43,6 @@ class imagemagick_mptr : public synfig::Importer
 {
 	SYNFIG_IMPORTER_MODULE_EXT
 private:
-	FILE *file;
-	//int cur_frame;
 	synfig::Surface frame;
 
 public:
@@ -53,7 +50,7 @@ public:
 
 	~imagemagick_mptr();
 
-	virtual bool get_frame(synfig::Surface &surface, const synfig::RendDesc &renddesc, synfig::Time time, synfig::ProgressCallback *callback);
+	bool get_frame(synfig::Surface &surface, const synfig::RendDesc &renddesc, synfig::Time time, synfig::ProgressCallback *callback) override;
 };
 
 /* === E N D =============================================================== */

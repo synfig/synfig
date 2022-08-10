@@ -219,6 +219,15 @@ protected:
 /** Run an executable binary with pipes for communication or stdout/stdin redirection to files */
 RunPipe::Handle run_async(std::string binary_path, const RunArgs& binary_args, RunMode mode, const RunRedirectionFiles& redir_files = {});
 
+/**
+ * Run an executable binary.
+ * It returns from the call after the program finishes only.
+ *
+ * Like system() call, but without wchar problems and the chance to log stdout/stderr via redir_files.
+ * @see run_async()
+ */
+bool run_sync(std::string binary_path, const RunArgs& binary_args, const std::string& stdout_redir_file = "", const std::string& stderr_redir_file = "");
+
 /** Launch a file with its default application */
 bool launch_file_async(const std::string& file);
 

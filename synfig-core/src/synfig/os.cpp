@@ -542,6 +542,24 @@ OS::run_async(std::string binary_path, const RunArgs& binary_args, RunMode mode,
 }
 
 bool
+OS::run_sync(std::string binary_path, const RunArgs& binary_args, const std::string& stdout_redir_file, const std::string& stderr_redir_file)
+{
+	auto run_pipe = OS::RunPipe::create();
+	if (!run_pipe)
+		return false;
+	run_pipe->open(binary_path, binary_args, OS::RunMode::RUN_MODE_READ, {stderr_redir_file, stdout_redir_file, ""});
+	if (!run_pipe->is_open())
+		return false;
+
+	int status = run_pipe->close();
+#ifdef _WIN32
+	return status == 0; // :(
+#else
+	return WIFEXITED(status) && WEXITSTATUS(status) == 0;
+#endif
+}
+
+bool
 OS::launch_file_async(const std::string& file)
 {
 #ifdef _WIN32
