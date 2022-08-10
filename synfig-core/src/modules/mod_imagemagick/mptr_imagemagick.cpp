@@ -102,9 +102,6 @@ imagemagick_mptr::~imagemagick_mptr()
 bool
 imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &renddesc, Time /*time*/, synfig::ProgressCallback *cb)
 {
-//#define HAS_LIBPNG 1
-
-#if 1
 	if(identifier.filename.empty() || !identifier.file_system)
 	{
 		if(cb)cb->error(_("No file to load"));
@@ -227,99 +224,4 @@ imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &re
 
 	remove(target_filename.c_str());
 	return true;
-
-#else
-
-#error This code contains tempfile and arbitrary shell command execution vulnerabilities
-
-	if(file)
-		pclose(file);
-
-	string command;
-
-	if(identifier.filename.empty())
-	{
-		if(cb)cb->error(_("No file to load"));
-		else synfig::error(_("No file to load"));
-		return false;
-	}
-
-	command=strprintf("convert \"%s\" -flatten ppm:-\n",identifier.filename.c_str());
-
-	file=popen(command.c_str(),POPEN_BINARY_READ_TYPE);
-
-	if(!file)
-	{
-		if(cb)cb->error(_("Unable to open pipe to imagemagick"));
-		else synfig::error(_("Unable to open pipe to imagemagick"));
-		return false;
-	}
-	int w,h;
-	float divisor;
-	char cookie[2];
-
-	while((cookie[0]=fgetc(file))!='P' && !feof(file));
-
-	if(feof(file))
-	{
-		if(cb)cb->error(_("Reached end of stream without finding PPM header"));
-		else synfig::error(_("Reached end of stream without finding PPM header"));
-		return false;
-	}
-
-	cookie[1]=fgetc(file);
-
-	if(cookie[0]!='P' || cookie[1]!='6')
-	{
-		if(cb)cb->error(string(_("stream not in PPM format"))+" \""+cookie[0]+cookie[1]+'"');
-		else synfig::error(string(_("stream not in PPM format"))+" \""+cookie[0]+cookie[1]+'"');
-		return false;
-	}
-
-	fgetc(file);
-	fscanf(file,"%d %d\n",&w,&h);
-	fscanf(file,"%f",&divisor);
-	fgetc(file);
-
-	if(feof(file))
-	{
-		if(cb)cb->error(_("Premature end of file (after header)"));
-		else synfig::error(_("Premature end of file (after header)"));
-		return false;
-	}
-
-	int x;
-	int y;
-	frame.set_wh(w,h);
-	for(y=0;y<frame.get_h();y++)
-		for(x=0;x<frame.get_w();x++)
-		{
-			if(feof(file))
-			{
-				if(cb)cb->error(_("Premature end of file"));
-				else synfig::error(_("Premature end of file"));
-				return false;
-			}
-			float b=gamma().r_U8_to_F32((unsigned char)fgetc(file));
-			float g=gamma().g_U8_to_F32((unsigned char)fgetc(file));
-			float r=gamma().b_U8_to_F32((unsigned char)fgetc(file));
-/*
-			float b=(float)(unsigned char)fgetc(file)/divisor;
-			float g=(float)(unsigned char)fgetc(file)/divisor;
-			float r=(float)(unsigned char)fgetc(file)/divisor;
-*/
-			frame[y][x]=Color(
-				b,
-				g,
-				r,
-				1.0
-			);
-		}
-
-	surface=frame;
-
-	return true;
-#endif
-
-
 }
