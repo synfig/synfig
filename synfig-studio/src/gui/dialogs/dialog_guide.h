@@ -60,15 +60,17 @@ class Dialog_Guide : public Gtk::Dialog
 	Gtk::SpinButton *angle_widget;
 	Glib::RefPtr<Gtk::Adjustment> angle_adjustment;
 
-	Glib::RefPtr<Gtk::Adjustment> coordinate_adjustment;
-
 	Gtk::SpinButton *center_x_widget;
+	Glib::RefPtr<Gtk::Adjustment> center_x_widget_adjust;
 
 	Gtk::SpinButton *center_y_widget;
+	Glib::RefPtr<Gtk::Adjustment> center_y_widget_adjust;
 
 	Gtk::SpinButton *point_x_widget;
+	Glib::RefPtr<Gtk::Adjustment> point_x_widget_adjust;
 
 	Gtk::SpinButton *point_y_widget;
+	Glib::RefPtr<Gtk::Adjustment> point_y_widget_adjust;
 
 
 	WorkArea *current_work_area;
@@ -76,6 +78,7 @@ class Dialog_Guide : public Gtk::Dialog
 	etl::handle<synfig::Canvas> canvas;
 
 	void on_ok_pressed();
+	void on_apply_pressed();
 	void rotate_ruler();
 	void set_new_coordinates();
 

@@ -1113,9 +1113,8 @@ bool
 WorkArea::on_key_press_event(GdkEventKey* event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
-	if((event->state == GDK_CONTROL_MASK) /*&&*/ /*(event->type == GDK_KEY_PRESS)*/){ // not working properly
+	if (event->state == GDK_CONTROL_MASK ) {
 			rotate_guide=true;
-			std::cout<<"rotat guide = true"<<std::endl;
 	}
 	auto event_result = canvas_view->get_smach().process_event(
 		EventKeyboard(EVENT_WORKAREA_KEY_DOWN, event->keyval, Gdk::ModifierType(event->state)));
@@ -1679,8 +1678,6 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 				if((!rotate_guide && ((*curr_guide_accomp_duckamtic) < -900)) || from_ruler_event ){// case 1: unrotated ruler
 				*curr_guide = mouse_pos[0]; // so basically curr_guide is iterator to the correct elemtn so we here set the element itselfs value.
-
-					std::cout<<mouse_pos[0]<<" , "<< mouse_pos[1]<<std::endl;
 				}
 				else if(!rotate_guide && ((*curr_guide_accomp_duckamtic) > -900) /*&& current_slope*/){ //case 2: rotated ruler being moved
 					// also test more because something are off anf btw remember the off thing when rotting "quadrant boundaries"
@@ -1741,6 +1738,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			const synfig::Point point(mouse_pos);
 			hruler->set_position( Distance(point[0], Distance::SYSTEM_UNITS).get(App::distance_system, get_canvas()->rend_desc()) );
 			vruler->set_position( Distance(point[1], Distance::SYSTEM_UNITS).get(App::distance_system, get_canvas()->rend_desc()) );
+			std::cout<<"called"<<std::endl;
 		}
 
 		if (get_drag_mode() == DRAG_WINDOW) {

@@ -472,6 +472,8 @@ public:
 
 	void grab_focus();
 
+	Gtk::DrawingArea* get_drawing_area() { return drawing_area; }
+
 private:
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------

@@ -154,7 +154,8 @@ Renderer_Guides::render_vfunc(
 			if(*accomp_iter > -900){ //meaning this is a rotated ruler render it diffrently
 
 //				std::cout<<" rotated \n"<<std::endl;
-//				std::cout<<"old "<<*accomp_iter<<std::endl;
+//				std::cout<<" canvas device coord: "<<*accomp_iter_other<<" , "<<*accomp_iter<<std::endl;
+//				std::cout<<" renderer coord: "<<x_rotate<<" , "<<y<<std::endl;
 //				std::cout<<"new "<<(*accomp_iter_list)[1]<<std::endl;  now its working so just use it instead of two lists
 
 //				if(first_time){
