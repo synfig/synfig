@@ -1691,11 +1691,19 @@ CanvasView::popup_layer_menu(Layer::Handle layer)
 	param_list.add("canvas",Canvas::Handle(layer->get_canvas()));
 	param_list.add("canvas_interface",canvas_interface());
 
-	SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
-	SelectionManager::LayerList::iterator iter;
+	SelectionManager::LayerList layer_list = get_selection_manager()->get_selected_layers();
 
-	for(iter=layer_list.begin();iter!=layer_list.end();++iter)
-		param_list.add("layer",Layer::Handle(*iter));
+	auto found = std::find(layer_list.cbegin(), layer_list.cend(), layer);
+	if (found == layer_list.cend())	{
+		// if the layer is not in the list of already selected layers, then clear selection and select it
+		get_selection_manager()->clear_selected_layers();
+		get_selection_manager()->set_selected_layer(layer);
+		param_list.add("layer", layer);
+	} else {
+		for (auto& layer_handle : layer_list) {
+			param_list.add("layer", layer_handle);
+		}
+	}
 
 	//Gtk::Menu *newlayers(manage(new Gtk::Menu()));
 	//build_new_layer_menu(*newlayers);
