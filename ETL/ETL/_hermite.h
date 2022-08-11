@@ -170,6 +170,13 @@ public:
 
 		bezier<V,T>::sync();
 	}
+
+	value_type derivative(const time_type& x)
+	{
+		V a = (*this)[0], b = (*this)[1], c = (*this)[2], d = (*this)[3];
+		time_type y(1-x);
+		return ((b-a)*y*y + (c-b)*x*y*2 + (d-c)*x*x) * 3;
+	};
 };
 
 };

@@ -14,10 +14,8 @@ etl_HEADERS = \
 	_ref_count.h \
 	handle \
 	hermite \
-	calculus \
 	stringf \
 	_stringf.h \
-	_calculus.h \
 	_hermite.h \
 	_curve_func.h \
 	_handle.h \

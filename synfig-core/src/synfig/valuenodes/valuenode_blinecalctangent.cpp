@@ -43,7 +43,6 @@
 #include <synfig/valuenode_registry.h>
 #include <synfig/exception.h>
 #include <ETL/hermite>
-#include <ETL/calculus>
 
 #endif
 
@@ -139,9 +138,8 @@ ValueNode_BLineCalcTangent::operator()(Time t, Real amount)const
 
 	etl::hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
 							   blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
-	etl::derivative< etl::hermite<Vector> > deriv(curve);
 
-	Vector tangent = deriv(part);
+	Vector tangent = curve.derivative(part);
 
 	Type &type(get_type());
 	if (type == type_angle)

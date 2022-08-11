@@ -50,15 +50,17 @@ int basic_test(void)
 
 	Hermie.sync();
 
-	integral<hermite<float> > inte(Hermie);
+	// TODO: replace code below with one that tests derivative()
 
-	fprintf(stderr,"integral of curve() on [0,1] = %f\n",inte(0,1.0));
-	fprintf(stderr,"integral of curve() on [-1,3] = %f\n",inte(-1.0,3.0));
-	Hermie.set_rs(-1.0,7.0);
-	inte=integral<hermite<float> >(Hermie);
-	fprintf(stderr,"integral of curve()[%f,%f] on [-1,7] = %f\n",Hermie.get_r(),Hermie.get_s(),inte(-1.0,7.0));
-	fprintf(stderr,"integral of curve()[%f,%f] on [0,1] = %f\n",Hermie.get_r(),Hermie.get_s(),inte(0,1.0));
-	Hermie.set_rs(0.0,1.0);
+//	integral<hermite<float> > inte(Hermie);
+
+//	fprintf(stderr,"integral of curve() on [0,1] = %f\n",inte(0,1.0));
+//	fprintf(stderr,"integral of curve() on [-1,3] = %f\n",inte(-1.0,3.0));
+//	Hermie.set_rs(-1.0,7.0);
+//	inte=integral<hermite<float> >(Hermie);
+//	fprintf(stderr,"integral of curve()[%f,%f] on [-1,7] = %f\n",Hermie.get_r(),Hermie.get_s(),inte(-1.0,7.0));
+//	fprintf(stderr,"integral of curve()[%f,%f] on [0,1] = %f\n",Hermie.get_r(),Hermie.get_s(),inte(0,1.0));
+//	Hermie.set_rs(0.0,1.0);
 
 	return ret;
 }

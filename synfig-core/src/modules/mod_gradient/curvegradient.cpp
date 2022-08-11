@@ -49,7 +49,6 @@
 #include <synfig/valuenode.h>
 #include <ETL/bezier>
 #include <ETL/hermite>
-#include <ETL/calculus>
 
 #endif
 
@@ -305,9 +304,6 @@ CurveGradient::color_func(const Point &point_, int quality, Real supersample)con
 			next->get_tangent1()
 			);
 
-		// Setup the derivative function
-		etl::derivative<etl::hermite<Vector> > deriv(curve);
-
 		int search_iterations(7);
 
 		/*if(quality==0)search_iterations=8;
@@ -332,8 +328,8 @@ CurveGradient::color_func(const Point &point_, int quality, Real supersample)con
 			t = curve.find_closest(fast, point,search_iterations);
 
 		// Calculate our values
-		p1=curve(t);			 // the closest point on the curve
-		tangent=deriv(t);		 // the tangent at that point
+		p1=curve(t);                 // the closest point on the curve
+		tangent=curve.derivative(t); // the tangent at that point
 
 		// if the point we're nearest to is at either end of the
 		// bline, our distance from the curve is the distance from the

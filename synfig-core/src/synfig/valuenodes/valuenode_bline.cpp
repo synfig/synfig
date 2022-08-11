@@ -43,7 +43,6 @@
 #include <synfig/valuenode_registry.h>
 #include <synfig/exception.h>
 #include <ETL/hermite>
-#include <ETL/calculus>
 #include <synfig/segment.h>
 #include <synfig/curve_helper.h>
 #include <algorithm> // for std::swap
@@ -707,14 +706,13 @@ ValueNode_BLine::operator()(Time t)const
 			// this is how the curve looks when we have completely vanished
 			etl::hermite<Vector> curve(blp_prev_off.get_vertex(),   blp_next_off.get_vertex(),
 									   blp_prev_off.get_tangent2(), blp_next_off.get_tangent1());
-			etl::derivative< etl::hermite<Vector> > deriv(curve);
 
 			// where would we be on this curve, how wide will we be, and
 			// where will our tangents point (all assuming that we hadn't vanished)
 			blp_here_off.set_vertex(curve(blp_here_on.get_origin()));
 			blp_here_off.set_width((blp_next_off.get_width()-blp_prev_off.get_width())*blp_here_on.get_origin()+blp_prev_off.get_width());
-			blp_here_off.set_tangent1(deriv(blp_here_on.get_origin()));
-			blp_here_off.set_tangent2(deriv(blp_here_on.get_origin()));
+			blp_here_off.set_tangent1(curve.derivative(blp_here_on.get_origin()));
+			blp_here_off.set_tangent2(curve.derivative(blp_here_on.get_origin()));
 
 			float prev_tangent_scalar(1.0f);
 			float next_tangent_scalar(1.0f);

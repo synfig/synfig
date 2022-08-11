@@ -36,13 +36,14 @@
 
 #include "curvewarp.h"
 
+#include <ETL/hermite>
+
 #include <synfig/localization.h>
 
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
 #include <synfig/surface.h>
 #include <synfig/valuenode.h>
-#include <ETL/calculus>
 
 #endif
 
@@ -232,9 +233,6 @@ CurveWarp::transform(const Point &point_, Real *dist, Real *along, int quality)c
 		// Setup the curve
 		etl::hermite<Vector> curve(iter->get_vertex(), next->get_vertex(), iter->get_tangent2(), next->get_tangent1());
 
-		// Setup the derivative function
-		etl::derivative<etl::hermite<Vector> > deriv(curve);
-
 		int search_iterations(7);
 
 		if(quality<=6)search_iterations=7;
@@ -246,8 +244,8 @@ CurveWarp::transform(const Point &point_, Real *dist, Real *along, int quality)c
 		if (fast) t = curve.find_closest(fast, point,search_iterations);
 
 		// Calculate our values
-		p1=curve(t);			 // the closest point on the curve
-		tangent=deriv(t);		 // the tangent at that point
+		p1=curve(t);			     // the closest point on the curve
+		tangent=curve.derivative(t); // the tangent at that point
 
 		// if the point we're nearest to is at either end of the
 		// bline, our distance from the curve is the distance from the

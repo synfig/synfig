@@ -6,7 +6,6 @@ configure_file(
 )
 
 set(ETL_HEADERS
-        "${CMAKE_CURRENT_LIST_DIR}/calculus"
         "${CMAKE_CURRENT_LIST_DIR}/misc"
         "${CMAKE_CURRENT_LIST_DIR}/hermite"
         "${CMAKE_CURRENT_LIST_DIR}/surface"
@@ -23,7 +22,6 @@ set(ETL_HEADERS
         "${CMAKE_CURRENT_LIST_DIR}/_pen.h"
         "${CMAKE_CURRENT_LIST_DIR}/_boxblur.h"
         "${CMAKE_CURRENT_LIST_DIR}/_stringf.h"
-        "${CMAKE_CURRENT_LIST_DIR}/_calculus.h"
         "${CMAKE_CURRENT_LIST_DIR}/_misc.h"
         "${CMAKE_CURRENT_LIST_DIR}/_hermite.h"
         "${CMAKE_CURRENT_LIST_DIR}/_bezier.h"
