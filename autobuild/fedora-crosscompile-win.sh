@@ -95,7 +95,6 @@ if [ ! -z $DEPS ]; then
 		${TOOLCHAIN}-libxml++ \
 		${TOOLCHAIN}-cairo \
 		${TOOLCHAIN}-pango \
-		${TOOLCHAIN}-boost \
 		${TOOLCHAIN}-libjpeg-turbo \
 		${TOOLCHAIN}-gtkmm30 \
 		${TOOLCHAIN}-glibmm24 \
@@ -123,10 +122,6 @@ for file in \
    iconv.dll \
    libatk-\*.dll \
    libatkmm-1.6-1.dll \
-   libboost_chrono\*.dll \
-   libboost_filesystem\*.dll \
-   libboost_program_options\*.dll \
-   libboost_system\*.dll \
    libbz2\*.dll \
    libcairo\*.dll \
    libdl.dll \
@@ -611,7 +606,7 @@ ${TOOLCHAIN}-configure \
 --sysconfdir=${PREFIX}/etc \
 --datarootdir=${PREFIX}/share \
 --enable-optimization=3 \
---disable-static --enable-shared --with-magickpp --without-libavcodec --with-boost=/usr/${TOOLCHAIN_HOST}/sys-root/mingw/ --enable-warnings=minimum $DEBUG
+--disable-static --enable-shared --with-magickpp --without-libavcodec --enable-warnings=minimum $DEBUG
 make install -j$THREADS
 }
 

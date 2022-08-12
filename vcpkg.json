@@ -8,8 +8,6 @@
     "fftw3",
     "freetype",
     "libtool",
-    "boost-config",
-    "boost-odeint",
     "zlib",
     "libpng",
     "libjpeg-turbo",

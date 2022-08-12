@@ -28,7 +28,6 @@ libtool \
 make \
 patch \
 tar \
-$MINGW_PACKAGE_PREFIX-boost \
 $MINGW_PACKAGE_PREFIX-ccache \
 $MINGW_PACKAGE_PREFIX-cmake \
 $MINGW_PACKAGE_PREFIX-dlfcn \

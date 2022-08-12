@@ -417,16 +417,6 @@ PKG_CHECK_MODULES(MLTPP, mlt++-7,[
 	])
 ])
 
-AX_BOOST_BASE([1.53.0],,AC_MSG_ERROR([ ** You need to install Boost >= 1.53.0]))
-#AX_BOOST_SYSTEM
-#if test "x$ax_cv_boost_system" != "xyes" ; then
-#	AC_MSG_ERROR([ ** You need to install Boost system library])
-#fi
-# Boost program options and system libraries are just dependencies
-# of the synfig cli and therefore
-# not required to link against the synfig library.
-
-
 TARGET_PNG="yes"
 TARGET_MNG="yes"
 
@@ -520,7 +510,7 @@ AC_SUBST(CONFIG_DEPS)
 AC_SUBST(ETL_CFLAGS)
 
 SYNFIG_LIBS="$VIMAGE_LIBS $LIBZ_LIBS $GLIBMM_LIBS $GIOMM_LIBS $LIBXMLPP_LIBS $LIBGL_LIBS $LIBCL_LIBS $LIBFFTW_LIBS $MLTPP_LIBS $ETL_LIBS $LIBSIGC_LIBS $LTLIBINTL"
-SYNFIG_CFLAGS="$BOOST_CPPFLAGS $LIBZ_CFLAGS $GLIBMM_CFLAGS $GIOMM_CFLAGS $LIBXMLPP_CFLAGS $LIBGL_CFLAGS $LIBCL_CFLAGS $LIBFFTW_CFLAGS $MLTPP_CFLAGS $ETL_CFLAGS $LIBSIGC_CFLAGS $CONFIG_CFLAGS -DSYNFIG_NO_DEPRECATED -DLOCALEDIR=\\\"$localedir\\\""
+SYNFIG_CFLAGS="$LIBZ_CFLAGS $GLIBMM_CFLAGS $GIOMM_CFLAGS $LIBXMLPP_CFLAGS $LIBGL_CFLAGS $LIBCL_CFLAGS $LIBFFTW_CFLAGS $MLTPP_CFLAGS $ETL_CFLAGS $LIBSIGC_CFLAGS $CONFIG_CFLAGS -DSYNFIG_NO_DEPRECATED -DLOCALEDIR=\\\"$localedir\\\""
 
 CONFIG_CFLAGS="`echo $CONFIG_CFLAGS | sed s/-mno-cygwin//g | sed s/-mwindows//g`"
 SYNFIG_CFLAGS="`echo $SYNFIG_CFLAGS | sed s/-mno-cygwin//g | sed s/-mwindows//g`"
@@ -617,7 +607,4 @@ OpenEXR --------------------------> $with_openexr
 "'$'"ETL_LIBS ------------------------> '$ETL_LIBS'
 "'$'"LIBSIGC_LIBS --------------------> '$LIBSIGC_LIBS'
 "'$'"SYNFIG_CFLAGS -------------------> '$SYNFIG_CFLAGS'
-"'$'"BOOST_CPPFLAGS ------------------> '$BOOST_CPPFLAGS'
-"'$'"BOOST_LDFLAGS -------------------> '$BOOST_LDFLAGS'
-"'$'"BOOST_SYSTEM_LIB ----------------> '$BOOST_SYSTEM_LIB'
 "
