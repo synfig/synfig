@@ -187,14 +187,14 @@ ValueNode_Bone::get_ordered_bones(etl::handle<const Canvas> canvas)
 
 				// erase (user,bone) from uses
 				if (getenv("SYNFIG_DEBUG_ORDER_BONES_FOR_SAVE_CANVAS")) printf("%s:%d trying to erase - searching %zd\n", __FILE__, __LINE__, uses.count(user));
-				std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle>::iterator begin2(uses.lower_bound(user));
 				std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle>::iterator end2(uses.upper_bound(user));
-				std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle>::iterator iter2;
-				for (iter2 = begin2; iter2 != end2; iter2++)
+				bool found = false;
+				for (auto iter2 = uses.lower_bound(user); iter2 != end2; ++iter2)
 				{
 					if (iter2->second == bone)
 					{
 						uses.erase(iter2);
+						found = true;
 						if (getenv("SYNFIG_DEBUG_ORDER_BONES_FOR_SAVE_CANVAS")) printf("%s:%d found it\n", __FILE__, __LINE__);
 						break;
 					}
@@ -203,7 +203,7 @@ ValueNode_Bone::get_ordered_bones(etl::handle<const Canvas> canvas)
 						if (getenv("SYNFIG_DEBUG_ORDER_BONES_FOR_SAVE_CANVAS")) printf("no\n");
 					}
 				}
-				if (iter2 == end2)
+				if (!found)
 				{
 					if (getenv("SYNFIG_DEBUG_ORDER_BONES_FOR_SAVE_CANVAS")) printf("%s:%d didn't find it?!?\n", __FILE__, __LINE__);
 					assert(0);
