@@ -99,7 +99,7 @@ struct MathVector : std::vector<Real>
 typedef std::function<void(const double, const std::vector<double>&, std::vector<double>&)> Function;
 
 static void
-runge_kutta_cash_karp(Function oscillator, Real& t, MathVector& x, Real& step_size, Real tolerance, Vector& twiddle, Vector& quit)
+runge_kutta_cash_karp(Function oscillator, Real& t, MathVector& x, Real& step_size, Real tolerance)
 {
 	const auto& num_dim = x.size();
 	MathVector xf;
@@ -125,7 +125,6 @@ runge_kutta_cash_karp(Function oscillator, Real& t, MathVector& x, Real& step_si
 	const Real VRKF_sf = 0.9;
 
 	Real tf(t);
-	Vector next_twiddle = twiddle;
 
 	while (true) {
 		tf = t + step_size;
@@ -150,109 +149,24 @@ runge_kutta_cash_karp(Function oscillator, Real& t, MathVector& x, Real& step_si
 
 		MathVector dy5 = k1 * (37/378.) + k3 * (250/621.) + k4 * (125/594.) + k6 * (512/1771.);
 		MathVector dy4 = k1 * (2825/27648.) + k3 * (18575/48384.) + k4 * (13525/55296.) + k5 * (277/14336.) + k6 * (1/4.);
-		MathVector dy3 = k1 * (19/54.) + k3 * (-10/27.) + k4 * (55/54.);
-		MathVector dy2 = k1 * (-3/2.) + k2 * (-5/2.);
-		MathVector dy1 = k1;
 
-		Solution solution{dy1, dy2};
-		auto e_1 = VRKF_e(solution, 1, tolerance);
-		if (e_1 > twiddle[0] * quit[0]) {
-			Real esttol = e_1 / quit[0];
-			step_size *= std::max(0.2, VRKF_sf / esttol);
-			continue;
-		}
-
-		solution.push_back(dy3);
-		auto e_2 = VRKF_e(solution, 2, tolerance);
-		if (e_2 > twiddle[1] * quit[1]) {
-			if (e_1 < 1) {
-				if (max_delta(k2, k1) /** step_size*/ / 10. < tolerance) {
-					// accept 2nd order solution
-					step_size /= 5.;
-					xf = x + (k1 + k2) * (1/10.);
-					break;
-				} else {
-					step_size /= 5.;
-					continue;
-				}
-			} else {
-				Real esttol = e_2 / quit[1];
-				step_size *= std::max(0.2, VRKF_sf / esttol);
-				continue;
-			}
-		}
-
-		solution.push_back(dy4);
-		solution.push_back(dy5);
+		Solution solution{0, 0, 0, dy4, dy5};
 		auto e_4 = VRKF_e(solution, 4, tolerance);
 		if (e_4 > 1) {
-			if (e_1/quit[0] < twiddle[0]) {
-				next_twiddle[0] = std::max(1.1, e_1/quit[0]);
-			} else {
-				next_twiddle[0] = twiddle[0];
-			}
-			if (e_2/quit[1] < twiddle[1]) {
-				next_twiddle[1] = std::max(1.1, e_2/quit[1]);
-			} else {
-				next_twiddle[1] = twiddle[1];
-			}
-			if (e_2 < 1) {
-				if (max_delta(k1+k4, k3*2) /** step_size*/ / 10. < tolerance) {
-					// accept 3rd order solution
-					step_size *= 3/5.;
-					xf = x + k1 * 0.1 + k3 * 0.2 + k4 * 0.1;
-					break;
-				} else {
-					if (e_1 < 1) {
-						if (max_delta(k2, k1) /** step_size*/ / 10. < tolerance) {
-							// accept 2nd order solution
-							step_size /= 5.;
-							// n = n + 1 ???
-							xf = x + (k1 + k2) * (1/10.);
-							break;
-						} else {
-							step_size /= 5.;
-							continue;
-						}
-					}
-				}
-			} else {
-				// No order less than 5th order is possibly good, so abandon current step
-				Real esttol = e_4;
-				step_size *= std::max(0.2, VRKF_sf / esttol);
-				continue;
-			}
+			// No order less than 5th order is possibly good, so abandon current step
+			step_size *= std::max(0.2, VRKF_sf / e_4);
+			continue;
 		} else {
 			// accept 5th order solution
-			xf = x + /*dy1 + dy2 + dy3 +dy4 +*/ dy5;
+
+			xf = x + dy5;
 
 			step_size *= std::min(5., VRKF_sf / e_4);
-			Real q1 = e_1 / e_4;
-			Real q2 = e_2 / e_4;
-
-			if (q1 > quit[0]) {
-				q1 = std::min(q1, 10 * quit[0]);
-			} else {
-				q1 = std::max(q1, 2/3. * quit[0]);
-			}
-			quit[0] = synfig::clamp(q1, 1., 10000.);
-
-			if (q2 > quit[1]) {
-				q2 = std::min(q2, 10 * quit[1]);
-			} else {
-				q2 = std::max(q2, 2/3. * quit[1]);
-			}
-			quit[1] = synfig::clamp(q2, 1., 10000.);
-
-			next_twiddle = twiddle;
-
 			break;
 		}
-
 	}
 	x = xf;
 	t = tf;
-	twiddle = next_twiddle;
 }
 
 static void
@@ -260,12 +174,10 @@ integrate(Function oscillator, MathVector& x0, Real to, Real tf, Real step_size,
 {
 	Real t = to;
 	MathVector x = x0;
-	Vector twiddle{1.5, 1.1};
-	Vector quit{100, 100};
 
 	while (t < tf) {
 		step_size = std::min(step_size, tf - t);
-		runge_kutta_cash_karp(oscillator, t, x, step_size, tolerance, twiddle, quit);
+		runge_kutta_cash_karp(oscillator, t, x, step_size, tolerance);
 	}
 	x0 = x;
 }
