@@ -36,13 +36,12 @@
 
 #include <gui/localization.h>
 
-#include <gui/widgets/widget_waypoint.h> //should probably be replaced with just box header
-#include <gui/widgets/widget_value.h>
+#include <gtkmm/box.h>
+#include <gtkmm/frame.h>
+#include <gtkmm/grid.h>
+
 #include <gui/workarea.h>
 #include <gui/app.h>
-
-
-#include <cmath>//remove probably not needed
 
 #endif
 
@@ -64,7 +63,8 @@ Dialog_Guide::Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canv
 	center_x_widget_adjust (Gtk::Adjustment::create(0,-2000000000,2000000000,1,1,0)),
 	center_y_widget_adjust (Gtk::Adjustment::create(0,-2000000000,2000000000,1,1,0)),
 	point_x_widget_adjust (Gtk::Adjustment::create(0,-2000000000,2000000000,1,1,0)),
-	point_y_widget_adjust (Gtk::Adjustment::create(0,-2000000000,2000000000,1,1,0))
+	point_y_widget_adjust (Gtk::Adjustment::create(0,-2000000000,2000000000,1,1,0)),
+	degrees(true)
 {
 	this->set_resizable(false);
 	assert(canvas);
@@ -90,21 +90,40 @@ Dialog_Guide::Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canv
 	point_y_widget->show();
 	point_y_widget->set_hexpand();
 
+	Gtk::Frame *angleFrame = manage(new Gtk::Frame(_("Rotate By Setting an Angle")));
+	angleFrame->set_shadow_type(Gtk::SHADOW_NONE);
+	((Gtk::Label *) angleFrame->get_label_widget())->set_markup(_("<b>Rotate By Setting an Angle</b>"));
+	angleFrame->set_margin_bottom(5);
+	angleFrame->set_margin_top(5);
+
+
 	auto guideGrid = manage(new Gtk::Grid());
 	guideGrid->get_style_context()->add_class("dialog-secondary-content");
 	guideGrid->set_row_spacing(6);
 	guideGrid->set_column_spacing(8);
+
+	angle_type_picker.append(_("Degree"));
+	angle_type_picker.append(_("Radian"));
+	angle_type_picker.set_active(0);
+	angle_type_picker.signal_changed().connect(sigc::mem_fun(*this, &Dialog_Guide::set_angle_type));
 
 	Gtk::Label *rotationAngleLabel = manage(new Gtk::Label(_("_Rotation Angle"), true));
 	rotationAngleLabel->set_halign(Gtk::ALIGN_CENTER);
 	rotationAngleLabel->set_mnemonic_widget(*angle_widget);
 	guideGrid->attach(*rotationAngleLabel, 0, 0, 1, 1);
 	guideGrid->attach(*angle_widget      , 1, 0, 1, 1);
+	guideGrid->attach(angle_type_picker  , 2, 0, 1, 1);
 
 	auto coordGrid = manage(new Gtk::Grid());
 	coordGrid->get_style_context()->add_class("dialog-secondary-content");
 	coordGrid->set_row_spacing(6);
 	coordGrid->set_column_spacing(8);
+
+	Gtk::Frame *coordFrame = manage(new Gtk::Frame(_("Rotate By Setting Coordinates")));
+	coordFrame->set_shadow_type(Gtk::SHADOW_NONE);
+	((Gtk::Label *) coordFrame->get_label_widget())->set_markup(_("<b>Rotate By Setting Coordinates</b>"));
+	coordFrame->set_margin_bottom(5);
+	coordFrame->set_margin_top(5);
 
 	Gtk::Label *centerCoordLabel = manage(new Gtk::Label(_("_Center Point"), true));
 	centerCoordLabel->set_halign(Gtk::ALIGN_CENTER);
@@ -122,27 +141,26 @@ Dialog_Guide::Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canv
 	coordGrid->attach(*point_y_widget,  2, 1, 1, 1);
 
 
-
+	guide_box->add(*angleFrame);
 	guide_box->add(*guideGrid);
+	guide_box->add(*coordFrame);
 	guide_box->add(*coordGrid);
 	guide_box->set_margin_bottom(5);
 
 	//Box end
-	get_content_area()->pack_start(*guide_box);// to get the box an then pack in the beginning the box
+	get_content_area()->pack_start(*guide_box);
 
 	Gtk::Button *apply_button(manage(new Gtk::Button(_("_Apply"), true)));
 	apply_button->show();
 	add_action_widget(*apply_button,0);
-	apply_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Guide::on_apply_pressed));
+	apply_button->signal_clicked().connect(sigc::bind(sigc::mem_fun(*this, &Dialog_Guide::on_ok_or_apply_pressed), false));
 
 	Gtk::Button *ok_button(manage(new Gtk::Button(_("_OK"), true)));
 	ok_button->show();
 	add_action_widget(*ok_button,1);
-	ok_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Guide::on_ok_pressed));
+	ok_button->signal_clicked().connect(sigc::bind(sigc::mem_fun(*this, &Dialog_Guide::on_ok_or_apply_pressed), true));
 
 	guide_box->show_all();
-
-	signal_changed().connect(sigc::mem_fun(*this, &Dialog_Guide::set_new_coordinates));
 
 	current_work_area = work_area;
 }
@@ -152,29 +170,32 @@ Dialog_Guide::~Dialog_Guide()
 }
 
 void
-Dialog_Guide::on_ok_pressed()
+Dialog_Guide::on_ok_or_apply_pressed(bool ok)
 {
-	if (angle_deg != angle_widget->get_value()) {
+	if (angle_deg != angle_widget->get_value() && degrees) {
 		angle_deg = angle_widget->get_value();
 		angle_rad = (angle_deg * pi )/(180);
-		hide();
 		rotate_ruler();
-	} else {
+	} else if (angle_rad != angle_widget->get_value() && !degrees) {
+		angle_rad = angle_widget->get_value();
+		rotate_ruler();
+	} else
+		set_new_coordinates();
+
+	if (ok)
 		hide();
-		signal_changed_(); //we can use this as a signal to connect to something in workarea to handle whatever
-	}
+	else
+		current_work_area->get_drawing_area()->queue_draw();
 }
 
 void
-Dialog_Guide::on_apply_pressed()
+Dialog_Guide::set_angle_type()
 {
-	if (angle_deg != angle_widget->get_value()) {
-		angle_deg = angle_widget->get_value();
-		angle_rad = (angle_deg * pi )/(180);
-		rotate_ruler();
-	} else
-		signal_changed_();
-	current_work_area->get_drawing_area()->queue_draw();
+	Glib::ustring text = angle_type_picker.get_active_text();
+	if (text == "Degree")
+		degrees=true;
+	else if (text == "Radian")
+		degrees=false;
 }
 
 void
@@ -188,7 +209,7 @@ Dialog_Guide::set_current_guide_iterators(GuideList::iterator curr_guide_workare
 }
 
 void
-Dialog_Guide::rotate_ruler() //--connceted to on ok pressed through signal changed
+Dialog_Guide::rotate_ruler()
 {
 	//rortate works by rotating around the center so basically we are only changing the accomp coords here here
 
@@ -247,7 +268,6 @@ Dialog_Guide::set_new_coordinates()
 		*curr_guide_accomp_duckamtic_other = point_y_new;
 		*curr_guide_accomp_duckamtic = point_x_new;
 	}
-	//check first to see if the value changed before setting the iterators
 }
 
 void
@@ -279,26 +299,17 @@ Dialog_Guide::set_rotation_angle(bool curr_guide_is_x)//should probably be renam
 		float angle_rad_float = std::atan(slope);
 
 
-		int quadrant=0; //unused var remove
 		// we want the range to be from 0 to 360 but atan has range -90 to 90
 		//p.s. this works only for when ruler was set by mouse rotation, dialog rotation shows 180 as 0 etc.. think of what to do here
 		if (rotated_x > center_x){
-			if (rotated_y > center_y)
-				quadrant = 1;
-			else {
-				quadrant = 4;
+			if (rotated_y <= center_y)
 				angle_rad_float += 2.0 * pi;
-			}
 		} else if (rotated_x < center_x) {
 			if (rotated_y > center_y){
-				quadrant = 2;
 				angle_rad_float += pi;
-			}
-			else if (rotated_y < center_y){
-				quadrant = 3;
+			} else if (rotated_y < center_y) {
 				angle_rad_float += pi;
-			}
-			else
+			} else
 				angle_rad_float = pi;
 		}
 		else {
@@ -315,36 +326,39 @@ Dialog_Guide::set_rotation_angle(bool curr_guide_is_x)//should probably be renam
 			angle_deg = 90;
 		else
 			angle_deg = 0;
-
 	}
-	std::cout<<"angle in degrees: "<<angle_deg<<std::endl;
 
-	angle_widget->set_value(angle_deg);
+	if(degrees)
+		angle_widget->set_value(angle_deg);
+	else
+		angle_widget->set_value(angle_rad);
 
 	double center_x_ruler_unit = synfig::Distance(center_x , synfig::Distance::SYSTEM_UNITS).get(App::distance_system, canvas->rend_desc());
 	double center_y_ruler_unit = synfig::Distance(center_y , synfig::Distance::SYSTEM_UNITS).get(App::distance_system, canvas->rend_desc());
 	double rotated_x_ruler_unit = synfig::Distance(rotated_x , synfig::Distance::SYSTEM_UNITS).get(App::distance_system, canvas->rend_desc());
 	double rotated_y_ruler_unit = synfig::Distance(rotated_y , synfig::Distance::SYSTEM_UNITS).get(App::distance_system, canvas->rend_desc());
 
-	if (menu_guide_is_x && rotated_x > -900) {
+	if (menu_guide_is_x && (rotated_x > -900)) {
+		center_x_widget->set_sensitive(true);
 		center_x_widget->set_value(center_x_ruler_unit);
 		point_x_widget->set_value(rotated_x_ruler_unit);
 		point_y_widget->set_value(rotated_y_ruler_unit);
-		center_y_widget->hide();
+		center_y_widget->set_sensitive(false);
 	} else if (!menu_guide_is_x &&  rotated_x > -900) {
+		center_y_widget->set_sensitive(true);
 		center_y_widget->set_value(center_y_ruler_unit);
 		point_x_widget->set_value(rotated_x_ruler_unit);
 		point_y_widget->set_value(rotated_y_ruler_unit);
-		center_x_widget->hide();
+		center_x_widget->set_sensitive(false);
 	} else if (rotated_x < -900) {
 		if (menu_guide_is_x) {
-			center_x_widget->show();
+			center_x_widget->set_sensitive(true);
 			center_x_widget->set_value(center_x_ruler_unit);
-			center_y_widget->hide();
+			center_y_widget->set_sensitive(false);
 		} else {
-			center_y_widget->show();
+			center_y_widget->set_sensitive(true);
 			center_y_widget->set_value(center_y_ruler_unit);
-			center_x_widget->hide();
+			center_x_widget->set_sensitive(false);
 		}
 	}
 }

@@ -33,10 +33,9 @@
 
 #include <gtkmm/dialog.h>
 #include <gtkmm/spinbutton.h>
-
+#include <gtkmm/comboboxtext.h>
 
 #include <synfigapp/value_desc.h>
-#include <synfig/valuenodes/valuenode_animated.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -55,8 +54,6 @@ class Dialog_Guide : public Gtk::Dialog
 {
 	typedef std::list<float> GuideList;
 
-	Widget_ValueBase *value_widget;//box stuff
-
 	Gtk::SpinButton *angle_widget;
 	Glib::RefPtr<Gtk::Adjustment> angle_adjustment;
 
@@ -72,28 +69,29 @@ class Dialog_Guide : public Gtk::Dialog
 	Gtk::SpinButton *point_y_widget;
 	Glib::RefPtr<Gtk::Adjustment> point_y_widget_adjust;
 
+	Gtk::ComboBoxText angle_type_picker;
+
 
 	WorkArea *current_work_area;
 
 	etl::handle<synfig::Canvas> canvas;
 
-	void on_ok_pressed();
-	void on_apply_pressed();
+	void on_ok_or_apply_pressed(bool ok);
 	void rotate_ruler();
 	void set_new_coordinates();
-
-	sigc::signal<void> signal_changed_;
+	void set_angle_type();
 
 	GuideList::iterator curr_guide;
 	GuideList::iterator curr_guide_accomp_duckamtic;
 	GuideList::iterator curr_guide_accomp_duckamtic_other;
 
 	float angle_rad;
-	float angle_deg;//this isnt necessary
+	float angle_deg;
 
 	synfig::ValueBase test_value;
 
 	bool menu_guide_is_x;
+	bool degrees;
 
 
 public:
@@ -103,9 +101,6 @@ public:
 	void set_current_guide_iterators(GuideList::iterator curr_guide_workarea,
 									 GuideList::iterator curr_guide_accomp_duckamtic_workarea,
 									 GuideList::iterator curr_guide_accomp_duckamtic_other_workarea);
-
-
-	sigc::signal<void> &signal_changed() {return signal_changed_; }
 
 	void set_rotation_angle(bool curr_guide_is_x);//must be called after set_current_guide_iterators()
 
