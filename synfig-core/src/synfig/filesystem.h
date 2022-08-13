@@ -247,6 +247,11 @@ namespace synfig
 			typedef std::basic_string<value_type> string_type;
 
 			/**
+			 * An empty file system path
+			 */
+			Path();
+
+			/**
 			 * Store a file system path
 			 * @param path the path in UTF-8 encoding
 			 */
@@ -261,11 +266,36 @@ namespace synfig
 			/** Path as a character string in UTF-8 encoding */
 			const std::string& u8string() const;
 
+			// Decomposition ---------------------
+
+			/** Last component of path.
+			 *  filename stem + extension
+			 */
+			Path filename() const;
+			/** File name stem.
+			 *  @return the substring from the beginning of filename() up to the beginning of extension().
+			 *  Dot character of extension is not included.
+			 */
+			Path stem() const;
+			/** File name extension (includes its initial dot if file has extension) */
+			Path extension() const;
+
+			// Queries ---------------------------
+
+			bool empty() const noexcept;
+
+			bool has_filename() const;
+			bool has_stem() const;
+			bool has_extension() const;
+
 		private:
 			/** Path in the native encoding */
 			string_type native_path_;
 			/** Path in UTF-8 encoding */
 			std::string path_;
+
+			std::size_t get_filename_pos() const;
+			std::size_t get_extension_pos() const;
 
 			/** Convert a UTF-8 encoded string into a native-encoded string
 			 *  @param utf8 the string to be converted

@@ -251,6 +251,10 @@ String FileSystem::get_real_filename(const String &filename) {
 	return Glib::filename_from_uri(get_real_uri(filename));
 }
 
+filesystem::Path::Path()
+{
+}
+
 filesystem::Path::Path(const std::string& path)
 {
 	path_ = path;
@@ -273,6 +277,109 @@ const std::string&
 filesystem::Path::u8string() const
 {
 	return path_;
+}
+
+filesystem::Path
+filesystem::Path::filename() const
+{
+	auto filename_pos = get_filename_pos();
+
+	if (filename_pos == std::string::npos)
+		return Path();
+
+	return path_.substr(filename_pos);
+}
+
+filesystem::Path
+filesystem::Path::stem() const
+{
+	auto filename_pos = get_filename_pos();
+	if (filename_pos == std::string::npos)
+		return Path();
+
+	auto extension_pos = get_extension_pos();
+
+	auto stem_length = extension_pos == std::string::npos ? extension_pos : extension_pos - filename_pos;
+
+	return path_.substr(filename_pos, stem_length);
+}
+
+filesystem::Path
+filesystem::Path::extension() const
+{
+	auto extension_pos = get_extension_pos();
+
+	if (extension_pos == std::string::npos)
+		return Path();
+
+	return path_.substr(extension_pos);
+}
+
+bool
+filesystem::Path::empty() const noexcept
+{
+	return path_.empty();
+}
+
+bool
+filesystem::Path::has_filename() const
+{
+	return get_filename_pos() != std::string::npos;
+}
+
+bool
+filesystem::Path::has_stem() const
+{
+	auto filename_pos = get_filename_pos();
+	auto extension_pos = get_extension_pos();
+	return filename_pos != std::string::npos && (extension_pos == std::string::npos || filename_pos < extension_pos);
+}
+
+bool
+filesystem::Path::has_extension() const
+{
+	return get_extension_pos() != std::string::npos;
+}
+
+std::size_t
+filesystem::Path::get_filename_pos() const
+{
+	if (path_.empty())
+		return std::string::npos;
+	auto separator_pos = path_.find_last_of("/\\");
+	if (separator_pos == std::string::npos)
+		return 0;
+	if (separator_pos + 1 == path_.size())
+		return std::string::npos;
+	return separator_pos + 1;
+}
+
+std::size_t
+filesystem::Path::get_extension_pos() const
+{
+	auto dot_pos = path_.rfind('.');
+	// no dot char
+	if (dot_pos == std::string::npos)
+		return std::string::npos;
+
+	auto filename_pos = get_filename_pos();
+	// no filename? no extension then
+	if (filename_pos == std::string::npos)
+		return std::string::npos;
+
+	// last dot  char was found before filename? not an extension separator then
+	if (filename_pos > dot_pos)
+		return std::string::npos;
+
+	// path is hidden file (.foo) or special dot file
+	if (filename_pos == dot_pos)
+		return std::string::npos;
+
+	// path is special dot-dot (..)
+	if (path_.size() - filename_pos == 2 && path_.compare(filename_pos, 2, "..") == 0)
+		return std::string::npos;
+
+	return dot_pos;
 }
 
 filesystem::Path::string_type
