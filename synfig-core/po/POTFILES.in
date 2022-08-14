@@ -293,9 +293,7 @@ src/synfig/target.cpp
 src/synfig/target.h
 src/synfig/target_multi.cpp
 src/synfig/target_multi.h
-src/synfig/target_null.cpp
 src/synfig/target_null.h
-src/synfig/target_null_tile.cpp
 src/synfig/target_null_tile.h
 src/synfig/target_scanline.cpp
 src/synfig/target_scanline.h
