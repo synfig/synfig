@@ -39,7 +39,7 @@
 namespace synfig {
 
 // Class ValueNode_Derivative
-// Implementation of a derivative based on finite diferences
+// Implementation of a derivative based on finite differences
 // See: http://en.wikipedia.org/wiki/Finite_difference
 // and http://en.wikipedia.org/wiki/Finite_difference_coefficients
 

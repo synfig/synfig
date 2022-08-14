@@ -689,7 +689,7 @@ StateNormal_Context::event_key_down_handler(const Smach::event& x)
 {
 	// event.modifier yet not set when ctrl (or alt or shift)
 	// key pressed event handled. So we need to check this keys manually.
-	// We may encountred some cosmetic problems with mouse-cursor image
+	// We may encounter some cosmetic problems with mouse-cursor image
 	// if user will redefine modifier keys.
 	// Anyway processing of keys Ctrl+Right, Ctrl+Left etc will works fine.
 	// see 'xmodmap' command

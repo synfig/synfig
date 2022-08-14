@@ -97,7 +97,7 @@ DockBook::clear()
 	// i didn't know why this happens, possibly because clear() is called from destructor
 	// and 'this' is already deleted. Or, this function maybe never work right.
 	// So here quick-hack again. Btw, as you can see from commented code later newly created 
-	// dockbook is works fine, so this situation is reqired more detailed investigation.
+	// dockbook is works fine, so this situation is required more detailed investigation.
 	if (!GTK_IS_NOTEBOOK (this)) return; // because we always fail if 'this' is not notebook
 
 	/*Gtk::Notebook note;

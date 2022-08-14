@@ -230,11 +230,11 @@ public:
 
 	//! Flag this node has changed.
 	//! This way programmer can batch its changes and call it only once
-	//! It emmits signal_changed()
+	//! It emits signal_changed()
 	void changed();
 	//! Flag the child node \p x has changed.
 	//! This way programmer can batch its changes and call it only once
-	//! It emmits signal_child_changed() and signal_changed()
+	//! It emits signal_child_changed() and signal_changed()
 	void child_changed(const Node *x);
 
 	//! Gets the GUID for this Node
