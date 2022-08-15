@@ -814,10 +814,9 @@ Duckmatic::set_guides_color(const synfig::Color &c)
 Duckmatic::GuideList::iterator
 Duckmatic::find_guide_x(synfig::Point pos, float radius) // returns found guide iterator which is actually just implied from its name
 {
-	GuideList::iterator iter,best(guide_list_x_.end()); // defining two iterators iter and best.--- best being the iterator following the elast element of the list
+	GuideList::iterator iter,best(guide_list_x_.end());
 	GuideList::iterator iter_accomp = list_x_accomp_cord_.begin();
 	GuideList::iterator iter_accomp_other = list_x_accomp_cord_other_.begin();
-//	AccompGuideList::iterator accomp_iter = accomp_list_x_.begin();
 	float dist(radius);
 	for(iter=guide_list_x_.begin();iter!=guide_list_x_.end();++iter)
 	{
@@ -836,44 +835,36 @@ Duckmatic::find_guide_x(synfig::Point pos, float radius) // returns found guide 
 		float y2((*iter_accomp-window_starty)/pheight);
 		float y((pos[1]-window_starty)/pheight);//live mouse position
 		float x((pos[0]-window_startx)/pwidth);
-		slope= (y2 - center_y)/(x2 - center_x);
+		slope = (y2 - center_y)/(x2 - center_x);
 		c = (-(slope*center_x)+center_y);
-		//now we have the equation of the rotated straight line y = slope*x + c, we now calc the perpindicular/shortest distnace from the line
-		num= std::fabs((slope*x)-y-(slope*center_x)+center_y);
-		denom= std::sqrt(1 + (slope)*(slope));
-		amount_rotate= num/denom; //perp distance
+		//now we have the equation of the rotated straight line y = slope*x + c, calc the perpindicular/shortest distnace from the line
+		num = std::fabs((slope*x)-y-(slope*center_x)+center_y);
+		denom = std::sqrt(1 + (slope)*(slope));
+		amount_rotate = num/denom; //perp distance
 		}
 
-		if( std::fabs(slope) > 400 )
+		if (std::fabs(slope) > 400)// any slope greater than 300 or 400 means it is almost vertical and should be treated as such
 			ruler_rotated = false;
 
 		float amount(std::fabs(*iter-pos[0]));
 			//if distace of this iterations ruler is less than dist which is preinitialized but then becomes amount then this is close and update dist
-		if( ((amount<dist) && (!ruler_rotated)) || ((ruler_rotated) && amount_rotate < (dist + 3)) )
+		if( ((amount<dist) && (!ruler_rotated)) || ((ruler_rotated) && amount_rotate < (dist + 3)) )//3 is an empirical value
 		{
 
-			if (ruler_rotated) {
-			current_ruler_rotated = true;
-			current_slope = slope;
-			current_c = c;
-			}
+			if (ruler_rotated)
+				current_slope = slope;
+
+
+			if(amount < amount_rotate - 3)
+				dist = amount;
 			else
-				current_ruler_rotated = false;
+				dist = amount_rotate - 3;
 
-
-			if(amount<amount_rotate)
-				dist=amount;
-			else{
-				dist=amount_rotate;//here maybe we could add the + 3 ?
-			}
-			best=iter; //best is now the found iter
+			best = iter;
 			curr_guide_accomp_duckamtic = iter_accomp;
 			curr_guide_accomp_duckamtic_other = iter_accomp_other;
-			std::cout<<"initialized"<<std::endl;
-//			curr_accomp_guide= accomp_iter;
 		}
 		iter_accomp++;
-//		accomp_iter++;
 		iter_accomp_other++;
 	}
 	return best;
@@ -885,7 +876,6 @@ Duckmatic::find_guide_y(synfig::Point pos, float radius)
 	GuideList::iterator iter,best(guide_list_y_.end());
 	GuideList::iterator iter_accomp = list_y_accomp_cord_.begin();
 	GuideList::iterator iter_accomp_other = list_y_accomp_cord_other_.begin();
-//	AccompGuideList::iterator accomp_iter = accomp_list_y_.begin();
 
 	float dist(radius);
 	for(iter=guide_list_y_.begin();iter!=guide_list_y_.end();++iter)
@@ -895,11 +885,9 @@ Duckmatic::find_guide_y(synfig::Point pos, float radius)
 
 		if(*iter_accomp > -900){
 			ruler_rotated = true;
-			current_ruler_rotated = true;
 		}
 		else{
 			ruler_rotated = false;
-			current_ruler_rotated = false; //really bad way of doing this fix later
 		}
 
 		if (ruler_rotated) {
@@ -921,27 +909,21 @@ Duckmatic::find_guide_y(synfig::Point pos, float radius)
 			ruler_rotated = false;
 
 		float amount(std::fabs(*iter-pos[1]));
-		if( ((amount<=dist) && (!ruler_rotated)) || ((amount_rotate) && amount_rotate < (dist + 3)) )
+		if( ((amount < dist) && (!ruler_rotated)) || ((ruler_rotated) && amount_rotate < (dist + 3)) )
 		{
-			if (ruler_rotated) {
-			current_slope= slope;
-			current_c = c;
-			}
+			if (ruler_rotated)
+				current_slope = slope;
 
-			if(amount<amount_rotate)
-				dist=amount;
-			else{
-				dist=amount_rotate;//here maybe we could add the + 3 ?
-			}
+			if (amount < amount_rotate - 3)
+				dist = amount;
+			else
+				dist = amount_rotate - 3;
 
-			dist=amount;
-			best=iter;
-			curr_guide_accomp_duckamtic= iter_accomp;
-			curr_guide_accomp_duckamtic_other= iter_accomp_other;
-//			curr_accomp_guide= accomp_iter;
+			best = iter;
+			curr_guide_accomp_duckamtic = iter_accomp;
+			curr_guide_accomp_duckamtic_other = iter_accomp_other;
 		}
 		iter_accomp++;
-//		accomp_iter++;
 		iter_accomp_other++;
 	}
 	return best;

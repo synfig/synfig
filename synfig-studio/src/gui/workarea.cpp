@@ -1495,11 +1495,9 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 					GuideList::iterator iter = find_guide_x(mouse_pos,radius); //we get the iterator to the found guide
 					if (iter == get_guide_list_x().end()) { //this means then its not found
 						curr_guide_is_x = false;
-						std::cout<<"0"<<std::endl;
 						iter = find_guide_y(mouse_pos,radius); // maes much snese
 					} else {
 						curr_guide_is_x = true;
-						std::cout<<"1"<<std::endl;
 					}//till here purpose is to set flags of which hor or vert ruler
 
 					if (iter != get_guide_list_x().end() && iter != get_guide_list_y().end()) {//meaning if its sure we found a guide
@@ -1567,11 +1565,9 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				bool curr_guide_is_x_temp;
 				if (iter == get_guide_list_x().end()) { //this means then its not found
 					curr_guide_is_x_temp = false;
-					std::cout<<"0"<<std::endl;
 					iter = find_guide_y(mouse_pos,radius); // maes much snese
 				} else {
 					curr_guide_is_x_temp = true;
-					std::cout<<"1"<<std::endl;
 				}//till here purpose is to set flags of which hor or vert ruler
 
 				guide_dialog.set_current_guide_iterators(curr_guide, curr_guide_accomp_duckamtic, curr_guide_accomp_duckamtic_other);
@@ -1677,9 +1673,9 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				float lower_limit_x = window_startx + 0.25;
 
 				if((!rotate_guide && ((*curr_guide_accomp_duckamtic) < -900)) || from_ruler_event ){// case 1: unrotated ruler
-				*curr_guide = mouse_pos[0]; // so basically curr_guide is iterator to the correct elemtn so we here set the element itselfs value.
+					*curr_guide = mouse_pos[0];
 				}
-				else if(!rotate_guide && ((*curr_guide_accomp_duckamtic) > -900) /*&& current_slope*/){ //case 2: rotated ruler being moved
+				else if (!rotate_guide && ((*curr_guide_accomp_duckamtic) > -900)) { //case 2: rotated ruler being moved
 					// also test more because something are off anf btw remember the off thing when rotting "quadrant boundaries"
 					*curr_guide_accomp_duckamtic = mouse_pos[1];
 					*curr_guide_accomp_duckamtic_other= mouse_pos[0];
@@ -1690,15 +1686,12 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				}
 				else if(rotate_guide && (!from_ruler_event) && ((*curr_guide > lower_limit_x) && (*curr_guide < upper_limit_x)) ) {// case: 3 ruler being rotated   ---- dont rotate if center of rotation isnt in screen
 
-				*curr_guide_accomp_duckamtic = mouse_pos[1]; //accoomp guide only has a value when it was moved while control pressed.
-				*curr_guide_accomp_duckamtic_other= mouse_pos[0];
-				//we could calculate slope here while turining to allow a move right after a turn before mouse release... should the same be allowed for rotate ?
-				float center_y = ((1.0/2.0)*(drawing_area_height)*pheight)+ window_starty;
-				float slope = (mouse_pos[1] - center_y)/(mouse_pos[0] - *curr_guide);
-				current_slope = -slope;
-//				std::cout<<"slope: "<<current_slope<<std::endl;
-//				std::array<float,2> accomp_cords_garb = { mouse_pos[0] , mouse_pos[1] };
-//				*curr_accomp_guide = accomp_cords_garb;
+					*curr_guide_accomp_duckamtic = mouse_pos[1]; //accoomp guide only has a value when it was moved while control pressed.
+					*curr_guide_accomp_duckamtic_other= mouse_pos[0];
+					//we could calculate slope here while turining to allow a move right after a turn before mouse release... should the same be allowed for rotate ?
+					float center_y = ((1.0/2.0)*(drawing_area_height)*pheight)+ window_starty;
+					float slope = (mouse_pos[1] - center_y)/(mouse_pos[0] - *curr_guide);
+					current_slope = -slope;
 				}
 			}
 			else{
@@ -1706,7 +1699,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				float upper_limit_y = window_starty;
 				if( ((!rotate_guide) && ((*curr_guide_accomp_duckamtic) < -900)) || from_ruler_event )
 				*curr_guide = mouse_pos[1];
-				else if ( !rotate_guide && ((*curr_guide_accomp_duckamtic) > -900) && current_slope ){
+				else if (!rotate_guide && ((*curr_guide_accomp_duckamtic) > -900)) {
 
 					*curr_guide_accomp_duckamtic = mouse_pos[0];
 					*curr_guide_accomp_duckamtic_other= mouse_pos[1];
@@ -1722,8 +1715,6 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 					float center_x_new = ((1.0/2.0)*(drawing_area_width)*pwidth)+ window_startx;
 					float slope = (mouse_pos[1] - *curr_guide)/(mouse_pos[0] - center_x_new );
 					current_slope = -slope;
-//					std::array<float,2> accomp_cords_garb = { mouse_pos[0] , mouse_pos[1] };
-//					*curr_accomp_guide = accomp_cords_garb;
 				}
 			}
 
@@ -1738,7 +1729,6 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			const synfig::Point point(mouse_pos);
 			hruler->set_position( Distance(point[0], Distance::SYSTEM_UNITS).get(App::distance_system, get_canvas()->rend_desc()) );
 			vruler->set_position( Distance(point[1], Distance::SYSTEM_UNITS).get(App::distance_system, get_canvas()->rend_desc()) );
-			std::cout<<"called"<<std::endl;
 		}
 
 		if (get_drag_mode() == DRAG_WINDOW) {
@@ -2004,13 +1994,13 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 }
 
 void
-WorkArea::edit_guide_from_menu()
+WorkArea::edit_guide_from_menu()//remove
 {
 	std::cout<<"edit guide bro"<<std::endl;
 }
 
 void
-WorkArea::set_ruler_angle() //not used
+WorkArea::set_ruler_angle() //not used //remove
 {
 	std::cout<<"connect correctly"<<std::endl;
 
@@ -2035,11 +2025,7 @@ WorkArea::on_hruler_event(GdkEvent *event)
 			curr_guide = get_guide_list_y().insert(get_guide_list_y().begin(), 0.0);//inserted at the beginning i.e. before prev begin
 			curr_guide_accomp_duckamtic = get_y_list_accomp_cord().insert(get_y_list_accomp_cord().begin(), -1000); //insert with garbage value and only enter real value in draw event when control is pressed
 			curr_guide_accomp_duckamtic_other = get_y_list_accomp_cord_other().insert(get_y_list_accomp_cord_other().begin(), -1000);
-//			current_slope = 0 ;
-//			std::array<float,2> accomp_cords_garb = { -1000 , -1000 };
-//			get_accomp_list_y().insert(get_accomp_list_y().begin(), accomp_cords_garb);
 			curr_guide_is_x = false;
-			std::cout<<" 0 from ruler"<<std::endl;
 		}
 		return true;
 	case GDK_MOTION_NOTIFY:
@@ -2077,15 +2063,10 @@ WorkArea::on_vruler_event(GdkEvent *event)
 		from_ruler_event = true;
 		if (get_drag_mode() == DRAG_NONE && show_guides) {
 			set_drag_mode(DRAG_GUIDE);
-			curr_guide =get_guide_list_x().insert(get_guide_list_x().begin(),0.0);
+			curr_guide = get_guide_list_x().insert(get_guide_list_x().begin(),0.0);
 			curr_guide_accomp_duckamtic = get_x_list_accomp_cord().insert(get_x_list_accomp_cord().begin(), -1000); //insert with garbage value and only enter real value in draw event when control is pressed
 			curr_guide_accomp_duckamtic_other = get_x_list_accomp_cord_other().insert(get_x_list_accomp_cord_other().begin(), -1000);
-			std::cout<<" initialized form ruler event"<<std::endl;
-//			current_slope = 1000; //in fact for vertical ruler it reaches something like infinity so it isnt usable so this is functioning more like a flag
-//			std::array<float,2> accomp_cords_garb = { -1000 , -1000 };
-//			get_accomp_list_x().insert(get_accomp_list_x().begin(), accomp_cords_garb);
 			curr_guide_is_x=true;
-			std::cout<<" 1 from ruler"<<std::endl;
 		}
 		return true;
 	case GDK_MOTION_NOTIFY:

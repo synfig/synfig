@@ -155,9 +155,7 @@ public:
 	int drawing_area_height;
 	float pwidth,pheight;
 	synfig::Vector::value_type window_startx,window_starty;
-	float current_slope=0, current_c=0;
-
-//	typedef std::list<std::array<float, 2>> AccompGuideList;
+	float current_slope = 0;
 
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
@@ -254,8 +252,6 @@ protected:
 	bool show_persistent_strokes;
 
 	bool axis_lock;
-
-	bool current_ruler_rotated = false;
 
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
