@@ -105,6 +105,7 @@ Importer(identifier)
 				line == "jpg"  ||
 				line == "png"  ||
 				line == "ppm"  ||
+				line == "svg"  ||
 				line == "tiff" )
 			{
 				ext = String(".") + line;
