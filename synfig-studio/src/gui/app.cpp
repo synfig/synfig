@@ -973,7 +973,7 @@ DEFINE_ACTION("mask-bone-ducks",                _("Next Bone Handles"))
 for(std::list<int>::iterator iter = CanvasView::get_pixel_sizes().begin(); iter != CanvasView::get_pixel_sizes().end(); iter++)
 DEFINE_ACTION(strprintf("lowres-pixel-%d", *iter), strprintf(_("Set Low-Res pixel size to %d"), *iter))
 
-DEFINE_ACTION("toggle-ruler-show",  _("Toggle Ruler Show"))
+DEFINE_ACTION("toggle-rulers-show",  _("Toggle Rulers Show"))
 DEFINE_ACTION("toggle-grid-show",  _("Toggle Grid Show"))
 DEFINE_ACTION("toggle-grid-snap",  _("Toggle Grid Snap"))
 DEFINE_ACTION("toggle-guide-show", _("Toggle Guide Show"))
@@ -1126,7 +1126,7 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 	ui_info_menu +=
 "		</menu>"
 "		<separator name='sep-view1'/>"
-"		<menuitem action='toggle-ruler-show'/>"
+"		<menuitem action='toggle-rulers-show'/>"
 "		<menuitem action='toggle-grid-show'/>"
 "		<menuitem action='toggle-grid-snap'/>"
 "		<menuitem action='toggle-guide-show'/>"

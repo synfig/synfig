@@ -183,7 +183,7 @@ private:
 	bool highlight_active_bone;
 
 	//! This state is true if ruler should be shown
-	bool ruler_status;
+	bool show_rulers;
 	//! This flag is set if the grid should be drawn
 	bool show_grid;
 
@@ -353,8 +353,8 @@ public:
 
 	void refresh_dimension_info();
 
-	void toggle_ruler();
-	void set_ruler_visible(bool visible);
+	void toggle_rulers();
+	void set_rulers_visible(bool visible);
 
 	//! Enables showing of the grid
 	void enable_grid();
@@ -373,7 +373,7 @@ public:
 	//! Returns the color of the grid
 	const synfig::Color &get_grid_color()const { return Duckmatic::get_grid_color();}
 
-	bool get_ruler_status()const { return ruler_status; }
+	bool get_show_rulers()const { return show_rulers; }
 	//! Returns the state of the show_guides flag
 	bool get_show_guides()const { return show_guides; }
 	//! Sets the showing of the grid

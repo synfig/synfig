@@ -225,7 +225,7 @@ public:
 
 	void set_grid_snap_toggle(bool flag) { grid_snap_toggle->set_active(flag); }
 	void set_grid_show_toggle(bool flag) { grid_show_toggle->set_active(flag); }
-	void set_ruler_show_toggle(bool flag) { ruler_show_toggle->set_active(flag); }
+	void set_rulers_show_toggle(bool flag) { rulers_show_toggle->set_active(flag); }
 	void set_guides_snap_toggle(bool flag) { guides_snap_toggle->set_active(flag); }
 	void set_guides_show_toggle(bool flag) { guides_show_toggle->set_active(flag); }
 	void set_onion_skin_toggle(bool flag) { onion_skin_toggle->set_active(flag); }
@@ -344,7 +344,7 @@ private:
 
 	Glib::RefPtr<Gtk::ToggleAction> grid_snap_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> grid_show_toggle;
-	Glib::RefPtr<Gtk::ToggleAction> ruler_show_toggle;
+	Glib::RefPtr<Gtk::ToggleAction> rulers_show_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> guides_snap_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> guides_show_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> onion_skin_toggle;

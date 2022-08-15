@@ -144,7 +144,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	highlight_active_bone(false),
 	show_grid(false),
 	show_guides(true),
-	ruler_status(true),
+	show_rulers(true),
 	background_size(15,15),
 	background_first_color(0.88, 0.88, 0.88),  /* light gray */
 	background_second_color(0.65, 0.65, 0.65),  /* dark gray */
@@ -373,7 +373,7 @@ WorkArea::save_meta_data()
 	canvas_interface->set_meta_data("guide_snap", get_guide_snap() ? "1" : "0");
 	canvas_interface->set_meta_data("guide_show", get_show_guides() ? "1" : "0");
 	canvas_interface->set_meta_data("grid_show", show_grid ? "1" : "0");
-	canvas_interface->set_meta_data("status_ruler", ruler_status ? "1" : "0");
+	canvas_interface->set_meta_data("status_ruler", show_rulers ? "1" : "0");
 	canvas_interface->set_meta_data("jack_offset", strprintf("%f", (double)jack_offset));
 	canvas_interface->set_meta_data("onion_skin", onion_skin ? "1" : "0");
 	canvas_interface->set_meta_data("onion_skin_past", strprintf("%d", onion_skins[0]));
@@ -552,9 +552,9 @@ WorkArea::load_meta_data()
 
 	data=canvas->get_meta_data("status_ruler");
 	if(data.size() && (data=="1" || data[0]=='t' || data[0]=='T'))
-		ruler_status=true;
+		show_rulers=true;
 	if(data.size() && (data=="0" || data[0]=='f' || data[0]=='F'))
-		ruler_status=false;
+		show_rulers=false;
 
 	data=canvas->get_meta_data("grid_show");
 	if(data.size() && (data=="1" || data[0]=='t' || data[0]=='T'))
@@ -813,17 +813,17 @@ WorkArea::set_background_rendering(bool x)
 }
 
 void
-WorkArea::set_ruler_visible(bool visible)
+WorkArea::set_rulers_visible(bool visible)
 {
 	hruler->set_visible(visible);
 	vruler->set_visible(visible);
 	menubutton_box->set_visible(visible);
 }
 void
-WorkArea::toggle_ruler()
+WorkArea::toggle_rulers()
 {
-	ruler_status = !ruler_status;
-	set_ruler_visible(ruler_status);
+	show_rulers = !show_rulers;
+	set_rulers_visible(show_rulers);
 	save_meta_data();
 }
 
