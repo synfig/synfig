@@ -3600,7 +3600,7 @@ App::dialog_message_2b(const std::string &message,
 // message dialog with 3 buttons.
 int
 App::dialog_message_3b(const std::string &message,
-	const std::string &detials,
+	const std::string &details,
 	const Gtk::MessageType &type,
 		//MESSAGE_INFO - Informational message.
 		//MESSAGE_WARNING - Non-fatal warning message.
@@ -3612,7 +3612,7 @@ App::dialog_message_3b(const std::string &message,
 	const std::string &button3)
 {
 	Gtk::MessageDialog dialog(*App::main_window, message, false, type, Gtk::BUTTONS_NONE, true);
-	dialog.set_secondary_text(detials);
+	dialog.set_secondary_text(details);
 	dialog.add_button(button1, 0);
 	dialog.add_button(button2, 1);
 	dialog.add_button(button3, 2);

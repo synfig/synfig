@@ -465,7 +465,7 @@ public:
 	static void dialog_message_1b(
 			const std::string &type,
 			const std::string &message,
-			const std::string &detials,
+			const std::string &details,
 			const std::string &button1,
 			const std::string &long_details = "long_details");
 
