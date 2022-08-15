@@ -285,9 +285,6 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	drawing_area->signal_event().connect(sigc::mem_fun(*this, &WorkArea::on_drawing_area_event));
 	drawing_area->signal_size_allocate().connect(sigc::hide(sigc::mem_fun(*this, &WorkArea::refresh_dimension_info)));
 
-//	guide_dialog.signal_changed().connect(sigc::mem_fun(*this, &WorkArea::set_ruler_angle));
-
-
 	canvas_interface->signal_rend_desc_changed().connect(sigc::mem_fun(*this, &WorkArea::refresh_dimension_info));
 	canvas_interface->signal_time_changed().connect(sigc::mem_fun(*this, &WorkArea::queue_draw));
 	// When either of the scrolling adjustments change, then redraw.
@@ -300,7 +297,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	get_canvas()->signal_meta_data_changed("grid_color").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("grid_snap").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("grid_show").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
-	get_canvas()->signal_meta_data_changed("guide_show").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));//meta data mod
+	get_canvas()->signal_meta_data_changed("guide_show").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_x").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_x_accomp").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_x_accomp_other").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
@@ -469,8 +466,6 @@ WorkArea::save_meta_data()
 			canvas_interface->set_meta_data("guide_y_accomp_other",data);
 		else if (!canvas->get_meta_data("guide_y_accomp_other").empty())
 			canvas_interface->erase_meta_data("guide_y_accomp_other");
-
-		// probably need to do the exact same for guide_list_x_accomp + other and same for y //metadata mod adham
 	}
 
 	if(get_sketch_filename().size())
@@ -790,8 +785,6 @@ WorkArea::load_meta_data()
 		else
 			data=String(iter+1,data.end());
 	}
-
-	//mod adham here also
 
 	data = canvas->get_meta_data("jack_offset");
 	if (!data.empty())
@@ -1113,9 +1106,9 @@ bool
 WorkArea::on_key_press_event(GdkEventKey* event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
-	if (event->state == GDK_CONTROL_MASK ) {
-			rotate_guide=true;
-	}
+	if (event->state == GDK_CONTROL_MASK)
+		rotate_guide=true;
+
 	auto event_result = canvas_view->get_smach().process_event(
 		EventKeyboard(EVENT_WORKAREA_KEY_DOWN, event->keyval, Gdk::ModifierType(event->state)));
 	if (event_result != Smach::RESULT_OK)
@@ -1173,13 +1166,11 @@ WorkArea::on_key_press_event(GdkEventKey* event)
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
-bool guide_highlighted = false;
-
 bool
 WorkArea::on_key_release_event(GdkEventKey* event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
-	rotate_guide=false;
+	rotate_guide = false;
 	auto event_result = canvas_view->get_smach().process_event(
 		EventKeyboard(EVENT_WORKAREA_KEY_UP, event->keyval, Gdk::ModifierType(event->state)) );
 	if (event_result != Smach::RESULT_OK)
@@ -1480,11 +1471,10 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				//}
 
 				// Check for a guide click
-				if (show_guides) { // ok here is intresting part  //this is whn the ruler is already in the canvas and we move it but fr the initia ruler getting and moving its in the other event first
-					//not both are needed here but ok
+				if (show_guides) {
 					drawing_area_width= drawing_area->get_window()->get_width();
 					drawing_area_height= drawing_area->get_window()->get_height();
-					const synfig::Vector::value_type window_start_x(get_window_tl()[0]);//this is probably whats causing the nan
+					const synfig::Vector::value_type window_start_x(get_window_tl()[0]);
 					const synfig::Vector::value_type window_start_y(get_window_tl()[1]);
 					const float pw_(get_pw()),ph_(get_ph());
 					pwidth= pw_;
@@ -1492,18 +1482,18 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 					window_startx= window_start_x;
 					window_starty= window_start_y;
 
-					GuideList::iterator iter = find_guide_x(mouse_pos,radius); //we get the iterator to the found guide
-					if (iter == get_guide_list_x().end()) { //this means then its not found
+					GuideList::iterator iter = find_guide_x(mouse_pos,radius);
+					if (iter == get_guide_list_x().end()) {
 						curr_guide_is_x = false;
-						iter = find_guide_y(mouse_pos,radius); // maes much snese
+						iter = find_guide_y(mouse_pos,radius);
 					} else {
 						curr_guide_is_x = true;
-					}//till here purpose is to set flags of which hor or vert ruler
+					}
 
-					if (iter != get_guide_list_x().end() && iter != get_guide_list_y().end()) {//meaning if its sure we found a guide
-						set_drag_mode(DRAG_GUIDE);// drag mode becomes guide
-						curr_guide = iter;// curr_guide iter is updated with the current guide
-						return true; //so basically this all is just work done on press to determine which guide we are working with then placing it in curr_guide
+					if (iter != get_guide_list_x().end() && iter != get_guide_list_y().end()) {
+						set_drag_mode(DRAG_GUIDE);
+						curr_guide = iter;
+						return true;
 					}
 				}
 
@@ -1561,14 +1551,14 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				waypoint_menu->popup(3, gtk_get_current_event_time());
 
 				//determine the curr_guide
-				GuideList::iterator iter = find_guide_x(mouse_pos,radius); //we get the iterator to the found guide
+				GuideList::iterator iter = find_guide_x(mouse_pos,radius);
 				bool curr_guide_is_x_temp;
-				if (iter == get_guide_list_x().end()) { //this means then its not found
+				if (iter == get_guide_list_x().end()) {
 					curr_guide_is_x_temp = false;
-					iter = find_guide_y(mouse_pos,radius); // maes much snese
+					iter = find_guide_y(mouse_pos,radius);
 				} else {
 					curr_guide_is_x_temp = true;
-				}//till here purpose is to set flags of which hor or vert ruler
+				}
 
 				guide_dialog.set_current_guide_iterators(curr_guide, curr_guide_accomp_duckamtic, curr_guide_accomp_duckamtic_other);
 				guide_dialog.set_rotation_angle(curr_guide_is_x_temp);
@@ -1618,7 +1608,6 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
             if (iter != curr_guide) {
                 curr_guide = iter;
                 drawing_area->queue_draw();
-				guide_highlighted = !guide_highlighted;//remove ??
             }
 
 			if( (iter == get_guide_list_x().end()) || (iter == get_guide_list_y().end()) )
@@ -1668,15 +1657,14 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 	        break;
 		}
 		case DRAG_GUIDE: {
-			if(curr_guide_is_x){
-				float upper_limit_x = ((drawing_area_width)*pwidth)+ window_startx - 0.25; //this should proably be calculate before these ifs
+			if (curr_guide_is_x) {
+				float upper_limit_x = ((drawing_area_width)*pwidth)+ window_startx - 0.25;
 				float lower_limit_x = window_startx + 0.25;
 
 				if((!rotate_guide && ((*curr_guide_accomp_duckamtic) < -900)) || from_ruler_event ){// case 1: unrotated ruler
 					*curr_guide = mouse_pos[0];
 				}
 				else if (!rotate_guide && ((*curr_guide_accomp_duckamtic) > -900)) { //case 2: rotated ruler being moved
-					// also test more because something are off anf btw remember the off thing when rotting "quadrant boundaries"
 					*curr_guide_accomp_duckamtic = mouse_pos[1];
 					*curr_guide_accomp_duckamtic_other= mouse_pos[0];
 
@@ -1685,10 +1673,9 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 					*curr_guide = center_x_new;
 				}
 				else if(rotate_guide && (!from_ruler_event) && ((*curr_guide > lower_limit_x) && (*curr_guide < upper_limit_x)) ) {// case: 3 ruler being rotated   ---- dont rotate if center of rotation isnt in screen
-
-					*curr_guide_accomp_duckamtic = mouse_pos[1]; //accoomp guide only has a value when it was moved while control pressed.
+					*curr_guide_accomp_duckamtic = mouse_pos[1];
 					*curr_guide_accomp_duckamtic_other= mouse_pos[0];
-					//we could calculate slope here while turining to allow a move right after a turn before mouse release... should the same be allowed for rotate ?
+					//update slope here while turining to allow a move right after a rotate before mouse release...
 					float center_y = ((1.0/2.0)*(drawing_area_height)*pheight)+ window_starty;
 					float slope = (mouse_pos[1] - center_y)/(mouse_pos[0] - *curr_guide);
 					current_slope = -slope;
@@ -1704,9 +1691,9 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 					*curr_guide_accomp_duckamtic = mouse_pos[0];
 					*curr_guide_accomp_duckamtic_other= mouse_pos[1];
 
-					float center_x_new = ((1.0/2.0)*(drawing_area_width)*pwidth)+ window_startx; //current slope is slope of the line on it being founds
-					float center_y = (mouse_pos[1])-((mouse_pos[0]-center_x_new)*(-current_slope));
-					*curr_guide = center_y; //rename the y her to new
+					float center_x_new = ((1.0/2.0)*(drawing_area_width)*pwidth)+ window_startx; //current slope is slope of the line on it being found
+					float center_y_new = (mouse_pos[1])-((mouse_pos[0]-center_x_new)*(-current_slope));
+					*curr_guide = center_y_new;
 
 				}
 				if(rotate_guide && (!from_ruler_event) && ((*curr_guide > lower_limit_y) && (*curr_guide < upper_limit_y))){
@@ -1718,7 +1705,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				}
 			}
 
-			drawing_area->queue_draw(); //drawing
+			drawing_area->queue_draw();
 	        break;
 		}
 		default: break;
@@ -1993,25 +1980,6 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
-void
-WorkArea::edit_guide_from_menu()//remove
-{
-	std::cout<<"edit guide bro"<<std::endl;
-}
-
-void
-WorkArea::set_ruler_angle() //not used //remove
-{
-	std::cout<<"connect correctly"<<std::endl;
-
-	std::cout<<*curr_guide<<std::endl;
-	//ok so the iters need to be passed
-	*curr_guide += 10;
-	std::cout<<*curr_guide<<std::endl;
-	//here we can edit the current guides points to set the angle
-	//for test purposes now we can move to random point ok im practising typong without looking
-}
-
 bool
 WorkArea::on_hruler_event(GdkEvent *event)
 {
@@ -2021,9 +1989,8 @@ WorkArea::on_hruler_event(GdkEvent *event)
 		from_ruler_event = true;
 		if (get_drag_mode() == DRAG_NONE && show_guides) {
 			set_drag_mode(DRAG_GUIDE);
-			//mod adham: starting point here we insert the guides_list_y accompanying event point but with a value which wed know as basically none
-			curr_guide = get_guide_list_y().insert(get_guide_list_y().begin(), 0.0);//inserted at the beginning i.e. before prev begin
-			curr_guide_accomp_duckamtic = get_y_list_accomp_cord().insert(get_y_list_accomp_cord().begin(), -1000); //insert with garbage value and only enter real value in draw event when control is pressed
+			curr_guide = get_guide_list_y().insert(get_guide_list_y().begin(), 0.0);
+			curr_guide_accomp_duckamtic = get_y_list_accomp_cord().insert(get_y_list_accomp_cord().begin(), -1000); //inserted with garbage value and only enter real value in draw event when control is pressed
 			curr_guide_accomp_duckamtic_other = get_y_list_accomp_cord_other().insert(get_y_list_accomp_cord_other().begin(), -1000);
 			curr_guide_is_x = false;
 		}

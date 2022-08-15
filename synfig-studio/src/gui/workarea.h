@@ -234,8 +234,9 @@ private:
 
 	etl::handle<LockDucks> lock_ducks;
 
-	bool rotate_guide=false;//move to header neccessary gdn
+	bool rotate_guide = false;
 	bool from_ruler_event = false;
+	bool guide_highlighted = false;
 
 public:
 	/*
@@ -485,8 +486,6 @@ private:
 	bool on_hruler_event(GdkEvent* event);
 	bool on_vruler_event(GdkEvent* event);
 	void on_duck_selection_single(const etl::handle<Duck>& duck_guid);
-	void edit_guide_from_menu();
-	void set_ruler_angle();
 }; // END of class WorkArea
 
 
