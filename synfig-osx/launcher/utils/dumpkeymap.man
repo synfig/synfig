@@ -58,7 +58,7 @@
 //	used with fixed-point font.  The third argument is the annotation
 //	itself.  The block should be terminated with the `AE' macro.  For all
 //	roff interpreters which properly implement diversions, indentation, and
-//	tab stops, all anotations within the block are automatically aligned at
+//	tab stops, all annotations within the block are automatically aligned at
 //	the same horizontal position.  This position is guaranteed to be just
 //	to the right of the widest `AN' detail line.  For broken roff
 //	interpreters, such as `rman', the string of spaces from the second

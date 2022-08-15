@@ -1340,7 +1340,7 @@ Duckmatic::find_duck(synfig::Point point, synfig::Real radius, Duck::Type type)
 		}
 	}
 
-	// Priorization of duck selection when are in the same place.
+	// Prioritization of duck selection when are in the same place.
 	bool found(false);
 	if(ret_vector.size())
 	{
