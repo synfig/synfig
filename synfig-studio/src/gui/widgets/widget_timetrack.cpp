@@ -204,17 +204,14 @@ bool Widget_Timetrack::move_selected(synfig::Time delta_time)
 	model.set_before(type);
 	model.set_after(type);
 	std::vector<WaypointItem*> selection = waypoint_sd.get_selected_items(); //storing selected waypoint items
-	std::vector<std::set<synfig::Waypoint, std::less<synfig::UniqueID> >> accumilated_selection_set;
-	accumilated_selection_set.clear();
 
     for(int i =0 ; i<selection.size() ; i++) //iteratre through selection size
     {
 		std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set_new; //declaration
 		fetch_waypoints(*selection[i], waypoint_set_new); //setting up waypoint_set_new
 		std::set<synfig::Waypoint, std::less<synfig::UniqueID> >::const_iterator iter;
-		accumilated_selection_set.push_back(waypoint_set_new);
 
-		for(iter=accumilated_selection_set[i].begin();iter!=accumilated_selection_set[i].end();++iter)
+		for(iter=waypoint_set_new.begin();iter!=waypoint_set_new.end();++iter)
         {
 			synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Change Waypoint Group"));
 
@@ -377,10 +374,6 @@ Widget_Timetrack::ActionState Widget_Timetrack::get_action_state() const
 void Widget_Timetrack::set_action_state(Widget_Timetrack::ActionState action_state)
 {
 	waypoint_sd.set_action(action_state);
-}
-void Widget_Timetrack::set_interpolation(synfig::Interpolation type)
-{
-	waypoint_sd.set_widget_interp(type);
 }
 
 bool Widget_Timetrack::on_event(GdkEvent* event)
@@ -1251,11 +1244,6 @@ void Widget_Timetrack::WaypointSD::set_action(Widget_Timetrack::ActionState acti
 	action = action_state;
 }
 
-void Widget_Timetrack::WaypointSD::set_widget_interp(synfig::Interpolation type)
-{
-	widget.interpolate_selected(type);
-}
-// mod adham
 sigc::signal<void>& Widget_Timetrack::WaypointSD::signal_action_changed()
 {
 	return signal_action_changed_;

@@ -95,7 +95,6 @@ public:
 	static std::string get_action_state_name(ActionState action_state);
 	ActionState get_action_state() const;
 	void set_action_state(ActionState action_state);
-	void set_interpolation(synfig::Interpolation type);
 	sigc::signal<void>& signal_action_state_changed() { return signal_action_state_changed_; }
 
 protected:
@@ -141,7 +140,6 @@ private:
 		const synfig::Time& get_deltatime() const;
 		ActionState get_action() const;
 		void set_action(ActionState action_state);
-		void set_widget_interp(synfig::Interpolation type); //not patched yet
 		sigc::signal<void>& signal_action_changed();
 	protected:
 		synfig::Time deltatime;

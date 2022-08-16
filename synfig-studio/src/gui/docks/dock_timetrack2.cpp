@@ -233,74 +233,29 @@ void Dock_Timetrack2::setup_tool_palette()
 		action_button_map[tool_button->get_name()] = tool_button;
 		tool_item_group->add(*tool_button);
 	}
-    Gtk::RadioButtonGroup interpolation_group;
-    //button1
-	Gtk::ToolButton *clamped_button = manage(new Gtk::ToolButton(
-													*manage(new Gtk::Image(
-																Gtk::StockID("synfig-interpolation_type_clamped"),
-																Gtk::IconSize::from_name("synfig-small_icon_16x16") )),
-																"_Clamped" ));
-	clamped_button->signal_clicked().connect( [this](){
 
-		current_widget_timetrack->set_interpolation(synfig::INTERPOLATION_CLAMPED);
+	std::vector<std::string> stock_id{ "synfig-interpolation_type_clamped", "synfig-interpolation_type_tcb",
+								  "synfig-interpolation_type_const", "synfig-interpolation_type_ease" ,
+								  "synfig-interpolation_type_linear"};
+	std::vector<std::string> name{ "Clamped", "TCB" , "Constant" , "Ease In/Out" , "Linear"};
+	std::vector<synfig::Interpolation> interp_type{ synfig::INTERPOLATION_CLAMPED, synfig::INTERPOLATION_TCB,
+												  synfig::INTERPOLATION_CONSTANT, synfig::INTERPOLATION_HALT,
+												  synfig::INTERPOLATION_LINEAR};
+	//button1
+	for (int i=0; i<=4; i++) {
+		Gtk::ToolButton *tool_button = manage(new Gtk::ToolButton(
+														*manage(new Gtk::Image(
+																	Gtk::StockID(stock_id[i]),
+																	Gtk::IconSize::from_name("synfig-small_icon_16x16"))),
+																	_(name[i].c_str())));
+		tool_button->signal_clicked().connect( [this, interp_type, i](){
 
-	} );
-	tool_item_group->add(*clamped_button);
+			current_widget_timetrack->interpolate_selected(interp_type[i]);
 
-	//button2
-	Gtk::ToolButton *tcb_button = manage(new Gtk::ToolButton(
-													*manage(new Gtk::Image(
-																Gtk::StockID("synfig-interpolation_type_tcb"),
-																Gtk::IconSize::from_name("synfig-small_icon_16x16") )),
-																"_TCB" ));
+		});
+		tool_item_group->add(*tool_button);
+	}
 
-	tcb_button->signal_clicked().connect( [this](){
-
-		current_widget_timetrack->set_interpolation(synfig::INTERPOLATION_TCB);
-
-	} );
-
-	tool_item_group->add(*tcb_button);
-    //button3
-	Gtk::ToolButton *const_button = manage(new Gtk::ToolButton(
-													*manage(new Gtk::Image(
-																Gtk::StockID("synfig-interpolation_type_const"),
-																Gtk::IconSize::from_name("synfig-small_icon_16x16") )),
-																"_Constant" ));
-
-	const_button->signal_clicked().connect( [this](){
-
-		current_widget_timetrack->set_interpolation(synfig::INTERPOLATION_CONSTANT);
-
-	} );
-	tool_item_group->add(*const_button);
-
-    //button4
-	Gtk::ToolButton *ease_button = manage(new Gtk::ToolButton(
-													*manage(new Gtk::Image(
-																Gtk::StockID("synfig-interpolation_type_ease"),
-																Gtk::IconSize::from_name("synfig-small_icon_16x16") )),
-																"_Ease In/Out" ));
-	ease_button->signal_clicked().connect( [this](){
-
-			current_widget_timetrack->set_interpolation(synfig::INTERPOLATION_HALT);
-    } );
-	tool_item_group->add(*ease_button);
-
-    //button5
-	Gtk::ToolButton *linear_button = manage(new Gtk::ToolButton(
-													*manage(new Gtk::Image(
-																Gtk::StockID("synfig-interpolation_type_linear"),
-																Gtk::IconSize::from_name("synfig-small_icon_16x16") )),
-																"_Linear" ));
-	tool_item_group->add(*linear_button);
-	linear_button->signal_clicked().connect( [this](){
-
-		current_widget_timetrack->set_interpolation(synfig::INTERPOLATION_LINEAR);
-
-	} );
-
-   // Gtk::RadioToolButton::RadioToolButton(Gtk::RadioToolButton::Group&, const Gtk::StockID&)
 	tool_palette.add(*tool_item_group);
 	tool_palette.set_sensitive(true);
 }
