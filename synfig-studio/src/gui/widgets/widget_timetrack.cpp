@@ -205,10 +205,10 @@ bool Widget_Timetrack::move_selected(synfig::Time delta_time)
 	model.set_after(type);
 	std::vector<WaypointItem*> selection = waypoint_sd.get_selected_items(); //storing selected waypoint items
 
-    for(int i =0 ; i<selection.size() ; i++) //iteratre through selection size
+	for(int i =0 ; i<selection.size() ; i++) //iteratre through selected waypoint items to fetch the set and apply the interpolation type
     {
-		std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set_new; //declaration
-		fetch_waypoints(*selection[i], waypoint_set_new); //setting up waypoint_set_new
+		std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set_new;
+		fetch_waypoints(*selection[i], waypoint_set_new);
 		std::set<synfig::Waypoint, std::less<synfig::UniqueID> >::const_iterator iter;
 
 		for(iter=waypoint_set_new.begin();iter!=waypoint_set_new.end();++iter)
