@@ -192,7 +192,7 @@ ffmpeg_trgt::init(ProgressCallback* cb = nullptr)
 #if defined(WIN32_PIPE_TO_PROCESSES)
 	// Windows always have ffmpeg
 	std::string binary_path = etl::dirname(synfig::get_binary_path(".")) + "/ffmpeg.exe";
-	if (FileSystemNative::instance()->is_file(ffmpeg_binary_path.c_str())) {
+	if (FileSystemNative::instance()->is_file(binary_path)) {
 		ffmpeg_binary_path = "\"" + binary_path + "\"";
 	}
 #else
