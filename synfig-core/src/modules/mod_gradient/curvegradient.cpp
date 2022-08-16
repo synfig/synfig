@@ -464,10 +464,14 @@ CurveGradient::calc_supersample(const synfig::Point &/*x*/, Real pw, Real /*ph*/
 synfig::Layer::Handle
 CurveGradient::hit_check(synfig::Context context, const synfig::Point &point)const
 {
+	bool check_myself_first;
+	auto layer = basic_hit_check(context, point, check_myself_first);
+
+	if (!check_myself_first)
+		return layer;
+
 	if(get_blend_method()==Color::BLEND_STRAIGHT && get_amount()>=0.5)
 		return const_cast<CurveGradient*>(this);
-	if(get_amount()==0.0)
-		return context.hit_check(point);
 	if((get_blend_method()==Color::BLEND_STRAIGHT || get_blend_method()==Color::BLEND_COMPOSITE|| get_blend_method()==Color::BLEND_ONTO) && color_func(point).get_a()>0.5)
 		return const_cast<CurveGradient*>(this);
 	return context.hit_check(point);

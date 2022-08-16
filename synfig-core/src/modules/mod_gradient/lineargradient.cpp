@@ -111,10 +111,14 @@ LinearGradient::calc_supersample(const Params &params, synfig::Real pw, synfig::
 synfig::Layer::Handle
 LinearGradient::hit_check(synfig::Context context, const synfig::Point &point)const
 {
+	bool check_myself_first;
+	auto layer = basic_hit_check(context, point, check_myself_first);
+
+	if (!check_myself_first)
+		return layer;
+
 	if(get_blend_method()==Color::BLEND_STRAIGHT && get_amount()>=0.5)
 		return const_cast<LinearGradient*>(this);
-	if(get_amount()==0.0)
-		return context.hit_check(point);
 
 	Params params;
 	fill_params(params);
