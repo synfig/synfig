@@ -31,7 +31,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <brushlib/brushlib.hpp>
-#include <ETL/angle> // we need PI
+#include <synfig/angle.h> // we need PI
 #include <synfig/surface.h>
 
 /* === M A C R O S ========================================================= */
@@ -71,7 +71,7 @@ namespace brushlib {
 		int offset_x;
 		int offset_y;
 
-		explicit SurfaceWrapper(surface_type *surface = NULL):
+		explicit SurfaceWrapper(surface_type* surface = nullptr):
 			surface(surface),
 			extra_left(0), extra_right(0),
 			extra_top(0), extra_bottom(0),
@@ -95,7 +95,7 @@ namespace brushlib {
 			float aspect_ratio = 1.0, float angle = 0.0,
 			float /* lock_alpha */ = 0.0
 		) {
-			if (surface == NULL) return false;
+			if (!surface) return false;
 
 			x += (float)offset_x;
 			y += (float)offset_y;
@@ -185,7 +185,7 @@ namespace brushlib {
 			float /* radius */,
 			float * color_r, float * color_g, float * color_b, float * color_a
 		) {
-			if (surface == NULL) {
+			if (!surface) {
 				*color_r = 0.f; *color_g = 0.f; *color_b = 0.f; *color_a = 0.f;
 				return;
 			}

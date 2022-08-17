@@ -60,7 +60,7 @@ gl::Buffers::Buffer::Buffer(Context &context, GLenum target, GLenum usage, int s
 	Context::Lock lock(context);
 	glGenBuffers(1, &id);
 	glBindBuffer(target, id);
-	glBufferData(target, size, NULL, usage);
+	glBufferData(target, size, nullptr, usage);
 	glBindBuffer(target, 0);
 }
 
@@ -76,8 +76,8 @@ gl::Buffers::Buffer::Chunk*
 gl::Buffers::Buffer::alloc(int size)
 {
 	// find empty chunk
-	Chunk *curr = NULL;
-	Chunk *next = first;
+	Chunk* curr = nullptr;
+	Chunk* next = first;
 	int offset = 0;
 	while(true) {
 		offset = curr ? curr->offset + curr->size : 0;

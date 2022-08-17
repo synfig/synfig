@@ -69,8 +69,8 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Bone, RELEASE_VERSION_0_62_00, "bone", "Bone")
-REGISTER_VALUENODE(ValueNode_Bone_Root, RELEASE_VERSION_0_62_00, "bone_root", "Root Bone")
+REGISTER_VALUENODE(ValueNode_Bone, RELEASE_VERSION_0_62_00, "bone", N_("Bone"))
+REGISTER_VALUENODE(ValueNode_Bone_Root, RELEASE_VERSION_0_62_00, "bone_root", N_("Root Bone"))
 
 static ValueNode_Bone::CanvasMap canvas_map;
 static int bone_counter;
@@ -187,14 +187,14 @@ ValueNode_Bone::get_ordered_bones(etl::handle<const Canvas> canvas)
 
 				// erase (user,bone) from uses
 				if (getenv("SYNFIG_DEBUG_ORDER_BONES_FOR_SAVE_CANVAS")) printf("%s:%d trying to erase - searching %zd\n", __FILE__, __LINE__, uses.count(user));
-				std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle>::iterator begin2(uses.lower_bound(user));
 				std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle>::iterator end2(uses.upper_bound(user));
-				std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle>::iterator iter2;
-				for (iter2 = begin2; iter2 != end2; iter2++)
+				bool found = false;
+				for (auto iter2 = uses.lower_bound(user); iter2 != end2; ++iter2)
 				{
 					if (iter2->second == bone)
 					{
 						uses.erase(iter2);
+						found = true;
 						if (getenv("SYNFIG_DEBUG_ORDER_BONES_FOR_SAVE_CANVAS")) printf("%s:%d found it\n", __FILE__, __LINE__);
 						break;
 					}
@@ -203,7 +203,7 @@ ValueNode_Bone::get_ordered_bones(etl::handle<const Canvas> canvas)
 						if (getenv("SYNFIG_DEBUG_ORDER_BONES_FOR_SAVE_CANVAS")) printf("no\n");
 					}
 				}
-				if (iter2 == end2)
+				if (!found)
 				{
 					if (getenv("SYNFIG_DEBUG_ORDER_BONES_FOR_SAVE_CANVAS")) printf("%s:%d didn't find it?!?\n", __FILE__, __LINE__);
 					assert(0);
@@ -641,19 +641,24 @@ ValueNode_Bone::get_children_vocab_vfunc() const
 	return ret;
 }
 
+ValueNode_Bone::LooseHandle
+ValueNode_Bone::find(const String& name)const
+{
+	return find(name, get_root_canvas());
+}
 
 ValueNode_Bone::LooseHandle
-ValueNode_Bone::find(String name)const
+ValueNode_Bone::find(const String& name, etl::loose_handle<Canvas> canvas)
 {
 	// printf("%s:%d finding '%s' : ", __FILE__, __LINE__, name.c_str());
 
-	BoneMap bone_map(canvas_map[get_root_canvas()]);
+	const BoneMap& bone_map(canvas_map[canvas]);
 
-	for (ValueNode_Bone::BoneMap::iterator iter =  bone_map.begin(); iter != bone_map.end(); iter++)
-		if ((*iter->second->get_link("name"))(0).get(String()) == name)
+	for (const auto& item : bone_map)
+		if ((*item.second->get_link("name"))(0).get(String()) == name)
 		{
 			// printf("yes\n");
-			return iter->second;
+			return item.second;
 		}
 
 	// printf("no\n");
@@ -713,7 +718,7 @@ ValueNode_Bone::unique_name(String name)const
 }
 
 // checks whether the current object is an ancestor of the supplied bone
-// returns a handle to NULL if it isn't
+// returns a handle to nullptr if it isn't
 // if there's a loop in the ancestry it returns a handle to the valuenode where the loop is detected
 // otherwise it returns the current object
 ValueNode_Bone::ConstHandle
@@ -851,13 +856,12 @@ ValueNode_Bone::get_bones_affected_by(ValueNode::Handle value_node)
 		for (std::set<const Node*>::iterator iter = current_nodes.begin(); iter != current_nodes.end(); iter++, count++)
 		{
 			// loop through the parents of each node in current_nodes
-			std::set<Node*> node_parents((*iter)->parent_set);
 			if (debug) printf("%s:%d node %d %p (%s) has %zd parents\n",
-							  __FILE__, __LINE__, count, *iter, (*iter)->get_string().c_str(), node_parents.size());
-			int count2 = 0;
-			for (std::set<Node*>::iterator iter2 = node_parents.begin(); iter2 != node_parents.end(); iter2++, count2++)
+							  __FILE__, __LINE__, count, *iter, (*iter)->get_string().c_str(), (*iter)->parent_count());
+			auto bones = (*iter)->find_all_parents_of_type<ValueNode_Bone>();
+			for (ValueNode_Bone::Handle& bone : bones)
 			{
-				Node* node(*iter2);
+				const Node* node = bone.get();
 				// if (debug) printf("%s:%d parent %d: %lx (%s)\n", __FILE__, __LINE__, count2, uintptr_t(node), node->get_string().c_str());
 				// for each parent we've not already seen
 				if (!seen.count(node))
@@ -867,10 +871,9 @@ ValueNode_Bone::get_bones_affected_by(ValueNode::Handle value_node)
 					// add it to the list of new nodes to loop though in the next iteration
 					new_nodes.insert(node);
 					// and if it's a ValueNode_Bone, add it to the set to be returned
-					if (dynamic_cast<ValueNode_Bone*>(node))
-						ret.insert(dynamic_cast<ValueNode_Bone*>(node));
+					ret.insert(bone);
 				}
-			}
+			};
 		}
 		current_nodes = new_nodes;
 		new_nodes.clear();

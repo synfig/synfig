@@ -226,8 +226,8 @@ public:
 	//! Returns \true if the Value Node has an ID (has been exported)
 	bool is_exported()const { return !get_id().empty(); }
 
-	//! Check recursively if \value_node_dest is a descendant of the Value Node
-	bool is_descendant(ValueNode::Handle value_node_dest);
+	//! Check recursively if \c value_node_dest is a descendant of this Value Node (or this value node itself)
+	bool is_ancestor_of(ValueNode::Handle value_node_dest) const;
 
 	//! Returns the type of the ValueNode
 	Type& get_type()const { return *type; }

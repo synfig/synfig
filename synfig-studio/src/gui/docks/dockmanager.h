@@ -32,8 +32,7 @@
 
 #include <list>
 #include <map>
-
-#include <ETL/smart_ptr>
+#include <memory>
 
 #include <gtkmm/widget.h>
 
@@ -65,7 +64,7 @@ class DockManager : public sigc::trackable
 	sigc::signal<void,Dockable*> signal_dockable_registered_;
 	sigc::signal<void,Dockable*> signal_dockable_unregistered_;
 
-	etl::smart_ptr<DockSettings> dock_settings;
+	std::shared_ptr<DockSettings> dock_settings;
 
 private:
 	static std::map<Gtk::Container*, bool> containers_to_remove_;

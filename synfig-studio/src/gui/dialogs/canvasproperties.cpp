@@ -120,17 +120,17 @@ CanvasProperties::CanvasProperties(Gtk::Window& parent,etl::handle<synfigapp::Ca
 	canvas_interface_->signal_rend_desc_changed().connect(sigc::mem_fun(*this,&studio::CanvasProperties::refresh));
 	canvas_interface_->signal_id_changed().connect(sigc::mem_fun(*this,&studio::CanvasProperties::refresh));
 
-	Gtk::Button *apply_button(manage(new class Gtk::Button(Gtk::StockID("gtk-apply"))));
+	Gtk::Button *apply_button(manage(new Gtk::Button(_("_Apply"), true)));
 	apply_button->show();
 	add_action_widget(*apply_button,1);
 	apply_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasProperties::on_apply_pressed));
 
-	Gtk::Button *cancel_button(manage(new class Gtk::Button(Gtk::StockID("gtk-close"))));
+	Gtk::Button *cancel_button(manage(new Gtk::Button(_("_Close"), true)));
 	cancel_button->show();
 	add_action_widget(*cancel_button,0);
 	cancel_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasProperties::on_cancel_pressed));
 
-	Gtk::Button *ok_button(manage(new class Gtk::Button(Gtk::StockID("gtk-ok"))));
+	Gtk::Button *ok_button(manage(new Gtk::Button(_("_OK"), true)));
 	ok_button->show();
 	add_action_widget(*ok_button,2);
 	ok_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::CanvasProperties::on_ok_pressed));
@@ -165,12 +165,12 @@ CanvasProperties::CanvasProperties(Gtk::Window& parent,etl::handle<synfigapp::Ca
 	//Gtk::Table *table=manage(new Gtk::Table());
 	//table->attach(*scrolledwindow, 0, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	//Gtk::Button* button_add(manage(new Gtk::Button(Gtk::StockID("gtk-add"))));
+	//Gtk::Button* button_add(manage(new Gtk::Button("gtk-add")));
 	//button_add->show();
 	//button_add->signal_clicked().connect(sigc::mem_fun(*this,&CanvasProperties::on_button_meta_data_add));
 	//table->attach(*button_add, 0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
 
-	//Gtk::Button* button_delete(manage(new Gtk::Button(Gtk::StockID("gtk-delete"))));
+	//Gtk::Button* button_delete(manage(new Gtk::Button("_Delete")));
 	//button_delete->show();
 	//button_delete->signal_clicked().connect(sigc::mem_fun(*this,&CanvasProperties::on_button_meta_data_delete));
 	//table->attach(*button_delete, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);

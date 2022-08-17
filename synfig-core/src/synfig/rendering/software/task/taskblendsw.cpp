@@ -145,10 +145,10 @@ public:
 					{
 						// mark unfilled regions
 						fill[0] = fill[1] = fill[2] = fill[3] = ra;
-						fill[0].maxx = fill[2].minx = fill[3].minx = std::max(ra.minx, std::min(ra.maxx, rb.minx));
-						fill[1].minx = fill[2].maxx = fill[3].maxx = std::max(ra.minx, std::min(ra.maxx, rb.maxx));
-						fill[2].maxy = std::max(ra.miny, std::min(ra.maxy, rb.miny));
-						fill[3].miny = std::max(ra.miny, std::min(ra.maxy, rb.maxy));
+						fill[0].maxx = fill[2].minx = fill[3].minx = synfig::clamp(rb.minx, ra.minx, ra.maxx);
+						fill[1].minx = fill[2].maxx = fill[3].maxx = synfig::clamp(rb.maxx, ra.minx, ra.maxx);
+						fill[2].maxy = synfig::clamp(rb.miny, ra.miny, ra.maxy);
+						fill[3].miny = synfig::clamp(rb.maxy, ra.miny, ra.maxy);
 					}
 				}
 			}

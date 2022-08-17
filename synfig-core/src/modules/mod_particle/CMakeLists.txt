@@ -4,7 +4,7 @@ add_library(mod_particle MODULE
         "${CMAKE_CURRENT_LIST_DIR}/plant.cpp"
 )
 
-target_link_libraries(mod_particle synfig)
+target_link_libraries(mod_particle libsynfig)
 
 install (
     TARGETS mod_particle

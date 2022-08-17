@@ -65,7 +65,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dock_History::Dock_History():
-	Dock_CanvasSpecific("history",_("History"),Gtk::StockID("synfig-history")),
+	Dock_CanvasSpecific("history",_("History"),"history_icon"),
 	action_group(Gtk::ActionGroup::create("action_group_dock_history"))
 {
 	// Make History toolbar small for space efficiency

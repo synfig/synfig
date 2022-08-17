@@ -126,7 +126,7 @@ protected:
 		{ return false; }
 	//! Implementations of this function should to work quick
 	virtual const Color* get_pixels_pointer_vfunc() const
-		{ return NULL; }
+		{ return nullptr; }
 	virtual bool get_pixels_vfunc(Color *dest) const;
 
 public:

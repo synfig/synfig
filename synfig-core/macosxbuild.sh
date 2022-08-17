@@ -8,7 +8,6 @@ export PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig:/usr/lib/pkgconfig:/usr/X11R6/lib/p
 OPTIONS="--prefix=$PREFIX"
 #OPTIONS="$OPTIONS --enable-optimization=2"
 OPTIONS="$OPTIONS --enable-optimization=3"
-#OPTIONS="$OPTIONS --enable-g5opt"
 #OPTIONS="$OPTIONS --disable-optimization"
 OPTIONS="$OPTIONS --disable-debug"
 #OPTIONS="$OPTIONS --with-vimage"

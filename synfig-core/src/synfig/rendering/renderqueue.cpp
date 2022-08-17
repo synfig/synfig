@@ -161,7 +161,7 @@ RenderQueue::process(int thread_index)
 		#ifdef DEBUG_TASK_SURFACE
 		debug::DebugSurface::save_to_file(
 			task->target_surface,
-			etl::strprintf(
+			strprintf(
 				"task-%05d-%04d-%05d",
 				task->renderer_data.batch_index,
 				task->renderer_data.index,
@@ -288,7 +288,7 @@ RenderQueue::remove_if_orphan(const Task::Handle &task, bool in_queue)
 	if (!task)
 		return true;
 
-	TaskSet *tasks = NULL;
+	TaskSet* tasks = nullptr;
 	TaskSet::iterator ii;
 	if (!in_queue) {
 		bool mt = task->get_allow_multithreading();

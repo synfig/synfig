@@ -68,13 +68,13 @@ using namespace studio;
 
 
 Dock_Toolbox::Dock_Toolbox():
-	Dockable("toolbox",_("Toolbox"),Gtk::StockID("synfig-about"))
+	Dockable("toolbox",_("Toolbox"),"about_icon")
 {
 	set_use_scrolled(false);
 	set_size_request(-1,-1);
 
 	tool_item_group = manage(new class Gtk::ToolItemGroup());
-	gtk_tool_item_group_set_label(tool_item_group->gobj(), NULL);
+	gtk_tool_item_group_set_label(tool_item_group->gobj(), nullptr);
 
 	Gtk::ToolPalette *palette = manage(new Gtk::ToolPalette());
 	palette->add(*tool_item_group);
@@ -122,8 +122,8 @@ Dock_Toolbox::~Dock_Toolbox()
 	//studio::App::cb.task(_("Toolbox: I was nailed!"));
 	//studio::App::quit();
 
-	if(studio::App::dock_toolbox==this)
-		studio::App::dock_toolbox=NULL;
+	if (studio::App::dock_toolbox == this)
+		studio::App::dock_toolbox = nullptr;
 }
 
 void Dock_Toolbox::write_layout_string(std::string& params) const

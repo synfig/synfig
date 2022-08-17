@@ -165,8 +165,8 @@ bool
 TimeModel::set_time_silent(Time time, bool *is_play_time_changed)
 {
 	time = round_time(time);
-	Time t = std::max(lower, std::min(upper, time));
-	Time pt = std::max(play_bounds_lower, std::min(play_bounds_upper, t));
+	Time t = synfig::clamp(time, lower, upper);
+	Time pt = synfig::clamp(t, play_bounds_lower, play_bounds_upper);
 
 	if (this->play_time != pt) {
 		this->play_time = pt;
@@ -201,7 +201,7 @@ TimeModel::set_bounds_silent(Time lower, Time upper, float fps)
 
 	set_visible_bounds_silent(visible_lower, visible_upper);
 	set_play_bounds_silent(play_bounds_lower, play_bounds_upper, play_bounds_enabled, play_repeat);
-	set_time_silent(time, NULL);
+	set_time_silent(time, nullptr);
 	return true;
 }
 
@@ -212,13 +212,13 @@ TimeModel::set_visible_bounds_silent(Time lower, Time upper)
 	Time duration = std::max(Time(fps ? 1.0/fps : 0.0), upper - lower);
 
 	// this->lower bound have priority when this->upper < this->lower
-	lower = std::max(this->lower, std::min(this->upper, lower));
-	upper = std::max(lower, std::min(this->upper, upper));
+	lower = synfig::clamp(lower, this->lower, this->upper);
+	upper = synfig::clamp(upper, lower, this->upper);
 
 	if (duration > Time() && this->lower < this->upper) {
 		Time t = lower + duration;
 		if (t > upper)
-			upper = std::max(lower, std::min(this->upper, t));
+			upper = synfig::clamp(t, lower, this->upper);
 		t = upper - duration;
 		if (t < lower)
 			lower = std::max(this->lower, t);
@@ -234,15 +234,15 @@ TimeModel::set_visible_bounds_silent(Time lower, Time upper)
 bool
 TimeModel::set_play_bounds_silent(Time lower, Time upper, bool enabled, bool repeat) {
 	// this->lower bound have priority when this->upper < this->lower
-	lower = std::max(this->lower, std::min(this->upper, round_time(lower)));
-	upper = std::max(lower, std::min(this->upper, round_time(upper)));
+	lower = synfig::clamp(round_time(lower), this->lower, this->upper);
+	upper = synfig::clamp(round_time(upper), lower, this->upper);
 
 	// try to keep minimum two frame range
 	if (fps && this->lower < this->upper) {
 		Time step = Time(2.0/fps);
 		Time t = round_time(lower + step);
 		if (t > upper)
-			upper = std::max(lower, std::min(this->upper, t));
+			upper = synfig::clamp(t, lower, this->upper);
 		t = round_time(upper - step);
 		if (t < lower)
 			lower = std::max(this->lower, t);
@@ -256,7 +256,7 @@ TimeModel::set_play_bounds_silent(Time lower, Time upper, bool enabled, bool rep
 	play_bounds_upper = upper;
 	play_bounds_enabled = enabled;
 	play_repeat = repeat;
-	set_time_silent(time, NULL);
+	set_time_silent(time, nullptr);
 	return true;
 }
 
@@ -331,5 +331,5 @@ TimeModel::get_page_increment() const
 {
 	Time s = get_step_increment();
 	Time p = get_page_size();
-	return std::max(s, std::min(p*0.8, p - s));
+	return synfig::clamp(p - s, s, p*0.8);
 }

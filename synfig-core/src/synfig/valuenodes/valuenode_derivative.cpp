@@ -39,8 +39,6 @@
 #include <synfig/valuenode_registry.h>
 #include <synfig/vector.h>
 
-#include <ETL/misc>
-
 #endif
 
 /* === U S I N G =========================================================== */
@@ -141,7 +139,7 @@ using namespace synfig;
 				)
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Derivative, RELEASE_VERSION_1_0, "derivative", "Derivative")
+REGISTER_VALUENODE(ValueNode_Derivative, RELEASE_VERSION_1_0, "derivative", N_("Derivative"))
 
 /* === P R O C E D U R E S ================================================= */
 

@@ -317,7 +317,7 @@ StateNormal_Context::refresh_tool_options()
 	App::dialog_tool_options->clear();
 	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Transform Tool"));
-	App::dialog_tool_options->set_name("normal");
+	App::dialog_tool_options->set_icon("tool_normal_icon");
 }
 
 
@@ -338,7 +338,7 @@ DuckDrag_Combo::DuckDrag_Combo():
 	bad_drag(),
 	move_only(),
 	is_moving(false),
-	canvas_view_(NULL),
+	canvas_view_(nullptr),
 	scale(false),
 	rotate(false),
 	constrain(false) // Lock aspect for scale
@@ -689,7 +689,7 @@ StateNormal_Context::event_key_down_handler(const Smach::event& x)
 {
 	// event.modifier yet not set when ctrl (or alt or shift)
 	// key pressed event handled. So we need to check this keys manually.
-	// We may encountred some cosmetic problems with mouse-cursor image
+	// We may encounter some cosmetic problems with mouse-cursor image
 	// if user will redefine modifier keys.
 	// Anyway processing of keys Ctrl+Right, Ctrl+Left etc will works fine.
 	// see 'xmodmap' command
@@ -718,7 +718,7 @@ StateNormal_Context::event_key_down_handler(const Smach::event& x)
 		set_shift_pressed(event.modifier&GDK_SHIFT_MASK);
 		break;
 	}
-	return Smach::RESULT_REJECT;
+	return Smach::RESULT_OK;
 }
 
 Smach::event_result
@@ -747,7 +747,7 @@ StateNormal_Context::event_key_up_handler(const Smach::event& x)
 	default:
 		break;
 	}
-	return Smach::RESULT_REJECT;
+	return Smach::RESULT_OK;
 }
 
 Smach::event_result

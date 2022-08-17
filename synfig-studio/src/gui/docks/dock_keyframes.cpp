@@ -61,7 +61,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dock_Keyframes::Dock_Keyframes():
-	Dock_CanvasSpecific("keyframes", _("Keyframes"),Gtk::StockID("synfig-keyframes")),
+	Dock_CanvasSpecific("keyframes", _("Keyframes"),"keyframe_icon"),
 	keyframe_action_manager(new KeyframeActionManager())
 {
 	// Make Keyframes toolbar small for space efficiency

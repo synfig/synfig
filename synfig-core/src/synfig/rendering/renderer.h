@@ -123,13 +123,13 @@ private:
 	void log(
 		const String &logfile,
 		const Task::Handle &task,
-		const Optimizer::RunParams* optimization_stack = NULL,
+		const Optimizer::RunParams* optimization_stack = nullptr,
 		int level = 0 ) const;
 	void log(
 		const String &logfile,
 		const Task::List &list,
 		const String &name = String(),
-		const Optimizer::RunParams* optimization_stack = NULL ) const;
+		const Optimizer::RunParams* optimization_stack = nullptr ) const;
 
 	static void initialize_renderers();
 	static void deinitialize_renderers();

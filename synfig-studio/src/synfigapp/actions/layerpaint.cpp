@@ -61,18 +61,18 @@ ACTION_SET_VERSION(Action::LayerPaint,"0.0");
 
 /* === G L O B A L S ======================================================= */
 
-Action::LayerPaint::PaintStroke* Action::LayerPaint::PaintStroke::first = NULL;
-Action::LayerPaint::PaintStroke* Action::LayerPaint::PaintStroke::last = NULL;
+Action::LayerPaint::PaintStroke* Action::LayerPaint::PaintStroke::first = nullptr;
+Action::LayerPaint::PaintStroke* Action::LayerPaint::PaintStroke::last = nullptr;
 
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
 
 Action::LayerPaint::PaintStroke::PaintStroke():
-	prev(NULL),
-	next(NULL),
-	prevSameLayer(NULL),
-	nextSameLayer(NULL),
+	prev(nullptr),
+	next(nullptr),
+	prevSameLayer(nullptr),
+	nextSameLayer(nullptr),
 	prepared(false),
 	applied(false)
 {
@@ -82,24 +82,31 @@ Action::LayerPaint::PaintStroke::~PaintStroke()
 {
 	if (prepared)
 	{
-		if (nextSameLayer != NULL)
+		if (nextSameLayer)
 		{
-			if (prevSameLayer == NULL)
+			if (!prevSameLayer)
 				paint_self(nextSameLayer->surface);
 			else
 				nextSameLayer->points.insert(nextSameLayer->points.begin(), points.begin(), points.end());
 			nextSameLayer->prevSameLayer = prevSameLayer;
 		}
-		if (prevSameLayer != NULL) prevSameLayer->nextSameLayer = nextSameLayer;
-		if (prev == NULL) first = next; else prev->next = next;
-		if (next == NULL) last = prev; else next->prev = prev;
+		if (prevSameLayer)
+			prevSameLayer->nextSameLayer = nextSameLayer;
+		if (!prev)
+			first = next;
+		else
+			prev->next = next;
+		if (!next)
+			last = prev;
+		else
+			next->prev = prev;
 	}
 }
 
 void
 Action::LayerPaint::PaintStroke::paint_prev(synfig::Surface &surface)
 {
-	if (prevSameLayer == NULL) {
+	if (!prevSameLayer) {
 		surface = this->surface;
 		return;
 	}
@@ -137,8 +144,8 @@ Action::LayerPaint::PaintStroke::add_point_and_apply(const PaintPoint &point)
 {
 	assert(prepared);
 	assert(applied || points.empty());
-	assert(prevSameLayer == NULL || prevSameLayer->applied);
-	assert(nextSameLayer == NULL);
+	assert(!prevSameLayer || prevSameLayer->applied);
+	assert(!nextSameLayer);
 
 	if (points.empty()) reset(point);
 	points.push_back(point);
@@ -191,18 +198,21 @@ Action::LayerPaint::PaintStroke::prepare()
 	assert(!prepared);
 
 	prev = last; last = this;
-	if (prev == NULL) first = this; else prev->next = this;
+	if (!prev)
+		first = this;
+	else
+		prev->next = this;
 
-	for(PaintStroke *p = prev; p != NULL; p = p->prev)
+	for(PaintStroke* p = prev; p; p = p->prev)
 		if (p->layer == layer)
 		{
-			assert(p->nextSameLayer == NULL);
+			assert(!p->nextSameLayer);
 			prevSameLayer = p;
 			p->nextSameLayer = this;
 			break;
 		}
 
-	if (prevSameLayer == NULL) {
+	if (!prevSameLayer) {
 		rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer->rendering_surface);
 		if (lock) surface = lock->get_surface();
 	}

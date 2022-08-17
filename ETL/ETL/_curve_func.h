@@ -58,7 +58,7 @@ struct affine_combo
 };
 
 template <class T, class K=float>
-struct distance_func : public std::binary_function<T, T, K>
+struct distance_func
 {
 	K operator()(const T &a,const T &b)const
 	{

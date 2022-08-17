@@ -34,6 +34,8 @@
 #	include <config.h>
 #endif
 
+#include <ETL/stringf>
+
 #include <synfig/general.h>
 
 #include "instance.h"
@@ -226,7 +228,7 @@ Instance::import_external_canvas(Canvas::Handle canvas, std::map<Canvas*, Canvas
 				continue;
 			}
 		} else {
-			imported[sub_canvas.get()] = NULL;
+			imported[sub_canvas.get()] = nullptr;
 
 			// generate name
 			std::string fname = filename_sans_extension(basename(sub_canvas->get_file_name()));

@@ -35,10 +35,6 @@
 #endif
 
 #include "toggleducksdial.h"
-
-#include <gtkmm/image.h>
-#include <gtkmm/stock.h>
-
 #include <gui/localization.h>
 
 #endif
@@ -54,15 +50,23 @@ using namespace studio;
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
+static void
+init_label_button(Gtk::ToggleToolButton &button, const std::string& icon_name, const std::string& label, const std::string& tooltip)
+{
+	button.set_label(label);
+	button.set_tooltip_text(tooltip);
+	button.set_icon_name(icon_name);
+	button.show();
+}
 
 ToggleDucksDial::ToggleDucksDial(const Gtk::IconSize &size)
 {
-	init_label_button(ducks_position, size, "synfig-toggle_duck_position", _("Position handles"), _("Toggle position handles"));
-	init_label_button(ducks_vertex,   size, "synfig-toggle_duck_vertex",   _("Vertex handles"),   _("Toggle vertex handles"));
-	init_label_button(ducks_tangent,  size, "synfig-toggle_duck_tangent",  _("Tangent handles"),  _("Toggle tangent handles"));
-	init_label_button(ducks_radius,   size, "synfig-toggle_duck_radius",   _("Radius handles"),   _("Toggle radius handles"));
-	init_label_button(ducks_width,    size, "synfig-toggle_duck_width",    _("Width handles"),    _("Toggle width handles"));
-	init_label_button(ducks_angle,    size, "synfig-toggle_duck_angle",    _("Angle handles"),    _("Toggle angle handles"));
+	init_label_button(ducks_position, "duck_position_icon", _("Position handles"), _("Toggle position handles"));
+	init_label_button(ducks_vertex,   "duck_vertex_icon",   _("Vertex handles"),   _("Toggle vertex handles"));
+	init_label_button(ducks_tangent,  "duck_tangent_icon",  _("Tangent handles"),  _("Toggle tangent handles"));
+	init_label_button(ducks_radius,   "duck_radius_icon",   _("Radius handles"),   _("Toggle radius handles"));
+	init_label_button(ducks_width,    "duck_width_icon",    _("Width handles"),    _("Toggle width handles"));
+	init_label_button(ducks_angle,    "duck_angle_icon",    _("Angle handles"),    _("Toggle angle handles"));
 }
 
 void
@@ -88,22 +92,6 @@ ToggleDucksDial::remove_from_toolbar(Gtk::Toolbar &toolbar)
 	toolbar.remove(ducks_radius);
 	toolbar.remove(ducks_width);
 	toolbar.remove(ducks_angle);
-}
-
-void
-ToggleDucksDial::init_label_button(Gtk::ToggleToolButton &button, Gtk::IconSize iconsize, const char *stockid, const char *label, const char *tooltip)
-{
-	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), iconsize));
-	icon->set_margin_start(0);
-	icon->set_margin_end(0);
-	icon->set_margin_top(0);
-	icon->set_margin_bottom(0);
-	icon->show();
-
-	button.set_label(label);
-	button.set_tooltip_text(tooltip);
-	button.set_icon_widget(*icon);
-	button.show();
 }
 
 void

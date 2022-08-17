@@ -53,7 +53,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_TwoTone, RELEASE_VERSION_0_61_06, "twotone", "Two-Tone")
+REGISTER_VALUENODE(ValueNode_TwoTone, RELEASE_VERSION_0_61_06, "twotone", N_("Two-Tone"))
 
 /* === P R O C E D U R E S ================================================= */
 

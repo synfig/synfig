@@ -90,7 +90,7 @@ public:
     for (int i=0; i<BRUSH_SETTINGS_COUNT; i++) {
       delete settings[i];
     }
-    g_rand_free (rng); rng = NULL;
+    g_rand_free(rng); rng = nullptr;
   }
 
   void reset()

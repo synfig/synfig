@@ -95,7 +95,7 @@ public:
 		if (!ldst)
 			return false;
 
-		return context.accelerated_render(&ldst->get_surface(), 4, desc, NULL);
+		return context.accelerated_render(&ldst->get_surface(), 4, desc, nullptr);
 	}
 };
 

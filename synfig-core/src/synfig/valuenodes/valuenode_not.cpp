@@ -51,7 +51,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Not, RELEASE_VERSION_0_62_00, "not", "NOT")
+REGISTER_VALUENODE(ValueNode_Not, RELEASE_VERSION_0_62_00, "not", N_("NOT"))
 
 /* === P R O C E D U R E S ================================================= */
 

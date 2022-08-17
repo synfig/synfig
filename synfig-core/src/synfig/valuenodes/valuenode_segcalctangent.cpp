@@ -42,7 +42,6 @@
 #include <synfig/valuenode_registry.h>
 #include <synfig/exception.h>
 #include <ETL/hermite>
-#include <ETL/calculus>
 #include <synfig/segment.h>
 
 #endif
@@ -55,7 +54,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_SegCalcTangent, RELEASE_VERSION_0_61_06, "segcalctangent", "Segment Tangent")
+REGISTER_VALUENODE(ValueNode_SegCalcTangent, RELEASE_VERSION_0_61_06, "segcalctangent", N_("Segment Tangent"))
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -93,9 +92,8 @@ ValueNode_SegCalcTangent::operator()(Time t)const
 	Segment segment((*segment_)(t).get(Segment()));
 
 	etl::hermite<Vector> curve(segment.p1,segment.p2,segment.t1,segment.t2);
-	etl::derivative< etl::hermite<Vector> > deriv(curve);
 
-	return deriv((*amount_)(t).get(Real()));
+	return curve.derivative((*amount_)(t).get(Real()));
 }
 
 

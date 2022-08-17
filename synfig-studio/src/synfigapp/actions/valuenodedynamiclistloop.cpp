@@ -92,15 +92,8 @@ Action::ValueNodeDynamicListLoop::is_candidate(const ParamList &x)
 		if(ValueNode_Composite::Handle::cast_dynamic(value_node))
 		{
 			ValueNode_Composite::Handle compo(ValueNode_Composite::Handle::cast_dynamic(value_node));
-			ValueNode_BLine::Handle bline=NULL;
-			std::set<Node*>::iterator iter;
 			// now check if the grand parent is a dynamic list 'bline' type
-			for(iter=compo->parent_set.begin();iter!=compo->parent_set.end();++iter)
-				{
-					bline=ValueNode_BLine::Handle::cast_dynamic(*iter);
-					if(bline)
-						break;
-				}
+			ValueNode_BLine::Handle bline = compo->find_first_parent_of_type<ValueNode_BLine>();
 			if(bline)
 				value_node=bline;
 		}
@@ -129,15 +122,8 @@ Action::ValueNodeDynamicListLoop::set_param(const synfig::String& name, const Ac
 			if(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_value_node()))
 			{
 				ValueNode_Composite::Handle compo(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_value_node()));
-				ValueNode_BLine::Handle bline=NULL;
-				std::set<Node*>::iterator iter;
 				// now check if the grand parent is a 'bline' type
-				for(iter=compo->parent_set.begin();iter!=compo->parent_set.end();++iter)
-					{
-						bline=ValueNode_BLine::Handle::cast_dynamic(*iter);
-						if(bline)
-							break;
-					}
+				ValueNode_BLine::Handle bline = compo->find_first_parent_of_type<ValueNode_BLine>();
 				if(bline)
 					value_node=bline;
 			}

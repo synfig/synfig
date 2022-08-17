@@ -165,10 +165,11 @@ LayerTree::create_layer_tree()
 	}
 
 	{	// --- I C O N --------------------------------------------------------
-		int index;
 		// Set up the icon cell-renderer
-		index=layer_tree_view().append_column(_("Icon"),layer_model.icon);
-		Gtk::TreeView::Column* column = layer_tree_view().get_column(index-1);
+		Gtk::CellRendererPixbuf* pixbuf_cell_renderer = manage(new Gtk::CellRendererPixbuf());
+		Gtk::TreeViewColumn* column = manage(new Gtk::TreeViewColumn(_("Icon"), *pixbuf_cell_renderer));
+		layer_tree_view().append_column(*column);
+		column->add_attribute(*pixbuf_cell_renderer, "icon_name", layer_model.icon_name);
 		layer_tree_view().set_expander_column(*column);
 	}
 	{	// --- N A M E --------------------------------------------------------
@@ -250,7 +251,7 @@ LayerTree::create_param_tree()
 		// Set up the icon cell-renderer
 		Gtk::CellRendererPixbuf* icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
 		column->pack_start(*icon_cellrenderer,false);
-		column->add_attribute(icon_cellrenderer->property_pixbuf(), param_model.icon);
+		column->add_attribute(*icon_cellrenderer, "icon_name", param_model.icon_name);
 
 		// Pack the label into the column
 		//column->pack_start(layer_model.label,true);
@@ -265,7 +266,7 @@ LayerTree::create_param_tree()
 		// Set up the value-node icon cell-renderer to be on the far right
 		Gtk::CellRendererPixbuf* valuenode_icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
 		column->pack_end(*valuenode_icon_cellrenderer,false);
-		valuenode_icon_cellrenderer->property_pixbuf()=Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-value_node"),icon_size);
+		valuenode_icon_cellrenderer->property_icon_name() = "valuenode_icon";
 		column->add_attribute(valuenode_icon_cellrenderer->property_visible(), param_model.is_shared);
 
 		// Finish setting up the column
@@ -309,13 +310,13 @@ LayerTree::create_param_tree()
 		// Set up the interpolation icon cell-renderer to be on the far right
 		Gtk::CellRendererPixbuf* interpolation_icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
 		column->pack_end(*interpolation_icon_cellrenderer,false);
-		column->add_attribute(interpolation_icon_cellrenderer->property_pixbuf(),param_model.interpolation_icon);
+		column->add_attribute(*interpolation_icon_cellrenderer, "icon_name", param_model.interpolation_icon_name);
 		column->add_attribute(interpolation_icon_cellrenderer->property_visible(), param_model.interpolation_icon_visible);
 
 		// Set up the static icon cell-renderer to be on the far right
 		Gtk::CellRendererPixbuf* static_icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
 		column->pack_end(*static_icon_cellrenderer,false);
-		static_icon_cellrenderer->property_pixbuf()=Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-valuenode_forbidanimation"),icon_size);
+		static_icon_cellrenderer->property_icon_name() = "valuenode_forbidanimation_icon";
 		column->add_attribute(static_icon_cellrenderer->property_visible(), param_model.is_static);
 
 		// Finish setting up the column

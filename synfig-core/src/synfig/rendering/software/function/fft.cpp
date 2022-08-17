@@ -123,7 +123,7 @@ software::FFT::fft(const Array<Complex, 1> &x, bool invert)
 	{
 		std::lock_guard<std::mutex> lock(Internal::mutex);
 		fftw_plan plan = fftw_plan_guru_dft(
-			1, &iodim, 0, NULL,
+			1, &iodim, 0, nullptr,
 			(fftw_complex*)x.pointer, (fftw_complex*)x.pointer,
 			invert ? FFTW_BACKWARD : FFTW_FORWARD, FFTW_ESTIMATE );
 		fftw_execute(plan);
@@ -162,7 +162,7 @@ software::FFT::fft2d(const Array<Complex, 2> &x, bool invert, bool do_rows, bool
 		if (do_rows && do_cols)
 		{
 			plan = fftw_plan_guru_dft(
-				2, iodim, 0, NULL,
+				2, iodim, 0, nullptr,
 				(fftw_complex*)x.pointer, (fftw_complex*)x.pointer,
 				invert ? FFTW_BACKWARD : FFTW_FORWARD, FFTW_ESTIMATE );
 		}

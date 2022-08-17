@@ -50,7 +50,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_TimeLoop, RELEASE_VERSION_0_61_08, "timeloop", "Time Loop")
+REGISTER_VALUENODE(ValueNode_TimeLoop, RELEASE_VERSION_0_61_08, "timeloop", N_("Time Loop"))
 
 /* === P R O C E D U R E S ================================================= */
 

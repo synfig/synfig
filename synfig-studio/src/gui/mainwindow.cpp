@@ -38,6 +38,8 @@
 #include <gtkmm/stock.h>
 #include <gtkmm/textview.h>
 
+#include <ETL/stringf>
+
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/dialogs/dialog_input.h>
@@ -97,7 +99,7 @@ MainWindow::MainWindow() :
 
 	auto visible_menubar = App::ui_manager()->get_widget("/menubar-main");
 	auto hidden_menubar  = App::ui_manager()->get_widget("/menubar-hidden");
-	if (visible_menubar != NULL)
+	if (visible_menubar)
 	{
 		hidden_box->add(*hidden_menubar);
 		hidden_box->hide();
@@ -327,12 +329,12 @@ MainWindow::make_short_filenames(
 			fullname = fullname.substr(7);
 		while(j < (int)fullname.size())
 		{
-			size_t k = fullname.find_first_of(ETL_DIRECTORY_SEPARATORS, j);
-			if (k == std::string::npos) k = fullname.size();
-			std::string sub = fullname.substr(j, k - j);
+			size_t dir_separator_pos = fullname.find_first_of("/\\", j);
+			if (dir_separator_pos == std::string::npos) dir_separator_pos = fullname.size();
+			std::string sub = fullname.substr(j, dir_separator_pos - j);
 			if (!sub.empty() && sub != "...")
 				dirs[i].insert(dirs[i].begin(), sub);
-			j = (int)k + 1;
+			j = (int)dir_separator_pos + 1;
 		}
 
 		dirflags[i].resize(dirs[i].size(), false);
@@ -409,7 +411,7 @@ MainWindow::on_recent_files_changed()
 			quoted += raw.substr(last_pos, ++pos - last_pos) + '_';
 		quoted += raw.substr(last_pos);
 
-		const std::string action_name = etl::strprintf("file-recent-%d", i);
+		const std::string action_name = synfig::strprintf("file-recent-%d", i);
 		menu_items += "<menuitem action='" + action_name +"' />";
 
 		std::string filename = fullnames[i];
@@ -459,7 +461,7 @@ MainWindow::on_custom_workspaces_changed()
 			quoted += raw.substr(last_pos, ++pos - last_pos) + '_';
 		quoted += raw.substr(last_pos);
 
-		std::string action_name = etl::strprintf("custom-workspace-%d", num_custom_workspaces);
+		std::string action_name = synfig::strprintf("custom-workspace-%d", num_custom_workspaces);
 		menu_items += "<menuitem action='" + action_name +"' />";
 
 		action_group->add( Gtk::Action::create(action_name, quoted),

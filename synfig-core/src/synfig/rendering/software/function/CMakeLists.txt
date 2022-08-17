@@ -1,4 +1,4 @@
-target_sources(synfig
+target_sources(libsynfig
     PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/blur.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/blur_iir_coefficients.cpp"

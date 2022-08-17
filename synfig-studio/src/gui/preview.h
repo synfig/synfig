@@ -29,7 +29,6 @@
 #define __SYNFIG_PREVIEW_H
 
 /* === H E A D E R S ======================================================= */
-#include <ETL/clock> /* indirectly includes winnt.h on WIN32 - needs to be included before gtkmm headers, which fix this */
 #include <ETL/handle>
 
 #include <gdkmm/pixbuf.h>
@@ -52,6 +51,7 @@
 #endif
 
 #include <synfig/canvas.h>
+#include <synfig/clock.h>
 #include <synfig/soundprocessor.h>
 #include <synfig/time.h>
 
@@ -76,7 +76,7 @@ public:
 		float t;
 		Glib::RefPtr<Gdk::Pixbuf> buf; //at whatever resolution they are rendered at (resized at run time)
 		cairo_surface_t* surface;
-		FlipbookElem(): t(), surface(NULL) { }
+		FlipbookElem(): t(), surface(nullptr) { }
 		//Copy constructor
 		FlipbookElem(const FlipbookElem& other): t(other.t) ,buf(other.buf), surface(cairo_surface_reference(other.surface))
 		{
@@ -194,7 +194,7 @@ class Widget_Preview : public Gtk::Table
 	Gtk::DrawingArea	draw_area;
 	Glib::RefPtr<Gtk::Adjustment> adj_time_scrub; //the adjustment for the managed scrollbar
 	Gtk::Scale		scr_time_scrub;
-	Gtk::ToggleButton	b_loop;
+	Gtk::ToggleButton*	b_loop;
 	Gtk::ScrolledWindow	preview_window;
 	//Glib::RefPtr<Gdk::GC>		gc_area;
 	Glib::RefPtr<Gdk::Pixbuf>	currentbuf;
@@ -218,7 +218,7 @@ class Widget_Preview : public Gtk::Table
 	bool	toolbarisshown;
 
 	//for accurate time tracking
-	etl::clock	timer;
+	synfig::clock timer;
 
 	//int		curindex; //for later
 	sigc::connection	timecon;
@@ -272,8 +272,8 @@ public:
 
 	void stoprender();
 
-	bool get_loop_flag() const {return b_loop.get_active();}
-	void set_loop_flag(bool b) {return b_loop.set_active(b);}
+	bool get_loop_flag() const {return b_loop->get_active();}
+	void set_loop_flag(bool b) {return b_loop->set_active(b);}
 
 	void on_dialog_show();
 	void on_dialog_hide();
@@ -320,8 +320,6 @@ private:
 	void set_jack_enabled(bool value);
 
 #ifdef WITH_JACK
-	Gtk::ToggleButton *jackbutton;
-	Widget_Time *offset_widget;
 	void toggle_jack_button();
 	void on_jack_offset_changed();
 

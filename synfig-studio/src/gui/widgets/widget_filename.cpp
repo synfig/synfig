@@ -41,6 +41,8 @@
 #include <gui/canvasview.h>
 #include <gui/localization.h>
 
+#include <ETL/stringf>
+
 #include <synfig/canvasfilenaming.h>
 
 #endif
@@ -60,9 +62,8 @@ using namespace studio;
 Widget_Filename::Widget_Filename()
 {
 	entry_filename=manage(new Gtk::Entry());
-	icon_browse = manage(new Gtk::Image(Gtk::StockID("synfig-open"), Gtk::ICON_SIZE_SMALL_TOOLBAR));
 	button_choose=manage(new Gtk::Button());
-	button_choose->add(*icon_browse);
+	button_choose->set_image_from_icon_name("action_doc_open_icon");
 
 	set_hexpand(true);
 	entry_filename->set_hexpand(true);
@@ -72,7 +73,6 @@ Widget_Filename::Widget_Filename()
 
 	entry_filename->show();
 	button_choose->show();
-	icon_browse->show();
 
 	button_choose->signal_clicked().connect(sigc::mem_fun(*this, &studio::Widget_Filename::on_button_choose_pressed));
 	//entry_filename->signal_value_changed().connect(sigc::mem_fun(*this, &studio::Widget_Filename::on_value_changed));

@@ -83,20 +83,29 @@ include(workarearenderer/CMakeLists.txt)
 
 add_subdirectory(resources)
 
-target_include_directories(synfigstudio PRIVATE ${MLT_INCLUDE_DIRS}) # required for widget_soundwave
-
-# on MacOS/Brew FontConfig located in non-standard folder
-# so we need to add it's path to target
-target_link_libraries(synfigstudio
-	${FONT_CONFIG_LDFLAGS}
-	${GTKMM_LIBRARIES}
-	${Gettext_LIBRARIES}
-	${MLT_LIBRARIES} # required for widget_soundwave
-	${LIBXML_LIBRARIES} # required for gui/pluginmanager
-	${FONT_CONFIG_LIBRARIES}
-	synfig
+target_link_libraries(synfigstudio PRIVATE
+	PkgConfig::GTKMM3
+	PkgConfig::XMLPP
+	libsynfig
 	synfigapp
 )
+
+if (FONTCONFIG_FOUND)
+	target_link_libraries(synfigstudio PRIVATE PkgConfig::FONTCONFIG)
+endif ()
+
+if (JACK_FOUND)
+	target_compile_definitions(synfigstudio PRIVATE WITH_JACK)
+	target_link_libraries(synfigstudio PRIVATE PkgConfig::JACK)
+endif ()
+
+if (MLT_FOUND)
+	target_link_libraries(synfigstudio PRIVATE PkgConfig::MLT)
+endif ()
+
+if(TCMALLOC_LIBRARY)
+	target_link_libraries(synfigstudio PRIVATE ${TCMALLOC_LIBRARY})
+endif()
 
 install(
 	TARGETS synfigstudio

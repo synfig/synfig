@@ -35,6 +35,7 @@
 
 #include <glib/gstdio.h>
 #include "trgt_ppm.h"
+#include <ETL/stringf>
 #endif
 
 /* === M A C R O S ========================================================= */
@@ -56,8 +57,8 @@ ppm::ppm(const char *Filename, const synfig::TargetParam &params):
 	multi_image(false),
 	file(),
 	filename(Filename),
-	color_buffer(NULL),
-	buffer(NULL),
+	color_buffer(nullptr),
+	buffer(nullptr),
 	sequence_separator(params.sequence_separator)
 {
 	set_alpha_mode(TARGET_ALPHA_MODE_FILL);
@@ -102,7 +103,7 @@ ppm::start_frame(synfig::ProgressCallback *callback)
 	{
 		String newfilename(filename_sans_extension(filename) +
 						   sequence_separator +
-						   etl::strprintf("%04d",imagecount) +
+						   strprintf("%04d",imagecount) +
 						   filename_extension(filename));
 		file=SmartFILE(g_fopen(newfilename.c_str(),POPEN_BINARY_WRITE_TYPE));
 		if(callback)callback->task(newfilename);

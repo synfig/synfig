@@ -10,7 +10,7 @@
 # it was faster. Make sure you have enough passes from the
 # `test_render_all_perf.py` script (default should be set to 10).  The `mean`
 # of all runs will be plotted as a bar's value.  But black line will appear
-# on the edge of the bar's tip, as to mark the varriance/error.
+# on the edge of the bar's tip, as to mark the variance/error.
 
 import sys
 import matplotlib.pyplot as plt

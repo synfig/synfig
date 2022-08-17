@@ -47,6 +47,6 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-gl::Environment *gl::Environment::instance = NULL;
+gl::Environment* gl::Environment::instance = nullptr;
 
 /* === E N T R Y P O I N T ================================================= */

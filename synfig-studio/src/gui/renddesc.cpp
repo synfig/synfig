@@ -45,6 +45,7 @@
 #include <gtkmm/stylecontext.h>
 
 #include <gui/localization.h>
+#include <gui/widgets/widget_link.h>
 
 #endif
 

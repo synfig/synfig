@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file smach.h
-**	\brief Template Header
+**	\brief State Machine for CanvasView
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -25,8 +25,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_SMACH_H
-#define __SYNFIG_SMACH_H
+#ifndef SYNFIG_GUI_SMACH_H
+#define SYNFIG_GUI_SMACH_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -43,7 +43,7 @@ namespace studio {
 
 class CanvasView;
 
-typedef etl::smach<CanvasView,EventKey> Smach;
+typedef smach<CanvasView,EventKey> Smach;
 
 }; // END of namespace studio
 

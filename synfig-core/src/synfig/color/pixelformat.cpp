@@ -44,10 +44,10 @@ namespace {
 		int src_stride_extra;
 
 		explicit inline Color2PFParams(
-			unsigned char *dst = NULL,
-			const Color *src = NULL,
+			unsigned char* dst = nullptr,
+			const Color* src = nullptr,
 			PixelFormat pf = 0,
-			const Gamma *gamma = NULL,
+			const Gamma* gamma = nullptr,
 			int width = 0,
 			int height = 0,
 			int dst_stride_extra = 0,
@@ -265,8 +265,8 @@ namespace {
 		int src_stride_extra;
 
 		explicit inline PF2ColorParams(
-			Color *dst = NULL,
-			const unsigned char *src = NULL,
+			Color* dst = nullptr,
+			const unsigned char* src = nullptr,
 			PixelFormat pf = 0,
 			int width = 0,
 			int height = 0,

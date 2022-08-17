@@ -79,16 +79,16 @@ namespace studio {
 		Gtk::Window *window;
 		bool is_first;
 
-		DockLinkPoint(): bin(NULL), paned(NULL), window(NULL), is_first(false) { }
-		explicit DockLinkPoint(Gtk::Bin *bin): bin(bin), paned(NULL), window(NULL), is_first(false) { }
-		explicit DockLinkPoint(Gtk::Paned *paned, bool is_first): bin(NULL), paned(paned), window(NULL), is_first(is_first) { }
-		explicit DockLinkPoint(Gtk::Window *window): bin(NULL), paned(NULL), window(window), is_first(false) { }
-		explicit DockLinkPoint(Gtk::Widget &widget) {
+		DockLinkPoint(): bin(nullptr), paned(nullptr), window(nullptr), is_first(false) { }
+		explicit DockLinkPoint(Gtk::Bin* bin): bin(bin), paned(nullptr), window(nullptr), is_first(false) { }
+		explicit DockLinkPoint(Gtk::Paned* paned, bool is_first): bin(nullptr), paned(paned), window(nullptr), is_first(is_first) { }
+		explicit DockLinkPoint(Gtk::Window* window): bin(nullptr), paned(nullptr), window(window), is_first(false) { }
+		explicit DockLinkPoint(Gtk::Widget& widget) {
 			Gtk::Container *container = widget.get_parent();
 			bin = dynamic_cast<Gtk::Bin*>(container);
 			paned = dynamic_cast<Gtk::Paned*>(container);
 			window = dynamic_cast<Gtk::Window*>(container);
-			is_first = paned != NULL && paned->get_child1() == &widget;
+			is_first = paned && paned->get_child1() == &widget;
 		}
 
 		bool is_valid() { return bin || paned || window; }
@@ -353,7 +353,7 @@ DockManager::add_widget(Gtk::Widget &dest_widget, Gtk::Widget &src_widget, bool 
 	if (&src_widget == &dest_widget) return false;
 
 	// check for src widget is parent for dest_widget
-	for(Gtk::Widget *parent = src_widget.get_parent(); parent != NULL; parent = parent->get_parent())
+	for(Gtk::Widget* parent = src_widget.get_parent(); parent; parent = parent->get_parent())
 		if (parent == &dest_widget)
 			return swap_widgets(src_widget, dest_widget);
 
@@ -418,7 +418,7 @@ std::string DockManager::extract_dockable_name(std::string &x) const
 
 int DockManager::read_int(std::string &x)
 {
-	return strtol(read_string(x).c_str(), NULL, 10);
+	return strtol(read_string(x).c_str(), nullptr, 10);
 }
 
 bool DockManager::read_bool(std::string &x)
@@ -505,20 +505,20 @@ Gtk::Widget* DockManager::read_widget(std::string &x)
 	{
 		// skip "[hor|" or "[vert|"
 		x = x.substr(1);
-		if (!read_separator(x)) return NULL;
+		if (!read_separator(x)) return nullptr;
 
 		int size = read_int(x);
-		if (!read_separator(x)) return NULL;
+		if (!read_separator(x)) return nullptr;
 
-		Gtk::Widget *first = NULL;
-		Gtk::Widget *second = NULL;
+		Gtk::Widget* first = nullptr;
+		Gtk::Widget* second = nullptr;
 
 		first = read_widget(x);
 		if (!read_separator(x)) return first;
 		second = read_widget(x);
 		read_separator(x);
 
-		if (!first && !second) return NULL;
+		if (!first && !second) return nullptr;
 		if (first && !second) return first;
 		if (!first && second) return second;
 
@@ -535,9 +535,9 @@ Gtk::Widget* DockManager::read_widget(std::string &x)
 	{
 		// skip "[book|"
 		x = x.substr(1);
-		if (!read_separator(x)) return NULL;
+		if (!read_separator(x)) return nullptr;
 
-		DockBook *book = NULL;
+		DockBook* book = nullptr;
 		do
 		{
 			std::string dockable_name_params = read_string(x);
@@ -552,7 +552,7 @@ Gtk::Widget* DockManager::read_widget(std::string &x)
 					container->remove(dockable);
 					containers_to_remove_[container] = true;
 				}
-				if (book == NULL) { book = manage(new DockBook()); book->show(); }
+				if (!book) { book = manage(new DockBook()); book->show(); }
 				book->add(dockable);
 			}			
 		} while (read_separator(x));
@@ -564,23 +564,23 @@ Gtk::Widget* DockManager::read_widget(std::string &x)
 	{
 		// skip "[dialog|"
 		x = x.substr(1);
-		if (!read_separator(x)) return NULL;
+		if (!read_separator(x)) return nullptr;
 
 		int left = read_int(x);
-		if (!read_separator(x)) return NULL;
+		if (!read_separator(x)) return nullptr;
 		int top = read_int(x);
-		if (!read_separator(x)) return NULL;
+		if (!read_separator(x)) return nullptr;
 		int width = read_int(x);
-		if (!read_separator(x)) return NULL;
+		if (!read_separator(x)) return nullptr;
 		int height = read_int(x);
-		if (!read_separator(x)) return NULL;
+		if (!read_separator(x)) return nullptr;
 
 		check_and_fix_window_position(left, top, width, height);
 
 		Gtk::Widget *widget = read_widget(x);
 		read_separator(x);
 
-		if (!widget) return NULL;
+		if (!widget) return nullptr;
 
 		DockDialog *dialog = new DockDialog();
 		dialog->add(*widget);
@@ -588,28 +588,28 @@ Gtk::Widget* DockManager::read_widget(std::string &x)
 		dialog->set_default_size(width, height);
 		dialog->resize(width, height);
 
-		return NULL;
+		return nullptr;
 	}
 	else
 	if (x.substr(0, 12) == "[mainwindow|")
 	{
 		// skip "[mainwindow|"
 		x = x.substr(1);
-		if (!read_separator(x)) return NULL;
+		if (!read_separator(x)) return nullptr;
 
 		int left = read_int(x);
-		if (!read_separator(x)) return NULL;
+		if (!read_separator(x)) return nullptr;
 		int top = read_int(x);
-		if (!read_separator(x)) return NULL;
+		if (!read_separator(x)) return nullptr;
 		int width = read_int(x);
-		if (!read_separator(x)) return NULL;
+		if (!read_separator(x)) return nullptr;
 		int height = read_int(x);
-		if (!read_separator(x)) return NULL;
+		if (!read_separator(x)) return nullptr;
 
 		Gtk::Widget *widget = read_widget(x);
 		read_separator(x);
 
-		if (!widget) return NULL;
+		if (!widget) return nullptr;
 
 		check_and_fix_window_position(left, top, width, height);
 
@@ -623,7 +623,7 @@ Gtk::Widget* DockManager::read_widget(std::string &x)
 		App::main_window->set_default_size(width, height);
 		App::main_window->resize(width, height);
 
-		return NULL;
+		return nullptr;
 	}
 	else
 	if (x.substr(0, 14) == "[mainnotebook]")
@@ -634,7 +634,7 @@ Gtk::Widget* DockManager::read_widget(std::string &x)
 		return &App::main_window->main_dock_book();
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 void DockManager::write_string(std::string &x, const std::string &str)
@@ -642,7 +642,7 @@ void DockManager::write_string(std::string &x, const std::string &str)
 void DockManager::write_separator(std::string &x, bool continue_)
 	{ write_string(x, continue_ ? "|" : "]"); }
 void DockManager::write_int(std::string &x, int i)
-	{ write_string(x, strprintf("%d", i)); }
+	{ write_string(x, synfig::strprintf("%d", i)); }
 void DockManager::write_bool(std::string &x, bool b)
 	{ write_string(x, b ? "true" : "false"); }
 
@@ -652,7 +652,7 @@ void DockManager::write_widget(std::string &x, Gtk::Widget* widget)
 	DockBook *book = dynamic_cast<DockBook*>(widget);
 	DockDialog *dialog = dynamic_cast<DockDialog*>(widget);
 
-	if (widget == NULL)
+	if (!widget)
 	{
 		return;
 	}
@@ -789,11 +789,11 @@ std::string DockManager::layout_from_template(const std::string &tpl, float dx, 
 		res+=tpl.substr(pos_end, pos_begin-pos_end);
 		pos_end = tpl.find_first_of("xyXY", pos_begin);
 		if (pos_end == std::string::npos) break;
-		float f = (float)strtol(tpl.c_str()+pos_begin+1, NULL, 10);
-		if (tpl[pos_end] == 'X') res += strprintf("%d", (int)roundf(dx+f*sx/100.f));
-		if (tpl[pos_end] == 'Y') res += strprintf("%d", (int)roundf(dy+f*sy/100.f));
-		if (tpl[pos_end] == 'x') res += strprintf("%d", (int)roundf(f*sx/100.f));
-		if (tpl[pos_end] == 'y') res += strprintf("%d", (int)roundf(f*sy/100.f));
+		float f = (float)strtol(tpl.c_str()+pos_begin+1, nullptr, 10);
+		if (tpl[pos_end] == 'X') res += synfig::strprintf("%d", (int)roundf(dx+f*sx/100.f));
+		if (tpl[pos_end] == 'Y') res += synfig::strprintf("%d", (int)roundf(dy+f*sy/100.f));
+		if (tpl[pos_end] == 'x') res += synfig::strprintf("%d", (int)roundf(f*sx/100.f));
+		if (tpl[pos_end] == 'y') res += synfig::strprintf("%d", (int)roundf(f*sy/100.f));
 		pos_end++;
 	}
 	return res;

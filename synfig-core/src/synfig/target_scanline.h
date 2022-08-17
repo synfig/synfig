@@ -68,13 +68,13 @@ public:
 	Target_Scanline();
 
 	//! Renders the canvas to the target
-	virtual bool render(ProgressCallback *cb=NULL);
+	virtual bool render(ProgressCallback* cb = nullptr);
 
 	//! Marks the start of a frame
 	/*! \return \c true on success, \c false upon an error.
 	**	\see end_frame(), start_scanline()
 	*/
-	virtual bool start_frame(ProgressCallback *cb=NULL)=0;
+	virtual bool start_frame(ProgressCallback* cb = nullptr) = 0;
 	
 	//! Returns the number of peniding frames to render. If it is zero it
 	//! stops rendering frames.

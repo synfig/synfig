@@ -1,7 +1,8 @@
-/*! ========================================================================
-** Extended Template and Library Test Suite
-** Hermite Curve Test
+/* === S Y N F I G ========================================================= */
+/*!	\file benchmark.cpp
+**	\brief Benchmark test
 **
+**	\legal
 ** Copyright (c) 2002 Robert B. Quattlebaum Jr.
 **
 ** This file is part of Synfig.
@@ -23,13 +24,14 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/clock>
+#include <cstdio>
+
 #include <ETL/hermite>
-#include <ETL/angle>
 #include <ETL/surface>
 #include <ETL/gaussian>
-#include <ETL/calculus>
-#include <stdio.h>
+
+#include <synfig/angle.h>
+#include <synfig/clock.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -126,7 +128,7 @@ void angle_atan2_speed_test(void)
 int surface_and_gaussian_blur_test()
 {
 	int ret=0;
-	etl::clock MyTimer;
+	synfig::clock MyTimer;
 	float endtime;
 
 	{
@@ -157,7 +159,7 @@ int hermite_int_test()
 	hermite<int>::time_type f;
 	int i;
 
-	etl::clock timer;
+	synfig::clock timer;
 	float t;
 
 	Hermie.p1()=0;
@@ -196,7 +198,7 @@ int hermite_float_test(void)
 	float f; int i;
 
 	hermite<float> Hermie;
-	etl::clock timer;
+	synfig::clock timer;
 	double t;
 
 	Hermie.p1()=0;
@@ -235,7 +237,7 @@ int hermite_double_test(void)
 	float f;
 
 	hermite<double> Hermie;
-	etl::clock timer;
+	synfig::clock timer;
 	double t;
 
 	Hermie.p1()=0;
@@ -268,19 +270,21 @@ int hermite_double_test(void)
 
 int hermite_angle_test(void)
 {
+	using namespace synfig;
+
 	int ret=0,i;
 	float f;
 
-	hermite<angle> Hermie;
-	etl::clock timer;
-	angle tmp;
+	hermite<Angle> Hermie;
+	synfig::clock timer;
+	Angle tmp;
 	double t;
 
-	Hermie.p1()=angle::deg(0);
-	Hermie.t1()=angle::deg(45);
+	Hermie.p1()=Angle::deg(0);
+	Hermie.t1()=Angle::deg(45);
 
-	Hermie.p2()=angle::deg(-45);
-	Hermie.t2()=angle::deg(180);
+	Hermie.p2()=Angle::deg(-45);
+	Hermie.t2()=Angle::deg(180);
 
 	Hermie.sync();
 

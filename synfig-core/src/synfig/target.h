@@ -222,12 +222,12 @@ public:
 	*/
 	virtual bool set_rend_desc(RendDesc *d) { desc=*d; return true; }
 	//! Renders the canvas to the target
-	virtual bool render(ProgressCallback *cb=NULL)=0;
+	virtual bool render(ProgressCallback* cb = nullptr) = 0;
 	//! Initialization tasks of the derived target.
 	/*!
 	 ** \returns true if the initialization has no errors
 	*/
-	virtual bool init(ProgressCallback *cb=NULL) { (void)cb; return true; }
+	virtual bool init(ProgressCallback* cb = nullptr) { (void)cb; return true; }
 
 	//! Creates a new Target described by \a type, outputting to a file described by \a filename.
 	static Handle create(const String &type, const String &filename,

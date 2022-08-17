@@ -52,6 +52,7 @@
  #include <fcntl.h>
 #endif
 #include <ETL/misc>
+#include <ETL/stringf>
 
 #endif
 
@@ -79,10 +80,10 @@ SYNFIG_TARGET_SET_VERSION(imagemagick_trgt,"0.1");
 imagemagick_trgt::imagemagick_trgt(const char *Filename,  const synfig::TargetParam &params):
 	imagecount(),
 	multi_image(false),
-	file(NULL),
+	file(nullptr),
 	filename(Filename),
-	buffer(NULL),
-	color_buffer(NULL),
+	buffer(nullptr),
+	color_buffer(nullptr),
 	pf(),
 	sequence_separator(params.sequence_separator)
 { }
@@ -98,7 +99,7 @@ imagemagick_trgt::~imagemagick_trgt()
 		waitpid(pid,&status,0);
 #endif
 	}
-	file=NULL;
+	file=nullptr;
 	delete [] buffer;
 	delete [] color_buffer;
 }
@@ -144,7 +145,7 @@ imagemagick_trgt::end_frame()
 		waitpid(pid,&status,0);
 #endif
 	}
-	file=NULL;
+	file=nullptr;
 	imagecount++;
 }
 
@@ -158,7 +159,7 @@ imagemagick_trgt::start_frame(synfig::ProgressCallback *cb)
 	if (multi_image)
 		newfilename = (filename_sans_extension(filename) +
 					   sequence_separator +
-					   etl::strprintf("%04d",imagecount) +
+					   strprintf("%04d",imagecount) +
 					   filename_extension(filename));
 	else
 		newfilename = filename;
@@ -212,7 +213,7 @@ imagemagick_trgt::start_frame(synfig::ProgressCallback *cb)
 			((pixel_size(pf) == 4) ? "rgba:-[0]" : "rgb:-[0]"),
 			"-density", strprintf("%dx%d", round_to_int(desc.get_x_res()/39.3700787402), round_to_int(desc.get_y_res()/39.3700787402)).c_str(),
 			newfilename.c_str(),
-			(const char *)NULL);
+			(const char*)nullptr);
 		// We should never reach here unless the exec failed
 		if(cb) cb->error(N_(msg));
 		else synfig::error(N_(msg));

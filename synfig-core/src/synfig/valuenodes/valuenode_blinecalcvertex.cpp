@@ -55,7 +55,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_BLineCalcVertex, RELEASE_VERSION_0_61_07, "blinecalcvertex", "Spline Vertex")
+REGISTER_VALUENODE(ValueNode_BLineCalcVertex, RELEASE_VERSION_0_61_07, "blinecalcvertex", N_("Spline Vertex"))
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -117,7 +117,7 @@ ValueNode_BLineCalcVertex::operator()(Time t)const
 	if (amount > 1) amount = 1;
 	amount *= count;
 
-	int i0 = std::max(0, std::min(size-1, (int)floor(amount)));
+	int i0 = synfig::clamp((int)floor(amount), 0, size-1);
 	int i1 = (i0 + 1) % size;
 	Real part = amount - i0;
 

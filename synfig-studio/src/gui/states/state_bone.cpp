@@ -426,7 +426,7 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
 
 	if(Layer_SkeletonDeformation::Handle::cast_dynamic(layer)){
-		get_work_area()->set_type_mask(get_work_area()->get_type_mask() - Duck::TYPE_TANGENT | (Duck::TYPE_WIDTH | Duck::TYPE_WIDTHPOINT_POSITION));
+		get_work_area()->set_type_mask((get_work_area()->get_type_mask() - Duck::TYPE_TANGENT) | (Duck::TYPE_WIDTH | Duck::TYPE_WIDTHPOINT_POSITION));
 		get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
 		layer->disable();
 		get_canvas_interface()->signal_layer_status_changed()(layer,false);
@@ -470,7 +470,7 @@ StateBone_Context::refresh_tool_options()
 	App::dialog_tool_options->set_name("bone");
 
 	App::dialog_tool_options->add_button(
-			Gtk::StockID("gtk-clear"),
+			"edit-clear",
 			_("Clear current Skeleton")
 	)->signal_clicked().connect(
 			sigc::mem_fun(
@@ -675,7 +675,7 @@ StateBone_Context::event_mouse_release_handler(const Smach::event& x)
 				const int item_index = must_create_layer ? 0 : find_bone_index(skel_layer? SKELETON_TYPE : SKELETON_DEFORMATION_TYPE, list_node, active_bone);
 				ValueDesc value_desc = ValueDesc(list_node,item_index,list_desc);
 
-				if(active_bone && item_index >= 0 && !list_node->list.empty()){
+				if(active_bone && !must_create_layer && item_index >= 0 && !list_node->list.empty()) {
 					// if active bone is already set
 					ValueNode_Bone::Handle bone_node = ValueNode_Bone::Handle::cast_dynamic(active_bone);
 					if (deform_layer) {
@@ -899,7 +899,7 @@ StateBone_Context::find_bone(Point point,Layer::Handle layer) const
 		}
 	}
 	if(std::fabs(close_line)<=0.2){
-		if (ret >=0 && ret < bone_list.size()) {
+		if (ret >=0 && ret < static_cast<int>(bone_list.size())) {
 			ValueNode_StaticList::Handle list_node;
 			list_node=ValueNode_StaticList::Handle::cast_dynamic(list_desc.get_value_node());
 			if (is_skeleton_deform_layer)

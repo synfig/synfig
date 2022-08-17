@@ -39,8 +39,6 @@
 #include <algorithm>
 #include <stdexcept>
 
-#include <ETL/misc>
-
 #include "general.h"
 #include <synfig/localization.h>
 #include <synfig/real.h>
@@ -307,7 +305,7 @@ CompiledGradient::set(const Gradient &gradient, bool repeat, bool zigzag) {
 	Gradient::CPointList cpoints;
 	cpoints.reserve(zigzag ? gradient.size()*2 : gradient.size());
 	for(Gradient::const_iterator i = gradient.begin(); i != gradient.end(); ++i) {
-		Real pos = std::max(0.0, std::min(1.0, i->pos));
+		Real pos = synfig::clamp(i->pos, 0., 1.);
 		cpoints.insert( std::upper_bound(cpoints.begin(), cpoints.end(), pos), *i )->pos = pos;
 	}
 

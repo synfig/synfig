@@ -208,7 +208,7 @@ Widget_Gradient::popup_menu(float x)
 	for(std::vector<Gtk::Widget*>::iterator i = children.begin(); i != children.end(); ++i)
 		menu->remove(**i);
 
-	Gtk::MenuItem *item = NULL;
+	Gtk::MenuItem* item = nullptr;
 
 	item = manage(new Gtk::MenuItem(_("Insert Color Stop")));
 	item->signal_activate().connect(

@@ -53,7 +53,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_WeightedAverage, RELEASE_VERSION_1_0, "weighted_average", "Weighted Average")
+REGISTER_VALUENODE(ValueNode_WeightedAverage, RELEASE_VERSION_1_0, "weighted_average", N_("Weighted Average"))
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -87,7 +87,7 @@ ValueNode_WeightedAverage::create(const ValueBase& value, Canvas::LooseHandle ca
 	ValueNode_WeightedAverage* value_node(new ValueNode_WeightedAverage(value, canvas));
 	
 	types_namespace::TypeWeightedValueBase *t = ValueAverage::get_weighted_type_for(value_node->get_type());
-	assert(t != NULL);
+	assert(t);
 
 	value_node->ref();
 	value_node->add(ValueNode::Handle(ValueNode_Const::create(t->create_weighted_value(1, value), canvas)));

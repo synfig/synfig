@@ -32,7 +32,6 @@
 #define __SYNFIG_STUDIO_APP_H
 
 /* === H E A D E R S ======================================================= */
-#include <ETL/smart_ptr>
 
 #include <gtkmm/box.h>
 #include <gtkmm/uimanager.h>
@@ -42,6 +41,7 @@
 #include <gui/pluginmanager.h>
 
 #include <list>
+#include <memory>
 #include <set>
 #include <string>
 
@@ -122,6 +122,7 @@ class WorkspaceHandler;
 
 class App : public Gtk::Application, private IconController
 {
+	class Preferences;
 	friend class Preferences;
 	friend class Dialog_Setup;
 
@@ -167,7 +168,7 @@ private:
 	static Dock_LayerGroups *dock_layer_groups;
 */
 
-	etl::smart_ptr<synfigapp::Main> synfigapp_main;
+	std::shared_ptr<synfigapp::Main> synfigapp_main;
 
 
 	static etl::handle<Instance> selected_instance;
@@ -180,6 +181,10 @@ private:
 //	static std::list< etl::handle< Module > > module_list_;
 
 	static WorkspaceHandler *workspaces;
+
+	static std::string icon_theme_name;
+
+	static Preferences _preferences;
 
 	/*
  -- ** -- P U B L I C   D A T A -----------------------------------------------
@@ -313,13 +318,17 @@ protected:
 	void on_activate() override;
 	void on_open(const type_vec_files& files, const Glib::ustring& hint) override;
 
+	void on_shutdown();
+
+	static void init_icon_themes();
+
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
 	*/
 
 public:
 
-	virtual ~App();
+	virtual ~App() = default;
 
 	/*
  -- ** -- S T A T I C   P U B L I C   M E T H O D S ---------------------------
@@ -354,7 +363,11 @@ public:
 	static void edit_custom_workspace_list();
 	static void apply_gtk_settings();
 
-	static std::string get_synfig_icon_theme();
+	// Get the currently used icon theme name
+	static std::string get_icon_theme_name();
+	// Get the icon theme name explicitly set by user preferences
+	static std::string get_raw_icon_theme_name();
+	static void set_icon_theme(const std::string &theme_name);
 
 	static const std::list<std::string>& get_recent_files();
 
@@ -414,7 +427,7 @@ public:
 	static synfig::Time::Format get_time_format();
 	static void set_time_format(synfig::Time::Format x);
 
-	static bool shutdown_request(GdkEventAny*bleh=NULL);
+	static bool shutdown_request(GdkEventAny* bleh = nullptr);
 
 //	static bool dialog_file(const std::string &title, std::string &filename);
 
@@ -455,7 +468,7 @@ public:
 	static void dialog_message_1b(
 			const std::string &type,
 			const std::string &message,
-			const std::string &detials,
+			const std::string &details,
 			const std::string &button1,
 			const std::string &long_details = "long_details");
 
@@ -486,7 +499,7 @@ public:
 	static void setup_changed();
 
 	static void process_all_events();
-	static bool check_python_version( std::string path);
+	static bool check_python_version(const std::string& path);
 }; // END of class App
 
 	void delete_widget(Gtk::Widget *widget);

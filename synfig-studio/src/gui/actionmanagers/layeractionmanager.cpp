@@ -71,7 +71,7 @@ remove_layers_inside_included_pastelayers(const std::list<Layer::Handle>& layer_
 {
 	std::vector<Layer::Handle> layerpastecanvas_list;
 	for (const auto& layer : layer_list) {
-		if (Layer_PasteCanvas* pastecanvas = dynamic_cast<Layer_PasteCanvas*>(layer.get())) {
+		if (dynamic_cast<Layer_PasteCanvas*>(layer.get())) {
 			layerpastecanvas_list.push_back(layer);
 		}
 	}

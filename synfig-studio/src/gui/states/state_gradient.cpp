@@ -61,12 +61,8 @@ using namespace studio;
 /* === M A C R O S ========================================================= */
 
 #ifndef LAYER_CREATION
-#define LAYER_CREATION(button, fun, stockid, tooltip)	\
-	{ \
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), \
-			Gtk::ICON_SIZE_SMALL_TOOLBAR)); \
-		button.add(*icon); \
-	} \
+#define LAYER_CREATION(button, fun, icon_name, tooltip)	\
+	button.set_image_from_icon_name(icon_name, Gtk::BuiltinIconSize::ICON_SIZE_SMALL_TOOLBAR); \
 	button.set_relief(Gtk::RELIEF_NONE); \
 	button.set_tooltip_text(tooltip); \
 	button.signal_toggled().connect(sigc::mem_fun(*this, \
@@ -372,13 +368,13 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 	layer_types_label.set_valign(Gtk::ALIGN_CENTER);
 
 	LAYER_CREATION(layer_linear_gradient_togglebutton, toggle_layer_linear_gradient,
-		("synfig-layer_gradient_linear"), _("Create a linear gradient"));
+		"layer_gradient_linear_icon", _("Create a linear gradient"));
 	LAYER_CREATION(layer_radial_gradient_togglebutton, toggle_layer_radial_gradient,
-		("synfig-layer_gradient_radial"), _("Create a radial gradient"));
+		"layer_gradient_radial_icon", _("Create a radial gradient"));
 	LAYER_CREATION(layer_conical_gradient_togglebutton, toggle_layer_conical_gradient,
-		("synfig-layer_gradient_conical"), _("Create a conical gradient"));
+		"layer_gradient_conical_icon", _("Create a conical gradient"));
 	LAYER_CREATION(layer_spiral_gradient_togglebutton, toggle_layer_spiral_gradient,
-		("synfig-layer_gradient_spiral"), _("Create a spiral gradient"));
+		"layer_gradient_spiral_icon", _("Create a spiral gradient"));
 
 	layer_linear_gradient_togglebutton.get_style_context()->add_class("indentation");
 	layer_types_box.pack_start(layer_linear_gradient_togglebutton, false, false, 0);
@@ -465,7 +461,7 @@ StateGradient_Context::refresh_tool_options()
 	App::dialog_tool_options->clear();
 	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Gradient Tool"));
-	App::dialog_tool_options->set_name("gradient");
+	App::dialog_tool_options->set_icon("tool_gradient_icon");
 }
 
 Smach::event_result

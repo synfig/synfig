@@ -50,9 +50,13 @@
 #include <gui/autorecover.h>
 #include <synfig/threadpool.h>
 
+#include <ETL/stringf>
+
 #include <synfig/rendering/renderer.h>
 
 #include <synfigapp/main.h>
+
+#include <gui/resourcehelper.h>
 
 #endif
 
@@ -454,7 +458,7 @@ dragging the handle to the left bottom part of your 2D space."));
 	attach_label(pi.grid,_("Preferred image editor"), ++row);
 
 	//create a button that will open the filechooserdialog to select image editor
-	Gtk::Button *choose_button(manage(new class Gtk::Button(Gtk::StockID(_("Choose...")))));
+	Gtk::Button *choose_button(manage(new Gtk::Button(_("Choose..."))));
 	choose_button->show();
 	choose_button->set_tooltip_text(_("Choose the preferred Image editor for Edit in external tool option"));
 	
@@ -582,7 +586,7 @@ Dialog_Setup::on_accel_edited(const Glib::ustring& path_string, guint accel_key,
 		problematic_iter->get_value(SHORTCUT_COLUMN_ID_ACTION_NAME, accel_path);
 
 		std::string message = _("This shortcut is already set for\n\t%s\n\nAre you sure? It will unset for previously bound action.");
-		message = etl::strprintf(message.c_str(), accel_path.c_str());
+		message = synfig::strprintf(message.c_str(), accel_path.c_str());
 		bool accepted = App::dialog_message_2b(_("Shortcut In Use"), message, Gtk::MESSAGE_QUESTION, _("Cancel"), _("OK"));
 		if (!accepted)
 			return;
@@ -738,6 +742,8 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 	 *  [________________________________]
 	 * COLORTHEME
 	 *  DarkUI          [x]
+	 * ICON THEME
+	 *  [________________________________]
 	 * HANDLETOOLTIP
 	 *  Widthpoint      [x| ]
 	 *  Radius          [x| ]
@@ -750,7 +756,7 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 
 	static const char* languages[][2] = {
 		#include <languages.inc.c>
-		{ NULL, NULL } // final entry without comma to avoid misunderstanding
+		{ nullptr, nullptr } // final entry without comma to avoid misunderstanding
 	};
 
 	ui_language_combo.append("os_LANG", Glib::ustring("(") + _("System Language") + ")");
@@ -777,6 +783,20 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 	pi.grid->attach(toggle_use_dark_theme, 1, row, 1, 1);
 	toggle_use_dark_theme.set_halign(Gtk::ALIGN_START);
 	toggle_use_dark_theme.set_hexpand(false);
+
+	{
+	FileSystem::FileList files;
+	FileSystemNative::instance()->directory_scan(ResourceHelper::get_themes_path(), files);
+	for (const auto& dir : files)
+		icon_theme_combo.append(dir);
+	icon_theme_combo.set_active_text(App::get_icon_theme_name());
+	}
+
+	// Interface - Icon theme
+	attach_label(pi.grid, _("Icon theme"), ++row);
+	pi.grid->attach(icon_theme_combo, 0, ++row, 1, 1);
+	icon_theme_combo.set_hexpand(true);
+	icon_theme_combo.set_margin_start(10);
 
 	// Interface - Toolbars section
 	attach_label_section(pi.grid, _("Toolbars"), ++row);
@@ -945,6 +965,8 @@ Dialog_Setup::on_apply_pressed()
 
 	// Set the dark theme flag
 	App::use_dark_theme               = toggle_use_dark_theme.get_active();
+	// Set the icon theme
+	App::set_icon_theme(icon_theme_combo.get_active_text());
 	App::apply_gtk_settings();
 
 	// Set file toolbar flag
@@ -1231,6 +1253,8 @@ Dialog_Setup::refresh()
 
 	// Refresh the status of the theme flag
 	toggle_use_dark_theme.set_active(App::use_dark_theme);
+	// Refresh the choice of the icon theme
+	icon_theme_combo.set_active_text(App::get_icon_theme_name());
 
 	// Refresh the status of the render done sound flag
 	toggle_play_sound_on_render_done.set_active(App::use_render_done_sound);

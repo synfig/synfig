@@ -81,7 +81,7 @@ ThreadPool::Group::process(int begin, int end) {
 
 void
 ThreadPool::Group::enqueue(const Slot &slot, Real weight) {
-	weight = std::max(real_precision<Real>(), std::min(1.0/real_precision<Real>(), weight));
+	weight = synfig::clamp(weight, real_precision<Real>(), 1.0/real_precision<Real>());
 	tasks.push_back(Entry(weight, slot));
 	sum_weight += weight;
 }
@@ -258,7 +258,7 @@ ThreadPool::thread_loop(int
 
 void
 ThreadPool::wakeup() {
-	int to_wakeup = std::max(0, std::min((int)queue_size, max_running_threads - (int)running_threads));
+	int to_wakeup = synfig::clamp(max_running_threads - (int)running_threads, 0, (int)queue_size);
 	int to_create = std::max(0, to_wakeup - (int)ready_threads);
 	to_wakeup     = std::max(0, to_wakeup - to_create);
 	while(to_create-- > 0)

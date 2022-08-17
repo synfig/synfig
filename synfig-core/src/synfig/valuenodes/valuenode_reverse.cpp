@@ -52,7 +52,6 @@
 #include <synfig/general.h>
 #include <synfig/localization.h>
 #include <synfig/valuenode_registry.h>
-#include <ETL/misc>
 
 #include <algorithm>
 
@@ -66,7 +65,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Reverse, RELEASE_VERSION_1_0_2, "reverse", "Reverse")
+REGISTER_VALUENODE(ValueNode_Reverse, RELEASE_VERSION_1_0_2, "reverse", N_("Reverse"))
 
 /* === P R O C E D U R E S ================================================= */
 

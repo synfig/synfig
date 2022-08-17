@@ -36,7 +36,6 @@
 #include <gtkmm/toolbar.h>
 #include <gtkmm/toolbutton.h>
 #include <gtkmm/toggletoolbutton.h>
-#include <gui/duckmatic.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -53,11 +52,8 @@ class ResolutionDial
 	Gtk::ToolButton decrease_resolution;
 	Gtk::ToggleToolButton use_low_resolution;
 
-	void init_button(Gtk::ToolButton &button, Gtk::IconSize size, const Gtk::StockID &stockid, const char *text, const char *tooltip);
-	void init_toggle_button(Gtk::ToggleToolButton &button, const char *label, const char *tooltip);
-
 public:
-	ResolutionDial(const Gtk::IconSize &size);
+	ResolutionDial();
 
 	void insert_to_toolbar(Gtk::Toolbar &toolbar, int index = -1);
 	void remove_from_toolbar(Gtk::Toolbar &toolbar);
@@ -69,7 +65,7 @@ public:
 
 }; // END of class ResolutionDial
 
-}; // END of namespace studio
+} // END of namespace studio
 
 
 /* === E N D =============================================================== */

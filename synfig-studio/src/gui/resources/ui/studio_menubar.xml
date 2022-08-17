@@ -1,0 +1,664 @@
+<interface>
+<!-- menubar -->
+    <menu id="studio_menubar">
+
+<!-- File menu -->
+        <submenu>
+	        <attribute name="label" translatable="yes">_File</attribute>
+	        <section>
+	            <item>
+                    <attribute name="label" translatable="yes">_New</attribute>
+                    <attribute name="action">app.new</attribute>
+                    <attribute name="accel">&lt;Control&gt;n</attribute>
+                    <attribute name="icon">action_doc_new_icon</attribute>
+                </item>
+	            <item>
+                    <attribute name="label" translatable="yes">_Open</attribute>
+                    <attribute name="action">app.open</attribute>
+                    <attribute name="accel">&lt;Control&gt;o</attribute>
+                    <attribute name="icon">action_doc_open_icon</attribute>
+                </item>
+
+<!-- Open Recent submenu -->
+                <submenu id="recent-file">
+                    <attribute name="label" translatable="yes">_Open Recent</attribute>
+                </submenu>
+
+<!-- File menu continued -->
+			</section>
+	        <section>
+                <item>
+                    <attribute name="label" translatable="yes">_Save</attribute>
+                    <attribute name="action">app.save</attribute>
+                    <attribute name="accel">&lt;Control&gt;s</attribute>
+                    <attribute name="icon">action_doc_save_icon</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">_Save As...</attribute>
+                    <attribute name="action">app.save-as</attribute>
+                    <attribute name="accel">&lt;Control&gt;&lt;Shift&gt;s</attribute>
+                    <attribute name="icon">action_doc_saveas_icon</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">_Save All...</attribute>
+                    <attribute name="action">app.save-all</attribute>
+                    <attribute name="accel">&lt;Control&gt;e</attribute>
+                    <attribute name="icon">action_doc_saveall_icon</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">_Export...</attribute>
+                    <attribute name="action">app.export</attribute>
+                    <attribute name="icon">action_export_icon</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">_Revert...</attribute>
+                    <attribute name="action">app.revert</attribute>
+                    <attribute name="icon">document-revert</attribute>
+                </item>
+            </section>
+	        <section>
+	            <item>
+                    <attribute name="label" translatable="yes">_Import...</attribute>
+                    <attribute name="action">app.import</attribute>
+                    <attribute name="accel">&lt;Control&gt;i</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">_Import Sequence...</attribute>
+                    <attribute name="action">app.import-sequence</attribute>
+                </item>
+            </section>
+            <section>
+                <item>
+                    <attribute name="label" translatable="yes">_Preview...</attribute>
+                    <attribute name="action">app.preview</attribute>
+                    <attribute name="accel">F11</attribute>
+                    <attribute name="icon">preview_options_icon</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">_Render...</attribute>
+                    <attribute name="action">app.render</attribute>
+                    <attribute name="accel">F9</attribute>
+                    <attribute name="icon">render_options_icon</attribute>
+                </item>
+            </section>
+			<section>
+				<item>
+					<attribute name="label" translatable="yes">_Close Document</attribute>
+					<attribute name="action">app.close-document</attribute>
+              		<attribute name="accel">&lt;Primary&gt;w</attribute>
+	          		<attribute name="icon">window-close</attribute>
+				</item>
+			</section>
+	        <section>
+                <item>
+                    <attribute name="label" translatable="yes">_Quit</attribute>
+                    <attribute name="action">app.quit</attribute>
+                    <attribute name="accel">&lt;Primary&gt;q</attribute>
+                    <attribute name="icon">application-exit</attribute>
+                </item>
+            </section>
+        </submenu>
+
+<!-- Edit menu -->
+		<submenu>
+			<attribute name="label" translatable="yes">_Edit</attribute>
+			<section>
+				<item>
+					<attribute name="label" translatable="yes">_Undo</attribute>
+					<attribute name="action">app.undo</attribute>
+					<attribute name="accel">&lt;Primary&gt;z</attribute>
+					<attribute name="sensitive">True</attribute>
+					<attribute name="icon">action_doc_undo_icon</attribute>
+				</item>
+				<item>
+					<attribute name="label" translatable="yes">_Redo</attribute>
+					<attribute name="action">app.redo</attribute>
+					<attribute name="accel">&lt;Shift&gt;&lt;Primary&gt;z</attribute>
+					<attribute name="icon">action_doc_redo_icon</attribute>
+				</item>
+			</section>
+			<section>
+				<item>
+					<attribute name="label" translatable="yes">_Cut</attribute>
+					<attribute name="action">app.cut</attribute>
+					<attribute name="accel">&lt;Primary&gt;x</attribute>
+					<attribute name="icon">edit-cut</attribute>
+				</item>
+				<item>
+					<attribute name="label" translatable="yes">_Copy</attribute>
+					<attribute name="action">app.copy</attribute>
+					<attribute name="accel">&lt;Primary&gt;c</attribute>
+					<attribute name="icon">edit-copy</attribute>
+				</item>
+				<item>
+					<attribute name="label" translatable="yes">_Paste</attribute>
+					<attribute name="action">app.paste</attribute>
+					<attribute name="accel">&lt;Primary&gt;v</attribute>
+					<attribute name="icon">edit-paste</attribute>
+				</item>
+			</section>
+			<section>
+				<item>
+					<attribute name="label" translatable="yes">_Select All Layers</attribute>
+					<attribute name="action">app.select-all-layers</attribute>
+					<attribute name="accel">&lt;Control&gt;&lt;Shift&gt;a</attribute>
+				</item>
+				<item>
+					<attribute name="label" translatable="yes">_Unselect All Layers</attribute>
+					<attribute name="action">app.unselect-all-layers</attribute>
+					<attribute name="accel">&lt;Control&gt;&lt;Shift&gt;d</attribute>
+				</item>
+				<item>
+					<attribute name="label" translatable="yes">_Select All Handles</attribute>
+					<attribute name="action">app.select-all-ducks</attribute>
+					<attribute name="accel">&lt;Control&gt;a</attribute>
+				</item>
+				<item>
+					<attribute name="label" translatable="yes">_Unselect All Handles</attribute>
+					<attribute name="action">app.unselect-all-ducks</attribute>
+					<attribute name="accel">&lt;Control&gt;d</attribute>
+				</item>
+				<item>
+					<attribute name="label" translatable="yes">_Select Parent Layer</attribute>
+					<attribute name="action">app.select-parent-layer</attribute>
+					<attribute name="accel">&lt;Alt&gt;Page_Up</attribute>
+				</item>
+			</section>
+			<section>
+				<item>
+					<attribute name="label" translatable="yes">_Input Devices...</attribute>
+					<attribute name="action">app.input-devices</attribute>
+				</item>
+				<item>
+					<attribute name="label" translatable="yes">_Preferences...</attribute>
+					<attribute name="action">app.setup</attribute>
+				</item>
+			</section>
+		</submenu>
+
+<!-- View submenu -->
+		<submenu>
+			<attribute name="label" translatable="yes">_View</attribute>
+			<section id="view-section-0">
+				<item>
+					<attribute name="label" translatable="yes">_Show Menubar</attribute>
+					<attribute name="action">app.show-menubar</attribute>
+				</item>
+				<item>
+					<attribute name="label" translatable="yes">_Toolbar</attribute>
+					<attribute name="action">app.show-toolbar</attribute>
+				</item>
+			</section>
+			<section>
+<!-- Show/Hide Handles submenu -->
+				<submenu>
+					<attribute name="label" translatable="yes">_Show/Hide Handles</attribute>
+						<item>
+							<attribute name="label" translatable="yes">_Toggle None/Last visible Handles</attribute>
+							<attribute name="action">app.mask-none-ducks</attribute>
+							<attribute name="accel">&lt;Alt&gt;0</attribute>
+						</item>
+						<item>
+							<attribute name="label" translatable="yes">_Show Position Handles</attribute>
+							<attribute name="action">app.mask-position-ducks</attribute>
+							<attribute name="accel">&lt;Alt&gt;1</attribute>
+						</item>
+						<item>
+							<attribute name="label" translatable="yes">_Show Vertex Handles</attribute>
+							<attribute name="action">app.mask-vertex-ducks</attribute>
+							<attribute name="accel">&lt;Alt&gt;2</attribute>
+						</item>
+						<item>
+							<attribute name="label" translatable="yes">_Show Tangent Handles</attribute>
+							<attribute name="action">app.mask-tangent-ducks</attribute>
+							<attribute name="accel">&lt;Alt&gt;3</attribute>
+						</item>
+
+						<item>
+							<attribute name="label" translatable="yes">_Show Radius Handles</attribute>
+							<attribute name="action">app.mask-radius-ducks</attribute>
+							<attribute name="accel">&lt;Alt&gt;4</attribute>
+						</item>
+						<item>
+							<attribute name="label" translatable="yes">_Show Width Handles</attribute>
+							<attribute name="action">app.mask-width-ducks</attribute>
+							<attribute name="accel">&lt;Alt&gt;5</attribute>
+						</item>
+						<item>
+							<attribute name="label" translatable="yes">_Show WidthPoints Position Handles</attribute>
+							<attribute name="action">app.mask-widthpoint-position-ducks</attribute>
+						</item>
+						<item>
+							<attribute name="label" translatable="yes">_Show Angle Handles</attribute>
+							<attribute name="action">app.mask-angle-ducks</attribute>
+							<attribute name="accel">&lt;Alt&gt;6</attribute>
+						</item>
+						<item>
+	<!-- WHAT DOES SHOW BONE SETUP HANDLES DO?? -->
+							<attribute name="label" translatable="yes">_Show Bone Setup Handles</attribute>
+	<!-- 						<attribute name="action">app.mask-angle-ducks</attribute> -->
+						</item>
+						<item>
+							<attribute name="label" translatable="yes">_Show Recursive Scale Bone Handles</attribute>
+							<attribute name="action">app.mask-bone-recursive-ducks</attribute>
+							<attribute name="accel">&lt;Alt&gt;8</attribute>
+						</item>
+						<item>
+							<attribute name="label" translatable="yes">_Next Bone Handles</attribute>
+							<attribute name="action">app.mask-bone-ducks</attribute>
+							<attribute name="accel">&lt;Alt&gt;9</attribute>
+						</item>
+				</submenu>
+				<submenu id="pixel-size">
+					<attribute name="label" translatable="yes">_Low-Res Pixel Size</attribute>
+					<section>
+						<item>
+							<attribute name="label" translatable="yes">_Decrease Low-Res Pixel Size</attribute>
+							<attribute name="action">app.dec-lowres-pixel</attribute>
+	          				<attribute name="accel">&lt;Control&gt;parenleft</attribute>
+						</item>
+						<item>
+							<attribute name="label" translatable="yes">_Increase Low-Res Pixel Size</attribute>
+							<attribute name="action">app.inc-lowres-pixel</attribute>
+	          				<attribute name="accel">&lt;Control&gt;parenright</attribute>
+						</item>
+					</section>
+					<section>
+						<item>
+							<attribute name="label" translatable="yes">_Set Low-Res pixel size to 2</attribute>
+							<attribute name="action">app.lowres-pixel</attribute>
+	          				<attribute name="target" type="i">2</attribute>
+						</item>
+						<item>
+							<attribute name="label" translatable="yes">_Set Low-Res pixel size to 4</attribute>
+							<attribute name="action">app.lowres-pixel</attribute>
+	          				<attribute name="target" type="i">4</attribute>
+						</item>
+						<item>
+							<attribute name="label" translatable="yes">_Set Low-Res pixel size to 8</attribute>
+							<attribute name="action">app.lowres-pixel</attribute>
+	          				<attribute name="target" type="i">8</attribute>
+						</item>
+						<item>
+							<attribute name="label" translatable="yes">_Set Low-Res pixel size to 16</attribute>
+							<attribute name="action">app.lowres-pixel</attribute>
+	          				<attribute name="target" type="i">16</attribute>
+						</item>
+					</section>
+				</submenu>
+			</section>
+			<section>
+						<item>
+							<attribute name="label" translatable="yes">_Show Grid</attribute>
+							<attribute name="action">app.show-grid</attribute>
+	          				<attribute name="accel">numbersign</attribute>
+						</item>
+						<item>
+							<attribute name="label" translatable="yes">_Snap to Grid</attribute>
+							<attribute name="action">app.snap-grid</attribute>
+	          				<attribute name="accel">&lt;Control&gt;L</attribute>
+						</item>
+						<item>
+							<attribute name="label" translatable="yes">_Show Guides</attribute>
+							<attribute name="action">app.show-guides</attribute>
+						</item>
+						<item>
+							<attribute name="label" translatable="yes">_Snap to Guides</attribute>
+							<attribute name="action">app.snap-guides</attribute>
+						</item>
+						<item>
+							<attribute name="label" translatable="yes">_Use Low-Res</attribute>
+							<attribute name="action">app.toggle-low-res</attribute>
+	          				<attribute name="accel">&lt;Control&gt;grave</attribute>
+						</item>
+						<item>
+							<attribute name="label" translatable="yes">_Enable rendering in background</attribute>
+							<attribute name="action">app.background-rendering</attribute>
+						</item>
+						<item>
+							<attribute name="label" translatable="yes">_Show Onion Skin</attribute>
+							<attribute name="action">app.onion-skin</attribute>
+	          				<attribute name="accel">&lt;Alt&gt;O</attribute>
+						</item>
+						<item>
+							<attribute name="label" translatable="yes">_Onion Skin on Keyframes</attribute>
+							<attribute name="action">app.onion-skin-keyframes</attribute>
+						</item>
+				</section>
+				<section>
+                    <item>
+                        <attribute name="label" translatable="yes">_Zoom In</attribute>
+                        <attribute name="action">app.zoom-in</attribute>
+                        <attribute name="accel">equal</attribute>
+                        <attribute name="icon">zoom-in</attribute>
+                    </item>
+                    <item>
+                        <attribute name="label" translatable="yes">_Zoom Out</attribute>
+                        <attribute name="action">app.zoom-out</attribute>
+                        <attribute name="accel">minus</attribute>
+                        <attribute name="icon">zoom-out</attribute>
+                    </item>
+                    <item>
+                        <attribute name="label" translatable="yes">_Best Fit</attribute>
+                        <attribute name="action">app.zoom-fit</attribute>
+                        <attribute name="accel">0</attribute>
+                        <attribute name="icon">zoom-fit-best</attribute>
+                    </item>
+                    <item>
+                        <attribute name="label" translatable="yes">_Normal Size</attribute>
+                        <attribute name="action">app.zoom-norm</attribute>
+                        <attribute name="icon">zoom-original</attribute>
+                    </item>
+				</section>
+                <section>
+                    <item>
+                        <attribute name="label" translatable="yes">_Zoom In on Timeline</attribute>
+                        <attribute name="action">app.time-zoom-in</attribute>
+                        <attribute name="accel">&lt;Control&gt;plus</attribute>
+                        <attribute name="icon">zoom-in</attribute>
+                    </item>
+                    <item>
+                        <attribute name="label" translatable="yes">_Zoom Out on Timeline</attribute>
+                        <attribute name="action">app.time-zoom-out</attribute>
+                        <attribute name="accel">&lt;Control&gt;minus</attribute>
+                        <attribute name="icon">zoom-out</attribute>
+                    </item>
+                </section>
+		</submenu>
+		<submenu>
+			<attribute name="label" translatable="yes">_Canvas</attribute>
+				<item>
+					<attribute name="label" translatable="yes">_Properties...</attribute>
+					<attribute name="action">app.properties</attribute>
+					<attribute name="accel">F8</attribute>
+					<attribute name="icon">document-properties</attribute>
+				</item>
+				<item>
+					<attribute name="label" translatable="yes">_Options...</attribute>
+					<attribute name="action">app.options</attribute>
+					<attribute name="accel">F12</attribute>
+				</item>
+		</submenu>
+<!-- toolbox -->
+		<submenu id="toolbox">
+			<attribute name="label" translatable="yes">_Toolbox</attribute>
+                <item>
+                    <attribute name="label" translatable="yes">_Transform Tool</attribute>
+                    <attribute name="action">app.state-normal</attribute>
+                    <attribute name="icon">tool_normal_icon</attribute>
+                    <attribute name="accel">S</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">_SmoothMove Tool</attribute>
+                    <attribute name="action">app.state-smooth-move</attribute>
+                    <attribute name="icon">tool_smooth_move_icon</attribute>
+                    <attribute name="accel">M</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">_Scale Tool</attribute>
+                    <attribute name="action">app.state-scale</attribute>
+                    <attribute name="icon">tool_scale_icon</attribute>
+                    <attribute name="accel">L</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">_Rotate Tool</attribute>
+                    <attribute name="action">app.state-rotate</attribute>
+                    <attribute name="icon">tool_rotate_icon</attribute>
+                    <attribute name="accel">A</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">_Mirror Tool</attribute>
+                    <attribute name="action">app.state-mirror</attribute>
+                    <attribute name="icon">tool_mirror_icon</attribute>
+                    <attribute name="accel">I</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">_Circle Tool</attribute>
+                    <attribute name="action">app.state-circle</attribute>
+                    <attribute name="icon">tool_circle_icon</attribute>
+                    <attribute name="accel">E</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">_Rectangle Tool</attribute>
+                    <attribute name="action">app.state-rectangle</attribute>
+                    <attribute name="icon">tool_rectangle_icon</attribute>
+                    <attribute name="accel">R</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">_Star Tool</attribute>
+                    <attribute name="action">app.state-star</attribute>
+                    <attribute name="icon">tool_star_icon</attribute>
+                    <attribute name="accel">asterisk</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">_Polygon Tool</attribute>
+                    <attribute name="action">app.state-polygon</attribute>
+                    <attribute name="icon">tool_polyline_icon</attribute>
+                    <attribute name="accel">O</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">_Gradient Tool</attribute>
+                    <attribute name="action">app.state-gradient</attribute>
+                    <attribute name="icon">tool_gradient_icon</attribute>
+                    <attribute name="accel">G</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">_Spline Tool</attribute>
+                    <attribute name="action">app.state-bline</attribute>
+                    <attribute name="icon">tool_spline_icon</attribute>
+                    <attribute name="accel">B</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">_Draw Tool</attribute>
+                    <attribute name="action">app.state-draw</attribute>
+                    <attribute name="icon">tool_draw_icon</attribute>
+                    <attribute name="accel">P</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">_Cutout Tool</attribute>
+                    <attribute name="action">app.state-lasso</attribute>
+                    <attribute name="icon">tool_cutout_icon</attribute>
+                    <attribute name="accel">C</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">_Width Tool</attribute>
+                    <attribute name="action">app.state-width</attribute>
+                    <attribute name="icon">tool_width_icon</attribute>
+                    <attribute name="accel">W</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">_Fill Tool</attribute>
+                    <attribute name="action">app.state-fill</attribute>
+                    <attribute name="icon">tool_fill_icon</attribute>
+                    <attribute name="accel">U</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">_Eyedrop Tool</attribute>
+                    <attribute name="action">app.state-eyedrop</attribute>
+                    <attribute name="icon">tool_eyedrop_icon</attribute>
+                    <attribute name="accel">D</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">_Skeleton Tool</attribute>
+                    <attribute name="action">app.state-bone</attribute>
+                    <attribute name="icon">tool_skeleton_icon</attribute>
+                    <attribute name="accel">D</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">_Text Tool</attribute>
+                    <attribute name="action">app.state-text</attribute>
+                    <attribute name="icon">tool_text_icon</attribute>
+                    <attribute name="accel">T</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">_Sketch Tool</attribute>
+                    <attribute name="action">app.state-sketch</attribute>
+                    <attribute name="icon">tool_sketch_icon</attribute>
+                    <attribute name="accel">K</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">_Zoom Tool</attribute>
+                    <attribute name="action">app.state-zoom</attribute>
+                    <attribute name="icon">tool_zoom_icon</attribute>
+                    <attribute name="accel">Z</attribute>
+                </item>
+		</submenu>
+<!-- Layers menu -->
+		<submenu id="menu-layer">
+            <attribute name="label" translatable="yes">_Layer</attribute>
+                <section>
+                    <submenu>
+                        <attribute name="label" translatable="yes">_New Layer</attribute>
+                            <submenu id="Blurs">
+                                <attribute name="label" translatable="yes">_Blurs</attribute>
+                            </submenu>
+                            <submenu id="Distortions">
+                                <attribute name="label" translatable="yes">_Distortions</attribute>
+                            </submenu>
+                            <submenu id="Example">
+                                <attribute name="label" translatable="yes">_Example</attribute>
+                            </submenu>
+                            <submenu id="Filters">
+                                <attribute name="label" translatable="yes">_Filters</attribute>
+                            </submenu>
+                            <submenu id="Fractals">
+                                <attribute name="label" translatable="yes">_Fractals</attribute>
+                            </submenu>
+                            <submenu id="Geometry">
+                                <attribute name="label" translatable="yes">_Geometry</attribute>
+                            </submenu>
+                            <submenu id="Gradients">
+                                <attribute name="label" translatable="yes">_Gradients</attribute>
+                            </submenu>
+                            <submenu id="Other">
+                                <attribute name="label" translatable="yes">_Other</attribute>
+                            </submenu>
+                            <submenu id="Stylize">
+                                <attribute name="label" translatable="yes">_Stylize</attribute>
+                            </submenu>
+                            <submenu id="Time">
+                                <attribute name="label" translatable="yes">_Time</attribute>
+                            </submenu>
+                            <submenu id="Transform">
+                                <attribute name="label" translatable="yes">_Transform</attribute>
+                            </submenu>
+                    </submenu>
+            </section>
+            <section id="instance-layers">
+            </section>
+            <section id="special-layer-actions">
+            </section>
+                <section>
+                    <item>
+                        <attribute name="label" translatable="yes">_Cut</attribute>
+                        <attribute name="action">app.cut</attribute>
+                        <attribute name="accel">&lt;Primary&gt;x</attribute>
+                        <attribute name="icon">edit-cut</attribute>
+                    </item>
+                    <item>
+                        <attribute name="label" translatable="yes">_Copy</attribute>
+                        <attribute name="action">app.copy</attribute>
+                        <attribute name="accel">&lt;Primary&gt;c</attribute>
+                        <attribute name="icon">edit-copy</attribute>
+                    </item>
+                    <item>
+                        <attribute name="label" translatable="yes">_Paste</attribute>
+                        <attribute name="action">app.paste</attribute>
+                        <attribute name="accel">&lt;Primary&gt;v</attribute>
+                        <attribute name="icon">edit-paste</attribute>
+                    </item>
+                </section>
+		</submenu>
+		<submenu id="plugins">
+			<attribute name="label" translatable="yes">_Plug-Ins</attribute>
+		</submenu>
+		<submenu id="menu-window">
+			<attribute name="label" translatable="yes">_Window</attribute>
+			<section>
+				<submenu>
+					<attribute name="label" translatable="yes">_Workspace</attribute>
+					<section>
+						<item>
+						    <attribute name="label" translatable="yes">_Default</attribute>
+						    <attribute name="action">app.workspace-default</attribute>
+						</item>
+						<item>
+						    <attribute name="label" translatable="yes">_Composting</attribute>
+						    <attribute name="action">app.workspace-composting</attribute>
+						</item>
+						<item>
+						    <attribute name="label" translatable="yes">_Animating</attribute>
+						    <attribute name="action">app.workspace-animating</attribute>
+						</item>
+					</section>
+					<section>
+						<item>
+						    <attribute name="label" translatable="yes">_Save Workspace...</attribute>
+						    <attribute name="action">app.save-workspace</attribute>
+						    <attribute name="icon">action_doc_saveas_icon</attribute>
+						</item>
+						<item>
+						    <attribute name="label" translatable="yes">_Edit Workspaces...</attribute>
+						    <attribute name="action">app.edit-workspacelist</attribute>
+						</item>
+					</section>
+				</submenu>
+			</section>
+			<section id="menu-window-docks">
+						<item>
+						    <attribute name="label" translatable="yes">_Preview Window</attribute>
+						    <attribute name="action">app.dialog-flipbook</attribute>
+						</item>
+			</section>
+			<section id="menu-window-canvas">
+			</section>
+		</submenu>
+		<submenu id="help">
+			<attribute name="label" translatable="yes">_Help</attribute>
+			    <section>
+                    <item>
+                        <attribute name="label" translatable="yes">_Help</attribute>
+                        <attribute name="action">app.help</attribute>
+                        <attribute name="icon">help-browser</attribute>
+                        <attribute name="accel">F1</attribute>
+                    </item>
+			    </section>
+			    <section id="help-section-1">
+                    <item>
+                        <attribute name="label" translatable="yes">_Keyboard Shortcuts</attribute>
+                        <attribute name="action">app.help-shortcuts</attribute>
+                        <attribute name="icon">preferences-desktop-keyboard</attribute>
+                    </item>
+                    <item>
+                        <attribute name="label" translatable="yes">_Tutorials</attribute>
+                        <attribute name="action">app.help-tutorials</attribute>
+                        <attribute name="icon">help-browser</attribute>
+                    </item>
+                    <item>
+                        <attribute name="label" translatable="yes">_Reference</attribute>
+                        <attribute name="action">app.help-reference</attribute>
+                        <attribute name="icon">help-browser</attribute>
+                    </item>
+                    <item>
+                        <attribute name="label" translatable="yes">_Frequently Asked Questions</attribute>
+                        <attribute name="action">app.help-faq</attribute>
+                        <attribute name="icon">help-browser</attribute>
+                    </item>
+			    </section>
+			    <section>
+                    <item>
+                        <attribute name="label" translatable="yes">_Get Support</attribute>
+                        <attribute name="action">app.help-support</attribute>
+                        <attribute name="icon">help-browser</attribute>
+                    </item>
+			    </section>
+			    <section>
+                    <item>
+                        <attribute name="label" translatable="yes">_About Synfig Studio</attribute>
+                        <attribute name="action">app.help-about</attribute>
+                        <attribute name="icon">synfig_icon</attribute>
+                    </item>
+			    </section>
+		</submenu>
+	</menu>
+</interface>

@@ -70,6 +70,14 @@ std::istream::pos_type FileSystemNative::ReadStream::seekpos(std::istream::pos_t
 	return ftell(file_);
 }
 
+int FileSystemNative::ReadStream::pbackfail(int ch)
+{
+	if (fseek(file_, -1, SEEK_CUR)) {
+		return EOF;
+	}
+	return FileSystem::ReadStream::underflow();
+}
+
 // WriteStream
 
 FileSystemNative::WriteStream::WriteStream(FileSystem::Handle file_system, FILE *file):

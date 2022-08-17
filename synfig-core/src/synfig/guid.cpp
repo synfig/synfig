@@ -35,7 +35,6 @@
 
 #include "guid.h"
 #include "quick_rng.h"
-#include <ETL/stringf>
 
 #include <cassert>
 #include <cstring>
@@ -48,7 +47,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */

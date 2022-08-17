@@ -37,7 +37,6 @@
 #include <gtkmm/scale.h>
 #include <gtkmm/spinbutton.h>
 
-#include <gui/widgets/widget_link.h>
 #include <gui/widgets/widget_time.h>
 #include <gui/widgets/widget_vector.h>
 
@@ -50,6 +49,8 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace studio {
+
+class Widget_Link;
 
 class Widget_RendDesc : public Gtk::Notebook
 {

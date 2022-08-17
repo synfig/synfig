@@ -33,11 +33,12 @@
 #	include <config.h>
 #endif
 
-#include <cstdlib>
-#include <cstdio>
 #include "node.h"
 
+#include <cstdlib>
 #include <map>
+
+#include "synfig/general.h"
 
 #endif
 
@@ -106,7 +107,7 @@ namespace {
 	};
 }
 
-//! A map to store all the GUIDs with a pointer to the Node.
+// A map to store all the GUIDs with a pointer to the Node.
 static GlobalNodeMap& global_node_map()
 {
 	static GlobalNodeMap map;
@@ -121,31 +122,23 @@ Node* synfig::find_node(const GUID &guid) {
 
 /* === M E T H O D S ======================================================= */
 
-#ifdef _DEBUG
-const char *
-TimePoint::c_str()const
-{
-	return get_time().get_string().c_str();
-}
-#endif
-
 void
 TimePoint::absorb(const TimePoint& x)
 {
-	//! If the Time Point to absorb is itself then bail out
+	// If the Time Point to absorb is itself then bail out
 	if(get_guid()==x.get_guid())
 		return;
-	//! Creates a new GUID with the old and the new one using XOR operator
+	// Creates a new GUID with the old and the new one using XOR operator
 	set_guid(get_guid()^x.get_guid());
-	//! If the current before/after interpolation is NIL use the interpolation
-	//! provided by the TimePoint to absorb
+	// If the current before/after interpolation is NIL use the interpolation
+	// provided by the TimePoint to absorb
 	if(get_after()==INTERPOLATION_NIL)
 		set_after(x.get_after());
 	if(get_before()==INTERPOLATION_NIL)
 		set_before(x.get_before());
-	//! If the interpolation of the Time Point to absorb is not the same
-	//! than the interpolation from the Time Point to absorb then
-	//! use UNDEFINED interpolation
+	// If the interpolation of the Time Point to absorb is not the same
+	// than the interpolation from the Time Point to absorb then
+	// use UNDEFINED interpolation
 	if(get_after()!=x.get_after() && x.get_after()!=INTERPOLATION_NIL)
 		set_after(INTERPOLATION_UNDEFINED);
 	if(get_before()!=x.get_before() && x.get_before()!=INTERPOLATION_NIL)
@@ -155,17 +148,17 @@ TimePoint::absorb(const TimePoint& x)
 TimePointSet::iterator
 TimePointSet::insert(const TimePoint& x)
 {
-	//! finds a iterator to a Time Point with the same time
-	//! \see inline bool operator==(const TimePoint& lhs,const TimePoint& rhs)
+	// finds a iterator to a Time Point with the same time
+	// \see inline bool operator==(const TimePoint& lhs,const TimePoint& rhs)
 	iterator iter(find(x));
-	//! If iter is not a the end of the set (we found one Time Point)
+	// If iter is not a the end of the set (we found one Time Point)
 	if(iter!=end())
 	{
-		//! Absorb the time point
+		// Absorb the time point
 		const_cast<TimePoint&>(*iter).absorb(x);
 		return iter;
 	}
-	//! Else, insert it at the first of the set
+	// Else, insert it at the first of the set
 	return std::set<TimePoint>::insert(x).first;
 }
 
@@ -198,8 +191,6 @@ Node::child_changed(const Node *x)
 	on_child_changed(x);
 }
 
-
-//! Gets the GUID for this value node
 const synfig::GUID&
 Node::get_guid()const
 {
@@ -215,7 +206,6 @@ Node::get_guid()const
 	return guid_;
 }
 
-//! Sets the GUID for this value node
 void
 Node::set_guid(const synfig::GUID& x)
 {
@@ -242,49 +232,103 @@ Node::get_time_last_changed()const
 }
 
 void
-Node::add_child(Node*x)
+Node::add_parent(Node* new_parent)
 {
+	std::lock_guard<std::mutex> lock(parent_set_mutex_);
+
 	if (getenv("SYNFIG_DEBUG_NODE_PARENT_SET"))
-		printf("%s:%d adding %p (%s) as parent of %p (%s) (%zd -> ", __FILE__, __LINE__,
+		printf("%s:%d adding %p (%s) as parent of %p (%s) (%zu -> ", __FILE__, __LINE__,
+			   new_parent, new_parent->get_string().c_str(),
 			   this, get_string().c_str(),
-			   x, x->get_string().c_str(),
-			   x->parent_set.size());
+			   parent_set.size());
 
-	x->parent_set.insert(this);
+	parent_set.insert(new_parent);
 
 	if (getenv("SYNFIG_DEBUG_NODE_PARENT_SET"))
-		printf("%zd)\n", x->parent_set.size());
+		printf("%zu)\n", parent_set.size());
 }
 
 void
-Node::remove_child(Node*x)
+Node::add_child(Node*x)
 {
-	if(x->parent_set.count(this) == 0)
+	if (!x)
+		error("Adding a null child node?!");
+	else
+		x->add_parent(this);
+}
+
+void
+Node::remove_parent(Node* parent)
+{
+	std::lock_guard<std::mutex> lock(parent_set_mutex_);
+
+	if(parent_set.count(parent) == 0)
 	{
 		if (getenv("SYNFIG_DEBUG_NODE_PARENT_SET"))
-			printf("%s:%d %p (%s) isn't in parent set of %p (%s)\n", __FILE__, __LINE__,
-				   this, get_string().c_str(),
-				   x, x->get_string().c_str());
+			warning("%s:%d %p (%s) isn't in parent set of %p (%s)\n", __FILE__, __LINE__,
+				   parent, parent->get_string().c_str(),
+				   this, get_string().c_str());
 
 		return;
 	}
 
 	if (getenv("SYNFIG_DEBUG_NODE_PARENT_SET"))
-		printf("%s:%d removing %p (%s) from parent set of %p (%s) (%zd -> ", __FILE__, __LINE__,
+		printf("%s:%d removing %p (%s) from parent set of %p (%s) (%zu -> ", __FILE__, __LINE__,
+			   parent, parent->get_string().c_str(),
 			   this, get_string().c_str(),
-			   x, x->get_string().c_str(),
-			   x->parent_set.size());
+			   parent_set.size());
 
-	x->parent_set.erase(this);
+	parent_set.erase(parent);
 
 	if (getenv("SYNFIG_DEBUG_NODE_PARENT_SET"))
-		printf("%zd)\n", x->parent_set.size());
+		printf("%zu)\n", parent_set.size());
 }
 
-int
+void
+Node::remove_child(Node*x)
+{
+	if (!x)
+		error("Internal error: Removing a null child node?!");
+	else
+		x->remove_parent(this);
+}
+
+std::size_t
 Node::parent_count()const
 {
 	return parent_set.size();
+}
+
+bool
+Node::is_child_of(const Node *x) const
+{
+	std::lock_guard<std::mutex> lock(parent_set_mutex_);
+	return parent_set.count(const_cast<Node*>(x)) != 0;
+}
+
+Node*
+Node::get_first_parent() const
+{
+	std::lock_guard<std::mutex> lock(parent_set_mutex_);
+	if (parent_set.empty())
+		return nullptr;
+	return *parent_set.begin();
+}
+
+void Node::foreach_parent(const ConstForeachFunc &func) const
+{
+	std::lock_guard<std::mutex> lock(parent_set_mutex_);
+	for (const Node* node : parent_set)
+		if (func(node))
+			return;
+}
+
+void Node::foreach_parent(const ForeachFunc &func)
+{
+	std::lock_guard<std::mutex> lock(parent_set_mutex_);
+	for (Node* node : parent_set)
+		if (func(node))
+			return;
 }
 
 const Node::time_set &
@@ -315,6 +359,7 @@ Node::on_changed()
 {
 	if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
 	{
+		std::lock_guard<std::mutex> lock(parent_set_mutex_);
 		printf("%s:%d Node::on_changed() for %p (%s); signalling these %zd parents:\n", __FILE__, __LINE__, this, get_string().c_str(), parent_set.size());
 		for (std::set<Node*>::iterator iter = parent_set.begin(); iter != parent_set.end(); ++iter) printf(" %p (%s)\n", *iter, (*iter)->get_string().c_str());
 		printf("\n");
@@ -323,6 +368,7 @@ Node::on_changed()
 	bchanged = true;
 	signal_changed()();
 
+	std::lock_guard<std::mutex> lock(parent_set_mutex_);
 	std::set<Node*>::iterator iter;
 	for(iter=parent_set.begin();iter!=parent_set.end();++iter)
 	{

@@ -57,7 +57,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dock_Params::Dock_Params():
-	Dock_CanvasSpecific( "params", _("Parameters"),Gtk::StockID("synfig-params") ),
+	Dock_CanvasSpecific("params", _("Parameters"), "parameters_icon"),
 	action_group( Gtk::ActionGroup::create("action_group_dock_params") ),
 	vadjustment( Gtk::Adjustment::create(0, 0, 1, 1, 1) )
 {

@@ -37,6 +37,7 @@
 #include <fstream>
 
 #include <gui/localization.h>
+#include <synfig/filesystem.h>
 #include <synfig/general.h>
 #include <synfig/string_helper.h>
 #endif
@@ -122,7 +123,7 @@ WorkspaceHandler::get_name_list(std::vector<std::string>& list)
 bool
 WorkspaceHandler::save(const std::string& filename)
 {
-	std::ofstream ofs(filename);
+	std::ofstream ofs(synfig::filesystem::Path(filename).c_str());
 	if (!ofs) {
 		synfig::error(_("Can't save custom workspaces"));
 		return false;
@@ -136,7 +137,7 @@ WorkspaceHandler::save(const std::string& filename)
 void
 WorkspaceHandler::load(const std::string& filename)
 {
-	std::ifstream ifs(filename);
+	std::ifstream ifs(synfig::filesystem::Path(filename).c_str());
 	std::string line;
 	int count = 0;
 	while (ifs && !ifs.eof()) {

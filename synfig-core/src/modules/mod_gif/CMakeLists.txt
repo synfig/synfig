@@ -3,7 +3,7 @@ add_library(mod_gif MODULE
         "${CMAKE_CURRENT_LIST_DIR}/main.cpp"
 )
 
-target_link_libraries(mod_gif synfig)
+target_link_libraries(mod_gif libsynfig)
 
 install (
     TARGETS mod_gif

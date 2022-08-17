@@ -94,21 +94,19 @@ static ValueNode_Composite::Handle search_for_related_blinepoint(const Action::P
 	if(blinepoint && blinepoint->get_type()==type_bline_point)
 		return blinepoint;
 
+	blinepoint = nullptr;
+
 	ValueNode_RadialComposite::Handle radial_value_node;
 	radial_value_node=ValueNode_RadialComposite::Handle::cast_dynamic(param.get_value_node());
 	if(radial_value_node && radial_value_node->get_type()==type_vector)
-	// value_node is radial composite and vector (user right click on a tangent)
 	{
-		std::set<Node*>::iterator iter;
+		// value_node is radial composite and vector (user right click on a tangent)
 		// now check if the parent of radial_value_node is a blinepoint type
-		for(iter=radial_value_node->parent_set.begin();iter!=radial_value_node->parent_set.end();++iter)
-		{
-			blinepoint=ValueNode_Composite::Handle::cast_dynamic(*iter);
-			if(blinepoint && blinepoint->get_type()==type_bline_point)
-				return blinepoint;
-		}
+		blinepoint = radial_value_node->find_first_parent_of_type<ValueNode_Composite>([](const ValueNode_Composite::Handle& compo) {
+			return compo->get_type()==type_bline_point;
+		});
 	}
-	return nullptr;
+	return blinepoint;
 }
 
 /* === M E T H O D S ======================================================= */

@@ -35,6 +35,8 @@
 #include "main.h"
 #include "action.h"
 
+#include <ETL/stringf>
+
 #include <synfig/general.h>
 
 #include <synfig/color.h>
@@ -112,7 +114,7 @@ synfigapp::Main::Main(const synfig::String &rootpath, synfig::ProgressCallback *
 
 #ifdef ENABLE_NLS
 	String locale_dir;
-	locale_dir = rootpath+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"locale";
+	locale_dir = rootpath+"/share/locale";
 	
 	bindtextdomain(GETTEXT_PACKAGE, Glib::locale_from_utf8(locale_dir).c_str() );
 	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
@@ -415,11 +417,9 @@ synfigapp::Main::set_state(synfig::String state)
 synfig::String
 synfigapp::Main::get_user_app_directory()
 {
-	String dir;
-	if (char* synfig_user_settings_dir = getenv("SYNFIG_USER_SETTINGS")) {
-		dir =  Glib::locale_to_utf8(String(synfig_user_settings_dir));
-	} else {
-		dir = Glib::get_home_dir()+ETL_DIRECTORY_SEPARATOR+SYNFIG_USER_APP_DIR;
+	std::string dir = Glib::getenv("SYNFIG_USER_SETTINGS");
+	if (!dir.empty()) {
+		return dir;
 	}
-	return dir;
+	return Glib::get_home_dir()+ETL_DIRECTORY_SEPARATOR+SYNFIG_USER_APP_DIR;
 }

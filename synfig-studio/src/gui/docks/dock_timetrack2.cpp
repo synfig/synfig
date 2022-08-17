@@ -43,7 +43,7 @@
 using namespace studio;
 
 Dock_Timetrack2::Dock_Timetrack2()
-	: Dock_CanvasSpecific("timetrack", _("Timetrack"), Gtk::StockID("synfig-timetrack")),
+	: Dock_CanvasSpecific("timetrack", _("Timetrack"), "time_track_icon"),
 	  current_widget_timetrack(nullptr)
 {
 	set_use_scrolled(false);
@@ -183,18 +183,18 @@ void Dock_Timetrack2::setup_tool_palette()
 	Gtk::ToolItemGroup *tool_item_group = Gtk::manage(new Gtk::ToolItemGroup());
 	gtk_tool_item_group_set_label(tool_item_group->gobj(), nullptr);
 	struct ActionButtonInfo {
-		std::string name;
+		std::string icon;
 		std::string tooltip;
 		std::string shortcut;
 		Widget_Timetrack::ActionState action_state ;
 	};
 
 	const std::vector<ActionButtonInfo> tools_info {
-		{"synfig-smooth_move", _("Move waypoints\n\nSelect waypoints and drag them along the timetrack."),
+		{"tool_smooth_move_icon", _("Move waypoints\n\nSelect waypoints and drag them along the timetrack."),
 					std::string(""), Widget_Timetrack::ActionState::MOVE},
-		{"synfig-duplicate", _("Duplicate waypoints\n\nAfter selecting waypoints, drag to duplicate them and place them in another time point."),
+		{"duplicate_icon", _("Duplicate waypoints\n\nAfter selecting waypoints, drag to duplicate them and place them in another time point."),
 					_("Shift"), Widget_Timetrack::ActionState::COPY},
-		{"synfig-scale", _("Scale waypoints\n\nAfter selecting more than one waypoint, drag them to change their timepoint regarding current time."),
+		{"tool_scale_icon", _("Scale waypoints\n\nAfter selecting more than one waypoint, drag them to change their timepoint regarding current time."),
 // This should be a function like get_key_name() to be reused
 #ifdef __APPLE__
 					_("Option"),
@@ -204,21 +204,17 @@ void Dock_Timetrack2::setup_tool_palette()
 					Widget_Timetrack::ActionState::SCALE}
 	};
 
+	tool_palette.set_icon_size(Gtk::IconSize::from_name("synfig-small_icon_16x16"));
+
 	Gtk::RadioButtonGroup button_group;
 	for (const auto & tool_info : tools_info) {
-		const std::string &name = tool_info.name;
+		const std::string &icon_name = tool_info.icon;
 		std::string tooltip = tool_info.tooltip;
 		const std::string &shortcut = tool_info.shortcut;
 		Widget_Timetrack::ActionState action_state = tool_info.action_state;
 
-		Gtk::StockItem stock_item;
-		Gtk::Stock::lookup(Gtk::StockID(name),stock_item);
-
-		Gtk::RadioToolButton *tool_button = manage(new Gtk::RadioToolButton(
-														*manage(new Gtk::Image(
-																	stock_item.get_stock_id(),
-																	Gtk::IconSize::from_name("synfig-small_icon_16x16") )),
-														stock_item.get_label() ));
+		Gtk::RadioToolButton *tool_button = manage(new Gtk::RadioToolButton());
+		tool_button->set_icon_name(icon_name);
 		tool_button->set_name(Widget_Timetrack::get_action_state_name(action_state));
 		if (!shortcut.empty()) {
 			std::string shortcut_text = _("Shortcut: ") + shortcut;

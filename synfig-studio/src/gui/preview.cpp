@@ -115,7 +115,7 @@ public:
 		return false;
 	}
 
-	virtual bool start_frame(ProgressCallback */*cb*/=NULL)
+	virtual bool start_frame(ProgressCallback* /*cb*/=nullptr)
 	{
 		return true;
 	}
@@ -312,17 +312,31 @@ void studio::Preview::frame_finish(const Preview_Target *targ)
 	signal_changed()();
 }
 
-#define IMAGIFY_BUTTON(button,stockid,tooltip) \
-	icon = manage(new Gtk::Image(Gtk::StockID(stockid), Gtk::ICON_SIZE_BUTTON)); \
-	button->set_tooltip_text(tooltip); \
-	button->add(*icon); \
-	button->set_relief(Gtk::RELIEF_NONE); \
-	button->show(); \
-	icon->set_margin_start(0); \
-	icon->set_margin_end(0); \
-	icon->set_margin_top(0); \
-	icon->set_margin_bottom(0); \
-	icon->show();
+static Gtk::Button*
+create_tool_button(const std::string& icon_name, const std::string& tooltip)
+{
+	Gtk::Button* button = manage(new Gtk::Button());
+	button->set_tooltip_text(tooltip);
+	button->set_image_from_icon_name(icon_name);
+	button->set_relief(Gtk::RELIEF_NONE);
+	button->show();
+
+	return button;
+}
+
+// TODO(ice0): duplicated code
+static Gtk::ToggleButton*
+create_toggle_button(const std::string& icon_name, const std::string& tooltip)
+{
+	Gtk::ToggleButton *button = manage(new class Gtk::ToggleButton());
+	button->set_tooltip_text(tooltip);
+	button->set_image_from_icon_name(icon_name);
+	button->set_relief(Gtk::RELIEF_NONE);
+	button->set_active();
+	button->show();
+
+	return button;
+}
 
 Widget_Preview::Widget_Preview():
 	Gtk::Table(1, 5),
@@ -341,18 +355,15 @@ Widget_Preview::Widget_Preview():
 	toolbar(),
 	play_button(),
 	pause_button(),
-	jackdial(NULL),
+	jackdial(nullptr),
 	jack_enabled(false),
 	jack_time(0),
 	jack_offset(0),
 	jack_initial_time(0)
 #ifdef WITH_JACK
 	,
-	jackbutton(),
-	offset_widget(),
-
+	jack_client(nullptr),
 	jack_is_playing(false),
-	jack_client(NULL),
 	jack_synchronizing(false)
 #endif
 {
@@ -383,122 +394,58 @@ Widget_Preview::Widget_Preview():
 
 	scr_time_scrub.set_draw_value(0);
 
-	Gtk::Button *button = 0;
-	Gtk::Image  *icon   = 0;
-
 	#if 1
 
 	//2nd row: prevframe play/pause nextframe loop | halt-render re-preview erase-all
 	toolbar = Gtk::manage(new class Gtk::HBox(false, 0));
 
 	//prev rendered frame
-	Gtk::Button *prev_framebutton;
-	Gtk::Image *icon0 = manage(new Gtk::Image(Gtk::StockID("synfig-animate_seek_prev_frame"), Gtk::ICON_SIZE_BUTTON));
-	prev_framebutton = manage(new class Gtk::Button());
-	prev_framebutton->set_tooltip_text(_("Seek to previous frame"));
-	icon0->set_margin_start(0);
-	icon0->set_margin_end(0);
-	icon0->set_margin_top(0);
-	icon0->set_margin_bottom(0);
-	icon0->show();
-	prev_framebutton->add(*icon0);
-	prev_framebutton->set_relief(Gtk::RELIEF_NONE);
-	prev_framebutton->show();
+	Gtk::Button* prev_framebutton = create_tool_button("animate_seek_prev_frame_icon", _("Seek to previous frame"));
 	prev_framebutton->signal_clicked().connect(sigc::bind(sigc::mem_fun(*this, &Widget_Preview::seek_frame), -1));
-
 	toolbar->pack_start(*prev_framebutton, Gtk::PACK_SHRINK, 0);
 
-	{ //play
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-animate_play"), Gtk::ICON_SIZE_BUTTON));
-		play_button = manage(new class Gtk::Button());
-		play_button->set_tooltip_text(_("Play"));
-		icon->set_margin_start(0);
-		icon->set_margin_end(0);
-		icon->set_margin_top(0);
-		icon->set_margin_bottom(0);
-		icon->show();
-		play_button->add(*icon);
-		play_button->set_relief(Gtk::RELIEF_NONE);
-		play_button->show();
-		play_button->signal_clicked().connect(sigc::mem_fun(*this, &Widget_Preview::on_play_pause_pressed));
-		toolbar->pack_start(*play_button, Gtk::PACK_SHRINK, 0);
-	}
+	//play
+	play_button = create_tool_button("animate_play_icon", _("Play"));
+	play_button->signal_clicked().connect(sigc::mem_fun(*this, &Widget_Preview::on_play_pause_pressed));
+	toolbar->pack_start(*play_button, Gtk::PACK_SHRINK, 0);
 
-	{ //pause
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-animate_pause"), Gtk::ICON_SIZE_BUTTON));
-		pause_button = manage(new class Gtk::Button());
-		pause_button->set_tooltip_text(_("Pause"));
-		icon->set_margin_start(0);
-		icon->set_margin_end(0);
-		icon->set_margin_top(0);
-		icon->set_margin_bottom(0);
-		icon->show();
-		pause_button->add(*icon);
-		pause_button->set_relief(Gtk::RELIEF_NONE);
-		pause_button->signal_clicked().connect(sigc::mem_fun(*this, &Widget_Preview::on_play_pause_pressed));
-		toolbar->pack_start(*pause_button, Gtk::PACK_SHRINK, 0);
-	}
-
+	//pause
+	pause_button = create_tool_button("animate_pause_icon", _("Pause"));
+	pause_button->signal_clicked().connect(sigc::mem_fun(*this, &Widget_Preview::on_play_pause_pressed));
+	toolbar->pack_start(*pause_button, Gtk::PACK_SHRINK, 0);
 
 	//next rendered frame
-	Gtk::Button *next_framebutton;
-	Gtk::Image *icon2 = manage(new Gtk::Image(Gtk::StockID("synfig-animate_seek_next_frame"), Gtk::ICON_SIZE_BUTTON));
-	next_framebutton = manage(new class Gtk::Button());
-	next_framebutton->set_tooltip_text(_("Seek to next frame"));
-	icon2->set_margin_start(0);
-	icon2->set_margin_end(0);
-	icon2->set_margin_top(0);
-	icon2->set_margin_bottom(0);
-	icon2->show();
-	next_framebutton->add(*icon2);
-	next_framebutton->set_relief(Gtk::RELIEF_NONE);
-	next_framebutton->show();
+	Gtk::Button* next_framebutton = create_tool_button("animate_seek_next_frame_icon", _("Seek to next frame"));
 	next_framebutton->signal_clicked().connect(sigc::bind(sigc::mem_fun(*this, &Widget_Preview::seek_frame), 1));
-
 	toolbar->pack_start(*next_framebutton, Gtk::PACK_SHRINK, 0);
 
 	//spacing
-	Gtk::Alignment *space = Gtk::manage(new Gtk::Alignment());
-	space->set_size_request(8);
-	toolbar->pack_start(*space, false, true);
-
+	next_framebutton->set_margin_end(8);
 
 	//loop
-	button = &b_loop;
-	IMAGIFY_BUTTON(button, "synfig-animate_loop", _("Loop"));
-	toolbar->pack_start(b_loop, Gtk::PACK_SHRINK,0);
+	b_loop = create_toggle_button("animate_loop_icon", _("Loop"));
+	toolbar->pack_start(*b_loop, Gtk::PACK_SHRINK, 0);
 
 	//spacing
-	Gtk::Alignment *space1 = Gtk::manage(new Gtk::Alignment());
-	space1->set_size_request(24);
-	toolbar->pack_start(*space1, false, true);
-
+	b_loop->set_margin_end(24);
 
 	//halt render
-	button = manage(new Gtk::Button());
-	button->signal_clicked().connect(sigc::mem_fun(*this, &Widget_Preview::stoprender));
-	IMAGIFY_BUTTON(button,Gtk::Stock::STOP, _("Stop rendering"));
-
-	toolbar->pack_start(*button, Gtk::PACK_SHRINK, 0);
+	Gtk::Button* halt_button = create_tool_button("process-stop", _("Stop rendering"));
+	halt_button->signal_clicked().connect(sigc::mem_fun(*this, &Widget_Preview::stoprender));
+	toolbar->pack_start(*halt_button, Gtk::PACK_SHRINK, 0);
 
 	//re-preview
-	button = manage(new Gtk::Button());
-	button->signal_clicked().connect(sigc::mem_fun(*this, &Widget_Preview::repreview));
-	IMAGIFY_BUTTON(button, "synfig-preview_options", _("Preview Settings"));
-
-	toolbar->pack_start(*button, Gtk::PACK_SHRINK, 0);
+	Gtk::Button* preview_button = create_tool_button("preview_options_icon", _("Preview Settings"));
+	preview_button->signal_clicked().connect(sigc::mem_fun(*this, &Widget_Preview::repreview));
+	toolbar->pack_start(*preview_button, Gtk::PACK_SHRINK, 0);
 
 	//erase all
-	button = manage(new Gtk::Button());
-	button->signal_clicked().connect(sigc::mem_fun(*this, &Widget_Preview::eraseall));
-	IMAGIFY_BUTTON(button, Gtk::Stock::CLEAR, _("Erase all rendered frames"));
-
-	toolbar->pack_start(*button, Gtk::PACK_SHRINK, 0);
+	Gtk::Button* erase_button = create_tool_button("edit-clear", _("Erase all rendered frames"));
+	erase_button->signal_clicked().connect(sigc::mem_fun(*this, &Widget_Preview::eraseall));
+	toolbar->pack_start(*erase_button, Gtk::PACK_SHRINK, 0);
 
 	//spacing
-	Gtk::Alignment *space2 = Gtk::manage(new Gtk::Alignment());
-	space1->set_size_request(24);
-	toolbar->pack_start(*space2, false, true);
+	erase_button->set_margin_end(24);
 
 	//jack
 	jackdial = Gtk::manage(new JackDial());
@@ -506,7 +453,6 @@ Widget_Preview::Widget_Preview():
 	jack_dispatcher.connect(sigc::mem_fun(*this, &Widget_Preview::on_jack_sync));
 	jack_dispatcher.connect(sigc::mem_fun(*this, &Widget_Preview::on_jack_sync));
 
-	jackbutton = jackdial->get_toggle_jackbutton();
 	jackdial->signal_toggle_jack().connect(sigc::mem_fun(*this, &studio::Widget_Preview::toggle_jack_button));
 	jackdial->signal_offset_changed().connect(sigc::mem_fun(*this, &studio::Widget_Preview::on_jack_offset_changed));
 #endif
@@ -546,11 +492,12 @@ Widget_Preview::Widget_Preview():
 
 	Gtk::Entry* entry = zoom_preview.get_entry();
 	entry->set_text(_("Fit")); //default zoom level
-	entry->set_icon_from_stock(Gtk::StockID("synfig-zoom"));
+	entry->set_icon_from_icon_name("tool_zoom_icon");
 	entry->signal_activate().connect(sigc::mem_fun(*this, &Widget_Preview::on_zoom_entry_activated));
 
 	//set the zoom widget width
 	zoom_preview.set_size_request(100, -1);
+	zoom_preview.set_margin_end(8);
 	zoom_preview.show();
 
 	toolbar->pack_end(zoom_preview, Gtk::PACK_SHRINK, 0);
@@ -686,7 +633,7 @@ void studio::Widget_Preview::update()
 }
 void studio::Widget_Preview::preview_draw()
 {
-	draw_area.queue_draw();//on_expose_event();
+	draw_area.queue_draw();
 }
 
 bool studio::Widget_Preview::redraw(const Cairo::RefPtr<Cairo::Context> &cr)
@@ -1266,8 +1213,8 @@ Widget_Preview::is_time_equal_to_current_frame(const synfig::Time &time)
 		t1 = t1.round(fps);
 	}
 
-	t0 = std::max(starttime, std::min(endtime, t0));
-	t1 = std::max(starttime, std::min(endtime, t1));
+	t0 = synfig::clamp(t0, starttime, endtime);
+	t1 = synfig::clamp(t1, starttime, endtime);
 
 	return t0.is_equal(t1);
 }
@@ -1306,7 +1253,7 @@ void Widget_Preview::set_jack_enabled(bool value) {
 		if (jack_activate(jack_client) != 0)
 		{
 			jack_client_close(jack_client);
-			jack_client = NULL;
+			jack_client = nullptr;
 			jack_enabled = false;
 			App::jack_unlock();
 		} else {
@@ -1325,7 +1272,7 @@ void Widget_Preview::set_jack_enabled(bool value) {
 		// deinitialize jack
 		jack_deactivate(jack_client);
 		jack_client_close(jack_client);
-		jack_client = NULL;
+		jack_client = nullptr;
 
 		// unlock jack in canvas views
 		App::jack_unlock();
@@ -1333,38 +1280,7 @@ void Widget_Preview::set_jack_enabled(bool value) {
 
 	//jackdial->toggle_enable_jack(jack_enabled);
 
-	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
-	Gtk::Image *icon;
-	offset_widget = jackdial->get_offsetwidget();
-
-	if (jackbutton->get_active())
-	{
-		icon = manage(new Gtk::Image(Gtk::StockID("synfig-jack"),iconsize));
-		jackbutton->remove();
-		jackbutton->add(*icon);
-		jackbutton->set_tooltip_text(_("Disable JACK"));
-		icon->set_margin_start(0);
-		icon->set_margin_end(0);
-		icon->set_margin_top(0);
-		icon->set_margin_bottom(0);
-		icon->show();
-
-		offset_widget->show();
-	}
-	else
-	{
-		icon = manage(new Gtk::Image(Gtk::StockID("synfig-jack"),iconsize));
-		jackbutton->remove();
-		jackbutton->add(*icon);
-		jackbutton->set_tooltip_text(_("Enable JACK"));
-		icon->set_margin_start(0);
-		icon->set_margin_end(0);
-		icon->set_margin_top(0);
-		icon->set_margin_bottom(0);
-		icon->show();
-
-		offset_widget->hide();
-	}
+	jackdial->set_state(jack_enabled);
 #endif
 
 	if (preview) preview->get_canvasview()->set_jack_enabled_in_preview( get_jack_enabled() );

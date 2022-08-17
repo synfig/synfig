@@ -36,9 +36,6 @@
 
 #include "resolutiondial.h"
 
-#include <gtkmm/image.h>
-#include <gtkmm/stock.h>
-
 #include <gui/localization.h>
 
 #endif
@@ -53,12 +50,33 @@ using namespace studio;
 
 /* === P R O C E D U R E S ================================================= */
 
+static void
+init_button(Gtk::ToolButton& button, const std::string& icon_name, const std::string& label, const std::string& tooltip)
+{
+	button.set_icon_name(icon_name);
+	button.set_label(label);
+	button.set_tooltip_text(tooltip);
+	button.show();
+}
+
+static void
+init_toggle_button(Gtk::ToggleToolButton& button, const std::string& label, const std::string& tooltip)
+{
+	// For label left/right padding
+	button.set_name("low-resolution");
+
+	button.set_label(label);
+	button.set_tooltip_text(tooltip);
+	button.set_is_important(true);
+	button.show();
+}
+
 /* === M E T H O D S ======================================================= */
 
-ResolutionDial::ResolutionDial(const Gtk::IconSize &size)
+ResolutionDial::ResolutionDial()
 {
-	init_button(increase_resolution, size, Gtk::StockID("synfig-increase_resolution"), _("Increase Resolution"), _("Increase Display Resolution"));
-	init_button(decrease_resolution, size, Gtk::StockID("synfig-decrease_resolution"), _("Decrease Resolution"), _("Decrease Display Resolution"));
+	init_button(increase_resolution, "incr_resolution_icon", _("Increase Resolution"), _("Increase Display Resolution"));
+	init_button(decrease_resolution, "decr_resolution_icon", _("Decrease Resolution"), _("Decrease Display Resolution"));
 	init_toggle_button(use_low_resolution, _("Low Res"), _("Use Low Resolution when enabled"));
 }
 
@@ -79,34 +97,6 @@ ResolutionDial::remove_from_toolbar(Gtk::Toolbar &toolbar)
 	toolbar.remove(decrease_resolution);
 	toolbar.remove(use_low_resolution);
 	toolbar.remove(increase_resolution);
-}
-
-void
-ResolutionDial::init_button(Gtk::ToolButton &button, Gtk::IconSize size, const Gtk::StockID & stockid, const char *label, const char *tooltip)
-{
-	Gtk::Image *icon = manage(new Gtk::Image(stockid, size));
-	icon->set_margin_start(0);
-	icon->set_margin_end(0);
-	icon->set_margin_top(0);
-	icon->set_margin_bottom(0);
-	icon->show();
-
-	button.set_icon_widget(*icon);
-	button.set_label(label);
-	button.set_tooltip_text(tooltip);
-	button.show();
-}
-
-void
-ResolutionDial::init_toggle_button(Gtk::ToggleToolButton &button, const char *label, const char *tooltip)
-{
-	// For label left/right padding
-	button.set_name("low-resolution");
-
-	button.set_label(label);
-	button.set_tooltip_text(tooltip);
-	button.set_is_important(true);
-	button.show();
 }
 
 void

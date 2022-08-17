@@ -47,7 +47,6 @@
 #include <synfig/real.h>
 
 #include <ETL/misc>
-#include <ETL/stringf>
 
 #include <stdexcept>
 
@@ -62,7 +61,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Add, RELEASE_VERSION_0_61_07, "add", "Add")
+REGISTER_VALUENODE(ValueNode_Add, RELEASE_VERSION_0_61_07, "add", N_("Add"))
 
 /* === P R O C E D U R E S ================================================= */
 

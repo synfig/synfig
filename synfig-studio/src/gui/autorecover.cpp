@@ -37,6 +37,8 @@
 
 #include <glibmm/main.h>
 
+#include <ETL/stringf>
+
 #include <gui/app.h>
 #include <gui/instance.h>
 
@@ -58,10 +60,10 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-AutoRecover::AutoRecover():
-	enabled(1),
-	timeout_ms(15000)
-{ }
+AutoRecover::AutoRecover()
+{
+	set_timer(true, 15000);
+}
 
 AutoRecover::~AutoRecover()
 {
@@ -75,6 +77,7 @@ AutoRecover::set_timer(bool enabled, int timeout_ms)
 	if (this->enabled != enabled || this->timeout_ms != timeout_ms)
 	{
 		bool env_enabled = !getenv("SYNFIG_DISABLE_AUTO_SAVE");
+		// if the timer was enabled then disconnect it
 		if (this->enabled && this->timeout_ms > 0 && env_enabled)
 			connection.disconnect();
 

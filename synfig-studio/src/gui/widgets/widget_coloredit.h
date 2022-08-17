@@ -197,7 +197,7 @@ public:
 private:
 	bool colorHVSChanged; //Spike. Look more in the code.
 	///@brief Sets color to the widget
-	void setHVSColor(synfig::Color color);
+	void setHVSColor(const synfig::Color& color);
 	///@brief The function adds slider into the row grid with label.
 	void SliderRow(int left, int top, ColorSlider *color_widget, std::string l, Gtk::Grid *grid);
 	///@brief The function adds spin button into the grid.

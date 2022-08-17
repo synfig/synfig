@@ -37,7 +37,6 @@
 
 #include <vector>
 
-#include <ETL/calculus>
 #include <ETL/hermite>
 
 #include <synfig/string.h>

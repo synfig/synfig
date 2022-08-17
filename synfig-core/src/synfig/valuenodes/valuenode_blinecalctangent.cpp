@@ -43,7 +43,6 @@
 #include <synfig/valuenode_registry.h>
 #include <synfig/exception.h>
 #include <ETL/hermite>
-#include <ETL/calculus>
 
 #endif
 
@@ -55,7 +54,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_BLineCalcTangent, RELEASE_VERSION_0_61_07, "blinecalctangent", "Spline Tangent")
+REGISTER_VALUENODE(ValueNode_BLineCalcTangent, RELEASE_VERSION_0_61_07, "blinecalctangent", N_("Spline Tangent"))
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -130,7 +129,7 @@ ValueNode_BLineCalcTangent::operator()(Time t, Real amount)const
 	if (amount > 1) amount = 1;
 	amount *= count;
 
-	int i0 = std::max(0, std::min(size-1, (int)floor(amount)));
+	int i0 = synfig::clamp((int)floor(amount), 0, size-1);
 	int i1 = (i0 + 1) % size;
 	Real part = amount - i0;
 
@@ -139,9 +138,8 @@ ValueNode_BLineCalcTangent::operator()(Time t, Real amount)const
 
 	etl::hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
 							   blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
-	etl::derivative< etl::hermite<Vector> > deriv(curve);
 
-	Vector tangent = deriv(part);
+	Vector tangent = curve.derivative(part);
 
 	Type &type(get_type());
 	if (type == type_angle)

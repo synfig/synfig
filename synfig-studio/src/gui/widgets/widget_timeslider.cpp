@@ -284,7 +284,7 @@ Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	cr->restore();
 
 	// Draw the time line
-	Gdk::Cairo::set_source_color(cr, Gdk::Color("#ffaf00"));
+	Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA("#ffaf00"));
 	cr->set_line_width(3.0);
 	double x = time_plot_data->get_pixel_t_coord(time_plot_data->time);
 	cr->move_to(x, 0.0);

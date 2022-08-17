@@ -35,6 +35,8 @@
 
 #include "listimporter.h"
 
+#include <ETL/stringf>
+
 #include "general.h"
 #include <synfig/localization.h>
 
@@ -103,6 +105,7 @@ Importer(identifier)
 				line == "jpg"  ||
 				line == "png"  ||
 				line == "ppm"  ||
+				line == "svg"  ||
 				line == "tiff" )
 			{
 				ext = String(".") + line;
@@ -161,7 +164,7 @@ ListImporter::get_sub_importer(const RendDesc &renddesc, Time time, ProgressCall
 {
 	float document_fps=renddesc.get_frame_rate();
 	int document_frame=etl::round_to_int(time*document_fps);
-	int frame=etl::floor_to_int(document_frame*fps/document_fps);
+	int frame = std::floor(document_frame*fps/document_fps);
 
 	if(!filename_list.size())
 	{
@@ -202,7 +205,7 @@ ListImporter::get_frame(Surface &surface, const RendDesc &renddesc, Time time, P
 rendering::Surface::Handle
 ListImporter::get_frame(const RendDesc &renddesc, const Time &time)
 {
-	Importer::Handle importer = get_sub_importer(renddesc, time, NULL);
+	Importer::Handle importer = get_sub_importer(renddesc, time, nullptr);
 	return importer ? importer->get_frame(renddesc, 0) : new rendering::SurfaceSW();
 }
 

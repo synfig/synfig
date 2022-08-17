@@ -34,8 +34,12 @@
 
 #include <synfig/string_helper.h>
 
+#include <cstdarg>
+#include <cstdlib>
+
 #include <algorithm>
 #include <locale>
+
 #include "general.h"
 #endif
 
@@ -44,7 +48,6 @@ get_locale_decimal_point()
 {
 	// TODO(ice0): move all the locale related code to the initialization part
 	// MinGW C++ std::locale accepts "C" and "POSIX" it does not support other locales.
-	synfig::ChangeLocale changeLocale(LC_NUMERIC, "");
 	#ifdef __MINGW32__
 		struct lconv *locale_info = localeconv();
 		const char decimal_point = *locale_info->decimal_point;
@@ -131,4 +134,64 @@ synfig::right_trim(const std::wstring& text)
 			   result.end()
 			   );
 	return result;
+}
+
+std::string
+synfig::vstrprintf(const char *format, va_list args)
+{
+#ifdef _MSC_VER
+	const int size = 8192; // MSVC doesn't support dynamic allocation, so make it static
+#else
+	// determine the length
+	va_list args_copy;
+	va_copy(args_copy, args);
+	int size = vsnprintf(nullptr, 0, format, args_copy);
+	va_end(args_copy);
+	if (size < 0) size = 0;
+	++size;
+#endif
+	// allocate buffer in stack (c99/c++11 only) and call vsnprintf again
+	char buffer[size + 1]; // +space for trailing zero
+	vsnprintf(buffer, size, format, args);
+	return buffer;
+}
+
+std::string
+synfig::strprintf(const char *format, ...)
+{
+	va_list args;
+	va_start(args,format);
+	const std::string buf = vstrprintf(format, args);
+	va_end(args);
+	return buf;
+}
+
+int
+synfig::vstrscanf(const std::string &data, const char*format, va_list args)
+{
+    return vsscanf(data.c_str(),format,args);
+}
+
+int
+synfig::strscanf(const std::string &data, const char*format, ...)
+{
+	va_list args;
+	va_start(args,format);
+	const int buf = vstrscanf(data, format, args);
+	va_end(args);
+	return buf;
+}
+
+// TODO: probably replace it with safer std::stod()
+double
+synfig::stratof(const std::string &str)
+{
+	return atof(str.c_str());
+}
+
+// TODO: probably replace it with safer std::stoi()
+int
+synfig::stratoi(const std::string &str)
+{
+	return atoi(str.c_str());
 }

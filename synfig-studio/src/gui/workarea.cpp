@@ -42,6 +42,8 @@
 #include <gtkmm/arrow.h>
 #include <gtkmm/scrollbar.h>
 
+#include <ETL/stringf>
+
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/event_keyboard.h>
@@ -62,6 +64,7 @@
 #include <gui/workarearenderer/renderer_guides.h>
 #include <gui/workarearenderer/renderer_timecode.h>
 
+#include <ETL/stringf>
 #include <synfig/blinepoint.h>
 #include <synfig/valuenodes/valuenode_bone.h>
 #include <synfig/valuenodes/valuenode_composite.h>
@@ -937,8 +940,8 @@ const Cairo::RefPtr<Cairo::SurfacePattern>&
 WorkArea::get_background_pattern() const
 {
 	if (!background_pattern) {
-		int w = std::max(1, std::min(1000, (int)round(background_size[0])));
-		int h = std::max(1, std::min(1000, (int)round(background_size[1])));
+		int w = synfig::clamp(round_to_int(background_size[0]), 1, 1000);
+		int h = synfig::clamp(round_to_int(background_size[1]), 1, 1000);
 	    Cairo::RefPtr<Cairo::ImageSurface> surface = Cairo::ImageSurface::create(Cairo::FORMAT_RGB24, w*2, h*2);
 	    Cairo::RefPtr<Cairo::Context> context = Cairo::Context::create(surface);
 	    context->set_source_rgb(background_first_color.get_r(), background_first_color.get_g(), background_first_color.get_b());
@@ -982,9 +985,13 @@ bool
 WorkArea::on_key_press_event(GdkEventKey* event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
-	if (Smach::RESULT_OK == canvas_view->get_smach().process_event(
-		EventKeyboard(EVENT_WORKAREA_KEY_DOWN, event->keyval, Gdk::ModifierType(event->state))))
-			return true;
+	auto event_result = canvas_view->get_smach().process_event(
+		EventKeyboard(EVENT_WORKAREA_KEY_DOWN, event->keyval, Gdk::ModifierType(event->state)));
+	if (event_result != Smach::RESULT_OK)
+		return true;
+
+	// Other possible actions if current state doesn't accept the event but not forbids it
+	// - Nudge selected ducks
 
 	if(get_selected_ducks().empty())
 		return false;
@@ -1039,8 +1046,14 @@ bool
 WorkArea::on_key_release_event(GdkEventKey* event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
-	return Smach::RESULT_OK == canvas_view->get_smach().process_event(
+	auto event_result = canvas_view->get_smach().process_event(
 		EventKeyboard(EVENT_WORKAREA_KEY_UP, event->keyval, Gdk::ModifierType(event->state)) );
+	if (event_result != Smach::RESULT_OK)
+		return true;
+
+	// Other possible actions if current state doesn't accept the event but not forbids it
+	// - currently none
+
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
@@ -1068,10 +1081,10 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		int n_axes = gdk_device_get_n_axes(device);
 		for (int i=0; i < n_axes; i++)
 		{
-			axes_str += etl::strprintf(" %f", event->motion.axes[i]);
+			axes_str += synfig::strprintf(" %f", event->motion.axes[i]);
 		}
 		synfig::warning("axes info: %s", axes_str.c_str());*/
-		//for(...) axesstr += etl::strprintf(" %f", event->motion.axes[i])
+		//for(...) axesstr += synfig::strprintf(" %f", event->motion.axes[i])
 
 		double x = 0.0, y = 0.0, p = 0.0;
 		int ox = 0, oy = 0;
@@ -1957,7 +1970,7 @@ WorkArea::refresh(const Cairo::RefPtr<Cairo::Context> &/*cr*/)
 
 	assert(get_canvas());
 
-	//!Check if the window we want draw is ready
+	// Check if the window we want draw is ready
 	Glib::RefPtr<Gdk::Window> draw_area_window = drawing_area->get_window();
 	if (!draw_area_window) return false;
 
@@ -2007,7 +2020,7 @@ WorkArea::get_renderer() const
 {
 	if (get_low_resolution_flag())
 	{
-		String renderer = etl::strprintf("software-low%d", get_low_res_pixel_size());
+		String renderer = synfig::strprintf("software-low%d", get_low_res_pixel_size());
 		if (synfig::rendering::Renderer::get_renderers().count(renderer))
 			return renderer;
 	}
@@ -2216,7 +2229,7 @@ studio::WorkArea::reset_cursor()
 void
 studio::WorkArea::set_zoom(float z)
 {
-	z=std::max(1.0f/128.0f,std::min(128.0f,z));
+	z=synfig::clamp(z,1.0f/128.0f,128.0f);
 	zoomdial->set_zoom(z);
 	if(z==zoom)
 		return;

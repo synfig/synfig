@@ -238,7 +238,7 @@ Action::ValueDescSkeletonLink::prepare()
 
 			// get type of weighted value
 			types_namespace::TypeWeightedValueBase *wt = ValueAverage::get_weighted_type_for(type);
-			assert(wt != NULL);
+			assert(wt);
 
 			// add each bone from influence_list to Average convert
 			for(Set::iterator i = current_list.begin(); i != current_list.end(); ++i)

@@ -50,7 +50,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Exp, RELEASE_VERSION_0_61_07, "exp", "Exponential")
+REGISTER_VALUENODE(ValueNode_Exp, RELEASE_VERSION_0_61_07, "exp", N_("Exponential"))
 
 /* === P R O C E D U R E S ================================================= */
 

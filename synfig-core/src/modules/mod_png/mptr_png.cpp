@@ -40,6 +40,7 @@
 
 #include "mptr_png.h"
 
+#include <ETL/stringf>
 #include <synfig/filecontainerzip.h>
 #include <synfig/general.h>
 
@@ -92,7 +93,7 @@ void
 png_mptr::read_callback(png_structp png_ptr, png_bytep out_bytes, png_size_t bytes_count_to_read)
 {
 	FileSystem::ReadStream *stream = (FileSystem::ReadStream*)png_get_io_ptr(png_ptr);
-	png_size_t s = stream == NULL
+	png_size_t s = !stream
 				 ? 0
 				 : stream->read_block(out_bytes, bytes_count_to_read);
 	if (s < bytes_count_to_read)
@@ -163,8 +164,7 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
     png_infop info_ptr = png_create_info_struct(png_ptr);
     if (!info_ptr)
     {
-        png_destroy_read_struct(&png_ptr,
-           (png_infopp)NULL, (png_infopp)NULL);
+		png_destroy_read_struct(&png_ptr, nullptr, nullptr);
         //! \todo THROW SOMETHING
 		throw String("error on importer construction, *WRITEME*4");
 		return false;
@@ -173,8 +173,7 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
     png_infop end_info = png_create_info_struct(png_ptr);
     if (!end_info)
     {
-        png_destroy_read_struct(&png_ptr, &info_ptr,
-          (png_infopp)NULL);
+		png_destroy_read_struct(&png_ptr, &info_ptr, nullptr);
         //! \todo THROW SOMETHING
 		throw String("error on importer construction, *WRITEME*4");
 		return false;
@@ -194,7 +193,7 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 
 	if (bit_depth > 16) {
 		synfig::error("png_mptr: error: bit depth not supported: %d", bit_depth);
-		throw etl::strprintf("png_mptr: error: bit depth not supported: %d", bit_depth);
+		throw strprintf("png_mptr: error: bit depth not supported: %d", bit_depth);
 		return false;
 	}
 
@@ -222,7 +221,7 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 	//   You must use png_transforms and not call any
 	//   png_set_transform() functions when you use png_read_png().
 	// but we used png_set_gamma(), which may be why we were seeing a crash at the end
-	//   png_read_png(png_ptr, info_ptr, PNG_TRANSFORM_PACKING|PNG_TRANSFORM_STRIP_16, NULL);
+	//   png_read_png(png_ptr, info_ptr, PNG_TRANSFORM_PACKING|PNG_TRANSFORM_STRIP_16, nullptr);
 
 	png_read_update_info(png_ptr, info_ptr);
 	png_uint_32 rowbytes = png_get_rowbytes(png_ptr, info_ptr);
@@ -277,15 +276,15 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 	{
 		if (bit_depth > 8) {
 			synfig::error("png_mptr: error: bit depth with palette not supported: %d", bit_depth);
-			throw etl::strprintf("png_mptr: error: bit depth with palette not supported: %d", bit_depth);
+			throw strprintf("png_mptr: error: bit depth with palette not supported: %d", bit_depth);
 			return false;
 		}
 		png_colorp palette;
 		int num_palette;
 		png_get_PLTE(png_ptr, info_ptr, &palette, &num_palette);
-		png_bytep trans_alpha = NULL;
+		png_bytep trans_alpha = nullptr;
 		int num_trans = 0;
-		bool has_alpha = png_get_tRNS(png_ptr, info_ptr, &trans_alpha, &num_trans, NULL)
+		bool has_alpha = png_get_tRNS(png_ptr, info_ptr, &trans_alpha, &num_trans, nullptr)
 		               & PNG_INFO_tRNS;
 		const ColorReal k = 1/255.0;
 		for(int y = 0; y < surface.get_h(); ++y)
@@ -295,7 +294,7 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 				ColorReal g = k*(unsigned char)palette[row_pointers[y][x]].green;
 				ColorReal b = k*(unsigned char)palette[row_pointers[y][x]].blue;
 				ColorReal a = 1;
-                if (has_alpha && num_trans > 0 && trans_alpha != NULL && row_pointers[y][x] < num_trans)
+				if (has_alpha && num_trans > 0 && trans_alpha && row_pointers[y][x] < num_trans)
                     a = k*(unsigned char)trans_alpha[row_pointers[y][x]];
 				surface[y][x] = gamma.apply(Color(r, g, b, a));
 			}
