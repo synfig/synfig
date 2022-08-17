@@ -59,6 +59,7 @@ Widget_Distance::Widget_Distance():
 {
 	set_adjustment(adjustment);
 	set_numeric(false);
+	signal_event_after().connect(sigc::mem_fun(*this, &Widget_Distance::after_event));
 }
 
 Widget_Distance::~Widget_Distance()
@@ -99,6 +100,14 @@ Widget_Distance::on_key_release_event(GdkEventKey* event)
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
+void
+Widget_Distance::after_event(GdkEvent *event)
+{
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
+	if (event->type == GDK_BUTTON_RELEASE)
+		select_region(0, get_text_length()-2);
+	SYNFIG_EXCEPTION_GUARD_END()
+}
 
 void
 Widget_Distance::set_value(const synfig::Distance &data)
