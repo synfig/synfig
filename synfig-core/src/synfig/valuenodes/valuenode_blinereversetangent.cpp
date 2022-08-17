@@ -43,7 +43,6 @@
 #include <synfig/valuenode_registry.h>
 #include <synfig/exception.h>
 #include <ETL/hermite>
-#include <ETL/calculus>
 
 #endif
 

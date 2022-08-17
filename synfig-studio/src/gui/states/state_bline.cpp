@@ -39,7 +39,6 @@
 #include <gtkmm/imagemenuitem.h>
 #include <gtkmm/separatormenuitem.h>
 
-#include <ETL/calculus>
 #include <ETL/hermite>
 
 #include <gui/app.h>
@@ -1762,13 +1761,12 @@ StateBLine_Context::bline_insert_vertex(synfig::ValueNode_Const::Handle value_no
 									   next_bline_point.get_vertex(),
 									   prev_bline_point.get_tangent2(),
 									   next_bline_point.get_tangent1());
-			etl::derivative< etl::hermite<Vector> > deriv(curve);
 
 			bline_point.set_split_tangent_angle(false);
 			bline_point.set_split_tangent_radius(false);
 			bline_point.set_vertex(curve(origin));
 			bline_point.set_width((next_bline_point.get_width()-prev_bline_point.get_width())*origin+prev_bline_point.get_width());
-			bline_point.set_tangent1(deriv(origin)*std::min(1.0f-origin,origin));
+			bline_point.set_tangent1(curve.derivative(origin)*std::min(1.0f-origin,origin));
 			bline_point.set_tangent2(bline_point.get_tangent1());
 			bline_point.set_origin(origin);
 			bline_point_list.insert(iter,ValueNode_Const::Handle::cast_dynamic(ValueNode_Const::create(bline_point)));

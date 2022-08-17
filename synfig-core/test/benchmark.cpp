@@ -29,7 +29,6 @@
 #include <ETL/hermite>
 #include <ETL/surface>
 #include <ETL/gaussian>
-#include <ETL/calculus>
 
 #include <synfig/angle.h>
 #include <synfig/clock.h>
