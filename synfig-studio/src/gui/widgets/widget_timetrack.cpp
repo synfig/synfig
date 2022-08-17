@@ -203,19 +203,16 @@ bool Widget_Timetrack::move_selected(synfig::Time delta_time)
 	synfig::Waypoint::Model model;
 	model.set_before(type);
 	model.set_after(type);
-	std::vector<WaypointItem*> selection = waypoint_sd.get_selected_items(); //storing selected waypoint items
+	std::vector<WaypointItem*> selection = waypoint_sd.get_selected_items();
 
-	for(int i =0 ; i<selection.size() ; i++) //iteratre through selected waypoint items to fetch the set and apply the interpolation type
-    {
+	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Change Waypoint Group"));
+
+	for (WaypointItem* waypoint_item : selection) {
 		std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set_new;
-		fetch_waypoints(*selection[i], waypoint_set_new);
-		std::set<synfig::Waypoint, std::less<synfig::UniqueID> >::const_iterator iter;
+		fetch_waypoints(*waypoint_item, waypoint_set_new);
 
-		for(iter=waypoint_set_new.begin();iter!=waypoint_set_new.end();++iter)
-        {
-			synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Change Waypoint Group"));
-
-			synfig::Waypoint waypoint(*iter);
+		for (synfig::Waypoint waypoint_new : waypoint_set_new) {
+			synfig::Waypoint waypoint(waypoint_new);
 			waypoint.apply_model(model);
 			synfigapp::Action::Handle action(synfigapp::Action::create("WaypointSet"));
 
@@ -227,8 +224,7 @@ bool Widget_Timetrack::move_selected(synfig::Time delta_time)
 			action->set_param("waypoint",waypoint);
 			action->set_param("value_node",waypoint.get_parent_value_node());
 
-			if(!get_canvas_interface()->get_instance()->perform_action(action))
-			{
+			if (!get_canvas_interface()->get_instance()->perform_action(action)) {
 				group.cancel();
 				return;
 			}

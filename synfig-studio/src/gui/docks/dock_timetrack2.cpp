@@ -234,25 +234,27 @@ void Dock_Timetrack2::setup_tool_palette()
 		tool_item_group->add(*tool_button);
 	}
 
-	std::vector<std::string> stock_id{ "synfig-interpolation_type_clamped", "synfig-interpolation_type_tcb",
-								  "synfig-interpolation_type_const", "synfig-interpolation_type_ease" ,
-								  "synfig-interpolation_type_linear"};
-	std::vector<std::string> name{ "Clamped", "TCB" , "Constant" , "Ease In/Out" , "Linear"};
-	std::vector<synfig::Interpolation> interp_type{ synfig::INTERPOLATION_CLAMPED, synfig::INTERPOLATION_TCB,
-												  synfig::INTERPOLATION_CONSTANT, synfig::INTERPOLATION_HALT,
-												  synfig::INTERPOLATION_LINEAR};
-	//button1
-	for (int i=0; i<=4; i++) {
-		Gtk::ToolButton *tool_button = manage(new Gtk::ToolButton(
-														*manage(new Gtk::Image(
-																	Gtk::StockID(stock_id[i]),
-																	Gtk::IconSize::from_name("synfig-small_icon_16x16"))),
-																	_(name[i].c_str())));
-		tool_button->signal_clicked().connect( [this, interp_type, i](){
+	struct interpolationButtonInfo {
+		std::string icon_name;
+		std::string name;
+		synfig::Interpolation interpolation;
+	};
 
-			current_widget_timetrack->interpolate_selected(interp_type[i]);
+	const std::vector<interpolationButtonInfo> interp_buttons_info{
+		{"interpolation_type_clamped_icon", N_("Clamped"), synfig::INTERPOLATION_CLAMPED},
+		{"interpolation_type_tcb_icon", N_("TCB"), synfig::INTERPOLATION_TCB},
+		{"interpolation_type_const_icon", N_("Constant"), synfig::INTERPOLATION_CONSTANT},
+		{"interpolation_type_ease_icon", N_("Ease In/Out"), synfig::INTERPOLATION_HALT},
+		{"interpolation_type_linear_icon", N_("Linear"), synfig::INTERPOLATION_LINEAR}
+	};
 
-		});
+	for (const auto & interp_button_info: interp_buttons_info) {
+		Gtk::Image* image= Gtk::manage(new Gtk::Image());
+		image->set_from_icon_name(interp_button_info.icon_name, Gtk::IconSize::from_name("synfig-small_icon_16x16"));
+		Gtk::ToolButton *tool_button = manage(new Gtk::ToolButton(*image, interp_button_info.name));
+		tool_button->signal_clicked().connect(sigc::track_obj([this, interp_button_info](){
+			current_widget_timetrack->interpolate_selected(interp_button_info.interpolation);
+		}, *this));
 		tool_item_group->add(*tool_button);
 	}
 
