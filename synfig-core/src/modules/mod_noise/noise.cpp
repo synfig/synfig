@@ -205,10 +205,14 @@ Noise::calc_supersample(const synfig::Point &/*x*/, float /*pw*/,float /*ph*/)co
 synfig::Layer::Handle
 Noise::hit_check(synfig::Context context, const synfig::Point &point)const
 {
+	bool check_myself_first;
+	auto layer = basic_hit_check(context, point, check_myself_first);
+
+	if (!check_myself_first)
+		return layer;
+
 	if(get_blend_method()==Color::BLEND_STRAIGHT && get_amount()>=0.5)
 		return const_cast<Noise*>(this);
-	if(get_amount()==0.0)
-		return context.hit_check(point);
 	if(color_func(point,0,context).get_a()>0.5)
 		return const_cast<Noise*>(this);
 	return synfig::Layer::Handle();
