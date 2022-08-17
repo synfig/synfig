@@ -211,22 +211,24 @@ bool Widget_Timetrack::move_selected(synfig::Time delta_time)
 		std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set_new;
 		fetch_waypoints(*waypoint_item, waypoint_set_new);
 
-		for (synfig::Waypoint waypoint_new : waypoint_set_new) {
+		for (const synfig::Waypoint& waypoint_new : waypoint_set_new) {
 			synfig::Waypoint waypoint(waypoint_new);
-			waypoint.apply_model(model);
-			synfigapp::Action::Handle action(synfigapp::Action::create("WaypointSet"));
+			if (waypoint.get_before() != type || waypoint.get_after() != type){
+				waypoint.apply_model(model);
+				synfigapp::Action::Handle action(synfigapp::Action::create("WaypointSet"));
 
-			assert(action);
+				assert(action);
 
-			action->set_param("canvas",get_canvas_interface()->get_canvas());
-			action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("canvas",get_canvas_interface()->get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
 
-			action->set_param("waypoint",waypoint);
-			action->set_param("value_node",waypoint.get_parent_value_node());
+				action->set_param("waypoint",waypoint);
+				action->set_param("value_node",waypoint.get_parent_value_node());
 
-			if (!get_canvas_interface()->get_instance()->perform_action(action)) {
-				group.cancel();
-				return;
+				if (!get_canvas_interface()->get_instance()->perform_action(action)) {
+					group.cancel();
+					return;
+				}
 			}
 		}
 	}
