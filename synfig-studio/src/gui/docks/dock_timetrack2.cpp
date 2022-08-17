@@ -37,6 +37,7 @@
 #include <gui/widgets/widget_timetrack.h>
 #include <gui/canvasview.h>
 #include <gui/localization.h>
+#include <gui/iconcontroller.h>
 
 #endif
 
@@ -230,23 +231,26 @@ void Dock_Timetrack2::setup_tool_palette()
 		tool_item_group->add(*tool_button);
 	}
 
+	Gtk::SeparatorToolItem* separator = Gtk::manage(new Gtk::SeparatorToolItem());
+	separator->set_valign(Gtk::ALIGN_CENTER);
+	tool_item_group->add(*separator);
+
 	struct InterpolationButtonInfo {
-		std::string icon_name;
 		std::string name;
 		synfig::Interpolation interpolation;
 	};
 
 	const std::vector<InterpolationButtonInfo> interp_buttons_info{
-		{"interpolation_type_clamped_icon", N_("Clamped"), synfig::INTERPOLATION_CLAMPED},
-		{"interpolation_type_tcb_icon", N_("TCB"), synfig::INTERPOLATION_TCB},
-		{"interpolation_type_const_icon", N_("Constant"), synfig::INTERPOLATION_CONSTANT},
-		{"interpolation_type_ease_icon", N_("Ease In/Out"), synfig::INTERPOLATION_HALT},
-		{"interpolation_type_linear_icon", N_("Linear"), synfig::INTERPOLATION_LINEAR}
+		{N_("Clamped"), synfig::INTERPOLATION_CLAMPED},
+		{N_("TCB"), synfig::INTERPOLATION_TCB},
+		{N_("Constant"), synfig::INTERPOLATION_CONSTANT},
+		{N_("Ease In/Out"), synfig::INTERPOLATION_HALT},
+		{N_("Linear"), synfig::INTERPOLATION_LINEAR}
 	};
 
 	for (const auto & interp_button_info: interp_buttons_info) {
 		Gtk::Image* image= Gtk::manage(new Gtk::Image());
-		image->set_from_icon_name(interp_button_info.icon_name, Gtk::IconSize::from_name("synfig-small_icon_16x16"));
+		image->set_from_icon_name(interpolation_icon_name(interp_button_info.interpolation), Gtk::IconSize::from_name("synfig-small_icon_16x16"));
 		Gtk::ToolButton *tool_button = manage(new Gtk::ToolButton(*image, _("interp_button_info.name")));
 		tool_button->signal_clicked().connect(sigc::track_obj([this, interp_button_info](){
 			current_widget_timetrack->interpolate_selected(interp_button_info.interpolation);
