@@ -34,6 +34,8 @@
 #include <gtkmm/drawingarea.h>
 #include <gui/timemodel.h>
 
+#include <synfig/rect.h>
+
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -84,8 +86,7 @@ protected: // implementation that other interfaces can see
 
 	virtual void draw_background(const Cairo::RefPtr<Cairo::Context> &cr);
 
-	void get_bounds_rectangle_dimensions(double& x0, double& x1, bool lower);
-
+	const synfig::Rect get_bounds_rectangle(bool lower) const;
 public:
 	Widget_Timeslider();
 	~Widget_Timeslider();
