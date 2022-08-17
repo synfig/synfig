@@ -169,7 +169,6 @@ void adding_child_node_adds_itself_as_parent_to_child() {
 	
 	parent_node.add_child(&child_node);
 	
-
 	ASSERT(child_node.is_child_of(&parent_node));
 }
 
