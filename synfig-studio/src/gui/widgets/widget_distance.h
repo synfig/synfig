@@ -55,6 +55,7 @@ protected:
 
 	bool on_key_press_event(GdkEventKey* event);
 	bool on_key_release_event(GdkEventKey* event);
+	void after_event(GdkEvent *event);
 
 public:
 	void set_value(const synfig::Distance &data);
