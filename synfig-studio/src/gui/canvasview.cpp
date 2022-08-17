@@ -1577,8 +1577,8 @@ CanvasView::init_menus()
 	{
 		Glib::RefPtr<Gtk::ToggleAction> action;
 
-		rulers_show_toggle = Gtk::ToggleAction::create("toggle-rulers-show", _("Show Rulers")); //also this
-		rulers_show_toggle->set_active(work_area->get_show_rulers()); //of course set the status the correct way
+		rulers_show_toggle = Gtk::ToggleAction::create("toggle-rulers-show", _("Show Rulers"));
+		rulers_show_toggle->set_active(work_area->get_show_rulers());
 		work_area->set_rulers_visible(work_area->get_show_rulers());
 		action_group->add(rulers_show_toggle, sigc::mem_fun(*this, &CanvasView::toggle_show_ruler));
 

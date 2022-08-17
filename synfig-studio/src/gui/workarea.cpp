@@ -819,6 +819,7 @@ WorkArea::set_rulers_visible(bool visible)
 	vruler->set_visible(visible);
 	menubutton_box->set_visible(visible);
 }
+
 void
 WorkArea::toggle_rulers()
 {
