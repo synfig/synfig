@@ -37,6 +37,8 @@
 // This is generated at make time from .git or autorevision.conf
 #include <autorevision.h>
 
+#include <ctime>
+
 #include <gtkmm/image.h>
 
 #include <gui/app.h>
@@ -84,7 +86,7 @@ About::About()
 	set_website("https://synfig.org/");
 	set_website_label(_("Visit the Synfig website"));
 
-	set_copyright(_("Copyright (c) 2001-2021\nSynfig developers & contributors"));
+	set_copyright(_("Copyright (c) 2001-2022\nSynfig developers & contributors"));
 	Glib::ustring license =
 		"This program is free software; you can redistribute it and/or modify "
 		"it under the terms of the GNU General Public License as published by "
@@ -308,31 +310,48 @@ About::About()
 	std::string extra_info = get_comments() + "\n";
 
 	#ifdef DEVEL_VERSION
-		extra_info += etl::strprintf(_("\nDevelopment version:\n%s\n"),DEVEL_VERSION);
+		extra_info += synfig::strprintf(_("\nDevelopment version:\n%s\n"),DEVEL_VERSION);
 	#endif
 
 	extra_info += "\n";
+	{
+		const int max_date_length = 50;
+		char date_str[max_date_length];
 
-	extra_info += etl::strprintf(_("Built on %s" /* at %s */ "\n\n"), __DATE__ /* , __TIME__ */ );
+		// https://reproducible-builds.org/specs/source-date-epoch/
+		if (char* source_date_epoch = getenv("SOURCE_DATE_EPOCH")) {
+			std::istringstream iss(source_date_epoch);
+			std::time_t t;
+			iss >> t;
+			if (iss.fail()
+			    || !iss.eof()
+			    || !std::strftime(date_str, sizeof(date_str), "%x", std::localtime(&t))) {
+				    std::strncpy(date_str, _("Unknown build date"), max_date_length-1);
+			}
+		} else
+			std::strncpy(date_str, __DATE__, max_date_length-1);
 
-	extra_info += etl::strprintf(_("Built with:\n"));
-	extra_info += etl::strprintf(_("ETL %s\n"), ETL_VERSION);
-	extra_info += etl::strprintf(_("Synfig API %s\n"), SYNFIG_VERSION);
-	extra_info += etl::strprintf(_("Synfig library %d\n"), SYNFIG_LIBRARY_VERSION);
-	extra_info += etl::strprintf(_("GTK+ %d.%d.%d\n"), GTK_MAJOR_VERSION, GTK_MINOR_VERSION, GTK_MICRO_VERSION);
+		extra_info += synfig::strprintf(_("Built on %s\n\n"), date_str );
+	}
+
+	extra_info += synfig::strprintf(_("Built with:\n"));
+	extra_info += synfig::strprintf(_("ETL %s\n"), ETL_VERSION);
+	extra_info += synfig::strprintf(_("Synfig API %s\n"), SYNFIG_VERSION);
+	extra_info += synfig::strprintf(_("Synfig library %d\n"), SYNFIG_LIBRARY_VERSION);
+	extra_info += synfig::strprintf(_("GTK+ %d.%d.%d\n"), GTK_MAJOR_VERSION, GTK_MINOR_VERSION, GTK_MICRO_VERSION);
 	#if defined(__clang__)
-		extra_info += etl::strprintf(_("Apple LLVM version %s\n"), __clang_version__);
+		extra_info += synfig::strprintf(_("Apple LLVM version %s\n"), __clang_version__);
 	#elif defined(__GNUC__) || defined(__GNUG__)
-		extra_info += etl::strprintf(_("GNU G++ %d.%d.%d\n"),__GNUC__,__GNUC_MINOR__,__GNUC_PATCHLEVEL__);
+		extra_info += synfig::strprintf(_("GNU G++ %d.%d.%d\n"),__GNUC__,__GNUC_MINOR__,__GNUC_PATCHLEVEL__);
 	#elif defined(_MSC_VER)
-		extra_info += etl::strprintf("Microsoft Visual C/C++ (%d)\n", _MSC_VER);
+		extra_info += synfig::strprintf("Microsoft Visual C/C++ (%d)\n", _MSC_VER);
 	#endif
 
 	extra_info += "\n";
 
-	extra_info += etl::strprintf(_("Using:\n"));
-	extra_info += etl::strprintf(_("Synfig %s\n"), synfig::get_version());
-	extra_info += etl::strprintf(_("GTK+ %d.%d.%d"),gtk_major_version,gtk_minor_version,gtk_micro_version);
+	extra_info += synfig::strprintf(_("Using:\n"));
+	extra_info += synfig::strprintf(_("Synfig %s\n"), synfig::get_version());
+	extra_info += synfig::strprintf(_("GTK+ %d.%d.%d"),gtk_major_version,gtk_minor_version,gtk_micro_version);
 
 	#ifdef _DEBUG
 		extra_info += "\n\nDEBUG BUILD";

@@ -155,7 +155,7 @@ public:
 public:
 
 	//! Default constructor - empty handle
-	handle():obj(NULL) {}
+	handle() : obj(nullptr) {}
 
 	//! Constructor that constructs from a pointer to new object
 	handle(pointer x):obj(x)
@@ -218,12 +218,12 @@ public:
 	}
 
 	//! Handle detach procedure
-	/*! unref()'s the object and sets the internal object pointer to \c NULL */
+	/*! unref()'s the object and sets the internal object pointer to \c nullptr */
 	void
 	detach()
 	{
 		pointer xobj(obj);
-		obj=0;
+		obj = nullptr;
 #ifdef ETL_SELF_DELETING_SHARED_OBJECT
 		if(xobj)
 			xobj->unref();
@@ -267,7 +267,7 @@ public:
 
 	//! More explicit bool cast
 	operator bool()const
-		{ return obj!=NULL; }
+		{ return obj != nullptr; }
 
 	operator handle<const value_type>()const
 	{ return handle<const value_type>(static_cast<const_pointer>(obj)); }
@@ -548,14 +548,14 @@ public:
 	}
 
 	//! Handle release procedure
-	/*! unref()'s the object and sets the internal object pointer to \c NULL */
+	/*! unref()'s the object and sets the internal object pointer to \c nullptr */
 	void
 	detach()
 	{
 //		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		if(obj)del_from_rlist();
 		handle<value_type>::detach();
-		obj=0;
+		obj = nullptr;
 	}
 
 	// This will be reintroduced with a new function

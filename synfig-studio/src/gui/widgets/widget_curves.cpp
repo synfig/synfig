@@ -80,9 +80,9 @@ using namespace studio;
 struct Widget_Curves::Channel
 {
 	String name;
-	Gdk::Color color;
+	Gdk::RGBA color;
 	std::map<Real, Real> values;
-	explicit Channel(const String &name = String(), const Gdk::Color &color = Gdk::Color()):
+	explicit Channel(const String &name = String(), const Gdk::RGBA& color = Gdk::RGBA()):
 		name(name), color(color) { }
 };
 
@@ -92,10 +92,10 @@ struct Widget_Curves::CurveStruct: sigc::trackable
 	ValueDesc value_desc;
 	std::vector<Channel> channels;
 
-	void add_channel(const String &name, const Gdk::Color &color)
+	void add_channel(const String &name, const Gdk::RGBA& color)
 		{ channels.push_back(Channel(name, color)); }
 	void add_channel(const String &name, const String &color)
-		{ add_channel(name, Gdk::Color(color)); }
+		{ add_channel(name, Gdk::RGBA(color)); }
 
 	CurveStruct() { }
 
@@ -691,7 +691,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 			range_max = std::max(range_max, old_value);
 			range_min = std::min(range_min, old_value);
 
-			Gdk::Cairo::set_source_color(cr, curve_it->channels[c].color);
+			Gdk::Cairo::set_source_rgba(cr, curve_it->channels[c].color);
 			cr->move_to(x, y);
 			cr->line_to(x, old_y);
 			cr->stroke();
@@ -712,7 +712,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 			points[c].reserve(w);
 		}
 
-		Time t = time_plot_data->lower;
+		Time t = time_plot_data->lower_ex;
 		for(int j = 0; j < w; ++j, t += time_plot_data->dt) {
 			for(size_t c = 0; c < channels; ++c) {
 				Real y = curve_it->get_value(c, t, time_plot_data->dt);
@@ -747,7 +747,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 				if (p_it->get_x() >= last_timepoint_pixel)
 					break;
 			}
-			Gdk::Cairo::set_source_color(cr, curve_it->channels[c].color);
+			Gdk::Cairo::set_source_rgba(cr, curve_it->channels[c].color);
 			cr->stroke();
 
 			// Draw the remaining curve

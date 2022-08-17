@@ -68,7 +68,7 @@ NoiseDistort::NoiseDistort():
 	Layer_CompositeFork(1.0,Color::BLEND_STRAIGHT),
 	param_displacement(ValueBase(Vector(0.25,0.25))),
 	param_size(ValueBase(Vector(1,1))),
-	param_random(ValueBase(int(time(NULL)))),
+	param_random(ValueBase(int(time(nullptr)))),
 	param_smooth(ValueBase(int(RandomNoise::SMOOTH_COSINE))),
 	param_detail(ValueBase(int(4))),
 	param_speed(ValueBase(Real(0))),

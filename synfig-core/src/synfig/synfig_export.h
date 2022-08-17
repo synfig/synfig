@@ -27,7 +27,7 @@
 
 #ifdef _MSC_VER
 // We need this export only for MSVC. Even on MinGW, it breaks linkning.
-#ifdef synfig_EXPORTS
+#ifdef libsynfig_EXPORTS
 /* We are building this library */
 #define SYNFIG_EXPORT __declspec(dllexport)
 #else

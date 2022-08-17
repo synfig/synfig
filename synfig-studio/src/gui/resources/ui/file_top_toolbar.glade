@@ -1,0 +1,246 @@
+<!-- Generated with glade 3.18.3 -->
+    <interface>
+      <requires lib="gtk+" version="3.4"/>
+      <object class="GtkToolbar" id="top-toolbar">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+	    <child>
+          <object class="GtkToolButton" id="new">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="tooltip_text" translatable="yes">Create a new document</property>
+            <property name="action_name">app.new</property>
+	        <property name="icon_name">action_doc_new_icon</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+		<child>
+	      <object class="GtkToolButton" id="open">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="tooltip_text" translatable="yes">Open an existing document</property>
+            <property name="action_name">app.open</property>
+	        <property name="icon_name">action_doc_open_icon</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+		<child>
+	      <object class="GtkToolButton" id="save">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="tooltip_text" translatable="yes">Save</property>
+            <property name="action_name">app.save</property>
+	        <property name="icon_name">action_doc_save_icon</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+		<child>
+	      <object class="GtkToolButton" id="save-as">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="tooltip_text" translatable="yes">Save As</property>
+            <property name="action_name">app.save-as</property>
+	        <property name="icon_name">action_doc_saveas_icon</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+		<child>
+	      <object class="GtkToolButton" id="save-all">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="tooltip_text" translatable="yes">Save all opened documents</property>
+            <property name="action_name">app.save-all</property>
+	        <property name="icon_name">action_doc_saveall_icon</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+		<child>
+			<object class="GtkSeparatorToolItem" id="sep-1">
+    			<property name="visible">True</property>
+    			<property name="can-focus">False</property>
+ 			</object>
+	      <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+		</child>
+
+		<child>
+	      <object class="GtkToolButton" id="undo">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="tooltip_text" translatable="yes">Undo the previous action</property>
+            <property name="action_name">app.undo</property>
+	        <property name="icon_name">action_doc_undo_icon</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+		<child>
+	      <object class="GtkToolButton" id="redo">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="tooltip_text" translatable="yes">Redo the previously undone action</property>
+            <property name="action_name">app.redo</property>
+	        <property name="icon_name">action_doc_redo_icon</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+		<child>
+			<object class="GtkSeparatorToolItem" id="sep-2">
+    			<property name="visible">True</property>
+    			<property name="can-focus">False</property>
+ 			</object>
+	      <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+		</child>
+		<child>
+	      <object class="GtkToolButton" id="preview">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="tooltip_text" translatable="yes">Shows the Preview Settings Dialog</property>
+            <property name="action_name">app.preview</property>
+	        <property name="icon_name">preview_options_icon</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+		<child>
+	      <object class="GtkToolButton" id="render">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="tooltip_text" translatable="yes">Shows the Render Settings Dialog</property>
+            <property name="action_name">app.render</property>
+	        <property name="icon_name">render_options_icon</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+		<child>
+			<object class="GtkSeparatorToolItem" id="sep-3">
+    			<property name="visible">True</property>
+    			<property name="can-focus">False</property>
+ 			</object>
+	      <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+		</child>
+		<child>
+	      <object class="GtkToolButton" id="refresh">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="tooltip_text" translatable="yes">Refresh workarea</property>
+            <property name="action_name">app.refresh</property>
+	        <property name="icon_name">view-refresh</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+		<child>
+			<object class="GtkToolItem" id="combobox-container">
+	    		<property name="visible">True</property>
+        		<property name="can_focus">False</property>
+			</object>
+		</child>
+		<child>
+	      <object class="GtkToggleToolButton" id="background-rendering">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="tooltip_text" translatable="yes">Render future and past frames in background when enabled</property>
+            <property name="action_name">app.background-rendering</property>
+	        <property name="icon_name">background_rendering_icon</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+		<child>
+			<object class="GtkSeparatorToolItem" id="sep-4">
+    			<property name="visible">True</property>
+    			<property name="can-focus">False</property>
+ 			</object>
+	      <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+		</child>
+		<child>
+			<object class="GtkSeparatorToolItem" id="sep-5">
+    			<property name="visible">True</property>
+    			<property name="can-focus">False</property>
+ 			</object>
+	      <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+		</child>
+		<child>
+	      <object class="GtkToggleToolButton" id="onion-skin">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="tooltip_text" translatable="yes">Show Onion Skin when enabled</property>
+            <property name="action_name">app.onion-skin</property>
+	        <property name="icon_name">onion_skin_icon</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+		<child>
+			<object class="GtkToolItem" id="pastonionskin-container">
+	    		<property name="visible">True</property>
+        		<property name="can_focus">False</property>
+			</object>
+		</child>
+		<child>
+			<object class="GtkToolItem" id="futureonionskin-container">
+	    		<property name="visible">True</property>
+        		<property name="can_focus">False</property>
+			</object>
+		</child>
+		<child>
+	      <object class="GtkToggleToolButton" id="onion-skin-keyframes">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="tooltip_text" translatable="yes">Show Onion Skin on Keyframes when enabled, on Frames when disabled</property>
+            <property name="action_name">app.onion-skin-keyframes</property>
+	        <property name="icon_name">keyframe_icon</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="homogeneous">True</property>
+          </packing>
+        </child>
+		</object>
+	</interface>

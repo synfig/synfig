@@ -81,32 +81,32 @@ struct timecmp
 };
 
 template<class T>
-struct subtractor: public std::binary_function<T, T, T>
+struct subtractor
 	{ T operator()(const T &a,const T &b)const { return a-b; } };
 
 template<>
-struct subtractor<Angle>: public std::binary_function<Angle, Angle, Angle>
+struct subtractor<Angle>
 	{ Angle operator()(const Angle &a,const Angle &b)const { return a.dist(b); } };
 
 
 template<class T>
-struct magnitude: public std::unary_function<float, T>
+struct magnitude
 	{ float operator()(const T &a)const { return std::fabs(a); } };
 
 template<>
-struct magnitude<Angle>: public std::unary_function<float, Angle>
+struct magnitude<Angle>
 	{ float operator()(const Angle &a)const { return std::fabs(Angle::rad(a).get()); } };
 
 template<>
-struct magnitude<Vector>: public std::unary_function<float, Vector>
+struct magnitude<Vector>
 	{ float operator()(const Vector &a)const { return a.mag(); } };
 
 template<>
-struct magnitude<Color>: public std::unary_function<float, Color>
+struct magnitude<Color>
 	{ float operator()(const Color &a)const { return std::fabs(a.get_y()); } };
 
 template<>
-struct magnitude<Gradient> : public std::unary_function<float, Gradient>
+struct magnitude<Gradient>
 	{ float operator()(const Gradient &a)const { return a.mag(); } };
 
 
@@ -862,7 +862,7 @@ public:
 ValueNode_AnimatedInterfaceConst::ValueNode_AnimatedInterfaceConst(ValueNode &node):
 	ValueNode_Interface(node),
 	interpolation_(INTERPOLATION_UNDEFINED),
-	interpolator_(NULL)
+	interpolator_(nullptr)
 {
 	interpolator_ = new Internal::Constant<ValueBase>(*this);
 }

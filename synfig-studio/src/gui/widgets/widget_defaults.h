@@ -98,7 +98,7 @@ public:
 
 	~Widget_Defaults();
 
-//	bool redraw(GdkEventExpose*bleh=NULL);
+//	bool redraw(GdkEventExpose* bleh = nullptr);
 
 //	bool on_event(GdkEvent *event);
 }; // END of class BlackLevelSelector

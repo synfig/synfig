@@ -70,12 +70,8 @@ using namespace studio;
 /* === M A C R O S ========================================================= */
 
 #ifndef LAYER_CREATION
-#define LAYER_CREATION(button, stockid, tooltip)	\
-	{ \
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), \
-			Gtk::ICON_SIZE_SMALL_TOOLBAR)); \
-		button.add(*icon); \
-	} \
+#define LAYER_CREATION(button, icon_name, tooltip)	\
+	button.set_image_from_icon_name(icon_name, Gtk::BuiltinIconSize::ICON_SIZE_SMALL_TOOLBAR); \
 	button.set_relief(Gtk::RELIEF_NONE); \
 	button.set_tooltip_text(tooltip); \
 	button.signal_toggled().connect(sigc::mem_fun(*this, \
@@ -92,10 +88,10 @@ StateLasso studio::state_lasso;
 
 class studio::StateLasso_Context : public sigc::trackable
 {
-	typedef etl::smart_ptr<std::list<synfig::Point> > StrokeData;
-	typedef etl::smart_ptr<std::list<synfig::Real> > WidthData;
+	typedef std::shared_ptr<std::list<synfig::Point>> StrokeData;
+	typedef std::shared_ptr<std::list<synfig::Real>> WidthData;
 
-	typedef std::list< std::pair<StrokeData,WidthData> > StrokeQueue;
+	typedef std::list< std::pair<StrokeData,WidthData>> StrokeQueue;
 
 	StrokeQueue stroke_queue;
 
@@ -116,7 +112,7 @@ class studio::StateLasso_Context : public sigc::trackable
 
 	Gtk::Menu menu;
 
-	std::list< etl::smart_ptr<std::list<synfig::Point> > > stroke_list;
+	std::list<std::shared_ptr<std::list<synfig::Point>>> stroke_list;
 
 	void refresh_ducks();
 
@@ -545,7 +541,7 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 	layer_types_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
 	LAYER_CREATION(layer_region_togglebutton,
-		("synfig-layer_geometry_region"), _("Create a region layer"));
+		"layer_geometry_region_icon", _("Create a region layer"));
 
 	layer_region_togglebutton.get_style_context()->add_class("indentation");
 	layer_types_box.pack_start(layer_region_togglebutton, Gtk::PACK_SHRINK);
@@ -741,10 +737,10 @@ StateLasso_Context::refresh_tool_options()
 	App::dialog_tool_options->clear();
 	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Cutout Tool"));
-	App::dialog_tool_options->set_name("lasso");
+	App::dialog_tool_options->set_icon("tool_cutout_icon");
 
 	//App::dialog_tool_options->add_button(
-	//	Gtk::StockID("synfig-fill"),
+	//	("synfig-fill"),
 	//	_("Fill Last Stroke")
 	//)->signal_clicked().connect(
 	//	sigc::mem_fun(
@@ -1036,7 +1032,7 @@ StateLasso_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synf
 	bool extend_start_join_same=false,extend_start_join_different=false;
 	bool extend_finish_join_same=false,extend_finish_join_different=false;
 	int start_duck_index = 0,finish_duck_index = 0; // initialized to keep the compiler happy; shouldn't be needed though
-	ValueNode_BLine::Handle start_duck_value_node_bline=NULL,finish_duck_value_node_bline=NULL;
+	ValueNode_BLine::Handle start_duck_value_node_bline=nullptr,finish_duck_value_node_bline=nullptr;
 
 	// Find any ducks at the start or end that we might attach to
 	// (this used to only run if we didn't just draw a loop - ie. !loop_bline_flag
@@ -2241,7 +2237,7 @@ StateLasso_Context::refresh_ducks()
 	get_work_area()->clear_ducks();
 
 
-	std::list< etl::smart_ptr<std::list<synfig::Point> > >::iterator iter;
+	std::list<std::shared_ptr<std::list<synfig::Point>>>::iterator iter;
 
 	for(iter=stroke_list.begin();iter!=stroke_list.end();++iter)
 	{
@@ -2267,21 +2263,13 @@ StateLasso_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,s
 	if(complete_loop)
 		inserted_bline.push_front((*value_node)(get_canvas()->get_time()).get_list().back().get(BLinePoint()));
 	// store the length of the inserted bline and the number of segments
-	Real inserted_length(bline_length(ValueBase::List(inserted_bline.begin(), inserted_bline.end()), false, NULL));
+	Real inserted_length(bline_length(ValueBase::List(inserted_bline.begin(), inserted_bline.end()), false, nullptr));
 	int inserted_size(inserted_bline.size());
 	// Determine if the bline that the layer belongs to is a Advanced Outline
-	bool is_advanced_outline(false);
-	Layer::Handle layer_parent;
-	std::set<Node*>::iterator niter;
-	for(niter=value_node->parent_set.begin();niter!=value_node->parent_set.end();++niter)
-	{
-		layer_parent=Layer::Handle::cast_dynamic(*niter);
-		if(layer_parent && layer_parent->get_name() == "advanced_outline")
-		{
-			is_advanced_outline=true;
-			break;
-		}
-	}
+	Layer::Handle layer_parent = value_node->find_first_parent_of_type<Layer>([](const Layer::Handle& layer) -> bool {
+		return layer->get_name() == "advanced_outline";
+	});
+	bool is_advanced_outline(layer_parent);
 
 	// Create the action group
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Extend Spline"));
@@ -2294,7 +2282,7 @@ StateLasso_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,s
 			// Calculate the number of blinepoints of the original bline
 			int value_node_size((*value_node)(get_canvas()->get_time()).get_list().size());
 			// Calculate the length of the original bline
-			Real value_node_length(bline_length(ValueBase((*value_node)(get_canvas()->get_time()).get_list()), false, NULL));
+			Real value_node_length(bline_length(ValueBase((*value_node)(get_canvas()->get_time()).get_list()), false, nullptr));
 			// Retrieve the homogeneous parameter value form the layer
 			bool homogeneous(layer_parent->get_param("homogeneous").get(bool()));
 			//
@@ -2458,21 +2446,13 @@ StateLasso_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std
 	if(complete_loop)
 		inserted_bline.push_back((*value_node)(get_canvas()->get_time()).get_list().front().get(BLinePoint()));
 	// store the length of the inserted bline and the number of segments
-	Real inserted_length(bline_length(ValueBase::List(inserted_bline.begin(), inserted_bline.end()), false, NULL));
+	Real inserted_length(bline_length(ValueBase::List(inserted_bline.begin(), inserted_bline.end()), false, nullptr));
 	int inserted_size(inserted_bline.size());
 	// Determine if the bline that the layer belongs to is a Advanced Outline
-	bool is_advanced_outline(false);
-	Layer::Handle layer_parent;
-	std::set<Node*>::iterator niter;
-	for(niter=value_node->parent_set.begin();niter!=value_node->parent_set.end();++niter)
-	{
-		layer_parent=Layer::Handle::cast_dynamic(*niter);
-		if(layer_parent && layer_parent->get_name() == "advanced_outline")
-		{
-			is_advanced_outline=true;
-			break;
-		}
-	}
+	Layer::Handle layer_parent = value_node->find_first_parent_of_type<Layer>([](const Layer::Handle& layer) -> bool {
+		return layer->get_name() == "advanced_outline";
+	});
+	bool is_advanced_outline(layer_parent);
 
 	// Create the action group
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Extend Spline"));
@@ -2485,7 +2465,7 @@ StateLasso_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std
 			// Calculate the number of blinepoints of the original bline
 			int value_node_size((*value_node)(get_canvas()->get_time()).get_list().size());
 			// Calculate the length of the original bline
-			Real value_node_length(bline_length(ValueBase((*value_node)(get_canvas()->get_time()).get_list()), false, NULL));
+			Real value_node_length(bline_length(ValueBase((*value_node)(get_canvas()->get_time()).get_list()), false, nullptr));
 			// Retrieve the homogeneous parameter value form the layer
 			bool homogeneous(layer_parent->get_param("homogeneous").get(bool()));
 			//

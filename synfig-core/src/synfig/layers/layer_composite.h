@@ -69,6 +69,24 @@ protected:
 	//!Old Straight plus transparent color seems to be the same new than alpha over.
 	bool transparent_color_;
 
+	/**
+	 * Convenient method to help to implement hit_check() for
+	 * Layer_Composite -based layers.
+	 *
+	 * It keep us from falling into the trap some blend methods may set.
+	 *
+	 * It's meant to be called in hit_check() implementations only.
+	 *
+	 * @param context Next layer down in canvas @see Layer::hit_check()
+	 * @param point Point to check if this layer is hittable
+	 * @param[out] check_myself_first If true, the caller layer must check
+	 *              if @a point is inside the layer. If so, return the layer itself.
+	 *              If not, return the context.hit_check()
+	 * @return The handle of the layer under @a point. If there is not
+	 *				a layer under @a point, then returns an empty handle.
+	 */
+	Layer::Handle basic_hit_check(synfig::Context context, const synfig::Point &point, bool& check_myself_first) const;
+
 public:
 	//! Gets the amount of the layer
 	float get_amount()const { return param_amount.get(Real()); }

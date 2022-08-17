@@ -75,9 +75,10 @@ LayerGroupTree::LayerGroupTree()
 		append_column(*column);
 	}
 	{	// --- I C O N --------------------------------------------------------
-		int index;
-		index=append_column(_(" "),model.icon);
-		Gtk::TreeView::Column* column = get_column(index-1);
+		Gtk::CellRendererPixbuf* cell_renderer_icon = Gtk::manage(new Gtk::CellRendererPixbuf());
+		Gtk::TreeViewColumn* column = manage(new Gtk::TreeViewColumn(" ", *cell_renderer_icon));
+		append_column(*column);
+		column->add_attribute(cell_renderer_icon->property_icon_name(), model.icon_name);
 		set_expander_column(*column);
 	}
 	{	// --- N A M E --------------------------------------------------------

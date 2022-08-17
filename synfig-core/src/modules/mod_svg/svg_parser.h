@@ -2,7 +2,7 @@
 /*!	\file svg_parser.h
 **	\brief Implementation of the Svg parser
 **	\brief Based on SVG XML specification 1.1
-**	\brief See: http://www.w3.org/TR/xml11/ for deatils
+**	\brief See: http://www.w3.org/TR/xml11/ for details
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

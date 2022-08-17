@@ -38,8 +38,6 @@
 
 #include <typeinfo>
 
-#include <ETL/stringf>
-
 #include <synfig/general.h>
 #include <synfig/localization.h>
 #include <synfig/threadpool.h>
@@ -519,7 +517,7 @@ Renderer::optimize(Task::List &list) const
 				break;
 			}
 			#ifdef DEBUG_OPTIMIZATION
-			log("", list, etl::strprintf("after category %d prepared", prepared_category_id));
+			log("", list, strprintf("after category %d prepared", prepared_category_id));
 			#endif
 		}
 		prepared_category_id = current_category_id;
@@ -577,19 +575,19 @@ Renderer::optimize(Task::List &list) const
 		}
 
 		#ifdef DEBUG_OPTIMIZATION
-		log("", list, etl::strprintf("before optimize category %d index %d", current_category_id, current_optimizer_index));
+		log("", list, strprintf("before optimize category %d index %d", current_category_id, current_optimizer_index));
 		#endif
 
 		#ifdef DEBUG_OPTIMIZATION_MEASURE
-		debug::Measure t(etl::strprintf("optimize category %d index %d", current_category_id, current_optimizer_index));
+		debug::Measure t(strprintf("optimize category %d index %d", current_category_id, current_optimizer_index));
 		#endif
 
 		#ifdef DEBUG_OPTIMIZATION_COUNTERS
 		std::atomic<int> calls_count(0), *calls_count_ptr = &calls_count;
 		std::atomic<int> optimizations_count(0), *optimizations_count_ptr = &optimizations_count;
 		#else
-		std::atomic<int> *calls_count_ptr = NULL;
-		std::atomic<int> *optimizations_count_ptr = NULL;
+		std::atomic<int>* calls_count_ptr = nullptr;
+		std::atomic<int>* optimizations_count_ptr = nullptr;
 		#endif
 
 		if (for_list)
@@ -657,7 +655,7 @@ Renderer::optimize(Task::List &list) const
 		#endif
 
 		#ifdef DEBUG_OPTIMIZATION
-		log("", list, etl::strprintf("after optimize category %d index %d", current_category_id, current_optimizer_index));
+		log("", list, strprintf("after optimize category %d index %d", current_category_id, current_optimizer_index));
 		#endif
 
 		if (categories_to_process & depends_from)
@@ -879,7 +877,7 @@ Renderer::log(
 	int level ) const
 {
 	bool use_stack = false;
-	const Optimizer::RunParams* p = optimization_stack ? optimization_stack->get_level(level) : NULL;
+	const Optimizer::RunParams* p = optimization_stack ? optimization_stack->get_level(level) : nullptr;
 	Task::Handle t = task;
 	if (p && p->orig_task == t)
 		{ use_stack = true; t = p->ref_task; }
@@ -895,7 +893,7 @@ Renderer::log(
 			for(Task::Set::const_iterator i = trd.deps.begin(); i != trd.deps.end(); ++i)
 				deps_set.insert((*i)->renderer_data.index);
 			for(std::multiset<int>::const_iterator i = deps_set.begin(); i != deps_set.end(); ++i)
-				deps += etl::strprintf("%d ", *i);
+				deps += strprintf("%d ", *i);
 			deps = "(" + deps.substr(0, deps.size()-1) + ") ";
 		}
 
@@ -906,7 +904,7 @@ Renderer::log(
 			for(Task::Set::const_iterator i = trd.back_deps.begin(); i != trd.back_deps.end(); ++i)
 				back_deps_set.insert((*i)->renderer_data.index);
 			for(std::multiset<int>::const_iterator i = back_deps_set.begin(); i != back_deps_set.end(); ++i)
-				back_deps += etl::strprintf("%d ", *i);
+				back_deps += strprintf("%d ", *i);
 			back_deps = "(" + back_deps.substr(0, back_deps.size()-1) + ") ";
 		}
 
@@ -928,17 +926,17 @@ Renderer::log(
 		debug::Log::info(logfile,
 		      String(level*2, ' ')
 			+ (use_stack ? "*" : "")
-			+ (trd.index ? etl::strprintf("#%05d-%04d ", trd.batch_index, trd.index): "")
+			+ (trd.index ? strprintf("#%05d-%04d ", trd.batch_index, trd.index): "")
 			+ deps
 			+ back_deps
 			+ t->get_token()->name
 			+ ( t->get_bounds().valid()
-			  ? etl::strprintf(" bounds (%f, %f)-(%f, %f)",
+			  ? strprintf(" bounds (%f, %f)-(%f, %f)",
 				t->get_bounds().minx, t->get_bounds().miny,
 				t->get_bounds().maxx, t->get_bounds().maxy )
 			  : "" )
 			+ ( t->target_surface
-              ? etl::strprintf(" source (%f, %f)-(%f, %f) target (%d, %d)-(%d, %d) surface [%s] (%dx%d) id %d",
+              ? strprintf(" source (%f, %f)-(%f, %f) target (%d, %d)-(%d, %d) surface [%s] (%dx%d) id %d",
 				t->source_rect.minx, t->source_rect.miny,
 				t->source_rect.maxx, t->source_rect.maxy,
 				t->target_rect.minx, t->target_rect.miny,
@@ -949,14 +947,14 @@ Renderer::log(
 				t->target_surface->get_id() )
 		      : "" ));
 		for(Task::List::const_iterator i = t->sub_tasks.begin(); i != t->sub_tasks.end(); ++i)
-			log(logfile, *i, use_stack ? optimization_stack : NULL, level+1);
+			log(logfile, *i, use_stack ? optimization_stack : nullptr, level+1);
 	}
 	else
 	{
 		debug::Log::info(logfile,
 			String(level*2, ' ')
 			+ (use_stack ? "*" : "")
-			+ "NULL" );
+			+ "nullptr" );
 	}
 }
 
@@ -981,7 +979,7 @@ Renderer::log(
 void
 Renderer::initialize()
 {
-	if (renderers != NULL || queue != NULL)
+	if (renderers || queue)
 		synfig::error("rendering::Renderer already initialized");
 
 	// init debug options
@@ -1001,7 +999,7 @@ Renderer::initialize()
 void
 Renderer::deinitialize()
 {
-	if (renderers == NULL || queue == NULL)
+	if (!renderers || !queue)
 		synfig::error("rendering::Renderer not initialized");
 
 	while(!get_renderers().empty())
@@ -1010,7 +1008,9 @@ Renderer::deinitialize()
 	deinitialize_renderers();
 
 	delete renderers;
+	renderers = nullptr;
 	delete queue;
+	queue = nullptr;
 }
 
 void
@@ -1041,7 +1041,7 @@ Renderer::get_renderer(const String &name)
 const std::map<String, Renderer::Handle>&
 Renderer::get_renderers()
 {
-	if (renderers == NULL)
+	if (!renderers)
 		synfig::error("rendering::Renderer not initialized");
 	return *renderers;
 }

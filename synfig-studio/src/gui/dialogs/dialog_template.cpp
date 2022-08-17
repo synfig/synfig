@@ -70,12 +70,12 @@ Dialog_Template::Dialog_Template(Gtk::Window& parent, synfig::String dialog_titl
 	add_action_widget(*restore_button,1);
 	restore_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Template::on_restore_pressed));
 
-	Gtk::Button *cancel_button(manage(new class Gtk::Button(Gtk::StockID("gtk-cancel"))));
+	Gtk::Button *cancel_button(manage(new Gtk::Button(_("_Cancel"), true)));
 	cancel_button->show();
 	add_action_widget(*cancel_button,0);
 	cancel_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Template::hide));
 
-	Gtk::Button *ok_button(manage(new class Gtk::Button(Gtk::StockID("gtk-ok"))));
+	Gtk::Button *ok_button(manage(new Gtk::Button(_("_OK"), true)));
 	ok_button->show();
 	add_action_widget(*ok_button,2);
 	ok_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Template::on_ok_pressed));

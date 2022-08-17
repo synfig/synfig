@@ -108,7 +108,8 @@ Action::LayerAddFrame::set_param(const synfig::String& name, const Action::Param
 		if (layer_switch)
 		{
 			layer_base = layer_switch->get_current_layer();
-			if (!layer_base) layer_switch = NULL;
+			if (!layer_base)
+				layer_switch = nullptr;
 		}
 		return layer_switch;
 	}

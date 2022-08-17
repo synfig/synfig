@@ -52,7 +52,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dialog_ToolOptions::Dialog_ToolOptions():
-	Dockable("tool_options",_("Tool Options"),Gtk::StockID("synfig-about")),
+	Dockable("tool_options",_("Tool Options"),"about_icon"),
 	empty_label(_("This tool has no options"))
 {
 	add(sub_vbox_);
@@ -78,7 +78,7 @@ Dialog_ToolOptions::clear()
 	sub_vbox_.set_valign(Gtk::Align::ALIGN_CENTER);
 	empty_label.show();
 
-	set_stock_id(Gtk::StockID("synfig-about"));
+	set_icon("about_icon");
 }
 
 void
@@ -91,10 +91,4 @@ Dialog_ToolOptions::set_widget(Gtk::Widget&x)
 	sub_vbox_.pack_start(x,false,false);
 	sub_vbox_.set_valign(Gtk::Align::ALIGN_FILL);
 	x.show();
-}
-
-void
-Dialog_ToolOptions::set_name(const synfig::String& name)
-{
-	set_stock_id(Gtk::StockID("synfig-"+name));
 }

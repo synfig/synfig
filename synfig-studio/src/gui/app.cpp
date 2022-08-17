@@ -53,6 +53,7 @@
 #include <glibmm/main.h>
 #include <glibmm/miscutils.h>
 #include <glibmm/timer.h>
+#include <glibmm/shell.h>
 #include <glibmm/spawn.h>
 
 #include <gtkmm/accelmap.h>
@@ -134,6 +135,8 @@
 #include <gui/widgets/widget_enum.h>
 #include <gui/workspacehandler.h>
 
+#include <ETL/stringf>
+
 #include <synfig/canvasfilenaming.h>
 #include <synfig/color.h>
 #include <synfig/filesystemnative.h>
@@ -152,6 +155,7 @@
 #include <synfigapp/settings.h>
 
 #include <thread>
+#include <gtkmm/icontheme.h>
 
 #ifdef _WIN32
 
@@ -169,6 +173,7 @@
 
 #endif // _WIN32
 
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -179,6 +184,7 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
+#define DEFAULT_ICON_THEME_NAME "classic"
 /* === S I G N A L S ======================================================= */
 
 static sigc::signal<void> signal_present_all_;
@@ -280,6 +286,7 @@ bool   studio::App::resize_imported_images       = false;
 bool   studio::App::animation_thumbnail_preview  = true;
 bool   studio::App::enable_experimental_features = false;
 bool   studio::App::use_dark_theme               = false;
+String studio::App::icon_theme_name              = "";
 bool   studio::App::show_file_toolbar            = true;
 String studio::App::custom_filename_prefix       (DEFAULT_FILENAME_PREFIX);
 int    studio::App::preferred_x_size             = 480;
@@ -450,7 +457,7 @@ class SetsModel : public Gtk::TreeModel::ColumnRecord
 
 /* === P R O C E D U R E S ================================================= */
 
-class Preferences : public synfigapp::Settings
+class App::Preferences : public synfigapp::Settings
 {
 public:
 	virtual bool get_raw_value(const synfig::String& key, synfig::String& value)const override
@@ -506,6 +513,11 @@ public:
 			if(key=="use_dark_theme")
 			{
 				value=strprintf("%i",(int)App::use_dark_theme);
+				return true;
+			}
+			if(key=="icon_theme_name")
+			{
+				value=strprintf("%s", App::get_raw_icon_theme_name().c_str());
 				return true;
 			}
 			if(key=="show_file_toolbar")
@@ -694,6 +706,11 @@ public:
 				App::use_dark_theme=i;
 				return true;
 			}
+			if(key=="icon_theme_name")
+			{
+				App::icon_theme_name = value;
+				return true;
+			}
 			if(key=="show_file_toolbar")
 			{
 				int i(atoi(value.c_str()));
@@ -833,6 +850,7 @@ public:
 		ret.push_back("animation_thumbnail_preview");
 		ret.push_back("enable_experimental_features");
 		ret.push_back("use_dark_theme");
+		ret.push_back("icon_theme_name");
 		ret.push_back("show_file_toolbar");
 		ret.push_back("brushes_path");
 		ret.push_back("custom_filename_prefix");
@@ -860,7 +878,15 @@ public:
 	}
 };
 
-static ::Preferences _preferences;
+App::Preferences App::_preferences;
+
+static void add_ui_from_string(const std::string& ui_info) {
+	try	{
+		App::ui_manager()->add_ui_from_string(ui_info);
+	} catch(const Glib::Error& ex) {
+		synfig::error("building menus and toolbars failed: " + ex.what() + "\n\n" + ui_info);
+	}
+}
 
 void
 init_ui_manager()
@@ -1250,21 +1276,12 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 
 	#undef DEFINE_ACTION
 
-	try
-	{
-		actions_action_group->set_sensitive(false);
-		App::ui_manager()->set_add_tearoffs(false);
-		App::ui_manager()->insert_action_group(menus_action_group,1);
-		App::ui_manager()->insert_action_group(actions_action_group,1);
-		App::ui_manager()->add_ui_from_string(ui_info);
-		App::ui_manager()->add_ui_from_string(hidden_ui_info);
-
-		//App::ui_manager()->get_accel_group()->unlock();
-	}
-	catch(const Glib::Error& ex)
-	{
-		synfig::error("building menus and toolbars failed: " + ex.what());
-	}
+	actions_action_group->set_sensitive(false);
+	App::ui_manager()->set_add_tearoffs(false);
+	App::ui_manager()->insert_action_group(menus_action_group,1);
+	App::ui_manager()->insert_action_group(actions_action_group,1);
+	add_ui_from_string(ui_info);
+	add_ui_from_string(hidden_ui_info);
 
 	auto default_accel_map = App::get_default_accel_map();
 	for (const auto& accel_item : default_accel_map) {
@@ -1381,6 +1398,7 @@ App::App()
 {
 	add_main_option_entry(Gio::Application::OPTION_TYPE_BOOL, "console", 'c', N_("Opens a console that shows some Synfig Studio output"));
 	signal_handle_local_options().connect(sigc::mem_fun(*this, &App::on_handle_local_options));
+	signal_shutdown().connect(sigc::mem_fun(*this, &App::on_shutdown));
 }
 
 int App::on_handle_local_options(const Glib::RefPtr<Glib::VariantDict> &options)
@@ -1438,12 +1456,8 @@ void App::init(const synfig::String& rootpath)
 
 	String path_to_plugins = ResourceHelper::get_plugin_path();
 
-	String path_to_user_plugins = synfigapp::Main::get_user_app_directory()
-		+ ETL_DIRECTORY_SEPARATOR + "plugins";
+	String path_to_user_plugins = synfigapp::Main::get_user_app_directory() + "/plugins";
 	
-	// icons
-	init_icons(path_to_icons + ETL_DIRECTORY_SEPARATOR);
-
 	ui_interface_=new GlobalUIInterface();
 
 	// don't call thread_init() if threads are already initialized
@@ -1492,7 +1506,7 @@ void App::init(const synfig::String& rootpath)
 	SuperCallback studio_init_cb(splash_screen.get_callback(),9000,10000,10000);
 
 	// Initialize the Synfig library
-	try { synfigapp_main=etl::smart_ptr<synfigapp::Main>(new synfigapp::Main(rootpath,&synfig_init_cb)); }
+	try { synfigapp_main = std::make_shared<synfigapp::Main>(rootpath,&synfig_init_cb); }
 	catch(std::runtime_error &x)
 	{
 		get_ui_interface()->error(strprintf("%s\n\n%s", _("Failed to initialize synfig!"), x.what()));
@@ -1508,6 +1522,10 @@ void App::init(const synfig::String& rootpath)
 	// add the preferences to the settings
 	synfigapp::Main::settings().add_domain(&_preferences,"pref");
 
+	// icons
+	init_icon_themes();
+	init_icons(path_to_icons + ETL_DIRECTORY_SEPARATOR);
+
 	try
 	{
 		// Try to load settings early to get access to some important
@@ -1515,6 +1533,7 @@ void App::init(const synfig::String& rootpath)
 		studio_init_cb.task(_("Loading Basic Settings..."));
 
 		load_settings("pref.use_dark_theme");
+
 		App::apply_gtk_settings();
 
 		load_settings("pref.show_file_toolbar");
@@ -1784,7 +1803,8 @@ void App::init(const synfig::String& rootpath)
 
 StateManager* App::get_state_manager() { return state_manager; }
 
-App::~App()
+void
+App::on_shutdown()
 {
 	shutdown_in_progress=true;
 
@@ -1807,8 +1827,6 @@ App::~App()
 
 	main_window->hide();
 
-	delete main_window;
-
 	delete dialog_setup;
 
 	delete dialog_gradient;
@@ -1825,6 +1843,9 @@ App::~App()
 
 	if (sound_render_done) delete sound_render_done;
 	sound_render_done = nullptr;
+	
+	process_all_events();
+	delete main_window;
 }
 
 synfig::String
@@ -1948,7 +1969,7 @@ App::save_settings()
 		{
 			std::string filename=get_config_file("language");
 
-			std::ofstream file(filename.c_str());
+			std::ofstream file(synfig::filesystem::Path(filename).c_str());
 
 			if(!file)
 			{
@@ -1960,7 +1981,7 @@ App::save_settings()
 		do{
 			std::string filename=get_config_file("recentfiles");
 
-			std::ofstream file(filename.c_str());
+			std::ofstream file(synfig::filesystem::Path(filename).c_str());
 
 			if(!file)
 			{
@@ -2046,7 +2067,7 @@ App::load_file_window_size()
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		{
 			std::string filename=get_config_file("recentfiles");
-			std::ifstream file(filename.c_str());
+			std::ifstream file(synfig::filesystem::Path(filename).c_str());
 
 			while(file)
 			{
@@ -2073,7 +2094,7 @@ App::load_language_settings()
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		{
 			std::string filename=get_config_file("language");
-			std::ifstream file(filename.c_str());
+			std::ifstream file(synfig::filesystem::Path(filename).c_str());
 
 			while(file)
 			{
@@ -2252,7 +2273,8 @@ App::apply_gtk_settings()
 {
 	Glib::RefPtr<Gtk::Settings> gtk_settings = Gtk::Settings::get_default();
 
-	if (const char *theme_name = getenv("SYNFIG_GTK_THEME"))
+	const std::string theme_name = Glib::getenv("SYNFIG_GTK_THEME");
+	if (!theme_name.empty())
 		gtk_settings->property_gtk_theme_name() = theme_name;
 
 	// dark theme
@@ -2279,18 +2301,57 @@ App::apply_gtk_settings()
 	Gtk::StyleContext::add_provider_for_screen(screen, provider, GTK_STYLE_PROVIDER_PRIORITY_USER);
 }
 
-std::string
-App::get_synfig_icon_theme()
+void
+App::init_icon_themes()
 {
-	if (const char *env_theme = getenv("SYNFIG_ICON_THEME")) {
-		std::string icon_theme(env_theme);
-		if (!icon_theme.empty()) {
-			// SYNFIG_ICON_THEME is not a path!
-			if (icon_theme.find('/') == icon_theme.npos && icon_theme.find('\\') == icon_theme.npos )
-				return icon_theme;
-		}
+	// If environment is not set then read theme name from preferences
+	if (Glib::getenv("SYNFIG_ICON_THEME").empty()) {
+		load_settings("pref.icon_theme_name");
 	}
-	return "classic";
+	auto icon_theme = Gtk::IconTheme::get_default();
+	icon_theme->prepend_search_path(ResourceHelper::get_themes_path());
+
+	set_icon_theme(App::icon_theme_name);
+}
+
+std::string
+App::get_icon_theme_name()
+{
+	// If not explicitly set at runtime, environment variable has priority
+	if (!icon_theme_name.empty())
+		return icon_theme_name;
+
+	auto env_icon_theme = Glib::getenv("SYNFIG_ICON_THEME");
+	if (!env_icon_theme.empty()) {
+		return env_icon_theme;
+	}
+
+	return DEFAULT_ICON_THEME_NAME;
+}
+
+std::string App::get_raw_icon_theme_name()
+{
+	return icon_theme_name;
+}
+
+// Almost all GTK methods using icons from the default GTK theme.
+// Unfortunately, we can't change the IconTheme name if we get it
+// from the default screen with the `Gtk::IconTheme::get_default()`
+// method.
+// https://docs.gtk.org/gtk3/method.IconTheme.set_custom_theme.html
+// > Sets the name of the icon theme that the GtkIconTheme object uses
+// > overriding system configuration. This function cannot be called on
+// > the icon theme objects returned from gtk_icon_theme_get_default()
+// > and gtk_icon_theme_get_for_screen().
+//
+// Also, I didn't find a way to change the app IconTheme to a custom
+// one. However, we can change the IconTheme for the default screen
+// using the `Gtk::Settings` object.
+void
+App::set_icon_theme(const std::string &theme_name)
+{
+	icon_theme_name = theme_name;
+	Gtk::Settings::get_default()->property_gtk_icon_theme_name() = get_icon_theme_name();
 }
 
 bool
@@ -2344,28 +2405,28 @@ App::dialog_open_file_ext(const std::string &title, std::vector<std::string> &fi
 	static TCHAR szFilter[] = TEXT (_("All Files (*.*)\0*.*\0\0")) ;
 
 	GdkWindow *gdkWinPtr=toolbox->get_window()->gobj();
-	HINSTANCE hInstance=static_cast<HINSTANCE>(GetModuleHandle(NULL));
+	HINSTANCE hInstance=static_cast<HINSTANCE>(GetModuleHandle(nullptr));
 	HWND hWnd=static_cast<HWND>(GDK_WINDOW_HWND(gdkWinPtr));
 
 	ofn.lStructSize=sizeof(OPENFILENAME);
 	ofn.hwndOwner = hWnd;
 	ofn.hInstance = hInstance;
 	ofn.lpstrFilter = szFilter;
-//	ofn.lpstrCustomFilter=NULL;
+//	ofn.lpstrCustomFilter=nullptr;
 //	ofn.nMaxCustFilter=0;
 //	ofn.nFilterIndex=0;
-//	ofn.lpstrFile=NULL;
+//	ofn.lpstrFile=nullptr;
 	ofn.nMaxFile=MAX_PATH;
-//	ofn.lpstrFileTitle=NULL;
-//	ofn.lpstrInitialDir=NULL;
-//	ofn.lpstrTitle=NULL;
+//	ofn.lpstrFileTitle=nullptr;
+//	ofn.lpstrInitialDir=nullptr;
+//	ofn.lpstrTitle=nullptr;
 	ofn.Flags=OFN_HIDEREADONLY;
 //	ofn.nFileOffset=0;
 //	ofn.nFileExtension=0;
 	ofn.lpstrDefExt=TEXT("sif");
 //	ofn.lCustData = 0l;
-	ofn.lpfnHook=NULL;
-//	ofn.lpTemplateName=NULL;
+	ofn.lpfnHook=nullptr;
+//	ofn.lpTemplateName=nullptr;
 
 	CHAR szFilename[MAX_PATH];
 	CHAR szTitle[500];
@@ -2998,28 +3059,28 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 	static TCHAR szFilter[] = TEXT (_("All Files (*.*)\0*.*\0\0")) ;
 
 	GdkWindow *gdkWinPtr=toolbox->get_window()->gobj();
-	HINSTANCE hInstance=static_cast<HINSTANCE>(GetModuleHandle(NULL));
+	HINSTANCE hInstance=static_cast<HINSTANCE>(GetModuleHandle(nullptr));
 	HWND hWnd=static_cast<HWND>(GDK_WINDOW_HWND(gdkWinPtr));
 
 	ofn.lStructSize=sizeof(OPENFILENAME);
 	ofn.hwndOwner = hWnd;
 	ofn.hInstance = hInstance;
 	ofn.lpstrFilter = szFilter;
-//	ofn.lpstrCustomFilter=NULL;
+//	ofn.lpstrCustomFilter=nullptr;
 //	ofn.nMaxCustFilter=0;
 //	ofn.nFilterIndex=0;
-//	ofn.lpstrFile=NULL;
+//	ofn.lpstrFile=nullptr;
 	ofn.nMaxFile=MAX_PATH;
-//	ofn.lpstrFileTitle=NULL;
-//	ofn.lpstrInitialDir=NULL;
-//	ofn.lpstrTitle=NULL;
+//	ofn.lpstrFileTitle=nullptr;
+//	ofn.lpstrInitialDir=nullptr;
+//	ofn.lpstrTitle=nullptr;
 	ofn.Flags=OFN_OVERWRITEPROMPT;
 //	ofn.nFileOffset=0;
 //	ofn.nFileExtension=0;
 	ofn.lpstrDefExt=TEXT("sif");
 //	ofn.lCustData = 0l;
-	ofn.lpfnHook=NULL;
-//	ofn.lpTemplateName=NULL;
+	ofn.lpfnHook=nullptr;
+//	ofn.lpTemplateName=nullptr;
 
 	CHAR szFilename[MAX_PATH];
 	CHAR szTitle[500];
@@ -3539,7 +3600,7 @@ App::dialog_message_2b(const std::string &message,
 // message dialog with 3 buttons.
 int
 App::dialog_message_3b(const std::string &message,
-	const std::string &detials,
+	const std::string &details,
 	const Gtk::MessageType &type,
 		//MESSAGE_INFO - Informational message.
 		//MESSAGE_WARNING - Non-fatal warning message.
@@ -3551,7 +3612,7 @@ App::dialog_message_3b(const std::string &message,
 	const std::string &button3)
 {
 	Gtk::MessageDialog dialog(*App::main_window, message, false, type, Gtk::BUTTONS_NONE, true);
-	dialog.set_secondary_text(detials);
+	dialog.set_secondary_text(details);
 	dialog.add_button(button1, 0);
 	dialog.add_button(button2, 1);
 	dialog.add_button(button3, 2);
@@ -3567,7 +3628,7 @@ try_open_uri(const std::string &uri)
 		App::main_window ? App::main_window->gobj() : nullptr,
 		uri.c_str(), GDK_CURRENT_TIME, nullptr );
 #else
-	return gtk_show_uri(NULL, uri.c_str(), GDK_CURRENT_TIME, NULL);
+	return gtk_show_uri(nullptr, uri.c_str(), GDK_CURRENT_TIME, nullptr);
 #endif
 }
 
@@ -3620,7 +3681,7 @@ void App::open_img_in_external(const std::string &uri)
 		// Glib::spawn_* needs `gspawn-win??-helper.exe` for Windows
 		Glib::spawn_async("", args);
 	} catch (const Glib::SpawnError& e) {
-		ui_interface_->error(etl::strprintf(_("Failed to run command: %s (%s)"), App::image_editor_path.c_str(), e.what().c_str()));
+		ui_interface_->error(synfig::strprintf(_("Failed to run command: %s (%s)"), App::image_editor_path.c_str(), e.what().c_str()));
 	}
 }
 
@@ -3794,13 +3855,23 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
 
 	dialog.get_content_area()->pack_start(text_view);
 
-	dialog.add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
-	dialog.add_button(_("OK"),   Gtk::RESPONSE_OK)->set_image_from_icon_name("gtk-ok", Gtk::ICON_SIZE_BUTTON);
-    //Gtk::Button* ok_button = dialog.add_button(_("Ok"), Gtk::RESPONSE_OK);
+	dialog.add_button(_("_Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
+	dialog.add_button(_("_OK"),   Gtk::RESPONSE_OK)->set_image_from_icon_name("gtk-ok", Gtk::ICON_SIZE_BUTTON);
 	dialog.set_default_response(Gtk::RESPONSE_OK);
 
-    dialog.signal_key_press_event().connect(sigc::ptr_fun(&on_key_pressed)); //catching key-press event
+	text_view.signal_key_press_event().connect(( [&dialog](GdkEventKey *ev) {
 
+		SYNFIG_EXCEPTION_GUARD_BEGIN()
+		if ((ev->type == GDK_KEY_PRESS) &&
+			(ev->keyval == (GDK_KEY_Return) || ev->keyval == (GDK_KEY_KP_Enter)) &&
+			(ev->state == GDK_CONTROL_MASK)){
+				dialog.response(Gtk::RESPONSE_OK);
+				return true;
+		}
+		return false;
+		SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
+
+	}), false );
 	//text_entry.signal_activate().connect(sigc::bind(sigc::mem_fun(dialog,&Gtk::Dialog::response),Gtk::RESPONSE_OK));
 	dialog.show();
 
@@ -3825,7 +3896,7 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
 std::string
 App::get_temporary_directory()
 {
-	return synfigapp::Main::get_user_app_directory() + ETL_DIRECTORY_SEPARATOR + "tmp";
+	return synfigapp::Main::get_user_app_directory() + "/tmp";
 }
 
 synfig::FileSystemTemporary::Handle
@@ -3838,7 +3909,7 @@ App::wrap_into_temporary_filesystem(
 	FileSystemTemporary::Handle temporary_file_system = new FileSystemTemporary("instance", get_temporary_directory(), canvas_file_system);
 	temporary_file_system->set_meta("filename", filename);
 	temporary_file_system->set_meta("as", as);
-	temporary_file_system->set_meta("truncate", etl::strprintf("%lld", truncate_storage_size));
+	temporary_file_system->set_meta("truncate", synfig::strprintf("%lld", truncate_storage_size));
 	return temporary_file_system;
 }
 
@@ -4132,13 +4203,13 @@ App::new_instance()
 		if (warnings != "")
 			App::dialog_message_1b(
 				"WARNING",
-				etl::strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
+				synfig::strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
 				"details",
 				_("Close"));
 		if (errors != "")
 			App::dialog_message_1b(
 				"ERROR",
-				etl::strprintf("%s:\n\n%s", _("Error"), errors.c_str()),
+				synfig::strprintf("%s:\n\n%s", _("Error"), errors.c_str()),
 				"details",
 				_("Close"));
 	}
@@ -4156,7 +4227,7 @@ App::new_instance()
 void
 App::open_from_plugin(const std::string& filename, const std::string& importer_id)
 {
-	String tmp_filename = get_temporary_directory() + ETL_DIRECTORY_SEPARATOR + "synfig";
+	String tmp_filename = get_temporary_directory() + "/synfig";
 
 	String filename_processed;
 	struct stat buf;
@@ -4420,28 +4491,26 @@ studio::App::process_all_events()
 }
 
 bool
-studio::App::check_python_version(String path)
+studio::App::check_python_version(const std::string& path)
 {
-#ifndef _MSC_VER	
-	String command;
-	String result;
-	command = path + " --version 2>&1";
-	FILE* pipe = popen(command.c_str(), "r");
-	if (!pipe) {
+	std::string working_directory, std_out, std_err;
+	int exit_status;
+	const char* err_msg = _("Failed to detect Python 3 executable:\n Error: %s");
+	const std::vector<std::string> argv = {path, "--version"};
+	try {
+		Glib::spawn_sync(working_directory, argv, Glib::SPAWN_SEARCH_PATH, Glib::SlotSpawnChildSetup(), &std_out, &std_err, &exit_status);
+	} catch (const Glib::SpawnError& e) {
+		synfig::error(err_msg, e.what().c_str());
+		return false;
+	} catch (const Glib::ShellError& e) {
+		synfig::error(err_msg, e.what().c_str());
 		return false;
 	}
-	char buffer[128];
-	while(!feof(pipe)) {
-		if(fgets(buffer, 128, pipe) != nullptr)
-				result += buffer;
-	}
-	pclose(pipe);
+
 	// Output is like: "Python 3.3.0"
-	if (result.substr(7,1) != "3"){
-		return false;
+	if (!exit_status && std_out.find("Python 3") != std::string::npos) {
+		return true;
 	}
-	return true;
-#else
+	synfig::warning(err_msg, (std_out + '\n' + std_err).c_str());
 	return false;
-#endif
 }

@@ -44,7 +44,7 @@ using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
-#define GUIDE_COLOR_CURRENT     Gdk::Color("#ff6f6f")
+#define GUIDE_COLOR_CURRENT     Gdk::RGBA("#ff6f6f")
 
 /* === G L O B A L S ======================================================= */
 

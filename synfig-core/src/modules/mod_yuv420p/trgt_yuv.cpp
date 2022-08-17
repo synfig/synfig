@@ -35,6 +35,9 @@
 
 #include <glib/gstdio.h>
 #include "trgt_yuv.h"
+
+#include <ETL/stringf>
+
 #endif
 
 using namespace synfig;
@@ -136,7 +139,7 @@ yuv::end_frame()
 			Color& c(surface[y][x]);
 			c=c.clamped();
 			float f(c.get_y());
-			int i(std::max(std::min(round_to_int(c.get_y()*Y_RANGE),Y_RANGE),0)+Y_FLOOR);
+			int i(synfig::clamp(round_to_int(c.get_y()*Y_RANGE),0, Y_RANGE)+Y_FLOOR);
 
 			if(dithering)
 			{
@@ -178,7 +181,7 @@ yuv::end_frame()
 		{
 			const Color& c(sm_surface[y][x]);
 			const float f(c.get_u());
-			const int i(std::max(std::min(round_to_int((f+0.5f)*UV_RANGE),UV_RANGE),0)+UV_FLOOR);
+			const int i(synfig::clamp(round_to_int((f+0.5f)*UV_RANGE), 0, UV_RANGE)+UV_FLOOR);
 
 			if(dithering)
 			{
@@ -204,7 +207,7 @@ yuv::end_frame()
 		{
 			const Color& c(sm_surface[y][x]);
 			const float f(c.get_v());
-			const int i(std::max(std::min(round_to_int((f+0.5f)*UV_RANGE),UV_RANGE),0)+UV_FLOOR);
+			const int i(synfig::clamp(round_to_int((f+0.5f)*UV_RANGE), 0, UV_RANGE)+UV_FLOOR);
 
 			if(dithering)
 			{

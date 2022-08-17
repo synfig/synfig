@@ -34,11 +34,14 @@
 #	include <config.h>
 #endif
 
+#include "plant.h"
+
+#include <cmath> // std::ceil()
+
 #include <synfig/localization.h>
 #include <synfig/general.h>
 
 #include <synfig/angle.h>
-#include "plant.h"
 #include <synfig/string.h>
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
@@ -47,7 +50,6 @@
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
 
-#include <ETL/calculus>
 #include <ETL/hermite>
 #include <vector>
 
@@ -100,7 +102,7 @@ Plant::Plant():
 {
 	bounding_rect=Rect::zero();
 	Random random;
-	random.set_seed(time(NULL));
+	random.set_seed(time(nullptr));
 	param_random.set(random.get_seed());
 	
 	std::vector<BLinePoint> bline;
@@ -260,7 +262,6 @@ Plant::sync()const
 		curve.p2()=next->get_vertex();
 		curve.t2()=next->get_tangent1();
 		curve.sync();
-		etl::derivative<etl::hermite<Vector> > deriv(curve);
 
 		Real f;
 
@@ -280,7 +281,7 @@ Plant::sync()const
 			stunt_growth*=stunt_growth;
 
 			if((((i+1)*sprouts + steps/2) / steps) > branch_count) {
-				Vector branch_velocity(deriv(f).norm()*velocity + deriv(f).perp().norm()*perp_velocity);
+				Vector branch_velocity(curve.derivative(f).norm()*velocity + curve.derivative(f).perp().norm()*perp_velocity);
 
 				if (std::isnan(branch_velocity[0]) || std::isnan(branch_velocity[1]))
 					continue;
@@ -589,6 +590,9 @@ Plant::draw_particles(Surface *dest_surface, const RendDesc &renddesc)const
 			float x2f=(particle->point[0]-tl[0])/pw+(scaled_radius*0.5);
 			float y1f=(particle->point[1]-tl[1])/ph-(scaled_radius*0.5);
 			float y2f=(particle->point[1]-tl[1])/ph+(scaled_radius*0.5);
+			const auto ceil_to_int = [](float num) -> int {
+				return static_cast<int>(std::ceil(num));
+			};
 			x1=ceil_to_int(x1f);
 			x2=ceil_to_int(x2f)-1;
 			y1=ceil_to_int(y1f);

@@ -45,6 +45,7 @@
 #include <cstdio>
 #include <cstring> 
 #include <ETL/misc>
+#include <ETL/stringf>
 #include <iostream>
 
 #endif
@@ -288,7 +289,7 @@ png_trgt_spritesheet::load_png_file()
 	}
 
     /* initialize stuff */
-    in_image.png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+	in_image.png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
 
     if (!in_image.png_ptr)
 	{
@@ -407,7 +408,7 @@ png_trgt_spritesheet::write_png_file()
     {
         synfig::error("Unable to setup PNG struct");
         fclose(out_file_pointer);
-        out_file_pointer=NULL;
+		out_file_pointer=nullptr;
         return false;
     }
 
@@ -417,8 +418,8 @@ png_trgt_spritesheet::write_png_file()
     {
         synfig::error("Unable to setup PNG info struct");
         fclose(out_file_pointer);
-        out_file_pointer=NULL;
-        png_destroy_write_struct(&png_ptr,(png_infopp)NULL);
+		out_file_pointer=nullptr;
+		png_destroy_write_struct(&png_ptr,(png_infopp)nullptr);
         return false;
     }
 
@@ -428,7 +429,7 @@ png_trgt_spritesheet::write_png_file()
         synfig::error("Unable to setup longjump");
         png_destroy_write_struct(&png_ptr, &info_ptr);
         fclose(out_file_pointer);
-        out_file_pointer=NULL;
+		out_file_pointer=nullptr;
         return false;
     }
     png_init_io(png_ptr,out_file_pointer);
@@ -499,7 +500,7 @@ png_trgt_spritesheet::write_png_file()
         png_write_end(png_ptr,info_ptr);
         png_destroy_write_struct(&png_ptr, &info_ptr);
         fclose(out_file_pointer);
-        out_file_pointer=NULL;
+		out_file_pointer=nullptr;
 
     }
 	return true;

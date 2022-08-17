@@ -140,25 +140,26 @@ else()
 	message(STATUS "Building with pkg-config...")
 	include(FindPkgConfig)
     if(PKG_CONFIG_FOUND)
-		pkg_check_modules(SIGCPP REQUIRED sigc++-2.0)
-		pkg_check_modules(GLIB REQUIRED glib-2.0)
-		pkg_check_modules(GLIBMM REQUIRED glibmm-2.4)
-		pkg_check_modules(GIOMM REQUIRED giomm-2.4)
-		pkg_check_modules(LIBXML REQUIRED libxml++-2.6)
-		pkg_search_module(MLT mlt++-7 mlt++)
-		pkg_check_modules(FFTW REQUIRED fftw3)
-		pkg_check_modules(LIBPNG REQUIRED libpng) # for mod_png
+		pkg_check_modules(SIGCPP REQUIRED IMPORTED_TARGET sigc++-2.0)
+		pkg_check_modules(GLIB REQUIRED IMPORTED_TARGET glib-2.0)
+		pkg_check_modules(GLIBMM REQUIRED IMPORTED_TARGET glibmm-2.4)
+		pkg_check_modules(GIOMM REQUIRED IMPORTED_TARGET giomm-2.4)
+		pkg_check_modules(XMLPP REQUIRED IMPORTED_TARGET libxml++-2.6)
+		pkg_search_module(MLT IMPORTED_TARGET mlt++-7 mlt++)
+		pkg_check_modules(FFTW REQUIRED IMPORTED_TARGET fftw3)
+		pkg_check_modules(LIBPNG REQUIRED IMPORTED_TARGET libpng) # for mod_png
 		#TODO(ice0): find solution for libmng
-		pkg_check_modules(LIBMNG libmng) # for mod_mng (set as optional as it is not correctly installed in Debian)
-		pkg_check_modules(LIBJPEG REQUIRED libjpeg) # for mod_mng
-		pkg_check_modules(OPENEXR OpenEXR) # for mod_openexr
-		pkg_check_modules(MAGICKCORE REQUIRED MagickCore) # for Magick++
+		pkg_check_modules(LIBMNG IMPORTED_TARGET libmng) # for mod_mng (set as optional as it is not correctly installed in Debian)
+		pkg_check_modules(LIBJPEG REQUIRED IMPORTED_TARGET libjpeg) # for mod_mng
+		pkg_check_modules(OPENEXR IMPORTED_TARGET OpenEXR) # for mod_openexr
+		pkg_check_modules(MAGICKCORE IMPORTED_TARGET MagickCore) # for Magick++
 
 		## TODO: move to module where it is actually required
-		pkg_check_modules(FT REQUIRED freetype2) # for lyr_freetype
-		pkg_check_modules(FONT_CONFIG fontconfig) # for FontConfig
-		pkg_check_modules(FRIBIDI REQUIRED fribidi)
-		pkg_check_modules(HARFBUZZ REQUIRED harfbuzz)
+		pkg_check_modules(FREETYPE2 REQUIRED IMPORTED_TARGET freetype2) # for lyr_freetype
+		pkg_check_modules(FONTCONFIG IMPORTED_TARGET fontconfig) # for FontConfig
+		pkg_check_modules(FRIBIDI REQUIRED IMPORTED_TARGET fribidi)
+		pkg_check_modules(HARFBUZZ REQUIRED IMPORTED_TARGET harfbuzz)
+		pkg_check_modules(LIBAVFORMAT IMPORTED_TARGET libavcodec libavformat libavutil libswresample libswscale)
 	endif()
 endif()
 

@@ -34,6 +34,11 @@
 #	include <config.h>
 #endif
 
+#include <cstring>
+#include <ctime>
+
+#include <ETL/stringf>
+
 #include <synfig/localization.h>
 #include <synfig/general.h>
 
@@ -125,7 +130,24 @@ synfig::get_version()
 const char *
 synfig::get_build_date()
 {
-	return __DATE__;
+	const int max_date_length = 50;
+	static char date_str[max_date_length] = {0};
+
+	if (date_str[0] == 0) {
+		// https://reproducible-builds.org/specs/source-date-epoch/
+		if (char* source_date_epoch = getenv("SOURCE_DATE_EPOCH")) {
+			std::istringstream iss(source_date_epoch);
+			std::time_t t;
+			iss >> t;
+			if (iss.fail()
+			    || !iss.eof()
+			    || !std::strftime(date_str, sizeof(date_str), "%x", std::localtime(&t))) {
+				    std::strncpy(date_str, _("Unknown build date"), max_date_length-1);
+			}
+		} else
+			return __DATE__;
+	}
+	return date_str;
 }
 
 bool
@@ -170,7 +192,7 @@ static void broken_pipe_signal (int /*sig*/)  {
 
 bool retrieve_modules_to_load(String filename,std::list<String> &modules_to_load)
 {
-	std::ifstream file(Glib::locale_from_utf8(filename).c_str());
+	std::ifstream file(synfig::filesystem::Path(filename).c_str());
 
 	if(!file)
 	{
@@ -203,11 +225,11 @@ synfig::Main::Main(const synfig::String& rootpath,ProgressCallback *cb):
 	// Paths
 
 	root_path       = rootpath;
-	bin_path        = root_path  + ETL_DIRECTORY_SEPARATOR + "bin";
-	share_path      = root_path  + ETL_DIRECTORY_SEPARATOR + "share";
-	locale_path     = share_path + ETL_DIRECTORY_SEPARATOR + "locale";
-	lib_path        = root_path  + ETL_DIRECTORY_SEPARATOR + "lib";
-	lib_synfig_path = lib_path   + ETL_DIRECTORY_SEPARATOR + "synfig";
+	bin_path        = root_path  + "/bin";
+	share_path      = root_path  + "/share";
+	locale_path     = share_path + "/locale";
+	lib_path        = root_path  + "/lib";
+	lib_synfig_path = lib_path   + "/synfig";
 
 	// Add initialization after this point
 
@@ -315,12 +337,15 @@ synfig::Main::Main(const synfig::String& rootpath,ProgressCallback *cb):
 	else
 	{
 		locations.push_back("./" MODULE_LIST_FILENAME);
-		if(getenv("HOME"))
-			locations.push_back(strprintf("%s/.local/share/synfig/%s", getenv("HOME"), MODULE_LIST_FILENAME));
+		const std::string home = Glib::getenv("HOME");
+		if (!home.empty()) {
+			locations.push_back(strprintf("%s/.local/share/synfig/%s", home.c_str(), MODULE_LIST_FILENAME));
+		}
+
 	#ifdef SYSCONFDIR
 		locations.push_back(SYSCONFDIR"/" MODULE_LIST_FILENAME);
 	#endif
-		locations.push_back(root_path + ETL_DIRECTORY_SEPARATOR + "etc" + ETL_DIRECTORY_SEPARATOR + MODULE_LIST_FILENAME);
+		locations.push_back(root_path + "/etc/" + MODULE_LIST_FILENAME);
 	#ifndef _WIN32
 		locations.push_back("/usr/local/etc/" MODULE_LIST_FILENAME);
 	#endif
@@ -407,7 +432,7 @@ synfig::Main::~Main()
 #endif
 
 	assert(instance);
-	instance = NULL;
+	instance = nullptr;
 }
 
 static const String
@@ -491,8 +516,8 @@ synfig::get_binary_path(const String &fallback_path)
 #ifdef _WIN32
 
 	wchar_t module_file_name[MAX_PATH];
-	if (GetModuleFileNameW(NULL, module_file_name, MAX_PATH)) {
-		result = String(g_utf16_to_utf8((gunichar2 *)module_file_name, -1, NULL, NULL, NULL));
+	if (GetModuleFileNameW(nullptr, module_file_name, MAX_PATH)) {
+		result = String(g_utf16_to_utf8((gunichar2 *)module_file_name, -1, nullptr, nullptr, nullptr));
 	}
 
 
@@ -575,14 +600,14 @@ synfig::get_binary_path(const String &fallback_path)
 		char* line = (char*)malloc(buf_size);
 
 		f = fopen("/proc/self/maps", "r");
-		if (f == NULL) {
+		if (!f) {
 			synfig::error("Cannot open /proc/self/maps.");
 		}
 
 		/* The first entry should be the executable name. */
 		char *r;
 		r = fgets(line, (int) buf_size, f);
-		if (r == NULL) {
+		if (!r) {
 			synfig::error("Cannot read /proc/self/maps.");
 		}
 
@@ -599,7 +624,7 @@ synfig::get_binary_path(const String &fallback_path)
 		path = strchr(line, '/');
 
 		/* Sanity check. */
-		if (strstr(line, " r-xp ") == NULL || path == NULL) {
+		if (strstr(line, " r-xp ") == nullptr || !path) {
 			synfig::error("Invalid /proc/self/maps.");
 		}
 

@@ -53,6 +53,8 @@
 #include <hb-ft.h>
 #endif
 
+#include <ETL/stringf>
+
 #include <synfig/canvasfilenaming.h>
 #include <synfig/context.h>
 #include <synfig/general.h>
@@ -286,8 +288,8 @@ get_possible_font_filenames(synfig::String family, int style, int weight, std::v
 
 	struct FontFileNameEntry {
 		const char *alias;
-		const char *preffix;
-		const char *alternative_preffix;
+		const char *prefix;
+		const char *alternative_prefix;
 		FontSuffixStyle suffix_style;
 		FontClassification classification;
 
@@ -398,11 +400,11 @@ get_possible_font_filenames(synfig::String family, int style, int weight, std::v
 		for (int i = 0; font_filename_db[i].alias; i++) {
 			const FontFileNameEntry &entry = font_filename_db[i];
 			if (possible_family == entry.alias) {
-				std::string filename = entry.preffix;
+				std::string filename = entry.prefix;
 				filename += entry.get_suffix(style, weight);
 				list.push_back(filename);
 
-				filename = entry.preffix;
+				filename = entry.prefix;
 				filename += FontFileNameEntry::get_alternative_suffix(style, weight);
 				list.push_back(filename);
 			}
@@ -467,6 +469,8 @@ Layer_Freetype::on_canvas_set()
 	int style=param_style.get(int());
 	int weight=param_weight.get(int());
 	new_font(family,style,weight);
+
+	sync(true);
 }
 
 void
@@ -730,7 +734,8 @@ Layer_Freetype::set_shape_param(const String & param, const ValueBase &value)
 */
 	IMPORT_VALUE_PLUS(param_family,
 		{
-			synfig::String family=param_family.get(synfig::String());
+			synfig::String family = FileSystem::fix_slashes(value.get(synfig::String()));
+			param_family.set(family);
 			int style=param_style.get(int());
 			int weight=param_weight.get(int());
 			new_font(family,style,weight);

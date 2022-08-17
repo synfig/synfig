@@ -56,7 +56,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_TimedSwap, RELEASE_VERSION_0_61_07, "timed_swap", "Timed Swap")
+REGISTER_VALUENODE(ValueNode_TimedSwap, RELEASE_VERSION_0_61_07, "timed_swap", N_("Timed Swap"))
 
 /* === P R O C E D U R E S ================================================= */
 

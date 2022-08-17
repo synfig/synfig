@@ -82,7 +82,7 @@ public:
 	Target_Tile();
 
 	//! Renders the canvas to the target
-	virtual bool render(ProgressCallback *cb=NULL);
+	virtual bool render(ProgressCallback* cb = nullptr);
 
 	virtual bool async_render_tile(
 		etl::handle<Canvas> canvas,
@@ -90,7 +90,7 @@ public:
 		RectInt rect,
 		RendDesc tile_desc,
 		ProgressCallback *cb);
-	virtual bool wait_render_tiles(ProgressCallback *cb=NULL);
+	virtual bool wait_render_tiles(ProgressCallback* cb = nullptr);
 
 	//! Determines which tile needs to be rendered next.
 	/*!	Most cases will not have to redefine this function.
@@ -112,7 +112,7 @@ public:
 	/*! \return \c true on success, \c false upon an error.
 	**	\see end_frame(), start_scanline()
 	*/
-	virtual bool start_frame(ProgressCallback *cb=NULL)=0;
+	virtual bool start_frame(ProgressCallback* cb = nullptr) = 0;
 
 	//! Marks the end of a frame
 	/*! \see start_frame() */

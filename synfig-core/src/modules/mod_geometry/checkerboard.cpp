@@ -159,7 +159,7 @@ public:
 
 					ColorReal a = std::min(px, py);
 					if ((p[0] < 0.5) != (p[1] < 0.5)) a = -a;
-					a = std::max(ColorReal(0), std::min(ColorReal(1), a + ColorReal(0.5)));
+					a = synfig::clamp(a + ColorReal(0.5), ColorReal(0), ColorReal(1));
 
 					c.set_a(color.get_a()*a);
 					apen.put_value(c, amount);
@@ -240,7 +240,7 @@ CheckerBoard::set_param(const String &param, const ValueBase &value)
 		return set_param("origin", value);
 
 	for(int i=0;i<2;i++)
-		if(param==etl::strprintf("pos[%d]",i) && value.get_type()==type_real)
+		if(param==strprintf("pos[%d]",i) && value.get_type()==type_real)
 		{
 			Point p=param_origin.get(Point());
 			p[i]=value.get(Real());
@@ -294,15 +294,14 @@ CheckerBoard::get_param_vocab()const
 synfig::Layer::Handle
 CheckerBoard::hit_check(synfig::Context context, const synfig::Point &getpos)const
 {
-	if(get_amount()!=0.0 && point_test(getpos))
-	{
-		synfig::Layer::Handle tmp;
-		if(get_blend_method()==Color::BLEND_BEHIND && (tmp=context.hit_check(getpos)))
-			return tmp;
-		if(Color::is_onto(get_blend_method()) && !(tmp=context.hit_check(getpos)))
-			return 0;
+	bool check_myself_first;
+	auto layer = basic_hit_check(context, getpos, check_myself_first);
+
+	if (!check_myself_first)
+		return layer;
+
+	if (point_test(getpos))
 		return const_cast<CheckerBoard*>(this);
-	}
 	else
 		return context.hit_check(getpos);
 }

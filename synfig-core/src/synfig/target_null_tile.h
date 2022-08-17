@@ -46,19 +46,18 @@ namespace synfig {
 */
 class Target_Null_Tile : public Target_Tile
 {
-	Target_Null_Tile() { }
+	Target_Null_Tile() = default;
 
 public:
 
-	~Target_Null_Tile() {  }
-	virtual bool add_tile(const synfig::Surface &/*surface*/, int /*x*/, int /*y*/) { return true; }
+	~Target_Null_Tile() = default;
 
-	virtual bool start_frame(ProgressCallback */*cb*/=NULL)
-		{ return true; }
+	bool add_tile(const synfig::Surface& /*surface*/, int /*x*/, int /*y*/) override { return true; }
 
-	virtual void end_frame() { return; }
+	bool start_frame(ProgressCallback* /*cb*/ = nullptr) override{ return true; }
+	void end_frame() override { }
 
-	static Target* create(const char */*filename*/=0) { return new Target_Null_Tile(); }
+	static Target* create(const char* /*filename*/, const synfig::TargetParam&) { return new Target_Null_Tile(); }
 }; // END of class Target_Null_Tile
 
 }; // END of namespace synfig

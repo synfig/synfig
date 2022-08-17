@@ -37,7 +37,6 @@
 #include <cassert>
 #include <cmath>
 #include <iostream>
-#include <ETL/stringf>
 
 /* === M A C R O S ========================================================= */
 

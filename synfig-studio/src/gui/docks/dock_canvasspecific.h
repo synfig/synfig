@@ -63,7 +63,7 @@ public:
 	etl::loose_handle<studio::CanvasView> get_canvas_view();
 	etl::loose_handle<synfigapp::CanvasInterface> get_canvas_interface();
 
-	Dock_CanvasSpecific(const synfig::String& name,const synfig::String& local_name,Gtk::StockID stock_id_=Gtk::StockID(" "));
+	Dock_CanvasSpecific(const synfig::String& name, const synfig::String& local_name, synfig::String icon="");
 	virtual ~Dock_CanvasSpecific();
 }; // END of Dock_CanvasSpecific
 

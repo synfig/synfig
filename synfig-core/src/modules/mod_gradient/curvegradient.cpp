@@ -49,7 +49,6 @@
 #include <synfig/valuenode.h>
 #include <ETL/bezier>
 #include <ETL/hermite>
-#include <ETL/calculus>
 
 #endif
 
@@ -305,9 +304,6 @@ CurveGradient::color_func(const Point &point_, int quality, Real supersample)con
 			next->get_tangent1()
 			);
 
-		// Setup the derivative function
-		etl::derivative<etl::hermite<Vector> > deriv(curve);
-
 		int search_iterations(7);
 
 		/*if(quality==0)search_iterations=8;
@@ -332,8 +328,8 @@ CurveGradient::color_func(const Point &point_, int quality, Real supersample)con
 			t = curve.find_closest(fast, point,search_iterations);
 
 		// Calculate our values
-		p1=curve(t);			 // the closest point on the curve
-		tangent=deriv(t);		 // the tangent at that point
+		p1=curve(t);                 // the closest point on the curve
+		tangent=curve.derivative(t); // the tangent at that point
 
 		// if the point we're nearest to is at either end of the
 		// bline, our distance from the curve is the distance from the
@@ -464,10 +460,14 @@ CurveGradient::calc_supersample(const synfig::Point &/*x*/, Real pw, Real /*ph*/
 synfig::Layer::Handle
 CurveGradient::hit_check(synfig::Context context, const synfig::Point &point)const
 {
+	bool check_myself_first;
+	auto layer = basic_hit_check(context, point, check_myself_first);
+
+	if (!check_myself_first)
+		return layer;
+
 	if(get_blend_method()==Color::BLEND_STRAIGHT && get_amount()>=0.5)
 		return const_cast<CurveGradient*>(this);
-	if(get_amount()==0.0)
-		return context.hit_check(point);
 	if((get_blend_method()==Color::BLEND_STRAIGHT || get_blend_method()==Color::BLEND_COMPOSITE|| get_blend_method()==Color::BLEND_ONTO) && color_func(point).get_a()>0.5)
 		return const_cast<CurveGradient*>(this);
 	return context.hit_check(point);

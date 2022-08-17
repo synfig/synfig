@@ -114,7 +114,7 @@ Action::System::perform_action(etl::handle<Action::Base> action)
 	etl::handle<Action::Undoable> undoable_action = etl::handle<Action::Undoable>::cast_dynamic(action);
 	assert(!undoable_action || undoable_action->is_active());
 	if (!undoable_action) {
-		String message = etl::strprintf(_("Do you want to do action \"%s\"?"), action->get_local_name().c_str());
+		String message = synfig::strprintf(_("Do you want to do action \"%s\"?"), action->get_local_name().c_str());
 		String details = _("This action cannot be undone.");
 		UIInterface::Response response = uim->confirmation(
 			message,
@@ -135,7 +135,7 @@ Action::System::perform_action(etl::handle<Action::Base> action)
 		uim->task(action->get_local_name()+' '+_("Failed"));
 		if (err.get_type() != Action::Error::TYPE_UNABLE) {
 			if (err.get_desc().empty())
-				uim->error(action->get_local_name() + ": " + etl::strprintf("%d", err.get_type()));
+				uim->error(action->get_local_name() + ": " + synfig::strprintf("%d", err.get_type()));
 			else
 				uim->error(action->get_local_name() + ": " + err.get_desc());
 		}
@@ -196,7 +196,7 @@ synfigapp::Action::System::undo_(etl::handle<UIInterface> uim)
 	catch (Action::Error &err) {
 		if(err.get_type() != Action::Error::TYPE_UNABLE) {
 			if(err.get_desc().empty())
-				uim->error(action->get_local_name() + _(" (Undo): ") + etl::strprintf("%d",err.get_type()));
+				uim->error(action->get_local_name() + _(" (Undo): ") + synfig::strprintf("%d",err.get_type()));
 			else
 				uim->error(action->get_local_name() + _(" (Undo): ") + err.get_desc());
 		}
@@ -265,7 +265,7 @@ Action::System::redo_(etl::handle<UIInterface> uim)
 	catch (const Action::Error& err) {
 		if (err.get_type() != Action::Error::TYPE_UNABLE) {
 			if(err.get_desc().empty())
-				uim->error(action->get_local_name() + _(" (Redo): ") + etl::strprintf("%d", err.get_type()));
+				uim->error(action->get_local_name() + _(" (Redo): ") + synfig::strprintf("%d", err.get_type()));
 			else
 				uim->error(action->get_local_name() + _(" (Redo): ") + err.get_desc());
 		}

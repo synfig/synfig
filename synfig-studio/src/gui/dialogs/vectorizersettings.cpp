@@ -213,7 +213,7 @@ VectorizerSettings::VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::L
 	add_action_widget(*convert_button,1);
 	convert_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::VectorizerSettings::on_convert_pressed));
 
-	Gtk::Button *cancel_button(manage(new class Gtk::Button(Gtk::StockID("gtk-cancel"))));
+	Gtk::Button *cancel_button(manage(new Gtk::Button(_("_Cancel"), true)));
 	cancel_button->set_tooltip_text("Close the dialog");
 	cancel_button->show();
 	add_action_widget(*cancel_button,0);

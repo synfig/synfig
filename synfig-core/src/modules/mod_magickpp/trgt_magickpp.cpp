@@ -35,6 +35,7 @@
 #include <synfig/general.h>
 
 #include <ETL/misc>
+#include <ETL/stringf>
 #include "trgt_magickpp.h"
 
 #endif
@@ -58,7 +59,7 @@ MagickCore::Image* copy_image_list(Container& container)
 {
 	typedef typename Container::iterator Iter;
 	MagickCore::Image* previous = 0;
-	MagickCore::Image* first = NULL;
+	MagickCore::Image* first = nullptr;
 	MagickCore::ExceptionInfo* exceptionInfo = MagickCore::AcquireExceptionInfo();
 	for (Iter iter = container.begin(); iter != container.end(); ++iter)
 	{
@@ -198,9 +199,9 @@ magickpp_trgt::~magickpp_trgt()
 		synfig::error("unknown exception");
 	}
 
-	if (buffer1 != NULL) delete [] buffer1;
-	if (buffer2 != NULL) delete [] buffer2;
-	if (color_buffer != NULL) delete [] color_buffer;
+	if (buffer1) delete [] buffer1;
+	if (buffer2) delete [] buffer2;
+	if (color_buffer) delete [] color_buffer;
 	//exceptionInfo = MagickCore::DestroyExceptionInfo(exceptionInfo);
 	MagickCore::DestroyExceptionInfo(exceptionInfo);
 }
@@ -218,21 +219,21 @@ magickpp_trgt::init(synfig::ProgressCallback*)
 	width = desc.get_w();
 	height = desc.get_h();
 
-	start_pointer = NULL;
+	start_pointer = nullptr;
 
 	buffer1 = new unsigned char[4*width*height];
-	if (buffer1 == NULL)
+	if (!buffer1)
 		return false;
 
 	buffer2 = new unsigned char[4*width*height];
-	if (buffer2 == NULL)
+	if (!buffer2)
 	{
 		delete [] buffer1;
 		return false;
 	}
 
 	color_buffer = new Color[width];
-	if (color_buffer == NULL)
+	if (!color_buffer)
 	{
 		delete [] buffer1;
 		delete [] buffer2;

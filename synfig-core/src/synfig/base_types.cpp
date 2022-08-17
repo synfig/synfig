@@ -77,7 +77,7 @@ namespace types_namespace {
 
 class TypeBool: public synfig::Type
 {
-	static String to_string(const bool &x) { return etl::strprintf("Bool (%s)", x ? "true" : "false"); }
+	static String to_string(const bool &x) { return strprintf("Bool (%s)", x ? "true" : "false"); }
 	void initialize_vfunc(Description &description)
 	{
 		Type::initialize_vfunc(description);
@@ -97,7 +97,7 @@ SYNFIG_IMPLEMENT_TYPE_ALIAS(bool, TypeBool)
 
 class TypeInteger: public Type
 {
-	static String to_string(const int &x) { return etl::strprintf("Integer (%d)", x); }
+	static String to_string(const int &x) { return strprintf("Integer (%d)", x); }
 	void initialize_vfunc(Description &description)
 	{
 		Type::initialize_vfunc(description);
@@ -118,7 +118,7 @@ SYNFIG_IMPLEMENT_TYPE_ALIAS(int, TypeInteger)
 
 class TypeAngle: public Type
 {
-	static String to_string(const Angle &x) { return etl::strprintf("Angle (%.2f)", Angle::deg(x).get()); }
+	static String to_string(const Angle &x) { return strprintf("Angle (%.2f)", Angle::deg(x).get()); }
 	void initialize_vfunc(Description &description)
 	{
 		Type::initialize_vfunc(description);
@@ -166,7 +166,7 @@ private:
 		{ return fabs((*(Inner*)a).r - (*(Inner*)b).r) <= 1e-14; }
 	static bool less(ConstInternalPointer a, ConstInternalPointer b)
 		{ return !equal(a, b) && (*(Inner*)a).r < (*(Inner*)b).r; }
-	static String to_string(const Inner &x) { return etl::strprintf("Real (%f)", (Real)x); }
+	static String to_string(const Inner &x) { return strprintf("Real (%f)", (Real)x); }
 	void initialize_vfunc(Description &description)
 	{
 		Type::initialize_vfunc(description);
@@ -193,7 +193,7 @@ SYNFIG_IMPLEMENT_TYPE_ALIAS(float, TypeReal)
 class TypeTime: public Type
 {
 	typedef TypeReal::Inner Inner;
-	static String to_string(const Inner &x) { return etl::strprintf("Time (%s)", ((const Time&)x).get_string().c_str()); }
+	static String to_string(const Inner &x) { return strprintf("Time (%s)", ((const Time&)x).get_string().c_str()); }
 	static bool equal(ConstInternalPointer a, ConstInternalPointer b)
 		{ return (const Time&)*(Inner*)a == (const Time&)*(Inner*)b; }
 	static bool less(ConstInternalPointer a, ConstInternalPointer b)
@@ -224,7 +224,7 @@ SYNFIG_IMPLEMENT_TYPE_ALIAS(Time, TypeTime)
 
 class TypeVector: public Type
 {
-	static String to_string(const Vector &x) { return etl::strprintf("Vector (%f, %f)", x[0], x[1]); }
+	static String to_string(const Vector &x) { return strprintf("Vector (%f, %f)", x[0], x[1]); }
 	void initialize_vfunc(Description &description)
 	{
 		Type::initialize_vfunc(description);
@@ -244,7 +244,7 @@ SYNFIG_IMPLEMENT_TYPE_ALIAS(Vector, TypeVector)
 
 class TypeColor: public Type
 {
-	static String to_string(const Color &x) { return etl::strprintf("Color (%s)", x.get_string().c_str()); }
+	static String to_string(const Color &x) { return strprintf("Color (%s)", x.get_string().c_str()); }
 	void initialize_vfunc(Description &description)
 	{
 		Type::initialize_vfunc(description);
@@ -263,7 +263,7 @@ SYNFIG_IMPLEMENT_TYPE_ALIAS(Color, TypeColor)
 
 class TypeSegment: public Type
 {
-	static String to_string(const Segment &x) { return etl::strprintf("Segment ((%f, %f) to (%f, %f))", x.p1[0], x.p1[1], x.p2[0], x.p2[1]); }
+	static String to_string(const Segment &x) { return strprintf("Segment ((%f, %f) to (%f, %f))", x.p1[0], x.p1[1], x.p2[0], x.p2[1]); }
 	void initialize_vfunc(Description &description)
 	{
 		Type::initialize_vfunc(description);
@@ -282,7 +282,7 @@ SYNFIG_IMPLEMENT_TYPE_ALIAS(Segment, TypeSegment)
 
 class TypeBLinePoint: public Type
 {
-	static String to_string(const BLinePoint &x) { return etl::strprintf("BLinePoint (%f, %f)", x.get_vertex()[0], x.get_vertex()[1]); }
+	static String to_string(const BLinePoint &x) { return strprintf("BLinePoint (%f, %f)", x.get_vertex()[0], x.get_vertex()[1]); }
 	void initialize_vfunc(Description &description)
 	{
 		Type::initialize_vfunc(description);
@@ -302,7 +302,7 @@ SYNFIG_IMPLEMENT_TYPE_ALIAS(BLinePoint, TypeBLinePoint)
 
 class TypeMatrix: public Type
 {
-	static String to_string(const Matrix &x) { return etl::strprintf("Matrix (%s)", x.get_string().c_str()); }
+	static String to_string(const Matrix &x) { return strprintf("Matrix (%s)", x.get_string().c_str()); }
 	void initialize_vfunc(Description &description)
 	{
 		Type::initialize_vfunc(description);
@@ -321,7 +321,7 @@ SYNFIG_IMPLEMENT_TYPE_ALIAS(Matrix, TypeMatrix)
 
 class TypeBoneWeightPair: public Type
 {
-	static String to_string(const BoneWeightPair &x) { return etl::strprintf("Bone Weight Pair (%s)", x.get_string().c_str()); }
+	static String to_string(const BoneWeightPair &x) { return strprintf("Bone Weight Pair (%s)", x.get_string().c_str()); }
 	void initialize_vfunc(Description &description)
 	{
 		Type::initialize_vfunc(description);
@@ -340,7 +340,7 @@ SYNFIG_IMPLEMENT_TYPE_ALIAS(BoneWeightPair, TypeBoneWeightPair)
 
 class TypeWidthPoint: public Type
 {
-	static String to_string(const WidthPoint &x) { return etl::strprintf("WidthPoint (%f, %f)", x.get_position(), x.get_width()); }
+	static String to_string(const WidthPoint &x) { return strprintf("WidthPoint (%f, %f)", x.get_position(), x.get_width()); }
 	void initialize_vfunc(Description &description)
 	{
 		Type::initialize_vfunc(description);
@@ -360,7 +360,7 @@ SYNFIG_IMPLEMENT_TYPE_ALIAS(WidthPoint, TypeWidthPoint)
 
 class TypeDashItem: public Type
 {
-	static String to_string(const DashItem &x) { return etl::strprintf("DashItem (%f, %f)", x.get_offset(), x.get_length()); }
+	static String to_string(const DashItem &x) { return strprintf("DashItem (%f, %f)", x.get_offset(), x.get_length()); }
 	void initialize_vfunc(Description &description)
 	{
 		Type::initialize_vfunc(description);
@@ -380,7 +380,7 @@ SYNFIG_IMPLEMENT_TYPE_ALIAS(DashItem, TypeDashItem)
 
 class TypeList: public Type
 {
-	static String to_string(const ValueBase::List &x) { return etl::strprintf("List (%zu elements)", x.size()); }
+	static String to_string(const ValueBase::List &x) { return strprintf("List (%zu elements)", x.size()); }
 	void initialize_vfunc(Description &description)
 	{
 		Type::initialize_vfunc(description);
@@ -411,10 +411,10 @@ class TypeCanvas: public Type
 		etl::loose_handle<Canvas> lh;
 		mutable CanvasPtr p;
 #ifdef TRY_FIX_FOR_BUG_27
-		Inner(): fake_handle(false), p(NULL) { }
+		Inner(): fake_handle(false), p(nullptr) { }
 		~Inner() { if (fake_handle) h->ref(); }
 #else
-		Inner(): p(NULL) { }
+		Inner(): p(nullptr) { }
 #endif
 		Inner& operator= (const etl::loose_handle<Canvas> &other)
 		{
@@ -442,7 +442,7 @@ class TypeCanvas: public Type
 		operator const etl::handle<Canvas>&() const { return h; }
 		operator const CanvasPtr &() const { return p = &*lh; }
 	};
-	static String to_string(const Inner &x) { return etl::strprintf("Canvas (%s)", x.lh ? x.lh->get_id().c_str() : "NULL"); }
+	static String to_string(const Inner &x) { return strprintf("Canvas (%s)", x.lh ? x.lh->get_id().c_str() : "NULL"); }
 	void initialize_vfunc(Description &description)
 	{
 		Type::initialize_vfunc(description);
@@ -473,7 +473,7 @@ class TypeString: public Type
 		String& operator=(const String &x) { std::string::operator=(x); return *this; }
 		String& operator=(const char * const &x) { std::string::operator=(x); return *this; }
 	};
-	static String to_string(const Inner &x) { return etl::strprintf("String (%s)", x.c_str()); }
+	static String to_string(const Inner &x) { return strprintf("String (%s)", x.c_str()); }
 	void initialize_vfunc(Description &description)
 	{
 		Type::initialize_vfunc(description);
@@ -494,7 +494,7 @@ SYNFIG_IMPLEMENT_TYPE_ALIAS(const char*, TypeString)
 
 class TypeGradient: public Type
 {
-	static String to_string(const Gradient &x) { return etl::strprintf("Gradient (%zu cpoints)", x.size()); }
+	static String to_string(const Gradient &x) { return strprintf("Gradient (%zu cpoints)", x.size()); }
 	void initialize_vfunc(Description &description)
 	{
 		Type::initialize_vfunc(description);
@@ -513,7 +513,7 @@ SYNFIG_IMPLEMENT_TYPE_ALIAS(Gradient, TypeGradient)
 
 class TypeBoneObject: public Type
 {
-	static String to_string(const Bone &x) { return etl::strprintf("Bone (%s)", x.get_string().c_str()); }
+	static String to_string(const Bone &x) { return strprintf("Bone (%s)", x.get_string().c_str()); }
 	void initialize_vfunc(Description &description)
 	{
 		Type::initialize_vfunc(description);
@@ -541,7 +541,7 @@ class TypeBoneValueNode: public Type
 		mutable etl::loose_handle<ValueNode_Bone> lh;
 		mutable ValueNode_BonePtr p;
 
-		Inner(): p(NULL) { }
+		Inner(): p(nullptr) { }
 		Inner& operator= (const etl::handle<ValueNode_Bone> &other) { h = other; return *this; }
 		Inner& operator= (const etl::loose_handle<ValueNode_Bone> &other) { h = other; return *this; }
 		Inner& operator= (const ValueNode_BonePtr &other) { h = other; return *this; }
@@ -552,7 +552,7 @@ class TypeBoneValueNode: public Type
 		operator const ValueNode_Bone::LooseHandle&() const { return lh = h; }
 		operator const ValueNode_BonePtr &() const { return p = &*h; }
 	};
-	static String to_string(const Inner &x) { return etl::strprintf("ValueNodeBone (%s)", x.lh ? x.lh->get_string().c_str() : "NULL"); }
+	static String to_string(const Inner &x) { return strprintf("ValueNodeBone (%s)", x.lh ? x.lh->get_string().c_str() : "NULL"); }
 	void initialize_vfunc(Description &description)
 	{
 		Type::initialize_vfunc(description);
@@ -575,7 +575,7 @@ SYNFIG_IMPLEMENT_TYPE_ALIAS(ValueNode_Bone*, TypeBoneValueNode)
 
 class TypeTransformation: public Type
 {
-	static String to_string(const Transformation &x) { return etl::strprintf("Transformation (%f, %f) (%f) (%f, %f)", x.offset[0], x.offset[1], Angle::deg(x.angle).get(), x.scale[0], x.scale[1]); }
+	static String to_string(const Transformation &x) { return strprintf("Transformation (%f, %f) (%f) (%f, %f)", x.offset[0], x.offset[1], Angle::deg(x.angle).get(), x.scale[0], x.scale[1]); }
 	void initialize_vfunc(Description &description)
 	{
 		Type::initialize_vfunc(description);

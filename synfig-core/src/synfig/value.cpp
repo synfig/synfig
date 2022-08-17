@@ -148,7 +148,7 @@ ValueBase::create(Type &type)
 	Operation::CreateFunc func =
 		Type::get_operation<Operation::CreateFunc>(
 			Operation::Description::get_create(type.identifier) );
-	assert(func != NULL);
+	assert(func);
 	clear();
 	this->type = &type;
 	data = func();
@@ -210,7 +210,7 @@ ValueBase::clear()
 		Operation::DestroyFunc func =
 			Type::get_operation<Operation::DestroyFunc>(
 				Operation::Description::get_destroy(type->identifier) );
-		assert(func != NULL);
+		assert(func);
 		func(data);
 	}
 	ref_count.detach();

@@ -35,9 +35,7 @@
 #	include <config.h>
 #endif
 
-#include <ETL/angle>
 #include "color.h"
-#include <cstdio>
 #include <cassert>
 #include <sstream>
 #include <iostream>

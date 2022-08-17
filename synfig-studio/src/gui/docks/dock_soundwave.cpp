@@ -172,7 +172,7 @@ private:
 		channel_combo.remove_all();
 		for (int n = 0; n < widget_sound.get_channel_number(); n++) {
 			// let us be a bit user-friendly by starting index from 1 instead of 0
-			std::string text = etl::strprintf(_("Channel #%i"), n+1);
+			std::string text = synfig::strprintf(_("Channel #%i"), n+1);
 			channel_combo.append(std::to_string(n), text);
 		}
 		channel_combo.set_active_id(std::to_string(widget_sound.get_channel_idx()));
@@ -193,7 +193,7 @@ private:
 			short_filename = ellipsis +
 					short_filename.substr(short_filename.length() - (max_filename_length-ellipsis.length()));
 		}
-		return etl::strprintf("[%s] %s", layer_name.c_str(), short_filename.c_str());
+		return synfig::strprintf("[%s] %s", layer_name.c_str(), short_filename.c_str());
 	}
 
 	bool import_file(const std::string &filename) {
@@ -204,13 +204,13 @@ private:
 		if (!errors.empty())
 			App::dialog_message_1b(
 				"ERROR",
-				etl::strprintf("%s:\n\n%s", _("Error"), errors.c_str()),
+				synfig::strprintf("%s:\n\n%s", _("Error"), errors.c_str()),
 				"details",
 				_("Close"));
 		if (!warnings.empty())
 			App::dialog_message_1b(
 				"WARNING",
-				etl::strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
+				synfig::strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
 				"details",
 				_("Close"));
 		if (!ok) {
@@ -456,7 +456,7 @@ const std::string studio::Grid_SoundWave::item_audio_file_str = _("Select an aud
 
 
 Dock_SoundWave::Dock_SoundWave()
-	: Dock_CanvasSpecific("soundwave", _("Sound"), Gtk::StockID("synfig-layer_other_sound")),
+	: Dock_CanvasSpecific("soundwave", _("Sound"), "layer_other_sound_icon"),
 	  current_grid_sound(nullptr)
 {
 	// Make Sound toolbar buttons small for space efficiency
@@ -575,7 +575,7 @@ void Dock_SoundWave::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragCont
 			} else {
 				App::dialog_message_1b(
 							"WARNING",
-							etl::strprintf("%s:\n\n%s\n%s",
+							synfig::strprintf("%s:\n\n%s\n%s",
 										   _("Warning"), _("The following files could not be imported:"), failed_uris.c_str()),
 							"details",
 							_("Close"));

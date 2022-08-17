@@ -154,9 +154,8 @@ SpiralGradient::color_func(const Point &pos, Real supersample)const
 	bool clockwise=param_clockwise.get(bool());
 	
 	const Point centered(pos-center);
-	Angle a;
-	a=Angle::tan(-centered[1],centered[0]).mod();
-	a=a+angle;
+	Angle a(angle);
+	a += Angle::tan(-centered[1],centered[0]).mod();
 
 	if(supersample<0.00001)supersample=0.00001;
 
@@ -182,10 +181,14 @@ SpiralGradient::calc_supersample(const synfig::Point &x, Real pw, Real /*ph*/)co
 synfig::Layer::Handle
 SpiralGradient::hit_check(synfig::Context context, const synfig::Point &point)const
 {
+	bool check_myself_first;
+	auto layer = basic_hit_check(context, point, check_myself_first);
+
+	if (!check_myself_first)
+		return layer;
+
 	if(get_blend_method()==Color::BLEND_STRAIGHT && get_amount()>=0.5)
 		return const_cast<SpiralGradient*>(this);
-	if(get_amount()==0.0)
-		return context.hit_check(point);
 	if((get_blend_method()==Color::BLEND_STRAIGHT || get_blend_method()==Color::BLEND_COMPOSITE) && color_func(point).get_a()>0.5)
 		return const_cast<SpiralGradient*>(this);
 	return context.hit_check(point);

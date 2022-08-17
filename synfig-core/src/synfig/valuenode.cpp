@@ -126,7 +126,7 @@ LinkableValueNode::unlink_all()
 	{
 		ValueNode::LooseHandle value_node(get_link(i));
 		if(value_node)
-			value_node->parent_set.erase(this);
+			remove_child(value_node.get());
 	}
 }
 
@@ -160,10 +160,10 @@ ValueNode::replace(etl::handle<ValueNode> x)
 	if(x.get()==this)
 		return 0;
 
-	while(parent_set.size())
+	while(parent_count())
 	{
-		(*parent_set.begin())->add_child(x.get());
-		(*parent_set.begin())->remove_child(this);
+		get_first_parent()->add_child(x.get());
+		get_first_parent()->remove_child(this);
 		//x->parent_set.insert(*parent_set.begin());
 		//parent_set.erase(parent_set.begin());
 	}
@@ -200,24 +200,21 @@ ValueNode::get_description(bool show_exported_name)const
 }
 
 bool
-ValueNode::is_descendant(ValueNode::Handle value_node_dest)
+ValueNode::is_ancestor_of(ValueNode::Handle value_node_dest) const
 {
-    if(!value_node_dest)
-        return false;
-    if(Handle(this) == value_node_dest)
-        return true;
+	if (this == value_node_dest)
+		return true;
+	if (!value_node_dest)
+		return false;
+	if (!value_node_dest->parent_count())
+		return false;
 
-    //! loop through the parents of each node in current_nodes
-	std::set<Node*> node_parents(value_node_dest->parent_set);
-    ValueNode::Handle value_node_parent;
-    for (std::set<Node*>::iterator iter = node_parents.begin(); iter != node_parents.end(); iter++)
-    {
-        value_node_parent = ValueNode::Handle::cast_dynamic(*iter);
-        if(Handle(this) == value_node_parent)
-            break;
-    }
+	ValueNode::Handle value_node_parent;
+	value_node_parent = value_node_dest->find_first_parent_of_type<ValueNode>([=](ValueNode::Handle node) {
+		return is_ancestor_of(node);
+	});
 
-    return value_node_dest->parent_count() ? is_descendant(value_node_parent) : false;
+	return value_node_parent? true : false;
 }
 
 void
@@ -286,19 +283,20 @@ ValueNode::canvas_time_bounds(const Canvas &canvas, bool &found, Time &begin, Ti
 void
 ValueNode::find_time_bounds(const Node &node, bool &found, Time &begin, Time &end, Real &fps)
 {
-	for(std::set<Node*>::const_iterator i = node.parent_set.begin(); i != node.parent_set.end(); ++i)
+	auto find_func = [&found, &begin, &end, &fps] (const Node* node) -> bool
 	{
-		if (!*i) continue;
-		if (Layer *layer = dynamic_cast<Layer*>(*i))
+		if (const Layer *layer = dynamic_cast<const Layer*>(node))
 		{
 			if (Canvas::Handle canvas = layer->get_canvas())
 				canvas_time_bounds(*canvas->get_root(), found, begin, end, fps);
 		}
 		else
 		{
-			find_time_bounds(**i, found, begin, end, fps);
+			find_time_bounds(*node, found, begin, end, fps);
 		}
-	}
+		return false;
+	};
+	node.foreach_parent(find_func);
 }
 
 void
@@ -703,7 +701,7 @@ LinkableValueNode::get_description(int index, bool show_exported_name)const
 	LinkableValueNode::ConstHandle parent_linkable_vn;
 
 	// walk up through the valuenodes trying to find the layer at the top
-	while (!node->parent_set.empty() && !dynamic_cast<const Layer*>(node))
+	while (node->parent_count() && !dynamic_cast<const Layer*>(node))
 	{
 		LinkableValueNode::ConstHandle linkable_value_node(dynamic_cast<const LinkableValueNode*>(node));
 		if (linkable_value_node)
@@ -719,7 +717,7 @@ LinkableValueNode::get_description(int index, bool show_exported_name)const
 
 			description = linkable_value_node->get_local_name() + link + (parent_linkable_vn?">":"") + description;
 		}
-		node = *node->parent_set.begin();
+		node = node->get_first_parent();
 		parent_linkable_vn = linkable_value_node;
 	}
 

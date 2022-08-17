@@ -51,7 +51,6 @@ public:
 
 	void clear();
 	void set_widget(Gtk::Widget&);
-	void set_name(const synfig::String& name);
 
 	Dialog_ToolOptions();
 	~Dialog_ToolOptions();

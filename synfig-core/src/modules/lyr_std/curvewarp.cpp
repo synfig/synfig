@@ -36,13 +36,14 @@
 
 #include "curvewarp.h"
 
+#include <ETL/hermite>
+
 #include <synfig/localization.h>
 
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
 #include <synfig/surface.h>
 #include <synfig/valuenode.h>
-#include <ETL/calculus>
 
 #endif
 
@@ -232,9 +233,6 @@ CurveWarp::transform(const Point &point_, Real *dist, Real *along, int quality)c
 		// Setup the curve
 		etl::hermite<Vector> curve(iter->get_vertex(), next->get_vertex(), iter->get_tangent2(), next->get_tangent1());
 
-		// Setup the derivative function
-		etl::derivative<etl::hermite<Vector> > deriv(curve);
-
 		int search_iterations(7);
 
 		if(quality<=6)search_iterations=7;
@@ -246,8 +244,8 @@ CurveWarp::transform(const Point &point_, Real *dist, Real *along, int quality)c
 		if (fast) t = curve.find_closest(fast, point,search_iterations);
 
 		// Calculate our values
-		p1=curve(t);			 // the closest point on the curve
-		tangent=deriv(t);		 // the tangent at that point
+		p1=curve(t);			     // the closest point on the curve
+		tangent=curve.derivative(t); // the tangent at that point
 
 		// if the point we're nearest to is at either end of the
 		// bline, our distance from the curve is the distance from the
@@ -623,7 +621,7 @@ CurveWarp::accelerated_render(Context context,Surface *surface,int quality, cons
 				if(u<0 || v<0 || u>=src_w || v>=src_h || std::isnan(u) || std::isnan(v))
 					(*surface)[y][x]=context.get_color(tmp);
 				else
-					(*surface)[y][x]=source[floor_to_int(v)][floor_to_int(u)];
+					(*surface)[y][x]=source[static_cast<int>(v)][static_cast<int>(u)]; // u >= 0 and v >= 0, so we can cast them to int
 			}
 			if((y&31)==0 && cb && !stagetwo.amount_complete(y,h)) return false;
 		}

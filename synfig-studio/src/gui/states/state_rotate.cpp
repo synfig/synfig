@@ -243,7 +243,7 @@ StateRotate_Context::refresh_tool_options()
 	App::dialog_tool_options->clear();
 	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Rotate Tool"));
-	App::dialog_tool_options->set_name("rotate");
+	App::dialog_tool_options->set_icon("tool_rotate_icon");
 }
 
 Smach::event_result

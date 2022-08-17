@@ -206,7 +206,7 @@ public:
 	void finish() {
 		assert(adjustment);
 		if (!adjustment) return;
-		double value = std::max(lower, std::min(upper - page_size, this->value));
+		double value = synfig::clamp(this->value, lower, upper - page_size);
 		if ( !is_equal(lower,          adjustment->get_lower())
 		  || !is_equal(upper,          adjustment->get_upper())
 		  || !is_equal(step_increment, adjustment->get_step_increment())

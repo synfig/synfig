@@ -35,6 +35,9 @@
 
 #include "mptr_ffmpeg.h"
 #include <cstdio>
+
+#include <ETL/stringf>
+
 #include <synfig/general.h>
 #include <synfig/localization.h>
 #if HAVE_SYS_WAIT_H
@@ -146,7 +149,7 @@ ffmpeg_mptr::seek_to(const Time& time)
 			close(p[1]);
 			/*std::string command = strprintf("\"%s\" -ss '%s' -i \"%s\" -vframes 1 -an -f image2pipe -vcodec ppm -\n", "ffmpeg", position2, identifier.filename.c_str());
 			synfig::warning("ffmpeg command: '%s'", command.c_str());*/
-			execlp("ffmpeg", "ffmpeg", "-ss", position.c_str(), "-i", identifier.filename.c_str(), "-vframes", "1","-an", "-f", "image2pipe", "-vcodec", "ppm", "-", (const char *)NULL);
+			execlp("ffmpeg", "ffmpeg", "-ss", position.c_str(), "-i", identifier.filename.c_str(), "-vframes", "1","-an", "-f", "image2pipe", "-vcodec", "ppm", "-", (const char*)nullptr);
 			// We should never reach here unless the exec failed
 			std::cerr<<"Unable to open pipe to ffmpeg (exec failed)"<<std::endl;
 			_exit(1);
@@ -233,7 +236,7 @@ ffmpeg_mptr::ffmpeg_mptr(const synfig::FileSystem::Identifier &identifier):
 #ifdef HAVE_TERMIOS_H
 	tcgetattr (0, &oldtty);
 #endif
-	file=NULL;
+	file=nullptr;
 	fps=23.98;
 	cur_frame=-1;
 }

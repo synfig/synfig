@@ -188,8 +188,6 @@ src/gui/widgets/widget_color.cpp
 src/gui/widgets/widget_color.h
 src/gui/widgets/widget_coloredit.cpp
 src/gui/widgets/widget_coloredit.h
-src/gui/widgets/widget_compselect.cpp
-src/gui/widgets/widget_compselect.h
 src/gui/widgets/widget_curves.cpp
 src/gui/widgets/widget_curves.h
 src/gui/widgets/widget_defaults.cpp
@@ -526,3 +524,8 @@ src/gui/resources/ui/canvas_options.glade
 src/gui/resources/ui/dialog_workspaces.glade
 src/gui/resources/ui/preview_options.glade
 src/gui/resources/ui/shortcuts_window.glade
+src/gui/resources/ui/file_top_toolbar.glade
+src/gui/resources/ui/history_toolbar.glade
+src/gui/resources/ui/right_toolbar.glade
+src/gui/resources/ui/studio_menubar.xml
+src/gui/resources/ui/top_toolbar.glade

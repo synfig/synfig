@@ -45,7 +45,6 @@
 #include <synfig/time.h>
 #include <synfig/angle.h>
 #include <ETL/misc>
-#include <ETL/stringf>
 
 #endif
 
@@ -58,7 +57,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Scale, RELEASE_VERSION_0_61_06, "scale", "Scale")
+REGISTER_VALUENODE(ValueNode_Scale, RELEASE_VERSION_0_61_06, "scale", N_("Scale"))
 
 /* === P R O C E D U R E S ================================================= */
 

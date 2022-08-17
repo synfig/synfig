@@ -91,6 +91,22 @@ CanvasTreeStore::expandable_bone_parent(ValueNode::Handle node)
 	return node;
 }
 
+// TODO(ice0): duplicate
+template<typename T>
+static void set_gvalue_tpl(Glib::ValueBase& value, const T &v, bool use_assign_operator)
+{
+	Glib::Value<T> x;
+	g_value_init(x.gobj(), x.value_type());
+
+	x.set(v);
+
+	g_value_init(value.gobj(), x.value_type());
+	if (use_assign_operator)
+		value = x;
+	else
+		g_value_copy(x.gobj(), value.gobj());
+}
+
 void
 CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int column, Glib::ValueBase& value)const
 {
@@ -325,35 +341,22 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 		g_value_copy(x.gobj(),value.gobj());
 	}
 	else
-	if(column==model.icon.index())
+	if(column==model.icon_name.index())
 	{
 		synfigapp::ValueDesc value_desc((*iter)[model.value_desc]);
 		if(!value_desc)
 			return Gtk::TreeStore::get_value_vfunc(iter,column,value);
 
-		Glib::Value<Glib::RefPtr<Gdk::Pixbuf> > x;
-		g_value_init(x.gobj(),x.value_type());
-
-		x.set(get_tree_pixbuf(value_desc.get_value_type()));
-
-		g_value_init(value.gobj(),x.value_type());
-		g_value_copy(x.gobj(),value.gobj());
+		set_gvalue_tpl<Glib::ustring>(value, value_icon_name(value_desc.get_value_type()), true);
 	}
 	else
-	if(column==model.interpolation_icon.index())
+	if(column==model.interpolation_icon_name.index())
 	{
 		synfigapp::ValueDesc value_desc((*iter)[model.value_desc]);
 		if(!value_desc)
 			return Gtk::TreeStore::get_value_vfunc(iter,column,value);
-		
-		Glib::Value<Glib::RefPtr<Gdk::Pixbuf> > x;
-		g_value_init(x.gobj(),x.value_type());
-		
-		x.set(get_interpolation_pixbuf(value_desc.get_interpolation()));
-		
-		g_value_init(value.gobj(),x.value_type());
-		g_value_copy(x.gobj(),value.gobj());
-		
+
+		set_gvalue_tpl<Glib::ustring>(value, interpolation_icon_name(value_desc.get_interpolation()), true);
 	}
 	else
 	if(column==model.is_static.index())

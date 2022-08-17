@@ -96,7 +96,7 @@ struct ipoint
 	{
 		next = this;
 		prev = this;
-		neighbor = NULL;
+		neighbor = nullptr;
 	}
 
 	bool operator<(const ipoint &rhs) const

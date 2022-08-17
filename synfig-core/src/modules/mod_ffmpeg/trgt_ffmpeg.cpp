@@ -34,12 +34,12 @@
 #	include <config.h>
 #endif
 
-#include <synfig/localization.h>
+#include <synfig/filesystemnative.h>
 #include <synfig/general.h>
+#include <synfig/localization.h>
 #include <synfig/soundprocessor.h>
 
-#include <cstdio>
-#include <glib/gstdio.h>
+#include <ETL/stringf>
 
 #include "trgt_ffmpeg.h"
 
@@ -47,11 +47,6 @@
  #include <sys/wait.h>
 #endif
 
-#endif
-
-// MSVC
-#ifndef F_OK
-#define F_OK 0
 #endif
 
 /* === M A C R O S ========================================================= */
@@ -86,7 +81,7 @@ ffmpeg_trgt::does_video_codec_support_alpha_channel(const synfig::String &video_
 ffmpeg_trgt::ffmpeg_trgt(const char *Filename, const synfig::TargetParam &params):
 	imagecount(0),
 	multi_image(false),
-	file(NULL),
+	file(nullptr),
 	filename(Filename),
 	sound_filename(""),
 	bitrate()
@@ -120,11 +115,11 @@ ffmpeg_trgt::~ffmpeg_trgt()
 		waitpid(pid,&status,0);
 #endif
 	}
-	file=NULL;
+	file=nullptr;
 
 	// Remove temporary sound file
-	if (g_file_test(sound_filename.c_str(), G_FILE_TEST_EXISTS)) {
-		if( g_remove(sound_filename.c_str()) != 0 ) {
+	if (FileSystemNative::instance()->is_file(sound_filename.c_str())) {
+		if(FileSystemNative::instance()->remove_recursive(sound_filename.c_str())) {
 			synfig::warning("Error deleting temporary sound file (%s).", sound_filename.c_str());
 		}
 	}
@@ -168,7 +163,7 @@ ffmpeg_trgt::set_rend_desc(RendDesc *given_desc)
 }
 
 bool
-ffmpeg_trgt::init(ProgressCallback *cb=NULL)
+ffmpeg_trgt::init(ProgressCallback* cb = nullptr)
 {
 
 	bool with_sound = true;
@@ -176,6 +171,7 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 		if (cb) cb->error(_("Unable to initialize Sound subsystem"));
 		with_sound = false;
 	} else {
+		auto& fs = FileSystemNative::instance();
 		synfig::SoundProcessor soundProcessor;
 		soundProcessor.set_infinite(false);
 		get_canvas()->fill_sound_processor(soundProcessor);
@@ -183,11 +179,11 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 		do {
 			synfig::GUID guid;
 			sound_filename = String(filename)+"."+guid.get_string().substr(0,8)+".wav";
-		} while (g_file_test(sound_filename.c_str(), G_FILE_TEST_EXISTS));
+		} while (fs->is_exists(sound_filename));
 
 		soundProcessor.do_export(sound_filename);
 
-		if (!g_file_test(sound_filename.c_str(), G_FILE_TEST_EXISTS)) {
+		if (!fs->is_exists(sound_filename)) {
 			with_sound = false;
 		}
 	}
@@ -196,7 +192,7 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 #if defined(WIN32_PIPE_TO_PROCESSES)
 	// Windows always have ffmpeg
 	std::string binary_path = etl::dirname(synfig::get_binary_path(".")) + "/ffmpeg.exe";
-	if (g_access(binary_path.c_str(), F_OK ) != -1 ) { // File found
+	if (FileSystemNative::instance()->is_file(binary_path)) {
 		ffmpeg_binary_path = "\"" + binary_path + "\"";
 	}
 #else
@@ -211,7 +207,7 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 		}
 		char buf[128];
 		while(!feof(pipe)) {
-			if(fgets(buf, 128, pipe) != NULL)
+			if(fgets(buf, 128, pipe))
 				result += buf;
 		}
 		/* `which` exit status
@@ -257,15 +253,15 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 	vargs.emplace_back("-vcodec");
 	vargs.emplace_back(use_alpha ? "pam" : "ppm");
 	vargs.emplace_back("-r");
-	vargs.emplace_back(etl::strprintf("%f", desc.get_frame_rate()));
+	vargs.emplace_back(strprintf("%f", desc.get_frame_rate()));
 	vargs.emplace_back("-i");
 	vargs.emplace_back("pipe:");
 	vargs.emplace_back("-metadata");
-	vargs.emplace_back(etl::strprintf("title=\"%s\"", get_canvas()->get_name().c_str()));
+	vargs.emplace_back(strprintf("title=\"%s\"", get_canvas()->get_name().c_str()));
 	vargs.emplace_back("-vcodec");
 	vargs.emplace_back(video_codec_real);
 	vargs.emplace_back("-b:v");
-	vargs.emplace_back(etl::strprintf("%ik", bitrate));
+	vargs.emplace_back(strprintf("%ik", bitrate));
 	if (video_codec == "libx264-lossless") {
 		vargs.emplace_back("-tune");
 		vargs.emplace_back("fastdecode");
@@ -286,7 +282,7 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 	vargs.emplace_back(video_codec == "mpeg1video" ? "pcm_s16be" : "pcm_s16le");
 	vargs.emplace_back("-y");
 	vargs.emplace_back("-t");
-	vargs.emplace_back((desc.get_time_end()-desc.get_time_start()).get_string());
+	vargs.emplace_back((desc.get_time_end()-desc.get_time_start()).get_string(Time::Format::FORMAT_VIDEO));
 	// We need "--" to separate filename from arguments (for the case when filename starts with "-")
 	if ( filename.substr(0,1) == "-" )
 		vargs.emplace_back("--");
@@ -310,8 +306,8 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 	// See: http://eli.thegreenplace.net/2011/01/28/on-spaces-in-the-paths-of-programs-and-files-on-windows/
 	command = "\"" + command + "\"";
 	
-	const wchar_t* wcommand = reinterpret_cast<const wchar_t*>(g_utf8_to_utf16(command.c_str(), -1, NULL, NULL, NULL));
-	const wchar_t* wmode = reinterpret_cast<const wchar_t*>(g_utf8_to_utf16(POPEN_BINARY_WRITE_TYPE, -1, NULL, NULL, NULL));
+	const wchar_t* wcommand = reinterpret_cast<const wchar_t*>(g_utf8_to_utf16(command.c_str(), -1, nullptr, nullptr, nullptr));
+	const wchar_t* wmode = reinterpret_cast<const wchar_t*>(g_utf8_to_utf16(POPEN_BINARY_WRITE_TYPE, -1, nullptr, nullptr, nullptr));
 	
 	file=_wpopen(wcommand, wmode);
 
@@ -354,7 +350,7 @@ ffmpeg_trgt::init(ProgressCallback *cb=NULL)
 			args[idx++] = &vargs[i][0];
 			//synfig::info(&vargs[i][0]);
 		}
-		args[idx++] = (char *)NULL;
+		args[idx++] = (char*)nullptr;
 		
 		execvp(ffmpeg_binary_path.c_str(), args);
 

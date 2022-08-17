@@ -35,13 +35,13 @@
 
 #include <gui/trees/childrentreestore.h>
 
-#include <ETL/clock>
 #include <glibmm/main.h>
 #include <gtkmm/button.h>
 #include <gui/localization.h>
+#include <synfig/clock.h>
 #include <synfig/general.h>
 
-class Profiler : private etl::clock
+class Profiler : private synfig::clock
 {
 	const std::string name;
 public:
@@ -189,7 +189,7 @@ ChildrenTreeStore::on_canvas_added(synfig::Canvas::Handle canvas)
 {
 	Gtk::TreeRow row = *(prepend(canvas_row.children()));
 
-	row[model.icon] = Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-type_canvas"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+	row[model.icon_name] = "type_canvas_icon";
 	row[model.id] = canvas->get_id();
 	row[model.name] = canvas->get_name();
 
@@ -244,7 +244,7 @@ ChildrenTreeStore::execute_changed_value_nodes()
 	if(!replaced_set_.empty())
 		rebuild_value_nodes();
 
-	etl::clock timer;
+	synfig::clock timer;
 	timer.reset();
 
 	while(!changed_set_.empty())

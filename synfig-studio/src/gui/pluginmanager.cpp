@@ -38,6 +38,8 @@
 #include <glibmm/fileutils.h>
 #include <glibmm/spawn.h>
 
+#include <ETL/stringf>
+
 #include <gui/app.h>
 #include <gui/localization.h>
 #include <gui/onemoment.h>
@@ -179,7 +181,8 @@ studio::PluginManager::load_plugin( const std::string &file, const std::string &
 {
 	synfig::info("   Loading plugin: %s", etl::basename(plugindir).c_str());
 
-	std::string id = file;
+	static int plugin_count = 0;
+	const std::string id = "plugin" + std::to_string(++plugin_count);
 
 	// parse xml file
 	try
@@ -265,29 +268,25 @@ std::string studio::PluginManager::interpreter_executable(const std::string& int
 
 	if ( interpreter == "python" )
 	{
-		const char* custom_python_binary = getenv("SYNFIG_PYTHON_BINARY");
-		if(custom_python_binary) {
-			command = custom_python_binary;
-			if ( !studio::App::check_python_version(command) ) {
-				command = "";
-			}
+		std::vector<std::string> search_paths;
+		std::string custom_python_binary = Glib::getenv("SYNFIG_PYTHON_BINARY");
+		if (!custom_python_binary.empty()) {
+			search_paths.emplace_back(custom_python_binary);
 		} else {
 			// Set path to python binary depending on the os type.
 			// For Windows case Python binary is expected
 			// at INSTALL_PREFIX/python/python.exe
-			for ( std::string iter : {"python", "python3"} )
-			{
-				std::string python_path;
+			for (std::string python_bin : {"python3", "python"} ) {
 #ifdef _WIN32
-				python_path = App::get_base_path() + "/python/" + iter + ".exe";
-#else
-				python_path = iter;
+				search_paths.emplace_back(App::get_base_path() + "/python/" + python_bin + ".exe");
 #endif
-				if ( studio::App::check_python_version(python_path) )
-				{
-					command = python_path;
-					break;
-				}
+				search_paths.emplace_back(python_bin);
+			}
+		}
+		for (const auto& path : search_paths) {
+			if (studio::App::check_python_version(path)) {
+				command = path;
+				break;
 			}
 		}
 
@@ -343,7 +342,7 @@ bool studio::PluginManager::run(const studio::PluginScript& script, std::vector<
 			&exit_status
 		);
 	} catch ( const Glib::SpawnError& err ) {
-		studio::App::dialog_message_1b("Error", etl::strprintf(_("Plugin execution failed: %s"), err.what().c_str()), "details", _("Close"));
+		studio::App::dialog_message_1b("Error", synfig::strprintf(_("Plugin execution failed: %s"), err.what().c_str()), "details", _("Close"));
 		return false;
 	}
 

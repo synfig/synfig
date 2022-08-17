@@ -243,7 +243,7 @@ StateSmoothMove_Context::refresh_tool_options()
 	App::dialog_tool_options->clear();
 	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Smooth Move"));
-	App::dialog_tool_options->set_name("smooth_move");
+	App::dialog_tool_options->set_icon("tool_smooth_move_icon");
 }
 
 Smach::event_result
@@ -364,7 +364,9 @@ DuckDrag_SmoothMove::end_duck_drag(Duckmatic* duckmatic)
 
 		int i;
 
-		smart_ptr<OneMoment> wait;if(selected_ducks.size()>20)wait.spawn();
+		std::shared_ptr<OneMoment> wait;
+		if (selected_ducks.size() > 20)
+			wait = std::make_shared<OneMoment>();
 
 		for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
 		{

@@ -39,8 +39,6 @@
 #include <synfig/valuenode_registry.h>
 #include <synfig/vector.h>
 
-#include <ETL/misc>
-
 #include <boost/numeric/odeint/integrate/integrate.hpp>
 #endif
 
@@ -52,7 +50,7 @@ using namespace boost::numeric::odeint;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Dynamic, RELEASE_VERSION_0_61_06, "dynamic", "Dynamic")
+REGISTER_VALUENODE(ValueNode_Dynamic, RELEASE_VERSION_0_61_06, "dynamic", N_("Dynamic"))
 
 
 /* === P R O C E D U R E S ================================================= */

@@ -50,7 +50,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Greyed, RELEASE_VERSION_0_62_00, "greyed", "Greyed")
+REGISTER_VALUENODE(ValueNode_Greyed, RELEASE_VERSION_0_62_00, "greyed", N_("Greyed"))
 
 /* === P R O C E D U R E S ================================================= */
 

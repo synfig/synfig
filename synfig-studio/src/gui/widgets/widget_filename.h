@@ -49,7 +49,6 @@ class Widget_Filename : public Gtk::Grid
 {
 	Gtk::Entry *entry_filename;
 	Gtk::Button *button_choose;
-	Gtk::Image *icon_browse;
 	etl::handle<synfig::Canvas> canvas;
 
 	void on_button_choose_pressed();

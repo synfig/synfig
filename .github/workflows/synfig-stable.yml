@@ -22,8 +22,8 @@ jobs:
     strategy:
       matrix:
         include:
-        - os: macos-10.15
-          name: MacOS 10.15 Catalina (Autotools)
+        - os: macos-11
+          name: macOS 11 Big Sur (Autotools)
           toolchain: autotools-release
           allow_failures: false
         - os: ubuntu-18.04

@@ -161,16 +161,14 @@ Metaballs::hit_check(synfig::Context context, const synfig::Point &point)const
 {
 	Real density(totaldensity(point));
 
-	if (density <= 0 || density > 1 || get_amount() == 0)
+	if (density <= 0 || density > 1)
 		return context.hit_check(point);
 
-	synfig::Layer::Handle tmp;
+	bool check_myself_first;
+	auto layer = basic_hit_check(context, point, check_myself_first);
 
-	if (get_blend_method()==Color::BLEND_BEHIND && (tmp=context.hit_check(point)))
-		return tmp;
-
-	if (Color::is_onto(get_blend_method()) && !(context.hit_check(point)))
-		return 0;
+	if (!check_myself_first)
+		return layer;
 
 	return const_cast<Metaballs*>(this);
 }

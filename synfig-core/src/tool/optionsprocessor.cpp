@@ -151,7 +151,7 @@ SynfigCommandLineParser::SynfigCommandLineParser() :
 	add_option(og_set, "height",      'h', set_height,		_("Set the image height in pixels (Use zero for file default)"), "NUM");
 	add_option(og_set, "span",        's', set_span,		_("Set the diagonal size of image window (Span)"), "NUM");
 	add_option(og_set, "antialias",   'a', set_antialias,	_("Set antialias amount for parametric renderer."), "1..30");
-	//og_set.add_option("quality",     'Q', quality_arg_desc, etl::strprintf(_("Specify image quality for accelerated renderer (Default: %d)"), DEFAULT_QUALITY).c_str(), "NUM");
+	//og_set.add_option("quality",     'Q', quality_arg_desc, strprintf(_("Specify image quality for accelerated renderer (Default: %d)"), DEFAULT_QUALITY).c_str(), "NUM");
 	add_option(og_set, "threads",     'T', set_num_threads, _("Enable multithreaded renderer using the specified number of threads"), "NUM");
 	add_option(og_set, "input-file",  'i', set_input_file, 	_("Specify input filename"), "filename");
 	add_option(og_set, "output-file", 'o', set_output_file, _("Specify output filename"), "filename");
@@ -375,15 +375,15 @@ void SynfigCommandLineParser::process_trivial_info_options()
 #ifdef DEVEL_VERSION
 		std::cout << std::endl << DEVEL_VERSION << std::endl << std::endl;
 #endif
-		std::cout << "Compiled on " __DATE__ /* " at "__TIME__ */;
+		std::cout << "Compiled on " << get_build_date();
 #ifdef __GNUC__
 		std::cout << " with GCC " << __VERSION__;
-#endif
-#ifdef _MSC_VER
+#elif defined(__clang__)
+		std::cout << " with Clang " << __VERSION__;
+#elif defined(_MSC_VER)
 		std::cout << " with Microsoft Visual C++ "
 			 << (_MSC_VER>>8) << '.' << (_MSC_VER&255);
-#endif
-#ifdef __TCPLUSPLUS__
+#elif defined(__TCPLUSPLUS__)
 		std::cout << " with Borland Turbo C++ "
 			 << (__TCPLUSPLUS__>>8) << '.'
 			 << ((__TCPLUSPLUS__&255)>>4) << '.'
@@ -569,7 +569,7 @@ RendDesc SynfigCommandLineParser::extract_renddesc(const RendDesc& renddesc)
 			h = desc.get_h() * w / desc.get_w();
 
 		desc.set_wh(w, h);
-		VERBOSE_OUT(1) << etl::strprintf(_("Resolution set to %dx%d."), w, h) << std::endl;
+		VERBOSE_OUT(1) << strprintf(_("Resolution set to %dx%d."), w, h) << std::endl;
 	}
 
 	if(span > 0)
@@ -612,7 +612,7 @@ TargetParam SynfigCommandLineParser::extract_targetparam()
 		if (!found)
 		{
 		    throw SynfigToolException(SYNFIGTOOL_UNKNOWNARGUMENT,
-                                      etl::strprintf(_("Video codec \"%s\" is not supported."), params.video_codec.c_str()));
+                                      strprintf(_("Video codec \"%s\" is not supported."), params.video_codec.c_str()));
 		}
 
 		VERBOSE_OUT(1) << _("Target video codec set to: ") << params.video_codec << std::endl;
@@ -670,7 +670,7 @@ Job SynfigCommandLineParser::extract_job()
 		if(!job.canvas)
 		{
 		    throw SynfigToolException(SYNFIGTOOL_FILENOTFOUND,
-                                      etl::strprintf(_("Unable to load file '%s'."), job.filename.c_str()));
+                                      strprintf(_("Unable to load file '%s'."), job.filename.c_str()));
 		}
 
 		job.root->set_time(0);
@@ -721,14 +721,14 @@ Job SynfigCommandLineParser::extract_job()
 		catch(Exception::IDNotFound&)
 		{
 			throw SynfigToolException(SYNFIGTOOL_INVALIDJOB,
-					etl::strprintf(_("Unable to find canvas with ID \"%s\" in %s.\n"
+					strprintf(_("Unable to find canvas with ID \"%s\" in %s.\n"
                                     "Throwing out job..."), 
 									canvasid.c_str(), job.filename.c_str()));
 		}
 		catch(Exception::BadLinkName&)
 		{
 		    throw SynfigToolException(SYNFIGTOOL_INVALIDJOB,
-                    etl::strprintf(_("Invalid canvas name \"%s\" in %s.\n"
+                    strprintf(_("Invalid canvas name \"%s\" in %s.\n"
                                     "Throwing out job..."),
                                    	canvasid.c_str(), job.filename.c_str())); // FIXME: is here must be canvasid nor canvasname?
 		}

@@ -51,7 +51,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_DotProduct, RELEASE_VERSION_0_61_09, "dotproduct", "Dot Product")
+REGISTER_VALUENODE(ValueNode_DotProduct, RELEASE_VERSION_0_61_09, "dotproduct", N_("Dot Product"))
 
 /* === P R O C E D U R E S ================================================= */
 

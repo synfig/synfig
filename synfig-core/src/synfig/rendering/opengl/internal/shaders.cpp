@@ -171,9 +171,7 @@ gl::Shaders::~Shaders()
 String
 gl::Shaders::get_shader_path()
 {
-	return Main::get_instance().lib_synfig_path
-		 + ETL_DIRECTORY_SEPARATOR
-		 + "glsl";
+	return Main::get_instance().lib_synfig_path + "/glsl";
 }
 
 String
@@ -200,7 +198,7 @@ gl::Shaders::compile_shader(GLenum type, const String &src)
 	//assert(!src.empty());
 	GLuint id = glCreateShader(type);
 	const char *lines = src.c_str();
-	glShaderSource(id, 1, &lines, NULL);
+	glShaderSource(id, 1, &lines, nullptr);
 	glCompileShader(id);
 	check_shader(id, src);
 	return id;

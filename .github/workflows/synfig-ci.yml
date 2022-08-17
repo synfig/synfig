@@ -2,7 +2,7 @@
 
 name: Synfig CI
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
@@ -24,14 +24,14 @@ jobs:
         include:
         # includes a new variable of npm with a value of 2
         # for the matrix leg matching the os and version
-        - os: macos-10.15
-          name: MacOS 10.15 Catalina (Autotools)
+        - os: macos-11
+          name: macOS 11 Big Sur (Autotools)
           toolchain: autotools
           allow_failures: false
 #        - os: macos-11.0
-        - os: macos-10.15
+        - os: macos-11
 #          name: MacOS 11.0 Big Sur (CMake+Ninja)
-          name: MacOS 10.15 Catalina (CMake+Ninja)
+          name: macOS 11 Big Sur (CMake+Ninja)
           toolchain: cmake-ninja
           allow_failures: true
         - os: ubuntu-18.04
@@ -85,7 +85,7 @@ jobs:
         if: matrix.toolchain == 'cmake-ninja'
         run: |
           mkdir build-cmake && cd build-cmake
-          cmake -GNinja -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_BUILD_TYPE=Release ..
+          cmake -GNinja -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_BUILD_TYPE=Release -DWITHOUT_MAGICPP=ON ..
           ninja
 
       - name: Build (Autotools+Make)

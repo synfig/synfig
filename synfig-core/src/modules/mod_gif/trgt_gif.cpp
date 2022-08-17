@@ -33,6 +33,8 @@
 #	include <config.h>
 #endif
 
+#include <ETL/stringf>
+
 #include <synfig/localization.h>
 #include <synfig/general.h>
 #include <synfig/color.h>
@@ -65,9 +67,9 @@ gif::gif(const char *filename_, const synfig::TargetParam & /* params */):
 	codesize(),
 	rootsize(),
 	nextcode(),
-	table(NULL),
-	next(NULL),
-	node(NULL),
+	table(nullptr),
+	next(nullptr),
+	node(nullptr),
 	imagecount(0),
 	cur_scanline(),
 	lossy(true),

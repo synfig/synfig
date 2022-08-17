@@ -116,7 +116,7 @@ public:
 		{ return wrap_func(sampler_func(surface, x, y)); }
 
 	inline static void prepare_coord(const coord_type x, int &u, float_type &a) {
-		u=floor_to_int(x);
+		u=static_cast<int>(std::floor(x));
 		a=float_type(x)-float_type(u);
 	}
 

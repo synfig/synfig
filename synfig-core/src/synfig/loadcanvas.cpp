@@ -51,6 +51,8 @@
 
 #include "loadcanvas.h"
 
+#include <ETL/stringf>
+
 #include "general.h"
 #include "localization.h"
 
@@ -1597,7 +1599,7 @@ CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 		{ // weighted value
 			types_namespace::TypeWeightedValueBase *type_weighted_value =
 				dynamic_cast<types_namespace::TypeWeightedValueBase*>(type);
-			if (type_weighted_value != NULL)
+			if (type_weighted_value)
 			{
 				ValueBase ret = parse_weighted_value(element, *type_weighted_value, canvas);
 				ret.set_static(parse_static(element));
@@ -1609,7 +1611,7 @@ CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 		{ // pair
 			types_namespace::TypePairBase *type_pair =
 				dynamic_cast<types_namespace::TypePairBase*>(type);
-			if (type_pair != NULL)
+			if (type_pair)
 			{
 				ValueBase ret = parse_pair(element, *type_pair, canvas);
 				ret.set_static(parse_static(element));

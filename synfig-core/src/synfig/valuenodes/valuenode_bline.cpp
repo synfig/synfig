@@ -43,7 +43,6 @@
 #include <synfig/valuenode_registry.h>
 #include <synfig/exception.h>
 #include <ETL/hermite>
-#include <ETL/calculus>
 #include <synfig/segment.h>
 #include <synfig/curve_helper.h>
 #include <algorithm> // for std::swap
@@ -61,7 +60,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_BLine, RELEASE_VERSION_0_61_06, "bline", "Spline")
+REGISTER_VALUENODE(ValueNode_BLine, RELEASE_VERSION_0_61_06, "bline", N_("Spline"))
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -208,7 +207,7 @@ synfig::find_closest_point(const ValueBase &bline, const Point &pos, Real radius
 				 + (curve[3] - curve[2]).mag();
 		
 		// want to make the distance between lines happy
-		Real step = std::max(minstep, std::min(maxstep, len/(2*radius))); 
+		Real step = synfig::clamp(len/(2*radius), minstep, maxstep);
 		float time = 0;
 		Real c = find_closest(curve, pos, step, &closest, &time);
 		if(c < closest) {
@@ -707,14 +706,13 @@ ValueNode_BLine::operator()(Time t)const
 			// this is how the curve looks when we have completely vanished
 			etl::hermite<Vector> curve(blp_prev_off.get_vertex(),   blp_next_off.get_vertex(),
 									   blp_prev_off.get_tangent2(), blp_next_off.get_tangent1());
-			etl::derivative< etl::hermite<Vector> > deriv(curve);
 
 			// where would we be on this curve, how wide will we be, and
 			// where will our tangents point (all assuming that we hadn't vanished)
 			blp_here_off.set_vertex(curve(blp_here_on.get_origin()));
 			blp_here_off.set_width((blp_next_off.get_width()-blp_prev_off.get_width())*blp_here_on.get_origin()+blp_prev_off.get_width());
-			blp_here_off.set_tangent1(deriv(blp_here_on.get_origin()));
-			blp_here_off.set_tangent2(deriv(blp_here_on.get_origin()));
+			blp_here_off.set_tangent1(curve.derivative(blp_here_on.get_origin()));
+			blp_here_off.set_tangent2(curve.derivative(blp_here_on.get_origin()));
 
 			float prev_tangent_scalar(1.0f);
 			float next_tangent_scalar(1.0f);
@@ -915,7 +913,7 @@ String
 ValueNode_BLine::link_local_name(int i)const
 {
 	assert(i>=0 && (unsigned)i<list.size());
-	return etl::strprintf(_("Vertex %03d"),i+1);
+	return strprintf(_("Vertex %03d"),i+1);
 }
 
 
@@ -1022,7 +1020,7 @@ ValueNode_BLine::get_children_vocab_vfunc()const
 	for(unsigned int i=0; i<list.size();i++)
 	{
 		ret.push_back(ParamDesc(ValueBase(),strprintf("item%04d",i))
-			.set_local_name(etl::strprintf(_("Vertex %03d"),i+1))
+			.set_local_name(strprintf(_("Vertex %03d"),i+1))
 		);
 	}
 

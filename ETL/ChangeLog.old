@@ -22,7 +22,7 @@
 
   * Fix initialization of accumulator_type.
   * Fixed 'unused variable warnings' (cleaning output)
-  * Fixed error preventing builing on gcc 8.1
+  * Fixed error preventing building on gcc 8.1
   * A lot of warnings fixed
   * Added bootstrap.sh
 

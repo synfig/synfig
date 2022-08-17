@@ -1708,7 +1708,7 @@ SkeletonList* studio::skeletonize(Contours &contours, const etl::handle<synfigap
 
 
   for (i = 0; i <contours_size ; ++i) {
-    /* To be enabled in case on isCancenled is implemnted
+    /* To be enabled in case on isCancenled is implemented
         if (thisVectorizer->isCanceled()) break;
     */
     res->push_back(skeletonize(contours[i], context));

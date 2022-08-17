@@ -43,7 +43,7 @@
 
 namespace studio {
 
-class LayerTreeStore : virtual public Gtk::TreeStore
+class LayerTreeStore : public Gtk::TreeStore
 {
 	/*
  -- ** -- P U B L I C   T Y P E S ---------------------------------------------
@@ -60,7 +60,7 @@ public:
 	class Model : public Gtk::TreeModel::ColumnRecord
 	{
 	public:
-		Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf> > icon;
+		Gtk::TreeModelColumn<Glib::ustring> icon_name;
 		Gtk::TreeModelColumn<Glib::ustring> label;
 		Gtk::TreeModelColumn<Glib::ustring> name;
 		Gtk::TreeModelColumn<Glib::ustring> id;
@@ -90,7 +90,7 @@ public:
 
 		Model()
 		{
-			add(icon);
+			add(icon_name);
 			add(label);
 			add(name);
 			add(id);
@@ -138,7 +138,6 @@ private:
 
 	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_;
 
-	Glib::RefPtr<Gdk::Pixbuf> layer_icon;
 
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
@@ -155,7 +154,7 @@ private:
 	void set_gvalue_tpl(Glib::ValueBase& value, const T &v, bool use_assign_operator = false) const;
 
 	virtual void  set_value_impl (const Gtk::TreeModel::iterator& row, int column, const Glib::ValueBase& value);
-	virtual void  get_value_vfunc (const Gtk::TreeModel::iterator& iter, int column, Glib::ValueBase& value)const;
+	void get_value_vfunc (const Gtk::TreeModel::iterator& iter, int column, Glib::ValueBase& value) const override;
 
 	virtual bool  row_draggable_vfunc (const TreeModel::Path& path)const;
 	virtual bool  drag_data_get_vfunc (const TreeModel::Path& path, Gtk::SelectionData& selection_data)const;

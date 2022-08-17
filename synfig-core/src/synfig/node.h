@@ -34,15 +34,18 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <sigc++/signal.h>
-#include <set>
 #include <ctime>
-#include "time.h"
-#include "guid.h"
-#include <ETL/handle>
-#include "interpolation.h"
 #include <mutex>
+#include <set>
+#include <vector>
+
 #include <glibmm/threads.h>
+#include <sigc++/signal.h>
+
+#include <ETL/handle>
+#include "guid.h"
+#include "interpolation.h"
+#include "time.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -76,10 +79,6 @@ public:
 		after(INTERPOLATION_NIL)
 	{
 	}
-
-#ifdef _DEBUG
-	const char *c_str()const;
-#endif
 
 	const GUID& get_guid()const { return guid; }
 	const Time& get_time()const { return time; }
@@ -128,6 +127,9 @@ public:
 
 }; // END of class TimePointSet
 
+
+//! Base class for dealing with parent-child relationship, time points and basic signals
+//! Historically, it was designed primarily for handling ValueNodes and their link features
 class Node : public etl::rshared_object
 {
 	/*
@@ -136,8 +138,7 @@ class Node : public etl::rshared_object
 
 public:
 
-	//! \writeme
-	typedef	TimePointSet	time_set;
+	typedef	TimePointSet time_set;
 
 	/*
  --	** -- D A T A -------------------------------------------------------------
@@ -145,18 +146,17 @@ public:
 
 private:
 
-	//! \ The GUID of the node
 	mutable std::mutex guid_mutex_;
+	//! The GUID of the node
 	mutable GUID guid_;
 
-	//! cached time values for all the children
-	mutable time_set	times;
+	//! Cached time values for this node and all the children
+	mutable time_set times;
 
-	//! \writeme
-	mutable bool		bchanged;
+	//! Indicates if \p times cache is not updated since last changed() call
+	mutable bool bchanged;
 
 	//! The last time the node was modified since the program started
-	//! \see __sys_clock
 	mutable clock_t time_last_changed_;
 
 	//! \writeme
@@ -165,11 +165,11 @@ private:
 	//! Variable used to remember that a signal_deleted has been thrown
 	bool deleting_;
 
-public:
+	//! Mutex for parent_set protection
+	mutable std::mutex parent_set_mutex_;
 
 	//! A set of pointers to parent nodes
-	//! \todo This should really be private
-	std::set<Node*> 	parent_set;
+	std::set<Node*> parent_set;
 
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
@@ -183,11 +183,11 @@ private:
 	//! Child node changed signal
 	sigc::signal<void, const Node*> signal_child_changed_;
 
-	//!	GUID changed signal
-	/*! \note The second parameter is the *OLD* guid! */
+	//! GUID changed signal
+	/*! \note The parameter is the *OLD* guid! */
 	sigc::signal<void,GUID> signal_guid_changed_;
 
-	//!	Node deleted signal
+	//! Node deleted signal
 	sigc::signal<void> signal_deleted_;
 
 	/*
@@ -196,14 +196,17 @@ private:
 
 public:
 
+	//! Signal emitted when node is about to be deleted
 	sigc::signal<void>& signal_deleted() { return signal_deleted_; }
 
+	//! Signal emitted when node is flagged as changed via changed() or child_changed()
 	sigc::signal<void>& signal_changed() { return signal_changed_; }
 
+	//! Signal emitted when a child node is flagged as changed via child_changed()
 	sigc::signal<void, const Node*>& signal_child_changed() { return signal_child_changed_; }
 
-	//!	GUID Changed
-	/*! \note The second parameter is the *OLD* guid! */
+	//! Signal emitted when GUID changes
+	/*! \note The parameter is the *OLD* guid! */
 	sigc::signal<void,GUID>& signal_guid_changed() { return signal_guid_changed_; }
 
 	/*
@@ -214,9 +217,7 @@ protected:
 
 	Node();
 
-	// This class cannot be copied -- use clone() if necessary
-private:
-	Node(const Node &x);
+	Node(const Node &x) = delete;
 
 public:
 	virtual ~Node();
@@ -227,7 +228,13 @@ public:
 
 public:
 
+	//! Flag this node has changed.
+	//! This way programmer can batch its changes and call it only once
+	//! It emits signal_changed()
 	void changed();
+	//! Flag the child node \p x has changed.
+	//! This way programmer can batch its changes and call it only once
+	//! It emits signal_child_changed() and signal_changed()
 	void child_changed(const Node *x);
 
 	//! Gets the GUID for this Node
@@ -239,14 +246,72 @@ public:
 	//! Gets the time when the Node was changed
 	int get_time_last_changed()const;
 
-	//! Adds the parameter \x as the child of the current Node
-	void add_child(Node*x);
+	//! Adds the parameter \p x as the child of the current Node
+	void add_child(Node *x);
 
-	//! Removes the parameter \x as a child of the current Node
-	void remove_child(Node*x);
+	//! Removes the parameter \p x as a child of the current Node
+	void remove_child(Node *x);
 
-	//!Returns how many parenst has the current Node
-	int parent_count()const;
+	//! Returns how many parents has the current Node
+	std::size_t parent_count() const;
+
+	//! Checks if node \p x is parent of this node
+	bool is_child_of(const Node* x) const;
+
+	//! Returns the first parent Node.
+	//! Note that parents are stored as a FIFO. Do not rely on parent order!
+	Node* get_first_parent() const;
+
+	//! Callback function for a foreach method.
+	//! If it returns true, the foreach iteration is halted.
+	using ForeachFunc = sigc::slot<bool(Node*)>;
+	using ConstForeachFunc = sigc::slot<bool(const Node*)>;
+
+	//! Call function func for each of the parents of the current Node
+	//! Do not add or remove any parent node while doing this foreach call
+	void foreach_parent(const ConstForeachFunc& func) const;
+
+	//! Call function func for each of the parents of the current Node
+	//! Do not add or remove any parent node while doing this foreach call
+	void foreach_parent(const ForeachFunc& func);
+
+	//! Return a list of all parents of a given type
+	//! Example: node->find_all_parents_of_type<MyType>()
+	template<typename T> std::vector<etl::handle<T>> find_all_parents_of_type() const {
+		std::vector<etl::handle<T>> list;
+		const_cast<Node*>(this)->foreach_parent([&list](Node* parent) -> bool {
+			if (auto item = dynamic_cast<T*>(parent))
+				list.push_back(item);
+			return false;
+		});
+		return list;
+	}
+
+	//! Return the first parent of a given type.
+	//! Example: node->find_first_parent_of_type<MyType>()
+	template<typename T> etl::handle<T> find_first_parent_of_type() const {
+		T* parent = nullptr;
+		foreach_parent([&parent](const Node* node) -> bool {
+			if (auto item = dynamic_cast<T*>(const_cast<Node*>(node)))
+				parent = item;
+			return parent;
+		});
+		return parent;
+	}
+
+	//! Return the first parent of a given type with an additional match condition
+	//! The CompareFunc should return true when match is satisfied
+	//! Example: node->find_first_parent_of_type<MyType>([](MyType::Handle v) -> bool { return v.prop == 1;});
+	template<typename T> etl::handle<T> find_first_parent_of_type(const sigc::slot<bool(const etl::handle<T>&)> &CompareFunc) const {
+		T* parent = nullptr;
+		foreach_parent([&parent, CompareFunc](const Node* node) -> bool {
+			if (auto item = dynamic_cast<T*>(const_cast<Node*>(node)))
+				if (CompareFunc(item))
+					parent = item;
+			return parent;
+		});
+		return parent;
+	}
 
 	//! Returns the cached times values for all the children
 	const time_set &get_times() const;
@@ -255,10 +320,16 @@ public:
 	Glib::Threads::RWLock& get_rw_lock()const { return rw_lock_; }
 
 	virtual String get_string()const = 0;
-protected:
 
+protected:
 	void begin_delete();
 
+private:
+	//! Add a new parent Node to parent_set
+	void add_parent(Node* new_parent);
+	//! Remove a Node from parent_set.
+	//! No error is reported if it is not a parent node
+	void remove_parent(Node* parent);
 	/*
  --	** -- V I R T U A L   F U N C T I O N S -----------------------------------
 	*/
@@ -279,7 +350,7 @@ protected:
 	//! the GUI can be connected to.
 	virtual void on_guid_changed(GUID guid);
 
-	//!	Function to be overloaded that fills the Time Point Set with
+	//! Function to be overloaded that fills the Time Point Set with
 	//! all the children Time Points.
 	virtual void get_times_vfunc(time_set &set) const = 0;
 }; // End of Node class
@@ -294,32 +365,6 @@ guid_cast(const synfig::GUID& guid)
 {
 	return etl::handle<T>::cast_dynamic(synfig::find_node(guid));
 }
-
-#ifdef _DEBUG
-template <typename T>
-synfig::String set_string(T start, T end)
-{
-	synfig::String ret("[");
-	bool started = false;
-
-	while (start != end)
-	{
-		if (started)	ret += ", ";
-		else			started = true;
-
-		ret += synfig::String((*start).c_str());
-		start++;
-	}
-
-	return ret + "]";
-}
-
-template <typename T>
-synfig::String set_string(T set)
-{
-	return set_string(set.begin(), set.end());
-}
-#endif // _DEBUG
 
 typedef etl::handle<Node> NodeHandle;
 

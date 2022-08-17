@@ -220,10 +220,6 @@ dnl    LDFLAGS="$LDFLAGS -lole32 -Wl,-no-undefined -Wl,--export-all-symbols -Wl,
     CXXFLAGS="$CXXFLAGS -I/target/include"
     CFLAGS="$CFLAGS -I/target/include"
     ;;
-  powerpc-apple*)
-    echo Adding mac-specific optimization flags. . .
-    CXXFLAGS="$CXXFLAGS $G5OPTFLAGS"
-    ;;
 esac
 
 

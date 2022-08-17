@@ -29,7 +29,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "etl_config.h"
+#include <ETL/etl_profile.h>
 
 #include "_bezier.h"
 

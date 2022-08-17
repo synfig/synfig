@@ -175,7 +175,7 @@ const Color*
 Surface::get_pixels_pointer() const
 {
 	if (!is_exists())
-		return NULL;
+		return nullptr;
 	return get_pixels_pointer_vfunc();
 }
 

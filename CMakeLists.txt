@@ -1,10 +1,12 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.6)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 project(synfig-studio)
 set(STUDIO_VERSION_MAJOR 1)
 set(STUDIO_VERSION_MINOR 5)
 set(STUDIO_VERSION_PATCH 0)
+
+option(ENABLE_TCMALLOC "Enable use of tcmalloc library" OFF)
 
 if(NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Debug)
@@ -68,6 +70,11 @@ message("-- CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
 
 if (${ENABLE_TESTS})
 	enable_testing()
+endif()
+
+if(ENABLE_TCMALLOC)
+	find_library(TCMALLOC_LIBRARY NAMES tcmalloc libtcmalloc.so.4 REQUIRED)
+	message(STATUS "TCMALLOC_LIBRARY: ${TCMALLOC_LIBRARY}")
 endif()
 
 include(SynfigFindGit)

@@ -59,17 +59,17 @@ using namespace software;
 
 
 PackedSurface::Reader::Reader():
-	surface(NULL),
-	first(NULL),
-	last(NULL),
-	cache(NULL)
+	surface(nullptr),
+	first(nullptr),
+	last(nullptr),
+	cache(nullptr)
 { }
 
 PackedSurface::Reader::Reader(const PackedSurface &surface):
-	surface(NULL),
-	first(NULL),
-	last(NULL),
-	cache(NULL)
+	surface(nullptr),
+	first(nullptr),
+	last(nullptr),
+	cache(nullptr)
 {
 	open(surface);
 }
@@ -98,7 +98,7 @@ PackedSurface::Reader::open(const PackedSurface &surface)
 
 	if (surface.chunk_size)
 	{
-		chunks.resize(surface.chunks_width*surface.chunks_height, NULL);
+		chunks.resize(surface.chunks_width*surface.chunks_height, nullptr);
 
 		int cacheCount = std::max(surface.chunks_width, surface.chunks_height)*CacheRows;
 		assert(cacheCount > 1);
@@ -109,7 +109,7 @@ PackedSurface::Reader::open(const PackedSurface &surface)
 		{
 			CacheEntry *entry = (CacheEntry*)(void*)(cache + i*cacheEntrySize);
 			entry->chunk_index = -1;
-			entry->next = NULL;
+			entry->next = nullptr;
 			entry->prev = last;
 			if (last) last->next = entry;
 			last = entry;
@@ -127,10 +127,10 @@ PackedSurface::Reader::close()
 			surface->readers.erase(this);
 		}
 		if (cache) delete[] cache;
-		first = NULL;
-		last = NULL;
-		cache = NULL;
-		surface = NULL;
+		first = nullptr;
+		last = nullptr;
+		cache = nullptr;
+		surface = nullptr;
 	}
 }
 
@@ -166,7 +166,7 @@ PackedSurface::Reader::get_pixel(int x, int y) const
 
 			entry = last;
 			if (entry->chunk_index >= 0)
-				chunks[entry->chunk_index] = NULL;
+				chunks[entry->chunk_index] = nullptr;
 			entry->chunk_index = chunk_index;
 			chunks[chunk_index] = entry;
 			zstreambuf::unpack(entry->data(), surface->chunk_size, data, size);
@@ -177,7 +177,7 @@ PackedSurface::Reader::get_pixel(int x, int y) const
 			(entry->next ? entry->next->prev : last) = entry->prev;
 
 			first->prev = entry;
-			entry->prev = NULL;
+			entry->prev = nullptr;
 			entry->next = first;
 			first = entry;
 		}
@@ -297,7 +297,7 @@ PackedSurface::get_compressed_chunk(int index, const void *&data, int &size, boo
 void
 PackedSurface::set_pixels(const Color *pixels, int width, int height, int pitch) {
 	clear();
-	if (pixels == NULL || width <= 0 || height <= 0)
+	if (!pixels || width <= 0 || height <= 0)
 		return;
 
 	if (pitch == 0) pitch = sizeof(Color)*width;
@@ -468,7 +468,7 @@ PackedSurface::set_pixels(const Color *pixels, int width, int height, int pitch)
 
 void
 PackedSurface::get_pixels(Color *target) const {
-	if (target == NULL || width <= 0 || height <= 0)
+	if (!target || width <= 0 || height <= 0)
 		return;
 	Reader reader(*this);
 	Color *color = target;

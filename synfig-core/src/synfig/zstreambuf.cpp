@@ -201,7 +201,7 @@ bool zstreambuf::inflate_buf()
 
 bool zstreambuf::deflate_buf(bool flush)
 {
-	if (pbase() != NULL && pptr() > pbase())
+	if (pbase() && pptr() > pbase())
 	{
 		// initialize deflate if need
 		if (!deflate_initialized)
@@ -233,7 +233,7 @@ bool zstreambuf::deflate_buf(bool flush)
 				buf_->sputn(out_buf, sizeof(out_buf) - deflate_stream_.avail_out);
 		} while (deflate_stream_.avail_out == 0);
 		assert(deflate_stream_.avail_in == 0);
-		setp(NULL, NULL);
+		setp(nullptr, nullptr);
 	}
 	return true;
 }

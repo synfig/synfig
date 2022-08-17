@@ -265,7 +265,6 @@ src/synfig/paramdesc.h
 src/synfig/pch.h
 src/synfig/polynomial_root.cpp
 src/synfig/polynomial_root.h
-src/synfig/protocol.h
 src/synfig/quick_rng.h
 src/synfig/real.h
 src/synfig/rect.cpp
@@ -294,9 +293,7 @@ src/synfig/target.cpp
 src/synfig/target.h
 src/synfig/target_multi.cpp
 src/synfig/target_multi.h
-src/synfig/target_null.cpp
 src/synfig/target_null.h
-src/synfig/target_null_tile.cpp
 src/synfig/target_null_tile.h
 src/synfig/target_scanline.cpp
 src/synfig/target_scanline.h

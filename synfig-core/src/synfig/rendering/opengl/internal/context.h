@@ -77,10 +77,10 @@ public:
 		GLXContext context;
 
 		ContextInfo():
-			display(NULL),
+			display(nullptr),
 			drawable(None),
 			read_drawable(None),
-			context(NULL) { }
+			context(nullptr) { }
 
 		bool operator== (const ContextInfo &other) const
 		{

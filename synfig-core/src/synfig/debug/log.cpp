@@ -32,20 +32,20 @@
 #	include <config.h>
 #endif
 
-#include <cstdlib>
+#include <cstdarg>
 
 #include <fstream>
 
 #include "log.h"
 
-#include <ETL/stringf>
+#include <synfig/filesystem.h>
 #include <synfig/general.h>
+#include <synfig/string.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace debug;
 
@@ -62,7 +62,7 @@ std::mutex Log::mutex;
 void Log::append_line_to_file(const String &logfile, const String &str)
 {
 	std::lock_guard<std::mutex> lock(mutex);
-	std::ofstream f(logfile.c_str(), std::ios_base::app);
+	std::ofstream f(synfig::filesystem::Path(logfile).c_str(), std::ios_base::app);
 	f << str << std::endl;
 }
 

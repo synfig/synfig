@@ -31,6 +31,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfigapp/action.h>
+#include <synfig/valuenodes/valuenode_bone.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -43,14 +44,15 @@ namespace synfigapp {
 namespace Action {
 
 class ValueDescBoneSetParent :
-	public Undoable,
-	public CanvasSpecific
+	public Super
 {
 private:
 	ValueDesc value_desc;
-	synfig::ValueNode::Handle child;
+	synfig::ValueNode_Bone::Handle active_bone_;
 	synfig::Time time;
-	synfig::ValueNode::Handle prev_parent;
+
+	void add_action_set_interpolation(synfig::ValueNode_Bone::Handle bone_valuenode, const char *link_name, synfig::Interpolation interpolation);
+	void add_action_set_valuedesc(synfig::ValueNode_Bone::Handle bone_valuenode, const char *link_name, const synfig::ValueBase& value);
 
 public:
 
@@ -62,8 +64,7 @@ public:
 	virtual bool set_param(const synfig::String& name, const Param &);
 	virtual bool is_ready()const;
 
-	virtual void perform();
-	virtual void undo();
+	virtual void prepare();
 
 	ACTION_MODULE_EXT
 };

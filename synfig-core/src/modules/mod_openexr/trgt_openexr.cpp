@@ -35,6 +35,8 @@
 
 #include "trgt_openexr.h"
 #include <cstdio>
+#include <ETL/stringf>
+
 #endif
 
 /* === M A C R O S ========================================================= */
@@ -62,9 +64,9 @@ exr_trgt::exr_trgt(const char *Filename, const synfig::TargetParam &params):
 	imagecount(0),
 	scanline(),
 	filename(Filename),
-	exr_file(NULL),
-	buffer(NULL),
-	buffer_color(NULL)
+	exr_file(nullptr),
+	buffer(nullptr),
+	buffer_color(nullptr)
 {
 	// OpenEXR uses linear gamma
 	sequence_separator = params.sequence_separator;
@@ -103,7 +105,7 @@ exr_trgt::start_frame(synfig::ProgressCallback *cb)
 	{
 		frame_name = (filename_sans_extension(filename) +
 					  sequence_separator +
-					  etl::strprintf("%04d",imagecount) +
+					  strprintf("%04d",imagecount) +
 					  filename_extension(filename));
 		if(cb)cb->task(frame_name);
 	}

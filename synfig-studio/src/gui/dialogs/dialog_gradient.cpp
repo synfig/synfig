@@ -70,12 +70,12 @@ Dialog_Gradient::Dialog_Gradient():
 	set_role("gradient_editor");
 
 	// Setup the buttons
-	Gtk::Button *cancel_button(manage(new class Gtk::Button(Gtk::StockID("gtk-close"))));
+	Gtk::Button *cancel_button(manage(new Gtk::Button(_("_Close"), true)));
 	cancel_button->show();
 	add_action_widget(*cancel_button,0);
 	cancel_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Gradient::hide));
 
-	set_default_button = manage(new class Gtk::Button(Gtk::StockID(_("Set as Default"))));
+	set_default_button = manage(new Gtk::Button(_("Set as Default")));
 	set_default_button->show();
 	add_action_widget(*set_default_button,2);
 	set_default_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Gradient::on_set_default_pressed));

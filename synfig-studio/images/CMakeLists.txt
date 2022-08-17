@@ -39,6 +39,9 @@ set(IMG_SOURCE_keyframe_lock_past_off_icon keyframe_lock_icons 1)
 set(IMG_SOURCE_keyframe_lock_future_on_icon keyframe_lock_icons 2)
 set(IMG_SOURCE_keyframe_lock_future_off_icon keyframe_lock_icons 3)
 
+set(IMG_SOURCE_tangent_merge_icon tangent_merge_split_icons 0)
+set(IMG_SOURCE_tangent_split_icon tangent_merge_split_icons 1)
+
 set(IMG_SOURCE_utils_chain_link_on_icon utils_chain_link_icons 0)
 set(IMG_SOURCE_utils_chain_link_off_icon utils_chain_link_icons 1)
 
@@ -81,6 +84,9 @@ set(ICONS
 	keyframe_lock_past_off_icon
 	keyframe_lock_future_on_icon
 	keyframe_lock_future_off_icon
+
+	tangent_merge_icon
+	tangent_split_icon
 
 	utils_chain_link_on_icon
 	utils_chain_link_off_icon
@@ -187,9 +193,9 @@ set(ICONS
 	resize_down_right_icon
 	resize_transparent_icon
 	select_all_child_layers_icon
-	set_fill_color
+	set_fill_color_icon
 	set_icon
-	set_outline_color
+	set_outline_color_icon
 	show_grid_icon
 	show_guideline_icon
 	sif_icon
@@ -242,7 +248,8 @@ set(IMAGES
 	${ICONS}
 )
 
-set(PIXMAPS_DIR ${SYNFIG_BUILD_ROOT}/share/synfig/icons/classic)
+set(THEME_DIR ${SYNFIG_BUILD_ROOT}/share/synfig/icons/classic)
+set(PIXMAPS_DIR ${THEME_DIR}/128x128)
 
 file(MAKE_DIRECTORY ${PIXMAPS_DIR})
 
@@ -287,7 +294,7 @@ foreach (IMAGE IN ITEMS ${IMAGES})
 	list(APPEND PIXMAPS ${PIXMAPS_DIR}/${IMAGE}.png)
 	install(
 		FILES ${PIXMAPS_DIR}/${IMAGE}.png
-		DESTINATION share/synfig/icons/classic
+		DESTINATION share/synfig/icons/classic/128x128
 	)
 endforeach()
 
@@ -301,6 +308,10 @@ install(
 	FILES ${CMAKE_CURRENT_SOURCE_DIR}/org.synfig.SynfigStudio.svg
 	DESTINATION share/icons/hicolor/scalable/apps
 )
+
+# index.theme
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/index.theme ${SYNFIG_BUILD_ROOT}/share/synfig/icons/classic/index.theme COPYONLY)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/index.theme DESTINATION share/synfig/icons/classic)
 
 # Synfig Splash Screen
 if(${CMAKE_BUILD_TYPE} MATCHES Debug)
@@ -334,14 +345,14 @@ install(
 # WIN32 Icon
 if(WIN32)
 	add_custom_command(
-		OUTPUT ${PIXMAPS_DIR}/synfig_icon.ico
-		COMMAND synfig_bin ${CMAKE_CURRENT_SOURCE_DIR}/synfig_icon.sif -o ${PIXMAPS_DIR}/synfig_icon.ico --time 0f --quiet
+		OUTPUT ${THEME_DIR}/synfig_icon.ico
+		COMMAND synfig_bin ${CMAKE_CURRENT_SOURCE_DIR}/synfig_icon.sif -o ${THEME_DIR}/synfig_icon.ico --time 0f --quiet
 		DEPENDS ${SYNFIG_SPLASH_SCREEN} synfig_bin
 	)
 
-	list(APPEND PIXMAPS ${PIXMAPS_DIR}/synfig_icon.ico)
+	list(APPEND PIXMAPS ${THEME_DIR}/synfig_icon.ico)
 	install(
-		FILES ${PIXMAPS_DIR}/synfig_icon.ico
+		FILES ${THEME_DIR}/synfig_icon.ico
 		DESTINATION share/pixmaps/synfigstudio
 	)
 endif()

@@ -213,14 +213,11 @@ Widget_Defaults::Widget_Defaults():
 		widget_fill_color->set_halign(Gtk::ALIGN_END);
 		widget_fill_color->set_valign(Gtk::ALIGN_END);
 
-		Gtk::Image* icon;
-
 		// Swap button
 		Gtk::Button* button_swap(manage(new Gtk::Button()));
 		button_swap->set_relief(Gtk::RELIEF_NONE);
 		button_swap->set_border_width(0);
-		icon = manage(new Gtk::Image(Gtk::StockID("synfig-swap_colors"), iconsize));
-		button_swap->add(*icon);
+		button_swap->set_image_from_icon_name("swap_colors_icon", iconsize);
 		button_swap->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_swap_color_clicked));
 		button_swap->set_tooltip_text(_("Swap Fill and\nOutline Colors"));
 
@@ -232,8 +229,7 @@ Widget_Defaults::Widget_Defaults():
 		Gtk::Button* button_reset(manage(new Gtk::Button()));
 		button_reset->set_relief(Gtk::RELIEF_NONE);
 		button_reset->set_border_width(0);
-		icon = manage(new Gtk::Image(Gtk::StockID("synfig-reset_colors"), iconsize));
-		button_reset->add(*icon);
+		button_reset->set_image_from_icon_name("reset_colors_icon", iconsize);
 		button_reset->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_reset_color_clicked));
 		button_reset->set_tooltip_text(_("Reset Colors to Black and White"));
 
@@ -358,7 +354,7 @@ Widget_Defaults::Widget_Defaults():
 		//widget_brush_bline_width->show_all();
 
 		Gtk::ToolItemGroup *tool_item_group = manage(new class Gtk::ToolItemGroup());
-		gtk_tool_item_group_set_label(tool_item_group->gobj(), NULL);
+		gtk_tool_item_group_set_label(tool_item_group->gobj(), nullptr);
 
 		Gtk::ToolPalette *palette = manage(new Gtk::ToolPalette());
 		palette->add(*tool_item_group);

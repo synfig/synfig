@@ -41,6 +41,8 @@
 #include <cstdio>
 #include <algorithm>
 #include <functional>
+
+#include <ETL/stringf>
 #endif
 
 /* === U S I N G =========================================================== */
@@ -150,10 +152,10 @@ bmp::bmp(const char *Filename, const synfig::TargetParam& params):
 	rowspan(),
 	imagecount(),
 	multi_image(false),
-	file(NULL),
+	file(nullptr),
 	filename(Filename),
-	buffer(NULL),
-	color_buffer(NULL),
+	buffer(nullptr),
+	color_buffer(nullptr),
 	pf()
 {
 	set_alpha_mode(TARGET_ALPHA_MODE_FILL);
@@ -164,7 +166,7 @@ bmp::~bmp()
 {
 	if(file)
 		fclose(file);
-	file=NULL;
+	file = nullptr;
 	delete [] buffer;
 	delete [] color_buffer;
 }
@@ -205,7 +207,7 @@ bmp::end_frame()
 		fclose(file);
 	delete [] color_buffer;
 	color_buffer=0;
-	file=NULL;
+	file = nullptr;
 	imagecount++;
 }
 
@@ -219,7 +221,7 @@ bmp::start_frame(synfig::ProgressCallback *callback)
 	{
 		String newfilename(filename_sans_extension(filename) +
 						   sequence_separator +
-						   etl::strprintf("%04d",imagecount) +
+						   strprintf("%04d",imagecount) +
 						   filename_extension(filename));
 		file=g_fopen(newfilename.c_str(),POPEN_BINARY_WRITE_TYPE);
 		if(callback)callback->task(newfilename+_(" (animated)"));

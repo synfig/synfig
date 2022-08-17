@@ -50,7 +50,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_BoneLink, RELEASE_VERSION_1_0, "bone_link", "Bone Link")
+REGISTER_VALUENODE(ValueNode_BoneLink, RELEASE_VERSION_1_0, "bone_link", N_("Bone Link"))
 
 /* === P R O C E D U R E S ================================================= */
 

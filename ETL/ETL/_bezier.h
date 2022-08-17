@@ -74,7 +74,7 @@ template<typename V,typename T> class bezier;
 // This generic implementation uses the DeCasteljau algorithm.
 // Works for just about anything that has an affine combination function
 template <typename V,typename T=float>
-class bezier_base : public std::unary_function<T,V>
+class bezier_base
 {
 public:
 	typedef V value_type;
@@ -230,7 +230,7 @@ public:
 #if 1
 // Fast float implementation of a cubic bezier curve
 template <>
-class bezier_base<float,float> : public std::unary_function<float,float>
+class bezier_base<float,float>
 {
 public:
 	typedef float value_type;
@@ -310,7 +310,7 @@ public:
 
 // Fast double implementation of a cubic bezier curve
 template <>
-class bezier_base<double,float> : public std::unary_function<float,double>
+class bezier_base<double,float>
 {
 public:
 	typedef double value_type;
@@ -620,11 +620,11 @@ private:
 				Vtemp[i][j][1] = (1.0 - t) * Vtemp[i-1][j][1] + t * Vtemp[i-1][j+1][1];
 			}
 
-		if (Left != NULL)
+		if (Left)
 			for (j = 0; j <= degree; j++)
 				Left[j]  = Vtemp[j][0];
 
-		if (Right != NULL)
+		if (Right)
 			for (j = 0; j <= degree; j++)
 				Right[j] = Vtemp[degree-j][j];
 
@@ -882,7 +882,7 @@ private:
 			/* Find distances for candidate points	*/
 			for (i = 0; i < n_solutions; i++)
 			{
-				p = Bezier(VT, DEGREE, t_candidate[i], (value_type *)NULL, (value_type *)NULL);
+				p = Bezier(VT, DEGREE, t_candidate[i], nullptr, nullptr);
 				new_dist = (P - p).mag_squared();
 				if (new_dist < dist)
 				{

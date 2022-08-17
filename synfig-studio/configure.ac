@@ -37,6 +37,7 @@ AC_PROG_CXXCPP
 AC_PROG_INSTALL
 AC_LANG([C++])
 AX_CXX_COMPILE_STDCXX([11], [noext])
+CXXFLAGS="$CXXFLAGS -std=gnu++11"
 
 AC_ARG_OPTIMIZATION
 AC_ARG_DEBUG
@@ -49,14 +50,6 @@ AC_ARG_WARNINGS
 AC_ARG_PROFILE_ARCS
 AC_ARG_BRANCH_PROBABILITIES
 AC_ARG_PROFILING
-
-AC_ARG_ENABLE(g5opt,[
-  --enable-g5opt           enable optimizations specific to G5 proc],[
-    G5OPTFLAGS="-mpowerpc-gpopt -mno-multiple -mno-update -mcpu=970  -mtune=970 -falign-loops=16 -falign-functions=16"
-],
-[
-    G5OPTFLAGS=
-])
 
 AC_WIN32_QUIRKS
 

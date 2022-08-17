@@ -22,8 +22,6 @@ TARGETHEADERS = \
 
 TARGETSOURCES = \
 	target_multi.cpp \
-	target_null.cpp \
-	target_null_tile.cpp \
 	target_scanline.cpp \
 	target_tile.cpp
 
@@ -60,12 +58,12 @@ VALUESOURCES = \
 SYNFIGHEADERS = \
 	angle.h \
 	canvasbase.h \
+	clock.h \
 	general.h \
 	localization.h \
 	progresscallback.h \
 	guidset.h \
 	interpolation.h \
-	protocol.h \
 	quick_rng.h \
 	real.h \
 	complex.h \

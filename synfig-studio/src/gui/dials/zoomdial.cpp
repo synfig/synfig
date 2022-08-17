@@ -58,10 +58,10 @@ using namespace studio;
 ZoomDial::ZoomDial(Gtk::IconSize & size):
 	Gtk::Grid()
 {
-	zoom_in = create_icon(size, Gtk::Stock::ZOOM_IN, _("Zoom In"));
-	zoom_out = create_icon(size, Gtk::Stock::ZOOM_OUT, _("Zoom Out"));
-	zoom_fit = create_icon(size, Gtk::Stock::ZOOM_FIT, _("Zoom to Fit"));
-	zoom_norm = create_icon(size, Gtk::Stock::ZOOM_100, _("Zoom to 100%"));
+	zoom_in = create_icon(size, "zoom-in", _("Zoom In"));
+	zoom_out = create_icon(size, "zoom-out", _("Zoom Out"));
+	zoom_fit = create_icon(size, "zoom-fit-best", _("Zoom to Fit"));
+	zoom_norm = create_icon(size, "zoom-original", _("Zoom to 100%"));
 
 	current_zoom = manage(new Gtk::Entry());
 	set_zoom(1.0);
@@ -113,18 +113,17 @@ ZoomDial::current_zoom_event(GdkEvent* event)
 
 
 Gtk::Button *
-ZoomDial::create_icon(Gtk::IconSize size, const Gtk::BuiltinStockID & stockid,
+ZoomDial::create_icon(Gtk::IconSize size, const std::string & icon_name,
 		const char * tooltip)
 {
 	Gtk::Button *button = manage(new class Gtk::Button());
-	Gtk::Image *icon = manage(new Gtk::Image(stockid, size));
-	button->add(*icon);
+	button->set_image_from_icon_name(icon_name, size);
 	button->set_tooltip_text(tooltip);
+	auto icon = button->get_image();
 	icon->set_margin_start(0);
 	icon->set_margin_end(0);
 	icon->set_margin_top(0);
 	icon->set_margin_bottom(0);
-	icon->show();
 	button->set_relief(Gtk::RELIEF_NONE);
 	button->show();
 
@@ -134,7 +133,7 @@ ZoomDial::create_icon(Gtk::IconSize size, const Gtk::BuiltinStockID & stockid,
 void
 ZoomDial::set_zoom(synfig::Real value)
 {
-	current_zoom->set_text(etl::strprintf("%.1lf%%", value*100.0));
+	current_zoom->set_text(synfig::strprintf("%.1lf%%", value*100.0));
 }
 
 synfig::Real

@@ -43,8 +43,6 @@
 #include <synfig/exception.h>
 #include <synfig/dashitem.h>
 
-#include <ETL/stringf>
-
 #include <vector>
 #include <list>
 
@@ -58,7 +56,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_DIList, RELEASE_VERSION_0_63_01, "dilist", "DIList")
+REGISTER_VALUENODE(ValueNode_DIList, RELEASE_VERSION_0_63_01, "dilist", N_("DIList"))
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -79,7 +77,7 @@ ValueNode_DIList::create(const ValueBase& value, etl::loose_handle<Canvas>)
 {
 	// if the parameter is not a list type, return null
 	if(value.get_type()!=type_list)
-		return NULL;
+		return nullptr;
 	// create an empty list
 	ValueNode_DIList* value_node(new ValueNode_DIList());
 	// If the value parameter is not empty
@@ -101,7 +99,7 @@ ValueNode_DIList::create(const ValueBase& value, etl::loose_handle<Canvas>)
 		{
 			// We got a list of who-knows-what. We don't have any idea
 			// what to do with it.
-			return NULL;
+			return nullptr;
 		}
 	}
 
@@ -171,7 +169,7 @@ String
 ValueNode_DIList::link_local_name(int i)const
 {
 	assert(i>=0 && (unsigned)i<list.size());
-	return etl::strprintf(_("DashItem %03d"),i+1);
+	return strprintf(_("DashItem %03d"),i+1);
 }
 
 

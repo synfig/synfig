@@ -63,44 +63,44 @@ gl::ClContext::ClContext():
 	// platform
 
 	cl_uint platform_count = 0;
-	clGetPlatformIDs(0, NULL, &platform_count);
+	clGetPlatformIDs(0, nullptr, &platform_count);
 	assert(platform_count);
 	std::vector<cl_platform_id> platforms(platform_count);
-	clGetPlatformIDs(platforms.size(), &platforms.front(), NULL);
+	clGetPlatformIDs(platforms.size(), &platforms.front(), nullptr);
 	cl_platform_id platform = platforms.front();
 	assert(platform);
 
 	//char vendor[256] = { };
-	//clGetPlatformInfo(platform, CL_PLATFORM_VENDOR, sizeof(vendor), vendor, NULL);
+	//clGetPlatformInfo(platform, CL_PLATFORM_VENDOR, sizeof(vendor), vendor, nullptr);
     //char platform_version[256];
-    //clGetPlatformInfo(platform, CL_PLATFORM_VERSION, sizeof(platform_version), platform_version, NULL);
+	//clGetPlatformInfo(platform, CL_PLATFORM_VERSION, sizeof(platform_version), platform_version, nullptr);
 
 	// devices
 
 	cl_uint device_count = 0;
-    clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 0, NULL, &device_count);
+	clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, 0, nullptr, &device_count);
     assert(device_count);
     std::vector<cl_device_id> devices(device_count);
-    clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, devices.size(), &devices.front(), NULL);
+	clGetDeviceIDs(platform, CL_DEVICE_TYPE_GPU, devices.size(), &devices.front(), nullptr);
     device = devices.front();
     assert(device);
 
     //char device_name[256];
-    //clGetDeviceInfo(device, CL_DEVICE_NAME, sizeof(device_name), device_name, NULL);
+	//clGetDeviceInfo(device, CL_DEVICE_NAME, sizeof(device_name), device_name, nullptr);
     //char device_version[256];
-    //clGetDeviceInfo(device, CL_DEVICE_VERSION, sizeof(device_version), device_version, NULL);
+	//clGetDeviceInfo(device, CL_DEVICE_VERSION, sizeof(device_version), device_version, nullptr);
 
     // context
 
     cl_context_properties context_props[] = {
     	CL_CONTEXT_PLATFORM, (cl_context_properties)platform,
 		CL_NONE };
-    context = clCreateContext(context_props, 1, &device, callback, NULL, NULL);
+	context = clCreateContext(context_props, 1, &device, callback, nullptr, nullptr);
     assert(context);
 
 	// command queue
 
-	queue = clCreateCommandQueue(context, device, CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE, NULL);
+	queue = clCreateCommandQueue(context, device, CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE, nullptr);
 	assert(queue);
 }
 
@@ -121,15 +121,15 @@ gl::ClContext::load_program(const String &source)
 	cl_int err = 0;
 
 	const char *source_pointer = source.c_str();
-	cl_program program = clCreateProgramWithSource(context, 1, &source_pointer, NULL, NULL);
+	cl_program program = clCreateProgramWithSource(context, 1, &source_pointer, nullptr, nullptr);
 	assert(program);
 
-	err = clBuildProgram(program, 1, &device, "", NULL, NULL);
+	err = clBuildProgram(program, 1, &device, "", nullptr, nullptr);
 	if (err) {
 		size_t size;
-		clGetProgramBuildInfo(program, device, CL_PROGRAM_BUILD_LOG, 0, NULL, &size);
+		clGetProgramBuildInfo(program, device, CL_PROGRAM_BUILD_LOG, 0, nullptr, &size);
 		String log(size, ' ');
-		clGetProgramBuildInfo(program, device, CL_PROGRAM_BUILD_LOG, size, &log[0], NULL);
+		clGetProgramBuildInfo(program, device, CL_PROGRAM_BUILD_LOG, size, &log[0], nullptr);
 		warning(log);
 	}
 	assert(!err);

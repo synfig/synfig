@@ -33,7 +33,6 @@
 #include <list>
 #include <map>
 
-#include <ETL/stringf>
 #include <synfig/distance.h>
 #include <synfig/string.h>
 

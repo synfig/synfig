@@ -35,8 +35,7 @@
 
 #include "asyncrenderer.h"
 
-#include <ETL/clock>
-
+#include <synfig/clock.h>
 #include <synfig/context.h>
 #include <synfig/general.h>
 #include <synfig/target_scanline.h>
@@ -136,7 +135,7 @@ public:
 			sigc::hide_return(
 				sigc::bind(
 					sigc::mem_fun(*this, &AsyncTarget_Tile::sync_render_tile),
-					canvas, context_params, rect, tile_desc, (synfig::ProgressCallback*)NULL )),
+					canvas, context_params, rect, tile_desc, (synfig::ProgressCallback*)nullptr )),
 				true
 			);
 		assert(thread);
@@ -163,7 +162,7 @@ public:
 		return r;
 	}
 
-	virtual bool wait_render_tiles(ProgressCallback *cb=NULL)
+	virtual bool wait_render_tiles(ProgressCallback* cb = nullptr)
 	{
 		if(!alive_flag)
 			return false;

@@ -235,6 +235,25 @@ namespace synfig
 		virtual FileSystem::WriteStream::Handle get_write_stream(const String &/*filename*/)
 			{ return WriteStream::Handle(); }
 	};
+
+	namespace filesystem {
+		class Path {
+		public:
+#ifdef _WIN32
+			typedef wchar_t	value_type;
+#else
+			typedef char value_type;
+#endif
+			typedef std::basic_string<value_type> string_type;
+
+			Path(const std::string& path);
+
+			const value_type* c_str() const noexcept;
+
+		private:
+			string_type path_;
+		};
+	}
 }
 
 /* === E N D =============================================================== */
