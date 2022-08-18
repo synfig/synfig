@@ -104,9 +104,21 @@ void
 Widget_Distance::after_event(GdkEvent *event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
-	if (event->type == GDK_BUTTON_RELEASE)
+	if ((event->type == GDK_BUTTON_RELEASE) && first_selection) {
 		select_region(0, get_text_length()-2);
+		first_selection = false;
+	}
 	SYNFIG_EXCEPTION_GUARD_END()
+}
+
+bool
+Widget_Distance::on_event(GdkEvent* event)
+{
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
+	if (event->type == GDK_FOCUS_CHANGE && event->focus_change.in)
+			first_selection=true;
+	return SpinButton::on_event(event);
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 void

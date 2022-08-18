@@ -48,6 +48,8 @@ class Widget_Distance : public Gtk::SpinButton
 
 	Glib::RefPtr<Gtk::Adjustment> adjustment;
 
+	bool first_selection = false;
+
 protected:
 
 	int	on_input(double* new_value);
@@ -56,6 +58,7 @@ protected:
 	bool on_key_press_event(GdkEventKey* event);
 	bool on_key_release_event(GdkEventKey* event);
 	void after_event(GdkEvent *event);
+	bool on_event(GdkEvent* event);
 
 public:
 	void set_value(const synfig::Distance &data);
