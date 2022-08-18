@@ -6,6 +6,7 @@ WIDGETS_HH = \
 	widgets/widget_curves.h \
 	widgets/widget_defaults.h \
 	widgets/widget_distance.h \
+	widgets/widget_entry.h \
 	widgets/widget_enum.h \
 	widgets/widget_sublayer.h \
 	widgets/widget_filename.h \
@@ -34,6 +35,7 @@ WIDGETS_CC = \
 	widgets/widget_curves.cpp \
 	widgets/widget_defaults.cpp \
 	widgets/widget_distance.cpp \
+	widgets/widget_entry.cpp \
 	widgets/widget_enum.cpp \
 	widgets/widget_sublayer.cpp \
 	widgets/widget_filename.cpp \

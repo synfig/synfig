@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file widget_distance.cpp
+/*!	\file widget_spin.cpp
 **	\brief Template File
 **
 **	\legal
@@ -32,7 +32,7 @@
 #	include <config.h>
 #endif
 
-#include <gui/widgets/widget_distance.h>
+#include <gui/widgets/widget_spin.h>
 
 #include <gui/exception_guard.h>
 #include <gui/localization.h>
@@ -52,56 +52,26 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-Widget_Distance::Widget_Distance():
-	Gtk::SpinButton(0.05,5),
-	distance_(1, Distance::SYSTEM_POINTS),
-	adjustment(Gtk::Adjustment::create(0,-100000000,100000000,1,1,0))
+Widget_Spin::Widget_Spin()
 {
-	set_adjustment(adjustment);
-	set_numeric(false);
-	signal_event_after().connect(sigc::mem_fun(*this, &Widget_Distance::after_event));
+	signal_event_after().connect(sigc::mem_fun(*this, &Widget_Spin::after_event));
 }
 
-Widget_Distance::~Widget_Distance()
+Widget_Spin::Widget_Spin(Glib::RefPtr<Gtk::Adjustment >& adjustment,//this ref should prob be const
+												  double climb_rate,
+													   guint digits)
 {
+	SpinButton::configure(adjustment,climb_rate,digits);
+	signal_event_after().connect(sigc::mem_fun(*this, &Widget_Spin::after_event));
 }
 
-int
-Widget_Distance::on_input(double* new_value)
-{
-	distance_=synfig::String(get_text());
-	*new_value=distance_.get();
-	return 1;
-}
 
-bool
-Widget_Distance::on_output()
+Widget_Spin::~Widget_Spin()
 {
-	try{
-	distance_=get_adjustment()->get_value();
-	set_text(distance_.get_string(get_digits()));
-	} catch (...) { /* synfig::error("Widget_Distance::on_output(): Caught something..."); */ }
-	return true;
-}
-
-bool
-Widget_Distance::on_key_press_event(GdkEventKey* event)
-{
-	SYNFIG_EXCEPTION_GUARD_BEGIN()
-	return SpinButton::on_key_press_event(event);
-	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
-}
-
-bool
-Widget_Distance::on_key_release_event(GdkEventKey* event)
-{
-	SYNFIG_EXCEPTION_GUARD_BEGIN()
-	return SpinButton::on_key_release_event(event);
-	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 void
-Widget_Distance::after_event(GdkEvent *event)
+Widget_Spin::after_event(GdkEvent *event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	if ((event->type == GDK_BUTTON_RELEASE) && first_selection) {
@@ -113,25 +83,11 @@ Widget_Distance::after_event(GdkEvent *event)
 }
 
 bool
-Widget_Distance::on_event(GdkEvent* event)
+Widget_Spin::on_event(GdkEvent* event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	if (event->type == GDK_FOCUS_CHANGE && event->focus_change.in)
 			first_selection=true;
 	return SpinButton::on_event(event);
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
-}
-
-void
-Widget_Distance::set_value(const synfig::Distance &data)
-{
-	distance_=data;
-	get_adjustment()->set_value(distance_.get());
-}
-
-synfig::Distance
-Widget_Distance::get_value() const
-{
-	distance_=get_adjustment()->get_value();
-	return distance_;
 }

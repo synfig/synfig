@@ -59,6 +59,7 @@
 
 /* === U S I N G =========================================================== */
 
+using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -92,7 +93,7 @@ StateCircle studio::state_circle;
 
 class studio::StateCircle_Context : public sigc::trackable
 {
-	CanvasView::Handle canvas_view_;
+	etl::handle<CanvasView> canvas_view_;
 	CanvasView::IsWorking is_working;
 
 	Duckmatic::Push duckmatic_push;
@@ -251,7 +252,7 @@ public:
 	~StateCircle_Context();
 
 	//Canvas interaction
-	const CanvasView::Handle& get_canvas_view()const{return canvas_view_;}
+	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view_;}
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
@@ -514,7 +515,6 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	bline_width_dist.set_digits(2);
 	bline_width_dist.set_range(0,10000000);
 	bline_width_dist.set_sensitive(false);
-//	bline_width_dist.signal_button_release_event().connect([&](GdkEventButton* ev){ bline_width_dist.select_region(0,-1)/*bline_width_dist.grab_focus()*/;return true;});
 
 
 	bline_points_label.set_label(_("Spline Points:"));
@@ -522,7 +522,6 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	bline_points_label.set_valign(Gtk::ALIGN_CENTER);
 	bline_points_label.set_sensitive(false);
 	number_of_bline_points_spin.set_sensitive(false);
-//	number_of_bline_points_spin.signal_event_after().connect(sigc::mem_fun(number_of_bline_points_spin, &Gtk::Widget::grab_focus));
 
 	bline_point_angle_offset_label.set_label(_("Offset:"));
 	bline_point_angle_offset_label.set_halign(Gtk::ALIGN_START);
