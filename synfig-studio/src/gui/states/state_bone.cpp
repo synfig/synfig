@@ -44,6 +44,7 @@
 #include <gui/event_mouse.h>
 #include <gui/localization.h>
 #include <gui/widgets/widget_distance.h>
+#include <gui/widgets/widget_entry.h>
 #include <gui/workarea.h>
 
 #include <synfig/general.h>
@@ -112,7 +113,7 @@ class studio::StateBone_Context : public sigc::trackable
 	// layer name:
 	Gtk::Label id_label;
 	Gtk::HBox id_box;
-	Gtk::Entry id_entry;
+	Widget_Entry id_entry;
 
 	//  bone width
 	Gtk::Label bone_width_label;

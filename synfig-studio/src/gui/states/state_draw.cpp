@@ -48,6 +48,8 @@
 #include <gui/states/state_normal.h>
 #include <gui/states/state_stroke.h>
 #include <gui/widgets/widget_distance.h>
+#include <gui/widgets/widget_spin.h>
+#include <gui/widgets/widget_entry.h>
 #include <gui/widgets/widget_enum.h>
 #include <gui/workarea.h>
 
@@ -139,7 +141,7 @@ class studio::StateDraw_Context : public sigc::trackable
 	Gtk::Label title_label;
 
 	Gtk::Label id_label;
-	Gtk::Entry id_entry;
+	Widget_Entry id_entry;
 	Gtk::Box id_box;
 
 	Gtk::Label layer_types_label;
@@ -167,7 +169,7 @@ class studio::StateDraw_Context : public sigc::trackable
 
 	Gtk::CheckButton min_pressure_checkbutton;
 	Glib::RefPtr<Gtk::Adjustment> min_pressure_adj;
-	Gtk::SpinButton  min_pressure_spin;
+	Widget_Spin min_pressure_spin;
 	Gtk::Box min_pressure_box;
 
 	Gtk::Label smoothness_label;
@@ -175,18 +177,18 @@ class studio::StateDraw_Context : public sigc::trackable
 
 	Gtk::RadioButton localthres_radiobutton;
 	Glib::RefPtr<Gtk::Adjustment> localthres_adj;
-	Gtk::SpinButton localthres_spin;
+	Widget_Spin localthres_spin;
 	Gtk::Box localthres_box;
 
 	Gtk::RadioButton globalthres_radiobutton;
 	Glib::RefPtr<Gtk::Adjustment> globalthres_adj;
-	Gtk::SpinButton globalthres_spin;
+	Widget_Spin globalthres_spin;
 	Gtk::Box globalthres_box;
 
 	Gtk::Label width_max_error_label;
 	Gtk::Box width_max_error_box;
 	Glib::RefPtr<Gtk::Adjustment> width_max_error_adj;
-	Gtk::SpinButton width_max_error_spin;
+	Widget_Spin width_max_error_spin;
 
 	Gtk::Label round_ends_label;
 	Gtk::CheckButton round_ends_checkbutton;

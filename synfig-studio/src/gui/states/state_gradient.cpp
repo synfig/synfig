@@ -44,6 +44,7 @@
 #include <gui/localization.h>
 #include <gui/states/state_normal.h>
 #include <gui/widgets/widget_enum.h>
+#include <gui/widgets/widget_entry.h>
 #include <gui/workarea.h>
 
 #include <synfig/general.h>
@@ -99,7 +100,7 @@ class studio::StateGradient_Context : public sigc::trackable
 	Gtk::Label title_label;
 
 	Gtk::Label id_label;
-	Gtk::Entry id_entry;
+	Widget_Entry id_entry;
 	Gtk::Box id_box;
 
 	Gtk::Label layer_types_label;
