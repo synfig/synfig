@@ -1663,6 +1663,8 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 				if((!rotate_guide && ((*curr_guide_accomp_duckamtic) < -900)) || from_ruler_event ){// case 1: unrotated ruler
 					*curr_guide = mouse_pos[0];
+
+				canvas_interface->ruler_state="moving unrotated";
 				}
 				else if (!rotate_guide && ((*curr_guide_accomp_duckamtic) > -900)) { //case 2: rotated ruler being moved
 					*curr_guide_accomp_duckamtic = mouse_pos[1];
@@ -1671,6 +1673,8 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 					float center_y = ((1.0/2.0)*(drawing_area_height)*pheight)+ window_starty;
 					float center_x_new= (mouse_pos[0])-((mouse_pos[1]-center_y)/(-current_slope));//current slope is slope of the line on it being founds
 					*curr_guide = center_x_new;
+
+					canvas_interface->ruler_state="moving rotated";
 				}
 				else if(rotate_guide && (!from_ruler_event) && ((*curr_guide > lower_limit_x) && (*curr_guide < upper_limit_x)) ) {// case: 3 ruler being rotated   ---- dont rotate if center of rotation isnt in screen
 					*curr_guide_accomp_duckamtic = mouse_pos[1];
@@ -1679,6 +1683,8 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 					float center_y = ((1.0/2.0)*(drawing_area_height)*pheight)+ window_starty;
 					float slope = (mouse_pos[1] - center_y)/(mouse_pos[0] - *curr_guide);
 					current_slope = -slope;
+
+					canvas_interface->ruler_state="rotating";
 				}
 			}
 			else{
