@@ -1545,8 +1545,8 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				Gtk::MenuItem *item = manage(new Gtk::MenuItem(_("_Edit Guide")));
 				item->set_use_underline(true);
 				item->show();
-				item->signal_activate().connect(//DONT COMMIT YET
-						sigc::mem_fun(guide_dialog,&Gtk::Widget::show));//DONT COMMIT YET
+				item->signal_activate().connect(
+						sigc::mem_fun(guide_dialog,&Gtk::Widget::show));
 				waypoint_menu->append(*item);
 				waypoint_menu->popup(3, gtk_get_current_event_time());
 
