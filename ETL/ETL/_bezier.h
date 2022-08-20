@@ -58,7 +58,6 @@
 #endif
 
 #define	BEZIER_EPSILON	(ldexp(1.0,-MAXDEPTH-1)) /*Flatness control value */
-//#define	BEZIER_EPSILON	0.00005 /*Flatness control value */
 #define	DEGREE	3			/*  Cubic Bezier curve		*/
 #define	W_DEGREE 5			/*  Degree of eqn to find roots of */
 
@@ -67,8 +66,6 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace etl {
-
-template<typename V,typename T> class bezier;
 
 //! Cubic Bezier Curve Base Class
 // This generic implementation uses the DeCasteljau algorithm.
@@ -115,25 +112,6 @@ public:
 		,t);
 	}
 
-	/*
-	void evaluate(time_type t, value_type &f, value_type &df) const
-	{
-		t=(t-r)/(s-r);
-
-		value_type p1 = affine_func(
-							affine_func(a,b,t),
-							affine_func(b,c,t)
-							,t);
-		value_type p2 = affine_func(
-							affine_func(b,c,t),
-							affine_func(c,d,t)
-						,t);
-
-		f = affine_func(p1,p2,t);
-		df = (p2-p1)*3;
-	}
-	*/
-
 	void set_rs(time_type new_r, time_type new_s) { r=new_r; s=new_s; }
 	void set_r(time_type new_r) { r=new_r; }
 	void set_s(time_type new_s) { s=new_s; }
@@ -172,51 +150,6 @@ public:
 		return 0;
 	}
 
-	/* subdivide at some time t into 2 separate curves left and right
-
-		b0 l1
-		*		0+1 l2
-		b1 		*		1+2*1+2 l3
-		*		1+2		*			0+3*1+3*2+3 l4,r1
-		b2 		*		1+2*2+2	r2	*
-		*		2+3	r3	*
-		b3 r4	*
-		*
-
-		0.1 2.3 ->	0.1 2 3 4 5.6
-	*/
-/*	void subdivide(bezier_base *left, bezier_base *right, const time_type &time = (time_type)0.5) const
-	{
-		time_type t = (time-r)/(s-r);
-		bezier_base lt,rt;
-
-		value_type temp;
-
-		//1st stage points to keep
-		lt.a = a;
-		rt.d = d;
-
-		//2nd stage calc
-		lt.b = affine_func(a,b,t);
-		temp = affine_func(b,c,t);
-		rt.c = affine_func(c,d,t);
-
-		//3rd stage calc
-		lt.c = affine_func(lt.b,temp,t);
-		rt.b = affine_func(temp,rt.c,t);
-
-		//last stage calc
-		lt.d = rt.a = affine_func(lt.c,rt.b,t);
-
-		//set the time range for l,r (the inside values should be 1, 0 respectively)
-		lt.r = r;
-		rt.s = s;
-
-		//give back the curves
-		if(left) *left = lt;
-		if(right) *right = rt;
-	}
-	*/
 	value_type &
 	operator[](int i)
 	{ return (&a)[i]; }
@@ -227,7 +160,6 @@ public:
 };
 
 
-#if 1
 // Fast float implementation of a cubic bezier curve
 template <>
 class bezier_base<float,float>
@@ -387,9 +319,6 @@ public:
 	{ return (&a)[i]; }
 };
 
-#endif
-
-
 
 template <typename V, typename T>
 class bezier_iterator
@@ -439,6 +368,7 @@ public:
 */
 
 };
+
 
 template <typename V,typename T=float>
 class bezier : public bezier_base<V,T>
