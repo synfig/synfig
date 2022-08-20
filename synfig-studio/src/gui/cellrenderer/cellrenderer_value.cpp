@@ -338,12 +338,12 @@ CellRenderer_ValueBase::render_vfunc(
 		{
 			Distance x( data.get(Real()), Distance::SYSTEM_UNITS);
 			x.convert( App::distance_system, get_canvas()->rend_desc() );
-			property_text() = x.get_string(real_num_decimals).c_str();
+			property_text() = remove_trailing_zeroes(x.get_string(real_num_decimals), true, true).c_str();
 		}
 		else
 		{
 			std::string format = strprintf("%%.%df", real_num_decimals);
-			property_text() = strprintf(format.c_str(), data.get(Real()));
+			property_text() = remove_trailing_zeroes(strprintf(format.c_str(), data.get(Real())));
 		}
 	}
 	else
@@ -351,7 +351,6 @@ CellRenderer_ValueBase::render_vfunc(
 	{
 		property_text() =
 			data.get(Time()).get_string( get_canvas()->rend_desc().get_frame_rate(),
-				                                         App::get_time_format());
 	}
 	else
 	if (type == type_angle)
@@ -402,10 +401,20 @@ CellRenderer_ValueBase::render_vfunc(
 			Distance x( vector[0], Distance::SYSTEM_UNITS ), y( vector[1], Distance::SYSTEM_UNITS );
 			x.convert( App::distance_system, get_canvas()->rend_desc() );
 			y.convert( App::distance_system, get_canvas()->rend_desc() );
-			property_text() = strprintf("%s,%s", x.get_string(real_num_decimals).c_str(), y.get_string(real_num_decimals).c_str());
+			std::string text = strprintf("%s,%s", x.get_string(real_num_decimals).c_str(), y.get_string(real_num_decimals).c_str());
+			size_t pos_comma = text.find_first_of(',');
+			std::string first_part = text.substr(0,pos_comma);
+			std::string second_part =text.substr(pos_comma+1, std::string::npos);
+			std::string final = remove_trailing_zeroes(first_part, true, true) + "," + remove_trailing_zeroes(second_part, true, true);
+			property_text() = final;
 		} else {
 			std::string format = strprintf("%%.%01df,%%.%01df", real_num_decimals, real_num_decimals);
-			property_text() = strprintf(format.c_str(), vector[0], vector[1]);
+			std::string text = strprintf(format.c_str(), vector[0], vector[1]);
+			size_t pos_comma = text.find_first_of(',');
+			std::string first_part = text.substr(0,pos_comma);
+			std::string second_part =text.substr(pos_comma, std::string::npos);
+			std::string final = remove_trailing_zeroes(first_part) + remove_trailing_zeroes(second_part);
+			property_text() = final;
 		}
 	}
 	else

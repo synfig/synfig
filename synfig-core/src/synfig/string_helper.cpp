@@ -39,6 +39,7 @@
 
 #include <algorithm>
 #include <locale>
+#include <iostream>
 
 #include "general.h"
 #endif
@@ -59,7 +60,7 @@ get_locale_decimal_point()
 }
 
 std::string
-synfig::remove_trailing_zeroes(const std::string& text, bool force_decimal_point)
+synfig::remove_trailing_zeroes(const std::string& text, bool force_decimal_point, bool has_unit)
 {
 	std::string result(text);
 	auto decimal_point = get_locale_decimal_point();
@@ -74,8 +75,14 @@ synfig::remove_trailing_zeroes(const std::string& text, bool force_decimal_point
 		else
 			result.pop_back();
 	} else {
-		const size_t last_non_zero_pos = result.find_last_not_of('0');
-		result = result.substr(0, std::max(decimal_point_pos+1, last_non_zero_pos) + 1);
+		if (has_unit) {
+			const size_t last_non_zero_pos = result.find_last_of("123456789.");
+			const size_t first_unit_pos = result.find_first_not_of("0123456789.-");
+			result = result.substr(0, std::max(decimal_point_pos+1, last_non_zero_pos) + 1) + result.substr(first_unit_pos);
+		} else {
+			const size_t last_non_zero_pos = result.find_last_not_of('0');
+			result = result.substr(0, std::max(decimal_point_pos+1, last_non_zero_pos) + 1);
+		}
 	}
 	return result;
 }
