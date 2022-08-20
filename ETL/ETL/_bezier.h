@@ -42,12 +42,6 @@
 
 /* === M A C R O S ========================================================= */
 
-#define MAXDEPTH 64	/*  Maximum depth for recursion */
-
-#define	BEZIER_EPSILON	(ldexp(1.0,-MAXDEPTH-1)) /*Flatness control value */
-#define	DEGREE	3			/*  Cubic Bezier curve		*/
-#define	W_DEGREE 5			/*  Degree of eqn to find roots of */
-
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
@@ -508,6 +502,15 @@ public:
 	}
 
 private:
+	/** Cubic Bezier curve */
+	static constexpr unsigned int DEGREE = 3;
+	/** Degree of eqn to find roots of */
+	static constexpr unsigned int W_DEGREE = 5;
+	/** Maximum depth for recursion */
+	static constexpr int MAXDEPTH = 64;
+	/** Flatness control value */
+	static const double EPSILON;
+
 	/** Take binary sign of a, either -1, or 1 if >= 0 */
 	template<typename U>
 	static int sgn(const U& a)
@@ -651,7 +654,7 @@ private:
 		left_intercept = min(intercept_1, intercept_2);
 		right_intercept = max(intercept_1, intercept_2);
 
-		return 0.5 * (right_intercept-left_intercept) < BEZIER_EPSILON ? 1 : 0;
+		return 0.5 * (right_intercept-left_intercept) < EPSILON ? 1 : 0;
 	}
 
 	/*
@@ -842,6 +845,10 @@ private:
 		return t;
 	}
 };
+
+/** in C++ 17, we can let it defined in-class, as constexpr. */
+template<typename V, typename T>
+const double bezier<V,T>::EPSILON = ldexp(1.0, -bezier<V,T>::MAXDEPTH-1);
 
 };
 
