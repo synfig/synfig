@@ -44,19 +44,6 @@
 
 #define MAXDEPTH 64	/*  Maximum depth for recursion */
 
-/* take binary sign of a, either -1, or 1 if >= 0 */
-#define SGN(a)		(((a)<0) ? -1 : 1)
-
-/* find minimum of a and b */
-#ifndef MIN
-#define MIN(a,b)	(((a)<(b))?(a):(b))
-#endif
-
-/* find maximum of a and b */
-#ifndef MAX
-#define MAX(a,b)	(((a)>(b))?(a):(b))
-#endif
-
 #define	BEZIER_EPSILON	(ldexp(1.0,-MAXDEPTH-1)) /*Flatness control value */
 #define	DEGREE	3			/*  Cubic Bezier curve		*/
 #define	W_DEGREE 5			/*  Degree of eqn to find roots of */
@@ -521,6 +508,27 @@ public:
 	}
 
 private:
+	/** Take binary sign of a, either -1, or 1 if >= 0 */
+	template<typename U>
+	static int sgn(const U& a)
+	{
+		return a < 0 ? -1 : 1;
+	}
+
+	/** Find minimum of a and b */
+	template<typename U>
+	static U min(const U& a, const U& b)
+	{
+		return a < b ? a : b;
+	}
+
+	/** Find maximum of a and b */
+	template<typename U>
+	static U max(const U& a, const U& b)
+	{
+		return a > b ? a : b;
+	}
+
 	/*
 	 *  Bezier :
 	 *	Evaluate a Bezier curve at a particular parameter value
@@ -574,10 +582,10 @@ private:
 		int 	n_crossings = 0;	/*  Number of zero-crossings	*/
 		int		sign, old_sign;		/*  Sign of coefficients		*/
 
-		sign = old_sign = SGN(VT[0][1]);
+		sign = old_sign = sgn(VT[0][1]);
 		for (i = 1; i <= W_DEGREE; i++)
 		{
-			sign = SGN(VT[i][1]);
+			sign = sgn(VT[i][1]);
 			if (sign != old_sign) n_crossings++;
 			old_sign = sign;
 		}
@@ -629,8 +637,8 @@ private:
 
 		for (i = 1; i < W_DEGREE; i++)
 		{
-			if (distance[i] < 0.0) max_distance_below = MIN(max_distance_below, distance[i]);
-			if (distance[i] > 0.0) max_distance_above = MAX(max_distance_above, distance[i]);
+			if (distance[i] < 0.0) max_distance_below = min(max_distance_below, distance[i]);
+			if (distance[i] > 0.0) max_distance_above = max(max_distance_above, distance[i]);
 		}
 
 		/* Implicit equation for "above" line */
@@ -640,8 +648,8 @@ private:
 		intercept_2 = -(c + max_distance_below)/a;
 
 		/* Compute intercepts of bounding box	*/
-		left_intercept = MIN(intercept_1, intercept_2);
-		right_intercept = MAX(intercept_1, intercept_2);
+		left_intercept = min(intercept_1, intercept_2);
+		right_intercept = max(intercept_1, intercept_2);
 
 		return 0.5 * (right_intercept-left_intercept) < BEZIER_EPSILON ? 1 : 0;
 	}
@@ -766,8 +774,8 @@ private:
 		m = DEGREE-1;
 		for (k = 0; k <= n + m; k++)
 		{
-			lb = MAX(0, k - m);
-			ub = MIN(k, n);
+			lb = max(0, k - m);
+			ub = min(k, n);
 			for (i = lb; i <= ub; i++)
 			{
 				j = k - i;
