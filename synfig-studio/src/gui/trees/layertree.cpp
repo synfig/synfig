@@ -123,9 +123,9 @@ bool LayerTree::on_key_press_event(GdkEventKey* event)
 				if (select_paths.empty())
 					return true;
 				auto path = select_paths.front();
-				if (layer_tree_view().row_expanded(path))
+				if (layer_tree_view().row_expanded(path)) {
 					layer_tree_view().collapse_row(path);
-				else if (path.size() > 1) {
+				} else if (path.size() > 1) {
 					path.up();
 					layer_tree_view().set_cursor(path);
 				} else {
