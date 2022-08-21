@@ -125,11 +125,10 @@ bool LayerTree::on_key_press_event(GdkEventKey* event)
 				auto path = select_paths.front();
 				if (layer_tree_view().row_expanded(path)) {
 					layer_tree_view().collapse_row(path);
+				} else if (!path.empty() && path.back() > 0 && path.prev()) {
+					layer_tree_view().set_cursor(path);
 				} else if (path.size() > 1) {
 					path.up();
-					layer_tree_view().set_cursor(path);
-				} else {
-					path.prev();
 					layer_tree_view().set_cursor(path);
 				}
 
@@ -142,7 +141,7 @@ bool LayerTree::on_key_press_event(GdkEventKey* event)
 				return true;
 			auto path = select_paths.front();
 			if (layer_tree_view().row_expanded(path)) {
-				path.down();
+				path.next();
 				layer_tree_view().set_cursor(path);
 			} else {
 				auto iter = layer_tree_view().get_model()->get_iter(path);
