@@ -301,56 +301,6 @@ public:
 };
 
 
-template <typename V, typename T>
-class bezier_iterator
-{
-public:
-
-	struct iterator_category {};
-	typedef V value_type;
-	typedef T difference_type;
-	typedef V reference;
-
-private:
-	difference_type t;
-	difference_type dt;
-	bezier_base<V,T>	curve;
-
-public:
-
-/*
-	reference
-	operator*(void)const { return curve(t); }
-	const surface_iterator&
-
-	operator++(void)
-	{ t+=dt; return &this; }
-
-	const surface_iterator&
-	operator++(int)
-	{ hermite_iterator _tmp=*this; t+=dt; return _tmp; }
-
-	const surface_iterator&
-	operator--(void)
-	{ t-=dt; return &this; }
-
-	const surface_iterator&
-	operator--(int)
-	{ hermite_iterator _tmp=*this; t-=dt; return _tmp; }
-
-
-	surface_iterator
-	operator+(difference_type __n) const
-	{ return surface_iterator(data+__n[0]+__n[1]*pitch,pitch); }
-
-	surface_iterator
-	operator-(difference_type __n) const
-	{ return surface_iterator(data-__n[0]-__n[1]*pitch,pitch); }
-*/
-
-};
-
-
 template <typename V,typename T=float>
 class bezier : public bezier_base<V,T>
 {
@@ -358,8 +308,6 @@ public:
 	typedef V value_type;
 	typedef T time_type;
 	typedef float distance_type;
-	typedef bezier_iterator<V,T> iterator;
-	typedef bezier_iterator<V,T> const_iterator;
 
 	distance_func<value_type> dist;
 
@@ -371,10 +319,6 @@ public:
 	bezier() { }
 	bezier(const value_type &a, const value_type &b, const value_type &c, const value_type &d):
 		bezier_base<V,T>(a,b,c,d) { }
-
-
-	const_iterator begin()const;
-	const_iterator end()const;
 
 	time_type find_closest(bool fast, const value_type& x, int i=7)const
 	{
