@@ -194,7 +194,7 @@ LayerTree::create_layer_tree()
 		layer_tree_view().append_column(*column);
 	}
 	{	// --- Z D E P T H ----------------------------------------------------
-		column_z_depth = Gtk::manage( new Gtk::TreeView::Column(_("Z Depth Mod")) );
+		column_z_depth = Gtk::manage( new Gtk::TreeView::Column(_("Z Depth")) );
 
 		// Set up the Layer label cell-renderer
 		Gtk::CellRendererText* cellrenderer = Gtk::manage( new Gtk::CellRendererText() );
@@ -203,7 +203,7 @@ LayerTree::create_layer_tree()
 		column_z_depth->add_attribute(cellrenderer->property_weight(), layer_model.weight);
 		column_z_depth->add_attribute(cellrenderer->property_underline(), layer_model.underline);
 		column_z_depth->add_attribute(cellrenderer->property_strikethrough(), layer_model.strikethrough);
-		column_z_depth->set_cell_data_func(*cellrenderer, sigc::mem_fun(*this, LayerTree::set_z_depth_cell_data));
+		column_z_depth->set_cell_data_func(*cellrenderer, sigc::mem_fun(*this, &LayerTree::set_z_depth_cell_data));
 
 		column_z_depth->set_reorderable();
 		column_z_depth->set_resizable();
