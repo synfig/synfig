@@ -338,7 +338,7 @@ CellRenderer_ValueBase::render_vfunc(
 		{
 			Distance x( data.get(Real()), Distance::SYSTEM_UNITS);
 			x.convert( App::distance_system, get_canvas()->rend_desc() );
-			property_text() = remove_trailing_zeroes(x.get_string(real_num_decimals), true, true).c_str();
+			property_text() = x.get_string(real_num_decimals,true,true,true).c_str();
 		}
 		else
 		{
@@ -402,12 +402,9 @@ CellRenderer_ValueBase::render_vfunc(
 			Distance x( vector[0], Distance::SYSTEM_UNITS ), y( vector[1], Distance::SYSTEM_UNITS );
 			x.convert( App::distance_system, get_canvas()->rend_desc() );
 			y.convert( App::distance_system, get_canvas()->rend_desc() );
-			std::string text = strprintf("%s,%s", x.get_string(real_num_decimals).c_str(), y.get_string(real_num_decimals).c_str());
-			size_t pos_comma = text.find_first_of(',');
-			std::string first_part = text.substr(0,pos_comma);
-			std::string second_part =text.substr(pos_comma+1, std::string::npos);
-			std::string final = remove_trailing_zeroes(first_part, true, true) + "," + remove_trailing_zeroes(second_part, true, true);
-			property_text() = final;
+			std::string text = strprintf("%s,%s", x.get_string(real_num_decimals,true,true,true).c_str(),
+												  y.get_string(real_num_decimals,true,true,true).c_str());
+			property_text() = text;
 		} else {
 			std::string format = strprintf("%%.%01df,%%.%01df", real_num_decimals, real_num_decimals);
 			std::string text = strprintf(format.c_str(), vector[0], vector[1]);

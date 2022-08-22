@@ -85,7 +85,7 @@ public:
 
 		Gtk::TreeModelColumn<bool>						children_lock;
 
-		Gtk::TreeModelColumn<Glib::ustring> z_depth;
+		Gtk::TreeModelColumn<float> z_depth;
 		Gtk::TreeModelColumn<int> index;
 
 		Model()

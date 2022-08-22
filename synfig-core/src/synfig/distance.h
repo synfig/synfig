@@ -82,7 +82,7 @@ public:
 
 	Distance& operator=(const synfig::String& rhs);
 
-	synfig::String get_string(int digits=4)const;
+	synfig::String get_string(int digits=4, bool remove_trailing_zeroes_=false,bool force_decimal_point=true, bool has_unit=false)const;
 
 	const System& get_system()const { return system_; }
 

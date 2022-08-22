@@ -128,7 +128,7 @@ LayerTreeStore::z_sorter(const Gtk::TreeModel::iterator &rhs,const Gtk::TreeMode
 {
 	const Model model;
 
-	float diff(stratof((Glib::ustring)(*rhs)[model.z_depth])-stratof((Glib::ustring)(*lhs)[model.z_depth]));//need to conv to float
+	float diff((float)(*rhs)[model.z_depth]-(float)(*lhs)[model.z_depth]);
 
 	if(diff<0)
 		return -1;
@@ -199,10 +199,8 @@ LayerTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int column
 			if (column == model.index.index())
 				set_gvalue_tpl<int>(value, layer->get_depth());
 			else
-			if (column == model.z_depth.index()){
-				Glib::ustring str = remove_trailing_zeroes(std::to_string(layer->get_true_z_depth(canvas_interface()->get_time())));
-				set_gvalue_tpl<Glib::ustring>(value, str);//the value itself doesnt have trailing zeroes but seems like the renderer does it
-			}
+			if (column == model.z_depth.index())
+				set_gvalue_tpl<float>(value, layer->get_true_z_depth(canvas_interface()->get_time()));
 			else
 			if (column == model.children_lock.index())
 			{
@@ -819,7 +817,7 @@ LayerTreeStore::refresh_row(Gtk::TreeModel::Row &row)
 		*/
 
 		if(layer->dynamic_param_list().count("z_depth"))
-			row[model.z_depth]=std::to_string(Time::begin());
+			row[model.z_depth]=Time::begin();
 		//	row_changed(get_path(row),row);
 
 		Gtk::TreeModel::Children children = row.children();
@@ -1143,7 +1141,7 @@ LayerTreeStore::on_layer_param_changed(synfig::Layer::Handle handle,synfig::Stri
 		Gtk::TreeModel::Children::iterator iter;
 		if(find_layer_row(handle,iter))
 		{
-			(*iter)[model.z_depth]=std::to_string(Time::begin());
+			(*iter)[model.z_depth]=Time::begin();
 		}
 	}
 
