@@ -402,8 +402,8 @@ LayerTree::create_param_tree()
 void
 LayerTree::set_z_depth_cell_data(Gtk::CellRenderer *cell, const Gtk::TreeIter& it)
 {
-	Glib::ustring test = remove_trailing_zeroes(std::to_string((*it)[layer_model.z_depth]));
-	dynamic_cast<Gtk::CellRendererText*>(cell)->property_text()=test;
+	Glib::ustring text = remove_trailing_zeroes(std::to_string((*it)[layer_model.z_depth]));
+	dynamic_cast<Gtk::CellRendererText*>(cell)->property_text()=text;
 }
 
 void
