@@ -74,8 +74,8 @@ synfig::remove_trailing_zeroes(const std::string& text, bool force_decimal_point
 		else
 			result.pop_back();
 	} else {
-			const size_t last_non_zero_pos = result.find_last_not_of('0');
-			result = result.substr(0, std::max(decimal_point_pos+1, last_non_zero_pos) + 1);
+		const size_t last_non_zero_pos = result.find_last_not_of('0');
+		result = result.substr(0, std::max(decimal_point_pos+1, last_non_zero_pos) + 1);
 	}
 	return result;
 }
