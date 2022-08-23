@@ -1,3 +1,7 @@
+- [`361ffce`](https://github.com/synfig/synfig/commit/361ffce745bbe2534ffdee5e05dca80b7cdb55e1) chore: updated changelog ([#2774](https://github.com/synfig/synfig/issues/2774))
+- [`9cc796e`](https://github.com/synfig/synfig/commit/9cc796e08727bf478c87dc93a74e46822398a16b) refactor!: add etl::hermite::derivative() and remove ETL/calculus ([#2791](https://github.com/synfig/synfig/issues/2791)) [ETL] [core] [studio]
+- [`4c99713`](https://github.com/synfig/synfig/commit/4c997135228c7b2f3767bb2f6420bb9acdd93f59) fix: hit_check for gradient & paste_canvas layers with BEHIND and ONTO blends ([#2804](https://github.com/synfig/synfig/issues/2804)) [core]
+- [`ac8214e`](https://github.com/synfig/synfig/commit/ac8214e47fd71dbec1066f475e98bd9dda5859e7) fix: Fixed issue with incorrect ffmpeg search on Windows ([#2797](https://github.com/synfig/synfig/issues/2797)) [core]
 - [`e289d69`](https://github.com/synfig/synfig/commit/e289d69bbccffe77158d7d2b65d932896c0fac04) feat: added support for SVG image sequence with lst files ([#2795](https://github.com/synfig/synfig/issues/2795)) [core]
 - [`fc78ce7`](https://github.com/synfig/synfig/commit/fc78ce7992df6171e24ebd57292c19a5dfc3a45c) chore: fix source typos ([#2803](https://github.com/synfig/synfig/issues/2803)) [studio]
 - [`2d13c78`](https://github.com/synfig/synfig/commit/2d13c78149795212602d54272a3efaec6e2a2eb2) fix: check whether iterator is valid before dereferencing ([#2798](https://github.com/synfig/synfig/issues/2798)) [studio]
