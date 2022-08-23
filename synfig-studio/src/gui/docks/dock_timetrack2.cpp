@@ -251,7 +251,7 @@ void Dock_Timetrack2::setup_tool_palette()
 	for (const auto & interp_button_info: interp_buttons_info) {
 		Gtk::Image* image= Gtk::manage(new Gtk::Image());
 		image->set_from_icon_name(interpolation_icon_name(interp_button_info.interpolation), Gtk::IconSize::from_name("synfig-small_icon_16x16"));
-		Gtk::ToolButton *tool_button = manage(new Gtk::ToolButton(*image, _("interp_button_info.name")));
+		Gtk::ToolButton *tool_button = manage(new Gtk::ToolButton(*image, _((interp_button_info.name).c_str())));
 		tool_button->signal_clicked().connect(sigc::track_obj([this, interp_button_info](){
 			current_widget_timetrack->interpolate_selected(interp_button_info.interpolation);
 		}, *this));
