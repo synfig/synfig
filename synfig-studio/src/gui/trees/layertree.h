@@ -228,8 +228,6 @@ private:
 
 	bool on_key_press_event(GdkEventKey* event);
 
-	void set_z_depth_cell_data(Gtk::CellRenderer *cell, const Gtk::TreeIter& it);
-
 }; // END of LayerTree
 
 }; // END of namespace studio
