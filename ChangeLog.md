@@ -1,3 +1,8 @@
+## Version 1.4.3 [ETL] [core] [studio]
+- [`b0d439b`](https://github.com/morevnaproject/morevna-builds/commit/b0d439ba0668a185512e1c49cae6caba25fe917a) Python updated to version 3.8.10 in Windows build.
+- [`ef1f618`](https://github.com/morevnaproject/morevna-builds/commit/ef1f618802ce1dc9a302017da4b7b225ffde6222) Use 64bit Python build in 64bit packages for Windows.
+
+
 ## Version 1.4.2 [ETL] [core] [studio]
 - [`b7305a9`](https://github.com/synfig/synfig/commit/b7305a9a3893caefffc1c36118e67f2f0610a1d5) Merge pull request [#1173](https://github.com/synfig/synfig/issues/1173) from rodolforg/fix-sound-dock-scroll
 - [`ba211ba`](https://github.com/synfig/synfig/commit/ba211bafbe5963bc863ad4e99d38e73a3d96fe92) remove some unneeded headers ([#1963](https://github.com/synfig/synfig/issues/1963)) [studio]
