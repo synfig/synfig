@@ -195,19 +195,19 @@ LayerTree::create_layer_tree()
 	}
 	{	// --- Z D E P T H ----------------------------------------------------
 		int index;
-			index=layer_tree_view().append_column(_("Z Depth"),layer_model.z_depth);
-			// Set up the Z-Depth label cell-renderer
-			column_z_depth=layer_tree_view().get_column(index-1);
-			column_z_depth->set_reorderable();
-			column_z_depth->set_resizable();
-			column_z_depth->set_clickable();
-			column_z_depth->set_sort_column(layer_model.z_depth);
+		index=layer_tree_view().append_column(_("Z Depth"),layer_model.z_depth);
+		// Set up the Z-Depth label cell-renderer
+		column_z_depth=layer_tree_view().get_column(index-1);
+		column_z_depth->set_reorderable();
+		column_z_depth->set_resizable();
+		column_z_depth->set_clickable();
+		column_z_depth->set_sort_column(layer_model.z_depth);
 
-			auto cell_renderer = layer_tree_view().get_column_cell_renderer(index-1);
-			column_z_depth->set_cell_data_func(*cell_renderer, (sigc::track_obj([this](Gtk::CellRenderer* cell, const Gtk::TreeIter& it){
-				Glib::ustring text = remove_trailing_zeroes(std::to_string(it->get_value(layer_model.z_depth)));
-				dynamic_cast<Gtk::CellRendererText*>(cell)->property_text()=text;
-			}, *this)));
+		auto cell_renderer = layer_tree_view().get_column_cell_renderer(index-1);
+		column_z_depth->set_cell_data_func(*cell_renderer, (sigc::track_obj([this](Gtk::CellRenderer* cell, const Gtk::TreeIter& it){
+			Glib::ustring text = remove_trailing_zeroes(std::to_string(it->get_value(layer_model.z_depth)));
+			dynamic_cast<Gtk::CellRendererText*>(cell)->property_text()=text;
+		}, *this)));
 	}
 
 	layer_tree_view().set_enable_search(true);
