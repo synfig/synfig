@@ -352,7 +352,6 @@ CellRenderer_ValueBase::render_vfunc(
 		property_text() =
 			data.get(Time()).get_string( get_canvas()->rend_desc().get_frame_rate(),
 				                                         App::get_time_format());
-
 	}
 	else
 	if (type == type_angle)
