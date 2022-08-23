@@ -111,16 +111,12 @@ Distance::operator=(const synfig::String& str)
 }
 
 synfig::String
-Distance::get_string(int digits, bool remove_trailing_zeroes_, bool force_decimal_point, bool has_unit)const
+Distance::get_string(int digits)const
 {
 	digits=synfig::clamp(digits,0,9);
 	String fmt(strprintf("%%.%01df",digits));
 	String str(strprintf(fmt.c_str(),value_));
-	if(remove_trailing_zeroes_){
-		return remove_trailing_zeroes(strprintf("%s%s",str.c_str(),system_name(system_).c_str()),
-									   force_decimal_point, has_unit);
-	} else
-	return strprintf("%s%s",str.c_str(),system_name(system_).c_str());
+	return strprintf("%s%s",remove_trailing_zeroes(str).c_str(),system_name(system_).c_str());
 }
 
 void

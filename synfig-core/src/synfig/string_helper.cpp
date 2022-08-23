@@ -59,7 +59,7 @@ get_locale_decimal_point()
 }
 
 std::string
-synfig::remove_trailing_zeroes(const std::string& text, bool force_decimal_point, bool has_unit)
+synfig::remove_trailing_zeroes(const std::string& text, bool force_decimal_point)
 {
 	std::string result(text);
 	auto decimal_point = get_locale_decimal_point();
@@ -74,16 +74,8 @@ synfig::remove_trailing_zeroes(const std::string& text, bool force_decimal_point
 		else
 			result.pop_back();
 	} else {
-		if (has_unit) {
-			const size_t last_non_zero_pos = result.find_last_of("123456789.");
-			std::string str = "0123456789-";
-			str.push_back(decimal_point);
-			const size_t first_unit_pos = result.find_first_not_of(str);
-			result = result.substr(0, std::max(decimal_point_pos+1, last_non_zero_pos) + 1) + result.substr(first_unit_pos);
-		} else {
 			const size_t last_non_zero_pos = result.find_last_not_of('0');
 			result = result.substr(0, std::max(decimal_point_pos+1, last_non_zero_pos) + 1);
-		}
 	}
 	return result;
 }

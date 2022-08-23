@@ -338,7 +338,7 @@ CellRenderer_ValueBase::render_vfunc(
 		{
 			Distance x( data.get(Real()), Distance::SYSTEM_UNITS);
 			x.convert( App::distance_system, get_canvas()->rend_desc() );
-			property_text() = x.get_string(real_num_decimals,true,true,true).c_str();
+			property_text() = x.get_string(real_num_decimals).c_str();
 		}
 		else
 		{
@@ -402,8 +402,8 @@ CellRenderer_ValueBase::render_vfunc(
 			Distance x( vector[0], Distance::SYSTEM_UNITS ), y( vector[1], Distance::SYSTEM_UNITS );
 			x.convert( App::distance_system, get_canvas()->rend_desc() );
 			y.convert( App::distance_system, get_canvas()->rend_desc() );
-			std::string text = strprintf("%s,%s", x.get_string(real_num_decimals,true,true,true).c_str(),
-												  y.get_string(real_num_decimals,true,true,true).c_str());
+			std::string text = strprintf("%s,%s", x.get_string(real_num_decimals).c_str(),
+												  y.get_string(real_num_decimals).c_str());
 			property_text() = text;
 		} else {
 			std::string format = strprintf("%%.%01df,%%.%01df", real_num_decimals, real_num_decimals);
