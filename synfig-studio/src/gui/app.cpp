@@ -3852,6 +3852,18 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
 		SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 
 	}), false );
+
+	int previous_num_lines(0);
+
+	text_buffer->signal_changed().connect(sigc::track_obj([&dialog,&text_buffer,&previous_num_lines](){
+			int num_lines=text_buffer->get_line_count();
+			if(num_lines<previous_num_lines)
+				dialog.resize(dialog.get_width(), 2);//any size less than minimum causes a resize to minimum possible size
+
+			previous_num_lines=num_lines;
+
+		}, dialog));
+
 	//text_entry.signal_activate().connect(sigc::bind(sigc::mem_fun(dialog,&Gtk::Dialog::response),Gtk::RESPONSE_OK));
 	dialog.show();
 
