@@ -409,10 +409,8 @@ CellRenderer_ValueBase::render_vfunc(
 			std::string format = strprintf("%%.%01df,%%.%01df", real_num_decimals, real_num_decimals);
 			std::string text = strprintf(format.c_str(), vector[0], vector[1]);
 			size_t pos_comma = text.find_first_of(',');
-			std::string first_part = text.substr(0,pos_comma);
-			std::string second_part =text.substr(pos_comma, std::string::npos);
-			std::string final = remove_trailing_zeroes(first_part) + remove_trailing_zeroes(second_part);
-			property_text() = final;
+			std::string adjusted_text = remove_trailing_zeroes(text.substr(0, pos_comma)) + remove_trailing_zeroes(text.substr(pos_comma));
+			property_text() = adjusted_text;
 		}
 	}
 	else
