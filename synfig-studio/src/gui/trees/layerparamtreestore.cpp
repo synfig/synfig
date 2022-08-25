@@ -598,26 +598,7 @@ LayerParamTreeStore::on_value_node_replaced(synfig::ValueNode::Handle /*replaced
 	// failing as a result.  not sure how the tree code has a pointer
 	// rather than a handle - maybe it has a loosehandle, that would
 	// cause the problem I was seeing
-
-	// Maybe the comment above is deprecated. -^
-	// It seems we don't need to use the old solution (call queue_refresh()),
-	// neither the previous solution (rebuild(), commented out below).
-	// When a value node is replaced (via RHandle::replace()), it
-	// already calls Node::signal_changed() so the row is refreshed
-	// by other signal slot.
-	//
-	// Calling rebuild() causes two bugs:
-	// 1. Parameters panel collapses items on edit (GH#386), when we
-	//    we have Animation Mode enabled and are editing parameter that
-	//    wasn't previously animated.
-	//    'Solution' seems to be to call queue_refresh()
-	// 2. Crash (or emit Gtk warning) when we animate a parameter (like
-	//    previous case) that uses a combobox for editing (GH#2390), as
-	//    Active Layer Name of Switch Layer or Bone Parent in Bones list
-	//    of Skeleton Layer.
-	//    'Solution' seems to be to call queue_rebuild()
-
-	//rebuild();
+	rebuild();
 }
 
 void
