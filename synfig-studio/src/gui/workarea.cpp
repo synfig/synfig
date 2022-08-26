@@ -813,18 +813,12 @@ WorkArea::set_background_rendering(bool x)
 }
 
 void
-WorkArea::set_rulers_visible(bool visible)
+WorkArea::set_show_rulers(bool visible)
 {
+	show_rulers = visible;
 	hruler->set_visible(visible);
 	vruler->set_visible(visible);
 	menubutton_box->set_visible(visible);
-}
-
-void
-WorkArea::toggle_rulers()
-{
-	show_rulers = !show_rulers;
-	set_rulers_visible(show_rulers);
 	save_meta_data();
 }
 

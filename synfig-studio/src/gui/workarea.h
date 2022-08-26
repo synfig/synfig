@@ -353,8 +353,7 @@ public:
 
 	void refresh_dimension_info();
 
-	void toggle_rulers();
-	void set_rulers_visible(bool visible);
+	void set_show_rulers(bool visible);
 
 	//! Enables showing of the grid
 	void enable_grid();

@@ -1579,7 +1579,7 @@ CanvasView::init_menus()
 
 		rulers_show_toggle = Gtk::ToggleAction::create("toggle-rulers-show", _("Show Rulers"));
 		rulers_show_toggle->set_active(work_area->get_show_rulers());
-		work_area->set_rulers_visible(work_area->get_show_rulers());
+		work_area->set_show_rulers(work_area->get_show_rulers());
 		action_group->add(rulers_show_toggle, sigc::mem_fun(*this, &CanvasView::toggle_show_ruler));
 
 		grid_show_toggle = Gtk::ToggleAction::create("toggle-grid-show", _("Show Grid"));
@@ -2709,9 +2709,10 @@ CanvasView::set_onion_skins()
 void
 CanvasView::toggle_show_ruler()
 {
-	work_area->toggle_rulers();
+	bool visible = !(work_area->get_show_rulers());
+	work_area->set_show_rulers(visible);
 	// Update the toggle ruler show action
-	set_rulers_show_toggle(work_area->get_show_rulers());
+//	set_rulers_show_toggle(work_area->get_show_rulers());
 }
 
 void
