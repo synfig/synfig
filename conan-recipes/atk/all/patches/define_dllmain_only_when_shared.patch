@@ -1,0 +1,19 @@
+commit 2c8b80761a9ef6b381c909cf05dda711e7e9b85c
+Author: Hesham Essam <hesham.essam.mail@gmail.com>
+Date:   Fri Jun 3 15:58:03 2022 +0200
+
+    Define DllMain only when building a dll
+
+diff --git a/atk/atkprivate.c b/atk/atkprivate.c
+index e414bf2..988acc8 100644
+--- a/atk/atkprivate.c
++++ b/atk/atkprivate.c
+@@ -30,7 +30,7 @@
+ 
+ #include "atkprivate.h"
+ 
+-#ifdef G_OS_WIN32
++#if defined(G_OS_WIN32) && defined(DLL_EXPORT)
+ 
+ #define STRICT
+ #include <windows.h>

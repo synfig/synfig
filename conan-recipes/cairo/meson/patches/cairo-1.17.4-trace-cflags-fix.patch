@@ -1,0 +1,20 @@
+Add missing 'PACKAGE' and 'PACKAGE_VERSION' defines for libbfd headers included by 'lookup-symbol.c'.
+Offending lines in 'bfd.h':
+
+   #if !defined PACKAGE && !defined PACKAGE_VERSION
+   #error config.h must be included before this header
+   #endif
+
+Previously autotools provided those defines for Cairo, but they are no longer generated with meson. @sh0
+
+--- meson.build	2020-11-27 01:20:59.000000000 +0200
++++ meson.build	2021-12-01 00:42:26.798320019 +0200
+@@ -12,7 +12,7 @@
+   include_directories: [incbase, incsrc],
+   dependencies: deps,
+   link_args: extra_link_args,
+-  c_args: ['-DSHARED_LIB_EXT="@0@"'.format(shared_lib_ext), '-DHAVE_CONFIG_H'] + pthread_c_args,
++  c_args: ['-DPACKAGE', '-DPACKAGE_VERSION', '-DSHARED_LIB_EXT="@0@"'.format(shared_lib_ext), '-DHAVE_CONFIG_H'] + pthread_c_args,
+   install: true,
+   install_dir: join_paths(get_option('prefix'), get_option('libdir'), 'cairo'),
+ )

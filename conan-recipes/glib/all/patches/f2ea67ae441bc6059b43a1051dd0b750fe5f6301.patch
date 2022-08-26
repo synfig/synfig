@@ -1,0 +1,25 @@
+From f2ea67ae441bc6059b43a1051dd0b750fe5f6301 Mon Sep 17 00:00:00 2001
+From: ericLemanissier <eric.lemanissier@gmail.com>
+Date: Thu, 23 Jun 2022 08:26:21 +0000
+Subject: [PATCH] use gvdb as a subproject
+
+this fixes the build when using --wrap-mode=nofallback
+fix proposed by @eschwartz
+---
+ meson.build | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/meson.build b/meson.build
+index 1234ba064..3da0010af 100644
+--- a/meson.build
++++ b/meson.build
+@@ -2042,6 +2042,7 @@ else
+ endif
+ 
+ # Import the gvdb sources as a subproject to avoid having the copylib in-tree
++subproject('gvdb')
+ gvdb_dep = dependency('gvdb')
+ 
+ libm = cc.find_library('m', required : false)
+-- 
+GitLab

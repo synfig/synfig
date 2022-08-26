@@ -1,0 +1,79 @@
+Author: Hesham Essam <hesham.essam.mail@gmail.com>
+Date:   Thu Aug 18 12:56:23 2022 +0200
+
+    Use macros _WIN32 and _WIN64 instead of WIN32 and WIN64
+
+diff --git a/Magick++/lib/Magick++/Include.h b/Magick++/lib/Magick++/Include.h
+index 5c3d8f023..ea51c84b7 100644
+--- a/Magick++/lib/Magick++/Include.h
++++ b/Magick++/lib/Magick++/Include.h
+@@ -55,7 +55,7 @@ namespace MagickCore
+ // Provide appropriate DLL imports/exports for Visual C++,
+ // Borland C++Builder and MinGW builds.
+ //
+-#if defined(WIN32) && !defined(__CYGWIN__) && !defined(__MINGW32__)
++#if defined(_WIN32) && !defined(__CYGWIN__) && !defined(__MINGW32__)
+ #  define MagickCplusPlusDLLSupported
+ #endif
+ #if defined(MagickCplusPlusDLLSupported)
+@@ -299,7 +299,7 @@ namespace MagickCore
+ #  endif
+ #endif
+ 
+-#if (defined(WIN32) || defined(WIN64)) && defined(_VISUALC_)
++#if (defined(_WIN32) || defined(_WIN64)) && defined(_VISUALC_)
+ #  pragma warning(disable : 4996) /* function deprecation warnings */
+ #endif
+ 
+diff --git a/MagickCore/MagickCore.h b/MagickCore/MagickCore.h
+index bcb612f3e..fd185a0e6 100644
+--- a/MagickCore/MagickCore.h
++++ b/MagickCore/MagickCore.h
+@@ -64,7 +64,7 @@ extern "C" {
+ #include <sys/types.h>
+ #include <time.h>
+ 
+-#if defined(WIN32) || defined(WIN64)
++#if defined(_WIN32) || defined(_WIN64)
+ #  define MAGICKCORE_WINDOWS_SUPPORT
+ #else
+ #  define MAGICKCORE_POSIX_SUPPORT
+diff --git a/MagickCore/studio.h b/MagickCore/studio.h
+index 5fb9a0c3b..f42cd242e 100644
+--- a/MagickCore/studio.h
++++ b/MagickCore/studio.h
+@@ -22,7 +22,7 @@
+ extern "C" {
+ #endif
+ 
+-#if defined(WIN32) || defined(WIN64)
++#if defined(_WIN32) || defined(_WIN64)
+ #  define MAGICKCORE_WINDOWS_SUPPORT
+ #else
+ #  define MAGICKCORE_POSIX_SUPPORT
+diff --git a/MagickWand/MagickWand.h b/MagickWand/MagickWand.h
+index 5018e65ce..d79b07647 100644
+--- a/MagickWand/MagickWand.h
++++ b/MagickWand/MagickWand.h
+@@ -64,7 +64,7 @@ extern "C" {
+ #include <sys/types.h>
+ #include <time.h>
+ 
+-#if defined(WIN32) || defined(WIN64)
++#if defined(_WIN32) || defined(_WIN64)
+ #  define MAGICKWAND_WINDOWS_SUPPORT
+ #else
+ #  define MAGICKWAND_POSIX_SUPPORT
+diff --git a/MagickWand/studio.h b/MagickWand/studio.h
+index 7d09f89be..1f981a0c0 100644
+--- a/MagickWand/studio.h
++++ b/MagickWand/studio.h
+@@ -22,7 +22,7 @@
+ extern "C" {
+ #endif
+ 
+-#if defined(WIN32) || defined(WIN64)
++#if defined(_WIN32) || defined(_WIN64)
+ #  define MAGICKWAND_WINDOWS_SUPPORT
+ #else
+ #  define MAGICKWAND_POSIX_SUPPORT

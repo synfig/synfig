@@ -1,0 +1,12 @@
+sources:
+  "3.1.5":
+    url: "https://github.com/AcademySoftwareFoundation/openexr/archive/refs/tags/v3.1.5.tar.gz"
+    sha256: "93925805c1fc4f8162b35f0ae109c4a75344e6decae5a240afdfce25f8a433ec"
+  "3.1.4":
+    url: "https://github.com/AcademySoftwareFoundation/openexr/archive/refs/tags/v3.1.4.tar.gz"
+    sha256: "cb019c3c69ada47fe340f7fa6c8b863ca0515804dc60bdb25c942c1da886930b"
+patches:
+  "3.1.5":
+    - patch_file: "patches/v3.1.4-gcc5-bug-workaround.patch"
+  "3.1.4":
+    - patch_file: "patches/v3.1.4-gcc5-bug-workaround.patch"

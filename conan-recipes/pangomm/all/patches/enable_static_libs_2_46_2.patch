@@ -1,0 +1,29 @@
+diff --git a/pango/meson.build b/pango/meson.build
+index f2df13e..0d379b7 100644
+--- a/pango/meson.build
++++ b/pango/meson.build
+@@ -29,6 +29,10 @@ pkg_conf_data.set('PANGOMM_MAJOR_VERSION', pangomm_major_version)
+ pkg_conf_data.set('PANGOMM_MINOR_VERSION', pangomm_minor_version)
+ pkg_conf_data.set('PANGOMM_MICRO_VERSION', pangomm_micro_version)
+ 
++if get_option('default_library') == 'static'
++  pkg_conf_data.set('PANGOMM_STATIC_LIB', 1)
++endif
++
+ configure_file(
+   input: 'pangomm.pc.in',
+   output: pangomm_pcname + '.pc',
+diff --git a/pango/pangommconfig.h.meson b/pango/pangommconfig.h.meson
+index 5eb895f..692d58f 100644
+--- a/pango/pangommconfig.h.meson
++++ b/pango/pangommconfig.h.meson
+@@ -16,6 +16,9 @@
+ /* Micro version number of pangomm. */
+ #mesondefine PANGOMM_MICRO_VERSION
+ 
++/* Define if pangomm is built as a static library */
++#mesondefine PANGOMM_STATIC_LIB
++
+ /* Enable DLL-specific stuff only when not building a static library */
+ #if !defined(__CYGWIN__) && (defined(__MINGW32__) || defined (_MSC_VER)) && !defined(PANGOMM_STATIC_LIB) && !defined (PANGOMM_USE_GENDEF)
+ # define PANGOMM_DLL 1

@@ -1,0 +1,18 @@
+Author: Hesham Essam <hesham.essam.mail@gmail.com>
+Date:   Fri Aug 19 01:36:40 2022 +0200
+
+    Make libtool accept static libraries
+
+diff --git a/configure b/configure
+index 26b3f7ec8..94799dfd3 100755
+--- a/configure
++++ b/configure
+@@ -12195,7 +12195,7 @@ mingw* | pw32*)
+   # func_win32_libid shell function, so use a weaker test based on 'objdump',
+   # unless we find 'file', for example because we are cross-compiling.
+   if ( file / ) >/dev/null 2>&1; then
+-    lt_cv_deplibs_check_method='file_magic ^x86 archive import|^x86 DLL'
++    lt_cv_deplibs_check_method='file_magic ^x86 archive|^x86 DLL'
+     lt_cv_file_magic_cmd='func_win32_libid'
+   else
+     # Keep this pattern in sync with the one in func_win32_libid.

@@ -1,0 +1,63 @@
+commit 9521539021d6c8e57fd40d1bf0ff34abf2edbd6b
+Author: Hesham Essam <hesham.essam.mail@gmail.com>
+Date:   Fri Jun 3 13:29:28 2022 +0200
+
+    Enable static builds on Windows
+
+diff --git a/gdk-pixbuf/gdk-pixbuf-io.c b/gdk-pixbuf/gdk-pixbuf-io.c
+index 182781178..e207d8143 100644
+--- a/gdk-pixbuf/gdk-pixbuf-io.c
++++ b/gdk-pixbuf/gdk-pixbuf-io.c
+@@ -182,6 +182,8 @@ get_file_formats (void)
+         return file_formats;
+ }
+ 
++#ifdef GDK_PIXBUF_RELOCATABLE // implies that gdk-pixbuf is built as a dll on windows
++
+ #ifdef G_OS_WIN32
+ 
+ /* DllMain function needed to tuck away the gdk-pixbuf DLL handle */
+@@ -203,9 +205,6 @@ DllMain (HINSTANCE hinstDLL,
+ }
+ #endif
+ 
+-
+-#ifdef GDK_PIXBUF_RELOCATABLE
+-
+ gchar *
+ gdk_pixbuf_get_toplevel (void)
+ {
+diff --git a/gdk-pixbuf/queryloaders.c b/gdk-pixbuf/queryloaders.c
+index ddcae7b6f..1d39b442e 100644
+--- a/gdk-pixbuf/queryloaders.c
++++ b/gdk-pixbuf/queryloaders.c
+@@ -280,7 +280,7 @@ query_module (GString *contents, const char *dir, const char *file)
+         g_free (path);
+ }
+ 
+-#ifdef G_OS_WIN32
++#if defined(G_OS_WIN32) && defined(GDK_PIXBUF_RELOCATABLE)
+ 
+ static char *
+ get_libdir (void)
+diff --git a/meson.build b/meson.build
+index ed82464e4..6b123847f 100644
+--- a/meson.build
++++ b/meson.build
+@@ -382,7 +382,7 @@ endif
+ # Determine whether we enable application bundle relocation support, and we use
+ # this always on Windows
+ if host_system == 'windows'
+-  relocatable = true
++  relocatable = (get_option('default_library') != 'static')
+ else
+   relocatable = get_option('relocatable')
+ endif
+@@ -445,6 +445,6 @@ summary('MediaLib', use_medialib, section: 'Build')
+ summary('Introspection', build_gir, section: 'Build')
+ summary('Documentation', build_docs, section: 'Build')
+ summary('Manual pages', get_option('man'), section: 'Build')
+-summary('Relocatable', get_option('relocatable'), section: 'Build')
++summary('Relocatable', relocatable, section: 'Build')
+ summary('Installed tests', get_option('installed_tests'), section: 'Build')
+ 

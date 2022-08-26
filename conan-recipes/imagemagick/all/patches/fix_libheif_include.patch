@@ -1,0 +1,22 @@
+Author: Hesham Essam <hesham.essam.mail@gmail.com>
+Date:   Thu Aug 18 15:39:07 2022 +0200
+
+    Include libheif/heif.c not heif.c
+
+diff --git a/coders/heic.c b/coders/heic.c
+index 2fe0c6ec3..13fa91957 100644
+--- a/coders/heic.c
++++ b/coders/heic.c
+@@ -74,12 +74,8 @@
+ #include "MagickCore/module.h"
+ #include "MagickCore/utility.h"
+ #if defined(MAGICKCORE_HEIC_DELEGATE)
+-#if defined(MAGICKCORE_WINDOWS_SUPPORT)
+-#include <heif.h>
+-#else
+ #include <libheif/heif.h>
+-#endif
+ #endif
+ 
+ #if defined(MAGICKCORE_HEIC_DELEGATE)
+ /*

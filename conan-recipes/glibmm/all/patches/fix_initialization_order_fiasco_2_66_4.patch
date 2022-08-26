@@ -1,0 +1,163 @@
+Author: Hesham <hesham.essam.mail@gmail.com>
+Date:   Fri May 6 20:02:25 2022 +0000
+
+    Fix initialization order fiasco
+
+    By default global static initialization with shared libraries begins down
+    the linking chain upwards, so that the deepest dependency initializes first
+    This is not guaranteed with static libraries, which might cause glibmm to
+    initialize before glib. This fix uses lazy initialization for static vars
+    in glibmm that depend on glib.
+
+diff --git a/glib/glibmm/class.cc b/glib/glibmm/class.cc
+index 057abed..e51d01b 100644
+--- a/glib/glibmm/class.cc
++++ b/glib/glibmm/class.cc
+@@ -170,7 +170,11 @@ Class::clone_custom_type(
+ }
+ 
+ // Initialize the static quark to store/get custom type properties.
++#if GLIB_STATIC_COMPILATION
++GQuark Class::iface_properties_quark = 0;
++#else
+ GQuark Class::iface_properties_quark = g_quark_from_string("gtkmm_CustomObject_iface_properties");
++#endif
+ 
+ // static
+ void
+diff --git a/glib/glibmm/init.cc b/glib/glibmm/init.cc
+index ab96892..267a6c0 100644
+--- a/glib/glibmm/init.cc
++++ b/glib/glibmm/init.cc
+@@ -14,15 +14,25 @@
+  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
+  */
+ 
++#include <glib.h>
+ #include <glibmm/init.h>
+ #include <glibmm/error.h>
+ 
++#if GLIB_STATIC_COMPILATION
++#include <glibmm/class.h>
++#endif
++
+ namespace Glib
+ {
+ 
+ void
+ init()
+ {
++#if GLIB_STATIC_COMPILATION
++  Glib::Class::iface_properties_quark =
++      g_quark_from_string("gtkmm_CustomObject_iface_properties");
++#endif
++
+   // Also calls Glib::wrap_register_init() and Glib::wrap_init().
+   Glib::Error::register_init();
+ }
+diff --git a/glib/glibmm/property.cc b/glib/glibmm/property.cc
+index a2624e5..d9f1095 100644
+--- a/glib/glibmm/property.cc
++++ b/glib/glibmm/property.cc
+@@ -89,8 +89,10 @@ struct custom_properties_type
+ };
+ 
+ // The quark used for storing/getting the custom properties of custom types.
+-static const GQuark custom_properties_quark =
+-  g_quark_from_string("gtkmm_CustomObject_custom_properties");
++static const GQuark& custom_properties_quark() {
++  static const GQuark custom_properties_quark_ = g_quark_from_string("gtkmm_CustomObject_custom_properties");
++  return custom_properties_quark_;
++}
+ 
+ // Delete the custom properties data when an object of a custom type is finalized.
+ void destroy_notify_obj_custom_props(void* data)
+@@ -111,12 +113,12 @@ custom_properties_type*
+ get_obj_custom_props(GObject* obj)
+ {
+   auto obj_custom_props =
+-    static_cast<custom_properties_type*>(g_object_get_qdata(obj, custom_properties_quark));
++    static_cast<custom_properties_type*>(g_object_get_qdata(obj, custom_properties_quark()));
+   if (!obj_custom_props)
+   {
+     obj_custom_props = new custom_properties_type();
+     g_object_set_qdata_full(
+-      obj, custom_properties_quark, obj_custom_props, destroy_notify_obj_custom_props);
++      obj, custom_properties_quark(), obj_custom_props, destroy_notify_obj_custom_props);
+   }
+   return obj_custom_props;
+ }
+diff --git a/untracked/gio/giomm/application.cc b/untracked/gio/giomm/application.cc
+index 43ae9df..0d12c9d 100644
+--- a/untracked/gio/giomm/application.cc
++++ b/untracked/gio/giomm/application.cc
+@@ -51,8 +51,13 @@ struct ExtraApplicationData
+   }
+ };
+ 
+-GQuark quark_extra_application_data =
+-  g_quark_from_string("glibmm__Gio::Application::quark_extra_application_data");
++static GQuark&
++quark_extra_application_data()
++{
++  static GQuark quark_extra_application_data_ =
++    g_quark_from_string("glibmm__Gio::Application::quark_extra_application_data");
++  return quark_extra_application_data_;
++}
+ 
+ void
+ Application_delete_extra_application_data(gpointer data)
+@@ -465,11 +470,11 @@ Application::add_main_option_entry_private(GOptionArg arg, const Glib::ustring&
+   gchar* arg_desc = arg_description.empty() ? nullptr : g_strdup(arg_description.c_str());
+ 
+   ExtraApplicationData* extra_application_data =
+-    static_cast<ExtraApplicationData*>(g_object_get_qdata(gobject_, quark_extra_application_data));
++    static_cast<ExtraApplicationData*>(g_object_get_qdata(gobject_, quark_extra_application_data()));
+   if (!extra_application_data)
+   {
+     extra_application_data = new ExtraApplicationData();
+-    g_object_set_qdata_full(gobject_, quark_extra_application_data, extra_application_data,
++    g_object_set_qdata_full(gobject_, quark_extra_application_data(), extra_application_data,
+       Application_delete_extra_application_data);
+   }
+ 
+@@ -1546,5 +1551,3 @@ void Gio::Application::run_mainloop_vfunc()
+ 
+ 
+ } // namespace Gio
+-
+-
+diff --git a/untracked/glib/glibmm/binding.cc b/untracked/glib/glibmm/binding.cc
+index d0d4f47..0528893 100644
+--- a/untracked/glib/glibmm/binding.cc
++++ b/untracked/glib/glibmm/binding.cc
+@@ -29,7 +29,10 @@
+ namespace
+ {
+ // TODO: When we can break ABI, replace this GQuark by a new data member in Glib::Binding.
+-GQuark quark_manage = g_quark_from_string("glibmm__Glib::Binding::manage");
++GQuark& quark_manage() {
++	static GQuark quark_manage_ = g_quark_from_string("glibmm__Glib::Binding::manage");
++	return quark_manage_;
++}
+ 
+ struct BindingTransformSlots
+ {
+@@ -150,7 +153,7 @@ Binding::unbind()
+ void
+ Binding::unreference() const
+ {
+-  if (!g_object_get_qdata(gobject_, quark_manage))
++  if (!g_object_get_qdata(gobject_, quark_manage()))
+   {
+     GBinding* const binding = const_cast<GBinding*>(gobj());
+ 
+@@ -168,7 +171,7 @@ void
+ Binding::set_manage()
+ {
+   // Any pointer can be set, just not nullptr.
+-  g_object_set_qdata(gobject_, quark_manage, this);
++  g_object_set_qdata(gobject_, quark_manage(), this);
+ }
+ 
+ const Glib::RefPtr<Glib::Binding>&

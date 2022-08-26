@@ -42,31 +42,7 @@ set(MODS_ENABLED
     mod_yuv420p
 #    mptr_mplayer # - "This code has vulnerabilities"
 )
-if(MSVC)
-	set(MODS_ENABLED
-			lyr_freetype
-			lyr_std
-			mod_bmp
-			#mod_dv
-			mod_example
-			mod_ffmpeg
-			mod_filter
-			mod_geometry
-			mod_gif
-			mod_gradient
-			mod_imagemagick
-			mod_jpeg
-			#    mod_libavcodec # - build failure
-			#    mod_magickpp # - made optional
-			mod_noise
-			#mod_openexr
-			mod_particle
-			mod_png
-			mod_ppm
-			mod_svg
-			mod_yuv420p
-	)
-endif()
+
 if(LIBMNG_FOUND)
   list(APPEND MODS_ENABLED mod_mng)
 else()
@@ -85,9 +61,9 @@ if (${WITH_MAGICPP} AND ${WITHOUT_MAGICPP})
     message(FATAL_ERROR "You cannot request both WITH_MAGICPP and WITHOUT_MAGICPP!")
 endif()
 
-if (NOT ${WITHOUT_MAGICPP} AND ImageMagick_Magick++_FOUND)
+if (NOT ${WITHOUT_MAGICPP} AND TARGET PkgConfig::MAGICKPP)
     list(APPEND MODS_ENABLED mod_magickpp)
-elseif (${WITH_MAGICPP} AND NOT ImageMagick_Magick++_FOUND)
+elseif (${WITH_MAGICPP} AND NOT TARGET PkgConfig::MAGICKPP)
     message(SEND_ERROR "Magic++ support is requested, but the package cannot be located.")
 endif()
 ## Magick++ support (end)

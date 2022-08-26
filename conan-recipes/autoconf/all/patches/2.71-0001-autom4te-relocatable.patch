@@ -1,0 +1,53 @@
+--- bin/autom4te.in
++++ bin/autom4te.in
+@@ -271,6 +271,13 @@
+ 	if /^\s*(\#.*)?$/;
+ 
+       my @words = shellwords ($_);
++      # not using: s#AUTOCONF_M4DIR#$pkgdatadir#r to support perl <5.14
++      my @words_clone = @words;
++      @words = ();
++      foreach ( @words_clone ) {
++          push(@words, do { (my $tmp = $_) =~ s#AUTOCONF_M4DIR#$pkgdatadir#; $tmp });
++      }
++
+       my $type = shift @words;
+       if ($type eq 'begin-language:')
+ 	{
+--- lib/autom4te.in
++++ lib/autom4te.in
+@@ -115,7 +115,7 @@
+ # This intermediate language is used by aclocal to build aclocal.m4.
+ 
+ begin-language: "Autoconf-without-aclocal-m4"
+-args: --prepend-include '@pkgdatadir@'
++args: --prepend-include 'AUTOCONF_M4DIR'
+ args: --cache=autom4te.cache
+ args: autoconf/autoconf.m4f
+ args: acsite.m4?
+@@ -142,7 +142,7 @@
+ ## -------- ##
+ 
+ begin-language: "Autotest"
+-args: --prepend-include '@pkgdatadir@'
++args: --prepend-include 'AUTOCONF_M4DIR'
+ args: autotest/autotest.m4f
+ args: package.m4?
+ args: local.at?
+@@ -156,7 +156,7 @@
+ ## ---- ##
+ 
+ begin-language: "M4sh"
+-args: --prepend-include '@pkgdatadir@'
++args: --prepend-include 'AUTOCONF_M4DIR'
+ args: m4sugar/m4sh.m4f
+ args: --mode 777
+ args: --language M4sugar
+@@ -168,6 +168,6 @@
+ ## ------- ##
+ 
+ begin-language: "M4sugar"
+-args: --prepend-include '@pkgdatadir@'
++args: --prepend-include 'AUTOCONF_M4DIR'
+ args: m4sugar/m4sugar.m4f
+ end-language: "M4sugar"

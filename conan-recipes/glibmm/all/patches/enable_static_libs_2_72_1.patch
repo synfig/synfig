@@ -1,0 +1,32 @@
+diff --git a/glib/glibmmconfig.h.meson b/glib/glibmmconfig.h.meson
+index ef4753d..58b343c 100644
+--- a/glib/glibmmconfig.h.meson
++++ b/glib/glibmmconfig.h.meson
+@@ -27,7 +27,9 @@
+ # if defined(_MSC_VER)
+ #  define GLIBMM_MSC 1
+ #  define GLIBMM_WIN32 1
+-#  define GLIBMM_DLL 1
++#  ifndef GLIBMM_STATIC_LIB
++#    define GLIBMM_DLL 1
++#  endif
+ # elif defined(__CYGWIN__)
+ #  define GLIBMM_CONFIGURE 1
+ # elif defined(__MINGW32__)
+diff --git a/glib/meson.build b/glib/meson.build
+index 0c20a91..6b8baa0 100644
+--- a/glib/meson.build
++++ b/glib/meson.build
+@@ -36,12 +36,6 @@ pkg_conf_data.set('MSVC_TOOLSET_VER', msvc14x_toolset_ver)
+ 
+ library_build_type = get_option('default_library')
+ 
+-if cpp_compiler.get_argument_syntax() == 'msvc'
+-  if library_build_type == 'static' or library_build_type == 'both'
+-    error('Static builds are not supported by MSVC-style builds')
+-  endif
+-endif
+-
+ if library_build_type == 'static'
+   pkg_conf_data.set('GLIBMM_STATIC_LIB', 1)
+   pkg_conf_data.set('GIOMM_STATIC_LIB', 1)

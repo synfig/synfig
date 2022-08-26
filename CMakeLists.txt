@@ -26,9 +26,11 @@ foreach(CONFIG_TYPE  ${CMAKE_CONFIGURATION_TYPES})
 	set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${CONFIG_TYPE} ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
 endforeach(CONFIG_TYPE CMAKE_CONFIGURATION_TYPES)
 
-if(DEFINED ENV{VCPKG_ROOT} AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
-	set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
-endif()
+# should this be here?
+if (MSVC AND CONAN_TOOLCHAIN)
+	file(GLOB CONAN_DLLS "${CONAN_INSTALLS_PREFIX}/bin/*.dll")
+	file(COPY ${CONAN_DLLS} DESTINATION "${SYNFIG_BUILD_ROOT}/bin")
+endif ()
 
 # MSYS is defined for MSYS Makefiles generator and undefined for Ninja (for example)
 # But if you run CMake from MSYS shell, we can still detect MSYS by environment variables (MINGW_PREFIX)

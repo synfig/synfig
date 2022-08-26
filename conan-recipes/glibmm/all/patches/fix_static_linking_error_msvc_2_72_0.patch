@@ -1,0 +1,15 @@
+diff --git a/meson.build b/meson.build
+index c003db0b..ec58b5a7 100644
+--- a/meson.build
++++ b/meson.build
+@@ -118,8 +118,8 @@ glibmm_requires = [
+ ]
+ 
+ gio_dep = dependency('gio-2.0', version: glib_req)
+-giomm_build_dep = glibmm_build_dep + [gio_dep]
+-giomm_requires = glibmm_requires + ['gio-2.0', glib_req]
++giomm_build_dep = [sigcxx_dep, gio_dep]
++giomm_requires = ['gio-2.0', glib_req]
+ if not is_host_windows
+   gio_unix_dep = dependency('gio-unix-2.0', version: glib_req)
+   giomm_build_dep += gio_unix_dep

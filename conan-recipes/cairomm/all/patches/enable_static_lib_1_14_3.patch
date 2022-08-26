@@ -1,0 +1,37 @@
+﻿commit 04b20b02cc0ff18f71da693cf2d89709adabd297
+Author: Hesham Essam <hesham.essam.mail@gmail.com>
+Date:   Fri May 6 21:26:01 2022 +0200
+
+    Enable static builds with msvc
+    
+    Cairomm exports dll symbols if the macro CAIROMM_STATIC_LIB is not
+    defined. This patch defines this macro in case of static builds.
+
+diff --git a/cairommconfig.h.meson b/cairommconfig.h.meson
+index 2988edc..b9e5c21 100644
+--- a/cairommconfig.h.meson
++++ b/cairommconfig.h.meson
+@@ -18,6 +18,9 @@
+ /* Micro version number of cairomm. */
+ #mesondefine CAIROMM_MICRO_VERSION
+ 
++/* Define if cairomm is built as a static library */
++#mesondefine CAIROMM_STATIC_LIB
++
+ /* Enable DLL-specific stuff only when not building a static library */
+ #if !defined(__CYGWIN__) && \
+     (defined(__MINGW32__) || defined (_MSC_VER)) && \
+diff --git a/meson.build b/meson.build
+index e130814..54c8d4f 100644
+--- a/meson.build
++++ b/meson.build
+@@ -244,6 +244,9 @@ endif
+ if build_exceptions_api
+   mm_conf_data.set('CAIROMM_EXCEPTIONS_ENABLED', 1)
+ endif
++if get_option('default_library') == 'static'
++  mm_conf_data.set('CAIROMM_STATIC_LIB', 1)
++endif
+ mm_conf_data.set('CAIROMM_MAJOR_VERSION', cairomm_major_version)
+ mm_conf_data.set('CAIROMM_MINOR_VERSION', cairomm_minor_version)
+ mm_conf_data.set('CAIROMM_MICRO_VERSION', cairomm_micro_version)
