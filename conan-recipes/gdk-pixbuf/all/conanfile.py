@@ -5,9 +5,11 @@ from conan.tools.gnu import PkgConfigDeps
 from conan.tools import files, scm
 from conan.errors import ConanInvalidConfiguration, ConanException
 from tempfile import TemporaryDirectory
+
 import functools
 import os
 import shutil
+import subprocess
 
 required_conan_version = ">=1.50.0"
 
@@ -113,6 +115,30 @@ class GdkPixbufConan(ConanFile):
 
         if self._requires_compiler_rt:
             tc.c_link_args.append("-rtlib=compiler-rt")
+
+        if self.settings.os == "Linux":
+            # gdk-pixbuf depends on shared-mime-info which is mostly a system
+            # library. The pkgconf installed via conan does not look into system paths
+            # for packages.
+            shared_mime_info_path = None
+            try:
+                shared_mime_info_path = subprocess.run(
+                    ["pkgconf", "--path", "shared-mime-info"],
+                    capture_output=True).stdout.decode("utf-8").strip()
+            except:
+                pass
+
+            if not shared_mime_info_path or not os.path.exists(
+                    shared_mime_info_path):
+                try:
+                    shared_mime_info_path = subprocess.run(
+                        ["pkgconfig", "--path", "shared-mime-info"],
+                        capture_output=True).stdout.decode("utf-8").strip()
+                except:
+                    pass
+
+            if shared_mime_info_path and os.path.exists(shared_mime_info_path):
+                shutil.copy(shared_mime_info_path, self.generators_folder)
 
         tc.generate()
 

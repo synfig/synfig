@@ -26,4 +26,11 @@ if(MSVC)
   install(
     DIRECTORY "${SYNFIG_BUILD_ROOT}/etc/fonts/"
     DESTINATION "etc/fonts")
+elseif(CONAN_TOOLCHAIN)
+  file(
+    COPY "${CONAN_INSTALLS_PREFIX}/etc/fonts/"
+    DESTINATION "${SYNFIG_BUILD_ROOT}/etc/fonts")
+  install(
+    DIRECTORY "${SYNFIG_BUILD_ROOT}/etc/fonts/"
+    DESTINATION "etc/fonts")
 endif()

@@ -226,15 +226,6 @@ class ImageMagicConan(ConanFile):
 
             self.conf["tools.microsoft.bash:subsystem"] = "msys2"
 
-        # FIXME: change pangocairo pkg-config component name in the pango recipe
-        try:
-            files.rename(
-                self,
-                os.path.join(self.folders.generators_folder, "pango-pangocairo.pc"),
-                os.path.join(self.folders.generators_folder, "pangocairo.pc"))
-        except:
-            pass
-
         autotools = self._build_configure()
         autotools.make()
 

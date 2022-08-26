@@ -2,13 +2,12 @@ import os
 import shutil
 import glob
 import re
+import subprocess
 
 from conan import ConanFile
 from conan.tools import microsoft
 from conan.tools.gnu import PkgConfigDeps
 from conan.tools.cmake import CMakeDeps, CMakeToolchain
-from conans.client.tools import environment_append
-
 
 required_conan_version = ">=1.50.0"
 
@@ -113,7 +112,6 @@ class SynfigConan(ConanFile):
             # find package module
             package_name = None
             if filename.startswith("Find"):
-                package_name = filename[len("Find"):-len(".cmake")]
                 self._move_overwrite(file, os.path.join(modules_dir))
             else:
                 for p in package_names:
@@ -178,12 +176,54 @@ class SynfigConan(ConanFile):
             self.deps_cpp_info["gettext"].rootpath, "bin", f"msgmerge{suffix}").replace("\\", "/")
         tc.variables["GETTEXT_MSGFMT_EXECUTABLE"] = os.path.join(
             self.deps_cpp_info["gettext"].rootpath, "bin", f"msgfmt{suffix}").replace("\\", "/")
+        tc.preprocessor_definitions["CONAN_TOOLCHAIN"] = True
         tc.generate()
 
     def imports(self):
         if microsoft.is_msvc(self):
             bin_dir = os.path.join(self.generators_folder, "bin")
             self.copy("*.dll", bin_dir, "@bindirs")
+
+        fontconf_file = self.deps_env_info["fontconfig"].FONTCONFIG_FILE
+        fontconf_dir = os.path.join(self.generators_folder, "etc", "fonts")
+        os.makedirs(fontconf_dir, exist_ok=True)
+        self._copy_overwrite(fontconf_file, fontconf_dir)
+
+        # Unfortunately fontconf recipe does not provide a variable locating
+        # the conf.d directory, so we have to just hardcode it
+        fontconf_conan_conf_dir = os.path.join(os.path.dirname(fontconf_file),
+                                               os.pardir, os.pardir, "share",
+                                               "fontconfig", "conf.avail")
+        fontconf_conf_dir = os.path.join(fontconf_dir, "conf.d")
+        os.makedirs(fontconf_conf_dir, exist_ok=True)
+
+        # fontconfig has a list of available configuration files (some are
+        # mutually exclusive). I chose the conf files that my system uses
+        # (Arch Linux) and are available in the conan build
+        conf_files = [
+            "10-scale-bitmap-fonts.conf",
+            "11-lcdfilter-default.conf",
+            "20-unhint-small-vera.conf",
+            "30-metric-aliases.conf",
+            "40-nonlatin.conf",
+            "45-generic.conf",
+            "45-latin.conf",
+            "49-sansserif.conf",
+            "50-user.conf",
+            "51-local.conf",
+            "60-generic.conf",
+            "60-latin.conf",
+            "65-fonts-persian.conf",
+            "65-nonlatin.conf",
+            "69-unifont.conf",
+            "80-delicious.conf",
+            "90-synthetic.conf"
+        ]
+
+        for f in glob.glob(os.path.join(fontconf_conan_conf_dir, "*")):
+            filename = os.path.basename(f)
+            if filename in conf_files:
+                self._copy_overwrite(f, fontconf_conf_dir)
 
     def config_options(self):
         self.options["glib"].shared = True

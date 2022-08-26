@@ -116,6 +116,24 @@ GeneralIOMutexHolder general_io_mutex;
 
 /* === P R O C E D U R E S ================================================= */
 
+#if defined(CONAN_TOOLCHAIN) or defined(_MSC_VER)
+
+static bool set_fontconfig_env()
+{
+  String env_fileconfig_path = Glib::getenv("FILECONFIG_PATH");
+  if (!env_fileconfig_path.empty()) return false;
+  String rootpath = dirname(dirname(get_binary_path("")));
+  if (rootpath.empty()) return false;
+  String fonts_dir = strprintf("%s/etc/fonts", rootpath.c_str());
+  Glib::setenv("FONTCONFIG_PATH", fonts_dir);
+  Glib::setenv("FONTCONFIG_FILE", "fonts.conf");
+  return true;
+}
+
+static bool initialize_fontconfig = set_fontconfig_env();
+
+#endif
+
 /* === M E T H O D S ======================================================= */
 
 const char *
@@ -233,12 +251,6 @@ synfig::Main::Main(const synfig::String& rootpath,ProgressCallback *cb):
 	lib_synfig_path = lib_path   + "/synfig";
 
 	// Add initialization after this point
-
-#ifdef _MSC_VER
-	String module_location = get_binary_path("");
-	_putenv(strprintf("FONTCONFIG_PATH=%s/../../etc/fonts", module_location.c_str()).c_str());
-	_putenv("FONTCONFIG_FILE=fonts.conf");
-#endif
 
 #ifdef ENABLE_NLS
 	bindtextdomain("synfig", Glib::locale_from_utf8(locale_path).c_str() );
