@@ -1,0 +1,95 @@
+Author: Hesham <hesham.essam.mail@gmail.com>
+Date:   Fri May 6 19:37:32 2022 +0000
+
+    Fix initialization order fiasco
+
+    By default global static initialization with shared libraries begins down
+    the linking chain upwards, so that the deepest dependency initializes first
+    This is not guaranteed with static libraries, which might cause glibmm to
+    initialize before glib. This fix uses lazy initialization for static vars
+    in glibmm that depend on glib.
+
+diff --git a/glib/glibmm/class.cc b/glib/glibmm/class.cc
+index 36c3c4b..f735129 100644
+--- a/glib/glibmm/class.cc
++++ b/glib/glibmm/class.cc
+@@ -157,7 +157,11 @@ Class::clone_custom_type(
+ }
+ 
+ // Initialize the static quark to store/get custom type properties.
++#if GLIB_STATIC_COMPILATION
++GQuark Class::iface_properties_quark = 0;
++#else
+ GQuark Class::iface_properties_quark = g_quark_from_string("gtkmm_CustomObject_iface_properties");
++#endif
+ 
+ // static
+ void
+diff --git a/glib/glibmm/init.cc b/glib/glibmm/init.cc
+index 0b34447..6b70a4c 100644
+--- a/glib/glibmm/init.cc
++++ b/glib/glibmm/init.cc
+@@ -14,12 +14,17 @@
+  * License along with this library.  If not, see <http://www.gnu.org/licenses/>.
+  */
+ 
++#include <glib.h>
+ #include <glibmm/init.h>
+ #include <glibmm/error.h>
+ #include <locale>
+ #include <clocale>
+ #include <stdexcept>
+ 
++#if GLIB_STATIC_COMPILATION
++#include <glibmm/class.h>
++#endif
++
+ namespace
+ {
+   bool init_to_users_preferred_locale = true;
+@@ -45,6 +50,11 @@ void init()
+   if (is_initialized)
+     return;
+ 
++#if GLIB_STATIC_COMPILATION
++  Glib::Class::iface_properties_quark =
++      g_quark_from_string("gtkmm_CustomObject_iface_properties");
++#endif
++
+   if (init_to_users_preferred_locale)
+   {
+     try
+diff --git a/glib/glibmm/property.cc b/glib/glibmm/property.cc
+index 56dad84..630b35b 100644
+--- a/glib/glibmm/property.cc
++++ b/glib/glibmm/property.cc
+@@ -89,8 +89,12 @@ struct custom_properties_type
+ };
+ 
+ // The quark used for storing/getting the custom properties of custom types.
+-static const GQuark custom_properties_quark =
+-  g_quark_from_string("gtkmm_CustomObject_custom_properties");
++static const GQuark&
++custom_properties_quark()
++{
++  static GQuark custom_properties_quark_ = g_quark_from_string("gtkmm_CustomObject_custom_properties");
++  return custom_properties_quark_;
++}
+ 
+ // Delete the custom properties data when an object of a custom type is finalized.
+ void destroy_notify_obj_custom_props(void* data)
+@@ -111,12 +115,12 @@ custom_properties_type*
+ get_obj_custom_props(GObject* obj)
+ {
+   auto obj_custom_props =
+-    static_cast<custom_properties_type*>(g_object_get_qdata(obj, custom_properties_quark));
++    static_cast<custom_properties_type*>(g_object_get_qdata(obj, custom_properties_quark()));
+   if (!obj_custom_props)
+   {
+     obj_custom_props = new custom_properties_type();
+     g_object_set_qdata_full(
+-      obj, custom_properties_quark, obj_custom_props, destroy_notify_obj_custom_props);
++      obj, custom_properties_quark(), obj_custom_props, destroy_notify_obj_custom_props);
+   }
+   return obj_custom_props;
+ }
