@@ -2711,8 +2711,6 @@ CanvasView::toggle_show_ruler()
 {
 	bool visible = !(work_area->get_show_rulers());
 	work_area->set_show_rulers(visible);
-	// Update the toggle ruler show action
-//	set_rulers_show_toggle(work_area->get_show_rulers());
 }
 
 void
