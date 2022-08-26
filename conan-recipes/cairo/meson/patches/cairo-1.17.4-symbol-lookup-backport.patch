@@ -1,0 +1,25 @@
+Backport new 'symbol-lookup' meson option from git master to cairo 1.17.4.
+This option is needed to turn linking with libbfd deterministically on or off. @sh0
+
+--- meson.build	2021-12-01 03:56:33.290547341 +0200
++++ meson.build	2021-12-01 03:58:17.955355490 +0200
+@@ -659,7 +659,7 @@
+ 
+ # Untested, libiberty.h is in a libiberty subfolder for me
+ # FIXME: automagic
+-bfd_dep = cc.find_library('bfd', required: false)
++bfd_dep = cc.find_library('bfd', has_headers: ['bfd.h'], required: get_option('symbol-lookup'))
+ if bfd_dep.found() and cc.has_function('bfd_openr', dependencies: [bfd_dep])
+   if cc.has_header('libiberty.h')
+     conf.set('HAVE_BFD', 1)
+--- meson_options.txt	2021-12-01 03:56:33.290547341 +0200
++++ meson_options.txt	2021-12-01 03:57:29.498907256 +0200
+@@ -30,6 +30,8 @@
+ # Misc deps
+ option('glib', type : 'feature', value : 'auto')
+ option('spectre', type : 'feature', value : 'auto')
++option('symbol-lookup', type: 'feature', value : 'auto',
++       description: 'Symbol lookup in debug utils via binutils/bfd')
+ 
+ # FIXME: implement these to avoid automagic
+ #option('egl', type : 'feature', value : 'auto')

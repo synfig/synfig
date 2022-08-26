@@ -1,0 +1,43 @@
+The libbfd issues were fixed in upstream with following commit:
+
+  From e30259f6237571c61992433c110bc6e1ef900244 Mon Sep 17 00:00:00 2001
+  From: =?UTF-8?q?Tim-Philipp=20M=C3=BCller?= <tim@centricular.com>
+  Date: Tue, 23 Feb 2021 11:36:24 +0000
+  Subject: cairo-trace: fix build with newer versions of bfd
+
+  https://cgit.freedesktop.org/cairo/commit/?id=e30259f6237571c61992433c110bc6e1ef900244
+
+Note that the upstream commit was more comprehensive, but cannot be directly
+applied to 1.17.4 version. Any new cairo version beyond 1.17.4 will likely
+not need this fix.
+
+--- lookup-symbol.c.original	2021-08-05 22:21:15.819998378 +0300
++++ lookup-symbol.c	2021-08-05 22:26:05.212448342 +0300
+@@ -145,14 +145,26 @@
+     if (symbol->found)
+ 	return;
+ 
++#ifdef bfd_get_section_flags
+     if ((bfd_get_section_flags (symtab->bfd, section) & SEC_ALLOC) == 0)
++#else
++    if ((bfd_section_flags (section) & SEC_ALLOC) == 0)
++#endif
+ 	return;
+ 
++#ifdef bfd_get_section_vma
+     vma = bfd_get_section_vma (symtab->bfd, section);
++#else
++    vma = bfd_section_vma (section);
++#endif
+     if (symbol->pc < vma)
+ 	return;
+ 
+-    size = bfd_section_size (symtab->bfd, section);
++#ifdef bfd_get_section_size
++    size = bfd_get_section_size (section);
++#else
++    size = bfd_section_size (section);
++#endif
+     if (symbol->pc >= vma + size)
+ 	return;
+ 

@@ -1,0 +1,9 @@
+[settings]
+arch=x86_64
+build_type=Release
+compiler=Visual Studio
+compiler.runtime=MD
+compiler.version=15
+os=Windows
+[options]
+cairomm:shared=False

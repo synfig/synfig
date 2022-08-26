@@ -1,0 +1,16 @@
+sources:
+  "7.1.0-45":
+    url: "https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.0-45.tar.gz"
+    sha256: "3df6ca6dff15a4e8a20b4593c60285a59e38890440494d91a344e5c0e2bb3eec"
+  "7.0.11-14":
+    url: "https://github.com/ImageMagick/ImageMagick/archive/7.0.11-14.tar.gz"
+    sha256: "dfa5aa3f7f289f12c2f9ee6c7c19b02ae857b4eec02f40298f60f5c11048a016"
+
+patches:
+  "7.1.0-45":
+    - patch_file: "patches/fix_ssize_t_undefined.patch"
+    - patch_file: "patches/dont_include_win32config.patch"
+    - patch_file: "patches/fix_win_macros.patch"
+    - patch_file: "patches/fix_libheif_include.patch"
+    - patch_file: "patches/fix_make_dependency.patch"
+    - patch_file: "patches/libtool_accept_static.patch"

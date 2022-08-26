@@ -1,0 +1,37 @@
+sources:
+#  "1.48.0":
+#    sha256: "d76513ac89341883320bd5ea063ec7005e70d962deedc064c62d6f17f6769b88"
+#    url: "https://github.com/GNOME/pango/archive/1.48.0.tar.gz"
+#  "1.48.1":
+#    sha256: "766ef4da466eb9a2a6d75278d769795a9c229fce5593d4e735039a05b155199c"
+#    url: "https://github.com/GNOME/pango/archive/1.48.1.tar.gz"
+#  "1.48.2":
+#    url: "https://github.com/GNOME/pango/archive/1.48.2.tar.gz"
+#    sha256: "19ea06742d9b8da590fed3c2bea018258609c18718a6deedd46cab957d3be9cf"
+##  "1.48.3":
+#    url: "https://github.com/GNOME/pango/archive/1.48.3.tar.gz"
+#    sha256: "63318b75bdd510b11fc960dbcdff9bc8b744fb3e45583acbb3410ef36bacc054"
+#  "1.48.4":
+#    url: "https://github.com/GNOME/pango/archive/1.48.4.tar.gz"
+#    sha256: "2c7e92f2430ae2ab91d6156488f41dfb0fd1ea787fbfb807dfe53a4f361a9d1a"
+#  "1.48.5":
+#    url: "https://github.com/GNOME/pango/archive/1.48.5.tar.gz"
+#    sha256: "9eccf148a4ca4727ed7d31ea1a2b7c77e8a8a286fc87967fb216669939e86eee"
+#  "1.48.6":
+#    url: "https://github.com/GNOME/pango/archive/1.48.6.tar.gz"
+#    sha256: "2ca6020ded58aee9bd10a8a547cad06204e28c36539598f2030cc672e5dfeab8"
+#  "1.48.7":
+#    url: "https://github.com/GNOME/pango/archive/1.48.7.tar.gz"
+#    sha256: "8783c82927582437d3a224eb18ea90d195b7451ff2effdffba16039df5346170"
+  "1.48.9":
+    url: "https://github.com/GNOME/pango/archive/1.48.9.tar.gz"
+    sha256: "6c78162507debd3389dab9f045cfa0b03cb44c432fb21979d4acf45db1b93781"
+  "1.49.3":
+    url: "https://github.com/GNOME/pango/archive/1.49.3.tar.gz"
+    sha256: "2bba081ba680b900a1285d7c9699c0058bf93c3c6b25acaa77214708fb7cb19b"
+  "1.50.7":
+    url: "https://github.com/GNOME/pango/archive/1.50.7.tar.gz"
+    sha256: "4964dc5f1a17464de3c1b91c16a0153429e2f73e81cfdea3229a6370b9ab8e5a"
+  "1.50.8":
+    url: "https://download.gnome.org/sources/pango/1.50/pango-1.50.8.tar.xz"
+    sha256: "cf626f59dd146c023174c4034920e9667f1d25ac2c1569516d63136c311255fa"

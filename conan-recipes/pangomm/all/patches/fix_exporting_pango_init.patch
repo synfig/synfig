@@ -1,0 +1,24 @@
+commit 17ecf1ec0d15089d66b6cec0d01d31e3118e1a8a
+Author: Hesham Essam <hesham.essam.mail@gmail.com>
+Date:   Mon May 30 18:40:53 2022 +0200
+
+    Fix exporting Pango::init
+    
+     Pangomm does not export the method "Pango::init" (by forgetting to
+     include the header that adds the export declspec clause), which isn't
+     really an issue since gtk uses Pango::init_wrap, but let's fix this
+     all the same since the test I wrote initially uses it (how unlucky to
+     stumble upon (maybe) the only unexported symbol)
+
+diff --git a/pango/pangomm/init.cc b/pango/pangomm/init.cc
+index 3dc4f2b..2ff927b 100644
+--- a/pango/pangomm/init.cc
++++ b/pango/pangomm/init.cc
+@@ -19,6 +19,7 @@
+  */
+ 
+ #include <glibmm/init.h>
++#include <pangomm/init.h>
+ #include <pangomm/wrap_init.h>
+ 
+ namespace Pango

@@ -52,6 +52,7 @@
 // Includes used by get_binary_path():
 #ifdef _WIN32
 #include <windows.h>
+#include <process.h>
 #elif defined(__APPLE__)
 #include <mach-o/dyld.h>
 #include <sys/param.h>
@@ -232,6 +233,12 @@ synfig::Main::Main(const synfig::String& rootpath,ProgressCallback *cb):
 	lib_synfig_path = lib_path   + "/synfig";
 
 	// Add initialization after this point
+
+#ifdef _MSC_VER
+	String module_location = get_binary_path("");
+	_putenv(strprintf("FONTCONFIG_PATH=%s/../../etc/fonts", module_location.c_str()).c_str());
+	_putenv("FONTCONFIG_FILE=fonts.conf");
+#endif
 
 #ifdef ENABLE_NLS
 	bindtextdomain("synfig", Glib::locale_from_utf8(locale_path).c_str() );

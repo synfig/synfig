@@ -1,0 +1,17 @@
+The trailer_m4 environment variable contains build-environment dependent information.
+So this variable needs to be overridden by the conanfile.
+But Windows has case insensitive environment variables.
+Python silently converts lowercase environment variables to uppercase.
+Work around this problem by getting the system information from an uppercase environment variable.
+
+--- bin/autoconf.as
++++ bin/autoconf.as
+@@ -90,7 +90,7 @@
+ 
+ # Variables.
+ : ${AUTOM4TE='@bindir@/@autom4te-name@'}
+-: ${trailer_m4='@pkgdatadir@/autoconf/trailer.m4'}
++: ${trailer_m4="$AC_MACRODIR/autoconf/trailer.m4"}
+ autom4te_options=
+ outfile=
+ verbose=false

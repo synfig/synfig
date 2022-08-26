@@ -1,0 +1,14 @@
+Workaround for GCC bug #82336, see:
+https://gcc.gnu.org/bugzilla/show_bug.cgi?id=82336
+
+--- a/src/lib/OpenEXR/ImfAttribute.h
++++ b/src/lib/OpenEXR/ImfAttribute.h
+@@ -119,7 +119,7 @@ class IMF_EXPORT_TEMPLATE_TYPE TypedAttribute: public Attribute
+     // that the type T is copyable/assignable/moveable.
+     //------------------------------------------------------------
+ 
+-    TypedAttribute () = default;
++    TypedAttribute () {}
+     TypedAttribute (const T &value);
+     TypedAttribute (const TypedAttribute<T> &other) = default;
+     TypedAttribute (TypedAttribute<T> &&other) = default;

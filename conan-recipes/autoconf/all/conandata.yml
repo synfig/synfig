@@ -1,0 +1,30 @@
+sources:
+  "2.71":
+    sha256: "431075ad0bf529ef13cb41e9042c542381103e80015686222b8a9d4abef42a1c"
+    url: "https://ftp.gnu.org/gnu/autoconf/autoconf-2.71.tar.gz"
+  "2.69":
+    sha256: "954bd69b391edc12d6a4a51a2dd1476543da5c6bbf05a95b59dc0dd6fd4c2969"
+    url: "https://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.gz"
+patches:
+  "2.71":
+    - patch_file: "patches/2.71-0001-autom4te-relocatable.patch"
+      base_path: "source_subfolder"
+    - patch_file: "patches/2.71-0002-no-perl-path-in-shebang.patch"
+      base_path: "source_subfolder"
+    - patch_file: "patches/2.71-0003-uppercase-autom4te_perllibdir.patch"
+      base_path: "source_subfolder"
+    - patch_file: "patches/2.71-0004-no-embedded-m4-paths.patch"
+      base_path: "source_subfolder"
+    - patch_file: "patches/2.71-0005-disable-man-regeneration.patch"
+      base_path: "source_subfolder"
+    - patch_file: "patches/2.71-0006-autoconf-no-embedded-trailer_m4-path.patch"
+      base_path: "source_subfolder"
+  "2.69":
+    - patch_file: "patches/2.69-0001-autom4te-relocatable.patch"
+      base_path: "source_subfolder"
+    - patch_file: "patches/2.69-0002-no-perl-path-in-shebang.patch"
+      base_path: "source_subfolder"
+    - patch_file: "patches/2.69-0003-uppercase-autom4te_perllibdir.patch"
+      base_path: "source_subfolder"
+    - patch_file: "patches/2.69-0004-no-embedded-m4-paths.patch"
+      base_path: "source_subfolder"
