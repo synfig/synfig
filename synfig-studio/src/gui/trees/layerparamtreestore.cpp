@@ -617,7 +617,7 @@ LayerParamTreeStore::on_value_node_replaced(synfig::ValueNode::Handle /*replaced
 	//    of Skeleton Layer.
 	//    'Solution' seems to be to call queue_rebuild()
 
-	//rebuild();
+	refresh();
 }
 
 void
