@@ -162,17 +162,22 @@ class SynfigConan(ConanFile):
 
         td = CMakeDeps(self)
         td.generate()
-        self._move_cmake_files
+        self._move_cmake_files()
         self._fixup_glib_schemas()
+
+        suffix = ".exe" if self.settings.os == 'Windows' else ""
 
         tc = CMakeToolchain(self)
         tc.variables["CMAKE_PREFIX_PATH"] = "${CMAKE_PREFIX_PATH};" + self.generators_folder.replace("\\", "/")
         tc.variables["CONAN_TOOLCHAIN"] = True
         tc.variables["CONAN_INSTALLS_PREFIX"] = self.generators_folder.replace("\\", "/")
         tc.variables["PKG_CONFIG_ARGN"] = "--dont-define-prefix"
-        tc.variables["PKG_CONFIG"] = os.path.join(
-            self.deps_cpp_info["pkgconf"].bin_paths[0], "pkgconf").replace("\\", "/")
-
+        tc.variables["PKG_CONFIG_EXECUTABLE"] = os.path.join(
+            self.deps_cpp_info["pkgconf"].bin_paths[0], f"pkgconf{suffix}").replace("\\", "/")
+        tc.variables["GETTEXT_MSGMERGE_EXECUTABLE"] = os.path.join(
+            self.deps_cpp_info["gettext"].rootpath, "bin", f"msgmerge{suffix}").replace("\\", "/")
+        tc.variables["GETTEXT_MSGFMT_EXECUTABLE"] = os.path.join(
+            self.deps_cpp_info["gettext"].rootpath, "bin", f"msgfmt{suffix}").replace("\\", "/")
         tc.generate()
 
     def imports(self):

@@ -19,16 +19,16 @@ https://gitlab.kitware.com/cmake/cmake/-/issues/20792
 
 #]=============================================================]
 
-find_program(MSGFMT_EXECUTABLE msgfmt)
+find_program(GETTEXT_MSGFMT_EXECUTABLE msgfmt)
 
-if(MSGFMT_EXECUTABLE)
-    execute_process(COMMAND ${MSGFMT_EXECUTABLE} --version
+if(GETTEXT_MSGFMT_EXECUTABLE)
+    execute_process(COMMAND ${GETTEXT_MSGFMT_EXECUTABLE} --version
         OUTPUT_VARIABLE GETTEXT_VERSION
         ERROR_QUIET
         OUTPUT_STRIP_TRAILING_WHITESPACE
     )
-    get_filename_component(MSGMERGE_NAME ${MSGFMT_EXECUTABLE} NAME)
-    get_filename_component(MSGMERGE_NAMEWE ${MSGFMT_EXECUTABLE} NAME_WE)
+    get_filename_component(MSGMERGE_NAME ${GETTEXT_MSGFMT_EXECUTABLE} NAME)
+    get_filename_component(MSGMERGE_NAMEWE ${GETTEXT_MSGFMT_EXECUTABLE} NAME_WE)
 
     if (GETTEXT_VERSION MATCHES "^(${MSGMERGE_NAME}|${MSGMERGE_NAMEWE}) \\([^\\)]*\\) ([0-9\\.]+[^ \n]*)")
         set(GETTEXT_VERSION_STRING "${CMAKE_MATCH_2}")
@@ -61,14 +61,14 @@ function(SYNFIG_PROCESS_PO_FILES)
         ${ARGN}
     )
 
-    if(MSGFMT_EXECUTABLE)
+    if(GETTEXT_MSGFMT_EXECUTABLE)
         foreach(_current_LANGUAGE ${_parsedArguments_LANGUAGES})
             set(_poFile ${CMAKE_CURRENT_SOURCE_DIR}/${_current_LANGUAGE}.po)
             set(_moDirectory ${SYNFIG_BUILD_ROOT}/share/locale/${_current_LANGUAGE}/LC_MESSAGES)
             set(_moFile ${_moDirectory}/${_parsedArguments_MO_NAME}.mo)
             add_custom_command(OUTPUT ${_moFile}
                 COMMAND ${CMAKE_COMMAND} -E make_directory ${_moDirectory}
-                COMMAND ${MSGFMT_EXECUTABLE} -o ${_moFile} ${_poFile}
+                COMMAND ${GETTEXT_MSGFMT_EXECUTABLE} -o ${_moFile} ${_poFile}
                 WORKING_DIRECTORY "."
                 DEPENDS ${_poFile}
             )
