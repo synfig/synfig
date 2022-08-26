@@ -147,6 +147,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	highlight_active_bone(false),
 	show_grid(false),
 	show_guides(true),
+	show_rulers(true),
 	background_size(15,15),
 	background_first_color(0.88, 0.88, 0.88),  /* light gray */
 	background_second_color(0.65, 0.65, 0.65),  /* dark gray */
@@ -231,7 +232,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 
 	Gtk::Arrow *menubutton = manage(new Gtk::Arrow(Gtk::ARROW_RIGHT, Gtk::SHADOW_OUT));
 	menubutton->set_size_request(18, 18);
-	Gtk::EventBox *menubutton_box = manage(new Gtk::EventBox());
+	menubutton_box = manage(new Gtk::EventBox());
 	menubutton_box->add(*menubutton);
 	menubutton_box->add_events(Gdk::BUTTON_RELEASE_MASK);
 	menubutton_box->signal_button_release_event().connect(
@@ -296,6 +297,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	get_canvas()->signal_meta_data_changed("grid_color").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("grid_snap").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("grid_show").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
+	get_canvas()->signal_meta_data_changed("status_ruler").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_show").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_x").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_y").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
@@ -374,6 +376,7 @@ WorkArea::save_meta_data()
 	canvas_interface->set_meta_data("guide_snap", get_guide_snap() ? "1" : "0");
 	canvas_interface->set_meta_data("guide_show", get_show_guides() ? "1" : "0");
 	canvas_interface->set_meta_data("grid_show", show_grid ? "1" : "0");
+	canvas_interface->set_meta_data("status_ruler", show_rulers ? "1" : "0");
 	canvas_interface->set_meta_data("jack_offset", strprintf("%f", (double)jack_offset));
 	canvas_interface->set_meta_data("onion_skin", onion_skin ? "1" : "0");
 	canvas_interface->set_meta_data("onion_skin_past", strprintf("%d", onion_skins[0]));
@@ -549,6 +552,12 @@ WorkArea::load_meta_data()
 
 		set_guides_color(synfig::Color(gr,gg,gb));
 	}
+
+	data=canvas->get_meta_data("status_ruler");
+	if(data.size() && (data=="1" || data[0]=='t' || data[0]=='T'))
+		show_rulers=true;
+	if(data.size() && (data=="0" || data[0]=='f' || data[0]=='F'))
+		show_rulers=false;
 
 	data=canvas->get_meta_data("grid_show");
 	if(data.size() && (data=="1" || data[0]=='t' || data[0]=='T'))
@@ -804,6 +813,16 @@ WorkArea::set_background_rendering(bool x)
 	background_rendering = x;
 	save_meta_data();
 	queue_draw();
+}
+
+void
+WorkArea::set_show_rulers(bool visible)
+{
+	show_rulers = visible;
+	hruler->set_visible(visible);
+	vruler->set_visible(visible);
+	menubutton_box->set_visible(visible);
+	save_meta_data();
 }
 
 void

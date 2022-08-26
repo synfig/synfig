@@ -1476,6 +1476,11 @@ CanvasView::init_menus()
 	{
 		Glib::RefPtr<Gtk::ToggleAction> action;
 
+		rulers_show_toggle = Gtk::ToggleAction::create("toggle-rulers-show", _("Show Rulers"));
+		rulers_show_toggle->set_active(work_area->get_show_rulers());
+		work_area->set_show_rulers(work_area->get_show_rulers());
+		action_group->add(rulers_show_toggle, sigc::mem_fun(*this, &CanvasView::toggle_show_ruler));
+
 		grid_show_toggle = Gtk::ToggleAction::create("toggle-grid-show", _("Show Grid"));
 		grid_show_toggle->set_active(work_area->grid_status());
 		action_group->add(grid_show_toggle, sigc::mem_fun(*this, &CanvasView::toggle_show_grid));
@@ -2554,6 +2559,13 @@ CanvasView::set_onion_skins()
 	onion_skins[0]=past_onion_spin->get_value();
 	onion_skins[1]=future_onion_spin->get_value();
 	work_area->set_onion_skins(onion_skins);
+}
+
+void
+CanvasView::toggle_show_ruler()
+{
+	bool visible = !(work_area->get_show_rulers());
+	work_area->set_show_rulers(visible);
 }
 
 void

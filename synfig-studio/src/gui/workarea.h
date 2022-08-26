@@ -40,6 +40,7 @@
 #include <gtkmm/adjustment.h>
 #include <gtkmm/drawingarea.h>
 #include <gtkmm/grid.h>
+#include <gtkmm/eventbox.h>
 
 #include <gui/dials/zoomdial.h>
 #include <gui/duckmatic.h>
@@ -134,6 +135,7 @@ private:
 	etl::handle<Renderer_Canvas> renderer_canvas;
 
 	// Widgets
+	Gtk::EventBox *menubutton_box;
 	Gtk::DrawingArea *drawing_area;
 	Gtk::Frame *drawing_frame;
 	Widget_Ruler *hruler;
@@ -180,6 +182,8 @@ private:
 	etl::loose_handle<synfig::ValueNode> active_bone_;
 	bool highlight_active_bone;
 
+	//! This state is true if ruler should be shown
+	bool show_rulers;
 	//! This flag is set if the grid should be drawn
 	bool show_grid;
 
@@ -349,6 +353,8 @@ public:
 
 	void refresh_dimension_info();
 
+	void set_show_rulers(bool visible);
+
 	//! Enables showing of the grid
 	void enable_grid();
 	//! Disables showing of the grid
@@ -366,6 +372,7 @@ public:
 	//! Returns the color of the grid
 	const synfig::Color &get_grid_color()const { return Duckmatic::get_grid_color();}
 
+	bool get_show_rulers()const { return show_rulers; }
 	//! Returns the state of the show_guides flag
 	bool get_show_guides()const { return show_guides; }
 	//! Sets the showing of the grid

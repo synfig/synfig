@@ -340,6 +340,7 @@ private:
 
 	Glib::RefPtr<Gtk::ToggleAction> grid_snap_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> grid_show_toggle;
+	Glib::RefPtr<Gtk::ToggleAction> rulers_show_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> guides_snap_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> guides_show_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> onion_skin_toggle;
@@ -466,6 +467,7 @@ private:
 	void increase_low_res_pixel_size();
 	void toggle_low_res_pixel_flag();
 	void set_onion_skins();
+	void toggle_show_ruler();
 	void toggle_show_grid();
 	void toggle_snap_grid();
 	void toggle_show_guides();
