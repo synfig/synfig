@@ -1,0 +1,154 @@
+--- bin/autom4te.in
++++ bin/autom4te.in
+@@ -87,7 +87,7 @@
+ my $freeze = 0;
+ 
+ # $M4.
+-my $m4 = $ENV{"M4"} || '@M4@';
++my $m4 = $ENV{"M4"} || '/usr/bin/env m4';
+ # Some non-GNU m4's don't reject the --help option, so give them /dev/null.
+ fatal "need GNU m4 1.4 or later: $m4"
+   if system "$m4 --help </dev/null 2>&1 | grep reload-state >/dev/null";
+--- bin/autoupdate.in
++++ bin/autoupdate.in
+@@ -53,7 +53,7 @@
+ my @include = ('@pkgdatadir@');
+ my $force = 0;
+ # m4.
+-my $m4 = $ENV{"M4"} || '@M4@';
++my $m4 = $ENV{"M4"} || '/usr/bin/env m4';
+ 
+ 
+ # $HELP
+--- bin/Makefile.in
++++ bin/Makefile.in
+@@ -133,7 +133,7 @@
+ LIBOBJS = @LIBOBJS@
+ LIBS = @LIBS@
+ LTLIBOBJS = @LTLIBOBJS@
+-M4 = @M4@
++M4 = /usr/bin/env m4
+ M4_DEBUGFILE = @M4_DEBUGFILE@
+ M4_GNU = @M4_GNU@
+ MAKEINFO = @MAKEINFO@
+--- doc/Makefile.in
++++ doc/Makefile.in
+@@ -125,7 +125,7 @@
+ LIBOBJS = @LIBOBJS@
+ LIBS = @LIBS@
+ LTLIBOBJS = @LTLIBOBJS@
+-M4 = @M4@
++M4 = /usr/bin/env m4
+ M4_DEBUGFILE = @M4_DEBUGFILE@
+ M4_GNU = @M4_GNU@
+ MAKEINFO = @MAKEINFO@
+--- lib/autoconf/Makefile.in
++++ lib/autoconf/Makefile.in
+@@ -135,7 +135,7 @@
+ LIBOBJS = @LIBOBJS@
+ LIBS = @LIBS@
+ LTLIBOBJS = @LTLIBOBJS@
+-M4 = @M4@
++M4 = /usr/bin/env m4
+ M4_DEBUGFILE = @M4_DEBUGFILE@
+ M4_GNU = @M4_GNU@
+ MAKEINFO = @MAKEINFO@
+--- lib/Autom4te/Makefile.in
++++ lib/Autom4te/Makefile.in
+@@ -114,7 +114,7 @@
+ LIBOBJS = @LIBOBJS@
+ LIBS = @LIBS@
+ LTLIBOBJS = @LTLIBOBJS@
+-M4 = @M4@
++M4 = /usr/bin/env m4
+ M4_DEBUGFILE = @M4_DEBUGFILE@
+ M4_GNU = @M4_GNU@
+ MAKEINFO = @MAKEINFO@
+--- lib/autoscan/Makefile.in
++++ lib/autoscan/Makefile.in
+@@ -131,7 +131,7 @@
+ LIBOBJS = @LIBOBJS@
+ LIBS = @LIBS@
+ LTLIBOBJS = @LTLIBOBJS@
+-M4 = @M4@
++M4 = /usr/bin/env m4
+ M4_DEBUGFILE = @M4_DEBUGFILE@
+ M4_GNU = @M4_GNU@
+ MAKEINFO = @MAKEINFO@
+--- lib/autotest/Makefile.in
++++ lib/autotest/Makefile.in
+@@ -134,7 +134,7 @@
+ LIBOBJS = @LIBOBJS@
+ LIBS = @LIBS@
+ LTLIBOBJS = @LTLIBOBJS@
+-M4 = @M4@
++M4 = /usr/bin/env m4
+ M4_DEBUGFILE = @M4_DEBUGFILE@
+ M4_GNU = @M4_GNU@
+ MAKEINFO = @MAKEINFO@
+--- lib/emacs/Makefile.in
++++ lib/emacs/Makefile.in
+@@ -104,7 +104,7 @@
+ LIBOBJS = @LIBOBJS@
+ LIBS = @LIBS@
+ LTLIBOBJS = @LTLIBOBJS@
+-M4 = @M4@
++M4 = /usr/bin/env m4
+ M4_DEBUGFILE = @M4_DEBUGFILE@
+ M4_GNU = @M4_GNU@
+ MAKEINFO = @MAKEINFO@
+--- lib/m4sugar/Makefile.in
++++ lib/m4sugar/Makefile.in
+@@ -134,7 +134,7 @@
+ LIBOBJS = @LIBOBJS@
+ LIBS = @LIBS@
+ LTLIBOBJS = @LTLIBOBJS@
+-M4 = @M4@
++M4 = /usr/bin/env m4
+ M4_DEBUGFILE = @M4_DEBUGFILE@
+ M4_GNU = @M4_GNU@
+ MAKEINFO = @MAKEINFO@
+--- lib/Makefile.in
++++ lib/Makefile.in
+@@ -153,7 +153,7 @@
+ LIBOBJS = @LIBOBJS@
+ LIBS = @LIBS@
+ LTLIBOBJS = @LTLIBOBJS@
+-M4 = @M4@
++M4 = /usr/bin/env m4
+ M4_DEBUGFILE = @M4_DEBUGFILE@
+ M4_GNU = @M4_GNU@
+ MAKEINFO = @MAKEINFO@
+--- Makefile.in
++++ Makefile.in
+@@ -169,7 +169,7 @@
+ LIBOBJS = @LIBOBJS@
+ LIBS = @LIBS@
+ LTLIBOBJS = @LTLIBOBJS@
+-M4 = @M4@
++M4 = /usr/bin/env m4
+ M4_DEBUGFILE = @M4_DEBUGFILE@
+ M4_GNU = @M4_GNU@
+ MAKEINFO = @MAKEINFO@
+--- man/Makefile.in
++++ man/Makefile.in
+@@ -115,7 +115,7 @@
+ LIBOBJS = @LIBOBJS@
+ LIBS = @LIBS@
+ LTLIBOBJS = @LTLIBOBJS@
+-M4 = @M4@
++M4 = /usr/bin/env m4
+ M4_DEBUGFILE = @M4_DEBUGFILE@
+ M4_GNU = @M4_GNU@
+ MAKEINFO = @MAKEINFO@
+--- tests/Makefile.in
++++ tests/Makefile.in
+@@ -107,7 +107,7 @@
+ LIBOBJS = @LIBOBJS@
+ LIBS = @LIBS@
+ LTLIBOBJS = @LTLIBOBJS@
+-M4 = @M4@
++M4 = /usr/bin/env m4
+ M4_DEBUGFILE = @M4_DEBUGFILE@
+ M4_GNU = @M4_GNU@
+ MAKEINFO = @MAKEINFO@

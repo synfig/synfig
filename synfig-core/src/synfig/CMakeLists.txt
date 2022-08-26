@@ -16,7 +16,7 @@ message(STATUS "MLT DIR: ${MLT_INCLUDE_DIRS}")
 # using the `-sysroot` flag, and this header cannot be found. (https://gitlab.kitware.com/cmake/cmake/-/issues/19120)
 # So, we need to manually find it.
 
-if(APPLE OR VCPKG_TOOLCHAIN)
+if(APPLE OR MSVC)
     find_path(LTDL_INCLUDE_DIRS ltdl.h)
     find_library(LTDL_LIBRARIES ltdl)
     message(STATUS "Libltdl headers:   ${LTDL_INCLUDE_DIRS}")
@@ -125,6 +125,7 @@ target_link_libraries(libsynfig PUBLIC
 	ZLIB::ZLIB
 	${LTDL_LIBRARIES}
 	${CMAKE_THREAD_LIBS_INIT}
+	${Intl_LIBRARIES}
 )
 
 if (MLT_FOUND)
@@ -144,6 +145,7 @@ install(
     TARGETS libsynfig
     EXPORT libsynfig
     LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin
 )
 
 export(

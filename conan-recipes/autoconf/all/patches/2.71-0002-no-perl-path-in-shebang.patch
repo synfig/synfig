@@ -1,0 +1,48 @@
+--- bin/autoheader.in
++++ bin/autoheader.in
+@@ -1,4 +1,4 @@
+-#! @PERL@
++#! /usr/bin/env perl
+ # -*- Perl -*-
+ # @configure_input@
+ 
+--- bin/autom4te.in
++++ bin/autom4te.in
+@@ -1,4 +1,4 @@
+-#! @PERL@
++#! /usr/bin/env perl
+ # -*- perl -*-
+ # @configure_input@
+ 
+--- bin/autoreconf.in
++++ bin/autoreconf.in
+@@ -1,4 +1,4 @@
+-#! @PERL@
++#! /usr/bin/env perl
+ # -*- perl -*-
+ # @configure_input@
+ 
+--- bin/autoscan.in
++++ bin/autoscan.in
+@@ -1,4 +1,4 @@
+-#! @PERL@
++#! /usr/bin/env perl
+ # -*- perl -*-
+ # @configure_input@
+ 
+--- bin/autoupdate.in
++++ bin/autoupdate.in
+@@ -1,4 +1,4 @@
+-#! @PERL@
++#! /usr/bin/env perl
+ # -*- perl -*-
+ # @configure_input@
+ 
+--- bin/ifnames.in
++++ bin/ifnames.in
+@@ -1,4 +1,4 @@
+-#! @PERL@
++#! /usr/bin/env perl
+ # -*- perl -*-
+ # @configure_input@
+ 

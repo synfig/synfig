@@ -1,0 +1,33 @@
+--- bin/autom4te.in
++++ bin/autom4te.in
+@@ -91,7 +91,7 @@
+ my $freeze = 0;
+ 
+ # $M4.
+-my $m4 = $ENV{"M4"} || '@M4@';
++my $m4 = $ENV{"M4"} || '/usr/bin/env m4';
+ # Some non-GNU m4's don't reject the --help option, so give them /dev/null.
+ fatal "need GNU m4 1.4 or later: $m4"
+   if system "$m4 --help </dev/null 2>&1 | grep reload-state >/dev/null";
+--- bin/autoupdate.in
++++ bin/autoupdate.in
+@@ -58,7 +58,7 @@
+ my @include = ('@pkgdatadir@');
+ my $force = 0;
+ # m4.
+-my $m4 = $ENV{"M4"} || '@M4@';
++my $m4 = $ENV{"M4"} || '/usr/bin/env m4';
+ 
+ 
+ # $HELP
+--- Makefile.in
++++ Makefile.in
+@@ -427,7 +427,7 @@
+ LIBOBJS = @LIBOBJS@
+ LIBS = @LIBS@
+ LTLIBOBJS = @LTLIBOBJS@
+-M4 = @M4@
++M4 = /usr/bin/env m4
+ M4_DEBUGFILE = @M4_DEBUGFILE@
+ M4_GNU = @M4_GNU@
+ MAKEINFO = @MAKEINFO@

@@ -511,7 +511,7 @@ LockDucks::~LockDucks() {
 
 CanvasView::ActivationIndex CanvasView::ActivationIndex::last__;
 
-CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasInterface> canvas_interface_):
+CanvasView::CanvasView(etl::loose_handle<studio::Instance> instance,etl::handle<CanvasInterface> canvas_interface_):
 	Dockable(synfig::GUID().get_string(),_("Canvas View")),
 	work_area                (),
 	activation_index_        (true),
@@ -643,9 +643,9 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	work_area->signal_meta_data_changed().connect(sigc::mem_fun(*this,&CanvasView::on_meta_data_changed));
 
 	canvas_interface()->signal_canvas_added().connect(
-		sigc::hide( sigc::mem_fun(*instance,&Instance::refresh_canvas_tree)));
+		sigc::hide( sigc::mem_fun(*instance,&studio::Instance::refresh_canvas_tree)));
 	canvas_interface()->signal_canvas_removed().connect(
-		sigc::hide( sigc::mem_fun(*instance,&Instance::refresh_canvas_tree)));
+		sigc::hide( sigc::mem_fun(*instance,&studio::Instance::refresh_canvas_tree)));
 	canvas_interface()->signal_layer_param_changed().connect(
 		sigc::hide(sigc::hide( SLOT_EVENT(EVENT_REFRESH_DUCKS))));
 	canvas_interface()->signal_keyframe_properties().connect(
@@ -728,7 +728,7 @@ CanvasView::~CanvasView()
 
 void CanvasView::save_all()
 {
-	std::list<etl::handle<Instance> >::iterator iter;
+	std::list<etl::handle<studio::Instance> >::iterator iter;
 	for(iter=App::instance_list.begin();iter!=App::instance_list.end();iter++)
 		(*iter)->save();
 }
@@ -1429,19 +1429,19 @@ CanvasView::init_menus()
 	action_group = Gtk::ActionGroup::create("canvasview");
 
 	action_group->add( Gtk::Action::create("save", Gtk::StockID("synfig-save"), _("Save"), _("Save")),
-		hide_return(sigc::mem_fun(*get_instance().get(), &Instance::save))
+		hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::save))
 	);
 	action_group->add( Gtk::Action::create_with_icon_name("save-as", "action_doc_saveas_icon", _("Save As..."), _("Save As")),
-		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::dialog_save_as))
+		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::dialog_save_as))
 	);
 	action_group->add( Gtk::Action::create("export", Gtk::StockID("synfig-export"), _("Export..."), _("Export")),
-		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::dialog_export))
+		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::dialog_export))
 	);
 	action_group->add( Gtk::Action::create("save-all", Gtk::StockID("synfig-save_all"), _("Save All"), _("Save all opened documents")),
 		sigc::ptr_fun(save_all)
 	);
 	action_group->add( Gtk::Action::create("revert", Gtk::Stock::REVERT_TO_SAVED),
-		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::safe_revert))
+		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::safe_revert))
 	);
 	action_group->add( Gtk::Action::create("import", _("Import...")),
 		sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_file))
@@ -1924,13 +1924,13 @@ CanvasView::close_instance()
 	Glib::signal_timeout().connect(
 		sigc::bind(
 			sigc::ptr_fun(_close_instance),
-			(etl::handle<Instance>)get_instance() ),
+			(etl::handle<studio::Instance>)get_instance() ),
 		250 );
 	return false;
 }
 
 etl::handle<CanvasView>
-CanvasView::create(etl::loose_handle<Instance> instance, etl::handle<Canvas> canvas)
+CanvasView::create(etl::loose_handle<studio::Instance> instance, etl::handle<Canvas> canvas)
 	{ return new CanvasView(instance,instance->Instance::find_canvas_interface(canvas)); }
 
 void

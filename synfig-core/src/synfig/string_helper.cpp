@@ -39,6 +39,7 @@
 
 #include <algorithm>
 #include <locale>
+#include <cctype>
 
 #include "general.h"
 #endif

@@ -1,0 +1,26 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -245,16 +245,16 @@ if (HB_HAVE_ICU)
+-  find_package(PkgConfig)
+-  pkg_check_modules(PC_ICU QUIET icu-uc)
++  # find_package(PkgConfig)
++  # pkg_check_modules(PC_ICU QUIET icu-uc)
+
+-  find_path(ICU_INCLUDE_DIR NAMES unicode/utypes.h HINTS ${PC_ICU_INCLUDE_DIRS} ${PC_ICU_INCLUDEDIR})
+-  find_library(ICU_LIBRARY NAMES libicuuc cygicuuc cygicuuc32 icuuc HINTS ${PC_ICU_LIBRARY_DIRS} ${PC_ICU_LIBDIR})
++  # find_path(ICU_INCLUDE_DIR NAMES unicode/utypes.h HINTS ${PC_ICU_INCLUDE_DIRS} ${PC_ICU_INCLUDEDIR})
++  # find_library(ICU_LIBRARY NAMES libicuuc cygicuuc cygicuuc32 icuuc HINTS ${PC_ICU_LIBRARY_DIRS} ${PC_ICU_LIBDIR})
+
+-  include_directories(${ICU_INCLUDE_DIR})
++  # include_directories(${ICU_INCLUDE_DIR})
+
+   list(APPEND project_headers ${PROJECT_SOURCE_DIR}/src/hb-icu.h)
+
+-  list(APPEND THIRD_PARTY_LIBS ${ICU_LIBRARY})
++  # list(APPEND THIRD_PARTY_LIBS ${ICU_LIBRARY})
+
+-  mark_as_advanced(ICU_INCLUDE_DIR ICU_LIBRARY)
++  # mark_as_advanced(ICU_INCLUDE_DIR ICU_LIBRARY)
+ endif ()
+
+ if (APPLE AND HB_HAVE_CORETEXT)

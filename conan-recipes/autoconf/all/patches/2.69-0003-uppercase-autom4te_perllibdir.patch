@@ -1,0 +1,156 @@
+--- bin/autoheader.in
++++ bin/autoheader.in
+@@ -28,7 +28,7 @@
+ 
+ BEGIN
+ {
+-  my $pkgdatadir = $ENV{'autom4te_perllibdir'} || '@pkgdatadir@';
++  my $pkgdatadir = $ENV{'AUTOM4TE_PERLLIBDIR'} || '@pkgdatadir@';
+   unshift @INC, "$pkgdatadir";
+ 
+   # Override SHELL.  On DJGPP SHELL may not be set to a shell
+--- bin/autom4te.in
++++ bin/autom4te.in
+@@ -24,7 +24,7 @@
+ 
+ BEGIN
+ {
+-  my $pkgdatadir = $ENV{'autom4te_perllibdir'} || '@pkgdatadir@';
++  my $pkgdatadir = $ENV{'AUTOM4TE_PERLLIBDIR'} || '@pkgdatadir@';
+   unshift @INC, $pkgdatadir;
+ 
+   # Override SHELL.  On DJGPP SHELL may not be set to a shell
+--- bin/autoreconf.in
++++ bin/autoreconf.in
+@@ -26,7 +26,7 @@
+ 
+ BEGIN
+ {
+-  my $pkgdatadir = $ENV{'autom4te_perllibdir'} || '@pkgdatadir@';
++  my $pkgdatadir = $ENV{'AUTOM4TE_PERLLIBDIR'} || '@pkgdatadir@';
+   unshift @INC, $pkgdatadir;
+ 
+   # Override SHELL.  On DJGPP SHELL may not be set to a shell
+--- bin/autoscan.in
++++ bin/autoscan.in
+@@ -25,7 +25,7 @@
+ 
+ BEGIN
+ {
+-  my $pkgdatadir = $ENV{'autom4te_perllibdir'} || '@pkgdatadir@';
++  my $pkgdatadir = $ENV{'AUTOM4TE_PERLLIBDIR'} || '@pkgdatadir@';
+   unshift @INC, $pkgdatadir;
+ 
+   # Override SHELL.  On DJGPP SHELL may not be set to a shell
+--- bin/autoupdate.in
++++ bin/autoupdate.in
+@@ -26,7 +26,7 @@
+ 
+ BEGIN
+ {
+-  my $pkgdatadir = $ENV{'autom4te_perllibdir'} || '@pkgdatadir@';
++  my $pkgdatadir = $ENV{'AUTOM4TE_PERLLIBDIR'} || '@pkgdatadir@';
+   unshift @INC, $pkgdatadir;
+ 
+   # Override SHELL.  On DJGPP SHELL may not be set to a shell
+--- bin/ifnames.in
++++ bin/ifnames.in
+@@ -31,7 +31,7 @@
+ 
+ BEGIN
+ {
+-  my $pkgdatadir = $ENV{'autom4te_perllibdir'} || '@pkgdatadir@';
++  my $pkgdatadir = $ENV{'AUTOM4TE_PERLLIBDIR'} || '@pkgdatadir@';
+   unshift @INC, $pkgdatadir;
+ 
+   # Override SHELL.  On DJGPP SHELL may not be set to a shell
+--- bin/Makefile.in
++++ bin/Makefile.in
+@@ -213,7 +213,7 @@
+ # others) to `false'.  Autoconf provides autom4te, so that doesn't
+ # apply to us.
+ MY_AUTOM4TE = \
+-	autom4te_perllibdir='$(top_srcdir)'/lib					\
++	AUTOM4TE_PERLLIBDIR='$(top_srcdir)'/lib					\
+ 	AUTOM4TE_CFG='$(AUTOM4TE_CFG)'         $(top_builddir)/bin/autom4te	\
+ 		-B '$(top_builddir)'/lib -B '$(top_srcdir)'/lib        # keep ` '
+ 
+--- lib/autoconf/Makefile.in
++++ lib/autoconf/Makefile.in
+@@ -229,7 +229,7 @@
+ # others) to `false'.  Autoconf provides autom4te, so that doesn't
+ # apply to us.
+ MY_AUTOM4TE = \
+-	autom4te_perllibdir='$(top_srcdir)'/lib					\
++	AUTOM4TE_PERLLIBDIR='$(top_srcdir)'/lib					\
+ 	AUTOM4TE_CFG='$(AUTOM4TE_CFG)'         $(top_builddir)/bin/autom4te	\
+ 		-B '$(top_builddir)'/lib -B '$(top_srcdir)'/lib        # keep ` '
+ 
+--- lib/autoscan/Makefile.in
++++ lib/autoscan/Makefile.in
+@@ -215,7 +215,7 @@
+ # others) to `false'.  Autoconf provides autom4te, so that doesn't
+ # apply to us.
+ MY_AUTOM4TE = \
+-	autom4te_perllibdir='$(top_srcdir)'/lib					\
++	AUTOM4TE_PERLLIBDIR='$(top_srcdir)'/lib					\
+ 	AUTOM4TE_CFG='$(AUTOM4TE_CFG)'         $(top_builddir)/bin/autom4te	\
+ 		-B '$(top_builddir)'/lib -B '$(top_srcdir)'/lib        # keep ` '
+ 
+--- lib/autotest/Makefile.in
++++ lib/autotest/Makefile.in
+@@ -222,7 +222,7 @@
+ # others) to `false'.  Autoconf provides autom4te, so that doesn't
+ # apply to us.
+ MY_AUTOM4TE = \
+-	autom4te_perllibdir='$(top_srcdir)'/lib					\
++	AUTOM4TE_PERLLIBDIR='$(top_srcdir)'/lib					\
+ 	AUTOM4TE_CFG='$(AUTOM4TE_CFG)'         $(top_builddir)/bin/autom4te	\
+ 		-B '$(top_builddir)'/lib -B '$(top_srcdir)'/lib        # keep ` '
+ 
+--- lib/freeze.mk
++++ lib/freeze.mk
+@@ -31,7 +31,7 @@
+ # others) to `false'.  Autoconf provides autom4te, so that doesn't
+ # apply to us.
+ MY_AUTOM4TE =									\
+-	autom4te_perllibdir='$(top_srcdir)'/lib					\
++	AUTOM4TE_PERLLIBDIR='$(top_srcdir)'/lib					\
+ 	AUTOM4TE_CFG='$(AUTOM4TE_CFG)'         $(top_builddir)/bin/autom4te	\
+ 		-B '$(top_builddir)'/lib -B '$(top_srcdir)'/lib        # keep ` '
+ 
+--- lib/m4sugar/Makefile.in
++++ lib/m4sugar/Makefile.in
+@@ -227,7 +227,7 @@
+ # others) to `false'.  Autoconf provides autom4te, so that doesn't
+ # apply to us.
+ MY_AUTOM4TE = \
+-	autom4te_perllibdir='$(top_srcdir)'/lib					\
++	AUTOM4TE_PERLLIBDIR='$(top_srcdir)'/lib					\
+ 	AUTOM4TE_CFG='$(AUTOM4TE_CFG)'         $(top_builddir)/bin/autom4te	\
+ 		-B '$(top_builddir)'/lib -B '$(top_srcdir)'/lib        # keep ` '
+ 
+--- tests/Makefile.in	2020-01-29 19:10:51.544709041 +0100
++++ tests/Makefile.in	2020-01-29 19:10:37.143656386 +0100
+@@ -200,7 +200,7 @@
+ # others) to `false'.  Autoconf provides autom4te, so that doesn't
+ # apply to us.
+ MY_AUTOM4TE = \
+-	autom4te_perllibdir='$(top_srcdir)'/lib					\
++	AUTOM4TE_PERLLIBDIR='$(top_srcdir)'/lib					\
+ 	AUTOM4TE_CFG='$(AUTOM4TE_CFG)'         $(top_builddir)/bin/autom4te	\
+ 		-B '$(top_builddir)'/lib -B '$(top_srcdir)'/lib        # keep ` '
+ 
+--- tests/wrapper.as	2020-01-29 19:10:54.928721413 +0100
++++ tests/wrapper.as	2020-01-29 19:10:37.143656386 +0100
+@@ -23,8 +23,8 @@
+ AUTOHEADER=autoheader
+ AUTOM4TE=autom4te
+ AUTOM4TE_CFG='@abs_top_builddir@/lib/autom4te.cfg'
+-autom4te_perllibdir='@abs_top_srcdir@/lib'
+-export AUTOCONF AUTOHEADER AUTOM4TE AUTOM4TE_CFG autom4te_perllibdir
++AUTOM4TE_PERLLIBDIR='@abs_top_srcdir@/lib'
++export AUTOCONF AUTOHEADER AUTOM4TE AUTOM4TE_CFG AUTOM4TE_PERLLIBDIR
+ 
+ case '@wrap_program@' in
+   ifnames)

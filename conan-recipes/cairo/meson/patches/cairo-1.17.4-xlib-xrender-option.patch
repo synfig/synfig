@@ -1,0 +1,26 @@
+This patch adds option to enable or disable xlib-xrender component.
+Without it 'xrender' is always required when 'xlib' option is enabled. @sh0
+
+--- meson.build	2020-11-27 01:20:59.000000000 +0200
++++ meson.build	2021-12-01 00:34:50.366334030 +0200
+@@ -273,8 +273,8 @@
+   endif
+ endif
+ 
+-if feature_conf.get('CAIRO_HAS_XLIB_SURFACE', 0) == 1
+-  xrender_dep = dependency('xrender', required: get_option('xlib'),
++if feature_conf.get('CAIRO_HAS_XLIB_SURFACE', 0) == 1 and get_option('xlib-xrender').enabled()
++  xrender_dep = dependency('xrender', required: true,
+                            version: xrender_required_version)
+ 
+   if xrender_dep.found()
+--- meson_options.txt	2020-11-27 01:20:59.000000000 +0200
++++ meson_options.txt	2021-12-01 00:32:43.480337924 +0200
+@@ -17,6 +17,7 @@
+ option('tee', type : 'feature', value : 'disabled')
+ option('xcb', type : 'feature', value : 'auto')
+ option('xlib', type : 'feature', value : 'auto')
++option('xlib-xrender', type : 'feature', value : 'disabled')
+ #option('xml', type : 'feature', value : 'disabled')
+ option('zlib', type : 'feature', value : 'auto') # script, ps, pdf, xml surfaces
+ 

@@ -1,0 +1,56 @@
+sources:
+  "3.0.0":
+    url: "https://github.com/harfbuzz/harfbuzz/releases/download/3.0.0/harfbuzz-3.0.0.tar.xz"
+    sha256: "036b0ee118451539783ec7864148bb4106be42a2eb964df4e83e6703ec46f3d9"
+  "3.1.2":
+    url: "https://github.com/harfbuzz/harfbuzz/releases/download/3.1.2/harfbuzz-3.1.2.tar.xz"
+    sha256: "4056b1541dd8bbd8ec29207fe30e568805c0705515632d7fec53a94399bc7945"
+  "3.2.0":
+    url: "https://github.com/harfbuzz/harfbuzz/releases/download/3.2.0/harfbuzz-3.2.0.tar.xz"
+    sha256: "0ada50a1c199bb6f70843ab893c55867743a443b84d087d54df08ad883ebc2cd"
+  "4.0.1":
+    url: "https://github.com/harfbuzz/harfbuzz/releases/download/4.0.1/harfbuzz-4.0.1.tar.xz"
+    sha256: "98f68777272db6cd7a3d5152bac75083cd52a26176d87bc04c8b3929d33bce49"
+  "4.1.0":
+    url: "https://github.com/harfbuzz/harfbuzz/archive/4.1.0.tar.gz"
+    sha256: "0dad9332aa017d216981382cc07a9cf115740990c83b81ce3ea71ad88026d7f1"
+  "4.2.1":
+    url: "https://github.com/harfbuzz/harfbuzz/archive/4.2.1.tar.gz"
+    sha256: "99fcd30e2f4c66d05af3d61ad4cdba2abc2a51ecabb7eb6dc222520a892b50b0"
+  "4.3.0":
+    url: "https://github.com/harfbuzz/harfbuzz/archive/4.3.0.tar.gz"
+    sha256: "32184860ddc0b264ff95010e1c64e596bd746fe4c2e34014a1185340cdddeba6"
+  "4.4.1":
+    url: "https://github.com/harfbuzz/harfbuzz/releases/download/4.4.1/harfbuzz-4.4.1.tar.xz"
+    sha256: "c5bc33ac099b2e52f01d27cde21cee4281b9d5bfec7684135e268512478bc9ee"
+  "5.1.0":
+    url: "https://github.com/harfbuzz/harfbuzz/releases/download/5.1.0/harfbuzz-5.1.0.tar.xz"
+    sha256: "2edb95db668781aaa8d60959d21be2ff80085f31b12053cdd660d9a50ce84f05"
+patches:
+  "3.0.0":
+    - patch_file: "patches/icu-3.0.x.patch"
+      base_path: "source_subfolder"
+  "3.1.2":
+    - patch_file: "patches/icu-3.0.x.patch"
+      base_path: "source_subfolder"
+  "3.2.0":
+    - patch_file: "patches/icu-3.0.x.patch"
+      base_path: "source_subfolder"
+  "4.0.1":
+    - patch_file: "patches/icu-4.0.x.patch"
+      base_path: "source_subfolder"
+  "4.1.0":
+    - patch_file: "patches/icu-4.0.x.patch"
+      base_path: "source_subfolder"
+  "4.2.1":
+    - patch_file: "patches/icu-4.0.x.patch"
+      base_path: "source_subfolder"
+  "4.3.0":
+    - patch_file: "patches/icu-4.0.x.patch"
+      base_path: "source_subfolder"
+  "4.4.1":
+    - patch_file: "patches/icu-4.0.x.patch"
+      base_path: "source_subfolder"
+  "5.1.0":
+    - patch_file: "patches/icu-5.1.x.patch"
+      base_path: "source_subfolder"

@@ -1,0 +1,77 @@
+--- bin/autoheader.in
++++ bin/autoheader.in
+@@ -32,7 +32,7 @@
+ 
+ BEGIN
+ {
+-  my $pkgdatadir = $ENV{'autom4te_perllibdir'} || '@pkgdatadir@';
++  my $pkgdatadir = $ENV{'AUTOM4TE_PERLLIBDIR'} || '@pkgdatadir@';
+   unshift @INC, "$pkgdatadir";
+ 
+   # Override SHELL.  On DJGPP SHELL may not be set to a shell
+--- bin/autom4te.in
++++ bin/autom4te.in
+@@ -28,7 +28,7 @@
+ 
+ BEGIN
+ {
+-  my $pkgdatadir = $ENV{'autom4te_perllibdir'} || '@pkgdatadir@';
++  my $pkgdatadir = $ENV{'AUTOM4TE_PERLLIBDIR'} || '@pkgdatadir@';
+   unshift @INC, $pkgdatadir;
+ 
+   # Override SHELL.  On DJGPP SHELL may not be set to a shell
+--- bin/autoreconf.in
++++ bin/autoreconf.in
+@@ -32,7 +32,7 @@
+ my $buildauxdir;
+ BEGIN
+ {
+-  my $pkgdatadir = $ENV{'autom4te_perllibdir'} || '@pkgdatadir@';
++  my $pkgdatadir = $ENV{'AUTOM4TE_PERLLIBDIR'} || '@pkgdatadir@';
+   unshift @INC, $pkgdatadir;
+ 
+   $buildauxdir = $ENV{'autom4te_buildauxdir'} || $pkgdatadir . '/build-aux';
+--- bin/autoscan.in
++++ bin/autoscan.in
+@@ -30,7 +30,7 @@
+ 
+ BEGIN
+ {
+-  my $pkgdatadir = $ENV{'autom4te_perllibdir'} || '@pkgdatadir@';
++  my $pkgdatadir = $ENV{'AUTOM4TE_PERLLIBDIR'} || '@pkgdatadir@';
+   unshift @INC, $pkgdatadir;
+ 
+   # Override SHELL.  On DJGPP SHELL may not be set to a shell
+--- bin/autoupdate.in
++++ bin/autoupdate.in
+@@ -31,7 +31,7 @@
+ 
+ BEGIN
+ {
+-  my $pkgdatadir = $ENV{'autom4te_perllibdir'} || '@pkgdatadir@';
++  my $pkgdatadir = $ENV{'AUTOM4TE_PERLLIBDIR'} || '@pkgdatadir@';
+   unshift @INC, $pkgdatadir;
+ 
+   # Override SHELL.  On DJGPP SHELL may not be set to a shell
+--- bin/ifnames.in
++++ bin/ifnames.in
+@@ -35,7 +35,7 @@
+ 
+ BEGIN
+ {
+-  my $pkgdatadir = $ENV{'autom4te_perllibdir'} || '@pkgdatadir@';
++  my $pkgdatadir = $ENV{'AUTOM4TE_PERLLIBDIR'} || '@pkgdatadir@';
+   unshift @INC, $pkgdatadir;
+ 
+   # Override SHELL.  On DJGPP SHELL may not be set to a shell
+--- Makefile.in
++++ Makefile.in
+@@ -576,7 +567,7 @@
+ # others) to `false'.  Autoconf provides autom4te, so that doesn't
+ # apply to us.
+ MY_AUTOM4TE = \
+-	autom4te_perllibdir='$(top_srcdir)'/lib					\
++	AUTOM4TE_PERLLIBDIR='$(top_srcdir)'/lib					\
+ 	AUTOM4TE_CFG='$(AUTOM4TE_CFG)'         $(top_build_prefix)bin/autom4te	\
+ 		-B '$(top_build_prefix)'lib -B '$(top_srcdir)'/lib        # keep ` '
+ 
