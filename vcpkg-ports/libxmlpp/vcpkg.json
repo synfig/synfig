@@ -1,0 +1,15 @@
+{
+  "name": "libxmlpp",
+  "version": "2.42.1",
+  "description": "libxml++ (a.k.a. libxmlplusplus) provides a C++ interface to XML files",
+  "homepage": "https://github.com/libxmlplusplus/libxmlplusplus",
+  "license": "LGPL-2.1",
+  "dependencies": [
+    "glibmm",
+    "libxml2",
+    {
+      "name": "vcpkg-tool-meson",
+      "host": true
+    }
+  ]
+}

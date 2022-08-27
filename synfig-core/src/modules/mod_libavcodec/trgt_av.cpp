@@ -144,8 +144,8 @@ private:
 		video_context->pix_fmt      = AV_PIX_FMT_YUV420P;
 		video_context->gop_size     = fps;                // emit one intra frame every second
 		video_context->mb_decision  = FF_MB_DECISION_RD;  // use best acroblock decision algorithm
-		video_context->framerate    = (AVRational){ fps, 1 };
-		video_context->time_base    = (AVRational){ 1, fps };
+		video_context->framerate    = AVRational{ fps, 1 };
+		video_context->time_base    = AVRational{ 1, fps };
 		video_stream->time_base     = video_context->time_base;
 
 		// some formats want stream headers to be separate.

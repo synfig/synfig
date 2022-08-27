@@ -1,0 +1,24 @@
+Author: Hesham Essam <hesham.essam.mail@gmail.com>
+Date:   Fri Jul 22 11:08:00 2022 +0200
+
+    Use unix-style path
+
+diff --git a/configure b/configure
+index c940852..736ae22 100644
+--- a/configure
++++ b/configure
+@@ -14741,10 +14741,10 @@ test -n "$GDK_PIXBUF_QUERYLOADERS" || GDK_PIXBUF_QUERYLOADERS="none"
+   fi
+ 
+   # First try the standalone gdk-pixbuf
+-  gdk_pixbuf_binary_version="`$PKG_CONFIG --variable=gdk_pixbuf_binary_version gdk-pixbuf-2.0`"
+-  gdk_pixbuf_binarydir="`$PKG_CONFIG --variable=gdk_pixbuf_binarydir gdk-pixbuf-2.0`"
+-  gdk_pixbuf_moduledir=`$PKG_CONFIG --variable gdk_pixbuf_moduledir gdk-pixbuf-2.0`
+-  gdk_pixbuf_cache_file=`$PKG_CONFIG --variable gdk_pixbuf_cache_file gdk-pixbuf-2.0`
++  gdk_pixbuf_binary_version="/`$PKG_CONFIG --variable=gdk_pixbuf_binary_version gdk-pixbuf-2.0 | sed 's/://'`"
++  gdk_pixbuf_binarydir="/`$PKG_CONFIG --variable=gdk_pixbuf_binarydir gdk-pixbuf-2.0 | sed 's/://'`"
++  gdk_pixbuf_moduledir="/`$PKG_CONFIG --variable gdk_pixbuf_moduledir gdk-pixbuf-2.0 | sed 's/://'`"
++  gdk_pixbuf_cache_file="/`$PKG_CONFIG --variable gdk_pixbuf_cache_file gdk-pixbuf-2.0 | sed 's/://'`"
+ fi
+ 
+ 
