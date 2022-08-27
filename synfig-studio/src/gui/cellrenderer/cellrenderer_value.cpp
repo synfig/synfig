@@ -64,7 +64,7 @@ using namespace studio;
 /* === G L O B A L S ======================================================= */
 
 // Number of decimal places for real values
-static constexpr int real_num_decimals = 6;
+static constexpr int real_num_decimals = 1;
 static constexpr int angle_num_decimals = 2;
 
 class studio::ValueBase_Entry : public Gtk::CellEditable, public Gtk::EventBox
@@ -402,9 +402,9 @@ CellRenderer_ValueBase::render_vfunc(
 			Distance x( vector[0], Distance::SYSTEM_UNITS ), y( vector[1], Distance::SYSTEM_UNITS );
 			x.convert( App::distance_system, get_canvas()->rend_desc() );
 			y.convert( App::distance_system, get_canvas()->rend_desc() );
-			property_text() = strprintf("%s,%s", x.get_string(real_num_decimals).c_str(), y.get_string(real_num_decimals).c_str());
+			property_text() = strprintf("%s, %s", x.get_string(real_num_decimals).c_str(), y.get_string(real_num_decimals).c_str());
 		} else {
-			std::string format = strprintf("%%.%01df,%%.%01df", real_num_decimals, real_num_decimals);
+			std::string format = strprintf("%%.%01df, %%.%01df", real_num_decimals, real_num_decimals);
 			property_text() = strprintf(format.c_str(), vector[0], vector[1]);
 		}
 	}
@@ -424,7 +424,7 @@ CellRenderer_ValueBase::render_vfunc(
 		sx.convert( App::distance_system, get_canvas()->rend_desc() );
 		sy.convert( App::distance_system, get_canvas()->rend_desc() );
 
-		std::string format = strprintf("%%s,%%s,%%.%df°,%%s,%%s", angle_num_decimals);
+		std::string format = strprintf("%%s, %%s, %%.%df°, %%s, %%s", angle_num_decimals);
 		property_text() = static_cast<Glib::ustring>(strprintf(
 			format.c_str(),
 			x.get_string(real_num_decimals).c_str(),
