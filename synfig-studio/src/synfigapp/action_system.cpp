@@ -53,6 +53,8 @@ using namespace synfigapp;
 
 /* === P R O C E D U R E S ================================================= */
 bool Action::System::block_new_history = false;
+bool Action::System::first_repeated_action = false;
+//bool Action::System::last_repeated_action = false;
 
 namespace {
 	class Lock {
@@ -85,6 +87,7 @@ Action::System::request_redraw(etl::handle<CanvasInterface> x)
 		{ group_stack_.front()->request_redraw(x); return; }
 	x->signal_dirty_preview()();
 }
+bool last_is_initial=false;
 
 bool
 Action::System::perform_action(etl::handle<Action::Base> action)
@@ -160,30 +163,58 @@ Action::System::perform_action(etl::handle<Action::Base> action)
 	if (clear_redo_stack_on_new_action_)
 		clear_redo_stack();
 
-	if(Action::System::block_new_history) /*for rapid repeated actions we only need the last action to be registered and the middle ones just performed*/
-	{
-		if (canvas_specific && canvas_specific->is_dirty())
-			request_redraw(canvas_specific->get_canvas_interface());
+	//we need to test out the theory of just replacing
+	// 1- if this isnt first action then we just lower actionc count
+	// 2- remove and replace the front of the undo action stack
+	// 3- might need to block signal_new_action
 
-		return true;
+//	if(Action::System::block_new_history && !Action::System::first_repeated_action) /*for rapid repeated actions we only need the last action to be registered and the middle ones just performed*/
+//	{/*
+//		if (canvas_specific && canvas_specific->is_dirty())
+//			request_redraw(canvas_specific->get_canvas_interface());*/
+//		undo_action_stack_.pop_front();
+//		undo_action_stack_.push_front(undoable_action);
+
+//		return true;
+//	}
+
+	if (!group_stack_.empty() /*&& (!Action::System::block_new_history || Action::System::first_repeated_action || last_is_initial)*/ ){ //we need to inc depth an amount of types
+		group_stack_.front()->inc_depth();//this is for the passive goruping  -- not related
+		std::cout<<"not empty group "<<std::endl;
 	}
+	else if (!Action::System::block_new_history || Action::System::first_repeated_action)
+		inc_action_count();//this would have to be dec probably ? in our approach  ---- does this signal new action ?
 
-	if (!group_stack_.empty())
-		group_stack_.front()->inc_depth();
-	else
-		inc_action_count();
+//	if (Action::System::block_new_history && !Action::System::first_repeated_action)
+//		dec_action_count();
+
 
 	// Push this action onto the action list if we can undo it
 	if (undoable_action) {
 		// If necessary, signal the change in status of undo
-		if(undo_action_stack_.empty()) signal_undo_status_(true);
+		if(undo_action_stack_.empty()) signal_undo_status_(true);//this is for refreshing the dock tool box if it was empty then now not makes sense yes
 
 		// Add it to the list
-		undo_action_stack_.push_front(undoable_action);
+//		if (Action::System::block_new_history && !Action::System::first_repeated_action){//we remove prev and replace it but we dont remove the first
+//			if(!last_is_initial)
+//				undo_action_stack_.pop_front();
+//			else
+//				last_is_initial=false;
+
+//			undo_action_stack_.push_front(undoable_action);
+//		} else {
+		undo_action_stack_.push_front(undoable_action);//we would need to pop it out then from the beginning
+		last_is_initial=true;
+//		}
 
 		// Signal that a new action has been added
-		if(group_stack_.empty())
+		if(group_stack_.empty() && (!Action::System::block_new_history || Action::System::first_repeated_action)){//if its not a passive group signal new action ok no problem
 			signal_new_action()(undoable_action);
+			std::cout<<"signal new action "<<std::endl;
+		}
+		std::cout<<"test"<<std::endl;
+		for (etl::handle<Action::Undoable> iter : undo_action_stack_)
+			std::cout<<iter->get_local_name()<<std::endl;
 	}
 
 	uim->task(action->get_local_name()+' '+_("Successful"));
@@ -429,14 +460,17 @@ Action::System::set_action_status(etl::handle<Action::Undoable> action, bool x)
 	return false;
 }
 
-Action::PassiveGrouper::PassiveGrouper(etl::loose_handle<System> instance_,synfig::String name_):
+Action::PassiveGrouper::PassiveGrouper(etl::loose_handle<System> instance_,synfig::String name_, bool repeated_action):
 	instance_(instance_),
 	name_(name_),
 	depth_(0),
-	finished_(false)
+	finished_(false),
+	repeated_action_group_(repeated_action)
 {
 	// Add this group onto the group stack
+//	if(!Action::System::block_new_history)
 	instance_->group_stack_.push_front(this);
+	std::cout<<"passive group constructor"<<std::endl;
 }
 
 void
@@ -453,9 +487,11 @@ Action::PassiveGrouper::finish()
 	if (finished_) return etl::handle<Action::Group>();
 	finished_ = true;
 
-	// Remove this group from the group stack
+	std::cout<<"finished passive group"<<std::endl;
+//	 Remove this group from the group stack
+//	if(!Action::System::block_new_history){
 	assert(instance_->group_stack_.front() == this);
-	instance_->group_stack_.pop_front();
+	instance_->group_stack_.pop_front();/*}*/
 
 	etl::handle<Action::Group> group;
 	if (depth_ == 1) {
@@ -479,6 +515,7 @@ Action::PassiveGrouper::finish()
 	} else
 	if (depth_ > 1) {
 		group = new Action::Group(name_);
+		int num_selected_layers = 0;
 
 		for(int i=0; i < depth_; i++) {
 			etl::handle<Action::Undoable> action = instance_->undo_action_stack_.front();
@@ -490,8 +527,16 @@ Action::PassiveGrouper::finish()
 					group->set_canvas_interface(canvas_specific->get_canvas_interface());
 				}
 
-			// Copy the action from the undo stack to the group
-			group->add_action_front(action);
+			if (i == 0){
+				num_selected_layers = dynamic_cast<Action::CanvasSpecific*>(action.get())->get_canvas_interface()->get_selection_manager()->get_selected_layer_count();
+				std::cout<<num_selected_layers;
+			}
+
+			// Copy the action from the undo stack to the group -- for
+			if (repeated_action_group_ && (i<num_selected_layers || i > depth_ - (num_selected_layers+1) ))
+				group->add_action_front(action);
+			else if (!repeated_action_group_)
+				group->add_action_front(action);
 
 			// Remove the action from the undo stack
 			instance_->undo_action_stack_.pop_front();

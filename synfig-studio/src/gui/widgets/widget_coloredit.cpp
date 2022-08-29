@@ -46,6 +46,7 @@
 #include <gui/app.h>
 #include <gui/exception_guard.h>
 #include <gui/localization.h>
+#include <gui/canvasview.h>
 
 #include <synfigapp/action_system.h>
 
@@ -505,6 +506,8 @@ void Widget_ColorEdit::setHVSColor(const synfig::Color& color)
 	colorHVSChanged = false;
 }
 
+synfigapp::Action::PassiveGrouper* group = nullptr;
+
 void
 Widget_ColorEdit::on_color_changed()
 {
@@ -538,20 +541,29 @@ Widget_ColorEdit::on_color_changed()
 						prevColor.get_green(),
 						prevColor.get_blue() );
 
-			if(get_initial_color)
+			if(get_initial_color){
 				initial_color=previousecolortemp;
+				synfigapp::Action::System::first_repeated_action = true;
+				group = new synfigapp::Action::PassiveGrouper(App::get_selected_canvas_view()->get_instance().get(),_("Change color"),true);
+			} else {
+				synfigapp::Action::System::first_repeated_action = false;
+			}
 
 			get_initial_color= false;
 		}
 
 
 		if(get_initial_color || escape_cancel){//last time now
-			synfigapp::Action::System::block_new_history=true;
-			initial_color = App::get_selected_canvas_gamma().apply(initial_color); //set original color while not sending action
-			set_value(initial_color);
-			colorHVSChanged = false;
-			on_value_changed();
-			synfigapp::Action::System::block_new_history=false;
+//			if (escape_cancel) {
+				synfigapp::Action::System::block_new_history=true;
+//				initial_color = App::get_selected_canvas_gamma().apply(initial_color); //set original color while not sending action
+//				set_value(initial_color);
+//				colorHVSChanged = false;
+//				on_value_changed();
+//			}
+//			synfigapp::Action::System::block_new_history=false;
+				delete group;
+			std::cout<<"last time"<<std::endl;
 		}
 		if(!escape_cancel){
 			synfigColor = App::get_selected_canvas_gamma().apply(synfigColor);
@@ -571,7 +583,7 @@ Widget_ColorEdit::on_color_changed()
 				newColor.get_red(),
 				newColor.get_green(),
 				newColor.get_blue() );
-			synfigColor = App::get_selected_canvas_gamma().apply(synfigColor);
+			synfigColor = App::get_selected_canvas_gamma().apply(synfigColor);//performs some form of color correction
 			set_value(synfigColor);
 			colorHVSChanged = true; //I reset the flag in setHVSColor(..)
 			on_value_changed();
