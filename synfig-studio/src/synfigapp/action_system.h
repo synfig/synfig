@@ -72,7 +72,7 @@ class PassiveGrouper
 	bool repeated_action_group_;
 
 public:
-	PassiveGrouper(etl::loose_handle<System> instance_, synfig::String name_, bool repeated_action = false);//set the local var in the def
+	PassiveGrouper(etl::loose_handle<System> instance_, synfig::String name_, bool repeated_action = false);
 
 	~PassiveGrouper();
 
@@ -106,8 +106,8 @@ class System : public etl::shared_object, public sigc::trackable
 	*/
 
 public:
-		static bool block_new_history;
-		static bool first_repeated_action;//for test
+		static bool repeated_action;
+		static bool cancel_repeated_action;
 
 	/*
  -- ** -- P U B L I C  D A T A ------------------------------------------------

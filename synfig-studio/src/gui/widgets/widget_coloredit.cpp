@@ -517,7 +517,6 @@ Widget_ColorEdit::on_color_changed()
 	if (!colorHVSChanged && wheel_pressed) //color change is from a wheel drag
 	{
 		Gdk::RGBA newColor = hvsColorWidget->get_current_rgba();
-		Gdk::RGBA prevColor = hvsColorWidget->get_previous_rgba();
 		Color synfigColor;
 
 		if(!(hvsColorWidget->is_adjusting())){//drag over
@@ -530,40 +529,28 @@ Widget_ColorEdit::on_color_changed()
 				wheel_pressed=false;
 		}
 		else{//drag did not end
-			synfigapp::Action::System::block_new_history=true;
+			synfigapp::Action::System::repeated_action=true;
 			Color synfigColorTemp(
 				newColor.get_red(),
 				newColor.get_green(),
 				newColor.get_blue() );
 			synfigColor=synfigColorTemp;
-			Color previousecolortemp(
-						prevColor.get_red(),
-						prevColor.get_green(),
-						prevColor.get_blue() );
 
 			if(get_initial_color){
-				initial_color=previousecolortemp;
-				synfigapp::Action::System::first_repeated_action = true;
 				group = new synfigapp::Action::PassiveGrouper(App::get_selected_canvas_view()->get_instance().get(),_("Change color"),true);
-			} else {
-				synfigapp::Action::System::first_repeated_action = false;
 			}
-
 			get_initial_color= false;
 		}
 
-
 		if(get_initial_color || escape_cancel){//last time now
-//			if (escape_cancel) {
-				synfigapp::Action::System::block_new_history=true;
-//				initial_color = App::get_selected_canvas_gamma().apply(initial_color); //set original color while not sending action
-//				set_value(initial_color);
-//				colorHVSChanged = false;
-//				on_value_changed();
-//			}
-//			synfigapp::Action::System::block_new_history=false;
+			synfigapp::Action::System::repeated_action=true;
+			if (escape_cancel) {
+				synfigapp::Action::System::cancel_repeated_action=true;
+				colorHVSChanged = true;
+				get_initial_color= true;
+				wheel_pressed=false;
+			}
 				delete group;
-			std::cout<<"last time"<<std::endl;
 		}
 		if(!escape_cancel){
 			synfigColor = App::get_selected_canvas_gamma().apply(synfigColor);
@@ -571,8 +558,9 @@ Widget_ColorEdit::on_color_changed()
 			colorHVSChanged = true;
 			on_value_changed();
 			wheel_released=false;
-			synfigapp::Action::System::block_new_history=false;//default is no block unless drag then block
 		}
+		synfigapp::Action::System::repeated_action=false;//default is no block unless drag then block
+		synfigapp::Action::System::cancel_repeated_action=false;
 		return;
 	}
 
