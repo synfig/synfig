@@ -3827,7 +3827,7 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
 
 	Gtk::Label* label = manage(new Gtk::Label(message));
 	label->show();
-	dialog.get_content_area()->pack_start(*label,false,false);
+	dialog.get_content_area()->pack_start(*label, false, false);
 
 	Glib::RefPtr<Gtk::TextBuffer> text_buffer(Gtk::TextBuffer::create());
 	text_buffer->set_text(text);
@@ -3856,7 +3856,6 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
 		SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 
 	}), false );
-
 	//text_entry.signal_activate().connect(sigc::bind(sigc::mem_fun(dialog,&Gtk::Dialog::response),Gtk::RESPONSE_OK));
 	dialog.show();
 
