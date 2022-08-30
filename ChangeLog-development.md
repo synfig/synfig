@@ -1,3 +1,8 @@
+- [`dd55c0f`](https://github.com/synfig/synfig/commit/dd55c0f3f982d676696e58fafb9175e4cd388e13) fix(msvc): fixed debug build in MSVC ([#2812](https://github.com/synfig/synfig/issues/2812)) [core]
+- [`c6eb41d`](https://github.com/synfig/synfig/commit/c6eb41d71876092484cf2a814c6a294beb78ac1e) build: Use vcpkg to build synfig ([#2725](https://github.com/synfig/synfig/issues/2725)) [core] [studio]
+- [`9cecd2a`](https://github.com/synfig/synfig/commit/9cecd2abe143e29cf0564e511183beebab7dfafb) feat: added ability to show/hide rulers ([#2634](https://github.com/synfig/synfig/issues/2634)) [studio]
+- [`5aee83b`](https://github.com/synfig/synfig/commit/5aee83b4f54d15f1b4b3b216e1122da064c69d63) fix: params panel doesn't update after layer switch ([#2811](https://github.com/synfig/synfig/issues/2811)) [studio]
+- [`36896b9`](https://github.com/synfig/synfig/commit/36896b9237a3a1e0e73a117b9775a738da6c7446) fix: avoid rebuild ParamTreeStore when animating a parameter ([#2729](https://github.com/synfig/synfig/issues/2729)) [studio]
 - [`361ffce`](https://github.com/synfig/synfig/commit/361ffce745bbe2534ffdee5e05dca80b7cdb55e1) chore: updated changelog ([#2774](https://github.com/synfig/synfig/issues/2774))
 - [`9cc796e`](https://github.com/synfig/synfig/commit/9cc796e08727bf478c87dc93a74e46822398a16b) refactor!: add etl::hermite::derivative() and remove ETL/calculus ([#2791](https://github.com/synfig/synfig/issues/2791)) [ETL] [core] [studio]
 - [`4c99713`](https://github.com/synfig/synfig/commit/4c997135228c7b2f3767bb2f6420bb9acdd93f59) fix: hit_check for gradient & paste_canvas layers with BEHIND and ONTO blends ([#2804](https://github.com/synfig/synfig/issues/2804)) [core]
