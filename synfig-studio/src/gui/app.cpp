@@ -70,6 +70,7 @@
 #endif
 #include <gtkmm/stock.h>
 #include <gtkmm/textview.h>
+#include <gtkmm/scrolledwindow.h>
 
 #include <gui/app.h>
 #include <gui/autorecover.h>
@@ -3826,14 +3827,17 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
 
 	Gtk::Label* label = manage(new Gtk::Label(message));
 	label->show();
-	dialog.get_content_area()->pack_start(*label);
+	dialog.get_content_area()->pack_start(*label,false,false);
 
 	Glib::RefPtr<Gtk::TextBuffer> text_buffer(Gtk::TextBuffer::create());
 	text_buffer->set_text(text);
 	Gtk::TextView text_view(text_buffer);
 	text_view.show();
+	Gtk::ScrolledWindow s_window;
+	s_window.add(text_view);
+	s_window.show();
 
-	dialog.get_content_area()->pack_start(text_view);
+	dialog.get_content_area()->pack_start(s_window);
 
 	dialog.add_button(_("_Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
 	dialog.add_button(_("_OK"),   Gtk::RESPONSE_OK)->set_image_from_icon_name("gtk-ok", Gtk::ICON_SIZE_BUTTON);
@@ -3852,17 +3856,6 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
 		SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 
 	}), false );
-
-	int previous_num_lines(0);
-
-	text_buffer->signal_changed().connect(sigc::track_obj([&dialog,&text_buffer,&previous_num_lines](){
-			int num_lines=text_buffer->get_line_count();
-			if(num_lines<previous_num_lines)
-				dialog.resize(dialog.get_width(), 2);//any size less than minimum causes a resize to minimum possible size
-
-			previous_num_lines=num_lines;
-
-		}, dialog));
 
 	//text_entry.signal_activate().connect(sigc::bind(sigc::mem_fun(dialog,&Gtk::Dialog::response),Gtk::RESPONSE_OK));
 	dialog.show();
