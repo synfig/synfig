@@ -73,7 +73,6 @@ parts:
       - libmlt-dev
       - libmlt++-dev
       - libmlt-data
-      - libboost-system-dev
       - libmng-dev
       - git
     stage-packages:

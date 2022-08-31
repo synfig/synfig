@@ -2,8 +2,6 @@
 ## Find packages
 ##
 
-# TODO: check if we really need all of them
-find_package(Boost REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(Intl REQUIRED)
 

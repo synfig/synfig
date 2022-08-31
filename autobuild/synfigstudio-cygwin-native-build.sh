@@ -22,8 +22,6 @@ $CYGWIN_SETUP \
 -P pkg-config \
 -P libcairo-devel \
 -P libpango1.0-devel \
--P libboost-devel \
--P libboost1.50 \
 -P libjpeg-devel \
 -P libpng-devel \
 -P p7zip \

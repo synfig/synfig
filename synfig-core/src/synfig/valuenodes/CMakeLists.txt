@@ -70,7 +70,6 @@ target_sources(libsynfig
 )
 
 file(GLOB VALUENODES_HEADERS "${CMAKE_CURRENT_LIST_DIR}/*.h")
-target_include_directories(libsynfig PRIVATE ${Boost_INCLUDE_DIRS})
 
 install(
     FILES ${VALUENODES_HEADERS}
