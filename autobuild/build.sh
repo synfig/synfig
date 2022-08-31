@@ -204,13 +204,6 @@ cd synfig-core
 pushd "${REPO_DIR}/synfig-core/" >/dev/null
 /bin/bash "${REPO_DIR}/synfig-core/bootstrap.sh"
 popd >/dev/null
-if [ -e /etc/debian_version ] && [ -z "$BOOST_CONFIGURE_OPTIONS" ]; then
-	# Debian/Ubuntu multiarch
-	MULTIARCH_LIBDIR="/usr/lib/`uname -m`-linux-gnu/"
-	if [ -e "${MULTIARCH_LIBDIR}/libboost_program_options.so" ]; then
-		export BOOST_CONFIGURE_OPTIONS="--with-boost-libdir=$MULTIARCH_LIBDIR"
-	fi
-fi
 if [[ `uname -o` == "Msys" ]]; then
 	# Currently there is an error when building with Magick++ on MSYS2
 	export CONFIGURE_OPTIONS="--without-magickpp"
@@ -233,7 +226,6 @@ fi
 	--disable-static --enable-shared \
 	--without-libavcodec \
 	--without-included-ltdl \
-	$BOOST_CONFIGURE_OPTIONS \
 	$CONFIGURE_OPTIONS \
 	$DEBUG
 cd ..

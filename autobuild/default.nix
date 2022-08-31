@@ -28,7 +28,7 @@ stdenv.mkDerivation rec {
 
   nativeBuildInputs = [ pkgconfig autoreconfHook gettext gnumake makeWrapper ];
   buildInputs = [
-    boost cairo ffmpeg fftw intltool glibmm gnome3.defaultIconTheme gtk3 gtkmm3
+    cairo ffmpeg fftw intltool glibmm gnome3.defaultIconTheme gtk3 gtkmm3
     imagemagick intltool libjpeg libjack2 libsigcxx libxmlxx mlt
     pango which
   ];
@@ -36,7 +36,6 @@ stdenv.mkDerivation rec {
   preConfigure = "";
   configureScript = "";
 
-  BOOST_CONFIGURE_OPTIONS = " --with-boost=${boost.dev} --with-boost-libdir=${boost.out}/lib ";
   ADWAITA_PATH = "${gnome3.adwaita-icon-theme.out}";
   MAKE_WRAPPER_PATH = "${makeWrapper.out}";
 

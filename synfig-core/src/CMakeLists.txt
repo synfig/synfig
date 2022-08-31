@@ -2,9 +2,6 @@
 ## Find packages
 ##
 
-# TODO: check if we really need all of them
-find_package(Boost REQUIRED system)
-
 find_package(ZLIB REQUIRED)
 
 ## ETL doesn't install a package configuration so find package will fail

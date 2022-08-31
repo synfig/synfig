@@ -116,7 +116,7 @@ class Oscillator
 	etl::handle<const ValueNode_Dynamic> d;
 public:
     Oscillator(const ValueNode_Dynamic* x) : d(x) { }
-    void operator() ( const std::vector<double> &x , std::vector<double> &dxdt , const double t )
+	void operator() ( const double t, const std::vector<double> &x, std::vector<double> &dxdt )
 	{
 		Vector u(cos(x[2]), sin(x[2]));
 		Vector v(-u[1], u[0]);

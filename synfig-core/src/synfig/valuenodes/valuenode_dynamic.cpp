@@ -30,22 +30,22 @@
 #endif
 
 #include "valuenode_dynamic.h"
+
+#include <algorithm>
+
 #include "valuenode_const.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
 #include <synfig/valuenode_registry.h>
 #include <synfig/vector.h>
 
-#include <ETL/misc>
-
-#include <boost/numeric/odeint/integrate/integrate.hpp>
 #endif
 
 /* === U S I N G =========================================================== */
 
 using namespace etl;
 using namespace synfig;
-using namespace boost::numeric::odeint;
+
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
@@ -54,6 +54,131 @@ REGISTER_VALUENODE(ValueNode_Dynamic, RELEASE_VERSION_0_61_06, "dynamic", "Dynam
 
 
 /* === P R O C E D U R E S ================================================= */
+
+struct MathVector : std::vector<Real>
+{
+	MathVector() = default;
+	MathVector(const MathVector&) = default;
+	MathVector(std::vector<Real>::iterator begin, std::vector<Real>::iterator end)
+		: std::vector<Real>(begin, end)
+	{
+	}
+	MathVector(size_type n)
+		: std::vector<Real>(n)
+	{
+	}
+
+	MathVector& operator=(const MathVector& rhs) = default;
+
+	MathVector& operator+=(const MathVector& rhs)
+	{
+		std::transform(begin(), end(), rhs.begin(), begin(), std::plus<Real>());
+		return *this;
+	}
+
+	MathVector operator+(const MathVector& rhs) const
+	{
+		return MathVector(*this) += rhs;
+	}
+
+	MathVector& operator*=(Real rhs)
+	{
+		for (auto& i: *this)
+			i *= rhs;
+		return *this;
+	}
+
+	MathVector operator*(Real rhs) const
+	{
+		return MathVector(*this) *= rhs;
+	}
+};
+
+typedef std::function<void(const double, const std::vector<double>&, std::vector<double>&)> Function;
+
+static void
+runge_kutta_cash_karp(Function oscillator, Real& t, MathVector& x, Real& step_size, Real tolerance)
+{
+	const auto& num_dim = x.size();
+	MathVector xf;
+	MathVector k1(num_dim), k2(num_dim), k3(num_dim), k4(num_dim), k5(num_dim), k6(num_dim);
+
+	auto max_delta = [] (const MathVector& a, const MathVector& b) -> Real {
+		Real max = 0;
+		const auto size = a.size();
+		for (unsigned int i = 0; i < size; ++i) {
+			max = std::max(max, std::fabs(a[i] - b[i]));
+		}
+		return max;
+	};
+
+	typedef std::vector<MathVector> Solution;
+
+	auto VRKF_err = [max_delta](const Solution& y, int order) {
+		return std::fabs(std::pow(max_delta(y[order], y[order - 1]), 1./(order + 1)));
+	};
+	auto VRKF_e = [VRKF_err](const Solution& y, int order, double tolerance) {
+		return VRKF_err(y, order) / std::pow(tolerance, 1./(order + 1));
+	};
+	const Real VRKF_sf = 0.9;
+
+	Real tf(t);
+
+	while (true) {
+		tf = t + step_size;
+		// k1
+		oscillator(t, x, k1);
+		k1 *= step_size;
+		// k2
+		oscillator(t + (1/5.) * step_size, x + k1 * (1/5.), k2);
+		k2 *= step_size;
+		// k3
+		oscillator(t + (3/10.) * step_size, x + k1 * (3/40.) + k2 * (9/40.), k3);
+		k3 *= step_size;
+		// k4
+		oscillator(t + (3/5.) * step_size, x + k1 * (3/10.) + k2 * (-9/10.) + k3 * (6/5.), k4);
+		k4 *= step_size;
+		// k5
+		oscillator(t + /*1. **/ step_size, x + k1 * (-11/54.) + k2 * (5/2.) + k3 * (-70/27.) + k4 * (35/27.), k5);
+		k5 *= step_size;
+		// k6
+		oscillator(t + (7/8.) * step_size, x + k1 * (1631/55296.) + k2 * (175/512.) + k3 * (575/13824.) + k4 * (44275/110592.) + k5 * (253/4096.), k6);
+		k6 *= step_size;
+
+		MathVector dy5 = k1 * (37/378.) + k3 * (250/621.) + k4 * (125/594.) + k6 * (512/1771.);
+		MathVector dy4 = k1 * (2825/27648.) + k3 * (18575/48384.) + k4 * (13525/55296.) + k5 * (277/14336.) + k6 * (1/4.);
+
+		Solution solution{0, 0, 0, dy4, dy5};
+		auto e_4 = VRKF_e(solution, 4, tolerance);
+		if (e_4 > 1) {
+			// No order less than 5th order is possibly good, so abandon current step
+			step_size *= std::max(0.2, VRKF_sf / e_4);
+			continue;
+		} else {
+			// accept 5th order solution
+
+			xf = x + dy5;
+
+			step_size *= std::min(5., VRKF_sf / e_4);
+			break;
+		}
+	}
+	x = xf;
+	t = tf;
+}
+
+static void
+integrate(Function oscillator, MathVector& x0, Real to, Real tf, Real step_size, Real tolerance = 1e-5)
+{
+	Real t = to;
+	MathVector x = x0;
+
+	while (t < tf) {
+		step_size = std::min(step_size, tf - t);
+		runge_kutta_cash_karp(oscillator, t, x, step_size, tolerance);
+	}
+	x0 = x;
+}
 
 /* === M E T H O D S ======================================================= */
 
@@ -146,7 +271,7 @@ ValueNode_Dynamic::operator()(Time t)const
 	ValueNode::RHandle value_node(ValueNode::RHandle::cast_dynamic(origin_d_->get_link("link")));
 	value_node->replace(origin_);
 	Oscillator oscillator(this);
-	std::vector<double> x(state.begin(), state.end());
+	MathVector x(state.begin(), state.end());
 	integrate(oscillator, x, t0, t1, step);
 	// Remember time and state for the next call
 	last_time=Time(t);
