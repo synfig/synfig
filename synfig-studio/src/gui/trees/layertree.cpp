@@ -424,8 +424,7 @@ LayerTree::search_param_tree(const Glib::RefPtr<Gtk::TreeModel>& model,int colum
 				match_found=true;
 				match_path=path_child;
 				break;
-			}
-			else
+			} else
 				search_param_tree(model,column,search_string,iter_child);//if not found inc search depth if possible on row
 	}
 	return (label.find(substr)==Glib::ustring::npos);
