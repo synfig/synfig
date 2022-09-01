@@ -399,9 +399,7 @@ CellRenderer_ValueBase::render_vfunc(
 			Distance x( vector[0], Distance::SYSTEM_UNITS ), y( vector[1], Distance::SYSTEM_UNITS );
 			x.convert( App::distance_system, get_canvas()->rend_desc() );
 			y.convert( App::distance_system, get_canvas()->rend_desc() );
-			std::string text = strprintf("%s,%s", x.get_string(real_num_decimals).c_str(),
-												  y.get_string(real_num_decimals).c_str());
-			property_text() = text;
+			property_text() = strprintf("%s,%s", x.get_string(real_num_decimals).c_str(), y.get_string(real_num_decimals).c_str());
 		} else
 			property_text() = float_presentation(vector[0]) + "," + float_presentation(vector[1]);
 	}
