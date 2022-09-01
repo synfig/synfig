@@ -352,10 +352,7 @@ CellRenderer_ValueBase::render_vfunc(
 	}
 	else
 	if (type == type_angle)
-	{
-		const std::string angle_format = strprintf("%%.%df°", angle_num_decimals);
-		property_text() = strprintf( angle_format.c_str(), (Real) Angle::deg( data.get(Angle()) ).get() );
-	}
+		property_text() = float_presentation(Angle::deg( data.get(Angle()) ).get(), angle_num_decimals) + "°";
 	else
 	if (type == type_integer)
 	{
