@@ -341,10 +341,7 @@ CellRenderer_ValueBase::render_vfunc(
 			property_text() = x.get_string(real_num_decimals).c_str();
 		}
 		else
-		{
-			std::string format = strprintf("%%.%df", real_num_decimals);
-			property_text() = remove_trailing_zeroes(strprintf(format.c_str(), data.get(Real())));
-		}
+			property_text() = float_presentation(data.get(Real()));
 	}
 	else
 	if (type == type_time)
@@ -405,13 +402,8 @@ CellRenderer_ValueBase::render_vfunc(
 			std::string text = strprintf("%s,%s", x.get_string(real_num_decimals).c_str(),
 												  y.get_string(real_num_decimals).c_str());
 			property_text() = text;
-		} else {
-			std::string format = strprintf("%%.%01df,%%.%01df", real_num_decimals, real_num_decimals);
-			std::string text = strprintf(format.c_str(), vector[0], vector[1]);
-			size_t pos_comma = text.find_first_of(',');
-			std::string adjusted_text = remove_trailing_zeroes(text.substr(0, pos_comma)) + remove_trailing_zeroes(text.substr(pos_comma));
-			property_text() = adjusted_text;
-		}
+		} else
+			property_text() = float_presentation(vector[0]) + "," + float_presentation(vector[1]);
 	}
 	else
 	if (type == type_transformation)
