@@ -1,4 +1,8 @@
 cmake_minimum_required(VERSION 3.6)
+if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.14")
+	cmake_policy(SET CMP0087 NEW)
+endif()
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 project(synfig-studio)
@@ -95,4 +99,5 @@ if(MSYS)
 	include(InstallMSYS2)
 endif()
 
+include(SynfigVcpkg)
 include(CPackConfig)

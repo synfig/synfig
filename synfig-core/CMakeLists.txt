@@ -17,13 +17,3 @@ endif()
 add_dependencies(synfig_bin
     build_pofiles_synfig
 )
-
-# FIXME: should this be here?
-if(MSVC)
-  file(
-    COPY "${CMAKE_CURRENT_SOURCE_DIR}/fonts-msvc/"
-    DESTINATION "${SYNFIG_BUILD_ROOT}/etc/fonts")
-  install(
-    DIRECTORY "${SYNFIG_BUILD_ROOT}/etc/fonts/"
-    DESTINATION "etc/fonts")
-endif()
