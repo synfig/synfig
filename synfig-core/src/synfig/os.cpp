@@ -149,10 +149,16 @@ OS::RunPipe::get_command() const
 #ifdef WIN32_PIPE_TO_PROCESSES
 class RunPipeWin32 : public OS::RunPipe
 {
-	FILE* file = nullptr;
 	bool initialized = false;
 	bool is_reader = false;
 	bool is_writer = false;
+
+	HANDLE child_STDIN_Read = INVALID_HANDLE_VALUE;
+	HANDLE child_STDIN_Write = INVALID_HANDLE_VALUE;
+	HANDLE child_STDOUT_Read = INVALID_HANDLE_VALUE;
+	HANDLE child_STDOUT_Write = INVALID_HANDLE_VALUE;
+	HANDLE child_STDERR_Read = INVALID_HANDLE_VALUE;
+	HANDLE child_STDERR_Write = INVALID_HANDLE_VALUE;
 
 	// RunPipe interface
 public:
@@ -170,59 +176,136 @@ public:
 		}
 		initialized = true;
 
+		is_reader = run_mode == OS::RUN_MODE_READ || run_mode == OS::RUN_MODE_READWRITE;
+		is_writer = run_mode == OS::RUN_MODE_WRITE || run_mode == OS::RUN_MODE_READWRITE;
+
 		String command = '"' + binary_path + '"';
 		command += " " + binary_args.get_string();
 
-		// This covers the dumb cmd.exe behavior.
-		// See: http://eli.thegreenplace.net/2011/01/28/on-spaces-in-the-paths-of-programs-and-files-on-windows/
-		command = "\"" + command + "\"";
 		full_command_ = command;
 
-		const wchar_t* wmode;
-		switch (run_mode) {
-			case OS::RUN_MODE_NONE:
-				break;
-			case OS::RUN_MODE_READ:
-				wmode = L"rb";
-				is_reader = true;
-				break;
-			case OS::RUN_MODE_WRITE:
-				wmode = L"wb";
-				is_writer = true;
-				break;
-			case OS::RUN_MODE_READWRITE:
-				wmode = L"rwb";
-				is_reader = true;
-				is_writer = true;
-				break;
+		SECURITY_ATTRIBUTES saAttr;
+		saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
+		saAttr.bInheritHandle = TRUE;
+		saAttr.lpSecurityDescriptor = NULL;
+
+		if (!redir_files.std_err.empty()) {
+			child_STDERR_Write = CreateFileW(synfig::filesystem::Path(redir_files.std_err).c_str(),
+											 GENERIC_WRITE,
+											 FILE_SHARE_READ,
+											 &saAttr,
+											 CREATE_ALWAYS,
+											 FILE_ATTRIBUTE_NORMAL,
+											 NULL
+								 );
+			if (child_STDERR_Write == INVALID_HANDLE_VALUE) {
+				synfig::error(_("Unable to open file to be stdout: %s [errno: %d]"), redir_files.std_err.c_str(), errno);
+				return false;
+			}
 		}
 
-		const std::wstring wcommand = synfig::filesystem::Path(command).c_str(); // TODO: remove .c_str() when filesystem::Path() improves
+		if (!redir_files.std_out.empty()) {
+			child_STDOUT_Write = CreateFileW(synfig::filesystem::Path(redir_files.std_out).c_str(),
+											 GENERIC_WRITE,
+											 FILE_SHARE_READ,
+											 &saAttr,
+											 CREATE_ALWAYS,
+											 FILE_ATTRIBUTE_NORMAL,
+											 NULL
+								 );
+			if (child_STDOUT_Write == INVALID_HANDLE_VALUE) {
+				synfig::error(_("Unable to open file to be stdout: %s [errno: %d]"), redir_files.std_out.c_str(), errno);
+				return false;
+			}
+		} else if (is_reader) {
+			if (!CreatePipe(&child_STDOUT_Read, &child_STDOUT_Write, &saAttr, 0))
+				synfig::error("synfig::OS::pipe: child_STDOUT CreatePipe");
 
-		file = _wpopen(wcommand.c_str(), wmode);
-		if (!file) {
-			synfig::error(_("Error while trying to open a pipe: %s"), command.c_str());
-			_wperror(wcommand.c_str());
+			// Ensure the read handle to the pipe for STDOUT is not inherited.
+
+			if (!SetHandleInformation(child_STDOUT_Read, HANDLE_FLAG_INHERIT, 0))
+				synfig::error("synfig::OS::pipe: child_STDOUT_Read SetHandleInformation");
 		}
-		return file != nullptr;
+
+		if (!redir_files.std_in.empty()) {
+			child_STDIN_Read = CreateFileW(synfig::filesystem::Path(redir_files.std_in).c_str(),
+											 GENERIC_READ,
+											 0,
+											 &saAttr,
+											 OPEN_EXISTING,
+											 FILE_ATTRIBUTE_NORMAL,
+											 NULL
+								 );
+			if (child_STDIN_Read == INVALID_HANDLE_VALUE) {
+				synfig::error(_("Unable to open file to be stdin: %s [errno: %d]"), redir_files.std_in.c_str(), errno);
+				return false;
+			}
+		} else if (is_writer) {
+			if (!CreatePipe(&child_STDIN_Read, &child_STDIN_Write, &saAttr, 0))
+				synfig::error("synfig::OS::pipe: child_STDIN CreatePipe");
+
+			// Ensure the write handle to the pipe for STDIN is not inherited.
+
+			if (!SetHandleInformation(child_STDIN_Write, HANDLE_FLAG_INHERIT, 0))
+				synfig::error("synfig::OS::pipe: child_STDIN_Write SetHandleInformation");
+		}
+
+		return create_child_process(command);
 	}
-	bool is_readable() const override { return is_reader && file != nullptr; }
-	bool is_writable() const override { return is_writer && file != nullptr; }
-	bool is_open() const override { return file != nullptr; };
+	bool is_readable() const override { return is_reader && child_STDOUT_Read != INVALID_HANDLE_VALUE; }
+	bool is_writable() const override { return is_writer && child_STDIN_Write != INVALID_HANDLE_VALUE; }
+	bool is_open() const override { return child_STDOUT_Read != INVALID_HANDLE_VALUE || child_STDIN_Write != INVALID_HANDLE_VALUE; };
 	int close() override
 	{
 		int status = 0;
-		if (file) {
-			status = _pclose(file);
-			file = nullptr;
+		if (child_STDIN_Read != INVALID_HANDLE_VALUE) {
+			CloseHandle(child_STDIN_Read);
+			child_STDIN_Read = INVALID_HANDLE_VALUE;
 		}
+		if (child_STDIN_Write != INVALID_HANDLE_VALUE) {
+			CloseHandle(child_STDIN_Write);
+			child_STDIN_Write = INVALID_HANDLE_VALUE;
+		}
+		if (child_STDOUT_Read != INVALID_HANDLE_VALUE) {
+			CloseHandle(child_STDOUT_Read);
+			child_STDOUT_Read = INVALID_HANDLE_VALUE;
+		}
+		if (child_STDOUT_Write != INVALID_HANDLE_VALUE) {
+			CloseHandle(child_STDOUT_Write);
+			child_STDOUT_Write = INVALID_HANDLE_VALUE;
+		}
+		if (child_STDERR_Read != INVALID_HANDLE_VALUE) {
+			CloseHandle(child_STDERR_Read);
+			child_STDERR_Read = INVALID_HANDLE_VALUE;
+		}
+		if (child_STDERR_Write != INVALID_HANDLE_VALUE) {
+			CloseHandle(child_STDERR_Write);
+			child_STDERR_Write = INVALID_HANDLE_VALUE;
+		}
+
+		//WaitForSingleObject(hThread, INFINITE);
+		//CloseHandle(hThread);
+
 		initialized = false;
 		return status;
 	}
-	void print(const std::string& text) override { fputs(text.c_str(), file); }
-	size_t write(const void* ptr, size_t size, size_t n) override { return fwrite(ptr, size, n, file); }
+	void print(const std::string& text) override
+	{
+		DWORD num_written = 0;
+		BOOL ok = WriteFile(child_STDIN_Write, text.c_str(), text.size(), &num_written, NULL);
+		if (!ok)
+			synfig::error("synfig::OS::Pipe : fail to print");
+	}
+	size_t write(const void* ptr, size_t size, size_t n) override
+	{
+		DWORD num_written = 0;
+		BOOL ok = WriteFile(child_STDIN_Write, ptr, size * n, &num_written, NULL);
+		if (!ok)
+			synfig::error("synfig::OS::Pipe : fail to write");
+		return num_written;
+	}
 
-	void flush() override { fflush(file); }
+	void flush() override { }
 
 	std::string read_contents() override
 	{
@@ -231,35 +314,110 @@ public:
 			return "";
 		}
 		std::string result;
-		char buf[128];
-		while(!feof(file)) {
-			if(fgets(buf, 128, file) != nullptr)
-				result += buf;
+		const int BUFSIZE = 4097;
+		char buffer[BUFSIZE];
+		buffer[BUFSIZE - 1] = 0;
+		while (true) {
+			DWORD num_read = 0;
+			bool success = ReadFile(child_STDOUT_Read, buffer, BUFSIZE - 1, &num_read, NULL);
+			if (!success || num_read == 0)
+				break;
+			result += buffer;
 		}
+
 		return result;
 	}
 	std::string read_contents(size_t max_bytes) override
 	{
-		if (!file) {
+		if (!is_reader) {
 			synfig::error("Should not try to readline(size_t max_bytes) a non-readable pipe");
 			return "";
 		}
 		std::string result;
 		result.reserve(max_bytes);
-		if(fgets(&result[0], max_bytes, file) != nullptr)
+		if (ReadFile(child_STDOUT_Read, &result[0], max_bytes, NULL, NULL))
 			return result;
 		return "";
 	}
-	int getc() override { return fgetc(file); }
+	int getc() override
+	{
+		char buffer;
+		bool success = ReadFile(child_STDOUT_Read, &buffer, 1, NULL, NULL);
+		if (!success)
+			return EOF;
+		return buffer;
+	}
 	int scanf(const char* __format, ...) override
 	{
 		va_list args;
 		va_start(args, __format);
-		int ret = vfscanf(file, __format, args);
+		// TODO: implement scanf for Windows pipe
+		int ret = 0; // = vfscanf(file, __format, args);
 		va_end(args);
 		return ret;
 	}
-	bool eof() const override { return feof(file); };
+	bool eof() const override
+	{
+		char buffer;
+		DWORD num_read = 0;
+		bool success = ReadFile(child_STDOUT_Read, &buffer, 0, &num_read, NULL);
+		return success && num_read == 0;
+	};
+
+private:
+	bool create_child_process(const std::string& command)
+	{
+		PROCESS_INFORMATION piProcInfo;
+		STARTUPINFOW siStartInfo;
+		BOOL bSuccess = FALSE;
+
+		ZeroMemory(&piProcInfo, sizeof(PROCESS_INFORMATION));
+
+		ZeroMemory( &siStartInfo, sizeof(STARTUPINFO) );
+		siStartInfo.cb = sizeof(STARTUPINFO);
+		siStartInfo.hStdError = child_STDERR_Write == INVALID_HANDLE_VALUE ? GetStdHandle(STD_ERROR_HANDLE) : child_STDERR_Write;
+		siStartInfo.hStdOutput = child_STDOUT_Write == INVALID_HANDLE_VALUE ? GetStdHandle(STD_OUTPUT_HANDLE) : child_STDOUT_Write;
+		siStartInfo.hStdInput = child_STDIN_Read == INVALID_HANDLE_VALUE ? GetStdHandle(STD_INPUT_HANDLE) : child_STDIN_Read;
+		siStartInfo.dwFlags |= STARTF_USESTDHANDLES;
+
+		auto native_command_line = synfig::filesystem::Path(command).native();
+		native_command_line.reserve(MAX_PATH);
+
+		bSuccess = CreateProcessW(NULL,
+			&native_command_line[0],     // command line
+			NULL,          // process security attributes
+			NULL,          // primary thread security attributes
+			TRUE,          // handles are inherited
+			0,             // creation flags
+			NULL,          // use parent's environment
+			NULL,          // use parent's current directory
+			&siStartInfo,  // STARTUPINFO pointer
+			&piProcInfo);  // receives PROCESS_INFORMATION
+
+		// If an error occurs, exit the application.
+		if (!bSuccess) {
+		   synfig::error("synfig::OS::pipe: CreateProcess");
+		   return false;
+		}
+		// Close handles to the child process and its primary thread.
+		// Some applications might keep these handles to monitor the status
+		// of the child process, for example.
+
+		CloseHandle(piProcInfo.hProcess);
+		CloseHandle(piProcInfo.hThread);
+
+		// Close handles to the stdin and stdout pipes no longer needed by the child process.
+		// If they are not explicitly closed, there is no way to recognize that the child process has ended.
+
+		CloseHandle(child_STDERR_Write);
+		child_STDERR_Write = INVALID_HANDLE_VALUE;
+		CloseHandle(child_STDOUT_Write);
+		child_STDOUT_Write = INVALID_HANDLE_VALUE;
+		CloseHandle(child_STDIN_Read);
+		child_STDIN_Read = INVALID_HANDLE_VALUE;
+
+		return true;
+	}
 };
 #else
 class RunPipeUnix : public OS::RunPipe
