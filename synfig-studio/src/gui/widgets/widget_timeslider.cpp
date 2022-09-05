@@ -350,6 +350,13 @@ Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 				Gdk::Cairo::set_source_pixbuf(cr, icon, x0 + w + boundary_adjust, 0);
 				cr->rectangle(x0 + w + boundary_adjust, 0.0, handle_dimension, (double)get_height());
 				cr->fill();
+				if (((moving_lower_bound_handle || hovering_on_lower_bound_handle) && i==0) ||
+						((moving_upper_bound_handle || hovering_on_upper_bound_handle) && i==1)) { //highlight/lighten bound
+					cairo_set_operator(cr->cobj(), CAIRO_OPERATOR_LIGHTEN);
+					cr->set_source_rgba(1.0, 1.0, 1.0, 0.2);
+					cr->rectangle(x0 + w + boundary_adjust, 0.0, handle_dimension, (double)get_height());
+					cr->fill();
+				}
 				cr->restore();
 			}
 		}
@@ -394,7 +401,21 @@ Widget_Timeslider::on_button_release_event(GdkEventButton *event){
 	lastx = (double)event->x;
 	moving_lower_bound_handle = false;
 	moving_upper_bound_handle = false;
+	hovering_on_lower_bound_handle = false;
+	hovering_on_upper_bound_handle = false;
+	queue_draw();
 	return event->button == 1 || event->button == 2;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
+}
+
+bool
+Widget_Timeslider::on_leave_notify_event(GdkEventCrossing*)
+{
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
+	hovering_on_lower_bound_handle = false;
+	hovering_on_upper_bound_handle = false;
+	queue_draw();
+	return true;
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
@@ -419,16 +440,21 @@ Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for dragging
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 
-	synfig::Rect lower_bound = 	get_bounds_rectangle(true);
-	synfig::Rect upper_bound =	get_bounds_rectangle(false);
+	synfig::Rect lower_bound = get_bounds_rectangle(true);
+	synfig::Rect upper_bound = get_bounds_rectangle(false);
 	synfig::Point cursor_pos(event->x, 0.0);
 	bool moving_handle = moving_lower_bound_handle || moving_upper_bound_handle;
 	bool bounds_enabled = time_plot_data->time_model->get_play_bounds_enabled();
+	hovering_on_lower_bound_handle = lower_bound.is_inside(cursor_pos);
+	hovering_on_upper_bound_handle = upper_bound.is_inside(cursor_pos);
+	bool hovering_on_handle = hovering_on_lower_bound_handle || hovering_on_upper_bound_handle;
 
-	if ((moving_handle || lower_bound.is_inside(cursor_pos) || upper_bound.is_inside(cursor_pos)) && (bounds_enabled))
+	if ((moving_handle || hovering_on_handle) && (bounds_enabled))
 		   get_window()->set_cursor(bounds_cursor);
 	else
 		   get_window()->set_cursor(default_cursor);
+
+	queue_draw();
 
 	double dx = (double)event->x - lastx;
 	lastx = (double)event->x;

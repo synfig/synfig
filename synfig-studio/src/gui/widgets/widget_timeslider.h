@@ -69,6 +69,8 @@ protected: // implementation that other interfaces can see
 
 	bool moving_lower_bound_handle = false;
 	bool moving_upper_bound_handle = false;
+	bool hovering_on_lower_bound_handle = false;
+	bool hovering_on_upper_bound_handle = false;
 
 	// distance between two small marks, also uses for left/right scroll
 	synfig::Time step;
@@ -82,6 +84,7 @@ protected: // implementation that other interfaces can see
 	virtual bool on_button_release_event(GdkEventButton *event); //for clicking
 	virtual bool on_motion_notify_event(GdkEventMotion* event); //for dragging
 	virtual bool on_scroll_event(GdkEventScroll* event); //for zooming
+	virtual bool on_leave_notify_event(GdkEventCrossing* event);
 	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 
 	virtual void draw_background(const Cairo::RefPtr<Cairo::Context> &cr);
