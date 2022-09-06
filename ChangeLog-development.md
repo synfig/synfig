@@ -1,3 +1,5 @@
+- [`da13b77`](https://github.com/synfig/synfig/commit/da13b77425c833434723dc8d22ce5c25410105e1) build(vcpkg): `cmake --install` now also installs required dependencies ([#2816](https://github.com/synfig/synfig/issues/2816)) [core] [studio]
+- [`18b9d2b`](https://github.com/synfig/synfig/commit/18b9d2b58b1cd07e0c7fb6306711766950f5a906) refactor: removed boost dependency ([#2792](https://github.com/synfig/synfig/issues/2792)) [core]
 - [`dd55c0f`](https://github.com/synfig/synfig/commit/dd55c0f3f982d676696e58fafb9175e4cd388e13) fix(msvc): fixed debug build in MSVC ([#2812](https://github.com/synfig/synfig/issues/2812)) [core]
 - [`c6eb41d`](https://github.com/synfig/synfig/commit/c6eb41d71876092484cf2a814c6a294beb78ac1e) build: Use vcpkg to build synfig ([#2725](https://github.com/synfig/synfig/issues/2725)) [core] [studio]
 - [`9cecd2a`](https://github.com/synfig/synfig/commit/9cecd2abe143e29cf0564e511183beebab7dfafb) feat: added ability to show/hide rulers ([#2634](https://github.com/synfig/synfig/issues/2634)) [studio]
