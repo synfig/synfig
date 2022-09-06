@@ -123,7 +123,8 @@ Duckmatic::Duckmatic(etl::loose_handle<synfigapp::CanvasInterface> canvas_interf
 	prev_zoom(1.0),
 	show_persistent_strokes(true),
 	axis_lock(false),
-	drag_offset_(0, 0)
+	drag_offset_(0, 0),
+	curr_guide_is_x(false)
 {
 	clear_duck_dragger();
 	clear_bezier_dragger();
@@ -929,8 +930,126 @@ Duckmatic::find_guide_y(synfig::Point pos, float radius)
 	return best;
 }
 
+Duckmatic::GuideList::iterator
+Duckmatic::find_guide(synfig::Point pos, float radius)
+{
+	GuideList::iterator iter,best(guide_list_y_.end());// from what i remember best is defaulted to end to know if there is a selection found or not
+
+	GuideList::iterator iter_accomp_y = list_y_accomp_cord_.begin();
+	GuideList::iterator iter_accomp_other_y = list_y_accomp_cord_other_.begin();
+
+//	GuideList::iterator iter,best(guide_list_x_.end());
+
+	curr_guide_is_x = false;
+	float dist(radius);
+	for(iter=guide_list_y_.begin();iter!=guide_list_y_.end();++iter)//looping through the y guides to find closest
+	{
+		float slope=0,c=0,num=0,denom=0,amount_rotate=0;
+		bool ruler_rotated;
+
+		if(*iter_accomp_y > -900){
+			ruler_rotated = true;
+		}
+		else{
+			ruler_rotated = false;
+		}
+
+		if (ruler_rotated) {
+			float center_x = (1.0/2.0)*(drawing_area_width);//center position
+			float center_y = ((*iter-window_starty)/pheight) ;
+			float x2((*iter_accomp_y-window_startx)/pwidth);//rotate position i.e. move with ctr
+			float y2((*iter_accomp_other_y-window_starty)/pheight);
+			float y((pos[1]-window_starty)/pheight);//live mouse position
+			float x((pos[0]-window_startx)/pwidth);
+			slope= (y2 - center_y)/(x2 - center_x);
+			c = (-(slope*center_x)+center_y);
+			//now we have the equation of the rotated straight line y = slope*x + c, we now calc the perpindicular/shortest distnace from the line
+			num= std::fabs((slope*x)-y-(slope*center_x)+center_y);
+			denom= std::sqrt(1 + (slope)*(slope));
+			amount_rotate= num/denom; //perp distance
+		}
+
+		if ((std::fabs(slope) < 0.01) || (std::fabs(slope) > 400))
+			ruler_rotated = false;
+
+		float amount(std::fabs(*iter-pos[1]));
+		if (((amount < dist) && (!ruler_rotated)) || ((ruler_rotated) && amount_rotate < (dist + 3)))
+		{
+			if (ruler_rotated)
+				current_slope = slope;
+
+			if (amount < amount_rotate - 3)
+				dist = amount;
+			else
+				dist = amount_rotate - 3;
+
+			best = iter;
+			curr_guide_accomp_duckamtic = iter_accomp_y;
+			curr_guide_accomp_duckamtic_other = iter_accomp_other_y;
+		}
+		iter_accomp_y++;
+		iter_accomp_other_y++;
+	}
+
+	GuideList::iterator iter_accomp_x = list_x_accomp_cord_.begin();
+	GuideList::iterator iter_accomp_other_x = list_x_accomp_cord_other_.begin();
+
+	for(iter=guide_list_x_.begin();iter!=guide_list_x_.end();++iter)
+	{
+		float slope=0,c=0,num=0,denom=0,amount_rotate=0;
+		bool ruler_rotated;
+
+		if(*iter_accomp_x > -900)
+			ruler_rotated = true;
+		else
+			ruler_rotated = false;
+
+		if (ruler_rotated) {
+		float center_x((*iter-window_startx)/pwidth);//center position
+		float center_y = (1.0/2.0)*(drawing_area_height);
+		float x2((*iter_accomp_other_x-window_startx)/pwidth);//rotate position i.e. move with ctr
+		float y2((*iter_accomp_x-window_starty)/pheight);
+		float y((pos[1]-window_starty)/pheight);//live mouse position
+		float x((pos[0]-window_startx)/pwidth);
+		slope = (y2 - center_y)/(x2 - center_x);
+		c = (-(slope*center_x)+center_y);
+		//now we have the equation of the rotated straight line y = slope*x + c, calc the perpindicular/shortest distnace from the line
+		num = std::fabs((slope*x)-y-(slope*center_x)+center_y);
+		denom = std::sqrt(1 + (slope)*(slope));
+		amount_rotate = num/denom; //perp distance
+		}
+
+		if (std::fabs(slope) > 400)// any slope greater than 300 or 400 means it is almost vertical and should be treated as such
+			ruler_rotated = false;
+
+		float amount(std::fabs(*iter-pos[0]));
+			//if distace of this iterations ruler is less than dist which is preinitialized but then becomes amount then this is close and update dist
+		if( ((amount<dist) && (!ruler_rotated)) || ((ruler_rotated) && amount_rotate < (dist + 3)) )//3 is an empirical value
+		{
+			curr_guide_is_x=true;
+
+			if (ruler_rotated)
+				current_slope = slope;
+
+
+			if(amount < amount_rotate - 3)
+				dist = amount;
+			else
+				dist = amount_rotate - 3;
+
+			best = iter;
+			curr_guide_accomp_duckamtic = iter_accomp_x;
+			curr_guide_accomp_duckamtic_other = iter_accomp_other_x;
+		}
+		iter_accomp_x++;
+		iter_accomp_other_x++;
+	}
+
+	return best;
+}
+
 Point
-Duckmatic::snap_point_to_grid(const synfig::Point& x)const
+Duckmatic::snap_point_to_grid(const synfig::Point& x)const//snap thing look into it after
 {
 	Point ret(x);
 	float radius(0.1/zoom);
@@ -958,12 +1077,30 @@ Duckmatic::snap_point_to_grid(const synfig::Point& x)const
 			ret[1]=snap[1],has_guide_y=false;
 	}
 
-	if(guide_snap)
+	if(guide_snap)//so this returns the value of the coordinate. now this is fine for non rot but for rotated difff strategy
 	{
-		if(has_guide_x)
-			ret[0]=*guide_x;
-		if(has_guide_y)
-			ret[1]=*guide_y;
+		//test to see if the point here is the uncorrected original point
+
+		if(has_guide_x && (*curr_guide_accomp_duckamtic < -900))
+			ret[0]=*guide_x; //now if not rotated then based on the y of the arg we figure out the needed x
+		else if (has_guide_x ){ //condition could be definetly be written better
+			float center_x =(*guide_x-window_startx)/pwidth;//center position
+			float center_y = (1.0/2.0)*(drawing_area_height);
+			float point_y_converted =((x[1]-window_starty)/pheight);
+			float new_adjusted_x = (point_y_converted - center_y)/(current_slope) + center_x;
+			ret[0] = (new_adjusted_x*pwidth)+window_startx;
+		}
+
+		if(has_guide_y && (*curr_guide_accomp_duckamtic < -900))
+			ret[1]=*guide_y; //opp
+		else if(has_guide_y) {
+			float center_x = (1.0/2.0)*(drawing_area_width);//center position
+			float center_y = ((*guide_y-window_starty)/pheight) ;
+			float point_x_converted = ((x[0]-window_startx)/pwidth);//rotate position i.e. move with ctr
+			float new_adjusted_y = (point_x_converted - center_x)*(current_slope) + center_y;
+			ret[1] = (new_adjusted_y*pheight)+window_starty;
+		}
+
 	}
 
 	if(axis_lock)

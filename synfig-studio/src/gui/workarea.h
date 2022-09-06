@@ -230,7 +230,6 @@ private:
 	bool allow_duck_clicks;
 	bool allow_bezier_clicks;
 	bool allow_layer_clicks;
-	bool curr_guide_is_x;
 
 	etl::handle<LockDucks> lock_ducks;
 

@@ -163,7 +163,6 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	allow_duck_clicks(true),
 	allow_bezier_clicks(true),
 	allow_layer_clicks(true),
-	curr_guide_is_x(false),
 	solid_lines(true),
 	timecode_width(0),
 	timecode_height(0),
@@ -1482,13 +1481,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 					window_startx= window_start_x;
 					window_starty= window_start_y;
 
-					GuideList::iterator iter = find_guide_x(mouse_pos,radius);
-					if (iter == get_guide_list_x().end()) {
-						curr_guide_is_x = false;
-						iter = find_guide_y(mouse_pos,radius);
-					} else {
-						curr_guide_is_x = true;
-					}
+					GuideList::iterator iter = find_guide(mouse_pos,radius);
 
 					if (iter != get_guide_list_x().end() && iter != get_guide_list_y().end()) {
 						set_drag_mode(DRAG_GUIDE);
@@ -1551,17 +1544,10 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				waypoint_menu->popup(3, gtk_get_current_event_time());
 
 				//determine the curr_guide
-				GuideList::iterator iter = find_guide_x(mouse_pos,radius);
-				bool curr_guide_is_x_temp;
-				if (iter == get_guide_list_x().end()) {
-					curr_guide_is_x_temp = false;
-					iter = find_guide_y(mouse_pos,radius);
-				} else {
-					curr_guide_is_x_temp = true;
-				}
+				GuideList::iterator iter = find_guide(mouse_pos,radius);
 
 				guide_dialog.set_current_guide_iterators(curr_guide, curr_guide_accomp_duckamtic, curr_guide_accomp_duckamtic_other);
-				guide_dialog.set_rotation_angle(curr_guide_is_x_temp);
+				guide_dialog.set_rotation_angle(curr_guide_is_x);
 				return true;
 			}
 
@@ -1601,9 +1587,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		// Guide/Duck highlights on hover
 		switch(get_drag_mode()) {
 		case DRAG_NONE: {
-            GuideList::iterator iter = find_guide_x(mouse_pos,radius);
-            if (iter == get_guide_list_x().end())
-                iter = find_guide_y(mouse_pos, radius);
+			GuideList::iterator iter = find_guide(mouse_pos,radius);
 
             if (iter != curr_guide) {
                 curr_guide = iter;

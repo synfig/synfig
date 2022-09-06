@@ -253,6 +253,8 @@ protected:
 
 	bool axis_lock;
 
+	bool curr_guide_is_x;
+
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
 	*/
@@ -506,6 +508,7 @@ public:
 
 	GuideList::iterator find_guide_x(synfig::Point pos, float radius=0.1);
 	GuideList::iterator find_guide_y(synfig::Point pos, float radius=0.1);
+	GuideList::iterator find_guide(synfig::Point pos, float radius=0.1);
 	GuideList::const_iterator find_guide_x(synfig::Point pos, float radius=0.1)const { return const_cast<Duckmatic*>(this)->find_guide_x(pos,radius); }
 	GuideList::const_iterator find_guide_y(synfig::Point pos, float radius=0.1)const { return const_cast<Duckmatic*>(this)->find_guide_y(pos,radius); }
 
