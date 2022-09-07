@@ -100,11 +100,6 @@ public:
 	const time_type &get_s()const { return s; }
 	time_type get_dt()const { return s-r; }
 
-	bool intersect_hull(const bezier_base<value_type,time_type> &/*x*/)const
-	{
-		return 0;
-	}
-
 	//! Bezier curve intersection function
 	/*! Calculates the time of intersection
 	**	for the calling curve.
