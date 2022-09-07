@@ -206,7 +206,7 @@ bool Widget_Timetrack::move_selected(synfig::Time delta_time)
 	model.set_after(type);
 	std::vector<WaypointItem*> selection = waypoint_sd.get_selected_items();
 
-	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Change Waypoint Group"));
+	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Change Waypoint Interpolation"));
 
 	for (WaypointItem* waypoint_item : selection) {
 		std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set_new;
