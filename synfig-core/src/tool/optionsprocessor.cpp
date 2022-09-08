@@ -241,7 +241,11 @@ bool SynfigCommandLineParser::parse(int argc, char* argv[])
 #ifdef GLIBMM_EXCEPTIONS_ENABLED
 	try
 	{
+#ifdef _WIN32
+		context.parse(argv);
+#else
 		context.parse(argc, argv);
+#endif
 	}
 	catch(const Glib::Error& ex)
 	{
