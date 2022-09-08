@@ -199,9 +199,6 @@ magickpp_trgt::~magickpp_trgt()
 		synfig::error("unknown exception");
 	}
 
-	if (buffer1) delete [] buffer1;
-	if (buffer2) delete [] buffer2;
-	if (color_buffer) delete [] color_buffer;
 	//exceptionInfo = MagickCore::DestroyExceptionInfo(exceptionInfo);
 	MagickCore::DestroyExceptionInfo(exceptionInfo);
 }
@@ -221,24 +218,11 @@ magickpp_trgt::init(synfig::ProgressCallback*)
 
 	start_pointer = nullptr;
 
-	buffer1 = new unsigned char[4*width*height];
-	if (!buffer1)
-		return false;
+	std::size_t buffer_size = static_cast<std::size_t>(4) * width * height;
+	buffer1.resize(buffer_size);
+	buffer2.resize(buffer_size);
 
-	buffer2 = new unsigned char[4*width*height];
-	if (!buffer2)
-	{
-		delete [] buffer1;
-		return false;
-	}
-
-	color_buffer = new Color[width];
-	if (!color_buffer)
-	{
-		delete [] buffer1;
-		delete [] buffer2;
-		return false;
-	}
+	color_buffer.resize(width);
 
 	return true;
 }
@@ -255,10 +239,10 @@ magickpp_trgt::end_frame()
 bool
 magickpp_trgt::start_frame(synfig::ProgressCallback */*callback*/)
 {
-	if (start_pointer == buffer1)
-		start_pointer = buffer_pointer = buffer2;
+	if (start_pointer == buffer1.data())
+		start_pointer = buffer_pointer = buffer2.data();
 	else
-		start_pointer = buffer_pointer = buffer1;
+		start_pointer = buffer_pointer = buffer1.data();
 
 	previous_buffer_pointer = start_pointer;
 
@@ -269,14 +253,14 @@ magickpp_trgt::start_frame(synfig::ProgressCallback */*callback*/)
 Color*
 magickpp_trgt::start_scanline(int /*scanline*/)
 {
-	return color_buffer;
+	return color_buffer.data();
 }
 
 bool
 magickpp_trgt::end_scanline()
 {
 	if (previous_buffer_pointer)
-		color_to_pixelformat(previous_buffer_pointer, color_buffer, PF_RGB|PF_A, 0, width);
+		color_to_pixelformat(previous_buffer_pointer, color_buffer.data(), PF_RGB|PF_A, 0, width);
 
 	if (!transparent)
 		for (int i = 0; i < width; i++)
