@@ -263,10 +263,9 @@ magickpp_trgt::end_scanline()
 	if (previous_row_buffer_pointer)
 		color_to_pixelformat(previous_row_buffer_pointer, color_buffer.data(), PF_RGB|PF_A, 0, width);
 
-	if (!transparent) {
+	if (!transparent && previous_row_buffer_pointer) {
 		for (int i = 0; i < width; i++) {
-			if (previous_row_buffer_pointer &&					// this isn't the first frame
-				current_row_buffer_pointer[i*4 + 3] < 128 &&	// our pixel is transparent
+			if (current_row_buffer_pointer[i*4 + 3] < 128 &&	// our pixel is transparent
 				!(previous_row_buffer_pointer[i*4 + 3] < 128))	// the previous frame's pixel wasn't
 			{
 				transparent = true;
