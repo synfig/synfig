@@ -57,8 +57,9 @@ private:
 
 	synfig::String filename;
 	std::vector<unsigned char> buffer1, buffer2;
-	unsigned char *start_pointer, *buffer_pointer;
-	unsigned char *previous_buffer_pointer;
+	unsigned char* buffer_pointer;
+	unsigned char* current_row_buffer_pointer;
+	unsigned char* previous_row_buffer_pointer;
 	bool transparent;
 	std::vector<synfig::Color> color_buffer;
 	std::vector<Magick::Image> images;
@@ -70,9 +71,9 @@ public:
 		width(),
 		height(),
 		filename(filename),
-		start_pointer(nullptr),
 		buffer_pointer(nullptr),
-		previous_buffer_pointer(nullptr),
+		current_row_buffer_pointer(nullptr),
+		previous_row_buffer_pointer(nullptr),
 		transparent(),
 		sequence_separator(params.sequence_separator)
 	{ }

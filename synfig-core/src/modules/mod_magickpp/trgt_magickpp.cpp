@@ -216,7 +216,7 @@ magickpp_trgt::init(synfig::ProgressCallback*)
 	width = desc.get_w();
 	height = desc.get_h();
 
-	start_pointer = nullptr;
+	buffer_pointer = nullptr;
 
 	std::size_t buffer_size = static_cast<std::size_t>(4) * width * height;
 	buffer1.resize(buffer_size);
@@ -230,7 +230,7 @@ magickpp_trgt::init(synfig::ProgressCallback*)
 void
 magickpp_trgt::end_frame()
 {
-	Magick::Image image(width, height, "RGBA", Magick::CharPixel, start_pointer);
+	Magick::Image image(width, height, "RGBA", Magick::CharPixel, buffer_pointer);
 	if (transparent && images.begin() != images.end())
 		(images.end()-1)->gifDisposeMethod(Magick::BackgroundDispose);
 	images.push_back(image);
@@ -239,14 +239,15 @@ magickpp_trgt::end_frame()
 bool
 magickpp_trgt::start_frame(synfig::ProgressCallback */*callback*/)
 {
-	if (start_pointer == buffer1.data())
-		start_pointer = buffer_pointer = buffer2.data();
+	if (buffer_pointer == buffer1.data())
+		buffer_pointer = current_row_buffer_pointer = buffer2.data();
 	else
-		start_pointer = buffer_pointer = buffer1.data();
+		buffer_pointer = current_row_buffer_pointer = buffer1.data();
 
-	previous_buffer_pointer = start_pointer;
+	previous_row_buffer_pointer = buffer_pointer;
 
 	transparent = false;
+
 	return true;
 }
 
@@ -259,23 +260,25 @@ magickpp_trgt::start_scanline(int /*scanline*/)
 bool
 magickpp_trgt::end_scanline()
 {
-	if (previous_buffer_pointer)
-		color_to_pixelformat(previous_buffer_pointer, color_buffer.data(), PF_RGB|PF_A, 0, width);
+	if (previous_row_buffer_pointer)
+		color_to_pixelformat(previous_row_buffer_pointer, color_buffer.data(), PF_RGB|PF_A, 0, width);
 
-	if (!transparent)
-		for (int i = 0; i < width; i++)
-			if (previous_buffer_pointer &&					// this isn't the first frame
-				buffer_pointer[i*4 + 3] < 128 &&			// our pixel is transparent
-				!(previous_buffer_pointer[i*4 + 3] < 128))	// the previous frame's pixel wasn't
+	if (!transparent) {
+		for (int i = 0; i < width; i++) {
+			if (previous_row_buffer_pointer &&					// this isn't the first frame
+				current_row_buffer_pointer[i*4 + 3] < 128 &&	// our pixel is transparent
+				!(previous_row_buffer_pointer[i*4 + 3] < 128))	// the previous frame's pixel wasn't
 			{
 				transparent = true;
 				break;
 			}
+		}
+	}
 
-	buffer_pointer += 4 * width;
+	current_row_buffer_pointer += 4 * width;
 
-	if (previous_buffer_pointer)
-		previous_buffer_pointer += 4 * width;
+	if (previous_row_buffer_pointer)
+		previous_row_buffer_pointer += 4 * width;
 
 	return true;
 }
