@@ -98,7 +98,7 @@ magickpp_trgt::~magickpp_trgt()
 		if (multiple_images)
 		{
 			// check whether this file format supports multiple-image files
-			Magick::Image image(*(images.begin()));
+			Magick::Image image(images.front());
 			image.fileName(filename);
 			try
 			{
@@ -218,9 +218,14 @@ magickpp_trgt::init(synfig::ProgressCallback*)
 
 	buffer_pointer = nullptr;
 
+	std::string extension = filename_extension(filename);
+	std::transform(extension.begin(), extension.end(), extension.begin(), [](unsigned char c) { return std::tolower(c); });
+	is_gif = extension == ".gif";
+
 	std::size_t buffer_size = static_cast<std::size_t>(4) * width * height;
 	buffer1.resize(buffer_size);
-	buffer2.resize(buffer_size);
+	if (is_gif)
+		buffer2.resize(buffer_size);
 
 	color_buffer.resize(width);
 
@@ -231,17 +236,18 @@ void
 magickpp_trgt::end_frame()
 {
 	Magick::Image image(width, height, "RGBA", Magick::CharPixel, buffer_pointer);
-	if (transparent && images.begin() != images.end())
-		(images.end()-1)->gifDisposeMethod(Magick::BackgroundDispose);
+	if (is_gif && transparent && images.size() > 1)
+		images.back().gifDisposeMethod(Magick::BackgroundDispose);
 	images.push_back(image);
 }
 
 bool
 magickpp_trgt::start_frame(synfig::ProgressCallback */*callback*/)
 {
-	previous_row_buffer_pointer = buffer_pointer;
+	if (is_gif)
+		previous_row_buffer_pointer = buffer_pointer;
 
-	if (buffer_pointer == buffer1.data())
+	if (is_gif && buffer_pointer == buffer1.data())
 		buffer_pointer = current_row_buffer_pointer = buffer2.data();
 	else
 		buffer_pointer = current_row_buffer_pointer = buffer1.data();

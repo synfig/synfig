@@ -61,6 +61,7 @@ private:
 	unsigned char* current_row_buffer_pointer;
 	unsigned char* previous_row_buffer_pointer;
 	bool transparent;
+	bool is_gif;
 	std::vector<synfig::Color> color_buffer;
 	std::vector<Magick::Image> images;
 	synfig::String sequence_separator;
@@ -75,6 +76,7 @@ public:
 		current_row_buffer_pointer(nullptr),
 		previous_row_buffer_pointer(nullptr),
 		transparent(),
+		is_gif(false),
 		sequence_separator(params.sequence_separator)
 	{ }
 	virtual ~magickpp_trgt();
