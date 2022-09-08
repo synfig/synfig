@@ -1,4 +1,4 @@
-APPLICATION_ICON    ICON    "${SYNFIG_BUILD_ROOT}/share/synfig/icons/classic/synfig_icon.ico" 
+APPLICATION_ICON    ICON    "synfig_icon.ico"
  
 1 VERSIONINFO 
     FILEVERSION     ${STUDIO_VERSION_MAJOR},${STUDIO_VERSION_MINOR},${STUDIO_VERSION_PATCH},0 
