@@ -239,12 +239,12 @@ magickpp_trgt::end_frame()
 bool
 magickpp_trgt::start_frame(synfig::ProgressCallback */*callback*/)
 {
+	previous_row_buffer_pointer = buffer_pointer;
+
 	if (buffer_pointer == buffer1.data())
 		buffer_pointer = current_row_buffer_pointer = buffer2.data();
 	else
 		buffer_pointer = current_row_buffer_pointer = buffer1.data();
-
-	previous_row_buffer_pointer = buffer_pointer;
 
 	transparent = false;
 
@@ -260,8 +260,7 @@ magickpp_trgt::start_scanline(int /*scanline*/)
 bool
 magickpp_trgt::end_scanline()
 {
-	if (previous_row_buffer_pointer)
-		color_to_pixelformat(previous_row_buffer_pointer, color_buffer.data(), PF_RGB|PF_A, 0, width);
+	color_to_pixelformat(current_row_buffer_pointer, color_buffer.data(), PF_RGB|PF_A, 0, width);
 
 	if (!transparent && previous_row_buffer_pointer) {
 		for (int i = 0; i < width; i++) {
