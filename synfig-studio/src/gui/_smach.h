@@ -142,6 +142,12 @@ public:
 
 		//! Copy constructor
 		event_def_internal(const event_def_internal &x):id(x.id),handler(x.handler) { }
+		event_def_internal& operator=(const event_def_internal& x)
+		{
+			id = x.id;
+			handler = x.handler;
+			return *this;
+		}
 
 	};
 
