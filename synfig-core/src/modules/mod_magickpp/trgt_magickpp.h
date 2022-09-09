@@ -56,10 +56,13 @@ private:
 	int width, height;
 
 	synfig::String filename;
-	unsigned char *buffer1, *start_pointer, *buffer_pointer;
-	unsigned char *buffer2, *previous_buffer_pointer;
+	std::vector<unsigned char> buffer1, buffer2;
+	unsigned char* buffer_pointer;
+	unsigned char* current_row_buffer_pointer;
+	unsigned char* previous_row_buffer_pointer;
 	bool transparent;
-	synfig::Color *color_buffer;
+	bool is_gif;
+	std::vector<synfig::Color> color_buffer;
 	std::vector<Magick::Image> images;
 	synfig::String sequence_separator;
 
@@ -69,13 +72,11 @@ public:
 		width(),
 		height(),
 		filename(filename),
-		buffer1(nullptr),
-		start_pointer(nullptr),
 		buffer_pointer(nullptr),
-		buffer2(nullptr),
-		previous_buffer_pointer(nullptr),
+		current_row_buffer_pointer(nullptr),
+		previous_row_buffer_pointer(nullptr),
 		transparent(),
-		color_buffer(nullptr),
+		is_gif(false),
 		sequence_separator(params.sequence_separator)
 	{ }
 	virtual ~magickpp_trgt();
