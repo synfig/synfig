@@ -61,8 +61,9 @@ Dock_Timetrack2::Dock_Timetrack2()
 	hscrollbar.set_hexpand();
 	hscrollbar.show();
 
-	setup_tool_palette();
-	tool_palette.show_all();
+	setup_tool_bar();
+	tool_bar->show_all();
+	set_interp_buttons_visibility(false);
 
 	grid.set_column_homogeneous(false);
 	grid.set_row_homogeneous(false);
@@ -99,7 +100,9 @@ void Dock_Timetrack2::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canva
 
 	widget_timetrack->signal_waypoint_double_clicked().connect(sigc::mem_fun(*this, &Dock_Timetrack2::on_widget_timetrack_waypoint_double_clicked));
 
-	widget_timetrack->signal_action_state_changed().connect(sigc::mem_fun(*this, &Dock_Timetrack2::update_tool_palette_action));
+	widget_timetrack->signal_action_state_changed().connect(sigc::mem_fun(*this, &Dock_Timetrack2::update_tool_bar_action));
+
+	widget_timetrack->signal_update_interpolation_buttons_visiblity().connect(sigc::mem_fun(*this, &Dock_Timetrack2::set_interp_buttons_visibility));
 }
 
 void Dock_Timetrack2::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
@@ -120,7 +123,7 @@ void Dock_Timetrack2::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> ca
 
 		hscrollbar.unset_adjustment();
 
-		tool_palette.hide();
+		tool_bar->hide();
 	} else {
 		widget_kf_list.set_time_model(canvas_view->time_model());
 		widget_kf_list.set_canvas_interface(canvas_view->canvas_interface());
@@ -134,15 +137,15 @@ void Dock_Timetrack2::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> ca
 
 		hscrollbar.set_adjustment(canvas_view->time_model()->scroll_time_adjustment());
 
-		update_tool_palette_action();
-		tool_palette.show();
+		update_tool_bar_action();
+		set_interp_buttons_visibility(current_widget_timetrack->get_num_waypoints_selected());
 
 		grid.attach(widget_kf_list,            0, 0, 1, 1);
 		grid.attach(widget_timeslider,         0, 1, 1, 1);
 		grid.attach(*current_widget_timetrack, 0, 2, 1, 1);
 		grid.attach(hscrollbar,                0, 4, 2, 1);
 		grid.attach(vscrollbar,                1, 0, 1, 4);
-		grid.attach(tool_palette,              2, 0, 1, 4);
+		grid.attach(*tool_bar,				   2, 0, 1, 4);
 		grid.show();
 	}
 
@@ -179,10 +182,13 @@ void Dock_Timetrack2::on_widget_timetrack_waypoint_double_clicked(synfigapp::Val
 		canvas_view->on_waypoint_clicked_canvasview(value_desc, waypoint_set, button);
 }
 
-void Dock_Timetrack2::setup_tool_palette()
+void Dock_Timetrack2::setup_tool_bar()
 {
-	Gtk::ToolItemGroup *tool_item_group = Gtk::manage(new Gtk::ToolItemGroup());
-	gtk_tool_item_group_set_label(tool_item_group->gobj(), nullptr);
+	tool_bar = manage(new Gtk::Toolbar());
+	tool_bar->set_icon_size(Gtk::IconSize::from_name("synfig-small_icon_16x16"));
+	tool_bar->set_toolbar_style(Gtk::TOOLBAR_ICONS);
+	tool_bar->set_property("orientation", Gtk::ORIENTATION_VERTICAL);
+
 	struct ActionButtonInfo {
 		std::string icon;
 		std::string tooltip;
@@ -205,8 +211,6 @@ void Dock_Timetrack2::setup_tool_palette()
 					Widget_Timetrack::ActionState::SCALE}
 	};
 
-	tool_palette.set_icon_size(Gtk::IconSize::from_name("synfig-small_icon_16x16"));
-
 	Gtk::RadioButtonGroup button_group;
 	for (const auto & tool_info : tools_info) {
 		const std::string &icon_name = tool_info.icon;
@@ -228,12 +232,12 @@ void Dock_Timetrack2::setup_tool_palette()
 				current_widget_timetrack->set_action_state(action_state);
 		}, *this));
 		action_button_map[tool_button->get_name()] = tool_button;
-		tool_item_group->add(*tool_button);
+		tool_bar->append(*tool_button);
 	}
 
 	Gtk::SeparatorToolItem* separator = Gtk::manage(new Gtk::SeparatorToolItem());
-	separator->set_valign(Gtk::ALIGN_CENTER);
-	tool_item_group->add(*separator);
+	separator->set_name("separator");
+	tool_bar->append(*separator);
 
 	struct InterpolationButtonInfo {
 		std::string name;
@@ -255,14 +259,15 @@ void Dock_Timetrack2::setup_tool_palette()
 		tool_button->signal_clicked().connect(sigc::track_obj([this, interp_button_info](){
 			current_widget_timetrack->interpolate_selected(interp_button_info.interpolation);
 		}, *this));
-		tool_item_group->add(*tool_button);
+		std::string tool_tip = N_("Change waypoint interpolation to " + interp_button_info.name);
+		tool_button->set_tooltip_text(_(tool_tip.c_str()));
+		tool_button->set_name(interp_button_info.name);
+		tool_bar->append(*tool_button);
 	}
-
-	tool_palette.add(*tool_item_group);
-	tool_palette.set_sensitive(true);
+	tool_bar->set_sensitive(true);
 }
 
-void Dock_Timetrack2::update_tool_palette_action()
+void Dock_Timetrack2::update_tool_bar_action()
 {
 	if (!current_widget_timetrack)
 		return;
@@ -278,3 +283,14 @@ void Dock_Timetrack2::update_tool_palette_action()
 	if (button)
 		button->set_active(true);
 }
+
+void Dock_Timetrack2::set_interp_buttons_visibility(bool visible)
+{
+	for (int i = 0; i < tool_bar->get_n_items(); i++){
+		std::string name = tool_bar->get_nth_item(i)->get_name();
+		if ( name == "Clamped" || name == "TCB" || name == "Constant" ||
+			 name =="separator" || name == "Ease In/Out"|| name == "Linear")
+			tool_bar->get_nth_item(i)->set_visible(visible);
+	}
+}
+

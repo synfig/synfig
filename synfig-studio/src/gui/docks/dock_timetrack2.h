@@ -56,15 +56,18 @@ private:
 	Widget_Timetrack *current_widget_timetrack;
 	Gtk::Scrollbar vscrollbar;
 	Gtk::Scrollbar hscrollbar;
-	Gtk::ToolPalette tool_palette;
+	Gtk::Toolbar *tool_bar;
+
+	Glib::RefPtr<Gtk::ActionGroup> tool_bar_action_group;
 
 	void on_update_header_height(int height);
 
 	void on_widget_timetrack_waypoint_clicked(synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint,std::less<synfig::UniqueID>> waypoint_set, int button);
 	void on_widget_timetrack_waypoint_double_clicked(synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint,std::less<synfig::UniqueID>> waypoint_set, int button);
 
-	void setup_tool_palette();
-	void update_tool_palette_action();
+	void setup_tool_bar();
+	void update_tool_bar_action();
+	void set_interp_buttons_visibility(bool visible);
 	std::map<std::string, Gtk::RadioToolButton*> action_button_map;
 };
 

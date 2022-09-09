@@ -66,6 +66,7 @@ Widget_Timetrack::Widget_Timetrack()
 	setup_adjustment();
 
 	waypoint_sd.signal_action_changed().connect(sigc::mem_fun(*this, &Widget_Timetrack::on_waypoint_action_changed));
+	waypoint_sd.signal_selection_changed().connect(sigc::mem_fun(*this, &Widget_Timetrack::on_waypoint_selection_changed));
 }
 
 Widget_Timetrack::~Widget_Timetrack()
@@ -990,6 +991,13 @@ void Widget_Timetrack::on_waypoint_action_changed()
 	update_cursor();
 	action_state = waypoint_sd.get_action();
 	signal_action_state_changed().emit();
+}
+
+void Widget_Timetrack::on_waypoint_selection_changed()
+{
+	std::vector<WaypointItem*> selection = waypoint_sd.get_selected_items();
+	bool show_tool_bar_buttons = (selection.size() != 0);
+	signal_update_interpolation_buttons_visiblity().emit(show_tool_bar_buttons);
 }
 
 void Widget_Timetrack::on_params_store_row_inserted(const Gtk::TreeModel::Path &, const Gtk::TreeModel::iterator &)
