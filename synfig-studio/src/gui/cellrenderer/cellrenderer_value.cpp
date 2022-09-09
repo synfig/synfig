@@ -417,8 +417,8 @@ CellRenderer_ValueBase::render_vfunc(
 		sy.convert( App::distance_system, get_canvas()->rend_desc() );
 
 		property_text() = x.get_string(real_num_decimals) + "," + y.get_string(real_num_decimals) +
-										float_presentation(angle.get(), angle_num_decimals) + "°" +
-							sx.get_string(real_num_decimals) + "," + sy.get_string(real_num_decimals);
+						float_presentation(angle.get(), angle_num_decimals) + "°" +
+					sx.get_string(real_num_decimals) + "," + sy.get_string(real_num_decimals);
 	}
 	else
 	if (type == type_string)
