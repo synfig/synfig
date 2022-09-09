@@ -39,7 +39,6 @@
 
 #include <gui/workarea.h>
 
-#include <gtkmm/arrow.h>
 #include <gtkmm/scrollbar.h>
 
 #include <ETL/stringf>
@@ -145,9 +144,9 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	drag_mode(DRAG_NONE),
 	active_bone_(0),
 	highlight_active_bone(false),
+	show_rulers(true),
 	show_grid(false),
 	show_guides(true),
-	show_rulers(true),
 	background_size(15,15),
 	background_first_color(0.88, 0.88, 0.88),  /* light gray */
 	background_second_color(0.65, 0.65, 0.65),  /* dark gray */
@@ -230,16 +229,10 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 
 	// Create the menu button
 
-	Gtk::Arrow *menubutton = manage(new Gtk::Arrow(Gtk::ARROW_RIGHT, Gtk::SHADOW_OUT));
-	menubutton->set_size_request(18, 18);
-	menubutton_box = manage(new Gtk::EventBox());
-	menubutton_box->add(*menubutton);
-	menubutton_box->add_events(Gdk::BUTTON_RELEASE_MASK);
-	menubutton_box->signal_button_release_event().connect(
-		sigc::bind_return(
-			sigc::hide(
-				sigc::mem_fun(*this, &WorkArea::popup_menu) ), true));
-	menubutton_box->set_hexpand(false);
+	menubutton_box = manage(new Gtk::Button());
+	menubutton_box->set_image_from_icon_name("pan-end-symbolic");
+	menubutton_box->set_relief(Gtk::RELIEF_NONE);
+	menubutton_box->signal_clicked().connect(sigc::mem_fun(*this, &WorkArea::popup_menu));
 	menubutton_box->show_all();
 
 	// Create scrollbars
