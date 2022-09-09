@@ -416,15 +416,9 @@ CellRenderer_ValueBase::render_vfunc(
 		sx.convert( App::distance_system, get_canvas()->rend_desc() );
 		sy.convert( App::distance_system, get_canvas()->rend_desc() );
 
-		std::string format = strprintf("%%s,%%s,%%.%df°,%%s,%%s", angle_num_decimals);
-		property_text() = static_cast<Glib::ustring>(strprintf(
-			format.c_str(),
-			x.get_string(real_num_decimals).c_str(),
-			y.get_string(real_num_decimals).c_str(),
-			(Real) angle.get(),
-			sx.get_string(real_num_decimals).c_str(),
-			sy.get_string(real_num_decimals).c_str()
-		));
+		property_text() = x.get_string(real_num_decimals) + "," + y.get_string(real_num_decimals) +
+										float_presentation(angle.get(), angle_num_decimals) + "°" +
+							sx.get_string(real_num_decimals) + "," + sy.get_string(real_num_decimals);
 	}
 	else
 	if (type == type_string)

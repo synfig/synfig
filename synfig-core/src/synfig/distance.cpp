@@ -114,9 +114,7 @@ synfig::String
 Distance::get_string(int digits)const
 {
 	digits=synfig::clamp(digits,0,9);
-	String fmt(strprintf("%%.%01df",digits));
-	String str(strprintf(fmt.c_str(),value_));
-	return strprintf("%s%s",remove_trailing_zeroes(str).c_str(),system_name(system_).c_str());
+	return synfig::float_presentation(value_, digits) + system_name(system_);
 }
 
 void
