@@ -69,9 +69,12 @@ public:
 	//! Constructor based on other CanvasBase iterator
 	IndependentContext(const CanvasBase::const_iterator &x):CanvasBase::const_iterator(x) { }
 
-	//! Assignation operator
-	IndependentContext operator=(const CanvasBase::const_iterator &x)
-	{ return CanvasBase::const_iterator::operator=(x); }
+	//! Assignment operator
+	IndependentContext& operator=(const CanvasBase::const_iterator &x)
+	{
+		CanvasBase::const_iterator::operator=(x);
+		return *this;
+	}
 
 	//! Sets the context to the Time \time. It is done recursively.
 	void set_time(Time time, bool force = false) const;

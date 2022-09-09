@@ -148,6 +148,7 @@ public:
 		mutable Time t;
 		Real r;
 		Inner(): f(0.f), t(0.0), r(0.0) { }
+		Inner(const Inner& other) { r = other.r; }
 
 		bool operator== (const Inner &other) const { return r == other.r; }
 		Inner& operator= (const Inner &other) { return *this = other.r; }
@@ -416,6 +417,8 @@ class TypeCanvas: public Type
 #else
 		Inner(): p(nullptr) { }
 #endif
+		Inner(const Inner& other) { *this = other; }
+
 		Inner& operator= (const etl::loose_handle<Canvas> &other)
 		{
 #ifdef TRY_FIX_FOR_BUG_27
@@ -542,6 +545,7 @@ class TypeBoneValueNode: public Type
 		mutable ValueNode_BonePtr p;
 
 		Inner(): p(nullptr) { }
+		Inner(const Inner& other) { h = other.h; }
 		Inner& operator= (const etl::handle<ValueNode_Bone> &other) { h = other; return *this; }
 		Inner& operator= (const etl::loose_handle<ValueNode_Bone> &other) { h = other; return *this; }
 		Inner& operator= (const ValueNode_BonePtr &other) { h = other; return *this; }
