@@ -1471,8 +1471,8 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 				// Check for a guide click
 				if (show_guides) {
-					drawing_area_width= drawing_area->get_window()->get_width();
-					drawing_area_height= drawing_area->get_window()->get_height();
+					drawing_area_width = drawing_area->get_window()->get_width();
+					drawing_area_height = drawing_area->get_window()->get_height();
 					const synfig::Vector::value_type window_start_x(get_window_tl()[0]);
 					const synfig::Vector::value_type window_start_y(get_window_tl()[1]);
 					const float pw_(get_pw()),ph_(get_ph());

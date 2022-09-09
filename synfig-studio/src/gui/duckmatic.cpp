@@ -1058,12 +1058,18 @@ Duckmatic::snap_point_to_grid(const synfig::Point& x)const//snap thing look into
 	bool has_guide_x(false), has_guide_y(false);
 
 	guide_x=find_guide_x(ret,radius);
-	if(guide_x!=guide_list_x_.end())
+	if(guide_x!=guide_list_x_.end()){
 		has_guide_x=true;
+		std::cout<<"has_guide_x "<<counter<<std::endl;
+	}
 
 	guide_y=find_guide_y(ret,radius);
-	if(guide_y!=guide_list_y_.end())
+	if(guide_y!=guide_list_y_.end()){
 		has_guide_y=true;
+		std::cout<<"has_guide_y "<<counter<<std::endl;
+	}
+
+	counter++;
 
 	if(get_grid_snap())
 	{
@@ -1077,30 +1083,46 @@ Duckmatic::snap_point_to_grid(const synfig::Point& x)const//snap thing look into
 			ret[1]=snap[1],has_guide_y=false;
 	}
 
-	if(guide_snap)//so this returns the value of the coordinate. now this is fine for non rot but for rotated difff strategy
+	if(guide_snap)
 	{
-		//test to see if the point here is the uncorrected original point
-
-		if(has_guide_x && (*curr_guide_accomp_duckamtic < -900))
-			ret[0]=*guide_x; //now if not rotated then based on the y of the arg we figure out the needed x
-		else if (has_guide_x ){ //condition could be definetly be written better
-			float center_x =(*guide_x-window_startx)/pwidth;//center position
-			float center_y = (1.0/2.0)*(drawing_area_height);
-			float point_y_converted =((x[1]-window_starty)/pheight);
-			float new_adjusted_x = (point_y_converted - center_y)/(current_slope) + center_x;
-			ret[0] = (new_adjusted_x*pwidth)+window_startx;
+		if(has_guide_x && (*curr_guide_accomp_duckamtic < -900)){
+			ret[0]=*guide_x;
+			std::cout<<" point sent "<<x[0]<<std::endl;//point sent is of same units
+			std::cout<<" guide x"<<*guide_x<<std::endl;
+			std::cout<<"center thign test it "<<x[1]<<std::endl;///center y is always zero yes
 		}
+		else if (has_guide_x){
+			// ruler: y - (current_slope)x = ruler_c
+			// perp: y - (perp_slope)x = perp_c
+			// (ruler_c - perp_c)/(perp_slope - current_slope) = x
+			double center_x =(*guide_x-window_startx)/pwidth;
+			double center_y = (1.0/2.0)*(drawing_area_height);
+			double ruler_c = center_y -(current_slope * (center_x));
+			double point_x_converted = ((x[0]-window_startx)/pwidth);
+			double point_y_converted = ((x[1]-window_starty)/pheight);
+			double perp_slope = -1/current_slope;//correct  ----- remmember this need to be udpated if changed from dialog
+			double perp_c = point_y_converted - (perp_slope * point_x_converted);
+			double adjusted_x = (ruler_c - perp_c)/(perp_slope - current_slope);
+			double adjusted_y = ruler_c + (current_slope)*adjusted_x;
+			ret[0] = (adjusted_x*pwidth)+window_startx;
+			ret[1] = (adjusted_y*pheight)+window_starty;
+		}
+
 
 		if(has_guide_y && (*curr_guide_accomp_duckamtic < -900))
-			ret[1]=*guide_y; //opp
+			ret[1]=*guide_y;
 		else if(has_guide_y) {
-			float center_x = (1.0/2.0)*(drawing_area_width);//center position
-			float center_y = ((*guide_y-window_starty)/pheight) ;
-			float point_x_converted = ((x[0]-window_startx)/pwidth);//rotate position i.e. move with ctr
-			float new_adjusted_y = (point_x_converted - center_x)*(current_slope) + center_y;
-			ret[1] = (new_adjusted_y*pheight)+window_starty;
-		}
-
+			double center_x = (1.0/2.0)*(drawing_area_width);
+			double center_y = ((*guide_y-window_starty)/pheight);
+			double ruler_c = center_y -(current_slope * (center_x));
+			double point_x_converted = ((x[0]-window_startx)/pwidth);
+			double point_y_converted = ((x[1]-window_starty)/pheight);
+			double perp_slope = -1/current_slope;
+			double perp_c = point_y_converted - (perp_slope * point_x_converted);
+			double adjusted_x = (ruler_c - perp_c)/(perp_slope - current_slope);
+			double adjusted_y = ruler_c + (current_slope)*adjusted_x;
+			ret[0] = (adjusted_x*pwidth)+window_startx;
+			ret[1] = (adjusted_y*pheight)+window_starty;		}
 	}
 
 	if(axis_lock)
