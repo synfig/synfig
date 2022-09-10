@@ -100,12 +100,12 @@ imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &re
 	}
 
 	OS::RunArgs args;
-	args.push_filename(filename);
+	args.push_back(filesystem::Path(filename));
 
 	if (filename_extension == ".psd" || filename_extension == ".xcf")
-		args.push("-flatten");
+		args.push_back("-flatten");
 
-	args.push(strprintf("png32:%s", target_filename.c_str()));
+	args.push_back(strprintf("png32:%s", target_filename.c_str()));
 
 	bool success = OS::run_sync("convert", args);
 	if (!success) {

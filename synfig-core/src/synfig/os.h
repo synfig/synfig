@@ -35,6 +35,8 @@
 #include <string>
 #include <vector>
 
+#include <synfig/filesystem.h> // synfig::filesystem::Path
+
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -50,33 +52,16 @@ namespace OS {
 /**
  * A list of arguments to a command that will be run via OS::RunPipe
  */
-class RunArgs
+class RunArgs : public std::vector<std::string>
 {
 public:
-	typedef std::vector<std::string>::size_type size_type;
-
 	// Modifiers -------------------------
-
-	void push(const std::vector<std::string>& args);
-	void push(const std::vector<const char*>& args);
-	void push(const std::string& item);
-	void push(std::string&& item);
-	void push(const char *__format, ...);
-	void push_pair(const std::string&  key, const std::string&  value);
-	void push_pair_filename(const std::string&  key, const std::string&  filename);
-	void push_filename(const std::string& filename);
-	void push_filename(std::string&& filename);
-	void push_filename(const char *filename);
-	void clear();
-
-	// Element access --------------------
-
-	const std::string& operator[](size_type i) const;
-
-	// Capacity --------------------------
-
-	bool empty() const;
-	size_type size() const;
+	void push_back(const std::string& arg);
+	void push_back(const char* arg);
+	void push_back(const synfig::filesystem::Path& file);
+	void push_back(const std::initializer_list<std::string>& args);
+	void push_back(const std::initializer_list<const char*>& args);
+	void push_back(const std::pair<std::string, synfig::filesystem::Path>& arg_pair);
 
 	// Query -----------------------------
 
@@ -85,9 +70,11 @@ public:
 	 * It uses a single regular space as separator.
 	 */
 	std::string get_string() const;
-
-private:
-	std::vector<std::string> run_args_;
+	/**
+	 * Similar to get_string() but with OS native encoding
+	 * (UTF-16 for MS Windows, and UTF-8 for others)
+	 */
+	std::string native() const;
 };
 
 /**

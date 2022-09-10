@@ -78,116 +78,56 @@ class RunPipeUnix;
 /* === M E T H O D S ======================================================= */
 
 void
-OS::RunArgs::push(const std::vector<std::string>& args)
+OS::RunArgs::push_back(const std::string& arg)
 {
-	run_args_.insert(run_args_.end(), args.begin(), args.end());
+	std::vector<std::string>::push_back(arg);
 }
 
 void
-OS::RunArgs::push(const std::vector<const char *>& args)
+OS::RunArgs::push_back(const char* arg)
 {
-	run_args_.insert(run_args_.end(), args.begin(), args.end());
+	std::vector<std::string>::push_back(std::string(arg));
 }
 
 void
-OS::RunArgs::push(const std::string& item)
-{
-	run_args_.push_back(item);
-}
-
-void
-OS::RunArgs::push(std::string&& item)
-{
-	run_args_.emplace_back(std::move(item));
-}
-
-void
-OS::RunArgs::push(const char* __format, ...)
-{
-	va_list args;
-	va_start(args, __format);
-	run_args_.emplace_back(vstrprintf(__format, args));
-	va_end(args);
-}
-
-void
-OS::RunArgs::push_pair(const std::string& key, const std::string& value)
-{
-	run_args_.push_back(key);
-	run_args_.push_back(value);
-}
-
-void
-OS::RunArgs::push_pair_filename(const std::string& key, const std::string& filename)
-{
-	run_args_.push_back(key);
-	push_filename(filename);
-}
-
-void
-OS::RunArgs::push_filename(const std::string& filename)
+OS::RunArgs::push_back(const synfig::filesystem::Path& filename)
 {
 #ifdef WIN32_PIPE_TO_PROCESSES
-	run_args_.push_back('"' + filename + '"');
+	std::vector<std::string>::push_back('"' + filename.u8string() + '"');
 #else
-	run_args_.push_back(filename);
+	std::vector<std::string>::push_back(filename.u8string());
 #endif
 }
 
 void
-OS::RunArgs::push_filename(std::string&& filename)
+OS::RunArgs::push_back(const std::pair<std::string, synfig::filesystem::Path>& arg_pair)
 {
-#ifdef WIN32_PIPE_TO_PROCESSES
-	run_args_.emplace_back(std::move('"' + filename + '"'));
-#else
-	run_args_.emplace_back(std::move(filename));
-#endif
+	std::vector<std::string>::push_back(arg_pair.first);
+	push_back(arg_pair.second);
 }
 
 void
-OS::RunArgs::push_filename(const char* filename)
+OS::RunArgs::push_back(const std::initializer_list<std::string>& args)
 {
-#ifdef WIN32_PIPE_TO_PROCESSES
-	run_args_.emplace_back(strprintf("\"%s\"", filename));
-#else
-	run_args_.emplace_back(filename);
-#endif
+	insert(end(), args.begin(), args.end());
 }
 
 void
-OS::RunArgs::clear()
+OS::RunArgs::push_back(const std::initializer_list<const char*>& args)
 {
-	run_args_.clear();
+	insert(end(), args.begin(), args.end());
 }
 
 std::string
 OS::RunArgs::get_string() const
 {
 	std::string ret;
-	for (const auto& arg : run_args_) {
+	for (const auto& arg : *this) {
 		ret.append(arg + " ");
 	}
 	if (!ret.empty())
 		ret.pop_back();
 	return ret;
-}
-
-const std::string&
-OS::RunArgs::operator[](RunArgs::size_type i) const
-{
-	return run_args_[i];
-}
-
-bool
-OS::RunArgs::empty() const
-{
-	return run_args_.empty();
-}
-
-OS::RunArgs::size_type
-OS::RunArgs::size() const
-{
-	return run_args_.size();
 }
 
 void

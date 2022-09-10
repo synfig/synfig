@@ -184,7 +184,7 @@ ffmpeg_trgt::init(ProgressCallback* cb = nullptr)
 	const std::vector<std::string> binary_choices = {"ffmpeg", "avconv"};
 	for (const auto& bin_name : binary_choices) {
 		OS::RunArgs args;
-		args.push_filename(bin_name);
+		args.push_back(bin_name);
 		OS::RunPipe::Handle pipe = OS::run_async("which", args, OS::RUN_MODE_READ);
 		if (!pipe) {
 			synfig::error(_("%s: Internal error: couldn't run 'which' async"), "trgt_ffmpeg");
@@ -215,59 +215,59 @@ ffmpeg_trgt::init(ProgressCallback* cb = nullptr)
 
 	OS::RunArgs vargs;
 	if (with_sound) {
-		vargs.push("-i");
-		vargs.push_filename(sound_filename);
+		vargs.push_back("-i");
+		vargs.push_back(filesystem::Path(sound_filename));
 	}
-	vargs.push("-f");
-	vargs.push("image2pipe");
-	vargs.push("-vcodec");
-	vargs.push(use_alpha ? "pam" : "ppm");
-	vargs.push("-r");
+	vargs.push_back("-f");
+	vargs.push_back("image2pipe");
+	vargs.push_back("-vcodec");
+	vargs.push_back(use_alpha ? "pam" : "ppm");
+	vargs.push_back("-r");
 	{
 		// this should avoid conflicts with locale settings
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		vargs.push("%f", desc.get_frame_rate());
+		vargs.push_back(strprintf("%f", desc.get_frame_rate()));
 	}
-	vargs.push("-i");
-	vargs.push("pipe:");
-	vargs.push("-metadata");
-	vargs.push("title=\"%s\"", get_canvas()->get_name().c_str());
-	vargs.push("-vcodec");
-	vargs.push(video_codec_real);
-	vargs.push("-b:v");
-	vargs.push("%ik", bitrate);
+	vargs.push_back("-i");
+	vargs.push_back("pipe:");
+	vargs.push_back("-metadata");
+	vargs.push_back(strprintf("title=\"%s\"", get_canvas()->get_name().c_str()));
+	vargs.push_back("-vcodec");
+	vargs.push_back(video_codec_real);
+	vargs.push_back("-b:v");
+	vargs.push_back(strprintf("%ik", bitrate));
 	if (video_codec == "libx264-lossless") {
-		vargs.push("-tune");
-		vargs.push("fastdecode");
-		vargs.push("-pix_fmt");
-		vargs.push(use_alpha ? "yuva420p" : "yuv420p");
-		vargs.push("-qp");
-		vargs.push("0");
+		vargs.push_back("-tune");
+		vargs.push_back("fastdecode");
+		vargs.push_back("-pix_fmt");
+		vargs.push_back(use_alpha ? "yuva420p" : "yuv420p");
+		vargs.push_back("-qp");
+		vargs.push_back("0");
 	} else if (use_alpha){
 		if (video_codec == "hap") {
-			vargs.push("-format");
-			vargs.push("hap_alpha");
+			vargs.push_back("-format");
+			vargs.push_back("hap_alpha");
 		}
-		vargs.push("-pix_fmt");
-		vargs.push("yuva420p");
+		vargs.push_back("-pix_fmt");
+		vargs.push_back("yuva420p");
 	}
 	if (with_sound) {
-		vargs.push("-acodec");
+		vargs.push_back("-acodec");
 		// MPEG-1 cannot work with 'le' audio, it requires 'be'
-		vargs.push(video_codec == "mpeg1video" ? "pcm_s16be" : "pcm_s16le");
+		vargs.push_back(video_codec == "mpeg1video" ? "pcm_s16be" : "pcm_s16le");
 	}
-	vargs.push("-y");
-	vargs.push("-t");
+	vargs.push_back("-y");
+	vargs.push_back("-t");
 	{
 		// this should avoid conflicts with locale settings
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		vargs.push((desc.get_time_end()-desc.get_time_start()).get_string(Time::Format::FORMAT_VIDEO));
+		vargs.push_back((desc.get_time_end()-desc.get_time_start()).get_string(Time::Format::FORMAT_VIDEO));
 	}
 	// We need "--" to separate filename from arguments (for the case when filename starts with "-")
 	if ( filename.substr(0,1) == "-" )
-		vargs.push("--");
+		vargs.push_back("--");
 
-	vargs.push_filename(filename);
+	vargs.push_back(filesystem::Path(filename));
 
 	pipe = OS::run_async(ffmpeg_binary_path, vargs, OS::RUN_MODE_WRITE);
 

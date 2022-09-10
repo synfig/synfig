@@ -122,8 +122,8 @@ dv_trgt::init(synfig::ProgressCallback * /* cb */)
 	OS::RunArgs args;
 
 	if (wide_aspect)
-		args.push_pair("-w", "1");
-	args.push("-");
+		args.push_back({"-w", "1"});
+	args.push_back("-");
 
 	pipe = OS::run_async("encodedv", args, OS::RUN_MODE_WRITE, {"", filename, ""});
 	if (!pipe || !pipe->is_writable()) {

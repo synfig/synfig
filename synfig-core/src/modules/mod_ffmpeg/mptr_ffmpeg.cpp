@@ -85,13 +85,14 @@ ffmpeg_mptr::seek_to(const Time& time)
 		const std::string position = time.get_string(Time::FORMAT_NORMAL);
 
 		OS::RunArgs args;
-		args.push_pair("-ss", position);
-		args.push_pair_filename("-i", identifier.filename);
-		args.push_pair("-vframes", "1");
-		args.push("-an");
-		args.push_pair("-f", "image2pipe");
-		args.push_pair("-vcodec", "ppm");
-		args.push("-");
+		args.push_back({"-ss", position});
+		args.push_back("-i");
+		args.push_back(filesystem::Path(identifier.filename));
+		args.push_back({"-vframes", "1"});
+		args.push_back("-an");
+		args.push_back({"-f", "image2pipe"});
+		args.push_back({"-vcodec", "ppm"});
+		args.push_back("-");
 
 #ifdef _WIN32
 		String binary_path = synfig::get_binary_path("");
