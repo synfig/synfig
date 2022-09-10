@@ -15,9 +15,12 @@
     "openexr",
     "librsvg",
     "ffmpeg",
-    "jack2",
     "hicolor-icon-theme",
     "adwaita-icon-theme",
+    {
+         "name": "jack2",
+         "platform": "linux"
+    },
     {
         "name": "pkgconf",
         "platform": "windows"
