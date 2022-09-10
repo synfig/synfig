@@ -7,6 +7,10 @@
   "dependencies": [
     "atk",
     {
+      "name": "at-spi2-atk",
+      "platform": "linux"
+    },
+    {
       "name": "cairo",
       "default-features": false,
       "features": [

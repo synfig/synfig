@@ -12,11 +12,14 @@ vcpkg_extract_source_archive_ex(
       remove_lm_from_pkgconfig.patch
 )
 
-vcpkg_find_acquire_program(PYTHON3)
-get_filename_component(PYTHON3_DIR "${PYTHON3}" DIRECTORY)
-# this is bad!
-# glib-mkenums has #!/bin/env python3
-file (COPY_FILE ${PYTHON3} "${PYTHON3_DIR}/python3.exe")
+# FIXME
+if(WIN32)
+  vcpkg_find_acquire_program(PYTHON3)
+  get_filename_component(PYTHON3_DIR "${PYTHON3}" DIRECTORY)
+  # this is bad!
+  # glib-mkenums has #!/bin/env python3
+  file (COPY_FILE ${PYTHON3} "${PYTHON3_DIR}/python3.exe")
+endif()
 
 vcpkg_add_to_path("${PYTHON3_DIR}")
 vcpkg_add_to_path("${CURRENT_HOST_INSTALLED_DIR}/tools/gdk-pixbuf")

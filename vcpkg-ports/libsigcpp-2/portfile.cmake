@@ -1,5 +1,3 @@
-vcpkg_check_linkage(ONLY_DYNAMIC_LIBRARY)
-
 vcpkg_download_distfile(ARCHIVE
     URLS "https://ftp2.nluug.nl/windowing/gnome/sources/libsigc++/2.10/libsigc++-2.10.8.tar.xz"
     FILENAME "libsigc++-2.10.8.tar.xz"

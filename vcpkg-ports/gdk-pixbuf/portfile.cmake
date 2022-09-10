@@ -1,5 +1,4 @@
 # adapted from vcpkg's own gdk-pixbuf port
-
 set(GDK_PIXBUF_VERSION 2.42)
 set(GDK_PIXBUF_PATCH 8)
 
@@ -45,7 +44,7 @@ vcpkg_install_meson(ADD_BIN_TO_PATH)
 set(_file "${CURRENT_PACKAGES_DIR}/debug/lib/pkgconfig/gdk-pixbuf-2.0.pc")
 if(EXISTS "${_file}")
     file(READ "${_file}" _contents)
-    string(REPLACE [[${bindir}]] "\${bindir}/../../tools/${PORT}" _contents "${_contents}")
+    string(REPLACE [[${bindir}]] "\${prefix}/../tools/${PORT}" _contents "${_contents}")
 
     # Essam: This is the problematic part
     # gdk_pixbuf_binarydir is erroneously set to ${libdir}/../gdk-pixbuf-2.0
@@ -57,7 +56,7 @@ endif()
 set(_file "${CURRENT_PACKAGES_DIR}/lib/pkgconfig/gdk-pixbuf-2.0.pc")
 if(EXISTS "${_file}")
     file(READ "${_file}" _contents)
-    string(REPLACE [[${bindir}]] "\${bindir}/../tools/${PORT}" _contents "${_contents}")
+    string(REPLACE [[${bindir}]] "\${prefix}/tools/${PORT}" _contents "${_contents}")
     # string(REPLACE [[gdk_pixbuf_binarydir=${libdir}/gdk-pixbuf-2.0/2.10.0]] "gdk_pixbuf_binarydir=\${libdir}/../gdk-pixbuf-2.0/2.10.0" _contents "${_contents}")
     file(WRITE "${_file}" "${_contents}")
 endif()
@@ -84,4 +83,3 @@ vcpkg_copy_tools(TOOL_NAMES ${TOOL_NAMES} AUTO_CLEAN)
 file(INSTALL "${SOURCE_PATH}/COPYING" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}" RENAME copyright)
 
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share")
-

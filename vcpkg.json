@@ -13,10 +13,14 @@
     "libjpeg-turbo",
     "imagemagick",
     "openexr",
-    "pkgconf",
     "librsvg",
     "ffmpeg",
+    "jack2",
     "hicolor-icon-theme",
-    "adwaita-icon-theme"
+    "adwaita-icon-theme",
+    {
+        "name": "pkgconf",
+        "platform": "windows"
+    }
   ]
 }

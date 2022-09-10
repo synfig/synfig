@@ -12,6 +12,7 @@ vcpkg_extract_source_archive_ex(
       dont_include_win32config.patch
       fix_make_dependency.patch
       fix_ssize_t_undefined.patch
+      fix_win_macros.patch
 )
 
 vcpkg_configure_make(

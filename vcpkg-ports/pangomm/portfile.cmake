@@ -1,5 +1,3 @@
-vcpkg_check_linkage(ONLY_DYNAMIC_LIBRARY)
-
 vcpkg_download_distfile(ARCHIVE
     URLS "https://download.gnome.org/sources/pangomm/2.46/pangomm-2.46.2.tar.xz"
     FILENAME "pangomm-2.46.2.tar.xz"

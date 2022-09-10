@@ -11,8 +11,7 @@ vcpkg_extract_source_archive_ex(
 
 vcpkg_configure_make(
   SOURCE_PATH "${SOURCE_PATH}"
-  DETERMINE_BUILD_TRIPLET
-  USE_WRAPPERS
+  NO_DEBUG
 )
 
 vcpkg_install_make()

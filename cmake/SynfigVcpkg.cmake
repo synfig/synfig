@@ -2,13 +2,6 @@ if(NOT VCPKG_TOOLCHAIN)
 	return()
 endif()
 
-# vcpkg supports linux, but the recipes and this file is only tested on Windows
-# using the MSVC compiler. Even though, I tried to make this file as generic as possible
-if(NOT MSVC)
-	message(FATAL_ERROR
-		"Synfig does not support building with vcpkg using anything other than the MSVC compiler yet!")
-endif()
-
 get_filename_component(VCPKG_TOOLCHAIN_DIR "${CMAKE_TOOLCHAIN_FILE}" DIRECTORY)
 
 # install dependecies
@@ -35,7 +28,34 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.14")
 			)
 		endmacro()
 	elseif(UNIX)
-		# TODO
+		# TODO: make appdeps.py work on windows as well, and don't depend on vcpkg's
+		# applocal.ps1, since it's not certain that it will remain the same
+		set(APPDEPS "${CMAKE_SOURCE_DIR}/autobuild/appdeps.py")
+
+    if(NOT DEFINED CMAKE_BUILD_TYPE OR CMAKE_BUILD_TYPE MATCHES "^[Dd][Ee][Bb][Uu][Gg]$")
+			set(__path_suffix "debug")
+		else()
+			set(__path_suffix ".")
+		endif()
+
+		find_package (Python COMPONENTS Interpreter)
+		find_program(PATCHELF patchelf)
+
+		if (NOT Python_FOUND OR NOT PATCHELF)
+			message(WARNING "Python and patchelf are required for creating a portable Synfig package")
+			macro(install_app_dependencies MOD MOD_NAME)
+			endmacro()
+		else ()
+			macro(install_app_dependencies MOD MOD_NAME)
+				install(CODE "
+					message(\"-- Installing app dependencies for ${MOD_NAME}...\")
+					execute_process(
+						COMMAND \"${Python_EXECUTABLE}\" \"${APPDEPS}\" -L \"${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/${__path_suffix}/lib/\"
+							--set-rpath '\\\$ORIGIN/../lib/' --outdir \"\${CMAKE_INSTALL_PREFIX}/lib/\" \"${MOD}\"
+					)"
+				)
+			endmacro()
+		endif()
 	endif()
 
 	# get all targets
@@ -102,11 +122,11 @@ if(GDKPIXBUF_LOADERS_DIR AND GDKPIXBUF_QUERYLOADERS)
 	set(GDKPIXBUF_MODULES_DEPS)
 	foreach(MOD "${GDKPIXBUF_MODULES}")
 		file(COPY "${MOD}" DESTINATION "${SYNFIG_PIXBUF_LOADERS}")
+		get_filename_component(MOD_NAME "${MOD}" NAME)
 
 		# for these modules to work, their dependencies have to be linked against synfig
 		# or present in synfig's bin directory
 		if(WIN32)
-			get_filename_component(MOD_NAME "${MOD}" NAME)
 			add_custom_target(
 				copy_${MOD_NAME}_dependencies ALL
 				COMMAND ${CMAKE_COMMAND} -E copy "${MOD}" "${SYNFIG_BUILD_ROOT}/bin/${MOD_NAME}"
@@ -116,12 +136,15 @@ if(GDKPIXBUF_LOADERS_DIR AND GDKPIXBUF_QUERYLOADERS)
 				COMMAND ${CMAKE_COMMAND} -E remove "${SYNFIG_BUILD_ROOT}/bin/${MOD_NAME}"
 				DEPENDS "${MOD}"
 			)
-			install_app_dependencies(${MOD} ${MOD_NAME})
-			list(APPEND GDKPIXBUF_MODULES_DEPS "copy_${MOD_NAME}_dependencies")
 		elseif(UNIX)
 			# TODO: find the gdkpixbuf loader dependencies using something like "ldd",
 			# copy them and change their rpath to look at synfig's lib directory
+			add_custom_target(
+				copy_${MOD_NAME}_dependencies ALL
+			)
 		endif()
+		install_app_dependencies(${MOD} ${MOD_NAME})
+		list(APPEND GDKPIXBUF_MODULES_DEPS "copy_${MOD_NAME}_dependencies")
 	endforeach()
 
 	install(
@@ -132,7 +155,8 @@ if(GDKPIXBUF_LOADERS_DIR AND GDKPIXBUF_QUERYLOADERS)
 	add_custom_target(
 		generate_pixbuf_loaders_cache ALL
 		BYPRODUCTS "${SYNFIG_PIXBUF_LOADERS}/../loaders.cache"
-		COMMAND "${SYNFIG_BUILD_ROOT}/bin/gdk-pixbuf-query-loaders${CMAKE_EXECUTABLE_SUFFIX}" > "${SYNFIG_PIXBUF_LOADERS}/../loaders.cache"
+		COMMAND ${CMAKE_COMMAND} -E env GDK_PIXBUF_MODULEDIR="${SYNFIG_PIXBUF_LOADERS}"
+			${SYNFIG_BUILD_ROOT}/bin/gdk-pixbuf-query-loaders${CMAKE_EXECUTABLE_SUFFIX} > "${SYNFIG_PIXBUF_LOADERS}/../loaders.cache"
 	)
 	add_dependencies(generate_pixbuf_loaders_cache ${GDKPIXBUF_MODULES_DEPS})
 else()

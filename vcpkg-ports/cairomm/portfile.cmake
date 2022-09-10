@@ -1,5 +1,3 @@
-vcpkg_check_linkage(ONLY_DYNAMIC_LIBRARY)
-
 vcpkg_download_distfile(ARCHIVE
     URLS "https://cairographics.org/releases/cairomm-1.14.3.tar.xz"
     FILENAME "cairomm-1.14.3.tar.xz"
