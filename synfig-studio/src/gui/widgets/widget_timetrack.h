@@ -98,7 +98,7 @@ public:
 	ActionState get_action_state() const;
 	void set_action_state(ActionState action_state);
 	sigc::signal<void>& signal_action_state_changed() { return signal_action_state_changed_; }
-	sigc::signal<void, bool> signal_update_interpolation_buttons_visiblity() { return signal_update_interpolation_buttons_visiblity_; };
+	sigc::signal<void, bool> signal_waypoint_selection_changed() { return signal_waypoint_selection_changed_; };
 
 protected:
 	virtual bool on_event(GdkEvent* event) override;
@@ -241,7 +241,7 @@ private:
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int> signal_waypoint_double_clicked_;
 
 	sigc::signal<void> signal_action_state_changed_;
-	sigc::signal<void, bool> signal_update_interpolation_buttons_visiblity_;
+	sigc::signal<void, bool> signal_waypoint_selection_changed_;
 
 	ActionState action_state;
 

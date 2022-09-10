@@ -997,7 +997,7 @@ void Widget_Timetrack::on_waypoint_selection_changed()
 {
 	std::vector<WaypointItem*> selection = waypoint_sd.get_selected_items();
 	bool show_tool_bar_buttons = (selection.size() != 0);
-	signal_update_interpolation_buttons_visiblity().emit(show_tool_bar_buttons);
+	signal_waypoint_selection_changed().emit(show_tool_bar_buttons);
 }
 
 void Widget_Timetrack::on_params_store_row_inserted(const Gtk::TreeModel::Path &, const Gtk::TreeModel::iterator &)
