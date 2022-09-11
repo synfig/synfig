@@ -6,8 +6,8 @@ vcpkg_download_distfile(ARCHIVE
     SHA512 D6FC2D0689BACA2B968820D1AF86CC0B175B6F38F720D315BC50663D30BD0A841DA57AC4336ABEC236542FB2893B28B2DE84087419B73ABA58B41F07568D4D93
 )
 
-vcpkg_extract_source_archive_ex(
-    OUT_SOURCE_PATH SOURCE_PATH
+vcpkg_extract_source_archive(
+    SOURCE_PATH
     ARCHIVE ${ARCHIVE}
 )
 
@@ -21,7 +21,6 @@ vcpkg_configure_meson(
         -Dmsvc14x-parallel-installable=false
         -Dbuild-documentation=false
         -Dbuild-atkmm-api=false
-        -Dbuild-x11-api=false
         -Dbuild-demos=false
         -Dbuild-tests=false
         -Dbuild-documentation=false

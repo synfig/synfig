@@ -32,7 +32,7 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.14")
 		# applocal.ps1, since it's not certain that it will remain the same
 		set(APPDEPS "${CMAKE_SOURCE_DIR}/autobuild/appdeps.py")
 
-    if(NOT DEFINED CMAKE_BUILD_TYPE OR CMAKE_BUILD_TYPE MATCHES "^[Dd][Ee][Bb][Uu][Gg]$")
+		if(NOT DEFINED CMAKE_BUILD_TYPE OR CMAKE_BUILD_TYPE MATCHES "^[Dd][Ee][Bb][Uu][Gg]$")
 			set(__path_suffix "debug")
 		else()
 			set(__path_suffix ".")

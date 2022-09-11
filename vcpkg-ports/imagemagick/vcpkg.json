@@ -15,7 +15,10 @@
     "libjpeg-turbo",
     "liblzma",
     "libxml2",
-    "openexr"
+    "openexr",
+    "bzip2",
+    "lcms",
+    "librsvg"
   ]
 }
 

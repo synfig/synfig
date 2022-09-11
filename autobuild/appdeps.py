@@ -123,7 +123,7 @@ if __name__ == "__main__":
 
     deps = find_deps(file_path, libdirs)
 
-    unresolved_deps = [key for key, value in deps.items() if value == None]
+    unresolved_deps = [key for key, value in deps.items() if value is None]
     if len(unresolved_deps) > 0:
         for dep in unresolved_deps:
             print(f"Error: Could not resolve path for dependency \"{dep}\"")

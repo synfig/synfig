@@ -7,10 +7,9 @@ vcpkg_download_distfile(GLIB_ARCHIVE
     SHA512 f965323be1d17dbc322ae329748b99365720977bd313519279a5236973532fed36a63726a3bffd2795eb5a627776cda3ebcbd3456cc2388f65ffe8afacbcc167
 )
 
-vcpkg_extract_source_archive_ex(
-    OUT_SOURCE_PATH SOURCE_PATH
+vcpkg_extract_source_archive(
+    SOURCE_PATH
     ARCHIVE ${GLIB_ARCHIVE}
-    REF "${GLIB_MAJOR_MINOR}.${GLIB_PATCH}"
     PATCHES
         use-libiconv-on-windows.patch
         libintl.patch
