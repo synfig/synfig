@@ -248,8 +248,8 @@ ValueNode_Dynamic::~ValueNode_Dynamic()
 ValueBase
 ValueNode_Dynamic::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 	double t0=last_time;
 	double t1=t;
 	double step;

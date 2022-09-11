@@ -696,8 +696,8 @@ CanvasView::~CanvasView()
 	delete canvas_options;
 	delete resolutiondial_;
 
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
-		info("CanvasView::~CanvasView(): Deleted");
+	DEBUG_LOG("SYNFIG_DEBUG_DESTRUCTORS",
+		"CanvasView::~CanvasView(): Deleted");
 
 	SYNFIG_EXCEPTION_GUARD_END()
 }

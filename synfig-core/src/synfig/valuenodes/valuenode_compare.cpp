@@ -123,8 +123,8 @@ ValueNode_Compare::get_link_vfunc(int i)const
 ValueBase
 ValueNode_Compare::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	Real lhs      = (*lhs_)     (t).get(Real());
 	Real rhs      = (*rhs_)     (t).get(Real());
