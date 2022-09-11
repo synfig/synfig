@@ -217,6 +217,11 @@ private:
 	bool alternative_mode_;
 	bool lock_animation_mode_;
 
+	bool has_guide_x = false;
+	bool has_guide_y = false;
+	double guides_interception_x = 0;
+	double guides_interception_y = 0;
+
 	/*
  -- ** -- P R O T E C T E D   D A T A -----------------------------------------
 	*/
@@ -506,11 +511,9 @@ public:
 	/*!	A radius of "zero" will have an unlimited radius */
 	etl::handle<Duck> find_duck(synfig::Point pos, synfig::Real radius=0, Duck::Type type=Duck::TYPE_DEFAULT);
 
-	GuideList::iterator find_guide_x(synfig::Point pos, float radius=0.1);
-	GuideList::iterator find_guide_y(synfig::Point pos, float radius=0.1);
 	GuideList::iterator find_guide(synfig::Point pos, float radius=0.1);
-	GuideList::const_iterator find_guide_x(synfig::Point pos, float radius=0.1)const { return const_cast<Duckmatic*>(this)->find_guide_x(pos,radius); }
-	GuideList::const_iterator find_guide_y(synfig::Point pos, float radius=0.1)const { return const_cast<Duckmatic*>(this)->find_guide_y(pos,radius); }
+	GuideList::const_iterator find_guide(synfig::Point pos, float radius=0.1)const { return const_cast<Duckmatic*>(this)->find_guide(pos,radius); }
+
 
 	//! \note parameter is in canvas coordinates
 	/*!	A radius of "zero" will have an unlimited radius */

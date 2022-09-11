@@ -1684,7 +1684,6 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 					float center_x_new = ((1.0/2.0)*(drawing_area_width)*pwidth)+ window_startx; //current slope is slope of the line on it being found
 					float center_y_new = (mouse_pos[1])-((mouse_pos[0]-center_x_new)*(-current_slope));
 					*curr_guide = center_y_new;
-
 				}
 				if(rotate_guide && (!from_ruler_event) && ((*curr_guide > lower_limit_y) && (*curr_guide < upper_limit_y))){
 					*curr_guide_accomp_duckamtic = mouse_pos[0];
