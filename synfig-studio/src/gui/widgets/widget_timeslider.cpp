@@ -350,8 +350,12 @@ Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 				Gdk::Cairo::set_source_pixbuf(cr, icon, x0 + w + boundary_adjust, 0);
 				cr->rectangle(x0 + w + boundary_adjust, 0.0, handle_dimension, (double)get_height());
 				cr->fill();
-				if (((moving_lower_bound_handle || hovering_on_lower_bound_handle) && i==0) ||
-						((moving_upper_bound_handle || hovering_on_upper_bound_handle) && i==1)) { //highlight/lighten bound
+				if ((moving_lower_bound_handle && i==0) || (moving_upper_bound_handle && i==1)) { //highlight/lighten bound on move
+					cairo_set_operator(cr->cobj(), CAIRO_OPERATOR_LIGHTEN);
+					cr->set_source_rgba(1.0, 1.0, 1.0, 0.4);
+					cr->rectangle(x0 + w + boundary_adjust, 0.0, handle_dimension, (double)get_height());
+					cr->fill();
+				} else if ((hovering_on_lower_bound_handle && i==0) ||	(hovering_on_upper_bound_handle && i==1)) { //highlight/lighten bound on hover
 					cairo_set_operator(cr->cobj(), CAIRO_OPERATOR_LIGHTEN);
 					cr->set_source_rgba(1.0, 1.0, 1.0, 0.2);
 					cr->rectangle(x0 + w + boundary_adjust, 0.0, handle_dimension, (double)get_height());
@@ -390,7 +394,7 @@ Widget_Timeslider::on_button_press_event(GdkEventButton *event) //for clicking
 		else if (upper_bound.is_inside(cursor_pos))
 				moving_upper_bound_handle = true;
 	}
-
+	queue_draw();
 	return event->button == 1 || event->button == 2;
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
@@ -401,8 +405,6 @@ Widget_Timeslider::on_button_release_event(GdkEventButton *event){
 	lastx = (double)event->x;
 	moving_lower_bound_handle = false;
 	moving_upper_bound_handle = false;
-	hovering_on_lower_bound_handle = false;
-	hovering_on_upper_bound_handle = false;
 	queue_draw();
 	return event->button == 1 || event->button == 2;
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
