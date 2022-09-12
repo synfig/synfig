@@ -60,17 +60,7 @@ vcpkg_configure_make(
     --disable-docs
 )
 
-# FIXME
-if(CMAKE_HOST_UNIX)
-    set(BACKUP_LD_LIBRARY_PATH $ENV{LD_LIBRARY_PATH})
-    set(ENV{LD_LIBRARY_PATH} "${CURRENT_INSTALLED_DIR}/lib:${BACKUP_LD_LIBRARY_PATH}")
-endif()
-
 vcpkg_install_make()
-
-if(CMAKE_HOST_UNIX)
-    set(ENV{LD_LIBRARY_PATH} "${BACKUP_LD_LIBRARY_PATH}")
-endif()
 
 vcpkg_fixup_pkgconfig()
 vcpkg_copy_tools(

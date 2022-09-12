@@ -13,6 +13,7 @@ vcpkg_extract_source_archive(
     PATCHES
         use-libiconv-on-windows.patch
         libintl.patch
+        install_rpath.patch
 )
 
 if (selinux IN_LIST FEATURES)
