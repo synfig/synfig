@@ -38,6 +38,7 @@
 #include <synfig/valuenode_registry.h>
 
 #include "valuenode_const.h"
+#include "synfig/general.h"
 
 #include <synfig/canvas.h>
 #include <synfig/valueoperations.h>
@@ -99,8 +100,8 @@ ValueNode_WeightedAverage::create(const ValueBase& value, Canvas::LooseHandle ca
 ValueBase
 ValueNode_WeightedAverage::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 	return ValueAverage::average_weighted(ValueNode_DynamicList::operator()(t), ValueBase(get_type()));
 }
 

@@ -143,8 +143,8 @@ synfig::ValueNode_Add::~ValueNode_Add()
 synfig::ValueBase
 synfig::ValueNode_Add::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	if(!ref_a || !ref_b)
 		throw std::runtime_error(strprintf("ValueNode_Add: %s",_("One or both of my parameters aren't set!")));

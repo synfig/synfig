@@ -63,8 +63,8 @@ Bone::Bone():
 	depth_(0.0),
 	parent_(nullptr)
 {
-	if (getenv("SYNFIG_DEBUG_NEW_BONES"))
-		printf("%s:%d new bone\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_NEW_BONES",
+		"%s:%d new bone\n", __FILE__, __LINE__);
 }
 
 //!Constructor by origin and tip
@@ -79,8 +79,8 @@ Bone::Bone(const Point &o, const Point &t):
 	depth_(0.0),
 	parent_(nullptr)
 {
-	if (getenv("SYNFIG_DEBUG_NEW_BONES"))
-		printf("%s:%d new bone\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_NEW_BONES",
+		"%s:%d new bone\n", __FILE__, __LINE__);
 }
 
 //!Constructor by origin, angle, length, strength, parent bone (default = no parent)
@@ -96,8 +96,8 @@ Bone::Bone(const String &n, const Point &o, const Angle &a, const Real &l, Value
 	depth_(0.0),
 	parent_(p)
 {
-	if (getenv("SYNFIG_DEBUG_NEW_BONES"))
-		printf("%s:%d new bone\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_NEW_BONES",
+		"%s:%d new bone\n", __FILE__, __LINE__);
 }
 
 const ValueNode_Bone*

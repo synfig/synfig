@@ -92,8 +92,8 @@ ValueNode_Atan2::~ValueNode_Atan2()
 ValueBase
 ValueNode_Atan2::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	return Angle::tan((*y_)(t).get(Real()),
 					  (*x_)(t).get(Real()));

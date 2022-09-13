@@ -163,8 +163,8 @@ bool DockDialog::on_key_press_event(GdkEventKey* key_event)
 bool
 DockDialog::close()
 {
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
-		synfig::info("DockDialog::close(): Deleted");
+	DEBUG_LOG("SYNFIG_DEBUG_DESTRUCTORS",
+		"DockDialog::close(): Deleted");
 
 	empty_sig.disconnect();
 	//get_dock_book().clear();
