@@ -92,8 +92,8 @@ ValueNode_Sine::~ValueNode_Sine()
 ValueBase
 ValueNode_Sine::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	return
 		Angle::sin(

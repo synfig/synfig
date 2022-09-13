@@ -595,8 +595,8 @@ ValueNode_DynamicList::ValueNode_DynamicList(Type &container_type, Canvas::Loose
 	container_type(&container_type),
 	loop_(false)
 {
-	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-		printf("%s:%d set parent canvas for dynamic_list %p to %p\n", __FILE__, __LINE__, this, canvas.get());
+	DEBUG_LOG("SYNFIG_DEBUG_SET_PARENT_CANVAS",
+		"%s:%d set parent canvas for dynamic_list %p to %p\n", __FILE__, __LINE__, this, canvas.get());
 	set_parent_canvas(canvas);
 }
 
@@ -605,8 +605,8 @@ ValueNode_DynamicList::ValueNode_DynamicList(Type &container_type, Type &type, C
 	container_type(&container_type),
 	loop_(false)
 {
-	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-		printf("%s:%d set parent canvas for dynamic_list %p to %p\n", __FILE__, __LINE__, this, canvas.get());
+	DEBUG_LOG("SYNFIG_DEBUG_SET_PARENT_CANVAS",
+		"%s:%d set parent canvas for dynamic_list %p to %p\n", __FILE__, __LINE__, this, canvas.get());
 	set_parent_canvas(canvas);
 }
 
@@ -653,8 +653,8 @@ ValueNode_DynamicList::create(const ValueBase& value, etl::loose_handle<Canvas>)
 ValueBase
 ValueNode_DynamicList::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	std::vector<ValueBase> ret_list;
 	std::vector<ListEntry>::const_iterator iter;

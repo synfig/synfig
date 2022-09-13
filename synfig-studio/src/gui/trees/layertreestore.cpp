@@ -119,8 +119,8 @@ LayerTreeStore::LayerTreeStore(etl::loose_handle<synfigapp::CanvasInterface> can
 
 LayerTreeStore::~LayerTreeStore()
 {
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
-		synfig::info("LayerTreeStore::~LayerTreeStore(): Deleted");
+	DEBUG_LOG("SYNFIG_DEBUG_DESTRUCTORS",
+		"LayerTreeStore::~LayerTreeStore(): Deleted");
 }
 
 int

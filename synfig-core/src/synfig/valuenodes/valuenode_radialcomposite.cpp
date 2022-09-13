@@ -106,8 +106,8 @@ ValueNode_RadialComposite::create_new()const
 ValueBase
 synfig::ValueNode_RadialComposite::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	Type &type(get_type());
 	if (type == type_vector)

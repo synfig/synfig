@@ -96,8 +96,8 @@ ValueNode_AngleString::~ValueNode_AngleString()
 ValueBase
 ValueNode_AngleString::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	Real angle(Angle::deg((*angle_)(t).get(Angle())).get());
 	int width((*width_)(t).get(int()));
