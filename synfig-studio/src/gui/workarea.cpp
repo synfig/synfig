@@ -332,8 +332,8 @@ WorkArea::~WorkArea()
 	set_drag_mode(DRAG_NONE);
 	while(!renderer_set_.empty())
 		erase_renderer(*renderer_set_.begin());
-	DEBUG_LOG("SYNFIG_DEBUG_DESTRUCTORS",
-		"WorkArea::~WorkArea(): Deleted");
+	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
+		info("WorkArea::~WorkArea(): Deleted");
 }
 
 void

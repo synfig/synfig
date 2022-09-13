@@ -133,8 +133,8 @@ Duckmatic::~Duckmatic()
 {
 	clear_ducks();
 
-	DEBUG_LOG("SYNFIG_DEBUG_DESTRUCTORS",
-		"Duckmatic::~Duckmatic(): Deleted");
+	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
+		synfig::info("Duckmatic::~Duckmatic(): Deleted");
 }
 
 void

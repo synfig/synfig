@@ -98,8 +98,8 @@ ValueNode_BLineCalcTangent::~ValueNode_BLineCalcTangent()
 ValueBase
 ValueNode_BLineCalcTangent::operator()(Time t, Real amount)const
 {
-	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
-		"%s:%d operator()\n", __FILE__, __LINE__);
+	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	const ValueBase::List bline = (*bline_)(t).get_list();
 	const ValueBase bline_value_node = (*bline_)(t);

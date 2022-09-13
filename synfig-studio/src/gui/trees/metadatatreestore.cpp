@@ -71,8 +71,8 @@ MetaDataTreeStore::MetaDataTreeStore(etl::loose_handle<synfigapp::CanvasInterfac
 
 MetaDataTreeStore::~MetaDataTreeStore()
 {
-	DEBUG_LOG("SYNFIG_DEBUG_DESTRUCTORS",
-		"MetaDataTreeStore::~MetaDataTreeStore(): Deleted");
+	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
+		synfig::info("MetaDataTreeStore::~MetaDataTreeStore(): Deleted");
 }
 
 Glib::RefPtr<MetaDataTreeStore>

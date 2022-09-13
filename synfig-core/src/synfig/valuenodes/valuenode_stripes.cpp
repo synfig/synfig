@@ -101,8 +101,8 @@ synfig::ValueNode_Stripes::~ValueNode_Stripes()
 synfig::ValueBase
 synfig::ValueNode_Stripes::operator()(Time t)const
 {
-	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
-		"%s:%d operator()\n", __FILE__, __LINE__);
+	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	const int total((*stripes_)(t).get(int()));
 	int i;

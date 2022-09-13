@@ -140,8 +140,8 @@ ValueNode::~ValueNode()
 void
 ValueNode::on_changed()
 {
-	DEBUG_LOG("SYNFIG_DEBUG_ON_CHANGED",
-		"%s:%d ValueNode::on_changed()\n", __FILE__, __LINE__);
+	if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
+		printf("%s:%d ValueNode::on_changed()\n", __FILE__, __LINE__);
 
 	etl::loose_handle<Canvas> parent_canvas = get_parent_canvas();
 	if(parent_canvas)
@@ -527,8 +527,8 @@ PlaceholderValueNode::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)c
 PlaceholderValueNode::Handle
 PlaceholderValueNode::create(Type &type)
 {
-	DEBUG_LOG("SYNFIG_DEBUG_PLACEHOLDER_VALUENODE",
-		"%s:%d PlaceholderValueNode::create\n", __FILE__, __LINE__);
+	if (getenv("SYNFIG_DEBUG_PLACEHOLDER_VALUENODE"))
+		printf("%s:%d PlaceholderValueNode::create\n", __FILE__, __LINE__);
 	return new PlaceholderValueNode(type);
 }
 
@@ -590,8 +590,8 @@ ValueNode::get_relative_id(etl::loose_handle<const Canvas> x)const
 etl::loose_handle<Canvas>
 ValueNode::get_parent_canvas()const
 {
-	DEBUG_LOG("SYNFIG_DEBUG_GET_PARENT_CANVAS",
-		"%s:%d get_parent_canvas of %p is %p\n", __FILE__, __LINE__, this, canvas_.get());
+	if (getenv("SYNFIG_DEBUG_GET_PARENT_CANVAS"))
+		printf("%s:%d get_parent_canvas of %p is %p\n", __FILE__, __LINE__, this, canvas_.get());
 
 	return canvas_;
 }
@@ -599,8 +599,8 @@ ValueNode::get_parent_canvas()const
 etl::loose_handle<Canvas>
 ValueNode::get_root_canvas()const
 {
-	DEBUG_LOG("SYNFIG_DEBUG_GET_PARENT_CANVAS",
-		"%s:%d get_root_canvas of %p is %p\n", __FILE__, __LINE__, this, root_canvas_.get());
+	if (getenv("SYNFIG_DEBUG_GET_PARENT_CANVAS"))
+		printf("%s:%d get_root_canvas of %p is %p\n", __FILE__, __LINE__, this, root_canvas_.get());
 
 	return root_canvas_;
 }
@@ -614,8 +614,8 @@ ValueNode::get_non_inline_ancestor_canvas()const
 	{
 		etl::loose_handle<Canvas> ret(parent->get_non_inline_ancestor());
 
-		DEBUG_LOG("SYNFIG_DEBUG_GET_PARENT_CANVAS",
-			"%s:%d get_non_inline_ancestor_canvas of %p is %p\n", __FILE__, __LINE__, this, ret.get());
+		if (getenv("SYNFIG_DEBUG_GET_PARENT_CANVAS"))
+			printf("%s:%d get_non_inline_ancestor_canvas of %p is %p\n", __FILE__, __LINE__, this, ret.get());
 
 		return ret;
 	}
@@ -626,13 +626,13 @@ ValueNode::get_non_inline_ancestor_canvas()const
 void
 ValueNode::set_parent_canvas(etl::loose_handle<Canvas> x)
 {
-	DEBUG_LOG("SYNFIG_DEBUG_SET_PARENT_CANVAS",
-		"%s:%d set_parent_canvas of %p to %p\n", __FILE__, __LINE__, this, x.get());
+	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
+		printf("%s:%d set_parent_canvas of %p to %p\n", __FILE__, __LINE__, this, x.get());
 
 	canvas_=x;
 
-	DEBUG_LOG("SYNFIG_DEBUG_SET_PARENT_CANVAS",
-		"%s:%d now %p\n", __FILE__, __LINE__, canvas_.get());
+	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
+		printf("%s:%d now %p\n", __FILE__, __LINE__, canvas_.get());
 
 	if(x) set_root_canvas(x);
 }
@@ -640,13 +640,13 @@ ValueNode::set_parent_canvas(etl::loose_handle<Canvas> x)
 void
 ValueNode::set_root_canvas(etl::loose_handle<Canvas> x)
 {
-	DEBUG_LOG("SYNFIG_DEBUG_SET_PARENT_CANVAS",
-		"%s:%d set_root_canvas of %p to %p - ", __FILE__, __LINE__, this, x.get());
+	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
+		printf("%s:%d set_root_canvas of %p to %p - ", __FILE__, __LINE__, this, x.get());
 
 	root_canvas_=x->get_root();
 
-	DEBUG_LOG("SYNFIG_DEBUG_SET_PARENT_CANVAS",
-		"now %p\n", root_canvas_.get());
+	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
+		printf("now %p\n", root_canvas_.get());
 }
 
 String

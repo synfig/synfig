@@ -119,8 +119,8 @@ synfig::ValueNode_Scale::~ValueNode_Scale()
 synfig::ValueBase
 synfig::ValueNode_Scale::operator()(Time t)const
 {
-	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
-		"%s:%d operator()\n", __FILE__, __LINE__);
+	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	if(!value_node || !scalar)
 		throw std::runtime_error(strprintf("ValueNode_Scale: %s",_("One or both of my parameters aren't set!")));

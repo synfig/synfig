@@ -97,8 +97,8 @@ ValueNode_BLineRevTangent::~ValueNode_BLineRevTangent()
 ValueBase
 ValueNode_BLineRevTangent::operator()(Time t)const
 {
-	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
-		"%s:%d operator()\n", __FILE__, __LINE__);
+	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	if ((*reverse_)(t).get(bool()))
 	{

@@ -146,8 +146,8 @@ LayerTree::LayerTree()
 
 LayerTree::~LayerTree()
 {
-	DEBUG_LOG("SYNFIG_DEBUG_DESTRUCTORS",
-		"LayerTree::~LayerTree(): Deleted");
+	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
+		synfig::info("LayerTree::~LayerTree(): Deleted");
 }
 
 void

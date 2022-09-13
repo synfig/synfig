@@ -78,8 +78,8 @@ HistoryTreeStore::HistoryTreeStore(etl::loose_handle<studio::Instance> instance_
 
 HistoryTreeStore::~HistoryTreeStore()
 {
-	DEBUG_LOG("SYNFIG_DEBUG_DESTRUCTORS",
-		"HistoryTreeStore::~HistoryTreeStore(): Deleted");
+	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
+		synfig::info("HistoryTreeStore::~HistoryTreeStore(): Deleted");
 }
 
 Glib::RefPtr<HistoryTreeStore>

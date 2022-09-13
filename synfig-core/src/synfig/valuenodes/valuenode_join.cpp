@@ -102,8 +102,8 @@ ValueNode_Join::~ValueNode_Join()
 ValueBase
 ValueNode_Join::operator()(Time t)const
 {
-	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
-		"%s:%d operator()\n", __FILE__, __LINE__);
+	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	const std::vector<ValueBase> strings((*strings_)(t).get_list());
 	const String before((*before_)(t).get(String()));

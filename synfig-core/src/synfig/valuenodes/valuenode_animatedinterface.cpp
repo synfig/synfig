@@ -398,8 +398,8 @@ public:
 
 		virtual void on_changed()
 		{
-			DEBUG_LOG("SYNFIG_DEBUG_ON_CHANGED",
-				"%s:%d _Hermite::on_changed()\n", __FILE__, __LINE__);
+			if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
+				printf("%s:%d _Hermite::on_changed()\n", __FILE__, __LINE__);
 
 			if(animated.waypoint_list_.size()<=1)
 				return;
@@ -729,8 +729,8 @@ public:
 
 		virtual void on_changed()
 		{
-			DEBUG_LOG("SYNFIG_DEBUG_ON_CHANGED",
-				"%s:%d _Constant::on_changed()\n", __FILE__, __LINE__);
+			if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
+				printf("%s:%d _Constant::on_changed()\n", __FILE__, __LINE__);
 
 			if(animated.waypoint_list_.size()<=1)
 				return;
@@ -820,8 +820,8 @@ public:
 
 		virtual void on_changed()
 		{
-			DEBUG_LOG("SYNFIG_DEBUG_ON_CHANGED",
-				"%s:%d _AnimBool::on_changed()\n", __FILE__, __LINE__);
+			if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
+				printf("%s:%d _AnimBool::on_changed()\n", __FILE__, __LINE__);
 
 			if(animated.waypoint_list_.size()<=1)
 				return;

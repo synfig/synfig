@@ -93,8 +93,8 @@ LayerGroupTreeStore::~LayerGroupTreeStore()
 {
 	//clear();
 
-	DEBUG_LOG("SYNFIG_DEBUG_DESTRUCTORS",
-		"LayerGroupTreeStore::~LayerGroupTreeStore(): Deleted");
+	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
+		synfig::info("LayerGroupTreeStore::~LayerGroupTreeStore(): Deleted");
 }
 
 bool

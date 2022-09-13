@@ -98,8 +98,8 @@ synfig::ValueNode_GradientRotate::~ValueNode_GradientRotate()
 synfig::ValueBase
 synfig::ValueNode_GradientRotate::operator()(Time t)const
 {
-	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
-		"%s:%d operator()\n", __FILE__, __LINE__);
+	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	Gradient gradient;
 	gradient=(*ref_gradient)(t).get(gradient);

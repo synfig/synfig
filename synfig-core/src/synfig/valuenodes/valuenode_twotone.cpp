@@ -94,8 +94,8 @@ synfig::ValueNode_TwoTone::~ValueNode_TwoTone()
 synfig::ValueBase
 synfig::ValueNode_TwoTone::operator()(Time t)const
 {
-	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
-		"%s:%d operator()\n", __FILE__, __LINE__);
+	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	return Gradient((*ref_a)(t).get(Color()),(*ref_b)(t).get(Color()));
 }

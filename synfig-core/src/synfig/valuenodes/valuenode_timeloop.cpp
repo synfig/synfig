@@ -120,8 +120,8 @@ ValueNode_TimeLoop::get_link_vfunc(int i)const
 ValueBase
 ValueNode_TimeLoop::operator()(Time t)const
 {
-	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
-		"%s:%d operator()\n", __FILE__, __LINE__);
+	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	Time link_time  = (*link_time_) (t).get(Time());
 	Time local_time = (*local_time_)(t).get(Time());

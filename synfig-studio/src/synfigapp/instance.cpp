@@ -169,8 +169,8 @@ Instance::~Instance()
 {
 	instance_map_.erase(canvas_);
 
-	DEBUG_LOG("SYNFIG_DEBUG_DESTRUCTORS",
-		"Instance::~Instance(): Deleted");
+	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
+		synfig::info("Instance::~Instance(): Deleted");
 }
 
 handle<CanvasInterface>

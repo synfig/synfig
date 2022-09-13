@@ -108,8 +108,8 @@ ValueNode_Not::get_link_vfunc(int i)const
 ValueBase
 ValueNode_Not::operator()(Time t)const
 {
-	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
-		"%s:%d operator()\n", __FILE__, __LINE__);
+	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	bool link      = (*link_)    (t).get(bool());
 

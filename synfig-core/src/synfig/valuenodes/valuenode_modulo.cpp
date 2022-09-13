@@ -101,8 +101,8 @@ synfig::ValueNode_Modulo::~ValueNode_Modulo()
 synfig::ValueBase
 synfig::ValueNode_Modulo::operator()(Time t)const
 {
-	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
-		"%s:%d operator()\n", __FILE__, __LINE__);
+	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	if(!dividend || !divisor)
 		throw std::runtime_error(strprintf("ValueNode_Modulo: %s",_("One or both of my parameters aren't set!")));

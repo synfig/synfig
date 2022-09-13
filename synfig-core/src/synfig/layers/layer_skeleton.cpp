@@ -33,9 +33,6 @@
 #endif
 
 #include "layer_skeleton.h"
-#ifdef _DEBUG
-#include "synfig/general.h"
-#endif
 
 #include <synfig/localization.h>
 
@@ -93,8 +90,8 @@ Layer_Skeleton::Layer_Skeleton():
 #ifdef _DEBUG
 Layer_Skeleton::~Layer_Skeleton()
 {
-	 DEBUG_LOG("SYNFIG_DEBUG_DESTRUCTORS",
-		"%s:%d ~Layer_Skeleton()\n", __FILE__, __LINE__);
+	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
+		printf("%s:%d ~Layer_Skeleton()\n", __FILE__, __LINE__);
 }
 #endif
 

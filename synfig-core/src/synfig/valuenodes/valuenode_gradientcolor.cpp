@@ -94,8 +94,8 @@ ValueNode_GradientColor::~ValueNode_GradientColor()
 ValueBase
 ValueNode_GradientColor::operator()(Time t)const
 {
-	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
-		"%s:%d operator()\n", __FILE__, __LINE__);
+	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	Real index((*index_)(t).get(Real()));
 	bool loop((*loop_)(t).get(bool()));

@@ -89,8 +89,8 @@ bool
 Action::System::perform_action(etl::handle<Action::Base> action)
 {
 	assert(action);
-	DEBUG_LOG("SYNFIG_DEBUG_ACTIONS",
-		"%s:%d perform_action: '%s'", __FILE__, __LINE__, action->get_name().c_str());
+	if (getenv("SYNFIG_DEBUG_ACTIONS"))
+		synfig::info("%s:%d perform_action: '%s'", __FILE__, __LINE__, action->get_name().c_str());
 
 	etl::handle<UIInterface> uim = get_ui_interface();
 	if (!action->is_ready()) {

@@ -71,8 +71,8 @@ ValueNode_BoneWeightPair::ValueNode_BoneWeightPair(const ValueBase &value, Canva
 		set_link("bone",ValueNode_Const::create(bone_value_node, canvas));
 		set_link("weight",ValueNode_Const::create(Real(bone_weight_pair.get_weight())));
 
-		DEBUG_LOG("SYNFIG_DEBUG_SET_PARENT_CANVAS",
-			"%s:%d set parent canvas for bwp to %p\n", __FILE__, __LINE__, canvas.get());
+		if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
+			printf("%s:%d set parent canvas for bwp to %p\n", __FILE__, __LINE__, canvas.get());
 		set_parent_canvas(canvas);
 
 		ValueNode_Bone::show_bone_map(canvas, __FILE__, __LINE__, "after making new boneweightpair");
@@ -103,8 +103,8 @@ ValueNode_BoneWeightPair::~ValueNode_BoneWeightPair()
 ValueBase
 ValueNode_BoneWeightPair::operator()(Time t)const
 {
-	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
-		"%s:%d operator()\n", __FILE__, __LINE__);
+	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	ValueNode_Bone::Handle bone_node((*bone_)(t).get(ValueNode_Bone::Handle()));
 	Bone bone((*bone_node)(t).get(Bone()));
