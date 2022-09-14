@@ -30,8 +30,9 @@ endif()
 ##
 
 if(WIN32)
-	configure_file(synfigstudio.rc ${CMAKE_CURRENT_BINARY_DIR}/synfigstudio.rc)
-	add_executable(synfigstudio main.cpp ${CMAKE_CURRENT_BINARY_DIR}/synfigstudio.rc)
+	set(RC_FILE ${SYNFIG_BUILD_ROOT}/share/synfig/icons/classic/synfigstudio.rc)
+	configure_file(synfigstudio.rc ${RC_FILE})
+	add_executable(synfigstudio main.cpp ${RC_FILE})
 else()
 	add_executable(synfigstudio main.cpp)
 endif()
