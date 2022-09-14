@@ -82,6 +82,14 @@ synfig::remove_trailing_zeroes(const std::string& text, bool force_decimal_point
 }
 
 std::string
+synfig::float_presentation(Real value, int num_decimals)
+{
+	std::string format = strprintf("%%.%df", num_decimals);
+	std::string text = remove_trailing_zeroes(strprintf(format.c_str(), value));
+	return text;
+}
+
+std::string
 synfig::trim(const std::string& text)
 {
 	return right_trim(left_trim(text));

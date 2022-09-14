@@ -341,10 +341,7 @@ CellRenderer_ValueBase::render_vfunc(
 			property_text() = x.get_string(real_num_decimals).c_str();
 		}
 		else
-		{
-			std::string format = strprintf("%%.%df", real_num_decimals);
-			property_text() = strprintf(format.c_str(), data.get(Real()));
-		}
+			property_text() = float_presentation(data.get(Real()));
 	}
 	else
 	if (type == type_time)
@@ -355,10 +352,7 @@ CellRenderer_ValueBase::render_vfunc(
 	}
 	else
 	if (type == type_angle)
-	{
-		const std::string angle_format = strprintf("%%.%df°", angle_num_decimals);
-		property_text() = strprintf( angle_format.c_str(), (Real) Angle::deg( data.get(Angle()) ).get() );
-	}
+		property_text() = float_presentation(Angle::deg( data.get(Angle()) ).get(), angle_num_decimals) + "°";
 	else
 	if (type == type_integer)
 	{
@@ -403,10 +397,8 @@ CellRenderer_ValueBase::render_vfunc(
 			x.convert( App::distance_system, get_canvas()->rend_desc() );
 			y.convert( App::distance_system, get_canvas()->rend_desc() );
 			property_text() = strprintf("%s,%s", x.get_string(real_num_decimals).c_str(), y.get_string(real_num_decimals).c_str());
-		} else {
-			std::string format = strprintf("%%.%01df,%%.%01df", real_num_decimals, real_num_decimals);
-			property_text() = strprintf(format.c_str(), vector[0], vector[1]);
-		}
+		} else
+			property_text() = float_presentation(vector[0]) + "," + float_presentation(vector[1]);
 	}
 	else
 	if (type == type_transformation)
@@ -424,15 +416,9 @@ CellRenderer_ValueBase::render_vfunc(
 		sx.convert( App::distance_system, get_canvas()->rend_desc() );
 		sy.convert( App::distance_system, get_canvas()->rend_desc() );
 
-		std::string format = strprintf("%%s,%%s,%%.%df°,%%s,%%s", angle_num_decimals);
-		property_text() = static_cast<Glib::ustring>(strprintf(
-			format.c_str(),
-			x.get_string(real_num_decimals).c_str(),
-			y.get_string(real_num_decimals).c_str(),
-			(Real) angle.get(),
-			sx.get_string(real_num_decimals).c_str(),
-			sy.get_string(real_num_decimals).c_str()
-		));
+		property_text() = x.get_string(real_num_decimals) + "," + y.get_string(real_num_decimals) +
+						float_presentation(angle.get(), angle_num_decimals) + "°" +
+					sx.get_string(real_num_decimals) + "," + sy.get_string(real_num_decimals);
 	}
 	else
 	if (type == type_string)
