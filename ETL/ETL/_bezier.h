@@ -48,9 +48,24 @@
 
 namespace etl {
 
-//! Cubic Bezier Curve Base Class
-// This generic implementation uses the DeCasteljau algorithm.
-// Works for just about anything that has an affine combination function
+/**
+ * Cubic Bezier Curve Base Class.
+ *
+ * This generic implementation uses the De Casteljau algorithm and implements
+ * stuff dedicated to a specific type. 'Actual' Bezier is the bezier class.
+ * Specialize this template for improving performance or correcting behavior
+ * for a specific value type.
+ *
+ * It works for just about anything that has an affine combination function.
+ * Specialize struct affine_combo to do so.
+ *
+ * As well known, Bezier Curve is a parametric function.
+ * The parameter (here called @c t) value is usually ranged from 0.0 to 1.0.
+ * You can change these bounds: we call the lower bound as @c r, and the upper
+ * bound as @c s. @see set_r(), set_s(), set_rs()
+ *
+ * For historical reasons, the type of parameter @c t is named @c time_type.
+ */
 template <typename V,typename T=float>
 class bezier_base
 {
@@ -76,6 +91,11 @@ public:
 	{
 	}
 
+	/**
+	 * Evaluate the Bezier curve value for a given parameter value
+	 * @param t the parameter value in @c r .. @c s range
+	 * @return the computed value
+	 */
 	value_type
 	operator()(time_type t)const
 	{
@@ -93,6 +113,11 @@ public:
 		,t);
 	}
 
+	/**
+	 * Set the bounds for curve parameter @c t
+	 * @param new_r the lower bound
+	 * @param new_s the upper bound
+	 */
 	void set_rs(time_type new_r, time_type new_s) { r=new_r; s=new_s; }
 	void set_r(time_type new_r) { r=new_r; }
 	void set_s(time_type new_s) { s=new_s; }
@@ -126,17 +151,27 @@ public:
 		return 0;
 	}
 
+	/**
+	 * The curve control point by index
+	 * @param i 0 and 3 and the on-curve points. 1 and 2 are the off-curve points
+	 * @return the control point at i-th index
+	 */
 	value_type &
 	operator[](int i)
 	{ return (&a)[i]; }
 
+	/**
+	 * The curve control point by index
+	 * @param i 0 and 3 and the on-curve points. 1 and 2 are the off-curve points
+	 * @return the control point at i-th index
+	 */
 	const value_type &
 	operator[](int i) const
 	{ return (&a)[i]; }
 };
 
 
-// Fast float implementation of a cubic bezier curve
+/** Fast float implementation of a cubic bezier curve */
 template <>
 class bezier_base<float,float>
 {
@@ -216,7 +251,7 @@ public:
 };
 
 
-// Fast double implementation of a cubic bezier curve
+/** Fast double implementation of a cubic bezier curve */
 template <>
 class bezier_base<double,float>
 {
@@ -295,7 +330,19 @@ public:
 	{ return (&a)[i]; }
 };
 
-
+/**
+ * A Bezier curve.
+ *
+ * As well known, Bezier Curve is a parametric function.
+ * The parameter (here called @c t) value is usually ranged from 0.0 to 1.0.
+ * You can change these bounds: we call the lower bound as @c r, and the upper
+ * bound as @c s. @see set_r(), set_s(), set_rs()
+ *
+ * For historical reasons, the type of parameter @c t is named @c time_type.
+ *
+ * The control points (the on-curve points and the off-curve points) can be accessed
+ * by using subscript operator[].
+ */
 template <typename V,typename T=float>
 class bezier : public bezier_base<V,T>
 {
@@ -315,6 +362,13 @@ public:
 	bezier(const value_type &a, const value_type &b, const value_type &c, const value_type &d):
 		bezier_base<V,T>(a,b,c,d) { }
 
+	/**
+	 * Find the closest Curve parameter @c t value that corresponds to the curve @a x value.
+	 * @param fast Use a faster approximation algorithm (but not necessarily as much precise as the slower one)
+	 * @param x The target value
+	 * @param i number of iterations to use is not using the faster algorithm
+	 * @return The curve parameter value
+	 */
 	time_type find_closest(bool fast, const value_type& x, int i=7)const
 	{
 	    if (!fast)
@@ -345,6 +399,13 @@ public:
 		}
 	}
 
+	/**
+	 * Compute the curve length between two curve parameter @c t values.
+	 * @param r the lower bound for curve parameter (start point)
+	 * @param s the upper bound for curve parameter (finish point)
+	 * @param steps number of iterations
+	 * @return the curve segment length
+	 */
 	distance_type find_distance(time_type r, time_type s, int steps=7)const
 	{
 		const time_type inc((s-r)/steps);
@@ -363,23 +424,32 @@ public:
 		return ret;
 	}
 
+	/**
+	 * The total length of the Bezier curve
+	 */
 	distance_type length()const { return find_distance(get_r(),get_s()); }
 
-	/* subdivide at some time t into 2 separate curves left and right
-
-		b0 l1
-		*		0+1 l2
-		b1 		*		1+2*1+2 l3
-		*		1+2		*			0+3*1+3*2+3 l4,r1
-		b2 		*		1+2*2+2	r2	*
-		*		2+3	r3	*
-		b3 r4	*
-		*
-
-		0.1 2.3 ->	0.1 2 3 4 5.6
-	*/
+	/**
+	 * Split the Bezier curve into two pieces from a given curve parameter value
+	 * @param[out] left The left slice of the curve (from start point to the curve parameter @a time). Use nullptr if not interested on it.
+	 * @param[out] right The right slice of the curve (from the curve parameter @a time to the finish point). Use nullptr if not interested on it.
+	 * @param time The curve parameter value where the Bezier curve will be cut.
+	 */
 	void subdivide(bezier *left, bezier *right, const time_type &time = (time_type)0.5) const
 	{
+		/* subdivide at some time t into 2 separate curves left and right
+
+			b0 l1
+			*		0+1 l2
+			b1 		*		1+2*1+2 l3
+			*		1+2		*			0+3*1+3*2+3 l4,r1
+			b2 		*		1+2*2+2	r2	*
+			*		2+3	r3	*
+			b3 r4	*
+			*
+
+			0.1 2.3 ->	0.1 2 3 4 5.6
+		*/
 		time_type t=(time-get_r())/get_dt();
 		bezier lt,rt;
 
@@ -417,7 +487,16 @@ public:
 		if(right) *right = rt;
 	}
 
-
+	/**
+	 * Evaluate the Bezier curve value for a given parameter value.
+	 *
+	 * It works like the bezier_base::operator(), but this method also provides the tangent at curve parameter @a t.
+	 * @see bezier_base::operator()
+	 *
+	 * @param t the parameter value in @c r .. @c s range
+	 * @param[out] f the computed value
+	 * @param[out] df the computed tangent
+	 */
 	void evaluate(time_type t, value_type &f, value_type &df) const
 	{
 		t=(t-get_r())/get_dt();

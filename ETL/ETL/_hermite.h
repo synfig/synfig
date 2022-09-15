@@ -46,14 +46,20 @@
 
 namespace etl {
 
+/**
+ * The hermite parametric curve.
+ *
+ * A hermite curve is defined by two on-curve points and their tangents.
+ *
+ * The curve parameter t lies traditionally on the [0, 1] interval.
+ * Here we can change these boundaries. @see bezier::set_rs()
+ */
 template <typename V,typename T=float>
 class hermite : public bezier<V,T>
 {
 public:
 	typedef V value_type;
 	typedef T time_type;
-
-
 
 public:
 	hermite() : P1{}, P2{}, T1{}, T2{} { }
@@ -64,11 +70,16 @@ public:
 
 	value_type P1,P2,T1,T2;
 
+	/** The start point */
 	value_type &p1() { return P1; }
+	/** The end point */
 	value_type &p2() { return P2; }
+	/** The tangent at the start point @c p1 */
 	value_type &t1() { return T1; }
+	/** The tangent at the end point @c p2 */
 	value_type &t2() { return T2; }
 
+	/** It must be called everytime you finish updating vertices and tangents */
 	void sync()
 	{
 		bezier<V,T>::operator[](0)=P1;
@@ -79,6 +90,9 @@ public:
 		bezier<V,T>::sync();
 	}
 
+	/** The tangent at curve parameter value x
+	 *  @param x a value between [get_r(), get_s()] ([0, 1] by default)
+	 */
 	value_type derivative(const time_type& x)
 	{
 		V a = (*this)[0], b = (*this)[1], c = (*this)[2], d = (*this)[3];
