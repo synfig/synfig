@@ -437,10 +437,10 @@ Widget_ColorEdit::Widget_ColorEdit():
 		Gtk::Box* box_cast_2 = static_cast<Gtk::Box*>( internal_child_2[0] );
 		std::vector<Widget*> internal_child_3 = box_cast_2->get_children(); //internal_child_3[0] is the color wheel widget
 
-		internal_child_3[0]->signal_button_press_event().connect([&](GdkEventButton *ev){ wheel_pressed=true; escape_cancel=false; return false;},false);
-		internal_child_3[0]->signal_button_release_event().connect([&](GdkEventButton *ev){ if(wheel_pressed)wheel_released=true;return false;},false);
+		internal_child_3[0]->signal_button_press_event().connect([&](GdkEventButton *ev){ colorHVSChanged = false;escape_cancel=false; return false;},false);
+		internal_child_3[0]->signal_button_release_event().connect([&](GdkEventButton *ev){ if((hvsColorWidget->is_adjusting()))wheel_released=true;return false;},false);
 		internal_child_3[0]->signal_key_press_event().connect([&](GdkEventKey *ev){
-			if((ev->keyval == GDK_KEY_Escape) && (wheel_pressed)){
+			if((ev->keyval == GDK_KEY_Escape) && (hvsColorWidget->is_adjusting())){
 				escape_cancel=true;on_color_changed();
 				return true;
 			}
@@ -514,10 +514,11 @@ Widget_ColorEdit::on_color_changed()
 	//Spike! Gtk::ColorSelection emits this signal when I use
 	//set_current_color(...). It calls recursion. Used a flag to fix it.
 
-	if (!colorHVSChanged && wheel_pressed) //color change is from a wheel drag
+	if (!colorHVSChanged && (hvsColorWidget->is_adjusting() || wheel_released)) //color change is from a wheel drag
 	{
 		Gdk::RGBA newColor = hvsColorWidget->get_current_rgba();
 		Color synfigColor;
+		etl::loose_handle<Instance> current_instance = App::get_selected_instance();
 
 		if(!(hvsColorWidget->is_adjusting())){//drag over
 			Color synfigColorTemp(
@@ -525,11 +526,10 @@ Widget_ColorEdit::on_color_changed()
 					newColor.get_green(),
 					newColor.get_blue() );
 				synfigColor=synfigColorTemp;
-				get_initial_color= true;
-				wheel_pressed=false;
+				get_initial_color= true;//rename
 		}
 		else{//drag did not end
-			synfigapp::Action::System::repeated_action=true;
+			current_instance->repeated_action = true;
 			Color synfigColorTemp(
 				newColor.get_red(),
 				newColor.get_green(),
@@ -543,12 +543,11 @@ Widget_ColorEdit::on_color_changed()
 		}
 
 		if(get_initial_color || escape_cancel){//last time now
-			synfigapp::Action::System::repeated_action=true;
+			current_instance->repeated_action = true;
 			if (escape_cancel) {
-				synfigapp::Action::System::cancel_repeated_action=true;
+				current_instance->cancel_repeated_action = true;
 				colorHVSChanged = true;
-				get_initial_color= true;
-				wheel_pressed=false;
+				get_initial_color = true;
 			}
 				delete group;
 		}
@@ -559,8 +558,8 @@ Widget_ColorEdit::on_color_changed()
 			on_value_changed();
 			wheel_released=false;
 		}
-		synfigapp::Action::System::repeated_action=false;//default is no block unless drag then block
-		synfigapp::Action::System::cancel_repeated_action=false;
+		current_instance->repeated_action = false;
+		current_instance->cancel_repeated_action = false;
 		return;
 	}
 

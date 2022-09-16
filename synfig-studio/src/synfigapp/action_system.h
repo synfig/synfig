@@ -106,8 +106,8 @@ class System : public etl::shared_object, public sigc::trackable
 	*/
 
 public:
-		static bool repeated_action;
-		static bool cancel_repeated_action;
+		bool repeated_action = false; //move to private and make a setter
+		bool cancel_repeated_action = false;
 
 	/*
  -- ** -- P U B L I C  D A T A ------------------------------------------------

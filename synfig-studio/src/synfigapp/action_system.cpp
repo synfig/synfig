@@ -52,8 +52,6 @@ using namespace synfigapp;
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
-bool Action::System::repeated_action = false;//rename to repeated_action
-bool Action::System::cancel_repeated_action = false;//rename to repeated_action
 
 namespace {
 	class Lock {
@@ -497,7 +495,7 @@ Action::PassiveGrouper::finish()
 		// Push the group onto the stack
 		instance_->undo_action_stack_.push_front(group);
 
-		if (Action::System::cancel_repeated_action) {
+		if (instance_->cancel_repeated_action) {
 			instance_->undo();
 			instance_->redo_action_stack_.pop_front();
 //			cancel(); //not really sure what it does is it needed?
