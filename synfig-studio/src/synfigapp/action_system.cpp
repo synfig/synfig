@@ -445,7 +445,7 @@ Action::PassiveGrouper::finish()
 	if (finished_) return etl::handle<Action::Group>();
 	finished_ = true;
 
-//	 Remove this group from the group stack
+	// Remove this group from the group stack
 	assert(instance_->group_stack_.front() == this);
 	instance_->group_stack_.pop_front();
 
