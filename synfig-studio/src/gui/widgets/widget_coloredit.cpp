@@ -48,8 +48,6 @@
 #include <gui/localization.h>
 #include <gui/canvasview.h>
 
-#include <synfigapp/action_system.h>
-
 #endif
 
 /* === U S I N G =========================================================== */
@@ -505,8 +503,6 @@ void Widget_ColorEdit::setHVSColor(const synfig::Color& color)
 	hvsColorWidget->set_previous_color(hvsColorWidget->get_current_color()); //We can't use it there, cause color changes in realtime.
 	colorHVSChanged = false;
 }
-
-synfigapp::Action::PassiveGrouper* group = nullptr;
 
 void
 Widget_ColorEdit::on_color_changed()
