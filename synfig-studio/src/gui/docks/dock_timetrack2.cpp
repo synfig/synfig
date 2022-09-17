@@ -145,7 +145,7 @@ void Dock_Timetrack2::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> ca
 		grid.attach(*current_widget_timetrack, 0, 2, 1, 1);
 		grid.attach(hscrollbar,                0, 4, 2, 1);
 		grid.attach(vscrollbar,                1, 0, 1, 4);
-		grid.attach(*toolbar, 		       2, 0, 1, 4);
+		grid.attach(*toolbar,                  2, 0, 1, 4);
 		grid.show();
 	}
 
