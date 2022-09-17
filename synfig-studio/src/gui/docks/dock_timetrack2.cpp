@@ -259,8 +259,7 @@ void Dock_Timetrack2::setup_toolbar()
 		tool_button->signal_clicked().connect(sigc::track_obj([this, interp_button_info](){
 			current_widget_timetrack->interpolate_selected(interp_button_info.interpolation);
 		}, *this));
-		std::string tool_tip = N_("Change waypoint interpolation to " + interp_button_info.name);
-		tool_button->set_tooltip_text(_(tool_tip.c_str()));
+		tool_button->set_tooltip_text(synfig::strprintf(_("Change waypoint interpolation to %s"), interp_button_info.name.c_str()));
 		tool_button->set_name(interp_button_info.name);
 		toolbar->append(*tool_button);
 	}
