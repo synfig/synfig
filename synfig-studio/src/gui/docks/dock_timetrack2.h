@@ -65,7 +65,7 @@ private:
 
 	void setup_toolbar();
 	void update_toolbar_action();
-	void set_interp_buttons_visibility(bool visible);
+	void set_interp_buttons_sensitivity(bool sensitive);
 	std::map<std::string, Gtk::RadioToolButton*> action_button_map;
 };
 

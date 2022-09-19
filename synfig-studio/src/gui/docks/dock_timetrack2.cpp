@@ -63,7 +63,7 @@ Dock_Timetrack2::Dock_Timetrack2()
 
 	setup_toolbar();
 	toolbar->show_all();
-	set_interp_buttons_visibility(false);
+	set_interp_buttons_sensitivity(false);
 
 	grid.set_column_homogeneous(false);
 	grid.set_row_homogeneous(false);
@@ -102,7 +102,7 @@ void Dock_Timetrack2::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canva
 
 	widget_timetrack->signal_action_state_changed().connect(sigc::mem_fun(*this, &Dock_Timetrack2::update_toolbar_action));
 
-	widget_timetrack->signal_waypoint_selection_changed().connect(sigc::mem_fun(*this, &Dock_Timetrack2::set_interp_buttons_visibility));
+	widget_timetrack->signal_waypoint_selection_changed().connect(sigc::mem_fun(*this, &Dock_Timetrack2::set_interp_buttons_sensitivity));
 }
 
 void Dock_Timetrack2::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
@@ -138,7 +138,7 @@ void Dock_Timetrack2::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> ca
 		hscrollbar.set_adjustment(canvas_view->time_model()->scroll_time_adjustment());
 
 		update_toolbar_action();
-		set_interp_buttons_visibility(current_widget_timetrack->get_num_waypoints_selected());
+		set_interp_buttons_sensitivity(current_widget_timetrack->get_num_waypoints_selected());
 
 		grid.attach(widget_kf_list,            0, 0, 1, 1);
 		grid.attach(widget_timeslider,         0, 1, 1, 1);
@@ -188,6 +188,7 @@ void Dock_Timetrack2::setup_toolbar()
 	toolbar->set_icon_size(Gtk::IconSize::from_name("synfig-small_icon_16x16"));
 	toolbar->set_toolbar_style(Gtk::TOOLBAR_ICONS);
 	toolbar->set_property("orientation", Gtk::ORIENTATION_VERTICAL);
+	toolbar->get_style_context()->add_class("synfigstudio-efficient-workspace");
 
 	struct ActionButtonInfo {
 		std::string icon;
@@ -283,13 +284,13 @@ void Dock_Timetrack2::update_toolbar_action()
 		button->set_active(true);
 }
 
-void Dock_Timetrack2::set_interp_buttons_visibility(bool visible)
+void Dock_Timetrack2::set_interp_buttons_sensitivity(bool sensitive)
 {
 	for (int i = 0; i < toolbar->get_n_items(); i++){
 		std::string name = toolbar->get_nth_item(i)->get_name();
 		if ( name == "Clamped" || name == "TCB" || name == "Constant" ||
 			 name =="separator" || name == "Ease In/Out"|| name == "Linear")
-			toolbar->get_nth_item(i)->set_visible(visible);
+			toolbar->get_nth_item(i)->set_sensitive(sensitive);
 	}
 }
 
