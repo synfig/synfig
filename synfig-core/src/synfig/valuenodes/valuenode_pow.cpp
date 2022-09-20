@@ -60,8 +60,7 @@ REGISTER_VALUENODE(ValueNode_Pow, RELEASE_VERSION_0_62_00, "power", N_("Power"))
 ValueNode_Pow::ValueNode_Pow(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	Real value(x.get(Real()));
 	Real infinity(999999.0);
 	Real epsilon(0.000001);

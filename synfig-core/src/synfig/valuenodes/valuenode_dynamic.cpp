@@ -187,8 +187,7 @@ integrate(Function oscillator, MathVector& x0, Real to, Real tf, Real step_size,
 ValueNode_Dynamic::ValueNode_Dynamic(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	set_link("origin",       ValueNode_Const::create(Vector(0,0)));
 	set_link("force",        ValueNode_Const::create(Vector(0,0)));
 	set_link("torque",       ValueNode_Const::create(Real(0.0)));

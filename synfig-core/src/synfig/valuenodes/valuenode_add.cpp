@@ -70,8 +70,7 @@ REGISTER_VALUENODE(ValueNode_Add, RELEASE_VERSION_0_61_07, "add", N_("Add"))
 synfig::ValueNode_Add::ValueNode_Add(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	set_link("scalar",ValueNode_Const::create(Real(1.0)));
 	Type& type(value.get_type());
 

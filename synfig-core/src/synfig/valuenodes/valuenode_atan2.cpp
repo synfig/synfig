@@ -59,8 +59,7 @@ REGISTER_VALUENODE(ValueNode_Atan2, RELEASE_VERSION_0_61_08, "atan2", N_("aTan2"
 ValueNode_Atan2::ValueNode_Atan2(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	if (value.get_type() == type_angle)
 	{
 		set_link("x",ValueNode_Const::create(Angle::cos(value.get(Angle())).get()));

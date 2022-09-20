@@ -64,8 +64,7 @@ ValueNode_Reference::ValueNode_Reference(Type &x):
 ValueNode_Reference::ValueNode_Reference(const ValueNode::Handle &x):
 	LinkableValueNode(x->get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	set_link("link",x);
 }
 

@@ -60,8 +60,7 @@ REGISTER_VALUENODE(ValueNode_VectorAngle, RELEASE_VERSION_0_61_09, "vectorangle"
 ValueNode_VectorAngle::ValueNode_VectorAngle(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	if (value.get_type() == type_angle)
 		set_link("vector",ValueNode_Const::create(Vector(Angle::cos(value.get(Angle())).get(),
 														 Angle::sin(value.get(Angle())).get())));

@@ -61,8 +61,7 @@ REGISTER_VALUENODE(ValueNode_Repeat_Gradient, RELEASE_VERSION_0_61_07, "repeat_g
 
 synfig::ValueNode_Repeat_Gradient::ValueNode_Repeat_Gradient(const Gradient& x):LinkableValueNode(synfig::type_gradient)
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	set_link("gradient",ValueNode_Const::create(x));
 	set_link("count",count_=ValueNode_Const::create(int(3)));
 	set_link("width",ValueNode_Const::create(0.5));

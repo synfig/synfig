@@ -59,8 +59,7 @@ REGISTER_VALUENODE(ValueNode_BoneLink, RELEASE_VERSION_1_0, "bone_link", N_("Bon
 ValueNode_BoneLink::ValueNode_BoneLink(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 
 	set_link("bone",			ValueNode_Const::create(ValueNode_Bone::get_root_bone()));
 	set_link("base_value",		ValueNode_Const::create(x));

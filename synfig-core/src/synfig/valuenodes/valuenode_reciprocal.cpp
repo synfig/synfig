@@ -59,8 +59,7 @@ REGISTER_VALUENODE(ValueNode_Reciprocal, RELEASE_VERSION_0_61_08, "reciprocal", 
 ValueNode_Reciprocal::ValueNode_Reciprocal(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	Real value(x.get(Real()));
 	Real infinity(999999.0);
 	Real epsilon(0.000001);

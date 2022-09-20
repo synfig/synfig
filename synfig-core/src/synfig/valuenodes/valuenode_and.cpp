@@ -60,8 +60,7 @@ REGISTER_VALUENODE(ValueNode_And, RELEASE_VERSION_0_62_00, "and", N_("AND"))
 ValueNode_And::ValueNode_And(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	bool value(x.get(bool()));
 
 	set_link("link1",        ValueNode_Const::create(bool(true)));

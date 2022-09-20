@@ -79,8 +79,7 @@ ValueNode_Reverse::ValueNode_Reverse(Type &x):
 ValueNode_Reverse::ValueNode_Reverse(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	Type &type(x.get_type());
 	if(x.empty()) {
 		set_link("link", ValueNode_Const::create(x));

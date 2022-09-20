@@ -67,8 +67,7 @@ REGISTER_VALUENODE(ValueNode_Subtract, RELEASE_VERSION_0_61_06, "subtract", N_("
 synfig::ValueNode_Subtract::ValueNode_Subtract(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	set_link("scalar",ValueNode_Const::create(Real(1.0)));
 	Type &type(value.get_type());
 

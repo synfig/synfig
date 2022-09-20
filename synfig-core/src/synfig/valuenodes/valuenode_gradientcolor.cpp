@@ -60,8 +60,7 @@ REGISTER_VALUENODE(ValueNode_GradientColor, RELEASE_VERSION_0_61_09, "gradientco
 ValueNode_GradientColor::ValueNode_GradientColor(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	if (value.get_type() ==  type_color)
 	{
 		set_link("gradient", ValueNode_Const::create(Gradient(value.get(Color()),value.get(Color()))));

@@ -232,8 +232,7 @@ ValueNode_Bone::get_ordered_bones(etl::handle<const Canvas> canvas)
 ValueNode_Bone::ValueNode_Bone():
 	LinkableValueNode(type_bone_object)
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	DEBUG_LOG("SYNFIG_DEBUG_ROOT_BONE",
 		"%s:%d ValueNode_Bone::ValueNode_Bone() this line should only appear once guid %s\n", __FILE__, __LINE__, get_guid().get_string().c_str());
 }
@@ -247,8 +246,7 @@ ValueNode_Bone::ValueNode_Bone(const ValueBase &value, etl::loose_handle<Canvas>
 		printf("%s:%d --- ValueNode_Bone() for %s at %p---\n", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), this);
 		printf("%s:%d ------------------------------------------------------------------------\n\n", __FILE__, __LINE__);
 	}
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	Type &type = value.get_type();
 	if (type == type_bone_object)
 	{

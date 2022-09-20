@@ -61,8 +61,7 @@ REGISTER_VALUENODE(ValueNode_TwoTone, RELEASE_VERSION_0_61_06, "twotone", N_("Tw
 
 synfig::ValueNode_TwoTone::ValueNode_TwoTone(const ValueBase &value):LinkableValueNode(synfig::type_gradient)
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	if (value.get_type() == type_gradient)
 	{
 		set_link("color1",ValueNode_Const::create(value.get(Gradient())(0)));

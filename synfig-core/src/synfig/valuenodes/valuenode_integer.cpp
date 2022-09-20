@@ -67,8 +67,7 @@ ValueNode_Integer::ValueNode_Integer(Type &x):
 ValueNode_Integer::ValueNode_Integer(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	Type &type(x.get_type());
 	if (type == type_angle)
 		set_link("link", ValueNode_Const::create(round_to_int(Angle::deg(x.get(Angle())).get())));

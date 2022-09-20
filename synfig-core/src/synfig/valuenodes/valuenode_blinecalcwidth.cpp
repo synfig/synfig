@@ -63,8 +63,7 @@ REGISTER_VALUENODE(ValueNode_BLineCalcWidth, RELEASE_VERSION_0_61_08, "blinecalc
 ValueNode_BLineCalcWidth::ValueNode_BLineCalcWidth(Type &x):
 	LinkableValueNode(x)
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	if(x!=type_real)
 		throw Exception::BadType(x.description.local_name);
 

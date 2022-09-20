@@ -67,8 +67,7 @@ REGISTER_VALUENODE(ValueNode_Modulo, RELEASE_VERSION_1_6_0, "modulo", N_("Modulo
 ValueNode_Modulo::ValueNode_Modulo(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	set_link("divisor",ValueNode_Const::create(int(2)));
 	set_link("scalar",ValueNode_Const::create(Real(1.0)));
 	Type& type(value.get_type());

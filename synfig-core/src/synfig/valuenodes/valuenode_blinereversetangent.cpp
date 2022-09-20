@@ -67,8 +67,7 @@ ValueNode_BLineRevTangent::ValueNode_BLineRevTangent(Type &x):
 ValueNode_BLineRevTangent::ValueNode_BLineRevTangent(const ValueNode::Handle &x):
 	LinkableValueNode(x->get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	if(x->get_type()!=type_bline_point)
 		throw Exception::BadType(x->get_type().description.local_name);
 

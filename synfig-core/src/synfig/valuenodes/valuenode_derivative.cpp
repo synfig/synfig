@@ -148,8 +148,7 @@ REGISTER_VALUENODE(ValueNode_Derivative, RELEASE_VERSION_1_0, "derivative", N_("
 ValueNode_Derivative::ValueNode_Derivative(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	set_link("interval",      ValueNode_Const::create(Real(0.01))); // Default interval
 	set_link("accuracy",      ValueNode_Const::create((int)(NORMAL)));
 	set_link("order",         ValueNode_Const::create((int)(FIRST)));

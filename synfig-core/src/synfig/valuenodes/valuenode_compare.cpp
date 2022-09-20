@@ -60,8 +60,7 @@ REGISTER_VALUENODE(ValueNode_Compare, RELEASE_VERSION_0_62_00, "compare", N_("Co
 ValueNode_Compare::ValueNode_Compare(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	bool value(x.get(bool()));
 
 	set_link("lhs",          ValueNode_Const::create(Real(0)));

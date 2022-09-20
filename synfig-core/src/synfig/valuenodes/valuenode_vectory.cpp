@@ -60,8 +60,7 @@ REGISTER_VALUENODE(ValueNode_VectorY, RELEASE_VERSION_0_61_09, "vectory", N_("Ve
 ValueNode_VectorY::ValueNode_VectorY(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	if (value.get_type() == type_real)
 		set_link("vector",ValueNode_Const::create(Vector(0, value.get(Real()))));
 	else

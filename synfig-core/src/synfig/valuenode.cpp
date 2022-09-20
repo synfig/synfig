@@ -795,6 +795,12 @@ LinkableValueNode::set_children_vocab(const Vocab &newvocab)
 }
 
 void
+LinkableValueNode::init_children_vocab()
+{
+	set_children_vocab(get_children_vocab_vfunc());
+}
+
+void
 LinkableValueNode::set_root_canvas(etl::loose_handle<Canvas> x)
 {
 	ValueNode::set_root_canvas(x);

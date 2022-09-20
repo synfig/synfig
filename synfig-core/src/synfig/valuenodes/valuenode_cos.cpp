@@ -59,8 +59,7 @@ REGISTER_VALUENODE(ValueNode_Cos, RELEASE_VERSION_0_61_08, "cos", N_("Cos"))
 ValueNode_Cos::ValueNode_Cos(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	if (value.get_type() == type_real)
 	{
 		set_link("angle",ValueNode_Const::create(Angle::deg(0)));

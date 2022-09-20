@@ -60,8 +60,7 @@ REGISTER_VALUENODE(ValueNode_TimeString, RELEASE_VERSION_0_61_09, "timestring", 
 ValueNode_TimeString::ValueNode_TimeString(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	if (value.get_type() == type_string)
 		set_link("time",ValueNode_Const::create(Time(0)));
 	else

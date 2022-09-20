@@ -60,8 +60,7 @@ REGISTER_VALUENODE(ValueNode_Not, RELEASE_VERSION_0_62_00, "not", N_("NOT"))
 ValueNode_Not::ValueNode_Not(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	bool value(x.get(bool()));
 
 	set_link("link",         ValueNode_Const::create(!value));

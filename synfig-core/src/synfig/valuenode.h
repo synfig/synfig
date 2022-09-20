@@ -465,6 +465,7 @@ protected:
 
 	//! Virtual member to set the children vocabulary to a given value
 	virtual void set_children_vocab(const Vocab& rvocab);
+	virtual void init_children_vocab();
 
 	virtual void get_values_vfunc(std::map<Time, ValueBase> &x) const;
 }; // END of class LinkableValueNode
