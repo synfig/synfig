@@ -748,8 +748,8 @@ LinkableValueNode::get_description(bool show_exported_name)const
 String
 LinkableValueNode::link_name(int i)const
 {
-	Vocab vocab(get_children_vocab());
-	Vocab::iterator iter(vocab.begin());
+	const auto& vocab = children_vocab;
+	Vocab::const_iterator iter(vocab.begin());
 	int j=0;
 	for(;iter!=vocab.end() && j<i; iter++, j++) {}
 	return iter!=vocab.end()?iter->get_name():String();
@@ -758,8 +758,8 @@ LinkableValueNode::link_name(int i)const
 String
 LinkableValueNode::link_local_name(int i)const
 {
-	Vocab vocab(get_children_vocab());
-	Vocab::iterator iter(vocab.begin());
+	const auto& vocab = children_vocab;
+	Vocab::const_iterator iter(vocab.begin());
 	int j=0;
 	for(;iter!=vocab.end() && j<i; iter++, j++) {}
 	return iter!=vocab.end()?iter->get_local_name():String();
@@ -768,8 +768,8 @@ LinkableValueNode::link_local_name(int i)const
 int
 LinkableValueNode::get_link_index_from_name(const String &name)const
 {
-	Vocab vocab(get_children_vocab());
-	Vocab::iterator iter(vocab.begin());
+	const auto& vocab = children_vocab;
+	Vocab::const_iterator iter(vocab.begin());
 	int j=0;
 	for(; iter!=vocab.end(); iter++, j++)
 		if(iter->get_name()==name) return j;
@@ -779,13 +779,13 @@ LinkableValueNode::get_link_index_from_name(const String &name)const
 int
 LinkableValueNode::link_count()const
 {
-	return get_children_vocab().size();
+	return children_vocab.size();
 }
 
-LinkableValueNode::Vocab
+const LinkableValueNode::Vocab&
 LinkableValueNode::get_children_vocab()const
 {
-	return get_children_vocab_vfunc();
+	return children_vocab;
 }
 
 void

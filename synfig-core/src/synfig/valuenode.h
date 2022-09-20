@@ -423,7 +423,7 @@ public:
 	String get_description(bool show_exported_name = true)const;
 
 	//! Gets the children vocabulary for linkable value nodes
-	virtual Vocab get_children_vocab()const;
+	virtual const Vocab& get_children_vocab()const;
 
 	virtual void set_root_canvas(etl::loose_handle<Canvas> x);
 
