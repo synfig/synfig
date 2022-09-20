@@ -435,7 +435,6 @@ Widget_ColorEdit::Widget_ColorEdit():
 		Gtk::Box* box_cast_2 = static_cast<Gtk::Box*>( internal_child_2[0] );
 		std::vector<Widget*> internal_child_3 = box_cast_2->get_children(); //internal_child_3[0] is the color wheel widget
 
-		internal_child_3[0]->signal_button_press_event().connect([&](GdkEventButton *ev){ colorHVSChanged = false;escape_cancel=false; return false;},false);
 		internal_child_3[0]->signal_button_release_event().connect([&](GdkEventButton *ev){ if((hvsColorWidget->is_adjusting()))wheel_released=true;return false;},false);
 		internal_child_3[0]->signal_key_press_event().connect([&](GdkEventKey *ev){
 			if((ev->keyval == GDK_KEY_Escape) && (hvsColorWidget->is_adjusting())){
@@ -510,6 +509,12 @@ Widget_ColorEdit::on_color_changed()
 	//Spike! Gtk::ColorSelection emits this signal when I use
 	//set_current_color(...). It calls recursion. Used a flag to fix it.
 
+	if (!hvsColorWidget->is_adjusting() && colorHVSChanged && current_action_cancelled) {
+		colorHVSChanged = false;
+		current_action_cancelled = false;
+		return;
+	}
+
 	if (!colorHVSChanged && (hvsColorWidget->is_adjusting() || wheel_released)) //color change is from a wheel drag
 	{
 		Gdk::RGBA newColor = hvsColorWidget->get_current_rgba();
@@ -544,6 +549,7 @@ Widget_ColorEdit::on_color_changed()
 				current_instance->cancel_repeated_action = true;
 				colorHVSChanged = true;
 				get_initial_color = true;
+				current_action_cancelled = true;
 			}
 				delete group;
 		}
@@ -556,6 +562,7 @@ Widget_ColorEdit::on_color_changed()
 		}
 		current_instance->repeated_action = false;
 		current_instance->cancel_repeated_action = false;
+		escape_cancel = false;
 		return;
 	}
 

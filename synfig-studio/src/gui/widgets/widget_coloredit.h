@@ -165,10 +165,10 @@ class Widget_ColorEdit : public Gtk::Grid
 
 	Gtk::Notebook* notebook;
 
-	bool escape_cancel=false;
-	bool wheel_released=false;
-	bool wheel_pressed=false;
-	bool get_initial_color= true;
+	bool escape_cancel = false;
+	bool wheel_released = false;
+	bool get_initial_color = true;
+	bool current_action_cancelled = false;
 	synfig::Color initial_color;
 	synfigapp::Action::PassiveGrouper* group = nullptr;
 
