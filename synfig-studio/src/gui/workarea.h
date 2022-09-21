@@ -476,8 +476,8 @@ private:
 	bool on_vruler_event(GdkEvent* event);
 	void on_duck_selection_single(const etl::handle<Duck>& duck_guid);
 
-    // Sets the current cursor regardless of drag mode
-    void set_cursor_forced(const Glib::RefPtr<Gdk::Cursor> &x);
+	// Sets the current cursor regardless of drag mode
+	void set_cursor_forced(const Glib::RefPtr<Gdk::Cursor> &x);
 }; // END of class WorkArea
 
 
