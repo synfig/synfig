@@ -38,5 +38,21 @@ vcpkg_configure_make(
 vcpkg_install_make()
 vcpkg_fixup_pkgconfig()
 
+if(EXISTS "${CURRENT_PACKAGES_DIR}/lib/librsvg-2.so.2.40.20")
+  file(RPATH_CHANGE
+    FILE "${CURRENT_PACKAGES_DIR}/lib/librsvg-2.so.2.40.20"
+    OLD_RPATH ""
+    NEW_RPATH "${CURRENT_PACKAGES_DIR}/lib"
+  )
+endif()
+
+if(EXISTS "${CURRENT_PACKAGES_DIR}/debug/lib/librsvg-2.so.2.40.20")
+  file(RPATH_CHANGE
+    FILE "${CURRENT_PACKAGES_DIR}/debug/lib/librsvg-2.so.2.40.20"
+    OLD_RPATH ""
+    NEW_RPATH "${CURRENT_PACKAGES_DIR}/debug/lib"
+  )
+endif()
+
 file(REMOVE_RECURSE "${CURRENT_PACKAGES_DIR}/debug/share")
 file(INSTALL "${SOURCE_PATH}/COPYING" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}" RENAME copyright)

@@ -1,8 +1,10 @@
-if(NOT VCPKG_TOOLCHAIN)
-	return()
-endif()
-
 get_filename_component(VCPKG_TOOLCHAIN_DIR "${CMAKE_TOOLCHAIN_FILE}" DIRECTORY)
+find_package(PkgConfig REQUIRED)
+
+# using "set(CMAKE_INSTALL_RPATH "\$ORIGIN/../lib")" won't cut it, since synfig's
+# modules exist in lib/synfig/modules, so their rpaths needs to be "$ORIGIN/../../../lib"
+# instead, we will customize the rpath for each target
+
 
 # install dependecies
 # we could have required the user to pass the option X_VCPKG_APPLOCAL_DEPS_INSTALL
@@ -11,19 +13,19 @@ get_filename_component(VCPKG_TOOLCHAIN_DIR "${CMAKE_TOOLCHAIN_FILE}" DIRECTORY)
 # (for installing dependencies of gdk-pixbuf loaders for example)
 if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.14")
 	if(WIN32)
-		macro(install_app_dependencies MOD MOD_NAME)
+		macro(install_app_dependencies mod mod_name)
 			install(CODE "
-				message(\"-- Installing app dependencies for ${MOD_NAME}...\")
+				message(\"-- Installing app dependencies for ${mod_name}...\")
 				execute_process(
-					COMMAND ${CMAKE_COMMAND} -E copy \"${MOD}\" \"\${CMAKE_INSTALL_PREFIX}/bin/${MOD_NAME}.tmp\"
+					COMMAND ${CMAKE_COMMAND} -E copy \"${mod}\" \"\${CMAKE_INSTALL_PREFIX}/bin/${mod_name}.tmp\"
 				)
 				execute_process(
 					COMMAND powershell -noprofile -executionpolicy Bypass -file ${VCPKG_TOOLCHAIN_DIR}/msbuild/applocal.ps1
-						-targetBinary \"\${CMAKE_INSTALL_PREFIX}/bin/${MOD_NAME}.tmp\"
+						-targetBinary \"\${CMAKE_INSTALL_PREFIX}/bin/${mod_name}.tmp\"
 						-installedDir \"${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}$<$<CONFIG:Debug>:/debug>/bin\"
 				)
 				execute_process(
-					COMMAND ${CMAKE_COMMAND} -E remove \"\${CMAKE_INSTALL_PREFIX}/bin/${MOD_NAME}.tmp\"
+					COMMAND ${CMAKE_COMMAND} -E remove \"\${CMAKE_INSTALL_PREFIX}/bin/${mod_name}.tmp\"
 				)"
 			)
 		endmacro()
@@ -43,55 +45,76 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.14")
 
 		if (NOT Python_FOUND OR NOT PATCHELF)
 			message(WARNING "Python and patchelf are required for creating a portable Synfig package")
-			macro(install_app_dependencies MOD MOD_NAME)
+			macro(install_app_dependencies mod mod_name)
 			endmacro()
 		else ()
-			macro(install_app_dependencies MOD MOD_NAME)
+			macro(install_app_dependencies mod mod_name)
 				install(CODE "
-					message(\"-- Installing app dependencies for ${MOD_NAME}...\")
+					message(\"-- Installing app dependencies for ${mod_name}...\")
 					execute_process(
 						COMMAND \"${Python_EXECUTABLE}\" \"${APPDEPS}\" -L \"${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/${__path_suffix}/lib/\"
-							--set-rpath '\\\$ORIGIN/../lib/' --outdir \"\${CMAKE_INSTALL_PREFIX}/lib/\" \"${MOD}\"
+							--set-rpath '\\\$ORIGIN/../lib/' --outdir \"\${CMAKE_INSTALL_PREFIX}/lib/\" \"${mod}\" --patchelf-program ${PATCHELF}
 					)"
 				)
 			endmacro()
 		endif()
 	endif()
-
-	# get all targets
-	# https://stackoverflow.com/questions/37434946/how-do-i-iterate-over-all-cmake-targets-programmatically/62311397#62311397
-	function(get_all_targets var)
-			set(targets)
-			get_all_targets_recursive(targets ${CMAKE_SOURCE_DIR})
-			set(${var} ${targets} PARENT_SCOPE)
-	endfunction()
-
-	macro(get_all_targets_recursive targets dir)
-			get_property(subdirectories DIRECTORY ${dir} PROPERTY SUBDIRECTORIES)
-			foreach(subdir ${subdirectories})
-					get_all_targets_recursive(${targets} ${subdir})
-			endforeach()
-
-			get_property(current_targets DIRECTORY ${dir} PROPERTY BUILDSYSTEM_TARGETS)
-			foreach(target ${current_targets})
-				get_target_property(target_type ${target} TYPE)
-				if ("${target_type}" MATCHES "^(EXECUTABLE|SHARED_LIBRARY|MODULE_LIBRARY)$")
-					list(APPEND targets ${target})
-				endif()
-			endforeach()
-	endmacro()
-
-	get_all_targets(all_targets)
-	foreach(target ${all_targets})
-		install_app_dependencies($<TARGET_FILE:${target}> $<TARGET_FILE_NAME:${target}>)
-	endforeach()
 else()
-	macro(install_app_dependencies MOD MOD_NAME)
+	macro(install_app_dependencies mod mod_name)
 	endmacro()
 	# this is because generator expressions are required to get target output files
 	# and they're not allowed inside install CODE before cmake 3.14
 	message(WARNING "At least CMake 3.14 is required for installing the dependencies of synfig (current version: ${CMAKE_VERSION})")
 endif()
+
+
+# this closely follows what vcpkg does:
+# https://github.com/microsoft/vcpkg/blob/01b29f6d8212bc845da64773b18665d682f5ab66/scripts/buildsystems/vcpkg.cmake#L697-L741
+function(install)
+	_install(${ARGV})
+
+	if(ARGV0 STREQUAL "TARGETS")
+		# Will contain the list of targets
+		set(parsed_targets "")
+
+		# Destination - [RUNTIME] DESTINATION argument overrides this
+		set(destination "bin")
+
+		set(component_param "")
+
+		# Parse arguments given to the install function to find targets and (runtime) destination
+		set(modifier "") # Modifier for the command in the argument
+		set(last_command "") # Last command we found to process
+		foreach(arg ${ARGV})
+		if(arg MATCHES "^(ARCHIVE|LIBRARY|RUNTIME|OBJECTS|FRAMEWORK|BUNDLE|PRIVATE_HEADER|PUBLIC_HEADER|RESOURCE|INCLUDES)$")
+			set(modifier "${arg}")
+			continue()
+		endif()
+		if(arg MATCHES "^(TARGETS|DESTINATION|PERMISSIONS|CONFIGURATIONS|COMPONENT|NAMELINK_COMPONENT|OPTIONAL|EXCLUDE_FROM_ALL|NAMELINK_ONLY|NAMELINK_SKIP|EXPORT)$")
+			set(last_command "${arg}")
+			continue()
+		endif()
+
+		if(last_command STREQUAL "TARGETS")
+			list(APPEND parsed_targets "${arg}")
+		endif()
+
+		if(last_command STREQUAL "DESTINATION" AND (modifier STREQUAL "" OR modifier STREQUAL "RUNTIME"))
+			set(destination "${arg}")
+		endif()
+		if(last_command STREQUAL "COMPONENT")
+			set(component_param "COMPONENT" "${arg}")
+		endif()
+		endforeach()
+
+		if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.14")
+			cmake_policy(SET CMP0087 NEW)
+		endif()
+		foreach(target "${parsed_targets}")
+			install_app_dependencies("$<TARGET_FILE:${target}>" "$<TARGET_FILE_NAME:${target}>")
+		endforeach()
+	endif()
+endfunction()
 
 # gdbus is required by gio on windows as a replacement for dbus on linux
 if(WIN32)

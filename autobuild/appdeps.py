@@ -4,16 +4,16 @@ import shutil
 import os
 
 
-def _change_rpath(lib, rpath):
-    val = subprocess.run(args=["patchelf", "--set-rpath", rpath, lib])
+def _change_rpath(lib, rpath, patchelf_program):
+    val = subprocess.run(args=[patchelf_program, "--set-rpath", rpath, lib])
     if val.returncode != 0:
         print(f"Error: Failed setting rpath of {lib} to {rpath}!")
         exit(-1)
 
 
-def change_rpath(libs, rpath):
+def change_rpath(libs, rpath, patchelf_program):
     for lib in libs:
-        _change_rpath(lib, rpath)
+        _change_rpath(lib, rpath, patchelf_program)
 
 
 def is_executable_or_shared(file):
@@ -96,6 +96,10 @@ if __name__ == "__main__":
                         dest="outdir",
                         type=str,
                         required=True)
+    parser.add_argument("--patchelf-program",
+                        metavar="patchelf-program",
+                        dest="patchelf_program",
+                        type=str)
     parser.add_argument("--set-rpath", metavar="rpath", dest="rpath", type=str)
     args = parser.parse_args()
 
@@ -121,6 +125,11 @@ if __name__ == "__main__":
         print("Error: File is neither a shared library nor an executable!")
         exit(-1)
 
+    if args.patchelf_program:
+        patchelf_program = args.patchelf_program
+    else:
+        patchelf_program = "patchelf"
+
     deps = find_deps(file_path, libdirs)
 
     unresolved_deps = [key for key, value in deps.items() if value is None]
@@ -132,4 +141,4 @@ if __name__ == "__main__":
     copied_deps = copy_deps(deps, outdir, libdirs, args.rpath)
 
     if args.rpath:
-        change_rpath(copied_deps, args.rpath)
+        change_rpath(copied_deps, args.rpath, patchelf_program)

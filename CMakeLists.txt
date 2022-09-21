@@ -1,9 +1,19 @@
 cmake_minimum_required(VERSION 3.6)
-if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.14")
-	cmake_policy(SET CMP0087 NEW)
-endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+
+# the following configurations have to be set before the first "project"
+# command. these will allow us to use host tools, specifically gettext
+# we can also get rid of them and require the user to pass
+# "-DVCPKG_HOST_TRIPLET=<host-triplet> and -DVCPKG_USE_HOST_TOOLS=ON" to cmake
+if(NOT VCPKG_HOST_TRIPLET)
+	if(UNIX)
+		set(VCPKG_HOST_TRIPLET "x64-linux")
+	elseif(WIN32)
+		set(VCPKG_HOST_TRIPLET "x64-windows")
+	endif()
+endif()
+set(VCPKG_USE_HOST_TOOLS ON)
 
 project(synfig-studio)
 set(STUDIO_VERSION_MAJOR 1)
@@ -11,11 +21,6 @@ set(STUDIO_VERSION_MINOR 5)
 set(STUDIO_VERSION_PATCH 0)
 
 option(ENABLE_TCMALLOC "Enable use of tcmalloc library" OFF)
-
-if(VCPKG_TOOLCHAIN)
-	set(CMAKE_INSTALL_RPATH "\$ORIGIN/../lib")
-	add_definitions(-DSYNFIG_PORTABLE)
-endif()
 
 if(NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Debug)
@@ -88,6 +93,11 @@ endif()
 
 include(SynfigFindGit)
 
+if(VCPKG_TOOLCHAIN)
+	add_definitions(-DSYNFIG_PORTABLE)
+	include(SynfigVcpkg)
+endif()
+
 add_subdirectory(ETL)
 include_directories(ETL)
 include_directories(${PROJECT_BINARY_DIR}/ETL) # to find the generated etl_profile.h
@@ -104,5 +114,4 @@ if(MSYS)
 	include(InstallMSYS2)
 endif()
 
-include(SynfigVcpkg)
 include(CPackConfig)

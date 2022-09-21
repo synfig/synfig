@@ -18,6 +18,11 @@
     "hicolor-icon-theme",
     "adwaita-icon-theme",
     {
+         "name": "gettext",
+         "features": ["tools"],
+         "host": true
+    },
+    {
          "name": "jack2",
          "platform": "linux"
     },
