@@ -39,7 +39,6 @@
 
 #include "renderer_ducks.h"
 
-#include <ETL/bezier>
 #include <synfig/distance.h>
 #include <synfig/valuenodes/valuenode_wplist.h>
 #include <synfig/valuenodes/valuenode_bline.h>
