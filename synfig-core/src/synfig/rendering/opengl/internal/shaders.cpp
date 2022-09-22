@@ -178,7 +178,7 @@ String
 gl::Shaders::get_shader_path(const String &filename)
 {
 	return get_shader_path()
-		 + ETL_DIRECTORY_SEPARATOR
+		 + "/"
 		 + filename;
 }
 
