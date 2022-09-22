@@ -435,7 +435,6 @@ Widget_ColorEdit::Widget_ColorEdit():
 		Gtk::Box* box_cast_2 = static_cast<Gtk::Box*>( internal_child_2[0] );
 		std::vector<Widget*> internal_child_3 = box_cast_2->get_children(); //internal_child_3[0] is the color wheel widget
 
-		internal_child_3[0]->signal_button_release_event().connect([&](GdkEventButton *ev){ if((hvsColorWidget->is_adjusting()))wheel_released=true;return false;},false);
 		internal_child_3[0]->signal_key_press_event().connect([&](GdkEventKey *ev){
 			if((ev->keyval == GDK_KEY_Escape) && (hvsColorWidget->is_adjusting())){
 				escape_cancel=true;on_color_changed();
@@ -515,7 +514,7 @@ Widget_ColorEdit::on_color_changed()
 		return;
 	}
 
-	if (!colorHVSChanged && (hvsColorWidget->is_adjusting() || wheel_released)) //color change is from a wheel drag
+	if (!colorHVSChanged) //color change is from a wheel drag
 	{
 		Gdk::RGBA newColor = hvsColorWidget->get_current_rgba();
 		Color synfigColor;
@@ -528,6 +527,8 @@ Widget_ColorEdit::on_color_changed()
 					newColor.get_blue() );
 				synfigColor=synfigColorTemp;
 				get_initial_color= true;//rename
+				if (!group)
+					group = new synfigapp::Action::PassiveGrouper(App::get_selected_canvas_view()->get_instance().get(),_("Change color"),true);
 		}
 		else{//drag did not end
 			current_instance->repeated_action = true;
@@ -543,7 +544,7 @@ Widget_ColorEdit::on_color_changed()
 			get_initial_color= false;
 		}
 
-		if(get_initial_color || escape_cancel){//last time now
+		if(get_initial_color || escape_cancel){//last time now //we can reset the action cancelled thing here
 			current_instance->repeated_action = true;
 			if (escape_cancel) {
 				current_instance->cancel_repeated_action = true;
@@ -551,7 +552,10 @@ Widget_ColorEdit::on_color_changed()
 				get_initial_color = true;
 				current_action_cancelled = true;
 			}
+			if (group)
 				delete group;
+			group = nullptr;
+
 		}
 		if(!escape_cancel){
 			synfigColor = App::get_selected_canvas_gamma().apply(synfigColor);
@@ -565,19 +569,6 @@ Widget_ColorEdit::on_color_changed()
 		escape_cancel = false;
 		return;
 	}
-
-	if (!colorHVSChanged) //color change is not from a wheel drag
-		{
-			Gdk::RGBA newColor = hvsColorWidget->get_current_rgba();
-			Color synfigColor(
-				newColor.get_red(),
-				newColor.get_green(),
-				newColor.get_blue() );
-			synfigColor = App::get_selected_canvas_gamma().apply(synfigColor);//performs some form of color correction
-			set_value(synfigColor);
-			colorHVSChanged = true; //I reset the flag in setHVSColor(..)
-			on_value_changed();
-		}
 }
 
 void
