@@ -183,13 +183,13 @@ TaskContourGL::run(RunParams & /* params */) const
 	// transformation
 
 	Vector rect_size = source_rect.get_size();
-	Matrix bounds_transfromation;
-	bounds_transfromation.m00 = 2.0/rect_size[0];
-	bounds_transfromation.m11 = 2.0/rect_size[1];
-	bounds_transfromation.m20 = -1.0 - source_rect.minx*bounds_transfromation.m00;
-	bounds_transfromation.m21 = -1.0 - source_rect.miny*bounds_transfromation.m11;
+	Matrix bounds_transformation;
+	bounds_transformation.m00 = 2.0/rect_size[0];
+	bounds_transformation.m11 = 2.0/rect_size[1];
+	bounds_transformation.m20 = -1.0 - source_rect.minx*bounds_transformation.m00;
+	bounds_transformation.m21 = -1.0 - source_rect.miny*bounds_transformation.m11;
 
-	Matrix matrix = bounds_transfromation * transformation->matrix;
+	Matrix matrix = bounds_transformation * transformation->matrix;
 
 	// apply bounds
 
