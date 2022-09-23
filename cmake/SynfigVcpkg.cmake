@@ -176,8 +176,6 @@ if(GDKPIXBUF_LOADERS_DIR AND GDKPIXBUF_QUERYLOADERS)
 				DEPENDS "${MOD}"
 			)
 		elseif(UNIX)
-			# TODO: find the gdkpixbuf loader dependencies using something like "ldd",
-			# copy them and change their rpath to look at synfig's lib directory
 			add_custom_target(
 				copy_${MOD_NAME}_dependencies ALL
 			)
