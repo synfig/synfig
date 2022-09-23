@@ -18,17 +18,22 @@
     "hicolor-icon-theme",
     "adwaita-icon-theme",
     {
-         "name": "gettext",
-         "features": ["tools"],
-         "host": true
+      "name": "gettext",
+      "features": ["tools"],
+      "host": true
     },
     {
-         "name": "jack2",
-         "platform": "linux"
+      "name": "patchelf",
+      "host": true
     },
     {
-        "name": "pkgconf",
-        "platform": "windows"
+      "name": "pkgconf",
+      "platform": "windows",
+      "host": true
+    },
+    {
+      "name": "jack2",
+      "platform": "linux"
     }
   ]
 }

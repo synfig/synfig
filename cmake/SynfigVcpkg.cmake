@@ -1,16 +1,7 @@
 get_filename_component(VCPKG_TOOLCHAIN_DIR "${CMAKE_TOOLCHAIN_FILE}" DIRECTORY)
 find_package(PkgConfig REQUIRED)
 
-# using "set(CMAKE_INSTALL_RPATH "\$ORIGIN/../lib")" won't cut it, since synfig's
-# modules exist in lib/synfig/modules, so their rpaths needs to be "$ORIGIN/../../../lib"
-# instead, we will customize the rpath for each target
-
-
 # install dependecies
-# we could have required the user to pass the option X_VCPKG_APPLOCAL_DEPS_INSTALL
-# to enable installing dependencies automatically without this section, but this
-# current solution requires less work on the user side, and will give us more control
-# (for installing dependencies of gdk-pixbuf loaders for example)
 if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.14")
 	if(WIN32)
 		macro(install_app_dependencies mod mod_name)
@@ -40,24 +31,17 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.14")
 			set(__path_suffix ".")
 		endif()
 
-		find_package (Python COMPONENTS Interpreter)
-		find_program(PATCHELF patchelf)
+		find_package (Python COMPONENTS Interpreter REQUIRED)
 
-		if (NOT Python_FOUND OR NOT PATCHELF)
-			message(WARNING "Python and patchelf are required for creating a portable Synfig package")
-			macro(install_app_dependencies mod mod_name)
-			endmacro()
-		else ()
-			macro(install_app_dependencies mod mod_name)
-				install(CODE "
-					message(\"-- Installing app dependencies for ${mod_name}...\")
-					execute_process(
-						COMMAND \"${Python_EXECUTABLE}\" \"${APPDEPS}\" -L \"${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/${__path_suffix}/lib/\"
-							--set-rpath '\\\$ORIGIN/../lib/' --outdir \"\${CMAKE_INSTALL_PREFIX}/lib/\" \"${mod}\" --patchelf-program ${PATCHELF}
-					)"
-				)
-			endmacro()
-		endif()
+		macro(install_app_dependencies mod mod_name)
+			install(CODE "
+				message(\"-- Installing app dependencies for ${mod_name}...\")
+				execute_process(
+					COMMAND \"${Python_EXECUTABLE}\" \"${APPDEPS}\" -L \"${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/${__path_suffix}/lib/\"
+						--outdir \"\${CMAKE_INSTALL_PREFIX}/lib/\" \"${mod}\"
+				)"
+			)
+		endmacro()
 	endif()
 else()
 	macro(install_app_dependencies mod mod_name)
@@ -71,49 +55,81 @@ endif()
 # this closely follows what vcpkg does:
 # https://github.com/microsoft/vcpkg/blob/01b29f6d8212bc845da64773b18665d682f5ab66/scripts/buildsystems/vcpkg.cmake#L697-L741
 function(install)
-	_install(${ARGV})
-
 	if(ARGV0 STREQUAL "TARGETS")
 		# Will contain the list of targets
 		set(parsed_targets "")
-
-		# Destination - [RUNTIME] DESTINATION argument overrides this
-		set(destination "bin")
 
 		set(component_param "")
 
 		# Parse arguments given to the install function to find targets and (runtime) destination
 		set(modifier "") # Modifier for the command in the argument
 		set(last_command "") # Last command we found to process
+		set(destination "")
+		set(library_destination "")
+		set(runtime_destination "")
+
 		foreach(arg ${ARGV})
-		if(arg MATCHES "^(ARCHIVE|LIBRARY|RUNTIME|OBJECTS|FRAMEWORK|BUNDLE|PRIVATE_HEADER|PUBLIC_HEADER|RESOURCE|INCLUDES)$")
-			set(modifier "${arg}")
-			continue()
-		endif()
-		if(arg MATCHES "^(TARGETS|DESTINATION|PERMISSIONS|CONFIGURATIONS|COMPONENT|NAMELINK_COMPONENT|OPTIONAL|EXCLUDE_FROM_ALL|NAMELINK_ONLY|NAMELINK_SKIP|EXPORT)$")
-			set(last_command "${arg}")
-			continue()
-		endif()
+			if(arg MATCHES "^(ARCHIVE|LIBRARY|RUNTIME|OBJECTS|FRAMEWORK|BUNDLE|PRIVATE_HEADER|PUBLIC_HEADER|RESOURCE|INCLUDES)$")
+				set(modifier "${arg}")
+				continue()
+			endif()
+			if(arg MATCHES "^(TARGETS|DESTINATION|PERMISSIONS|CONFIGURATIONS|COMPONENT|NAMELINK_COMPONENT|OPTIONAL|EXCLUDE_FROM_ALL|NAMELINK_ONLY|NAMELINK_SKIP|EXPORT)$")
+				set(last_command "${arg}")
+				continue()
+			endif()
 
-		if(last_command STREQUAL "TARGETS")
-			list(APPEND parsed_targets "${arg}")
-		endif()
+			if(last_command STREQUAL "TARGETS")
+				list(APPEND parsed_targets "${arg}")
+			endif()
 
-		if(last_command STREQUAL "DESTINATION" AND (modifier STREQUAL "" OR modifier STREQUAL "RUNTIME"))
-			set(destination "${arg}")
-		endif()
-		if(last_command STREQUAL "COMPONENT")
-			set(component_param "COMPONENT" "${arg}")
-		endif()
+			if(last_command STREQUAL "DESTINATION" AND modifier STREQUAL "")
+				set(destination "${arg}")
+			endif()
+
+			if(last_command STREQUAL "DESTINATION" AND modifier STREQUAL "RUNTIME")
+				set(runtime_destination "${arg}")
+			endif()
+
+			if(last_command STREQUAL "DESTINATION" AND modifier STREQUAL "LIBRARY")
+				set(library_destination "${arg}")
+			endif()
+
+			if(last_command STREQUAL "COMPONENT")
+				set(component_param "COMPONENT" "${arg}")
+			endif()
 		endforeach()
+
+		if(NOT destination)
+			if(WIN32 AND runtime_destination)
+				set(destination "${runtime_destination}")
+			elseif(UNIX AND library_destination)
+				set(destination "${library_destination}")
+			endif()
+		endif()
+
+		# calculate rpath
+		if(UNIX)
+			set(rpath "$ORIGIN/..")
+			string(REGEX MATCHALL "/" separators "${destination}")
+			foreach(separator ${separators})
+				string(APPEND rpath "/..")
+			endforeach()
+			string(APPEND rpath "/lib")
+		endif()
 
 		if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.14")
 			cmake_policy(SET CMP0087 NEW)
 		endif()
-		foreach(target "${parsed_targets}")
+
+		foreach(target ${parsed_targets})
 			install_app_dependencies("$<TARGET_FILE:${target}>" "$<TARGET_FILE_NAME:${target}>")
+			if(UNIX)
+				set_target_properties(${target} PROPERTIES INSTALL_RPATH "${rpath}")
+				message("set_target_properties(${target} PROPERTIES INSTALL_RPATH ${rpath})")
+			endif()
 		endforeach()
 	endif()
+	_install(${ARGV})
 endfunction()
 
 # gdbus is required by gio on windows as a replacement for dbus on linux
@@ -143,7 +159,7 @@ if(GDKPIXBUF_LOADERS_DIR AND GDKPIXBUF_QUERYLOADERS)
 
 	file(GLOB GDKPIXBUF_MODULES "${GDKPIXBUF_LOADERS_DIR}/*${CMAKE_SHARED_LIBRARY_SUFFIX}")
 	set(GDKPIXBUF_MODULES_DEPS)
-	foreach(MOD "${GDKPIXBUF_MODULES}")
+	foreach(MOD ${GDKPIXBUF_MODULES})
 		file(COPY "${MOD}" DESTINATION "${SYNFIG_PIXBUF_LOADERS}")
 		get_filename_component(MOD_NAME "${MOD}" NAME)
 
