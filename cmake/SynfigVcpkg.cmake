@@ -84,9 +84,6 @@ function(install)
 		# Parse arguments given to the install function to find targets and (runtime) destination
 		set(modifier "") # Modifier for the command in the argument
 		set(last_command "") # Last command we found to process
-		set(destination "")
-		set(library_destination "")
-		set(runtime_destination "")
 
 		foreach(arg ${ARGV})
 			if(arg MATCHES "^(ARCHIVE|LIBRARY|RUNTIME|OBJECTS|FRAMEWORK|BUNDLE|PRIVATE_HEADER|PUBLIC_HEADER|RESOURCE|INCLUDES)$")
@@ -101,22 +98,6 @@ function(install)
 			if(last_command STREQUAL "TARGETS")
 				list(APPEND parsed_targets "${arg}")
 			endif()
-
-			if(last_command STREQUAL "DESTINATION" AND modifier STREQUAL "")
-				set(destination "${arg}")
-			endif()
-
-			if(last_command STREQUAL "DESTINATION" AND modifier STREQUAL "RUNTIME")
-				set(runtime_destination "${arg}")
-			endif()
-
-			if(last_command STREQUAL "DESTINATION" AND modifier STREQUAL "LIBRARY")
-				set(library_destination "${arg}")
-			endif()
-
-			if(last_command STREQUAL "COMPONENT")
-				set(component_param "COMPONENT" "${arg}")
-			endif()
 		endforeach()
 
 		if(NOT destination)
@@ -127,15 +108,22 @@ function(install)
 			endif()
 		endif()
 
-		set(rpath "$ORIGIN/..")
-		string(REGEX MATCHALL "/" separators "${destination}")
-		foreach(separator IN LISTS separators)
-			string(APPEND rpath "/..")
-		endforeach()
-		string(APPEND rpath "/lib")
-		set_target_properties(${parsed_targets} PROPERTIES INSTALL_RPATH "${rpath}")
+		# unlike vcpkg's implementation, which installs dependencies in the same
+		# directory as the target, this will always installs dependencies inside
+		# bin/lib directories
+		if(WIN32)
+			install_app_dependencies(TARGETS ${parsed_targets} DESTINATION bin)
+		elseif(UNIX)
+			set(rpath "$ORIGIN/..")
+			string(REGEX MATCHALL "/" separators "${destination}")
+			foreach(separator IN LISTS separators)
+				string(APPEND rpath "/..")
+			endforeach()
+			string(APPEND rpath "/lib")
+			set_target_properties(${parsed_targets} PROPERTIES INSTALL_RPATH "${rpath}")
 
-		install_app_dependencies(TARGETS ${parsed_targets} DESTINATION ${destination})
+			install_app_dependencies(TARGETS ${parsed_targets} DESTINATION lib)
+		endif()
 	endif()
 	_install(${ARGV})
 endfunction()
