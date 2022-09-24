@@ -23,10 +23,6 @@
       "host": true
     },
     {
-      "name": "patchelf",
-      "host": true
-    },
-    {
       "name": "pkgconf",
       "platform": "windows",
       "host": true
