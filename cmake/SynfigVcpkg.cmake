@@ -58,15 +58,6 @@ function(install_app_dependencies)
 				)"
 			)
 		elseif(UNIX)
-			# calculate_rpath
-			set(rpath "$ORIGIN/..")
-			string(REGEX MATCHALL "/" separators "${destination}")
-			foreach(separator IN LISTS separators)
-				string(APPEND rpath "/..")
-			endforeach()
-			string(APPEND rpath "/lib")
-
-			set_target_properties(${target} PROPERTIES INSTALL_RPATH "${rpath}")
 
 			# TODO: make appdeps.py work on windows as well, and don't depend on vcpkg's
 			# applocal.ps1, since it's not certain that it will remain the same
@@ -136,6 +127,14 @@ function(install)
 			endif()
 		endif()
 
+		set(rpath "$ORIGIN/..")
+		string(REGEX MATCHALL "/" separators "${destination}")
+		foreach(separator IN LISTS separators)
+			string(APPEND rpath "/..")
+		endforeach()
+		string(APPEND rpath "/lib")
+		set_target_properties(${parsed_targets} PROPERTIES INSTALL_RPATH "${rpath}")
+
 		install_app_dependencies(TARGETS ${parsed_targets} DESTINATION ${destination})
 	endif()
 	_install(${ARGV})
@@ -161,13 +160,7 @@ pkg_get_variable(GDKPIXBUF_QUERYLOADERS gdk-pixbuf-2.0 gdk_pixbuf_query_loaders)
 if(GDKPIXBUF_LOADERS_DIR AND GDKPIXBUF_QUERYLOADERS)
 	set(SYNFIG_PIXBUF_LOADERS "${SYNFIG_BUILD_ROOT}/lib/gdk-pixbuf-2.0/2.10.0/loaders/")
 	file(MAKE_DIRECTORY "${SYNFIG_PIXBUF_LOADERS}")
-	file(
-		COPY "${GDKPIXBUF_QUERYLOADERS}${CMAKE_EXECUTABLE_SUFFIX}"
-		DESTINATION "${SYNFIG_BUILD_ROOT}/bin"
-	)
-
 	file(GLOB GDKPIXBUF_MODULES "${GDKPIXBUF_LOADERS_DIR}/*${CMAKE_SHARED_LIBRARY_SUFFIX}")
-	set(GDKPIXBUF_MODULES_DEPS)
 	foreach(MOD IN LISTS GDKPIXBUF_MODULES)
 		file(COPY "${MOD}" DESTINATION "${SYNFIG_PIXBUF_LOADERS}")
 		get_filename_component(MOD_NAME "${MOD}" NAME)
@@ -184,7 +177,6 @@ if(GDKPIXBUF_LOADERS_DIR AND GDKPIXBUF_QUERYLOADERS)
 				COMMAND ${CMAKE_COMMAND} -E remove "${SYNFIG_BUILD_ROOT}/bin/${MOD_NAME}"
 				DEPENDS "${MOD}"
 			)
-			list(APPEND GDKPIXBUF_MODULES_DEPS "copy_${MOD_NAME}_dependencies")
 			install_app_dependencies(FILES "${MOD}" DESTINATION "bin")
 		elseif(UNIX)
 			install_app_dependencies(FILES "${MOD}" DESTINATION "lib")
@@ -199,10 +191,9 @@ if(GDKPIXBUF_LOADERS_DIR AND GDKPIXBUF_QUERYLOADERS)
 	add_custom_target(
 		generate_pixbuf_loaders_cache ALL
 		BYPRODUCTS "${SYNFIG_PIXBUF_LOADERS}/../loaders.cache"
-		COMMAND ${CMAKE_COMMAND} -E env GDK_PIXBUF_MODULEDIR="${SYNFIG_PIXBUF_LOADERS}"
-			${SYNFIG_BUILD_ROOT}/bin/gdk-pixbuf-query-loaders${CMAKE_EXECUTABLE_SUFFIX} > "${SYNFIG_PIXBUF_LOADERS}/../loaders.cache"
+		COMMAND ${CMAKE_COMMAND} -E env GDK_PIXBUF_MODULEDIR="${GDKPIXBUF_LOADERS_DIR}"
+			${GDKPIXBUF_QUERYLOADERS}${CMAKE_EXECUTABLE_SUFFIX} > "${SYNFIG_PIXBUF_LOADERS}/../loaders.cache"
 	)
-	add_dependencies(generate_pixbuf_loaders_cache ${GDKPIXBUF_MODULES_DEPS})
 else()
 	message(WARNING "Gdk-pixbuf loaders directory cannot be found!")
 endif()
