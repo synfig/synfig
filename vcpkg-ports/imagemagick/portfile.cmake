@@ -16,6 +16,8 @@ vcpkg_extract_source_archive(
       use_cxx_to_link.patch
 )
 
+# TODO: investigate each of imagemagick's optional dependencies and make this
+# port customizable
 vcpkg_configure_make(
   SOURCE_PATH "${SOURCE_PATH}"
   DETERMINE_BUILD_TRIPLET
@@ -34,7 +36,8 @@ vcpkg_configure_make(
     --with-openexr
     --with-bzlib
     --with-lcms
-    --with-rsvg
+    # FIXME: see librsvg portfile
+    --without-rsvg
     # FIXME (gdi+ is used in MagickCore which is a C project, while gdi+ is c++)
     # msvc automatically uses C mode when compiling files with extension "c"
     --without-gdi32

@@ -35,6 +35,18 @@ vcpkg_configure_make(
     --enable-pixbuf-loader
 )
 
+# FIXME: librsvg uses glib-mkenums which for some reason generated incorrect
+# code on Windows. Specifically:
+# librsvg-enum-types.h:
+# 1   G_BEGIN_DECLS
+# 2   E:/vcpkg/downloads/tools/msys2/583ad6e4115a307a/* enumerations from "rsvg.h" */
+# 3   GType rsvg_error_get_type (void);
+# 4   #define RSVG_TYPE_ERROR (rsvg_error_get_type())
+# 5   GType rsvg_handle_flags_get_type (void);
+# 6   #define RSVG_TYPE_HANDLE_FLAGS (rsvg_handle_flags_get_type())
+# 7   G_END_DECLS
+# the second line won't obviously compile
+
 vcpkg_install_make()
 vcpkg_fixup_pkgconfig()
 
