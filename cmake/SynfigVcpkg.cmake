@@ -1,56 +1,86 @@
 get_filename_component(VCPKG_TOOLCHAIN_DIR "${CMAKE_TOOLCHAIN_FILE}" DIRECTORY)
 find_package(PkgConfig REQUIRED)
+find_package (Python COMPONENTS Interpreter REQUIRED)
 
-# install dependecies
-if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.14")
-	if(WIN32)
-		macro(install_app_dependencies mod mod_name)
-			install(CODE "
-				message(\"-- Installing app dependencies for ${mod_name}...\")
-				execute_process(
-					COMMAND ${CMAKE_COMMAND} -E copy \"${mod}\" \"\${CMAKE_INSTALL_PREFIX}/bin/${mod_name}.tmp\"
-				)
-				execute_process(
-					COMMAND powershell -noprofile -executionpolicy Bypass -file ${VCPKG_TOOLCHAIN_DIR}/msbuild/applocal.ps1
-						-targetBinary \"\${CMAKE_INSTALL_PREFIX}/bin/${mod_name}.tmp\"
-						-installedDir \"${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}$<$<CONFIG:Debug>:/debug>/bin\"
-				)
-				execute_process(
-					COMMAND ${CMAKE_COMMAND} -E remove \"\${CMAKE_INSTALL_PREFIX}/bin/${mod_name}.tmp\"
-				)"
-			)
-		endmacro()
-	elseif(UNIX)
-		# TODO: make appdeps.py work on windows as well, and don't depend on vcpkg's
-		# applocal.ps1, since it's not certain that it will remain the same
-		set(APPDEPS "${CMAKE_SOURCE_DIR}/autobuild/appdeps.py")
-
-		if(NOT DEFINED CMAKE_BUILD_TYPE OR CMAKE_BUILD_TYPE MATCHES "^[Dd][Ee][Bb][Uu][Gg]$")
-			set(__path_suffix "debug")
-		else()
-			set(__path_suffix ".")
-		endif()
-
-		find_package (Python COMPONENTS Interpreter REQUIRED)
-
-		macro(install_app_dependencies mod mod_name)
-			install(CODE "
-				message(\"-- Installing app dependencies for ${mod_name}...\")
-				execute_process(
-					COMMAND \"${Python_EXECUTABLE}\" \"${APPDEPS}\" -L \"${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/${__path_suffix}/lib/\"
-						--outdir \"\${CMAKE_INSTALL_PREFIX}/lib/\" \"${mod}\"
-				)"
-			)
-		endmacro()
-	endif()
-else()
-	macro(install_app_dependencies mod mod_name)
-	endmacro()
-	# this is because generator expressions are required to get target output files
-	# and they're not allowed inside install CODE before cmake 3.14
+if(CMAKE_VERSION VERSION_LESS "3.14")
 	message(WARNING "At least CMake 3.14 is required for installing the dependencies of synfig (current version: ${CMAKE_VERSION})")
 endif()
 
+function(install_app_dependencies)
+	if(CMAKE_VERSION VERSION_LESS "3.14")
+		return()
+	endif()
+	cmake_policy(SET CMP0087 NEW)
+
+	cmake_parse_arguments(PARSE_ARGV 0 arg
+		""
+		"DESTINATION"
+		"TARGETS;FILES"
+	)
+
+	if(DEFINED arg_UNPARSED_ARGUMENTS)
+			message(FATAL_ERROR "${CMAKE_CURRENT_FUNCTION} was passed extra arguments: ${arg_UNPARSED_ARGUMENTS}")
+	endif()
+	if(NOT DEFINED arg_DESTINATION)
+			message(FATAL_ERROR "DESTINATION must be specified")
+	endif()
+
+	if(NOT IS_ABSOLUTE "${arg_DESTINATION}")
+			set(arg_DESTINATION "\${CMAKE_INSTALL_PREFIX}/${arg_DESTINATION}")
+	endif()
+
+	foreach(target IN LISTS arg_TARGETS arg_FILES)
+		if(TARGET ${target})
+			get_target_property(target_type "${target}" TYPE)
+			if(target_type STREQUAL "INTERFACE_LIBRARY")
+				continue()
+			endif()
+			set(name "${target}")
+			set(file_path "$<TARGET_FILE:${target}>")
+		else()
+			get_filename_component(name "${target}" NAME_WE)
+			set(file_path "${target}")
+		endif()
+
+		if(WIN32)
+			install(CODE "
+				message(\"-- Installing app dependencies for ${name}...\")
+				execute_process(
+					COMMAND ${CMAKE_COMMAND} -E copy \"${file_path}\" \"${arg_DESTINATION}/${name}.tmp\"
+				)
+				execute_process(
+					COMMAND powershell -noprofile -executionpolicy Bypass -file ${VCPKG_TOOLCHAIN_DIR}/msbuild/applocal.ps1
+						-targetBinary \"${arg_DESTINATION}/${name}.tmp\"
+						-installedDir \"${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}$<$<CONFIG:Debug>:/debug>/bin\"
+				)
+				execute_process(
+					COMMAND ${CMAKE_COMMAND} -E remove \"${arg_DESTINATION}/${name}.tmp\"
+				)"
+			)
+		elseif(UNIX)
+			# calculate_rpath
+			set(rpath "$ORIGIN/..")
+			string(REGEX MATCHALL "/" separators "${destination}")
+			foreach(separator IN LISTS separators)
+				string(APPEND rpath "/..")
+			endforeach()
+			string(APPEND rpath "/lib")
+
+			set_target_properties(${target} PROPERTIES INSTALL_RPATH "${rpath}")
+
+			# TODO: make appdeps.py work on windows as well, and don't depend on vcpkg's
+			# applocal.ps1, since it's not certain that it will remain the same
+			set(APPDEPS "${CMAKE_SOURCE_DIR}/autobuild/appdeps.py")
+			install(CODE "
+				message(\"-- Installing app dependencies for ${name}...\")
+				execute_process(
+					COMMAND \"${Python_EXECUTABLE}\" \"${APPDEPS}\" -L \"${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/$<$<CONFIG:Debug>:/debug>/lib\"
+					--outdir \"${arg_DESTINATION}\" \"${file_path}\"
+				)"
+			)
+		endif()
+	endforeach()
+endfunction()
 
 # this closely follows what vcpkg does:
 # https://github.com/microsoft/vcpkg/blob/01b29f6d8212bc845da64773b18665d682f5ab66/scripts/buildsystems/vcpkg.cmake#L697-L741
@@ -58,7 +88,6 @@ function(install)
 	if(ARGV0 STREQUAL "TARGETS")
 		# Will contain the list of targets
 		set(parsed_targets "")
-
 		set(component_param "")
 
 		# Parse arguments given to the install function to find targets and (runtime) destination
@@ -107,27 +136,7 @@ function(install)
 			endif()
 		endif()
 
-		# calculate rpath
-		if(UNIX)
-			set(rpath "$ORIGIN/..")
-			string(REGEX MATCHALL "/" separators "${destination}")
-			foreach(separator ${separators})
-				string(APPEND rpath "/..")
-			endforeach()
-			string(APPEND rpath "/lib")
-		endif()
-
-		if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.14")
-			cmake_policy(SET CMP0087 NEW)
-		endif()
-
-		foreach(target ${parsed_targets})
-			install_app_dependencies("$<TARGET_FILE:${target}>" "$<TARGET_FILE_NAME:${target}>")
-			if(UNIX)
-				set_target_properties(${target} PROPERTIES INSTALL_RPATH "${rpath}")
-				message("set_target_properties(${target} PROPERTIES INSTALL_RPATH ${rpath})")
-			endif()
-		endforeach()
+		install_app_dependencies(TARGETS ${parsed_targets} DESTINATION ${destination})
 	endif()
 	_install(${ARGV})
 endfunction()
@@ -159,7 +168,7 @@ if(GDKPIXBUF_LOADERS_DIR AND GDKPIXBUF_QUERYLOADERS)
 
 	file(GLOB GDKPIXBUF_MODULES "${GDKPIXBUF_LOADERS_DIR}/*${CMAKE_SHARED_LIBRARY_SUFFIX}")
 	set(GDKPIXBUF_MODULES_DEPS)
-	foreach(MOD ${GDKPIXBUF_MODULES})
+	foreach(MOD IN LISTS GDKPIXBUF_MODULES)
 		file(COPY "${MOD}" DESTINATION "${SYNFIG_PIXBUF_LOADERS}")
 		get_filename_component(MOD_NAME "${MOD}" NAME)
 
@@ -175,13 +184,11 @@ if(GDKPIXBUF_LOADERS_DIR AND GDKPIXBUF_QUERYLOADERS)
 				COMMAND ${CMAKE_COMMAND} -E remove "${SYNFIG_BUILD_ROOT}/bin/${MOD_NAME}"
 				DEPENDS "${MOD}"
 			)
+			list(APPEND GDKPIXBUF_MODULES_DEPS "copy_${MOD_NAME}_dependencies")
+			install_app_dependencies(FILES "${MOD}" DESTINATION "bin")
 		elseif(UNIX)
-			add_custom_target(
-				copy_${MOD_NAME}_dependencies ALL
-			)
+			install_app_dependencies(FILES "${MOD}" DESTINATION "lib")
 		endif()
-		install_app_dependencies(${MOD} ${MOD_NAME})
-		list(APPEND GDKPIXBUF_MODULES_DEPS "copy_${MOD_NAME}_dependencies")
 	endforeach()
 
 	install(

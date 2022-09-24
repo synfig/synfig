@@ -95,7 +95,7 @@ include(SynfigFindGit)
 
 if(VCPKG_TOOLCHAIN)
 	add_definitions(-DSYNFIG_PORTABLE)
-	include(SynfigVcpkg)
+	include(SynfigVcpkg NO_POLICY_SCOPE)
 endif()
 
 add_subdirectory(ETL)
