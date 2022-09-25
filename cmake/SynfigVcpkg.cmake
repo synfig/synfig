@@ -84,6 +84,9 @@ function(install)
 		# Parse arguments given to the install function to find targets and (runtime) destination
 		set(modifier "") # Modifier for the command in the argument
 		set(last_command "") # Last command we found to process
+		set(destination "")
+		set(library_destination "")
+		set(runtime_destination "")
 
 		foreach(arg ${ARGV})
 			if(arg MATCHES "^(ARCHIVE|LIBRARY|RUNTIME|OBJECTS|FRAMEWORK|BUNDLE|PRIVATE_HEADER|PUBLIC_HEADER|RESOURCE|INCLUDES)$")
@@ -97,6 +100,22 @@ function(install)
 
 			if(last_command STREQUAL "TARGETS")
 				list(APPEND parsed_targets "${arg}")
+			endif()
+
+			if(last_command STREQUAL "DESTINATION" AND modifier STREQUAL "")
+				set(destination "${arg}")
+			endif()
+
+			if(last_command STREQUAL "DESTINATION" AND modifier STREQUAL "RUNTIME")
+				set(runtime_destination "${arg}")
+			endif()
+
+			if(last_command STREQUAL "DESTINATION" AND modifier STREQUAL "LIBRARY")
+				set(library_destination "${arg}")
+			endif()
+
+			if(last_command STREQUAL "COMPONENT")
+				set(component_param "COMPONENT" "${arg}")
 			endif()
 		endforeach()
 
