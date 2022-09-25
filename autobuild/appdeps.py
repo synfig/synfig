@@ -48,7 +48,7 @@ def find_deps(file, libdirs):
         if len(parts) == 1:
             continue
 
-        lib_name = parts[0].strip()
+        lib_name = os.path.basename(parts[0].strip())
         lib_path = parts[1].split(" (")[0].strip()
         if lib_path == "not found":
             lib_path = None
@@ -63,9 +63,8 @@ def copy_deps(deps, outdir, libdirs, rpath):
     for libname, libpath in deps.items():
         reallibpath = os.path.realpath(libpath)
         found_lib = False
-        for libdir in libdirs:
-            if os.path.commonpath([reallibpath,
-                                   libdir]) == os.path.commonpath([libdir]):
+        for searchdir in libdirs:
+            if os.path.realpath(os.path.join(searchdir, libname)) == reallibpath:
                 found_lib = True
                 break
 
