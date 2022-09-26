@@ -1,3 +1,5 @@
+- [`630eddc`](https://github.com/synfig/synfig/commit/630eddc0c92c37322aae4dc0309c152ea4bc7f2e) feat: Added support for scrolling through text in text paragraph dialog ([#2810](https://github.com/synfig/synfig/issues/2810)) [studio]
+- [`0be02a8`](https://github.com/synfig/synfig/commit/0be02a8f146429d88798766fe2c0fe62a10b2be3) fix: broken opengl build (due to ETL_DIRECTORY_SEPARATOR) and typos ([#2834](https://github.com/synfig/synfig/issues/2834)) [core]
 - [`994622b`](https://github.com/synfig/synfig/commit/994622bb93d3abcf2e4fa2b168951b8369422905) fix: prevent crash or hang when frame cannot be imported ([#2830](https://github.com/synfig/synfig/issues/2830)) [core]
 - [`fbe312d`](https://github.com/synfig/synfig/commit/fbe312da00d7a748b553f4b5b97dc2fe14b546de) feat: reduced displayed floating point precision ([#2809](https://github.com/synfig/synfig/issues/2809)) [core] [studio]
 - [`ef1cb75`](https://github.com/synfig/synfig/commit/ef1cb75f5f187b06d8b39d25d1c2a411fe2140d5) build(cmake): fixed build when path contains non-Latin characters (MSYS2) ([#2821](https://github.com/synfig/synfig/issues/2821)) [studio]
