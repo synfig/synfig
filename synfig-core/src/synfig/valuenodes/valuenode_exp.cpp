@@ -91,7 +91,7 @@ ValueNode_Exp::~ValueNode_Exp()
 ValueBase
 ValueNode_Exp::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+	if (DEBUG_GETENV("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	return (exp((*exp_)(t).get(Real())) *

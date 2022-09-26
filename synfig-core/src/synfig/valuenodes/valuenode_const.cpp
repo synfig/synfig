@@ -33,6 +33,7 @@
 #include "valuenode_bone.h"
 #include "valuenode_boneweightpair.h"
 #include "valuenode_composite.h"
+#include "synfig/general.h"
 #include <synfig/canvas.h>
 #include <synfig/general.h>
 #include <synfig/localization.h>
@@ -63,8 +64,8 @@ ValueNode_Const::ValueNode_Const(const ValueBase &x, Canvas::LooseHandle canvas)
 	ValueNode	(x.get_type()),
 	value		(x)
 {
-	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-		printf("%s:%d set parent canvas for const %lx to %lx\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(canvas.get()));
+	DEBUG_LOG("SYNFIG_DEBUG_SET_PARENT_CANVAS",
+		"%s:%d set parent canvas for const %lx to %lx\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(canvas.get()));
 
 	if (x.get_type() == type_bone_valuenode)
 		add_child(x.get(ValueNode_Bone::Handle()).get());
@@ -122,8 +123,8 @@ ValueNode_Const::~ValueNode_Const()
 ValueBase
 ValueNode_Const::operator()(Time /*t*/)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	return value;
 }

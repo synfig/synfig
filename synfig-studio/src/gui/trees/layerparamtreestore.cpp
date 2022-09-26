@@ -111,8 +111,8 @@ LayerParamTreeStore::~LayerParamTreeStore()
 		changed_connection_list.pop_back();
 	}
 
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
-		synfig::info("LayerParamTreeStore::~LayerParamTreeStore(): Deleted");
+	DEBUG_LOG("SYNFIG_DEBUG_DESTRUCTORS",
+		"LayerParamTreeStore::~LayerParamTreeStore(): Deleted");
 }
 
 Glib::RefPtr<LayerParamTreeStore>

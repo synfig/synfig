@@ -45,6 +45,7 @@
 
 #include <gui/localization.h>
 
+#include "synfig/general.h"
 #endif
 
 /* === U S I N G =========================================================== */
@@ -136,8 +137,8 @@ Dialog_Gradient::on_set_default_pressed()
 void
 Dialog_Gradient::on_changed()
 {
-	if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
-		printf("%s:%d Dialog_Gradient::on_changed()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_ON_CHANGED",
+		"%s:%d Dialog_Gradient::on_changed()\n", __FILE__, __LINE__);
 
 	signal_edited_(get_gradient());
 }

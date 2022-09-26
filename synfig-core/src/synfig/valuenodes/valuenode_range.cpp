@@ -125,8 +125,8 @@ synfig::ValueNode_Range::~ValueNode_Range()
 synfig::ValueBase
 synfig::ValueNode_Range::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	if(!min_ || !max_ || !link_)
 		throw runtime_error(strprintf("ValueNode_Range: %s",_("Some of my parameters aren't set!")));

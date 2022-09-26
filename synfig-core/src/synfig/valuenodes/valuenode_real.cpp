@@ -129,8 +129,8 @@ ValueNode_Real::get_link_vfunc(int i)const
 ValueBase
 ValueNode_Real::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	float real = (*real_)(t).get(float());
 

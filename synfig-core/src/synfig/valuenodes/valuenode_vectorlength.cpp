@@ -86,8 +86,8 @@ ValueNode_VectorLength::~ValueNode_VectorLength()
 ValueBase
 ValueNode_VectorLength::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	return (*vector_)(t).get(Vector()).mag();
 }

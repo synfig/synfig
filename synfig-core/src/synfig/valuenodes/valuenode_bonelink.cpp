@@ -175,8 +175,8 @@ ValueNode_BoneLink::get_bone_transformation(Time t)const
 ValueBase
 ValueNode_BoneLink::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 	return ValueTransformation::transform(
 		get_bone_transformation(t), (*base_value_)(t) );
 }

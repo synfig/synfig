@@ -118,8 +118,8 @@ ValueNode_Pow::get_link_vfunc(int i)const
 ValueBase
 ValueNode_Pow::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	Real base     = (*base_)    (t).get(Real());
 	Real power    = (*power_)   (t).get(Real());

@@ -189,8 +189,8 @@ KeyframeTreeStore::KeyframeTreeStore(etl::loose_handle<synfigapp::CanvasInterfac
 
 KeyframeTreeStore::~KeyframeTreeStore()
 {
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
-		synfig::info("KeyframeTreeStore::~KeyframeTreeStore(): Deleted");
+	DEBUG_LOG("SYNFIG_DEBUG_DESTRUCTORS",
+		"KeyframeTreeStore::~KeyframeTreeStore(): Deleted");
 }
 
 Glib::RefPtr<KeyframeTreeStore>

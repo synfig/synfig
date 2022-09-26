@@ -385,8 +385,8 @@ synfig::bline_length(const ValueBase &bline, bool bline_loop, std::vector<Real> 
 ValueNode_BLine::ValueNode_BLine(Canvas::LooseHandle canvas):
 	ValueNode_DynamicList(type_bline_point, canvas)
 {
-	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-		printf("%s:%d should have already set parent canvas for bline %lx to %lx (using dynamic_list constructor)\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(canvas.get()));
+	DEBUG_LOG("SYNFIG_DEBUG_SET_PARENT_CANVAS",
+		"%s:%d should have already set parent canvas for bline %lx to %lx (using dynamic_list constructor)\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(canvas.get()));
 }
 
 ValueNode_BLine::~ValueNode_BLine()
@@ -550,8 +550,8 @@ ValueNode_BLine::create_list_entry(int index, Time time, Real origin)
 ValueBase
 ValueNode_BLine::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	std::vector<BLinePoint> ret_list;
 
@@ -1000,8 +1000,8 @@ ValueNode_BLine::get_blinepoint(std::vector<ListEntry>::const_iterator current, 
 void
 ValueNode_BLine::ref()const
 {
-	if (getenv("SYNFIG_DEBUG_BLINE_REFCOUNT"))
-		printf("%s:%d %lx   ref bline %*s -> %2d\n", __FILE__, __LINE__, uintptr_t(this), (count()*2), "", count()+1);
+	DEBUG_LOG("SYNFIG_DEBUG_BLINE_REFCOUNT",
+		"%s:%d %lx   ref bline %*s -> %2d\n", __FILE__, __LINE__, uintptr_t(this), (count()*2), "", count()+1);
 
 	LinkableValueNode::ref();
 }
@@ -1009,8 +1009,8 @@ ValueNode_BLine::ref()const
 bool
 ValueNode_BLine::unref()const
 {
-	if (getenv("SYNFIG_DEBUG_BLINE_REFCOUNT"))
-		printf("%s:%d %lx unref bline %*s%2d <-\n", __FILE__, __LINE__, uintptr_t(this), ((count()-1)*2), "", count()-1);
+	DEBUG_LOG("SYNFIG_DEBUG_BLINE_REFCOUNT",
+		"%s:%d %lx unref bline %*s%2d <-\n", __FILE__, __LINE__, uintptr_t(this), ((count()-1)*2), "", count()-1);
 
 	return LinkableValueNode::unref();
 }

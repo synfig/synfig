@@ -203,23 +203,23 @@ ValueNode_StaticList::add(const ValueNode::Handle &value_node, int index) // lin
 {
 	if(index<0 || index>=(int)list.size())
 	{
-		if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
-			printf("%s:%d vvv adding valuenode to end of static list\n", __FILE__, __LINE__);
+		DEBUG_LOG("SYNFIG_DEBUG_BONE_REFCOUNT",
+			"%s:%d vvv adding valuenode to end of static list\n", __FILE__, __LINE__);
 
 		list.push_back(value_node);
 
-		if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
-			printf("%s:%d ^^^ done adding valuenode\n", __FILE__, __LINE__);
+		DEBUG_LOG("SYNFIG_DEBUG_BONE_REFCOUNT",
+			"%s:%d ^^^ done adding valuenode\n", __FILE__, __LINE__);
 	}
 	else
 	{
-		if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
-			printf("%s:%d vvv inserting valuenode into static list at %d\n", __FILE__, __LINE__, index);
+		DEBUG_LOG("SYNFIG_DEBUG_BONE_REFCOUNT",
+			"%s:%d vvv inserting valuenode into static list at %d\n", __FILE__, __LINE__, index);
 
 		list.insert(list.begin()+index,value_node);
 
-		if (getenv("SYNFIG_DEBUG_BONE_REFCOUNT"))
-			printf("%s:%d ^^^ done inserting valuenode\n", __FILE__, __LINE__);
+		DEBUG_LOG("SYNFIG_DEBUG_BONE_REFCOUNT",
+			"%s:%d ^^^ done inserting valuenode\n", __FILE__, __LINE__);
 	}
 
 	add_child(value_node.get());
@@ -272,18 +272,18 @@ ValueNode_StaticList::ValueNode_StaticList(Type &container_type, Canvas::LooseHa
 	container_type(&container_type),
 	loop_(false)
 {
-	if (getenv("SYNFIG_DEBUG_STATICLIST_CONSTRUCTORS"))
-		printf("%s:%d ValueNode_StaticList::ValueNode_StaticList() construct %lx\n", __FILE__, __LINE__, uintptr_t(this));
+	DEBUG_LOG("SYNFIG_DEBUG_STATICLIST_CONSTRUCTORS",
+		"%s:%d ValueNode_StaticList::ValueNode_StaticList() construct %lx\n", __FILE__, __LINE__, uintptr_t(this));
 
-	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-		printf("%s:%d set parent canvas for static_list %lx to %lx\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(canvas.get()));
+	DEBUG_LOG("SYNFIG_DEBUG_SET_PARENT_CANVAS",
+		"%s:%d set parent canvas for static_list %lx to %lx\n", __FILE__, __LINE__, uintptr_t(this), uintptr_t(canvas.get()));
 	set_parent_canvas(canvas);
 }
 
 ValueNode_StaticList::~ValueNode_StaticList()
 {
 #ifdef _DEBUG
-	if (getenv("SYNFIG_DEBUG_STATICLIST_CONSTRUCTORS"))
+	if (DEBUG_GETENV("SYNFIG_DEBUG_STATICLIST_CONSTRUCTORS"))
 	{
 		printf("\n%s:%d ------------------------------------------------------------------------\n", __FILE__, __LINE__);
 		printf("%s:%d ~ValueNode_StaticList()\n", __FILE__, __LINE__);
@@ -340,8 +340,8 @@ ValueNode_StaticList::create(const ValueBase &value)
 ValueBase
 ValueNode_StaticList::operator()(Time t)const // line 596
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	std::vector<ValueBase> ret_list;
 	std::vector<ReplaceableListEntry>::const_iterator iter;
@@ -495,8 +495,8 @@ ValueNode_StaticList::set_member_canvas(etl::loose_handle<Canvas> canvas) // lin
 {
 	for (vector<ReplaceableListEntry>::iterator iter = list.begin(); iter != list.end(); iter++)
 	{
-		if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-			printf("%s:%d set parent canvas of member (%lx) to (%lx)\n", __FILE__, __LINE__, uintptr_t((*iter).get()), uintptr_t(canvas.get()));
+		DEBUG_LOG("SYNFIG_DEBUG_SET_PARENT_CANVAS",
+			"%s:%d set parent canvas of member (%lx) to (%lx)\n", __FILE__, __LINE__, uintptr_t((*iter).get()), uintptr_t(canvas.get()));
 		(*iter)->set_parent_canvas(canvas);
 	}
 }
@@ -517,8 +517,8 @@ ValueNode_StaticList::create_new() const
 void
 ValueNode_StaticList::ref()const
 {
-	if (getenv("SYNFIG_DEBUG_STATICLIST_REFCOUNT"))
-		printf("%s:%d %lx   ref staticlist %*s -> %2d\n", __FILE__, __LINE__, uintptr_t(this), (count()*2), "", count()+1);
+	DEBUG_LOG("SYNFIG_DEBUG_STATICLIST_REFCOUNT",
+		"%s:%d %lx   ref staticlist %*s -> %2d\n", __FILE__, __LINE__, uintptr_t(this), (count()*2), "", count()+1);
 
 	LinkableValueNode::ref();
 }
@@ -526,8 +526,8 @@ ValueNode_StaticList::ref()const
 bool
 ValueNode_StaticList::unref()const
 {
-	if (getenv("SYNFIG_DEBUG_STATICLIST_REFCOUNT"))
-		printf("%s:%d %lx unref staticlist %*s%2d <-\n", __FILE__, __LINE__, uintptr_t(this), ((count()-1)*2), "", count()-1);
+	DEBUG_LOG("SYNFIG_DEBUG_STATICLIST_REFCOUNT",
+		"%s:%d %lx unref staticlist %*s%2d <-\n", __FILE__, __LINE__, uintptr_t(this), ((count()-1)*2), "", count()-1);
 
 	return LinkableValueNode::unref();
 }

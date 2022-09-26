@@ -745,8 +745,8 @@ CanvasView::~CanvasView()
 
 	delete canvas_options;
 
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
-		info("CanvasView::~CanvasView(): Deleted");
+	DEBUG_LOG("SYNFIG_DEBUG_DESTRUCTORS",
+		"CanvasView::~CanvasView(): Deleted");
 }
 
 void CanvasView::save_all()

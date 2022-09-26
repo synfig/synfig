@@ -96,8 +96,8 @@ ValueNode_DotProduct::~ValueNode_DotProduct()
 ValueBase
 ValueNode_DotProduct::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	Vector lhs((*lhs_)(t).get(Vector()));
 	Vector rhs((*rhs_)(t).get(Vector()));

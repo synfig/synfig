@@ -161,8 +161,8 @@ ValueNode_Duplicate::count_steps(Time t)const
 ValueBase
 ValueNode_Duplicate::operator()(Time t __attribute__ ((unused)))const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	return index;
 }
