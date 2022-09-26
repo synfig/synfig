@@ -70,6 +70,7 @@
 #endif
 #include <gtkmm/stock.h>
 #include <gtkmm/textview.h>
+#include <gtkmm/scrolledwindow.h>
 
 #include <gui/app.h>
 #include <gui/autorecover.h>
@@ -3828,14 +3829,17 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
 
 	Gtk::Label* label = manage(new Gtk::Label(message));
 	label->show();
-	dialog.get_content_area()->pack_start(*label);
+	dialog.get_content_area()->pack_start(*label, Gtk::PACK_SHRINK);
 
 	Glib::RefPtr<Gtk::TextBuffer> text_buffer(Gtk::TextBuffer::create());
 	text_buffer->set_text(text);
 	Gtk::TextView text_view(text_buffer);
 	text_view.show();
+	Gtk::ScrolledWindow scrolled_window;
+	scrolled_window.add(text_view);
+	scrolled_window.show();
 
-	dialog.get_content_area()->pack_start(text_view);
+	dialog.get_content_area()->pack_start(scrolled_window);
 
 	dialog.add_button(_("_Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
 	dialog.add_button(_("_OK"),   Gtk::RESPONSE_OK)->set_image_from_icon_name("gtk-ok", Gtk::ICON_SIZE_BUTTON);
@@ -3855,6 +3859,7 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
 
 	}), false );
 	//text_entry.signal_activate().connect(sigc::bind(sigc::mem_fun(dialog,&Gtk::Dialog::response),Gtk::RESPONSE_OK));
+	dialog.set_default_size(400, 300);
 	dialog.show();
 
 	if(dialog.run()!=Gtk::RESPONSE_OK)
