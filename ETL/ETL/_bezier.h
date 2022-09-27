@@ -599,12 +599,11 @@ private:
 	 */
 	static int CrossingCount(value_type *VT)
 	{
-		int 	i;
 		int 	n_crossings = 0;	/*  Number of zero-crossings	*/
 		int		sign, old_sign;		/*  Sign of coefficients		*/
 
 		sign = old_sign = sgn(VT[0][1]);
-		for (i = 1; i <= W_DEGREE; i++)
+		for (unsigned i = 1; i <= W_DEGREE; i++)
 		{
 			sign = sgn(VT[i][1]);
 			if (sign != old_sign) n_crossings++;
@@ -623,7 +622,6 @@ private:
 	 */
 	static int ControlPolygonFlatEnough(value_type *VT)
 	{
-		int 			i;					/* Index variable					*/
 		distance_type 	distance[W_DEGREE] = {};	/* Distances from pts to line		*/
 		distance_type 	max_distance_above;	/* maximum of these					*/
 		distance_type 	max_distance_below;
@@ -644,7 +642,7 @@ private:
 
 			abSquared = (a * a) + (b * b);
 
-			for (i = 1; i < W_DEGREE; i++)
+			for (unsigned int i = 1; i < W_DEGREE; i++)
 			{
 				/* Compute distance from each of the points to that line	*/
 				distance[i] = a * VT[i][0] + b * VT[i][1] + c;
@@ -656,7 +654,7 @@ private:
 		/* Find the largest distance */
 		max_distance_above = max_distance_below = 0.0;
 
-		for (i = 1; i < W_DEGREE; i++)
+		for (unsigned int i = 1; i < W_DEGREE; i++)
 		{
 			if (distance[i] < 0.0) max_distance_below = min(max_distance_below, distance[i]);
 			if (distance[i] > 0.0) max_distance_above = max(max_distance_above, distance[i]);
@@ -698,15 +696,14 @@ private:
 	 *    time_type 	*t;				RETURN candidate t-values
 	 *    int 			depth;			The depth of the recursion
 	 */
-	static int FindRoots(value_type *w, time_type *t, int depth)
+	static unsigned int FindRoots(value_type *w, time_type *t, int depth)
 	{
-		int 		i;
-		value_type 	Left[W_DEGREE+1];	/* New left and right 	*/
-		value_type	Right[W_DEGREE+1];	/* control polygons		*/
-		int 		left_count;			/* Solution count from	*/
-		int			right_count;		/* children				*/
-		time_type 	left_t[W_DEGREE+1];	/* Solutions from kids	*/
-		time_type	right_t[W_DEGREE+1];
+		value_type Left[W_DEGREE+1];	/* New left and right 	*/
+		value_type Right[W_DEGREE+1];	/* control polygons		*/
+		unsigned int left_count;     	/* Solution count from	*/
+		unsigned int right_count;    	/* children				*/
+		time_type left_t[W_DEGREE+1];	/* Solutions from kids	*/
+		time_type right_t[W_DEGREE+1];
 
 		switch (CrossingCount(w))
 		{
@@ -739,8 +736,8 @@ private:
 		right_count = FindRoots(Right, right_t, depth+1);
 
 		/* Gather solutions together	*/
-		for (i = 0; i < left_count;  i++) t[i] = left_t[i];
-		for (i = 0; i < right_count; i++) t[i+left_count] = right_t[i];
+		for (unsigned int i = 0; i < left_count;  i++) t[i] = left_t[i];
+		for (unsigned int i = 0; i < right_count; i++) t[i+left_count] = right_t[i];
 
 		/* Send back total number of solutions	*/
 		return (left_count+right_count);
@@ -757,8 +754,7 @@ private:
 	 */
 	static void ConvertToBezierForm(const value_type& P, value_type *VT, value_type w[W_DEGREE+1])
 	{
-		int 	i, j, k, m, n, ub, lb;
-		int 	row, column;				/* Table indices				*/
+		unsigned int i, j, k, ub, lb;
 		value_type 	c[DEGREE+1];			/* VT(i)'s - P					*/
 		value_type 	d[DEGREE];				/* VT(i+1) - VT(i)				*/
 		distance_type 	cdTable[3][4];		/* Dot product of c, d			*/
@@ -769,33 +765,33 @@ private:
 
 		/* Determine the c's -- these are vectors created by subtracting */
 		/* point P from each of the control points						 */
-		for (i = 0; i <= DEGREE; i++)
+		for (i = 0; i < DEGREE + 1; i++)
 			c[i] = VT[i] - P;
 
 		/* Determine the d's -- these are vectors created by subtracting */
 		/* each control point from the next								 */
-		for (i = 0; i <= DEGREE - 1; i++)
+		for (i = 0; i < DEGREE; i++)
 			d[i] = (VT[i+1] - VT[i]) * 3.0;
 
 		/* Create the c,d table -- this is a table of dot products of the */
 		/* c's and d's													  */
-		for (row = 0; row <= DEGREE - 1; row++)
-			for (column = 0; column <= DEGREE; column++)
+		for (unsigned int row = 0; row < DEGREE; row++)
+			for (unsigned int column = 0; column < DEGREE + 1; column++)
 				cdTable[row][column] = d[row] * c[column];
 
 		/* Now, apply the z's to the dot products, on the skew diagonal */
 		/* Also, set up the x-values, making these "points"				*/
-		for (i = 0; i <= W_DEGREE; i++)
+		for (i = 0; i < W_DEGREE + 1; i++)
 		{
 			w[i][0] = (distance_type)(i) / W_DEGREE;
 			w[i][1] = 0.0;
 		}
 
-		n = DEGREE;
-		m = DEGREE-1;
-		for (k = 0; k <= n + m; k++)
+		const unsigned int n = DEGREE;
+		const unsigned int m = DEGREE-1;
+		for (k = 0; k < 2 * DEGREE; k++)
 		{
-			lb = max(0, k - m);
+			lb = k > m ? k - m : 0;
 			ub = min(k, n);
 			for (i = lb; i <= ub; i++)
 			{
@@ -817,10 +813,10 @@ private:
 	 */
 	static time_type NearestPointOnCurve(const value_type& P, value_type VT[4])
 	{
-		value_type 	w[W_DEGREE+1];			/* Ctl pts of 5th-degree curve  */
-		time_type 	t_candidate[W_DEGREE];	/* Possible roots				 */
-		int 		n_solutions;			/* Number of roots found		 */
-		time_type	t;						/* Parameter value of closest pt */
+		value_type   w[W_DEGREE+1];			/* Ctl pts of 5th-degree curve  */
+		time_type    t_candidate[W_DEGREE];	/* Possible roots				 */
+		unsigned int n_solutions;			/* Number of roots found		 */
+		time_type    t;						/* Parameter value of closest pt */
 
 		/*  Convert problem to 5th-degree Bezier form */
 		ConvertToBezierForm(P, VT, w);
@@ -832,14 +828,13 @@ private:
 		{
 			distance_type 	dist, new_dist;
 			value_type 		p, v;
-			int				i;
 
 			/* Check distance to beginning of curve, where t = 0	*/
 			dist = (P - VT[0]).mag_squared();
 			t = 0.0;
 
 			/* Find distances for candidate points	*/
-			for (i = 0; i < n_solutions; i++)
+			for (unsigned int i = 0; i < n_solutions; i++)
 			{
 				p = Bezier(VT, DEGREE, t_candidate[i], nullptr, nullptr);
 				new_dist = (P - p).mag_squared();
