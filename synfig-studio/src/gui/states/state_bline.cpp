@@ -39,7 +39,7 @@
 #include <gtkmm/imagemenuitem.h>
 #include <gtkmm/separatormenuitem.h>
 
-#include <ETL/hermite>
+#include <ETL/bezier>
 
 #include <gui/app.h>
 #include <gui/canvasview.h>

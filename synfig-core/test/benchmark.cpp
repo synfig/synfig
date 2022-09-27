@@ -26,7 +26,7 @@
 
 #include <cstdio>
 
-#include <ETL/hermite>
+#include <ETL/bezier>
 #include <ETL/surface>
 #include <ETL/gaussian>
 

@@ -36,7 +36,7 @@
 
 #include "curvewarp.h"
 
-#include <ETL/hermite>
+#include <ETL/bezier>
 
 #include <synfig/localization.h>
 

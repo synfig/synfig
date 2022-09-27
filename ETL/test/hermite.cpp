@@ -24,7 +24,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/hermite>
+#include <ETL/bezier>
 #include <ETL/calculus>
 #include <stdio.h>
 

@@ -41,7 +41,7 @@
 #include <list>
 #include <stdexcept>
 
-#include <ETL/hermite>
+#include <ETL/bezier>
 #include <ETL/handle>
 #include <ETL/misc>
 

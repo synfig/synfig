@@ -868,6 +868,61 @@ private:
 template<typename V, typename T>
 const double bezier<V,T>::EPSILON = ldexp(1.0, -bezier<V,T>::MAXDEPTH-1);
 
+/**
+ * The hermite parametric curve.
+ *
+ * A hermite curve is defined by two on-curve points and their tangents.
+ *
+ * The curve parameter t lies traditionally on the [0, 1] interval.
+ * Here we can change these boundaries. @see bezier::set_rs()
+ */
+template <typename V,typename T=float>
+class hermite : public bezier<V,T>
+{
+public:
+	typedef V value_type;
+	typedef T time_type;
+
+public:
+	hermite() : P1{}, P2{}, T1{}, T2{} { }
+	hermite(const value_type &p1, const value_type &p2, const value_type &t1, const value_type &t2):
+		P1(p1),P2(p2),T1(t1),T2(t2) { sync(); }
+	hermite(const value_type &p1, const value_type &p2):
+		P1(p1),P2(p2),T1(p2-p1),T2(p2-p1) { sync(); }
+
+	value_type P1,P2,T1,T2;
+
+	/** The start point */
+	value_type& p1() { return P1; }
+	/** The end point */
+	value_type& p2() { return P2; }
+	/** The tangent at the start point @c p1 */
+	value_type& t1() { return T1; }
+	/** The tangent at the end point @c p2 */
+	value_type& t2() { return T2; }
+
+	/** It must be called everytime you finish updating vertices and tangents */
+	void sync()
+	{
+		bezier<V,T>::operator[](0)=P1;
+		bezier<V,T>::operator[](1)=P1+T1/3;
+		bezier<V,T>::operator[](2)=P2-T2/3;
+		bezier<V,T>::operator[](3)=P2;
+
+		bezier<V,T>::sync();
+	}
+
+	/** The tangent at curve parameter value x
+	 *  @param x a value between [get_r(), get_s()] ([0, 1] by default)
+	 */
+	value_type derivative(const time_type& x)
+	{
+		V a = (*this)[0], b = (*this)[1], c = (*this)[2], d = (*this)[3];
+		time_type y(1-x);
+		return ((b-a)*y*y + (c-b)*x*y*2 + (d-c)*x*x) * 3;
+	};
+};
+
 };
 
 /* === E X T E R N S ======================================================= */

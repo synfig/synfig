@@ -26,7 +26,7 @@
 
 #include <synfig/angle.h>
 
-#include <ETL/hermite>
+#include <ETL/bezier>
 
 #include "test_base.h"
 
