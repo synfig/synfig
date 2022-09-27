@@ -79,6 +79,7 @@
 #include <sstream>
 #include <string>
 
+#include <synfig/rendering/renderer.h>
 #include <synfig/valuenodes/valuenode_animated.h>
 
 #include <synfigapp/canvasinterface.h>
@@ -1106,9 +1107,8 @@ CanvasView::create_top_toolbar()
 	{ // Rendering mode ComboBox
 		render_combobox = Gtk::manage(new class Gtk::ComboBoxText());
 		render_combobox->append("software-draft", _("Draft"));
-#ifdef WITH_OPENGL
-		render_combobox->append("gl", _("GL"));
-#endif
+		if (synfig::rendering::Renderer::get_renderers().count("gl") != 0)
+			render_combobox->append("gl", _("GL"));
 		render_combobox->append("software-preview", _("Preview"));
 		render_combobox->append("software", _("Final"));
 		render_combobox->signal_changed().connect(sigc::mem_fun(*this, &CanvasView::toggle_render_combobox));
