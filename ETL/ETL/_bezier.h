@@ -599,8 +599,8 @@ private:
 	 */
 	static int CrossingCount(value_type *VT)
 	{
-		int 	n_crossings = 0;	/*  Number of zero-crossings	*/
-		int		sign, old_sign;		/*  Sign of coefficients		*/
+		int n_crossings = 0;	/*  Number of zero-crossings	*/
+		int	sign, old_sign;		/*  Sign of coefficients		*/
 
 		sign = old_sign = sgn(VT[0][1]);
 		for (unsigned i = 1; i <= W_DEGREE; i++)
@@ -622,11 +622,11 @@ private:
 	 */
 	static int ControlPolygonFlatEnough(value_type *VT)
 	{
-		distance_type 	distance[W_DEGREE] = {};	/* Distances from pts to line		*/
-		distance_type 	max_distance_above;	/* maximum of these					*/
-		distance_type 	max_distance_below;
-		time_type 		intercept_1, intercept_2, left_intercept, right_intercept;
-		distance_type 	a, b, c;			/* Coefficients of implicit			*/
+		distance_type distance[W_DEGREE] = {};	/* Distances from pts to line		*/
+		distance_type max_distance_above;	/* maximum of these					*/
+		distance_type max_distance_below;
+		time_type     intercept_1, intercept_2, left_intercept, right_intercept;
+		distance_type a, b, c;			/* Coefficients of implicit			*/
 		/* eqn for line from VT[0]-VT[deg]			*/
 		/* Find the  perpendicular distance			*/
 		/* from each interior control point to 		*/
