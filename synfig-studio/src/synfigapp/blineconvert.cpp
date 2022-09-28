@@ -38,7 +38,7 @@
 #include "blineconvert.h"
 #include <vector>
 #include <ETL/gaussian>
-#include <ETL/hermite>
+#include <ETL/bezier>
 #include <float.h>
 #include <algorithm>
 #include <cassert>

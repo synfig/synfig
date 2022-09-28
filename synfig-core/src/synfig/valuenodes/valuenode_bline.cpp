@@ -42,7 +42,7 @@
 #include <synfig/localization.h>
 #include <synfig/valuenode_registry.h>
 #include <synfig/exception.h>
-#include <ETL/hermite>
+#include <ETL/bezier>
 #include <synfig/segment.h>
 #include <synfig/curve_helper.h>
 #include <algorithm> // for std::swap

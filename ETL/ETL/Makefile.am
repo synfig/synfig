@@ -13,10 +13,8 @@ etl_HEADERS = \
 	ref_count \
 	_ref_count.h \
 	handle \
-	hermite \
 	stringf \
 	_stringf.h \
-	_hermite.h \
 	_curve_func.h \
 	_handle.h \
 	$(top_builddir)/ETL/etl_profile.h \

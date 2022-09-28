@@ -42,7 +42,6 @@
 #include <stdexcept>
 
 #include <ETL/bezier>
-#include <ETL/hermite>
 #include <ETL/handle>
 #include <ETL/misc>
 

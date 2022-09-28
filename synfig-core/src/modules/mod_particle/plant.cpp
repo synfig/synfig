@@ -50,7 +50,7 @@
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
 
-#include <ETL/hermite>
+#include <ETL/bezier>
 #include <vector>
 
 #include <synfig/valuenodes/valuenode_bline.h>

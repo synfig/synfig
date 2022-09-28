@@ -37,8 +37,6 @@
 
 #include <vector>
 
-#include <ETL/hermite>
-
 #include <synfig/string.h>
 #include <synfig/time.h>
 #include <synfig/context.h>
