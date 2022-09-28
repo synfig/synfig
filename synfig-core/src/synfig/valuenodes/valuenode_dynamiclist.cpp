@@ -138,6 +138,7 @@ ValueNode_DynamicList::reindex()
 			iter->set_parent_value_node(this);
 		}
 	}
+	init_children_vocab();
 }
 
 ValueNode_DynamicList::ListEntry
