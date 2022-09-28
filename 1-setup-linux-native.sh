@@ -213,8 +213,6 @@ elif [ "$ID_LIKE" == "debian" ] || [ "$ID_LIKE" == "ubuntu" ] || [ "$ID_LIKE" ==
                 libxml2-dev \
                 libtiff5-dev \
                 libmlt-dev libmlt++-dev libmlt-data \
-                x11proto-xext-dev libdirectfb-dev libxfixes-dev libxinerama-dev libxdamage-dev libxcomposite-dev libxcursor-dev libxft-dev libxrender-dev libxt-dev libxrandr-dev libxi-dev libxext-dev libx11-dev \
-                libatk1.0-dev \
                 libgl1-mesa-dev \
                 imagemagick \
                 libsdl2-dev \
@@ -228,7 +226,7 @@ elif [ "$ID_LIKE" == "debian" ] || [ "$ID_LIKE" == "ubuntu" ] || [ "$ID_LIKE" ==
                 libsigc++-2.0-dev \
                 libxml++2.6-dev \
                 libmagick++-dev \
-                libxslt-dev python-dev python3-lxml"
+                libxslt-dev python3 python3-lxml"
         else
             #  ALT Linux case
             PKG_LIST=" \
