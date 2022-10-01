@@ -544,6 +544,14 @@ Widget_ColorEdit::on_color_changed()
 			get_initial_color= false;
 		}
 
+		if(!escape_cancel){
+			synfigColor = App::get_selected_canvas_gamma().apply(synfigColor);
+			set_value(synfigColor);
+			colorHVSChanged = true;
+			on_value_changed();
+			wheel_released=false;
+		}
+
 		if(get_initial_color || escape_cancel){//last time now //we can reset the action cancelled thing here
 			current_instance->repeated_action = true;
 			if (escape_cancel) {
@@ -555,14 +563,6 @@ Widget_ColorEdit::on_color_changed()
 			if (group)
 				delete group;
 			group = nullptr;
-
-		}
-		if(!escape_cancel){
-			synfigColor = App::get_selected_canvas_gamma().apply(synfigColor);
-			set_value(synfigColor);
-			colorHVSChanged = true;
-			on_value_changed();
-			wheel_released=false;
 		}
 		current_instance->repeated_action = false;
 		current_instance->cancel_repeated_action = false;
