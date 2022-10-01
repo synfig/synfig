@@ -51,6 +51,8 @@
 # define WIN32_PIPE_TO_PROCESSES
 # define WIN32_LEAN_AND_MEAN
 # include <windows.h>
+# include <fcntl.h> // for _O_ flags
+# include <io.h> // for _open_osfhandle()
 # include <shellapi.h> // for ShellExecuteW
 #else
 # error There are no known APIs for creating child processes
@@ -155,7 +157,7 @@ class RunPipeWin32 : public OS::RunPipe
 
 	HANDLE child_STDIN_Read = INVALID_HANDLE_VALUE;
 	HANDLE child_STDIN_Write = INVALID_HANDLE_VALUE;
-	HANDLE child_STDOUT_Read = INVALID_HANDLE_VALUE;
+	FILE* read_file = nullptr;
 	HANDLE child_STDOUT_Write = INVALID_HANDLE_VALUE;
 	HANDLE child_STDERR_Read = INVALID_HANDLE_VALUE;
 	HANDLE child_STDERR_Write = INVALID_HANDLE_VALUE;
@@ -218,6 +220,7 @@ public:
 				return false;
 			}
 		} else if (is_reader) {
+			HANDLE child_STDOUT_Read = INVALID_HANDLE_VALUE;
 			if (!CreatePipe(&child_STDOUT_Read, &child_STDOUT_Write, &saAttr, 0))
 				synfig::error("synfig::OS::pipe: child_STDOUT CreatePipe");
 
@@ -225,6 +228,19 @@ public:
 
 			if (!SetHandleInformation(child_STDOUT_Read, HANDLE_FLAG_INHERIT, 0))
 				synfig::error("synfig::OS::pipe: child_STDOUT_Read SetHandleInformation");
+
+			// Convert to C stdio FILE*
+			int child_stdout_read_osfh = _open_osfhandle(intptr_t(child_STDOUT_Read), 0);
+			if (child_stdout_read_osfh == -1) {
+				synfig::error("synfig::OS::pipe: _open_osfhandle (stdout-read)");
+				return false;
+			}
+			read_file = _fdopen(child_stdout_read_osfh, "rb");
+			if (!read_file) {
+				synfig::error("synfig::OS::pipe: _fdopen (stdout-read)");
+				return false;
+			}
+			child_STDOUT_Read = INVALID_HANDLE_VALUE;
 		}
 
 		if (!redir_files.std_in.empty()) {
@@ -252,9 +268,9 @@ public:
 
 		return create_child_process(command);
 	}
-	bool is_readable() const override { return is_reader && child_STDOUT_Read != INVALID_HANDLE_VALUE; }
+	bool is_readable() const override { return is_reader && read_file; }
 	bool is_writable() const override { return is_writer && child_STDIN_Write != INVALID_HANDLE_VALUE; }
-	bool is_open() const override { return child_STDOUT_Read != INVALID_HANDLE_VALUE || child_STDIN_Write != INVALID_HANDLE_VALUE; };
+	bool is_open() const override { return read_file || child_STDIN_Write != INVALID_HANDLE_VALUE; };
 	int close() override
 	{
 		int status = 0;
@@ -266,9 +282,9 @@ public:
 			CloseHandle(child_STDIN_Write);
 			child_STDIN_Write = INVALID_HANDLE_VALUE;
 		}
-		if (child_STDOUT_Read != INVALID_HANDLE_VALUE) {
-			CloseHandle(child_STDOUT_Read);
-			child_STDOUT_Read = INVALID_HANDLE_VALUE;
+		if (read_file) {
+			fclose(read_file);
+			read_file = nullptr;
 		}
 		if (child_STDOUT_Write != INVALID_HANDLE_VALUE) {
 			CloseHandle(child_STDOUT_Write);
@@ -309,60 +325,46 @@ public:
 
 	std::string read_contents() override
 	{
-		if (!is_reader) {
+		if (!read_file) {
 			synfig::error("Should not try to readline() a non-readable pipe");
 			return "";
 		}
 		std::string result;
-		const int BUFSIZE = 4097;
-		char buffer[BUFSIZE];
-		buffer[BUFSIZE - 1] = 0;
-		while (true) {
-			DWORD num_read = 0;
-			bool success = ReadFile(child_STDOUT_Read, buffer, BUFSIZE - 1, &num_read, NULL);
-			if (!success || num_read == 0)
-				break;
-			result += buffer;
+		char buf[128];
+		while(!feof(read_file)) {
+			if(fgets(buf, 128, read_file) != nullptr)
+				result += buf;
 		}
-
 		return result;
 	}
 	std::string read_contents(size_t max_bytes) override
 	{
-		if (!is_reader) {
+		if (!read_file) {
 			synfig::error("Should not try to readline(size_t max_bytes) a non-readable pipe");
 			return "";
 		}
 		std::string result;
 		result.reserve(max_bytes);
-		if (ReadFile(child_STDOUT_Read, &result[0], max_bytes, NULL, NULL))
+		if (fgets(&result[0], max_bytes, read_file) != nullptr)
 			return result;
 		return "";
 	}
 	int getc() override
 	{
-		char buffer;
-		bool success = ReadFile(child_STDOUT_Read, &buffer, 1, NULL, NULL);
-		if (!success)
-			return EOF;
-		return buffer;
+		return fgetc(read_file);
 	}
 	int scanf(const char* __format, ...) override
 	{
 		va_list args;
 		va_start(args, __format);
-		// TODO: implement scanf for Windows pipe
-		int ret = 0; // = vfscanf(file, __format, args);
+		int ret = vfscanf(read_file, __format, args);
 		va_end(args);
 		return ret;
 	}
 	bool eof() const override
 	{
-		char buffer;
-		DWORD num_read = 0;
-		bool success = ReadFile(child_STDOUT_Read, &buffer, 0, &num_read, NULL);
-		return success && num_read == 0;
-	};
+		return feof(read_file);
+	}
 
 private:
 	bool create_child_process(const std::string& command)
@@ -396,8 +398,8 @@ private:
 
 		// If an error occurs, exit the application.
 		if (!bSuccess) {
-		   synfig::error("synfig::OS::pipe: CreateProcess");
-		   return false;
+			synfig::error("synfig::OS::pipe: CreateProcess");
+			return false;
 		}
 		// Close handles to the child process and its primary thread.
 		// Some applications might keep these handles to monitor the status
@@ -631,11 +633,15 @@ OS::RunPipe::Handle
 OS::run_async(std::string binary_path, const RunArgs& binary_args, RunMode mode, const RunRedirectionFiles& redir_files)
 {
 	auto run_pipe = OS::RunPipe::create();
-	if (!run_pipe)
+	if (!run_pipe) {
+		synfig::warning("couldn't create pipe for %s %s", binary_path.c_str(), binary_args.get_string().c_str());
 		return nullptr;
+	}
 	run_pipe->open(binary_path, binary_args, mode, redir_files);
-	if (!run_pipe->is_open())
+	if (!run_pipe->is_open()) {
+		synfig::warning("couldn't open pipe for %s %s", binary_path.c_str(), binary_args.get_string().c_str());
 		return nullptr;
+	}
 	return run_pipe;
 }
 
