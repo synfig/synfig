@@ -68,7 +68,7 @@ namespace types_namespace {
 	class TypeWeightedValue: public TypeWeightedValueBase
 	{
 		static String to_string(const WeightedValue<T> &x) {
-			return etl::strprintf("Weight (%f) %s", x.weight, value_to_string(x.value).c_str());
+			return strprintf("Weight (%f) %s", x.weight, value_to_string(x.value).c_str());
 		}
 		void initialize_vfunc(Description &description)
 		{

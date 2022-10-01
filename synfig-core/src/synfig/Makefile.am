@@ -22,8 +22,6 @@ TARGETHEADERS = \
 
 TARGETSOURCES = \
 	target_multi.cpp \
-	target_null.cpp \
-	target_null_tile.cpp \
 	target_scanline.cpp \
 	target_tile.cpp
 

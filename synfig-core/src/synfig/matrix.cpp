@@ -142,7 +142,7 @@ Matrix2::invert()
 String
 Matrix2::get_string(int spaces, String before, String after)const
 {
-	return etl::strprintf("%*s [%7.2f %7.2f] %s\n%*s [%7.2f %7.2f]\n",
+	return strprintf("%*s [%7.2f %7.2f] %s\n%*s [%7.2f %7.2f]\n",
 						  spaces, before.c_str(), m00, m01, after.c_str(),
 						  spaces, "",			  m10, m11);
 }
@@ -333,7 +333,7 @@ Matrix3::normalize_by_det()
 String
 Matrix3::get_string(int spaces, String before, String after)const
 {
-	return etl::strprintf("%*s [%7.2f %7.2f %7.2f] %s\n%*s [%7.2f %7.2f %7.2f]\n%*s [%7.2f %7.2f %7.2f]\n",
+	return strprintf("%*s [%7.2f %7.2f %7.2f] %s\n%*s [%7.2f %7.2f %7.2f]\n%*s [%7.2f %7.2f %7.2f]\n",
 						  spaces, before.c_str(), m00, m01, m02, after.c_str(),
 						  spaces, "",			  m10, m11, m12,
 						  spaces, "",			  m20, m21, m22);

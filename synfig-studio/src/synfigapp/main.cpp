@@ -35,6 +35,8 @@
 #include "main.h"
 #include "action.h"
 
+#include <ETL/stringf>
+
 #include <synfig/general.h>
 
 #include <synfig/color.h>

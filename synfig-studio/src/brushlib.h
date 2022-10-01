@@ -31,7 +31,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <brushlib/brushlib.hpp>
-#include <ETL/angle> // we need PI
+#include <synfig/angle.h> // we need PI
 #include <synfig/surface.h>
 
 /* === M A C R O S ========================================================= */

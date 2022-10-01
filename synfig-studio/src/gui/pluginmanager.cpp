@@ -38,6 +38,8 @@
 #include <glibmm/fileutils.h>
 #include <glibmm/spawn.h>
 
+#include <ETL/stringf>
+
 #include <gui/app.h>
 #include <gui/localization.h>
 #include <gui/onemoment.h>
@@ -179,7 +181,8 @@ studio::PluginManager::load_plugin( const std::string &file, const std::string &
 {
 	synfig::info("   Loading plugin: %s", etl::basename(plugindir).c_str());
 
-	std::string id = file;
+	static int plugin_count = 0;
+	const std::string id = "plugin" + std::to_string(++plugin_count);
 
 	// parse xml file
 	try
@@ -339,7 +342,7 @@ bool studio::PluginManager::run(const studio::PluginScript& script, std::vector<
 			&exit_status
 		);
 	} catch ( const Glib::SpawnError& err ) {
-		studio::App::dialog_message_1b("Error", etl::strprintf(_("Plugin execution failed: %s"), err.what().c_str()), "details", _("Close"));
+		studio::App::dialog_message_1b("Error", synfig::strprintf(_("Plugin execution failed: %s"), err.what().c_str()), "details", _("Close"));
 		return false;
 	}
 

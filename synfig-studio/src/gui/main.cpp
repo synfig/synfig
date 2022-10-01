@@ -35,6 +35,8 @@
 
 #include <glibmm/convert.h>
 
+#include <ETL/stringf>
+
 #include <gui/app.h>
 #include <gui/exception_guard.h>
 #include <gui/localization.h>

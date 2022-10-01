@@ -35,6 +35,9 @@
 
 #include "mptr_ffmpeg.h"
 #include <cstdio>
+
+#include <ETL/stringf>
+
 #include <synfig/general.h>
 #include <synfig/localization.h>
 #if HAVE_SYS_WAIT_H

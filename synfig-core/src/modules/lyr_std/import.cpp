@@ -105,7 +105,7 @@ Import::set_param(const String & param, const ValueBase &value)
 		{
 			importer.reset();
 			rendering_surface.reset();
-			param_filename.set(value.get(String()));
+			param_filename.set(FileSystem::fix_slashes(value.get(String())));
 			return true;
 		}
 
@@ -115,7 +115,7 @@ Import::set_param(const String & param, const ValueBase &value)
 			return false;
 		}
 
-		String filename = value.get(String());
+		String filename = FileSystem::fix_slashes(value.get(String()));
 		String fixed_filename = filename;
 
 		// TODO: find source of this sreening of unicode characters

@@ -67,18 +67,14 @@ using namespace studio;
 
 static LayerGroupTreeStore::Model& ModelHack()
 {
-	static LayerGroupTreeStore::Model* model(0);
-	if(!model)model=new LayerGroupTreeStore::Model;
-	return *model;
+	static LayerGroupTreeStore::Model model;
+	return model;
 }
 
 LayerGroupTreeStore::LayerGroupTreeStore(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_):
 	Gtk::TreeStore			(ModelHack()),
 	canvas_interface_		(canvas_interface_)
 {
-	layer_icon=Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-layer"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
-	group_icon=Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-group"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
-
 	// Connect Signals to Terminals
 	canvas_interface()->signal_layer_status_changed().connect(sigc::mem_fun(*this,&studio::LayerGroupTreeStore::on_layer_status_changed));
 	canvas_interface()->signal_layer_new_description().connect(sigc::mem_fun(*this,&studio::LayerGroupTreeStore::on_layer_new_description));
@@ -118,6 +114,18 @@ Glib::RefPtr<LayerGroupTreeStore>
 LayerGroupTreeStore::create(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_)
 {
 	return Glib::RefPtr<LayerGroupTreeStore>(new LayerGroupTreeStore(canvas_interface_));
+}
+
+// TODO(ice0): duplicated code (search by function name)
+template<typename T>
+static void set_gvalue_tpl(Glib::ValueBase& value, const T &v)
+{
+	Glib::Value<T> x;
+	x.init(x.value_type());
+	x.set(v);
+
+	value.init(x.value_type());
+	value = x;
 }
 
 void
@@ -297,23 +305,15 @@ LayerGroupTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 		g_value_copy(x.gobj(),value.gobj());
 	}
 	else
-	if(column==model.icon.index())
+	if(column==model.icon_name.index())
 	{
-		Glib::Value<Glib::RefPtr<Gdk::Pixbuf> > x;
-		x.init(x.value_type());
-
-		if((bool)(*iter)[model.is_layer])
-		{
-			synfig::Layer::Handle layer((*iter)[model.layer]);
-			if(!layer)return;
-			//x.set(layer_icon);
-			x.set(get_tree_pixbuf_layer(layer->get_name()));
+		if (iter->get_value(model.is_group)) {
+			set_gvalue_tpl<Glib::ustring>(value, "set_icon");
+		} else if (iter->get_value(model.is_layer)) {
+			synfig::Layer::Handle layer(iter->get_value(model.layer));
+			if (!layer) return;
+			set_gvalue_tpl<Glib::ustring>(value, layer_icon_name(layer->get_name()));
 		}
-		if((bool)(*iter)[model.is_group])
-			x.set(group_icon);
-
-		value.init(x.value_type());
-		g_value_copy(x.gobj(),value.gobj());
 	}
 	else
 		Gtk::TreeStore::get_value_vfunc(iter,column,value);

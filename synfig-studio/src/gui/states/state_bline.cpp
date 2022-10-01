@@ -1199,7 +1199,7 @@ StateBLine_Context::event_key_press_handler(const Smach::event& x)
 			run();
 		return Smach::RESULT_ACCEPT;
 	}
-	return Smach::RESULT_REJECT;
+	return Smach::RESULT_OK;
 }
 
 Smach::event_result
@@ -1212,7 +1212,7 @@ StateBLine_Context::event_key_release_handler(const Smach::event& x)
 		reset();
 		return Smach::RESULT_ACCEPT;
 	}
-	return Smach::RESULT_REJECT;
+	return Smach::RESULT_OK;
 }
 
 Smach::event_result

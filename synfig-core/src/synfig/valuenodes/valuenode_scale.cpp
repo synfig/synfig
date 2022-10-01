@@ -45,7 +45,6 @@
 #include <synfig/time.h>
 #include <synfig/angle.h>
 #include <ETL/misc>
-#include <ETL/stringf>
 
 #endif
 

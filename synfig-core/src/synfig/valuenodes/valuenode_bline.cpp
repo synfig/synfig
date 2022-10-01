@@ -915,7 +915,7 @@ String
 ValueNode_BLine::link_local_name(int i)const
 {
 	assert(i>=0 && (unsigned)i<list.size());
-	return etl::strprintf(_("Vertex %03d"),i+1);
+	return strprintf(_("Vertex %03d"),i+1);
 }
 
 
@@ -1022,7 +1022,7 @@ ValueNode_BLine::get_children_vocab_vfunc()const
 	for(unsigned int i=0; i<list.size();i++)
 	{
 		ret.push_back(ParamDesc(ValueBase(),strprintf("item%04d",i))
-			.set_local_name(etl::strprintf(_("Vertex %03d"),i+1))
+			.set_local_name(strprintf(_("Vertex %03d"),i+1))
 		);
 	}
 

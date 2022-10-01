@@ -38,6 +38,8 @@
 #include <gtkmm/stock.h>
 #include <gtkmm/textview.h>
 
+#include <ETL/stringf>
+
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/dialogs/dialog_input.h>
@@ -409,7 +411,7 @@ MainWindow::on_recent_files_changed()
 			quoted += raw.substr(last_pos, ++pos - last_pos) + '_';
 		quoted += raw.substr(last_pos);
 
-		const std::string action_name = etl::strprintf("file-recent-%d", i);
+		const std::string action_name = synfig::strprintf("file-recent-%d", i);
 		menu_items += "<menuitem action='" + action_name +"' />";
 
 		std::string filename = fullnames[i];
@@ -459,7 +461,7 @@ MainWindow::on_custom_workspaces_changed()
 			quoted += raw.substr(last_pos, ++pos - last_pos) + '_';
 		quoted += raw.substr(last_pos);
 
-		std::string action_name = etl::strprintf("custom-workspace-%d", num_custom_workspaces);
+		std::string action_name = synfig::strprintf("custom-workspace-%d", num_custom_workspaces);
 		menu_items += "<menuitem action='" + action_name +"' />";
 
 		action_group->add( Gtk::Action::create(action_name, quoted),

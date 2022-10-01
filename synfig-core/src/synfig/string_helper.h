@@ -47,6 +47,15 @@ std::wstring left_trim(const std::wstring& text);
 std::string right_trim(const std::string& text);
 std::wstring right_trim(const std::wstring& text);
 
+std::string vstrprintf(const char* format, va_list args);
+std::string strprintf(const char* format, ...);
+
+int vstrscanf(const std::string& data, const char* format, va_list args);
+int strscanf(const std::string& data, const char* format, ...);
+
+double stratof(const std::string& str);
+int stratoi(const std::string& str);
+
 }; // END of namespace synfig
 
 #endif // SYNFIG_STRING_HELPER_H

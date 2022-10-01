@@ -49,6 +49,9 @@
 #if HAVE_FCNTL_H
  #include <fcntl.h>
 #endif
+
+#include <ETL/stringf>
+
 #include <synfig/general.h>
 #include <synfig/localization.h>
 #include <synfig/filesystemnative.h>

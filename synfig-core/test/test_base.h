@@ -28,6 +28,7 @@
 #include <cstdlib> // std::abs
 #include <iostream> // std::cerr
 #include <sstream>
+#include <vector>
 
 #include <synfig/general.h> // synfig::error , synfig::info
 #include <synfig/vector.h>
@@ -48,6 +49,13 @@ struct SynfigTestException : public std::exception
 std::ostream& operator<<(std::ostream& os, const synfig::Vector& v)
 {
 	os << '(' << v[0] << ',' << v[1] << ')';
+	return os;
+}
+
+// remove this operator after switch to c++17 (it is already implemented in c++17)
+std::ostream& operator<<(std::ostream& os, std::nullptr_t)
+{
+	os << "null";
 	return os;
 }
 

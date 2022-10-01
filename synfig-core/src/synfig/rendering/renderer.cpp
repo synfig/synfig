@@ -38,8 +38,6 @@
 
 #include <typeinfo>
 
-#include <ETL/stringf>
-
 #include <synfig/general.h>
 #include <synfig/localization.h>
 #include <synfig/threadpool.h>
@@ -519,7 +517,7 @@ Renderer::optimize(Task::List &list) const
 				break;
 			}
 			#ifdef DEBUG_OPTIMIZATION
-			log("", list, etl::strprintf("after category %d prepared", prepared_category_id));
+			log("", list, strprintf("after category %d prepared", prepared_category_id));
 			#endif
 		}
 		prepared_category_id = current_category_id;
@@ -577,11 +575,11 @@ Renderer::optimize(Task::List &list) const
 		}
 
 		#ifdef DEBUG_OPTIMIZATION
-		log("", list, etl::strprintf("before optimize category %d index %d", current_category_id, current_optimizer_index));
+		log("", list, strprintf("before optimize category %d index %d", current_category_id, current_optimizer_index));
 		#endif
 
 		#ifdef DEBUG_OPTIMIZATION_MEASURE
-		debug::Measure t(etl::strprintf("optimize category %d index %d", current_category_id, current_optimizer_index));
+		debug::Measure t(strprintf("optimize category %d index %d", current_category_id, current_optimizer_index));
 		#endif
 
 		#ifdef DEBUG_OPTIMIZATION_COUNTERS
@@ -657,7 +655,7 @@ Renderer::optimize(Task::List &list) const
 		#endif
 
 		#ifdef DEBUG_OPTIMIZATION
-		log("", list, etl::strprintf("after optimize category %d index %d", current_category_id, current_optimizer_index));
+		log("", list, strprintf("after optimize category %d index %d", current_category_id, current_optimizer_index));
 		#endif
 
 		if (categories_to_process & depends_from)
@@ -895,7 +893,7 @@ Renderer::log(
 			for(Task::Set::const_iterator i = trd.deps.begin(); i != trd.deps.end(); ++i)
 				deps_set.insert((*i)->renderer_data.index);
 			for(std::multiset<int>::const_iterator i = deps_set.begin(); i != deps_set.end(); ++i)
-				deps += etl::strprintf("%d ", *i);
+				deps += strprintf("%d ", *i);
 			deps = "(" + deps.substr(0, deps.size()-1) + ") ";
 		}
 
@@ -906,7 +904,7 @@ Renderer::log(
 			for(Task::Set::const_iterator i = trd.back_deps.begin(); i != trd.back_deps.end(); ++i)
 				back_deps_set.insert((*i)->renderer_data.index);
 			for(std::multiset<int>::const_iterator i = back_deps_set.begin(); i != back_deps_set.end(); ++i)
-				back_deps += etl::strprintf("%d ", *i);
+				back_deps += strprintf("%d ", *i);
 			back_deps = "(" + back_deps.substr(0, back_deps.size()-1) + ") ";
 		}
 
@@ -928,17 +926,17 @@ Renderer::log(
 		debug::Log::info(logfile,
 		      String(level*2, ' ')
 			+ (use_stack ? "*" : "")
-			+ (trd.index ? etl::strprintf("#%05d-%04d ", trd.batch_index, trd.index): "")
+			+ (trd.index ? strprintf("#%05d-%04d ", trd.batch_index, trd.index): "")
 			+ deps
 			+ back_deps
 			+ t->get_token()->name
 			+ ( t->get_bounds().valid()
-			  ? etl::strprintf(" bounds (%f, %f)-(%f, %f)",
+			  ? strprintf(" bounds (%f, %f)-(%f, %f)",
 				t->get_bounds().minx, t->get_bounds().miny,
 				t->get_bounds().maxx, t->get_bounds().maxy )
 			  : "" )
 			+ ( t->target_surface
-              ? etl::strprintf(" source (%f, %f)-(%f, %f) target (%d, %d)-(%d, %d) surface [%s] (%dx%d) id %d",
+              ? strprintf(" source (%f, %f)-(%f, %f) target (%d, %d)-(%d, %d) surface [%s] (%dx%d) id %d",
 				t->source_rect.minx, t->source_rect.miny,
 				t->source_rect.maxx, t->source_rect.maxy,
 				t->target_rect.minx, t->target_rect.miny,

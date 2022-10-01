@@ -44,7 +44,6 @@ namespace studio {
 class DockManager;
 class DockBook;
 class Dockable;
-class Widget_CompSelect;
 class CanvasView;
 
 class DockDialog : public Gtk::Window

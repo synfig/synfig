@@ -224,6 +224,12 @@ Layer_Shape::is_inside_contour(const Point& p, bool ignore_feather) const
 synfig::Layer::Handle
 Layer_Shape::hit_check(synfig::Context context, const synfig::Point &point) const
 {
+	bool check_myself_first;
+	auto layer = basic_hit_check(context, point, check_myself_first);
+
+	if (!check_myself_first)
+		return layer;
+
 	sync();
 
 	Color::BlendMethod blend_method = get_blend_method();
@@ -234,16 +240,6 @@ Layer_Shape::hit_check(synfig::Context context, const synfig::Point &point) cons
 		inside = is_inside_contour(point, false);
 
 	if (inside) {
-		if (blend_method == Color::BLEND_BEHIND) {
-			synfig::Layer::Handle layer = context.hit_check(point);
-			if (layer) return layer;
-		}
-		
-		if (Color::is_onto(blend_method)) {
-			//if there's something in the lower layer then we're set...
-			if (context.hit_check(point))
-				return const_cast<Layer_Shape*>(this);
-		} else
 		if (blend_method == Color::BLEND_ALPHA_OVER) {
 			synfig::info("layer_shape::hit_check - we've got alphaover");
 			//if there's something in the lower layer then we're set...

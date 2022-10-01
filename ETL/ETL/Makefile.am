@@ -12,7 +12,6 @@ etl_HEADERS = \
 	_misc.h \
 	ref_count \
 	_ref_count.h \
-	angle \
 	handle \
 	hermite \
 	calculus \
@@ -21,9 +20,7 @@ etl_HEADERS = \
 	_calculus.h \
 	_hermite.h \
 	_curve_func.h \
-	_angle.h \
 	_handle.h \
-	etl_config.h \
 	$(top_builddir)/ETL/etl_profile.h \
 	bezier \
 	_bezier.h \

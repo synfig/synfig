@@ -37,7 +37,6 @@
 #include <png.h>
 #include <synfig/target_scanline.h>
 #include <synfig/string.h>
-#include <synfig/targetparam.h>
 #include <cstdio>
 
 /* === M A C R O S ========================================================= */
@@ -49,7 +48,9 @@
 class png_trgt_spritesheet : public synfig::Target_Scanline
 {
 	SYNFIG_TARGET_MODULE_EXT
+
 private:
+
 	struct PngImage
 	{
 		PngImage():
@@ -91,15 +92,18 @@ private:
 	std::string get_image_size_error_message() const;
 
 public:
+
 	png_trgt_spritesheet(const char *filename, const synfig::TargetParam& /* params */);
 	virtual ~png_trgt_spritesheet();
 
-	virtual bool set_rend_desc(synfig::RendDesc *desc);
-	virtual bool start_frame(synfig::ProgressCallback *cb);
-	virtual void end_frame();
+	bool set_rend_desc(synfig::RendDesc* desc) override;
 
-	virtual synfig::Color * start_scanline(int scanline);
-	virtual bool end_scanline();
+	bool start_frame(synfig::ProgressCallback* cb) override;
+	void end_frame() override;
+
+	synfig::Color* start_scanline(int scanline) override;
+	bool end_scanline() override;
+
 	bool read_png_file();
 	bool write_png_file();
 	bool load_png_file();

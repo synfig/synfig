@@ -190,6 +190,12 @@ Layer_Bitmap::get_param_vocab()const
 synfig::Layer::Handle
 Layer_Bitmap::hit_check(synfig::Context context, const synfig::Point &pos)const
 {
+	bool check_myself_first;
+	auto layer = basic_hit_check(context, pos, check_myself_first);
+
+	if (!check_myself_first)
+		return layer;
+
 	Point tl(param_tl.get(Point()));
 	Point br(param_br.get(Point()));
 	Point surface_pos;

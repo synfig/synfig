@@ -49,6 +49,8 @@
 #include <gui/localization.h>
 #include <gui/widgets/widget_color.h>
 
+#include <ETL/stringf>
+
 #include <synfig/general.h>
 #include <synfigapp/main.h>
 #include <synfigapp/uimanager.h>
@@ -256,17 +258,17 @@ Dock_PalEdit::on_save_pressed()
 			if (stat_return == -1 && errno != ENOENT)
 			{
 				perror(filename.c_str());
-				std::string msg(etl::strprintf(_("Unable to check whether '%s' exists."), filename.c_str()));
+				std::string msg(synfig::strprintf(_("Unable to check whether '%s' exists."), filename.c_str()));
 				App::dialog_message_1b("ERROR", msg, "details", _("Close"));
 				continue;
 			}
 
 			// if the file exists and the user doesn't want to overwrite it, keep prompting for a filename
-			std::string message = etl::strprintf(_("A file named \"%s\" already exists. "
+			std::string message = synfig::strprintf(_("A file named \"%s\" already exists. "
 							"Do you want to replace it?"),
 							etl::basename(filename).c_str());
 
-			std::string details = etl::strprintf(_("The file already exists in \"%s\". "
+			std::string details = synfig::strprintf(_("The file already exists in \"%s\". "
 							"Replacing it will overwrite its contents."),
 							etl::basename(etl::dirname(filename)).c_str());
 

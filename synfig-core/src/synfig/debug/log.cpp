@@ -32,21 +32,20 @@
 #	include <config.h>
 #endif
 
-#include <cstdlib>
+#include <cstdarg>
 
 #include <fstream>
 
 #include "log.h"
 
-#include <ETL/stringf>
 #include <synfig/filesystem.h>
 #include <synfig/general.h>
+#include <synfig/string.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace debug;
 

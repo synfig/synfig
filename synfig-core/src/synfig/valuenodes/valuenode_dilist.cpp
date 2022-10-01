@@ -43,8 +43,6 @@
 #include <synfig/exception.h>
 #include <synfig/dashitem.h>
 
-#include <ETL/stringf>
-
 #include <vector>
 #include <list>
 
@@ -171,7 +169,7 @@ String
 ValueNode_DIList::link_local_name(int i)const
 {
 	assert(i>=0 && (unsigned)i<list.size());
-	return etl::strprintf(_("DashItem %03d"),i+1);
+	return strprintf(_("DashItem %03d"),i+1);
 }
 
 

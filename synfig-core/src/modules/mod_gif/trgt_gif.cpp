@@ -33,6 +33,8 @@
 #	include <config.h>
 #endif
 
+#include <ETL/stringf>
+
 #include <synfig/localization.h>
 #include <synfig/general.h>
 #include <synfig/color.h>

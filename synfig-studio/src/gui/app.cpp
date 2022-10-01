@@ -135,6 +135,8 @@
 #include <gui/widgets/widget_enum.h>
 #include <gui/workspacehandler.h>
 
+#include <ETL/stringf>
+
 #include <synfig/canvasfilenaming.h>
 #include <synfig/color.h>
 #include <synfig/filesystemnative.h>
@@ -878,6 +880,14 @@ public:
 
 App::Preferences App::_preferences;
 
+static void add_ui_from_string(const std::string& ui_info) {
+	try	{
+		App::ui_manager()->add_ui_from_string(ui_info);
+	} catch(const Glib::Error& ex) {
+		synfig::error("building menus and toolbars failed: " + ex.what() + "\n\n" + ui_info);
+	}
+}
+
 void
 init_ui_manager()
 {
@@ -1266,21 +1276,12 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 
 	#undef DEFINE_ACTION
 
-	try
-	{
-		actions_action_group->set_sensitive(false);
-		App::ui_manager()->set_add_tearoffs(false);
-		App::ui_manager()->insert_action_group(menus_action_group,1);
-		App::ui_manager()->insert_action_group(actions_action_group,1);
-		App::ui_manager()->add_ui_from_string(ui_info);
-		App::ui_manager()->add_ui_from_string(hidden_ui_info);
-
-		//App::ui_manager()->get_accel_group()->unlock();
-	}
-	catch(const Glib::Error& ex)
-	{
-		synfig::error("building menus and toolbars failed: " + ex.what());
-	}
+	actions_action_group->set_sensitive(false);
+	App::ui_manager()->set_add_tearoffs(false);
+	App::ui_manager()->insert_action_group(menus_action_group,1);
+	App::ui_manager()->insert_action_group(actions_action_group,1);
+	add_ui_from_string(ui_info);
+	add_ui_from_string(hidden_ui_info);
 
 	auto default_accel_map = App::get_default_accel_map();
 	for (const auto& accel_item : default_accel_map) {
@@ -1397,6 +1398,7 @@ App::App()
 {
 	add_main_option_entry(Gio::Application::OPTION_TYPE_BOOL, "console", 'c', N_("Opens a console that shows some Synfig Studio output"));
 	signal_handle_local_options().connect(sigc::mem_fun(*this, &App::on_handle_local_options));
+	signal_shutdown().connect(sigc::mem_fun(*this, &App::on_shutdown));
 }
 
 int App::on_handle_local_options(const Glib::RefPtr<Glib::VariantDict> &options)
@@ -1801,7 +1803,8 @@ void App::init(const synfig::String& rootpath)
 
 StateManager* App::get_state_manager() { return state_manager; }
 
-App::~App()
+void
+App::on_shutdown()
 {
 	shutdown_in_progress=true;
 
@@ -1824,8 +1827,6 @@ App::~App()
 
 	main_window->hide();
 
-	delete main_window;
-
 	delete dialog_setup;
 
 	delete dialog_gradient;
@@ -1842,6 +1843,9 @@ App::~App()
 
 	if (sound_render_done) delete sound_render_done;
 	sound_render_done = nullptr;
+	
+	process_all_events();
+	delete main_window;
 }
 
 synfig::String
@@ -3677,7 +3681,7 @@ void App::open_img_in_external(const std::string &uri)
 		// Glib::spawn_* needs `gspawn-win??-helper.exe` for Windows
 		Glib::spawn_async("", args);
 	} catch (const Glib::SpawnError& e) {
-		ui_interface_->error(etl::strprintf(_("Failed to run command: %s (%s)"), App::image_editor_path.c_str(), e.what().c_str()));
+		ui_interface_->error(synfig::strprintf(_("Failed to run command: %s (%s)"), App::image_editor_path.c_str(), e.what().c_str()));
 	}
 }
 
@@ -3875,7 +3879,7 @@ App::wrap_into_temporary_filesystem(
 	FileSystemTemporary::Handle temporary_file_system = new FileSystemTemporary("instance", get_temporary_directory(), canvas_file_system);
 	temporary_file_system->set_meta("filename", filename);
 	temporary_file_system->set_meta("as", as);
-	temporary_file_system->set_meta("truncate", etl::strprintf("%lld", truncate_storage_size));
+	temporary_file_system->set_meta("truncate", synfig::strprintf("%lld", truncate_storage_size));
 	return temporary_file_system;
 }
 
@@ -4169,13 +4173,13 @@ App::new_instance()
 		if (warnings != "")
 			App::dialog_message_1b(
 				"WARNING",
-				etl::strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
+				synfig::strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
 				"details",
 				_("Close"));
 		if (errors != "")
 			App::dialog_message_1b(
 				"ERROR",
-				etl::strprintf("%s:\n\n%s", _("Error"), errors.c_str()),
+				synfig::strprintf("%s:\n\n%s", _("Error"), errors.c_str()),
 				"details",
 				_("Close"));
 	}

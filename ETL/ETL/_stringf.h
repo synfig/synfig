@@ -42,11 +42,11 @@
 #endif
 
 #include <string>
-#include <cstdarg>
-#include <cstdlib>
 #include <glibmm/miscutils.h>
 
 /* === M A C R O S ========================================================= */
+
+#define ETL_DIRECTORY_SEPARATOR		'/'
 
 #ifdef _WIN32
 #define POPEN_BINARY_READ_TYPE "rb"
@@ -61,64 +61,6 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace etl {
-
-inline std::string
-vstrprintf(const char *format, va_list args)
-{
-#ifdef _MSC_VER
-	const int size = 8192; // MSVC doesn't support dynamic allocation, so make it static
-#else
-	// determine the length
-	va_list args_copy;
-	va_copy(args_copy, args);
-	int size = vsnprintf(nullptr, 0, format, args_copy);
-	va_end(args_copy);
-	if (size < 0) size = 0;
-	++size;
-#endif
-	// allocate buffer in stack (c99/c++11 only) and call vsnprintf again
-	char buffer[size + 1]; // +space for trailing zero
-	vsnprintf(buffer, size, format, args);
-	return buffer;
-}
-
-inline std::string
-strprintf(const char *format, ...)
-{
-	va_list args;
-	va_start(args,format);
-	const std::string buf = vstrprintf(format, args);
-	va_end(args);
-	return buf;
-}
-
-inline int
-vstrscanf(const std::string &data, const char*format, va_list args)
-{
-    return vsscanf(data.c_str(),format,args);
-}
-
-inline int
-strscanf(const std::string &data, const char*format, ...)
-{
-	va_list args;
-	va_start(args,format);
-	const int buf = vstrscanf(data, format, args);
-	va_end(args);
-	return buf;
-}
-
-
-inline double stratof(const std::string &str)
-{
-	return atof(str.c_str());
-}
-
-inline double stratoi(const std::string &str)
-{
-	return atoi(str.c_str());
-}
-
 
 inline bool is_separator(char c)
 {
@@ -187,6 +129,12 @@ dirname(const std::string &str)
 		   return ".";
 	}
 
+#ifdef _WIN32
+	// leave the trailing separator after windows drive name
+	if (std::distance(str.begin(), iter) == 2 && str.size() >= 3 && str[1] == ':' && is_separator(str[2]))
+		++iter;
+#endif
+
 	return std::string(str.begin(),iter);
 }
 
@@ -222,27 +170,6 @@ is_absolute_path(const std::string &path)
 	if(!path.empty() && is_separator(path[0]))
 		return true;
 	return false;
-}
-
-inline std::string
-unix_to_local_path(const std::string &path)
-{
-	std::string ret;
-	std::string::const_iterator iter;
-	for(iter=path.begin();iter!=path.end();iter++)
-		if (is_separator(*iter))
-			ret+=ETL_DIRECTORY_SEPARATOR;
-		else
-		switch(*iter)
-		{
-		case '~':
-			ret+='~';
-			break;
-		default:
-			ret+=*iter;
-			break;
-		}
-	return ret;
 }
 
 inline std::string

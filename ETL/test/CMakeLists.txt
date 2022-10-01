@@ -4,9 +4,6 @@ include_directories(${PROJECT_BINARY_DIR})
 # for ETL headers
 include_directories(${PROJECT_SOURCE_DIR})
 
-add_executable(angle angle.cpp)
-add_test(NAME test_angle COMMAND angle)
-
 add_executable(handle handle.cpp)
 add_test(NAME test_handle COMMAND handle)
 
@@ -30,7 +27,7 @@ add_executable(surface surface.cpp)
 add_test(NAME test_surface COMMAND surface)
 
 set_target_properties(
-		angle handle hermite stringf pen surface
+		handle hermite stringf pen surface
 		PROPERTIES
 		RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test
 )

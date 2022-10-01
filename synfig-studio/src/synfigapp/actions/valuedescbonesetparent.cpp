@@ -264,7 +264,7 @@ Action::ValueDescBoneSetParent::prepare()
 	for (const auto& item : new_parenting_info) {
 		ValueNode_Bone::BoneSet possible_parents = ValueNode_Bone::get_possible_parent_bones(item.first);
 		if (possible_parents.count(item.second) <= 0) {
-			std::string error_msg = etl::strprintf(_("The bone \"%s\" can't be parent of the active one (\"%s\")"),
+			std::string error_msg = synfig::strprintf(_("The bone \"%s\" can't be parent of the active one (\"%s\")"),
 												   item.second->get_name().c_str(),
 												   item.first->get_name().c_str());
 			get_canvas_interface()->get_ui_interface()->error(error_msg);

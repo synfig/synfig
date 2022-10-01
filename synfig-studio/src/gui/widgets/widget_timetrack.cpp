@@ -858,13 +858,45 @@ void Widget_Timetrack::draw_active_point_status(const Cairo::RefPtr<Cairo::Conte
 	const synfig::ValueNode_DynamicList::ListEntry& list_entry = dynamic_list->list[ value_desc.get_index() ];
 	const synfig::ValueNode_DynamicList::ListEntry::ActivepointList& activepoint_list = list_entry.timing_info;
 
+	if (activepoint_list.empty())
+		return;
+
 	const Gdk::RGBA activepoint_color[] = {
 	    Gdk::RGBA("#ff0000"),
 	    Gdk::RGBA("#00ff00")
 	};
+	const Gdk::RGBA inactive_color("rgba(0.,0.,0.,0.5)");
 
 	const double w = 2;
 
+	// Drawing disabled intervals
+	synfig::Time previous_activepoint_time = synfig::Time::begin();
+	synfig::Time initial_off_time = list_entry.status_at_time(previous_activepoint_time) ? synfig::Time::end() : synfig::Time::begin();
+
+	cr->set_source_rgba(inactive_color.get_red(), inactive_color.get_green(), inactive_color.get_blue(), inactive_color.get_alpha());
+
+	for (const auto& activepoint : activepoint_list) {
+		if (!list_entry.status_at_time(0.5*(previous_activepoint_time + activepoint.get_time()))) {
+			if (initial_off_time == synfig::Time::end())
+				initial_off_time = previous_activepoint_time;
+		} else {
+			if (initial_off_time != synfig::Time::end()) {
+				cr->rectangle(+w/2+time_plot_data->get_pixel_t_coord(initial_off_time), row_info.get_geometry().y, -w+time_plot_data->get_delta_pixel_from_delta_t_coord(previous_activepoint_time - initial_off_time), row_info.get_geometry().h);
+				cr->fill();
+				initial_off_time = synfig::Time::end();
+			}
+		}
+		previous_activepoint_time = activepoint.get_time();
+	}
+
+	if (initial_off_time != synfig::Time::end() || !list_entry.status_at_time(synfig::Time::end())) {
+		initial_off_time = synfig::clamp(initial_off_time, time_plot_data->lower, previous_activepoint_time);
+		int initial_pixel_index = +w/2+time_plot_data->get_pixel_t_coord(initial_off_time);
+		cr->rectangle(initial_pixel_index, row_info.get_geometry().y, get_width() - initial_pixel_index, row_info.get_geometry().h);
+		cr->fill();
+	}
+
+	// Now we highlight all active point states
 	for (const auto& activepoint : activepoint_list) {
 		const Gdk::RGBA& color = activepoint_color[activepoint.get_state() ? 1 : 0];
 		cr->set_source_rgb(color.get_red(), color.get_green(), color.get_blue());

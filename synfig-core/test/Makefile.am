@@ -7,11 +7,16 @@ AM_LDFLAGS = \
 check_PROGRAMS=$(TESTS)
 
 TESTS = \
+	angle \
 	benchmark \
 	bline \
 	bone \
 	clock \
-	node
+	keyframe \
+	node \
+	string
+
+angle_SOURCES=angle.cpp
 
 benchmark_SOURCES=benchmark.cpp
 
@@ -21,4 +26,8 @@ bline_SOURCES=bline.cpp
 
 clock_SOURCES=clock.cpp
 
+keyframe_SOURCES=keyframe.cpp
+
 node_SOURCES=node.cpp
+
+string_SOURCES=string.cpp

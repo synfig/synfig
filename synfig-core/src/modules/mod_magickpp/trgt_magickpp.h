@@ -32,8 +32,6 @@
 
 #include <synfig/target_scanline.h>
 #include <synfig/string.h>
-#include <synfig/targetparam.h>
-#include <cstdio>
 
 #include <vector>
 
@@ -82,14 +80,14 @@ public:
 	{ }
 	virtual ~magickpp_trgt();
 
-	virtual bool set_rend_desc(synfig::RendDesc *desc);
-	virtual bool init(synfig::ProgressCallback *cb);
+	bool set_rend_desc(synfig::RendDesc* desc) override;
+	bool init(synfig::ProgressCallback* cb) override;
 
-	virtual bool start_frame(synfig::ProgressCallback *cb);
-	virtual void end_frame();
+	bool start_frame(synfig::ProgressCallback* cb) override;
+	void end_frame() override;
 
-	virtual synfig::Color* start_scanline(int scanline);
-	virtual bool end_scanline();
+	synfig::Color* start_scanline(int scanline) override;
+	bool end_scanline() override;
 };
 
 /* === E N D =============================================================== */

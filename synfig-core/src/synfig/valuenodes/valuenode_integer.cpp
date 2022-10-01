@@ -41,7 +41,6 @@
 #include <synfig/localization.h>
 #include <synfig/valuenode_registry.h>
 #include <ETL/misc>
-#include <ETL/stringf>
 
 #endif
 

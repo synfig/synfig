@@ -40,6 +40,7 @@
 
 #include "mptr_png.h"
 
+#include <ETL/stringf>
 #include <synfig/filecontainerzip.h>
 #include <synfig/general.h>
 
@@ -192,7 +193,7 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 
 	if (bit_depth > 16) {
 		synfig::error("png_mptr: error: bit depth not supported: %d", bit_depth);
-		throw etl::strprintf("png_mptr: error: bit depth not supported: %d", bit_depth);
+		throw strprintf("png_mptr: error: bit depth not supported: %d", bit_depth);
 		return false;
 	}
 
@@ -275,7 +276,7 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 	{
 		if (bit_depth > 8) {
 			synfig::error("png_mptr: error: bit depth with palette not supported: %d", bit_depth);
-			throw etl::strprintf("png_mptr: error: bit depth with palette not supported: %d", bit_depth);
+			throw strprintf("png_mptr: error: bit depth with palette not supported: %d", bit_depth);
 			return false;
 		}
 		png_colorp palette;

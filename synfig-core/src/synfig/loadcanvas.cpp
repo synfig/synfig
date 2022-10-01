@@ -51,6 +51,8 @@
 
 #include "loadcanvas.h"
 
+#include <ETL/stringf>
+
 #include "general.h"
 #include "localization.h"
 

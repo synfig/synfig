@@ -34,8 +34,6 @@
 #include "real.h"
 #include "string.h"
 #include "bone.h"
-// #include <ETL/handle>
-#include <ETL/stringf>
 
 /* === M A C R O S ========================================================= */
 
@@ -66,7 +64,7 @@ public:
 
 	//!Get the string of the BoneWeightPair
 	//!@return String type. A string representation of the two components.
-	String get_string()const { return etl::strprintf("(%.2f) %s", weight, bone.get_name().c_str()); }
+	String get_string()const { return strprintf("(%.2f) %s", weight, bone.get_name().c_str()); }
 };
 
 }; // END of namespace synfig
