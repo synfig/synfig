@@ -2,7 +2,7 @@
 
 name: Synfig (stable)
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
@@ -26,8 +26,8 @@ jobs:
           name: macOS 11 Big Sur (Autotools)
           toolchain: autotools-release
           allow_failures: false
-        - os: ubuntu-18.04
-          name: Ubuntu 18.04 Bionic (Autotools)
+        - os: ubuntu-20.04
+          name: Ubuntu 20.04 Focal (Autotools)
           allow_failures: false
           toolchain: autotools-release
 
