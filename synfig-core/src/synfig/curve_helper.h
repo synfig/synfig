@@ -29,8 +29,8 @@
 #define __SYNFIG_CURVE_HELPER_H
 
 /* === H E A D E R S ======================================================= */
-#include <ETL/bezier>
 
+#include <synfig/bezier.h>
 #include "rect.h"
 #include "real.h"
 #include "vector.h"

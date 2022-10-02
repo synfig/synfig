@@ -36,11 +36,9 @@
 
 #include "curvewarp.h"
 
-#include <ETL/bezier>
-
-#include <synfig/localization.h>
-
+#include <synfig/bezier.h>
 #include <synfig/context.h>
+#include <synfig/localization.h>
 #include <synfig/paramdesc.h>
 #include <synfig/surface.h>
 #include <synfig/valuenode.h>

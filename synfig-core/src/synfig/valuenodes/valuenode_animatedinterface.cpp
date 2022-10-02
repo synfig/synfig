@@ -41,10 +41,10 @@
 #include <list>
 #include <stdexcept>
 
-#include <ETL/bezier>
 #include <ETL/handle>
 #include <ETL/misc>
 
+#include <synfig/bezier.h>
 #include <synfig/canvas.h>
 #include <synfig/general.h>
 #include <synfig/localization.h>

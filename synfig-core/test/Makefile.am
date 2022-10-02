@@ -9,6 +9,7 @@ check_PROGRAMS=$(TESTS)
 TESTS = \
 	angle \
 	benchmark \
+	bezier \
 	bline \
 	bone \
 	clock \
@@ -19,6 +20,8 @@ TESTS = \
 angle_SOURCES=angle.cpp
 
 benchmark_SOURCES=benchmark.cpp
+
+bezier_SOURCES=hermite.cpp
 
 bone_SOURCES=bone.cpp
 

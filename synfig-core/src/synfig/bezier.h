@@ -37,7 +37,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "_curve_func.h"
+#include <ETL/_curve_func.h>
 #include <cmath>				// for ldexp
 
 /* === M A C R O S ========================================================= */

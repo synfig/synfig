@@ -25,8 +25,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfig/angle.h>
-
-#include <ETL/bezier>
+#include <synfig/bezier.h>
 
 #include "test_base.h"
 

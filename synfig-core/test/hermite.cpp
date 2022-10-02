@@ -24,8 +24,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/bezier>
-#include <ETL/calculus>
+#include <synfig/bezier.h>
 #include <stdio.h>
 
 /* === M A C R O S ========================================================= */

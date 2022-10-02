@@ -39,8 +39,6 @@
 #include <gtkmm/imagemenuitem.h>
 #include <gtkmm/separatormenuitem.h>
 
-#include <ETL/bezier>
-
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/docks/dialog_tooloptions.h>
@@ -53,6 +51,7 @@
 #include <gui/widgets/widget_enum.h>
 #include <gui/workarea.h>
 
+#include <synfig/bezier.h>
 #include <synfig/general.h>
 #include <synfig/valuenodes/valuenode_bline.h>
 
