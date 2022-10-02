@@ -217,7 +217,6 @@ HistoryTreeStore::on_redo_stack_cleared()
 void
 HistoryTreeStore::on_new_action(etl::handle<synfigapp::Action::Undoable> action)
 {
- if (!synfigapp::Action::System::block_new_history){ /*if change isn't due to rapid repeated actions show history normally*/
 	Gtk::TreeRow row;
 
 	row=*insert(next_action_iter);
@@ -227,7 +226,7 @@ HistoryTreeStore::on_new_action(etl::handle<synfigapp::Action::Undoable> action)
 	next_action_iter = row;
 	++next_action_iter;
 
-	signal_undo_tree_changed()();}
+	signal_undo_tree_changed()();
 }
 
 void

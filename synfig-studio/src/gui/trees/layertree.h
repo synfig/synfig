@@ -39,6 +39,7 @@
 #include <gui/widgets/widget_value.h>
 
 #include <synfigapp/value_desc.h>
+#include <synfigapp/action_system.h>
 
 
 /* === M A C R O S ========================================================= */
@@ -249,9 +250,8 @@ private:
 	float value_float ;
 	bool first_iteration=false;
 	float initial_value;
-	bool just_finished = false;
 	bool param_mouse_edit=false;
-
+	synfigapp::Action::PassiveGrouper* group = nullptr;
 
 }; // END of LayerTree
 

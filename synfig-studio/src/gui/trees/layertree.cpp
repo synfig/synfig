@@ -46,6 +46,7 @@
 #include <gui/exception_guard.h>
 #include <gui/instance.h>
 #include <gui/localization.h>
+#include <gui/canvasview.h>
 
 #ifdef TIMETRACK_IN_PARAMS_PANEL
 #  include <synfig/timepointcollect.h>
@@ -53,7 +54,6 @@
 
 #include <synfigapp/actions/layerremove.h>
 #include <synfigapp/instance.h>
-#include <synfigapp/action_system.h>
 #include <gui/trees/historytreestore.h>
 
 #include <thread>
@@ -252,24 +252,28 @@ LayerTree::on_param_tree_view_key_press_event(GdkEventKey* event)
 		Glib::RefPtr<Gdk::Screen> scrn = disp->get_default_screen();
 		Glib::RefPtr<Gdk::Window> window = scrn->get_root_window();
 		window->set_cursor(window->get_cursor());
+		etl::loose_handle<Instance> current_instance = App::get_selected_instance();
 
 		param_tree_view().get_window()->set_cursor(default_cursor);
-		synfigapp::Action::System::block_new_history=true;
-		just_finished=false;
-		value_base.set<float>(initial_value); row[param_model.value] = value_base;
-		synfigapp::Action::System::block_new_history=false;
-		while(gtk_events_pending ()) { gtk_main_iteration (); }
+		current_instance->cancel_repeated_action = true;
+		delete group;
+		group = nullptr;
+		current_instance->repeated_action = false;
+
+		while (gtk_events_pending()) {
+			gtk_main_iteration ();
+		}
+		current_instance->cancel_repeated_action = false;
 	}
 	return false;
 }
 bool
 LayerTree::on_motion_notify_event(GdkEventMotion* event)
-{
-
+{	
 	auto t_now = std::chrono::high_resolution_clock::now();
 	double elapsed_time_ms = std::chrono::duration<double, std::milli>(t_now-t_start).count();
 	if(elapsed_time_ms>65){//not a click so start proocessing inc/dec
-	if(synfigapp::Action::System::block_new_history){//block new history is set to true when there is motion/and in general in rapid action movements such as color wheel drag
+	if(App::get_selected_instance()->repeated_action){//repeated_action is set to true when there is motion/and in general in rapid action movements such as color wheel drag
 
 	if(iter && param_mouse_edit){ //to make sure there is already a treeview i.e. not empty and to not apply changes if its just a click
 
@@ -299,7 +303,6 @@ LayerTree::on_motion_notify_event(GdkEventMotion* event)
 
 		first_cord_x= second_cord_x;
 		value_base = value_base_mod;
-		just_finished = true;
 		first_iteration = false;
 	}}}
 
@@ -312,6 +315,8 @@ LayerTree::on_button_press_or_release_event(GdkEventButton* event)//To DO change
 {
 
 	if(event->button==1 && iter){
+
+	etl::loose_handle<Instance> current_instance = App::get_selected_instance();
 
 	//to be able to know the slected column
 	Gtk::TreeModel::Path path;
@@ -339,7 +344,8 @@ LayerTree::on_button_press_or_release_event(GdkEventButton* event)//To DO change
 			param_mouse_edit=true;
 
 		value_base = value_base_test; // storing initial value base
-		synfigapp::Action::System::block_new_history=true;
+		current_instance->repeated_action = true;
+		group = new synfigapp::Action::PassiveGrouper(App::get_selected_canvas_view()->get_instance().get(),_("Set Parameter"),true);
 		t_start = std::chrono::high_resolution_clock::now();
 		first_iteration=true;
 		signal_handled=false;
@@ -357,7 +363,8 @@ LayerTree::on_button_press_or_release_event(GdkEventButton* event)//To DO change
 			param_tree_view().set_cursor(path, *column, true);
 			grab_focus();
 			param_tree_view().get_window()->set_cursor(default_cursor);
-			synfigapp::Action::System::block_new_history=false;
+			current_instance->repeated_action = false;
+			delete group;
 			param_mouse_edit=false;
 			return false;
 		}
@@ -375,16 +382,12 @@ LayerTree::on_button_press_or_release_event(GdkEventButton* event)//To DO change
 //		release_cord= event->x;
 
 
-		if(just_finished)
-			value_base.set<float>(initial_value); row[param_model.value] = value_base;
+		if (group)
+			delete group;
 
-		synfigapp::Action::System::block_new_history=false;
-
-		if(just_finished)
-		value_base.set<float>(value_float); row[param_model.value] = value_base;
+		current_instance->repeated_action = false;
 
 		param_tree_view().get_window()->set_cursor(default_cursor);
-		just_finished = false;
 		param_mouse_edit=false;
 	}}}
 	return false;
