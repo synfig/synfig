@@ -983,11 +983,11 @@ Renderer::initialize()
 		synfig::error("rendering::Renderer already initialized");
 
 	// init debug options
-	if (const char *s = getenv("SYNFIG_RENDERING_DEBUG_TASK_LIST_LOG"))
+	if (const char *s = DEBUG_ENV("SYNFIG_RENDERING_DEBUG_TASK_LIST_LOG"))
 		debug_options.task_list_log = s;
-	if (const char *s = getenv("SYNFIG_RENDERING_DEBUG_TASK_LIST_OPTIMIZED_LOG"))
+	if (const char *s = DEBUG_ENV("SYNFIG_RENDERING_DEBUG_TASK_LIST_OPTIMIZED_LOG"))
 		debug_options.task_list_optimized_log = s;
-	if (const char *s = getenv("SYNFIG_RENDERING_DEBUG_RESULT_IMAGE"))
+	if (const char *s = DEBUG_ENV("SYNFIG_RENDERING_DEBUG_RESULT_IMAGE"))
 		debug_options.result_image = s;
 
 	renderers = new std::map<String, Handle>();

@@ -92,9 +92,11 @@ extern void info(const String &str);
 #ifdef LOGGING_ENABLED
 #define DEBUG_LOG(logger, fmt, ...) if (getenv(logger)) printf(fmt __VA_OPT__(,) __VA_ARGS__);
 #define DEBUG_GETENV(name) getenv(name)
+#define DEBUG_ENV(name) getenv(name)
 #else
 #define DEBUG_LOG(logger, fmt, ...) void (0)
 #define DEBUG_GETENV(name) false
+#define DEBUG_ENV(name) NULL
 #endif
 
 //! Returns absolute path to the binary
