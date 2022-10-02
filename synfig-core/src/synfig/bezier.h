@@ -1,8 +1,6 @@
-/*! ========================================================================
-** Extended Template Library
-** \file _bezier.h
-** \brief Bezier Template Class Implementation
-** \internal
+/* === S Y N F I G ========================================================= */
+/* \file bezier.h
+** \brief Bezier and Hermite Template Class Implementation
 **
 ** \legal
 ** Copyright (c) 2002 Robert B. Quattlebaum Jr.
@@ -23,22 +21,19 @@
 ** You should have received a copy of the GNU General Public License
 ** along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 ** \endlegal
-**
-** \note
-** This is an internal header file, included by other ETL headers.
-** You should not attempt to use it directly.
-**
-** ========================================================================= */
+*/
+/* ========================================================================= */
 
 /* === S T A R T =========================================================== */
 
-#ifndef __ETL__BEZIER_H
-#define __ETL__BEZIER_H
+#ifndef SYNFIG_BEZIER_H
+#define SYNFIG_BEZIER_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/_curve_func.h>
 #include <cmath>				// for ldexp
+
+#include <ETL/_curve_func.h>
 
 /* === M A C R O S ========================================================= */
 
