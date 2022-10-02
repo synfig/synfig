@@ -1,6 +1,6 @@
-/*! ========================================================================
-** Extended Template and Library Test Suite
-** Hermite Curve Test
+/* === S Y N F I G ========================================================= */
+/*! \file hermite.cpp
+**  \brief Hermite Curve Test
 **
 ** Copyright (c) 2002 Robert B. Quattlebaum Jr.
 ** Copyright (c) 2007 Chris Moore
@@ -19,13 +19,14 @@
 **
 ** You should have received a copy of the GNU General Public License
 ** along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
-**
-** ========================================================================= */
+*/
+/* ========================================================================= */
 
 /* === H E A D E R S ======================================================= */
 
 #include <synfig/bezier.h>
-#include <stdio.h>
+
+#include "test_base.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -36,18 +37,21 @@ using namespace synfig;
 
 /* === P R O C E D U R E S ================================================= */
 
-int basic_test(void)
+void test_basic()
 {
-	int ret=0;
-
 	hermite<float> Hermie;
 
 	Hermie.p1()=0;
 	Hermie.t1()=1;
-	Hermie.p2()=0;
+	Hermie.p2()=2;
 	Hermie.t2()=1;
 
 	Hermie.sync();
+
+	ASSERT_APPROX_EQUAL(0.f, Hermie[0])
+	ASSERT_APPROX_EQUAL(2.f, Hermie[3])
+	ASSERT_APPROX_EQUAL(0.f, Hermie.get_r())
+	ASSERT_APPROX_EQUAL(1.f, Hermie.get_s())
 
 	// TODO: replace code below with one that tests derivative()
 
@@ -60,14 +64,10 @@ int basic_test(void)
 //	fprintf(stderr,"integral of curve()[%f,%f] on [-1,7] = %f\n",Hermie.get_r(),Hermie.get_s(),inte(-1.0,7.0));
 //	fprintf(stderr,"integral of curve()[%f,%f] on [0,1] = %f\n",Hermie.get_r(),Hermie.get_s(),inte(0,1.0));
 //	Hermie.set_rs(0.0,1.0);
-
-	return ret;
 }
 
-int float_intersection_test()
+void test_float_intersection_reciprocity()
 {
-	int ret=0;
-
 	hermite<float> curve1(0,1,0,1);
 	hermite<float> curve2(-1,2,-1,-2);
 	double t1,t2;
@@ -78,24 +78,19 @@ int float_intersection_test()
 
 	d=curve1(t1)-curve2(t2);
 
-	fprintf(stderr,"float:Intersection difference: %f (t1=%f, t2=%f)\n",d,t1,t2);
-
-	if(d>0.01)
-	{
-		fprintf(stderr,"float:FAILED INTERSECTION TEST.\n");
-		ret++;
-	}
-
-	return ret;
+	ASSERT_APPROX_EQUAL_MICRO(0.f, d);
 }
 
 /* === E N T R Y P O I N T ================================================= */
 
 int main()
 {
-	int error=0;
+	TEST_SUITE_BEGIN()
 
-	error+=basic_test();
-	error+=float_intersection_test();
-	return error;
+	TEST_FUNCTION(test_basic);
+	TEST_FUNCTION(test_float_intersection_reciprocity);
+
+	TEST_SUITE_END()
+
+	return tst_exit_status;
 }
