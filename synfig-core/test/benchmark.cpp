@@ -36,6 +36,7 @@
 /* === M A C R O S ========================================================= */
 
 using namespace etl;
+using namespace synfig;
 
 #define HERMITE_TEST_ITERATIONS		(100000)
 

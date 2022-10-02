@@ -240,7 +240,7 @@ Plant::sync()const
 
 	std::vector<synfig::BLinePoint>::const_iterator iter,next;
 
-	etl::hermite<Vector> curve;
+	hermite<Vector> curve;
 
 	Real step(std::fabs(step_));
 

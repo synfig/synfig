@@ -41,7 +41,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace etl {
+namespace synfig {
 
 /**
  * Cubic Bezier Curve Base Class.

@@ -1756,7 +1756,7 @@ StateBLine_Context::bline_insert_vertex(synfig::ValueNode_Const::Handle value_no
 
 			prev_bline_point=(*prev)->get_value().get(BLinePoint());
 
-			etl::hermite<Vector> curve(prev_bline_point.get_vertex(),
+			hermite<Vector> curve(prev_bline_point.get_vertex(),
 									   next_bline_point.get_vertex(),
 									   prev_bline_point.get_tangent2(),
 									   next_bline_point.get_tangent1());

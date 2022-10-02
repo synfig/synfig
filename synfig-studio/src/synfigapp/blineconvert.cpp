@@ -317,7 +317,7 @@ int tessellate_curves(const std::vector<cpindex> &inds, const std::vector<Point>
 	if(inds.size() < 2)
 		return 0;
 
-	etl::hermite<Point>	curve;
+	synfig::hermite<Point> curve;
 	int ntess = 0;
 
 	std::vector<cpindex>::const_iterator j = inds.begin(),j2, end = inds.end();

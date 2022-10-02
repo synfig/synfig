@@ -123,7 +123,7 @@ ValueNode_BLineCalcVertex::operator()(Time t)const
 	const BLinePoint &blinepoint0 = bline[i0].get(BLinePoint());
 	const BLinePoint &blinepoint1 = bline[i1].get(BLinePoint());
 
-	etl::hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
+	hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
 							   blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
 	return curve(part);
 }

@@ -41,7 +41,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -56,7 +55,7 @@ const Real ERROR = 1e-11;
 
 /* === E N T R Y P O I N T ================================================= */
 
-Real synfig::find_closest(const etl::bezier<Point> &curve, const Point &point,
+Real synfig::find_closest(const bezier<Point> &curve, const Point &point,
 				float step, Real *dout, float *tout)
 {
 #if 0
@@ -106,7 +105,7 @@ Real synfig::find_closest(const etl::bezier<Point> &curve, const Point &point,
 }
 
 // Line and BezHull Definitions
-void BezHull::Bound(const etl::bezier<Point> &b)
+void BezHull::Bound(const bezier<Point> &b)
 {
 	#if 1
 
@@ -623,7 +622,7 @@ void CIntersect::recurse_intersect(const SCurve &left, const SCurve &right, int 
 
 
 
-bool CIntersect::operator()(const etl::bezier<Point> &c1, const etl::bezier<Point> &c2)
+bool CIntersect::operator()(const bezier<Point> &c1, const bezier<Point> &c2)
 {
 	times.clear();
 

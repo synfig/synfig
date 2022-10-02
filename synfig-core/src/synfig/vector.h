@@ -480,7 +480,7 @@ abs(const synfig::Vector &rhs)
 
 #include <synfig/bezier.h>
 
-namespace etl {
+namespace synfig {
 
 template <>
 class bezier_base<synfig::Vector,float>
