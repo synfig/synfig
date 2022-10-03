@@ -141,6 +141,63 @@ void test_length_on_straight_line()
 	ASSERT_APPROX_EQUAL_MICRO(5, curve1.length());
 }
 
+void test_length_on_straight_line_segment()
+{
+	hermite<double> curve1(5,6,1,1);
+
+	ASSERT_APPROX_EQUAL_MICRO(.5, curve1.find_distance(0.25,.75));
+
+	hermite<double> curve2(-5,6,11,11);
+
+	ASSERT_APPROX_EQUAL_MICRO(5.5, curve2.find_distance(0.25,.75));
+}
+
+void test_subdivide_at_initial_parameter()
+{
+	hermite<double> curve1(3,4,0,0);
+	hermite<double> s, f;
+	curve1.subdivide(&s, &f, 0.);
+	ASSERT_APPROX_EQUAL(0.f, s.length());
+	ASSERT_APPROX_EQUAL(1.f, f.length());
+}
+
+void test_subdivide_at_final_parameter()
+{
+	hermite<double> curve1(3,4,0,0);
+	hermite<double> s, f;
+	curve1.subdivide(&s, &f, 1.);
+	ASSERT_APPROX_EQUAL(1.f, s.length());
+	ASSERT_APPROX_EQUAL(0.f, f.length());
+}
+
+void test_subdivide_at_midpoint()
+{
+	hermite<double> curve1(3,4,0,0);
+	hermite<double> s, f;
+	curve1.subdivide(&s, &f, .5);
+	ASSERT_APPROX_EQUAL(0.5f, s.length());
+	ASSERT_APPROX_EQUAL(0.5f, f.length());
+}
+
+void test_subdivide_at_some_point()
+{
+	hermite<double> curve1(3,4,1,1);
+	bezier<double> s, f;
+	const double subdiv_parameter = 0.3;
+	curve1.subdivide(&s, &f, subdiv_parameter);
+	ASSERT_APPROX_EQUAL(curve1.length(), s.length() + f.length());
+	// keep end poinds
+	ASSERT_APPROX_EQUAL(3., s[0]);
+	ASSERT_APPROX_EQUAL(4., f[3]);
+	// same subdivision point
+	ASSERT_APPROX_EQUAL(s[3], f[0]);
+	ASSERT_APPROX_EQUAL(curve1(subdiv_parameter), s[3]);
+	// keep end point tangents
+//	ASSERT_APPROX_EQUAL(3.1, s[1]);
+//	ASSERT_APPROX_EQUAL(3.9, f[2]);
+//	ASSERT_APPROX_EQUAL(f[1], s[2]);
+}
+
 /* === E N T R Y P O I N T ================================================= */
 
 int main()
@@ -159,6 +216,13 @@ int main()
 	TEST_FUNCTION(test_mid_value_for_modified_mid_parameter_on_straight_line);
 
 	TEST_FUNCTION(test_length_on_straight_line);
+	TEST_FUNCTION(test_length_on_straight_line_segment);
+
+	TEST_FUNCTION(test_subdivide_at_initial_parameter);
+	TEST_FUNCTION(test_subdivide_at_final_parameter);
+	TEST_FUNCTION(test_subdivide_at_midpoint);
+	TEST_FUNCTION(test_subdivide_at_some_point);
+
 	TEST_SUITE_END()
 
 	return tst_exit_status;

@@ -173,6 +173,10 @@ class bezier_base<float,float>
 public:
 	typedef float value_type;
 	typedef float time_type;
+
+protected:
+	affine_combo<float, float> affine_func;
+
 private:
 	// affine_combo<value_type,time_type> affine_func;
 	value_type a,b,c,d;
@@ -253,6 +257,10 @@ class bezier_base<double,float>
 public:
 	typedef double value_type;
 	typedef float time_type;
+
+protected:
+	affine_combo<double, float> affine_func;
+
 private:
 	// affine_combo<value_type,time_type> affine_func;
 	value_type a,b,c,d;
