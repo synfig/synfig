@@ -81,6 +81,66 @@ void test_float_intersection_reciprocity()
 	ASSERT_APPROX_EQUAL_MICRO(0.f, d);
 }
 
+void test_initial_value_for_initial_parameter()
+{
+	hermite<double> curve1(3,4,1,1);
+
+	ASSERT_APPROX_EQUAL_MICRO(3., curve1(0));
+}
+
+void test_final_value_for_final_parameter()
+{
+	hermite<double> curve1(3,4,1,1);
+
+	ASSERT_APPROX_EQUAL_MICRO(4., curve1(1));
+}
+
+void test_mid_value_for_mid_parameter_on_straight_line()
+{
+	hermite<double> curve1(3,4,0,0);
+
+	ASSERT_APPROX_EQUAL_MICRO(3.5, curve1(0.5));
+}
+
+void test_initial_value_for_modified_initial_parameter()
+{
+	hermite<double> curve1(3,4,1,1);
+	curve1.set_r(-1);
+
+	ASSERT_APPROX_EQUAL_MICRO(3., curve1(-1));
+}
+
+void test_final_value_for_modified_final_parameter()
+{
+	hermite<double> curve1(3,4,1,1);
+	curve1.set_s(2);
+
+	ASSERT_APPROX_EQUAL_MICRO(4., curve1(2));
+}
+
+void test_mid_value_for_modified_mid_parameter_on_straight_line()
+{
+	hermite<double> curve1(3,4,0,0);
+	curve1.set_rs(-2, 4);
+
+	ASSERT_APPROX_EQUAL_MICRO(3.5, curve1(1));
+}
+
+void test_length_on_straight_line()
+{
+	hermite<double> curve1(3,4,0,0);
+
+	ASSERT_APPROX_EQUAL_MICRO(1, curve1.length());
+
+	curve1.p2() = 7;
+	curve1.sync();
+	ASSERT_APPROX_EQUAL_MICRO(4, curve1.length());
+
+	curve1.p2() = -2;
+	curve1.sync();
+	ASSERT_APPROX_EQUAL_MICRO(5, curve1.length());
+}
+
 /* === E N T R Y P O I N T ================================================= */
 
 int main()
@@ -90,6 +150,15 @@ int main()
 	TEST_FUNCTION(test_basic);
 	TEST_FUNCTION(test_float_intersection_reciprocity);
 
+	TEST_FUNCTION(test_initial_value_for_initial_parameter);
+	TEST_FUNCTION(test_final_value_for_final_parameter);
+	TEST_FUNCTION(test_mid_value_for_mid_parameter_on_straight_line);
+
+	TEST_FUNCTION(test_initial_value_for_modified_initial_parameter);
+	TEST_FUNCTION(test_final_value_for_modified_final_parameter);
+	TEST_FUNCTION(test_mid_value_for_modified_mid_parameter_on_straight_line);
+
+	TEST_FUNCTION(test_length_on_straight_line);
 	TEST_SUITE_END()
 
 	return tst_exit_status;
