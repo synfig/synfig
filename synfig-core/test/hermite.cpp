@@ -193,9 +193,23 @@ void test_subdivide_at_some_point()
 	ASSERT_APPROX_EQUAL(s[3], f[0]);
 	ASSERT_APPROX_EQUAL(curve1(subdiv_parameter), s[3]);
 	// keep end point tangents
-//	ASSERT_APPROX_EQUAL(3.1, s[1]);
-//	ASSERT_APPROX_EQUAL(3.9, f[2]);
-//	ASSERT_APPROX_EQUAL(f[1], s[2]);
+	hermite<double> hs(s), hf(f);
+	ASSERT_APPROX_EQUAL_MICRO(.3, hs.t1());
+	ASSERT_APPROX_EQUAL_MICRO(.3, hs.t2());
+	ASSERT_APPROX_EQUAL_MICRO(.7, hf.t2());
+	ASSERT_APPROX_EQUAL_MICRO(.7, hf.t1());
+}
+
+void test_convert_bezier_to_hermite()
+{
+	hermite<double> curve1(3,4,1,.5);
+	bezier<double> bez(curve1);
+	hermite<double> curve2(bez);
+
+	ASSERT_EQUAL(3., curve2.P1);
+	ASSERT_EQUAL(4., curve2.P2);
+	ASSERT_APPROX_EQUAL(1., curve2.T1);
+	ASSERT_APPROX_EQUAL(.5, curve2.T2);
 }
 
 /* === E N T R Y P O I N T ================================================= */
@@ -222,6 +236,8 @@ int main()
 	TEST_FUNCTION(test_subdivide_at_final_parameter);
 	TEST_FUNCTION(test_subdivide_at_midpoint);
 	TEST_FUNCTION(test_subdivide_at_some_point);
+
+	TEST_FUNCTION(test_convert_bezier_to_hermite);
 
 	TEST_SUITE_END()
 

@@ -887,6 +887,14 @@ public:
 		P1(p1),P2(p2),T1(t1),T2(t2) { sync(); }
 	hermite(const value_type &p1, const value_type &p2):
 		P1(p1),P2(p2),T1(p2-p1),T2(p2-p1) { sync(); }
+	hermite(const bezier<V,T>& b)
+	{
+		P1 = b[0];
+		T1 = 3 * (b[1] - P1);
+		P2 = b[3];
+		T2 = 3 * (P2 - b[2]);
+		sync();
+	}
 
 	value_type P1,P2,T1,T2;
 
