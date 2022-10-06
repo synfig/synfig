@@ -66,8 +66,7 @@ Widget_Entry::after_event(GdkEvent *event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	if ((event->type == GDK_BUTTON_RELEASE) && first_selection) {
-		int last_digit_pos = get_text().find_first_not_of("0123456789.-");
-		select_region(0, last_digit_pos);
+		select_region(0, -1);
 		first_selection = false;
 	}
 	SYNFIG_EXCEPTION_GUARD_END()
