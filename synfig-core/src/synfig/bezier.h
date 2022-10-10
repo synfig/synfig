@@ -1,8 +1,6 @@
-/*! ========================================================================
-** Extended Template Library
-** \file _bezier.h
-** \brief Bezier Template Class Implementation
-** \internal
+/* === S Y N F I G ========================================================= */
+/* \file bezier.h
+** \brief Bezier and Hermite Template Class Implementation
 **
 ** \legal
 ** Copyright (c) 2002 Robert B. Quattlebaum Jr.
@@ -23,22 +21,19 @@
 ** You should have received a copy of the GNU General Public License
 ** along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 ** \endlegal
-**
-** \note
-** This is an internal header file, included by other ETL headers.
-** You should not attempt to use it directly.
-**
-** ========================================================================= */
+*/
+/* ========================================================================= */
 
 /* === S T A R T =========================================================== */
 
-#ifndef __ETL__BEZIER_H
-#define __ETL__BEZIER_H
+#ifndef SYNFIG_BEZIER_H
+#define SYNFIG_BEZIER_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "_curve_func.h"
 #include <cmath>				// for ldexp
+
+#include <ETL/_curve_func.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -46,7 +41,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace etl {
+namespace synfig {
 
 /**
  * Cubic Bezier Curve Base Class.
@@ -178,6 +173,10 @@ class bezier_base<float,float>
 public:
 	typedef float value_type;
 	typedef float time_type;
+
+protected:
+	affine_combo<float, float> affine_func;
+
 private:
 	// affine_combo<value_type,time_type> affine_func;
 	value_type a,b,c,d;
@@ -258,6 +257,10 @@ class bezier_base<double,float>
 public:
 	typedef double value_type;
 	typedef float time_type;
+
+protected:
+	affine_combo<double, float> affine_func;
+
 private:
 	// affine_combo<value_type,time_type> affine_func;
 	value_type a,b,c,d;
@@ -884,6 +887,14 @@ public:
 		P1(p1),P2(p2),T1(t1),T2(t2) { sync(); }
 	hermite(const value_type &p1, const value_type &p2):
 		P1(p1),P2(p2),T1(p2-p1),T2(p2-p1) { sync(); }
+	hermite(const bezier<V,T>& b)
+	{
+		P1 = b[0];
+		T1 = 3 * (b[1] - P1);
+		P2 = b[3];
+		T2 = 3 * (P2 - b[2]);
+		sync();
+	}
 
 	value_type P1,P2,T1,T2;
 

@@ -36,18 +36,15 @@
 
 #include "curvewarp.h"
 
-#include <ETL/bezier>
-
-#include <synfig/localization.h>
-
+#include <synfig/bezier.h>
 #include <synfig/context.h>
+#include <synfig/localization.h>
 #include <synfig/paramdesc.h>
 #include <synfig/surface.h>
 #include <synfig/valuenode.h>
 
 #endif
 
-using namespace etl;
 using namespace synfig;
 using namespace modules;
 using namespace lyr_std;
@@ -82,7 +79,7 @@ inline float calculate_distance(const std::vector<BLinePoint>& bline)
 	for(;next!=end;iter=next++)
 	{
 		// Setup the curve
-		etl::hermite<Vector> curve(iter->get_vertex(), next->get_vertex(), iter->get_tangent2(), next->get_tangent1());
+		hermite<Vector> curve(iter->get_vertex(), next->get_vertex(), iter->get_tangent2(), next->get_tangent1());
 		dist+=curve.length();
 	}
 
@@ -99,7 +96,7 @@ find_closest_to_bline(bool fast, const std::vector<BLinePoint>& bline,const Poin
 	float dist(100000000000.0);
 	next=bline.begin();
 	float best_pos(0), best_len(0);
-	etl::hermite<Vector> best_curve;
+	hermite<Vector> best_curve;
 	iter=next++;
 	Point bp;
 	float total_len(0);
@@ -109,7 +106,7 @@ find_closest_to_bline(bool fast, const std::vector<BLinePoint>& bline,const Poin
 	for(;next!=end;iter=next++)
 	{
 		// Setup the curve
-		etl::hermite<Vector> curve(iter->get_vertex(), next->get_vertex(), iter->get_tangent2(), next->get_tangent1());
+		hermite<Vector> curve(iter->get_vertex(), next->get_vertex(), iter->get_tangent2(), next->get_tangent1());
 		float thisdist(0);
 		last = false;
 
@@ -231,7 +228,7 @@ CurveWarp::transform(const Point &point_, Real *dist, Real *along, int quality)c
 		if(next==bline.end()) next=bline.begin();
 
 		// Setup the curve
-		etl::hermite<Vector> curve(iter->get_vertex(), next->get_vertex(), iter->get_tangent2(), next->get_tangent1());
+		hermite<Vector> curve(iter->get_vertex(), next->get_vertex(), iter->get_tangent2(), next->get_tangent1());
 
 		int search_iterations(7);
 
@@ -272,7 +269,7 @@ CurveWarp::transform(const Point &point_, Real *dist, Real *along, int quality)c
 						if (iter != bline.begin()) (prev = iter)--;
 						else prev = iter;
 
-						etl::hermite<Vector> other_curve(prev->get_vertex(), iter->get_vertex(), prev->get_tangent2(), iter->get_tangent1());
+						hermite<Vector> other_curve(prev->get_vertex(), iter->get_vertex(), prev->get_tangent2(), iter->get_tangent1());
 						other_tangent = other_curve(1) - other_curve(1-FAKE_TANGENT_STEP);
 					}
 
@@ -297,7 +294,7 @@ CurveWarp::transform(const Point &point_, Real *dist, Real *along, int quality)c
 						if (++next2 == bline.end())
 							next2 = next;
 
-						etl::hermite<Vector> other_curve(next->get_vertex(), next2->get_vertex(), next->get_tangent2(), next2->get_tangent1());
+						hermite<Vector> other_curve(next->get_vertex(), next2->get_vertex(), next->get_tangent2(), next2->get_tangent1());
 						other_tangent = other_curve(FAKE_TANGENT_STEP) - other_curve(0);
 					}
 

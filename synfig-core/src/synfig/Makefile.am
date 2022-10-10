@@ -57,6 +57,7 @@ VALUESOURCES = \
 
 SYNFIGHEADERS = \
 	angle.h \
+	bezier.h \
 	canvasbase.h \
 	clock.h \
 	general.h \

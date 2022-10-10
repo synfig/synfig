@@ -12,7 +12,6 @@ set(ETL_HEADERS
         "${CMAKE_CURRENT_LIST_DIR}/boxblur"
         "${CMAKE_CURRENT_LIST_DIR}/ref_count"
         "${CMAKE_CURRENT_LIST_DIR}/pen"
-        "${CMAKE_CURRENT_LIST_DIR}/bezier"
         "${CMAKE_CURRENT_LIST_DIR}/gaussian"
         "${CMAKE_CURRENT_LIST_DIR}/handle"
 #     PRIVATE
@@ -22,7 +21,6 @@ set(ETL_HEADERS
         "${CMAKE_CURRENT_LIST_DIR}/_boxblur.h"
         "${CMAKE_CURRENT_LIST_DIR}/_stringf.h"
         "${CMAKE_CURRENT_LIST_DIR}/_misc.h"
-        "${CMAKE_CURRENT_LIST_DIR}/_bezier.h"
         "${CMAKE_CURRENT_LIST_DIR}/_curve_func.h"
         "${CMAKE_CURRENT_LIST_DIR}/_handle.h"
         "${CMAKE_CURRENT_LIST_DIR}/_gaussian.h"

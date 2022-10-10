@@ -42,7 +42,7 @@
 #include <synfig/localization.h>
 #include <synfig/valuenode_registry.h>
 #include <synfig/exception.h>
-#include <ETL/bezier>
+#include <synfig/bezier.h>
 #include <synfig/segment.h>
 #include <synfig/curve_helper.h>
 #include <algorithm> // for std::swap
@@ -260,7 +260,7 @@ synfig::std_to_hom(const ValueBase &bline, Real pos, bool index_loop, bool bline
 	size_t next_vertex = (from_vertex + 1) % size;
 	const BLinePoint &blinepoint0 = list[from_vertex];
 	const BLinePoint &blinepoint1 = list[next_vertex];
-	etl::hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
+	hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
 							blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
 	// add the distance on the bezier we are on.
 	partial_length += curve.find_distance(0.0, pos*count - from_vertex);
@@ -317,7 +317,7 @@ synfig::hom_to_std(const ValueBase &bline, Real pos, bool index_loop, bool bline
 	// set up the curve
 	const BLinePoint &blinepoint0 = list[from_vertex];
 	const BLinePoint &blinepoint1 = list[(from_vertex+1) % size];
-	etl::hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
+	hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
 	                           blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
 	// Find the solution to which is the standard position which matches the current
 	// homogeneous position
@@ -368,7 +368,7 @@ synfig::bline_length(const ValueBase &bline, bool bline_loop, std::vector<Real> 
 		size_t i1 = (i0 + 1)%list.size();
 		const BLinePoint &blinepoint0 = list[i0];
 		const BLinePoint &blinepoint1 = list[i1];
-		etl::hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
+		hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
 							blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
 		Real l=curve.length();
 		if(lengths) lengths->push_back(l);
@@ -525,9 +525,9 @@ ValueNode_BLine::create_list_entry(int index, Time time, Real origin)
 		prev_i=find_prev_valid_entry(index,time);
 		next=(*list[next_i].value_node)(time).get(BLinePoint());
 		prev=(*list[prev_i].value_node)(time).get(BLinePoint());
-		etl::hermite<Vector> curve(prev.get_vertex(),next.get_vertex(),prev.get_tangent2(),next.get_tangent1());
-		etl::hermite<Vector> left;
-		etl::hermite<Vector> right;
+		hermite<Vector> curve(prev.get_vertex(),next.get_vertex(),prev.get_tangent2(),next.get_tangent1());
+		hermite<Vector> left;
+		hermite<Vector> right;
 		curve.subdivide(&left, &right, origin);
 		bline_point.set_vertex(left[3]);
 		bline_point.set_width((next.get_width()-prev.get_width())*origin+prev.get_width());
@@ -704,7 +704,7 @@ ValueNode_BLine::operator()(Time t)const
 			}
 
 			// this is how the curve looks when we have completely vanished
-			etl::hermite<Vector> curve(blp_prev_off.get_vertex(),   blp_next_off.get_vertex(),
+			hermite<Vector> curve(blp_prev_off.get_vertex(),   blp_next_off.get_vertex(),
 									   blp_prev_off.get_tangent2(), blp_next_off.get_tangent1());
 
 			// where would we be on this curve, how wide will we be, and

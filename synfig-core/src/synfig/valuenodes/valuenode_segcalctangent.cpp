@@ -41,7 +41,7 @@
 #include <synfig/localization.h>
 #include <synfig/valuenode_registry.h>
 #include <synfig/exception.h>
-#include <ETL/bezier>
+#include <synfig/bezier.h>
 #include <synfig/segment.h>
 
 #endif
@@ -91,7 +91,7 @@ ValueNode_SegCalcTangent::operator()(Time t)const
 
 	Segment segment((*segment_)(t).get(Segment()));
 
-	etl::hermite<Vector> curve(segment.p1,segment.p2,segment.t1,segment.t2);
+	hermite<Vector> curve(segment.p1,segment.p2,segment.t1,segment.t2);
 
 	return curve.derivative((*amount_)(t).get(Real()));
 }

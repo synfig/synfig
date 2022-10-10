@@ -42,15 +42,15 @@
 #include <synfig/general.h>
 
 #include <synfig/angle.h>
-#include <synfig/string.h>
+#include <synfig/bezier.h>
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
 #include <synfig/renddesc.h>
+#include <synfig/string.h>
 #include <synfig/surface.h>
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
 
-#include <ETL/bezier>
 #include <vector>
 
 #include <synfig/valuenodes/valuenode_bline.h>
@@ -240,7 +240,7 @@ Plant::sync()const
 
 	std::vector<synfig::BLinePoint>::const_iterator iter,next;
 
-	etl::hermite<Vector> curve;
+	hermite<Vector> curve;
 
 	Real step(std::fabs(step_));
 

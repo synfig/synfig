@@ -9,6 +9,10 @@ add_executable(test_synfig_benchmark benchmark.cpp)
 target_link_libraries(test_synfig_benchmark PRIVATE libsynfig)
 add_test(NAME test_synfig_benchmark COMMAND test_synfig_benchmark)
 
+add_executable(test_synfig_bezier hermite.cpp)
+target_link_libraries(test_synfig_bezier PRIVATE libsynfig)
+add_test(NAME test_synfig_bezier COMMAND test_synfig_bezier)
+
 add_executable(test_synfig_bline bline.cpp)
 target_link_libraries(test_synfig_bline PRIVATE libsynfig)
 add_test(NAME test_synfig_bline COMMAND test_synfig_bline)
@@ -34,7 +38,7 @@ target_link_libraries(test_synfig_string PRIVATE libsynfig)
 add_test(NAME test_synfig_string COMMAND test_synfig_string)
 
 set_target_properties(
-        test_synfig_angle test_synfig_benchmark test_synfig_bline test_synfig_bone test_synfig_clock test_synfig_keyframe test_synfig_node test_synfig_string
+        test_synfig_angle test_synfig_benchmark test_synfig_bezier test_synfig_bline test_synfig_bone test_synfig_clock test_synfig_keyframe test_synfig_node test_synfig_string
         PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test
 )

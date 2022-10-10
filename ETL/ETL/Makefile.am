@@ -18,8 +18,6 @@ etl_HEADERS = \
 	_curve_func.h \
 	_handle.h \
 	$(top_builddir)/ETL/etl_profile.h \
-	bezier \
-	_bezier.h \
 	pen \
 	_pen.h \
 	boxblur \

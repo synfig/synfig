@@ -478,9 +478,9 @@ abs(const synfig::Vector &rhs)
 
 }; // END of namespace std
 
-#include <ETL/bezier>
+#include <synfig/bezier.h>
 
-namespace etl {
+namespace synfig {
 
 template <>
 class bezier_base<synfig::Vector,float>

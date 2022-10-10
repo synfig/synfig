@@ -39,8 +39,6 @@
 #include <gtkmm/imagemenuitem.h>
 #include <gtkmm/separatormenuitem.h>
 
-#include <ETL/bezier>
-
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/docks/dialog_tooloptions.h>
@@ -53,6 +51,7 @@
 #include <gui/widgets/widget_enum.h>
 #include <gui/workarea.h>
 
+#include <synfig/bezier.h>
 #include <synfig/general.h>
 #include <synfig/valuenodes/valuenode_bline.h>
 
@@ -1757,7 +1756,7 @@ StateBLine_Context::bline_insert_vertex(synfig::ValueNode_Const::Handle value_no
 
 			prev_bline_point=(*prev)->get_value().get(BLinePoint());
 
-			etl::hermite<Vector> curve(prev_bline_point.get_vertex(),
+			hermite<Vector> curve(prev_bline_point.get_vertex(),
 									   next_bline_point.get_vertex(),
 									   prev_bline_point.get_tangent2(),
 									   next_bline_point.get_tangent1());
