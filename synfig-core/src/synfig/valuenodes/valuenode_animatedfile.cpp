@@ -335,7 +335,7 @@ ValueNode_AnimatedFile::ValueNode_AnimatedFile(Type &t):
 {
 	ValueNode_AnimatedInterfaceConst::set_interpolation(INTERPOLATION_CONSTANT);
 	ValueNode_AnimatedInterfaceConst::set_type(t);
-	set_children_vocab(get_children_vocab());
+	init_children_vocab();
 	set_link("filename", ValueNode_Const::create(String()));
 }
 

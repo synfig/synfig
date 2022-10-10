@@ -65,8 +65,7 @@ REGISTER_VALUENODE(ValueNode_Range, RELEASE_VERSION_0_61_07, "range", N_("Range"
 synfig::ValueNode_Range::ValueNode_Range(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	Type &type(value.get_type());
 
 	if (type == type_angle)

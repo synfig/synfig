@@ -61,8 +61,7 @@ REGISTER_VALUENODE(ValueNode_RealString, RELEASE_VERSION_0_61_09, "realstring", 
 ValueNode_RealString::ValueNode_RealString(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	if (value.get_type() == type_string)
 	{
 		set_link("real",ValueNode_Const::create(Real(0)));

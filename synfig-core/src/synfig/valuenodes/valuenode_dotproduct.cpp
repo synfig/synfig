@@ -60,8 +60,7 @@ REGISTER_VALUENODE(ValueNode_DotProduct, RELEASE_VERSION_0_61_09, "dotproduct", 
 ValueNode_DotProduct::ValueNode_DotProduct(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	Type &type(value.get_type());
 	if (type == type_real)
 	{

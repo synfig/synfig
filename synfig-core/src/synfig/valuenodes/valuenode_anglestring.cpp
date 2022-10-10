@@ -61,8 +61,7 @@ REGISTER_VALUENODE(ValueNode_AngleString, RELEASE_VERSION_0_61_09, "anglestring"
 ValueNode_AngleString::ValueNode_AngleString(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	if (value.get_type() == type_string)
 	{
 		set_link("angle",ValueNode_Const::create(Angle::deg(0)));

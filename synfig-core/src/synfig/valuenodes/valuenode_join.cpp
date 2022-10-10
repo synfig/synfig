@@ -61,8 +61,7 @@ REGISTER_VALUENODE(ValueNode_Join, RELEASE_VERSION_0_61_09, "join", N_("Joined L
 ValueNode_Join::ValueNode_Join(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	if (value.get_type() == type_string)
 	{
 		std::vector<ValueBase> v(1, value.get(String()));

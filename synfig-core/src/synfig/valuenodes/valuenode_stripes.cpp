@@ -61,8 +61,7 @@ REGISTER_VALUENODE(ValueNode_Stripes, RELEASE_VERSION_0_61_06, "stripes", N_("St
 
 synfig::ValueNode_Stripes::ValueNode_Stripes():LinkableValueNode(synfig::type_gradient)
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	set_link("color1",ValueNode_Const::create(Color::alpha()));
 	set_link("color2",ValueNode_Const::create(Color::black()));
 	set_link("stripes",stripes_=ValueNode_Const::create(int(5)));

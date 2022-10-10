@@ -225,6 +225,7 @@ ValueNode_StaticList::add(const ValueNode::Handle &value_node, int index) // lin
 			"%s:%d ^^^ done inserting valuenode\n", __FILE__, __LINE__);
 	}
 
+	init_children_vocab();
 	add_child(value_node.get());
 	//changed();
 
@@ -244,7 +245,7 @@ ValueNode_StaticList::erase(const ListEntry &value_node_) // line 513
 		throw String("ValueNode_StaticList::erase(): Passed bad value node");
 
 	std::vector<ReplaceableListEntry>::iterator iter;
-	for(iter=list.begin();iter!=list.end();++iter)
+	for(iter=list.begin();iter!=list.end();++iter) {
 		if(*iter==value_node)
 		{
 			list.erase(iter);
@@ -268,6 +269,8 @@ ValueNode_StaticList::erase(const ListEntry &value_node_) // line 513
 			}
 			break;
 		}
+	}
+	init_children_vocab();
 }
 
 ValueNode_StaticList::ValueNode_StaticList(Type &container_type, Canvas::LooseHandle canvas): // line 548

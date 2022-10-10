@@ -65,8 +65,7 @@ REGISTER_VALUENODE(ValueNode_TimedSwap, RELEASE_VERSION_0_61_07, "timed_swap", N
 ValueNode_TimedSwap::ValueNode_TimedSwap(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	Type &type(get_type());
 	if (type == type_angle)
 	{

@@ -64,8 +64,7 @@ ValueNode_Switch::ValueNode_Switch(Type &x):
 ValueNode_Switch::ValueNode_Switch(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	set_link("link_off",ValueNode_Const::create(x));
 	set_link("link_on",ValueNode_Const::create(x));
 	set_link("switch",ValueNode_Const::create(bool(false)));

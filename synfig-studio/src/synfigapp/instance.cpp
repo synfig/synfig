@@ -504,7 +504,7 @@ Instance::process_filenames(const ProcessFilenamesParams &params, const synfig::
 		  && linkable->get_parent_canvas()->get_root() != params.canvas)
 			return;
 
-		const ParamVocab vocab = linkable->get_children_vocab();
+		const ParamVocab& vocab = linkable->get_children_vocab();
 		for(ParamVocab::const_iterator i = vocab.begin(); i != vocab.end(); ++i)
 			process_filenames(params, ValueNode::Handle(linkable->get_link(i->get_name())), i->get_hint() == "filename");
 

@@ -73,8 +73,7 @@ REGISTER_VALUENODE(ValueNode_Composite, RELEASE_VERSION_0_61_06, "composite", N_
 synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value, Canvas::LooseHandle canvas):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	Type &type(get_type());
 	if (type == type_vector)
 	{

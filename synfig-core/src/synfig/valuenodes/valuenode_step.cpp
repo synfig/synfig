@@ -59,8 +59,7 @@ REGISTER_VALUENODE(ValueNode_Step, RELEASE_VERSION_0_61_08, "step", N_("Step"))
 ValueNode_Step::ValueNode_Step(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	set_link("duration",     ValueNode_Const::create(Time(1)));
 	set_link("start_time",   ValueNode_Const::create(Time(0)));
 	set_link("intersection", ValueNode_Const::create(Real(0.5)));

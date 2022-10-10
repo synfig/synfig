@@ -1566,7 +1566,7 @@ Instance::gather_uri(std::set<synfig::String> &x, const synfig::ValueNode::Handl
 
 	Time t = value_node->get_parent_canvas()->get_time();
 
-	ParamVocab vocab = linkable_value_node->get_children_vocab();
+	const ParamVocab& vocab = linkable_value_node->get_children_vocab();
 	for(ParamVocab::const_iterator i = vocab.begin(); i != vocab.end(); ++i)
 	{
 		ValueNode::Handle child_node = linkable_value_node->get_link(i->get_name());

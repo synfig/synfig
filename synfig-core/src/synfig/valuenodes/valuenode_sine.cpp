@@ -59,8 +59,7 @@ REGISTER_VALUENODE(ValueNode_Sine, RELEASE_VERSION_0_61_06, "sine", N_("Sine"))
 ValueNode_Sine::ValueNode_Sine(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	if (value.get_type() == type_real)
 	{
 		set_link("angle",ValueNode_Const::create(Angle::deg(90)));
