@@ -70,7 +70,6 @@ class PassiveGrouper
 	RedrawSet redraw_set_;
 	bool finished_;
 	bool repeated_action_group_;
-	bool cancel_repeated_action_;
 
 public:
 	PassiveGrouper(etl::loose_handle<System> instance_, synfig::String name_, bool repeated_action = false);
