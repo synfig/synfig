@@ -436,7 +436,11 @@ Action::PassiveGrouper::request_redraw(etl::handle<CanvasInterface> x)
 	{ if (x) redraw_set_.insert(x); }
 
 Action::PassiveGrouper::~PassiveGrouper()
-	{ if (!finished_) finish(); }
+{
+	if (!finished_) finish();
+	if (repeated_action_group_ && instance_->is_repeated_action_cancelled())
+		instance_->reset_cancel_repeated_action();
+}
 
 etl::handle<Action::Group>
 Action::PassiveGrouper::finish()
@@ -470,7 +474,10 @@ Action::PassiveGrouper::finish()
 			instance_->group_stack_.front()->inc_depth();
 	} else
 	if (depth_ > 1) {
-		group = new Action::Group(name_);
+		if (!repeated_action_group_)
+			group = new Action::Group(name_);
+		else
+			group = new Action::Group(name_, true);
 
 		for(int i=0; i < depth_; i++) {
 			etl::handle<Action::Undoable> action = instance_->undo_action_stack_.front();
@@ -495,10 +502,9 @@ Action::PassiveGrouper::finish()
 		// Push the group onto the stack
 		instance_->undo_action_stack_.push_front(group);
 
-		if (instance_->cancel_repeated_action) {
+		if (instance_->is_repeated_action_cancelled()) {
 			instance_->undo();
 			instance_->redo_action_stack_.pop_front();
-//			cancel(); //not really sure what it does is it needed?
 			return etl::handle<Action::Group>();
 		}
 

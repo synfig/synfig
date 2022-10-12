@@ -166,10 +166,6 @@ class Widget_ColorEdit : public Gtk::Grid
 	Gtk::Notebook* notebook;
 
 	bool escape_cancel = false;
-	bool wheel_released = false;
-	bool get_initial_color = true;
-	bool current_action_cancelled = false;
-	synfig::Color initial_color;
 	synfigapp::Action::PassiveGrouper* group = nullptr;
 
 protected:
@@ -210,6 +206,8 @@ private:
 	void SliderRow(int left, int top, ColorSlider *color_widget, std::string l, Gtk::Grid *grid);
 	///@brief The function adds spin button into the grid.
 	void AttachSpinButton(int left, int top, Gtk::SpinButton *spin_button, Gtk::Grid *grid);
+
+	bool on_escape_pressed(GdkEventKey *ev);
 
 }; // END of class Widget_ColorEdit
 
