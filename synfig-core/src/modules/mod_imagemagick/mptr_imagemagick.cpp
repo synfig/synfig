@@ -35,20 +35,6 @@
 #endif
 
 #include "mptr_imagemagick.h"
-#include <cstdio>
-#include <sys/types.h>
-#if HAVE_SYS_WAIT_H
- #include <sys/wait.h>
-#endif
-#if HAVE_IO_H
- #include <io.h>
-#endif
-#if HAVE_PROCESS_H
- #include <process.h>
-#endif
-#if HAVE_FCNTL_H
- #include <fcntl.h>
-#endif
 
 #include <ETL/stringf>
 
@@ -56,6 +42,7 @@
 #include <synfig/localization.h>
 #include <synfig/filesystemnative.h>
 #include <synfig/filesystemtemporary.h>
+#include <synfig/os.h>
 
 #endif
 
@@ -63,13 +50,6 @@
 
 using namespace synfig;
 using namespace etl;
-
-#if defined(HAVE_FORK) && defined(HAVE_PIPE) && defined(HAVE_WAITPID)
- #define UNIX_PIPE_TO_PROCESSES
- #include <unistd.h>
-#else
- #define WIN32_PIPE_TO_PROCESSES
-#endif
 
 /* === G L O B A L S ======================================================= */
 
@@ -82,21 +62,12 @@ SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(imagemagick_mptr, false);
 /* === M E T H O D S ======================================================= */
 
 
-imagemagick_mptr::imagemagick_mptr(const synfig::FileSystem::Identifier &identifier):
-synfig::Importer(identifier),
-file(nullptr)
-//cur_frame(0)
+imagemagick_mptr::imagemagick_mptr(const synfig::FileSystem::Identifier& identifier)
+	: synfig::Importer(identifier)
 { }
 
 imagemagick_mptr::~imagemagick_mptr()
 {
-	if (file) {
-#if defined(WIN32_PIPE_TO_PROCESSES)
-		_pclose(file);
-#elif defined(UNIX_PIPE_TO_PROCESSES)
-		fclose(file);
-#endif
-	}
 }
 
 bool
@@ -128,49 +99,19 @@ imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &re
 		}
 	}
 
-#if defined(WIN32_PIPE_TO_PROCESSES)
+	OS::RunArgs args;
+	args.push_back(filesystem::Path(filename));
 
-	if(file)
-		_pclose(file);
+	if (filename_extension == ".psd" || filename_extension == ".xcf")
+		args.push_back("-flatten");
 
-	std::string command;
+	args.push_back(strprintf("png32:%s", target_filename.c_str()));
 
-	if(identifier.filename.find("psd")!=String::npos)
-		command=strprintf("convert \"%s\" -flatten \"png32:%s\"\n",filename.c_str(),target_filename.c_str());
-	else
-		command=strprintf("convert \"%s\" \"png32:%s\"\n",filename.c_str(),target_filename.c_str());
-
-	if(system(command.c_str())!=0)
-		return false;
-
-#elif defined(UNIX_PIPE_TO_PROCESSES)
-
-	std::string output="png32:"+target_filename;
-
-	pid_t pid = fork();
-
-	if (pid == -1) {
+	bool success = OS::run_sync("convert", args);
+	if (!success) {
+		synfig::error(_("Unable to open convert [ImageMagick]"));
 		return false;
 	}
-
-	if (pid == 0){
-		// Child process
-		if(identifier.filename.find("psd")!=String::npos)
-			execlp("convert", "convert", filename.c_str(), "-flatten", output.c_str(), (const char*)nullptr);
-		else
-			execlp("convert", "convert", filename.c_str(), output.c_str(), (const char*)nullptr);
-		// We should never reach here unless the exec failed
-		return false;
-	}
-
-	int status;
-	waitpid(pid, &status, 0);
-	if( (WIFEXITED(status) && WEXITSTATUS(status) != 0) || !WIFEXITED(status) )
-		return false;
-
-#else
-	#error There are no known APIs for creating child processes
-#endif
 
 	if(is_temporary_file)
 		identifier.file_system->file_remove(filename);

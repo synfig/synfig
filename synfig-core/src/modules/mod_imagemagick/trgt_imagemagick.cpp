@@ -37,20 +37,7 @@
 #include <synfig/general.h>
 
 #include "trgt_imagemagick.h"
-#include <cstdio>
 
-#if HAVE_SYS_WAIT_H
- #include <sys/wait.h>
-#endif
-#if HAVE_IO_H
- #include <io.h>
-#endif
-#if HAVE_PROCESS_H
- #include <process.h>
-#endif
-#if HAVE_FCNTL_H
- #include <fcntl.h>
-#endif
 #include <ETL/misc>
 #include <ETL/stringf>
 
@@ -60,13 +47,6 @@
 
 using namespace synfig;
 using namespace etl;
-
-#if defined(HAVE_FORK) && defined(HAVE_PIPE) && defined(HAVE_WAITPID)
- #define UNIX_PIPE_TO_PROCESSES
- #include <unistd.h>
-#else
- #define WIN32_PIPE_TO_PROCESSES
-#endif
 
 /* === G L O B A L S ======================================================= */
 
@@ -80,7 +60,7 @@ SYNFIG_TARGET_SET_VERSION(imagemagick_trgt,"0.1");
 imagemagick_trgt::imagemagick_trgt(const char *Filename,  const synfig::TargetParam &params):
 	imagecount(),
 	multi_image(false),
-	file(nullptr),
+	pipe(nullptr),
 	filename(Filename),
 	buffer(nullptr),
 	color_buffer(nullptr),
@@ -90,16 +70,6 @@ imagemagick_trgt::imagemagick_trgt(const char *Filename,  const synfig::TargetPa
 
 imagemagick_trgt::~imagemagick_trgt()
 {
-	if(file){
-#if defined(WIN32_PIPE_TO_PROCESSES)
-		_pclose(file);
-#elif defined(UNIX_PIPE_TO_PROCESSES)
-		fclose(file);
-		int status;
-		waitpid(pid,&status,0);
-#endif
-	}
-	file=nullptr;
 	delete [] buffer;
 	delete [] color_buffer;
 }
@@ -133,19 +103,10 @@ imagemagick_trgt::init(synfig::ProgressCallback * /* cb */)
 void
 imagemagick_trgt::end_frame()
 {
-	if(file)
-	{
-		fputc(0,file);
-		fflush(file);
-#if defined(WIN32_PIPE_TO_PROCESSES)
-		_pclose(file);
-#elif defined(UNIX_PIPE_TO_PROCESSES)
-		fclose(file);
-		int status;
-		waitpid(pid,&status,0);
-#endif
+	if (pipe) {
+		pipe->close();
+		pipe = nullptr;
 	}
-	file=nullptr;
 	imagecount++;
 }
 
@@ -164,85 +125,25 @@ imagemagick_trgt::start_frame(synfig::ProgressCallback *cb)
 	else
 		newfilename = filename;
 
-#if defined(WIN32_PIPE_TO_PROCESSES)
+	OS::RunArgs args;
+	args.push_back({"-depth", "8"});
+	args.push_back({"-size", strprintf("%dx%d", desc.get_w(), desc.get_h())});
+	args.push_back(pixel_size(pf) == 4 ? "rgba:-[0]" : "rgb:-[0]");
+	args.push_back({"-density", strprintf("%dx%d", round_to_int(desc.get_x_res()/39.3700787402), round_to_int(desc.get_y_res()/39.3700787402))});
+	args.push_back(filesystem::Path(newfilename));
 
-	std::string command;
+	pipe = OS::run_async("convert", args, OS::RUN_MODE_WRITE);
 
-	command=strprintf("convert -depth 8 -size %dx%d rgb%s:-[0] -density %dx%d \"%s\"\n",
-	                  desc.get_w(), desc.get_h(),                                   // size
-	                  ((pixel_size(pf) == 4) ? "a" : ""),                             // rgba or rgb?
-	                  round_to_int(desc.get_x_res()/39.3700787402), // density
-	                  round_to_int(desc.get_y_res()/39.3700787402),
-	                  newfilename.c_str());
-
-	file=_popen(command.c_str(),POPEN_BINARY_WRITE_TYPE);
-
-#elif defined(UNIX_PIPE_TO_PROCESSES)
-
-	int p[2];
-
-	if (pipe(p)) {
-		if(cb) cb->error(N_(msg));
-		else synfig::error(N_(msg));
-		return false;
-	};
-
-	pid = fork();
-
-	if (pid == -1) {
-		if(cb) cb->error(N_(msg));
-		else synfig::error(N_(msg));
-		return false;
-	}
-
-	if (pid == 0){
-		// Child process
-		// Close pipeout, not needed
-		close(p[1]);
-		// Dup pipeout to stdin
-		if( dup2( p[0], STDIN_FILENO ) == -1 ){
-			if(cb) cb->error(N_(msg));
-			else synfig::error(N_(msg));
-			return false;
-		}
-		// Close the unneeded pipeout
-		close(p[0]);
-		execlp("convert", "convert",
-			"-depth", "8",
-			"-size", strprintf("%dx%d", desc.get_w(), desc.get_h()).c_str(),
-			((pixel_size(pf) == 4) ? "rgba:-[0]" : "rgb:-[0]"),
-			"-density", strprintf("%dx%d", round_to_int(desc.get_x_res()/39.3700787402), round_to_int(desc.get_y_res()/39.3700787402)).c_str(),
-			newfilename.c_str(),
-			(const char*)nullptr);
-		// We should never reach here unless the exec failed
-		if(cb) cb->error(N_(msg));
-		else synfig::error(N_(msg));
-		return false;
-	} else {
-		// Parent process
-		// Close pipein, not needed
-		close(p[0]);
-		// Save pipeout to file handle, will write to it later
-		file = fdopen(p[1], "wb");
-	}
-
-#else
-	#error There are no known APIs for creating child processes
-#endif
-
-	if(!file)
-	{
+	if (!pipe) {
 		if(cb)cb->error(N_(msg));
 		else synfig::error(N_(msg));
 		return false;
 	}
 
-	//etl::yield();
-
 	return true;
 }
 
-Color *
+Color*
 imagemagick_trgt::start_scanline(int /*scanline*/)
 {
 	return color_buffer;
@@ -251,12 +152,12 @@ imagemagick_trgt::start_scanline(int /*scanline*/)
 bool
 imagemagick_trgt::end_scanline(void)
 {
-	if(!file)
+	if (!pipe)
 		return false;
 
 	color_to_pixelformat(buffer, color_buffer, pf, 0, desc.get_w());
 
-	if(!fwrite(buffer,pixel_size(pf),desc.get_w(),file))
+	if (!pipe->write(buffer, pixel_size(pf), desc.get_w()))
 		return false;
 
 	return true;

@@ -126,6 +126,7 @@ SYNFIGHEADERS = \
 	valuetransformation.h \
 	soundprocessor.h \
 	canvasfilenaming.h \
+	os.h \
 	token.h \
 	threadpool.h
 
@@ -177,6 +178,7 @@ SYNFIGSOURCES = \
 	valueoperations.cpp \
 	soundprocessor.cpp \
 	canvasfilenaming.cpp \
+	os.cpp \
 	token.cpp \
 	threadpool.cpp
 

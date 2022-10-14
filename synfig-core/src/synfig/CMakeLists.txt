@@ -46,6 +46,7 @@ target_sources(libsynfig
         "${CMAKE_CURRENT_LIST_DIR}/main.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/module.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/node.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/os.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/palette.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/paramdesc.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/polynomial_root.cpp"
