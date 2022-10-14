@@ -234,6 +234,19 @@ bool Widget_Timetrack::copy_selected(synfig::Time delta_time)
 	return ok;
 }
 
+void Widget_Timetrack::handle_copied_waypoints_selection(bool selection_changed)
+{
+	if (selection_changed) {//when the copied waypoints selection is altered then copy is over and paste menu item should not show
+		waypoint_mouse_copy=false;
+		return;
+	}
+
+	if (!waypoint_sd.is_selected(waypoint_sd.get_hovered_item())) { //if copied waypoint isnt selected select it and deselect any other waypoints
+		waypoint_sd.deselect_all();
+		waypoint_sd.select(waypoint_sd.get_hovered_item());
+	}
+}
+
 void Widget_Timetrack::scale_selected()
 {
 	std::lock_guard<std::mutex> lock(param_list_mutex);
@@ -598,8 +611,10 @@ void Widget_Timetrack::setup_mouse_handler()
 	waypoint_sd.signal_panning_requested().connect(sigc::mem_fun(*this, &Widget_Timetrack::pan));
 
 	waypoint_sd.signal_selection_changed().connect(sigc::mem_fun(*this, &Gtk::Widget::queue_draw));
+	waypoint_sd.signal_selection_changed().connect(sigc::bind(sigc::mem_fun(*this, &Widget_Timetrack::handle_copied_waypoints_selection), true));
 	waypoint_sd.signal_item_clicked().connect(sigc::mem_fun(*this, &Widget_Timetrack::on_waypoint_clicked));
 	waypoint_sd.signal_item_double_clicked().connect(sigc::mem_fun(*this, &Widget_Timetrack::on_waypoint_double_clicked));
+	waypoint_sd.signal_no_item_clicked().connect(sigc::mem_fun(*this, &Widget_Timetrack::on_no_waypoint_clicked));
 }
 
 void Widget_Timetrack::setup_params_store()
@@ -947,6 +962,12 @@ void Widget_Timetrack::on_waypoint_double_clicked(const Widget_Timetrack::Waypoi
 		const synfigapp::ValueDesc &value_desc = param_info_map.at(wi.path.to_string()).get_value_desc();
 		signal_waypoint_double_clicked().emit(value_desc, waypoint_set, button);
 	}
+}
+
+void Widget_Timetrack::on_no_waypoint_clicked(unsigned int button, Gdk::Point button_coord)
+{
+	synfig::Time time = time_plot_data->get_t_from_pixel_coord(button_coord.get_x());
+	signal_no_waypoint_click().emit(time, button);
 }
 
 void Widget_Timetrack::on_waypoint_action_changed()

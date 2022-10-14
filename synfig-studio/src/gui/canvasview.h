@@ -125,6 +125,7 @@ class Dock_Layers;
 class Dock_Children;
 class Dock_Keyframes;
 class KeyFrameDial;
+class Widget_Timetrack;
 
 class LockDucks: public etl::shared_object {
 private:
@@ -383,6 +384,8 @@ private:
 	int ducks_locks;
 	bool ducks_rebuild_requested;
 	bool ducks_rebuild_queue_requested;
+
+	synfig::Time copied_waypoint_time;
 
 	/*
  -- ** -- P U B L I C   D A T A -----------------------------------------------
@@ -644,6 +647,12 @@ public:
 	void import_sequence();
 
 	void on_waypoint_clicked_canvasview(synfigapp::ValueDesc,std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int button);
+
+	void on_no_waypoint_clicked_canvasview(synfig::Time time , unsigned int button);
+
+	void copy_waypoints(synfig::Time time);
+
+	void paste_waypoints(synfig::Time time);
 
 	void preview_option() {on_preview_option();}
 

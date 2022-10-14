@@ -99,6 +99,8 @@ void Dock_Timetrack2::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canva
 	widget_timetrack->signal_waypoint_double_clicked().connect(sigc::mem_fun(*this, &Dock_Timetrack2::on_widget_timetrack_waypoint_double_clicked));
 
 	widget_timetrack->signal_action_state_changed().connect(sigc::mem_fun(*this, &Dock_Timetrack2::update_tool_palette_action));
+
+	widget_timetrack->signal_no_waypoint_click().connect(sigc::mem_fun(*canvas_view, &CanvasView::on_no_waypoint_clicked_canvasview));
 }
 
 void Dock_Timetrack2::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
