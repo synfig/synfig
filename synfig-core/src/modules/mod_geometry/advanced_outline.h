@@ -88,7 +88,6 @@ public:
 
 private:
 	bool connect_bline_to_wplist(etl::loose_handle<synfig::ValueNode> x);
-	bool connect_bline_to_dilist(etl::loose_handle<synfig::ValueNode> x);
 	
 protected:
 	virtual void sync_vfunc();

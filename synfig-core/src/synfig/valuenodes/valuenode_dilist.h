@@ -47,8 +47,6 @@ namespace synfig {
 */
 class ValueNode_DIList : public ValueNode_DynamicList
 {
-	ValueNode::RHandle bline_;
-
 	ValueNode_DIList();
 
 public:
@@ -74,11 +72,6 @@ public:
 	//! \param origin unused. Always is in the middle.
 	//! \return the new List Entry
 	virtual ListEntry create_list_entry(int index, Time time=0, Real origin=0.5) override;
-
-	//! Gets the bline RHandle
-	ValueNode::LooseHandle get_bline() const;
-	//! Sets the bline RHandle
-	void set_bline(ValueNode::Handle b);
 
 protected:
 	LinkableValueNode* create_new() const override;

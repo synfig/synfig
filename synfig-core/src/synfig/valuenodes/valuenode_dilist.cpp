@@ -172,8 +172,6 @@ ValueNode_DIList::link_local_name(int i)const
 	return strprintf(_("DashItem %03d"),i+1);
 }
 
-
-
 LinkableValueNode*
 ValueNode_DIList::create_new()const
 {
@@ -185,16 +183,3 @@ ValueNode_DIList::check_type(Type &type)
 {
 	return type==type_list;
 }
-
-ValueNode::LooseHandle
-ValueNode_DIList::get_bline()const
-{
-	return bline_;
-}
-
-void
-ValueNode_DIList::set_bline(ValueNode::Handle b)
-{
-	bline_=b;
-}
-
