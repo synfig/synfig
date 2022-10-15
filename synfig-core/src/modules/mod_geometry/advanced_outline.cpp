@@ -853,9 +853,8 @@ Advanced_Outline::connect_bline_to_wplist(etl::loose_handle<ValueNode> x)
 {
 	if(x->get_type() != type_list)
 		return false;
-	if((*x)(Time(0)).empty())
-		return false;
-	if((*x)(Time(0)).get_list().front().get_type() != type_bline_point)
+	ValueBase v = (*x)(Time(0));
+	if(v.get_contained_type() != type_bline_point)
 		return false;
 	ValueNode::LooseHandle vnode;
 	DynamicParamList::const_iterator iter(dynamic_param_list().find("wplist"));
@@ -873,9 +872,8 @@ Advanced_Outline::connect_bline_to_dilist(etl::loose_handle<ValueNode> x)
 {
 	if(x->get_type() != type_list)
 		return false;
-	if((*x)(Time(0)).empty())
-		return false;
-	if((*x)(Time(0)).get_list().front().get_type() != type_bline_point)
+	ValueBase v = (*x)(Time(0));
+	if(v.get_contained_type() != type_bline_point)
 		return false;
 	ValueNode::LooseHandle vnode;
 	DynamicParamList::const_iterator iter(dynamic_param_list().find("dilist"));
