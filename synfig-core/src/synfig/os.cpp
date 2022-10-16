@@ -637,8 +637,7 @@ OS::run_async(std::string binary_path, const RunArgs& binary_args, RunMode mode,
 		synfig::warning("couldn't create pipe for %s %s", binary_path.c_str(), binary_args.get_string().c_str());
 		return nullptr;
 	}
-	run_pipe->open(binary_path, binary_args, mode, redir_files);
-	if (!run_pipe->is_open()) {
+	if (!run_pipe->open(binary_path, binary_args, mode, redir_files) || !run_pipe->is_open()) {
 		synfig::warning("couldn't open pipe for %s %s", binary_path.c_str(), binary_args.get_string().c_str());
 		return nullptr;
 	}
@@ -651,7 +650,8 @@ OS::run_sync(std::string binary_path, const RunArgs& binary_args, const std::str
 	auto run_pipe = OS::RunPipe::create();
 	if (!run_pipe)
 		return false;
-	run_pipe->open(binary_path, binary_args, OS::RunMode::RUN_MODE_READ, {stderr_redir_file, stdout_redir_file, ""});
+	if (!run_pipe->open(binary_path, binary_args, OS::RunMode::RUN_MODE_READ, {stderr_redir_file, stdout_redir_file, ""}))
+		return false;
 	if (!run_pipe->is_open())
 		return false;
 
