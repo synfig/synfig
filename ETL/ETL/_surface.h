@@ -205,11 +205,8 @@ class surface
 {
 public:
 	typedef T value_type;
-	typedef T accumulator_type;
 	typedef value_type* pointer;
-	typedef accumulator_type* accumulator_pointer;
 	typedef const value_type* const_pointer;
-	typedef const accumulator_type* const_accumulator_pointer;
 	typedef value_type& reference;
 	typedef generic_pen<value_type> pen;
 	typedef generic_pen<const value_type> const_pen;
