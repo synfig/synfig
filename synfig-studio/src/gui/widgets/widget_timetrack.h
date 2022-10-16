@@ -72,6 +72,7 @@ public:
 	bool use_canvas_view(etl::loose_handle<CanvasView> canvas_view);
 
 	void delete_selected();
+	void interpolate_selected(synfig::Interpolation type);
 	bool move_selected(synfig::Time delta_time);
 	//! Duplicate selected waypoints and move them delta_time
 	bool copy_selected(synfig::Time delta_time);
@@ -81,6 +82,8 @@ public:
 	void goto_next_waypoint(long n);
 	//! \param n : how many waypoints to skip back
 	void goto_previous_waypoint(long n);
+
+	int get_num_waypoints_selected() { return waypoint_sd.get_selected_items().size(); };
 
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int>& signal_waypoint_clicked() { return signal_waypoint_clicked_; }
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int>& signal_waypoint_double_clicked() { return signal_waypoint_double_clicked_; }
@@ -95,6 +98,7 @@ public:
 	ActionState get_action_state() const;
 	void set_action_state(ActionState action_state);
 	sigc::signal<void>& signal_action_state_changed() { return signal_action_state_changed_; }
+	sigc::signal<void, bool> signal_waypoint_selection_changed() { return signal_waypoint_selection_changed_; };
 
 protected:
 	virtual bool on_event(GdkEvent* event) override;
@@ -223,6 +227,7 @@ private:
 	void on_waypoint_clicked(const WaypointItem &wi, unsigned int button, Gdk::Point /*point*/);
 	void on_waypoint_double_clicked(const WaypointItem &wi, unsigned int button, Gdk::Point /*point*/);
 	void on_waypoint_action_changed();
+	void on_waypoint_selection_changed();
 
 	void on_params_store_row_inserted(const Gtk::TreeModel::Path&, const Gtk::TreeModel::iterator&);
 	void on_params_store_row_deleted(const Gtk::TreeModel::Path&);
@@ -236,6 +241,7 @@ private:
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int> signal_waypoint_double_clicked_;
 
 	sigc::signal<void> signal_action_state_changed_;
+	sigc::signal<void, bool> signal_waypoint_selection_changed_;
 
 	ActionState action_state;
 
