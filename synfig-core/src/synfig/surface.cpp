@@ -33,11 +33,9 @@
 #	include <config.h>
 #endif
 
-#include "canvas.h"
 #include "surface.h"
 #include "target_scanline.h"
 #include "target_tile.h"
-#include "general.h"
 #include <synfig/localization.h>
 
 #ifdef HAS_VIMAGE
