@@ -46,7 +46,7 @@ using namespace rendering;
 
 #ifdef _MSC_VER
 // MSVC requires explicit template instantiation. Without it, it will crash with an internal compiler error :(
-template Color etl::surface<Color, ColorAccumulator, ColorPrep>::reader<etl::clamping::clamp, etl::clamping::clamp>(const void*, int, int);
+template Color etl::surface<Color, ColorPrep>::reader<etl::clamping::clamp, etl::clamping::clamp>(const void*, int, int);
 template Color software::PackedSurface::Reader::reader<etl::clamping::clamp, etl::clamping::clamp>(void const*, int, int);
 #endif
 
@@ -64,11 +64,11 @@ namespace {
 		struct MapPixelPart { int src; int dst; ColorReal k0; ColorReal k1; };
 
 		template< Color reader(const void*,int,int),
-				ColorAccumulator reader_cook(const void*,int,int) >
+				Color reader_cook(const void*,int,int) >
 		class Generic {
 		public:
-			typedef synfig::Surface::sampler<Color, reader> Sampler;
-			typedef synfig::Surface::sampler<ColorAccumulator, reader_cook> SamplerCook;
+			typedef synfig::Surface::sampler<reader> Sampler;
+			typedef synfig::Surface::sampler<reader_cook> SamplerCook;
 			typedef typename Sampler::coord_type Coord;
 			typedef typename Sampler::func SamplerFunc;
 			typedef typename SamplerCook::func SamplerCookFunc;

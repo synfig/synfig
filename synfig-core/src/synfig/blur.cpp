@@ -156,25 +156,25 @@ inline Color zero<Color>()
 	return Color::alpha();
 }
 
-template <typename T,typename AT,class VP>
-static void GaussianBlur_2x2(etl::surface<T,AT,VP> &surface)
+template <typename T,class VP>
+static void GaussianBlur_2x2(etl::surface<T,VP>& surface)
 {
 	int x,y,w,h;
-	AT Tmp1,Tmp2,SR0;
+	T Tmp1,Tmp2,SR0;
 
 	w=surface.get_w();
 	h=surface.get_h();
 	
-	AT *SC0=new AT[w];
+	T *SC0=new T[w];
 
-	memcpy(static_cast<void*>(SC0), surface[0], w*sizeof(AT));
+	memcpy(static_cast<void*>(SC0), surface[0], w*sizeof(T));
 
 	for(y=0;y<h;y++)
 	{
 		SR0=surface[y][0];
 		for(x=0;x<w;x++)
 		{
-			Tmp1=(AT)(surface[y][x]);
+			Tmp1=surface[y][x];
 			Tmp2=SR0+Tmp1;
 			SR0=Tmp1;
 			surface[y][x]=(SC0[x]+Tmp2)/4;
@@ -184,11 +184,11 @@ static void GaussianBlur_2x2(etl::surface<T,AT,VP> &surface)
 	delete [] SC0;
 }
 
-template <typename T,typename AT,class VP>
-static void GaussianBlur_2x1(etl::surface<T,AT,VP> &surface)
+template <typename T,class VP>
+static void GaussianBlur_2x1(etl::surface<T,VP> &surface)
 {
 	int x,y,w,h;
-	AT Tmp1,Tmp2,SR0;
+	T Tmp1,Tmp2,SR0;
 
 	w = surface.get_w();
 	h = surface.get_h();
@@ -206,11 +206,11 @@ static void GaussianBlur_2x1(etl::surface<T,AT,VP> &surface)
 	}
 }
 
-template <typename T,typename AT,class VP>
-static void GaussianBlur_3x1(etl::surface<T,AT,VP> &surface)
+template <typename T,class VP>
+static void GaussianBlur_3x1(etl::surface<T,VP> &surface)
 {
 	int x,y,w,h;
-	AT Tmp1,Tmp2,SR0,SR1;
+	T Tmp1,Tmp2,SR0,SR1;
 	w = surface.get_w();
 	h = surface.get_h();
 	
@@ -232,15 +232,15 @@ static void GaussianBlur_3x1(etl::surface<T,AT,VP> &surface)
 	}
 }
 
-template <typename T,typename AT,class VP>
-static void GaussianBlur_1x2(etl::surface<T,AT,VP> &surface)
+template <typename T,class VP>
+static void GaussianBlur_1x2(etl::surface<T,VP> &surface)
 {
 	int x,y;
-	AT Tmp1,Tmp2,SR0;
+	T Tmp1,Tmp2,SR0;
 
 	for(x=0;x<surface.get_w();x++)
 	{
-		SR0 = zero<AT>();
+		SR0 = zero<T>();
 		for(y=0;y<surface.get_h();y++)
 		{
 			Tmp1=surface[y][x];
@@ -251,11 +251,11 @@ static void GaussianBlur_1x2(etl::surface<T,AT,VP> &surface)
 	}
 }
 
-template <typename T,typename AT,class VP>
-static void GaussianBlur_1x3(etl::surface<T,AT,VP> &surface)
+template <typename T,class VP>
+static void GaussianBlur_1x3(etl::surface<T,VP> &surface)
 {
 	int x,y;
-	AT Tmp1,Tmp2,SR0,SR1;
+	T Tmp1,Tmp2,SR0,SR1;
 
 	for(x=0;x<surface.get_w();x++)
 	{
@@ -556,10 +556,10 @@ bool Blur::operator()(const Surface &surface,
 			int bh = (int)(std::fabs(ph)*size[1]*GAUSSIAN_ADJUSTMENT+0.5);
 			int max=bw+bh;
 
-			ColorAccumulator *SC0=new ColorAccumulator[w+2];
-			ColorAccumulator *SC1=new ColorAccumulator[w+2];
-			ColorAccumulator *SC2=new ColorAccumulator[w+2];
-			ColorAccumulator *SC3=new ColorAccumulator[w+2];
+			Color* SC0=new Color[w+2];
+			Color* SC1=new Color[w+2];
+			Color* SC2=new Color[w+2];
+			Color* SC3=new Color[w+2];
 
 			//synfig::warning("Didn't crash yet b2");
 			//int i = 0;
