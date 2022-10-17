@@ -134,7 +134,7 @@ synfig::Surface::clear()
 #ifdef HAS_VIMAGE
 	fill(Color(0.5,0.5,0.5,0.0000001));
 #else
-	etl::surface<Color, ColorAccumulator, ColorPrep>::clear();
+	etl::surface<Color, ColorPrep>::clear();
 #endif
 }
 
@@ -238,7 +238,7 @@ synfig::Surface::blit_to(alpha_pen& pen, int x, int y, int w, int h)
 		return;
 	}
 #endif
-	etl::surface<Color, ColorAccumulator, ColorPrep>::blit_to(pen,x,y,w,h);
+	etl::surface<Color, ColorPrep>::blit_to(pen,x,y,w,h);
 }
 
 

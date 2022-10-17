@@ -119,16 +119,13 @@ public:
 	generic_pen_row_iterator():data_(nullptr), pitch_(0) { }
 };
 
-template<typename T, typename AT=T>
+template<typename T>
 class generic_pen
 {
 public:
 	typedef T value_type;
-	typedef AT accumulator_type;
 	typedef value_type* pointer;
-	typedef accumulator_type* accumulator_pointer;
 	typedef const value_type* const_pointer;
-	typedef const accumulator_type* const_accumulator_pointer;
 	typedef value_type& reference;
 	typedef const value_type& const_reference;
 
@@ -155,7 +152,7 @@ private:
 	value_type value_;
 	value_type *data_ = nullptr;
 
-	typedef generic_pen<T,AT> self_type;
+	typedef generic_pen<T> self_type;
 
 	void addptr(int nbytes)
 	{
@@ -202,8 +199,8 @@ public:
 	}
 	self_type& move_to(int x, int y) { assert(data_); return move(x - x_,y - y_);}
 
-	template<typename TT, typename ATT>
-	self_type& move_to(const generic_pen<TT, ATT> &p) { assert(data_ && p.data_); return move_to(p.x_,p.y_);}
+	template<typename TT>
+	self_type& move_to(const generic_pen<TT> &p) { assert(data_ && p.data_); return move_to(p.x_,p.y_);}
 
 	void set_value(const value_type &v) { value_=v; }
 

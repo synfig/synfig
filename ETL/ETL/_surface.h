@@ -101,13 +101,12 @@ public:
 	value_type uncook(const accumulator_type& x)const { return (value_type)x; }
 };
 
-template <typename VT, typename CT, typename ST, ST reader(const void*, int, int)>
+template <typename VT, typename CT, VT reader(const void*, int, int)>
 class sampler
 {
 public:
 	typedef VT value_type;
 	typedef CT coord_type;
-	typedef ST source_type;
 	typedef coord_type float_type;
 	typedef value_type func(const void*, const coord_type, const coord_type);
 
@@ -201,19 +200,16 @@ public:
 	}
 };
 
-template <typename T, typename AT=T, class VP=value_prep<T,AT> >
+template <typename T, class VP=value_prep<T,T> >
 class surface
 {
 public:
 	typedef T value_type;
-	typedef AT accumulator_type;
 	typedef value_type* pointer;
-	typedef accumulator_type* accumulator_pointer;
 	typedef const value_type* const_pointer;
-	typedef const accumulator_type* const_accumulator_pointer;
 	typedef value_type& reference;
-	typedef generic_pen<value_type,accumulator_type> pen;
-	typedef generic_pen<const value_type,accumulator_type> const_pen;
+	typedef generic_pen<value_type> pen;
+	typedef generic_pen<const value_type> const_pen;
 	typedef VP value_prep_type;
 
 	typedef alpha_pen<const_pen> const_alpha_pen;
@@ -540,16 +536,16 @@ public:
 
 	template< clamping::func clamp_x = clamping::clamp,
 			  clamping::func clamp_y = clamping::clamp >
-	inline static accumulator_type reader_cook(const void *surf, int x, int y) {
+	inline static value_type reader_cook(const void *surf, int x, int y) {
 		const surface &s = *(const surface*)surf;
 		return clamp_x(x, s.get_w()) && clamp_y(y, s.get_h()) ? s.cooker_.cook(s[y][x]) : value_type();
 	}
 
-	template<typename ReaderType, ReaderType reader(const void*, int, int)>
-	class sampler: public etl::sampler<accumulator_type, float, ReaderType, reader> { };
+	template<value_type reader(const void*, int, int)>
+	class sampler: public etl::sampler<value_type, float, reader> { };
 
-	typedef sampler<accumulator_type, surface::reader_cook> sampler_cook;
-	typedef sampler<value_type, surface::reader> sampler_nocook;
+	typedef sampler<surface::reader_cook> sampler_cook;
+	typedef sampler<surface::reader> sampler_nocook;
 
 	//! Nearest sample
 	value_type nearest_sample(const float x, const float y)const

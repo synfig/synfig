@@ -49,40 +49,37 @@ namespace etl {
 
 template<typename T> void
 gaussian_blur_5x5_(T pen,int w, int h,
-typename T::accumulator_pointer SC0,
-typename T::accumulator_pointer SC1,
-typename T::accumulator_pointer SC2,
-typename T::accumulator_pointer SC3)
+typename T::pointer SC0,
+typename T::pointer SC1,
+typename T::pointer SC2,
+typename T::pointer SC3)
 {
 	int x,y;
-	typename T::accumulator_type Tmp1,Tmp2,SR0,SR1,SR2,SR3;
+	typename T::value_type Tmp1,Tmp2,SR0,SR1,SR2,SR3;
 
 	//typename T::iterator_x iter;
 
 	// Setup the row buffers
-	for(x=0;x<w;x++)SC0[x+2]=(typename T::accumulator_type)(pen.x()[x])*24;
-	memset((void *)SC1,0,(w+2)*sizeof(typename T::accumulator_type));
-	memset((void *)SC2,0,(w+2)*sizeof(typename T::accumulator_type));
-	memset((void *)SC3,0,(w+2)*sizeof(typename T::accumulator_type));
-	/*memset(SC1,0,(w+2)*sizeof(typename T::accumulator_type));
-	memset(SC2,0,(w+2)*sizeof(typename T::accumulator_type));
-	memset(SC3,0,(w+2)*sizeof(typename T::accumulator_type));*/
+	for(x=0;x<w;x++)SC0[x+2]=(pen.x()[x])*24;
+	memset((void *)SC1,0,(w+2)*sizeof(typename T::value_type));
+	memset((void *)SC2,0,(w+2)*sizeof(typename T::value_type));
+	memset((void *)SC3,0,(w+2)*sizeof(typename T::value_type));
 
 	for(y=0;y<h+2;y++,pen.inc_y())
 	{
 		int yadj;
 		if(y>=h)
-			{yadj=(h-y)-1; SR0=(typename T::accumulator_type)(pen.y()[yadj])*1.35;}
+			{yadj=(h-y)-1; SR0=(pen.y()[yadj])*1.35;}
 		else
-			{yadj=0; SR0=(typename T::accumulator_type)(pen.get_value())*1.35; }
+			{yadj=0; SR0=(pen.get_value())*1.35; }
 
-		SR1=SR2=SR3=typename T::accumulator_type();
+		SR1=SR2=SR3=typename T::value_type();
 		for(x=0;x<w+2;x++,pen.inc_x())
 		{
 			if(x>=w)
-				Tmp1=(typename T::accumulator_type)(pen[yadj][(w-x)-1]);
+				Tmp1=pen[yadj][(w-x)-1];
 			else
-				Tmp1=(typename T::accumulator_type)(*pen[yadj]);
+				Tmp1=*pen[yadj];
 
 			Tmp2=SR0+Tmp1;
 			SR0=Tmp1;
@@ -112,10 +109,10 @@ typename T::accumulator_pointer SC3)
 template<typename T> void
 gaussian_blur_5x5(T pen, int w, int h)
 {
-	typename T::accumulator_pointer SC0=new typename T::accumulator_type[w+2];
-	typename T::accumulator_pointer SC1=new typename T::accumulator_type[w+2];
-	typename T::accumulator_pointer SC2=new typename T::accumulator_type[w+2];
-	typename T::accumulator_pointer SC3=new typename T::accumulator_type[w+2];
+	typename T::pointer SC0=new typename T::value_type[w+2];
+	typename T::pointer SC1=new typename T::value_type[w+2];
+	typename T::pointer SC2=new typename T::value_type[w+2];
+	typename T::pointer SC3=new typename T::value_type[w+2];
 
 	gaussian_blur_5x5_(pen,w,h,SC0,SC1,SC2,SC3);
 
@@ -130,10 +127,10 @@ gaussian_blur_5x5(T begin, T end)
 {
 	typename T::difference_type size(end-begin);
 
-	typename T::accumulator_pointer SC0=new typename T::accumulator_type[size.x+2];
-	typename T::accumulator_pointer SC1=new typename T::accumulator_type[size.x+2];
-	typename T::accumulator_pointer SC2=new typename T::accumulator_type[size.x+2];
-	typename T::accumulator_pointer SC3=new typename T::accumulator_type[size.x+2];
+	typename T::pointer SC0=new typename T::value_type[size.x+2];
+	typename T::pointer SC1=new typename T::value_type[size.x+2];
+	typename T::pointer SC2=new typename T::value_type[size.x+2];
+	typename T::pointer SC3=new typename T::value_type[size.x+2];
 
 	gaussian_blur_5x5_(begin,size.x,size.y,SC0,SC1,SC2,SC3);
 
@@ -147,31 +144,31 @@ template<typename T> void
 gaussian_blur_3x3(T pen,int w, int h)
 {
 	int x,y;
-	typename T::accumulator_type Tmp1,Tmp2,SR0,SR1;
+	typename T::value_type Tmp1,Tmp2,SR0,SR1;
 
 //	typename T::iterator_x iter;
 
-	typename T::accumulator_pointer SC0=new typename T::accumulator_type[w+1];
-	typename T::accumulator_pointer SC1=new typename T::accumulator_type[w+1];
+	typename T::pointer SC0=new typename T::value_type[w+1];
+	typename T::pointer SC1=new typename T::value_type[w+1];
 
 	// Setup the row buffers
-	for(x=0;x<w;x++)SC0[x+1]=(typename T::accumulator_type)(pen.x()[x])*4;
-	memset((void *)SC1,0,(w+1)*sizeof(typename T::accumulator_type));
+	for(x=0;x<w;x++)SC0[x+1]=(pen.x()[x])*4;
+	memset((void *)SC1,0,(w+1)*sizeof(typename T::value_type));
 
 	for(y=0;y<h+1;y++,pen.inc_y())
 	{
 		int yadj;
 		if(y>=h)
-			{yadj=-1; SR1=SR0=(typename T::accumulator_type)(pen.y()[yadj]);}
+			{yadj=-1; SR1=SR0=pen.y()[yadj];}
 		else
-			{yadj=0; SR1=SR0=(typename T::accumulator_type)(pen.get_value()); }
+			{yadj=0; SR1=SR0=pen.get_value(); }
 
 		for(x=0;x<w+1;x++,pen.inc_x())
 		{
 			if(x>=w)
-				Tmp1=(typename T::accumulator_type)(pen[yadj][(w-x)-2]);
+				Tmp1=pen[yadj][(w-x)-2];
 			else
-				Tmp1=(typename T::accumulator_type)(*pen[yadj]);
+				Tmp1=*pen[yadj];
 
 			Tmp2=SR0+Tmp1;
 			SR0=Tmp1;
@@ -181,7 +178,7 @@ gaussian_blur_3x3(T pen,int w, int h)
 			Tmp2=SC0[x]+Tmp1;
 			SC0[x]=Tmp1;
 			if(y&&x)
-				pen[-1][-1]=(typename T::value_type)((SC1[x]+Tmp2)/16);
+				pen[-1][-1]=(SC1[x]+Tmp2)/16;
 			SC1[x]=Tmp2;
 		}
 		pen.dec_x(x);
@@ -252,10 +249,10 @@ gaussian_blur_1x3(_PEN begin, _PEN end)
 template<typename T> void
 gaussian_blur(T pen, int w, int h, int blur_x, int blur_y)
 {
-	typename T::accumulator_pointer SC0=new typename T::accumulator_type[w+2];
-	typename T::accumulator_pointer SC1=new typename T::accumulator_type[w+2];
-	typename T::accumulator_pointer SC2=new typename T::accumulator_type[w+2];
-	typename T::accumulator_pointer SC3=new typename T::accumulator_type[w+2];
+	typename T::pointer SC0=new typename T::value_type[w+2];
+	typename T::pointer SC1=new typename T::value_type[w+2];
+	typename T::pointer SC2=new typename T::value_type[w+2];
+	typename T::pointer SC3=new typename T::value_type[w+2];
 
 	blur_x--;
 	blur_y--;
