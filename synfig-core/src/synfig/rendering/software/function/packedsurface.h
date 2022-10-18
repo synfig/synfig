@@ -93,21 +93,17 @@ public:
 
 		Color get_pixel(int x, int y) const;
 
-		template< etl::clamping::func clamp_x = etl::clamping::clamp,
-				  etl::clamping::func clamp_y = etl::clamping::clamp >
 		inline static Color reader(const void *surf, int x, int y)
 		{
 			const Reader &r = *(const Reader*)surf;
-			return clamp_x(x, r.surface->width) && clamp_y(y, r.surface->height)
+			return etl::clamping::clamp(x, r.surface->width) && etl::clamping::clamp(y, r.surface->height)
 			     ? r.get_pixel(x, y) : Color();
 		}
 
-		template< etl::clamping::func clamp_x = etl::clamping::clamp,
-				  etl::clamping::func clamp_y = etl::clamping::clamp >
 		inline static Color reader_cook(const void *surf, int x, int y)
 		{
 			const Reader &r = *(const Reader*)surf;
-			return clamp_x(x, r.surface->width) && clamp_y(y, r.surface->height)
+			return etl::clamping::clamp(x, r.surface->width) && etl::clamping::clamp(y, r.surface->height)
 				 ? ColorPrep::cook_static(r.get_pixel(x, y)) : Color();
 		}
 	};

@@ -48,43 +48,12 @@
 
 namespace etl {
 
-class clamping
+namespace clamping
 {
-public:
-	typedef bool func(int&, int);
-
-	inline static bool lock(int&, int)
-		{ return false; }
-
-	inline static bool pass(int&, int)
-		{ return true; }
-
-	inline static bool truncate(int &x, int bound)
-		{ return x >= 0 && x < bound; }
-
 	inline static bool clamp(int &x, int bound) {
 		if (bound <= 0) return false;
 		if (x < 0) x = 0; else
 			if (x >= bound) x = bound - 1;
-		return true;
-	}
-
-	inline static int repeat(int &x, int bound) {
-		if (bound <= 0) return false;
-		x %= bound;
-		if (x < 0) x += bound;
-		return true;
-	}
-
-	inline static int mirror(int &x, int bound) {
-		if (bound <= 0) return false;
-		x = abs(x);
-		return x < bound;
-	}
-
-	inline static int mirror_repeat(int &x, int bound) {
-		if (bound <= 0) return false;
-		x = abs((abs(x) + bound)%(2*bound) - bound);
 		return true;
 	}
 };
@@ -527,18 +496,14 @@ public:
 	const_pen get_pen(int x, int y)const { assert(data_); return begin().move(x,y); }
 	const_pen end()const { assert(data_); return get_pen(w_,h_); }
 
-	template< clamping::func clamp_x = clamping::clamp,
-			  clamping::func clamp_y = clamping::clamp >
 	inline static value_type reader(const void *surf, int x, int y) {
 		const surface &s = *(const surface*)surf;
-		return clamp_x(x, s.get_w()) && clamp_y(y, s.get_h()) ? s[y][x] : value_type();
+		return clamping::clamp(x, s.get_w()) && clamping::clamp(y, s.get_h()) ? s[y][x] : value_type();
 	}
 
-	template< clamping::func clamp_x = clamping::clamp,
-			  clamping::func clamp_y = clamping::clamp >
 	inline static value_type reader_cook(const void *surf, int x, int y) {
 		const surface &s = *(const surface*)surf;
-		return clamp_x(x, s.get_w()) && clamp_y(y, s.get_h()) ? s.cooker_.cook(s[y][x]) : value_type();
+		return clamping::clamp(x, s.get_w()) && clamping::clamp(y, s.get_h()) ? s.cooker_.cook(s[y][x]) : value_type();
 	}
 
 	template<value_type reader(const void*, int, int)>
