@@ -90,6 +90,7 @@ synfig::waypoint_collect(std::set<Waypoint, std::less<UniqueID> >	&waypoint_set,
 		if (layer->get_name() != "group"){
 			for(iter=dyn_param_list.begin();iter!=dyn_param_list.end();++iter)
 				ret+=waypoint_collect(waypoint_set,time,iter->second);
+		}
 
 		ValueBase canvas_value(layer->get_param("canvas"));
 		if(canvas_value.get_type()==type_canvas)
