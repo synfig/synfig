@@ -32,7 +32,6 @@
 /* === H E A D E R S ======================================================= */
 
 #include "color.h"
-#include "renddesc.h"
 #include <ETL/surface>
 #include <ETL/handle>
 
