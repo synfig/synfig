@@ -128,6 +128,7 @@ class Dialog_Setup : public Dialog_Template
 	synfig::Time::Format time_format;
 
 	Widget_Enum *widget_enum;
+	Widget_Enum *widget_interpolation;
 
 	Widget_Time auto_backup_interval;
 

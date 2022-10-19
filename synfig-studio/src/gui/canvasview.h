@@ -115,7 +115,6 @@ class CanvasViewSelectionManager;
 class CellRenderer_TimeTrack;
 class CellRenderer_ValueBase;
 class WorkArea;
-class Widget_Enum;
 class Preview;
 struct PreviewInfo;
 class ResolutionDial;
@@ -285,7 +284,6 @@ private:
 	Gtk::ComboBoxText *render_combobox;
 	Gtk::Grid *timebar;
 	Gtk::Toolbar *displaybar;
-	Widget_Enum *widget_interpolation;
 	Gtk::ToggleButton *animatebutton;
 	Gtk::ToggleButton *timetrackbutton;
 	Gtk::Grid *timetrack;
@@ -482,9 +480,6 @@ private:
 	void toggle_render_combobox();
 
 	void on_play_timeout();
-
-	void interpolation_refresh();
-	void on_interpolation_changed();
 
 	static void save_all();
 

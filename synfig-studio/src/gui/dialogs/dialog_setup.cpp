@@ -47,6 +47,7 @@
 #include <gui/localization.h>
 #include <gui/resourcehelper.h>
 #include <gui/widgets/widget_enum.h>
+#include <gui/widgets/widget_interpolation.h>
 #include <gui/autorecover.h>
 #include <synfig/threadpool.h>
 
@@ -439,6 +440,14 @@ Dialog_Setup::create_editing_page(PageInfo pi)
 	toggle_animation_thumbnail_preview.set_tooltip_text(_("Turn on/off animation thumbnail preview when you hover your mouse over the timetrack panel."));
 	toggle_animation_thumbnail_preview.set_halign(Gtk::ALIGN_START);
 	toggle_animation_thumbnail_preview.set_hexpand(false);
+
+	attach_label(pi.grid, _("Default Interpolation"), ++row);
+	widget_interpolation = manage(new Widget_Interpolation(Widget_Interpolation::SIDE_BOTH));
+	widget_interpolation->set_tooltip_text(_("Default Interpolation"));
+	widget_interpolation->set_popup_fixed_width(false);
+	widget_interpolation->set_hexpand(false);
+	widget_interpolation->show();
+	pi.grid->attach(*widget_interpolation, 1, row, 1, 1);
 
 	// Editing Other section
 	attach_label_section(pi.grid, _("Other"), ++row);
@@ -870,6 +879,8 @@ Dialog_Setup::on_restore_pressed()
 		widget_enum->set_value(Distance::SYSTEM_POINTS);
 		toggle_restrict_radius_ducks.set_active(true);
 		toggle_animation_thumbnail_preview.set_active(true);
+		synfigapp::Main::set_interpolation(INTERPOLATION_CLAMPED);
+		widget_interpolation->set_value(synfigapp::Main::get_interpolation());
 		toggle_enable_experimental_features.set_active(false);
 		toggle_clear_redo_stack_on_new_action.set_active(true);
 		toggle_use_dark_theme.set_active(false);
@@ -956,6 +967,9 @@ Dialog_Setup::on_apply_pressed()
 
 	// Set the animation_thumbnail_preview flag
 	App::animation_thumbnail_preview  = toggle_animation_thumbnail_preview.get_active();
+
+	// Set the default widget interpolation
+	synfigapp::Main::set_interpolation(Waypoint::Interpolation(widget_interpolation->get_value()));
 
 	// Set the experimental features flag
 	App::enable_experimental_features = toggle_enable_experimental_features.get_active();
@@ -1241,6 +1255,9 @@ Dialog_Setup::refresh()
 
 	// Refresh the status of animation_thumbnail_preview flag
 	toggle_animation_thumbnail_preview.set_active(App::animation_thumbnail_preview);
+
+	// Refresh the default interpolation
+	widget_interpolation->set_value(synfigapp::Main::get_interpolation());
 
 	// Refresh the status of the experimental features flag
 	toggle_enable_experimental_features.set_active(App::enable_experimental_features);

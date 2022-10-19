@@ -72,7 +72,6 @@
 #include <gui/preview.h>
 #include <gui/states/state_normal.h>
 #include <gui/widgets/widget_canvastimeslider.h>
-#include <gui/widgets/widget_interpolation.h>
 #include <gui/workarea.h>
 
 #include <pangomm.h>
@@ -833,18 +832,6 @@ CanvasView::create_time_bar()
 	timetrack->attach(*widget_kf_list, 0, 2, 1, 1);
 	timetrack->hide();
 
-	// Interpolation widget
-	widget_interpolation = manage(new Widget_Interpolation(Widget_Interpolation::SIDE_BOTH));
-	widget_interpolation->set_tooltip_text(_("Default Interpolation"));
-	widget_interpolation->set_popup_fixed_width(false);
-	widget_interpolation->set_hexpand(false);
-	widget_interpolation->show();
-	widget_interpolation->signal_changed().connect(sigc::mem_fun(*this, &CanvasView::on_interpolation_changed));
-
-	synfigapp::Main::signal_interpolation_changed().connect(sigc::mem_fun(*this, &CanvasView::interpolation_refresh));
-	synfigapp::Main::set_interpolation(INTERPOLATION_CLAMPED); // Clamped by default.
-	interpolation_refresh();
-
 	//Setup the Animation Mode Button and the Keyframe Lock button
 	{
 		Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
@@ -975,7 +962,6 @@ CanvasView::create_time_bar()
 		controls->attach(*jackdial, left_pos++, 0, 1, 1);
 		controls->attach(*statusbar, left_pos++, 0, 1, 1);
 		controls->attach(*progressbar, left_pos++, 0, 1, 1);
-		controls->attach(*widget_interpolation, left_pos++, 0, 1, 1);
 		controls->attach(*keyframedial, left_pos++, 0, 1, 1);
 		controls->attach(*animatebutton, left_pos++, 0, 1, 1);
 
@@ -3857,14 +3843,6 @@ CanvasView::jack_sync_callback(jack_transport_state_t /* state */, jack_position
 	return 1;
 }
 #endif
-
-void
-CanvasView::interpolation_refresh()
-	{ widget_interpolation->set_value(synfigapp::Main::get_interpolation()); }
-
-void
-CanvasView::on_interpolation_changed()
-	{ synfigapp::Main::set_interpolation(Waypoint::Interpolation(widget_interpolation->get_value())); }
 
 void 
 CanvasView::toggle_show_toolbar(){
