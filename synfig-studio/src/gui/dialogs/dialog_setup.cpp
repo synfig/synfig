@@ -443,7 +443,6 @@ Dialog_Setup::create_editing_page(PageInfo pi)
 
 	attach_label(pi.grid, _("Default Interpolation"), ++row);
 	widget_interpolation = manage(new Widget_Interpolation(Widget_Interpolation::SIDE_BOTH));
-	widget_interpolation->set_tooltip_text(_("Default Interpolation"));
 	widget_interpolation->set_popup_fixed_width(false);
 	widget_interpolation->set_hexpand(false);
 	widget_interpolation->show();
