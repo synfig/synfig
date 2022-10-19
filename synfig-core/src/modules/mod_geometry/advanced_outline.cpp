@@ -812,8 +812,17 @@ Advanced_Outline::connect_dynamic_param(const String& param, etl::loose_handle<V
 {
 	if(param=="bline")
 	{
-		connect_bline_to_wplist(x);
-		connect_bline_to_dilist(x);
+		// only accept a valuenode that gives us a list of blinepoints, or null to disconnect
+		bool is_bline_vn = false;
+		if (x && x->get_type() == type_list) {
+			ValueBase v = (*x)(Time(0));
+			if (v.get_contained_type() == type_bline_point) {
+				is_bline_vn = true;
+			}
+		}
+		if (!x || is_bline_vn) {
+			connect_bline_to_wplist(x);
+		}
 		return Layer::connect_dynamic_param(param, x);
 	}
 	if(param=="wplist")
@@ -823,27 +832,14 @@ Advanced_Outline::connect_dynamic_param(const String& param, etl::loose_handle<V
 			DynamicParamList::const_iterator iter(dynamic_param_list().find("bline"));
 			if(iter==dynamic_param_list().end())
 				return false;
-			else if(!connect_bline_to_wplist(iter->second))
+			else if(iter->second && !connect_bline_to_wplist(iter->second))
 				return false;
 			return true;
 		}
 		else
 			return false;
 	}
-	if(param=="dilist")
-	{
-		if(Layer::connect_dynamic_param(param, x))
-		{
-			DynamicParamList::const_iterator iter(dynamic_param_list().find("bline"));
-			if(iter==dynamic_param_list().end())
-				return false;
-			else if(!connect_bline_to_dilist(iter->second))
-				return false;
-			return true;
-		}
-		else
-			return false;
-	}
+	// no special treatment for param == "dilist"
 
 	return Layer::connect_dynamic_param(param, x);
 }
@@ -851,12 +847,7 @@ Advanced_Outline::connect_dynamic_param(const String& param, etl::loose_handle<V
 bool
 Advanced_Outline::connect_bline_to_wplist(etl::loose_handle<ValueNode> x)
 {
-	if(x->get_type() != type_list)
-		return false;
-	if((*x)(Time(0)).empty())
-		return false;
-	if((*x)(Time(0)).get_list().front().get_type() != type_bline_point)
-		return false;
+	// connect_dynamic_param() makes sure x is a list of blinepoints.
 	ValueNode::LooseHandle vnode;
 	DynamicParamList::const_iterator iter(dynamic_param_list().find("wplist"));
 	if(iter==dynamic_param_list().end())
@@ -867,24 +858,3 @@ Advanced_Outline::connect_bline_to_wplist(etl::loose_handle<ValueNode> x)
 	wplist->set_bline(ValueNode::Handle(x));
 	return true;
 }
-
-bool
-Advanced_Outline::connect_bline_to_dilist(etl::loose_handle<ValueNode> x)
-{
-	if(x->get_type() != type_list)
-		return false;
-	if((*x)(Time(0)).empty())
-		return false;
-	if((*x)(Time(0)).get_list().front().get_type() != type_bline_point)
-		return false;
-	ValueNode::LooseHandle vnode;
-	DynamicParamList::const_iterator iter(dynamic_param_list().find("dilist"));
-	if(iter==dynamic_param_list().end())
-		return false;
-	ValueNode_DIList::Handle dilist(ValueNode_DIList::Handle::cast_dynamic(iter->second));
-	if(!dilist)
-		return false;
-	dilist->set_bline(ValueNode::Handle(x));
-	return true;
-}
-
