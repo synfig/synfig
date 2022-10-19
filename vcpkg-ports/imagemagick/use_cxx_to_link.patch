@@ -1,0 +1,24 @@
+Author: Hesham <hesham.essam.mail@gmail.com>
+Date:   Sun Sep 11 03:37:21 2022 +0200
+
+    Use CXX to link utilities
+    
+    many utilities depend on c++ libraries
+
+diff --git a/Makefile.in b/Makefile.in
+index 75aab03fd..1ba2489a0 100644
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -2128,9 +2128,9 @@ am__utilities_magick_SOURCES_DIST = utilities/magick.c
+ utilities_magick_OBJECTS = $(am_utilities_magick_OBJECTS)
+ @WITH_UTILITIES_TRUE@utilities_magick_DEPENDENCIES =  \
+ @WITH_UTILITIES_TRUE@	$(MAGICKCORE_LIBS) $(MAGICKWAND_LIBS)
+-utilities_magick_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+-	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
+-	$(AM_CFLAGS) $(CFLAGS) $(utilities_magick_LDFLAGS) $(LDFLAGS) \
++utilities_magick_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
++	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
++	$(AXXM_CFLAGS) $(CXXFLAGS) $(utilities_magick_LDFLAGS) $(LDFLAGS) \
+ 	-o $@
+ SCRIPTS = $(bin_SCRIPTS)
+ AM_V_P = $(am__v_P_@AM_V@)

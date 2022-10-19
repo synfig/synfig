@@ -13,10 +13,23 @@
     "libjpeg-turbo",
     "imagemagick",
     "openexr",
-    "pkgconf",
     "librsvg",
     "ffmpeg",
     "hicolor-icon-theme",
-    "adwaita-icon-theme"
+    "adwaita-icon-theme",
+    {
+      "name": "gettext",
+      "features": ["tools"],
+      "host": true
+    },
+    {
+      "name": "pkgconf",
+      "platform": "windows",
+      "host": true
+    },
+    {
+      "name": "jack2",
+      "platform": "linux"
+    }
   ]
 }

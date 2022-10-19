@@ -4,16 +4,20 @@ vcpkg_download_distfile(ARCHIVE
     SHA512 A655DA17BE5E7B1A9CA95960DD29261ACD21222A2087BB187E9A06B29446F3755CF305B86185FED9D8B4BA30F46D1D679159B4670089ECCF93153A6A7FA63160
 )
 
-vcpkg_extract_source_archive_ex(
-    OUT_SOURCE_PATH SOURCE_PATH
+vcpkg_extract_source_archive(
+    SOURCE_PATH
     ARCHIVE "${ARCHIVE}"
     PATCHES
       disable_complex_fftw.patch
       dont_include_win32config.patch
       fix_make_dependency.patch
       fix_ssize_t_undefined.patch
+      fix_win_macros.patch
+      use_cxx_to_link.patch
 )
 
+# TODO: investigate each of imagemagick's optional dependencies and make this
+# port customizable
 vcpkg_configure_make(
   SOURCE_PATH "${SOURCE_PATH}"
   DETERMINE_BUILD_TRIPLET
@@ -30,13 +34,37 @@ vcpkg_configure_make(
     --with-zlib
     --with-zstd
     --with-openexr
-    # FIXME (gdi32 is used in MagickCore which is a C project, while gdi32 is c++)
+    --with-bzlib
+    --with-lcms
+    # FIXME: see librsvg portfile
+    --without-rsvg
+    # FIXME (gdi+ is used in MagickCore which is a C project, while gdi+ is c++)
     # msvc automatically uses C mode when compiling files with extension "c"
     --without-gdi32
+    --without-autotrace
+    --without-djvu
+    --without-dps
+    --without-flif
+    --without-fpx
+    --without-gslib
+    --without-gvc
+    --without-heic
+    --without-jbig
+    --without-jxl
+    --without-lqr
+    --without-ltdl
+    --without-openjp2
+    --without-perl
+    --without-raqm
+    --without-tiff
+    --without-webp
+    --without-wmf
+    --without-raw # libraw exists but it has a bug with its pkgconfig file
     --disable-docs
 )
 
 vcpkg_install_make()
+
 vcpkg_fixup_pkgconfig()
 vcpkg_copy_tools(
   TOOL_NAMES
