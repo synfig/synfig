@@ -1,3 +1,46 @@
+## Version 1.4.3 [ETL] [core] [studio]
+- [`042c737`](https://github.com/synfig/synfig/commit/042c7378917c32af4354bac5d35283a63a7b828c) Fix bug with src offset in blur sw task ([#2570](https://github.com/synfig/synfig/issues/2570)) [core]
+- [`249cee7`](https://github.com/synfig/synfig/commit/249cee7d22df2501b4413c46be7d284687d3659a) fix layer Clamp not rendering ([#2550](https://github.com/synfig/synfig/issues/2550)) [core]
+- [`ac8b5e0`](https://github.com/synfig/synfig/commit/ac8b5e02e3ab36fd0f49708086837cc36be9de62) chore: Enabled some strings for translation ([#2768](https://github.com/synfig/synfig/issues/2768)) [studio]
+- [`68d8a25`](https://github.com/synfig/synfig/commit/68d8a25c1e10905acd2b28ab23f255c08ed4615d) Fixed crash when deleting last waypoint ([#2587](https://github.com/synfig/synfig/issues/2587)) [studio]
+- [`e23b229`](https://github.com/synfig/synfig/commit/e23b229208f2cc9e8b37c46857eeaf629b4d8e1a) gperf: improved file opening speed in Windows ([#2826](https://github.com/synfig/synfig/issues/2826)) [core] [studio]
+- [`3015a77`](https://github.com/synfig/synfig/commit/3015a77900d9aebb759dd907f5825c4d5e720903) fix: don't allow to Connect to exported value node if it has wrong type ([#2694](https://github.com/synfig/synfig/issues/2694)) [studio]
+- [`3ea8fe6`](https://github.com/synfig/synfig/commit/3ea8fe60ec87a489a7dda3e0882222f339124dd2) Fixed issue with autosave not working when interval is set to 15 seconds. ([#2647](https://github.com/synfig/synfig/issues/2647)) [studio]
+- [`2a11e92`](https://github.com/synfig/synfig/commit/2a11e920a6a8394184aaa3085d6150718657a451) fix regression: importing papagayo file didn't show the expected layers ([#2495](https://github.com/synfig/synfig/issues/2495)) [studio]
+- [`34b9c43`](https://github.com/synfig/synfig/commit/34b9c43c5c5a69816543478f0e77acf3708f88aa) Fixed video render with ffmpeg 3.x ([#2628](https://github.com/synfig/synfig/issues/2628)) [core]
+- [`61c6f49`](https://github.com/synfig/synfig/commit/61c6f49d79f1cc562e1171fe3638664d846508e0) Bumped year ([#2623](https://github.com/synfig/synfig/issues/2623)) [studio]
+- [`9ef1c59`](https://github.com/synfig/synfig/commit/9ef1c59fc345350461dfa3fef8f45d0dc091a177) Fix module search path for Lottie Exporter ([#2621](https://github.com/synfig/synfig/issues/2621)) [studio]
+- [`590560f`](https://github.com/synfig/synfig/commit/6732c6cc6c689176eaa2fa8dfa7aaaa20f3f9340) prevent ambiguity of 'abs(synfig::Real&)' on Plant ([#2617](https://github.com/synfig/synfig/issues/2617))
+- [`590560f`](https://github.com/synfig/synfig/commit/71775e696d32388b0f04a267c02a3785732f4bdc) Update contributor name list ([#2601](https://github.com/synfig/synfig/issues/2601))
+- [`590560f`](https://github.com/synfig/synfig/commit/590560fe1c4c6e63e794cd762d91ae1eece4937c) Switched Ubuntu version on Github Workflows to 18.04 ([#2322](https://github.com/synfig/synfig/issues/2322))
+- [`b3b88c9`](https://github.com/synfig/synfig/commit/b3b88c9ad03d51ef2cf82b323eadd121429a9f33) ETL test: avoid clash between ETL::hermite and std::hermite ([#2547](https://github.com/synfig/synfig/issues/2547)) [ETL]
+- [`1f202d3`](https://github.com/synfig/synfig/commit/1f202d3cb9bc0149f8e28b555dc6d384fb4bc533) Merge PR ([#2399](https://github.com/synfig/synfig/issues/2399)): ETL cleanup: remove unused files and deprecated functions [ETL] [core]
+- [`7c8878b`](https://github.com/synfig/synfig/commit/7c8878b7cd735b72b637a794ddb7cbdda7ba3462) Removed tests for `fixed` class ([#2521](https://github.com/synfig/synfig/issues/2521)) [ETL]
+- [`b4d1f62`](https://github.com/synfig/synfig/commit/b4d1f62778ea1c62215f7296509458ef67bc96ce) loadcanvas: fix loading of some non-value nodes lists ([#2482](https://github.com/synfig/synfig/issues/2482)) [core]
+- [`65303bc`](https://github.com/synfig/synfig/commit/65303bc518cef3381bb537b0e29d61d1f3849e31) fix crash when using Width Tool on Skeleton Layer ([#2500](https://github.com/synfig/synfig/issues/2500)) [studio]
+- [`2943fdc`](https://github.com/synfig/synfig/commit/2943fdc0191b081c90d2ce6cd34c226ef76719cf) BoneLink: Ask if user wants to link transformation instead of origin ([#2468](https://github.com/synfig/synfig/issues/2468)) [studio]
+- [`7fe4274`](https://github.com/synfig/synfig/commit/7fe42741fa7282a448368d7b30e54ef61eebeca1) Fix exported file with audio being smaller than it should ([#2477](https://github.com/synfig/synfig/issues/2477)) [core]
+- [`3d47605`](https://github.com/synfig/synfig/commit/3d47605f69b0758397c0a2f69c2fd0c08089b2de) Make sure flags are correctly updated when setting renddesc or toggling ([#2463](https://github.com/synfig/synfig/issues/2463)) [studio]
+- [`33cc306`](https://github.com/synfig/synfig/commit/33cc30613bf0586a5abe74decf787bbbf786a37a) Parameters and Timeline panels show the same row selected ([#2422](https://github.com/synfig/synfig/issues/2422)) [studio]
+- [`83828f0`](https://github.com/synfig/synfig/commit/83828f0da7b5e6a72976eb298fa0eae9eab7f4e2) Revert changes for Panel Tabs made in [#2189](https://github.com/synfig/synfig/issues/2189) ([#2436](https://github.com/synfig/synfig/issues/2436)) [studio]
+- [`e932a39`](https://github.com/synfig/synfig/commit/e932a39ca8e6aca097a77622b5a7df91c2b0abe8) Allow Bones parameters to be connected to exported value nodes ([#2433](https://github.com/synfig/synfig/issues/2433)) [core]
+- [`326ee01`](https://github.com/synfig/synfig/commit/326ee01f2f07b95af83ad6b52435baa42015247d) Fixed crash when rendering to gif target ([#2389](https://github.com/synfig/synfig/issues/2389)) [core]
+- [`7b8f9c7`](https://github.com/synfig/synfig/commit/7b8f9c76bc569a3095ff130093bd0e719874070f) Fixed issue with Text Tool not working on MacOS because of missing "fonts.conf" file ([#2380](https://github.com/synfig/synfig/issues/2380))
+- [`19a88f4`](https://github.com/synfig/synfig/commit/19a88f4400a727b0080c26f9ba833647369181c3) Added `seekpos` method for FileSystemNative::ReadStream ([#2224](https://github.com/synfig/synfig/issues/2224)) [core]
+- [`5e19882`](https://github.com/synfig/synfig/commit/5e19882b8cf3a0ea67de5c394e9f350b96d81a39) Enable "Link width and height" by default in Render Settings ([#2351](https://github.com/synfig/synfig/issues/2351)) [studio]
+- [`87cc5d2`](https://github.com/synfig/synfig/commit/87cc5d28090b172eabdf7f92baaded3bd20cd01e) Apply action to all selected layers from pop-over menu ([#2352](https://github.com/synfig/synfig/issues/2352)) [studio]
+- [`e6ae677`](https://github.com/synfig/synfig/commit/e6ae677cbea5a9e81b7ef9764576381625da4629) Dock widget shortcuts have priority over App Accels - fix [#1820](https://github.com/synfig/synfig/issues/1820) ([#1827](https://github.com/synfig/synfig/issues/1827)) [studio]
+- [`21e1a3e`](https://github.com/synfig/synfig/commit/21e1a3e0e7e42dafc8c959d54ac461d325f680d2) Fix regression on Link To Spline: Vertex should be linkable ([#2345](https://github.com/synfig/synfig/issues/2345)). Closes [#2344](https://github.com/synfig/synfig/issues/2344). [studio]
+- [`798bfbf`](https://github.com/synfig/synfig/commit/798bfbf95983ff6c01ca019ac72b390fbc259eab) Fixed a crash when trying to import a file into yourself ([#2239](https://github.com/synfig/synfig/issues/2239)) [studio]
+- [`c0bebf6`](https://github.com/synfig/synfig/commit/c0bebf68b97fbc0b5451da07b9291234a9197793) Fix possible crash on get_local_name() of Layer_PasteCanvas ([#2300](https://github.com/synfig/synfig/issues/2300)) [core]
+- [`dda0317`](https://github.com/synfig/synfig/commit/dda03175bad54c445fdf671636335c6cd59380ec) Fix regression: importing image making it upside-down ([#2333](https://github.com/synfig/synfig/issues/2333)) [studio]
+- [`5c930dc`](https://github.com/synfig/synfig/commit/5c930dc8a3d71f7bcba9d4b71deed297642baf74) Fix image size when importing onto canvas with non-standard size ([#2252](https://github.com/synfig/synfig/issues/2252)) [studio]
+- [`576c349`](https://github.com/synfig/synfig/commit/576c349ae84f2490f4997581f3b4cc0750e0a61b) Autotools: Remove @MAGICKPP_LIBS@ variable from LDFLAGS([#2326](https://github.com/synfig/synfig/issues/2326)) [core]
+- [`391f8a1`](https://github.com/synfig/synfig/commit/391f8a1540b4c9339bb1141f4067221f6cc87b8b) Fix magick++ target missing in AppImage (issue [#2320](https://github.com/synfig/synfig/issues/2320)) ([#2324](https://github.com/synfig/synfig/issues/2324)) [core]
+- [`b0d439b`](https://github.com/morevnaproject/morevna-builds/commit/b0d439ba0668a185512e1c49cae6caba25fe917a) Python updated to version 3.8.10 in Windows build.
+- [`ef1f618`](https://github.com/morevnaproject/morevna-builds/commit/ef1f618802ce1dc9a302017da4b7b225ffde6222) Use 64bit Python build in 64bit packages for Windows.
+- [`2e3aefb`](https://github.com/morevnaproject/morevna-builds/commit/2e3aefbb94cf5c7dc831a7f9c487ddae7568f889) Appimage: Fix fontconfig compatibiity for recent linux distros.
+
 ## Version 1.4.2 [ETL] [core] [studio]
 - [`b7305a9`](https://github.com/synfig/synfig/commit/b7305a9a3893caefffc1c36118e67f2f0610a1d5) Merge pull request [#1173](https://github.com/synfig/synfig/issues/1173) from rodolforg/fix-sound-dock-scroll
 - [`ba211ba`](https://github.com/synfig/synfig/commit/ba211bafbe5963bc863ad4e99d38e73a3d96fe92) remove some unneeded headers ([#1963](https://github.com/synfig/synfig/issues/1963)) [studio]
