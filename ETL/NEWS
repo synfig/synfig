@@ -1,3 +1,7 @@
+## Version 1.4.3
+- [`b3b88c9`](https://github.com/synfig/synfig/commit/b3b88c9ad03d51ef2cf82b323eadd121429a9f33) ETL test: avoid clash between ETL::hermite and std::hermite ([#2547](https://github.com/synfig/synfig/issues/2547))
+- [`1f202d3`](https://github.com/synfig/synfig/commit/1f202d3cb9bc0149f8e28b555dc6d384fb4bc533) Merge PR ([#2399](https://github.com/synfig/synfig/issues/2399)): ETL cleanup: remove unused files and deprecated functions
+- [`7c8878b`](https://github.com/synfig/synfig/commit/7c8878b7cd735b72b637a794ddb7cbdda7ba3462) Removed tests for `fixed` class ([#2521](https://github.com/synfig/synfig/issues/2521))
 ## Version 1.4.2
 - [`d3906ca`](https://github.com/synfig/synfig/commit/d3906ca969de15df00776353d13387317e08ca38) Merge PR [#1853](https://github.com/synfig/synfig/issues/1853): `etl::clock` refactored to use `std::chrono`
 ## Version 1.4.1
