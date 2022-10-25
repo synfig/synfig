@@ -1,3 +1,17 @@
+## Version 1.4.3
+- [`042c737`](https://github.com/synfig/synfig/commit/042c7378917c32af4354bac5d35283a63a7b828c) Fix bug with src offset in blur sw task ([#2570](https://github.com/synfig/synfig/issues/2570))
+- [`249cee7`](https://github.com/synfig/synfig/commit/249cee7d22df2501b4413c46be7d284687d3659a) fix layer Clamp not rendering ([#2550](https://github.com/synfig/synfig/issues/2550))
+- [`e23b229`](https://github.com/synfig/synfig/commit/e23b229208f2cc9e8b37c46857eeaf629b4d8e1a) gperf: improved file opening speed in Windows ([#2826](https://github.com/synfig/synfig/issues/2826))
+- [`34b9c43`](https://github.com/synfig/synfig/commit/34b9c43c5c5a69816543478f0e77acf3708f88aa) Fixed video render with ffmpeg 3.x ([#2628](https://github.com/synfig/synfig/issues/2628))
+- [`1f202d3`](https://github.com/synfig/synfig/commit/1f202d3cb9bc0149f8e28b555dc6d384fb4bc533) Merge PR ([#2399](https://github.com/synfig/synfig/issues/2399)): ETL cleanup: remove unused files and deprecated functions
+- [`b4d1f62`](https://github.com/synfig/synfig/commit/b4d1f62778ea1c62215f7296509458ef67bc96ce) loadcanvas: fix loading of some non-value nodes lists ([#2482](https://github.com/synfig/synfig/issues/2482))
+- [`7fe4274`](https://github.com/synfig/synfig/commit/7fe42741fa7282a448368d7b30e54ef61eebeca1) Fix exported file with audio being smaller than it should ([#2477](https://github.com/synfig/synfig/issues/2477))
+- [`e932a39`](https://github.com/synfig/synfig/commit/e932a39ca8e6aca097a77622b5a7df91c2b0abe8) Allow Bones parameters to be connected to exported value nodes ([#2433](https://github.com/synfig/synfig/issues/2433))
+- [`326ee01`](https://github.com/synfig/synfig/commit/326ee01f2f07b95af83ad6b52435baa42015247d) Fixed crash when rendering to gif target ([#2389](https://github.com/synfig/synfig/issues/2389))
+- [`19a88f4`](https://github.com/synfig/synfig/commit/19a88f4400a727b0080c26f9ba833647369181c3) Added `seekpos` method for FileSystemNative::ReadStream ([#2224](https://github.com/synfig/synfig/issues/2224))
+- [`c0bebf6`](https://github.com/synfig/synfig/commit/c0bebf68b97fbc0b5451da07b9291234a9197793) Fix possible crash on get_local_name() of Layer_PasteCanvas ([#2300](https://github.com/synfig/synfig/issues/2300))
+- [`576c349`](https://github.com/synfig/synfig/commit/576c349ae84f2490f4997581f3b4cc0750e0a61b) Autotools: Remove @MAGICKPP_LIBS@ variable from LDFLAGS([#2326](https://github.com/synfig/synfig/issues/2326))
+- [`391f8a1`](https://github.com/synfig/synfig/commit/391f8a1540b4c9339bb1141f4067221f6cc87b8b) Fix magick++ target missing in AppImage (issue [#2320](https://github.com/synfig/synfig/issues/2320)) ([#2324](https://github.com/synfig/synfig/issues/2324))
 ## Version 1.4.2
 - [`6b0d418`](https://github.com/synfig/synfig/commit/6b0d4185255cc534940709c9001227d1ef52ba68) [Autotools] Fixed problem with missing \*.glsl files in distribution ([#1982](https://github.com/synfig/synfig/issues/1982))
 - [`4ddd22d`](https://github.com/synfig/synfig/commit/4ddd22d8de1f4729c83fe0b0e8cde5b46fd84e87) Merge PR [#1995](https://github.com/synfig/synfig/issues/1995): [Core] create stringhelper
