@@ -2,8 +2,8 @@
 - [`042c737`](https://github.com/synfig/synfig/commit/042c7378917c32af4354bac5d35283a63a7b828c) Fix bug with src offset in blur sw task ([#2570](https://github.com/synfig/synfig/issues/2570)) [core]
 - [`249cee7`](https://github.com/synfig/synfig/commit/249cee7d22df2501b4413c46be7d284687d3659a) fix layer Clamp not rendering ([#2550](https://github.com/synfig/synfig/issues/2550)) [core]
 - [`ac8b5e0`](https://github.com/synfig/synfig/commit/ac8b5e02e3ab36fd0f49708086837cc36be9de62) chore: Enabled some strings for translation ([#2768](https://github.com/synfig/synfig/issues/2768)) [studio]
-- [`19e3e5f`](https://github.com/synfig/synfig/commit/19e3e5f51d718dd59d2b65a1104925416380c954) fix: Interface background became white after clicking OK in Preferences dialog ([#2732](https://github.com/synfig/synfig/issues/2732)) [studio]
-- [`e23b229`](https://github.com/synfig/synfig/commit/e23b229208f2cc9e8b37c46857eeaf629b4d8e1a) gperf: improved file opening speed in Windows ([#2826](https://github.com/synfig/synfig/issues/2826)) [core] [studio]
+- [`68d8a25`](https://github.com/synfig/synfig/commit/68d8a25c1e10905acd2b28ab23f255c08ed4615d) Fixed crash when deleting last waypoint ([#2587](https://github.com/synfig/synfig/issues/2587)) [studio]
+- [`e23b229`](https://github.com/synfig/synfig/commit/e23b229208f2cc9e8b37c46857eeaf629b4d8e1a) perf: improved file opening speed in Windows ([#2826](https://github.com/synfig/synfig/issues/2826)) [core] [studio]
 - [`3015a77`](https://github.com/synfig/synfig/commit/3015a77900d9aebb759dd907f5825c4d5e720903) fix: don't allow to Connect to exported value node if it has wrong type ([#2694](https://github.com/synfig/synfig/issues/2694)) [studio]
 - [`3ea8fe6`](https://github.com/synfig/synfig/commit/3ea8fe60ec87a489a7dda3e0882222f339124dd2) Fixed issue with autosave not working when interval is set to 15 seconds. ([#2647](https://github.com/synfig/synfig/issues/2647)) [studio]
 - [`2a11e92`](https://github.com/synfig/synfig/commit/2a11e920a6a8394184aaa3085d6150718657a451) fix regression: importing papagayo file didn't show the expected layers ([#2495](https://github.com/synfig/synfig/issues/2495)) [studio]
@@ -23,6 +23,7 @@
 - [`3d47605`](https://github.com/synfig/synfig/commit/3d47605f69b0758397c0a2f69c2fd0c08089b2de) Make sure flags are correctly updated when setting renddesc or toggling ([#2463](https://github.com/synfig/synfig/issues/2463)) [studio]
 - [`33cc306`](https://github.com/synfig/synfig/commit/33cc30613bf0586a5abe74decf787bbbf786a37a) Parameters and Timeline panels show the same row selected ([#2422](https://github.com/synfig/synfig/issues/2422)) [studio]
 - [`83828f0`](https://github.com/synfig/synfig/commit/83828f0da7b5e6a72976eb298fa0eae9eab7f4e2) Revert changes for Panel Tabs made in [#2189](https://github.com/synfig/synfig/issues/2189) ([#2436](https://github.com/synfig/synfig/issues/2436)) [studio]
+- [`27ea632`](https://github.com/synfig/synfig/commit/27ea632ec8b214ccdbc37034dcda563672010a1d) Usability tweaks ([#2189](https://github.com/synfig/synfig/issues/2189)) [studio]
 - [`e932a39`](https://github.com/synfig/synfig/commit/e932a39ca8e6aca097a77622b5a7df91c2b0abe8) Allow Bones parameters to be connected to exported value nodes ([#2433](https://github.com/synfig/synfig/issues/2433)) [core]
 - [`326ee01`](https://github.com/synfig/synfig/commit/326ee01f2f07b95af83ad6b52435baa42015247d) Fixed crash when rendering to gif target ([#2389](https://github.com/synfig/synfig/issues/2389)) [core]
 - [`7b8f9c7`](https://github.com/synfig/synfig/commit/7b8f9c76bc569a3095ff130093bd0e719874070f) Fixed issue with Text Tool not working on MacOS because of missing "fonts.conf" file ([#2380](https://github.com/synfig/synfig/issues/2380))

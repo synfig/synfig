@@ -49,6 +49,7 @@
 - [`671407c`](https://github.com/synfig/synfig/commit/671407c3e6e073a8127e82172206f5b88275af40) test: missing keyframe test in CMake ([#2784](https://github.com/synfig/synfig/issues/2784)) [core]
 - [`c7b3bf0`](https://github.com/synfig/synfig/commit/c7b3bf03b5e1b6cbcf02cb5660bb86388309dc14) refactor: removed code from ImageMagick module commented out from 2005 ([#2783](https://github.com/synfig/synfig/issues/2783)) [core]
 - [`54e4987`](https://github.com/synfig/synfig/commit/54e49872deb52b39457ac2406812e4280531c7ca) ci: Updated ChangeLog generator script ([#2782](https://github.com/synfig/synfig/issues/2782))
+- [`19e3e5f`](https://github.com/synfig/synfig/commit/19e3e5f51d718dd59d2b65a1104925416380c954) fix: Interface background became white after clicking OK in Preferences dialog ([#2732](https://github.com/synfig/synfig/issues/2732)) [studio]
 - [`fc38d7c`](https://github.com/synfig/synfig/commit/fc38d7c0daf676760ca06523a644ebdc386fd77e) refactor: prefer FileSystemNative rather GLib ([#2780](https://github.com/synfig/synfig/issues/2780)) [core]
 - [`0ce508f`](https://github.com/synfig/synfig/commit/0ce508fcfcf32671dab1e6f36d4c4a286ad7034f) refactor: remove deprecated Gtk::StockID used by some Gtk::Image constructors ([#2776](https://github.com/synfig/synfig/issues/2776)) [studio]
 - [`021410d`](https://github.com/synfig/synfig/commit/021410d7ddde74960a4fbdc957b346457b42d7d6) fix: fixed broken synfig.dll debugging in MSVC build ([#2764](https://github.com/synfig/synfig/issues/2764)) [core] [studio]
@@ -154,7 +155,6 @@
 - [`0b455f3`](https://github.com/synfig/synfig/commit/0b455f370fc7fcf3d640eecd4c988729af0d25d8) Added .glade/xml files for gtk::builder ([#2638](https://github.com/synfig/synfig/issues/2638)) [studio]
 - [`865f197`](https://github.com/synfig/synfig/commit/865f1977d0a3e4129a1031cc39d7ea7514bc7158) Merge PR [#2632](https://github.com/synfig/synfig/issues/2632): Added basic support for Gtk theme [studio]
 - [`9b5140f`](https://github.com/synfig/synfig/commit/9b5140ffb49b6ec64a4c729e8862b9c87cb791e0) Fix typo in source ([#2631](https://github.com/synfig/synfig/issues/2631)) [core]
-- [`68d8a25`](https://github.com/synfig/synfig/commit/68d8a25c1e10905acd2b28ab23f255c08ed4615d) Fixed crash when deleting last waypoint ([#2587](https://github.com/synfig/synfig/issues/2587)) [studio]
 - [`78f08a4`](https://github.com/synfig/synfig/commit/78f08a426835a98dcc40c4cc458218b05710b939) [CMake] Added option to link with tcmalloc library ([#2602](https://github.com/synfig/synfig/issues/2602)) [core] [studio]
 - [`08202f4`](https://github.com/synfig/synfig/commit/08202f400bffb75031b907c7eab02f517ad99fef) Removed old .cvsignore files ([#2616](https://github.com/synfig/synfig/issues/2616))
 - [`ead44ed`](https://github.com/morevnaproject/morevna-builds/commit/ead44ed5a5e8ac6fb20815b3cc37a452c0953acf) Fix issue [#2410](https://github.com/synfig/synfig/issues/2410) - Can't import file into a saved SIF animation (if both are on the same disk) [studio]
@@ -258,7 +258,6 @@
 - [`ea4777d`](https://github.com/synfig/synfig/commit/ea4777dbe5ee4cbc03ec6323f0c0c357f5caf9de) Svg_parser: primitive rect properly uses style ([#2429](https://github.com/synfig/synfig/issues/2429)) [core]
 - [`957bc26`](https://github.com/synfig/synfig/commit/957bc26fb5c3815d0475d0ed410d95d7746ff3d1) fix compilation warning for unused parameters on valuenode methods ([#2432](https://github.com/synfig/synfig/issues/2432)) [core]
 - [`6e3a450`](https://github.com/synfig/synfig/commit/6e3a4502338b8c32b554d8b42b61a199c70ad113) Svg_parser: fix warning: unused parameters ([#2431](https://github.com/synfig/synfig/issues/2431)) [core]
-- [`27ea632`](https://github.com/synfig/synfig/commit/27ea632ec8b214ccdbc37034dcda563672010a1d) Usability tweaks ([#2189](https://github.com/synfig/synfig/issues/2189)) [studio]
 - [`9b6004e`](https://github.com/synfig/synfig/commit/9b6004eb4f9d829c8f606d5657ee893f2b029444) Move variable closer to its use and rename it to avoid confusion ([#2421](https://github.com/synfig/synfig/issues/2421)) [studio]
 - [`5a40a64`](https://github.com/synfig/synfig/commit/5a40a6436024b87c19a9ee551c5aae77ad83b94b) Don't let user drag a waypoint to a time lower than current minimum ([#2420](https://github.com/synfig/synfig/issues/2420)) [studio]
 - [`e795752`](https://github.com/synfig/synfig/commit/e7957520c2622cbca0acc5c82210eae1a9a0244d) Add completion to Widget_FontFamily ([#2414](https://github.com/synfig/synfig/issues/2414)) [studio]
