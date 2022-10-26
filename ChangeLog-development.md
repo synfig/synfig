@@ -586,7 +586,7 @@
 - [`0485671`](https://github.com/synfig/synfig/commit/048567137d1235fd4f46754adb6f126d0c1a3eb4) CMake NSIS Installer ([#1582](https://github.com/synfig/synfig/issues/1582)) [studio]
 - [`b92a370`](https://github.com/synfig/synfig/commit/b92a3708db735f18c45534066fe158c960978a35) Skeleton Tool: Fixed Skeleton Deformation layer Highlighting ([#1628](https://github.com/synfig/synfig/issues/1628)) [studio]
 - [`8d27d97`](https://github.com/synfig/synfig/commit/8d27d97bfd709cecd5f52ca77b5693fac338df43) Added button to stop rendering process ([#1585](https://github.com/synfig/synfig/issues/1585)) [studio]
-- [`f89c807`](https://github.com/synfig/synfig/commit/f89c8079d407f5863f4f3ddf76bff37f36b6fb72) Merge PR [#1622](https://github.com/synfig/synfig/issues/1622): Freetype: avoid uneeded font search [core]
+- [`f89c807`](https://github.com/synfig/synfig/commit/f89c8079d407f5863f4f3ddf76bff37f36b6fb72) Merge PR [#1622](https://github.com/synfig/synfig/issues/1622): Freetype: avoid unneeded font search [core]
 - [`161fd5b`](https://github.com/synfig/synfig/commit/161fd5b5f2f3294a6537d1e287002cf60bc84384) Canvas end-time could be set by wrong reason ([#1614](https://github.com/synfig/synfig/issues/1614)) [core]
 - [`8cece27`](https://github.com/synfig/synfig/commit/8cece276ec0891f3573a4975a1ab1d444e5b3985) Merge PR [#1617](https://github.com/synfig/synfig/issues/1617): Skeleton Tool - Skeleton Deformation Layer created as "disabled". Closes [#1615](https://github.com/synfig/synfig/issues/1615). [studio]
 - [`e02a3a8`](https://github.com/synfig/synfig/commit/e02a3a8c944fbd3731c6486de9ecd2eea73f597d) Removed old (2005) simple hack for gcc < 4.1.2 bugged warning ([#1613](https://github.com/synfig/synfig/issues/1613)) [core]
@@ -708,7 +708,7 @@
 - [`b57b280`](https://github.com/synfig/synfig/commit/b57b2809af3e52f16bc5d67b351e79fd04d9b222) "Lock Selection" parameter of Group Layer should be static by default ([#1259](https://github.com/synfig/synfig/issues/1259)) [studio]
 - [`616ba52`](https://github.com/synfig/synfig/commit/616ba526c7111bdf98d13f97c666a80c34082c0c) 1-setup-linux-native.sh can now use /etc/os-release for better OS detection ([#1263](https://github.com/synfig/synfig/issues/1263))
 - [`a12bbfb`](https://github.com/synfig/synfig/commit/a12bbfbee316953834e17d8a0acd134ad5979471) fix missing breaks in switch ([#1268](https://github.com/synfig/synfig/issues/1268)) [studio]
-- [`75029fb`](https://github.com/synfig/synfig/commit/75029fb7b942c66eaefbbd5a0fdaa4cb8f4c8624) Merge PR [#1248](https://github.com/synfig/synfig/issues/1248): Restore defaults now reset all settings [studi
+- [`75029fb`](https://github.com/synfig/synfig/commit/75029fb7b942c66eaefbbd5a0fdaa4cb8f4c8624) Merge PR [#1248](https://github.com/synfig/synfig/issues/1248): Restore defaults now reset all settings [studio]
 - [`6591875`](https://github.com/synfig/synfig/commit/6591875e830e41352d753a0f9f1b47135fbd31b9) Add FUNDING.yml
 - [`70c851e`](https://github.com/synfig/synfig/commit/70c851e9028527208109f7cb49a90576f068d616) Merge PR [#1135](https://github.com/synfig/synfig/issues/1135): New timetrack [studio]
 - [`2dbc760`](https://github.com/synfig/synfig/commit/2dbc76041d379ea1232788dd5157a2eb2d5425a7) Merge PR [#1247](https://github.com/synfig/synfig/issues/1247): [CMake] build_images target now places images in the correct folder [studio]

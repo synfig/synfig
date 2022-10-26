@@ -325,7 +325,7 @@ private:
       wrap = 1.0 + settings_value[BRUSH_STROKE_HOLDTIME];
       if (states[STATE_STROKE] > wrap) {
         if (wrap > 9.9 + 1.0) {
-          // "inifinity", just hold stroke somewhere >= 1.0
+          // "infinity", just hold stroke somewhere >= 1.0
           states[STATE_STROKE] = 1.0;
         } else {
           states[STATE_STROKE] = fmodf(states[STATE_STROKE], wrap);

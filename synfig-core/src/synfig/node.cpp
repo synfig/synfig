@@ -360,7 +360,7 @@ Node::on_changed()
 	if (DEBUG_GETENV("SYNFIG_DEBUG_ON_CHANGED"))
 	{
 		std::lock_guard<std::mutex> lock(parent_set_mutex_);
-		printf("%s:%d Node::on_changed() for %p (%s); signalling these %zd parents:\n", __FILE__, __LINE__, this, get_string().c_str(), parent_set.size());
+		printf("%s:%d Node::on_changed() for %p (%s); signaling these %zd parents:\n", __FILE__, __LINE__, this, get_string().c_str(), parent_set.size());
 		for (std::set<Node*>::iterator iter = parent_set.begin(); iter != parent_set.end(); ++iter) printf(" %p (%s)\n", *iter, (*iter)->get_string().c_str());
 		printf("\n");
 	}

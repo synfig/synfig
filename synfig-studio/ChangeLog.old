@@ -729,7 +729,7 @@
 2003-10-07 (darco) : Layers are now categorized
 2003-10-06 (darco) : Added red-blue gamma adjustment to setup dialog
 2003-10-06 (darco) : Implemented Image Import Tool. (CTRL-I)
-2003-10-06 (darco) : The Ducks in the Work Area are now more percisely placed. (Especially obvious for radiuses)
+2003-10-06 (darco) : The Ducks in the Work Area are now more precisely placed. (Especially obvious for radiuses)
 2003-10-06 (darco) : Implemented adjustable default BLine width. To adjust it, use the scroll wheel on your mouse.
 2003-10-06 (darco) : Fixed bug where changing parameters may not always refresh the work area. (AGAIN)
 2003-10-06 (darco) : Fixed dragging-layer-into-inline-canvas crash bug.

@@ -407,9 +407,8 @@ void studio::calculateSequenceColors(const etl::handle<synfig::Layer_Bitmap> &ra
 
   if (ras && g.currConfig->m_maxThickness > 0.0) 
   {
-    // singleSequence is traversed back-to-front because new, possibly splitted
-    // sequences
-    // are inserted at back - and don't have to be re-sampled.
+    // singleSequence is traversed back-to-front because new, possibly split
+    // sequences are inserted at back - and don't have to be re-sampled.
     for (l = singleSequences.size() - 1; l >= 0; --l) 
     {
       Sequence rear;
