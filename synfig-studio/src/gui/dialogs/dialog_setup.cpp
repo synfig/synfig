@@ -445,6 +445,7 @@ Dialog_Setup::create_editing_page(PageInfo pi)
 	widget_interpolation = manage(new Widget_Interpolation(Widget_Interpolation::SIDE_BOTH));
 	widget_interpolation->set_popup_fixed_width(false);
 	widget_interpolation->set_hexpand(false);
+	widget_interpolation->set_halign(Gtk::ALIGN_START);
 	synfigapp::Main::set_interpolation(INTERPOLATION_CLAMPED);// To Do maybe: store interpolation in settings instead of default clamped
 	widget_interpolation->set_value(synfigapp::Main::get_interpolation());
 	widget_interpolation->show();
