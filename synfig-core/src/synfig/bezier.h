@@ -907,7 +907,7 @@ public:
 	/** The tangent at the end point @c p2 */
 	value_type& t2() { return T2; }
 
-	/** It must be called everytime you finish updating vertices and tangents */
+	/** It must be called every time you finish updating vertices and tangents */
 	void sync()
 	{
 		bezier<V,T>::operator[](0)=P1;

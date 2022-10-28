@@ -11,7 +11,7 @@ endif()
 
 get_filename_component(VCPKG_TOOLCHAIN_DIR "${CMAKE_TOOLCHAIN_FILE}" DIRECTORY)
 
-# install dependecies
+# install dependencies
 # we could have required the user to pass the option X_VCPKG_APPLOCAL_DEPS_INSTALL
 # to enable installing dependencies automatically without this section, but this
 # current solution requires less work on the user side, and will give us more control

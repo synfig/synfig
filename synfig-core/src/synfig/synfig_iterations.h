@@ -39,9 +39,9 @@ namespace synfig
 struct TraverseLayerStatus
 {
 	// - SETTINGS -
-	/// Should traverse into layer paramenter valuenodes of canvas type and they are inline
+	/// Should traverse into layer parameter valuenodes of canvas type and they are inline
 	bool traverse_dynamic_inline_canvas = true;
-	/// Should traverse into layer paramenter valuenodes of canvas type and they are not inline
+	/// Should traverse into layer parameter valuenodes of canvas type and they are not inline
 	bool traverse_dynamic_non_inline_canvas = false;
 	// - STATUS -
 	/// Tracks the index of each recursive iteration. The last element is the current level. Its size is, then, the real depth
