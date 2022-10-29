@@ -883,19 +883,6 @@ StateDraw_Context::event_mouse_down_handler(const Smach::event& x)
 
 #define SIMILAR_TANGENT_THRESHOLD	(0.2)
 
-struct debugclass
-{
-	synfig::String x;
-	debugclass(const synfig::String &x):x(x)
-	{
-//		synfig::warning(">>>>>>>>>>>>>>>>>>> "+x);
-	}
-	~debugclass()
-	{
-//		synfig::warning("<<<<<<<<<<<<<<<<<<< "+x);
-	}
-};
-
 struct DepthCounter
 {
 	int &i;
