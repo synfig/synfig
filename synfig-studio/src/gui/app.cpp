@@ -242,6 +242,8 @@ Glib::RefPtr<studio::UIManager>	App::ui_manager_;
 int        App::jack_locks_ = 0;
 synfig::Distance::System  App::distance_system;
 
+synfig::Waypoint::Interpolation App::default_interpolation;
+
 std::list<etl::handle<Instance> > App::instance_list;
 
 static etl::handle<synfigapp::UIInterface>           ui_interface_;
@@ -482,6 +484,11 @@ public:
 				value=strprintf("%s",Distance::system_name(App::distance_system).c_str());
 				return true;
 			}
+			if(key=="default_interpolation")
+			{
+				value=strprintf("%i",App::default_interpolation);
+				return true;
+			}
 			if(key=="autosave_backup")
 			{
 				value=strprintf("%i",App::auto_recover->get_enabled());
@@ -678,6 +685,13 @@ public:
 				App::distance_system=Distance::ident_system(value);
 				return true;
 			}
+			if(key=="default_interpolation")
+			{
+				int i(atoi(value.c_str()));
+				App::default_interpolation= static_cast<synfig::Waypoint::Interpolation>(i);
+				synfigapp::Main::set_interpolation(App::default_interpolation);
+				return true;
+			}
 			if(key=="restrict_radius_ducks")
 			{
 				int i(atoi(value.c_str()));
@@ -844,6 +858,7 @@ public:
 		KeyList ret(synfigapp::Settings::get_key_list());
 		ret.push_back("time_format");
 		ret.push_back("distance_system");
+		ret.push_back("default_interpolation");
 		ret.push_back("file_history.size");
 		ret.push_back("autosave_backup");
 		ret.push_back("autosave_backup_interval");

@@ -206,6 +206,7 @@ public:
 	static Dialog_ToolOptions *dialog_tool_options;
 	static VectorizerSettings *vectorizerpopup;
 	static synfig::Distance::System distance_system;
+	static synfig::Waypoint::Interpolation default_interpolation;
 
 	static About *about;
 	static MainWindow *main_window;

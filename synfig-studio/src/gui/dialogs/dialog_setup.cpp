@@ -446,8 +446,8 @@ Dialog_Setup::create_editing_page(PageInfo pi)
 	widget_interpolation->set_popup_fixed_width(false);
 	widget_interpolation->set_hexpand(false);
 	widget_interpolation->set_halign(Gtk::ALIGN_START);
-	synfigapp::Main::set_interpolation(INTERPOLATION_CLAMPED);// To Do maybe: store interpolation in settings instead of default clamped
 	widget_interpolation->set_value(synfigapp::Main::get_interpolation());
+	synfigapp::Main::set_interpolation(App::default_interpolation);
 	widget_interpolation->show();
 	pi.grid->attach(*widget_interpolation, 1, row, 1, 1);
 
@@ -971,7 +971,8 @@ Dialog_Setup::on_apply_pressed()
 	App::animation_thumbnail_preview  = toggle_animation_thumbnail_preview.get_active();
 
 	// Set the default widget interpolation
-	synfigapp::Main::set_interpolation(Waypoint::Interpolation(widget_interpolation->get_value()));
+	App::default_interpolation = Waypoint::Interpolation(widget_interpolation->get_value());
+	synfigapp::Main::set_interpolation(App::default_interpolation);
 
 	// Set the experimental features flag
 	App::enable_experimental_features = toggle_enable_experimental_features.get_active();
@@ -1259,7 +1260,7 @@ Dialog_Setup::refresh()
 	toggle_animation_thumbnail_preview.set_active(App::animation_thumbnail_preview);
 
 	// Refresh the default interpolation
-	widget_interpolation->set_value(synfigapp::Main::get_interpolation());
+	widget_interpolation->set_value(App::default_interpolation);
 
 	// Refresh the status of the experimental features flag
 	toggle_enable_experimental_features.set_active(App::enable_experimental_features);
