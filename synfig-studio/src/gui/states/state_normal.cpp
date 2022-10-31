@@ -396,12 +396,23 @@ DuckDrag_Combo::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 	last_move=vect;
 
 	const DuckList selected_ducks(duckmatic->get_selected_ducks());
+
+	bool constrain_single_rotating_handle = false;
+
+	if (constrain && selected_ducks.size() == 1) {
+		auto& duck = selected_ducks.front();
+		auto duck_type = duck->get_type();
+		if (duck_type == Duck::TYPE_ANGLE || duck_type == Duck::TYPE_TANGENT) {
+			constrain_single_rotating_handle = true;
+		}
+	}
+
 	DuckList::const_iterator iter;
 
 	Time time(duckmatic->get_time());
 
 	int i;
-	if( move_only || (!scale && !rotate) )
+	if( !constrain_single_rotating_handle && (move_only || (!scale && !rotate)) )
 	{
 		for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
 		{
@@ -415,7 +426,18 @@ DuckDrag_Combo::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 		}
 	}
 
-	if (rotate)
+	if (constrain_single_rotating_handle)
+	{
+		auto duck = selected_ducks.front();
+		auto origin = duck->get_trans_origin();
+		auto p = duck->get_trans_point();
+		Vector v = vector - origin;
+		Angle::deg angle(Angle::tan(v[1], v[0]));
+		float degrees = angle.get()/15;
+		angle = Angle::deg(15 * (degrees > 0 ? std::floor(degrees) : std::ceil(degrees)));
+		v = origin + Vector(v.mag(),0).rotate(angle);
+		duck->set_trans_point(v, time);
+	} else if (rotate)
 	{
 		Angle::deg angle(Angle::tan(vect[1],vect[0]));
 		angle=original_angle-angle;
