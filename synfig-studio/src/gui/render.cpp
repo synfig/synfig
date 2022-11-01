@@ -154,12 +154,12 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	target_grid->attach(entry_filename, 1, 0, 1, 1);
 	target_grid->attach(*choose_button, 2, 0, 1, 1);
 
-	Gtk::Label *targetLabel = manage(new Gtk::Label(_("_Target"), true));
-	targetLabel->set_halign(Gtk::ALIGN_START);
-	targetLabel->set_valign(Gtk::ALIGN_CENTER);
-	targetLabel->set_mnemonic_widget(comboboxtext_target);
+	Gtk::Label *moduleLabel = manage(new Gtk::Label(_("_Module"), true));
+	moduleLabel->set_halign(Gtk::ALIGN_START);
+	moduleLabel->set_valign(Gtk::ALIGN_CENTER);
+	moduleLabel->set_mnemonic_widget(comboboxtext_target);
 	comboboxtext_target.set_hexpand();
-	target_grid->attach(*targetLabel, 0, 1, 1, 1);
+	target_grid->attach(*moduleLabel, 0, 1, 1, 1);
 	target_grid->attach(comboboxtext_target, 1, 1, 1, 1);
 	target_grid->attach(*tparam_button, 2, 1, 1, 1);
 
