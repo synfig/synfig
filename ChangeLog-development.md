@@ -1,3 +1,6 @@
+- [`d9a37d3`](https://github.com/synfig/synfig/commit/d9a37d301cbdf0eaadb1bdbd2083ab7a05835b29) refactor: remove unused class `debugclass` ([#2865](https://github.com/synfig/synfig/issues/2865)) [studio]
+- [`1cfeeee`](https://github.com/synfig/synfig/commit/1cfeeee8bcc18bd722a76241b68501db5addc330) chore: fix typos ([#2863](https://github.com/synfig/synfig/issues/2863)) [core] [studio]
+- [`71a3041`](https://github.com/synfig/synfig/commit/71a30418475bf1800d97b1437561a22272cad02d) perf: avoid double computation ([#2849](https://github.com/synfig/synfig/issues/2849)) [core]
 - [`06f4ca8`](https://github.com/synfig/synfig/commit/06f4ca8a72b1792032892194fcf602ab635c6a41) fix: hide bone width handles when they are meaningless ([#2778](https://github.com/synfig/synfig/issues/2778)) [studio]
 - [`296bd31`](https://github.com/synfig/synfig/commit/296bd31b3636b51c6d65bdc2f6b30043525cdd60) refactor: remove unused alternative clamping functions ([#2845](https://github.com/synfig/synfig/issues/2845)) [ETL] [core]
 - [`cf5adb6`](https://github.com/synfig/synfig/commit/cf5adb6ad0c9b9f10cbf56d9adcbecde2d106214) refactor: remove some unused #include directives ([#2851](https://github.com/synfig/synfig/issues/2851)) [core]
