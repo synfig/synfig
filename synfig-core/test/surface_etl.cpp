@@ -23,20 +23,20 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/surface>
+#include <synfig/surface_etl.h>
 #include <ETL/gaussian>
 #include <cstdio>
 
 /* === M A C R O S ========================================================= */
 
-using namespace etl;
+using namespace synfig;
 
 /* === C L A S S E S ======================================================= */
 
 
 /* === P R O C E D U R E S ================================================= */
 
-int display_pen(generic_pen<float> pen, int w, int h)
+int display_pen(etl::generic_pen<float> pen, int w, int h)
 {
 	int ret=0;
 	int x, y;
@@ -70,7 +70,7 @@ int display_pen(generic_pen<float> pen, int w, int h)
 	return ret;
 }
 
-void make_pattern(generic_pen<float> pen, int w, int h)
+void make_pattern(etl::generic_pen<float> pen, int w, int h)
 {
 	int x,y;
 	for(y=0;y<h;y++,pen.inc_y())

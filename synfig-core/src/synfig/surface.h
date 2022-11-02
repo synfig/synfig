@@ -32,7 +32,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include "color.h"
-#include <ETL/surface>
+#include "surface_etl.h"
 #include <ETL/handle>
 
 /* === M A C R O S ========================================================= */
@@ -81,7 +81,7 @@ public:
 **	\brief Bitmap Surface
 **	\todo writeme
 */
-class Surface : public etl::surface<Color, ColorPrep>
+class Surface : public surface<Color, ColorPrep>
 {
 public:
 	typedef Color value_type;
@@ -90,14 +90,14 @@ public:
 	Surface() { }
 
 	Surface(const size_type::value_type &w, const size_type::value_type &h):
-		etl::surface<Color, ColorPrep>(w,h) { }
+		surface<Color, ColorPrep>(w,h) { }
 
 	Surface(const size_type &s):
-		etl::surface<Color, ColorPrep>(s) { }
+		surface<Color, ColorPrep>(s) { }
 
 	template <typename _pen>
 	Surface(const _pen &_begin, const _pen &_end):
-		etl::surface<Color, ColorPrep>(_begin,_end) { }
+		surface<Color, ColorPrep>(_begin,_end) { }
 
 	template <class _pen> void blit_to(_pen &pen)
 	{ return blit_to(pen,0,0, get_w(),get_h()); }
@@ -105,7 +105,7 @@ public:
 	template <class _pen> void
 	blit_to(_pen& DEST_PEN,	int x, int y, int w, int h)
 	{
-		etl::surface<Color, ColorPrep>::blit_to(DEST_PEN,x,y,w,h);
+		surface<Color, ColorPrep>::blit_to(DEST_PEN,x,y,w,h);
 	}
 
 	void clear();

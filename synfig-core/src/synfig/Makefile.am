@@ -104,6 +104,7 @@ SYNFIGHEADERS = \
 	renddesc.h \
 	render.h \
 	savecanvas.h \
+	surface_etl.h \
 	surface.h \
 	synfig_iterations.h \
 	target.h \

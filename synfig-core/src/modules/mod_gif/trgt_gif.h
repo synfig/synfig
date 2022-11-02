@@ -174,8 +174,8 @@ private:
 	lzwcode *table,*next,*node;
 
 	synfig::Surface curr_surface;
-	etl::surface<unsigned char> curr_frame;
-	etl::surface<unsigned char> prev_frame;
+	synfig::surface<unsigned char> curr_frame;
+	synfig::surface<unsigned char> prev_frame;
 
 	int imagecount;
 	int cur_scanline;

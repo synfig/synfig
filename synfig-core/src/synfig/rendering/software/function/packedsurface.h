@@ -96,14 +96,14 @@ public:
 		inline static Color reader(const void *surf, int x, int y)
 		{
 			const Reader &r = *(const Reader*)surf;
-			return etl::clamping::clamp(x, r.surface->width) && etl::clamping::clamp(y, r.surface->height)
+			return clamping::clamp(x, r.surface->width) && clamping::clamp(y, r.surface->height)
 			     ? r.get_pixel(x, y) : Color();
 		}
 
 		inline static Color reader_cook(const void *surf, int x, int y)
 		{
 			const Reader &r = *(const Reader*)surf;
-			return etl::clamping::clamp(x, r.surface->width) && etl::clamping::clamp(y, r.surface->height)
+			return clamping::clamp(x, r.surface->width) && clamping::clamp(y, r.surface->height)
 				 ? ColorPrep::cook_static(r.get_pixel(x, y)) : Color();
 		}
 	};
@@ -124,7 +124,7 @@ public:
 			{ return min <= c && c <= max; }
 	};
 
-	typedef etl::sampler<Color, float, Reader::reader_cook> Sampler;
+	typedef sampler<Color, float, Reader::reader_cook> Sampler;
 
 private:
 	mutable std::mutex mutex;
