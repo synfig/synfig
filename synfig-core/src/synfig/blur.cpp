@@ -157,7 +157,7 @@ inline Color zero<Color>()
 }
 
 template <typename T,class VP>
-static void GaussianBlur_2x2(etl::surface<T,VP>& surface)
+static void GaussianBlur_2x2(synfig::surface<T,VP>& surface)
 {
 	int x,y,w,h;
 	T Tmp1,Tmp2,SR0;
@@ -185,7 +185,7 @@ static void GaussianBlur_2x2(etl::surface<T,VP>& surface)
 }
 
 template <typename T,class VP>
-static void GaussianBlur_2x1(etl::surface<T,VP> &surface)
+static void GaussianBlur_2x1(synfig::surface<T,VP> &surface)
 {
 	int x,y,w,h;
 	T Tmp1,Tmp2,SR0;
@@ -207,7 +207,7 @@ static void GaussianBlur_2x1(etl::surface<T,VP> &surface)
 }
 
 template <typename T,class VP>
-static void GaussianBlur_3x1(etl::surface<T,VP> &surface)
+static void GaussianBlur_3x1(synfig::surface<T,VP> &surface)
 {
 	int x,y,w,h;
 	T Tmp1,Tmp2,SR0,SR1;
@@ -233,7 +233,7 @@ static void GaussianBlur_3x1(etl::surface<T,VP> &surface)
 }
 
 template <typename T,class VP>
-static void GaussianBlur_1x2(etl::surface<T,VP> &surface)
+static void GaussianBlur_1x2(synfig::surface<T,VP> &surface)
 {
 	int x,y;
 	T Tmp1,Tmp2,SR0;
@@ -252,7 +252,7 @@ static void GaussianBlur_1x2(etl::surface<T,VP> &surface)
 }
 
 template <typename T,class VP>
-static void GaussianBlur_1x3(etl::surface<T,VP> &surface)
+static void GaussianBlur_1x3(synfig::surface<T,VP> &surface)
 {
 	int x,y;
 	T Tmp1,Tmp2,SR0,SR1;
@@ -691,9 +691,9 @@ bool Blur::operator()(const Surface &surface,
 
 //////
 
-bool Blur::operator()(const etl::surface<float> &surface,
+bool Blur::operator()(const synfig::surface<float> &surface,
 					  const synfig::Vector &resolution,
-					  etl::surface<float> &out) const
+					  synfig::surface<float> &out) const
 {
 	int w = surface.get_w(),
 		h = surface.get_h();
@@ -709,7 +709,7 @@ bool Blur::operator()(const etl::surface<float> &surface,
 
 	SuperCallback blurcall(cb,0,5000,5000);
 
-	etl::surface<float> worksurface(surface);
+	synfig::surface<float> worksurface(surface);
 
 	//don't need to premultiply because we are dealing with ONLY alpha
 
@@ -723,7 +723,7 @@ bool Blur::operator()(const etl::surface<float> &surface,
 			if(size[0] && size[1] && w*h>2)
 			{
 				int x2,y2;
-				etl::surface<float> tmp_surface(worksurface);
+				synfig::surface<float> tmp_surface(worksurface);
 
 				for(y=0;y<h;y++)
 				{
@@ -784,7 +784,7 @@ bool Blur::operator()(const etl::surface<float> &surface,
 	case Blur::BOX: // B O X -------------------------------------------------------
 		{
 			//horizontal part
-			etl::surface<float> temp_surface;
+			synfig::surface<float> temp_surface;
 			temp_surface.set_wh(w,h);
 
 			if(size[0])
@@ -797,7 +797,7 @@ bool Blur::operator()(const etl::surface<float> &surface,
 			else temp_surface = worksurface;
 
 			//vertical part
-			//etl::surface<float> temp_surface2;
+			//synfig::surface<float> temp_surface2;
 			//temp_surface2.set_wh(w,h);
 
 			if(size[1])
@@ -829,10 +829,10 @@ bool Blur::operator()(const etl::surface<float> &surface,
 				1	2	1
 			*/
 
-			etl::surface<float> temp_surface;
+			synfig::surface<float> temp_surface;
 			temp_surface.set_wh(w,h);
 
-			//etl::surface<float> temp_surface2;
+			//synfig::surface<float> temp_surface2;
 			//temp_surface2.set_wh(w,h);
 
 			//horizontal part
@@ -873,7 +873,7 @@ bool Blur::operator()(const etl::surface<float> &surface,
 	case Blur::CROSS: // C R O S S  -------------------------------------------------------
 		{
 			//horizontal part
-			etl::surface<float> temp_surface;
+			synfig::surface<float> temp_surface;
 			temp_surface.set_wh(worksurface.get_w(),worksurface.get_h());
 
 			if(size[0])
@@ -886,7 +886,7 @@ bool Blur::operator()(const etl::surface<float> &surface,
 			else temp_surface = worksurface;
 
 			//vertical part
-			etl::surface<float> temp_surface2;
+			synfig::surface<float> temp_surface2;
 			temp_surface2.set_wh(worksurface.get_w(),worksurface.get_h());
 
 			if(size[1])
@@ -921,8 +921,8 @@ bool Blur::operator()(const etl::surface<float> &surface,
 			Real	pw = (Real)w/(resolution[0]);
 			Real 	ph = (Real)h/(resolution[1]);
 
-			//etl::surface<float> temp_surface;
-			etl::surface<float> *gauss_surface;
+			//synfig::surface<float> temp_surface;
+			synfig::surface<float> *gauss_surface;
 
 			//if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 				gauss_surface = &worksurface;

@@ -266,7 +266,7 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 
 	RendDesc	workdesc = get_sub_renddesc(renddesc);
 	Surface		worksurface;
-	etl::surface<float> blurred;
+	synfig::surface<float> blurred;
 
 	const Real	pw = renddesc.get_pw(),
 				ph = renddesc.get_ph();

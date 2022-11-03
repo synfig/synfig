@@ -54,7 +54,7 @@ private:
 	synfig::String filename;
 	Imf::RgbaOutputFile *exr_file;
 	Imf::Rgba *buffer;
-	etl::surface<Imf::Rgba> out_surface;
+	synfig::surface<Imf::Rgba> out_surface;
 	synfig::Color *buffer_color;
 
 	bool ready();

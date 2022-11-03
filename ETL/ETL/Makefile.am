@@ -23,9 +23,7 @@ etl_HEADERS = \
 	boxblur \
 	_boxblur.h \
 	gaussian \
-	_gaussian.h \
-	surface \
-	_surface.h
+	_gaussian.h
 
 
 $(top_builddir)/ETL/etl_profile.h:$(top_builddir)/ETL/etl_profile_.h

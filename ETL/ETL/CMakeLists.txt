@@ -7,7 +7,6 @@ configure_file(
 
 set(ETL_HEADERS
         "${CMAKE_CURRENT_LIST_DIR}/misc"
-        "${CMAKE_CURRENT_LIST_DIR}/surface"
         "${CMAKE_CURRENT_LIST_DIR}/stringf"
         "${CMAKE_CURRENT_LIST_DIR}/boxblur"
         "${CMAKE_CURRENT_LIST_DIR}/ref_count"
@@ -16,7 +15,6 @@ set(ETL_HEADERS
         "${CMAKE_CURRENT_LIST_DIR}/handle"
 #     PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/_ref_count.h"
-        "${CMAKE_CURRENT_LIST_DIR}/_surface.h"
         "${CMAKE_CURRENT_LIST_DIR}/_pen.h"
         "${CMAKE_CURRENT_LIST_DIR}/_boxblur.h"
         "${CMAKE_CURRENT_LIST_DIR}/_stringf.h"

@@ -1,8 +1,6 @@
-/*! ========================================================================
-** Extended Template and Library
-** \file _surface.h
-** \brief Surface Class Implementation
-** \internal
+/* === S Y N F I G ========================================================= */
+/*! \file surface_etl.h
+** \brief surface Template Class
 **
 ** \legal
 ** Copyright (c) 2002 Robert B. Quattlebaum Jr.
@@ -23,30 +21,26 @@
 ** You should have received a copy of the GNU General Public License
 ** along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 ** \endlegal
-**
-** \note
-** This is an internal header file, included by other ETL headers.
-** You should not attempt to use it directly.
-**
 ** ========================================================================= */
 
 /* === S T A R T =========================================================== */
 
-#ifndef __ETL__SURFACE_H
-#define __ETL__SURFACE_H
+#ifndef SYNFIG_SURFACE_ETL_H
+#define SYNFIG_SURFACE_ETL_H
 
 /* === H E A D E R S ======================================================= */
 
-#include "_pen.h"
-#include "_misc.h"
 #include <algorithm>
 #include <cstring>
+
+#include <ETL/_misc.h>
+#include <ETL/_pen.h>
 
 /* === M A C R O S ========================================================= */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace etl {
+namespace synfig {
 
 namespace clamping
 {
@@ -104,7 +98,7 @@ public:
 
 	//! Nearest sample
 	static value_type nearest_sample(const void *surface, const coord_type x, const coord_type y)
-		{ return (value_type)reader(surface, round_to_int(x), round_to_int(y)); }
+		{ return (value_type)reader(surface, etl::round_to_int(x), etl::round_to_int(y)); }
 
 	//! Linear sample
 	static value_type linear_sample(const void *surface, const coord_type x, const coord_type y)
@@ -177,12 +171,12 @@ public:
 	typedef value_type* pointer;
 	typedef const value_type* const_pointer;
 	typedef value_type& reference;
-	typedef generic_pen<value_type> pen;
-	typedef generic_pen<const value_type> const_pen;
+	typedef etl::generic_pen<value_type> pen;
+	typedef etl::generic_pen<const value_type> const_pen;
 	typedef VP value_prep_type;
 
-	typedef alpha_pen<const_pen> const_alpha_pen;
-	typedef alpha_pen<pen> non_const_alpha_pen;
+	typedef etl::alpha_pen<const_pen> const_alpha_pen;
+	typedef etl::alpha_pen<pen> non_const_alpha_pen;
 
 	typedef typename pen::difference_type size_type;
 	typedef typename pen::difference_type difference_type;
@@ -507,7 +501,7 @@ public:
 	}
 
 	template<value_type reader(const void*, int, int)>
-	class sampler: public etl::sampler<value_type, float, reader> { };
+	class sampler: public synfig::sampler<value_type, float, reader> { };
 
 	typedef sampler<surface::reader_cook> sampler_cook;
 	typedef sampler<surface::reader> sampler_nocook;
@@ -552,4 +546,4 @@ public:
 
 /* === E N D =============================================================== */
 
-#endif
+#endif // SYNFIG_SURFACE_ETL_H
