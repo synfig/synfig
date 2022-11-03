@@ -44,6 +44,10 @@ namespace synfig {
 
 namespace clamping
 {
+	/**
+	 * Clamp @a x to a natural number between [0, bound)
+	 * @return false if @a bound is invalid (less or equal to zero)
+	 */
 	inline static bool clamp(int &x, int bound) {
 		if (bound <= 0) return false;
 		if (x < 0) x = 0; else
@@ -64,6 +68,9 @@ public:
 	value_type uncook(const accumulator_type& x)const { return (value_type)x; }
 };
 
+/**
+ * Allow to get an interpolated sample from image from real coordinates instead of exact pixels
+ */
 template <typename VT, typename CT, VT reader(const void*, int, int)>
 class sampler
 {
@@ -96,11 +103,11 @@ public:
 		tx[3] = float_type(0.5)*x*x*(x-float_type(1));						                // -t^2 + t^3
 	}
 
-	//! Nearest sample
+	/** Retrieve the nearest sample */
 	static value_type nearest_sample(const void *surface, const coord_type x, const coord_type y)
 		{ return (value_type)reader(surface, synfig::round_to_int(x), synfig::round_to_int(y)); }
 
-	//! Linear sample
+	/** Linear interpolation */
 	static value_type linear_sample(const void *surface, const coord_type x, const coord_type y)
 	{
 		int u, v; float_type a, b;
@@ -114,7 +121,7 @@ public:
 			 + (value_type)(reader(surface, u+1,v+1))*a*b;
 	}
 
-	//! Cosine sample
+	/** Cosine sample */
 	static value_type cosine_sample(const void *surface, const coord_type x, const coord_type y)
 	{
 		int u, v; float_type a, b;
@@ -131,7 +138,7 @@ public:
 			 + (value_type)(reader(surface, u+1,v+1))*a*b;
 	}
 
-	//! Cubic sample
+	/** Cubic sample: uses Catmull-Rom spline */
 	static value_type cubic_sample(const void *surface, const coord_type x, const coord_type y)
 	{
 		//Using catmull rom interpolation because it doesn't blur at all
@@ -163,6 +170,21 @@ public:
 	}
 };
 
+/**
+ * A 2D image data.
+ *
+ * You can think it as a 2D matrix too.
+ *
+ * Its size is defined on construction, but it can be changed later (set_wh()).
+ *
+ * Data can be accessed as a 2D matrix (integer coordinates via operator []).
+ * They also can be get by samplers, to get pixel values in real number coordinates,
+ * by using some interpolation methods. @see nearest_sample(), linear_sample() and others.
+ * Another way is by using iterators (begin(), end()) or pen (get_pen())
+ *
+ * Pixels can be changed directly by their coordinates, or via iterators or pens.
+ * There are also the painting methods like fill() and blit_to().
+ */
 template <typename T, class VP=value_prep<T,T> >
 class surface
 {
@@ -187,10 +209,21 @@ public:
 	typedef typename pen::const_iterator_y const_iterator_y;
 
 private:
+	/** a contiguous memory space.
+	 *  If it is deletable, it is expected to be allocated by `new value_type[]` allocator
+	 */
 	value_type *data_;
-	value_type *zero_pos_;
+	/** the starting pointer of the pixel at (0,0) */
+	value_type* zero_pos_;
+	/** the byte length of a row, possibly including some padding for byte-alignment
+	 *  It is negative if rows are ordered from bottom to top.
+	 */
 	typename difference_type::value_type pitch_;
-	int w_, h_;
+	/** surface width (number of pixels/samples per row) */
+	int w_;
+	/** surface height (number of pixels/samples per column or number of rows) */
+	int h_;
+	/** if the data is dynamically allocated and can be deleted (on destructor too) */
 	bool deletable_;
 
 	value_prep_type cooker_;
@@ -324,7 +357,8 @@ public:
 			return;
 		memcpy(data_, rhs.data_, pitch_*h_);
 	}
-	
+
+	/** Change the surface size. It doesn't keep the previous pixel/sample values */
 	void
 	set_wh(typename size_type::value_type w, typename size_type::value_type h, const typename size_type::value_type &pitch=0)
 	{
