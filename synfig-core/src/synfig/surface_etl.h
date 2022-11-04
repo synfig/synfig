@@ -209,11 +209,9 @@ private:
 	 *  If it is deletable, it is expected to be allocated by `new value_type[]` allocator
 	 */
 	value_type *data_;
-	/** the starting pointer of the pixel at (0,0) */
-	value_type* zero_pos_;
-	/** the byte length of a row, possibly including some padding for byte-alignment
-	 *  It is negative if rows are ordered from bottom to top.
-	 */
+	/** the byte length of a row, possibly including some padding for byte-alignment.
+	 *  It must be a positive number
+	*/
 	typename difference_type::value_type pitch_;
 	/** surface width (number of pixels/samples per row) */
 	int w_;
@@ -227,35 +225,30 @@ private:
 public:
 	surface():
 		data_(0),
-		zero_pos_(data_),
 		pitch_(0),
 		w_(0),h_(0),
 		deletable_(false) { }
 
 	surface(value_type* data, int w, int h, bool deletable=false):
 		data_(data),
-		zero_pos_(data),
 		pitch_(sizeof(value_type)*w),
 		w_(w),h_(h),
 		deletable_(deletable) { }
 
 	surface(value_type* data, int w, int h, typename difference_type::value_type pitch, bool deletable=false):
 		data_(data),
-		zero_pos_(data),
 		pitch_(pitch),
 		w_(w),h_(h),
 		deletable_(deletable) { }
 	
 	surface(const typename size_type::value_type &w, const typename size_type::value_type &h):
 		data_(new value_type[w*h]),
-		zero_pos_(data_),
 		pitch_(sizeof(value_type)*w),
 		w_(w),h_(h),
 		deletable_(true) { }
 
 	surface(const size_type &s):
 		data_(new value_type[s.x*s.y]),
-		zero_pos_(data_),
 		pitch_(sizeof(value_type)*s.x),
 		w_(s.x),h_(s.y),
 		deletable_(true) { }
@@ -268,7 +261,6 @@ public:
 		data_=new value_type[size.x*size.y];
 		w_=size.x;
 		h_=size.y;
-		zero_pos_=data_;
 		pitch_=sizeof(value_type)*w_;
 		deletable_=true;
 
@@ -281,7 +273,6 @@ public:
 
 	surface(const surface &s):
 		data_(s.data_?(pointer)(new char[s.pitch_*s.h_]):0),
-		zero_pos_(data_+(s.zero_pos_-s.data_)),
 		pitch_(s.pitch_),
 		w_(s.w_),
 		h_(s.h_),
@@ -291,7 +282,7 @@ public:
 		if(s.data_)
 		{
 			assert(data_);
-			memcpy(data_,s.data_,std::abs(pitch_)*h_);
+			memcpy(data_, s.data_, pitch_ * h_);
 		}
 	}
 
@@ -313,7 +304,6 @@ public:
 	const surface &operator=(const surface &rhs)
 	{
 		set_wh(rhs.w_,rhs.h_);
-		zero_pos_=data_+(rhs.zero_pos_-rhs.data_);
 		pitch_=rhs.pitch_;
 		deletable_=true;
 
@@ -348,7 +338,7 @@ public:
 			pitch_=pitch;
 		else
 			pitch_=sizeof(value_type)*w_;
-		zero_pos_=data_=(pointer)(new char[pitch_*h_]);
+		data_=(pointer)(new char[pitch_*h_]);
 		deletable_=true;
 	}
 
@@ -447,20 +437,19 @@ public:
 
 	iterator_x
 	operator[](const int &y)
-	{ assert(data_); return (pointer)(((char*)zero_pos_)+y*pitch_); }
+	{ assert(data_); return (pointer)(((char*)data_)+y*pitch_); }
 
 	const_iterator_x
 	operator[](const int &y)const
-	{ assert(data_); return (const_pointer)(((const char*)zero_pos_)+y*pitch_); }
+	{ assert(data_); return (const_pointer)(((const char*)data_)+y*pitch_); }
 
 
 	bool is_valid()const
 	{
 		return 	data_!=0
-			&&	zero_pos_!=0
 			&&	w_>0
 			&&	h_>0
-			&&	pitch_!=0
+			&&	pitch_ > 0
 		;
 	}
 
