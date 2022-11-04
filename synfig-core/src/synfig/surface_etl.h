@@ -80,10 +80,6 @@ public:
 	typedef coord_type float_type;
 	typedef value_type func(const void*, const coord_type, const coord_type);
 
-	template<typename T, T wrap_func(const VT&), func sampler_func>
-	inline static T wrap(const void *surface, const coord_type x, const coord_type y)
-		{ return wrap_func(sampler_func(surface, x, y)); }
-
 	inline static void prepare_coord(const coord_type x, int &u, float_type &a) {
 		u=static_cast<int>(std::floor(x));
 		a=float_type(x)-float_type(u);
@@ -228,16 +224,6 @@ private:
 
 	value_prep_type cooker_;
 
-	void swap(surface &x)
-	{
-		std::swap(data_,x.data_);
-		std::swap(zero_pos_,x.zero_pos_);
-		std::swap(pitch_,x.pitch_);
-		std::swap(w_,x.w_);
-		std::swap(h_,x.h_);
-		std::swap(deletable_,x.deletable_);
-	}
-
 public:
 	surface():
 		data_(0),
@@ -324,20 +310,6 @@ public:
 	typename size_type::value_type get_w()const { return w_; }
 	typename size_type::value_type get_h()const { return h_; }
 
-	const surface &mirror(const surface &rhs)
-	{
-		if(deletable_)delete [] data_;
-
-		data_=rhs.data_;
-		zero_pos_=rhs.zero_pos_;
-		pitch_=rhs.pitch_;
-		w_=rhs.w_;
-		h_=rhs.h_;
-		deletable_=false;
-
-		return *this;
-	}
-
 	const surface &operator=(const surface &rhs)
 	{
 		set_wh(rhs.w_,rhs.h_);
@@ -380,19 +352,6 @@ public:
 		deletable_=true;
 	}
 
-	void
-	set_wh(typename size_type::value_type w, typename size_type::value_type h, unsigned char* newdata, const typename size_type::value_type &pitch)
-	{
-		if(data_ && deletable_)
-		{
-			delete [] data_;
-		}
-		w_=w;
-		h_=h;
-		zero_pos_=data_=(pointer)newdata;
-		pitch_=pitch;
-		deletable_=false;	
-	}
 
 	void
 	fill(value_type v, int x, int y, int w, int h)
@@ -494,15 +453,6 @@ public:
 	operator[](const int &y)const
 	{ assert(data_); return (const_pointer)(((const char*)zero_pos_)+y*pitch_); }
 
-	void
-	flip_v()
-	{
-		assert(data_);
-
-		zero_pos_=(pointer)(((char*)zero_pos_)+pitch_*h_);
-
-		pitch_=-pitch_;
-	}
 
 	bool is_valid()const
 	{
