@@ -224,7 +224,7 @@ private:
 
 public:
 	surface():
-		data_(0),
+		data_(nullptr),
 		pitch_(0),
 		w_(0),h_(0),
 		deletable_(false) { }
@@ -440,7 +440,7 @@ public:
 
 	bool is_valid()const
 	{
-		return 	data_!=0
+		return data_ != nullptr
 			&&	w_>0
 			&&	h_>0
 			&&	pitch_ > 0
