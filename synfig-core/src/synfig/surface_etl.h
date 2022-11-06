@@ -264,10 +264,8 @@ public:
 		pitch_=sizeof(value_type)*w_;
 		deletable_=true;
 
-		int x,y;
-
-		for(y=0;y<h_;y++)
-			for(x=0;x<w_;x++)
+		for(int y = 0; y < h_; y++)
+			for(int x = 0; x < w_; x++)
 				(*this)[y][x]=_begin.get_value_at(x,y);
 	}
 
@@ -348,10 +346,9 @@ public:
 	{
 		assert(data_);
 		if(w<=0 || h<=0)return;
-		int i;
 		pen PEN(get_pen(x,y));
 		PEN.set_value(v);
-		for(i=0;i<h;i++,PEN.inc_y(),PEN.dec_x(w))
+		for(int i = 0; i < h; i++, PEN.inc_y(), PEN.dec_x(w))
 			PEN.put_hline(w);
 	}
 
@@ -360,9 +357,8 @@ public:
 	{
 		assert(data_);
 		if(w<=0 || h<=0)return;
-		int y;
 		PEN.set_value(v);
-		for(y=0;y<h;y++,PEN.inc_y(),PEN.dec_x(w))
+		for(int y = 0; y < h; y++, PEN.inc_y(), PEN.dec_x(w))
 			PEN.put_hline(w);
 	}
 
@@ -370,10 +366,9 @@ public:
 	fill(value_type v)
 	{
 		assert(data_);
-		int y;
 		pen pen_=begin();
 		pen_.set_value(v);
-		for(y=0;y<h_;y++,pen_.inc_y(),pen_.dec_x(w_))
+		for(int y = 0; y < h_; y++, pen_.inc_y(), pen_.dec_x(w_))
 			pen_.put_hline(w_);
 	}
 
@@ -415,8 +410,7 @@ public:
 
 		for(; h>0; h--,DEST_PEN.inc_y(),SOURCE_PEN.inc_y())
 		{
-			int i;
-			for(i=0; i<w; i++,DEST_PEN.inc_x(),SOURCE_PEN.inc_x())
+			for(int i = 0; i < w; i++, DEST_PEN.inc_x(), SOURCE_PEN.inc_x())
 			{
 				DEST_PEN.put_value(SOURCE_PEN.get_value());
 			}
