@@ -39,8 +39,8 @@
 #include "valuenode_const.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/misc.h>
 #include <synfig/valuenode_registry.h>
-#include <ETL/misc>
 
 #endif
 

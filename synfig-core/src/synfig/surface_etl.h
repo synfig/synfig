@@ -33,7 +33,7 @@
 #include <algorithm>
 #include <cstring>
 
-#include <ETL/_misc.h>
+#include <synfig/misc.h>
 #include <ETL/_pen.h>
 
 /* === M A C R O S ========================================================= */
@@ -98,7 +98,7 @@ public:
 
 	//! Nearest sample
 	static value_type nearest_sample(const void *surface, const coord_type x, const coord_type y)
-		{ return (value_type)reader(surface, etl::round_to_int(x), etl::round_to_int(y)); }
+		{ return (value_type)reader(surface, synfig::round_to_int(x), synfig::round_to_int(y)); }
 
 	//! Linear sample
 	static value_type linear_sample(const void *surface, const coord_type x, const coord_type y)

@@ -6,7 +6,6 @@ configure_file(
 )
 
 set(ETL_HEADERS
-        "${CMAKE_CURRENT_LIST_DIR}/misc"
         "${CMAKE_CURRENT_LIST_DIR}/stringf"
         "${CMAKE_CURRENT_LIST_DIR}/boxblur"
         "${CMAKE_CURRENT_LIST_DIR}/ref_count"
@@ -18,7 +17,6 @@ set(ETL_HEADERS
         "${CMAKE_CURRENT_LIST_DIR}/_pen.h"
         "${CMAKE_CURRENT_LIST_DIR}/_boxblur.h"
         "${CMAKE_CURRENT_LIST_DIR}/_stringf.h"
-        "${CMAKE_CURRENT_LIST_DIR}/_misc.h"
         "${CMAKE_CURRENT_LIST_DIR}/_curve_func.h"
         "${CMAKE_CURRENT_LIST_DIR}/_handle.h"
         "${CMAKE_CURRENT_LIST_DIR}/_gaussian.h"

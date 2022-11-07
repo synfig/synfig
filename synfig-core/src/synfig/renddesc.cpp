@@ -35,13 +35,12 @@
 #endif
 
 #include "renddesc.h"
-#include <ETL/misc>
+#include <synfig/misc.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */

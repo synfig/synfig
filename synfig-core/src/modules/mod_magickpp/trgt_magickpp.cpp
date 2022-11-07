@@ -33,8 +33,8 @@
 #endif
 
 #include <synfig/general.h>
+#include <synfig/misc.h>
 
-#include <ETL/misc>
 #include <ETL/stringf>
 #include "trgt_magickpp.h"
 

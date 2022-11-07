@@ -41,9 +41,8 @@
 #include "valuenode_const.h"
 #include <stdexcept>
 #include <synfig/color.h>
+#include <synfig/misc.h>
 #include <synfig/vector.h>
-
-#include <ETL/misc>
 
 #endif
 

@@ -38,12 +38,11 @@
 
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/misc.h>
 #include <synfig/valuenode_registry.h>
 #include <synfig/vector.h>
 #include <synfig/angle.h>
 #include <synfig/real.h>
-
-#include <ETL/misc>
 
 #include <stdexcept>
 
@@ -215,7 +214,7 @@ ValueNode_Modulo::get_inverse(const Time& t, const ValueBase& target_value) cons
 	const int max_value = (*divisor)(t).get(int()) - 1;
 
 	if (type == type_angle) {
-		int int_target = etl::round_to_int(Angle::deg(target_value.get(Angle())).get()) / scalar_value;
+		int int_target = round_to_int(Angle::deg(target_value.get(Angle())).get()) / scalar_value;
 		Angle::deg ret = Angle::deg(int_target / scalar_value);
 		return synfig::clamp(ret, Angle::deg(-max_value), Angle::deg(max_value));
 	}
@@ -224,12 +223,12 @@ ValueNode_Modulo::get_inverse(const Time& t, const ValueBase& target_value) cons
 		return synfig::clamp(ret, -max_value, max_value);
 	}
 	if (type == type_real) {
-		int int_target = etl::round_to_int(target_value.get(Real()));
+		int int_target = round_to_int(target_value.get(Real()));
 		Real ret = int_target / scalar_value;
 		return synfig::clamp(ret, Real(-max_value), Real(max_value));
 	}
 	if (type == type_time) {
-		int int_target = etl::round_to_int(target_value.get(Time()));
+		int int_target = round_to_int(target_value.get(Time()));
 		Time ret = int_target / scalar_value;
 		return synfig::clamp(ret, Time(-max_value), Time(-max_value));
 	}

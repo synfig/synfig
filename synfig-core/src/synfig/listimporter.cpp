@@ -163,7 +163,7 @@ Importer::Handle
 ListImporter::get_sub_importer(const RendDesc &renddesc, Time time, ProgressCallback *cb)
 {
 	float document_fps=renddesc.get_frame_rate();
-	int document_frame=etl::round_to_int(time*document_fps);
+	int document_frame=round_to_int(time*document_fps);
 	int frame = std::floor(document_frame*fps/document_fps);
 
 	if(!filename_list.size())
