@@ -80,7 +80,6 @@ hbox_blur(T1 pen,int w, int h, int length, T2 outpen)
 	}
 }
 
-#if 1
 template<typename T1,typename T2> void
 vbox_blur(T1 pen,const int w, const int h, int length, T2 outpen)
 {
@@ -114,109 +113,6 @@ vbox_blur(T1 pen,const int w, const int h, int length, T2 outpen)
 		outpen.dec_y(y);
 	}
 }
-
-#else
-
-template<typename T1,typename T2> void
-vbox_blur(T1 pen,int w, int h, int length,T2 outpen)
-{
-	int x,y;
-   	typename T1::iterator_y iter, end, biter,eiter;
-
-	//print out the info I need to figure out if this is somehow a buffer overrun...
-	/*char *beginptr=0,*endptr=0;
-	{
-		T1 ypen = pen;
-		T1 endpen = pen;
-		endpen.move(w,h);
-		ypen.inc_y();
-
-		T2 	open = outpen,
-			oepen = outpen;
-		oepen.move(w,h);
-		printf("V Blur (%d,%d,s-%d) in(%p,%p,st %d) out(%p,%p)\n",
-				w,h,length,(char*)pen.x(),(char*)endpen.x(),(char*)ypen.x()-(char*)pen.x(),
-				(char*)open.x(),(char*)oepen.x());
-	}*/
-	length=min(h-1,length);
-
-	const float divisor(1.0f/(length*2+1));
-	//const int div = (length*2+1);
-
-	//since the filter range is 2*length+1 we need h-1
-	for(x=0;x<w;x++,pen.inc_x(),outpen.inc_x())
-	{
-		iter=pen.y();
-		end=pen.end_y();
-
-		const typename T1::value_type bval = *iter;
-		const typename T1::value_type eval = end[-1];
-
-		typename T1::value_type tot(bval*(length+1));
-		//beginptr = (char*)&*iter; endptr = (char*)&*end;
-
-		//printf("\nx line %d (%p,%p)\n",x,beginptr,endptr);
-
-		//printf("Init %.3f - ",tot);
-		for (y=0;y<length && iter!=end;y++)
-		{
-			tot+=iter[y];
-			//printf("(%d,%p,+%.3f->%.3f),",y,&iter[y],iter[y],tot);
-		}
-		iter=pen.y();
-
-		//printf(" tot=%.3f\n",tot);
-
-		biter = iter+(-length-1); //get the first one...
-		eiter = iter+length;
-
-		//y will always be > length
-		//T2 open = outpen;
-		for (y=0;y<h && iter!=end;y++,++iter,++biter,++eiter,outpen.inc_y())
-		{
-			//printf("y line %d - (%f) ",y,tot);
-
-			if (y>length)
-			{
-				typename T1::value_type &v = *biter;
-				/*if( (char*)&v < beginptr ||
-					(char*)&v >= endptr)
-					printf("crap! %d (%p off %p)\n",y,(char*)&v,(char*)&*iter);*/
-				tot -= v;
-				//printf("[%.3f,",v);
-			}
-			else
-			{
-				tot -= bval;
-				//printf("[%.3f,",bval);
-			}
-
-			if (y+length<h)
-			{
-				typename T1::value_type &v = *eiter;
-				/*if( (char*)&v < beginptr ||
-					(char*)&v >= endptr)
-					printf("crap! %d (%p off %p)\n",y,(char*)&v,(char*)&*iter);*/
-				tot += v;
-				//printf("%.3f]",v);
-			}
-			else
-			{
-				tot += eval;
-				//printf("%.3f]",eval);
-			}
-
-			//test handled in the previous case...
-			//tot -= (y>length) ? *biter : bval;
-			//tot += (y+length<h) ? *eiter : eval;
-
-			//printf(" - %.3f\n",tot);
-			outpen.put_value(tot*divisor);
-		}
-		outpen.dec_y(y);
-	}
-}
-#endif
 
 template<typename T1,typename T2> void
 box_blur(T1 pen,int w, int h, int blur_w, int blur_h, T2 outpen)
