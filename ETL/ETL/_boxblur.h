@@ -36,8 +36,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <algorithm>
-
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -52,7 +50,8 @@ hbox_blur(T1 pen,int w, int h, int length, T2 outpen)
 	int x,y;
    	typename T1::iterator_x iter, end;
 
-	length=std::min(w,length);
+	if (w < length)
+		length = w;
 	const float divisor(1.0f/(length*2+1));
 
 	for(y=0;y<h;y++,pen.inc_y(),outpen.inc_y())
@@ -86,7 +85,8 @@ vbox_blur(T1 pen,const int w, const int h, int length, T2 outpen)
 	int x,y;
    	typename T1::iterator_y iter, end;
 
-	length=std::min(h,length);
+	if (h < length)
+		length = h;
 	const float divisor(1.0f/(length*2+1));
 
 	for(x=0;x<w;x++,pen.inc_x(),outpen.inc_x())
