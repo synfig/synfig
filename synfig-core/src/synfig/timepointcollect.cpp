@@ -87,13 +87,15 @@ synfig::waypoint_collect(std::set<Waypoint, std::less<UniqueID> >	&waypoint_set,
 		const Layer::DynamicParamList& dyn_param_list(layer->dynamic_param_list());
 		Layer::DynamicParamList::const_iterator iter;
 		int ret(0);
-		for(iter=dyn_param_list.begin();iter!=dyn_param_list.end();++iter)
-			ret+=waypoint_collect(waypoint_set,time,iter->second);
+		etl::handle<Layer_PasteCanvas> p = etl::handle<Layer_PasteCanvas>::cast_dynamic(layer);
+		if (!p){
+			for(iter=dyn_param_list.begin();iter!=dyn_param_list.end();++iter)
+				ret+=waypoint_collect(waypoint_set,time,iter->second);
+		}
 
 		ValueBase canvas_value(layer->get_param("canvas"));
 		if(canvas_value.get_type()==type_canvas)
 		{
-			etl::handle<Layer_PasteCanvas> p = etl::handle<Layer_PasteCanvas>::cast_dynamic(layer);
 			if (p)
 				ret+=waypoint_collect(waypoint_set, time + p->get_time_offset(),
 									  Canvas::Handle(canvas_value.get(Canvas::Handle())));
