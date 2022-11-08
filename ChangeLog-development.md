@@ -1,3 +1,6 @@
+- [`8bf9c30`](https://github.com/synfig/synfig/commit/8bf9c30cbef249b842f3d5f2c002a71897ee94c5) fix: Fixes issue [#2857](https://github.com/synfig/synfig/issues/2857) when changing interpolation of Canvas parameter changes interpolation for other waypoints [core]
+- [`92b537c`](https://github.com/synfig/synfig/commit/92b537c14a5992b13125aa9c98622e949390cdd5) ui: Rename "Target" dropdown to "Module" in rendering dialog ([#2869](https://github.com/synfig/synfig/issues/2869)) [studio]
+- [`284723d`](https://github.com/synfig/synfig/commit/284723da82463729b632d11a03f4a7dbc53647e1) refactor!: move ETL/surface to synfig/surface_etl.h and its test file ([#2870](https://github.com/synfig/synfig/issues/2870)) [ETL] [core]
 - [`d9a37d3`](https://github.com/synfig/synfig/commit/d9a37d301cbdf0eaadb1bdbd2083ab7a05835b29) refactor: remove unused class `debugclass` ([#2865](https://github.com/synfig/synfig/issues/2865)) [studio]
 - [`1cfeeee`](https://github.com/synfig/synfig/commit/1cfeeee8bcc18bd722a76241b68501db5addc330) chore: fix typos ([#2863](https://github.com/synfig/synfig/issues/2863)) [core] [studio]
 - [`71a3041`](https://github.com/synfig/synfig/commit/71a30418475bf1800d97b1437561a22272cad02d) perf: avoid double computation ([#2849](https://github.com/synfig/synfig/issues/2849)) [core]
