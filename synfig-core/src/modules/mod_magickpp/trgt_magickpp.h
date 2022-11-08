@@ -78,7 +78,10 @@ public:
 		transparent(),
 		is_gif(false),
 		sequence_separator(params.sequence_separator)
-	{ }
+	{
+		// todo(ice0): fix portable build
+		Magick::InitializeMagick(nullptr);
+	}
 	virtual ~magickpp_trgt();
 
 	bool set_rend_desc(synfig::RendDesc* desc) override;
