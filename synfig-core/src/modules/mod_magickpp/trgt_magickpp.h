@@ -73,7 +73,10 @@ public:
 		transparent(),
 		color_buffer(NULL),
 		sequence_separator(params.sequence_separator)
-	{ }
+	{
+		// todo(ice0): fix portable build
+		Magick::InitializeMagick(nullptr);
+	}
 	virtual ~magickpp_trgt();
 
 	virtual bool set_rend_desc(synfig::RendDesc *desc);
