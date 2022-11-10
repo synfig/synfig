@@ -35,8 +35,9 @@
 
 #include "renderer_grid.h"
 
-#include <ETL/misc>
 #include <gui/workarea.h>
+
+#include <synfig/misc.h>
 
 #endif
 

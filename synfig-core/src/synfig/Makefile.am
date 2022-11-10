@@ -95,6 +95,7 @@ SYNFIGHEADERS = \
 	layer.h \
 	loadcanvas.h \
 	main.h \
+	misc.h \
 	module.h \
 	node.h \
 	palette.h \

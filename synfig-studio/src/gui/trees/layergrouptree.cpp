@@ -36,12 +36,11 @@
 
 #include <gui/trees/layergrouptree.h>
 
-#include <ETL/misc>
-
 #include <gui/exception_guard.h>
 #include <gui/localization.h>
 
 #include <synfig/layer.h>
+#include <synfig/misc.h>
 
 #endif
 

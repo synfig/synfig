@@ -39,12 +39,12 @@
 #include "radialblur.h"
 #include <synfig/string.h>
 #include <synfig/context.h>
+#include <synfig/misc.h>
 #include <synfig/paramdesc.h>
 #include <synfig/renddesc.h>
 #include <synfig/surface.h>
 #include <synfig/value.h>
 #include <synfig/transform.h>
-#include <ETL/misc>
 
 #endif
 

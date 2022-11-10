@@ -41,6 +41,7 @@
 #include <synfig/string.h>
 #include <synfig/time.h>
 #include <synfig/context.h>
+#include <synfig/misc.h>
 #include <synfig/paramdesc.h>
 #include <synfig/renddesc.h>
 #include <synfig/surface.h>
@@ -49,7 +50,6 @@
 #include <synfig/segment.h>
 
 #include <cstring>
-#include <ETL/misc>
 
 #endif
 

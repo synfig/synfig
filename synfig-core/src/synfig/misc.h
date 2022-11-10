@@ -1,7 +1,6 @@
 /*! ========================================================================
-** Extended Template and Library
-** \file _misc.h
-** \brief Misc
+** \file misc.h
+** \brief Miscellaneous functions
 ** \internal
 **
 ** \legal
@@ -28,8 +27,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __ETL__MISC_H_
-#define __ETL__MISC_H_
+#ifndef SYNFIG_MISC_H_
+#define SYNFIG_MISC_H_
 
 /* === H E A D E R S ======================================================= */
 
@@ -39,12 +38,14 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace etl {
+namespace synfig {
 
+/**
+ * Find the iterator equals to value or the closest one (lower bound)
+ */
 template<typename I, typename T> inline I
 binary_find(I begin, I end, const T& value)
 {
-#if 1
 	I iter(begin+(end-begin)/2);
 
 	while(end-begin>1 && !(*iter==value))
@@ -54,25 +55,6 @@ binary_find(I begin, I end, const T& value)
 		iter = begin+(end-begin)/2;
 	}
 	return iter;
-#else
-	size_t len_(end-begin);
-	size_t half_(len_/2);
-
-	I iter(begin);
-	iter+=half_;
-
-	while(len_>1 && !(*iter==value))
-	{
-		((*iter<value)?begin:end) = iter;
-
-		len_=half_;
-		half_/=2;
-
-		iter=begin;
-		iter+=half_;
-	}
-	return iter;
-#endif
 }
 
 inline int round_to_int(const float x) {
@@ -81,8 +63,8 @@ inline int round_to_int(const float x) {
 	**	looking into at some point... */
 	// return static_cast<int>(x+0.5f);			// <-- (a) fast, but rounds -1.333 to 0!
 	// return static_cast<int>(rintf(x));		// <-- (b) slow, but correct
-    if (x>=0) return static_cast<int>(x + 0.5);	// <-- slower than (a), but correct, and faster than (b)
-    else      return static_cast<int>(x - 0.5);
+	if (x>=0) return static_cast<int>(x + 0.5f);	// <-- slower than (a), but correct, and faster than (b)
+	else      return static_cast<int>(x - 0.5f);
 }
 inline int round_to_int(const double x) {
 	// return static_cast<int>(x+0.5);
@@ -97,4 +79,4 @@ inline int round_to_int(const double x) {
 
 /* === E N D =============================================================== */
 
-#endif
+#endif // SYNFIG_MISC_H

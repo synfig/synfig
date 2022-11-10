@@ -42,12 +42,12 @@
 #include <stdexcept>
 
 #include <ETL/handle>
-#include <ETL/misc>
 
 #include <synfig/bezier.h>
 #include <synfig/canvas.h>
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/misc.h>
 #include <synfig/exception.h>
 #include <synfig/gradient.h>
 

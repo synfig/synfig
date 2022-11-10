@@ -35,10 +35,10 @@
 
 #include <synfig/localization.h>
 #include <synfig/general.h>
+#include <synfig/misc.h>
 
 #include "trgt_imagemagick.h"
 
-#include <ETL/misc>
 #include <ETL/stringf>
 
 #endif

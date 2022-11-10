@@ -42,10 +42,10 @@
 #include <stdexcept>
 #include <synfig/color.h>
 #include <synfig/gradient.h>
+#include <synfig/misc.h>
 #include <synfig/vector.h>
 #include <synfig/angle.h>
 #include <synfig/real.h>
-#include <ETL/misc>
 
 #endif
 

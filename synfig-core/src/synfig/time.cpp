@@ -42,20 +42,18 @@
 
 #include <algorithm>
 
-#include <ETL/misc>
-
 #include "general.h"
 #include "real.h"
 
 #include "time.h"
 
 #include <synfig/localization.h>
+#include <synfig/misc.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 
 #define tolower ::tolower

@@ -41,10 +41,10 @@
 #include "valuenode_const.h"
 #include <stdexcept>
 #include <synfig/color.h>
+#include <synfig/misc.h>
 #include <synfig/vector.h>
 #include <synfig/time.h>
 #include <synfig/angle.h>
-#include <ETL/misc>
 
 #endif
 

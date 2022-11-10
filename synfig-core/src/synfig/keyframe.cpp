@@ -38,7 +38,7 @@
 #include "keyframe.h"
 #include "general.h"
 #include <synfig/localization.h>
-#include <ETL/misc>
+#include <synfig/misc.h>
 
 #endif
 

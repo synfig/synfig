@@ -39,14 +39,13 @@
 
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/misc.h>
 #include <synfig/valuenode_registry.h>
 #include <synfig/color.h>
 #include <synfig/gradient.h>
 #include <synfig/vector.h>
 #include <synfig/angle.h>
 #include <synfig/real.h>
-
-#include <ETL/misc>
 
 #include <stdexcept>
 

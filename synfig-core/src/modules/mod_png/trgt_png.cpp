@@ -39,9 +39,10 @@
 #include "trgt_png.h"
 #include <png.h>
 #include <cstdio>
-#include <ETL/misc>
 #include <ETL/stringf>
 #include <string.h>
+
+#include <synfig/misc.h>
 
 #endif
 

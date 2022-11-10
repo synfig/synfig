@@ -41,8 +41,9 @@
 #include <glib/gstdio.h>
 #include "trgt_mng.h"
 #include <libmng.h>
-#include <ETL/misc>
 #include <ETL/stringf>
+
+#include <synfig/misc.h>
 
 #endif
 
