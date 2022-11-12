@@ -71,7 +71,7 @@ SYNFIG_LAYER_INIT(Layer_Shade);
 SYNFIG_LAYER_SET_NAME(Layer_Shade,"shade");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Shade,N_("Shade"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_Shade,N_("Stylize"));
-SYNFIG_LAYER_SET_VERSION(Layer_Shade,"0.2");
+SYNFIG_LAYER_SET_VERSION(Layer_Shade,"1.0");
 
 /* -- F U N C T I O N S ----------------------------------------------------- */
 
@@ -86,7 +86,8 @@ Layer_Shade::Layer_Shade():
 	param_size(ValueBase(Vector(0.1,0.1))),
 	param_type(ValueBase(int(Blur::FASTGAUSSIAN))),
 	param_color(ValueBase(Color::black())),
-	param_origin(ValueBase(Vector(0.2,-0.2))),
+	param_origin(ValueBase(Vector(0.0,0.0))),
+	param_transformation(Transformation(Vector(0.2,-0.2))),	
 	param_invert(ValueBase(false))
 {
 	SET_INTERPOLATION_DEFAULTS();
@@ -121,6 +122,7 @@ Layer_Shade::set_param(const String &param, const ValueBase &value)
 		}
 		);
 	IMPORT_VALUE(param_origin);
+	IMPORT_VALUE(param_transformation);
 	IMPORT_VALUE(param_invert);
 
 	if(param=="offset")
@@ -136,6 +138,7 @@ Layer_Shade::get_param(const String &param)const
 	EXPORT_VALUE(param_type);
 	EXPORT_VALUE(param_color);
 	EXPORT_VALUE(param_origin);
+	EXPORT_VALUE(param_transformation);
 	EXPORT_VALUE(param_invert);
 
 	EXPORT_NAME();
@@ -179,6 +182,10 @@ Layer_Shade::get_param_vocab(void)const
 	ret.push_back(ParamDesc("origin")
 		.set_local_name(_("Origin"))
 		.set_is_distance()
+	);
+	ret.push_back(ParamDesc("transformation")
+		.set_local_name(_("Transformation"))
+		.set_description(_("Offset, Angle, Skew Angle and Scale"))
 	);
 	ret.push_back(ParamDesc("size")
 		.set_local_name(_("Size"))
@@ -259,7 +266,7 @@ Layer_Shade::build_composite_fork_task_vfunc(ContextParams /* context_params */,
 	task_colormatrix->sub_task() = task_blur;
 
 	rendering::TaskTransformationAffine::Handle task_transformation(new rendering::TaskTransformationAffine());
-	task_transformation->transformation->matrix.set_translate(origin);
+	task_transformation->transformation->matrix = get_summary_transformation().get_matrix();
 	task_transformation->sub_task() = task_colormatrix;
 
 	return task_transformation;
