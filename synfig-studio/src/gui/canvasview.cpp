@@ -2328,7 +2328,6 @@ CanvasView::on_mode_changed(CanvasInterface::Mode mode)
 		return;
 	toggling_animate_mode_=true;
 	// If the animate flag was set in mode...
-	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
 	if(mode&MODE_ANIMATE)
 	{
 		animatebutton->set_image_from_icon_name("animate_mode_on_icon");
