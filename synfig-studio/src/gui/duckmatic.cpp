@@ -2001,7 +2001,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 	{
 		if (value_desc.parent_is_layer() && param_desc)
 		{
-			Layer_PasteCanvas::Handle layer = Layer_PasteCanvas::Handle::cast_dynamic(value_desc.get_layer());
+			synfig::Layer::Handle layer = value_desc.get_layer();
 			if (layer)
 			{
 				synfigapp::ValueDesc origin_value_desc(value_desc.get_layer(), "origin");
