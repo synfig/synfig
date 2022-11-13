@@ -182,6 +182,7 @@ Layer_Shade::get_param_vocab(void)const
 	ret.push_back(ParamDesc("origin")
 		.set_local_name(_("Origin"))
 		.set_is_distance()
+		.set_invisible_duck()
 	);
 	ret.push_back(ParamDesc("transformation")
 		.set_local_name(_("Transformation"))
@@ -191,7 +192,6 @@ Layer_Shade::get_param_vocab(void)const
 		.set_local_name(_("Size"))
 		.set_description(_("Size of the shade"))
 		.set_is_distance()
-		.set_origin("origin")
 	);
 	ret.push_back(ParamDesc("type")
 		.set_local_name(_("Type"))
