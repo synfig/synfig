@@ -44,6 +44,10 @@ namespace synfig {
 
 namespace clamping
 {
+	/**
+	 * Clamp @a x to a natural number between [0, bound)
+	 * @return false if @a bound is invalid (less or equal to zero)
+	 */
 	inline static bool clamp(int &x, int bound) {
 		if (bound <= 0) return false;
 		if (x < 0) x = 0; else
@@ -64,6 +68,9 @@ public:
 	value_type uncook(const accumulator_type& x)const { return (value_type)x; }
 };
 
+/**
+ * Allow to get an interpolated sample from image from real coordinates instead of exact pixels
+ */
 template <typename VT, typename CT, VT reader(const void*, int, int)>
 class sampler
 {
@@ -72,10 +79,6 @@ public:
 	typedef CT coord_type;
 	typedef coord_type float_type;
 	typedef value_type func(const void*, const coord_type, const coord_type);
-
-	template<typename T, T wrap_func(const VT&), func sampler_func>
-	inline static T wrap(const void *surface, const coord_type x, const coord_type y)
-		{ return wrap_func(sampler_func(surface, x, y)); }
 
 	inline static void prepare_coord(const coord_type x, int &u, float_type &a) {
 		u=static_cast<int>(std::floor(x));
@@ -96,11 +99,11 @@ public:
 		tx[3] = float_type(0.5)*x*x*(x-float_type(1));						                // -t^2 + t^3
 	}
 
-	//! Nearest sample
+	/** Retrieve the nearest sample */
 	static value_type nearest_sample(const void *surface, const coord_type x, const coord_type y)
 		{ return (value_type)reader(surface, synfig::round_to_int(x), synfig::round_to_int(y)); }
 
-	//! Linear sample
+	/** Linear interpolation */
 	static value_type linear_sample(const void *surface, const coord_type x, const coord_type y)
 	{
 		int u, v; float_type a, b;
@@ -114,7 +117,7 @@ public:
 			 + (value_type)(reader(surface, u+1,v+1))*a*b;
 	}
 
-	//! Cosine sample
+	/** Cosine sample */
 	static value_type cosine_sample(const void *surface, const coord_type x, const coord_type y)
 	{
 		int u, v; float_type a, b;
@@ -131,7 +134,7 @@ public:
 			 + (value_type)(reader(surface, u+1,v+1))*a*b;
 	}
 
-	//! Cubic sample
+	/** Cubic sample: uses Catmull-Rom spline */
 	static value_type cubic_sample(const void *surface, const coord_type x, const coord_type y)
 	{
 		//Using catmull rom interpolation because it doesn't blur at all
@@ -163,6 +166,21 @@ public:
 	}
 };
 
+/**
+ * A 2D image data.
+ *
+ * You can think it as a 2D matrix too.
+ *
+ * Its size is defined on construction, but it can be changed later (set_wh()).
+ *
+ * Data can be accessed as a 2D matrix (integer coordinates via operator []).
+ * They also can be get by samplers, to get pixel values in real number coordinates,
+ * by using some interpolation methods. @see nearest_sample(), linear_sample() and others.
+ * Another way is by using iterators (begin(), end()) or pen (get_pen())
+ *
+ * Pixels can be changed directly by their coordinates, or via iterators or pens.
+ * There are also the painting methods like fill() and blit_to().
+ */
 template <typename T, class VP=value_prep<T,T> >
 class surface
 {
@@ -187,56 +205,50 @@ public:
 	typedef typename pen::const_iterator_y const_iterator_y;
 
 private:
+	/** a contiguous memory space.
+	 *  If it is deletable, it is expected to be allocated by `new value_type[]` allocator
+	 */
 	value_type *data_;
-	value_type *zero_pos_;
+	/** the byte length of a row, possibly including some padding for byte-alignment.
+	 *  It must be a positive number
+	*/
 	typename difference_type::value_type pitch_;
-	int w_, h_;
+	/** surface width (number of pixels/samples per row) */
+	int w_;
+	/** surface height (number of pixels/samples per column or number of rows) */
+	int h_;
+	/** if the data is dynamically allocated and can be deleted (on destructor too) */
 	bool deletable_;
 
 	value_prep_type cooker_;
 
-	void swap(surface &x)
-	{
-		std::swap(data_,x.data_);
-		std::swap(zero_pos_,x.zero_pos_);
-		std::swap(pitch_,x.pitch_);
-		std::swap(w_,x.w_);
-		std::swap(h_,x.h_);
-		std::swap(deletable_,x.deletable_);
-	}
-
 public:
 	surface():
-		data_(0),
-		zero_pos_(data_),
+		data_(nullptr),
 		pitch_(0),
 		w_(0),h_(0),
 		deletable_(false) { }
 
 	surface(value_type* data, int w, int h, bool deletable=false):
 		data_(data),
-		zero_pos_(data),
 		pitch_(sizeof(value_type)*w),
 		w_(w),h_(h),
 		deletable_(deletable) { }
 
 	surface(value_type* data, int w, int h, typename difference_type::value_type pitch, bool deletable=false):
 		data_(data),
-		zero_pos_(data),
 		pitch_(pitch),
 		w_(w),h_(h),
 		deletable_(deletable) { }
 	
 	surface(const typename size_type::value_type &w, const typename size_type::value_type &h):
 		data_(new value_type[w*h]),
-		zero_pos_(data_),
 		pitch_(sizeof(value_type)*w),
 		w_(w),h_(h),
 		deletable_(true) { }
 
 	surface(const size_type &s):
 		data_(new value_type[s.x*s.y]),
-		zero_pos_(data_),
 		pitch_(sizeof(value_type)*s.x),
 		w_(s.x),h_(s.y),
 		deletable_(true) { }
@@ -249,20 +261,16 @@ public:
 		data_=new value_type[size.x*size.y];
 		w_=size.x;
 		h_=size.y;
-		zero_pos_=data_;
 		pitch_=sizeof(value_type)*w_;
 		deletable_=true;
 
-		int x,y;
-
-		for(y=0;y<h_;y++)
-			for(x=0;x<w_;x++)
+		for(int y = 0; y < h_; y++)
+			for(int x = 0; x < w_; x++)
 				(*this)[y][x]=_begin.get_value_at(x,y);
 	}
 
 	surface(const surface &s):
 		data_(s.data_?(pointer)(new char[s.pitch_*s.h_]):0),
-		zero_pos_(data_+(s.zero_pos_-s.data_)),
 		pitch_(s.pitch_),
 		w_(s.w_),
 		h_(s.h_),
@@ -272,7 +280,7 @@ public:
 		if(s.data_)
 		{
 			assert(data_);
-			memcpy(data_,s.data_,std::abs(pitch_)*h_);
+			memcpy(data_, s.data_, pitch_ * h_);
 		}
 	}
 
@@ -291,24 +299,9 @@ public:
 	typename size_type::value_type get_w()const { return w_; }
 	typename size_type::value_type get_h()const { return h_; }
 
-	const surface &mirror(const surface &rhs)
-	{
-		if(deletable_)delete [] data_;
-
-		data_=rhs.data_;
-		zero_pos_=rhs.zero_pos_;
-		pitch_=rhs.pitch_;
-		w_=rhs.w_;
-		h_=rhs.h_;
-		deletable_=false;
-
-		return *this;
-	}
-
 	const surface &operator=(const surface &rhs)
 	{
 		set_wh(rhs.w_,rhs.h_);
-		zero_pos_=data_+(rhs.zero_pos_-rhs.data_);
 		pitch_=rhs.pitch_;
 		deletable_=true;
 
@@ -324,7 +317,8 @@ public:
 			return;
 		memcpy(data_, rhs.data_, pitch_*h_);
 	}
-	
+
+	/** Change the surface size. It doesn't keep the previous pixel/sample values */
 	void
 	set_wh(typename size_type::value_type w, typename size_type::value_type h, const typename size_type::value_type &pitch=0)
 	{
@@ -342,33 +336,19 @@ public:
 			pitch_=pitch;
 		else
 			pitch_=sizeof(value_type)*w_;
-		zero_pos_=data_=(pointer)(new char[pitch_*h_]);
+		data_=(pointer)(new char[pitch_*h_]);
 		deletable_=true;
 	}
 
-	void
-	set_wh(typename size_type::value_type w, typename size_type::value_type h, unsigned char* newdata, const typename size_type::value_type &pitch)
-	{
-		if(data_ && deletable_)
-		{
-			delete [] data_;
-		}
-		w_=w;
-		h_=h;
-		zero_pos_=data_=(pointer)newdata;
-		pitch_=pitch;
-		deletable_=false;	
-	}
 
 	void
 	fill(value_type v, int x, int y, int w, int h)
 	{
 		assert(data_);
 		if(w<=0 || h<=0)return;
-		int i;
 		pen PEN(get_pen(x,y));
 		PEN.set_value(v);
-		for(i=0;i<h;i++,PEN.inc_y(),PEN.dec_x(w))
+		for(int i = 0; i < h; i++, PEN.inc_y(), PEN.dec_x(w))
 			PEN.put_hline(w);
 	}
 
@@ -377,9 +357,8 @@ public:
 	{
 		assert(data_);
 		if(w<=0 || h<=0)return;
-		int y;
 		PEN.set_value(v);
-		for(y=0;y<h;y++,PEN.inc_y(),PEN.dec_x(w))
+		for(int y = 0; y < h; y++, PEN.inc_y(), PEN.dec_x(w))
 			PEN.put_hline(w);
 	}
 
@@ -387,10 +366,9 @@ public:
 	fill(value_type v)
 	{
 		assert(data_);
-		int y;
 		pen pen_=begin();
 		pen_.set_value(v);
-		for(y=0;y<h_;y++,pen_.inc_y(),pen_.dec_x(w_))
+		for(int y = 0; y < h_; y++, pen_.inc_y(), pen_.dec_x(w_))
 			pen_.put_hline(w_);
 	}
 
@@ -432,8 +410,7 @@ public:
 
 		for(; h>0; h--,DEST_PEN.inc_y(),SOURCE_PEN.inc_y())
 		{
-			int i;
-			for(i=0; i<w; i++,DEST_PEN.inc_x(),SOURCE_PEN.inc_x())
+			for(int i = 0; i < w; i++, DEST_PEN.inc_x(), SOURCE_PEN.inc_x())
 			{
 				DEST_PEN.put_value(SOURCE_PEN.get_value());
 			}
@@ -454,29 +431,19 @@ public:
 
 	iterator_x
 	operator[](const int &y)
-	{ assert(data_); return (pointer)(((char*)zero_pos_)+y*pitch_); }
+	{ assert(data_); return (pointer)(((char*)data_)+y*pitch_); }
 
 	const_iterator_x
 	operator[](const int &y)const
-	{ assert(data_); return (const_pointer)(((const char*)zero_pos_)+y*pitch_); }
+	{ assert(data_); return (const_pointer)(((const char*)data_)+y*pitch_); }
 
-	void
-	flip_v()
-	{
-		assert(data_);
-
-		zero_pos_=(pointer)(((char*)zero_pos_)+pitch_*h_);
-
-		pitch_=-pitch_;
-	}
 
 	bool is_valid()const
 	{
-		return 	data_!=0
-			&&	zero_pos_!=0
+		return data_ != nullptr
 			&&	w_>0
 			&&	h_>0
-			&&	pitch_!=0
+			&&	pitch_ > 0
 		;
 	}
 
