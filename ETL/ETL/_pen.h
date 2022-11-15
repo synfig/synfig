@@ -38,7 +38,6 @@
 
 #include "_curve_func.h"
 #include <cassert>
-#include <iterator>
 #include <algorithm>
 
 /* === M A C R O S ========================================================= */
@@ -64,7 +63,6 @@ template<typename T>
 class generic_pen_row_iterator
 {
 public:
-	struct iterator_category : public std::random_access_iterator_tag {};
 	typedef T value_type;
 	typedef int difference_type;
 	typedef value_type* pointer;
