@@ -274,7 +274,7 @@ public:
 		}
 	}
 
-	void put_block_clip(int h, int w) { put_block(h,w,value_); }
+	void put_block_clip(int h, int w) { put_block_clip(h,w,value_); }
 
 
 	iterator_x operator[](int i)const { assert(data_); return (pointer)(((char*)data_)+i*pitch_); }
