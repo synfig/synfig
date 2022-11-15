@@ -138,10 +138,8 @@ public:
 	struct difference_type
 	{
 		typedef int value_type;
-		value_type x,y;
-		difference_type(value_type x, value_type y):x(x),y(y) { }
-		const value_type &operator[](int i) const { return i?y:x; }
-		value_type &operator[](int i) { return i?y:x; }
+		value_type x, y;
+		difference_type(value_type x, value_type y) : x(x), y(y) { }
 	};
 
 protected:
@@ -310,17 +308,8 @@ public:
 		return ret;
 	}
 
-	difference_type	diff_begin()const {return difference_type(-x_,-y_);}
-	difference_type	diff_end()const {return difference_type(w_-x_,h_-y_);}
-
-	self_type get_start()const 	{return *this + diff_begin(); }
-	self_type get_end()const 	{return *this + diff_end(); }
-
 	int get_width()const {return w_;}
 	int get_height()const {return h_;}
-
-	int get_w()const {return w_;}
-	int get_h()const {return h_;}
 	int get_pitch()const {return pitch_;}
 };
 

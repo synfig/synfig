@@ -291,7 +291,7 @@ int box_blur_test(void)
 	}
 
 	boxblur_float max=0;
-	printf("CHECK BOXBLUR RESULTS %d,%d:\n",pen.diff_begin().x, pen.diff_begin().y);
+	printf("CHECK BOXBLUR RESULTS\n");
 	for(y=0;y<h;y++,pen.inc_y())
 	{
 		for(x=0;x<w;x++,pen.inc_x())
