@@ -61,9 +61,11 @@ public:
 
 	typedef generic_pen_row_iterator<value_type> self_type;
 
-	pointer data_;
-	int pitch_;
+private:
+	pointer data_ = nullptr;
+	int pitch_ = 0;
 
+public:
 	reference operator[](int i)const { assert(data_); return *(pointer)( (char*)data_+pitch_*i ); }
 	reference operator*()const { assert(data_); return *data_; }
 	pointer operator->() const { assert(data_); return &(operator*()); }
