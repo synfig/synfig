@@ -355,16 +355,16 @@ public:
 	const alpha_type& get_alpha()const { return alpha_; }
 	void set_alpha(alpha_type a) { alpha_=a; }
 
-	void put_value(const value_type &v, alpha_type a=1)const
+	void put_value(const value_type &v, const alpha_type& a=1)const
 		{ PEN_::put_value(affine_func_(get_value(),v,alpha_*a)); }
 	void put_value()const { put_value(get_pen_value()); }
-	void put_value_alpha(alpha_type a)const { put_value(get_pen_value(),a); }
+	void put_value_alpha(const alpha_type& a)const { put_value(get_pen_value(),a); }
 	void put_hline(int l, const alpha_type &a = 1){for(;l>0;l--,inc_x())put_value_alpha(a);}
 
-	void put_value_clip(const value_type &v, alpha_type a=1)const
+	void put_value_clip(const value_type &v, const alpha_type& a=1)const
 		{ if(!clipped())PEN_::put_value(affine_func_(get_value(),v,alpha_*a)); }
 	void put_value_clip()const { put_value_clip(get_pen_value()); }
-	void put_value_clip_alpha(alpha_type a)const { put_value_clip(get_pen_value(),a); }
+	void put_value_clip_alpha(const alpha_type& a)const { put_value_clip(get_pen_value(),a); }
 	void put_hline_clip(int l, const alpha_type &a = 1){l=std::min(l,w_-x_);for(;l>0;l--,inc_x())put_value_clip_alpha(a);}
 
 	//the put_block functions do not modify the pen
