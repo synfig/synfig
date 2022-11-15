@@ -79,7 +79,7 @@ private:
 public:
 	reference operator[](int i)const { assert(data_); return *(pointer)( (char*)data_+pitch_*i ); }
 	reference operator*()const { assert(data_); return *data_; }
-	pointer operator->() const { assert(data_); return &(operator*()); }
+	pointer operator->() const { assert(data_); return data_; }
 
 	/** Go to next surface row */
 	void inc() { assert(data_); data_ = (pointer)((char*)data_ + pitch_); }
