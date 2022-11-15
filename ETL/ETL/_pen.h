@@ -353,7 +353,6 @@ public:
 		:PEN_(x),alpha_(a),affine_func_(func) { }
 
 	const alpha_type& get_alpha()const { return alpha_; }
-	void get_alpha(alpha_type &a) const { a=alpha_; }
 	void set_alpha(alpha_type a) { alpha_=a; }
 
 	void put_value(const value_type &v, alpha_type a=1)const
