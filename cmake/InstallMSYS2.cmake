@@ -74,7 +74,7 @@ file(GLOB MINGW_LIBS
 	    ${MINGW_BIN}/libpangoft2-1.0-[0-9]*.dll
 	    ${MINGW_BIN}/libpangomm-1.4-[0-9]*.dll
 	    ${MINGW_BIN}/libpangowin32-1.0-[0-9]*.dll
-	    ${MINGW_BIN}/libpcre-[0-9]*.dll
+	    ${MINGW_BIN}/libpcre2-[0-9]*.dll
 	    ${MINGW_BIN}/libpixman-1-[0-9]*.dll
 	    ${MINGW_BIN}/libpng16-1[0-9]*.dll
 	    ${MINGW_BIN}/libpng16-config
