@@ -1,8 +1,6 @@
 /*! ========================================================================
-** Extended Template Library
-** \file _pen.h
+** \file pen.h
 ** \brief Pen Template Class Implementation
-** \internal
 **
 ** \legal
 ** Copyright (c) 2002 Robert B. Quattlebaum Jr.
@@ -23,16 +21,12 @@
 ** along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 ** \endlegal
 **
-** \note
-** This is an internal header file, included by other ETL headers.
-** You should not attempt to use it directly.
-**
 ** ========================================================================= */
 
 /* === S T A R T =========================================================== */
 
-#ifndef __ETL__PEN_H
-#define __ETL__PEN_H
+#ifndef SYNFIG_PEN_H
+#define SYNFIG_PEN_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -46,7 +40,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace etl {
+namespace synfig {
 
 /**
  * A 2D surface row iterator: access surface samples of a single row.
@@ -550,4 +544,4 @@ public:
 
 /* === E N D =============================================================== */
 
-#endif
+#endif // SYNFIG_PEN

@@ -37,7 +37,7 @@
 
 /* === M A C R O S ========================================================= */
 
-using namespace etl;
+using namespace synfig;
 
 /* === C L A S S E S ======================================================= */
 
@@ -265,19 +265,19 @@ int box_blur_test(void)
 	pen2.move(w,h);
 
 	//temporary
-	vbox_blur(pen,pen2,2,pen3);
+	etl::vbox_blur(pen,pen2,2,pen3);
 	printf("\n VBLUR ONLY:\n");
 	display_pen(pen3,w,h);
 
 //	box_blur(pen,w,h,4);
-	hbox_blur(pen,pen2,2,pen3);
+	etl::hbox_blur(pen,pen2,2,pen3);
 
 	printf("\n HBLUR ONLY:\n");
 	display_pen(pen3,w,h);
 
 	pen2=pen3;
 	pen2.move(w,h);
-	vbox_blur(pen3,pen2,2,pen);
+	etl::vbox_blur(pen3,pen2,2,pen);
 
 	printf("\nAFTER BOX BLUR:\n");
 

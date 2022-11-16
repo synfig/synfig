@@ -657,7 +657,7 @@ void test_surface_blitting_clamp_larger_height()
 	ASSERT_EQUAL( 0, dst_surface[3][3]);
 }
 
-int display_pen(etl::generic_pen<float> pen, int w, int h)
+int display_pen(synfig::generic_pen<float> pen, int w, int h)
 {
 	int ret=0;
 	int x, y;
@@ -691,7 +691,7 @@ int display_pen(etl::generic_pen<float> pen, int w, int h)
 	return ret;
 }
 
-void make_pattern(etl::generic_pen<float> pen, int w, int h)
+void make_pattern(synfig::generic_pen<float> pen, int w, int h)
 {
 	int x,y;
 	for(y=0;y<h;y++,pen.inc_y())
