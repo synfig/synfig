@@ -132,17 +132,9 @@ NoiseDistort::point_func(const Point &point)const
 }
 
 inline Color
-NoiseDistort::color_func(const Point &point, float /*supersample*/,Context context)const
+NoiseDistort::color_func(const Point &point, Context context)const
 {
-	Color ret(0,0,0,0);
-	ret=context.get_color(point_func(point));
-	return ret;
-}
-
-inline float
-NoiseDistort::calc_supersample(const synfig::Point &/*x*/, float /*pw*/,float /*ph*/)const
-{
-	return 0.0f;
+	return context.get_color(point_func(point));
 }
 
 synfig::Layer::Handle
@@ -152,7 +144,7 @@ NoiseDistort::hit_check(synfig::Context context, const synfig::Point &point)cons
 		return const_cast<NoiseDistort*>(this);
 	if(get_amount()==0.0)
 		return context.hit_check(point);
-	if(color_func(point,0,context).get_a()>0.5)
+	if(color_func(point,context).get_a()>0.5)
 		return const_cast<NoiseDistort*>(this);
 	return synfig::Layer::Handle();
 }
@@ -243,7 +235,7 @@ NoiseDistort::get_param_vocab()const
 Color
 NoiseDistort::get_color(Context context, const Point &point)const
 {
-	const Color color(color_func(point,0,context));
+	const Color color(color_func(point,context));
 
 	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 		return color;
@@ -326,13 +318,13 @@ NoiseDistort::accelerated_render(Context context,Surface *surface,int quality, c
 	{
 		for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)
 			for(x=0,pos[0]=tl[0];x<w;x++,pen.inc_x(),pos[0]+=pw)
-				pen.put_value(color_func(pos,calc_supersample(pos,pw,ph),context));
+				pen.put_value(color_func(pos,context));
 	}
 	else
 	{
 		for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)
 			for(x=0,pos[0]=tl[0];x<w;x++,pen.inc_x(),pos[0]+=pw)
-				pen.put_value(Color::blend(color_func(pos,calc_supersample(pos,pw,ph),context),pen.get_value(),get_amount(),get_blend_method()));
+				pen.put_value(Color::blend(color_func(pos,context),pen.get_value(),get_amount(),get_blend_method()));
 	}
 
 	// Mark our progress as finished

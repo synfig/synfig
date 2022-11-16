@@ -65,10 +65,8 @@ private:
 	//!Parameter: (bool)
 	synfig::ValueBase param_turbulent;
 
-	synfig::Color color_func(const synfig::Point &x, float supersample,synfig::Context context)const;
+	synfig::Color color_func(const synfig::Point &x,synfig::Context context)const;
 	synfig::Point point_func(const synfig::Point &point)const;
-
-	float calc_supersample(const synfig::Point &x, float pw,float ph)const;
 
 public:
 	NoiseDistort();
