@@ -30,7 +30,7 @@
 #include <utility>
 #include <memory>
 #include <map>
-#include <ETL/pen>
+#include <synfig/pen.h>
 #include <ETL/boxblur>
 //#include <ETL/gaussian>
 #include <cmath>

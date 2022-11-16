@@ -33,6 +33,10 @@ add_executable(test_synfig_node node.cpp)
 target_link_libraries(test_synfig_node PRIVATE libsynfig)
 add_test(NAME test_synfig_node COMMAND test_synfig_node)
 
+add_executable(test_synfig_pen pen.cpp)
+target_link_libraries(test_synfig_pen PRIVATE libsynfig)
+add_test(NAME test_synfig_pen COMMAND test_synfig_pen)
+
 add_executable(test_synfig_string string.cpp)
 target_link_libraries(test_synfig_string PRIVATE libsynfig)
 add_test(NAME test_synfig_string COMMAND test_synfig_string)

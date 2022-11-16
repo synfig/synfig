@@ -34,7 +34,7 @@
 #include <cstring>
 
 #include <synfig/misc.h>
-#include <ETL/_pen.h>
+#include <synfig/pen.h>
 
 /* === M A C R O S ========================================================= */
 
