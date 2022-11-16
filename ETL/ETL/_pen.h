@@ -38,7 +38,6 @@
 
 #include "_curve_func.h"
 #include <cassert>
-#include <iterator>
 #include <algorithm>
 
 /* === M A C R O S ========================================================= */
@@ -49,11 +48,21 @@
 
 namespace etl {
 
+/**
+ * A 2D surface row iterator: access surface samples of a single row.
+ *
+ * You can get or set a sample value with operator[] or the current sample by derefencing the iterator.
+ *
+ * Check if iterator is valid by casting it to bool.
+ *
+ * Go to next row via inc() or increment operators. Analog for previous row.
+ * Please note that the iterator does not check if you are passing the surface boundaries
+ * (before first row or beyond the last one).
+ */
 template<typename T>
 class generic_pen_row_iterator
 {
 public:
-	struct iterator_category : public std::random_access_iterator_tag {};
 	typedef T value_type;
 	typedef int difference_type;
 	typedef value_type* pointer;
@@ -61,24 +70,34 @@ public:
 
 	typedef generic_pen_row_iterator<value_type> self_type;
 
-	pointer data_;
-	int pitch_;
+private:
+	pointer data_ = nullptr;
+	int pitch_ = 0;
 
+public:
 	reference operator[](int i)const { assert(data_); return *(pointer)( (char*)data_+pitch_*i ); }
 	reference operator*()const { assert(data_); return *data_; }
-	pointer operator->() const { assert(data_); return &(operator*()); }
+	pointer operator->() const { assert(data_); return data_; }
 
+	/** Go to next surface row */
 	void inc() { assert(data_); data_ = (pointer)((char*)data_ + pitch_); }
+	/** Skip @a n surface rows */
 	void inc(int n) { assert(data_); data_ = (pointer)((char*)data_ + n*pitch_); }
 
+	/** Go back to previous surface row */
 	void dec() { assert(data_); data_ = (pointer)((char*)data_ - pitch_); }
+	/** Go back @a n surface rows */
 	void dec(int n) { assert(data_); data_ = (pointer)((char*)data_ - n*pitch_); }
 
+	/** Go to next surface row */
 	const self_type &operator++() { assert(data_); inc(); return *this; }
+	/** Go back to previous surface row */
 	const self_type &operator--() { assert(data_); dec(); return *this; }
 
+	/** Go to next surface row */
 	self_type operator++(int)
 		{ assert(data_); self_type ret(*this); inc(); return ret; }
+	/** Go back to previous surface row */
 	self_type operator--(int)
 		{ assert(data_); self_type ret(*this); dec(); return ret; }
 
@@ -112,13 +131,31 @@ public:
 		return generic_pen_row_iterator<const value_type>(data_,pitch_);
 	}
 
+	/** Check if iterator is valid. DOES NOT check if it off the 2D surface */
 	operator bool()const { return (bool)data_; }
+	/** Check if iterator is invalid. DOES NOT check if it off the 2D surface */
 	bool operator!()const { return !data_; }
 
 	generic_pen_row_iterator(pointer data, int pitch):data_(data), pitch_(pitch) { }
 	generic_pen_row_iterator():data_(nullptr), pitch_(0) { }
 };
 
+/**
+ * A 2D cursor to walk/read/write on a 2D surface.
+ *
+ * You can change the surface by writing:
+ * - a 2D block: put_block()
+ * - a horizontal line: put_hline()
+ * - a single sample: put_value()
+ *
+ * You can set a default value to write via set_value() and retrieve it back with get_pen_value().
+ *
+ * Get sample iterators with operator[], x(), y() and similar methods or a specific sample with get_value() method.
+ *
+ * The pen can move around the surface with inc(), dec(), move(), move_to() and some other methods.
+ *
+ * You should write/read samples inside valid area. Look for the _clip() methods.
+ */
 template<typename T>
 class generic_pen
 {
@@ -138,27 +175,30 @@ public:
 	struct difference_type
 	{
 		typedef int value_type;
-		value_type x,y;
-		difference_type(value_type x, value_type y):x(x),y(y) { }
-		const value_type &operator[](int i) const { return i?y:x; }
-		value_type &operator[](int i) { return i?y:x; }
+		value_type x, y;
+		difference_type(value_type x, value_type y) : x(x), y(y) { }
 	};
 
 protected:
 	int x_ = 0, y_ = 0;
 	int w_ = 0, h_ = 0;
 private:
+	/** how many bytes have a surface row, including possible padding */
 	int pitch_ = 0;
-	value_type value_;
-	value_type *data_ = nullptr;
+	/** the default sample value to write on the surface */
+	value_type value_ {};
+	/** current pointer to surface data */
+	value_type* data_ = nullptr;
 
 	typedef generic_pen<T> self_type;
 
+	/** convenient method to advance @c data_ some @a nbytes */
 	void addptr(int nbytes)
 	{
 		data_ = (pointer)((char*)data_ + nbytes);
 	}
 
+	/** conveniet method to return @c data_ some @a nbytes */
 	void subptr(int nbytes)
 	{
 		data_ = (pointer)((char*)data_ - nbytes);
@@ -166,6 +206,13 @@ private:
 
 public:
 
+	/**
+	 * A generic_pen
+	 * @param data the sample vector
+	 * @param w width: the number of samples per surface row
+	 * @param h height: the number of samples per surface column
+	 * @param pitch number of BYTES in a surface row
+	 */
 	generic_pen(value_type *data, int w, int h, int pitch):
 		x_(0),
 		y_(0),
@@ -177,6 +224,12 @@ public:
 	{
 	}
 
+	/**
+	 * A generic_pen
+	 * @param data the sample vector
+	 * @param w width: the number of samples per surface row
+	 * @param h height: the number of samples per surface column
+	 */
 	generic_pen(value_type *data, int w, int h):
 		x_(0),
 		y_(0),
@@ -190,6 +243,12 @@ public:
 
 	generic_pen(): value_{}, data_(nullptr) { }
 
+	/**
+	 * Move this pen by a relative distance (@a a, @a b)
+	 * @param a how many samples to move in horizontal axis
+	 * @param b how many samples to move in vertical axis
+	 * @return this object
+	 */
 	self_type& move(int a, int b)
 	{
 		assert(data_);
@@ -197,51 +256,109 @@ public:
 		addptr(b*pitch_ + a*sizeof(value_type));
 		return *this;
 	}
+	/**
+	 * Move this pen to the absolute position (@a x, @a y)
+	 * @param x how many samples to move in horizontal axis from the start of the row (0-indexed)
+	 * @param y how many samples to move in vertical axis from the start of the column (0-indexed)
+	 * @return this object
+	 */
 	self_type& move_to(int x, int y) { assert(data_); return move(x - x_,y - y_);}
 
+	/**
+	 * Move this pen to the same position of pen @a p
+	 * @param p the reference pen to get the position
+	 * @return this object
+	 */
 	template<typename TT>
 	self_type& move_to(const generic_pen<TT> &p) { assert(data_ && p.data_); return move_to(p.x_,p.y_);}
 
+	/**
+	 * The default sample value to write on surface
+	 * @param v the value
+	 */
 	void set_value(const value_type &v) { value_=v; }
 
+	/** Move this pen to the next horizontal sample */
 	void inc_x() { assert(data_); x_++; data_++; }
+	/** Move this pen to the previous horizontal sample */
 	void dec_x() { assert(data_); x_--; data_--; }
+	/** Move this pen to the next vertical sample */
 	void inc_y() { assert(data_); y_++; addptr(pitch_); }
+	/** Move this pen to the previous vertical sample */
 	void dec_y() { assert(data_); y_--; subptr(pitch_); }
 
+	/** Move this pen @a n samples along the horizontal axis */
 	void inc_x(int n) { assert(data_); x_+=n; data_+=n; }
+	/** Move this pen @a n samples along the horizontal axis before current position */
 	void dec_x(int n) { assert(data_); x_-=n; data_-=n; }
+	/** Move this pen @a n samples along the vertical axis after current position */
 	void inc_y(int n) { assert(data_); y_+=n; data_ = (pointer)((char*)data_ + pitch_*n); }
+	/** Move this pen @a n samples along the vertical axis before current position */
 	void dec_y(int n) { assert(data_); y_-=n; data_ = (pointer)((char*)data_ - pitch_*n); }
 
+	/** Replace the sample at current position with @a v */
 	void put_value(const value_type &v)const { assert(data_); *data_=v; }
+	/** Replace the sample at current position with pen value set by set_value() */
 	void put_value()const { assert(data_); put_value(value_); }
 
+	/** Replace the sample at current position with @a v if inside valid area */
 	void put_value_clip(const value_type &v)const
 		{ if(!clipped()) put_value(v); }
+	/** Replace the sample at current position with pen value set by set_value() if inside valid area */
 	void put_value_clip()const { put_value_clip(value_); }
 
+	/** Get the current sample value */
 	const_reference get_value()const { assert(data_); return *data_; }
 
+	/** Get the sample value at (@a x, @a y) coordinates from current point */
 	const_reference get_value_at(int x, int y)const { assert(data_); return ((pointer)(((char*)data_)+y*pitch_))[x]; }
 
+	/** Get the sample value at (@a x, @a y) coordinates from current point if it is in a valid region */
 	const_reference get_value_clip_at(int x, int y)const { assert(data_); if(clipped(x,y))return value_type(); return ((pointer)(((char*)data_)+y*pitch_))[x]; }
 
+	/** Get the current sample value if it is in a valid region */
 	const value_type get_value_clip()const { assert(data_); if(clipped())return value_type(); return *data_; }
 
+	/** Get the default sample value set by set_value() */
 	const value_type get_pen_value()const { return value_; }
 
+	/**
+	 *  Write @a l sample values in a row. It moves the pen.
+	 * @param l the number of samples to write
+	 * @param v the sample value to be written
+	 */
 	void put_hline(int l,const value_type &v)
 	{for(;l>0;l--,inc_x())put_value(v);}
 
+	/**
+	 *  Write @a l sample values in a row, with the pen default value. It moves the pen.
+	 * @param l the number of samples to write
+	 */
 	void put_hline(int l) {put_hline(l,value_);}
 
+	/**
+	 *  Write at most @a l sample values in a row, as long as they are in the valid region. It moves the pen.
+	 * @param l the number of samples to write
+	 * @param v the sample value to be written
+	 */
 	void put_hline_clip(int l, const value_type &v)
 	{l=std::min(l,w_-x_);for(;l>0;l--,inc_x())put_value_clip(v);}
 
+	/**
+	 *  Write at most @a l samples in a row, as long as they are in the valid region.
+	 *  It moves the pen.
+	 *  It uses the default sample value set by set_value().
+	 * @param l the number of samples to write
+	 */
 	void put_hline_clip(int l) {put_hline_clip(l,value_);}
 
-	//the put_block functions do not modify the pen
+	/**
+	 * Write the same sample value @a v in a 2D-rectangle from current position
+	 * It moves the pen.
+	 * @param h the rectangle height
+	 * @param w the rectangle width
+	 * @param v the sample value to be used
+	 */
 	void put_block(int h, int w, const value_type &v)
 	{
 		self_type row(*this);
@@ -252,8 +369,22 @@ public:
 		}
 	}
 
+	/**
+	 * Write the pen value @a v in a 2D-rectangle from current position
+	 * It moves the pen.
+	 * @param h the rectangle height
+	 * @param w the rectangle width
+	 */
 	void put_block(int h, int w) { put_block(h,w,value_); }
 
+	/**
+	 * Write the same sample value @a v in a 2D-rectangle from current position,
+	 * where the rectangle is in the valid area.
+	 * It moves the pen.
+	 * @param h the rectangle height
+	 * @param w the rectangle width
+	 * @param v the sample value to be used
+	 */
 	void put_block_clip(int h, int w, const value_type &v)
 	{
 		self_type row(*this);
@@ -274,7 +405,14 @@ public:
 		}
 	}
 
-	void put_block_clip(int h, int w) { put_block(h,w,value_); }
+	/**
+	 * Write the pen value @a v in a 2D-rectangle from current position
+	 * where the rectangle is in the valid area.
+	 * It moves the pen.
+	 * @param h the rectangle height
+	 * @param w the rectangle width
+	 */
+	void put_block_clip(int h, int w) { put_block_clip(h,w,value_); }
 
 
 	iterator_x operator[](int i)const { assert(data_); return (pointer)(((char*)data_)+i*pitch_); }
@@ -310,20 +448,18 @@ public:
 		return ret;
 	}
 
-	difference_type	diff_begin()const {return difference_type(-x_,-y_);}
-	difference_type	diff_end()const {return difference_type(w_-x_,h_-y_);}
-
-	self_type get_start()const 	{return *this + diff_begin(); }
-	self_type get_end()const 	{return *this + diff_end(); }
-
 	int get_width()const {return w_;}
 	int get_height()const {return h_;}
-
-	int get_w()const {return w_;}
-	int get_h()const {return h_;}
 	int get_pitch()const {return pitch_;}
 };
 
+/**
+ * The alpha_pen class is a variation of generic_pen, with a transparency effect.
+ *
+ * You can set an transparency fade when writing with this pen by setting the
+ * default alpha value with set_alpha(), and/or another additional alpha effect
+ * available on some put_xxxx() methods.
+ */
 template <
 	typename PEN_,
 	typename A_=float,
@@ -362,19 +498,18 @@ public:
 		:PEN_(x),alpha_(a),affine_func_(func) { }
 
 	const alpha_type& get_alpha()const { return alpha_; }
-	void get_alpha(alpha_type &a) const { a=alpha_; }
 	void set_alpha(alpha_type a) { alpha_=a; }
 
-	void put_value(const value_type &v, alpha_type a=1)const
+	void put_value(const value_type &v, const alpha_type& a=1)const
 		{ PEN_::put_value(affine_func_(get_value(),v,alpha_*a)); }
 	void put_value()const { put_value(get_pen_value()); }
-	void put_value_alpha(alpha_type a)const { put_value(get_pen_value(),a); }
+	void put_value_alpha(const alpha_type& a)const { put_value(get_pen_value(),a); }
 	void put_hline(int l, const alpha_type &a = 1){for(;l>0;l--,inc_x())put_value_alpha(a);}
 
-	void put_value_clip(const value_type &v, alpha_type a=1)const
+	void put_value_clip(const value_type &v, const alpha_type& a=1)const
 		{ if(!clipped())PEN_::put_value(affine_func_(get_value(),v,alpha_*a)); }
 	void put_value_clip()const { put_value_clip(get_pen_value()); }
-	void put_value_clip_alpha(alpha_type a)const { put_value_clip(get_pen_value(),a); }
+	void put_value_clip_alpha(const alpha_type& a)const { put_value_clip(get_pen_value(),a); }
 	void put_hline_clip(int l, const alpha_type &a = 1){l=std::min(l,w_-x_);for(;l>0;l--,inc_x())put_value_clip_alpha(a);}
 
 	//the put_block functions do not modify the pen
