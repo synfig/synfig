@@ -38,7 +38,7 @@ int generic_pen_test(int w, int h)
 {
 	printf("generic_pen(w:%d,h:%d): ",w,h);
 
-	std::unique_ptr<float> data(new float[w*h]);
+	std::unique_ptr<float[]> data(new float[w*h]);
 	//unique_ptr<float> data(new float[w*h]);
 	if(!data.get())
 	{
@@ -219,8 +219,8 @@ int box_blur_test(void)
 
 	//unique_ptr<boxblur_float> data(new boxblur_float[w*h]);
 	//unique_ptr<boxblur_float> data2(new boxblur_float[w*h]);
-	std::unique_ptr<boxblur_float> data(new boxblur_float[w*h]);
-	std::unique_ptr<boxblur_float> data2(new boxblur_float[w*h]);
+	std::unique_ptr<boxblur_float[]> data(new boxblur_float[w*h]);
+	std::unique_ptr<boxblur_float[]> data2(new boxblur_float[w*h]);
 	if(!data.get())
 	{
 		printf("Um..... malloc failure on line %d of " __FILE__ "...\n", __LINE__);
