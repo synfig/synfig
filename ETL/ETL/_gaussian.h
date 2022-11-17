@@ -200,11 +200,9 @@ gaussian_blur_3x3(_PEN begin, _PEN end)
 template<typename I> void
 gaussian_blur_3(I begin, I end, bool endpts = true)
 {
-//	typedef typename I _itertype;
-//	int i;
-	typename std::iterator_traits<I>::value_type Tmp1,Tmp2,SR0,SR1;
-
-	SR0=SR1=*begin;
+	auto SR0 = *begin;
+	auto SR1 = SR0;
+	decltype(SR0) Tmp1, Tmp2;
 	I iter,prev=begin;
 	for(iter=begin;iter!=end;prev=iter++)
 	{
