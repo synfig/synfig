@@ -114,25 +114,6 @@ int generic_pen_test(int w, int h)
 	return 0;
 }
 
-int alpha_pen_test(void)
-{
-	printf("alpha_pen: ");
-	printf("SKIPPED\n");
-
-	return 0;
-}
-
-int bbox_pen_test(void)
-{
-	printf("bbox_pen: ");
-
-
-
-	printf("SKIPPED\n");
-
-	return 0;
-}
-
 int display_pen(generic_pen<float> pen, int w, int h)
 {
 	int ret=0;
@@ -199,14 +180,6 @@ int display_pen(generic_pen<double> pen, int w, int h)
 	}
 	pen.dec_y(y);
 	return ret;
-}
-
-void emptyfunction(int v)
-{
-	static int stupid = 0;
-	stupid = v;
-	if (stupid == 0) return; // disable unused warning
-	//printf("Called... %d\n",v);
 }
 
 int box_blur_test(void)
@@ -536,8 +509,6 @@ int main()
 	error+=generic_pen_test(10,40);
 	error+=generic_pen_test(40,10);
     if(error)return error;
-	error+=alpha_pen_test();
-	error+=bbox_pen_test();
 	error+=box_blur_test();
     if(error)return error;
 	error+=gaussian_blur_test();
