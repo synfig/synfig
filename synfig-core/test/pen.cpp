@@ -23,17 +23,10 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <list>
 #include <cstdio>
-#include <cstdlib>
-#include <string>
-#include <utility>
 #include <memory>
-#include <map>
 #include <synfig/pen.h>
 #include <ETL/boxblur>
-//#include <ETL/gaussian>
-#include <cmath>
 
 /* === M A C R O S ========================================================= */
 
