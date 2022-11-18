@@ -23,8 +23,10 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <cstdio>
+#include "test_base.h"
+
 #include <memory>
+
 #include <synfig/pen.h>
 #include <ETL/boxblur>
 
@@ -34,121 +36,56 @@ using namespace synfig;
 
 /* === C L A S S E S ======================================================= */
 
-int generic_pen_test(int w, int h)
+void generic_pen_test(int w, int h)
 {
-	printf("generic_pen(w:%d,h:%d): ",w,h);
-
 	std::unique_ptr<float[]> data(new float[w*h]);
-	//unique_ptr<float> data(new float[w*h]);
-	if(!data.get())
-	{
-		printf("Um..... malloc failure on line %d of " __FILE__ "...\n", __LINE__);
-		abort();
-	}
+	ASSERT(data);
 
 	generic_pen<float> pen(data.get(),w,h);
 	generic_pen<float> pen2;
 
-	if(!pen)
-	{
-		printf("FAILURE! " __FILE__ "@%d: On pen bool test\n", __LINE__);
-		return 1;
-	}
+	ASSERT(pen)
 
-	if(&pen.x()[2]!=&pen[0][2])
-	{
-		printf("FAILURE! " __FILE__ "@%d: On request for horizontal iterator\n", __LINE__);
-		return 1;
-	}
+	ASSERT(&pen.x()[2] == &pen[0][2]);
 
-	if(&pen.y()[2]!=&pen[2][0])
-	{
-		printf("FAILURE! " __FILE__ "@%d: On request for vertical iterator\n", __LINE__);
-		return 1;
-	}
+	ASSERT(&pen.y()[2] == &pen[2][0]);
 
 	pen.move(1,1);
 	pen2=pen;
 
-	if(pen!=pen2)
-	{
-		printf("FAILURE! " __FILE__ "@%d: On pen assignment or pen comparison\n", __LINE__);
-		return 1;
-	}
+	ASSERT(pen==pen2);
 
 	pen2.move(w,h);
 	generic_pen<float>::difference_type diff(pen2-pen);
 
-	if(diff.x!=w || diff.y!=h)
-	{
-		printf("FAILURE! " __FILE__ "@%d: pen difference inconsistency ([%d,%d]!=[%d,%d])\n", __LINE__, diff.x, diff.y, w, h);
-		return 1;
-	}
+	ASSERT_EQUAL(w, diff.x);
+	ASSERT_EQUAL(h, diff.y);
 
-	if(pen.end_x()-pen.x()!=w-1)
-	{
-		printf("FAILURE! " __FILE__ "@%d: iterator_x inconsistency (%ld!=%d)\n", __LINE__, pen.end_x()-pen.x(), w);
-		return 1;
-	}
+	ASSERT_EQUAL(w - 1, pen.end_x() - pen.x());
 
-	if(pen.end_y()-pen.y()!=h-1)
-	{
-		printf("FAILURE! " __FILE__ "@%d: iterator_y inconsistency (%d!=%d)\n", __LINE__, pen.end_y()-pen.y(), h);
-		return 1;
-	}
+	ASSERT_EQUAL(h - 1, pen.end_y() - pen.y());
 
-	if(&pen.end_y()[-1]!=&pen.y()[(h-2)])
-	{
-		printf("FAILURE! " __FILE__ "@%d: iterator_y inconsistency\n", __LINE__);
-		return 1;
-	}
+	ASSERT(&pen.end_y()[-1] == &pen.y()[(h-2)]);
 
-	if(&pen.end_x()[-1]!=&pen.x()[(w-2)])
-	{
-		printf("FAILURE! " __FILE__ "@%d: iterator_x inconsistency\n", __LINE__);
-		return 1;
-	}
+	ASSERT(&pen.end_x()[-1] == &pen.x()[(w-2)]);
+}
 
-	printf("PASSED\n");
+void generic_pen_test_40_40()
+{
+	generic_pen_test(40, 40);
+}
 
-	return 0;
+void generic_pen_test_40_10()
+{
+	generic_pen_test(40, 10);
+}
+
+void generic_pen_test_10_40()
+{
+	generic_pen_test(10, 40);
 }
 
 int display_pen(generic_pen<float> pen, int w, int h)
-{
-	int ret=0;
-	int x, y;
-	// print out the after pic
-	for(y=0;y<h;y++,pen.inc_y())
-	{
-		printf("|");
-		for(x=0;x<w;x++,pen.inc_x())
-		{
-			if(pen.get_value()>=2.0f)
-				printf("#");
-			else if(pen.get_value()>=1.0f)
-				printf("@");
-			else if(pen.get_value()>=0.8f)
-				printf("%%");
-			else if(pen.get_value()>=0.6f)
-				printf("O");
-			else if(pen.get_value()>=0.4f)
-				printf(":");
-			else if(pen.get_value()>=0.2f)
-				printf(".");
-			else if(pen.get_value()>=-0.0001f)
-				printf(" ");
-			else
-				printf("X"),ret++;
-		}
-		pen.dec_x(x);
-		printf("|\n");
-	}
-	pen.dec_y(y);
-	return ret;
-}
-
-int display_pen(generic_pen<double> pen, int w, int h)
 {
 	int ret=0;
 	int x, y;
@@ -503,11 +440,16 @@ int gaussian_blur_test(void)
 
 int main()
 {
-	int error=0;
 
-	error+=generic_pen_test(40,40);
-	error+=generic_pen_test(10,40);
-	error+=generic_pen_test(40,10);
+	TEST_SUITE_BEGIN()
+		TEST_FUNCTION(generic_pen_test_40_40);
+		TEST_FUNCTION(generic_pen_test_10_40);
+		TEST_FUNCTION(generic_pen_test_40_10);
+	TEST_SUITE_END()
+
+//	return tst_exit_status;
+	int error=tst_exit_status;
+
     if(error)return error;
 	error+=box_blur_test();
     if(error)return error;
