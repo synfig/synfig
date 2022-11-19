@@ -26,12 +26,12 @@
 
 #include <cstdio>
 
-#include <ETL/surface>
 #include <ETL/gaussian>
 
 #include <synfig/angle.h>
 #include <synfig/bezier.h>
 #include <synfig/clock.h>
+#include <synfig/surface_etl.h>
 
 /* === M A C R O S ========================================================= */
 
