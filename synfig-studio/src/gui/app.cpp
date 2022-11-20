@@ -1365,7 +1365,7 @@ App::get_default_accel_map()
 		{"<Control>parenleft" ,     "<Actions>/canvasview/decrease-low-res-pixel-size"},
 		{"<Control>parenright" ,    "<Actions>/canvasview/increase-low-res-pixel-size"},
 		{"<Primary>g",              "<Actions>/action_group_layer_action_manager/action-LayerEncapsulate"},
-        {"<Primary>u",              "<Actions>/action_group_layer_action_manager/action-LayerDuplicate"},
+		{"<Primary>u",              "<Actions>/action_group_layer_action_manager/action-LayerDuplicate"},
 		{"<Control><Mod1>parenleft",  "<Actions>/action_group_layer_action_manager/amount-dec"},
 		{"<Control><Mod1>parenright", "<Actions>/action_group_layer_action_manager/amount-inc"},
 		{"equal",                   "<Actions>/canvasview/canvas-zoom-in"},
