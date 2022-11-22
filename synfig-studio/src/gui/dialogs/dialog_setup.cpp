@@ -313,7 +313,7 @@ Dialog_Setup::create_document_page(PageInfo pi)
 	// Document - New Document X size
 	Gtk::Grid *grid_size(manage (new Gtk::Grid()));
 
-	Gtk::Label* label = Gtk::manage(attach_label(grid_size,_("Width"), 0, 0));
+	Gtk::Label* label = attach_label(grid_size,_("Width"), 0, 0);
 	label->set_halign(Gtk::ALIGN_END);
 
 	pref_x_size_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_pref_x_size, 1, 0));
