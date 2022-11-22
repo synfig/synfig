@@ -36,13 +36,19 @@
 namespace synfig
 {
 
-struct TraverseLayerStatus
+struct TraverseLayerSettings
 {
-	// - SETTINGS -
+	/// Should traverse into static layer parameter values of canvas type and they are not inline
+	bool traverse_static_non_inline_canvas = false;
 	/// Should traverse into layer parameter valuenodes of canvas type and they are inline
 	bool traverse_dynamic_inline_canvas = true;
 	/// Should traverse into layer parameter valuenodes of canvas type and they are not inline
 	bool traverse_dynamic_non_inline_canvas = false;
+};
+
+struct TraverseLayerStatus
+{
+	TraverseLayerSettings settings;
 	// - STATUS -
 	/// Tracks the index of each recursive iteration. The last element is the current level. Its size is, then, the real depth
 	std::vector<int> depth = {-1};
@@ -60,8 +66,24 @@ typedef std::function<void(Layer::LooseHandle, const TraverseLayerStatus&)> Trav
 ///
 /// \param layer The starting point to scanning
 /// \param callback A functor called at each layer found
-void traverse_layers(Layer::Handle layer, TraverseLayerCallback callback);
+void traverse_layers(Layer::Handle layer, TraverseLayerCallback callback, TraverseLayerSettings settings = TraverseLayerSettings());
 
+/// Return of TraverseCallback
+/// TRAVERSE_CALLBACK_SKIP means it should not enter in valuenode recursively (if linkable valuenode)
+/// TRAVERSE_CALLBACK_RECURSIVE means the callback will be called for current valuenode as well as for each of its links
+/// TRAVERSE_CALLBACK_ABORT means to stop any other for-each iteration (e.g. exiting from the traverse_valuenodes() call)
+enum TraverseCallbackAction {
+	TRAVERSE_CALLBACK_SKIP,
+	TRAVERSE_CALLBACK_RECURSIVE,
+	TRAVERSE_CALLBACK_ABORT,
+};
+
+/// Walks into valuenode tree performing valuenode_callback() on each valuenode
+/// If value_node is LinkableValueNode, runs on each of its links too, according to return of the valuenode_callback (see TraverseCallbackAction)
+///
+/// \param value_node The starting point to scannning
+/// \param valuenode_callback A functor called at each valuenode found
+void traverse_valuenodes(ValueNode::Handle value_node, std::function<TraverseCallbackAction(ValueNode::Handle)> valuenode_callback);
 
 /// Useful for parameter fetch_replacement_for of replace_value_nodes()
 /// When you have a simple std::map that maps source-value-node to replacement-value-node

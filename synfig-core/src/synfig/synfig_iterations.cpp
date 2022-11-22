@@ -70,13 +70,14 @@ do_traverse_layers(Layer::Handle layer, TraverseLayerStatus& status, TraverseLay
 			 ; iter != param_list.end()
 			 ; ++iter)
 	{
-		if (layer->dynamic_param_list().count(iter->first)==0 && iter->second.get_type()==type_canvas)
+		auto dynamic_param_it = layer->dynamic_param_list().find(iter->first);
+		if (dynamic_param_it == layer->dynamic_param_list().end() && iter->second.get_type()==type_canvas)
 		{
 			bool previous_is_dynamic = status.is_dynamic_canvas;
 			/*status.is_dynamic_canvas = false;*/
 			status.depth.push_back(-1);
 			Canvas::Handle subcanvas(iter->second.get(Canvas::Handle()));
-			if (subcanvas && subcanvas->is_inline())
+			if (subcanvas && (status.settings.traverse_static_non_inline_canvas || subcanvas->is_inline()))
 				for (IndependentContext iter = subcanvas->get_independent_context(); iter != subcanvas->end(); iter++)
 					do_traverse_layers(*iter, status, callback);
 			status.depth.pop_back();
@@ -84,7 +85,7 @@ do_traverse_layers(Layer::Handle layer, TraverseLayerStatus& status, TraverseLay
 		}
 	}
 
-	if (!status.traverse_dynamic_inline_canvas && !status.traverse_dynamic_non_inline_canvas)
+	if (!status.settings.traverse_dynamic_inline_canvas && !status.settings.traverse_dynamic_non_inline_canvas)
 		return;
 
 	for (Layer::DynamicParamList::const_iterator iter(layer->dynamic_param_list().begin())
@@ -103,12 +104,12 @@ do_traverse_layers(Layer::Handle layer, TraverseLayerStatus& status, TraverseLay
 
 				Canvas::Handle subcanvas(value.get(Canvas::Handle()));
 				if (subcanvas && subcanvas->is_inline()) {
-					if (status.traverse_dynamic_inline_canvas)
+					if (status.settings.traverse_dynamic_inline_canvas)
 						for (IndependentContext iter = subcanvas->get_independent_context(); iter != subcanvas->end(); ++iter)
 							do_traverse_layers(*iter, status, callback);
 				} else {
 					//! \todo do we need to implement this?
-					if (status.traverse_dynamic_non_inline_canvas)
+					if (status.settings.traverse_dynamic_non_inline_canvas)
 						warning("%s:%d not yet implemented - do we need to traverse non-inline canvases in layer dynamic parameters?", __FILE__, __LINE__);
 				}
 
@@ -120,12 +121,72 @@ do_traverse_layers(Layer::Handle layer, TraverseLayerStatus& status, TraverseLay
 }
 
 void
-synfig::traverse_layers(Layer::Handle layer, TraverseLayerCallback callback)
+synfig::traverse_layers(Layer::Handle layer, TraverseLayerCallback callback, TraverseLayerSettings settings)
 {
 	TraverseLayerStatus status;
+	status.settings = settings;
 	do_traverse_layers(layer, status, callback);
 }
 
+struct TraverseValueNodeStatus {
+	std::set<ValueNode::LooseHandle> visited_value_nodes;
+};
+
+static TraverseCallbackAction
+do_traverse_valuenodes(ValueNode::Handle value_node, TraverseValueNodeStatus& status, std::function<TraverseCallbackAction(ValueNode::Handle)> valuenode_callback)
+{
+	if (!value_node) {
+		synfig::warning("%s:%d null valuenode?!\n", __FILE__, __LINE__);
+		assert(false);
+		return TRAVERSE_CALLBACK_SKIP;
+	}
+
+	// avoid loops
+	if (status.visited_value_nodes.count(value_node))
+		return TRAVERSE_CALLBACK_SKIP;
+	status.visited_value_nodes.insert(value_node);
+
+	TraverseCallbackAction action = valuenode_callback(value_node);
+	if (action != TRAVERSE_CALLBACK_RECURSIVE)
+		return action;
+
+	// Call valuenode_callback recursively for this value node
+
+	if (auto linkable_vn = LinkableValueNode::Handle::cast_dynamic(value_node)) {
+		for (int i=0; i < linkable_vn->link_count(); i++) {
+			auto ith_link = linkable_vn->get_link(i);
+			action = do_traverse_valuenodes(ith_link, status, valuenode_callback);
+			if (action == TRAVERSE_CALLBACK_ABORT)
+				break;
+		}
+	} else if (auto const_vn = ValueNode_Const::Handle::cast_dynamic(value_node)) {
+		if (const_vn->get_type() == type_bone_valuenode) {
+			ValueNode_Bone::Handle bone_vn = const_vn->get_value().get(ValueNode_Bone::Handle());
+			action = do_traverse_valuenodes(bone_vn.get(), status, valuenode_callback);
+		}
+	} else if (auto animated_vn = ValueNode_Animated::Handle::cast_dynamic(value_node)) {
+		ValueNode_Animated::WaypointList& list(animated_vn->editable_waypoint_list());
+		for (ValueNode_Animated::WaypointList::iterator iter = list.begin(); iter != list.end(); ++iter) {
+			ValueNode::Handle vn = iter->get_value_node();
+			action = do_traverse_valuenodes(vn, status, valuenode_callback);
+			if (action == TRAVERSE_CALLBACK_ABORT)
+				break;
+		}
+	} else {
+		// actually there is a known case: PlaceholderValueNode
+		// but maybe user has custom valuenode modules...
+		synfig::warning(_("Unknown value node type (%s) to traverse by. Ignoring it."), value_node->get_local_name().c_str());
+	}
+
+	return action;
+}
+
+void
+synfig::traverse_valuenodes(ValueNode::Handle value_node, std::function<TraverseCallbackAction(ValueNode::Handle)> valuenode_callback)
+{
+	TraverseValueNodeStatus status;
+	do_traverse_valuenodes(value_node, status, valuenode_callback);
+}
 
 struct ReplaceValueNodeStatus {
 	std::set<ValueNode::LooseHandle> visited_value_nodes;
@@ -194,9 +255,9 @@ void
 synfig::replace_value_nodes(Layer::LooseHandle layer, std::function<ValueNode::LooseHandle(const ValueNode::LooseHandle&)> fetch_replacement_for)
 {
 	auto replace_value_nodes_from_layer = [fetch_replacement_for](Layer::LooseHandle layer, const TraverseLayerStatus& /*status*/) {
-		const auto dyn_param_list = layer->dynamic_param_list();
-		for (auto dyn_param : dyn_param_list) {
-			if (auto new_vn = fetch_replacement_for(dyn_param.second)) {
+		const Layer::DynamicParamList& dyn_param_list = layer->dynamic_param_list();
+		for (const auto& dyn_param : dyn_param_list) {
+			if (ValueNode::LooseHandle new_vn = fetch_replacement_for(dyn_param.second)) {
 				layer->disconnect_dynamic_param(dyn_param.first);
 				layer->connect_dynamic_param(dyn_param.first, new_vn);
 			} else {
