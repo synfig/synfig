@@ -1396,7 +1396,7 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("close-document", Gtk::StockID("gtk-close"), _("Close Document")),
 		sigc::hide_return(sigc::mem_fun(*this,&CanvasView::close_instance))
 	);
-	action_group->add( Gtk::Action::create("show-dependencies", _("Show Dependencies")),
+	action_group->add( Gtk::Action::create("show-dependencies", _("Show Dependencies...")),
 		sigc::hide_return(sigc::mem_fun(*this,&CanvasView::show_dependencies))
 	);
 	action_group->add( Gtk::Action::create("quit", Gtk::StockID("gtk-quit"), _("Quit")),
