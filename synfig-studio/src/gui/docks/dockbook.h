@@ -81,6 +81,8 @@ public:
 
 	void refresh_tab(Dockable*);
 
+	void on_switch_tab_action();
+
 protected:
 	bool tab_button_pressed(GdkEventButton* event, Dockable* dockable);
 	void on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int, int, const Gtk::SelectionData& selection_data, guint, guint time);
@@ -90,6 +92,10 @@ protected:
 	void on_switch_page(Gtk::Widget* page, guint page_num);
 
 	void set_dock_area_visibility(bool visible, DockBook * source);
+
+	static bool switch_tab_action_initialized;
+	static std::vector<DockBook*> books;
+	static std::vector<Gtk::Widget*> books_widget;
 
 protected:
 	DockDropArea *dock_area;

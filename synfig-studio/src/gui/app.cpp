@@ -1071,12 +1071,15 @@ DEFINE_ACTION("help-about",     Gtk::StockID("synfig-about"))
 // actions: Keyframe
 DEFINE_ACTION("keyframe-properties", _("Properties"))
 
+// tab actions
+DEFINE_ACTION("switch-tab", _("switch stab") )
 
 //Layout the actions in the main menu (caret menu, right click on canvas menu) and toolbar:
 	Glib::ustring ui_info_menu =
 "	<menu action='menu-file'>"
 "		<menuitem action='new' />"
 "		<menuitem action='open' />"
+"		<menuitem action='switch-tab' />"
 "		<menu action='menu-open-recent' />"
 "		<separator name='sep-file1'/>"
 "		<menuitem action='save' />"
@@ -1340,6 +1343,7 @@ App::get_default_accel_map()
 		{"<Control>l",              "<Actions>/canvasview/toggle-grid-snap"},
 		{"<Control>n",              "<Actions>/mainwindow/new"},
 		{"<Control>o",              "<Actions>/mainwindow/open"},
+		{"<Primary>t",              "<Actions>/tab_actions/switch-tab"},
 		{"<Control>s",              "<Actions>/canvasview/save"},
 		{"<Control><Shift>s",       "<Actions>/canvasview/save-as"},
 		{"<Control>e",              "<Actions>/canvasview/save-all"},
