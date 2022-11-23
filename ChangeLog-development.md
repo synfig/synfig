@@ -1,3 +1,10 @@
+- [`520bec6`](https://github.com/synfig/synfig/commit/520bec620d3070f110f760aced3bceed3a5c33b4) feat: add Show Canvas External Dependencies dialog ([#2472](https://github.com/synfig/synfig/issues/2472)) [core] [studio]
+- [`3d3f008`](https://github.com/synfig/synfig/commit/3d3f0086ade92630e2649e5e8b4c2df45ca77837) test: fix synfig/benchmark test build ([#2890](https://github.com/synfig/synfig/issues/2890)) [core]
+- [`1e55a85`](https://github.com/synfig/synfig/commit/1e55a859e7de051ff6ad8ead0e5b97775ea7c47d) refactor: avoid std::iterator_traits in ETL/gaussian ([#2889](https://github.com/synfig/synfig/issues/2889)) [ETL]
+- [`72ed46d`](https://github.com/synfig/synfig/commit/72ed46db11a062edad03ffe44b9d19bcb4ca36cb) fix(lang): Spanish translation typo ([#2879](https://github.com/synfig/synfig/issues/2879)) [studio]
+- [`ecd8ea6`](https://github.com/synfig/synfig/commit/ecd8ea634ee45dcbb6ceb941988c55d1ae99be46) refactor(NoiseDistort): remove useless method, argument, intermediate var ([#2887](https://github.com/synfig/synfig/issues/2887)) [core]
+- [`980fd1e`](https://github.com/synfig/synfig/commit/980fd1e8230e25f3ab4e8d325ccda54c82993ae6) build(appveyor): added missing libpcre2 ([#2886](https://github.com/synfig/synfig/issues/2886))
+- [`94b9861`](https://github.com/synfig/synfig/commit/94b98610c974c1d30a78c93af9492be7592fa24f) refactor: cleanup on ETL/pen ([#2881](https://github.com/synfig/synfig/issues/2881)) [ETL]
 - [`8d50079`](https://github.com/synfig/synfig/commit/8d50079c16095b0cc8f49ff946d52a03c2226781) refactor: minor cleanup in ETL box_blur ([#2873](https://github.com/synfig/synfig/issues/2873)) [ETL]
 - [`5584006`](https://github.com/synfig/synfig/commit/558400604d215fb91d9984788ecc3313f9f2e0bb) refactor: removed unused Gtk::IconSIze ([#2878](https://github.com/synfig/synfig/issues/2878)) [studio]
 - [`2c1244b`](https://github.com/synfig/synfig/commit/2c1244b5425ffeceea523fddf4c9d672b125f624) refactor: remove some unused methods and add docs to synfig::surface ([#2871](https://github.com/synfig/synfig/issues/2871)) [core]
