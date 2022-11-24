@@ -1341,8 +1341,8 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		ADD_IMAGE_MENU_ITEM(TYPE_SQUARED, "action_squared_interpolation_icon", _("Cusp Before: Squared"))
 		ADD_IMAGE_MENU_ITEM(TYPE_PEAK, "action_peak_interpolation_icon", _("Cusp Before: Peak"))
 		ADD_IMAGE_MENU_ITEM(TYPE_FLAT, "action_flat_interpolation_icon", _("Cusp Before: Flat"))
-		ADD_IMAGE_MENU_ITEM(TYPE_INNER_ROUNDED, "action_rounded_interpolation_icon", _("Cusp Before: Inner Rounded"))
-		ADD_IMAGE_MENU_ITEM(TYPE_INNER_PEAK, "action_peak_interpolation_icon", _("Cusp Before: Off-Peak"))
+		ADD_IMAGE_MENU_ITEM(TYPE_INNER_ROUNDED, "action_innerrounded_interpolation_icon", _("Cusp Before: Inner Rounded"))
+		ADD_IMAGE_MENU_ITEM(TYPE_INNER_PEAK, "action_offpeak_interpolation_icon", _("Cusp Before: Off-Peak"))
 
 		///////
 		item = Gtk::manage(new Gtk::SeparatorMenuItem());
@@ -1358,8 +1358,8 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		ADD_IMAGE_MENU_ITEM(TYPE_SQUARED, "action_squared_interpolation_icon", _("Cusp After: Squared"))
 		ADD_IMAGE_MENU_ITEM(TYPE_PEAK, "action_peak_interpolation_icon", _("Cusp After: Peak"))
 		ADD_IMAGE_MENU_ITEM(TYPE_FLAT, "action_flat_interpolation_icon", _("Cusp After: Flat"))
-		ADD_IMAGE_MENU_ITEM(TYPE_INNER_ROUNDED, "action_rounded_interpolation_icon", _("Cusp After: Inner Rounded"))
-		ADD_IMAGE_MENU_ITEM(TYPE_INNER_PEAK, "action_peak_interpolation_icon", _("Cusp After: Off-Peak"))
+		ADD_IMAGE_MENU_ITEM(TYPE_INNER_ROUNDED, "action_innerrounded_interpolation_icon", _("Cusp After: Inner Rounded"))
+		ADD_IMAGE_MENU_ITEM(TYPE_INNER_PEAK, "action_offpeak_interpolation_icon", _("Cusp After: Off-Peak"))
 
 		///////
 		item = Gtk::manage(new Gtk::SeparatorMenuItem());

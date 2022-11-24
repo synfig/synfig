@@ -96,8 +96,10 @@ set(ICONS
 	action_flat_interpolation_icon
 	action_interpolate_interpolation_icon
 	action_peak_interpolation_icon
+	action_offpeak_interpolation_icon
 	action_remove_from_set_icon
 	action_rounded_interpolation_icon
+	action_innerrounded_interpolation_icon
 	action_set_layer_description_icon
 	action_squared_interpolation_icon
 	action_unexport_icon

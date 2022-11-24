@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <canvas version="1.2" width="128" height="128" xres="2952.755900" yres="2952.755900" gamma-r="2.200000" gamma-g="2.200000" gamma-b="2.200000" view-box="-1.000000 1.000000 1.000000 -1.000000" antialias="1" fps="30.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
-  <name>action_rounded_interpolation_icon.sif</name>
+  <name>action_innerrounded_interpolation_icon.sif</name>
   <desc>Placed in the Public Domain in 2011 by Carlos López (genete)</desc>
   <meta name="background_first_color" content="0.880000 0.880000 0.880000"/>
   <meta name="background_rendering" content="0"/>
@@ -2792,7 +2792,7 @@
             <point>
               <vector>
                 <x>-0.5625000000</x>
-                <y>0.0000000000</y>
+                <y>0.1875000000</y>
               </vector>
             </point>
             <width>
@@ -2807,7 +2807,7 @@
             <t1>
               <radial_composite type="vector">
                 <radius>
-                  <real value="0.9375000000"/>
+                  <real value="0.5625000000"/>
                 </radius>
                 <theta>
                   <angle value="89.999992"/>
@@ -2817,18 +2817,18 @@
             <t2>
               <radial_composite type="vector">
                 <radius>
-                  <real value="0.9375000000"/>
+                  <real value="0.7500000000"/>
                 </radius>
                 <theta>
-                  <angle value="89.999992"/>
+                  <angle value="-89.999992"/>
                 </theta>
               </radial_composite>
             </t2>
             <split_radius>
-              <bool value="false"/>
+              <bool value="true"/>
             </split_radius>
             <split_angle>
-              <bool value="false"/>
+              <bool value="true"/>
             </split_angle>
           </composite>
         </entry>
@@ -2836,8 +2836,8 @@
           <composite guid="04EE25F492441831E8FC2A94979D56A0" type="bline_point">
             <point>
               <vector>
-                <x>0.0000000246</x>
-                <y>0.5625000000</y>
+                <x>-0.0000000164</x>
+                <y>-0.3750000000</y>
               </vector>
             </point>
             <width>
@@ -2882,7 +2882,7 @@
             <point>
               <vector>
                 <x>0.5625000000</x>
-                <y>0.0000000000</y>
+                <y>0.1875000000</y>
               </vector>
             </point>
             <width>
@@ -2897,28 +2897,28 @@
             <t1>
               <radial_composite type="vector">
                 <radius>
-                  <real value="0.9375000000"/>
+                  <real value="0.7500000000"/>
                 </radius>
                 <theta>
-                  <angle value="-89.999992"/>
+                  <angle value="89.999992"/>
                 </theta>
               </radial_composite>
             </t1>
             <t2>
               <radial_composite type="vector">
                 <radius>
-                  <real value="0.1875000000"/>
+                  <real value="0.5625000000"/>
                 </radius>
                 <theta>
-                  <angle value="-89.999992"/>
+                  <angle value="-90.000000"/>
                 </theta>
               </radial_composite>
             </t2>
             <split_radius>
-              <bool value="false"/>
+              <bool value="true"/>
             </split_radius>
             <split_angle>
-              <bool value="false"/>
+              <bool value="true"/>
             </split_angle>
           </composite>
         </entry>

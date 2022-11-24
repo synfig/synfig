@@ -79,7 +79,9 @@ EXTRA_DIST = \
 	action_flat_interpolation_icon.sif \
 	action_interpolate_interpolation_icon.sif \
 	action_peak_interpolation_icon.sif \
+	action_offpeak_interpolation_icon.sif \
 	action_rounded_interpolation_icon.sif \
+	action_innerrounded_interpolation_icon.sif \
 	action_squared_interpolation_icon.sif \
 	\
 	action_doc_icons.sif \
@@ -269,7 +271,9 @@ ICONS = \
 	action_flat_interpolation_icon.$(EXT) \
 	action_interpolate_interpolation_icon.$(EXT) \
 	action_peak_interpolation_icon.$(EXT) \
+	action_offpeak_interpolation_icon.$(EXT) \
 	action_rounded_interpolation_icon.$(EXT) \
+	action_innerrounded_interpolation_icon.$(EXT) \
 	action_squared_interpolation_icon.$(EXT) \
 	\
 	action_doc_new_icon.$(EXT) \
