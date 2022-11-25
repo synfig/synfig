@@ -116,7 +116,7 @@ StateEyedrop_Context::StateEyedrop_Context(CanvasView *canvasView):
 	canvas_view->get_work_area()->set_cursor(Gdk::Cursor::create(Gdk::CROSSHAIR));
 
 	// Toolbox widgets
-	title_label.set_label(_("Eyedrop Tool"));
+	title_label.set_label(_("Eyedropper Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
@@ -156,7 +156,7 @@ StateEyedrop_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
 	App::dialog_tool_options->set_widget(options_grid);
-	App::dialog_tool_options->set_local_name(_("Eyedrop Tool"));
+	App::dialog_tool_options->set_local_name(_("Eyedropper Tool"));
 	App::dialog_tool_options->set_name("eyedrop");
 }
 
