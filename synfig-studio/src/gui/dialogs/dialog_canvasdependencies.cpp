@@ -134,12 +134,18 @@ struct ExternalValueNodeCollector {
 				if (it != layer->dynamic_param_list().end()) {
 					std::set<ValueBase> values;
 					it->second->get_values(values);
-					for (const auto& v : values)
-						external_resource_stats[v.get(String())]++;
+					for (const auto& v : values) {
+						auto str_value = v.get(String());
+						if (!str_value.empty())
+							external_resource_stats[str_value]++;
+					}
 				} else {
 					ValueBase v = layer->get_param(param_name);
-					if (v.is_valid())
-						external_resource_stats[v.get(String())]++;
+					if (v.is_valid()) {
+						auto str_value = v.get(String());
+						if (!str_value.empty())
+							external_resource_stats[str_value]++;
+					}
 				}
 			}
 		}
