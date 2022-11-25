@@ -248,7 +248,9 @@ void Dialog_CanvasDependencies::refresh()
 			row->set_value(0, pair.first);
 			row->set_value(1, pair.second);
 			Glib::RefPtr<Gdk::Pixbuf> pixbuf;
-			const std::string ext = Glib::ustring(etl::filename_extension(pair.first).substr(1)).lowercase();
+			std::string ext = Glib::ustring(etl::filename_extension(pair.first)).lowercase();
+			if (!ext.empty())
+				ext = ext.substr(1);
 			const std::vector<std::string> audio_ext = {"wav", "wave", "mp3", "ogg", "ogm", "oga", "wma", "m4a", "aiff", "aif", "aifc"};
 			const std::vector<std::string> image_ext = {"png", "bmp", "jpg", "jpeg", "gif", "tiff", "tif", "dib", "ppm", "pbm", "pgm", "pnm", "webp"};
 			const std::vector<std::string> lipsync_ext = {"ppo", "tsv", "xml"};
