@@ -89,7 +89,7 @@ synfig::waypoint_collect(std::set<Waypoint, std::less<UniqueID> >	&waypoint_set,
 		Layer::DynamicParamList::const_iterator iter;
 		int ret(0);
 		etl::handle<Layer_PasteCanvas> p = etl::handle<Layer_PasteCanvas>::cast_dynamic(layer);
-        if ((!p && ignore_dynamic_parameters) || !ignore_dynamic_parameters){
+		if (!p || !ignore_dynamic_parameters){
 			for(iter=dyn_param_list.begin();iter!=dyn_param_list.end();++iter)
 				ret+=waypoint_collect(waypoint_set,time,iter->second);
 		}
