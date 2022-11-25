@@ -160,20 +160,15 @@ LayerGroupTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& iter, int 
 		if((bool)(*iter)[model.is_group])
 		{
 			LayerList layer_list;
-			Gtk::TreeModel::iterator child_iter(iter->children().begin());
-			for(;child_iter;++child_iter)
-			{
-				LayerList layer_list2((LayerList)(*child_iter)[model.all_layers]);
-				//for(;layer_list2.size();layer_list2.pop_front())
-				for(;!layer_list2.empty();layer_list2.pop_front())
-					layer_list.push_back(layer_list2.front());
+			for (const auto& child : iter->children()) {
+				LayerList layer_list2(static_cast<LayerList>(child[model.all_layers]));
+				layer_list.splice(layer_list.end(), layer_list2);
 			}
 			x.set(layer_list);
 		}
 		else if((bool)(*iter)[model.is_layer])
 		{
-			LayerList layer_list;
-			layer_list.push_back((Layer::Handle)(*iter)[model.layer]);
+			LayerList layer_list({static_cast<Layer::Handle>((*iter)[model.layer])});
 			x.set(layer_list);
 		}
 
