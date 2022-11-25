@@ -115,7 +115,7 @@ synfig::waypoint_collect(std::set<Waypoint, std::less<UniqueID> >	&waypoint_set,
 		Canvas::const_iterator iter;
 		int ret(0);
 		for(iter=canvas->begin();iter!=canvas->end();++iter)
-            ret+=waypoint_collect(waypoint_set,time,*iter, ignore_dynamic_parameters);
+			ret+=waypoint_collect(waypoint_set,time,*iter, ignore_dynamic_parameters);
 		return ret;
 	}
 
