@@ -126,7 +126,7 @@ public:
 	}
 
 	/** Check if iterator is valid. DOES NOT check if it off the 2D surface */
-	operator bool()const { return (bool)data_; }
+	explicit operator bool()const { return (bool)data_; }
 	/** Check if iterator is invalid. DOES NOT check if it off the 2D surface */
 	bool operator!()const { return !data_; }
 
@@ -419,7 +419,7 @@ public:
 	iterator_y begin_y() { assert(data_); return iterator_y((pointer)((char*)data_ - y_*pitch_),pitch_); }
 	iterator_y end_y() { assert(data_); return iterator_y((pointer)((char*)data_ + (h_-y_)*pitch_),pitch_); }
 
-	operator bool()const { return (bool)data_; }
+	explicit operator bool()const { return (bool)data_; }
 	bool operator!()const { return !data_; }
 	bool operator==(const self_type &rhs)const { return data_==rhs.data_; }
 	bool operator!=(const self_type &rhs)const { return data_!=rhs.data_; }
