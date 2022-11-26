@@ -34,7 +34,256 @@
 
 using namespace synfig;
 
+static int data[] = {
+	1,2,3,0,0,0,
+	4,5,6,0,0,0,
+	7,8,9,0,0,0,
+	10,11,12,0,0,0
+};
+
+
 /* === C L A S S E S ======================================================= */
+
+void test_default_generic_pen_row_iterator_is_invalid()
+{
+	generic_pen_row_iterator<int> it;
+
+	ASSERT_FALSE(bool(it));
+
+	ASSERT(!it);
+}
+
+void test_inc_generic_pen_row_iterator_goes_to_next_row()
+{
+	generic_pen_row_iterator<int> it(data, 6*sizeof(int));
+
+	ASSERT_EQUAL(1, *it);
+
+	it.inc();
+	ASSERT_EQUAL(4, *it);
+}
+
+void test_inc_n_generic_pen_row_iterator_advance_n_rows()
+{
+	generic_pen_row_iterator<int> it(data, 6*sizeof(int));
+
+	ASSERT_EQUAL(1, *it);
+
+	it.inc(2);
+	ASSERT_EQUAL(7, *it);
+}
+
+void test_dec_generic_pen_row_iterator_goes_to_previous_row()
+{
+	generic_pen_row_iterator<int> it(&data[12], 6*sizeof(int));
+
+	ASSERT_EQUAL(7, *it);
+
+	it.dec();
+	ASSERT_EQUAL(4, *it);
+}
+
+void test_dec_n_generic_pen_row_iterator_returns_n_rows()
+{
+	generic_pen_row_iterator<int> it(&data[12], 6*sizeof(int));
+
+	ASSERT_EQUAL(7, *it);
+
+	it.dec(2);
+	ASSERT_EQUAL(1, *it);
+}
+
+void test_pre_inc_generic_pen_row_iterator_goes_to_next_row()
+{
+	generic_pen_row_iterator<int> it(data, 6*sizeof(int));
+
+	ASSERT_EQUAL(1, *it);
+
+	ASSERT_EQUAL(4, *++it);
+}
+
+void test_pre_dec_generic_pen_row_iterator_goes_to_previous_row()
+{
+	generic_pen_row_iterator<int> it(&data[12], 6*sizeof(int));
+
+	ASSERT_EQUAL(7, *it);
+
+	ASSERT_EQUAL(4, *(--it));
+}
+
+void test_post_inc_generic_pen_row_iterator_goes_to_next_row()
+{
+	generic_pen_row_iterator<int> it(data, 6*sizeof(int));
+
+	ASSERT_EQUAL(1, *it);
+
+	it++;
+	ASSERT_EQUAL(4, *it);
+}
+
+void test_post_dec_generic_pen_row_iterator_goes_to_previous_row()
+{
+	generic_pen_row_iterator<int> it(&data[12], 6*sizeof(int));
+
+	ASSERT_EQUAL(7, *it);
+
+	it--;
+	ASSERT_EQUAL(4, *it);
+}
+
+void test_post_inc_generic_pen_row_iterator_does_change_itself_after()
+{
+	generic_pen_row_iterator<int> it(data, 6*sizeof(int));
+
+	ASSERT_EQUAL(1, *it);
+
+	ASSERT_EQUAL(1, *it++);
+}
+
+void test_post_dec_generic_pen_row_iterator_does_change_itself_after()
+{
+	generic_pen_row_iterator<int> it(&data[12], 6*sizeof(int));
+
+	ASSERT_EQUAL(7, *it);
+
+	ASSERT_EQUAL(7, *(it--));
+}
+
+void test_generic_pen_row_iterator_operator_brackets_reaches_nth_row()
+{
+	generic_pen_row_iterator<int> it(data, 6*sizeof(int));
+
+	ASSERT_EQUAL(1, it[0]);
+	ASSERT_EQUAL(4, it[1]);
+	ASSERT_EQUAL(7, it[2]);
+	ASSERT_EQUAL(10, it[3]);
+
+	generic_pen_row_iterator<int> it2(&data[12], 6*sizeof(int));
+
+	ASSERT_EQUAL(7, it2[0]);
+	ASSERT_EQUAL(10, it2[1]);
+	ASSERT_EQUAL(4, it2[-1]);
+	ASSERT_EQUAL(1, it2[-2]);
+}
+
+void test_generic_pen_row_iterator_adding_number_advance_n_rows()
+{
+	generic_pen_row_iterator<int> it(data, 6*sizeof(int));
+
+	it = it + 2;
+	ASSERT_EQUAL(7, *it);
+
+	it = it + 1;
+	ASSERT_EQUAL(10, *it);
+}
+
+void test_generic_pen_row_iterator_subtracting_number_advance_n_rows()
+{
+	generic_pen_row_iterator<int> it(&data[12], 6*sizeof(int));
+
+	it = it - 2;
+	ASSERT_EQUAL(1, *it);
+}
+
+void test_generic_pen_row_iterator_difference_computes_n_rows()
+{
+	generic_pen_row_iterator<int> it1(&data[0], 6*sizeof(int));
+	generic_pen_row_iterator<int> it2(&data[12], 6*sizeof(int));
+
+	ASSERT_EQUAL(0, it1 - it1);
+	ASSERT_EQUAL(0, it2 - it2);
+	ASSERT_EQUAL(2, it2 - it1);
+	ASSERT_EQUAL(-2, it1 - it2);
+}
+
+void test_default_generic_pen_is_invalid()
+{
+	generic_pen<int> pen;
+	ASSERT(!pen);
+}
+
+void test_generic_pen_stores_constructor_info()
+{
+	generic_pen<int> pen(data, 3, 4, 6*sizeof(int));
+
+	ASSERT(pen);
+
+	ASSERT_EQUAL(3, pen.get_width());
+	ASSERT_EQUAL(4, pen.get_height());
+	ASSERT_EQUAL(24, pen.get_pitch());
+}
+
+void test_generic_pen_remembers_pen_value_set()
+{
+	generic_pen<int> pen(data, 3, 4, 6*sizeof(int));
+	pen.set_value(-15);
+	ASSERT_EQUAL(-15, pen.get_pen_value());
+}
+
+
+void test_generic_pen_inc_x_moves_to_next_column()
+{
+	generic_pen<int> pen(data, 3, 4, 6*sizeof(int));
+	ASSERT_EQUAL(1, *pen.x());
+	ASSERT_EQUAL(1, *pen[0]);
+	pen.inc_x();
+	ASSERT_EQUAL(2, *pen.x());
+}
+
+void test_generic_pen_inc_x_advances_n_columns()
+{
+	generic_pen<int> pen(data, 3, 4, 6*sizeof(int));
+	pen.inc_x(2);
+	ASSERT_EQUAL(3, *pen.x());
+}
+
+void test_generic_pen_dec_x_moves_to_previous_column()
+{
+	generic_pen<int> pen(data, 3, 4, 6*sizeof(int));
+	ASSERT_EQUAL(1, *pen.x());
+	pen.inc_x(2);
+	pen.dec_x();
+	ASSERT_EQUAL(2, *pen.x());
+}
+
+void test_generic_pen_dec_x_returns_n_columns()
+{
+	generic_pen<int> pen(data, 3, 4, 6*sizeof(int));
+	ASSERT_EQUAL(1, *pen.x());
+	pen.inc_x(3);
+	pen.dec_x(2);
+	ASSERT_EQUAL(2, *pen.x());
+}
+
+void test_generic_pen_inc_y_moves_to_next_row()
+{
+	generic_pen<int> pen(data, 3, 4, 6*sizeof(int));
+	pen.inc_y();
+	ASSERT_EQUAL(4, *pen.x());
+}
+
+void test_generic_pen_inc_y_advances_n_rows()
+{
+	generic_pen<int> pen(data, 3, 4, 6*sizeof(int));
+	pen.inc_y(2);
+	ASSERT_EQUAL(7, *pen.x());
+}
+
+void test_generic_pen_dec_y_moves_to_previous_row()
+{
+	generic_pen<int> pen(data, 3, 4, 6*sizeof(int));
+	pen.inc_y(2);
+	pen.dec_y();
+	ASSERT_EQUAL(4, *pen.x());
+}
+
+void test_generic_pen_dec_y_returns_n_rows()
+{
+	generic_pen<int> pen(data, 3, 4, 6*sizeof(int));
+	pen.inc_y(3);
+	pen.dec_y(2);
+	ASSERT_EQUAL(4, *pen.x());
+}
 
 void generic_pen_test(int w, int h)
 {
@@ -442,6 +691,37 @@ int main()
 {
 
 	TEST_SUITE_BEGIN()
+		TEST_FUNCTION(test_default_generic_pen_row_iterator_is_invalid);
+		TEST_FUNCTION(test_inc_generic_pen_row_iterator_goes_to_next_row);
+		TEST_FUNCTION(test_inc_n_generic_pen_row_iterator_advance_n_rows);
+		TEST_FUNCTION(test_dec_generic_pen_row_iterator_goes_to_previous_row);
+		TEST_FUNCTION(test_dec_n_generic_pen_row_iterator_returns_n_rows);
+		TEST_FUNCTION(test_pre_inc_generic_pen_row_iterator_goes_to_next_row);
+		TEST_FUNCTION(test_pre_dec_generic_pen_row_iterator_goes_to_previous_row);
+		TEST_FUNCTION(test_post_inc_generic_pen_row_iterator_goes_to_next_row);
+		TEST_FUNCTION(test_post_dec_generic_pen_row_iterator_goes_to_previous_row);
+		TEST_FUNCTION(test_post_inc_generic_pen_row_iterator_does_change_itself_after);
+		TEST_FUNCTION(test_post_dec_generic_pen_row_iterator_does_change_itself_after);
+		TEST_FUNCTION(test_generic_pen_row_iterator_operator_brackets_reaches_nth_row);
+		TEST_FUNCTION(test_generic_pen_row_iterator_adding_number_advance_n_rows);
+		TEST_FUNCTION(test_generic_pen_row_iterator_subtracting_number_advance_n_rows);
+		// FIXME: .end_y() should return an invalid y() (right after last row) ?
+		//TEST_FUNCTION(test_generic_pen_row_iterator_difference_computes_n_rows);
+
+		TEST_FUNCTION(test_default_generic_pen_is_invalid);
+		TEST_FUNCTION(test_generic_pen_stores_constructor_info);
+		TEST_FUNCTION(test_generic_pen_remembers_pen_value_set);
+
+		TEST_FUNCTION(test_generic_pen_inc_x_moves_to_next_column);
+		TEST_FUNCTION(test_generic_pen_inc_x_advances_n_columns);
+		TEST_FUNCTION(test_generic_pen_dec_x_moves_to_previous_column);
+		TEST_FUNCTION(test_generic_pen_dec_x_returns_n_columns);
+
+		TEST_FUNCTION(test_generic_pen_inc_y_moves_to_next_row);
+		TEST_FUNCTION(test_generic_pen_inc_y_advances_n_rows);
+		TEST_FUNCTION(test_generic_pen_dec_y_moves_to_previous_row);
+		TEST_FUNCTION(test_generic_pen_dec_y_returns_n_rows);
+
 		TEST_FUNCTION(generic_pen_test_40_40);
 		TEST_FUNCTION(generic_pen_test_10_40);
 		TEST_FUNCTION(generic_pen_test_40_10);
