@@ -128,9 +128,9 @@ StateEyedrop_Context::StateEyedrop_Context(CanvasView *canvasView):
 	// Toolbox layout
 	options_grid.attach(title_label,
 		0, 0, 2, 1);
-	options_grid.attach(*manage(new Gtk::Label(_("Click to assign Outline Color"), Gtk::ALIGN_START)),
+	options_grid.attach(*manage(new Gtk::Label(_("Click to assign Fill Color"), Gtk::ALIGN_START)),
 		0, 1, 2, 1);
-	options_grid.attach(*manage(new Gtk::Label(_("Ctrl + Click to assign Fill Color"), Gtk::ALIGN_START)),
+	options_grid.attach(*manage(new Gtk::Label(_("Ctrl + Click to assign Outline Color"), Gtk::ALIGN_START)),
 		0, 2, 2, 1);
 
 	options_grid.set_border_width(GAP*2);
