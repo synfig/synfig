@@ -169,6 +169,8 @@ ffmpeg_trgt::init(ProgressCallback* cb = nullptr)
 		if (!fs->is_exists(sound_filename)) {
 			with_sound = false;
 		}
+
+		SoundProcessor::subsys_stop();
 	}
 
 	String ffmpeg_binary_path;
