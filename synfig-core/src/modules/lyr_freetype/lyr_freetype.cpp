@@ -571,7 +571,11 @@ static std::string fontconfig_get_filename(const std::string& font_fam, int styl
 		case SYNFIG_TO_FC(THIN);
 		case SYNFIG_TO_FC(ULTRALIGHT);
 		case SYNFIG_TO_FC(LIGHT);
+#if FC_VERSION >= 21191
 		case SYNFIG_TO_FC(SEMILIGHT);
+#else
+		case TEXT_WEIGHT_SEMILIGHT : fc_weight = FC_WEIGHT_LIGHT ; break;
+#endif
 		case SYNFIG_TO_FC(BOOK);
 		case SYNFIG_TO_FC(MEDIUM);
 		case SYNFIG_TO_FC(SEMIBOLD);
