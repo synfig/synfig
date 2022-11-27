@@ -261,7 +261,7 @@ ffmpeg_trgt::init(ProgressCallback* cb = nullptr)
 	{
 		// this should avoid conflicts with locale settings
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		vargs.push_back((desc.get_time_end()-desc.get_time_start()).get_string(Time::Format::FORMAT_VIDEO));
+		vargs.push_back(desc.get_duration().get_string(Time::Format::FORMAT_VIDEO));
 	}
 	// We need "--" to separate filename from arguments (for the case when filename starts with "-")
 	if ( filename.substr(0,1) == "-" )
