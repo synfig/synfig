@@ -15,6 +15,7 @@ TESTS = \
 	clock \
 	keyframe \
 	node \
+	pen \
 	string \
 	surface_etl
 
@@ -33,6 +34,8 @@ clock_SOURCES=clock.cpp
 keyframe_SOURCES=keyframe.cpp
 
 node_SOURCES=node.cpp
+
+pen_SOURCES=pen.cpp
 
 string_SOURCES=string.cpp
 

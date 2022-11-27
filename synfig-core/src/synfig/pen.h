@@ -1,8 +1,6 @@
 /*! ========================================================================
-** Extended Template Library
-** \file _pen.h
+** \file pen.h
 ** \brief Pen Template Class Implementation
-** \internal
 **
 ** \legal
 ** Copyright (c) 2002 Robert B. Quattlebaum Jr.
@@ -23,16 +21,12 @@
 ** along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 ** \endlegal
 **
-** \note
-** This is an internal header file, included by other ETL headers.
-** You should not attempt to use it directly.
-**
 ** ========================================================================= */
 
 /* === S T A R T =========================================================== */
 
-#ifndef __ETL__PEN_H
-#define __ETL__PEN_H
+#ifndef SYNFIG_PEN_H
+#define SYNFIG_PEN_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -46,7 +40,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace etl {
+namespace synfig {
 
 /**
  * A 2D surface row iterator: access surface samples of a single row.
@@ -132,7 +126,7 @@ public:
 	}
 
 	/** Check if iterator is valid. DOES NOT check if it off the 2D surface */
-	operator bool()const { return (bool)data_; }
+	explicit operator bool()const { return (bool)data_; }
 	/** Check if iterator is invalid. DOES NOT check if it off the 2D surface */
 	bool operator!()const { return !data_; }
 
@@ -425,7 +419,7 @@ public:
 	iterator_y begin_y() { assert(data_); return iterator_y((pointer)((char*)data_ - y_*pitch_),pitch_); }
 	iterator_y end_y() { assert(data_); return iterator_y((pointer)((char*)data_ + (h_-y_)*pitch_),pitch_); }
 
-	operator bool()const { return (bool)data_; }
+	explicit operator bool()const { return (bool)data_; }
 	bool operator!()const { return !data_; }
 	bool operator==(const self_type &rhs)const { return data_==rhs.data_; }
 	bool operator!=(const self_type &rhs)const { return data_!=rhs.data_; }
@@ -550,4 +544,4 @@ public:
 
 /* === E N D =============================================================== */
 
-#endif
+#endif // SYNFIG_PEN

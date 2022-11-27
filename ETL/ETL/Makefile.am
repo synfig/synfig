@@ -13,11 +13,8 @@ etl_HEADERS = \
 	handle \
 	stringf \
 	_stringf.h \
-	_curve_func.h \
 	_handle.h \
 	$(top_builddir)/ETL/etl_profile.h \
-	pen \
-	_pen.h \
 	boxblur \
 	_boxblur.h \
 	gaussian \

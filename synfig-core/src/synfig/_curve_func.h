@@ -1,5 +1,4 @@
 /*! ========================================================================
-** Extended Template and Library
 ** \file _curve_func.h
 ** \brief Utility Curve Template Class Implementations
 ** \internal
@@ -24,19 +23,18 @@
 ** \endlegal
 **
 ** \note
-** This is an internal header file, included by other ETL headers.
+** This is an internal header file, included by other synfig headers.
 ** You should not attempt to use it directly.
 **
 ** ========================================================================= */
 
 /* === S T A R T =========================================================== */
 
-#ifndef __ETL__CURVE_FUNC_H
-#define __ETL__CURVE_FUNC_H
+#ifndef SYNFIG_CURVE_FUNC_H
+#define SYNFIG_CURVE_FUNC_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <functional>
 #include <cmath> // sqrt
 
 /* -- C L A S S E S --------------------------------------------------------- */
@@ -73,4 +71,4 @@ struct distance_func
 
 /* -- E N D ----------------------------------------------------------------- */
 
-#endif
+#endif // SYNFIG_CURVE_FUNC_H

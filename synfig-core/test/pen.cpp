@@ -23,121 +23,315 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <list>
-#include <cstdio>
-#include <cstdlib>
-#include <string>
-#include <utility>
+#include "test_base.h"
+
 #include <memory>
-#include <map>
-#include <ETL/pen>
+
+#include <synfig/pen.h>
 #include <ETL/boxblur>
-//#include <ETL/gaussian>
-#include <cmath>
 
 /* === M A C R O S ========================================================= */
 
-using namespace etl;
+using namespace synfig;
+
+static int data[] = {
+	1,2,3,0,0,0,
+	4,5,6,0,0,0,
+	7,8,9,0,0,0,
+	10,11,12,0,0,0
+};
+
 
 /* === C L A S S E S ======================================================= */
 
-int generic_pen_test(int w, int h)
+void test_default_generic_pen_row_iterator_is_invalid()
 {
-	printf("generic_pen(w:%d,h:%d): ",w,h);
+	generic_pen_row_iterator<int> it;
 
-	std::unique_ptr<float> data(new float[w*h]);
-	//unique_ptr<float> data(new float[w*h]);
-	if(!data.get())
-	{
-		printf("Um..... malloc failure on line %d of " __FILE__ "...\n", __LINE__);
-		abort();
-	}
+	ASSERT_FALSE(bool(it));
+
+	ASSERT(!it);
+}
+
+void test_inc_generic_pen_row_iterator_goes_to_next_row()
+{
+	generic_pen_row_iterator<int> it(data, 6*sizeof(int));
+
+	ASSERT_EQUAL(1, *it);
+
+	it.inc();
+	ASSERT_EQUAL(4, *it);
+}
+
+void test_inc_n_generic_pen_row_iterator_advance_n_rows()
+{
+	generic_pen_row_iterator<int> it(data, 6*sizeof(int));
+
+	ASSERT_EQUAL(1, *it);
+
+	it.inc(2);
+	ASSERT_EQUAL(7, *it);
+}
+
+void test_dec_generic_pen_row_iterator_goes_to_previous_row()
+{
+	generic_pen_row_iterator<int> it(&data[12], 6*sizeof(int));
+
+	ASSERT_EQUAL(7, *it);
+
+	it.dec();
+	ASSERT_EQUAL(4, *it);
+}
+
+void test_dec_n_generic_pen_row_iterator_returns_n_rows()
+{
+	generic_pen_row_iterator<int> it(&data[12], 6*sizeof(int));
+
+	ASSERT_EQUAL(7, *it);
+
+	it.dec(2);
+	ASSERT_EQUAL(1, *it);
+}
+
+void test_pre_inc_generic_pen_row_iterator_goes_to_next_row()
+{
+	generic_pen_row_iterator<int> it(data, 6*sizeof(int));
+
+	ASSERT_EQUAL(1, *it);
+
+	ASSERT_EQUAL(4, *++it);
+}
+
+void test_pre_dec_generic_pen_row_iterator_goes_to_previous_row()
+{
+	generic_pen_row_iterator<int> it(&data[12], 6*sizeof(int));
+
+	ASSERT_EQUAL(7, *it);
+
+	ASSERT_EQUAL(4, *(--it));
+}
+
+void test_post_inc_generic_pen_row_iterator_goes_to_next_row()
+{
+	generic_pen_row_iterator<int> it(data, 6*sizeof(int));
+
+	ASSERT_EQUAL(1, *it);
+
+	it++;
+	ASSERT_EQUAL(4, *it);
+}
+
+void test_post_dec_generic_pen_row_iterator_goes_to_previous_row()
+{
+	generic_pen_row_iterator<int> it(&data[12], 6*sizeof(int));
+
+	ASSERT_EQUAL(7, *it);
+
+	it--;
+	ASSERT_EQUAL(4, *it);
+}
+
+void test_post_inc_generic_pen_row_iterator_does_change_itself_after()
+{
+	generic_pen_row_iterator<int> it(data, 6*sizeof(int));
+
+	ASSERT_EQUAL(1, *it);
+
+	ASSERT_EQUAL(1, *it++);
+}
+
+void test_post_dec_generic_pen_row_iterator_does_change_itself_after()
+{
+	generic_pen_row_iterator<int> it(&data[12], 6*sizeof(int));
+
+	ASSERT_EQUAL(7, *it);
+
+	ASSERT_EQUAL(7, *(it--));
+}
+
+void test_generic_pen_row_iterator_operator_brackets_reaches_nth_row()
+{
+	generic_pen_row_iterator<int> it(data, 6*sizeof(int));
+
+	ASSERT_EQUAL(1, it[0]);
+	ASSERT_EQUAL(4, it[1]);
+	ASSERT_EQUAL(7, it[2]);
+	ASSERT_EQUAL(10, it[3]);
+
+	generic_pen_row_iterator<int> it2(&data[12], 6*sizeof(int));
+
+	ASSERT_EQUAL(7, it2[0]);
+	ASSERT_EQUAL(10, it2[1]);
+	ASSERT_EQUAL(4, it2[-1]);
+	ASSERT_EQUAL(1, it2[-2]);
+}
+
+void test_generic_pen_row_iterator_adding_number_advance_n_rows()
+{
+	generic_pen_row_iterator<int> it(data, 6*sizeof(int));
+
+	it = it + 2;
+	ASSERT_EQUAL(7, *it);
+
+	it = it + 1;
+	ASSERT_EQUAL(10, *it);
+}
+
+void test_generic_pen_row_iterator_subtracting_number_advance_n_rows()
+{
+	generic_pen_row_iterator<int> it(&data[12], 6*sizeof(int));
+
+	it = it - 2;
+	ASSERT_EQUAL(1, *it);
+}
+
+void test_generic_pen_row_iterator_difference_computes_n_rows()
+{
+	generic_pen_row_iterator<int> it1(&data[0], 6*sizeof(int));
+	generic_pen_row_iterator<int> it2(&data[12], 6*sizeof(int));
+
+	ASSERT_EQUAL(0, it1 - it1);
+	ASSERT_EQUAL(0, it2 - it2);
+	ASSERT_EQUAL(2, it2 - it1);
+	ASSERT_EQUAL(-2, it1 - it2);
+}
+
+void test_default_generic_pen_is_invalid()
+{
+	generic_pen<int> pen;
+	ASSERT(!pen);
+}
+
+void test_generic_pen_stores_constructor_info()
+{
+	generic_pen<int> pen(data, 3, 4, 6*sizeof(int));
+
+	ASSERT(pen);
+
+	ASSERT_EQUAL(3, pen.get_width());
+	ASSERT_EQUAL(4, pen.get_height());
+	ASSERT_EQUAL(24, pen.get_pitch());
+}
+
+void test_generic_pen_remembers_pen_value_set()
+{
+	generic_pen<int> pen(data, 3, 4, 6*sizeof(int));
+	pen.set_value(-15);
+	ASSERT_EQUAL(-15, pen.get_pen_value());
+}
+
+
+void test_generic_pen_inc_x_moves_to_next_column()
+{
+	generic_pen<int> pen(data, 3, 4, 6*sizeof(int));
+	ASSERT_EQUAL(1, *pen.x());
+	ASSERT_EQUAL(1, *pen[0]);
+	pen.inc_x();
+	ASSERT_EQUAL(2, *pen.x());
+}
+
+void test_generic_pen_inc_x_advances_n_columns()
+{
+	generic_pen<int> pen(data, 3, 4, 6*sizeof(int));
+	pen.inc_x(2);
+	ASSERT_EQUAL(3, *pen.x());
+}
+
+void test_generic_pen_dec_x_moves_to_previous_column()
+{
+	generic_pen<int> pen(data, 3, 4, 6*sizeof(int));
+	ASSERT_EQUAL(1, *pen.x());
+	pen.inc_x(2);
+	pen.dec_x();
+	ASSERT_EQUAL(2, *pen.x());
+}
+
+void test_generic_pen_dec_x_returns_n_columns()
+{
+	generic_pen<int> pen(data, 3, 4, 6*sizeof(int));
+	ASSERT_EQUAL(1, *pen.x());
+	pen.inc_x(3);
+	pen.dec_x(2);
+	ASSERT_EQUAL(2, *pen.x());
+}
+
+void test_generic_pen_inc_y_moves_to_next_row()
+{
+	generic_pen<int> pen(data, 3, 4, 6*sizeof(int));
+	pen.inc_y();
+	ASSERT_EQUAL(4, *pen.x());
+}
+
+void test_generic_pen_inc_y_advances_n_rows()
+{
+	generic_pen<int> pen(data, 3, 4, 6*sizeof(int));
+	pen.inc_y(2);
+	ASSERT_EQUAL(7, *pen.x());
+}
+
+void test_generic_pen_dec_y_moves_to_previous_row()
+{
+	generic_pen<int> pen(data, 3, 4, 6*sizeof(int));
+	pen.inc_y(2);
+	pen.dec_y();
+	ASSERT_EQUAL(4, *pen.x());
+}
+
+void test_generic_pen_dec_y_returns_n_rows()
+{
+	generic_pen<int> pen(data, 3, 4, 6*sizeof(int));
+	pen.inc_y(3);
+	pen.dec_y(2);
+	ASSERT_EQUAL(4, *pen.x());
+}
+
+void generic_pen_test(int w, int h)
+{
+	std::unique_ptr<float[]> data(new float[w*h]);
+	ASSERT(data);
 
 	generic_pen<float> pen(data.get(),w,h);
 	generic_pen<float> pen2;
 
-	if(!pen)
-	{
-		printf("FAILURE! " __FILE__ "@%d: On pen bool test\n", __LINE__);
-		return 1;
-	}
+	ASSERT(pen)
 
-	if(&pen.x()[2]!=&pen[0][2])
-	{
-		printf("FAILURE! " __FILE__ "@%d: On request for horizontal iterator\n", __LINE__);
-		return 1;
-	}
+	ASSERT(&pen.x()[2] == &pen[0][2]);
 
-	if(&pen.y()[2]!=&pen[2][0])
-	{
-		printf("FAILURE! " __FILE__ "@%d: On request for vertical iterator\n", __LINE__);
-		return 1;
-	}
+	ASSERT(&pen.y()[2] == &pen[2][0]);
 
 	pen.move(1,1);
 	pen2=pen;
 
-	if(pen!=pen2)
-	{
-		printf("FAILURE! " __FILE__ "@%d: On pen assignment or pen comparison\n", __LINE__);
-		return 1;
-	}
+	ASSERT(pen==pen2);
 
 	pen2.move(w,h);
 	generic_pen<float>::difference_type diff(pen2-pen);
 
-	if(diff.x!=w || diff.y!=h)
-	{
-		printf("FAILURE! " __FILE__ "@%d: pen difference inconsistency ([%d,%d]!=[%d,%d])\n", __LINE__, diff.x, diff.y, w, h);
-		return 1;
-	}
+	ASSERT_EQUAL(w, diff.x);
+	ASSERT_EQUAL(h, diff.y);
 
-	if(pen.end_x()-pen.x()!=w-1)
-	{
-		printf("FAILURE! " __FILE__ "@%d: iterator_x inconsistency (%ld!=%d)\n", __LINE__, pen.end_x()-pen.x(), w);
-		return 1;
-	}
+	ASSERT_EQUAL(w - 1, pen.end_x() - pen.x());
 
-	if(pen.end_y()-pen.y()!=h-1)
-	{
-		printf("FAILURE! " __FILE__ "@%d: iterator_y inconsistency (%d!=%d)\n", __LINE__, pen.end_y()-pen.y(), h);
-		return 1;
-	}
+	ASSERT_EQUAL(h - 1, pen.end_y() - pen.y());
 
-	if(&pen.end_y()[-1]!=&pen.y()[(h-2)])
-	{
-		printf("FAILURE! " __FILE__ "@%d: iterator_y inconsistency\n", __LINE__);
-		return 1;
-	}
+	ASSERT(&pen.end_y()[-1] == &pen.y()[(h-2)]);
 
-	if(&pen.end_x()[-1]!=&pen.x()[(w-2)])
-	{
-		printf("FAILURE! " __FILE__ "@%d: iterator_x inconsistency\n", __LINE__);
-		return 1;
-	}
-
-	printf("PASSED\n");
-
-	return 0;
+	ASSERT(&pen.end_x()[-1] == &pen.x()[(w-2)]);
 }
 
-int alpha_pen_test(void)
+void generic_pen_test_40_40()
 {
-	printf("alpha_pen: ");
-	printf("SKIPPED\n");
-
-	return 0;
+	generic_pen_test(40, 40);
 }
 
-int bbox_pen_test(void)
+void generic_pen_test_40_10()
 {
-	printf("bbox_pen: ");
+	generic_pen_test(40, 10);
+}
 
-
-
-	printf("SKIPPED\n");
-
-	return 0;
+void generic_pen_test_10_40()
+{
+	generic_pen_test(10, 40);
 }
 
 int display_pen(generic_pen<float> pen, int w, int h)
@@ -174,48 +368,6 @@ int display_pen(generic_pen<float> pen, int w, int h)
 	return ret;
 }
 
-int display_pen(generic_pen<double> pen, int w, int h)
-{
-	int ret=0;
-	int x, y;
-	// print out the after pic
-	for(y=0;y<h;y++,pen.inc_y())
-	{
-		printf("|");
-		for(x=0;x<w;x++,pen.inc_x())
-		{
-			if(pen.get_value()>=2.0f)
-				printf("#");
-			else if(pen.get_value()>=1.0f)
-				printf("@");
-			else if(pen.get_value()>=0.8f)
-				printf("%%");
-			else if(pen.get_value()>=0.6f)
-				printf("O");
-			else if(pen.get_value()>=0.4f)
-				printf(":");
-			else if(pen.get_value()>=0.2f)
-				printf(".");
-			else if(pen.get_value()>=-0.0001f)
-				printf(" ");
-			else
-				printf("X"),ret++;
-		}
-		pen.dec_x(x);
-		printf("|\n");
-	}
-	pen.dec_y(y);
-	return ret;
-}
-
-void emptyfunction(int v)
-{
-	static int stupid = 0;
-	stupid = v;
-	if (stupid == 0) return; // disable unused warning
-	//printf("Called... %d\n",v);
-}
-
 int box_blur_test(void)
 {
 	typedef float boxblur_float;
@@ -226,8 +378,8 @@ int box_blur_test(void)
 
 	//unique_ptr<boxblur_float> data(new boxblur_float[w*h]);
 	//unique_ptr<boxblur_float> data2(new boxblur_float[w*h]);
-	std::unique_ptr<boxblur_float> data(new boxblur_float[w*h]);
-	std::unique_ptr<boxblur_float> data2(new boxblur_float[w*h]);
+	std::unique_ptr<boxblur_float[]> data(new boxblur_float[w*h]);
+	std::unique_ptr<boxblur_float[]> data2(new boxblur_float[w*h]);
 	if(!data.get())
 	{
 		printf("Um..... malloc failure on line %d of " __FILE__ "...\n", __LINE__);
@@ -265,19 +417,19 @@ int box_blur_test(void)
 	pen2.move(w,h);
 
 	//temporary
-	vbox_blur(pen,pen2,2,pen3);
+	etl::vbox_blur(pen,pen2,2,pen3);
 	printf("\n VBLUR ONLY:\n");
 	display_pen(pen3,w,h);
 
 //	box_blur(pen,w,h,4);
-	hbox_blur(pen,pen2,2,pen3);
+	etl::hbox_blur(pen,pen2,2,pen3);
 
 	printf("\n HBLUR ONLY:\n");
 	display_pen(pen3,w,h);
 
 	pen2=pen3;
 	pen2.move(w,h);
-	vbox_blur(pen3,pen2,2,pen);
+	etl::vbox_blur(pen3,pen2,2,pen);
 
 	printf("\nAFTER BOX BLUR:\n");
 
@@ -537,14 +689,48 @@ int gaussian_blur_test(void)
 
 int main()
 {
-	int error=0;
 
-	error+=generic_pen_test(40,40);
-	error+=generic_pen_test(10,40);
-	error+=generic_pen_test(40,10);
+	TEST_SUITE_BEGIN()
+		TEST_FUNCTION(test_default_generic_pen_row_iterator_is_invalid);
+		TEST_FUNCTION(test_inc_generic_pen_row_iterator_goes_to_next_row);
+		TEST_FUNCTION(test_inc_n_generic_pen_row_iterator_advance_n_rows);
+		TEST_FUNCTION(test_dec_generic_pen_row_iterator_goes_to_previous_row);
+		TEST_FUNCTION(test_dec_n_generic_pen_row_iterator_returns_n_rows);
+		TEST_FUNCTION(test_pre_inc_generic_pen_row_iterator_goes_to_next_row);
+		TEST_FUNCTION(test_pre_dec_generic_pen_row_iterator_goes_to_previous_row);
+		TEST_FUNCTION(test_post_inc_generic_pen_row_iterator_goes_to_next_row);
+		TEST_FUNCTION(test_post_dec_generic_pen_row_iterator_goes_to_previous_row);
+		TEST_FUNCTION(test_post_inc_generic_pen_row_iterator_does_change_itself_after);
+		TEST_FUNCTION(test_post_dec_generic_pen_row_iterator_does_change_itself_after);
+		TEST_FUNCTION(test_generic_pen_row_iterator_operator_brackets_reaches_nth_row);
+		TEST_FUNCTION(test_generic_pen_row_iterator_adding_number_advance_n_rows);
+		TEST_FUNCTION(test_generic_pen_row_iterator_subtracting_number_advance_n_rows);
+		// FIXME: .end_y() should return an invalid y() (right after last row) ?
+		//TEST_FUNCTION(test_generic_pen_row_iterator_difference_computes_n_rows);
+
+		TEST_FUNCTION(test_default_generic_pen_is_invalid);
+		TEST_FUNCTION(test_generic_pen_stores_constructor_info);
+		TEST_FUNCTION(test_generic_pen_remembers_pen_value_set);
+
+		TEST_FUNCTION(test_generic_pen_inc_x_moves_to_next_column);
+		TEST_FUNCTION(test_generic_pen_inc_x_advances_n_columns);
+		TEST_FUNCTION(test_generic_pen_dec_x_moves_to_previous_column);
+		TEST_FUNCTION(test_generic_pen_dec_x_returns_n_columns);
+
+		TEST_FUNCTION(test_generic_pen_inc_y_moves_to_next_row);
+		TEST_FUNCTION(test_generic_pen_inc_y_advances_n_rows);
+		TEST_FUNCTION(test_generic_pen_dec_y_moves_to_previous_row);
+		TEST_FUNCTION(test_generic_pen_dec_y_returns_n_rows);
+
+		TEST_FUNCTION(generic_pen_test_40_40);
+		TEST_FUNCTION(generic_pen_test_10_40);
+		TEST_FUNCTION(generic_pen_test_40_10);
+	TEST_SUITE_END()
+
+//	return tst_exit_status;
+	int error=tst_exit_status;
+
     if(error)return error;
-	error+=alpha_pen_test();
-	error+=bbox_pen_test();
 	error+=box_blur_test();
     if(error)return error;
 	error+=gaussian_blur_test();

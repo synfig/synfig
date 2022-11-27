@@ -33,7 +33,7 @@
 
 #include <cmath>				// for ldexp
 
-#include <ETL/_curve_func.h>
+#include <synfig/_curve_func.h>
 
 /* === M A C R O S ========================================================= */
 

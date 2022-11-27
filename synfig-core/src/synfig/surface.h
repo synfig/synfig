@@ -141,16 +141,16 @@ struct _BlendFunc
 **	The default blending method is Color::BLEND_COMPOSITE.
 **	\see Color::BlendMethod
 */
-class Surface::alpha_pen : public etl::alpha_pen< etl::generic_pen<Color>, Color::value_type, _BlendFunc<Color> >
+class Surface::alpha_pen : public synfig::alpha_pen< synfig::generic_pen<Color>, Color::value_type, _BlendFunc<Color> >
 {
 public:
 	alpha_pen() { }
-	alpha_pen(const etl::alpha_pen< etl::generic_pen<Color>, Color::value_type, _BlendFunc<Color> > &x):
-		etl::alpha_pen< etl::generic_pen<Color>, Color::value_type, _BlendFunc<Color> >(x)
+	alpha_pen(const synfig::alpha_pen< generic_pen<Color>, Color::value_type, _BlendFunc<Color> > &x):
+		synfig::alpha_pen< generic_pen<Color>, Color::value_type, _BlendFunc<Color> >(x)
 	{ }
 
-	alpha_pen(const etl::generic_pen<Color>& pen, const Color::value_type &a = 1, const _BlendFunc<Color> &func = _BlendFunc<Color>()):
-		etl::alpha_pen< etl::generic_pen<Color>, Color::value_type, _BlendFunc<Color> >(pen,a,func)
+	alpha_pen(const synfig::generic_pen<Color>& pen, const Color::value_type &a = 1, const _BlendFunc<Color> &func = _BlendFunc<Color>()):
+		synfig::alpha_pen< synfig::generic_pen<Color>, Color::value_type, _BlendFunc<Color> >(pen,a,func)
 	{ }
 
 	//! Sets the blend method to that described by \a method

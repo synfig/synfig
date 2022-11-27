@@ -84,6 +84,7 @@ SYNFIGHEADERS = \
 	canvas.h \
 	color.h \
 	context.h \
+	_curve_func.h \
 	curve.h \
 	curve_helper.h \
 	curveset.h \
@@ -100,6 +101,7 @@ SYNFIGHEADERS = \
 	node.h \
 	palette.h \
 	paramdesc.h \
+	pen.h \
 	polynomial_root.h \
 	rect.h \
 	renddesc.h \

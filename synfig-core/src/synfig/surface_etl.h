@@ -34,7 +34,7 @@
 #include <cstring>
 
 #include <synfig/misc.h>
-#include <ETL/_pen.h>
+#include <synfig/pen.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -189,12 +189,12 @@ public:
 	typedef value_type* pointer;
 	typedef const value_type* const_pointer;
 	typedef value_type& reference;
-	typedef etl::generic_pen<value_type> pen;
-	typedef etl::generic_pen<const value_type> const_pen;
+	typedef generic_pen<value_type> pen;
+	typedef generic_pen<const value_type> const_pen;
 	typedef VP value_prep_type;
 
-	typedef etl::alpha_pen<const_pen> const_alpha_pen;
-	typedef etl::alpha_pen<pen> non_const_alpha_pen;
+	typedef alpha_pen<const_pen> const_alpha_pen;
+	typedef alpha_pen<pen> non_const_alpha_pen;
 
 	typedef typename pen::difference_type size_type;
 	typedef typename pen::difference_type difference_type;
