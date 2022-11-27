@@ -2,8 +2,9 @@ name: Style
 
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
+  # Event list: https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
   pull_request:
-    types: [opened, edited]
+    types: [opened, edited, synchronize]
     branches: [ master ]
 
   # Allows you to run this workflow manually from the Actions tab
