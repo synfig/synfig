@@ -148,9 +148,14 @@ ffmpeg_trgt::set_rend_desc(RendDesc *given_desc)
 bool
 ffmpeg_trgt::init(ProgressCallback* cb = nullptr)
 {
+	bool with_sound = false;
+	const std::string extension = etl::filename_extension(filename);
+	const std::vector<const char*> image_only_extensions{".gif", ".mng"};
+	const bool does_file_format_support_audio = std::find(image_only_extensions.begin(), image_only_extensions.end(), extension) != image_only_extensions.end();
 
-	bool with_sound = true;
-	if(!SoundProcessor::subsys_init()) {
+	if (!does_file_format_support_audio) {
+		with_sound = false;
+	} else if(!SoundProcessor::subsys_init()) {
 		if (cb) cb->error(_("Unable to initialize Sound subsystem"));
 		with_sound = false;
 	} else {
