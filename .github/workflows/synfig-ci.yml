@@ -34,12 +34,12 @@ jobs:
           name: macOS 11 Big Sur (CMake+Ninja)
           toolchain: cmake-ninja
           allow_failures: true
-        - os: ubuntu-18.04
-          name: Ubuntu 18.04 Bionic (Autotools)
+        - os: ubuntu-20.04
+          name: Ubuntu 20.04 Focal (Autotools)
           allow_failures: false
           toolchain: autotools
-        - os: ubuntu-20.04
-          name: Ubuntu 20.04 Focal (CMake+Ninja)
+        - os: ubuntu-22.04
+          name: Ubuntu 22.04 Jammy (CMake+Ninja)
           toolchain: cmake-ninja
           allow_failures: false
 

@@ -2,7 +2,7 @@
 
 name: Synfig Tests CI
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
@@ -24,8 +24,8 @@ jobs:
         include:
         # includes a new variable of npm with a value of 2
         # for the matrix leg matching the os and version
-        - os: ubuntu-18.04
-          name: Ubuntu 18.04 (Bionic)
+        - os: ubuntu-20.04
+          name: Ubuntu 20.04 (Focal)
           allow_failures: false
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -39,7 +39,7 @@ jobs:
           sudo apt install flatpak
           sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
           sudo flatpak install flathub org.freedesktop.appstream-glib -y
-          sudo flatpak run org.freedesktop.appstream-glib validate synfig-studio/org.synfig.SynfigStudio.appdata.xml.in
+          flatpak run org.freedesktop.appstream-glib validate synfig-studio/org.synfig.SynfigStudio.appdata.xml.in
 
       - name: "Lottie exporter"
         run: |
