@@ -107,40 +107,6 @@ typename T::pointer SC3)
 }
 
 template<typename T> void
-gaussian_blur_5x5(T pen, int w, int h)
-{
-	typename T::pointer SC0=new typename T::value_type[w+2];
-	typename T::pointer SC1=new typename T::value_type[w+2];
-	typename T::pointer SC2=new typename T::value_type[w+2];
-	typename T::pointer SC3=new typename T::value_type[w+2];
-
-	gaussian_blur_5x5_(pen,w,h,SC0,SC1,SC2,SC3);
-
-	delete [] SC0;
-	delete [] SC1;
-	delete [] SC2;
-	delete [] SC3;
-}
-
-template<typename T> void
-gaussian_blur_5x5(T begin, T end)
-{
-	typename T::difference_type size(end-begin);
-
-	typename T::pointer SC0=new typename T::value_type[size.x+2];
-	typename T::pointer SC1=new typename T::value_type[size.x+2];
-	typename T::pointer SC2=new typename T::value_type[size.x+2];
-	typename T::pointer SC3=new typename T::value_type[size.x+2];
-
-	gaussian_blur_5x5_(begin,size.x,size.y,SC0,SC1,SC2,SC3);
-
-	delete [] SC0;
-	delete [] SC1;
-	delete [] SC2;
-	delete [] SC3;
-}
-
-template<typename T> void
 gaussian_blur_3x3(T pen,int w, int h)
 {
 	int x,y;
@@ -224,91 +190,6 @@ gaussian_blur_3(I begin, I end, bool endpts = true)
 		SR1=Tmp2;
 		*prev=(Tmp1)/4;
 	}
-}
-
-//! 2D 3x1 pixel gaussian blur
-template<typename _PEN> void
-gaussian_blur_3x1(_PEN begin, _PEN end)
-{
-	typename _PEN::difference_type size=end-begin;
-	for(;size.y>0;size.y--, begin.inc_y())
-		gaussian_blur_3(begin.x(),begin.x()+size.x);
-}
-
-//! 2D 1x3 pixel gaussian blur
-template<typename _PEN> void
-gaussian_blur_1x3(_PEN begin, _PEN end)
-{
-	typename _PEN::difference_type size=end-begin;
-	for(;size.x>0;size.x--,begin.inc_x())
-		gaussian_blur_3(begin.y(),begin.y()+size.y);
-}
-
-template<typename T> void
-gaussian_blur(T pen, int w, int h, int blur_x, int blur_y)
-{
-	typename T::pointer SC0=new typename T::value_type[w+2];
-	typename T::pointer SC1=new typename T::value_type[w+2];
-	typename T::pointer SC2=new typename T::value_type[w+2];
-	typename T::pointer SC3=new typename T::value_type[w+2];
-
-	blur_x--;
-	blur_y--;
-
-	while(blur_x&&blur_y)
-	{
-		if(blur_x>=4 && blur_y>=4)
-		{
-			gaussian_blur_5x5_(pen,w,h,SC0,SC1,SC2,SC3);
-			blur_x-=4,blur_y-=4;
-		}
-		else if(blur_x>=2 && blur_y>=2)
-		{
-			gaussian_blur_3x3(pen,w,h);
-			blur_x-=2,blur_y-=2;
-		}
-		else
-			blur_x--,blur_y--;
-	}
-	while(blur_x)
-	{
-		if(blur_x>=2)
-		{
-			gaussian_blur_3x1(pen,T(pen).move(w,h));
-			blur_x-=2;
-		}
-		else
-			blur_x--;
-	}
-	while(blur_y)
-	{
-		if(blur_y>=2)
-		{
-			gaussian_blur_1x3(pen,T(pen).move(w,h));
-			blur_y-=2;
-		}
-		else
-			blur_y--;
-	}
-
-	delete [] SC0;
-	delete [] SC1;
-	delete [] SC2;
-	delete [] SC3;
-}
-
-template<typename T> void
-gaussian_blur(T begin, T end,int w, int h)
-{
-	typename T::difference_type size(end-begin);
-	gaussian_blur(begin,size.x,size.y,w,h);
-}
-
-template<typename T> void
-gaussian_blur(T begin, T end,int w)
-{
-	typename T::difference_type size(end-begin);
-	gaussian_blur(begin,size.x,size.y,w,w);
 }
 
 };

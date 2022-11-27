@@ -115,14 +115,6 @@ vbox_blur(T1 pen,const int w, const int h, int length, T2 outpen)
 }
 
 template<typename T1,typename T2> void
-box_blur(T1 pen,int w, int h, int blur_w, int blur_h, T2 outpen)
-	{ hbox_blur(pen,w,h,blur_w,outpen); vbox_blur(pen,w,h,blur_h,outpen); }
-
-template<typename T1,typename T2> void
-box_blur(T1 pen,int w, int h, int size, T2 outpen)
-	{ hbox_blur(pen,w,h,size,outpen); vbox_blur(pen,w,h,size,outpen); }
-
-template<typename T1,typename T2> void
 hbox_blur(T1 begin,T1 end, int len,T2 outpen)
 {
 	typename T1::difference_type size(end-begin);
@@ -134,20 +126,6 @@ vbox_blur(T1 begin,T1 end, int len,T2 outpen)
 {
 	typename T1::difference_type size(end-begin);
 	vbox_blur(begin,size.x,size.y,len,outpen);
-}
-
-template<typename T1,typename T2> void
-box_blur(T1 begin,T1 end, int blur_w, int blur_h,T2 outpen)
-{
-	typename T1::difference_type size(end-begin);
-	hbox_blur(begin,size.x,size.y,blur_w,outpen); vbox_blur(begin,size.x,size.y,blur_h,outpen);
-}
-
-template<typename T1,typename T2> void
-box_blur(T1 begin,T1 end, int blursize,T2 outpen)
-{
-	typename T1::difference_type size(end-begin);
-	hbox_blur(begin,size.x,size.y,blursize,outpen); vbox_blur(begin,size.x,size.y,blursize,outpen);
 }
 
 };
