@@ -149,6 +149,40 @@ class GUID;
 class Canvas;
 class SoundProcessor;
 
+typedef std::vector<std::pair<std::string, std::string>> CanvasMissingIdList;
+//! Map to fix broken links due to missing files
+//! (original_file_path, (new_file_path, [(valuenode_id, value_type), ...]))
+//! If new_file_path is null, there is no replacement file path to that item
+struct CanvasBrokenUseIdMap : std::map<std::string, std::pair<std::string, CanvasMissingIdList>>
+{
+	bool fix(std::string& use_id) const
+	{
+		auto pos = use_id.find('#');
+		if (pos == std::string::npos || pos == 0)
+			return false;
+
+		try {
+			std::string filepath = use_id.substr(0, pos);
+			filepath = this->at(filepath).first;
+			use_id = filepath + use_id.substr(pos);
+			return true;
+		} catch (...) {
+			return false;
+		}
+	}
+
+	bool add(const std::string& use_id, const std::string& type)
+	{
+		auto pos = use_id.find('#');
+		if (pos == std::string::npos || pos == 0)
+			return false;
+
+		(*this)[use_id.substr(0, pos)] = {"", {{use_id.substr(pos+1), type}}};
+		return true;
+	}
+
+};
+
 /*!	\class Canvas
 **	\brief Canvas is a list of Layers. It is the base class for a Synfig
 * document.
@@ -503,16 +537,16 @@ public:
 	/*!	\return If found, returns a handle to the ValueNode.
 	**		Otherwise, returns an empty handle.
 	*/
-	ValueNode::Handle find_value_node(const String &id, bool might_fail);
+	ValueNode::Handle find_value_node(const String &id, bool might_fail, CanvasBrokenUseIdMap* broken_links = nullptr);
 
 	//! \internal \writeme
-	ValueNode::Handle surefind_value_node(const String &id);
+	ValueNode::Handle surefind_value_node(const String &id, CanvasBrokenUseIdMap* broken_links = nullptr);
 
 	//! Finds the ValueNode in the Canvas with the given \a id
 	/*!	\return If found, returns a handle to the ValueNode.
 	**		Otherwise, returns an empty handle.
 	*/
-	ValueNode::ConstHandle find_value_node(const String &id, bool might_fail)const;
+	ValueNode::ConstHandle find_value_node(const String &id, bool might_fail, CanvasBrokenUseIdMap* broken_links = nullptr)const;
 
 	//! Adds a Value node by its Id.
 	/*! Throws an error if the Id is not
@@ -534,19 +568,19 @@ public:
 	**		If not found, it creates a new Canvas and returns it
 	**		If an error occurs, it returns an empty handle
 	*/
-	Handle surefind_canvas(const String &id,String &warnings);
+	Handle surefind_canvas(const String &id,String &warnings, CanvasBrokenUseIdMap* broken_links = nullptr);
 
 	//! Finds a child Canvas in the Canvas with the given \a id
 	/*!	\return If found, returns a handle to the child Canvas.
 	**		Otherwise, returns an empty handle.
 	*/
-	Handle find_canvas(const String &id, String &warnings);
+	Handle find_canvas(const String &id, String &warnings, CanvasBrokenUseIdMap* broken_links = nullptr);
 
 	//! Finds a child Canvas in the Canvas with the given \a id
 	/*!	\return If found, returns a handle to the child Canvas.
 	**		Otherwise, returns an empty handle.
 	*/
-	ConstHandle find_canvas(const String &id, String &warnings)const;
+	ConstHandle find_canvas(const String &id, String &warnings, CanvasBrokenUseIdMap* broken_links = nullptr)const;
 
 	//! Returns the file path from the file name
 	String get_file_path()const;

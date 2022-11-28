@@ -3575,7 +3575,7 @@ App::open(filesystem::Path filename, /* std::string as, */ synfig::FileContainer
 		// file to open inside canvas file-system
 		String canvas_filename = CanvasFileNaming::project_file(filename.u8string());
 
-		CanvasParser::BrokenUseIdMap broken_links;
+		CanvasBrokenUseIdMap broken_links;
 		broken_links["DupBug-simplified.sif"] = {"DupBug-simplified.sif_", {}};
 		Canvas::Handle canvas = open_canvas_as(canvas_file_system->get_identifier(canvas_filename), filename.u8string(), errors, warnings, &broken_links);
 		if(canvas && get_instance(canvas))

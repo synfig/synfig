@@ -129,7 +129,7 @@ static void _canvas_file_name_changed(Canvas *x)
 }
 
 Canvas::Handle
-synfig::open_canvas_as(const FileSystem::Identifier &identifier, const String &as, String &errors, String &warnings, CanvasParser::BrokenUseIdMap *broken_links)
+synfig::open_canvas_as(const FileSystem::Identifier &identifier, const String &as, String &errors, String &warnings, CanvasBrokenUseIdMap *broken_links)
 {
 	String filename = FileSystem::fix_slashes(as);
 	if (CanvasParser::loading_.count(identifier))
@@ -1697,7 +1697,7 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 					if (type==type_canvas)
 					{
 						String warnings;
-						waypoint_value_node=ValueNode_Const::create(canvas->surefind_canvas(use_id, warnings));
+						waypoint_value_node=ValueNode_Const::create(canvas->surefind_canvas(use_id, warnings, &filepath_fix_map));
 						warnings_text += warnings;
 					}
 					else
@@ -2878,7 +2878,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 				{
 					String warnings;
 					try {
-						Canvas::Handle c(canvas->surefind_canvas(use_id, warnings));
+						Canvas::Handle c(canvas->surefind_canvas(use_id, warnings, &filepath_fix_map));
 						warnings_text += warnings;
 						if(!c) error(child,strprintf(_("Failed to load subcanvas '%s'"), use_id.c_str()));
 						if(!layer->set_param(param_name,c))
@@ -3173,7 +3173,7 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 			try
 			{
 				String warnings;
-				canvas=parent->find_canvas(element->get_attribute("id")->get_value(), warnings);
+				canvas=parent->find_canvas(element->get_attribute("id")->get_value(), warnings, &filepath_fix_map);
 				warnings_text += warnings;
 			}
 			catch(...)
@@ -3557,7 +3557,7 @@ CanvasParser::parse_from_file_as(const FileSystem::Identifier &identifier,const 
 				return canvas;
 			}
 		} else {
-			register_broken_use_id(as, "file");
+			register_broken_use_id(as+"#", "file");
 			throw std::runtime_error(String("  * ") + _("Can't find linked file") + " \"" + identifier.filename.u8string() + "\"");
 		}
 	}
@@ -3668,42 +3668,26 @@ synfig::open_canvas(xmlpp::Element* node,String &errors,String &warnings){
 	return canvas;
 }
 
-const CanvasParser::BrokenUseIdMap&
+const CanvasBrokenUseIdMap&
 CanvasParser::get_broken_use_ids() const
 {
 	return filepath_fix_map;
 }
 
 void
-CanvasParser::set_broken_use_ids(const BrokenUseIdMap& map)
+CanvasParser::set_broken_use_ids(const CanvasBrokenUseIdMap& map)
 {
 	filepath_fix_map = map;
 }
 
 bool
-CanvasParser::fix_broken_use_id(std::string &use_id) const
+CanvasParser::fix_broken_use_id(std::string& use_id) const
 {
-	auto pos = use_id.find('#');
-	if (pos == std::string::npos || pos == 0)
-		return false;
-
-	try {
-		std::string filepath = use_id.substr(0, pos);
-		filepath = filepath_fix_map.at(filepath).first;
-		use_id = filepath + use_id.substr(pos);
-		return true;
-	} catch (...) {
-		return false;
-	}
+	return filepath_fix_map.fix(use_id);
 }
 
 bool
-CanvasParser::register_broken_use_id(const std::string &use_id, const std::string &type)
+CanvasParser::register_broken_use_id(const std::string& use_id, const std::string& type)
 {
-	auto pos = use_id.find('#');
-	if (pos == std::string::npos || pos == 0)
-		return false;
-
-	filepath_fix_map[use_id.substr(0, pos)] = {"", {{use_id.substr(pos+1), type}}};
-	return true;
+	return filepath_fix_map.add(use_id, type);
 }

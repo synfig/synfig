@@ -63,11 +63,6 @@ namespace synfig {
 class CanvasParser
 {
 public:
-	//! Map to fix broken links due to missing files
-	//! (original_file_path, (new_file_path, [(valuenode_id, value_type), ...]))
-	//! If new_file_path is null, there is no replacement file path to that item
-	typedef std::vector<std::pair<std::string, std::string>> MissingIdList;
-	typedef std::map<std::string, std::pair<std::string, MissingIdList>> BrokenUseIdMap;
 
 	/*
  --	** -- D A T A -------------------------------------------------------------
@@ -95,7 +90,7 @@ private:
 	//
 	bool in_bones_section;
 
-	BrokenUseIdMap filepath_fix_map;
+	CanvasBrokenUseIdMap filepath_fix_map;
 	/*
  --	** -- C O N S T R U C T O R S ---------------------------------------------
 	*/
@@ -143,9 +138,9 @@ public:
 	const synfig::String& get_warnings_text()const { return warnings_text; }
 
 	//! Gets the list of the broken use id due to missing files
-	const BrokenUseIdMap& get_broken_use_ids() const;
+	const CanvasBrokenUseIdMap& get_broken_use_ids() const;
 	//! Sets the map of (missing file, replacement file)
-	void set_broken_use_ids(const BrokenUseIdMap& map);
+	void set_broken_use_ids(const CanvasBrokenUseIdMap& map);
 
 	//! Register a canvas in the canvas map
 	/*! \param canvas The handle to the canvas to register
@@ -254,7 +249,7 @@ private:
 	bool fix_broken_use_id(std::string& use_id) const;
 	//! Register file path in use_id as broken
 	//! \return true if use_id refers to an external canvas file.
-	bool register_broken_use_id(const std::string& use_id, const std::string &type);
+	bool register_broken_use_id(const std::string& use_id, const std::string& type);
 }; // END of CanvasParser
 
 /* === E X T E R N S ======================================================= */
@@ -264,7 +259,7 @@ private:
 extern Canvas::Handle open_canvas(xmlpp::Element* node,String &errors,String &warnings);
 //!	Loads a canvas from \a filename and its absolute path
 /*!	\return	The Canvas's handle on success, an empty handle on failure */
-extern Canvas::Handle open_canvas_as(const FileSystem::Identifier &identifier, const String &as, String &errors, String &warnings, CanvasParser::BrokenUseIdMap*broken_links = nullptr);
+extern Canvas::Handle open_canvas_as(const FileSystem::Identifier &identifier, const String &as, String &errors, String &warnings, CanvasBrokenUseIdMap*broken_links = nullptr);
 
 //! Returns the Open Canvases Map.
 //! \see open_canvas_map_
