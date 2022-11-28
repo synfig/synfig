@@ -151,7 +151,7 @@ ffmpeg_trgt::init(ProgressCallback* cb = nullptr)
 	bool with_sound = false;
 	const std::string extension = etl::filename_extension(filename);
 	const std::vector<const char*> image_only_extensions{".gif", ".mng"};
-	const bool does_file_format_support_audio = std::find(image_only_extensions.begin(), image_only_extensions.end(), extension) != image_only_extensions.end();
+	const bool does_file_format_support_audio = std::find(image_only_extensions.begin(), image_only_extensions.end(), extension) == image_only_extensions.end();
 
 	if (!does_file_format_support_audio) {
 		with_sound = false;
