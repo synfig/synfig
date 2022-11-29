@@ -47,15 +47,10 @@
 #include "context.h"
 #include "exception.h"
 #include "filesystemnative.h"
-#include "importer.h"
 #include "layer.h"
 #include "loadcanvas.h"
-#include "valuenode_registry.h"
 
-#include "debug/measure.h"
 #include "layers/layer_pastecanvas.h"
-#include "valuenodes/valuenode_const.h"
-#include "valuenodes/valuenode_scale.h"
 #include "rendering/common/task/taskpixelprocessor.h"
 
 #endif
