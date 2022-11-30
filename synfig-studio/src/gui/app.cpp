@@ -1071,6 +1071,12 @@ DEFINE_ACTION("help-about",     Gtk::StockID("synfig-about"))
 // actions: Keyframe
 DEFINE_ACTION("keyframe-properties", _("Properties"))
 
+// actions: move to tab
+for (int i = 1; i <= 8; ++i) {
+	const std::string tab = std::to_string(i);
+	DEFINE_ACTION("switch-to-tab-" + tab, _("Switch to Tab ") + tab)
+}
+DEFINE_ACTION("switch-to-rightmost-tab",  _("Switch to Rightmost Tab"))
 
 //Layout the actions in the main menu (caret menu, right click on canvas menu) and toolbar:
 	Glib::ustring ui_info_menu =
@@ -1255,6 +1261,15 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 "		<menuitem action='seek-next-second'/>"
 "		<menuitem action='seek-begin'/>"
 "		<menuitem action='seek-end'/>"
+"		<menu action='switch-to-tab-1' />"
+"		<menu action='switch-to-tab-2' />"
+"		<menu action='switch-to-tab-3' />"
+"		<menu action='switch-to-tab-4' />"
+"		<menu action='switch-to-tab-5' />"
+"		<menu action='switch-to-tab-6' />"
+"		<menu action='switch-to-tab-7' />"
+"		<menu action='switch-to-tab-8' />"
+"		<menu action='switch-to-rightmost-tab' />"
 "	</menu>";
 
 	hidden_ui_info_menu +=
@@ -1340,6 +1355,15 @@ App::get_default_accel_map()
 		{"<Control>l",              "<Actions>/canvasview/toggle-grid-snap"},
 		{"<Control>n",              "<Actions>/mainwindow/new"},
 		{"<Control>o",              "<Actions>/mainwindow/open"},
+		{"<Primary>1",              "<Actions>/mainwindow/switch-to-tab-1"},
+		{"<Primary>2",              "<Actions>/mainwindow/switch-to-tab-2"},
+		{"<Primary>3",              "<Actions>/mainwindow/switch-to-tab-3"},
+		{"<Primary>4",              "<Actions>/mainwindow/switch-to-tab-4"},
+		{"<Primary>5",              "<Actions>/mainwindow/switch-to-tab-5"},
+		{"<Primary>6",              "<Actions>/mainwindow/switch-to-tab-6"},
+		{"<Primary>7",              "<Actions>/mainwindow/switch-to-tab-7"},
+		{"<Primary>8",              "<Actions>/mainwindow/switch-to-tab-8"},
+		{"<Primary>9",              "<Actions>/mainwindow/switch-to-rightmost-tab"},
 		{"<Control>s",              "<Actions>/canvasview/save"},
 		{"<Control><Shift>s",       "<Actions>/canvasview/save-as"},
 		{"<Control>e",              "<Actions>/canvasview/save-all"},

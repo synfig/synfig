@@ -196,6 +196,17 @@ MainWindow::init_menus()
 		sigc::ptr_fun(App::edit_custom_workspace_list)
 	);
 
+	//animation tabs
+	for (int i = 1; i <= 8; ++i) {
+		const std::string tab = std::to_string(i);
+		action_group->add(Gtk::Action::create("switch-to-tab-" + tab, _("Switch to Tab ") + tab),
+			sigc::track_obj([this, i]() { main_dock_book().set_current_page(i-1); }, this)
+		);
+	}
+	action_group->add(Gtk::Action::create("switch-to-rightmost-tab", _("Switch to Rightmost Tab")),
+		sigc::track_obj([this]() { main_dock_book().set_current_page(-1); }, this)
+	);
+
 	// help
 	#define URL(action_name,title,url) \
 		action_group->add( Gtk::Action::create(action_name, title), \
