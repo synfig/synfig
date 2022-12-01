@@ -601,7 +601,13 @@ Canvas::find_value_node(const String &id, bool might_fail, CanvasBrokenUseIdMap*
 	//synfig::warning("constfind:canvas_id: "+canvas_id);
 
 	String warnings;
-	return find_canvas(canvas_id, warnings, broken_links)->value_node_list_.find(value_node_id, might_fail);
+	try {
+		return find_canvas(canvas_id, warnings, broken_links)->value_node_list_.find(value_node_id, might_fail);
+	} catch (...) {
+		if (broken_links)
+			(*broken_links)[canvas_id].second.push_back({value_node_id, ""});
+		throw;
+	}
 }
 
 ValueNode::Handle
@@ -624,7 +630,13 @@ Canvas::surefind_value_node(const String &id, CanvasBrokenUseIdMap* broken_links
 		canvas_id=':';
 
 	String warnings;
-	return surefind_canvas(canvas_id,warnings, broken_links)->value_node_list_.surefind(value_node_id);
+	try {
+		return surefind_canvas(canvas_id,warnings, broken_links)->value_node_list_.surefind(value_node_id);
+	} catch (...) {
+		if (broken_links)
+			(*broken_links)[canvas_id].second.push_back({value_node_id, ""});
+		throw;
+	}
 }
 
 void

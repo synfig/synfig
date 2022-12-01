@@ -159,14 +159,18 @@ synfig::open_canvas_as(const FileSystem::Identifier &identifier, const String &a
 	}
 	catch (...)
 	{
+error("broken size _catach %zu", parser.get_broken_use_ids().size());
 		CanvasParser::loading_.erase(identifier);
 		if (broken_links)
 			*broken_links = parser.get_broken_use_ids();
 		throw;
 	}
+error("broken size not catach %zu", parser.get_broken_use_ids().size());
 	CanvasParser::loading_.erase(identifier);
 	if (broken_links)
 		*broken_links = parser.get_broken_use_ids();
+if (broken_links)
+	error("\t size not catach %zu", broken_links->size());
 
 	warnings = parser.get_warnings_text();
 
@@ -1701,7 +1705,7 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 						warnings_text += warnings;
 					}
 					else
-						waypoint_value_node=canvas->surefind_value_node(use_id);
+						waypoint_value_node=canvas->surefind_value_node(use_id, &filepath_fix_map);
 				} catch (Exception::IDNotFound&) {
 					register_broken_use_id(use_id, type.description.name);
 				}
@@ -1927,7 +1931,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 				}
 				int placeholders(canvas->value_node_list().placeholder_count());
 				try {
-					c[index] = canvas->surefind_value_node(id);
+					c[index] = canvas->surefind_value_node(id, &filepath_fix_map);
 					// Don't accept links for unsolved exported Value Nodes.
 					// Except if it is parsing <bones>, as this section is defined before <defs>
 					if (!in_bones_section) {
@@ -2259,7 +2263,7 @@ CanvasParser::parse_static_list(xmlpp::Element *element,Canvas::Handle canvas)
 
 				try
 				{
-					list_entry=canvas->surefind_value_node(use_id);
+					list_entry=canvas->surefind_value_node(use_id, &filepath_fix_map);
 				}
 				catch(Exception::IDNotFound&)
 				{
@@ -2519,7 +2523,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 				fix_broken_use_id(use_id);
 				try
 				{
-					list_entry.value_node=canvas->surefind_value_node(use_id);
+					list_entry.value_node=canvas->surefind_value_node(use_id, &filepath_fix_map);
 					if(PlaceholderValueNode::Handle::cast_dynamic(list_entry.value_node))
 						throw Exception::IDNotFound("parse_dynamic_list()");
 				}
@@ -2895,7 +2899,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 				else
 				try
 				{
-					ValueNode::Handle value_node = canvas->surefind_value_node(use_id);
+					ValueNode::Handle value_node = canvas->surefind_value_node(use_id, &filepath_fix_map);
 					if(PlaceholderValueNode::Handle::cast_dynamic(value_node))
 						throw Exception::IDNotFound("parse_layer()");
 
@@ -3557,7 +3561,8 @@ CanvasParser::parse_from_file_as(const FileSystem::Identifier &identifier,const 
 				return canvas;
 			}
 		} else {
-			register_broken_use_id(as+"#", "file");
+			bool ok = register_broken_use_id(as+"#", "file");
+			synfig::warning("registered? %i [%zu] %s", ok, filepath_fix_map.size(), as.c_str());
 			throw std::runtime_error(String("  * ") + _("Can't find linked file") + " \"" + identifier.filename.u8string() + "\"");
 		}
 	}

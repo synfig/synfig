@@ -3576,47 +3576,62 @@ App::open(filesystem::Path filename, /* std::string as, */ synfig::FileContainer
 		String canvas_filename = CanvasFileNaming::project_file(filename.u8string());
 
 		CanvasBrokenUseIdMap broken_links;
-		broken_links["DupBug-simplified.sif"] = {"DupBug-simplified.sif_", {}};
-		Canvas::Handle canvas = open_canvas_as(canvas_file_system->get_identifier(canvas_filename), filename.u8string(), errors, warnings, &broken_links);
-		if(canvas && get_instance(canvas))
-		{
-			get_instance(canvas)->find_canvas_view(canvas)->present();
-			info("%s is already open", canvas_filename.c_str());
-			// throw (String)strprintf(_("\"%s\" appears to already be open!"),filename.c_str());
-		}
-		else
-		{
-			if (!canvas) {
-				for (const auto& pair : broken_links) {
-					warning("Missing file: %s", pair.first.c_str());
-				}
-				throw (String)strprintf(_("Unable to load \"%s\":\n\n"), filename.u8_str()) + errors;
+		Canvas::Handle canvas;
+
+		do {
+			broken_links["DupBug-simplified.sif_"] = {"DupBug-simplified.sif", {}};
+			canvas = open_canvas_as(canvas_file_system ->get_identifier(canvas_filename), filename.u8string(), errors, warnings, &broken_links);
+			if(canvas && get_instance(canvas))
+			{
+				get_instance(canvas)->find_canvas_view(canvas)->present();
+				info("%s is already open", canvas_filename.c_str());
+				// throw (String)strprintf(_("\"%s\" appears to already be open!"),filename.c_str());
 			}
+			else
+			{
+	info("else %zu", broken_links.size());
+				if(!canvas) {
+					for(const auto& pair : broken_links) {
+						warning("Missing file: %s", pair.first.c_str());
+						for (const auto& p : pair.second.second) {
+							warning("\t%s (%s)", p.first.c_str(), p.second.c_str());
+						}
+					}
+					if (!broken_links.empty()) {
+						// show dialog
+						// if dialog cancelled, resume loop
+						// if confirmed, continue;
+					}
+					warning("hey");
+					throw (String)strprintf(_("Unable to load \"%s\":\n\n"), filename.u8_str()) + errors;
+				}
 
-			// Set new pixel ratio
-			canvas->rend_desc().set_pixel_ratio(canvas->rend_desc().get_w(), canvas->rend_desc().get_h());
+				// Set new pixel ratio
+				canvas->rend_desc().set_pixel_ratio(canvas->rend_desc().get_w(), canvas->rend_desc().get_h());
 
-			if (!warnings.empty())
-				dialog_message_1b(
-					"WARNING",
-					_("Warning"),
-					"details",
-					_("Close"),
-					warnings);
+				if (!warnings.empty())
+					dialog_message_1b(
+						"WARNING",
+						_("Warning"),
+						"details",
+						_("Close"),
+						warnings);
 
-			if (filename.u8string().find(custom_filename_prefix) != 0)
-				add_recent_file(filename);
+				if (filename.u8string().find(custom_filename_prefix) != 0)
+					add_recent_file(filename);
 
-			etl::handle<Instance> instance(Instance::create(canvas, container));
+				etl::handle<Instance> instance(Instance::create(canvas, container));
 
-			if(!instance)
-				throw (String)strprintf(_("Unable to create instance for \"%s\""), filename.u8_str());
+				if(!instance)
+					throw (String)strprintf(_("Unable to create instance for \"%s\""), filename.u8_str());
 
-			one_moment.hide();
-		}
+				one_moment.hide();
+			}
+		} while (!canvas);
 	}
 	catch(String &x)
 	{
+info("STRING");
 		dialog_message_1b(
 			"ERROR",
 			x,
@@ -3627,6 +3642,7 @@ App::open(filesystem::Path filename, /* std::string as, */ synfig::FileContainer
 	}
 	catch(std::runtime_error &x)
 	{
+info("RUNTIME");
 		dialog_message_1b(
 			"ERROR",
 			x.what(),
@@ -3637,6 +3653,7 @@ App::open(filesystem::Path filename, /* std::string as, */ synfig::FileContainer
 	}
 	catch(...)
 	{
+info("UNKNOWN");
 		dialog_message_1b(
 			"ERROR",
 			_("Uncaught error on file open (BUG)"),
