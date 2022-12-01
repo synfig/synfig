@@ -55,4 +55,4 @@ Support this project with your organization. Your logo will show up here with a 
 
 ## License
 
-See the [LICENSE](https://github.com/synfig/synfig/blob/master/LICENSE) file.
+This project is licensed under the [GNU General Public License v3.0](https://github.com/synfig/synfig/blob/master/LICENSE).
