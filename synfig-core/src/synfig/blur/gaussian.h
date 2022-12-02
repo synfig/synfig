@@ -41,6 +41,16 @@
 
 namespace synfig {
 
+/**
+ * 2D 5x5 pixel gaussian blur
+ * @param begin pen at the initial point
+ * @param w width of area to be blurred
+ * @param h height of area to be blurred
+ * @param SC0 empty array with (width + 2) elements, used for caching and avoiding repeated memory allocation
+ * @param SC1 empty array with (width + 2) elements, used for caching and avoiding repeated memory allocation
+ * @param SC2 empty array with (width + 2) elements, used for caching and avoiding repeated memory allocation
+ * @param SC3 empty array with (width + 2) elements, used for caching and avoiding repeated memory allocation
+*/
 template<typename T> void
 gaussian_blur_5x5_(T pen,int w, int h,
 typename T::pointer SC0,
@@ -98,6 +108,12 @@ typename T::pointer SC3)
 
 }
 
+/**
+ * 2D 3x3 pixel gaussian blur
+ * @param begin pen at the initial point
+ * @param w width of area to be blurred
+ * @param h height of area to be blurred
+ */
 template<typename T> void
 gaussian_blur_3x3(T pen,int w, int h)
 {
@@ -144,7 +160,11 @@ gaussian_blur_3x3(T pen,int w, int h)
 	delete [] SC1;
 }
 
-//! 2D 3x3 pixel gaussian blur
+/**
+ * 2D 3x3 pixel gaussian blur
+ * @param begin pen at the initial point
+ * @param end pen at the final point
+ */
 template<typename _PEN> void
 gaussian_blur_3x3(_PEN begin, _PEN end)
 {
@@ -152,7 +172,9 @@ gaussian_blur_3x3(_PEN begin, _PEN end)
 	gaussian_blur_3x3(begin,size.x,size.y);
 }
 
-//! 1D 3 pixel gaussian blur
+/**
+ * 1D 3 pixel gaussian blur
+ */
 template<typename I> void
 gaussian_blur_3(I begin, I end, bool endpts = true)
 {

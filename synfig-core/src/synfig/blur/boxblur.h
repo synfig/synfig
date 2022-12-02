@@ -39,6 +39,17 @@
 
 namespace synfig {
 
+/**
+ * Blur every row of a sample block based only on the samples of the same horizontal line.
+ *
+ * The formula for a blured sample is: ?
+ *
+ * @param pen the initial point of the sample block
+ * @param w the block width
+ * @param h the block height
+ * @param length how many adjacent samples influence the sample bluring. 0 means no blur
+ * @param outpen where to write the blurred block
+ */
 template<typename T1,typename T2> void
 hbox_blur(T1 pen,int w, int h, int length, T2 outpen)
 {
@@ -74,6 +85,17 @@ hbox_blur(T1 pen,int w, int h, int length, T2 outpen)
 	}
 }
 
+/**
+ * Blur every column of a sample block based only on the samples of the same vertical line.
+ *
+ * The formula for a blured sample is: ?
+ *
+ * @param pen the initial point of the sample block
+ * @param w the block width
+ * @param h the block height
+ * @param length how many adjacent samples influence the sample bluring
+ * @param outpen where to write the blurred block
+ */
 template<typename T1,typename T2> void
 vbox_blur(T1 pen,const int w, const int h, int length, T2 outpen)
 {
@@ -109,6 +131,16 @@ vbox_blur(T1 pen,const int w, const int h, int length, T2 outpen)
 	}
 }
 
+/**
+ * Blur every row of a sample block based only on the samples of the same horizontal line.
+ *
+ * @param begin the pen on the initial point of the sample block
+ * @param end the pen on the final point of the sample block
+ * @param len how many adjacent samples influence the sample bluring
+ * @param outpen where to write the blurred block
+ *
+ * @see void hbox_blur(T1 pen,const int w, const int h, int length, T2 outpen)
+ */
 template<typename T1,typename T2> void
 hbox_blur(T1 begin,T1 end, int len,T2 outpen)
 {
@@ -116,6 +148,16 @@ hbox_blur(T1 begin,T1 end, int len,T2 outpen)
 	hbox_blur(begin,size.x,size.y,len,outpen);
 }
 
+/**
+ * Blur every column of a sample block based only on the samples of the same vertical line.
+ *
+ * @param begin the pen on the initial point of the sample block
+ * @param end the pen on the final point of the sample block
+ * @param len how many adjacent samples influence the sample bluring
+ * @param outpen where to write the blurred block
+ *
+ * @see void vbox_blur(T1 pen,const int w, const int h, int length, T2 outpen)
+ */
 template<typename T1,typename T2> void
 vbox_blur(T1 begin,T1 end, int len,T2 outpen)
 {
