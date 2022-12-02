@@ -582,7 +582,7 @@ bool Blur::operator()(const Surface &surface,
 				else
 				if(bw>=2 && bh>=2)
 				{
-					gaussian_blur_3x3(gauss_surface->begin(),gauss_surface->end());
+					gaussian_blur_3x3(gauss_surface->begin(),gauss_surface->end(), SC0, SC1);
 					bw-=2,bh-=2;
 				}
 				else
@@ -977,7 +977,7 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 				else
 				if(bw>=2 && bh>=2)
 				{
-					gaussian_blur_3x3(gauss_surface->begin(),gauss_surface->end());
+					gaussian_blur_3x3(gauss_surface->begin(),gauss_surface->end(), SC0, SC1);
 					bw-=2,bh-=2;
 				}
 				else

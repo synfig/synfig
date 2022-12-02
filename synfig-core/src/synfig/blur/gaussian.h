@@ -113,15 +113,15 @@ typename T::pointer SC3)
  * @param begin pen at the initial point
  * @param w width of area to be blurred
  * @param h height of area to be blurred
+ * @param SC0 empty array with (width + 1) elements, used for caching and avoiding repeated memory allocation
+ * @param SC1 empty array with (width + 1) elements, used for caching and avoiding repeated memory allocation
  */
 template<typename T> void
-gaussian_blur_3x3(T pen,int w, int h)
+gaussian_blur_3x3(T pen,int w, int h, typename T::pointer SC0, typename T::pointer SC1)
 {
 	int x,y;
 	typename T::value_type Tmp1,Tmp2,SR0,SR1;
 
-	typename T::pointer SC0=new typename T::value_type[w+1];
-	typename T::pointer SC1=new typename T::value_type[w+1];
 
 	// Setup the row buffers
 	SC0[0] = typename T::value_type();
@@ -157,20 +157,20 @@ gaussian_blur_3x3(T pen,int w, int h)
 		pen.dec_x(x);
 	}
 
-	delete [] SC0;
-	delete [] SC1;
 }
 
 /**
  * 2D 3x3 pixel gaussian blur
  * @param begin pen at the initial point
  * @param end pen at the final point
+ * @param SC0 empty array with (width + 1) elements, used for caching and avoiding repeated memory allocation
+ * @param SC1 empty array with (width + 1) elements, used for caching and avoiding repeated memory allocation
  */
 template<typename _PEN> void
-gaussian_blur_3x3(_PEN begin, _PEN end)
+gaussian_blur_3x3(_PEN begin, _PEN end, typename _PEN::pointer SC0, typename _PEN::pointer SC1)
 {
 	typename _PEN::difference_type size(end-begin);
-	gaussian_blur_3x3(begin,size.x,size.y);
+	gaussian_blur_3x3(begin,size.x,size.y, SC0, SC1);
 }
 
 /**
