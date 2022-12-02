@@ -124,6 +124,7 @@ gaussian_blur_3x3(T pen,int w, int h)
 	typename T::pointer SC1=new typename T::value_type[w+1];
 
 	// Setup the row buffers
+	SC0[0] = typename T::value_type();
 	for(x=0;x<w;x++)SC0[x+1]=(pen.x()[x])*4;
 	memset((void *)SC1,0,(w+1)*sizeof(typename T::value_type));
 
