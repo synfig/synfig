@@ -56,7 +56,6 @@
 #endif
 
 using namespace synfig;
-using namespace etl;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */

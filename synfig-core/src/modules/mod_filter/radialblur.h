@@ -42,7 +42,6 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 using namespace synfig;
-using namespace etl;
 
 class RadialBlur : public Layer_CompositeFork
 {
