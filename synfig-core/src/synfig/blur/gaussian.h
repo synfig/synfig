@@ -1,6 +1,5 @@
-/*! ========================================================================
-** Extended Template Library
-** \file _gaussian.h
+/* === S Y N F I G ========================================================= */
+/*! \file gaussian.h
 ** \brief Gaussian Blur Template Implementation
 ** \internal
 **
@@ -22,17 +21,13 @@
 ** You should have received a copy of the GNU General Public License
 ** along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 ** \endlegal
-**
-** \note
-** This is an internal header file, included by other ETL headers.
-** You should not attempt to use it directly.
-**
-** ========================================================================= */
+*/
+/* ========================================================================= */
 
 /* === S T A R T =========================================================== */
 
-#ifndef __ETL__GAUSSIAN_H
-#define __ETL__GAUSSIAN_H
+#ifndef SYNFIG_GAUSSIAN_H
+#define SYNFIG_GAUSSIAN_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -44,7 +39,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace etl {
+namespace synfig {
 
 template<typename T> void
 gaussian_blur_5x5_(T pen,int w, int h,
@@ -193,4 +188,4 @@ gaussian_blur_3(I begin, I end, bool endpts = true)
 
 /* === E N D =============================================================== */
 
-#endif
+#endif // SYNFIG_GAUSSIAN_H

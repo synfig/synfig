@@ -1,6 +1,5 @@
-/*! ========================================================================
-** Extended Template Library
-** \file _boxblur.h
+/* === S Y N F I G ========================================================= */
+/*! \file boxblur.h
 ** \brief Box Blur Template Implementation
 ** \internal
 **
@@ -22,17 +21,13 @@
 ** You should have received a copy of the GNU General Public License
 ** along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 ** \endlegal
-**
-** \note
-** This is an internal header file, included by other ETL headers.
-** You should not attempt to use it directly.
-**
-** ========================================================================= */
+*/
+/* ========================================================================= */
 
 /* === S T A R T =========================================================== */
 
-#ifndef __ETL__BOXBLUR_H
-#define __ETL__BOXBLUR_H
+#ifndef SYNFIG_BOXBLUR_H
+#define SYNFIG_BOXBLUR_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -42,7 +37,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace etl {
+namespace synfig {
 
 template<typename T1,typename T2> void
 hbox_blur(T1 pen,int w, int h, int length, T2 outpen)
@@ -134,4 +129,4 @@ vbox_blur(T1 begin,T1 end, int len,T2 outpen)
 
 /* === E N D =============================================================== */
 
-#endif
+#endif // SYNFIG_BOXBLUR_H
