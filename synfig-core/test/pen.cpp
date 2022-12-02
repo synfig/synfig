@@ -27,8 +27,8 @@
 
 #include <memory>
 
+#include <synfig/blur/boxblur.h>
 #include <synfig/pen.h>
-#include <ETL/boxblur>
 
 /* === M A C R O S ========================================================= */
 

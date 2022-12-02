@@ -24,7 +24,6 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfig/surface_etl.h>
-#include <ETL/gaussian>
 
 #include "test_base.h"
 

@@ -26,8 +26,6 @@
 
 #include <cstdio>
 
-#include <ETL/gaussian>
-
 #include <synfig/angle.h>
 #include <synfig/bezier.h>
 #include <synfig/clock.h>
@@ -35,7 +33,6 @@
 
 /* === M A C R O S ========================================================= */
 
-using namespace etl;
 using namespace synfig;
 
 #define HERMITE_TEST_ITERATIONS		(100000)

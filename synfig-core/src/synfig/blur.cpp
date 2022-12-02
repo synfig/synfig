@@ -35,8 +35,8 @@
 
 #include <stdexcept>
 
-#include <ETL/boxblur>
-#include <ETL/gaussian>
+#include <synfig/blur/boxblur.h>
+#include <synfig/blur/gaussian.h>
 
 #include "blur.h"
 
