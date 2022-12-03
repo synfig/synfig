@@ -57,8 +57,6 @@
 
 #endif
 
-using namespace etl;
-
 /* === M A C R O S ========================================================= */
 
 #define SAMPLES		300

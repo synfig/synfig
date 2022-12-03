@@ -89,7 +89,6 @@
 #define PATH_MAX 4096
 #endif
 
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */

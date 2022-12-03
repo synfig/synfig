@@ -84,7 +84,6 @@
 using namespace etl;
 using namespace synfig;
 using namespace studio;
-using namespace sigc;
 
 /* === M A C R O S ========================================================= */
 

@@ -47,7 +47,6 @@
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
-using namespace etl;
 
 #define MAX_FRAME_RATE	(20.0)
 
