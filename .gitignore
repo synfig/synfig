@@ -60,6 +60,7 @@ compile
 /_debug/
 /_production/
 /_release/
+/build-cmake/
 /build.conf
 
 # ------------------------------------------------------------------------
