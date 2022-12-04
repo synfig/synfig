@@ -7,7 +7,6 @@
 # Artem Krosheninnikov <feeblehamster@gmail.com>, 2022
 # Tim <zurbaxi@gmail.com>, 2022
 # Oleg Gordeev <Retro47@Yandex.ru>, 2022
-# darumka, 2022
 # AlexL <loginov.alex.valer@gmail.com>, 2022
 # Илья Новиньков <vinurd@mail.ru>, 2022
 # Кира Гуляева, 2022
@@ -18,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
-"POT-Creation-Date: 2022-10-24 08:55+0700\n"
+"POT-Creation-Date: 2022-10-26 07:53+0700\n"
 "PO-Revision-Date: 2022-05-25 14:46+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>, 2022\n"
 "Language-Team: Russian (https://www.transifex.com/morevnaproject/teams/34857/ru/)\n"
@@ -246,7 +245,7 @@ msgstr "Стилизация"
 #: ../src/modules/mod_filter/blur.cpp:447
 #: ../src/modules/mod_filter/halftone2.cpp:177
 msgid "Type"
-msgstr "Type"
+msgstr "Тип"
 
 #: ../src/modules/lyr_std/bevel.cpp:666 ../src/modules/lyr_std/shade.cpp:646
 #: ../src/modules/mod_filter/blur.cpp:448
@@ -444,7 +443,7 @@ msgstr "Свободное время"
 #: ../src/synfig/valuenodes/valuenode_timedswap.cpp:261
 #: ../src/synfig/valuenodes/valuenode_timestring.cpp:150
 msgid "Time"
-msgstr "Time"
+msgstr "Время"
 
 #: ../src/modules/lyr_std/freetime.cpp:102
 msgid "Current time for next layers"
@@ -452,7 +451,7 @@ msgstr "Текущее время для следующих слоев"
 
 #: ../src/modules/lyr_std/import.cpp:69
 msgid "Import Image"
-msgstr "Import Image"
+msgstr "Импорт изображения"
 
 #: ../src/modules/lyr_std/import.cpp:204
 #: ../src/modules/mod_svg/layer_svg.cpp:107
@@ -1041,7 +1040,7 @@ msgstr "(анимировано)"
 #: ../src/modules/mod_bmp/trgt_bmp.cpp:234
 #: ../src/modules/mod_bmp/trgt_bmp.cpp:235
 msgid "Unable to open file"
-msgstr "Unable to open file"
+msgstr "Невозможно открыть файл"
 
 #: ../src/modules/mod_bmp/trgt_bmp.cpp:266
 #: ../src/modules/mod_bmp/trgt_bmp.cpp:267
@@ -1587,7 +1586,7 @@ msgstr "Радиус внутренних точек звезды"
 #: ../src/synfig/valuenodes/valuenode_cos.cpp:149
 #: ../src/synfig/valuenodes/valuenode_sine.cpp:148
 msgid "Angle"
-msgstr "Angle"
+msgstr "Угол"
 
 #: ../src/modules/mod_geometry/star.cpp:177
 msgid "The orientation of the star"
@@ -1595,7 +1594,7 @@ msgstr "Ориентация звезды"
 
 #: ../src/modules/mod_geometry/star.cpp:182 ../src/synfig/distance.cpp:251
 msgid "Points"
-msgstr "Points"
+msgstr "Точки"
 
 #: ../src/modules/mod_geometry/star.cpp:183
 msgid "The number of points in the star"
@@ -1603,7 +1602,7 @@ msgstr "Количество лучей звезды"
 
 #: ../src/modules/mod_geometry/star.cpp:187
 msgid "Regular Polygon"
-msgstr "Regular Polygon"
+msgstr "Равносторонний многоугольник"
 
 #: ../src/modules/mod_geometry/star.cpp:188
 msgid "Whether to draw a star or a regular polygon"
@@ -1843,14 +1842,14 @@ msgstr "Ближайший сосед"
 #: ../src/synfig/layers/layer_bitmap.cpp:173
 #: ../src/synfig/layers/layer_motionblur.cpp:141
 msgid "Linear"
-msgstr "Linear"
+msgstr "Линейный"
 
 #: ../src/modules/mod_noise/distort.cpp:231
 #: ../src/modules/mod_noise/noise.cpp:283
 #: ../src/modules/mod_noise/valuenode_random.cpp:268
 #: ../src/synfig/layers/layer_bitmap.cpp:174
 msgid "Cosine"
-msgstr "Cosine"
+msgstr "Косинус"
 
 #: ../src/modules/mod_noise/distort.cpp:232
 #: ../src/modules/mod_noise/noise.cpp:284
@@ -1939,7 +1938,7 @@ msgstr "Когда включено, градиент станет супер с
 #: ../src/synfig/valuenodes/valuenode_step.cpp:186
 #: ../src/synfig/valuenodes/valuenode_timeloop.cpp:168
 msgid "Link"
-msgstr "Link"
+msgstr "Связь"
 
 #: ../src/modules/mod_noise/valuenode_random.cpp:244
 msgid "The value node source that provides the central value"
@@ -3233,13 +3232,13 @@ msgstr "Затемнение"
 #: ../src/synfig/paramdesc.cpp:90
 #: ../src/synfig/valuenodes/valuenode_radialcomposite.cpp:255
 msgid "Hue"
-msgstr "Hue"
+msgstr "Оттенок"
 
 #: ../src/synfig/paramdesc.cpp:91
 #: ../src/synfig/valuenodes/valuenode_radialcomposite.cpp:252
 #: ../src/synfig/valuenodes/valuenode_radialcomposite.cpp:258
 msgid "Saturation"
-msgstr "Saturation"
+msgstr "Насыщенность"
 
 #: ../src/synfig/paramdesc.cpp:92
 msgid "Luminance"
@@ -3879,7 +3878,7 @@ msgstr "Неверныйтип для комбинации"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:626
 msgid "Red"
-msgstr "Red"
+msgstr "Красный"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:627
 msgid "The red component of the color"
@@ -3887,7 +3886,7 @@ msgstr "Значение красного канала цвета"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:630
 msgid "Green"
-msgstr "Green"
+msgstr "Зеленый"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:631
 msgid "The green component of the color"
@@ -3895,7 +3894,7 @@ msgstr "Значение зеленого канала цвета"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:634
 msgid "Blue"
-msgstr "Blue"
+msgstr "Синий"
 
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:635
 msgid "The blue component of the color"
@@ -4629,7 +4628,7 @@ msgstr "Значение, которое умножает значение уз�
 #: ../src/synfig/valuenodes/valuenode_segcalctangent.cpp:150
 #: ../src/synfig/valuenodes/valuenode_segcalcvertex.cpp:148
 msgid "Segment"
-msgstr "Segment"
+msgstr "Сегмент"
 
 #: ../src/synfig/valuenodes/valuenode_segcalctangent.cpp:151
 msgid "The Segment where the tangent is linked to"

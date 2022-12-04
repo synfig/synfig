@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
-"POT-Creation-Date: 2022-10-24 08:55+0700\n"
+"POT-Creation-Date: 2022-10-26 07:53+0700\n"
 "PO-Revision-Date: 2022-05-25 14:47+0000\n"
 "Last-Translator: Alexander Gabilondo <alexgabi@disroot.org>, 2022\n"
 "Language-Team: Basque (https://www.transifex.com/morevnaproject/teams/34857/eu/)\n"
@@ -151,6 +151,10 @@ msgid ""
 "values' from the 'help' menu to get a feeling for the range; negative values"
 " are rare but possible for very low speed."
 msgstr ""
+"Zein azkar mugitzen zaren une honetan. Hau oso azkar alda daiteke. Saiatu "
+"'inprimatu sarrerako balioak' 'laguntza' menutik barrutiaren sentsazioa "
+"izateko; balio negatiboak arraroak dira baina oso abiadura baxurako posible "
+"dira."
 
 #: ../src/brushlib/brushsettings.py:28
 msgid "Gross speed"
@@ -1861,7 +1865,7 @@ msgstr "Multzo-aukerak"
 
 #: ../src/gui/docks/dock_layers.cpp:69 ../src/gui/app.cpp:1055
 msgid "Layers"
-msgstr ""
+msgstr "Geruzak"
 
 #: ../src/gui/docks/dock_layers.cpp:152
 msgid "Layer Ops"
@@ -2271,7 +2275,7 @@ msgstr "Ezin da gehitu nodo-baliorik"
 #: ../src/gui/states/state_star.cpp:1358 ../src/gui/states/state_star.cpp:1442
 #: ../src/gui/states/state_text.cpp:642
 msgid "Unable to create layer"
-msgstr ""
+msgstr "Ezin da geruza sortu"
 
 #: ../src/gui/states/state_bline.cpp:908
 #: ../src/gui/states/state_circle.cpp:1005
@@ -3237,7 +3241,7 @@ msgstr ""
 #: ../src/synfigapp/canvasinterface.cpp:1176
 #: ../src/synfigapp/canvasinterface.cpp:1229
 msgid "Action Failed."
-msgstr ""
+msgstr "Ekintzak huts egin du."
 
 #: ../src/gui/widgets/widget_curves.cpp:971
 msgid "Change animation curve"
@@ -3329,11 +3333,11 @@ msgstr "Izengabea"
 
 #: ../src/gui/widgets/widget_soundwave.cpp:166
 msgid "Audio file not supported"
-msgstr ""
+msgstr "Audio fitxategia ez da onartzen"
 
 #: ../src/gui/widgets/widget_sublayer.cpp:90
 msgid "<empty>"
-msgstr ""
+msgstr "<empty>"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:78
 msgid "(Non-static value)"
@@ -3462,7 +3466,7 @@ msgstr ""
 
 #: ../src/gui/workarearenderer/renderer_canvas.cpp:471
 msgid "Unknown reason"
-msgstr ""
+msgstr "Arrazoi ezezaguna"
 
 #: ../src/gui/workarearenderer/renderer_canvas.cpp:474
 #, c-format

@@ -6,11 +6,11 @@
 # Translators:
 # Artem Krosheninnikov <feeblehamster@gmail.com>, 2022
 # Oleg Gordeev <Retro47@Yandex.ru>, 2022
-# AlexL <loginov.alex.valer@gmail.com>, 2022
 # darumka, 2022
+# AlexL <loginov.alex.valer@gmail.com>, 2022
 # Tim <zurbaxi@gmail.com>, 2022
-# Илья Новиньков <vinurd@mail.ru>, 2022
 # Кира Гуляева, 2022
+# Илья Новиньков <vinurd@mail.ru>, 2022
 # Nadine, 2022
 # morevnaproject <ksee.zelgadis@gmail.com>, 2022
 # 
@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
-"POT-Creation-Date: 2022-10-24 08:55+0700\n"
+"POT-Creation-Date: 2022-10-26 07:53+0700\n"
 "PO-Revision-Date: 2022-05-25 14:47+0000\n"
 "Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>, 2022\n"
 "Language-Team: Russian (https://www.transifex.com/morevnaproject/teams/34857/ru/)\n"
@@ -305,7 +305,7 @@ msgstr ""
 #: ../src/brushlib/brushsettings.py:47 ../src/gui/dialogs/dialog_setup.cpp:783
 #: ../src/gui/states/state_smoothmove.cpp:203
 msgid "Radius"
-msgstr "Radius"
+msgstr "Радиус"
 
 #: ../src/brushlib/brushsettings.py:47
 msgid ""
@@ -829,11 +829,11 @@ msgstr "Безымянная установка"
 
 #: ../src/gui/actionmanagers/keyframeactionmanager.cpp:240
 msgid "Add New Keyframe"
-msgstr "Add New Keyframe"
+msgstr "Добавить новый ключевой кадр"
 
 #: ../src/gui/actionmanagers/keyframeactionmanager.cpp:245
 msgid "Keyframe Properties"
-msgstr "Keyframe Properties"
+msgstr "Свойства ключевого кадра"
 
 #: ../src/gui/actionmanagers/keyframeactionmanager.cpp:249
 msgid "Toggle Keyframe"
@@ -847,18 +847,18 @@ msgstr "Установить описание ключевого кадра"
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:271
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:525
 msgid "Increase Amount"
-msgstr "Increase Amount"
+msgstr "Увеличить значение"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:122
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:272
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:542
 msgid "Decrease Amount"
-msgstr "Decrease Amount"
+msgstr "Уменьшить значение"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:134
 #: ../src/gui/iconcontroller.cpp:268
 msgid "Select All Child Layers"
-msgstr "Select All Child Layers"
+msgstr "Выбрать все вложенные слои"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:268
 msgid "Increase Opacity"
@@ -870,7 +870,7 @@ msgstr "Уменьшить непрозрачность"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:392
 msgid "Paste"
-msgstr "Paste"
+msgstr "Вставить"
 
 #: ../src/gui/actionmanagers/layeractionmanager.cpp:481
 #: ../src/synfigapp/actions/layerduplicate.cpp:334
@@ -882,12 +882,12 @@ msgstr "Номер %d"
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:237
 #: ../src/gui/states/state_text.cpp:633
 msgid "Text Paragraph"
-msgstr "Text Paragraph"
+msgstr "Новый абзац"
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:237
 #: ../src/gui/states/state_text.cpp:633
 msgid "Enter text here:"
-msgstr "Enter text here:"
+msgstr "Введите сюда текст:"
 
 #: ../src/gui/cellrenderer/cellrenderer_value.cpp:427
 msgid "<Group>"
@@ -903,7 +903,7 @@ msgstr "Нет родителя"
 
 #: ../src/gui/dialogs/about.cpp:88
 msgid "Visit the Synfig website"
-msgstr "Visit the Synfig website"
+msgstr "Посетите сайт Synfig"
 
 #: ../src/gui/dialogs/about.cpp:90
 msgid ""
@@ -915,11 +915,11 @@ msgstr ""
 
 #: ../src/gui/dialogs/about.cpp:109
 msgid "Original developers:"
-msgstr "Original developers:"
+msgstr "Первые разработчики:"
 
 #: ../src/gui/dialogs/about.cpp:114
 msgid "Contributors:"
-msgstr "Contributors:"
+msgstr "Участники проекта:"
 
 #. TRANSLATORS: change this to your name, separate multiple names with \n
 #: ../src/gui/dialogs/about.cpp:274
@@ -937,17 +937,17 @@ msgid ""
 "%s\n"
 msgstr ""
 "\n"
-"Development version:\n"
+"Сборка:\n"
 "%s\n"
 
 #: ../src/gui/dialogs/about.cpp:294
 #, c-format
 msgid "Built on %s\n"
-msgstr "Built on %s\n"
+msgstr "Дата сборки %s\n"
 
 #: ../src/gui/dialogs/about.cpp:298
 msgid "Built with:\n"
-msgstr "Built with:\n"
+msgstr "При помощи:\n"
 
 #: ../src/gui/dialogs/about.cpp:299
 #, c-format
@@ -962,7 +962,7 @@ msgstr "Synfig API %s\n"
 #: ../src/gui/dialogs/about.cpp:301
 #, c-format
 msgid "Synfig library %d\n"
-msgstr "Synfig library %d\n"
+msgstr "Библиотека Synfig %d\n"
 
 #: ../src/gui/dialogs/about.cpp:302
 #, c-format
@@ -976,7 +976,7 @@ msgstr "GNU G++ %d.%d.%d\n"
 
 #: ../src/gui/dialogs/about.cpp:309
 msgid "Using:\n"
-msgstr "Using:\n"
+msgstr "Используется:\n"
 
 #: ../src/gui/dialogs/about.cpp:310
 #, c-format
@@ -990,23 +990,23 @@ msgstr "GTK+ %d.%d.%d"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:151
 msgid "Options"
-msgstr "Options"
+msgstr "Параметры"
 
 #: ../src/gui/dialogs/canvasoptions.cpp:169
 msgid "Not yet implemented"
-msgstr "Not yet implemented"
+msgstr "Пока не реализовано"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:66
 msgid "Canvas Properties"
-msgstr "Canvas Properties"
+msgstr "Свойства холста"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:79
 msgid "Canvas Info"
-msgstr "Canvas Info"
+msgstr "О холсте"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:81
 msgid "<b>Canvas Info</b>"
-msgstr "<b>Canvas Info</b>"
+msgstr "<b>Данные о холсте</b>"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:97
 msgid "_ID"
@@ -1014,31 +1014,31 @@ msgstr "_ID"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:103
 msgid "_Name"
-msgstr "_Name"
+msgstr "_Имя"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:106
 msgid "_Description"
-msgstr "_Description"
+msgstr "О_писание"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:199 ../src/gui/app.cpp:1076
 msgid "Properties"
-msgstr "Properties"
+msgstr "Свойства"
 
 #: ../src/gui/dialogs/canvasproperties.cpp:228
 msgid "Edit Canvas Properties"
-msgstr "Edit Canvas Properties"
+msgstr "Изменить свойства холста"
 
 #: ../src/gui/dialogs/dialog_color.cpp:60
 msgid "Colors"
-msgstr "Colors"
+msgstr "Цвета"
 
 #: ../src/gui/dialogs/dialog_color.cpp:68 ../src/gui/iconcontroller.cpp:293
 msgid "Set as Outline"
-msgstr "Set as Outline"
+msgstr "Установить как цвет контура"
 
 #: ../src/gui/dialogs/dialog_color.cpp:70 ../src/gui/iconcontroller.cpp:294
 msgid "Set as Fill"
-msgstr "Set as Fill"
+msgstr "Установить как цвет заливки"
 
 #: ../src/gui/dialogs/dialog_ffmpegparam.cpp:49
 msgid "Custom Video Codec"
@@ -1122,7 +1122,7 @@ msgstr "Битрейт видео:"
 
 #: ../src/gui/dialogs/dialog_gradient.cpp:67
 msgid "Gradient Editor"
-msgstr "Gradient Editor"
+msgstr "Редактор градиентов"
 
 #: ../src/gui/dialogs/dialog_gradient.cpp:77
 msgid "Set as Default"
@@ -1175,7 +1175,7 @@ msgstr "Окно"
 
 #: ../src/gui/dialogs/dialog_keyframe.cpp:61
 msgid "Keyframe Dialog"
-msgstr "Keyframe Dialog"
+msgstr "Параметры ключевого кадра"
 
 #: ../src/gui/dialogs/dialog_keyframe.cpp:95
 msgid "Description :"
@@ -1187,7 +1187,7 @@ msgstr "Действующий:"
 
 #: ../src/gui/dialogs/dialog_preview.cpp:73 ../src/gui/canvasview.cpp:1559
 msgid "Preview Window"
-msgstr "Preview Window"
+msgstr "Окно предпросмотра"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:82
 msgid "Synfig Studio Preferences"
@@ -1199,7 +1199,7 @@ msgstr "Интерфейс"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:96
 msgid "Document"
-msgstr "Document"
+msgstr "Документ"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:97
 msgid "Editing"
@@ -1208,7 +1208,7 @@ msgstr "Редактирование"
 #: ../src/gui/dialogs/dialog_setup.cpp:98 ../src/gui/canvasview.cpp:1176
 #: ../src/gui/render.cpp:192
 msgid "Render"
-msgstr "Render"
+msgstr "Визуализация"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:99
 msgid "System"
@@ -1221,11 +1221,11 @@ msgstr "Комбинации клавиш"
 #: ../src/gui/dialogs/dialog_setup.cpp:138
 #: ../src/gui/dialogs/dialog_setup.cpp:166
 msgid "Units"
-msgstr "Units"
+msgstr "Единицы"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:140
 msgid "Timestamp"
-msgstr "Timestamp"
+msgstr "Формат времени"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:167
 msgid "Pixels"
@@ -1233,27 +1233,27 @@ msgstr "Пиксели"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:168
 msgid "Points"
-msgstr "Points"
+msgstr "Точка"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:169
 msgid "Inches"
-msgstr "Inches"
+msgstr "Дюйм"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:170
 msgid "Meters"
-msgstr "Meters"
+msgstr "Метр"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:171
 msgid "Centimeters"
-msgstr "Centimeters"
+msgstr "Сантиметр"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:172
 msgid "Millimeters"
-msgstr "Millimeters"
+msgstr "Миллиметр"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:177
 msgid "Unit System"
-msgstr "Unit System"
+msgstr "Единица измерения"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:183
 msgid "Recent Files"
@@ -1278,7 +1278,7 @@ msgstr "Экспериментальные функции (требуется п
 #: ../src/gui/dialogs/dialog_setup.cpp:260 ../src/gui/iconcontroller.cpp:172
 #: ../src/synfigapp/actions/canvasadd.cpp:76
 msgid "New Canvas"
-msgstr "New Canvas"
+msgstr "Новый холст"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:262
 msgid "Name prefix"
@@ -1286,7 +1286,7 @@ msgstr "Префикс имени"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:264
 msgid "File name prefix for the new created document"
-msgstr "File name prefix for the new created document"
+msgstr "Префикс имени файлов для новых документов"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:269
 msgid "FPS"
@@ -1294,7 +1294,7 @@ msgstr "Количество кадров в секунду"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:272
 msgid "Frames per second of the new created document"
-msgstr "Frames per second of the new created document"
+msgstr "Количество кадров в секунду в каждом новом документе"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:294
 msgid "Size"
@@ -1306,7 +1306,7 @@ msgstr "Ширина"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:304
 msgid "Width in pixels of the new created document"
-msgstr "Width in pixels of the new created document"
+msgstr "Ширина новых документов в пикселах"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:315
 msgid "Height"
@@ -1318,11 +1318,11 @@ msgstr "Высота в пикселях нового создаваемого �
 
 #: ../src/gui/dialogs/dialog_setup.cpp:327
 msgid "4096x3112 Full Aperture 4K"
-msgstr "4096x3112 Full Aperture 4K"
+msgstr "4096x3112 полное кадровое окно 4K"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:328
 msgid "2048x1556 Full Aperture Native 2K"
-msgstr "2048x1556 Full Aperture Native 2K"
+msgstr "2048x1556 полное кадровое окно 2K"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:329
 msgid "1920x1080 HDTV 1080p/i"
@@ -1386,7 +1386,7 @@ msgstr "Сплошная заливка"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:371 ../src/gui/renddesc.cpp:231
 msgid "Image"
-msgstr "Image"
+msgstr "Изображение"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:376
 #: ../src/gui/dialogs/dialog_setup.cpp:654
@@ -1411,7 +1411,7 @@ msgstr ""
 
 #: ../src/gui/dialogs/dialog_setup.cpp:429 ../src/gui/renddesc.cpp:234
 msgid "Other"
-msgstr "Other"
+msgstr "Прочее"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:432
 msgid "Restrict real value handles to top right quadrant"
@@ -1439,7 +1439,7 @@ msgstr "Предпочитаемый редактор изображений"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:446 ../src/gui/render.cpp:117
 msgid "Choose..."
-msgstr "Choose..."
+msgstr "Выбрать..."
 
 #: ../src/gui/dialogs/dialog_setup.cpp:448
 msgid "Choose the preferred Image editor for Edit in external tool option"
@@ -1462,7 +1462,7 @@ msgstr "Комбинации клавиш"
 #: ../src/gui/dialogs/dialog_setup.cpp:488
 #: ../src/gui/docks/dock_history.cpp:206
 msgid "Action"
-msgstr "Action"
+msgstr "Действие"
 
 #: ../src/gui/dialogs/dialog_setup.cpp:496
 msgid "Shortcut"
@@ -1588,7 +1588,7 @@ msgstr "Выберите новый путь для кисти"
 
 #: ../src/gui/dialogs/dialog_setup.h:63
 msgid "Custom Size"
-msgstr "Custom Size"
+msgstr "Другой размер"
 
 #: ../src/gui/dialogs/dialog_setup.h:66
 msgid "Custom fps"
@@ -1596,23 +1596,23 @@ msgstr "Другая частота кадров"
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:62
 msgid "Sound Select"
-msgstr "Sound Select"
+msgstr "Выбор звукового файла"
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:69
 msgid "Sound Parameters"
-msgstr "Sound Parameters"
+msgstr "Параметры звука"
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:70
 msgid "<b>Sound Parameters</b>"
-msgstr "<b>Sound Parameters</b>"
+msgstr "<b>Параметры звука</b>"
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:78
 msgid "_Sound File"
-msgstr "_Sound File"
+msgstr "_Звуковой файл"
 
 #: ../src/gui/dialogs/dialog_soundselect.cpp:81
 msgid "Time _Offset"
-msgstr "Time _Offset"
+msgstr "_Смещение времени"
 
 #: ../src/gui/dialogs/dialog_spritesheetparam.cpp:36
 msgid "Sprite sheet parameters"
@@ -1648,7 +1648,7 @@ msgstr "Параметры экспорта"
 
 #: ../src/gui/dialogs/dialog_template.cpp:66 ../src/gui/app.cpp:979
 msgid "Restore Defaults"
-msgstr "Восстановить умолчания"
+msgstr "Сбросить настройки"
 
 #: ../src/gui/dialogs/dialog_template.cpp:117
 msgid "Category"
@@ -1656,7 +1656,7 @@ msgstr "Категория"
 
 #: ../src/gui/dialogs/dialog_waypoint.cpp:66
 msgid "Waypoint Editor"
-msgstr "Waypoint Editor"
+msgstr "Редактор фиксатора"
 
 #: ../src/gui/dialogs/dialog_workspaces.cpp:131
 #, c-format
@@ -1720,12 +1720,12 @@ msgstr "Перейти к предыдущему кадру"
 #: ../src/gui/dials/framedial.cpp:63 ../src/gui/app.cpp:1018
 #: ../src/gui/iconcontroller.cpp:299 ../src/gui/preview.cpp:421
 msgid "Play"
-msgstr "Play"
+msgstr "Воспроизведение"
 
 #: ../src/gui/dials/framedial.cpp:64 ../src/gui/app.cpp:1021
 #: ../src/gui/iconcontroller.cpp:301 ../src/gui/preview.cpp:434
 msgid "Pause"
-msgstr "Pause"
+msgstr "Пауза"
 
 #: ../src/gui/dials/framedial.cpp:65
 msgid "Seek to next frame"
@@ -1782,7 +1782,7 @@ msgstr "Увеличить разрешение"
 
 #: ../src/gui/dials/resolutiondial.cpp:58
 msgid "Increase Display Resolution"
-msgstr "Increase Display Resolution"
+msgstr "Увеличить разрешение для просмотра"
 
 #: ../src/gui/dials/resolutiondial.cpp:59
 msgid "Decrease Resolution"
@@ -1790,7 +1790,7 @@ msgstr "Уменьшить разрешение"
 
 #: ../src/gui/dials/resolutiondial.cpp:59
 msgid "Decrease Display Resolution"
-msgstr "Decrease Display Resolution"
+msgstr "Уменьшить разрешение просмотра"
 
 #: ../src/gui/dials/resolutiondial.cpp:60
 msgid "Low Res"
@@ -1798,7 +1798,9 @@ msgstr "Низкое разрешение"
 
 #: ../src/gui/dials/resolutiondial.cpp:60
 msgid "Use Low Resolution when enabled"
-msgstr "Use Low Resolution when enabled"
+msgstr ""
+"Если включено, использовать низкое разрешение для получения ускоренной "
+"отрисовки"
 
 #: ../src/gui/dials/toggleducksdial.cpp:58
 msgid "Position handles"
@@ -1850,32 +1852,32 @@ msgstr "Включить точки углов"
 
 #: ../src/gui/dials/zoomdial.cpp:64
 msgid "Zoom In"
-msgstr "Zoom In"
+msgstr "Приблизить"
 
 #: ../src/gui/dials/zoomdial.cpp:65
 msgid "Zoom Out"
-msgstr "Zoom Out"
+msgstr "Отдалить"
 
 #: ../src/gui/dials/zoomdial.cpp:66
 msgid "Zoom to Fit"
-msgstr "Zoom to Fit"
+msgstr "Уместить"
 
 #: ../src/gui/dials/zoomdial.cpp:67
 msgid "Zoom to 100%"
-msgstr "Zoom to 100%"
+msgstr "Масштаб 100%"
 
 #: ../src/gui/docks/dialog_tooloptions.cpp:58
 #: ../src/gui/docks/dialog_tooloptions.cpp:78 ../src/gui/app.cpp:1051
 msgid "Tool Options"
-msgstr "Tool Options"
+msgstr "Параметры инструмента"
 
 #: ../src/gui/docks/dialog_tooloptions.cpp:59
 msgid "This tool has no options"
-msgstr "This tool has no options"
+msgstr "У этого инструмента нет параметров"
 
 #: ../src/gui/docks/dock_canvases.cpp:57 ../src/gui/app.cpp:1053
 msgid "Canvas Browser"
-msgstr "Canvas Browser"
+msgstr "Просмотр холста"
 
 #: ../src/gui/docks/dock_canvases.cpp:110 ../src/gui/trees/childrentree.cpp:69
 #: ../src/synfigapp/actions/canvasadd.cpp:81
@@ -1895,61 +1897,61 @@ msgstr "Графики"
 #: ../src/gui/docks/dock_history.cpp:68 ../src/gui/docks/dock_history.cpp:124
 #: ../src/gui/app.cpp:1052 ../src/gui/iconcontroller.cpp:279
 msgid "History"
-msgstr "History"
+msgstr "История действий"
 
 #: ../src/gui/docks/dock_history.cpp:77 ../src/gui/iconcontroller.cpp:270
 msgid "Clear Undo Stack"
-msgstr "Clear Undo Stack"
+msgstr "Забыть историю отмен"
 
 #: ../src/gui/docks/dock_history.cpp:78
 msgid "Clear the undo stack"
-msgstr "Clear the undo stack"
+msgstr "Стереть информацию об отменяемых действиях"
 
 #: ../src/gui/docks/dock_history.cpp:88 ../src/gui/iconcontroller.cpp:271
 msgid "Clear Redo Stack"
-msgstr "Clear Redo Stack"
+msgstr "Забыть историю повторов"
 
 #: ../src/gui/docks/dock_history.cpp:89
 msgid "Clear the redo stack"
-msgstr "Clear the redo stack"
+msgstr "Стереть информацию о повторяемых действиях"
 
 #: ../src/gui/docks/dock_history.cpp:99
 msgid "Clear Undo and Redo Stacks"
-msgstr "Clear Undo and Redo Stacks"
+msgstr "Забыть историю отмен и повторы"
 
 #: ../src/gui/docks/dock_history.cpp:100
 msgid "Clear the undo and redo stacks"
-msgstr "Clear the undo and redo stacks"
+msgstr "Стереть информацию об отменяемых и повторяемых действиях"
 
 #: ../src/gui/docks/dock_history.cpp:110 ../src/gui/iconcontroller.cpp:182
 msgid "Undo"
-msgstr "Undo"
+msgstr "Отменить"
 
 #: ../src/gui/docks/dock_history.cpp:111
 msgid "Undo the previous action"
-msgstr "Undo the previous action"
+msgstr "Отменить предыдущее действие"
 
 #: ../src/gui/docks/dock_history.cpp:118 ../src/gui/iconcontroller.cpp:181
 msgid "Redo"
-msgstr "Redo"
+msgstr "Повторить"
 
 #: ../src/gui/docks/dock_history.cpp:119
 msgid "Redo the previously undone action"
-msgstr "Redo the previously undone action"
+msgstr "Повторить отмененное ранее действие"
 
 #: ../src/gui/docks/dock_history.cpp:189 ../src/gui/trees/keyframetree.cpp:107
 #: ../src/gui/trees/keyframetree.cpp:295
 msgid "Jump"
-msgstr "Jump"
+msgstr "Переход"
 
 #: ../src/gui/docks/dock_history.cpp:194 ../src/gui/trees/keyframetree.cpp:111
 msgid "(JMP)"
-msgstr "(JMP)"
+msgstr "(перейти)"
 
 #: ../src/gui/docks/dock_history.cpp:254 ../src/gui/docks/dock_history.cpp:268
 #: ../src/gui/docks/dock_history.cpp:282
 msgid "Clear History"
-msgstr "Clear History"
+msgstr "Очистить историю"
 
 #: ../src/gui/docks/dock_history.cpp:255
 msgid ""
@@ -1963,7 +1965,7 @@ msgstr ""
 #: ../src/gui/docks/dock_history.cpp:287
 #: ../src/gui/docks/dock_soundwave.cpp:60
 msgid "Clear"
-msgstr "Clear"
+msgstr "Очистить"
 
 #: ../src/gui/docks/dock_history.cpp:269
 msgid ""
@@ -1983,7 +1985,7 @@ msgstr ""
 
 #: ../src/gui/docks/dock_info.cpp:105 ../src/gui/app.cpp:1059
 msgid "Info"
-msgstr "Info"
+msgstr "Инфо"
 
 #: ../src/gui/docks/dock_info.cpp:112
 msgid "X: "
@@ -2016,7 +2018,7 @@ msgstr "Прогресс отрисовки: "
 #: ../src/gui/docks/dock_keyframes.cpp:65 ../src/gui/app.cpp:1054
 #: ../src/gui/iconcontroller.cpp:275
 msgid "Keyframes"
-msgstr "Keyframes"
+msgstr "Ключевые кадры"
 
 #: ../src/gui/docks/dock_layergroups.cpp:66 ../src/gui/app.cpp:1063
 msgid "Sets"
@@ -2028,7 +2030,7 @@ msgstr "Набор операций"
 
 #: ../src/gui/docks/dock_layers.cpp:69 ../src/gui/app.cpp:1055
 msgid "Layers"
-msgstr "Layers"
+msgstr "Слои"
 
 #: ../src/gui/docks/dock_layers.cpp:152
 msgid "Layer Ops"
@@ -2037,16 +2039,16 @@ msgstr "Операции слоя"
 #: ../src/gui/docks/dock_layers.cpp:154 ../src/gui/app.cpp:925
 #: ../src/gui/canvasview.cpp:2186 ../src/synfigapp/actions/layeradd.cpp:85
 msgid "New Layer"
-msgstr "New Layer"
+msgstr "Создать слой"
 
 #: ../src/gui/docks/dock_metadata.cpp:65 ../src/gui/docks/dock_metadata.cpp:92
 #: ../src/gui/app.cpp:1057
 msgid "Canvas MetaData"
-msgstr "Canvas MetaData"
+msgstr "Метаданные холста"
 
 #: ../src/gui/docks/dock_metadata.cpp:71
 msgid "Add new MetaData entry"
-msgstr "Add new MetaData entry"
+msgstr "Создать новую запись в метаданных"
 
 #: ../src/gui/docks/dock_metadata.cpp:72
 msgid "Add a new MetaData entry to the canvas"
@@ -2054,7 +2056,7 @@ msgstr "Создать новую запись в метаданных на хо
 
 #: ../src/gui/docks/dock_metadata.cpp:83
 msgid "Remove selected MetaData entry"
-msgstr "Remove selected MetaData entry"
+msgstr "Удалить выбранную запись в метаданных"
 
 #: ../src/gui/docks/dock_metadata.cpp:84
 msgid "Remove the selected MetaData entry"
@@ -2071,7 +2073,7 @@ msgstr "Имя ключа:"
 #: ../src/gui/docks/dock_navigator.cpp:303 ../src/gui/app.cpp:1060
 #: ../src/gui/iconcontroller.cpp:277
 msgid "Navigator"
-msgstr "Navigator"
+msgstr "Навигатор"
 
 #: ../src/gui/docks/dock_params.cpp:64 ../src/gui/app.cpp:1056
 #: ../src/gui/iconcontroller.cpp:281
@@ -2099,7 +2101,7 @@ msgstr "Канал #%i"
 #: ../src/gui/trees/childrentree.cpp:116 ../src/gui/trees/layertree.cpp:345
 #: ../src/gui/iconcontroller.cpp:278
 msgid "Time Track"
-msgstr "Time Track"
+msgstr "Дорожка времени"
 
 #: ../src/gui/docks/dock_timetrack.cpp:431 ../src/gui/app.cpp:1061
 msgid "Timetrack"
@@ -2116,7 +2118,7 @@ msgstr "Отсоединить панель"
 
 #: ../src/gui/docks/dockdialog.cpp:107 ../src/gui/docks/dockmanager.cpp:828
 msgid "Dock Panel"
-msgstr "Dock Panel"
+msgstr "Панель дока"
 
 #: ../src/gui/docks/dockmanager.cpp:828 ../src/gui/docks/dockmanager.cpp:838
 #: ../src/gui/app.cpp:1501
@@ -2125,23 +2127,23 @@ msgstr "Synfig Studio"
 
 #: ../src/gui/modules/mod_palette/dock_palbrowse.cpp:58
 msgid "Palette Browser"
-msgstr "Palette Browser"
+msgstr "Просмотр палитр"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:125 ../src/gui/app.cpp:1064
 msgid "Palette Editor"
-msgstr "Palette Editor"
+msgstr "Редактор палитр"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:133
 msgid "Add Color"
-msgstr "Add Color"
+msgstr "Добавить цвет"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:134
 msgid ""
 "Add current outline color\n"
 "to the palette"
 msgstr ""
-"Add current outline color\n"
-"to the palette"
+"Добавить активный цвет\n"
+"контура в палитру"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:144
 msgid "Save palette"
@@ -2235,7 +2237,7 @@ msgstr "Пожалуйста, выберите файл палитры"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:306 ../src/gui/app.cpp:4118
 msgid "Unable to open file"
-msgstr "Unable to open file"
+msgstr "Не удалось открыть файл"
 
 #: ../src/gui/modules/mod_palette/dock_paledit.cpp:306
 msgid "Unknown error"
@@ -2326,7 +2328,7 @@ msgstr "Метод смешивания:"
 #: ../src/gui/states/state_rectangle.cpp:542
 #: ../src/gui/states/state_star.cpp:664 ../src/gui/states/state_text.cpp:426
 msgid "Blend Method"
-msgstr "Blend Method"
+msgstr "Режим смешивания"
 
 #: ../src/gui/states/state_bline.cpp:564
 msgid "Defines the blend method to be used for splines"
@@ -2358,7 +2360,7 @@ msgstr "Диаметр кисти:"
 #: ../src/gui/states/state_rectangle.cpp:570
 #: ../src/gui/states/state_star.cpp:728
 msgid "Feather:"
-msgstr "Feather:"
+msgstr "Растушёвка:"
 
 #: ../src/gui/states/state_bline.cpp:593
 #: ../src/gui/states/state_circle.cpp:669
@@ -2366,12 +2368,12 @@ msgstr "Feather:"
 #: ../src/gui/states/state_rectangle.cpp:588
 #: ../src/gui/states/state_star.cpp:737
 msgid "Link Origins"
-msgstr "Link Origins"
+msgstr "Связать начала координат"
 
 #: ../src/gui/states/state_bline.cpp:601 ../src/gui/states/state_draw.cpp:764
 #: ../src/gui/states/state_lasso.cpp:749
 msgid "Auto Export"
-msgstr "Auto Export"
+msgstr "Автоэкспорт"
 
 #: ../src/gui/states/state_bline.cpp:702 ../src/gui/iconcontroller.cpp:147
 msgid "Spline Tool"
@@ -2442,7 +2444,7 @@ msgstr "Невозможно добавить узел"
 #: ../src/gui/states/state_star.cpp:1358 ../src/gui/states/state_star.cpp:1442
 #: ../src/gui/states/state_text.cpp:642
 msgid "Unable to create layer"
-msgstr "Unable to create layer"
+msgstr "Не удалось создать слой"
 
 #: ../src/gui/states/state_bline.cpp:908
 #: ../src/gui/states/state_circle.cpp:1005
@@ -2450,7 +2452,7 @@ msgstr "Unable to create layer"
 #: ../src/gui/states/state_rectangle.cpp:860
 #: ../src/gui/states/state_star.cpp:1126
 msgid " Gradient"
-msgstr " Gradient"
+msgstr " Градиент"
 
 #: ../src/gui/states/state_bline.cpp:932 ../src/gui/states/state_bline.cpp:955
 #: ../src/gui/states/state_circle.cpp:1032
@@ -2461,7 +2463,7 @@ msgstr " Gradient"
 #: ../src/gui/states/state_rectangle.cpp:900
 #: ../src/gui/states/state_star.cpp:1154 ../src/gui/states/state_star.cpp:1176
 msgid "Unable to create Gradient layer"
-msgstr "Unable to create Gradient layer"
+msgstr "Не удалось создать слой градиентной заливки"
 
 #: ../src/gui/states/state_bline.cpp:979
 #: ../src/gui/states/state_circle.cpp:1083
@@ -2469,7 +2471,7 @@ msgstr "Unable to create Gradient layer"
 #: ../src/gui/states/state_rectangle.cpp:931
 #: ../src/gui/states/state_star.cpp:1205
 msgid " Plant"
-msgstr " Plant"
+msgstr " Растение"
 
 #: ../src/gui/states/state_bline.cpp:1003
 #: ../src/gui/states/state_bline.cpp:1025
@@ -2481,7 +2483,7 @@ msgstr " Plant"
 #: ../src/gui/states/state_rectangle.cpp:971
 #: ../src/gui/states/state_star.cpp:1229 ../src/gui/states/state_star.cpp:1251
 msgid "Unable to create Plant layer"
-msgstr "Unable to create Plant layer"
+msgstr "Не удалось создать слой растения"
 
 #: ../src/gui/states/state_bline.cpp:1049
 #: ../src/gui/states/state_circle.cpp:1158
@@ -2491,7 +2493,7 @@ msgstr "Unable to create Plant layer"
 #: ../src/gui/states/state_rectangle.cpp:1002
 #: ../src/gui/states/state_star.cpp:1280
 msgid " Region"
-msgstr " Region"
+msgstr " Область"
 
 #: ../src/gui/states/state_bline.cpp:1081
 #: ../src/gui/states/state_bline.cpp:1103
@@ -2506,7 +2508,7 @@ msgstr " Region"
 #: ../src/gui/states/state_rectangle.cpp:1052
 #: ../src/gui/states/state_star.cpp:1312 ../src/gui/states/state_star.cpp:1334
 msgid "Unable to create Region layer"
-msgstr "Unable to create Region layer"
+msgstr "Не удалось создать слой области"
 
 #: ../src/gui/states/state_bline.cpp:1127
 #: ../src/gui/states/state_circle.cpp:1241
@@ -2516,7 +2518,7 @@ msgstr "Unable to create Region layer"
 #: ../src/gui/states/state_rectangle.cpp:1076
 #: ../src/gui/states/state_star.cpp:1363
 msgid " Outline"
-msgstr " Outline"
+msgstr " Контур"
 
 #: ../src/gui/states/state_bline.cpp:1160
 #: ../src/gui/states/state_bline.cpp:1182
@@ -2528,7 +2530,7 @@ msgstr " Outline"
 #: ../src/gui/states/state_rectangle.cpp:1131
 #: ../src/gui/states/state_star.cpp:1396 ../src/gui/states/state_star.cpp:1418
 msgid "Unable to create Outline layer"
-msgstr "Unable to create Outline layer"
+msgstr "Не удалось создать слой контура"
 
 #: ../src/gui/states/state_bline.cpp:1206
 #: ../src/gui/states/state_circle.cpp:1324
@@ -2567,11 +2569,11 @@ msgstr "Замкнуть контур"
 #: ../src/gui/states/state_bline.cpp:1759
 #: ../src/gui/states/state_bline.cpp:1959
 msgid "Delete Vertex"
-msgstr "Delete Vertex"
+msgstr "Удалить вершину"
 
 #: ../src/gui/states/state_bline.cpp:1778
 msgid "Insert Vertex"
-msgstr "Insert Vertex"
+msgstr "Вставить вершину"
 
 #: ../src/gui/states/state_bline.cpp:1852
 msgid ""
@@ -2617,11 +2619,11 @@ msgstr "Смещение:"
 #: ../src/gui/states/state_rectangle.cpp:562
 #: ../src/gui/states/state_star.cpp:720
 msgid "Invert"
-msgstr "Invert"
+msgstr "Инвертировать"
 
 #: ../src/gui/states/state_circle.cpp:650
 msgid "Falloff:"
-msgstr "Falloff:"
+msgstr "Затухание:"
 
 #: ../src/gui/states/state_circle.cpp:658
 msgid "Falloff"
@@ -2638,7 +2640,7 @@ msgstr "Определяет функцию затухания для расту
 #: ../src/gui/widgets/widget_waypointmodel.cpp:100
 #: ../src/gui/canvasview.cpp:918 ../src/gui/instance.cpp:1443
 msgid "Linear"
-msgstr "Linear"
+msgstr "Линейное"
 
 #: ../src/gui/states/state_circle.cpp:662
 msgid "Squared"
@@ -2646,7 +2648,7 @@ msgstr "Квадратичная"
 
 #: ../src/gui/states/state_circle.cpp:663
 msgid "Square Root"
-msgstr "Square Root"
+msgstr "Квадратный корень"
 
 #: ../src/gui/states/state_circle.cpp:664
 msgid "Sigmond"
@@ -2654,7 +2656,7 @@ msgstr "Сигмонд"
 
 #: ../src/gui/states/state_circle.cpp:665
 msgid "Cosine"
-msgstr "Cosine"
+msgstr "По косинусу"
 
 #: ../src/gui/states/state_circle.cpp:677 ../src/gui/states/state_star.cpp:745
 msgid "Spline Origins at Center"
@@ -2662,15 +2664,15 @@ msgstr "Начало координат кривой в центре"
 
 #: ../src/gui/states/state_circle.cpp:799 ../src/gui/iconcontroller.cpp:154
 msgid "Circle Tool"
-msgstr "Circle Tool"
+msgstr "Окружности"
 
 #: ../src/gui/states/state_circle.cpp:845
 msgid "New Circle"
-msgstr "New Circle"
+msgstr "Новая окружность"
 
 #: ../src/gui/states/state_circle.cpp:976
 msgid "Unable to create Circle layer"
-msgstr "Unable to create Circle layer"
+msgstr "Не удалось создать слой окружности"
 
 #: ../src/gui/states/state_draw.cpp:616 ../src/gui/states/state_draw.cpp:970
 #: ../src/gui/states/state_lasso.cpp:613
@@ -2707,15 +2709,15 @@ msgstr "Концы закругления"
 
 #: ../src/gui/states/state_draw.cpp:736 ../src/gui/states/state_lasso.cpp:721
 msgid "Auto Loop"
-msgstr "Auto Loop"
+msgstr "Замыкать автоматически"
 
 #: ../src/gui/states/state_draw.cpp:743 ../src/gui/states/state_lasso.cpp:728
 msgid "Auto Extend"
-msgstr "Auto Extend"
+msgstr "Авторасширение"
 
 #: ../src/gui/states/state_draw.cpp:750 ../src/gui/states/state_lasso.cpp:735
 msgid "Auto Link"
-msgstr "Auto Link"
+msgstr "Автосвязь"
 
 #: ../src/gui/states/state_draw.cpp:965 ../src/gui/iconcontroller.cpp:150
 msgid "Draw Tool"
@@ -2740,7 +2742,7 @@ msgstr "Продолжить кривую"
 #: ../src/gui/states/state_draw.cpp:2540
 #: ../src/gui/states/state_lasso.cpp:2553
 msgid "Unable to set lower boundary for wplist"
-msgstr "Unable to set lower boundary for wplist"
+msgstr "Невозможно задать нижнюю границу"
 
 #: ../src/gui/states/state_draw.cpp:2585 ../src/gui/states/state_draw.cpp:2628
 #: ../src/gui/states/state_draw.cpp:2776 ../src/gui/states/state_draw.cpp:2819
@@ -2760,7 +2762,7 @@ msgstr "Невозможно замкнуть кривую"
 #: ../src/gui/states/state_draw.cpp:2731
 #: ../src/gui/states/state_lasso.cpp:2744
 msgid "Unable to set upper boundary for wplist"
-msgstr "Unable to set upper boundary for wplist"
+msgstr "Невозможно задать верхнюю границу"
 
 #: ../src/gui/states/state_draw.cpp:2861
 #: ../src/gui/states/state_lasso.cpp:2874
@@ -2769,7 +2771,7 @@ msgstr "Залить контур"
 
 #: ../src/gui/states/state_fill.cpp:162
 msgid "No layer here"
-msgstr "No layer here"
+msgstr "Здесь нет слоя"
 
 #: ../src/gui/states/state_fill.cpp:172
 msgid "Unable to set layer color"
@@ -2801,11 +2803,11 @@ msgstr "Определяет метод наложения, применяемы
 
 #: ../src/gui/states/state_gradient.cpp:524 ../src/gui/iconcontroller.cpp:163
 msgid "Gradient Tool"
-msgstr "Gradient Tool"
+msgstr "Градиентная заливка"
 
 #: ../src/gui/states/state_gradient.cpp:582
 msgid "New Gradient"
-msgstr "New Gradient"
+msgstr "Новый градиент"
 
 #: ../src/gui/states/state_lasso.cpp:618
 msgid "Lasso"
@@ -2821,16 +2823,16 @@ msgstr "Маска"
 
 #: ../src/gui/states/state_mirror.cpp:176
 msgid "Horizontal"
-msgstr "Horizontal"
+msgstr "По горизонтали"
 
 #: ../src/gui/states/state_mirror.cpp:177
 msgid "Vertical"
-msgstr "Vertical"
+msgstr "По вертикали"
 
 #: ../src/gui/states/state_mirror.cpp:180
 #: ../src/gui/states/state_mirror.cpp:243 ../src/gui/iconcontroller.cpp:161
 msgid "Mirror Tool"
-msgstr "Mirror Tool"
+msgstr "Отражение"
 
 #: ../src/gui/states/state_mirror.cpp:183
 msgid "(Shift key toggles axis)"
@@ -2839,19 +2841,19 @@ msgstr "(Клавиша Shift переключает ось)"
 #: ../src/gui/states/state_normal.cpp:286
 #: ../src/gui/states/state_normal.cpp:311 ../src/gui/iconcontroller.cpp:145
 msgid "Transform Tool"
-msgstr "Transform Tool"
+msgstr "Инструмент трансформации"
 
 #: ../src/gui/states/state_normal.cpp:287
 msgid "Ctrl to rotate"
-msgstr "Ctrl to rotate"
+msgstr "Ctrl вращает"
 
 #: ../src/gui/states/state_normal.cpp:288
 msgid "Alt to scale"
-msgstr "Alt to scale"
+msgstr "Alt меняет размер"
 
 #: ../src/gui/states/state_normal.cpp:289
 msgid "Shift to constrain"
-msgstr "Shift to constrain"
+msgstr "Shift включает ограничитель"
 
 #: ../src/gui/states/state_polygon.cpp:472
 msgid "Polygon Creation"
@@ -2867,19 +2869,19 @@ msgstr "Определяет метод наложения, применяемы
 
 #: ../src/gui/states/state_polygon.cpp:670 ../src/gui/iconcontroller.cpp:146
 msgid "Polygon Tool"
-msgstr "Polygon Tool"
+msgstr "Многоугольник"
 
 #: ../src/gui/states/state_polygon.cpp:675
 msgid "Make Polygon"
-msgstr "Make Polygon"
+msgstr "Создать многоугольник"
 
 #: ../src/gui/states/state_polygon.cpp:685
 msgid "Clear current Polygon"
-msgstr "Clear current Polygon"
+msgstr "Очистить активный многоугольник"
 
 #: ../src/gui/states/state_polygon.cpp:752
 msgid "New Polygon"
-msgstr "New Polygon"
+msgstr "Новый многоугольник"
 
 #: ../src/gui/states/state_polygon.cpp:872
 #: ../src/gui/states/state_polygon.cpp:874
@@ -2904,15 +2906,15 @@ msgstr "Диаметр кисти"
 
 #: ../src/gui/states/state_rectangle.cpp:579
 msgid "Expansion:"
-msgstr "Expansion:"
+msgstr "Расширение:"
 
 #: ../src/gui/states/state_rectangle.cpp:690 ../src/gui/iconcontroller.cpp:155
 msgid "Rectangle Tool"
-msgstr "Rectangle Tool"
+msgstr "Прямоугольник"
 
 #: ../src/gui/states/state_rectangle.cpp:738
 msgid "New Rectangle"
-msgstr "New Rectangle"
+msgstr "Новый прямоугольник"
 
 #: ../src/gui/states/state_rotate.cpp:198
 msgid "Allow Scale"
@@ -2921,7 +2923,7 @@ msgstr "Разрешить масштабирование"
 #: ../src/gui/states/state_rotate.cpp:203
 #: ../src/gui/states/state_rotate.cpp:230 ../src/gui/iconcontroller.cpp:157
 msgid "Rotate Tool"
-msgstr "Rotate Tool"
+msgstr "Вращение"
 
 #: ../src/gui/states/state_rotate.cpp:404
 msgid "Move Handle"
@@ -2933,62 +2935,62 @@ msgstr "Рычаг вращения"
 
 #: ../src/gui/states/state_scale.cpp:187
 msgid "Lock Aspect Ratio"
-msgstr "Lock Aspect Ratio"
+msgstr "Запереть соотношение сторон"
 
 #: ../src/gui/states/state_scale.cpp:190 ../src/gui/states/state_scale.cpp:216
 #: ../src/gui/iconcontroller.cpp:159
 msgid "Scale Tool"
-msgstr "Scale Tool"
+msgstr "Масштабирование"
 
 #: ../src/gui/states/state_sketch.cpp:157
 msgid "Save Sketch"
-msgstr "Save Sketch"
+msgstr "Сохранить эскиз"
 
 #: ../src/gui/states/state_sketch.cpp:167
 msgid "Unable to save sketch"
-msgstr "Unable to save sketch"
+msgstr "Не удалось сохранить эскиз"
 
 #: ../src/gui/states/state_sketch.cpp:176
 msgid "Load Sketch"
-msgstr "Load Sketch"
+msgstr "Загрузить эскиз"
 
 #: ../src/gui/states/state_sketch.cpp:186
 msgid "Unable to load sketch"
-msgstr "Unable to load sketch"
+msgstr "Не удалось загрузить эскиз"
 
 #: ../src/gui/states/state_sketch.cpp:235
 msgid "Show Sketch"
-msgstr "Show Sketch"
+msgstr "Отображать эскиз"
 
 #: ../src/gui/states/state_sketch.cpp:245
 #: ../src/gui/states/state_sketch.cpp:306 ../src/gui/iconcontroller.cpp:153
 msgid "Sketch Tool"
-msgstr "Sketch Tool"
+msgstr "Эскиз"
 
 #: ../src/gui/states/state_sketch.cpp:311
 msgid "Undo Last Stroke"
-msgstr "Undo Last Stroke"
+msgstr "Отменить последний штрих"
 
 #: ../src/gui/states/state_sketch.cpp:320
 msgid "Clear Sketch"
-msgstr "Clear Sketch"
+msgstr "Очистить эскиз"
 
 #: ../src/gui/states/state_sketch.cpp:329
 msgid "Save Sketch As..."
-msgstr "Save Sketch As..."
+msgstr "Сохранить эскиз как..."
 
 #: ../src/gui/states/state_sketch.cpp:339
 msgid "Open a Sketch"
-msgstr "Open a Sketch"
+msgstr "Открыть эскиз"
 
 #: ../src/gui/states/state_smoothmove.cpp:202
 #: ../src/gui/iconcontroller.cpp:156
 msgid "SmoothMove Tool"
-msgstr "SmoothMove Tool"
+msgstr "Деформация"
 
 #: ../src/gui/states/state_smoothmove.cpp:229
 msgid "Smooth Move"
-msgstr "Smooth Move"
+msgstr "Деформация"
 
 #: ../src/gui/states/state_star.cpp:608
 msgid "Star Creation"
@@ -3008,39 +3010,39 @@ msgstr "Точки звезды:"
 
 #: ../src/gui/states/state_star.cpp:693
 msgid "Radius Ratio:"
-msgstr "Radius Ratio:"
+msgstr "Соотношение радиусов:"
 
 #: ../src/gui/states/state_star.cpp:697
 msgid "Regular Polygon"
-msgstr "Regular Polygon"
+msgstr "Обычный многоугольник"
 
 #: ../src/gui/states/state_star.cpp:704
 msgid "Inner Width:"
-msgstr "Inner Width:"
+msgstr "Внутренняя толщина:"
 
 #: ../src/gui/states/state_star.cpp:708
 msgid "Inner Tangent:"
-msgstr "Inner Tangent:"
+msgstr "Внутренняя касательная:"
 
 #: ../src/gui/states/state_star.cpp:712
 msgid "Outer Width:"
-msgstr "Outer Width:"
+msgstr "Внешняя толщина:"
 
 #: ../src/gui/states/state_star.cpp:716
 msgid "Outer Tangent:"
-msgstr "Outer Tangent:"
+msgstr "Внешняя касательная:"
 
 #: ../src/gui/states/state_star.cpp:897 ../src/gui/iconcontroller.cpp:164
 msgid "Star Tool"
-msgstr "Star Tool"
+msgstr "Звезда"
 
 #: ../src/gui/states/state_star.cpp:943
 msgid "New Star"
-msgstr "New Star"
+msgstr "Новая звезда"
 
 #: ../src/gui/states/state_star.cpp:1096
 msgid "Unable to create Star layer"
-msgstr "Unable to create Star layer"
+msgstr "Не удалось создать слой звезды"
 
 #: ../src/gui/states/state_text.cpp:390
 msgid "Text Creation"
@@ -3068,15 +3070,15 @@ msgstr "Ориентация:"
 
 #: ../src/gui/states/state_text.cpp:457
 msgid "Family:"
-msgstr "Family:"
+msgstr "Гарнитура:"
 
 #: ../src/gui/states/state_text.cpp:559 ../src/gui/iconcontroller.cpp:162
 msgid "Text Tool"
-msgstr "Text Tool"
+msgstr "Текст"
 
 #: ../src/gui/states/state_text.cpp:608
 msgid "New Text"
-msgstr "New Text"
+msgstr "Новый текст"
 
 #: ../src/gui/states/state_text.cpp:635
 msgid "Input text"
@@ -3088,24 +3090,24 @@ msgstr "Текст:"
 
 #: ../src/gui/states/state_width.cpp:239
 msgid "Relative Growth"
-msgstr "Relative Growth"
+msgstr "Относительное наращивание"
 
 #: ../src/gui/states/state_width.cpp:250 ../src/gui/states/state_width.cpp:307
 #: ../src/gui/iconcontroller.cpp:158
 msgid "Width Tool"
-msgstr "Width Tool"
+msgstr "Коррекция толщины"
 
 #: ../src/gui/states/state_width.cpp:253
 msgid "Growth:"
-msgstr "Growth:"
+msgstr "Сила:"
 
 #: ../src/gui/states/state_width.cpp:255
 msgid "Radius:"
-msgstr "Radius:"
+msgstr "Радиус:"
 
 #: ../src/gui/states/state_width.cpp:587
 msgid "Sketch Width"
-msgstr "Sketch Width"
+msgstr "Толщина"
 
 #: ../src/gui/trees/canvastreestore.cpp:265
 #: ../src/gui/trees/canvastreestore.cpp:305
@@ -3113,7 +3115,7 @@ msgstr "Sketch Width"
 #: ../src/gui/iconcontroller.cpp:141 ../src/gui/iconcontroller.cpp:171
 #: ../src/synfigapp/action.cpp:560
 msgid "Canvas"
-msgstr "Canvas"
+msgstr "Холст"
 
 #: ../src/gui/trees/canvastreestore.cpp:275
 #: ../src/gui/trees/canvastreestore.cpp:276
@@ -3130,7 +3132,7 @@ msgstr "[Без названия]"
 #: ../src/gui/trees/childrentree.cpp:88 ../src/gui/trees/layertree.cpp:328
 #: ../src/synfigapp/actions/valuedescconvert.cpp:100
 msgid "Type"
-msgstr "Type"
+msgstr "Тип"
 
 #: ../src/gui/trees/childrentree.cpp:99
 #: ../src/synfigapp/actions/layerparamset.cpp:82
@@ -3141,7 +3143,7 @@ msgstr "База значений"
 
 #: ../src/gui/trees/childrentreestore.cpp:82
 msgid "Canvases"
-msgstr "Canvases"
+msgstr "Холсты"
 
 #: ../src/gui/trees/childrentreestore.cpp:87
 msgid "ValueBase Nodes"
@@ -3194,7 +3196,7 @@ msgstr " "
 #: ../src/synfigapp/actions/waypointdisconnect.cpp:86
 #: ../src/synfigapp/actions/waypointsetsmart.cpp:102
 msgid "Time"
-msgstr "Time"
+msgstr "Время"
 
 #: ../src/gui/trees/keyframetree.cpp:92
 msgid "Length"
@@ -3206,12 +3208,12 @@ msgstr "Длина"
 #: ../src/synfigapp/actions/layerencapsulatefilter.cpp:87
 #: ../src/synfigapp/actions/layerencapsulateswitch.cpp:87
 msgid "Description"
-msgstr "Description"
+msgstr "Описание"
 
 #: ../src/gui/trees/keyframetreestore.cpp:802
 #: ../src/gui/trees/keyframetreestore.cpp:817
 msgid "Unable to find Keyframe in table"
-msgstr "Unable to find Keyframe in table"
+msgstr "Не удалось найти ключевой кадр в таблице"
 
 #: ../src/gui/trees/keyframetreestore.cpp:808
 msgid "There are no keyframes in this canvas"
@@ -3223,11 +3225,11 @@ msgstr "Глубина Z"
 
 #: ../src/gui/trees/layergrouptreestore.cpp:451
 msgid "Activate "
-msgstr "Activate "
+msgstr "Активировать"
 
 #: ../src/gui/trees/layergrouptreestore.cpp:451
 msgid "Deactivate "
-msgstr "Deactivate "
+msgstr "Деактивировать"
 
 #: ../src/gui/trees/layergrouptreestore.cpp:574
 msgid "Reset"
@@ -3260,7 +3262,7 @@ msgstr "Сбросить"
 #: ../src/synfigapp/actions/layersetexcludefromrendering.cpp:99
 #: ../src/synfigapp/actions/layerzdepthrangeset.cpp:89
 msgid "Layer"
-msgstr "Layer"
+msgstr "Слой"
 
 #: ../src/gui/trees/layerparamtreestore.cpp:240
 msgid "Set Layer Parameters"
@@ -3280,7 +3282,7 @@ msgstr "Создать группу из Ghost"
 
 #: ../src/gui/trees/layertreestore.cpp:593
 msgid "Move Layers"
-msgstr "Move Layers"
+msgstr "Переместить слои"
 
 #: ../src/gui/trees/metadatatree.cpp:60
 #: ../src/synfigapp/actions/canvasmetadataerase.cpp:82
@@ -3299,7 +3301,7 @@ msgstr "<нет>"
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:120
 msgid "Other..."
-msgstr "Other..."
+msgstr "Другой..."
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:137
 msgid "Choose canvas"
@@ -3315,7 +3317,7 @@ msgstr "Выбрать"
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:153
 msgid "No canvas name was specified"
-msgstr "No canvas name was specified"
+msgstr "Имя холста не указано"
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:172
 msgid ""
@@ -3327,7 +3329,7 @@ msgstr ""
 
 #: ../src/gui/widgets/widget_canvaschooser.cpp:182
 msgid "Unknown Exception"
-msgstr "Unknown Exception"
+msgstr "Неизвестное прерывание"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:384
 msgid "RGB"
@@ -3343,19 +3345,19 @@ msgstr "HSV"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:411
 msgid "Red"
-msgstr "Red"
+msgstr "Красный"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:413
 msgid "Green"
-msgstr "Green"
+msgstr "Зеленый"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:415
 msgid "Blue"
-msgstr "Blue"
+msgstr "Синий"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:418
 msgid "HTML code"
-msgstr "HTML code"
+msgstr "Код HTML"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:432
 msgid "Luma"
@@ -3363,11 +3365,11 @@ msgstr "Светимость"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:433
 msgid "Hue"
-msgstr "Hue"
+msgstr "Тон"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:434
 msgid "Saturation"
-msgstr "Saturation"
+msgstr "Насыщенность"
 
 #: ../src/gui/widgets/widget_coloredit.cpp:435
 msgid "U"
@@ -3419,27 +3421,25 @@ msgstr "Изменить кривую анимации"
 
 #: ../src/gui/widgets/widget_defaults.cpp:198
 msgid "Outline Color"
-msgstr "Outline Color"
+msgstr "Цвет контура"
 
 #: ../src/gui/widgets/widget_defaults.cpp:209
 msgid "Fill Color"
-msgstr "Fill Color"
+msgstr "Цвет заливки"
 
 #: ../src/gui/widgets/widget_defaults.cpp:226
 msgid ""
 "Swap Fill and\n"
 "Outline Colors"
-msgstr ""
-"Swap Fill and\n"
-"Outline Colors"
+msgstr "Поменять местами цвета заливки и обводки"
 
 #: ../src/gui/widgets/widget_defaults.cpp:239
 msgid "Reset Colors to Black and White"
-msgstr "Reset Colors to Black and White"
+msgstr "Сбросить цвета до черного и белого"
 
 #: ../src/gui/widgets/widget_defaults.cpp:258
 msgid "Brush Preview"
-msgstr "Brush Preview"
+msgstr "Предпросмотр кисти"
 
 #: ../src/gui/widgets/widget_defaults.cpp:261
 msgid "Increase brush size"
@@ -3452,11 +3452,11 @@ msgstr "Уменьшить диаметр кисти"
 #: ../src/gui/widgets/widget_defaults.cpp:276
 #: ../src/gui/widgets/widget_defaults.cpp:299
 msgid "Brush Size"
-msgstr "Brush Size"
+msgstr "Диаметр кисти"
 
 #: ../src/gui/widgets/widget_defaults.cpp:334
 msgid "Default Gradient"
-msgstr "Default Gradient"
+msgstr "Градиент по умолчанию"
 
 #: ../src/gui/widgets/widget_filename.cpp:142 ../src/gui/canvasview.cpp:1720
 msgid "Please choose an audio file"
@@ -3515,7 +3515,7 @@ msgstr "<пусто>"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:78
 msgid "(Non-static value)"
-msgstr "(Non-static value)"
+msgstr "(нестатическое значение)"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:89
 #: ../src/gui/widgets/widget_waypoint.cpp:107
@@ -3539,7 +3539,7 @@ msgstr "TCB"
 #: ../src/gui/widgets/widget_waypointmodel.cpp:98
 #: ../src/gui/canvasview.cpp:916 ../src/gui/instance.cpp:1445
 msgid "Constant"
-msgstr "Constant"
+msgstr "Константа"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:92
 #: ../src/gui/widgets/widget_waypoint.cpp:110
@@ -3555,32 +3555,32 @@ msgstr "Замедлить / ускорить"
 #: ../src/synfigapp/actions/waypointsimpleadd.cpp:81
 #: ../src/synfigapp/value_desc.cpp:99
 msgid "Waypoint"
-msgstr "Waypoint"
+msgstr "Фиксатор"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:131
 msgid "<b>Waypoint</b>"
-msgstr "<b>Waypoint</b>"
+msgstr "<b>Фиксатор</b>"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:143
 msgid "_Value"
-msgstr "_Value"
+msgstr "_Значение"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:150
 msgid "_Time"
-msgstr "_Time"
+msgstr "_Время"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:156 ../src/gui/instance.cpp:1450
 #: ../src/synfigapp/actions/valuedescsetinterpolation.cpp:92
 msgid "Interpolation"
-msgstr "Interpolation"
+msgstr "Интерполяция"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:158
 msgid "<b>Interpolation</b>"
-msgstr "<b>Interpolation</b>"
+msgstr "<b>Интерполяция</b>"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:170
 msgid "_In Interpolation"
-msgstr "_In Interpolation"
+msgstr "Интерполяция на в_ходе"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:176
 msgid "O_ut Interpolation"
@@ -3588,15 +3588,15 @@ msgstr "Интерполяция на выходе"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:182
 msgid "TCB Parameters"
-msgstr "TCB Parameters"
+msgstr "TCB-параметры"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:184
 msgid "<b>TCB Parameter</b>"
-msgstr "<b>TCB Parameter</b>"
+msgstr "<b>TCB-параметр</b>"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:196
 msgid "T_ension"
-msgstr "T_ension"
+msgstr "_Натяжение:"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:203
 msgid "Continuit_y"
@@ -3604,35 +3604,35 @@ msgstr "Непрерывность"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:210
 msgid "_Bias"
-msgstr "_Bias"
+msgstr "От_клонение"
 
 #: ../src/gui/widgets/widget_waypoint.cpp:217
 msgid "Te_mporal Tension"
-msgstr "Te_mporal Tension"
+msgstr "_Временное натяжение"
 
 #: ../src/gui/widgets/widget_waypointmodel.cpp:66
 msgid "Out:"
-msgstr "Out:"
+msgstr "Выход:"
 
 #: ../src/gui/widgets/widget_waypointmodel.cpp:67
 msgid "In:"
-msgstr "In:"
+msgstr "Вход:"
 
 #: ../src/gui/widgets/widget_waypointmodel.cpp:68
 msgid "Tension:"
-msgstr "Tension:"
+msgstr "Натяжение:"
 
 #: ../src/gui/widgets/widget_waypointmodel.cpp:69
 msgid "Continuity:"
-msgstr "Continuity:"
+msgstr "Непрерывность:"
 
 #: ../src/gui/widgets/widget_waypointmodel.cpp:70
 msgid "Bias:"
-msgstr "Bias:"
+msgstr "Отклонение:"
 
 #: ../src/gui/widgets/widget_waypointmodel.cpp:71
 msgid "Temporal Tension:"
-msgstr "Temporal Tension:"
+msgstr "Временное натяжение:"
 
 #: ../src/gui/workarearenderer/renderer_bonesetup.cpp:91
 msgid "Bone Recursive Scale Mode"
@@ -3667,19 +3667,19 @@ msgstr "игнорирование дублированного имени ра�
 
 #: ../src/gui/app.cpp:912
 msgid "_File"
-msgstr "_File"
+msgstr "_Файл"
 
 #: ../src/gui/app.cpp:913
 msgid "Open Recent"
-msgstr "Open Recent"
+msgstr "Открыть последние"
 
 #: ../src/gui/app.cpp:915 ../src/gui/canvasview.cpp:2991
 msgid "_Edit"
-msgstr "_Edit"
+msgstr "_Правка"
 
 #: ../src/gui/app.cpp:917
 msgid "_View"
-msgstr "_View"
+msgstr "_Вид"
 
 #: ../src/gui/app.cpp:918
 msgid "_Navigation"
@@ -3691,15 +3691,15 @@ msgstr "Скрыть/Показать Контрольные точки"
 
 #: ../src/gui/app.cpp:920
 msgid "Low-Res Pixel Size"
-msgstr "Low-Res Pixel Size"
+msgstr "Размер пикселов при низком разрешении"
 
 #: ../src/gui/app.cpp:922
 msgid "_Canvas"
-msgstr "_Canvas"
+msgstr "_Холст"
 
 #: ../src/gui/app.cpp:924
 msgid "_Layer"
-msgstr "_Layer"
+msgstr "Сло_й"
 
 #: ../src/gui/app.cpp:927
 msgid "Plug-Ins"
@@ -3719,7 +3719,7 @@ msgstr "Рабочее пространство"
 
 #: ../src/gui/app.cpp:933
 msgid "_Help"
-msgstr "_Help"
+msgstr "_Справка"
 
 #: ../src/gui/app.cpp:935 ../src/synfigapp/actions/keyframeduplicate.cpp:81
 #: ../src/synfigapp/actions/keyframeremove.cpp:81
@@ -3727,7 +3727,7 @@ msgstr "_Help"
 #: ../src/synfigapp/actions/keyframetoggl.cpp:95
 #: ../src/synfigapp/actions/keyframewaypointset.cpp:80
 msgid "Keyframe"
-msgstr "Keyframe"
+msgstr "Ключевой кадр"
 
 #: ../src/gui/app.cpp:960 ../src/gui/canvasview.cpp:1474
 msgid "Import..."
@@ -3747,7 +3747,7 @@ msgstr "Предварительный просмотр..."
 
 #: ../src/gui/app.cpp:964 ../src/gui/canvasview.cpp:1492
 msgid "Close Document"
-msgstr "Close Document"
+msgstr "Закрыть документ"
 
 #: ../src/gui/app.cpp:973 ../src/gui/canvasview.cpp:1499
 msgid "Select All Handles"
@@ -3759,15 +3759,15 @@ msgstr "Снять выделение со всех Контрольных то�
 
 #: ../src/gui/app.cpp:975 ../src/gui/canvasview.cpp:1507
 msgid "Select All Layers"
-msgstr "Select All Layers"
+msgstr "Выбрать все слои"
 
 #: ../src/gui/app.cpp:976 ../src/gui/canvasview.cpp:1511
 msgid "Unselect All Layers"
-msgstr "Unselect All Layers"
+msgstr "Снять выделение со всех слоёв"
 
 #: ../src/gui/app.cpp:977 ../src/gui/mainwindow.cpp:169
 msgid "Input Devices..."
-msgstr "Input Devices..."
+msgstr "Устройства ввода..."
 
 #: ../src/gui/app.cpp:978 ../src/gui/mainwindow.cpp:172
 msgid "Preferences..."
@@ -3828,19 +3828,19 @@ msgstr "Следующие точки костей"
 #: ../src/gui/app.cpp:998 ../src/gui/canvasview.cpp:1538
 #, c-format
 msgid "Set Low-Res pixel size to %d"
-msgstr "Set Low-Res pixel size to %d"
+msgstr "Сделать размер равным %dpx"
 
 #: ../src/gui/app.cpp:1000
 msgid "Toggle Grid Show"
-msgstr "Toggle Grid Show"
+msgstr "Переключить отображение сетки"
 
 #: ../src/gui/app.cpp:1001
 msgid "Toggle Grid Snap"
-msgstr "Toggle Grid Snap"
+msgstr "Переключить прилипание к сетке"
 
 #: ../src/gui/app.cpp:1002
 msgid "Toggle Guide Show"
-msgstr "Toggle Guide Show"
+msgstr "Переключить отображение направляющих"
 
 #: ../src/gui/app.cpp:1003
 msgid "Toggle Guide Snap"
@@ -3848,15 +3848,15 @@ msgstr "Прилипание к направляющим"
 
 #: ../src/gui/app.cpp:1004
 msgid "Toggle Low-Res"
-msgstr "Toggle Low-Res"
+msgstr "Переключить низкое разрешение"
 
 #: ../src/gui/app.cpp:1006 ../src/gui/canvasview.cpp:1548
 msgid "Decrease Low-Res Pixel Size"
-msgstr "Decrease Low-Res Pixel Size"
+msgstr "Уменьшить размер пикселов"
 
 #: ../src/gui/app.cpp:1007 ../src/gui/canvasview.cpp:1551
 msgid "Increase Low-Res Pixel Size"
-msgstr "Increase Low-Res Pixel Size"
+msgstr "Увеличить размер пикселов"
 
 #: ../src/gui/app.cpp:1008
 msgid "Toggle Background Rendering"
@@ -3864,7 +3864,7 @@ msgstr "Переключить фоновую отрисовку"
 
 #: ../src/gui/app.cpp:1009
 msgid "Toggle Onion Skin"
-msgstr "Toggle Onion Skin"
+msgstr "Переключить кальку"
 
 #: ../src/gui/app.cpp:1023 ../src/gui/iconcontroller.cpp:303
 msgid "Seek to Next Keyframe"
@@ -3884,19 +3884,19 @@ msgstr "Перейти к предыдущему кадру"
 
 #: ../src/gui/app.cpp:1027 ../src/gui/canvasview.cpp:1615
 msgid "Seek Forward"
-msgstr "Seek Forward"
+msgstr "Перемотать вперед"
 
 #: ../src/gui/app.cpp:1028 ../src/gui/canvasview.cpp:1617
 msgid "Seek Backward"
-msgstr "Seek Backward"
+msgstr "Перемотать назад"
 
 #: ../src/gui/app.cpp:1029 ../src/gui/iconcontroller.cpp:296
 msgid "Seek to Begin"
-msgstr "Seek to Begin"
+msgstr "Перемотать к началу"
 
 #: ../src/gui/app.cpp:1030 ../src/gui/iconcontroller.cpp:304
 msgid "Seek to End"
-msgstr "Seek to End"
+msgstr "Перемотать к концу"
 
 #: ../src/gui/app.cpp:1037 ../src/gui/canvasview.cpp:1523
 msgid "Properties..."
@@ -3928,7 +3928,7 @@ msgstr "Сохранить рабочее пространство..."
 
 #: ../src/gui/app.cpp:1049
 msgid "Preview Dialog"
-msgstr "Preview Dialog"
+msgstr "Диалог предпросмотра"
 
 #: ../src/gui/app.cpp:1300
 #, c-format
@@ -3953,7 +3953,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:1514 ../src/gui/app.cpp:1519
 msgid "Failed to initialize synfig!"
-msgstr "Failed to initialize synfig!"
+msgstr "Не удалось инициализировать Synfig!"
 
 #: ../src/gui/app.cpp:1531
 msgid "Loading Basic Settings..."
@@ -3965,15 +3965,15 @@ msgstr "Загружаются плагины..."
 
 #: ../src/gui/app.cpp:1554
 msgid "Init UI Manager..."
-msgstr "Init UI Manager..."
+msgstr "Диспетчер интерфейса..."
 
 #: ../src/gui/app.cpp:1558
 msgid "Init Dock Manager..."
-msgstr "Init Dock Manager..."
+msgstr "Диспетчер панелей..."
 
 #: ../src/gui/app.cpp:1561
 msgid "Init State Manager..."
-msgstr "Init State Manager..."
+msgstr "Диспетчер состояния..."
 
 #: ../src/gui/app.cpp:1564
 msgid "Init Main Window..."
@@ -3981,31 +3981,31 @@ msgstr "Инициализация главного окна..."
 
 #: ../src/gui/app.cpp:1568
 msgid "Init Toolbox..."
-msgstr "Init Toolbox..."
+msgstr "Панель инструментов..."
 
 #: ../src/gui/app.cpp:1572
 msgid "Init About Dialog..."
-msgstr "Init About Dialog..."
+msgstr "Справочный диалог..."
 
 #: ../src/gui/app.cpp:1575
 msgid "Init Tool Options..."
-msgstr "Init Tool Options..."
+msgstr "Панель параметров инструментов..."
 
 #: ../src/gui/app.cpp:1579
 msgid "Init History..."
-msgstr "Init History..."
+msgstr "Панель истории действий..."
 
 #: ../src/gui/app.cpp:1583
 msgid "Init Canvases..."
-msgstr "Init Canvases..."
+msgstr "Панель холстов..."
 
 #: ../src/gui/app.cpp:1587
 msgid "Init Keyframes..."
-msgstr "Init Keyframes..."
+msgstr "Панель ключевых кадров..."
 
 #: ../src/gui/app.cpp:1594
 msgid "Init Layers..."
-msgstr "Init Layers..."
+msgstr "Панель слоёв..."
 
 #: ../src/gui/app.cpp:1598
 msgid "Init Parameters..."
@@ -4013,7 +4013,7 @@ msgstr "Инициализация параметров..."
 
 #: ../src/gui/app.cpp:1602
 msgid "Init MetaData..."
-msgstr "Init MetaData..."
+msgstr "Панель метаданных..."
 
 #: ../src/gui/app.cpp:1606
 msgid "Init Library..."
@@ -4021,11 +4021,11 @@ msgstr "Инициализация библиотеки..."
 
 #: ../src/gui/app.cpp:1610
 msgid "Init Info..."
-msgstr "Init Info..."
+msgstr "Панель сведений..."
 
 #: ../src/gui/app.cpp:1614
 msgid "Init Navigator..."
-msgstr "Init Navigator..."
+msgstr "Панель навигатора..."
 
 #: ../src/gui/app.cpp:1618
 msgid "Init SoundWave..."
@@ -4037,7 +4037,7 @@ msgstr "Загружается шкала кадров..."
 
 #: ../src/gui/app.cpp:1626
 msgid "Init Curve Editor..."
-msgstr "Init Curve Editor..."
+msgstr "Панель редактора кривых..."
 
 #: ../src/gui/app.cpp:1630
 msgid "Init Layer Sets..."
@@ -4045,15 +4045,15 @@ msgstr "Инициализация установок слоёв..."
 
 #: ../src/gui/app.cpp:1635
 msgid "Init Color Dialog..."
-msgstr "Init Color Dialog..."
+msgstr "Диалог выбора цвета..."
 
 #: ../src/gui/app.cpp:1638
 msgid "Init Gradient Dialog..."
-msgstr "Init Gradient Dialog..."
+msgstr "Редактор градиентов..."
 
 #: ../src/gui/app.cpp:1641
 msgid "Init DeviceTracker..."
-msgstr "Init DeviceTracker..."
+msgstr "Устройства ввода..."
 
 #: ../src/gui/app.cpp:1646
 msgid "Init ModPalette..."
@@ -4061,11 +4061,11 @@ msgstr "Инициализируется модуль палитры"
 
 #: ../src/gui/app.cpp:1649
 msgid "Init Setup Dialog..."
-msgstr "Init Setup Dialog..."
+msgstr "Диалог настройки..."
 
 #: ../src/gui/app.cpp:1652
 msgid "Init Input Dialog..."
-msgstr "Init Input Dialog..."
+msgstr "Диалог устройств ввода..."
 
 #: ../src/gui/app.cpp:1656
 msgid "Loading Custom Workspace List..."
@@ -4073,19 +4073,19 @@ msgstr "Загрузка пользовательского списка раб�
 
 #: ../src/gui/app.cpp:1661
 msgid "Init auto recovery..."
-msgstr "Init auto recovery..."
+msgstr "Автовосстановление..."
 
 #: ../src/gui/app.cpp:1665
 msgid "Loading Settings..."
-msgstr "Loading Settings..."
+msgstr "Загружаются параметры..."
 
 #: ../src/gui/app.cpp:1675
 msgid "Init Tools..."
-msgstr "Init Tools..."
+msgstr "Инструменты..."
 
 #: ../src/gui/app.cpp:1714
 msgid "Checking auto-recover..."
-msgstr "Checking auto-recover..."
+msgstr "Нужно ли автовосстановление..."
 
 #: ../src/gui/app.cpp:1723
 msgid "Auto recovery file(s) found. Do you want to recover unsaved changes?"
@@ -4102,19 +4102,19 @@ msgstr ""
 
 #: ../src/gui/app.cpp:1725
 msgid "Ignore"
-msgstr "Ignore"
+msgstr "Проигнорировать"
 
 #: ../src/gui/app.cpp:1726
 msgid "Recover"
-msgstr "Recover"
+msgstr "Восстановить"
 
 #: ../src/gui/app.cpp:1732
 msgid "Unable to fully recover from previous crash"
-msgstr "Unable to fully recover from previous crash"
+msgstr "Невозможно полностью восстановить данные"
 
 #: ../src/gui/app.cpp:1734
 msgid "Unable to recover from previous crash"
-msgstr "Unable to recover from previous crash"
+msgstr "Невозможно восстановить данные"
 
 #: ../src/gui/app.cpp:1738
 msgid "It would be a good idea to review and save recovered files now."
@@ -4135,7 +4135,7 @@ msgstr "Благодарим"
 
 #: ../src/gui/app.cpp:1758
 msgid "Loading files..."
-msgstr "Loading files..."
+msgstr "Загружаются файлы..."
 
 #: ../src/gui/app.cpp:1769
 msgid "Done."
@@ -4293,23 +4293,23 @@ msgstr "Текущий"
 
 #: ../src/gui/app.cpp:3160
 msgid "and older"
-msgstr "and older"
+msgstr "и ранее"
 
 #: ../src/gui/app.cpp:3164
 msgid "File Format Version: "
-msgstr "File Format Version: "
+msgstr "Версия формата файлов:"
 
 #: ../src/gui/app.cpp:3469
 msgid "Feature not available"
-msgstr "Feature not available"
+msgstr "Функция недоступна"
 
 #: ../src/gui/app.cpp:3470
 msgid "Sorry, this feature has not yet been implemented."
-msgstr "Sorry, this feature has not yet been implemented."
+msgstr "Извините, пока что эта функция не реализована."
 
 #: ../src/gui/app.cpp:3591
 msgid "Documentation"
-msgstr "Documentation"
+msgstr "Документация"
 
 #: ../src/gui/app.cpp:3592
 msgid ""
@@ -4323,7 +4323,7 @@ msgstr ""
 
 #: ../src/gui/app.cpp:3593
 msgid "Help"
-msgstr "Help"
+msgstr "Справка"
 
 #: ../src/gui/app.cpp:3601
 msgid ""
@@ -4362,7 +4362,7 @@ msgid ""
 "Unable to load \"%s\":\n"
 "\n"
 msgstr ""
-"Unable to load \"%s\":\n"
+"Не удалось загрузить «%s»:\n"
 "\n"
 
 #: ../src/gui/app.cpp:3793 ../src/gui/app.cpp:3904 ../src/gui/app.cpp:4052
@@ -4460,15 +4460,15 @@ msgstr "возникла ошибка визуализации"
 
 #: ../src/gui/canvasview.cpp:201
 msgid "Idle"
-msgstr "Idle"
+msgstr "Бездействие"
 
 #: ../src/gui/canvasview.cpp:280
 msgid "ERROR"
-msgstr "ERROR"
+msgstr "ОШИБКА"
 
 #: ../src/gui/canvasview.cpp:347
 msgid "Feature not yet implemented"
-msgstr "Feature not yet implemented"
+msgstr "Функция пока что не реализована"
 
 #: ../src/gui/canvasview.cpp:548
 msgid "Canvas View"
@@ -4484,7 +4484,7 @@ msgstr "Перемещение окна времени"
 
 #: ../src/gui/canvasview.cpp:925
 msgid "Default Interpolation"
-msgstr "Default Interpolation"
+msgstr "Интерполяция по умолчанию"
 
 #: ../src/gui/canvasview.cpp:939 ../src/gui/canvasview.cpp:2392
 msgid "Turn on animate editing mode"
@@ -4496,19 +4496,19 @@ msgstr "Переключить строку времени"
 
 #: ../src/gui/canvasview.cpp:975
 msgid "Current time"
-msgstr "Current time"
+msgstr "Текущее время"
 
 #: ../src/gui/canvasview.cpp:1177
 msgid "Shows the Render Settings Dialog"
-msgstr "Shows the Render Settings Dialog"
+msgstr "Открыть диалог параметров визуализации"
 
 #: ../src/gui/canvasview.cpp:1192
 msgid "Preview"
-msgstr "Preview"
+msgstr "Предпросмотр"
 
 #: ../src/gui/canvasview.cpp:1193
 msgid "Shows the Preview Settings Dialog"
-msgstr "Shows the Preview Settings Dialog"
+msgstr "Открыть диалог параметров предпросмотра"
 
 #: ../src/gui/canvasview.cpp:1232
 msgid "Show grid"
@@ -4516,7 +4516,7 @@ msgstr "Показать сетку"
 
 #: ../src/gui/canvasview.cpp:1233
 msgid "Show grid when enabled"
-msgstr "Show grid when enabled"
+msgstr "Показывать сетку"
 
 #: ../src/gui/canvasview.cpp:1249
 msgid "Snap to grid"
@@ -4528,7 +4528,7 @@ msgstr "Привязывать к сетке если включено"
 
 #: ../src/gui/canvasview.cpp:1267
 msgid "Refresh"
-msgstr "Refresh"
+msgstr "Обновить"
 
 #: ../src/gui/canvasview.cpp:1268
 msgid "Refresh workarea"
@@ -4552,7 +4552,7 @@ msgstr "Калька"
 
 #: ../src/gui/canvasview.cpp:1338
 msgid "Shows onion skin when enabled"
-msgstr "Shows onion skin when enabled"
+msgstr "Показывать кальку"
 
 #: ../src/gui/canvasview.cpp:1348
 msgid "Past onion skins"
@@ -4569,11 +4569,11 @@ msgstr "Остановить текущую операцию"
 #: ../src/gui/canvasview.cpp:1448 ../src/gui/iconcontroller.cpp:178
 #: ../src/gui/instance.cpp:1051
 msgid "Save"
-msgstr "Save"
+msgstr "Сохранить"
 
 #: ../src/gui/canvasview.cpp:1451
 msgid "Save As..."
-msgstr "Save As..."
+msgstr "Сохранить как..."
 
 #: ../src/gui/canvasview.cpp:1451 ../src/gui/iconcontroller.cpp:179
 msgid "Save As"
@@ -4581,7 +4581,7 @@ msgstr "Сохранить как"
 
 #: ../src/gui/canvasview.cpp:1454 ../src/gui/iconcontroller.cpp:180
 msgid "Save All"
-msgstr "Save All"
+msgstr "Сохранить все"
 
 #: ../src/gui/canvasview.cpp:1454
 msgid "Save all opened documents"
@@ -4589,20 +4589,20 @@ msgstr "Сохранить все открытые документы"
 
 #: ../src/gui/canvasview.cpp:1495 ../src/gui/mainwindow.cpp:164
 msgid "Quit"
-msgstr "Quit"
+msgstr "Выход"
 
 #: ../src/gui/canvasview.cpp:1568 ../src/gui/iconcontroller.cpp:253
 #: ../src/gui/iconcontroller.cpp:258
 msgid "Show Grid"
-msgstr "Show Grid"
+msgstr "Показывать сетку"
 
 #: ../src/gui/canvasview.cpp:1572
 msgid "Snap to Grid"
-msgstr "Snap to Grid"
+msgstr "Прилипать к сетке"
 
 #: ../src/gui/canvasview.cpp:1576
 msgid "Show Guides"
-msgstr "Show Guides"
+msgstr "Показывать направляющие"
 
 #: ../src/gui/canvasview.cpp:1580
 msgid "Snap to Guides"
@@ -4610,7 +4610,7 @@ msgstr "Прилипать к направляющим"
 
 #: ../src/gui/canvasview.cpp:1584
 msgid "Use Low-Res"
-msgstr "Use Low-Res"
+msgstr "Низкое разрешение"
 
 #: ../src/gui/canvasview.cpp:1588
 msgid "Enable rendering in background"
@@ -4618,19 +4618,19 @@ msgstr "Включить отрисовку в фоновом режиме"
 
 #: ../src/gui/canvasview.cpp:1592
 msgid "Show Onion Skin"
-msgstr "Show Onion Skin"
+msgstr "Показывать кальку"
 
 #: ../src/gui/canvasview.cpp:1644
 msgid "Zoom In on Timeline"
-msgstr "Zoom In on Timeline"
+msgstr "Приблизить шкалу кадров"
 
 #: ../src/gui/canvasview.cpp:1647
 msgid "Zoom Out on Timeline"
-msgstr "Zoom Out on Timeline"
+msgstr "Отдалить шкалу кадров"
 
 #: ../src/gui/canvasview.cpp:1773 ../src/gui/canvasview.cpp:2189
 msgid "Select All Children"
-msgstr "Select All Children"
+msgstr "Выделить дочерние слои"
 
 #: ../src/gui/canvasview.cpp:1951
 msgid "-MODIFIED"
@@ -4662,40 +4662,40 @@ msgstr "Заблокировать последние ключевые кадр�
 
 #: ../src/gui/canvasview.cpp:2867
 msgid "Change Waypoint Group"
-msgstr "Change Waypoint Group"
+msgstr "Изменить группу фиксаторов"
 
 #: ../src/gui/canvasview.cpp:2898
 msgid "Duplicate Waypoints"
-msgstr "Duplicate Waypoints"
+msgstr "Создать копии фиксаторов"
 
 #: ../src/gui/canvasview.cpp:2914
 msgid "Remove Waypoints"
-msgstr "Remove Waypoints"
+msgstr "Удалить фиксаторы"
 
 #: ../src/gui/canvasview.cpp:2968
 msgid "_Jump To"
-msgstr "_Jump To"
+msgstr "_Перейти сюда"
 
 #: ../src/gui/canvasview.cpp:2975
 msgid "_Duplicate"
-msgstr "_Duplicate"
+msgstr "Про_дублировать"
 
 #: ../src/gui/canvasview.cpp:2982
 msgid "_Remove"
-msgstr "_Remove"
+msgstr "_Удалить"
 
 #: ../src/gui/canvasview.cpp:2982
 #, c-format
 msgid "_Remove %d Waypoints"
-msgstr "_Remove %d Waypoints"
+msgstr "_Удалить %d фиксаторов"
 
 #: ../src/gui/canvasview.cpp:3007
 msgid "_In"
-msgstr "_In"
+msgstr "_Вход"
 
 #: ../src/gui/canvasview.cpp:3013
 msgid "_Out"
-msgstr "_Out"
+msgstr "В_ыход"
 
 #: ../src/gui/canvasview.cpp:3053
 msgid "_Clamped"
@@ -4707,23 +4707,23 @@ msgstr "_TCB"
 
 #: ../src/gui/canvasview.cpp:3055
 msgid "_Constant"
-msgstr "_Constant"
+msgstr "_Постоянная"
 
 #: ../src/gui/canvasview.cpp:3056
 msgid "_Ease In"
-msgstr "_Ease In"
+msgstr "Плавный _вход"
 
 #: ../src/gui/canvasview.cpp:3056
 msgid "_Ease Out"
-msgstr "_Ease Out"
+msgstr "Плавный в_ыход"
 
 #: ../src/gui/canvasview.cpp:3056
 msgid "_Ease In/Out"
-msgstr "_Ease In/Out"
+msgstr "Плавный вход/вы_ход"
 
 #: ../src/gui/canvasview.cpp:3057
 msgid "_Linear"
-msgstr "_Linear"
+msgstr "_Линейная"
 
 #: ../src/gui/canvasview.cpp:3345
 msgid " Description"
@@ -4785,7 +4785,7 @@ msgstr "Целое"
 
 #: ../src/gui/iconcontroller.cpp:132
 msgid "Angle"
-msgstr "Angle"
+msgstr "Угол"
 
 #: ../src/gui/iconcontroller.cpp:134
 msgid "Real"
@@ -4801,7 +4801,7 @@ msgstr "Цвет"
 
 #: ../src/gui/iconcontroller.cpp:137
 msgid "Segment"
-msgstr "Segment"
+msgstr "Сегмент"
 
 #: ../src/gui/iconcontroller.cpp:138
 msgid "Spline Point"
@@ -4809,7 +4809,7 @@ msgstr "Вершина кривой"
 
 #: ../src/gui/iconcontroller.cpp:139
 msgid "List"
-msgstr "List"
+msgstr "Список"
 
 #: ../src/gui/iconcontroller.cpp:140
 msgid "String"
@@ -4821,23 +4821,23 @@ msgstr "Градиент"
 
 #: ../src/gui/iconcontroller.cpp:148
 msgid "Eyedrop Tool"
-msgstr "Eyedrop Tool"
+msgstr "Пипетка"
 
 #: ../src/gui/iconcontroller.cpp:149
 msgid "Fill Tool"
-msgstr "Fill Tool"
+msgstr "Сплошная заливка"
 
 #: ../src/gui/iconcontroller.cpp:160
 msgid "Zoom Tool"
-msgstr "Zoom Tool"
+msgstr "Лупа"
 
 #: ../src/gui/iconcontroller.cpp:166
 msgid "Reset Colors"
-msgstr "Reset Colors"
+msgstr "Сбросить цвета"
 
 #: ../src/gui/iconcontroller.cpp:167
 msgid "Swap Colors"
-msgstr "Swap Colors"
+msgstr "Поменять цвета местами"
 
 #: ../src/gui/iconcontroller.cpp:168
 #: ../src/synfigapp/actions/layerparamconnect.cpp:82
@@ -4862,7 +4862,7 @@ msgstr "Переименовать"
 
 #: ../src/gui/iconcontroller.cpp:175
 msgid "About"
-msgstr "About"
+msgstr "О программе"
 
 #: ../src/gui/iconcontroller.cpp:176 ../src/gui/mainwindow.cpp:158
 msgid "New"
@@ -4870,43 +4870,43 @@ msgstr "Новый"
 
 #: ../src/gui/iconcontroller.cpp:187
 msgid "Blur Layer"
-msgstr "Blur Layer"
+msgstr "Слой размывания"
 
 #: ../src/gui/iconcontroller.cpp:188
 msgid "Motion Blur Layer"
-msgstr "Motion Blur Layer"
+msgstr "Слой движения размыванием"
 
 #: ../src/gui/iconcontroller.cpp:189
 msgid "Radial Blur Layer"
-msgstr "Radial Blur Layer"
+msgstr "Слой радиального размывания"
 
 #: ../src/gui/iconcontroller.cpp:191
 msgid "Curve Warp Layer"
-msgstr "Curve Warp Layer"
+msgstr "Слой деформации по кривой"
 
 #: ../src/gui/iconcontroller.cpp:192
 msgid "Inside Out Layer"
-msgstr "Inside Out Layer"
+msgstr "Слой наизнанку"
 
 #: ../src/gui/iconcontroller.cpp:193
 msgid "Noise Distort Layer"
-msgstr "Noise Distort Layer"
+msgstr "Слой искажения шумом"
 
 #: ../src/gui/iconcontroller.cpp:194
 msgid "Spherize Layer"
-msgstr "Spherize Layer"
+msgstr "Слой сферизации"
 
 #: ../src/gui/iconcontroller.cpp:195
 msgid "Stretch Layer"
-msgstr "Stretch Layer"
+msgstr "Слой растяжения"
 
 #: ../src/gui/iconcontroller.cpp:196
 msgid "Twirl Layer"
-msgstr "Twirl Layer"
+msgstr "Слой вихря"
 
 #: ../src/gui/iconcontroller.cpp:197
 msgid "Warp Layer"
-msgstr "Warp Layer"
+msgstr "Слой деформации"
 
 #: ../src/gui/iconcontroller.cpp:199
 msgid "Metallballs Layer"
@@ -4918,11 +4918,11 @@ msgstr "Простая окружность"
 
 #: ../src/gui/iconcontroller.cpp:202
 msgid "Clamp Layer"
-msgstr "Clamp Layer"
+msgstr "Слой кучи"
 
 #: ../src/gui/iconcontroller.cpp:203
 msgid "Color Correct Layer"
-msgstr "Color Correct Layer"
+msgstr "Слой цветокоррекции"
 
 #: ../src/gui/iconcontroller.cpp:204
 msgid "Halftone 2 Layer"
@@ -4938,15 +4938,15 @@ msgstr "Слой ключа светимости"
 
 #: ../src/gui/iconcontroller.cpp:208
 msgid "Julia Set Layer"
-msgstr "Julia Set Layer"
+msgstr "Слой фрактала Жюлиа"
 
 #: ../src/gui/iconcontroller.cpp:209
 msgid "Mandelbrot Set Layer"
-msgstr "Mandelbrot Set Layer"
+msgstr "Слой фрактала Мандельброта"
 
 #: ../src/gui/iconcontroller.cpp:211
 msgid "Checker Board Layer"
-msgstr "Checker Board Layer"
+msgstr "Шахматная доска"
 
 #: ../src/gui/iconcontroller.cpp:212
 msgid "Circle Layer"
@@ -4982,15 +4982,15 @@ msgstr "Звезда"
 
 #: ../src/gui/iconcontroller.cpp:221
 msgid "Conical Gradient Layer"
-msgstr "Conical Gradient Layer"
+msgstr "Слой конического градиента"
 
 #: ../src/gui/iconcontroller.cpp:222
 msgid "Curve Gradient Layer"
-msgstr "Curve Gradient Layer"
+msgstr "Слой градиента по кривой"
 
 #: ../src/gui/iconcontroller.cpp:223
 msgid "Noise Gradient Layer"
-msgstr "Noise Gradient Layer"
+msgstr "Слой градиентного шума"
 
 #: ../src/gui/iconcontroller.cpp:224
 msgid "Linear Gradient Layer"
@@ -4998,17 +4998,17 @@ msgstr "Линейный градиент"
 
 #: ../src/gui/iconcontroller.cpp:225
 msgid "Radial Gradient Layer"
-msgstr "Radial Gradient Layer"
+msgstr "Слой радиального градиента"
 
 #: ../src/gui/iconcontroller.cpp:226
 msgid "Spiral Gradient Layer"
-msgstr "Spiral Gradient Layer"
+msgstr "Слой спирального градиента"
 
 #: ../src/gui/iconcontroller.cpp:228
 #: ../src/synfigapp/actions/layerduplicate.cpp:55
 #: ../src/synfigapp/actions/layerduplicate.cpp:191
 msgid "Duplicate Layer"
-msgstr "Duplicate Layer"
+msgstr "Создать копию слоя"
 
 #: ../src/gui/iconcontroller.cpp:229
 msgid "Import Image Layer"
@@ -5030,7 +5030,7 @@ msgstr "Слой стробоскопа"
 
 #: ../src/gui/iconcontroller.cpp:233
 msgid "Super Sample Layer"
-msgstr "Super Sample Layer"
+msgstr "Слой сглаживания"
 
 #: ../src/gui/iconcontroller.cpp:234
 msgid "Sound Layer"
@@ -5050,19 +5050,19 @@ msgstr "Текст"
 
 #: ../src/gui/iconcontroller.cpp:238
 msgid "Time Loop Layer"
-msgstr "Time Loop Layer"
+msgstr "Слой петли времени"
 
 #: ../src/gui/iconcontroller.cpp:239
 msgid "XOR Pattern Layer"
-msgstr "XOR Pattern Layer"
+msgstr "Слой узора исключающего ИЛИ"
 
 #: ../src/gui/iconcontroller.cpp:241
 msgid "Bevel Layer"
-msgstr "Bevel Layer"
+msgstr "Слой фаски"
 
 #: ../src/gui/iconcontroller.cpp:242
 msgid "Shade Layer"
-msgstr "Shade Layer"
+msgstr "Слой тени"
 
 #: ../src/gui/iconcontroller.cpp:244
 msgid "Rotate Layer"
@@ -5070,7 +5070,7 @@ msgstr "Вращение"
 
 #: ../src/gui/iconcontroller.cpp:245
 msgid "Translate Layer"
-msgstr "Translate Layer"
+msgstr "Слой перемещения"
 
 #: ../src/gui/iconcontroller.cpp:246
 msgid "Scale Layer"
@@ -5086,19 +5086,19 @@ msgstr "Информация"
 
 #: ../src/gui/iconcontroller.cpp:259
 msgid "Hide Grid"
-msgstr "Hide Grid"
+msgstr "Скрыть сетку"
 
 #: ../src/gui/iconcontroller.cpp:260
 msgid "Enable Grid Snap"
-msgstr "Enable Grid Snap"
+msgstr "Включить прилипание к сетке"
 
 #: ../src/gui/iconcontroller.cpp:261
 msgid "Disable Grid Snap"
-msgstr "Disable Grid Snap"
+msgstr "Отключить прилипание к сетке"
 
 #: ../src/gui/iconcontroller.cpp:262
 msgid "Duplicate"
-msgstr "Duplicate"
+msgstr "Продублировать"
 
 #: ../src/gui/iconcontroller.cpp:263
 msgid "Group"
@@ -5114,7 +5114,7 @@ msgstr "Сгруппировать в фильтр"
 
 #: ../src/gui/iconcontroller.cpp:276
 msgid "MetaData"
-msgstr "MetaData"
+msgstr "Метаданные"
 
 #: ../src/gui/iconcontroller.cpp:280
 msgid "Palette"
@@ -5154,7 +5154,7 @@ msgstr "Перейти к предыдущему ключевому кадру"
 
 #: ../src/gui/iconcontroller.cpp:300
 msgid "Stop"
-msgstr "Stop"
+msgstr "Остановить"
 
 #: ../src/gui/iconcontroller.cpp:302
 msgid "Seek to Next frame"
@@ -5188,7 +5188,7 @@ msgstr "Удалить слой из группы"
 #: ../src/synfigapp/actions/layersetdesc.cpp:52
 #: ../src/synfigapp/actions/layersetdesc.cpp:75
 msgid "Set Layer Description"
-msgstr "Set Layer Description"
+msgstr "Ввести описание слоя"
 
 #: ../src/gui/iconcontroller.cpp:313
 msgid "Export Value Node"
@@ -5220,15 +5220,15 @@ msgstr "Установить интерполяцию: Квадрат"
 
 #: ../src/gui/iconcontroller.cpp:328
 msgid "Toggle show grid"
-msgstr "Toggle show grid"
+msgstr "Переключить отображение сетки"
 
 #: ../src/gui/iconcontroller.cpp:329
 msgid "Toggle snap grid"
-msgstr "Toggle snap grid"
+msgstr "Переключить прилипание к сетке"
 
 #: ../src/gui/iconcontroller.cpp:330
 msgid "Toggle show guide"
-msgstr "Переключить показ руководства"
+msgstr "Переключить отображение направляющих"
 
 #: ../src/gui/iconcontroller.cpp:331
 msgid "Toggle snap guide"
@@ -5236,7 +5236,7 @@ msgstr "Переключить прилипание к руководству"
 
 #: ../src/gui/iconcontroller.cpp:333
 msgid "Toggle onion skin"
-msgstr "Toggle onion skin"
+msgstr "Переключить кальку"
 
 #: ../src/gui/iconcontroller.cpp:335
 msgid "Toggle background rendering"
@@ -5244,35 +5244,35 @@ msgstr "Переключить фоновую отрисовку"
 
 #: ../src/gui/iconcontroller.cpp:337
 msgid "Increase resolution"
-msgstr "Increase resolution"
+msgstr "Увеличить разрешение"
 
 #: ../src/gui/iconcontroller.cpp:338
 msgid "Decrease resolution"
-msgstr "Decrease resolution"
+msgstr "Уменьшить разрешение"
 
 #: ../src/gui/iconcontroller.cpp:340
 msgid "Preview Options Dialog"
-msgstr "Preview Options Dialog"
+msgstr "Параметры предпросмотра"
 
 #: ../src/gui/iconcontroller.cpp:341
 msgid "Render Options Dialog"
-msgstr "Render Options Dialog"
+msgstr "Параметры визуализации"
 
 #: ../src/gui/iconcontroller.cpp:343
 msgid "TCB interpolation"
-msgstr "TCB interpolation"
+msgstr "TCB-интерполяция"
 
 #: ../src/gui/iconcontroller.cpp:344
 msgid "Ease In/Out interpolation"
-msgstr "Ease In/Out interpolation"
+msgstr "Интерполяция с замедлением/ускорением"
 
 #: ../src/gui/iconcontroller.cpp:345
 msgid "Const interpolation"
-msgstr "Const interpolation"
+msgstr "Постоянная интерполяция"
 
 #: ../src/gui/iconcontroller.cpp:346
 msgid "Linear interpolation"
-msgstr "Linear interpolation"
+msgstr "Линейная интерполяция"
 
 #: ../src/gui/iconcontroller.cpp:347
 msgid "Clamped interpolation"
@@ -5375,7 +5375,7 @@ msgstr ""
 
 #: ../src/gui/instance.cpp:567
 msgid "Unknown extension"
-msgstr "Unknown extension"
+msgstr "Неизвестное расширение"
 
 #: ../src/gui/instance.cpp:568
 msgid ""
@@ -5391,11 +5391,11 @@ msgstr "Конечно"
 
 #: ../src/gui/instance.cpp:759
 msgid "You must first add this composition to the repository"
-msgstr "You must first add this composition to the repository"
+msgstr "Сначала добавьте эту композицию в репозиторий"
 
 #: ../src/gui/instance.cpp:773 ../src/gui/instance.cpp:881
 msgid "This will save any changes you have made. Are you sure?"
-msgstr "This will save any changes you have made. Are you sure?"
+msgstr "Это сохранит все ваши изменения. Вы уверены?"
 
 #: ../src/gui/instance.cpp:776 ../src/gui/instance.cpp:798
 msgid "Commit"
@@ -5544,7 +5544,7 @@ msgstr "Передача..."
 
 #: ../src/gui/instance.cpp:1283
 msgid "Export"
-msgstr "Export"
+msgstr "Экспортировать"
 
 #: ../src/gui/instance.cpp:1284
 msgid "Name: "
@@ -5557,7 +5557,7 @@ msgstr "Сумма"
 #: ../src/gui/instance.cpp:1393
 #: ../src/synfigapp/actions/valuedescconvert.cpp:63
 msgid "Convert"
-msgstr "Convert"
+msgstr "Преобразовать"
 
 #: ../src/gui/instance.cpp:1444
 msgid "Ease"
@@ -5565,7 +5565,7 @@ msgstr "Замедление"
 
 #: ../src/gui/instance.cpp:1492
 msgid "Edit Waypoint"
-msgstr "Edit Waypoint"
+msgstr "Изменить фиксатор"
 
 #: ../src/gui/instance.cpp:1540
 msgid "Cusp Before: Interpolate"
@@ -5637,11 +5637,11 @@ msgstr "Применить"
 
 #: ../src/gui/instance.cpp:1622
 msgid "Set Waypoints"
-msgstr "Set Waypoints"
+msgstr "Установить фиксаторы"
 
 #: ../src/gui/instance.cpp:1684
 msgid "Unable to convert to animated waypoint"
-msgstr "Unable to convert to animated waypoint"
+msgstr "Не удалось преобразовать в анимированный фиксатор"
 
 #: ../src/gui/instance.cpp:1701
 msgid "Unable to find WaypointSetSmart action"
@@ -5649,11 +5649,11 @@ msgstr "Не удается найти действие WaypointSetSmart"
 
 #: ../src/gui/instance.cpp:1714
 msgid "Unable to set a specific waypoint"
-msgstr "Unable to set a specific waypoint"
+msgstr "Невозможно установить специфический фиксатор"
 
 #: ../src/gui/instance.cpp:1742
 msgid "Edit Waypoints"
-msgstr "Edit Waypoints"
+msgstr "Изменить фиксаторы"
 
 #: ../src/gui/instance.cpp:1896 ../src/gui/instance.cpp:1953
 msgid "Edit image in external tool..."
@@ -5673,11 +5673,11 @@ msgstr "Меню преобразования в вектор"
 
 #: ../src/gui/instance.h:43
 msgid "Synfig Animation "
-msgstr "Synfig Animation "
+msgstr "Мультфильм Synfig"
 
 #: ../src/gui/main.cpp:112
 msgid "synfig studio is already running"
-msgstr "synfig studio is already running"
+msgstr "Программа Synfig Studio уже запущена"
 
 #: ../src/gui/main.cpp:113
 msgid "the existing process will be used"
@@ -5685,7 +5685,7 @@ msgstr "будет использоваться существующий про�
 
 #: ../src/gui/main.cpp:132
 msgid "synfig studio -- starting up application..."
-msgstr "synfig studio -- starting up application..."
+msgstr "Synfig Studio — запускается приложение..."
 
 #: ../src/gui/mainwindow.cpp:158
 msgid "Create a new document"
@@ -5743,7 +5743,7 @@ msgstr "О Synfig Studio"
 
 #: ../src/gui/onemoment.cpp:90
 msgid "One Moment, Please..."
-msgstr "One Moment, Please..."
+msgstr "Минуточку, пожалуйста..."
 
 #: ../src/gui/onemoment.cpp:92
 msgid "Working..."
@@ -5780,7 +5780,7 @@ msgstr "Стереть все визуализированные кадры"
 #: ../src/gui/preview.cpp:1112 ../src/gui/preview.cpp:1129
 #: ../src/gui/preview.cpp:1240 ../src/gui/preview.cpp:1242
 msgid "Fit"
-msgstr "Fit"
+msgstr "Уместить"
 
 #: ../src/gui/renddesc.cpp:233
 msgid "Gamma correction"
@@ -5792,27 +5792,27 @@ msgstr "Соотношение размера изображения:"
 
 #: ../src/gui/renddesc.cpp:594
 msgid "_Pixel Aspect"
-msgstr "_Pixel Aspect"
+msgstr "_Соотн. сторон пиксела"
 
 #: ../src/gui/renddesc.cpp:596
 msgid "Pi_xel Width"
-msgstr "Pi_xel Width"
+msgstr "Ширина _пиксела"
 
 #: ../src/gui/renddesc.cpp:598
 msgid "Pix_el Height"
-msgstr "Pix_el Height"
+msgstr "В_ысота пиксела"
 
 #: ../src/gui/renddesc.cpp:600
 msgid "Image _Aspect"
-msgstr "Image _Aspect"
+msgstr "Соотн. сторон _изображения"
 
 #: ../src/gui/renddesc.cpp:602
 msgid "Image _Width"
-msgstr "Image _Width"
+msgstr "_Ширина изображения"
 
 #: ../src/gui/renddesc.cpp:604
 msgid "Image _Height"
-msgstr "Image _Height"
+msgstr "_Высота изображения"
 
 #: ../src/gui/renddesc.cpp:606
 msgid "Image _Span"
@@ -5836,51 +5836,51 @@ msgstr "Развязать разрешение x и y"
 
 #: ../src/gui/renddesc.cpp:657
 msgid "Image Size"
-msgstr "Image Size"
+msgstr "Размер изображения"
 
 #: ../src/gui/renddesc.cpp:659
 msgid "<b>Image Size</b>"
-msgstr "<b>Image Size</b>"
+msgstr "<b>Размер изображения</b>"
 
 #: ../src/gui/renddesc.cpp:669
 msgid "_Width"
-msgstr "_Width"
+msgstr "_Ширина:"
 
 #: ../src/gui/renddesc.cpp:672
 msgid "_Height"
-msgstr "_Height"
+msgstr "_Высота:"
 
 #: ../src/gui/renddesc.cpp:675
 msgid "_XRes"
-msgstr "_XRes"
+msgstr "_Разреш. по X:"
 
 #: ../src/gui/renddesc.cpp:678
 msgid "_YRes"
-msgstr "_YRes"
+msgstr "Р_азреш. по Y:"
 
 #: ../src/gui/renddesc.cpp:681
 msgid "_Physical Width"
-msgstr "_Physical Width"
+msgstr "_Физическая ширина:"
 
 #: ../src/gui/renddesc.cpp:684
 msgid "Phy_sical Height"
-msgstr "Phy_sical Height"
+msgstr "Ф_изическая высота:"
 
 #: ../src/gui/renddesc.cpp:716
 msgid "Image Area"
-msgstr "Image Area"
+msgstr "Область изображения"
 
 #: ../src/gui/renddesc.cpp:718
 msgid "<b>Image Area</b>"
-msgstr "<b>Image Area</b>"
+msgstr "<b>Область изображения</b>"
 
 #: ../src/gui/renddesc.cpp:732
 msgid "_Top Left"
-msgstr "_Top Left"
+msgstr "В_ерхний левый угол:"
 
 #: ../src/gui/renddesc.cpp:735
 msgid "_Bottom Right"
-msgstr "_Bottom Right"
+msgstr "_Нижний правый угол:"
 
 #: ../src/gui/renddesc.cpp:738
 msgid "I_mage Span"
@@ -5888,23 +5888,23 @@ msgstr "_Интервал изображений"
 
 #: ../src/gui/renddesc.cpp:768
 msgid "Time Settings"
-msgstr "Time Settings"
+msgstr "Параметры времени"
 
 #: ../src/gui/renddesc.cpp:770
 msgid "<b>Time Settings</b>"
-msgstr "<b>Time Settings</b>"
+msgstr "<b>Параметры времени</b>"
 
 #: ../src/gui/renddesc.cpp:785
 msgid "_Frames per second"
-msgstr "_Frames per second"
+msgstr "_Кадров в секунду:"
 
 #: ../src/gui/renddesc.cpp:793
 msgid "_Start Time"
-msgstr "_Start Time"
+msgstr "_Время начала:"
 
 #: ../src/gui/renddesc.cpp:800
 msgid "_End Time"
-msgstr "_End Time"
+msgstr "_Время конца:"
 
 #: ../src/gui/renddesc.cpp:807
 msgid "_Duration"
@@ -5932,27 +5932,27 @@ msgstr "_Синий"
 
 #: ../src/gui/renddesc.cpp:912
 msgid "Locks and Links"
-msgstr "Locks and Links"
+msgstr "Блокировки и связи"
 
 #: ../src/gui/renddesc.cpp:914
 msgid "<b>Locks and Links</b>"
-msgstr "<b>Locks and Links</b>"
+msgstr "<b>Блокировки и связи</b>"
 
 #: ../src/gui/renddesc.cpp:939
 msgid "Focus Point"
-msgstr "Focus Point"
+msgstr "Точка фокусировки"
 
 #: ../src/gui/renddesc.cpp:941
 msgid "<b>Focus Point</b>"
-msgstr "<b>Focus Point</b>"
+msgstr "<b>Точка фокусировки</b>"
 
 #: ../src/gui/renddesc.cpp:951
 msgid "_Focus Point"
-msgstr "_Focus Point"
+msgstr "_Точка фокусировки"
 
 #: ../src/gui/render.cpp:80 ../src/gui/render.cpp:204
 msgid "Render Settings"
-msgstr "Render Settings"
+msgstr "Параметры визуализации"
 
 #: ../src/gui/render.cpp:86
 msgid "Render _current frame only"
@@ -5964,27 +5964,27 @@ msgstr "Извлечь альфа-канал"
 
 #: ../src/gui/render.cpp:98
 msgid "Auto"
-msgstr "Auto"
+msgstr "Автоматически"
 
 #: ../src/gui/render.cpp:121
 msgid "Parameters..."
-msgstr "Parameters..."
+msgstr "Параметры..."
 
 #: ../src/gui/render.cpp:126
 msgid "Target"
-msgstr "Target"
+msgstr "Цель"
 
 #: ../src/gui/render.cpp:128
 msgid "<b>Target</b>"
-msgstr "<b>Target</b>"
+msgstr "<b>Цель</b>"
 
 #: ../src/gui/render.cpp:139
 msgid "_Filename"
-msgstr "_Filename"
+msgstr "_Имя файла:"
 
 #: ../src/gui/render.cpp:146
 msgid "_Target"
-msgstr "_Target"
+msgstr "_Цель:"
 
 #: ../src/gui/render.cpp:155
 msgid "Settings"
@@ -5992,19 +5992,19 @@ msgstr "Настройки"
 
 #: ../src/gui/render.cpp:157
 msgid "<b>Settings</b>"
-msgstr "<b>Settings</b>"
+msgstr "<b>Параметры</b>"
 
 #: ../src/gui/render.cpp:169
 msgid "_Quality"
-msgstr "_Quality"
+msgstr "_Качество:"
 
 #: ../src/gui/render.cpp:175
 msgid "_Anti-Aliasing"
-msgstr "_Anti-Aliasing"
+msgstr "_Сглаживание:"
 
 #: ../src/gui/render.cpp:320
 msgid "You must supply a filename!"
-msgstr "You must supply a filename!"
+msgstr "Необходимо указать имя файла!"
 
 #: ../src/gui/render.cpp:346
 msgid "Unable to determine proper target from filename."
@@ -6041,11 +6041,11 @@ msgstr "сек"
 
 #: ../src/gui/splash.cpp:102
 msgid "ERROR:"
-msgstr "ERROR:"
+msgstr "ОШИБКА:"
 
 #: ../src/gui/splash.cpp:116
 msgid "WARNING:"
-msgstr "WARNING:"
+msgstr "ПРЕДУПРЕЖДЕНИЕ:"
 
 #: ../src/gui/workarea.cpp:500
 msgid "Unable to set \"grid_color\""
@@ -6065,7 +6065,7 @@ msgstr "Невозможно установить \"второй_цвет_фон
 
 #: ../src/gui/workarea.cpp:992
 msgid "Nudge"
-msgstr "Nudge"
+msgstr "Толкнуть"
 
 #: ../src/gui/workarea.cpp:1503 ../src/gui/workarea.cpp:1536
 msgid "Move"
@@ -6073,7 +6073,7 @@ msgstr "Переместить"
 
 #: ../src/synfigapp/action.cpp:561
 msgid "Selected Canvas"
-msgstr "Selected Canvas"
+msgstr "Выбранный холст"
 
 #: ../src/synfigapp/action.cpp:565 ../src/synfigapp/action.cpp:566
 msgid "Canvas Interface"
@@ -6081,7 +6081,7 @@ msgstr "Интерфейс холста"
 
 #: ../src/synfigapp/actions/activepointadd.cpp:52
 msgid "Add Activepoint"
-msgstr "Add Activepoint"
+msgstr "Добавить активную точку"
 
 #: ../src/synfigapp/actions/activepointadd.cpp:79
 #: ../src/synfigapp/actions/activepointremove.cpp:78
@@ -6142,7 +6142,7 @@ msgstr "Эта активная точка уже находится в знач
 
 #: ../src/synfigapp/actions/activepointremove.cpp:52
 msgid "Remove Activepoint"
-msgstr "Remove Activepoint"
+msgstr "Удалить активную точку"
 
 #: ../src/synfigapp/actions/activepointremove.cpp:82
 #: ../src/synfigapp/actions/activepointset.cpp:81
@@ -6150,12 +6150,12 @@ msgstr "Remove Activepoint"
 #: ../src/synfigapp/actions/activepointseton.cpp:91
 #: ../src/synfigapp/actions/activepointsimpleadd.cpp:82
 msgid "Activepoint"
-msgstr "Activepoint"
+msgstr "Активная точка"
 
 #: ../src/synfigapp/actions/activepointremove.cpp:83
 #: ../src/synfigapp/actions/activepointset.cpp:82
 msgid "Activepoint to be changed"
-msgstr "Activepoint to be changed"
+msgstr "Изменяемая активная точка"
 
 #: ../src/synfigapp/actions/activepointremove.cpp:147
 #: ../src/synfigapp/actions/activepointset.cpp:155
@@ -6163,19 +6163,19 @@ msgstr "Activepoint to be changed"
 #: ../src/synfigapp/actions/activepointset.cpp:259
 #: ../src/synfigapp/actions/activepointset.cpp:280
 msgid "Unable to find activepoint"
-msgstr "Unable to find activepoint"
+msgstr "Не удалось найти активную точку"
 
 #: ../src/synfigapp/actions/activepointset.cpp:52
 msgid "Set Activepoint"
-msgstr "Set Activepoint"
+msgstr "Установить активную точку"
 
 #: ../src/synfigapp/actions/activepointsetoff.cpp:60
 msgid "Mark Activepoint as \"Off\""
-msgstr "Mark Activepoint as \"Off\""
+msgstr "Пометить активную точку как выключенную"
 
 #: ../src/synfigapp/actions/activepointseton.cpp:60
 msgid "Mark Activepoint as \"On\""
-msgstr "Mark Activepoint as \"On\""
+msgstr "Пометить активную точку как включенную"
 
 #: ../src/synfigapp/actions/activepointsetsmart.cpp:59
 msgid "Set Activepoint (Smart)"
@@ -6189,7 +6189,7 @@ msgstr "Не могу определить, как действовать дал
 #: ../src/synfigapp/actions/activepointsimpleadd.cpp:51
 #: ../src/synfigapp/actions/waypointsimpleadd.cpp:51
 msgid "Simply Add Waypoint"
-msgstr "Simply Add Waypoint"
+msgstr "Просто добавить фиксатор"
 
 #: ../src/synfigapp/actions/activepointsimpleadd.cpp:78
 #: ../src/synfigapp/actions/waypointadd.cpp:79
@@ -6201,11 +6201,11 @@ msgstr "Значение узла назначения (анимированны
 
 #: ../src/synfigapp/actions/activepointsimpleadd.cpp:173
 msgid "The activepoint to remove no longer exists"
-msgstr "The activepoint to remove no longer exists"
+msgstr "Удаляемая активная точка больше не существует"
 
 #: ../src/synfigapp/actions/blinepointtangentmerge.cpp:61
 msgid "Merge Tangents"
-msgstr "Merge Tangents"
+msgstr "Связать касательные"
 
 #: ../src/synfigapp/actions/blinepointtangentmerge.cpp:70
 msgid "Merge Tangents's Radius"
@@ -6218,7 +6218,7 @@ msgstr "Связать угол касательных"
 #: ../src/synfigapp/actions/blinepointtangentmerge.cpp:103
 #, c-format
 msgid "Merge Tangents of '%s'"
-msgstr "Merge Tangents of '%s'"
+msgstr "Вернуть симметричность касательным '%s'"
 
 #: ../src/synfigapp/actions/blinepointtangentmerge.cpp:111
 #: ../src/synfigapp/actions/blinepointtangentmerge.cpp:268
@@ -6252,7 +6252,7 @@ msgstr "Связать угол касательных '%s'"
 
 #: ../src/synfigapp/actions/blinepointtangentsplit.cpp:61
 msgid "Split Tangents"
-msgstr "Split Tangents"
+msgstr "Разделить касательные"
 
 #: ../src/synfigapp/actions/blinepointtangentsplit.cpp:70
 msgid "Split Tangents's Radius"
@@ -6265,7 +6265,7 @@ msgstr "Развязать угол касательных"
 #: ../src/synfigapp/actions/blinepointtangentsplit.cpp:103
 #, c-format
 msgid "Split Tangents of '%s'"
-msgstr "Split Tangents of '%s'"
+msgstr "Разделить касательные '%s'"
 
 #: ../src/synfigapp/actions/blinepointtangentsplit.cpp:258
 #, c-format
@@ -6287,14 +6287,14 @@ msgstr "Как вы хотите назвать этот холст"
 
 #: ../src/synfigapp/actions/canvasdescriptionset.cpp:52
 msgid "Set Canvas Description"
-msgstr "Set Canvas Description"
+msgstr "Установить описание холста"
 
 #. TRANSLATORS: This is used in the 'history' dialog when a Canvas has its
 #. description changed.
 #: ../src/synfigapp/actions/canvasdescriptionset.cpp:73
 #, c-format
 msgid "Change canvas description from '%s' to '%s'"
-msgstr "Change canvas description from '%s' to '%s'"
+msgstr "Смена описания холста с '%s' на '%s'"
 
 #: ../src/synfigapp/actions/canvasidset.cpp:51
 msgid "Set Canvas Id"
@@ -6305,7 +6305,7 @@ msgstr "Установить идентификатор холста"
 #: ../src/synfigapp/actions/canvasidset.cpp:72
 #, c-format
 msgid "Change canvas id from '%s' to '%s'"
-msgstr "Change canvas id from '%s' to '%s'"
+msgstr "ID холста '%s' изменен на '%s'"
 
 #: ../src/synfigapp/actions/canvasidset.cpp:83
 msgid "Id"
@@ -6333,22 +6333,22 @@ msgstr "Править метаданные холста"
 
 #: ../src/synfigapp/actions/canvasnameset.cpp:52
 msgid "Set Canvas Name"
-msgstr "Set Canvas Name"
+msgstr "Указать название холста"
 
 #. TRANSLATORS: This is used in the 'history' dialog when a Canvas has its
 #. name changed.
 #: ../src/synfigapp/actions/canvasnameset.cpp:73
 #, c-format
 msgid "Change canvas name from '%s' to '%s'"
-msgstr "Change canvas name from '%s' to '%s'"
+msgstr "Холст '%s' переименован в '%s'"
 
 #: ../src/synfigapp/actions/canvasremove.cpp:51
 msgid "Remove Canvas"
-msgstr "Remove Canvas"
+msgstr "Удалить холст"
 
 #: ../src/synfigapp/actions/canvasremove.cpp:109
 msgid "You cannot remove the root canvas!"
-msgstr "You cannot remove the root canvas!"
+msgstr "Вы не можете удалить основной холст!"
 
 #: ../src/synfigapp/actions/canvasremove.cpp:112
 msgid "You cannot remove a canvas from a Group!"
@@ -6364,23 +6364,23 @@ msgstr "RendDesc"
 
 #: ../src/synfigapp/actions/colorset.cpp:57
 msgid "Apply Outline Color"
-msgstr "Apply Outline Color"
+msgstr "Применить цвет контура"
 
 #: ../src/synfigapp/actions/colorset.cpp:66
 msgid "Apply Fill Color"
-msgstr "Apply Fill Color"
+msgstr "Применить цвет заливки"
 
 #: ../src/synfigapp/actions/editmodeset.cpp:51
 msgid "Set Edit Mode"
-msgstr "Set Edit Mode"
+msgstr "Смена режима правки"
 
 #: ../src/synfigapp/actions/editmodeset.cpp:74
 msgid "New Edit Mode"
-msgstr "New Edit Mode"
+msgstr "Новый режим правки"
 
 #: ../src/synfigapp/actions/gradientset.cpp:57
 msgid "Apply Default Gradient"
-msgstr "Apply Default Gradient"
+msgstr "Применить градиент по умолчанию"
 
 #: ../src/synfigapp/actions/groupaddlayers.cpp:51
 msgid "Add Layers to Set"
@@ -6437,24 +6437,24 @@ msgstr "Набор с именем \"%s\" уже существует!"
 
 #: ../src/synfigapp/actions/keyframeadd.cpp:51
 msgid "Add Keyframe"
-msgstr "Add Keyframe"
+msgstr "Добавить ключевой кадр"
 
 #: ../src/synfigapp/actions/keyframeadd.cpp:76
 #: ../src/synfigapp/actions/keyframeset.cpp:82
 msgid "New Keyframe"
-msgstr "New Keyframe"
+msgstr "Новый ключевой кадр"
 
 #: ../src/synfigapp/actions/keyframeadd.cpp:77
 #: ../src/synfigapp/actions/keyframeset.cpp:83
 msgid "Keyframe to be added"
-msgstr "Keyframe to be added"
+msgstr "Добавляемый ключевой кадр"
 
 #: ../src/synfigapp/actions/keyframeadd.cpp:118
 #: ../src/synfigapp/actions/keyframeduplicate.cpp:152
 #: ../src/synfigapp/actions/keyframeduplicate.cpp:239
 #: ../src/synfigapp/actions/keyframeremove.cpp:234
 msgid "A Keyframe already exists at this point in time"
-msgstr "A Keyframe already exists at this point in time"
+msgstr "В этой точке времени уже есть ключевой кадр"
 
 #: ../src/synfigapp/actions/keyframeadd.cpp:120
 #: ../src/synfigapp/actions/keyframeduplicate.cpp:245
@@ -6464,15 +6464,15 @@ msgstr "Этот ключевой кадр уже в значении узла"
 
 #: ../src/synfigapp/actions/keyframeduplicate.cpp:55
 msgid "Duplicate Keyframe"
-msgstr "Duplicate Keyframe"
+msgstr "Создать копию ключевого кадра"
 
 #: ../src/synfigapp/actions/keyframeduplicate.cpp:82
 msgid "Keyframe to be duplicated"
-msgstr "Keyframe to be duplicated"
+msgstr "Дублируемый ключевой кадр"
 
 #: ../src/synfigapp/actions/keyframeduplicate.cpp:104
 msgid " (Duplicate)"
-msgstr " (Duplicate)"
+msgstr " (Копия)"
 
 #: ../src/synfigapp/actions/keyframeduplicate.cpp:147
 #: ../src/synfigapp/actions/keyframeremove.cpp:130
@@ -6481,19 +6481,19 @@ msgstr " (Duplicate)"
 #: ../src/synfigapp/actions/keyframetoggl.cpp:150
 #: ../src/synfigapp/actions/keyframewaypointset.cpp:132
 msgid "Unable to find the given keyframe"
-msgstr "Unable to find the given keyframe"
+msgstr "Невозможно найти указанный ключевой кадр"
 
 #: ../src/synfigapp/actions/keyframeremove.cpp:56
 msgid "Remove Keyframe"
-msgstr "Remove Keyframe"
+msgstr "Удалить ключевой кадр"
 
 #: ../src/synfigapp/actions/keyframeremove.cpp:82
 msgid "Keyframe to be removed"
-msgstr "Keyframe to be removed"
+msgstr "Удаляемый ключевой кадр"
 
 #: ../src/synfigapp/actions/keyframeset.cpp:57
 msgid "Set Keyframe"
-msgstr "Set Keyframe"
+msgstr "Указать ключевой кадр"
 
 #: ../src/synfigapp/actions/keyframeset.cpp:375
 msgid ""
@@ -6505,11 +6505,11 @@ msgstr ""
 
 #: ../src/synfigapp/actions/keyframesetdelta.cpp:51
 msgid "Set Keyframe Delta"
-msgstr "Set Keyframe Delta"
+msgstr "Установка дельты ключевого кадра"
 
 #: ../src/synfigapp/actions/keyframesetdelta.cpp:80
 msgid "Delta"
-msgstr "Delta"
+msgstr "Дельта"
 
 #: ../src/synfigapp/actions/keyframetoggl.cpp:56
 msgid "Activate/Deactivate Keyframe"
@@ -6531,7 +6531,7 @@ msgstr "Ключевой кадр для активации или деакти�
 #: ../src/synfigapp/actions/keyframetoggl.cpp:100
 #: ../src/synfigapp/actions/layeractivate.cpp:93
 msgid "New Status"
-msgstr "New Status"
+msgstr "Новый статус"
 
 #: ../src/synfigapp/actions/keyframetoggl.cpp:101
 msgid "The new status of the keyframe"
@@ -6539,26 +6539,26 @@ msgstr "Новый статус ключевого кадра"
 
 #: ../src/synfigapp/actions/keyframewaypointset.cpp:55
 msgid "Set Waypoints at Keyframe"
-msgstr "Set Waypoints at Keyframe"
+msgstr "Установка фиксатора в ключевом кадре"
 
 #: ../src/synfigapp/actions/keyframewaypointset.cpp:84
 #: ../src/synfigapp/actions/waypointsetsmart.cpp:97
 msgid "Waypoint Model"
-msgstr "Waypoint Model"
+msgstr "Модель фиксатора"
 
 #: ../src/synfigapp/actions/layeractivate.cpp:52
 #: ../src/synfigapp/actions/layeractivate.cpp:74
 #: ../src/synfigapp/actions/layeractivate.cpp:78
 msgid "Activate Layer"
-msgstr "Activate Layer"
+msgstr "Активировать слой"
 
 #: ../src/synfigapp/actions/layeractivate.cpp:79
 msgid "Deactivate Layer"
-msgstr "Deactivate Layer"
+msgstr "Деактивировать слой"
 
 #: ../src/synfigapp/actions/layeractivate.cpp:94
 msgid "The new status of the layer"
-msgstr "The new status of the layer"
+msgstr "Новый статус слоя"
 
 #: ../src/synfigapp/actions/layeractivate.cpp:144
 #: ../src/synfigapp/actions/layeradd.cpp:154
@@ -6577,17 +6577,17 @@ msgstr "The new status of the layer"
 #: ../src/synfigapp/actions/layersetexcludefromrendering.cpp:164
 #: ../src/synfigapp/actions/vectorization.cpp:292
 msgid "This layer doesn't exist anymore."
-msgstr "This layer doesn't exist anymore."
+msgstr "Этот слой больше не существует."
 
 #: ../src/synfigapp/actions/layeradd.cpp:53
 #: ../src/synfigapp/actions/layeradd.cpp:74
 #: ../src/synfigapp/actions/layeradd.cpp:76
 msgid "Add Layer"
-msgstr "Add Layer"
+msgstr "Добавить слой"
 
 #: ../src/synfigapp/actions/layeradd.cpp:86
 msgid "Layer to be added"
-msgstr "Layer to be added"
+msgstr "Добавляемый слой"
 
 #: ../src/synfigapp/actions/layeraddframe.cpp:54
 msgid "Make New Frame"
@@ -6638,7 +6638,7 @@ msgstr "Слой для копирования"
 #: ../src/synfigapp/actions/layermakebline.cpp:161
 #: ../src/synfigapp/actions/layerremove.cpp:185
 msgid "This layer doesn't belong to this canvas anymore"
-msgstr "This layer doesn't belong to this canvas anymore"
+msgstr "Этот слой больше не принадлежит холсту"
 
 #: ../src/synfigapp/actions/layerduplicate.cpp:89
 msgid "Skeleton layer without 'bones' parameter!"
@@ -6650,11 +6650,11 @@ msgstr "Не удается заменить  пустое значение уз
 
 #: ../src/synfigapp/actions/layerduplicate.cpp:191
 msgid "Duplicate Layers"
-msgstr "Duplicate Layers"
+msgstr "Создать копию слоёв"
 
 #: ../src/synfigapp/actions/layerduplicate.cpp:201
 msgid "Layer to be duplicated"
-msgstr "Layer to be duplicated"
+msgstr "Дублируемый слой"
 
 #: ../src/synfigapp/actions/layerduplicate.cpp:312
 #, c-format
@@ -6709,7 +6709,7 @@ msgstr "В группе нет слоёв"
 #: ../src/synfigapp/actions/layerencapsulatefilter.cpp:205
 #: ../src/synfigapp/actions/layerencapsulateswitch.cpp:206
 msgid "This layer doesn't have a parent canvas"
-msgstr "This layer doesn't have a parent canvas"
+msgstr "У этого слоя нет родительского холста"
 
 #: ../src/synfigapp/actions/layerencapsulate.cpp:223
 #: ../src/synfigapp/actions/layerencapsulatefilter.cpp:214
@@ -6778,15 +6778,15 @@ msgstr "Вы не можете поместить анимированные с�
 #: ../src/synfigapp/actions/layerlower.cpp:53
 #: ../src/synfigapp/actions/layerlower.cpp:73
 msgid "Lower Layer"
-msgstr "Lower Layer"
+msgstr "Опустить слой"
 
 #: ../src/synfigapp/actions/layerlower.cpp:73
 msgid "Lower Layers"
-msgstr "Lower Layers"
+msgstr "Опустить слои"
 
 #: ../src/synfigapp/actions/layerlower.cpp:83
 msgid "Layer to be lowered"
-msgstr "Layer to be lowered"
+msgstr "Опускаемый слой"
 
 #: ../src/synfigapp/actions/layermakebline.cpp:68
 msgid "Make Outline"
@@ -6812,11 +6812,11 @@ msgstr "Этот слой не содержит связанного парам�
 #: ../src/synfigapp/actions/layermove.cpp:76
 #: ../src/synfigapp/actions/layermove.cpp:78
 msgid "Move Layer"
-msgstr "Move Layer"
+msgstr "Переместить слой"
 
 #: ../src/synfigapp/actions/layermove.cpp:88
 msgid "Layer to be moved"
-msgstr "Layer to be moved"
+msgstr "Перемещаемый слой"
 
 #: ../src/synfigapp/actions/layermove.cpp:92
 msgid "New Index"
@@ -6828,11 +6828,11 @@ msgstr "Куда должен быть перемещен слой"
 
 #: ../src/synfigapp/actions/layermove.cpp:97
 msgid "Destination Canvas"
-msgstr "Destination Canvas"
+msgstr "Холст назначения"
 
 #: ../src/synfigapp/actions/layermove.cpp:98
 msgid "The canvas the layer is to be moved to"
-msgstr "The canvas the layer is to be moved to"
+msgstr "Холст, на который переносится слой"
 
 #: ../src/synfigapp/actions/layermove.cpp:170
 msgid "You cannot directly move layers across compositions"
@@ -6870,7 +6870,7 @@ msgstr "Параметр слоя ни с чем не связан"
 
 #: ../src/synfigapp/actions/layerparamset.cpp:51
 msgid "Set Layer Parameter"
-msgstr "Set Layer Parameter"
+msgstr "Смена параметра слоя"
 
 #: ../src/synfigapp/actions/layerparamset.cpp:134
 msgid "ValueNode attached to Parameter."
@@ -6879,7 +6879,7 @@ msgstr "Значение узла подключено к Параметру"
 #: ../src/synfigapp/actions/layerparamset.cpp:142
 #: ../src/synfigapp/actions/layerparamset.cpp:162
 msgid "Layer did not accept parameter."
-msgstr "Layer did not accept parameter."
+msgstr "Слой не принял параметр."
 
 #: ../src/synfigapp/actions/layerparamsetstatic.cpp:52
 #: ../src/synfigapp/actions/valuenodeconstsetstatic.cpp:52
@@ -6911,28 +6911,28 @@ msgstr "Разрешить анимацию"
 #: ../src/synfigapp/actions/layerraise.cpp:53
 #: ../src/synfigapp/actions/layerraise.cpp:73
 msgid "Raise Layer"
-msgstr "Raise Layer"
+msgstr "Поднять слой"
 
 #: ../src/synfigapp/actions/layerraise.cpp:73
 msgid "Raise Layers"
-msgstr "Raise Layers"
+msgstr "Поднять слои"
 
 #: ../src/synfigapp/actions/layerraise.cpp:83
 msgid "Layer to be raised"
-msgstr "Layer to be raised"
+msgstr "Поднимаемый слой"
 
 #: ../src/synfigapp/actions/layerremove.cpp:52
 #: ../src/synfigapp/actions/layerremove.cpp:107
 msgid "Delete Layer"
-msgstr "Delete Layer"
+msgstr "Удалить слой"
 
 #: ../src/synfigapp/actions/layerremove.cpp:107
 msgid "Delete Layers"
-msgstr "Delete Layers"
+msgstr "Удалить слои"
 
 #: ../src/synfigapp/actions/layerremove.cpp:117
 msgid "Layer to be deleted"
-msgstr "Layer to be deleted"
+msgstr "Удаляемый слой"
 
 #: ../src/synfigapp/actions/layerresetpose.cpp:53
 #: ../src/synfigapp/actions/valuedescresetpose.cpp:53
@@ -6956,11 +6956,11 @@ msgstr "Слой для описания"
 
 #: ../src/synfigapp/actions/layersetdesc.cpp:92
 msgid "New Description"
-msgstr "New Description"
+msgstr "Новое описание"
 
 #: ../src/synfigapp/actions/layersetdesc.cpp:93
 msgid "Enter a new description for this layer"
-msgstr "Enter a new description for this layer"
+msgstr "Введите новое описание этого слоя"
 
 #: ../src/synfigapp/actions/layersetexcludefromrendering.cpp:62
 msgid "Disable Layer Rendering"
@@ -7017,7 +7017,7 @@ msgstr "Не найдено родительской группы!"
 #: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:408
 #: ../src/synfigapp/actions/valuenodedynamiclistinsertsmart.cpp:423
 msgid "Unable to find action ValueDescSet (bug)"
-msgstr "Unable to find action ValueDescSet (bug)"
+msgstr "Не удалось найти действие ValueDescSet (ошибка)"
 
 #: ../src/synfigapp/actions/timepointscopy.cpp:60
 msgid "Copy Time Points"
@@ -7027,7 +7027,7 @@ msgstr "Копировать временные точки"
 #: ../src/synfigapp/actions/timepointsdelete.cpp:84
 #: ../src/synfigapp/actions/timepointsmove.cpp:85
 msgid "New Selected Layer"
-msgstr "New Selected Layer"
+msgstr "Новый выбранный слой"
 
 #: ../src/synfigapp/actions/timepointscopy.cpp:86
 #: ../src/synfigapp/actions/timepointsdelete.cpp:85
@@ -7121,7 +7121,7 @@ msgstr "ValueDesc на Кривой перейти по ссылке"
 #: ../src/synfigapp/actions/valuenodestaticlistinsertsmart.cpp:87
 #: ../src/synfigapp/actions/valuenodestaticlistremovesmart.cpp:94
 msgid "Origin"
-msgstr "Origin"
+msgstr "Исходная точка"
 
 #: ../src/synfigapp/actions/valuedescbonelink.cpp:61
 msgid "Link to Bone"
@@ -7148,14 +7148,14 @@ msgstr ""
 
 #: ../src/synfigapp/actions/valuedescconnect.cpp:57
 msgid "Connect"
-msgstr "Connect"
+msgstr "Соединить"
 
 #. TRANSLATORS: This is used in the 'history' dialog when a connection is
 #. made.
 #: ../src/synfigapp/actions/valuedescconnect.cpp:78
 #, c-format
 msgid "Connect '%s' to '%s'"
-msgstr "Connect '%s' to '%s'"
+msgstr "Соединение '%s' с '%s'"
 
 #: ../src/synfigapp/actions/valuedescconnect.cpp:89
 msgid "Destination ValueDesc"
@@ -7206,14 +7206,14 @@ msgstr "ValueDesc на родительской Кости"
 
 #: ../src/synfigapp/actions/valuedescdisconnect.cpp:62
 msgid "Disconnect"
-msgstr "Disconnect"
+msgstr "Отсоединить"
 
 #. TRANSLATORS: This is used in the History dialog when a ValueNode is
 #. disconnected.
 #: ../src/synfigapp/actions/valuedescdisconnect.cpp:84
 #, c-format
 msgid "Disconnect %s"
-msgstr "Disconnect %s"
+msgstr "Отсоединение %s"
 
 #: ../src/synfigapp/actions/valuedescexport.cpp:61
 msgid "Export Value to project library"
@@ -7225,7 +7225,7 @@ msgstr "Экспортировать значение в библиотеку п
 #: ../src/synfigapp/actions/valuedescexport.cpp:82
 #, c-format
 msgid "Export '%s' as '%s'"
-msgstr "Export '%s' as '%s'"
+msgstr "Экспорт '%s' как '%s'"
 
 #: ../src/synfigapp/actions/valuedescexport.cpp:98
 msgid "Export the value."
@@ -7247,7 +7247,7 @@ msgstr "Не удалось экспортировать параметр. (Ош
 
 #: ../src/synfigapp/actions/valuedesclink.cpp:61
 msgid "Link"
-msgstr "Link"
+msgstr "Связь"
 
 #: ../src/synfigapp/actions/valuedesclink.cpp:70
 msgid "Link Opposite"
@@ -7429,7 +7429,8 @@ msgstr "неизвестный параметр (пожалуйста, сооб�
 msgid ""
 "It is forbidden to set lower boundary equal or bigger than upper boundary"
 msgstr ""
-"It is forbidden to set lower boundary equal or bigger than upper boundary"
+"Значение нижней границы не должно быть равно или больше значения верхней "
+"границы"
 
 #: ../src/synfigapp/actions/valuedescset.cpp:799
 #: ../src/synfigapp/actions/valuedescset.cpp:910
@@ -7456,7 +7457,8 @@ msgstr ""
 
 #: ../src/synfigapp/actions/valuedescset.cpp:907
 msgid "You must be in Animate-Editing-Mode to directly manipulate this value"
-msgstr "You must be in Animate-Editing-Mode to directly manipulate this value"
+msgstr ""
+"Для прямого редактирования этого значения необходимо быть в режиме анимации"
 
 #: ../src/synfigapp/actions/valuedescset.cpp:926
 msgid "Unsupported ValueDesc type"
@@ -7557,12 +7559,12 @@ msgstr "Удалить узел (умно)"
 #: ../src/synfigapp/actions/valuenodedynamiclistrotateorder.cpp:52
 #: ../src/synfigapp/actions/valuenodestaticlistrotateorder.cpp:52
 msgid "Rotate Order"
-msgstr "Rotate Order"
+msgstr "Сменить порядок"
 
 #: ../src/synfigapp/actions/valuenodedynamiclistunloop.cpp:54
 #: ../src/synfigapp/actions/valuenodestaticlistunloop.cpp:52
 msgid "Unloop"
-msgstr "Unloop"
+msgstr "Разомкнуть"
 
 #: ../src/synfigapp/actions/valuenodelinkconnect.cpp:51
 msgid "Connect ValueNode Link"
@@ -7750,28 +7752,28 @@ msgstr "Добавить границу в окончательные конту
 #: ../src/synfigapp/actions/waypointadd.cpp:53
 #: ../src/synfigapp/actions/waypointsetsmart.cpp:61
 msgid "Add Waypoint"
-msgstr "Add Waypoint"
+msgstr "Добавить фиксатор"
 
 #: ../src/synfigapp/actions/waypointadd.cpp:83
 #: ../src/synfigapp/actions/waypointsetsmart.cpp:91
 msgid "New Waypoint"
-msgstr "New Waypoint"
+msgstr "Новый фиксатор"
 
 #: ../src/synfigapp/actions/waypointadd.cpp:84
 #: ../src/synfigapp/actions/waypointsetsmart.cpp:92
 #: ../src/synfigapp/actions/waypointsimpleadd.cpp:82
 msgid "Waypoint to be added"
-msgstr "Waypoint to be added"
+msgstr "Добавляемый фиксатор"
 
 #: ../src/synfigapp/actions/waypointadd.cpp:90
 #: ../src/synfigapp/actions/waypointsetsmart.cpp:103
 msgid "Time where waypoint is to be added"
-msgstr "Time where waypoint is to be added"
+msgstr "Отметка времени для добавления фиксатора"
 
 #: ../src/synfigapp/actions/waypointadd.cpp:188
 #, c-format
 msgid "A Waypoint already exists at this point in time (%s)"
-msgstr "A Waypoint already exists at this point in time (%s)"
+msgstr "В этой точке времени (%s) уже есть фиксатор"
 
 #: ../src/synfigapp/actions/waypointadd.cpp:191
 #: ../src/synfigapp/actions/waypointremove.cpp:200
@@ -7793,7 +7795,7 @@ msgstr "Отсоединить фиксатор"
 
 #: ../src/synfigapp/actions/waypointremove.cpp:51
 msgid "Remove Waypoint"
-msgstr "Remove Waypoint"
+msgstr "Удалить фиксатор"
 
 #: ../src/synfigapp/actions/waypointremove.cpp:76
 msgid "ValueNode (Animated)"
@@ -7801,7 +7803,7 @@ msgstr "Значение узла (Анимированное)"
 
 #: ../src/synfigapp/actions/waypointremove.cpp:81
 msgid "Waypoint to be Removed"
-msgstr "Waypoint to be Removed"
+msgstr "Удаляемый фиксатор"
 
 #: ../src/synfigapp/actions/waypointremove.cpp:126
 #, c-format
@@ -7835,30 +7837,30 @@ msgstr ""
 
 #: ../src/synfigapp/actions/waypointremove.cpp:197
 msgid "A Waypoint already exists at this point in time"
-msgstr "A Waypoint already exists at this point in time"
+msgstr "В этой точке времени уже есть фиксатор"
 
 #: ../src/synfigapp/actions/waypointset.cpp:51
 msgid "Set Waypoint"
-msgstr "Set Waypoint"
+msgstr "Установить фиксатор"
 
 #: ../src/synfigapp/actions/waypointset.cpp:80
 msgid "Waypoint to be changed"
-msgstr "Waypoint to be changed"
+msgstr "Меняемый фиксатор"
 
 #: ../src/synfigapp/actions/waypointset.cpp:135
 #: ../src/synfigapp/actions/waypointset.cpp:196
 #: ../src/synfigapp/actions/waypointset.cpp:240
 #: ../src/synfigapp/actions/waypointset.cpp:261
 msgid "Unable to find waypoint"
-msgstr "Unable to find waypoint"
+msgstr "Не удалось найти фиксатор"
 
 #: ../src/synfigapp/actions/waypointsimpleadd.cpp:150
 msgid "The waypoint to remove no longer exists"
-msgstr "The waypoint to remove no longer exists"
+msgstr "Удаляемый фиксатор уже не существует."
 
 #: ../src/synfigapp/action_system.cpp:94
 msgid "Action is not ready."
-msgstr "Action is not ready."
+msgstr "Действие не готово."
 
 #: ../src/synfigapp/action_system.cpp:114
 #, c-format
@@ -7886,20 +7888,20 @@ msgstr "Успешно"
 #: ../src/synfigapp/action_system.cpp:196
 #: ../src/synfigapp/action_system.cpp:198
 msgid " (Undo): "
-msgstr "(Отменить):"
+msgstr " (Отменить):"
 
 #: ../src/synfigapp/action_system.cpp:244
 msgid "Failed to undo."
-msgstr "Failed to undo."
+msgstr "Не удалось отменить действие."
 
 #: ../src/synfigapp/action_system.cpp:265
 #: ../src/synfigapp/action_system.cpp:267
 msgid " (Redo): "
-msgstr "(Повторить):"
+msgstr " (Повторить):"
 
 #: ../src/synfigapp/action_system.cpp:313
 msgid "Failed to redo."
-msgstr "Failed to redo."
+msgstr "Не удалось вернуть действие"
 
 #: ../src/synfigapp/action_system.cpp:528
 msgid "State restore failure"
@@ -7937,7 +7939,7 @@ msgstr "Добавить слой в"
 
 #: ../src/synfigapp/canvasinterface.cpp:484
 msgid "Empty name!"
-msgstr "Empty name!"
+msgstr "Имя не введено!"
 
 #: ../src/synfigapp/canvasinterface.cpp:703
 msgid "File name must have an extension!"
@@ -7993,7 +7995,7 @@ msgstr ""
 
 #: ../src/synfigapp/canvasinterface.cpp:839
 msgid "I don't know how to open images of this type -- "
-msgstr "I don't know how to open images of this type -- "
+msgstr "Программа не умеет открывать файлы формата "
 
 #: ../src/synfigapp/canvasinterface.cpp:946
 msgid "Import sequence"
@@ -8044,23 +8046,23 @@ msgstr "Импорт внешних холстов"
 
 #: ../src/synfigapp/uimanager.cpp:98
 msgid "(no/yes)"
-msgstr "(no/yes)"
+msgstr "(Нет/Да)"
 
 #: ../src/synfigapp/uimanager.cpp:100
 msgid "(yes/no)"
-msgstr "(yes/no)"
+msgstr "(Да/Нет)"
 
 #: ../src/synfigapp/uimanager.cpp:132
 msgid "error: "
-msgstr "error: "
+msgstr "Ошибка:"
 
 #: ../src/synfigapp/uimanager.cpp:140
 msgid "warning: "
-msgstr "warning: "
+msgstr "Предупреждение:"
 
 #: ../src/synfigapp/value_desc.cpp:78
 msgid "Layer Parameter"
-msgstr "Layer Parameter"
+msgstr "Параметр слоя"
 
 #: ../src/synfigapp/value_desc.cpp:95
 msgid "Const ValueNode"
