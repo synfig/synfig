@@ -6,6 +6,8 @@ plugins/add-skeleton-simple/plugin.xml.in
 plugins/lottie-exporter/plugin.xml.in
 plugins/view-unhide-all-layers/plugin.xml.in
 src/brushlib/brushsettings.py
+src/gui/actionmanagers/actionmanager.cpp
+src/gui/actionmanagers/actionmanager.h
 src/gui/actionmanagers/groupactionmanager.cpp
 src/gui/actionmanagers/groupactionmanager.h
 src/gui/actionmanagers/keyframeactionmanager.cpp

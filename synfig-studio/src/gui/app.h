@@ -117,6 +117,7 @@ class Dock_SoundWave;
 class Module;
 
 class StateManager;
+class ActionDatabase;
 
 class App : public Gtk::Application, private IconController
 {
@@ -329,6 +330,7 @@ public:
 public:
 
 	static StateManager* get_state_manager();
+	static ActionDatabase* get_action_database();
 
 	static Glib::RefPtr<UIManager>& ui_manager() { return ui_manager_; }
 
