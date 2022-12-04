@@ -336,20 +336,21 @@ Palette::load_from_file(const synfig::String& filename)
 
 		getline(*file, ret.name_);
 
-		while(!file->eof())	{
+		std::string line_trail;
+
+		while(file->good())	{
 			PaletteItem item;
 			String n;
 			float r, g, b, a;
 			getline(*file, item.name);
 			*file >> r >> g >> b >> a;
-			item.color.set_r(r);
-			item.color.set_g(g);
-			item.color.set_b(b);
-			item.color.set_a(a);
+			item.color.set_r(r).set_g(g).set_b(b).set_a(a);
 
 			// file ends in new line
-			if (!file->eof())
+			if (file->good())
 				ret.push_back(item);
+
+			getline(*file, line_trail);
 		}
 	}
 	else if (ext==PALETTE_GIMP_EXT)
@@ -368,43 +369,41 @@ Palette::load_from_file(const synfig::String& filename)
 		[<new line>]
 		*/
 
+		int line_num = 0;
+
+		// skip initial empty lines on malformed files
 		do {
 			getline(*file, line);
-		} while (!file->eof() && line != PALETTE_GIMP_FILE_COOKIE);
+			line_num++;
+		} while (file->good() && line.empty());
 
 		if (line != PALETTE_GIMP_FILE_COOKIE)
 			throw strprintf(_("%s does not appear to be a valid %s palette file"),filename.c_str(),"GIMP");
 
-
-		bool has_color = false;
-
-		do
+		while (file->good())
 		{
 			getline(*file, line);
+			line_num++;
 
-			if (!line.empty() && line.substr(0,5) == "Name:")
+			if (line.empty())
+				continue;
+
+			if (line.substr(0,5) == "Name:")
 				ret.name_ = String(line.substr(6));
-			else if (!line.empty() && line.substr(0,8) == "Columns:")
+			else if (line.substr(0,8) == "Columns:")
 				; // Ignore columns
-			else if (!line.empty() && line.substr(0,1) == "#")
+			else if (line.substr(0,1) == "#")
 				; // Ignore comments
-			else if (!line.empty())
-			{
-				// not empty line not part of the header => color
-				has_color = true;
-				// line contains the first color so we put it back in (including \n)
-				for (int i = line.length()+1; i; i--)
-					file->unget();
-			}
-		} while (!file->eof() && !has_color);
+			else
+				break;
+		}
 
-		while(!file->eof() && has_color)
+		while(file->good())
 		{
 			PaletteItem item;
-			float r, g, b;
+			int r, g, b;
 
 			stringstream ss;
-			getline(*file, line);
 
 			if (!line.empty())
 			{
@@ -413,14 +412,17 @@ Palette::load_from_file(const synfig::String& filename)
 			 	ss >> r >> g >> b;
 				getline(ss, item.name);
 
-				item.color.set_r(r/255);
-				item.color.set_g(g/255);
-				item.color.set_b(b/255);
+				item.color.set_r(r/255.f).set_g(g/255.f).set_b(b/255.f);
 				// Alpha is 1 by default
 				item.color.set_a(1);
 
 				ret.push_back(item);
 			}
+
+			getline(*file, line);
+			line_num++;
+			if (!file->eof() && file->fail())
+				warning(_("could not properly load palette: error parsing line #%i (%s)"), line_num, filename.c_str());
 		}
 	}
 	else
