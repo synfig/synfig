@@ -51,7 +51,7 @@
 - [`391f8a1`](https://github.com/synfig/synfig/commit/391f8a1540b4c9339bb1141f4067221f6cc87b8b) Fix magick++ target missing in AppImage (issue [#2320](https://github.com/synfig/synfig/issues/2320)) ([#2324](https://github.com/synfig/synfig/issues/2324)) [core]
 - [`b0d439b`](https://github.com/morevnaproject/morevna-builds/commit/b0d439ba0668a185512e1c49cae6caba25fe917a) Python updated to version 3.8.10 in Windows build.
 - [`ef1f618`](https://github.com/morevnaproject/morevna-builds/commit/ef1f618802ce1dc9a302017da4b7b225ffde6222) Use 64bit Python build in 64bit packages for Windows.
-- [`2e3aefb`](https://github.com/morevnaproject/morevna-builds/commit/2e3aefbb94cf5c7dc831a7f9c487ddae7568f889) Appimage: Fix fontconfig compatibiity for recent linux distros.
+- [`2e3aefb`](https://github.com/morevnaproject/morevna-builds/commit/2e3aefbb94cf5c7dc831a7f9c487ddae7568f889) Appimage: Fix fontconfig compatibility for recent linux distros.
 
 ## Version 1.4.2 [ETL] [core] [studio]
 - [`b7305a9`](https://github.com/synfig/synfig/commit/b7305a9a3893caefffc1c36118e67f2f0610a1d5) Merge pull request [#1173](https://github.com/synfig/synfig/issues/1173) from rodolforg/fix-sound-dock-scroll
