@@ -1302,33 +1302,6 @@ App::get_default_accel_map()
 {
 	// Add default keyboard accelerators
 	static const std::map<const char*, const char*> default_accel_map = {
-		// Toolbox
-		{"s",             "<Actions>/action_group_state_manager/set-state-normal"},
-		{"m",             "<Actions>/action_group_state_manager/set-state-smooth_move"},
-		{"l",             "<Actions>/action_group_state_manager/set-state-scale"},
-		{"a",             "<Actions>/action_group_state_manager/set-state-rotate"},
-		{"i",             "<Actions>/action_group_state_manager/set-state-mirror"},
-		{"e",             "<Actions>/action_group_state_manager/set-state-circle"},
-		{"r",             "<Actions>/action_group_state_manager/set-state-rectangle"},
-		{"asterisk",      "<Actions>/action_group_state_manager/set-state-star"},
-		{"g",             "<Actions>/action_group_state_manager/set-state-gradient"},
-		{"o",             "<Actions>/action_group_state_manager/set-state-polygon"},
-		{"b",             "<Actions>/action_group_state_manager/set-state-bline"},
-		{"n",             "<Actions>/action_group_state_manager/set-state-bone"},
-		{"t",             "<Actions>/action_group_state_manager/set-state-text"},
-		{"u",             "<Actions>/action_group_state_manager/set-state-fill"},
-		{"d",             "<Actions>/action_group_state_manager/set-state-eyedrop"},
-		{"c",             "<Actions>/action_group_state_manager/set-state-lasso"},
-		{"z",             "<Actions>/action_group_state_manager/set-state-zoom"},
-		{"p",             "<Actions>/action_group_state_manager/set-state-draw"},
-		{"k",             "<Actions>/action_group_state_manager/set-state-sketch"},
-		{"w",             "<Actions>/action_group_state_manager/set-state-width"},
-
-		// Classic edit
-		{"<Primary>x",              "<Actions>/action_group_layer_action_manager/cut"},
-		{"<Primary>c",              "<Actions>/action_group_layer_action_manager/copy"},
-		{"<Primary>v",              "<Actions>/action_group_layer_action_manager/paste"},
-
 		// Everything else
 		{"<Primary>q",              "<Actions>/mainwindow/quit"},
 		{"<Control>a",              "<Actions>/canvasview/select-all-ducks"},

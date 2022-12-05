@@ -38,6 +38,8 @@
 //#include <giomm/action.h>
 #include <gtkmm/application.h>
 
+#include <synfig/filesystem_path.h>
+
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -103,10 +105,10 @@ class UserShortcutList
 public:
 	typedef std::map<std::string, Glib::ustring> List;
 
-	bool load_from_file(const std::string& file, bool force_reset = true);
+	bool load_from_file(const synfig::filesystem::Path& file, bool force_reset = true);
 	bool load_from_string(const std::string& contents, bool force_reset = true);
 
-	bool save_to_file(const std::string& file) const;
+	bool save_to_file(const synfig::filesystem::Path& file) const;
 	std::string get_string() const;
 
 	bool restore_to_defaults(const ActionManager& actions);

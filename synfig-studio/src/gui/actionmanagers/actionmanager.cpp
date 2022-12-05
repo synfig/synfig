@@ -173,10 +173,10 @@ ActionManager::get_entries_for_group(const std::string& group) const
 }
 
 bool
-UserShortcutList::load_from_file(const std::string& file, bool force_reset)
+UserShortcutList::load_from_file(const synfig::filesystem::Path& file, bool force_reset)
 {
 	try {
-		std::string contents = Glib::file_get_contents(file);
+		std::string contents = Glib::file_get_contents(file.u8string());
 		return load_from_string(contents, force_reset);
 	} catch (const Glib::FileError& error) {
 		synfig::error(_("shortcut file: error loading from file %s: %s"), file.c_str(), error.what().c_str());
@@ -247,11 +247,11 @@ UserShortcutList::load_from_string(const std::string& contents, bool force_reset
 }
 
 bool
-UserShortcutList::save_to_file(const std::string& file) const
+UserShortcutList::save_to_file(const synfig::filesystem::Path& file) const
 {
 	try {
 		std::string contents = get_string();
-		Glib::file_set_contents(file, contents);
+		Glib::file_set_contents(file.u8string(), contents);
 		return true;
 	} catch (const Glib::FileError& error) {
 		synfig::error(_("shortcut file: error saving to file %s: %s"), file.c_str(), error.what().c_str());
