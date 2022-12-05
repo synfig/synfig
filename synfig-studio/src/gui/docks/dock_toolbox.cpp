@@ -39,9 +39,9 @@
 
 #include <gtkmm/accelmap.h>
 #include <gtkmm/paned.h>
-#include <gtkmm/stock.h>
 #include <gtkmm/toolpalette.h>
 
+#include <gui/actionmanagers/actionmanager.h>
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/docks/dialog_tooloptions.h>
@@ -152,8 +152,8 @@ Dock_Toolbox::set_active_state(const synfig::String& statename)
 
 	try {
 		for (const auto& item : state_button_map) {
-			if (item.first == statename && !item.second->get_active()) {
-				item.second->set_active(true);
+			if (item.first == statename && !item.second.first->get_active()) {
+				item.second.first->set_active(true);
 				break;
 			}
 		}
@@ -168,17 +168,16 @@ Dock_Toolbox::set_active_state(const synfig::String& statename)
 void
 Dock_Toolbox::change_state(const synfig::String& statename, bool force)
 {
-	etl::handle<studio::CanvasView> canvas_view(studio::App::get_selected_canvas_view());
+	studio::CanvasView::Handle canvas_view(studio::App::get_selected_canvas_view());
 	if(canvas_view)
 	{
 		if(!force && statename==canvas_view->get_smach().get_state_name())
-		{
 			return;
-		}
 
-		if(state_button_map.count(statename))
+		auto iter = state_button_map.find(statename);
+		if(iter != state_button_map.end())
 		{
-			state_button_map[statename]->activate();
+			change_state_(static_cast<const Smach::state_base*>(iter->second.second));
 		}
 		else
 		{
@@ -198,7 +197,7 @@ Dock_Toolbox::change_state_(const Smach::state_base *state)
 	{
 		etl::handle<studio::CanvasView> canvas_view(studio::App::get_selected_canvas_view());
 		if(canvas_view)
-				canvas_view->get_smach().enter(state);
+			canvas_view->get_smach().enter(state);
 		else
 			refresh();
 	}
@@ -217,39 +216,26 @@ Dock_Toolbox::change_state_(const Smach::state_base *state)
  *  \param state a const pointer to Smach::state_base
 */
 void
-Dock_Toolbox::add_state(const Smach::state_base *state)
+Dock_Toolbox::add_state(const Smach::state_base* state)
 {
 	assert(state);
 
 	String name=state->get_name();
 
-	Gtk::StockItem stock_item;
-	Gtk::Stock::lookup(Gtk::StockID("synfig-"+name),stock_item);
-	Gtk::IconSize tool_icon_size = Gtk::IconSize::from_name("synfig-small_icon_16x16");
-	Gtk::Image *tool_icon = manage(new Gtk::Image(stock_item.get_stock_id(), tool_icon_size));
-	Glib::ustring tool_label = stock_item.get_label();
-	Gtk::RadioToolButton *tool_button = manage(new Gtk::RadioToolButton(*tool_icon, tool_label));
+	const ActionManager::Entry& entry = App::get_action_manager()->get("app.set-tool-" + name);
+
+	Gtk::RadioToolButton *tool_button = manage(new Gtk::RadioToolButton());
+	tool_button->set_label(entry.label_);
+	// Sadly not all tool icons (or tool names) follow a convention
+	const std::string symbolic_suffix = ""; // App::use-symbolic-icons ? "-symbolic" : "";
+	tool_button->set_icon_name(entry.icon_ + symbolic_suffix);
 	tool_button->set_group(radio_tool_button_group);
-	
+
 	// Keeps updating the tooltip if user changes the shortcut at runtime
 	tool_button->property_has_tooltip() = true;
-	tool_button->signal_query_tooltip().connect([name](int,int,bool,const Glib::RefPtr<Gtk::Tooltip>& tooltip) -> bool
+	tool_button->signal_query_tooltip().connect([entry](int,int,bool,const Glib::RefPtr<Gtk::Tooltip>& tooltip) -> bool
 	{
-		Gtk::StockItem stock_item;
-		if (Gtk::Stock::lookup(Gtk::StockID("synfig-"+name), stock_item)) {
-			std::string tooltip_string = stock_item.get_label();
-
-			Gtk::AccelKey key;
-			if (Gtk::AccelMap::lookup_entry("<Actions>/action_group_state_manager/state-" + name, key)) {
-				tooltip_string += "  ";
-				tooltip_string += gtk_accelerator_get_label(key.get_key(), GdkModifierType(key.get_mod()));
-			}
-
-			tooltip->set_text(tooltip_string);
-		} else {
-			synfig::warning("There is no StockItem named 'synfig-%s", name.c_str());
-		}
-
+		tooltip->set_text(entry.get_tooltip(App::instance()));
 		return true;
 	});
 
@@ -258,14 +244,11 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 	tool_item_group->insert(*tool_button);
 	tool_item_group->show_all();
 
-	state_button_map[name] = tool_button;
+	state_button_map[name] = std::make_pair(tool_button, state);
 
-	tool_button->signal_clicked().connect(
-		sigc::bind(
-			sigc::mem_fun(*this,&studio::Dock_Toolbox::change_state_),
-			state
-		)
-	);
+	tool_button->signal_clicked().connect([name]() {
+		App::instance()->activate_action("set-tool-" + name);
+	});
 
 	refresh();
 }
@@ -280,9 +263,8 @@ Dock_Toolbox::update_tools()
 	// These next several lines just adjust the tool buttons
 	// so that they are only clickable when they should be.
 	bool sensitive = instance && canvas_view;
-	std::map<synfig::String,Gtk::ToggleToolButton *>::iterator iter;
-	for(iter=state_button_map.begin();iter!=state_button_map.end();++iter)
-		iter->second->set_sensitive(sensitive);
+	for (const auto& item : state_button_map)
+		item.second.first->set_sensitive(sensitive);
 
 	if (canvas_view && canvas_view->get_smach().get_state_name())
 		set_active_state(canvas_view->get_smach().get_state_name());

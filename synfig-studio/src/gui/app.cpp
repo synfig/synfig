@@ -1302,28 +1302,6 @@ App::get_default_accel_map()
 {
 	// Add default keyboard accelerators
 	static const std::map<const char*, const char*> default_accel_map = {
-		// Toolbox
-		{"s",             "<Actions>/action_group_state_manager/state-normal"},
-		{"m",             "<Actions>/action_group_state_manager/state-smooth_move"},
-		{"l",             "<Actions>/action_group_state_manager/state-scale"},
-		{"a",             "<Actions>/action_group_state_manager/state-rotate"},
-		{"i",             "<Actions>/action_group_state_manager/state-mirror"},
-		{"e",             "<Actions>/action_group_state_manager/state-circle"},
-		{"r",             "<Actions>/action_group_state_manager/state-rectangle"},
-		{"asterisk",      "<Actions>/action_group_state_manager/state-star"},
-		{"g",             "<Actions>/action_group_state_manager/state-gradient"},
-		{"o",             "<Actions>/action_group_state_manager/state-polygon"},
-		{"b",             "<Actions>/action_group_state_manager/state-bline"},
-		{"n",             "<Actions>/action_group_state_manager/state-bone"},
-		{"t",             "<Actions>/action_group_state_manager/state-text"},
-		{"u",             "<Actions>/action_group_state_manager/state-fill"},
-		{"d",             "<Actions>/action_group_state_manager/state-eyedrop"},
-		{"c",             "<Actions>/action_group_state_manager/state-lasso"},
-		{"z",             "<Actions>/action_group_state_manager/state-zoom"},
-		{"p",             "<Actions>/action_group_state_manager/state-draw"},
-		{"k",             "<Actions>/action_group_state_manager/state-sketch"},
-		{"w",             "<Actions>/action_group_state_manager/state-width"},
-
 		// Everything else
 		{"<Control>a",              "<Actions>/canvasview/select-all-ducks"},
 		{"<Control>d",              "<Actions>/canvasview/unselect-all-ducks"},
