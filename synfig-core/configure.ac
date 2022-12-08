@@ -254,8 +254,8 @@ AC_ARG_WITH([harfbuzz],
 AS_IF([test "x$with_harfbuzz" != xno],
 	[
 		AS_IF([test "x$with_freetype" != xyes],
-			AC_MSG_FAILURE(
-				[--with-harfbuzz was given, but it depends on --with-freetype])
+			[AC_MSG_FAILURE(
+				[--with-harfbuzz was given, but it depends on --with-freetype])]
 		)
 	]
 )
