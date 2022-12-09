@@ -1735,11 +1735,9 @@ void App::init(const synfig::String& rootpath)
 		// Load the user shortcuts/accel keys
 		{
 			UserShortcutList list;
-			if (list.load_from_file(get_config_file("shortcuts"))) {
-				list.apply(App::instance(), *App::get_action_manager());
-			} else {
-				list.restore_to_defaults(App::instance(), *App::get_action_manager());
-			}
+			list.restore_to_defaults(*App::get_action_manager());
+			list.load_from_file(get_config_file("shortcuts"), false);
+			list.apply(App::instance(), *App::get_action_manager());
 		}
 
 		device_tracker->load_preferences();
@@ -2079,10 +2077,24 @@ App::save_accel_map()
 		synfig::warning("Caught exception when attempting to save accel map settings.");
 	}
 
+	// only save those shortcuts customized by user, i.e., without default values
 	UserShortcutList list;
 	for (const auto& entry : action_manager->get_entries()) {
-		auto accels = App::instance()->get_accels_for_action(entry.name_);
-		list.shortcuts[entry.name_] = accels.empty() ? "" : accels[0];
+		auto user_accels = App::instance()->get_accels_for_action(entry.name_);
+		if (user_accels.empty() && !entry.accelerators_.empty()) {
+			if (!entry.accelerators_[0].empty())
+				list.shortcuts[entry.name_] = "";
+		} else if (!user_accels.empty() && entry.accelerators_.empty()) {
+			if (!user_accels[0].empty())
+				list.shortcuts[entry.name_] = user_accels[0];
+		} else {
+			std::sort(user_accels.begin(), user_accels.end());
+			auto default_accels = entry.accelerators_;
+			std::sort(default_accels.begin(), default_accels.end());
+			if (user_accels[0] != default_accels[0]) {
+				list.shortcuts[entry.name_] = user_accels[0];
+			}
+		}
 	}
 	list.save_to_file(get_config_file("shortcuts"));
 }
