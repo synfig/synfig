@@ -105,19 +105,19 @@ Renderer_Guides::render_vfunc(
 		dashes[1]=5.0;
 		cr->set_dash(dashes, 0);
 
-		Duckmatic::GuideList::const_iterator newIter;
-		// both vert and hor test
-		for (newIter = get_work_area()->get_guide_list().begin(); newIter!=get_work_area()->get_guide_list().end(); ++newIter)
+		Duckmatic::GuideList::const_iterator iter;
+
+		for (iter = get_work_area()->get_guide_list().begin(); iter!=get_work_area()->get_guide_list().end(); ++iter)
 		{
 
-			const float x_center(((*newIter).point[0]-window_startx)/pw);
-			const float y_center(((*newIter).point[1]-window_starty)/ph);
+			const float x_center((iter->point[0]-window_startx)/pw);
+			const float y_center((iter->point[1]-window_starty)/ph);
 
-			float x_temp = x_center;//its ok for these to start same as center
+			float x_temp = x_center;
 			float y_temp = y_center;
 
 			bool current_guide = false;
-			if(newIter==get_work_area()->curr_guide){
+			if(iter==get_work_area()->curr_guide){
 				cr->set_source_rgb(GDK_COLOR_TO_RGB(GUIDE_COLOR_CURRENT));
 				current_guide = true;
 			}
@@ -125,30 +125,30 @@ Renderer_Guides::render_vfunc(
 				cr->set_source_rgb(guides_color.get_r(),guides_color.get_g(),guides_color.get_b());
 				current_guide = false;
 			}
-			if((*newIter).angle.get() != 0 && synfig::Angle::deg((*newIter).angle).get() != 90){ //we are rotated
+			if(iter->angle.get() != 0 && synfig::Angle::deg(iter->angle).get() != 90){
 
 				//draw the center of rotation for the selected guide
-				if (current_guide) {//probably should show as well when dialog is open
+				if (current_guide) {
 					cr->save();
 					cr->unset_dash();
 					cr->set_source_rgb(0,0,1.0);
 					cr->set_line_width(1.0);
-					cr->move_to(x_center + 6.0, y_center);//make a var for the four and name it center_label_width and have it be 8
+					cr->move_to(x_center + 6.0, y_center);
 					cr->line_to(x_center - 6.0, y_center);
 					cr->stroke();
 					cr->move_to(x_center, y_center + 6.0);
 					cr->line_to(x_center, y_center - 6.0);
 //					cr->set_source_rgb(0,1,0); //should it instead be a circle ?
-//					cr->arc(x_center, y_center, 3.0, 0, 6.82); //make a pi const or use one
+//					cr->arc(x_center, y_center, 3.0, 0, 6.82);
 					cr->stroke();
 					cr->restore();
 				}
 
 				//determine cordinate of point relative to center
 				std::string cordinate;
-				float slope = tan((*newIter).angle.get());
-				float angle = synfig::Angle::deg((*newIter).angle).get();
-				while (angle > 360)//this should probably happen in the guide struct
+				float slope = tan(iter->angle.get());
+				float angle = synfig::Angle::deg(iter->angle).get();
+				while (angle > 360)
 					angle -= 360;
 				if (angle > 0 && angle < 90)
 					cordinate="first";
@@ -160,17 +160,12 @@ Renderer_Guides::render_vfunc(
 					cordinate = "fourth";
 
 				if(cordinate == "first" || cordinate == "third" ){
-						//loop until y less than zero or x greater than width
-						//loop on cordinate
-
 					while( (y_temp>0) && (x_temp<drawable_w)){
-						x_temp +=1/*/2*/;
-						y_temp += -1 *slope/*/2*/;
+						x_temp +=1;
+						y_temp += -1 *slope;
 
 				}
 				cr->move_to(x_center,y_center);
-
-				//now point is inc succesfully we should draw
 				cr->line_to(
 					x_temp,
 					y_temp
@@ -187,16 +182,12 @@ Renderer_Guides::render_vfunc(
 				);
 				cr->stroke();
 			} else if(cordinate == "second" || cordinate == "fourth"){
-
-					//loop until y greater than height
 					while( (y_temp<drawable_h) && (x_temp<drawable_w)){
 						x_temp +=1/*/2*/;
 						y_temp -=slope/*/2*/;
 
 						}
 					cr->move_to(x_center,y_center);
-
-					// point is inc succesfully... draw
 					cr->line_to(
 						x_temp,
 						y_temp
@@ -214,8 +205,8 @@ Renderer_Guides::render_vfunc(
 					);
 					cr->stroke();
 				}
-			} else { //not rotated
-				if ((*newIter).isVertical){
+			} else {
+				if (iter->isVertical){
 					cr->move_to(
 						x_center,
 						0

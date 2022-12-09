@@ -52,7 +52,6 @@ using namespace studio;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
-const double pi = std::acos(-1);
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
@@ -72,10 +71,9 @@ Dialog_Guide::Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canv
 
 	//Box start
 	Gtk::Box *guide_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
-	//ok so now we need to add to the two grids then we worry about frames
 
 	angle_widget=manage(new class Gtk::SpinButton(angle_adjustment,15,2));
-	angle_widget->set_value(5.5);//this is not neeeded remove
+	angle_widget->set_value(5.5);
 	angle_widget->show();
 
 	center_x_widget=manage(new class Gtk::SpinButton(center_x_widget_adjust,15,2));
@@ -181,11 +179,11 @@ Dialog_Guide::set_current_guide_and_init(GuideList::iterator current_guide)
 void
 Dialog_Guide::on_ok_or_apply_pressed(bool ok)
 {
-	if (synfig::Angle::deg((*curr_guide).angle).get() != angle_widget->get_value() && degrees) {//process the angles so they are less than 360 and either in first or fourth quadrants
+	if (synfig::Angle::deg((*curr_guide).angle).get() != angle_widget->get_value() && degrees) {
 		(*curr_guide).angle = synfig::Angle::deg(angle_widget->get_value());
 	} else if ((*curr_guide).angle.get() != angle_widget->get_value() && !degrees) {
 		(*curr_guide).angle = synfig::Angle::rad(angle_widget->get_value());
-	} else //the change was a point not an angle
+	} else
 		set_new_coordinates();
 
 	if (ok)
@@ -207,7 +205,6 @@ Dialog_Guide::set_angle_type()
 void
 Dialog_Guide::set_new_coordinates()
 {
-	//converting ruler coordinates back to the mouse coordinates to store
 	float center_x_new = synfig::Distance(center_x_widget->get_value() , App::distance_system).get(synfig::Distance::SYSTEM_UNITS, canvas->rend_desc());
 
 	float center_y_new = synfig::Distance(center_y_widget->get_value() , App::distance_system).get(synfig::Distance::SYSTEM_UNITS, canvas->rend_desc());
@@ -216,7 +213,7 @@ Dialog_Guide::set_new_coordinates()
 
 	float point_y_new = synfig::Distance(point_y_widget->get_value() , App::distance_system).get(synfig::Distance::SYSTEM_UNITS, canvas->rend_desc());
 
-	if ((*curr_guide).isVertical) { //set the center point and angle
+	if ((*curr_guide).isVertical) {
 		float slope = (point_y_new - (*curr_guide).point[1])/(point_x_new - center_x_new);
 		(*curr_guide).point[0] = center_x_new;
 		(*curr_guide).angle = synfig::Angle::rad(atan(slope));
@@ -228,16 +225,12 @@ Dialog_Guide::set_new_coordinates()
 }
 
 void
-Dialog_Guide::init_widget_values()//should probably be renamed to something like set value as this will set values for both the angle and the coords
+Dialog_Guide::init_widget_values()
 {
 	float center_x = (*curr_guide).point[0];
 	float center_y = (*curr_guide).point[1];
-	float rotated_x = center_x + 2;//rotate cords not needed
+	float rotated_x = center_x + 2;
 	float rotated_y = center_y + (2.0)*(tan((*curr_guide).angle.get()));
-
-	//if they arent rotated yet they are either horizontal or vertical so 0 or 90 deg
-	//from the values of the accomp we can know if they arent rotated
-	//but we need to know if x_ruler or y_ruler
 
 	if(degrees)
 		angle_widget->set_value(synfig::Angle::deg((*curr_guide).angle).get());
