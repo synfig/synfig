@@ -62,18 +62,6 @@ Renderer_Guides::get_enabled_vfunc()const
 	return get_work_area()->get_show_guides();
 }
 
-std::list<float>&
-Renderer_Guides::get_guide_list_x()
-{
-	return get_work_area()->get_guide_list_x();
-}
-
-std::list<float>&
-Renderer_Guides::get_guide_list_y()
-{
-	return get_work_area()->get_guide_list_y();
-}
-
 bool
 Renderer_Guides::event_vfunc(GdkEvent* /*event*/)
 {
@@ -106,10 +94,6 @@ Renderer_Guides::render_vfunc(
 
 	// Draw out the guides
 	{
-		Duckmatic::GuideList::const_iterator iter;
-		Duckmatic::GuideList::const_iterator accomp_iter;
-		Duckmatic::GuideList::const_iterator accomp_iter_other;
-
 		cr->save();
 		cr->set_line_cap(Cairo::LINE_CAP_BUTT);
 		cr->set_line_join(Cairo::LINE_JOIN_MITER);
@@ -121,20 +105,19 @@ Renderer_Guides::render_vfunc(
 		dashes[1]=5.0;
 		cr->set_dash(dashes, 0);
 
-		accomp_iter=get_work_area()->get_x_list_accomp_cord().begin();
-		accomp_iter_other=get_work_area()->get_x_list_accomp_cord_other().begin();
-
-		// vertical
-		for(iter=get_guide_list_x().begin();iter!=get_guide_list_x().end();++iter)
+		Duckmatic::GuideList::const_iterator newIter;
+		// both vert and hor test
+		for (newIter = get_work_area()->get_guide_list().begin(); newIter!=get_work_area()->get_guide_list().end(); ++newIter)
 		{
-			const float x((*iter-window_startx)/pw);
-			const float x_rotate((*accomp_iter_other-window_startx)/pw);
-			const float y((*accomp_iter-window_starty)/ph);
 
-			float x_temp = x_rotate;
-			float y_temp = y;
+			const float x_center(((*newIter).point[0]-window_startx)/pw);
+			const float y_center(((*newIter).point[1]-window_starty)/ph);
+
+			float x_temp = x_center;//its ok for these to start same as center
+			float y_temp = y_center;
+
 			bool current_guide = false;
-			if(iter==get_work_area()->curr_guide){
+			if(newIter==get_work_area()->curr_guide){
 				cr->set_source_rgb(GDK_COLOR_TO_RGB(GUIDE_COLOR_CURRENT));
 				current_guide = true;
 			}
@@ -142,12 +125,7 @@ Renderer_Guides::render_vfunc(
 				cr->set_source_rgb(guides_color.get_r(),guides_color.get_g(),guides_color.get_b());
 				current_guide = false;
 			}
-
-			if(*accomp_iter > -900){ //meaning this is a rotated ruler render it diffrently
-
-				//first we move the point to the center of rotation which for vert. is 1/2 drawable_height and x before rotate for nows sake lets just consider case of one ruler
-				float center_x = x; //this has to be x_before rotation which I think would be so much easier to disable x when rotate and have sep x rotate
-				float center_y = (1.0/2.0)*(drawable_h);
+			if((*newIter).angle.get() != 0 && synfig::Angle::deg((*newIter).angle).get() != 90){ //we are rotated
 
 				//draw the center of rotation for the selected guide
 				if (current_guide) {//probably should show as well when dialog is open
@@ -155,50 +133,31 @@ Renderer_Guides::render_vfunc(
 					cr->unset_dash();
 					cr->set_source_rgb(0,0,1.0);
 					cr->set_line_width(1.0);
-					cr->move_to(center_x + 6.0, center_y);//make a var for the four and name it center_label_width and have it be 8
-					cr->line_to(center_x - 6.0, center_y);
+					cr->move_to(x_center + 6.0, y_center);//make a var for the four and name it center_label_width and have it be 8
+					cr->line_to(x_center - 6.0, y_center);
 					cr->stroke();
-					cr->move_to(center_x, center_y + 6.0);
-					cr->line_to(center_x, center_y - 6.0);
+					cr->move_to(x_center, y_center + 6.0);
+					cr->line_to(x_center, y_center - 6.0);
 //					cr->set_source_rgb(0,1,0); //should it instead be a circle ?
-//					cr->arc(center_x, center_y, 3.0, 0, 6.82); //make a pi const or use one
+//					cr->arc(x_center, y_center, 3.0, 0, 6.82); //make a pi const or use one
 					cr->stroke();
 					cr->restore();
 				}
 
-				//then we get the point where the mouse is which is (x , y)
 				//determine cordinate of point relative to center
 				std::string cordinate;
-				if(x_rotate>center_x){
-					if(y<center_y)
-						cordinate="first";
-					else
-						cordinate="fourth";
-				}
-				else{
-					if(y<center_y)
-						cordinate="second";
-					else
-						cordinate="third";
-				}
-				float slope= (y-center_y)/(x_rotate-center_x);
-				//if slope is greter than 300 absoulute then its just vertical and should be drawn as such
-				if ( std::fabs(slope) > 300 ) {
-
-					cr->move_to(
-						x,
-						0
-						); //now the point is x,0
-					cr->line_to(
-						x,
-						drawable_h
-					);
-					cr->stroke();
-					accomp_iter++;
-					accomp_iter_other++;
-					continue;
-				}
-				float y_inc= slope;
+				float slope = tan((*newIter).angle.get());
+				float angle = synfig::Angle::deg((*newIter).angle).get();
+				while (angle > 360)//this should probably happen in the guide struct
+					angle -= 360;
+				if (angle > 0 && angle < 90)
+					cordinate="first";
+				else if (angle > 90 && angle < 180)
+					cordinate="second";
+				else if (angle > 180 && angle < 270)
+					cordinate = "third";
+				else
+					cordinate = "fourth";
 
 				if(cordinate == "first" || cordinate == "third" ){
 						//loop until y less than zero or x greater than width
@@ -206,10 +165,10 @@ Renderer_Guides::render_vfunc(
 
 					while( (y_temp>0) && (x_temp<drawable_w)){
 						x_temp +=1/*/2*/;
-						y_temp +=slope/*/2*/;
+						y_temp += -1 *slope/*/2*/;
 
 				}
-				cr->move_to(center_x,center_y);
+				cr->move_to(x_center,y_center);
 
 				//now point is inc succesfully we should draw
 				cr->line_to(
@@ -217,26 +176,25 @@ Renderer_Guides::render_vfunc(
 					y_temp
 				);
 				cr->stroke();
-				cr->move_to(center_x,center_y);
+				cr->move_to(x_center,y_center);
 				while ((y_temp<drawable_h) && (x_temp>0)) {
 					x_temp -=1;
-					y_temp -=slope;
+					y_temp +=slope;
 					}
 				cr->line_to(
 					x_temp,
 					y_temp
 				);
 				cr->stroke();
-			}
-				else if(cordinate == "second" || cordinate == "fourth"){
+			} else if(cordinate == "second" || cordinate == "fourth"){
 
 					//loop until y greater than height
 					while( (y_temp<drawable_h) && (x_temp<drawable_w)){
 						x_temp +=1/*/2*/;
-						y_temp +=slope/*/2*/;
+						y_temp -=slope/*/2*/;
 
 						}
-					cr->move_to(center_x,center_y);
+					cr->move_to(x_center,y_center);
 
 					// point is inc succesfully... draw
 					cr->line_to(
@@ -244,11 +202,11 @@ Renderer_Guides::render_vfunc(
 						y_temp
 					);
 					cr->stroke();
-					cr->move_to(center_x,center_y);
+					cr->move_to(x_center,y_center);
 
 					while( (y_temp>0) && (x_temp>0)){
 							x_temp -=1;
-							y_temp -=slope;
+							y_temp +=slope;
 					}
 					cr->line_to(
 						x_temp,
@@ -256,175 +214,29 @@ Renderer_Guides::render_vfunc(
 					);
 					cr->stroke();
 				}
-			} else {
-			cr->move_to(
-				x,
-				0
-				);
-			cr->line_to(
-				x,
-				drawable_h
-			);
-
-			cr->stroke();
-			}
-
-			accomp_iter++;
-			accomp_iter_other++;
-		}
-
-		accomp_iter=get_work_area()->get_y_list_accomp_cord().begin();
-		accomp_iter_other=get_work_area()->get_y_list_accomp_cord_other().begin();
-
-		// horizontal
-		for(iter=get_guide_list_y().begin();iter!=get_guide_list_y().end();++iter)
-		{
-			const float x((*accomp_iter-window_startx)/pw);
-			const float y((*iter-window_starty)/ph);
-			const float y_rotate((*accomp_iter_other-window_starty)/ph);
-
-			float x_temp = x;
-			float y_temp = y_rotate;
-
-			bool current_guide = false; //unnecessaryy just move center def higher up
-			if(iter==get_work_area()->curr_guide){
-				cr->set_source_rgb(GDK_COLOR_TO_RGB(GUIDE_COLOR_CURRENT));
-				current_guide = true;
-			}
-			else{
-				cr->set_source_rgb(guides_color.get_r(),guides_color.get_g(),guides_color.get_b());
-				current_guide = false;
-			}
-
-			if(*accomp_iter > -1000){
-
-				float center_x = (1.0/2.0)*(drawable_w);
-				float center_y = y;
-
-				if(current_guide) {
-					cr->save();
-					cr->unset_dash();
-					cr->set_source_rgb(0,0,1.0);
-					cr->set_line_width(1.0);
-					cr->move_to(center_x + 6.0, center_y);//make a var for the four and name it center_label_width and have it be 8
-					cr->line_to(center_x - 6.0, center_y);
-					cr->stroke();
-					cr->move_to(center_x, center_y + 6.0);
-					cr->line_to(center_x, center_y - 6.0);
-//					cr->set_source_rgb(0,1,0); //should it instead be a circle ?
-//					cr->arc(center_x, center_y, 3.0, 0, 6.82); //make a pi const or use one
-					cr->stroke();
-					cr->restore();
-				}
-
-				std::string cordinate;
-				if(x>center_x){
-					if(y_rotate<center_y)
-						cordinate="first";
-					else
-						cordinate="fourth";
-				}
-				else{
-					if(y_rotate<center_y)
-						cordinate="second";
-					else
-						cordinate="third";
-				}
-
-				//determine slope
-				float slope= (y_rotate-center_y)/(x-center_x);
-
-				if (std::fabs(slope) > 300) {
-
+			} else { //not rotated
+				if ((*newIter).isVertical){
 					cr->move_to(
-						x,
+						x_center,
 						0
-						); //now the point is x,0
+						);
 					cr->line_to(
-						x,
+						x_center,
 						drawable_h
 					);
 					cr->stroke();
-					accomp_iter++;
-					accomp_iter_other++;
-					continue;
-				}
-				float y_inc= slope;
-
-				if(cordinate == "first" || cordinate == "third" ){
-						//loop until y less than zero or x greater than width
-						//loop on cordinate
-
-					while( (y_temp>0) && (x_temp<drawable_w)){
-						x_temp +=1;
-						y_temp +=slope;
-
-				}
-						cr->move_to(center_x,center_y);
-
-						//now point is inc succesfully we should draw
-						cr->line_to(
-							x_temp,
-							y_temp
+				} else {
+					cr->move_to(
+						0,
+						y_center
 						);
-						cr->stroke();
-
-						cr->move_to(center_x,center_y);
-
-						while( (y_temp<drawable_h) && (x_temp>0)){
-							x_temp -=1;
-							y_temp -=slope;
-
-					}
-						cr->line_to(
-							x_temp,
-							y_temp
-						);
-						cr->stroke();
+					cr->line_to(
+						drawable_w,
+						y_center
+					);
+					cr->stroke();
+				}
 			}
-				else if(cordinate == "second" || cordinate == "fourth"){
-
-					//loop until y greater than height
-					while( (y_temp<drawable_h) && (x_temp<drawable_w)){
-						x_temp +=1;
-						y_temp +=slope;
-
-						}
-					cr->move_to(center_x,center_y);
-
-					//now point is inc succesfully we should draw
-					cr->line_to(
-						x_temp,
-						y_temp
-					);
-					cr->stroke();
-					cr->move_to(center_x,center_y);
-
-					while( (y_temp>0) && (x_temp>0)){
-						x_temp -=1;
-						y_temp -=slope;
-					}
-					cr->line_to(
-						x_temp,
-						y_temp
-					);
-					cr->stroke();
-				}
-
-					}else{
-
-				cr->move_to(
-					0,
-					y
-					);
-				cr->line_to(
-					drawable_w,
-					y
-				);
-				cr->stroke();
-				}
-			accomp_iter++;
-			accomp_iter_other++;
 		}
 
 		cr->restore();

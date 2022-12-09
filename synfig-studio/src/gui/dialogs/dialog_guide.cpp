@@ -41,6 +41,7 @@
 #include <gtkmm/grid.h>
 
 #include <gui/workarea.h>
+#include <gui/duckmatic.h>
 #include <gui/app.h>
 
 #endif
@@ -56,7 +57,7 @@ const double pi = std::acos(-1);
 
 /* === M E T H O D S ======================================================= */
 
-Dialog_Guide::Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canvas,WorkArea *work_area):
+Dialog_Guide::Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canvas, WorkArea *work_area):
 	Dialog(_("Guide Editor"),parent),
 	canvas(canvas),
 	angle_adjustment(Gtk::Adjustment::create(0,-2000000000,2000000000,1,1,0)),
@@ -170,16 +171,21 @@ Dialog_Guide::~Dialog_Guide()
 }
 
 void
+Dialog_Guide::set_current_guide_and_init(GuideList::iterator current_guide)
+{
+	curr_guide = current_guide;
+	init_widget_values();
+}
+
+
+void
 Dialog_Guide::on_ok_or_apply_pressed(bool ok)
 {
-	if (angle_deg != angle_widget->get_value() && degrees) {
-		angle_deg = angle_widget->get_value();
-		angle_rad = (angle_deg * pi )/(180);
-		rotate_ruler();
-	} else if (angle_rad != angle_widget->get_value() && !degrees) {
-		angle_rad = angle_widget->get_value();
-		rotate_ruler();
-	} else
+	if (synfig::Angle::deg((*curr_guide).angle).get() != angle_widget->get_value() && degrees) {//process the angles so they are less than 360 and either in first or fourth quadrants
+		(*curr_guide).angle = synfig::Angle::deg(angle_widget->get_value());
+	} else if ((*curr_guide).angle.get() != angle_widget->get_value() && !degrees) {
+		(*curr_guide).angle = synfig::Angle::rad(angle_widget->get_value());
+	} else //the change was a point not an angle
 		set_new_coordinates();
 
 	if (ok)
@@ -199,166 +205,61 @@ Dialog_Guide::set_angle_type()
 }
 
 void
-Dialog_Guide::set_current_guide_iterators(GuideList::iterator curr_guide_workarea,
-								 GuideList::iterator curr_guide_accomp_duckamtic_workarea,
-								 GuideList::iterator curr_guide_accomp_duckamtic_other_workarea)
-{
-	curr_guide = curr_guide_workarea;
-	curr_guide_accomp_duckamtic = curr_guide_accomp_duckamtic_workarea;
-	curr_guide_accomp_duckamtic_other = curr_guide_accomp_duckamtic_other_workarea;
-}
-
-void
-Dialog_Guide::rotate_ruler()
-{
-	//rortate works by rotating around the center so basically we are only changing the accomp coords here here
-
-	//coordinates
-	float center_x, center_y, new_rotated_x, new_rotated_y;
-
-	// equation of line with entered slope and passing through the point which is center
-	// y-y1 = slope(x-x1)
-	// y = y1 + slope(x - x1)
-	// x = ((y-y1)/slope) + x1
-
-	if (menu_guide_is_x) {
-		center_x = *curr_guide;
-		center_y = ((1.0/2.0)*(current_work_area->drawing_area_height)*(current_work_area->pheight)) + current_work_area->window_starty;
-		new_rotated_x = center_x + 3;
-		new_rotated_y = center_y + (std::tan(angle_rad))*(new_rotated_x - center_x);
-		*curr_guide_accomp_duckamtic_other = new_rotated_x;
-		*curr_guide_accomp_duckamtic = new_rotated_y;
-	}
-	else {
-		center_x = ((1.0/2.0)*(current_work_area->drawing_area_width)*(current_work_area->pwidth)) + current_work_area->window_startx;
-		center_y = *curr_guide;
-		//handling angle being zero or 180
-		if ( angle_rad == 0 ){
-			new_rotated_y = center_y;
-			new_rotated_x = center_x + 3;
-		} else if ( angle_rad == (float)pi ){
-			new_rotated_y = center_y;
-			new_rotated_x = center_x - 3;
-		} else {
-			new_rotated_y = center_y + 3;
-			new_rotated_x = ((new_rotated_y - center_y)/(std::tan(angle_rad))) + center_x;
-		}
-		*curr_guide_accomp_duckamtic_other = new_rotated_y;
-		*curr_guide_accomp_duckamtic = new_rotated_x;
-	}
-}
-
-void
 Dialog_Guide::set_new_coordinates()
 {
 	//converting ruler coordinates back to the mouse coordinates to store
-	float center_x_new =  synfig::Distance(center_x_widget->get_value() , App::distance_system).get(synfig::Distance::SYSTEM_UNITS, canvas->rend_desc());
+	float center_x_new = synfig::Distance(center_x_widget->get_value() , App::distance_system).get(synfig::Distance::SYSTEM_UNITS, canvas->rend_desc());
 
 	float center_y_new = synfig::Distance(center_y_widget->get_value() , App::distance_system).get(synfig::Distance::SYSTEM_UNITS, canvas->rend_desc());
 
 	float point_x_new = synfig::Distance(point_x_widget->get_value() , App::distance_system).get(synfig::Distance::SYSTEM_UNITS, canvas->rend_desc());
 
 	float point_y_new = synfig::Distance(point_y_widget->get_value() , App::distance_system).get(synfig::Distance::SYSTEM_UNITS, canvas->rend_desc());
-	if (menu_guide_is_x) {
-		*curr_guide = center_x_new;
-		*curr_guide_accomp_duckamtic_other = point_x_new;
-		*curr_guide_accomp_duckamtic = point_y_new;
+
+	if ((*curr_guide).isVertical) { //set the center point and angle
+		float slope = (point_y_new - (*curr_guide).point[1])/(point_x_new - center_x_new);
+		(*curr_guide).point[0] = center_x_new;
+		(*curr_guide).angle = synfig::Angle::rad(atan(slope));
 	} else {
-		*curr_guide = center_y_new;
-		*curr_guide_accomp_duckamtic_other = point_y_new;
-		*curr_guide_accomp_duckamtic = point_x_new;
+		float slope = (point_y_new - center_y_new)/(point_x_new - (*curr_guide).point[0]);
+		(*curr_guide).point[1] = center_y_new;
+		(*curr_guide).angle = synfig::Angle::rad(atan(slope));
 	}
 }
 
 void
-Dialog_Guide::set_rotation_angle(bool curr_guide_is_x)//should probably be renamed to something like set value as this will set values for both the angle and the coords
+Dialog_Guide::init_widget_values()//should probably be renamed to something like set value as this will set values for both the angle and the coords
 {
-	menu_guide_is_x = curr_guide_is_x;
-	float center_x, center_y, rotated_x, rotated_y;
-	if (menu_guide_is_x) {
-		center_x = *curr_guide;
-		center_y = ((1.0/2.0)*(current_work_area->drawing_area_height)*(current_work_area->pheight)) + current_work_area->window_starty;
-		rotated_x = *curr_guide_accomp_duckamtic_other;//rotate cords not needed
-		rotated_y = *curr_guide_accomp_duckamtic; //this isnt safe it isnt initilized before rotation
-	}
-	else
-	{
-		center_x = ((1.0/2.0)*(current_work_area->drawing_area_width)*(current_work_area->pwidth)) + current_work_area->window_startx;
-		center_y = *curr_guide;
-		rotated_x = *curr_guide_accomp_duckamtic;
-		rotated_y = *curr_guide_accomp_duckamtic_other;
-	}
+	float center_x = (*curr_guide).point[0];
+	float center_y = (*curr_guide).point[1];
+	float rotated_x = center_x + 2;//rotate cords not needed
+	float rotated_y = center_y + (2.0)*(tan((*curr_guide).angle.get()));
 
 	//if they arent rotated yet they are either horizontal or vertical so 0 or 90 deg
 	//from the values of the accomp we can know if they arent rotated
 	//but we need to know if x_ruler or y_ruler
 
-	if (rotated_x > -900) {  /*this means it is rotated*/
-		//slope = tan(theta)... theta = atan(slope)
-		float slope = (rotated_y - center_y)/(rotated_x - center_x);
-		float angle_rad_float = std::atan(slope);
-
-
-		// we want the range to be from 0 to 360 but atan has range -90 to 90
-		//p.s. this works only for when ruler was set by mouse rotation, dialog rotation shows 180 as 0 etc.. think of what to do here
-		if (rotated_x > center_x){
-			if (rotated_y <= center_y)
-				angle_rad_float += 2.0 * pi;
-		} else if (rotated_x < center_x) {
-			if (rotated_y > center_y){
-				angle_rad_float += pi;
-			} else if (rotated_y < center_y) {
-				angle_rad_float += pi;
-			} else
-				angle_rad_float = pi;
-		}
-		else {
-			if(rotated_y < center_y)
-				angle_rad_float = (3.0*pi)/(2.0);
-		}
-
-		angle_rad = angle_rad_float;
-		angle_deg = (angle_rad * 180)/(pi);
-	}
-	else
-	{
-		if (curr_guide_is_x)
-			angle_deg = 90;
-		else
-			angle_deg = 0;
-	}
-
 	if(degrees)
-		angle_widget->set_value(angle_deg);
+		angle_widget->set_value(synfig::Angle::deg((*curr_guide).angle).get());
 	else
-		angle_widget->set_value(angle_rad);
+		angle_widget->set_value((*curr_guide).angle.get());
 
 	double center_x_ruler_unit = synfig::Distance(center_x , synfig::Distance::SYSTEM_UNITS).get(App::distance_system, canvas->rend_desc());
 	double center_y_ruler_unit = synfig::Distance(center_y , synfig::Distance::SYSTEM_UNITS).get(App::distance_system, canvas->rend_desc());
 	double rotated_x_ruler_unit = synfig::Distance(rotated_x , synfig::Distance::SYSTEM_UNITS).get(App::distance_system, canvas->rend_desc());
 	double rotated_y_ruler_unit = synfig::Distance(rotated_y , synfig::Distance::SYSTEM_UNITS).get(App::distance_system, canvas->rend_desc());
 
-	if (menu_guide_is_x && (rotated_x > -900)) {
+	if ((*curr_guide).isVertical) {
 		center_x_widget->set_sensitive(true);
 		center_x_widget->set_value(center_x_ruler_unit);
 		point_x_widget->set_value(rotated_x_ruler_unit);
 		point_y_widget->set_value(rotated_y_ruler_unit);
 		center_y_widget->set_sensitive(false);
-	} else if (!menu_guide_is_x &&  rotated_x > -900) {
+	} else {
 		center_y_widget->set_sensitive(true);
 		center_y_widget->set_value(center_y_ruler_unit);
 		point_x_widget->set_value(rotated_x_ruler_unit);
 		point_y_widget->set_value(rotated_y_ruler_unit);
 		center_x_widget->set_sensitive(false);
-	} else if (rotated_x < -900) {
-		if (menu_guide_is_x) {
-			center_x_widget->set_sensitive(true);
-			center_x_widget->set_value(center_x_ruler_unit);
-			center_y_widget->set_sensitive(false);
-		} else {
-			center_y_widget->set_sensitive(true);
-			center_y_widget->set_value(center_y_ruler_unit);
-			center_x_widget->set_sensitive(false);
-		}
 	}
 }

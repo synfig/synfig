@@ -103,9 +103,7 @@ CanvasInterface::CanvasInterface(etl::loose_handle<Instance> instance,etl::handl
 	canvas_(canvas),
 	cur_time_(canvas->rend_desc().get_frame_start()),
 	mode_(MODE_NORMAL|MODE_ANIMATE_PAST|MODE_ANIMATE_FUTURE),
-	state_(""),
-	ruler_state("moving unrotated"),
-	rotation_data(3)
+	state_("")
 {
 	set_selection_manager(get_instance()->get_selection_manager());
 	set_ui_interface(get_instance()->get_ui_interface());
@@ -1314,53 +1312,7 @@ CanvasInterface::set_meta_data(const synfig::String& key,const synfig::String& d
 	if (get_canvas()->get_meta_data(key) == data)
 		return;
 
-	bool rotated_ruler_group = false;
-	bool state_rotated_motion = ruler_state!="moving unrotated";
-	bool vertical_ruler = key=="guide_x" || key=="guide_x_accomp" || key=="guide_x_accomp_other";
-	if (state_rotated_motion) {
-		if ((key != "guide_x_accomp_other") && (key != "guide_y_accomp_other")) {
-			if (key=="guide_x" || key=="guide_y")
-				rotation_data[0] = data;
-			else if (key=="guide_x_accomp" || key=="guide_y_accomp")
-				rotation_data[1] = data;
-			return;
-		}
-		else if ((key == "guide_x_accomp_other" || key == "guide_y_accomp_other")) {
-			rotation_data[2] = data;
-			rotated_ruler_group = true;
-		}
-	}
-
-	if (rotated_ruler_group) {
-		Action::PassiveGrouper group(get_instance().get(),_("Move Rotated Ruler"));//is this name for both rotation and moving rotated ruler fine ?
-
-		for (int i=0; i<=2; ++i) {
-		synfig::String key_rotated;
-
-		if (i==0)
-			vertical_ruler ? key_rotated = "guide_x" : key_rotated = "guide_y";
-		else if (i==1)
-			vertical_ruler ? key_rotated = "guide_x_accomp" : key_rotated = "guide_y_accomp";
-		else if (i==2)
-			vertical_ruler ? key_rotated = "guide_x_accomp_other" : key_rotated = "guide_y_accomp_other";
-
-		if (ruler_state=="rotating" && i==0)
-			continue;
-
-		synfigapp::Action::Handle action(synfigapp::Action::create("CanvasMetadataSet"));
-
-		assert(action);
-		if(!action)
-			return;
-
-		action->set_param("canvas",get_canvas());
-		action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
-		action->set_param("key",key_rotated);
-		action->set_param("value",rotation_data[i]);
-
-		get_instance()->perform_action(action);
-		}
-	} else if (key=="guide_x" || key=="guide_y")
+	if (key=="guide")
 	{
 		// Create an undoable action
 

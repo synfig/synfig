@@ -123,8 +123,7 @@ Duckmatic::Duckmatic(etl::loose_handle<synfigapp::CanvasInterface> canvas_interf
 	prev_zoom(1.0),
 	show_persistent_strokes(true),
 	axis_lock(false),
-	drag_offset_(0, 0),
-	curr_guide_is_x(false)
+	drag_offset_(0, 0)
 {
 	clear_duck_dragger();
 	clear_bezier_dragger();
@@ -811,162 +810,33 @@ Duckmatic::set_guides_color(const synfig::Color &c)
 		signal_grid_changed().emit();
 	}
 }
+double
+Duckmatic::calculate_distance_from_guide(const Guide guide, const synfig::Point point)
+{
+	return std::fabs((cos(guide.angle.get())*(guide.point[1]-point[1])) - (sin(guide.angle.get())*(guide.point[0] - point[0])));
+}
+
 
 Duckmatic::GuideList::iterator
 Duckmatic::find_guide(synfig::Point pos, float radius)
 {
 	has_guide_x = false;
 	has_guide_y = false;
-	GuideList::iterator iter,best(guide_list_y_.end());// from what i remember best is defaulted to end to know if there is a selection found or not
-	GuideList::iterator best_y(guide_list_y_.end()), best_x(guide_list_x_.end());
+	GuideList::iterator iter,best(guide_list_.end());
+	second_best_guide_match = guide_list_.end();
 
-	GuideList::iterator iter_accomp_y = list_y_accomp_cord_.begin();
-	GuideList::iterator iter_accomp_other_y = list_y_accomp_cord_other_.begin();
-	GuideList::iterator iter_accomp_y_best, iter_accomp_x_best, iter_accomp_other_y_best, iter_accomp_other_x_best;
-
-//	GuideList::iterator iter,best(guide_list_x_.end());
-	float slope_y_current=0,c_y_current=0,slope_x_current=0,c_x_current=0;
-	float dist_y(radius);
-	for(iter=guide_list_y_.begin();iter!=guide_list_y_.end();++iter)//looping through the y guides to find closest
-	{
-		float slope_y=0,c_y=0,num=0,denom=0,amount_rotate=0;
-		bool ruler_rotated;
-
-		if(*iter_accomp_y > -900){
-			ruler_rotated = true;
+	float dist(radius);
+	for(iter=guide_list_.begin();iter!=guide_list_.end();++iter){
+		float amount = calculate_distance_from_guide(*iter,pos);
+		if (amount<dist){
+			dist = amount;
+			second_best_guide_match = best;
+			best = iter;
+			has_guide_x = (*iter).isVertical;
 		}
-		else{
-			ruler_rotated = false;
-		}
-
-		if (ruler_rotated) {
-			float center_x = (1.0/2.0)*(drawing_area_width);//center position
-			float center_y = ((*iter-window_starty)/pheight) ;
-			float x2((*iter_accomp_y-window_startx)/pwidth);//rotate position i.e. move with ctr
-			float y2((*iter_accomp_other_y-window_starty)/pheight);
-			float y((pos[1]-window_starty)/pheight);//live mouse position
-			float x((pos[0]-window_startx)/pwidth);
-			slope_y= (y2 - center_y)/(x2 - center_x);
-			c_y = (-(slope_y*center_x)+center_y);
-			//now we have the equation of the rotated straight line y = slope*x + c, we now calc the perpindicular/shortest distnace from the line
-			num= std::fabs((slope_y*x)-y-(slope_y*center_x)+center_y);
-			denom= std::sqrt(1 + (slope_y)*(slope_y));
-			amount_rotate= num/denom; //perp distance
-		}
-
-		if ((std::fabs(slope_y) < 0.01) || (std::fabs(slope_y) > 400))
-			ruler_rotated = false;
-
-		float amount(std::fabs(*iter-pos[1]));
-		if (((amount < dist_y) && (!ruler_rotated)) || ((ruler_rotated) && amount_rotate < (dist_y + 3)))
-		{
-			if (ruler_rotated) {
-				current_slope = slope_y;
-				slope_y_current = slope_y;
-			}
-
-			if (amount < amount_rotate - 3)
-				dist_y = amount;
-			else
-				dist_y = amount_rotate - 3;
-
-			best_y = iter;
-			iter_accomp_y_best = iter_accomp_y;
-			iter_accomp_other_y_best = iter_accomp_other_y;
-			has_guide_y = true;
-			c_y_current = c_y;
-		}
-		iter_accomp_y++;
-		iter_accomp_other_y++;
 	}
-
-	GuideList::iterator iter_accomp_x = list_x_accomp_cord_.begin();
-	GuideList::iterator iter_accomp_other_x = list_x_accomp_cord_other_.begin();
-
-
-	float dist_x(radius);
-	for(iter=guide_list_x_.begin();iter!=guide_list_x_.end();++iter)
-	{
-		float slope_x=0,c_x=0,num=0,denom=0,amount_rotate=0;
-		bool ruler_rotated;
-
-		if(*iter_accomp_x > -900)
-			ruler_rotated = true;
-		else
-			ruler_rotated = false;
-
-		if (ruler_rotated) {
-		float center_x((*iter-window_startx)/pwidth);//center position
-		float center_y = (1.0/2.0)*(drawing_area_height);
-		float x2((*iter_accomp_other_x-window_startx)/pwidth);//rotate position i.e. move with ctr
-		float y2((*iter_accomp_x-window_starty)/pheight);
-		float y((pos[1]-window_starty)/pheight);//live mouse position
-		float x((pos[0]-window_startx)/pwidth);
-		slope_x = (y2 - center_y)/(x2 - center_x);
-		c_x = (-(slope_x*center_x)+center_y);
-		//now we have the equation of the rotated straight line y = slope*x + c, calc the perpindicular/shortest distnace from the line
-		num = std::fabs((slope_x*x)-y-(slope_x*center_x)+center_y);
-		denom = std::sqrt(1 + (slope_x)*(slope_x));
-		amount_rotate = num/denom; //perp distance
-		}
-
-		if (std::fabs(slope_x) > 400)// any slope greater than 300 or 400 means it is almost vertical and should be treated as such
-			ruler_rotated = false;
-
-		float amount(std::fabs(*iter-pos[0]));
-			//if distace of this iterations ruler is less than dist which is preinitialized but then becomes amount then this is close and update dist
-		if( ((amount<dist_x) && (!ruler_rotated)) || ((ruler_rotated) && amount_rotate <= (dist_x + 3)) )//3 is an empirical value
-		{
-			if (ruler_rotated){
-				current_slope = slope_x;
-				slope_x_current = slope_x;
-			}
-
-			if(amount < amount_rotate - 3)
-				dist_x = amount;
-			else
-				dist_x = amount_rotate - 3;
-
-			best_x = iter;
-			iter_accomp_x_best = iter_accomp_x;
-			iter_accomp_other_x_best = iter_accomp_other_x;
-			has_guide_x = true;
-			c_x_current = c_x;
-		}
-		iter_accomp_x++;
-		iter_accomp_other_x++;
-	}
-
-	if ((dist_x < dist_y) && has_guide_x) {
-		best = best_x;
-		curr_guide_accomp_duckamtic = iter_accomp_x_best;
-		curr_guide_accomp_duckamtic_other = iter_accomp_other_x_best;
-		curr_guide_is_x = true;
-		current_slope = slope_x_current;
-	} else if (has_guide_y) {
-		best = best_y;
-		curr_guide_accomp_duckamtic = iter_accomp_y_best;
-		curr_guide_accomp_duckamtic_other = iter_accomp_other_y_best;
-		curr_guide_is_x=false;
-		current_slope = slope_y_current;
-	}
-
-	if (has_guide_x && has_guide_y && slope_x_current && slope_y_current) {//intersection of two rotated rulers
-		guides_interception_x = (c_y_current - c_x_current)/(slope_x_current - slope_y_current);
-		guides_interception_y = slope_x_current * guides_interception_x + c_x_current;
-	} else if (has_guide_x && has_guide_y && (slope_x_current || slope_y_current)) {//intersec. unrot. + rot.
-		if(*iter_accomp_x_best > -900) {
-			guides_interception_y = (*best_y-window_starty)/pheight;
-			guides_interception_x = (guides_interception_y - c_x_current)/(slope_x_current);
-		} else if(*iter_accomp_y_best > -900){
-			guides_interception_x = (*best_x-window_startx)/pwidth;
-			guides_interception_y = slope_y_current * guides_interception_x + c_y_current;
-		}
-	} else if (has_guide_x && has_guide_y) {//intersec. two unrot.
-		guides_interception_x = (*best_x-window_startx)/pwidth;
-		guides_interception_y = (*best_y-window_starty)/pheight;
-	}
-
+	if (best != guide_list_.end())
+		has_guide_y = !has_guide_x;
 	return best;
 }
 
@@ -989,60 +859,51 @@ Duckmatic::snap_point_to_grid(const synfig::Point& x)const
 			floor(ret[0]/get_grid_size()[0]+0.5)*get_grid_size()[0],
 			floor(ret[1]/get_grid_size()[1]+0.5)*get_grid_size()[1]);
 
-		if(std::fabs(snap[0]-ret[0])<=radius && (!has_guide_x || std::fabs(snap[0]-ret[0])<=std::fabs(*guide-ret[0])))
+		if(std::fabs(snap[0]-ret[0])<=radius && (!has_guide_x || std::fabs(snap[0]-ret[0])<=std::fabs((guide->point)[0]-ret[0])))
 			ret[0]=snap[0],has_guide_x_=false;
-		if(std::fabs(snap[1]-ret[1])<=radius && (!has_guide_y || std::fabs(snap[1]-ret[1])<=std::fabs(*guide-ret[1])))
+		if(std::fabs(snap[1]-ret[1])<=radius && (!has_guide_y || std::fabs(snap[1]-ret[1])<=std::fabs((guide->point)[1]-ret[1])))
 			ret[1]=snap[1],has_guide_y_=false;
 	}
 
 	if(guide_snap)
 	{
-		if (!has_guide_y_) {
-			if (has_guide_x_ && (*curr_guide_accomp_duckamtic < -900)) {
-				ret[0]=*guide;
-			}
-			else if (has_guide_x_){
-				// ruler: y - (current_slope)x = ruler_c
-				// perp: y - (perp_slope)x = perp_c
-				// (ruler_c - perp_c)/(perp_slope - current_slope) = x
-				double center_x =(*guide-window_startx)/pwidth;
-				double center_y = (1.0/2.0)*(drawing_area_height);
-				double ruler_c = center_y -(current_slope * (center_x));
-				double point_x_converted = ((x[0]-window_startx)/pwidth);
-				double point_y_converted = ((x[1]-window_starty)/pheight);
-				double perp_slope = -1/current_slope;//correct  ----- remmember this need to be udpated if changed from dialog
-				double perp_c = point_y_converted - (perp_slope * point_x_converted);
-				double adjusted_x = (ruler_c - perp_c)/(perp_slope - current_slope);
-				double adjusted_y = ruler_c + (current_slope)*adjusted_x;
-				ret[0] = (adjusted_x*pwidth)+window_startx;
-				ret[1] = (adjusted_y*pheight)+window_starty;
-			}
+		bool possible_intersection_close = second_best_guide_match != guide_list_.end() && (second_best_guide_match->angle != guide->angle);
+		if (possible_intersection_close){
+					float guides_intersection_x = 0, guides_intersection_y = 0;
+					if (second_best_guide_match != guide_list_.end() && synfig::Angle::deg(guide->angle).get()!=90 &&
+						synfig::Angle::deg(second_best_guide_match->angle).get() != 90){
+						//find the interception and store it.
+						float slope_best = tan(guide->angle.get()), slope_second_best_guide_match = tan(second_best_guide_match->angle.get());
+						float bestX = guide->point[0], bestY = guide->point[1], lastBestX = second_best_guide_match->point[0], lastBestY = second_best_guide_match->point[1];
+						guides_intersection_x = ( bestY - lastBestY + slope_second_best_guide_match*lastBestX - slope_best*bestX )/(slope_second_best_guide_match - slope_best);
+						guides_intersection_y = slope_best*(guides_intersection_x - bestX) + bestY;
+						possible_intersection_close = (pow(pow(guide->point[1] - guides_intersection_y, 2.0) + pow(guide->point[0] - guides_intersection_x, 2.0), 0.5)) < radius;//distance from intersection to us has to be at most radius
+					} else if (second_best_guide_match != guide_list_.end() && guide->angle != second_best_guide_match->angle){
+						if (synfig::Angle::deg(guide->angle).get() == 90){
+							guides_intersection_x = guide->point[0];
+							guides_intersection_y = tan(second_best_guide_match->angle.get())*(second_best_guide_match->point[0]) + second_best_guide_match->point[1];
+						} else if (synfig::Angle::deg(second_best_guide_match->angle).get() == 90){
+							guides_intersection_x = second_best_guide_match->point[0];
+							guides_intersection_y = tan(guide->angle.get())*(guide->point[0]) + guide->point[1];
+						}
+						possible_intersection_close = (pow(pow(ret[1] - guides_intersection_y, 2.0) + pow(ret[0] - guides_intersection_x, 2.0), 0.5)) < radius;//distance from intersection to us has to be at most radius
+					}
+					if (possible_intersection_close) {
+					ret[0] = guides_intersection_x;
+					ret[1] = guides_intersection_y;
+					}
+				}
+		if (!possible_intersection_close && has_guide_x_ && guide->angle == synfig::Angle::deg(90))
+			ret[0]=guide->point[0];
+		else if (!possible_intersection_close && has_guide_y_ && guide->angle == synfig::Angle::deg(0))
+			ret[1]=guide->point[1];
+		else if ( !possible_intersection_close && (has_guide_x_ || has_guide_y_) ){
+			float slope1 = tan(guide->angle.get());
+			float slope2 = -1.0/slope1;
+			float x1 = guide->point[0], y1 = guide->point[1];
+			ret[0] = (x[1] - y1 + slope1*x1 - slope2*x[0])/(slope1 - slope2);
+			ret[1] = slope1*(ret[0] - x1) + y1;
 		}
-
-		if (!has_guide_x_) {
-			if (has_guide_y_ && (*curr_guide_accomp_duckamtic < -900))
-				ret[1]=*guide;
-			else if(has_guide_y_) {
-				double center_x = (1.0/2.0)*(drawing_area_width);
-				double center_y = ((*guide-window_starty)/pheight);
-				double ruler_c = center_y -(current_slope * (center_x));
-				double point_x_converted = ((x[0]-window_startx)/pwidth);
-				double point_y_converted = ((x[1]-window_starty)/pheight);
-				double perp_slope = -1/current_slope;
-				double perp_c = point_y_converted - (perp_slope * point_x_converted);
-				double adjusted_x = (ruler_c - perp_c)/(perp_slope - current_slope);
-				double adjusted_y = ruler_c + (current_slope)*adjusted_x;
-				ret[0] = (adjusted_x*pwidth)+window_startx;
-				ret[1] = (adjusted_y*pheight)+window_starty;
-			}
-		}
-
-
-		if (has_guide_x && has_guide_y) { //store the intersection point
-			ret[0] = (guides_interception_x*pwidth)+window_startx;
-			ret[1] = (guides_interception_y*pheight)+window_starty;
-		}
-
 	}
 
 	if(axis_lock)

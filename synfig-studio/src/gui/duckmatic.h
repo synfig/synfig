@@ -114,6 +114,13 @@ public:
 	void bezier_drag(Duckmatic* duckmatic, const synfig::Vector& vector);
 };
 
+struct Guide
+	{
+		synfig::Point point;
+		synfig::Angle::rad angle;
+		bool isVertical;
+	};
+
 /*! \class Duckmatic
 **
 **	This class helps organize any of the devices displayed in
@@ -148,15 +155,7 @@ public:
 
 	typedef Duck::Type Type;
 
-	typedef std::list<float> GuideList;
-
-	// for finding current rotated guide
-	int drawing_area_width;
-	int drawing_area_height;
-	float pwidth,pheight;
-	synfig::Vector::value_type window_startx,window_starty;
-	float current_slope = 0;
-
+	typedef std::list<Guide> GuideList;
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
 	*/
@@ -197,16 +196,7 @@ private:
 
 	mutable sigc::signal<void> signal_sketch_saved_;
 
-	GuideList guide_list_x_; // basically this is a list containing the x cordinate of each vertical ruler
-	GuideList list_x_accomp_cord_;
-	GuideList list_x_accomp_cord_other_;
-//	AccompGuideList accomp_list_x_;
-
-	GuideList guide_list_y_;
-	GuideList list_y_accomp_cord_;
-	GuideList list_y_accomp_cord_other_;
-
-//	AccompGuideList accomp_list_y_;
+	GuideList guide_list_;
 
 	mutable synfig::String sketch_filename_;
 
@@ -219,8 +209,7 @@ private:
 
 	bool has_guide_x = false;
 	bool has_guide_y = false;
-	double guides_interception_x = 0;
-	double guides_interception_y = 0;
+	GuideList::iterator second_best_guide_match = guide_list_.end();
 
 	/*
  -- ** -- P R O T E C T E D   D A T A -----------------------------------------
@@ -231,10 +220,6 @@ protected:
 	etl::handle<Bezier> selected_bezier;
 
 	synfig::Time cur_time;
-
-	GuideList::iterator curr_guide_accomp_duckamtic;
-	GuideList::iterator curr_guide_accomp_duckamtic_other;
-//	AccompGuideList::iterator curr_accomp_guide;
 
 	//! This flag is set if operations should snap to the grid
 	/*! \todo perhaps there should be two of these flags, one for each axis?
@@ -258,8 +243,6 @@ protected:
 
 	bool axis_lock;
 
-	bool curr_guide_is_x;
-
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
 	*/
@@ -272,6 +255,8 @@ private:
 	//etl::handle<Duck> selected_duck;
 
 	void connect_signals(const Duck::Handle &duck, const synfigapp::ValueDesc& value_desc, CanvasView &canvas_view);
+
+	double calculate_distance_from_guide(const Guide guide, const synfig::Point point);
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -294,27 +279,8 @@ public:
 	sigc::signal<void>& signal_grid_changed() { return signal_grid_changed_; }
 	sigc::signal<void>& signal_sketch_saved() { return signal_sketch_saved_; }
 
-	GuideList& get_guide_list_x() { return guide_list_x_; }
-	GuideList& get_x_list_accomp_cord() { return list_x_accomp_cord_; }
-	GuideList& get_x_list_accomp_cord_other() { return list_x_accomp_cord_other_; }
-
-//	AccompGuideList& get_accomp_list_x()  {return accomp_list_x_;}
-
-	GuideList& get_guide_list_y() { return guide_list_y_; }
-	GuideList& get_y_list_accomp_cord() { return list_y_accomp_cord_; }
-	GuideList& get_y_list_accomp_cord_other() { return list_y_accomp_cord_other_; }
-
-//	AccompGuideList& get_accomp_list_y()  {return accomp_list_y_;}
-
-	const GuideList& get_guide_list_x()const { return guide_list_x_; }
-	const GuideList& get_x_list_accomp_cord()const { return list_x_accomp_cord_; }
-	const GuideList& get_x_list_accomp_cord_other()const { return list_x_accomp_cord_other_; }
-//	const AccompGuideList& get_accomp_list_x()const {return accomp_list_x_;}
-	const GuideList& get_guide_list_y()const { return guide_list_y_; }
-	const GuideList& get_y_list_accomp_cord()const { return list_y_accomp_cord_; }
-	const GuideList& get_y_list_accomp_cord_other()const { return list_y_accomp_cord_other_; }
-//	const AccompGuideList& get_accomp_list_y()const {return accomp_list_y_;}
-
+	GuideList& get_guide_list() { return guide_list_; }
+	const GuideList& get_guide_list()const { return guide_list_; }
 
 	void set_guide_snap(bool x=true);
 	bool get_guide_snap()const { return guide_snap; }

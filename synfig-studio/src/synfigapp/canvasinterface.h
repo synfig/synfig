@@ -67,7 +67,6 @@ class CanvasInterface : public etl::shared_object, public sigc::trackable
 public:
 
 	typedef EditMode Mode;
-	std::string ruler_state;
 
 private:
 	// Constructor is private to force the use of the "create()" constructor.
@@ -81,7 +80,6 @@ private:
 	synfig::Time cur_time_;
 	Mode mode_;
 	synfig::String state_;
-	std::vector<synfig::String> rotation_data;
 
 	sigc::signal<void,synfig::Layer::Handle> signal_layer_raised_;
 	sigc::signal<void,synfig::Layer::Handle> signal_layer_lowered_;

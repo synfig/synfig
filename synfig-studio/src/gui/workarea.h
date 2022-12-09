@@ -124,7 +124,7 @@ public:
 	friend class WorkAreaRenderer;
 	friend class WorkAreaProgress;
 
-	Dialog_Guide guide_dialog;//set up properly
+	Dialog_Guide guide_dialog;
 
 private:
 	/*
@@ -247,8 +247,6 @@ public:
 
 	// used in renderer_guides.cpp
 	GuideList::iterator curr_guide;
-	GuideList::iterator curr_guide_accomp; //this need to point to correct accompanying element so we can set its value   //is this used??
-//	AccompGuideList::iterator curr_accomp_guide;
 
 	// used in renderer_timecode.cpp
 	int timecode_width, timecode_height;

@@ -49,10 +49,11 @@ namespace studio {
 class Widget_Waypoint;
 class Widget_ValueBase;
 class WorkArea;
+struct Guide;
 
 class Dialog_Guide : public Gtk::Dialog
 {
-	typedef std::list<float> GuideList;
+	typedef std::list<Guide> GuideList;
 
 	Gtk::SpinButton *angle_widget;
 	Glib::RefPtr<Gtk::Adjustment> angle_adjustment;
@@ -77,16 +78,11 @@ class Dialog_Guide : public Gtk::Dialog
 	etl::handle<synfig::Canvas> canvas;
 
 	void on_ok_or_apply_pressed(bool ok);
-	void rotate_ruler();
 	void set_new_coordinates();
 	void set_angle_type();
+	void init_widget_values();
 
 	GuideList::iterator curr_guide;
-	GuideList::iterator curr_guide_accomp_duckamtic;
-	GuideList::iterator curr_guide_accomp_duckamtic_other;
-
-	float angle_rad;
-	float angle_deg;
 
 	synfig::ValueBase test_value;
 
@@ -97,12 +93,7 @@ class Dialog_Guide : public Gtk::Dialog
 public:
 	Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canvas, WorkArea *work_area);
 	~Dialog_Guide();
-
-	void set_current_guide_iterators(GuideList::iterator curr_guide_workarea,
-									 GuideList::iterator curr_guide_accomp_duckamtic_workarea,
-									 GuideList::iterator curr_guide_accomp_duckamtic_other_workarea);
-
-	void set_rotation_angle(bool curr_guide_is_x);//must be called after set_current_guide_iterators()
+	void set_current_guide_and_init(GuideList::iterator current_guide);
 
 }; // END of Dialog_Guide
 
