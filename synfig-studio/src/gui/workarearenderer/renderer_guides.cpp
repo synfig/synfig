@@ -183,8 +183,8 @@ Renderer_Guides::render_vfunc(
 				cr->stroke();
 			} else if(cordinate == "second" || cordinate == "fourth"){
 					while( (y_temp<drawable_h) && (x_temp<drawable_w)){
-						x_temp +=1/*/2*/;
-						y_temp -=slope/*/2*/;
+						x_temp +=1;
+						y_temp -=slope;
 
 						}
 					cr->move_to(x_center,y_center);

@@ -393,13 +393,7 @@ WorkArea::save_meta_data()
 		for (iter = get_guide_list().begin(); iter != get_guide_list().end(); ++iter){
 			if(!data.empty())
 				data+=' ';
-			data+=strprintf("%f", (*iter).point[0]);
-			data+='*';
-			data+=strprintf("%f", (*iter).point[1]);
-			data+='*';
-			data+=strprintf("%f", (*iter).angle.get());
-			data+='*';
-			data+=strprintf("%d", (*iter).isVertical);
+			data+=strprintf(" %f*%f*%f*%d", (*iter).point[0], (*iter).point[1], (*iter).angle.get(), (*iter).isVertical);
 		}
 		if(!data.empty())
 			canvas_interface->set_meta_data("guide",data);
@@ -621,14 +615,13 @@ WorkArea::load_meta_data()
 	if(data.size() && (data=="0" || data[0]=='f' || data[0]=='F'))
 		set_background_rendering(false);
 
-	//for our guide to be stored wed have to store 2 floats x,y + 1 float angle in rad + a true or false
+	//for the guide to be stored we have to store 2 floats x,y + 1 float angle in rad + a true or false
 	data=canvas->get_meta_data("guide");
 	get_guide_list().clear();
 	while(!data.empty())
 	{
 		String::iterator iter(find(data.begin(),data.end(),' '));
 		String guide(data.begin(),iter);//this now contains the four things
-		ChangeLocale change_locale(LC_NUMERIC, "C");
 		std::vector<String> guide_components(4);
 		int i = 0;
 		for (auto character: guide){
@@ -638,6 +631,7 @@ WorkArea::load_meta_data()
 				++i;
 		}
 		if(!guide.empty()){
+			ChangeLocale change_locale(LC_NUMERIC, "C");
 			Guide obj = {synfig::Point{stratof(guide_components.at(0)),stratof(guide_components.at(1))},
 						 synfig::Angle::rad(stratof(guide_components.at(2))),
 						 (bool)stratoi(guide_components.at(3))};
@@ -1343,7 +1337,6 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 						curr_guide = iter;
 						return true;
 					}
-
 				}
 
 				// All else fails, try making a selection box
@@ -1445,10 +1438,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				drawing_area->queue_draw();
 			}
 
-			if( (iter == get_guide_list().end()) )
-				guide_highlighted = false;
-			else
-				guide_highlighted = true;
+			guide_highlighted = iter != get_guide_list().end();
 
             etl::handle<Duck> duck = find_duck(mouse_pos, radius);
             if (duck != hover_duck) {
@@ -1555,10 +1545,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			double y(event->button.y), x(event->button.x);
 
 			// Erase the guides if dragged into the rulers
-			if(curr_guide->isVertical && !std::isnan(x) && x<0.0 )
-				get_guide_list().erase(curr_guide);
-			else
-			if(!curr_guide->isVertical && !std::isnan(y) && y<0.0 )
+			if(!std::isnan(x) && (x<0.0 || y<0.0))
 				get_guide_list().erase(curr_guide);
 
 			drawing_area->queue_draw();
@@ -1796,7 +1783,7 @@ WorkArea::on_hruler_event(GdkEvent *event)
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	switch(event->type) {
 	case GDK_BUTTON_PRESS:
-			from_ruler_event = true;
+		from_ruler_event = true;
 		if (get_drag_mode() == DRAG_NONE && show_guides) {
 			set_drag_mode(DRAG_GUIDE);
 			curr_guide = get_guide_list().insert(get_guide_list().begin(),{synfig::Point(((1.0/2.0)*(drawing_area->get_window()->get_width())*get_pw())+ get_window_tl()[0], 0),
@@ -1815,7 +1802,7 @@ WorkArea::on_hruler_event(GdkEvent *event)
 		}
 		return true;
 	case GDK_BUTTON_RELEASE:
-			from_ruler_event = false;
+		from_ruler_event = false;
 		if (get_drag_mode() == DRAG_GUIDE && !curr_guide->isVertical) {
 			set_drag_mode(DRAG_NONE);
 			save_meta_data();
