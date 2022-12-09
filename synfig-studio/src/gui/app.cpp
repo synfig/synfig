@@ -1595,7 +1595,7 @@ void App::init(const synfig::String& rootpath)
 		state_manager=new StateManager();
 
 		studio_init_cb.task(_("Init Main Window..."));
-		main_window=new studio::MainWindow();
+		main_window=new studio::MainWindow(App::instance());
 		main_window->add_accel_group(App::ui_manager_->get_accel_group());
 
 		studio_init_cb.task(_("Init Toolbox..."));
@@ -3652,7 +3652,7 @@ try_open_uri(const std::string &uri)
 {
 #if GTK_CHECK_VERSION(3, 22, 0)
 	return gtk_show_uri_on_window(
-		App::main_window ? App::main_window->gobj() : nullptr,
+		App::main_window ? GTK_WINDOW(App::main_window->gobj()) : nullptr,
 		uri.c_str(), GDK_CURRENT_TIME, nullptr );
 #else
 	return gtk_show_uri(nullptr, uri.c_str(), GDK_CURRENT_TIME, nullptr);

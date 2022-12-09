@@ -68,8 +68,9 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-MainWindow::MainWindow() :
-	save_workspace_merge_id(0), custom_workspaces_merge_id(0)
+MainWindow::MainWindow(const Glib::RefPtr<Gtk::Application>& application)
+	: Gtk::ApplicationWindow(application),
+	  save_workspace_merge_id(0), custom_workspaces_merge_id(0)
 {
 	register_custom_widget_types();
 
@@ -306,7 +307,7 @@ MainWindow::on_key_press_event(GdkEventKey* key_event)
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	Gtk::Widget * widget = get_focus();
 	if (widget && (dynamic_cast<Gtk::Editable*>(widget) || dynamic_cast<Gtk::TextView*>(widget) || dynamic_cast<Gtk::DrawingArea*>(widget))) {
-		bool handled = gtk_window_propagate_key_event(this->gobj(), key_event);
+		bool handled = gtk_window_propagate_key_event(GTK_WINDOW(this->gobj()), key_event);
 		if (handled)
 			return true;
 	}
