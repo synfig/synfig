@@ -640,7 +640,7 @@ WorkArea::load_meta_data()
 		if(!guide.empty()){
 			Guide obj = {synfig::Point{stratof(guide_components.at(0)),stratof(guide_components.at(1))},
 						 synfig::Angle::rad(stratof(guide_components.at(2))),
-						 stratoi(guide_components.at(3))};
+						 (bool)stratoi(guide_components.at(3))};
 			get_guide_list().push_back(obj);
 		}
 
