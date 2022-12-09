@@ -173,11 +173,11 @@ ActionManager::get_entries_for_group(const std::string& group) const
 }
 
 bool
-UserShortcutList::load_from_file(const std::string& file)
+UserShortcutList::load_from_file(const std::string& file, bool force_reset)
 {
 	try {
 		std::string contents = Glib::file_get_contents(file);
-		return load_from_string(contents);
+		return load_from_string(contents, force_reset);
 	} catch (const Glib::FileError& error) {
 		synfig::error(_("shortcut file: error loading from file %s: %s"), file.c_str(), error.what().c_str());
 		return false;
@@ -187,9 +187,10 @@ UserShortcutList::load_from_file(const std::string& file)
 }
 
 bool
-UserShortcutList::load_from_string(const std::string& contents)
+UserShortcutList::load_from_string(const std::string& contents, bool force_reset)
 {
-	shortcuts.clear();
+	if (force_reset)
+		shortcuts.clear();
 
 	std::string::size_type pos = 0;
 	std::string::size_type length = contents.length();
@@ -271,10 +272,23 @@ UserShortcutList::get_string() const
 }
 
 bool
-UserShortcutList::restore_to_defaults(Glib::RefPtr<Gtk::Application> app, const ActionManager& actions) const
+UserShortcutList::restore_to_defaults(const ActionManager& actions)
+{
+	shortcuts.clear();
+
+	for (const auto& item : actions.get_entries()) {
+		shortcuts[item.name_] =  item.accelerators_[0];
+	}
+	return true;
+}
+
+bool
+UserShortcutList::restore_to_defaults_and_apply(Glib::RefPtr<Gtk::Application> app, const ActionManager& actions)
 {
 	if (!app)
 		return false;
+
+	restore_to_defaults(actions);
 
 	auto action_list = app->list_action_descriptions();
 	for (const auto& item_name : action_list)
