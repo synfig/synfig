@@ -103,13 +103,14 @@ class UserShortcutList
 public:
 	typedef std::map<std::string, Glib::ustring> List;
 
-	bool load_from_file(const std::string& file);
-	bool load_from_string(const std::string& contents);
+	bool load_from_file(const std::string& file, bool force_reset = true);
+	bool load_from_string(const std::string& contents, bool force_reset = true);
 
 	bool save_to_file(const std::string& file) const;
 	std::string get_string() const;
 
-	bool restore_to_defaults(Glib::RefPtr<Gtk::Application> app, const ActionManager& actions) const;
+	bool restore_to_defaults(const ActionManager& actions);
+	bool restore_to_defaults_and_apply(Glib::RefPtr<Gtk::Application> app, const ActionManager& actions);
 
 	void apply(Glib::RefPtr<Gtk::Application> app, const ActionManager& actions) const;
 
