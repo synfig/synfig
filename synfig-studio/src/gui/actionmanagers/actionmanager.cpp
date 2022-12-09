@@ -276,10 +276,23 @@ UserShortcutList::get_string() const
 }
 
 bool
-UserShortcutList::restore_to_defaults(Glib::RefPtr<Gtk::Application> app, const ActionDatabase& actions) const
+UserShortcutList::restore_to_defaults(const ActionDatabase& actions)
+{
+	shortcuts.clear();
+
+	for (const auto& item : actions.get_entries()) {
+		shortcuts[item.name_] =  item.accelerators_[0];
+	}
+	return true;
+}
+
+bool
+UserShortcutList::restore_to_defaults_and_apply(Glib::RefPtr<Gtk::Application> app, const ActionDatabase& actions)
 {
 	if (!app)
 		return false;
+
+	restore_to_defaults(actions);
 
 	auto action_list = app->list_action_descriptions();
 	for (const auto& item_name : action_list)
