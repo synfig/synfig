@@ -105,7 +105,8 @@ public:
 	bool save_to_file(const synfig::filesystem::Path& file) const;
 	std::string get_string() const;
 
-	bool restore_to_defaults(Glib::RefPtr<Gtk::Application> app, const ActionDatabase& actions) const;
+	bool restore_to_defaults(const ActionDatabase& actions);
+	bool restore_to_defaults_and_apply(Glib::RefPtr<Gtk::Application> app, const ActionDatabase& actions);
 
 	void apply(Glib::RefPtr<Gtk::Application> app, const ActionDatabase& actions) const;
 
