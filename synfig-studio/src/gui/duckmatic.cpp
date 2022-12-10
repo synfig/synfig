@@ -811,32 +811,27 @@ Duckmatic::set_guides_color(const synfig::Color &c)
 	}
 }
 double
-Duckmatic::calculate_distance_from_guide(const Guide guide, const synfig::Point point)
+Duckmatic::calculate_distance_from_guide(const Guide& guide, const Point& point)
 {
 	return std::fabs((cos(guide.angle.get())*(guide.point[1]-point[1])) - (sin(guide.angle.get())*(guide.point[0] - point[0])));
 }
 
 
 Duckmatic::GuideList::iterator
-Duckmatic::find_guide(synfig::Point pos, float radius)
+Duckmatic::find_guide(synfig::Point pos, float radius, Guide* second_best_guide_match)
 {
-	has_guide_x = false;
-	has_guide_y = false;
 	GuideList::iterator iter,best(guide_list_.end());
-	second_best_guide_match = guide_list_.end();
-
+	second_best_guide_match = nullptr;
 	float dist(radius);
 	for(iter=guide_list_.begin();iter!=guide_list_.end();++iter){
 		float amount = calculate_distance_from_guide(*iter,pos);
 		if (amount<dist){
 			dist = amount;
-			second_best_guide_match = best;
+			if (best != guide_list_.end())
+				second_best_guide_match = &(*best);
 			best = iter;
-			has_guide_x = (*iter).isVertical;
 		}
 	}
-	if (best != guide_list_.end())
-		has_guide_y = !has_guide_x;
 	return best;
 }
 
@@ -847,38 +842,43 @@ Duckmatic::snap_point_to_grid(const synfig::Point& x)const
 	float radius(0.1/zoom);
 
 	GuideList::const_iterator guide;
-
-	guide = find_guide(ret,radius);
-
-	bool has_guide_x_ = has_guide_x;
-	bool has_guide_y_ = has_guide_y;
+	Guide* second_best_guide_match = nullptr;
+	guide = find_guide(ret,radius, second_best_guide_match);
+	bool has_guide = guide != guide_list_.end();
 
 	if(get_grid_snap())
 	{
 		Point snap(
 			floor(ret[0]/get_grid_size()[0]+0.5)*get_grid_size()[0],
 			floor(ret[1]/get_grid_size()[1]+0.5)*get_grid_size()[1]);
-
-		if(std::fabs(snap[0]-ret[0])<=radius && (!has_guide_x || std::fabs(snap[0]-ret[0])<=std::fabs((guide->point)[0]-ret[0])))
-			ret[0]=snap[0],has_guide_x_=false;
-		if(std::fabs(snap[1]-ret[1])<=radius && (!has_guide_y || std::fabs(snap[1]-ret[1])<=std::fabs((guide->point)[1]-ret[1])))
-			ret[1]=snap[1],has_guide_y_=false;
+		if ( !has_guide || guide->angle == synfig::Angle::deg(90) || guide->angle == synfig::Angle::deg(0)) {
+			if(std::fabs(snap[0]-ret[0])<=radius && (!has_guide || (guide->angle == synfig::Angle::deg(90) &&
+													 std::fabs(snap[0]-ret[0])<=std::fabs((guide->point)[0]-ret[0]))))
+				ret[0]=snap[0],has_guide=false;
+			if(std::fabs(snap[1]-ret[1])<=radius && (!has_guide || (guide->angle == synfig::Angle::deg(0) &&
+													 std::fabs(snap[1]-ret[1])<=std::fabs((guide->point)[1]-ret[1]))))
+				ret[1]=snap[1],has_guide=false;
+		} else {
+			float distance_from_grid = pow( pow( snap[1] - ret[1], 2.0) + pow(snap[0] - ret[0] , 2.0), 0.5);
+			if ( distance_from_grid <= calculate_distance_from_guide(*guide, ret)){
+				ret = snap;
+				has_guide = false;
+			}
+		}
 	}
 
-	if(guide_snap)
+	if(guide_snap && has_guide)
 	{
-		bool possible_intersection_close = second_best_guide_match != guide_list_.end() && (second_best_guide_match->angle != guide->angle);
+		bool possible_intersection_close = second_best_guide_match != nullptr && (second_best_guide_match->angle != guide->angle);
 		if (possible_intersection_close){
 					float guides_intersection_x = 0, guides_intersection_y = 0;
-					if (second_best_guide_match != guide_list_.end() && synfig::Angle::deg(guide->angle).get()!=90 &&
-						synfig::Angle::deg(second_best_guide_match->angle).get() != 90){
-						//find the interception and store it.
+					if (guide->angle != synfig::Angle::deg(90) && second_best_guide_match->angle != synfig::Angle::deg(90)){
 						float slope_best = tan(guide->angle.get()), slope_second_best_guide_match = tan(second_best_guide_match->angle.get());
 						float bestX = guide->point[0], bestY = guide->point[1], lastBestX = second_best_guide_match->point[0], lastBestY = second_best_guide_match->point[1];
 						guides_intersection_x = ( bestY - lastBestY + slope_second_best_guide_match*lastBestX - slope_best*bestX )/(slope_second_best_guide_match - slope_best);
 						guides_intersection_y = slope_best*(guides_intersection_x - bestX) + bestY;
-						possible_intersection_close = (pow(pow(guide->point[1] - guides_intersection_y, 2.0) + pow(guide->point[0] - guides_intersection_x, 2.0), 0.5)) < radius;//distance from intersection to us has to be at most radius
-					} else if (second_best_guide_match != guide_list_.end() && guide->angle != second_best_guide_match->angle){
+						possible_intersection_close = (pow(pow(guide->point[1] - guides_intersection_y, 2.0) + pow(guide->point[0] - guides_intersection_x, 2.0), 0.5)) <= radius;
+					} else if (guide->angle != second_best_guide_match->angle){
 						if (synfig::Angle::deg(guide->angle).get() == 90){
 							guides_intersection_x = guide->point[0];
 							guides_intersection_y = tan(second_best_guide_match->angle.get())*(second_best_guide_match->point[0]) + second_best_guide_match->point[1];
@@ -886,18 +886,18 @@ Duckmatic::snap_point_to_grid(const synfig::Point& x)const
 							guides_intersection_x = second_best_guide_match->point[0];
 							guides_intersection_y = tan(guide->angle.get())*(guide->point[0]) + guide->point[1];
 						}
-						possible_intersection_close = (pow(pow(ret[1] - guides_intersection_y, 2.0) + pow(ret[0] - guides_intersection_x, 2.0), 0.5)) < radius;//distance from intersection to us has to be at most radius
+						possible_intersection_close = (pow(pow(ret[1] - guides_intersection_y, 2.0) + pow(ret[0] - guides_intersection_x, 2.0), 0.5)) <= radius;
 					}
 					if (possible_intersection_close) {
 					ret[0] = guides_intersection_x;
 					ret[1] = guides_intersection_y;
 					}
 				}
-		if (!possible_intersection_close && has_guide_x_ && guide->angle == synfig::Angle::deg(90))
+		if (!possible_intersection_close && guide->angle == synfig::Angle::deg(90))
 			ret[0]=guide->point[0];
-		else if (!possible_intersection_close && has_guide_y_ && guide->angle == synfig::Angle::deg(0))
+		else if (!possible_intersection_close && guide->angle == synfig::Angle::deg(0))
 			ret[1]=guide->point[1];
-		else if ( !possible_intersection_close && (has_guide_x_ || has_guide_y_) ){
+		else if (!possible_intersection_close){
 			float slope1 = tan(guide->angle.get());
 			float slope2 = -1.0/slope1;
 			float x1 = guide->point[0], y1 = guide->point[1];
