@@ -128,6 +128,13 @@ AC_ARG_WITH(ffmpeg,
 ])
 AM_CONDITIONAL(WITH_FFMPEG, test $with_ffmpeg = yes)
 
+AC_ARG_WITH(webp,
+	AS_HELP_STRING(--without-webp, [do not support WEBP]),[
+],[
+	with_webp="yes"
+])
+AM_CONDITIONAL(WITH_WEBP, test $with_webp = yes)
+
 
 AC_ARG_WITH(vimage,
 	AS_HELP_STRING(--with-vimage, [support Apple vImage]),[
@@ -497,7 +504,7 @@ AC_CHECK_HEADERS([signal.h termios.h process.h io.h fcntl.h])
 
 # -- F U N C T I O N S ----------------------------------------
 
-AC_CHECK_FUNCS([fork]) # used by mod_dv, mod_ffmpeg, mod_imagemagick and synfig-osx launcher
+AC_CHECK_FUNCS([fork]) # used by mod_dv, mod_ffmpeg, mod_webp, mod_imagemagick and synfig-osx launcher
 AC_CHECK_FUNCS([pipe])
 AC_CHECK_FUNCS([waitpid])
 
@@ -560,6 +567,7 @@ src/modules/mod_png/Makefile
 src/modules/mod_ppm/Makefile
 src/modules/mod_yuv420p/Makefile
 src/modules/mod_svg/Makefile
+src/modules/mod_webp/Makefile
 src/modules/mod_example/Makefile
 src/tool/Makefile
 src/modules/synfig_modules.cfg
@@ -598,6 +606,7 @@ vImage ---------------------------> $with_vimage
 ImageMagick ----------------------> $with_imagemagick
 Magick++ -------------------------> $with_magickpp
 FFMPEG ---------------------------> $with_ffmpeg
+WEBP -----------------------------> $with_webp
 OpenGL ---------------------------> $with_opengl
 OpenCL ---------------------------> $with_opencl
 libdv ----------------------------> $with_libdv

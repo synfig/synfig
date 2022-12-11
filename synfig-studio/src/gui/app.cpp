@@ -1487,7 +1487,7 @@ void App::init(const synfig::String& rootpath)
 	String path_to_plugins = ResourceHelper::get_plugin_path();
 
 	String path_to_user_plugins = synfigapp::Main::get_user_app_directory() + "/plugins";
-	
+
 	ui_interface_=new GlobalUIInterface();
 
 	// don't call thread_init() if threads are already initialized
@@ -1496,7 +1496,7 @@ void App::init(const synfig::String& rootpath)
 	//	Glib::thread_init();
 
 	distance_system=Distance::SYSTEM_PIXELS;
-	
+
 #ifdef _WIN32
 	// Do not show "No disc in drive" errors
 	// - https://github.com/synfig/synfig/issues/489
@@ -1873,7 +1873,7 @@ App::on_shutdown()
 
 	if (sound_render_done) delete sound_render_done;
 	sound_render_done = nullptr;
-	
+
 	process_all_events();
 	delete main_window;
 }
@@ -2398,7 +2398,7 @@ App::quit()
 	if (shutdown_in_progress) return;
 
 	get_ui_interface()->task(_("Quit Request"));
-	
+
 	if(Busy::count)
 	{
 		dialog_message_1b(
@@ -2503,6 +2503,7 @@ App::dialog_open_file_ext(const std::string &title, std::vector<std::string> &fi
 	filter_supported->add_mime_type("image/svg+xml");
 	filter_supported->add_mime_type("application/x-krita");
 	filter_supported->add_mime_type("image/openraster");
+	filter_supported->add_mime_type("image/webp");
 	filter_supported->add_pattern("*.png");
 	filter_supported->add_pattern("*.jpeg");
 	filter_supported->add_pattern("*.jpg");
@@ -2511,6 +2512,7 @@ App::dialog_open_file_ext(const std::string &title, std::vector<std::string> &fi
 	filter_supported->add_pattern("*.lst");
 	filter_supported->add_pattern("*.kra");
 	filter_supported->add_pattern("*.ora");
+	filter_supported->add_pattern("*.webp");
 	// 0.3 Audio files
 	filter_supported->add_mime_type("audio/x-vorbis+ogg");
 	filter_supported->add_mime_type("audio/mpeg");
@@ -2537,17 +2539,19 @@ App::dialog_open_file_ext(const std::string &title, std::vector<std::string> &fi
 
 	// 2.1 Image files
 	Glib::RefPtr<Gtk::FileFilter> filter_image = Gtk::FileFilter::create();
-	filter_image->set_name(_("Images (*.png, *.jpeg, *.bmp, *.svg)"));
+	filter_image->set_name(_("Images (*.png, *.jpeg, *.bmp, *.svg, *.webp)"));
 	filter_image->add_mime_type("image/png");
 	filter_image->add_mime_type("image/jpeg");
 	filter_image->add_mime_type("image/jpg");
 	filter_image->add_mime_type("image/bmp");
 	filter_image->add_mime_type("image/svg+xml");
+	filter_image->add_mime_type("image/webp");
 	filter_image->add_pattern("*.png");
 	filter_image->add_pattern("*.jpeg");
 	filter_image->add_pattern("*.jpg");
 	filter_image->add_pattern("*.bmp");
 	filter_image->add_pattern("*.svg");
+	filter_image->add_pattern("*.webp");
 
 	// 2.2 Image sequence/list files
 	Glib::RefPtr<Gtk::FileFilter> filter_image_list = Gtk::FileFilter::create();
@@ -2621,7 +2625,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 {
 	std::vector<std::string> filenames;
 	if (!filename.empty())
-        filenames.push_back(filename);
+		filenames.push_back(filename);
 	if(dialog_open_file_ext(title, filenames, preference, false)) {
 		filename = filenames.front();
 		return true;
@@ -2739,18 +2743,20 @@ App::dialog_open_file_image(const std::string &title, std::string &filename, std
 
 	// show only images
 	Glib::RefPtr<Gtk::FileFilter> filter_image = Gtk::FileFilter::create();
-	filter_image->set_name(_("Images and sequence files (*.png, *.jpg, *.jpeg, *.bmp, *.svg, *.lst)"));
+	filter_image->set_name(_("Images and sequence files (*.png, *.jpg, *.jpeg, *.bmp, *.svg, *.lst, *.webp"));
 	filter_image->add_mime_type("image/png");
 	filter_image->add_mime_type("image/jpeg");
 	filter_image->add_mime_type("image/jpg");
 	filter_image->add_mime_type("image/bmp");
 	filter_image->add_mime_type("image/svg+xml");
+	filter_image->add_mime_type("image/webp");
 	filter_image->add_pattern("*.png");
 	filter_image->add_pattern("*.jpeg");
 	filter_image->add_pattern("*.jpg");
 	filter_image->add_pattern("*.bmp");
 	filter_image->add_pattern("*.svg");
 	filter_image->add_pattern("*.lst");
+	filter_image->add_pattern("*.webp");
 	dialog->add_filter(filter_image);
 
 	// Any files
@@ -2863,7 +2869,7 @@ App::dialog_open_file_image_sequence(const std::string &title, std::set<synfig::
 	filter_any->set_name(_("Any files"));
 	filter_any->add_pattern("*");
 	dialog->add_filter(filter_any);
-	
+
 	dialog->set_extra_widget(*scale_imported_box());
 
 	std::string filename = filenames.empty() ? std::string() : *filenames.begin();
@@ -4359,7 +4365,7 @@ App::set_selected_instance(etl::loose_handle<Instance> instance)
 {
 	if (selected_instance == instance)
 		return;
-	
+
 	if (get_selected_canvas_view() && get_selected_canvas_view()->get_instance() != instance) {
 		if (instance) {
 			instance->focus( instance->get_canvas() );
@@ -4377,7 +4383,7 @@ App::set_selected_canvas_view(etl::loose_handle<CanvasView> canvas_view)
 {
 	if (selected_canvas_view == canvas_view)
 		return;
-	
+
 	etl::loose_handle<CanvasView> prev = selected_canvas_view;
 	etl::loose_handle<Instance> prev_instance = selected_instance;
 
@@ -4448,19 +4454,19 @@ studio::App::scale_imported_box()
 	Gtk::Box *box = manage(new Gtk::Box);
 	Gtk::Label *label_resize = manage(new Gtk::Label(_("Scale to fit Canvas")));
 	Gtk::Switch *toggle_resize = manage(new Gtk::Switch);
-	
+
 	label_resize->set_margin_end(5);
 	toggle_resize->set_valign(Gtk::ALIGN_CENTER);
 	toggle_resize->set_active(App::resize_imported_images);
-	
+
 	toggle_resize->property_active().signal_changed().connect(
 		sigc::mem_fun(*App::dialog_setup, &studio::Dialog_Setup::on_resize_imported_changed));
-	
+
 	box->pack_start(*label_resize, false, false);
 	box->pack_end(*toggle_resize, false, false);
 	box->set_tooltip_text(_("Check this to scale imported images to Canvas size"));
 	box->show_all();
-	
+
 	return box;
 }
 

@@ -4,6 +4,7 @@
 **
 **	\legal
 **	Copyright (c) 2010 Diego Barrios Romero
+**	Copyright (c) 2022 BobSynfig
 **
 **	This file is part of Synfig.
 **
@@ -41,26 +42,53 @@ struct TargetParam
 		HR = 0, //Horizontal 
 		VR = 1  //Vertical
 	};
-	
+
 	//! Constructor
 	/*! Not valid default values, if they are not modified before
 	 *  passing them to the target module, it would override them with
 	 *  its own valid default settings.
 	 */
-	TargetParam (const std::string& Video_codec = "none", int Bitrate = -1):
-		video_codec(Video_codec), bitrate(Bitrate), sequence_separator("."), offset_x(0), offset_y(0),rows(0),columns(0),append(true),dir(HR)
+	TargetParam( const std::string& Video_codec = "none"
+	           , int                Bitrate     = -1
+	           ):
+		video_codec       (Video_codec),
+		bitrate           (Bitrate),
+
+		sequence_separator("."),
+		offset_x          (0),
+		offset_y          (0),
+		rows              (0),
+		columns           (0),
+		append            (true),
+		dir               (HR),
+
+		//<!-- Added for Webp support
+		comp_lvl          ( 4  ),
+		loop              (true),
+		lossless          (true),
+		quality           (75.0),
+		preset            ("default")
+		//-->  Added for Webp support
 	{ }
 
 	std::string video_codec;
-	int bitrate;
+	int         bitrate;
 	std::string sequence_separator;
 	//TODO: It is a spike. Need to separate this class.
-	int offset_x;
-	int offset_y;
-	int rows;
-	int columns;
-	bool append;
-	Direction dir;
+	int         offset_x;
+	int         offset_y;
+	int         rows;
+	int         columns;
+	bool        append;
+	Direction   dir;
+
+	//<!-- Added for Webp support
+	int         comp_lvl;
+	bool        loop;
+	bool        lossless;
+	float       quality;
+	std::string preset;
+	//-->  Added for Webp support
 };
 
 }; // END of namespace synfig
