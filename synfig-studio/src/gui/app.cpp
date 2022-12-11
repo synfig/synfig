@@ -2077,11 +2077,8 @@ App::save_accel_map()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		{
-			std::string filename=get_config_file("accelrc");
-			Gtk::AccelMap::save(filename);
-		}
+		std::string filename=get_config_file("accelrc");
+		Gtk::AccelMap::save(filename);
 	}
 	catch(...)
 	{
