@@ -132,11 +132,11 @@ Instance::~Instance()
 }
 
 // this function returns true if the given extension belongs to image layer type
-bool Instance::is_img(synfig::String ext) const
+static bool
+is_img(const synfig::String& filename)
 {
-		std::set <String> img_ext{".jpg",".jpeg",".png",".bmp",".gif"};
-		bool is_in = img_ext.find(ext) != img_ext.end();
-		return is_in;
+	static const std::set<String> img_ext{".jpg",".jpeg",".png",".bmp",".gif",".tiff",".tif",".dib",".ppm",".pbm",".pgm",".pnm",".webp"};
+	return img_ext.find(Glib::ustring(etl::filename_extension(filename)).lowercase()) != img_ext.end();
 }
 
 synfig::Layer::Handle
@@ -1688,7 +1688,7 @@ Instance::add_special_layer_actions_to_menu(Gtk::Menu *menu, const synfigapp::Se
 	gather_uri(uris, layers);
 	for(std::map<String, String>::const_iterator i = uris.begin(); i != uris.end(); ++i)
 	{
-		if(is_img(filename_extension(i->second)))// check if layer is image
+		if(is_img(i->second))// check if layer is image
 		{
 			Gtk::MenuItem *item = manage(new Gtk::ImageMenuItem(Gtk::Stock::OPEN));
 			item->set_label( (String(_("Edit image in external tool..."))).c_str() );
@@ -1746,7 +1746,7 @@ Instance::add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup
 	{
 		String action_name = synfig::strprintf("special-action-open-file-%d", index);
 		//if the import layer is type image 
-		if(is_img(filename_extension(i->second)))
+		if(is_img(i->second))
 		{
 			String local_name = String(_("Edit image in external tool..."));
 			action_group->add(
