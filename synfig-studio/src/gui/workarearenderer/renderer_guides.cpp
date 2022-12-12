@@ -112,11 +112,8 @@ Renderer_Guides::render_vfunc(
 
 			const float x_center((iter->point[0]-window_startx)/pw);
 			const float y_center((iter->point[1]-window_starty)/ph);
-
-			float x_temp = x_center;
-			float y_temp = y_center;
-
 			bool current_guide = false;
+
 			if(iter==get_work_area()->curr_guide){
 				cr->set_source_rgb(GDK_COLOR_TO_RGB(GUIDE_COLOR_CURRENT));
 				current_guide = true;
@@ -126,7 +123,6 @@ Renderer_Guides::render_vfunc(
 				current_guide = false;
 			}
 			if(iter->angle.get() != 0 && synfig::Angle::deg(iter->angle).get() != 90){
-
 				//draw the center of rotation for the selected guide
 				if (current_guide) {
 					cr->save();
@@ -143,68 +139,54 @@ Renderer_Guides::render_vfunc(
 					cr->stroke();
 					cr->restore();
 				}
-
-				//determine cordinate of point relative to center
-				std::string cordinate;
-				float slope = tan(iter->angle.get());
-				float angle = synfig::Angle::deg(iter->angle).get();
-				while (angle > 360)
-					angle -= 360;
-				if (angle > 0 && angle < 90)
-					cordinate="first";
-				else if (angle > 90 && angle < 180)
-					cordinate="second";
-				else if (angle > 180 && angle < 270)
-					cordinate = "third";
-				else
-					cordinate = "fourth";
-
-				if(cordinate == "first" || cordinate == "third" ){
-					while( (y_temp>0) && (x_temp<drawable_w)){
-						x_temp +=1;
-						y_temp += -1 *slope;
-
+				float slope = -tan(iter->angle.get());
+				synfig::Point point1;
+				synfig::Point point2;
+				bool point1_done = false, point2_done = false;
+				float temp =0;
+				// equation of guide: y = slope*(x - x_center) + y_center
+				// intersection with x = 0
+				temp =  slope * (-x_center) + y_center;
+				if (temp>0 && temp < drawable_h){
+					point1_done = true;
+					point1 = synfig::Point(0.0, temp);
 				}
-				cr->move_to(x_center,y_center);
-				cr->line_to(
-					x_temp,
-					y_temp
-				);
-				cr->stroke();
-				cr->move_to(x_center,y_center);
-				while ((y_temp<drawable_h) && (x_temp>0)) {
-					x_temp -=1;
-					y_temp +=slope;
+				//intersection with x = drawable_w
+				temp =  slope * (drawable_w - x_center) + y_center;
+				if (temp>0 && temp < drawable_h){
+					if (point1_done){
+						point2 = synfig::Point(drawable_w, temp);
+						point2_done = true;
+					} else{
+						point1 = synfig::Point(drawable_w, temp);
+						point1_done = true;
 					}
-				cr->line_to(
-					x_temp,
-					y_temp
-				);
-				cr->stroke();
-			} else if(cordinate == "second" || cordinate == "fourth"){
-					while( (y_temp<drawable_h) && (x_temp<drawable_w)){
-						x_temp +=1;
-						y_temp -=slope;
-
+				}
+				if (!point2_done) {
+					//intersection with y = 0
+					temp = x_center + (-y_center)/slope;
+					if (temp>0.0 && temp < drawable_w){
+						if (point1_done){
+							point2 = synfig::Point(temp, 0.0);
+							point2_done = true;
+						} else {
+							point1 = synfig::Point(temp, 0.0);
 						}
-					cr->move_to(x_center,y_center);
-					cr->line_to(
-						x_temp,
-						y_temp
-					);
-					cr->stroke();
-					cr->move_to(x_center,y_center);
-
-					while( (y_temp>0) && (x_temp>0)){
-							x_temp -=1;
-							y_temp +=slope;
 					}
-					cr->line_to(
-						x_temp,
-						y_temp
-					);
-					cr->stroke();
 				}
+				if (!point2_done){
+					//intersection with y = drawable_h
+					temp = x_center + (drawable_h - y_center)/slope;
+					if (temp>0.0 && temp < drawable_w){
+						point2 = synfig::Point(temp, drawable_h);
+					}
+				}
+				cr->move_to(point1[0],point1[1]);
+				cr->line_to(
+				point2[0],
+				point2[1]
+				);
+				cr->stroke();
 			} else {
 				if (iter->isVertical){
 					cr->move_to(

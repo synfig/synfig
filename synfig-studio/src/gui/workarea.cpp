@@ -1382,15 +1382,15 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			}
 
 			if(guide_highlighted){
-				Gtk::Menu* waypoint_menu(manage(new Gtk::Menu()));
-				waypoint_menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), waypoint_menu));
+				Gtk::Menu* guide_menu(manage(new Gtk::Menu()));
+				guide_menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), guide_menu));
 				Gtk::MenuItem *item = manage(new Gtk::MenuItem(_("_Edit Guide")));
 				item->set_use_underline(true);
 				item->show();
 				item->signal_activate().connect(
 						sigc::mem_fun(guide_dialog,&Gtk::Widget::show));
-				waypoint_menu->append(*item);
-				waypoint_menu->popup(3, gtk_get_current_event_time());
+				guide_menu->append(*item);
+				guide_menu->popup(3, gtk_get_current_event_time());
 				guide_dialog.set_current_guide_and_init(curr_guide);
 				return true;
 			}
@@ -1545,7 +1545,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			double y(event->button.y), x(event->button.x);
 
 			// Erase the guides if dragged into the rulers
-			if(!std::isnan(x) && (x<0.0 || y<0.0))
+			if((!std::isnan(x) && x<0.0) || (!std::isnan(y) && y<0.0))
 				get_guide_list().erase(curr_guide);
 
 			drawing_area->queue_draw();

@@ -851,20 +851,11 @@ Duckmatic::snap_point_to_grid(const synfig::Point& x)const
 		Point snap(
 			floor(ret[0]/get_grid_size()[0]+0.5)*get_grid_size()[0],
 			floor(ret[1]/get_grid_size()[1]+0.5)*get_grid_size()[1]);
-		if ( !has_guide || guide->angle == synfig::Angle::deg(90) || guide->angle == synfig::Angle::deg(0)) {
-			if(std::fabs(snap[0]-ret[0])<=radius && (!has_guide || (guide->angle == synfig::Angle::deg(90) &&
-													 std::fabs(snap[0]-ret[0])<=std::fabs((guide->point)[0]-ret[0]))))
-				ret[0]=snap[0],has_guide=false;
-			if(std::fabs(snap[1]-ret[1])<=radius && (!has_guide || (guide->angle == synfig::Angle::deg(0) &&
-													 std::fabs(snap[1]-ret[1])<=std::fabs((guide->point)[1]-ret[1]))))
-				ret[1]=snap[1],has_guide=false;
-		} else {
-			float distance_from_grid = pow( pow( snap[1] - ret[1], 2.0) + pow(snap[0] - ret[0] , 2.0), 0.5);
-			if ( distance_from_grid <= calculate_distance_from_guide(*guide, ret)){
-				ret = snap;
-				has_guide = false;
-			}
-		}
+		float distance_from_guide = calculate_distance_from_guide(*guide, ret);
+		if(std::fabs(snap[0]-ret[0])<=radius && (!has_guide || std::fabs(snap[0]-ret[0])<=distance_from_guide))
+			ret[0]=snap[0],has_guide=false;
+		if(std::fabs(snap[1]-ret[1])<=radius && (!has_guide || std::fabs(snap[1]-ret[1])<=distance_from_guide))
+			ret[1]=snap[1],has_guide=false;
 	}
 
 	if(guide_snap && has_guide)
