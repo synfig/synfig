@@ -1691,7 +1691,7 @@ Instance::add_special_layer_actions_to_menu(Gtk::Menu *menu, const synfigapp::Se
 		if(is_img(i->second))// check if layer is image
 		{
 			Gtk::MenuItem *item = manage(new Gtk::ImageMenuItem(Gtk::Stock::OPEN));
-			item->set_label( (String(_("Edit image in external tool..."))).c_str() );
+			item->set_label(_("Edit image in external tool..."));
 			item->signal_activate().connect(
 				sigc::bind(sigc::ptr_fun(&App::open_img_in_external), i->second) );
 			item->show();
@@ -1700,7 +1700,7 @@ Instance::add_special_layer_actions_to_menu(Gtk::Menu *menu, const synfigapp::Se
 		else
 		{
 			Gtk::MenuItem *item = manage(new Gtk::ImageMenuItem(Gtk::Stock::OPEN));
-			item->set_label( (String(_("Open file")) + " '" + i->first + "'").c_str() );
+			item->set_label(strprintf(_("Open file '%s'"), i->first.c_str()));
 			item->signal_activate().connect(
 				sigc::bind(sigc::ptr_fun(&App::open_uri), i->second) );
 			item->show();
@@ -1748,7 +1748,7 @@ Instance::add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup
 		//if the import layer is type image 
 		if(is_img(i->second))
 		{
-			String local_name = String(_("Edit image in external tool..."));
+			String local_name = _("Edit image in external tool...");
 			action_group->add(
 				Gtk::Action::create(
 					action_name,
@@ -1759,7 +1759,7 @@ Instance::add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup
 		}
 		else
 		{
-			String local_name = String(_("Open file")) + " '" + i->first + "'";
+			String local_name = strprintf(_("Open file '%s'"), i->first.c_str());
 			action_group->add(
 				Gtk::Action::create(
 					action_name,
