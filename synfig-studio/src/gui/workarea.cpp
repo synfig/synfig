@@ -621,7 +621,7 @@ WorkArea::load_meta_data()
 	while(!data.empty())
 	{
 		String::iterator iter(find(data.begin(),data.end(),' '));
-		String guide(data.begin(),iter);//this now contains the four things
+		String guide(data.begin(),iter);//this now contains the four items
 		std::vector<String> guide_components(4);
 		int i = 0;
 		for (auto character: guide){
@@ -1390,6 +1390,13 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				item->signal_activate().connect(
 						sigc::mem_fun(guide_dialog,&Gtk::Widget::show));
 				guide_menu->append(*item);
+				item = manage(new Gtk::MenuItem(_("_Delete")));
+				item->set_use_underline(true);
+				item->show();
+				item->signal_activate().connect(sigc::track_obj([this](){
+					get_guide_list().erase(this->curr_guide);
+				}, *this));
+				guide_menu->append(*item);
 				guide_menu->popup(3, gtk_get_current_event_time());
 				guide_dialog.set_current_guide_and_init(curr_guide);
 				return true;
@@ -1482,7 +1489,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 	        break;
 		}
 		case DRAG_GUIDE: {
-			if (curr_guide->isVertical) {//should then be replaced by checking current guides isVertical
+			if (curr_guide->isVertical) {
 				if((!rotate_guide && (synfig::Angle::deg(curr_guide->angle).get() == 90))){// case 1: unrotated ruler (vertical)
 					curr_guide->point[0] = mouse_pos[0];
 				} else if (!rotate_guide) { //case 2: rotated ruler being moved
@@ -1499,7 +1506,6 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				}
 			}
 			if(rotate_guide && !from_ruler_event) {// case: 3 ruler being rotated   ---- dont rotate if center of rotation isnt in screen
-								//update slope here while turining to allow a move right after a rotate before mouse release...
 								float slope = (mouse_pos[1] - curr_guide->point[1])/(mouse_pos[0] - curr_guide->point[0]);
 								//just change the angle of the ruler
 								curr_guide->angle = synfig::Angle::rad(atan(slope));
@@ -1821,7 +1827,7 @@ WorkArea::on_vruler_event(GdkEvent *event)
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	switch(event->type) {
 	case GDK_BUTTON_PRESS:
-			from_ruler_event = true;
+		from_ruler_event = true;
 		if (get_drag_mode() == DRAG_NONE && show_guides) {
 			set_drag_mode(DRAG_GUIDE);
 			curr_guide = get_guide_list().insert(get_guide_list().begin(),{synfig::Point(0 ,((1.0/2.0)*(drawing_area->get_window()->get_height())*get_ph())+ get_window_tl()[1]),
