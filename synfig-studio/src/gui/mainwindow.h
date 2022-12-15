@@ -71,6 +71,10 @@ namespace studio {
 		void add_custom_workspace_menu_item_handlers();
 		void remove_custom_workspace_menu_item_handlers();
 
+		static const std::vector<std::string> get_workspaces();
+
+		void save_custom_workspace();
+
 	protected:
 		virtual bool on_key_press_event(GdkEventKey *key_event);
 
@@ -83,6 +87,12 @@ namespace studio {
 
 		DockBook& main_dock_book() { return *main_dock_book_; }
 		const DockBook& main_dock_book() const { return *main_dock_book_; }
+
+		static void set_workspace_default();
+		static void set_workspace_compositing();
+		static void set_workspace_animating();
+		static void set_workspace_from_template(const std::string &tpl);
+		static void set_workspace_from_name(const std::string &name);
 
 		static void make_short_filenames(
 			const std::vector<synfig::String> &fullnames,
