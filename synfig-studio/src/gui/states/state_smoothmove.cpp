@@ -274,7 +274,7 @@ StateSmoothMove_Context::~StateSmoothMove_Context()
 
 
 
-DuckDrag_SmoothMove::DuckDrag_SmoothMove():radius(1.0f)
+DuckDrag_SmoothMove::DuckDrag_SmoothMove():radius(synfigapp::Main::get_selected_input_device()->settings().get_value("smooth_move.radius", 1.0))
 {
 }
 
