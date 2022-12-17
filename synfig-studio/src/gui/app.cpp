@@ -1705,7 +1705,7 @@ void App::init(const synfig::String& rootpath)
 			set_workspace_default();
 		if (!load_settings("workspace.layout"))
 			set_workspace_default();
-		load_file_window_size();
+		load_recent_files();
 
 		// Init Tools must be done after load_accel_map() : accelerators keys
 		// are displayed in toolbox labels
@@ -2087,29 +2087,25 @@ App::save_accel_map()
 }
 
 void
-App::load_file_window_size()
+App::load_recent_files()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+		std::string filename=get_config_file("recentfiles");
+		std::ifstream file(synfig::filesystem::Path(filename).c_str());
+
+		while(file)
 		{
-			std::string filename=get_config_file("recentfiles");
-			std::ifstream file(synfig::filesystem::Path(filename).c_str());
-
-			while(file)
-			{
-				std::string recent_file;
-				getline(file,recent_file);
-				if(!recent_file.empty() && FileSystemNative::instance()->is_file(recent_file))
-					add_recent_file(recent_file, false);
-			}
-			signal_recent_files_changed()();
+			std::string recent_file;
+			getline(file,recent_file);
+			if(!recent_file.empty() && FileSystemNative::instance()->is_file(recent_file))
+				add_recent_file(recent_file, false);
 		}
-
+		signal_recent_files_changed()();
 	}
 	catch(...)
 	{
-		synfig::warning("Caught exception when attempting to load window settings.");
+		synfig::warning("Caught exception when attempting to load recent file list.");
 	}
 }
 
