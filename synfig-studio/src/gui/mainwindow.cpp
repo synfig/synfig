@@ -44,6 +44,7 @@
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/dialogs/dialog_input.h>
+#include <gui/dialogs/dialog_workspaces.h>
 #include <gui/docks/dockable.h>
 #include <gui/docks/dockbook.h>
 #include <gui/docks/dockmanager.h>
@@ -65,6 +66,9 @@ using namespace studio;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+std::unique_ptr<studio::WorkspaceHandler> studio::MainWindow::workspaces = nullptr;
+static sigc::signal<void> signal_custom_workspaces_changed_;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -124,7 +128,7 @@ MainWindow::MainWindow(const Glib::RefPtr<Gtk::Application>& application)
 	App::signal_recent_files_changed().connect(
 		sigc::mem_fun(*this, &MainWindow::on_recent_files_changed) );
 
-	App::signal_custom_workspaces_changed().connect(
+	signal_custom_workspaces_changed().connect(
 		sigc::mem_fun(*this, &MainWindow::on_custom_workspaces_changed) );
 
 	signal_delete_event().connect(
@@ -196,7 +200,7 @@ MainWindow::init_menus()
 	);
 
 	action_group->add( Gtk::Action::create("edit-workspacelist", _("Edit workspaces...")),
-		sigc::ptr_fun(App::edit_custom_workspace_list)
+		sigc::ptr_fun(MainWindow::edit_custom_workspace_list)
 	);
 
 	//animation tabs
@@ -307,8 +311,8 @@ const std::vector<std::string>
 MainWindow::get_workspaces()
 {
 	std::vector<std::string> list;
-	if (App::get_workspace_handler())
-		App::get_workspace_handler()->get_name_list(list);
+	if (workspaces)
+		workspaces->get_name_list(list);
 	return list;
 }
 
@@ -554,10 +558,10 @@ MainWindow::set_workspace_from_template(const std::string& tpl)
 void
 MainWindow::set_workspace_from_name(const std::string& name)
 {
-	if (!App::get_workspace_handler())
+	if (!workspaces)
 		return;
 	std::string tpl;
-	bool ok = App::get_workspace_handler()->get_workspace(name, tpl);
+	bool ok = workspaces->get_workspace(name, tpl);
 	if (!ok)
 		return;
 	set_workspace_from_template(tpl);
@@ -566,7 +570,7 @@ MainWindow::set_workspace_from_name(const std::string& name)
 void
 MainWindow::save_custom_workspace()
 {
-	if (!App::dock_manager || !App::get_workspace_handler()) {
+	if (!App::dock_manager || !workspaces) {
 		Gtk::MessageDialog dialog(*this, _("Internal error: Dock Manager or Workspace Handler not set"), false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_NONE, true);
 		return;
 	}
@@ -603,7 +607,6 @@ MainWindow::save_custom_workspace()
 	std::string name = synfig::trim(name_entry->get_text());
 
 	std::string tpl = App::dock_manager->save_layout_to_string();
-	WorkspaceHandler* workspaces = App::get_workspace_handler();
 	if (!workspaces->has_workspace(name))
 		workspaces->add_workspace(name, tpl);
 	else {
@@ -612,6 +615,45 @@ MainWindow::save_custom_workspace()
 			return;
 		workspaces->set_workspace(name, tpl);
 	}
+}
+
+void
+MainWindow::load_custom_workspaces()
+{
+	if (!workspaces) {
+		workspaces = std::unique_ptr<WorkspaceHandler>(new WorkspaceHandler());
+		workspaces->signal_list_changed().connect( sigc::mem_fun(signal_custom_workspaces_changed_, &sigc::signal<void>::emit) );
+	}
+	workspaces->clear();
+	std::string filename = App::get_config_file("workspaces");
+	workspaces->load(filename);
+}
+
+void
+MainWindow::save_custom_workspaces()
+{
+	if (workspaces) {
+		std::string filename = App::get_config_file("workspaces");
+		workspaces->save(filename);
+	}
+}
+
+sigc::signal<void>&
+MainWindow::signal_custom_workspaces_changed()
+{
+	return signal_custom_workspaces_changed_;
+}
+
+void
+MainWindow::edit_custom_workspace_list()
+{
+	Dialog_Workspaces* dlg = Dialog_Workspaces::create(*App::main_window);
+	if (!dlg) {
+		synfig::warning("Can't load Dialog_Workspaces");
+		return;
+	}
+	dlg->run();
+	delete dlg;
 }
 
 void

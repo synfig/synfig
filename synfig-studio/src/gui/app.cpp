@@ -82,7 +82,6 @@
 #include <gui/dialogs/dialog_gradient.h>
 #include <gui/dialogs/dialog_input.h>
 #include <gui/dialogs/dialog_setup.h>
-#include <gui/dialogs/dialog_workspaces.h>
 #include <gui/dialogs/vectorizersettings.h>
 
 #include <gui/docks/dialog_tooloptions.h>
@@ -134,7 +133,6 @@
 #include <gui/states/state_zoom.h>
 
 #include <gui/widgets/widget_enum.h>
-#include <gui/workspacehandler.h>
 
 #include <ETL/stringf>
 
@@ -196,13 +194,6 @@ App::signal_present_all() { return signal_present_all_; }
 static sigc::signal<void> signal_recent_files_changed_;
 sigc::signal<void>&
 App::signal_recent_files_changed() { return signal_recent_files_changed_; }
-
-static sigc::signal<void> signal_custom_workspaces_changed_;
-sigc::signal<void>&
-App::signal_custom_workspaces_changed()
-{
-	return signal_custom_workspaces_changed_;
-}
 
 static sigc::signal<void,etl::loose_handle<CanvasView> > signal_canvas_view_focus_;
 sigc::signal<void,etl::loose_handle<CanvasView> >&
@@ -318,8 +309,6 @@ SoundProcessor *App::sound_render_done = nullptr;
 bool App::use_render_done_sound = true;
 
 static StateManager* state_manager;
-
-studio::WorkspaceHandler *studio::App::workspaces = nullptr;
 
 static bool
 really_delete_widget(Gtk::Widget *widget)
@@ -1682,9 +1671,7 @@ void App::init(const synfig::String& rootpath)
 		dialog_input->signal_apply().connect( sigc::mem_fun( *device_tracker, &DeviceTracker::save_preferences) );
 
 		studio_init_cb.task(_("Loading Custom Workspace List..."));
-		workspaces = new WorkspaceHandler();
-		workspaces->signal_list_changed().connect( sigc::mem_fun(signal_custom_workspaces_changed_, &sigc::signal<void>::emit) );
-		load_custom_workspaces();
+		MainWindow::load_custom_workspaces();
 
 		studio_init_cb.task(_("Init auto recovery..."));
 		auto_recover=new AutoRecover();
@@ -1858,8 +1845,6 @@ App::on_shutdown()
 
 	delete dock_manager;
 
-	delete workspaces;
-
 	instance_list.clear();
 
 	if (sound_render_done) delete sound_render_done;
@@ -2018,10 +2003,7 @@ App::save_settings()
 		std::string filename=get_config_file("settings-1.4");
 		synfigapp::Main::settings().save_to_file(filename);
 
-		{
-			std::string filename = get_config_file("workspaces");
-			workspaces->save(filename);
-		}
+		MainWindow::save_custom_workspaces();
 	}
 	catch(...)
 	{
@@ -2124,24 +2106,6 @@ App::load_language_settings()
 	{
 		synfig::warning("Caught exception when attempting to loading language settings.");
 	}
-}
-
-void App::load_custom_workspaces()
-{
-	workspaces->clear();
-	std::string filename = get_config_file("workspaces");
-	workspaces->load(filename);
-}
-
-void App::edit_custom_workspace_list()
-{
-	Dialog_Workspaces * dlg = Dialog_Workspaces::create(*App::main_window);
-	if (!dlg) {
-		synfig::warning("Can't load Dialog_Workspaces");
-		return;
-	}
-	dlg->run();
-	delete dlg;
 }
 
 void
