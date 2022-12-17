@@ -504,8 +504,8 @@ public:
 			}
 			if(key=="animation_thumbnail_preview")
 			{
-			        value=strprintf("%i",(int)App::animation_thumbnail_preview);
-			        return true;
+				value=strprintf("%i",(int)App::animation_thumbnail_preview);
+				return true;
 			}
 			if(key=="enable_experimental_features")
 			{
@@ -588,7 +588,7 @@ public:
 			}
 			if (key == "default_background_layer_type")
 			{
-                value = strprintf("%s", App::default_background_layer_type.c_str());
+				value = strprintf("%s", App::default_background_layer_type.c_str());
 				return true;
 			}
 			if (key == "default_background_layer_color")
@@ -692,9 +692,9 @@ public:
 			}
 			if(key=="animation_thumbnail_preview")
 			{
-			        int i(atoi(value.c_str()));
-			        App::animation_thumbnail_preview=i;
-			        return true;
+				int i(atoi(value.c_str()));
+				App::animation_thumbnail_preview=i;
+				return true;
 			}
 			if(key=="enable_experimental_features")
 			{
@@ -1487,7 +1487,7 @@ void App::init(const synfig::String& rootpath)
 	String path_to_plugins = ResourceHelper::get_plugin_path();
 
 	String path_to_user_plugins = synfigapp::Main::get_user_app_directory() + "/plugins";
-	
+
 	ui_interface_=new GlobalUIInterface();
 
 	// don't call thread_init() if threads are already initialized
@@ -1496,7 +1496,7 @@ void App::init(const synfig::String& rootpath)
 	//	Glib::thread_init();
 
 	distance_system=Distance::SYSTEM_PIXELS;
-	
+
 #ifdef _WIN32
 	// Do not show "No disc in drive" errors
 	// - https://github.com/synfig/synfig/issues/489
@@ -1727,7 +1727,7 @@ void App::init(const synfig::String& rootpath)
 		/* bline tools */
 		state_manager->add_state(&state_bline);
 		if(!getenv("SYNFIG_DISABLE_DRAW"   )) state_manager->add_state(&state_draw ); // Enabled for now.  Let's see whether they're good enough yet.
-                state_manager->add_state(&state_lasso); // Enabled for now.  Let's see whether they're good enough yet.
+		state_manager->add_state(&state_lasso);
 		if(!getenv("SYNFIG_DISABLE_WIDTH"  )) state_manager->add_state(&state_width); // Enabled since 0.61.09
 		state_manager->add_state(&state_fill);
 		state_manager->add_state(&state_eyedrop);
@@ -1873,7 +1873,7 @@ App::on_shutdown()
 
 	if (sound_render_done) delete sound_render_done;
 	sound_render_done = nullptr;
-	
+
 	process_all_events();
 	delete main_window;
 }
@@ -2395,7 +2395,7 @@ App::quit()
 	if (shutdown_in_progress) return;
 
 	get_ui_interface()->task(_("Quit Request"));
-	
+
 	if(Busy::count)
 	{
 		dialog_message_1b(
@@ -2618,7 +2618,7 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 {
 	std::vector<std::string> filenames;
 	if (!filename.empty())
-        filenames.push_back(filename);
+		filenames.push_back(filename);
 	if(dialog_open_file_ext(title, filenames, preference, false)) {
 		filename = filenames.front();
 		return true;
@@ -2860,7 +2860,7 @@ App::dialog_open_file_image_sequence(const std::string &title, std::set<synfig::
 	filter_any->set_name(_("Any files"));
 	filter_any->add_pattern("*");
 	dialog->add_filter(filter_any);
-	
+
 	dialog->set_extra_widget(*scale_imported_box());
 
 	std::string filename = filenames.empty() ? std::string() : *filenames.begin();
@@ -3249,10 +3249,10 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 	_preferences.set_value(preference, dirname(filename));
 	delete dialog;
 	return true;
-    }
+	}
 
-    delete dialog;
-    return false;
+	delete dialog;
+	return false;
 #endif
 }
 
@@ -3280,9 +3280,8 @@ App::dialog_export_file(const std::string &title, std::string &filename, std::st
 
 	if (filename.empty()) {
 		dialog->set_filename(prev_path);
-
 	} else {
-        dialog->set_current_name(filename_sans_extension(basename(filename)));
+		dialog->set_current_name(filename_sans_extension(basename(filename)));
 	}
 
 	// set focus to the file name entry(box) of dialog instead to avoid the name
@@ -3306,10 +3305,10 @@ App::dialog_export_file(const std::string &title, std::string &filename, std::st
 				return exporter.id;
 			}
 		}
-    }
+	}
 
-    delete dialog;
-    return {};
+	delete dialog;
+	return {};
 }
 
 bool
@@ -4152,8 +4151,8 @@ App::new_instance()
 
 	handle<Instance> instance = Instance::create(canvas, container);
 
-    if (App::default_background_layer_type == "solid_color")
-    {
+	if (App::default_background_layer_type == "solid_color")
+	{
 		//Create a SolidColor layer
 		synfig::Layer::Handle layer(instance->find_canvas_interface(canvas)->add_layer_to("SolidColor",
 			                        canvas,
@@ -4356,7 +4355,7 @@ App::set_selected_instance(etl::loose_handle<Instance> instance)
 {
 	if (selected_instance == instance)
 		return;
-	
+
 	if (get_selected_canvas_view() && get_selected_canvas_view()->get_instance() != instance) {
 		if (instance) {
 			instance->focus( instance->get_canvas() );
@@ -4374,7 +4373,7 @@ App::set_selected_canvas_view(etl::loose_handle<CanvasView> canvas_view)
 {
 	if (selected_canvas_view == canvas_view)
 		return;
-	
+
 	etl::loose_handle<CanvasView> prev = selected_canvas_view;
 	etl::loose_handle<Instance> prev_instance = selected_instance;
 
@@ -4445,19 +4444,19 @@ studio::App::scale_imported_box()
 	Gtk::Box *box = manage(new Gtk::Box);
 	Gtk::Label *label_resize = manage(new Gtk::Label(_("Scale to fit Canvas")));
 	Gtk::Switch *toggle_resize = manage(new Gtk::Switch);
-	
+
 	label_resize->set_margin_end(5);
 	toggle_resize->set_valign(Gtk::ALIGN_CENTER);
 	toggle_resize->set_active(App::resize_imported_images);
-	
+
 	toggle_resize->property_active().signal_changed().connect(
 		sigc::mem_fun(*App::dialog_setup, &studio::Dialog_Setup::on_resize_imported_changed));
-	
+
 	box->pack_start(*label_resize, false, false);
 	box->pack_end(*toggle_resize, false, false);
 	box->set_tooltip_text(_("Check this to scale imported images to Canvas size"));
 	box->show_all();
-	
+
 	return box;
 }
 
