@@ -85,13 +85,15 @@ webp_trgt::webp_trgt( const char *Filename, const synfig::TargetParam &params ):
 	preset     (params.preset  )  //"default"
 {
 	// Set default video codec if it wasn't given.
-	if (params.video_codec == "none")
+	if (    params.video_codec != "libwebp_anim"
+	     && params.video_codec != "libwebp"
+	   )
 		video_codec = "libwebp_anim";
 	else
 		video_codec = params.video_codec;
 
 	if (does_video_codec_support_alpha_channel( video_codec ))
-		set_alpha_mode( TARGET_ALPHA_MODE_KEEP);
+		set_alpha_mode( TARGET_ALPHA_MODE_KEEP );
 	else
 		set_alpha_mode( TARGET_ALPHA_MODE_FILL );
 }
