@@ -14,11 +14,7 @@ etl_HEADERS = \
 	stringf \
 	_stringf.h \
 	_handle.h \
-	$(top_builddir)/ETL/etl_profile.h \
-	boxblur \
-	_boxblur.h \
-	gaussian \
-	_gaussian.h
+	$(top_builddir)/ETL/etl_profile.h
 
 
 $(top_builddir)/ETL/etl_profile.h:$(top_builddir)/ETL/etl_profile_.h

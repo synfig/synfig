@@ -1,6 +1,5 @@
-/*! ========================================================================
-** Extended Template Library
-** \file _gaussian.h
+/* === S Y N F I G ========================================================= */
+/*! \file gaussian.h
 ** \brief Gaussian Blur Template Implementation
 ** \internal
 **
@@ -22,17 +21,13 @@
 ** You should have received a copy of the GNU General Public License
 ** along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 ** \endlegal
-**
-** \note
-** This is an internal header file, included by other ETL headers.
-** You should not attempt to use it directly.
-**
-** ========================================================================= */
+*/
+/* ========================================================================= */
 
 /* === S T A R T =========================================================== */
 
-#ifndef __ETL__GAUSSIAN_H
-#define __ETL__GAUSSIAN_H
+#ifndef SYNFIG_GAUSSIAN_H
+#define SYNFIG_GAUSSIAN_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -44,8 +39,18 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace etl {
+namespace synfig {
 
+/**
+ * 2D 5x5 pixel gaussian blur
+ * @param begin pen at the initial point
+ * @param w width of area to be blurred
+ * @param h height of area to be blurred
+ * @param SC0 empty array with (width + 2) elements, used for caching and avoiding repeated memory allocation
+ * @param SC1 empty array with (width + 2) elements, used for caching and avoiding repeated memory allocation
+ * @param SC2 empty array with (width + 2) elements, used for caching and avoiding repeated memory allocation
+ * @param SC3 empty array with (width + 2) elements, used for caching and avoiding repeated memory allocation
+*/
 template<typename T> void
 gaussian_blur_5x5_(T pen,int w, int h,
 typename T::pointer SC0,
@@ -103,16 +108,23 @@ typename T::pointer SC3)
 
 }
 
+/**
+ * 2D 3x3 pixel gaussian blur
+ * @param begin pen at the initial point
+ * @param w width of area to be blurred
+ * @param h height of area to be blurred
+ * @param SC0 empty array with (width + 1) elements, used for caching and avoiding repeated memory allocation
+ * @param SC1 empty array with (width + 1) elements, used for caching and avoiding repeated memory allocation
+ */
 template<typename T> void
-gaussian_blur_3x3(T pen,int w, int h)
+gaussian_blur_3x3(T pen,int w, int h, typename T::pointer SC0, typename T::pointer SC1)
 {
 	int x,y;
 	typename T::value_type Tmp1,Tmp2,SR0,SR1;
 
-	typename T::pointer SC0=new typename T::value_type[w+1];
-	typename T::pointer SC1=new typename T::value_type[w+1];
 
 	// Setup the row buffers
+	SC0[0] = typename T::value_type();
 	for(x=0;x<w;x++)SC0[x+1]=(pen.x()[x])*4;
 	memset((void *)SC1,0,(w+1)*sizeof(typename T::value_type));
 
@@ -145,19 +157,25 @@ gaussian_blur_3x3(T pen,int w, int h)
 		pen.dec_x(x);
 	}
 
-	delete [] SC0;
-	delete [] SC1;
 }
 
-//! 2D 3x3 pixel gaussian blur
+/**
+ * 2D 3x3 pixel gaussian blur
+ * @param begin pen at the initial point
+ * @param end pen at the final point
+ * @param SC0 empty array with (width + 1) elements, used for caching and avoiding repeated memory allocation
+ * @param SC1 empty array with (width + 1) elements, used for caching and avoiding repeated memory allocation
+ */
 template<typename _PEN> void
-gaussian_blur_3x3(_PEN begin, _PEN end)
+gaussian_blur_3x3(_PEN begin, _PEN end, typename _PEN::pointer SC0, typename _PEN::pointer SC1)
 {
 	typename _PEN::difference_type size(end-begin);
-	gaussian_blur_3x3(begin,size.x,size.y);
+	gaussian_blur_3x3(begin,size.x,size.y, SC0, SC1);
 }
 
-//! 1D 3 pixel gaussian blur
+/**
+ * 1D 3 pixel gaussian blur
+ */
 template<typename I> void
 gaussian_blur_3(I begin, I end, bool endpts = true)
 {
@@ -193,4 +211,4 @@ gaussian_blur_3(I begin, I end, bool endpts = true)
 
 /* === E N D =============================================================== */
 
-#endif
+#endif // SYNFIG_GAUSSIAN_H

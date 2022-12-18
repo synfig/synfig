@@ -27,8 +27,8 @@
 
 #include <memory>
 
+#include <synfig/blur/boxblur.h>
 #include <synfig/pen.h>
-#include <ETL/boxblur>
 
 /* === M A C R O S ========================================================= */
 
@@ -417,19 +417,19 @@ int box_blur_test(void)
 	pen2.move(w,h);
 
 	//temporary
-	etl::vbox_blur(pen,pen2,2,pen3);
+	vbox_blur(pen,pen2,2,pen3);
 	printf("\n VBLUR ONLY:\n");
 	display_pen(pen3,w,h);
 
 //	box_blur(pen,w,h,4);
-	etl::hbox_blur(pen,pen2,2,pen3);
+	hbox_blur(pen,pen2,2,pen3);
 
 	printf("\n HBLUR ONLY:\n");
 	display_pen(pen3,w,h);
 
 	pen2=pen3;
 	pen2.move(w,h);
-	etl::vbox_blur(pen3,pen2,2,pen);
+	vbox_blur(pen3,pen2,2,pen);
 
 	printf("\nAFTER BOX BLUR:\n");
 
