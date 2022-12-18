@@ -106,9 +106,9 @@ imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &re
 
 	args.push_back(strprintf("png32:%s", target_filename.c_str()));
 
-	bool success = OS::run_sync("convert", args);
+	bool success = OS::run_sync("magick", args);
 	if (!success) {
-		synfig::error(_("Unable to open convert [ImageMagick]"));
+		synfig::error(_("Unable to open magick [ImageMagick]"));
 		return false;
 	}
 
