@@ -954,7 +954,7 @@ bool Widget_Timetrack::fetch_waypoints(const WaypointItem &wi, std::set<synfig::
 			node = value_desc.get_canvas();
 
 		if (node)
-			synfig::waypoint_collect(waypoint_set, wi.time_point.get_time(), node);
+			synfig::waypoint_collect(waypoint_set, wi.time_point.get_time(), node, true);
 
 		return node;
 	} catch (std::out_of_range& ex) {

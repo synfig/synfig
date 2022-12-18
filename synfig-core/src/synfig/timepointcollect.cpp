@@ -58,7 +58,8 @@ using namespace synfig;
 int
 synfig::waypoint_collect(std::set<Waypoint, std::less<UniqueID> >	&waypoint_set,
 						 const Time								&time,
-						 const etl::handle<Node>				&node)
+						 const etl::handle<Node>				&node,
+                         bool ignore_dynamic_parameters)
 {
 	const TimePointSet& timepoint_set(node->get_times());
 
@@ -88,7 +89,7 @@ synfig::waypoint_collect(std::set<Waypoint, std::less<UniqueID> >	&waypoint_set,
 		Layer::DynamicParamList::const_iterator iter;
 		int ret(0);
 		etl::handle<Layer_PasteCanvas> p = etl::handle<Layer_PasteCanvas>::cast_dynamic(layer);
-		if (!p){
+		if (!p || !ignore_dynamic_parameters){
 			for(iter=dyn_param_list.begin();iter!=dyn_param_list.end();++iter)
 				ret+=waypoint_collect(waypoint_set,time,iter->second);
 		}
@@ -114,7 +115,7 @@ synfig::waypoint_collect(std::set<Waypoint, std::less<UniqueID> >	&waypoint_set,
 		Canvas::const_iterator iter;
 		int ret(0);
 		for(iter=canvas->begin();iter!=canvas->end();++iter)
-			ret+=waypoint_collect(waypoint_set,time,*iter);
+			ret+=waypoint_collect(waypoint_set,time,*iter, ignore_dynamic_parameters);
 		return ret;
 	}
 
