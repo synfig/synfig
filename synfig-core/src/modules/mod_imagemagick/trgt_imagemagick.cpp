@@ -126,6 +126,7 @@ imagemagick_trgt::start_frame(synfig::ProgressCallback *cb)
 		newfilename = filename;
 
 	OS::RunArgs args;
+	args.push_back({"convert"});
 	args.push_back({"-depth", "8"});
 	args.push_back({"-size", strprintf("%dx%d", desc.get_w(), desc.get_h())});
 	args.push_back(pixel_size(pf) == 4 ? "rgba:-[0]" : "rgb:-[0]");

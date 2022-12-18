@@ -99,6 +99,7 @@ imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &re
 	}
 
 	OS::RunArgs args;
+	args.push_back("convert");
 	args.push_back(filesystem::Path(filename));
 
 	if (filename_extension == ".psd" || filename_extension == ".xcf")
