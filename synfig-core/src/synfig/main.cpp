@@ -547,7 +547,7 @@ synfig::get_binary_path(const String &fallback_path)
 	if (start_pos != std::string::npos)
 		result.replace(start_pos, artifact.length(), "/");
 	
-#elif !defined(__OpenBSD__)
+#else
 
 	size_t buf_size = PATH_MAX - 1;
 	char* path = (char*)malloc(buf_size);
@@ -557,9 +557,17 @@ synfig::get_binary_path(const String &fallback_path)
 	FILE *f;
 
 	/* Read from /proc/self/exe (symlink) */
-	//char* path2 = (char*)malloc(buf_size);
 	char* path2 = new char[buf_size];
-	strncpy(path2, "/proc/self/exe", buf_size - 1);
+	const char* procfs_path =
+#if defined(__FreeBSD__) || defined (__DragonFly__) || defined (__OpenBSD__)
+		"/proc/curproc/file";
+#elif defined(__NetBSD__)
+		"/proc/curproc/exe";
+#else
+		"/proc/self/exe";
+#endif
+
+	strncpy(path2, procfs_path, buf_size - 1);
 
 	while (1) {
 		int i;
@@ -594,9 +602,9 @@ synfig::get_binary_path(const String &fallback_path)
 		strncpy(path, path2, buf_size - 1);
 	}
 	
-	//free(path2);
 	delete[] path2;
 
+#if ! (defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined (__OpenBSD__))
 	if (result == "")
 	{
 		/* readlink() or stat() failed; this can happen when the program is
@@ -638,7 +646,7 @@ synfig::get_binary_path(const String &fallback_path)
 		free(line);
 		fclose(f);
 	}
-	
+#endif
 	free(path);
 
 	result = Glib::filename_to_utf8(result);
