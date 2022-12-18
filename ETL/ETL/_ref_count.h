@@ -58,32 +58,47 @@ public:
 	typedef std::atomic<int> counter_type;
 
 private:
-	counter_type *counter;
+	counter_type* counter;
 
 public:
-	explicit reference_counter(const bool &x = true):
-		counter()
-		{ if (x) reset(); }
-	reference_counter(const reference_counter &x):
-		reference_counter(false)
-		{ *this = x; }
-	~reference_counter() { detach(); }
+	explicit reference_counter(const bool& x = true)
+		: counter(nullptr)
+	{
+		if (x)
+			reset();
+	}
+	reference_counter(const reference_counter& x)
+		: counter(nullptr)
+	{
+		*this = x;
+	}
+	~reference_counter()
+	{
+		detach();
+	}
 
-	void reset() {
+	void
+	reset()
+	{
 		detach();
 		counter = new counter_type(1);
 	}
 
-	void detach() {
+	void
+	detach()
+	{
 		if (counter) {
 			int count = --(*counter);
 			assert(count >= 0);
-			if (count <= 0) delete counter;
-			counter = 0;
+			if (count <= 0)
+				delete counter;
+			counter = nullptr;
 		}
 	}
 
-	reference_counter& operator=(const reference_counter &other) {
+	reference_counter&
+	operator=(const reference_counter& other)
+	{
 		if (other.counter != counter) {
 			detach();
 			if (other.counter) {
@@ -95,8 +110,7 @@ public:
 		return *this;
 	}
 
-
-	int count() const { return counter ? (int)*counter: 0; }
+	int count() const { return counter ? static_cast<int>(*counter) : 0; }
 	bool unique() const { return count() == 1; }
 	operator int() const { return count(); }
 }; // END of class reference_counter
