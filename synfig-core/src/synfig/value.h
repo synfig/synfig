@@ -106,7 +106,7 @@ public:
 	//! Template constructor for any type
 	template <typename T>
 	ValueBase(const T &x, bool loop_=false, bool static_=false):
-		type(&type_nil),data(nullptr),ref_count(0),loop_(loop_), static_(static_),
+		type(&type_nil),data(nullptr),ref_count(false),loop_(loop_), static_(static_),
 		interpolation_(INTERPOLATION_UNDEFINED)
 	{
 #ifdef INITIALIZE_TYPE_BEFORE_USE
@@ -117,7 +117,7 @@ public:
 
 	template <typename T>
 	ValueBase(const std::vector<T> &x, bool loop_=false, bool static_=false):
-		type(&type_nil),data(nullptr),ref_count(0),loop_(loop_), static_(static_),
+		type(&type_nil),data(nullptr),ref_count(false),loop_(loop_), static_(static_),
 		interpolation_(INTERPOLATION_UNDEFINED)
 	{
 #ifdef INITIALIZE_TYPE_BEFORE_USE
