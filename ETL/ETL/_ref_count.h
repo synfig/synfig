@@ -61,7 +61,7 @@ private:
 	counter_type* counter;
 
 public:
-	explicit reference_counter(const bool& x = true)
+	explicit reference_counter(bool x = true)
 		: counter(nullptr)
 	{
 		if (x)
