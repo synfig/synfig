@@ -284,7 +284,8 @@ private:
 	Gtk::ToolButton *refreshbutton;
 	Gtk::ComboBoxText *render_combobox;
 	Gtk::Grid *timebar;
-	Gtk::Toolbar *displaybar;
+	Gtk::Toolbar *top_toolbar;
+	Gtk::Toolbar *right_toolbar;
 	Widget_Enum *widget_interpolation;
 	Gtk::ToggleButton *animatebutton;
 	Gtk::ToggleButton *timetrackbutton;
