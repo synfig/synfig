@@ -134,7 +134,7 @@ void Dialog_PasteOptions::set_value_nodes(const std::vector<ValueNode::LooseHand
 
 		std::vector<ValueNode::LooseHandle> dependencies;
 		for (auto w : value_node_list) {
-			if (w != value_node && value_node->is_descendant(w))
+			if (w != value_node && value_node->is_ancestor_of(w))
 				dependencies.push_back(w);
 		}
 
@@ -309,7 +309,7 @@ void Dialog_PasteOptions::rebuild_model()
 		iter->set_value(COLUMN_VALUENODE_POINTER, v.get());
 		iter->set_value(COLUMN_ORIGINAL_NAME, v->get_id());
 		iter->set_value(COLUMN_NAME, v->get_id());
-		iter->set_value(COLUMN_FILE_PATH, etl::strprintf("(%s)", v->get_root_canvas()->get_file_name().c_str()));
+		iter->set_value(COLUMN_FILE_PATH, strprintf("(%s)", v->get_root_canvas()->get_file_name().c_str()));
 		iter->set_value(COLUMN_VALUE_TYPE, get_tree_pixbuf(v->get_type()));
 		iter->set_value(COLUMN_COPY_OR_NOT, true);
 		iter->set_value(COLUMN_IS_EDITABLE, true);
@@ -360,7 +360,7 @@ void Dialog_PasteOptions::refresh_row_status(size_t row_index)
 		bool will_w_be_copied;
 		w_iter->get_value(COLUMN_COPY_OR_NOT, will_w_be_copied);
 		if (!will_w_be_copied) {
-			if (w->is_descendant(v)) {
+			if (w->is_ancestor_of(v)) {
 				linked_ascendent_value_nodes.push_back(w);
 			}
 		}
@@ -388,7 +388,7 @@ void Dialog_PasteOptions::refresh_row_status(size_t row_index)
 				names += w->get_id() + ", ";
 			}
 			names = names.substr(0, names.size()-2);
-			std::string msg = etl::strprintf(_("Some exported values depend on this one, and you chose to keep them linked to external file.\n"
+			std::string msg = strprintf(_("Some exported values depend on this one, and you chose to keep them linked to external file.\n"
                            "Therefore, this value must be linked too.\n"
                            "These are the values: %s"), names.c_str());
 			status_tooltip = msg;
@@ -413,7 +413,7 @@ void Dialog_PasteOptions::refresh_row_status(size_t row_index)
 				const char *format = _("There is an exported value with same name ('%s') whose value type is %s, "
 				                        "but you are trying to paste one whose value type is %s.\n"
 				                        "Please rename it or choose to link it or cancel the whole copying.");
-				status_tooltip = etl::strprintf(format,
+				status_tooltip = strprintf(format,
 												v->get_id().c_str(),
 												v->get_type().description.local_name.c_str(),
 												existent_vn->get_type().description.local_name.c_str());
@@ -422,7 +422,7 @@ void Dialog_PasteOptions::refresh_row_status(size_t row_index)
 				const char *format = _("There is an exported value with same name ('%s') whose value node type is %s, "
 				                       "but you are trying to paste one whose type is %s.\n"
 				                       "Please rename it or choose to link it or cancel the whole copying.");
-				status_tooltip = etl::strprintf(format,
+				status_tooltip = strprintf(format,
 												v->get_id().c_str(),
 												v->get_local_name().c_str(),
 												existent_vn->get_local_name().c_str());
