@@ -20,7 +20,7 @@
                 </item>
 
 <!-- Open Recent submenu -->
-                <submenu id="recent-file">
+                <submenu id="menu-recent-files">
                     <attribute name="label" translatable="yes">_Open Recent</attribute>
                 </submenu>
 
@@ -65,6 +65,10 @@
                 <item>
                     <attribute name="label" translatable="yes">_Import Sequence...</attribute>
                     <attribute name="action">app.import-sequence</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">Show _Dependencies...</attribute>
+                    <attribute name="action">doc.show-dependencies</attribute>
                 </item>
             </section>
             <section>
@@ -289,6 +293,10 @@
 			</section>
 			<section>
 						<item>
+							<attribute name="label" translatable="yes">_Show Ruler</attribute>
+							<attribute name="action">app.show-ruler</attribute>
+						</item>
+						<item>
 							<attribute name="label" translatable="yes">_Show Grid</attribute>
 							<attribute name="action">app.show-grid</attribute>
 	          				<attribute name="accel">numbersign</attribute>
@@ -378,9 +386,13 @@
 					<attribute name="action">app.options</attribute>
 					<attribute name="accel">F12</attribute>
 				</item>
+				<item>
+					<attribute name="label" translatable="yes">_Resize...</attribute>
+					<attribute name="action">app.resize-canvas</attribute>
+				</item>
 		</submenu>
 <!-- toolbox -->
-		<submenu id="toolbox">
+		<submenu id="menu-tools">
 			<attribute name="label" translatable="yes">_Toolbox</attribute>
                 <item>
                     <attribute name="label" translatable="yes">_Transform Tool</attribute>
@@ -569,7 +581,7 @@
                     </item>
                 </section>
 		</submenu>
-		<submenu id="plugins">
+		<submenu id="menu-plugins">
 			<attribute name="label" translatable="yes">_Plug-Ins</attribute>
 		</submenu>
 		<submenu id="menu-window">
@@ -590,6 +602,8 @@
 						    <attribute name="label" translatable="yes">_Animating</attribute>
 						    <attribute name="action">app.workspace-animating</attribute>
 						</item>
+					</section>
+					<section id="menu-window-custom-workspaces">
 					</section>
 					<section>
 						<item>
