@@ -169,18 +169,15 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	INIT_STOCK_ICON(undo, "action_doc_undo_icon." IMAGE_EXT, _("Undo"));
 
 	// Ghost Layers
-	// TODO: icon for ghost group
-	INIT_STOCK_ICON(layer_ghost_group, "layer_other_group_icon." IMAGE_EXT, _("Group Ghost"));
+	INIT_STOCK_ICON(layer_ghost_group, "layer_other_ghostgroup_icon." IMAGE_EXT, _("Group Ghost"));
 
 	INIT_STOCK_ICON(info, "info_icon." IMAGE_EXT, _("Info Tool"));
 	INIT_STOCK_ICON(group, "set_icon." IMAGE_EXT, _("Set"));
 
 	INIT_STOCK_ICON(duplicate, "duplicate_icon." IMAGE_EXT, _("Duplicate"));
 	INIT_STOCK_ICON(encapsulate, "group_icon." IMAGE_EXT, _("Group"));
-	// TODO: icon for 'Group Layer into Switch' action
 	INIT_STOCK_ICON(encapsulate_switch, "layer_other_switch_icon." IMAGE_EXT, _("Group into Switch"));
-	// TODO: icon for 'Group Layer into Filter' action
-	INIT_STOCK_ICON(encapsulate_filter, "layer_icon." IMAGE_EXT, _("Group into Filter"));
+	INIT_STOCK_ICON(encapsulate_filter, "layer_other_filtergroup_icon." IMAGE_EXT, _("Group into Filter"));
 	INIT_STOCK_ICON(select_all_child_layers, "select_all_child_layers_icon." IMAGE_EXT, _("Select All Child Layers"));
 
 	INIT_STOCK_ICON(clear_undo, "clear_undo_icon." IMAGE_EXT, _("Clear Undo Stack"));
@@ -421,6 +418,8 @@ studio::layer_icon_name(const synfig::String &layer)
 		return "layer_distortion_insideout_icon";
 	else if(layer=="noise_distort")
 		return "layer_distortion_noise_icon";
+	else if(layer=="skeleton_deformation")
+		return "layer_distortion_skeletondeformation_icon";
 	else if(layer=="spherize")
 		return "layer_distortion_spherize_icon";
 	else if(layer=="stretch")
@@ -487,10 +486,14 @@ studio::layer_icon_name(const synfig::String &layer)
 		return "layer_other_duplicate_icon";
 	else if(layer=="importimage" || layer=="import")
 		return "layer_other_importimage_icon";
+	else if(layer=="filter_group")
+		return "layer_other_filtergroup_icon";
 	else if(layer=="group" || layer=="PasteCanvas" || layer=="pastecanvas" || layer=="paste_canvas")
 		return "layer_other_group_icon";
 	else if(layer=="plant")
 		return "layer_other_plant_icon";
+	else if(layer=="freetime")
+		return "layer_other_freetime_icon";
 	else if(layer=="stroboscope")
 		return "layer_other_stroboscope_icon";
 	else if(layer=="skeleton")
@@ -520,8 +523,7 @@ studio::layer_icon_name(const synfig::String &layer)
 	else if(layer=="zoom")
 		return "layer_transform_scale_icon";
 	else if(layer=="ghost_group")
-		return "layer_other_group_icon";
-//		return "layer_ghost_group_icon"; // missing icon!
+		return "layer_other_ghostgroup_icon";
 	else
 		return "layer_icon";
 }

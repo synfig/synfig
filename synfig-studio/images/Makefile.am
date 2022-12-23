@@ -94,6 +94,7 @@ EXTRA_DIST = \
 	layer_distortion_curvewarp_icon.sif \
 	layer_distortion_insideout_icon.sif \
 	layer_distortion_noise_icon.sif \
+	layer_distortion_skeletondeformation_icon.sif \
 	layer_distortion_spherize_icon.sif \
 	layer_distortion_stretch_icon.sif \
 	layer_distortion_twirl_icon.sif \
@@ -123,12 +124,15 @@ EXTRA_DIST = \
 	layer_gradient_radial_icon.sif \
 	layer_gradient_spiral_icon.sif \
 	layer_other_duplicate_icon.sif \
+	layer_other_filtergroup_icon.sif \
 	layer_other_group_icon.sif \
+	layer_other_ghostgroup_icon.sif \
 	layer_other_plant_icon.sif \
 	layer_other_stroboscope_icon.sif \
 	layer_other_supersample_icon.sif \
 	layer_other_skeleton_icon.sif \
 	layer_other_sound_icon.sif \
+	layer_other_freetime_icon.sif \
 	layer_other_switch_icon.sif \
 	layer_other_text_icon.sif \
 	layer_other_timeloop_icon.sif \
@@ -199,6 +203,7 @@ EXTRA_DIST = \
 	navigator_icon.sif \
 	palette_icon.sif \
 	parameters_icon.sif \
+	sound_icon \
 	time_track_icon.sif \
 	\
 	utils_chain_link_icons.sif \
@@ -297,6 +302,7 @@ ICONS = \
 	layer_distortion_curvewarp_icon.$(EXT) \
 	layer_distortion_insideout_icon.$(EXT) \
 	layer_distortion_noise_icon.$(EXT) \
+	layer_distortion_skeletondeformation_icon.$(EXT) \
 	layer_distortion_spherize_icon.$(EXT) \
 	layer_distortion_stretch_icon.$(EXT) \
 	layer_distortion_twirl_icon.$(EXT) \
@@ -327,8 +333,11 @@ ICONS = \
 	layer_gradient_spiral_icon.$(EXT) \
 	layer_other_duplicate_icon.$(EXT) \
 	layer_other_importimage_icon.$(EXT) \
+	layer_other_filtergroup_icon.$(EXT) \
 	layer_other_group_icon.$(EXT) \
+	layer_other_ghostgroup_icon.$(EXT) \
 	layer_other_plant_icon.$(EXT) \
+	layer_other_freetime_icon.$(EXT) \
 	layer_other_stroboscope_icon.$(EXT) \
 	layer_other_supersample_icon.$(EXT) \
 	layer_other_skeleton_icon.$(EXT) \
@@ -405,6 +414,7 @@ ICONS = \
 	navigator_icon.$(EXT) \
 	palette_icon.$(EXT) \
 	parameters_icon.$(EXT) \
+	sound_icon.$(EXT) \
 	time_track_icon.$(EXT) \
 	\
 	utils_chain_link_on_icon.$(EXT) \
