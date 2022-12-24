@@ -41,7 +41,7 @@
                 </item>
                 <item>
                     <attribute name="label" translatable="yes">_Save All...</attribute>
-                    <attribute name="action">app.save-all</attribute>
+                    <attribute name="action">win.save-all</attribute>
                     <attribute name="accel">&lt;Control&gt;e</attribute>
                     <attribute name="icon">action_doc_saveall_icon</attribute>
                 </item>
@@ -171,7 +171,7 @@
 			<section>
 				<item>
 					<attribute name="label" translatable="yes">_Input Devices...</attribute>
-					<attribute name="action">app.input-devices</attribute>
+					<attribute name="action">win.input-devices</attribute>
 				</item>
 				<item>
 					<attribute name="label" translatable="yes">_Preferences...</attribute>
@@ -186,11 +186,11 @@
 			<section id="view-section-0">
 				<item>
 					<attribute name="label" translatable="yes">_Show Menubar</attribute>
-					<attribute name="action">app.show-menubar</attribute>
+					<attribute name="action">win.show-menubar</attribute>
 				</item>
 				<item>
 					<attribute name="label" translatable="yes">_Toolbar</attribute>
-					<attribute name="action">app.show-toolbar</attribute>
+					<attribute name="action">win.show-toolbar</attribute>
 				</item>
 			</section>
 			<section>
@@ -592,15 +592,15 @@
 					<section>
 						<item>
 						    <attribute name="label" translatable="yes">_Default</attribute>
-						    <attribute name="action">app.workspace-default</attribute>
+						    <attribute name="action">win.workspace-default</attribute>
 						</item>
 						<item>
 						    <attribute name="label" translatable="yes">_Compositing</attribute>
-						    <attribute name="action">app.workspace-compositing</attribute>
+						    <attribute name="action">win.workspace-compositing</attribute>
 						</item>
 						<item>
 						    <attribute name="label" translatable="yes">_Animating</attribute>
-						    <attribute name="action">app.workspace-animating</attribute>
+						    <attribute name="action">win.workspace-animating</attribute>
 						</item>
 					</section>
 					<section id="menu-window-custom-workspaces">
@@ -608,12 +608,12 @@
 					<section>
 						<item>
 						    <attribute name="label" translatable="yes">_Save Workspace...</attribute>
-						    <attribute name="action">app.save-workspace</attribute>
+						    <attribute name="action">win.save-workspace</attribute>
 						    <attribute name="icon">action_doc_saveas_icon</attribute>
 						</item>
 						<item>
 						    <attribute name="label" translatable="yes">_Edit Workspaces...</attribute>
-						    <attribute name="action">app.edit-workspacelist</attribute>
+						    <attribute name="action">win.edit-workspacelist</attribute>
 						</item>
 					</section>
 				</submenu>
