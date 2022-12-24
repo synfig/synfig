@@ -1,7 +1,12 @@
+## Version 1.4.4
+- [`0ab9d69`](https://github.com/synfig/synfig/commit/0ab9d69e4ce0b923d22185b2f6508b71ea7162cd) Merge PR ([#2445](https://github.com/synfig/synfig/issues/2445)): Fixed crash when using Draw tool (Fedora/Flatpak)
+- [`bb36171`](https://github.com/synfig/synfig/commit/bb361718bc6d061d010e5d6ab5bebeeaae59ad71) fix: Right-clicking a layer on a just opened file shows empty menu ([#2781](https://github.com/synfig/synfig/issues/2781))
+- [`e06c83f`](https://github.com/synfig/synfig/commit/e06c83fbdcf01e6c73d67321926a52cc92ebaa38) build(autotools): allow to compile release build with debug info ([#2838](https://github.com/synfig/synfig/issues/2838))
+- [`091ac5c`](https://github.com/synfig/synfig/commit/091ac5c820f3bc6c9db773bfdd8669cc3ae23eb0) Fixed messed up translations for Russian language
 ## Version 1.4.3
 - [`ac8b5e0`](https://github.com/synfig/synfig/commit/ac8b5e02e3ab36fd0f49708086837cc36be9de62) chore: Enabled some strings for translation ([#2768](https://github.com/synfig/synfig/issues/2768))
 - [`68d8a25`](https://github.com/synfig/synfig/commit/68d8a25c1e10905acd2b28ab23f255c08ed4615d) Fixed crash when deleting last waypoint ([#2587](https://github.com/synfig/synfig/issues/2587))
-- [`e23b229`](https://github.com/synfig/synfig/commit/e23b229208f2cc9e8b37c46857eeaf629b4d8e1a) gperf: improved file opening speed in Windows ([#2826](https://github.com/synfig/synfig/issues/2826))
+- [`e23b229`](https://github.com/synfig/synfig/commit/e23b229208f2cc9e8b37c46857eeaf629b4d8e1a) perf: improved file opening speed in Windows ([#2826](https://github.com/synfig/synfig/issues/2826))
 - [`3015a77`](https://github.com/synfig/synfig/commit/3015a77900d9aebb759dd907f5825c4d5e720903) fix: don't allow to Connect to exported value node if it has wrong type ([#2694](https://github.com/synfig/synfig/issues/2694))
 - [`3ea8fe6`](https://github.com/synfig/synfig/commit/3ea8fe60ec87a489a7dda3e0882222f339124dd2) Fixed issue with autosave not working when interval is set to 15 seconds. ([#2647](https://github.com/synfig/synfig/issues/2647))
 - [`2a11e92`](https://github.com/synfig/synfig/commit/2a11e920a6a8394184aaa3085d6150718657a451) fix regression: importing papagayo file didn't show the expected layers ([#2495](https://github.com/synfig/synfig/issues/2495))
@@ -12,6 +17,7 @@
 - [`3d47605`](https://github.com/synfig/synfig/commit/3d47605f69b0758397c0a2f69c2fd0c08089b2de) Make sure flags are correctly updated when setting renddesc or toggling ([#2463](https://github.com/synfig/synfig/issues/2463))
 - [`33cc306`](https://github.com/synfig/synfig/commit/33cc30613bf0586a5abe74decf787bbbf786a37a) Parameters and Timeline panels show the same row selected ([#2422](https://github.com/synfig/synfig/issues/2422))
 - [`83828f0`](https://github.com/synfig/synfig/commit/83828f0da7b5e6a72976eb298fa0eae9eab7f4e2) Revert changes for Panel Tabs made in [#2189](https://github.com/synfig/synfig/issues/2189) ([#2436](https://github.com/synfig/synfig/issues/2436))
+- [`27ea632`](https://github.com/synfig/synfig/commit/27ea632ec8b214ccdbc37034dcda563672010a1d) Usability tweaks ([#2189](https://github.com/synfig/synfig/issues/2189))
 - [`5e19882`](https://github.com/synfig/synfig/commit/5e19882b8cf3a0ea67de5c394e9f350b96d81a39) Enable "Link width and height" by default in Render Settings ([#2351](https://github.com/synfig/synfig/issues/2351))
 - [`87cc5d2`](https://github.com/synfig/synfig/commit/87cc5d28090b172eabdf7f92baaded3bd20cd01e) Apply action to all selected layers from pop-over menu ([#2352](https://github.com/synfig/synfig/issues/2352))
 - [`e6ae677`](https://github.com/synfig/synfig/commit/e6ae677cbea5a9e81b7ef9764576381625da4629) Dock widget shortcuts have priority over App Accels - fix [#1820](https://github.com/synfig/synfig/issues/1820) ([#1827](https://github.com/synfig/synfig/issues/1827))

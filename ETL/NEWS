@@ -1,3 +1,5 @@
+## Version 1.4.4
+- [`e06c83f`](https://github.com/synfig/synfig/commit/e06c83fbdcf01e6c73d67321926a52cc92ebaa38) build(autotools): allow to compile release build with debug info ([#2838](https://github.com/synfig/synfig/issues/2838))
 ## Version 1.4.3
 - [`b3b88c9`](https://github.com/synfig/synfig/commit/b3b88c9ad03d51ef2cf82b323eadd121429a9f33) ETL test: avoid clash between ETL::hermite and std::hermite ([#2547](https://github.com/synfig/synfig/issues/2547))
 - [`1f202d3`](https://github.com/synfig/synfig/commit/1f202d3cb9bc0149f8e28b555dc6d384fb4bc533) Merge PR ([#2399](https://github.com/synfig/synfig/issues/2399)): ETL cleanup: remove unused files and deprecated functions
