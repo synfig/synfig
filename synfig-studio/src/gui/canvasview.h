@@ -458,11 +458,6 @@ private:
 
 	void selected_layer_color_set(synfig::Color color);
 
-	void register_layer_type(synfig::Layer::Book::value_type &lyr,std::map<synfig::String,Gtk::Menu*>*);
-
-	//! Rebuilds the "new layer" menu
-	void build_new_layer_menu(Gtk::Menu &menu);
-
 	void decrease_low_res_pixel_size();
 	void increase_low_res_pixel_size();
 	void toggle_low_res_pixel_flag();
