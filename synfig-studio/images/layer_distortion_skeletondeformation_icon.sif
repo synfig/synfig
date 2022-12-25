@@ -7,7 +7,7 @@
   <meta name="background_second_color" content="0.650000 0.650000 0.650000"/>
   <meta name="background_size" content="15.000000 15.000000"/>
   <meta name="grid_color" content="0.500000 0.500000 0.500000"/>
-  <meta name="grid_show" content="0"/>
+  <meta name="grid_show" content="1"/>
   <meta name="grid_size" content="0.062500 0.062500"/>
   <meta name="grid_snap" content="1"/>
   <meta name="guide_color" content="0.000000 0.000000 0.000000"/>
@@ -2703,7 +2703,7 @@
       </layer>
     </canvas>
   </defs>
-  <layer type="group" active="true" exclude_from_rendering="false" version="0.3" desc="persona">
+  <layer type="group" active="true" exclude_from_rendering="false" version="0.3" desc="sombra">
     <param name="z_depth">
       <real value="0.0000000000"/>
     </param>
@@ -2785,7 +2785,7 @@
           <param name="bline">
             <bline type="bline_point" loop="true">
               <entry>
-                <composite guid="2B2695F9B05E58DA34B6217DE84905DF" type="bline_point">
+                <composite guid="4BF484B8B4E6E204380EE54CDA3BBA2E" type="bline_point">
                   <point>
                     <vector>
                       <x>-0.0000000382</x>
@@ -2830,7 +2830,7 @@
                 </composite>
               </entry>
               <entry>
-                <composite guid="72F513354192E688B21FDD6153F62E29" type="bline_point">
+                <composite guid="12270274452A5C56BEA71950618491D8" type="bline_point">
                   <point>
                     <vector>
                       <x>0.6874999404</x>
@@ -2875,7 +2875,7 @@
                 </composite>
               </entry>
               <entry>
-                <composite guid="16C9CE9BDEDC05229DA0B5F2F69F0881" type="bline_point">
+                <composite guid="761BDFDADA64BFFC911871C3C4EDB770" type="bline_point">
                   <point>
                     <vector>
                       <x>-0.0000000328</x>
@@ -2920,7 +2920,7 @@
                 </composite>
               </entry>
               <entry>
-                <composite guid="D7BE05DA7ECE9FE44C51FAA2D4866666" type="bline_point">
+                <composite guid="B76C149B7A76253A40E93E93E6F4D997" type="bline_point">
                   <point>
                     <vector>
                       <x>-0.6875000596</x>
@@ -2987,6 +2987,73 @@
             <integer value="1" static="true"/>
           </param>
         </layer>
+      </canvas>
+    </param>
+    <param name="time_dilation">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="time_offset">
+      <time value="0s"/>
+    </param>
+    <param name="children_lock">
+      <bool value="false"/>
+    </param>
+    <param name="outline_grow">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="z_range">
+      <bool value="false" static="true"/>
+    </param>
+    <param name="z_range_position">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="z_range_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="z_range_blur">
+      <real value="0.0000000000"/>
+    </param>
+  </layer>
+  <layer type="group" active="true" exclude_from_rendering="false" version="0.3" desc="persona">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="0" static="true"/>
+    </param>
+    <param name="origin">
+      <vector>
+        <x>0.0000000000</x>
+        <y>0.0000000000</y>
+      </vector>
+    </param>
+    <param name="transformation">
+      <composite type="transformation">
+        <offset>
+          <vector>
+            <x>0.0000000000</x>
+            <y>0.0000000000</y>
+          </vector>
+        </offset>
+        <angle>
+          <angle value="0.000000"/>
+        </angle>
+        <skew_angle>
+          <angle value="0.000000"/>
+        </skew_angle>
+        <scale>
+          <vector>
+            <x>1.0000000000</x>
+            <y>1.0000000000</y>
+          </vector>
+        </scale>
+      </composite>
+    </param>
+    <param name="canvas">
+      <canvas>
         <layer type="outline" active="true" exclude_from_rendering="false" version="0.3" desc="NewSpline043 Outline">
           <param name="z_depth">
             <real value="0.0000000000"/>
@@ -3257,7 +3324,7 @@
                 <composite guid="ACB1B705E95A56537037D914FA54AEB4" type="bline_point">
                   <point>
                     <vector>
-                      <x>0.5000000000</x>
+                      <x>0.4375000298</x>
                       <y>0.4375000000</y>
                     </vector>
                   </point>
@@ -3302,8 +3369,8 @@
                 <composite guid="AB1651E1478CE4E793242A3EACA57CD2" type="bline_point">
                   <point>
                     <vector>
-                      <x>0.6250000000</x>
-                      <y>0.0625000000</y>
+                      <x>0.6875000000</x>
+                      <y>-0.0625000000</y>
                     </vector>
                   </point>
                   <width>
@@ -3346,7 +3413,7 @@
             </bline>
           </param>
           <param name="width">
-            <real value="0.1250000000"/>
+            <real value="0.1875000000"/>
           </param>
           <param name="expand">
             <real value="0.0000000000"/>
@@ -3543,7 +3610,7 @@
             </bline>
           </param>
           <param name="width">
-            <real value="0.1250000000"/>
+            <real value="0.1875000000"/>
           </param>
           <param name="expand">
             <real value="0.0000000000"/>
@@ -3696,7 +3763,7 @@
                 <composite guid="66419ACC271AEEDD6CA7F19E4609F44E" type="bline_point">
                   <point>
                     <vector>
-                      <x>-0.4999999702</x>
+                      <x>-0.4374999702</x>
                       <y>0.4375000000</y>
                     </vector>
                   </point>
@@ -3741,8 +3808,8 @@
                 <composite guid="7519BDD59122B6941A55FA5EE25241DE" type="bline_point">
                   <point>
                     <vector>
-                      <x>-0.6250000000</x>
-                      <y>0.0625000000</y>
+                      <x>-0.6875000000</x>
+                      <y>-0.0625000000</y>
                     </vector>
                   </point>
                   <width>
@@ -3785,7 +3852,7 @@
             </bline>
           </param>
           <param name="width">
-            <real value="0.1250000000"/>
+            <real value="0.1875000000"/>
           </param>
           <param name="expand">
             <real value="0.0000000000"/>
@@ -3815,9 +3882,9 @@
           </param>
           <param name="color">
             <color>
-              <r>0.170138</r>
-              <g>0.353741</g>
-              <b>0.632043</b>
+              <r>0.671481</r>
+              <g>0.798014</g>
+              <b>0.946227</b>
               <a>1.000000</a>
             </color>
           </param>
@@ -4073,7 +4140,7 @@
                 <composite guid="46E928B91507AD56EA5DE59AC395F51D" type="bline_point">
                   <point>
                     <vector>
-                      <x>0.5000000000</x>
+                      <x>0.4375000298</x>
                       <y>0.4375000000</y>
                     </vector>
                   </point>
@@ -4118,8 +4185,8 @@
                 <composite guid="414ECE5DBBD11FE2094E16B09564277B" type="bline_point">
                   <point>
                     <vector>
-                      <x>0.6250000000</x>
-                      <y>0.0625000000</y>
+                      <x>0.6875000000</x>
+                      <y>-0.0625000000</y>
                     </vector>
                   </point>
                   <width>
@@ -4162,7 +4229,7 @@
             </bline>
           </param>
           <param name="width">
-            <real value="0.0312500000"/>
+            <real value="0.1250000000"/>
           </param>
           <param name="expand">
             <real value="0.0000000000"/>
@@ -4192,9 +4259,9 @@
           </param>
           <param name="color">
             <color>
-              <r>0.170138</r>
-              <g>0.353741</g>
-              <b>0.632043</b>
+              <r>0.671481</r>
+              <g>0.798014</g>
+              <b>0.946227</b>
               <a>1.000000</a>
             </color>
           </param>
@@ -4359,7 +4426,7 @@
             </bline>
           </param>
           <param name="width">
-            <real value="0.0312500000"/>
+            <real value="0.1250000000"/>
           </param>
           <param name="expand">
             <real value="0.0000000000"/>
@@ -4389,9 +4456,9 @@
           </param>
           <param name="color">
             <color>
-              <r>0.170138</r>
-              <g>0.353741</g>
-              <b>0.632043</b>
+              <r>0.671481</r>
+              <g>0.798014</g>
+              <b>0.946227</b>
               <a>1.000000</a>
             </color>
           </param>
@@ -4512,7 +4579,7 @@
                 <composite guid="79183A1C5758E90E35385D7282EA3B38" type="bline_point">
                   <point>
                     <vector>
-                      <x>-0.4999999702</x>
+                      <x>-0.4374999702</x>
                       <y>0.4375000000</y>
                     </vector>
                   </point>
@@ -4557,8 +4624,8 @@
                 <composite guid="6A401D05E160B14743CA56B226B18EA8" type="bline_point">
                   <point>
                     <vector>
-                      <x>-0.6250000000</x>
-                      <y>0.0625000000</y>
+                      <x>-0.6875000000</x>
+                      <y>-0.0625000000</y>
                     </vector>
                   </point>
                   <width>
@@ -4601,7 +4668,7 @@
             </bline>
           </param>
           <param name="width">
-            <real value="0.0312500000"/>
+            <real value="0.1250000000"/>
           </param>
           <param name="expand">
             <real value="0.0000000000"/>
@@ -4617,40 +4684,6 @@
           </param>
           <param name="homogeneous_width">
             <bool value="true"/>
-          </param>
-        </layer>
-        <layer type="circle" active="false" exclude_from_rendering="false" version="0.2" desc="Circle069">
-          <param name="z_depth">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="amount">
-            <real value="1.0000000000"/>
-          </param>
-          <param name="blend_method">
-            <integer value="0" static="true"/>
-          </param>
-          <param name="color">
-            <color>
-              <r>0.000000</r>
-              <g>0.000000</g>
-              <b>0.000000</b>
-              <a>1.000000</a>
-            </color>
-          </param>
-          <param name="radius">
-            <real value="0.2500000000"/>
-          </param>
-          <param name="feather">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="origin">
-            <vector>
-              <x>0.0000000000</x>
-              <y>0.7187500000</y>
-            </vector>
-          </param>
-          <param name="invert">
-            <bool value="false"/>
           </param>
         </layer>
       </canvas>
@@ -4720,7 +4753,7 @@
     </param>
     <param name="canvas">
       <canvas>
-        <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle072">
+        <layer type="group" active="true" exclude_from_rendering="false" version="0.3" desc="out">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -4729,122 +4762,6 @@
           </param>
           <param name="blend_method">
             <integer value="0" static="true"/>
-          </param>
-          <param name="color">
-            <color>
-              <r>0.000000</r>
-              <g>0.000000</g>
-              <b>0.000000</b>
-              <a>1.000000</a>
-            </color>
-          </param>
-          <param name="radius">
-            <real value="0.1250000000"/>
-          </param>
-          <param name="feather">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="origin">
-            <vector>
-              <x>-0.5000000000</x>
-              <y>0.4375000000</y>
-            </vector>
-          </param>
-          <param name="invert">
-            <bool value="false"/>
-          </param>
-        </layer>
-        <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle073">
-          <param name="z_depth">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="amount">
-            <real value="1.0000000000"/>
-          </param>
-          <param name="blend_method">
-            <integer value="0" static="true"/>
-          </param>
-          <param name="color">
-            <color>
-              <r>0.000000</r>
-              <g>0.000000</g>
-              <b>0.000000</b>
-              <a>1.000000</a>
-            </color>
-          </param>
-          <param name="radius">
-            <real value="0.1250000000"/>
-          </param>
-          <param name="feather">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="origin">
-            <vector>
-              <x>0.5000000000</x>
-              <y>0.4375000000</y>
-            </vector>
-          </param>
-          <param name="invert">
-            <bool value="false"/>
-          </param>
-        </layer>
-        <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle074">
-          <param name="z_depth">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="amount">
-            <real value="1.0000000000"/>
-          </param>
-          <param name="blend_method">
-            <integer value="0" static="true"/>
-          </param>
-          <param name="color">
-            <color>
-              <r>0.000000</r>
-              <g>0.000000</g>
-              <b>0.000000</b>
-              <a>1.000000</a>
-            </color>
-          </param>
-          <param name="radius">
-            <real value="0.1250000000"/>
-          </param>
-          <param name="feather">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="origin">
-            <vector>
-              <x>0.0000000000</x>
-              <y>0.4375000000</y>
-            </vector>
-          </param>
-          <param name="invert">
-            <bool value="false"/>
-          </param>
-        </layer>
-        <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle075">
-          <param name="z_depth">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="amount">
-            <real value="1.0000000000"/>
-          </param>
-          <param name="blend_method">
-            <integer value="0" static="true"/>
-          </param>
-          <param name="color">
-            <color>
-              <r>0.000000</r>
-              <g>0.000000</g>
-              <b>0.000000</b>
-              <a>1.000000</a>
-            </color>
-          </param>
-          <param name="radius">
-            <real value="0.1250000000"/>
-          </param>
-          <param name="feather">
-            <real value="0.0000000000"/>
           </param>
           <param name="origin">
             <vector>
@@ -4852,11 +4769,432 @@
               <y>0.0000000000</y>
             </vector>
           </param>
-          <param name="invert">
+          <param name="transformation">
+            <composite type="transformation">
+              <offset>
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </offset>
+              <angle>
+                <angle value="0.000000"/>
+              </angle>
+              <skew_angle>
+                <angle value="0.000000"/>
+              </skew_angle>
+              <scale>
+                <vector>
+                  <x>1.0000000000</x>
+                  <y>1.0000000000</y>
+                </vector>
+              </scale>
+            </composite>
+          </param>
+          <param name="canvas">
+            <canvas>
+              <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle072">
+                <param name="z_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="amount">
+                  <real value="1.0000000000"/>
+                </param>
+                <param name="blend_method">
+                  <integer value="0" static="true"/>
+                </param>
+                <param name="color">
+                  <color>
+                    <r>0.000000</r>
+                    <g>0.000000</g>
+                    <b>0.000000</b>
+                    <a>1.000000</a>
+                  </color>
+                </param>
+                <param name="radius">
+                  <real value="0.1250000000"/>
+                </param>
+                <param name="feather">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="origin">
+                  <vector>
+                    <x>-0.4374999702</x>
+                    <y>0.4375000000</y>
+                  </vector>
+                </param>
+                <param name="invert">
+                  <bool value="false"/>
+                </param>
+              </layer>
+              <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle073">
+                <param name="z_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="amount">
+                  <real value="1.0000000000"/>
+                </param>
+                <param name="blend_method">
+                  <integer value="0" static="true"/>
+                </param>
+                <param name="color">
+                  <color>
+                    <r>0.000000</r>
+                    <g>0.000000</g>
+                    <b>0.000000</b>
+                    <a>1.000000</a>
+                  </color>
+                </param>
+                <param name="radius">
+                  <real value="0.1250000000"/>
+                </param>
+                <param name="feather">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="origin">
+                  <vector>
+                    <x>0.4375000298</x>
+                    <y>0.4375000000</y>
+                  </vector>
+                </param>
+                <param name="invert">
+                  <bool value="false"/>
+                </param>
+              </layer>
+              <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle074">
+                <param name="z_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="amount">
+                  <real value="1.0000000000"/>
+                </param>
+                <param name="blend_method">
+                  <integer value="0" static="true"/>
+                </param>
+                <param name="color">
+                  <color>
+                    <r>0.000000</r>
+                    <g>0.000000</g>
+                    <b>0.000000</b>
+                    <a>1.000000</a>
+                  </color>
+                </param>
+                <param name="radius">
+                  <real value="0.1250000000"/>
+                </param>
+                <param name="feather">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="origin">
+                  <vector>
+                    <x>0.0000000000</x>
+                    <y>0.4375000000</y>
+                  </vector>
+                </param>
+                <param name="invert">
+                  <bool value="false"/>
+                </param>
+              </layer>
+              <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle075">
+                <param name="z_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="amount">
+                  <real value="1.0000000000"/>
+                </param>
+                <param name="blend_method">
+                  <integer value="0" static="true"/>
+                </param>
+                <param name="color">
+                  <color>
+                    <r>0.000000</r>
+                    <g>0.000000</g>
+                    <b>0.000000</b>
+                    <a>1.000000</a>
+                  </color>
+                </param>
+                <param name="radius">
+                  <real value="0.1250000000"/>
+                </param>
+                <param name="feather">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="origin">
+                  <vector>
+                    <x>0.0000000000</x>
+                    <y>0.0000000000</y>
+                  </vector>
+                </param>
+                <param name="invert">
+                  <bool value="false"/>
+                </param>
+              </layer>
+              <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle076">
+                <param name="z_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="amount">
+                  <real value="1.0000000000"/>
+                </param>
+                <param name="blend_method">
+                  <integer value="0" static="true"/>
+                </param>
+                <param name="color">
+                  <color>
+                    <r>0.000000</r>
+                    <g>0.000000</g>
+                    <b>0.000000</b>
+                    <a>1.000000</a>
+                  </color>
+                </param>
+                <param name="radius">
+                  <real value="0.1250000000"/>
+                </param>
+                <param name="feather">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="origin">
+                  <vector>
+                    <x>0.3750000000</x>
+                    <y>-0.3750000000</y>
+                  </vector>
+                </param>
+                <param name="invert">
+                  <bool value="false"/>
+                </param>
+              </layer>
+              <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle077">
+                <param name="z_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="amount">
+                  <real value="1.0000000000"/>
+                </param>
+                <param name="blend_method">
+                  <integer value="0" static="true"/>
+                </param>
+                <param name="color">
+                  <color>
+                    <r>0.000000</r>
+                    <g>0.000000</g>
+                    <b>0.000000</b>
+                    <a>1.000000</a>
+                  </color>
+                </param>
+                <param name="radius">
+                  <real value="0.1250000000"/>
+                </param>
+                <param name="feather">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="origin">
+                  <vector>
+                    <x>-0.1250000000</x>
+                    <y>-0.4375000000</y>
+                  </vector>
+                </param>
+                <param name="invert">
+                  <bool value="false"/>
+                </param>
+              </layer>
+              <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle077">
+                <param name="z_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="amount">
+                  <real value="1.0000000000"/>
+                </param>
+                <param name="blend_method">
+                  <integer value="0" static="true"/>
+                </param>
+                <param name="color">
+                  <color>
+                    <r>0.000000</r>
+                    <g>0.000000</g>
+                    <b>0.000000</b>
+                    <a>1.000000</a>
+                  </color>
+                </param>
+                <param name="radius">
+                  <real value="0.1250000000"/>
+                </param>
+                <param name="feather">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="origin">
+                  <vector>
+                    <x>0.6875000000</x>
+                    <y>-0.0625000000</y>
+                  </vector>
+                </param>
+                <param name="invert">
+                  <bool value="false"/>
+                </param>
+              </layer>
+              <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle077">
+                <param name="z_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="amount">
+                  <real value="1.0000000000"/>
+                </param>
+                <param name="blend_method">
+                  <integer value="0" static="true"/>
+                </param>
+                <param name="color">
+                  <color>
+                    <r>0.000000</r>
+                    <g>0.000000</g>
+                    <b>0.000000</b>
+                    <a>1.000000</a>
+                  </color>
+                </param>
+                <param name="radius">
+                  <real value="0.1250000000"/>
+                </param>
+                <param name="feather">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="origin">
+                  <vector>
+                    <x>-0.6875000000</x>
+                    <y>-0.0625000000</y>
+                  </vector>
+                </param>
+                <param name="invert">
+                  <bool value="false"/>
+                </param>
+              </layer>
+              <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle077">
+                <param name="z_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="amount">
+                  <real value="1.0000000000"/>
+                </param>
+                <param name="blend_method">
+                  <integer value="0" static="true"/>
+                </param>
+                <param name="color">
+                  <color>
+                    <r>0.000000</r>
+                    <g>0.000000</g>
+                    <b>0.000000</b>
+                    <a>1.000000</a>
+                  </color>
+                </param>
+                <param name="radius">
+                  <real value="0.1250000000"/>
+                </param>
+                <param name="feather">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="origin">
+                  <vector>
+                    <x>-0.4375000298</x>
+                    <y>-0.7500000000</y>
+                  </vector>
+                </param>
+                <param name="invert">
+                  <bool value="false"/>
+                </param>
+              </layer>
+              <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle077">
+                <param name="z_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="amount">
+                  <real value="1.0000000000"/>
+                </param>
+                <param name="blend_method">
+                  <integer value="0" static="true"/>
+                </param>
+                <param name="color">
+                  <color>
+                    <r>0.000000</r>
+                    <g>0.000000</g>
+                    <b>0.000000</b>
+                    <a>1.000000</a>
+                  </color>
+                </param>
+                <param name="radius">
+                  <real value="0.1250000000"/>
+                </param>
+                <param name="feather">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="origin">
+                  <vector>
+                    <x>0.4374999702</x>
+                    <y>-0.7500000000</y>
+                  </vector>
+                </param>
+                <param name="invert">
+                  <bool value="false"/>
+                </param>
+              </layer>
+              <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle077">
+                <param name="z_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="amount">
+                  <real value="1.0000000000"/>
+                </param>
+                <param name="blend_method">
+                  <integer value="0" static="true"/>
+                </param>
+                <param name="color">
+                  <color>
+                    <r>0.000000</r>
+                    <g>0.000000</g>
+                    <b>0.000000</b>
+                    <a>1.000000</a>
+                  </color>
+                </param>
+                <param name="radius">
+                  <real value="0.1250000000"/>
+                </param>
+                <param name="feather">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="origin">
+                  <vector>
+                    <x>0.0000000355</x>
+                    <y>0.8125000000</y>
+                  </vector>
+                </param>
+                <param name="invert">
+                  <bool value="false"/>
+                </param>
+              </layer>
+            </canvas>
+          </param>
+          <param name="time_dilation">
+            <real value="1.0000000000"/>
+          </param>
+          <param name="time_offset">
+            <time value="0s"/>
+          </param>
+          <param name="children_lock">
             <bool value="false"/>
           </param>
+          <param name="outline_grow">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range">
+            <bool value="false" static="true"/>
+          </param>
+          <param name="z_range_position">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_depth">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="z_range_blur">
+            <real value="0.0000000000"/>
+          </param>
         </layer>
-        <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle076">
+        <layer type="group" active="true" exclude_from_rendering="false" version="0.3" desc="in">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -4865,360 +5203,6 @@
           </param>
           <param name="blend_method">
             <integer value="0" static="true"/>
-          </param>
-          <param name="color">
-            <color>
-              <r>0.000000</r>
-              <g>0.000000</g>
-              <b>0.000000</b>
-              <a>1.000000</a>
-            </color>
-          </param>
-          <param name="radius">
-            <real value="0.1250000000"/>
-          </param>
-          <param name="feather">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="origin">
-            <vector>
-              <x>0.3750000000</x>
-              <y>-0.3750000000</y>
-            </vector>
-          </param>
-          <param name="invert">
-            <bool value="false"/>
-          </param>
-        </layer>
-        <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle077">
-          <param name="z_depth">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="amount">
-            <real value="1.0000000000"/>
-          </param>
-          <param name="blend_method">
-            <integer value="0" static="true"/>
-          </param>
-          <param name="color">
-            <color>
-              <r>0.000000</r>
-              <g>0.000000</g>
-              <b>0.000000</b>
-              <a>1.000000</a>
-            </color>
-          </param>
-          <param name="radius">
-            <real value="0.1250000000"/>
-          </param>
-          <param name="feather">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="origin">
-            <vector>
-              <x>-0.1250000000</x>
-              <y>-0.4375000000</y>
-            </vector>
-          </param>
-          <param name="invert">
-            <bool value="false"/>
-          </param>
-        </layer>
-        <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle077">
-          <param name="z_depth">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="amount">
-            <real value="1.0000000000"/>
-          </param>
-          <param name="blend_method">
-            <integer value="0" static="true"/>
-          </param>
-          <param name="color">
-            <color>
-              <r>0.000000</r>
-              <g>0.000000</g>
-              <b>0.000000</b>
-              <a>1.000000</a>
-            </color>
-          </param>
-          <param name="radius">
-            <real value="0.1250000000"/>
-          </param>
-          <param name="feather">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="origin">
-            <vector>
-              <x>0.6250000000</x>
-              <y>0.0625000000</y>
-            </vector>
-          </param>
-          <param name="invert">
-            <bool value="false"/>
-          </param>
-        </layer>
-        <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle077">
-          <param name="z_depth">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="amount">
-            <real value="1.0000000000"/>
-          </param>
-          <param name="blend_method">
-            <integer value="0" static="true"/>
-          </param>
-          <param name="color">
-            <color>
-              <r>0.000000</r>
-              <g>0.000000</g>
-              <b>0.000000</b>
-              <a>1.000000</a>
-            </color>
-          </param>
-          <param name="radius">
-            <real value="0.1250000000"/>
-          </param>
-          <param name="feather">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="origin">
-            <vector>
-              <x>-0.6250000000</x>
-              <y>0.0625000000</y>
-            </vector>
-          </param>
-          <param name="invert">
-            <bool value="false"/>
-          </param>
-        </layer>
-        <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle077">
-          <param name="z_depth">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="amount">
-            <real value="1.0000000000"/>
-          </param>
-          <param name="blend_method">
-            <integer value="0" static="true"/>
-          </param>
-          <param name="color">
-            <color>
-              <r>0.000000</r>
-              <g>0.000000</g>
-              <b>0.000000</b>
-              <a>1.000000</a>
-            </color>
-          </param>
-          <param name="radius">
-            <real value="0.1250000000"/>
-          </param>
-          <param name="feather">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="origin">
-            <vector>
-              <x>-0.4375000298</x>
-              <y>-0.7500000000</y>
-            </vector>
-          </param>
-          <param name="invert">
-            <bool value="false"/>
-          </param>
-        </layer>
-        <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle077">
-          <param name="z_depth">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="amount">
-            <real value="1.0000000000"/>
-          </param>
-          <param name="blend_method">
-            <integer value="0" static="true"/>
-          </param>
-          <param name="color">
-            <color>
-              <r>0.000000</r>
-              <g>0.000000</g>
-              <b>0.000000</b>
-              <a>1.000000</a>
-            </color>
-          </param>
-          <param name="radius">
-            <real value="0.1250000000"/>
-          </param>
-          <param name="feather">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="origin">
-            <vector>
-              <x>0.4374999702</x>
-              <y>-0.7500000000</y>
-            </vector>
-          </param>
-          <param name="invert">
-            <bool value="false"/>
-          </param>
-        </layer>
-        <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle077">
-          <param name="z_depth">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="amount">
-            <real value="1.0000000000"/>
-          </param>
-          <param name="blend_method">
-            <integer value="0" static="true"/>
-          </param>
-          <param name="color">
-            <color>
-              <r>0.000000</r>
-              <g>0.000000</g>
-              <b>0.000000</b>
-              <a>1.000000</a>
-            </color>
-          </param>
-          <param name="radius">
-            <real value="0.1250000000"/>
-          </param>
-          <param name="feather">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="origin">
-            <vector>
-              <x>0.0000000328</x>
-              <y>0.7500000000</y>
-            </vector>
-          </param>
-          <param name="invert">
-            <bool value="false"/>
-          </param>
-        </layer>
-        <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle072">
-          <param name="z_depth">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="amount">
-            <real value="1.0000000000"/>
-          </param>
-          <param name="blend_method">
-            <integer value="0" static="true"/>
-          </param>
-          <param name="color">
-            <color>
-              <r>0.010398</r>
-              <g>0.065754</g>
-              <b>0.246800</b>
-              <a>1.000000</a>
-            </color>
-          </param>
-          <param name="radius">
-            <real value="0.0937500000"/>
-          </param>
-          <param name="feather">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="origin">
-            <vector>
-              <x>-0.5000000000</x>
-              <y>0.4375000000</y>
-            </vector>
-          </param>
-          <param name="invert">
-            <bool value="false"/>
-          </param>
-        </layer>
-        <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle073">
-          <param name="z_depth">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="amount">
-            <real value="1.0000000000"/>
-          </param>
-          <param name="blend_method">
-            <integer value="0" static="true"/>
-          </param>
-          <param name="color">
-            <color>
-              <r>0.010398</r>
-              <g>0.065754</g>
-              <b>0.246800</b>
-              <a>1.000000</a>
-            </color>
-          </param>
-          <param name="radius">
-            <real value="0.0937500000"/>
-          </param>
-          <param name="feather">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="origin">
-            <vector>
-              <x>0.5000000000</x>
-              <y>0.4375000000</y>
-            </vector>
-          </param>
-          <param name="invert">
-            <bool value="false"/>
-          </param>
-        </layer>
-        <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle074">
-          <param name="z_depth">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="amount">
-            <real value="1.0000000000"/>
-          </param>
-          <param name="blend_method">
-            <integer value="0" static="true"/>
-          </param>
-          <param name="color">
-            <color>
-              <r>0.010398</r>
-              <g>0.065754</g>
-              <b>0.246800</b>
-              <a>1.000000</a>
-            </color>
-          </param>
-          <param name="radius">
-            <real value="0.0937500000"/>
-          </param>
-          <param name="feather">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="origin">
-            <vector>
-              <x>0.0000000000</x>
-              <y>0.4375000000</y>
-            </vector>
-          </param>
-          <param name="invert">
-            <bool value="false"/>
-          </param>
-        </layer>
-        <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle075">
-          <param name="z_depth">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="amount">
-            <real value="1.0000000000"/>
-          </param>
-          <param name="blend_method">
-            <integer value="0" static="true"/>
-          </param>
-          <param name="color">
-            <color>
-              <r>0.010398</r>
-              <g>0.065754</g>
-              <b>0.246800</b>
-              <a>1.000000</a>
-            </color>
-          </param>
-          <param name="radius">
-            <real value="0.0937500000"/>
-          </param>
-          <param name="feather">
-            <real value="0.0000000000"/>
           </param>
           <param name="origin">
             <vector>
@@ -5226,246 +5210,429 @@
               <y>0.0000000000</y>
             </vector>
           </param>
-          <param name="invert">
-            <bool value="false"/>
+          <param name="transformation">
+            <composite type="transformation">
+              <offset>
+                <vector>
+                  <x>0.0000000000</x>
+                  <y>0.0000000000</y>
+                </vector>
+              </offset>
+              <angle>
+                <angle value="0.000000"/>
+              </angle>
+              <skew_angle>
+                <angle value="0.000000"/>
+              </skew_angle>
+              <scale>
+                <vector>
+                  <x>1.0000000000</x>
+                  <y>1.0000000000</y>
+                </vector>
+              </scale>
+            </composite>
           </param>
-        </layer>
-        <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle076">
-          <param name="z_depth">
-            <real value="0.0000000000"/>
+          <param name="canvas">
+            <canvas>
+              <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle072">
+                <param name="z_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="amount">
+                  <real value="1.0000000000"/>
+                </param>
+                <param name="blend_method">
+                  <integer value="0" static="true"/>
+                </param>
+                <param name="color">
+                  <color>
+                    <r>0.170138</r>
+                    <g>0.353741</g>
+                    <b>0.632043</b>
+                    <a>1.000000</a>
+                  </color>
+                </param>
+                <param name="radius">
+                  <real value="0.0937500000"/>
+                </param>
+                <param name="feather">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="origin">
+                  <vector>
+                    <x>-0.4374999702</x>
+                    <y>0.4375000000</y>
+                  </vector>
+                </param>
+                <param name="invert">
+                  <bool value="false"/>
+                </param>
+              </layer>
+              <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle073">
+                <param name="z_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="amount">
+                  <real value="1.0000000000"/>
+                </param>
+                <param name="blend_method">
+                  <integer value="0" static="true"/>
+                </param>
+                <param name="color">
+                  <color>
+                    <r>0.170138</r>
+                    <g>0.353741</g>
+                    <b>0.632043</b>
+                    <a>1.000000</a>
+                  </color>
+                </param>
+                <param name="radius">
+                  <real value="0.0937500000"/>
+                </param>
+                <param name="feather">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="origin">
+                  <vector>
+                    <x>0.4375000298</x>
+                    <y>0.4375000000</y>
+                  </vector>
+                </param>
+                <param name="invert">
+                  <bool value="false"/>
+                </param>
+              </layer>
+              <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle074">
+                <param name="z_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="amount">
+                  <real value="1.0000000000"/>
+                </param>
+                <param name="blend_method">
+                  <integer value="0" static="true"/>
+                </param>
+                <param name="color">
+                  <color>
+                    <r>0.170138</r>
+                    <g>0.353741</g>
+                    <b>0.632043</b>
+                    <a>1.000000</a>
+                  </color>
+                </param>
+                <param name="radius">
+                  <real value="0.0937500000"/>
+                </param>
+                <param name="feather">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="origin">
+                  <vector>
+                    <x>0.0000000000</x>
+                    <y>0.4375000000</y>
+                  </vector>
+                </param>
+                <param name="invert">
+                  <bool value="false"/>
+                </param>
+              </layer>
+              <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle075">
+                <param name="z_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="amount">
+                  <real value="1.0000000000"/>
+                </param>
+                <param name="blend_method">
+                  <integer value="0" static="true"/>
+                </param>
+                <param name="color">
+                  <color>
+                    <r>0.170138</r>
+                    <g>0.353741</g>
+                    <b>0.632043</b>
+                    <a>1.000000</a>
+                  </color>
+                </param>
+                <param name="radius">
+                  <real value="0.0937500000"/>
+                </param>
+                <param name="feather">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="origin">
+                  <vector>
+                    <x>0.0000000000</x>
+                    <y>0.0000000000</y>
+                  </vector>
+                </param>
+                <param name="invert">
+                  <bool value="false"/>
+                </param>
+              </layer>
+              <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle076">
+                <param name="z_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="amount">
+                  <real value="1.0000000000"/>
+                </param>
+                <param name="blend_method">
+                  <integer value="0" static="true"/>
+                </param>
+                <param name="color">
+                  <color>
+                    <r>0.170138</r>
+                    <g>0.353741</g>
+                    <b>0.632043</b>
+                    <a>1.000000</a>
+                  </color>
+                </param>
+                <param name="radius">
+                  <real value="0.0937500000"/>
+                </param>
+                <param name="feather">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="origin">
+                  <vector>
+                    <x>0.3750000000</x>
+                    <y>-0.3750000000</y>
+                  </vector>
+                </param>
+                <param name="invert">
+                  <bool value="false"/>
+                </param>
+              </layer>
+              <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle077">
+                <param name="z_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="amount">
+                  <real value="1.0000000000"/>
+                </param>
+                <param name="blend_method">
+                  <integer value="0" static="true"/>
+                </param>
+                <param name="color">
+                  <color>
+                    <r>0.170138</r>
+                    <g>0.353741</g>
+                    <b>0.632043</b>
+                    <a>1.000000</a>
+                  </color>
+                </param>
+                <param name="radius">
+                  <real value="0.0937500000"/>
+                </param>
+                <param name="feather">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="origin">
+                  <vector>
+                    <x>-0.1250000000</x>
+                    <y>-0.4375000000</y>
+                  </vector>
+                </param>
+                <param name="invert">
+                  <bool value="false"/>
+                </param>
+              </layer>
+              <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle077">
+                <param name="z_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="amount">
+                  <real value="1.0000000000"/>
+                </param>
+                <param name="blend_method">
+                  <integer value="0" static="true"/>
+                </param>
+                <param name="color">
+                  <color>
+                    <r>0.010398</r>
+                    <g>0.065754</g>
+                    <b>0.246800</b>
+                    <a>1.000000</a>
+                  </color>
+                </param>
+                <param name="radius">
+                  <real value="0.0937500000"/>
+                </param>
+                <param name="feather">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="origin">
+                  <vector>
+                    <x>0.0000000355</x>
+                    <y>0.8125000000</y>
+                  </vector>
+                </param>
+                <param name="invert">
+                  <bool value="false"/>
+                </param>
+              </layer>
+              <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle077">
+                <param name="z_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="amount">
+                  <real value="1.0000000000"/>
+                </param>
+                <param name="blend_method">
+                  <integer value="0" static="true"/>
+                </param>
+                <param name="color">
+                  <color>
+                    <r>0.010398</r>
+                    <g>0.065754</g>
+                    <b>0.246800</b>
+                    <a>1.000000</a>
+                  </color>
+                </param>
+                <param name="radius">
+                  <real value="0.0937500000"/>
+                </param>
+                <param name="feather">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="origin">
+                  <vector>
+                    <x>0.4374999702</x>
+                    <y>-0.7500000000</y>
+                  </vector>
+                </param>
+                <param name="invert">
+                  <bool value="false"/>
+                </param>
+              </layer>
+              <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle077">
+                <param name="z_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="amount">
+                  <real value="1.0000000000"/>
+                </param>
+                <param name="blend_method">
+                  <integer value="0" static="true"/>
+                </param>
+                <param name="color">
+                  <color>
+                    <r>0.010398</r>
+                    <g>0.065754</g>
+                    <b>0.246800</b>
+                    <a>1.000000</a>
+                  </color>
+                </param>
+                <param name="radius">
+                  <real value="0.0937500000"/>
+                </param>
+                <param name="feather">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="origin">
+                  <vector>
+                    <x>-0.4375000298</x>
+                    <y>-0.7500000000</y>
+                  </vector>
+                </param>
+                <param name="invert">
+                  <bool value="false"/>
+                </param>
+              </layer>
+              <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle077">
+                <param name="z_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="amount">
+                  <real value="1.0000000000"/>
+                </param>
+                <param name="blend_method">
+                  <integer value="0" static="true"/>
+                </param>
+                <param name="color">
+                  <color>
+                    <r>0.010398</r>
+                    <g>0.065754</g>
+                    <b>0.246800</b>
+                    <a>1.000000</a>
+                  </color>
+                </param>
+                <param name="radius">
+                  <real value="0.0937500000"/>
+                </param>
+                <param name="feather">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="origin">
+                  <vector>
+                    <x>0.6875000000</x>
+                    <y>-0.0625000000</y>
+                  </vector>
+                </param>
+                <param name="invert">
+                  <bool value="false"/>
+                </param>
+              </layer>
+              <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle077">
+                <param name="z_depth">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="amount">
+                  <real value="1.0000000000"/>
+                </param>
+                <param name="blend_method">
+                  <integer value="0" static="true"/>
+                </param>
+                <param name="color">
+                  <color>
+                    <r>0.010398</r>
+                    <g>0.065754</g>
+                    <b>0.246800</b>
+                    <a>1.000000</a>
+                  </color>
+                </param>
+                <param name="radius">
+                  <real value="0.0937500000"/>
+                </param>
+                <param name="feather">
+                  <real value="0.0000000000"/>
+                </param>
+                <param name="origin">
+                  <vector>
+                    <x>-0.6875000000</x>
+                    <y>-0.0625000000</y>
+                  </vector>
+                </param>
+                <param name="invert">
+                  <bool value="false"/>
+                </param>
+              </layer>
+            </canvas>
           </param>
-          <param name="amount">
+          <param name="time_dilation">
             <real value="1.0000000000"/>
           </param>
-          <param name="blend_method">
-            <integer value="0" static="true"/>
+          <param name="time_offset">
+            <time value="0s"/>
           </param>
-          <param name="color">
-            <color>
-              <r>0.010398</r>
-              <g>0.065754</g>
-              <b>0.246800</b>
-              <a>1.000000</a>
-            </color>
-          </param>
-          <param name="radius">
-            <real value="0.0937500000"/>
-          </param>
-          <param name="feather">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="origin">
-            <vector>
-              <x>0.3750000000</x>
-              <y>-0.3750000000</y>
-            </vector>
-          </param>
-          <param name="invert">
+          <param name="children_lock">
             <bool value="false"/>
           </param>
-        </layer>
-        <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle077">
-          <param name="z_depth">
+          <param name="outline_grow">
             <real value="0.0000000000"/>
           </param>
-          <param name="amount">
-            <real value="1.0000000000"/>
+          <param name="z_range">
+            <bool value="false" static="true"/>
           </param>
-          <param name="blend_method">
-            <integer value="0" static="true"/>
-          </param>
-          <param name="color">
-            <color>
-              <r>0.010398</r>
-              <g>0.065754</g>
-              <b>0.246800</b>
-              <a>1.000000</a>
-            </color>
-          </param>
-          <param name="radius">
-            <real value="0.0937500000"/>
-          </param>
-          <param name="feather">
+          <param name="z_range_position">
             <real value="0.0000000000"/>
           </param>
-          <param name="origin">
-            <vector>
-              <x>-0.1250000000</x>
-              <y>-0.4375000000</y>
-            </vector>
-          </param>
-          <param name="invert">
-            <bool value="false"/>
-          </param>
-        </layer>
-        <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle077">
-          <param name="z_depth">
+          <param name="z_range_depth">
             <real value="0.0000000000"/>
           </param>
-          <param name="amount">
-            <real value="1.0000000000"/>
-          </param>
-          <param name="blend_method">
-            <integer value="0" static="true"/>
-          </param>
-          <param name="color">
-            <color>
-              <r>0.170138</r>
-              <g>0.353741</g>
-              <b>0.632043</b>
-              <a>1.000000</a>
-            </color>
-          </param>
-          <param name="radius">
-            <real value="0.0937500000"/>
-          </param>
-          <param name="feather">
+          <param name="z_range_blur">
             <real value="0.0000000000"/>
-          </param>
-          <param name="origin">
-            <vector>
-              <x>0.0000000328</x>
-              <y>0.7500000000</y>
-            </vector>
-          </param>
-          <param name="invert">
-            <bool value="false"/>
-          </param>
-        </layer>
-        <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle077">
-          <param name="z_depth">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="amount">
-            <real value="1.0000000000"/>
-          </param>
-          <param name="blend_method">
-            <integer value="0" static="true"/>
-          </param>
-          <param name="color">
-            <color>
-              <r>0.170138</r>
-              <g>0.353741</g>
-              <b>0.632043</b>
-              <a>1.000000</a>
-            </color>
-          </param>
-          <param name="radius">
-            <real value="0.0937500000"/>
-          </param>
-          <param name="feather">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="origin">
-            <vector>
-              <x>0.4374999702</x>
-              <y>-0.7500000000</y>
-            </vector>
-          </param>
-          <param name="invert">
-            <bool value="false"/>
-          </param>
-        </layer>
-        <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle077">
-          <param name="z_depth">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="amount">
-            <real value="1.0000000000"/>
-          </param>
-          <param name="blend_method">
-            <integer value="0" static="true"/>
-          </param>
-          <param name="color">
-            <color>
-              <r>0.170138</r>
-              <g>0.353741</g>
-              <b>0.632043</b>
-              <a>1.000000</a>
-            </color>
-          </param>
-          <param name="radius">
-            <real value="0.0937500000"/>
-          </param>
-          <param name="feather">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="origin">
-            <vector>
-              <x>-0.4375000298</x>
-              <y>-0.7500000000</y>
-            </vector>
-          </param>
-          <param name="invert">
-            <bool value="false"/>
-          </param>
-        </layer>
-        <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle077">
-          <param name="z_depth">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="amount">
-            <real value="1.0000000000"/>
-          </param>
-          <param name="blend_method">
-            <integer value="0" static="true"/>
-          </param>
-          <param name="color">
-            <color>
-              <r>0.170138</r>
-              <g>0.353741</g>
-              <b>0.632043</b>
-              <a>1.000000</a>
-            </color>
-          </param>
-          <param name="radius">
-            <real value="0.0937500000"/>
-          </param>
-          <param name="feather">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="origin">
-            <vector>
-              <x>0.6250000000</x>
-              <y>0.0625000000</y>
-            </vector>
-          </param>
-          <param name="invert">
-            <bool value="false"/>
-          </param>
-        </layer>
-        <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle077">
-          <param name="z_depth">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="amount">
-            <real value="1.0000000000"/>
-          </param>
-          <param name="blend_method">
-            <integer value="0" static="true"/>
-          </param>
-          <param name="color">
-            <color>
-              <r>0.170138</r>
-              <g>0.353741</g>
-              <b>0.632043</b>
-              <a>1.000000</a>
-            </color>
-          </param>
-          <param name="radius">
-            <real value="0.0937500000"/>
-          </param>
-          <param name="feather">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="origin">
-            <vector>
-              <x>-0.6250000000</x>
-              <y>0.0625000000</y>
-            </vector>
-          </param>
-          <param name="invert">
-            <bool value="false"/>
           </param>
         </layer>
       </canvas>
