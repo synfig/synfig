@@ -1714,11 +1714,6 @@ CanvasView::popup_layer_menu(Layer::Handle layer)
 		}
 	}
 
-	//Gtk::Menu *newlayers(manage(new Gtk::Menu()));
-	//build_new_layer_menu(*newlayers);
-
-	//parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("New Layer"),*newlayers));
-
 	if(etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
 	{
 		Gtk::MenuItem *item = manage(new Gtk::ImageMenuItem(
@@ -1738,55 +1733,6 @@ CanvasView::popup_layer_menu(Layer::Handle layer)
 	get_instance()->add_special_layer_actions_to_menu(menu, layer);
 
 	menu->popup(3,gtk_get_current_event_time());
-}
-
-void
-CanvasView::register_layer_type(Layer::Book::value_type &/*lyr*/,std::map<String,Gtk::Menu*>* /*category_map*/)
-{
-/*	if(lyr.second.category==CATEGORY_DO_NOT_USE)
-		return;
-
-	if(category_map->count(lyr.second.category)==0)
-		(*category_map)[lyr.second.category]=manage(new Gtk::Menu());
-
-	(*category_map)[lyr.second.category]->items().push_back(Gtk::Menu_Helpers::MenuElem(lyr.second.local_name,
-		sigc::hide_return(
-			sigc::bind(
-				sigc::mem_fun(*this,&CanvasView::add_layer),
-				lyr.first
-			)
-		)
-	));
-*/
-}
-
-void
-CanvasView::build_new_layer_menu(Gtk::Menu &/*menu*/)
-{
-/*
-	std::map<String,Gtk::Menu*> category_map;
-
-	std::for_each(
-		Layer::book().begin(),
-		Layer::book().end(),
-		sigc::bind(
-			sigc::mem_fun(
-				*this,
-				&CanvasView::register_layer_type
-			),
-			&category_map
-		)
-	);
-
-	menu.items().clear();
-	menu.items().push_back(Gtk::Menu_Helpers::TearoffMenuElem());
-
-	std::map<String,Gtk::Menu*>::iterator iter;
-	for(iter=category_map.begin();iter!=category_map.end();++iter)
-		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(iter->first,*iter->second));
-
-	menu.show();
-*/
 }
 
 void
@@ -2091,110 +2037,7 @@ CanvasView::on_layer_user_click(int button, Gtk::TreeRow /*row*/, LayerTree::Col
 				menu->get_submenu()->popup(button,gtk_get_current_event_time());
 			#endif
 			}
-
-			#if 0
-			bool multiple_selected=true;
-
-			if(layer_tree->get_selection()->count_selected_rows()<=1)
-				multiple_selected=false;
-
-			// If the clicked row is not selected, then unselect
-			// everything that isn't selected and select this row
-			if(multiple_selected && !layer_tree->get_selection()->is_selected(row))
-			{
-				layer_tree->get_selection()->unselect_all();
-				layer_tree->get_selection()->select(row);
-				multiple_selected=false;
-			}
-
-			if(column_id==COLUMNID_TIME_TRACK)
-				return false;
-
-			//ValueDesc value_desc(row[layer_param_tree_model.value_desc]);
-			//ValueNode::Handle value_node(row[layer_param_tree_model.value_node]);
-			//ValueNode::Handle parent_value_node;
-			//ValueBase value=row[layer_param_tree_model.value];
-
-			//if(row.parent())
-			//{
-			//	parent_value_node=(*row.parent())[layer_tree_model.value_node];
-			//}
-
-			{
-				Layer::Handle layer(row[layer_tree_model.layer]);
-				Action::ParamList param_list;
-				param_list.add("time",canvas_interface()->get_time());
-				param_list.add("canvas",Canvas::Handle(row[layer_tree_model.canvas]));
-				param_list.add("canvas_interface",canvas_interface());
-				if(!multiple_selected)
-					param_list.add("layer",layer);
-				else
-				{
-					SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
-					SelectionManager::LayerList::iterator iter;
-
-					for(iter=layer_list.begin();iter!=layer_list.end();++iter)
-						param_list.add("layer",Layer::Handle(*iter));
-				}
-
-				parammenu.items().clear();
-
-				Gtk::Menu *newlayers(manage(new Gtk::Menu()));
-				// do we need this?  the code is all #ifdef'ed out anyway
-				// newlayers->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), newlayers));
-				build_new_layer_menu(*newlayers);
-
-				parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("New Layer"),*newlayers));
-				if(!multiple_selected && etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
-				{
-					parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Select All Children"),
-						sigc::bind(
-							sigc::mem_fun(
-								*layer_tree,
-								&LayerTree::select_all_children_layers
-							),
-							layer
-						)
-					));
-				}
-
-				add_actions_to_menu(&parammenu, param_list,Action::CATEGORY_LAYER);
-				parammenu.popup(button,gtk_get_current_event_time());
-				return true;
-			}
-/*
-			else if(column_id==LayerTree::COLUMNID_TIME_TRACK && value_node && handle<ValueNode_Animated>::cast_dynamic(value_node))
-			{
-				// Right-click on time track with animated
-//				trackmenu.popup(0,0);
-				return true;
-			}
-			else
-			{
-				if(!multiple_selected)
-				{
-					popup_param_menu(value_desc);
-					return true;
-				}
-				else
-				{
-#warning update me!
-#if 0
-					parammenu.items().clear();
-					parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Connect"),
-						hide_return(sigc::mem_fun(*canvas_interface().get(),&CanvasInterface::connect_selected_layer_params))
-					));
-					parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Disconnect"),
-						hide_return(sigc::mem_fun(*canvas_interface().get(),&CanvasInterface::disconnect_selected_layer_params))
-					));
-					parammenu.popup(0,0);
-#endif
-				}
-				return true;
-			}
-		*/
-#endif
-}
+		}
 		return true;
 
 	default:
