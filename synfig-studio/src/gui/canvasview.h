@@ -486,8 +486,6 @@ private:
 	void interpolation_refresh();
 	void on_interpolation_changed();
 
-	static void save_all();
-
 	//helper function for import_file()
 	bool is_same_file(const std::string &filename);
 	
