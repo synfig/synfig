@@ -35,6 +35,7 @@
 #include <gui/mainwindow.h>
 
 #include <gtkmm/box.h>
+#include <gtkmm/messagedialog.h>
 #include <gtkmm/stock.h>
 #include <gtkmm/textview.h>
 
@@ -43,6 +44,7 @@
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/dialogs/dialog_input.h>
+#include <gui/dialogs/dialog_workspaces.h>
 #include <gui/docks/dockable.h>
 #include <gui/docks/dockbook.h>
 #include <gui/docks/dockmanager.h>
@@ -50,6 +52,7 @@
 #include <gui/localization.h>
 #include <gui/widgets/widget_time.h>
 #include <gui/widgets/widget_vector.h>
+#include <gui/workspacehandler.h>
 
 #include <synfigapp/main.h>
 
@@ -63,6 +66,9 @@ using namespace studio;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+std::unique_ptr<studio::WorkspaceHandler> studio::MainWindow::workspaces = nullptr;
+static sigc::signal<void> signal_custom_workspaces_changed_;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -122,7 +128,7 @@ MainWindow::MainWindow(const Glib::RefPtr<Gtk::Application>& application)
 	App::signal_recent_files_changed().connect(
 		sigc::mem_fun(*this, &MainWindow::on_recent_files_changed) );
 
-	App::signal_custom_workspaces_changed().connect(
+	signal_custom_workspaces_changed().connect(
 		sigc::mem_fun(*this, &MainWindow::on_custom_workspaces_changed) );
 
 	signal_delete_event().connect(
@@ -181,20 +187,20 @@ MainWindow::init_menus()
 	
 	// pre defined workspace (window ui layout)
 	action_group->add( Gtk::Action::create("workspace-compositing", _("Compositing")),
-		sigc::ptr_fun(App::set_workspace_compositing)
+		sigc::ptr_fun(MainWindow::set_workspace_compositing)
 	);
 	action_group->add( Gtk::Action::create("workspace-animating", _("Animating")),
-		sigc::ptr_fun(App::set_workspace_animating)
+		sigc::ptr_fun(MainWindow::set_workspace_animating)
 	);
 	action_group->add( Gtk::Action::create("workspace-default", _("Default")),
-		sigc::ptr_fun(App::set_workspace_default)
+		sigc::ptr_fun(MainWindow::set_workspace_default)
 	);
 	action_group->add( Gtk::Action::create("save-workspace", Gtk::StockID("synfig-save_as"), _("Save workspace...")),
-		sigc::ptr_fun(App::save_custom_workspace)
+		sigc::mem_fun(*this, &MainWindow::save_custom_workspace)
 	);
 
 	action_group->add( Gtk::Action::create("edit-workspacelist", _("Edit workspaces...")),
-		sigc::ptr_fun(App::edit_custom_workspace_list)
+		sigc::ptr_fun(MainWindow::edit_custom_workspace_list)
 	);
 
 	//animation tabs
@@ -299,6 +305,15 @@ void MainWindow::add_custom_workspace_menu_item_handlers()
 void MainWindow::remove_custom_workspace_menu_item_handlers()
 {
 	App::ui_manager()->remove_ui(save_workspace_merge_id);
+}
+
+const std::vector<std::string>
+MainWindow::get_workspaces()
+{
+	std::vector<std::string> list;
+	if (workspaces)
+		workspaces->get_name_list(list);
+	return list;
 }
 
 bool
@@ -455,11 +470,198 @@ MainWindow::on_recent_files_changed()
 }
 
 void
+MainWindow::set_workspace_default()
+{
+	std::string tpl =
+	"[mainwindow|%0X|%0Y|%100x|%90y|"
+		"[hor|%75x"
+			"|[vert|%70y"
+				"|[hor|%10x"
+					"|[book|toolbox]"
+					"|[mainnotebook]"
+				"]"
+				"|[hor|%25x"
+					"|[book|params|keyframes]"
+					"|[book|timetrack|curves|children|meta_data|soundwave]"
+				"]"
+			"]"
+			"|[vert|%20y"
+				"|[book|canvases|pal_edit|navigator|info]"
+				"|[vert|%25y"
+					"|[book|tool_options|history]"
+										"|[book|layers|groups]"
+				"]"
+			"]"
+		"]"
+	"]";
+
+	set_workspace_from_template(tpl);
+}
+
+void
+MainWindow::set_workspace_compositing()
+{
+	std::string tpl =
+	"[mainwindow|%0X|%0Y|%100x|%90y|"
+		"[hor|%1x"
+			"|[vert|%1y|[book|toolbox]|[book|tool_options]]"
+			"|[hor|%60x|[mainnotebook]"
+				"|[hor|%50x|[book|params]"
+					"|[vert|%30y|[book|history|groups]|[book|layers|canvases]]"
+			"]"
+		"]"
+	"]";
+
+	set_workspace_from_template(tpl);
+}
+
+void
+MainWindow::set_workspace_animating()
+{
+	std::string tpl =
+	"[mainwindow|%0X|%0Y|%100x|%90y|"
+		"[hor|%70x"
+			"|[vert|%1y"
+				"|[hor|%1x|[book|toolbox]|[mainnotebook]]"
+				"|[hor|%25x|[book|params|children]|[book|timetrack|curves|soundwave|]]"
+			"]"
+			"|[vert|%30y"
+				"|[book|keyframes|history|groups]|[book|layers|canvases]]"
+			"]"
+		"]"
+	"]";
+
+	set_workspace_from_template(tpl);
+}
+
+void
+MainWindow::set_workspace_from_template(const std::string& tpl)
+{
+	Glib::RefPtr<Gdk::Display> display(Gdk::Display::get_default());
+	Glib::RefPtr<const Gdk::Screen> screen(display->get_default_screen());
+	Gdk::Rectangle rect;
+	// A proper way to obtain the primary monitor is to use the
+	// Gdk::Screen::get_primary_monitor () const member. But as it
+	// was introduced in gtkmm 2.20 I assume that the monitor 0 is the
+	// primary one.
+	screen->get_monitor_geometry(0,rect);
+	float dx = (float)rect.get_x();
+	float dy = (float)rect.get_y();
+	float sx = (float)rect.get_width();
+	float sy = (float)rect.get_height();
+
+	std::string layout = DockManager::layout_from_template(tpl, dx, dy, sx, sy);
+	App::dock_manager->load_layout_from_string(layout);
+	App::dock_manager->show_all_dock_dialogs();
+}
+
+void
+MainWindow::set_workspace_from_name(const std::string& name)
+{
+	if (!workspaces)
+		return;
+	std::string tpl;
+	bool ok = workspaces->get_workspace(name, tpl);
+	if (!ok)
+		return;
+	set_workspace_from_template(tpl);
+}
+
+void
+MainWindow::save_custom_workspace()
+{
+	if (!App::dock_manager || !workspaces) {
+		Gtk::MessageDialog dialog(*this, _("Internal error: Dock Manager or Workspace Handler not set"), false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_NONE, true);
+		return;
+	}
+
+	Gtk::MessageDialog dialog(*this, _("Type a name for this custom workspace:"), false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_NONE);
+
+	dialog.add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
+	Gtk::Button * ok_button = dialog.add_button(_("Ok"), Gtk::RESPONSE_OK);
+	ok_button->set_sensitive(false);
+
+	Gtk::Entry * name_entry = Gtk::manage(new Gtk::Entry());
+	name_entry->set_margin_start(16);
+	name_entry->set_margin_end(16);
+	name_entry->signal_changed().connect(sigc::track_obj([&](){
+		std::string name = synfig::trim(name_entry->get_text());
+		bool has_equal_sign = name.find('=') != std::string::npos;
+		ok_button->set_sensitive(!name.empty() && !has_equal_sign);
+		if (ok_button->is_sensitive())
+			ok_button->grab_default();
+	}, dialog));
+	name_entry->signal_activate().connect(sigc::mem_fun(*ok_button, &Gtk::Button::clicked));
+
+	dialog.get_content_area()->set_spacing(12);
+	dialog.get_content_area()->add(*name_entry);
+
+	ok_button->set_can_default(true);
+
+	dialog.show_all();
+
+	int response = dialog.run();
+	if (response != Gtk::RESPONSE_OK)
+		return;
+
+	std::string name = synfig::trim(name_entry->get_text());
+
+	std::string tpl = App::dock_manager->save_layout_to_string();
+	if (!workspaces->has_workspace(name))
+		workspaces->add_workspace(name, tpl);
+	else {
+		Gtk::MessageDialog confirm_dlg(dialog, _("Do you want to overwrite this workspace?"), false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL);
+		if (confirm_dlg.run() != Gtk::RESPONSE_OK)
+			return;
+		workspaces->set_workspace(name, tpl);
+	}
+}
+
+void
+MainWindow::load_custom_workspaces()
+{
+	if (!workspaces) {
+		workspaces = std::unique_ptr<WorkspaceHandler>(new WorkspaceHandler());
+		workspaces->signal_list_changed().connect( sigc::mem_fun(signal_custom_workspaces_changed_, &sigc::signal<void>::emit) );
+	}
+	workspaces->clear();
+	std::string filename = App::get_config_file("workspaces");
+	workspaces->load(filename);
+}
+
+void
+MainWindow::save_custom_workspaces()
+{
+	if (workspaces) {
+		std::string filename = App::get_config_file("workspaces");
+		workspaces->save(filename);
+	}
+}
+
+sigc::signal<void>&
+MainWindow::signal_custom_workspaces_changed()
+{
+	return signal_custom_workspaces_changed_;
+}
+
+void
+MainWindow::edit_custom_workspace_list()
+{
+	Dialog_Workspaces* dlg = Dialog_Workspaces::create(*App::main_window);
+	if (!dlg) {
+		synfig::warning("Can't load Dialog_Workspaces");
+		return;
+	}
+	dlg->run();
+	delete dlg;
+}
+
+void
 MainWindow::on_custom_workspaces_changed()
 {
 	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create("mainwindow-customworkspaces");
 
-	std::vector<std::string> workspaces = App::get_workspaces();
+	std::vector<std::string> workspaces = get_workspaces();
 
 	std::string menu_items;
 	unsigned int num_custom_workspaces = 0;
@@ -477,7 +679,7 @@ MainWindow::on_custom_workspaces_changed()
 		menu_items += "<menuitem action='" + action_name +"' />";
 
 		action_group->add( Gtk::Action::create(action_name, quoted),
-			sigc::bind(sigc::ptr_fun(&App::set_workspace_from_name), workspaces[num_custom_workspaces])
+			sigc::bind(sigc::ptr_fun(&MainWindow::set_workspace_from_name), workspaces[num_custom_workspaces])
 		);
 	}
 	if (num_custom_workspaces > 0)

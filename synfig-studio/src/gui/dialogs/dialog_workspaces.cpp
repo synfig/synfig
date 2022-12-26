@@ -30,8 +30,8 @@
 
 #include <gui/dialogs/dialog_workspaces.h>
 
-#include <gui/app.h>
 #include <gui/localization.h>
+#include <gui/mainwindow.h>
 #include <gui/resourcehelper.h>
 #include <gui/workspacehandler.h>
 
@@ -116,7 +116,7 @@ Dialog_Workspaces::Dialog_Workspaces(Gtk::Dialog::BaseObjectType* cobject, const
 //		row[ws_cols.col_name] = "ui";
 //		workspace_model->append()->set_value(0, Glib::ustring("ui"));
 
-		App::signal_custom_workspaces_changed().connect(sigc::mem_fun(*this, &Dialog_Workspaces::rebuild_list));
+		MainWindow::signal_custom_workspaces_changed().connect(sigc::mem_fun(*this, &Dialog_Workspaces::rebuild_list));
 
 		rebuild_list();
 	}
@@ -164,7 +164,7 @@ void Dialog_Workspaces::on_delete_clicked()
 		names.push_back(name);
 	}
 	for (const std::string & name : names) {
-		App::get_workspace_handler()->remove_workspace(name);
+		MainWindow::get_workspace_handler()->remove_workspace(name);
 	}
 }
 
@@ -210,23 +210,26 @@ void Dialog_Workspaces::on_rename_clicked()
 	if (old_name == name)
 		return;
 
-	if (App::get_workspace_handler()->has_workspace(name)) {
+	if (MainWindow::get_workspace_handler()->has_workspace(name)) {
 		Gtk::MessageDialog error_dlg(dialog, _("There is already a workspace with this name."), false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK);
 		error_dlg.run();
 		return;
 	}
 
 	std::string tpl;
-	App::get_workspace_handler()->get_workspace(old_name, tpl);
-	App::get_workspace_handler()->remove_workspace(old_name);
-	App::get_workspace_handler()->add_workspace(name, tpl);
+	MainWindow::get_workspace_handler()->get_workspace(old_name, tpl);
+	MainWindow::get_workspace_handler()->remove_workspace(old_name);
+	MainWindow::get_workspace_handler()->add_workspace(name, tpl);
 }
 
 void Dialog_Workspaces::rebuild_list()
 {
 	workspace_model->clear();
 
-	WorkspaceHandler *workspaces = App::get_workspace_handler();
+	WorkspaceHandler* workspaces = MainWindow::get_workspace_handler();
+	if (!workspaces)
+		return;
+
 	std::vector<std::string> names;
 	workspaces->get_name_list(names);
 	for (const std::string & name : names)
