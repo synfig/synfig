@@ -72,6 +72,18 @@ static sigc::signal<void> signal_custom_workspaces_changed_;
 
 /* === P R O C E D U R E S ================================================= */
 
+// replace _ in menu item labels with __ or it won't show up in the menu
+static std::string
+escape_underline(const std::string& raw)
+{
+	std::string quoted;
+	size_t pos = 0, last_pos = 0;
+	for (pos = last_pos = 0; (pos = raw.find('_', pos)) != std::string::npos; last_pos = pos)
+		quoted += raw.substr(last_pos, ++pos - last_pos) + '_';
+	quoted += raw.substr(last_pos);
+	return quoted;
+}
+
 /* === M E T H O D S ======================================================= */
 
 MainWindow::MainWindow(const Glib::RefPtr<Gtk::Application>& application)
@@ -430,13 +442,7 @@ MainWindow::on_recent_files_changed()
 	for(int i = 0; i < (int)fullnames.size(); ++i)
 	{
 		std::string raw = shortnames[i];
-		std::string quoted;
-		size_t pos = 0, last_pos = 0;
-
-		// replace _ in filenames by __ or it won't show up in the menu
-		for (pos = last_pos = 0; (pos = raw.find('_', pos)) != std::string::npos; last_pos = pos)
-			quoted += raw.substr(last_pos, ++pos - last_pos) + '_';
-		quoted += raw.substr(last_pos);
+		std::string quoted = escape_underline(raw);
 
 		const std::string action_name = synfig::strprintf("file-recent-%d", i);
 		menu_items += "<menuitem action='" + action_name +"' />";
@@ -667,13 +673,7 @@ MainWindow::on_custom_workspaces_changed()
 	unsigned int num_custom_workspaces = 0;
 	for (auto it = workspaces.cbegin(); it != workspaces.cend(); ++it, ++num_custom_workspaces) {
 		std::string raw = *it;
-		std::string quoted;
-		size_t pos = 0, last_pos = 0;
-
-		// replace _ in names by __ or it won't show up in the menu
-		for (pos = last_pos = 0; (pos = raw.find('_', pos)) != std::string::npos; last_pos = pos)
-			quoted += raw.substr(last_pos, ++pos - last_pos) + '_';
-		quoted += raw.substr(last_pos);
+		std::string quoted = escape_underline(raw);
 
 		std::string action_name = synfig::strprintf("custom-workspace-%d", num_custom_workspaces);
 		menu_items += "<menuitem action='" + action_name +"' />";
@@ -718,15 +718,8 @@ MainWindow::on_custom_workspaces_changed()
 void
 MainWindow::on_dockable_registered(Dockable* dockable)
 {
-
-	// replace _ in panel names (filenames) by __ or it won't show up in the menu,
-	// this block code is just a copy from MainWindow::on_recent_files_changed().
 	std::string raw = dockable->get_local_name();
-	std::string quoted;
-	size_t pos = 0, last_pos = 0;
-	for (pos = last_pos = 0; (pos = raw.find('_', pos)) != std::string::npos; last_pos = pos)
-		quoted += raw.substr(last_pos, ++pos - last_pos) + '_';
-	quoted += raw.substr(last_pos);
+	std::string quoted = escape_underline(raw);
 
 	window_action_group->add( Gtk::Action::create("panel-" + dockable->get_name(), quoted),
 		sigc::mem_fun(*dockable, &Dockable::present)
