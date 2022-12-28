@@ -1,3 +1,6 @@
+- [`80aabd4`](https://github.com/synfig/synfig/commit/80aabd44ddff5e4af0d0d16944fa4abc7903bf21) refactor: remove commented-out methods since march 2005 ([#2956](https://github.com/synfig/synfig/issues/2956)) [studio]
+- [`76dbcd1`](https://github.com/synfig/synfig/commit/76dbcd19ce8f95c86a1129b6f5f2aa717efe9b73) refactor: added internal escape_underline() in MainWindow ([#2952](https://github.com/synfig/synfig/issues/2952)) [studio]
+- [`414b5d7`](https://github.com/synfig/synfig/commit/414b5d7e42ce0822d07989b4851edf072897e8e7) refactor: move workspace methods from App to MainWindow ([#2942](https://github.com/synfig/synfig/issues/2942)) [studio]
 - [`7480fb8`](https://github.com/synfig/synfig/commit/7480fb80de2f03692bd860606a07d33a76ef6211) fix: get_binary_path() for FreeBSD, DragonFlyBSD, NetBSD and OpenBSD ([#2950](https://github.com/synfig/synfig/issues/2950)) [core]
 - [`18b6d7f`](https://github.com/synfig/synfig/commit/18b6d7f8b0269b9a3a2ee481de69f3d5c7e7db90) style: some indentation inconsistencies in app.cpp ([#2946](https://github.com/synfig/synfig/issues/2946)) [studio]
 - [`54667f3`](https://github.com/synfig/synfig/commit/54667f34bd7f86fd4fd582b1a70d63b4c5ab10bf) fix: no context menu when right-clicking on waypoint ([#2877](https://github.com/synfig/synfig/issues/2877)) [core] [studio]
