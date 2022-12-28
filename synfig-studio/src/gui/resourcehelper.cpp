@@ -56,7 +56,7 @@ synfig::String studio::ResourceHelper::get_image_path(const synfig::String& imag
 synfig::String studio::ResourceHelper::get_synfig_data_path()
 {
 	std::string synfig_datadir;
-	if (char* synfig_root = getenv("SYNFIG_ROOT")) {
+	if (char* synfig_root = DEBUG_GETENV("SYNFIG_ROOT")) {
 		synfig_datadir = std::string(synfig_root) + "/share/synfig";
 	} else {
 #if defined CMAKE_BUILD || defined _WIN32

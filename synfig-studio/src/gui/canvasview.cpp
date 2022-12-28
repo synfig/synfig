@@ -935,8 +935,8 @@ CanvasView::create_time_bar()
 
 	//Adjust both widgets to be the same as the
 	int header_height = 0;
-	if(getenv("SYNFIG_TIMETRACK_HEADER_HEIGHT"))
-		header_height = atoi(getenv("SYNFIG_TIMETRACK_HEADER_HEIGHT"));
+	if(DEBUG_GETENV("SYNFIG_TIMETRACK_HEADER_HEIGHT"))
+		header_height = atoi(DEBUG_GETENV("SYNFIG_TIMETRACK_HEADER_HEIGHT"));
 	if (header_height < 3)
 		header_height = 24;
 	timeslider->set_size_request(-1,header_height-header_height/3+1);

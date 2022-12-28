@@ -402,7 +402,7 @@ static Time
 get_time_offset_from_vdesc(const ValueDesc &v)
 {
 #ifdef ADJUST_WAYPOINTS_FOR_TIME_OFFSET
-	if (v.get_value_type() != type_canvas || getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS"))
+	if (v.get_value_type() != type_canvas || DEBUG_GETENV("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS"))
 		return Time::zero();
 
 	if (!v.get_value().get(Canvas::Handle()))

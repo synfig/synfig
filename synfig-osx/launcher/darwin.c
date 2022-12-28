@@ -311,7 +311,7 @@ DarwinFindLibraryFile (const char *file, const char *pathext)
 
     fullPath = xalloc(PATH_MAX);
 
-    home = getenv("HOME");
+    home = DEBUG_GETENV("HOME");
     if (home) {
         snprintf(fullPath, PATH_MAX, "%s/Library/%s/%s", home, pathext, file);
         if (!access(fullPath, F_OK))

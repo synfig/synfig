@@ -143,7 +143,7 @@ private:
 		config = FcInitLoadConfigAndFonts();
 #ifdef _WIN32
 		// Windows 10 (1809) Added local user fonts installed to C:\Users\%USERNAME%\AppData\Local\Microsoft\Windows\Fonts
-		std::string localdir = Glib::getenv("LOCALAPPDATA");
+		std::string localdir = Glib::DEBUG_GETENV("LOCALAPPDATA");
 		if (!localdir.empty()) {
 			localdir.append("\\Microsoft\\Windows\\Fonts\\");
 			FcConfigAppFontAddDir(config, (const FcChar8 *)localdir.c_str());
@@ -670,7 +670,7 @@ Layer_Freetype::get_possible_font_directories(const std::string& canvas_path)
 
 #ifdef _WIN32
 	// All users fonts
-	std::string windir = Glib::getenv("windir");
+	std::string windir = Glib::DEBUG_GETENV("windir");
 	if (windir.empty()) {
 		possible_font_directories.emplace_back("C:\\WINDOWS\\FONTS\\");
 	} else {

@@ -72,7 +72,7 @@ Target_Scanline::Target_Scanline():
 	threads_(2)
 {
 	curr_frame_=0;
-	if (const char *s = getenv("SYNFIG_TARGET_DEFAULT_ENGINE"))
+	if (const char *s = DEBUG_GETENV("SYNFIG_TARGET_DEFAULT_ENGINE"))
 		set_engine(s);
 }
 

@@ -245,7 +245,7 @@ public:
 		{
 			tile_t& tile(tile_queue.front());
 
-			if (getenv("SYNFIG_SHOW_TILE_OUTLINES"))
+			if (DEBUG_GETENV("SYNFIG_SHOW_TILE_OUTLINES"))
 			{
 				Color red(1,0,0);
 				tile.surface.fill(red, 0, 0, 1, tile.surface.get_h());

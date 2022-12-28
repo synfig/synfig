@@ -331,7 +331,7 @@ CanvasInterface::layer_set_defaults(const synfig::Layer::Handle &layer)
 						else
 						if (type == type_bone_object)
 						{
-							if (getenv("SYNFIG_USE_DYNAMIC_LIST_FOR_BONES"))
+							if (DEBUG_GETENV("SYNFIG_USE_DYNAMIC_LIST_FOR_BONES"))
 							{
 								value_node=ValueNodeRegistry::create("dynamic_list",iter->second);
 								ValueNode_DynamicList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);

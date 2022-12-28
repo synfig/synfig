@@ -385,7 +385,7 @@ write_auth_file (int add_entries)
     if (auth_file == NULL)
 	return FALSE;
 
-    home = getenv ("HOME");
+    home = DEBUG_GETENV ("HOME");
     if (home == NULL)
     {
 	auth_file = NULL;
@@ -515,7 +515,7 @@ start_client (void)
 
     case 0:				/* child */
 	/* cd $HOME */
-	tem = getenv ("HOME");
+	tem = DEBUG_GETENV ("HOME");
 	if (tem != NULL)
 	    chdir (tem);
 

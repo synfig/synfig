@@ -81,9 +81,9 @@ String
 FileSystemTemporary::get_system_temporary_directory()
 {
     const char *tmpdir;
-	if (!(tmpdir = getenv("TEMP")))
-	if (!(tmpdir = getenv("TMP")))
-	if (!(tmpdir = getenv("TMPDIR")))
+	if (!(tmpdir = DEBUG_GETENV("TEMP")))
+	if (!(tmpdir = DEBUG_GETENV("TMP")))
+	if (!(tmpdir = DEBUG_GETENV("TMPDIR")))
     	 tmpdir = "/tmp";
     return String(tmpdir);
 }

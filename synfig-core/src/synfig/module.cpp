@@ -60,7 +60,7 @@ Module::Book *synfig::Module::book_;
 static void add_search_dir(const char* dir) {
 	lt_dladdsearchdir(dir);
 #ifdef _MSC_VER
-	const char* path = getenv("PATH");
+	const char* path = DEBUG_GETENV("PATH");
 	std::string new_path = strprintf("PATH=%s;%s", path, dir);
 	_putenv(new_path.c_str());
 #endif
@@ -80,7 +80,7 @@ Module::subsys_init(const String &prefix)
 
 	// user's synfig library path
 #ifdef _WIN32
-	if(const char *localappdata = getenv("%LOCALAPPDATA%")) {
+	if(const char *localappdata = DEBUG_GETENV("%LOCALAPPDATA%")) {
 		std::string user_module_path = Glib::locale_from_utf8(localappdata) + "/synfig/modules";
 		add_search_dir(user_module_path.c_str());
 	}

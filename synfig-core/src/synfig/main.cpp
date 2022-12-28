@@ -135,7 +135,7 @@ synfig::get_build_date()
 
 	if (date_str[0] == 0) {
 		// https://reproducible-builds.org/specs/source-date-epoch/
-		if (char* source_date_epoch = getenv("SOURCE_DATE_EPOCH")) {
+		if (char* source_date_epoch = DEBUG_GETENV("SOURCE_DATE_EPOCH")) {
 			std::istringstream iss(source_date_epoch);
 			std::time_t t;
 			iss >> t;
@@ -338,8 +338,8 @@ synfig::Main::Main(const synfig::String& rootpath,ProgressCallback *cb):
 	std::list<String> modules_to_load;
 	std::vector<String> locations;
 
-	if(getenv("SYNFIG_MODULE_LIST"))
-		locations.push_back(getenv("SYNFIG_MODULE_LIST"));
+	if(DEBUG_GETENV("SYNFIG_MODULE_LIST"))
+		locations.push_back(DEBUG_GETENV("SYNFIG_MODULE_LIST"));
 	else
 	{
 		locations.push_back("./" MODULE_LIST_FILENAME);
