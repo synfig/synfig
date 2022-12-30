@@ -81,12 +81,12 @@ VectorizerSettings::VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::L
 	// comboboxtext_mode.signal_changed().connect(
 	// 	sigc::mem_fun(this, &VectorizerSettings::on_comboboxtext_mode_changed));
 	config_map = &configmap;
-	Gtk::VBox *dialogBox = manage(new Gtk::VBox(false, 12));
+	Gtk::Box *dialogBox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 12));
 	dialogBox->set_valign(Gtk::ALIGN_END);
 	dialogBox->set_halign(Gtk::ALIGN_END);
 	dialogBox->set_hexpand(1);
 	dialogBox->set_vexpand(1);
-	get_vbox()->pack_start(*dialogBox, false, false, 0);
+	get_content_area()->pack_start(*dialogBox, false, false, 0);
 
 	// Gtk::Frame *target_frame=manage(new Gtk::Frame());
 	// target_frame->set_shadow_type(Gtk::SHADOW_NONE);
@@ -222,7 +222,7 @@ VectorizerSettings::VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::L
 
 	set_title(_("Vectorizer Settings - ")+ layer_bitmap_->get_description());
 
-	get_vbox()->show_all();
+	get_content_area()->show_all();
 	Outline_setting_grid->hide();
 	on_comboboxtext_mode_changed();
 
