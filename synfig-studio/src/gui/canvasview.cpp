@@ -1044,28 +1044,28 @@ void CanvasView::toggle_render_combobox()
 Gtk::Widget*
 CanvasView::create_top_toolbar()
 {
-	displaybar = manage(new Gtk::Toolbar());
-	displaybar->set_icon_size(Gtk::IconSize::from_name("synfig-small_icon_16x16"));
-	displaybar->set_toolbar_style(Gtk::TOOLBAR_BOTH_HORIZ);
+	top_toolbar = manage(new Gtk::Toolbar());
+	top_toolbar->set_icon_size(Gtk::IconSize::from_name("synfig-small_icon_16x16"));
+	top_toolbar->set_toolbar_style(Gtk::TOOLBAR_BOTH_HORIZ);
 
 	// File buttons
 	if (App::show_file_toolbar) {
-		displaybar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/new")));
-		displaybar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/open")));
-		displaybar->append(*create_action_toolbutton(action_group->get_action("save")));
-		displaybar->append(*create_action_toolbutton(action_group->get_action("save-as")));
-		displaybar->append(*create_action_toolbutton(action_group->get_action("save-all")));
+		top_toolbar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/new")));
+		top_toolbar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/open")));
+		top_toolbar->append(*create_action_toolbutton(action_group->get_action("save")));
+		top_toolbar->append(*create_action_toolbutton(action_group->get_action("save-as")));
+		top_toolbar->append(*create_action_toolbutton(action_group->get_action("save-all")));
 
 		// Separator
-		displaybar->append( *create_tool_separator() );
+		top_toolbar->append( *create_tool_separator() );
 	}
 
 	// Undo/Redo buttons
-	displaybar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/undo")));
-	displaybar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/redo")));
+	top_toolbar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/undo")));
+	top_toolbar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/redo")));
 
 	// Separator
-	displaybar->append(*create_tool_separator());
+	top_toolbar->append(*create_tool_separator());
 
 	{ // Preview Settings dialog button
 		preview_options_button = Gtk::manage(new Gtk::ToolButton());
@@ -1076,7 +1076,7 @@ CanvasView::create_top_toolbar()
 		preview_options_button->set_tooltip_text(_("Shows the Preview Settings Dialog"));
 		preview_options_button->show();
 
-		displaybar->append(*preview_options_button);
+		top_toolbar->append(*preview_options_button);
 	}
 
 	{ // Render Settings dialog button
@@ -1088,11 +1088,11 @@ CanvasView::create_top_toolbar()
 		render_options_button->set_tooltip_text(_("Shows the Render Settings Dialog"));
 		render_options_button->show();
 
-		displaybar->append(*render_options_button);
+		top_toolbar->append(*render_options_button);
 	}
 
 	// Separator
-	displaybar->append(*create_tool_separator());
+	top_toolbar->append(*create_tool_separator());
 
 	{ // Refresh button
 		refreshbutton = Gtk::manage(new Gtk::ToolButton());
@@ -1102,7 +1102,7 @@ CanvasView::create_top_toolbar()
 		refreshbutton->set_tooltip_text( _("Refresh workarea"));
 		refreshbutton->show();
 
-		displaybar->append(*refreshbutton);
+		top_toolbar->append(*refreshbutton);
 	}
 
 	{ // Rendering mode ComboBox
@@ -1120,7 +1120,7 @@ CanvasView::create_top_toolbar()
 		container->add(*render_combobox);
 
 		container->show();
-		displaybar->add(*container);
+		top_toolbar->add(*container);
 	}
 
 	{ // Background rendering button
@@ -1133,11 +1133,11 @@ CanvasView::create_top_toolbar()
 		background_rendering_button->set_tooltip_text(_("Render future and past frames in background when enabled"));
 		background_rendering_button->show();
 
-		displaybar->append(*background_rendering_button);
+		top_toolbar->append(*background_rendering_button);
 	}
 
 	// Separator
-	displaybar->append(*create_tool_separator());
+	top_toolbar->append(*create_tool_separator());
 
 	// ResolutionDial widget
 	resolutiondial_->update_lowres(work_area->get_low_resolution_flag());
@@ -1147,10 +1147,10 @@ CanvasView::create_top_toolbar()
 		sigc::mem_fun(*this, &CanvasView::increase_low_res_pixel_size));
 	resolutiondial_->signal_use_low_resolution().connect(
 		sigc::mem_fun(*this, &CanvasView::toggle_low_res_pixel_flag));
-	resolutiondial_->insert_to_toolbar(*displaybar);
+	resolutiondial_->insert_to_toolbar(*top_toolbar);
 
 	// Separator
-	displaybar->append(*create_tool_separator());
+	top_toolbar->append(*create_tool_separator());
 
 	{ // Onion skin toggle button
 		onion_skin = Gtk::manage(new Gtk::ToggleToolButton());
@@ -1162,7 +1162,7 @@ CanvasView::create_top_toolbar()
 		onion_skin->set_tooltip_text(_("Show Onion Skin when enabled"));
 		onion_skin->show();
 
-		displaybar->append(*onion_skin);
+		top_toolbar->append(*onion_skin);
 	}
 
 	{ // Past onion skin spin button
@@ -1178,7 +1178,7 @@ CanvasView::create_top_toolbar()
 		toolitem->set_is_important(true);
 		toolitem->show();
 
-		displaybar->append(*toolitem);
+		top_toolbar->append(*toolitem);
 	}
 
 	{ // Future onion skin spin button
@@ -1194,7 +1194,7 @@ CanvasView::create_top_toolbar()
 		toolitem->set_is_important(true);
 		toolitem->show();
 
-		displaybar->append(*toolitem);
+		top_toolbar->append(*toolitem);
 	}
 
 	{ // Onion skin on Keyframes/Frames toggle button
@@ -1207,16 +1207,16 @@ CanvasView::create_top_toolbar()
 		onion_skin_keyframes->set_tooltip_text(_("Show Onion Skin on Keyframes when enabled, on Frames when disabled"));
 		onion_skin_keyframes->show();
 
-		displaybar->append(*onion_skin_keyframes);
+		top_toolbar->append(*onion_skin_keyframes);
 	}
 
 	if(App::enable_mainwin_toolbar)
-		displaybar->show();
+		top_toolbar->show();
 	else
-		displaybar->hide();
+		top_toolbar->hide();
 	cancel=false;
 
-	return displaybar;
+	return top_toolbar;
 }
 
 Gtk::Widget*
@@ -1236,10 +1236,10 @@ CanvasView::create_stop_button()
 Gtk::Widget*
 CanvasView::create_right_toolbar()
 {
-	displaybar = manage(new Gtk::Toolbar());
-	displaybar->set_icon_size(Gtk::IconSize::from_name("synfig-small_icon_16x16"));
-	displaybar->set_toolbar_style(Gtk::TOOLBAR_ICONS);
-	displaybar->set_property("orientation", Gtk::ORIENTATION_VERTICAL);
+	right_toolbar = manage(new Gtk::Toolbar());
+	right_toolbar->set_icon_size(Gtk::IconSize::from_name("synfig-small_icon_16x16"));
+	right_toolbar->set_toolbar_style(Gtk::TOOLBAR_ICONS);
+	right_toolbar->set_property("orientation", Gtk::ORIENTATION_VERTICAL);
 
 	{ // Show grid toggle button
 		show_grid = Gtk::manage(new Gtk::ToggleToolButton());
@@ -1251,7 +1251,7 @@ CanvasView::create_right_toolbar()
 		show_grid->set_tooltip_text(_("Show Grid when enabled"));
 		show_grid->show();
 
-		displaybar->append(*show_grid);
+		right_toolbar->append(*show_grid);
 	}
 
 	{ // Snap to grid toggle button
@@ -1264,7 +1264,7 @@ CanvasView::create_right_toolbar()
 		snap_grid->set_tooltip_text(_("Snap to Grid when enabled"));
 		snap_grid->show();
 
-		displaybar->append(*snap_grid);
+		right_toolbar->append(*snap_grid);
 	}
 
 	{ // Show guide toggle button
@@ -1277,7 +1277,7 @@ CanvasView::create_right_toolbar()
 		show_guides->set_tooltip_text(_("Show Guides when enabled"));
 		show_guides->show();
 
-		displaybar->append(*show_guides);
+		right_toolbar->append(*show_guides);
 	}
 
 	{ // Snap to guides toggle button
@@ -1290,11 +1290,11 @@ CanvasView::create_right_toolbar()
 		snap_guides->set_tooltip_text(_("Snap to Guides when enabled"));
 		snap_guides->show();
 
-		displaybar->append(*snap_guides);
+		right_toolbar->append(*snap_guides);
 	}
 
 	// Separator
-	displaybar->append(*create_tool_separator());
+	right_toolbar->append(*create_tool_separator());
 
 	// ToggleDuckDial widget
 	Duck::Type m = work_area->get_type_mask();
@@ -1311,11 +1311,11 @@ CanvasView::create_right_toolbar()
 		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_WIDTH));
 	toggleducksdial.signal_ducks_angle().connect(
 		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_ANGLE));
-	toggleducksdial.insert_to_toolbar(*displaybar);
+	toggleducksdial.insert_to_toolbar(*right_toolbar);
 
-	displaybar->show();
+	right_toolbar->show();
 
-	return displaybar;
+	return right_toolbar;
 }
 
 void CanvasView::grab_focus()
@@ -3732,8 +3732,11 @@ CanvasView::on_interpolation_changed()
 
 void 
 CanvasView::toggle_show_toolbar(){
-	if(App::enable_mainwin_toolbar)
-		displaybar->show();
-	else
-		displaybar->hide();
+	if (App::enable_mainwin_toolbar) {
+		top_toolbar->show();
+		right_toolbar->show();
+	} else {
+		top_toolbar->hide();
+		right_toolbar->hide();
+	}
 };
