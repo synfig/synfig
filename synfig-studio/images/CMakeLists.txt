@@ -126,6 +126,7 @@ set(ICONS
 	layer_distortion_curvewarp_icon
 	layer_distortion_insideout_icon
 	layer_distortion_noise_icon
+	layer_distortion_skeletondeformation_icon
 	layer_distortion_spherize_icon
 	layer_distortion_stretch_icon
 	layer_distortion_twirl_icon
@@ -156,11 +157,14 @@ set(ICONS
 	layer_gradient_spiral_icon
 	layer_icon
 	layer_other_duplicate_icon
+	layer_other_filtergroup_icon
 	layer_other_group_icon
+	layer_other_ghostgroup_icon
 	layer_other_importimage_icon
 	layer_other_plant_icon
 	layer_other_skeleton_icon
 	layer_other_sound_icon
+	layer_other_freetime_icon
 	layer_other_stroboscope_icon
 	layer_other_supersample_icon
 	layer_other_switch_icon
@@ -203,6 +207,7 @@ set(ICONS
 	sif_icon
 	snap_grid_icon
 	snap_guideline_icon
+	sound_icon
 	swap_colors_icon
 	time_track_icon
 	tool_brush_icon
