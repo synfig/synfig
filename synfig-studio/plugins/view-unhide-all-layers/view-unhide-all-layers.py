@@ -20,6 +20,8 @@ def process(filename):
 	for inactive_layer in root.findall('layer[@active="false"]'):
 		inactive_layer.set('active', 'true')
 	tree.write(filename, encoding='UTF-8')
+
+if len(sys.argv) < 2:
 	sys.exit()
 else:
 	process(sys.argv[1])
