@@ -1004,9 +1004,9 @@ DEFINE_ACTION("canvas-zoom-out-2",  Gtk::StockID("gtk-zoom-out"))
 DEFINE_ACTION("canvas-zoom-fit-2",  Gtk::StockID("gtk-zoom-fit"))
 
 // actions in Canvas menu
-DEFINE_ACTION("properties", _("Properties..."))
-DEFINE_ACTION("options",    _("Options..."))
-DEFINE_ACTION("resize",     _("Resize..."))
+DEFINE_ACTION("properties",     _("Properties..."))
+DEFINE_ACTION("options",        _("Options..."))
+DEFINE_ACTION("resize-canvas",  _("Resize..."))
 
 // actions in Layer menu
 DEFINE_ACTION("amount-inc", _("Increase Layer Amount"))
@@ -1148,7 +1148,7 @@ DEFINE_ACTION("switch-to-rightmost-tab",  _("Switch to Rightmost Tab"))
 "	<menu action='menu-canvas'>"
 "		<menuitem action='properties'/>"
 "		<menuitem action='options'/>"
-"		<menuitem action='resize'/>"
+"		<menuitem action='resize-canvas'/>"
 "	</menu>"
 "	<menu action='menu-toolbox'>"
 "	</menu>"
