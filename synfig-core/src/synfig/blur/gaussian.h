@@ -62,6 +62,7 @@ typename T::pointer SC3)
 	typename T::value_type Tmp1,Tmp2,SR0,SR1,SR2,SR3;
 
 	// Setup the row buffers
+	SC0[0] = SC0[1] = typename T::value_type();
 	for(x=0;x<w;x++)SC0[x+2]=(pen.x()[x])*24;
 	memset((void *)SC1,0,(w+2)*sizeof(typename T::value_type));
 	memset((void *)SC2,0,(w+2)*sizeof(typename T::value_type));

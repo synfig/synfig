@@ -951,13 +951,6 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 			float *SC2=new float[w+2];
 			float *SC3=new float[w+2];
 
-			memset(SC0,0,(w+2)*sizeof(float));
-			memset(SC0,0,(w+2)*sizeof(float));
-			memset(SC0,0,(w+2)*sizeof(float));
-			memset(SC0,0,(w+2)*sizeof(float));
-
-			//int i = 0;
-
 			while(bw&&bh)
 			{
 				if (!blurcall.amount_complete(max-(bw+bh),max)) {
