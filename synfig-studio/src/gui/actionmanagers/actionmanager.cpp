@@ -315,9 +315,8 @@ UserShortcutList::apply(Glib::RefPtr<Gtk::Application> app, const ActionDatabase
 		return;
 	}
 
-	auto action_list = app->list_action_descriptions();
-	for (const auto& item_name : action_list)
-		app->unset_accels_for_action(item_name);
+	for (const auto& entry : actions.get_entries())
+		app->unset_accels_for_action(entry.name_);
 
 	for (const auto& item : shortcuts) {
 		const std::string& action_name = item.first;
