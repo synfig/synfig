@@ -259,34 +259,34 @@
 					<section>
 						<item>
 							<attribute name="label" translatable="yes">_Decrease Low-Res Pixel Size</attribute>
-							<attribute name="action">doc.dec-lowres-pixel</attribute>
+							<attribute name="action">doc.decrease-low-res-pixel-size</attribute>
 	          				<attribute name="accel">&lt;Control&gt;parenleft</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Increase Low-Res Pixel Size</attribute>
-							<attribute name="action">doc.inc-lowres-pixel</attribute>
+							<attribute name="action">doc.increase-low-res-pixel-size</attribute>
 	          				<attribute name="accel">&lt;Control&gt;parenright</attribute>
 						</item>
 					</section>
 					<section>
 						<item>
 							<attribute name="label" translatable="yes">_Set Low-Res pixel size to 2</attribute>
-							<attribute name="action">doc.lowres-pixel</attribute>
+							<attribute name="action">doc.set-lowres-pixel</attribute>
 	          				<attribute name="target" type="i">2</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Set Low-Res pixel size to 4</attribute>
-							<attribute name="action">doc.lowres-pixel</attribute>
+							<attribute name="action">doc.set-lowres-pixel</attribute>
 	          				<attribute name="target" type="i">4</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Set Low-Res pixel size to 8</attribute>
-							<attribute name="action">doc.lowres-pixel</attribute>
+							<attribute name="action">doc.set-lowres-pixel</attribute>
 	          				<attribute name="target" type="i">8</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Set Low-Res pixel size to 16</attribute>
-							<attribute name="action">doc.lowres-pixel</attribute>
+							<attribute name="action">doc.set-lowres-pixel</attribute>
 	          				<attribute name="target" type="i">16</attribute>
 						</item>
 					</section>
@@ -295,25 +295,25 @@
 			<section>
 						<item>
 							<attribute name="label" translatable="yes">_Show Ruler</attribute>
-							<attribute name="action">doc.show-ruler</attribute>
+							<attribute name="action">doc.toggle-rulers-show</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Show Grid</attribute>
-							<attribute name="action">doc.show-grid</attribute>
+							<attribute name="action">doc.toggle-grid-show</attribute>
 	          				<attribute name="accel">numbersign</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Snap to Grid</attribute>
-							<attribute name="action">doc.snap-grid</attribute>
+							<attribute name="action">doc.toggle-grid-snap</attribute>
 	          				<attribute name="accel">&lt;Control&gt;L</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Show Guides</attribute>
-							<attribute name="action">doc.show-guides</attribute>
+							<attribute name="action">doc.toggle-guide-show</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Snap to Guides</attribute>
-							<attribute name="action">doc.snap-guides</attribute>
+							<attribute name="action">doc.toggle-guide-snap</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Use Low-Res</attribute>
@@ -322,40 +322,40 @@
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Enable rendering in background</attribute>
-							<attribute name="action">doc.background-rendering</attribute>
+							<attribute name="action">doc.toggle-background-rendering</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Show Onion Skin</attribute>
-							<attribute name="action">doc.onion-skin</attribute>
+							<attribute name="action">doc.toggle-onion-skin</attribute>
 	          				<attribute name="accel">&lt;Alt&gt;O</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Onion Skin on Keyframes</attribute>
-							<attribute name="action">doc.onion-skin-keyframes</attribute>
+							<attribute name="action">doc.toggle-onion-skin-keyframes</attribute>
 						</item>
 				</section>
 				<section>
                     <item>
                         <attribute name="label" translatable="yes">_Zoom In</attribute>
-                        <attribute name="action">doc.zoom-in</attribute>
+                        <attribute name="action">doc.canvas-zoom-in</attribute>
                         <attribute name="accel">equal</attribute>
                         <attribute name="icon">zoom-in</attribute>
                     </item>
                     <item>
                         <attribute name="label" translatable="yes">_Zoom Out</attribute>
-                        <attribute name="action">doc.zoom-out</attribute>
+                        <attribute name="action">doc.canvas-zoom-out</attribute>
                         <attribute name="accel">minus</attribute>
                         <attribute name="icon">zoom-out</attribute>
                     </item>
                     <item>
                         <attribute name="label" translatable="yes">_Best Fit</attribute>
-                        <attribute name="action">doc.zoom-fit</attribute>
+                        <attribute name="action">doc.canvas-zoom-fit</attribute>
                         <attribute name="accel">0</attribute>
                         <attribute name="icon">zoom-fit-best</attribute>
                     </item>
                     <item>
                         <attribute name="label" translatable="yes">_Normal Size</attribute>
-                        <attribute name="action">doc.zoom-norm</attribute>
+                        <attribute name="action">doc.canvas-zoom-100</attribute>
                         <attribute name="icon">zoom-original</attribute>
                     </item>
 				</section>
@@ -395,126 +395,6 @@
 <!-- toolbox -->
 		<submenu id="menu-tools">
 			<attribute name="label" translatable="yes">_Toolbox</attribute>
-                <item>
-                    <attribute name="label" translatable="yes">_Transform Tool</attribute>
-                    <attribute name="action">app.state-normal</attribute>
-                    <attribute name="icon">tool_normal_icon</attribute>
-                    <attribute name="accel">S</attribute>
-                </item>
-                <item>
-                    <attribute name="label" translatable="yes">_SmoothMove Tool</attribute>
-                    <attribute name="action">app.state-smooth-move</attribute>
-                    <attribute name="icon">tool_smooth_move_icon</attribute>
-                    <attribute name="accel">M</attribute>
-                </item>
-                <item>
-                    <attribute name="label" translatable="yes">_Scale Tool</attribute>
-                    <attribute name="action">app.state-scale</attribute>
-                    <attribute name="icon">tool_scale_icon</attribute>
-                    <attribute name="accel">L</attribute>
-                </item>
-                <item>
-                    <attribute name="label" translatable="yes">_Rotate Tool</attribute>
-                    <attribute name="action">app.state-rotate</attribute>
-                    <attribute name="icon">tool_rotate_icon</attribute>
-                    <attribute name="accel">A</attribute>
-                </item>
-                <item>
-                    <attribute name="label" translatable="yes">_Mirror Tool</attribute>
-                    <attribute name="action">app.state-mirror</attribute>
-                    <attribute name="icon">tool_mirror_icon</attribute>
-                    <attribute name="accel">I</attribute>
-                </item>
-                <item>
-                    <attribute name="label" translatable="yes">_Circle Tool</attribute>
-                    <attribute name="action">app.state-circle</attribute>
-                    <attribute name="icon">tool_circle_icon</attribute>
-                    <attribute name="accel">E</attribute>
-                </item>
-                <item>
-                    <attribute name="label" translatable="yes">_Rectangle Tool</attribute>
-                    <attribute name="action">app.state-rectangle</attribute>
-                    <attribute name="icon">tool_rectangle_icon</attribute>
-                    <attribute name="accel">R</attribute>
-                </item>
-                <item>
-                    <attribute name="label" translatable="yes">_Star Tool</attribute>
-                    <attribute name="action">app.state-star</attribute>
-                    <attribute name="icon">tool_star_icon</attribute>
-                    <attribute name="accel">asterisk</attribute>
-                </item>
-                <item>
-                    <attribute name="label" translatable="yes">_Polygon Tool</attribute>
-                    <attribute name="action">app.state-polygon</attribute>
-                    <attribute name="icon">tool_polyline_icon</attribute>
-                    <attribute name="accel">O</attribute>
-                </item>
-                <item>
-                    <attribute name="label" translatable="yes">_Gradient Tool</attribute>
-                    <attribute name="action">app.state-gradient</attribute>
-                    <attribute name="icon">tool_gradient_icon</attribute>
-                    <attribute name="accel">G</attribute>
-                </item>
-                <item>
-                    <attribute name="label" translatable="yes">_Spline Tool</attribute>
-                    <attribute name="action">app.state-bline</attribute>
-                    <attribute name="icon">tool_spline_icon</attribute>
-                    <attribute name="accel">B</attribute>
-                </item>
-                <item>
-                    <attribute name="label" translatable="yes">_Draw Tool</attribute>
-                    <attribute name="action">app.state-draw</attribute>
-                    <attribute name="icon">tool_draw_icon</attribute>
-                    <attribute name="accel">P</attribute>
-                </item>
-                <item>
-                    <attribute name="label" translatable="yes">_Cutout Tool</attribute>
-                    <attribute name="action">app.state-lasso</attribute>
-                    <attribute name="icon">tool_cutout_icon</attribute>
-                    <attribute name="accel">C</attribute>
-                </item>
-                <item>
-                    <attribute name="label" translatable="yes">_Width Tool</attribute>
-                    <attribute name="action">app.state-width</attribute>
-                    <attribute name="icon">tool_width_icon</attribute>
-                    <attribute name="accel">W</attribute>
-                </item>
-                <item>
-                    <attribute name="label" translatable="yes">_Fill Tool</attribute>
-                    <attribute name="action">app.state-fill</attribute>
-                    <attribute name="icon">tool_fill_icon</attribute>
-                    <attribute name="accel">U</attribute>
-                </item>
-                <item>
-                    <attribute name="label" translatable="yes">_Eyedropper Tool</attribute>
-                    <attribute name="action">app.state-eyedrop</attribute>
-                    <attribute name="icon">tool_eyedrop_icon</attribute>
-                    <attribute name="accel">D</attribute>
-                </item>
-                <item>
-                    <attribute name="label" translatable="yes">_Skeleton Tool</attribute>
-                    <attribute name="action">app.state-bone</attribute>
-                    <attribute name="icon">tool_skeleton_icon</attribute>
-                    <attribute name="accel">D</attribute>
-                </item>
-                <item>
-                    <attribute name="label" translatable="yes">_Text Tool</attribute>
-                    <attribute name="action">app.state-text</attribute>
-                    <attribute name="icon">tool_text_icon</attribute>
-                    <attribute name="accel">T</attribute>
-                </item>
-                <item>
-                    <attribute name="label" translatable="yes">_Sketch Tool</attribute>
-                    <attribute name="action">app.state-sketch</attribute>
-                    <attribute name="icon">tool_sketch_icon</attribute>
-                    <attribute name="accel">K</attribute>
-                </item>
-                <item>
-                    <attribute name="label" translatable="yes">_Zoom Tool</attribute>
-                    <attribute name="action">app.state-zoom</attribute>
-                    <attribute name="icon">tool_zoom_icon</attribute>
-                    <attribute name="accel">Z</attribute>
-                </item>
 		</submenu>
 <!-- Layers menu -->
 		<submenu id="menu-layer">
