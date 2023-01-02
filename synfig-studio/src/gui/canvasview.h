@@ -42,6 +42,8 @@
 
 #include <gdkmm/device.h>
 
+#include <giomm/simpleactiongroup.h>
+
 #include <glibmm/dispatcher.h>
 
 #include <gtkmm/button.h>
@@ -334,6 +336,7 @@ private:
 	//! Menu members
 	Gtk::Menu parammenu;
 
+// apagar
 	Gtk::UIManager::ui_merge_id merge_id_popup_;
 	Gtk::UIManager::ui_merge_id merge_id_toolbar_;
 
@@ -351,6 +354,7 @@ private:
 	Gtk::RadioButtonGroup low_res_pixel_size_group;
 
 	Glib::RefPtr<Gtk::ActionGroup> action_group;
+	Glib::RefPtr<Gio::SimpleActionGroup> action_group_;
 	bool _action_group_removed;
 
 	etl::handle<synfigapp::UIInterface> ui_interface_;

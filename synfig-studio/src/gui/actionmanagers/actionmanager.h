@@ -72,6 +72,7 @@ public:
 		Entry(const std::string& action_name, const std::string& label, const std::vector<Glib::ustring>& accelerators);
 		Entry(const std::string& action_name, const std::string& label, const std::string& accelerator);
 		Entry(const std::string& action_name, const std::string& label, const std::string& accelerator, const std::string& icon);
+		Entry(const std::string& action_name, const std::string& label, const std::string& accelerator, const std::string& icon, const std::string& tooltip);
 		static Entry create_from_synfigapp_action(const std::string& action_name, const std::string& accelerator);
 
 		std::string get_menu_item_string(Glib::RefPtr<Gtk::Application> app) const;

@@ -108,5 +108,11 @@ StateManager::add_state(const Smach::state_base* state)
 												  state
 											  ));
 
+	std::string action_name = "win.set-tool-" + name;
+	auto action_entry = App::get_action_manager()->get(action_name);
+	auto menu_item = Gio::MenuItem::create(action_entry.label_, action_name);
+	menu_item->set_icon(Gio::Icon::create(action_entry.icon_));
+	App::menu_tools->append_item(menu_item);
+
 	App::dock_toolbox->add_state(state);
 }
