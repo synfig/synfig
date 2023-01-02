@@ -209,7 +209,7 @@ Dock_Toolbox::add_state(const Smach::state_base* state)
 
 	String name=state->get_name();
 
-	const ActionDatabase::Entry& entry = App::get_action_database()->get("app.set-tool-" + name);
+	const ActionDatabase::Entry& entry = App::get_action_database()->get("win.set-tool-" + name);
 
 	Gtk::RadioToolButton *tool_button = manage(new Gtk::RadioToolButton());
 	tool_button->set_label(entry.label_);
@@ -234,7 +234,7 @@ Dock_Toolbox::add_state(const Smach::state_base* state)
 	state_button_map[name] = std::make_pair(tool_button, state);
 
 	tool_button->signal_clicked().connect([name]() {
-		App::instance()->activate_action("set-tool-" + name);
+		App::instance()->main_window->activate_action("set-tool-" + name);
 	});
 
 	refresh();
