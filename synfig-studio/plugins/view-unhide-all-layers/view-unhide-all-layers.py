@@ -17,7 +17,7 @@ def process(filename):
 	
 	tree = ET.parse(filename)
 	root = tree.getroot()
-	for inactive_layer in root.findall('layer[@active="false"]'):
+	for inactive_layer in root.findall('.//layer[@active="false"]'):
 		inactive_layer.set('active', 'true')
 	tree.write(filename, encoding='UTF-8')
 
