@@ -73,6 +73,11 @@ ActionManager::Entry::Entry(const std::string& action_name, const std::string& l
 {
 }
 
+ActionManager::Entry::Entry(const std::string& action_name, const std::string& label, const std::string& accelerator, const std::string& icon, const std::string& tooltip)
+	: name_(action_name), label_(label), accelerators_({accelerator}), icon_(icon), tooltip_(tooltip)
+{
+}
+
 std::string
 ActionManager::Entry::get_menu_item_string(Glib::RefPtr<Gtk::Application> app) const
 {
@@ -311,9 +316,8 @@ UserShortcutList::apply(Glib::RefPtr<Gtk::Application> app, const ActionManager&
 		return;
 	}
 
-	auto action_list = app->list_action_descriptions();
-	for (const auto& item_name : action_list)
-		app->unset_accels_for_action(item_name);
+	for (const auto& entry : actions.get_entries())
+		app->unset_accels_for_action(entry.name_);
 
 	for (const auto& item : shortcuts) {
 		const std::string& action_name = item.first;

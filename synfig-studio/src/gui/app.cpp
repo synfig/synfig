@@ -293,6 +293,14 @@ String        studio::App::default_background_layer_image = "undefined";
 synfig::Color studio::App::preview_background_color =
 	synfig::Color(0.742187, 0.742187, 0.742187, 1.000000);  //X11 Gray
 
+Glib::RefPtr<Gio::Menu> studio::App::menu_recent_files;
+Glib::RefPtr<Gio::Menu> studio::App::menu_plugins;
+Glib::RefPtr<Gio::Menu> studio::App::menu_layers;
+Glib::RefPtr<Gio::Menu> studio::App::menu_tools;
+Glib::RefPtr<Gio::Menu> studio::App::menu_window_custom_workspaces;
+Glib::RefPtr<Gio::Menu> studio::App::menu_window_docks;
+Glib::RefPtr<Gio::Menu> studio::App::menu_window_canvas;
+
 bool   studio::App::enable_mainwin_menubar = true;
 bool   studio::App::enable_mainwin_toolbar = true;
 String studio::App::ui_language ("os_LANG");
@@ -1297,6 +1305,49 @@ DEFINE_ACTION("switch-to-rightmost-tab",  _("Switch to Rightmost Tab"))
 	}
 }
 
+static const ActionManager::EntryList app_action_db =
+{
+	{"app.new",            N_("New"),            {"<Primary>n"}, "action_doc_new_icon", N_("Create a new document")},
+	{"app.open",           N_("Open"),           {"<Primary>o"}, "action_doc_open_icon", N_("Open an existing document")},
+	{"app.quit",           N_("Quit"),           {"<Primary>q"}, "application-exit", N_("Quit application")},
+	{"app.setup",          N_("Preferences..."), {},             "application-preferences"},
+	{"app.help",           N_("Help"),           {"F1"},         "help-contents"},
+#if GTK_CHECK_VERSION(3, 20, 0)
+	{"app.help-shortcuts", N_("Keyboard Shortcuts"),         {}, ""},
+#endif
+	{"app.help-tutorials", N_("Tutorials"),                  {}, ""},
+	{"app.help-reference", N_("Reference"),                  {}, ""},
+	{"app.help-faq",       N_("Frequently Asked Questions"), {}, "help-faq"},
+	{"app.help-support",   N_("Get Support"),                {}, ""},
+	{"app.help-about",     N_("About Synfig Studio"),        {}, "help-about"},
+};
+
+/* === P R O C E D U R E S ================================================= */
+
+/* === M E T H O D S ======================================================= */
+
+static void
+init_app_actions()
+{
+	Glib::RefPtr<Gio::ActionMap> action_map = App::instance();
+	action_map->add_action("new", sigc::hide_return(sigc::ptr_fun(&App::new_instance)));
+	action_map->add_action("open", sigc::hide_return(sigc::bind(sigc::ptr_fun(&App::dialog_open), synfig::filesystem::Path{})));
+	action_map->add_action("quit", sigc::hide_return(sigc::ptr_fun(&App::quit)));
+	action_map->add_action("setup", sigc::ptr_fun(&App::show_setup));
+	action_map->add_action("help", sigc::ptr_fun(App::dialog_help));
+#if GTK_CHECK_VERSION(3, 20, 0)
+	action_map->add_action("help-shortcuts", sigc::ptr_fun(App::window_shortcuts));
+#endif
+	action_map->add_action("help-tutorials", sigc::bind(sigc::ptr_fun(&App::open_uri), _("https://synfig.readthedocs.io/en/latest/tutorials.html")));
+	action_map->add_action("help-reference", sigc::bind(sigc::ptr_fun(&App::open_uri), _("https://wiki.synfig.org/Category:Reference")));
+	action_map->add_action("help-faq", sigc::bind(sigc::ptr_fun(&App::open_uri), _("https://wiki.synfig.org/FAQ")));
+	action_map->add_action("help-support", sigc::bind(sigc::ptr_fun(&App::open_uri), _("https://forums.synfig.org/")));
+	action_map->add_action("help-about", sigc::ptr_fun(App::dialog_about));
+
+	for (const auto& entry : app_action_db)
+		App::get_action_manager()->add(entry);
+}
+
 const std::map<const char*, const char*>&
 App::get_default_accel_map()
 {
@@ -1316,9 +1367,9 @@ App::get_default_accel_map()
 		{"<control>i",              "<Actions>/canvasview/import"},
 		{"numbersign",              "<Actions>/canvasview/toggle-grid-show"},
 		{"<Control>l",              "<Actions>/canvasview/toggle-grid-snap"},
-		{"<Control>n",              "<Actions>/mainwindow/new"},
-		{"<Control>o",              "<Actions>/mainwindow/open"},
-		{"<Control>e",              "<Actions>/mainwindow/save-all"},
+//		{"<Control>n",              "<Actions>/mainwindow/new"},
+//		{"<Control>o",              "<Actions>/mainwindow/open"},
+//		{"<Control>e",              "<Actions>/mainwindow/save-all"},
 		{"<Primary>1",              "<Actions>/mainwindow/switch-to-tab-1"},
 		{"<Primary>2",              "<Actions>/mainwindow/switch-to-tab-2"},
 		{"<Primary>3",              "<Actions>/mainwindow/switch-to-tab-3"},
@@ -1520,6 +1571,31 @@ void App::init(const synfig::String& rootpath)
 	init_icon_themes();
 	init_icons(path_to_icons);
 
+	auto builder = Gtk::Builder::create();
+	try
+	{
+		builder->add_from_file(ResourceHelper::get_ui_path("studio_menubar.xml"));
+	}
+	catch (const Glib::Error& ex)
+	{
+		std::cerr << "Building menus failed: " << ex.what();
+	}
+
+	auto object = builder->get_object("studio_menubar");
+	auto gmenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(object);
+	if (!gmenu) {
+		g_warning("GMenu not found");
+	} else {
+		set_menubar(gmenu);
+		menu_recent_files = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-recent-files"));
+		menu_plugins = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-plugins"));
+//		menu_layers = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-layer"));
+		menu_tools = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-tools"));
+		menu_window_custom_workspaces = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-window-custom-workspaces"));
+		menu_window_docks = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-window-docks"));
+		menu_window_canvas = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-window-canvas"));
+	}
+
 	try
 	{
 		// Try to load settings early to get access to some important
@@ -1553,6 +1629,7 @@ void App::init(const synfig::String& rootpath)
 
 		App::ui_manager_=studio::UIManager::create();
 		init_ui_manager();
+		init_app_actions();
 
 		studio_init_cb.task(_("Init Dock Manager..."));
 		dock_manager=new studio::DockManager();

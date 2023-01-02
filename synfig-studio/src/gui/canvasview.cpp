@@ -678,8 +678,10 @@ CanvasView::~CanvasView()
 	// but i didn't think it worth to spend time to it, because remove_action_group is deprecated
 	// and this code is required to rewrite.
 
-	if (!this->_action_group_removed)
+	if (!this->_action_group_removed) {
 		App::ui_manager()->remove_action_group(action_group);
+		App::main_window->remove_action_group("doc");
+	}
 
 	// Shut down the smach
 	smach_.egress();
@@ -708,6 +710,7 @@ void CanvasView::activate()
 	activation_index_.activate();
 	get_smach().process_event(EVENT_REFRESH_TOOL_OPTIONS);
 	App::ui_manager()->insert_action_group(action_group);
+	App::main_window->insert_action_group("doc", action_group_);
 	this->_action_group_removed = false;
 	update_title();
 	present();
@@ -718,6 +721,7 @@ void CanvasView::deactivate()
 {
 	get_smach().process_event(EVENT_YIELD_TOOL_OPTIONS);
 	App::ui_manager()->remove_action_group(action_group);
+	App::main_window->remove_action_group("doc");
 	this->_action_group_removed = true;
 	update_title();
 }
@@ -1420,6 +1424,7 @@ CanvasView::init_menus()
 	};
 
 	action_group = Gtk::ActionGroup::create("canvasview");
+	action_group_ = Gio::SimpleActionGroup::create();
 
 	for (const auto& item : action_list) {
 		if (!item.icon.empty()) {
@@ -1429,11 +1434,15 @@ CanvasView::init_menus()
 		} else {
 			action_group->add( Gtk::Action::create(item.name, _(item.label.c_str()), _(item.tooltip.c_str())), item.slot);
 		}
+		action_group_->add_action(item.name, item.slot);
 	}
 
 	// Prevent call to preview window before preview option has created the preview window
 	action_group->get_action("dialog-flipbook")->set_sensitive(false);
 
+	Glib::RefPtr<Gio::SimpleAction>::cast_static(action_group_->lookup_action("dialog-flipbook"))->set_enabled(false);
+
+	// Plugins
 	auto instance = get_instance().get();
 	for ( const auto& plugin : App::plugin_manager.plugins() )
 	{
@@ -1442,6 +1451,7 @@ CanvasView::init_menus()
 			Gtk::Action::create(id, plugin.name.get()),
 			[instance, id](){instance->run_plugin(id, true);}
 		);
+		action_group_->add_action("plugin-" + id, [instance, id](){ instance->run_plugin(id, true); });
 	}
 
 	// Low-Res Quality Menu
@@ -1458,6 +1468,12 @@ CanvasView::init_menus()
 			action,
 			sigc::bind(sigc::mem_fun(*work_area, &WorkArea::set_low_res_pixel_size), i) );
 	}
+	const int initial_low_res_pixel_size = 2;
+	action_group_->add_action_radio_integer("set-lowres-pixel", sigc::track_obj([=](int n) {
+		action_group_->lookup_action("set-lowres-pixel")->change_state(n);
+		work_area->set_low_res_pixel_size(n);
+	}, *this), initial_low_res_pixel_size);
+	work_area->set_low_res_pixel_size(initial_low_res_pixel_size);
 
 	struct BoolActionMetadata {
 		std::string name;
@@ -1482,6 +1498,8 @@ CanvasView::init_menus()
 
 	for (const auto& item : bool_action_list) {
 		bool current_value = (work_area->*item.slot_to_get)();
+		auto action_name = item.name;
+		action_group_->add_action_bool(action_name, sigc::mem_fun(*this, item.slot_to_toogle), current_value);
 
 		auto action = Gtk::ToggleAction::create(item.name, _(item.label.c_str()));
 		action->set_active(current_value);
@@ -1508,6 +1526,8 @@ CanvasView::init_menus()
 		action= Gtk::ToggleAction::create("mask-none-ducks", _("Toggle None/Last visible Handles"));
 		action->set_active(false);
 		action_group->add(action,  sigc::mem_fun(*this,&CanvasView::toggle_duck_mask_all));
+		action_group_->add_action_bool("mask-none-ducks", sigc::mem_fun(*this, &CanvasView::toggle_duck_mask_all));
+
 		struct DuckActionMetaData {
 			std::string action;
 			Duck::Type type;
@@ -1533,14 +1553,17 @@ CanvasView::init_menus()
 			action=Gtk::ToggleAction::create(item.action, _(item.label));
 			action->set_active(duck_active);
 			action_group->add(action, duck_slot);
+			action_group_->add_action_bool(item.action, duck_slot, duck_active);
 		}
 		action_mask_bone_setup_ducks = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("mask-angle-ducks"));
 		action_mask_bone_recursive_ducks = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("mask-bone-recursive-ducks"));
 
 		action_group->add(Gtk::Action::create("mask-bone-ducks", _("Next Bone Handles")),
 						  sigc::mem_fun(*this,&CanvasView::mask_bone_ducks));
+		action_group_->add_action("mask-bone-ducks", sigc::mem_fun(*this,&CanvasView::mask_bone_ducks));
 	}
 
+	insert_action_group("doc", action_group_);
 }
 
 void
@@ -1674,9 +1697,10 @@ CanvasView::popup_layer_menu(Layer::Handle layer)
 void
 CanvasView::popup_main_menu()
 {
-	Gtk::Menu* menu = dynamic_cast<Gtk::Menu*>(App::ui_manager()->get_widget("/menu-main"));
+	auto menu = new Gtk::Menu(App::instance()->get_menubar());
 	if(menu)
 	{
+		menu->attach_to_widget(*this);
 		//menu->set_accel_group(App::ui_manager()->get_accel_group());
 		//menu->accelerate(*this);
 		menu->popup(0,gtk_get_current_event_time());
@@ -2263,6 +2287,7 @@ CanvasView::decrease_low_res_pixel_size()
 				assert(action);
 				action->activate(); // to make sure the radiobutton in the menu is updated too
 				work_area->set_low_resolution_flag(true);
+				action_group_->lookup_action("set-lowres-pixel")->activate(*iter);
 			}
 			break;
 		}
@@ -2302,6 +2327,7 @@ CanvasView::increase_low_res_pixel_size()
 				assert(action);
 				action->activate(); // to make sure the radiobutton in the menu is updated too
 				work_area->set_low_resolution_flag(true);
+				action_group_->lookup_action("set-lowres-pixel")->activate(*iter);
 			}
 			break;
 		}
@@ -2325,6 +2351,7 @@ CanvasView::toggle_low_res_pixel_flag()
 	// Update the "toggle-low-res" action
 	Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
 	action->set_active(work_area->get_low_resolution_flag());
+	action_group_->lookup_action("toggle-low-res")->change_state(work_area->get_low_resolution_flag());
 	changing_resolution_=false;
 }
 
@@ -2344,6 +2371,7 @@ CanvasView::toggle_show_ruler()
 {
 	bool visible = !(work_area->get_show_rulers());
 	work_area->set_show_rulers(visible);
+	action_group_->lookup_action("toggle-rulers-show")->change_state(visible);
 }
 
 void
@@ -2357,6 +2385,7 @@ CanvasView::toggle_show_grid()
 	set_grid_show_toggle(work_area->grid_status());
 	// Update the toggle grid show check button
 	show_grid->set_active(work_area->grid_status());
+	action_group_->lookup_action("toggle-grid-show")->change_state(work_area->grid_status());
 	toggling_show_grid=false;
 }
 
@@ -2371,6 +2400,7 @@ CanvasView::toggle_snap_grid()
 	set_grid_snap_toggle(work_area->get_grid_snap());
 	// Update the toggle grid snap check button
 	snap_grid->set_active(work_area->get_grid_snap());
+	action_group_->lookup_action("toggle-grid-snap")->change_state(work_area->get_grid_snap());
 	toggling_snap_grid=false;
 }
 
@@ -2383,6 +2413,7 @@ CanvasView::toggle_show_guides()
 	work_area->toggle_show_guides();
 	set_guides_show_toggle(work_area->get_show_guides());
 	show_guides->set_active(work_area->get_show_guides());
+	action_group_->lookup_action("toggle-guide-show")->change_state(work_area->get_show_guides());
 	toggling_show_guides=false;
 }
 
@@ -2395,6 +2426,7 @@ CanvasView::toggle_snap_guides()
 	work_area->toggle_guide_snap();
 	set_guides_snap_toggle(work_area->get_guide_snap());
 	snap_guides->set_active(work_area->get_guide_snap());
+	action_group_->lookup_action("toggle-guide-snap")->change_state(work_area->get_guide_snap());
 	toggling_snap_guides=false;
 }
 
@@ -2409,6 +2441,7 @@ CanvasView::toggle_onion_skin()
 	set_onion_skin_toggle(work_area->get_onion_skin());
 	// Update the toggle onion skin button
 	onion_skin->set_active(work_area->get_onion_skin());
+	action_group_->lookup_action("toggle-onion-skin")->change_state(work_area->get_onion_skin());
 	toggling_onion_skin=false;
 }
 
@@ -2421,6 +2454,7 @@ CanvasView::toggle_onion_skin_keyframes()
 	work_area->set_onion_skin_keyframes(!work_area->get_onion_skin_keyframes());
 	set_onion_skin_keyframes_toggle(work_area->get_onion_skin_keyframes());
 	onion_skin_keyframes->set_active(work_area->get_onion_skin_keyframes());
+	action_group_->lookup_action("toggle-onion-skin-keyframes")->change_state(work_area->get_onion_skin_keyframes());
 	toggling_onion_skin_keyframes=false;
 }
 
@@ -2435,6 +2469,7 @@ CanvasView::toggle_background_rendering()
 	set_background_rendering_toggle(work_area->get_background_rendering());
 	// Update the toggle background rendering button
 	background_rendering_button->set_active(work_area->get_background_rendering());
+	action_group_->lookup_action("toggle-background-rendering")->change_state(work_area->get_background_rendering());
 	toggling_background_rendering=false;
 }
 
@@ -3073,6 +3108,15 @@ CanvasView::toggle_duck_mask(Duckmatic::Type type)
 	try
 	{
 		// Update the toggle ducks actions
+
+		action_group_->lookup_action("mask-position-ducks")->change_state(bool(work_area->get_type_mask()&Duck::TYPE_POSITION));
+		action_group_->lookup_action("mask-tangent-ducks")->change_state(bool(work_area->get_type_mask()&Duck::TYPE_TANGENT));
+		action_group_->lookup_action("mask-vertex-ducks")->change_state(bool(work_area->get_type_mask()&Duck::TYPE_VERTEX));
+		action_group_->lookup_action("mask-radius-ducks")->change_state(bool(work_area->get_type_mask()&Duck::TYPE_RADIUS));
+		action_group_->lookup_action("mask-width-ducks")->change_state(bool(work_area->get_type_mask()&Duck::TYPE_WIDTH));
+		action_group_->lookup_action("mask-angle-ducks")->change_state(bool(work_area->get_type_mask()&Duck::TYPE_ANGLE));
+
+
 		Glib::RefPtr<Gtk::ToggleAction> action;
 		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-position-ducks"));
 		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_POSITION));
@@ -3086,6 +3130,7 @@ CanvasView::toggle_duck_mask(Duckmatic::Type type)
 		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_WIDTH));
 		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-angle-ducks"));
 		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_ANGLE));
+
 		// Update toggle ducks buttons
 		action->get_active();
 		toggleducksdial.update_toggles(work_area->get_type_mask());
@@ -3372,6 +3417,7 @@ CanvasView::on_preview_create(const PreviewInfo &info)
 	preview_dialog.present();
 
 	// Preview Window created, the action can be enabled
+	Glib::RefPtr<Gio::SimpleAction>::cast_static(action_group_->lookup_action("dialog-flipbook"))->set_enabled(true);
 	{
 		Glib::RefPtr< Gtk::Action > action = action_group->get_action("dialog-flipbook");
 		action->set_sensitive(true);
@@ -3464,7 +3510,7 @@ CanvasView::get_popup_id()
 {
 	return merge_id_popup_;
 }
-
+// apagar
 void
 CanvasView::set_popup_id(Gtk::UIManager::ui_merge_id popup_id)
 {
