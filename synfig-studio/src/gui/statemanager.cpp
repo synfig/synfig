@@ -54,27 +54,27 @@ using namespace studio;
 
 static const ActionManager::EntryList known_states_db =
 {
-	{"app.set-tool-normal",      N_("Transform Tool"),  {"s"}, "tool_normal_icon"},
-	{"app.set-tool-smooth_move", N_("SmoothMove Tool"), {"m"}, "tool_smooth_move_icon"},
-	{"app.set-tool-scale",       N_("Scale Tool"),      {"l"}, "tool_scale_icon"},
-	{"app.set-tool-rotate",      N_("Rotate Tool"),     {"a"}, "tool_rotate_icon"},
-	{"app.set-tool-mirror",      N_("Mirror Tool"),     {"i"}, "tool_mirror_icon"},
-	{"app.set-tool-circle",      N_("Circle Tool"),     {"e"}, "tool_circle_icon"},
-	{"app.set-tool-rectangle",   N_("Rectangle Tool"),  {"r"}, "tool_rectangle_icon"},
-	{"app.set-tool-star",        N_("Star Tool"),       {"asterisk"}, "tool_star_icon"},
-	{"app.set-tool-gradient",    N_("Gradient Tool"),   {"g"}, "tool_gradient_icon"},
-	{"app.set-tool-polygon",     N_("Polygon Tool"),    {"o"}, "tool_polyline_icon"}, // icon name does not match state name
-	{"app.set-tool-bline",       N_("Spline Tool"),     {"b"}, "tool_spline_icon"},   // icon name does not match state name
-	{"app.set-tool-bone",        N_("Skeleton Tool"),   {"n"}, "tool_skeleton_icon"}, // icon name does not match state name
-	{"app.set-tool-text",        N_("Text Tool"),       {"t"}, "tool_text_icon"},
-	{"app.set-tool-fill",        N_("Fill Tool"),       {"u"}, "tool_fill_icon"},
-	{"app.set-tool-eyedrop",     N_("Eyedrop Tool"),    {"d"}, "tool_eyedrop_icon"},
-	{"app.set-tool-lasso",       N_("Cutout Tool"),     {"c"}, "tool_cutout_icon"},   // icon name does not match state name
-	{"app.set-tool-zoom",        N_("Zoom Tool"),       {"z"}, "tool_zoom_icon"},
-	{"app.set-tool-draw",        N_("Draw Tool"),       {"p"}, "tool_draw_icon"},
-	{"app.set-tool-sketch",      N_("Sketch Tool"),     {"k"}, "tool_sketch_icon"},
-	{"app.set-tool-width",       N_("Width Tool"),      {"w"}, "tool_width_icon"},
-	{"app.set-tool-brush",       N_("Brush Tool"),      {}, "tool_brush_icon"},
+	{"win.set-tool-normal",      N_("Transform Tool"),  {"s"}, "tool_normal_icon"},
+	{"win.set-tool-smooth_move", N_("SmoothMove Tool"), {"m"}, "tool_smooth_move_icon"},
+	{"win.set-tool-scale",       N_("Scale Tool"),      {"l"}, "tool_scale_icon"},
+	{"win.set-tool-rotate",      N_("Rotate Tool"),     {"a"}, "tool_rotate_icon"},
+	{"win.set-tool-mirror",      N_("Mirror Tool"),     {"i"}, "tool_mirror_icon"},
+	{"win.set-tool-circle",      N_("Circle Tool"),     {"e"}, "tool_circle_icon"},
+	{"win.set-tool-rectangle",   N_("Rectangle Tool"),  {"r"}, "tool_rectangle_icon"},
+	{"win.set-tool-star",        N_("Star Tool"),       {"asterisk"}, "tool_star_icon"},
+	{"win.set-tool-gradient",    N_("Gradient Tool"),   {"g"}, "tool_gradient_icon"},
+	{"win.set-tool-polygon",     N_("Polygon Tool"),    {"o"}, "tool_polyline_icon"}, // icon name does not match state name
+	{"win.set-tool-bline",       N_("Spline Tool"),     {"b"}, "tool_spline_icon"},   // icon name does not match state name
+	{"win.set-tool-bone",        N_("Skeleton Tool"),   {"n"}, "tool_skeleton_icon"}, // icon name does not match state name
+	{"win.set-tool-text",        N_("Text Tool"),       {"t"}, "tool_text_icon"},
+	{"win.set-tool-fill",        N_("Fill Tool"),       {"u"}, "tool_fill_icon"},
+	{"win.set-tool-eyedrop",     N_("Eyedrop Tool"),    {"d"}, "tool_eyedrop_icon"},
+	{"win.set-tool-lasso",       N_("Cutout Tool"),     {"c"}, "tool_cutout_icon"},   // icon name does not match state name
+	{"win.set-tool-zoom",        N_("Zoom Tool"),       {"z"}, "tool_zoom_icon"},
+	{"win.set-tool-draw",        N_("Draw Tool"),       {"p"}, "tool_draw_icon"},
+	{"win.set-tool-sketch",      N_("Sketch Tool"),     {"k"}, "tool_sketch_icon"},
+	{"win.set-tool-width",       N_("Width Tool"),      {"w"}, "tool_width_icon"},
+	{"win.set-tool-brush",       N_("Brush Tool"),      {}, "tool_brush_icon"},
 };
 
 /* === P R O C E D U R E S ================================================= */
@@ -102,11 +102,11 @@ StateManager::add_state(const Smach::state_base* state)
 {
 	synfig::String name(state->get_name());
 
-	App::instance()->add_action("set-tool-" + name,
-								sigc::bind(
-									sigc::mem_fun(*this, &studio::StateManager::change_state_),
-									state
-								));
+	auto action = App::instance()->main_window->add_action("set-tool-" + name,
+											  sigc::bind(
+												  sigc::mem_fun(*this, &studio::StateManager::change_state_),
+												  state
+											  ));
 
 	App::dock_toolbox->add_state(state);
 }
