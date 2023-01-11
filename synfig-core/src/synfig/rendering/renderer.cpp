@@ -35,7 +35,7 @@
 #include <algorithm> // std::sort
 #include <cstdlib>
 #include <climits>
-
+#include <iostream>
 #include <typeinfo>
 
 #include <synfig/general.h>
@@ -1044,6 +1044,13 @@ Renderer::get_renderers()
 	if (!renderers)
 		synfig::error("rendering::Renderer not initialized");
 	return *renderers;
+}
+
+void Renderer::print_renderers() {
+	std::cout << "available renderers: " << std::endl;
+	for(auto i = renderers->begin(); i != renderers->end(); ++i)
+		if (i->second)
+			std::cout << "  " << i->first << " - " << i->second->get_name() << std::endl;
 }
 
 /* === E N T R Y P O I N T ================================================= */
