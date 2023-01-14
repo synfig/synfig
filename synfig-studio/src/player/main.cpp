@@ -117,7 +117,7 @@ int main(int argc, char **argv)
 		std::cout << "Options:"<<std::endl;
 		std::cout << "  --benchmark - Ignore real-time synchronization and render every frame (used for benchmarks)."<<std::endl;
 		std::cout << std::endl;
-		rendering::Renderer::print_renderers(renderers);
+		rendering::Renderer::print_renderers();
 		return 0;
 	}
 
