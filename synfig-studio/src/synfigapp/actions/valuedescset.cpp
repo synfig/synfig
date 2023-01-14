@@ -571,7 +571,13 @@ Action::ValueDescSet::prepare()
 	// allowed position.
 	if (ValueNode_BLineCalcVertex::Handle bline_vertex = ValueNode_BLineCalcVertex::Handle::cast_dynamic(value_desc.get_value_node()))
 	{
-		ValueNode_BLine::Handle bline = ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link("bline"));
+		ValueNode_BLine::Handle bline;
+		if (auto vn = bline_vertex->get_link("bline")) {
+			if (vn->get_name() == "reference") {
+				vn = LinkableValueNode::Handle::cast_static(vn)->get_link("link");
+			}
+			bline = ValueNode_BLine::Handle::cast_dynamic(vn);
+		}
 		Real radius = 0.0;
 		Real new_amount;
 		if (((*(bline_vertex->get_link("loop")))(time).get(bool())))
