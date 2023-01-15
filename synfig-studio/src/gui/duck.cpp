@@ -288,12 +288,22 @@ Duck::set_sub_trans_point(const synfig::Point &x, const synfig::Time &time)
 		{
 			synfig::Point closest_point = get_point();
 			synfig::Real radius = 0.0;
-			ValueNode_BLine::Handle bline = ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link("bline"));
+			bool bline_loop = false;
+			ValueNode::LooseHandle bline = bline_vertex->get_link("bline");
+			if (bline) {
+				ValueBase v = (*bline)(Time(0));
+
+				if (v.get_contained_type() == type_bline_point)
+					bline_loop = v.get_loop();
+			} else {
+				warning(_("Internal error: duck: It is a BLine Vertex, but it has not a BLine link"));
+				return;
+			}
 			synfig::find_closest_point(
 				(*bline)(time),
 				get_point(),
 				radius,
-				bline->get_loop(),
+				bline_loop,
 				&closest_point);
 			set_point(closest_point);
 		}

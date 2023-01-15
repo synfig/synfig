@@ -606,22 +606,21 @@ Duckmatic::update_ducks()
 			{
 				synfig::Real radius = 0.0;
 				synfig::Point point(0.0, 0.0);
-				ValueNode_BLine::Handle bline;
-				if (auto vn = bline_vertex->get_link("bline")) {
-					if (vn->get_name() == "reference") {
-						vn = LinkableValueNode::Handle::cast_static(vn)->get_link("link");
-					}
-					bline = ValueNode_BLine::Handle::cast_dynamic(vn);
-				}
+				bool bline_loop = false;
+				ValueNode::LooseHandle bline = bline_vertex->get_link("bline");
+				if (bline) {
+					ValueBase v = (*bline)(Time(0));
 
-				if (!bline) {
-					warning(_("It is a BLine Vertex, but it has not a BLine link"));
+					if (v.get_contained_type() == type_bline_point)
+						bline_loop = v.get_loop();
+				} else {
+					warning(_("Internal error: duckmatic: It is a BLine Vertex, but it has not a BLine link"));
 					return;
 				}
-				Real amount = synfig::find_closest_point((*bline)(time), duck->get_point(), radius, bline->get_loop(), &point);
+				Real amount = synfig::find_closest_point((*bline)(time), duck->get_point(), radius, bline_loop, &point);
 				bool homogeneous((*(bline_vertex->get_link("homogeneous")))(time).get(bool()));
 				if(homogeneous)
-					amount=std_to_hom((*bline)(time), amount, ((*(bline_vertex->get_link("loop")))(time).get(bool())), bline->get_loop() );
+					amount=std_to_hom((*bline)(time), amount, ((*(bline_vertex->get_link("loop")))(time).get(bool())), bline_loop );
 				ValueNode::Handle vertex_amount_value_node(bline_vertex->get_link("amount"));
 				duck->set_point(point);
 
