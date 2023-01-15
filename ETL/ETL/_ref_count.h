@@ -47,11 +47,11 @@
 
 namespace etl {
 
-// ========================================================================
-/*!	\class	reference_counter	_ref_count.h	ETL/ref_count
-**	\brief	Reference counter
-**	\writeme
-*/
+/**
+ * A reference counter
+ *
+ * A shared counter that is increased/decreased as the object is copied, moved, deleted. etc.
+ */
 class ReferenceCounter
 {
 public:
@@ -82,6 +82,7 @@ public:
 		detach();
 	}
 
+	/** (re)initialize the counter */
 	void
 	reset()
 	{
@@ -89,6 +90,7 @@ public:
 		counter = new counter_type(1);
 	}
 
+	/** decrease the counter */
 	void
 	detach()
 	{
@@ -128,8 +130,11 @@ public:
 		return *this;
 	}
 
+	/** the current count */
 	int count() const { return counter ? static_cast<int>(*counter) : 0; }
+	/** if there is only one reference */
 	bool unique() const { return count() == 1; }
+	/** the current count */
 	operator int() const { return count(); }
 }; // END of class reference_counter
 
