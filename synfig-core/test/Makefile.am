@@ -16,6 +16,7 @@ TESTS = \
 	keyframe \
 	node \
 	pen \
+	reference_counter \
 	string \
 	surface_etl
 
@@ -36,6 +37,8 @@ keyframe_SOURCES=keyframe.cpp
 node_SOURCES=node.cpp
 
 pen_SOURCES=pen.cpp
+
+reference_counter_SOURCES=reference_counter.cpp
 
 string_SOURCES=string.cpp
 
