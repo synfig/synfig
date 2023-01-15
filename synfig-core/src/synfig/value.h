@@ -32,13 +32,12 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "base_types.h"
-
 #include <vector>
 #include <list>
-#include "interpolation.h"
 
-#include <ETL/ref_count>
+#include "base_types.h"
+#include "interpolation.h"
+#include "reference_counter.h"
 
 /* === M A C R O S ========================================================= */
 

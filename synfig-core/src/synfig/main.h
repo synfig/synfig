@@ -32,8 +32,7 @@
 
 #include <cassert>
 
-#include <ETL/ref_count>
-
+#include "reference_counter.h"
 #include "string.h"
 #include "progresscallback.h"
 
