@@ -72,6 +72,11 @@ public:
 	{
 		*this = x;
 	}
+	reference_counter(reference_counter&& x)
+		: counter(nullptr)
+	{
+		*this = std::move(x);
+	}
 	~reference_counter()
 	{
 		detach();
@@ -106,6 +111,19 @@ public:
 				(*counter)++;
 				assert(count() > 1);
 			}
+		}
+		return *this;
+	}
+
+	reference_counter&
+	operator=(reference_counter&& other) noexcept
+	{
+		if (this != &other) {
+			if (other.counter != counter)
+				detach();
+			counter = other.counter;
+			other.counter = nullptr;
+			assert(count() >= 0);
 		}
 		return *this;
 	}
