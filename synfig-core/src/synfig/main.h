@@ -54,7 +54,7 @@ class Main
 {
 private:
 	static Main *instance;
-	etl::reference_counter ref_count_;
+	etl::ReferenceCounter ref_count_;
 
 public:
 	synfig::String root_path;
@@ -67,7 +67,7 @@ public:
 	Main(const synfig::String& rootpath,ProgressCallback *cb=nullptr);
 	~Main();
 
-	const etl::reference_counter& ref_count()const { return ref_count_; }
+	const etl::ReferenceCounter& ref_count()const { return ref_count_; }
 	static const Main& get_instance() { assert(instance); return *instance; }
 }; // END of class Main
 

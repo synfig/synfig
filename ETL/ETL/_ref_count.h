@@ -52,7 +52,7 @@ namespace etl {
 **	\brief	Reference counter
 **	\writeme
 */
-class reference_counter
+class ReferenceCounter
 {
 public:
 	typedef std::atomic<int> counter_type;
@@ -61,23 +61,23 @@ private:
 	counter_type* counter;
 
 public:
-	explicit reference_counter(bool initialize = true)
+	explicit ReferenceCounter(bool initialize = true)
 		: counter(nullptr)
 	{
 		if (initialize)
 			reset();
 	}
-	reference_counter(const reference_counter& x)
+	ReferenceCounter(const ReferenceCounter& x)
 		: counter(nullptr)
 	{
 		*this = x;
 	}
-	reference_counter(reference_counter&& x)
+	ReferenceCounter(ReferenceCounter&& x)
 		: counter(nullptr)
 	{
 		*this = std::move(x);
 	}
-	~reference_counter()
+	~ReferenceCounter()
 	{
 		detach();
 	}
@@ -101,8 +101,8 @@ public:
 		}
 	}
 
-	reference_counter&
-	operator=(const reference_counter& other)
+	ReferenceCounter&
+	operator=(const ReferenceCounter& other)
 	{
 		if (other.counter != counter) {
 			detach();
@@ -115,8 +115,8 @@ public:
 		return *this;
 	}
 
-	reference_counter&
-	operator=(reference_counter&& other) noexcept
+	ReferenceCounter&
+	operator=(ReferenceCounter&& other) noexcept
 	{
 		if (this != &other) {
 			if (other.counter != counter)

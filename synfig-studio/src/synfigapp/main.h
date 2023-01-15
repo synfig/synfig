@@ -60,12 +60,12 @@ namespace synfigapp {
 */
 class Main : public synfig::Main
 {
-	etl::reference_counter ref_count_;
+	etl::ReferenceCounter ref_count_;
 public:
 	Main(const synfig::String &rootpath,synfig::ProgressCallback *cb=nullptr);
 	~Main();
 
-	const etl::reference_counter& ref_count()const { return ref_count_; }
+	const etl::ReferenceCounter& ref_count()const { return ref_count_; }
 
 	static const synfig::Color& get_outline_color();
 	static const synfig::Color& get_fill_color();

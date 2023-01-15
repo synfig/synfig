@@ -97,7 +97,7 @@ using namespace synfig;
 
 /* === S T A T I C S ======================================================= */
 
-static etl::reference_counter synfig_ref_count_(false);
+static etl::ReferenceCounter synfig_ref_count_(false);
 Main *Main::instance = nullptr;
 
 class GeneralIOMutexHolder {
