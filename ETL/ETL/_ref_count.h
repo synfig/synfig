@@ -61,10 +61,10 @@ private:
 	counter_type* counter;
 
 public:
-	explicit reference_counter(bool x = true)
+	explicit reference_counter(bool initialize = true)
 		: counter(nullptr)
 	{
-		if (x)
+		if (initialize)
 			reset();
 	}
 	reference_counter(const reference_counter& x)
