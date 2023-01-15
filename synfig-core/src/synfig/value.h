@@ -85,7 +85,7 @@ protected:
 	//! Counter of Value Nodes that refers to this Value Base
 	//! Value base can only be destructed if the ref_count is not greater than 0
 	//!\see etl::reference_counter
-	etl::ReferenceCounter ref_count;
+	ReferenceCounter ref_count;
 	//! For Values with loop option like TYPE_LIST
 	bool loop_;
 	//! For Values of Constant Value Nodes
