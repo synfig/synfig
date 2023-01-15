@@ -3415,9 +3415,8 @@ CanvasView::on_preview_option()
 		RendDesc &r = canv->rend_desc();
 		if(r.get_frame_rate())
 		{
-			float rate = 1/r.get_frame_rate();
-			float beg = r.get_time_start() + r.get_frame_start()*rate;
-			float end = r.get_time_start() + r.get_frame_end()*rate;
+			float beg = r.get_time_start();
+			float end = r.get_time_end();
 
 			Dialog_PreviewOptions *po = dynamic_cast<Dialog_PreviewOptions *>( get_ext_widget("prevoptions") );
 			if(!po)
