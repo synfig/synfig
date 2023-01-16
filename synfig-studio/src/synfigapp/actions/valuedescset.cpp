@@ -572,13 +572,8 @@ Action::ValueDescSet::prepare()
 	if (ValueNode_BLineCalcVertex::Handle bline_vertex = ValueNode_BLineCalcVertex::Handle::cast_dynamic(value_desc.get_value_node()))
 	{
 		bool bline_loop = false;
-		ValueNode::LooseHandle bline = bline_vertex->get_link("bline");
-		if (bline) {
-			ValueBase v = (*bline)(Time(0));
-
-			if (v.get_contained_type() == type_bline_point)
-				bline_loop = v.get_loop();
-		} else {
+		ValueNode::LooseHandle bline = bline_vertex->get_bline_handle(bline_loop);
+		if (!bline) {
 			warning(_("Internal error: ValueDescSet: It is a BLine Vertex, but it has not a BLine link"));
 			return;
 		}

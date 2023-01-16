@@ -607,13 +607,8 @@ Duckmatic::update_ducks()
 				synfig::Real radius = 0.0;
 				synfig::Point point(0.0, 0.0);
 				bool bline_loop = false;
-				ValueNode::LooseHandle bline = bline_vertex->get_link("bline");
-				if (bline) {
-					ValueBase v = (*bline)(Time(0));
-
-					if (v.get_contained_type() == type_bline_point)
-						bline_loop = v.get_loop();
-				} else {
+				ValueNode::LooseHandle bline = bline_vertex->get_bline_handle(bline_loop);
+				if (!bline) {
 					warning(_("Internal error: duckmatic: It is a BLine Vertex, but it has not a BLine link"));
 					return;
 				}
