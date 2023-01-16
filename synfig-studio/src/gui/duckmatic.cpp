@@ -606,11 +606,16 @@ Duckmatic::update_ducks()
 			{
 				synfig::Real radius = 0.0;
 				synfig::Point point(0.0, 0.0);
-				ValueNode_BLine::Handle bline(ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link("bline")));
-				Real amount = synfig::find_closest_point((*bline)(time), duck->get_point(), radius, bline->get_loop(), &point);
+				bool bline_loop = false;
+				ValueNode::LooseHandle bline = bline_vertex->get_bline_handle(bline_loop);
+				if (!bline) {
+					warning(_("Internal error: duckmatic: It is a BLine Vertex, but it has not a BLine link"));
+					return;
+				}
+				Real amount = synfig::find_closest_point((*bline)(time), duck->get_point(), radius, bline_loop, &point);
 				bool homogeneous((*(bline_vertex->get_link("homogeneous")))(time).get(bool()));
 				if(homogeneous)
-					amount=std_to_hom((*bline)(time), amount, ((*(bline_vertex->get_link("loop")))(time).get(bool())), bline->get_loop() );
+					amount=std_to_hom((*bline)(time), amount, ((*(bline_vertex->get_link("loop")))(time).get(bool())), bline_loop );
 				ValueNode::Handle vertex_amount_value_node(bline_vertex->get_link("amount"));
 				duck->set_point(point);
 
