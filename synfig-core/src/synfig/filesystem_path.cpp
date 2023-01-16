@@ -221,6 +221,11 @@ filesystem::Path::lexically_normal() const
 	return normalize(path_);
 }
 
+filesystem::Path filesystem::Path::cleanup() const
+{
+	return lexically_normal();
+}
+
 filesystem::Path
 filesystem::Path::lexically_relative(const Path& base) const
 {
@@ -315,6 +320,11 @@ filesystem::Path::lexically_relative(const Path& base) const
 	if (a_pos != std::string::npos)
 		p.append(path_, a_pos);
 	return Path(p);
+}
+
+filesystem::Path filesystem::Path::relative_to(const Path& base) const
+{
+	return lexically_relative(base).lexically_normal();
 }
 
 filesystem::Path

@@ -143,11 +143,23 @@ public:
 	Path lexically_normal() const;
 
 	/**
+	 * Alias for lexically_normal()
+	 */
+	Path cleanup() const;
+
+	/**
 	 * Returns @c *this made relative to @a base.
 	 * @param base the reference path
 	 * @return the path relative to base
 	 */
 	Path lexically_relative(const Path& base) const;
+
+	/**
+	 * Convenient method that calls lexically_relative() followed by lexically_normal().
+	 * @param base the reference path
+	 * @return the normalized path relative to base
+	 */
+	Path relative_to(const Path& base) const;
 
 	// Decomposition ---------------------
 
