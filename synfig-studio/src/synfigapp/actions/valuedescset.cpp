@@ -509,7 +509,12 @@ Action::ValueDescSet::prepare()
 	// allowed position.
 	if (ValueNode_BLineCalcVertex::Handle bline_vertex = ValueNode_BLineCalcVertex::Handle::cast_dynamic(value_desc.get_value_node()))
 	{
-		ValueNode_BLine::Handle bline = ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link("bline"));
+		bool bline_loop = false;
+		ValueNode::LooseHandle bline = bline_vertex->get_bline_handle(bline_loop);
+		if (!bline) {
+			warning(_("Internal error: ValueDescSet: It is a BLine Vertex, but it has not a BLine link"));
+			return;
+		}
 		Real radius = 0.0;
 		Real new_amount;
 		if (((*(bline_vertex->get_link("loop")))(time).get(bool())))
@@ -519,7 +524,7 @@ Action::ValueDescSet::prepare()
 			// not change drastically.
 			Real amount_old((*(bline_vertex->get_link("amount")))(time).get(Real()));
 
-			Real amount_new = synfig::find_closest_point((*bline)(time), value.get(Vector()), radius, bline->get_loop());
+			Real amount_new = synfig::find_closest_point((*bline)(time), value.get(Vector()), radius, bline_loop);
 			Real difference = fmod( fmod(amount_new - amount_old, 1.0) + 1.0 , 1.0);
 			//fmod is called twice to avoid negative values
 			if (difference > 0.5)
@@ -527,10 +532,10 @@ Action::ValueDescSet::prepare()
 			new_amount = amount_old+difference;
 		}
 		else
-			new_amount = synfig::find_closest_point((*bline)(time), value.get(Vector()), radius, bline->get_loop());
+			new_amount = synfig::find_closest_point((*bline)(time), value.get(Vector()), radius, bline_loop);
 		bool homogeneous((*(bline_vertex->get_link("homogeneous")))(time).get(bool()));
 		if(homogeneous)
-			new_amount=std_to_hom((*bline)(time), new_amount, (*(bline_vertex->get_link("loop")))(time).get(bool()), bline->get_loop() );
+			new_amount=std_to_hom((*bline)(time), new_amount, (*(bline_vertex->get_link("loop")))(time).get(bool()), bline_loop );
 		add_action_valuedescset(new_amount,ValueDesc(bline_vertex, bline_vertex->get_link_index_from_name("amount")));
 		return;
 	}
