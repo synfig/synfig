@@ -3415,9 +3415,6 @@ CanvasView::on_preview_option()
 		RendDesc &r = canv->rend_desc();
 		if(r.get_frame_rate())
 		{
-			float beg = r.get_time_start();
-			float end = r.get_time_end();
-
 			Dialog_PreviewOptions *po = dynamic_cast<Dialog_PreviewOptions *>( get_ext_widget("prevoptions") );
 			if(!po)
 			{
@@ -3427,9 +3424,9 @@ CanvasView::on_preview_option()
 			}
 
 			if (!po->get_begin_override())
-				po->set_begintime(beg);
+				po->set_begintime(r.get_time_start());
 			if (!po->get_end_override())
-				po->set_endtime(end);
+				po->set_endtime(r.get_time_end());
 
 			po->set_global_fps(r.get_frame_rate());
 			po->signal_finish().connect(sigc::mem_fun(*this, &CanvasView::on_preview_create));
