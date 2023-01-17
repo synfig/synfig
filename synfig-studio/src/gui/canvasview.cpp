@@ -3731,12 +3731,8 @@ CanvasView::on_interpolation_changed()
 	{ synfigapp::Main::set_interpolation(Waypoint::Interpolation(widget_interpolation->get_value())); }
 
 void 
-CanvasView::toggle_show_toolbar(){
-	if (App::enable_mainwin_toolbar) {
-		top_toolbar->show();
-		right_toolbar->show();
-	} else {
-		top_toolbar->hide();
-		right_toolbar->hide();
-	}
+CanvasView::set_show_toolbars(bool show)
+{
+	top_toolbar->set_visible(show);
+	right_toolbar->set_visible(show);
 };
