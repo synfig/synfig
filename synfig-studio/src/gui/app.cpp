@@ -1589,7 +1589,7 @@ void App::init(const synfig::String& rootpath)
 		set_menubar(gmenu);
 		menu_recent_files = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-recent-files"));
 		menu_plugins = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-plugins"));
-//		menu_layers = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-layer"));
+		menu_layers = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-layer-new"));
 		menu_tools = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-tools"));
 		menu_window_custom_workspaces = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-window-custom-workspaces"));
 		menu_window_docks = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-window-docks"));
