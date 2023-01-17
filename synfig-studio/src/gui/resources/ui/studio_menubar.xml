@@ -399,43 +399,10 @@
 <!-- Layers menu -->
 		<submenu id="menu-layer">
             <attribute name="label" translatable="yes">_Layer</attribute>
-                <section>
-                    <submenu>
-                        <attribute name="label" translatable="yes">_New Layer</attribute>
-                            <submenu id="Blurs">
-                                <attribute name="label" translatable="yes">_Blurs</attribute>
-                            </submenu>
-                            <submenu id="Distortions">
-                                <attribute name="label" translatable="yes">_Distortions</attribute>
-                            </submenu>
-                            <submenu id="Example">
-                                <attribute name="label" translatable="yes">_Example</attribute>
-                            </submenu>
-                            <submenu id="Filters">
-                                <attribute name="label" translatable="yes">_Filters</attribute>
-                            </submenu>
-                            <submenu id="Fractals">
-                                <attribute name="label" translatable="yes">_Fractals</attribute>
-                            </submenu>
-                            <submenu id="Geometry">
-                                <attribute name="label" translatable="yes">_Geometry</attribute>
-                            </submenu>
-                            <submenu id="Gradients">
-                                <attribute name="label" translatable="yes">_Gradients</attribute>
-                            </submenu>
-                            <submenu id="Other">
-                                <attribute name="label" translatable="yes">_Other</attribute>
-                            </submenu>
-                            <submenu id="Stylize">
-                                <attribute name="label" translatable="yes">_Stylize</attribute>
-                            </submenu>
-                            <submenu id="Time">
-                                <attribute name="label" translatable="yes">_Time</attribute>
-                            </submenu>
-                            <submenu id="Transform">
-                                <attribute name="label" translatable="yes">_Transform</attribute>
-                            </submenu>
-                    </submenu>
+            <section>
+                <submenu id="menu-layer-new">
+                    <attribute name="label" translatable="yes">_New Layer</attribute>
+                </submenu>
             </section>
             <section id="instance-layers">
             </section>

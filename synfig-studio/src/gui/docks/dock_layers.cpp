@@ -35,6 +35,7 @@
 
 #include "docks/dock_layers.h"
 
+#include <giomm/themedicon.h>
 #include <glibmm/markup.h>
 #include <gtkmm/stylecontext.h>
 
@@ -75,7 +76,17 @@ Dock_Layers::Dock_Layers():
 	action_group_new_layers=Gtk::ActionGroup::create("action_group_new_layers");
 	action_group_layer_ops=Gtk::ActionGroup::create("action_group_layer_ops");
 
+	action_group_new_layers2 = Gio::SimpleActionGroup::create();
+
 	std::map<synfig::String,synfig::String> category_map;
+	// map: category local name -> (layer name, layer local name)
+	std::map<std::string, std::vector<std::pair<std::string, std::string>>> layer_category_map;
+
+	auto new_layer_slot = sigc::track_obj([=](const Glib::VariantBase& v) {
+		std::string layer_name = Glib::VariantBase::cast_dynamic<Glib::Variant<Glib::ustring>>(v).get();
+		add_layer(layer_name);
+	}, *this);
+	action_group_new_layers2->add_action_with_parameter("layer-new", Glib::VARIANT_TYPE_STRING, new_layer_slot);
 
 	// Build layer creation actions
 	synfig::Layer::Book::iterator iter;
@@ -98,6 +109,8 @@ Dock_Layers::Dock_Layers():
 				)
 			)
 		);
+
+		layer_category_map[dgettext("synfig", lyr.second.category.c_str())].push_back({lyr.first, lyr.second.local_name});
 
 		category_map[lyr.second.category]+=strprintf("<menuitem action='layer-new-%s' />",lyr.first.c_str());
 
@@ -122,6 +135,22 @@ Dock_Layers::Dock_Layers():
 
 		App::ui_manager()->insert_action_group(action_group_categories);
 		App::ui_manager()->insert_action_group(action_group_new_layers);
+
+		const std::string symbolic_suffix = ""; // App::use-symbolic-icons ? "-symbolic" : "";
+
+		for (const auto& item : layer_category_map) {
+			const std::string& category = item.first;
+			auto submenu = Gio::Menu::create();
+			for (const auto& lyr : item.second) {
+				const std::string& layer_name = lyr.first;
+				const std::string& layer_local_name = lyr.second;
+
+				auto item = Gio::MenuItem::create(layer_local_name, strprintf("new_layers.layer-new(\"%s\")", layer_name.c_str()));
+				item->set_icon(Gio::ThemedIcon::create(layer_icon_name(layer_name) + symbolic_suffix));
+				submenu->append_item(item);
+			}
+			App::menu_layers->append_submenu(category, submenu);
+		}
 
 		try
 		{
@@ -252,6 +281,7 @@ Dock_Layers::changed_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 		tree_view->show();
 		action_group_new_layers->set_sensitive(true);
 		action_new_layer->set_sensitive(true);
+		App::main_window->insert_action_group("new_layers", action_group_new_layers2);
 		if(layer_action_manager)
 		{
 			layer_action_manager->set_layer_tree(dynamic_cast<LayerTree*>(canvas_view->get_ext_widget(get_name()+"_cmp")));
@@ -263,6 +293,7 @@ Dock_Layers::changed_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 	{
 		action_group_new_layers->set_sensitive(false);
 		action_new_layer->set_sensitive(false);
+		App::main_window->remove_action_group("new_layers");
 		if(layer_action_manager)
 		{
 			layer_action_manager->clear();
