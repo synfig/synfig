@@ -62,9 +62,233 @@ using namespace synfig;
 #	define IMAGE_EXT	"png"
 #endif
 
-/* === M E T H O D S ======================================================= */
+/* === G L O B A L S ======================================================= */
 
+// map Type::identifier -> Pixbuf
 static std::map< int, Glib::RefPtr<Gdk::Pixbuf> > _tree_pixbuf_table_value_type;
+
+// map ID -> (icon name, label)
+static const std::map<std::string, std::pair<const char*, const char*>> known_icon_list = {
+	// Types
+	{"type_bool", {"type_bool_icon", N_("Bool")}},
+	{"type_integer", {"type_integer_icon", N_("Integer")}},
+	{"type_angle", {"type_angle_icon", N_("Angle")}},
+	{"type_time", {"type_time_icon", N_("Time")}},
+	{"type_real", {"type_real_icon", N_("Real")}},
+	{"type_vector", {"type_vector_icon", N_("Vector")}},
+	{"type_color", {"type_color_icon", N_("Color")}},
+	{"type_segment", {"type_segment_icon", N_("Segment")}},
+	{"type_blinepoint", {"type_splinepoint_icon", N_("Spline Point")}},
+	{"type_list", {"type_list_icon", N_("List")}},
+	{"type_string", {"type_string_icon", N_("String")}},
+	{"type_canvas", {"type_canvas_icon", N_("Canvas")}},
+	{"type_gradient", {"type_gradient_icon", N_("Gradient")}},
+
+	// ToolBox Tools
+	{"normal", {"tool_normal_icon", N_("Transform Tool")}},
+	{"polygon", {"tool_polyline_icon", N_("Polygon Tool")}},
+	{"bline", {"tool_spline_icon", N_("Spline Tool")}},
+	{"bone", {"tool_skeleton_icon", N_("Skeleton Tool")}},
+	{"eyedrop", {"tool_eyedrop_icon", N_("Eyedropper Tool")}},
+	{"fill", {"tool_fill_icon", N_("Fill Tool")}},
+	{"draw", {"tool_draw_icon", N_("Draw Tool")}},
+	{"lasso", {"tool_cutout_icon", N_("Cutout Tool")}},
+	{"brush", {"tool_brush_icon", N_("Brush Tool")}},
+	{"sketch", {"tool_sketch_icon", N_("Sketch Tool")}},
+	{"circle", {"tool_circle_icon", N_("Circle Tool")}},
+	{"rectangle", {"tool_rectangle_icon", N_("Rectangle Tool")}},
+	{"smooth_move", {"tool_smooth_move_icon", N_("SmoothMove Tool")}},
+	{"rotate", {"tool_rotate_icon", N_("Rotate Tool")}},
+	{"width", {"tool_width_icon", N_("Width Tool")}},
+	{"scale", {"tool_scale_icon", N_("Scale Tool")}},
+	{"zoom", {"tool_zoom_icon", N_("Zoom Tool")}},
+	{"mirror", {"tool_mirror_icon", N_("Mirror Tool")}},
+	{"text", {"tool_text_icon", N_("Text Tool")}},
+	{"gradient", {"tool_gradient_icon", N_("Gradient Tool")}},
+	{"star", {"tool_star_icon", N_("Star Tool")}},
+	// ToolBox Others
+	{"reset_colors", {"reset_colors_icon", N_("Reset Colors")}},
+	{"swap_colors", {"swap_colors_icon", N_("Swap Colors")}},
+	{"value_node", {"valuenode_icon", N_("ValueNode")}},
+	{"valuenode_forbidanimation", {"valuenode_forbidanimation_icon", N_("ValueNode Forbid Animation")}},
+	{"rename", {"rename_icon", N_("Rename")}},
+	{"canvas", {"canvas_icon", N_("Canvas")}},
+	{"canvas_new", {"canvas_icon", N_("New Canvas")}},
+
+	// Document Related Actions
+	{"about", {"about_icon", N_("About")}},
+	{"new_doc", {"action_doc_new_icon", N_("New")}},
+	{"open", {"action_doc_open_icon", N_("Open")}},
+	{"save", {"action_doc_save_icon", N_("Save")}},
+	{"save_as", {"action_doc_saveas_icon", N_("Save As")}},
+	{"export", {"action_doc_saveas_icon", N_("Export")}},
+	{"save_all", {"action_doc_saveall_icon", N_("Save All")}},
+	{"redo", {"action_doc_redo_icon", N_("Redo")}},
+	{"undo", {"action_doc_undo_icon", N_("Undo")}},
+
+	// Ghost Layers
+	{"layer_ghost_group", {"layer_other_ghostgroup_icon", N_("Group Ghost")}},
+
+	{"info", {"info_icon", N_("Info Tool")}},
+	{"group", {"set_icon", N_("Set")}},
+
+	{"duplicate", {"duplicate_icon", N_("Duplicate")}},
+	{"encapsulate", {"group_icon", N_("Group")}},
+	{"encapsulate_switch", {"layer_other_switch_icon", N_("Group into Switch")}},
+	{"encapsulate_filter", {"layer_other_filtergroup_icon", N_("Group into Filter")}},
+	{"select_all_child_layers", {"select_all_child_layers_icon", N_("Select All Child Layers")}},
+
+	{"clear_undo", {"clear_undo_icon", N_("Clear Undo Stack")}},
+	{"clear_redo", {"clear_redo_icon", N_("Clear Redo Stack")}},
+
+	{"children", {"library_icon", N_("Library")}},
+	{"curves", {"graphs_icon", N_("Graphs")}},
+	{"keyframes", {"keyframe_icon", N_("Keyframes")}},
+	{"meta_data", {"meta_data_icon", N_("MetaData")}},
+	{"navigator", {"navigator_icon", N_("Navigator")}},
+	{"timetrack", {"time_track_icon", N_("Time Track")}},
+	{"history", {"history_icon", N_("History")}},
+	{"palette", {"palette_icon", N_("Palette")}},
+	{"params", {"parameters_icon", N_("Parameters")}},
+
+	{"keyframe_lock_past_off", {"keyframe_lock_past_off_icon", N_("Past keyframes unlocked")}},
+	{"keyframe_lock_past_on", {"keyframe_lock_past_on_icon", N_("Past keyframes locked")}},
+	{"keyframe_lock_future_off", {"keyframe_lock_future_off_icon", N_("Future keyframes unlocked")}},
+	{"keyframe_lock_future_on", {"keyframe_lock_future_on_icon", N_("Future keyframes locked")}},
+
+	{"animate_mode_off", {"animate_mode_off_icon", N_("Animate Mode Off")}},
+	{"animate_mode_on", {"animate_mode_on_icon", N_("Animate Mode On")}},
+
+	{"jack", {"jack_icon", N_("JACK")}},
+
+	{"set_outline_color", {"set_outline_color_icon", N_("Set as Outline")}},
+	{"set_fill_color", {"set_fill_color_icon", N_("Set as Fill")}},
+
+	{"animate_seek_begin", {"animate_seek_begin_icon", N_("Seek to Begin")}},
+	{"animate_seek_prev_keyframe", {"animate_seek_prev_keyframe_icon", N_("Seek to Previous Keyframe")}},
+	{"animate_seek_prev_frame", {"animate_seek_prev_frame_icon", N_("Seek to Previous Frame")}},
+	{"animate_play", {"animate_play_icon", N_("Play")}},
+	{"animate_stop", {"animate_stop_icon", N_("Stop")}},
+	{"animate_pause", {"animate_pause_icon", N_("Pause")}},
+	{"animate_seek_next_frame", {"animate_seek_next_frame_icon", N_("Seek to Next frame")}},
+	{"animate_seek_next_keyframe", {"animate_seek_next_keyframe_icon", N_("Seek to Next Keyframe")}},
+	{"animate_seek_end", {"animate_seek_end_icon", N_("Seek to End")}},
+	{"animate_loop", {"animate_loop_icon", N_("Animate Loop")}},
+	{"animate_bounds", {"animate_bounds_icon", N_("Play Bounds")}},
+	{"animate_bound_lower", {"animate_bound_lower_icon", N_("Lower Bound")}},
+	{"animate_bound_upper", {"animate_bound_upper_icon", N_("Upper Bound")}},
+
+	{"add_to_group", {"action_add_to_set_icon", N_("Add Layer to Set")}},
+	{"remove_from_group", {"action_remove_from_set_icon", N_("Remove Layer from Set")}},
+	{"set_desc", {"action_set_layer_description_icon", N_("Set Layer Description")}},
+	{"export", {"action_export_icon", N_("Export Value Node")}},
+	{"unexport", {"action_unexport_icon", N_("Unexport Value Node")}},
+	{"flat_interpolation", {"action_flat_interpolation_icon", N_("Set Interpolation to Flat")}},
+	{"interpolate_interpolation", {"action_interpolate_interpolation_icon", N_("Set Interpolation to Interpolate")}},
+	{"peak_interpolation", {"action_peak_interpolation_icon", N_("Set Interpolation to Peak")}},
+	{"offpeak_interpolation", {"action_offpeak_interpolation_icon", N_("Set Interpolation to Off-Peak")}},
+	{"rounded_interpolation", {"action_rounded_interpolation_icon", N_("Set Interpolation to Rounded")}},
+	{"innerrounded_interpolation", {"action_innerrounded_interpolation_icon", N_("Set Interpolation to Inner Rounded")}},
+	{"squared_interpolation", {"action_squared_interpolation_icon", N_("Set Interpolation to Squared")}},
+
+	{"toggle_duck_position", {"duck_position_icon", N_("Toggle position handles")}},
+	{"toggle_duck_vertex", {"duck_vertex_icon", N_("Toggle vertex handles")}},
+	{"toggle_duck_tangent", {"duck_tangent_icon", N_("Toggle tangent handles")}},
+	{"toggle_duck_radius", {"duck_radius_icon", N_("Toggle radius handles")}},
+	{"toggle_duck_width", {"duck_width_icon", N_("Toggle width handles")}},
+	{"toggle_duck_angle", {"duck_angle_icon", N_("Toggle angle handles")}},
+
+	{"toggle_show_grid", {"show_grid_icon", N_("Toggle show grid")}},
+	{"toggle_snap_grid", {"snap_grid_icon", N_("Toggle snap grid")}},
+	{"toggle_show_guide", {"show_guideline_icon", N_("Toggle show guide")}},
+	{"toggle_snap_guide", {"snap_guideline_icon", N_("Toggle snap guide")}},
+
+	{"toggle_onion_skin", {"onion_skin_icon", N_("Toggle onion skin")}},
+
+	{"toggle_background_rendering", {"background_rendering_icon", N_("Toggle background rendering")}},
+
+	{"increase_resolution", {"incr_resolution_icon", N_("Increase resolution")}},
+	{"decrease_resolution", {"decr_resolution_icon", N_("Decrease resolution")}},
+
+	{"preview_options", {"preview_options_icon", N_("Preview Options Dialog")}},
+	{"render_options", {"render_options_icon", N_("Render Options Dialog")}},
+
+	{"utils_chain_link_on", {"utils_chain_link_on_icon", N_("Linked")}},
+	{"utils_chain_link_off", {"utils_chain_link_off_icon", N_("Unlinked")}},
+	{"utils_timetrack_align", {"utils_timetrack_align_icon", N_("Utils Timetrack align")}},
+};
+
+// map layer name -> icon name
+static const std::map<std::string, std::string> layer_icon_names = {
+	// Blur Layers
+	{"blur",          "layer_blur_blur_icon"},
+	{"motion_blur",   "layer_blur_motion_icon"},
+	{"radial_blur",   "layer_blur_radial_icon"},
+	// Distortion Layers
+	{"curve_warp",           "layer_distortion_curvewarp_icon"},
+	{"inside_out",           "layer_distortion_insideout_icon"},
+	{"noise_distort",        "layer_distortion_noise_icon"},
+	{"skeleton_deformation", "layer_distortion_skeletondeformation_icon"},
+	{"spherize",             "layer_distortion_spherize_icon"},
+	{"stretch",              "layer_distortion_stretch_icon"},
+	{"twirl",                "layer_distortion_twirl_icon"},
+	{"warp",                 "layer_distortion_warp_icon"},
+	// Example Layers
+	{"metaballs",            "layer_example_metaballs_icon"},
+	{"simple_circle",        "layer_example_simplecircle_icon"},
+	// Filter Layers
+	{"clamp",        "layer_filter_clamp_icon"},
+	{"colorcorrect", "layer_filter_colorcorrect_icon"},
+	{"halftone2",    "layer_filter_halftone2_icon"},
+	{"halftone3",    "layer_filter_halftone3_icon"},
+	{"lumakey",      "layer_filter_lumakey_icon"},
+	// Fractal Layers
+	{"mandelbrot",   "layer_fractal_mandelbrot_icon"},
+	{"julia",        "layer_fractal_julia_icon"},
+	// Geometry Layers
+	{"checker_board",    "layer_geometry_checkerboard_icon"},
+	{"circle",           "layer_geometry_circle_icon"},
+	{"outline",          "layer_geometry_outline_icon"},
+	{"advanced_outline", "layer_geometry_advanced_outline_icon"},
+	{"polygon",          "layer_geometry_polygon_icon"},
+	{"rectangle",        "layer_geometry_rectangle_icon"},
+	{"region",           "layer_geometry_region_icon"},
+	{"solid_color",      "layer_geometry_solidcolor_icon"},
+	{"star",             "layer_geometry_star_icon"},
+	// Gradient Layers
+	{"conical_gradient", "layer_gradient_conical_icon"},
+	{"curve_gradient",   "layer_gradient_curve_icon"},
+	{"noise",            "layer_gradient_noise_icon"},
+	{"linear_gradient",  "layer_gradient_linear_icon"},
+	{"radial_gradient",  "layer_gradient_radial_icon"},
+	{"spiral_gradient",  "layer_gradient_spiral_icon"},
+	// Other Layers
+	{"duplicate",    "layer_other_duplicate_icon"},
+	{"import",       "layer_other_importimage_icon"},
+	{"filter_group", "layer_other_filtergroup_icon"},
+	{"group",        "layer_other_group_icon"}, // "paste_canvas"
+	{"plant",        "layer_other_plant_icon"},
+	{"freetime",     "layer_other_freetime_icon"},
+	{"stroboscope",  "layer_other_stroboscope_icon"},
+	{"skeleton",     "layer_other_skeleton_icon"},
+	{"super_sample", "layer_other_supersample_icon"},
+	{"switch",       "layer_other_switch_icon"},
+	{"text",         "layer_other_text_icon"},
+	{"sound",        "layer_other_sound_icon"},
+	{"timeloop",     "layer_other_timeloop_icon"},
+	{"xor_pattern",  "layer_other_xorpattern_icon"},
+	// Stylize Layers
+	{"bevel",        "layer_stylize_bevel_icon"},
+	{"shade",        "layer_stylize_shade_icon"},
+	// Transform Layers
+	{"rotate",       "layer_transform_rotate_icon"},
+	{"translate",    "layer_transform_translate_icon"},
+	{"zoom",         "layer_transform_scale_icon"},
+	// Fake Layers
+	{"ghost_group",  "layer_other_ghostgroup_icon"},
+};
+
+/* === M E T H O D S ======================================================= */
 
 IconController::IconController()
 {
@@ -103,158 +327,9 @@ IconController::init_icons(const synfig::String& path_to_icons)
 		synfig::warning("Unable to open "+path_to_icons+"synfig_icon."+IMAGE_EXT);
 	}
 
-#define INIT_STOCK_ICON(name,iconfile,desc) \
-	init_icon(#name, (path_to_icons) + (iconfile), (desc));
 
-	// Types
-	INIT_STOCK_ICON(type_bool, "type_bool_icon." IMAGE_EXT, _("Bool"));
-	INIT_STOCK_ICON(type_integer, "type_integer_icon." IMAGE_EXT, _("Integer"));
-	INIT_STOCK_ICON(type_angle, "type_angle_icon." IMAGE_EXT, _("Angle"));
-	INIT_STOCK_ICON(type_time, "type_time_icon." IMAGE_EXT, _("Time"));
-	INIT_STOCK_ICON(type_real, "type_real_icon." IMAGE_EXT, _("Real"));
-	INIT_STOCK_ICON(type_vector, "type_vector_icon." IMAGE_EXT, _("Vector"));
-	INIT_STOCK_ICON(type_color, "type_color_icon." IMAGE_EXT, _("Color"));
-	INIT_STOCK_ICON(type_segment, "type_segment_icon." IMAGE_EXT, _("Segment"));
-	INIT_STOCK_ICON(type_blinepoint, "type_splinepoint_icon." IMAGE_EXT, _("Spline Point"));
-	INIT_STOCK_ICON(type_list, "type_list_icon." IMAGE_EXT, _("List"));
-	INIT_STOCK_ICON(type_string, "type_string_icon." IMAGE_EXT, _("String"));
-	INIT_STOCK_ICON(type_canvas, "type_canvas_icon." IMAGE_EXT, _("Canvas"));
-	INIT_STOCK_ICON(type_gradient, "type_gradient_icon." IMAGE_EXT, _("Gradient"))
-
-	// ToolBox Tools
-	INIT_STOCK_ICON(normal, "tool_normal_icon." IMAGE_EXT, _("Transform Tool"));
-	INIT_STOCK_ICON(polygon, "tool_polyline_icon." IMAGE_EXT, _("Polygon Tool"));
-	INIT_STOCK_ICON(bline, "tool_spline_icon." IMAGE_EXT, _("Spline Tool"));
-	INIT_STOCK_ICON(bone,"tool_skeleton_icon." IMAGE_EXT,_("Skeleton Tool"));
-	INIT_STOCK_ICON(eyedrop, "tool_eyedrop_icon." IMAGE_EXT, _("Eyedropper Tool"));
-	INIT_STOCK_ICON(fill, "tool_fill_icon." IMAGE_EXT, _("Fill Tool"));
-	INIT_STOCK_ICON(draw, "tool_draw_icon." IMAGE_EXT, _("Draw Tool"));
-	INIT_STOCK_ICON(lasso, "tool_cutout_icon." IMAGE_EXT, _("Cutout Tool"));
-	INIT_STOCK_ICON(brush, "tool_brush_icon." IMAGE_EXT, _("Brush Tool"));
-	INIT_STOCK_ICON(sketch, "tool_sketch_icon." IMAGE_EXT, _("Sketch Tool"));
-	INIT_STOCK_ICON(circle, "tool_circle_icon." IMAGE_EXT, _("Circle Tool"));
-	INIT_STOCK_ICON(rectangle, "tool_rectangle_icon." IMAGE_EXT, _("Rectangle Tool"));
-	INIT_STOCK_ICON(smooth_move, "tool_smooth_move_icon." IMAGE_EXT, _("SmoothMove Tool"));
-	INIT_STOCK_ICON(rotate, "tool_rotate_icon." IMAGE_EXT, _("Rotate Tool"));
-	INIT_STOCK_ICON(width, "tool_width_icon." IMAGE_EXT, _("Width Tool"));
-	INIT_STOCK_ICON(scale, "tool_scale_icon." IMAGE_EXT, _("Scale Tool"));
-	INIT_STOCK_ICON(zoom, "tool_zoom_icon." IMAGE_EXT, _("Zoom Tool"));
-	INIT_STOCK_ICON(mirror, "tool_mirror_icon." IMAGE_EXT, _("Mirror Tool"));
-	INIT_STOCK_ICON(text, "tool_text_icon." IMAGE_EXT, _("Text Tool"));
-	INIT_STOCK_ICON(gradient, "tool_gradient_icon." IMAGE_EXT, _("Gradient Tool"));
-	INIT_STOCK_ICON(star, "tool_star_icon." IMAGE_EXT, _("Star Tool"));
-	// ToolBox Others
-	INIT_STOCK_ICON(reset_colors, "reset_colors_icon." IMAGE_EXT, _("Reset Colors"));
-	INIT_STOCK_ICON(swap_colors, "swap_colors_icon." IMAGE_EXT, _("Swap Colors"));
-	INIT_STOCK_ICON(value_node, "valuenode_icon." IMAGE_EXT, _("ValueNode"));
-	INIT_STOCK_ICON(valuenode_forbidanimation, "valuenode_forbidanimation_icon." IMAGE_EXT, _("ValueNode Forbid Animation"));
-	INIT_STOCK_ICON(rename, "rename_icon." IMAGE_EXT, _("Rename"));
-	INIT_STOCK_ICON(canvas, "canvas_icon." IMAGE_EXT, _("Canvas"));
-	INIT_STOCK_ICON(canvas_new, "canvas_icon." IMAGE_EXT, _("New Canvas"));
-
-	// Document Related Actions
-	INIT_STOCK_ICON(about, "about_icon." IMAGE_EXT, _("About"));
-	INIT_STOCK_ICON(new_doc, "action_doc_new_icon." IMAGE_EXT, _("New"));
-	INIT_STOCK_ICON(open, "action_doc_open_icon." IMAGE_EXT, _("Open"));
-	INIT_STOCK_ICON(save, "action_doc_save_icon." IMAGE_EXT, _("Save"));
-	INIT_STOCK_ICON(save_as, "action_doc_saveas_icon." IMAGE_EXT, _("Save As"));
-	INIT_STOCK_ICON(export, "action_doc_saveas_icon." IMAGE_EXT, _("Export"));
-	INIT_STOCK_ICON(save_all, "action_doc_saveall_icon." IMAGE_EXT, _("Save All"));
-	INIT_STOCK_ICON(redo, "action_doc_redo_icon." IMAGE_EXT, _("Redo"));
-	INIT_STOCK_ICON(undo, "action_doc_undo_icon." IMAGE_EXT, _("Undo"));
-
-	// Ghost Layers
-	INIT_STOCK_ICON(layer_ghost_group, "layer_other_ghostgroup_icon." IMAGE_EXT, _("Group Ghost"));
-
-	INIT_STOCK_ICON(info, "info_icon." IMAGE_EXT, _("Info Tool"));
-	INIT_STOCK_ICON(group, "set_icon." IMAGE_EXT, _("Set"));
-
-	INIT_STOCK_ICON(duplicate, "duplicate_icon." IMAGE_EXT, _("Duplicate"));
-	INIT_STOCK_ICON(encapsulate, "group_icon." IMAGE_EXT, _("Group"));
-	INIT_STOCK_ICON(encapsulate_switch, "layer_other_switch_icon." IMAGE_EXT, _("Group into Switch"));
-	INIT_STOCK_ICON(encapsulate_filter, "layer_other_filtergroup_icon." IMAGE_EXT, _("Group into Filter"));
-	INIT_STOCK_ICON(select_all_child_layers, "select_all_child_layers_icon." IMAGE_EXT, _("Select All Child Layers"));
-
-	INIT_STOCK_ICON(clear_undo, "clear_undo_icon." IMAGE_EXT, _("Clear Undo Stack"));
-	INIT_STOCK_ICON(clear_redo, "clear_redo_icon." IMAGE_EXT, _("Clear Redo Stack"));
-
-	INIT_STOCK_ICON(children, "library_icon." IMAGE_EXT, _("Library"));
-	INIT_STOCK_ICON(curves, "graphs_icon." IMAGE_EXT, _("Graphs"));
-	INIT_STOCK_ICON(keyframes, "keyframe_icon." IMAGE_EXT, _("Keyframes"));
-	INIT_STOCK_ICON(meta_data, "meta_data_icon." IMAGE_EXT, _("MetaData"));
-	INIT_STOCK_ICON(navigator, "navigator_icon." IMAGE_EXT, _("Navigator"));
-	INIT_STOCK_ICON(timetrack, "time_track_icon." IMAGE_EXT, _("Time Track"));
-	INIT_STOCK_ICON(history, "history_icon." IMAGE_EXT, _("History"));
-	INIT_STOCK_ICON(palette, "palette_icon." IMAGE_EXT, _("Palette"));
-	INIT_STOCK_ICON(params, "parameters_icon." IMAGE_EXT, _("Parameters"));
-
-	INIT_STOCK_ICON(keyframe_lock_past_off, "keyframe_lock_past_off_icon." IMAGE_EXT, _("Past keyframes unlocked"));
-	INIT_STOCK_ICON(keyframe_lock_past_on, "keyframe_lock_past_on_icon." IMAGE_EXT, _("Past keyframes locked"));
-	INIT_STOCK_ICON(keyframe_lock_future_off, "keyframe_lock_future_off_icon." IMAGE_EXT, _("Future keyframes unlocked"));
-	INIT_STOCK_ICON(keyframe_lock_future_on, "keyframe_lock_future_on_icon." IMAGE_EXT, _("Future keyframes locked"));
-
-	INIT_STOCK_ICON(animate_mode_off, "animate_mode_off_icon." IMAGE_EXT, _("Animate Mode Off"));
-	INIT_STOCK_ICON(animate_mode_on, "animate_mode_on_icon." IMAGE_EXT, _("Animate Mode On"));
-	
-	INIT_STOCK_ICON(jack, "jack_icon." IMAGE_EXT, _("JACK"));
-
-	INIT_STOCK_ICON(set_outline_color, "set_outline_color_icon." IMAGE_EXT, _("Set as Outline"));
-	INIT_STOCK_ICON(set_fill_color, "set_fill_color_icon." IMAGE_EXT, _("Set as Fill"));
-
-	INIT_STOCK_ICON(animate_seek_begin, "animate_seek_begin_icon." IMAGE_EXT, _("Seek to Begin"));
-	INIT_STOCK_ICON(animate_seek_prev_keyframe, "animate_seek_prev_keyframe_icon." IMAGE_EXT, _("Seek to Previous Keyframe"));
-	INIT_STOCK_ICON(animate_seek_prev_frame, "animate_seek_prev_frame_icon." IMAGE_EXT, _("Seek to Previous Frame"));
-	INIT_STOCK_ICON(animate_play, "animate_play_icon." IMAGE_EXT, _("Play"));
-	INIT_STOCK_ICON(animate_stop, "animate_stop_icon." IMAGE_EXT, _("Stop"));
-	INIT_STOCK_ICON(animate_pause, "animate_pause_icon." IMAGE_EXT, _("Pause"));
-	INIT_STOCK_ICON(animate_seek_next_frame, "animate_seek_next_frame_icon." IMAGE_EXT, _("Seek to Next frame"));
-	INIT_STOCK_ICON(animate_seek_next_keyframe, "animate_seek_next_keyframe_icon." IMAGE_EXT, _("Seek to Next Keyframe"));
-	INIT_STOCK_ICON(animate_seek_end, "animate_seek_end_icon." IMAGE_EXT, _("Seek to End"));
-	INIT_STOCK_ICON(animate_loop, "animate_loop_icon." IMAGE_EXT, _("Animate Loop"));
-	INIT_STOCK_ICON(animate_bounds, "animate_bounds_icon." IMAGE_EXT, _("Play Bounds"));
-	INIT_STOCK_ICON(animate_bound_lower, "animate_bound_lower_icon." IMAGE_EXT, _("Lower Bound"));
-	INIT_STOCK_ICON(animate_bound_upper, "animate_bound_upper_icon." IMAGE_EXT, _("Upper Bound"));
-
-	INIT_STOCK_ICON(add_to_group, "action_add_to_set_icon." IMAGE_EXT, _("Add Layer to Set"));
-	INIT_STOCK_ICON(remove_from_group, "action_remove_from_set_icon." IMAGE_EXT, _("Remove Layer from Set"));
-	INIT_STOCK_ICON(set_desc, "action_set_layer_description_icon." IMAGE_EXT, _("Set Layer Description"));
-	INIT_STOCK_ICON(export, "action_export_icon." IMAGE_EXT, _("Export Value Node"));
-	INIT_STOCK_ICON(unexport, "action_unexport_icon." IMAGE_EXT, _("Unexport Value Node"));
-	INIT_STOCK_ICON(flat_interpolation, "action_flat_interpolation_icon." IMAGE_EXT, _("Set Interpolation to Flat"));
-	INIT_STOCK_ICON(interpolate_interpolation, "action_interpolate_interpolation_icon." IMAGE_EXT, _("Set Interpolation to Interpolate"));
-	INIT_STOCK_ICON(peak_interpolation, "action_peak_interpolation_icon." IMAGE_EXT, _("Set Interpolation to Peak"));
-	INIT_STOCK_ICON(offpeak_interpolation, "action_offpeak_interpolation_icon." IMAGE_EXT, _("Set Interpolation to Off-Peak"));
-	INIT_STOCK_ICON(rounded_interpolation, "action_rounded_interpolation_icon." IMAGE_EXT, _("Set Interpolation to Rounded"));
-	INIT_STOCK_ICON(innerrounded_interpolation, "action_innerrounded_interpolation_icon." IMAGE_EXT, _("Set Interpolation to Inner Rounded"));
-	INIT_STOCK_ICON(squared_interpolation, "action_squared_interpolation_icon." IMAGE_EXT, _("Set Interpolation to Squared"));
-
-	INIT_STOCK_ICON(toggle_duck_position, "duck_position_icon." IMAGE_EXT, _("Toggle position handles"));
-	INIT_STOCK_ICON(toggle_duck_vertex, "duck_vertex_icon." IMAGE_EXT, _("Toggle vertex handles"));
-	INIT_STOCK_ICON(toggle_duck_tangent, "duck_tangent_icon." IMAGE_EXT, _("Toggle tangent handles"));
-	INIT_STOCK_ICON(toggle_duck_radius, "duck_radius_icon." IMAGE_EXT, _("Toggle radius handles"));
-	INIT_STOCK_ICON(toggle_duck_width, "duck_width_icon." IMAGE_EXT, _("Toggle width handles"));
-	INIT_STOCK_ICON(toggle_duck_angle, "duck_angle_icon." IMAGE_EXT, _("Toggle angle handles"));
-
-	INIT_STOCK_ICON(toggle_show_grid, "show_grid_icon." IMAGE_EXT, _("Toggle show grid"));
-	INIT_STOCK_ICON(toggle_snap_grid, "snap_grid_icon." IMAGE_EXT, _("Toggle snap grid"));
-	INIT_STOCK_ICON(toggle_show_guide, "show_guideline_icon." IMAGE_EXT, _("Toggle show guide"));
-	INIT_STOCK_ICON(toggle_snap_guide, "snap_guideline_icon." IMAGE_EXT, _("Toggle snap guide"));
-
-	INIT_STOCK_ICON(toggle_onion_skin, "onion_skin_icon." IMAGE_EXT, _("Toggle onion skin"));
-
-	INIT_STOCK_ICON(toggle_background_rendering, "background_rendering_icon." IMAGE_EXT, _("Toggle background rendering"));
-
-	INIT_STOCK_ICON(increase_resolution, "incr_resolution_icon." IMAGE_EXT, _("Increase resolution"));
-	INIT_STOCK_ICON(decrease_resolution, "decr_resolution_icon." IMAGE_EXT, _("Decrease resolution"));
-
-	INIT_STOCK_ICON(preview_options, "preview_options_icon." IMAGE_EXT, _("Preview Options Dialog"));
-	INIT_STOCK_ICON(render_options, "render_options_icon." IMAGE_EXT, _("Render Options Dialog"));
-
-	INIT_STOCK_ICON(utils_chain_link_on, "utils_chain_link_on_icon." IMAGE_EXT, _("Linked"));
-	INIT_STOCK_ICON(utils_chain_link_off, "utils_chain_link_off_icon." IMAGE_EXT, _("Unlinked"));
-	INIT_STOCK_ICON(utils_timetrack_align, "utils_timetrack_align_icon." IMAGE_EXT, _("Utils Timetrack align"));
-
-#undef INIT_STOCK_ICON
+	for (const auto& item : known_icon_list)
+		init_icon(item.first, path_to_icons + item.second.first + "." IMAGE_EXT, _(item.second.second));
 
 	icon_factory->add_default();
 
@@ -393,130 +468,13 @@ studio::get_action_stock_id(const synfigapp::Action::BookEntry& action)
 }
 
 std::string
-studio::layer_icon_name(const synfig::String &layer)
+studio::layer_icon_name(const synfig::String& layer_name)
 {
-	// Blur Layers
-	if(layer=="blur")
-		return "layer_blur_blur_icon";
-	else if(layer=="motion_blur")
-		return "layer_blur_motion_icon";
-	else if(layer=="radial_blur")
-		return "layer_blur_radial_icon";
-	// Distortion Layers
-	else if(layer=="curve_warp")
-		return "layer_distortion_curvewarp_icon";
-	else if(layer=="inside_out")
-		return "layer_distortion_insideout_icon";
-	else if(layer=="noise_distort")
-		return "layer_distortion_noise_icon";
-	else if(layer=="skeleton_deformation")
-		return "layer_distortion_skeletondeformation_icon";
-	else if(layer=="spherize")
-		return "layer_distortion_spherize_icon";
-	else if(layer=="stretch")
-		return "layer_distortion_stretch_icon";
-	else if(layer=="twirl")
-		return "layer_distortion_twirl_icon";
-	else if(layer=="warp")
-		return "layer_distortion_warp_icon";
-	// Example Layers
-	else if(layer=="metaballs")
-		return "layer_example_metaballs_icon";
-	else if(layer=="simple_circle")
-		return "layer_example_simplecircle_icon";
-	// Filter Layers
-	else if(layer=="clamp")
-		return "layer_filter_clamp_icon";
-	else if(layer=="colorcorrect")
-		return "layer_filter_colorcorrect_icon";
-	else if(layer=="halftone2")
-		return "layer_filter_halftone2_icon";
-	else if(layer=="halftone3")
-		return "layer_filter_halftone3_icon";
-	else if(layer=="lumakey")
-		return "layer_filter_lumakey_icon";
-	// Fractal Layers
-	else if(layer=="mandelbrot")
-		return "layer_fractal_mandelbrot_icon";
-	else if(layer=="julia")
-		return "layer_fractal_julia_icon";
-	// Geometry Layers
-	else if(layer=="checker_board")
-		return "layer_geometry_checkerboard_icon";
-	else if(layer=="circle")
-		return "layer_geometry_circle_icon";
-	else if(layer=="outline")
-		return "layer_geometry_outline_icon";
-	else if(layer=="advanced_outline")
-		return "layer_geometry_advanced_outline_icon";
-	else if(layer=="polygon")
-		return "layer_geometry_polygon_icon";
-	else if(layer=="rectangle")
-		return "layer_geometry_rectangle_icon";
-	else if(layer=="region")
-		return "layer_geometry_region_icon";
-	else if(layer=="solid_color")
-		return "layer_geometry_solidcolor_icon";
-	else if(layer=="star")
-		return "layer_geometry_star_icon";
-	// Gradient Layers
-	else if(layer=="conical_gradient")
-		return "layer_gradient_conical_icon";
-	else if(layer=="curve_gradient")
-		return "layer_gradient_curve_icon";
-	else if(layer=="noise")
-		return "layer_gradient_noise_icon";
-	else if(layer=="linear_gradient")
-		return "layer_gradient_linear_icon";
-	else if(layer=="radial_gradient")
-		return "layer_gradient_radial_icon";
-	else if(layer=="spiral_gradient")
-		return "layer_gradient_spiral_icon";
-	// Other Layers
-	else if(layer=="duplicate")
-		return "layer_other_duplicate_icon";
-	else if(layer=="importimage" || layer=="import")
-		return "layer_other_importimage_icon";
-	else if(layer=="filter_group")
-		return "layer_other_filtergroup_icon";
-	else if(layer=="group" || layer=="PasteCanvas" || layer=="pastecanvas" || layer=="paste_canvas")
-		return "layer_other_group_icon";
-	else if(layer=="plant")
-		return "layer_other_plant_icon";
-	else if(layer=="freetime")
-		return "layer_other_freetime_icon";
-	else if(layer=="stroboscope")
-		return "layer_other_stroboscope_icon";
-	else if(layer=="skeleton")
-		return "layer_other_skeleton_icon";
-	else if(layer=="super_sample")
-		return "layer_other_supersample_icon";
-	else if(layer=="switch")
-		return "layer_other_switch_icon";
-	else if(layer=="text")
-		return "layer_other_text_icon";
-	else if(layer=="sound")
-		return "layer_other_sound_icon";
-	else if(layer=="timeloop")
-		return "layer_other_timeloop_icon";
-	else if(layer=="xor_pattern")
-		return "layer_other_xorpattern_icon";
-	// Stylize Layers
-	else if(layer=="bevel")
-		return "layer_stylize_bevel_icon";
-	else if(layer=="shade")
-		return "layer_stylize_shade_icon";
-	// Transform Layers
-	else if(layer=="rotate")
-		return "layer_transform_rotate_icon";
-	else if(layer=="translate")
-		return "layer_transform_translate_icon";
-	else if(layer=="zoom")
-		return "layer_transform_scale_icon";
-	else if(layer=="ghost_group")
-		return "layer_other_ghostgroup_icon";
-	else
-		return "layer_icon";
+	auto iter = layer_icon_names.find(layer_name);
+	if (iter != layer_icon_names.end())
+		return iter->second;
+
+	return "layer_icon";
 }
 
 Glib::RefPtr<Gdk::Pixbuf>
