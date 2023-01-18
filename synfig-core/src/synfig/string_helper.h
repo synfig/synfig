@@ -59,6 +59,9 @@ int strscanf(const std::string& data, const char* format, ...);
 double stratof(const std::string& str);
 int stratoi(const std::string& str);
 
+void strtolower(std::string& str);
+void strtoupper(std::string& str);
+
 }; // END of namespace synfig
 
 #endif // SYNFIG_STRING_HELPER_H
