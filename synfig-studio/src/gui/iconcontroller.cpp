@@ -49,13 +49,10 @@
 
 #include <gtkmm/icontheme.h>
 
-#include "app.h" // temporary while we use StockID here
-
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace studio;
 using namespace synfig;
 
@@ -64,8 +61,6 @@ using namespace synfig;
 #ifndef IMAGE_EXT
 #	define IMAGE_EXT	"png"
 #endif
-
-#define NUM_INTERPOLATION_TYPES (int(INTERPOLATION_CLAMPED)+1)
 
 /* === M E T H O D S ======================================================= */
 
@@ -357,16 +352,12 @@ studio::interpolation_icon_name(synfig::Interpolation type)
 
 
 std::string
-studio::valuenode_icon_name(etl::handle<synfig::ValueNode> value_node)
+studio::valuenode_icon_name(synfig::ValueNode::Handle value_node)
 {
-	if(handle<ValueNode_Const>::cast_dynamic(value_node))
-	{
+	if (ValueNode_Const::Handle::cast_dynamic(value_node))
 		return value_icon_name(value_node->get_type());
-	}
 	else
-	{
 		return "value_node_icon";
-	}
 }
 
 Glib::RefPtr<Gdk::Pixbuf>
