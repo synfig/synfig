@@ -15,6 +15,11 @@ add_subdirectory(plugins)
 add_subdirectory(po)
 add_subdirectory(sounds)
 
+if (${ENABLE_TESTS})
+    enable_testing()
+    add_subdirectory(test)
+endif()
+
 file(MAKE_DIRECTORY "${SYNFIG_BUILD_ROOT}/share/appdata")
 file(MAKE_DIRECTORY "${SYNFIG_BUILD_ROOT}/share/applications")
 
