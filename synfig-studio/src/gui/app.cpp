@@ -3968,7 +3968,7 @@ App::new_instance()
 	if (App::default_background_layer_type == "solid_color")
 	{
 		//Create a SolidColor layer
-		synfig::Layer::Handle layer(instance->find_canvas_interface(canvas)->add_layer_to("SolidColor",
+		synfig::Layer::Handle layer(instance->find_canvas_interface(canvas)->add_layer_to("solid_color",
 			                        canvas,
 			                        0)); //target_depth
 
@@ -4032,7 +4032,7 @@ App::new_instance()
 		instance->find_canvas_view(canvas)->add_layer("skeleton");
 
 	if (getenv("SYNFIG_AUTO_ADD_MOTIONBLUR_LAYER"))
-		instance->find_canvas_view(canvas)->add_layer("MotionBlur");
+		instance->find_canvas_view(canvas)->add_layer("motion_blur");
 
 	if (getenv("SYNFIG_ENABLE_NEW_CANVAS_EDIT_PROPERTIES"))
 		instance->find_canvas_view(canvas)->canvas_properties.present();

@@ -407,7 +407,7 @@ studio::layer_icon_name(const synfig::String &layer)
 	// Blur Layers
 	if(layer=="blur")
 		return "layer_blur_blur_icon";
-	else if(layer=="MotionBlur") // in the future should be "motion_blur"
+	else if(layer=="motion_blur")
 		return "layer_blur_motion_icon";
 	else if(layer=="radial_blur")
 		return "layer_blur_radial_icon";
@@ -464,7 +464,7 @@ studio::layer_icon_name(const synfig::String &layer)
 		return "layer_geometry_rectangle_icon";
 	else if(layer=="region")
 		return "layer_geometry_region_icon";
-	else if(layer=="solid_color" || layer=="SolidColor")
+	else if(layer=="solid_color")
 		return "layer_geometry_solidcolor_icon";
 	else if(layer=="star")
 		return "layer_geometry_star_icon";
