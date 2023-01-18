@@ -144,15 +144,19 @@ Instance::layer_inside_switch(synfig::Layer_Switch::Handle paste) const
 {
 	synfig::Layer::Handle child_layer;
 	synfig::Canvas::Handle canvas = paste->get_sub_canvas();
-	synfig::String active_layer = "";
-	active_layer = paste->get_param("layer_name").get(synfig::String());
 	if(canvas)
 	{
-		for(IndependentContext i = canvas->get_independent_context(); *i; i++)
-		{
-			if((*i)->get_description()==active_layer)
-			{
-				child_layer = (*i);
+		synfig::String active_layer = paste->get_param("layer_name").get(synfig::String());
+
+		if (active_layer.empty()) {
+			int active_layer_index = paste->get_param("layer_depth").get(int());
+			auto layer_iter = canvas->byindex(active_layer_index);
+			if (layer_iter != canvas->end())
+				child_layer = *layer_iter;
+		} else {
+			for (IndependentContext i = canvas->get_independent_context(); *i; i++) {
+				if((*i)->get_description()==active_layer)
+					child_layer = (*i);
 			}
 		}
 	}
