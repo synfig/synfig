@@ -204,3 +204,15 @@ synfig::stratoi(const std::string &str)
 {
 	return atoi(str.c_str());
 }
+
+void
+synfig::strtolower(std::string& str)
+{
+	std::transform(str.begin(), str.end(), str.begin(), &::tolower);
+}
+
+void
+synfig::strtoupper(std::string& str)
+{
+	std::transform(str.begin(), str.end(), str.begin(), &::toupper);
+}

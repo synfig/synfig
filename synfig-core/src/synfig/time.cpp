@@ -56,8 +56,6 @@
 
 using namespace synfig;
 
-#define tolower ::tolower
-
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
@@ -68,7 +66,7 @@ Time::Time(const String &str_, float fps):
 	value_(0)
 {
 	String str(str_);
-	std::transform(str.begin(),str.end(),str.begin(),&tolower);
+	strtolower(str);
 
 	// Start/Begin Of Time
 	if(str=="sot" || str=="bot")
