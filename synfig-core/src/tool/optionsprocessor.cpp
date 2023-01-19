@@ -135,7 +135,7 @@ SynfigCommandLineParser::SynfigCommandLineParser() :
 	show_license(),
 	show_modules(),
 	show_targets(),
-        show_renderers(),
+	show_renderers(),
 	show_codecs(),
 	show_value_nodes(),
 	show_version()
@@ -491,11 +491,12 @@ void SynfigCommandLineParser::process_info_options()
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
         
-        if(show_renderers)
-        {
-            rendering::Renderer::print_renderers();
+        if(show_renderers) {
+		for(const auto& iter : synfig::rendering::Renderer::get_renderers()) {
+		        std::cout << (iter.first).c_str() << " - " << iter.second->get_name() << std::endl;
+		}
             
-            throw (SynfigToolException(SYNFIGTOOL_HELP));
+		throw (SynfigToolException(SYNFIGTOOL_HELP));
         }
 
 	if (show_value_nodes) {
@@ -708,7 +709,9 @@ Job SynfigCommandLineParser::extract_job()
             if (ri == renderers.end() || !ri->second) 
             {
                     synfig::error("Invalid renderer: %s", set_renderer.c_str()); 
-                    rendering::Renderer::print_renderers();
+		    for(const auto& iter : synfig::rendering::Renderer::get_renderers()) {
+			    std::cout << (iter.first).c_str() << " - " << iter.second->get_name() << std::endl;
+		    }
                     throw SynfigToolException(SYNFIGTOOL_INVALIDJOB);
             }
             job.render_engine = set_renderer;
@@ -825,7 +828,6 @@ Job SynfigCommandLineParser::extract_job()
 
 		throw SynfigToolException(SYNFIGTOOL_OK);
 	}
-       
 	return job;
 }
 

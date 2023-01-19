@@ -34,7 +34,7 @@ struct Job
 	std::string filename;
 	std::string outfilename;
 	std::string target_name;
-        std::string render_engine;
+	std::string render_engine;
         
 	synfig::RendDesc desc;
 	synfig::TargetAlphaMode alpha_mode;

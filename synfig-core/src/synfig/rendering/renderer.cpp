@@ -1046,11 +1046,4 @@ Renderer::get_renderers()
 	return *renderers;
 }
 
-void Renderer::print_renderers() {
-	std::cout << "available renderers: " << std::endl;
-	for(auto i = renderers->begin(); i != renderers->end(); ++i)
-		if (i->second)
-			std::cout << "  " << i->first << " - " << i->second->get_name() << std::endl;
-}
-
 /* === E N T R Y P O I N T ================================================= */

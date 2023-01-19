@@ -117,7 +117,9 @@ int main(int argc, char **argv)
 		std::cout << "Options:"<<std::endl;
 		std::cout << "  --benchmark - Ignore real-time synchronization and render every frame (used for benchmarks)."<<std::endl;
 		std::cout << std::endl;
-		rendering::Renderer::print_renderers();
+		for(const auto& iter : synfig::rendering::Renderer::get_renderers()) {
+		        std::cout << (iter.first).c_str() << " - " << iter.second->get_name() << std::endl;
+		}
 		return 0;
 	}
 
@@ -138,7 +140,9 @@ int main(int argc, char **argv)
 	RendererMap::const_iterator ri = renderers.find(renderer_name);
 	if (ri == renderers.end() || !ri->second) {
 		error("unknown renderer: %s", renderer_name.c_str());
-		rendering::Renderer::print_renderers();
+		for(const auto& iter : synfig::rendering::Renderer::get_renderers()) {
+		        std::cout << (iter.first).c_str() << " - " << iter.second->get_name() << std::endl;
+		}
 		return 1;
 	}
 	rendering::Renderer::Handle renderer = ri->second;

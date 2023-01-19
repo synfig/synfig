@@ -180,7 +180,6 @@ public:
 	static void deinitialize();
 	static void register_renderer(const String &name, const Renderer::Handle &renderer);
 	static void unregister_renderer(const String &name);
-        static void print_renderers();
 	static const Renderer::Handle& get_renderer(const String &name);
 	static const std::map<String, Handle>& get_renderers();
 
