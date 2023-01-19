@@ -1312,7 +1312,7 @@ static const ActionManager::EntryList app_action_db =
 	{"app.new",            N_("New"),            {"<Primary>n"}, "action_doc_new_icon", N_("Create a new document")},
 	{"app.open",           N_("Open"),           {"<Primary>o"}, "action_doc_open_icon", N_("Open an existing document")},
 	{"app.quit",           N_("Quit"),           {"<Primary>q"}, "application-exit", N_("Quit application")},
-	{"app.setup",          N_("Preferences..."), {},             "application-preferences"},
+	{"app.preferences",    N_("Preferences..."), {},             "application-preferences"},
 	{"app.help",           N_("Help"),           {"F1"},         "help-contents"},
 #if GTK_CHECK_VERSION(3, 20, 0)
 	{"app.help-shortcuts", N_("Keyboard Shortcuts"),         {}, ""},
@@ -1321,7 +1321,7 @@ static const ActionManager::EntryList app_action_db =
 	{"app.help-reference", N_("Reference"),                  {}, ""},
 	{"app.help-faq",       N_("Frequently Asked Questions"), {}, "help-faq"},
 	{"app.help-support",   N_("Get Support"),                {}, ""},
-	{"app.help-about",     N_("About Synfig Studio"),        {}, "help-about"},
+	{"app.about",          N_("About Synfig Studio"),        {}, "help-about"},
 };
 
 /* === P R O C E D U R E S ================================================= */
@@ -1335,7 +1335,7 @@ init_app_actions()
 	action_map->add_action("new", sigc::hide_return(sigc::ptr_fun(&App::new_instance)));
 	action_map->add_action("open", sigc::hide_return(sigc::bind(sigc::ptr_fun(&App::dialog_open), synfig::filesystem::Path{})));
 	action_map->add_action("quit", sigc::hide_return(sigc::ptr_fun(&App::quit)));
-	action_map->add_action("setup", sigc::ptr_fun(&App::show_setup));
+	action_map->add_action("preferences", sigc::ptr_fun(&App::show_setup));
 	action_map->add_action("help", sigc::ptr_fun(App::dialog_help));
 #if GTK_CHECK_VERSION(3, 20, 0)
 	action_map->add_action("help-shortcuts", sigc::ptr_fun(App::window_shortcuts));
@@ -1344,7 +1344,7 @@ init_app_actions()
 	action_map->add_action("help-reference", sigc::bind(sigc::ptr_fun(&App::open_uri), _("https://wiki.synfig.org/Category:Reference")));
 	action_map->add_action("help-faq", sigc::bind(sigc::ptr_fun(&App::open_uri), _("https://wiki.synfig.org/FAQ")));
 	action_map->add_action("help-support", sigc::bind(sigc::ptr_fun(&App::open_uri), _("https://forums.synfig.org/")));
-	action_map->add_action("help-about", sigc::ptr_fun(App::dialog_about));
+	action_map->add_action("about", sigc::ptr_fun(App::dialog_about));
 
 	for (const auto& entry : app_action_db)
 		App::get_action_manager()->add(entry);
