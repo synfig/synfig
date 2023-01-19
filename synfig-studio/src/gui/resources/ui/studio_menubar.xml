@@ -404,26 +404,38 @@
                     <attribute name="label" translatable="yes">_New Layer</attribute>
                 </submenu>
             </section>
-            <section id="instance-layers">
+            <section id="selected-layer-actions">
+                <item>
+                    <attribute name="label" translatable="yes">Increase Amount</attribute>
+                    <attribute name="action">layer.amount-inc</attribute>
+                    <attribute name="accel">&lt;Primary&gt;&lt;Shift&gt;parenright</attribute>
+                    <attribute name="icon">list-add</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">Decrease Amount</attribute>
+                    <attribute name="action">layer.amount-dec</attribute>
+                    <attribute name="accel">&lt;Primary&gt;&lt;Shift&gt;parenleft</attribute>
+                    <attribute name="icon">list-remove</attribute>
+                </item>
             </section>
             <section id="special-layer-actions">
             </section>
                 <section>
                     <item>
                         <attribute name="label" translatable="yes">_Cut</attribute>
-                        <attribute name="action">doc.cut</attribute>
+                        <attribute name="action">layer.cut</attribute>
                         <attribute name="accel">&lt;Primary&gt;x</attribute>
                         <attribute name="icon">edit-cut</attribute>
                     </item>
                     <item>
                         <attribute name="label" translatable="yes">_Copy</attribute>
-                        <attribute name="action">doc.copy</attribute>
+                        <attribute name="action">layer.copy</attribute>
                         <attribute name="accel">&lt;Primary&gt;c</attribute>
                         <attribute name="icon">edit-copy</attribute>
                     </item>
                     <item>
                         <attribute name="label" translatable="yes">_Paste</attribute>
-                        <attribute name="action">doc.paste</attribute>
+                        <attribute name="action">layer.paste</attribute>
                         <attribute name="accel">&lt;Primary&gt;v</attribute>
                         <attribute name="icon">edit-paste</attribute>
                     </item>

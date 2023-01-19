@@ -72,6 +72,8 @@ Dock_Layers::Dock_Layers():
 	get_style_context()->add_class("synfigstudio-efficient-workspace");
 
 	if(layer_action_manager)layer_action_manager->set_ui_manager(App::ui_manager());
+	if (layer_action_manager)
+		layer_action_manager->set_action_widget_and_menu(App::main_window, App::menu_selected_layers, App::menu_special_layers);
 
 	action_group_new_layers=Gtk::ActionGroup::create("action_group_new_layers");
 	action_group_layer_ops=Gtk::ActionGroup::create("action_group_layer_ops");
