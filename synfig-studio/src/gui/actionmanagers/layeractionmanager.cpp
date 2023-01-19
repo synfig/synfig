@@ -35,6 +35,7 @@
 
 #include "layeractionmanager.h"
 
+#include <giomm/themedicon.h>
 #include <glibmm/main.h>
 
 #include <gui/app.h>
@@ -64,6 +65,8 @@ static const guint no_prev_popup((guint)-1);
 //#define ONE_ACTION_GROUP 1
 
 /* === G L O B A L S ======================================================= */
+
+static const std::string group_name {"layer"};
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -183,9 +186,12 @@ remove_layers_inside_included_pastelayers(const std::list<Layer::Handle>& layer_
 /* === M E T H O D S ======================================================= */
 
 LayerActionManager::LayerActionManager():
+	action_widget_(nullptr),
+	layer_tree_(nullptr),
 	action_group_(Gtk::ActionGroup::create("action_group_layer_action_manager")),
 	menu_popup_id_(no_prev_popup),
 	menu_main_id_(no_prev_popup),
+	action_group2_(Gio::SimpleActionGroup::create()),
 	queued(false)
 {
 	action_cut_=Gtk::Action::create_with_icon_name(
@@ -250,6 +256,35 @@ LayerActionManager::LayerActionManager():
 		_("Select All Child Layers"),_("Select All Child Layers")
 	);
 	action_select_all_child_layers_->set_sensitive(false);
+
+
+
+
+	action_cut2_ = Gio::SimpleAction::create("cut");
+	action_cut2_->signal_activate().connect(sigc::hide(sigc::mem_fun(*this, &LayerActionManager::cut)));
+	action_copy2_ = Gio::SimpleAction::create("copy");
+	action_copy2_->signal_activate().connect(sigc::hide(sigc::mem_fun(*this, &LayerActionManager::copy)));
+	action_paste2_ = Gio::SimpleAction::create("paste");
+	action_paste2_->signal_activate().connect(sigc::hide(sigc::mem_fun(*this, &LayerActionManager::paste)));
+
+
+	action_amount_inc2_ = Gio::SimpleAction::create("amount-inc");
+	action_amount_inc2_->signal_activate().connect(sigc::hide(sigc::mem_fun(*this, &LayerActionManager::amount_inc)));
+
+	action_amount_dec2_ = Gio::SimpleAction::create("amount-dec");
+	action_amount_dec2_->signal_activate().connect(sigc::hide(sigc::mem_fun(*this, &LayerActionManager::amount_dec)));
+
+	action_select_all_child_layers2_ = Gio::SimpleAction::create("select-all-child-layers");
+	action_select_all_child_layers2_->set_enabled(false);
+
+	action_group2_->add_action(action_cut2_);
+	action_group2_->add_action(action_copy2_);
+	action_group2_->add_action(action_paste2_);
+
+	action_group2_->add_action(action_amount_inc2_);
+	action_group2_->add_action(action_amount_dec2_);
+
+	action_group2_->add_action(action_select_all_child_layers2_);
 }
 
 LayerActionManager::~LayerActionManager()
@@ -268,6 +303,16 @@ LayerActionManager::set_ui_manager(const Glib::RefPtr<Gtk::UIManager> &x)
 #else
 	ui_manager_=x;
 #endif
+}
+
+void
+LayerActionManager::set_action_widget_and_menu(Gtk::Widget* x, Glib::RefPtr<Gio::Menu>& menu_selected, Glib::RefPtr<Gio::Menu>& menu_special)
+{
+	clear();
+
+	action_widget_ = x;
+	menu_selected_layers_ = menu_selected;
+	menu_special_layers_ = menu_special;
 }
 
 void
@@ -292,6 +337,24 @@ LayerActionManager::set_canvas_interface(const etl::handle<synfigapp::CanvasInte
 void
 LayerActionManager::clear()
 {
+	if (action_widget_) {
+		const auto preservable_actions = {"cut", "copy", "paste", "amount-inc", "amount-dec", "select-all-child-layers"};
+
+		if (action_group2_) {
+			auto actions = action_group2_->list_actions();
+			for (const auto& action_name : actions) {
+				if (std::find(preservable_actions.begin(), preservable_actions.end(), action_name) != preservable_actions.end())
+					continue;
+				action_group2_->remove_action(action_name);
+			}
+		}
+
+		action_widget_->remove_action_group(group_name);
+
+		menu_selected_layers_->remove_all();
+		menu_special_layers_->remove_all();
+	}
+
 	if(ui_manager_)
 	{
 		// Clear out old stuff
@@ -348,7 +411,7 @@ LayerActionManager::refresh()
 	clear();
 
 	// Make sure we are ready
-	if(!ui_manager_ || !layer_tree_ || !canvas_interface_)
+	if(!ui_manager_ || !layer_tree_ || !canvas_interface_ || !action_widget_)
 	{
 		synfig::error("LayerActionManager::refresh(): Not ready!");
 		return;
@@ -359,8 +422,19 @@ LayerActionManager::refresh()
 	action_paste_->set_sensitive(!clipboard_.empty());
 	action_group_->add(action_paste_);
 
-	if(layer_tree_->get_selection()->count_selected_rows()!=0)
-	{
+	const std::string symbolic_suffix = ""; // "-symbolic"
+
+	action_paste2_->set_enabled(!clipboard_.empty());
+
+	if (layer_tree_->get_selection()->count_selected_rows() == 0) {
+		action_copy2_->set_enabled(false);
+		action_cut2_->set_enabled(false);
+
+		action_amount_inc2_->set_enabled(false);
+		action_amount_dec2_->set_enabled(false);
+
+		action_select_all_child_layers2_->set_enabled(false);
+	} else {
 		bool multiple_selected(layer_tree_->get_selection()->count_selected_rows()>1);
 		Layer::Handle layer(layer_tree_->get_selected_layer());
 
@@ -383,12 +457,26 @@ LayerActionManager::refresh()
 				if (Layer_Skeleton::Handle::cast_dynamic(layer) || etl::handle<Layer_Composite>::cast_dynamic(layer)) {
 					action_amount_inc_->set_label(_("Increase Opacity"));
 					action_amount_dec_->set_label(_("Decrease Opacity"));
+
+					auto menu_item = Gio::MenuItem::create(_("Increase Opacity"), group_name + "." + "amount-inc");
+					menu_item->set_icon(Gio::ThemedIcon::create("list-add" + symbolic_suffix));
+					menu_selected_layers_->append_item(menu_item);
+
+					menu_item = Gio::MenuItem::create(_("Decrease Opacity"), group_name + "." + "amount-dec");
+					menu_item->set_icon(Gio::ThemedIcon::create("list-remove" + symbolic_suffix));
+					menu_selected_layers_->append_item(menu_item);
 				} else {
 					action_amount_inc_->set_label(_("Increase Amount"));
 					action_amount_dec_->set_label(_("Decrease Amount"));
 				}
 				action_group_->add(action_amount_inc_);
 				action_group_->add(action_amount_dec_);
+
+				action_copy2_->set_enabled(!layer_list.empty());
+				action_cut2_->set_enabled(!layer_list.empty());
+
+				action_amount_inc2_->set_enabled(!layer_list.empty());
+				action_amount_dec2_->set_enabled(!layer_list.empty());
 
 				for(iter=layer_list.begin();iter!=layer_list.end();++iter)
 				{
@@ -423,20 +511,34 @@ LayerActionManager::refresh()
 							   Layer::LooseHandle(layer)));
 
 				action_select_all_child_layers_->set_sensitive(true);
+				action_select_all_child_layers2_->set_enabled(true);
 
 				ui_info+="<menuitem action='select-all-child-layers'/>";
+
+				{
+					auto menu_item = Gio::MenuItem::create(_("Select All Child Layers"), group_name + ".select-all-child-layers");
+					menu_item->set_icon(Gio::ThemedIcon::create("select_all_child_layers_icon" + symbolic_suffix));
+
+					menu_selected_layers_->append_item(menu_item);
+				}
 			}
-			else
+			else {
 				action_select_all_child_layers_->set_sensitive(false);
+				action_select_all_child_layers2_->set_enabled(false);
+			}
 
 			auto instance = etl::handle<studio::Instance>::cast_static(get_canvas_interface()->get_instance());
 
 			instance->
 				add_actions_to_group(action_group_, ui_info, param_list, synfigapp::Action::CATEGORY_LAYER);
+			etl::handle<studio::Instance>::cast_static(get_canvas_interface()->get_instance())->
+				add_actions_to_group_and_menu(action_group2_, group_name, menu_selected_layers_, param_list, synfigapp::Action::CATEGORY_LAYER);
 
 			ui_info+="<separator/>";
 			instance->
 				add_special_layer_actions_to_group(action_group_, ui_info, layer_list);
+			etl::handle<studio::Instance>::cast_static(get_canvas_interface()->get_instance())->
+				add_special_layer_actions_to_group_and_menu(action_group2_, group_name, menu_special_layers_, layer_list);
 		}
 	}
 
@@ -473,6 +575,8 @@ LayerActionManager::refresh()
 #else
 	get_ui_manager()->insert_action_group(action_group_);
 #endif
+
+	action_widget_->insert_action_group(group_name, action_group2_);
 }
 
 void
