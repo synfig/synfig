@@ -995,6 +995,44 @@ Instance::add_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_grou
 }
 
 void
+Instance::add_actions_to_group_and_menu(
+		const Glib::RefPtr<Gio::SimpleActionGroup>& action_group,
+		const std::string& action_group_name,
+		const Glib::RefPtr<Gio::Menu>& menu,
+		const synfigapp::Action::ParamList& param_list,
+		synfigapp::Action::Category category) const
+{
+	const std::string symbolic_suffix = ""; // App::use-symbolic-icons ? "-symbolic" : "";
+
+	synfigapp::Action::CandidateList candidate_list;
+
+	candidate_list=compile_visible_candidate_list(param_list,category);
+
+	candidate_list.sort();
+
+	for(const auto& item : candidate_list) {
+		auto a = action_group->add_action("action-" + item.name,
+			sigc::bind(
+				sigc::bind(
+					sigc::mem_fun(
+						*const_cast<studio::Instance*>(this),
+						&studio::Instance::process_action
+					),
+					param_list
+				),
+				item.name
+			)
+		);
+
+		auto menu_item = Gio::MenuItem::create(item.local_name, action_group_name + ".action-" + item.name);
+		const std::string icon_name = get_action_icon_name(item);
+		if (!icon_name.empty())
+			menu_item->set_icon(Gio::ThemedIcon::create(icon_name + symbolic_suffix));
+		menu->append_item(menu_item);
+	}
+}
+
+void
 Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamList &param_list,synfigapp::Action::Category category)const
 {
 	synfigapp::Action::CandidateList candidate_list;
@@ -1862,6 +1900,62 @@ Instance::add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup
 					local_name, local_name ),
 				sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), layer_bitmap, layers.front()) );
 			ui_info += strprintf("<menuitem action='%s' />", action_name.c_str());
+		}
+	}
+}
+
+void
+Instance::add_special_layer_actions_to_group_and_menu(
+		const Glib::RefPtr<Gio::SimpleActionGroup>& action_group,
+		const std::string& action_group_name,
+		const Glib::RefPtr<Gio::Menu>& menu,
+		const synfigapp::SelectionManager::LayerList& layers) const
+{
+	const std::string symbolic_suffix = ""; // App::use-symbolic-icons ? "-symbolic" : "";
+	// Open files with external apps
+	std::map<String, String> uris;
+	gather_uri(uris, layers);
+	int index = 0;
+	for (auto i = uris.cbegin(); i != uris.cend(); ++i, ++index) {
+		String action_name = strprintf("special-action-open-file-%d", index);
+		String local_name;
+		Gtk::Action::SlotActivate func;
+		//if the import layer is type image
+		if (is_img(i->second)) {
+			local_name = _("Edit image in external tool...");
+			func = sigc::bind(sigc::ptr_fun(&App::open_img_in_external), i->second);
+		} else {
+			local_name = strprintf(_("Open file '%s'"), i->first.c_str());
+			func = sigc::bind(sigc::ptr_fun(&App::open_uri), i->second);
+		}
+
+		action_group->add_action(action_name, func);
+
+		auto menu_item = Gio::MenuItem::create(local_name, action_group_name + "." + action_name);
+		menu_item->set_icon(Gio::ThemedIcon::create("document-open" + symbolic_suffix));
+		menu->append_item(menu_item);
+	}
+
+	// Vectorizer
+	if (layers.size() == 1)	{
+		String local_name = _("Convert to Vector");
+		String action_name = strprintf("special-action-open-file-vectorizer-%d", index);
+		Layer_Bitmap::Handle layer_bitmap;
+
+		if (auto reference_layer = etl::handle<Layer_Switch>::cast_dynamic(layers.front())) {
+			//the layer selected is a switch group
+			layer_bitmap = Layer_Bitmap::Handle::cast_dynamic(layer_inside_switch(reference_layer));
+		} else {
+			layer_bitmap = Layer_Bitmap::Handle::cast_dynamic(layers.front());
+		}
+
+		if (layer_bitmap) {
+			action_group->add_action(action_name, sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), layer_bitmap, layers.front()));
+
+			auto menu_item = Gio::MenuItem::create(local_name, action_group_name + "." + action_name);
+			// FIXME Gtk::StockID STOCK_ID Gtk::Stock::CONVERT
+			menu_item->set_icon(Gio::ThemedIcon::create("gtk-convert" + symbolic_suffix));
+			menu->append_item(menu_item);
 		}
 	}
 }

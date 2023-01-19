@@ -235,6 +235,8 @@ public:
 	static Glib::RefPtr<Gio::Menu> menu_recent_files;
 	static Glib::RefPtr<Gio::Menu> menu_plugins;
 	static Glib::RefPtr<Gio::Menu> menu_layers;
+	static Glib::RefPtr<Gio::Menu> menu_selected_layers;
+	static Glib::RefPtr<Gio::Menu> menu_special_layers;
 	static Glib::RefPtr<Gio::Menu> menu_tools;
 	static Glib::RefPtr<Gio::Menu> menu_window_custom_workspaces;
 	static Glib::RefPtr<Gio::Menu> menu_window_docks;
