@@ -45,7 +45,7 @@
 #include <glibmm/uriutils.h>
 
 #include <gtkmm/eventbox.h>
-#include <gtkmm/hvseparator.h>
+#include <gtkmm/separator.h>
 #include <gtkmm/imagemenuitem.h>
 #include <gtkmm/label.h>
 #include <gtkmm/messagedialog.h>
