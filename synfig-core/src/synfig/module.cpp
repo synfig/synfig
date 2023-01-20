@@ -40,9 +40,7 @@
 #include "type.h"
 #include <glibmm.h>
 
-#ifndef USE_CF_BUNDLES
 #include <ltdl.h>
-#endif
 
 #endif
 
@@ -50,27 +48,20 @@
 
 /* === G L O B A L S ======================================================= */
 
-using namespace etl;
-using namespace synfig;
-
-Module::Book *synfig::Module::book_;
-
 /* === P R O C E D U R E S ================================================= */
 
-static void add_search_dir(const char* dir) {
-	lt_dladdsearchdir(dir);
+static void add_search_dir(const std::string& dir) {
+	lt_dladdsearchdir(dir.c_str());
 #ifdef _MSC_VER
-	const char* path = getenv("PATH");
-	std::string new_path = strprintf("PATH=%s;%s", path, dir);
-	_putenv(new_path.c_str());
+	const std::string path = Glib::getenv("PATH");
+	std::string new_path = path + ";" + dir;
+	Glib::setenv("PATH", new_path);
 #endif
 }
 
 bool
-Module::subsys_init(const String &prefix)
+synfig::Module::subsys_init(const std::string& prefix)
 {
-#ifndef USE_CF_BUNDLES
-
 	if(lt_dlinit())
 	{
 		error(_("Errors on lt_dlinit()"));
@@ -80,51 +71,46 @@ Module::subsys_init(const String &prefix)
 
 	// user's synfig library path
 #ifdef _WIN32
-	if(const char *localappdata = getenv("%LOCALAPPDATA%")) {
-		std::string user_module_path = Glib::locale_from_utf8(localappdata) + "/synfig/modules";
-		add_search_dir(user_module_path.c_str());
+	std::string localappdata = Glib::getenv("%LOCALAPPDATA%");
+	if (!localappdata.empty()) {
+		std::string user_module_path = localappdata + "/synfig/modules";
+		add_search_dir(user_module_path);
 	}
+#elif defined(__APPLE__)
+	std::string home = Glib::getenv("HOME");
+	if (!home.empty())
+		add_search_dir(home + "/Library/Application Support/org.synfig.SynfigStudio/modules");
+
+	add_search_dir("/Library/Frameworks/synfig.framework/Resources/modules");
 #else
-#ifdef __APPLE__
-	if(const char *home = getenv("HOME"))
-		add_search_dir(strprintf("%s/Library/Application Support/org.synfig.SynfigStudio/modules", home).c_str());
-#else
-	if(const char *home = getenv("HOME"))
-		add_search_dir(strprintf("%s/.local/share/synfig/modules", home).c_str());
-#endif
+	std::string home = Glib::getenv("HOME");
+	if (!home.empty())
+		add_search_dir(home + "/.local/share/synfig/modules");
 #endif
 
 	// (runtime) prefix path
-	add_search_dir((Glib::locale_from_utf8(prefix) + "/lib/synfig/modules").c_str());
+	add_search_dir((Glib::locale_from_utf8(prefix) + "/lib/synfig/modules"));
 
 	// path defined on build time
 #ifdef LIBDIR
 	add_search_dir(LIBDIR"/synfig/modules");
 #endif
-#ifdef __APPLE__
-	add_search_dir("/Library/Frameworks/synfig.framework/Resources/modules");
-#endif
 
 	// current working path...
 	add_search_dir(".");
-#endif
-	book_=new Book;
+
 	return true;
 }
 
 bool
-Module::subsys_stop()
+synfig::Module::subsys_stop()
 {
-	delete book_;
-
-#ifndef USE_CF_BUNDLES
 	lt_dlexit();
-#endif
 	return true;
 }
 
 void
-Module::register_default_modules(ProgressCallback *callback)
+synfig::Module::register_default_modules(ProgressCallback *callback)
 {
 	#define REGISTER_MODULE(module) if (!Register(module, callback)) \
 										throw std::runtime_error(strprintf(_("Unable to load module '%s'"), module))
@@ -134,10 +120,11 @@ Module::register_default_modules(ProgressCallback *callback)
 	REGISTER_MODULE("mod_particle");
 }
 
-Module::Book&
-Module::book()
+synfig::Module::Book&
+synfig::Module::book()
 {
-	return *book_;
+	static Book book_;
+	return book_;
 }
 
 void
@@ -149,7 +136,6 @@ synfig::Module::Register(Module::Handle mod)
 bool
 synfig::Module::Register(const String &module_name, ProgressCallback *callback)
 {
-#ifndef USE_CF_BUNDLES
 	// reset error string
 	lt_dlerror();
 
@@ -182,7 +168,7 @@ synfig::Module::Register(const String &module_name, ProgressCallback *callback)
 
 	if(constructor)
 	{
-		mod=handle<Module>((*constructor)(callback));
+		mod=etl::handle<Module>((*constructor)(callback));
 	}
 	else
 	{
@@ -202,7 +188,6 @@ synfig::Module::Register(const String &module_name, ProgressCallback *callback)
 
 	if(callback)callback->task(strprintf(_("Success for \"%s\""),module_name.c_str()));
 
-#endif
 	return true;
 }
 
