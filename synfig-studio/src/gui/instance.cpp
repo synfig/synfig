@@ -1684,52 +1684,45 @@ Instance::add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup
 void
 Instance::add_special_layer_actions_to_menu(Gtk::Menu *menu, const synfigapp::SelectionManager::LayerList &layers) const
 {
+	// Open files with external apps
 	std::map<String, String> uris;
 	gather_uri(uris, layers);
-	for(std::map<String, String>::const_iterator i = uris.begin(); i != uris.end(); ++i)
-	{
-		if(is_img(i->second))// check if layer is image
-		{
-			Gtk::MenuItem *item = manage(new Gtk::ImageMenuItem(Gtk::Stock::OPEN));
-			item->set_label(_("Edit image in external tool..."));
-			item->signal_activate().connect(
-				sigc::bind(sigc::ptr_fun(&App::open_img_in_external), i->second) );
-			item->show();
-			menu->append(*item);
+	for (auto i = uris.cbegin(); i != uris.cend(); ++i) {
+		String label;
+		Gtk::Action::SlotActivate func;
+		// check if layer is image
+		if (is_img(i->second)) {
+			label = _("Edit image in external tool...");
+			func = sigc::bind(sigc::ptr_fun(&App::open_img_in_external), i->second);
+		} else {
+			label = strprintf(_("Open file '%s'"), i->first.c_str());
+			func = sigc::bind(sigc::ptr_fun(&App::open_uri), i->second);
 		}
-		else
-		{
-			Gtk::MenuItem *item = manage(new Gtk::ImageMenuItem(Gtk::Stock::OPEN));
-			item->set_label(strprintf(_("Open file '%s'"), i->first.c_str()));
-			item->signal_activate().connect(
-				sigc::bind(sigc::ptr_fun(&App::open_uri), i->second) );
-			item->show();
-			menu->append(*item);	
-		}
+		Gtk::MenuItem *item = manage(new Gtk::ImageMenuItem(Gtk::Stock::OPEN));
+		item->set_label(label);
+		item->signal_activate().connect(func);
+		item->show();
+		menu->append(*item);
 	}
-	if(layers.size()==1)
-	{
-		if(etl::handle<Layer_Bitmap> my_layer_bitmap = etl::handle<Layer_Bitmap>::cast_dynamic(layers.front()))
-		{
-				Gtk::MenuItem *item2 = manage(new Gtk::ImageMenuItem(Gtk::Stock::CONVERT));
-				item2->set_label( (String(_("Convert to Vector"))).c_str() );
-				item2->signal_activate().connect(
-					sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), my_layer_bitmap,layers.front()) );
-				item2->show();
-				menu->append(*item2);
-		}
-		else if(etl::handle<Layer_Switch> reference_layer = etl::handle<Layer_Switch>::cast_dynamic(layers.front()))
-		{
+
+	// Vectorizer
+	if (layers.size() == 1) {
+		Layer_Bitmap::Handle layer_bitmap;
+
+		if (auto reference_layer = etl::handle<Layer_Switch>::cast_dynamic(layers.front())) {
 			//the layer selected is a switch group
-			if(etl::handle<Layer_Bitmap> my_layer_bitmap = etl::handle<Layer_Bitmap>::cast_dynamic(layer_inside_switch(reference_layer)))
-			{
-				Gtk::MenuItem *item2 = manage(new Gtk::ImageMenuItem(Gtk::Stock::CONVERT));
-				item2->set_label( (String(_("Convert to Vector"))).c_str() );
-				item2->signal_activate().connect(
-					sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), my_layer_bitmap,layers.front()) );
-				item2->show();
-				menu->append(*item2);
-			} 
+			layer_bitmap = Layer_Bitmap::Handle::cast_dynamic(layer_inside_switch(reference_layer));
+		} else {
+			layer_bitmap = Layer_Bitmap::Handle::cast_dynamic(layers.front());
+		}
+
+		if (layer_bitmap) {
+			Gtk::MenuItem *item2 = manage(new Gtk::ImageMenuItem(Gtk::Stock::CONVERT));
+			item2->set_label( (String(_("Convert to Vector"))).c_str() );
+			item2->signal_activate().connect(
+				sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), layer_bitmap, layers.front()) );
+			item2->show();
+			menu->append(*item2);
 		}
 	}
 }
@@ -1739,66 +1732,53 @@ Instance::add_special_layer_actions_to_menu(Gtk::Menu *menu, const synfigapp::Se
 void
 Instance::add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_group, synfig::String& ui_info, const synfigapp::SelectionManager::LayerList &layers) const
 {
+	// Open files with external apps
 	std::map<String, String> uris;
 	gather_uri(uris, layers);
 	int index = 0;
-	for(std::map<String, String>::const_iterator i = uris.begin(); i != uris.end(); ++i, ++index)
-	{
-		String action_name = synfig::strprintf("special-action-open-file-%d", index);
-		//if the import layer is type image 
-		if(is_img(i->second))
-		{
-			String local_name = _("Edit image in external tool...");
-			action_group->add(
-				Gtk::Action::create(
-					action_name,
-					Gtk::Stock::OPEN,
-					local_name, local_name ),
-				sigc::bind(sigc::ptr_fun(&App::open_img_in_external), i->second) ); 
-			ui_info += strprintf("<menuitem action='%s' />", action_name.c_str());
+	for (auto i = uris.cbegin(); i != uris.cend(); ++i, ++index) {
+		String action_name = strprintf("special-action-open-file-%d", index);
+		String local_name;
+		Gtk::Action::SlotActivate func;
+		//if the import layer is type image
+		if (is_img(i->second)) {
+			local_name = _("Edit image in external tool...");
+			func = sigc::bind(sigc::ptr_fun(&App::open_img_in_external), i->second);
+		} else {
+			local_name = strprintf(_("Open file '%s'"), i->first.c_str());
+			func = sigc::bind(sigc::ptr_fun(&App::open_uri), i->second);
 		}
-		else
-		{
-			String local_name = strprintf(_("Open file '%s'"), i->first.c_str());
-			action_group->add(
-				Gtk::Action::create(
-					action_name,
-					Gtk::Stock::OPEN,
-					local_name, local_name ),
-				sigc::bind(sigc::ptr_fun(&App::open_uri), i->second) );
-			ui_info += strprintf("<menuitem action='%s' />", action_name.c_str());
-		}
+
+		action_group->add(
+			Gtk::Action::create(
+				action_name,
+				Gtk::Stock::OPEN,
+				local_name, local_name ),
+			func );
+		ui_info += strprintf("<menuitem action='%s' />", action_name.c_str());
 	}
-	if(layers.size()==1)
-	{
-		String local_name2 = String(_("Convert to Vector"));
-		String action_name2 = synfig::strprintf("special-action-open-file-vectorizer-%d",index);
-		if(etl::handle<Layer_Switch> reference_layer = etl::handle<Layer_Switch>::cast_dynamic(layers.front()))
-		{
+
+	// Vectorizer
+	if (layers.size() == 1)	{
+		String local_name = _("Convert to Vector");
+		String action_name = strprintf("special-action-open-file-vectorizer-%d", index);
+		Layer_Bitmap::Handle layer_bitmap;
+
+		if (auto reference_layer = etl::handle<Layer_Switch>::cast_dynamic(layers.front())) {
 			//the layer selected is a switch group
-			if(etl::handle<Layer_Bitmap> my_layer_bitmap = etl::handle<Layer_Bitmap>::cast_dynamic(layer_inside_switch(reference_layer)))
-			{
-				action_group->add(
-			 	Gtk::Action::create(
-			 		action_name2,
-			 		Gtk::Stock::CONVERT,
-			 		local_name2, local_name2 ),
-			 	sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), my_layer_bitmap,layers.front()) );
-				 			ui_info += strprintf("<menuitem action='%s' />", action_name2.c_str());
-
-			} 
+			layer_bitmap = Layer_Bitmap::Handle::cast_dynamic(layer_inside_switch(reference_layer));
+		} else {
+			layer_bitmap = Layer_Bitmap::Handle::cast_dynamic(layers.front());
 		}
-		if(etl::handle<Layer_Bitmap> my_layer_bitmap = etl::handle<Layer_Bitmap>::cast_dynamic(layers.front()))
-		{
-				action_group->add(
-			 	Gtk::Action::create(
-			 		action_name2,
-			 		Gtk::Stock::CONVERT,
-			 		local_name2, local_name2 ),
-			 	sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), my_layer_bitmap,layers.front()) );
-				 			ui_info += strprintf("<menuitem action='%s' />", action_name2.c_str());
 
-
+		if (layer_bitmap) {
+			action_group->add(
+				Gtk::Action::create(
+					action_name,
+					Gtk::Stock::CONVERT,
+					local_name, local_name ),
+				sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), layer_bitmap, layers.front()) );
+			ui_info += strprintf("<menuitem action='%s' />", action_name.c_str());
 		}
 	}
 }
