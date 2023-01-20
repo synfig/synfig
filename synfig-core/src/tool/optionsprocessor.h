@@ -106,7 +106,7 @@ private:
 	int				set_num_threads;
 	Glib::ustring	set_input_file;
 	Glib::ustring	set_output_file;
-        Glib::ustring   set_renderer;
+	Glib::ustring   set_renderer;
 	Glib::ustring	set_sequence_separator;
 	Glib::ustring	set_canvas_id;
 	double			set_fps;
@@ -143,7 +143,7 @@ private:
 	bool			show_license;
 	bool			show_modules;
 	bool			show_targets;
-        bool                    show_renderers;
+	bool			show_renderers;
 	bool			show_codecs;
 	bool			show_value_nodes;
 	bool			show_version;
