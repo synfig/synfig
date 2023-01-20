@@ -496,7 +496,7 @@ void SynfigCommandLineParser::process_info_options()
 		}
 
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
-    }
+	}
 
 	if (show_value_nodes) {
 		for(const auto& iter : synfig::ValueNodeRegistry::book()) {
