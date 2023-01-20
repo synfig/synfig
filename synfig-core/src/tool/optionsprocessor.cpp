@@ -56,7 +56,6 @@
 #endif
 
 using namespace synfig;
-typedef std::map<String, rendering::Renderer::Handle> RendererMap;
 
 template<typename T>
 void SynfigCommandLineParser::add_option(Glib::OptionGroup& og, const std::string& name, const gchar& short_name,
@@ -491,13 +490,13 @@ void SynfigCommandLineParser::process_info_options()
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
         
-        if(show_renderers) {
+	if(show_renderers) {
 		for(const auto& iter : synfig::rendering::Renderer::get_renderers()) {
-		        std::cout << (iter.first).c_str() << " - " << iter.second->get_name() << std::endl;
+			std::cout << (iter.first).c_str() << " - " << iter.second->get_name() << std::endl;
 		}
-            
+
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
-        }
+    }
 
 	if (show_value_nodes) {
 		for(const auto& iter : synfig::ValueNodeRegistry::book()) {
@@ -704,18 +703,18 @@ Job SynfigCommandLineParser::extract_job()
         
 	if(!set_renderer.empty())
 	{
-	    auto renderers = rendering::Renderer::get_renderers();
-	    auto ri = renderers.find(set_renderer);
-	    if (ri == renderers.end() || !ri->second)
-	    {
-		synfig::error("Invalid renderer: %s", set_renderer.c_str()); 
-		for(const auto& iter : synfig::rendering::Renderer::get_renderers()) {
-		    std::cout << (iter.first).c_str() << " - " << iter.second->get_name() << std::endl;
+		auto renderers = rendering::Renderer::get_renderers();
+		auto ri = renderers.find(set_renderer);
+		if (ri == renderers.end() || !ri->second)
+		{
+			synfig::error("Invalid renderer: %s", set_renderer.c_str()); 
+			for(const auto& iter : synfig::rendering::Renderer::get_renderers()) {
+				std::cout << (iter.first).c_str() << " - " << iter.second->get_name() << std::endl;
+			}
+			throw SynfigToolException(SYNFIGTOOL_INVALIDJOB);
 		}
-		throw SynfigToolException(SYNFIGTOOL_INVALIDJOB);
-	    }
-	    job.render_engine = set_renderer;
-	    VERBOSE_OUT(1) << _("Renderer set to: ") << job.render_engine << std::endl;
+		job.render_engine = set_renderer;
+		VERBOSE_OUT(1) << _("Renderer set to: ") << job.render_engine << std::endl;
 	}
 
 	if (!set_target.empty())
