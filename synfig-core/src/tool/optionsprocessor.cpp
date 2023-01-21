@@ -707,7 +707,7 @@ Job SynfigCommandLineParser::extract_job()
 		auto ri = renderers.find(set_renderer);
 		if (ri == renderers.end() || !ri->second)
 		{
-			synfig::error("Invalid renderer: %s", set_renderer.c_str()); 
+			synfig::error(_("Invalid renderer: %s"), set_renderer.c_str()); 
 			for(const auto& iter : synfig::rendering::Renderer::get_renderers()) {
 				std::cout << (iter.first).c_str() << " - " << iter.second->get_name() << std::endl;
 			}

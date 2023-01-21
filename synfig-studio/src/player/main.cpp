@@ -118,7 +118,7 @@ int main(int argc, char **argv)
 		std::cout << "  --benchmark - Ignore real-time synchronization and render every frame (used for benchmarks)."<<std::endl;
 		std::cout << std::endl;
 		for(const auto& iter : synfig::rendering::Renderer::get_renderers()) {
-				std::cout << (iter.first).c_str() << " - " << iter.second->get_name() << std::endl;
+			std::cout << (iter.first).c_str() << " - " << iter.second->get_name() << std::endl;
 		}
 		return 0;
 	}

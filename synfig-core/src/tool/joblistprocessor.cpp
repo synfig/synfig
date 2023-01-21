@@ -221,8 +221,7 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 		{
 			scanline_target->set_threads(SynfigToolGeneralOptions::instance()->get_threads());
 			scanline_target->set_engine(job.render_engine);
-		}
-		if(auto tile_target = Target_Tile::Handle::cast_dynamic(job.target))
+		} else if(auto tile_target = Target_Tile::Handle::cast_dynamic(job.target))
 		{
 			tile_target->set_threads(SynfigToolGeneralOptions::instance()->get_threads());
 			tile_target->set_engine(job.render_engine);
