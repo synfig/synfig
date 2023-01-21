@@ -481,7 +481,6 @@ void
 MainWindow::on_recent_files_changed()
 {
 	// TODO(ice0): switch to GtkRecentChooserMenu?
-	const char* action_name_format = "file-recent-%d";
 	auto recent_file_group = App::instance();
 
 	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create("mainwindow-recentfiles");
@@ -491,14 +490,6 @@ MainWindow::on_recent_files_changed()
 	make_short_filenames(fullnames, shortnames);
 
 	App::menu_recent_files->remove_all();
-	{
-		int i = 0;
-		std::string action_name = synfig::strprintf(action_name_format, i);
-		while (App::instance()->lookup_action(action_name)) {
-			App::instance()->remove_action(action_name);
-			action_name = synfig::strprintf(action_name_format, ++i);
-		}
-	}
 
 	std::string menu_items;
 	for(int i = 0; i < (int)fullnames.size(); ++i)
@@ -506,15 +497,14 @@ MainWindow::on_recent_files_changed()
 		std::string raw = shortnames[i];
 		std::string quoted = escape_underline(raw);
 
-		const std::string action_name = synfig::strprintf(action_name_format, i);
+		const std::string action_name = synfig::strprintf("file-recent-%d", i);
 		menu_items += "<menuitem action='" + action_name +"' />";
 
 		filesystem::Path filename = fullnames[i];
 		action_group->add( Gtk::Action::create(action_name, quoted, filename.u8string()),
 			[filename](){App::open_recent(filename);}
 		);
-		recent_file_group->add_action(action_name, [filename](){ App::open_recent(filename); });
-		App::menu_recent_files->append(quoted, "app." + action_name);
+		App::menu_recent_files->append(quoted, strprintf("app.open-recent-file(\"%s\")", filename.c_str()));
 	}
 
 	std::string ui_info =
