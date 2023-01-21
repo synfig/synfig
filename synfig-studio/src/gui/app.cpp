@@ -1346,6 +1346,12 @@ init_app_actions()
 	action_map->add_action("help-support", sigc::bind(sigc::ptr_fun(&App::open_uri), _("https://forums.synfig.org/")));
 	action_map->add_action("about", sigc::ptr_fun(App::dialog_about));
 
+	auto open_recent_slot = [](const Glib::VariantBase& v) {
+		Glib::Variant<Glib::ustring> filename = Glib::VariantBase::cast_dynamic<Glib::Variant<Glib::ustring>>(v);
+		App::open_recent(synfig::filesystem::Path(filename.get()));
+	};
+	action_map->add_action_with_parameter("open-recent-file", Glib::VARIANT_TYPE_STRING, open_recent_slot);
+
 	for (const auto& entry : app_action_db)
 		App::get_action_manager()->add(entry);
 }
