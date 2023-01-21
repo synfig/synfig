@@ -1421,6 +1421,8 @@ CanvasView::init_menus()
 		{"jump-next-keyframe", "animate_seek_next_keyframe_icon", N_("Seek to Next Keyframe"),      "", sigc::mem_fun(*canvas_interface(), &CanvasInterface::jump_to_next_keyframe) },
 		{"jump-prev-keyframe", "animate_seek_prev_keyframe_icon", N_("Seek to Previous Keyframe") , "", sigc::mem_fun(*canvas_interface(), &CanvasInterface::jump_to_prev_keyframe) },
 
+		{"undo", "edit-undo", N_("Undo"), "", sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::undo))},
+		{"redo", "edit-redo", N_("Redo"), "", sigc::ptr_fun(App::redo)},
 	};
 
 	action_group = Gtk::ActionGroup::create("canvasview");
@@ -1441,6 +1443,13 @@ CanvasView::init_menus()
 	action_group->get_action("dialog-flipbook")->set_sensitive(false);
 
 	Glib::RefPtr<Gio::SimpleAction>::cast_static(action_group_->lookup_action("dialog-flipbook"))->set_enabled(false);
+
+	// Undo/Redo
+	get_instance()->signal_undo_redo_status_changed().connect(sigc::track_obj([=](){
+		Glib::RefPtr<Gio::SimpleAction>::cast_static(action_group_->lookup_action("undo"))->set_enabled(get_instance()->get_undo_status());
+		Glib::RefPtr<Gio::SimpleAction>::cast_static(action_group_->lookup_action("redo"))->set_enabled(get_instance()->get_redo_status());
+	}, *this));
+	get_instance()->signal_undo_redo_status_changed().emit();
 
 	// Plugins
 	auto instance = get_instance().get();
