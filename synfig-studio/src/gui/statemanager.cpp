@@ -100,6 +100,8 @@ StateManager::change_state_(const Smach::state_base* state)
 void
 StateManager::add_state(const Smach::state_base* state)
 {
+	const std::string symbolic_suffix = ""; // App::use-symbolic-icons ? "-symbolic" : "";
+
 	synfig::String name(state->get_name());
 
 	auto action = App::instance()->main_window->add_action("set-tool-" + name,
@@ -111,7 +113,7 @@ StateManager::add_state(const Smach::state_base* state)
 	std::string action_name = "win.set-tool-" + name;
 	auto action_entry = App::get_action_manager()->get(action_name);
 	auto menu_item = Gio::MenuItem::create(action_entry.label_, action_name);
-	menu_item->set_icon(Gio::Icon::create(action_entry.icon_));
+	menu_item->set_icon(Gio::Icon::create(action_entry.icon_ + symbolic_suffix));
 	App::menu_tools->append_item(menu_item);
 
 	App::dock_toolbox->add_state(state);
