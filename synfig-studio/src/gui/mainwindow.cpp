@@ -115,20 +115,16 @@ MainWindow::MainWindow(const Glib::RefPtr<Gtk::Application>& application)
 	auto visible_vbox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 	auto hidden_box   = manage(new Gtk::Box());
 
-	auto visible_menubar = App::ui_manager()->get_widget("/menubar-main");
 	auto hidden_menubar  = App::ui_manager()->get_widget("/menubar-hidden");
-	if (visible_menubar)
 	{
 		hidden_box->add(*hidden_menubar);
 		hidden_box->hide();
 
 		visible_vbox->add(*hidden_box);
-		visible_vbox->pack_start(*visible_menubar, false, false, 0);
 	}
 
 	visible_vbox->pack_end(*bin_, true, true, 0);
 	visible_vbox->show();
-	if(!App::enable_mainwin_menubar && visible_menubar) visible_menubar->hide();
 
 	add(*visible_vbox);
 
@@ -308,12 +304,8 @@ void MainWindow::register_custom_widget_types()
 void
 MainWindow::toggle_show_menubar()
 {
-	Gtk::Widget* menubar = App::ui_manager()->get_widget("/menubar-main");
-
 	App::enable_mainwin_menubar = !App::enable_mainwin_menubar;
 	property_show_menubar() = App::enable_mainwin_menubar;
-
-	menubar->set_visible(App::enable_mainwin_menubar);
 
 	auto action = this->lookup_action("show-menubar");
 	if (action)
