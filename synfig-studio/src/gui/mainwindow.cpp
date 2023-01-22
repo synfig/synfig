@@ -35,6 +35,7 @@
 #include <gui/mainwindow.h>
 
 #include <gtkmm/box.h>
+#include <gtkmm/cssprovider.h>
 #include <gtkmm/messagedialog.h>
 #include <gtkmm/stock.h>
 #include <gtkmm/textview.h>
@@ -146,6 +147,9 @@ MainWindow::MainWindow(const Glib::RefPtr<Gtk::Application>& application)
 
 	App::dock_manager->signal_dockable_unregistered().connect(
 		sigc::mem_fun(*this,&MainWindow::on_dockable_unregistered) );
+
+	signal_direction_changed().connect(sigc::hide(sigc::mem_fun(*this, &MainWindow::refresh_menu_icon_offset)));
+	signal_map().connect(sigc::mem_fun(*this, &MainWindow::refresh_menu_icon_offset));
 
 	set_type_hint(Gdk::WindowTypeHint(synfigapp::Main::settings().get_value("pref.mainwindow_hints", Gdk::WindowTypeHint())));
 }
@@ -709,6 +713,21 @@ MainWindow::edit_custom_workspace_list()
 	}
 	dlg->run();
 	delete dlg;
+}
+
+void
+MainWindow::refresh_menu_icon_offset()
+{
+	static auto provider = Gtk::CssProvider::create();
+	auto screen   = Gdk::Screen::get_default();
+	const bool is_ltr = App::main_window->get_direction() == Gtk::TEXT_DIR_LTR;
+
+	int icon_offset = -24; // How to discover it in runtime?
+	int margin_left = is_ltr ? icon_offset :   0;
+	int margin_right = is_ltr ? 0 : icon_offset;
+	provider->load_from_data(strprintf("menubar menuitem image, .shift-icon menuitem image { margin-left:%ipx; margin-right:%ipx}",  margin_left, margin_right));
+	Gtk::StyleContext::remove_provider_for_screen(screen, provider);
+	Gtk::StyleContext::add_provider_for_screen(screen, provider, GTK_STYLE_PROVIDER_PRIORITY_USER);
 }
 
 void
