@@ -1709,9 +1709,8 @@ CanvasView::popup_layer_menu(Layer::Handle layer)
 void
 CanvasView::popup_main_menu()
 {
-	auto menu = new Gtk::Menu(App::instance()->get_menubar());
-	if(menu)
-	{
+	if (auto menu = Gtk::manage(new Gtk::Menu(App::instance()->get_menubar()))) {
+		menu->get_style_context()->add_class("shift-icon");
 		menu->attach_to_widget(*this);
 		//menu->set_accel_group(App::ui_manager()->get_accel_group());
 		//menu->accelerate(*this);
