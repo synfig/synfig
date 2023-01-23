@@ -764,7 +764,7 @@ CanvasInterface::import(
 
 	
 	if (ext.size()) ext = ext.substr(1); // skip initial '.'
-	std::transform(ext.begin(),ext.end(),ext.begin(),&::tolower);
+	strtolower(ext);
 
 	String short_filename = CanvasFileNaming::make_short_filename(get_canvas()->get_file_name(), filename);
 	String full_filename = CanvasFileNaming::make_full_filename(get_canvas()->get_file_name(), short_filename);
@@ -991,7 +991,7 @@ CanvasInterface::import_sequence(
 			
 			String ext(filename_extension(filename));
 			if (!ext.empty()) ext = ext.substr(1); // skip initial '.'
-			std::transform(ext.begin(),ext.end(),ext.begin(),&::tolower);
+			strtolower(ext);
 			
 			if (ext.empty())
 			{

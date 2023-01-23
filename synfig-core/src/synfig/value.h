@@ -32,13 +32,12 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "base_types.h"
-
 #include <vector>
 #include <list>
-#include "interpolation.h"
 
-#include <ETL/ref_count>
+#include "base_types.h"
+#include "interpolation.h"
+#include "reference_counter.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -86,7 +85,7 @@ protected:
 	//! Counter of Value Nodes that refers to this Value Base
 	//! Value base can only be destructed if the ref_count is not greater than 0
 	//!\see etl::reference_counter
-	etl::reference_counter ref_count;
+	ReferenceCounter ref_count;
 	//! For Values with loop option like TYPE_LIST
 	bool loop_;
 	//! For Values of Constant Value Nodes
@@ -106,7 +105,7 @@ public:
 	//! Template constructor for any type
 	template <typename T>
 	ValueBase(const T &x, bool loop_=false, bool static_=false):
-		type(&type_nil),data(nullptr),ref_count(0),loop_(loop_), static_(static_),
+		type(&type_nil),data(nullptr),ref_count(false),loop_(loop_), static_(static_),
 		interpolation_(INTERPOLATION_UNDEFINED)
 	{
 #ifdef INITIALIZE_TYPE_BEFORE_USE
@@ -117,7 +116,7 @@ public:
 
 	template <typename T>
 	ValueBase(const std::vector<T> &x, bool loop_=false, bool static_=false):
-		type(&type_nil),data(nullptr),ref_count(0),loop_(loop_), static_(static_),
+		type(&type_nil),data(nullptr),ref_count(false),loop_(loop_), static_(static_),
 		interpolation_(INTERPOLATION_UNDEFINED)
 	{
 #ifdef INITIALIZE_TYPE_BEFORE_USE

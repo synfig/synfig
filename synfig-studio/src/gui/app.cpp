@@ -1371,6 +1371,7 @@ App::get_default_accel_map()
 		{"<Control>parenleft" ,     "<Actions>/canvasview/decrease-low-res-pixel-size"},
 		{"<Control>parenright" ,    "<Actions>/canvasview/increase-low-res-pixel-size"},
 		{"<Primary>g",              "<Actions>/action_group_layer_action_manager/action-LayerEncapsulate"},
+		{"<Primary>u",              "<Actions>/action_group_layer_action_manager/action-LayerDuplicate"},
 		{"<Control><Mod1>parenleft",  "<Actions>/action_group_layer_action_manager/amount-dec"},
 		{"<Control><Mod1>parenright", "<Actions>/action_group_layer_action_manager/amount-inc"},
 		{"equal",                   "<Actions>/canvasview/canvas-zoom-in"},
@@ -3967,7 +3968,7 @@ App::new_instance()
 	if (App::default_background_layer_type == "solid_color")
 	{
 		//Create a SolidColor layer
-		synfig::Layer::Handle layer(instance->find_canvas_interface(canvas)->add_layer_to("SolidColor",
+		synfig::Layer::Handle layer(instance->find_canvas_interface(canvas)->add_layer_to("solid_color",
 			                        canvas,
 			                        0)); //target_depth
 
@@ -4031,7 +4032,7 @@ App::new_instance()
 		instance->find_canvas_view(canvas)->add_layer("skeleton");
 
 	if (getenv("SYNFIG_AUTO_ADD_MOTIONBLUR_LAYER"))
-		instance->find_canvas_view(canvas)->add_layer("MotionBlur");
+		instance->find_canvas_view(canvas)->add_layer("motion_blur");
 
 	if (getenv("SYNFIG_ENABLE_NEW_CANVAS_EDIT_PROPERTIES"))
 		instance->find_canvas_view(canvas)->canvas_properties.present();

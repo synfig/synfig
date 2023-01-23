@@ -663,7 +663,7 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 	options_grid.set_margin_bottom(0);
 	options_grid.show_all();
 
-	fill_last_stroke_button.signal_pressed().connect(
+	fill_last_stroke_button.signal_clicked().connect(
 		sigc::mem_fun(*this, &StateLasso_Context::fill_last_stroke));
 	pressure_width_checkbutton.signal_toggled().connect(
 		sigc::mem_fun(*this, &StateLasso_Context::UpdateUsePressure));

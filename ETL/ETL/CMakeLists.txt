@@ -7,10 +7,8 @@ configure_file(
 
 set(ETL_HEADERS
         "${CMAKE_CURRENT_LIST_DIR}/stringf"
-        "${CMAKE_CURRENT_LIST_DIR}/ref_count"
         "${CMAKE_CURRENT_LIST_DIR}/handle"
 #     PRIVATE
-        "${CMAKE_CURRENT_LIST_DIR}/_ref_count.h"
         "${CMAKE_CURRENT_LIST_DIR}/_stringf.h"
         "${CMAKE_CURRENT_LIST_DIR}/_handle.h"
 

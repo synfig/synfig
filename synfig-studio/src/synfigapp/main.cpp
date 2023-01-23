@@ -68,7 +68,7 @@ using namespace synfigapp;
 
 /* === S T A T I C S ======================================================= */
 
-static etl::reference_counter synfigapp_ref_count_(0);
+static ReferenceCounter synfigapp_ref_count_(0);
 static synfigapp::Action::Main* action_main;
 
 static Color outline_;

@@ -119,8 +119,8 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 		}
 		else
 		{
-			std::string lower_ext;
-			std::transform(ext.begin(), ext.end(), std::back_inserter(lower_ext), ::tolower);
+			std::string lower_ext(ext);
+			strtolower(lower_ext);
 
 			if(Target::ext_book().count(lower_ext))
 			{

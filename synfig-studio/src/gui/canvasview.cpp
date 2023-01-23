@@ -45,7 +45,7 @@
 #include <glibmm/uriutils.h>
 
 #include <gtkmm/eventbox.h>
-#include <gtkmm/hvseparator.h>
+#include <gtkmm/separator.h>
 #include <gtkmm/imagemenuitem.h>
 #include <gtkmm/label.h>
 #include <gtkmm/messagedialog.h>
@@ -3415,10 +3415,6 @@ CanvasView::on_preview_option()
 		RendDesc &r = canv->rend_desc();
 		if(r.get_frame_rate())
 		{
-			float rate = 1/r.get_frame_rate();
-			float beg = r.get_time_start() + r.get_frame_start()*rate;
-			float end = r.get_time_start() + r.get_frame_end()*rate;
-
 			Dialog_PreviewOptions *po = dynamic_cast<Dialog_PreviewOptions *>( get_ext_widget("prevoptions") );
 			if(!po)
 			{
@@ -3428,9 +3424,9 @@ CanvasView::on_preview_option()
 			}
 
 			if (!po->get_begin_override())
-				po->set_begintime(beg);
+				po->set_begintime(r.get_time_start());
 			if (!po->get_end_override())
-				po->set_endtime(end);
+				po->set_endtime(r.get_time_end());
 
 			po->set_global_fps(r.get_frame_rate());
 			po->signal_finish().connect(sigc::mem_fun(*this, &CanvasView::on_preview_create));
@@ -3731,12 +3727,8 @@ CanvasView::on_interpolation_changed()
 	{ synfigapp::Main::set_interpolation(Waypoint::Interpolation(widget_interpolation->get_value())); }
 
 void 
-CanvasView::toggle_show_toolbar(){
-	if (App::enable_mainwin_toolbar) {
-		top_toolbar->show();
-		right_toolbar->show();
-	} else {
-		top_toolbar->hide();
-		right_toolbar->hide();
-	}
+CanvasView::set_show_toolbars(bool show)
+{
+	top_toolbar->set_visible(show);
+	right_toolbar->set_visible(show);
 };

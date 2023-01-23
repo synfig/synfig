@@ -232,9 +232,6 @@ public:
 	typedef Module* (*constructor_type)(ProgressCallback *);
 	//! Type of registered modules: maps Module name to Module handle
 	typedef std::map<String, Handle> Book;
-private:
-	//! Registered modules
-	static Book* book_;
 public:
 	//! The registered modules
 	static Book& book();

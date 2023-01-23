@@ -67,7 +67,7 @@ RendererDraftSW::RendererDraftSW()
 	// register optimizers
 	register_optimizer(new OptimizerDraftContour(2.0, true));
 	register_optimizer(new OptimizerDraftBlur());
-	register_optimizer(new OptimizerDraftLayerSkip("MotionBlur"));
+	register_optimizer(new OptimizerDraftLayerSkip("motion_blur"));
 	register_optimizer(new OptimizerDraftLayerSkip("radial_blur"));
 	register_optimizer(new OptimizerDraftLayerSkip("curve_warp"));
 	register_optimizer(new OptimizerDraftLayerSkip("inside_out"));

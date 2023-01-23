@@ -597,10 +597,7 @@ TargetParam SynfigCommandLineParser::extract_targetparam()
 		params.video_codec = video_codec;
 
 		// video_codec string to lowercase
-		transform (params.video_codec.begin(),
-				   params.video_codec.end(),
-				   params.video_codec.begin(),
-				   ::tolower);
+		strtolower(params.video_codec);
 
 		bool found = false;
 		// Check if the given video codec is allowed.

@@ -132,7 +132,7 @@ Layer::subsys_init()
 				  class::get_register_version())
 
 	INCLUDE_LAYER(Layer_SolidColor);
-		LAYER_ALIAS(Layer_SolidColor,	"solid_color");
+		LAYER_ALIAS(Layer_SolidColor,	"SolidColor"); // old name, previous to version 1.5.2
 	INCLUDE_LAYER(Layer_FilterGroup);
 	INCLUDE_LAYER(Layer_Group);
 		LAYER_ALIAS(Layer_Group,		"paste_canvas");
@@ -141,7 +141,7 @@ Layer::subsys_init()
 	INCLUDE_LAYER(Layer_Polygon);
 		LAYER_ALIAS(Layer_Polygon,		"Polygon");
 	INCLUDE_LAYER(Layer_MotionBlur);
-		LAYER_ALIAS(Layer_MotionBlur,	"motion_blur");
+		LAYER_ALIAS(Layer_MotionBlur,	"MotionBlur"); // old name, previous to version 1.5.2
 	INCLUDE_LAYER(Layer_Duplicate);
 	INCLUDE_LAYER(Layer_Skeleton);
 	INCLUDE_LAYER(Layer_SkeletonDeformation);

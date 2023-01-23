@@ -106,6 +106,7 @@ SYNFIGHEADERS = \
 	pen.h \
 	polynomial_root.h \
 	rect.h \
+	reference_counter.h \
 	renddesc.h \
 	render.h \
 	savecanvas.h \

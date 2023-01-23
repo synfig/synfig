@@ -292,7 +292,8 @@ bool SoundProcessor::subsys_init() {
 bool SoundProcessor::subsys_stop()
 {
 #ifndef WITHOUT_MLT
-	delete Internal::repository;
+	// delete leads to crash on Ubuntu 16.04
+	//delete Internal::repository;
 	Mlt::Factory::close();
 #endif
 	return true;

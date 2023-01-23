@@ -143,16 +143,22 @@ Canvas::indexof(const const_iterator &iter) const
 Canvas::iterator
 Canvas::byindex(int index)
 {
-	for(iterator i = begin(); i != end(); ++i, --index)
-		if (!index) return i;
+	if (index >= 0) {
+		for (iterator i = begin(); i != end(); ++i, --index)
+			if (index == 0)
+				return i;
+	}
 	return end();
 }
 
 Canvas::const_iterator
 Canvas::byindex(int index) const
 {
-	for(const_iterator i = begin(); i != end(); ++i, --index)
-		if (!index) return i;
+	if (index >= 0) {
+		for (const_iterator i = begin(); i != end(); ++i, --index)
+			if (index == 0)
+				return i;
+	}
 	return end();
 }
 
