@@ -3403,6 +3403,10 @@ CanvasView::on_input_device_changed(GdkDevice* device)
 
 	InputDevice::Handle input_device;
 	input_device = synfigapp::Main::select_input_device(gdk_device_get_name(device));
+
+	if (!input_device) {
+		return;
+	}
 	App::dock_toolbox->change_state(input_device->get_state(), true);
 	process_event_key(EVENT_INPUT_DEVICE_CHANGED);
 }
