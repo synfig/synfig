@@ -365,9 +365,13 @@ synfigapp::Main::add_input_device(const synfig::String id, InputDevice::Type typ
 InputDevice::Handle
 synfigapp::Main::find_input_device(const synfig::String id)
 {
+	static const char MASTER_POINTER_FOR[] = "Master pointer for ";
+	static const size_t MASTER_POINTER_FOR_LENGTH = sizeof (MASTER_POINTER_FOR) - 1;
+	const size_t offset = id.rfind(MASTER_POINTER_FOR, 0) == 0 ? MASTER_POINTER_FOR_LENGTH : 0;
+
 	std::list<InputDevice::Handle>::iterator iter;
 	for(iter=input_devices_.begin();iter!=input_devices_.end();++iter)
-		if((*iter)->get_id()==id)
+		if(id.compare(offset, std::string::npos, (*iter)->get_id()) == 0)
 			return *iter;
 	return 0;
 }
