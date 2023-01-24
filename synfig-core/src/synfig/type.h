@@ -2,20 +2,23 @@
 /*!	\file type.h
 **	\brief Template Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -284,7 +287,7 @@ private:
 		OperationBookBase *previous, *next;
 		bool initialized;
 
-		OperationBookBase(const OperationBookBase &): previous(NULL), next(NULL), initialized(false) { }
+		OperationBookBase(const OperationBookBase &): previous(nullptr), next(nullptr), initialized(false) { }
 		OperationBookBase& operator= (const OperationBookBase &) { return *this; }
 
 		OperationBookBase();
@@ -336,7 +339,7 @@ private:
 
 		virtual void set_alias(OperationBookBase *alias)
 		{
-			map_alias = alias == NULL ? &map : ((OperationBook<T>*)alias)->map_alias;
+			map_alias = !alias ? &map : ((OperationBook<T>*)alias)->map_alias;
 			if (map_alias != &map)
 			{
 				map_alias->insert(map.begin(), map.end());
@@ -385,11 +388,11 @@ protected:
 private:
 	// lock default copy constructor
 	Type(const Type &):
-		previous(NULL), next(NULL),
+		previous(nullptr), next(nullptr),
 		initialized(false),
 		private_identifier(0),
-		clone_prev(NULL),
-		clone_next(NULL),
+		clone_prev(nullptr),
+		clone_next(nullptr),
 		identifier(private_identifier),
 		description(private_description)
 	{ assert(false); }
@@ -441,7 +444,7 @@ public:
 		typedef typename OperationBook<T>::Map Map;
 		const Map &map = OperationBook<T>::instance.get_map();
 		typename Map::const_iterator i = map.find(description);
-		return i == map.end() ? NULL : i->second.second;
+		return i == map.end() ? nullptr : i->second.second;
 	}
 
 	template<typename T>
@@ -467,19 +470,19 @@ public:
 		{ return get_type<T>(); }
 
 	static Type* try_get_type_by_id(TypeId id)
-		{ return id < staticData.typesById.size() ? staticData.typesById[id] : NULL; }
+		{ return id < staticData.typesById.size() ? staticData.typesById[id] : nullptr; }
 
 	static Type* try_get_type_by_name(const String &name)
 	{
 		std::map<String, Type*>::const_iterator i = staticData.typesByName.find(name);
-		return i == staticData.typesByName.end() ? NULL : i->second;
+		return i == staticData.typesByName.end() ? nullptr : i->second;
 	}
 
 	static Type& get_type_by_id(TypeId id)
-		{ assert(try_get_type_by_id(id) != NULL); return *try_get_type_by_id(id); }
+		{ assert(try_get_type_by_id(id)); return *try_get_type_by_id(id); }
 
 	static Type& get_type_by_name(const String &name)
-		{ assert(try_get_type_by_name(name) != NULL); return *try_get_type_by_name(name); }
+		{ assert(try_get_type_by_name(name)); return *try_get_type_by_name(name); }
 
 private:
 	inline void register_create(TypeId type, Operation::CreateFunc func)
@@ -579,7 +582,7 @@ private:
 			Operation::ToStringFunc to_string_func =
 				Type::get_operation<Operation::ToStringFunc>(
 					Operation::Description::get_to_string(alias.type.identifier) );
-			return to_string_func(NULL);
+			return to_string_func(nullptr);
 		}
 
 		typedef typename T::AliasedType TT;
@@ -596,10 +599,10 @@ private:
 		Operation::DestroyFunc destroy_func =
 			Type::get_operation<Operation::DestroyFunc>(
 				Operation::Description::get_destroy(alias.type.identifier) );
-		assert(create_func != NULL);
-		assert(set_func != NULL);
-		assert(to_string_func != NULL);
-		assert(destroy_func != NULL);
+		assert(create_func);
+		assert(set_func);
+		assert(to_string_func);
+		assert(destroy_func);
 
 		InternalPointer data = create_func();
 		set_func(data, x);

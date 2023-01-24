@@ -2,23 +2,26 @@
 /*!	\file keyframedial.h
 **	\brief Template Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
 **	Copyright (c) 2009 Gerco Ballintijn
 **	Copyright (c) 2009 Carlos Lopez
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -30,8 +33,9 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/grid.h>
+#include <gtkmm/box.h>
 #include <gtkmm/togglebutton.h>
+#include <synfigapp/editmode.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -42,24 +46,21 @@
 namespace studio
 {
 
-class KeyFrameDial : public Gtk::Grid
+class KeyFrameDial : public Gtk::Box
 {
 	Gtk::ToggleButton *toggle_keyframe_past;
 	Gtk::ToggleButton *toggle_keyframe_future;
 
-	Gtk::ToggleButton *create_icon(Gtk::IconSize iconsize, const char * stockid, const char * tooltip);
-
 public:
 
 	KeyFrameDial();
+	void on_mode_changed(synfigapp::EditMode mode); // Updates button icons/state
 	Glib::SignalProxy0<void> signal_toggle_keyframe_past() { return toggle_keyframe_past->signal_toggled(); }
 	Glib::SignalProxy0<void> signal_toggle_keyframe_future() { return toggle_keyframe_future->signal_toggled(); }
-	Gtk::ToggleButton *get_toggle_pastbutton() { return toggle_keyframe_past; }
-	Gtk::ToggleButton *get_toggle_futurebutton() { return toggle_keyframe_future; }
 
 }; // END of class KeyFrameDial
 
-}; // END of namespace studio
+} // END of namespace studio
 
 
 /* === E N D =============================================================== */

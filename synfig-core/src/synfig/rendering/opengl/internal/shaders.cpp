@@ -2,20 +2,23 @@
 /*!	\file synfig/rendering/opengl/internal/shaders.cpp
 **	\brief Environment
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -168,16 +171,14 @@ gl::Shaders::~Shaders()
 String
 gl::Shaders::get_shader_path()
 {
-	return Main::get_instance().lib_synfig_path
-		 + ETL_DIRECTORY_SEPARATOR
-		 + "glsl";
+	return Main::get_instance().lib_synfig_path + "/glsl";
 }
 
 String
 gl::Shaders::get_shader_path(const String &filename)
 {
 	return get_shader_path()
-		 + ETL_DIRECTORY_SEPARATOR
+		 + "/"
 		 + filename;
 }
 
@@ -197,7 +198,7 @@ gl::Shaders::compile_shader(GLenum type, const String &src)
 	//assert(!src.empty());
 	GLuint id = glCreateShader(type);
 	const char *lines = src.c_str();
-	glShaderSource(id, 1, &lines, NULL);
+	glShaderSource(id, 1, &lines, nullptr);
 	glCompileShader(id);
 	check_shader(id, src);
 	return id;

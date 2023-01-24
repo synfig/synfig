@@ -2,21 +2,24 @@
 /*!	\file childrentreestore.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -32,13 +35,13 @@
 
 #include <gui/trees/childrentreestore.h>
 
-#include <ETL/clock>
 #include <glibmm/main.h>
 #include <gtkmm/button.h>
 #include <gui/localization.h>
+#include <synfig/clock.h>
 #include <synfig/general.h>
 
-class Profiler : private etl::clock
+class Profiler : private synfig::clock
 {
 	const std::string name;
 public:
@@ -50,8 +53,6 @@ public:
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -188,7 +189,7 @@ ChildrenTreeStore::on_canvas_added(synfig::Canvas::Handle canvas)
 {
 	Gtk::TreeRow row = *(prepend(canvas_row.children()));
 
-	row[model.icon] = Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-type_canvas"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+	row[model.icon_name] = "type_canvas_icon";
 	row[model.id] = canvas->get_id();
 	row[model.name] = canvas->get_name();
 
@@ -243,7 +244,7 @@ ChildrenTreeStore::execute_changed_value_nodes()
 	if(!replaced_set_.empty())
 		rebuild_value_nodes();
 
-	etl::clock timer;
+	synfig::clock timer;
 	timer.reset();
 
 	while(!changed_set_.empty())

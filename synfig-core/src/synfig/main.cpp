@@ -2,22 +2,25 @@
 /*!	\file synfig/main.cpp
 **	\brief \writeme
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2013 Konstantin Dmitriev
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -30,6 +33,11 @@
 #ifdef HAVE_CONFIG_H
 #	include <config.h>
 #endif
+
+#include <cstring>
+#include <ctime>
+
+#include <ETL/stringf>
 
 #include <synfig/localization.h>
 #include <synfig/general.h>
@@ -44,6 +52,7 @@
 // Includes used by get_binary_path():
 #ifdef _WIN32
 #include <windows.h>
+#include <process.h>
 #elif defined(__APPLE__)
 #include <mach-o/dyld.h>
 #include <sys/param.h>
@@ -54,13 +63,11 @@
 
 #include "token.h"
 #include "target.h"
-#include "cairolistimporter.h"
 #include "listimporter.h"
-#include "cairoimporter.h"
 #include "color.h"
 #include "vector.h"
 #include <fstream>
-#include <time.h>
+#include <ctime>
 #include "layer.h"
 #include "soundprocessor.h"
 #include "threadpool.h"
@@ -82,7 +89,6 @@
 #define PATH_MAX 4096
 #endif
 
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -91,7 +97,7 @@ using namespace synfig;
 
 /* === S T A T I C S ======================================================= */
 
-static etl::reference_counter synfig_ref_count_(0);
+static ReferenceCounter synfig_ref_count_(false);
 Main *Main::instance = nullptr;
 
 class GeneralIOMutexHolder {
@@ -124,7 +130,24 @@ synfig::get_version()
 const char *
 synfig::get_build_date()
 {
-	return __DATE__;
+	const int max_date_length = 50;
+	static char date_str[max_date_length] = {0};
+
+	if (date_str[0] == 0) {
+		// https://reproducible-builds.org/specs/source-date-epoch/
+		if (char* source_date_epoch = getenv("SOURCE_DATE_EPOCH")) {
+			std::istringstream iss(source_date_epoch);
+			std::time_t t;
+			iss >> t;
+			if (iss.fail()
+			    || !iss.eof()
+			    || !std::strftime(date_str, sizeof(date_str), "%x", std::localtime(&t))) {
+				    std::strncpy(date_str, _("Unknown build date"), max_date_length-1);
+			}
+		} else
+			return __DATE__;
+	}
+	return date_str;
 }
 
 bool
@@ -169,7 +192,7 @@ static void broken_pipe_signal (int /*sig*/)  {
 
 bool retrieve_modules_to_load(String filename,std::list<String> &modules_to_load)
 {
-	std::ifstream file(Glib::locale_from_utf8(filename).c_str());
+	std::ifstream file(synfig::filesystem::Path(filename).c_str());
 
 	if(!file)
 	{
@@ -187,7 +210,7 @@ bool retrieve_modules_to_load(String filename,std::list<String> &modules_to_load
 	return true;
 }
 
-synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
+synfig::Main::Main(const synfig::String& rootpath,ProgressCallback *cb):
 	ref_count_(synfig_ref_count_)
 {
 	if(ref_count_.count())
@@ -201,14 +224,20 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 
 	// Paths
 
-	root_path       = etl::dirname(basepath);
-	bin_path        = root_path  + ETL_DIRECTORY_SEPARATOR + "bin";
-	share_path      = root_path  + ETL_DIRECTORY_SEPARATOR + "share";
-	locale_path     = share_path + ETL_DIRECTORY_SEPARATOR + "locale";
-	lib_path        = root_path  + ETL_DIRECTORY_SEPARATOR + "lib";
-	lib_synfig_path = lib_path   + ETL_DIRECTORY_SEPARATOR + "synfig";
+	root_path       = rootpath;
+	bin_path        = root_path  + "/bin";
+	share_path      = root_path  + "/share";
+	locale_path     = share_path + "/locale";
+	lib_path        = root_path  + "/lib";
+	lib_synfig_path = lib_path   + "/synfig";
 
 	// Add initialization after this point
+
+#ifdef _MSC_VER
+	String module_location = get_binary_path("");
+	_putenv(strprintf("FONTCONFIG_PATH=%s/../../etc/fonts", module_location.c_str()).c_str());
+	_putenv("FONTCONFIG_FILE=fonts.conf");
+#endif
 
 #ifdef ENABLE_NLS
 	bindtextdomain("synfig", Glib::locale_from_utf8(locale_path).c_str() );
@@ -295,19 +324,6 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 		throw std::runtime_error(_("Unable to initialize subsystem \"Importers\""));
 	}
 
-	if(cb)cb->task(_("Starting Subsystem \"Cairo Importers\""));
-	if(!CairoImporter::subsys_init())
-	{
-		Importer::subsys_stop();
-		Target::subsys_stop();
-		Layer::subsys_stop();
-		Module::subsys_stop();
-		rendering::Renderer::subsys_stop();
-		Type::subsys_stop();
-		SoundProcessor::subsys_stop();
-		throw std::runtime_error(_("Unable to initialize subsystem \"Cairo Importers\""));
-	}
-
 	if(cb)cb->task(_("Starting Subsystem \"Thread Pool\""));
 	if(!ThreadPool::subsys_init())
 		throw std::runtime_error(_("Unable to initialize subsystem \"Thread Pool\""));
@@ -317,7 +333,6 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 
 	// Load up the list importer
 	Importer::book()[String("lst")]=Importer::BookEntry(ListImporter::create, ListImporter::supports_file_system_wrapper__);
-	CairoImporter::book()[String("lst")]=CairoImporter::BookEntry(CairoListImporter::create, CairoListImporter::supports_file_system_wrapper__);
 
 	// Load up the modules
 	std::list<String> modules_to_load;
@@ -328,12 +343,15 @@ synfig::Main::Main(const synfig::String& basepath,ProgressCallback *cb):
 	else
 	{
 		locations.push_back("./" MODULE_LIST_FILENAME);
-		if(getenv("HOME"))
-			locations.push_back(strprintf("%s/.local/share/synfig/%s", getenv("HOME"), MODULE_LIST_FILENAME));
+		const std::string home = Glib::getenv("HOME");
+		if (!home.empty()) {
+			locations.push_back(strprintf("%s/.local/share/synfig/%s", home.c_str(), MODULE_LIST_FILENAME));
+		}
+
 	#ifdef SYSCONFDIR
 		locations.push_back(SYSCONFDIR"/" MODULE_LIST_FILENAME);
 	#endif
-		locations.push_back(root_path + ETL_DIRECTORY_SEPARATOR + "etc" + ETL_DIRECTORY_SEPARATOR + MODULE_LIST_FILENAME);
+		locations.push_back(root_path + "/etc/" + MODULE_LIST_FILENAME);
 	#ifndef _WIN32
 		locations.push_back("/usr/local/etc/" MODULE_LIST_FILENAME);
 	#endif
@@ -393,10 +411,8 @@ synfig::Main::~Main()
 	if(!get_open_canvas_map().empty())
 	{
 		synfig::warning("Canvases still open!");
-		std::map<synfig::String, etl::loose_handle<Canvas> >::iterator iter;
-		for(iter=get_open_canvas_map().begin();iter!=get_open_canvas_map().end();++iter)
-		{
-			synfig::warning("%s: count()=%d",iter->first.c_str(), iter->second.count());
+		for (const auto& iter : get_open_canvas_map()) {
+			synfig::warning("%s: count()=%d",iter.second.c_str(), iter.first->count());
 		}
 	}
 
@@ -404,7 +420,6 @@ synfig::Main::~Main()
 	ThreadPool::subsys_stop();
 	// synfig::info("Importer::subsys_stop()");
 	Importer::subsys_stop();
-	CairoImporter::subsys_stop();
 	// synfig::info("Target::subsys_stop()");
 	Target::subsys_stop();
 	// synfig::info("Layer::subsys_stop()");
@@ -423,7 +438,7 @@ synfig::Main::~Main()
 #endif
 
 	assert(instance);
-	instance = NULL;
+	instance = nullptr;
 }
 
 static const String
@@ -507,8 +522,8 @@ synfig::get_binary_path(const String &fallback_path)
 #ifdef _WIN32
 
 	wchar_t module_file_name[MAX_PATH];
-	if (GetModuleFileNameW(NULL, module_file_name, MAX_PATH)) {
-		result = String(g_utf16_to_utf8((gunichar2 *)module_file_name, -1, NULL, NULL, NULL));
+	if (GetModuleFileNameW(nullptr, module_file_name, MAX_PATH)) {
+		result = String(g_utf16_to_utf8((gunichar2 *)module_file_name, -1, nullptr, nullptr, nullptr));
 	}
 
 
@@ -532,7 +547,7 @@ synfig::get_binary_path(const String &fallback_path)
 	if (start_pos != std::string::npos)
 		result.replace(start_pos, artifact.length(), "/");
 	
-#elif !defined(__OpenBSD__)
+#else
 
 	size_t buf_size = PATH_MAX - 1;
 	char* path = (char*)malloc(buf_size);
@@ -542,9 +557,17 @@ synfig::get_binary_path(const String &fallback_path)
 	FILE *f;
 
 	/* Read from /proc/self/exe (symlink) */
-	//char* path2 = (char*)malloc(buf_size);
 	char* path2 = new char[buf_size];
-	strncpy(path2, "/proc/self/exe", buf_size - 1);
+	const char* procfs_path =
+#if defined(__FreeBSD__) || defined (__DragonFly__) || defined (__OpenBSD__)
+		"/proc/curproc/file";
+#elif defined(__NetBSD__)
+		"/proc/curproc/exe";
+#else
+		"/proc/self/exe";
+#endif
+
+	strncpy(path2, procfs_path, buf_size - 1);
 
 	while (1) {
 		int i;
@@ -579,9 +602,9 @@ synfig::get_binary_path(const String &fallback_path)
 		strncpy(path, path2, buf_size - 1);
 	}
 	
-	//free(path2);
 	delete[] path2;
 
+#if ! (defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined (__OpenBSD__))
 	if (result == "")
 	{
 		/* readlink() or stat() failed; this can happen when the program is
@@ -591,14 +614,14 @@ synfig::get_binary_path(const String &fallback_path)
 		char* line = (char*)malloc(buf_size);
 
 		f = fopen("/proc/self/maps", "r");
-		if (f == NULL) {
+		if (!f) {
 			synfig::error("Cannot open /proc/self/maps.");
 		}
 
 		/* The first entry should be the executable name. */
 		char *r;
 		r = fgets(line, (int) buf_size, f);
-		if (r == NULL) {
+		if (!r) {
 			synfig::error("Cannot read /proc/self/maps.");
 		}
 
@@ -615,7 +638,7 @@ synfig::get_binary_path(const String &fallback_path)
 		path = strchr(line, '/');
 
 		/* Sanity check. */
-		if (strstr(line, " r-xp ") == NULL || path == NULL) {
+		if (strstr(line, " r-xp ") == nullptr || !path) {
 			synfig::error("Invalid /proc/self/maps.");
 		}
 
@@ -623,7 +646,7 @@ synfig::get_binary_path(const String &fallback_path)
 		free(line);
 		fclose(f);
 	}
-	
+#endif
 	free(path);
 
 	result = Glib::filename_to_utf8(result);

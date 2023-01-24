@@ -1,3 +1,26 @@
+/*!	\file player/visualizationwindow.cpp
+**	\brief Template Header
+**
+**	\legal
+**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**  Copyright (c) 2020 Ivan Mahonin
+**
+**	This file is part of Synfig.
+**
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
+**	but WITHOUT ANY WARRANTY; without even the implied warranty of
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
+**	\endlegal
+*/
 
 #include <cassert>
 #include <iomanip>
@@ -5,14 +28,13 @@
 
 #include <cairomm/cairomm.h>
 
-#include <ETL/misc>
-
 #include <glibmm.h>
 
 #include <gtkmm/drawingarea.h>
 
 #include <synfig/context.h>
 #include <synfig/general.h>
+#include <synfig/misc.h>
 #include <synfig/rendering/task.h>
 #include <synfig/rendering/common/task/tasktransformation.h>
 
@@ -256,7 +278,7 @@ VisualizationWindow::on_content_draw(const Cairo::RefPtr<Cairo::Context> &contex
 	
 	++rendered_frames;
 	if(real_time) {
-		frame = (frame + etl::round_to_int((g_get_monotonic_time() - bef_render_time) / (frame_duration * 1000000ll))) %
+		frame = (frame + synfig::round_to_int((g_get_monotonic_time() - bef_render_time) / (frame_duration * 1000000ll))) %
 				frames_count;
 	}else{
 		frame = (frame + 1) % frames_count;

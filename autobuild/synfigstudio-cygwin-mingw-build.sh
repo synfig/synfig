@@ -3,15 +3,20 @@
 # SynfigStudio Windows package build script
 # Copyright (c) 2013 Konstantin Dmitriev
 #
-# This package is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License as
-# published by the Free Software Foundation; either version 2 of
-# the License, or (at your option) any later version.
+# This file is part of Synfig.
 #
-# This package is distributed in the hope that it will be useful,
+# Synfig is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# Synfig is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-# General Public License for more details.
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
 # = Usage notes =
@@ -948,7 +953,6 @@ rpm -Uhv --force --ignoreos --nodeps yum-utils-1.1.31-18.fc20.noarch.rpm
 fedora-mingw-install mingw${ARCH}-libxml++
 fedora-mingw-install mingw${ARCH}-cairo
 fedora-mingw-install mingw${ARCH}-pango
-fedora-mingw-install mingw${ARCH}-boost
 fedora-mingw-install mingw${ARCH}-libjpeg-turbo
 fedora-mingw-install mingw${ARCH}-gtkmm30
 fedora-mingw-install mingw${ARCH}-SDL
@@ -1005,7 +1009,7 @@ cd $SRCPREFIX/synfig-core
 --build=i686-pc-cygwin --host=${TOOLCHAIN_HOST} \
 --enable-shared --disable-static \
 --with-libiconv-prefix=no --with-libintl-prefix=no \
---with-magickpp=yes --with-boost=${MINGWPREFIX} \
+--with-magickpp=yes \
 --enable-maintainer-mode $DEBUG
 make -j$THREADS
 make install
@@ -1083,10 +1087,6 @@ for file in \
    iconv.dll \
    libatk-\*.dll \
    libatkmm-1.6-1.dll \
-   libboost_chrono\*.dll \
-   libboost_filesystem\*.dll \
-   libboost_program_options\*.dll \
-   libboost_system\*.dll \
    libbz2\*.dll \
    libcairo\*.dll \
    libdl.dll \

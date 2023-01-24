@@ -2,22 +2,25 @@
 /*!	\file layer_solidcolor.cpp
 **	\brief Implementation of the "Solid Color" layer
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2011-2013 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -33,17 +36,12 @@
 
 #include "layer_solidcolor.h"
 
-#include <synfig/general.h>
 #include <synfig/localization.h>
 
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
-#include <synfig/renddesc.h>
-#include <synfig/time.h>
 #include <synfig/string.h>
-#include <synfig/surface.h>
 #include <synfig/value.h>
-#include <synfig/valuenode.h>
 
 #include <synfig/rendering/common/task/taskpixelprocessor.h>
 
@@ -51,14 +49,12 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
-using namespace std;
 using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
 SYNFIG_LAYER_INIT(Layer_SolidColor);
-SYNFIG_LAYER_SET_NAME(Layer_SolidColor,"SolidColor"); // todo: use solid_color
+SYNFIG_LAYER_SET_NAME(Layer_SolidColor,"solid_color");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_SolidColor,N_("Solid Color"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_SolidColor,N_("Geometry"));
 SYNFIG_LAYER_SET_VERSION(Layer_SolidColor,"0.1");
@@ -127,15 +123,22 @@ synfig::Layer::Handle
 Layer_SolidColor::hit_check(synfig::Context context, const synfig::Point &point)const
 {
 	Color color=param_color.get(Color());
+
+	bool check_myself_first;
+	auto layer = basic_hit_check(context, point, check_myself_first);
+
+	if (!check_myself_first)
+		return layer;
+
 	if(get_blend_method()==Color::BLEND_STRAIGHT && get_amount()>=0.5)
 		return const_cast<Layer_SolidColor*>(this);
 	else
 	if(get_blend_method()==Color::BLEND_COMPOSITE && get_amount()*color.get_a()>=0.5)
 		return const_cast<Layer_SolidColor*>(this);
 
-	Layer::Handle layer(context.hit_check(point));
+	layer = context.hit_check(point);
 
-	return layer?layer:const_cast<Layer_SolidColor*>(this);
+	return layer ? layer : const_cast<Layer_SolidColor*>(this);
 }
 
 Color

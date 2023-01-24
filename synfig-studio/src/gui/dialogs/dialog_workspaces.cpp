@@ -1,3 +1,25 @@
+/*!	\file gui/dialogs/dialog_workspaces.cpp
+**	\brief Dialog for handling custom workspace list
+**
+**	\legal
+**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**
+**	This file is part of Synfig.
+**
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
+**	but WITHOUT ANY WARRANTY; without even the implied warranty of
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
+**	\endlegal
+*/
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -8,8 +30,8 @@
 
 #include <gui/dialogs/dialog_workspaces.h>
 
-#include <gui/app.h>
 #include <gui/localization.h>
+#include <gui/mainwindow.h>
 #include <gui/resourcehelper.h>
 #include <gui/workspacehandler.h>
 
@@ -94,7 +116,7 @@ Dialog_Workspaces::Dialog_Workspaces(Gtk::Dialog::BaseObjectType* cobject, const
 //		row[ws_cols.col_name] = "ui";
 //		workspace_model->append()->set_value(0, Glib::ustring("ui"));
 
-		App::signal_custom_workspaces_changed().connect(sigc::mem_fun(*this, &Dialog_Workspaces::rebuild_list));
+		MainWindow::signal_custom_workspaces_changed().connect(sigc::mem_fun(*this, &Dialog_Workspaces::rebuild_list));
 
 		rebuild_list();
 	}
@@ -130,7 +152,7 @@ void Dialog_Workspaces::on_delete_clicked()
 	char msg[256];
 	snprintf(msg, 255, _("Are you sure you want to delete %d workspaces?"), current_selection->count_selected_rows());
 	Gtk::MessageDialog confirm_dlg(*this, msg, false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_YES_NO, true);
-	if (confirm_dlg.run() == Gtk::RESPONSE_NO)
+	if (confirm_dlg.run() != Gtk::RESPONSE_YES)
 		return;
 
 	// get_selected_rows() return TreePath not TreeIter
@@ -142,7 +164,7 @@ void Dialog_Workspaces::on_delete_clicked()
 		names.push_back(name);
 	}
 	for (const std::string & name : names) {
-		App::get_workspace_handler()->remove_workspace(name);
+		MainWindow::get_workspace_handler()->remove_workspace(name);
 	}
 }
 
@@ -160,14 +182,14 @@ void Dialog_Workspaces::on_rename_clicked()
 	Gtk::Entry * name_entry = Gtk::manage(new Gtk::Entry());
 	name_entry->set_margin_start(16);
 	name_entry->set_margin_end(16);
-	name_entry->signal_changed().connect([&](){
+	name_entry->signal_changed().connect(sigc::track_obj([&](){
 		std::string name = name_entry->get_text();
 		synfig::trim(name);
-		bool has_equal_sign = name.find("=") != std::string::npos;
+		bool has_equal_sign = name.find('=') != std::string::npos;
 		ok_button->set_sensitive(!name.empty() && !has_equal_sign);
 		if (ok_button->is_sensitive())
 			ok_button->grab_default();
-	});
+	}, *this));
 	name_entry->signal_activate().connect(sigc::mem_fun(*ok_button, &Gtk::Button::clicked));
 	name_entry->set_text(old_name);
 
@@ -179,7 +201,7 @@ void Dialog_Workspaces::on_rename_clicked()
 	dialog.show_all();
 
 	int response = dialog.run();
-	if (response == Gtk::RESPONSE_CANCEL)
+	if (response != Gtk::RESPONSE_OK)
 		return;
 
 	std::string name = name_entry->get_text();
@@ -188,23 +210,26 @@ void Dialog_Workspaces::on_rename_clicked()
 	if (old_name == name)
 		return;
 
-	if (App::get_workspace_handler()->has_workspace(name)) {
+	if (MainWindow::get_workspace_handler()->has_workspace(name)) {
 		Gtk::MessageDialog error_dlg(dialog, _("There is already a workspace with this name."), false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK);
 		error_dlg.run();
 		return;
 	}
 
 	std::string tpl;
-	App::get_workspace_handler()->get_workspace(old_name, tpl);
-	App::get_workspace_handler()->remove_workspace(old_name);
-	App::get_workspace_handler()->add_workspace(name, tpl);
+	MainWindow::get_workspace_handler()->get_workspace(old_name, tpl);
+	MainWindow::get_workspace_handler()->remove_workspace(old_name);
+	MainWindow::get_workspace_handler()->add_workspace(name, tpl);
 }
 
 void Dialog_Workspaces::rebuild_list()
 {
 	workspace_model->clear();
 
-	WorkspaceHandler *workspaces = App::get_workspace_handler();
+	WorkspaceHandler* workspaces = MainWindow::get_workspace_handler();
+	if (!workspaces)
+		return;
+
 	std::vector<std::string> names;
 	workspaces->get_name_list(names);
 	for (const std::string & name : names)

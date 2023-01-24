@@ -2,22 +2,25 @@
 /*!	\file halftone3.cpp
 **	\brief Implementation of the "Halftone 3" layer
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007-2008 Chris Moore
 **	Copyright (c) 2012-2013 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -35,7 +38,6 @@
 #include "halftone.h"
 
 #include <synfig/localization.h>
-#include <synfig/general.h>
 
 #include <synfig/string.h>
 #include <synfig/time.h>
@@ -44,16 +46,12 @@
 #include <synfig/renddesc.h>
 #include <synfig/surface.h>
 #include <synfig/value.h>
-#include <synfig/valuenode.h>
-#include <synfig/cairo_renddesc.h>
 
 #endif
 
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
-using namespace std;
-using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
@@ -250,7 +248,7 @@ Halftone3::color_func(const Point &point, float supersample,const Color& in_colo
 inline float
 Halftone3::calc_supersample(const synfig::Point &/*x*/, float pw,float /*ph*/)const
 {
-	return abs(pw/(tone[0].param_size.get(Vector())).mag());
+	return std::fabs(pw/(tone[0].param_size.get(Vector())).mag());
 }
 
 synfig::Layer::Handle
@@ -393,7 +391,7 @@ Halftone3::accelerated_render(Context context,Surface *surface,int quality, cons
 	const Point tl(renddesc.get_tl());
 	const int w(surface->get_w());
 	const int h(surface->get_h());
-	const float supersample_size(abs(pw/(tone[0].param_size.get(Vector())).mag()));
+	const float supersample_size(std::fabs(pw/(tone[0].param_size.get(Vector())).mag()));
 
 	Surface::pen pen(surface->begin());
 	Point pos;
@@ -437,103 +435,7 @@ Halftone3::accelerated_render(Context context,Surface *surface,int quality, cons
 }
 
 ////
-////
-bool
-Halftone3::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc_, ProgressCallback *cb)const
-{
-	RendDesc	renddesc(renddesc_);
-	
-	// Untransform the render desc
-	if(!cairo_renddesc_untransform(cr, renddesc))
-		return false;
-	
-	const Real pw(renddesc.get_pw()),ph(renddesc.get_ph());
-	const Point tl(renddesc.get_tl());
-	const int w(renddesc.get_w());
-	const int h(renddesc.get_h());
-	const float supersample_size(abs(pw/(tone[0].param_size.get(Vector())).mag()));
-	
-	SuperCallback supercb(cb,0,9500,10000);
-	
-	if(get_amount()==0)
-		return true;
-	
-	cairo_surface_t *surface;
-	
-	surface=cairo_surface_create_similar(cairo_get_target(cr), CAIRO_CONTENT_COLOR_ALPHA, w, h);
-	cairo_t* subcr=cairo_create(surface);
-	cairo_scale(subcr, 1/pw, 1/ph);
-	cairo_translate(subcr, -tl[0], -tl[1]);
-	if(!context.accelerated_cairorender(subcr,quality,renddesc,&supercb))
-	{
-		if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
-		return false;
-	}
-	cairo_destroy(subcr);
-	
-	CairoSurface csurface(surface);
-	
-	if(!csurface.map_cairo_image())
-		return false;
-	
-	CairoSurface::pen pen(csurface.begin());
-	
-	Point pos;
-	int x,y;
-	
-	if(is_solid_color())
-	{
-		for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)
-			for(x=0,pos[0]=tl[0];x<w;x++,pen.inc_x(),pos[0]+=pw)
-				pen.put_value(
-							  CairoColor(color_func(
-													pos,
-													supersample_size,
-													Color(pen.get_value().demult_alpha())
-													)
-										 ).premult_alpha()
-							  );
-	}
-	else
-	{
-		for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)
-			for(x=0,pos[0]=tl[0];x<w;x++,pen.inc_x(),pos[0]+=pw)
-			{
-				Color val=Color(pen.get_value().demult_alpha());
-				pen.put_value(
-							  CairoColor(Color::blend(
-													  color_func(
-																 pos,
-																 supersample_size,
-																 val
-																 ),
-													  val,
-													  get_amount(),
-													  get_blend_method()
-													  ).clamped()
-										 ).premult_alpha()
-							  );
-			}
-		
-	}
-	
-	csurface.unmap_cairo_image();
-	// paint surface on cr
-	cairo_save(cr);
-	cairo_translate(cr, tl[0], tl[1]);
-	cairo_scale(cr, pw, ph);
-	cairo_set_source_surface(cr, surface, 0, 0);
-	cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
-	cairo_paint(cr);
-	cairo_restore(cr);
-	
-	cairo_surface_destroy(surface);
-	// Mark our progress as finished
-	if(cb && !cb->amount_complete(10000,10000))
-		return false;
-	
-	return true;
-}
+
 
 rendering::Task::Handle
 Halftone3::build_rendering_task_vfunc(Context context) const

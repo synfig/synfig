@@ -2,21 +2,24 @@
 /*!	\file zoomdial.cpp
 **	\brief Zoom widget
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2016 caryoscelus
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -41,7 +44,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace synfig;
 using namespace studio;
 
@@ -56,10 +58,10 @@ using namespace studio;
 ZoomDial::ZoomDial(Gtk::IconSize & size):
 	Gtk::Grid()
 {
-	zoom_in = create_icon(size, Gtk::Stock::ZOOM_IN, _("Zoom In"));
-	zoom_out = create_icon(size, Gtk::Stock::ZOOM_OUT, _("Zoom Out"));
-	zoom_fit = create_icon(size, Gtk::Stock::ZOOM_FIT, _("Zoom to Fit"));
-	zoom_norm = create_icon(size, Gtk::Stock::ZOOM_100, _("Zoom to 100%"));
+	zoom_in = create_icon(size, "zoom-in", _("Zoom In"));
+	zoom_out = create_icon(size, "zoom-out", _("Zoom Out"));
+	zoom_fit = create_icon(size, "zoom-fit-best", _("Zoom to Fit"));
+	zoom_norm = create_icon(size, "zoom-original", _("Zoom to 100%"));
 
 	current_zoom = manage(new Gtk::Entry());
 	set_zoom(1.0);
@@ -111,15 +113,17 @@ ZoomDial::current_zoom_event(GdkEvent* event)
 
 
 Gtk::Button *
-ZoomDial::create_icon(Gtk::IconSize size, const Gtk::BuiltinStockID & stockid,
+ZoomDial::create_icon(Gtk::IconSize size, const std::string & icon_name,
 		const char * tooltip)
 {
 	Gtk::Button *button = manage(new class Gtk::Button());
-	Gtk::Image *icon = manage(new Gtk::Image(stockid, size));
-	button->add(*icon);
+	button->set_image_from_icon_name(icon_name, size);
 	button->set_tooltip_text(tooltip);
-	icon->set_padding(0, 0);
-	icon->show();
+	auto icon = button->get_image();
+	icon->set_margin_start(0);
+	icon->set_margin_end(0);
+	icon->set_margin_top(0);
+	icon->set_margin_bottom(0);
 	button->set_relief(Gtk::RELIEF_NONE);
 	button->show();
 
@@ -129,7 +133,7 @@ ZoomDial::create_icon(Gtk::IconSize size, const Gtk::BuiltinStockID & stockid,
 void
 ZoomDial::set_zoom(synfig::Real value)
 {
-	current_zoom->set_text(etl::strprintf("%.1lf%%", value*100.0));
+	current_zoom->set_text(synfig::strprintf("%.1lf%%", value*100.0));
 }
 
 synfig::Real

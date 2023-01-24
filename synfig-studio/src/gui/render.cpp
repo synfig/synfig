@@ -1,22 +1,25 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file gtkmm/render.cpp
+/*!	\file gui/render.cpp
 **	\brief Template File
-**
-**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -40,9 +43,10 @@
 #include <glibmm/fileutils.h>
 #include <glibmm/miscutils.h>
 
-#include <gtkmm/alignment.h>
 #include <gtkmm/frame.h>
-#include <gtkmm/table.h>
+#include <gtkmm/grid.h>
+
+#include <ETL/stringf>
 
 #include <gui/app.h>
 #include <gui/asyncrenderer.h>
@@ -61,10 +65,13 @@
 
 #endif
 
+// MSVC doesn't define W_OK
+#ifndef W_OK
+#define W_OK 2
+#endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;
@@ -88,6 +95,7 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	toggle_extract_alpha(_("Extract alpha"), true),
 	tparam("mpeg4",6000)
 {
+	this->set_resizable(false);
 	progress_logger.reset(new ProgressLogger());
 	tparam.sequence_separator=App::sequence_separator;
 	widget_rend_desc.show();
@@ -108,18 +116,18 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	comboboxtext_target.set_active(0);
 	comboboxtext_target.signal_changed().connect(sigc::mem_fun(this, &RenderSettings::on_comboboxtext_target_changed));
 
-	Gtk::Alignment *dialogPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	dialogPadding->set_padding(12, 12, 12, 12);
-	get_vbox()->pack_start(*dialogPadding, false, false, 0);
+	Gtk::Grid *dialogGrid = manage(new Gtk::Grid());
+	dialogGrid->get_style_context()->add_class("dialog-main-content");
+	dialogGrid->set_row_spacing(12);
+	dialogGrid->set_vexpand(true);
+	dialogGrid->set_hexpand(true);
+	get_content_area()->pack_start(*dialogGrid,false,false,0);
 
-	Gtk::VBox *dialogBox = manage(new Gtk::VBox(false, 12));
-	dialogPadding->add(*dialogBox);
-
-	Gtk::Button *choose_button(manage(new class Gtk::Button(Gtk::StockID(_("Choose...")))));
+	Gtk::Button *choose_button(manage(new Gtk::Button(_("Choose..."))));
 	choose_button->show();
 	choose_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::RenderSettings::on_choose_pressed));
 
-	tparam_button=manage(new class Gtk::Button(Gtk::StockID(_("Parameters..."))));
+	tparam_button=manage(new Gtk::Button(_("Parameters...")));
 	tparam_button->show();
 	tparam_button->set_sensitive(false);
 	tparam_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::RenderSettings::on_targetparam_pressed));
@@ -127,75 +135,84 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	Gtk::Frame *target_frame=manage(new Gtk::Frame(_("Target")));
 	target_frame->set_shadow_type(Gtk::SHADOW_NONE);
 	((Gtk::Label *) target_frame->get_label_widget())->set_markup(_("<b>Target</b>"));
-	dialogBox->pack_start(*target_frame);
-	Gtk::Alignment *targetPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	targetPadding->set_padding(6, 0, 24, 0);
-	target_frame->add(*targetPadding);
+	dialogGrid->attach(*target_frame, 0, 0, 1, 1);
 
-	Gtk::Table *target_table = manage(new Gtk::Table(2, 3, false));
-	target_table->set_row_spacings(6);
-	target_table->set_col_spacings(12);
-	targetPadding->add(*target_table);
+	Gtk::Grid *target_grid = manage(new Gtk::Grid());
+	target_grid->get_style_context()->add_class("dialog-secondary-content");
+	target_grid->set_row_spacing(6);
+	target_grid->set_column_spacing(12);
+	target_grid->set_vexpand(true);
+	target_grid->set_hexpand(true);
+	target_frame->add(*target_grid);
 
 	Gtk::Label *filenameLabel = manage(new Gtk::Label(_("_Filename"), true));
-	filenameLabel->set_alignment(0, 0.5);
+	filenameLabel->set_halign(Gtk::ALIGN_START);
+	filenameLabel->set_valign(Gtk::ALIGN_CENTER);
 	filenameLabel->set_mnemonic_widget(entry_filename);
-	target_table->attach(*filenameLabel, 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	target_table->attach(entry_filename, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	target_table->attach(*choose_button, 2, 3, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	entry_filename.set_hexpand();
+	target_grid->attach(*filenameLabel, 0, 0, 1, 1);
+	target_grid->attach(entry_filename, 1, 0, 1, 1);
+	target_grid->attach(*choose_button, 2, 0, 1, 1);
 
-	Gtk::Label *targetLabel = manage(new Gtk::Label(_("_Target"), true));
-	targetLabel->set_alignment(0, 0.5);
-	targetLabel->set_mnemonic_widget(comboboxtext_target);
-	target_table->attach(*targetLabel, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	target_table->attach(comboboxtext_target, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	target_table->attach(*tparam_button, 2, 3, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	Gtk::Label *moduleLabel = manage(new Gtk::Label(_("_Module"), true));
+	moduleLabel->set_halign(Gtk::ALIGN_START);
+	moduleLabel->set_valign(Gtk::ALIGN_CENTER);
+	moduleLabel->set_mnemonic_widget(comboboxtext_target);
+	comboboxtext_target.set_hexpand();
+	target_grid->attach(*moduleLabel, 0, 1, 1, 1);
+	target_grid->attach(comboboxtext_target, 1, 1, 1, 1);
+	target_grid->attach(*tparam_button, 2, 1, 1, 1);
 
 	toggle_single_frame.signal_toggled().connect(sigc::mem_fun(*this, &studio::RenderSettings::on_single_frame_toggle));
 
 	Gtk::Frame *settings_frame=manage(new Gtk::Frame(_("Settings")));
 	settings_frame->set_shadow_type(Gtk::SHADOW_NONE);
 	((Gtk::Label *) settings_frame->get_label_widget())->set_markup(_("<b>Settings</b>"));
-	dialogBox->pack_start(*settings_frame);
+	dialogGrid->attach(*settings_frame, 0, 1, 1, 1);
 
-	Gtk::Alignment *settingsPadding = manage(new Gtk::Alignment(0, 0, 1, 1));
-	settingsPadding->set_padding(6, 0, 24, 0);
-	settings_frame->add(*settingsPadding);
-
-	Gtk::Table *settings_table=manage(new Gtk::Table(3,2,false));
-	settings_table->set_row_spacings(6);
-	settings_table->set_col_spacings(12);
-	settingsPadding->add(*settings_table);
+	Gtk::Grid *settings_grid = manage(new Gtk::Grid());
+	settings_grid->get_style_context()->add_class("dialog-secondary-content");
+	settings_grid->set_row_spacing(6);
+	settings_grid->set_column_spacing(12);
+	settings_grid->set_vexpand(true);
+	settings_grid->set_hexpand(true);
+	settings_frame->add(*settings_grid);
 
 	Gtk::Label *qualityLabel = manage(new Gtk::Label(_("_Quality"), true));
-	qualityLabel->set_alignment(0, 0.5);
+	qualityLabel->set_halign(Gtk::ALIGN_START);
+	qualityLabel->set_valign(Gtk::ALIGN_CENTER);
 	qualityLabel->set_mnemonic_widget(entry_quality);
-	settings_table->attach(*qualityLabel, 0, 1, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	settings_table->attach(entry_quality, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	entry_quality.set_hexpand();
+	settings_grid->attach(*qualityLabel, 0, 0, 1, 1);
+	settings_grid->attach(entry_quality, 1, 0, 1, 1);
 
 	Gtk::Label *antiAliasLabel = manage(new Gtk::Label(_("_Anti-Aliasing"), true));
-	antiAliasLabel->set_alignment(0, 0.5);
+	antiAliasLabel->set_halign(Gtk::ALIGN_START);
+	antiAliasLabel->set_valign(Gtk::ALIGN_CENTER);
 	antiAliasLabel->set_mnemonic_widget(entry_antialias);
-	settings_table->attach(*antiAliasLabel, 0, 1, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
-	settings_table->attach(entry_antialias, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	entry_antialias.set_hexpand();
+	settings_grid->attach(*antiAliasLabel, 0, 1, 1, 1);
+	settings_grid->attach(entry_antialias, 1, 1, 1, 1);
 
-	toggle_single_frame.set_alignment(0, 0.5);
-	settings_table->attach(toggle_single_frame, 2, 3, 0, 1, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	toggle_single_frame.set_halign(Gtk::ALIGN_START);
+	toggle_single_frame.set_valign(Gtk::ALIGN_CENTER);
+	settings_grid->attach(toggle_single_frame, 2, 0, 1, 1);
 	toggle_single_frame.set_active(false);
 
-	toggle_extract_alpha.set_alignment(0, 0.5);
-	settings_table->attach(toggle_extract_alpha, 2, 3, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL, 0, 0);
+	toggle_extract_alpha.set_halign(Gtk::ALIGN_START);
+	toggle_extract_alpha.set_valign(Gtk::ALIGN_CENTER);
+	settings_grid->attach(toggle_extract_alpha, 2, 1, 1, 1);
 	toggle_extract_alpha.set_active(false);
 
-	dialogBox->pack_start(widget_rend_desc);
+	dialogGrid->attach(widget_rend_desc, 0, 2, 1, 1);
 
 
-	Gtk::Button *cancel_button(manage(new class Gtk::Button(Gtk::StockID("gtk-cancel"))));
+	Gtk::Button *cancel_button(manage(new Gtk::Button(_("_Cancel"), true)));
 	cancel_button->show();
 	add_action_widget(*cancel_button,0);
 	cancel_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::RenderSettings::on_cancel_pressed));
 
-	Gtk::Button *render_button(manage(new class Gtk::Button(Gtk::StockID(_("Render")))));
+	Gtk::Button *render_button(manage(new Gtk::Button(_("Render"))));
 	render_button->show();
 	add_action_widget(*render_button,1);
 	render_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::RenderSettings::on_render_pressed));
@@ -206,7 +223,7 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 
 	set_entry_filename();
 
-	get_vbox()->show_all();
+	get_content_area()->show_all();
 }
 
 RenderSettings::~RenderSettings()
@@ -248,7 +265,7 @@ RenderSettings::set_entry_filename()
 void
 RenderSettings::on_comboboxtext_target_changed()
 {
-	std::map<std::string,std::string> ext = {{"bmp",".bmp"}, {"cairo_png",".png"},{"dv",".dv"},
+	std::map<std::string,std::string> ext = {{"bmp",".bmp"}, {"dv",".dv"},
 					{"ffmpeg",".avi"},{"gif",".gif"},{"imagemagick",".png"}, {"jpeg",".jpg"},
 					{"magick++",".gif"},{"mng",".mng"},{"openexr",".exr"},{"png",".png"},
 					{"png-spritesheet",".png"},{"ppm",".ppm"}, {"yuv420p",".yuv"}, {"libav",".avi"}};
@@ -314,6 +331,7 @@ void
 RenderSettings::on_render_pressed()
 {
 	String filename=entry_filename.get_text();
+	tparam.sequence_separator = App::sequence_separator;
 	
 	if(!check_target_destination())
 	{
@@ -405,7 +423,7 @@ RenderSettings::check_target_destination()
 	{
 		//Check format which could have an image sequence as output
 		//If format is selected in comboboxtext_target
-		std::map<std::string,std::string> ext_multi = {{"bmp",".bmp"},{"cairo_png",".png"},
+		std::map<std::string,std::string> ext_multi = {{"bmp",".bmp"},
 					{"imagemagick",".png"}, {"jpeg",".jpg"},{"mng",".mng"},
 					{"openexr",".exr"},{"png",".png"},{"ppm",".ppm"}};
 	
@@ -435,8 +453,8 @@ RenderSettings::check_target_destination()
 					n_frame++)
 			{
 				if(Glib::file_test(filename_sans_extension(filename) +
-					tparam.sequence_separator + 
-					etl::strprintf("%04d", n_frame) +
+					tparam.sequence_separator +
+					synfig::strprintf("%04d", n_frame) +
 					extension, Glib::FILE_TEST_EXISTS))
 					n_frames_overwrite++;
 			}
@@ -483,7 +501,7 @@ void
 RenderSettings::submit_next_render_pass()
 {
 	if (render_passes.size()>0) {
-		pair<TargetAlphaMode,String> pass_info = render_passes.back();
+		std::pair<TargetAlphaMode,String> pass_info = render_passes.back();
 		render_passes.pop_back();
 
 		App::dock_info_->set_n_passes_pending(render_passes.size()); //! Decrease until 0

@@ -1,7 +1,4 @@
-add_library(mod_geometry MODULE "")
-
-target_sources(mod_geometry
-    PUBLIC
+add_library(mod_geometry MODULE
         "${CMAKE_CURRENT_LIST_DIR}/advanced_outline.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/checkerboard.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/circle.cpp"
@@ -12,7 +9,7 @@ target_sources(mod_geometry
         "${CMAKE_CURRENT_LIST_DIR}/star.cpp"
 )
 
-target_link_libraries(mod_geometry synfig ${CAIRO_LIBRARIES} ${GLIBMM_LIBRARIES})
+target_link_libraries(mod_geometry libsynfig)
 
 install (
     TARGETS mod_geometry

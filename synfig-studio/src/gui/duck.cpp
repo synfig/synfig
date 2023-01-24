@@ -2,23 +2,26 @@
 /*!	\file duck.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2009 Nikita Kitaev
 **  Copyright (c) 2011 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -34,8 +37,6 @@
 
 #include "duck.h"
 
-#include <ETL/misc>
-
 #include <gui/localization.h>
 
 #include <synfig/general.h>
@@ -50,8 +51,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -289,12 +288,17 @@ Duck::set_sub_trans_point(const synfig::Point &x, const synfig::Time &time)
 		{
 			synfig::Point closest_point = get_point();
 			synfig::Real radius = 0.0;
-			ValueNode_BLine::Handle bline = ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link("bline"));
+			bool bline_loop = false;
+			ValueNode::LooseHandle bline = bline_vertex->get_bline_handle(bline_loop);
+			if (!bline) {
+				warning(_("Internal error: duck: It is a BLine Vertex, but it has not a BLine link"));
+				return;
+			}
 			synfig::find_closest_point(
 				(*bline)(time),
 				get_point(),
 				radius,
-				bline->get_loop(),
+				bline_loop,
 				&closest_point);
 			set_point(closest_point);
 		}

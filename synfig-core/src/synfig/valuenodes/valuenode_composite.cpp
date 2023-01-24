@@ -2,23 +2,26 @@
 /*!	\file valuenode_composite.cpp
 **	\brief Implementation of the "Composite" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
 **	Copyright (c) 2009 Nikita Kitaev
 **  Copyright (c) 2011 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -54,15 +57,13 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Composite, RELEASE_VERSION_0_61_06, "composite", "Composite")
+REGISTER_VALUENODE(ValueNode_Composite, RELEASE_VERSION_0_61_06, "composite", N_("Composite"))
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -71,8 +72,7 @@ REGISTER_VALUENODE(ValueNode_Composite, RELEASE_VERSION_0_61_06, "composite", "C
 synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value, Canvas::LooseHandle canvas):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	Type &type(get_type());
 	if (type == type_vector)
 	{
@@ -192,8 +192,8 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value, Canvas:
 		throw Exception::BadType(get_type().description.local_name);
 	}
 
-	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-		printf("%s:%d set parent canvas for composite %p to %p\n", __FILE__, __LINE__, this, canvas.get());
+	DEBUG_LOG("SYNFIG_DEBUG_SET_PARENT_CANVAS",
+		"%s:%d set parent canvas for composite %p to %p\n", __FILE__, __LINE__, this, canvas.get());
 	set_parent_canvas(canvas);
 }
 
@@ -203,7 +203,7 @@ ValueNode_Composite::~ValueNode_Composite()
 }
 
 ValueNode_Composite*
-ValueNode_Composite::create(const ValueBase &value, Canvas::LooseHandle canvas)
+ValueNode_Composite::create(const ValueBase& value, Canvas::LooseHandle canvas)
 {
 	return new ValueNode_Composite(value, canvas);
 }
@@ -217,8 +217,8 @@ ValueNode_Composite::create_new()const
 ValueBase
 synfig::ValueNode_Composite::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	Type &type(get_type());
 	if (type == type_vector)
@@ -318,7 +318,7 @@ synfig::ValueNode_Composite::operator()(Time t)const
 		return tp->create_value((*components[0])(t), (*components[1])(t));
 	}
 
-	synfig::error(string("ValueNode_Composite::operator():")+_("Bad type for composite"));
+	synfig::error(std::string("ValueNode_Composite::operator():")+_("Bad type for composite"));
 	assert(components[0]);
 	return (*components[0])(t);
 }
@@ -704,7 +704,6 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 		ret.push_back(ParamDesc(ValueBase(),"origin")
 			.set_local_name(_("Origin"))
 			.set_description(_("Defines the Off and On position relative to neighbours"))
-			.set_is_distance()
 		);
 		ret.push_back(ParamDesc(ValueBase(),"split")
 			.set_local_name(_("Split"))
@@ -738,7 +737,7 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 		);
 		ret.push_back(ParamDesc(ValueBase(),"width")
 			.set_local_name(_("Width"))
-			.set_description(_("The width of the Width Point"))
+			.set_description(_("The relative width of the Width Point"))
 		);
 		ret.push_back(ParamDesc(ValueBase(),"side_before")
 			.set_local_name(_("Side Type Before"))
@@ -782,10 +781,12 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 		ret.push_back(ParamDesc(ValueBase(),"offset")
 			.set_local_name(_("Offset"))
 			.set_description(_("The offset length of the Dash Item over the Spline"))
+			.set_is_distance()
 		);
 		ret.push_back(ParamDesc(ValueBase(),"length")
 			.set_local_name(_("Length"))
 			.set_description(_("The length of the Dash Item"))
+			.set_is_distance()
 		);
 		ret.push_back(ParamDesc(ValueBase(),"side_before")
 			.set_local_name(_("Side Type Before"))

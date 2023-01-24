@@ -1,23 +1,26 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file outline.cpp
+/*!	\file advanced_outline.cpp
 **	\brief Implementation of the "Advanced Outline" layer
-**
-**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2011-2013 Carlos López
 **	......... ... 2019 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -40,6 +43,7 @@
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
 #include <synfig/curve.h>
+#include <synfig/dashitem.h>
 
 #include <synfig/valuenodes/valuenode_bline.h>
 #include <synfig/valuenodes/valuenode_wplist.h>
@@ -788,19 +792,16 @@ Advanced_Outline::get_param_vocab()const
 	);
 	ret.push_back(ParamDesc("dash_enabled")
 		.set_local_name(_("Dashed Outline"))
-		.set_hint("dash")
 		.set_description(_("When checked, outline is dashed"))
 	);
 	ret.push_back(ParamDesc("dilist")
 		.set_local_name(_("Dash Item List"))
-		.set_hint("dash")
 		.set_origin("origin")
 		.set_description(_("List of dash items that defines the dashed outline"))
 	);
 	ret.push_back(ParamDesc("dash_offset")
 		.set_local_name(_("Dash Items Offset"))
 		.set_is_distance()
-		.set_hint("dash")
 		.set_description(_("Distance to Offset the Dash Items"))
 	);
 	return ret;
@@ -811,8 +812,17 @@ Advanced_Outline::connect_dynamic_param(const String& param, etl::loose_handle<V
 {
 	if(param=="bline")
 	{
-		connect_bline_to_wplist(x);
-		connect_bline_to_dilist(x);
+		// only accept a valuenode that gives us a list of blinepoints, or null to disconnect
+		bool is_bline_vn = false;
+		if (x && x->get_type() == type_list) {
+			ValueBase v = (*x)(Time(0));
+			if (v.get_contained_type() == type_bline_point) {
+				is_bline_vn = true;
+			}
+		}
+		if (!x || is_bline_vn) {
+			connect_bline_to_wplist(x);
+		}
 		return Layer::connect_dynamic_param(param, x);
 	}
 	if(param=="wplist")
@@ -822,27 +832,14 @@ Advanced_Outline::connect_dynamic_param(const String& param, etl::loose_handle<V
 			DynamicParamList::const_iterator iter(dynamic_param_list().find("bline"));
 			if(iter==dynamic_param_list().end())
 				return false;
-			else if(!connect_bline_to_wplist(iter->second))
+			else if(iter->second && !connect_bline_to_wplist(iter->second))
 				return false;
 			return true;
 		}
 		else
 			return false;
 	}
-	if(param=="dilist")
-	{
-		if(Layer::connect_dynamic_param(param, x))
-		{
-			DynamicParamList::const_iterator iter(dynamic_param_list().find("bline"));
-			if(iter==dynamic_param_list().end())
-				return false;
-			else if(!connect_bline_to_dilist(iter->second))
-				return false;
-			return true;
-		}
-		else
-			return false;
-	}
+	// no special treatment for param == "dilist"
 
 	return Layer::connect_dynamic_param(param, x);
 }
@@ -850,12 +847,7 @@ Advanced_Outline::connect_dynamic_param(const String& param, etl::loose_handle<V
 bool
 Advanced_Outline::connect_bline_to_wplist(etl::loose_handle<ValueNode> x)
 {
-	if(x->get_type() != type_list)
-		return false;
-	if((*x)(Time(0)).empty())
-		return false;
-	if((*x)(Time(0)).get_list().front().get_type() != type_bline_point)
-		return false;
+	// connect_dynamic_param() makes sure x is a list of blinepoints.
 	ValueNode::LooseHandle vnode;
 	DynamicParamList::const_iterator iter(dynamic_param_list().find("wplist"));
 	if(iter==dynamic_param_list().end())
@@ -866,24 +858,3 @@ Advanced_Outline::connect_bline_to_wplist(etl::loose_handle<ValueNode> x)
 	wplist->set_bline(ValueNode::Handle(x));
 	return true;
 }
-
-bool
-Advanced_Outline::connect_bline_to_dilist(etl::loose_handle<ValueNode> x)
-{
-	if(x->get_type() != type_list)
-		return false;
-	if((*x)(Time(0)).empty())
-		return false;
-	if((*x)(Time(0)).get_list().front().get_type() != type_bline_point)
-		return false;
-	ValueNode::LooseHandle vnode;
-	DynamicParamList::const_iterator iter(dynamic_param_list().find("dilist"));
-	if(iter==dynamic_param_list().end())
-		return false;
-	ValueNode_DIList::Handle dilist(ValueNode_DIList::Handle::cast_dynamic(iter->second));
-	if(!dilist)
-		return false;
-	dilist->set_bline(ValueNode::Handle(x));
-	return true;
-}
-

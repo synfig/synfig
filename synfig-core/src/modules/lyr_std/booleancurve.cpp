@@ -2,20 +2,23 @@
 /*!	\file booleancurve.cpp
 **	\brief Boolean Curve Implementation File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -32,23 +35,18 @@
 #include "booleancurve.h"
 
 #include <synfig/localization.h>
-#include <synfig/general.h>
 
 #include <synfig/string.h>
-#include <synfig/time.h>
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
 #include <synfig/renddesc.h>
 #include <synfig/surface.h>
 #include <synfig/value.h>
-#include <synfig/valuenode.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace modules;
 using namespace lyr_std;
@@ -75,15 +73,14 @@ bool BooleanCurve::set_param(const String & param, const ValueBase &value)
 {
 	if(param=="regions" && value.same_type_as(ValueBase::List()))
 	{
-		vector<BLinePoint> bv;
 		int size = value.get_list().size();
 
-		const vector<ValueBase> &vlist = value.get_list();
+		const std::vector<ValueBase> &vlist = value.get_list();
 
 		regions.clear();
 		for(int i = 0; i < size; ++i)
 		{
-			regions.push_back(vector<BLinePoint>(vlist[i].get_list_of(BLinePoint())));
+			regions.push_back(std::vector<BLinePoint>(vlist[i].get_list_of(BLinePoint())));
 		}
 		return true;
 	}

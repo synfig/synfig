@@ -2,21 +2,24 @@
 /*!	\file blineconvert.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -34,8 +37,8 @@
 
 #include "blineconvert.h"
 #include <vector>
-#include <ETL/gaussian>
-#include <ETL/hermite>
+#include <synfig/blur/gaussian.h>
+#include <synfig/bezier.h>
 #include <float.h>
 #include <algorithm>
 #include <cassert>
@@ -46,8 +49,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -315,7 +316,7 @@ int tessellate_curves(const std::vector<cpindex> &inds, const std::vector<Point>
 	if(inds.size() < 2)
 		return 0;
 
-	etl::hermite<Point>	curve;
+	synfig::hermite<Point> curve;
 	int ntess = 0;
 
 	std::vector<cpindex>::const_iterator j = inds.begin(),j2, end = inds.end();
@@ -558,14 +559,14 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 
 		cum_dist.resize(point_cache.size()); this_dist.resize(point_cache.size());
 		Real d = 0;
-		for(unsigned int i = 0; i < point_cache.size();)
+		for(unsigned int i = 0; i < point_cache.size(); i++)
 		{
+			p2=point_cache[i];
+
 			d += (this_dist[i] = (p2-p1).mag());
 			cum_dist[i] = d;
 
 			p1=p2;
-			//! \todo is this legal?  it reads off the end of the vector
-			p2=point_cache[++i];
 		}
 	}
 	//disteval = timer();

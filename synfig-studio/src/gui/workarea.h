@@ -2,23 +2,26 @@
 /*!	\file workarea.h
 **	\brief Template Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **  Copyright (c) 2011 Nikita Kitaev
 **  ......... ... 2018 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -131,6 +134,7 @@ private:
 	etl::handle<Renderer_Canvas> renderer_canvas;
 
 	// Widgets
+	Gtk::Button* menubutton_box;
 	Gtk::DrawingArea *drawing_area;
 	Gtk::Frame *drawing_frame;
 	Widget_Ruler *hruler;
@@ -177,6 +181,8 @@ private:
 	etl::loose_handle<synfig::ValueNode> active_bone_;
 	bool highlight_active_bone;
 
+	//! This state is true if ruler should be shown
+	bool show_rulers;
 	//! This flag is set if the grid should be drawn
 	bool show_grid;
 
@@ -210,6 +216,8 @@ private:
 	bool onion_skin;
 	//! stores the future [1] and past [0] onion skins based on keyframes
 	int onion_skins[2];
+	// Onion Skin on Keyframes or Frames
+	bool onion_skin_keyframes;
 
 	// render future and past frames in background
 	bool background_rendering;
@@ -272,6 +280,8 @@ private:
 
 	void set_drag_mode(DragMode mode);
 
+	void set_active_bone_value_node(etl::loose_handle<synfig::ValueNode> x);
+
 public:
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -306,6 +316,8 @@ public:
 	bool get_onion_skin() const { return onion_skin; }
 	void set_onion_skins(int *onions);
 	int const * get_onion_skins() const { return onion_skins; }
+	void set_onion_skin_keyframes(bool x);
+	bool get_onion_skin_keyframes() const { return onion_skin_keyframes; }
 
 	void set_background_rendering(bool x);
 	bool get_background_rendering() const { return background_rendering; }
@@ -313,7 +325,6 @@ public:
 	void set_selected_value_node(etl::loose_handle<synfig::ValueNode> x);
 
 	const etl::loose_handle<synfig::ValueNode>& get_active_bone_value_node(){return active_bone_;}
-	void set_active_bone_value_node(etl::loose_handle<synfig::ValueNode> x);
 	bool get_active_bone_display(){return highlight_active_bone;}
 	void set_active_bone_display(bool x){highlight_active_bone=x;}
 
@@ -341,6 +352,8 @@ public:
 
 	void refresh_dimension_info();
 
+	void set_show_rulers(bool visible);
+
 	//! Enables showing of the grid
 	void enable_grid();
 	//! Disables showing of the grid
@@ -358,6 +371,7 @@ public:
 	//! Returns the color of the grid
 	const synfig::Color &get_grid_color()const { return Duckmatic::get_grid_color();}
 
+	bool get_show_rulers()const { return show_rulers; }
 	//! Returns the state of the show_guides flag
 	bool get_show_guides()const { return show_guides; }
 	//! Sets the showing of the grid

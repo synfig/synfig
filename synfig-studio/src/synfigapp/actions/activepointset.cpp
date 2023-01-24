@@ -2,21 +2,24 @@
 /*!	\file activepointset.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **  Copyright (c) 2008 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -39,8 +42,6 @@
 
 #endif
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
 using namespace Action;
@@ -140,11 +141,10 @@ void
 Action::ActivepointSet::perform()
 {
 	typedef ValueNode_DynamicList::ListEntry::ActivepointList AList;
-	AList::iterator iter;
 
 #if 1
-	vector<AList::iterator>	iters;
-	vector<Activepoint>::iterator i = activepoints.begin(), end = activepoints.end();
+	std::vector<AList::iterator>	iters;
+	std::vector<Activepoint>::iterator i = activepoints.begin(), end = activepoints.end();
 
 	for(; i != end; ++i)
 	{
@@ -167,7 +167,7 @@ Action::ActivepointSet::perform()
 		//we only want to track overwrites (not activepoints that are also being modified)
 		if(candelete)
 		{
-			for(vector<AList::iterator>::iterator ii = iters.begin(); ii != iters.end(); ++ii)
+			for (std::vector<AList::iterator>::iterator ii = iters.begin(); ii != iters.end(); ++ii)
 			{
 				if(timeiter.first == *ii)
 				{
@@ -188,7 +188,7 @@ Action::ActivepointSet::perform()
 	//overwrite all the valuenodes we're supposed to set
 	{
 		i = activepoints.begin();
-		for(vector<AList::iterator>::iterator ii = iters.begin(); ii != iters.end() && i != end; ++ii, ++i)
+		for (std::vector<AList::iterator>::iterator ii = iters.begin(); ii != iters.end() && i != end; ++ii, ++i)
 		{
 			old_activepoints.push_back(**ii);
 			**ii = *i; //set the point to the corresponding point in the normal waypoint list
@@ -197,7 +197,7 @@ Action::ActivepointSet::perform()
 
 	//remove all the points we're supposed to be overwriting
 	{
-		vector<Activepoint>::iterator 	oi = overwritten_activepoints.begin(),
+		std::vector<Activepoint>::iterator 	oi = overwritten_activepoints.begin(),
 										oend = overwritten_activepoints.end();
 		for(; oi != oend; ++oi)
 		{
@@ -206,6 +206,7 @@ Action::ActivepointSet::perform()
 	}
 
 #else
+	AList::iterator iter;
 	try { iter=value_node->list[index].find(activepoint); }
 	catch(synfig::Exception::NotFound)
 	{
@@ -248,7 +249,7 @@ Action::ActivepointSet::undo()
 	ValueNode_DynamicList::ListEntry::ActivepointList::iterator iter;
 
 #if 1
-	vector<Activepoint>::iterator i = old_activepoints.begin(), end = old_activepoints.end();
+	std::vector<Activepoint>::iterator i = old_activepoints.begin(), end = old_activepoints.end();
 
 	for(; i != end; ++i)
 	{
@@ -264,7 +265,7 @@ Action::ActivepointSet::undo()
 
 	//add back in all the points that we removed before...
 	{
-		vector<Activepoint>::iterator 	oi = overwritten_activepoints.begin(),
+		std::vector<Activepoint>::iterator 	oi = overwritten_activepoints.begin(),
 										oend = overwritten_activepoints.end();
 		for(; oi != oend; ++oi)
 		{

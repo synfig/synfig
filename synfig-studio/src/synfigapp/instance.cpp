@@ -2,22 +2,25 @@
 /*!	\file synfigapp/instance.cpp
 **	\brief Instance
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **  Copyright (c) 2011 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -30,6 +33,8 @@
 #ifdef HAVE_CONFIG_H
 #	include <config.h>
 #endif
+
+#include <ETL/stringf>
 
 #include <synfig/general.h>
 
@@ -80,7 +85,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
@@ -165,8 +169,8 @@ Instance::~Instance()
 {
 	instance_map_.erase(canvas_);
 
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
-		synfig::info("Instance::~Instance(): Deleted");
+	DEBUG_LOG("SYNFIG_DEBUG_DESTRUCTORS",
+		"Instance::~Instance(): Deleted");
 }
 
 handle<CanvasInterface>
@@ -224,7 +228,7 @@ Instance::import_external_canvas(Canvas::Handle canvas, std::map<Canvas*, Canvas
 				continue;
 			}
 		} else {
-			imported[sub_canvas.get()] = NULL;
+			imported[sub_canvas.get()] = nullptr;
 
 			// generate name
 			std::string fname = filename_sans_extension(basename(sub_canvas->get_file_name()));
@@ -345,7 +349,7 @@ void
 Instance::process_filename(const ProcessFilenamesParams &params, const synfig::String &filename, synfig::String &out_filename)
 {
 	String full_filename = CanvasFileNaming::make_full_filename(params.previous_canvas_filename, filename);
-	map<String, String>::const_iterator i = params.processed_files.find(full_filename);
+	std::map<String, String>::const_iterator i = params.processed_files.find(full_filename);
 	if (i != params.processed_files.end())
 		{ out_filename = i->second; return; }
 
@@ -500,7 +504,7 @@ Instance::process_filenames(const ProcessFilenamesParams &params, const synfig::
 		  && linkable->get_parent_canvas()->get_root() != params.canvas)
 			return;
 
-		const ParamVocab vocab = linkable->get_children_vocab();
+		const ParamVocab& vocab = linkable->get_children_vocab();
 		for(ParamVocab::const_iterator i = vocab.begin(); i != vocab.end(); ++i)
 			process_filenames(params, ValueNode::Handle(linkable->get_link(i->get_name())), i->get_hint() == "filename");
 

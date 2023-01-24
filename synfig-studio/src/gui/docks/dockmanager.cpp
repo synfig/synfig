@@ -2,21 +2,24 @@
 /*!	\file dockmanager.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -59,7 +62,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -76,16 +78,16 @@ namespace studio {
 		Gtk::Window *window;
 		bool is_first;
 
-		DockLinkPoint(): bin(NULL), paned(NULL), window(NULL), is_first(false) { }
-		explicit DockLinkPoint(Gtk::Bin *bin): bin(bin), paned(NULL), window(NULL), is_first(false) { }
-		explicit DockLinkPoint(Gtk::Paned *paned, bool is_first): bin(NULL), paned(paned), window(NULL), is_first(is_first) { }
-		explicit DockLinkPoint(Gtk::Window *window): bin(NULL), paned(NULL), window(window), is_first(false) { }
-		explicit DockLinkPoint(Gtk::Widget &widget) {
+		DockLinkPoint(): bin(nullptr), paned(nullptr), window(nullptr), is_first(false) { }
+		explicit DockLinkPoint(Gtk::Bin* bin): bin(bin), paned(nullptr), window(nullptr), is_first(false) { }
+		explicit DockLinkPoint(Gtk::Paned* paned, bool is_first): bin(nullptr), paned(paned), window(nullptr), is_first(is_first) { }
+		explicit DockLinkPoint(Gtk::Window* window): bin(nullptr), paned(nullptr), window(window), is_first(false) { }
+		explicit DockLinkPoint(Gtk::Widget& widget) {
 			Gtk::Container *container = widget.get_parent();
 			bin = dynamic_cast<Gtk::Bin*>(container);
 			paned = dynamic_cast<Gtk::Paned*>(container);
 			window = dynamic_cast<Gtk::Window*>(container);
-			is_first = paned != NULL && paned->get_child1() == &widget;
+			is_first = paned && paned->get_child1() == &widget;
 		}
 
 		bool is_valid() { return bin || paned || window; }
@@ -135,7 +137,7 @@ public:
 		synfigapp::Main::settings().remove_domain("workspace");
 	}
 
-	virtual bool get_value(const synfig::String& key_, synfig::String& value)const
+	virtual bool get_raw_value(const synfig::String& key_, synfig::String& value)const override
 	{
 		try
 		{
@@ -145,10 +147,10 @@ public:
 				return true;
 			}
 		}catch (...) { return false; }
-		return synfigapp::Settings::get_value(key_,value);
+		return synfigapp::Settings::get_raw_value(key_,value);
 	}
 
-	virtual bool set_value(const synfig::String& key_,const synfig::String& value)
+	virtual bool set_value(const synfig::String& key_,const synfig::String& value) override
 	{
 		try
 		{
@@ -161,7 +163,7 @@ public:
 		return synfigapp::Settings::set_value(key_,value);
 	}
 
-	virtual KeyList get_key_list()const
+	virtual KeyList get_key_list()const override
 	{
 		synfigapp::Settings::KeyList ret(synfigapp::Settings::get_key_list());
 		ret.push_back("layout");
@@ -350,7 +352,7 @@ DockManager::add_widget(Gtk::Widget &dest_widget, Gtk::Widget &src_widget, bool 
 	if (&src_widget == &dest_widget) return false;
 
 	// check for src widget is parent for dest_widget
-	for(Gtk::Widget *parent = src_widget.get_parent(); parent != NULL; parent = parent->get_parent())
+	for(Gtk::Widget* parent = src_widget.get_parent(); parent; parent = parent->get_parent())
 		if (parent == &dest_widget)
 			return swap_widgets(src_widget, dest_widget);
 
@@ -404,7 +406,7 @@ std::string DockManager::read_string(std::string &x)
 
 std::string DockManager::extract_dockable_name(std::string &x) const
 {
-	size_t pos = x.find(",");
+	size_t pos = x.find(',');
 	std::string res = x.substr(0, pos);
 	if (pos == std::string::npos)
 		x.clear();
@@ -415,7 +417,7 @@ std::string DockManager::extract_dockable_name(std::string &x) const
 
 int DockManager::read_int(std::string &x)
 {
-	return strtol(read_string(x).c_str(), NULL, 10);
+	return strtol(read_string(x).c_str(), nullptr, 10);
 }
 
 bool DockManager::read_bool(std::string &x)
@@ -444,12 +446,24 @@ static void check_and_fix_window_position(int &x, int &y, int &width, int &heigh
 	const Gdk::Rectangle window_rect(x,y,width,height);
 	Gdk::Rectangle window_visible_rect;
 
+	Gdk::Rectangle monitor_rect;
+
 #if GTK_CHECK_VERSION(3,22,0)
 	int n_monitors = display->get_n_monitors();
+	auto monitor_at_topleft = display->get_monitor_at_point(x, y);
+	monitor_at_topleft->get_geometry(monitor_rect);
 #else
 	auto screen = display->get_default_screen();
-	int n_monitors = display->get_default_screen()->get_n_monitors();
+	int n_monitors = screen->get_n_monitors();
+	auto monitor_at_topleft_idx = screen->get_monitor_at_point(x, y);
+	screen->get_monitor_geometry(monitor_at_topleft_idx, monitor_rect);
 #endif
+
+	// adjust topleft point to lie in the monitor
+	if (x < monitor_rect.get_x() || x > monitor_rect.get_x() + monitor_rect.get_width())
+		x = monitor_rect.get_x();
+	if (y < monitor_rect.get_y() || y > monitor_rect.get_y() + monitor_rect.get_height())
+		y = monitor_rect.get_y();
 
 	for (int i = 0; i < n_monitors; i++) {
 		Gdk::Rectangle rect;
@@ -472,13 +486,6 @@ static void check_and_fix_window_position(int &x, int &y, int &width, int &heigh
 	bool bad_visible_height = window_visible_rect.get_height() < magic_mininum_length;
 	bool bad_visible_width = window_visible_rect.get_width() < magic_mininum_length;
 	if (bad_visible_height || bad_visible_width) {
-		Gdk::Rectangle monitor_rect;
-#if GTK_CHECK_VERSION(3,22,0)
-		display->get_monitor_at_point(x,y)->get_geometry(monitor_rect);
-#else
-		int monitor_idx = screen->get_monitor_at_point(x,y);
-		screen->get_monitor_geometry(monitor_idx, monitor_rect);
-#endif
 		if (bad_visible_height)
 			y = monitor_rect.get_y();
 		if (bad_visible_width)
@@ -497,20 +504,20 @@ Gtk::Widget* DockManager::read_widget(std::string &x)
 	{
 		// skip "[hor|" or "[vert|"
 		x = x.substr(1);
-		if (!read_separator(x)) return NULL;
+		if (!read_separator(x)) return nullptr;
 
 		int size = read_int(x);
-		if (!read_separator(x)) return NULL;
+		if (!read_separator(x)) return nullptr;
 
-		Gtk::Widget *first = NULL;
-		Gtk::Widget *second = NULL;
+		Gtk::Widget* first = nullptr;
+		Gtk::Widget* second = nullptr;
 
 		first = read_widget(x);
 		if (!read_separator(x)) return first;
 		second = read_widget(x);
 		read_separator(x);
 
-		if (!first && !second) return NULL;
+		if (!first && !second) return nullptr;
 		if (first && !second) return first;
 		if (!first && second) return second;
 
@@ -527,9 +534,9 @@ Gtk::Widget* DockManager::read_widget(std::string &x)
 	{
 		// skip "[book|"
 		x = x.substr(1);
-		if (!read_separator(x)) return NULL;
+		if (!read_separator(x)) return nullptr;
 
-		DockBook *book = NULL;
+		DockBook* book = nullptr;
 		do
 		{
 			std::string dockable_name_params = read_string(x);
@@ -544,7 +551,7 @@ Gtk::Widget* DockManager::read_widget(std::string &x)
 					container->remove(dockable);
 					containers_to_remove_[container] = true;
 				}
-				if (book == NULL) { book = manage(new DockBook()); book->show(); }
+				if (!book) { book = manage(new DockBook()); book->show(); }
 				book->add(dockable);
 			}			
 		} while (read_separator(x));
@@ -556,56 +563,52 @@ Gtk::Widget* DockManager::read_widget(std::string &x)
 	{
 		// skip "[dialog|"
 		x = x.substr(1);
-		if (!read_separator(x)) return NULL;
+		if (!read_separator(x)) return nullptr;
 
 		int left = read_int(x);
-		if (!read_separator(x)) return NULL;
+		if (!read_separator(x)) return nullptr;
 		int top = read_int(x);
-		if (!read_separator(x)) return NULL;
+		if (!read_separator(x)) return nullptr;
 		int width = read_int(x);
-		if (!read_separator(x)) return NULL;
+		if (!read_separator(x)) return nullptr;
 		int height = read_int(x);
-		if (!read_separator(x)) return NULL;
+		if (!read_separator(x)) return nullptr;
 
 		check_and_fix_window_position(left, top, width, height);
 
 		Gtk::Widget *widget = read_widget(x);
 		read_separator(x);
 
-		if (!widget) return NULL;
+		if (!widget) return nullptr;
 
 		DockDialog *dialog = new DockDialog();
 		dialog->add(*widget);
-		// FIXME(ice0): hack to fix incorrect positioning https://github.com/synfig/synfig/issues/1975
-		if (dialog->is_visible())
-			dialog->hide();
 		dialog->move(left, top);
 		dialog->set_default_size(width, height);
 		dialog->resize(width, height);
-		dialog->present();
 
-		return NULL;
+		return nullptr;
 	}
 	else
 	if (x.substr(0, 12) == "[mainwindow|")
 	{
 		// skip "[mainwindow|"
 		x = x.substr(1);
-		if (!read_separator(x)) return NULL;
+		if (!read_separator(x)) return nullptr;
 
 		int left = read_int(x);
-		if (!read_separator(x)) return NULL;
+		if (!read_separator(x)) return nullptr;
 		int top = read_int(x);
-		if (!read_separator(x)) return NULL;
+		if (!read_separator(x)) return nullptr;
 		int width = read_int(x);
-		if (!read_separator(x)) return NULL;
+		if (!read_separator(x)) return nullptr;
 		int height = read_int(x);
-		if (!read_separator(x)) return NULL;
+		if (!read_separator(x)) return nullptr;
 
 		Gtk::Widget *widget = read_widget(x);
 		read_separator(x);
 
-		if (!widget) return NULL;
+		if (!widget) return nullptr;
 
 		check_and_fix_window_position(left, top, width, height);
 
@@ -615,15 +618,11 @@ Gtk::Widget* DockManager::read_widget(std::string &x)
 			delete child;
 		App::main_window->root().add(*widget);
 
-		// FIXME(ice0): hack to fix incorrect positioning https://github.com/synfig/synfig/issues/1975
-		if (App::main_window->is_visible())
-			App::main_window->hide();
 		App::main_window->move(left, top);
 		App::main_window->set_default_size(width, height);
 		App::main_window->resize(width, height);
-		App::main_window->present();
 
-		return NULL;
+		return nullptr;
 	}
 	else
 	if (x.substr(0, 14) == "[mainnotebook]")
@@ -634,7 +633,7 @@ Gtk::Widget* DockManager::read_widget(std::string &x)
 		return &App::main_window->main_dock_book();
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 void DockManager::write_string(std::string &x, const std::string &str)
@@ -642,7 +641,7 @@ void DockManager::write_string(std::string &x, const std::string &str)
 void DockManager::write_separator(std::string &x, bool continue_)
 	{ write_string(x, continue_ ? "|" : "]"); }
 void DockManager::write_int(std::string &x, int i)
-	{ write_string(x, strprintf("%d", i)); }
+	{ write_string(x, synfig::strprintf("%d", i)); }
 void DockManager::write_bool(std::string &x, bool b)
 	{ write_string(x, b ? "true" : "false"); }
 
@@ -652,7 +651,7 @@ void DockManager::write_widget(std::string &x, Gtk::Widget* widget)
 	DockBook *book = dynamic_cast<DockBook*>(widget);
 	DockDialog *dialog = dynamic_cast<DockDialog*>(widget);
 
-	if (widget == NULL)
+	if (!widget)
 	{
 		return;
 	}
@@ -783,17 +782,17 @@ std::string DockManager::layout_from_template(const std::string &tpl, float dx, 
 	size_t pos_end = 0;
 	while(true)
 	{
-		pos_begin = tpl.find_first_of("%", pos_end);
+		pos_begin = tpl.find_first_of('%', pos_end);
 		if (pos_begin == std::string::npos)
 			{ res+=tpl.substr(pos_end); break; }
 		res+=tpl.substr(pos_end, pos_begin-pos_end);
 		pos_end = tpl.find_first_of("xyXY", pos_begin);
 		if (pos_end == std::string::npos) break;
-		float f = (float)strtol(tpl.c_str()+pos_begin+1, NULL, 10);
-		if (tpl[pos_end] == 'X') res += strprintf("%d", (int)roundf(dx+f*sx/100.f));
-		if (tpl[pos_end] == 'Y') res += strprintf("%d", (int)roundf(dy+f*sy/100.f));
-		if (tpl[pos_end] == 'x') res += strprintf("%d", (int)roundf(f*sx/100.f));
-		if (tpl[pos_end] == 'y') res += strprintf("%d", (int)roundf(f*sy/100.f));
+		float f = (float)strtol(tpl.c_str()+pos_begin+1, nullptr, 10);
+		if (tpl[pos_end] == 'X') res += synfig::strprintf("%d", (int)roundf(dx+f*sx/100.f));
+		if (tpl[pos_end] == 'Y') res += synfig::strprintf("%d", (int)roundf(dy+f*sy/100.f));
+		if (tpl[pos_end] == 'x') res += synfig::strprintf("%d", (int)roundf(f*sx/100.f));
+		if (tpl[pos_end] == 'y') res += synfig::strprintf("%d", (int)roundf(f*sy/100.f));
 		pos_end++;
 	}
 	return res;

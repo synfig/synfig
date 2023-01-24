@@ -2,21 +2,24 @@
 /*!	\file asyncrenderer.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -32,14 +35,11 @@
 
 #include "asyncrenderer.h"
 
-#include <ETL/clock>
-
+#include <synfig/clock.h>
 #include <synfig/context.h>
 #include <synfig/general.h>
 #include <synfig/target_scanline.h>
 #include <synfig/target_tile.h>
-#include <synfig/target_cairo.h>
-#include <synfig/target_cairo_tile.h>
 
 #include <gui/app.h>
 #include <gui/docks/dock_info.h>
@@ -50,8 +50,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -137,7 +135,7 @@ public:
 			sigc::hide_return(
 				sigc::bind(
 					sigc::mem_fun(*this, &AsyncTarget_Tile::sync_render_tile),
-					canvas, context_params, rect, tile_desc, (synfig::ProgressCallback*)NULL )),
+					canvas, context_params, rect, tile_desc, (synfig::ProgressCallback*)nullptr )),
 				true
 			);
 		assert(thread);
@@ -164,7 +162,7 @@ public:
 		return r;
 	}
 
-	virtual bool wait_render_tiles(ProgressCallback *cb=NULL)
+	virtual bool wait_render_tiles(ProgressCallback* cb = nullptr)
 	{
 		if(!alive_flag)
 			return false;
@@ -271,180 +269,6 @@ public:
 			end_time.assign_current_time();
 			end_time.add_microseconds(BOREDOM_TIMEOUT);
 
-			if(!tile_queue.empty() && alive_flag)
-			{
-				if(cond_tile_queue_empty.timed_wait(mutex,end_time))
-					break;
-			}
-			else
-				break;
-		}
-		Glib::Mutex::Lock lock(mutex);
-		if(!alive_flag)
-			return;
-		return warm_target->end_frame();
-	}
-};
-
-class AsyncTarget_Cairo_Tile : public synfig::Target_Cairo_Tile
-{
-public:
-	etl::handle<synfig::Target_Cairo_Tile> warm_target;
-	
-	class tile_t
-	{
-	public:
-		cairo_surface_t* surface;
-		int x,y;
-		tile_t(): surface(NULL), x(0), y(0)
-		{
-		}
-		tile_t(cairo_surface_t*& surface_,int x_, int y_)
-		{
-			if(surface_)
-				surface=cairo_surface_reference(surface_);
-			else
-				surface=surface_;
-			x=x_;
-			y=y_;
-		}
-		tile_t(const tile_t &other):
-		surface(cairo_surface_reference(other.surface)),
-		x(other.x),
-		y(other.y)
-		{
-		}
-		~tile_t()
-		{
-			if(surface)
-				cairo_surface_destroy(surface);
-		}
-	};
-	std::list<tile_t> tile_queue;
-	Glib::Mutex mutex;
-	
-#ifndef GLIB_DISPATCHER_BROKEN
-	Glib::Dispatcher tile_ready_signal;
-#endif
-	Glib::Cond cond_tile_queue_empty;
-	bool alive_flag;
-	
-	sigc::connection ready_connection;
-	
-public:
-	AsyncTarget_Cairo_Tile(etl::handle<synfig::Target_Cairo_Tile> warm_target):
-	warm_target(warm_target)
-	{
-		set_avoid_time_sync(warm_target->get_avoid_time_sync());
-		set_tile_w(warm_target->get_tile_w());
-		set_tile_h(warm_target->get_tile_h());
-		set_canvas(warm_target->get_canvas());
-		set_quality(warm_target->get_quality());
-		set_alpha_mode(warm_target->get_alpha_mode());
-		set_threads(warm_target->get_threads());
-		set_clipping(warm_target->get_clipping());
-		set_rend_desc(&warm_target->rend_desc());
-		alive_flag=true;
-#ifndef GLIB_DISPATCHER_BROKEN
-		ready_connection=tile_ready_signal.connect(sigc::mem_fun(*this,&AsyncTarget_Cairo_Tile::tile_ready));
-#endif
-	}
-	
-	~AsyncTarget_Cairo_Tile()
-	{
-		ready_connection.disconnect();
-	}
-	void set_dead()
-	{
-		Glib::Mutex::Lock lock(mutex);
-		alive_flag=false;
-	}
-	
-	virtual int next_tile(int& x, int& y)
-	{
-		if(!alive_flag)
-			return 0;
-		
-		return warm_target->next_tile(x,y);
-	}
-	
-	virtual int next_frame(Time& time)
-	{
-		if(!alive_flag)
-			return 0;
-		return warm_target->next_frame(time);
-	}
-	
-	virtual bool start_frame(synfig::ProgressCallback *cb=0)
-	{
-		if(!alive_flag)
-			return false;
-		return warm_target->start_frame(cb);
-	}
-	
-	virtual bool add_tile(cairo_surface_t* surface, int gx, int gy)
-	{
-		if(cairo_surface_status(surface))
-			return false;
-		if(!alive_flag)
-			return false;
-		Glib::Mutex::Lock lock(mutex);
-		tile_queue.push_back(tile_t(surface,gx,gy));
-		if(tile_queue.size()==1)
-		{
-#ifdef GLIB_DISPATCHER_BROKEN
-			ready_connection=Glib::signal_timeout().connect(
-					sigc::bind_return(
-							sigc::mem_fun(*this,&AsyncTarget_Cairo_Tile::tile_ready),
-							false
-							)
-							,0
-						);
-#else
-			tile_ready_signal();
-#endif
-		}
-		//cairo_surface_destroy(surface);
-		return alive_flag;
-	}
-	
-	void tile_ready()
-	{
-		Glib::Mutex::Lock lock(mutex);
-		if(!alive_flag)
-		{
-			tile_queue.clear();
-			cond_tile_queue_empty.signal();
-			return;
-		}
-		while(!tile_queue.empty() && alive_flag)
-		{
-			tile_t& tile(tile_queue.front());
-			
-//			if (getenv("SYNFIG_SHOW_TILE_OUTLINES"))
-//			{
-//				Color red(1,0,0);
-//				tile.surface.fill(red, 0, 0, 1, tile.surface.get_h());
-//				tile.surface.fill(red, 0, 0, tile.surface.get_w(), 1);
-//			}
-			
-			alive_flag=warm_target->add_tile(tile.surface,tile.x,tile.y);
-			
-			tile_queue.pop_front();
-		}
-		cond_tile_queue_empty.signal();
-	}
-	
-	virtual void end_frame()
-	{
-		while(alive_flag)
-		{
-			Glib::Mutex::Lock lock(mutex);
-			Glib::TimeVal end_time;
-			
-			end_time.assign_current_time();
-			end_time.add_microseconds(BOREDOM_TIMEOUT);
-			
 			if(!tile_queue.empty() && alive_flag)
 			{
 				if(cond_tile_queue_empty.timed_wait(mutex,end_time))
@@ -596,127 +420,6 @@ public:
 	}
 };
 
-class AsyncTarget_Cairo : public synfig::Target_Cairo
-{
-public:
-	etl::handle<synfig::Target_Cairo> warm_target;
-	
-	cairo_surface_t* surface;
-	ProgressCallback *callback;
-	
-	Glib::Mutex mutex;
-	
-#ifndef GLIB_DISPATCHER_BROKEN
-	Glib::Dispatcher frame_ready_signal;
-#endif
-	Glib::Cond cond_frame_queue_empty;
-	bool alive_flag;
-	bool ready_next;
-	sigc::connection ready_connection;
-	
-	
-public:
-	AsyncTarget_Cairo(etl::handle<synfig::Target_Cairo> warm_target):
-		warm_target(warm_target),
-		surface(),
-		callback(),
-		alive_flag(),
-		ready_next()
-	{
-		set_avoid_time_sync(warm_target->get_avoid_time_sync());
-		set_canvas(warm_target->get_canvas());
-		set_quality(warm_target->get_quality());
-		set_alpha_mode(warm_target->get_alpha_mode());
-		set_rend_desc(&warm_target->rend_desc());
-		alive_flag=true;
-#ifndef GLIB_DISPATCHER_BROKEN
-		ready_connection=frame_ready_signal.connect(sigc::mem_fun(*this,&AsyncTarget_Cairo::frame_ready));
-#endif
-	}
-	
-	~AsyncTarget_Cairo()
-	{
-		ready_connection.disconnect();
-	}
-	
-	virtual int next_frame(Time& time)
-	{
-		Glib::Mutex::Lock lock(mutex);
-		if(!alive_flag)
-			return 0;
-		return warm_target->next_frame(time);
-		
-	}
-	
-	void set_dead()
-	{
-		Glib::Mutex::Lock lock(mutex);
-		alive_flag=false;
-	}
-		
-	virtual bool put_surface(cairo_surface_t* s, ProgressCallback *cb)
-	{
-		{
-			Glib::Mutex::Lock lock(mutex);
-			surface=s;
-			callback=cb;
-			if(!alive_flag)
-				return false;
-			ready_next=false;
-			
-#ifdef GLIB_DISPATCHER_BROKEN
-			ready_connection=Glib::signal_timeout().connect(
-							sigc::bind_return(sigc::mem_fun(*this,&AsyncTarget_Cairo::frame_ready),false)
-											,0
-											);
-#else
-			frame_ready_signal();
-#endif
-		}
-		
-		Glib::TimeVal end_time;
-		
-		end_time.assign_current_time();
-		end_time.add_microseconds(BOREDOM_TIMEOUT);
-		
-		while(alive_flag && !ready_next)
-		{
-			Glib::Mutex::Lock lock(mutex);
-			if(cond_frame_queue_empty.timed_wait(mutex, end_time))
-				break;
-		}
-		return true;
-	}
-	
-	void frame_ready()
-	{
-		Glib::Mutex::Lock lock(mutex);
-		if(alive_flag)
-			alive_flag=warm_target->put_surface(surface, callback);
-		cond_frame_queue_empty.signal();
-		ready_next=true;
-		
-		int n_total_frames_to_render = warm_target->desc.get_frame_end()        //120
-		                             - warm_target->desc.get_frame_start()      //0
-		                             + 1;                                       //->121
-		int current_rendered_frames_count = warm_target->curr_frame_;
-		
-		float r = (float) current_rendered_frames_count 
-		        / (float) n_total_frames_to_render;
-		
-		App::dock_info_->set_render_progress(r);
-	}
-
-	virtual bool obtain_surface(cairo_surface_t*& s)
-	{
-		Glib::Mutex::Lock lock(mutex);
-		if(!alive_flag)
-			return false;
-		return warm_target->obtain_surface(s);
-	}
-
-};
-
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
@@ -750,26 +453,6 @@ AsyncRenderer::AsyncRenderer(etl::handle<synfig::Target> target_,synfig::Progres
 
 		signal_stop_.connect(sigc::mem_fun(*wrap_target,&AsyncTarget_Scanline::set_dead));
 
-		target=wrap_target;
-	}
-	else if(auto cast_target = etl::handle<synfig::Target_Cairo_Tile>::cast_dynamic(target_))
-	{
-		etl::handle<AsyncTarget_Cairo_Tile> wrap_target(
-			new AsyncTarget_Cairo_Tile(cast_target)
-		);
-		
-		signal_stop_.connect(sigc::mem_fun(*wrap_target,&AsyncTarget_Cairo_Tile::set_dead));
-		
-		target=wrap_target;
-	}
-	else if(auto cast_target = etl::handle<synfig::Target_Cairo>::cast_dynamic(target_))
-	{
-		etl::handle<AsyncTarget_Cairo> wrap_target(
-			new AsyncTarget_Cairo(cast_target)
-		);
-		
-		signal_stop_.connect(sigc::mem_fun(*wrap_target,&AsyncTarget_Cairo::set_dead));
-		
 		target=wrap_target;
 	}
 }
@@ -903,13 +586,13 @@ AsyncRenderer::render_target()
 #endif
 		}
 	} catch (std::runtime_error &err) {
-		error_str = std::string(_("AsynRenderer: ")) + _("runtime error: ") + err.what();
+		error_str = std::string(_("AsyncRenderer: ")) + _("runtime error: ") + err.what();
 	} catch (std::exception &ex) {
-		error_str = std::string(_("AsynRenderer: ")) + _("exception: ") + ex.what();
+		error_str = std::string(_("AsyncRenderer: ")) + _("exception: ") + ex.what();
 	} catch (std::string &str) {
-		error_str = std::string(_("AsynRenderer: ")) + _("string exception: ") + str;
+		error_str = std::string(_("AsyncRenderer: ")) + _("string exception: ") + str;
 	} catch (...) {
-		error_str = std::string(_("AsynRenderer: ")) + _("internal error: ") + _("some exception has been thrown while rendering");
+		error_str = std::string(_("AsyncRenderer: ")) + _("internal error: ") + _("some exception has been thrown while rendering");
 	}
 
 	if (!error_str.empty()) {

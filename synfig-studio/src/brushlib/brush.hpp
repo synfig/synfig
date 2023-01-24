@@ -90,7 +90,7 @@ public:
     for (int i=0; i<BRUSH_SETTINGS_COUNT; i++) {
       delete settings[i];
     }
-    g_rand_free (rng); rng = NULL;
+    g_rand_free(rng); rng = nullptr;
   }
 
   void reset()
@@ -325,7 +325,7 @@ private:
       wrap = 1.0 + settings_value[BRUSH_STROKE_HOLDTIME];
       if (states[STATE_STROKE] > wrap) {
         if (wrap > 9.9 + 1.0) {
-          // "inifinity", just hold stroke somewhere >= 1.0
+          // "infinity", just hold stroke somewhere >= 1.0
           states[STATE_STROKE] = 1.0;
         } else {
           states[STATE_STROKE] = fmodf(states[STATE_STROKE], wrap);
@@ -615,7 +615,7 @@ public:
 
       tilt_ascension = 180.0*atan2(-xtilt, ytilt)/M_PI;
       float e;
-      if (abs(xtilt) > abs(ytilt)) {
+	  if (std::fabs(xtilt) > std::fabs(ytilt)) {
         e = sqrt(1+ytilt*ytilt);
       } else {
         e = sqrt(1+xtilt*xtilt);

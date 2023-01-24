@@ -2,21 +2,24 @@
 /*!	\file layer_motionblur.cpp
 **	\brief Implementation of the "Motion Blur" layer
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -32,18 +35,13 @@
 
 #include "layer_motionblur.h"
 
-#include <synfig/general.h>
 #include <synfig/localization.h>
 
-#include <synfig/canvas.h>
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
-#include <synfig/renddesc.h>
 #include <synfig/string.h>
-#include <synfig/surface.h>
 #include <synfig/time.h>
 #include <synfig/value.h>
-#include <synfig/valuenode.h>
 
 #include <synfig/rendering/common/task/taskblend.h>
 
@@ -52,13 +50,11 @@
 /* === U S I N G =========================================================== */
 
 using namespace synfig;
-using namespace etl;
-using namespace std;
 
 /* === G L O B A L S ======================================================= */
 
 SYNFIG_LAYER_INIT(Layer_MotionBlur);
-SYNFIG_LAYER_SET_NAME(Layer_MotionBlur,"MotionBlur"); // todo: use motion_blur
+SYNFIG_LAYER_SET_NAME(Layer_MotionBlur,"motion_blur");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_MotionBlur,N_("Motion Blur"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_MotionBlur,N_("Blurs"));
 SYNFIG_LAYER_SET_VERSION(Layer_MotionBlur,"0.1");
@@ -178,7 +174,7 @@ Layer_MotionBlur::build_rendering_task_vfunc(Context context) const
 		if (fabs(subsample_end) < precision) ++samples;
 	}
 
-	vector<Real> scales(samples, 0.0);
+	std::vector<Real> scales(samples, 0.0);
 	Real sum = 0.0;
 	for(int i = 0; i < samples; i++)
 	{

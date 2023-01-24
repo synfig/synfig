@@ -2,22 +2,25 @@
 /*!	\file layertree.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2011 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -74,7 +77,8 @@ bool LayerTree::on_key_press_event(GdkEventKey* event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	switch (event->keyval) {
-		case GDK_KEY_Delete: {
+		case GDK_KEY_Delete:
+		case GDK_KEY_KP_Delete: {
 			LayerList layers = get_selected_layers();
 
 			if (layers.size() == 0) return true; // nothing to do
@@ -142,8 +146,8 @@ LayerTree::LayerTree()
 
 LayerTree::~LayerTree()
 {
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
-		synfig::info("LayerTree::~LayerTree(): Deleted");
+	DEBUG_LOG("SYNFIG_DEBUG_DESTRUCTORS",
+		"LayerTree::~LayerTree(): Deleted");
 }
 
 void
@@ -161,10 +165,11 @@ LayerTree::create_layer_tree()
 	}
 
 	{	// --- I C O N --------------------------------------------------------
-		int index;
 		// Set up the icon cell-renderer
-		index=layer_tree_view().append_column(_("Icon"),layer_model.icon);
-		Gtk::TreeView::Column* column = layer_tree_view().get_column(index-1);
+		Gtk::CellRendererPixbuf* pixbuf_cell_renderer = manage(new Gtk::CellRendererPixbuf());
+		Gtk::TreeViewColumn* column = manage(new Gtk::TreeViewColumn(_("Icon"), *pixbuf_cell_renderer));
+		layer_tree_view().append_column(*column);
+		column->add_attribute(*pixbuf_cell_renderer, "icon_name", layer_model.icon_name);
 		layer_tree_view().set_expander_column(*column);
 	}
 	{	// --- N A M E --------------------------------------------------------
@@ -199,6 +204,12 @@ LayerTree::create_layer_tree()
 		column_z_depth->set_clickable();
 
 		column_z_depth->set_sort_column(layer_model.z_depth);
+		auto cell_renderer = layer_tree_view().get_column_cell_renderer(index-1);
+
+		column_z_depth->set_cell_data_func(*cell_renderer, (sigc::track_obj([this](Gtk::CellRenderer* cell, const Gtk::TreeIter& it){
+			Glib::ustring text = remove_trailing_zeroes(std::to_string(it->get_value(layer_model.z_depth)));
+			dynamic_cast<Gtk::CellRendererText*>(cell)->property_text()=text;
+		}, *this)));
 	}
 
 	layer_tree_view().set_enable_search(true);
@@ -246,7 +257,7 @@ LayerTree::create_param_tree()
 		// Set up the icon cell-renderer
 		Gtk::CellRendererPixbuf* icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
 		column->pack_start(*icon_cellrenderer,false);
-		column->add_attribute(icon_cellrenderer->property_pixbuf(), param_model.icon);
+		column->add_attribute(*icon_cellrenderer, "icon_name", param_model.icon_name);
 
 		// Pack the label into the column
 		//column->pack_start(layer_model.label,true);
@@ -261,7 +272,7 @@ LayerTree::create_param_tree()
 		// Set up the value-node icon cell-renderer to be on the far right
 		Gtk::CellRendererPixbuf* valuenode_icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
 		column->pack_end(*valuenode_icon_cellrenderer,false);
-		valuenode_icon_cellrenderer->property_pixbuf()=Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-value_node"),icon_size);
+		valuenode_icon_cellrenderer->property_icon_name() = "valuenode_icon";
 		column->add_attribute(valuenode_icon_cellrenderer->property_visible(), param_model.is_shared);
 
 		// Finish setting up the column
@@ -305,13 +316,13 @@ LayerTree::create_param_tree()
 		// Set up the interpolation icon cell-renderer to be on the far right
 		Gtk::CellRendererPixbuf* interpolation_icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
 		column->pack_end(*interpolation_icon_cellrenderer,false);
-		column->add_attribute(interpolation_icon_cellrenderer->property_pixbuf(),param_model.interpolation_icon);
+		column->add_attribute(*interpolation_icon_cellrenderer, "icon_name", param_model.interpolation_icon_name);
 		column->add_attribute(interpolation_icon_cellrenderer->property_visible(), param_model.interpolation_icon_visible);
 
 		// Set up the static icon cell-renderer to be on the far right
 		Gtk::CellRendererPixbuf* static_icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
 		column->pack_end(*static_icon_cellrenderer,false);
-		static_icon_cellrenderer->property_pixbuf()=Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-valuenode_forbidanimation"),icon_size);
+		static_icon_cellrenderer->property_icon_name() = "valuenode_forbidanimation_icon";
 		column->add_attribute(static_icon_cellrenderer->property_visible(), param_model.is_static);
 
 		// Finish setting up the column
@@ -410,14 +421,8 @@ LayerTree::select_layer(synfig::Layer::Handle layer)
 			iter=sorted_layer_tree_store_->convert_child_iter_to_iter(iter);
 
 		Gtk::TreePath path(iter);
-		for(size_t i=path.size();i;i--)
-		{
-			path=Gtk::TreePath(iter);
-			for(size_t j=i;j;j--)
-				path.up();
-			layer_tree_view().expand_row(path,false);
-		}
-		layer_tree_view().scroll_to_row(Gtk::TreePath(iter));
+		layer_tree_view().expand_to_path(path);
+		layer_tree_view().scroll_to_row(path);
 		layer_tree_view().get_selection()->select(iter);
 	}
 }

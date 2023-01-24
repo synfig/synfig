@@ -2,20 +2,23 @@
 /*!	\file about.cpp
 **	\brief About dialog implementation
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2008 Paul Wise
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -33,6 +36,8 @@
 
 // This is generated at make time from .git or autorevision.conf
 #include <autorevision.h>
+
+#include <ctime>
 
 #include <gtkmm/image.h>
 
@@ -81,7 +86,7 @@ About::About()
 	set_website("https://synfig.org/");
 	set_website_label(_("Visit the Synfig website"));
 
-	set_copyright(_("Copyright (c) 2001-2021\nSynfig developers & contributors"));
+	set_copyright(_("Copyright (c) 2001-2023\nSynfig developers & contributors"));
 	Glib::ustring license =
 		"This program is free software; you can redistribute it and/or modify "
 		"it under the terms of the GNU General Public License as published by "
@@ -99,48 +104,121 @@ About::About()
 	set_license(license);
 	set_wrap_license(true);
 
-	std::vector<Glib::ustring> authors;
-	authors.push_back(_("Original developers:"));
-	authors.push_back("");
-	authors.push_back("Robert B. Quattlebaum Jr (darco)");
-	authors.push_back("Adrian Bentley");
-	authors.push_back("");
-	authors.push_back(_("Contributors:"));
-	authors.push_back("");
-	authors.push_back("Adrian Winchell (SnapSilverlight)");
-	authors.push_back("Andreas Jochens");
-	authors.push_back("Brendon Higgins");
-	authors.push_back("Carlos López González (genete)");
-	authors.push_back("Carlos A. Sosa Navarro");
-	authors.push_back("caryoscelus");
-	authors.push_back("Chris Moore (dooglus)");
-	authors.push_back("Chris Norman (pixelgeek)");
-	authors.push_back("Cyril Brulebois (KiBi)");
-	authors.push_back("Daniel Fort");
-	authors.push_back("Daniel Hornung (rubikcube)");
-	authors.push_back("David Roden (Bombe)");
-	authors.push_back("Denis Zdorovtsov (trizer)");
-	authors.push_back("Dmitriy Pomerantsev (Atrus)");
-	authors.push_back("Douglas Lau");
-	authors.push_back("Evgenij Katunov");
-	authors.push_back("Gerald Young (Yoyobuae)");
-	authors.push_back("Gerco Ballintijn");
-	authors.push_back("IL'dar AKHmetgaleev (AkhIL)");
-	authors.push_back("Ivan Mahonin");
-	authors.push_back("Jerome Blanchi (d.j.a.y.)");
-	authors.push_back("Konstantin Dmitriev (zelgadis)");
-	authors.push_back("Luka Pravica");
-	authors.push_back("Nikita Kitaev (nikitakit)");
-	authors.push_back("Martin Michlmayr (tbm)");
-	authors.push_back("Max May (Permutatrix)");
-	authors.push_back("Miguel Gea Milvaques (xerakko)");
-	authors.push_back("Paul Wise (pabs)");
-	authors.push_back("Ralf Corsepius");
-	authors.push_back("Ramon Miranda");
-	authors.push_back("Ray Frederikson");
-	authors.push_back("Timo Paulssen (timonator)");
-	authors.push_back("Yu Chen (jcome)");
-	authors.push_back("Yue Shi Lai");
+	std::vector<Glib::ustring> authors = {
+		{_("Original developers:")},
+		{""},
+		{"Robert B. Quattlebaum Jr (darco)"},
+		{"Adrian Bentley"},
+		{""},
+		{_("Contributors:")},
+		{""},
+		{"Abhay Raj Singh"},
+		{"Aditya Abhiram"},
+		{"Adrian Winchell (SnapSilverlight)"},
+		{"Alexandre Prokoudine"},
+		{"Alyssa Rosenzweig"},
+		{"Andreas Jochens"},
+		{"Androbin"},
+		{"Anish Gulati"},
+		{"Ankit Kumar Dwivedi"},
+		{"Anshita Vishwa"},
+		{"Artem Konoplin (ice0)"},
+		{"Arya Bhardwaj"},
+		{"AYESDIE"},
+		{"Ayush Chamoli"},
+		{"Badri Sunderarajan (Hippo)"},
+		{"Benjamin N. Summerton"},
+		{"Binyamin Aron Green"},
+		{"BobSynfig"},
+		{"Brendon Higgins"},
+		{"bth"},
+		{"Carl Kruk"},
+		{"Carlos A. Sosa Navarro"},
+		{"Carlos López González (genete)"},
+		{"caryoscelus"},
+		{"Charlie Murphy"},
+		{"Chris London"},
+		{"Chris Moore (dooglus)"},
+		{"Chris Norman (pixelgeek)"},
+		{"Cillian de Róiste"},
+		{"Cyril Brulebois (KiBi)"},
+		{"Daniel Fort"},
+		{"Daniel Hornung (rubikcube)"},
+		{"David Roden (Bombe)"},
+		{"Denis Zdorovtsov (trizer)"},
+		{"DhairyaBahl"},
+		{"Diego Barrios Romero (eldruin)"},
+		{"Dmitriy Pomerantsev (Atrus)"},
+		{"Dmitry Razumovsky"},
+		{"Dmitry Smirnov"},
+		{"Douglas Lau"},
+		{"Eoin Shanaghy"},
+		{"eroen"},
+		{"eszlari"},
+		{"Evgenij Katunov"},
+		{"fardragon"},
+		{"Firas Hanife (FirasH)"},
+		{"flurick"},
+		{"frijol"},
+		{"Gerald Young (Yoyobuae)"},
+		{"Gerco Ballintijn"},
+		{"GinPachi"},
+		{"Hesham Essam"},
+		{"Igor Montagner"},
+		{"IL'dar AKHmetgaleev (AkhIL)"},
+		{"Ivan Mahonin (blackwarthog)"},
+		{"Jerome Blanchi (d.j.a.y.)"},
+		{"Jess"},
+		{"Joshua Evan Arijanto"},
+		{"Keyikedalube Ndang"},
+		{"Konstantin Dmitriev (zelgadis)"},
+		{"Kristi Isakog"},
+		{"lenixlobo"},
+		{"luboshnikov"},
+		{"Luka Pravica"},
+		{"luz.paz"},
+		{"Marc Weber"},
+		{"Marcelo Dias"},
+		{"Martin Michlmayr (tbm)"},
+		{"Matthew White"},
+		{"Mattia Basaglia"},
+		{"Max May (Permutatrix)"},
+		{"Maximilian Federle"},
+		{"Maxwell Paul Brickner"},
+		{"Miguel Gea Milvaques (xerakko)"},
+		{"mohamedAdhamc"},
+		{"Moritz Grosch (LittleFox)"},
+		{"Natyym"},
+		{"Nick Anderson"},
+		{"Nikita Kitaev (nikitakit)"},
+		{"Pascal Schmid"},
+		{"Paul Wise (pabs)"},
+		{"Peter Eszlari"},
+		{"Rahmanu Hermawan"},
+		{"Rakesh Roshan"},
+		{"Ralf Corsepius"},
+		{"Ramon Miranda"},
+		{"Ray Frederikson"},
+		{"rChen10"},
+		{"Reshabh Sharma"},
+		{"Rock Okechukwu"},
+		{"rockyhandsome1"},
+		{"Rodolfo Ribeiro Gomes (rodolforg)"},
+		{"Saurabh Chand Ramola"},
+		{"Scott Hardin"},
+		{"SushantAA"},
+		{"Sylvain Leroux"},
+		{"Timo Paulssen (timonator)"},
+		{"Tommy Nguyen"},
+		{"Trang Nguyen"},
+		{"Veer Metri"},
+		{"Voldracarno Draconor"},
+		{"wstaelens"},
+		{"xerakko"},
+		{"Yash Kapoor"},
+		{"Yu Chen (jcome)"},
+		{"Yue Shi Lai"},
+	};
 	set_authors(authors);
 
 	std::vector<Glib::ustring> artists;
@@ -232,31 +310,48 @@ About::About()
 	std::string extra_info = get_comments() + "\n";
 
 	#ifdef DEVEL_VERSION
-		extra_info += etl::strprintf(_("\nDevelopment version:\n%s\n"),DEVEL_VERSION);
+		extra_info += synfig::strprintf(_("\nDevelopment version:\n%s\n"),DEVEL_VERSION);
 	#endif
 
 	extra_info += "\n";
+	{
+		const int max_date_length = 50;
+		char date_str[max_date_length];
 
-	extra_info += etl::strprintf(_("Built on %s" /* at %s */ "\n\n"), __DATE__ /* , __TIME__ */ );
+		// https://reproducible-builds.org/specs/source-date-epoch/
+		if (char* source_date_epoch = getenv("SOURCE_DATE_EPOCH")) {
+			std::istringstream iss(source_date_epoch);
+			std::time_t t;
+			iss >> t;
+			if (iss.fail()
+			    || !iss.eof()
+			    || !std::strftime(date_str, sizeof(date_str), "%x", std::localtime(&t))) {
+				    std::strncpy(date_str, _("Unknown build date"), max_date_length-1);
+			}
+		} else
+			std::strncpy(date_str, __DATE__, max_date_length-1);
 
-	extra_info += etl::strprintf(_("Built with:\n"));
-	extra_info += etl::strprintf(_("ETL %s\n"), ETL_VERSION);
-	extra_info += etl::strprintf(_("Synfig API %s\n"), SYNFIG_VERSION);
-	extra_info += etl::strprintf(_("Synfig library %d\n"), SYNFIG_LIBRARY_VERSION);
-	extra_info += etl::strprintf(_("GTK+ %d.%d.%d\n"), GTK_MAJOR_VERSION, GTK_MINOR_VERSION, GTK_MICRO_VERSION);
+		extra_info += synfig::strprintf(_("Built on %s\n\n"), date_str );
+	}
+
+	extra_info += synfig::strprintf(_("Built with:\n"));
+	extra_info += synfig::strprintf(_("ETL %s\n"), ETL_VERSION);
+	extra_info += synfig::strprintf(_("Synfig API %s\n"), SYNFIG_VERSION);
+	extra_info += synfig::strprintf(_("Synfig library %d\n"), SYNFIG_LIBRARY_VERSION);
+	extra_info += synfig::strprintf(_("GTK+ %d.%d.%d\n"), GTK_MAJOR_VERSION, GTK_MINOR_VERSION, GTK_MICRO_VERSION);
 	#if defined(__clang__)
-		extra_info += etl::strprintf(_("Apple LLVM version %s\n"), __clang_version__);
+		extra_info += synfig::strprintf(_("Apple LLVM version %s\n"), __clang_version__);
 	#elif defined(__GNUC__) || defined(__GNUG__)
-		extra_info += etl::strprintf(_("GNU G++ %d.%d.%d\n"),__GNUC__,__GNUC_MINOR__,__GNUC_PATCHLEVEL__);
+		extra_info += synfig::strprintf(_("GNU G++ %d.%d.%d\n"),__GNUC__,__GNUC_MINOR__,__GNUC_PATCHLEVEL__);
 	#elif defined(_MSC_VER)
-		extra_info += etl::strprintf("Microsoft Visual C/C++ (%d)\n", _MSC_VER);
+		extra_info += synfig::strprintf("Microsoft Visual C/C++ (%d)\n", _MSC_VER);
 	#endif
 
 	extra_info += "\n";
 
-	extra_info += etl::strprintf(_("Using:\n"));
-	extra_info += etl::strprintf(_("Synfig %s\n"), synfig::get_version());
-	extra_info += etl::strprintf(_("GTK+ %d.%d.%d"),gtk_major_version,gtk_minor_version,gtk_micro_version);
+	extra_info += synfig::strprintf(_("Using:\n"));
+	extra_info += synfig::strprintf(_("Synfig %s\n"), synfig::get_version());
+	extra_info += synfig::strprintf(_("GTK+ %d.%d.%d"),gtk_major_version,gtk_minor_version,gtk_micro_version);
 
 	#ifdef _DEBUG
 		extra_info += "\n\nDEBUG BUILD";

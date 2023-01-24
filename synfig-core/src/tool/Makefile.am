@@ -1,5 +1,3 @@
-# $Id$
-
 MAINTAINERCLEANFILES = \
 	Makefile.in
 
@@ -8,9 +6,7 @@ EXTRA_DIST = \
 
 AM_CPPFLAGS = \
 	-I$(top_builddir) \
-	-I$(top_srcdir)/src \
-	@BOOST_CPPFLAGS@
-
+	-I$(top_srcdir)/src
 
 bin_PROGRAMS = \
 	synfig
@@ -33,8 +29,7 @@ synfig_SOURCES = \
 
 synfig_LDADD = \
 	../synfig/libsynfig.la \
-	@SYNFIG_LIBS@ \
-	@BOOST_LDFLAGS@
+	@SYNFIG_LIBS@
 
 synfig_CXXFLAGS = \
 	@SYNFIG_CFLAGS@

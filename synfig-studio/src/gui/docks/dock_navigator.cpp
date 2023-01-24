@@ -2,23 +2,26 @@
 /*!	\file dock_navigator.cpp
 **	\brief Dock Nagivator File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
 **  Copyright (c) 2011 Nikita Kitaev
 **  ......... ... 2018 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -67,17 +70,23 @@ Widget_NavView::Widget_NavView():
 	adj_zoom(Gtk::Adjustment::create(0, -4, 4, 1, 2)),
 	scrolling(0)
 {
-	//zooming stuff
-	zoom_print.set_size_request(40,-1);
-	Gtk::HScale *hs = manage(new Gtk::HScale(adj_zoom));
+	drawto.set_hexpand();
+	drawto.set_vexpand();
+
+	Gtk::Separator *sep = manage(new Gtk::Separator());
+
+	zoom_print.set_size_request(60,-1);
+	zoom_print.set_margin_start(5);
+	zoom_print.set_margin_end(5);
+
+	Gtk::Scale *hs = manage(new Gtk::Scale(adj_zoom));
 	hs->set_draw_value(false);
+	hs->set_hexpand();
 
-	Gtk::HSeparator *sep = manage(new Gtk::HSeparator());
-
-	attach(drawto,     0, 4, 0, 1);
-	attach(*sep,       0, 4, 1, 2, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
-	attach(zoom_print, 0, 1, 2, 3, Gtk::SHRINK|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
-	attach(*hs,        1, 4, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK|Gtk::FILL);
+	attach(drawto,     0, 0, 2, 1);
+	attach(*sep,       0, 1, 2, 1);
+	attach(zoom_print, 0, 2, 1, 1);
+	attach(*hs,        1, 2, 1, 1);
 	show_all();
 
 	adj_zoom->signal_value_changed().connect(sigc::mem_fun(*this, &Widget_NavView::on_number_modify));
@@ -223,7 +232,7 @@ Widget_NavView::on_number_modify()
 	// map: -4,4 -> small number,1600 with 100 at 0
 	// f(x) = 100*2^x
 	double z = pow(2.0, adj_zoom->get_value());
-	zoom_print.set_text(etl::strprintf("%.1f%%", z*100.0));
+	zoom_print.set_text(synfig::strprintf("%.1f%%", z*100.0));
 	if(get_canvas_view() && z != get_canvas_view()->get_work_area()->get_zoom()) {
 		struct Lock {
 			int &i;
@@ -296,7 +305,7 @@ studio::Widget_NavView::on_mouse_event(GdkEvent * e)
 // Navigator Dock Definitions
 
 Dock_Navigator::Dock_Navigator():
-	Dock_CanvasSpecific("navigator", _("Navigator"),Gtk::StockID("synfig-navigator"))
+	Dock_CanvasSpecific("navigator", _("Navigator"),"navigator_icon")
 {
 	add(navview);
 }

@@ -2,21 +2,24 @@
 /*!	\file dockbook.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -94,7 +97,7 @@ DockBook::clear()
 	// i didn't know why this happens, possibly because clear() is called from destructor
 	// and 'this' is already deleted. Or, this function maybe never work right.
 	// So here quick-hack again. Btw, as you can see from commented code later newly created 
-	// dockbook is works fine, so this situation is reqired more detailed investigation.
+	// dockbook is works fine, so this situation is required more detailed investigation.
 	if (!GTK_IS_NOTEBOOK (this)) return; // because we always fail if 'this' is not notebook
 
 	/*Gtk::Notebook note;
@@ -137,7 +140,7 @@ DockBook::add(Dockable& dockable, int position)
 
 	refresh_tab(&dockable);
 
-	dockable.signal_stock_id_changed().connect(
+	dockable.signal_icon_changed().connect(
 		sigc::bind(
 			sigc::mem_fun(
 				*this,
@@ -260,6 +263,13 @@ DockBook::tab_button_pressed(GdkEventButton* event, Dockable* dockable)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	CanvasView *canvas_view = dynamic_cast<CanvasView*>(dockable);
+
+	// Handle middle mouse click event first before showing the canvas
+	if (event->button == 2 && canvas_view) {
+		canvas_view->close_view();
+		return true;
+	}
+
 	if (canvas_view && canvas_view != App::get_selected_canvas_view())
 		App::set_selected_canvas_view(canvas_view);
 
@@ -269,12 +279,14 @@ DockBook::tab_button_pressed(GdkEventButton* event, Dockable* dockable)
 	Gtk::Menu *tabmenu=manage(new class Gtk::Menu());
 	tabmenu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), tabmenu));
 
-	Gtk::MenuItem *item = manage(new Gtk::MenuItem(_("Undock panel")));
-	item->signal_activate().connect(sigc::mem_fun(*dockable, &Dockable::detach_to_pointer));
-	item->show();
-	tabmenu->append(*item);
+	if (get_n_pages() > 1 || (get_parent() && get_parent()->get_children().size() > 1)) {
+		Gtk::MenuItem *item = manage(new Gtk::MenuItem(_("Undock panel")));
+		item->signal_activate().connect(sigc::mem_fun(*dockable, &Dockable::detach_to_pointer));
+		item->show();
+		tabmenu->append(*item);
+	}
 
-	item = manage(new Gtk::ImageMenuItem(Gtk::StockID("gtk-close")));
+	Gtk::MenuItem *item = manage(new Gtk::ImageMenuItem(Gtk::StockID("gtk-close")));
 	item->signal_activate().connect(
 		sigc::bind(sigc::ptr_fun(&DockManager::remove_widget_by_pointer_recursive), dockable) );
 	item->show();
@@ -289,7 +301,7 @@ DockBook::tab_button_pressed(GdkEventButton* event, Dockable* dockable)
 void
 DockBook::on_switch_page(Gtk::Widget* page, guint page_num)
 {
-	if (page != NULL && this->page_num(*page)) {
+	if (page && this->page_num(*page) != -1) {
 		CanvasView *canvas_view = dynamic_cast<CanvasView*>(page);
 		if (canvas_view && canvas_view != App::get_selected_canvas_view())
 			App::set_selected_canvas_view(canvas_view);

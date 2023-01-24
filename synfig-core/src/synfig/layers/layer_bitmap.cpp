@@ -2,21 +2,24 @@
 /*!	\file layer_bitmap.cpp
 **	\brief Template Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2012-2013 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -30,8 +33,6 @@
 #	include <config.h>
 #endif
 
-#include <ETL/misc>
-
 #include "layer_bitmap.h"
 
 #include <synfig/time.h>
@@ -41,6 +42,7 @@
 #include <synfig/context.h>
 #include <synfig/time.h>
 #include <synfig/color.h>
+#include <synfig/misc.h>
 #include <synfig/surface.h>
 #include <synfig/renddesc.h>
 #include <synfig/target.h>
@@ -59,8 +61,6 @@
 /* === U S I N G =========================================================== */
 
 using namespace synfig;
-using namespace std;
-using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
@@ -188,6 +188,12 @@ Layer_Bitmap::get_param_vocab()const
 synfig::Layer::Handle
 Layer_Bitmap::hit_check(synfig::Context context, const synfig::Point &pos)const
 {
+	bool check_myself_first;
+	auto layer = basic_hit_check(context, pos, check_myself_first);
+
+	if (!check_myself_first)
+		return layer;
+
 	Point tl(param_tl.get(Point()));
 	Point br(param_br.get(Point()));
 	Point surface_pos;
@@ -220,22 +226,6 @@ synfig::Layer_Bitmap::filter(Color& x)const
 	}
 	return x;
 }
-
-inline
-const CairoColor&
-synfig::Layer_Bitmap::filter(CairoColor& x)const
-{
-	Real gamma_adjust(param_gamma_adjust.get(Real()));
-	if(gamma_adjust!=1.0)
-	{
-		x.set_r(powf((float)(x.get_r()/CairoColor::range),gamma_adjust)*CairoColor::range);
-		x.set_g(powf((float)(x.get_g()/CairoColor::range),gamma_adjust)*CairoColor::range);
-		x.set_b(powf((float)(x.get_b()/CairoColor::range),gamma_adjust)*CairoColor::range);
-		x.set_a(powf((float)(x.get_a()/CairoColor::range),gamma_adjust)*CairoColor::range);
-	}
-	return x;
-}
-
 
 Color
 synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
@@ -332,8 +322,8 @@ synfig::Layer_Bitmap::get_color(Context context, const Point &pos)const
 				case 0:	// Nearest Neighbor
 				default:
 					{
-						int x(min(w-1,max(0,round_to_int(surface_pos[0]))));
-						int y(min(h-1,max(0,round_to_int(surface_pos[1]))));
+						int x(synfig::clamp(round_to_int(surface_pos[0]), 0, w-1));
+						int y(synfig::clamp(round_to_int(surface_pos[1]), 0, h-1));
 						ret= surface[y][x];
 					}
 				break;

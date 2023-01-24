@@ -13,48 +13,15 @@ MacOS.
 
 https://synfig.org/
 
-[![Build Status](https://travis-ci.com/synfig/synfig.svg?branch=master)](https://travis-ci.com/synfig/synfig)
+[![Build Status](https://travis-ci.com/synfig/synfig.svg?branch=master)](https://app.travis-ci.com/synfig/synfig)
 [![GitHub Actions](https://github.com/synfig/synfig/workflows/Synfig%20CI/badge.svg?branch=master)](https://github.com/synfig/synfig/actions)
 [![Windows Build status](https://img.shields.io/appveyor/ci/synfig/synfig/master.svg?label=Windows%20build)](https://ci.appveyor.com/project/Synfig/synfig/branch/master)
 
 Installing
 ----------
 
-#### Debian/Ubuntu
-1. Download the AppImage file from the website.
-2. Left-click on the file and select `properties`. Navigate to `permissions` and check the box that says `Allow executing file as program`. Finally, run the  file.
-
-For more information see https://discourse.appimage.org/t/how-to-make-an-appimage-executable/80.
-
-#### Windows
-1. Download the `.exe` file from the website.
-2. Run the file. A wizard will then guide you through the rest of the installation.
-
-#### MacOS
-1. Download the `.dmg` file from the website.
-2. Drag the file into your applications directory, then run it.
-
-If you get an error message like "can't be opened because it comes from a non identified developer", then do the following:
-
-1. Locate the Synfig app in Finder (don’t use Launchpad to do this - Launchpad doesn't allow you to access the shortcut menu)
-2. Control-click the app icon, choose "Open" from the shortcut menu.
-3. Click Open.
-
-The app is saved as an exception to your security settings, and you can open it in the future by double-clicking it just as you can any registered app.
-
-> **NOTE**
-> 
-> You can also grant an exception for a blocked app by clicking the “Open Anyway” button in the General pane of Security & Privacy preferences. This button is available for about an hour after you try to open the app. To open this pane, choose Apple menu > System Preferences, click Security & Privacy, then click General.
-
-
-For more details please refer to this [page](https://support.apple.com/kb/PH25088?locale=en_US)
-
-#### Building from source
-
-See instructions for installing dependencies and building using autotools/make or CMake [here](https://synfig-docs-dev.readthedocs.io/en/latest/building/Building%20Synfig.html)
-
-If you have previous Synfig build installed in system path (e.g. `/usr/local/`),
-you are recommended to uninstall that.
+* [Installation instructions for Windows, Linux, MacOS packages](https://synfig.readthedocs.io/en/latest/installation.html)
+* [Building and installing from source](https://synfig-docs-dev.readthedocs.io/en/latest/building/Building%20Synfig.html)
 
 ## Credits
 
@@ -88,4 +55,4 @@ Support this project with your organization. Your logo will show up here with a 
 
 ## License
 
-See the [LICENSE](https://github.com/synfig/synfig/blob/master/LICENSE) file.
+This project is licensed under the [GNU General Public License v3.0](https://github.com/synfig/synfig/blob/master/LICENSE).

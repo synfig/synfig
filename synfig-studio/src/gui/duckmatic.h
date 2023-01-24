@@ -2,22 +2,25 @@
 /*!	\file duckmatic.h
 **	\brief Template Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **  Copyright (c) 2011 Nikita Kitaev
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -29,13 +32,13 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/smart_ptr>
 #include <ETL/handle>
 
 #include <gui/duck.h>
 
 #include <list>
 #include <map>
+#include <memory>
 #include <set>
 #include <sigc++/sigc++.h>
 
@@ -129,7 +132,7 @@ class Duckmatic
 
 public:
 
-	typedef std::map<synfig::GUID,etl::smart_ptr<synfig::Point> > DuckDataMap;
+	typedef std::map<synfig::GUID,std::shared_ptr<synfig::Point>> DuckDataMap;
 
 	typedef studio::DuckMap DuckMap;
 
@@ -193,7 +196,7 @@ private:
 	mutable synfig::String sketch_filename_;
 
 	synfig::TransformStack curr_transform_stack;
-	bool curr_transform_stack_set;
+	bool curr_transform_stack_set = false;
 	std::list<sigc::connection> duck_changed_connections;
 
 	bool alternative_mode_;
@@ -442,9 +445,9 @@ public:
 	etl::handle<Duck> find_similar_duck(etl::handle<Duck> duck);
 	etl::handle<Duck> add_similar_duck(etl::handle<Duck> duck);
 
-	void add_stroke(etl::smart_ptr<std::list<synfig::Point> > stroke_point_list, const synfig::Color& color=synfig::Color(0,0,0));
+	void add_stroke(std::shared_ptr<std::list<synfig::Point>> stroke_point_list, const synfig::Color& color=synfig::Color(0,0,0));
 
-	void add_persistent_stroke(etl::smart_ptr<std::list<synfig::Point> > stroke_point_list, const synfig::Color& color=synfig::Color(0,0,0));
+	void add_persistent_stroke(std::shared_ptr<std::list<synfig::Point>> stroke_point_list, const synfig::Color& color=synfig::Color(0,0,0));
 
 	void clear_persistent_strokes();
 
@@ -481,7 +484,7 @@ public:
 	etl::handle<Bezier> find_bezier(synfig::Point pos, synfig::Real scale, synfig::Real radius, float* location=0);
 
 	//! if transform_count is set function will not restore transporm stack
-	void add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Layer::Handle>& selected_layer_set, etl::handle<CanvasView> canvas_view, synfig::TransformStack& transform_stack, int *transform_count = NULL);
+	void add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Layer::Handle>& selected_layer_set, etl::handle<CanvasView> canvas_view, synfig::TransformStack& transform_stack, int* transform_count = nullptr);
 
 	bool add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<CanvasView> canvas_view, const synfig::TransformStack& transform_stack_, synfig::ParamDesc *param_desc=0);
 
@@ -546,12 +549,14 @@ struct Duckmatic::Bezier : public etl::shared_object
 {
 private:
 	sigc::signal<void,float> signal_user_click_[5];
+	sigc::signal<void,float> signal_user_doubleclick_[5];
 public:
 
 	etl::handle<Duck> p1,p2,c1,c2;
 	bool is_valid()const { return p1 && p2 && c1 && c2; }
 
 	sigc::signal<void,float> &signal_user_click(int i=0) { assert(i>=0); assert(i<5); return signal_user_click_[i]; }
+	sigc::signal<void,float> &signal_user_doubleclick(int i=0) { assert(i>=0); assert(i<5); return signal_user_doubleclick_[i]; }
 }; // END of struct Duckmatic::Bezier
 
 /*! \struct Duckmatic::Stroke
@@ -562,7 +567,7 @@ private:
 	sigc::signal<void,float> signal_user_click_[5];
 public:
 
-	etl::smart_ptr<std::list<synfig::Point> > stroke_data;
+	std::shared_ptr<std::list<synfig::Point>> stroke_data;
 
 	synfig::Color color;
 

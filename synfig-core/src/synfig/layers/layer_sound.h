@@ -2,20 +2,23 @@
 /*!	\file layer_sound.h
 **	\brief Header file for implementation of the "Sound" layer
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -27,8 +30,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "layer_composite.h"
-#include <synfig/color.h>
+#include "layer_invisible.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -38,7 +40,7 @@
 
 namespace synfig {
 
-class Layer_Sound : public Layer_Composite, public Layer_NoDeform
+class Layer_Sound : public Layer_Invisible
 {
 	SYNFIG_LAYER_MODULE_EXT
 private:
@@ -52,8 +54,7 @@ public:
 	virtual ValueBase get_param(const String & param)const;
 	virtual Vocab get_param_vocab()const;
 	virtual void fill_sound_processor(SoundProcessor &soundProcessor) const;
-	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context)const;
-}; // END of class Layer_SolidColor
+}; // END of class Layer_Sound
 
 }; // END of namespace synfig
 

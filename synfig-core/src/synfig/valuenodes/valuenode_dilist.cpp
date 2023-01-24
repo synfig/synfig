@@ -1,22 +1,25 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file valuenode_DIList.cpp
+/*!	\file valuenode_dilist.cpp
 **	\brief Implementation of the "Dash Item List" valuenode conversion.
-**
-**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2011 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -40,8 +43,6 @@
 #include <synfig/exception.h>
 #include <synfig/dashitem.h>
 
-#include <ETL/stringf>
-
 #include <vector>
 #include <list>
 
@@ -49,15 +50,13 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_DIList, RELEASE_VERSION_0_63_01, "dilist", "DIList")
+REGISTER_VALUENODE(ValueNode_DIList, RELEASE_VERSION_0_63_01, "dilist", N_("DIList"))
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -74,11 +73,11 @@ ValueNode_DIList::~ValueNode_DIList()
 }
 
 ValueNode_DIList*
-ValueNode_DIList::create(const ValueBase &value)
+ValueNode_DIList::create(const ValueBase& value, etl::loose_handle<Canvas>)
 {
 	// if the parameter is not a list type, return null
 	if(value.get_type()!=type_list)
-		return NULL;
+		return nullptr;
 	// create an empty list
 	ValueNode_DIList* value_node(new ValueNode_DIList());
 	// If the value parameter is not empty
@@ -100,7 +99,7 @@ ValueNode_DIList::create(const ValueBase &value)
 		{
 			// We got a list of who-knows-what. We don't have any idea
 			// what to do with it.
-			return NULL;
+			return nullptr;
 		}
 	}
 
@@ -131,8 +130,8 @@ ValueNode_DIList::create_list_entry(int index, Time time, Real /*origin*/)
 ValueBase
 ValueNode_DIList::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	std::vector<DashItem> ret_list;
 
@@ -158,10 +157,10 @@ ValueNode_DIList::operator()(Time t)const
 		}
 	}
 	if(list.empty())
-		synfig::warning(string("ValueNode_DIList::operator()():")+_("No entries in list"));
+		synfig::warning(std::string("ValueNode_DIList::operator()():")+_("No entries in list"));
 	else
 	if(ret_list.empty())
-		synfig::warning(string("ValueNode_DIList::operator()():")+_("No entries in ret_list"));
+		synfig::warning(std::string("ValueNode_DIList::operator()():")+_("No entries in ret_list"));
 
 	return ValueBase(ret_list,get_loop());
 }
@@ -170,10 +169,8 @@ String
 ValueNode_DIList::link_local_name(int i)const
 {
 	assert(i>=0 && (unsigned)i<list.size());
-	return etl::strprintf(_("DashItem %03d"),i+1);
+	return strprintf(_("DashItem %03d"),i+1);
 }
-
-
 
 LinkableValueNode*
 ValueNode_DIList::create_new()const
@@ -186,16 +183,3 @@ ValueNode_DIList::check_type(Type &type)
 {
 	return type==type_list;
 }
-
-ValueNode::LooseHandle
-ValueNode_DIList::get_bline()const
-{
-	return bline_;
-}
-
-void
-ValueNode_DIList::set_bline(ValueNode::Handle b)
-{
-	bline_=b;
-}
-

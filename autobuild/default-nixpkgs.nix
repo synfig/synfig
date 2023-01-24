@@ -42,14 +42,12 @@ let
     src = ../synfig-core;
 
     configureFlags = [
-      "--with-boost=${boost.dev}"
-      "--with-boost-libdir=${boost.out}/lib"
     ];
 
     nativeBuildInputs = [ pkgconfig autoreconfHook gettext ];
 
     buildInputs = [
-      ETL boost cairo fftw glibmm intltool libjpeg libsigcxx libxmlxx
+      ETL cairo fftw glibmm intltool libjpeg libsigcxx libxmlxx
       mlt imagemagick pango which
     ];
 
@@ -66,7 +64,7 @@ stdenv.mkDerivation rec {
 
   nativeBuildInputs = [ pkgconfig autoreconfHook gettext ];
   buildInputs = [
-    ETL boost cairo fftw glibmm gnome3.defaultIconTheme gtk3 gtkmm3
+    ETL cairo fftw glibmm gnome3.defaultIconTheme gtk3 gtkmm3
     imagemagick intltool libjack2 libsigcxx libxmlxx makeWrapper mlt
     synfig which
   ];

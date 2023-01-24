@@ -2,8 +2,6 @@
 /*!	\file widget_coloredit.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
@@ -11,15 +9,20 @@
 **  Copyright (c) 2015 Denis Zdorovtsov
 **  Copyright (c) 2015-2016 Jérôme Blanchi
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -462,25 +465,23 @@ Widget_ColorEdit::~Widget_ColorEdit()
 {
 }
 
-#define CLIP_VALUE(value, min, max) (value <= min ? min : (value > max ? max : value))
-
-bool are_close_colors(Gdk::Color const& a, Gdk::Color const& b) {
-	static const int eps = 1;
+bool are_close_colors(Gdk::RGBA const& a, Gdk::RGBA const& b) {
+	constexpr float epsilon = 0.000001f;
 	if (a == b)
 		return true;
-	return std::abs(a.get_red()-b.get_red()) <= eps
-		&& std::abs(a.get_green()-b.get_green()) <= eps
-		&& std::abs(a.get_blue()-b.get_blue()) <= eps;
+	return std::fabs(a.get_red()-b.get_red()) <= epsilon
+		   && std::fabs(a.get_green()-b.get_green()) <= epsilon
+		   && std::fabs(a.get_blue()-b.get_blue()) <= epsilon;
 }
 
-void Widget_ColorEdit::setHVSColor(synfig::Color color)
+void Widget_ColorEdit::setHVSColor(const synfig::Color& color)
 {
 	Color c = App::get_selected_canvas_gamma().get_inverted().apply(color).clamped();
-	Gdk::Color gtkColor;
-	gtkColor.set_rgb_p(c.get_r(), c.get_g(), c.get_b());
-	if (!are_close_colors(hvsColorWidget->get_current_color(), gtkColor)) {
+	Gdk::RGBA gdkColor;
+	gdkColor.set_rgba(c.get_r(), c.get_g(), c.get_b(), c.get_a());
+	if (!are_close_colors(hvsColorWidget->get_current_rgba(), gdkColor)) {
 		colorHVSChanged = true;
-		hvsColorWidget->set_current_color(gtkColor);
+		hvsColorWidget->set_current_rgba(gdkColor);
 	}
 	hvsColorWidget->set_previous_color(hvsColorWidget->get_current_color()); //We can't use it there, cause color changes in realtime.
 	colorHVSChanged = false;
@@ -493,11 +494,12 @@ Widget_ColorEdit::on_color_changed()
 	//set_current_color(...). It calls recursion. Used a flag to fix it.
 	if (!colorHVSChanged)
 	{
-		Gdk::Color newColor = hvsColorWidget->get_current_color();
+		Gdk::RGBA newColor = hvsColorWidget->get_current_rgba();
 		Color synfigColor(
-			newColor.get_red_p(),
-			newColor.get_green_p(),
-			newColor.get_blue_p() );
+			newColor.get_red(),
+			newColor.get_green(),
+			newColor.get_blue(),
+			A_adjustment->get_value()/100);
 		synfigColor = App::get_selected_canvas_gamma().apply(synfigColor);
 		set_value(synfigColor);
 		colorHVSChanged = true; //I reset the flag in setHVSColor(..)

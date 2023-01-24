@@ -2,20 +2,23 @@
 /*!	\file curve_helper.cpp
 **	\brief Curve Helper File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -38,8 +41,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -54,7 +55,7 @@ const Real ERROR = 1e-11;
 
 /* === E N T R Y P O I N T ================================================= */
 
-Real synfig::find_closest(const etl::bezier<Point> &curve, const Point &point,
+Real synfig::find_closest(const bezier<Point> &curve, const Point &point,
 				float step, Real *dout, float *tout)
 {
 #if 0
@@ -104,7 +105,7 @@ Real synfig::find_closest(const etl::bezier<Point> &curve, const Point &point,
 }
 
 // Line and BezHull Definitions
-void BezHull::Bound(const etl::bezier<Point> &b)
+void BezHull::Bound(const bezier<Point> &b)
 {
 	#if 1
 
@@ -372,11 +373,11 @@ int intersect(const BezHull &bh, const Point &p, const Vector &v)
 		//going OUT
 		if(nv > ERR)
 		{
-			maxt = min(maxt,(float)((n*(p-last))/nv));
+			maxt = std::min(maxt,(float)((n*(p-last))/nv));
 		}else
 		if( nv < -ERR) //going IN
 		{
-			mint = max(mint,(float)((n*(p-last))/nv));
+			mint = std::max(mint,(float)((n*(p-last))/nv));
 		}else
 		{
 			if( n*(p-last) > 0 ) //outside entirely
@@ -415,12 +416,12 @@ int Clip(const Rect &r, const Point &p1, const Point &p2, Point *op1, Point *op2
 		//line in positive direction (normal comparisons
 		if(tt1 < tt2)
 		{
-			t1 = max(t1,tt1);
-			t2 = min(t2,tt2);
+			t1 = std::max(t1,tt1);
+			t2 = std::min(t2,tt2);
 		}else
 		{
-			t1 = max(t1,tt2);
-			t2 = min(t2,tt1);
+			t1 = std::max(t1,tt2);
+			t2 = std::min(t2,tt1);
 		}
 	}else
 	{
@@ -438,12 +439,12 @@ int Clip(const Rect &r, const Point &p1, const Point &p2, Point *op1, Point *op2
 		//line in positive direction (normal comparisons
 		if(tt1 < tt2)
 		{
-			t1 = max(t1,tt1);
-			t2 = min(t2,tt2);
+			t1 = std::max(t1,tt1);
+			t2 = std::min(t2,tt2);
 		}else
 		{
-			t1 = max(t1,tt2);
-			t2 = min(t2,tt1);
+			t1 = std::max(t1,tt2);
+			t2 = std::min(t2,tt1);
 		}
 	}else
 	{
@@ -621,7 +622,7 @@ void CIntersect::recurse_intersect(const SCurve &left, const SCurve &right, int 
 
 
 
-bool CIntersect::operator()(const etl::bezier<Point> &c1, const etl::bezier<Point> &c2)
+bool CIntersect::operator()(const bezier<Point> &c1, const bezier<Point> &c2)
 {
 	times.clear();
 

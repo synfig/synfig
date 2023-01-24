@@ -2,24 +2,25 @@
 /*!	\file trgt_openexr.cpp
 **	\brief exr_trgt Target Module
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
-**	\endlegal
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
 **
-** === N O T E S ===========================================================
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
+**	\endlegal
 **
 ** ========================================================================= */
 
@@ -34,12 +35,13 @@
 
 #include "trgt_openexr.h"
 #include <cstdio>
+#include <ETL/stringf>
+
 #endif
 
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
-using namespace std;
 using namespace etl;
 
 /* === G L O B A L S ======================================================= */
@@ -62,9 +64,9 @@ exr_trgt::exr_trgt(const char *Filename, const synfig::TargetParam &params):
 	imagecount(0),
 	scanline(),
 	filename(Filename),
-	exr_file(NULL),
-	buffer(NULL),
-	buffer_color(NULL)
+	exr_file(nullptr),
+	buffer(nullptr),
+	buffer_color(nullptr)
 {
 	// OpenEXR uses linear gamma
 	sequence_separator = params.sequence_separator;
@@ -103,7 +105,7 @@ exr_trgt::start_frame(synfig::ProgressCallback *cb)
 	{
 		frame_name = (filename_sans_extension(filename) +
 					  sequence_separator +
-					  etl::strprintf("%04d",imagecount) +
+					  strprintf("%04d",imagecount) +
 					  filename_extension(filename));
 		if(cb)cb->task(frame_name);
 	}

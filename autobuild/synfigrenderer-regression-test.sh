@@ -2,8 +2,17 @@
 
 set -x
 
-export PATH="${TRAVIS_BUILD_DIR}/_production/build/bin:$PATH"
+export SCRIPTPATH=$(cd `dirname "$0"`; pwd)
+
+export PATH="${SCRIPTPATH}/../_production/build/bin:$PATH"
 
 ccache -s # show ccache stats
-git clone https://gitlab.com/synfig/synfig-tests.git
+cd "${SCRIPTPATH}/../_production/"
+if [ ! -d synfig-tests ]; then
+    git clone https://gitlab.com/synfig/synfig-tests.git
+else
+    cd synfig-tests
+    git pull
+    cd ..
+fi
 bash ./synfig-tests/test-rendering.sh results

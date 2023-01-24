@@ -2,20 +2,23 @@
 /*!	\file mainwindow.h
 **	\brief MainWindow
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2013 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -28,7 +31,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/actiongroup.h>
-#include <gtkmm/window.h>
+#include <gtkmm/applicationwindow.h>
 #include <synfig/string.h>
 
 /* === M A C R O S ========================================================= */
@@ -40,8 +43,9 @@
 namespace studio {
 	class Dockable;
 	class DockBook;
+	class WorkspaceHandler;
 
-	class MainWindow: public Gtk::Window
+	class MainWindow: public Gtk::ApplicationWindow
 	{
 	private:
 		Gtk::Bin *bin_;
@@ -68,11 +72,17 @@ namespace studio {
 		void add_custom_workspace_menu_item_handlers();
 		void remove_custom_workspace_menu_item_handlers();
 
+		static std::unique_ptr<studio::WorkspaceHandler> workspaces;
+		static const std::vector<std::string> get_workspaces();
+
+		void save_custom_workspace();
+		static void edit_custom_workspace_list();
+
 	protected:
 		virtual bool on_key_press_event(GdkEventKey *key_event);
 
 	public:
-		MainWindow();
+		MainWindow(const Glib::RefPtr<Gtk::Application>& application);
 		virtual ~MainWindow();
 
 		Gtk::Bin& root() { return *bin_; }
@@ -80,6 +90,17 @@ namespace studio {
 
 		DockBook& main_dock_book() { return *main_dock_book_; }
 		const DockBook& main_dock_book() const { return *main_dock_book_; }
+
+		static void set_workspace_default();
+		static void set_workspace_compositing();
+		static void set_workspace_animating();
+		static void set_workspace_from_template(const std::string &tpl);
+		static void set_workspace_from_name(const std::string &name);
+		static void load_custom_workspaces();
+		static void save_custom_workspaces();
+		static WorkspaceHandler* get_workspace_handler() { return workspaces.get(); }
+
+		static sigc::signal<void>& signal_custom_workspaces_changed();
 
 		static void make_short_filenames(
 			const std::vector<synfig::String> &fullnames,

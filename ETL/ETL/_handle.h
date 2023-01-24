@@ -1,6 +1,5 @@
 /* === E T L =============================================================== */
 /*!	\file _handle.h
-**	$Id$
 **	\brief Template Object Handle Implementation
 **	\internal
 **
@@ -8,15 +7,20 @@
 **	Copyright (c) 2002 Robert B. Quattlebaum Jr.
 **	Copyright (c) 2007, 2008 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 **
 **	\note
@@ -63,10 +67,11 @@ class shared_object
 private:
 	mutable std::atomic<int> refcount;
 
+public:
+	shared_object(const shared_object&) = delete;
+	shared_object& operator= (const shared_object&) = delete;
 protected:
 	shared_object():refcount(0) { }
-	shared_object(const shared_object&):refcount(0) { }
-	shared_object& operator= (const shared_object&) { return *this; }
 
 #ifdef ETL_SELF_DELETING_SHARED_OBJECT
 	virtual ~shared_object() { }
@@ -112,9 +117,9 @@ class virtual_shared_object
 {
 protected:
 	virtual_shared_object() { }
-	virtual_shared_object(const virtual_shared_object&) { }
-	virtual_shared_object& operator= (const virtual_shared_object&) { return *this; }
 public:
+	virtual_shared_object(const virtual_shared_object&) = delete;
+	virtual_shared_object& operator= (const virtual_shared_object&) = delete;
 	virtual ~virtual_shared_object() { }
 	virtual void ref()const=0;
 	virtual bool unref()const=0;
@@ -150,7 +155,7 @@ public:
 public:
 
 	//! Default constructor - empty handle
-	handle():obj(NULL) {}
+	handle() : obj(nullptr) {}
 
 	//! Constructor that constructs from a pointer to new object
 	handle(pointer x):obj(x)
@@ -213,12 +218,12 @@ public:
 	}
 
 	//! Handle detach procedure
-	/*! unref()'s the object and sets the internal object pointer to \c NULL */
+	/*! unref()'s the object and sets the internal object pointer to \c nullptr */
 	void
 	detach()
 	{
 		pointer xobj(obj);
-		obj=0;
+		obj = nullptr;
 #ifdef ETL_SELF_DELETING_SHARED_OBJECT
 		if(xobj)
 			xobj->unref();
@@ -262,7 +267,7 @@ public:
 
 	//! More explicit bool cast
 	operator bool()const
-		{ return obj!=NULL; }
+		{ return obj != nullptr; }
 
 	operator handle<const value_type>()const
 	{ return handle<const value_type>(static_cast<const_pointer>(obj)); }
@@ -333,10 +338,11 @@ public:
 
 protected:
 	rshared_object():rrefcount(0),front_(0),back_(0) { }
-	rshared_object(const rshared_object &other): shared_object(other), rrefcount(0),front_(0),back_(0) { }
-	rshared_object& operator= (const rshared_object&) { return *this; }
 
 public:
+	rshared_object(const rshared_object &other) = delete;
+	rshared_object& operator= (const rshared_object&) = delete;
+
 	virtual void rref()const
 		{ rrefcount++; }
 
@@ -542,14 +548,14 @@ public:
 	}
 
 	//! Handle release procedure
-	/*! unref()'s the object and sets the internal object pointer to \c NULL */
+	/*! unref()'s the object and sets the internal object pointer to \c nullptr */
 	void
 	detach()
 	{
 //		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		if(obj)del_from_rlist();
 		handle<value_type>::detach();
-		obj=0;
+		obj = nullptr;
 	}
 
 	// This will be reintroduced with a new function

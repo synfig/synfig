@@ -2,21 +2,24 @@
 /*!	\file layeractionmanager.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -47,7 +50,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;
@@ -61,6 +63,35 @@ static const guint no_prev_popup((guint)-1);
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
+
+// COPIED FROM synfigapp/actions/layerduplicate.cpp
+/// Remove the layers that are inside an already listed group-kind layer, as they would be duplicated twice
+static std::list<Layer::Handle>
+remove_layers_inside_included_pastelayers(const std::list<Layer::Handle>& layer_list)
+{
+	std::vector<Layer::Handle> layerpastecanvas_list;
+	for (const auto& layer : layer_list) {
+		if (dynamic_cast<Layer_PasteCanvas*>(layer.get())) {
+			layerpastecanvas_list.push_back(layer);
+		}
+	}
+
+	std::list<Layer::Handle> clean_layer_list;
+	for (const Layer::Handle& layer : layer_list) {
+		bool is_inside_a_selected_pastecanvas = false;
+		auto parent_paste_canvas = layer->get_parent_paste_canvas_layer();
+		while (parent_paste_canvas) {
+			if (std::find(layerpastecanvas_list.begin(), layerpastecanvas_list.end(), parent_paste_canvas) != layerpastecanvas_list.end()) {
+				is_inside_a_selected_pastecanvas = true;
+				break;
+			}
+			parent_paste_canvas = parent_paste_canvas->get_parent_paste_canvas_layer();
+		}
+		if (!is_inside_a_selected_pastecanvas)
+			clean_layer_list.push_back(layer);
+	}
+	return clean_layer_list;
+}
 
 /* === M E T H O D S ======================================================= */
 
@@ -263,7 +294,7 @@ LayerActionManager::refresh()
 
 				action_amount_inc_->set_sensitive(!layer_list.empty());
 				action_amount_dec_->set_sensitive(!layer_list.empty());
-				if (etl::handle<Layer_Skeleton>::cast_dynamic(layer) || etl::handle<Layer_Composite>::cast_dynamic(layer)) {
+				if (Layer_Skeleton::Handle::cast_dynamic(layer) || etl::handle<Layer_Composite>::cast_dynamic(layer)) {
 					action_amount_inc_->set_label(_("Increase Opacity"));
 					action_amount_dec_->set_label(_("Decrease Opacity"));
 				} else {
@@ -368,6 +399,10 @@ void
 LayerActionManager::copy()
 {
 	synfigapp::SelectionManager::LayerList layer_list(layer_tree_->get_selected_layers());
+
+	// remove layers that would be duplicated twice
+	layer_list = remove_layers_inside_included_pastelayers(layer_list);
+
 	clipboard_.clear();
 	synfig::GUID guid;
 

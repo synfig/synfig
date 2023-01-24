@@ -2,21 +2,24 @@
 /*!	\file widget_filename.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -38,13 +41,14 @@
 #include <gui/canvasview.h>
 #include <gui/localization.h>
 
+#include <ETL/stringf>
+
 #include <synfig/canvasfilenaming.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -58,9 +62,8 @@ using namespace studio;
 Widget_Filename::Widget_Filename()
 {
 	entry_filename=manage(new Gtk::Entry());
-	icon_browse = manage(new Gtk::Image(Gtk::StockID("synfig-open"), Gtk::ICON_SIZE_SMALL_TOOLBAR));
 	button_choose=manage(new Gtk::Button());
-	button_choose->add(*icon_browse);
+	button_choose->set_image_from_icon_name("action_doc_open_icon");
 
 	set_hexpand(true);
 	entry_filename->set_hexpand(true);
@@ -70,7 +73,6 @@ Widget_Filename::Widget_Filename()
 
 	entry_filename->show();
 	button_choose->show();
-	icon_browse->show();
 
 	button_choose->signal_clicked().connect(sigc::mem_fun(*this, &studio::Widget_Filename::on_button_choose_pressed));
 	//entry_filename->signal_value_changed().connect(sigc::mem_fun(*this, &studio::Widget_Filename::on_value_changed));
@@ -94,7 +96,7 @@ Widget_Filename::set_value(const std::string &data)
 	entry_filename->set_text(data);
 }
 
-string
+std::string
 Widget_Filename::get_value() const
 {
 	try
@@ -103,7 +105,7 @@ Widget_Filename::get_value() const
 	}
 	catch(...)
 	{
-		throw string("Caught unknown exception");
+		throw std::string("Caught unknown exception");
 	}
 }
 
@@ -116,7 +118,7 @@ Widget_Filename::on_value_changed()
 void
 Widget_Filename::on_button_choose_pressed()
 {
-	string filename=entry_filename->get_text();
+	std::string filename=entry_filename->get_text();
 	filename = synfig::CanvasFileNaming::make_full_filename(canvas->get_file_name(), filename);
 
 	if(filename.empty())

@@ -2,25 +2,26 @@
 /*!	\file import.cpp
 **	\brief Implementation of the "Import Image" layer
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
 **	Copyright (c) 2011-2013 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
-**	\endlegal
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
 **
-** === N O T E S ===========================================================
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
+**	\endlegal
 **
 ** ========================================================================= */
 
@@ -54,7 +55,6 @@
 
 #endif
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace modules;
@@ -104,9 +104,8 @@ Import::set_param(const String & param, const ValueBase &value)
 		if(!get_canvas() || !get_canvas()->get_file_system())
 		{
 			importer.reset();
-			cimporter.reset();
 			rendering_surface.reset();
-			param_filename.set(value.get(String()));
+			param_filename.set(FileSystem::fix_slashes(value.get(String())));
 			return true;
 		}
 
@@ -116,7 +115,7 @@ Import::set_param(const String & param, const ValueBase &value)
 			return false;
 		}
 
-		String filename = value.get(String());
+		String filename = FileSystem::fix_slashes(value.get(String()));
 		String fixed_filename = filename;
 
 		// TODO: find source of this sreening of unicode characters
@@ -128,7 +127,6 @@ Import::set_param(const String & param, const ValueBase &value)
 		if (full_filename.empty())
 		{
 			importer.reset();
-			cimporter.reset();
 			rendering_surface.reset();
 			param_filename.set(filename);
 			return true;
@@ -157,7 +155,6 @@ Import::set_param(const String & param, const ValueBase &value)
 			{
 				error(strprintf("Unable to create an importer object with file \"%s\"", independent_filename.c_str()));
 				importer.reset();
-				cimporter.reset();
 				param_filename.set(filename);
 				rendering_surface.reset();
 				return true;
@@ -169,8 +166,10 @@ Import::set_param(const String & param, const ValueBase &value)
 		if (!newimporter->is_animated())
 			time = Time(0);
 
-		rendering_surface = new rendering::SurfaceResource(
-			newimporter->get_frame(get_canvas()->rend_desc(), time) );
+		rendering::Surface::Handle surface = newimporter->get_frame(get_canvas()->rend_desc(), time);
+		if (!surface)
+			return false;
+		rendering_surface = new rendering::SurfaceResource(surface);
 		importer=newimporter;
 		param_filename.set(filename);
 
@@ -226,8 +225,14 @@ void
 Import::load_resources_vfunc(IndependentContext context, Time time)const
 {
 	Time time_offset=param_time_offset.get(Time());
-	if(get_amount() && importer && importer->is_animated())
-		rendering_surface = new rendering::SurfaceResource(
-			importer->get_frame(get_canvas()->rend_desc(), time+time_offset) );
+	if(get_amount() && importer && importer->is_animated()) {
+		rendering::Surface::Handle surface = importer->get_frame(get_canvas()->rend_desc(), time+time_offset);
+		if (!surface) {
+			synfig::error(_("Couldn't load resources: couldn't get frame at %s"), (time + time_offset).get_string().c_str());
+			rendering_surface = nullptr;
+			return;
+		}
+		rendering_surface = new rendering::SurfaceResource(surface);
+	}
 	context.load_resources(time);
 }

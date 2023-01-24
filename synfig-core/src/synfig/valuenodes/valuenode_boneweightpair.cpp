@@ -2,22 +2,25 @@
 /*!	\file valuenode_boneweightpair.cpp
 **	\brief Implementation of the "BoneWeightPair" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
 **	Copyright (c) 2008 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -44,15 +47,13 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_BoneWeightPair, RELEASE_VERSION_0_62_00, "boneweightpair", "Bone Weight Pair")
+REGISTER_VALUENODE(ValueNode_BoneWeightPair, RELEASE_VERSION_0_62_00, "boneweightpair", N_("Bone Weight Pair"))
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -70,8 +71,8 @@ ValueNode_BoneWeightPair::ValueNode_BoneWeightPair(const ValueBase &value, Canva
 		set_link("bone",ValueNode_Const::create(bone_value_node, canvas));
 		set_link("weight",ValueNode_Const::create(Real(bone_weight_pair.get_weight())));
 
-		if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-			printf("%s:%d set parent canvas for bwp to %p\n", __FILE__, __LINE__, canvas.get());
+		DEBUG_LOG("SYNFIG_DEBUG_SET_PARENT_CANVAS",
+			"%s:%d set parent canvas for bwp to %p\n", __FILE__, __LINE__, canvas.get());
 		set_parent_canvas(canvas);
 
 		ValueNode_Bone::show_bone_map(canvas, __FILE__, __LINE__, "after making new boneweightpair");
@@ -89,7 +90,7 @@ ValueNode_BoneWeightPair::create_new()const
 }
 
 ValueNode_BoneWeightPair*
-ValueNode_BoneWeightPair::create(const ValueBase &x, Canvas::LooseHandle canvas)
+ValueNode_BoneWeightPair::create(const ValueBase& x, Canvas::LooseHandle canvas)
 {
 	return new ValueNode_BoneWeightPair(x, canvas);
 }
@@ -102,8 +103,8 @@ ValueNode_BoneWeightPair::~ValueNode_BoneWeightPair()
 ValueBase
 ValueNode_BoneWeightPair::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	ValueNode_Bone::Handle bone_node((*bone_)(t).get(ValueNode_Bone::Handle()));
 	Bone bone((*bone_node)(t).get(Bone()));

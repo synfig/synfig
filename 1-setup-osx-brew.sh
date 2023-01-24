@@ -15,7 +15,7 @@ set -e
 
 if ! ( which brew >/dev/null ); then
     echo "No brew found. Installing..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
 WORKDIR=`dirname "$0"`
@@ -27,12 +27,11 @@ PACKAGES="\
 adwaita-icon-theme \
 autoconf \
 automake \
-boost \
-cairo \
 ccache \
 cmake \
 fftw \
 fontconfig \
+fribidi \
 gettext \
 glibmm \
 gtkmm3 \
@@ -44,7 +43,6 @@ libxml2 \
 libxslt \
 mlt \
 ninja \
-pango \
 pkg-config \
 python \
 sdl2 \
@@ -66,6 +64,7 @@ if [ $OS -lt 15 ] && [ -z "$TRAVIS_BUILD_DIR" ]; then # For OSX < 10.11
     cd /usr/local/Homebrew/
     git checkout 1.4.1
     brew info gobject-introspection | grep >/dev/null 'Not installed' && brew install ${WORKDIR}/autobuild/osx/gobject-introspection.rb
+    brew info fribidi | grep >/dev/null 'Not installed' && brew install ${WORKDIR}/autobuild/osx/fribidi.rb # broken url in original formula
 fi
 
 for pkg in $PACKAGES;
@@ -74,20 +73,8 @@ do
     brew info "$pkg" | grep 'Not installed' >/dev/null && brew install "$pkg"
 done
 
-if ! ( which pip >/dev/null ); then
-    echo "No pip found. Installing..."
-    echo "Running python in sudo (you need root privelegies to do that)..."
-    # Dependency for lxml
-    curl https://bootstrap.pypa.io/get-pip.py | sudo python
-fi
 
-# Installing lxml using pip
-export PIPBINARY=pip
-if `which pip3 >/dev/null`; then
-    PIPBINARY=pip3
-fi
-
-# Do not install lxml for GitHub Actions (it fails to build on MacOS 11.0)
+# Do not install lxml for GitHub Actions
 if [[ -z "${CI}" ]]; then
-    STATIC_DEPS=true sudo $PIPBINARY install lxml
+    STATIC_DEPS=true pip3 install lxml
 fi

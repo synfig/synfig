@@ -2,8 +2,6 @@
 /*!	\file duckmatic.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
@@ -11,15 +9,20 @@
 **	Copyright (c) 2011 Carlos López
 **	Copyright (c) 2015 Blanchi Jérôme
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -77,7 +80,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;
@@ -131,8 +133,8 @@ Duckmatic::~Duckmatic()
 {
 	clear_ducks();
 
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
-		synfig::info("Duckmatic::~Duckmatic(): Deleted");
+	DEBUG_LOG("SYNFIG_DEBUG_DESTRUCTORS",
+		"Duckmatic::~Duckmatic(): Deleted");
 }
 
 void
@@ -604,11 +606,16 @@ Duckmatic::update_ducks()
 			{
 				synfig::Real radius = 0.0;
 				synfig::Point point(0.0, 0.0);
-				ValueNode_BLine::Handle bline(ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link("bline")));
-				Real amount = synfig::find_closest_point((*bline)(time), duck->get_point(), radius, bline->get_loop(), &point);
+				bool bline_loop = false;
+				ValueNode::LooseHandle bline = bline_vertex->get_bline_handle(bline_loop);
+				if (!bline) {
+					warning(_("Internal error: duckmatic: It is a BLine Vertex, but it has not a BLine link"));
+					return;
+				}
+				Real amount = synfig::find_closest_point((*bline)(time), duck->get_point(), radius, bline_loop, &point);
 				bool homogeneous((*(bline_vertex->get_link("homogeneous")))(time).get(bool()));
 				if(homogeneous)
-					amount=std_to_hom((*bline)(time), amount, ((*(bline_vertex->get_link("loop")))(time).get(bool())), bline->get_loop() );
+					amount=std_to_hom((*bline)(time), amount, ((*(bline_vertex->get_link("loop")))(time).get(bool())), bline_loop );
 				ValueNode::Handle vertex_amount_value_node(bline_vertex->get_link("amount"));
 				duck->set_point(point);
 
@@ -816,7 +823,7 @@ Duckmatic::find_guide_x(synfig::Point pos, float radius)
 	float dist(radius);
 	for(iter=guide_list_x_.begin();iter!=guide_list_x_.end();++iter)
 	{
-		float amount(abs(*iter-pos[0]));
+		float amount(std::fabs(*iter-pos[0]));
 		if(amount<dist)
 		{
 			dist=amount;
@@ -833,7 +840,7 @@ Duckmatic::find_guide_y(synfig::Point pos, float radius)
 	float dist(radius);
 	for(iter=guide_list_y_.begin();iter!=guide_list_y_.end();++iter)
 	{
-		float amount(abs(*iter-pos[1]));
+		float amount(std::fabs(*iter-pos[1]));
 		if(amount<=dist)
 		{
 			dist=amount;
@@ -866,9 +873,9 @@ Duckmatic::snap_point_to_grid(const synfig::Point& x)const
 			floor(ret[0]/get_grid_size()[0]+0.5)*get_grid_size()[0],
 			floor(ret[1]/get_grid_size()[1]+0.5)*get_grid_size()[1]);
 
-		if(abs(snap[0]-ret[0])<=radius && (!has_guide_x || abs(snap[0]-ret[0])<=abs(*guide_x-ret[0])))
+		if(std::fabs(snap[0]-ret[0])<=radius && (!has_guide_x || std::fabs(snap[0]-ret[0])<=std::fabs(*guide_x-ret[0])))
 			ret[0]=snap[0],has_guide_x=false;
-		if(abs(snap[1]-ret[1])<=radius && (!has_guide_y || abs(snap[1]-ret[1])<=abs(*guide_y-ret[1])))
+		if(std::fabs(snap[1]-ret[1])<=radius && (!has_guide_y || std::fabs(snap[1]-ret[1])<=std::fabs(*guide_y-ret[1])))
 			ret[1]=snap[1],has_guide_y=false;
 	}
 
@@ -883,7 +890,7 @@ Duckmatic::snap_point_to_grid(const synfig::Point& x)const
 	if(axis_lock)
 	{
 		ret-=drag_offset_;
-		if(abs(ret[0])<abs(ret[1]))
+		if(std::fabs(ret[0])<std::fabs(ret[1]))
 			ret[0]=0;
 		else
 			ret[1]=0;
@@ -964,7 +971,7 @@ Duckmatic::signal_edited_selected_ducks(bool moving)
 
 	// If we have more than 20 things to move, then display
 	// something to explain that it may take a moment
-	//smart_ptr<OneMoment> wait; if(ducks.size()>20)wait.spawn();
+	//std::shared_ptr<OneMoment> wait; if(ducks.size()>20)wait = std::make_shared<OneMoment>();
 	for(iter=ducks.begin();iter!=ducks.end();++iter)
 	{
 		try
@@ -1054,9 +1061,6 @@ Duckmatic::on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& 
 		else
 		{
 			Transformation transformation = value_desc.get_value(get_time()).get(Transformation());
-			Point axis_x_one(1, transformation.angle);
-			Point axis_y_one(1, transformation.angle + Angle::deg(90.f) + transformation.skew_angle);
-
 			switch(duck.get_type()) {
 			case Duck::TYPE_POSITION:
 				transformation.offset = value;
@@ -1161,7 +1165,7 @@ Duckmatic::add_duck(const etl::handle<Duck> &duck)
 		}
 		else
 		{
-			etl::smart_ptr<synfig::Point> point(new Point(duck->get_point()));
+			std::shared_ptr<synfig::Point> point = std::make_shared<Point>(duck->get_point());
 			duck->set_shared_point(point);
 			duck_data_share_map[duck->get_data_guid()]=point;
 		}
@@ -1179,7 +1183,7 @@ Duckmatic::add_bezier(const etl::handle<Bezier> &bezier)
 }
 
 void
-Duckmatic::add_stroke(etl::smart_ptr<std::list<synfig::Point> > stroke_point_list, const synfig::Color& color)
+Duckmatic::add_stroke(std::shared_ptr<std::list<synfig::Point>> stroke_point_list, const synfig::Color& color)
 {
 	assert(stroke_point_list);
 
@@ -1200,7 +1204,7 @@ Duckmatic::add_stroke(etl::smart_ptr<std::list<synfig::Point> > stroke_point_lis
 }
 
 void
-Duckmatic::add_persistent_stroke(etl::smart_ptr<std::list<synfig::Point> > stroke_point_list, const synfig::Color& color)
+Duckmatic::add_persistent_stroke(std::shared_ptr<std::list<synfig::Point>> stroke_point_list, const synfig::Color& color)
 {
 	add_stroke(stroke_point_list,color);
 	persistent_stroke_list_.push_back(stroke_list_.back());
@@ -1341,7 +1345,7 @@ Duckmatic::find_duck(synfig::Point point, synfig::Real radius, Duck::Type type)
 		}
 	}
 
-	// Priorization of duck selection when are in the same place.
+	// Prioritization of duck selection when are in the same place.
 	bool found(false);
 	if(ret_vector.size())
 	{
@@ -1446,8 +1450,8 @@ Duckmatic::find_bezier(synfig::Point pos, synfig::Real scale, synfig::Real radiu
 
 		step = d/(2*scale); //want to make the distance between lines happy
 
-		step = max(step,0.01); //100 samples should be plenty
-		step = min(step,0.1); //10 is minimum
+		step = std::max(step,0.01); //100 samples should be plenty
+		step = std::min(step,0.1); //10 is minimum
 
 		d = find_closest(curve,pos,step,&closest,&time);
 #endif
@@ -1479,11 +1483,11 @@ bool
 Duckmatic::save_sketch(const synfig::String& filename)const
 {
 	ChangeLocale change_locale(LC_NUMERIC, "C");
-	std::ofstream file(filename.c_str());
+	std::ofstream file(synfig::filesystem::Path(filename).c_str());
 
 	if(!file)return false;
 
-	file<<"SKETCH"<<endl;
+	file<<"SKETCH"<<std::endl;
 
 	std::list<etl::handle<Stroke> >::const_iterator iter;
 
@@ -1493,14 +1497,14 @@ Duckmatic::save_sketch(const synfig::String& filename)const
 			<<(*iter)->color.get_r()<<' '
 			<<(*iter)->color.get_g()<<' '
 			<<(*iter)->color.get_b()
-		<<endl;
+		<< std::endl;
 		std::list<synfig::Point>::const_iterator viter;
 		for(viter=(*iter)->stroke_data->begin();viter!=(*iter)->stroke_data->end();++viter)
 		{
 			file<<"V "
 				<<(*viter)[0]<<' '
 				<<(*viter)[1]
-			<<endl;
+			<< std::endl;
 		}
 	}
 	if(!file)return false;
@@ -1513,7 +1517,7 @@ bool
 Duckmatic::load_sketch(const synfig::String& filename)
 {
 	ChangeLocale change_locale(LC_NUMERIC, "C");
-	std::ifstream file(filename.c_str());
+	std::ifstream file(synfig::filesystem::Path(filename).c_str());
 
 	if(!file)
 		return false;
@@ -1527,7 +1531,7 @@ Duckmatic::load_sketch(const synfig::String& filename)
 		return false;
 	}
 
-	etl::smart_ptr<std::list<synfig::Point> > stroke_data;
+	std::shared_ptr<std::list<synfig::Point>> stroke_data;
 
 	while(file)
 	{
@@ -1541,7 +1545,7 @@ Duckmatic::load_sketch(const synfig::String& filename)
 		case 'C':
 		case 'c':
 			{
-				stroke_data.spawn();
+				stroke_data = std::make_shared<std::list<synfig::Point>>();
 				float r,g,b;
 				if(!strscanf(line,"C %f %f %f",&r, &g, &b))
 				{
@@ -1555,7 +1559,7 @@ Duckmatic::load_sketch(const synfig::String& filename)
 		case 'v':
 			if(!stroke_data)
 			{
-				stroke_data.spawn();
+				stroke_data = std::make_shared<std::list<synfig::Point>>();
 				add_persistent_stroke(stroke_data, synfig::Color(0,0,0));
 			}
 			float x,y;
@@ -1963,7 +1967,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 	else
 	if (type == type_transformation)
 	{
-		if (value_desc.parent_is_layer() && param_desc != NULL)
+		if (value_desc.parent_is_layer() && param_desc)
 		{
 			etl::handle<Layer_PasteCanvas> layer = etl::handle<Layer_PasteCanvas>::cast_dynamic(value_desc.get_layer());
 			if (layer)
@@ -2350,9 +2354,9 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					duck->set_origin(vertex_duck);
 					duck->set_scalar(-TANGENT_BEZIER_SCALE);
 					duck->set_tangent(true);
-					duck->set_shared_point(etl::smart_ptr<Point>());
-					duck->set_shared_angle(etl::smart_ptr<Angle>());
-					duck->set_shared_mag(etl::smart_ptr<Real>());
+					duck->set_shared_point(std::shared_ptr<Point>());
+					duck->set_shared_angle(std::shared_ptr<Angle>());
+					duck->set_shared_mag(std::shared_ptr<Real>());
 					connect_signals(duck, duck->get_value_desc(), *canvas_view);
 
 					// each bezier uses t2 of one point and t1 of the next
@@ -2366,6 +2370,13 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 							sigc::mem_fun(
 								*canvas_view,
 								&studio::CanvasView::popup_param_menu_bezier),
+							synfigapp::ValueDesc(value_node,i)));
+
+					bezier->signal_user_doubleclick(1).connect(
+						sigc::bind(
+							sigc::mem_fun(
+								*canvas_view,
+								&studio::CanvasView::create_new_vertex_on_bline),
 							synfigapp::ValueDesc(value_node,i)));
 
 					add_bezier(bezier);
@@ -2389,9 +2400,9 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				duck->set_origin(vertex_duck);
 				duck->set_scalar(TANGENT_BEZIER_SCALE);
 				duck->set_tangent(true);
-				duck->set_shared_point(etl::smart_ptr<Point>());
-				duck->set_shared_angle(etl::smart_ptr<Angle>());
-				duck->set_shared_mag(etl::smart_ptr<Real>());
+				duck->set_shared_point(std::shared_ptr<Point>());
+				duck->set_shared_angle(std::shared_ptr<Angle>());
+				duck->set_shared_mag(std::shared_ptr<Real>());
 				connect_signals(duck, duck->get_value_desc(), *canvas_view);
 
 				bezier->p1=vertex_duck;
@@ -2403,24 +2414,24 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				if (tangent1_duck && tangent2_duck && !bline_point.get_split_tangent_both()) {
 					if (bline_point.get_merge_tangent_both())
 					{
-						etl::smart_ptr<synfig::Point> point(new Point(tangent1_duck->get_point()));
+						std::shared_ptr<synfig::Point> point = std::make_shared<Point>(tangent1_duck->get_point());
 						tangent1_duck->set_shared_point(point);
 						tangent2_duck->set_shared_point(point);
 					}
 					else
 					if (!bline_point.get_split_tangent_angle())
 					{
-						etl::smart_ptr<synfig::Angle> angle(new Angle(
+						std::shared_ptr<synfig::Angle> angle = std::make_shared<Angle>(
 							approximate_zero( tangent1_duck->get_point().mag() )
 						  ? tangent2_duck->get_point().angle()
-						  : tangent1_duck->get_point().angle() ));
+						  : tangent1_duck->get_point().angle() );
 						tangent1_duck->set_shared_angle(angle);
 						tangent2_duck->set_shared_angle(angle);
 					}
 					else
 					if (!bline_point.get_split_tangent_radius())
 					{
-						etl::smart_ptr<synfig::Real> mag(new Real(tangent1_duck->get_point().mag()));
+						std::shared_ptr<synfig::Real> mag = std::make_shared<Real>(tangent1_duck->get_point().mag());
 						tangent1_duck->set_shared_mag(mag);
 						tangent2_duck->set_shared_mag(mag);
 					}
@@ -2478,9 +2489,9 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				duck->set_origin(vertex_duck);
 				duck->set_scalar(-TANGENT_BEZIER_SCALE);
 				duck->set_tangent(true);
-				duck->set_shared_point(etl::smart_ptr<Point>());
-				duck->set_shared_angle(etl::smart_ptr<Angle>());
-				duck->set_shared_mag(etl::smart_ptr<Real>());
+				duck->set_shared_point(std::shared_ptr<Point>());
+				duck->set_shared_angle(std::shared_ptr<Angle>());
+				duck->set_shared_mag(std::shared_ptr<Real>());
 				connect_signals(duck, duck->get_value_desc(), *canvas_view);
 
 				bezier->p2=vertex_duck;
@@ -2493,6 +2504,13 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 							&studio::CanvasView::popup_param_menu_bezier),
 						synfigapp::ValueDesc(value_node,first)));
 
+				bezier->signal_user_doubleclick(1).connect(
+					sigc::bind(
+						sigc::mem_fun(
+							*canvas_view,
+							&studio::CanvasView::create_new_vertex_on_bline),
+						synfigapp::ValueDesc(value_node,first)));
+
 				add_bezier(bezier);
 				bezier=0;
 				Duck::Handle tangent1_duck = duck;
@@ -2501,24 +2519,24 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				if (tangent1_duck && tangent2_duck && !bline_point.get_split_tangent_both()) {
 					if (bline_point.get_merge_tangent_both())
 					{
-						etl::smart_ptr<synfig::Point> point(new Point(tangent1_duck->get_point()));
+						std::shared_ptr<synfig::Point> point = std::make_shared<Point>(tangent1_duck->get_point());
 						tangent1_duck->set_shared_point(point);
 						tangent2_duck->set_shared_point(point);
 					}
 					else
 					if (!bline_point.get_split_tangent_angle())
 					{
-						etl::smart_ptr<synfig::Angle> angle(new Angle(
+						std::shared_ptr<synfig::Angle> angle = std::make_shared<Angle>(
 							approximate_zero( tangent1_duck->get_point().mag() )
 						  ? tangent2_duck->get_point().angle()
-						  : tangent1_duck->get_point().angle() ));
+						  : tangent1_duck->get_point().angle() );
 						tangent1_duck->set_shared_angle(angle);
 						tangent2_duck->set_shared_angle(angle);
 					}
 					else
 					if (!bline_point.get_split_tangent_radius())
 					{
-						etl::smart_ptr<synfig::Real> mag(new Real(tangent1_duck->get_point().mag()));
+						std::shared_ptr<synfig::Real> mag = std::make_shared<Real>(tangent1_duck->get_point().mag());
 						tangent1_duck->set_shared_mag(mag);
 						tangent2_duck->set_shared_mag(mag);
 					}
@@ -2902,6 +2920,28 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			return false;
 		}
 
+		bool do_not_show_bone_width = false;
+		{
+			bool is_skeleton_deformation_layer_in_pose_mode = false;
+			bool is_skeleton_layer = false;
+
+			const synfig::Node* node = bone_value_node.get();
+			Layer::ConstHandle parent_layer;
+			while (node->parent_count() && !(parent_layer = dynamic_cast<const Layer*>(node)))
+			{
+				node = node->get_first_parent();
+			}
+			if (parent_layer) {
+				if (parent_layer->get_name() == "skeleton") {
+					is_skeleton_layer = true;
+				} else if (parent_layer->get_name() == "skeleton_deformation") {
+					if (parent_layer->active())
+						is_skeleton_deformation_layer_in_pose_mode = true;
+				}
+			}
+			do_not_show_bone_width = is_skeleton_layer || is_skeleton_deformation_layer_in_pose_mode;
+		}
+
 		synfig::GUID guid(bone_value_node->get_guid());
 		Time time(get_time());
 		Bone bone((*bone_value_node)(time).get(Bone()));
@@ -3102,6 +3142,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		}
 
 		// origin width
+		if (!do_not_show_bone_width)
 		{
 
 			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name("width"), orig_value_desc);
@@ -3130,6 +3171,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		}
 
 		// tip width
+		if (!do_not_show_bone_width)
 		{
 
 			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name("tipwidth"), orig_value_desc);

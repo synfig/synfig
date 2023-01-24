@@ -1,5 +1,5 @@
 #render-progress * {
-	min-height: 20px;
+	min-height: 30px;
 }
 
 /*
@@ -69,4 +69,31 @@
 	margin-right : 12px;
 	margin-top   : 12px;
 	margin-bottom: 12px;
+}
+
+/*
+ * Synfig Studio options in dialogs
+ * Slightly moved to the right
+ */
+.dialog-secondary-content {
+	margin-left  : 24px;
+	margin-right : 0px;
+	margin-top   : 6px;
+	margin-bottom: 0px;
+}
+
+.gap {
+	margin-right : 3px;
+}
+
+.indentation{
+	margin-left : 6px;
+}
+
+/*
+ * Let WorkArea/Canvas background be the
+ * default system background
+ */
+#canvasview {
+	background: @theme_unfocused_bg_color;
 }

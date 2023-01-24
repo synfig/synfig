@@ -2,25 +2,26 @@
 /*!	\file splash.cpp
 **	\brief writeme
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
 **	Copyright (c) 2008 Paul Wise
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
-**	\endlegal
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
 **
-** === N O T E S ===========================================================
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
+**	\endlegal
 **
 ** ========================================================================= */
 
@@ -51,7 +52,6 @@
 
 #endif
 
-using namespace etl;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -141,7 +141,7 @@ Splash::Splash():
 	// Create the splash image
 	Gtk::Image* splash_image = manage(new class Gtk::Image());
 	/* Dual-splash code:
-	srand(time(NULL));
+	srand(time(nullptr));
 	const float ran = rand()/float(RAND_MAX);
 	int number = 1;
 	if(ran >0.499999)
@@ -150,8 +150,12 @@ Splash::Splash():
 	splash_image->set(imagepath+"splash_screen"+strprintf("%d",number)+"." IMAGE_EXT);
 	*/
 	splash_image->set(imagepath + "splash_screen." IMAGE_EXT);
-	splash_image->set_alignment(0.5,0.5);
-	splash_image->set_padding(0,0);
+	splash_image->set_halign(Gtk::ALIGN_CENTER);
+	splash_image->set_halign(Gtk::ALIGN_CENTER);
+	splash_image->set_margin_start(0);
+	splash_image->set_margin_end(0);
+	splash_image->set_margin_top(0);
+	splash_image->set_margin_bottom(0);
 
 	// Get the image size
 	int image_w = 350; int image_h = 0;
@@ -197,11 +201,10 @@ Splash::Splash():
 	set_resizable(false);
 	set_type_hint(Gdk::WINDOW_TYPE_HINT_SPLASHSCREEN);
 	set_auto_startup_notification(false);
-	std::string icon_path = ResourceHelper::get_icon_path("synfig_icon." IMAGE_EXT);
 	try {
-		set_icon_from_file(icon_path);
+		set_icon_name("synfig_icon");
 	} catch(...) {
-		synfig::warning("Unable to open "+icon_path);
+		synfig::warning("Unable to open synfig icon for Splash");
 	}
 	add(*frame);
 

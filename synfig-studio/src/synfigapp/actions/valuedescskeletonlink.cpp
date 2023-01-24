@@ -2,20 +2,23 @@
 /*!	\file valuedescskeletonlink.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2013 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -53,8 +56,6 @@
 
 #endif
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
 using namespace Action;
@@ -182,7 +183,6 @@ Action::ValueDescSkeletonLink::prepare()
 
 	// bones list
 	typedef std::set<ValueNode_Bone::Handle> Set;
-	ValueBase::List value_bone_list = (*bone_list_value_node)(time).get_list();
 	Set list;
 	for(int i = 0; i < bone_list_value_node->link_count(); ++i)
 	{
@@ -238,7 +238,7 @@ Action::ValueDescSkeletonLink::prepare()
 
 			// get type of weighted value
 			types_namespace::TypeWeightedValueBase *wt = ValueAverage::get_weighted_type_for(type);
-			assert(wt != NULL);
+			assert(wt);
 
 			// add each bone from influence_list to Average convert
 			for(Set::iterator i = current_list.begin(); i != current_list.end(); ++i)

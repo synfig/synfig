@@ -2,22 +2,25 @@
 /*!	\file state_star.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
 **  Copyright (c) 2010 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -32,8 +35,6 @@
 #endif
 
 #include <gui/states/state_star.h>
-
-#include <gtkmm/alignment.h>
 
 #include <gui/app.h>
 #include <gui/canvasview.h>
@@ -57,34 +58,21 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
 #ifndef LAYER_CREATION
-#define LAYER_CREATION(button, stockid, tooltip)	\
-	{ \
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), \
-			Gtk::ICON_SIZE_SMALL_TOOLBAR)); \
-		button.add(*icon); \
-	} \
+#define LAYER_CREATION(button, icon_name, tooltip)	\
+	button.set_image_from_icon_name(icon_name, Gtk::BuiltinIconSize::ICON_SIZE_SMALL_TOOLBAR); \
 	button.set_relief(Gtk::RELIEF_NONE); \
 	button.set_tooltip_text(tooltip) ;\
 	button.signal_toggled().connect(sigc::mem_fun(*this, \
 		&studio::StateStar_Context::toggle_layer_creation))
 #endif
 
-// indentation for options layout
-#ifndef SPACING
-#define SPACING(name, px) \
-	Gtk::Alignment *name = Gtk::manage(new Gtk::Alignment()); \
-	name->set_size_request(px)
-#endif
-
 const int GAP = 3;
-const int INDENTATION = 6;
 
 /* === G L O B A L S ======================================================= */
 
@@ -107,21 +95,17 @@ class studio::StateStar_Context : public sigc::trackable
 
 	bool prev_workarea_layer_status_;
 
-	//Toolbox settings
+	// Toolbox settings
 	synfigapp::Settings& settings;
 
-	// holder of options
-	Gtk::Table options_table;
+	Gtk::Grid options_grid;
 
-	// title
 	Gtk::Label title_label;
 
-	// layer name:
 	Gtk::Label id_label;
-	Gtk::HBox id_box;
 	Gtk::Entry id_entry;
+	Gtk::Box id_box;
 
-	// layer types to create:
 	Gtk::Label layer_types_label;
 	Gtk::ToggleButton layer_star_togglebutton;
 	Gtk::ToggleButton layer_region_togglebutton;
@@ -129,79 +113,64 @@ class studio::StateStar_Context : public sigc::trackable
 	Gtk::ToggleButton layer_advanced_outline_togglebutton;
 	Gtk::ToggleButton layer_curve_gradient_togglebutton;
 	Gtk::ToggleButton layer_plant_togglebutton;
-	Gtk::HBox layer_types_box;
+	Gtk::Box layer_types_box;
 
-	// blend method
 	Gtk::Label blend_label;
-	Gtk::HBox blend_box;
 	Widget_Enum blend_enum;
+	Gtk::Box blend_box;
 
-	// opacity
 	Gtk::Label opacity_label;
-	Gtk::HScale opacity_hscl;
+	Gtk::Scale opacity_hscl;
 
-	// brush size
 	Gtk::Label bline_width_label;
 	Widget_Distance bline_width_dist;
 
-	// star points
 	Gtk::Label number_of_points_label;
 	Glib::RefPtr<Gtk::Adjustment> number_of_points_adj;
 	Gtk::SpinButton	number_of_points_spin;
 
-	// radius ratio
 	Gtk::Label radius_ratio_label;
 	Glib::RefPtr<Gtk::Adjustment> radius_ratio_adj;
 	Gtk::SpinButton	radius_ratio_spin;
 
-	// angle offset
 	Gtk::Label angle_offset_label;
 	Glib::RefPtr<Gtk::Adjustment> angle_offset_adj;
 	Gtk::SpinButton	angle_offset_spin;
 
-	// regular polygon
 	Gtk::Label regular_polygon_label;
 	Gtk::CheckButton regular_polygon_checkbutton;
-	Gtk::HBox regular_polygon_box;
+	Gtk::Box regular_polygon_box;
 
-	// inner width
 	Gtk::Label outer_width_label;
 	Glib::RefPtr<Gtk::Adjustment> outer_width_adj;
 	Gtk::SpinButton	outer_width_spin;
 
-	// inner tangent
 	Gtk::Label inner_tangent_label;
 	Glib::RefPtr<Gtk::Adjustment> inner_tangent_adj;
 	Gtk::SpinButton	inner_tangent_spin;
 
-	// outer width
 	Gtk::Label inner_width_label;
 	Glib::RefPtr<Gtk::Adjustment> inner_width_adj;
 	Gtk::SpinButton	inner_width_spin;
 
-	// outer tangent
 	Gtk::Label outer_tangent_label;
 	Glib::RefPtr<Gtk::Adjustment> outer_tangent_adj;
 	Gtk::SpinButton	outer_tangent_spin;
 
-	// invert
 	Gtk::Label invert_label;
 	Gtk::CheckButton invert_checkbutton;
-	Gtk::HBox invert_box;
+	Gtk::Box invert_box;
 
-	// feather size
 	Gtk::Label feather_label;
 	Widget_Distance feather_dist;
 
-	// link origins
 	Gtk::Label link_origins_label;
 	Gtk::CheckButton layer_link_origins_checkbutton;
-	Gtk::HBox link_origins_box;
+	Gtk::Box link_origins_box;
 
-	// spline origins at center
 	Gtk::Label origins_at_center_label;
 	Gtk::CheckButton layer_origins_at_center_checkbutton;
-	Gtk::HBox origins_at_center_box;
+	Gtk::Box origins_at_center_box;
 
 public:
 
@@ -366,127 +335,59 @@ StateStar_Context::load_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		String value;
-
 		//parse the arguments yargh!
-		if(settings.get_value("star.id",value))
-			set_id(value);
-		else
-			set_id("Star");
+		set_id(settings.get_value("star.id", "Star"));
 
-		if(settings.get_value("star.blend",value) && value != "")
-			set_blend(atoi(value.c_str()));
-		else
-			set_blend(0);//(int)Color::BLEND_COMPOSITE); //0 should be blend composites value
+		set_blend(settings.get_value("star.blend", int(Color::BLEND_COMPOSITE)));
 
-		if(settings.get_value("star.opacity",value))
-			set_opacity(atof(value.c_str()));
-		else
-			set_opacity(1);
+		set_opacity(settings.get_value("star.opacity", 1.0));
 
-		if(settings.get_value("star.bline_width",value) && value != "")
-			set_bline_width(Distance(atof(value.c_str()), App::distance_system));
-		else
-			set_bline_width(Distance(1, App::distance_system)); // default width
+		set_bline_width(settings.get_value("star.bline_width", Distance("1px")));
 
-		if(settings.get_value("star.feather",value))
-			set_feather_size(Distance(atof(value.c_str()), App::distance_system));
-		else
-			set_feather_size(Distance(0, App::distance_system)); // default feather
+		set_feather_size(settings.get_value("star.feather", Distance("0px")));
 
-		if(settings.get_value("star.number_of_points",value))
-			set_number_of_points(atof(value.c_str()));
-		else
-			set_number_of_points(5);
+		set_number_of_points(settings.get_value("star.number_of_points", 5));
 
-		if(settings.get_value("star.inner_tangent",value))
-			set_inner_tangent(atof(value.c_str()));
-		else
-			set_inner_tangent(0);
+		set_inner_tangent(settings.get_value("star.inner_tangent", 0.0));
 
-		if(settings.get_value("star.outer_tangent",value))
-			set_outer_tangent(atof(value.c_str()));
-		else
-			set_outer_tangent(0);
+		set_outer_tangent(settings.get_value("star.outer_tangent", 0.0));
 
-		if(settings.get_value("star.inner_width",value))
-			set_inner_width(atof(value.c_str()));
-		else
-			set_inner_width(1);
+		set_inner_width(settings.get_value("star.inner_width", 1.0));
 
-		if(settings.get_value("star.outer_width",value))
-			set_outer_width(atof(value.c_str()));
-		else
-			set_outer_width(1);
+		set_outer_width(settings.get_value("star.outer_width", 1.0));
 
-		if(settings.get_value("star.radius_ratio",value))
-			set_radius_ratio(atof(value.c_str()));
-		else
-			set_radius_ratio(0.5);
+		set_radius_ratio(settings.get_value("star.radius_ratio", 0.5));
 
-		//if(settings.get_value("star.angle_offset",value))
-		//	set_angle_offset(atof(value.c_str()));
-		//else
-			set_angle_offset(90.0);
+		//set_angle_offset(settings.get_value("star.angle_offset", 90.0));
+		set_angle_offset(90.0);
 
-		if(settings.get_value("star.invert",value) && value != "0")
-			set_invert(true);
-		else
-			set_invert(false);
+		set_invert(settings.get_value("star.invert", false));
 
-		if(settings.get_value("star.regular_polygon",value) && value != "0")
-			set_regular_polygon(true);
-		else
-			set_regular_polygon(false);
+		set_regular_polygon(settings.get_value("star.regular_polygon", false));
 
-		if(settings.get_value("star.layer_star",value) && value=="0")
-			set_layer_star_flag(false);
-		else
-			set_layer_star_flag(true);
+		set_layer_star_flag(settings.get_value("star.layer_star", true));
 
-		if(settings.get_value("star.layer_region",value) && value=="1")
-			set_layer_region_flag(true);
-		else
-			set_layer_region_flag(false);
+		set_layer_region_flag(settings.get_value("star.layer_region", false));
 
-		if(settings.get_value("star.layer_outline",value) && value=="1")
-			set_layer_outline_flag(true);
-		else
-			set_layer_outline_flag(false);
+		set_layer_outline_flag(settings.get_value("star.layer_outline", false));
 
-		if(settings.get_value("star.layer_advanced_outline",value) && value=="1")
-			set_layer_advanced_outline_flag(true);
-		else
-			set_layer_advanced_outline_flag(false);
+		set_layer_advanced_outline_flag(settings.get_value("star.layer_advanced_outline", false));
 
-		if(settings.get_value("star.layer_curve_gradient",value) && value=="1")
-			set_layer_curve_gradient_flag(true);
-		else
-			set_layer_curve_gradient_flag(false);
+		set_layer_curve_gradient_flag(settings.get_value("star.layer_curve_gradient", false));
 
-		if(settings.get_value("star.layer_plant",value) && value=="1")
-			set_layer_plant_flag(true);
-		else
-			set_layer_plant_flag(false);
+		set_layer_plant_flag(settings.get_value("star.layer_plant", false));
 
-		if(settings.get_value("star.layer_link_origins",value) && value=="0")
-			set_layer_link_origins_flag(false);
-		else
-			set_layer_link_origins_flag(true);
+		set_layer_link_origins_flag(settings.get_value("star.layer_link_origins", true));
 
-		if(settings.get_value("star.layer_origins_at_center",value) && value=="0")
-			set_layer_origins_at_center_flag(false);
-		else
-			set_layer_origins_at_center_flag(true);
+		set_layer_origins_at_center_flag(settings.get_value("star.layer_origins_at_center", true));
 
-	  // determine layer flags
+		// determine layer flags
 		layer_star_flag = get_layer_star_flag();
-	  layer_region_flag = get_layer_region_flag();
-	  layer_outline_flag = get_layer_outline_flag();
-	  layer_advanced_outline_flag = get_layer_outline_flag();
-	  layer_curve_gradient_flag = get_layer_curve_gradient_flag();
-	  layer_plant_flag = get_layer_plant_flag();
+		layer_region_flag = get_layer_region_flag();
+		layer_outline_flag = get_layer_outline_flag();
+		layer_advanced_outline_flag = get_layer_advanced_outline_flag();
+		layer_curve_gradient_flag = get_layer_curve_gradient_flag();
+		layer_plant_flag = get_layer_plant_flag();
 	}
 	catch(...)
 	{
@@ -499,29 +400,28 @@ StateStar_Context::save_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		settings.set_value("star.id",get_id());
-		settings.set_value("star.blend",strprintf("%d",get_blend()));
-		settings.set_value("star.opacity",strprintf("%f",(float)get_opacity()));
-		settings.set_value("star.bline_width", bline_width_dist.get_value().get_string());
-		settings.set_value("star.feather", feather_dist.get_value().get_string());
-		settings.set_value("star.number_of_points",strprintf("%d",(int)(get_number_of_points() + 0.5)));
-		settings.set_value("star.inner_tangent",strprintf("%f",(float)get_inner_tangent()));
-		settings.set_value("star.outer_tangent",strprintf("%f",(float)get_outer_tangent()));
-		settings.set_value("star.inner_width",strprintf("%f",(float)get_inner_width()));
-		settings.set_value("star.outer_width",strprintf("%f",(float)get_outer_width()));
-		settings.set_value("star.radius_ratio",strprintf("%f",(float)get_radius_ratio()));
-		//settings.set_value("star.angle_offset",strprintf("%f",(float)get_angle_offset()));
-		settings.set_value("star.invert",get_invert()?"1":"0");
-		settings.set_value("star.regular_polygon",get_regular_polygon()?"1":"0");
-		settings.set_value("star.layer_star",get_layer_star_flag()?"1":"0");
-		settings.set_value("star.layer_outline",get_layer_outline_flag()?"1":"0");
-		settings.set_value("star.layer_advanced_outline",get_layer_advanced_outline_flag()?"1":"0");
-		settings.set_value("star.layer_region",get_layer_region_flag()?"1":"0");
-		settings.set_value("star.layer_curve_gradient",get_layer_curve_gradient_flag()?"1":"0");
-		settings.set_value("star.layer_plant",get_layer_plant_flag()?"1":"0");
-		settings.set_value("star.layer_link_origins",get_layer_link_origins_flag()?"1":"0");
-		settings.set_value("star.layer_origins_at_center",get_layer_origins_at_center_flag()?"1":"0");
+		settings.set_value("star.blend",get_blend());
+		settings.set_value("star.opacity",get_opacity());
+		settings.set_value("star.bline_width", bline_width_dist.get_value());
+		settings.set_value("star.feather", feather_dist.get_value());
+		settings.set_value("star.number_of_points",(int)(get_number_of_points() + 0.5));
+		settings.set_value("star.inner_tangent",get_inner_tangent());
+		settings.set_value("star.outer_tangent",get_outer_tangent());
+		settings.set_value("star.inner_width",get_inner_width());
+		settings.set_value("star.outer_width",get_outer_width());
+		settings.set_value("star.radius_ratio",get_radius_ratio());
+		//settings.set_value("star.angle_offset",get_angle_offset()));
+		settings.set_value("star.invert",get_invert());
+		settings.set_value("star.regular_polygon",get_regular_polygon());
+		settings.set_value("star.layer_star",get_layer_star_flag());
+		settings.set_value("star.layer_outline",get_layer_outline_flag());
+		settings.set_value("star.layer_advanced_outline",get_layer_advanced_outline_flag());
+		settings.set_value("star.layer_region",get_layer_region_flag());
+		settings.set_value("star.layer_curve_gradient",get_layer_curve_gradient_flag());
+		settings.set_value("star.layer_plant",get_layer_plant_flag());
+		settings.set_value("star.layer_link_origins",get_layer_link_origins_flag());
+		settings.set_value("star.layer_origins_at_center",get_layer_origins_at_center_flag());
 	}
 	catch(...)
 	{
@@ -586,7 +486,7 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 	duckmatic_push(get_work_area()),
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
-	opacity_hscl(0.0f, 1.0125f, 0.0125f),
+	opacity_hscl(Gtk::Adjustment::create(1.0, 0.0, 1.0, 0.01, 0.1)),
 	number_of_points_adj(Gtk::Adjustment::create(0, 2, 120, 1, 1)),
 	number_of_points_spin(number_of_points_adj,1,0),
 	radius_ratio_adj(Gtk::Adjustment::create(0, -10, 10, 0.01, 0.1)),
@@ -604,275 +504,212 @@ StateStar_Context::StateStar_Context(CanvasView* canvas_view):
 {
 	egress_on_selection_change=true;
 
-	/* Set up the tool options dialog */
-
-	// 0, title
+	// Toolbox widgets
 	title_label.set_label(_("Star Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
 	title_label.set_attributes(list);
-	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	title_label.set_hexpand();
+	title_label.set_halign(Gtk::ALIGN_START);
+	title_label.set_valign(Gtk::ALIGN_CENTER);
 
-	// 1, layer name label and entry
 	id_label.set_label(_("Name:"));
-	id_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	SPACING(id_gap, GAP);
-	id_box.pack_start(id_label, Gtk::PACK_SHRINK);
-	id_box.pack_start(*id_gap, Gtk::PACK_SHRINK);
+	id_label.set_halign(Gtk::ALIGN_START);
+	id_label.set_valign(Gtk::ALIGN_CENTER);
+	id_label.get_style_context()->add_class("gap");
+	id_box.pack_start(id_label, false, false, 0);
+	id_box.pack_start(id_entry, true, true, 0);
 
-	id_box.pack_start(id_entry);
-
-	// 2, layer types creation
 	layer_types_label.set_label(_("Layer Type:"));
-	layer_types_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	layer_types_label.set_halign(Gtk::ALIGN_START);
+	layer_types_label.set_valign(Gtk::ALIGN_CENTER);
 
 	LAYER_CREATION(layer_star_togglebutton,
-		("synfig-layer_geometry_star"), _("Create a star layer"));
-
+		"layer_geometry_star_icon", _("Create a star layer"));
 	LAYER_CREATION(layer_region_togglebutton,
-		("synfig-layer_geometry_region"), _("Create a region layer"));
-
+		"layer_geometry_region_icon", _("Create a region layer"));
 	LAYER_CREATION(layer_outline_togglebutton,
-		("synfig-layer_geometry_outline"), _("Create an outline layer"));
-
+		"layer_geometry_outline_icon", _("Create an outline layer"));
 	LAYER_CREATION(layer_advanced_outline_togglebutton,
-		("synfig-layer_geometry_advanced_outline"), _("Create an advanced outline layer"));
-
+		"layer_geometry_advanced_outline_icon", _("Create an advanced outline layer"));
 	LAYER_CREATION(layer_plant_togglebutton,
-		("synfig-layer_other_plant"), _("Create a plant layer"));
-
+		"layer_other_plant_icon", _("Create a plant layer"));
 	LAYER_CREATION(layer_curve_gradient_togglebutton,
-		("synfig-layer_gradient_curve"), _("Create a gradient layer"));
+		"layer_gradient_curve_icon", _("Create a gradient layer"));
 
-	SPACING(layer_types_indent, INDENTATION);
+	layer_star_togglebutton.get_style_context()->add_class("indentation");
+	layer_types_box.pack_start(layer_star_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_region_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_outline_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_advanced_outline_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_plant_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_curve_gradient_togglebutton, false, false, 0);
 
-	layer_types_box.pack_start(*layer_types_indent, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_star_togglebutton, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_region_togglebutton, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_outline_togglebutton, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_advanced_outline_togglebutton, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_plant_togglebutton, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_curve_gradient_togglebutton, Gtk::PACK_SHRINK);
-
-	// 3, blend method label and dropdown list
 	blend_label.set_label(_("Blend Method:"));
-	blend_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	SPACING(blend_gap, GAP);
-	blend_box.pack_start(blend_label, Gtk::PACK_SHRINK);
-	blend_box.pack_start(*blend_gap, Gtk::PACK_SHRINK);
+	blend_label.set_halign(Gtk::ALIGN_START);
+	blend_label.set_valign(Gtk::ALIGN_CENTER);
+	blend_label.get_style_context()->add_class("gap");
+	blend_box.pack_start(blend_label, false, false, 0);
 
 	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
 		.set_local_name(_("Blend Method"))
 		.set_description(_("Defines the blend method to be used for stars")));
 
-	// 4, opacity label and slider
 	opacity_label.set_label(_("Opacity:"));
-	opacity_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	opacity_label.set_halign(Gtk::ALIGN_START);
+	opacity_label.set_valign(Gtk::ALIGN_CENTER);
 
 	opacity_hscl.set_digits(2);
 	opacity_hscl.set_value_pos(Gtk::POS_LEFT);
 	opacity_hscl.set_tooltip_text(_("Opacity"));
 
-	// 5, brush size
 	bline_width_label.set_label(_("Brush Size:"));
-	bline_width_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	bline_width_label.set_halign(Gtk::ALIGN_START);
+	bline_width_label.set_valign(Gtk::ALIGN_CENTER);
 	bline_width_label.set_sensitive(false);
 
 	bline_width_dist.set_digits(2);
 	bline_width_dist.set_range(0,10000000);
 	bline_width_dist.set_sensitive(false);
 
-	// 6, star points
 	number_of_points_label.set_label(_("Star Points:"));
-	number_of_points_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	number_of_points_label.set_halign(Gtk::ALIGN_START);
+	number_of_points_label.set_valign(Gtk::ALIGN_CENTER);
 
-	// 7, angle offset
 	angle_offset_label.set_label(_("Offset:"));
-	angle_offset_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	angle_offset_label.set_halign(Gtk::ALIGN_START);
+	angle_offset_label.set_valign(Gtk::ALIGN_CENTER);
 
-	// 8, radius ratio
 	radius_ratio_label.set_label(_("Radius Ratio:"));
-	radius_ratio_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	radius_ratio_label.set_halign(Gtk::ALIGN_START);
+	radius_ratio_label.set_valign(Gtk::ALIGN_CENTER);
 
-	// 9, regular polygon
 	regular_polygon_label.set_label(_("Regular Polygon"));
-	regular_polygon_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	regular_polygon_label.set_halign(Gtk::ALIGN_START);
+	regular_polygon_label.set_valign(Gtk::ALIGN_CENTER);
 
-	regular_polygon_box.pack_start(regular_polygon_label);
-	regular_polygon_box.pack_end(regular_polygon_checkbutton, Gtk::PACK_SHRINK);
+	regular_polygon_box.pack_start(regular_polygon_label, true, true, 0);
+	regular_polygon_box.pack_start(regular_polygon_checkbutton, false, false, 0);
 
-	// 10, inner width
 	inner_width_label.set_label(_("Inner Width:"));
-	inner_width_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	inner_width_label.set_halign(Gtk::ALIGN_START);
+	inner_width_label.set_valign(Gtk::ALIGN_CENTER);
 
-	// 11, inner tangent
 	inner_tangent_label.set_label(_("Inner Tangent:"));
-	inner_tangent_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	inner_tangent_label.set_halign(Gtk::ALIGN_START);
+	inner_tangent_label.set_valign(Gtk::ALIGN_CENTER);
 
-	// 12, outer width
 	outer_width_label.set_label(_("Outer Width:"));
-	outer_width_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	outer_width_label.set_halign(Gtk::ALIGN_START);
+	outer_width_label.set_valign(Gtk::ALIGN_CENTER);
 
-	// 13, outer tangent
 	outer_tangent_label.set_label(_("Outer Tangent:"));
-	outer_tangent_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	outer_tangent_label.set_halign(Gtk::ALIGN_START);
+	outer_tangent_label.set_valign(Gtk::ALIGN_CENTER);
 
-	// 14, invert
 	invert_label.set_label(_("Invert"));
-	invert_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	invert_label.set_halign(Gtk::ALIGN_START);
+	invert_label.set_valign(Gtk::ALIGN_CENTER);
 
-	invert_box.pack_start(invert_label);
-	invert_box.pack_end(invert_checkbutton, Gtk::PACK_SHRINK);
+	invert_box.pack_start(invert_label, true, true, 0);
+	invert_box.pack_start(invert_checkbutton, false, false, 0);
 	invert_box.set_sensitive(false);
 
-	// 15, feather
 	feather_label.set_label(_("Feather:"));
-	feather_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	feather_label.set_halign(Gtk::ALIGN_START);
+	feather_label.set_valign(Gtk::ALIGN_CENTER);
 	feather_label.set_sensitive(false);
 
 	feather_dist.set_digits(2);
 	feather_dist.set_range(0,10000000);
 	feather_dist.set_sensitive(false);
 
-	// 16, link origins
 	link_origins_label.set_label(_("Link Origins"));
-	link_origins_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	link_origins_label.set_halign(Gtk::ALIGN_START);
+	link_origins_label.set_valign(Gtk::ALIGN_CENTER);
 
-	link_origins_box.pack_start(link_origins_label);
-	link_origins_box.pack_end(layer_link_origins_checkbutton, Gtk::PACK_SHRINK);
+	link_origins_box.pack_start(link_origins_label, true, true, 0);
+	link_origins_box.pack_start(layer_link_origins_checkbutton, false, false, 0);
 	link_origins_box.set_sensitive(false);
 
-	// 17, spline origins at center
 	origins_at_center_label.set_label(_("Spline Origins at Center"));
-	origins_at_center_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	origins_at_center_label.set_halign(Gtk::ALIGN_START);
+	origins_at_center_label.set_valign(Gtk::ALIGN_CENTER);
 
-	origins_at_center_box.pack_start(origins_at_center_label);
-	origins_at_center_box.pack_end(layer_origins_at_center_checkbutton, Gtk::PACK_SHRINK);
+	origins_at_center_box.pack_start(origins_at_center_label, true, true, 0);
+	origins_at_center_box.pack_start(layer_origins_at_center_checkbutton, false, false, 0);
 	origins_at_center_box.set_sensitive(false);
 
 	load_settings();
 
-	// pack all options to the options_table
+	// Toolbox layout
+	options_grid.attach(title_label,
+		0, 0, 2, 1);
+	options_grid.attach(id_box,
+		0, 1, 2, 1);
+	options_grid.attach(layer_types_label,
+		0, 2, 2, 1);
+	options_grid.attach(layer_types_box,
+		0, 3, 2, 1);
+	options_grid.attach(blend_box,
+		0, 4, 1, 1);
+	options_grid.attach(blend_enum,
+		1, 4, 1, 1);
+	options_grid.attach(opacity_label,
+		0, 5, 1, 1);
+	options_grid.attach(opacity_hscl,
+		1, 5, 1, 1);
+	options_grid.attach(bline_width_label,
+		0, 6, 1, 1);
+	options_grid.attach(bline_width_dist,
+		1, 6, 1, 1);
+	options_grid.attach(number_of_points_label,
+		0, 7, 1, 1);
+	options_grid.attach(number_of_points_spin,
+		1, 7, 1, 1);
+	options_grid.attach(angle_offset_label,
+		0, 8, 1, 1);
+	options_grid.attach(angle_offset_spin,
+		1, 8, 1, 1);
+	options_grid.attach(radius_ratio_label,
+		0, 9, 1, 1);
+	options_grid.attach(radius_ratio_spin,
+		1, 9, 1, 1);
+	options_grid.attach(regular_polygon_box,
+		0, 10, 2, 1);
+	options_grid.attach(inner_width_label,
+		0, 11, 1, 1);
+	options_grid.attach(inner_width_spin,
+		1, 11, 1, 1);
+	options_grid.attach(inner_tangent_label,
+		0, 12, 1, 1);
+	options_grid.attach(inner_tangent_spin,
+		1, 12, 1, 1);
+	options_grid.attach(outer_width_label,
+		0, 13, 1, 1);
+	options_grid.attach(outer_width_spin,
+		1, 13, 1, 1);
+	options_grid.attach(outer_tangent_label,
+		0, 14, 1, 1);
+	options_grid.attach(outer_tangent_spin,
+		1, 14, 1, 1);
+	options_grid.attach(invert_box,
+		0, 15, 2, 1);
+	options_grid.attach(feather_label,
+		0, 16, 1, 1);
+	options_grid.attach(feather_dist,
+		1, 16, 1, 1);
+	options_grid.attach(link_origins_box,
+		0, 17, 2, 1);
+	options_grid.attach(origins_at_center_box,
+		0, 18, 2, 1);
 
-	// 0, title
-	options_table.attach(title_label,
-		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 1, name
-	options_table.attach(id_box,
-		0, 2, 1, 2, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 2, layer types creation
-	options_table.attach(layer_types_label,
-		0, 2, 2, 3, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(layer_types_box,
-		0, 2, 3, 4, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 3, blend method
-	options_table.attach(blend_box,
-		0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(blend_enum,
-		1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 4, opacity
-	options_table.attach(opacity_label,
-		0, 1, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(opacity_hscl,
-		1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 5, brush size
-	options_table.attach(bline_width_label,
-		0, 1, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(bline_width_dist,
-		1, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 6, star points
-	options_table.attach(number_of_points_label,
-		0, 1, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(number_of_points_spin,
-		1, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 7, star points offset
-	options_table.attach(angle_offset_label,
-		0, 1, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(angle_offset_spin,
-		1, 2, 8, 9, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 8, radius ratio
-	options_table.attach(radius_ratio_label,
-		0, 1, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(radius_ratio_spin,
-		1, 2, 9, 10, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 9, regular polygon
-	options_table.attach(regular_polygon_box,
-		0, 2, 10, 11, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 10, inner width
-	options_table.attach(inner_width_label,
-		0, 1, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(inner_width_spin,
-		1, 2, 11, 12, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 11, inner tangent
-	options_table.attach(inner_tangent_label,
-		0, 1, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(inner_tangent_spin,
-		1, 2, 12, 13, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 12, outer width
-	options_table.attach(outer_width_label,
-		0, 1, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(outer_width_spin,
-		1, 2, 13, 14, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 13, outer tangent
-	options_table.attach(outer_tangent_label,
-		0, 1, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(outer_tangent_spin,
-		1, 2, 14, 15, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 14, invert
-	options_table.attach(invert_box,
-		0, 2, 15, 16, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 15, feather
-	options_table.attach(feather_label,
-		0, 1, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(feather_dist,
-		1, 2, 16, 17, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 16, link origins
-	options_table.attach(link_origins_box,
-		0, 2, 17, 18, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 17, origins at center
-	options_table.attach(origins_at_center_box,
-		0, 2, 18, 19, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-
-	// fine-tune options layout
-	options_table.set_border_width(GAP*2); // border width
-	options_table.set_row_spacings(GAP); // row gap
-	options_table.set_row_spacing(0, GAP*2); // the gap between first and second row.
-	options_table.set_row_spacing(2, 1); // row gap between label and icon of layer type
-	//options_table.set_row_spacing(19, 0); // the final row using border width of table
-	options_table.set_margin_bottom(0);
-
-	options_table.show_all();
+	options_grid.set_vexpand(false);
+	options_grid.set_border_width(GAP*2);
+	options_grid.set_row_spacing(GAP);
+	options_grid.set_margin_bottom(0);
+	options_grid.show_all();
 
 	refresh_tool_options();
 	App::dialog_tool_options->present();
@@ -895,9 +732,9 @@ void
 StateStar_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_table);
+	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Star Tool"));
-	App::dialog_tool_options->set_name("star");
+	App::dialog_tool_options->set_icon("tool_star_icon");
 }
 
 Smach::event_result

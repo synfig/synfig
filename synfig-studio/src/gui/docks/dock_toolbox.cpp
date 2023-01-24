@@ -2,26 +2,27 @@
 /*!	\file dock_toolbox.cpp
 **	\brief writeme
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **  Copyright (c) 2008 Paul Wise
 **	Copyright (c) 2009 Nikita Kitaev
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
-**	\endlegal
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
 **
-** === N O T E S ===========================================================
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
+**	\endlegal
 **
 ** ========================================================================= */
 
@@ -67,13 +68,13 @@ using namespace studio;
 
 
 Dock_Toolbox::Dock_Toolbox():
-	Dockable("toolbox",_("Toolbox"),Gtk::StockID("synfig-about"))
+	Dockable("toolbox",_("Toolbox"),"about_icon")
 {
 	set_use_scrolled(false);
 	set_size_request(-1,-1);
 
 	tool_item_group = manage(new class Gtk::ToolItemGroup());
-	gtk_tool_item_group_set_label(tool_item_group->gobj(), NULL);
+	gtk_tool_item_group_set_label(tool_item_group->gobj(), nullptr);
 
 	Gtk::ToolPalette *palette = manage(new Gtk::ToolPalette());
 	palette->add(*tool_item_group);
@@ -92,8 +93,8 @@ Dock_Toolbox::Dock_Toolbox():
 	Widget_Defaults* widget_defaults(manage(new Widget_Defaults()));
 
 	tool_box_paned = manage(new Gtk::Paned(Gtk::ORIENTATION_VERTICAL));
-	tool_box_paned->pack1(*scrolled_window, Gtk::PACK_EXPAND_WIDGET|Gtk::PACK_SHRINK, 3);
-	tool_box_paned->pack2(*widget_defaults, Gtk::PACK_EXPAND_WIDGET|Gtk::PACK_SHRINK, 3);
+	tool_box_paned->pack1(*scrolled_window, Gtk::PACK_EXPAND_WIDGET|Gtk::PACK_SHRINK, false);
+	tool_box_paned->pack2(*widget_defaults, Gtk::PACK_EXPAND_WIDGET|Gtk::PACK_SHRINK, false);
 	tool_box_paned->set_position(200);
 	tool_box_paned->show_all();
 	add(*tool_box_paned);
@@ -121,8 +122,8 @@ Dock_Toolbox::~Dock_Toolbox()
 	//studio::App::cb.task(_("Toolbox: I was nailed!"));
 	//studio::App::quit();
 
-	if(studio::App::dock_toolbox==this)
-		studio::App::dock_toolbox=NULL;
+	if (studio::App::dock_toolbox == this)
+		studio::App::dock_toolbox = nullptr;
 }
 
 void Dock_Toolbox::write_layout_string(std::string& params) const

@@ -1,8 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file
+/*!	\file synfig/color/colorblendingfunctions.h
 **	\brief Color blending function implementation
-**
-**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -10,15 +8,20 @@
 **	Copyright (c) 2012-2013 Carlos López
 **	Copyright (c) 2015 Diego Barrios Romero
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -29,6 +32,7 @@
 #define COLOR_EPSILON	(0.000001f)
 
 #include <synfig/color.h>
+#include <synfig/real.h>
 #include <algorithm>
 
 namespace synfig {
@@ -174,7 +178,7 @@ C blendfunc_ADD_COMPOSITE(C &a,C &b,float amount)
 {
 	float ba(b.get_a());
 	float aa(a.get_a()*amount);
-	const float alpha(std::max(0.f, std::min(1.f, ba + aa)));
+	const float alpha(synfig::clamp(ba + aa, 0.f, 1.f));
 	const float k = fabs(alpha) > 1e-8 ? 1.0/alpha : 0.0;
 	aa *= k; ba *= k;
 

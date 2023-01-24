@@ -2,23 +2,26 @@
 /*!	\file layerparamtreestore.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2011 Carlos López
 **	Copyright (c) 2012-2013 Konstantin Dmitriev
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -105,8 +108,8 @@ LayerParamTreeStore::~LayerParamTreeStore()
 		changed_connection_list.pop_back();
 	}
 
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
-		synfig::info("LayerParamTreeStore::~LayerParamTreeStore(): Deleted");
+	DEBUG_LOG("SYNFIG_DEBUG_DESTRUCTORS",
+		"LayerParamTreeStore::~LayerParamTreeStore(): Deleted");
 }
 
 Glib::RefPtr<LayerParamTreeStore>
@@ -595,7 +598,26 @@ LayerParamTreeStore::on_value_node_replaced(synfig::ValueNode::Handle /*replaced
 	// failing as a result.  not sure how the tree code has a pointer
 	// rather than a handle - maybe it has a loosehandle, that would
 	// cause the problem I was seeing
-	rebuild();
+
+	// Maybe the comment above is deprecated. -^
+	// It seems we don't need to use the old solution (call queue_refresh()),
+	// neither the previous solution (rebuild(), commented out below).
+	// When a value node is replaced (via RHandle::replace()), it
+	// already calls Node::signal_changed() so the row is refreshed
+	// by other signal slot.
+	//
+	// Calling rebuild() causes two bugs:
+	// 1. Parameters panel collapses items on edit (GH#386), when we
+	//    we have Animation Mode enabled and are editing parameter that
+	//    wasn't previously animated.
+	//    'Solution' seems to be to call queue_refresh()
+	// 2. Crash (or emit Gtk warning) when we animate a parameter (like
+	//    previous case) that uses a combobox for editing (GH#2390), as
+	//    Active Layer Name of Switch Layer or Bone Parent in Bones list
+	//    of Skeleton Layer.
+	//    'Solution' seems to be to call queue_rebuild()
+
+	refresh();
 }
 
 void

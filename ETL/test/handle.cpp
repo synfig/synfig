@@ -1,21 +1,23 @@
 /*! ========================================================================
 ** Extended Template and Library Test Suite
 ** Handle Template Class Test
-** $Id$
 **
 ** Copyright (c) 2002 Robert B. Quattlebaum Jr.
 **
-** This package is free software; you can redistribute it and/or
-** modify it under the terms of the GNU General Public License as
-** published by the Free Software Foundation; either version 2 of
-** the License, or (at your option) any later version.
+** This file is part of Synfig.
 **
-** This package is distributed in the hope that it will be useful,
+** Synfig is free software: you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation, either version 2 of the License, or
+** (at your option) any later version.
+**
+** Synfig is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
-** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-** General Public License for more details.
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
 **
-** === N O T E S ===========================================================
+** You should have received a copy of the GNU General Public License
+** along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **
 ** ========================================================================= */
 
@@ -32,7 +34,6 @@
 /* === M A C R O S ========================================================= */
 
 #define NUMBER_OF_OBJECTS	40000
-using namespace std;
 
 /* === C L A S S E S ======================================================= */
 
@@ -79,9 +80,9 @@ int my_other_test_obj::instance_count=0;
 typedef etl::handle<my_test_obj> obj_handle;
 typedef etl::rhandle<my_test_obj> robj_handle;
 typedef etl::handle<my_other_test_obj> other_obj_handle;
-typedef list< obj_handle > obj_list;
-typedef list< other_obj_handle > other_obj_list;
-typedef list< robj_handle > robj_list;
+typedef std::list< obj_handle > obj_list;
+typedef std::list< other_obj_handle > other_obj_list;
+typedef std::list< robj_handle > robj_list;
 
 int handle_basic_test()
 {
@@ -106,7 +107,7 @@ int handle_basic_test()
 	}
 
 	{
-		map<string,etl::handle<my_test_obj> > my_map;
+		std::map<std::string, etl::handle<my_test_obj> > my_map;
 		etl::handle<my_test_obj> obj_handle(new my_test_obj(rand()));
 		my_map["bleh"]=obj_handle;
 	}

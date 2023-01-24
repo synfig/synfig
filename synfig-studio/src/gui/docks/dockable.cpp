@@ -2,20 +2,23 @@
 /*!	\file dockable.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -43,6 +46,8 @@
 #include <gui/docks/dockbook.h>
 #include <gui/docks/dockdialog.h>
 
+#include <gtkmm/icontheme.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -61,10 +66,10 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-Dockable::Dockable(const synfig::String& name, const synfig::String& local_name, Gtk::StockID stock_id):
+Dockable::Dockable(const synfig::String& name, const synfig::String& local_name, std::string icon_name_):
 	name_(name),
 	local_name_(local_name),
-	stock_id_(stock_id),
+	icon_name(icon_name_),
 	use_scrolled(true),
 	container(),
 	toolbar_container(),
@@ -142,7 +147,7 @@ void
 Dockable::set_local_name(const synfig::String& local_name)
 {
 	local_name_ = local_name;
-	signal_stock_id_changed()();
+	signal_icon_changed()();
 }
 
 void
@@ -150,11 +155,10 @@ Dockable::attach_dnd_to(Gtk::Widget& widget)
 {
 	std::vector<Gtk::TargetEntry> listTargets;
 	listTargets.push_back( Gtk::TargetEntry("SYNFIG_DOCK") );
-	Gtk::StockItem stock_item;
 
 	widget.drag_source_set(listTargets);
-	if (Gtk::Stock::lookup(get_stock_id(), stock_item))
-		widget.drag_source_set_icon(get_stock_id());
+	if (Gtk::IconTheme::get_default()->has_icon(icon_name))
+		widget.drag_source_set_icon(icon_name);
 	widget.drag_dest_set(listTargets);
 	widget.signal_drag_data_get().connect( sigc::mem_fun(*this, &Dockable::on_drag_data_get ));
 	widget.signal_drag_end().connect( sigc::mem_fun(*this, &Dockable::on_drag_end ));
@@ -200,7 +204,7 @@ void
 Dockable::set_toolbar(Gtk::Toolbar& toolbar)
 {
 	reset_toolbar();
-	toolbar.set_icon_size(Gtk::IconSize(1) /*GTK::ICON_SIZE_MENU*/);
+	toolbar.set_icon_size(Gtk::BuiltinIconSize::ICON_SIZE_MENU);
 	toolbar.set_toolbar_style(Gtk::TOOLBAR_ICONS);
 	toolbar.set_hexpand(true);
 	toolbar.set_vexpand(false);
@@ -209,7 +213,7 @@ Dockable::set_toolbar(Gtk::Toolbar& toolbar)
 }
 
 Gtk::ToolButton*
-Dockable::add_button(const Gtk::StockID& stock_id, const synfig::String& tooltip)
+Dockable::add_button(const std::string& icon_name, const synfig::String& tooltip)
 {
 	if (!toolbar_container) reset_toolbar();
 	Gtk::Toolbar *toolbar = dynamic_cast<Gtk::Toolbar*>(toolbar_container->get_child());
@@ -218,7 +222,8 @@ Dockable::add_button(const Gtk::StockID& stock_id, const synfig::String& tooltip
 		set_toolbar(*toolbar);
 	}
 
-	Gtk::ToolButton* ret(manage(new Gtk::ToolButton(stock_id)));
+	Gtk::ToolButton* ret(manage(new Gtk::ToolButton()));
+	ret->set_icon_name(icon_name);
 	ret->set_tooltip_text(tooltip);
 	ret->show();
 	toolbar->set_has_tooltip();
@@ -237,7 +242,7 @@ Dockable::reset_container()
 	container->show();
 	set_use_scrolled(use_scrolled);
 	attach(*container, 0, 0, 1, 1);
-	
+
 	// to avoid GTK warning:
 	//   Allocating size to widget without calling gtk_widget_get_preferred_width/height().
 	//   How does the code know the size to allocate?
@@ -245,7 +250,7 @@ Dockable::reset_container()
 	//App::process_all_events();
 	// Update:
 	// Seems bug in other place, process_all_events() here produces
-	// a concurrent event processing and collissions
+	// a concurrent event processing and collisions
 }
 
 void
@@ -278,7 +283,7 @@ Dockable::present()
 		DockBook* book = manage(new DockBook());
 		book->add(*this);
 		book->show();
-		
+
 		DockDialog* dock_dialog(new DockDialog());
 		dock_dialog->add(*book);
 		dock_dialog->present();
@@ -293,14 +298,20 @@ Dockable::create_tab_label()
 	attach_dnd_to(*event_box);
 
 	// Check to make sure the icon is valid
-	Gtk::StockItem stock_item;
-	if (Gtk::Stock::lookup(get_stock_id(), stock_item)) {
+	if (Gtk::IconTheme::get_default()->has_icon(icon_name)) {
 		// add icon
 		Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
-		Gtk::Image* icon(manage(new Gtk::Image(get_stock_id(), iconsize)));
+
+#if GTK_CHECK_VERSION(3,24,0)
+		Gtk::Image* icon(manage(new Gtk::Image(icon_name, iconsize)));
+#else
+		Gtk::Image* icon(manage(new Gtk::Image()));
+		icon->set_from_icon_name(icon_name, iconsize);
+#endif
 		icon->show();
 		event_box->set_tooltip_text(get_local_name());
 		event_box->add(*icon);
+
 	} else {
 		// bad icon, add label
 		Gtk::Label* label = manage(new Gtk::Label(get_local_name()));

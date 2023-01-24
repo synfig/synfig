@@ -2,20 +2,23 @@
 /*!	\file synfig/rendering/opengl/task/taskcontourgl.cpp
 **	\brief TaskContourGL
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -180,13 +183,13 @@ TaskContourGL::run(RunParams & /* params */) const
 	// transformation
 
 	Vector rect_size = source_rect.get_size();
-	Matrix bounds_transfromation;
-	bounds_transfromation.m00 = 2.0/rect_size[0];
-	bounds_transfromation.m11 = 2.0/rect_size[1];
-	bounds_transfromation.m20 = -1.0 - source_rect.minx*bounds_transfromation.m00;
-	bounds_transfromation.m21 = -1.0 - source_rect.miny*bounds_transfromation.m11;
+	Matrix bounds_transformation;
+	bounds_transformation.m00 = 2.0/rect_size[0];
+	bounds_transformation.m11 = 2.0/rect_size[1];
+	bounds_transformation.m20 = -1.0 - source_rect.minx*bounds_transformation.m00;
+	bounds_transformation.m21 = -1.0 - source_rect.miny*bounds_transformation.m11;
 
-	Matrix matrix = bounds_transfromation * transformation->matrix;
+	Matrix matrix = bounds_transformation * transformation->matrix;
 
 	// apply bounds
 

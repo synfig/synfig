@@ -1,23 +1,30 @@
 /* =========================================================================
 ** Extended Template and Library
-** stringf Procedure Implementation
-** $Id$
+** \file _stringf.h
+** \brief stringf Procedure Implementation
+** \internal
 **
+** \legal
 ** Copyright (c) 2002 Robert B. Quattlebaum Jr.
 ** Copyright (c) 2007 Chris Moore
 **
-** This package is free software; you can redistribute it and/or
-** modify it under the terms of the GNU General Public License as
-** published by the Free Software Foundation; either version 2 of
-** the License, or (at your option) any later version.
+** This file is part of Synfig.
 **
-** This package is distributed in the hope that it will be useful,
+** Synfig is free software: you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation, either version 2 of the License, or
+** (at your option) any later version.
+**
+** Synfig is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
-** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-** General Public License for more details.
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
 **
-** === N O T E S ===========================================================
+** You should have received a copy of the GNU General Public License
+** along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
+** \endlegal
 **
+** \note
 ** This is an internal header file, included by other ETL headers.
 ** You should not attempt to use it directly.
 **
@@ -35,19 +42,13 @@
 #endif
 
 #include <string>
-#include <cstdarg>
-#include <cstdlib>
 #include <glibmm/miscutils.h>
 
 /* === M A C R O S ========================================================= */
 
-#ifdef _WIN32
-#define POPEN_BINARY_READ_TYPE "rb"
+#define ETL_DIRECTORY_SEPARATOR		'/'
+
 #define POPEN_BINARY_WRITE_TYPE "wb"
-#else
-#define POPEN_BINARY_READ_TYPE "r"
-#define POPEN_BINARY_WRITE_TYPE "w"
-#endif
 
 /* === T Y P E D E F S ===================================================== */
 
@@ -55,67 +56,9 @@
 
 namespace etl {
 
-inline std::string
-vstrprintf(const char *format, va_list args)
-{
-#ifdef _MSC_VER
-	const int size = 8192; // MSVC doesn't support dynamic allocation, so make it static
-#else
-	// determine the length
-	va_list args_copy;
-	va_copy(args_copy, args);
-	int size = vsnprintf(NULL, 0, format, args_copy);
-	va_end(args_copy);
-	if (size < 0) size = 0;
-	++size;
-#endif
-	// allocate buffer in stack (c99/c++11 only) and call vsnprintf again
-	char buffer[size + 1]; // +space for trailing zero
-	vsnprintf(buffer, size, format, args);
-	return buffer;
-}
-
-inline std::string
-strprintf(const char *format, ...)
-{
-	va_list args;
-	va_start(args,format);
-	const std::string buf = vstrprintf(format, args);
-	va_end(args);
-	return buf;
-}
-
-inline int
-vstrscanf(const std::string &data, const char*format, va_list args)
-{
-    return vsscanf(data.c_str(),format,args);
-}
-
-inline int
-strscanf(const std::string &data, const char*format, ...)
-{
-	va_list args;
-	va_start(args,format);
-	const int buf = vstrscanf(data, format, args);
-	va_end(args);
-	return buf;
-}
-
-
-inline double stratof(const std::string &str)
-{
-	return atof(str.c_str());
-}
-
-inline double stratoi(const std::string &str)
-{
-	return atoi(str.c_str());
-}
-
-
 inline bool is_separator(char c)
 {
-	return c == ETL_DIRECTORY_SEPARATOR0 || c == ETL_DIRECTORY_SEPARATOR1;
+	return c == '/' || c == '\\';
 }
 
 inline std::string
@@ -180,6 +123,12 @@ dirname(const std::string &str)
 		   return ".";
 	}
 
+#ifdef _WIN32
+	// leave the trailing separator after windows drive name
+	if (std::distance(str.begin(), iter) == 2 && str.size() >= 3 && str[1] == ':' && is_separator(str[2]))
+		++iter;
+#endif
+
 	return std::string(str.begin(),iter);
 }
 
@@ -215,27 +164,6 @@ is_absolute_path(const std::string &path)
 	if(!path.empty() && is_separator(path[0]))
 		return true;
 	return false;
-}
-
-inline std::string
-unix_to_local_path(const std::string &path)
-{
-	std::string ret;
-	std::string::const_iterator iter;
-	for(iter=path.begin();iter!=path.end();iter++)
-		if (is_separator(*iter))
-			ret+=ETL_DIRECTORY_SEPARATOR;
-		else
-		switch(*iter)
-		{
-		case '~':
-			ret+='~';
-			break;
-		default:
-			ret+=*iter;
-			break;
-		}
-	return ret;
 }
 
 inline std::string
@@ -278,8 +206,6 @@ remove_root_from_path(std::string path)
 inline std::string
 cleanup_path(std::string path)
 {
-    std::string ret;
-
     // remove '.'
     for(int i = 0; i < (int)path.size();)
     {
@@ -327,15 +253,15 @@ cleanup_path(std::string path)
 				// path[i-1] is not a separator (double separators removed already),
 				// so path[i-1] is part of valid directory entry,
 				// also is not a special entry ('.' or '..'), see previous case and stage "remove '.'"
-				size_t pos = path.find_last_of(ETL_DIRECTORY_SEPARATORS, i-1);
-				if (pos == std::string::npos) {
+				size_t dir_separator_pos = path.find_last_of("/\\", i-1);
+				if (dir_separator_pos == std::string::npos) {
 					path.erase(0, i+3 >= (int)path.size() ? i+3 : i+4);
 					i = 0;
 				}
 				else
 				{
-					path.erase(pos + 1, (i+3 >= (int)path.size() ? i+3 : i+4) - (int)pos - 1);
-					i = (int)pos;
+					path.erase(dir_separator_pos + 1, (i+3 >= (int)path.size() ? i+3 : i+4) - (int)dir_separator_pos - 1);
+					i = (int)dir_separator_pos;
 				}
 			}
         }
@@ -400,7 +326,7 @@ relative_path(std::string curr_path,std::string dest_path)
 
 	while(!curr_path.empty())
 	{
-		dest_path=std::string("..")+ETL_DIRECTORY_SEPARATOR+dest_path;
+		dest_path="../"+dest_path;
 		curr_path=remove_root_from_path(curr_path);
 	}
 

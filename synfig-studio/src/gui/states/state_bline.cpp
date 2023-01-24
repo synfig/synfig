@@ -2,22 +2,25 @@
 /*!	\file state_bline.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **  Copyright (c) 2010, 2011 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -33,12 +36,8 @@
 
 #include <gui/states/state_bline.h>
 
-#include <gtkmm/alignment.h>
 #include <gtkmm/imagemenuitem.h>
 #include <gtkmm/separatormenuitem.h>
-
-#include <ETL/calculus>
-#include <ETL/hermite>
 
 #include <gui/app.h>
 #include <gui/canvasview.h>
@@ -52,6 +51,7 @@
 #include <gui/widgets/widget_enum.h>
 #include <gui/workarea.h>
 
+#include <synfig/bezier.h>
 #include <synfig/general.h>
 #include <synfig/valuenodes/valuenode_bline.h>
 
@@ -61,7 +61,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;
@@ -72,27 +71,15 @@ using namespace studio;
 #define DISTINGUISH_FIRST_DUCK
 
 #ifndef LAYER_CREATION
-#define LAYER_CREATION(button, stockid, tooltip)	\
-	{ \
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), \
-			Gtk::ICON_SIZE_SMALL_TOOLBAR)); \
-		button.add(*icon); \
-	} \
+#define LAYER_CREATION(button, icon_name, tooltip) \
+	button.set_image_from_icon_name(icon_name, Gtk::BuiltinIconSize::ICON_SIZE_SMALL_TOOLBAR); \
 	button.set_relief(Gtk::RELIEF_NONE); \
 	button.set_tooltip_text(tooltip) ;\
 	button.signal_toggled().connect(sigc::mem_fun(*this, \
 		&studio::StateBLine_Context::toggle_layer_creation))
 #endif
 
-// indentation for options layout
-#ifndef SPACING
-#define SPACING(name, px) \
-	Gtk::Alignment *name = Gtk::manage(new Gtk::Alignment()); \
-	name->set_size_request(px)
-#endif
-
 const int GAP = 3;
-const int INDENTATION = 6;
 
 /* === G L O B A L S ======================================================= */
 
@@ -125,10 +112,13 @@ class studio::StateBLine_Context : public sigc::trackable
 	bool on_vertex_change(const studio::Duck &duck, synfig::ValueNode_Const::Handle value_node);
 	bool on_tangent1_change(const studio::Duck &duck, handle<WorkArea::Duck> other_duck, synfig::ValueNode_Const::Handle value_node);
 	bool on_tangent2_change(const studio::Duck &duck, handle<WorkArea::Duck> other_duck, synfig::ValueNode_Const::Handle value_node);
+	void on_first_duck_clicked();
 
 	void popup_handle_menu(synfig::ValueNode_Const::Handle value_node);
 	void popup_vertex_menu(synfig::ValueNode_Const::Handle value_node);
 	void popup_bezier_menu(float location, synfig::ValueNode_Const::Handle value_node);
+
+	Gtk::MenuItem* create_split_merge_menu_item(const String& title, bool split_angle, bool split_radius, const String& icon, ValueNode_Const::Handle& value_node);
 
 	void bline_set_split_handle(synfig::ValueNode_Const::Handle value_node, bool merge_radius, bool merge_angle);
 	void bline_delete_vertex(synfig::ValueNode_Const::Handle value_node);
@@ -138,55 +128,45 @@ class studio::StateBLine_Context : public sigc::trackable
 
 	void refresh_ducks(bool x=true);
 
-	//Toolbox settings
+	// Toolbox settings
 	synfigapp::Settings& settings;
 
-	// holder of options
-	Gtk::Table options_table;
+	Gtk::Grid options_grid;
 
-	// title
 	Gtk::Label title_label;
 
-	// layer name:
 	Gtk::Label id_label;
-	Gtk::HBox id_box;
 	Gtk::Entry id_entry;
+	Gtk::Box id_box;
 
-	// layer types to create:
 	Gtk::Label layer_types_label;
 	Gtk::ToggleButton layer_region_togglebutton;
 	Gtk::ToggleButton layer_outline_togglebutton;
 	Gtk::ToggleButton layer_advanced_outline_togglebutton;
 	Gtk::ToggleButton layer_curve_gradient_togglebutton;
 	Gtk::ToggleButton layer_plant_togglebutton;
-	Gtk::HBox layer_types_box;
+	Gtk::Box layer_types_box;
 
-	// blend method
 	Gtk::Label blend_label;
-	Gtk::HBox blend_box;
 	Widget_Enum blend_enum;
+	Gtk::Box blend_box;
 
-	// opacity
 	Gtk::Label opacity_label;
-	Gtk::HScale opacity_hscl;
+	Gtk::Scale opacity_hscl;
 
-	// brush size
 	Gtk::Label bline_width_label;
 	Widget_Distance bline_width_dist;
 
-	// feather size
 	Gtk::Label feather_label;
 	Widget_Distance feather_dist;
 
-	// link origins
 	Gtk::Label link_origins_label;
 	Gtk::CheckButton layer_link_origins_checkbutton;
-	Gtk::HBox link_origins_box;
+	Gtk::Box link_origins_box;
 
-	// auto export
 	Gtk::Label auto_export_label;
 	Gtk::CheckButton auto_export_checkbutton;
-	Gtk::HBox auto_export_box;
+	Gtk::Box auto_export_box;
 
 public:
 
@@ -304,6 +284,19 @@ public:
 
 };	// END of class StateBLine_Context
 
+/* === P R O C E D U R E S ================================================= */
+
+static Gtk::Image*
+create_image_from_icon(const std::string& icon_name, Gtk::IconSize icon_size)
+{
+#if GTK_CHECK_VERSION(3,24,0)
+	return new Gtk::Image(icon_name, icon_size);
+#else
+	Gtk::Image* image = new Gtk::Image();
+	image->set_from_icon_name(icon_name, icon_size);
+	return image;
+#endif
+}
 
 /* === M E T H O D S ======================================================= */
 
@@ -338,75 +331,36 @@ StateBLine_Context::load_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		String value;
+		set_id(settings.get_value("bline.id", _("NewSpline")));
 
-		if(settings.get_value("bline.id",value))
-			set_id(value);
-		else
-			set_id(_("NewSpline"));
+		set_blend(settings.get_value("bline.blend", int(Color::BLEND_COMPOSITE)));
 
-		if(settings.get_value("bline.blend",value) && value != "")
-			set_blend(atoi(value.c_str()));
-		else
-			set_blend(0);//(int)Color::BLEND_COMPOSITE); //0 should be blend composites value
+		set_opacity(settings.get_value("bline.opacity", 1.0));
 
-		if(settings.get_value("bline.opacity",value))
-			set_opacity(atof(value.c_str()));
-		else
-			set_opacity(1);
+		set_bline_width(settings.get_value("bline.bline_width", Distance("1px")));
 
-		if(settings.get_value("bline.bline_width",value) && value != "")
-			set_bline_width(Distance(atof(value.c_str()), App::distance_system));
-		else
-			set_bline_width(Distance(1, App::distance_system)); // default width
+		set_layer_region_flag(settings.get_value("bline.layer_region", true));
 
-		if(settings.get_value("bline.layer_region",value) && value=="0")
-			set_layer_region_flag(false);
-		else
-			set_layer_region_flag(true);
+		set_layer_outline_flag(settings.get_value("bline.layer_outline", false));
 
-		if(settings.get_value("bline.layer_outline",value) && value=="1")
-			set_layer_outline_flag(true);
-		else
-			set_layer_outline_flag(false);
+		set_layer_advanced_outline_flag(settings.get_value("bline.layer_advanced_outline", true));
 
-		if(settings.get_value("bline.layer_advanced_outline",value) && value=="0")
-			set_layer_advanced_outline_flag(false);
-		else
-			set_layer_advanced_outline_flag(true);
+		set_layer_curve_gradient_flag(settings.get_value("bline.layer_curve_gradient", false));
 
-		if(settings.get_value("bline.layer_curve_gradient",value) && value=="1")
-			set_layer_curve_gradient_flag(true);
-		else
-			set_layer_curve_gradient_flag(false);
+		set_layer_plant_flag(settings.get_value("bline.layer_plant", false));
 
-		if(settings.get_value("bline.layer_plant",value) && value=="1")
-			set_layer_plant_flag(true);
-		else
-			set_layer_plant_flag(false);
+		set_layer_link_origins_flag(settings.get_value("bline.layer_link_origins", true));
 
-		if(settings.get_value("bline.layer_link_origins",value) && value=="0")
-			set_layer_link_origins_flag(false);
-		else
-			set_layer_link_origins_flag(true);
+		set_auto_export_flag(settings.get_value("bline.auto_export", false));
 
-		if(settings.get_value("bline.auto_export",value) && value=="1")
-			set_auto_export_flag(true);
-		else
-			set_auto_export_flag(false);
+		set_feather_size(settings.get_value("bline.feather", Distance("0px")));
 
-		if(settings.get_value("bline.feather",value))
-			set_feather_size(Distance(atof(value.c_str()), App::distance_system));
-		else
-			set_feather_size(Distance(0, App::distance_system));
-
-	  // determine layer flags
-	  layer_region_flag = get_layer_region_flag();
-	  layer_outline_flag = get_layer_outline_flag();
-	  layer_advanced_outline_flag = get_layer_outline_flag();
-	  layer_curve_gradient_flag = get_layer_curve_gradient_flag();
-	  layer_plant_flag = get_layer_plant_flag();
+		// determine layer flags
+		layer_region_flag = get_layer_region_flag();
+		layer_outline_flag = get_layer_outline_flag();
+		layer_advanced_outline_flag = get_layer_advanced_outline_flag();
+		layer_curve_gradient_flag = get_layer_curve_gradient_flag();
+		layer_plant_flag = get_layer_plant_flag();
 
 		sanity_check();
 	}
@@ -421,20 +375,19 @@ StateBLine_Context::save_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		sanity_check();
-		settings.set_value("bline.id",get_id().c_str());
-		settings.set_value("bline.layer_outline",get_layer_outline_flag()?"1":"0");
-		settings.set_value("bline.layer_advanced_outline",get_layer_advanced_outline_flag()?"1":"0");
-		settings.set_value("bline.layer_region",get_layer_region_flag()?"1":"0");
-		settings.set_value("bline.layer_curve_gradient",get_layer_curve_gradient_flag()?"1":"0");
-		settings.set_value("bline.layer_plant",get_layer_plant_flag()?"1":"0");
-		settings.set_value("bline.layer_link_origins",get_layer_link_origins_flag()?"1":"0");
-		settings.set_value("bline.blend",strprintf("%d",get_blend()));
-		settings.set_value("bline.opacity",strprintf("%f",(float)get_opacity()));
-		settings.set_value("bline.bline_width", bline_width_dist.get_value().get_string());
-		settings.set_value("bline.feather", feather_dist.get_value().get_string());
-		settings.set_value("bline.auto_export",get_auto_export_flag()?"1":"0");
+		settings.set_value("bline.id",get_id());
+		settings.set_value("bline.layer_outline",get_layer_outline_flag());
+		settings.set_value("bline.layer_advanced_outline",get_layer_advanced_outline_flag());
+		settings.set_value("bline.layer_region",get_layer_region_flag());
+		settings.set_value("bline.layer_curve_gradient",get_layer_curve_gradient_flag());
+		settings.set_value("bline.layer_plant",get_layer_plant_flag());
+		settings.set_value("bline.layer_link_origins",get_layer_link_origins_flag());
+		settings.set_value("bline.blend",get_blend());
+		settings.set_value("bline.opacity",get_opacity());
+		settings.set_value("bline.bline_width", bline_width_dist.get_value());
+		settings.set_value("bline.feather", feather_dist.get_value());
+		settings.set_value("bline.auto_export",get_auto_export_flag());
 
 	}
 	catch(...)
@@ -505,174 +458,139 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 	depth(-1),
 	duckmatic_push(get_work_area()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
-	opacity_hscl(0.0f, 1.0125f, 0.0125f)
+	opacity_hscl(Gtk::Adjustment::create(1.0, 0.0, 1.0, 0.01, 0.1))
 {
 	egress_on_selection_change=true;
 
-	/* Set up the tool options dialog */
-
-	// 0, title
+	// Toolbox widgets
 	title_label.set_label(_("Spline Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
 	title_label.set_attributes(list);
-	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	title_label.set_hexpand();
+	title_label.set_halign(Gtk::ALIGN_START);
+	title_label.set_valign(Gtk::ALIGN_CENTER);
 
-	// 1, layer name label and entry
 	id_label.set_label(_("Name:"));
-	id_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	SPACING(id_gap, GAP);
-	id_box.pack_start(id_label, Gtk::PACK_SHRINK);
-	id_box.pack_start(*id_gap, Gtk::PACK_SHRINK);
+	id_label.set_halign(Gtk::ALIGN_START);
+	id_label.set_valign(Gtk::ALIGN_CENTER);
+	id_label.get_style_context()->add_class("gap");
+	id_box.pack_start(id_label, false, false, 0);
+	id_box.pack_start(id_entry, true, true, 0);
 
-	id_box.pack_start(id_entry);
-
-	// 2, layer types creation
 	layer_types_label.set_label(_("Layer Type:"));
-	layer_types_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	layer_types_label.set_halign(Gtk::ALIGN_START);
+	layer_types_label.set_valign(Gtk::ALIGN_CENTER);
 
 	LAYER_CREATION(layer_region_togglebutton,
-		("synfig-layer_geometry_region"), _("Create a region layer"));
-
+		"layer_geometry_region_icon", _("Create a region layer"));
 	LAYER_CREATION(layer_outline_togglebutton,
-		("synfig-layer_geometry_outline"), _("Create an outline layer"));
-
+		"layer_geometry_outline_icon", _("Create an outline layer"));
 	LAYER_CREATION(layer_advanced_outline_togglebutton,
-		("synfig-layer_geometry_advanced_outline"), _("Create an advanced outline layer"));
-
+		"layer_geometry_advanced_outline_icon", _("Create an advanced outline layer"));
 	LAYER_CREATION(layer_plant_togglebutton,
-		("synfig-layer_other_plant"), _("Create a plant layer"));
-
+		"layer_other_plant_icon", _("Create a plant layer"));
 	LAYER_CREATION(layer_curve_gradient_togglebutton,
-		("synfig-layer_gradient_curve"), _("Create a gradient layer"));
+		"layer_gradient_curve_icon", _("Create a gradient layer"));
 
-	SPACING(layer_types_indent, INDENTATION);
+	layer_region_togglebutton.get_style_context()->add_class("indentation");
 
-	layer_types_box.pack_start(*layer_types_indent, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_region_togglebutton, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_outline_togglebutton, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_advanced_outline_togglebutton, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_plant_togglebutton, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_curve_gradient_togglebutton, Gtk::PACK_SHRINK);
+	layer_types_box.pack_start(layer_region_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_outline_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_advanced_outline_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_plant_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_curve_gradient_togglebutton, false, false, 0);
 
-	// 3, blend method label and dropdown list
 	blend_label.set_label(_("Blend Method:"));
-	blend_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	SPACING(blend_gap, GAP);
-	blend_box.pack_start(blend_label, Gtk::PACK_SHRINK);
-	blend_box.pack_start(*blend_gap, Gtk::PACK_SHRINK);
+	blend_label.set_halign(Gtk::ALIGN_START);
+	blend_label.set_valign(Gtk::ALIGN_CENTER);
+	blend_label.get_style_context()->add_class("gap");
+	blend_box.pack_start(blend_label, false, false, 0);
 
 	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
 		.set_local_name(_("Blend Method"))
 		.set_description(_("Defines the blend method to be used for splines")));
 
-	// 4, opacity label and slider
 	opacity_label.set_label(_("Opacity:"));
-	opacity_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	opacity_label.set_halign(Gtk::ALIGN_START);
+	opacity_label.set_valign(Gtk::ALIGN_CENTER);
 
 	opacity_hscl.set_digits(2);
 	opacity_hscl.set_value_pos(Gtk::POS_LEFT);
 	opacity_hscl.set_tooltip_text(_("Opacity"));
 
-	// 5, brush size
 	bline_width_label.set_label(_("Brush Size:"));
-	bline_width_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	bline_width_label.set_halign(Gtk::ALIGN_START);
+	bline_width_label.set_valign(Gtk::ALIGN_CENTER);
 	bline_width_label.set_sensitive(false);
 
 	bline_width_dist.set_digits(2);
 	bline_width_dist.set_range(0,10000000);
 	bline_width_dist.set_sensitive(false);
 
-	// 6, feather
 	feather_label.set_label(_("Feather:"));
-	feather_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	feather_label.set_halign(Gtk::ALIGN_START);
+	feather_label.set_valign(Gtk::ALIGN_CENTER);
 	feather_label.set_sensitive(false);
 
 	feather_dist.set_digits(2);
 	feather_dist.set_range(0,10000000);
 	feather_dist.set_sensitive(false);
 
-	// 7, link origins
 	link_origins_label.set_label(_("Link Origins"));
-	link_origins_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	link_origins_label.set_halign(Gtk::ALIGN_START);
+	link_origins_label.set_valign(Gtk::ALIGN_CENTER);
 
-	link_origins_box.pack_start(link_origins_label);
-	link_origins_box.pack_end(layer_link_origins_checkbutton, Gtk::PACK_SHRINK);
+	link_origins_box.pack_start(link_origins_label, true, true, 0);
+	link_origins_box.pack_start(layer_link_origins_checkbutton, false, false, 0);
 	link_origins_box.set_sensitive(false);
 
-	// 8, auto export
 	auto_export_label.set_label(_("Auto Export"));
-	auto_export_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	auto_export_label.set_halign(Gtk::ALIGN_START);
+	auto_export_label.set_valign(Gtk::ALIGN_CENTER);
 
-	auto_export_box.pack_start(auto_export_label);
-	auto_export_box.pack_end(auto_export_checkbutton, Gtk::PACK_SHRINK);
+	auto_export_box.pack_start(auto_export_label, true, true, 0);
+	auto_export_box.pack_start(auto_export_checkbutton, false, false, 0);
 	auto_export_box.set_sensitive(true);
 
 	load_settings();
 
-	// pack all options to the options_table
+	// Toolbox layout
+	options_grid.attach(title_label,
+		0, 0, 2, 1);
+	options_grid.attach(id_box,
+		0, 1, 2, 1);
+	options_grid.attach(layer_types_label,
+		0, 2, 2, 1);
+	options_grid.attach(layer_types_box,
+		0, 3, 2, 1);
+	options_grid.attach(blend_box,
+		0, 4, 1, 1);
+	options_grid.attach(blend_enum,
+		1, 4, 1, 1);
+	options_grid.attach(opacity_label,
+		0, 5, 1, 1);
+	options_grid.attach(opacity_hscl,
+		1, 5, 1, 1);
+	options_grid.attach(bline_width_label,
+		0, 6, 1, 1);
+	options_grid.attach(bline_width_dist,
+		1, 6, 1, 1);
+	options_grid.attach(feather_label,
+		0, 7, 1, 1);
+	options_grid.attach(feather_dist,
+		1, 7, 1, 1);
+	options_grid.attach(link_origins_box,
+		0, 8, 2, 1);
+	options_grid.attach(auto_export_box,
+		0, 9, 2, 1);
 
-	// 0, title
-	options_table.attach(title_label,
-		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 1, name
-	options_table.attach(id_box,
-		0, 2, 1, 2, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 2, layer types creation
-	options_table.attach(layer_types_label,
-		0, 2, 2, 3, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(layer_types_box,
-		0, 2, 3, 4, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 3, blend method
-	options_table.attach(blend_box,
-		0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(blend_enum,
-		1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 4, opacity
-	options_table.attach(opacity_label,
-		0, 1, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(opacity_hscl,
-		1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 5, brush size
-	options_table.attach(bline_width_label,
-		0, 1, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(bline_width_dist,
-		1, 2, 6, 7, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 6, feather
-	options_table.attach(feather_label,
-		0, 1, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(feather_dist,
-		1, 2, 7, 8, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 7, link origins
-	options_table.attach(link_origins_box,
-		0, 2, 8, 9, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 8, auto export
-	options_table.attach(auto_export_box,
-		0, 2, 9, 10, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-
-	// fine-tune options layout
-	options_table.set_border_width(GAP*2); // border width
-	options_table.set_row_spacings(GAP); // row gap
-	options_table.set_row_spacing(0, GAP*2); // the gap between first and second row.
-	options_table.set_row_spacing(2, 1); // row gap between label and icon of layer type
-	//options_table.set_row_spacing(10, 0); //// the final row using border width of table
-	options_table.set_margin_bottom(0);
-	options_table.show_all();
+	options_grid.set_vexpand(false);
+	options_grid.set_border_width(GAP*2);
+	options_grid.set_row_spacing(GAP);
+	options_grid.set_margin_bottom(0);
+	options_grid.show_all();
 
 	refresh_tool_options();
 	App::dialog_tool_options->present();
@@ -702,12 +620,12 @@ void
 StateBLine_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_table);
+	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Spline Tool"));
-	App::dialog_tool_options->set_name("bline");
+	App::dialog_tool_options->set_icon("tool_spline_icon");
 
 	App::dialog_tool_options->add_button(
-		Gtk::StockID("gtk-execute"),
+		"system-run",
 		_("Make Spline")
 	)->signal_clicked().connect(
 		sigc::hide_return(sigc::mem_fun(
@@ -717,7 +635,7 @@ StateBLine_Context::refresh_tool_options()
 	);
 
 	App::dialog_tool_options->add_button(
-		Gtk::StockID("gtk-clear"),
+		"edit-clear",
 		_("Clear current Spline")
 	)->signal_clicked().connect(
 		sigc::mem_fun(
@@ -1294,7 +1212,7 @@ StateBLine_Context::event_key_press_handler(const Smach::event& x)
 			run();
 		return Smach::RESULT_ACCEPT;
 	}
-	return Smach::RESULT_REJECT;
+	return Smach::RESULT_OK;
 }
 
 Smach::event_result
@@ -1307,7 +1225,7 @@ StateBLine_Context::event_key_release_handler(const Smach::event& x)
 		reset();
 		return Smach::RESULT_ACCEPT;
 	}
-	return Smach::RESULT_REJECT;
+	return Smach::RESULT_OK;
 }
 
 Smach::event_result
@@ -1399,7 +1317,7 @@ StateBLine_Context::refresh_ducks(bool button_down)
 	if(bline_point_list.empty())
 		return;
 
-	list<ValueNode_Const::Handle>::iterator iter;
+	std::list<ValueNode_Const::Handle>::iterator iter;
 
 	handle<WorkArea::Bezier> bezier;
 	handle<WorkArea::Duck> duck,tduck1,tduck2,first_tduck1,first_tduck2;
@@ -1424,10 +1342,7 @@ StateBLine_Context::refresh_ducks(bool button_down)
 #endif
 		// Loop it and finish if user clicked on the first vertex
 		if (iter == bline_point_list.begin()) {
-			duck->signal_user_click(0).connect([&](){
-				loop_=true;
-				run();
-			});
+			duck->signal_user_click(0).connect(sigc::mem_fun(*this, &StateBLine_Context::on_first_duck_clicked));
 		}
 
 		duck->set_name(strprintf("%p-vertex",value_node.get()));
@@ -1483,7 +1398,7 @@ StateBLine_Context::refresh_ducks(bool button_down)
 		}
 
 		// Now we see if we need to create a bezier
-		list<ValueNode_Const::Handle>::iterator next(iter);
+		std::list<ValueNode_Const::Handle>::iterator next(iter);
 		next++;
 
 		bezier=new WorkArea::Bezier();
@@ -1666,6 +1581,13 @@ StateBLine_Context::on_tangent2_change(const studio::Duck &duck, handle<WorkArea
 }
 
 void
+StateBLine_Context::on_first_duck_clicked()
+{
+	loop_=true;
+	run();
+}
+
+void
 StateBLine_Context::loop_bline()
 {
 	loop_=true;
@@ -1688,41 +1610,26 @@ StateBLine_Context::popup_vertex_menu(synfig::ValueNode_Const::Handle value_node
 	for(std::vector<Gtk::Widget*>::iterator i = children.begin(); i != children.end(); ++i)
 		menu.remove(**i);
 
-	Gtk::MenuItem *item = NULL;
-	Gtk::ImageMenuItem *item2 = NULL;
+	Gtk::MenuItem* item = nullptr;
 
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
-	#define STATE_BLINE_ADD_MENU_ITEM(title, split_angle, split_radius, icon) \
-	do {                                                                \
-		item2 = manage(new Gtk::ImageMenuItem(                       \
-				*manage(new Gtk::Image(			    \
-					Gtk::StockID(icon),		\
-					Gtk::ICON_SIZE_MENU )),			\
-				_(title)));                     \
-		item2->signal_activate().connect(                                \
-				sigc::bind(                                             \
-					sigc::mem_fun(*this,&studio::StateBLine_Context::bline_set_split_handle), \
-					value_node, split_angle, split_radius ));           \
-		item2->show();                                                   \
-		menu.append(*item2);                                             \
-	} while (false)
 
 	bool split_angle = bline_point.get_split_tangent_angle();
 	bool split_radius = bline_point.get_split_tangent_radius();
 	
 	if (split_angle && split_radius)
-		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents", false, false, "gtk-connect");
+		menu.append(*create_split_merge_menu_item(_("Merge Tangents"), false, false, "tangent_merge_icon", value_node));
 	else if (!split_angle && !split_radius)
-		STATE_BLINE_ADD_MENU_ITEM("Split Tangents", true, true, "gtk-disconnect");
+		menu.append(*create_split_merge_menu_item(_("Split Tangents"), true, true, "tangent_split_icon", value_node));
 	else if (!split_angle && split_radius)
 	{
-		STATE_BLINE_ADD_MENU_ITEM("Split Tangents", true, true, "gtk-disconnect");
-		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents", false, false, "gtk-connect");
+		menu.append(*create_split_merge_menu_item(_("Split Tangents"), true, true, "tangent_split_icon", value_node));
+		menu.append(*create_split_merge_menu_item(_("Merge Tangents"), false, false, "tangent_merge_icon", value_node));
 	}
 	else if (split_angle && !split_radius)
 	{
-		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents", false, false, "gtk-connect");
-		STATE_BLINE_ADD_MENU_ITEM("Split Tangents", true, true, "gtk-disconnect");
+		menu.append(*create_split_merge_menu_item(_("Merge Tangents"), false, false, "tangent_merge_icon", value_node));
+		menu.append(*create_split_merge_menu_item(_("Split Tangents"), true, true, "tangent_split_icon", value_node));
 	}
 	
 	item = manage(new Gtk::SeparatorMenuItem());
@@ -1730,17 +1637,15 @@ StateBLine_Context::popup_vertex_menu(synfig::ValueNode_Const::Handle value_node
 	menu.append(*item);
 
 	if (split_angle)
-		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents's Angle", false, split_radius, "synfig-type_angle");
+		menu.append(*create_split_merge_menu_item(_("Merge Tangents's Angle"), false, split_radius, "type_angle_icon", value_node));
 	else
-		STATE_BLINE_ADD_MENU_ITEM("Split Tangents's Angle", true, split_radius, "synfig-type_angle");
+		menu.append(*create_split_merge_menu_item(_("Split Tangents's Angle"), true, split_radius, "type_angle_icon", value_node));
 
 	if (split_radius)
-		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents's Radius", split_angle, false, "synfig-type_vector");
+		menu.append(*create_split_merge_menu_item(_("Merge Tangents's Radius"), split_angle, false, "type_vector_icon", value_node));
 	else
-		STATE_BLINE_ADD_MENU_ITEM("Split Tangents's Radius", split_angle, true, "synfig-type_vector");
+		menu.append(*create_split_merge_menu_item(_("Split Tangents's Radius"), split_angle, true, "type_vector_icon", value_node));
 
-	#undef STATE_BLINE_ADD_MENU_ITEM
-	
 	item = manage(new Gtk::SeparatorMenuItem());
 	item->show();
 	menu.append(*item);
@@ -1782,7 +1687,7 @@ StateBLine_Context::popup_bezier_menu(float location, synfig::ValueNode_Const::H
 	for(std::vector<Gtk::Widget*>::iterator i = children.begin(); i != children.end(); ++i)
 		menu.remove(**i);
 
-	Gtk::MenuItem *item = NULL;
+	Gtk::MenuItem* item = nullptr;
 	item = manage(new Gtk::MenuItem(_("Insert Vertex")));
 	item->signal_activate().connect(
 		sigc::bind(
@@ -1815,10 +1720,24 @@ StateBLine_Context::popup_bezier_menu(float location, synfig::ValueNode_Const::H
 	menu.popup(0, gtk_get_current_event_time());
 }
 
+Gtk::MenuItem*
+StateBLine_Context::create_split_merge_menu_item(const std::string& title, bool split_angle, bool split_radius, const std::string& icon, ValueNode_Const::Handle& value_node)
+{
+	Gtk::MenuItem* item = Gtk::manage(new Gtk::ImageMenuItem(
+			*manage(create_image_from_icon(icon, Gtk::ICON_SIZE_MENU)),
+			title));
+	item->signal_activate().connect(
+			sigc::bind(
+				sigc::mem_fun(*this, &studio::StateBLine_Context::bline_set_split_handle),
+				value_node, split_angle, split_radius ));
+	item->show();
+	return item;
+}
+
 void
 StateBLine_Context::bline_insert_vertex(synfig::ValueNode_Const::Handle value_node, float origin)
 {
-	list<ValueNode_Const::Handle>::iterator iter;
+	std::list<ValueNode_Const::Handle>::iterator iter;
 
 	for(iter=bline_point_list.begin();iter!=bline_point_list.end();++iter)
 		if(*iter==value_node)
@@ -1827,7 +1746,7 @@ StateBLine_Context::bline_insert_vertex(synfig::ValueNode_Const::Handle value_no
 			BLinePoint next_bline_point((*iter)->get_value().get(BLinePoint()));
 			BLinePoint prev_bline_point;
 
-			list<ValueNode_Const::Handle>::iterator prev(iter);
+			std::list<ValueNode_Const::Handle>::iterator prev(iter);
 			if(iter==bline_point_list.begin())
 			{
 				assert(loop_);
@@ -1837,17 +1756,16 @@ StateBLine_Context::bline_insert_vertex(synfig::ValueNode_Const::Handle value_no
 
 			prev_bline_point=(*prev)->get_value().get(BLinePoint());
 
-			etl::hermite<Vector> curve(prev_bline_point.get_vertex(),
+			hermite<Vector> curve(prev_bline_point.get_vertex(),
 									   next_bline_point.get_vertex(),
 									   prev_bline_point.get_tangent2(),
 									   next_bline_point.get_tangent1());
-			etl::derivative< etl::hermite<Vector> > deriv(curve);
 
 			bline_point.set_split_tangent_angle(false);
 			bline_point.set_split_tangent_radius(false);
 			bline_point.set_vertex(curve(origin));
 			bline_point.set_width((next_bline_point.get_width()-prev_bline_point.get_width())*origin+prev_bline_point.get_width());
-			bline_point.set_tangent1(deriv(origin)*std::min(1.0f-origin,origin));
+			bline_point.set_tangent1(curve.derivative(origin)*std::min(1.0f-origin,origin));
 			bline_point.set_tangent2(bline_point.get_tangent1());
 			bline_point.set_origin(origin);
 			bline_point_list.insert(iter,ValueNode_Const::Handle::cast_dynamic(ValueNode_Const::create(bline_point)));
@@ -1868,7 +1786,7 @@ StateBLine_Context::bline_delete_vertex(synfig::ValueNode_Const::Handle value_no
 {
 	bool vertex_deleted = false;
 
-	for(list<ValueNode_Const::Handle>::iterator iter=bline_point_list.begin();iter!=bline_point_list.end();++iter)
+	for(std::list<ValueNode_Const::Handle>::iterator iter=bline_point_list.begin();iter!=bline_point_list.end();++iter)
 		if(*iter==value_node)
 		{
 			bline_point_list.erase(iter);
@@ -1892,56 +1810,39 @@ StateBLine_Context::popup_handle_menu(synfig::ValueNode_Const::Handle value_node
 
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
 
-	Gtk::MenuItem *item = NULL;
-	Gtk::ImageMenuItem *item2 = NULL;
-	#define STATE_BLINE_ADD_MENU_ITEM(title, split_angle, split_radius, icon)	\
-	do {                                                                \
-		item2 = manage(new Gtk::ImageMenuItem(                       \
-				*Gtk::manage(new Gtk::Image(			    \
-					Gtk::StockID(icon),		\
-					Gtk::ICON_SIZE_MENU )),			\
-				_(title)));                     \
-		item2->signal_activate().connect(                                \
-			sigc::bind(													\
-				sigc::mem_fun(*this,&studio::StateBLine_Context::bline_set_split_handle), \
-				value_node, split_angle, split_radius ));               \
-		item2->show();                                                   \
-		menu.append(*item2);                                             \
-	} while(false)
+	Gtk::MenuItem* item = nullptr;
 
 	bool split_angle = bline_point.get_split_tangent_angle();
 	bool split_radius = bline_point.get_split_tangent_radius();
 	
 	if (split_angle && split_radius)
-		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents", false, false, "gtk-connect");
+		menu.append(*create_split_merge_menu_item(_("Merge Tangents"), false, false, "tangent_merge_icon", value_node));
 	else if (!split_angle && !split_radius)
-		STATE_BLINE_ADD_MENU_ITEM("Split Tangents", true, true, "gtk-disconnect");
+		menu.append(*create_split_merge_menu_item(_("Split Tangents"), true, true, "tangent_split_icon", value_node));
 	else if (!split_angle && split_radius)
 	{
-		STATE_BLINE_ADD_MENU_ITEM("Split Tangents", true, true, "gtk-disconnect");
-		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents", false, false, "gtk-connect");
+		menu.append(*create_split_merge_menu_item(_("Split Tangents"), true, true, "tangent_split_icon", value_node));
+		menu.append(*create_split_merge_menu_item(_("Merge Tangents"), false, false, "tangent_merge_icon", value_node));
 	}
 	else if (split_angle && !split_radius)
 	{
-		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents", false, false, "gtk-connect");
-		STATE_BLINE_ADD_MENU_ITEM("Split Tangents", true, true, "gtk-disconnect");
+		menu.append(*create_split_merge_menu_item(_("Merge Tangents"), false, false, "tangent_merge_icon", value_node));
+		menu.append(*create_split_merge_menu_item(_("Split Tangents"), true, true, "tangent_split_icon", value_node));
 	}
-	
+
 	item = manage(new Gtk::SeparatorMenuItem());
 	item->show();
 	menu.append(*item);
 
 	if (split_angle)
-		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents's Angle", false, split_radius, "synfig-type_angle");
+		menu.append(*create_split_merge_menu_item(_("Merge Tangents's Angle"), false, split_radius, "type_angle_icon", value_node));
 	else
-		STATE_BLINE_ADD_MENU_ITEM("Split Tangents's Angle", true, split_radius, "synfig-type_angle");
+		menu.append(*create_split_merge_menu_item(_("Split Tangents's Angle"), true, split_radius, "type_angle_icon", value_node));
 
 	if (split_radius)
-		STATE_BLINE_ADD_MENU_ITEM("Merge Tangents's Radius", split_angle, false, "synfig-type_vector");
+		menu.append(*create_split_merge_menu_item(_("Merge Tangents's Radius"), split_angle, false, "type_vector_icon", value_node));
 	else
-		STATE_BLINE_ADD_MENU_ITEM("Split Tangents's Radius", split_angle, true, "synfig-type_vector");
-
-	#undef STATE_BLINE_ADD_MENU_ITEM
+		menu.append(*create_split_merge_menu_item(_("Split Tangents's Radius"), split_angle, true, "type_vector_icon", value_node));
 
 	item = manage(new Gtk::SeparatorMenuItem());
 	item->show();

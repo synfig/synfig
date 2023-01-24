@@ -2,20 +2,23 @@
 /*!	\file layermakebline.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2013 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -42,8 +45,6 @@
 
 #endif
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
 using namespace Action;
@@ -65,15 +66,23 @@ using namespace Action;
 
 ACTION_LAYERMAKEBLINE_IMPLEMENT(
 		LayerMakeOutline, N_("Make Outline"), "outline", false,
-		"advanced_outline", "region");
+		"advanced_outline", "region", "plant", "curve_gradient");
 
 ACTION_LAYERMAKEBLINE_IMPLEMENT(
 		LayerMakeAdvancedOutline, N_("Make Advanced Outline"), "advanced_outline", false,
-		"outline", "region");
+		"outline", "region", "plant", "curve_gradient");
 
 ACTION_LAYERMAKEBLINE_IMPLEMENT(
 		LayerMakeRegion, N_("Make Region"), "region", true,
-		"outline", "advanced_outline");
+		"outline", "advanced_outline", "plant", "curve_gradient");
+
+ACTION_LAYERMAKEBLINE_IMPLEMENT(
+		LayerMakeCurveGradient, N_("Make Curve Gradient"), "curve_gradient", true,
+		"outline", "advanced_outline", "region", "plant");
+
+ACTION_LAYERMAKEBLINE_IMPLEMENT(
+		LayerMakePlant, N_("Make Plant"), "plant", false,
+		"outline", "advanced_outline", "region", "curve_gradient");
 
 /* === G L O B A L S ======================================================= */
 

@@ -2,22 +2,25 @@
 /*!	\file state_rotate.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **  Copyright (c) 2008 Chris Moore
 **  Copyright (c) 2010 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -50,8 +53,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -107,12 +108,12 @@ class studio::StateRotate_Context : public sigc::trackable
 
 	etl::handle<DuckDrag_Rotate> duck_dragger_;
 
-	Gtk::Table options_table;
+	Gtk::Grid options_grid;
 	Gtk::Label title_label;
 
 	Gtk::Label scale_label;
 	Gtk::CheckButton scale_checkbutton;
-	Gtk::HBox scale_box;
+	Gtk::Box scale_box;
 
 public:
 
@@ -162,13 +163,7 @@ StateRotate_Context::load_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		String value;
-
-		if(settings.get_value("rotate.scale",value) && value=="0")
-			set_scale_flag(false);
-		else
-			set_scale_flag(true);
+		set_scale_flag(settings.get_value("rotate.scale", true));
 	}
 	catch(...)
 	{
@@ -181,8 +176,7 @@ StateRotate_Context::save_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		settings.set_value("rotate.scale",get_scale_flag()?"1":"0");
+		settings.set_value("rotate.scale",get_scale_flag());
 	}
 	catch(...)
 	{
@@ -198,41 +192,44 @@ StateRotate_Context::StateRotate_Context(CanvasView* canvas_view):
 {
 	duck_dragger_->canvas_view_=get_canvas_view();
 
-	// Set up the tool options dialog
+	// Toolbox widgets
 	title_label.set_label(_("Rotate Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
 	title_label.set_attributes(list);
-	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	
+	title_label.set_hexpand();
+	title_label.set_halign(Gtk::ALIGN_START);
+	title_label.set_valign(Gtk::ALIGN_CENTER);
+
 	scale_label.set_label(_("Allow Scale"));
-	scale_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	
-	scale_box.pack_start(scale_label);
-	scale_box.pack_end(scale_checkbutton, Gtk::PACK_SHRINK);
-	
-	options_table.attach(title_label,
-		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(scale_box,
-		0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
-		);
+	scale_label.set_halign(Gtk::ALIGN_START);
+	scale_label.set_valign(Gtk::ALIGN_CENTER);
+
+	scale_box.pack_start(scale_label, true, true, 0);
+	scale_box.pack_start(scale_checkbutton, false, false, 0);
+
+	// Toolbox layout
+	options_grid.attach(title_label,
+		0, 0, 2, 1);
+	options_grid.attach(scale_box,
+		0, 1, 2, 1);
 
 	scale_checkbutton.signal_toggled().connect(sigc::mem_fun(*this,&StateRotate_Context::refresh_scale_flag));
 
-	options_table.set_border_width(GAP*2);
-	options_table.set_row_spacings(GAP);
-	options_table.show_all();
+	options_grid.set_hexpand();
+	options_grid.set_vexpand(false);
+	options_grid.set_border_width(GAP*2);
+	options_grid.set_row_spacing(GAP);
+	options_grid.show_all();
+
 	refresh_tool_options();
-	//App::dialog_tool_options->set_widget(options_table);
 	App::dialog_tool_options->present();
 
 	get_work_area()->set_allow_layer_clicks(true);
 	get_work_area()->set_duck_dragger(duck_dragger_);
 
 	get_work_area()->set_cursor(Gdk::EXCHANGE);
-//	get_work_area()->reset_cursor();
 
 	App::dock_toolbox->refresh();
 
@@ -244,9 +241,9 @@ void
 StateRotate_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_table);
+	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Rotate Tool"));
-	App::dialog_tool_options->set_name("rotate");
+	App::dialog_tool_options->set_icon("tool_rotate_icon");
 }
 
 Smach::event_result
@@ -320,10 +317,10 @@ DuckDrag_Rotate::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& off
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
 	{
 		Point p((*iter)->get_trans_point());
-		vmin[0]=min(vmin[0],p[0]);
-		vmin[1]=min(vmin[1],p[1]);
-		vmax[0]=max(vmax[0],p[0]);
-		vmax[1]=max(vmax[1],p[1]);
+		vmin[0]=std::min(vmin[0],p[0]);
+		vmin[1]=std::min(vmin[1],p[1]);
+		vmax[0]=std::max(vmax[0],p[0]);
+		vmax[1]=std::max(vmax[1],p[1]);
 		positions.push_back(p);
 	}
 	center=(vmin+vmax)*0.5;

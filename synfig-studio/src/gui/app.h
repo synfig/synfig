@@ -2,23 +2,26 @@
 /*!	\file app.h
 **	\brief writeme
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2008, 2013 Carlos López
 **	Copyright (c) 2012 Konstantin Dmitriev
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -29,10 +32,8 @@
 #define __SYNFIG_STUDIO_APP_H
 
 /* === H E A D E R S ======================================================= */
-#include <ETL/smart_ptr>
 
 #include <gtkmm/box.h>
-#include <gtkmm/main.h>
 #include <gtkmm/uimanager.h>
 
 #include <gui/iconcontroller.h>
@@ -40,6 +41,7 @@
 #include <gui/pluginmanager.h>
 
 #include <list>
+#include <memory>
 #include <set>
 #include <string>
 
@@ -112,16 +114,13 @@ class Dock_Navigator;
 class Dock_LayerGroups;
 class Dock_SoundWave;
 
-class IPC;
-
 class Module;
 
 class StateManager;
 
-class WorkspaceHandler;
-
-class App : public Gtk::Main, private IconController
+class App : public Gtk::Application, private IconController
 {
+	class Preferences;
 	friend class Preferences;
 	friend class Dialog_Setup;
 
@@ -130,6 +129,8 @@ class App : public Gtk::Main, private IconController
 	*/
 
 public:
+	static Glib::RefPtr<App> instance();
+	void init(const synfig::String& basepath);
 
 	struct Busy
 	{
@@ -163,11 +164,9 @@ private:
 	static Dock_History *dock_history;
 	static Dock_Canvases *dock_canvases;
 	static Dock_LayerGroups *dock_layer_groups;
-
-	static IPC *ipc;
 */
 
-	etl::smart_ptr<synfigapp::Main> synfigapp_main;
+	std::shared_ptr<synfigapp::Main> synfigapp_main;
 
 
 	static etl::handle<Instance> selected_instance;
@@ -179,7 +178,9 @@ private:
 
 //	static std::list< etl::handle< Module > > module_list_;
 
-	static WorkspaceHandler *workspaces;
+	static std::string icon_theme_name;
+
+	static Preferences _preferences;
 
 	/*
  -- ** -- P U B L I C   D A T A -----------------------------------------------
@@ -245,8 +246,6 @@ public:
 
 	static Dock_Info* dock_info_; //For Render ProgressBar
 
-	static WorkspaceHandler * get_workspace_handler() {return workspaces;}
-
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
 	*/
@@ -276,8 +275,6 @@ public:
 
 	static sigc::signal<void> &signal_recent_files_changed();
 
-	static sigc::signal<void> &signal_custom_workspaces_changed();
-
 	static sigc::signal<
 		void,
 		etl::loose_handle<CanvasView>
@@ -304,6 +301,18 @@ public:
 
 private:
 	static void add_recent_file(const std::string &filename, bool emit_signal);
+	static bool dialog_open_file_ext(const std::string &title, std::vector<std::string> &filenames, std::string preference, bool allow_multiple_selection);
+
+	App();
+
+protected:
+	int on_handle_local_options(const Glib::RefPtr<Glib::VariantDict>& options);
+	void on_activate() override;
+	void on_open(const type_vec_files& files, const Glib::ustring& hint) override;
+
+	void on_shutdown();
+
+	static void init_icon_themes();
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -311,8 +320,7 @@ private:
 
 public:
 
-	App(const synfig::String& basepath, int *argc, char ***argv);
-	virtual ~App();
+	virtual ~App() = default;
 
 	/*
  -- ** -- S T A T I C   P U B L I C   M E T H O D S ---------------------------
@@ -332,23 +340,20 @@ public:
 	static void save_settings();
 	static bool load_settings(const synfig::String& key_filter = "");
 	static void load_accel_map();
-	static void load_file_window_size();
+	static void save_accel_map();
+	/// \param[out] map Maps AccelKey to Action
+	static const std::map<const char*, const char*>& get_default_accel_map();
+	static void load_recent_files();
 	static void load_language_settings();
-	static void set_workspace_default();
-	static void set_workspace_compositing();
-	static void set_workspace_animating();
-	static void set_workspace_from_template(const std::string &tpl);
-	static void set_workspace_from_name(const std::string &name);
-	static void load_custom_workspaces();
-	static void save_custom_workspace();
-	static void edit_custom_workspace_list();
 	static void apply_gtk_settings();
 
-	static std::string get_synfig_icon_theme();
+	// Get the currently used icon theme name
+	static std::string get_icon_theme_name();
+	// Get the icon theme name explicitly set by user preferences
+	static std::string get_raw_icon_theme_name();
+	static void set_icon_theme(const std::string &theme_name);
 
 	static const std::list<std::string>& get_recent_files();
-
-	static const std::vector<std::string> get_workspaces();
 
 	static const etl::handle<synfigapp::UIInterface>& get_ui_interface();
 
@@ -404,12 +409,13 @@ public:
 	static synfig::Time::Format get_time_format();
 	static void set_time_format(synfig::Time::Format x);
 
-	static bool shutdown_request(GdkEventAny*bleh=NULL);
+	static bool shutdown_request(GdkEventAny* bleh = nullptr);
 
 //	static bool dialog_file(const std::string &title, std::string &filename);
 
 	static bool dialog_select_importer(const std::string& filename, std::string& plugin);
 	static bool dialog_open_file(const std::string &title, std::string &filename, std::string preference);
+	static bool dialog_open_file(const std::string &title, std::vector<std::string> &filenames, std::string preference);
 	static bool dialog_open_file_spal(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_open_file_sketch(const std::string &title, std::string &filename, std::string preference);
 	static bool dialog_open_file_image(const std::string &title, std::string &filename, std::string preference);
@@ -441,7 +447,7 @@ public:
 	static void dialog_message_1b(
 			const std::string &type,
 			const std::string &message,
-			const std::string &detials,
+			const std::string &details,
 			const std::string &button1,
 			const std::string &long_details = "long_details");
 
@@ -471,8 +477,8 @@ public:
 	// This fixes bug 1890020
 	static void setup_changed();
 
-	static void process_all_events(long unsigned int us = 1);
-	static bool check_python_version( std::string path);
+	static void process_all_events();
+	static bool check_python_version(const std::string& path);
 }; // END of class App
 
 	void delete_widget(Gtk::Widget *widget);

@@ -2,21 +2,24 @@
 /*!	\file widgets/widget_fontfamily.cpp
 **	\brief Widget to select font family
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2020 Rodolfo Ribeiro Gomes
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -149,12 +152,16 @@ Widget_FontFamily::Widget_FontFamily()
 	set_model(enum_TreeModel);
 	set_wrap_width(1); // https://github.com/synfig/synfig/issues/650
 
-	if (get_has_entry())
-		static_cast<Gtk::Entry*>(get_child())->signal_activate().connect([=](){ signal_activate().emit(); });
-	signal_changed().connect([=]() {
-		if (!get_has_entry() || get_active_row_number() != -1)
-			signal_activate().emit();
-	});
+	if (get_has_entry()) {
+		Gtk::Entry* entry = static_cast<Gtk::Entry*>(get_child());
+		entry->signal_activate().connect(sigc::mem_fun(signal_activate(), &sigc::signal<void>::emit));
+
+		Glib::RefPtr<Gtk::EntryCompletion> completion = Gtk::EntryCompletion::create();
+		completion->set_model(enum_TreeModel);
+		completion->set_text_column(0);
+
+		entry->set_completion(completion);
+	}
 }
 
 Widget_FontFamily::~Widget_FontFamily()
@@ -189,4 +196,7 @@ Widget_FontFamily::on_changed()
 		Gtk::TreeModel::Row row = *iter;
 		value = row.get_value(enum_model.value);
 	}
+
+	if (!get_has_entry() || get_active_row_number() != -1)
+		signal_activate().emit();
 }

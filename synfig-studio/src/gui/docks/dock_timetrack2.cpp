@@ -2,21 +2,24 @@
 /*!	\file docks/dock_timetrack2.cpp
 **	\brief Dock to displaying layer parameters timetrack
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **  ......... ... 2020 Rodolfo Ribeiro Gomes
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 
@@ -34,13 +37,14 @@
 #include <gui/widgets/widget_timetrack.h>
 #include <gui/canvasview.h>
 #include <gui/localization.h>
+#include <gui/iconcontroller.h>
 
 #endif
 
 using namespace studio;
 
 Dock_Timetrack2::Dock_Timetrack2()
-	: Dock_CanvasSpecific("timetrack", _("Timetrack"), Gtk::StockID("synfig-timetrack")),
+	: Dock_CanvasSpecific("timetrack", _("Timetrack"), "time_track_icon"),
 	  current_widget_timetrack(nullptr)
 {
 	set_use_scrolled(false);
@@ -52,12 +56,14 @@ Dock_Timetrack2::Dock_Timetrack2()
 
 	vscrollbar.set_vexpand();
 	vscrollbar.set_hexpand(false);
+	vscrollbar.set_orientation(Gtk::ORIENTATION_VERTICAL);
 	vscrollbar.show();
 	hscrollbar.set_hexpand();
 	hscrollbar.show();
 
-	setup_tool_palette();
-	tool_palette.show_all();
+	setup_toolbar();
+	toolbar->show_all();
+	set_interp_buttons_sensitivity(false);
 
 	grid.set_column_homogeneous(false);
 	grid.set_row_homogeneous(false);
@@ -90,23 +96,13 @@ void Dock_Timetrack2::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canva
 		sigc::mem_fun(*this, &studio::Dock_Timetrack2::on_update_header_height)
 	);
 
-	widget_timetrack->signal_waypoint_clicked().connect([=](synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint,std::less<synfig::UniqueID>> waypoint_set, int button) {
-		if (button != 3)
-			return;
-		button = 2;
-		canvas_view->on_waypoint_clicked_canvasview(value_desc, waypoint_set, button);
-	});
+	widget_timetrack->signal_waypoint_clicked().connect(sigc::mem_fun(*this, &Dock_Timetrack2::on_widget_timetrack_waypoint_clicked));
 
-	widget_timetrack->signal_waypoint_double_clicked().connect([=](synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint,std::less<synfig::UniqueID>> waypoint_set, int button) {
-		if (button != 1)
-			return;
-		button = -1;
-		canvas_view->on_waypoint_clicked_canvasview(value_desc, waypoint_set, button);
-	});
+	widget_timetrack->signal_waypoint_double_clicked().connect(sigc::mem_fun(*this, &Dock_Timetrack2::on_widget_timetrack_waypoint_double_clicked));
 
-	widget_timetrack->signal_action_state_changed().connect([=](){
-		update_tool_palette_action();
-	});
+	widget_timetrack->signal_action_state_changed().connect(sigc::mem_fun(*this, &Dock_Timetrack2::update_toolbar_action));
+
+	widget_timetrack->signal_waypoint_selection_changed().connect(sigc::mem_fun(*this, &Dock_Timetrack2::set_interp_buttons_sensitivity));
 }
 
 void Dock_Timetrack2::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
@@ -127,7 +123,7 @@ void Dock_Timetrack2::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> ca
 
 		hscrollbar.unset_adjustment();
 
-		tool_palette.hide();
+		toolbar->hide();
 	} else {
 		widget_kf_list.set_time_model(canvas_view->time_model());
 		widget_kf_list.set_canvas_interface(canvas_view->canvas_interface());
@@ -141,15 +137,15 @@ void Dock_Timetrack2::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> ca
 
 		hscrollbar.set_adjustment(canvas_view->time_model()->scroll_time_adjustment());
 
-		update_tool_palette_action();
-		tool_palette.show();
+		update_toolbar_action();
+		set_interp_buttons_sensitivity(current_widget_timetrack->get_num_waypoints_selected());
 
 		grid.attach(widget_kf_list,            0, 0, 1, 1);
 		grid.attach(widget_timeslider,         0, 1, 1, 1);
 		grid.attach(*current_widget_timetrack, 0, 2, 1, 1);
 		grid.attach(hscrollbar,                0, 4, 2, 1);
 		grid.attach(vscrollbar,                1, 0, 1, 4);
-		grid.attach(tool_palette,              2, 0, 1, 4);
+		grid.attach(*toolbar,                  2, 0, 1, 4);
 		grid.show();
 	}
 
@@ -166,23 +162,47 @@ void Dock_Timetrack2::on_update_header_height(int height)
 		widget_timeslider.set_size_request(-1, ts_height);
 }
 
-void Dock_Timetrack2::setup_tool_palette()
+void Dock_Timetrack2::on_widget_timetrack_waypoint_clicked(synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set, int button)
 {
-	Gtk::ToolItemGroup *tool_item_group = Gtk::manage(new Gtk::ToolItemGroup());
-	gtk_tool_item_group_set_label(tool_item_group->gobj(), nullptr);
+	if (button != 3)
+		return;
+	button = 2;
+	CanvasView::LooseHandle canvas_view = get_canvas_view();
+	if (canvas_view)
+		canvas_view->on_waypoint_clicked_canvasview(value_desc, waypoint_set, button);
+}
+
+void Dock_Timetrack2::on_widget_timetrack_waypoint_double_clicked(synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set, int button)
+{
+	if (button != 1)
+		return;
+	button = -1;
+	CanvasView::LooseHandle canvas_view = get_canvas_view();
+	if (canvas_view)
+		canvas_view->on_waypoint_clicked_canvasview(value_desc, waypoint_set, button);
+}
+
+void Dock_Timetrack2::setup_toolbar()
+{
+	toolbar = manage(new Gtk::Toolbar());
+	toolbar->set_icon_size(Gtk::IconSize::from_name("synfig-small_icon_16x16"));
+	toolbar->set_toolbar_style(Gtk::TOOLBAR_ICONS);
+	toolbar->set_property("orientation", Gtk::ORIENTATION_VERTICAL);
+	toolbar->get_style_context()->add_class("synfigstudio-efficient-workspace");
+
 	struct ActionButtonInfo {
-		std::string name;
+		std::string icon;
 		std::string tooltip;
 		std::string shortcut;
 		Widget_Timetrack::ActionState action_state ;
 	};
 
 	const std::vector<ActionButtonInfo> tools_info {
-		{"synfig-smooth_move", _("Move waypoints\n\nSelect waypoints and drag them along the timetrack."),
+		{"tool_smooth_move_icon", _("Move waypoints\n\nSelect waypoints and drag them along the timetrack."),
 					std::string(""), Widget_Timetrack::ActionState::MOVE},
-		{"synfig-duplicate", _("Duplicate waypoints\n\nAfter selecting waypoints, drag to duplicate them and place them in another time point."),
+		{"duplicate_icon", _("Duplicate waypoints\n\nAfter selecting waypoints, drag to duplicate them and place them in another time point."),
 					_("Shift"), Widget_Timetrack::ActionState::COPY},
-		{"synfig-scale", _("Scale waypoints\n\nAfter selecting more than one waypoint, drag them to change their timepoint regarding current time."),
+		{"tool_scale_icon", _("Scale waypoints\n\nAfter selecting more than one waypoint, drag them to change their timepoint regarding current time."),
 // This should be a function like get_key_name() to be reused
 #ifdef __APPLE__
 					_("Option"),
@@ -194,19 +214,13 @@ void Dock_Timetrack2::setup_tool_palette()
 
 	Gtk::RadioButtonGroup button_group;
 	for (const auto & tool_info : tools_info) {
-		const std::string &name = tool_info.name;
+		const std::string &icon_name = tool_info.icon;
 		std::string tooltip = tool_info.tooltip;
 		const std::string &shortcut = tool_info.shortcut;
 		Widget_Timetrack::ActionState action_state = tool_info.action_state;
 
-		Gtk::StockItem stock_item;
-		Gtk::Stock::lookup(Gtk::StockID(name),stock_item);
-
-		Gtk::RadioToolButton *tool_button = manage(new Gtk::RadioToolButton(
-														*manage(new Gtk::Image(
-																	stock_item.get_stock_id(),
-																	Gtk::IconSize::from_name("synfig-small_icon_16x16") )),
-														stock_item.get_label() ));
+		Gtk::RadioToolButton *tool_button = manage(new Gtk::RadioToolButton());
+		tool_button->set_icon_name(icon_name);
 		tool_button->set_name(Widget_Timetrack::get_action_state_name(action_state));
 		if (!shortcut.empty()) {
 			std::string shortcut_text = _("Shortcut: ") + shortcut;
@@ -214,18 +228,46 @@ void Dock_Timetrack2::setup_tool_palette()
 		}
 		tool_button->set_tooltip_text(tooltip);
 		tool_button->set_group(button_group);
-		tool_button->signal_toggled().connect([this, tool_button, action_state](){
+		tool_button->signal_toggled().connect(sigc::track_obj([this, tool_button, action_state](){
 			if (tool_button->get_active())
 				current_widget_timetrack->set_action_state(action_state);
-		});
+		}, *this));
 		action_button_map[tool_button->get_name()] = tool_button;
-		tool_item_group->add(*tool_button);
+		toolbar->append(*tool_button);
 	}
-	tool_palette.add(*tool_item_group);
-	tool_palette.set_sensitive(true);
+
+	Gtk::SeparatorToolItem* separator = Gtk::manage(new Gtk::SeparatorToolItem());
+	separator->set_name("separator");
+	toolbar->append(*separator);
+
+	struct InterpolationButtonInfo {
+		std::string name;
+		synfig::Interpolation interpolation;
+	};
+
+	const std::vector<InterpolationButtonInfo> interp_buttons_info{
+		{N_("Clamped"), synfig::INTERPOLATION_CLAMPED},
+		{N_("TCB"), synfig::INTERPOLATION_TCB},
+		{N_("Constant"), synfig::INTERPOLATION_CONSTANT},
+		{N_("Ease In/Out"), synfig::INTERPOLATION_HALT},
+		{N_("Linear"), synfig::INTERPOLATION_LINEAR}
+	};
+
+	for (const auto & interp_button_info: interp_buttons_info) {
+		Gtk::Image* image= Gtk::manage(new Gtk::Image());
+		image->set_from_icon_name(interpolation_icon_name(interp_button_info.interpolation), Gtk::IconSize::from_name("synfig-small_icon_16x16"));
+		Gtk::ToolButton *tool_button = manage(new Gtk::ToolButton(*image, _((interp_button_info.name).c_str())));
+		tool_button->signal_clicked().connect(sigc::track_obj([this, interp_button_info](){
+			current_widget_timetrack->interpolate_selected(interp_button_info.interpolation);
+		}, *this));
+		tool_button->set_tooltip_text(synfig::strprintf(_("Change waypoint interpolation to %s"), interp_button_info.name.c_str()));
+		tool_button->set_name(interp_button_info.name);
+		toolbar->append(*tool_button);
+	}
+	toolbar->set_sensitive(true);
 }
 
-void Dock_Timetrack2::update_tool_palette_action()
+void Dock_Timetrack2::update_toolbar_action()
 {
 	if (!current_widget_timetrack)
 		return;
@@ -241,3 +283,14 @@ void Dock_Timetrack2::update_tool_palette_action()
 	if (button)
 		button->set_active(true);
 }
+
+void Dock_Timetrack2::set_interp_buttons_sensitivity(bool sensitive)
+{
+	for (int i = 0; i < toolbar->get_n_items(); i++){
+		std::string name = toolbar->get_nth_item(i)->get_name();
+		if ( name == "Clamped" || name == "TCB" || name == "Constant" ||
+			 name =="separator" || name == "Ease In/Out"|| name == "Linear")
+			toolbar->get_nth_item(i)->set_sensitive(sensitive);
+	}
+}
+

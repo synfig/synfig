@@ -1,22 +1,25 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file trgt_yuv.cpp
-**	\brief Template File
-**
-**	$Id$
+**	\brief YUV Exporter module (trgt_yuv)
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -32,12 +35,12 @@
 
 #include <glib/gstdio.h>
 #include "trgt_yuv.h"
-#include <cstdio>
+
+#include <ETL/stringf>
+
 #endif
 
 using namespace synfig;
-using namespace std;
-using namespace etl;
 
 /* === M A C R O S ========================================================= */
 
@@ -135,7 +138,7 @@ yuv::end_frame()
 			Color& c(surface[y][x]);
 			c=c.clamped();
 			float f(c.get_y());
-			int i(max(min(round_to_int(c.get_y()*Y_RANGE),Y_RANGE),0)+Y_FLOOR);
+			int i(synfig::clamp(round_to_int(c.get_y()*Y_RANGE),0, Y_RANGE)+Y_FLOOR);
 
 			if(dithering)
 			{
@@ -177,7 +180,7 @@ yuv::end_frame()
 		{
 			const Color& c(sm_surface[y][x]);
 			const float f(c.get_u());
-			const int i(max(min(round_to_int((f+0.5f)*UV_RANGE),UV_RANGE),0)+UV_FLOOR);
+			const int i(synfig::clamp(round_to_int((f+0.5f)*UV_RANGE), 0, UV_RANGE)+UV_FLOOR);
 
 			if(dithering)
 			{
@@ -203,7 +206,7 @@ yuv::end_frame()
 		{
 			const Color& c(sm_surface[y][x]);
 			const float f(c.get_v());
-			const int i(max(min(round_to_int((f+0.5f)*UV_RANGE),UV_RANGE),0)+UV_FLOOR);
+			const int i(synfig::clamp(round_to_int((f+0.5f)*UV_RANGE), 0, UV_RANGE)+UV_FLOOR);
 
 			if(dithering)
 			{

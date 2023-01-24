@@ -2,22 +2,25 @@
 /*!	\file valuenode_subtract.cpp
 **	\brief Implementation of the "Subtract" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **  Copyright (c) 2011 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -39,25 +42,22 @@
 #include <stdexcept>
 #include <synfig/color.h>
 #include <synfig/gradient.h>
+#include <synfig/misc.h>
 #include <synfig/vector.h>
 #include <synfig/angle.h>
 #include <synfig/real.h>
-#include <ETL/misc>
-#include <ETL/stringf>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Subtract, RELEASE_VERSION_0_61_06, "subtract", "Subtract")
+REGISTER_VALUENODE(ValueNode_Subtract, RELEASE_VERSION_0_61_06, "subtract", N_("Subtract"))
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -66,8 +66,7 @@ REGISTER_VALUENODE(ValueNode_Subtract, RELEASE_VERSION_0_61_06, "subtract", "Sub
 synfig::ValueNode_Subtract::ValueNode_Subtract(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	set_link("scalar",ValueNode_Const::create(Real(1.0)));
 	Type &type(value.get_type());
 
@@ -115,7 +114,7 @@ synfig::ValueNode_Subtract::ValueNode_Subtract(const ValueBase &value):
 	else
 	{
 		assert(0);
-		throw runtime_error(get_local_name()+_(":Bad type ")+type.description.local_name);
+		throw std::runtime_error(get_local_name()+_(":Bad type ")+type.description.local_name);
 	}
 
 	assert(ref_a->get_type()==type);
@@ -130,7 +129,7 @@ ValueNode_Subtract::create_new()const
 }
 
 ValueNode_Subtract*
-ValueNode_Subtract::create(const ValueBase& value)
+ValueNode_Subtract::create(const ValueBase& value, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Subtract(value);
 }
@@ -143,11 +142,11 @@ synfig::ValueNode_Subtract::~ValueNode_Subtract()
 synfig::ValueBase
 synfig::ValueNode_Subtract::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	if(!ref_a || !ref_b)
-		throw runtime_error(strprintf("ValueNode_Subtract: %s",_("One or both of my parameters aren't set!")));
+		throw std::runtime_error(strprintf("ValueNode_Subtract: %s",_("One or both of my parameters aren't set!")));
 	Type &type(get_type());
 	if (type == type_angle)
 		return ((*ref_a)(t).get(Angle())-(*ref_b)(t).get(Angle()))*(*scalar)(t).get(Real());

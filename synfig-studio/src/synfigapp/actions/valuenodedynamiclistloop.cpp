@@ -2,22 +2,25 @@
 /*!	\file valuenodedynamiclistloop.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
 **	Copyright (c) 2012 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -41,8 +44,6 @@
 
 #endif
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
 using namespace Action;
@@ -91,15 +92,8 @@ Action::ValueNodeDynamicListLoop::is_candidate(const ParamList &x)
 		if(ValueNode_Composite::Handle::cast_dynamic(value_node))
 		{
 			ValueNode_Composite::Handle compo(ValueNode_Composite::Handle::cast_dynamic(value_node));
-			ValueNode_BLine::Handle bline=NULL;
-			std::set<Node*>::iterator iter;
 			// now check if the grand parent is a dynamic list 'bline' type
-			for(iter=compo->parent_set.begin();iter!=compo->parent_set.end();++iter)
-				{
-					bline=ValueNode_BLine::Handle::cast_dynamic(*iter);
-					if(bline)
-						break;
-				}
+			ValueNode_BLine::Handle bline = compo->find_first_parent_of_type<ValueNode_BLine>();
 			if(bline)
 				value_node=bline;
 		}
@@ -128,15 +122,8 @@ Action::ValueNodeDynamicListLoop::set_param(const synfig::String& name, const Ac
 			if(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_value_node()))
 			{
 				ValueNode_Composite::Handle compo(ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_value_node()));
-				ValueNode_BLine::Handle bline=NULL;
-				std::set<Node*>::iterator iter;
 				// now check if the grand parent is a 'bline' type
-				for(iter=compo->parent_set.begin();iter!=compo->parent_set.end();++iter)
-					{
-						bline=ValueNode_BLine::Handle::cast_dynamic(*iter);
-						if(bline)
-							break;
-					}
+				ValueNode_BLine::Handle bline = compo->find_first_parent_of_type<ValueNode_BLine>();
 				if(bline)
 					value_node=bline;
 			}

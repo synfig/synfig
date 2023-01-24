@@ -2,21 +2,24 @@
 /*!	\file docks/dock_timetrack.h
 **	\brief Template Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **  Copyright (c) 2009, 2010 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -45,8 +48,8 @@ namespace studio {
 
 class Dock_Timetrack_Old : public Dock_CanvasSpecific
 {
-	Gtk::HScrollbar hscrollbar_;
-	Gtk::VScrollbar vscrollbar_;
+	Gtk::Scrollbar hscrollbar_;
+	Gtk::Scrollbar vscrollbar_;
 	Widget_CanvasTimeslider widget_timeslider_;
 	Widget_Keyframe_List widget_kf_list_;
 	Gtk::Grid *grid_;

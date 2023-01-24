@@ -23,11 +23,11 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-**Desktop (please complete the following information):**
+**System information:**
  - Linux distro: [eg. Debian, Manjaaro, Ubuntu, etc)
  - OS version:
  - Package: [Snap, AppImage, Flatpak]
- - Synfig version: 1.4.0
+ - Synfig version: 1.4.1
 
-**Additional context**
+**Additional comments**
 Add any other context about the problem here.

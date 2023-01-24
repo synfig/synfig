@@ -2,22 +2,25 @@
 /*!	\file layer_shape.cpp
 **	\brief Implementation of the "Shape" layer
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2012-2013 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -198,32 +201,45 @@ Layer_Shape::get_param_vocab()const
 	return ret;
 }
 
-synfig::Layer::Handle
-Layer_Shape::hit_check(synfig::Context context, const synfig::Point &point) const
+bool
+Layer_Shape::is_inside_contour(const Point& p, bool ignore_feather) const
 {
-	sync();
-
-	Color::BlendMethod blend_method = get_blend_method();
-	Color color = param_color.get(Color());
 	bool invert = param_invert.get(bool(true));
 	Point origin = param_origin.get(Point());
 	rendering::Contour::WindingStyle winding_style = (rendering::Contour::WindingStyle)param_winding_style.get(int());
 
+	Point point = p;
+
+	if (!ignore_feather) {
+		int blurtype = param_blurtype.get(int());
+		Real feather = param_feather.get(Real());
+
+		if (feather)
+			point = Blur(feather,feather,blurtype)(p);
+	}
+
+	return contour->is_inside(point - origin, winding_style, invert);
+}
+
+synfig::Layer::Handle
+Layer_Shape::hit_check(synfig::Context context, const synfig::Point &point) const
+{
+	bool check_myself_first;
+	auto layer = basic_hit_check(context, point, check_myself_first);
+
+	if (!check_myself_first)
+		return layer;
+
+	sync();
+
+	Color::BlendMethod blend_method = get_blend_method();
+	Color color = param_color.get(Color());
+
 	bool inside = false;
 	if (get_amount() && blend_method != Color::BLEND_ALPHA_OVER)
-		inside = contour->is_inside(point - origin, winding_style, invert);
+		inside = is_inside_contour(point, false);
 
 	if (inside) {
-		if (blend_method == Color::BLEND_BEHIND) {
-			synfig::Layer::Handle layer = context.hit_check(point);
-			if (layer) return layer;
-		}
-		
-		if (Color::is_onto(blend_method)) {
-			//if there's something in the lower layer then we're set...
-			if (context.hit_check(point))
-				return const_cast<Layer_Shape*>(this);
-		} else
 		if (blend_method == Color::BLEND_ALPHA_OVER) {
 			synfig::info("layer_shape::hit_check - we've got alphaover");
 			//if there's something in the lower layer then we're set...
@@ -244,19 +260,9 @@ Layer_Shape::get_color(Context context, const Point &p)const
 	sync();
 
 	Color color = param_color.get(Color());
-	Point origin = param_origin.get(Point());
-	bool invert = param_invert.get(bool(true));
-	int blurtype = param_blurtype.get(int());
-	Real feather = param_feather.get(Real());
-	rendering::Contour::WindingStyle winding_style = (rendering::Contour::WindingStyle)param_winding_style.get(int());
-
-	Point pp = p;
-	if (feather)
-		pp = Blur(feather,feather,blurtype)(p);
-
-	bool inside = contour->is_inside(pp - origin, winding_style, invert);
+	bool inside = is_inside_contour(p, true);
 	if (!inside)
-		return Color::blend(Color::alpha(), context.get_color(pp), get_amount(), get_blend_method());
+		return Color::blend(Color::alpha(), context.get_color(p), get_amount(), get_blend_method());
 
 	//Ok, we're inside... bummmm ba bum buM...
 	if (get_blend_method() == Color::BLEND_STRAIGHT && get_amount() == 1)

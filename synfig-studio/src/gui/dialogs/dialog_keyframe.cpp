@@ -2,20 +2,23 @@
 /*!	\file dialog_keyframe.cpp
 **	\brief Keyframe properties dialog implementation
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -60,22 +63,22 @@ Dialog_Keyframe::Dialog_Keyframe(Gtk::Window& parent, etl::handle<synfigapp::Can
 {
 	// Set up the buttons
 	{
-		Gtk::Button *delete_button(manage(new class Gtk::Button(Gtk::StockID("gtk-delete"))));
+		Gtk::Button *delete_button(manage(new Gtk::Button(_("_Delete"), true)));
 		delete_button->show();
 		add_action_widget(*delete_button,3);
 		delete_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Keyframe::on_delete_pressed));
 
-		Gtk::Button *apply_button(manage(new class Gtk::Button(Gtk::StockID("gtk-apply"))));
+		Gtk::Button *apply_button(manage(new Gtk::Button(_("_Apply"), true)));
 		apply_button->show();
 		add_action_widget(*apply_button,1);
 		apply_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Keyframe::on_apply_pressed));
 
-		Gtk::Button *cancel_button(manage(new class Gtk::Button(Gtk::StockID("gtk-close"))));
+		Gtk::Button *cancel_button(manage(new Gtk::Button(_("_Close"), true)));
 		cancel_button->show();
 		add_action_widget(*cancel_button,0);
 		cancel_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Keyframe::hide));
 
-		Gtk::Button *ok_button(manage(new class Gtk::Button(Gtk::StockID("gtk-ok"))));
+		Gtk::Button *ok_button(manage(new class Gtk::Button(_("_OK"), true)));
 		ok_button->show();
 		add_action_widget(*ok_button,2);
 		ok_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Keyframe::on_ok_pressed));

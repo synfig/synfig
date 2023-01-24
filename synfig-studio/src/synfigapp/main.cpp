@@ -2,20 +2,23 @@
 /*!	\file synfigapp/main.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -32,6 +35,8 @@
 #include "main.h"
 #include "action.h"
 
+#include <ETL/stringf>
+
 #include <synfig/general.h>
 
 #include <synfig/color.h>
@@ -46,8 +51,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
 
@@ -65,7 +68,7 @@ using namespace synfigapp;
 
 /* === S T A T I C S ======================================================= */
 
-static etl::reference_counter synfigapp_ref_count_(0);
+static ReferenceCounter synfigapp_ref_count_(0);
 static synfigapp::Action::Main* action_main;
 
 static Color outline_;
@@ -78,8 +81,12 @@ static synfig::Distance bline_width_;
 //static Color::BlendMethod blend_method_;
 //static Real opacity_;
 
+// Settings should be initialized before input_devices_ because
+// input_devices_ uses `Main::settings()` to store settings
+static Settings settings_;
+
 static synfigapp::InputDevice::Handle selected_input_device_;
-static list<synfigapp::InputDevice::Handle> input_devices_;
+static std::list<synfigapp::InputDevice::Handle> input_devices_;
 
 sigc::signal<void> signal_outline_color_changed_;
 sigc::signal<void> signal_fill_color_changed_;
@@ -87,16 +94,14 @@ sigc::signal<void> signal_gradient_changed_;
 sigc::signal<void> signal_bline_width_changed_;
 sigc::signal<void> signal_interpolation_changed_;
 
-Settings settings_;
-
 static synfig::Waypoint::Interpolation interpolation_;
 
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
 
-synfigapp::Main::Main(const synfig::String &basepath, synfig::ProgressCallback *cb):
-	synfig::Main(basepath,cb),
+synfigapp::Main::Main(const synfig::String &rootpath, synfig::ProgressCallback *cb):
+	synfig::Main(rootpath,cb),
 	ref_count_(synfigapp_ref_count_)
 {
 	if(ref_count_.count())
@@ -109,7 +114,7 @@ synfigapp::Main::Main(const synfig::String &basepath, synfig::ProgressCallback *
 
 #ifdef ENABLE_NLS
 	String locale_dir;
-	locale_dir = etl::dirname(basepath)+ETL_DIRECTORY_SEPARATOR+"share"+ETL_DIRECTORY_SEPARATOR+"locale";
+	locale_dir = rootpath+"/share/locale";
 	
 	bindtextdomain(GETTEXT_PACKAGE, Glib::locale_from_utf8(locale_dir).c_str() );
 	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
@@ -360,7 +365,7 @@ synfigapp::Main::add_input_device(const synfig::String id, InputDevice::Type typ
 InputDevice::Handle
 synfigapp::Main::find_input_device(const synfig::String id)
 {
-	list<InputDevice::Handle>::iterator iter;
+	std::list<InputDevice::Handle>::iterator iter;
 	for(iter=input_devices_.begin();iter!=input_devices_.end();++iter)
 		if((*iter)->get_id()==id)
 			return *iter;
@@ -412,11 +417,9 @@ synfigapp::Main::set_state(synfig::String state)
 synfig::String
 synfigapp::Main::get_user_app_directory()
 {
-	String dir;
-	if (char* synfig_user_settings_dir = getenv("SYNFIG_USER_SETTINGS")) {
-		dir =  Glib::locale_to_utf8(String(synfig_user_settings_dir));
-	} else {
-		dir = Glib::get_home_dir()+ETL_DIRECTORY_SEPARATOR+SYNFIG_USER_APP_DIR;
+	std::string dir = Glib::getenv("SYNFIG_USER_SETTINGS");
+	if (!dir.empty()) {
+		return dir;
 	}
-	return dir;
+	return Glib::get_home_dir()+ETL_DIRECTORY_SEPARATOR+SYNFIG_USER_APP_DIR;
 }

@@ -2,21 +2,24 @@
 /*!	\file valuedescbonelink.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2013 Ivan Mahonin
 **	......... ... 2014 Jerome Blanchi
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -48,8 +51,6 @@
 
 #endif
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
 using namespace Action;
@@ -107,7 +108,7 @@ Action::ValueDescBoneLink::is_candidate(const ParamList &x)
 	//ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
 
 	bool selected_value_desc_is_bone = false;
-	pair<ParamList::const_iterator, ParamList::const_iterator> selected_vd_range = x.equal_range("selected_value_desc");
+	std::pair<ParamList::const_iterator, ParamList::const_iterator> selected_vd_range = x.equal_range("selected_value_desc");
 	//get the range of selected value desc to check if at least one is a bone
 	for (iter = selected_vd_range.first; iter != selected_vd_range.second ; ++iter)
 	{
@@ -189,6 +190,28 @@ Action::ValueDescBoneLink::prepare()
 			continue;
 		if (value_desc.parent_is_value_node() && bone_value_node == value_desc.get_parent_value_node())
 			continue;
+
+		if (value_desc.parent_is_layer() && value_desc.get_param_name() == "origin") {
+			Layer::ConstHandle layer = value_desc.get_layer();
+			bool has_transformation = layer->get_param("transformation").is_valid()
+									  || layer->dynamic_param_list().count("transformation") > 0;
+			if (has_transformation) {
+				// Propose to user to change to "transformation" parameter
+				if ( get_canvas_interface()
+				  && get_canvas_interface()->get_ui_interface()
+				  && UIInterface::RESPONSE_OK == get_canvas_interface()->get_ui_interface()->confirmation(
+						 _("Possible Wrong Bone Link"),
+						 synfig::strprintf(_("You are trying to link \"origin\" of layer '%s' to a bone.\n\n"
+							"Maybe you intended to link \"transformation\" parameter instead?"),
+							 layer->get_description().c_str()),
+						 _("Yes"),
+						 _("No"),
+						 synfigapp::UIInterface::RESPONSE_OK ))
+				{
+					value_desc = ValueDesc(value_desc.get_layer(), "transformation", value_desc.get_parent_desc());
+				}
+			}
+		}
 
 		/*
 		if (value_desc.is_value_node())

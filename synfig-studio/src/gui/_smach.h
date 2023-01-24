@@ -1,36 +1,45 @@
+/* === S Y N F I G ========================================================= */
 /*! ========================================================================
-** Extended Template and Library
-** State Machine Abstraction Class Implementation
-** $Id$
+** \file _smach.h
+** \brief State Machine Abstraction Class Implementation
+** \internal
 **
+** \legal
 ** Copyright (c) 2002 Robert B. Quattlebaum Jr.
 ** Copyright (c) 2008 Chris Moore
 **
-** This package is free software; you can redistribute it and/or
-** modify it under the terms of the GNU General Public License as
-** published by the Free Software Foundation; either version 2 of
-** the License, or (at your option) any later version.
+** This file is part of Synfig.
 **
-** This package is distributed in the hope that it will be useful,
+** Synfig is free software: you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation, either version 2 of the License, or
+** (at your option) any later version.
+**
+** Synfig is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
-** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-** General Public License for more details.
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
 **
-** === N O T E S ===========================================================
+** You should have received a copy of the GNU General Public License
+** along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
+** \endlegal
 **
 ** ========================================================================= */
 
 /* === S T A R T =========================================================== */
 
-#ifndef __ETL__SMACH_H_
-#define __ETL__SMACH_H_
+#ifndef SYNFIG_GUI__SMACH_H
+#define SYNFIG_GUI__SMACH_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <cassert>
-#include <vector>
+
 #include <algorithm>
 #include <stdexcept>
+#include <vector>
+
+#include <synfig/misc.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -41,7 +50,7 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace etl {
+namespace studio {
 
 /*! ========================================================================
 ** \class	smach
@@ -67,10 +76,10 @@ public:
 	{
 		// These values are returned by the event
 		// handlers cast to state pointers.
-		RESULT_ERROR,		//!< General error or malfunction
-		RESULT_OK,			//!< Event has been processed
-		RESULT_ACCEPT,		//!< The event has been explicitly accepted.
-		RESULT_REJECT,		//!< The event has been explicitly rejected.
+		RESULT_ERROR,		//!< Tool/state processed the event and found a general error or malfunction
+		RESULT_OK,			//!< Tool/state processed the event or not, but let it be processed (too) by other handlers in the event pipeline (WorkArea, Gtk App, etc)
+		RESULT_ACCEPT,		//!< Tool/state processed the event and consumed the event
+		RESULT_REJECT,		//!< Tool/state processed the event and/or forbid the event
 
 		RESULT_END			//!< Not a valid result
 	};
@@ -133,6 +142,12 @@ public:
 
 		//! Copy constructor
 		event_def_internal(const event_def_internal &x):id(x.id),handler(x.handler) { }
+		event_def_internal& operator=(const event_def_internal& x)
+		{
+			id = x.id;
+			handler = x.handler;
+			return *this;
+		}
 
 	};
 
@@ -176,8 +191,8 @@ public:
 	public:
 
 		//! Constructor
-		state(const char *n, smach* nest=0):
-			nested(nest),name(n),default_handler(NULL)
+		state(const char* n, smach* nest = nullptr)
+		    : nested(nest), name(n), default_handler(nullptr)
 		{ }
 
 		virtual ~state() { }
@@ -212,8 +227,8 @@ public:
 				high=x.id;
 		}
 
-		typename std::vector<event_def>::iterator find(const event_key &x) { return binary_find(event_list.begin(),event_list.end(),x); }
-		typename std::vector<event_def>::const_iterator find(const event_key &x)const { return binary_find(event_list.begin(),event_list.end(),x); }
+		typename std::vector<event_def>::iterator find(const event_key &x) { return synfig::binary_find(event_list.begin(),event_list.end(),x); }
+		typename std::vector<event_def>::const_iterator find(const event_key &x)const { return synfig::binary_find(event_list.begin(),event_list.end(),x); }
 
 	protected:
 
@@ -330,7 +345,7 @@ private:
 
 	//! State stack data
 	const state_base* 	state_stack[SMACH_STATE_STACK_SIZE];
-	void* 				state_context_stack[SMACH_STATE_STACK_SIZE];
+	void* 				state_context_stack[SMACH_STATE_STACK_SIZE] = {0};
 	int 				states_on_stack;
 	
 	bool changing_state;

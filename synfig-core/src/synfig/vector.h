@@ -1,22 +1,25 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file vector.h
-**	\brief Various discreet type definitions
-**
-**	$Id$
+**	\brief Various discrete type definitions
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -475,12 +478,12 @@ abs(const synfig::Vector &rhs)
 
 }; // END of namespace std
 
-#include <ETL/bezier>
+#include <synfig/bezier.h>
 
-namespace etl {
+namespace synfig {
 
 template <>
-class bezier_base<synfig::Vector,float> : public std::unary_function<float,synfig::Vector>
+class bezier_base<synfig::Vector,float>
 {
 public:
 	typedef synfig::Vector value_type;

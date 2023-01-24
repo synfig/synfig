@@ -1,0 +1,22 @@
+{
+  "name": "synfig",
+  "version": "1.5.1",
+  "dependencies": [
+    "gtkmm3",
+    "libxmlpp",
+    "gettext",
+    "fftw3",
+    "freetype",
+    "libtool",
+    "zlib",
+    "libpng",
+    "libjpeg-turbo",
+    "imagemagick",
+    "openexr",
+    "pkgconf",
+    "librsvg",
+    "ffmpeg",
+    "hicolor-icon-theme",
+    "adwaita-icon-theme"
+  ]
+}

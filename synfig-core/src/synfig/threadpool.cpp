@@ -2,20 +2,23 @@
 /*!	\file threadpool.cpp
 **	\brief ThreadPool File
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2018 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -78,7 +81,7 @@ ThreadPool::Group::process(int begin, int end) {
 
 void
 ThreadPool::Group::enqueue(const Slot &slot, Real weight) {
-	weight = std::max(real_precision<Real>(), std::min(1.0/real_precision<Real>(), weight));
+	weight = synfig::clamp(weight, real_precision<Real>(), 1.0/real_precision<Real>());
 	tasks.push_back(Entry(weight, slot));
 	sum_weight += weight;
 }
@@ -255,7 +258,7 @@ ThreadPool::thread_loop(int
 
 void
 ThreadPool::wakeup() {
-	int to_wakeup = std::max(0, std::min((int)queue_size, max_running_threads - (int)running_threads));
+	int to_wakeup = synfig::clamp(max_running_threads - (int)running_threads, 0, (int)queue_size);
 	int to_create = std::max(0, to_wakeup - (int)ready_threads);
 	to_wakeup     = std::max(0, to_wakeup - to_create);
 	while(to_create-- > 0)

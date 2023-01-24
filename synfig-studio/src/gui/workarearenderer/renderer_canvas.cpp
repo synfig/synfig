@@ -2,23 +2,26 @@
 /*!	\file renderer_canvas.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **  Copyright (c) 2011 Nikita Kitaev
 **  ......... ... 2018 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -341,7 +344,6 @@ void
 Renderer_Canvas::build_onion_frames()
 {
 	// mutex must be already locked
-
 	Canvas::Handle canvas    = get_work_area()->get_canvas();
 	int            w         = get_work_area()->get_w();
 	int            h         = get_work_area()->get_h();
@@ -349,6 +351,7 @@ Renderer_Canvas::build_onion_frames()
 	int            thumb_h   = get_work_area()->get_thumb_h();
 	int            past      = std::max(0, get_work_area()->get_onion_skins()[0]);
 	int            future    = std::max(0, get_work_area()->get_onion_skins()[1]);
+	bool           keyframes = get_work_area()->get_onion_skin_keyframes();
 
 	Time base_time;
 	if (CanvasView::Handle canvas_view = get_work_area()->get_canvas_view())
@@ -361,29 +364,79 @@ Renderer_Canvas::build_onion_frames()
 	current_thumb = FrameId(base_time, thumb_w, thumb_h);
 	frame_duration = Time(approximate_greater_lp(fps, 0.f) ? 1.0/(double)fps : 0.0);
 
-	// set onion_frames
+	// Set onion_frames
 	onion_frames.clear();
 	if ( get_work_area()->get_onion_skin()
 	  && frame_duration
 	  && (past > 0 || future > 0) )
 	{
+		// Store vector of Past and Future Frames to use
+		std::vector<Time> past_times, future_times;
+
 		const Color color_past  (1.f, 0.f, 0.f, 0.2f);
 		const Color color_future(0.f, 1.f, 0.f, 0.2f);
 		const ColorReal base_alpha = 1.f;
 		const ColorReal current_alpha = 0.5f;
-		// make onion levels
-		for(int i = past; i > 0; --i) {
-			Time time = base_time - frame_duration*i;
-			ColorReal alpha = base_alpha + (ColorReal)(past - i + 1)/(ColorReal)(past + 1);
-			if (time >= rend_desc.get_time_start() && time <= rend_desc.get_time_end())
-				onion_frames.push_back(FrameDesc(time, w, h, alpha));
+
+		if (keyframes) {
+			// Onion Skin on Keyframes
+			// Find and push_back valid Past Keyframes Times
+			Time keyframe_time = base_time;
+			for(int i = past; i > 0; --i) {
+				KeyframeList::iterator iter;
+				if (canvas->keyframe_list().find_prev(keyframe_time, iter)) {
+					if (keyframe_time >= rend_desc.get_time_start() && keyframe_time <= rend_desc.get_time_end()) {
+						keyframe_time = iter->get_time();
+						past_times.push_back(keyframe_time);
+					}
+				}
+				else
+					break;
+			}
+
+			// Find and push_back valid Future Keyframes Times
+			keyframe_time = base_time;
+			for(int i = future; i > 0; --i) {
+				KeyframeList::iterator iter;
+				if (canvas->keyframe_list().find_next(keyframe_time, iter)) {
+					if (keyframe_time >= rend_desc.get_time_start() && keyframe_time <= rend_desc.get_time_end()) {
+						keyframe_time = iter->get_time();
+						future_times.push_back(keyframe_time);
+					}
+				}
+				else
+					break;
+			}
+		} else {
+			// Onion Skin on Frames
+			// Find and push_back valid Past Frames Times
+			for(int i = past; i > 0; --i) {
+				Time frame_time = base_time - frame_duration * i;
+				if (frame_time >= rend_desc.get_time_start() && frame_time <= rend_desc.get_time_end())
+					past_times.push_back(frame_time);
+			}
+
+			// Find and push_back valid Future Frames Times
+			for(int i = future; i > 0; --i) {
+				Time frame_time = base_time + frame_duration * i;
+				if (frame_time >= rend_desc.get_time_start() && frame_time <= rend_desc.get_time_end())
+					future_times.push_back(frame_time);
+			}
 		}
-		for(int i = future; i > 0; --i) {
-			Time time = base_time + frame_duration*i;
-			ColorReal alpha = base_alpha + (ColorReal)(future - i + 1)/(ColorReal)(future + 1);
-			if (time >= rend_desc.get_time_start() && time <= rend_desc.get_time_end())
-				onion_frames.push_back(FrameDesc(time, w, h, alpha));
+
+		// Cycle through past_times and retrieve their Time values
+		for(int i = past_times.size(); i > 0; --i) {
+			ColorReal alpha = base_alpha + (ColorReal)(past_times.size() - i + 1)/(ColorReal)(past_times.size() + 1);
+			onion_frames.push_back(FrameDesc(past_times[past_times.size() - i], w, h, alpha));
 		}
+
+		// Cycle through future_times and retrieve their Time values
+		for(int i = future_times.size(); i > 0; --i) {
+			ColorReal alpha = base_alpha + (ColorReal)(future_times.size() - i + 1)/(ColorReal)(future_times.size() + 1);
+			onion_frames.push_back(FrameDesc(future_times[future_times.size() - i], w, h, alpha));
+		}
+
+		// Add current time Frame
 		onion_frames.push_back(FrameDesc(current_frame, base_alpha + 1.f + current_alpha));
 
 		// normalize
@@ -397,7 +450,7 @@ Renderer_Canvas::build_onion_frames()
 		onion_frames.push_back(FrameDesc(current_frame, 1.f));
 	}
 
-	// set visible_frames
+	// Set visible_frames
 	visible_frames.clear();
 	for(FrameList::const_iterator i = onion_frames.begin(); i != onion_frames.end(); ++i)
 		visible_frames.insert(i->id);
@@ -462,7 +515,7 @@ Renderer_Canvas::enqueue_render_frame(
 		loading_error_msg = _("Unknown reason");
 	}
 	if (!loading_error_msg.empty()) {
-		std::string full_error_msg = etl::strprintf(_("Error loading canvas resources at %s (%s):\n\t%s"), id.time.get_string().c_str(), canvas->get_name().c_str(), loading_error_msg.c_str());
+		std::string full_error_msg = synfig::strprintf(_("Error loading canvas resources at %s (%s):\n\t%s"), id.time.get_string().c_str(), canvas->get_name().c_str(), loading_error_msg.c_str());
 		rendering_error_msg_map[id.time].insert(full_error_msg);
 		synfig::error(full_error_msg);
 		return false;

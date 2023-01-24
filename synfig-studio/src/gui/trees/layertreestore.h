@@ -2,20 +2,23 @@
 /*!	\file layertreestore.h
 **	\brief Template Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -40,7 +43,7 @@
 
 namespace studio {
 
-class LayerTreeStore : virtual public Gtk::TreeStore
+class LayerTreeStore : public Gtk::TreeStore
 {
 	/*
  -- ** -- P U B L I C   T Y P E S ---------------------------------------------
@@ -57,7 +60,7 @@ public:
 	class Model : public Gtk::TreeModel::ColumnRecord
 	{
 	public:
-		Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf> > icon;
+		Gtk::TreeModelColumn<Glib::ustring> icon_name;
 		Gtk::TreeModelColumn<Glib::ustring> label;
 		Gtk::TreeModelColumn<Glib::ustring> name;
 		Gtk::TreeModelColumn<Glib::ustring> id;
@@ -87,7 +90,7 @@ public:
 
 		Model()
 		{
-			add(icon);
+			add(icon_name);
 			add(label);
 			add(name);
 			add(id);
@@ -125,7 +128,8 @@ public:
 
 private:
 
-	bool queued;
+	std::atomic<bool> queued;
+	std::mutex rebuild_queue_mtx;
 
 	sigc::connection queue_connection;
 
@@ -134,7 +138,6 @@ private:
 
 	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_;
 
-	Glib::RefPtr<Gdk::Pixbuf> layer_icon;
 
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
@@ -151,7 +154,7 @@ private:
 	void set_gvalue_tpl(Glib::ValueBase& value, const T &v, bool use_assign_operator = false) const;
 
 	virtual void  set_value_impl (const Gtk::TreeModel::iterator& row, int column, const Glib::ValueBase& value);
-	virtual void  get_value_vfunc (const Gtk::TreeModel::iterator& iter, int column, Glib::ValueBase& value)const;
+	void get_value_vfunc (const Gtk::TreeModel::iterator& iter, int column, Glib::ValueBase& value) const override;
 
 	virtual bool  row_draggable_vfunc (const TreeModel::Path& path)const;
 	virtual bool  drag_data_get_vfunc (const TreeModel::Path& path, Gtk::SelectionData& selection_data)const;

@@ -2,20 +2,23 @@
 /*!	\file synfigapp/main.h
 **	\brief Template Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -27,7 +30,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/ref_count>
 #include <synfig/string.h>
 #include <synfig/main.h>
 #include <synfig/distance.h>
@@ -57,12 +59,12 @@ namespace synfigapp {
 */
 class Main : public synfig::Main
 {
-	etl::reference_counter ref_count_;
+	synfig::ReferenceCounter ref_count_;
 public:
-	Main(const synfig::String &basepath,synfig::ProgressCallback *cb=0);
+	Main(const synfig::String &rootpath,synfig::ProgressCallback *cb=nullptr);
 	~Main();
 
-	const etl::reference_counter& ref_count()const { return ref_count_; }
+	const synfig::ReferenceCounter& ref_count()const { return ref_count_; }
 
 	static const synfig::Color& get_outline_color();
 	static const synfig::Color& get_fill_color();

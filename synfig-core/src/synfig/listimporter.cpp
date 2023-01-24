@@ -2,21 +2,24 @@
 /*!	\file listimporter.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -31,6 +34,8 @@
 #endif
 
 #include "listimporter.h"
+
+#include <ETL/stringf>
 
 #include "general.h"
 #include <synfig/localization.h>
@@ -61,7 +66,6 @@ SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(ListImporter, false);
 
 /* === M E T H O D S ======================================================= */
 
-//TODO factorize code with cairolistimporter.cpp
 ListImporter::ListImporter(const FileSystem::Identifier &identifier):
 Importer(identifier)
 {
@@ -101,6 +105,7 @@ Importer(identifier)
 				line == "jpg"  ||
 				line == "png"  ||
 				line == "ppm"  ||
+				line == "svg"  ||
 				line == "tiff" )
 			{
 				ext = String(".") + line;
@@ -158,8 +163,8 @@ Importer::Handle
 ListImporter::get_sub_importer(const RendDesc &renddesc, Time time, ProgressCallback *cb)
 {
 	float document_fps=renddesc.get_frame_rate();
-	int document_frame=etl::round_to_int(time*document_fps);
-	int frame=etl::floor_to_int(document_frame*fps/document_fps);
+	int document_frame=round_to_int(time*document_fps);
+	int frame = std::floor(document_frame*fps/document_fps);
 
 	if(!filename_list.size())
 	{
@@ -200,7 +205,7 @@ ListImporter::get_frame(Surface &surface, const RendDesc &renddesc, Time time, P
 rendering::Surface::Handle
 ListImporter::get_frame(const RendDesc &renddesc, const Time &time)
 {
-	Importer::Handle importer = get_sub_importer(renddesc, time, NULL);
+	Importer::Handle importer = get_sub_importer(renddesc, time, nullptr);
 	return importer ? importer->get_frame(renddesc, 0) : new rendering::SurfaceSW();
 }
 

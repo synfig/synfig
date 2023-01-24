@@ -2,22 +2,25 @@
 /*!	\file target_scanline.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
 **	Copyright (c) 2012-2013 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -50,8 +53,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace rendering;
 
@@ -191,9 +192,9 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 					// loop through all the full rows
 					if(!start_frame())
 					{
-//						throw(string("add_frame(): target panic on start_frame()"));
+//						throw(string("render(): target panic on start_frame()"));
 						if(cb)
-							cb->error(_("add_frame(): target panic on start_frame()"));
+							cb->error(_("render(): target panic on start_frame()"));
 						return false;
 					}
 
@@ -240,9 +241,9 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 								Color *colordata= start_scanline(y + yoff);
 								if(!colordata)
 								{
-//									throw(string("add_frame(): call to start_scanline(y) returned NULL"));
+//									throw(string("add_frame(): call to start_scanline(y) returned nullptr"));
 									if(cb)
-										cb->error(_("add_frame(): call to start_scanline(y) returned NULL"));
+										cb->error(_("add_frame(): call to start_scanline(y) returned nullptr"));
 									return false;
 								}
 
@@ -270,9 +271,9 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 
 								if(!end_scanline())
 								{
-//									throw(string("add_frame(): target panic on end_scanline()"));
+//									throw(string("render(): target panic on end_scanline()"));
 									if(cb)
-										cb->error(_("add_frame(): target panic on end_scanline()"));
+										cb->error(_("render(): target panic on end_scanline()"));
 									return false;
 								}
 							}
@@ -344,9 +345,9 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 				// loop through all the full rows
 				if(!start_frame())
 				{
-//					throw(string("add_frame(): target panic on start_frame()"));
+//					throw(string("render(): target panic on start_frame()"));
 					if(cb)
-						cb->error(_("add_frame(): target panic on start_frame()"));
+						cb->error(_("render(): target panic on start_frame()"));
 					return false;
 				}
 
@@ -396,9 +397,9 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 						Color *colordata= start_scanline(y + yoff);
 						if(!colordata)
 						{
-//							throw(string("add_frame(): call to start_scanline(y) returned NULL"));
+//							throw(string("add_frame(): call to start_scanline(y) returned nullptr"));
 							if(cb)
-								cb->error(_("add_frame(): call to start_scanline(y) returned NULL"));
+								cb->error(_("add_frame(): call to start_scanline(y) returned nullptr"));
 							return false;
 						}
 
@@ -426,9 +427,9 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 
 						if(!end_scanline())
 						{
-//							throw(string("add_frame(): target panic on end_scanline()"));
+//							throw(string("render(): target panic on end_scanline()"));
 							if(cb)
-								cb->error(_("add_frame(): target panic on end_scanline()"));
+								cb->error(_("render(): target panic on end_scanline()"));
 							return false;
 						}
 					}
@@ -514,9 +515,9 @@ Target_Scanline::add_frame(const synfig::Surface *surface, ProgressCallback *cb)
 		Color *colordata= start_scanline(y);
 		if(!colordata)
 		{
-//			throw(string("add_frame(): call to start_scanline(y) returned NULL"));
+//			throw(string("add_frame(): call to start_scanline(y) returned nullptr"));
 			if (cb)
-				cb->error(_("add_frame(): call to start_scanline(y) returned NULL"));
+				cb->error(_("add_frame(): call to start_scanline(y) returned nullptr"));
 			return false;
 		}
 

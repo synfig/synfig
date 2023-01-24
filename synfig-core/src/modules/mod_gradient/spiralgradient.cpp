@@ -2,21 +2,24 @@
 /*!	\file spiralgradient.cpp
 **	\brief Implementation of the "Spiral Gradient" layer
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2011 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -34,14 +37,11 @@
 #include <synfig/general.h>
 
 #include <synfig/string.h>
-#include <synfig/time.h>
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
 #include <synfig/renddesc.h>
 #include <synfig/surface.h>
 #include <synfig/value.h>
-#include <synfig/valuenode.h>
-#include <synfig/cairo_renddesc.h>
 
 #include "spiralgradient.h"
 
@@ -49,8 +49,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
-using namespace std;
 using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
@@ -156,9 +154,8 @@ SpiralGradient::color_func(const Point &pos, Real supersample)const
 	bool clockwise=param_clockwise.get(bool());
 	
 	const Point centered(pos-center);
-	Angle a;
-	a=Angle::tan(-centered[1],centered[0]).mod();
-	a=a+angle;
+	Angle a(angle);
+	a += Angle::tan(-centered[1],centered[0]).mod();
 
 	if(supersample<0.00001)supersample=0.00001;
 
@@ -184,10 +181,14 @@ SpiralGradient::calc_supersample(const synfig::Point &x, Real pw, Real /*ph*/)co
 synfig::Layer::Handle
 SpiralGradient::hit_check(synfig::Context context, const synfig::Point &point)const
 {
+	bool check_myself_first;
+	auto layer = basic_hit_check(context, point, check_myself_first);
+
+	if (!check_myself_first)
+		return layer;
+
 	if(get_blend_method()==Color::BLEND_STRAIGHT && get_amount()>=0.5)
 		return const_cast<SpiralGradient*>(this);
-	if(get_amount()==0.0)
-		return context.hit_check(point);
 	if((get_blend_method()==Color::BLEND_STRAIGHT || get_blend_method()==Color::BLEND_COMPOSITE) && color_func(point).get_a()>0.5)
 		return const_cast<SpiralGradient*>(this);
 	return context.hit_check(point);
@@ -253,71 +254,6 @@ SpiralGradient::accelerated_render(Context context,Surface *surface,int quality,
 	return true;
 }
 
-////
-bool
-SpiralGradient::accelerated_cairorender(Context context, cairo_t *cr,int quality, const RendDesc &renddesc_, ProgressCallback *cb)const
-{
-	RendDesc	renddesc(renddesc_);
-	
-	// Untransform the render desc
-	if(!cairo_renddesc_untransform(cr, renddesc))
-		return false;
-
-	Point pos;
-	const Real pw(renddesc.get_pw()),ph(renddesc.get_ph());
-	const Point tl(renddesc.get_tl());
-	const int w(renddesc.get_w());
-	const int h(renddesc.get_h());
-	
-	SuperCallback supercb(cb,0,9500,10000);
-	
-	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
-	{
-		cairo_save(cr);
-		cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
-		cairo_paint(cr);
-		cairo_restore(cr);
-	}
-	else
-	{
-		if(!context.accelerated_cairorender(cr,quality,renddesc,&supercb))
-			return false;
-		if(get_amount()==0)
-			return true;
-	}
-	
-	
-	int x,y;
-	cairo_surface_t *surface;
-	
-	surface=cairo_surface_create_similar(cairo_get_target(cr), CAIRO_CONTENT_COLOR_ALPHA, w, h);
-	
-	CairoSurface csurface(surface);
-	if(!csurface.map_cairo_image())
-	{
-		synfig::warning("Spiral Gradient: map cairo surface failed");
-		return false;
-	}
-	for(y=0,pos[1]=tl[1];y<h;y++,pos[1]+=ph)
-		for(x=0,pos[0]=tl[0];x<w;x++,pos[0]+=pw)
-			csurface[y][x]=CairoColor(color_func(pos,calc_supersample(pos,pw,ph))).premult_alpha();
-	csurface.unmap_cairo_image();
-	
-	// paint surface on cr
-	cairo_save(cr);
-	cairo_translate(cr, tl[0], tl[1]);
-	cairo_scale(cr, pw, ph);
-	cairo_set_source_surface(cr, surface, 0, 0);
-	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
-	cairo_restore(cr);
-	
-	cairo_surface_destroy(surface);	
-	// Mark our progress as finished
-	if(cb && !cb->amount_complete(10000,10000))
-		return false;
-	
-	return true;
-}
 
 
 

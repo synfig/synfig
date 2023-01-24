@@ -1,7 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file centerlinepolygonizer.cpp
-**
-**	$Id$
+/*!	\file synfigapp/vectorizer/centerlinepolygonizer.cpp
 **
 **	\legal
 **	This file uses code from OpenToonz open-source animation software  (https://github.com/opentoonz/opentoonz/), which is developed from Toonz, a software originally created by Digital Video, S.p.A., Rome Italy Digital Video, S.p.A., Rome Italy.
@@ -45,8 +43,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace studio;
 using namespace synfig;
 
@@ -368,7 +364,7 @@ static RawBorder *extractPath(Signaturemap &ras, int x0, int y0, int pathType,
 
   // If the inner region's overall area is under a given threshold,
   // then erase it (intended as image noise).
-  if (abs(area) < despeckling) 
+  if (std::abs(area) < despeckling)
   {
     setSignature(ras, *path, invalid);
     delete path;
@@ -599,7 +595,7 @@ inline std::unique_ptr<int[]> furthestKs(RawBorder &path, std::unique_ptr<int[]>
       }
 
       // Update constraints
-      if (abs(shift[0]) > 1 || abs(shift[1]) > 1) {
+      if (std::abs(shift[0]) > 1 || std::abs(shift[1]) > 1) {
         newLeftConstraint[0] =
             shift[0] + (shift[1] < 0 || (shift[1] == 0 && shift[0] < 0) ? 1 : -1);
         newLeftConstraint[1] =

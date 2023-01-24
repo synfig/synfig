@@ -1,8 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file centerlineskeletonizer.cpp
 **
-**	$Id$
-**
 **	\legal
 **	This file uses code from OpenToonz open-source animation software  (https://github.com/opentoonz/opentoonz/), which is developed from Toonz, a software originally created by Digital Video, S.p.A., Rome Italy Digital Video, S.p.A., Rome Italy.
 **
@@ -41,8 +39,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace studio;
 using namespace synfig;
 
@@ -139,7 +135,7 @@ public:
   double m_height;
   double m_displacement;
   ContourNode *m_generator;
-  ContourNode *m_coGenerator;
+  ContourNode *m_coGenerator = nullptr;
   Type m_type;
   unsigned int m_algorithmicTime;
 
@@ -243,7 +239,6 @@ inline IndexTable::IndexColumn::iterator IndexTable::find(ContourNode *sought) {
 // Handles active contour merging due to split/vertex events
 void IndexTable::merge(IndexColumn::iterator index1,
                        IndexColumn::iterator index2) {
-  IndexColumn::iterator current;
 
   int identifier1 = m_identifiers[(*index1)->m_ancestorContour],
       identifier2 = m_identifiers[(*index2)->m_ancestorContour];
@@ -286,23 +281,23 @@ struct VectorizationContext {
   VectorizerCoreGlobals *m_globals;
 
   // Globals
-  unsigned int m_totalNodes;      // Number of original contour nodes
-  unsigned int m_contoursCount;   // Number of contours in input region
-  IndexTable m_activeTable;       // Index table of active contours
-  SkeletonGraph *m_output;        // Output skeleton of input region
-  double m_currentHeight;         // Height of our 'roof-flooding' process
-  Timeline m_timeline;            // Ordered queue of all possible events
-  unsigned int m_algorithmicTime; // Number of events processed up to now
+  unsigned int m_totalNodes = 0;      // Number of original contour nodes
+  unsigned int m_contoursCount = 0;   // Number of contours in input region
+  IndexTable m_activeTable;           // Index table of active contours
+  SkeletonGraph *m_output = nullptr;  // Output skeleton of input region
+  double m_currentHeight = 0;         // Height of our 'roof-flooding' process
+  Timeline m_timeline;                // Ordered queue of all possible events
+  unsigned int m_algorithmicTime = 0; // Number of events processed up to now
 
   // Containers
   std::vector<ContourEdge> m_edgesHeap;
   std::vector<ContourNode> m_nodesHeap;  // of *non-original* nodes only
-  unsigned int m_nodesHeapCount;         // number of nodes used in nodesHeap
+  unsigned int m_nodesHeapCount = 0;     // number of nodes used in nodesHeap
 
   //'Linear Axis-added' *pseudo-original* nodes and edges
   std::vector<ContourNode> m_linearNodesHeap;
   std::vector<ContourEdge> m_linearEdgesHeap;
-  unsigned int m_linearNodesHeapCount;
+  unsigned int m_linearNodesHeapCount = 0;
 
 public:
   VectorizationContext(VectorizerCoreGlobals *globals) : m_globals(globals) {}
@@ -602,8 +597,8 @@ inline void ContourNode::buildNodeInfos(bool forceConvex) {
 
 class RandomizedNode {
 public:
-  ContourNode *m_node;
-  int m_number;
+  ContourNode *m_node = nullptr;
+  int m_number = 0;
 
   RandomizedNode() {}
   RandomizedNode(ContourNode *node) : m_node(node), m_number(rand()) {}
@@ -1713,7 +1708,7 @@ SkeletonList* studio::skeletonize(Contours &contours, const etl::handle<synfigap
 
 
   for (i = 0; i <contours_size ; ++i) {
-    /* To be enabled in case on isCancenled is implemnted
+    /* To be enabled in case on isCancenled is implemented
         if (thisVectorizer->isCanceled()) break;
     */
     res->push_back(skeletonize(contours[i], context));

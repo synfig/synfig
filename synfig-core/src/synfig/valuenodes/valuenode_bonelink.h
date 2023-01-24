@@ -2,20 +2,23 @@
 /*!	\file valuenode_bonelink.h
 **	\brief Header file for implementation of the "BoneLink" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2013 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -45,34 +48,33 @@ class ValueNode_BoneLink : public LinkableValueNode
 	ValueNode::RHandle scale_x_;
 	ValueNode::RHandle scale_y_;
 
+	ValueNode_BoneLink(const ValueBase &x);
+
 public:
 	typedef etl::handle<ValueNode_BoneLink> Handle;
 	typedef etl::handle<const ValueNode_BoneLink> ConstHandle;
 
-	ValueNode_BoneLink(const ValueBase &x);
-
-	Transformation get_bone_transformation(Time t)const;
-	virtual ValueBase operator()(Time t)const;
-
+	static ValueNode_BoneLink* create(const ValueBase& x, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_BoneLink();
 
-	virtual String get_name()const;
-	virtual String get_local_name()const;
+	virtual ValueBase operator()(Time t) const override;
 
-	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
+	static bool check_type(Type &type);
+
+	virtual void set_root_canvas(etl::loose_handle<Canvas> canvas) override;
 
 protected:
-	LinkableValueNode* create_new()const;
-	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
+	LinkableValueNode* create_new() const override;
+
+	virtual bool set_link_vfunc(int i,ValueNode::Handle x) override;
+	virtual ValueNode::LooseHandle get_link_vfunc(int i) const override;
+
+	virtual Vocab get_children_vocab_vfunc() const override;
 
 public:
-	using synfig::LinkableValueNode::get_link_vfunc;
-
-	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(Type &type);
-	static ValueNode_BoneLink* create(const ValueBase &x);
-	virtual Vocab get_children_vocab_vfunc()const;
-	virtual void set_root_canvas(etl::loose_handle<Canvas> canvas);
+	Transformation get_bone_transformation(Time t) const;
 }; // END of class ValueNode_Pow
 
 }; // END of namespace synfig

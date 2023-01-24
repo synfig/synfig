@@ -83,8 +83,8 @@ AC_DEFUN([AC_ARG_DEBUG],
 		;;
 		no|*)
 			debug_flags="-DNDEBUG"
-			CXXFLAGS="`echo $CXXFLAGS | sed 's:-g[[a-z-]]*\s::g' | sed 's:-g[[a-z-]]*$::'` $debug_flags"
-			CFLAGS="`echo $CFLAGS | sed 's:-g[[a-z-]]*\s::g' | sed 's:-g[[a-z-]]*$::'` $debug_flags"
+			CXXFLAGS="$CXXFLAGS $debug_flags"
+			CFLAGS="$CFLAGS $debug_flags"
 		;;
 	esac
 
@@ -216,10 +216,6 @@ dnl    LDFLAGS="$LDFLAGS -lole32 -Wl,-no-undefined -Wl,--export-all-symbols -Wl,
 dnl    LDFLAGS="$LDFLAGS -lole32 -Wl,-no-undefined -Wl,--export-all-symbols -Wl,--enable-auto-import -Wl,--subsystem=console"
     CXXFLAGS="$CXXFLAGS -I/target/include"
     CFLAGS="$CFLAGS -I/target/include"
-    ;;
-  powerpc-apple*)
-    echo Adding mac-specific optimization flags. . .
-    CXXFLAGS="$CXXFLAGS $G5OPTFLAGS"
     ;;
 esac
 

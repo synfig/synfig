@@ -2,21 +2,24 @@
 /*!	\file synfig/blur.cpp
 **	\brief Blur Implementation File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2012-2013 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -32,8 +35,8 @@
 
 #include <stdexcept>
 
-#include <ETL/boxblur>
-#include <ETL/gaussian>
+#include <synfig/blur/boxblur.h>
+#include <synfig/blur/gaussian.h>
 
 #include "blur.h"
 
@@ -44,8 +47,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -98,7 +99,7 @@ Point Blur::operator()(const Point &pos) const
 
 	case DISC:
 		{
-			Angle theta=Angle::rotations((float)rand()/(float)RAND_MAX);
+			Angle theta=Angle::rot((float)rand()/(float)RAND_MAX);
 			Vector::value_type mag=(float)rand()/(float)RAND_MAX;
 			Vector vect((float)Angle::cos(theta).get()*mag,(float)Angle::sin(theta).get()*mag);
 
@@ -154,31 +155,25 @@ inline Color zero<Color>()
 	return Color::alpha();
 }
 
-template <>
-inline CairoColorAccumulator zero<CairoColorAccumulator>()
-{
-	return CairoColorAccumulator(0);
-}
-
-template <typename T,typename AT,class VP>
-static void GaussianBlur_2x2(etl::surface<T,AT,VP> &surface)
+template <typename T,class VP>
+static void GaussianBlur_2x2(synfig::surface<T,VP>& surface)
 {
 	int x,y,w,h;
-	AT Tmp1,Tmp2,SR0;
+	T Tmp1,Tmp2,SR0;
 
 	w=surface.get_w();
 	h=surface.get_h();
 	
-	AT *SC0=new AT[w];
+	T *SC0=new T[w];
 
-	memcpy(static_cast<void*>(SC0), surface[0], w*sizeof(AT));
+	memcpy(static_cast<void*>(SC0), surface[0], w*sizeof(T));
 
 	for(y=0;y<h;y++)
 	{
 		SR0=surface[y][0];
 		for(x=0;x<w;x++)
 		{
-			Tmp1=(AT)(surface[y][x]);
+			Tmp1=surface[y][x];
 			Tmp2=SR0+Tmp1;
 			SR0=Tmp1;
 			surface[y][x]=(SC0[x]+Tmp2)/4;
@@ -188,212 +183,11 @@ static void GaussianBlur_2x2(etl::surface<T,AT,VP> &surface)
 	delete [] SC0;
 }
 
-template <typename T,typename AT,class VP>
-static void GaussianBlur_3x3(etl::surface<T,AT,VP> &surface)
-{
-	int x,y,u,v,w,h;
-	AT Tmp1,Tmp2,SR0,SR1;
-
-	w=surface.get_w();
-	h=surface.get_h();
-
-	AT *SC0=new AT[w+1];
-	AT *SC1=new AT[w+1];
-
-	// Setup the row buffers
-	for(x=0;x<w;x++)SC0[x]=(AT)(surface[0][x])*4;
-
-	for(y=0;y<=h;y++)
-	{
-		if(y>=h)
-			v=h-1;
-		else
-			v=y;
-
-		SR0=SR1=surface[y][0];
-		for(x=0;x<=w;x++)
-		{
-			if(x>=w)
-				u=w-1;
-			else
-				u=x;
-
-			// Row Machine
-			Tmp1=surface[v][u];
-			Tmp2=SR0+Tmp1;
-			SR0=Tmp1;
-			Tmp1=SR1+Tmp2;
-			SR1=Tmp2;
-
-			// Column Machine
-			Tmp2=SC0[x]+Tmp1;
-			SC0[x]=Tmp1;
-			if(y&&x)
-				surface[y-1][x-1]=(SC1[x]+Tmp2)/16;
-			SC1[x]=Tmp2;
-		}
-	}
-
-	delete [] SC0;
-	delete [] SC1;
-}
-
-template <typename T,typename AT,class VP>
-inline static void GaussianBlur_5x5_(etl::surface<T,AT,VP> &surface,AT *SC0,AT *SC1,AT *SC2,AT *SC3)
-{
-	int x,y,u,v,w,h;
-	AT Tmp1,Tmp2,SR0,SR1,SR2,SR3;
-
-	w=surface.get_w();
-	h=surface.get_h();
-
-	// Setup the row buffers
-	for(x=0;x<w;x++)SC0[x+2]=(AT)(surface[0][x])*24;
-
-	for(y=0;y<h+2;y++)
-	{
-		if(y>=h)
-			v=h-1;
-		else
-			v=y;
-
-		SR0=SR1=SR2=SR3=0;
-		SR0=(AT)(surface[v][0])*1.5;
-		for(x=0;x<w+2;x++)
-		{
-			if(x>=w)
-				u=w-1;
-			else
-				u=x;
-
-			// Row Machine
-			Tmp1=surface[v][u];
-			Tmp2=SR0+Tmp1;
-			SR0=Tmp1;
-			Tmp1=SR1+Tmp2;
-			SR1=Tmp2;
-			Tmp2=SR2+Tmp1;
-			SR2=Tmp1;
-			Tmp1=SR3+Tmp2;
-			SR3=Tmp2;
-
-			// Column Machine
-			Tmp2=SC0[x]+Tmp1;
-			SC0[x]=Tmp1;
-			Tmp1=SC1[x]+Tmp2;
-			SC1[x]=Tmp2;
-			Tmp2=SC2[x]+Tmp1;
-			SC2[x]=Tmp1;
-			if(y>1&&x>1)
-				surface[y-2][x-2]=(SC3[x]+Tmp2)/256;
-			SC3[x]=Tmp2;
-		}
-	}
-
-}
-
-template <typename T,typename AT,class VP>
-inline static void GaussianBlur_5x5(etl::surface<T,AT,VP> &surface)
-{
-	int w2=surface.get_w() + 2;
-
-	AT *SC0=new AT[w2];
-	AT *SC1=new AT[w2];
-	AT *SC2=new AT[w2];
-	AT *SC3=new AT[w2];
-
-	GaussianBlur_5x5_(surface,SC0,SC1,SC2,SC3);
-
-	delete [] SC0;
-	delete [] SC1;
-	delete [] SC2;
-	delete [] SC3;
-}
-
-template <typename T,typename AT,class VP>
-static void GaussianBlur_nxn(etl::surface<T,AT,VP> &surface,int n)
-{
-	int x,y,u,v,w,h;
-	int half_n=n/2,i;
-	float inv_divisor=pow(2.0,(n-1));
-	AT Tmp1,Tmp2;
-	inv_divisor=1.0/(inv_divisor*inv_divisor);
-
-	w=surface.get_w();
-	h=surface.get_h();
-	int w_half_n=w+half_n;
-    AT SR[n-1];
-	AT *SC[n-1];
-
-	for(i=0;i<n-1;i++)
-	{
-		SC[i]=new AT[w_half_n];
-		if(!SC[i])
-		{
-			throw(runtime_error(strprintf(__FILE__":%d:Malloc failure",__LINE__)));
-			return;
-		}
-	}
-
-	// Setup the first row
-//	for(x=0;x<w;x++)SC[0][x+half_n]=surface[0][x]*550.0;//*pow(2.0,(n-1))*(2.0/n);
-
-	for(y=0;y<h+half_n;y++)
-	{
-		if(y>=h)
-			v=h-1;
-		else
-			v=y;
-
-		if(y!=0)
-			memset(SR,0,(n-1)*sizeof(AT));
-
-//		SR[0]=surface[v][0]*(2.0-1.9/n);
-
-		for(x=0;x<w_half_n;x++)
-		{
-			if(x>=w)
-				u=w-1;
-			else
-				u=x;
-
-			Tmp1=surface[v][u];
-			// Row Machine
-			for(i=0;i<half_n;i++)
-			{
-				int idouble = i*2;
-				Tmp2=SR[idouble]+Tmp1;
-				SR[idouble]=Tmp1;
-				Tmp1=SR[idouble+1]+Tmp2;
-				SR[idouble+1]=Tmp2;
-			}
-
-			// Column Machine
-			for(i=0;i<half_n-1;i++)
-			{
-				int idouble = i*2;
-				Tmp2=SC[idouble][x]+Tmp1;
-				SC[idouble][x]=Tmp1;
-				Tmp1=SC[idouble+1][x]+Tmp2;
-				SC[idouble+1][x]=Tmp2;
-			}
-			Tmp2=SC[n-3][x]+Tmp1;
-			SC[n-3][x]=Tmp1;
-			if(y>=half_n&&x>=half_n)
-				surface[y-half_n][x-half_n]=(SC[n-2][x]+Tmp2)*inv_divisor;
-			SC[n-2][x]=Tmp2;
-		}
-	}
-
-	for(i=0;i<n-1;i++)
-		delete [] SC[i];
-}
-
-template <typename T,typename AT,class VP>
-static void GaussianBlur_2x1(etl::surface<T,AT,VP> &surface)
+template <typename T,class VP>
+static void GaussianBlur_2x1(synfig::surface<T,VP> &surface)
 {
 	int x,y,w,h;
-	AT Tmp1,Tmp2,SR0;
+	T Tmp1,Tmp2,SR0;
 
 	w = surface.get_w();
 	h = surface.get_h();
@@ -411,11 +205,11 @@ static void GaussianBlur_2x1(etl::surface<T,AT,VP> &surface)
 	}
 }
 
-template <typename T,typename AT,class VP>
-static void GaussianBlur_3x1(etl::surface<T,AT,VP> &surface)
+template <typename T,class VP>
+static void GaussianBlur_3x1(synfig::surface<T,VP> &surface)
 {
 	int x,y,w,h;
-	AT Tmp1,Tmp2,SR0,SR1;
+	T Tmp1,Tmp2,SR0,SR1;
 	w = surface.get_w();
 	h = surface.get_h();
 	
@@ -437,15 +231,15 @@ static void GaussianBlur_3x1(etl::surface<T,AT,VP> &surface)
 	}
 }
 
-template <typename T,typename AT,class VP>
-static void GaussianBlur_1x2(etl::surface<T,AT,VP> &surface)
+template <typename T,class VP>
+static void GaussianBlur_1x2(synfig::surface<T,VP> &surface)
 {
 	int x,y;
-	AT Tmp1,Tmp2,SR0;
+	T Tmp1,Tmp2,SR0;
 
 	for(x=0;x<surface.get_w();x++)
 	{
-		SR0 = zero<AT>();
+		SR0 = zero<T>();
 		for(y=0;y<surface.get_h();y++)
 		{
 			Tmp1=surface[y][x];
@@ -456,11 +250,11 @@ static void GaussianBlur_1x2(etl::surface<T,AT,VP> &surface)
 	}
 }
 
-template <typename T,typename AT,class VP>
-static void GaussianBlur_1x3(etl::surface<T,AT,VP> &surface)
+template <typename T,class VP>
+static void GaussianBlur_1x3(synfig::surface<T,VP> &surface)
 {
 	int x,y;
-	AT Tmp1,Tmp2,SR0,SR1;
+	T Tmp1,Tmp2,SR0,SR1;
 
 	for(x=0;x<surface.get_w();x++)
 	{
@@ -493,8 +287,8 @@ bool Blur::operator()(const Surface &surface,
 	const Real	pw = resolution[0]/w,
 				ph = resolution[1]/h;
 
-	int	halfsizex = (int) (abs(size[0]*.5/pw) + 1),
-		halfsizey = (int) (abs(size[1]*.5/ph) + 1);
+	int	halfsizex = (int) (std::fabs(size[0]*.5/pw) + 1),
+		halfsizey = (int) (std::fabs(size[1]*.5/ph) + 1);
 
 	int x,y;
 
@@ -600,7 +394,7 @@ bool Blur::operator()(const Surface &surface,
 				length=std::max(1,length);
 
 				//synfig::info("Blur: hbox blur work -> temp %d", length);
-				etl::hbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface.begin());
+				hbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface.begin());
 			}
 			else temp_surface = worksurface;
 			//synfig::info("Blur: hbox finished");
@@ -615,7 +409,7 @@ bool Blur::operator()(const Surface &surface,
 				length = std::max(1,length);
 
 				//synfig::info("Blur: vbox blur temp -> work %d",length);
-				etl::vbox_blur(temp_surface.begin(),temp_surface.end(),length,worksurface.begin());
+				vbox_blur(temp_surface.begin(),temp_surface.end(),length,worksurface.begin());
 			}
 			else worksurface = temp_surface;
 			//synfig::info("Blur: vbox finished");
@@ -650,24 +444,24 @@ bool Blur::operator()(const Surface &surface,
 			//horizontal part
 			if(size[0])
 			{
-				Real length=abs((float)w/(resolution[0]))*size[0]*0.5+1;
+				Real length=std::fabs((float)w/(resolution[0]))*size[0]*0.5+1;
 				length=std::max(1.0,length);
 
 				//two box blurs produces: 1 2 1
-				etl::hbox_blur(worksurface.begin(),w,h,(int)(length*3/4),temp_surface.begin());
-				etl::hbox_blur(temp_surface.begin(),w,h,(int)(length*3/4),worksurface.begin());
+				hbox_blur(worksurface.begin(),w,h,(int)(length*3/4),temp_surface.begin());
+				hbox_blur(temp_surface.begin(),w,h,(int)(length*3/4),worksurface.begin());
 			}
 			//else temp_surface2=worksurface;
 
 			//vertical part
 			if(size[1])
 			{
-				Real length=abs((float)h/(resolution[1]))*size[1]*0.5+1;
+				Real length=std::fabs((float)h/(resolution[1]))*size[1]*0.5+1;
 				length=std::max(1.0,length);
 
 				//two box blurs produces: 1 2 1 on the horizontal 1 2 1
-				etl::vbox_blur(worksurface.begin(),w,h,(int)(length*3/4),temp_surface.begin());
-				etl::vbox_blur(temp_surface.begin(),w,h,(int)(length*3/4),worksurface.begin());
+				vbox_blur(worksurface.begin(),w,h,(int)(length*3/4),temp_surface.begin());
+				vbox_blur(temp_surface.begin(),w,h,(int)(length*3/4),worksurface.begin());
 			}
 			//else temp_surface2=temp_surface2;
 
@@ -693,7 +487,7 @@ bool Blur::operator()(const Surface &surface,
 				int length = halfsizex;
 				length = std::max(1,length);
 
-				etl::hbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface.begin());
+				hbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface.begin());
 			}
 			else temp_surface = worksurface;
 
@@ -706,7 +500,7 @@ bool Blur::operator()(const Surface &surface,
 				int length = halfsizey;
 				length = std::max(1,length);
 
-				etl::vbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface2.begin());
+				vbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface2.begin());
 			}
 			else temp_surface2 = worksurface;
 
@@ -757,14 +551,14 @@ bool Blur::operator()(const Surface &surface,
 			pw=pw*pw;
 			ph=ph*ph;
 
-			int bw = (int)(abs(pw)*size[0]*GAUSSIAN_ADJUSTMENT+0.5);
-			int bh = (int)(abs(ph)*size[1]*GAUSSIAN_ADJUSTMENT+0.5);
+			int bw = (int)(std::fabs(pw)*size[0]*GAUSSIAN_ADJUSTMENT+0.5);
+			int bh = (int)(std::fabs(ph)*size[1]*GAUSSIAN_ADJUSTMENT+0.5);
 			int max=bw+bh;
 
-			ColorAccumulator *SC0=new ColorAccumulator[w+2];
-			ColorAccumulator *SC1=new ColorAccumulator[w+2];
-			ColorAccumulator *SC2=new ColorAccumulator[w+2];
-			ColorAccumulator *SC3=new ColorAccumulator[w+2];
+			Color* SC0=new Color[w+2];
+			Color* SC1=new Color[w+2];
+			Color* SC2=new Color[w+2];
+			Color* SC3=new Color[w+2];
 
 			//synfig::warning("Didn't crash yet b2");
 			//int i = 0;
@@ -782,13 +576,13 @@ bool Blur::operator()(const Surface &surface,
 
 				if(bw>=4 && bh>=4)
 				{
-					etl::gaussian_blur_5x5_(gauss_surface->begin(),gauss_surface->get_w(),gauss_surface->get_h(),SC0,SC1,SC2,SC3);
+					gaussian_blur_5x5_(gauss_surface->begin(),gauss_surface->get_w(),gauss_surface->get_h(),SC0,SC1,SC2,SC3);
 					bw-=4,bh-=4;
 				}
 				else
 				if(bw>=2 && bh>=2)
 				{
-					etl::gaussian_blur_3x3(gauss_surface->begin(),gauss_surface->end());
+					gaussian_blur_3x3(gauss_surface->begin(),gauss_surface->end(), SC0, SC1);
 					bw-=2,bh-=2;
 				}
 				else
@@ -895,377 +689,10 @@ bool Blur::operator()(const Surface &surface,
 }
 
 //////
-bool Blur::operator()(cairo_surface_t *surface,
-					  const Vector &resolution,
-					  cairo_surface_t *out) const
-{
 
-	CairoSurface cairosurface(surface);
-	if(!cairosurface.map_cairo_image())
-	{
-		synfig::info("cairosurface map cairo image failed");
-		return false;
-	}
-
-	int w = cairosurface.get_w(),
-	h = cairosurface.get_h();
-	
-	if(w == 0 || h == 0 || resolution[0] == 0 || resolution[1] == 0)
-	{
-		cairosurface.unmap_cairo_image();
-		return false;
-	}
-	
-	const Real	pw = resolution[0]/w,
-	ph = resolution[1]/h;
-	
-	int	halfsizex = (int) (abs(size[0]*.5/pw) + 1),
-	halfsizey = (int) (abs(size[1]*.5/ph) + 1);
-	
-	int x,y;
-	
-	SuperCallback blurcall(cb,0,5000,5000);
-	
-	CairoSurface cairoout(out);
-	if(!cairoout.map_cairo_image())
-	{
-		synfig::info("cairoout map cairo image failed");
-		cairosurface.unmap_cairo_image();
-		return false;
-	}
-
-	switch(type)
-	{
-		case Blur::DISC:	// D I S C ----------------------------------------------------------
-		{
-			int bw = halfsizex;
-			int bh = halfsizey;
-			
-			if(size[0] && size[1] && w*h>2)
-			{
-				int x2,y2;
-				
-				for(y=0;y<h;y++)
-				{
-					for(x=0;x<w;x++)
-					{
-						//accumulate all the pixels in an ellipse of w,h about the current pixel
-						Color color=Color::alpha();
-						int total=0;
-						
-						for(y2=-bh;y2<=bh;y2++)
-						{
-							for(x2=-bw;x2<=bw;x2++)
-							{
-								//get the floating point distance away from the origin pixel in relative coords
-								float tmp_x=(float)x2/bw;
-								float tmp_y=(float)y2/bh;
-								tmp_x*=tmp_x;
-								tmp_y*=tmp_y;
-								
-								//ignore if it's outside of the disc
-								if( tmp_x+tmp_y>1.0)
-									continue;
-								
-								//cap the pixel indices to inside the surface
-								int u= x+x2,
-								v= y+y2;
-								
-								if( u < 0 )					u = 0;
-								if( u >= w ) u = w-1;
-								
-								if( v < 0 ) 				v = 0;
-								if( v >= h ) v = h-1;
-								
-								//accumulate the color, and # of pixels added in
-								color += Color(cairosurface[v][u]);
-								total++;
-							}
-						}
-						
-						//blend the color with the original color
-						cairoout[y][x]=CairoColor(color/total);
-					}
-					if(!blurcall.amount_complete(y,h))
-					{
-						if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
-						cairosurface.unmap_cairo_image();
-						cairoout.unmap_cairo_image();
-						return false;
-					}
-				}
-				break;
-			}
-			//if we don't qualify for disc blur just use box blur
-		}
-			
-		case Blur::BOX: // B O X -------------------------------------------------------
-		{
-			cairo_surface_t* temp=cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR_ALPHA, w, h);
-			CairoSurface cairotemp(temp);
-			if(!cairotemp.map_cairo_image())
-			{
-				synfig::info("cairotemp map cairo image failed");
-				return false;
-			}
-			//horizontal part
-			if(size[0])
-			{
-				int length = halfsizex;
-				length=std::max(1,length);
-				etl::hbox_blur(cairosurface.begin(),cairosurface.end(),length,cairotemp.begin());
-			}
-			else cairotemp.copy(cairosurface);
-			
-			//vertical part
-			if(size[1])
-			{
-				int length = halfsizey;
-				length = std::max(1,length);
-				etl::vbox_blur(cairotemp.begin(),cairotemp.end(),length,cairoout.begin());
-			}
-			else cairoout.copy(cairotemp);
-			cairotemp.unmap_cairo_image();
-			cairo_surface_destroy(temp);
-		}
-			break;
-			
-		case Blur::FASTGAUSSIAN:	// F A S T G A U S S I A N ----------------------------------------------
-		{
-			//fast gaussian is treated as a 3x3 type of thing, except expanded to work with the length
-			
-			/*	1	2	1
-			 2	4	2
-			 1	2	1
-			 */
-			cairo_surface_t* temp=cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR_ALPHA, w, h);
-			CairoSurface cairotemp(temp);
-			if(!cairotemp.map_cairo_image())
-			{
-				synfig::info("cairotemp map cairo image failed. Fast Gaussian");
-				return false;
-			}
-			
-			//horizontal part
-			if(size[0])
-			{
-				Real length=abs((float)w/(resolution[0]))*size[0]*0.5+1;
-				length=std::max(1.0,length);
-				
-				//two box blurs produces: 1 2 1
-				etl::hbox_blur(cairosurface.begin(),w,h,(int)(length*3/4),cairotemp.begin());
-				etl::hbox_blur(cairotemp.begin(),w,h,(int)(length*3/4),cairoout.begin());
-			}
-			else cairoout.copy(cairosurface);
-			
-			// Interchange result with temp
-			cairotemp.copy(cairoout);
-			//vertical part
-			if(size[1])
-			{
-				Real length=abs((float)h/(resolution[1]))*size[1]*0.5+1;
-				length=std::max(1.0,length);
-				
-				//two box blurs produces: 1 2 1 on the horizontal 1 2 1
-				etl::vbox_blur(cairoout.begin(),w,h,(int)(length*3/4),cairotemp.begin());
-				etl::vbox_blur(cairotemp.begin(),w,h,(int)(length*3/4),cairoout.begin());
-			}
-			else cairoout.copy(cairotemp);
-			cairotemp.unmap_cairo_image();
-			cairo_surface_destroy(temp);			
-		}
-			break;
-			
-		case Blur::CROSS: // C R O S S  -------------------------------------------------------
-		{
-			//horizontal part
-			cairo_surface_t* temp=cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR_ALPHA, w, h);
-			CairoSurface cairotemp(temp);
-			if(!cairotemp.map_cairo_image())
-			{
-				synfig::info("cairotemp map cairo image failed. Cross");
-				cairo_surface_destroy(temp);
-				return false;
-			}
-			
-			if(size[0])
-			{
-				int length = halfsizex;
-				length = std::max(1,length);
-				
-				etl::hbox_blur(cairosurface.begin(),cairosurface.end(),length,cairotemp.begin());
-			}
-			else cairotemp.copy(cairosurface);
-			
-			//vertical part
-			cairo_surface_t* temp2=cairo_surface_create_similar(surface, CAIRO_CONTENT_COLOR_ALPHA, w, h);
-			CairoSurface cairotemp2(temp2);
-			if(!cairotemp2.map_cairo_image())
-			{
-				synfig::info("cairotemp2 map cairo image failed. Cross");
-				cairotemp.unmap_cairo_image();
-				cairo_surface_destroy(temp);
-				cairo_surface_destroy(temp2);
-				return false;
-			}
-			
-			if(size[1])
-			{
-				int length = halfsizey;
-				length = std::max(1,length);
-				
-				etl::vbox_blur(cairosurface.begin(),cairosurface.end(),length,cairotemp2.begin());
-			}
-			else cairotemp2.copy(cairosurface);
-			
-			//blend the two together
-			int x,y;
-			
-			for(y=0;y<h;y++)
-			{
-				for(x=0;x<w;x++)
-				{
-					cairoout[y][x] = cairotemp[y][x]*0.5+cairotemp2[y][x]*0.5;
-				}
-			}
-			cairotemp.unmap_cairo_image();
-			cairo_surface_destroy(temp);
-			cairotemp2.unmap_cairo_image();
-			cairo_surface_destroy(temp2);
-			break;
-		}
-			
-		case Blur::GAUSSIAN:	// G A U S S I A N ----------------------------------------------
-		{
-#ifndef	GAUSSIAN_ADJUSTMENT
-#define GAUSSIAN_ADJUSTMENT		(0.05)
-#endif
-			
-			Real	pw = (Real)w/(resolution[0]);
-			Real 	ph = (Real)h/(resolution[1]);
-			
-			CairoSurface *gauss_surface;
-			cairoout.copy(cairosurface);
-			gauss_surface = &cairoout;
-            /* Squaring the pw and ph values
-			 is necessary to insure consistent
-			 results when rendered to different
-			 resolutions.
-			 Unfortunately, this automatically
-			 squares our rendertime.
-			 There has got to be a faster way...
-			 */
-			pw=pw*pw;
-			ph=ph*ph;
-			
-			int bw = (int)(abs(pw)*size[0]*GAUSSIAN_ADJUSTMENT+0.5);
-			int bh = (int)(abs(ph)*size[1]*GAUSSIAN_ADJUSTMENT+0.5);
-			int max=bw+bh;
-			
-			CairoColorAccumulator *SC0=new class CairoColorAccumulator[w+2];
-			CairoColorAccumulator *SC1=new class CairoColorAccumulator[w+2];
-			CairoColorAccumulator *SC2=new class CairoColorAccumulator[w+2];
-			CairoColorAccumulator *SC3=new class CairoColorAccumulator[w+2];
-						
-			while(bw&&bh)
-			{
-				if(!blurcall.amount_complete(max-(bw+bh),max)) {
-					delete [] SC0;
-					delete [] SC1;
-					delete [] SC2;
-					delete [] SC3;
-
-					return false;
-				}
-				
-				if(bw>=4 && bh>=4)
-				{
-					etl::gaussian_blur_5x5_(gauss_surface->begin(),gauss_surface->get_w(),gauss_surface->get_h(),SC0,SC1,SC2,SC3);
-					bw-=4,bh-=4;
-				}
-				else
-					if(bw>=2 && bh>=2)
-					{
-						etl::gaussian_blur_3x3(gauss_surface->begin(),gauss_surface->end());
-						bw-=2,bh-=2;
-					}
-					else
-						if(bw>=1 && bh>=1)
-						{
-							GaussianBlur_2x2(*gauss_surface);
-							bw--,bh--;
-						}				
-			}
-			while(bw)
-			{
-				if(!blurcall.amount_complete(max-(bw+bh),max)) {
-					delete [] SC0;
-					delete [] SC1;
-					delete [] SC2;
-					delete [] SC3;
-
-					return false;
-				}
-				if(bw>=2)
-				{
-					GaussianBlur_3x1(*gauss_surface);
-					bw-=2;
-				}
-				else
-					if(bw>=1)
-					{
-						GaussianBlur_2x1(*gauss_surface);
-						bw--;
-					}
-			}
-			while(bh)
-			{
-				if(!blurcall.amount_complete(max-(bw+bh),max)) {
-					delete [] SC0;
-					delete [] SC1;
-					delete [] SC2;
-					delete [] SC3;
-
-					return false;
-				}
-				if(bh>=2)
-				{
-					GaussianBlur_1x3(*gauss_surface);
-					bh-=2;
-				}
-				else
-					if(bh>=1)
-					{
-						GaussianBlur_1x2(*gauss_surface);
-						bh--;
-					}
-			}
-			
-			delete [] SC0;
-			delete [] SC1;
-			delete [] SC2;
-			delete [] SC3;
-		}
-			break;
-			
-		default:
-			break;
-	}
-
-	//we are FRIGGGIN done....
-	blurcall.amount_complete(100,100);
-	
-	cairosurface.unmap_cairo_image();
-	cairoout.unmap_cairo_image();
-	
-	return true;
-}
-
-//////
-
-bool Blur::operator()(const etl::surface<float> &surface,
+bool Blur::operator()(const synfig::surface<float> &surface,
 					  const synfig::Vector &resolution,
-					  etl::surface<float> &out) const
+					  synfig::surface<float> &out) const
 {
 	int w = surface.get_w(),
 		h = surface.get_h();
@@ -1275,13 +702,13 @@ bool Blur::operator()(const etl::surface<float> &surface,
 	const Real	pw = resolution[0]/w,
 				ph = resolution[1]/h;
 
-	int	halfsizex = (int) (abs(size[0]*.5/pw) + 1),
-		halfsizey = (int) (abs(size[1]*.5/ph) + 1);
+	int	halfsizex = (int) (std::fabs(size[0]*.5/pw) + 1),
+		halfsizey = (int) (std::fabs(size[1]*.5/ph) + 1);
 	int x,y;
 
 	SuperCallback blurcall(cb,0,5000,5000);
 
-	etl::surface<float> worksurface(surface);
+	synfig::surface<float> worksurface(surface);
 
 	//don't need to premultiply because we are dealing with ONLY alpha
 
@@ -1295,7 +722,7 @@ bool Blur::operator()(const etl::surface<float> &surface,
 			if(size[0] && size[1] && w*h>2)
 			{
 				int x2,y2;
-				etl::surface<float> tmp_surface(worksurface);
+				synfig::surface<float> tmp_surface(worksurface);
 
 				for(y=0;y<h;y++)
 				{
@@ -1356,7 +783,7 @@ bool Blur::operator()(const etl::surface<float> &surface,
 	case Blur::BOX: // B O X -------------------------------------------------------
 		{
 			//horizontal part
-			etl::surface<float> temp_surface;
+			synfig::surface<float> temp_surface;
 			temp_surface.set_wh(w,h);
 
 			if(size[0])
@@ -1364,19 +791,19 @@ bool Blur::operator()(const etl::surface<float> &surface,
 				int length = halfsizex;
 				length=std::max(1,length);
 
-				etl::hbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface.begin());
+				hbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface.begin());
 			}
 			else temp_surface = worksurface;
 
 			//vertical part
-			//etl::surface<float> temp_surface2;
+			//synfig::surface<float> temp_surface2;
 			//temp_surface2.set_wh(w,h);
 
 			if(size[1])
 			{
 				int length = halfsizey;
 				length = std::max(1,length);
-				etl::vbox_blur(temp_surface.begin(),temp_surface.end(),length,worksurface.begin());
+				vbox_blur(temp_surface.begin(),temp_surface.end(),length,worksurface.begin());
 			}
 			else worksurface = temp_surface;
 
@@ -1401,33 +828,33 @@ bool Blur::operator()(const etl::surface<float> &surface,
 				1	2	1
 			*/
 
-			etl::surface<float> temp_surface;
+			synfig::surface<float> temp_surface;
 			temp_surface.set_wh(w,h);
 
-			//etl::surface<float> temp_surface2;
+			//synfig::surface<float> temp_surface2;
 			//temp_surface2.set_wh(w,h);
 
 			//horizontal part
 			if(size[0])
 			{
-				Real length=abs((float)w/(resolution[0]))*size[0]*0.5+1;
+				Real length=std::fabs((float)w/(resolution[0]))*size[0]*0.5+1;
 				length=std::max(1.0,length);
 
 				//two box blurs produces: 1 2 1
-				etl::hbox_blur(worksurface.begin(),w,h,(int)(length*3/4),temp_surface.begin());
-				etl::hbox_blur(temp_surface.begin(),w,h,(int)(length*3/4),worksurface.begin());
+				hbox_blur(worksurface.begin(),w,h,(int)(length*3/4),temp_surface.begin());
+				hbox_blur(temp_surface.begin(),w,h,(int)(length*3/4),worksurface.begin());
 			}
 			//else temp_surface2=worksurface;
 
 			//vertical part
 			if(size[1])
 			{
-				Real length=abs((float)h/(resolution[1]))*size[1]*0.5+1;
+				Real length=std::fabs((float)h/(resolution[1]))*size[1]*0.5+1;
 				length=std::max(1.0,length);
 
 				//two box blurs produces: 1 2 1 on the horizontal 1 2 1
-				etl::vbox_blur(worksurface.begin(),w,h,(int)(length*3/4),temp_surface.begin());
-				etl::vbox_blur(temp_surface.begin(),w,h,(int)(length*3/4),worksurface.begin());
+				vbox_blur(worksurface.begin(),w,h,(int)(length*3/4),temp_surface.begin());
+				vbox_blur(temp_surface.begin(),w,h,(int)(length*3/4),worksurface.begin());
 			}
 			//else temp_surface2=temp_surface2;
 
@@ -1445,7 +872,7 @@ bool Blur::operator()(const etl::surface<float> &surface,
 	case Blur::CROSS: // C R O S S  -------------------------------------------------------
 		{
 			//horizontal part
-			etl::surface<float> temp_surface;
+			synfig::surface<float> temp_surface;
 			temp_surface.set_wh(worksurface.get_w(),worksurface.get_h());
 
 			if(size[0])
@@ -1453,12 +880,12 @@ bool Blur::operator()(const etl::surface<float> &surface,
 				int length = halfsizex;
 				length = std::max(1,length);
 
-				etl::hbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface.begin());
+				hbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface.begin());
 			}
 			else temp_surface = worksurface;
 
 			//vertical part
-			etl::surface<float> temp_surface2;
+			synfig::surface<float> temp_surface2;
 			temp_surface2.set_wh(worksurface.get_w(),worksurface.get_h());
 
 			if(size[1])
@@ -1466,7 +893,7 @@ bool Blur::operator()(const etl::surface<float> &surface,
 				int length = halfsizey;
 				length = std::max(1,length);
 
-				etl::vbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface2.begin());
+				vbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface2.begin());
 			}
 			else temp_surface2 = worksurface;
 
@@ -1493,8 +920,8 @@ bool Blur::operator()(const etl::surface<float> &surface,
 			Real	pw = (Real)w/(resolution[0]);
 			Real 	ph = (Real)h/(resolution[1]);
 
-			//etl::surface<float> temp_surface;
-			etl::surface<float> *gauss_surface;
+			//synfig::surface<float> temp_surface;
+			synfig::surface<float> *gauss_surface;
 
 			//if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 				gauss_surface = &worksurface;
@@ -1515,21 +942,14 @@ bool Blur::operator()(const etl::surface<float> &surface,
 			pw=pw*pw;
 			ph=ph*ph;
 
-			int bw = (int)(abs(pw)*size[0]*GAUSSIAN_ADJUSTMENT+0.5);
-			int bh = (int)(abs(ph)*size[1]*GAUSSIAN_ADJUSTMENT+0.5);
+			int bw = (int)(std::fabs(pw)*size[0]*GAUSSIAN_ADJUSTMENT+0.5);
+			int bh = (int)(std::fabs(ph)*size[1]*GAUSSIAN_ADJUSTMENT+0.5);
 			int max=bw+bh;
 
 			float *SC0=new float[w+2];
 			float *SC1=new float[w+2];
 			float *SC2=new float[w+2];
 			float *SC3=new float[w+2];
-
-			memset(SC0,0,(w+2)*sizeof(float));
-			memset(SC0,0,(w+2)*sizeof(float));
-			memset(SC0,0,(w+2)*sizeof(float));
-			memset(SC0,0,(w+2)*sizeof(float));
-
-			//int i = 0;
 
 			while(bw&&bh)
 			{
@@ -1544,13 +964,13 @@ bool Blur::operator()(const etl::surface<float> &surface,
 
 				if(bw>=4 && bh>=4)
 				{
-					etl::gaussian_blur_5x5_(gauss_surface->begin(),gauss_surface->get_w(),gauss_surface->get_h(),SC0,SC1,SC2,SC3);
+					gaussian_blur_5x5_(gauss_surface->begin(),gauss_surface->get_w(),gauss_surface->get_h(),SC0,SC1,SC2,SC3);
 					bw-=4,bh-=4;
 				}
 				else
 				if(bw>=2 && bh>=2)
 				{
-					etl::gaussian_blur_3x3(gauss_surface->begin(),gauss_surface->end());
+					gaussian_blur_3x3(gauss_surface->begin(),gauss_surface->end(), SC0, SC1);
 					bw-=2,bh-=2;
 				}
 				else

@@ -2,22 +2,25 @@
 /*!	\file loadcanvas.h
 **	\brief Implementation for the Synfig Canvas Loader (canvas file parser)
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2009 Carlos A. Sosa Navarro
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -34,9 +37,7 @@
 #include "valuenode.h"
 #include "vector.h"
 #include "value.h"
-#include "valuenodes/valuenode_subtract.h"
 #include "valuenodes/valuenode_animated.h"
-#include "valuenodes/valuenode_composite.h"
 #include "valuenodes/valuenode_staticlist.h"
 #include "valuenodes/valuenode_dynamiclist.h"
 #include "keyframe.h"
@@ -84,6 +85,8 @@ private:
 	String warnings_text;
 	//! Seems not to be used
 	GUID guid_;
+	//
+	bool in_bones_section;
 
 	/*
  --	** -- C O N S T R U C T O R S ---------------------------------------------
@@ -95,7 +98,8 @@ public:
 		max_warnings_	(1000),
 		total_warnings_	(0),
 		total_errors_	(0),
-		allow_errors_	(false)
+		allow_errors_	(false),
+		in_bones_section(false)
 	{ }
 
 	/*
@@ -245,7 +249,8 @@ extern Canvas::Handle open_canvas_as(const FileSystem::Identifier &identifier,co
 
 //! Returns the Open Canvases Map.
 //! \see open_canvas_map_
-std::map<String, etl::loose_handle<Canvas> >& get_open_canvas_map();
+using OpenCanvasMap = std::map<Canvas::LooseHandle, std::string>;
+OpenCanvasMap& get_open_canvas_map();
 
 }; // END of namespace synfig
 

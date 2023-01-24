@@ -26,6 +26,8 @@ src/gui/dialogs/canvasoptions.cpp
 src/gui/dialogs/canvasoptions.h
 src/gui/dialogs/canvasproperties.cpp
 src/gui/dialogs/canvasproperties.h
+src/gui/dialogs/dialog_canvasdependencies.cpp
+src/gui/dialogs/dialog_canvasdependencies.h
 src/gui/dialogs/dialog_color.cpp
 src/gui/dialogs/dialog_color.h
 src/gui/dialogs/dialog_ffmpegparam.cpp
@@ -188,8 +190,6 @@ src/gui/widgets/widget_color.cpp
 src/gui/widgets/widget_color.h
 src/gui/widgets/widget_coloredit.cpp
 src/gui/widgets/widget_coloredit.h
-src/gui/widgets/widget_compselect.cpp
-src/gui/widgets/widget_compselect.h
 src/gui/widgets/widget_curves.cpp
 src/gui/widgets/widget_curves.h
 src/gui/widgets/widget_defaults.cpp
@@ -204,6 +204,8 @@ src/gui/widgets/widget_fontfamily.cpp
 src/gui/widgets/widget_fontfamily.h
 src/gui/widgets/widget_gradient.cpp
 src/gui/widgets/widget_gradient.h
+src/gui/widgets/widget_interpolation.cpp
+src/gui/widgets/widget_interpolation.h
 src/gui/widgets/widget_keyframe_list.cpp
 src/gui/widgets/widget_keyframe_list.h
 src/gui/widgets/widget_link.h
@@ -228,6 +230,8 @@ src/gui/workarearenderer/renderer_background.cpp
 src/gui/workarearenderer/renderer_background.h
 src/gui/workarearenderer/renderer_bbox.cpp
 src/gui/workarearenderer/renderer_bbox.h
+src/gui/workarearenderer/renderer_bonedeformarea.cpp
+src/gui/workarearenderer/renderer_bonedeformarea.h
 src/gui/workarearenderer/renderer_bonesetup.cpp
 src/gui/workarearenderer/renderer_canvas.cpp
 src/gui/workarearenderer/renderer_canvas.h
@@ -248,8 +252,6 @@ src/gui/app.cpp
 src/gui/app.h
 src/gui/asyncrenderer.cpp
 src/gui/asyncrenderer.h
-src/gui/audiocontainer.cpp
-src/gui/audiocontainer.h
 src/gui/autorecover.cpp
 src/gui/autorecover.h
 src/gui/canvasview.cpp
@@ -275,8 +277,6 @@ src/gui/iconcontroller.cpp
 src/gui/iconcontroller.h
 src/gui/instance.cpp
 src/gui/instance.h
-src/gui/ipc.cpp
-src/gui/ipc.h
 src/gui/keymapsettings.cpp
 src/gui/keymapsettings.h
 src/gui/main.cpp
@@ -296,8 +296,6 @@ src/gui/splash.cpp
 src/gui/splash.h
 src/gui/statemanager.cpp
 src/gui/statemanager.h
-src/gui/valuelink.cpp
-src/gui/valuelink.h
 src/gui/workarea.cpp
 src/gui/workarea.h
 src/gui/workarearenderer/workarearenderer.cpp
@@ -525,7 +523,13 @@ src/synfigapp/value_desc.h
 
 # Now, UI xml files
 src/gui/resources/ui/canvas_options.glade
+src/gui/resources/ui/dialog_canvasdependencies.glade
 src/gui/resources/ui/dialog_workspaces.glade
 src/gui/resources/ui/preview_options.glade
 src/gui/resources/ui/shortcuts_window.glade
 src/gui/resources/ui/vectorizer_settings.glade
+src/gui/resources/ui/file_top_toolbar.glade
+src/gui/resources/ui/history_toolbar.glade
+src/gui/resources/ui/right_toolbar.glade
+src/gui/resources/ui/studio_menubar.xml
+src/gui/resources/ui/top_toolbar.glade

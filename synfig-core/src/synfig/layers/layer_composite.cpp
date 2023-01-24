@@ -2,22 +2,25 @@
 /*!	\file layer_composite.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
 **	Copyright (c) 2011-2013 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -41,7 +44,6 @@
 #include <synfig/target.h>
 #include <synfig/render.h>
 #include <synfig/paramdesc.h>
-#include <synfig/cairo_renddesc.h>
 
 #include "layer_composite.h"
 
@@ -55,8 +57,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -75,6 +75,32 @@ Layer_Composite::Layer_Composite(Real a, Color::BlendMethod bm):
 		SET_INTERPOLATION_DEFAULTS();
 		SET_STATIC_DEFAULTS();
 	}
+
+Layer::Handle
+Layer_Composite::basic_hit_check(synfig::Context context, const synfig::Point &point, bool& check_myself_first) const
+{
+	check_myself_first = false;
+
+	// if we have a zero amount
+	if (get_amount() == 0.0)
+		// then the click passes down to our context
+		return context.hit_check(point);
+
+	Layer::Handle tmp;
+	// if we are behind the context, and the click hits something in the context
+	if (get_blend_method() == Color::BLEND_BEHIND && (tmp = context.hit_check(point)))
+		// then return the thing it hit in the context
+		return tmp;
+
+	// if we're using an 'onto' blend method and the click missed the context
+	if (Color::is_onto(get_blend_method()) && !(tmp = context.hit_check(point)))
+		// then it misses everything
+		return nullptr;
+
+	// otherwise the click may hit us: caller function must check if point does hit me or not
+	check_myself_first = true;
+	return nullptr;
+}
 
 Rect
 Layer_Composite::get_full_bounding_rect(Context context)const
@@ -126,7 +152,7 @@ Layer_Composite::set_param(const String & param, const ValueBase &value)
 
 				if (version == "0.1" || version == "0.2")
 				{
-					if (dynamic_cast<Layer_PasteCanvas*>(this) != NULL)
+					if (dynamic_cast<Layer_PasteCanvas*>(this))
 						warning("loaded a version %s canvas with a 'Straight' blended PasteCanvas (%s) - check it renders OK",
 								version.c_str(), get_non_empty_description().c_str());
 					else
@@ -165,7 +191,7 @@ Layer_Composite::build_composite_task_vfunc(ContextParams /*context_params*/)con
 	return new rendering::TaskLayer();
 	//rendering::TaskLayer::Handle task = new rendering::TaskLayer();
 	//// TODO: This is not thread-safe
-	//task->layer = const_cast<Layer_Composite*>(this);//clone(NULL);
+	//task->layer = const_cast<Layer_Composite*>(this);//clone(nullptr);
 	//return task;
 }
 

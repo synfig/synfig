@@ -2,20 +2,23 @@
 /*!	\file debug/log.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -29,20 +32,20 @@
 #	include <config.h>
 #endif
 
-#include <cstdlib>
+#include <cstdarg>
 
 #include <fstream>
 
 #include "log.h"
 
-#include <ETL/stringf>
+#include <synfig/filesystem.h>
 #include <synfig/general.h>
+#include <synfig/string.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace debug;
 
@@ -59,7 +62,7 @@ std::mutex Log::mutex;
 void Log::append_line_to_file(const String &logfile, const String &str)
 {
 	std::lock_guard<std::mutex> lock(mutex);
-	std::ofstream f(logfile.c_str(), std::ios_base::app);
+	std::ofstream f(synfig::filesystem::Path(logfile).c_str(), std::ios_base::app);
 	f << str << std::endl;
 }
 

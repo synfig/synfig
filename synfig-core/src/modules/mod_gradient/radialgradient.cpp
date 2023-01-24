@@ -2,22 +2,25 @@
 /*!	\file mod_gradient/radialgradient.cpp
 **	\brief Implementation of the "Radial Gradient" layer
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
 **	Copyright (c) 2011-2013 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -32,16 +35,13 @@
 #endif
 
 #include <synfig/localization.h>
-#include <synfig/general.h>
 
 #include <synfig/string.h>
-#include <synfig/time.h>
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
 #include <synfig/renddesc.h>
 #include <synfig/surface.h>
 #include <synfig/value.h>
-#include <synfig/valuenode.h>
 
 #include "radialgradient.h"
 
@@ -49,8 +49,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
-using namespace std;
 using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
@@ -175,10 +173,14 @@ RadialGradient::calc_supersample(const synfig::Point &/*x*/, Real pw, Real /*ph*
 synfig::Layer::Handle
 RadialGradient::hit_check(synfig::Context context, const synfig::Point &point)const
 {
+	bool check_myself_first;
+	auto layer = basic_hit_check(context, point, check_myself_first);
+
+	if (!check_myself_first)
+		return layer;
+
 	if(get_blend_method()==Color::BLEND_STRAIGHT && get_amount()>=0.5)
 		return const_cast<RadialGradient*>(this);
-	if(get_amount()==0.0)
-		return context.hit_check(point);
 	if((get_blend_method()==Color::BLEND_STRAIGHT || get_blend_method()==Color::BLEND_COMPOSITE) && color_func(point).get_a()>0.5)
 		return const_cast<RadialGradient*>(this);
 	return context.hit_check(point);
@@ -244,101 +246,4 @@ RadialGradient::accelerated_render(Context context,Surface *surface,int quality,
 	return true;
 }
 
-
-bool
-RadialGradient::accelerated_cairorender(Context context,cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	Gradient gradient=param_gradient.get(Gradient());
-	Point center=param_center.get(Point());
-	Real radius=param_radius.get(Real());
-	bool loop=param_loop.get(bool());
-
-	cairo_save(cr);
-	cairo_pattern_t* pattern=cairo_pattern_create_radial(center[0], center[1], 0.0 ,center[0], center[1], radius);
-	bool cpoints_all_opaque=compile_gradient(pattern, gradient);
-	if(loop)
-		cairo_pattern_set_extend(pattern, CAIRO_EXTEND_REPEAT);
-	if(quality>8) cairo_pattern_set_filter(pattern, CAIRO_FILTER_FAST);
-	else if(quality>=4) cairo_pattern_set_filter(pattern, CAIRO_FILTER_GOOD);
-	else cairo_pattern_set_filter(pattern, CAIRO_FILTER_BEST);
-	if(
-	   !
-	   (is_solid_color() ||
-		(cpoints_all_opaque && get_blend_method()==Color::BLEND_COMPOSITE && get_amount()==1.f))
-	   )
-	{
-		// Initially render what's behind us
-		if(!context.accelerated_cairorender(cr,quality,renddesc,cb))
-		{
-			if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
-			return false;
-		}
-	}
-	cairo_set_source(cr, pattern);
-	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
-	
-	cairo_pattern_destroy(pattern); // Not needed more
-	cairo_restore(cr);
-	return true;
-}
-
-bool
-RadialGradient::compile_gradient(cairo_pattern_t* pattern, Gradient mygradient)const
-{
-	bool zigzag=param_zigzag.get(bool());
-	bool loop=param_loop.get(bool());
-
-	bool cpoints_all_opaque=true;
-	float a,r,g,b;
-	Gradient::CPoint cp;
-	Gradient::const_iterator iter;
-	mygradient.sort();
-	if(zigzag)
-	{
-		Gradient zgradient;
-		for(iter=mygradient.begin();iter!=mygradient.end(); iter++)
-		{
-			cp=*iter;
-			cp.pos=cp.pos/2;
-			zgradient.push_back(cp);
-		}
-		for(iter=mygradient.begin();iter!=mygradient.end(); iter++)
-		{
-			cp=*iter;
-			cp.pos=1.0-cp.pos/2;
-			zgradient.push_back(cp);
-		}
-		mygradient=zgradient;
-	}
-	mygradient.sort();
-	if(loop)
-	{
-		cp=*mygradient.begin();
-		a=cp.color.get_a();
-		r=cp.color.get_r();
-		g=cp.color.get_g();
-		b=cp.color.get_b();
-		cairo_pattern_add_color_stop_rgba(pattern, 0.0, r, g, b, a);
-	}
-	for(iter=mygradient.begin();iter!=mygradient.end(); iter++)
-	{
-		cp=*iter;
-		a=cp.color.get_a();
-		r=cp.color.get_r();
-		g=cp.color.get_g();
-		b=cp.color.get_b();
-		cairo_pattern_add_color_stop_rgba(pattern, cp.pos, r, g, b, a);
-		if(a!=1.0) cpoints_all_opaque=false;
-	}
-	if(loop)
-	{
-		cp=*(--mygradient.end());
-		a=cp.color.get_a();
-		r=cp.color.get_r();
-		g=cp.color.get_g();
-		b=cp.color.get_b();
-		cairo_pattern_add_color_stop_rgba(pattern, 1.0, r, g, b, a);
-	}
-	return cpoints_all_opaque;
-}
 

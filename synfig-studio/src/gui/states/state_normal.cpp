@@ -2,22 +2,25 @@
 /*!	\file state_normal.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2009 Nikita Kitaev
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -51,8 +54,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -109,7 +110,7 @@ class studio::StateNormal_Context : public sigc::trackable
 
 	etl::handle<DuckDrag_Combo> duck_dragger_;
 
-	Gtk::Table options_table;
+	Gtk::Grid options_grid;
 	Gtk::Label title_label;
 
 	bool ctrl_pressed;
@@ -277,37 +278,35 @@ StateNormal_Context::StateNormal_Context(CanvasView* canvas_view):
 {
 	duck_dragger_->canvas_view_=get_canvas_view();
 
-	// Set up the tool options dialog
+	// Toolbox widgets
 	title_label.set_label(_("Transform Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
 	title_label.set_attributes(list);
-	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	
-	options_table.attach(title_label,
-		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Ctrl to rotate"), Gtk::ALIGN_START)),
-		0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Alt to scale"), Gtk::ALIGN_START)),
-		0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Shift to constrain"), Gtk::ALIGN_START)),
-		0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	title_label.set_hexpand();
+	title_label.set_halign(Gtk::ALIGN_START);
+	title_label.set_valign(Gtk::ALIGN_CENTER);
 
-	options_table.set_border_width(GAP*2);
-	options_table.set_row_spacings(GAP);
+	// Toolbox layout
+	options_grid.attach(title_label,
+		0, 0, 1, 1);
+	options_grid.attach(*manage(new Gtk::Label(_("Ctrl to rotate"), Gtk::ALIGN_START)),
+		0, 1, 1, 1);
+	options_grid.attach(*manage(new Gtk::Label(_("Alt to scale"), Gtk::ALIGN_START)),
+		0, 2, 1, 1);
+	options_grid.attach(*manage(new Gtk::Label(_("Shift to constrain"), Gtk::ALIGN_START)),
+		0, 3, 1, 1);
 
-	options_table.show_all();
+	options_grid.set_border_width(GAP*2);
+	options_grid.set_row_spacing(GAP);
+	options_grid.set_margin_bottom(0);
+	options_grid.show_all();
+
 	refresh_tool_options();
-	//App::dialog_tool_options->set_widget(options_table);
-	//App::dialog_tool_options->present();
 
 	get_work_area()->set_allow_layer_clicks(true);
 	get_work_area()->set_duck_dragger(duck_dragger_);
-
-	//these will segfault
-//	get_work_area()->set_cursor(Gdk::CROSSHAIR);
-//	get_work_area()->reset_cursor();
 
 	App::dock_toolbox->refresh();
 }
@@ -316,9 +315,9 @@ void
 StateNormal_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_table);
+	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Transform Tool"));
-	App::dialog_tool_options->set_name("normal");
+	App::dialog_tool_options->set_icon("tool_normal_icon");
 }
 
 
@@ -339,7 +338,7 @@ DuckDrag_Combo::DuckDrag_Combo():
 	bad_drag(),
 	move_only(),
 	is_moving(false),
-	canvas_view_(NULL),
+	canvas_view_(nullptr),
 	scale(false),
 	rotate(false),
 	constrain(false) // Lock aspect for scale
@@ -371,10 +370,10 @@ DuckDrag_Combo::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& offs
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
 	{
 		Point p((*iter)->get_trans_point());
-		vmin[0]=min(vmin[0],p[0]);
-		vmin[1]=min(vmin[1],p[1]);
-		vmax[0]=max(vmax[0],p[0]);
-		vmax[1]=max(vmax[1],p[1]);
+		vmin[0]=std::min(vmin[0],p[0]);
+		vmin[1]=std::min(vmin[1],p[1]);
+		vmax[0]=std::max(vmax[0],p[0]);
+		vmax[1]=std::max(vmax[1],p[1]);
 		positions.push_back(p);
 	}
 	center=(vmin+vmax)*0.5;
@@ -474,11 +473,11 @@ DuckDrag_Combo::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 	{
 		if(!constrain)
 		{
-			if(abs(drag_offset[0]-center[0])>EPSILON)
+			if(std::fabs(drag_offset[0]-center[0])>EPSILON)
 				vect[0]/=drag_offset[0]-center[0];
 			else
 				vect[0]=1;
-			if(abs(drag_offset[1]-center[1])>EPSILON)
+			if(std::fabs(drag_offset[1]-center[1])>EPSILON)
 				vect[1]/=drag_offset[1]-center[1];
 			else
 				vect[1]=1;
@@ -690,7 +689,7 @@ StateNormal_Context::event_key_down_handler(const Smach::event& x)
 {
 	// event.modifier yet not set when ctrl (or alt or shift)
 	// key pressed event handled. So we need to check this keys manually.
-	// We may encountred some cosmetic problems with mouse-cursor image
+	// We may encounter some cosmetic problems with mouse-cursor image
 	// if user will redefine modifier keys.
 	// Anyway processing of keys Ctrl+Right, Ctrl+Left etc will works fine.
 	// see 'xmodmap' command
@@ -719,7 +718,7 @@ StateNormal_Context::event_key_down_handler(const Smach::event& x)
 		set_shift_pressed(event.modifier&GDK_SHIFT_MASK);
 		break;
 	}
-	return Smach::RESULT_REJECT;
+	return Smach::RESULT_OK;
 }
 
 Smach::event_result
@@ -748,7 +747,7 @@ StateNormal_Context::event_key_up_handler(const Smach::event& x)
 	default:
 		break;
 	}
-	return Smach::RESULT_REJECT;
+	return Smach::RESULT_OK;
 }
 
 Smach::event_result

@@ -2,20 +2,23 @@
 /*!	\file trees/canvastreestore.h
 **	\brief Template Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -66,7 +69,7 @@ public:
 	class Model : public Gtk::TreeModel::ColumnRecord
 	{
 	public:
-		Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf> > icon;
+		Gtk::TreeModelColumn<Glib::ustring> icon_name;
 		Gtk::TreeModelColumn<Glib::ustring> label;
 		Gtk::TreeModelColumn<Glib::ustring> name;
 		Gtk::TreeModelColumn<Glib::ustring> id;
@@ -91,7 +94,7 @@ public:
 
 		Gtk::TreeModelColumn<Glib::ustring> tooltip;
 		
-		Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf> > interpolation_icon;
+		Gtk::TreeModelColumn<Glib::ustring> interpolation_icon_name;
 		Gtk::TreeModelColumn<bool> is_static;
 		Gtk::TreeModelColumn<bool> interpolation_icon_visible;
 
@@ -100,7 +103,7 @@ public:
 			add(value);
 			add(name);
 			add(label);
-			add(icon);
+			add(icon_name);
 			add(type);
 			add(id);
 			add(canvas);
@@ -117,7 +120,7 @@ public:
 			add(link_id);
 
 			add(tooltip);
-			add(interpolation_icon);
+			add(interpolation_icon_name);
 			add(is_static);
 			add(interpolation_icon_visible);
 		}

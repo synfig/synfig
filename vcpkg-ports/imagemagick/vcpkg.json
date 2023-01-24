@@ -1,0 +1,21 @@
+{
+  "name": "imagemagick",
+  "version": "7.1.0-39",
+  "description": "Use ImageMagick® to create, edit, compose, or convert digital images.",
+  "homepage": "https://imagemagick.org",
+  "license": "ImageMagick",
+  "dependencies": [
+    "pango",
+    "fftw3",
+    "fontconfig",
+    "freetype",
+    "libpng",
+    "zlib",
+    "zstd",
+    "libjpeg-turbo",
+    "liblzma",
+    "libxml2",
+    "openexr"
+  ]
+}
+

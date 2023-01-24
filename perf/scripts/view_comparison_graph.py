@@ -10,7 +10,7 @@
 # it was faster. Make sure you have enough passes from the
 # `test_render_all_perf.py` script (default should be set to 10).  The `mean`
 # of all runs will be plotted as a bar's value.  But black line will appear
-# on the edge of the bar's tip, as to mark the varriance/error.
+# on the edge of the bar's tip, as to mark the variance/error.
 
 import sys
 import matplotlib.pyplot as plt
@@ -28,7 +28,7 @@ def main():
 
     run_data_filenames = sys.argv[1:]
 
-    # First one is the refernce
+    # First one is the reference
     ref_run_filename = run_data_filenames[0]
 
     # Chart data
@@ -62,7 +62,7 @@ def main():
             ref_slowest_runs.append(slowest_run - mean_run)
 
     # test run
-    # TODO, this should be put in a reusable fuction!!
+    # TODO, this should be put in a reusable function!!
     test_run_filename = run_data_filenames[1]
     test_mean_runs = []
     test_fastest_runs = []

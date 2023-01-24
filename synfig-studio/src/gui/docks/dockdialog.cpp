@@ -2,21 +2,24 @@
 /*!	\file dockdialog.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -50,21 +53,10 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
-
-#define GRAB_HINT_DATA(y,default)	{ \
-		String x; \
-		if(synfigapp::Main::settings().get_value(String("pref.")+y+"_hints",x)) \
-		{ \
-			set_type_hint((Gdk::WindowTypeHint)atoi(x.c_str()));	\
-		} else {\
-			set_type_hint(default); \
-		} \
-	}
 
 /* === G L O B A L S ======================================================= */
 
@@ -81,11 +73,14 @@ DockDialog::DockDialog():
 	set_id(synfig::UniqueID().get_uid()^reinterpret_cast<intptr_t>(this));
 
 	set_role(strprintf("dock_dialog_%d",get_id()));
+	{
 #ifdef __APPLE__
-	GRAB_HINT_DATA("dock_dialog", Gdk::WINDOW_TYPE_HINT_NORMAL);
+		const int default_hint = Gdk::WINDOW_TYPE_HINT_NORMAL;
 #else
-	GRAB_HINT_DATA("dock_dialog", Gdk::WINDOW_TYPE_HINT_UTILITY);
+		const int default_hint = Gdk::WINDOW_TYPE_HINT_UTILITY;
 #endif
+		set_type_hint(Gdk::WindowTypeHint(synfigapp::Main::settings().get_value("pref.dock_dialog_hints", default_hint)));
+	}
 	set_keep_above(false);
 
 	//! \todo can we set dialog windows transient for all normal windows, not just the toolbox?
@@ -167,8 +162,8 @@ bool DockDialog::on_key_press_event(GdkEventKey* key_event)
 bool
 DockDialog::close()
 {
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
-		synfig::info("DockDialog::close(): Deleted");
+	DEBUG_LOG("SYNFIG_DEBUG_DESTRUCTORS",
+		"DockDialog::close(): Deleted");
 
 	empty_sig.disconnect();
 	//get_dock_book().clear();

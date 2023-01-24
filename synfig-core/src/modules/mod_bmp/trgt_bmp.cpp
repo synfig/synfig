@@ -2,21 +2,24 @@
 /*!	\file trgt_bmp.cpp
 **	\brief Bitmap Target
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -38,12 +41,13 @@
 #include <cstdio>
 #include <algorithm>
 #include <functional>
+
+#include <ETL/stringf>
 #endif
 
 /* === U S I N G =========================================================== */
 
 using namespace synfig;
-using namespace std;
 using namespace etl;
 
 /* === I N F O ============================================================= */
@@ -148,10 +152,10 @@ bmp::bmp(const char *Filename, const synfig::TargetParam& params):
 	rowspan(),
 	imagecount(),
 	multi_image(false),
-	file(NULL),
+	file(nullptr),
 	filename(Filename),
-	buffer(NULL),
-	color_buffer(NULL),
+	buffer(nullptr),
+	color_buffer(nullptr),
 	pf()
 {
 	set_alpha_mode(TARGET_ALPHA_MODE_FILL);
@@ -162,7 +166,7 @@ bmp::~bmp()
 {
 	if(file)
 		fclose(file);
-	file=NULL;
+	file = nullptr;
 	delete [] buffer;
 	delete [] color_buffer;
 }
@@ -203,7 +207,7 @@ bmp::end_frame()
 		fclose(file);
 	delete [] color_buffer;
 	color_buffer=0;
-	file=NULL;
+	file = nullptr;
 	imagecount++;
 }
 
@@ -217,7 +221,7 @@ bmp::start_frame(synfig::ProgressCallback *callback)
 	{
 		String newfilename(filename_sans_extension(filename) +
 						   sequence_separator +
-						   etl::strprintf("%04d",imagecount) +
+						   strprintf("%04d",imagecount) +
 						   filename_extension(filename));
 		file=g_fopen(newfilename.c_str(),POPEN_BINARY_WRITE_TYPE);
 		if(callback)callback->task(newfilename+_(" (animated)"));

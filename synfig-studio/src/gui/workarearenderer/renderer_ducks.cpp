@@ -2,8 +2,6 @@
 /*!	\file renderer_ducks.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
@@ -12,15 +10,20 @@
 **  Copyright (c) 2011 Carlos López
 **  Copyright (c) 2015 Jérôme Blanchi
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -36,7 +39,6 @@
 
 #include "renderer_ducks.h"
 
-#include <ETL/bezier>
 #include <synfig/distance.h>
 #include <synfig/valuenodes/valuenode_wplist.h>
 #include <synfig/valuenodes/valuenode_bline.h>
@@ -50,7 +52,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;
@@ -58,53 +59,53 @@ using namespace studio;
 /* === M A C R O S ========================================================= */
 
 /** DUCK_COLOR_NOT_EDITABLE : light grey - for parameter (handle) like converted (linked also?) for example*/
-#define DUCK_COLOR_NOT_EDITABLE	Gdk::Color("#cfcfcf")
+#define DUCK_COLOR_NOT_EDITABLE	Gdk::RGBA("#cfcfcf")
 /** DUCK_COLOR_ORIGIN : green */
-#define DUCK_COLOR_ORIGIN        Gdk::Color("#00ff00") // green
+#define DUCK_COLOR_ORIGIN        Gdk::RGBA("#00ff00") // green
 /** DUCK_COLOR_ANGLE : blue */
-#define DUCK_COLOR_ANGLE		Gdk::Color("#0000ff") // blue
+#define DUCK_COLOR_ANGLE		Gdk::RGBA("#0000ff") // blue
 /** DUCK_COLOR_RADIUS : cyan */
-#define DUCK_COLOR_RADIUS		Gdk::Color("#00ffff") // cyan
+#define DUCK_COLOR_RADIUS		Gdk::RGBA("#00ffff") // cyan
 /** DUCK_COLOR_LINEAR : cyan for linear radius ducks */
-#define DUCK_COLOR_LINEAR		Gdk::Color("#00ffff") // cyan // for linear radius ducks
+#define DUCK_COLOR_LINEAR		Gdk::RGBA("#00ffff") // cyan // for linear radius ducks
 /** DUCK_COLOR_TANGENT_1 : yellow */
-#define DUCK_COLOR_TANGENT_1	Gdk::Color("#ffff00") // yellow
+#define DUCK_COLOR_TANGENT_1	Gdk::RGBA("#ffff00") // yellow
 /** DUCK_COLOR_TANGENT_2 : red (not used) */
-#define DUCK_COLOR_TANGENT_2	Gdk::Color("#ff0000") // red
+#define DUCK_COLOR_TANGENT_2	Gdk::RGBA("#ff0000") // red
 /** DUCK_COLOR_SKEW : red */
-#define DUCK_COLOR_SKEW         Gdk::Color("#ff0000") // red
+#define DUCK_COLOR_SKEW         Gdk::RGBA("#ff0000") // red
 /** DUCK_COLOR_VERTEX : orange */
-#define DUCK_COLOR_VERTEX		Gdk::Color("#ff7f00") // orange
+#define DUCK_COLOR_VERTEX		Gdk::RGBA("#ff7f00") // orange
 /** DUCK_COLOR_WIDTH : magenta */
-#define DUCK_COLOR_WIDTH		Gdk::Color("#ff00ff") // magenta
+#define DUCK_COLOR_WIDTH		Gdk::RGBA("#ff00ff") // magenta
 /** DUCK_COLOR_WIDTHPOINT_POSITION : purple */
-#define DUCK_COLOR_WIDTHPOINT_POSITION	Gdk::Color("#d3afff") // purple
+#define DUCK_COLOR_WIDTHPOINT_POSITION	Gdk::RGBA("#d3afff") // purple
 /** DUCK_COLOR_OTHER : green */
-#define DUCK_COLOR_OTHER		Gdk::Color("#00ff00") // green
+#define DUCK_COLOR_OTHER		Gdk::RGBA("#00ff00") // green
 /** DUCK_COLOR_OUTLINE : black , the outline around each duck*/
-#define DUCK_COLOR_OUTLINE		Gdk::Color("#000000") // the outline around each duck
+#define DUCK_COLOR_OUTLINE		Gdk::RGBA("#000000") // the outline around each duck
 /** DUCK_COLOR_BEZIER_1 : black, the 2 colors used to draw bezier curves */
-#define DUCK_COLOR_BEZIER_1		Gdk::Color("#000000") // black // the 2 colors used to draw bezier curves
+#define DUCK_COLOR_BEZIER_1		Gdk::RGBA("#000000") // black // the 2 colors used to draw bezier curves
 /** DUCK_COLOR_BEZIER_2 : grey , the second colors used to draw bezier curves*/
-#define DUCK_COLOR_BEZIER_2		Gdk::Color("#afafaf") // grey
+#define DUCK_COLOR_BEZIER_2		Gdk::RGBA("#afafaf") // grey
 /** DUCK_COLOR_COLOR_BOX_1 : white , the first color used to draw boxes*/
-#define DUCK_COLOR_BOX_1		Gdk::Color("#ffffff") // white // the 2 colors used to draw boxes
+#define DUCK_COLOR_BOX_1		Gdk::RGBA("#ffffff") // white // the 2 colors used to draw boxes
 /** DUCK_COLOR_BOX_2 : black , the second color used to draw boxes*/
-#define DUCK_COLOR_BOX_2		Gdk::Color("#000000") // black
+#define DUCK_COLOR_BOX_2		Gdk::RGBA("#000000") // black
 /** DUCK_COLOR_SELECTED : red , the color of the box drawn when a valuenode is selected*/
-#define DUCK_COLOR_SELECTED		Gdk::Color("#ff0000") // red // the color of the box drawn when a valuenode is selected
+#define DUCK_COLOR_SELECTED		Gdk::RGBA("#ff0000") // red // the color of the box drawn when a valuenode is selected
 /** DUCK_COLOR_CONNECT_INSIDE : the color of the inside of the line connecting a vertex duck to the tangent ducks */
-#define DUCK_COLOR_CONNECT_INSIDE	Gdk::Color("#9fefef") // the color of the inside of the line connecting a vertex duck to the tangent ducks
+#define DUCK_COLOR_CONNECT_INSIDE	Gdk::RGBA("#9fefef") // the color of the inside of the line connecting a vertex duck to the tangent ducks
 /** DUCK_COLOR_CONNECT_OUTSIDE : black, the color of the outside of the line connecting a vertex duck to the tangent ducks*/
-#define DUCK_COLOR_CONNECT_OUTSIDE	Gdk::Color("#000000") // the color of the outside of the line connecting a vertex duck to the tangent ducks
+#define DUCK_COLOR_CONNECT_OUTSIDE	Gdk::RGBA("#000000") // the color of the outside of the line connecting a vertex duck to the tangent ducks
 /** DUCK_COLOR_WIDTH_TEXT_1 : black, the color of the text's shadow when hovering over a width duck*/
-#define DUCK_COLOR_WIDTH_TEXT_1	Gdk::Color("#000000") // the color of the text's shadow when hovering over a width duck
+#define DUCK_COLOR_WIDTH_TEXT_1	Gdk::RGBA("#000000") // the color of the text's shadow when hovering over a width duck
 /** DUCK_COLOR_WIDTH_TEXT_2 : magenta, the color of the text when hovering over a width duck*/
-#define DUCK_COLOR_WIDTH_TEXT_2	Gdk::Color("#ff00ff") // the color of the text when hovering over a width duck
+#define DUCK_COLOR_WIDTH_TEXT_2	Gdk::RGBA("#ff00ff") // the color of the text when hovering over a width duck
 /** DUCK_COLOR_TRANSFO_TEXT_1 : black , the color of the text's shadow when hovering over any duck of a transformation widget*/
-#define DUCK_COLOR_TRANSFO_TEXT_1 Gdk::Color("#000000") // the color of the text's shadow when hovering over any duck of a transformation widget
+#define DUCK_COLOR_TRANSFO_TEXT_1 Gdk::RGBA("#000000") // the color of the text's shadow when hovering over any duck of a transformation widget
 /** ACTIVE_BONE : Color of active bone rectangle */
-#define ACTIVE_BONE Gdk::Color("#fff700") // the color of the text's shadow when hovering over any duck of a transformation widget
+#define ACTIVE_BONE Gdk::RGBA("#fff700") // the color of the text's shadow when hovering over any duck of a transformation widget
 
 /* === G L O B A L S ======================================================= */
 
@@ -127,7 +128,7 @@ Renderer_Ducks::get_enabled_vfunc()const
 struct ScreenDuck
 {
 	synfig::Point pos;
-	Gdk::Color color;
+	Gdk::RGBA color;
 	Real width;
 	bool selected;
 	bool hover;
@@ -249,7 +250,7 @@ Renderer_Ducks::render_vfunc(
 	const DuckList duck_list(get_work_area()->get_duck_list());
 
 	std::list<ScreenDuck> screen_duck_list;
-	const float radius((abs(pw)+abs(ph))*4);
+	const float radius((std::fabs(pw)+std::fabs(ph))*4);
 
 	etl::handle<Duck> hover_duck(get_work_area()->find_duck(get_work_area()->get_cursor_pos(),radius, get_work_area()->get_type_mask()));
 
@@ -355,7 +356,7 @@ Renderer_Ducks::render_vfunc(
 			Point boxpoint((*iter)->get_box_duck()->get_trans_point());
 			boxpoint[0]=(boxpoint[0]-window_start[0])/pw;
 			boxpoint[1]=(boxpoint[1]-window_start[1])/ph;
-			Point tl(min(point[0],boxpoint[0]),min(point[1],boxpoint[1]));
+			Point tl(std::min(point[0],boxpoint[0]),std::min(point[1],boxpoint[1]));
 
 			if (!boxpoint.is_nan_or_inf() && !tl.is_nan_or_inf())
 			{
@@ -364,8 +365,8 @@ Renderer_Ducks::render_vfunc(
 				cr->rectangle(
 					round_to_int(tl[0]),
 					round_to_int(tl[1]),
-					round_to_int(abs(boxpoint[0]-point[0])),
-					round_to_int(abs(boxpoint[1]-point[1]))
+					round_to_int(std::fabs(boxpoint[0]-point[0])),
+					round_to_int(std::fabs(boxpoint[1]-point[1]))
 					);
 
 				// Solid white box
@@ -707,17 +708,11 @@ Renderer_Ducks::render_vfunc(
 						bool blineloop(bline->get_loop());
 						bool homogeneous=false;
 						// Retrieve the homogeneous layer parameter
-						std::set<Node*>::iterator iter;
-						for(iter=wplist->parent_set.begin();iter!=wplist->parent_set.end();++iter)
-							{
-								Layer::Handle layer;
-								layer=Layer::Handle::cast_dynamic(*iter);
-								if(layer && layer->get_name() == "advanced_outline")
-								{
-									homogeneous=layer->get_param("homogeneous").get(bool());
-									break;
-								}
-							}
+						Layer::Handle layer = wplist->find_first_parent_of_type<Layer>([](const Layer::Handle& layer) -> bool {
+							return layer->get_name() == "advanced_outline";
+						});
+						if(layer)
+							homogeneous=layer->get_param("homogeneous").get(bool());
 						WidthPoint wp((*wpoint_composite)(time).get(WidthPoint()));
 						if(wplistloop)
 						{
@@ -883,7 +878,7 @@ Renderer_Ducks::render_vfunc(
 
 	for(;!screen_duck_list.empty();screen_duck_list.pop_front())
 	{
-		Gdk::Color color(screen_duck_list.front().color);
+		Gdk::RGBA color(screen_duck_list.front().color);
 		double radius = 4;
 		double outline = 1;
 		bool duck_alternative = alternative && screen_duck_list.front().has_alternative;
@@ -900,9 +895,9 @@ Renderer_Ducks::render_vfunc(
 
 		if(!screen_duck_list.front().selected)
 		{
-		    color.set_rgb_p(color.get_red_p()*2/3,
-		                    color.get_green_p()*2/3,
-		                    color.get_blue_p()*2/3);
+		    color.set_rgba(color.get_red()*2/3,
+		                    color.get_green()*2/3,
+		                    color.get_blue()*2/3);
 		}
 
 		if(screen_duck_list.front().hover)
@@ -920,9 +915,9 @@ Renderer_Ducks::render_vfunc(
 			);
 
 		cr->set_source_rgba(
-			color.get_red_p(),
-			color.get_green_p(),
-			color.get_blue_p(),
+			color.get_red(),
+			color.get_green(),
+			color.get_blue(),
 			duck_alternative || duck_move_origin ? 0.5 : 1.0
 			);
 		cr->fill_preserve();

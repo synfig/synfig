@@ -4,15 +4,20 @@
 # Copyright (c) 2008-2009 Simone Karin Lehmann (GimpOSX parts)
 # Copyright (c) 2012-2013 Konstantin Dmitriev
 #
-# This package is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License as
-# published by the Free Software Foundation; either version 2 of
-# the License, or (at your option) any later version.
+# This file is part of Synfig.
 #
-# This package is distributed in the hope that it will be useful,
+# Synfig is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# Synfig is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-# General Public License for more details.
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
 # = Usage notes =
@@ -257,7 +262,6 @@ mkdeps()
 		openexr \
 		pkgconfig \
 		ffmpeg \
-		boost \
 		cairo \
 		libtool \
     libsdl2 \
@@ -303,7 +307,7 @@ mksynfig()
 	if [[ ! $UNIVERSAL == 0 ]]; then
 	export DEPTRACK="--disable-dependency-tracking"
 	fi
-	/bin/sh ./configure ${DEPTRACK} --prefix=${SYNFIG_PREFIX} --includedir=${SYNFIG_PREFIX}/include --disable-static --enable-shared --with-magickpp --without-libavcodec --with-boost=${MACPORTS} ${DEBUG}
+	/bin/sh ./configure ${DEPTRACK} --prefix=${SYNFIG_PREFIX} --includedir=${SYNFIG_PREFIX}/include --disable-static --enable-shared --with-magickpp --without-libavcodec ${DEBUG}
 	make -j$JOBS install
 	popd
 }

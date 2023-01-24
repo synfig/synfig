@@ -1,5 +1,3 @@
-# $Id$
-
 MAINTAINERCLEANFILES = Makefile.in
 
 AM_CPPFLAGS = \
@@ -25,7 +23,6 @@ liblyr_freetype_la_SOURCES = \
 liblyr_freetype_la_LIBADD = \
 	../../synfig/libsynfig.la \
 	@FREETYPE_LIBS@ \
-	@LIBPANGO_LIBS@ \
 	@SYNFIG_LIBS@
 
 liblyr_freetype_la_LDFLAGS = \
@@ -35,12 +32,16 @@ liblyr_freetype_la_LDFLAGS = \
 
 liblyr_freetype_la_CXXFLAGS = \
 	@SYNFIG_CFLAGS@ \
-	@FREETYPE_CFLAGS@ \
-	@LIBPANGO_CFLAGS@
+	@FREETYPE_CFLAGS@
 
 if WITH_FONTCONFIG
 liblyr_freetype_la_LIBADD += @FONTCONFIG_LIBS@
 liblyr_freetype_la_CXXFLAGS += @FONTCONFIG_CFLAGS@
+endif
+
+if WITH_HARFBUZZ
+liblyr_freetype_la_LIBADD += @HARFBUZZ_LIBS@
+liblyr_freetype_la_CXXFLAGS += @HARFBUZZ_CFLAGS@
 endif
 
 endif

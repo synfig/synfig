@@ -2,20 +2,23 @@
 /*!	\file curve_helper.h
 **	\brief Curve Helper Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -26,8 +29,8 @@
 #define __SYNFIG_CURVE_HELPER_H
 
 /* === H E A D E R S ======================================================= */
-#include <ETL/bezier>
 
+#include <synfig/bezier.h>
 #include "rect.h"
 #include "real.h"
 #include "vector.h"
@@ -107,12 +110,12 @@ inline bool intersect_line_segments(const Point &a, const Point &b, float &tout,
 }
 
 //Find the closest point on the curve to a point (and return its distance, and time value)
-Real find_closest(const etl::bezier<Point> &curve, const Point &point, float step, Real *closest, float *t);
+Real find_closest(const bezier<Point> &curve, const Point &point, float step, Real *closest, float *t);
 
 //----------- Rectangle helper functions ---------------
 
 template < typename T >
-inline void Bound(synfig::rect<T> &r, const etl::bezier<Point> &b)
+inline void Bound(synfig::rect<T> &r, const bezier<Point> &b)
 {
 	r.set_point(b[0][0],b[0][1]);
 	r.expand(b[1][0],b[1][1]);
@@ -135,15 +138,15 @@ struct BezHull
 	Point	p[4];
 	int		size;
 
-	void Bound(const etl::bezier<Point> &b);
+	void Bound(const bezier<Point> &b);
 };
 
 //Line Intersection
 int intersect(const Rect &r1, const Point &p, const Vector &v);
 int intersect(const Rect &r1, const Point &p); //inside or to the right
 int intersect(const BezHull &bh, const Point &p, const Vector &v);
-//int intersect(const etl::bezier<Point> &b, const Point &p, const Vector &v);
-int intersect(const etl::bezier<Point> &b, const Point &p); //for use in containment tests for regions
+//int intersect(const bezier<Point> &b, const Point &p, const Vector &v);
+int intersect(const bezier<Point> &b, const Point &p); //for use in containment tests for regions
 
 //Curve intersection object
 class CIntersect
@@ -162,7 +165,7 @@ public:
 
 	CIntersect();
 
-	bool operator()(const etl::bezier<Point> &b1, const etl::bezier<Point> &b2);
+	bool operator()(const bezier<Point> &b1, const bezier<Point> &b2);
 };
 
 }; // END of namespace synfig

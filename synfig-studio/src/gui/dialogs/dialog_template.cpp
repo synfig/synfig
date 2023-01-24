@@ -2,21 +2,24 @@
 /*!	\file dialogs/dialog_template.cpp
 **	\brief Dialog design list and panel template Implementation
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2016 Jerome Blanchi
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -40,7 +43,6 @@
 
 /* === U S I N G =========================================================== */
 using namespace synfig;
-using namespace std;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -68,12 +70,12 @@ Dialog_Template::Dialog_Template(Gtk::Window& parent, synfig::String dialog_titl
 	add_action_widget(*restore_button,1);
 	restore_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Template::on_restore_pressed));
 
-	Gtk::Button *cancel_button(manage(new class Gtk::Button(Gtk::StockID("gtk-cancel"))));
+	Gtk::Button *cancel_button(manage(new Gtk::Button(_("_Cancel"), true)));
 	cancel_button->show();
 	add_action_widget(*cancel_button,0);
 	cancel_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Template::hide));
 
-	Gtk::Button *ok_button(manage(new class Gtk::Button(Gtk::StockID("gtk-ok"))));
+	Gtk::Button *ok_button(manage(new Gtk::Button(_("_OK"), true)));
 	ok_button->show();
 	add_action_widget(*ok_button,2);
 	ok_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Template::on_ok_pressed));
@@ -133,8 +135,8 @@ Dialog_Template::Dialog_Template(Gtk::Window& parent, synfig::String dialog_titl
 	//! TODO create a warning zone to push message on rare events (like no brush path, zero fps ...)
 	//! this warning zone could also hold normal message like : "x change to come"  (and a link to "Changes summary" page)
 
-	get_vbox()->pack_start(main_grid);
-	get_vbox()->set_border_width(12);
+	get_content_area()->pack_start(main_grid);
+	get_content_area()->set_border_width(12);
 
 	show_all_children();
 }
@@ -164,7 +166,8 @@ void
 Dialog_Template::attach_label(Gtk::Grid *grid, synfig::String str, guint row)
 {
 	Gtk::Label* label(manage(new Gtk::Label((str + ":").c_str())));
-	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	label->set_halign(Gtk::ALIGN_START);
+	label->set_valign(Gtk::ALIGN_CENTER);
 	label->set_margin_start(10);
 	grid->attach(*label, 0, row, 1, 1);
 }
@@ -174,7 +177,8 @@ Dialog_Template::attach_label_section(Gtk::Grid *grid, synfig::String str, guint
 {
 	Gtk::Label* label(manage(new Gtk::Label(str)));
 	label->set_attributes(section_attrlist);
-	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	label->set_halign(Gtk::ALIGN_START);
+	label->set_valign(Gtk::ALIGN_CENTER);
 	grid->attach(*label, 0, row, 1, 1);
 }
 
@@ -183,7 +187,8 @@ Dialog_Template::attach_label_title(Gtk::Grid *grid, synfig::String str)
 {
 	Gtk::Label* label(manage(new Gtk::Label(str)));
 	label->set_attributes(title_attrlist);
-	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	label->set_halign(Gtk::ALIGN_START);
+	label->set_valign(Gtk::ALIGN_CENTER);
 	label->set_margin_start(20);
 	Gtk::EventBox* box(manage(new Gtk::EventBox()));
 	box->add(*label);
@@ -196,7 +201,8 @@ Dialog_Template::attach_label(Gtk::Grid *grid, synfig::String str, guint row, gu
 {
 	str = endstring?str+":":str;
 	Gtk::Label* label(manage(new Gtk::Label(str)));
-	label->set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	label->set_halign(Gtk::ALIGN_START);
+	label->set_valign(Gtk::ALIGN_CENTER);
 	grid->attach(*label, col, row, 1, 1);
 	return label;
 }

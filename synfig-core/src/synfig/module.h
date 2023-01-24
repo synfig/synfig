@@ -2,21 +2,24 @@
 /*!	\file synfig/module.h
 **	\brief Base class for all libraries modules
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -38,7 +41,7 @@
 /* === M A C R O S ========================================================= */
 
 //! Marks the start of a module description
-#define MODULE_DESC_BEGIN(x) struct x##_modclass : public synfig::Module { x##_modclass(synfig::ProgressCallback *callback=nullptr);
+#define MODULE_DESC_BEGIN(x) struct x##_modclass : public synfig::Module { explicit x##_modclass(synfig::ProgressCallback *callback=nullptr);
 
 //! Sets the localized name of the module
 #define MODULE_NAME(x) 			virtual const char * Name() const { return x; }
@@ -64,20 +67,30 @@
 //! Marks the end of a module description
 #define MODULE_DESC_END };
 
+#ifdef _MSC_VER
+#define SYNFIG_API_EXPORT __declspec(dllexport)
+#else
+#define SYNFIG_API_EXPORT
+#endif
+
 #ifdef __APPLE__
 //! Marks the start of a module's inventory
 #define MODULE_INVENTORY_BEGIN(x)  extern "C" {		\
 	synfig::Module* _##x##_LTX_new_instance(synfig::ProgressCallback *cb) \
-	{ if(SYNFIG_CHECK_VERSION()){x##_modclass *mod=new x##_modclass(cb); mod->constructor_(cb); return mod; }\
-	if(cb)cb->error(#x": Unable to load module due to version mismatch."); return nullptr; } \
-	}; x##_modclass::x##_modclass(synfig::ProgressCallback */*cb*/) {
+	{ if(SYNFIG_CHECK_VERSION()) { x##_modclass *mod=new x##_modclass(cb); mod->constructor_(cb); return mod; }\
+	  if(cb) { cb->error(#x": Unable to load module due to version mismatch."); } \
+	  return nullptr; \
+	} \
+}; x##_modclass::x##_modclass(synfig::ProgressCallback */*cb*/) {
 #else
 //! Marks the start of a module's inventory
 #define MODULE_INVENTORY_BEGIN(x)  extern "C" {		\
-	synfig::Module* x##_LTX_new_instance(synfig::ProgressCallback *cb) \
-	{ if(SYNFIG_CHECK_VERSION()){x##_modclass *mod=new x##_modclass(cb); mod->constructor_(cb); return mod; }\
-	if(cb)cb->error(#x": Unable to load module due to version mismatch."); return nullptr; } \
-	}; x##_modclass::x##_modclass(synfig::ProgressCallback */*cb*/) {
+	SYNFIG_API_EXPORT synfig::Module* x##_LTX_new_instance(synfig::ProgressCallback *cb) \
+	{ if(SYNFIG_CHECK_VERSION()) { x##_modclass *mod=new x##_modclass(cb); mod->constructor_(cb); return mod; }\
+	  if(cb) { cb->error(#x": Unable to load module due to version mismatch."); } \
+	  return nullptr; \
+	} \
+}; x##_modclass::x##_modclass(synfig::ProgressCallback */*cb*/) {
 #endif
 
 //! Marks the start of the layers in the module's inventory
@@ -87,10 +100,10 @@
 #define LAYER(class)																			\
 	synfig::Layer::register_in_book(															\
 		synfig::Layer::BookEntry(class::create,													\
-								 class::name__,													\
-								 synfigcore_localize(class::local_name__),		\
-								 class::category__,												\
-								 class::version__));
+								 class::get_register_name(),													\
+								 synfigcore_localize(class::get_register_local_name()),		\
+								 class::get_register_category(),												\
+								 class::get_register_version()));
 
 //! Register a Layer class in the book of layers with an alias
 #define LAYER_ALIAS(class,alias)																\
@@ -99,7 +112,7 @@
 								 alias,															\
 								 alias,															\
 								 CATEGORY_DO_NOT_USE,											\
-								 class::version__));
+								 class::get_register_version()));
 
 //! Marks the end of the layers in the module's inventory
 #define END_LAYERS }
@@ -132,13 +145,6 @@
 
 //! Register an Importer class in the book of importers by the default extension
 #define IMPORTER(x) IMPORTER_EXT(x,x::ext__)
-
-//! Register an Importer class in the book of importers by one file extension string
-#define CAIROIMPORTER_EXT(x,y) \
-		synfig::CairoImporter::book()[synfig::String(y)]=synfig::CairoImporter::BookEntry(x::create, x::supports_file_system_wrapper__);
-
-//! Register an CairoImporter class in the book of importers by the default extension
-#define CAIROIMPORTER(x) CAIROIMPORTER_EXT(x,x::ext__)
 
 //! Marks the end of the importers in the module's inventory
 #define END_IMPORTERS }
@@ -226,9 +232,6 @@ public:
 	typedef Module* (*constructor_type)(ProgressCallback *);
 	//! Type of registered modules: maps Module name to Module handle
 	typedef std::map<String, Handle> Book;
-private:
-	//! Registered modules
-	static Book* book_;
 public:
 	//! The registered modules
 	static Book& book();

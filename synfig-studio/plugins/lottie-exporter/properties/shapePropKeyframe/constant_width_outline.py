@@ -12,7 +12,6 @@ from common.Count import Count
 from properties.value import gen_properties_value
 from properties.valueKeyframed import gen_value_Keyframed
 from properties.shapePropKeyframe.helper import insert_dict_at, animate_tangents, cubic_to
-from properties.shapePropKeyframe.outline import get_outline_param_at_frame,synfig_outline
 
 def gen_bline_outline_constant(lottie, bline_point, layer, transformation, idx):
 	"""
@@ -180,3 +179,42 @@ def gen_bline_outline_constant(lottie, bline_point, layer, transformation, idx):
 				cubic_to(pos_ret,t1,t2,st_val,cur_origin,False,True)
 
 
+def get_outline_param_at_frame(entry, fr):
+    """
+    Given a entry and frame, returns the parameters of the outline layer at
+    that frame
+
+    Args:
+        entry (dict) : Vertex of outline layer in Synfig format
+        fr        (int)                 : frame number
+
+    Returns:
+        (common.Vector.Vector) : position of the vertex
+        (float)       : width of the vertex
+        (common.Vector.Vector) : Tangent 1 of the vertex
+        (common.Vector.Vector) : Tangent 2 of the vertex
+        (bool)        : True if radius split is ticked at this frame
+        (bool)        : True if tangent split is ticked at this frame
+    """
+    pos = entry["point"].get_value(fr)
+    # Convert pos back to Synfig coordinates
+    pos = to_Synfig_axis(pos, "vector")
+    pos_ret = Vector(pos[0], pos[1])
+
+    width = entry["width"].get_value(fr)
+    width = to_Synfig_axis(width, "real")
+    t1 = entry["t1"]
+    t2 = entry["t2"]
+    split_r = entry["split_radius"]
+    split_a = entry["split_angle"]
+
+
+    t1, t2 = get_tangent_at_frame(t1, t2, split_r, split_a, fr)
+    # Convert to Synfig units
+    t1 /= settings.PIX_PER_UNIT
+    t2 /= settings.PIX_PER_UNIT
+
+    split_r_val = split_r.get_value(fr)
+    split_a_val = split_a.get_value(fr)
+
+    return pos_ret, width, t1, t2, split_r_val, split_a_val

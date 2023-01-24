@@ -2,22 +2,25 @@
 /*!	\file valuenode_bline.cpp
 **	\brief Implementation of the "BLine" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **  Copyright (c) 2011 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -39,12 +42,7 @@
 #include <synfig/localization.h>
 #include <synfig/valuenode_registry.h>
 #include <synfig/exception.h>
-#include <synfig/blinepoint.h>
-#include <vector>
-#include <list>
-#include <algorithm>
-#include <ETL/hermite>
-#include <ETL/calculus>
+#include <synfig/bezier.h>
 #include <synfig/segment.h>
 #include <synfig/curve_helper.h>
 #include <algorithm> // for std::swap
@@ -53,8 +51,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -63,7 +59,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_BLine, RELEASE_VERSION_0_61_06, "bline", "Spline")
+REGISTER_VALUENODE(ValueNode_BLine, RELEASE_VERSION_0_61_06, "bline", N_("Spline"))
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -210,7 +206,7 @@ synfig::find_closest_point(const ValueBase &bline, const Point &pos, Real radius
 				 + (curve[3] - curve[2]).mag();
 		
 		// want to make the distance between lines happy
-		Real step = std::max(minstep, std::min(maxstep, len/(2*radius))); 
+		Real step = synfig::clamp(len/(2*radius), minstep, maxstep);
 		float time = 0;
 		Real c = find_closest(curve, pos, step, &closest, &time);
 		if(c < closest) {
@@ -263,7 +259,7 @@ synfig::std_to_hom(const ValueBase &bline, Real pos, bool index_loop, bool bline
 	size_t next_vertex = (from_vertex + 1) % size;
 	const BLinePoint &blinepoint0 = list[from_vertex];
 	const BLinePoint &blinepoint1 = list[next_vertex];
-	etl::hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
+	hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
 							blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
 	// add the distance on the bezier we are on.
 	partial_length += curve.find_distance(0.0, pos*count - from_vertex);
@@ -320,7 +316,7 @@ synfig::hom_to_std(const ValueBase &bline, Real pos, bool index_loop, bool bline
 	// set up the curve
 	const BLinePoint &blinepoint0 = list[from_vertex];
 	const BLinePoint &blinepoint1 = list[(from_vertex+1) % size];
-	etl::hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
+	hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
 	                           blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
 	// Find the solution to which is the standard position which matches the current
 	// homogeneous position
@@ -371,7 +367,7 @@ synfig::bline_length(const ValueBase &bline, bool bline_loop, std::vector<Real> 
 		size_t i1 = (i0 + 1)%list.size();
 		const BLinePoint &blinepoint0 = list[i0];
 		const BLinePoint &blinepoint1 = list[i1];
-		etl::hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
+		hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
 							blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
 		Real l=curve.length();
 		if(lengths) lengths->push_back(l);
@@ -386,8 +382,8 @@ synfig::bline_length(const ValueBase &bline, bool bline_loop, std::vector<Real> 
 ValueNode_BLine::ValueNode_BLine(Canvas::LooseHandle canvas):
 	ValueNode_DynamicList(type_bline_point, canvas)
 {
-	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-		printf("%s:%d should have already set parent canvas for bline %p to %p (using dynamic_list constructor)\n", __FILE__, __LINE__, this, canvas.get());
+	DEBUG_LOG("SYNFIG_DEBUG_SET_PARENT_CANVAS",
+		"%s:%d should have already set parent canvas for bline %p to %p (using dynamic_list constructor)\n", __FILE__, __LINE__, this, canvas.get());
 }
 
 ValueNode_BLine::~ValueNode_BLine()
@@ -395,7 +391,7 @@ ValueNode_BLine::~ValueNode_BLine()
 }
 
 ValueNode_BLine*
-ValueNode_BLine::create(const ValueBase &value, Canvas::LooseHandle canvas)
+ValueNode_BLine::create(const ValueBase& value, Canvas::LooseHandle canvas)
 {
 	if(value.get_type()!=type_list)
 		return 0;
@@ -528,9 +524,9 @@ ValueNode_BLine::create_list_entry(int index, Time time, Real origin)
 		prev_i=find_prev_valid_entry(index,time);
 		next=(*list[next_i].value_node)(time).get(BLinePoint());
 		prev=(*list[prev_i].value_node)(time).get(BLinePoint());
-		etl::hermite<Vector> curve(prev.get_vertex(),next.get_vertex(),prev.get_tangent2(),next.get_tangent1());
-		etl::hermite<Vector> left;
-		etl::hermite<Vector> right;
+		hermite<Vector> curve(prev.get_vertex(),next.get_vertex(),prev.get_tangent2(),next.get_tangent1());
+		hermite<Vector> left;
+		hermite<Vector> right;
 		curve.subdivide(&left, &right, origin);
 		bline_point.set_vertex(left[3]);
 		bline_point.set_width((next.get_width()-prev.get_width())*origin+prev.get_width());
@@ -551,8 +547,8 @@ ValueNode_BLine::create_list_entry(int index, Time time, Real origin)
 ValueBase
 ValueNode_BLine::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	std::vector<BLinePoint> ret_list;
 
@@ -707,16 +703,15 @@ ValueNode_BLine::operator()(Time t)const
 			}
 
 			// this is how the curve looks when we have completely vanished
-			etl::hermite<Vector> curve(blp_prev_off.get_vertex(),   blp_next_off.get_vertex(),
+			hermite<Vector> curve(blp_prev_off.get_vertex(),   blp_next_off.get_vertex(),
 									   blp_prev_off.get_tangent2(), blp_next_off.get_tangent1());
-			etl::derivative< etl::hermite<Vector> > deriv(curve);
 
 			// where would we be on this curve, how wide will we be, and
 			// where will our tangents point (all assuming that we hadn't vanished)
 			blp_here_off.set_vertex(curve(blp_here_on.get_origin()));
 			blp_here_off.set_width((blp_next_off.get_width()-blp_prev_off.get_width())*blp_here_on.get_origin()+blp_prev_off.get_width());
-			blp_here_off.set_tangent1(deriv(blp_here_on.get_origin()));
-			blp_here_off.set_tangent2(deriv(blp_here_on.get_origin()));
+			blp_here_off.set_tangent1(curve.derivative(blp_here_on.get_origin()));
+			blp_here_off.set_tangent2(curve.derivative(blp_here_on.get_origin()));
 
 			float prev_tangent_scalar(1.0f);
 			float next_tangent_scalar(1.0f);
@@ -905,10 +900,10 @@ ValueNode_BLine::operator()(Time t)const
 */
 
 	if(list.empty())
-		synfig::warning(string("ValueNode_BLine::operator()():")+_("No entries in list"));
+		synfig::warning(std::string("ValueNode_BLine::operator()():")+_("No entries in list"));
 	else
 	if(ret_list.empty())
-		synfig::warning(string("ValueNode_BLine::operator()():")+_("No entries in ret_list"));
+		synfig::warning(std::string("ValueNode_BLine::operator()():")+_("No entries in ret_list"));
 
 	return ValueBase(ValueBase::List(ret_list.begin(), ret_list.end()),get_loop());
 }
@@ -917,7 +912,7 @@ String
 ValueNode_BLine::link_local_name(int i)const
 {
 	assert(i>=0 && (unsigned)i<list.size());
-	return etl::strprintf(_("Vertex %03d"),i+1);
+	return strprintf(_("Vertex %03d"),i+1);
 }
 
 
@@ -1001,8 +996,8 @@ ValueNode_BLine::get_blinepoint(std::vector<ListEntry>::const_iterator current, 
 void
 ValueNode_BLine::ref()const
 {
-	if (getenv("SYNFIG_DEBUG_BLINE_REFCOUNT"))
-		printf("%s:%d %lx   ref bline %*s -> %2d\n", __FILE__, __LINE__, uintptr_t(this), (count()*2), "", count()+1);
+	DEBUG_LOG("SYNFIG_DEBUG_BLINE_REFCOUNT",
+		"%s:%d %lx   ref bline %*s -> %2d\n", __FILE__, __LINE__, uintptr_t(this), (count()*2), "", count()+1);
 
 	LinkableValueNode::ref();
 }
@@ -1010,8 +1005,8 @@ ValueNode_BLine::ref()const
 bool
 ValueNode_BLine::unref()const
 {
-	if (getenv("SYNFIG_DEBUG_BLINE_REFCOUNT"))
-		printf("%s:%d %lx unref bline %*s%2d <-\n", __FILE__, __LINE__, uintptr_t(this), ((count()-1)*2), "", count()-1);
+	DEBUG_LOG("SYNFIG_DEBUG_BLINE_REFCOUNT",
+		"%s:%d %lx unref bline %*s%2d <-\n", __FILE__, __LINE__, uintptr_t(this), ((count()-1)*2), "", count()-1);
 
 	return LinkableValueNode::unref();
 }
@@ -1024,7 +1019,7 @@ ValueNode_BLine::get_children_vocab_vfunc()const
 	for(unsigned int i=0; i<list.size();i++)
 	{
 		ret.push_back(ParamDesc(ValueBase(),strprintf("item%04d",i))
-			.set_local_name(etl::strprintf(_("Vertex %03d"),i+1))
+			.set_local_name(strprintf(_("Vertex %03d"),i+1))
 		);
 	}
 

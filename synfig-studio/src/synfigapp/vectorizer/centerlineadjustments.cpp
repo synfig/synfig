@@ -2,8 +2,6 @@
 /*!	\file centerlineadjustments.cpp
 **	\brief centerlineadjustments File
 **
-**	$Id$
-**
 **	\legal
 **	This file uses code from OpenToonz open-source animation software  (https://github.com/opentoonz/opentoonz/), which is developed from Toonz, a software originally created by Digital Video, S.p.A., Rome Italy Digital Video, S.p.A., Rome Italy.
 **
@@ -42,8 +40,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */

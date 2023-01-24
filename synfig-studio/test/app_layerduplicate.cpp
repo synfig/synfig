@@ -1,23 +1,28 @@
 /*!	\file test/app_layerduplicate.cpp
 **	\brief Tests for synfigapp::Action LayerDuplicate
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2021 Synfig authors
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
+
+#include "test_base.h"
 
 #include <synfig/canvas.h>
 #include <synfig/general.h>
@@ -31,72 +36,8 @@
 #include <synfigapp/instance.h>
 #include <synfigapp/main.h>
 
-#define ERROR_MESSAGE_TWO_VALUES(a, b) \
-	std::cerr.precision(8); \
-	std::cerr << __FUNCTION__ << ":" << __LINE__ << std::endl << "\t - expected " << a << ", but got " << b << std::endl;
-
-#define ASSERT(value) {\
-	if (!(value)) { \
-		std::cerr << __FUNCTION__ << ":" << __LINE__ << std::endl << "\t - not TRUE: " << #value << std::endl; \
-		return true; \
-	} \
-}
-
-#define ASSERT_FALSE(value) {\
-	if (value) { \
-		std::cerr << __FUNCTION__ << ":" << __LINE__ << std::endl << "\t - not FALSE: " << #value << std::endl; \
-		return true; \
-	} \
-}
-
-#define ASSERT_EQUAL(expected, value) {\
-	if (expected != value) { \
-		ERROR_MESSAGE_TWO_VALUES(expected, value) \
-		return true; \
-	} \
-}
-
-#define ASSERT_NOT_EQUAL(not_acceptable, value) {\
-	if (not_acceptable == value) { \
-		std::cerr.precision(8); \
-		std::cerr << __FUNCTION__ << ":" << __LINE__ << std::endl << "\t - must not be equal" << std::endl; \
-		return true; \
-	} \
-}
-
-#define ASSERT_APPROX_EQUAL(expected, value) {\
-	if (!synfig::approximate_equal(expected, value)) { \
-		ERROR_MESSAGE_TWO_VALUES(expected, value) \
-		return true; \
-	} \
-}
-
-#define ASSERT_APPROX_EQUAL_MICRO(expected, value) {\
-	if (std::abs(expected - value) > 1e-6) { \
-		ERROR_MESSAGE_TWO_VALUES(expected, value) \
-		return true; \
-	} \
-}
-
-#define ASSERT_VECTOR_APPROX_EQUAL_MICRO(expected, value) {\
-	if (std::abs(expected[0] - value[0]) > 2e-6 || std::abs(expected[1] - value[1]) > 2e-6) { \
-		ERROR_MESSAGE_TWO_VALUES(expected, value) \
-		return true; \
-	} \
-}
-
-#define TEST_FUNCTION(function_name) {\
-	bool fail = function_name(); \
-	if (fail) { \
-		synfig::error("%s FAILED", #function_name); \
-		failures++; \
-	} else { \
-		successes++; \
-	} \
-}
-
 // Check basic case of duplication: a single layer
-static bool test_synfigapp_layerduplicate_one_regular_layer()
+static void test_synfigapp_layerduplicate_one_regular_layer()
 {
 	synfig::Canvas::Handle canvas = synfig::Canvas::create();
 	canvas->set_id("MyCanvas");
@@ -118,11 +59,10 @@ static bool test_synfigapp_layerduplicate_one_regular_layer()
 	ASSERT_EQUAL("circle", canvas->front()->get_name())
 	ASSERT_APPROX_EQUAL(5.5, canvas->front()->get_param("radius").get(synfig::Real()))
 	ASSERT_EQUAL(3.0, canvas->back()->get_param("radius").get(synfig::Real()))
-	return false;
 }
 
 // Check if duplicated layer stays right above source layer
-static bool test_synfigapp_layerduplicate_place_dup_above_source_layer()
+static void test_synfigapp_layerduplicate_place_dup_above_source_layer()
 {
 	synfig::Canvas::Handle canvas = synfig::Canvas::create();
 	canvas->set_id("MyCanvas");
@@ -168,12 +108,10 @@ static bool test_synfigapp_layerduplicate_place_dup_above_source_layer()
 	// Now: 1 1 2 2 3 3
 	ASSERT_EQUAL(size_t(6), canvas->size())
 	ASSERT_APPROX_EQUAL(3.0, (*std::next(canvas->begin(), 4))->get_param("radius").get(synfig::Real()))
-
-	return false;
 }
 
 // Check if action duplicates more than one layer and place them right above first one if in a row
-static bool test_synfigapp_layerduplicate_two_regular_layers_must_keep_order()
+static void test_synfigapp_layerduplicate_two_regular_layers_must_keep_order()
 {
 	synfig::Canvas::Handle canvas = synfig::Canvas::create();
 	canvas->set_id("MyCanvas");
@@ -209,12 +147,10 @@ static bool test_synfigapp_layerduplicate_two_regular_layers_must_keep_order()
 	ASSERT_APPROX_EQUAL(2.0, (*layer_it)->get_param("radius").get(synfig::Real()))
 	++layer_it;
 	ASSERT_APPROX_EQUAL(3.0, (*layer_it)->get_param("radius").get(synfig::Real()))
-
-	return false;
 }
 
 // Check if exported valuenode are not re-created (= linked, keeps same id) - but those not-exported are not linked
-static bool test_synfigapp_layerduplicate_regular_layer_with_exported_valuenode()
+static void test_synfigapp_layerduplicate_regular_layer_with_exported_valuenode()
 {
 	synfig::Canvas::Handle canvas = synfig::Canvas::create();
 	canvas->set_id("MyCanvas");
@@ -253,10 +189,9 @@ static bool test_synfigapp_layerduplicate_regular_layer_with_exported_valuenode(
 	ASSERT(dup_origin_it != canvas->front()->dynamic_param_list().end())
 	ASSERT(src_origin_it != canvas->back()->dynamic_param_list().end())
 	ASSERT(src_origin_it->second != dup_origin_it->second)
-	return false;
 }
 
-static bool test_synfigapp_layerduplicate_encapsulated_layer_solo()
+static void test_synfigapp_layerduplicate_encapsulated_layer_solo()
 {
 	synfig::Canvas::Handle canvas = synfig::Canvas::create();
 	canvas->set_id("MyCanvas");
@@ -274,10 +209,9 @@ static bool test_synfigapp_layerduplicate_encapsulated_layer_solo()
 	action->perform();
 
 	ASSERT_EQUAL(2, canvas->size())
-	return false;
 }
 
-static bool test_synfigapp_layerduplicate_encapsulated_layer_with_contents()
+static void test_synfigapp_layerduplicate_encapsulated_layer_with_contents()
 {
 	synfig::Canvas::Handle canvas = synfig::Canvas::create();
 	canvas->set_id("MyCanvas");
@@ -314,11 +248,10 @@ static bool test_synfigapp_layerduplicate_encapsulated_layer_with_contents()
 
 	ASSERT_NOT_EQUAL(dup_canvas->front(), src_canvas->front())
 	ASSERT_NOT_EQUAL(dup_canvas->back(), src_canvas->back())
-	return false;
 }
 
 // Check if duplicated layer_duplicate has its (auto-exported) 'index' parameter renamed
-static bool test_synfigapp_layerduplicate_layer_duplicate_solo()
+static void test_synfigapp_layerduplicate_layer_duplicate_solo()
 {
 	synfig::Canvas::Handle canvas = synfig::Canvas::create();
 	canvas->set_id("MyCanvas");
@@ -338,11 +271,10 @@ static bool test_synfigapp_layerduplicate_layer_duplicate_solo()
 	ASSERT_EQUAL(2, canvas->size())
 	ASSERT_EQUAL(2, canvas->value_node_list().size())
 	ASSERT_NOT_EQUAL("Index 1", canvas->front()->dynamic_param_list().find("index")->second->get_id())
-	return false;
 }
 
 // Check if duplicated layer whose parameter is linked to layer_duplicate index keeps linked to it too
-static bool test_synfigapp_layerduplicate_dup_is_linked_to_same_layer_duplicate_index_valuenode()
+static void test_synfigapp_layerduplicate_dup_is_linked_to_same_layer_duplicate_index_valuenode()
 {
 	synfig::Canvas::Handle canvas = synfig::Canvas::create();
 	canvas->set_id("MyCanvas");
@@ -369,13 +301,12 @@ static bool test_synfigapp_layerduplicate_dup_is_linked_to_same_layer_duplicate_
 
 	ASSERT_EQUAL("Index 1", dup_circle->dynamic_param_list().find("radius")->second->get_id())
 	ASSERT_EQUAL("Index 1", src_circle->dynamic_param_list().find("radius")->second->get_id())
-	return false;
 }
 
 // Bug GH #1921
 // Layer_Duplicate and a layer linked to it are Duplicated.
 // Check if the latter is linked to the cloned Layer_Duplicate, not the source one.
-static bool test_synfigapp_layerduplicate_both_layer_duplicate_and_linked_layers()
+static void test_synfigapp_layerduplicate_both_layer_duplicate_and_linked_layers()
 {
 	synfig::Canvas::Handle canvas = synfig::Canvas::create();
 	canvas->set_id("MyCanvas");
@@ -454,14 +385,13 @@ static bool test_synfigapp_layerduplicate_both_layer_duplicate_and_linked_layers
 	ASSERT_EQUAL(3, canvas->size())
 	ASSERT_EQUAL(1, canvas->value_node_list().size())
 	ASSERT_EQUAL("Index 1", canvas->value_node_list().front()->get_id())
-	return false;
 }
 
 // When duplicating two groups (each one with a layer_duplicate) at same time,
 // it used to try to create new Index with same names (wrong)
 // and export them (error on second export)
 // Check if recent fix works
-static bool test_synfigapp_layerduplicate_two_groups_with_layer_duplicate_each()
+static void test_synfigapp_layerduplicate_two_groups_with_layer_duplicate_each()
 {
 	synfig::Canvas::Handle canvas = synfig::Canvas::create();
 	canvas->set_id("MyCanvas");
@@ -509,13 +439,11 @@ static bool test_synfigapp_layerduplicate_two_groups_with_layer_duplicate_each()
 	ASSERT_NOT_EQUAL(new_id2, new_id1)
 	ASSERT_NOT_EQUAL("some_index1", new_id2)
 	ASSERT_NOT_EQUAL("some_index2", new_id2)
-
-	return false;
 }
 
 // Case: There are two sibling groups, each one has a layer_duplicate.
 // Check if duplicating only the layer_duplicates (not the groups) work
-static bool test_synfigapp_layerduplicate_two_layer_duplicate_in_different_groups()
+static void test_synfigapp_layerduplicate_two_layer_duplicate_in_different_groups()
 {
 	synfig::Canvas::Handle canvas = synfig::Canvas::create();
 	canvas->set_id("MyCanvas");
@@ -558,13 +486,11 @@ static bool test_synfigapp_layerduplicate_two_layer_duplicate_in_different_group
 	ASSERT_NOT_EQUAL(new_id2, new_id1)
 	ASSERT_NOT_EQUAL("some_index1", new_id2)
 	ASSERT_NOT_EQUAL("some_index2", new_id2)
-
-	return false;
 }
 
 // User try to duplicate a group AND an inner layer_duplicate
 // Check if it creates a new group and don't duplicate layer_duplicate
-static bool test_synfigapp_layerduplicate_encapsulated_and_inner_layer_duplicate()
+static void test_synfigapp_layerduplicate_encapsulated_and_inner_layer_duplicate()
 {
 	synfig::Canvas::Handle canvas = synfig::Canvas::create();
 	canvas->set_id("MyCanvas");
@@ -606,11 +532,9 @@ static bool test_synfigapp_layerduplicate_encapsulated_and_inner_layer_duplicate
 	std::string id0 = duplicate_layer->dynamic_param_list().find("index")->second->get_id();
 	ASSERT_NOT_EQUAL("some_index1", new_id1)
 	ASSERT_EQUAL("some_index1", id0)
-
-	return false;
 }
 
-static bool test_synfigapp_layerduplicate_skeleton_with_bone_link()
+static void test_synfigapp_layerduplicate_skeleton_with_bone_link()
 {
 	synfig::Canvas::Handle canvas = synfig::Canvas::create();
 	canvas->set_id("MyCanvas");
@@ -700,11 +624,9 @@ static bool test_synfigapp_layerduplicate_skeleton_with_bone_link()
 	ASSERT_EQUAL("constant", cloned_bone_link->get_link("bone")->get_name())
 	auto cloned_bone_link_const = synfig::ValueNode_Const::Handle::cast_static(cloned_bone_link->get_link("bone"));
 	ASSERT_NOT_EQUAL("my bone 0", cloned_bone_link_const->get_value().get(synfig::ValueNode_Bone::Handle())->get_bone_name(synfig::Time()))
-
-	return false;
 }
 
-static bool test_synfigapp_layerduplicate_skeleton_with_animated_bone_link()
+static void test_synfigapp_layerduplicate_skeleton_with_animated_bone_link()
 {
 	// same setup of previous test: test_synfigapp_layerduplicate_skeleton_with_animated_bone_link
 
@@ -822,19 +744,13 @@ static bool test_synfigapp_layerduplicate_skeleton_with_animated_bone_link()
 	auto cloned_bone_link_animated = synfig::ValueNode_Animated::Handle::cast_static(cloned_bone_link->get_link("bone"));
 	ASSERT_EQUAL(cloned_bone0_name, (*cloned_bone_link_animated)(0.0).get(synfig::ValueNode_Bone::Handle())->get_bone_name(synfig::Time()))
 	ASSERT_EQUAL(cloned_bone1_name, (*cloned_bone_link_animated)(1.0).get(synfig::ValueNode_Bone::Handle())->get_bone_name(synfig::Time()))
-
-	return false;
 }
 
 int main()
 {
 	synfigapp::Main Main("");
 
-	int successes = 0;
-	int failures = 0;
-	bool exception_thrown = false;
-
-	try {
+	TEST_SUITE_BEGIN()
 		TEST_FUNCTION(test_synfigapp_layerduplicate_one_regular_layer)
 		TEST_FUNCTION(test_synfigapp_layerduplicate_place_dup_above_source_layer)
 		TEST_FUNCTION(test_synfigapp_layerduplicate_two_regular_layers_must_keep_order)
@@ -850,17 +766,7 @@ int main()
 
 		TEST_FUNCTION(test_synfigapp_layerduplicate_skeleton_with_bone_link)
 		TEST_FUNCTION(test_synfigapp_layerduplicate_skeleton_with_animated_bone_link)
-	} catch (...) {
-		synfig::error("Some exception has been thrown.");
-		exception_thrown = true;
-	}
+	TEST_SUITE_END();
 
-	if (exception_thrown)
-		synfig::error("Test interrupted due to an exception thrown (%i errors and %i successful tests until then)", failures, successes);
-	else if (failures)
-		synfig::error("Test finished with %i errors and %i successful tests", failures, successes);
-	else
-		synfig::info("Success");
-
-	return exception_thrown? 2 : (failures ? 1 : 0);
+	return tst_exit_status;
 }

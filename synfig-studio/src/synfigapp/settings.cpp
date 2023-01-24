@@ -2,21 +2,24 @@
 /*!	\file settings.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -35,17 +38,17 @@
 #include <algorithm>
 #include <sys/stat.h>
 #include "settings.h"
+#include <synfig/filesystem.h>
 #include <synfig/general.h>
 #include <synfig/guid.h>
 
 #include <synfigapp/localization.h>
+#include <glib/gstdio.h> // for g_rename(...)
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
 
@@ -69,7 +72,7 @@ synfig::String
 Settings::get_value(const synfig::String& key)const
 {
 	synfig::String value;
-	if(!get_value(key,value))
+	if(!get_raw_value(key,value))
 		return synfig::String();
 	return value;
 }
@@ -87,7 +90,7 @@ Settings::remove_domain(const synfig::String& name)
 }
 
 bool
-Settings::get_value(const synfig::String& key, synfig::String& value)const
+Settings::get_raw_value(const synfig::String& key, synfig::String& value)const
 {
 	// Search for the value in any children domains
 	DomainMap::const_iterator iter;
@@ -99,7 +102,7 @@ Settings::get_value(const synfig::String& key, synfig::String& value)const
 			synfig::String key_(key.begin()+iter->first.size()+1,key.end());
 
 			// If the domain has it, then we have got a hit
-			if(iter->second->get_value(key_,value))
+			if(iter->second->get_raw_value(key_,value))
 				return true;
 		}
 	}
@@ -188,9 +191,12 @@ Settings::save_to_file(const synfig::String& filename)const
 
 	try
 	{
-		std::ofstream file(tmp_filename.c_str());
+		std::ofstream file(synfig::filesystem::Path(tmp_filename).c_str());
 
-		if(!file)return false;
+		if(!file) {
+			synfig::warning(_("Can't save settings to file %s!"), filename.c_str());
+			return false;
+		}
 
 		KeyList key_list(get_key_list());
 
@@ -201,7 +207,7 @@ Settings::save_to_file(const synfig::String& filename)const
 			{
 				if(!file)return false;
 				String ret = get_value(*iter);
-				if (ret != String()) file<<(*iter).c_str()<<'='<<(ret == "none" ? "normal" : ret).c_str()<<endl;
+				if (ret != String()) file<<(*iter).c_str()<<'='<<(ret == "none" ? "normal" : ret) << '\n';
 			}
 		}
 
@@ -209,29 +215,8 @@ Settings::save_to_file(const synfig::String& filename)const
 			return false;
 	}catch(...) { return false; }
 
-#ifdef _WIN32
-
-	// On Win32 platforms, rename() has bad behavior. Work around it.
-
-	// Make random filename and ensure there's no file with such name exist
-	struct stat buf;
-	String old_file;
-	do {
-		synfig::GUID guid;
-		old_file = filename+"."+guid.get_string().substr(0,8);
-	} while (stat(old_file.c_str(), &buf) != -1);
-
-	rename(filename.c_str(),old_file.c_str());
-	if(rename(tmp_filename.c_str(),filename.c_str())!=0)
-	{
-		rename(old_file.c_str(),filename.c_str());
+	if (g_rename(tmp_filename.c_str(),filename.c_str())!=0)
 		return false;
-	}
-	remove(old_file.c_str());
-#else
-	if(rename(tmp_filename.c_str(),filename.c_str())!=0)
-		return false;
-#endif
 
 	return true;
 }
@@ -239,9 +224,13 @@ Settings::save_to_file(const synfig::String& filename)const
 bool
 Settings::load_from_file(const synfig::String& filename, const synfig::String& key_filter )
 {
-	std::ifstream file(filename.c_str());
-	if(!file)
+	std::ifstream file(synfig::filesystem::Path(filename).c_str());
+
+	if(!file) {
+		synfig::warning(_("Can't load settings from file %s!"), filename.c_str());
 		return false;
+	}
+
 	bool loaded_filter = false;
 	while(file)
 	{
@@ -278,4 +267,95 @@ Settings::load_from_file(const synfig::String& filename, const synfig::String& k
 	if (!key_filter.empty() && !loaded_filter)
 		return false;
 	return true;
+}
+
+double
+Settings::get_value(const synfig::String& key, double default_value) const {
+	synfig::String value;
+	if (!get_raw_value(key, value))
+		return default_value;
+	try {
+		synfig::ChangeLocale l(LC_NUMERIC, "C");
+		return stod(value);
+	} catch (const std::invalid_argument&) {
+		synfig::error("Settings: Invalid argument for %s: %s. Using default value: %s", key.c_str(), value.c_str(), default_value);
+		return default_value;
+	}
+}
+
+int
+Settings::get_value(const synfig::String& key, int default_value) const {
+	synfig::String value;
+	if (!get_raw_value(key, value))
+		return default_value;
+	try {
+		return stoi(value);
+	} catch (const std::invalid_argument&) {
+		synfig::error("Settings: Invalid argument for %s: %s. Using default value: %s", key.c_str(), value.c_str(), default_value);
+		return default_value;
+	}
+}
+
+bool
+Settings::get_value(const synfig::String& key, bool default_value) const {
+	synfig::String value;
+	if (!get_raw_value(key, value) || value.empty())
+		return default_value;
+	return value == "1" || value == "true";
+}
+
+synfig::Distance
+Settings::get_value(const synfig::String &key, const synfig::Distance &default_value) const
+{
+	ChangeLocale change_locale(LC_NUMERIC, "C");
+	synfig::String value;
+	return get_raw_value(key, value) ? Distance(value) : default_value;
+}
+
+synfig::String
+Settings::get_value(const synfig::String& key, const synfig::String& default_value) const {
+	synfig::String value;
+	return get_raw_value(key, value) ? value : default_value;
+}
+
+synfig::String
+Settings::get_value(const synfig::String &key, const char* default_value) const
+{
+	return get_value(key, synfig::String(default_value));
+}
+
+bool
+Settings::set_value(const synfig::String &key, double value)
+{
+	std::string v;
+	{
+		synfig::ChangeLocale l(LC_NUMERIC, "C");
+		v = std::to_string(value);
+	}
+	return set_value(key, v);
+}
+
+bool
+Settings::set_value(const synfig::String &key, int value)
+{
+	return set_value(key, strprintf("%d", value));
+}
+
+bool
+Settings::set_value(const synfig::String &key, bool value)
+{
+	return set_value(key, value? "1" : "0");
+}
+
+bool
+Settings::set_value(const synfig::String &key, const synfig::Distance &value)
+{
+	ChangeLocale change_locale(LC_NUMERIC, "C");
+	return set_value(key, value.get_string());
+}
+
+bool
+Settings::set_value(const synfig::String &key, const char *value)
+{
+	return set_value(key, String(value));
 }

@@ -2,20 +2,23 @@
 /*!	\file filesystem.h
 **	\brief FileSystem
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2013 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -129,7 +132,7 @@ namespace synfig
 			Identifier(const FileSystem::Handle &file_system, const String &filename):
 				file_system(file_system), filename(filename) { }
 
-			bool empty() const { return file_system; }
+			bool empty() const { return !file_system; }
 			operator bool () const { return !empty(); }
 
 			bool operator < (const Identifier &other) const
@@ -232,6 +235,45 @@ namespace synfig
 		virtual FileSystem::WriteStream::Handle get_write_stream(const String &/*filename*/)
 			{ return WriteStream::Handle(); }
 	};
+
+	namespace filesystem {
+		class Path {
+		public:
+#ifdef _WIN32
+			typedef wchar_t	value_type;
+#else
+			typedef char value_type;
+#endif
+			typedef std::basic_string<value_type> string_type;
+
+			/**
+			 * Store a file system path
+			 * @param path the path in UTF-8 encoding
+			 */
+			Path(const std::string& path);
+
+			// Format observers ------------------
+
+			/** Path as a character string in native encoding */
+			const value_type* c_str() const noexcept;
+			/** Path as a character string in native encoding */
+			const string_type& native() const noexcept;
+			/** Path as a character string in UTF-8 encoding */
+			const std::string& u8string() const;
+
+		private:
+			/** Path in the native encoding */
+			string_type native_path_;
+			/** Path in UTF-8 encoding */
+			std::string path_;
+
+			/** Convert a UTF-8 encoded string into a native-encoded string
+			 *  @param utf8 the string to be converted
+			 *  @return a string in native encoding
+			 */
+			static string_type utf8_to_native(const std::string& utf8);
+		};
+	}
 }
 
 /* === E N D =============================================================== */

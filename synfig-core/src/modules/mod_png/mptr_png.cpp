@@ -1,25 +1,26 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file mptr_png.cpp
-**	\brief ppm Target Module
-**
-**	$Id$
+**	\brief PNG Importer Module
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
-**	\endlegal
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
 **
-** === N O T E S ===========================================================
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
+**	\endlegal
 **
 ** ========================================================================= */
 
@@ -38,23 +39,16 @@
 #endif
 
 #include "mptr_png.h"
-#include <synfig/importer.h>
-#include <synfig/time.h>
+
+#include <ETL/stringf>
+#include <synfig/filecontainerzip.h>
 #include <synfig/general.h>
-#include <synfig/localization.h>
-#include <synfig/debug/debugsurface.h>
 
-
-#include <cstdio>
-#include <algorithm>
-#include <functional>
 #endif
 
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
-using namespace std;
-using namespace etl;
 
 #define PNG_CHECK_BYTES 	8
 
@@ -63,7 +57,7 @@ using namespace etl;
 SYNFIG_IMPORTER_INIT(png_mptr);
 SYNFIG_IMPORTER_SET_NAME(png_mptr,"png");
 SYNFIG_IMPORTER_SET_EXT(png_mptr,"png");
-SYNFIG_IMPORTER_SET_VERSION(png_mptr,"0.1");
+SYNFIG_IMPORTER_SET_VERSION(png_mptr,"0.2");
 SYNFIG_IMPORTER_SET_SUPPORTS_FILE_SYSTEM_WRAPPER(png_mptr, true);
 
 /* === M E T H O D S ======================================================= */
@@ -98,7 +92,7 @@ void
 png_mptr::read_callback(png_structp png_ptr, png_bytep out_bytes, png_size_t bytes_count_to_read)
 {
 	FileSystem::ReadStream *stream = (FileSystem::ReadStream*)png_get_io_ptr(png_ptr);
-	png_size_t s = stream == NULL
+	png_size_t s = !stream
 				 ? 0
 				 : stream->read_block(out_bytes, bytes_count_to_read);
 	if (s < bytes_count_to_read)
@@ -108,6 +102,15 @@ png_mptr::read_callback(png_structp png_ptr, png_bytep out_bytes, png_size_t byt
 png_mptr::png_mptr(const synfig::FileSystem::Identifier &identifier):
 	Importer(identifier)
 {
+	std::string file_ext = etl::filename_extension(identifier.filename);
+	if (file_ext == ".kra" || file_ext == ".ora") {
+		zip_fs = new FileContainerZip();
+		if (!zip_fs->open(identifier.filename)) {
+			synfig::error("Can't find the file %s", identifier.filename.c_str());
+			return;
+		}
+		zipped_file = FileSystem::Identifier(zip_fs, "mergedimage.png");
+	}
 }
 
 png_mptr::~png_mptr()
@@ -117,8 +120,13 @@ png_mptr::~png_mptr()
 bool
 png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc*/, Time, synfig::ProgressCallback */*cb*/)
 {
+	if (zip_fs && zipped_file.empty()) {
+		//! \todo THROW SOMETHING
+		throw strprintf("Unable to physically open %s: missing internal 'mergedimage.png'",identifier.filename.c_str());
+		return false;
+	}
 	/* Open the file pointer */
-	FileSystem::ReadStream::Handle stream = identifier.get_read_stream();
+	FileSystem::ReadStream::Handle stream = zip_fs? zipped_file.get_read_stream() : identifier.get_read_stream();
     if (!stream)
     {
         //! \todo THROW SOMETHING
@@ -155,8 +163,7 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
     png_infop info_ptr = png_create_info_struct(png_ptr);
     if (!info_ptr)
     {
-        png_destroy_read_struct(&png_ptr,
-           (png_infopp)NULL, (png_infopp)NULL);
+		png_destroy_read_struct(&png_ptr, nullptr, nullptr);
         //! \todo THROW SOMETHING
 		throw String("error on importer construction, *WRITEME*4");
 		return false;
@@ -165,8 +172,7 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
     png_infop end_info = png_create_info_struct(png_ptr);
     if (!end_info)
     {
-        png_destroy_read_struct(&png_ptr, &info_ptr,
-          (png_infopp)NULL);
+		png_destroy_read_struct(&png_ptr, &info_ptr, nullptr);
         //! \todo THROW SOMETHING
 		throw String("error on importer construction, *WRITEME*4");
 		return false;
@@ -186,7 +192,7 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 
 	if (bit_depth > 16) {
 		synfig::error("png_mptr: error: bit depth not supported: %d", bit_depth);
-		throw etl::strprintf("png_mptr: error: bit depth not supported: %d", bit_depth);
+		throw strprintf("png_mptr: error: bit depth not supported: %d", bit_depth);
 		return false;
 	}
 
@@ -214,7 +220,7 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 	//   You must use png_transforms and not call any
 	//   png_set_transform() functions when you use png_read_png().
 	// but we used png_set_gamma(), which may be why we were seeing a crash at the end
-	//   png_read_png(png_ptr, info_ptr, PNG_TRANSFORM_PACKING|PNG_TRANSFORM_STRIP_16, NULL);
+	//   png_read_png(png_ptr, info_ptr, PNG_TRANSFORM_PACKING|PNG_TRANSFORM_STRIP_16, nullptr);
 
 	png_read_update_info(png_ptr, info_ptr);
 	png_uint_32 rowbytes = png_get_rowbytes(png_ptr, info_ptr);
@@ -269,15 +275,15 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 	{
 		if (bit_depth > 8) {
 			synfig::error("png_mptr: error: bit depth with palette not supported: %d", bit_depth);
-			throw etl::strprintf("png_mptr: error: bit depth with palette not supported: %d", bit_depth);
+			throw strprintf("png_mptr: error: bit depth with palette not supported: %d", bit_depth);
 			return false;
 		}
 		png_colorp palette;
 		int num_palette;
 		png_get_PLTE(png_ptr, info_ptr, &palette, &num_palette);
-		png_bytep trans_alpha = NULL;
+		png_bytep trans_alpha = nullptr;
 		int num_trans = 0;
-		bool has_alpha = png_get_tRNS(png_ptr, info_ptr, &trans_alpha, &num_trans, NULL)
+		bool has_alpha = png_get_tRNS(png_ptr, info_ptr, &trans_alpha, &num_trans, nullptr)
 		               & PNG_INFO_tRNS;
 		const ColorReal k = 1/255.0;
 		for(int y = 0; y < surface.get_h(); ++y)
@@ -287,7 +293,7 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 				ColorReal g = k*(unsigned char)palette[row_pointers[y][x]].green;
 				ColorReal b = k*(unsigned char)palette[row_pointers[y][x]].blue;
 				ColorReal a = 1;
-                if (has_alpha && num_trans > 0 && trans_alpha != NULL && row_pointers[y][x] < num_trans)
+				if (has_alpha && num_trans > 0 && trans_alpha && row_pointers[y][x] < num_trans)
                     a = k*(unsigned char)trans_alpha[row_pointers[y][x]];
 				surface[y][x] = gamma.apply(Color(r, g, b, a));
 			}

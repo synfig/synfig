@@ -2,23 +2,26 @@
 /*!	\file canvasinterface.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2009 Carlos A. Sosa Navarro
 **  Copyright (c) 2011 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -31,6 +34,8 @@
 #ifdef HAVE_CONFIG_H
 #	include <config.h>
 #endif
+
+#include <ETL/stringf>
 
 #include <synfig/general.h>
 
@@ -81,7 +86,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
@@ -107,8 +111,8 @@ CanvasInterface::CanvasInterface(etl::loose_handle<Instance> instance,etl::handl
 
 CanvasInterface::~CanvasInterface()
 {
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
-		synfig::info("CanvasInterface::~CanvasInterface(): Deleted");
+	DEBUG_LOG("SYNFIG_DEBUG_DESTRUCTORS",
+		"CanvasInterface::~CanvasInterface(): Deleted");
 }
 
 void
@@ -309,10 +313,10 @@ CanvasInterface::layer_set_defaults(const synfig::Layer::Handle &layer)
 			if(iter->second.get_type()==type_list)
 			{
 				// check whether it's a list of blinepoints or widthpoints only
-				vector<ValueBase> list(iter->second.get_list());
+				std::vector<ValueBase> list(iter->second.get_list());
 				if (list.size())
 				{
-					vector<ValueBase>::iterator iter2 = list.begin();
+					std::vector<ValueBase>::iterator iter2 = list.begin();
 					Type &type(iter2->get_type());
 					for (iter2++; iter2 != list.end(); iter2++)
 						if (iter2->get_type() != type)
@@ -700,7 +704,46 @@ CanvasInterface::jump_to_prev_keyframe()
 	//catch(...) { synfig::warning("Unable to find prev keyframe"); }
 }
 
-bool
+static void update_layer_size(const RendDesc& rend_desc, Layer::Handle& layer, bool resize_image) {
+	int w = layer->get_param("_width").get(int());
+	int h = layer->get_param("_height").get(int());
+
+	if (w && h) {
+		Vector x, size = rend_desc.get_br() - rend_desc.get_tl();
+
+		// vector from top left of canvas to bottom right
+		if (resize_image) {
+			if (std::fabs(size[0]) < std::fabs(size[1])) { // if canvas is tall and thin (portrait)
+				x[0]=size[0];	// use full width
+				x[1]=size[0]/w*h; // and scale for height
+
+				if ((size[0]<0) ^ (size[1]<0))
+					x[1] = -x[1];
+			} else { // else canvas is short and fat (or maybe square) (landscape)
+				x[1]=size[1];	// use full height
+				x[0]=size[1]/h*w; // and scale for width
+
+				if ((size[0]<0) ^ (size[1]<0))
+					x[0] = -x[0];
+			}
+		} else {
+			x[0] = w*rend_desc.get_pw();
+			x[1] = h*rend_desc.get_ph();
+		}
+
+		if(!layer->set_param("tl",ValueBase(-x/2)))
+			throw int();
+		if(!layer->set_param("br",ValueBase(x/2)))
+			throw int();
+	} else {
+		if(!layer->set_param("tl",ValueBase(rend_desc.get_tl())))
+			throw int();
+		if(!layer->set_param("br",ValueBase(rend_desc.get_br())))
+			throw int();
+	}
+}
+
+Layer::Handle
 CanvasInterface::import(
 	const synfig::String &filename,
 	synfig::String &errors,
@@ -716,17 +759,17 @@ CanvasInterface::import(
 	if (ext == "")
 	{
 		get_ui_interface()->error(_("File name must have an extension!"));
-		return false;
+		return nullptr;
 	}
 
 	
 	if (ext.size()) ext = ext.substr(1); // skip initial '.'
-	std::transform(ext.begin(),ext.end(),ext.begin(),&::tolower);
+	strtolower(ext);
 
 	String short_filename = CanvasFileNaming::make_short_filename(get_canvas()->get_file_name(), filename);
 	String full_filename = CanvasFileNaming::make_full_filename(get_canvas()->get_file_name(), short_filename);
 
-	if (ext=="pgo")
+	if (ext=="pgo" || ext=="tsv" || ext=="xml")
 	{
 		synfigapp::Action::PassiveGrouper group(get_instance().get(),_("Import Lipsync"));
 
@@ -753,7 +796,7 @@ CanvasInterface::import(
 		{
 			soundfile = etl::solve_relative_path(etl::dirname(full_filename), soundfile);
 			String short_soundfile = CanvasFileNaming::make_short_filename(get_canvas()->get_file_name(), soundfile);
-			String full_soundfile = CanvasFileNaming::make_full_filename(get_canvas()->get_file_name(), short_soundfile);
+			//String full_soundfile = CanvasFileNaming::make_full_filename(get_canvas()->get_file_name(), short_soundfile);
 
 			Layer::Handle layer_sound = layer_create("sound", get_canvas());
 			if(!layer_sound)
@@ -767,7 +810,7 @@ CanvasInterface::import(
 				throw String(_("Unable to add \"Sound\" layer"));
 		}
 
-		return true;
+		return layer_switch;
 	}
 
 	if (ext=="wav" || ext=="ogg" || ext=="mp3")
@@ -783,7 +826,7 @@ CanvasInterface::import(
 		if (!layer_add_action(layer))
 			throw String(_("Unable to add \"Sound\" layer"));
 
-		return true;
+		return layer;
 	}
 
 	if (ext=="svg") //I don't like it, but worse is nothing
@@ -811,7 +854,7 @@ CanvasInterface::import(
 			}
 		}
 		signal_layer_new_description()(_new_layer,etl::basename(filename));
-		return true;
+		return _new_layer;
 	}
 
 	// If this is a SIF file, then we need to do things slightly differently
@@ -836,82 +879,37 @@ CanvasInterface::import(
 
 		//layer->set_description(basename(filename));
 		signal_layer_new_description()(layer,etl::basename(filename));
-		return true;
+		return layer;
 	}
 	catch (const String& x)
 	{
 		get_ui_interface()->error(filename + ": " + x);
-		return false;
+		return nullptr;
 	}
 	catch (...)
 	{
 		get_ui_interface()->error(_("Uncaught exception when attempting\nto open this composition -- ")+filename);
-		return false;
+		return nullptr;
 	}
 
 	if(!Importer::book().count(ext))
 	{
 		get_ui_interface()->error(_("I don't know how to open images of this type -- ")+ext);
-		return false;
+		return nullptr;
 	}
 
 	try
 	{
 		Layer::Handle layer(add_layer_to("Import",get_canvas()));
-		int w,h;
 		if(!layer)
 			throw int();
 		if(!layer->set_param("filename",ValueBase(short_filename)))
 			throw int();
-		w=layer->get_param("_width").get(int());
-		h=layer->get_param("_height").get(int());
+		update_layer_size(get_canvas()->rend_desc(), layer, resize_image);
 		layer->monitor(filename);
-		if(w&&h)
-		{
-			Vector x, size = get_canvas()->rend_desc().get_br()-get_canvas()->rend_desc().get_tl();
-
-			// vector from top left of canvas to bottom right
-			if (resize_image)
-			{
-				if(abs(size[0])<abs(size[1]))	// if canvas is tall and thin
-				{
-					x[0]=size[0];	// use full width
-					x[1]=size[0]/w*h; // and scale for height
-					if((size[0]<0) ^ (size[1]<0))
-						x[1]=-x[1];
-				}
-				else				// else canvas is short and fat (or maybe square)
-				{
-					x[1]=size[1];	// use full height
-					x[0]=size[1]/h*w; // and scale for width
-					if((size[0]<0) ^ (size[1]<0))
-						x[0]=-x[0];
-				}
-			}
-			else
-			{
-				x[0] = w/60.0;
-				x[1] = h/60.0;
-				if((size[0]<0)) x[0]=-x[0];
-				if((size[1]<0)) x[1]=-x[1];
-			}
-
-			if(!layer->set_param("tl",ValueBase(-x/2)))
-				throw int();
-			if(!layer->set_param("br",ValueBase(x/2)))
-				throw int();
-		}
-		else
-		{
-			if(!layer->set_param("tl",ValueBase(get_canvas()->rend_desc().get_tl())))
-				throw int();
-			if(!layer->set_param("br",ValueBase(get_canvas()->rend_desc().get_br())))
-				throw int();
-		}
-
-		layer->set_description(etl::basename(filename));
-		signal_layer_new_description()(layer,etl::basename(filename));
-
+		String desc = etl::basename(filename);
+		layer->set_description(desc);
+		signal_layer_new_description()(layer, desc);
 		//get_instance()->set_selected_layer(get_canvas(), layer);
 		//get_instance()->set_selected_layer(layer, get_canvas());
 
@@ -926,28 +924,28 @@ CanvasInterface::import(
 		// add imported layer into switch
 		Action::Handle action(Action::create("LayerEncapsulateSwitch"));
 		assert(action);
-		if(!action) return false;
+		if(!action) return nullptr;
 		action->set_param("canvas",get_canvas());
 		action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
 		action->set_param("layer",layer);
 		action->set_param("description",layer->get_description());
 		if(!action->is_ready())
-			{ get_ui_interface()->error(_("Action Not Ready")); return false; }
+			{ get_ui_interface()->error(_("Action Not Ready")); return nullptr; }
 		if(!get_instance()->perform_action(action))
-			{ get_ui_interface()->error(_("Action Failed.")); return false; }
+			{ get_ui_interface()->error(_("Action Failed.")); return nullptr; }
 
 		Layer::LooseHandle l = layer->get_parent_paste_canvas_layer(); // get parent layer, because image is incapsulated into action switch
 		
 		get_selection_manager()->clear_selected_layers();
 		get_selection_manager()->set_selected_layer(l);
 
-		return true;
+		return l;
 	}
 	catch(...)
 	{
 		get_ui_interface()->error("Unable to import "+filename);
 		group.cancel();
-		return false;
+		return nullptr;
 	}
 }
 
@@ -993,17 +991,17 @@ CanvasInterface::import_sequence(
 			
 			String ext(filename_extension(filename));
 			if (!ext.empty()) ext = ext.substr(1); // skip initial '.'
-			std::transform(ext.begin(),ext.end(),ext.begin(),&::tolower);
+			strtolower(ext);
 			
 			if (ext.empty())
 			{
-				errors += etl::strprintf(_("Cannot import file without extension: %s\n"), filename.c_str());
+				errors += synfig::strprintf(_("Cannot import file without extension: %s\n"), filename.c_str());
 				continue;
 			}
 			
 			if(!Importer::book().count(ext))
 			{
-				errors += etl::strprintf(_("Cannot import file of type '%s': %s\n"), ext.c_str(), filename.c_str());
+				errors += synfig::strprintf(_("Cannot import file of type '%s': %s\n"), ext.c_str(), filename.c_str());
 				continue;
 			}
 			
@@ -1011,7 +1009,6 @@ CanvasInterface::import_sequence(
 			
 			try {
 				layer = add_layer_to("Import",get_canvas());
-				int w, h;
 				if (!layer)
 					throw int();
 				if (!layer->set_param("filename", ValueBase(short_filename)))
@@ -1038,40 +1035,8 @@ CanvasInterface::import_sequence(
 						first_time = false;
 					}
 				}
-
-				w = layer->get_param("_width").get(int());
-				h = layer->get_param("_height").get(int());
+				update_layer_size(get_canvas()->rend_desc(), layer, resize_image);
 				layer->monitor(filename);
-				if (w && h) {
-					Vector x, size = get_canvas()->rend_desc().get_br()-get_canvas()->rend_desc().get_tl();
-					// vector from top left of canvas to bottom right
-					if (resize_image) {
-						if(abs(size[0])<abs(size[1])) {// if canvas is tall and thin
-							x[0]=size[0];	// use full width
-							x[1]=size[0]/w*h; // and scale for height
-							if ((size[0]<0) ^ (size[1]<0)) x[1] = -x[1];
-						} else { // else canvas is short and fat (or maybe square)
-							x[1]=size[1];	// use full height
-							x[0]=size[1]/h*w; // and scale for width
-							if ((size[0]<0) ^ (size[1]<0)) x[0] = -x[0];
-						}
-					} else {
-						x[0] = w/60.0;
-						x[1] = h/60.0;
-						if((size[0]<0)) x[0]=-x[0];
-						if((size[1]<0)) x[1]=-x[1];
-					}
-					if(!layer->set_param("tl",ValueBase(-x/2)))
-						throw int();
-					if(!layer->set_param("br",ValueBase(x/2)))
-						throw int();
-				} else {
-					if(!layer->set_param("tl",ValueBase(get_canvas()->rend_desc().get_tl())))
-						throw int();
-					if(!layer->set_param("br",ValueBase(get_canvas()->rend_desc().get_br())))
-						throw int();
-				}
-
 				String desc = etl::basename(filename);
 				layer->set_description(desc);
 				signal_layer_new_description()(layer, desc);
@@ -1089,7 +1054,7 @@ CanvasInterface::import_sequence(
 				prev_surface=cur_surface;
 				advance(c2,1);
 			} catch(...) {
-				errors += etl::strprintf(_("Unable to import file: %s"), filename.c_str());
+				errors += synfig::strprintf(_("Unable to import file: %s"), filename.c_str());
 				group.cancel();
 				return false;
 			}
@@ -1106,7 +1071,7 @@ CanvasInterface::import_sequence(
 		}
 
 		if (layer) {
-			// get parent layer, because image is incapsulated into action switch
+			// get parent layer, because image is encapsulated into action switch
 			Layer::Handle layer_switch = layer->get_parent_paste_canvas_layer();
 
 			// connect animated layer_name param

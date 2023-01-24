@@ -2,20 +2,23 @@
 /*!	\file layerextract.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2013 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -29,6 +32,8 @@
 #	include <config.h>
 #endif
 
+#include <ETL/stringf>
+
 #include <synfig/general.h>
 #include <synfig/string.h>
 #include <synfig/canvasfilenaming.h>
@@ -40,8 +45,6 @@
 
 #endif
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
 using namespace Action;
@@ -74,7 +77,7 @@ Action::LayerExtract::get_param_vocab()
 
 	ret.push_back(ParamDesc("filename",Param::TYPE_STRING)
 		.set_local_name(_("File name"))
-		.set_desc(_("File name witch path to store exported file"))
+		.set_desc(_("File name with path to store exported file"))
 		.set_user_supplied()
 	);
 

@@ -2,20 +2,23 @@
 /*!	\file dialog_gradient.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -40,6 +43,8 @@
 
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/main.h>
+#include "synfig/general.h"
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -67,18 +72,18 @@ Dialog_Gradient::Dialog_Gradient():
 	set_role("gradient_editor");
 
 	// Setup the buttons
-	set_default_button = manage(new class Gtk::Button(Gtk::StockID(_("Set as Default"))));
-	set_default_button->show();
-	add_action_widget(*set_default_button,2);
-	set_default_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Gradient::on_set_default_pressed));
-
-	Gtk::Button *cancel_button(manage(new class Gtk::Button(Gtk::StockID("gtk-close"))));
+	Gtk::Button *cancel_button(manage(new Gtk::Button(_("_Close"), true)));
 	cancel_button->show();
 	add_action_widget(*cancel_button,0);
 	cancel_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Gradient::hide));
 
+	set_default_button = manage(new Gtk::Button(_("Set as Default")));
+	set_default_button->show();
+	add_action_widget(*set_default_button,2);
+	set_default_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Gradient::on_set_default_pressed));
+
 	Gtk::Table* table(manage(new Gtk::Table(2,2,false)));
-	get_vbox()->pack_start(*table);
+	get_content_area()->pack_start(*table);
 
 	widget_gradient=manage(new Widget_Gradient());
 	widget_gradient->set_editable();
@@ -136,8 +141,8 @@ Dialog_Gradient::on_set_default_pressed()
 void
 Dialog_Gradient::on_changed()
 {
-	if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
-		printf("%s:%d Dialog_Gradient::on_changed()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_ON_CHANGED",
+		"%s:%d Dialog_Gradient::on_changed()\n", __FILE__, __LINE__);
 
 	signal_edited_(get_gradient());
 }

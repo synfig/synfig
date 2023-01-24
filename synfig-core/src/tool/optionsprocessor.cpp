@@ -2,22 +2,25 @@
 /*!	\file tool/optionsprocessor.cpp
 **	\brief Synfig Tool Options Processor Class
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2009-2014 Diego Barrios Romero
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -36,16 +39,12 @@
 #include <synfig/localization.h>
 #include <synfig/canvas.h>
 #include <synfig/canvasfilenaming.h>
-#include <synfig/context.h>
 #include <synfig/target.h>
 #include <synfig/layer.h>
 #include <synfig/module.h>
 #include <synfig/importer.h>
 #include <synfig/loadcanvas.h>
 #include <synfig/valuenode_registry.h>
-#include <synfig/filesystemgroup.h>
-#include <synfig/filesystemnative.h>
-#include <synfig/filecontainerzip.h>
 
 #include "definitions.h"
 #include "job.h"
@@ -152,7 +151,7 @@ SynfigCommandLineParser::SynfigCommandLineParser() :
 	add_option(og_set, "height",      'h', set_height,		_("Set the image height in pixels (Use zero for file default)"), "NUM");
 	add_option(og_set, "span",        's', set_span,		_("Set the diagonal size of image window (Span)"), "NUM");
 	add_option(og_set, "antialias",   'a', set_antialias,	_("Set antialias amount for parametric renderer."), "1..30");
-	//og_set.add_option("quality",     'Q', quality_arg_desc, etl::strprintf(_("Specify image quality for accelerated renderer (Default: %d)"), DEFAULT_QUALITY).c_str(), "NUM");
+	//og_set.add_option("quality",     'Q', quality_arg_desc, strprintf(_("Specify image quality for accelerated renderer (Default: %d)"), DEFAULT_QUALITY).c_str(), "NUM");
 	add_option(og_set, "threads",     'T', set_num_threads, _("Enable multithreaded renderer using the specified number of threads"), "NUM");
 	add_option(og_set, "input-file",  'i', set_input_file, 	_("Specify input filename"), "filename");
 	add_option(og_set, "output-file", 'o', set_output_file, _("Specify output filename"), "filename");
@@ -242,7 +241,11 @@ bool SynfigCommandLineParser::parse(int argc, char* argv[])
 #ifdef GLIBMM_EXCEPTIONS_ENABLED
 	try
 	{
+#ifdef _WIN32
+		context.parse(argv);
+#else
 		context.parse(argc, argv);
+#endif
 	}
 	catch(const Glib::Error& ex)
 	{
@@ -376,15 +379,15 @@ void SynfigCommandLineParser::process_trivial_info_options()
 #ifdef DEVEL_VERSION
 		std::cout << std::endl << DEVEL_VERSION << std::endl << std::endl;
 #endif
-		std::cout << "Compiled on " __DATE__ /* " at "__TIME__ */;
+		std::cout << "Compiled on " << get_build_date();
 #ifdef __GNUC__
 		std::cout << " with GCC " << __VERSION__;
-#endif
-#ifdef _MSC_VER
+#elif defined(__clang__)
+		std::cout << " with Clang " << __VERSION__;
+#elif defined(_MSC_VER)
 		std::cout << " with Microsoft Visual C++ "
 			 << (_MSC_VER>>8) << '.' << (_MSC_VER&255);
-#endif
-#ifdef __TCPLUSPLUS__
+#elif defined(__TCPLUSPLUS__)
 		std::cout << " with Borland Turbo C++ "
 			 << (__TCPLUSPLUS__>>8) << '.'
 			 << ((__TCPLUSPLUS__&255)>>4) << '.'
@@ -420,7 +423,6 @@ void SynfigCommandLineParser::process_trivial_info_options()
 
 }
 
-//void OptionsProcessor::process_info_options()
 void SynfigCommandLineParser::process_info_options()
 {
 	if (show_layers_list) {
@@ -494,7 +496,6 @@ void SynfigCommandLineParser::process_info_options()
 	}
 }
 
-//RendDesc OptionsProcessor::extract_renddesc(const RendDesc& renddesc)
 RendDesc SynfigCommandLineParser::extract_renddesc(const RendDesc& renddesc)
 {
 	RendDesc desc = renddesc;
@@ -572,7 +573,7 @@ RendDesc SynfigCommandLineParser::extract_renddesc(const RendDesc& renddesc)
 			h = desc.get_h() * w / desc.get_w();
 
 		desc.set_wh(w, h);
-		VERBOSE_OUT(1) << etl::strprintf(_("Resolution set to %dx%d."), w, h) << std::endl;
+		VERBOSE_OUT(1) << strprintf(_("Resolution set to %dx%d."), w, h) << std::endl;
 	}
 
 	if(span > 0)
@@ -581,7 +582,6 @@ RendDesc SynfigCommandLineParser::extract_renddesc(const RendDesc& renddesc)
 	return desc;
 }
 
-//TargetParam OptionsProcessor::extract_targetparam()
 TargetParam SynfigCommandLineParser::extract_targetparam()
 {
 	TargetParam params;
@@ -597,10 +597,7 @@ TargetParam SynfigCommandLineParser::extract_targetparam()
 		params.video_codec = video_codec;
 
 		// video_codec string to lowercase
-		transform (params.video_codec.begin(),
-				   params.video_codec.end(),
-				   params.video_codec.begin(),
-				   ::tolower);
+		strtolower(params.video_codec);
 
 		bool found = false;
 		// Check if the given video codec is allowed.
@@ -616,7 +613,7 @@ TargetParam SynfigCommandLineParser::extract_targetparam()
 		if (!found)
 		{
 		    throw SynfigToolException(SYNFIGTOOL_UNKNOWNARGUMENT,
-                                      etl::strprintf(_("Video codec \"%s\" is not supported."), params.video_codec.c_str()));
+                                      strprintf(_("Video codec \"%s\" is not supported."), params.video_codec.c_str()));
 		}
 
 		VERBOSE_OUT(1) << _("Target video codec set to: ") << params.video_codec << std::endl;
@@ -639,7 +636,6 @@ TargetParam SynfigCommandLineParser::extract_targetparam()
 	return params;
 }
 
-//Job OptionsProcessor::extract_job()
 Job SynfigCommandLineParser::extract_job()
 {
 	Job job;
@@ -675,7 +671,7 @@ Job SynfigCommandLineParser::extract_job()
 		if(!job.canvas)
 		{
 		    throw SynfigToolException(SYNFIGTOOL_FILENOTFOUND,
-                                      etl::strprintf(_("Unable to load file '%s'."), job.filename.c_str()));
+                                      strprintf(_("Unable to load file '%s'."), job.filename.c_str()));
 		}
 
 		job.root->set_time(0);
@@ -726,14 +722,14 @@ Job SynfigCommandLineParser::extract_job()
 		catch(Exception::IDNotFound&)
 		{
 			throw SynfigToolException(SYNFIGTOOL_INVALIDJOB,
-					etl::strprintf(_("Unable to find canvas with ID \"%s\" in %s.\n"
+					strprintf(_("Unable to find canvas with ID \"%s\" in %s.\n"
                                     "Throwing out job..."), 
 									canvasid.c_str(), job.filename.c_str()));
 		}
 		catch(Exception::BadLinkName&)
 		{
 		    throw SynfigToolException(SYNFIGTOOL_INVALIDJOB,
-                    etl::strprintf(_("Invalid canvas name \"%s\" in %s.\n"
+                    strprintf(_("Invalid canvas name \"%s\" in %s.\n"
                                     "Throwing out job..."),
                                    	canvasid.c_str(), job.filename.c_str())); // FIXME: is here must be canvasid nor canvasname?
 		}
@@ -799,7 +795,6 @@ Job SynfigCommandLineParser::extract_job()
 	return job;
 }
 
-//void OptionsProcessor::print_target_video_codecs_help() const
 void SynfigCommandLineParser::print_target_video_codecs_help() const
 {
 	for (std::vector<VideoCodec>::const_iterator itr = _allowed_video_codecs.begin();
@@ -841,8 +836,7 @@ void signal_test()
 }
 
 // DEBUG options ----------------------------------------------
-//void OptionsProcessor::process_debug_options() throw (SynfigToolException&)
-void SynfigCommandLineParser::process_debug_options() throw (SynfigToolException&)
+void SynfigCommandLineParser::process_debug_options()
 {
 	if (debug_signal)
 	{
@@ -858,4 +852,3 @@ void SynfigCommandLineParser::process_debug_options() throw (SynfigToolException
 }
 
 #endif
-

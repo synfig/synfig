@@ -2,20 +2,23 @@
 /*!	\file dialog_input.cpp
 **	\brief Input dialog implementation
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -102,7 +105,7 @@ Dialog_Input::Dialog_Input(Gtk::Window& parent):
 	Gtk::Dialog(_("Input Dialog"), parent),
 	dialog_settings(this, "input"),
 	options(new DeviceOptions()),
-	scrolled_window(NULL)
+	scrolled_window(nullptr)
 {
 	set_type_hint(Gdk::WINDOW_TYPE_HINT_UTILITY);
 	add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
@@ -156,9 +159,9 @@ void Dialog_Input::take_options()
 
 void Dialog_Input::create_widgets()
 {
-	if (scrolled_window != NULL) {
+	if (scrolled_window) {
 		get_content_area()->remove(*scrolled_window);
-		scrolled_window = NULL;
+		scrolled_window = nullptr;
 	}
 
 	// Devices
@@ -191,7 +194,7 @@ void Dialog_Input::create_widgets()
 			table->attach(*comboboxtext, 1, 2, row, row+1, Gtk::EXPAND | Gtk::FILL, Gtk::SHRINK | Gtk::FILL);
 		}
 
-		table->attach( *manage(new class Gtk::HSeparator()),
+		table->attach( *manage(new class Gtk::Separator()),
 					   0,
 					   2,
 					   (int)options->devices.size(),

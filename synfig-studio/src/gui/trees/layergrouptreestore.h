@@ -6,15 +6,20 @@
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2017 caryoscelus
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -49,7 +54,7 @@ public:
 	class Model : public Gtk::TreeModel::ColumnRecord
 	{
 	public:
-		Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf> > icon;
+		Gtk::TreeModelColumn<Glib::ustring> icon_name;
 		Gtk::TreeModelColumn<Glib::ustring> label;
 		Gtk::TreeModelColumn<Glib::ustring> tooltip;
 
@@ -70,7 +75,7 @@ public:
 
 		Model()
 		{
-			add(icon);
+			add(icon_name);
 			add(label);
 			add(group_name);
 			add(parent_group_name);
@@ -95,7 +100,7 @@ public:
 	//! TreeModel for the layers
 	const Model model;
 
-	bool rebuilding;
+	bool rebuilding = false;
 
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
@@ -104,9 +109,6 @@ public:
 private:
 
 	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface_;
-
-	Glib::RefPtr<Gdk::Pixbuf> layer_icon;
-	Glib::RefPtr<Gdk::Pixbuf> group_icon;
 
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------

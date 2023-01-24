@@ -1,8 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file template.h
+/*!	\file synfigapp/vectorizer/polygonizerclasses.h
 **	\brief Template Header
-**
-**	$Id$
 **
 **	\legal
 **	This file uses code from OpenToonz open-source animation software  (https://github.com/opentoonz/opentoonz/), which is developed from Toonz, a software originally created by Digital Video, S.p.A., Rome Italy Digital Video, S.p.A., Rome Italy.
@@ -84,7 +82,7 @@ template <typename NodeContentType, typename ArcType>
 class Graph {
 public:
   class Link {
-    UINT m_next;    //!< Index of the node pointed by this link.
+    UINT m_next = 0;    //!< Index of the node pointed by this link.
     ArcType m_arc;  //!< Edge data associated to this link.
     int m_access;   //!< Whether access to a node is allowed
                     //!  through this link.

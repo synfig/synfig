@@ -2,22 +2,25 @@
 /*!	\file target_tile.h
 **	\brief Template Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
 **	Copyright (c) 2012-2013 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -79,7 +82,7 @@ public:
 	Target_Tile();
 
 	//! Renders the canvas to the target
-	virtual bool render(ProgressCallback *cb=NULL);
+	virtual bool render(ProgressCallback* cb = nullptr);
 
 	virtual bool async_render_tile(
 		etl::handle<Canvas> canvas,
@@ -87,7 +90,7 @@ public:
 		RectInt rect,
 		RendDesc tile_desc,
 		ProgressCallback *cb);
-	virtual bool wait_render_tiles(ProgressCallback *cb=NULL);
+	virtual bool wait_render_tiles(ProgressCallback* cb = nullptr);
 
 	//! Determines which tile needs to be rendered next.
 	/*!	Most cases will not have to redefine this function.
@@ -109,7 +112,7 @@ public:
 	/*! \return \c true on success, \c false upon an error.
 	**	\see end_frame(), start_scanline()
 	*/
-	virtual bool start_frame(ProgressCallback *cb=NULL)=0;
+	virtual bool start_frame(ProgressCallback* cb = nullptr) = 0;
 
 	//! Marks the end of a frame
 	/*! \see start_frame() */

@@ -2,20 +2,23 @@
 /*!	\file synfig/rendering/software/function/packedsurface.cpp
 **	\brief PackedSurface
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2016 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -56,17 +59,17 @@ using namespace software;
 
 
 PackedSurface::Reader::Reader():
-	surface(NULL),
-	first(NULL),
-	last(NULL),
-	cache(NULL)
+	surface(nullptr),
+	first(nullptr),
+	last(nullptr),
+	cache(nullptr)
 { }
 
 PackedSurface::Reader::Reader(const PackedSurface &surface):
-	surface(NULL),
-	first(NULL),
-	last(NULL),
-	cache(NULL)
+	surface(nullptr),
+	first(nullptr),
+	last(nullptr),
+	cache(nullptr)
 {
 	open(surface);
 }
@@ -95,7 +98,7 @@ PackedSurface::Reader::open(const PackedSurface &surface)
 
 	if (surface.chunk_size)
 	{
-		chunks.resize(surface.chunks_width*surface.chunks_height, NULL);
+		chunks.resize(surface.chunks_width*surface.chunks_height, nullptr);
 
 		int cacheCount = std::max(surface.chunks_width, surface.chunks_height)*CacheRows;
 		assert(cacheCount > 1);
@@ -106,7 +109,7 @@ PackedSurface::Reader::open(const PackedSurface &surface)
 		{
 			CacheEntry *entry = (CacheEntry*)(void*)(cache + i*cacheEntrySize);
 			entry->chunk_index = -1;
-			entry->next = NULL;
+			entry->next = nullptr;
 			entry->prev = last;
 			if (last) last->next = entry;
 			last = entry;
@@ -124,10 +127,10 @@ PackedSurface::Reader::close()
 			surface->readers.erase(this);
 		}
 		if (cache) delete[] cache;
-		first = NULL;
-		last = NULL;
-		cache = NULL;
-		surface = NULL;
+		first = nullptr;
+		last = nullptr;
+		cache = nullptr;
+		surface = nullptr;
 	}
 }
 
@@ -163,7 +166,7 @@ PackedSurface::Reader::get_pixel(int x, int y) const
 
 			entry = last;
 			if (entry->chunk_index >= 0)
-				chunks[entry->chunk_index] = NULL;
+				chunks[entry->chunk_index] = nullptr;
 			entry->chunk_index = chunk_index;
 			chunks[chunk_index] = entry;
 			zstreambuf::unpack(entry->data(), surface->chunk_size, data, size);
@@ -174,7 +177,7 @@ PackedSurface::Reader::get_pixel(int x, int y) const
 			(entry->next ? entry->next->prev : last) = entry->prev;
 
 			first->prev = entry;
-			entry->prev = NULL;
+			entry->prev = nullptr;
 			entry->next = first;
 			first = entry;
 		}
@@ -294,7 +297,7 @@ PackedSurface::get_compressed_chunk(int index, const void *&data, int &size, boo
 void
 PackedSurface::set_pixels(const Color *pixels, int width, int height, int pitch) {
 	clear();
-	if (pixels == NULL || width <= 0 || height <= 0)
+	if (!pixels || width <= 0 || height <= 0)
 		return;
 
 	if (pitch == 0) pitch = sizeof(Color)*width;
@@ -465,7 +468,7 @@ PackedSurface::set_pixels(const Color *pixels, int width, int height, int pitch)
 
 void
 PackedSurface::get_pixels(Color *target) const {
-	if (target == NULL || width <= 0 || height <= 0)
+	if (!target || width <= 0 || height <= 0)
 		return;
 	Reader reader(*this);
 	Color *color = target;

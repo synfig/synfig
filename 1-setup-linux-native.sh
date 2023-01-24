@@ -13,7 +13,7 @@
 # glibmm (platform depended functions)
 # mlt++ imagemagick openexr libmng libpng libjpeg (various formats reading functions)
 # libxml++ libxml2 libxslt (.sif XML reading)
-# boost cairo fftw pango (image transformation and rendering functions)
+# cairo fftw pango (image transformation and rendering functions)
 # gtkmm3 (Synfig Studio GUI)
 # libsig++ (GUI signals and events)
 # sdl2 sdl2_mixer jack (audio output and synchronization)
@@ -69,6 +69,7 @@ if ([ "$ID_LIKE" == "fedora" ] && [ VERSION_ID > 22 ]); then
             libjpeg-devel \
             fftw-devel \
             freetype-devel \
+            fribidi-devel \
             fontconfig-devel \
             atk-devel \
             pango-devel \
@@ -82,12 +83,10 @@ if ([ "$ID_LIKE" == "fedora" ] && [ VERSION_ID > 22 ]); then
             automake \
             libtool \
             libtool-ltdl-devel \
-            boost-devel \
             shared-mime-info \
             OpenEXR-devel \
             libmng-devel \
             ImageMagick-c++-devel \
-            jack-audio-connection-kit-devel \
             mlt-devel \
             ocl-icd-devel \
             opencl-headers \
@@ -96,6 +95,12 @@ if ([ "$ID_LIKE" == "fedora" ] && [ VERSION_ID > 22 ]); then
             SDL2-devel \
             SDL2_mixer-devel \
             libxslt-devel python-devel python3-lxml"
+    # Fedora 34 and onward uses pipewire
+    if dnf -C list installed pipewire-jack-audio-connection-kit &> /dev/null; then
+        PKG_LIST="$PKG_LIST pipewire-jack-audio-connection-kit-devel"
+    else
+        PKG_LIST="$PKG_LIST jack-audio-connection-kit-devel"
+    fi
 
     if ! ( rpm -qv $PKG_LIST ); then
         echo "Running dnf (root privileges are needed)..."
@@ -109,6 +114,7 @@ elif ([ "$ID_LIKE" == "fedora" ] && [ VERSION_ID <= 22]); then
             libjpeg-devel \
             fftw-devel \
             freetype-devel \
+            fribidi-devel \
             fontconfig-devel \
             atk-devel \
             pango-devel \
@@ -122,7 +128,6 @@ elif ([ "$ID_LIKE" == "fedora" ] && [ VERSION_ID <= 22]); then
             automake \
             libtool \
             libtool-ltdl-devel \
-            boost-devel \
             shared-mime-info \
             OpenEXR-devel \
             libmng-devel \
@@ -143,7 +148,7 @@ elif ([ "$ID_LIKE" == "fedora" ] && [ VERSION_ID <= 22]); then
     fi
 
 elif [ "$ID_LIKE" == "suse opensuse" ]; then
-    PKG_LIST="git libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk3-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel boost-devel shared-mime-info"
+    PKG_LIST="git libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk3-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel shared-mime-info"
     PKG_LIST="${PKG_LIST} OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm3-devel glibmm2-devel"
 
     if ! ( rpm -qv $PKG_LIST ); then
@@ -160,7 +165,6 @@ elif [ "$ID_LIKE" == "suse opensuse" ]; then
 elif [ "$ID_LIKE" == "arch" ]; then
     PKG_LIST="git \
             automake autoconf \
-            boost \
             cairo \
             freetype2 \
             fftw \
@@ -204,12 +208,11 @@ elif [ "$ID_LIKE" == "debian" ] || [ "$ID_LIKE" == "ubuntu" ] || [ "$ID_LIKE" ==
                 libfftw3-dev \
                 fontconfig \
                 libfreetype6-dev \
+                libfribidi-dev \
                 libfontconfig1-dev \
                 libxml2-dev \
                 libtiff5-dev \
                 libmlt-dev libmlt++-dev libmlt-data \
-                x11proto-xext-dev libdirectfb-dev libxfixes-dev libxinerama-dev libxdamage-dev libxcomposite-dev libxcursor-dev libxft-dev libxrender-dev libxt-dev libxrandr-dev libxi-dev libxext-dev libx11-dev \
-                libatk1.0-dev \
                 libgl1-mesa-dev \
                 imagemagick \
                 libsdl2-dev \
@@ -222,9 +225,8 @@ elif [ "$ID_LIKE" == "debian" ] || [ "$ID_LIKE" == "ubuntu" ] || [ "$ID_LIKE" ==
                 libglibmm-2.4-dev \
                 libsigc++-2.0-dev \
                 libxml++2.6-dev \
-                libboost-system-dev \
                 libmagick++-dev \
-                libxslt-dev python-dev python3-lxml"
+                libxslt-dev python3 python3-lxml"
         else
             #  ALT Linux case
             PKG_LIST=" \
@@ -238,6 +240,7 @@ elif [ "$ID_LIKE" == "debian" ] || [ "$ID_LIKE" == "ubuntu" ] || [ "$ID_LIKE" ==
                 libjpeg-devel \
                 fontconfig \
                 libfreetype-devel \
+                libfribidi-devel \
                 fontconfig-devel \
                 libxml2-devel \
                 libtiff-devel \

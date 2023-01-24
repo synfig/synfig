@@ -2,8 +2,6 @@
 /*!	\file workarea.cpp
 **	\brief Work area
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2006 Yue Shi Lai
@@ -12,15 +10,20 @@
 **	Copyright (c) 2016 caryoscelus
 **  ......... ... 2018 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -36,8 +39,9 @@
 
 #include <gui/workarea.h>
 
-#include <gtkmm/arrow.h>
 #include <gtkmm/scrollbar.h>
+
+#include <ETL/stringf>
 
 #include <gui/app.h>
 #include <gui/canvasview.h>
@@ -49,6 +53,7 @@
 #include <gui/workarearenderer/workarearenderer.h>
 #include <gui/workarearenderer/renderer_background.h>
 #include <gui/workarearenderer/renderer_bbox.h>
+#include <gui/workarearenderer/renderer_bonedeformarea.h>
 #include <gui/workarearenderer/renderer_bonesetup.h>
 #include <gui/workarearenderer/renderer_canvas.h>
 #include <gui/workarearenderer/renderer_dragbox.h>
@@ -58,6 +63,7 @@
 #include <gui/workarearenderer/renderer_guides.h>
 #include <gui/workarearenderer/renderer_timecode.h>
 
+#include <ETL/stringf>
 #include <synfig/blinepoint.h>
 #include <synfig/valuenodes/valuenode_bone.h>
 #include <synfig/valuenodes/valuenode_composite.h>
@@ -66,7 +72,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;
@@ -139,6 +144,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	drag_mode(DRAG_NONE),
 	active_bone_(0),
 	highlight_active_bone(false),
+	show_rulers(true),
 	show_grid(false),
 	show_guides(true),
 	background_size(15,15),
@@ -152,6 +158,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	dirty_trap_count(0),
 	dirty_trap_queued(0),
 	onion_skin(false),
+	onion_skin_keyframes(true),
 	background_rendering(false),
 	allow_duck_clicks(true),
 	allow_bezier_clicks(true),
@@ -172,6 +179,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	insert_renderer(renderer_canvas,          10);
 	insert_renderer(new Renderer_Grid,       100);
 	insert_renderer(new Renderer_Guides,     200);
+	insert_renderer(new Renderer_BoneDeformArea, 299);
 	insert_renderer(new Renderer_Ducks,      300);
 	insert_renderer(new Renderer_BBox,       399);
 	insert_renderer(new Renderer_Dragbox,    400);
@@ -221,16 +229,10 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 
 	// Create the menu button
 
-	Gtk::Arrow *menubutton = manage(new Gtk::Arrow(Gtk::ARROW_RIGHT, Gtk::SHADOW_OUT));
-	menubutton->set_size_request(18, 18);
-	Gtk::EventBox *menubutton_box = manage(new Gtk::EventBox());
-	menubutton_box->add(*menubutton);
-	menubutton_box->add_events(Gdk::BUTTON_RELEASE_MASK);
-	menubutton_box->signal_button_release_event().connect(
-		sigc::bind_return(
-			sigc::hide(
-				sigc::mem_fun(*this, &WorkArea::popup_menu) ), true));
-	menubutton_box->set_hexpand(false);
+	menubutton_box = manage(new Gtk::Button());
+	menubutton_box->set_image_from_icon_name("pan-end-symbolic");
+	menubutton_box->set_relief(Gtk::RELIEF_NONE);
+	menubutton_box->signal_clicked().connect(sigc::mem_fun(*this, &WorkArea::popup_menu));
 	menubutton_box->show_all();
 
 	// Create scrollbars
@@ -272,7 +274,6 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 
 
 	// Attach signals
-
 	drawing_area->signal_draw().connect(sigc::mem_fun(*this, &WorkArea::refresh));
 	drawing_area->signal_event().connect(sigc::mem_fun(*this, &WorkArea::on_drawing_area_event));
 	drawing_area->signal_size_allocate().connect(sigc::hide(sigc::mem_fun(*this, &WorkArea::refresh_dimension_info)));
@@ -289,12 +290,15 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	get_canvas()->signal_meta_data_changed("grid_color").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("grid_snap").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("grid_show").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
+	get_canvas()->signal_meta_data_changed("status_ruler").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_show").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_x").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_y").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
+	get_canvas()->signal_meta_data_changed("background_rendering").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("onion_skin").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("onion_skin_past").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("onion_skin_future").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
+	get_canvas()->signal_meta_data_changed("onion_skin_keyframes").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_snap").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_color").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("sketch").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
@@ -328,8 +332,8 @@ WorkArea::~WorkArea()
 	set_drag_mode(DRAG_NONE);
 	while(!renderer_set_.empty())
 		erase_renderer(*renderer_set_.begin());
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
-		info("WorkArea::~WorkArea(): Deleted");
+	DEBUG_LOG("SYNFIG_DEBUG_DESTRUCTORS",
+		"WorkArea::~WorkArea(): Deleted");
 }
 
 void
@@ -365,10 +369,12 @@ WorkArea::save_meta_data()
 	canvas_interface->set_meta_data("guide_snap", get_guide_snap() ? "1" : "0");
 	canvas_interface->set_meta_data("guide_show", get_show_guides() ? "1" : "0");
 	canvas_interface->set_meta_data("grid_show", show_grid ? "1" : "0");
+	canvas_interface->set_meta_data("status_ruler", show_rulers ? "1" : "0");
 	canvas_interface->set_meta_data("jack_offset", strprintf("%f", (double)jack_offset));
 	canvas_interface->set_meta_data("onion_skin", onion_skin ? "1" : "0");
 	canvas_interface->set_meta_data("onion_skin_past", strprintf("%d", onion_skins[0]));
 	canvas_interface->set_meta_data("onion_skin_future", strprintf("%d", onion_skins[1]));
+	canvas_interface->set_meta_data("onion_skin_keyframes", get_onion_skin_keyframes() ? "1" : "0");
 	canvas_interface->set_meta_data("background_rendering", background_rendering ? "1" : "0");
 
 	s = get_background_size();
@@ -485,7 +491,7 @@ WorkArea::load_meta_data()
 
 		String tmp;
 		// Insert the string into a stream
-		stringstream ss(data);
+		std::stringstream ss(data);
 		// Create vector to hold our colors
 		std::vector<String> tokens;
 
@@ -516,7 +522,7 @@ WorkArea::load_meta_data()
 
 		String tmp;
 		// Insert the string into a stream
-		stringstream ss(data);
+		std::stringstream ss(data);
 		// Create vector to hold our colors
 		std::vector<String> tokens;
 
@@ -539,6 +545,12 @@ WorkArea::load_meta_data()
 
 		set_guides_color(synfig::Color(gr,gg,gb));
 	}
+
+	data=canvas->get_meta_data("status_ruler");
+	if(data.size() && (data=="1" || data[0]=='t' || data[0]=='T'))
+		show_rulers=true;
+	if(data.size() && (data=="0" || data[0]=='f' || data[0]=='F'))
+		show_rulers=false;
 
 	data=canvas->get_meta_data("grid_show");
 	if(data.size() && (data=="1" || data[0]=='t' || data[0]=='T'))
@@ -603,6 +615,13 @@ WorkArea::load_meta_data()
 			render_required = true;
 		}
 	}
+
+	data=canvas->get_meta_data("onion_skin_keyframes");
+	if(data.size() && (data=="1" || data[0]=='t' || data[0]=='T'))
+		set_onion_skin_keyframes(true);
+	if(data.size() && (data=="0" || data[0]=='f' || data[0]=='F'))
+		set_onion_skin_keyframes(false);
+
 	// Update the canvas
 	if (onion_skin && render_required) queue_render();
 
@@ -688,7 +707,7 @@ WorkArea::load_meta_data()
 
 		String tmp;
 		// Insert the string into a stream
-		stringstream ss(data);
+		std::stringstream ss(data);
 		// Create vector to hold our colors
 		std::vector<String> tokens;
 
@@ -719,7 +738,7 @@ WorkArea::load_meta_data()
 
 		String tmp;
 		// Insert the string into a stream
-		stringstream ss(data);
+		std::stringstream ss(data);
 		// Create vector to hold our colors
 		std::vector<String> tokens;
 
@@ -758,10 +777,22 @@ WorkArea::set_onion_skin(bool x)
 	queue_draw();
 }
 
-void WorkArea::set_onion_skins(int *onions)
+void
+WorkArea::set_onion_skins(int *onions)
 {
 	onion_skins[0] = onions[0];
 	onion_skins[1] = onions[1];
+	if (onion_skin)
+		queue_draw();
+	save_meta_data();
+}
+
+void
+WorkArea::set_onion_skin_keyframes(bool x)
+{
+	if (onion_skin_keyframes == x)
+		return;
+	onion_skin_keyframes = x;
 	if (onion_skin)
 		queue_draw();
 	save_meta_data();
@@ -775,6 +806,16 @@ WorkArea::set_background_rendering(bool x)
 	background_rendering = x;
 	save_meta_data();
 	queue_draw();
+}
+
+void
+WorkArea::set_show_rulers(bool visible)
+{
+	show_rulers = visible;
+	hruler->set_visible(visible);
+	vruler->set_visible(visible);
+	menubutton_box->set_visible(visible);
+	save_meta_data();
 }
 
 void
@@ -911,8 +952,8 @@ const Cairo::RefPtr<Cairo::SurfacePattern>&
 WorkArea::get_background_pattern() const
 {
 	if (!background_pattern) {
-		int w = std::max(1, std::min(1000, (int)round(background_size[0])));
-		int h = std::max(1, std::min(1000, (int)round(background_size[1])));
+		int w = synfig::clamp(round_to_int(background_size[0]), 1, 1000);
+		int h = synfig::clamp(round_to_int(background_size[1]), 1, 1000);
 	    Cairo::RefPtr<Cairo::ImageSurface> surface = Cairo::ImageSurface::create(Cairo::FORMAT_RGB24, w*2, h*2);
 	    Cairo::RefPtr<Cairo::Context> context = Cairo::Context::create(surface);
 	    context->set_source_rgb(background_first_color.get_r(), background_first_color.get_g(), background_first_color.get_b());
@@ -956,9 +997,13 @@ bool
 WorkArea::on_key_press_event(GdkEventKey* event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
-	if (Smach::RESULT_OK == canvas_view->get_smach().process_event(
-		EventKeyboard(EVENT_WORKAREA_KEY_DOWN, event->keyval, Gdk::ModifierType(event->state))))
-			return true;
+	auto event_result = canvas_view->get_smach().process_event(
+		EventKeyboard(EVENT_WORKAREA_KEY_DOWN, event->keyval, Gdk::ModifierType(event->state)));
+	if (event_result != Smach::RESULT_OK)
+		return true;
+
+	// Other possible actions if current state doesn't accept the event but not forbids it
+	// - Nudge selected ducks
 
 	if(get_selected_ducks().empty())
 		return false;
@@ -1013,8 +1058,14 @@ bool
 WorkArea::on_key_release_event(GdkEventKey* event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
-	return Smach::RESULT_OK == canvas_view->get_smach().process_event(
+	auto event_result = canvas_view->get_smach().process_event(
 		EventKeyboard(EVENT_WORKAREA_KEY_UP, event->keyval, Gdk::ModifierType(event->state)) );
+	if (event_result != Smach::RESULT_OK)
+		return true;
+
+	// Other possible actions if current state doesn't accept the event but not forbids it
+	// - currently none
+
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
@@ -1024,7 +1075,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	synfig::Point mouse_pos;
     float bezier_click_pos(0);
-	const float radius((abs(pw)+abs(ph))*4);
+	const float radius((std::fabs(pw)+std::fabs(ph))*4);
 	int button_pressed(0);
 	float pressure(0);
 	Gdk::ModifierType modifier(Gdk::ModifierType(0));
@@ -1042,10 +1093,10 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		int n_axes = gdk_device_get_n_axes(device);
 		for (int i=0; i < n_axes; i++)
 		{
-			axes_str += etl::strprintf(" %f", event->motion.axes[i]);
+			axes_str += synfig::strprintf(" %f", event->motion.axes[i]);
 		}
 		synfig::warning("axes info: %s", axes_str.c_str());*/
-		//for(...) axesstr += etl::strprintf(" %f", event->motion.axes[i])
+		//for(...) axesstr += synfig::strprintf(" %f", event->motion.axes[i])
 
 		double x = 0.0, y = 0.0, p = 0.0;
 		int ox = 0, oy = 0;
@@ -1181,8 +1232,18 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 	switch(event->type) {
 	case GDK_2BUTTON_PRESS: {
 		if (event->button.button == 1) {
-			if (canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_2BUTTON_DOWN,BUTTON_LEFT,mouse_pos,pressure,modifier))==Smach::RESULT_ACCEPT) {
+			auto event_result = canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_2BUTTON_DOWN,BUTTON_LEFT,mouse_pos,pressure,modifier));
+			if (event_result == Smach::RESULT_ACCEPT) {
 				return true;
+			} else if (event_result == Smach::RESULT_OK) {
+				set_drag_mode(DRAG_NONE);
+
+				if (etl::handle<Bezier> bezier = find_bezier(mouse_pos, radius, &bezier_click_pos)) {
+					if (selected_bezier == bezier) {
+						bezier->signal_user_doubleclick(1)(bezier_click_pos);
+						return true;
+					}
+				}
 			}
 		}
 		break;
@@ -1875,10 +1936,14 @@ WorkArea::screen_to_comp_coords(synfig::Point pos)const
 }
 
 synfig::Point
-WorkArea::comp_to_screen_coords(synfig::Point /*pos*/)const
+WorkArea::comp_to_screen_coords(synfig::Point pos)const
 {
-	synfig::warning("WorkArea::comp_to_screen_coords: Not yet implemented");
-	return synfig::Point();
+	synfig::RendDesc &rend_desc(get_canvas()->rend_desc());
+	Vector focus_point=get_focus_point();
+	synfig::Vector::value_type x=focus_point[0]/pw+drawing_area->get_width()/2-w/2;
+	synfig::Vector::value_type y=focus_point[1]/ph+drawing_area->get_height()/2-h/2;
+
+	return -rend_desc.get_tl().multiply_coords(Point(1./pw,1./ph))+synfig::Point(x,y)+synfig::Point(pos[0]/pw,pos[1]/ph);
 }
 
 synfig::VectorInt
@@ -1917,7 +1982,7 @@ WorkArea::refresh(const Cairo::RefPtr<Cairo::Context> &/*cr*/)
 
 	assert(get_canvas());
 
-	//!Check if the window we want draw is ready
+	// Check if the window we want draw is ready
 	Glib::RefPtr<Gdk::Window> draw_area_window = drawing_area->get_window();
 	if (!draw_area_window) return false;
 
@@ -1967,7 +2032,7 @@ WorkArea::get_renderer() const
 {
 	if (get_low_resolution_flag())
 	{
-		String renderer = etl::strprintf("software-low%d", get_low_res_pixel_size());
+		String renderer = synfig::strprintf("software-low%d", get_low_res_pixel_size());
 		if (synfig::rendering::Renderer::get_renderers().count(renderer))
 			return renderer;
 	}
@@ -2069,7 +2134,7 @@ studio::WorkArea::zoom_out()
 void
 studio::WorkArea::zoom_fit()
 {
-	float new_zoom(min(drawing_area->get_width() * zoom / w,
+	float new_zoom(std::min(drawing_area->get_width() * zoom / w,
 					   drawing_area->get_height() * zoom / h) * 0.995);
 	if (zoom / new_zoom > 0.995 && new_zoom / zoom > 0.995)
 	{
@@ -2127,7 +2192,7 @@ studio::WorkArea::queue_render(bool refresh)
 		{ dirty_trap_queued++; return; }
 	dirty_trap_queued = 0;
 	// avoiding dead-lock : github#1071
-	Glib::signal_idle().connect_once([=] () {
+	Glib::signal_idle().connect_once(sigc::track_obj([=] () {
 		if (refresh) {
 			renderer_canvas->clear_render();
 			Glib::signal_idle().connect_once(
@@ -2136,7 +2201,7 @@ studio::WorkArea::queue_render(bool refresh)
 		} else {
 			renderer_canvas->enqueue_render();
 		}
-	});
+	}, *this));
 }
 
 void
@@ -2176,7 +2241,7 @@ studio::WorkArea::reset_cursor()
 void
 studio::WorkArea::set_zoom(float z)
 {
-	z=max(1.0f/128.0f,min(128.0f,z));
+	z=synfig::clamp(z,1.0f/128.0f,128.0f);
 	zoomdial->set_zoom(z);
 	if(z==zoom)
 		return;
@@ -2204,8 +2269,10 @@ WorkArea::set_selected_value_node(etl::loose_handle<synfig::ValueNode> x)
 void
 WorkArea::set_active_bone_value_node(etl::loose_handle<synfig::ValueNode> x)
 {
-	if(x!=active_bone_ && etl::handle<synfig::ValueNode_Bone>::cast_dynamic(x))
+	if(x!=active_bone_)
 	{
+		if (x && !synfig::ValueNode_Bone::Handle::cast_dynamic(x))
+			return;
 		active_bone_=x;
 		queue_draw();
 	}

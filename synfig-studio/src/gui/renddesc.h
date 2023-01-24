@@ -1,24 +1,25 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file gtkmm/renddesc.h
+/*!	\file gui/renddesc.h
 **	\brief Header File
-**
-**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
-**	\endlegal
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
 **
-** === N O T E S ===========================================================
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
+**	\endlegal
 **
 ** ========================================================================= */
 
@@ -36,7 +37,6 @@
 #include <gtkmm/scale.h>
 #include <gtkmm/spinbutton.h>
 
-#include <gui/widgets/widget_link.h>
 #include <gui/widgets/widget_time.h>
 #include <gui/widgets/widget_vector.h>
 
@@ -49,6 +49,8 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace studio {
+
+class Widget_Link;
 
 class Widget_RendDesc : public Gtk::Notebook
 {
@@ -163,6 +165,8 @@ private:
 	void on_gamma_changed();
 
 	void on_ratio_wh_toggled();
+	void activate_ratio_wh();
+	void deactivate_ratio_wh();
 	void on_ratio_res_toggled();
 
 	void create_widgets();

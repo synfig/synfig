@@ -2,20 +2,23 @@
 /*!	\file valuenode_dynamic.h
 **	\brief Header file for implementation of the "Dynamic" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2014 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -29,11 +32,11 @@
 
 #include <synfig/valuenode.h>
 #include "valuenode_derivative.h"
-#include "valuenode_const.h"
 #include <synfig/vector.h>
 
 /* === M A C R O S ========================================================= */
 #define MASS_INERTIA_MINIMUM 0.0000001
+
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfig {
@@ -83,40 +86,37 @@ private:
 		*/
 	mutable std::vector<double> state;
 	void reset_state(Time t)const;
-public:
 
+public:
 	typedef etl::handle<ValueNode_Dynamic> Handle;
 	typedef etl::handle<const ValueNode_Dynamic> ConstHandle;
 
-	virtual ValueBase operator()(Time t)const;
-
+	static ValueNode_Dynamic* create(const ValueBase& x, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_Dynamic();
 
-	virtual String get_name()const;
-	virtual String get_local_name()const;
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
+	static bool check_type(Type &type);
 
-	virtual ValueNode::LooseHandle get_link_vfunc(int i)const;
+	virtual ValueBase operator()(Time t) const override;
 
 protected:
-	LinkableValueNode* create_new()const;
-	virtual bool set_link_vfunc(int i,ValueNode::Handle x);
+	LinkableValueNode* create_new() const override;
 
-public:
-	using synfig::LinkableValueNode::get_link_vfunc;
+	virtual bool set_link_vfunc(int i,ValueNode::Handle x) override;
+	virtual ValueNode::LooseHandle get_link_vfunc(int i) const override;
 
-	using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(Type &type);
-	static ValueNode_Dynamic* create(const ValueBase &x);
-	virtual Vocab get_children_vocab_vfunc()const;
+	virtual Vocab get_children_vocab_vfunc() const override;
 }; // END of class ValueNode_Dynamic
 
 
 class Oscillator
 {
 	etl::handle<const ValueNode_Dynamic> d;
+
 public:
     Oscillator(const ValueNode_Dynamic* x) : d(x) { }
-    void operator() ( const std::vector<double> &x , std::vector<double> &dxdt , const double t )
+	void operator() ( const double t, const std::vector<double> &x, std::vector<double> &dxdt )
 	{
 		Vector u(cos(x[2]), sin(x[2]));
 		Vector v(-u[1], u[0]);

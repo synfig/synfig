@@ -2,20 +2,23 @@
 /*!	\file transform.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -29,6 +32,7 @@
 #	include <config.h>
 #endif
 
+#include "general.h"
 #include "transform.h"
 #include <algorithm>
 
@@ -36,8 +40,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -63,13 +65,13 @@ TransformStack::perform(const synfig::Vector& x)const
 {
 	synfig::Vector ret(x);
 
-	if (getenv("SYNFIG_DEBUG_TRANSFORM_STACK")) printf("   PERFORM %s: %5.2f %5.2f", get_guid().get_string().substr(0,6).c_str(), ret[0], ret[1]);
+	DEBUG_LOG("SYNFIG_DEBUG_TRANSFORM_STACK", "   PERFORM %s: %5.2f %5.2f", get_guid().get_string().substr(0,6).c_str(), ret[0], ret[1]);
 	for(const_reverse_iterator iter(rbegin());iter!=rend();++iter)
 	{
 		ret=(*iter)->perform(ret);
-		if (getenv("SYNFIG_DEBUG_TRANSFORM_STACK")) printf(" (%14s) %5.2f %5.2f", (*iter)->get_string().c_str(), ret[0], ret[1]);
+		DEBUG_LOG("SYNFIG_DEBUG_TRANSFORM_STACK", " (%14s) %5.2f %5.2f", (*iter)->get_string().c_str(), ret[0], ret[1]);
 	}
-	if (getenv("SYNFIG_DEBUG_TRANSFORM_STACK")) printf("\n");
+	DEBUG_LOG("SYNFIG_DEBUG_TRANSFORM_STACK", "\n");
 
 	return ret;
 }
@@ -79,13 +81,13 @@ TransformStack::unperform(const synfig::Vector& x)const
 {
 	synfig::Vector ret(x);
 
-	if (getenv("SYNFIG_DEBUG_TRANSFORM_STACK")) printf(" UNPERFORM %s: %5.2f %5.2f", get_guid().get_string().substr(0,6).c_str(), ret[0], ret[1]);
+	DEBUG_LOG("SYNFIG_DEBUG_TRANSFORM_STACK", " UNPERFORM %s: %5.2f %5.2f", get_guid().get_string().substr(0,6).c_str(), ret[0], ret[1]);
 	for(const_iterator iter(begin());iter!=end();++iter)
 	{
 		ret=(*iter)->unperform(ret);
-		if (getenv("SYNFIG_DEBUG_TRANSFORM_STACK")) printf(" (%14s) %5.2f %5.2f", (*iter)->get_string().c_str(), ret[0], ret[1]);
+		DEBUG_LOG("SYNFIG_DEBUG_TRANSFORM_STACK", " (%14s) %5.2f %5.2f", (*iter)->get_string().c_str(), ret[0], ret[1]);
 	}
-	if (getenv("SYNFIG_DEBUG_TRANSFORM_STACK")) printf("\n");
+	DEBUG_LOG("SYNFIG_DEBUG_TRANSFORM_STACK", "\n");
 
 	return ret;
 }

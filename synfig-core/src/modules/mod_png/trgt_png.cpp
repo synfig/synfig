@@ -2,24 +2,25 @@
 /*!	\file trgt_png.cpp
 **	\brief png_trgt Target Module
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
-**	\endlegal
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
 **
-** === N O T E S ===========================================================
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
+**	\endlegal
 **
 ** ========================================================================= */
 
@@ -32,22 +33,22 @@
 #	include <config.h>
 #endif
 
-#include <synfig/localization.h>
 #include <synfig/general.h>
 
 #include <glib/gstdio.h>
 #include "trgt_png.h"
 #include <png.h>
 #include <cstdio>
-#include <ETL/misc>
+#include <ETL/stringf>
 #include <string.h>
+
+#include <synfig/misc.h>
 
 #endif
 
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
-using namespace std;
 using namespace etl;
 
 /* === G L O B A L S ======================================================= */
@@ -79,15 +80,15 @@ png_trgt::png_out_warning(png_struct *png_data,const char *msg)
 //Target *png_trgt::New(const char *filename){	return new png_trgt(filename);}
 
 png_trgt::png_trgt(const char *Filename, const synfig::TargetParam &params):
-	file(NULL),
-	png_ptr(NULL),
-	info_ptr(NULL),
+	file(nullptr),
+	png_ptr(nullptr),
+	info_ptr(nullptr),
 	multi_image(),
 	ready(false),
 	imagecount(),
 	filename(Filename),
-	buffer(NULL),
-	color_buffer(NULL),
+	buffer(nullptr),
+	color_buffer(nullptr),
 	sequence_separator(params.sequence_separator)
 { }
 
@@ -95,7 +96,7 @@ png_trgt::~png_trgt()
 {
 	if(file)
 		fclose(file);
-	file=NULL;
+	file=nullptr;
 	delete [] buffer;
 	delete [] color_buffer;
 }
@@ -124,7 +125,7 @@ png_trgt::end_frame()
 
 	if(file && file!=stdout)
 		fclose(file);
-	file=NULL;
+	file=nullptr;
 	imagecount++;
 	ready=false;
 }
@@ -145,7 +146,7 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 	{
 		String newfilename(filename_sans_extension(filename) +
 						   sequence_separator +
-						   etl::strprintf("%04d",imagecount) +
+						   strprintf("%04d",imagecount) +
 						   filename_extension(filename));
 		file=g_fopen(newfilename.c_str(),POPEN_BINARY_WRITE_TYPE);
 		if(callback)callback->task(newfilename);
@@ -178,7 +179,7 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 	{
 		synfig::error("Unable to setup PNG info struct");
 		fclose(file);
-		png_destroy_write_struct(&png_ptr,(png_infopp)NULL);
+		png_destroy_write_struct(&png_ptr, nullptr);
 		return false;
 	}
 

@@ -1,21 +1,24 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file template.cpp
+/*!	\file synfigapp/actions/layerfit.cpp
 **	\brief LayerFit
-**
-**	$Id$
 **
 **	\legal
 **	......... ... 2013 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -39,8 +42,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
 using namespace Action;
@@ -149,7 +150,7 @@ Action::LayerFit::perform()
 	{
 		Vector x;
 
-		if(abs(size[0])<abs(size[1]))	// if canvas is tall and thin
+		if(std::fabs(size[0])<std::fabs(size[1]))	// if canvas is tall and thin
 		{
 			x[0]=size[0];	// use full width
 			x[1]=size[0]/w*h; // and scale for height

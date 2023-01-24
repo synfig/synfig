@@ -2,20 +2,23 @@
 /*!	\file synfig/main.h
 **	\brief Template Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -29,8 +32,7 @@
 
 #include <cassert>
 
-#include <ETL/ref_count>
-
+#include "reference_counter.h"
 #include "string.h"
 #include "progresscallback.h"
 
@@ -51,7 +53,7 @@ class Main
 {
 private:
 	static Main *instance;
-	etl::reference_counter ref_count_;
+	ReferenceCounter ref_count_;
 
 public:
 	synfig::String root_path;
@@ -61,10 +63,10 @@ public:
 	synfig::String lib_path;
 	synfig::String lib_synfig_path;
 
-	Main(const synfig::String& basepath,ProgressCallback *cb=0);
+	Main(const synfig::String& rootpath,ProgressCallback *cb=nullptr);
 	~Main();
 
-	const etl::reference_counter& ref_count()const { return ref_count_; }
+	const ReferenceCounter& ref_count()const { return ref_count_; }
 	static const Main& get_instance() { assert(instance); return *instance; }
 }; // END of class Main
 

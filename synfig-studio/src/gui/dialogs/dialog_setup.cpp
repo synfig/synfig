@@ -2,8 +2,6 @@
 /*!	\file dialog_setup.cpp
 **	\brief Dialog Preference implementation
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
@@ -11,15 +9,20 @@
 **	Copyright (c) 2014 Yu Chen
 **	Copyright (c) 2015 Jerome Blanchi
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -35,6 +38,7 @@
 
 #include <gui/dialogs/dialog_setup.h>
 
+#include <gtkmm/accelmap.h>
 #include <gtkmm/filechooserdialog.h>
 
 #include <gui/app.h>
@@ -46,15 +50,18 @@
 #include <gui/autorecover.h>
 #include <synfig/threadpool.h>
 
+#include <ETL/stringf>
+
 #include <synfig/rendering/renderer.h>
 
 #include <synfigapp/main.h>
+
+#include <gui/resourcehelper.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace studio;
@@ -62,6 +69,14 @@ using namespace studio;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+
+enum ShortcutsColumns{
+	SHORTCUT_COLUMN_ID_ACTION_NAME = 0,
+	SHORTCUT_COLUMN_ID_ACTION_KEY = 1,
+	SHORTCUT_COLUMN_ID_ACTION_MODS = 2,
+	SHORTCUT_COLUMN_ID_ACTION_SHORT_NAME = 3,
+	SHORTCUT_COLUMN_ID_IS_ACTION = 4,
+};
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -86,7 +101,8 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 		document_str(_("Document")),
 		editing_str(_("Editing")),
 		render_str(_("Render")),
-		system_str(_("System"));
+		system_str(_("System")),
+		shortcuts_str(_("Shortcuts"));
 	// WARNING FIXED ORDER : the page added to notebook same has treeview
 	// Interface
 	create_interface_page(add_page(interface_str));
@@ -98,6 +114,8 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	create_render_page(add_page(render_str));
 	// System
 	create_system_page(add_page(system_str));
+	// Keyboard shortcuts
+	create_shortcuts_page(add_page(shortcuts_str));
 
 	show_all_children();
 }
@@ -218,6 +236,12 @@ Dialog_Setup::create_system_page(PageInfo pi)
 	pi.grid->attach(toggle_enable_experimental_features, 1, row, 1, 1);
 	toggle_enable_experimental_features.set_halign(Gtk::ALIGN_START);
 	toggle_enable_experimental_features.set_hexpand(false);
+
+	// System - clear_redo_stack_on_new_action
+	attach_label_section(pi.grid, _("Clear redo history on new action"), ++row);
+	pi.grid->attach(toggle_clear_redo_stack_on_new_action, 1, row, 1, 1);
+	toggle_clear_redo_stack_on_new_action.set_halign(Gtk::ALIGN_START);
+	toggle_clear_redo_stack_on_new_action.set_hexpand(false);
 
 	// signal for change resume
 	auto_backup_interval.signal_changed().connect(
@@ -434,7 +458,7 @@ dragging the handle to the left bottom part of your 2D space."));
 	attach_label(pi.grid,_("Preferred image editor"), ++row);
 
 	//create a button that will open the filechooserdialog to select image editor
-	Gtk::Button *choose_button(manage(new class Gtk::Button(Gtk::StockID(_("Choose...")))));
+	Gtk::Button *choose_button(manage(new Gtk::Button(_("Choose..."))));
 	choose_button->show();
 	choose_button->set_tooltip_text(_("Choose the preferred Image editor for Edit in external tool option"));
 	
@@ -447,6 +471,172 @@ dragging the handle to the left bottom part of your 2D space."));
 	
 }
 
+void
+Dialog_Setup::create_shortcuts_page(Dialog_Template::PageInfo pi)
+{
+	int row = 1;
+
+	Gtk::Label *label = manage(new Gtk::Label(_("To change a shortcut, double-click it and then type the new keys. "
+                                                "You can cancel a shortcut edition by pressing Esc.\n"
+                                                "To clear a shortcut, press Backspace when trying to change it.")));
+	label->set_halign(Gtk::ALIGN_START);
+	pi.grid->attach(*label, 0, row++, 1, 1);
+
+	attach_label_section(pi.grid, _("Keyboard Shortcuts"), row++);
+
+	Gtk::TreeModelColumnRecord columns;
+	Gtk::TreeModelColumn<std::string> action_name_col;
+	Gtk::TreeModelColumn<guint> action_key_col;
+	Gtk::TreeModelColumn<Gdk::ModifierType> action_mods_col;
+	Gtk::TreeModelColumn<std::string> action_short_name_col;
+	Gtk::TreeModelColumn<bool> action_is_action_col;
+	columns.add(action_name_col);  //SHORTCUT_COLUMN_ID_ACTION_NAME
+	columns.add(action_key_col);   //SHORTCUT_COLUMN_ID_ACTION_KEY
+	columns.add(action_mods_col);  //SHORTCUT_COLUMN_ID_ACTION_MODS
+	columns.add(action_short_name_col);  //SHORTCUT_COLUMN_ID_ACTION_SHORT_NAME
+	columns.add(action_is_action_col);  //SHORTCUT_COLUMN_ID_IS_ACTION
+	auto model = Gtk::TreeStore::create(columns);
+
+	treeview_accels = manage(new Gtk::TreeView(model));
+	treeview_accels->set_hexpand(true);
+	treeview_accels->set_vexpand(true);
+	treeview_accels->append_column(_("Action"), action_short_name_col);
+	treeview_accels->set_search_column(action_short_name_col);
+
+	renderer_accel.property_editable() = true;
+
+	renderer_accel.signal_accel_edited().connect(sigc::mem_fun(*this, &Dialog_Setup::on_accel_edited));
+	renderer_accel.signal_accel_cleared().connect(sigc::mem_fun(*this, &Dialog_Setup::on_accel_cleared));
+
+	const int shortcut_col_idx = -1 + treeview_accels->append_column(_("Shortcut"), renderer_accel);
+	treeview_accels->get_column(shortcut_col_idx)->add_attribute(renderer_accel, "accel-key", action_key_col);
+	treeview_accels->get_column(shortcut_col_idx)->add_attribute(renderer_accel, "accel-mods", action_mods_col);
+	treeview_accels->get_column(shortcut_col_idx)->add_attribute(renderer_accel, "visible", action_is_action_col);
+
+	auto map = App::get_default_accel_map();
+
+	// sort by action path
+	std::map<std::string,std::string> action_map;
+	for (const auto& pair : map)
+		action_map[pair.second] = pair.first;
+
+	std::string current_section_name = "-";
+	Gtk::TreeRow current_section_row;
+	for (const auto& pair : action_map) {
+		const std::string &action_full_path = pair.first;
+
+		const auto separator_pos = action_full_path.find_last_of('/');
+
+		// New section?
+		if (action_full_path.compare(0, current_section_name.size(), current_section_name) != 0) {
+			current_section_name = action_full_path.substr(0, separator_pos);
+			current_section_row = *model->append();
+
+			current_section_row.set_value(action_short_name_col, current_section_name);
+			current_section_row.set_value(action_key_col, guint(0));
+			current_section_row.set_value(action_mods_col, Gdk::ModifierType(0));
+			current_section_row.set_value(action_is_action_col, false);
+		}
+
+		Gtk::TreeRow row = *model->append(current_section_row.children());
+
+		Gtk::AccelKey accel;
+		if (!Gtk::AccelMap::lookup_entry(action_full_path, accel))
+			accel = Gtk::AccelKey(pair.second, action_full_path);
+
+		row.set_value(action_name_col, action_full_path);
+		row.set_value(action_key_col, accel.get_key());
+		row.set_value(action_mods_col, accel.get_mod());
+		row.set_value(action_short_name_col, action_full_path.substr(separator_pos+1));
+		row.set_value(action_is_action_col, true);
+	}
+
+	treeview_accels->expand_all();
+
+	Gtk::ScrolledWindow *scroll = manage(new Gtk::ScrolledWindow());
+	scroll->add(*treeview_accels);
+
+	pi.grid->attach(*scroll, 0, row++, 1, 1);
+
+	Gtk::Button *restore_default_accels = manage(new Gtk::Button(_("Restore default shortcuts")));
+	restore_default_accels->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Setup::on_restore_default_accels_pressed));
+	pi.grid->attach(*restore_default_accels, 0, row++, 1, 1);
+}
+
+void
+Dialog_Setup::on_accel_edited(const Glib::ustring& path_string, guint accel_key, Gdk::ModifierType accel_mods, guint hardware_keycode)
+{
+	Gtk::TreeIter problematic_iter;
+	treeview_accels->get_model()->foreach_iter([accel_key, accel_mods, &problematic_iter] (const Gtk::TreeModel::iterator& iter) -> bool {
+		guint row_accel_key;
+		Gdk::ModifierType row_accel_mods;
+		(*iter).get_value(SHORTCUT_COLUMN_ID_ACTION_KEY, row_accel_key);
+		(*iter).get_value(SHORTCUT_COLUMN_ID_ACTION_MODS, row_accel_mods);
+
+		if (accel_key == row_accel_key && accel_mods == row_accel_mods) {
+			problematic_iter = iter;
+			return true;
+		}
+
+		return false;
+	});
+
+	if (problematic_iter && treeview_accels->get_model()->get_path(problematic_iter).to_string() != path_string) {
+		std::string accel_path;
+		problematic_iter->get_value(SHORTCUT_COLUMN_ID_ACTION_NAME, accel_path);
+
+		std::string message = _("This shortcut is already set for\n\t%s\n\nAre you sure? It will unset for previously bound action.");
+		message = synfig::strprintf(message.c_str(), accel_path.c_str());
+		bool accepted = App::dialog_message_2b(_("Shortcut In Use"), message, Gtk::MESSAGE_QUESTION, _("Cancel"), _("OK"));
+		if (!accepted)
+			return;
+
+		problematic_iter->set_value(SHORTCUT_COLUMN_ID_ACTION_KEY, 0);
+		problematic_iter->set_value(SHORTCUT_COLUMN_ID_ACTION_MODS, Gdk::ModifierType(0));
+	}
+
+	auto iter = treeview_accels->get_model()->get_iter(path_string);
+	iter->set_value(SHORTCUT_COLUMN_ID_ACTION_KEY, accel_key);
+	iter->set_value(SHORTCUT_COLUMN_ID_ACTION_MODS, accel_mods);
+}
+
+void
+Dialog_Setup::on_accel_cleared(const Glib::ustring& path_string)
+{
+	auto iter = treeview_accels->get_model()->get_iter(path_string);
+	iter->set_value(SHORTCUT_COLUMN_ID_ACTION_KEY, 0);
+	iter->set_value(SHORTCUT_COLUMN_ID_ACTION_MODS, Gdk::ModifierType(0));
+}
+
+void
+Dialog_Setup::on_restore_default_accels_pressed()
+{
+	std::string message = _("Do you really want to restore the default shortcuts?");
+	bool accepted = App::dialog_message_2b(_("Restore Default Shortcuts"), message, Gtk::MESSAGE_QUESTION, _("Cancel"), _("OK"));
+	if (!accepted)
+		return;
+
+	auto accel_rows = treeview_accels->get_model()->children();
+	auto default_accel_map = App::get_default_accel_map();
+	for (const auto& section_row : accel_rows) {
+		for (auto& row : section_row.children()) {
+			Gtk::AccelKey accel;
+
+			std::string accel_path;
+			row.get_value(SHORTCUT_COLUMN_ID_ACTION_NAME, accel_path);
+
+			for (auto it = default_accel_map.begin(); it != default_accel_map.end(); ++it) {
+				if (it->second == accel_path) {
+					accel = Gtk::AccelKey(it->first);
+					break;
+				}
+			}
+
+			row.set_value(SHORTCUT_COLUMN_ID_ACTION_KEY, accel.get_key());
+			row.set_value(SHORTCUT_COLUMN_ID_ACTION_MODS, accel.get_mod());
+		}
+	}
+}
 
 void
 Dialog_Setup::on_choose_editor_pressed()
@@ -502,7 +692,6 @@ Dialog_Setup::create_render_page(PageInfo pi)
 	attach_label(pi.grid, _("Number of threads used"), row);
 	number_of_threads_select = Gtk::manage(new Gtk::SpinButton(adj_number_of_threads,0,0));
 	pi.grid->attach(*number_of_threads_select, 1, row, 1, 1);
-	number_of_threads_select->set_tooltip_text(_("Number of threads change"));
 	number_of_threads_select->signal_changed().connect(sigc::mem_fun(*this, &Dialog_Setup::on_number_of_thread_changed) );
 	number_of_threads_select->set_hexpand(true);
 	// Render - Image sequence separator
@@ -553,6 +742,8 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 	 *  [________________________________]
 	 * COLORTHEME
 	 *  DarkUI          [x]
+	 * ICON THEME
+	 *  [________________________________]
 	 * HANDLETOOLTIP
 	 *  Widthpoint      [x| ]
 	 *  Radius          [x| ]
@@ -565,7 +756,7 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 
 	static const char* languages[][2] = {
 		#include <languages.inc.c>
-		{ NULL, NULL } // final entry without comma to avoid misunderstanding
+		{ nullptr, nullptr } // final entry without comma to avoid misunderstanding
 	};
 
 	ui_language_combo.append("os_LANG", Glib::ustring("(") + _("System Language") + ")");
@@ -592,6 +783,20 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 	pi.grid->attach(toggle_use_dark_theme, 1, row, 1, 1);
 	toggle_use_dark_theme.set_halign(Gtk::ALIGN_START);
 	toggle_use_dark_theme.set_hexpand(false);
+
+	{
+	FileSystem::FileList files;
+	FileSystemNative::instance()->directory_scan(ResourceHelper::get_themes_path(), files);
+	for (const auto& dir : files)
+		icon_theme_combo.append(dir);
+	icon_theme_combo.set_active_text(App::get_icon_theme_name());
+	}
+
+	// Interface - Icon theme
+	attach_label(pi.grid, _("Icon theme"), ++row);
+	pi.grid->attach(icon_theme_combo, 0, ++row, 1, 1);
+	icon_theme_combo.set_hexpand(true);
+	icon_theme_combo.set_margin_start(10);
 
 	// Interface - Toolbars section
 	attach_label_section(pi.grid, _("Toolbars"), ++row);
@@ -666,6 +871,7 @@ Dialog_Setup::on_restore_pressed()
 		toggle_restrict_radius_ducks.set_active(true);
 		toggle_animation_thumbnail_preview.set_active(true);
 		toggle_enable_experimental_features.set_active(false);
+		toggle_clear_redo_stack_on_new_action.set_active(true);
 		toggle_use_dark_theme.set_active(false);
 		toggle_show_file_toolbar.set_active(true);
 		listviewtext_brushes_path->clear_items();
@@ -696,6 +902,32 @@ Dialog_Setup::on_restore_pressed()
 		toggle_handle_tooltip_transformation.set_active(false);
 		toggle_handle_tooltip_transfo_name.set_active(false);
 		toggle_handle_tooltip_transfo_value.set_active(false);
+
+		// Keyboard accels
+		auto accel_rows = treeview_accels->get_model()->children();
+		auto default_accel_map = App::get_default_accel_map();
+		for (const auto& section_row : accel_rows) {
+			for (auto& row : section_row.children()) {
+				Gtk::AccelKey accel;
+
+				std::string accel_path;
+				row.get_value(SHORTCUT_COLUMN_ID_ACTION_NAME, accel_path);
+
+				bool found = false;
+				for (auto it = default_accel_map.begin(); it != default_accel_map.end(); ++it) {
+					if (it->second == accel_path) {
+						Gtk::AccelKey accel(it->first);
+						Gtk::AccelMap::change_entry(accel_path, accel.get_key(), accel.get_mod(), true);
+						found = true;
+						break;
+					}
+				}
+
+				if (!found) {
+					Gtk::AccelMap::change_entry(accel_path, 0, Gdk::ModifierType(0), true);
+				}
+			}
+		}
 	}
 }
 
@@ -728,8 +960,13 @@ Dialog_Setup::on_apply_pressed()
 	// Set the experimental features flag
 	App::enable_experimental_features = toggle_enable_experimental_features.get_active();
 
+	// Set the advanced and risky flag that keeps the Redo stack on new action, instead of clear it
+	synfigapp::Main::settings().set_value("pref.clear_redo_stack_on_new_action", toggle_clear_redo_stack_on_new_action.get_active());
+
 	// Set the dark theme flag
 	App::use_dark_theme               = toggle_use_dark_theme.get_active();
+	// Set the icon theme
+	App::set_icon_theme(icon_theme_combo.get_active_text());
 	App::apply_gtk_settings();
 
 	// Set file toolbar flag
@@ -754,7 +991,7 @@ Dialog_Setup::on_apply_pressed()
 			input_settings.set_value(strprintf("brush.path_%d", path_count++), path);
 			App::brushes_path.insert(path);
 		}
-		input_settings.set_value("brush.path_count", strprintf("%d", path_count));
+		input_settings.set_value("brush.path_count", path_count);
 	}
 
 	// Set the preferred file name prefix
@@ -840,6 +1077,22 @@ Dialog_Setup::on_apply_pressed()
 		}
 	}
 
+	// Set keyboard accels for actions
+	auto accel_rows = treeview_accels->get_model()->children();
+	for (const auto& section_row : accel_rows) {
+		for (auto& row : section_row.children()) {
+			Gtk::AccelKey accel;
+
+			std::string accel_path;
+			row.get_value(SHORTCUT_COLUMN_ID_ACTION_NAME, accel_path);
+			guint accel_key;
+			row.get_value(SHORTCUT_COLUMN_ID_ACTION_KEY, accel_key);
+			Gdk::ModifierType accel_mod;
+			row.get_value(SHORTCUT_COLUMN_ID_ACTION_MODS, accel_mod);
+
+			Gtk::AccelMap::change_entry(accel_path, accel_key, accel_mod, true);
+		}
+	}
 
 	App::save_settings();
 	App::setup_changed();
@@ -862,8 +1115,8 @@ Dialog_Setup::on_size_template_combo_change()
 		pref_x_size_spinbutton->set_sensitive(true);
 		return;
 	}
-	String::size_type locx=selection.find_first_of("x"); // here should be some comparison with string::npos
-	String::size_type locspace=selection.find_first_of(" ");
+	String::size_type locx=selection.find_first_of('x'); // here should be some comparison with string::npos
+	String::size_type locspace=selection.find_first_of(' ');
 	String x_size(selection.substr(0,locx));
 	String y_size(selection.substr(locx+1,locspace));
 	int x=atoi(x_size.c_str());
@@ -992,8 +1245,16 @@ Dialog_Setup::refresh()
 	// Refresh the status of the experimental features flag
 	toggle_enable_experimental_features.set_active(App::enable_experimental_features);
 
+	// Refresh the status of the experimental features flag
+	{
+		bool active = synfigapp::Main::settings().get_value("pref.clear_redo_stack_on_new_action", true);
+		toggle_clear_redo_stack_on_new_action.set_active(active);
+	}
+
 	// Refresh the status of the theme flag
 	toggle_use_dark_theme.set_active(App::use_dark_theme);
+	// Refresh the choice of the icon theme
+	icon_theme_combo.set_active_text(App::get_icon_theme_name());
 
 	// Refresh the status of the render done sound flag
 	toggle_play_sound_on_render_done.set_active(App::use_render_done_sound);
@@ -1035,25 +1296,25 @@ Dialog_Setup::refresh()
 	//! Now brush path(s) are hold by input preferences : brush.path_count & brush.path_%d
 	String value;
 	Gtk::TreeIter ui_iter;
-	bool bvalue(input_settings.get_value("brush.path_count",value));
-	int i(atoi(value.c_str()));
+	int brush_path_count = input_settings.get_value("brush.path_count", 0);
 	App::brushes_path.clear();
 	liststore->clear();
-	if(!bvalue || (bvalue && i<=0))
+	if(brush_path_count == 0)
 	{
 		App::brushes_path.insert(ResourceHelper::get_brush_path());
 	}
 	else
 	{
-		for(int j = 0; j<i;j++)
+		for(int j = 0; j<brush_path_count;j++)
 		{
-			if(input_settings.get_value(strprintf("brush.path_%d", j),value))
+			std::string path = input_settings.get_value(strprintf("brush.path_%d", j), "");
+			if(!path.empty())
 			{
 				App::brushes_path.insert(value);
 			}
 		}
 	}
-	for (set<synfig::String>::iterator setiter = App::brushes_path.begin();
+	for (std::set<synfig::String>::iterator setiter = App::brushes_path.begin();
 			setiter != App::brushes_path.end(); setiter++)
 	{
 		ui_iter = liststore->append();
@@ -1111,6 +1372,30 @@ Dialog_Setup::refresh()
 		toggle_handle_tooltip_transfo_name.set_sensitive(false);
 		toggle_handle_tooltip_transfo_value.set_active(false);
 		toggle_handle_tooltip_transfo_value.set_sensitive(false);
+	}
+
+	// Refresh keyboard accels for actions
+	auto accel_rows = treeview_accels->get_model()->children();
+	for (auto& section_row : accel_rows) {
+		for (auto& row : section_row.children()) {
+			Gtk::AccelKey accel;
+
+			bool is_action;
+			row.get_value(SHORTCUT_COLUMN_ID_IS_ACTION, is_action);
+			if (!is_action)
+				continue;
+
+			std::string accel_path;
+			row.get_value(SHORTCUT_COLUMN_ID_ACTION_NAME, accel_path);
+
+			if (Gtk::AccelMap::lookup_entry(accel_path, accel)) {
+				row.set_value(SHORTCUT_COLUMN_ID_ACTION_KEY, accel.get_key());
+				row.set_value(SHORTCUT_COLUMN_ID_ACTION_MODS, accel.get_mod());
+			} else {
+				row.set_value(SHORTCUT_COLUMN_ID_ACTION_KEY, 0);
+				row.set_value(SHORTCUT_COLUMN_ID_ACTION_MODS, Gdk::ModifierType(0));
+			}
+		}
 	}
 
 	refreshing = false;

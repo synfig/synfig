@@ -29,9 +29,10 @@ endif()
 ## Targets
 ##
 
-if(MINGW)
-	configure_file(synfigstudio.rc ${CMAKE_CURRENT_BINARY_DIR}/synfigstudio.rc)
-	add_executable(synfigstudio main.cpp ${CMAKE_CURRENT_BINARY_DIR}/synfigstudio.rc)
+if(WIN32)
+	set(RC_FILE ${SYNFIG_BUILD_ROOT}/share/synfig/icons/classic/synfigstudio.rc)
+	configure_file(synfigstudio.rc ${RC_FILE})
+	add_executable(synfigstudio main.cpp ${RC_FILE})
 else()
 	add_executable(synfigstudio main.cpp)
 endif()
@@ -44,7 +45,6 @@ target_sources(synfigstudio
 		"${CMAKE_CURRENT_LIST_DIR}/timemodel.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/app.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/asyncrenderer.cpp"
-		"${CMAKE_CURRENT_LIST_DIR}/audiocontainer.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/autorecover.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/canvasview.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/devicetracker.cpp"
@@ -52,7 +52,6 @@ target_sources(synfigstudio
 		"${CMAKE_CURRENT_LIST_DIR}/duckmatic.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/iconcontroller.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/instance.cpp"
-		"${CMAKE_CURRENT_LIST_DIR}/ipc.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/keymapsettings.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/onemoment.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/pluginmanager.cpp"
@@ -64,7 +63,6 @@ target_sources(synfigstudio
 		"${CMAKE_CURRENT_LIST_DIR}/splash.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/statemanager.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/timeplotdata.cpp"
-		"${CMAKE_CURRENT_LIST_DIR}/valuelink.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/waypointrenderer.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/workarea.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/workspacehandler.cpp"
@@ -86,20 +84,29 @@ include(workarearenderer/CMakeLists.txt)
 
 add_subdirectory(resources)
 
-target_include_directories(synfigstudio PRIVATE ${MLT_INCLUDE_DIRS}) # required for widget_soundwave
-
-# on MacOS/Brew FontConfig located in non-standard folder
-# so we need to add it's path to target
-target_link_libraries(synfigstudio
-	${FONT_CONFIG_LDFLAGS}
-	${GTKMM_LIBRARIES}
-	${Gettext_LIBRARIES}
-	${MLT_LIBRARIES} # required for widget_soundwave
-	${LIBXML_LIBRARIES} # required for gui/pluginmanager
-	${FONT_CONFIG_LIBRARIES}
-	synfig
+target_link_libraries(synfigstudio PRIVATE
+	PkgConfig::GTKMM3
+	PkgConfig::XMLPP
+	libsynfig
 	synfigapp
 )
+
+if (FONTCONFIG_FOUND)
+	target_link_libraries(synfigstudio PRIVATE PkgConfig::FONTCONFIG)
+endif ()
+
+if (JACK_FOUND)
+	target_compile_definitions(synfigstudio PRIVATE WITH_JACK)
+	target_link_libraries(synfigstudio PRIVATE PkgConfig::JACK)
+endif ()
+
+if (MLT_FOUND)
+	target_link_libraries(synfigstudio PRIVATE PkgConfig::MLT)
+endif ()
+
+if(TCMALLOC_LIBRARY)
+	target_link_libraries(synfigstudio PRIVATE ${TCMALLOC_LIBRARY})
+endif()
 
 install(
 	TARGETS synfigstudio

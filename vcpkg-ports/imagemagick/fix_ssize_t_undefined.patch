@@ -1,0 +1,42 @@
+commit 99e40404c1ebace2cedb443fb26ae0a3b4153658
+Author: Hesham Essam <hesham.essam.mail@gmail.com>
+Date:   Fri Jul 15 15:54:00 2022 +0200
+
+    Fix ssize_t not defined in msvc
+
+diff --git a/config/config.h.in b/config/config.h.in
+index 4d902e626..70b306d4b 100644
+--- a/config/config.h.in
++++ b/config/config.h.in
+@@ -1,5 +1,31 @@
+ /* config/config.h.in.  Generated from configure.ac by autoheader.  */
+ 
++/*
++  Visual C++ does not define double_t, float_t, or ssize_t by default.
++*/
++#ifdef _MSC_VER
++  #if !defined(double_t)
++    #define MAGICKCORE_HAVE_DOUBLE_T
++    #if !defined(__MINGW32__)
++      typedef double double_t;
++    #endif
++  #endif
++  #if !defined(float_t)
++    #define MAGICKCORE_HAVE_FLOAT_T
++    #if !defined(__MINGW32__)
++      typedef float float_t;
++    #endif
++  #endif
++  #if !defined(ssize_t) && !defined(__MINGW32__)
++    #define MAGICKCORE_HAVE_SSIZE_T
++    #if defined(_WIN64)
++      typedef __int64 ssize_t;
++    #else
++      typedef long ssize_t;
++    #endif
++  #endif
++#endif
++
+ /* Define if building universal (internal helper macro) */
+ #undef AC_APPLE_UNIVERSAL_BUILD
+ 

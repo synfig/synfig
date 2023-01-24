@@ -2,20 +2,23 @@
 /*!	\file synfig/rendering/software/task/taskblendsw.cpp
 **	\brief TaskBlendSW
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -28,8 +31,6 @@
 #ifdef HAVE_CONFIG_H
 #	include <config.h>
 #endif
-
-#include <synfig/general.h>
 
 #include <synfig/debug/debugsurface.h>
 
@@ -144,10 +145,10 @@ public:
 					{
 						// mark unfilled regions
 						fill[0] = fill[1] = fill[2] = fill[3] = ra;
-						fill[0].maxx = fill[2].minx = fill[3].minx = std::max(ra.minx, std::min(ra.maxx, rb.minx));
-						fill[1].minx = fill[2].maxx = fill[3].maxx = std::max(ra.minx, std::min(ra.maxx, rb.maxx));
-						fill[2].maxy = std::max(ra.miny, std::min(ra.maxy, rb.miny));
-						fill[3].miny = std::max(ra.miny, std::min(ra.maxy, rb.maxy));
+						fill[0].maxx = fill[2].minx = fill[3].minx = synfig::clamp(rb.minx, ra.minx, ra.maxx);
+						fill[1].minx = fill[2].maxx = fill[3].maxx = synfig::clamp(rb.maxx, ra.minx, ra.maxx);
+						fill[2].maxy = synfig::clamp(rb.miny, ra.miny, ra.maxy);
+						fill[3].miny = synfig::clamp(rb.maxy, ra.miny, ra.maxy);
 					}
 				}
 			}

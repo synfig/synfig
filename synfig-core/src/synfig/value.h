@@ -2,22 +2,25 @@
 /*!	\file value.h
 **	\brief Template Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **  Copyright (c) 2011 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -29,13 +32,12 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "base_types.h"
-
 #include <vector>
 #include <list>
-#include "interpolation.h"
 
-#include <ETL/ref_count>
+#include "base_types.h"
+#include "interpolation.h"
+#include "reference_counter.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -83,7 +85,7 @@ protected:
 	//! Counter of Value Nodes that refers to this Value Base
 	//! Value base can only be destructed if the ref_count is not greater than 0
 	//!\see etl::reference_counter
-	etl::reference_counter ref_count;
+	ReferenceCounter ref_count;
 	//! For Values with loop option like TYPE_LIST
 	bool loop_;
 	//! For Values of Constant Value Nodes
@@ -103,7 +105,7 @@ public:
 	//! Template constructor for any type
 	template <typename T>
 	ValueBase(const T &x, bool loop_=false, bool static_=false):
-		type(&type_nil),data(nullptr),ref_count(0),loop_(loop_), static_(static_),
+		type(&type_nil),data(nullptr),ref_count(false),loop_(loop_), static_(static_),
 		interpolation_(INTERPOLATION_UNDEFINED)
 	{
 #ifdef INITIALIZE_TYPE_BEFORE_USE
@@ -114,7 +116,7 @@ public:
 
 	template <typename T>
 	ValueBase(const std::vector<T> &x, bool loop_=false, bool static_=false):
-		type(&type_nil),data(nullptr),ref_count(0),loop_(loop_), static_(static_),
+		type(&type_nil),data(nullptr),ref_count(false),loop_(loop_), static_(static_),
 		interpolation_(INTERPOLATION_UNDEFINED)
 	{
 #ifdef INITIALIZE_TYPE_BEFORE_USE
@@ -339,7 +341,7 @@ public:
 		Operation::GenericFuncs<T>::GetFunc func =
 			Type::get_operation<Operation::GenericFuncs<T>::GetFunc>(
 				Operation::Description::get_get(t.identifier) );
-		assert(func != NULL);
+		assert(func);
 		return func(data);
 	}
 	*/
@@ -356,7 +358,7 @@ private:
 	inline static bool _can_get(const TypeId type, const T &)
 	{
 		typedef typename T::AliasedType TT;
-		return NULL !=
+		return nullptr !=
 			Type::get_operation<typename Operation::GenericFuncs<TT>::GetFunc>(
 				Operation::Description::get_get(type) );
 	}
@@ -365,7 +367,7 @@ private:
 	inline static bool _can_put(const TypeId type, const T &)
 	{
 		typedef typename T::AliasedType TT;
-		return NULL !=
+		return nullptr !=
 			Type::get_operation<typename Operation::GenericFuncs<TT>::PutFunc>(
 				Operation::Description::get_put(type) );
 	}
@@ -374,7 +376,7 @@ private:
 	inline static bool _can_set(const TypeId type, const T &)
 	{
 		typedef typename T::AliasedType TT;
-		return NULL !=
+		return nullptr !=
 			Type::get_operation<typename Operation::GenericFuncs<TT>::SetFunc>(
 				Operation::Description::get_set(type) );
 	}
@@ -392,10 +394,10 @@ private:
 			Type::get_operation<typename Operation::GenericFuncs<TT>::GetFunc>(
 				Operation::Description::get_get(type->identifier) );
 #ifdef _DEBUG
-		if (func == NULL)
-			printf("%s:%d %s get_func == NULL\n", __FILE__, __LINE__, type->description.name.c_str());
+		if (!func)
+			printf("%s:%d %s get_func == nullptr\n", __FILE__, __LINE__, type->description.name.c_str());
 #endif
-		assert(func !=  NULL);
+		assert(func);
 		return func(data);
 	}
 
@@ -407,7 +409,7 @@ private:
 		typename Operation::GenericFuncs<TT>::PutFunc func =
 			Type::get_operation<typename Operation::GenericFuncs<TT>::PutFunc>(
 				Operation::Description::get_put(type->identifier) );
-		assert(func !=  NULL);
+		assert(func);
 		func(*x, data);
 	}
 
@@ -425,7 +427,7 @@ private:
 			typename Operation::GenericFuncs<TT>::SetFunc func =
 				Type::get_operation<typename Operation::GenericFuncs<TT>::SetFunc>(
 					Operation::Description::get_set(current_type.identifier) );
-			if (func != NULL)
+			if (func)
 			{
 				if (!ref_count.unique()) create(current_type);
 				func(data, x);
@@ -440,7 +442,7 @@ private:
 		typename Operation::GenericFuncs<TT>::SetFunc func =
 			Type::get_operation<typename Operation::GenericFuncs<TT>::SetFunc>(
 				Operation::Description::get_set(new_type.identifier) );
-		assert(func != NULL);
+		assert(func);
 
 		create(new_type);
 		assert(*type != type_nil);

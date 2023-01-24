@@ -64,7 +64,7 @@ def update_child_at_parent(parent, new_child, tag, param_name=None):
     parent.insert(0, new_child)
 
 
-def get_tangent_at_frame(t1, t2, split_r, split_a, fr):
+def get_tangent_at_frame(t1, t2, fr):
     """
     Given a frame, returns the in-tangent and out-tangent at a bline point
     depending on whether split_radius and split_angle is "true"/"false"
@@ -80,10 +80,6 @@ def get_tangent_at_frame(t1, t2, split_r, split_a, fr):
         (common.Vector.Vector, common.Vector.Vector) : In-tangent and out-tangent at the given frame
     """
 
-    # Get value of split_radius and split_angle at frame
-    sp_r = split_r.get_value(fr)
-    sp_a = split_a.get_value(fr)
-
     # Setting tangent 1
     r1 = t1.get_subparam("radius").get_value(fr)
     a1 = t1.get_subparam("theta").get_value(fr)
@@ -96,21 +92,7 @@ def get_tangent_at_frame(t1, t2, split_r, split_a, fr):
     a2 = t2.get_subparam("theta").get_value(fr)
 
     x, y = radial_to_tangent(r2, a2)
-    orig_tang2 = Vector(x, y)
-
-    if not sp_r:
-        # Use t1's radius
-        r2 = r1
-    if not sp_a:
-        # Use t1's angle
-        a2 = a1
-
-    x, y = radial_to_tangent(r2, a2)
     tangent2 = Vector(x, y)
-
-    if sp_r and (not sp_a):
-        if tangent1.mag_squared() == 0:
-            tangent2 = orig_tang2
 
     return tangent1, tangent2
 
@@ -230,7 +212,7 @@ def convert_tangent_to_lottie(t1, t2):
     return t1, t2
 
 
-def insert_dict_at(lottie, idx, fr, loop,constant=False):
+def insert_dict_at(lottie, idx, fr, loop, constant=False):
     """
     Inserts dictionary values in the main dictionary, required by shape layer of
     lottie format
@@ -240,6 +222,7 @@ def insert_dict_at(lottie, idx, fr, loop,constant=False):
         idx    (int)  : index at which dictionary needs to be stored
         fr     (int)  : frame number
         loop   (bool) : Specifies if the shape is loop or not
+        constant(bool): Specifies if the user wants a constant shaped outline
 
     Returns:
         (dict) : Starting dictionary for shape interpolation
@@ -271,6 +254,41 @@ def insert_dict_at(lottie, idx, fr, loop,constant=False):
         en_val["i"], en_val["o"], en_val["v"], en_val["c"] = [], [], [], loop
         return st_val, en_val
 
+
+def insert_dict_at_adv_outline(lottie, idx, fr, loop):
+    """
+    Inserts dictionary values in the main dictionary, required by shape layer of
+    Lottie format. But this is specific for advanced outline layer, as we needed
+    hold/constant interpolation between alternate frames
+
+    Args:
+        lottie (dict) : Shape layer will be stored in this main dictionary
+        idx    (int)  : index at which dictionary needs to be stored
+        fr     (int)  : frame number
+        loop   (bool) : Specifies if the shape is loop or not
+
+    Returns:
+        (dict) : Starting dictionary for shape interpolation
+        (dict) : Ending dictionary for shape interpolation
+
+    """
+    if idx != -1:
+        lottie.insert(idx, {})
+    else:
+        lottie.append({})
+    lottie[idx]["i"], lottie[idx]["o"] = {}, {}
+    lottie[idx]["i"]["x"] = lottie[idx]["i"]["y"] = 0.5     # Does not matter because frames are adjacent
+    lottie[idx]["o"]["x"] = lottie[idx]["o"]["y"] = 0.5     # Does not matter because frames are adjacent
+    lottie[idx]["h"] = 1
+    lottie[idx]["t"] = fr
+    lottie[idx]["s"], lottie[idx]["e"] = [], []
+    st_val, en_val = lottie[idx]["s"], lottie[idx]["e"]
+
+    st_val.append({}), en_val.append({})
+    st_val, en_val = st_val[0], en_val[0]
+    st_val["i"], st_val["o"], st_val["v"], st_val["c"] = [], [], [], loop
+    en_val["i"], en_val["o"], en_val["v"], en_val["c"] = [], [], [], loop
+    return st_val, en_val
 
 def quadratic_to_cubic(qp0, qp1, qp2):
     """

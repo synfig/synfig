@@ -2,22 +2,25 @@
 /*!	\file state_scale.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **  Copyright (c) 2008 Chris Moore
 **  Copyright (c) 2010 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -50,7 +53,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace synfig;
 using namespace studio;
 
@@ -95,12 +97,12 @@ class studio::StateScale_Context : public sigc::trackable
 
 	etl::handle<DuckDrag_Scale> duck_dragger_;
 
-	Gtk::Table options_table;
+	Gtk::Grid options_grid;
 	Gtk::Label title_label;
 
 	Gtk::Label aspect_lock_label;
 	Gtk::CheckButton aspect_lock_checkbutton;
-	Gtk::HBox aspect_lock_box;
+	Gtk::Box aspect_lock_box;
 
 public:
 
@@ -150,13 +152,7 @@ StateScale_Context::load_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		String value;
-
-		if(settings.get_value("scale.lock_aspect",value) && value=="0")
-			set_aspect_lock_flag(false);
-		else
-			set_aspect_lock_flag(true);
+		set_aspect_lock_flag(settings.get_value("scale.lock_aspect", true));
 	}
 	catch(...)
 	{
@@ -169,8 +165,7 @@ StateScale_Context::save_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		settings.set_value("scale.lock_aspect",get_aspect_lock_flag()?"1":"0");
+		settings.set_value("scale.lock_aspect",get_aspect_lock_flag());
 	}
 	catch(...)
 	{
@@ -184,32 +179,36 @@ StateScale_Context::StateScale_Context(CanvasView* canvas_view):
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	duck_dragger_(new DuckDrag_Scale())
 {
-	// Set up the tool options dialog
+	// Toolbox widgets
 	title_label.set_label(_("Scale Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
 	title_label.set_attributes(list);
-	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	title_label.set_hexpand();
+	title_label.set_halign(Gtk::ALIGN_START);
+	title_label.set_valign(Gtk::ALIGN_CENTER);
 
 	aspect_lock_label.set_label(_("Lock Aspect Ratio"));
-	aspect_lock_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	aspect_lock_label.set_hexpand();
+	aspect_lock_label.set_halign(Gtk::ALIGN_START);
+	aspect_lock_label.set_valign(Gtk::ALIGN_CENTER);
+	aspect_lock_box.pack_start(aspect_lock_label, true, true, 0);
+	aspect_lock_box.pack_start(aspect_lock_checkbutton, false, false, 0);
 
-	aspect_lock_box.pack_start(aspect_lock_label);
-	aspect_lock_box.pack_end(aspect_lock_checkbutton, Gtk::PACK_SHRINK);
-	
-	options_table.attach(title_label,
-		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(aspect_lock_box,
-		0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
-		);
+	// Toolbox layout
+	options_grid.attach(title_label,
+		0, 0, 2, 1);
+	options_grid.attach(aspect_lock_box,
+		0, 1, 2, 1);
 
 	aspect_lock_checkbutton.signal_toggled().connect(sigc::mem_fun(*this,&StateScale_Context::refresh_aspect_lock_flag));
 
-	options_table.set_border_width(GAP*2);
-	options_table.set_row_spacings(GAP);
-	options_table.show_all();
+	options_grid.set_vexpand(false);
+	options_grid.set_border_width(GAP*2);
+	options_grid.set_row_spacing(GAP);
+	options_grid.show_all();
+
 	refresh_tool_options();
 	App::dialog_tool_options->present();
 
@@ -229,9 +228,9 @@ void
 StateScale_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_table);
+	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Scale Tool"));
-	App::dialog_tool_options->set_name("scale");
+	App::dialog_tool_options->set_icon("tool_scale_icon");
 }
 
 Smach::event_result
@@ -302,10 +301,10 @@ DuckDrag_Scale::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& offs
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
 	{
 		Point p((*iter)->get_trans_point());
-		vmin[0]=min(vmin[0],p[0]);
-		vmin[1]=min(vmin[1],p[1]);
-		vmax[0]=max(vmax[0],p[0]);
-		vmax[1]=max(vmax[1],p[1]);
+		vmin[0]=std::min(vmin[0],p[0]);
+		vmin[1]=std::min(vmin[1],p[1]);
+		vmax[0]=std::max(vmax[0],p[0]);
+		vmax[1]=std::max(vmax[1],p[1]);
 		positions.push_back(p);
 	}
 	if((vmin-vmax).mag()<=EPSILON)
@@ -358,11 +357,11 @@ DuckDrag_Scale::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 
 	if(!lock_aspect)
 	{
-		if(abs(drag_offset[0]-center[0])>EPSILON)
+		if(std::fabs(drag_offset[0]-center[0])>EPSILON)
 			vect[0]/=drag_offset[0]-center[0];
 		else
 			vect[0]=1;
-		if(abs(drag_offset[1]-center[1])>EPSILON)
+		if(std::fabs(drag_offset[1]-center[1])>EPSILON)
 			vect[1]/=drag_offset[1]-center[1];
 		else
 			vect[1]=1;

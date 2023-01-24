@@ -2,20 +2,23 @@
 /*!	\file dialogs/dialog_preview.h
 **	\brief Preview dialog Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -30,6 +33,7 @@
 #include <gtkmm/builder.h>
 #include <gtkmm/checkbutton.h>
 #include <gtkmm/dialog.h>
+#include <gtkmm/grid.h>
 
 #include <gui/dialogsettings.h>
 #include <gui/preview.h>
@@ -66,7 +70,7 @@ public:
 	Dialog_Preview();
 	~Dialog_Preview();
 
-    void set_preview(etl::handle<Preview> prev);
+	void set_preview(etl::handle<Preview> prev);
 
 	Widget_Preview &get_widget() {return preview;}
 	const Widget_Preview &get_widget() const {return preview;}
@@ -82,7 +86,7 @@ private:
 	void close_window_handler();
 
 protected:
-	Gtk::Table preview_table;
+	Gtk::Grid preview_grid;
 
 }; // END of Dialog_Preview
 
@@ -100,7 +104,7 @@ class Dialog_PreviewOptions : public Gtk::Dialog
 
 	DialogSettings	settings;
 
-	float globalfps;
+	float globalfps = 0;
 
 	// for finishing
 	void on_ok_pressed();

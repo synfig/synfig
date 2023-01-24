@@ -2,23 +2,26 @@
 /*!	\file color.cpp
 **	\brief Color Class implementation
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2012-2013 Carlos López
 **	Copyright (c) 2015 Diego Barrios Romero
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -32,9 +35,7 @@
 #	include <config.h>
 #endif
 
-#include <ETL/angle>
 #include "color.h"
-#include <cstdio>
 #include <cassert>
 #include <sstream>
 #include <iostream>
@@ -46,8 +47,6 @@
 #endif
 
 using namespace synfig;
-using namespace etl;
-using namespace std;
 
 #define COLOR_EPSILON	(0.000001f)
 
@@ -59,7 +58,7 @@ Color::hex2real(String s)
 	std::istringstream i(s);
 	int n;
 	i.fill('0');
-	if (!(i >> hex >> n))
+	if (!(i >> std::hex >> n))
 		throw String("bad conversion from hex string \"") + s + String("\"");
 	return n / 255.0f;
 }
@@ -72,7 +71,7 @@ Color::real2hex(ColorReal c)
 	o.fill('0');
 	if (c<0) c = 0;
 	if (c>1) c = 1;
-	o << hex << int(c*255.0f);
+	o << std::hex << int(c*255.0f);
 	return o.str();
 }
 
@@ -109,7 +108,7 @@ Color::set_hex(String& str)
 			r_ = r; g_ = g; b_ = b;
 		}
 	}
-	catch (const string& s)
+	catch (const std::string& s)
 	{
 		synfig::warning("caught <%s>\n", s.c_str());
 		return;
@@ -213,9 +212,6 @@ Color::blend(Color a, Color b, float amount, Color::BlendMethod type)
 
 	const static blendfunc vtable[BLEND_END]=
 	{
-        // WARNING: any change here must be coordinated with
-        // other specializations of the functions, for example
-        // for CairoColor
 		blendfunc_COMPOSITE<Color>,	// 0
 		blendfunc_STRAIGHT<Color>,
 		blendfunc_BRIGHTEN<Color>,

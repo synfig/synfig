@@ -2,21 +2,24 @@
 /*!	\file distance.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -30,8 +33,6 @@
 #	include <config.h>
 #endif
 
-#include <ETL/stringf>
-
 #include "distance.h"
 #include "renddesc.h"
 #include "general.h"
@@ -41,8 +42,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -53,7 +52,7 @@ using namespace synfig;
 #define CENTIMETERS_PER_METER (100.0)
 #define MILLIMETERS_PER_METER (1000.0)
 
-#define METERS_PER_UNIT		  (rend_desc.get_physical_w()/abs(rend_desc.get_tl()[0]-rend_desc.get_br()[0]))
+#define METERS_PER_UNIT		  (rend_desc.get_physical_w()/std::abs(rend_desc.get_tl()[0]-rend_desc.get_br()[0]))
 
 /* === G L O B A L S ======================================================= */
 
@@ -113,10 +112,8 @@ Distance::operator=(const synfig::String& str)
 synfig::String
 Distance::get_string(int digits)const
 {
-	digits=min(9,max(0,digits));
-	String fmt(strprintf("%%.%01df",digits));
-	String str(strprintf(fmt.c_str(),value_));
-	return strprintf("%s%s",str.c_str(),system_name(system_).c_str());
+	digits=synfig::clamp(digits,0,9);
+	return synfig::float_presentation(value_, digits) + system_name(system_);
 }
 
 void

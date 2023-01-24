@@ -2,20 +2,23 @@
 /*!	\file synfig/rendering/opengl/internal/buffers.h
 **	\brief Buffers Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -110,7 +113,7 @@ public:
 		BufferLock(const BufferLock &other): chunk()
 			{ *this = other; }
 		~BufferLock()
-			{ set(NULL); }
+			{ set(nullptr); }
 		BufferLock& operator = (const BufferLock &other)
 			{ set(other.chunk); return *this; }
 		GLuint get_id() const
@@ -149,7 +152,7 @@ public:
 		VertexArrayLock(const VertexArrayLock &other): vertex_array()
 			{ *this = other; }
 		~VertexArrayLock()
-			{ set(NULL); }
+			{ set(nullptr); }
 		VertexArrayLock& operator = (const VertexArrayLock &other)
 			{ set(other.vertex_array); return *this; }
 		GLuint get_id() const

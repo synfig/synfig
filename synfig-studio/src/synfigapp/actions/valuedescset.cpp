@@ -2,23 +2,26 @@
 /*!	\file valuedescset.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **  Copyright (c) 2011 Carlos López
 **  Copyright (c) 2013 Konstantin Dmitriev
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -42,6 +45,7 @@
 
 #include "valuedescset.h"
 #include <synfigapp/canvasinterface.h>
+#include <synfig/layers/layer_skeletondeformation.h>
 #include <synfig/valuenodes/valuenode_add.h>
 #include <synfig/valuenodes/valuenode_bline.h>
 #include <synfig/valuenodes/valuenode_wplist.h>
@@ -70,8 +74,6 @@
 
 #endif
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
 using namespace Action;
@@ -200,47 +202,59 @@ Action::ValueDescSet::prepare()
 
 	get_canvas_interface()->signal_value_desc_set()(value_desc,value);
 
-	// If the tool is state_bone
-	// then both bones in a ValueNode_Composite
-	// should follow each other
-	ValueNode_Composite::Handle comp = ValueNode_Composite::Handle::cast_dynamic(value_desc.get_parent_desc().get_parent_desc().get_value_node());
-	if(comp && get_canvas_interface()->get_state()=="bone"){
+	// If current tool is Bone Tool, changing a bone of a Skeleton Deformation
+	// Layer should affect its pair too. One follow each other with Bone Tool.
+	// Just remembering: Skeleton Deformation a list of bone pairs:
+	//   * the first element of every pair compounds the resting pose
+	//   * the second element of every pair compounds the current animated pose
+	if(get_canvas_interface()->get_state()=="bone") {
+		ValueNode_Composite::Handle deformation_bone_pair_composite;
 
-		if(value_desc.get_parent_value_node() == comp->get_link("first")){
-			ValueNode_Bone::Handle bone = ValueNode_Bone::Handle::cast_dynamic(comp->get_link("second"));
-			ValueNode_Bone::Handle bone1 = 	ValueNode_Bone::Handle::cast_dynamic(comp->get_link("first"));
-			if(bone){
-				ValueBase svalue(0);
+		// Skeleton Deformation layer > Bone pair list > Bone pair item > Bone
+		const ValueDesc grand_parent = value_desc.get_parent_desc().get_parent_desc();
+		if (grand_parent.get_parent_desc().parent_is_layer()) {
+			if (Layer_SkeletonDeformation::Handle::cast_dynamic(grand_parent.get_parent_desc().get_layer())) {
+				const types_namespace::TypePair<Bone,Bone>& type_bone_pair = types_namespace::TypePair<Bone,Bone>::instance;
+				if (grand_parent.parent_is_value_node() && grand_parent.get_parent_value_node()->get_type() == type_list)
+					if (value_desc.get_parent_desc().parent_is_value_node()
+						&& value_desc.get_parent_desc().get_parent_value_node()->get_type() == type_bone_pair)
+					{
+						deformation_bone_pair_composite = ValueNode_Composite::Handle::cast_dynamic(grand_parent.get_value_node());
+					}
+			}
+		}
+
+		if(deformation_bone_pair_composite && value_desc.get_parent_value_node() == deformation_bone_pair_composite->get_link("first")){
+			ValueNode_Bone::Handle pose_bone = ValueNode_Bone::Handle::cast_dynamic(deformation_bone_pair_composite->get_link("second"));
+			ValueNode_Bone::Handle rest_bone = ValueNode_Bone::Handle::cast_dynamic(deformation_bone_pair_composite->get_link("first"));
+			if(pose_bone){
 				const int index = value_desc.get_index();
-				const int origin_index = bone->get_link_index_from_name("origin");
-				const int angle_index = bone->get_link_index_from_name("angle");
-				const int scalelx_index = bone->get_link_index_from_name("scalelx");
+				const int origin_index = pose_bone->get_link_index_from_name("origin");
+				const int angle_index = pose_bone->get_link_index_from_name("angle");
+				const int scalelx_index = pose_bone->get_link_index_from_name("scalelx");
 				if(index==origin_index || index==angle_index || index==scalelx_index){
+					ValueBase svalue(0);
 
 					if(index==origin_index) {
 						Point p = value.get(Point());
-
-						Bone parentBone = (*bone->get_link("parent"))(time).get(Bone());
-						Bone parentBone1 = (*bone1->get_link("parent"))(time).get(Bone());
-						
-						Matrix parentAnimMatrix = parentBone.get_animated_matrix();
-						Matrix parentAnimMatrix1 = parentBone1.get_animated_matrix();
-
-						p += parentAnimMatrix.get_transformed(bone->get_link(index)->operator()(time).get(Point()));
-						p -= parentAnimMatrix1.get_transformed(-bone1->get_link(index)->operator()(time).get(Point()));
-						svalue = ValueBase(parentAnimMatrix.get_inverted().get_transformed(p));
+						// Let's find how much origin of "first" bone was shifted
+						Point p_delta = p - rest_bone->get_link(index)->operator()(time).get(Point());
+						// Now apply same offset value to "second" bone
+						svalue = ValueBase(pose_bone->get_link(index)->operator()(time).get(Point()) + p_delta);
 					}else if(index==angle_index){
 						Angle a = value.get(Angle());
-						a+=bone->get_link(index)->operator()(time).get(Angle());
-						a-=bone1->get_link(index)->operator()(time).get(Angle());
+						a -= rest_bone->get_link(index)->operator()(time).get(Angle());
+						a += pose_bone->get_link(index)->operator()(time).get(Angle());
 						svalue = ValueBase(a);
 					}else if(index==scalelx_index){
 						Real r = value.get(Real());
-						r+= bone->get_link(index)->operator()(time).get(Real());
-						r-=bone1->get_link(index)->operator()(time).get(Real());
+						r -= rest_bone->get_link(index)->operator()(time).get(Real());
+						r += pose_bone->get_link(index)->operator()(time).get(Real());
 						svalue = ValueBase(r);
 					}
-					add_action_valuedescset(svalue,ValueDesc(bone,index));
+					add_action_valuedescset(svalue,ValueDesc(pose_bone,index));
+
+					// don't return here: continue in this method to apply changes set to first bone as defined for this action
 				}
 			}
 		}
@@ -557,7 +571,12 @@ Action::ValueDescSet::prepare()
 	// allowed position.
 	if (ValueNode_BLineCalcVertex::Handle bline_vertex = ValueNode_BLineCalcVertex::Handle::cast_dynamic(value_desc.get_value_node()))
 	{
-		ValueNode_BLine::Handle bline = ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link("bline"));
+		bool bline_loop = false;
+		ValueNode::LooseHandle bline = bline_vertex->get_bline_handle(bline_loop);
+		if (!bline) {
+			warning(_("Internal error: ValueDescSet: It is a BLine Vertex, but it has not a BLine link"));
+			return;
+		}
 		Real radius = 0.0;
 		Real new_amount;
 		if (((*(bline_vertex->get_link("loop")))(time).get(bool())))
@@ -567,7 +586,7 @@ Action::ValueDescSet::prepare()
 			// not change drastically.
 			Real amount_old((*(bline_vertex->get_link("amount")))(time).get(Real()));
 
-			Real amount_new = synfig::find_closest_point((*bline)(time), value.get(Vector()), radius, bline->get_loop());
+			Real amount_new = synfig::find_closest_point((*bline)(time), value.get(Vector()), radius, bline_loop);
 			Real difference = fmod( fmod(amount_new - amount_old, 1.0) + 1.0 , 1.0);
 			//fmod is called twice to avoid negative values
 			if (difference > 0.5)
@@ -575,10 +594,10 @@ Action::ValueDescSet::prepare()
 			new_amount = amount_old+difference;
 		}
 		else
-			new_amount = synfig::find_closest_point((*bline)(time), value.get(Vector()), radius, bline->get_loop());
+			new_amount = synfig::find_closest_point((*bline)(time), value.get(Vector()), radius, bline_loop);
 		bool homogeneous((*(bline_vertex->get_link("homogeneous")))(time).get(bool()));
 		if(homogeneous)
-			new_amount=std_to_hom((*bline)(time), new_amount, (*(bline_vertex->get_link("loop")))(time).get(bool()), bline->get_loop() );
+			new_amount=std_to_hom((*bline)(time), new_amount, (*(bline_vertex->get_link("loop")))(time).get(bool()), bline_loop );
 		add_action_valuedescset(new_amount,ValueDesc(bline_vertex, bline_vertex->get_link_index_from_name("amount")));
 		return;
 	}
@@ -648,71 +667,60 @@ Action::ValueDescSet::prepare()
 	// (Code copied from BLineCalcVertex above)
 	if (value_desc.parent_is_linkable_value_node() && value_desc.get_parent_value_node()->get_type() == type_list)
 	{
-		if(ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node())->get_contained_type() == type_width_point)
+		if(ValueNode_WPList::Handle wplist = ValueNode_WPList::Handle::cast_dynamic(value_desc.get_parent_value_node()))
 		{
-			ValueNode_WPList::Handle wplist=ValueNode_WPList::Handle::cast_dynamic(value_desc.get_parent_value_node());
-			if(wplist)
+			bool wplistloop(wplist->get_loop());
+			ValueNode_BLine::Handle bline(ValueNode_BLine::Handle::cast_dynamic(wplist->get_bline()));
+			ValueNode_Composite::Handle wpoint_composite = composite_value_node;
+			if(bline && wpoint_composite)
 			{
-				bool wplistloop(wplist->get_loop());
-				ValueNode_BLine::Handle bline(ValueNode_BLine::Handle::cast_dynamic(wplist->get_bline()));
-				ValueNode_Composite::Handle wpoint_composite = composite_value_node;
-				if(bline && wpoint_composite)
+				bool blineloop(bline->get_loop());
+				// Retrieve the homogeneous layer parameter
+				bool homogeneous=false;
+				Layer::Handle layer_parent = wplist->find_first_parent_of_type<Layer>([](const Layer::Handle& layer) -> bool {
+					return layer->get_name() == "advanced_outline";
+				});
+				if(layer_parent)
+					homogeneous=layer_parent->get_param("homogeneous").get(bool());
+				Real radius = 0.0;
+				Real new_amount;
+				WidthPoint wp((*wpoint_composite)(time).get(WidthPoint()));
+				if (wplistloop)
 				{
-					bool blineloop(bline->get_loop());
-					// Retrieve the homogeneous layer parameter
-					bool homogeneous=false;
-					Layer::Handle layer_parent;
-					std::set<Node*>::iterator iter;
-					for(iter=wplist->parent_set.begin();iter!=wplist->parent_set.end();++iter)
-						{
-							Layer::Handle layer;
-							layer=Layer::Handle::cast_dynamic(*iter);
-							if(layer && layer->get_name() == "advanced_outline")
-							{
-								homogeneous=layer->get_param("homogeneous").get(bool());
-								break;
-							}
-						}
-					Real radius = 0.0;
-					Real new_amount;
-					WidthPoint wp((*wpoint_composite)(time).get(WidthPoint()));
-					if (wplistloop)
-					{
-						// The wplist is looped. Animation may require a position parameter
-						// outside the range of 0-1, so make sure that the position doesn't
-						// change drastically.
-						Real amount_old(wp.get_norm_position(wplistloop));
-						Real amount_old_b(wp.get_bound_position(wplistloop));
-						// If it is homogeneous then convert it to standard
-						amount_old=homogeneous?hom_to_std((*bline)(time), amount_old, wplistloop, blineloop):amount_old;
-						// grab a new position given by duck's position on the bline
-						Real amount_new = synfig::find_closest_point((*bline)(time), value.get(Vector()), radius, blineloop);
-						// calculate the difference between old and new amounts
-						Real difference = fmod( fmod(amount_new - amount_old, 1.0) + 1.0 , 1.0);
-						//fmod is called twice to avoid negative values
-						if (difference > 0.5)
-							difference=difference-1.0;
-						// calculate a new value for the position
-						new_amount=amount_old+difference;
-						// restore the homogeneous value if needed
-						new_amount = homogeneous ? std_to_hom((*bline)(time), new_amount, wplistloop, blineloop) : new_amount;
-						// this is the difference between the new amount and the old amount inside the boundaries
-						Real bound_diff((wp.get_lower_bound() + new_amount*(wp.get_upper_bound()-wp.get_lower_bound()))-amount_old_b);
-						// add the new diff to the current amount
-						new_amount = wp.get_position() + bound_diff;
-					}
-					else
-					{
-						// grab a new amount given by duck's position on the bline
-						new_amount = synfig::find_closest_point((*bline)(time), value.get(Vector()), radius, blineloop);
-						// if it is homogeneous then convert to it
-						new_amount = homogeneous ? std_to_hom((*bline)(time), new_amount, wplistloop, blineloop) : new_amount;
-						// convert the value inside the boundaries
-						new_amount = wp.get_lower_bound()+new_amount*(wp.get_upper_bound()-wp.get_lower_bound());
-					}
-					add_action_valuedescset(new_amount,ValueDesc(wpoint_composite, wpoint_composite->get_link_index_from_name("position")));
-					return;
+					// The wplist is looped. Animation may require a position parameter
+					// outside the range of 0-1, so make sure that the position doesn't
+					// change drastically.
+					Real amount_old(wp.get_norm_position(wplistloop));
+					Real amount_old_b(wp.get_bound_position(wplistloop));
+					// If it is homogeneous then convert it to standard
+					amount_old=homogeneous?hom_to_std((*bline)(time), amount_old, wplistloop, blineloop):amount_old;
+					// grab a new position given by duck's position on the bline
+					Real amount_new = synfig::find_closest_point((*bline)(time), value.get(Vector()), radius, blineloop);
+					// calculate the difference between old and new amounts
+					Real difference = fmod( fmod(amount_new - amount_old, 1.0) + 1.0 , 1.0);
+					//fmod is called twice to avoid negative values
+					if (difference > 0.5)
+						difference=difference-1.0;
+					// calculate a new value for the position
+					new_amount=amount_old+difference;
+					// restore the homogeneous value if needed
+					new_amount = homogeneous ? std_to_hom((*bline)(time), new_amount, wplistloop, blineloop) : new_amount;
+					// this is the difference between the new amount and the old amount inside the boundaries
+					Real bound_diff((wp.get_lower_bound() + new_amount*(wp.get_upper_bound()-wp.get_lower_bound()))-amount_old_b);
+					// add the new diff to the current amount
+					new_amount = wp.get_position() + bound_diff;
 				}
+				else
+				{
+					// grab a new amount given by duck's position on the bline
+					new_amount = synfig::find_closest_point((*bline)(time), value.get(Vector()), radius, blineloop);
+					// if it is homogeneous then convert to it
+					new_amount = homogeneous ? std_to_hom((*bline)(time), new_amount, wplistloop, blineloop) : new_amount;
+					// convert the value inside the boundaries
+					new_amount = wp.get_lower_bound()+new_amount*(wp.get_upper_bound()-wp.get_lower_bound());
+				}
+				add_action_valuedescset(new_amount,ValueDesc(wpoint_composite, wpoint_composite->get_link_index_from_name("position")));
+				return;
 			}
 		}
 	}
@@ -911,8 +919,8 @@ Action::ValueDescSet::prepare()
 						  || UIInterface::RESPONSE_OK != get_canvas_interface()->get_ui_interface()->confirmation(
 								 _("You are trying to edit animated parameter while Animation Mode is off.\n\nDo you want to apply offset to this animation?" ),
 								 _("Hint: You can hold Spacebar key while editing parameter to avoid this confirmation dialog."),
-								 _("No"),
 								 _("Yes"),
+								 _("No"),
 								 synfigapp::UIInterface::RESPONSE_OK ))
 						{
 							throw Error(Error::TYPE_UNABLE); // Issue  #693

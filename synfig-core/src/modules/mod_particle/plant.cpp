@@ -2,22 +2,25 @@
 /*!	\file plant.cpp
 **	\brief Implementation of the "Plant" layer
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2011 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -31,31 +34,28 @@
 #	include <config.h>
 #endif
 
+#include "plant.h"
+
+#include <cmath> // std::ceil()
+
 #include <synfig/localization.h>
 #include <synfig/general.h>
 
 #include <synfig/angle.h>
-#include "plant.h"
-#include <synfig/string.h>
-#include <synfig/time.h>
+#include <synfig/bezier.h>
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
 #include <synfig/renddesc.h>
+#include <synfig/string.h>
 #include <synfig/surface.h>
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
 
-#include <ETL/calculus>
-#include <ETL/bezier>
-#include <ETL/hermite>
 #include <vector>
-#include <time.h>
 
 #include <synfig/valuenodes/valuenode_bline.h>
 
 #endif
-
-using namespace etl;
 
 /* === M A C R O S ========================================================= */
 
@@ -96,11 +96,11 @@ Plant::Plant():
 	param_random_factor(ValueBase(Real(0.2))),
 	param_drag(ValueBase(Real(0.1))),
 	param_use_width(ValueBase(true)),
-	version(version__)
+	version(get_register_version())
 {
 	bounding_rect=Rect::zero();
 	Random random;
-	random.set_seed(time(NULL));
+	random.set_seed(time(nullptr));
 	param_random.set(random.get_seed());
 	
 	std::vector<BLinePoint> bline;
@@ -238,9 +238,9 @@ Plant::sync()const
 
 	std::vector<synfig::BLinePoint>::const_iterator iter,next;
 
-	etl::hermite<Vector> curve;
+	hermite<Vector> curve;
 
-	Real step(abs(step_));
+	Real step(std::fabs(step_));
 
 	int seg(0);
 
@@ -260,7 +260,6 @@ Plant::sync()const
 		curve.p2()=next->get_vertex();
 		curve.t2()=next->get_tangent1();
 		curve.sync();
-		etl::derivative<etl::hermite<Vector> > deriv(curve);
 
 		Real f;
 
@@ -280,7 +279,7 @@ Plant::sync()const
 			stunt_growth*=stunt_growth;
 
 			if((((i+1)*sprouts + steps/2) / steps) > branch_count) {
-				Vector branch_velocity(deriv(f).norm()*velocity + deriv(f).perp().norm()*perp_velocity);
+				Vector branch_velocity(curve.derivative(f).norm()*velocity + curve.derivative(f).perp().norm()*perp_velocity);
 
 				if (std::isnan(branch_velocity[0]) || std::isnan(branch_velocity[1]))
 					continue;
@@ -528,29 +527,6 @@ Plant::accelerated_render(Context context,Surface *surface,int quality, const Re
 }
 
 
-///
-bool
-Plant::accelerated_cairorender(Context context, cairo_t *cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	
-	bool ret(context.accelerated_cairorender(cr,quality,renddesc,cb));
-	if(is_disabled() || !ret)
-		return ret;
-
-	if(needs_sync_==true)
-		sync();
-	
-	cairo_save(cr);
-	cairo_push_group(cr);
-	// Here is where drawing occurs
-	draw_particles(cr);
-	cairo_pop_group_to_source(cr);
-	// blend the painted particles on the cr
-	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
-	cairo_restore(cr);
-	
-	return true;
-}
 
 
 void
@@ -582,7 +558,7 @@ Plant::draw_particles(Surface *dest_surface, const RendDesc &renddesc)const
 		std::vector<Particle>::iterator iter;
 		Particle *particle;
 		
-		float radius(size*sqrt(1.0f/(abs(pw)*abs(ph))));
+		float radius(size*sqrt(1.0f/(std::fabs(pw)*std::fabs(ph))));
 		
 		int x1,y1,x2,y2;
 		
@@ -612,6 +588,9 @@ Plant::draw_particles(Surface *dest_surface, const RendDesc &renddesc)const
 			float x2f=(particle->point[0]-tl[0])/pw+(scaled_radius*0.5);
 			float y1f=(particle->point[1]-tl[1])/ph-(scaled_radius*0.5);
 			float y2f=(particle->point[1]-tl[1])/ph+(scaled_radius*0.5);
+			const auto ceil_to_int = [](float num) -> int {
+				return static_cast<int>(std::ceil(num));
+			};
 			x1=ceil_to_int(x1f);
 			x2=ceil_to_int(x2f)-1;
 			y1=ceil_to_int(y1f);
@@ -785,77 +764,6 @@ Plant::draw_particles(Surface *dest_surface, const RendDesc &renddesc)const
 	}
 }
 
-
-///
-void
-Plant::draw_particles(cairo_t *cr)const
-{
-	Point origin=param_origin.get(Vector());
-	Real size=param_size.get(Real());
-	bool reverse=param_reverse.get(bool());
-	bool size_as_alpha=param_size_as_alpha.get(bool());
-
-	if (particle_list.begin() != particle_list.end())
-	{
-		std::vector<Particle>::iterator iter;
-		Particle *particle;
-		
-		float radius(size);
-		
-		if (reverse)	iter = particle_list.end();
-		else			iter = particle_list.begin();
-		
-		while (true)
-		{
-			if (reverse)	particle = &(*(iter-1));
-			else			particle = &(*iter);
-			
-			float scaled_radius(radius);
-			Color color(particle->color);
-			if(size_as_alpha)
-			{
-				scaled_radius*=color.get_a();
-				color.set_a(1);
-			}
-			
-			// calculate the box that this particle will be drawn as
-			const float x1f=particle->point[0]-scaled_radius*0.5;
-			const float x2f=particle->point[0]+scaled_radius*0.5;
-			const float y1f=particle->point[1]-scaled_radius*0.5;
-			const float y2f=particle->point[1]+scaled_radius*0.5;
-			const double width (x2f-x1f);
-			const double height(y2f-y1f);
-			
-			// grab the color components
-			const float r=color.clamped().get_r();
-			const float g=color.clamped().get_g();
-			const float b=color.clamped().get_b();
-			const float a=color.clamped().get_a();
-			
-			cairo_save(cr);
-			
-			cairo_set_source_rgb(cr, r, g, b);
-			cairo_translate(cr, origin[0], origin[1]);
-			cairo_rectangle(cr, x1f, y1f, width, height);
-			cairo_clip(cr);
-			cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
-			cairo_paint_with_alpha(cr, a);
-			
-			cairo_restore(cr);
-			
-			if (reverse)
-			{
-				if (--iter == particle_list.begin())
-					break;
-			}
-			else
-			{
-				if (++iter == particle_list.end())
-					break;
-			}
-		}
-	}
-}
 
 
 Rect

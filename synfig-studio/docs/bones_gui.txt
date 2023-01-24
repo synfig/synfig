@@ -142,13 +142,13 @@ SETUP AND ANIMATED SKELETONS
 
 By using the ALT-7 keyboard combintation the user sees the setup or the
 non setup skeletons.
-When the user is creating the skeleton and is modifiying it in non
+When the user is creating the skeleton and is modifying it in non
 animation mode then the setuo and the non setup skeletons should be the
 same. In this way the workflow for this creation of the skeleton will be:
 
 1) In non animation mode and with no waypoints, modify the setup skeleton
 should modify also the not setup skeleton. In this case there is not difference
-between one skeleton and the other and the interface will mdify both at
+between one skeleton and the other and the interface will modify both at
 the same time.
 
 2) Once you're in animation mode you can modify either the setup skeleton

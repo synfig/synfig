@@ -2,21 +2,24 @@
 /*!	\file action.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -159,8 +162,6 @@
 
 #endif
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
 using namespace Action;
@@ -200,6 +201,12 @@ Action::Main::Main()
 	ADD_ACTION(Action::LayerMakeOutline);
 	ADD_ACTION(Action::LayerMakeAdvancedOutline);
 	ADD_ACTION(Action::LayerMakeRegion);
+	auto layer_iter = synfig::Layer::book().find("curve_gradient");
+	if (layer_iter != synfig::Layer::book().end())
+		ADD_ACTION(Action::LayerMakeCurveGradient)
+	layer_iter = synfig::Layer::book().find("plant");
+	if (layer_iter != synfig::Layer::book().end())
+		ADD_ACTION(Action::LayerMakePlant)
 	ADD_ACTION(Action::LayerParamSet);
 	ADD_ACTION(Action::LayerParamSetStatic);
 	ADD_ACTION(Action::LayerParamUnSetStatic);
@@ -463,8 +470,8 @@ Super::perform()
 	ActionList::const_iterator iter;
 	for(iter=action_list_.begin();iter!=action_list_.end();++iter)
 	{
-		if (getenv("SYNFIG_DEBUG_ACTIONS"))
-			synfig::info("%s:%d action: '%s'", __FILE__, __LINE__, (*iter)->get_name().c_str());
+		DEBUG_LOG("SYNFIG_DEBUG_ACTIONS",
+			"%s:%d action: '%s'", __FILE__, __LINE__, (*iter)->get_name().c_str());
 
 		try
 		{
@@ -642,8 +649,8 @@ Undoable::~Undoable() {
 void
 Undoable::ref()const
 {
-	if (getenv("SYNFIG_DEBUG_ACTION_REFCOUNT"))
-		printf("%s:%d %lx   ref undoable %*s -> %2d\n", __FILE__, __LINE__, uintptr_t(this), (count()*2), "", count()+1);
+	DEBUG_LOG("SYNFIG_DEBUG_ACTION_REFCOUNT",
+		"%s:%d %lx   ref undoable %*s -> %2d\n", __FILE__, __LINE__, uintptr_t(this), (count()*2), "", count()+1);
 
 	Base::ref();
 }
@@ -651,8 +658,8 @@ Undoable::ref()const
 bool
 Undoable::unref()const
 {
-	if (getenv("SYNFIG_DEBUG_ACTION_REFCOUNT"))
-		printf("%s:%d %lx unref undoable %*s%2d <-\n", __FILE__, __LINE__, uintptr_t(this), ((count()-1)*2), "", count()-1);
+	DEBUG_LOG("SYNFIG_DEBUG_ACTION_REFCOUNT",
+		"%s:%d %lx unref undoable %*s%2d <-\n", __FILE__, __LINE__, uintptr_t(this), ((count()-1)*2), "", count()-1);
 
 	return Base::unref();
 }

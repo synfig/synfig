@@ -2,20 +2,23 @@
 /*!	\file filesystemtemporary.cpp
 **	\brief FileSystemTemporary Implementation
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2016 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -45,7 +48,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 
@@ -79,17 +81,17 @@ String
 FileSystemTemporary::get_system_temporary_directory()
 {
     const char *tmpdir;
-    if ((tmpdir = getenv("TEMP")) == NULL)
-    if ((tmpdir = getenv("TMP")) == NULL)
-    if ((tmpdir = getenv("TMPDIR")) == NULL)
+	if (!(tmpdir = getenv("TEMP")))
+	if (!(tmpdir = getenv("TMP")))
+	if (!(tmpdir = getenv("TMPDIR")))
     	 tmpdir = "/tmp";
     return String(tmpdir);
 }
 
 String
-FileSystemTemporary::generate_temporary_filename_base(const String &tag)
+FileSystemTemporary::generate_temporary_filename_base(const String &tag, const String &extension)
 {
-    return "synfig_" + tag + "_" + GUID().get_string();
+	return "synfig_" + tag + "_" + GUID().get_string() + (extension.size() && extension[0] != '.' ? "." : "") + extension;
 }
 
 bool
@@ -110,9 +112,9 @@ FileSystemTemporary::scan_temporary_directory(const String &tag, FileList &out_f
 }
 
 String
-FileSystemTemporary::generate_system_temporary_filename(const String &tag)
+FileSystemTemporary::generate_system_temporary_filename(const String &tag, const String &extension)
 {
-    return get_system_temporary_directory() + ETL_DIRECTORY_SEPARATOR + generate_temporary_filename_base(tag);
+	return get_system_temporary_directory() + ETL_DIRECTORY_SEPARATOR + generate_temporary_filename_base(tag, extension);
 }
 
 bool
@@ -455,7 +457,7 @@ FileSystemTemporary::reset_temporary_filename_base(const String &tag, const Stri
 String
 FileSystemTemporary::get_meta(const String &key) const
 {
-	map<String, String>::const_iterator i = meta.find(key);
+	std::map<String, String>::const_iterator i = meta.find(key);
 	return i == meta.end() ? String() : i->second;
 }
 
@@ -503,7 +505,7 @@ FileSystemTemporary::save_temporary() const
 	xmlpp::Element *root = document.create_root_node("temporary-file-system");
 
 	xmlpp::Element *meta_node = root->add_child("meta");
-	for(map<String, String>::const_iterator i = meta.begin(); i != meta.end(); i++)
+	for(std::map<String, String>::const_iterator i = meta.begin(); i != meta.end(); i++)
 	{
 		xmlpp::Element *entry = meta_node->add_child("entry");
 		entry->add_child("key")->set_child_text(i->first);
@@ -547,7 +549,7 @@ String
 FileSystemTemporary::get_xml_node_text(xmlpp::Node *node)
 {
 	String s;
-	if (node != NULL)
+	if (node)
 	{
 		xmlpp::Element::NodeList list = node->get_children();
 		for(xmlpp::Element::NodeList::iterator i = list.begin(); i != list.end(); i++)
@@ -567,14 +569,14 @@ FileSystemTemporary::open_temporary(const String &filename)
 	String temporary_directory = etl::dirname(filename);
 	String temporary_filename_base = etl::basename(filename);
 
-	size_t tag_begin = temporary_filename_base.find_first_of("_");
-	size_t tag_end   = temporary_filename_base.find_last_of("_");
+	size_t tag_begin = temporary_filename_base.find_first_of('_');
+	size_t tag_end   = temporary_filename_base.find_last_of('_');
 	if (tag_begin != String::npos && tag_end != String::npos && tag_end - tag_begin > 1)
 		tag = temporary_filename_base.substr(tag_begin + 1, tag_end - tag_begin - 1);
 
 	FileSystem::ReadStream::Handle stream = file_system->get_read_stream(filename);
 	if (!stream) return false;
-	stream = new ZReadStream(stream);
+	stream = new ZReadStream(stream, zstreambuf::compression::gzip);
 
 	xmlpp::DomParser parser;
 	parser.parse_stream(*stream);

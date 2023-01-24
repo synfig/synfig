@@ -2,20 +2,23 @@
 /*!	\file filesystemtemporary.h
 **	\brief FileSystemTemporary Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2016 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -137,8 +140,8 @@ namespace synfig
 		bool open_temporary(const String &filename);
 
 		static String get_system_temporary_directory();
-		static String generate_temporary_filename_base(const String &tag);
-		static String generate_system_temporary_filename(const String &tag);
+		static String generate_temporary_filename_base(const String &tag, const String &extension = String());
+		static String generate_system_temporary_filename(const String &tag, const String &extension = String());
 		static String generate_indexed_temporary_filename(const FileSystem::Handle &fs, const String &filename);
 		static bool scan_temporary_directory(const String &tag, FileList &out_files, const String &dirname = String());
 	};

@@ -2,21 +2,24 @@
 /*!	\file valuedesccreatechildbone.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **  Copyright (c) 2013 Ivan Mahonin
 **  Copyright (c) 2020 Aditya Abhiram J
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -33,17 +36,14 @@
 #include <synfig/general.h>
 
 #include "valuedesccreatechildbone.h"
-#include "valuenodestaticlistinsertsmart.h"
-#include "valuenodestaticlistinsert.h"
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/localization.h>
 #include <synfig/valuenodes/valuenode_bone.h>
 #include <synfig/valuenodes/valuenode_composite.h>
+#include <synfig/valuenodes/valuenode_staticlist.h>
 
 #endif
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
 using namespace Action;
@@ -54,7 +54,7 @@ ACTION_INIT(Action::ValueDescCreateChildBone);
 ACTION_SET_NAME(Action::ValueDescCreateChildBone,"ValueDescCreateChildBone");
 ACTION_SET_LOCAL_NAME(Action::ValueDescCreateChildBone,N_("Create Child Bone"));
 ACTION_SET_TASK(Action::ValueDescCreateChildBone,"create_child_bone");
-ACTION_SET_CATEGORY(Action::ValueDescCreateChildBone,Action::CATEGORY_HIDDEN);
+ACTION_SET_CATEGORY(Action::ValueDescCreateChildBone,Action::CATEGORY_VALUEDESC);
 ACTION_SET_PRIORITY(Action::ValueDescCreateChildBone,0);
 ACTION_SET_VERSION(Action::ValueDescCreateChildBone,"0.0");
 
@@ -216,7 +216,9 @@ Action::ValueDescCreateChildBone::prepare()
 
 	Action::Handle action;
 
-	action = ValueNodeStaticListInsert::create();
+	action = Action::create("ValueNodeStaticListInsert");
+	if (!action)
+		throw Error(Error::TYPE_BUG, "ValueDescCreateChildBone: action 'ValueNodeStaticListInsert' not found");
 	action->set_param("canvas", get_canvas());
 	action->set_param("canvas_interface", get_canvas_interface());
 	action->set_param("time", time);
@@ -226,7 +228,7 @@ Action::ValueDescCreateChildBone::prepare()
 	{
 		ValueNode_StaticList::Handle value_node=ValueNode_StaticList::Handle::cast_dynamic(parent_desc.get_parent_value_node());
 		if(!value_node){
-			cout<<"Error"<<endl;
+			std::cout<<"Error"<<std::endl;
 			throw Error(Error::TYPE_NOTREADY, "ValueDescCreateChildBone: not a static list");
 		}
 
@@ -250,7 +252,10 @@ Action::ValueDescCreateChildBone::prepare()
 		action->set_param("value_desc",ValueDesc(value_node,index));
 
 		if(c_active_bone){
-			Action::Handle setActiveBone(Action::Handle(Action::create("ValueNodeSetActiveBone")));
+			Action::Handle setActiveBone(Action::create("ValueNodeSetActiveBone"));
+			if (!setActiveBone)
+				throw Error(Error::TYPE_BUG, "ValueDescCreateChildBone: action 'ValueNodeSetActiveBone' not found");
+
 			setActiveBone->set_param("canvas",get_canvas());
 			setActiveBone->set_param("canvas_interface",get_canvas_interface());
 
@@ -265,7 +270,6 @@ Action::ValueDescCreateChildBone::prepare()
 	} else {
 		ValueNode_StaticList::Handle value_node=ValueNode_StaticList::Handle::cast_dynamic(parent_desc.get_parent_desc().get_parent_value_node());
 		if(!value_node){
-			cout<<"Error"<<endl;
 			throw Error(Error::TYPE_NOTREADY, "ValueDescCreateChildBone: parent value node is not a static list");
 		}
 		int index=parent_desc.get_parent_desc().get_index();
@@ -297,7 +301,9 @@ Action::ValueDescCreateChildBone::prepare()
 
 		action->set_param("item",ValueNode::Handle::cast_dynamic(bone_pair));
 		if(c_active_bone){
-			Action::Handle setActiveBone(Action::Handle(Action::create("ValueNodeSetActiveBone")));
+			Action::Handle setActiveBone(Action::create("ValueNodeSetActiveBone"));
+			if (!setActiveBone)
+				throw Error(Error::TYPE_BUG, "ValueDescCreateChildBone: action 'ValueNodeSetActiveBone' not found");
 			setActiveBone->set_param("canvas",get_canvas());
 			setActiveBone->set_param("canvas_interface",get_canvas_interface());
 

@@ -60,9 +60,12 @@ compile
 /_debug/
 /_production/
 /_release/
+/build-cmake/
 /build.conf
 
 # ------------------------------------------------------------------------
+
+cmake-build
 
 ETL/ETL.pc.in
 ETL/ETL/etl_profile.h
@@ -222,7 +225,6 @@ ETL/test/handle
 ETL/test/hermite
 ETL/test/pen
 ETL/test/smach
-ETL/test/smart_ptr
 ETL/test/stringf
 ETL/test/surface
 

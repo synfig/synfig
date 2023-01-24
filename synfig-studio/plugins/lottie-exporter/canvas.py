@@ -5,6 +5,36 @@ import settings
 from common.misc import calculate_pixels_per_unit
 
 
+def convert_time_to_frames(time):
+    """
+    Given time in hours, minutes, seconds, and frames, split it and convert it
+    to frames
+
+    Args:
+        time (str) : Time in h/m/s/f
+
+    Returns:
+        (float)
+    """
+    time = time.strip().split(" ")
+    ret = 0
+    for frame in time:
+        # Adding time in hours
+        if frame[-1] == "h":
+            ret += float(frame[:-1]) * 60 * 60 * settings.lottie_format["fr"]
+        # Adding time in minutes
+        elif frame[-1] == "m":
+            ret += float(frame[:-1]) * 60 * settings.lottie_format["fr"]
+        # Adding time in seconds
+        elif frame[-1] == "s":
+            ret += float(frame[:-1]) * settings.lottie_format["fr"]
+        # Adding time in frames
+        elif frame[-1] == "f":
+            ret += float(frame[:-1])
+
+    return ret
+
+
 def calc_time(root, lottie, which):
     """
     Converts the starting time and ending time to lottie format
@@ -21,21 +51,8 @@ def calc_time(root, lottie, which):
         phase = "begin-time"
     elif which == "op":
         phase = "end-time"
-    time = root.attrib[phase].split(" ")
-    lottie[which] = 0
-    for frame in time:
-        # Adding time in hours
-        if frame[-1] == "h":
-            lottie[which] += float(frame[:-1]) * 60 * 60 * lottie["fr"]
-        # Adding time in minutes
-        elif frame[-1] == "m":
-            lottie[which] += float(frame[:-1]) * 60 * lottie["fr"]
-        # Adding time in seconds
-        elif frame[-1] == "s":
-            lottie[which] += float(frame[:-1]) * lottie["fr"]
-        # Adding time in frames
-        elif frame[-1] == "f":
-            lottie[which] += float(frame[:-1])
+    time = root.attrib[phase]
+    lottie[which] = convert_time_to_frames(time)
 
     # To support canvas with single frames
     if which == "op":

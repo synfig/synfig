@@ -2,22 +2,25 @@
 /*!	\file widget_defaults.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **  Copyright (c) 2008 Chris Moore
 **  Copyright (c) 2008, 2011, 2012 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -187,73 +190,69 @@ Widget_Defaults::Widget_Defaults():
 
 	// widget colors: outline color and fill color.
 
-	_widget_colors = manage(new Gtk::Grid());
+	widget_colors = manage(new Gtk::Grid());
 	{
 		// widget outline color
-		_widget_otln_color = manage(new Widget_Color());
-		_widget_otln_color->set_size_request(30, 26);
-		_widget_otln_color->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_otln_color_clicked));
-		_widget_otln_color->set_tooltip_text(_("Outline Color"));
+		widget_outline_color = manage(new Widget_Color());
+		widget_outline_color->set_size_request(30, 26);
+		widget_outline_color->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_outline_color_clicked));
+		widget_outline_color->set_tooltip_text(_("Outline Color"));
 
 		// fixed outline color widget size
-		Gtk::Alignment *widget_otln_color(manage(new Gtk::Alignment(Gtk::ALIGN_END, Gtk::ALIGN_END, 0.0, 0.0)));
-		widget_otln_color->add(*_widget_otln_color);
+		widget_outline_color->set_halign(Gtk::ALIGN_END);
+		widget_outline_color->set_valign(Gtk::ALIGN_END);
 
 
 		// widget fill color
-		_widget_fill_color = manage(new Widget_Color());
-		_widget_fill_color->set_size_request(30, 26);
-		_widget_fill_color->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_fill_color_clicked));
-		_widget_fill_color->set_tooltip_text(_("Fill Color"));
+		widget_fill_color = manage(new Widget_Color());
+		widget_fill_color->set_size_request(30, 26);
+		widget_fill_color->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_fill_color_clicked));
+		widget_fill_color->set_tooltip_text(_("Fill Color"));
 
 		// fixed fill color wiget size
-		widget_fill_color = manage(new Gtk::Alignment(Gtk::ALIGN_END, Gtk::ALIGN_END, 0.0, 0.0));
-		widget_fill_color->add(*_widget_fill_color);
-
-
-		Gtk::Image* icon;
+		widget_fill_color->set_halign(Gtk::ALIGN_END);
+		widget_fill_color->set_valign(Gtk::ALIGN_END);
 
 		// Swap button
-		Gtk::Button* _button_swap(manage(new Gtk::Button()));
-		_button_swap->set_relief(Gtk::RELIEF_NONE);
-		_button_swap->set_border_width(0);
-		icon = manage(new Gtk::Image(Gtk::StockID("synfig-swap_colors"), iconsize));
-		_button_swap->add(*icon);
-		dynamic_cast<Gtk::Misc*>(_button_swap->get_child())->set_padding(0, 0);
-		_button_swap->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_swap_color_clicked));
-		_button_swap->set_tooltip_text(_("Swap Fill and\nOutline Colors"));
+		Gtk::Button* button_swap(manage(new Gtk::Button()));
+		button_swap->set_relief(Gtk::RELIEF_NONE);
+		button_swap->set_border_width(0);
+		button_swap->set_image_from_icon_name("swap_colors_icon", iconsize);
+		button_swap->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_swap_color_clicked));
+		button_swap->set_tooltip_text(_("Swap Fill and\nOutline Colors"));
 
-		Gtk::Alignment *button_swap(manage(new Gtk::Alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_CENTER, 0, 0)));
-		button_swap->add(*_button_swap);
+		// fixed swap button widget size
+		button_swap->set_valign(Gtk::ALIGN_CENTER);
+		button_swap->set_halign(Gtk::ALIGN_CENTER);
 
 		// Reset button
-		Gtk::Button* _button_reset(manage(new Gtk::Button()));
-		_button_reset->set_relief(Gtk::RELIEF_NONE);
-		_button_reset->set_border_width(0);
-		icon = manage(new Gtk::Image(Gtk::StockID("synfig-reset_colors"), iconsize));
-		_button_reset->add(*icon);
-		dynamic_cast<Gtk::Misc*>(_button_reset->get_child())->set_padding(0, 0);
-		_button_reset->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_reset_color_clicked));
-		_button_reset->set_tooltip_text(_("Reset Colors to Black and White"));
+		Gtk::Button* button_reset(manage(new Gtk::Button()));
+		button_reset->set_relief(Gtk::RELIEF_NONE);
+		button_reset->set_border_width(0);
+		button_reset->set_image_from_icon_name("reset_colors_icon", iconsize);
+		button_reset->signal_clicked().connect(sigc::mem_fun(*this,&Widget_Defaults::on_reset_color_clicked));
+		button_reset->set_tooltip_text(_("Reset Colors to Black and White"));
 
-		Gtk::Alignment *button_reset (manage (new Gtk::Alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_CENTER, 0 ,0)));
-		button_reset->add(*_button_reset);
+		// fixed reset button widget size
+		button_reset->set_halign(Gtk::ALIGN_CENTER);
+		button_reset->set_valign(Gtk::ALIGN_CENTER);
 
 		// ship child widgets together
-		_widget_colors->attach(*widget_otln_color, 0, 0, 1, 1);
-		_widget_colors->attach(*widget_fill_color, 1, 1, 1, 1);
-		_widget_colors->attach(*button_swap,       1, 0, 1, 1);
-		_widget_colors->attach(*button_reset,      0, 1, 1, 1);
+		widget_colors->attach(*widget_outline_color, 0, 0, 1, 1);
+		widget_colors->attach(*widget_fill_color, 1, 1, 1, 1);
+		widget_colors->attach(*button_swap,       1, 0, 1, 1);
+		widget_colors->attach(*button_reset,      0, 1, 1, 1);
 
 		// fixed colors widget size
-		widget_colors = manage(new Gtk::Alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_CENTER, 0.0, 0.0));
-		widget_colors->add(*_widget_colors);
+		widget_colors->set_valign(Gtk::ALIGN_CENTER);
+		widget_colors->set_halign(Gtk::ALIGN_CENTER);
+
 	}
 
 	// widget brush
-	_widget_brush = manage(new Widget_Brush());
-	_widget_brush->set_size_request(56, 48);
-	_widget_brush->set_tooltip_text(_("Brush Preview"));
+	widget_brush = manage(new Widget_Brush());
+	widget_brush->set_size_request(56, 48);
+	widget_brush->set_tooltip_text(_("Brush Preview"));
 
 	brush_increase = Gtk::manage(new class Gtk::Button("+"));
 	brush_increase->set_tooltip_text(_("Increase brush size"));
@@ -274,16 +273,15 @@ Widget_Defaults::Widget_Defaults():
 	brush_entry->set_tooltip_text(_("Brush Size"));
 
 	auto brush_layout = Gtk::manage(new class Gtk::Grid());
-	brush_layout->attach(*_widget_brush,  0, 0, 2, 1);
+	brush_layout->attach(*widget_brush,  0, 0, 2, 1);
 	brush_layout->attach(*brush_decrease, 0, 1, 1, 1);
 	brush_layout->attach(*brush_increase, 1, 1, 1, 1);
 	brush_layout->attach(*brush_entry,    0, 2, 2, 1);
 	brush_layout->show_all();
 
 	// fixed brush widget size
-	widget_brush = manage(new Gtk::Alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_CENTER, 0.0, 0.0));
-	widget_brush->add(*brush_layout);
-
+	brush_layout->set_valign(Gtk::ALIGN_CENTER);
+	brush_layout->set_halign(Gtk::ALIGN_CENTER);
 
 	// widget bline width
 	widget_bline_width = manage(new Widget_Distance());
@@ -318,7 +316,7 @@ Widget_Defaults::Widget_Defaults():
 	//widget_blend_method->set_tooltip_text(_("Default Blend Method"));
 
 	// widget opacity
-	//widget_opacity = manage(new Gtk::HScale(0.0f,1.01f,0.01f));
+	//widget_opacity = manage(new Gtk::Scale(0.0f,1.01f,0.01f));
 	//widget_opacity->set_digits(2);
 	//widget_opacity->set_value_pos(Gtk::POS_LEFT);
 	//widget_opacity->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_opacity_changed));
@@ -326,15 +324,14 @@ Widget_Defaults::Widget_Defaults():
 	//widget_opacity->set_value_pos(Gtk::POS_LEFT);
 
 	// widget gradient
-	_widget_gradient = manage(new Widget_Gradient());
-	_widget_gradient->signal_clicked().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_gradient_clicked));
-	_widget_gradient->set_size_request(56, 24);
-	_widget_gradient->set_tooltip_text(_("Default Gradient"));
+	widget_gradient = manage(new Widget_Gradient());
+	widget_gradient->signal_clicked().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::on_gradient_clicked));
+	widget_gradient->set_size_request(56, 24);
+	widget_gradient->set_tooltip_text(_("Default Gradient"));
 
 	// fixed gradient widget size
-	widget_gradient = manage(new Gtk::Alignment(Gtk::ALIGN_CENTER, Gtk::ALIGN_CENTER, 0.0, 0.0));
-	widget_gradient->add(*_widget_gradient);
-
+	widget_gradient->set_halign(Gtk::ALIGN_CENTER);
+	widget_gradient->set_valign(Gtk::ALIGN_CENTER);
 
 	// pack all widgets
 	{
@@ -357,7 +354,7 @@ Widget_Defaults::Widget_Defaults():
 		//widget_brush_bline_width->show_all();
 
 		Gtk::ToolItemGroup *tool_item_group = manage(new class Gtk::ToolItemGroup());
-		gtk_tool_item_group_set_label(tool_item_group->gobj(), NULL);
+		gtk_tool_item_group_set_label(tool_item_group->gobj(), nullptr);
 
 		Gtk::ToolPalette *palette = manage(new Gtk::ToolPalette());
 		palette->add(*tool_item_group);
@@ -372,7 +369,7 @@ Widget_Defaults::Widget_Defaults():
 		tool_item_group->insert(*tool_item1);
 		tool_item1->show();
 		Gtk::ToolItem *tool_item2 = manage(new class Gtk::ToolItem());
-		tool_item2->add(*widget_brush);
+		tool_item2->add(*brush_layout);
 		tool_item_group->insert(*tool_item2);
 		tool_item2->show();
 
@@ -391,12 +388,12 @@ Widget_Defaults::Widget_Defaults():
 	// Signals
 	//synfigapp::Main::signal_opacity_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::opacity_refresh));
 	synfigapp::Main::signal_bline_width_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::bline_width_refresh));
-	synfigapp::Main::signal_outline_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::otln_color_refresh));
+	synfigapp::Main::signal_outline_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::outline_color_refresh));
 	synfigapp::Main::signal_fill_color_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::fill_color_refresh));
 	synfigapp::Main::signal_gradient_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::gradient_refresh));
 	//synfigapp::Main::signal_blend_method_changed().connect(sigc::mem_fun(*this,&studio::Widget_Defaults::blend_method_refresh));
 
-	otln_color_refresh();
+	outline_color_refresh();
 	fill_color_refresh();
 	gradient_refresh();
 	//blend_method_refresh();
@@ -408,21 +405,21 @@ Widget_Defaults::~Widget_Defaults()
 }
 
 void
-Widget_Defaults::otln_color_refresh()
+Widget_Defaults::outline_color_refresh()
 {
-	_widget_otln_color->set_value(synfigapp::Main::get_outline_color());
+	widget_outline_color->set_value(synfigapp::Main::get_outline_color());
 }
 
 void
 Widget_Defaults::fill_color_refresh()
 {
-	_widget_fill_color->set_value(synfigapp::Main::get_fill_color());
+	widget_fill_color->set_value(synfigapp::Main::get_fill_color());
 }
 
 void
 Widget_Defaults::gradient_refresh()
 {
-	_widget_gradient->set_value(synfigapp::Main::get_gradient());
+	widget_gradient->set_value(synfigapp::Main::get_gradient());
 }
 
 void
@@ -489,7 +486,7 @@ Widget_Defaults::on_brush_decrease_clicked()
 }
 
 void
-Widget_Defaults::on_otln_color_clicked()
+Widget_Defaults::on_outline_color_clicked()
 {
 	// Left click on outline color
 	App::dialog_color->reset();

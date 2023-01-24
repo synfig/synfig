@@ -2,23 +2,26 @@
 /*!	\file jackdial.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
 **	Copyright (c) 2009 Gerco Ballintijn
 **	Copyright (c) 2009 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -33,17 +36,11 @@
 #endif
 
 #include "jackdial.h"
-
-#include <gtkmm/image.h>
-#include <gtkmm/stock.h>
-#include <gtkmm/alignment.h>
-
 #include <gui/localization.h>
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -54,37 +51,51 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-JackDial::JackDial(): Gtk::Grid()
+// TODO(ice0): duplicated code
+static Gtk::ToggleButton*
+create_toggle_button(const std::string& icon_name, const std::string& tooltip)
 {
-	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
-	toggle_jack = create_icon(iconsize, "synfig-jack",_("Disable JACK"));
-	offset = manage(new Widget_Time());
-	offset->set_value(synfig::Time(0.0));
-	offset->set_size_request(0,-1); // request horizontal shrink
-	offset->set_width_chars(6);
-	offset->set_tooltip_text(_("JACK Offset"));
-
-	attach(*toggle_jack, 0, 0, 1, 1);
-	attach(*offset, 1, 0, 1, 1);
-
-	offset->hide();
-#ifndef WITH_JACK
-	offset->set_sensitive(false);
-#endif
-}
-
-Gtk::ToggleButton *
-JackDial::create_icon(Gtk::IconSize iconsize, const char *stockid, const char *tooltip)
-{
-	iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
-	Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), iconsize));
 	Gtk::ToggleButton *button = manage(new class Gtk::ToggleButton());
-	button->add(*icon);
 	button->set_tooltip_text(tooltip);
-	icon->set_padding(0, 0);
-	icon->show();
+	button->set_image_from_icon_name(icon_name);
 	button->set_relief(Gtk::RELIEF_NONE);
+	button->set_active();
 	button->show();
 
 	return button;
+}
+
+void
+JackDial::set_state(bool enabled)
+{
+	// start
+	if (enabled) {
+		toggle_jack_button->set_tooltip_text(_("Disable JACK"));
+	} else {
+		toggle_jack_button->set_tooltip_text(_("Enable JACK"));
+	}
+	toggle_jack_button->set_active(enabled);
+	offset_widget->set_visible(enabled);
+}
+
+JackDial::JackDial(): Gtk::Box()
+{
+	offset_widget = manage(new Widget_Time());
+	offset_widget->set_value(synfig::Time(0.0));
+	//offset_widget->set_size_request(0,-1); // request horizontal shrink
+	offset_widget->set_width_chars(6);
+	offset_widget->set_tooltip_text(_("JACK Offset"));
+
+	toggle_jack_button = create_toggle_button("jack_icon", "");
+	set_state(false);
+
+	add(*toggle_jack_button);
+	add(*offset_widget);
+	toggle_jack_button->set_margin_start(8);
+	toggle_jack_button->set_margin_end(4);
+
+	offset_widget->hide();
+#ifndef WITH_JACK
+	offset_widget->set_sensitive(false);
+#endif
 }

@@ -2,22 +2,25 @@
 /*!	\file cellrenderer_timetrack.h
 **	\brief Cell renderer for the timetrack. Render all time points (waypoints / keyframes and current time line ...)
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	......... ... 2018 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -40,7 +43,7 @@
 #include <synfigapp/value_desc.h>
 #include <synfigapp/canvasinterface.h>
 
-#include <gui/timemodel.h>
+#include <gui/timeplotdata.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -63,7 +66,7 @@ class CellRenderer_TimeTrack :
 private:
 
 	//! Time model
-	etl::handle<TimeModel> time_model;
+	TimePlotData time_plot_data;
 
 	synfig::UniqueID selected;
 
@@ -122,7 +125,7 @@ public:
 	CellRenderer_TimeTrack();
     ~CellRenderer_TimeTrack();
 
-	const etl::handle<TimeModel>& get_time_model() const { return time_model; }
+	const etl::handle<TimeModel>& get_time_model() const { return time_plot_data.time_model; }
 	void set_time_model(const etl::handle<TimeModel> &x);
 
 	const etl::loose_handle<synfigapp::CanvasInterface>& get_canvas_interface() const { return canvas_interface; }

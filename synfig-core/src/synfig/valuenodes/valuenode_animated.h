@@ -2,20 +2,23 @@
 /*!	\file valuenode_animated.h
 **	\brief Header file for Valuenode_Animated.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -63,8 +66,6 @@ public:
 	static Handle create(ValueNode::Handle value_node, const Time& time);
 
 	virtual ValueBase operator()(Time t) const;
-	virtual void get_values_vfunc(std::map<Time, ValueBase> &x) const;
-
 	virtual Interpolation get_interpolation()const
 		{ return ValueNode_AnimatedInterfaceConst::get_interpolation(); }
 	virtual void set_interpolation(Interpolation i)
@@ -75,6 +76,7 @@ protected:
 
 	virtual void on_changed();
 	virtual void get_times_vfunc(Node::time_set &set) const;
+	virtual void get_values_vfunc(std::map<Time, ValueBase> &x) const;
 };
 
 }; // END of namespace synfig

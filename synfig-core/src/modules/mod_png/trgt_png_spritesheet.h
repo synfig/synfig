@@ -2,8 +2,6 @@
 /*!	\file trgt_png_spritesheet.h
 **	\brief Sprite sheet render target.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **  Copyright (c) 2013		Moritz Grosch (LittleFox) <littlefox@fsfe.org>
@@ -11,18 +9,21 @@
 **
 **  Based on trgt_png.h
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
-**	\endlegal
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
 **
-** === N O T E S ===========================================================
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
+**	\endlegal
 **
 ** ========================================================================= */
 
@@ -36,7 +37,6 @@
 #include <png.h>
 #include <synfig/target_scanline.h>
 #include <synfig/string.h>
-#include <synfig/targetparam.h>
 #include <cstdio>
 
 /* === M A C R O S ========================================================= */
@@ -48,7 +48,9 @@
 class png_trgt_spritesheet : public synfig::Target_Scanline
 {
 	SYNFIG_TARGET_MODULE_EXT
+
 private:
+
 	struct PngImage
 	{
 		PngImage():
@@ -60,8 +62,8 @@ private:
 		unsigned int height;
 		png_byte color_type;
 		png_byte bit_depth;
-		png_structp png_ptr;
-		png_infop info_ptr;
+		png_structp png_ptr = nullptr;
+		png_infop info_ptr = nullptr;
 	};
 
 	static void png_out_error(png_struct *png,const char *msg);
@@ -90,15 +92,18 @@ private:
 	std::string get_image_size_error_message() const;
 
 public:
+
 	png_trgt_spritesheet(const char *filename, const synfig::TargetParam& /* params */);
 	virtual ~png_trgt_spritesheet();
 
-	virtual bool set_rend_desc(synfig::RendDesc *desc);
-	virtual bool start_frame(synfig::ProgressCallback *cb);
-	virtual void end_frame();
+	bool set_rend_desc(synfig::RendDesc* desc) override;
 
-	virtual synfig::Color * start_scanline(int scanline);
-	virtual bool end_scanline();
+	bool start_frame(synfig::ProgressCallback* cb) override;
+	void end_frame() override;
+
+	synfig::Color* start_scanline(int scanline) override;
+	bool end_scanline() override;
+
 	bool read_png_file();
 	bool write_png_file();
 	bool load_png_file();

@@ -2,20 +2,23 @@
 /*!	\file test_bline.cpp
 **	\brief Test BLine class
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2020 Synfig contributors
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -28,53 +31,11 @@
 #include <synfig/valuenodes/valuenode_blinecalcvertex.h>
 #include <synfig/valuenodes/valuenode_const.h>
 
-#include<synfig/general.h>
-
 #include <vector>
 
-#include <iostream>
+#include "test_base.h"
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
-
-ostream& operator<<(ostream& os, const Vector& v)
-{
-    os << '(' << v[0] << ',' << v[1] << ')';
-    return os;
-}
-
-#define ERROR_MESSAGE_TWO_VALUES(a, b) \
-	std::cerr.precision(8); \
-	std::cerr << __FUNCTION__ << ":" << __LINE__ << " - expected " << a << ", but got " << b << std::endl;
-
-#define ASSERT_EQUAL(expected, value) {\
-	if (expected != value) { \
-		ERROR_MESSAGE_TWO_VALUES(expected, value) \
-		return true; \
-	} \
-}
-
-#define ASSERT_APPROX_EQUAL(expected, value) {\
-	if (!synfig::approximate_equal(expected, value)) { \
-		ERROR_MESSAGE_TWO_VALUES(expected, value) \
-		return true; \
-	} \
-}
-
-#define ASSERT_APPROX_EQUAL_MICRO(expected, value) {\
-	if (std::abs(expected - value) > 1e-6) { \
-		ERROR_MESSAGE_TWO_VALUES(expected, value) \
-		return true; \
-	} \
-}
-
-#define ASSERT_VECTOR_APPROX_EQUAL_MICRO(expected, value) {\
-	if (std::abs(expected[0] - value[0]) > 2e-6 || std::abs(expected[1] - value[1]) > 2e-6) { \
-		ERROR_MESSAGE_TWO_VALUES(expected, value) \
-		return true; \
-	} \
-}
 
 void fill_list(std::vector<ValueBase> &list) {
 	BLinePoint p;
@@ -85,7 +46,7 @@ void fill_list(std::vector<ValueBase> &list) {
 	list.push_back(p);
 }
 
-bool test_bline_length() {
+void test_bline_length() {
 	std::vector<ValueBase> list;
 	fill_list(list);
 	
@@ -123,11 +84,9 @@ bool test_bline_length() {
 	l = bline_length(list, loop, &lengths);
 	ASSERT_EQUAL(1, lengths.size());
 	ASSERT_APPROX_EQUAL_MICRO(0.349854, l);
-
-	return false;
 }
 
-bool test_bline_std_to_hom_without_loop() {
+void test_bline_std_to_hom_without_loop() {
 	std::vector<ValueBase> list;
 	fill_list(list);
 
@@ -150,11 +109,9 @@ bool test_bline_std_to_hom_without_loop() {
 		Real value = synfig::std_to_hom(list, positions[i] + index_offset, true, false);
 		ASSERT_APPROX_EQUAL_MICRO(expected[i] + index_offset, value);
 	}
-
-	return false;
 }
 
-bool test_bline_std_to_hom_with_loop() {
+void test_bline_std_to_hom_with_loop() {
 	std::vector<ValueBase> list;
 	fill_list(list);
 
@@ -177,11 +134,9 @@ bool test_bline_std_to_hom_with_loop() {
 		Real value = synfig::std_to_hom(list, positions[i] + index_offset, true, true);
 		ASSERT_APPROX_EQUAL_MICRO(expected[i] + index_offset, value);
 	}
-
-	return false;
 }
 
-bool test_bline_hom_to_std_without_loop() {
+void test_bline_hom_to_std_without_loop() {
 	std::vector<ValueBase> list;
 	fill_list(list);
 
@@ -204,11 +159,9 @@ bool test_bline_hom_to_std_without_loop() {
 		Real value = synfig::hom_to_std(list, positions[i] + index_offset, true, false);
 		ASSERT_APPROX_EQUAL_MICRO(expected[i] + index_offset, value);
 	}
-
-	return false;
 }
 
-bool test_bline_hom_to_std_with_loop() {
+void test_bline_hom_to_std_with_loop() {
 	std::vector<ValueBase> list;
 	fill_list(list);
 
@@ -231,11 +184,9 @@ bool test_bline_hom_to_std_with_loop() {
 		Real value = synfig::hom_to_std(list, positions[i] + index_offset, true, true);
 		ASSERT_APPROX_EQUAL_MICRO(expected[i] + index_offset, value);
 	}
-
-	return false;
 }
 
-bool test_calc_vertex() {
+void test_calc_vertex() {
 	std::vector<ValueBase> list;
 	BLinePoint p;
 	p.set_vertex(Point(-2.342526, -1.151789));
@@ -280,44 +231,22 @@ bool test_calc_vertex() {
 	bline_calc_vertex->set_link("amount", ValueNode_Const::create(0.507960));
 	vertex = (*bline_calc_vertex)(Time()).get(Vector());
 	ASSERT_VECTOR_APPROX_EQUAL_MICRO(Vector(-0.260716, 0.341317), vertex)
-
-	return false;
 }
 
-
-#define TEST_FUNCTION(function_name) {\
-	fail = function_name(); \
-	if (fail) { \
-		error("%s FAILED", #function_name); \
-		failures++; \
-	} \
-}
 
 int main() {
 	Type::subsys_init();
 
-	int failures = 0;
-	bool fail;
-	bool exception_thrown = false;
-
-	try {
+	TEST_SUITE_BEGIN()
 		TEST_FUNCTION(test_bline_length)
 		TEST_FUNCTION(test_bline_std_to_hom_without_loop)
 		TEST_FUNCTION(test_bline_std_to_hom_with_loop)
 		TEST_FUNCTION(test_bline_hom_to_std_without_loop)
 		TEST_FUNCTION(test_bline_hom_to_std_with_loop)
 		TEST_FUNCTION(test_calc_vertex)
-	} catch (...) {
-		error("Some exception has been thrown.");
-		exception_thrown = true;
-	}
-
-	if (failures || exception_thrown)
-		error("Test finished with %i errors and %i exception", failures, exception_thrown);
-	else
-		info("Success");
+	TEST_SUITE_END()
 
 	Type::subsys_stop();
 
-	return (failures || exception_thrown)? 1 : 0;
+	return tst_exit_status;
 }

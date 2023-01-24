@@ -2,22 +2,25 @@
 /*!	\file valuedesclink.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2010, 2011 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -44,15 +47,12 @@
 #include <synfig/blinepoint.h>
 
 #include <synfigapp/localization.h>
-#include <zconf.h>
+//#include <zconf.h>
 
 #endif
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
-using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
@@ -79,7 +79,7 @@ ACTION_SET_VERSION(Action::ValueDescLinkOpposite,"0.0");
 /* === M E T H O D S ======================================================= */
 
 Action::ValueDescLink::ValueDescLink():
-poison(false), status_level(0), link_scalar(0.0), link_opposite(false)
+poison(false), status_level(0), link_opposite(false)
 {
 }
 
@@ -126,7 +126,7 @@ Action::ValueDescLink::set_param(const synfig::String& name, const Action::Param
 				String param_name;
 				if (value_desc.parent_is_value_desc() && !value_desc.get_sub_name().empty())
 				{
-					LinkableValueNode::Vocab vocab = compo->get_children_vocab();
+					const LinkableValueNode::Vocab& vocab = compo->get_children_vocab();
 					for(LinkableValueNode::Vocab::const_iterator i = vocab.begin(); i != vocab.end(); ++i)
 						if (i->get_name() == value_desc.get_sub_name())
 							param_name = value_desc.get_sub_name();
@@ -169,7 +169,6 @@ Action::ValueDescLink::set_param(const synfig::String& name, const Action::Param
 			}
 
 			link_value_node=value_desc.get_value_node();
-			link_scalar=value_desc.parent_is_linkable_value_node()?value_desc.get_scalar():1.0;
 			status_message = _("Used exported ValueNode ('") + link_value_node->get_id() + _("').");
 		}
 		else if(value_desc.is_value_node())
@@ -179,7 +178,6 @@ Action::ValueDescLink::set_param(const synfig::String& name, const Action::Param
 				status_level = 1;
 				status_message = _("Using the only available ValueNode.");
 				link_value_node=value_desc.get_value_node();
-				link_scalar=value_desc.parent_is_linkable_value_node()?value_desc.get_scalar():1.0;
 			}
 			else if(link_value_node->is_exported())
 			{
@@ -193,7 +191,6 @@ Action::ValueDescLink::set_param(const synfig::String& name, const Action::Param
 					status_level = 2;
 					status_message = _("Using the most referenced ValueNode.");
 					link_value_node=value_desc.get_value_node();
-					link_scalar=value_desc.parent_is_linkable_value_node()?value_desc.get_scalar():1.0;
 				}
 				else if (status_level <= 2)
 				{
@@ -208,7 +205,6 @@ Action::ValueDescLink::set_param(const synfig::String& name, const Action::Param
 				status_level = 3;
 				status_message = _("There's a tie for most referenced; using the animated ValueNode.");
 				link_value_node=value_desc.get_value_node();
-				link_scalar=value_desc.parent_is_linkable_value_node()?value_desc.get_scalar():1.0;
 			}
 			else if(ValueNode_Const::Handle::cast_dynamic(value_desc.get_value_node()) && !ValueNode_Const::Handle::cast_dynamic(link_value_node))
 			{
@@ -230,7 +226,6 @@ Action::ValueDescLink::set_param(const synfig::String& name, const Action::Param
 					status_level = 4;
 					status_message = _("There's a tie for most referenced, and both are animated; using the one with the most waypoints.");
 					link_value_node=value_desc.get_value_node();
-					link_scalar=value_desc.parent_is_linkable_value_node()?value_desc.get_scalar():1.0;
 				}
 				else if (status_level <= 4)
 				{
@@ -250,7 +245,6 @@ Action::ValueDescLink::set_param(const synfig::String& name, const Action::Param
 					status_level = 4;
 					status_message = _("There's a tie for most referenced, and both are linkable value node animated; using the one with the most waypoints.");
 					link_value_node=value_desc.get_value_node();
-					link_scalar=value_desc.parent_is_linkable_value_node()?value_desc.get_scalar():1.0;
 				}
 				else if (status_level <= 4)
 				{
@@ -266,7 +260,6 @@ Action::ValueDescLink::set_param(const synfig::String& name, const Action::Param
 					status_level = 5;
 					status_message = _("Everything is tied; using the least recently modified value.");
 					link_value_node=value_desc.get_value_node();
-					link_scalar=value_desc.parent_is_linkable_value_node()?value_desc.get_scalar():1.0;
 				}
 				else if (status_level <= 5)
 				{
@@ -355,49 +348,9 @@ Action::ValueDescLink::prepare()
 					link_is_scaled=true;
 		}
 
-	std::list<ValueDesc>::iterator iter;
-	// Gets the scalar value of the current value node
-	Real current_scalar(0);
-	if(value_desc_list.begin()->parent_is_linkable_value_node())
-		current_scalar=value_desc_list.begin()->get_scalar();
-	bool found_inverse(false);
-	// Check if we are dealing the case of linking different types of tangents
-	for(iter=value_desc_list.begin();iter!=value_desc_list.end();++iter)
-	{
-		ValueDesc& v_desc(*iter);
-		// If parent is linkable value node
-		if(v_desc.parent_is_linkable_value_node())
-		{
-			// if the link describe to any tangent (index 4 or 5), continue
-			if(v_desc.get_index() == 4 || v_desc.get_index() == 5)
-			{
-				synfig::Real iter_scalar=v_desc.get_scalar();
-				// Let's compare the sign  of scalar of the value node with the current one
-				// and remember if a change of sign is seen.
-				if(iter_scalar*current_scalar < 0) // if they have different signs
-				{
-					found_inverse=true;
-					current_scalar=iter_scalar;
-				}
-			}
-			else // link doesn't describe a tangent
-			{
-				found_inverse=false;
-				break;
-			}
-		}
-		else // parent is not a linkable value node
-		{
-			found_inverse=false;
-			break;
-		}
-	}
-	// found_inverse =  true only if all they are tangents and some are inversed tangents
 	//Now let's loop through all the value desc
-	for(iter=value_desc_list.begin();iter!=value_desc_list.end();++iter)
+	for(const ValueDesc& value_desc : value_desc_list)
 	{
-		ValueDesc& value_desc(*iter);
-
 		// only one of the selected items can be exported - that's the one we're linking to
 		// don't link it to itself
 		if (value_desc.is_exported())
@@ -405,21 +358,19 @@ Action::ValueDescLink::prepare()
 		// Don't link the selected to itself (maybe it is redundant with the previous check)
 		if(value_desc.get_value_node() == link_value_node)
 			continue;
-		// found_inverse xor link_opposite
-		// If     found_inverse and not link_opposite then scale by -1 first (smart link)
-		// If     found inverse and     link_opposite then do a direct link instead
-		// If not found_inverse and not link_opposite then do a direct link instead
-		// If not found_inverse and     link_opposite then scale by -1 first (smart link)
-		if((found_inverse && !link_opposite) || (!found_inverse && link_opposite))
+
+		// If not link_opposite then do a direct link instead
+		// If link_opposite then scale by -1 first (smart link)
+		if(link_opposite)
 		{
 			//Check if the current value node has opposite scalar than the link
 			// value node to convert to scale -1.0 before connect.
 			// Check also if the link value node is NOT also a scale -1
 			// And check also if we are linking opposite
-			if( (value_desc.get_scalar()*link_scalar<0 || link_opposite) && (link_is_scaled==false))
+			if(!link_is_scaled)
 			{
 				//Let's create a Scale Value Node
-				synfig::ValueNode::Handle scale_value_node=synfig::ValueNodeRegistry::create("scale",iter->get_value(time));
+				synfig::ValueNode::Handle scale_value_node=synfig::ValueNodeRegistry::create("scale",value_desc.get_value(time));
 				if(!scale_value_node)
 					throw Error(Error::TYPE_BUG);
 				scale_value_node->set_parent_canvas(get_canvas());
@@ -465,7 +416,7 @@ Action::ValueDescLink::prepare()
 					throw Error(Error::TYPE_NOTREADY);
 				add_action_front(action3);
 			}
-			else if((iter->get_scalar()*link_scalar<0 || link_opposite) && (link_is_scaled==true))
+			else
 			{
 				//Let's connect the link value node -> link to the value node
 				// There is not needed conversion to scale of the value node
@@ -481,22 +432,6 @@ Action::ValueDescLink::prepare()
 				if(!action4->is_ready())
 					throw Error(Error::TYPE_NOTREADY);
 				add_action_front(action4);
-			}
-			else
-			{
-				//Let's connect the link value node to the value node
-				Action::Handle action(Action::create("ValueDescConnect"));
-
-				action->set_param("canvas",get_canvas());
-				action->set_param("canvas_interface",get_canvas_interface());
-				action->set_param("src",link_value_node);
-				action->set_param("dest",value_desc);
-
-				assert(action->is_ready());
-				if(!action->is_ready())
-					throw Error(Error::TYPE_NOTREADY);
-
-				add_action_front(action);
 			}
 		} // found inverse
 		else // Not found inverse so do a regular link

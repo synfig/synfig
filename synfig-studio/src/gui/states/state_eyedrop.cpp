@@ -2,20 +2,23 @@
 /*!	\file state_eyedrop.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -63,7 +66,7 @@ class studio::StateEyedrop_Context : public sigc::trackable
 	CanvasView *canvas_view;
 	CanvasView::IsWorking is_working;
 
-	Gtk::Table options_table;
+	Gtk::Grid options_grid;
 	Gtk::Label title_label;
 
 public:
@@ -112,27 +115,30 @@ StateEyedrop_Context::StateEyedrop_Context(CanvasView *canvasView):
 	synfig::info("Entered Eyedrop State");
 	canvas_view->get_work_area()->set_cursor(Gdk::Cursor::create(Gdk::CROSSHAIR));
 
-	// Setup Eyedrop options dialog
-	title_label.set_label(_("Eyedrop Tool"));
+	// Toolbox widgets
+	title_label.set_label(_("Eyedropper Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
 	title_label.set_attributes(list);
-	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	title_label.set_hexpand();
+	title_label.set_halign(Gtk::ALIGN_START);
+	title_label.set_valign(Gtk::ALIGN_CENTER);
 
-	options_table.attach(title_label,
-		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Click to assign Outline Color"), Gtk::ALIGN_START)),
-		0, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
-	options_table.attach(*manage(new Gtk::Label(_("Ctrl + Click to assign Fill Color"), Gtk::ALIGN_START)),
-		0, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0);
+	// Toolbox layout
+	options_grid.attach(title_label,
+		0, 0, 2, 1);
+	options_grid.attach(*manage(new Gtk::Label(_("Click to assign Fill Color"), Gtk::ALIGN_START)),
+		0, 1, 2, 1);
+	options_grid.attach(*manage(new Gtk::Label(_("Ctrl + Click to assign Outline Color"), Gtk::ALIGN_START)),
+		0, 2, 2, 1);
 
-	options_table.set_border_width(GAP*2);
-	options_table.set_row_spacings(GAP);
+	options_grid.set_border_width(GAP*2);
+	options_grid.set_row_spacing(GAP);
+	options_grid.set_margin_bottom(0);
+	options_grid.show_all();
 
-	options_table.show_all();
 	refresh_tool_options();
-
 	App::dock_toolbox->refresh();
 }
 
@@ -149,8 +155,8 @@ void
 StateEyedrop_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_table);
-	App::dialog_tool_options->set_local_name(_("Eyedrop Tool"));
+	App::dialog_tool_options->set_widget(options_grid);
+	App::dialog_tool_options->set_local_name(_("Eyedropper Tool"));
 	App::dialog_tool_options->set_name("eyedrop");
 }
 
@@ -189,10 +195,10 @@ StateEyedrop_Context::event_workarea_mouse_button_down_handler(const Smach::even
 	{
 		Color color(canvas_view->get_canvas()->get_context(canvas_view->get_context_params()).get_color(event.pos));
 		if((event.modifier&GDK_CONTROL_MASK) == GDK_CONTROL_MASK) {
-		    synfigapp::Main::set_fill_color(color);
+			synfigapp::Main::set_outline_color(color);
 		}
 		else {
-		    synfigapp::Main::set_outline_color(color);
+			synfigapp::Main::set_fill_color(color);
 		}
 		studio::App::dialog_color->set_color(color);
 		return Smach::RESULT_ACCEPT;

@@ -2,20 +2,23 @@
 /*!	\file colormatrix.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **  ......... ... 2016 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -31,7 +34,6 @@
 
 #include <cassert>
 #include <cstring>
-#include <ETL/stringf>
 #include <synfig/real.h>
 
 #include "colormatrix.h"
@@ -40,8 +42,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -581,7 +581,7 @@ ColorMatrix::operator*=(const value_type &rhs)
 String
 ColorMatrix::get_string(int spaces, String before, String after)const
 {
-	return etl::strprintf(
+	return strprintf(
 		"%*s [%7.2f %7.2f %7.2f %7.2f %7.2f] %s\n"
 		"%*s [%7.2f %7.2f %7.2f %7.2f %7.2f] %s\n"
 		"%*s [%7.2f %7.2f %7.2f %7.2f %7.2f] %s\n"

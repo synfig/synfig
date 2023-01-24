@@ -2,21 +2,24 @@
 /*!	\file widget_gradient.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -32,13 +35,13 @@
 
 #include <gui/widgets/widget_gradient.h>
 
-#include <ETL/misc>
-
 #include <gtkmm/menu.h>
 
 #include <gui/app.h>
 #include <gui/exception_guard.h>
 #include <gui/localization.h>
+
+#include <synfig/misc.h>
 
 #endif
 
@@ -158,14 +161,14 @@ Widget_Gradient::on_draw(const ::Cairo::RefPtr< ::Cairo::Context>& cr)
 		get_style_context()->render_arrow(
 			cr,
 			1.5*M_PI,
-			etl::round_to_int(selected_iter->pos*w)-CONTROL_HEIGHT/2+1,
+			synfig::round_to_int(selected_iter->pos*w)-CONTROL_HEIGHT/2+1,
 			h-CONTROL_HEIGHT,
 			CONTROL_HEIGHT
 		);
 		get_style_context()->render_arrow(
 			cr,
 			1.5*M_PI,
-			etl::round_to_int(selected_iter->pos*w)-CONTROL_HEIGHT/2+1,
+			synfig::round_to_int(selected_iter->pos*w)-CONTROL_HEIGHT/2+1,
 			h-CONTROL_HEIGHT*1.3,
 			CONTROL_HEIGHT
 		);
@@ -205,7 +208,7 @@ Widget_Gradient::popup_menu(float x)
 	for(std::vector<Gtk::Widget*>::iterator i = children.begin(); i != children.end(); ++i)
 		menu->remove(**i);
 
-	Gtk::MenuItem *item = NULL;
+	Gtk::MenuItem* item = nullptr;
 
 	item = manage(new Gtk::MenuItem(_("Insert Color Stop")));
 	item->signal_activate().connect(

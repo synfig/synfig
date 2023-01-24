@@ -2,22 +2,25 @@
 /*!	\file valuenode_blinecalctangent.cpp
 **	\brief Implementation of the "BLine Tangent" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **  Copyright (c) 2011 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -39,22 +42,19 @@
 #include <synfig/localization.h>
 #include <synfig/valuenode_registry.h>
 #include <synfig/exception.h>
-#include <ETL/hermite>
-#include <ETL/calculus>
+#include <synfig/bezier.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_BLineCalcTangent, RELEASE_VERSION_0_61_07, "blinecalctangent", "Spline Tangent")
+REGISTER_VALUENODE(ValueNode_BLineCalcTangent, RELEASE_VERSION_0_61_07, "blinecalctangent", N_("Spline Tangent"))
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -63,12 +63,11 @@ REGISTER_VALUENODE(ValueNode_BLineCalcTangent, RELEASE_VERSION_0_61_07, "blineca
 ValueNode_BLineCalcTangent::ValueNode_BLineCalcTangent(Type &x):
 	LinkableValueNode(x)
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	if(x!=type_angle && x!=type_real && x!=type_vector)
 		throw Exception::BadType(x.description.local_name);
 
-	ValueNode_BLine* value_node(new ValueNode_BLine());
+	ValueNode_BLine* value_node(ValueNode_BLine::create());
 	set_link("bline",value_node);
 	set_link("loop",ValueNode_Const::create(bool(false)));
 	set_link("amount",ValueNode_Const::create(Real(0.5)));
@@ -85,7 +84,7 @@ ValueNode_BLineCalcTangent::create_new()const
 }
 
 ValueNode_BLineCalcTangent*
-ValueNode_BLineCalcTangent::create(const ValueBase &x)
+ValueNode_BLineCalcTangent::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_BLineCalcTangent(x.get_type());
 }
@@ -98,8 +97,8 @@ ValueNode_BLineCalcTangent::~ValueNode_BLineCalcTangent()
 ValueBase
 ValueNode_BLineCalcTangent::operator()(Time t, Real amount)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	const ValueBase::List bline = (*bline_)(t).get_list();
 	const ValueBase bline_value_node = (*bline_)(t);
@@ -129,18 +128,17 @@ ValueNode_BLineCalcTangent::operator()(Time t, Real amount)const
 	if (amount > 1) amount = 1;
 	amount *= count;
 
-	int i0 = std::max(0, std::min(size-1, (int)floor(amount)));
+	int i0 = synfig::clamp((int)floor(amount), 0, size-1);
 	int i1 = (i0 + 1) % size;
 	Real part = amount - i0;
 
 	const BLinePoint &blinepoint0 = bline[i0].get(BLinePoint());
 	const BLinePoint &blinepoint1 = bline[i1].get(BLinePoint());
 
-	etl::hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
+	hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
 							   blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
-	etl::derivative< etl::hermite<Vector> > deriv(curve);
 
-	Vector tangent = deriv(part);
+	Vector tangent = curve.derivative(part);
 
 	Type &type(get_type());
 	if (type == type_angle)

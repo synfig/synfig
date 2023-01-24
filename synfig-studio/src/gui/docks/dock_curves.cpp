@@ -2,20 +2,23 @@
 /*!	\file dock_curves.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -52,10 +55,12 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dock_Curves::Dock_Curves():
-	Dock_CanvasSpecific("curves",_("Graphs"),Gtk::StockID("synfig-curves")),
+	Dock_CanvasSpecific("curves",_("Graphs"),"graphs_icon"),
 	table_(),
 	last_widget_curves_()
-{ }
+{
+	vscrollbar_.set_orientation(Gtk::ORIENTATION_VERTICAL);
+}
 
 Dock_Curves::~Dock_Curves()
 {
@@ -123,23 +128,14 @@ Dock_Curves::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 		)
 	);
 
-	studio::LayerTree* tree_layer(dynamic_cast<studio::LayerTree*>(canvas_view->get_ext_widget("layers_cmp")));
-	tree_layer->signal_param_tree_header_height_changed().connect(
-		sigc::mem_fun(*this, &studio::Dock_Curves::on_update_header_height) );
+	if (studio::LayerTree* tree_layer = dynamic_cast<studio::LayerTree*>(canvas_view->get_ext_widget("layers_cmp"))) {
+		tree_layer->signal_param_tree_header_height_changed().connect(
+				sigc::mem_fun(*this, &studio::Dock_Curves::on_update_header_height) );
+	}
 
-	curves->signal_waypoint_clicked().connect([=](synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint,std::less<synfig::UniqueID>> waypoint_set, int button) {
-		if (button != 3)
-			return;
-		button = 2;
-		canvas_view->on_waypoint_clicked_canvasview(value_desc, waypoint_set, button);
-	});
+	curves->signal_waypoint_clicked().connect(sigc::mem_fun(*this, &Dock_Curves::on_curves_waypoint_clicked));
 
-	curves->signal_waypoint_double_clicked().connect([=](synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint,std::less<synfig::UniqueID>> waypoint_set, int button) {
-		if (button != 1)
-			return;
-		button = -1;
-		canvas_view->on_waypoint_clicked_canvasview(value_desc, waypoint_set, button);
-	});
+	curves->signal_waypoint_double_clicked().connect(sigc::mem_fun(*this, &Dock_Curves::on_curves_waypoint_double_clicked));
 
 	canvas_view->set_ext_widget(get_name(),curves);
 }
@@ -189,6 +185,9 @@ Dock_Curves::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 	if(canvas_view)
 	{
 		last_widget_curves_=dynamic_cast<Widget_Curves*>( canvas_view->get_ext_widget(get_name()) );
+		if (!last_widget_curves_) {
+			return;
+		}
 
 		vscrollbar_.set_adjustment(last_widget_curves_->get_range_adjustment());
 		hscrollbar_.set_adjustment(canvas_view->time_model()->scroll_time_adjustment());
@@ -219,4 +218,26 @@ Dock_Curves::on_update_header_height(int height)
 	widget_timeslider_.get_size_request(w, h);
 	if (h != ts_height)
 		widget_timeslider_.set_size_request(-1, ts_height);
+}
+
+void
+Dock_Curves::on_curves_waypoint_clicked(synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set, int button)
+{
+	if (button != 3)
+		return;
+	button = 2;
+	CanvasView::LooseHandle canvas_view = get_canvas_view();
+	if (canvas_view)
+		canvas_view->on_waypoint_clicked_canvasview(value_desc, waypoint_set, button);
+}
+
+void
+Dock_Curves::on_curves_waypoint_double_clicked(synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set, int button)
+{
+	if (button != 1)
+		return;
+	button = -1;
+	CanvasView::LooseHandle canvas_view = get_canvas_view();
+	if (canvas_view)
+		canvas_view->on_waypoint_clicked_canvasview(value_desc, waypoint_set, button);
 }

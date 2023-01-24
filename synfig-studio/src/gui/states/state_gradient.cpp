@@ -2,22 +2,25 @@
 /*!	\file state_gradient.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **  Copyright (c) 2008 Chris Moore
 **  Copyright (c) 2010 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -32,8 +35,6 @@
 #endif
 
 #include <gui/states/state_gradient.h>
-
-#include <gtkmm/alignment.h>
 
 #include <gui/app.h>
 #include <gui/canvasview.h>
@@ -60,27 +61,15 @@ using namespace studio;
 /* === M A C R O S ========================================================= */
 
 #ifndef LAYER_CREATION
-#define LAYER_CREATION(button, fun, stockid, tooltip)	\
-	{ \
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID(stockid), \
-			Gtk::ICON_SIZE_SMALL_TOOLBAR)); \
-		button.add(*icon); \
-	} \
+#define LAYER_CREATION(button, fun, icon_name, tooltip)	\
+	button.set_image_from_icon_name(icon_name, Gtk::BuiltinIconSize::ICON_SIZE_SMALL_TOOLBAR); \
 	button.set_relief(Gtk::RELIEF_NONE); \
 	button.set_tooltip_text(tooltip); \
 	button.signal_toggled().connect(sigc::mem_fun(*this, \
 		&studio::StateGradient_Context::fun))
 #endif
 
-// indentation for options layout
-#ifndef SPACING
-#define SPACING(name, px) \
-	Gtk::Alignment *name = Gtk::manage(new Gtk::Alignment()); \
-	name->set_size_request(px)
-#endif
-
 const int GAP = 3;
-const int INDENTATION = 6;
 
 /* === G L O B A L S ======================================================= */
 
@@ -105,34 +94,28 @@ class studio::StateGradient_Context : public sigc::trackable
 
 	bool prev_workarea_layer_status_;
 
-	// holder of options
-	Gtk::Table options_table;
+	Gtk::Grid options_grid;
 
-	// title
 	Gtk::Label title_label;
 
-	// layer name:
 	Gtk::Label id_label;
-	Gtk::HBox id_box;
 	Gtk::Entry id_entry;
+	Gtk::Box id_box;
 
-	// layer types to create:
 	Gtk::Label layer_types_label;
 	Gtk::ToggleButton layer_circle_togglebutton;
 	Gtk::ToggleButton layer_linear_gradient_togglebutton;
 	Gtk::ToggleButton layer_radial_gradient_togglebutton;
 	Gtk::ToggleButton layer_conical_gradient_togglebutton;
 	Gtk::ToggleButton layer_spiral_gradient_togglebutton;
-	Gtk::HBox layer_types_box;
+	Gtk::Box layer_types_box;
 
-	// blend method
 	Gtk::Label blend_label;
-	Gtk::HBox blend_box;
 	Widget_Enum blend_enum;
+	Gtk::Box blend_box;
 
-	// opacity
 	Gtk::Label opacity_label;
-	Gtk::HScale opacity_hscl;
+	Gtk::Scale opacity_hscl;
 
 
 public:
@@ -257,49 +240,25 @@ StateGradient_Context::load_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		String value;
+		set_id(settings.get_value("gradient.id", "Gradient"));
 
-		if(settings.get_value("gradient.id",value))
-			set_id(value);
-		else
-			set_id("Gradient");
+		set_layer_linear_gradient_flag(settings.get_value("gradient.layer_linear_gradient", true));
 
-		if(settings.get_value("gradient.layer_linear_gradient",value) && value=="0")
-			set_layer_linear_gradient_flag(false);
-		else
-			set_layer_linear_gradient_flag(true);
+		set_layer_radial_gradient_flag(settings.get_value("gradient.layer_radial_gradient", true));
 
-		if(settings.get_value("gradient.layer_radial_gradient",value) && value=="0")
-			set_layer_radial_gradient_flag(false);
-		else
-			set_layer_radial_gradient_flag(true);
+		set_layer_conical_gradient_flag(settings.get_value("gradient.layer_conical_gradient", true));
 
-		if(settings.get_value("gradient.layer_conical_gradient",value) && value=="0")
-			set_layer_conical_gradient_flag(false);
-		else
-			set_layer_conical_gradient_flag(true);
+		set_layer_spiral_gradient_flag(settings.get_value("gradient.layer_spiral_gradient", true));
 
-		if(settings.get_value("gradient.layer_spiral_gradient",value) && value=="0")
-			set_layer_spiral_gradient_flag(false);
-		else
-			set_layer_spiral_gradient_flag(true);
+		set_blend(settings.get_value("gradient.blend", int(Color::BLEND_COMPOSITE)));
 
-		if(settings.get_value("gradient.blend",value))
-			set_blend(atoi(value.c_str()));
-		else
-			set_blend(Color::BLEND_COMPOSITE);
+		set_opacity(settings.get_value("gradient.opacity", 1.0));
 
-		if(settings.get_value("gradient.opacity",value))
-			set_opacity(atof(value.c_str()));
-		else
-			set_opacity(1);
-
-	  // determine layer flags
+		// determine layer flags
 		layer_linear_gradient_flag = get_layer_linear_gradient_flag();
-	  layer_radial_gradient_flag = get_layer_radial_gradient_flag();
-	  layer_conical_gradient_flag = get_layer_conical_gradient_flag();
-	  layer_spiral_gradient_flag = get_layer_spiral_gradient_flag();
+		layer_radial_gradient_flag = get_layer_radial_gradient_flag();
+		layer_conical_gradient_flag = get_layer_conical_gradient_flag();
+		layer_spiral_gradient_flag = get_layer_spiral_gradient_flag();
 	}
 	catch(...)
 	{
@@ -312,14 +271,13 @@ StateGradient_Context::save_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		settings.set_value("gradient.id",get_id().c_str());
-		settings.set_value("gradient.layer_linear_gradient",get_layer_linear_gradient_flag()?"1":"0");
-		settings.set_value("gradient.layer_radial_gradient",get_layer_radial_gradient_flag()?"1":"0");
-		settings.set_value("gradient.layer_conical_gradient",get_layer_conical_gradient_flag()?"1":"0");
-		settings.set_value("gradient.layer_spiral_gradient",get_layer_spiral_gradient_flag()?"1":"0");
-		settings.set_value("gradient.blend",strprintf("%d",get_blend()));
-		settings.set_value("gradient.opacity",strprintf("%f",(float)get_opacity()));
+		settings.set_value("gradient.id",get_id());
+		settings.set_value("gradient.layer_linear_gradient",get_layer_linear_gradient_flag());
+		settings.set_value("gradient.layer_radial_gradient",get_layer_radial_gradient_flag());
+		settings.set_value("gradient.layer_conical_gradient",get_layer_conical_gradient_flag());
+		settings.set_value("gradient.layer_spiral_gradient",get_layer_spiral_gradient_flag());
+		settings.set_value("gradient.blend",get_blend());
+		settings.set_value("gradient.opacity",get_opacity());
 	}
 	catch(...)
 	{
@@ -384,111 +342,93 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 	duckmatic_push(get_work_area()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
-	opacity_hscl(0.0f, 1.0125f, 0.0125f)
-
+	opacity_hscl(Gtk::Adjustment::create(1.0, 0.0, 1.0, 0.01, 0.1))
 {
 	egress_on_selection_change=true;
 
-	// Set up the tool options dialog
-
-	// title
+	// Toolbox widgets
 	title_label.set_label(_("Gradient Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
 	title_label.set_attributes(list);
-	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	title_label.set_hexpand();
+	title_label.set_halign(Gtk::ALIGN_START);
+	title_label.set_valign(Gtk::ALIGN_CENTER);
 
-	// layer name
 	id_label.set_label(_("Name:"));
-	SPACING(name_gap, GAP);
-	id_box.pack_start(id_label, Gtk::PACK_SHRINK);
-	id_box.pack_start(*name_gap, Gtk::PACK_SHRINK);
-	id_box.pack_start(id_entry, Gtk::PACK_EXPAND_WIDGET);
+	id_label.set_halign(Gtk::ALIGN_START);
+	id_label.set_valign(Gtk::ALIGN_CENTER);
+	id_label.get_style_context()->add_class("gap");
+	id_box.pack_start(id_label, false, false, 0);
+	id_box.pack_start(id_entry, true, true, 0);
 
-	// layer (gradient) creation label
 	layer_types_label.set_label(_("Layer Type:"));
-	layer_types_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	// layer creation buttons
+	layer_types_label.set_halign(Gtk::ALIGN_START);
+	layer_types_label.set_valign(Gtk::ALIGN_CENTER);
+
 	LAYER_CREATION(layer_linear_gradient_togglebutton, toggle_layer_linear_gradient,
-		("synfig-layer_gradient_linear"), _("Create a linear gradient"));
+		"layer_gradient_linear_icon", _("Create a linear gradient"));
 	LAYER_CREATION(layer_radial_gradient_togglebutton, toggle_layer_radial_gradient,
-		("synfig-layer_gradient_radial"), _("Create a radial gradient"));
+		"layer_gradient_radial_icon", _("Create a radial gradient"));
 	LAYER_CREATION(layer_conical_gradient_togglebutton, toggle_layer_conical_gradient,
-		("synfig-layer_gradient_conical"), _("Create a conical gradient"));
+		"layer_gradient_conical_icon", _("Create a conical gradient"));
 	LAYER_CREATION(layer_spiral_gradient_togglebutton, toggle_layer_spiral_gradient,
-		("synfig-layer_gradient_spiral"), _("Create a spiral gradient"));
+		"layer_gradient_spiral_icon", _("Create a spiral gradient"));
 
-	SPACING(layer_types_indent, INDENTATION);
-	layer_types_box.pack_start(*layer_types_indent, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_linear_gradient_togglebutton, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_radial_gradient_togglebutton, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_conical_gradient_togglebutton, Gtk::PACK_SHRINK);
-	layer_types_box.pack_start(layer_spiral_gradient_togglebutton, Gtk::PACK_SHRINK);
+	layer_linear_gradient_togglebutton.get_style_context()->add_class("indentation");
+	layer_types_box.pack_start(layer_linear_gradient_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_radial_gradient_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_conical_gradient_togglebutton, false, false, 0);
+	layer_types_box.pack_start(layer_spiral_gradient_togglebutton, false, false, 0);
 
-	// blend method label
 	blend_label.set_label(_("Blend Method:"));
-	blend_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	SPACING(blend_gap, GAP);
-	blend_box.pack_start(blend_label, Gtk::PACK_SHRINK);
-	blend_box.pack_start(*blend_gap, Gtk::PACK_SHRINK);
-	// blend method
+	blend_label.set_halign(Gtk::ALIGN_START);
+	blend_label.set_valign(Gtk::ALIGN_CENTER);
+	blend_label.get_style_context()->add_class("gap");
+
+	blend_box.pack_start(blend_label, false, false, 0);
+
 	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
 		.set_local_name(_("Blend Method"))
 		.set_description(_("Defines the blend method to be used for gradients")));
 
-	// opacity label
 	opacity_label.set_label(_("Opacity:"));
-	opacity_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	// opacity
+	opacity_label.set_halign(Gtk::ALIGN_START);
+	opacity_label.set_valign(Gtk::ALIGN_CENTER);
+
 	opacity_hscl.set_digits(2);
 	opacity_hscl.set_value_pos(Gtk::POS_LEFT);
 	opacity_hscl.set_tooltip_text(_("Opacity"));
 
-	// options table
-	// 0, title
-	options_table.attach(title_label,
-		0, 2,  0,  1, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 1, name
-	options_table.attach(id_box,
-		0, 2, 1, 2, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 2, layer types creation
-	options_table.attach(layer_types_label,
-		0, 2, 2, 3, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(layer_types_box,
-		0, 2, 3, 4, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 3, blend method
-	options_table.attach(blend_box,
-		0, 1, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(blend_enum,
-		1, 2, 4, 5, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	// 4, opacity
-	options_table.attach(opacity_label,
-		0, 1, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(opacity_hscl,
-		1, 2, 5, 6, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-
-	// fine-tune options layout
-	options_table.set_border_width(GAP*2); // border width
-	options_table.set_row_spacings(GAP); // row gap
-	options_table.set_row_spacing(0, GAP*2); // the gap between first and second row.
-	options_table.set_row_spacing(2, 1); // row gap between label and icon of layer type
-	//options_table.set_row_spacing(6, 0); // the final row using border width of table
-	options_table.set_margin_bottom(0);
-	options_table.show_all();
-
 	load_settings();
+
+	// Toolbox layout
+	options_grid.attach(title_label,
+		0, 0, 2, 1);
+	options_grid.attach(id_box,
+		0, 1, 2, 1);
+	options_grid.attach(layer_types_label,
+		0, 2, 2, 1);
+	options_grid.attach(layer_types_box,
+		0, 3, 2, 1);
+	options_grid.attach(blend_box,
+		0, 4, 1, 1);
+	options_grid.attach(blend_enum,
+		1, 4, 1, 1);
+	options_grid.attach(opacity_label,
+		0, 5, 1, 1);
+	options_grid.attach(opacity_hscl,
+		1, 5, 1, 1);
+
+	options_grid.set_vexpand(false);
+	options_grid.set_border_width(GAP*2);
+	options_grid.set_row_spacing(GAP);
+	options_grid.set_margin_bottom(0);
+	options_grid.show_all();
+
 	refresh_tool_options();
 	App::dialog_tool_options->present();
-
 
 	// Turn off layer clicking
 	get_work_area()->set_allow_layer_clicks(false);
@@ -519,9 +459,9 @@ void
 StateGradient_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_table);
+	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Gradient Tool"));
-	App::dialog_tool_options->set_name("gradient");
+	App::dialog_tool_options->set_icon("tool_gradient_icon");
 }
 
 Smach::event_result

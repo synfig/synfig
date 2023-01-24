@@ -2,21 +2,24 @@
 /*!	\file action.h
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -34,16 +37,16 @@
 
 #define ACTION_MODULE_EXT public: \
 	static const char name__[], local_name__[], version__[], task__[]; \
-	static const Category category__; \
+	static const synfigapp::Action::Category category__; \
 	static const int priority__; \
-	static Action::Base *create(); \
+	static synfigapp::Action::Base *create(); \
 	virtual synfig::String get_name()const;	\
 	virtual synfig::String get_local_name()const;
 
 
 #define ACTION_SET_NAME(class,x) const char class::name__[]=x
 
-#define ACTION_SET_CATEGORY(class,x) const Category class::category__(x)
+#define ACTION_SET_CATEGORY(class,x) const synfigapp::Action::Category class::category__(x)
 
 #define ACTION_SET_TASK(class,x) const char class::task__[]=x
 
@@ -55,7 +58,7 @@
 
 //! don't define get_local_name() - allow the action code to define its own
 #define ACTION_INIT_NO_GET_LOCAL_NAME(class)			  \
-	Action::Base* class::create() { return new class(); } \
+	synfigapp::Action::Base* class::create() { return new class(); } \
 	synfig::String class::get_name()const { return name__; }
 
 #define ACTION_INIT(class)				 \
@@ -108,7 +111,7 @@ public:
 	{
 		va_list args;
 		va_start(args,format);
-		desc_=etl::vstrprintf(format,args);
+		desc_=synfig::vstrprintf(format,args);
 		va_end(args);
 	}
 
@@ -117,7 +120,7 @@ public:
 	{
 		va_list args;
 		va_start(args,format);
-		desc_=etl::vstrprintf(format,args);
+		desc_=synfig::vstrprintf(format,args);
 		va_end(args);
 	}
 

@@ -1,5 +1,3 @@
-# $Id$
-
 MAINTAINERCLEANFILES = \
 	Makefile.in
 
@@ -44,7 +42,6 @@ OTHER_HH = \
 	timemodel.h \
 	app.h \
 	asyncrenderer.h \
-	audiocontainer.h \
 	autorecover.h \
 	canvasview.h \
 	devicetracker.h \
@@ -54,7 +51,6 @@ OTHER_HH = \
 	localization.h \
 	iconcontroller.h \
 	instance.h \
-	ipc.h \
 	keymapsettings.h \
 	onemoment.h \
 	pluginmanager.h \
@@ -67,7 +63,6 @@ OTHER_HH = \
 	splash.h \
 	statemanager.h \
 	timeplotdata.h \
-	valuelink.h \
 	waypointrenderer.h \
 	workarea.h \
 	workspacehandler.h \
@@ -79,7 +74,6 @@ OTHER_CC = \
 	timemodel.cpp \
 	app.cpp \
 	asyncrenderer.cpp \
-	audiocontainer.cpp \
 	autorecover.cpp \
 	canvasview.cpp \
 	devicetracker.cpp \
@@ -87,7 +81,6 @@ OTHER_CC = \
 	duckmatic.cpp \
 	iconcontroller.cpp \
 	instance.cpp \
-	ipc.cpp \
 	keymapsettings.cpp \
 	onemoment.cpp \
 	pluginmanager.cpp \
@@ -99,7 +92,6 @@ OTHER_CC = \
 	splash.cpp \
 	statemanager.cpp \
 	timeplotdata.cpp \
-	valuelink.cpp \
 	waypointrenderer.cpp \
 	workarea.cpp \
 	workspacehandler.cpp \

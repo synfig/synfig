@@ -2,21 +2,24 @@
 /*!	\file timepointcollect.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -41,8 +44,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -55,9 +56,10 @@ using namespace synfig;
 
 //! \writeme
 int
-synfig::waypoint_collect(set<Waypoint, std::less<UniqueID> >	&waypoint_set,
+synfig::waypoint_collect(std::set<Waypoint, std::less<UniqueID> >	&waypoint_set,
 						 const Time								&time,
-						 const etl::handle<Node>				&node)
+						 const etl::handle<Node>				&node,
+                         bool ignore_dynamic_parameters)
 {
 	const TimePointSet& timepoint_set(node->get_times());
 
@@ -86,13 +88,15 @@ synfig::waypoint_collect(set<Waypoint, std::less<UniqueID> >	&waypoint_set,
 		const Layer::DynamicParamList& dyn_param_list(layer->dynamic_param_list());
 		Layer::DynamicParamList::const_iterator iter;
 		int ret(0);
-		for(iter=dyn_param_list.begin();iter!=dyn_param_list.end();++iter)
-			ret+=waypoint_collect(waypoint_set,time,iter->second);
+		etl::handle<Layer_PasteCanvas> p = etl::handle<Layer_PasteCanvas>::cast_dynamic(layer);
+		if (!p || !ignore_dynamic_parameters){
+			for(iter=dyn_param_list.begin();iter!=dyn_param_list.end();++iter)
+				ret+=waypoint_collect(waypoint_set,time,iter->second);
+		}
 
 		ValueBase canvas_value(layer->get_param("canvas"));
 		if(canvas_value.get_type()==type_canvas)
 		{
-			etl::handle<Layer_PasteCanvas> p = etl::handle<Layer_PasteCanvas>::cast_dynamic(layer);
 			if (p)
 				ret+=waypoint_collect(waypoint_set, time + p->get_time_offset(),
 									  Canvas::Handle(canvas_value.get(Canvas::Handle())));
@@ -111,7 +115,7 @@ synfig::waypoint_collect(set<Waypoint, std::less<UniqueID> >	&waypoint_set,
 		Canvas::const_iterator iter;
 		int ret(0);
 		for(iter=canvas->begin();iter!=canvas->end();++iter)
-			ret+=waypoint_collect(waypoint_set,time,*iter);
+			ret+=waypoint_collect(waypoint_set,time,*iter, ignore_dynamic_parameters);
 		return ret;
 	}
 
@@ -211,7 +215,7 @@ synfig::waypoint_search(Waypoint& waypoint, const UniqueID &uid, const etl::hand
 
 //! \writeme
 int
-synfig::activepoint_collect(set<Activepoint, std::less<UniqueID> >& /*activepoint_set*/,const Time& time, const etl::handle<Node>& node)
+synfig::activepoint_collect(std::set<Activepoint, std::less<UniqueID> >& /*activepoint_set*/,const Time& time, const etl::handle<Node>& node)
 {
 	const TimePointSet& timepoint_set(node->get_times());
 

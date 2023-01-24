@@ -3,15 +3,20 @@
 # SynfigStudio build script
 # Copyright (c) 2008-2018 Konstantin Dmitriev
 #
-# This package is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License as
-# published by the Free Software Foundation; either version 2 of
-# the License, or (at your option) any later version.
+# This file is part of Synfig.
 #
-# This package is distributed in the hope that it will be useful,
+# Synfig is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#
+# Synfig is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-# General Public License for more details.
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 
 # = Usage: =
 #    ./build.sh [package] [mode]
@@ -46,7 +51,8 @@ if [ -z "$PREFIX" ]; then
 PREFIX=`pwd`/build
 fi
 
-MAKE_THREADS=2					#count of threads for make
+# detect number of threads for make (this can be overridden by build.conf)
+MAKE_THREADS="$(which nproc >/dev/null && nproc || sysctl -n hw.ncpu || getconf _NPROCESSORS_ONLN || echo 2 2>/dev/null)"
 
 # Allow overriding PREFIX and other settings
 if [ -f "./build.conf" ] ; then
@@ -84,7 +90,7 @@ if [[ `uname` == "MINGW"* ]]; then # MacOS doesn't support `uname -o` flag
 	# copy MLT
 	MLT_REV=1   # Change this when something is changed inside of if block below
 	if [ ! -f "${PREFIX}/mlt-${VERSION_MLT}-${MLT_REV}.done" ]; then
-		VERSION_MLT="6.16.0"
+		VERSION_MLT="7.2.0"
 		cp -rf /opt/mlt-${VERSION_MLT}/*.dll "${PREFIX}/bin/"
 		cp -rf /opt/mlt-${VERSION_MLT}/*.exe "${PREFIX}/bin/"
 		cp -rf /opt/mlt-${VERSION_MLT}/share "${PREFIX}/bin/"
@@ -97,12 +103,16 @@ fi
 if [[ `uname` == "Darwin" ]]; then
 	# autopoint is not in PATH after install via brew (conflicting with system gettext https://github.com/Homebrew/legacy-homebrew/issues/24070)
 	# so we can do `brew link --force gettext` or just add it to PATH before configuring which is preferable because we need it only for compiling
-	export PATH="/usr/local/opt/ccache/libexec:/usr/local/opt/gettext/bin:${PATH}"
-	export LDFLAGS="-L/usr/local/opt/gettext/lib ${LDFLAGS}"
-	export LDFLAGS="-L$(brew --prefix libomp)/lib ${LDFLAGS}"
-	export LDFLAGS="-L$(brew --prefix libtool)/lib ${LDFLAGS}"
-	export CPPFLAGS="-I/usr/local/opt/gettext/include ${CPPFLAGS}"
-	export PKG_CONFIG_PATH="/usr/local/opt/libffi/lib/pkgconfig:${PKG_CONFIG_PATH}"
+	export PATH="$(brew --prefix ccache)/libexec:$(brew --prefix gettext)/bin:${PATH}"
+	# `lib` is required to correctly detect libmng/libjpeg in autotools. Current `configure.ac` script doesn't use
+	# `pkg-config` to get library flags (libmng provides pkg-config (.pc) file from 2.0.3, but Debian still using 1.0.1).
+	export LDFLAGS="-L$(brew --prefix)/lib ${LDFLAGS}"
+
+	#export LDFLAGS="-L$(brew --prefix gettext)/lib ${LDFLAGS}"
+	#export LDFLAGS="-L$(brew --prefix libomp)/lib ${LDFLAGS}"
+	#export LDFLAGS="-L$(brew --prefix libtool)/lib ${LDFLAGS}"
+	#export CPPFLAGS="-I$(brew --prefix gettext)/include ${CPPFLAGS}"
+	#export PKG_CONFIG_PATH="$(brew --prefix libffi)/lib/pkgconfig:${PKG_CONFIG_PATH}"
 
 	# Force use system perl, see https://github.com/synfig/synfig/issues/794
 	cat > "${PREFIX}/bin/perl" <<EOF
@@ -204,13 +214,6 @@ cd synfig-core
 pushd "${REPO_DIR}/synfig-core/" >/dev/null
 /bin/bash "${REPO_DIR}/synfig-core/bootstrap.sh"
 popd >/dev/null
-if [ -e /etc/debian_version ] && [ -z "$BOOST_CONFIGURE_OPTIONS" ]; then
-	# Debian/Ubuntu multiarch
-	MULTIARCH_LIBDIR="/usr/lib/`uname -m`-linux-gnu/"
-	if [ -e "${MULTIARCH_LIBDIR}/libboost_program_options.so" ]; then
-		export BOOST_CONFIGURE_OPTIONS="--with-boost-libdir=$MULTIARCH_LIBDIR"
-	fi
-fi
 if [[ `uname -o` == "Msys" ]]; then
 	# Currently there is an error when building with Magick++ on MSYS2
 	export CONFIGURE_OPTIONS="--without-magickpp"
@@ -233,7 +236,6 @@ fi
 	--disable-static --enable-shared \
 	--without-libavcodec \
 	--without-included-ltdl \
-	$BOOST_CONFIGURE_OPTIONS \
 	$CONFIGURE_OPTIONS \
 	$DEBUG
 cd ..
@@ -249,6 +251,13 @@ cd ..
 
 ccache_show_stats
 
+}
+
+core_check()
+{
+cd synfig-core
+make check
+cd ..
 }
 
 core_build()
@@ -320,6 +329,13 @@ fi
 
 cd ..
 msg_done
+}
+
+studio_check()
+{
+cd synfig-studio
+make check
+cd ..
 }
 
 studio_build()

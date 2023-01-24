@@ -2,8 +2,6 @@
 /*!	\file centerlinecolors.cpp
 **	\brief centerlinecolors File
 **
-**	$Id$
-**
 **	\legal
 **	This file uses code from OpenToonz open-source animation software  (https://github.com/opentoonz/opentoonz/), which is developed from Toonz, a software originally created by Digital Video, S.p.A., Rome Italy Digital Video, S.p.A., Rome Italy.
 **
@@ -45,8 +43,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace studio;
 using namespace synfig;
 
@@ -83,7 +79,7 @@ static synfig::Point3 firstInkChangePosition(
 {
   double dist = (end - start).mag();
 
-  int sampleMax = ceil_to_int(dist), sampleCount = sampleMax + 1;
+  int sampleMax = std::ceil(dist), sampleCount = sampleMax + 1;
   double sampleMaxD = double(sampleMax);
 
   // Get first ink color
@@ -410,9 +406,8 @@ void studio::calculateSequenceColors(const etl::handle<synfig::Layer_Bitmap> &ra
 
   if (ras && g.currConfig->m_maxThickness > 0.0) 
   {
-    // singleSequence is traversed back-to-front because new, possibly splitted
-    // sequences
-    // are inserted at back - and don't have to be re-sampled.
+    // singleSequence is traversed back-to-front because new, possibly split
+    // sequences are inserted at back - and don't have to be re-sampled.
     for (l = singleSequences.size() - 1; l >= 0; --l) 
     {
       Sequence rear;

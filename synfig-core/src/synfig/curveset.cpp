@@ -2,20 +2,23 @@
 /*!	\file curveset.cpp
 **	\brief Curve Set Implementation File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -29,10 +32,12 @@
 #	include <config.h>
 #endif
 
-#include "curve_helper.h"
 #include "curveset.h"
+
+#include <synfig/bezier.h>
 #include "blinepoint.h"
-#include <ETL/bezier>
+#include "curve_helper.h"
+
 #include <vector>
 #include <list>
 #include <set>
@@ -41,8 +46,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -94,7 +97,7 @@ struct ipoint
 	{
 		next = this;
 		prev = this;
-		neighbor = NULL;
+		neighbor = nullptr;
 	}
 
 	bool operator<(const ipoint &rhs) const
@@ -182,10 +185,10 @@ enum SetOp
 class PolygonClipper
 {
 public:
-	typedef vector<ipoint *>	CurveInts; //in no particular order
+	typedef std::vector<ipoint *>	CurveInts; //in no particular order
 
-	vector<CurveInts>	c1ints;
-	vector<CurveInts>	c2ints;
+	std::vector<CurveInts>	c1ints;
+	std::vector<CurveInts>	c2ints;
 
 	//get the intersections
 	void GetIntersections(const CurveSet &lhs, const CurveSet &rhs)
@@ -344,7 +347,7 @@ public:
 		//traverse path based on inside flags
 
 		//fill all the paths of native stuff
-		set<ipoint *>	ipset;
+		std::set<ipoint *>	ipset;
 		for(int ci=0; ci<(int)c1ints.size(); ++ci)
 		{
 			for(int i=0; i < (int)c1ints[ci].size(); ++i)
@@ -365,13 +368,10 @@ public:
 			bool curin, otherin;
 			bool delcur = true;
 
-			set<ipoint *>::iterator deliter;
+			std::set<ipoint *>::iterator deliter;
 
 			//int ci,i1,i2,size;
 			//float t1,t2;
-
-			CurveSet::region	current;
-			CurvePoint	cp;
 
 			cur = &lhs; other = &rhs;
 			curin = in1; otherin = in2;
@@ -403,8 +403,8 @@ public:
 
 				//transition curves...
 				iter = iter->neighbor;
-				swap(cur,other);
-				swap(curin,otherin);
+				std::swap(cur,other);
+				std::swap(curin,otherin);
 				delcur = !delcur;
 			}while(iter != start); //I hope THIS isn't an infinite loop
 		}
@@ -469,7 +469,7 @@ int CurveSet::intersect(const Point &p) const
 
 	for(ci=0; ci < (int)set.size(); ++ci)
 	{
-		const vector<CurvePoint> &curve = set[ci];
+		const std::vector<CurvePoint> &curve = set[ci];
 		s = curve.size();
 		for(j=s-1,i=0; i < s; j = i++)
 		{

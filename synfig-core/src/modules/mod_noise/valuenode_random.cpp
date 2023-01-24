@@ -2,22 +2,25 @@
 /*!	\file valuenode_random.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **  Copyright (c) 2011 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -36,25 +39,21 @@
 #include <synfig/valuenode_registry.h>
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/misc.h>
 #include "synfig/color.h"
 #include <synfig/vector.h>
-
-#include <ETL/misc>
-#include <time.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Random, RELEASE_VERSION_0_61_08, "random", "Random")
+REGISTER_VALUENODE(ValueNode_Random, RELEASE_VERSION_0_61_08, "random", N_("Random"))
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -63,9 +62,8 @@ REGISTER_VALUENODE(ValueNode_Random, RELEASE_VERSION_0_61_08, "random", "Random"
 ValueNode_Random::ValueNode_Random(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
-	random.set_seed(time(NULL));
+	init_children_vocab();
+	random.set_seed(time(nullptr));
 
 	set_link("radius",ValueNode_Const::create(Real(1)));
 	set_link("seed",ValueNode_Const::create(random.get_seed()));
@@ -105,7 +103,7 @@ ValueNode_Random::create_new()const
 }
 
 ValueNode_Random*
-ValueNode_Random::create(const ValueBase &x)
+ValueNode_Random::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Random(x);
 }
@@ -226,7 +224,7 @@ ValueNode_Random::randomize_seed()
 	ValueNode::Handle link = get_link_vfunc(i);
 	if(!link->is_exported() && link->get_name() == "constant")
 	{
-		int seed = time(NULL) + rand();
+		int seed = time(nullptr) + rand();
 		if (seed < 0) seed = -seed;
 		random.set_seed(seed);
 		set_link(i, ValueNode_Const::create(seed));

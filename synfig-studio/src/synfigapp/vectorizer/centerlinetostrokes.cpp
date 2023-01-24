@@ -2,8 +2,6 @@
 /*!	\file centerlinetostrokes.cpp
 **	\brief centerlinetostrokes
 **
-**	$Id$
-**
 **	\legal
 **	This file uses code from OpenToonz open-source animation software  (https://github.com/opentoonz/opentoonz/), which is developed from Toonz, a software originally created by Digital Video, S.p.A., Rome Italy Digital Video, S.p.A., Rome Italy.
 **
@@ -48,8 +46,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -60,7 +56,7 @@ const double Polyg_eps_mul = 0.75;  // Sequence simple thickness-multiplier erro
 const double Quad_eps_max =  infinity;  // As above, for sequence conversion into strokes
 synfig::Point bottomleft(0,0);
 bool max_thickness_zero = false;
-synfig::CanvasHandle canvas;
+synfig::Canvas::Handle canvas;
 float unit_size;
 float h_factor = 1;
 float w_factor = 1;
@@ -79,7 +75,7 @@ void PreProcessSegment(studio::PointList &segment)
   {
     segment[i][0] = w_factor *( multiplier * segment[i][0]/unit_size ) + bottomleft[0];
     segment[i][1] = h_factor *( multiplier * segment[i][1]/unit_size ) + bottomleft[1];
-    segment[i][2] = (segment[i][2]/2.5)*max(w_factor,h_factor);
+    segment[i][2] = (segment[i][2]/2.5)*std::max(w_factor,h_factor);
   }
   
 }
@@ -203,7 +199,7 @@ private:
   public:
     int n;
     double l;
-    UINT firstNode, secondNode;
+    UINT firstNode = 0, secondNode = 0;
 
     Length() : n(0), l(0) {}
     Length(int n_, double l_) : n(n_), l(l_) {}
@@ -360,7 +356,7 @@ class SequenceConverter
 
 public:
   // Length construction globals (see 'lengthOf' method)
-  unsigned int middle;
+  unsigned int middle = 0;
   std::vector<double> pars;
 
   class Length 
@@ -408,7 +404,7 @@ public:
 
   // Intermediate Sequence form
   std::vector<synfig::Point3> middleAddedSequence;
-  std::vector<unsigned int> *inputIndices;
+  std::vector<unsigned int> *inputIndices = nullptr;
 
   // Methods
   SequenceConverter(const Sequence *s, double penalty)

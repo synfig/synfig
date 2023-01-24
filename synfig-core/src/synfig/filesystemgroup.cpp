@@ -2,20 +2,23 @@
 /*!	\file filesystemgroup.cpp
 **	\brief FileSystemGroup
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2013 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -39,8 +42,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -66,11 +67,10 @@ const FileSystemGroup::Entry* FileSystemGroup::find_system(const String &filenam
 		if ( clean_filename.substr(0, i->prefix.size()) == i->prefix
 		  && ( i->is_separator
 			|| clean_filename.size() == i->prefix.size()
-			|| clean_filename[i->prefix.size()] == ETL_DIRECTORY_SEPARATOR0
-			|| clean_filename[i->prefix.size()] == ETL_DIRECTORY_SEPARATOR1 ))
+			|| etl::is_separator(clean_filename[i->prefix.size()] )))
 		{
 			String sub_name = clean_filename.substr(i->prefix.size());
-			if (!i->prefix.empty() && !sub_name.empty() && (sub_name[0] == ETL_DIRECTORY_SEPARATOR0 || sub_name[0] == ETL_DIRECTORY_SEPARATOR1))
+			if (!i->prefix.empty() && !sub_name.empty() && etl::is_separator(sub_name[0]))
 				sub_name = sub_name.substr(1);
 			out_file_system = i->sub_file_system;
 			out_filename = i->sub_prefix.empty() || sub_name.empty()
@@ -82,7 +82,7 @@ const FileSystemGroup::Entry* FileSystemGroup::find_system(const String &filenam
 
 	out_file_system.reset();
 	out_filename.clear();
-	return NULL;
+	return nullptr;
 }
 
 void FileSystemGroup::register_system(const String &prefix, const FileSystem::Handle &sub_file_system, const String &sub_prefix, bool is_separator)

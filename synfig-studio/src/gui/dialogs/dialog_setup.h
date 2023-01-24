@@ -2,23 +2,26 @@
 /*!	\file dialogs/dialog_setup.h
 **	\brief Dialog Preference Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2008, 2009. 2012 Carlos López
 **	Copyright (c) 2015 Jerome Blanchi
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -111,6 +114,7 @@ class Dialog_Setup : public Dialog_Template
 	void create_render_page(PageInfo pi);
 	void create_interface_page(PageInfo pi);
 	void create_editing_page(PageInfo pi);
+	void create_shortcuts_page(PageInfo pi);
 
 	synfigapp::Settings &input_settings;
 
@@ -130,6 +134,7 @@ class Dialog_Setup : public Dialog_Template
 	Gtk::Switch toggle_restrict_radius_ducks;
 	Gtk::Switch toggle_animation_thumbnail_preview;
 	Gtk::Switch toggle_enable_experimental_features;
+	Gtk::Switch toggle_clear_redo_stack_on_new_action;
 	Gtk::Switch toggle_use_dark_theme;
 	Gtk::Switch toggle_show_file_toolbar;
 
@@ -140,6 +145,7 @@ class Dialog_Setup : public Dialog_Template
 	Gtk::ComboBoxText* size_template_combo;
 	Gtk::ComboBoxText* fps_template_combo;
 	Gtk::ComboBoxText ui_language_combo;
+	Gtk::ComboBoxText icon_theme_combo;
 	Gtk::Switch toggle_handle_tooltip_transfo_value;
 	Gtk::Switch toggle_handle_tooltip_transfo_name;
 
@@ -185,6 +191,12 @@ class Dialog_Setup : public Dialog_Template
 	};
 	PrefsBrushPath prefs_brushpath;
 
+	Gtk::CellRendererAccel renderer_accel;
+	Gtk::TreeView *treeview_accels;
+
+	void on_accel_edited(const Glib::ustring& path_string, guint accel_key, Gdk::ModifierType accel_mods, guint hardware_keycode);
+	void on_accel_cleared(const Glib::ustring& path_string);
+	void on_restore_default_accels_pressed();
 public:
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
@@ -204,7 +216,7 @@ public:
 	const synfig::Time::Format& get_time_format()const { return time_format; }
 
     void refresh();
-}; // END of Dialog_Waypoint
+}; // END of Dialog_Setup
 
 }; // END of namespace studio
 

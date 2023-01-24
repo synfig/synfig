@@ -2,22 +2,25 @@
 /*!	\file valuenode_stripes.cpp
 **	\brief Implementation of the "Stripes" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
 **  Copyright (c) 2011 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -44,15 +47,13 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Stripes, RELEASE_VERSION_0_61_06, "stripes", "Stripes")
+REGISTER_VALUENODE(ValueNode_Stripes, RELEASE_VERSION_0_61_06, "stripes", N_("Stripes"))
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -60,8 +61,7 @@ REGISTER_VALUENODE(ValueNode_Stripes, RELEASE_VERSION_0_61_06, "stripes", "Strip
 
 synfig::ValueNode_Stripes::ValueNode_Stripes():LinkableValueNode(synfig::type_gradient)
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	set_link("color1",ValueNode_Const::create(Color::alpha()));
 	set_link("color2",ValueNode_Const::create(Color::black()));
 	set_link("stripes",stripes_=ValueNode_Const::create(int(5)));
@@ -75,14 +75,14 @@ ValueNode_Stripes::create_new()const
 }
 
 ValueNode_Stripes*
-ValueNode_Stripes::create(const ValueBase& x)
+ValueNode_Stripes::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	Type &type(x.get_type());
 
 	if(type!=type_gradient)
 	{
 		assert(0);
-		throw runtime_error(String(_("Stripes"))+_(":Bad type ")+type.description.local_name);
+		throw std::runtime_error(String(_("Stripes"))+_(":Bad type ")+type.description.local_name);
 	}
 
 	ValueNode_Stripes* value_node=new ValueNode_Stripes();
@@ -100,8 +100,8 @@ synfig::ValueNode_Stripes::~ValueNode_Stripes()
 synfig::ValueBase
 synfig::ValueNode_Stripes::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	const int total((*stripes_)(t).get(int()));
 	int i;
@@ -112,7 +112,7 @@ synfig::ValueNode_Stripes::operator()(Time t)const
 
 	const Color color1((*color1_)(t).get(Color()));
 	const Color color2((*color2_)(t).get(Color()));
-	const float width(max(0.0,min(1.0,(*width_)(t).get(Real()))));
+	const float width(synfig::clamp((*width_)(t).get(Real()), 0., 1.));
 
 	const float stripe_width_a(width/total);
 	const float stripe_width_b((1.0-width)/total);

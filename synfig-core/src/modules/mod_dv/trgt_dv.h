@@ -1,24 +1,25 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file trgt_dv.h
-**	\brief Template Header
-**
-**	$Id$
+**	\brief Header for DV Exporter (dv_trgt)
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
-**	\endlegal
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
 **
-** === N O T E S ===========================================================
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
+**	\endlegal
 **
 ** ========================================================================= */
 
@@ -29,11 +30,9 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/target_scanline.h>
+#include <synfig/os.h>
 #include <synfig/string.h>
-#include <synfig/targetparam.h>
-#include <sys/types.h>
-#include <cstdio>
+#include <synfig/target_scanline.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -45,26 +44,28 @@
 class dv_trgt : public synfig::Target_Scanline
 {
 	SYNFIG_TARGET_MODULE_EXT
+
 private:
-	pid_t pid;
 	int imagecount;
 	bool wide_aspect;
-	FILE *file;
+	synfig::OS::RunPipe::Handle pipe;
 	synfig::String filename;
 	unsigned char *buffer;
 	synfig::Color *color_buffer;
+
 public:
+
 	dv_trgt(const char *filename, const synfig::TargetParam& /* params */);
 	virtual ~dv_trgt();
 
+	bool set_rend_desc(synfig::RendDesc* desc) override;
+	bool init(synfig::ProgressCallback* cb) override;
 
-	virtual bool set_rend_desc(synfig::RendDesc *desc);
-	virtual bool init(synfig::ProgressCallback *cb);
-	virtual bool start_frame(synfig::ProgressCallback *cb);
-	virtual void end_frame();
+	bool start_frame(synfig::ProgressCallback* cb) override;
+	void end_frame() override;
 
-	virtual synfig::Color * start_scanline(int scanline);
-	virtual bool end_scanline();
+	synfig::Color* start_scanline(int scanline) override;
+	bool end_scanline() override;
 };
 
 /* === E N D =============================================================== */

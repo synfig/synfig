@@ -2,20 +2,23 @@
 /*!	\file zstreambuf.h
 **	\brief zstreambuf
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2013 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -45,8 +48,17 @@ namespace synfig {
 	class zstreambuf : public std::streambuf
 	{
 	public:
+		// From zlib documentation (https://zlib.net/manual.html):
+		// windowBits can also be greater than 15 for optional gzip decoding.
+		// Add 32 to windowBits to enable zlib and gzip decoding with automatic
+		// header detection, or add 16 to decode only the gzip format
+		enum compression : int {
+			gzip        = 16+MAX_WBITS,
+			zip_or_gzip = 32+MAX_WBITS,
+			deflate     = -MAX_WBITS
+		};
 		enum {
-			option_bufsize				= 4096,
+			option_bufsize				= 32*1024,
 			option_method				= Z_DEFLATED,
 			option_compression_level	= Z_BEST_COMPRESSION,
 			option_window_bits			= 16+MAX_WBITS,
@@ -60,6 +72,7 @@ namespace synfig {
 
 	private:
 		std::streambuf *buf_;
+		zstreambuf::compression compression_;
 
 		bool inflate_initialized;
 		z_stream inflate_stream_;
@@ -73,7 +86,7 @@ namespace synfig {
 		bool deflate_buf(bool flush);
 
 	public:
-		explicit zstreambuf(std::streambuf *buf);
+		zstreambuf(std::streambuf *buf, zstreambuf::compression compression);
 		virtual ~zstreambuf();
 
 	protected:
@@ -103,10 +116,10 @@ namespace synfig {
 			{ return (size_t)istream_.read((char*)buffer, size).gcount(); }
 
 	public:
-		ZReadStream(FileSystem::ReadStream::Handle stream):
+		ZReadStream(FileSystem::ReadStream::Handle stream, zstreambuf::compression compression):
 			FileSystem::ReadStream(stream->file_system()),
 			stream_(stream),
-			buf_(stream_->rdbuf()),
+			buf_(stream_->rdbuf(), compression),
 			istream_(&buf_)
 		{ }
 
@@ -135,7 +148,7 @@ namespace synfig {
 		ZWriteStream(FileSystem::WriteStream::Handle stream):
 			FileSystem::WriteStream(stream->file_system()),
 			stream_(stream),
-			buf_(stream_->rdbuf()),
+			buf_(stream_->rdbuf(), zstreambuf::compression::gzip),
 			ostream_(&buf_)
 		{ }
 	};

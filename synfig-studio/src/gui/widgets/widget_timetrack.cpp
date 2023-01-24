@@ -2,21 +2,24 @@
 /*!	\file widgets/widget_timetrack.cpp
 **	\brief Widget to displaying layer parameter waypoints along time
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	......... ... 2020 Rodolfo Ribeiro Gomes
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 
@@ -36,6 +39,7 @@
 
 #include <synfig/general.h>
 #include <synfig/timepointcollect.h>
+#include <synfig/valuenodes/valuenode_dynamiclist.h>
 
 #endif
 
@@ -57,16 +61,12 @@ Widget_Timetrack::Widget_Timetrack()
 {
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::SCROLL_MASK | Gdk::POINTER_MOTION_MASK | Gdk::KEY_PRESS_MASK | Gdk::KEY_RELEASE_MASK);
 	set_can_focus(true);
-	time_plot_data->set_extra_time_margin(16/2);
 	setup_mouse_handler();
 
 	setup_adjustment();
 
-	waypoint_sd.signal_action_changed().connect([=](){
-		update_cursor();
-		action_state = waypoint_sd.get_action();
-		signal_action_state_changed().emit();
-	});
+	waypoint_sd.signal_action_changed().connect(sigc::mem_fun(*this, &Widget_Timetrack::on_waypoint_action_changed));
+	waypoint_sd.signal_selection_changed().connect(sigc::mem_fun(*this, &Widget_Timetrack::on_waypoint_selection_changed));
 }
 
 Widget_Timetrack::~Widget_Timetrack()
@@ -119,15 +119,15 @@ bool Widget_Timetrack::use_canvas_view(etl::loose_handle<CanvasView> canvas_view
 	}
 	Gtk::TreeView* params_treeview = dynamic_cast<Gtk::TreeView*>(canvas_view->get_ext_widget("params"));
 
-	// This parameter dock is connected to timetrack
-	// We have to set padding to this widget to achieve our intended padding
-	// behavior for our timetrack
-	params_treeview->set_name("timetrack");
-
 	if (!params_treeview) {
 		synfig::error(_("Params treeview widget doesn't exist"));
 		return false;
 	}
+
+	// This parameter dock is connected to timetrack
+	// We have to set padding to this widget to achieve our intended padding
+	// behavior for our timetrack
+	params_treeview->set_name("timetrack");
 
 	set_time_model(canvas_view->time_model());
 	set_canvas_interface(canvas_view->canvas_interface());
@@ -198,6 +198,42 @@ bool Widget_Timetrack::move_selected(synfig::Time delta_time)
 	if (ok)
 		displace_selected_waypoint_items(delta_time);
 	return ok;
+}
+
+ void Widget_Timetrack::interpolate_selected(synfig::Interpolation type)
+{
+	synfig::Waypoint::Model model;
+	model.set_before(type);
+	model.set_after(type);
+	std::vector<WaypointItem*> selection = waypoint_sd.get_selected_items();
+
+	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Change Waypoint Interpolation"));
+
+	for (WaypointItem* waypoint_item : selection) {
+		std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set_new;
+		fetch_waypoints(*waypoint_item, waypoint_set_new);
+
+		for (const synfig::Waypoint& waypoint_new : waypoint_set_new) {
+			synfig::Waypoint waypoint(waypoint_new);
+			if (waypoint.get_before() != type || waypoint.get_after() != type){
+				waypoint.apply_model(model);
+				synfigapp::Action::Handle action(synfigapp::Action::create("WaypointSet"));
+
+				assert(action);
+
+				action->set_param("canvas",get_canvas_interface()->get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+
+				action->set_param("waypoint",waypoint);
+				action->set_param("value_node",waypoint.get_parent_value_node());
+
+				if (!get_canvas_interface()->get_instance()->perform_action(action)) {
+					group.cancel();
+					return;
+				}
+			}
+		}
+	}
 }
 
 bool Widget_Timetrack::copy_selected(synfig::Time delta_time)
@@ -352,6 +388,7 @@ bool Widget_Timetrack::on_event(GdkEvent* event)
 			return true;
 		switch (event->key.keyval) {
 		case GDK_KEY_Delete:
+		case GDK_KEY_KP_Delete:
 			delete_selected();
 			return true;
 		case GDK_KEY_n:
@@ -414,8 +451,10 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		const bool is_user_moving_waypoints = is_dragging && waypoint_sd.get_action() == MOVE;
 		const bool is_user_scaling_waypoints = is_dragging && waypoint_sd.get_action() == SCALE;
 
+		draw_discrete_animated_times(cr, row_info);
+
 		std::vector<std::pair<synfig::TimePoint, synfig::Time>> visible_waypoints;
-		WaypointRenderer::foreach_visible_waypoint(row_info.get_value_desc(), *time_plot_data,
+		WaypointRenderer::foreach_visible_waypoint(value_desc, *time_plot_data,
 			[&](const synfig::TimePoint &tp, const synfig::Time &t, void *) -> bool
 		{
 			// Don't draw it if it's being moved by user
@@ -430,6 +469,8 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 			draw_static_intervals_for_row(cr, row_info, visible_waypoints);
 
 		draw_waypoints(cr, path, row_info, visible_waypoints);
+
+		draw_active_point_status(cr, row_info, value_desc);
 
 		return false;
 	});
@@ -532,6 +573,15 @@ void Widget_Timetrack::on_size_allocate(Gtk::Allocation& allocation)
 void Widget_Timetrack::on_canvas_interface_changed()
 {
 	waypoint_sd.set_canvas_interface(canvas_interface);
+
+	// Update time track area when keyframe is changed from keyframe_list
+	keyframe_changed_connection_.disconnect();
+
+	if (!canvas_interface) return;
+	
+	keyframe_changed_connection_ = canvas_interface->signal_keyframe_changed().connect([this](synfig::Keyframe) {
+		this->queue_draw();
+	});
 }
 
 void Widget_Timetrack::displace_selected_waypoint_items(const synfig::Time& offset)
@@ -593,28 +643,16 @@ void Widget_Timetrack::setup_params_store()
 {
 	sigc::connection conn;
 
-	conn = params_store->signal_row_inserted().connect([&](const Gtk::TreeModel::Path&, const Gtk::TreeModel::iterator&){
-		queue_rebuild_param_info_list();
-	});
+	conn = params_store->signal_row_inserted().connect(sigc::mem_fun(*this, &Widget_Timetrack::on_params_store_row_inserted));
 	treestore_connections.push_back(conn);
 
-	conn = params_store->signal_row_deleted().connect([&](const Gtk::TreeModel::Path&){
-		queue_rebuild_param_info_list();
-	});
+	conn = params_store->signal_row_deleted().connect(sigc::mem_fun(*this, &Widget_Timetrack::on_params_store_row_deleted));
 	treestore_connections.push_back(conn);
 
-	conn = params_store->signal_rows_reordered().connect([&](const Gtk::TreeModel::Path&, const Gtk::TreeModel::iterator&, int*){
-		queue_rebuild_param_info_list();
-	});
+	conn = params_store->signal_rows_reordered().connect(sigc::mem_fun(*this, &Widget_Timetrack::on_params_store_rows_reordered));
 	treestore_connections.push_back(conn);
 
-	conn = params_store->signal_row_changed().connect([&](const Gtk::TreeModel::Path &p, const Gtk::TreeModel::iterator&){
-		// this is the way I found out how to redraw when a new value node is created by editor
-		// Instead of on every row change, it should be called only when a value node is created...
-		RowInfo &row_info = param_info_map[p.to_string()];
-		if (row_info.is_valid())
-			row_info.recheck_for_value_nodes();
-	});
+	conn = params_store->signal_row_changed().connect(sigc::mem_fun(*this, &Widget_Timetrack::on_params_store_row_changed));
 	treestore_connections.push_back(conn);
 }
 
@@ -627,15 +665,14 @@ void Widget_Timetrack::teardown_params_store()
 
 void Widget_Timetrack::setup_params_view()
 {
+	sigc::slot<void,const Gtk::TreeModel::iterator&,const Gtk::TreeModel::Path&> slot_on_row_collapse_or_expand =
+			sigc::hide(sigc::hide(sigc::mem_fun(*this, &Widget_Timetrack::queue_update_param_list_geometries)));
+
 	sigc::connection conn;
-	conn = params_treeview->signal_row_expanded().connect([&](const Gtk::TreeModel::iterator&,const Gtk::TreeModel::Path&) {
-		queue_update_param_list_geometries();
-	});
+	conn = params_treeview->signal_row_expanded().connect(slot_on_row_collapse_or_expand);
 	treeview_connections.push_back(conn);
 
-	conn = params_treeview->signal_row_collapsed().connect([&](const Gtk::TreeModel::iterator&,const Gtk::TreeModel::Path&) {
-		queue_update_param_list_geometries();
-	});
+	conn = params_treeview->signal_row_collapsed().connect(slot_on_row_collapse_or_expand);
 	treeview_connections.push_back(conn);
 
 	conn = params_treeview->signal_style_updated().connect(sigc::mem_fun(*this, &Widget_Timetrack::queue_update_param_list_geometries));
@@ -654,14 +691,8 @@ void Widget_Timetrack::teardown_params_view()
 
 void Widget_Timetrack::setup_adjustment()
 {
-	range_adjustment->signal_value_changed().connect([&](){
-		// wait for all members of Adjustment group to synchronize
-		queue_update_param_list_geometries();
-	});
-	range_adjustment->signal_changed().connect([&](){
-		set_default_page_size(range_adjustment->get_page_size());
-		queue_update_param_list_geometries();
-	});
+	range_adjustment->signal_value_changed().connect(sigc::mem_fun(*this, &Widget_Timetrack::on_range_adjustment_value_changed));
+	range_adjustment->signal_changed().connect(sigc::mem_fun(*this, &Widget_Timetrack::on_range_adjustment_changed));
 }
 
 void Widget_Timetrack::queue_rebuild_param_info_list()
@@ -784,6 +815,27 @@ void Widget_Timetrack::draw_static_intervals_for_row(const Cairo::RefPtr<Cairo::
 	}
 }
 
+void
+Widget_Timetrack::draw_discrete_animated_times(const Cairo::RefPtr<Cairo::Context> &cr, const RowInfo &row_info) const
+{
+	const synfigapp::ValueDesc &value_desc = row_info.get_value_desc();
+	std::set<synfig::Time> times;
+	if (value_desc.is_value_node()) {
+		const synfig::Type & value_type = value_desc.get_value_type();
+		if (value_type == synfig::type_string
+			|| value_type == synfig::type_bool
+			|| value_type == synfig::type_canvas)
+		{
+			value_desc.get_value_node()->get_value_change_times(times);
+		}
+	}
+	const double yc = row_info.get_geometry().y + row_info.get_geometry().h/2.;
+	for(std::set<synfig::Time>::const_iterator i = times.begin(); i != times.end(); ++i) {
+		cr->arc(1+time_plot_data->get_pixel_t_coord(*i), yc, 2, 0, 2*3.1415);
+		cr->fill();
+	}
+}
+
 void Widget_Timetrack::draw_waypoints(const Cairo::RefPtr<Cairo::Context>& cr, const Gtk::TreePath &path, const RowInfo &row_info, const std::vector<std::pair<synfig::TimePoint, synfig::Time> >& waypoints) const
 {
 	const int margin = 1;
@@ -832,24 +884,156 @@ void Widget_Timetrack::draw_selected_background(const Cairo::RefPtr<Cairo::Conte
 	}
 }
 
+void Widget_Timetrack::draw_active_point_status(const Cairo::RefPtr<Cairo::Context> &cr, const RowInfo &row_info, const synfigapp::ValueDesc &value_desc)
+{
+	if (!value_desc.parent_is_value_node())
+		return;
+	synfig::ValueNode_DynamicList::Handle dynamic_list = synfig::ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node());
+	if (!dynamic_list)
+		return;
+
+	const synfig::ValueNode_DynamicList::ListEntry& list_entry = dynamic_list->list[ value_desc.get_index() ];
+	const synfig::ValueNode_DynamicList::ListEntry::ActivepointList& activepoint_list = list_entry.timing_info;
+
+	if (activepoint_list.empty())
+		return;
+
+	const Gdk::RGBA activepoint_color[] = {
+	    Gdk::RGBA("#ff0000"),
+	    Gdk::RGBA("#00ff00")
+	};
+	const Gdk::RGBA inactive_color("rgba(0.,0.,0.,0.5)");
+
+	const double w = 2;
+
+	// Drawing disabled intervals
+	synfig::Time previous_activepoint_time = synfig::Time::begin();
+	synfig::Time initial_off_time = list_entry.status_at_time(previous_activepoint_time) ? synfig::Time::end() : synfig::Time::begin();
+
+	cr->set_source_rgba(inactive_color.get_red(), inactive_color.get_green(), inactive_color.get_blue(), inactive_color.get_alpha());
+
+	for (const auto& activepoint : activepoint_list) {
+		if (!list_entry.status_at_time(0.5*(previous_activepoint_time + activepoint.get_time()))) {
+			if (initial_off_time == synfig::Time::end())
+				initial_off_time = previous_activepoint_time;
+		} else {
+			if (initial_off_time != synfig::Time::end()) {
+				cr->rectangle(+w/2+time_plot_data->get_pixel_t_coord(initial_off_time), row_info.get_geometry().y, -w+time_plot_data->get_delta_pixel_from_delta_t_coord(previous_activepoint_time - initial_off_time), row_info.get_geometry().h);
+				cr->fill();
+				initial_off_time = synfig::Time::end();
+			}
+		}
+		previous_activepoint_time = activepoint.get_time();
+	}
+
+	if (initial_off_time != synfig::Time::end() || !list_entry.status_at_time(synfig::Time::end())) {
+		initial_off_time = synfig::clamp(initial_off_time, time_plot_data->lower, previous_activepoint_time);
+		int initial_pixel_index = +w/2+time_plot_data->get_pixel_t_coord(initial_off_time);
+		cr->rectangle(initial_pixel_index, row_info.get_geometry().y, get_width() - initial_pixel_index, row_info.get_geometry().h);
+		cr->fill();
+	}
+
+	// Now we highlight all active point states
+	for (const auto& activepoint : activepoint_list) {
+		const Gdk::RGBA& color = activepoint_color[activepoint.get_state() ? 1 : 0];
+		cr->set_source_rgb(color.get_red(), color.get_green(), color.get_blue());
+		cr->rectangle(-w/2+time_plot_data->get_pixel_t_coord(activepoint.get_time()), row_info.get_geometry().y, w, row_info.get_geometry().h);
+		cr->fill();
+	}
+}
+
+bool Widget_Timetrack::fetch_waypoints(const WaypointItem &wi, std::set<synfig::Waypoint, std::less<synfig::UniqueID>>& waypoint_set) const
+{
+	try {
+		const synfigapp::ValueDesc &value_desc = param_info_map.at(wi.path.to_string()).get_value_desc();
+
+		etl::handle<synfig::Node> node;
+		if (value_desc.is_value_node())
+			node = value_desc.get_value_node() ;
+		else if (value_desc.parent_is_layer() && value_desc.get_layer()->get_param(value_desc.get_param_name()).get_type() == synfig::type_canvas)
+			node = value_desc.get_canvas();
+
+		if (node)
+			synfig::waypoint_collect(waypoint_set, wi.time_point.get_time(), node, true);
+
+		return node;
+	} catch (std::out_of_range& ex) {
+		synfig::error(_("Timetrack: trying to fetch waypoints of not-mapped parameter: %s [%f]"), wi.path.to_string().c_str(), wi.time_point.get_time());
+	} catch (...) {
+		synfig::error(_("Timetrack: Unknown error"));
+	}
+
+	return false;
+}
+
 void Widget_Timetrack::on_waypoint_clicked(const Widget_Timetrack::WaypointItem& wi, unsigned int button, Gdk::Point)
 {
 	std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set;
-	const synfigapp::ValueDesc &value_desc = param_info_map[wi.path.to_string()].get_value_desc();
-	if (value_desc.is_value_node())
-		synfig::waypoint_collect(waypoint_set, wi.time_point.get_time(), value_desc.get_value_node());
-	if (waypoint_set.size() > 0)
+	fetch_waypoints(wi, waypoint_set);
+	if (waypoint_set.size() > 0) {
+		const synfigapp::ValueDesc &value_desc = param_info_map.at(wi.path.to_string()).get_value_desc();
 		signal_waypoint_clicked().emit(value_desc, waypoint_set, button);
+	}
 }
 
 void Widget_Timetrack::on_waypoint_double_clicked(const Widget_Timetrack::WaypointItem& wi, unsigned int button, Gdk::Point)
 {
 	std::set<synfig::Waypoint, std::less<synfig::UniqueID> > waypoint_set;
-	const synfigapp::ValueDesc &value_desc = param_info_map[wi.path.to_string()].get_value_desc();
-	if (value_desc.is_value_node())
-		synfig::waypoint_collect(waypoint_set, wi.time_point.get_time(), value_desc.get_value_node());
-	if (waypoint_set.size() > 0)
-	signal_waypoint_double_clicked().emit(value_desc, waypoint_set, button);
+	fetch_waypoints(wi, waypoint_set);
+	if (waypoint_set.size() > 0) {
+		const synfigapp::ValueDesc &value_desc = param_info_map.at(wi.path.to_string()).get_value_desc();
+		signal_waypoint_double_clicked().emit(value_desc, waypoint_set, button);
+	}
+}
+
+void Widget_Timetrack::on_waypoint_action_changed()
+{
+	update_cursor();
+	action_state = waypoint_sd.get_action();
+	signal_action_state_changed().emit();
+}
+
+void Widget_Timetrack::on_waypoint_selection_changed()
+{
+	std::vector<WaypointItem*> selection = waypoint_sd.get_selected_items();
+	bool show_tool_bar_buttons = (selection.size() != 0);
+	signal_waypoint_selection_changed().emit(show_tool_bar_buttons);
+}
+
+void Widget_Timetrack::on_params_store_row_inserted(const Gtk::TreeModel::Path &, const Gtk::TreeModel::iterator &)
+{
+	queue_rebuild_param_info_list();
+}
+
+void Widget_Timetrack::on_params_store_row_deleted(const Gtk::TreeModel::Path &)
+{
+	queue_rebuild_param_info_list();
+}
+
+void Widget_Timetrack::on_params_store_rows_reordered(const Gtk::TreeModel::Path &, const Gtk::TreeModel::iterator &, int *)
+{
+	queue_rebuild_param_info_list();
+}
+
+void Widget_Timetrack::on_params_store_row_changed(const Gtk::TreeModel::Path &path, const Gtk::TreeModel::iterator &)
+{
+	// this is the way I found out how to redraw when a new value node is created by editor
+	// Instead of on every row change, it should be called only when a value node is created...
+	RowInfo &row_info = param_info_map[path.to_string()];
+	if (row_info.is_valid())
+		row_info.recheck_for_value_nodes();
+}
+
+void Widget_Timetrack::on_range_adjustment_value_changed()
+{
+	// wait for all members of Adjustment group to synchronize
+	queue_update_param_list_geometries();
+}
+
+void Widget_Timetrack::on_range_adjustment_changed()
+{
+	set_default_page_size(range_adjustment->get_page_size());
+	queue_update_param_list_geometries();
 }
 
 Widget_Timetrack::WaypointScaleInfo Widget_Timetrack::compute_scale_params() const
@@ -977,10 +1161,10 @@ Widget_Timetrack::WaypointSD::WaypointSD(Widget_Timetrack& widget)
 	  action(ActionState::NONE),
 	  is_action_set_before_drag(false)
 {
-	signal_drag_started().connect([&]() {on_drag_started();});
-	signal_drag_canceled().connect([&]() {on_drag_canceled();});
-	signal_drag_finished().connect([&](bool started_by_keys) {on_drag_finish(started_by_keys);});
-	signal_modifier_keys_changed().connect([&]() {on_modifier_keys_changed();});
+	signal_drag_started().connect(sigc::mem_fun(*this, &Widget_Timetrack::WaypointSD::on_drag_started));
+	signal_drag_canceled().connect(sigc::mem_fun(*this, &Widget_Timetrack::WaypointSD::on_drag_canceled));
+	signal_drag_finished().connect(sigc::mem_fun(*this, &Widget_Timetrack::WaypointSD::on_drag_finish));
+	signal_modifier_keys_changed().connect(sigc::mem_fun(*this, &Widget_Timetrack::WaypointSD::on_modifier_keys_changed));
 }
 
 Widget_Timetrack::WaypointSD::~WaypointSD()
@@ -1125,8 +1309,10 @@ void Widget_Timetrack::WaypointSD::delta_drag(int total_dx, int /*total_dy*/, bo
 	const float fps = widget.canvas_interface->get_canvas()->rend_desc().get_frame_rate();
 	int x0, y0;
 	get_active_item_initial_point(x0, y0);
-	const synfig::Time base_time = widget.time_plot_data->get_t_from_pixel_coord(x0);
-	const synfig::Time next_time = widget.time_plot_data->get_t_from_pixel_coord(widget.time_plot_data->get_pixel_t_coord(base_time) + dx).round(fps);
+	const TimePlotData* time_plot_data = widget.time_plot_data;
+	const synfig::Time base_time = time_plot_data->get_t_from_pixel_coord(x0);
+	const synfig::Time next_time = std::max(time_plot_data->time_model->get_lower(),
+											time_plot_data->get_t_from_pixel_coord(time_plot_data->get_pixel_t_coord(base_time) + dx).round(fps));
 
 	deltatime = next_time - base_time;
 

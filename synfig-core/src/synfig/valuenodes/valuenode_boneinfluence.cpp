@@ -2,21 +2,24 @@
 /*!	\file valuenode_boneinfluence.cpp
 **	\brief Implementation of the "BoneInfluence" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -46,8 +49,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -56,7 +57,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_BoneInfluence, RELEASE_VERSION_0_62_00, "boneinfluence", "Bone Influence")
+REGISTER_VALUENODE(ValueNode_BoneInfluence, RELEASE_VERSION_0_62_00, "boneinfluence", N_("Bone Influence"))
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -82,8 +83,8 @@ ValueNode_BoneInfluence::ValueNode_BoneInfluence(const ValueNode::Handle &x, Can
 		set_link("bone_weight_list",	bone_weight_list);
 		set_link("link",				x);
 
-		if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-			printf("%s:%d set parent canvas for bone influence to %p\n", __FILE__, __LINE__, canvas.get());
+		DEBUG_LOG("SYNFIG_DEBUG_SET_PARENT_CANVAS",
+			"%s:%d set parent canvas for bone influence to %p\n", __FILE__, __LINE__, canvas.get());
 		set_parent_canvas(canvas);
 	}
 	else
@@ -93,7 +94,7 @@ ValueNode_BoneInfluence::ValueNode_BoneInfluence(const ValueNode::Handle &x, Can
 }
 
 ValueNode_BoneInfluence*
-ValueNode_BoneInfluence::create(const ValueBase &x, Canvas::LooseHandle canvas)
+ValueNode_BoneInfluence::create(const ValueBase& x, Canvas::LooseHandle canvas)
 {
 	if (x.get_type() == type_bline_point)
 		return new ValueNode_BoneInfluence(ValueNode_Composite::create(x, canvas), canvas);
@@ -115,8 +116,8 @@ ValueNode_BoneInfluence::~ValueNode_BoneInfluence()
 ValueBase
 ValueNode_BoneInfluence::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	Matrix transform(get_transform(true, t));
 	Type &type(link_->get_type());
@@ -124,8 +125,8 @@ ValueNode_BoneInfluence::operator()(Time t)const
 	{
 		Vector link((*link_)(t).get(Vector()));
 
-		if (getenv("SYNFIG_DEBUG_BONE_VECTOR_TRANSFORMATION"))
-			printf("%s\n", transform.get_string(35,
+		DEBUG_LOG("SYNFIG_DEBUG_BONE_VECTOR_TRANSFORMATION",
+			"%s\n", transform.get_string(35,
 												strprintf("transform (%7.2f %7.2f) using",
 														  link[0],
 														  link[1]),
@@ -154,8 +155,8 @@ ValueNode_BoneInfluence::operator()(Time t)const
 			link.set_vertex_setup(v);
 		}
 
-		if (getenv("SYNFIG_DEBUG_BONE_BLINEPOINT_TRANSFORMATION"))
-			printf("%s\n", transform.get_string(35,
+		DEBUG_LOG("SYNFIG_DEBUG_BONE_BLINEPOINT_TRANSFORMATION",
+			"%s\n", transform.get_string(35,
 												strprintf("transform v(%7.2f %7.2f) using",
 														  v[0],
 														  v[1]),
@@ -232,17 +233,16 @@ ValueNode_BoneInfluence::calculate_transform(Time t)const
 {
 	Matrix transform;
 	transform *= 0.0;
-	vector<ValueBase> bone_weight_list((*bone_weight_list_)(t).get_list());
+	std::vector<ValueBase> bone_weight_list((*bone_weight_list_)(t).get_list());
 	Real total_weight = 0;
-	for (vector<ValueBase>::iterator iter = bone_weight_list.begin(); iter != bone_weight_list.end(); iter++)
+	for (std::vector<ValueBase>::iterator iter = bone_weight_list.begin(); iter != bone_weight_list.end(); iter++)
 	{
 		Bone bone(iter->get(BoneWeightPair()).get_bone());
 		Real weight(iter->get(BoneWeightPair()).get_weight());
 
-		if (getenv("SYNFIG_DEBUG_BONE_TRANSFORM_WEIGHTING"))
 		{
-			printf("%s  *\n", Matrix().set_scale(bone.get_local_scale()).get_string(15, "local scale").c_str());
-			printf("%s  =\n", bone.get_animated_matrix().get_string(15, "animated", strprintf("* %.2f (weight)", weight)).c_str());
+			DEBUG_LOG("SYNFIG_DEBUG_BONE_TRANSFORM_WEIGHTING", "%s  *\n", Matrix().set_scale(bone.get_local_scale()).get_string(15, "local scale").c_str());
+			DEBUG_LOG("SYNFIG_DEBUG_BONE_TRANSFORM_WEIGHTING", "%s  =\n", bone.get_animated_matrix().get_string(15, "animated", strprintf("* %.2f (weight)", weight)).c_str());
 		}
 
 		transform += ( bone.get_animated_matrix()
@@ -250,19 +250,18 @@ ValueNode_BoneInfluence::calculate_transform(Time t)const
 		total_weight += weight;
 	}
 
-	if (getenv("SYNFIG_DEBUG_BONE_TRANSFORM_WEIGHTING"))
 	{
-		printf("%s:%d transform:\n%s\n", __FILE__, __LINE__, transform.get_string().c_str());
-		printf("%s:%d total_weight: %.2f\n", __FILE__, __LINE__, total_weight);
+		DEBUG_LOG("SYNFIG_DEBUG_BONE_TRANSFORM_WEIGHTING", "%s:%d transform:\n%s\n", __FILE__, __LINE__, transform.get_string().c_str());
+		DEBUG_LOG("SYNFIG_DEBUG_BONE_TRANSFORM_WEIGHTING", "%s:%d total_weight: %.2f\n", __FILE__, __LINE__, total_weight);
 	}
 
-	if (abs(total_weight) > epsilon)
+	if (std::fabs(total_weight) > epsilon)
 		transform *= (1.0/total_weight);
 	else
 		transform = Matrix();
 
-	if (getenv("SYNFIG_DEBUG_BONE_TRANSFORM_WEIGHTING"))
-		printf("%s:%d final transform:\n%s\n", __FILE__, __LINE__, transform.get_string().c_str());
+	DEBUG_LOG("SYNFIG_DEBUG_BONE_TRANSFORM_WEIGHTING",
+		"%s:%d final transform:\n%s\n", __FILE__, __LINE__, transform.get_string().c_str());
 
 	return transform;
 }

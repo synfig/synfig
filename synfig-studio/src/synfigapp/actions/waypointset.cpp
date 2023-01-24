@@ -2,20 +2,23 @@
 /*!	\file waypointset.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -38,8 +41,6 @@
 
 #endif
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
 using namespace Action;
@@ -123,8 +124,8 @@ Action::WaypointSet::perform()
 	//WaypointList::iterator iter;
 
 #if 1
-	vector<WaypointList::iterator>	iters;
-	vector<Waypoint>::iterator i = waypoints.begin(), end = waypoints.end();
+	std::vector<WaypointList::iterator>	iters;
+	std::vector<Waypoint>::iterator i = waypoints.begin(), end = waypoints.end();
 
 	for(; i != end; ++i)
 	{
@@ -147,7 +148,7 @@ Action::WaypointSet::perform()
 		//we only want to track overwrites (not waypoints that are also being modified)
 		if(candelete)
 		{
-			for(vector<WaypointList::iterator>::iterator ii = iters.begin(); ii != iters.end(); ++ii)
+			for (std::vector<WaypointList::iterator>::iterator ii = iters.begin(); ii != iters.end(); ++ii)
 			{
 				if(timeiter.first == *ii)
 				{
@@ -168,7 +169,7 @@ Action::WaypointSet::perform()
 	//overwrite all the valuenodes we're supposed to set
 	{
 		i = waypoints.begin();
-		for(vector<WaypointList::iterator>::iterator ii = iters.begin(); ii != iters.end() && i != end; ++ii, ++i)
+		for (std::vector<WaypointList::iterator>::iterator ii = iters.begin(); ii != iters.end() && i != end; ++ii, ++i)
 		{
 			old_waypoints.push_back(**ii);
 			**ii = *i; //set the point to the corresponding point in the normal waypoint list
@@ -177,7 +178,7 @@ Action::WaypointSet::perform()
 
 	//remove all the points we're supposed to be overwriting
 	{
-		vector<Waypoint>::iterator 	oi = overwritten_waypoints.begin(),
+		std::vector<Waypoint>::iterator 	oi = overwritten_waypoints.begin(),
 									oend = overwritten_waypoints.end();
 		for(; oi != oend; ++oi)
 		{
@@ -229,7 +230,7 @@ Action::WaypointSet::undo()
 	WaypointList::iterator iter;
 
 #if 1
-	vector<Waypoint>::iterator i = old_waypoints.begin(), end = old_waypoints.end();
+	std::vector<Waypoint>::iterator i = old_waypoints.begin(), end = old_waypoints.end();
 
 	for(; i != end; ++i)
 	{
@@ -245,7 +246,7 @@ Action::WaypointSet::undo()
 
 	//add back in all the points that we removed before...
 	{
-		vector<Waypoint>::iterator 	oi = overwritten_waypoints.begin(),
+		std::vector<Waypoint>::iterator 	oi = overwritten_waypoints.begin(),
 									oend = overwritten_waypoints.end();
 		for(; oi != oend; ++oi)
 		{

@@ -1,23 +1,26 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file valuenode_bline.h
+/*!	\file valuenode_wplist.h
 **	\brief Header file for implementation of the "Width Point List" valuenode
 **	conversion.
-**
-**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2010 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -29,12 +32,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <vector>
-#include <list>
-
-#include <synfig/valuenode.h>
-#include <synfig/time.h>
-#include <synfig/uniqueid.h>
 #include <synfig/widthpoint.h>
 #include "valuenode_dynamiclist.h"
 
@@ -62,23 +59,31 @@ synfig::Real widthpoint_interpolate(const WidthPoint& prev, const WidthPoint& ne
 */
 class ValueNode_WPList : public ValueNode_DynamicList
 {
-private:
 	ValueNode::RHandle bline_;
 
-public:
-
-	typedef etl::handle<ValueNode_WPList> Handle;
-	typedef etl::handle<const ValueNode_WPList> ConstHandle;
-	typedef etl::handle<const ValueNode_WPList> LooseHandle;
 	ValueNode_WPList();
 
 public:
+	typedef etl::handle<ValueNode_WPList> Handle;
+	typedef etl::handle<const ValueNode_WPList> ConstHandle;
+	typedef etl::handle<const ValueNode_WPList> LooseHandle;
 
- 	virtual ValueBase operator()(Time t)const;
+	// Creates a Value Node Width Point List from another compatible list
+	static ValueNode_WPList* create(const ValueBase& x=type_list, etl::loose_handle<Canvas> canvas=nullptr);
 	virtual ~ValueNode_WPList();
-	virtual String link_local_name(int i)const;
-	virtual String get_name()const;
-	virtual String get_local_name()const;
+
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
+	static bool check_type(Type &type);
+
+	virtual String link_local_name(int i) const override;
+
+	virtual ValueBase operator()(Time t) const override;
+
+protected:
+	LinkableValueNode* create_new() const override;
+
+public:
 	//! Inserts a new entry between the previous found
 	//! widthpoint and the one where the action was called
 	//! with an average width and a middle position.
@@ -86,36 +91,26 @@ public:
 	//! \param time the time when inserted in animation mode
 	//! \param origin unused. Always is in the middle.
 	//! \return the new List Entry
-	virtual ListEntry create_list_entry(int index, Time time=0, Real origin=0.5);
+	virtual ListEntry create_list_entry(int index, Time time=0, Real origin=0.5) override;
 	//! Finds a fully on width point at given time and after the given position
 	//! \param position the position where to start to seek from
 	//! \param time the time when things are evaluated
 	//! \return a width point reference with the proper values
-	WidthPoint find_next_valid_entry_by_position(Real position, Time time=0)const;
+	WidthPoint find_next_valid_entry_by_position(Real position, Time time=0) const;
 	//! Finds a fully on width point at given time and before the given position
 	//! \param position the position where to start to seek from
 	//! \param time the time when things are evaluated
 	//! \return a width point reference with the proper values
-	WidthPoint find_prev_valid_entry_by_position(Real position, Time time=0)const;
+	WidthPoint find_prev_valid_entry_by_position(Real position, Time time=0) const;
 	//! Interpolated width at a a given time based on surrounding full 'on' width points
 	//! \param position the position where to evaluate the width
 	//! \param time the time when evaluates
 	//! \return the interpolated width
-	Real interpolated_width(Real position, Time time)const;
+	Real interpolated_width(Real position, Time time) const;
 	//! Gets the bline RHandle
-	ValueNode::LooseHandle get_bline()const;
+	ValueNode::LooseHandle get_bline() const;
 	//! Sets the bline RHandle
 	void set_bline(ValueNode::Handle b);
-
-protected:
-
-	LinkableValueNode* create_new()const;
-
-public:
-
-	static bool check_type(Type &type);
-	// Creates a Value Node Width Point List from another compatible list
-	static ValueNode_WPList* create(const ValueBase &x=type_list);
 }; // END of class ValueNode_WPList
 
 typedef ValueNode_WPList::ListEntry::ActivepointList ActivepointList;

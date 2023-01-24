@@ -2,21 +2,24 @@
 /*!	\file dock_history.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -62,7 +65,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dock_History::Dock_History():
-	Dock_CanvasSpecific("history",_("History"),Gtk::StockID("synfig-history")),
+	Dock_CanvasSpecific("history",_("History"),"history_icon"),
 	action_group(Gtk::ActionGroup::create("action_group_dock_history"))
 {
 	// Make History toolbar small for space efficiency
@@ -140,7 +143,9 @@ Dock_History::Dock_History():
 
 	action_group->set_sensitive(false);
 
-	set_toolbar(*dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-history")));
+	if (Gtk::Toolbar* toolbar = dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-history"))) {
+		set_toolbar(*toolbar);
+	}
 	add(*create_action_tree());
 }
 
@@ -377,8 +382,6 @@ Dock_History::set_selected_instance(etl::loose_handle<studio::Instance> x)
 	// if it's already selected, don't select it again
 	if (x==selected_instance)
 		return;
-
-	std::list<etl::handle<studio::Instance> >::iterator iter;
 
 	set_selected_instance_(x);
 }

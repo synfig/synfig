@@ -2,31 +2,39 @@
 /*!	\file filesystem.cpp
 **	\brief FileSystem
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2013 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
 
 /* === H E A D E R S ======================================================= */
 
+#include "localization.h"
 #ifdef USING_PCH
 #	include "pch.h"
 #else
 #ifdef HAVE_CONFIG_H
 #	include <config.h>
+#endif
+#ifdef _WIN32
+#include <codecvt>
+#include <locale>
 #endif
 
 #include <glibmm.h>
@@ -36,12 +44,12 @@
 
 #include "filesystem.h"
 
+#include "general.h" // synfig::error(...)
+
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -185,8 +193,16 @@ bool FileSystem::copy_recursive(Handle from_file_system, const String &from_file
 String FileSystem::fix_slashes(const String &filename)
 {
 	String fixed = etl::cleanup_path(filename);
-	if (fixed == ".") fixed = "";
-	for(size_t i = 0; i < fixed.size(); ++i)
+	if (fixed == ".")
+		return String();
+
+	String::size_type i = 0;
+	// For MS Windows shared folder paths like \\host\folder\file,
+	// we keep \\ for now
+	if (fixed.size() > 2 && fixed.substr(0, 2) == "\\\\")
+		i = 2;
+	// All other backslashes \ are replaced with slashes /
+	for(; i < fixed.size(); ++i)
 		if (fixed[i] == '\\') fixed[i] = '/';
 	return fixed;
 }
@@ -235,6 +251,47 @@ String FileSystem::get_real_filename(const String &filename) {
 	return Glib::filename_from_uri(get_real_uri(filename));
 }
 
+filesystem::Path::Path(const std::string& path)
+{
+	path_ = path;
+	native_path_ = utf8_to_native(path);
+}
+
+const filesystem::Path::value_type*
+filesystem::Path::c_str() const noexcept
+{
+	return native().c_str();
+}
+
+const filesystem::Path::string_type&
+filesystem::Path::native() const noexcept
+{
+	return native_path_;
+}
+
+const std::string&
+filesystem::Path::u8string() const
+{
+	return path_;
+}
+
+filesystem::Path::string_type
+filesystem::Path::utf8_to_native(const std::string& utf8)
+{
+#ifdef _WIN32
+	// Windows uses UTF-16 for filenames, so we need to convert it from UTF-8.
+	try {
+		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> wcu8;
+		return wcu8.from_bytes(utf8);
+	} catch (const std::range_error& exception) {
+		synfig::error("Failed to convert UTF-8 string (%s)", utf8.c_str());
+		throw;
+	}
+#else
+	// For other OS, it's the file name as it is
+	return utf8;
+#endif
+}
 
 /* === E N T R Y P O I N T ================================================= */
 

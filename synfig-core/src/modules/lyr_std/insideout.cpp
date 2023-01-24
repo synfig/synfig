@@ -2,24 +2,25 @@
 /*!	\file insideout.cpp
 **	\brief Implementation of the "Inside Out" layer
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
-**	\endlegal
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
 **
-** === N O T E S ===========================================================
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
+**	\endlegal
 **
 ** ========================================================================= */
 
@@ -49,8 +50,6 @@
 
 #endif
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace modules;
 using namespace lyr_std;
@@ -124,15 +123,6 @@ InsideOut::get_color(Context context, const Point &p)const
 	return context.get_color(invpos+origin);
 }
 
-CairoColor
-InsideOut::get_cairocolor(Context context, const Point &p)const
-{
-	Point origin=param_origin.get(Point());
-	Point pos(p-origin);
-	Real inv_mag=pos.inv_mag();
-	Point invpos(pos*inv_mag*inv_mag);
-	return context.get_cairocolor(invpos+origin);
-}
 
 class lyr_std::InsideOut_Trans : public Transform
 {

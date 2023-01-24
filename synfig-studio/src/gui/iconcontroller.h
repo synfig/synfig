@@ -2,20 +2,23 @@
 /*!	\file iconcontroller.h
 **	\brief Template Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -50,7 +53,6 @@ class IconController
 {
 	Glib::RefPtr<Gtk::IconFactory> icon_factory;
 	void init_icon(const synfig::String &name, const synfig::String &iconfile, const synfig::String& desc);
-	void init_icon_clone(const synfig::String &name, const synfig::String& desc);
 
 public:
 	IconController();
@@ -61,14 +63,13 @@ public:
 	static Glib::RefPtr<Gdk::Cursor> get_tool_cursor(const Glib::ustring& name,const Glib::RefPtr<Gdk::Window>& window);
 };
 
-Gtk::StockID layer_icon(const synfig::String &layer);
+std::string layer_icon_name(const synfig::String &layer);
 Glib::RefPtr<Gdk::Pixbuf> get_tree_pixbuf_layer(const synfig::String &layer);
 
-Gtk::StockID value_icon(synfig::Type &type);
-Gtk::StockID interpolation_icon(synfig::Interpolation type);
-Gtk::StockID valuenode_icon(etl::handle<synfig::ValueNode> value_node);
+std::string value_icon_name(synfig::Type &type);
+std::string interpolation_icon_name(synfig::Interpolation type);
+std::string valuenode_icon_name(etl::handle<synfig::ValueNode> value_node);
 Glib::RefPtr<Gdk::Pixbuf> get_tree_pixbuf(synfig::Type &type);
-Glib::RefPtr<Gdk::Pixbuf> get_interpolation_pixbuf(synfig::Interpolation itype);
 Gtk::StockID get_action_stock_id(const synfigapp::Action::BookEntry& action);
 
 }; // END of namespace studio

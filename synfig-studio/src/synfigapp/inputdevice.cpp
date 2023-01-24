@@ -2,21 +2,24 @@
 /*!	\file inputdevice.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **  Copyright (c) 2010 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -42,8 +45,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
 
@@ -59,7 +60,7 @@ public:
 		input_device(input_device) { }
 
 
-	virtual bool get_value(const synfig::String& key, synfig::String& value)const
+	virtual bool get_raw_value(const synfig::String& key, synfig::String& value)const override
 	{
 		try
 		{
@@ -71,7 +72,7 @@ public:
 			}
 			if(key=="bline_width")
 			{
-				value=strprintf("%s",input_device->get_bline_width().get_string().c_str());
+				value=input_device->get_bline_width().get_string();
 				return true;
 			}
 			if(key=="opacity")
@@ -113,7 +114,7 @@ public:
 		{
 			synfig::warning("DeviceSettings: Caught exception when attempting to get value.");
 		}
-		return Settings::get_value(key, value);
+		return Settings::get_raw_value(key, value);
 	}
 
 	void get_mode_value(synfig::String & value) const
@@ -128,23 +129,23 @@ public:
 
 	void get_axes_value(synfig::String & value) const
 	{
-		vector<InputDevice::AxisUse> axes = input_device->get_axes();
+		std::vector<InputDevice::AxisUse> axes = input_device->get_axes();
 		value = strprintf("%zu", axes.size());
-		vector<InputDevice::AxisUse>::const_iterator itr;
+		std::vector<InputDevice::AxisUse>::const_iterator itr;
 		for (itr = axes.begin(); itr != axes.end(); itr++)
 			value += strprintf(" %u", (unsigned int) *itr);
 	}
 
 	void get_keys_value(synfig::String & value) const
 	{
-		vector<InputDevice::DeviceKey> keys = input_device->get_keys();
+		std::vector<InputDevice::DeviceKey> keys = input_device->get_keys();
 		value = strprintf("%zu", keys.size());
-		vector<InputDevice::DeviceKey>::const_iterator itr;
+		std::vector<InputDevice::DeviceKey>::const_iterator itr;
 		for (itr = keys.begin(); itr != keys.end(); itr++)
 			value += strprintf(" %u %u", itr->keyval, itr->modifiers);
 	}
 
-	virtual bool set_value(const synfig::String& key,const synfig::String& value)
+	virtual bool set_value(const synfig::String& key,const synfig::String& value) override
 	{
 		try
 		{
@@ -257,7 +258,7 @@ public:
 		input_device->set_keys(keys);
 	}
 
-	virtual KeyList get_key_list()const
+	virtual KeyList get_key_list()const override
 	{
 		KeyList ret(Settings::get_key_list());
 		ret.push_back("outline_color");

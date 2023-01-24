@@ -2,23 +2,26 @@
 /*!	\file blinepointtangentsplit.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2009 Nikita Kitaev
 **	Copyright (c) 2012 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -48,11 +51,8 @@
 
 #endif
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
-using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
@@ -92,21 +92,19 @@ static ValueNode_Composite::Handle search_for_related_blinepoint(const Action::P
 	if(blinepoint && blinepoint->get_type()==type_bline_point)
 		return blinepoint;
 
+	blinepoint = nullptr;
+
 	ValueNode_RadialComposite::Handle radial_value_node;
 	radial_value_node=ValueNode_RadialComposite::Handle::cast_dynamic(param.get_value_node());
 	if(radial_value_node && radial_value_node->get_type()==type_vector)
-	// value_node is radial composite and vector (user right click on a tangent)
 	{
-		std::set<Node*>::iterator iter;
+		// value_node is radial composite and vector (user right click on a tangent)
 		// now check if the parent of radial_value_node is a blinepoint type
-		for(iter=radial_value_node->parent_set.begin();iter!=radial_value_node->parent_set.end();++iter)
-		{
-			blinepoint=ValueNode_Composite::Handle::cast_dynamic(*iter);
-			if(blinepoint && blinepoint->get_type()==type_bline_point)
-				return blinepoint;
-		}
+		blinepoint = radial_value_node->find_first_parent_of_type<ValueNode_Composite>([](const ValueNode_Composite::Handle& compo) {
+			return compo->get_type()==type_bline_point;
+		});
 	}
-	return nullptr;
+	return blinepoint;
 }
 
 /* === M E T H O D S ======================================================= */

@@ -2,22 +2,25 @@
 /*!	\file cellrenderer_value.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **  Copyright (c) 2011 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -37,8 +40,6 @@
 #include <gtkmm/celleditable.h>
 #include <gtkmm/eventbox.h>
 
-#include <ETL/stringf>
-
 #include <synfig/general.h>
 #include <synfig/transformation.h>
 #include <synfig/valuenodes/valuenode_bone.h>
@@ -55,8 +56,6 @@
 #endif
 
 using namespace synfig;
-using namespace etl;
-using namespace std;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
@@ -123,16 +122,18 @@ public:
 	void start_editing_vfunc(GdkEvent *event)
 	{
 		SYNFIG_EXCEPTION_GUARD_BEGIN()
-		valuewidget->signal_activate().connect(sigc::mem_fun(*this,
-			&studio::ValueBase_Entry::editing_done));
+		if (valuewidget) {
+			valuewidget->signal_activate().connect(sigc::mem_fun(*this, &studio::ValueBase_Entry::editing_done));
+			valuewidget->signal_key_press_event().connect(sigc::mem_fun(*this, &studio::ValueBase_Entry::on_key_press_event));
+		}
 
 		// popup combobox menu if its is a enum editor
 		if (event && event->type == GDK_BUTTON_PRESS && valuewidget) {
 			Type &type(valuewidget->get_value().get_type());
 			bool popup_combobox = false;
 			if (type == type_integer) {
-				string param_hint = valuewidget->get_param_desc().get_hint();
-				string child_param_hint = valuewidget->get_child_param_desc().get_hint();
+				std::string param_hint = valuewidget->get_param_desc().get_hint();
+				std::string child_param_hint = valuewidget->get_child_param_desc().get_hint();
 				if ( param_hint == "enum" || child_param_hint == "enum" )
 					popup_combobox = true;
 			} else if (type == type_canvas)
@@ -140,8 +141,8 @@ public:
 			else if (type == type_bone_valuenode)
 				popup_combobox = true;
 			else if (type == type_string) {
-				string param_hint = valuewidget->get_param_desc().get_hint();
-				string child_param_hint = valuewidget->get_child_param_desc().get_hint();
+				std::string param_hint = valuewidget->get_param_desc().get_hint();
+				std::string child_param_hint = valuewidget->get_child_param_desc().get_hint();
 				if( param_hint == "sublayer_name" || child_param_hint == "sublayer_name")
 					popup_combobox = true;
 			}
@@ -166,6 +167,21 @@ public:
 		 || event->any.type == GDK_3BUTTON_PRESS )
 			return true;
 		return Gtk::EventBox::on_event(event);
+		SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
+	}
+
+	bool on_key_press_event(GdkEventKey* key_event)
+	{
+		SYNFIG_EXCEPTION_GUARD_BEGIN()
+		if(key_event->keyval == GDK_KEY_Escape)
+		{
+			hide();
+			if (parent) parent->grab_focus();
+			property_editing_canceled() = true;
+			editing_done();
+			return true;
+		}
+		return Gtk::EventBox::on_key_press_event(key_event);
 		SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 	}
 
@@ -266,8 +282,8 @@ CellRenderer_ValueBase::CellRenderer_ValueBase():
 
 CellRenderer_ValueBase::~CellRenderer_ValueBase()
 {
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
-		synfig::info("CellRenderer_ValueBase::~CellRenderer_ValueBase(): Deleted");
+	DEBUG_LOG("SYNFIG_DEBUG_DESTRUCTORS",
+		"CellRenderer_ValueBase::~CellRenderer_ValueBase(): Deleted");
 }
 
 void
@@ -324,10 +340,7 @@ CellRenderer_ValueBase::render_vfunc(
 			property_text() = x.get_string(real_num_decimals).c_str();
 		}
 		else
-		{
-			std::string format = strprintf("%%.%df", real_num_decimals);
-			property_text() = strprintf(format.c_str(), data.get(Real()));
-		}
+			property_text() = float_presentation(data.get(Real()));
 	}
 	else
 	if (type == type_time)
@@ -338,10 +351,7 @@ CellRenderer_ValueBase::render_vfunc(
 	}
 	else
 	if (type == type_angle)
-	{
-		const std::string angle_format = strprintf("%%.%df°", angle_num_decimals);
-		property_text() = strprintf( angle_format.c_str(), (Real) Angle::deg( data.get(Angle()) ).get() );
-	}
+		property_text() = float_presentation(Angle::deg( data.get(Angle()) ).get(), angle_num_decimals) + "°";
 	else
 	if (type == type_integer)
 	{
@@ -386,10 +396,8 @@ CellRenderer_ValueBase::render_vfunc(
 			x.convert( App::distance_system, get_canvas()->rend_desc() );
 			y.convert( App::distance_system, get_canvas()->rend_desc() );
 			property_text() = strprintf("%s,%s", x.get_string(real_num_decimals).c_str(), y.get_string(real_num_decimals).c_str());
-		} else {
-			std::string format = strprintf("%%.%01df,%%.%01df", real_num_decimals, real_num_decimals);
-			property_text() = strprintf(format.c_str(), vector[0], vector[1]);
-		}
+		} else
+			property_text() = float_presentation(vector[0]) + "," + float_presentation(vector[1]);
 	}
 	else
 	if (type == type_transformation)
@@ -407,15 +415,9 @@ CellRenderer_ValueBase::render_vfunc(
 		sx.convert( App::distance_system, get_canvas()->rend_desc() );
 		sy.convert( App::distance_system, get_canvas()->rend_desc() );
 
-		std::string format = strprintf("%%s,%%s,%%.%df°,%%s,%%s", angle_num_decimals);
-		property_text() = static_cast<Glib::ustring>(strprintf(
-			format.c_str(),
-			x.get_string(real_num_decimals).c_str(),
-			y.get_string(real_num_decimals).c_str(),
-			(Real) angle.get(),
-			sx.get_string(real_num_decimals).c_str(),
-			sy.get_string(real_num_decimals).c_str()
-		));
+		property_text() = x.get_string(real_num_decimals) + "," + y.get_string(real_num_decimals) +
+						float_presentation(angle.get(), angle_num_decimals) + "°" +
+					sx.get_string(real_num_decimals) + "," + sy.get_string(real_num_decimals);
 	}
 	else
 	if (type == type_string)
@@ -669,6 +671,9 @@ CellRenderer_ValueBase::start_editing_vfunc(
 void
 CellRenderer_ValueBase::on_value_editing_done()
 {
+	if (value_entry && value_entry->property_editing_canceled())
+		return;
+
 	if (edit_value_done_called)
 	{
 		synfig::error("on_value_editing_done(): Called twice!");

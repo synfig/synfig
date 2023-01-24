@@ -74,7 +74,7 @@ file(GLOB MINGW_LIBS
 	    ${MINGW_BIN}/libpangoft2-1.0-[0-9]*.dll
 	    ${MINGW_BIN}/libpangomm-1.4-[0-9]*.dll
 	    ${MINGW_BIN}/libpangowin32-1.0-[0-9]*.dll
-	    ${MINGW_BIN}/libpcre-[0-9]*.dll
+	    ${MINGW_BIN}/libpcre2-[0-9]*.dll
 	    ${MINGW_BIN}/libpixman-1-[0-9]*.dll
 	    ${MINGW_BIN}/libpng16-1[0-9]*.dll
 	    ${MINGW_BIN}/libpng16-config
@@ -96,7 +96,7 @@ install(FILES ${MINGW_LIBS} DESTINATION bin)
 
 find_program(CYGPATH_EXECUTABLE cygpath ${MINGW_PATH}/../usr/bin/)
 if(CYGPATH_EXECUTABLE)
-    set(MLT_PATH "/opt/mlt-6.16.0")
+    set(MLT_PATH "/opt/mlt-7.2.0")
     execute_process(
 		    COMMAND ${CYGPATH_EXECUTABLE} -m ${MLT_PATH}
 		    OUTPUT_VARIABLE MLT_DIRECTORY
@@ -106,12 +106,12 @@ if(CYGPATH_EXECUTABLE)
     message(${MLT_DIRECTORY})
 else()
     message(WARNING "-- cygpath tool not found, using relative path for MLT.")
-    set(MLT_DIRECTORY "${MINGW_PATH}/../opt/mlt-6.16.0")
+    set(MLT_DIRECTORY "${MINGW_PATH}/../opt/mlt-7.2.0")
 endif()
 
 file(GLOB MLT_FILES
-	    ${MLT_DIRECTORY}/libmlt++-3.dll
-	    ${MLT_DIRECTORY}/libmlt-6.dll
+	    ${MLT_DIRECTORY}/libmlt++-*.dll
+	    ${MLT_DIRECTORY}/libmlt-*.dll
 	    ${MLT_DIRECTORY}/melt.exe
 	    )
 file(COPY ${MLT_FILES} DESTINATION ${SYNFIG_BUILD_ROOT}/bin)

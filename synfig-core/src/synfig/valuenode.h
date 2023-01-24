@@ -8,15 +8,20 @@
 **	Copyright (c) 2011 Carlos López
 **	Copyright (c) 2016 caryoscelus
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -221,8 +226,8 @@ public:
 	//! Returns \true if the Value Node has an ID (has been exported)
 	bool is_exported()const { return !get_id().empty(); }
 
-	//! Check recursively if \value_node_dest is a descendant of the Value Node
-	bool is_descendant(ValueNode::Handle value_node_dest);
+	//! Check recursively if \c value_node_dest is a descendant of this Value Node (or this value node itself)
+	bool is_ancestor_of(ValueNode::Handle value_node_dest) const;
 
 	//! Returns the type of the ValueNode
 	Type& get_type()const { return *type; }
@@ -351,7 +356,7 @@ protected:
 *
 * 	This Value Node is calculated based on a math calculation or a time
 * 	evaluation of the linked Value Nodes. It is commonly known as
-* 	Converted Value Nodes. The derived clases defines the behavior.
+* 	Converted Value Nodes. The derived classes defines the behavior.
 */
 class LinkableValueNode : public ValueNode
 {
@@ -418,7 +423,7 @@ public:
 	String get_description(bool show_exported_name = true)const;
 
 	//! Gets the children vocabulary for linkable value nodes
-	virtual Vocab get_children_vocab()const;
+	virtual const Vocab& get_children_vocab()const;
 
 	virtual void set_root_canvas(etl::loose_handle<Canvas> x);
 
@@ -460,6 +465,7 @@ protected:
 
 	//! Virtual member to set the children vocabulary to a given value
 	virtual void set_children_vocab(const Vocab& rvocab);
+	virtual void init_children_vocab();
 
 	virtual void get_values_vfunc(std::map<Time, ValueBase> &x) const;
 }; // END of class LinkableValueNode

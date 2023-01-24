@@ -2,22 +2,25 @@
 /*!	\file noise.cpp
 **	\brief Implementation of the "Noise Gradient" layer
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
 **	Copyright (c) 2011-2013 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -34,7 +37,6 @@
 #include "noise.h"
 
 #include <synfig/localization.h>
-#include <synfig/general.h>
 
 #include <synfig/string.h>
 #include <synfig/time.h>
@@ -43,16 +45,13 @@
 #include <synfig/renddesc.h>
 #include <synfig/surface.h>
 #include <synfig/value.h>
-#include <synfig/valuenode.h>
-#include <time.h>
+#include <ctime>
 
 #endif
 
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
-using namespace std;
-using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
@@ -69,7 +68,7 @@ SYNFIG_LAYER_SET_VERSION(Noise,"0.0");
 Noise::Noise():
 	Layer_Composite(1.0,Color::BLEND_COMPOSITE),
 	param_gradient(ValueBase(Gradient(Color::black(), Color::white()))),
-	param_random(ValueBase(int(time(NULL)))),
+	param_random(ValueBase(int(time(nullptr)))),
 	param_size(ValueBase(Vector(1,1))),
 	param_smooth(ValueBase(int(RandomNoise::SMOOTH_COSINE))),
 	param_detail(ValueBase(int(4))),
@@ -146,8 +145,8 @@ Noise::color_func(const Point &point, float pixel_size,Context /*context*/)const
 
 				if(turbulent)
 				{
-					amount2=abs(amount2);
-					amount3=abs(amount3);
+					amount2=std::fabs(amount2);
+					amount3=std::fabs(amount3);
 				}
 
 				x2*=0.5f;
@@ -163,8 +162,8 @@ Noise::color_func(const Point &point, float pixel_size,Context /*context*/)const
 
 			if(turbulent)
 			{
-				amount=abs(amount);
-				alpha=abs(alpha);
+				amount=std::fabs(amount);
+				alpha=std::fabs(alpha);
 			}
 
 			x*=0.5f;
@@ -185,7 +184,7 @@ Noise::color_func(const Point &point, float pixel_size,Context /*context*/)const
 		}
 
 		if(super_sample && pixel_size) {
-			Real da = max(amount3, max(amount,amount2)) - min(amount3, min(amount,amount2));
+			Real da = std::max(amount3, std::max(amount,amount2)) - std::min(amount3, std::min(amount,amount2));
 			ret = compiled_gradient.average(amount - da, amount + da);
 		} else {
 			ret = compiled_gradient.color(amount);
@@ -206,10 +205,14 @@ Noise::calc_supersample(const synfig::Point &/*x*/, float /*pw*/,float /*ph*/)co
 synfig::Layer::Handle
 Noise::hit_check(synfig::Context context, const synfig::Point &point)const
 {
+	bool check_myself_first;
+	auto layer = basic_hit_check(context, point, check_myself_first);
+
+	if (!check_myself_first)
+		return layer;
+
 	if(get_blend_method()==Color::BLEND_STRAIGHT && get_amount()>=0.5)
 		return const_cast<Noise*>(this);
-	if(get_amount()==0.0)
-		return context.hit_check(point);
 	if(color_func(point,0,context).get_a()>0.5)
 		return const_cast<Noise*>(this);
 	return synfig::Layer::Handle();
@@ -320,16 +323,6 @@ Noise::get_color(Context context, const Point &point)const
 		return Color::blend(color,context.get_color(point),get_amount(),get_blend_method());
 }
 
-CairoColor
-Noise::get_cairocolor(Context context, const Point &point)const
-{
-	const CairoColor color(color_func(point,0,context));
-	
-	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
-		return color;
-	else
-		return CairoColor::blend(color,context.get_cairocolor(point),get_amount(),get_blend_method());
-}
 
 bool
 Noise::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
@@ -359,7 +352,7 @@ Noise::accelerated_render(Context context,Surface *surface,int quality, const Re
 	Point tl(renddesc.get_tl());
 	const int w(surface->get_w());
 	const int h(surface->get_h());
-	float supersampleradius((abs(pw)+abs(ph))*0.5f);
+	float supersampleradius((std::fabs(pw)+std::fabs(ph))*0.5f);
 	if(quality>=8)
 		supersampleradius=0;
 

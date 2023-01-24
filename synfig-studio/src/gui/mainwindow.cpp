@@ -2,20 +2,23 @@
 /*!	\file mainwindow.cpp
 **	\brief MainWindow
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2013 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -32,12 +35,16 @@
 #include <gui/mainwindow.h>
 
 #include <gtkmm/box.h>
+#include <gtkmm/messagedialog.h>
 #include <gtkmm/stock.h>
 #include <gtkmm/textview.h>
+
+#include <ETL/stringf>
 
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/dialogs/dialog_input.h>
+#include <gui/dialogs/dialog_workspaces.h>
 #include <gui/docks/dockable.h>
 #include <gui/docks/dockbook.h>
 #include <gui/docks/dockmanager.h>
@@ -45,6 +52,7 @@
 #include <gui/localization.h>
 #include <gui/widgets/widget_time.h>
 #include <gui/widgets/widget_vector.h>
+#include <gui/workspacehandler.h>
 
 #include <synfigapp/main.h>
 
@@ -52,28 +60,35 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
-#define GRAB_HINT_DATA(y)	{ \
-		String x; \
-		if(synfigapp::Main::settings().get_value(String("pref.")+y+"_hints",x)) \
-		{ \
-			set_type_hint((Gdk::WindowTypeHint)atoi(x.c_str()));	\
-		} \
-	}
-
 /* === G L O B A L S ======================================================= */
+
+std::unique_ptr<studio::WorkspaceHandler> studio::MainWindow::workspaces = nullptr;
+static sigc::signal<void> signal_custom_workspaces_changed_;
 
 /* === P R O C E D U R E S ================================================= */
 
+// replace _ in menu item labels with __ or it won't show up in the menu
+static std::string
+escape_underline(const std::string& raw)
+{
+	std::string quoted;
+	size_t pos = 0, last_pos = 0;
+	for (pos = last_pos = 0; (pos = raw.find('_', pos)) != std::string::npos; last_pos = pos)
+		quoted += raw.substr(last_pos, ++pos - last_pos) + '_';
+	quoted += raw.substr(last_pos);
+	return quoted;
+}
+
 /* === M E T H O D S ======================================================= */
 
-MainWindow::MainWindow() :
-	save_workspace_merge_id(0), custom_workspaces_merge_id(0)
+MainWindow::MainWindow(const Glib::RefPtr<Gtk::Application>& application)
+	: Gtk::ApplicationWindow(application),
+	  save_workspace_merge_id(0), custom_workspaces_merge_id(0)
 {
 	register_custom_widget_types();
 
@@ -103,7 +118,7 @@ MainWindow::MainWindow() :
 
 	auto visible_menubar = App::ui_manager()->get_widget("/menubar-main");
 	auto hidden_menubar  = App::ui_manager()->get_widget("/menubar-hidden");
-	if (visible_menubar != NULL)
+	if (visible_menubar)
 	{
 		hidden_box->add(*hidden_menubar);
 		hidden_box->hide();
@@ -125,7 +140,7 @@ MainWindow::MainWindow() :
 	App::signal_recent_files_changed().connect(
 		sigc::mem_fun(*this, &MainWindow::on_recent_files_changed) );
 
-	App::signal_custom_workspaces_changed().connect(
+	signal_custom_workspaces_changed().connect(
 		sigc::mem_fun(*this, &MainWindow::on_custom_workspaces_changed) );
 
 	signal_delete_event().connect(
@@ -137,7 +152,7 @@ MainWindow::MainWindow() :
 	App::dock_manager->signal_dockable_unregistered().connect(
 		sigc::mem_fun(*this,&MainWindow::on_dockable_unregistered) );
 
-	GRAB_HINT_DATA("mainwindow");
+	set_type_hint(Gdk::WindowTypeHint(synfigapp::Main::settings().get_value("pref.mainwindow_hints", Gdk::WindowTypeHint())));
 }
 
 MainWindow::~MainWindow() = default;
@@ -184,20 +199,31 @@ MainWindow::init_menus()
 	
 	// pre defined workspace (window ui layout)
 	action_group->add( Gtk::Action::create("workspace-compositing", _("Compositing")),
-		sigc::ptr_fun(App::set_workspace_compositing)
+		sigc::ptr_fun(MainWindow::set_workspace_compositing)
 	);
 	action_group->add( Gtk::Action::create("workspace-animating", _("Animating")),
-		sigc::ptr_fun(App::set_workspace_animating)
+		sigc::ptr_fun(MainWindow::set_workspace_animating)
 	);
 	action_group->add( Gtk::Action::create("workspace-default", _("Default")),
-		sigc::ptr_fun(App::set_workspace_default)
+		sigc::ptr_fun(MainWindow::set_workspace_default)
 	);
 	action_group->add( Gtk::Action::create("save-workspace", Gtk::StockID("synfig-save_as"), _("Save workspace...")),
-		sigc::ptr_fun(App::save_custom_workspace)
+		sigc::mem_fun(*this, &MainWindow::save_custom_workspace)
 	);
 
 	action_group->add( Gtk::Action::create("edit-workspacelist", _("Edit workspaces...")),
-		sigc::ptr_fun(App::edit_custom_workspace_list)
+		sigc::ptr_fun(MainWindow::edit_custom_workspace_list)
+	);
+
+	//animation tabs
+	for (int i = 1; i <= 8; ++i) {
+		const std::string tab = std::to_string(i);
+		action_group->add(Gtk::Action::create("switch-to-tab-" + tab, _("Switch to Tab ") + tab),
+			sigc::track_obj([this, i]() { main_dock_book().set_current_page(i-1); }, this)
+		);
+	}
+	action_group->add(Gtk::Action::create("switch-to-rightmost-tab", _("Switch to Rightmost Tab")),
+		sigc::track_obj([this]() { main_dock_book().set_current_page(-1); }, this)
 	);
 
 	// help
@@ -219,9 +245,9 @@ MainWindow::init_menus()
 #endif
 
 	// TRANSLATORS:         | Help menu entry:              | A wiki page:          |
-	WIKI("help-tutorials",	_("Tutorials"),					_("/Category:Tutorials"));
-	WIKI("help-reference",	_("Reference"),					_("/Category:Reference"));
-	WIKI("help-faq",		_("Frequently Asked Questions"),_("/FAQ")				);
+	URL("help-tutorials",	_("Tutorials"),					_("https://synfig.readthedocs.io/en/latest/tutorials.html"));
+	WIKI("help-reference",	_("Reference"),					_("Category:Reference"));
+	URL("help-faq",		_("Frequently Asked Questions"),	_("https://wiki.synfig.org/FAQ")				);
 	URL("help-support",		_("Get Support"),				_("https://forums.synfig.org/")	);
 
 	action_group->add( Gtk::Action::create(
@@ -261,10 +287,10 @@ MainWindow::toggle_show_toolbar()
 {
 	App::enable_mainwin_toolbar = !App::enable_mainwin_toolbar;
 	
-	for(std::list<etl::handle<Instance> >::iterator iter1 = App::instance_list.begin(); iter1 != App::instance_list.end(); iter1++){
-			const Instance::CanvasViewList &views = (*iter1)->canvas_view_list();
-			for(Instance::CanvasViewList::const_iterator iter2 = views.begin(); iter2 != views.end(); ++iter2)
-				(*iter2)->toggle_show_toolbar();
+	for (const auto& instance : App::instance_list) {
+		const Instance::CanvasViewList& views = instance->canvas_view_list();
+		for (auto& canvas_view : views)
+			canvas_view->set_show_toolbars(App::enable_mainwin_toolbar);
 	}
 }
 
@@ -293,13 +319,22 @@ void MainWindow::remove_custom_workspace_menu_item_handlers()
 	App::ui_manager()->remove_ui(save_workspace_merge_id);
 }
 
+const std::vector<std::string>
+MainWindow::get_workspaces()
+{
+	std::vector<std::string> list;
+	if (workspaces)
+		workspaces->get_name_list(list);
+	return list;
+}
+
 bool
 MainWindow::on_key_press_event(GdkEventKey* key_event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	Gtk::Widget * widget = get_focus();
 	if (widget && (dynamic_cast<Gtk::Editable*>(widget) || dynamic_cast<Gtk::TextView*>(widget) || dynamic_cast<Gtk::DrawingArea*>(widget))) {
-		bool handled = gtk_window_propagate_key_event(this->gobj(), key_event);
+		bool handled = gtk_window_propagate_key_event(GTK_WINDOW(this->gobj()), key_event);
 		if (handled)
 			return true;
 	}
@@ -320,8 +355,8 @@ MainWindow::make_short_filenames(
 	}
 
 	const int count = (int)fullnames.size();
-	vector< vector<String> > dirs(count);
-	vector< vector<bool> > dirflags(count);
+	std::vector< std::vector<String> > dirs(count);
+	std::vector< std::vector<bool> > dirflags(count);
 	shortnames.clear();
 	shortnames.resize(count);
 
@@ -333,12 +368,12 @@ MainWindow::make_short_filenames(
 			fullname = fullname.substr(7);
 		while(j < (int)fullname.size())
 		{
-			size_t k = fullname.find_first_of(ETL_DIRECTORY_SEPARATORS, j);
-			if (k == string::npos) k = fullname.size();
-			string sub = fullname.substr(j, k - j);
+			size_t dir_separator_pos = fullname.find_first_of("/\\", j);
+			if (dir_separator_pos == std::string::npos) dir_separator_pos = fullname.size();
+			std::string sub = fullname.substr(j, dir_separator_pos - j);
 			if (!sub.empty() && sub != "...")
 				dirs[i].insert(dirs[i].begin(), sub);
-			j = (int)k + 1;
+			j = (int)dir_separator_pos + 1;
 		}
 
 		dirflags[i].resize(dirs[i].size(), false);
@@ -399,23 +434,17 @@ MainWindow::on_recent_files_changed()
 	// TODO(ice0): switch to GtkRecentChooserMenu?
 	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create("mainwindow-recentfiles");
 
-	vector<String> fullnames(App::get_recent_files().begin(), App::get_recent_files().end());
-	vector<String> shortnames;
+	std::vector<String> fullnames(App::get_recent_files().begin(), App::get_recent_files().end());
+	std::vector<String> shortnames;
 	make_short_filenames(fullnames, shortnames);
 
 	std::string menu_items;
 	for(int i = 0; i < (int)fullnames.size(); ++i)
 	{
 		std::string raw = shortnames[i];
-		std::string quoted;
-		size_t pos = 0, last_pos = 0;
+		std::string quoted = escape_underline(raw);
 
-		// replace _ in filenames by __ or it won't show up in the menu
-		for (pos = last_pos = 0; (pos = raw.find('_', pos)) != string::npos; last_pos = pos)
-			quoted += raw.substr(last_pos, ++pos - last_pos) + '_';
-		quoted += raw.substr(last_pos);
-
-		const std::string action_name = etl::strprintf("file-recent-%d", i);
+		const std::string action_name = synfig::strprintf("file-recent-%d", i);
 		menu_items += "<menuitem action='" + action_name +"' />";
 
 		std::string filename = fullnames[i];
@@ -447,29 +476,210 @@ MainWindow::on_recent_files_changed()
 }
 
 void
+MainWindow::set_workspace_default()
+{
+	std::string tpl =
+	"[mainwindow|%0X|%0Y|%100x|%90y|"
+		"[hor|%75x"
+			"|[vert|%70y"
+				"|[hor|%10x"
+					"|[book|toolbox]"
+					"|[mainnotebook]"
+				"]"
+				"|[hor|%25x"
+					"|[book|params|keyframes]"
+					"|[book|timetrack|curves|children|meta_data|soundwave]"
+				"]"
+			"]"
+			"|[vert|%20y"
+				"|[book|canvases|pal_edit|navigator|info]"
+				"|[vert|%25y"
+					"|[book|tool_options|history]"
+										"|[book|layers|groups]"
+				"]"
+			"]"
+		"]"
+	"]";
+
+	set_workspace_from_template(tpl);
+}
+
+void
+MainWindow::set_workspace_compositing()
+{
+	std::string tpl =
+	"[mainwindow|%0X|%0Y|%100x|%90y|"
+		"[hor|%1x"
+			"|[vert|%1y|[book|toolbox]|[book|tool_options]]"
+			"|[hor|%60x|[mainnotebook]"
+				"|[hor|%50x|[book|params]"
+					"|[vert|%30y|[book|history|groups]|[book|layers|canvases]]"
+			"]"
+		"]"
+	"]";
+
+	set_workspace_from_template(tpl);
+}
+
+void
+MainWindow::set_workspace_animating()
+{
+	std::string tpl =
+	"[mainwindow|%0X|%0Y|%100x|%90y|"
+		"[hor|%70x"
+			"|[vert|%1y"
+				"|[hor|%1x|[book|toolbox]|[mainnotebook]]"
+				"|[hor|%25x|[book|params|children]|[book|timetrack|curves|soundwave|]]"
+			"]"
+			"|[vert|%30y"
+				"|[book|keyframes|history|groups]|[book|layers|canvases]]"
+			"]"
+		"]"
+	"]";
+
+	set_workspace_from_template(tpl);
+}
+
+void
+MainWindow::set_workspace_from_template(const std::string& tpl)
+{
+	Glib::RefPtr<Gdk::Display> display(Gdk::Display::get_default());
+	Glib::RefPtr<const Gdk::Screen> screen(display->get_default_screen());
+	Gdk::Rectangle rect;
+	// A proper way to obtain the primary monitor is to use the
+	// Gdk::Screen::get_primary_monitor () const member. But as it
+	// was introduced in gtkmm 2.20 I assume that the monitor 0 is the
+	// primary one.
+	screen->get_monitor_geometry(0,rect);
+	float dx = (float)rect.get_x();
+	float dy = (float)rect.get_y();
+	float sx = (float)rect.get_width();
+	float sy = (float)rect.get_height();
+
+	std::string layout = DockManager::layout_from_template(tpl, dx, dy, sx, sy);
+	App::dock_manager->load_layout_from_string(layout);
+	App::dock_manager->show_all_dock_dialogs();
+}
+
+void
+MainWindow::set_workspace_from_name(const std::string& name)
+{
+	if (!workspaces)
+		return;
+	std::string tpl;
+	bool ok = workspaces->get_workspace(name, tpl);
+	if (!ok)
+		return;
+	set_workspace_from_template(tpl);
+}
+
+void
+MainWindow::save_custom_workspace()
+{
+	if (!App::dock_manager || !workspaces) {
+		Gtk::MessageDialog dialog(*this, _("Internal error: Dock Manager or Workspace Handler not set"), false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_NONE, true);
+		return;
+	}
+
+	Gtk::MessageDialog dialog(*this, _("Type a name for this custom workspace:"), false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_NONE);
+
+	dialog.add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
+	Gtk::Button * ok_button = dialog.add_button(_("Ok"), Gtk::RESPONSE_OK);
+	ok_button->set_sensitive(false);
+
+	Gtk::Entry * name_entry = Gtk::manage(new Gtk::Entry());
+	name_entry->set_margin_start(16);
+	name_entry->set_margin_end(16);
+	name_entry->signal_changed().connect(sigc::track_obj([&](){
+		std::string name = synfig::trim(name_entry->get_text());
+		bool has_equal_sign = name.find('=') != std::string::npos;
+		ok_button->set_sensitive(!name.empty() && !has_equal_sign);
+		if (ok_button->is_sensitive())
+			ok_button->grab_default();
+	}, dialog));
+	name_entry->signal_activate().connect(sigc::mem_fun(*ok_button, &Gtk::Button::clicked));
+
+	dialog.get_content_area()->set_spacing(12);
+	dialog.get_content_area()->add(*name_entry);
+
+	ok_button->set_can_default(true);
+
+	dialog.show_all();
+
+	int response = dialog.run();
+	if (response != Gtk::RESPONSE_OK)
+		return;
+
+	std::string name = synfig::trim(name_entry->get_text());
+
+	std::string tpl = App::dock_manager->save_layout_to_string();
+	if (!workspaces->has_workspace(name))
+		workspaces->add_workspace(name, tpl);
+	else {
+		Gtk::MessageDialog confirm_dlg(dialog, _("Do you want to overwrite this workspace?"), false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL);
+		if (confirm_dlg.run() != Gtk::RESPONSE_OK)
+			return;
+		workspaces->set_workspace(name, tpl);
+	}
+}
+
+void
+MainWindow::load_custom_workspaces()
+{
+	if (!workspaces) {
+		workspaces = std::unique_ptr<WorkspaceHandler>(new WorkspaceHandler());
+		workspaces->signal_list_changed().connect( sigc::mem_fun(signal_custom_workspaces_changed_, &sigc::signal<void>::emit) );
+	}
+	workspaces->clear();
+	std::string filename = App::get_config_file("workspaces");
+	workspaces->load(filename);
+}
+
+void
+MainWindow::save_custom_workspaces()
+{
+	if (workspaces) {
+		std::string filename = App::get_config_file("workspaces");
+		workspaces->save(filename);
+	}
+}
+
+sigc::signal<void>&
+MainWindow::signal_custom_workspaces_changed()
+{
+	return signal_custom_workspaces_changed_;
+}
+
+void
+MainWindow::edit_custom_workspace_list()
+{
+	Dialog_Workspaces* dlg = Dialog_Workspaces::create(*App::main_window);
+	if (!dlg) {
+		synfig::warning("Can't load Dialog_Workspaces");
+		return;
+	}
+	dlg->run();
+	delete dlg;
+}
+
+void
 MainWindow::on_custom_workspaces_changed()
 {
 	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create("mainwindow-customworkspaces");
 
-	vector<string> workspaces = App::get_workspaces();
+	std::vector<std::string> workspaces = get_workspaces();
 
 	std::string menu_items;
 	unsigned int num_custom_workspaces = 0;
 	for (auto it = workspaces.cbegin(); it != workspaces.cend(); ++it, ++num_custom_workspaces) {
 		std::string raw = *it;
-		std::string quoted;
-		size_t pos = 0, last_pos = 0;
+		std::string quoted = escape_underline(raw);
 
-		// replace _ in names by __ or it won't show up in the menu
-		for (pos = last_pos = 0; (pos = raw.find('_', pos)) != string::npos; last_pos = pos)
-			quoted += raw.substr(last_pos, ++pos - last_pos) + '_';
-		quoted += raw.substr(last_pos);
-
-		std::string action_name = etl::strprintf("custom-workspace-%d", num_custom_workspaces);
+		std::string action_name = synfig::strprintf("custom-workspace-%d", num_custom_workspaces);
 		menu_items += "<menuitem action='" + action_name +"' />";
 
 		action_group->add( Gtk::Action::create(action_name, quoted),
-			sigc::bind(sigc::ptr_fun(&App::set_workspace_from_name), workspaces[num_custom_workspaces])
+			sigc::bind(sigc::ptr_fun(&MainWindow::set_workspace_from_name), workspaces[num_custom_workspaces])
 		);
 	}
 	if (num_custom_workspaces > 0)
@@ -508,15 +718,8 @@ MainWindow::on_custom_workspaces_changed()
 void
 MainWindow::on_dockable_registered(Dockable* dockable)
 {
-
-	// replace _ in panel names (filenames) by __ or it won't show up in the menu,
-	// this block code is just a copy from MainWindow::on_recent_files_changed().
 	std::string raw = dockable->get_local_name();
-	std::string quoted;
-	size_t pos = 0, last_pos = 0;
-	for (pos = last_pos = 0; (pos = raw.find('_', pos)) != string::npos; last_pos = pos)
-		quoted += raw.substr(last_pos, ++pos - last_pos) + '_';
-	quoted += raw.substr(last_pos);
+	std::string quoted = escape_underline(raw);
 
 	window_action_group->add( Gtk::Action::create("panel-" + dockable->get_name(), quoted),
 		sigc::mem_fun(*dockable, &Dockable::present)

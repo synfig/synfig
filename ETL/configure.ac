@@ -1,8 +1,6 @@
-# $Id$
-
 # -- I N I T --------------------------------------------------
 AC_PREREQ(2.60)
-AC_INIT([Extended Template Library],[1.5.0],[https://github.com/synfig/synfig/issues],[ETL])
+AC_INIT([Extended Template Library],[1.5.1],[https://github.com/synfig/synfig/issues],[ETL])
 AC_REVISION
 
 AM_SILENT_RULES([yes])
@@ -32,6 +30,7 @@ AC_PROG_CXXCPP
 AC_PROG_INSTALL
 AC_PROG_RANLIB
 AX_CXX_COMPILE_STDCXX([11], [noext])
+CXXFLAGS="$CXXFLAGS -std=gnu++11"
 
 # that is not working, btw
 test "x$CXX" == "x" && AC_MSG_ERROR([Required program 'c++' not found.])
@@ -69,6 +68,12 @@ AH_BOTTOM([
 ETL_DEPS
 
 # -- O U T P U T ----------------------------------------------
+
+PKG_CHECK_MODULES(GLIBMM, [glibmm-2.4 >= 2.24.2],[
+	CONFIG_DEPS="$CONFIG_DEPS glibmm-2.4"
+],[
+	AC_MSG_ERROR([ ** You need to install glibmm-2.4 version 2.24.2 or higher.])
+])
 
 etlincludedir=$includedir/ETL
 AC_SUBST(etlincludedir)

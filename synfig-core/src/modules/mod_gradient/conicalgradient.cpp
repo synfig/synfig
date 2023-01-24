@@ -2,21 +2,24 @@
 /*!	\file conicalgradient.cpp
 **	\brief Implementation of the "Conical Gradient" layer
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2011-2013 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -31,16 +34,13 @@
 #endif
 
 #include <synfig/localization.h>
-#include <synfig/general.h>
 
 #include <synfig/string.h>
-#include <synfig/time.h>
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
 #include <synfig/renddesc.h>
 #include <synfig/surface.h>
 #include <synfig/value.h>
-#include <synfig/valuenode.h>
 #include <synfig/angle.h>
 
 #include "conicalgradient.h"
@@ -49,8 +49,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
-using namespace std;
 using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
@@ -162,7 +160,7 @@ ConicalGradient::calc_supersample(const synfig::Point &x, Real pw, Real ph)const
 	Point center=param_center.get(Point());
 
 	Point adj(x-center);
-	if(abs(adj[0])<abs(pw*0.5) && abs(adj[1])<abs(ph*0.5))
+	if(std::fabs(adj[0])<std::fabs(pw*0.5) && std::fabs(adj[1])<std::fabs(ph*0.5))
 		return 0.5;
 	return (pw/Point(x-center).mag())/(PI*2);
 }
@@ -170,10 +168,14 @@ ConicalGradient::calc_supersample(const synfig::Point &x, Real pw, Real ph)const
 synfig::Layer::Handle
 ConicalGradient::hit_check(synfig::Context context, const synfig::Point &point)const
 {
+	bool check_myself_first;
+	auto layer = basic_hit_check(context, point, check_myself_first);
+
+	if (!check_myself_first)
+		return layer;
+
 	if(get_blend_method()==Color::BLEND_STRAIGHT && get_amount()>=0.5)
 		return const_cast<ConicalGradient*>(this);
-	if(get_amount()==0.0)
-		return context.hit_check(point);
 	if((get_blend_method()==Color::BLEND_STRAIGHT || get_blend_method()==Color::BLEND_COMPOSITE) && color_func(point).get_a()>0.5)
 		return const_cast<ConicalGradient*>(this);
 	return context.hit_check(point);
@@ -255,187 +257,4 @@ ConicalGradient::accelerated_render(Context context,Surface *surface,int quality
 		return false;
 
 	return true;
-}
-
-/////////
-bool
-ConicalGradient::accelerated_cairorender(Context context,cairo_t *cr,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	Gradient gradient=param_gradient.get(Gradient());
-	Point center=param_center.get(Point());
-
-	cairo_save(cr);
-	const Point	tl(renddesc.get_tl());
-	const Point br(renddesc.get_br());
-	const Point tr(Point(tl[1], br[0]));
-	const Point bl(Point(tl[0], br[1]));
-		
-	cairo_pattern_t* pattern=cairo_pattern_create_mesh();
-	// Calculate the outer radius of the mesh pattern. It has to
-	// cover the whole render desc
-	Real c1=(tl-center).mag_squared();
-	Real c2=(br-center).mag_squared();
-	Real c3=(bl-center).mag_squared();
-	Real c4=(tr-center).mag_squared();
-	Real radius(max(max(max(c1,c2),c3),c4));
-	radius=sqrt(radius)*1.20;
-
-	bool cpoints_all_opaque=compile_mesh(pattern, gradient, radius);
-	if(quality>8) cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
-	else if(quality>=4) cairo_set_antialias(cr, CAIRO_ANTIALIAS_GOOD);
-	else cairo_set_antialias(cr, CAIRO_ANTIALIAS_BEST);
-	if(
-	   !
-	   (is_solid_color() ||
-		(cpoints_all_opaque && get_blend_method()==Color::BLEND_COMPOSITE && get_amount()==1.f))
-	   )
-	{
-		// Initially render what's behind us
-		if(!context.accelerated_cairorender(cr,quality,renddesc,cb))
-		{
-			if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Cairo Renderer Failure",__LINE__));
-			return false;
-		}
-	}
-	cairo_translate(cr, center[0], center[1]);
-	cairo_set_source(cr, pattern);
-	cairo_paint_with_alpha_operator(cr, get_amount(), get_blend_method());
-	
-	cairo_pattern_destroy(pattern); // Not needed more
-	cairo_restore(cr);
-	return true;
-	
-}
-////////
-
-bool
-ConicalGradient::compile_mesh(cairo_pattern_t* pattern, Gradient mygradient, Real radius)const
-{
-	Angle angle=param_angle.get(Angle());
-	bool symmetric=param_symmetric.get(bool());
-
-	bool cpoints_all_opaque=true;
-	float a1, r1, g1, b1, a2, r2, g2, b2;
-	Gradient::CPoint cp;
-	Gradient::const_iterator iter, iter2;
-	mygradient.sort();
-	// Handle symmetric conical gradients
-	if(symmetric)
-	{
-		Gradient sgradient;
-		for(iter=mygradient.begin();iter!=mygradient.end(); iter++)
-		{
-			cp=*iter;
-			cp.pos=cp.pos/2;
-			sgradient.push_back(cp);
-		}
-		for(iter=mygradient.begin();iter!=mygradient.end(); iter++)
-		{
-			cp=*iter;
-			cp.pos=1.0-cp.pos/2;
-			sgradient.push_back(cp);
-		}
-		mygradient=sgradient;
-		mygradient.sort();
-	}
-	// Complete the gradient to be sure that always there is a color
-	// stop at start and end of gradient.
-	cp=*mygradient.begin();
-	if(cp.pos!=0.0)
-	{
-		mygradient.push_back(GradientCPoint(0.0, cp.color));
-		mygradient.sort();
-	}
-	cp=*(--mygradient.end());
-	if(cp.pos!=1.0)
-	{
-		mygradient.push_back(GradientCPoint(1.0, cp.color));
-		mygradient.sort();
-	}
-	mygradient.sort();
-	
-	// Add as many color stops as needed to be sure
-	// that there is not a space >0.4 between color stops
-	bool long_segment;
-	do
-	{
-		long_segment=false;
-		Gradient cgradient=mygradient;
-		for(iter=cgradient.begin();iter!=cgradient.end(); iter++)
-		{
-			iter2=iter+1;
-			if(iter2==cgradient.end()) break;
-			Real pos1(iter->pos);
-			Real pos2(iter2->pos);
-			if(fabs(pos2-pos1)>=0.4)
-			{
-				long_segment=true;
-				Real pos((pos1+pos2)/2.0);
-				mygradient.push_back(GradientCPoint(pos, cgradient(pos)));
-			}
-		}
-		mygradient.sort();
-	} while (long_segment);
-	
-	mygradient.sort();
-	//// Debug
-	if(0)
-	{
-		int i = 0;
-		for (Gradient::const_iterator iter = mygradient.begin(); iter != mygradient.end(); iter++)
-			printf("%3d : %.3f %s\n", i++, (*iter).pos, (*iter).color.get_string().c_str());
-	}
-	////
-	// Now insert the mesh patches
-	Color c1, c2;
-	Angle beta, beta1, beta2;
-	Real t;
-	Real v1x,v1y,t1x,t1y;
-	Real v2x,v2y,t2x,t2y;
-	for(iter=mygradient.begin();iter!=mygradient.end(); iter++)
-	{
-		iter2=iter+1;
-		if(iter2==mygradient.end()) break;
-		c1=iter->color;
-		c2=iter2->color;
-		if(iter->pos == iter2->pos) continue;
-		beta1=(Angle::deg(-360.0*(iter->pos)))+angle;
-		beta2=(Angle::deg(-360.0*(iter2->pos)))+angle;
-		beta=beta2-beta1;
-		t=(4 * ( (mygradient.size() == 3)
-				? 1
-				:((2 * Angle::cos((beta)/2).get() - Angle::cos(beta).get() - 1) / Angle::sin(beta).get())
-				));
-		v1x=(radius*Angle::cos(beta1).get());
-		v1y=(radius*Angle::sin(beta1).get());
-		v2x=(radius*Angle::cos(beta2).get());
-		v2y=(radius*Angle::sin(beta2).get());
-		t1x=(-radius*t*Angle::sin(beta1).get());
-		t1y=(+radius*t*Angle::cos(beta1).get());
-		t2x=(+radius*t*Angle::sin(beta2).get());
-		t2y=(-radius*t*Angle::cos(beta2).get());
-		a1=iter->color.get_a();
-		r1=iter->color.get_r();
-		g1=iter->color.get_g();
-		b1=iter->color.get_b();
-		a2=iter2->color.get_a();
-		r2=iter2->color.get_r();
-		g2=iter2->color.get_g();
-		b2=iter2->color.get_b();
-		// Do the patch!
-		cairo_mesh_pattern_begin_patch(pattern);
-		cairo_mesh_pattern_move_to(pattern, 0.0, 0.0);
-		cairo_mesh_pattern_line_to(pattern, v1x, v1y);
-		cairo_mesh_pattern_curve_to(pattern, v1x+t1x/3, v1y+t1y/3, v2x+t2x/3, v2y+t2y/3, v2x, v2y);
-		cairo_mesh_pattern_line_to(pattern, 0.0, 0.0);
-		cairo_mesh_pattern_line_to(pattern, 0.0, 0.0);
-		cairo_mesh_pattern_set_corner_color_rgba(pattern, 0, r1, g1, b1, a1);
-		cairo_mesh_pattern_set_corner_color_rgba(pattern, 1, r1, g1, b1, a1);
-		cairo_mesh_pattern_set_corner_color_rgba(pattern, 2, r2, g2, b2, a2);
-		cairo_mesh_pattern_set_corner_color_rgba(pattern, 3, r2, g2, b2, a2);
-		cairo_mesh_pattern_end_patch(pattern);
-		
-		if(a1!=1.0 && a2!=0.0) cpoints_all_opaque=false;
-	}
-	return cpoints_all_opaque;
 }

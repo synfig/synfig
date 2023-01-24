@@ -10,7 +10,7 @@
 # in an MSYS shell
 # -------------------------------------------------------------------------------
 
-SCRIPT_DIR=`dirname "$0"`
+SCRIPT_DIR=$(dirname "$0")
 
 echo "Selected ARCH: ${MINGW_PACKAGE_PREFIX}"
 
@@ -24,33 +24,28 @@ pacman -S --needed --noconfirm --color=auto \
 autoconf \
 automake-wrapper \
 intltool \
+libtool \
 make \
 patch \
 tar \
-$MINGW_PACKAGE_PREFIX-gcc \
 $MINGW_PACKAGE_PREFIX-ccache \
-$MINGW_PACKAGE_PREFIX-libtool \
-$MINGW_PACKAGE_PREFIX-make \
-$MINGW_PACKAGE_PREFIX-pkg-config \
+$MINGW_PACKAGE_PREFIX-cmake \
 $MINGW_PACKAGE_PREFIX-dlfcn \
-$MINGW_PACKAGE_PREFIX-SDL2  \
-$MINGW_PACKAGE_PREFIX-boost \
-$MINGW_PACKAGE_PREFIX-cairomm \
 $MINGW_PACKAGE_PREFIX-ffmpeg \
 $MINGW_PACKAGE_PREFIX-fftw \
+$MINGW_PACKAGE_PREFIX-gcc \
 $MINGW_PACKAGE_PREFIX-glibmm \
-$MINGW_PACKAGE_PREFIX-imagemagick \
-$MINGW_PACKAGE_PREFIX-libxml++2.6 \
-$MINGW_PACKAGE_PREFIX-pango \
 $MINGW_PACKAGE_PREFIX-gtkmm3 \
+$MINGW_PACKAGE_PREFIX-harfbuzz \
+$MINGW_PACKAGE_PREFIX-imagemagick \
+$MINGW_PACKAGE_PREFIX-libltdl \
+$MINGW_PACKAGE_PREFIX-libmng \
+$MINGW_PACKAGE_PREFIX-libxml++2.6 \
+$MINGW_PACKAGE_PREFIX-make \
+$MINGW_PACKAGE_PREFIX-ninja \
 $MINGW_PACKAGE_PREFIX-openexr \
-$MINGW_PACKAGE_PREFIX-libmng
+$MINGW_PACKAGE_PREFIX-pkgconf \
+$MINGW_PACKAGE_PREFIX-SDL2
 
 # build mlt
-bash ${SCRIPT_DIR}/autobuild/msys2/build_mlt.sh
-
-# Apply patch to libintl.h. This required because libintl.h redefines sprintf
-# and std::sprintf is stop working. But std::sprintf is used by Boost::Odeint library
-# so we need it.
-
-patch $MINGW_PREFIX/include/libintl.h < ${SCRIPT_DIR}/autobuild/msys2/libintl.h.patch
+bash "${SCRIPT_DIR}/autobuild/msys2/build_mlt.sh"

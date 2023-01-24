@@ -2,21 +2,24 @@
 /*!	\file importer.cpp
 **	\brief It is the base class for all the importers.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -39,6 +42,8 @@
 
 #include <glibmm.h>
 
+#include <ETL/stringf>
+
 #include "general.h"
 #include <synfig/localization.h>
 
@@ -57,12 +62,11 @@
 /* === G L O B A L S ======================================================= */
 
 using namespace etl;
-using namespace std;
 using namespace synfig;
 
 Importer::Book* synfig::Importer::book_;
 
-static map<FileSystem::Identifier,Importer::LooseHandle> *__open_importers;
+static std::map<FileSystem::Identifier,Importer::LooseHandle> *__open_importers;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -72,7 +76,7 @@ bool
 Importer::subsys_init()
 {
 	book_=new Book();
-	__open_importers=new map<FileSystem::Identifier,Importer::LooseHandle>();
+	__open_importers=new std::map<FileSystem::Identifier,Importer::LooseHandle>();
 	return true;
 }
 
@@ -117,7 +121,7 @@ Importer::open(const FileSystem::Identifier &identifier, bool force)
 
 	String ext(filename_extension(identifier.filename));
 	if (ext.size()) ext = ext.substr(1); // skip initial '.'
-	std::transform(ext.begin(),ext.end(),ext.begin(),&::tolower);
+	strtolower(ext);
 
 
 	if(!Importer::book().count(ext))
@@ -153,7 +157,7 @@ Importer::Importer(const FileSystem::Identifier &identifier):
 Importer::~Importer()
 {
 	// Remove ourselves from the open importer list
-	map<FileSystem::Identifier,Importer::LooseHandle>::iterator iter;
+	std::map<FileSystem::Identifier,Importer::LooseHandle>::iterator iter;
 	for(iter=__open_importers->begin();iter!=__open_importers->end();)
 		if(iter->second==this)
 			__open_importers->erase(iter++); else ++iter;
@@ -166,8 +170,10 @@ Importer::get_frame(const RendDesc & /* renddesc */, const Time &time)
 		return last_surface_;
 
 	Surface surface;
-	if(!get_frame(surface, RendDesc(), time))
-		warning(strprintf("Unable to get frame from \"%s\"", identifier.filename.c_str()));
+	if(!get_frame(surface, RendDesc(), time)) {
+		warning(strprintf(_("Unable to get frame from \"%s\" [%s]"), identifier.filename.c_str(), time.get_string().c_str()));
+		return nullptr;
+	}
 
 	const char *s = getenv("SYNFIG_PACK_IMAGES");
 	if (s == nullptr || atoi(s) != 0)

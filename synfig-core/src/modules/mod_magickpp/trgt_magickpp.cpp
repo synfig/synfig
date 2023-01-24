@@ -2,23 +2,24 @@
 /*!	\file trgt_magickpp.cpp
 **	\brief Magick++ Target Module
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2007, 2008 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
-**	\endlegal
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
 **
-** === N O T E S ===========================================================
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
+**	\endlegal
 **
 ** ========================================================================= */
 
@@ -32,8 +33,9 @@
 #endif
 
 #include <synfig/general.h>
+#include <synfig/misc.h>
 
-#include <ETL/misc>
+#include <ETL/stringf>
 #include "trgt_magickpp.h"
 
 #endif
@@ -41,7 +43,6 @@
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
-using namespace std;
 using namespace etl;
 
 /* === G L O B A L S ======================================================= */
@@ -58,7 +59,7 @@ MagickCore::Image* copy_image_list(Container& container)
 {
 	typedef typename Container::iterator Iter;
 	MagickCore::Image* previous = 0;
-	MagickCore::Image* first = NULL;
+	MagickCore::Image* first = nullptr;
 	MagickCore::ExceptionInfo* exceptionInfo = MagickCore::AcquireExceptionInfo();
 	for (Iter iter = container.begin(); iter != container.end(); ++iter)
 	{
@@ -97,7 +98,7 @@ magickpp_trgt::~magickpp_trgt()
 		if (multiple_images)
 		{
 			// check whether this file format supports multiple-image files
-			Magick::Image image(*(images.begin()));
+			Magick::Image image(images.front());
 			image.fileName(filename);
 			try
 			{
@@ -198,9 +199,6 @@ magickpp_trgt::~magickpp_trgt()
 		synfig::error("unknown exception");
 	}
 
-	if (buffer1 != NULL) delete [] buffer1;
-	if (buffer2 != NULL) delete [] buffer2;
-	if (color_buffer != NULL) delete [] color_buffer;
 	//exceptionInfo = MagickCore::DestroyExceptionInfo(exceptionInfo);
 	MagickCore::DestroyExceptionInfo(exceptionInfo);
 }
@@ -218,26 +216,18 @@ magickpp_trgt::init(synfig::ProgressCallback*)
 	width = desc.get_w();
 	height = desc.get_h();
 
-	start_pointer = NULL;
+	buffer_pointer = nullptr;
 
-	buffer1 = new unsigned char[4*width*height];
-	if (buffer1 == NULL)
-		return false;
+	std::string extension = filename_extension(filename);
+	strtolower(extension);
+	is_gif = extension == ".gif";
 
-	buffer2 = new unsigned char[4*width*height];
-	if (buffer2 == NULL)
-	{
-		delete [] buffer1;
-		return false;
-	}
+	std::size_t buffer_size = static_cast<std::size_t>(4) * width * height;
+	buffer1.resize(buffer_size);
+	if (is_gif)
+		buffer2.resize(buffer_size);
 
-	color_buffer = new Color[width];
-	if (color_buffer == NULL)
-	{
-		delete [] buffer1;
-		delete [] buffer2;
-		return false;
-	}
+	color_buffer.resize(width);
 
 	return true;
 }
@@ -245,52 +235,54 @@ magickpp_trgt::init(synfig::ProgressCallback*)
 void
 magickpp_trgt::end_frame()
 {
-	Magick::Image image(width, height, "RGBA", Magick::CharPixel, start_pointer);
-	if (transparent && images.begin() != images.end())
-		(images.end()-1)->gifDisposeMethod(Magick::BackgroundDispose);
+	Magick::Image image(width, height, "RGBA", Magick::CharPixel, buffer_pointer);
+	if (is_gif && transparent && images.size() > 1)
+		images.back().gifDisposeMethod(Magick::BackgroundDispose);
 	images.push_back(image);
 }
 
 bool
 magickpp_trgt::start_frame(synfig::ProgressCallback */*callback*/)
 {
-	if (start_pointer == buffer1)
-		start_pointer = buffer_pointer = buffer2;
-	else
-		start_pointer = buffer_pointer = buffer1;
+	if (is_gif)
+		previous_row_buffer_pointer = buffer_pointer;
 
-	previous_buffer_pointer = start_pointer;
+	if (is_gif && buffer_pointer == buffer1.data())
+		buffer_pointer = current_row_buffer_pointer = buffer2.data();
+	else
+		buffer_pointer = current_row_buffer_pointer = buffer1.data();
 
 	transparent = false;
+
 	return true;
 }
 
 Color*
 magickpp_trgt::start_scanline(int /*scanline*/)
 {
-	return color_buffer;
+	return color_buffer.data();
 }
 
 bool
 magickpp_trgt::end_scanline()
 {
-	if (previous_buffer_pointer)
-		color_to_pixelformat(previous_buffer_pointer, color_buffer, PF_RGB|PF_A, 0, width);
+	color_to_pixelformat(current_row_buffer_pointer, color_buffer.data(), PF_RGB|PF_A, 0, width);
 
-	if (!transparent)
-		for (int i = 0; i < width; i++)
-			if (previous_buffer_pointer &&					// this isn't the first frame
-				buffer_pointer[i*4 + 3] < 128 &&			// our pixel is transparent
-				!(previous_buffer_pointer[i*4 + 3] < 128))	// the previous frame's pixel wasn't
+	if (!transparent && previous_row_buffer_pointer) {
+		for (int i = 0; i < width; i++) {
+			if (current_row_buffer_pointer[i*4 + 3] < 128 &&	// our pixel is transparent
+				!(previous_row_buffer_pointer[i*4 + 3] < 128))	// the previous frame's pixel wasn't
 			{
 				transparent = true;
 				break;
 			}
+		}
+	}
 
-	buffer_pointer += 4 * width;
+	current_row_buffer_pointer += 4 * width;
 
-	if (previous_buffer_pointer)
-		previous_buffer_pointer += 4 * width;
+	if (previous_row_buffer_pointer)
+		previous_row_buffer_pointer += 4 * width;
 
 	return true;
 }

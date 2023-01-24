@@ -18,11 +18,10 @@ target_sources(synfig_bin
         "${CMAKE_CURRENT_LIST_DIR}/renderprogress.cpp"
 )
 
-target_link_libraries(synfig_bin synfig)
-target_link_libraries(synfig_bin
-    ${Boost_SYSTEM_LIBRARIES}
-    ${GIOMM_LIBRARIES}
-)
+target_link_libraries(synfig_bin PRIVATE libsynfig)
+if(TCMALLOC_LIBRARY)
+    target_link_libraries(synfig_bin PRIVATE ${TCMALLOC_LIBRARY})
+endif()
 
 install (
     TARGETS synfig_bin

@@ -2,22 +2,25 @@
 /*!	\file valuenode_duplicate.cpp
 **	\brief Implementation of the "Duplicate" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **  Copyright (c) 2011 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -41,15 +44,13 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Duplicate, RELEASE_VERSION_0_61_08, "duplicate", "Duplicate")
+REGISTER_VALUENODE(ValueNode_Duplicate, RELEASE_VERSION_0_61_08, "duplicate", N_("Duplicate"))
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -65,15 +66,14 @@ ValueNode_Duplicate::ValueNode_Duplicate(const ValueBase &x):
 	LinkableValueNode(x.get_type()),
 	index(1.0)
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	set_link("from", ValueNode_Const::create(Real(1.0)));
 	set_link("to",   ValueNode_Const::create(x.get(Real())));
 	set_link("step", ValueNode_Const::create(Real(1.0)));
 }
 
 ValueNode_Duplicate*
-ValueNode_Duplicate::create(const ValueBase &x)
+ValueNode_Duplicate::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Duplicate(x);
 }
@@ -132,7 +132,7 @@ ValueNode_Duplicate::step(Time t)const
 
 	if (step == 0) return false;
 
-	step = abs(step);
+	step = std::fabs(step);
 
 	if (from < to)
 	{
@@ -155,14 +155,14 @@ ValueNode_Duplicate::count_steps(Time t)const
 
 	if (step == 0) return 1;
 
-	return abs((from - to) / step) + 1;
+	return std::fabs((from - to) / step) + 1;
 }
 
 ValueBase
-ValueNode_Duplicate::operator()(Time t)const
+ValueNode_Duplicate::operator()(Time /*t*/)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	return index;
 }
@@ -170,7 +170,7 @@ ValueNode_Duplicate::operator()(Time t)const
 
 
 bool
-ValueNode_Duplicate::check_type(Type &type)
+ValueNode_Duplicate::check_type(Type &/*type*/)
 {
 	// never offer this as a choice.  it's used automatically by the 'Duplicate' layer.
 	return false;

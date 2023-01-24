@@ -2,20 +2,23 @@
 /*!	\file layer_skeleton.cpp
 **	\brief Implementation of the "Layer_Skeleton" layer
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2008 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -30,8 +33,10 @@
 #endif
 
 #include "layer_skeleton.h"
+#ifdef _DEBUG
+#include "synfig/general.h"
+#endif
 
-#include <synfig/general.h>
 #include <synfig/localization.h>
 
 #include <synfig/context.h>
@@ -47,8 +52,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
-using namespace std;
 using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
@@ -90,8 +93,8 @@ Layer_Skeleton::Layer_Skeleton():
 #ifdef _DEBUG
 Layer_Skeleton::~Layer_Skeleton()
 {
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
-		printf("%s:%d ~Layer_Skeleton()\n", __FILE__, __LINE__);
+	 DEBUG_LOG("SYNFIG_DEBUG_DESTRUCTORS",
+		"%s:%d ~Layer_Skeleton()\n", __FILE__, __LINE__);
 }
 #endif
 

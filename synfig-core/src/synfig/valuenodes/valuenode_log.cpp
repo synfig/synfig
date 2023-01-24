@@ -2,22 +2,25 @@
 /*!	\file valuenode_log.cpp
 **	\brief Implementation of the "Natural Logarithm" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **  Copyright (c) 2008, 2011 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -41,15 +44,13 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Logarithm, RELEASE_VERSION_0_61_09, "logarithm", "Logarithm")
+REGISTER_VALUENODE(ValueNode_Logarithm, RELEASE_VERSION_0_61_09, "logarithm", N_("Logarithm"))
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -58,8 +59,7 @@ REGISTER_VALUENODE(ValueNode_Logarithm, RELEASE_VERSION_0_61_09, "logarithm", "L
 ValueNode_Logarithm::ValueNode_Logarithm(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	Real value(x.get(Real()));
 	Real infinity(999999.0);
 	Real epsilon(0.000001);
@@ -72,7 +72,7 @@ ValueNode_Logarithm::ValueNode_Logarithm(const ValueBase &x):
 }
 
 ValueNode_Logarithm*
-ValueNode_Logarithm::create(const ValueBase &x)
+ValueNode_Logarithm::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Logarithm(x);
 }
@@ -117,8 +117,8 @@ ValueNode_Logarithm::get_link_vfunc(int i)const
 ValueBase
 ValueNode_Logarithm::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	Real link     = (*link_)    (t).get(Real());
 	Real epsilon  = (*epsilon_) (t).get(Real());

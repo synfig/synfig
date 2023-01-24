@@ -2,21 +2,24 @@
 /*!	\file valuedescconnect.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -44,11 +47,8 @@
 
 #endif
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
-using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
@@ -107,16 +107,15 @@ Action::ValueDescConnect::is_candidate(const ParamList &x)
 {
 	if(candidate_check(get_param_vocab(),x))
 	{
-	    ValueDesc value_desc(x.find("dest")->second.get_value_desc());
-	    ValueNode::Handle value_node(x.find("src")->second.get_value_node());
+		ValueDesc value_desc(x.find("dest")->second.get_value_desc());
+		ValueNode::Handle value_node(x.find("src")->second.get_value_node());
 
-	    //! forbid recursive linking (fix #48)
-	    if (value_desc.parent_is_value_node())
-	    {
-	        ValueNode* vn = dynamic_cast<ValueNode*>(value_node.get());
-	        if (vn && vn->is_descendant(value_desc.get_parent_value_node()))
-	            return false;
-	    }
+		//! forbid recursive linking (fix #48)
+		if (value_desc.parent_is_value_node())
+		{
+			if (value_node && value_node->is_ancestor_of(value_desc.get_parent_value_node()))
+				return false;
+		}
 
 
 		// don't show the option of connecting to an existing Index parameter of the Duplicate layer
@@ -130,8 +129,8 @@ Action::ValueDescConnect::is_candidate(const ParamList &x)
 
 		if(x.count("src"))
 		{
-			if(value_desc.get_value_type()==value_node->get_type())
-				return true;
+			if (value_desc.get_value_type() != value_node->get_type())
+				return false;
 		}
 		return true;
 	}

@@ -2,22 +2,25 @@
 /*!	\file dock_timetrack.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **  Copyright (c) 2010 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -64,7 +67,8 @@ class TimeTrackView : public Gtk::TreeView
 private:
 	sigc::connection expand_connection;
 	sigc::connection collapse_connection;
-	
+	sigc::connection selection_connection;
+
 	CellRenderer_TimeTrack *cellrenderer_time_track;
 
 public:
@@ -284,7 +288,8 @@ public:
 	{
 		expand_connection.disconnect();
 		collapse_connection.disconnect();
-		
+		selection_connection.disconnect();
+
 		expand_connection = tree_view->signal_row_expanded().connect(
 			sigc::hide<0>(
 			sigc::hide_return(
@@ -305,6 +310,16 @@ public:
 						&Gtk::TreeView::collapse_row
 					)
 			))
+		);
+
+		selection_connection = tree_view->get_selection()->signal_changed().connect(
+			sigc::bind(
+				sigc::mem_fun(
+					*this,
+					&TimeTrackView::on_external_selection_changed
+				),
+				tree_view->get_selection()
+			)
 		);
 	}
 
@@ -337,6 +352,14 @@ public:
 		if (!waypoint_set.empty())
 			signal_waypoint_clicked_timetrackview(value_desc,waypoint_set,button);
 	}
+
+	void
+	on_external_selection_changed(Glib::RefPtr<TreeView::Selection> tree_view_selection)
+	{
+		Glib::RefPtr<TreeView::Selection> selection = get_selection();
+		for (const auto& path : tree_view_selection->get_selected_rows())
+			selection->select(path);
+	}
 };
 
 /* === G L O B A L S ======================================================= */
@@ -346,10 +369,11 @@ public:
 /* === M E T H O D S ======================================================= */
 
 Dock_Timetrack_Old::Dock_Timetrack_Old():
-	Dock_CanvasSpecific("timetrack-old",_("Timetrack (old)"),Gtk::StockID("synfig-timetrack")),
+	Dock_CanvasSpecific("timetrack-old",_("Timetrack (old)"),"time_track_icon"),
 	grid_()
 {
 	set_use_scrolled(false);
+	vscrollbar_.set_orientation(Gtk::ORIENTATION_VERTICAL);
 }
 
 Dock_Timetrack_Old::~Dock_Timetrack_Old()

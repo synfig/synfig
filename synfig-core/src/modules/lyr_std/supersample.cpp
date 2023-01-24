@@ -2,24 +2,25 @@
 /*!	\file supersample.cpp
 **	\brief Implementation of the "Super Sample" layer
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2011-2013 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
-**	\endlegal
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
 **
-** === N O T E S ===========================================================
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
+**	\endlegal
 **
 ** ========================================================================= */
 
@@ -33,28 +34,17 @@
 #endif
 
 #include <synfig/localization.h>
-#include <synfig/general.h>
 
 #include <synfig/context.h>
-#include <synfig/cairo_renddesc.h>
 #include <synfig/paramdesc.h>
-#include <synfig/renddesc.h>
-#include <synfig/render.h>
 #include <synfig/rendering/common/task/tasktransformation.h>
 #include <synfig/string.h>
-#include <synfig/surface.h>
-#include <synfig/target.h>
-#include <synfig/target_scanline.h>
-#include <synfig/time.h>
 #include <synfig/value.h>
-#include <synfig/valuenode.h>
 
 #include "supersample.h"
 
 #endif
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace modules;
 using namespace lyr_std;
@@ -67,7 +57,7 @@ SYNFIG_LAYER_INIT(SuperSample);
 SYNFIG_LAYER_SET_NAME(SuperSample,"super_sample");
 SYNFIG_LAYER_SET_LOCAL_NAME(SuperSample,N_("Super Sample"));
 SYNFIG_LAYER_SET_CATEGORY(SuperSample,N_("Other"));
-SYNFIG_LAYER_SET_VERSION(SuperSample,"0.1");
+SYNFIG_LAYER_SET_VERSION(SuperSample,"0.2");
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -77,8 +67,6 @@ SuperSample::SuperSample():
 param_width(ValueBase(int(2))),
 param_height(ValueBase(int(2)))
 {
-	param_scanline=ValueBase(false);
-	param_alpha_aware=ValueBase(true);
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
 
@@ -89,24 +77,18 @@ SuperSample::set_param(const String & param, const ValueBase &value)
 {
 	IMPORT_VALUE_PLUS(param_width,
 		{
-			int width=param_width.get(int());
-			if(value.get(int()) < 1) width = 1;
-			else width=value.get(int());
+			int width = std::max(1, value.get(int()));
 			param_width.set(width);
 			return true;
 		}
 		);
 	IMPORT_VALUE_PLUS(param_height,
 		{
-			int height=param_height.get(int());
-			if(value.get(int()) < 1) height = 1;
-			else height=value.get(int());
+			int height = std::max(1, value.get(int()));
 			param_height.set(height);
 			return true;
 		}
 		);
-	IMPORT_VALUE(param_scanline);
-	IMPORT_VALUE(param_alpha_aware);
 
 	return false;
 }
@@ -116,8 +98,6 @@ SuperSample::get_param(const String& param)const
 {
 	EXPORT_VALUE(param_width);
 	EXPORT_VALUE(param_height);
-    EXPORT_VALUE(param_scanline);
-    EXPORT_VALUE(param_alpha_aware);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -137,14 +117,6 @@ SuperSample::get_param_vocab(void)const
 	ret.push_back(ParamDesc("height")
 		.set_local_name(_("Height"))
 		.set_description(_("Height of the sample area (In pixels)"))
-	);
-	ret.push_back(ParamDesc("scanline")
-		.set_local_name(_("Use Parametric"))
-		.set_description(_("When checked, uses the Parametric Renderer"))
-	);
-	ret.push_back(ParamDesc("alpha_aware")
-		.set_local_name(_("Be Alpha Safe"))
-		.set_description(_("When checked, avoids alpha artifacts"))
 	);
 
 	return ret;

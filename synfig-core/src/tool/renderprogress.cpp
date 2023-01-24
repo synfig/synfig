@@ -1,27 +1,29 @@
 /*!	\file tool/renderprogress.cpp
 **	\brief Implementation of the functions from the render progress class
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2014, 2015 Diego Barrios Romero
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 
 #include <cmath>
 #include <iostream>
 #include "renderprogress.h"
-#include <ETL/stringf>
 #include <sstream>
 
 RenderProgress::RenderProgress()
@@ -74,7 +76,7 @@ bool RenderProgress::amount_complete(int current_frame, int frames_count)
         }
 
         outputStream << "\r"
-                     << etl::strprintf(_("%s: Frame %d of %d (%d%%). Remaining time: "), 
+					 << synfig::strprintf(_("%s: Frame %d of %d (%d%%). Remaining time: "),
                         taskname_.c_str(), current_frame, frames_count, percentage_completed);
 
         if (current_frame != last_frame_)

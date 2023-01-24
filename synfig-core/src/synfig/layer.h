@@ -2,22 +2,25 @@
 /*!	\file layer.h
 **	\brief Layer Class Header
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
 **  Copyright (c) 2011-2013 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -36,7 +39,6 @@
 #include <sigc++/signal.h>
 #include <sigc++/connection.h>
 
-#include "cairo.h"
 #include "guid.h"
 #include "interpolation.h"
 #include "node.h"
@@ -60,26 +62,31 @@
 
 //! Defines various variables and the create method, common for all importers.
 //! To be used in the private part of the importer class definition.
+// Static `name`, `local_name`, `version`, and `category` is needed to register layer.
+// We also have non-static versions of these methods in order to be able to change the
+// layer name (visual presentation) at runtime depending on its parameters.
 #define SYNFIG_LAYER_MODULE_EXT \
 	public: \
-	static const char name__[], version__[], local_name__[], category__[]; \
+	static const char* get_register_name(); \
+	static const char* get_register_version(); \
+	static const char* get_register_local_name(); \
+	static const char* get_register_category(); \
 	static Layer *create();
-
 //! Sets the name of the layer
 #define SYNFIG_LAYER_SET_NAME(class,x) \
-	const char class::name__[]=x
+	const char* class::get_register_name() { return x; }
 
 //! Sets the local name of the layer
 #define SYNFIG_LAYER_SET_LOCAL_NAME(class,x) \
-	const char class::local_name__[]=x;
+	const char* class::get_register_local_name() { return x; }
 
 //! Sets the category of the layer
 #define SYNFIG_LAYER_SET_CATEGORY(class,x) \
-	const char class::category__[]=x
+	const char* class::get_register_category() { return x; }
 
 //! Sets the version string for the layer
 #define SYNFIG_LAYER_SET_VERSION(class,x) \
-	const char class::version__[]=x
+	const char* class::get_register_version() { return x; }
 
 //! Defines de implementation of the create method for the importer
 #define SYNFIG_LAYER_INIT(class) \
@@ -126,14 +133,14 @@
 //! Exports the name or the local name of the layer
 #define EXPORT_NAME() \
 	if (param=="Name" || param=="name" || param=="name__") \
-		return name__; \
+		return get_register_name(); \
 	else if (param=="local_name__") \
-		return synfigcore_localize(local_name__);
+		return synfigcore_localize(get_register_local_name());
 
 //! Exports the version of the layer
 #define EXPORT_VERSION() \
 	if (param=="Version" || param=="version" || param=="version__") \
-		return version__;
+		return get_register_version();
 
 //! This is used as the category for layer book entries which represent aliases of layers.
 //! It prevents these layers showing up in the menu.
@@ -171,8 +178,6 @@
 
 namespace synfig {
 
-class CairoColor;
-class CairoSurface;
 class Canvas;
 class Color;
 class Context;
@@ -481,7 +486,7 @@ public:
 	//! Returns the localised version of the given layer parameter
 	const String get_param_local_name(const String &param_name)const;
 
-	//! Returns a handle to the Parent PasteCanvas layer or NULL if layer belongs to root canvas
+	//! Returns a handle to the Parent PasteCanvas layer or nullptr if layer belongs to root canvas
 	/*! Notice that it could return the wrong handle to PasteCanvas if the layer */
 	/*! belongs to a exported canvas (canvas can be referenced multiple times)*/
 	Layer::LooseHandle get_parent_paste_canvas_layer()const;
@@ -583,7 +588,6 @@ public:
 	**	\see Context::get_color()
 	*/
 	virtual Color get_color(Context context, const Point &pos)const;
-	virtual CairoColor get_cairocolor(Context context, const Point &pos)const;
 
 	// Temporary function to render transformed layer for layers which yet not support transformed rendering
 	static bool render_transformed(const Layer *layer, Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb, const char *file, int line);
@@ -593,12 +597,11 @@ public:
 	**	\param surface		Pointer to Surface to render to.
 	**	\param quality		The requested quality-level to render at.
 	**	\param renddesc		The associated RendDesc.
-	**	\param cb			Pointer to callback object. May be NULL if there is no callback.
+	**	\param cb			Pointer to callback object. May be nullptr if there is no callback.
 	**	\return \c true on success, \c false on failure
 	**	\see Context::accelerated_render()
 	*/
 	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-	virtual bool accelerated_cairorender(Context context, cairo_t* cr, int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
 protected:
 	virtual void set_time_vfunc(IndependentContext context, Time time) const;

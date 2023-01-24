@@ -2,20 +2,23 @@
 /*!	\file valuenode_derivative.cpp
 **	\brief Implementation of the "Derivative" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2014 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -36,14 +39,10 @@
 #include <synfig/valuenode_registry.h>
 #include <synfig/vector.h>
 
-#include <ETL/misc>
-
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -140,7 +139,7 @@ using namespace synfig;
 				)
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Derivative, RELEASE_VERSION_1_0, "derivative", "Derivative")
+REGISTER_VALUENODE(ValueNode_Derivative, RELEASE_VERSION_1_0, "derivative", N_("Derivative"))
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -149,8 +148,7 @@ REGISTER_VALUENODE(ValueNode_Derivative, RELEASE_VERSION_1_0, "derivative", "Der
 ValueNode_Derivative::ValueNode_Derivative(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	set_link("interval",      ValueNode_Const::create(Real(0.01))); // Default interval
 	set_link("accuracy",      ValueNode_Const::create((int)(NORMAL)));
 	set_link("order",         ValueNode_Const::create((int)(FIRST)));
@@ -178,7 +176,7 @@ ValueNode_Derivative::create_new()const
 }
 
 ValueNode_Derivative*
-ValueNode_Derivative::create(const ValueBase &x)
+ValueNode_Derivative::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Derivative(x);
 }
@@ -191,8 +189,8 @@ ValueNode_Derivative::~ValueNode_Derivative()
 ValueBase
 ValueNode_Derivative::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	Type &type(get_type());
 	if (type == type_real)

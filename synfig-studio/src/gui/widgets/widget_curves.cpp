@@ -2,23 +2,26 @@
 /*!	\file widget_curves.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **  Copyright (c) 2008 Gerco Ballintijn
 **  Copyright (c) 2011 Carlos López
 **  ......... ... 2018 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -77,9 +80,9 @@ using namespace studio;
 struct Widget_Curves::Channel
 {
 	String name;
-	Gdk::Color color;
+	Gdk::RGBA color;
 	std::map<Real, Real> values;
-	explicit Channel(const String &name = String(), const Gdk::Color &color = Gdk::Color()):
+	explicit Channel(const String &name = String(), const Gdk::RGBA& color = Gdk::RGBA()):
 		name(name), color(color) { }
 };
 
@@ -89,10 +92,10 @@ struct Widget_Curves::CurveStruct: sigc::trackable
 	ValueDesc value_desc;
 	std::vector<Channel> channels;
 
-	void add_channel(const String &name, const Gdk::Color &color)
+	void add_channel(const String &name, const Gdk::RGBA& color)
 		{ channels.push_back(Channel(name, color)); }
 	void add_channel(const String &name, const String &color)
-		{ add_channel(name, Gdk::Color(color)); }
+		{ add_channel(name, Gdk::RGBA(color)); }
 
 	CurveStruct() { }
 
@@ -496,24 +499,15 @@ Widget_Curves::Widget_Curves()
 
 	set_can_focus(true);
 
-	time_plot_data->set_extra_time_margin(16/2);
-
 	channel_point_sd.set_pan_enabled(true);
 	channel_point_sd.set_zoom_enabled(true);
 	channel_point_sd.set_scroll_enabled(true);
 	channel_point_sd.set_canvas_interface(canvas_interface);
-	channel_point_sd.signal_drag_canceled().connect([&]() {
-		overlapped_waypoints.clear();
-	});
-	channel_point_sd.signal_drag_finished().connect([&](bool /*started_by_keys*/) {
-//		overlapped_waypoints.clear();
-	});
+	channel_point_sd.signal_drag_canceled().connect(sigc::mem_fun(*this, &Widget_Curves::on_channel_point_drag_canceled));
+	channel_point_sd.signal_drag_finished().connect(sigc::mem_fun(*this, &Widget_Curves::on_channel_point_drag_finished));
 	channel_point_sd.signal_redraw_needed().connect(sigc::mem_fun(*this, &Gtk::Widget::queue_draw));
 	channel_point_sd.signal_focus_requested().connect(sigc::mem_fun(*this, &Gtk::Widget::grab_focus));
-	channel_point_sd.signal_selection_changed().connect([=](){
-		overlapped_waypoints.clear();
-		queue_draw();
-	});
+	channel_point_sd.signal_selection_changed().connect(sigc::mem_fun(*this, &Widget_Curves::on_channel_point_selection_changed));
 	channel_point_sd.signal_zoom_in_requested().connect(sigc::mem_fun(*this, &Widget_Curves::zoom_in));
 	channel_point_sd.signal_zoom_out_requested().connect(sigc::mem_fun(*this, &Widget_Curves::zoom_out));
 	channel_point_sd.signal_zoom_horizontal_in_requested().connect(sigc::mem_fun(*this, &Widget_Curves::zoom_horizontal_in));
@@ -603,6 +597,7 @@ Widget_Curves::on_event(GdkEvent *event)
 			return true;
 		switch (event->key.keyval) {
 		case GDK_KEY_Delete:
+		case GDK_KEY_KP_Delete:
 			delete_selected();
 			return true;
 		default:
@@ -696,7 +691,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 			range_max = std::max(range_max, old_value);
 			range_min = std::min(range_min, old_value);
 
-			Gdk::Cairo::set_source_color(cr, curve_it->channels[c].color);
+			Gdk::Cairo::set_source_rgba(cr, curve_it->channels[c].color);
 			cr->move_to(x, y);
 			cr->line_to(x, old_y);
 			cr->stroke();
@@ -717,7 +712,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 			points[c].reserve(w);
 		}
 
-		Time t = time_plot_data->lower;
+		Time t = time_plot_data->lower_ex;
 		for(int j = 0; j < w; ++j, t += time_plot_data->dt) {
 			for(size_t c = 0; c < channels; ++c) {
 				Real y = curve_it->get_value(c, t, time_plot_data->dt);
@@ -752,7 +747,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 				if (p_it->get_x() >= last_timepoint_pixel)
 					break;
 			}
-			Gdk::Cairo::set_source_color(cr, curve_it->channels[c].color);
+			Gdk::Cairo::set_source_rgba(cr, curve_it->channels[c].color);
 			cr->stroke();
 
 			// Draw the remaining curve
@@ -874,6 +869,24 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	cr->restore();
 
 	return true;
+}
+
+void
+Widget_Curves::on_channel_point_drag_canceled()
+{
+	overlapped_waypoints.clear();
+}
+
+void
+Widget_Curves::on_channel_point_drag_finished(bool /*started_by_keys*/)
+{
+}
+
+void
+Widget_Curves::on_channel_point_selection_changed()
+{
+	overlapped_waypoints.clear();
+	queue_draw();
 }
 
 void
@@ -1142,8 +1155,11 @@ void Widget_Curves::ChannelPointSD::delta_drag(int total_dx, int total_dy, bool 
 	std::vector<std::pair<const ValueDesc&, Time>> times_to_move;
 
 	const float fps = widget.canvas_interface->get_canvas()->rend_desc().get_frame_rate();
+	const TimePlotData* time_plot_data = widget.time_plot_data;
 	const Time base_time = get_active_item()->time_point.get_time();
-	const Time next_time = widget.time_plot_data->get_t_from_pixel_coord(widget.time_plot_data->get_pixel_t_coord(base_time) + dx).round(fps);
+	const Time next_time = std::max(time_plot_data->time_model->get_lower(),
+									time_plot_data->get_t_from_pixel_coord(time_plot_data->get_pixel_t_coord(base_time) + dx).round(fps));
+
 	const Time deltatime = next_time - base_time;
 
 	if (deltatime != 0) {

@@ -2,22 +2,25 @@
 /*!	\file widget_keyframe_list.h
 **	\brief A custom widget to manage keyframes in the timeline.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2009 Carlos López
 **	......... ... 2018 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -33,7 +36,7 @@
 #include <gtkmm/label.h>
 #include <gtkmm/window.h>
 
-#include <gui/timemodel.h>
+#include <gui/timeplotdata.h>
 
 #include <synfig/keyframe.h>
 
@@ -55,9 +58,6 @@ class Widget_Keyframe_List : public Gtk::DrawingArea
 	//! The canvas interface being watched
 	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface;
 
-	//! Time model
-	etl::handle<TimeModel> time_model;
-
 	//! True if it is editable. Keyframes can be moved.
 	bool editable;
 
@@ -66,8 +66,6 @@ class Widget_Keyframe_List : public Gtk::DrawingArea
 
 	//! True if a keyframe has been moved
 	bool changed;
-
-	synfig::Time time_ratio;
 
 	//! Holds the selected keyframe of the keyframe list
 	synfig::Keyframe selected_kf;
@@ -86,6 +84,12 @@ class Widget_Keyframe_List : public Gtk::DrawingArea
 	//! The Moving handmade tooltip y fixed coordinate
 	//int moving_tooltip_y;
 
+	//! Helper to map time to pixel
+	TimePlotData time_plot_data;
+
+	//! Keyframe mark width
+	int keyframe_width;
+
 	//! Connectors for handling the signal of the time model
 	sigc::connection time_model_change;
 
@@ -94,6 +98,10 @@ class Widget_Keyframe_List : public Gtk::DrawingArea
 	sigc::connection keyframe_changed;
 	sigc::connection keyframe_removed;
 	sigc::connection keyframe_selected;
+
+	//! Return the nearest keyframe around the horizontal pixel position
+	//! \return nullptr if none is near
+	synfig::Keyframe* get_keyframe_around(synfig::Time t, bool ignore_disabled = true);
 
 public:
 	Widget_Keyframe_List();
@@ -110,7 +118,7 @@ public:
 
 	//! Set the time model and proper connects its change signals
 	void set_time_model(const etl::handle<TimeModel> &x);
-	const etl::handle<TimeModel>& get_time_model() const { return time_model; }
+	const etl::handle<TimeModel>& get_time_model() const { return time_plot_data.time_model; }
 
 	void set_editable(bool x = true) { editable = x; }
 	bool get_editable() const { return editable; }

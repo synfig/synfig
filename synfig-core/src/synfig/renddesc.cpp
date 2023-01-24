@@ -3,21 +3,24 @@
 **	\brief Class that defines the parameters needed by the Renderer to
 * render a context to a surface.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -32,14 +35,12 @@
 #endif
 
 #include "renddesc.h"
-#include <ETL/misc>
+#include <synfig/misc.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -594,12 +595,12 @@ RendDesc::set_tl(const Point &x)
 	if(FLAGS(flags,PX_ASPECT)) // "Pixel Aspect"
 	{
 		Vector new_size(x-br_);
-		new_size[0]=abs(new_size[0]);
-		new_size[1]=abs(new_size[1]);
+		new_size[0]=std::fabs(new_size[0]);
+		new_size[1]=std::fabs(new_size[1]);
 
 		Vector old_size(tl_-br_);
-		old_size[0]=abs(old_size[0]);
-		old_size[1]=abs(old_size[1]);
+		old_size[0]=std::fabs(old_size[0]);
+		old_size[1]=std::fabs(old_size[1]);
 
 		if(new_size[0]!=old_size[0])
 			w_=round_to_int(new_size[0]*w_/old_size[0]);
@@ -617,12 +618,12 @@ RendDesc::set_br(const Point &x)
 	if(FLAGS(flags,PX_ASPECT)) // "Pixel Aspect"
 	{
 		Vector new_size(x-tl_);
-		new_size[0]=abs(new_size[0]);
-		new_size[1]=abs(new_size[1]);
+		new_size[0]=std::fabs(new_size[0]);
+		new_size[1]=std::fabs(new_size[1]);
 
 		Vector old_size(tl_-br_);
-		old_size[0]=abs(old_size[0]);
-		old_size[1]=abs(old_size[1]);
+		old_size[0]=std::fabs(old_size[0]);
+		old_size[1]=std::fabs(old_size[1]);
 
 		if(new_size[0]!=old_size[0])
 			w_=round_to_int(new_size[0]*w_/old_size[0]);
@@ -639,12 +640,12 @@ RendDesc::set_tl_br(const Point &x, const Point &y)
 	if(FLAGS(flags, PX_ASPECT))
 	{
 		Vector new_size(y-x);
-		new_size[0]=abs(new_size[0]);
-		new_size[1]=abs(new_size[1]);
+		new_size[0]=std::fabs(new_size[0]);
+		new_size[1]=std::fabs(new_size[1]);
 		
 		Vector old_size(tl_-br_);
-		old_size[0]=abs(old_size[0]);
-		old_size[1]=abs(old_size[1]);
+		old_size[0]=std::fabs(old_size[0]);
+		old_size[1]=std::fabs(old_size[1]);
 		
 		if(new_size[0]!=old_size[0])
 			w_=round_to_int(new_size[0]*w_/old_size[0]);

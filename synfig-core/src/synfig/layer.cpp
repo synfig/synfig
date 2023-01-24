@@ -2,22 +2,25 @@
 /*!	\file layer.cpp
 **	\brief Layer class implementation
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2011-2013 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -74,7 +77,6 @@
 /* === U S I N G =========================================================== */
 
 using namespace etl;
-using namespace std;
 using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
@@ -114,12 +116,12 @@ Layer::subsys_init()
 	_layer_book=new Book();
 
 #define INCLUDE_LAYER(class)									\
-	synfig::Layer::book() [synfig::String(class::name__)] =		\
+	synfig::Layer::book() [class::get_register_name()] =		\
 		BookEntry(class::create,								\
-				  class::name__,								\
-				   _(class::local_name__),		\
-				  class::category__,							\
-				  class::version__)
+				  class::get_register_name(),					\
+				   _(class::get_register_local_name()),			\
+				  class::get_register_category(),				\
+				  class::get_register_version())
 
 #define LAYER_ALIAS(class,alias)								\
 	synfig::Layer::book()[synfig::String(alias)] =				\
@@ -127,10 +129,10 @@ Layer::subsys_init()
 				  alias,										\
 				  alias,										\
 				  CATEGORY_DO_NOT_USE,							\
-				  class::version__)
+				  class::get_register_version())
 
 	INCLUDE_LAYER(Layer_SolidColor);
-		LAYER_ALIAS(Layer_SolidColor,	"solid_color");
+		LAYER_ALIAS(Layer_SolidColor,	"SolidColor"); // old name, previous to version 1.5.2
 	INCLUDE_LAYER(Layer_FilterGroup);
 	INCLUDE_LAYER(Layer_Group);
 		LAYER_ALIAS(Layer_Group,		"paste_canvas");
@@ -139,7 +141,7 @@ Layer::subsys_init()
 	INCLUDE_LAYER(Layer_Polygon);
 		LAYER_ALIAS(Layer_Polygon,		"Polygon");
 	INCLUDE_LAYER(Layer_MotionBlur);
-		LAYER_ALIAS(Layer_MotionBlur,	"motion_blur");
+		LAYER_ALIAS(Layer_MotionBlur,	"MotionBlur"); // old name, previous to version 1.5.2
 	INCLUDE_LAYER(Layer_Duplicate);
 	INCLUDE_LAYER(Layer_Skeleton);
 	INCLUDE_LAYER(Layer_SkeletonDeformation);
@@ -321,7 +323,6 @@ Layer::connect_dynamic_param(const String& param, etl::loose_handle<ValueNode> v
 	if (previous == value_node)
 		return true;
 
-	String param_noref = param;
 	dynamic_param_list_[param]=ValueNode::Handle(value_node);
 
 	if (previous)
@@ -381,8 +382,8 @@ Layer::disconnect_dynamic_param(const String& param)
 void
 Layer::on_changed()
 {
-	if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
-		printf("%s:%d Layer::on_changed()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_ON_CHANGED",
+		"%s:%d Layer::on_changed()\n", __FILE__, __LINE__);
 
 	clear_time_mark();
 	Node::on_changed();
@@ -657,14 +658,6 @@ Layer::get_color(Context context, const Point &pos)const
 	return context.get_color(pos);
 }
 
-CairoColor
-Layer::get_cairocolor(Context context, const Point &pos)const
-{
-	// When the layer doesn't define its own get_cairocolor
-	// then the normal get_cairo color will be used and 
-	// a Color to CairoColor conversion will be done. 
-	return CairoColor(get_color(context, pos));
-}
 
 
 synfig::Layer::Handle
@@ -779,8 +772,8 @@ Layer::render_transformed(const Layer *layer, Context context,Surface *surface,i
 	int right  = (int)ceil (pixels_outer_bounds.maxx);
 	int bottom = (int)ceil (pixels_outer_bounds.maxy);
 
-	int w = min(surface->get_w(), renddesc.get_w());
-	int h = min(surface->get_h(), renddesc.get_h());
+	int w = std::min(surface->get_w(), renddesc.get_w());
+	int h = std::min(surface->get_h(), renddesc.get_h());
 
 	if (left < 0) left = 0;
 	if (top < 0) top = 0;
@@ -865,20 +858,7 @@ Layer::accelerated_render(Context context,Surface *surface,int quality, const Re
 }
 
 
-bool
-Layer::accelerated_cairorender(Context context, cairo_t *cr, int /*quality*/, const RendDesc &renddesc, ProgressCallback *cb)  const
-{
-	// When we render, we want to
-	// make sure that we are rendered too...
-	// Since the context iterator is for
-	// the layer after us, we need to back up.
-	// This could be considered a hack, as
-	// it is a possibility that we are indeed
-	// not the previous layer.
-	--context;
-	
-	return cairorender(context,cr,renddesc,cb);
-}
+
 
 RendDesc
 Layer::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
@@ -911,14 +891,14 @@ Layer::build_rendering_task_vfunc(Context context)const
 {
 	rendering::TaskLayer::Handle task = new rendering::TaskLayer();
 	// TODO: This is not thread-safe
-	//task->layer = const_cast<Layer*>(this);//clone(NULL);
-	task->layer = clone(NULL);
+	//task->layer = const_cast<Layer*>(this);//clone(nullptr);
+	task->layer = clone(nullptr);
 	task->layer->set_canvas(get_canvas());
 
 	Real amount = Context::z_depth_visibility(context.get_params(), *this);
 	if (approximate_not_equal(amount, 1.0) && task->layer.type_is<Layer_Composite>())
 	{
-		//task->layer = task->layer->clone(NULL);
+		//task->layer = task->layer->clone(nullptr);
 		etl::handle<Layer_Composite> composite = etl::handle<Layer_Composite>::cast_dynamic(task->layer);
 		composite->set_amount( composite->get_amount()*amount );
 	}
@@ -1029,18 +1009,17 @@ synfig::Layer::get_parent_paste_canvas_layer()const
 		for(iter=parent_canvas->begin();iter!=parent_canvas->end();++iter)
 		{
 			Layer::LooseHandle layer=iter->get();
-			if(dynamic_cast<Layer_PasteCanvas*>(layer.get()) != NULL)
+			if(Layer_PasteCanvas* paste_canvas = dynamic_cast<Layer_PasteCanvas*>(layer.get()))
 			{
-				Layer_PasteCanvas* paste_canvas(static_cast<Layer_PasteCanvas*>(layer.get()));
 				Canvas::Handle sub_canvas=paste_canvas->get_sub_canvas();
 				if(sub_canvas==canvas)
 					return layer;
 			}
 		}
 		synfig::warning("Layer's canvas has parent canvas but I can't find a proper Layer_PasteCanvas in it");
-		return NULL;
+		return nullptr;
 	}
-	return NULL;
+	return nullptr;
 }
 
 String
@@ -1077,7 +1056,7 @@ bool Layer::monitor(const std::string& path) { // append file monitor (returns t
 	RefPtr<Gio::File> file = Gio::File::create_for_path(path);
 	file_monitor = file->monitor_file(); // defaults to Gio::FileMonitorFlags::FILE_MONITOR_NONE
 	monitor_connection = file_monitor->signal_changed().connect(sigc::mem_fun(*this, &Layer::on_file_changed));
-	monitored_path = path;
+	monitored_path = FileSystem::fix_slashes(path);
 	synfig::info("File monitor attached to file: (" + path + ")");
 
 	return true;

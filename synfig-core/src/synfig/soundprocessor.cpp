@@ -2,20 +2,23 @@
 /*!	\file synfig/soundprocessor.cpp
 **	\brief Template Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -40,9 +43,7 @@
 
 #endif
 
-using namespace std;
 using namespace synfig;
-using namespace etl;
 
 /* === M A C R O S ========================================================= */
 
@@ -58,6 +59,7 @@ public:
 	static bool initialized;
 	std::vector<PlayOptions> stack;
 #ifndef WITHOUT_MLT
+	static Mlt::Repository* repository;
 	Mlt::Profile profile;
 	Mlt::Producer *last_track;
 	Mlt::Consumer *consumer;
@@ -67,8 +69,8 @@ public:
 
 	void clear() {
 #ifndef WITHOUT_MLT
-		if (last_track != NULL) { delete last_track; last_track = NULL; }
-		if (consumer != NULL) { consumer->stop(); delete consumer; consumer = NULL; }
+		if (last_track) { delete last_track; last_track = nullptr; }
+		if (consumer) { consumer->stop(); delete consumer; consumer = nullptr; }
 		stack.clear();
 		stack.push_back(PlayOptions());
 #endif
@@ -83,6 +85,9 @@ public:
 };
 
 bool SoundProcessor::Internal::initialized = false;
+#ifndef WITHOUT_MLT
+Mlt::Repository* SoundProcessor::Internal::repository = nullptr;
+#endif
 
 SoundProcessor::SoundProcessor()
 {
@@ -122,10 +127,10 @@ void SoundProcessor::addSound(const PlayOptions &playOptions, const Sound &sound
 
 	// Create track
 	Mlt::Producer *track = new Mlt::Producer(internal->profile, (String("avformat:") + sound.filename).c_str());
-	if (track->get_producer() == NULL || track->get_length() <= 0) {
+	if (!track->get_producer() || track->get_length() <= 0) {
 		delete track;
 		track = new Mlt::Producer(internal->profile, (String("vorbis:") + sound.filename).c_str());
-		if (track->get_producer() == NULL || track->get_length() <= 0) { delete track; return; }
+		if (!track->get_producer() || track->get_length() <= 0) { delete track; return; }
 	}
 
 	int delay = (int)round(options.delay*internal->profile.fps());
@@ -151,7 +156,7 @@ void SoundProcessor::addSound(const PlayOptions &playOptions, const Sound &sound
 		track = playlist;
 	}
 
-	if (internal->last_track == NULL) {
+	if (!internal->last_track) {
 
 		if (!infinite) {
 			internal->last_track = track;
@@ -175,7 +180,7 @@ void SoundProcessor::addSound(const PlayOptions &playOptions, const Sound &sound
 			error("SoundProcessor: cannot mute the 'tone' MLT producer for fake infinite track");
 		}
 		
-		if (infinite_track->get_producer() == NULL) {
+		if (!infinite_track->get_producer()) {
 			delete infinite_track;
 			internal->last_track = track;
 			return;
@@ -212,7 +217,7 @@ void SoundProcessor::set_infinite(bool value)
 Time SoundProcessor::get_position() const
 {
 #ifndef WITHOUT_MLT
-	return Time(internal->last_track == NULL ? 0.0 :
+	return Time(!internal->last_track ? 0.0 :
 				(double)internal->last_track->position()/internal->profile.fps() );
 #else
 	return Time();
@@ -225,7 +230,7 @@ void SoundProcessor::set_position(Time value)
 	Time dt = value - get_position();
 	if (dt >= Time(-0.01) && dt <= Time(0.01))
 		return;
-	if (internal->last_track != NULL) {
+	if (internal->last_track) {
 		bool restart = internal->playing && internal->consumer;
 		if (restart) set_playing(false);
 		internal->last_track->seek( (int)round(value*internal->profile.fps()) );
@@ -243,7 +248,7 @@ void SoundProcessor::set_playing(bool value)
 	if (value == internal->playing) return;
 	internal->playing = value;
 	if (internal->playing) {
-		if (internal->last_track != NULL) {
+		if (internal->last_track) {
 			internal->last_track->set_speed(1.0);
 			internal->consumer = new Mlt::Consumer(internal->profile, "sdl_audio");
 			internal->consumer->connect(*internal->last_track);
@@ -253,7 +258,7 @@ void SoundProcessor::set_playing(bool value)
 		if (internal->consumer) {
 			internal->consumer->stop();
 			delete internal->consumer;
-			internal->consumer = NULL;
+			internal->consumer = nullptr;
 		}
 	}
 #endif
@@ -262,7 +267,7 @@ void SoundProcessor::set_playing(bool value)
 void SoundProcessor::do_export(String path)
 {
 #ifndef WITHOUT_MLT
-	if (internal->last_track != NULL) {
+	if (internal->last_track) {
 		internal->last_track->set_speed(1.0);
 		internal->consumer = new Mlt::Consumer(internal->profile, "avformat");
 		internal->consumer->connect(*internal->last_track);
@@ -273,18 +278,22 @@ void SoundProcessor::do_export(String path)
 }
 
 bool SoundProcessor::subsys_init() {
-	if (!Internal::initialized)
+	if (!Internal::initialized) {
 #ifndef WITHOUT_MLT
-		Internal::initialized = Mlt::Factory::init();
+		Internal::repository = Mlt::Factory::init();
+		Internal::initialized = Internal::repository;
 #else
 		Internal::initialized = true;
 #endif
+	}
 	return Internal::initialized;
 }
 
 bool SoundProcessor::subsys_stop()
 {
 #ifndef WITHOUT_MLT
+	// delete leads to crash on Ubuntu 16.04
+	//delete Internal::repository;
 	Mlt::Factory::close();
 #endif
 	return true;

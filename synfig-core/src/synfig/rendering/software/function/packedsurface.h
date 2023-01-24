@@ -2,20 +2,23 @@
 /*!	\file synfig/rendering/software/function/packedsurface.h
 **	\brief PackedSurface Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2016 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -86,25 +89,21 @@ public:
 
 		void open(const PackedSurface &surface);
 		void close();
-		bool is_opened() const { return surface != NULL; }
+		bool is_opened() const { return surface != nullptr; }
 
 		Color get_pixel(int x, int y) const;
 
-		template< etl::clamping::func clamp_x = etl::clamping::clamp,
-				  etl::clamping::func clamp_y = etl::clamping::clamp >
 		inline static Color reader(const void *surf, int x, int y)
 		{
 			const Reader &r = *(const Reader*)surf;
-			return clamp_x(x, r.surface->width) && clamp_y(y, r.surface->height)
+			return clamping::clamp(x, r.surface->width) && clamping::clamp(y, r.surface->height)
 			     ? r.get_pixel(x, y) : Color();
 		}
 
-		template< etl::clamping::func clamp_x = etl::clamping::clamp,
-				  etl::clamping::func clamp_y = etl::clamping::clamp >
-		inline static ColorAccumulator reader_cook(const void *surf, int x, int y)
+		inline static Color reader_cook(const void *surf, int x, int y)
 		{
 			const Reader &r = *(const Reader*)surf;
-			return clamp_x(x, r.surface->width) && clamp_y(y, r.surface->height)
+			return clamping::clamp(x, r.surface->width) && clamping::clamp(y, r.surface->height)
 				 ? ColorPrep::cook_static(r.get_pixel(x, y)) : Color();
 		}
 	};
@@ -125,7 +124,7 @@ public:
 			{ return min <= c && c <= max; }
 	};
 
-	typedef etl::sampler<ColorAccumulator, float, ColorAccumulator, Reader::reader_cook> Sampler;
+	typedef sampler<Color, float, Reader::reader_cook> Sampler;
 
 private:
 	mutable std::mutex mutex;

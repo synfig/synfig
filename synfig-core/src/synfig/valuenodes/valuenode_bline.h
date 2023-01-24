@@ -2,22 +2,25 @@
 /*!	\file valuenode_bline.h
 **	\brief Header file for implementation of the "BLine" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
 **  Copyright (c) 2011 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -30,13 +33,9 @@
 /* === H E A D E R S ======================================================= */
 
 #include <vector>
-#include <list>
 
-#include <synfig/valuenode.h>
-#include <synfig/time.h>
-#include <synfig/uniqueid.h>
 #include <synfig/blinepoint.h>
-#include "valuenode_dynamiclist.h"
+#include <synfig/valuenodes/valuenode_dynamiclist.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -69,43 +68,37 @@ Real bline_length(const ValueBase &bline, bool bline_loop, std::vector<Real> *le
 */
 class ValueNode_BLine : public ValueNode_DynamicList
 {
-public:
-
-	typedef etl::handle<ValueNode_BLine> Handle;
-	typedef etl::handle<const ValueNode_BLine> ConstHandle;
-
-
 	ValueNode_BLine(etl::loose_handle<Canvas> canvas = 0);
-
-public:
-
- 	virtual ValueBase operator()(Time t)const;
-
-	virtual ~ValueNode_BLine();
-
-	virtual String link_local_name(int i)const;
-
-	virtual String get_name()const;
-	virtual String get_local_name()const;
-
-	virtual ListEntry create_list_entry(int index, Time time=0, Real origin=0.5);
-
-protected:
-
-	LinkableValueNode* create_new()const;
-
-public:
-	//using synfig::LinkableValueNode::set_link_vfunc;
-	static bool check_type(Type &type);
-	static ValueNode_BLine* create(const ValueBase &x=type_list, etl::loose_handle<Canvas> canvas = 0);
 
 	//! Returns the BlinePoint at time t, with the tangents modified if
 	//! the vertex is boned influenced, otherwise returns the Blinepoint at time t.
-	BLinePoint get_blinepoint(std::vector<ListEntry>::const_iterator current, Time t)const;
-	virtual Vocab get_children_vocab_vfunc()const;
+	BLinePoint get_blinepoint(std::vector<ListEntry>::const_iterator current, Time t) const;
+
+public:
+	typedef etl::handle<ValueNode_BLine> Handle;
+	typedef etl::handle<const ValueNode_BLine> ConstHandle;
+
+	static ValueNode_BLine* create(const ValueBase& x=type_list, etl::loose_handle<Canvas> canvas=nullptr);
+	virtual ~ValueNode_BLine();
+
+	virtual ValueBase operator()(Time t) const override;
+
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
+	virtual String link_local_name(int i) const override;
+	static bool check_type(Type &type);
+
+	virtual ListEntry create_list_entry(int index, Time time=0, Real origin=0.5) override;
+
+protected:
+	LinkableValueNode* create_new() const override;
+
+	virtual Vocab get_children_vocab_vfunc() const override;
+
+public:
 #ifdef _DEBUG
-	virtual void ref()const;
-	virtual bool unref()const;
+	virtual void ref() const override;
+	virtual bool unref() const override;
 #endif
 }; // END of class ValueNode_BLine
 

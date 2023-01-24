@@ -2,21 +2,24 @@
 /*!	\file guid.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -32,8 +35,8 @@
 
 #include "guid.h"
 #include "quick_rng.h"
-#include <ETL/stringf>
 
+#include <cassert>
 #include <cstring>
 
 #ifdef _WIN32
@@ -44,7 +47,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -63,7 +65,7 @@ using namespace synfig;
 
 
 #ifdef MANUAL_GUID_CALC
-#include <time.h>
+#include <ctime>
 static GUID_RNG _a, _b;
 static void _set_up_rand_long_long(uint64_t &x);
 static void _get_rand_long_long(uint64_t &x);
@@ -126,8 +128,10 @@ static void _get_rand_long_long(uint64_t &x){	read(rand_fd,&x,sizeof(x));}
 void
 synfig::GUID::make_unique()
 {
-	get_rand_long_long(data.u_64.a);
-	get_rand_long_long(data.u_64.b);
+	do {
+		get_rand_long_long(data.u_64.a);
+		get_rand_long_long(data.u_64.b);
+	} while (data.u_64.a == 0 && data.u_64.b == 0);
 }
 
 synfig::GUID

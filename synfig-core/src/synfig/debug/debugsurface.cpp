@@ -2,20 +2,23 @@
 /*!	\file debugsurface.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -42,7 +45,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace debug;
 
@@ -65,7 +67,7 @@ DebugSurface::save_to_file(const void *buffer, int width, int height, int pitch,
 			FileSystemNative::instance(),
 			filename + ".tga" );
 
-	if (buffer == NULL || width <= 0 || height <= 0)
+	if (!buffer || width <= 0 || height <= 0)
 	{
 		// save empty file for empty surface
 		FileSystemNative::instance()
@@ -86,7 +88,7 @@ DebugSurface::save_to_file(const void *buffer, int width, int height, int pitch,
 		// write rows in reverse order (for TGA format)
 		color_to_pixelformat(
 			byte_buffer + total_bytes - row_bytes,
-			(const Color*)buffer, pf, NULL, width, height, -row_bytes, pitch );
+			(const Color*)buffer, pf, nullptr, width, height, -row_bytes, pitch );
 
 		// create file
 		FileSystem::WriteStream::Handle ws =
@@ -123,7 +125,7 @@ DebugSurface::save_to_file(const Surface &surface, const String &filename, bool 
 	if (surface.is_valid())
 		save_to_file(&surface[0][0], surface.get_w(), surface.get_h(), surface.get_pitch(), filename, overwrite);
 	else
-		save_to_file(NULL, 0, 0, 0, filename, overwrite);
+		save_to_file(nullptr, 0, 0, 0, filename, overwrite);
 }
 
 void
@@ -134,7 +136,7 @@ DebugSurface::save_to_file(const rendering::Surface &surface, const String &file
 		surface.get_pixels(&buffer.front());
 		save_to_file(&buffer.front(), surface.get_width(), surface.get_height(), 0, filename, overwrite);
 	} else
-		save_to_file(NULL, 0, 0, 0, filename, overwrite);
+		save_to_file(nullptr, 0, 0, 0, filename, overwrite);
 }
 
 void
@@ -143,7 +145,7 @@ DebugSurface::save_to_file(const rendering::Surface::Handle &surface, const Stri
 	if (surface)
 		save_to_file(*surface, filename, overwrite);
 	else
-		save_to_file(NULL, 0, 0, 0, filename, overwrite);
+		save_to_file(nullptr, 0, 0, 0, filename, overwrite);
 }
 
 void
@@ -157,6 +159,6 @@ DebugSurface::save_to_file(const rendering::SurfaceResource::Handle &surface, co
 		std::vector<Color> buffer(size[0] * size[1]);
 		save_to_file(&buffer.front(), size[0], size[1], 0, filename, overwrite);
 	} else {
-		save_to_file(NULL, 0, 0, 0, filename, overwrite);
+		save_to_file(nullptr, 0, 0, 0, filename, overwrite);
 	}
 }

@@ -2,20 +2,23 @@
 /*!	\file layer_sound.cpp
 **	\brief Implementation of the "Sound" layer
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -31,7 +34,6 @@
 
 #include <glibmm/convert.h>
 
-#include <synfig/general.h>
 #include <synfig/localization.h>
 
 #include <synfig/real.h>
@@ -48,8 +50,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
-using namespace std;
 using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
@@ -67,7 +67,7 @@ SYNFIG_LAYER_SET_VERSION(Layer_Sound,"0.1");
 /* === E N T R Y P O I N T ================================================= */
 
 Layer_Sound::Layer_Sound():
-	Layer_Composite(0.0),
+	Layer_Invisible(),
 	param_filename(String()),
 	param_delay(Time()),
 	param_volume(Real(1.0))
@@ -79,7 +79,11 @@ Layer_Sound::Layer_Sound():
 bool
 Layer_Sound::set_param(const String &param, const ValueBase &value)
 {
-	IMPORT_VALUE(param_filename);
+	IMPORT_VALUE_PLUS(param_filename,
+		{
+			param_filename = FileSystem::fix_slashes(value.get(String()));
+		}
+		);
 	IMPORT_VALUE(param_delay);
 	IMPORT_VALUE(param_volume);
 
@@ -142,10 +146,4 @@ Layer_Sound::fill_sound_processor(SoundProcessor &soundProcessor) const
 	Time delay = param_delay.get(Time());
 	Real volume = param_volume.get(Real());
 	soundProcessor.addSound(SoundProcessor::PlayOptions(delay, volume), SoundProcessor::Sound(filename));
-}
-
-rendering::Task::Handle
-Layer_Sound::build_rendering_task_vfunc(Context context)const
-{
-	return context.build_rendering_task();
 }

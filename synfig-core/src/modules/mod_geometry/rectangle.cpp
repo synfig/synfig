@@ -2,22 +2,25 @@
 /*!	\file rectangle.cpp
 **	\brief Implementation of the "Rectangle" layer
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002 Robert B. Quattlebaum Jr.
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2011-2013 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -31,10 +34,7 @@
 #	include <config.h>
 #endif
 
-#include <ETL/misc>
-
 #include <synfig/localization.h>
-#include <synfig/general.h>
 
 #include "rectangle.h"
 
@@ -42,8 +42,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
-using namespace std;
 using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
@@ -80,16 +78,16 @@ Rectangle::sync_vfunc()
 	Real bevel = fabs(param_bevel.get(Real()));
 	Point p0 = param_point1.get(Point());
 	Point p1 = param_point2.get(Point());
-	if (p1[0] < p0[0]) swap(p0[0], p1[0]);
-	if (p1[1] < p0[1]) swap(p0[1], p1[1]);
+	if (p1[0] < p0[0]) std::swap(p0[0], p1[0]);
+	if (p1[1] < p0[1]) std::swap(p0[1], p1[1]);
 
 	bool bev_circle = param_bevCircle.get(bool());
 	
 	Real w = p1[0] - p0[0] + 2*expand;
 	Real h = p1[1] - p0[1] + 2*expand;
 	Real bev = (bevel > 1) ? 1 : bevel;
-	Real bevx = bev_circle ? min(w*bev/2.0, h*bev/2.0) : w*bev/2.0;
-	Real bevy = bev_circle ? min(w*bev/2.0, h*bev/2.0) : h*bev/2.0;
+	Real bevx = bev_circle ? std::min(w*bev/2.0, h*bev/2.0) : w*bev/2.0;
+	Real bevy = bev_circle ? std::min(w*bev/2.0, h*bev/2.0) : h*bev/2.0;
 	clear();
 	if (approximate_equal(bevel, 0.0))
 	{
@@ -206,7 +204,6 @@ Rectangle::get_param_vocab()const
 	ret.push_back(ParamDesc("bevel")
 		.set_local_name(_("Bevel"))
 		.set_description(_("Use Bevel for the corners"))
-		.set_is_distance()
 	);
 	ret.push_back(ParamDesc("bevCircle")
 		.set_local_name(_("Keep Bevel Circular"))

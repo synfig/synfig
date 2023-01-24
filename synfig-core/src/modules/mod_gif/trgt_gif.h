@@ -1,24 +1,25 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file trgt_gif.h
-**	\brief Template Header
-**
-**	$Id$
+**	\brief Header for GIF Exporter (gif)
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
-**	\endlegal
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
 **
-** === N O T E S ===========================================================
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
+**	\endlegal
 **
 ** ========================================================================= */
 
@@ -32,10 +33,8 @@
 #include <synfig/target_scanline.h>
 #include <synfig/string.h>
 #include <synfig/smartfile.h>
-#include <cstdio>
 #include <synfig/surface.h>
 #include <synfig/palette.h>
-#include <synfig/targetparam.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -46,7 +45,9 @@
 class gif : public synfig::Target_Scanline
 {
 	SYNFIG_TARGET_MODULE_EXT
+
 private:
+
 	// Class for abstracting the
 	// output of the codes
 	struct bitstream
@@ -56,7 +57,7 @@ private:
 		char curr_bit;
 		bitstream():pool(0),curr_bit(0),curr_pos(0) {}
 		bitstream(synfig::SmartFILE file):file(file),pool(0),curr_bit(0),curr_pos(0) {}
-		unsigned char buffer[256];
+		unsigned char buffer[256]; //-V730_NOINIT
 		int curr_pos;
 
 		// Pushes a single bit onto the bit
@@ -162,7 +163,7 @@ private:
 		}
 	};
 
-private:
+
 	bitstream bs;
 	synfig::String filename;
 	synfig::SmartFILE file;
@@ -173,8 +174,8 @@ private:
 	lzwcode *table,*next,*node;
 
 	synfig::Surface curr_surface;
-	etl::surface<unsigned char> curr_frame;
-	etl::surface<unsigned char> prev_frame;
+	synfig::surface<unsigned char> curr_frame;
+	synfig::surface<unsigned char> prev_frame;
 
 	int imagecount;
 	int cur_scanline;
@@ -196,16 +197,16 @@ private:
 public:
 	gif(const char *filename, const synfig::TargetParam& /* params */);
 
-	virtual bool set_rend_desc(synfig::RendDesc *desc);
-	virtual bool init(synfig::ProgressCallback *cb);
-	virtual bool start_frame(synfig::ProgressCallback *cb);
-	virtual void end_frame();
-
 	virtual ~gif();
 
-	virtual synfig::Color * start_scanline(int scanline);
-	virtual bool end_scanline(void);
+	bool set_rend_desc(synfig::RendDesc* desc) override;
+	bool init(synfig::ProgressCallback* cb) override;
 
+	bool start_frame(synfig::ProgressCallback* cb) override;
+	void end_frame() override;
+
+	synfig::Color* start_scanline(int scanline) override;
+	bool end_scanline() override;
 };
 
 /* === E N D =============================================================== */

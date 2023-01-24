@@ -33,9 +33,16 @@ class Vector:
         Returns:
             (None)
         """
-        self.val1 = val1
-        self.val2 = val2
-        self.type = _type
+         
+        #print(type(val2), isinstance(val2, common.Angle.Angle))
+        if isinstance(val2, common.Angle.Angle):
+            self.val1 = val1 * common.Angle.CosAngle(val2).get()
+            self.val2 = val1 * common.Angle.SinAngle(val2).get()
+            self.type = _type
+        else:
+            self.val1 = val1
+            self.val2 = val2
+            self.type = _type
 
     def __str__(self):
         return "({0},{1}, {2})".format(self.val1, self.val2, self.type)
@@ -64,6 +71,12 @@ class Vector:
         else:
             self.val1 = value
 
+    def isnan(self):
+        """
+        Returns true is any value of this vector is nan
+        """
+        return math.isnan(self.val1) or math.isnan(self.val2)
+
     def mag(self):
         """
         Returns the magnitude of the vector
@@ -84,6 +97,8 @@ class Vector:
         Returns:
             (float) : Magnitude inversed
         """
+        if self.mag() == 0:
+            return float('nan')
         return 1.0 / self.mag()
 
     def perp(self):
@@ -121,6 +136,17 @@ class Vector:
         """
         ret = self.val1 * self.val1 + self.val2 * self.val2
         return ret
+
+    def angle(self):
+        """
+        Returns the angle of this Vector in Radians
+
+        Args:
+            (None)
+        Returns:
+            (common.Angle.RadAngle): The angle of Vector
+        """
+        return common.Angle.RadAngle(math.atan2(self.val2, self.val1))
 
     def norm(self):
         """

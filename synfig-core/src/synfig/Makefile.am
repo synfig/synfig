@@ -1,5 +1,3 @@
-# $Id$
-
 MAINTAINERCLEANFILES = \
 	Makefile.in
 
@@ -19,28 +17,20 @@ TARGETHEADERS = \
 	target_null.h \
 	target_null_tile.h \
 	target_scanline.h \
-	target_cairo.h \
 	target_tile.h \
-	target_cairo_tile.h \
 	targetparam.h
 
 TARGETSOURCES = \
 	target_multi.cpp \
-	target_null.cpp \
-	target_null_tile.cpp \
 	target_scanline.cpp \
-	target_cairo.cpp \
-	target_tile.cpp \
-	target_cairo_tile.cpp
+	target_tile.cpp
 
 
 IMPORTERHEADERS = \
-	listimporter.h \
-	cairolistimporter.h
+	listimporter.h
 
 IMPORTERSOURCES = \
-	listimporter.cpp \
-	cairolistimporter.cpp
+	listimporter.cpp
 
 
 VALUEHEADERS = \
@@ -67,13 +57,14 @@ VALUESOURCES = \
 
 SYNFIGHEADERS = \
 	angle.h \
+	bezier.h \
 	canvasbase.h \
+	clock.h \
 	general.h \
 	localization.h \
 	progresscallback.h \
 	guidset.h \
 	interpolation.h \
-	protocol.h \
 	quick_rng.h \
 	real.h \
 	complex.h \
@@ -89,12 +80,13 @@ SYNFIGHEADERS = \
 	boneweightpair.h \
 	activepoint.h \
 	blur.h \
+	blur/boxblur.h \
+	blur/gaussian.h \
 	bone.h \
-	cairo_operators.h \
-	cairo_renddesc.h \
 	canvas.h \
 	color.h \
 	context.h \
+	_curve_func.h \
 	curve.h \
 	curve_helper.h \
 	curveset.h \
@@ -102,21 +94,25 @@ SYNFIGHEADERS = \
 	exception.h \
 	guid.h \
 	importer.h \
-	cairoimporter.h \
 	keyframe.h \
 	layer.h \
 	loadcanvas.h \
 	main.h \
+	misc.h \
 	module.h \
 	node.h \
 	palette.h \
 	paramdesc.h \
+	pen.h \
 	polynomial_root.h \
 	rect.h \
+	reference_counter.h \
 	renddesc.h \
 	render.h \
 	savecanvas.h \
+	surface_etl.h \
 	surface.h \
+	synfig_iterations.h \
 	target.h \
 	time.h \
 	timepointcollect.h \
@@ -136,8 +132,8 @@ SYNFIGHEADERS = \
 	valueoperations.h \
 	valuetransformation.h \
 	soundprocessor.h \
-	polygon.h \
 	canvasfilenaming.h \
+	os.h \
 	token.h \
 	threadpool.h
 
@@ -145,8 +141,6 @@ SYNFIGSOURCES = \
 	activepoint.cpp \
 	bone.cpp \
 	blur.cpp \
-	cairo_operators.cpp \
-	cairo_renddesc.cpp \
 	canvas.cpp \
 	context.cpp \
 	curve.cpp \
@@ -156,7 +150,6 @@ SYNFIGSOURCES = \
 	exception.cpp \
 	guid.cpp \
 	importer.cpp \
-	cairoimporter.cpp \
 	keyframe.cpp \
 	layer.cpp \
 	loadcanvas.cpp \
@@ -172,6 +165,7 @@ SYNFIGSOURCES = \
 	savecanvas.cpp \
 	string_helper.cpp \
 	surface.cpp \
+	synfig_iterations.cpp \
 	target.cpp \
 	time.cpp \
 	timepointcollect.cpp \
@@ -191,6 +185,7 @@ SYNFIGSOURCES = \
 	valueoperations.cpp \
 	soundprocessor.cpp \
 	canvasfilenaming.cpp \
+	os.cpp \
 	token.cpp \
 	threadpool.cpp
 

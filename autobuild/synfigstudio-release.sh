@@ -40,17 +40,9 @@ YLW='\033[1;33m'
 GRN='\033[0;32m'
 NC='\033[0m' # No Color
 
-if [ -e /etc/debian_version ] && [ -z $with_boost_libdir ]; then
-	# Debian/Ubuntu multiarch
-	MULTIARCH_LIBDIR="/usr/lib/`uname -m`-linux-gnu/"
-	if [ -e "${MULTIARCH_LIBDIR}/libboost_program_options.so" ]; then
-		export with_boost_libdir=$MULTIARCH_LIBDIR
-	fi
-fi
-
 if [[ `uname` == "MINGW"* ]]; then # MacOS doesn't support `uname -o` flag
 	PATH="${MINGW_PREFIX}/lib/ccache/bin:${PATH}"
-	PKG_CONFIG_PATH="/opt/mlt-6.16.0/lib/pkgconfig:${PKG_CONFIG_PATH}"
+	PKG_CONFIG_PATH="/opt/mlt-7.2.0/lib/pkgconfig:${PKG_CONFIG_PATH}"
 	echo "ccache enabled"
 fi
 

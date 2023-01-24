@@ -2,21 +2,24 @@
 /*!	\file widgets/widget_timetrack.h
 **	\brief Widget to displaying layer parameter waypoints along time
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	......... ... 2020 Rodolfo Ribeiro Gomes
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 
@@ -69,6 +72,7 @@ public:
 	bool use_canvas_view(etl::loose_handle<CanvasView> canvas_view);
 
 	void delete_selected();
+	void interpolate_selected(synfig::Interpolation type);
 	bool move_selected(synfig::Time delta_time);
 	//! Duplicate selected waypoints and move them delta_time
 	bool copy_selected(synfig::Time delta_time);
@@ -78,6 +82,8 @@ public:
 	void goto_next_waypoint(long n);
 	//! \param n : how many waypoints to skip back
 	void goto_previous_waypoint(long n);
+
+	int get_num_waypoints_selected() { return waypoint_sd.get_selected_items().size(); };
 
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int>& signal_waypoint_clicked() { return signal_waypoint_clicked_; }
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int>& signal_waypoint_double_clicked() { return signal_waypoint_double_clicked_; }
@@ -92,6 +98,7 @@ public:
 	ActionState get_action_state() const;
 	void set_action_state(ActionState action_state);
 	sigc::signal<void>& signal_action_state_changed() { return signal_action_state_changed_; }
+	sigc::signal<void, bool> signal_waypoint_selection_changed() { return signal_waypoint_selection_changed_; };
 
 protected:
 	virtual bool on_event(GdkEvent* event) override;
@@ -211,16 +218,30 @@ private:
 	void update_param_list_geometries();
 
 	void draw_static_intervals_for_row(const Cairo::RefPtr<Cairo::Context> &cr, const RowInfo &row_info, const std::vector<std::pair<synfig::TimePoint, synfig::Time>> &waypoints) const;
+	void draw_discrete_animated_times(const Cairo::RefPtr<Cairo::Context> &cr, const RowInfo &row_info) const;
 	void draw_waypoints(const Cairo::RefPtr<Cairo::Context> &cr, const Gtk::TreePath &path, const RowInfo &row_info, const std::vector<std::pair<synfig::TimePoint, synfig::Time>> &waypoints) const;
 	void draw_selected_background(const Cairo::RefPtr<Cairo::Context> &cr, const Gtk::TreePath &path, const RowInfo &row_info) const;
+	void draw_active_point_status(const Cairo::RefPtr<Cairo::Context> &cr, const RowInfo &row_info, const synfigapp::ValueDesc &value_desc);
 
+	bool fetch_waypoints(const WaypointItem &wi, std::set<synfig::Waypoint, std::less<synfig::UniqueID> > &waypoint_set) const;
 	void on_waypoint_clicked(const WaypointItem &wi, unsigned int button, Gdk::Point /*point*/);
 	void on_waypoint_double_clicked(const WaypointItem &wi, unsigned int button, Gdk::Point /*point*/);
+	void on_waypoint_action_changed();
+	void on_waypoint_selection_changed();
+
+	void on_params_store_row_inserted(const Gtk::TreeModel::Path&, const Gtk::TreeModel::iterator&);
+	void on_params_store_row_deleted(const Gtk::TreeModel::Path&);
+	void on_params_store_rows_reordered(const Gtk::TreeModel::Path&, const Gtk::TreeModel::iterator&, int*);
+	void on_params_store_row_changed(const Gtk::TreeModel::Path& path, const Gtk::TreeModel::iterator&);
+
+	void on_range_adjustment_value_changed();
+	void on_range_adjustment_changed();
 
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int> signal_waypoint_clicked_;
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int> signal_waypoint_double_clicked_;
 
 	sigc::signal<void> signal_action_state_changed_;
+	sigc::signal<void, bool> signal_waypoint_selection_changed_;
 
 	ActionState action_state;
 
@@ -232,6 +253,7 @@ private:
 
 	WaypointScaleInfo compute_scale_params() const;
 	synfig::Time compute_scaled_time(const WaypointItem &item, const WaypointScaleInfo &scale_info) const;
+	sigc::connection keyframe_changed_connection_;
 };
 
 }

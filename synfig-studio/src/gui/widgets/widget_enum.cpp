@@ -2,20 +2,23 @@
 /*!	\file widget_enum.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -31,13 +34,12 @@
 
 #include <gui/widgets/widget_enum.h>
 
-#include <ETL/stringf>
+#include <synfig/string_helper.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -56,7 +58,12 @@ Widget_Enum::Widget_Enum():
 
 	enum_TreeModel = Gtk::ListStore::create(enum_model);
 	set_model(enum_TreeModel);
-	pack_start(enum_model.icon, false);
+
+	Gtk::CellRendererPixbuf* pixbuf_cell_renderer = manage(new Gtk::CellRendererPixbuf());
+
+	pack_start(*pixbuf_cell_renderer, true);
+	add_attribute(pixbuf_cell_renderer->property_icon_name(), enum_model.icon_name);
+
 	pack_start(enum_model.local_name, true);
 	this->set_wrap_width(1); // https://github.com/synfig/synfig/issues/650
 
@@ -72,7 +79,7 @@ void
 Widget_Enum::set_param_desc(const synfig::ParamDesc &x)
 {
 	param_desc=x;
-	// First clear the current items in the ComobBox
+	// First clear the current items in the ComboBox
 	enum_TreeModel->clear();
 	std::list<synfig::ParamDesc::EnumData> enum_list=param_desc.get_enum_list();
 	std::list<synfig::ParamDesc::EnumData>::iterator iter;
@@ -87,14 +94,14 @@ Widget_Enum::set_param_desc(const synfig::ParamDesc &x)
 }
 
 void
-Widget_Enum::set_icon(Gtk::TreeNodeChildren::size_type index, const Glib::RefPtr<Gdk::Pixbuf> &icon)
+Widget_Enum::set_icon(Gtk::TreeNodeChildren::size_type index, const std::string& icon_name)
 {
 	// check if the index is valid
 	if(index > enum_TreeModel->children().size()-1 )
 		return;
 	Glib::ustring path(strprintf("%d", index).c_str());
 	Gtk::TreeModel::Row row = *(enum_TreeModel->get_iter(path));
-	row[enum_model.icon]=icon;
+	row[enum_model.icon_name] = icon_name;
 }
 
 void

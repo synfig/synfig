@@ -2,20 +2,23 @@
 /*!	\file pair.h
 **	\brief A pair value template
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -27,7 +30,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/stringf>
 #include <utility>
 #include "type.h"
 #include "value.h"
@@ -57,7 +59,7 @@ namespace types_namespace {
 		typedef std::pair<T1, T2> ValueType;
 
 		static String to_string(const ValueType &x) {
-			return etl::strprintf("Pair (%s, %s)", value_to_string(x.first).c_str(), value_to_string(x.second).c_str());
+			return strprintf("Pair (%s, %s)", value_to_string(x.first).c_str(), value_to_string(x.second).c_str());
 		}
 		void initialize_vfunc(Description &description)
 		{

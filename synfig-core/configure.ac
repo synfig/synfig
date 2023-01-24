@@ -1,9 +1,7 @@
-# $Id$
-
 # -- I N I T --------------------------------------------------
 
 AC_PREREQ([2.60])
-AC_INIT([Synfig Core],[1.5.0],[https://github.com/synfig/synfig/issues],[synfig])
+AC_INIT([Synfig Core],[1.5.1],[https://github.com/synfig/synfig/issues],[synfig])
 AC_REVISION()
 
 AM_SILENT_RULES([yes])
@@ -14,6 +12,12 @@ AC_CANONICAL_HOST
 
 AM_INIT_AUTOMAKE([nostdinc subdir-objects])
 AM_MAINTAINER_MODE
+
+dnl override platform specific check for dependent libraries
+dnl otherwise libtool linking of shared libraries will
+dnl fail on anything other than pass_all.
+# this hack is needed to link libsynfig with static libdl in MSYS2 environment
+AC_CACHE_VAL(lt_cv_deplibs_check_method, [lt_cv_deplibs_check_method=pass_all])
 
 LT_CONFIG_LTDL_DIR([libltdl])
 
@@ -38,6 +42,7 @@ AC_PROG_CPP
 AC_PROG_CXXCPP
 AC_PROG_INSTALL
 AX_CXX_COMPILE_STDCXX([11], [noext])
+CXXFLAGS="$CXXFLAGS -std=gnu++11"
 
 AC_LANG([C++])
 
@@ -52,15 +57,6 @@ AC_ARG_WARNINGS
 AC_ARG_PROFILING
 AC_ARG_PROFILE_ARCS
 AC_ARG_BRANCH_PROBABILITIES
-
-AC_ARG_ENABLE(g5opt,
-	AS_HELP_STRING(--enable-g5opt, [enable optimizations specific to G5 proc]),[
-	CXXFLAGS="$CXXFLAGS -mtune=G5 -falign-loops=32"
-	CFLAGS="$CFLAGS -mtune=G5"
-],
-[
-	true
-])
 
 AC_WIN32_QUIRKS
 
@@ -247,6 +243,37 @@ if test $with_fontconfig = "yes" ; then {
 	AM_CONDITIONAL(WITH_FONTCONFIG,false)
 } ; fi
 
+# HARFBUZZ CHECK--------------------
+
+AC_ARG_WITH([harfbuzz],
+	[AS_HELP_STRING([--without-harfbuzz], [disable support text rendering for non-latin scripts])],
+	[],
+	[with_harfbuzz=yes]
+)
+
+AS_IF([test "x$with_harfbuzz" != xno],
+	[
+		AS_IF([test "x$with_freetype" != xyes],
+			[AC_MSG_FAILURE(
+				[--with-harfbuzz was given, but it depends on --with-freetype])]
+		)
+	]
+)
+
+AS_IF([test "x$with_harfbuzz" != xno],
+	[PKG_CHECK_MODULES(HARFBUZZ, [harfbuzz fribidi],
+		[
+			with_harfbuzz="yes"
+			AC_DEFINE(HAVE_HARFBUZZ, [1],[Enable harfbuzz support])
+		],[
+			AC_MSG_FAILURE(
+				[--with-harfbuzz was given, but harfbuzz or fribidi development files were not found])
+		]
+	)]
+)
+
+AM_CONDITIONAL(WITH_HARFBUZZ, test $with_harfbuzz = yes)
+
 
 # OPENEXR CHECK------------------------
 AC_ARG_WITH(openexr,
@@ -295,8 +322,8 @@ AM_GNU_GETTEXT([external])
 # This is here so autoreconf will run autopoint
 AM_GNU_GETTEXT_VERSION([0.15])
 
-PKG_CHECK_MODULES(ETL, [ETL >= 1.5.0],,[
-	AC_MSG_ERROR([ ** You need to install the ETL (version 1.5.0 or greater).])
+PKG_CHECK_MODULES(ETL, [ETL >= 1.5.1],,[
+	AC_MSG_ERROR([ ** You need to install the ETL (version 1.5.1 or greater).])
 ])
 CONFIG_DEPS="$CONFIG_DEPS ETL"
 
@@ -334,12 +361,6 @@ PKG_CHECK_MODULES(LIBSIGC, [sigc++-2.0],,[
 	AC_MSG_ERROR([ ** libsigc++-2.0 not found. It is required. You should really install it.])
 ])
 CONFIG_DEPS="$CONFIG_DEPS sigc++-2.0"
-
-PKG_CHECK_MODULES(LIBCAIRO, [cairo >= 1.12.0],[
-	CONFIG_DEPS="$CONFIG_DEPS cairo"
-],[
-	AC_MSG_ERROR([ ** You need to install cairo version 1.12.0 or higher.])
-])
 
 AC_MSG_CHECKING([for OpenGL])
 AC_ARG_WITH(opengl,
@@ -392,61 +413,27 @@ PKG_CHECK_MODULES(LIBFFTW, fftw3,,[
 ])
 CONFIG_DEPS="$CONFIG_DEPS fftw3"
 
-PKG_CHECK_MODULES(LIBPANGO, pango pangocairo,[
-	CONFIG_DEPS="$CONFIG_DEPS pango pangocairo"
+PKG_CHECK_MODULES(MLTPP, mlt++-7,[
+	CONFIG_DEPS="$CONFIG_DEPS mlt++-7"
 ],[
-	AC_MSG_ERROR([ ** You need to install pango])
+	PKG_CHECK_MODULES(MLTPP, mlt++,[
+		CONFIG_DEPS="$CONFIG_DEPS mlt++"
+	],[
+		AC_MSG_ERROR([ ** You need to install mlt++.])
+	])
 ])
-
-PKG_CHECK_MODULES(MLTPP, mlt++,,[
-	AC_MSG_ERROR([ ** You need to install mlt++.])
-])
-CONFIG_DEPS="$CONFIG_DEPS mlt++"
-
-AX_BOOST_BASE([1.53.0],,AC_MSG_ERROR([ ** You need to install Boost >= 1.53.0]))
-#AX_BOOST_SYSTEM
-#if test "x$ax_cv_boost_system" != "xyes" ; then
-#	AC_MSG_ERROR([ ** You need to install Boost system library])
-#fi
-# Boost program options and system libraries are just dependencies
-# of the synfig cli and therefore
-# not required to link against the synfig library.
-
 
 TARGET_PNG="yes"
 TARGET_MNG="yes"
 
-AC_CHECK_LIB(png16, png_write_row,[
-	PNG_LIBS="-lpng16"
+PKG_CHECK_MODULES(PNG, [libpng],[
 	AC_DEFINE(HAVE_LIBPNG,[], [ Define if PNG library is available ])
-	AC_SUBST(PNG_LIBS)
 	AM_CONDITIONAL(HAVE_LIBPNG,true)
 ],[
-	AC_CHECK_LIB(png14, png_write_row,[
-		PNG_LIBS="-lpng14"
-		AC_DEFINE(HAVE_LIBPNG,[], [ Define if PNG library is available ])
-		AC_SUBST(PNG_LIBS)
-		AM_CONDITIONAL(HAVE_LIBPNG,true)
-	],[
-		AC_CHECK_LIB(png12, png_write_row,[
-		PNG_LIBS="-lpng12"
-		AC_DEFINE(HAVE_LIBPNG,[])
-		AC_SUBST(PNG_LIBS)
-		AM_CONDITIONAL(HAVE_LIBPNG,true)
-		],[
-			AC_CHECK_LIB(png, png_write_row,[
-			PNG_LIBS="-lpng"
-			AC_DEFINE(HAVE_LIBPNG,[])
-			AC_SUBST(PNG_LIBS)
-			AM_CONDITIONAL(HAVE_LIBPNG,true)
-			],[
-				AC_MSG_RESULT([ *** PNG Output target disabled])
-				TARGET_PNG="no"
-				AM_CONDITIONAL(HAVE_LIBPNG,false)
-			],[-lz -L${exec_prefix}/lib])
-		],[-lz -L${exec_prefix}/lib])
-	],[-lz -L${exec_prefix}/lib])
-],[-lz -L${exec_prefix}/lib])
+	AC_MSG_RESULT([ *** PNG Output target disabled])
+	TARGET_PNG="no"
+	AM_CONDITIONAL(HAVE_LIBPNG,false)
+])
 
 AC_CHECK_LIB(mng, mng_initialize,[
 	MNG_LIBS="-lmng -lz"
@@ -521,12 +508,6 @@ AC_SUBST(CXXFLAGS)
 AC_SUBST(CPPFLAGS)
 AC_SUBST(LDFLAGS)
 
-# AC_CONFIG_SUBDIRS(libltdl) is required for libtool 1.5.26 but must not be present for
-# libtool 2.2.4. Problem seems to be that AC_LIB_LTDL (above) now calls AC_CONFIG_SUBDIRS
-# itself, through LTDL_INIT, _LTDL_SETUP, _LTDL_MODE_DISPATCH. We need to check the
-# condition that libltdl has already been registered with AC_CONFIG_SUBDIRS:
-m4_ifdef([_AC_SEEN_TAG(libltdl)], [], [AC_CONFIG_SUBDIRS(libltdl)])
-
 CONFIG_LIBS="-lsynfig"
 CONFIG_CFLAGS="$CONFIG_CFLAGS"
 AC_SUBST(CONFIG_LIBS)
@@ -534,8 +515,8 @@ AC_SUBST(CONFIG_CFLAGS)
 AC_SUBST(CONFIG_DEPS)
 AC_SUBST(ETL_CFLAGS)
 
-SYNFIG_LIBS="$VIMAGE_LIBS $LIBZ_LIBS $GLIBMM_LIBS $GIOMM_LIBS $LIBXMLPP_LIBS $LIBCAIRO_LIBS $LIBCAIROMM_LIBS $LIBGL_LIBS $LIBCL_LIBS $LIBFFTW_LIBS $MLTPP_LIBS $ETL_LIBS $LIBSIGC_LIBS $LTLIBINTL"
-SYNFIG_CFLAGS="$BOOST_CPPFLAGS $LIBZ_CFLAGS $GLIBMM_CFLAGS $GIOMM_CFLAGS $LIBXMLPP_CFLAGS $LIBCAIRO_CFLAGS $LIBCAIROMM_CFLAGS $LIBGL_CFLAGS $LIBCL_CFLAGS $LIBFFTW_CFLAGS $MLTPP_CFLAGS $ETL_CFLAGS $LIBSIGC_CFLAGS $CONFIG_CFLAGS -DSYNFIG_NO_DEPRECATED -DLOCALEDIR=\\\"$localedir\\\""
+SYNFIG_LIBS="$VIMAGE_LIBS $LIBZ_LIBS $GLIBMM_LIBS $GIOMM_LIBS $LIBXMLPP_LIBS $LIBGL_LIBS $LIBCL_LIBS $LIBFFTW_LIBS $MLTPP_LIBS $ETL_LIBS $LIBSIGC_LIBS $LTLIBINTL"
+SYNFIG_CFLAGS="$LIBZ_CFLAGS $GLIBMM_CFLAGS $GIOMM_CFLAGS $LIBXMLPP_CFLAGS $LIBGL_CFLAGS $LIBCL_CFLAGS $LIBFFTW_CFLAGS $MLTPP_CFLAGS $ETL_CFLAGS $LIBSIGC_CFLAGS $CONFIG_CFLAGS -DSYNFIG_NO_DEPRECATED -DLOCALEDIR=\\\"$localedir\\\""
 
 CONFIG_CFLAGS="`echo $CONFIG_CFLAGS | sed s/-mno-cygwin//g | sed s/-mwindows//g`"
 SYNFIG_CFLAGS="`echo $SYNFIG_CFLAGS | sed s/-mno-cygwin//g | sed s/-mwindows//g`"
@@ -629,13 +610,7 @@ OpenEXR --------------------------> $with_openexr
 "'$'"GLIBMM_LIBS ---------------------> '$GLIBMM_LIBS'
 "'$'"GIOMM_LIBS ----------------------> '$GIOMM_LIBS'
 "'$'"LIBXMLPP_LIBS -------------------> '$LIBXMLPP_LIBS'
-"'$'"LIBCAIRO_LIBS -------------------> '$LIBCAIRO_LIBS'
-"'$'"LIBCAIROMM_LIBS -----------------> '$LIBCAIROMM_LIBS'
-"'$'"LIBPANGO_LIBS -------------------> '$LIBPANGO_LIBS'
 "'$'"ETL_LIBS ------------------------> '$ETL_LIBS'
 "'$'"LIBSIGC_LIBS --------------------> '$LIBSIGC_LIBS'
 "'$'"SYNFIG_CFLAGS -------------------> '$SYNFIG_CFLAGS'
-"'$'"BOOST_CPPFLAGS ------------------> '$BOOST_CPPFLAGS'
-"'$'"BOOST_LDFLAGS -------------------> '$BOOST_LDFLAGS'
-"'$'"BOOST_SYSTEM_LIB ----------------> '$BOOST_SYSTEM_LIB'
 "

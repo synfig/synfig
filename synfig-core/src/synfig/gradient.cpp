@@ -2,22 +2,25 @@
 /*!	\file gradient.cpp
 **	\brief Color Gradient Class Member Definitions
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
 **	......... ... 2018 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -36,8 +39,6 @@
 #include <algorithm>
 #include <stdexcept>
 
-#include <ETL/misc>
-
 #include "general.h"
 #include <synfig/localization.h>
 #include <synfig/real.h>
@@ -48,8 +49,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -106,7 +105,7 @@ Gradient::operator+(const Gradient &rhs) const
 		if (i == end())
 			current = pj = j++, left = right = pi;
 		else
-		if (j == end())
+		if (j == rhs.end())
 			current = pi = i++, left = right = pj;
 		else
 		if (i->pos < j->pos)
@@ -228,9 +227,9 @@ Gradient::proximity(const Real &x)
 		Real new_dist;
 
 		if(prev_pos==iter->pos)
-			new_dist=(abs(x-iter->pos-0.00001));
+			new_dist=(std::fabs(x-iter->pos-0.00001));
 		else
-			new_dist=(abs(x-iter->pos));
+			new_dist=(std::fabs(x-iter->pos));
 
 		if(new_dist>dist)
 		{
@@ -306,19 +305,19 @@ CompiledGradient::set(const Gradient &gradient, bool repeat, bool zigzag) {
 	Gradient::CPointList cpoints;
 	cpoints.reserve(zigzag ? gradient.size()*2 : gradient.size());
 	for(Gradient::const_iterator i = gradient.begin(); i != gradient.end(); ++i) {
-		Real pos = std::max(0.0, std::min(1.0, i->pos));
+		Real pos = synfig::clamp(i->pos, 0., 1.);
 		cpoints.insert( std::upper_bound(cpoints.begin(), cpoints.end(), pos), *i )->pos = pos;
 	}
 
 	// add flipped points for zigzag
-	// memory for points already reserved enough, so all iterators will stay valid
 	if (zigzag) {
 		// add mirror in order:
 		//    0 1 2 3 4
 		//    0 1 2 3 4 - 4 3 2 1 0
-		for(Gradient::reverse_iterator ri = cpoints.rbegin(); ri != cpoints.rend(); ++ri) {
-			ri->pos *= 0.5;
-			cpoints.push_back(*ri);
+		for (int index = cpoints.size(); index > 0; --index) {
+			auto& elem = cpoints[index-1];
+			elem.pos *= 0.5;
+			cpoints.push_back(elem);
 			cpoints.back().pos = 1.0 - cpoints.back().pos;
 		}
 	}

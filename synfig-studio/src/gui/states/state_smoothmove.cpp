@@ -2,23 +2,26 @@
 /*!	\file state_smoothmove.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **  Copyright (c) 2008 Chris Moore
 **	Copyright (c) 2009 Nikita Kitaev
 **  Copyright (c) 2010 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -52,7 +55,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -99,7 +101,7 @@ class studio::StateSmoothMove_Context : public sigc::trackable
 
 	etl::handle<DuckDrag_SmoothMove> duck_dragger_;
 
-	Gtk::Table options_table;
+	Gtk::Grid options_grid;
 	Gtk::Label title_label;
 
 	Glib::RefPtr<Gtk::Adjustment> adj_radius;
@@ -156,13 +158,7 @@ StateSmoothMove_Context::load_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		String value;
-
-		if(settings.get_value("smooth_move.radius",value))
-			set_radius(atof(value.c_str()));
-		else
-			set_radius(1.0f);
+		set_radius(settings.get_value("smooth_move.radius", 1.0));
 	}
 	catch(...)
 	{
@@ -175,8 +171,7 @@ StateSmoothMove_Context::save_settings()
 {
 	try
 	{
-	synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		settings.set_value("smooth_move.radius",strprintf("%f",get_radius()));
+		settings.set_value("smooth_move.radius",double(get_radius()));
 	}
 	catch(...)
 	{
@@ -195,35 +190,41 @@ StateSmoothMove_Context::StateSmoothMove_Context(CanvasView* canvas_view):
 {
 	pressure=1.0f;
 
-	// Set up the tool options dialog
-	
+	// Toolbox widgets
 	title_label.set_label(_("SmoothMove Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
 	title_label.set_attributes(list);
-	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	title_label.set_hexpand();
+	title_label.set_halign(Gtk::ALIGN_START);
+	title_label.set_valign(Gtk::ALIGN_CENTER);
 
 	spin_label.set_label(_("Radius:"));
-	spin_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	
-	options_table.attach(title_label,
-		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(spin_label,
-		0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(spin_radius,
-		1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::FILL, 0, 0
-		);
+	spin_label.set_halign(Gtk::ALIGN_START);
+	spin_label.set_valign(Gtk::ALIGN_CENTER);
+
+	spin_radius.set_halign(Gtk::ALIGN_END);
+	spin_radius.set_valign(Gtk::ALIGN_CENTER);
+
+	load_settings();
+
+	// Toolbox layout
+	options_grid.attach(title_label,
+		0, 0, 2, 1);
+	options_grid.attach(spin_label,
+		0, 1, 1, 1);
+	options_grid.attach(spin_radius,
+		1, 1, 1, 1);
 
 	spin_radius.signal_value_changed().connect(sigc::mem_fun(*this,&StateSmoothMove_Context::refresh_radius));
 
-	options_table.set_border_width(GAP*2);
-	options_table.set_row_spacings(GAP);
-	options_table.show_all();
+	options_grid.set_border_width(GAP*2);
+	options_grid.set_row_spacing(GAP);
+	options_grid.set_margin_bottom(0);
+	options_grid.show_all();
+
 	refresh_tool_options();
-	//App::dialog_tool_options->set_widget(options_table);
 	App::dialog_tool_options->present();
 
 	get_work_area()->set_allow_layer_clicks(true);
@@ -233,17 +234,15 @@ StateSmoothMove_Context::StateSmoothMove_Context(CanvasView* canvas_view):
 
 	get_work_area()->set_cursor(Gdk::FLEUR);
 	//get_work_area()->reset_cursor();
-
-	load_settings();
 }
 
 void
 StateSmoothMove_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_table);
+	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Smooth Move"));
-	App::dialog_tool_options->set_name("smooth_move");
+	App::dialog_tool_options->set_icon("tool_smooth_move_icon");
 }
 
 Smach::event_result
@@ -364,7 +363,9 @@ DuckDrag_SmoothMove::end_duck_drag(Duckmatic* duckmatic)
 
 		int i;
 
-		smart_ptr<OneMoment> wait;if(selected_ducks.size()>20)wait.spawn();
+		std::shared_ptr<OneMoment> wait;
+		if (selected_ducks.size() > 20)
+			wait = std::make_shared<OneMoment>();
 
 		for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
 		{

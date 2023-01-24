@@ -2,20 +2,23 @@
 /*!	\file synfig/rendering/software/function/blur.cpp
 **	\brief Blur
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -38,10 +41,9 @@
 
 #include "blurtemplates.h"
 #include "fft.h"
-#include "blur_iir_coefficients.cpp"
+//#include "blur_iir_coefficients.cpp"
 #endif
 
-using namespace std;
 using namespace synfig;
 using namespace rendering;
 
@@ -69,11 +71,12 @@ software::Blur::Params::validate()
 	amplified_size[0] = fabs(amplified_size[0]);
 	amplified_size[1] = fabs(amplified_size[1]);
 
+	VectorInt offset = src_offset - dest_rect.get_min();
+
 	extra_size = get_extra_size(type, size);
 	rect_set_intersect(dest_rect, dest_rect, RectInt(0, 0, dest->get_w(), dest->get_h()));
 	if (!dest_rect.valid()) return false;
 
-	VectorInt offset = src_offset - dest_rect.get_min();
 	src_rect = dest_rect + offset;
 	src_rect.minx -= extra_size[0];
 	src_rect.miny -= extra_size[1];
@@ -90,6 +93,8 @@ software::Blur::Params::validate()
 	dest_rect.maxy -= extra_size[1];
 	if (!dest_rect.valid()) return false;
 	if (!rect_contains(RectInt(0, 0, dest->get_w(), dest->get_h()), dest_rect)) return false;
+
+	src_offset = src_rect.get_min() + extra_size;
 
 	return true;
 }
@@ -163,11 +168,11 @@ software::Blur::blur_pattern(const Params &params)
 	int cols = params.src_rect.get_size()[0];
 	int pattern_rows = params.extra_size[1] + 1;
 	int pattern_cols = params.extra_size[0] + 1;
-	vector<ColorReal> src_surface(rows*cols*channels);
-	vector<ColorReal> dst_surface(rows*cols*channels);
-	vector<ColorReal> full_pattern;
-	vector<ColorReal> row_pattern;
-	vector<ColorReal> col_pattern;
+	std::vector<ColorReal> src_surface(rows*cols*channels);
+	std::vector<ColorReal> dst_surface(rows*cols*channels);
+	std::vector<ColorReal> full_pattern;
+	std::vector<ColorReal> row_pattern;
+	std::vector<ColorReal> col_pattern;
 	bool full = false;
 	bool cross = false;
 
@@ -276,8 +281,8 @@ software::Blur::blur_pattern(const Params &params)
 
 		if (!cross)
 		{
-			swap(arr_src_surface_cols.pointer, arr_dst_surface_cols.pointer);
-			swap(arr_src_surface.pointer, arr_dst_surface.pointer);
+			std::swap(arr_src_surface_cols.pointer, arr_dst_surface_cols.pointer);
+			std::swap(arr_src_surface.pointer, arr_dst_surface.pointer);
 			memset(&src_surface.front(), 0, sizeof(src_surface.front())*src_surface.size());
 		}
 
@@ -304,10 +309,10 @@ software::Blur::blur_fft(const Params &params)
 	const int channels = 4;
 	int rows = FFT::get_valid_count(params.src_rect.get_size()[1]);
 	int cols = FFT::get_valid_count(params.src_rect.get_size()[0]);
-	vector<Complex> surface(rows*cols*channels);
-	vector<Complex> full_pattern;
-	vector<Complex> row_pattern;
-	vector<Complex> col_pattern;
+	std::vector<Complex> surface(rows*cols*channels);
+	std::vector<Complex> full_pattern;
+	std::vector<Complex> row_pattern;
+	std::vector<Complex> col_pattern;
 	bool full = false;
 	bool cross = false;
 
@@ -406,7 +411,7 @@ software::Blur::blur_fft(const Params &params)
 		BlurTemplates::normalize_full_pattern( arr_row_pattern.reorder(0) );
 		BlurTemplates::normalize_full_pattern( arr_col_pattern.reorder(0) );
 
-		vector<Complex> surface_copy;
+		std::vector<Complex> surface_copy;
 		Array<Complex, 3> arr_surface_rows(arr_surface.group_items<Complex>().reorder(2, 0, 1));
 		Array<Complex, 3> arr_surface_cols(arr_surface_rows.reorder(0, 2, 1));
 
@@ -465,7 +470,7 @@ software::Blur::blur_box(const Params &params)
 	int rows = params.src_rect.get_size()[1];
 	int cols = params.src_rect.get_size()[0];
 
-	vector<ColorReal> surface(rows*cols*channels);
+	std::vector<ColorReal> surface(rows*cols*channels);
 	Array<ColorReal, 3> arr_surface(&surface.front());
 	arr_surface
 		.set_dim(rows, cols*channels)
@@ -493,8 +498,8 @@ software::Blur::blur_box(const Params &params)
 		return;
 	}
 
-	deque<ColorReal> q;
-	vector<ColorReal> surface_copy;
+	std::deque<ColorReal> q;
+	std::vector<ColorReal> surface_copy;
 	Array<ColorReal, 3> arr_surface_rows(arr_surface.reorder(2, 0, 1));
 	Array<ColorReal, 3> arr_surface_cols(arr_surface_rows.reorder(0, 2, 1));
 
@@ -541,12 +546,12 @@ software::Blur::blur_box(const Params &params)
 		params.blend_method,
 		params.amount );
 }
-
+/*
 software::Blur::IIRCoefficients
 software::Blur::get_iir_coefficients(Real radius)
 {
 	const Real precision(1e-8);
-	radius = max(iir_min_radius + precision, min(iir_max_radius - precision, fabs(radius)));
+	radius = synfig::clamp(fabs(radius), iir_min_radius + precision, iir_max_radius - precision);
 
 	Real x = (radius - iir_min_radius)/iir_radius_step;
 	//int index = floor(x);
@@ -704,7 +709,7 @@ software::Blur::blur_iir(const Params &params)
 		params.blend,
 		params.blend_method,
 		params.amount );
-}
+}*/
 
 void
 software::Blur::blur(Params params)
@@ -716,8 +721,8 @@ software::Blur::blur(Params params)
 		{ blur_box(params); return; }
 
 	if ( params.type == rendering::Blur::DISC
-      && fabs(params.extra_size[0]) < 8
-      && fabs(params.extra_size[1]) < 8 )
+	  && std::abs(params.extra_size[0]) < 8
+	  && std::abs(params.extra_size[1]) < 8 )
 		{ blur_pattern(params); return; }
 
 	if ( params.type == rendering::Blur::DISC

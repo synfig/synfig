@@ -2,20 +2,23 @@
 /*!	\file valueoperations.h
 **	\brief Common operations with ValueBase
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2013 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -112,7 +115,7 @@ public:
 
 	static bool check_weighted_type(Type& type);
 	static bool check_type(Type& type)
-		{ return get_weighted_type_for(type) != NULL; }
+		{ return get_weighted_type_for(type); }
 	static bool check_type(const ValueBase &value)
 		{ return check_type(value.get_type()); }
 
@@ -178,7 +181,7 @@ public:
 
 	template<typename ConstIterator>
 	static ValueBase average_generic(ConstIterator begin, ConstIterator end, const ValueBase &default_value = ValueBase())
-		{ return average_generic(begin, end, (Real*)NULL, (Real*)NULL, default_value); }
+		{ return average_generic(begin, end, (Real*)nullptr, (Real*)nullptr, default_value); }
 
 	static ValueBase average(const ValueBase &list, const ValueBase &weights, const ValueBase &default_value)
 	{
@@ -242,7 +245,7 @@ public:
 
 	template<typename Iterator>
 	static void set_average_value_generic(Iterator begin, Iterator end, const ValueBase &value)
-		{ set_average_value_generic(begin, end, (Real*)NULL, (Real*)NULL, value); }
+		{ set_average_value_generic(begin, end, (Real*)nullptr, (Real*)nullptr, value); }
 
 	static void set_average_value(ValueBase &list, const ValueBase &weights, const ValueBase &value)
 	{

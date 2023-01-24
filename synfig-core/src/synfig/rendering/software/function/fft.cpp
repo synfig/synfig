@@ -2,20 +2,23 @@
 /*!	\file synfig/rendering/software/function/fft.cpp
 **	\brief FFT
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -120,7 +123,7 @@ software::FFT::fft(const Array<Complex, 1> &x, bool invert)
 	{
 		std::lock_guard<std::mutex> lock(Internal::mutex);
 		fftw_plan plan = fftw_plan_guru_dft(
-			1, &iodim, 0, NULL,
+			1, &iodim, 0, nullptr,
 			(fftw_complex*)x.pointer, (fftw_complex*)x.pointer,
 			invert ? FFTW_BACKWARD : FFTW_FORWARD, FFTW_ESTIMATE );
 		fftw_execute(plan);
@@ -159,7 +162,7 @@ software::FFT::fft2d(const Array<Complex, 2> &x, bool invert, bool do_rows, bool
 		if (do_rows && do_cols)
 		{
 			plan = fftw_plan_guru_dft(
-				2, iodim, 0, NULL,
+				2, iodim, 0, nullptr,
 				(fftw_complex*)x.pointer, (fftw_complex*)x.pointer,
 				invert ? FFTW_BACKWARD : FFTW_FORWARD, FFTW_ESTIMATE );
 		}

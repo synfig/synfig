@@ -2,20 +2,23 @@
 /*!	\file valuenode_const.cpp
 **	\brief Implementation of the "Constant" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -33,8 +36,8 @@
 #include "valuenode_bone.h"
 #include "valuenode_boneweightpair.h"
 #include "valuenode_composite.h"
+#include "synfig/general.h"
 #include <synfig/canvas.h>
-#include <synfig/general.h>
 #include <synfig/localization.h>
 #include <synfig/pair.h>
 
@@ -42,8 +45,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -63,8 +64,8 @@ ValueNode_Const::ValueNode_Const(const ValueBase &x, Canvas::LooseHandle canvas)
 	ValueNode	(x.get_type()),
 	value		(x)
 {
-	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-		printf("%s:%d set parent canvas for const %p to %p\n", __FILE__, __LINE__, this, canvas.get());
+	DEBUG_LOG("SYNFIG_DEBUG_SET_PARENT_CANVAS",
+		"%s:%d set parent canvas for const %p to %p\n", __FILE__, __LINE__, this, canvas.get());
 
 	if (x.get_type() == type_bone_valuenode)
 		add_child(x.get(ValueNode_Bone::Handle()).get());
@@ -74,7 +75,7 @@ ValueNode_Const::ValueNode_Const(const ValueBase &x, Canvas::LooseHandle canvas)
 
 
 ValueNode*
-ValueNode_Const::create(const ValueBase &x, Canvas::LooseHandle canvas)
+ValueNode_Const::create(const ValueBase& x, Canvas::LooseHandle canvas)
 {
 	// this is nasty - shouldn't it be done somewhere else?
 	if (x.get_type() == type_bone_object)
@@ -122,8 +123,8 @@ ValueNode_Const::~ValueNode_Const()
 ValueBase
 ValueNode_Const::operator()(Time /*t*/)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	return value;
 }

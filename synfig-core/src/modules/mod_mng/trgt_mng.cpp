@@ -2,25 +2,27 @@
 /*!	\file trgt_mng.cpp
 **	\brief MNG Target Module
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2007 Paul Wise
 **	Copyright (c) 2007 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 **
-** === N O T E S ===========================================================
-**
+** \note
 ** You will need to read the PNG and MNG specs to understand this code
 **
 ** ========================================================================= */
@@ -39,14 +41,15 @@
 #include <glib/gstdio.h>
 #include "trgt_mng.h"
 #include <libmng.h>
-#include <ETL/misc>
+#include <ETL/stringf>
+
+#include <synfig/misc.h>
 
 #endif
 
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
-using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
@@ -95,18 +98,18 @@ mng_error_proc(mng_handle /*mng*/, mng_int32 /*error*/,
 }
 
 mng_trgt::mng_trgt(const char *Filename, const synfig::TargetParam & /* params */):
-	file(NULL),
+	file(nullptr),
 	w(),
 	h(),
-	mng(NULL),
+	mng(nullptr),
 	multi_image(),
 	ready(false),
 	imagecount(),
 	filename(Filename),
-	buffer(NULL),
-	color_buffer(NULL),
+	buffer(nullptr),
+	color_buffer(nullptr),
 	zstream(),
-	zbuffer(NULL),
+	zbuffer(nullptr),
 	zbuffer_len(0)
 { }
 
@@ -129,10 +132,10 @@ mng_trgt::~mng_trgt()
 		}
 		mng_cleanup (&mng);
 	}
-	if (file != NULL) { fclose(file); file=NULL; }
-	if (buffer != NULL) { delete [] buffer; buffer = NULL; }
-	if (color_buffer != NULL) { delete [] color_buffer; color_buffer = NULL; }
-	if (zbuffer != NULL) { free(zbuffer); zbuffer = NULL; zbuffer_len = 0; }
+	if (file) { fclose(file); file=nullptr; }
+	if (buffer) { delete [] buffer; buffer = nullptr; }
+	if (color_buffer) { delete [] color_buffer; color_buffer = nullptr; }
+	if (zbuffer) { free(zbuffer); zbuffer = nullptr; zbuffer_len = 0; }
 }
 
 bool
@@ -170,11 +173,11 @@ mng_trgt::init(synfig::ProgressCallback * /* cb */)
 		play_time = 0;
 	}
 
-	time_t t = time (NULL);
+	time_t t = time(nullptr);
 	struct tm* gmt = gmtime(&t);
 	w=desc.get_w(); h=desc.get_h();
 	file = g_fopen(filename.c_str(), POPEN_BINARY_WRITE_TYPE);
-	if (file == NULL) goto cleanup_on_error;
+	if (!file) goto cleanup_on_error;
 	mng = mng_initialize((mng_ptr)file, mng_alloc_proc, mng_free_proc, MNG_NULL);
 	if (mng == MNG_NULL) goto cleanup_on_error;
 	if (mng_setcb_errorproc(mng, mng_error_proc) != 0) goto cleanup_on_error;
@@ -203,9 +206,9 @@ mng_trgt::init(synfig::ProgressCallback * /* cb */)
 	if (mng_putchunk_phys(mng, MNG_FALSE, round_to_int(desc.get_x_res()),round_to_int(desc.get_y_res()), MNG_UNIT_METER) != 0) goto cleanup_on_error;
 	if (mng_putchunk_time(mng, gmt->tm_year + 1900, gmt->tm_mon + 1, gmt->tm_mday, gmt->tm_hour, gmt->tm_min, gmt->tm_sec) != 0) goto cleanup_on_error;
 	buffer=new unsigned char[(4*w)+1];
-	if (buffer == NULL) goto cleanup_on_error;
+	if (!buffer) goto cleanup_on_error;
 	color_buffer=new Color[w];
-	if (color_buffer == NULL) goto cleanup_on_error;
+	if (!color_buffer) goto cleanup_on_error;
 	return true;
 
 cleanup_on_error:
@@ -225,18 +228,18 @@ cleanup_on_error:
 
 	if (file && file!=stdout)
 		fclose(file);
-	file=NULL;
+	file=nullptr;
 
-	if (buffer != NULL)
+	if (buffer)
 	{
 		delete [] buffer;
-		buffer = NULL;
+		buffer = nullptr;
 	}
 
-	if (color_buffer != NULL)
+	if (color_buffer)
 	{
 		delete [] color_buffer;
-		color_buffer = NULL;
+		color_buffer = nullptr;
 	}
 
 	return false;
@@ -293,7 +296,7 @@ mng_trgt::start_frame(synfig::ProgressCallback */*callback*/)
 		return false;
 	}
 
-	if (zbuffer == NULL)
+	if (!zbuffer)
 	{
 		zbuffer_len = deflateBound(&zstream,((4*w)+1)*h); // don't forget the 'filter' byte - one per scanline
 		zbuffer = (unsigned char*)realloc(zbuffer, zbuffer_len);

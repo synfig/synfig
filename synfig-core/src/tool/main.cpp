@@ -2,22 +2,25 @@
 /*!	\file tool/main.cpp
 **	\brief SYNFIG Tool
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2009-2015 Diego Barrios Romero
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -35,26 +38,15 @@
 #include <string>
 #include <list>
 
-//#include <boost/program_options/options_description.hpp>
-//#include <boost/program_options/parsers.hpp>
-//#include <boost/program_options/variables_map.hpp>
-#include <boost/tokenizer.hpp>
-#include <boost/token_functions.hpp>
-//#include <boost/format.hpp>
 
 #include <glibmm.h>
 
 #include <synfig/localization.h>
-#include <synfig/general.h>
-
 #include <synfig/module.h>
 #include <synfig/importer.h>
-#include <synfig/cairoimporter.h>
 #include <synfig/layer.h>
 #include <synfig/canvas.h>
 #include <synfig/target.h>
-#include <synfig/targetparam.h>
-#include <synfig/string.h>
 #include <synfig/paramdesc.h>
 #include <synfig/main.h>
 #include <autorevision.h>
@@ -66,15 +58,13 @@
 #include "joblistprocessor.h"
 #include "printing_functions.h"
 
-//#include "named_type.h"
 #endif
 
-//namespace po=boost::program_options;
 
 std::string _appendAlphaToFilename(std::string input_filename)
 {
 
-	std::size_t found = input_filename.rfind(".");
+	std::size_t found = input_filename.rfind('.');
 	if (found == std::string::npos) return input_filename + "-alpha"; // extension not found, just add to the end
 	
 	return input_filename.substr(0, found) + "-alpha" + input_filename.substr(found);
@@ -100,17 +90,14 @@ int main(int argc, char* argv[])
 	} argv_guard(&argv);
  #endif
 
-	SynfigToolGeneralOptions::create_singleton_instance(argv[0]);
+	SynfigToolGeneralOptions::instance()->set_binary_path(argv[0]);
 
-	std::string binary_path =
+	const std::string binary_path =
 		SynfigToolGeneralOptions::instance()->get_binary_path();
+	const std::string root_path = get_absolute_path(binary_path + "/../../");
 
 #ifdef ENABLE_NLS
-	/*bst::filesystem::path locale_path =
-		binary_path.parent_path().parent_path();*/
-	std::string locale_path = get_absolute_path(binary_path + "../../share/locale");
-	//locale_path = locale_path/"share"/"locale";
-	//bindtextdomain("synfig", Glib::locale_from_utf8(locale_path.string()).c_str() );
+	std::string locale_path = root_path + "/share/locale";
 	bindtextdomain("synfig", Glib::locale_from_utf8(locale_path).c_str() );
 	bind_textdomain_codeset("synfig", "UTF-8");
 	textdomain("synfig");
@@ -163,7 +150,7 @@ int main(int argc, char* argv[])
             ("height,h", height_arg_desc, _("Set the image height in pixels (Use zero for file default)"))
             ("span,s", span_arg_desc, _("Set the diagonal size of image window (Span)"))
             ("antialias,a", antialias_arg_desc, _("Set antialias amount for parametric renderer."))
-            ("quality,Q", quality_arg_desc->default_value(DEFAULT_QUALITY), etl::strprintf(_("Specify image quality for accelerated renderer (Default: %d)"), DEFAULT_QUALITY).c_str())
+            ("quality,Q", quality_arg_desc->default_value(DEFAULT_QUALITY), strprintf(_("Specify image quality for accelerated renderer (Default: %d)"), DEFAULT_QUALITY).c_str())
             ("gamma,g", gamma_arg_desc, _("Gamma"))
             ("threads,T", threads_arg_desc, _("Enable multithreaded renderer using the specified number of threads"))
             ("input-file,i", input_file_arg_desc, _("Specify input filename"))
@@ -282,8 +269,7 @@ int main(int argc, char* argv[])
 		// Synfig Main initialization needs to be after verbose and
 		// before any other where it's used
 		Progress p(binary_path.c_str());
-		//synfig::Main synfig_main(binary_path.parent_path().string(), &p);
-		synfig::Main synfig_main(get_absolute_path(binary_path + "/.."), &p);
+		synfig::Main synfig_main(root_path, &p);
 
 		// Info options -----------------------------------------------
 		parser.process_info_options();

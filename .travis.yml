@@ -21,38 +21,38 @@ jobs:
       - sudo flatpak install flathub org.freedesktop.appstream-glib -y
     script: sudo flatpak run org.freedesktop.appstream-glib validate synfig-studio/org.synfig.SynfigStudio.appdata.xml.in
 
-  - os: linux
-    name: "Synfig Studio Ubuntu 16.04 Xenial (GCC/Autotools)"
-    dist: xenial
-    cache: ccache
-    before_install: ./1-setup-linux-native.sh
-    before_script:
-      - ccache -s
-      - ccache --set-config=compression=true
-    script: ./travis.sh
+#  - os: linux
+#    name: "Synfig Studio Ubuntu 16.04 Xenial (GCC/Autotools)"
+#    dist: xenial
+#    cache: ccache
+#    before_install: ./1-setup-linux-native.sh
+#    before_script:
+#      - ccache -s
+#      - ccache --set-config=compression=true
+#    script: ./travis.sh
 
-  - os: linux
-    if: false
-    name: "Distcheck - Synfig Studio Ubuntu 16.04 Xenial (GCC/Autotools)"
-    dist: xenial
-    cache: ccache
-    before_install: ./1-setup-linux-native.sh
-    before_script:
-      - ccache -s
-      - ccache --set-config=compression=true
-    script: ./travis.sh distcheck
+#  - os: linux
+#    if: false
+#    name: "Distcheck - Synfig Studio Ubuntu 16.04 Xenial (GCC/Autotools)"
+#    dist: xenial
+#    cache: ccache
+#    before_install: ./1-setup-linux-native.sh
+#    before_script:
+#      - ccache -s
+#      - ccache --set-config=compression=true
+#    script: ./travis.sh distcheck
 
-  - os: linux
-    name: "Synfig Studio Ubuntu 16.04 Xenial (CMake/Ninja)"
-    env: CMAKE=true
-    dist: xenial
-    cache: ccache
-    before_install: sudo apt-get install ninja-build && ./1-setup-linux-native.sh
-    before_script:
-      - ccache -s
-      - ccache --set-config=compression=true
-    script: mkdir -p build && cd build && cmake .. -GNinja && ninja
-    after_script: ccache -s # show ccache stats
+#  - os: linux
+#    name: "Synfig Studio Ubuntu 16.04 Xenial (CMake/Ninja)"
+#    env: CMAKE=true
+#    dist: xenial
+#    cache: ccache
+#    before_install: sudo apt-get install ninja-build && ./1-setup-linux-native.sh
+#    before_script:
+#      - ccache -s
+#      - ccache --set-config=compression=true
+#    script: mkdir -p build && cd build && cmake .. -GNinja && ninja
+#    after_script: ccache -s # show ccache stats
 
   - os: linux
     name: "Test render engine for regressions"

@@ -2,20 +2,23 @@
 /*!	\file canvasfilenaming.cpp
 **	\brief CanvasFilenaming Implementation
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2016 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -31,6 +34,8 @@
 
 #include <algorithm> // std::transform
 #include "canvasfilenaming.h"
+
+#include <ETL/stringf>
 
 #include "filecontainerzip.h"
 #include "filesystemnative.h"
@@ -64,7 +69,7 @@ CanvasFileNaming::filename_extension_lower(const String &filename)
 {
 	String ext = etl::filename_extension(filename);
 	if (!ext.empty()) ext = ext.substr(1); // skip initial '.'
-	std::transform(ext.begin(), ext.end(), ext.begin(), &::tolower);
+	strtolower(ext);
 	return ext;
 }
 
@@ -79,7 +84,7 @@ CanvasFileNaming::content_folder_by_extension(const String &ext)
 {
 	if (Importer::book().count(ext))
 		return "images";
-	if (ext == "pgo")
+	if (ext == "pgo" || ext == "tsv" || ext == "xml")
 		return "animations";
 	return String();
 }
@@ -321,10 +326,10 @@ CanvasFileNaming::generate_container_filename(const FileSystem::Handle &canvas_f
 	{
 		String short_filename = i <= 1
 				              ? container_prefix + base + "." + ext
-				              : etl::strprintf("%s%s_%d.%s", container_prefix.c_str(), base.c_str(), i, ext.c_str());
+				              : strprintf("%s%s_%d.%s", container_prefix.c_str(), base.c_str(), i, ext.c_str());
 		String full_filename = i <= 1
 				             ? container_prefix + base + "." + ext
-				             : etl::strprintf("%s%s%s_%d.%s", container_prefix.c_str(), content_prefix.c_str(), base.c_str(), i, ext.c_str());
+				             : strprintf("%s%s%s_%d.%s", container_prefix.c_str(), content_prefix.c_str(), base.c_str(), i, ext.c_str());
 		if (!canvas_filesystem->is_exists(full_filename))
 			return short_filename;
 	}

@@ -2,21 +2,24 @@
 /*!	\file workspacehandler.cpp
 **	\brief Handle with custom workspaces
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2019 Rodolfo R Gomes
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 
@@ -34,6 +37,7 @@
 #include <fstream>
 
 #include <gui/localization.h>
+#include <synfig/filesystem.h>
 #include <synfig/general.h>
 #include <synfig/string_helper.h>
 #endif
@@ -48,7 +52,7 @@ bool
 WorkspaceHandler::is_valid_name(const std::string& name)
 {
 	std::string valid_name = synfig::trim(name);
-	return !valid_name.empty() && valid_name.find("=") == std::string::npos;
+	return !valid_name.empty() && valid_name.find('=') == std::string::npos;
 }
 
 bool
@@ -119,7 +123,7 @@ WorkspaceHandler::get_name_list(std::vector<std::string>& list)
 bool
 WorkspaceHandler::save(const std::string& filename)
 {
-	std::ofstream ofs(filename);
+	std::ofstream ofs(synfig::filesystem::Path(filename).c_str());
 	if (!ofs) {
 		synfig::error(_("Can't save custom workspaces"));
 		return false;
@@ -133,7 +137,7 @@ WorkspaceHandler::save(const std::string& filename)
 void
 WorkspaceHandler::load(const std::string& filename)
 {
-	std::ifstream ifs(filename);
+	std::ifstream ifs(synfig::filesystem::Path(filename).c_str());
 	std::string line;
 	int count = 0;
 	while (ifs && !ifs.eof()) {
@@ -141,7 +145,7 @@ WorkspaceHandler::load(const std::string& filename)
 		if (line.empty())
 			continue;
 
-		auto pos = line.find("=");
+		const auto pos = line.find('=');
 		if (pos == std::string::npos) {
 			synfig::warning(_("ignoring malformed workspace line: %s"), line.c_str());
 			continue;

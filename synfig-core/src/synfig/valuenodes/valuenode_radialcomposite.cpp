@@ -2,22 +2,25 @@
 /*!	\file valuenode_radialcomposite.cpp
 **	\brief Implementation of the "Radial Composite" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **  Copyright (c) 2011 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -43,15 +46,13 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_RadialComposite, RELEASE_VERSION_0_61_06, "radial_composite", "Radial Composite")
+REGISTER_VALUENODE(ValueNode_RadialComposite, RELEASE_VERSION_0_61_06, "radial_composite", N_("Radial Composite"))
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -60,8 +61,7 @@ REGISTER_VALUENODE(ValueNode_RadialComposite, RELEASE_VERSION_0_61_06, "radial_c
 synfig::ValueNode_RadialComposite::ValueNode_RadialComposite(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	Type &type(get_type());
 	if (type == type_vector)
 	{
@@ -90,7 +90,7 @@ ValueNode_RadialComposite::~ValueNode_RadialComposite()
 }
 
 ValueNode_RadialComposite*
-ValueNode_RadialComposite::create(const ValueBase &value)
+ValueNode_RadialComposite::create(const ValueBase& value, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_RadialComposite(value);
 }
@@ -104,13 +104,13 @@ ValueNode_RadialComposite::create_new()const
 ValueBase
 synfig::ValueNode_RadialComposite::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	Type &type(get_type());
 	if (type == type_vector)
 	{
-		Real mag;
+		Real mag = 0.f;
 		Angle angle;
 		assert(components[0] && components[1]);
 		mag=(*components[0])(t).get(mag);
@@ -129,7 +129,7 @@ synfig::ValueNode_RadialComposite::operator()(Time t)const
 		);
 	}
 
-	synfig::error(string("ValueNode_RadialComposite::operator():")+_("Bad type for radialcomposite"));
+	synfig::error(std::string("ValueNode_RadialComposite::operator():")+_("Bad type for radialcomposite"));
 	assert(components[0]);
 	return (*components[0])(t);
 }

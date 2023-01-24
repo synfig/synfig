@@ -1,22 +1,25 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file widget_curves.cpp
+/*!	\file timeplotdata.cpp
 **	\brief Template File
-**
-**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **  ......... ... 2019 Rodolfo R. Gomes
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -31,7 +34,8 @@
 # endif
 
 # include "timeplotdata.h"
-# include <ETL/misc>
+
+#include <synfig/misc.h>
 
 #endif
 
@@ -47,15 +51,17 @@
 
 namespace studio {
 
-TimePlotData::TimePlotData(Gtk::Widget& widget, Glib::RefPtr<Gtk::Adjustment> vertical_adjustment) :
+TimePlotData::TimePlotData(Gtk::Widget* widget, Glib::RefPtr<Gtk::Adjustment> vertical_adjustment) :
 	invalid(true),
-	extra_margin(0),
+	k(0),
+	extra_margin(10),
 	has_vertical(false),
 	widget(widget),
 	vertical_adjustment(vertical_adjustment)
 {
-	widget_resized = widget.signal_configure_event().connect(
-				sigc::mem_fun(*this, &TimePlotData::on_widget_resize) );
+	if (widget)
+		widget_resized = widget->signal_configure_event().connect(
+					sigc::mem_fun(*this, &TimePlotData::on_widget_resize) );
 
 	if (vertical_adjustment) {
 		vertical_changed = vertical_adjustment->signal_changed().connect(
@@ -104,12 +110,26 @@ TimePlotData::set_extra_time_margin(double margin)
 {
 	extra_margin = margin;
 
-	recompute_extra_time();
+	recompute_geometry_data();
+}
+
+void
+TimePlotData::set_dimensions(const Gdk::Point &size)
+{
+	if (this->size != size) {
+		this->size.set_x(size.get_x());
+		this->size.set_y(size.get_y());
+
+		recompute_geometry_data();
+	}
 }
 
 bool
 TimePlotData::on_widget_resize(GdkEventConfigure*)
 {
+	size.set_x(widget->get_width());
+	size.set_y(widget->get_height());
+
 	recompute_geometry_data();
 	return false;
 }
@@ -120,7 +140,7 @@ TimePlotData::recompute_time_bounds()
 	if (!time_model) {
 		time = lower = upper = 0;
 		invalid = true;
-		widget.queue_draw();
+		queue_draw();
 		return;
 	}
 	time  = time_model->get_time();
@@ -129,7 +149,7 @@ TimePlotData::recompute_time_bounds()
 
 	if (lower >= upper) {
 		invalid = true;
-		widget.queue_draw();
+		queue_draw();
 		return;
 	}
 
@@ -140,24 +160,19 @@ TimePlotData::recompute_time_bounds()
 void
 TimePlotData::recompute_geometry_data()
 {
-	k = widget.get_width()/(upper - lower);
+	k = (size.get_x()-2*extra_margin)/(upper - lower);
 	dt = 1.0/k;
 
 	if (has_vertical) {
-		range_k = widget.get_height()/(range_upper - range_lower);
+		range_k = size.get_y()/(range_upper - range_lower);
 	}
 
-	recompute_extra_time(); // k (and lower and upper) changes extra_time
-}
-
-void
-TimePlotData::recompute_extra_time()
-{
+//	recompute_extra_time(); // k (and lower and upper) changes extra_time
 	extra_time = extra_margin/k;
 	lower_ex = lower - extra_time;
 	upper_ex = upper + extra_time;
 
-	widget.queue_draw();
+	queue_draw();
 }
 
 void
@@ -178,9 +193,18 @@ TimePlotData::recompute_vertical()
 	}
 	range_lower = vertical_adjustment->get_value();
 	range_upper = range_lower + vertical_adjustment->get_page_size();
-	range_k = widget.get_height()/(range_upper - range_lower);
+	range_k = size.get_y()/(range_upper - range_lower);
 	has_vertical = true;
-	widget.queue_draw();
+	queue_draw();
+}
+
+void
+TimePlotData::queue_draw()
+{
+	if (widget)
+		widget->queue_draw();
+	else
+		signal_redraw_requested().emit();
 }
 
 bool
@@ -210,25 +234,25 @@ TimePlotData::is_y_visible(synfig::Real y) const
 int
 TimePlotData::get_pixel_t_coord(const synfig::Time& t) const
 {
-	return etl::round_to_int((t - lower) * k);
+	return synfig::round_to_int((t - lower_ex) * k);
 }
 
 double
 TimePlotData::get_double_pixel_t_coord(const synfig::Time& t) const
 {
-	return round((t - lower) * k);
+	return round((t - lower_ex) * k);
 }
 
 int
 TimePlotData::get_pixel_y_coord(synfig::Real y) const
 {
-	return etl::round_to_int(-(y + range_lower) * range_k);
+	return synfig::round_to_int(-(y + range_lower) * range_k);
 }
 
 synfig::Time
 TimePlotData::get_t_from_pixel_coord(double pixel) const
 {
-	return lower + synfig::Time(pixel/k);
+	return lower_ex + synfig::Time(pixel/k);
 }
 
 double TimePlotData::get_y_from_pixel_coord(double pixel) const

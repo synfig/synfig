@@ -2,23 +2,26 @@
 /*!	\file widget_timeslider.cpp
 **	\brief Time Slider Widget Implementation File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2004 Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2012, Carlos López
 **	......... ... 2018 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -64,7 +67,7 @@ const int fullheight = 20;
 static void
 calc_divisions(float fps, double range, double sub_range, double &out_step, int &out_subdivisions)
 {
-	int ifps = etl::round_to_int(fps);
+	int ifps = synfig::round_to_int(fps);
 	if (ifps < 1) ifps = 1;
 
 	// build a list of all the factors of the frame rate
@@ -101,7 +104,7 @@ calc_divisions(float fps, double range, double sub_range, double &out_step, int 
 	// find most ideal scale
 	double scale;
 	{
-		std::vector<double>::iterator next = etl::binary_find(ranges.begin(), ranges.end(), mid_range);
+		std::vector<double>::iterator next = synfig::binary_find(ranges.begin(), ranges.end(), mid_range);
 		std::vector<double>::iterator iter = next++;
 		if (iter == ranges.end()) iter--;
 		if (next == ranges.end()) next--;
@@ -111,7 +114,7 @@ calc_divisions(float fps, double range, double sub_range, double &out_step, int 
 	}
 
 	// subdivide into this many tick marks (8 or less)
-	int subdiv = etl::round_to_int(scale * ifps);
+	int subdiv = synfig::round_to_int(scale * ifps);
 	if (subdiv > 8) {
 		const int ideal = subdiv;
 
@@ -162,17 +165,13 @@ Widget_Timeslider::Widget_Timeslider():
 		play_bounds_pattern->set_extend(Cairo::EXTEND_REPEAT);
 	}
 
-	time_plot_data = new TimePlotData(*this);
-	time_plot_data->set_extra_time_margin(get_height());
+	time_plot_data = new TimePlotData(this);
 
 	// click / scroll / zoom
 	add_events( Gdk::BUTTON_PRESS_MASK
 			  | Gdk::BUTTON_RELEASE_MASK
 			  | Gdk::BUTTON_MOTION_MASK
 			  | Gdk::SCROLL_MASK );
-
-	signal_configure_event().connect(
-		sigc::mem_fun(*this, &Widget_Timeslider::on_configure_event));
 }
 
 Widget_Timeslider::~Widget_Timeslider()
@@ -203,14 +202,6 @@ Widget_Timeslider::draw_background(const Cairo::RefPtr<Cairo::Context> &cr)
 	cr->rectangle(0.0, 0.0, (double)get_width(), (double)get_height());
 	cr->fill();
 	cr->restore();
-}
-
-bool Widget_Timeslider::on_configure_event(GdkEventConfigure* configure)
-{
-	SYNFIG_EXCEPTION_GUARD_BEGIN()
-	time_plot_data->set_extra_time_margin(configure->height);
-	return false;
-	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool
@@ -293,7 +284,7 @@ Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	cr->restore();
 
 	// Draw the time line
-	Gdk::Cairo::set_source_color(cr, Gdk::Color("#ffaf00"));
+	Gdk::Cairo::set_source_rgba(cr, Gdk::RGBA("#ffaf00"));
 	cr->set_line_width(3.0);
 	double x = time_plot_data->get_pixel_t_coord(time_plot_data->time);
 	cr->move_to(x, 0.0);

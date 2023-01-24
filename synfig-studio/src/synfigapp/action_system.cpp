@@ -2,20 +2,23 @@
 /*!	\file action_system.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -86,8 +89,8 @@ bool
 Action::System::perform_action(etl::handle<Action::Base> action)
 {
 	assert(action);
-	if (getenv("SYNFIG_DEBUG_ACTIONS"))
-		synfig::info("%s:%d perform_action: '%s'", __FILE__, __LINE__, action->get_name().c_str());
+	DEBUG_LOG("SYNFIG_DEBUG_ACTIONS",
+		"%s:%d perform_action: '%s'", __FILE__, __LINE__, action->get_name().c_str());
 
 	etl::handle<UIInterface> uim = get_ui_interface();
 	if (!action->is_ready()) {
@@ -111,13 +114,13 @@ Action::System::perform_action(etl::handle<Action::Base> action)
 	etl::handle<Action::Undoable> undoable_action = etl::handle<Action::Undoable>::cast_dynamic(action);
 	assert(!undoable_action || undoable_action->is_active());
 	if (!undoable_action) {
-		String message = etl::strprintf(_("Do you want to do action \"%s\"?"), action->get_local_name().c_str());
+		String message = synfig::strprintf(_("Do you want to do action \"%s\"?"), action->get_local_name().c_str());
 		String details = _("This action cannot be undone.");
 		UIInterface::Response response = uim->confirmation(
 			message,
 			details,
-			_("Cancel"),
 			_("Continue"),
+			_("Cancel"),
 			UIInterface::RESPONSE_CANCEL );
 		if (response == UIInterface::RESPONSE_CANCEL)
 			return false;
@@ -132,7 +135,7 @@ Action::System::perform_action(etl::handle<Action::Base> action)
 		uim->task(action->get_local_name()+' '+_("Failed"));
 		if (err.get_type() != Action::Error::TYPE_UNABLE) {
 			if (err.get_desc().empty())
-				uim->error(action->get_local_name() + ": " + etl::strprintf("%d", err.get_type()));
+				uim->error(action->get_local_name() + ": " + synfig::strprintf("%d", err.get_type()));
 			else
 				uim->error(action->get_local_name() + ": " + err.get_desc());
 		}
@@ -193,7 +196,7 @@ synfigapp::Action::System::undo_(etl::handle<UIInterface> uim)
 	catch (Action::Error &err) {
 		if(err.get_type() != Action::Error::TYPE_UNABLE) {
 			if(err.get_desc().empty())
-				uim->error(action->get_local_name() + _(" (Undo): ") + etl::strprintf("%d",err.get_type()));
+				uim->error(action->get_local_name() + _(" (Undo): ") + synfig::strprintf("%d",err.get_type()));
 			else
 				uim->error(action->get_local_name() + _(" (Undo): ") + err.get_desc());
 		}
@@ -262,7 +265,7 @@ Action::System::redo_(etl::handle<UIInterface> uim)
 	catch (const Action::Error& err) {
 		if (err.get_type() != Action::Error::TYPE_UNABLE) {
 			if(err.get_desc().empty())
-				uim->error(action->get_local_name() + _(" (Redo): ") + etl::strprintf("%d", err.get_type()));
+				uim->error(action->get_local_name() + _(" (Redo): ") + synfig::strprintf("%d", err.get_type()));
 			else
 				uim->error(action->get_local_name() + _(" (Redo): ") + err.get_desc());
 		}

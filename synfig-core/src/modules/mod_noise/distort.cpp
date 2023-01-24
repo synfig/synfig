@@ -2,22 +2,25 @@
 /*!	\file distort.cpp
 **	\brief Implementation of the "Noise Distort" layer
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
 **	Copyright (c) 2011-2013 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -34,25 +37,20 @@
 #include "distort.h"
 
 #include <synfig/localization.h>
-#include <synfig/general.h>
 
 #include <synfig/string.h>
 #include <synfig/time.h>
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
 #include <synfig/renddesc.h>
-#include <synfig/surface.h>
 #include <synfig/value.h>
-#include <synfig/valuenode.h>
-#include <time.h>
+#include <ctime>
 
 #endif
 
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
-using namespace std;
-using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
@@ -70,7 +68,7 @@ NoiseDistort::NoiseDistort():
 	Layer_CompositeFork(1.0,Color::BLEND_STRAIGHT),
 	param_displacement(ValueBase(Vector(0.25,0.25))),
 	param_size(ValueBase(Vector(1,1))),
-	param_random(ValueBase(int(time(NULL)))),
+	param_random(ValueBase(int(time(nullptr)))),
 	param_smooth(ValueBase(int(RandomNoise::SMOOTH_COSINE))),
 	param_detail(ValueBase(int(4))),
 	param_speed(ValueBase(Real(0))),
@@ -114,8 +112,8 @@ NoiseDistort::point_func(const Point &point)const
 		
 		if(turbulent)
 		{
-			vect[0]=abs(vect[0]);
-			vect[1]=abs(vect[1]);
+			vect[0]=std::fabs(vect[0]);
+			vect[1]=std::fabs(vect[1]);
 		}
 		
 		x/=2.0f;
@@ -134,26 +132,9 @@ NoiseDistort::point_func(const Point &point)const
 }
 
 inline Color
-NoiseDistort::color_func(const Point &point, float /*supersample*/,Context context)const
+NoiseDistort::color_func(const Point &point, Context context)const
 {
-	Color ret(0,0,0,0);
-	ret=context.get_color(point_func(point));
-	return ret;
-}
-
-inline CairoColor
-NoiseDistort::cairocolor_func(const Point &point, float /*supersample*/,Context context)const
-{
-	CairoColor ret(0,0,0,0);
-	ret=context.get_cairocolor(point_func(point));
-	return ret;
-}
-
-
-inline float
-NoiseDistort::calc_supersample(const synfig::Point &/*x*/, float /*pw*/,float /*ph*/)const
-{
-	return 0.0f;
+	return context.get_color(point_func(point));
 }
 
 synfig::Layer::Handle
@@ -163,7 +144,7 @@ NoiseDistort::hit_check(synfig::Context context, const synfig::Point &point)cons
 		return const_cast<NoiseDistort*>(this);
 	if(get_amount()==0.0)
 		return context.hit_check(point);
-	if(color_func(point,0,context).get_a()>0.5)
+	if(color_func(point,context).get_a()>0.5)
 		return const_cast<NoiseDistort*>(this);
 	return synfig::Layer::Handle();
 }
@@ -254,7 +235,7 @@ NoiseDistort::get_param_vocab()const
 Color
 NoiseDistort::get_color(Context context, const Point &point)const
 {
-	const Color color(color_func(point,0,context));
+	const Color color(color_func(point,context));
 
 	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 		return color;
@@ -262,16 +243,7 @@ NoiseDistort::get_color(Context context, const Point &point)const
 		return Color::blend(color,context.get_color(point),get_amount(),get_blend_method());
 }
 
-CairoColor
-NoiseDistort::get_cairocolor(Context context, const Point &point)const
-{
-	const CairoColor color(cairocolor_func(point,0,context));
-	
-	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
-		return color;
-	else
-		return CairoColor::blend(color,context.get_cairocolor(point),get_amount(),get_blend_method());
-}
+
 
 RendDesc
 NoiseDistort::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
@@ -346,13 +318,13 @@ NoiseDistort::accelerated_render(Context context,Surface *surface,int quality, c
 	{
 		for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)
 			for(x=0,pos[0]=tl[0];x<w;x++,pen.inc_x(),pos[0]+=pw)
-				pen.put_value(color_func(pos,calc_supersample(pos,pw,ph),context));
+				pen.put_value(color_func(pos,context));
 	}
 	else
 	{
 		for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)
 			for(x=0,pos[0]=tl[0];x<w;x++,pen.inc_x(),pos[0]+=pw)
-				pen.put_value(Color::blend(color_func(pos,calc_supersample(pos,pw,ph),context),pen.get_value(),get_amount(),get_blend_method()));
+				pen.put_value(Color::blend(color_func(pos,context),pen.get_value(),get_amount(),get_blend_method()));
 	}
 
 	// Mark our progress as finished

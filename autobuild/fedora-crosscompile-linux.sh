@@ -76,7 +76,6 @@ GTKGLEXTMM_VERSION=1.2.0
 LIBXMLPP_VERSION=2.22.0
 GLIBMM_VERSION=2.42.0
 CAIRO_VERSION=1.12.18
-BOOST_VERSION=1_53_0
 ATK_VERSION=2.14.0
 AT_SPI2_VERSION=2.10.2
 AT_SPI2_ATK_VERSION=2.10.2
@@ -1425,33 +1424,6 @@ if [ ! -f ${PREFIX}/../${PKG_NAME}-${PKG_VERSION}.done ]; then
 fi
 }
 
-mkboost()
-{
-PKG_NAME=boost
-PKG_VERSION="${BOOST_VERSION}"
-TAREXT=bz2
-if ! cat ${PREFIX}/include/boost/version.hpp |egrep "BOOST_LIB_VERSION \"${PKG_VERSION%_*}\""; then
-	#PATH_BAK=$PATH
-	#PATH="${DEPSPREFIX}/bin-gcc/:$PATH"
-	#rm -rf ${DEPSPREFIX}/lib/libboost_program_options* || true
-	#rm -rf ${PREFIX}/lib/libboost_program_options* || true
-	rsync -av ${SOURCES_URL}/${PKG_NAME}_${PKG_VERSION}.tar.${TAREXT} ${WORKSPACE}/cache/${PKG_NAME}_${PKG_VERSION}.tar.${TAREXT}
-	pushd ${SRCPREFIX}
-	[ ! -d ${PKG_NAME}_${PKG_VERSION} ] && tar -xjf ${WORKSPACE}/cache/${PKG_NAME}_${PKG_VERSION}.tar.${TAREXT}
-	cd ${PKG_NAME}_${PKG_VERSION}
-	./bootstrap.sh --prefix=${PREFIX} \
-		--libdir=${PREFIX}/lib \
-		--exec-prefix=${PREFIX} \
-		--with-libraries=program_options,filesystem,system,chrono
-	./b2
-	./b2 install || true
-	cd ..
-	popd
-	#PATH="$PATH_BAK"
-fi
-#cp ${DEPSPREFIX}/lib/libboost_program_options.so.*.0 ${PREFIX}/lib/
-}
-
 mklibdrm()
 {
 PKG_NAME=libdrm
@@ -1842,7 +1814,6 @@ make clean || true
 	--sysconfdir=${PREFIX}/etc \
 	--disable-static --enable-shared \
 	--with-magickpp --without-libavcodec \
-	--with-boost=${PREFIX}/ \
 	--enable-warnings=minimum \
 	$DEBUG_OPT
 make -j${THREADS}
@@ -2334,7 +2305,6 @@ mkall()
 	#fi
 	mkmlt
 	mkimagemagick
-	mkboost
 	mkfftw
 	
 	# synfig-studio deps

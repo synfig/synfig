@@ -2,22 +2,25 @@
 /*!	\file distort.h
 **	\brief Header file for implementation of the "Noise Distort" layer
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
 **	Copyright (c) 2012-2013 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -62,11 +65,8 @@ private:
 	//!Parameter: (bool)
 	synfig::ValueBase param_turbulent;
 
-	synfig::Color color_func(const synfig::Point &x, float supersample,synfig::Context context)const;
-	synfig::CairoColor cairocolor_func(const synfig::Point &x, float supersample,synfig::Context context)const;
+	synfig::Color color_func(const synfig::Point &x,synfig::Context context)const;
 	synfig::Point point_func(const synfig::Point &point)const;
-
-	float calc_supersample(const synfig::Point &x, float pw,float ph)const;
 
 public:
 	NoiseDistort();
@@ -74,7 +74,6 @@ public:
 	virtual bool set_param(const synfig::String &param, const synfig::ValueBase &value);
 	virtual synfig::ValueBase get_param(const synfig::String &param)const;
 	virtual synfig::Color get_color(synfig::Context context, const synfig::Point &pos)const;
-	virtual synfig::CairoColor get_cairocolor(synfig::Context context, const synfig::Point &pos)const;
 	//virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
 	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
 	using Layer::get_bounding_rect;

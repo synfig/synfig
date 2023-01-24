@@ -2,21 +2,24 @@
 /*!	\file valuenode_greyed.cpp
 **	\brief Implementation of the "Greyed" valuenode conversion.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2008 Chris Moore
 **  Copyright (c) 2011 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -32,7 +35,6 @@
 
 #include "valuenode_greyed.h"
 
-#include <synfig/general.h>
 #include <synfig/localization.h>
 #include <synfig/valuenode_registry.h>
 
@@ -48,7 +50,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Greyed, RELEASE_VERSION_0_62_00, "greyed", "Greyed")
+REGISTER_VALUENODE(ValueNode_Greyed, RELEASE_VERSION_0_62_00, "greyed", N_("Greyed"))
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -62,13 +64,12 @@ ValueNode_Greyed::ValueNode_Greyed(Type &x):
 ValueNode_Greyed::ValueNode_Greyed(const ValueNode::Handle &x):
 	ValueNode_Reference(x->get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	set_link("link",x);
 }
 
 ValueNode_Greyed*
-ValueNode_Greyed::create(const ValueBase &x)
+ValueNode_Greyed::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Greyed(ValueNode_Const::create(x));
 }

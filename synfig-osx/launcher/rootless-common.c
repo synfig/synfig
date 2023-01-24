@@ -282,7 +282,7 @@ RootlessStopDrawing (WindowPtr pWindow, Bool flush)
     }
 
     /* FIXME: instead of just checking if we tried to flush (which
-       happens everytime we block for I/O), I used to check if
+       happens every time we block for I/O), I used to check if
        anything was actually marked in the window. But that often
        caused problems with some window managers, and it didn't really
        make any noticeable difference, so... */

@@ -2,21 +2,24 @@
 /*!	\file widgets/widget_timegraphbase.cpp
 **	\brief Base class for widgets that are graph-like representations with time axis
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	......... ... 2019 Rodolfo Ribeiro Gomes
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 
@@ -48,7 +51,7 @@ Widget_TimeGraphBase::Widget_TimeGraphBase()
 	  zoom_changing_factor(DEFAULT_ZOOM_CHANGING_FACTOR),
 	  default_page_size(DEFAULT_PAGE_SIZE)
 {
-	time_plot_data = new TimePlotData(*this, range_adjustment);
+	time_plot_data = new TimePlotData(this, range_adjustment);
 }
 
 Widget_TimeGraphBase::~Widget_TimeGraphBase()
@@ -263,9 +266,9 @@ void Widget_TimeGraphBase::draw_keyframe_line(const Cairo::RefPtr<Cairo::Context
 	const synfig::Time &keyframe_time = keyframe.get_time();
 	if (keyframe_time < time_plot_data->lower_ex || keyframe_time >= time_plot_data->upper_ex)
 		return;
-	const Gdk::Color keyframe_color("#a07f7f");
+	const Gdk::RGBA keyframe_color("#a07f7f");
 	cr->save();
-	Gdk::Cairo::set_source_color(cr, keyframe_color);
+	Gdk::Cairo::set_source_rgba(cr, keyframe_color);
 	cr->rectangle(time_plot_data->get_pixel_t_coord(keyframe_time), 0, 1.0, get_height());
 	cr->fill();
 	cr->restore();

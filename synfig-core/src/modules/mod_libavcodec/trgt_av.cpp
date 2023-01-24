@@ -1,8 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file trgt_av.cpp
-**	\brief \writeme
-**
-**	$Id$
+**	\brief AV Exporter module (Target_LibAVCodec)
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -10,15 +8,20 @@
 **  Copyright (c) 2008 Gerco Ballintijn
 **  ......... ... 2018 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -38,6 +41,7 @@
 extern "C"
 {
 #ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
+#	include <libavcodec/avcodec.h>
 #	include <libavformat/avformat.h>
 #elif defined(HAVE_AVFORMAT_H)
 #	include <avformat.h>
@@ -78,8 +82,6 @@ extern "C"
 /* === U S I N G =========================================================== */
 
 using namespace synfig;
-using namespace std;
-using namespace etl;
 
 /* === I N F O ============================================================= */
 
@@ -142,8 +144,8 @@ private:
 		video_context->pix_fmt      = AV_PIX_FMT_YUV420P;
 		video_context->gop_size     = fps;                // emit one intra frame every second
 		video_context->mb_decision  = FF_MB_DECISION_RD;  // use best acroblock decision algorithm
-		video_context->framerate    = (AVRational){ fps, 1 };
-		video_context->time_base    = (AVRational){ 1, fps };
+		video_context->framerate    = AVRational{ fps, 1 };
+		video_context->time_base    = AVRational{ 1, fps };
 		video_stream->time_base     = video_context->time_base;
 
 		// some formats want stream headers to be separate.
@@ -154,11 +156,11 @@ private:
     }
 
 	bool open_video_stream() {
-		if (avcodec_open2(video_context, NULL, NULL) < 0) {
+		if (avcodec_open2(video_context, nullptr, nullptr) < 0) {
 			synfig::error("Target_LibAVCodec: could not open video codec");
 			// seems the calling of avcodec_free_context after error will cause crash
 			// so just forget about this context
-			video_context = NULL;
+			video_context = nullptr;
 			close();
 			return false;
         }
@@ -196,7 +198,7 @@ private:
 				video_frame->width,
 				video_frame->height,
 				(AVPixelFormat)video_frame->format,
-				SWS_BICUBIC, NULL, NULL, NULL );
+				SWS_BICUBIC, nullptr, nullptr, nullptr );
 			if (!video_swscale_context) {
 				synfig::error("Target_LibAVCodec: cannot initialize the conversion context");
 				close();
@@ -233,15 +235,21 @@ public:
 		close();
 
 		if (!av_registered) {
+#if LIBAVCODEC_VERSION_MAJOR < 58 // FFMPEG < 4.0
 			av_register_all();
+#endif
 			av_registered = true;
 		}
 
 		// guess format
-		AVOutputFormat *format = av_guess_format(NULL, filename.c_str(), NULL);
+#if LIBAVCODEC_VERSION_MAJOR < 59 // FFMPEG < 5.0
+		AVOutputFormat* format = av_guess_format(nullptr, filename.c_str(), nullptr);
+#else
+		const AVOutputFormat* format = av_guess_format(nullptr, filename.c_str(), nullptr);
+#endif
 		if (!format) {
 			synfig::warning("Target_LibAVCodec: unable to guess the output format, defaulting to MPEG");
-			format = av_guess_format("mpeg", NULL, NULL);
+			format = av_guess_format("mpeg", nullptr, nullptr);
 		}
 		if (!format) {
 			synfig::error("Target_LibAVCodec: unable to find 'mpeg' output format");
@@ -253,6 +261,7 @@ public:
 		context = avformat_alloc_context();
 		assert(context);
 		context->oformat = format;
+#if LIBAVCODEC_VERSION_MAJOR < 58 // FFMPEG < 4.0
 		if (filename.size() + 1 > sizeof(context->filename)) {
 			synfig::error(
 				"Target_LibAVCodec: filename too long, max length is %d, filename is '%s'",
@@ -262,6 +271,14 @@ public:
 			return false;
 		}
 		memcpy(context->filename, filename.c_str(), filename.size() + 1);
+#else
+		context->url = av_strndup(filename.c_str(), filename.size());
+		if (!context->url) {
+			synfig::error("Target_LibAVCodec: cannot allocate space for filename");
+			close();
+			return false;
+		}
+#endif
 
 		packet = av_packet_alloc();
 		assert(packet);
@@ -293,7 +310,7 @@ public:
 		}
 
 		// write the stream header, if any.
-		if (avformat_write_header(context, NULL) < 0) {
+		if (avformat_write_header(context, nullptr) < 0) {
 			synfig::error("Target_LibAVCodec: could not write header");
 			close();
             return false;
@@ -391,21 +408,21 @@ public:
 		if (video_context) avcodec_free_context(&video_context);
 		if (video_swscale_context) {
 			sws_freeContext(video_swscale_context);
-			video_swscale_context = NULL;
+			video_swscale_context = nullptr;
 		}
 		if (video_frame) av_frame_free(&video_frame);
 		if (video_frame_rgb) av_frame_free(&video_frame_rgb);
-		video_stream = NULL;
-		video_codec = NULL;
+		video_stream = nullptr;
+		video_codec = nullptr;
 
 		if (context) {
 			if (file_opened) {
 				avio_close(context->pb);
-				context->pb = NULL;
+				context->pb = nullptr;
 				file_opened = false;
 			}
 			avformat_free_context(context);
-			context = NULL;
+			context = nullptr;
 		}
 	}
 };

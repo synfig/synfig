@@ -2,20 +2,23 @@
 /*!	\file layer_skeletondeformation.h
 **	\brief SkeletonDeformation layer
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -61,6 +64,10 @@ private:
 	static Real distance_to_line(const Vector &p0, const Vector &p1, const Vector &x);
 
 public:
+	typedef etl::handle<Layer_SkeletonDeformation> Handle;
+	typedef etl::handle<const Layer_SkeletonDeformation> ConstHandle;
+	typedef etl::loose_handle<Layer_SkeletonDeformation> LooseHandle;
+
 	typedef std::pair<Bone, Bone> BonePair;
 
 	//! Default constructor

@@ -2,21 +2,24 @@
 /*!	\file context.h
 **	\brief Iterator for the layers behind the current Layer.
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2012-2013 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -48,7 +51,6 @@ class Vector;
 typedef Vector Point;
 class Color;
 class Surface;
-class CairoSurface;
 class RendDesc;
 class ProgressCallback;
 class Layer;
@@ -67,9 +69,12 @@ public:
 	//! Constructor based on other CanvasBase iterator
 	IndependentContext(const CanvasBase::const_iterator &x):CanvasBase::const_iterator(x) { }
 
-	//! Assignation operator
-	IndependentContext operator=(const CanvasBase::const_iterator &x)
-	{ return CanvasBase::const_iterator::operator=(x); }
+	//! Assignment operator
+	IndependentContext& operator=(const CanvasBase::const_iterator &x)
+	{
+		CanvasBase::const_iterator::operator=(x);
+		return *this;
+	}
 
 	//! Sets the context to the Time \time. It is done recursively.
 	void set_time(Time time, bool force = false) const;
@@ -156,12 +161,10 @@ public:
 	//!	Returns the color of the context at the Point \pos.
 	//! It is the blended color of the context
 	Color get_color(const Point &pos)const;
-	CairoColor get_cairocolor(const Point &pos)const;
 
 	//!	With a given \quality and a given render description it puts the context
 	//! blend result into the painting \surface */
 	bool accelerated_render(Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb) const;
-	bool accelerated_cairorender(cairo_t *cr,int quality, const RendDesc &renddesc, ProgressCallback *cb) const;
 
 	//!	Make rendering task
 	rendering::Task::Handle build_rendering_task() const;

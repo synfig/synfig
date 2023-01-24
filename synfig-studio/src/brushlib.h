@@ -2,20 +2,23 @@
 /*!	\file brushlib.h
 **	\brief Helper file to integrte brushlib into synfig
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -28,7 +31,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <brushlib/brushlib.hpp>
-#include <ETL/angle> // we need PI
+#include <synfig/angle.h> // we need PI
 #include <synfig/surface.h>
 
 /* === M A C R O S ========================================================= */
@@ -68,7 +71,7 @@ namespace brushlib {
 		int offset_x;
 		int offset_y;
 
-		explicit SurfaceWrapper(surface_type *surface = NULL):
+		explicit SurfaceWrapper(surface_type* surface = nullptr):
 			surface(surface),
 			extra_left(0), extra_right(0),
 			extra_top(0), extra_bottom(0),
@@ -92,7 +95,7 @@ namespace brushlib {
 			float aspect_ratio = 1.0, float angle = 0.0,
 			float /* lock_alpha */ = 0.0
 		) {
-			if (surface == NULL) return false;
+			if (!surface) return false;
 
 			x += (float)offset_x;
 			y += (float)offset_y;
@@ -182,7 +185,7 @@ namespace brushlib {
 			float /* radius */,
 			float * color_r, float * color_g, float * color_b, float * color_a
 		) {
-			if (surface == NULL) {
+			if (!surface) {
 				*color_r = 0.f; *color_g = 0.f; *color_b = 0.f; *color_a = 0.f;
 				return;
 			}

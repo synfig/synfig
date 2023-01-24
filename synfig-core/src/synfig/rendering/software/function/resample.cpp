@@ -2,20 +2,23 @@
 /*!	\file synfig/rendering/software/function/resample.cpp
 **	\brief Resample
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015-2019 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -28,9 +31,6 @@
 #ifdef HAVE_CONFIG_H
 #	include <config.h>
 #endif
-
-#include <synfig/general.h>
-#include <synfig/localization.h>
 
 #include <synfig/debug/debugsurface.h>
 
@@ -46,8 +46,8 @@ using namespace rendering;
 
 #ifdef _MSC_VER
 // MSVC requires explicit template instantiation. Without it, it will crash with an internal compiler error :(
-template Color etl::surface<Color, ColorAccumulator, ColorPrep>::reader<etl::clamping::clamp, etl::clamping::clamp>(const void*, int, int);
-template Color software::PackedSurface::Reader::reader<etl::clamping::clamp, etl::clamping::clamp>(void const*, int, int);
+template Color surface<Color, ColorPrep>::reader<clamping::clamp, clamping::clamp>(const void*, int, int);
+template Color software::PackedSurface::Reader::reader<clamping::clamp, clamping::clamp>(void const*, int, int);
 #endif
 
 /* === G L O B A L S ======================================================= */
@@ -64,11 +64,11 @@ namespace {
 		struct MapPixelPart { int src; int dst; ColorReal k0; ColorReal k1; };
 
 		template< Color reader(const void*,int,int),
-				ColorAccumulator reader_cook(const void*,int,int) >
+				Color reader_cook(const void*,int,int) >
 		class Generic {
 		public:
-			typedef synfig::Surface::sampler<Color, reader> Sampler;
-			typedef synfig::Surface::sampler<ColorAccumulator, reader_cook> SamplerCook;
+			typedef synfig::Surface::sampler<reader> Sampler;
+			typedef synfig::Surface::sampler<reader_cook> SamplerCook;
 			typedef typename Sampler::coord_type Coord;
 			typedef typename Sampler::func SamplerFunc;
 			typedef typename SamplerCook::func SamplerCookFunc;
@@ -450,8 +450,8 @@ namespace {
 
 					int sw = src_bounds.get_width();
 					int sh = src_bounds.get_height();
-					int w = std::min( sw, std::max(1, (int)ceil((Real)sw * bounds.resolution[0])) );
-					int h = std::min( sh, std::max(1, (int)ceil((Real)sh * bounds.resolution[1])) );
+					int w = synfig::clamp((int)ceil((Real)sw * bounds.resolution[0]), 1, sw);
+					int h = synfig::clamp((int)ceil((Real)sh * bounds.resolution[1]), 1, sh);
 
 					if (w < sw || h < sh) {
 						synfig::Surface new_src(w, h);

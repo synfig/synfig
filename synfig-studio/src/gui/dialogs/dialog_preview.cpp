@@ -2,20 +2,23 @@
 /*!	\file dialog_preview.cpp
 **	\brief Preview dialog File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -60,15 +63,16 @@ using namespace studio;
 
 //dialog_preview stuff...
 Dialog_Preview::Dialog_Preview():
-	settings(this, "preview"),
-	preview_table(1, 1, true)
+	settings(this, "preview")
 {
 	set_title(_("Preview"));
 	set_transient_for(*App::main_window);
-	add(preview_table);
-	preview_table.attach(preview, 0, 1, 0, 1);
+	add(preview_grid);
+	preview_grid.set_row_homogeneous(true);
+	preview_grid.set_column_homogeneous(true);
+	preview_grid.attach(preview, 0, 0, 1, 1);
 	preview.show();
-	preview_table.show();
+	preview_grid.show();
 
 	//catch key press event
 	signal_key_press_event().connect(sigc::mem_fun(*this, &Dialog_Preview::on_key_pressed));

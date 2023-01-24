@@ -2,20 +2,23 @@
 /*!	\file synfig/rendering/task.cpp
 **	\brief Task
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -49,7 +52,7 @@ using namespace rendering;
 
 
 synfig::Token Mode::mode_token;
-synfig::Token Task::token;
+SYNFIG_EXPORT synfig::Token Task::token;
 
 SYNFIG_EXPORT const Task::Handle Task::blank;
 
@@ -370,7 +373,7 @@ void
 TaskLockSurface::unlock() {
 	if (lock_) {
 		delete lock_;
-		lock_ = NULL;
+		lock_ = nullptr;
 	}
 }
 

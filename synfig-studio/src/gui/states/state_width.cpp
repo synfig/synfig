@@ -2,22 +2,25 @@
 /*!	\file state_width.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **  Copyright (c) 2008 Chris Moore
 **  Copyright (c) 2011 Carlos López
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -30,8 +33,6 @@
 #ifdef HAVE_CONFIG_H
 #	include <config.h>
 #endif
-
-#include <ETL/clock>
 
 #include <gui/app.h>
 #include <gui/canvasview.h>
@@ -46,6 +47,7 @@
 #include <gui/workarea.h>
 
 #include <synfig/blinepoint.h>
+#include <synfig/clock.h>
 #include <synfig/general.h>
 #include <synfig/valuenodes/valuenode_wplist.h>
 
@@ -56,7 +58,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
 using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
@@ -82,10 +83,9 @@ class studio::StateWidth_Context : public sigc::trackable
 	handle<Duck> radius;
 	handle<Duck> closestpoint;
 
-	map<handle<Duck>,Real>	changetable;
+	std::map<handle<Duck>,Real>	changetable;
 
-	etl::clock	clocktime;
-	// Real		lastt; // unused
+	synfig::clock	clocktime;
 
 	bool added;
 
@@ -93,11 +93,10 @@ class studio::StateWidth_Context : public sigc::trackable
 
 	WorkArea::PushState push_state;
 
-	//Toolbox settings
+	// Toolbox settings
 	synfigapp::Settings& settings;
 
-	//Toolbox display
-	Gtk::Table options_table;
+	Gtk::Grid options_grid;
 	Gtk::Label title_label;
 
 	Glib::RefPtr<Gtk::Adjustment> adj_delta;
@@ -107,7 +106,7 @@ class studio::StateWidth_Context : public sigc::trackable
 
 	Gtk::Label relative_label;
 	Gtk::CheckButton relative_checkbutton;
-	Gtk::HBox relative_box;
+	Gtk::Box relative_box;
 
 	Gtk::Label growth_label;
 	Gtk::Label radius_label;
@@ -177,25 +176,12 @@ StateWidth_Context::load_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		String value;
-
 		//parse the arguments yargh!
-		if(settings.get_value("width.delta",value))
-			set_delta(atof(value.c_str()));
-		else
-			set_delta(6);
+		set_delta(settings.get_value("width.delta", 6.0));
 
-		if(settings.get_value("width.radius",value))
-			set_radius(Distance(atof(value.c_str()), App::distance_system));
-		else
-			set_radius(Distance(60, App::distance_system));
+		set_radius(settings.get_value("width.radius", Distance("60px")));
 
-		//defaults to false
-		if(settings.get_value("width.relative",value) && value == "1")
-			set_relative(true);
-		else
-			set_relative(false);
+		set_relative(settings.get_value("width.relative", false));
 	}
 	catch(...)
 	{
@@ -208,10 +194,9 @@ StateWidth_Context::save_settings()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		settings.set_value("width.delta",strprintf("%f",get_delta()));
-		settings.set_value("width.radius",influence_radius->get_value().get_string());
-		settings.set_value("width.relative",get_relative()?"1":"0");
+		settings.set_value("width.delta",get_delta());
+		settings.set_value("width.radius",influence_radius->get_value());
+		settings.set_value("width.relative",get_relative());
 	}
 	catch(...)
 	{
@@ -233,6 +218,32 @@ StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 	adj_delta(Gtk::Adjustment::create(6,0,20,0.01,0.1)),
 	spin_delta(adj_delta,0.01,3)
 {
+	// Toolbox widgets
+	title_label.set_label(_("Width Tool"));
+	Pango::AttrList list;
+	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
+	list.insert(attr);
+	title_label.set_attributes(list);
+	title_label.set_hexpand();
+	title_label.set_halign(Gtk::ALIGN_START);
+	title_label.set_valign(Gtk::ALIGN_CENTER);
+	
+	relative_label.set_label(_("Relative Growth"));
+	relative_label.set_halign(Gtk::ALIGN_START);
+	relative_label.set_valign(Gtk::ALIGN_CENTER);
+	relative_label.set_hexpand();
+	
+	relative_box.pack_start(relative_label, true, true, 0);
+	relative_box.pack_start(relative_checkbutton, false, false, 0);
+
+	growth_label.set_label(_("Growth:"));
+	growth_label.set_halign(Gtk::ALIGN_START);
+	growth_label.set_valign(Gtk::ALIGN_CENTER);
+
+	radius_label.set_label(_("Radius:"));
+	radius_label.set_halign(Gtk::ALIGN_START);
+	radius_label.set_valign(Gtk::ALIGN_CENTER);
+
 	influence_radius=manage(new Widget_Distance());
 	influence_radius->show();
 	influence_radius->set_digits(0);
@@ -241,48 +252,26 @@ StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 
 	load_settings();
 
-	// Set up the tool options dialog
-	title_label.set_label(_("Width Tool"));
-	Pango::AttrList list;
-	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
-	list.insert(attr);
-	title_label.set_attributes(list);
-	title_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	
-	relative_label.set_label(_("Relative Growth"));
-	relative_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	
-	relative_box.pack_start(relative_label);
-	relative_box.pack_end(relative_checkbutton, Gtk::PACK_SHRINK);
+	// Toolbox layout
+	options_grid.attach(title_label,
+		0, 0, 2, 1);
+	options_grid.attach(growth_label,
+		0, 1, 1, 1);
+	options_grid.attach(spin_delta,
+		1, 1, 1, 1);
+	options_grid.attach(radius_label,
+		0, 2, 1, 1);
+	options_grid.attach(*influence_radius,
+		1, 2, 1, 1);
+	options_grid.attach(relative_box,
+		0, 3, 2, 1);
 
-	growth_label.set_label(_("Growth:"));
-	growth_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
+	options_grid.set_vexpand(false);
+	options_grid.set_border_width(GAP*2);
+	options_grid.set_row_spacing(GAP);
+	options_grid.show_all();
+	options_grid.set_margin_bottom(0);
 
-	radius_label.set_label(_("Radius:"));
-	radius_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
-	
-	options_table.attach(title_label,
-		0, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0
-		);
-	options_table.attach(growth_label,
-		0, 1, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
-		);
-	options_table.attach(spin_delta,
-		1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
-		);
-	options_table.attach(radius_label,
-		0, 1, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
-		);
-	options_table.attach(*influence_radius,
-		1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
-		);
-	options_table.attach(relative_box,
-		0, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::EXPAND|Gtk::FILL, 0, 0
-		);
-
-	options_table.set_border_width(GAP*2);
-	options_table.set_row_spacings(GAP);
-	options_table.show_all();
 	refresh_tool_options();
 	App::dialog_tool_options->present();
 	// Turn off layer clicking
@@ -329,9 +318,9 @@ void
 StateWidth_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_table);
+	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Width Tool"));
-	App::dialog_tool_options->set_name("width");
+	App::dialog_tool_options->set_icon("tool_width_icon");
 }
 
 Smach::event_result
@@ -454,7 +443,7 @@ StateWidth_Context::AdjustWidth(handle<Duckmatic::Bezier> c, float t, Real mult,
 	synfig::ValueNode::Handle p1pvn(p1->get_value_desc().get_parent_value_node());
 	synfig::ValueNode::Handle p2pvn(p2->get_value_desc().get_parent_value_node());
 	// if the bezier position ducks are linkable valuenode children
-	if(p1pvn && p2pvn && p1pvn==p2pvn)
+	if(p1pvn && p1pvn->get_type() == type_list && p2pvn && p1pvn==p2pvn)
 	{
 		// we guess that the parent value node is a bline value node
 		synfig::ValueNode::Handle bezier_bline=p1pvn;
@@ -550,7 +539,7 @@ StateWidth_Context::event_mouse_handler(const Smach::event& x)
 		//if we're dragging get the difference in time between now and then
 		if(event.key == EVENT_WORKAREA_MOUSE_BUTTON_DRAG)
 		{
-			dtime = min((float)(1/15.0),(float)(clocktime()));
+			dtime = std::min((float)(1/15.0),(float)(clocktime()));
 		}
 		clocktime.reset();
 
@@ -567,7 +556,10 @@ StateWidth_Context::event_mouse_handler(const Smach::event& x)
 		if(event.pressure >= threshold)
 			c = get_work_area()->find_bezier(event.pos,scale*8,rad,&t);
 		//run algorithm on event.pos to get 2nd placement
-		if(!c.empty())
+		if(!c.empty()
+			&& c->p1
+			&& c->p1->get_value_desc().parent_is_value_node()
+			&& c->p1->get_value_desc().get_parent_value_node()->get_type() == type_list) // avoid Beziers for Bone Parenting
 		{
 			bezier<Point> curve;
 			Point p;
@@ -606,7 +598,7 @@ StateWidth_Context::event_mouse_handler(const Smach::event& x)
 			added = false;
 		}
 		//Affect the width changes here...
-		map<handle<Duck>,Real>::iterator i = changetable.begin();
+		std::map<handle<Duck>,Real>::iterator i = changetable.begin();
 		synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Sketch Width"));
 		for(; i != changetable.end(); ++i)
 		{

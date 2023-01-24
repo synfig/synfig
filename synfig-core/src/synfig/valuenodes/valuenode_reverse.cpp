@@ -1,8 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file ValueNode_Reverse.cpp
+/*!	\file valuenode_reverse.cpp
 **	\brief Implementation of the "Reverse" valuenode conversion.
-**
-**	$Id$
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -11,15 +9,20 @@
 **	Copyright (c) 2013 Konstantin Dmitriev
 **	Copyright (c) 2015 Max May
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -37,6 +40,7 @@
 #include <synfig/segment.h>
 #include <synfig/gradient.h>
 #include <synfig/blinepoint.h>
+#include <synfig/dashitem.h>
 
 #include "valuenode_bline.h"
 #include "valuenode_dilist.h"
@@ -48,7 +52,6 @@
 #include <synfig/general.h>
 #include <synfig/localization.h>
 #include <synfig/valuenode_registry.h>
-#include <ETL/misc>
 
 #include <algorithm>
 
@@ -56,15 +59,13 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Reverse, RELEASE_VERSION_1_0_2, "reverse", "Reverse")
+REGISTER_VALUENODE(ValueNode_Reverse, RELEASE_VERSION_1_0_2, "reverse", N_("Reverse"))
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -78,8 +79,7 @@ ValueNode_Reverse::ValueNode_Reverse(Type &x):
 ValueNode_Reverse::ValueNode_Reverse(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	Type &type(x.get_type());
 	if(x.empty()) {
 		set_link("link", ValueNode_Const::create(x));
@@ -108,7 +108,7 @@ ValueNode_Reverse::ValueNode_Reverse(const ValueBase &x):
 }
 
 ValueNode_Reverse*
-ValueNode_Reverse::create(const ValueBase &x)
+ValueNode_Reverse::create(const ValueBase& x, etl::loose_handle<Canvas>)
 {
 	return new ValueNode_Reverse(x);
 }
@@ -266,8 +266,8 @@ reverse_value(const ValueBase &value)
 ValueBase
 ValueNode_Reverse::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	return reverse_value((*link_)(t));
 }

@@ -2,21 +2,24 @@
 /*!	\file dock_info.cpp
 **	\brief Dock Info File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007 Chris Moore
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -41,7 +44,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -91,53 +93,53 @@ void studio::Dock_Info::on_mouse_move()
 }
 
 studio::Dock_Info::Dock_Info()
-:Dock_CanvasSpecific("info",_("Info"),Gtk::StockID("synfig-info"))
+:Dock_CanvasSpecific("info",_("Info"),"info_icon")
 {
 	set_use_scrolled(false);
 
-	Gtk::Grid *table = manage(new Gtk::Grid);
-	table->set_column_spacing(3);
+	Gtk::Grid *grid = manage(new Gtk::Grid);
+	grid->set_column_spacing(3);
 
-	//pos labels
+	// X and Y position labels
 	Gtk::Label *x_label = manage(new Gtk::Label());
-	x_label->set_markup(etl::strprintf("<b>%s</b>", _("X: ")));
+	x_label->set_markup(synfig::strprintf("<b>%s</b>", _("X: ")));
 	x_label->set_hexpand(false);
 	Gtk::Label *y_label = manage(new Gtk::Label());
-	y_label->set_markup(etl::strprintf("<b>%s</b>", _("Y: ")));
+	y_label->set_markup(synfig::strprintf("<b>%s</b>", _("Y: ")));
 	y_label->set_hexpand(false);
-	table->attach(*x_label, 0,0,1,1);
-	table->attach(*y_label, 0,1,1,1);
+	grid->attach(*x_label, 0, 0, 1, 1);
+	grid->attach(*y_label, 0, 1, 1, 1);
 
-	//pos
+	// X and Y position values
 	x.property_xalign() = 1.0;
 	y.property_xalign() = 1.0;
-	table->attach_next_to(x, *x_label, Gtk::POS_RIGHT, 1,1);
-	table->attach_next_to(y, *y_label, Gtk::POS_RIGHT, 1,1);
+	grid->attach_next_to(x, *x_label, Gtk::POS_RIGHT, 1, 1);
+	grid->attach_next_to(y, *y_label, Gtk::POS_RIGHT, 1, 1);
 
-	//separator
+	// Horizontal separator
 	Gtk::Label *separator1 = manage(new Gtk::Label("  "));
 	separator1->set_hexpand(true);
-	table->attach_next_to(*separator1, x, Gtk::POS_RIGHT, 1,4);
+	grid->attach_next_to(*separator1, x, Gtk::POS_RIGHT, 1, 4);
 
-	//color label
+	// Color labels
 	Gtk::Label *r_label = manage(new Gtk::Label());
-	r_label->set_markup(etl::strprintf("<b>%s</b>", _("R: ")));
+	r_label->set_markup(synfig::strprintf("<b>%s</b>", _("R: ")));
 	r_label->set_hexpand(false);
 	Gtk::Label *g_label = manage(new Gtk::Label());
-	g_label->set_markup(etl::strprintf("<b>%s</b>", _("G: ")));
+	g_label->set_markup(synfig::strprintf("<b>%s</b>", _("G: ")));
 	g_label->set_hexpand(false);
 	Gtk::Label *b_label = manage(new Gtk::Label());
-	b_label->set_markup(etl::strprintf("<b>%s</b>", _("B: ")));
+	b_label->set_markup(synfig::strprintf("<b>%s</b>", _("B: ")));
 	b_label->set_hexpand(false);
 	Gtk::Label *a_label = manage(new Gtk::Label());
-	a_label->set_markup(etl::strprintf("<b>%s</b>", _("A: ")));
+	a_label->set_markup(synfig::strprintf("<b>%s</b>", _("A: ")));
 	a_label->set_hexpand(false);
-	table->attach(*r_label, 3,0,1,1);
-	table->attach(*g_label, 3,1,1,1);
-	table->attach(*b_label, 3,2,1,1);
-	table->attach(*a_label, 3,3,1,1);
+	grid->attach(*r_label, 3, 0, 1, 1);
+	grid->attach(*g_label, 3, 1, 1, 1);
+	grid->attach(*b_label, 3, 2, 1, 1);
+	grid->attach(*a_label, 3, 3, 1, 1);
 
-	//color
+	// Color values
 	r.property_xalign() = 1.0f;
 	g.property_xalign() = 1.0f;
 	b.property_xalign() = 1.0f;
@@ -146,45 +148,52 @@ studio::Dock_Info::Dock_Info()
 	g.set_tooltip_text(_("Green component value of color\nThe value after gamma correction, if different, is given in brackets"));
 	b.set_tooltip_text(_("Blue component value of color\nThe value after gamma correction, if different, is given in brackets"));
 	a.set_tooltip_text(_("Alpha component value of color, i.e. opacity"));
-	table->attach_next_to(r, *r_label, Gtk::POS_RIGHT, 1,1);
-	table->attach_next_to(g, *g_label, Gtk::POS_RIGHT, 1,1);
-	table->attach_next_to(b, *b_label, Gtk::POS_RIGHT, 1,1);
-	table->attach_next_to(a, *a_label, Gtk::POS_RIGHT, 1,1);
+	grid->attach_next_to(r, *r_label, Gtk::POS_RIGHT, 1, 1);
+	grid->attach_next_to(g, *g_label, Gtk::POS_RIGHT, 1, 1);
+	grid->attach_next_to(b, *b_label, Gtk::POS_RIGHT, 1, 1);
+	grid->attach_next_to(a, *a_label, Gtk::POS_RIGHT, 1, 1);
 
 	Gtk::Label *separator2 = manage(new Gtk::Label(" "));
-	table->attach(*separator2, 0,4,8,1);
+	grid->attach(*separator2, 0, 4, 8, 1);
 
-	//Render Progress Bar
+	// Render Progress Bar
+	Gtk::Box *render_box = manage(new Gtk::Box());
 	Gtk::Label *render_progress_label = manage(new Gtk::Label());
-	render_progress_label->set_markup(etl::strprintf("<b>%s</b>", _("Render Progress: ")));
-	table->attach_next_to(*render_progress_label, *separator2, Gtk::POS_BOTTOM, 8,1);
+	Gtk::Overlay *overlay = manage(new Gtk::Overlay());
+
+	render_progress_label->set_markup(synfig::strprintf("<b>%s</b>", _("Render Progress:")));
 
 	// Render progress CSS ID
 	render_progress.set_name("render-progress");
-
-	table->attach_next_to(render_progress, *render_progress_label, Gtk::POS_BOTTOM, 7,1);
 	render_progress.set_hexpand(true);
 	render_progress.set_vexpand(false);
-	render_progress.set_show_text(true);
-	render_progress.set_text(strprintf("%.1f%%", 0.0));
+	render_progress.set_margin_end(5);
+	render_progress.set_valign(Gtk::ALIGN_CENTER);
 	render_progress.set_fraction(0.0);
 
-	stop_button.set_label(_("Stop rendering"));
+	render_percentage.set_text(strprintf("%.1f%%", 0.0));
+
+	overlay->add(render_progress);
+	overlay->add_overlay(render_percentage);
+
+	stop_button.set_image_from_icon_name("process-stop", Gtk::IconSize::from_name("synfig-small_icon"));
+	stop_button.set_valign(Gtk::ALIGN_CENTER);
 	stop_button.signal_clicked().connect(sigc::mem_fun(*this, &studio::Dock_Info::on_stop_button_clicked));
 
-	table->attach_next_to(stop_button, render_progress, Gtk::POS_BOTTOM, 7, 1);
+	render_box->pack_start(*overlay, true, true, 0);
+	render_box->pack_start(stop_button, false, false, 0);
+	grid->attach_next_to(*render_progress_label, *separator2, Gtk::POS_BOTTOM, 8, 1);
+	grid->attach_next_to(*render_box, *render_progress_label, Gtk::POS_BOTTOM, 7, 1);
 
-	table->set_margin_start(5);
-	table->set_margin_end(5);
-	table->set_margin_top(5);
-	table->set_margin_bottom(5);
+	grid->set_margin_start(5);
+	grid->set_margin_end(5);
+	grid->set_margin_top(5);
+	grid->set_margin_bottom(5);
+	grid->show_all();
 
-	
-	table->show_all();
+	add(*grid);
 
-	add(*table);
-	
-	//Render progress
+	// Render progress
 	set_n_passes_requested(1); //Default
 	set_n_passes_pending  (0); //Default
 	set_render_progress (0.0); //Default, 0.0%
@@ -242,7 +251,7 @@ void studio::Dock_Info::set_render_progress(float value)
 	float already_done = coeff * (float)(n_passes_requested - n_passes_pending -1); 
 	float r            = ( coeff * value ) + already_done;
 
-	render_progress.set_text( strprintf( "%.1f%%", r*100 ));
+	render_percentage.set_text(strprintf("%.1f%%", r*100));
 	render_progress.set_fraction(r);
 
 	if(r > 0.0 && r < 1.0)

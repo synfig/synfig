@@ -32,27 +32,11 @@ for which a new license (GPL+exception) is in place.
 #include <stdio.h>
 #include <fcntl.h>
 #include <io.h>
-using namespace std;
 
 #define MAX_LINES 500
 
 #include <windows.h>
 #include <wincon.h>
-
-bool consoleOptionEnabled(int argc, char* argv[])
-{
-	bool value = false;
-	for (int i = 0; i < argc; i++)
-	{
-		if (strcmp(argv[i], "--console") == 0 ||
-			strcmp(argv[i], "-c") == 0)
-		{
-			value = true;
-			break;
-		}
-	}
-	return value;
-}
 
 void redirectIOToConsole()
 {
@@ -73,22 +57,22 @@ void redirectIOToConsole()
 	hConHandle = _open_osfhandle((intptr_t) lStdHandle, _O_TEXT);
 	fp = _fdopen( hConHandle, "w" );
 	*stdout = *fp;
-	setvbuf( stdout, NULL, _IONBF, 0 );
+	setvbuf( stdout, nullptr, _IONBF, 0 );
 	// redirect unbuffered STDIN to the console
 	lStdHandle = GetStdHandle(STD_INPUT_HANDLE);
 	hConHandle = _open_osfhandle((intptr_t) lStdHandle, _O_TEXT);
 	fp = _fdopen( hConHandle, "r" );
 	*stdin = *fp;
-	setvbuf( stdin, NULL, _IONBF, 0 );
+	setvbuf( stdin, nullptr, _IONBF, 0 );
 	// redirect unbuffered STDERR to the console
 	lStdHandle = GetStdHandle(STD_ERROR_HANDLE);
 	hConHandle = _open_osfhandle((intptr_t) lStdHandle, _O_TEXT);
 	fp = _fdopen( hConHandle, "w" );
 	*stderr = *fp;
-	setvbuf( stderr, NULL, _IONBF, 0 );
+	setvbuf( stderr, nullptr, _IONBF, 0 );
 	// make cout, wcout, cin, wcin, wcerr, cerr, wclog and clog 
 	// point to console as well
-	ios::sync_with_stdio();
+	std::ios::sync_with_stdio();
 }
 
 #endif /* WIN32 */

@@ -1,9 +1,7 @@
-# $Id$
-
 # -- I N I T --------------------------------------------------
 
 AC_PREREQ([2.60])
-AC_INIT([Synfig Studio],[1.5.0],[https://github.com/synfig/synfig/issues],[synfigstudio])
+AC_INIT([Synfig Studio],[1.5.1],[https://github.com/synfig/synfig/issues],[synfigstudio])
 AC_REVISION()
 
 AM_SILENT_RULES([yes])
@@ -39,6 +37,7 @@ AC_PROG_CXXCPP
 AC_PROG_INSTALL
 AC_LANG([C++])
 AX_CXX_COMPILE_STDCXX([11], [noext])
+CXXFLAGS="$CXXFLAGS -std=gnu++11"
 
 AC_ARG_OPTIMIZATION
 AC_ARG_DEBUG
@@ -51,14 +50,6 @@ AC_ARG_WARNINGS
 AC_ARG_PROFILE_ARCS
 AC_ARG_BRANCH_PROBABILITIES
 AC_ARG_PROFILING
-
-AC_ARG_ENABLE(g5opt,[
-  --enable-g5opt           enable optimizations specific to G5 proc],[
-    G5OPTFLAGS="-mpowerpc-gpopt -mno-multiple -mno-update -mcpu=970  -mtune=970 -falign-loops=16 -falign-functions=16"
-],
-[
-    G5OPTFLAGS=
-])
 
 AC_WIN32_QUIRKS
 
@@ -101,8 +92,8 @@ PKG_CHECK_MODULES(GTKMM, gtkmm-3.0,,[
 AC_SUBST(GTKMM_CFLAGS)
 AC_SUBST(GTKMM_LIBS)
 
-PKG_CHECK_MODULES(SYNFIG, [synfig >= 1.5.0] [ETL >= 1.5.0] sigc++-2.0,,[
-    AC_MSG_ERROR([ ** Unable to set up dependent libraries (synfig >= 1.5.0, ETL >= 1.5.0, sigc++-2.0) ])
+PKG_CHECK_MODULES(SYNFIG, [synfig >= 1.5.1] [ETL >= 1.5.1] sigc++-2.0,,[
+    AC_MSG_ERROR([ ** Unable to set up dependent libraries (synfig >= 1.5.1, ETL >= 1.5.1, sigc++-2.0) ])
 ])
 AC_SUBST(SYNFIG_CFLAGS)
 AC_SUBST(SYNFIG_LIBS)

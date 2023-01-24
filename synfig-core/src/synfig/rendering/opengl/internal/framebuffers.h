@@ -2,20 +2,23 @@
 /*!	\file synfig/rendering/opengl/internal/framebuffers.h
 **	\brief Framebuffers Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -83,7 +86,7 @@ public:
 		RenderbufferLock(const RenderbufferLock &other): renderbuffer()
 			{ *this = other; }
 		~RenderbufferLock()
-			{ set(NULL); }
+			{ set(nullptr); }
 		RenderbufferLock& operator = (const RenderbufferLock &other)
 			{ set(other.renderbuffer); return *this; }
 		GLuint get_id() const
@@ -122,7 +125,7 @@ public:
 		FramebufferLock(const FramebufferLock &other): framebuffer()
 			{ *this = other; }
 		~FramebufferLock()
-			{ set(NULL); }
+			{ set(nullptr); }
 		FramebufferLock& operator = (const FramebufferLock &other)
 			{ set(other.framebuffer); return *this; }
 		GLuint get_id() const

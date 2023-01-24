@@ -2,20 +2,23 @@
 /*!	\file synfig/rendering/software/function/blur.h
 **	\brief Blur Header
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2015 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -31,9 +34,9 @@
 
 #include "../../primitive/blur.h"
 
-#include <synfig/vector.h>
-#include <synfig/complex.h>
+#include <synfig/rect.h>
 #include <synfig/surface.h>
+#include <synfig/vector.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -58,7 +61,7 @@ public:
 		const synfig::Surface *src;
 		VectorInt src_offset;
 		RectInt src_rect;
-		rendering::Blur::Type type;
+		rendering::Blur::Type type = rendering::Blur::BOX;
 		Vector size;
 		Vector amplified_size;
 		VectorInt extra_size;

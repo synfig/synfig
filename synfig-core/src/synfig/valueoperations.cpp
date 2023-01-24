@@ -2,20 +2,23 @@
 /*!	\file valueoperations.cpp
 **	\brief Implementation of common operations with ValueBase.
 **
-**	$Id$
-**
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -39,8 +42,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -226,7 +227,7 @@ types_namespace::TypeWeightedValueBase* ValueAverage::get_weighted_type_for(Type
 	for(unsigned int i = 0; i < sizeof(allowed_types)/sizeof(allowed_types[0]); ++i)
 		if (allowed_types[i]->get_contained_type() == type)
 			return allowed_types[i];
-	return NULL;
+	return nullptr;
 }
 
 Type& ValueAverage::get_type_from_weighted(Type& type)
@@ -240,7 +241,7 @@ Type& ValueAverage::get_type_from_weighted(Type& type)
 Type& ValueAverage::convert_to_weighted_type(Type &type)
 {
 	Type* t = get_weighted_type_for(type);
-	return t == NULL ? type_nil : *t;
+	return t? *t : type_nil;
 }
 
 bool ValueAverage::check_weighted_type(Type& type) {
@@ -262,7 +263,7 @@ ValueBase ValueAverage::average_weighted(const ValueBase &weighted_list, const V
 	for(ValueBase::List::const_iterator i = list.begin(); i != list.end(); ++i) {
 		types_namespace::TypeWeightedValueBase *t =
 			dynamic_cast<types_namespace::TypeWeightedValueBase *>(&(i->get_type()));
-		if (t == NULL) continue;
+		if (!t) continue;
 		if (!check_weighted_type(*t)) continue;
 		weights_list.push_back( t->extract_weight(*i) );
 		values_list.push_back( t->extract_value(*i) );
@@ -281,7 +282,7 @@ void ValueAverage::set_average_value_weighted(ValueBase &weighted_list, const Va
 	if (list.empty()) return;
 	types_namespace::TypeWeightedValueBase *t =
 		dynamic_cast<types_namespace::TypeWeightedValueBase *>(&(list.front().get_type()));
-	if (t == NULL) return;
+	if (!t) return;
 	if (!check_weighted_type(*t)) return;
 
 	ValueBase::List values_list;

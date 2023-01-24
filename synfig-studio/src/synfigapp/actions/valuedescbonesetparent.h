@@ -1,21 +1,24 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file ValueDescBoneSetParent.h
+/*!	\file synfigapp/actions/valuedescbonesetparent.h
 **	\brief Template File
-**
-**	$Id$
 **
 **	\legal
 **  Copyright (c) 2020 Aditya Abhiram J
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -28,12 +31,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfigapp/action.h>
-#include <synfigapp/value_desc.h>
-#include <synfig/valuenode.h>
-#include <synfig/valuenodes/valuenode_dynamiclist.h>
-#include <synfig/layers/layer_skeleton.h>
-#include <synfig/canvas.h>
-#include <list>
+#include <synfig/valuenodes/valuenode_bone.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -46,14 +44,15 @@ namespace synfigapp {
 namespace Action {
 
 class ValueDescBoneSetParent :
-	public Undoable,
-	public CanvasSpecific
+	public Super
 {
 private:
 	ValueDesc value_desc;
-	synfig::ValueNode::Handle child;
+	synfig::ValueNode_Bone::Handle active_bone_;
 	synfig::Time time;
-	synfig::ValueNode::Handle prev_parent;
+
+	void add_action_set_interpolation(synfig::ValueNode_Bone::Handle bone_valuenode, const char *link_name, synfig::Interpolation interpolation);
+	void add_action_set_valuedesc(synfig::ValueNode_Bone::Handle bone_valuenode, const char *link_name, const synfig::ValueBase& value);
 
 public:
 
@@ -65,8 +64,7 @@ public:
 	virtual bool set_param(const synfig::String& name, const Param &);
 	virtual bool is_ready()const;
 
-	virtual void perform();
-	virtual void undo();
+	virtual void prepare();
 
 	ACTION_MODULE_EXT
 };

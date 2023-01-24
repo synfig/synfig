@@ -2,20 +2,23 @@
 /*!	\file uimanager.cpp
 **	\brief Template File
 **
-**	$Id$
-**
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **
-**	This package is free software; you can redistribute it and/or
-**	modify it under the terms of the GNU General Public License as
-**	published by the Free Software Foundation; either version 2 of
-**	the License, or (at your option) any later version.
+**	This file is part of Synfig.
 **
-**	This package is distributed in the hope that it will be useful,
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
 **	but WITHOUT ANY WARRANTY; without even the implied warranty of
-**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-**	General Public License for more details.
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
 */
 /* ========================================================================= */
@@ -41,8 +44,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace std;
-using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
 
@@ -59,16 +60,16 @@ ConsoleUIInterface::confirmation(
 			Response dflt
 )
 {
-	cout << message.c_str() << endl;
-	cout << details.c_str();
+	std::cout << message.c_str() << std::endl;
+	std::cout << details.c_str();
 
 	if (dflt == RESPONSE_OK)
-		cout << "(" << confirm.c_str() << "/" << cancel.c_str() << ")" << endl;
+		std::cout << "(" << confirm.c_str() << "/" << cancel.c_str() << ")" << std::endl;
 	else
-		cout << "(" << cancel.c_str() << "/" << confirm.c_str() << ")" << endl;
+		std::cout << "(" << cancel.c_str() << "/" << confirm.c_str() << ")" << std::endl;
 
-	string resp;
-	cin >> resp;
+	std::string resp;
+	std::cin >> resp;
 
 	if (dflt == RESPONSE_OK)
 	{
@@ -90,16 +91,17 @@ ConsoleUIInterface::yes_no_cancel(
 			const std::string &/*button1*/,
 			const std::string &/*button2*/,
 			const std::string &/*button3*/,
+			bool hasDestructiveAction,
 			Response dflt
 )
 {
-	cout<<message.c_str()<<": "<<details.c_str()<<' ';
+	std::cout<<message.c_str()<<": "<<details.c_str()<<' ';
 	if(dflt==RESPONSE_NO)
-		cout<<_("(no/yes)")<<endl;
+		std::cout<<_("(no/yes)")<<std::endl;
 	else
-		cout<<_("(yes/no)")<<endl;
-	string resp;
-	cin>>resp;
+		std::cout<<_("(yes/no)")<<std::endl;
+	std::string resp;
+	std::cin>>resp;
 
 	if(dflt==RESPONSE_NO)
 	{
@@ -121,7 +123,7 @@ ConsoleUIInterface::yes_no_cancel(
 bool
 ConsoleUIInterface::task(const std::string &task)
 {
-	cout<<task.c_str()<<endl;
+	std::cout<<task.c_str()<<std::endl;
 	return true;
 }
 
@@ -129,7 +131,7 @@ ConsoleUIInterface::task(const std::string &task)
 bool
 ConsoleUIInterface::error(const std::string &task)
 {
-	cout<<_("error: ")<<task.c_str()<<endl;
+	std::cout<<_("error: ")<<task.c_str()<<std::endl;
 	return true;
 }
 
@@ -137,7 +139,7 @@ ConsoleUIInterface::error(const std::string &task)
 bool
 ConsoleUIInterface::warning(const std::string &task)
 {
-	cout<<_("warning: ")<<task.c_str()<<endl;
+	std::cout<<_("warning: ")<<task.c_str()<<std::endl;
 	return true;
 }
 
