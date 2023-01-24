@@ -373,7 +373,7 @@ synfigapp::Main::find_input_device(const synfig::String id)
 	for(iter=input_devices_.begin();iter!=input_devices_.end();++iter)
 		if(id.compare(offset, std::string::npos, (*iter)->get_id()) == 0)
 			return *iter;
-	return 0;
+	return nullptr;
 }
 
 InputDevice::Handle
@@ -381,9 +381,9 @@ synfigapp::Main::select_input_device(const synfig::String id)
 {
 	InputDevice::Handle input_device(find_input_device(id));
 	if(!input_device)
-		return 0;
+		return nullptr;
 	if(!select_input_device(input_device))
-		return 0;
+		return nullptr;
 	return input_device;
 }
 
