@@ -260,7 +260,7 @@ private:
 	sigc::signal<void, GdkDevice*> signal_input_device_changed_;
 	sigc::signal<void> signal_popup_menu_;
 	sigc::signal<void, synfig::Point> signal_user_click_[5]; //!< One signal per button
-	sigc::signal<void, etl::handle<synfig::Layer> > signal_layer_selected_; //!< Signal for when the user clicks on a layer
+	sigc::signal<void, synfig::Layer::Handle> signal_layer_selected_; //!< Signal for when the user clicks on a layer
 
 public:
 	sigc::signal<void>& signal_rendering() { return signal_rendering_; }
@@ -271,7 +271,7 @@ public:
 	sigc::signal<void, GdkDevice*>& signal_input_device_changed() { return signal_input_device_changed_; }
 	sigc::signal<void> &signal_popup_menu() { return signal_popup_menu_; }
 	sigc::signal<void, synfig::Point> &signal_user_click(int button=0){ return signal_user_click_[button]; } //!< One signal per button (5 buttons)
-	sigc::signal<void, etl::handle<synfig::Layer> >& signal_layer_selected() { return signal_layer_selected_; }
+	sigc::signal<void, synfig::Layer::Handle>& signal_layer_selected() { return signal_layer_selected_; }
 
 private:
 	/*

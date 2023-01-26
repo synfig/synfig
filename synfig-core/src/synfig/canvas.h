@@ -278,8 +278,8 @@ private:
 	//! Group Changed
 	sigc::signal<void,String> signal_group_changed_;
 
-	sigc::signal<void,String,etl::handle<synfig::Layer> > signal_group_pair_added_;
-	sigc::signal<void,String,etl::handle<synfig::Layer> > signal_group_pair_removed_;
+	sigc::signal<void,String,etl::handle<Layer>> signal_group_pair_added_;
+	sigc::signal<void,String,etl::handle<Layer>> signal_group_pair_removed_;
 
 	//!	RendDesc Changed
 	sigc::signal<void> signal_rend_desc_changed_;
@@ -315,8 +315,8 @@ private:
 
 public:
 
-	sigc::signal<void,String,etl::handle<synfig::Layer> >& signal_group_pair_added() { return signal_group_pair_added_; }
-	sigc::signal<void,String,etl::handle<synfig::Layer> >& signal_group_pair_removed() { return signal_group_pair_removed_; }
+	sigc::signal<void,String,etl::handle<Layer>>& signal_group_pair_added() { return signal_group_pair_added_; }
+	sigc::signal<void,String,etl::handle<Layer>>& signal_group_pair_removed() { return signal_group_pair_removed_; }
 
 	//!	Group Added
 	sigc::signal<void,String>& signal_group_added() { return signal_group_added_; }

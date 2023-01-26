@@ -232,7 +232,7 @@ Context::get_full_bounding_rect()const
 */
 
 
-etl::handle<Layer>
+Layer::Handle
 Context::hit_check(const Point &pos)const
 {
 	Context context(*this);

@@ -81,7 +81,7 @@ void PreProcessSegment(studio::PointList &segment)
 }
 
 
-etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
+synfig::Layer::Handle BezierToOutline(studio::PointList segment)
 {
   int segment_size = segment.size();
   synfig::Layer::Handle layer(synfig::Layer::create("outline"));
@@ -412,7 +412,7 @@ public:
 
   Length lengthOf(unsigned int a, unsigned int b);
   void addMiddlePoints();
-  etl::handle<synfig::Layer> operator()(std::vector<unsigned int> *indices);
+  synfig::Layer::Handle operator()(std::vector<unsigned int> *indices);
 
   // Length construction methods
   bool parametrize(unsigned int a, unsigned int b);
@@ -468,7 +468,7 @@ inline void SequenceConverter::addMiddlePoints()
 
 //--------------------------------------------------------------------------
 
-etl::handle<synfig::Layer> SequenceConverter::operator()(std::vector<unsigned int> *indices) {
+synfig::Layer::Handle SequenceConverter::operator()(std::vector<unsigned int> *indices) {
   // Prepare Sequence
   inputIndices = indices;
   addMiddlePoints();
@@ -522,7 +522,7 @@ etl::handle<synfig::Layer> SequenceConverter::operator()(std::vector<unsigned in
   }
   controlPoints[0] = middleAddedSequence[0];
   
-  etl::handle<synfig::Layer> res = BezierToOutline(controlPoints);
+  synfig::Layer::Handle res = BezierToOutline(controlPoints);
 
   return res;
 }
@@ -879,11 +879,11 @@ bool SequenceConverter::penalty(unsigned int a, unsigned int b, Length &len)
 }
 
 //--------------------------------------------------------------------------
-inline etl::handle<synfig::Layer> convert(const Sequence &s, double penalty) 
+inline synfig::Layer::Handle convert(const Sequence &s, double penalty) 
 {
   SkeletonGraph *graph = s.m_graphHolder;
 
-  etl::handle<synfig::Layer> result;
+  synfig::Layer::Handle result;
 
   // First, we simplify the skeleton sequences found
   std::vector<unsigned int> reducedIndices;
@@ -936,7 +936,7 @@ inline etl::handle<synfig::Layer> convert(const Sequence &s, double penalty)
 // Stroke. 
 // In synfig we will be using outline layer instead of TStroke  
 
-void studio::conversionToStrokes(std::vector< etl::handle<synfig::Layer> > &strokes, VectorizerCoreGlobals &g,const etl::handle<synfig::Layer_Bitmap> &image) 
+void studio::conversionToStrokes(std::vector<synfig::Layer::Handle> &strokes, VectorizerCoreGlobals &g,const etl::handle<synfig::Layer_Bitmap> &image) 
 {
   SequenceList &singleSequences           = g.singleSequences;
   JointSequenceGraphList &organizedGraphs = g.organizedGraphs;

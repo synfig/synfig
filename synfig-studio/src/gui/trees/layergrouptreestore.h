@@ -132,8 +132,8 @@ private:
 	virtual bool  row_drop_possible_vfunc (const TreeModel::Path& dest, const Gtk::SelectionData& selection_data)const;
 
 
-	void on_group_pair_added(synfig::String group, etl::handle<synfig::Layer> layer);
-	void on_group_pair_removed(synfig::String group, etl::handle<synfig::Layer> layer);
+	void on_group_pair_added(synfig::String group, synfig::Layer::Handle layer);
+	void on_group_pair_removed(synfig::String group, synfig::Layer::Handle layer);
 
 	void on_activity();
 
