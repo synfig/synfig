@@ -154,7 +154,7 @@ ValueNode::on_changed()
 }
 
 int
-ValueNode::replace(etl::handle<ValueNode> x)
+ValueNode::replace(ValueNode::Handle x)
 {
 	if(x.get()==this)
 		return 0;

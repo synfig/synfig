@@ -2257,7 +2257,7 @@ studio::WorkArea::set_zoom(float z)
 }
 
 void
-WorkArea::set_selected_value_node(etl::loose_handle<synfig::ValueNode> x)
+WorkArea::set_selected_value_node(synfig::ValueNode::LooseHandle x)
 {
 	if(x!=selected_value_node_)
 	{
@@ -2267,7 +2267,7 @@ WorkArea::set_selected_value_node(etl::loose_handle<synfig::ValueNode> x)
 }
 
 void
-WorkArea::set_active_bone_value_node(etl::loose_handle<synfig::ValueNode> x)
+WorkArea::set_active_bone_value_node(synfig::ValueNode::LooseHandle x)
 {
 	if(x!=active_bone_)
 	{

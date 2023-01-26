@@ -178,7 +178,7 @@ private:
 	synfig::Point previous_focus;
 
 	//! Active Bone
-	etl::loose_handle<synfig::ValueNode> active_bone_;
+	synfig::ValueNode::LooseHandle active_bone_;
 	bool highlight_active_bone;
 
 	//! This state is true if ruler should be shown
@@ -222,7 +222,7 @@ private:
 	// render future and past frames in background
 	bool background_rendering;
 
-	etl::loose_handle<synfig::ValueNode> selected_value_node_;
+	synfig::ValueNode::LooseHandle selected_value_node_;
 
 	bool allow_duck_clicks;
 	bool allow_bezier_clicks;
@@ -280,7 +280,7 @@ private:
 
 	void set_drag_mode(DragMode mode);
 
-	void set_active_bone_value_node(etl::loose_handle<synfig::ValueNode> x);
+	void set_active_bone_value_node(synfig::ValueNode::LooseHandle x);
 
 public:
 	/*
@@ -292,7 +292,7 @@ public:
 
 	void view_window_changed() { signal_view_window_changed()(); }
 
-	const etl::loose_handle<synfig::ValueNode>& get_selected_value_node() { return  selected_value_node_; }
+	const synfig::ValueNode::LooseHandle& get_selected_value_node() { return  selected_value_node_; }
 	const synfig::Point& get_drag_point()const { return drag_point; }
 
 	synfig::VectorInt get_windows_offset() const;
@@ -322,9 +322,9 @@ public:
 	void set_background_rendering(bool x);
 	bool get_background_rendering() const { return background_rendering; }
 
-	void set_selected_value_node(etl::loose_handle<synfig::ValueNode> x);
+	void set_selected_value_node(synfig::ValueNode::LooseHandle x);
 
-	const etl::loose_handle<synfig::ValueNode>& get_active_bone_value_node(){return active_bone_;}
+	const synfig::ValueNode::LooseHandle& get_active_bone_value_node(){return active_bone_;}
 	bool get_active_bone_display(){return highlight_active_bone;}
 	void set_active_bone_display(bool x){highlight_active_bone=x;}
 

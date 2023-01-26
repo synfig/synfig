@@ -160,7 +160,7 @@ etl::handle<synfig::Layer> BezierToOutline(studio::PointList segment)
   
   etl::handle<synfig::ValueNode_BLine> bline_value_node; 
   etl::handle<synfig::ValueNode_DynamicList> value_node;
-  etl::handle<synfig::ValueNode> vn;
+  synfig::ValueNode::Handle vn;
 
 	vn=value_node=bline_value_node=synfig::ValueNode_BLine::create(bline_point_list, canvas);
   layer->connect_dynamic_param("bline",vn);

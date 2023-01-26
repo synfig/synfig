@@ -1863,8 +1863,8 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 
 	DEBUG_LOG("SYNFIG_DEBUG_LOAD_CANVAS", "%s:%d creating linkable '%s' type '%s'\n", __FILE__, __LINE__, element->get_name().c_str(), type.description.name.c_str());
 	handle<LinkableValueNode> value_node=ValueNodeRegistry::create(element->get_name(),type);
- 	//handle<ValueNode> c[value_node->link_count()]; changed because of clang complain
-	std::vector<handle<ValueNode> > c(value_node->link_count());
+	//ValueNode::Handle c[value_node->link_count()]; changed because of clang complain
+	std::vector<ValueNode::Handle> c(value_node->link_count());
 
 	if(!value_node)
 	{
@@ -2537,11 +2537,11 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 	return value_node;
 }
 
-handle<ValueNode>
+ValueNode::Handle
 CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 {
 	DEBUG_LOG("SYNFIG_DEBUG_LOAD_CANVAS", "%s:%d parse_value_node\n", __FILE__, __LINE__);
-	handle<ValueNode> value_node;
+	ValueNode::Handle value_node;
 	assert(element);
 
 	GUID guid;
@@ -2860,7 +2860,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 				else
 				try
 				{
-					handle<ValueNode> value_node=canvas->surefind_value_node(str);
+					ValueNode::Handle value_node=canvas->surefind_value_node(str);
 					if(PlaceholderValueNode::Handle::cast_dynamic(value_node))
 						throw Exception::IDNotFound("parse_layer()");
 
@@ -2925,7 +2925,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 			}
 
 			ValueBase data;
-			handle<ValueNode> value_node;
+			ValueNode::Handle value_node;
 
 			// If we recognize the element name as a
 			// ValueBase, then treat is at one

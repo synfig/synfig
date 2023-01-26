@@ -158,25 +158,25 @@ public:	// Signal Interface
 	//sigc::signal<void>& signal_dirty_preview() { return signal_dirty_preview_; }
 	sigc::signal<void>& signal_dirty_preview() { return get_canvas()->signal_dirty(); }
 
-	sigc::signal<void,etl::handle<synfig::ValueNode>,etl::handle<synfig::ValueNode> >&
+	sigc::signal<void,synfig::ValueNode::Handle,synfig::ValueNode::Handle>&
 		signal_value_node_child_added() { return get_canvas()->signal_value_node_child_added(); }
-	sigc::signal<void,etl::handle<synfig::ValueNode>,etl::handle<synfig::ValueNode> >&
+	sigc::signal<void,synfig::ValueNode::Handle,synfig::ValueNode::Handle>&
 		signal_value_node_child_removed() { return get_canvas()->signal_value_node_child_removed(); }
 
 	//! Signal called when a ValueNode has changed
-	sigc::signal<void,etl::handle<synfig::ValueNode> >& signal_value_node_added() { return signal_value_node_added_; }
+	sigc::signal<void,synfig::ValueNode::Handle>& signal_value_node_added() { return signal_value_node_added_; }
 
 	//! Signal called when a ValueNode has been deleted
-	sigc::signal<void,etl::handle<synfig::ValueNode> >& signal_value_node_deleted() { return signal_value_node_deleted_; }
+	sigc::signal<void,synfig::ValueNode::Handle>& signal_value_node_deleted() { return signal_value_node_deleted_; }
 
 	//! Signal called when a ValueNode has been changed
-	sigc::signal<void,etl::handle<synfig::ValueNode> >& signal_value_node_changed() { return get_canvas()->signal_value_node_changed(); }
+	sigc::signal<void,synfig::ValueNode::Handle>& signal_value_node_changed() { return get_canvas()->signal_value_node_changed(); }
 
 	//! Signal called when a ValueDesc has been set
 	sigc::signal<void,synfigapp::ValueDesc,synfig::ValueBase>& signal_value_desc_set() { return signal_value_desc_set_; }
 
 	//! Signal called when a ValueNode has been renamed
-	sigc::signal<void,etl::handle<synfig::ValueNode> >& signal_value_node_renamed() { return get_canvas()->signal_value_node_renamed(); }
+	sigc::signal<void,synfig::ValueNode::Handle>& signal_value_node_renamed() { return get_canvas()->signal_value_node_renamed(); }
 
 	//! Signal called when the mode has changed
 	sigc::signal<void,Mode> signal_mode_changed() { return signal_mode_changed_; }

@@ -312,7 +312,7 @@ Layer::dynamic_param_changed(const String &param)
 }
 
 bool
-Layer::connect_dynamic_param(const String& param, etl::loose_handle<ValueNode> value_node)
+Layer::connect_dynamic_param(const String& param, ValueNode::LooseHandle value_node)
 {
 	if (!value_node) return disconnect_dynamic_param(param);
 

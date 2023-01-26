@@ -520,7 +520,7 @@ LayerParamTreeStore::refresh_row(Gtk::TreeModel::Row &row)
 		}
 	}
 
-	//handle<ValueNode> value_node=row[model.value_node];
+	//ValueNode::Handle value_node=row[model.value_node];
 	//if(value_node)
 	{
 		CanvasTreeStore::refresh_row(row);

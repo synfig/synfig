@@ -301,13 +301,13 @@ private:
 
 
 	//!	ValueBasenode Changed
-	sigc::signal<void, etl::handle<ValueNode> > signal_value_node_changed_;
+	sigc::signal<void, ValueNode::Handle> signal_value_node_changed_;
 	//!	ValueBasenode Renamed
-	sigc::signal<void, etl::handle<ValueNode> > signal_value_node_renamed_;
+	sigc::signal<void, ValueNode::Handle> signal_value_node_renamed_;
 	//!	Child Value Node Added. Used in Dynamic List Value Nodes
-	sigc::signal<void, etl::handle<ValueNode>, etl::handle<ValueNode> > signal_value_node_child_added_;
+	sigc::signal<void, ValueNode::Handle, ValueNode::Handle> signal_value_node_child_added_;
 	//!	Child Value Node Removed. Used in Dynamic List Value Nodes
-	sigc::signal<void, etl::handle<ValueNode>, etl::handle<ValueNode> > signal_value_node_child_removed_;
+	sigc::signal<void, ValueNode::Handle, ValueNode::Handle> signal_value_node_child_removed_;
 
 	/*
  -- ** -- S I G N A L   I N T E R F A C E -------------------------------------
@@ -343,20 +343,20 @@ public:
 	sigc::signal<void>& signal_meta_data_changed(const String& key) { return signal_map_meta_data_changed_[key]; }
 
 	//! Value Node Changed
-	sigc::signal<void, etl::handle<ValueNode> >& signal_value_node_changed() { return signal_value_node_changed_; }
+	sigc::signal<void, ValueNode::Handle>& signal_value_node_changed() { return signal_value_node_changed_; }
 	//! Value Node Renamed
-	sigc::signal<void, etl::handle<ValueNode> >& signal_value_node_renamed() { return signal_value_node_renamed_; }
+	sigc::signal<void, ValueNode::Handle>& signal_value_node_renamed() { return signal_value_node_renamed_; }
 
 	//! Dirty
 	sigc::signal<void>& signal_dirty() { return signal_changed();	}
 
 	//! Child Value Node Added
-	sigc::signal<void, etl::handle<ValueNode>, etl::handle<ValueNode> >& signal_value_node_child_added() { return signal_value_node_child_added_; }
+	sigc::signal<void, ValueNode::Handle, ValueNode::Handle>& signal_value_node_child_added() { return signal_value_node_child_added_; }
 
 	//! Child Value Node Removed
-	sigc::signal<void, etl::handle<ValueNode>, etl::handle<ValueNode> >& signal_value_node_child_removed() { return signal_value_node_child_removed_; }
+	sigc::signal<void, ValueNode::Handle, ValueNode::Handle>& signal_value_node_child_removed() { return signal_value_node_child_removed_; }
 
-	void invoke_signal_value_node_child_removed(etl::handle<ValueNode>, etl::handle<ValueNode>);
+	void invoke_signal_value_node_child_removed(ValueNode::Handle, ValueNode::Handle);
 
 	/*
  --	** -- C O N S T R U C T O R S ---------------------------------------------

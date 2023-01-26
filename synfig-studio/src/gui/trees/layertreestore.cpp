@@ -919,7 +919,7 @@ LayerTreeStore::set_row_layer(Gtk::TreeRow &row, const synfig::Layer::Handle &ha
 		}
 
 		/*
-		etl::handle<ValueNode> value_node;
+		ValueNode::Handle value_node;
 		if(handle.constant()->dynamic_param_list().count(iter->get_name()))
 			value_node=handle->dynamic_param_list()[iter->get_name()];
 

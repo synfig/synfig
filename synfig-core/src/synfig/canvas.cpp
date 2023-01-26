@@ -1509,7 +1509,7 @@ Canvas::show_structure(int i) const
 // the container is a ValueNode_{Static,Dynamic}List
 // the content is the entry
 void
-Canvas::invoke_signal_value_node_child_removed(etl::handle<ValueNode> container, etl::handle<ValueNode> content)
+Canvas::invoke_signal_value_node_child_removed(ValueNode::Handle container, ValueNode::Handle content)
 {
 	signal_value_node_child_removed()(container, content);
 	Canvas::Handle canvas(this);
