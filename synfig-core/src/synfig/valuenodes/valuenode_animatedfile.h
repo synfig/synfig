@@ -61,7 +61,7 @@ public:
 	typedef etl::handle<ValueNode_AnimatedFile> Handle;
 	typedef etl::handle<const ValueNode_AnimatedFile> ConstHandle;
 
-	static ValueNode_AnimatedFile* create(const ValueBase& x, etl::loose_handle<Canvas> canvas=nullptr);
+	static ValueNode_AnimatedFile* create(const ValueBase& x, Canvas::LooseHandle canvas=nullptr);
 	virtual ~ValueNode_AnimatedFile();
 
 	virtual ValueBase operator()(Time t) const override;

@@ -187,7 +187,7 @@ Waypoint::apply_model(const Model &x)
 }
 
 Waypoint
-Waypoint::clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid)const
+Waypoint::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)const
 {
 	Waypoint ret(*this);
 	ret.make_unique();

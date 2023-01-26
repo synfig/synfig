@@ -1473,7 +1473,7 @@ Canvas::show_externals(String file, int line, String text) const
 	for (iter = externals_.begin(); iter != externals_.end(); iter++)
 	{
 		synfig::String first(iter->first);
-		etl::loose_handle<Canvas> second(iter->second);
+		Canvas::LooseHandle second(iter->second);
 		printf("  |    %40s : %lx (%d)\n", first.c_str(), uintptr_t(&*second), second->count());
 	}
 	printf("  `-----\n\n");

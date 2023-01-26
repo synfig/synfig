@@ -227,7 +227,7 @@ synfig::Target_Tile::render_frame_(Canvas::Handle canvas, ContextParams context_
 
 bool
 synfig::Target_Tile::async_render_tile(
-	etl::handle<Canvas> canvas,
+	Canvas::Handle canvas,
 	ContextParams context_params,
 	RectInt rect,
 	RendDesc tile_desc,

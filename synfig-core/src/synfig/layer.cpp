@@ -206,7 +206,7 @@ synfig::Layer::~Layer()
 }
 
 void
-synfig::Layer::set_canvas(etl::loose_handle<Canvas> x)
+synfig::Layer::set_canvas(Canvas::LooseHandle x)
 {
 	if(canvas_!=x)
 	{
@@ -220,7 +220,7 @@ synfig::Layer::set_canvas(etl::loose_handle<Canvas> x)
 						*this,
 						&Layer::set_canvas
 					),
-					etl::loose_handle<synfig::Canvas>(0)
+					Canvas::LooseHandle(0)
 				)
 			);
 		}
@@ -247,7 +247,7 @@ synfig::Layer::on_dynamic_param_changed(const String & /* param */)
 	{ }
 
 
-etl::loose_handle<synfig::Canvas>
+Canvas::LooseHandle
 synfig::Layer::get_canvas()const
 {
 	return canvas_;

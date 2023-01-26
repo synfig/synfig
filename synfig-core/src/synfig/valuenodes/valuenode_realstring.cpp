@@ -81,7 +81,7 @@ ValueNode_RealString::create_new()const
 }
 
 ValueNode_RealString*
-ValueNode_RealString::create(const ValueBase& x, etl::loose_handle<Canvas>)
+ValueNode_RealString::create(const ValueBase& x, Canvas::LooseHandle)
 {
 	return new ValueNode_RealString(x);
 }

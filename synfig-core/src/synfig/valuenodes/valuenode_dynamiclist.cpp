@@ -623,7 +623,7 @@ ValueNode_DynamicList::~ValueNode_DynamicList()
 }
 
 ValueNode_DynamicList*
-ValueNode_DynamicList::create(const ValueBase& value, etl::loose_handle<Canvas>)
+ValueNode_DynamicList::create(const ValueBase& value, Canvas::LooseHandle)
 {
 	//vector<ValueBase> value_list(value.operator vector<ValueBase>());
 	std::vector<ValueBase> value_list(value.get_list());
@@ -774,7 +774,7 @@ ValueNode_DynamicList::check_type(Type &type)
 }
 
 void
-ValueNode_DynamicList::set_member_canvas(etl::loose_handle<Canvas> canvas)
+ValueNode_DynamicList::set_member_canvas(Canvas::LooseHandle canvas)
 {
 	for (std::vector<ListEntry>::iterator iter = list.begin(); iter != list.end(); iter++)
 		iter->value_node->set_parent_canvas(canvas);
