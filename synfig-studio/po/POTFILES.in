@@ -527,6 +527,7 @@ src/gui/resources/ui/dialog_canvasdependencies.glade
 src/gui/resources/ui/dialog_workspaces.glade
 src/gui/resources/ui/preview_options.glade
 src/gui/resources/ui/shortcuts_window.glade
+src/gui/resources/ui/vectorizer_settings.glade
 src/gui/resources/ui/file_top_toolbar.glade
 src/gui/resources/ui/history_toolbar.glade
 src/gui/resources/ui/right_toolbar.glade

@@ -3531,8 +3531,18 @@ void App::open_vectorizerpopup(const etl::handle<synfig::Layer_Bitmap> my_layer_
 {
 	String desc = my_layer_bitmap->get_description();
 	synfig::info("Opening Vectorizerpopup for :"+desc);
-	App::vectorizerpopup = new studio::VectorizerSettings(*App::main_window,my_layer_bitmap,selected_instance,vectorizer_configmap,reference_layer);
-	App::vectorizerpopup->show();
+	App::vectorizerpopup = studio::VectorizerSettings::create(*App::main_window,my_layer_bitmap,selected_instance,vectorizer_configmap,reference_layer);
+	if(!vectorizerpopup){
+		App::dialog_message_1b(
+			"ERROR",
+			_("Glade file could not be found!"),
+			"details",
+			_("Ok"),
+			"long_details"
+		);
+	}
+	else
+		App::vectorizerpopup->show();
 }
 
 void App::open_uri(const std::string &uri)

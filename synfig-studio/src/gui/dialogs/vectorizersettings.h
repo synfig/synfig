@@ -36,6 +36,7 @@
 #include <gtkmm/separator.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/switch.h>
+#include <gtkmm/builder.h>
 #include <gui/instance.h>
 #include <synfig/layers/layer_bitmap.h>
 #include <unordered_map>
@@ -51,45 +52,39 @@ namespace studio
 class VectorizerSettings : public Gtk::Dialog
 {
 	Glib::RefPtr<Gtk::Adjustment> adjustment_accuracy;
-	Gtk::SpinButton entry_accuracy;
 	Glib::RefPtr<Gtk::Adjustment> adjustment_accuracy2;
-	Gtk::SpinButton entry_accuracy2;
 	Glib::RefPtr<Gtk::Adjustment> adjustment_threshold;
-	Gtk::SpinButton entry_threshold;
 	Glib::RefPtr<Gtk::Adjustment> adjustment_despeckling;
-	Gtk::SpinButton entry_despeckling;
 	Glib::RefPtr<Gtk::Adjustment> adjustment_despeckling2;
-	Gtk::SpinButton entry_despeckling2;
 	Glib::RefPtr<Gtk::Adjustment> adjustment_maxthickness;
-	Gtk::SpinButton entry_maxthickness;
 	
 	Glib::RefPtr<Gtk::Adjustment> adjustment_radius;
-	Gtk::SpinButton entry_radius;
 	Glib::RefPtr<Gtk::Adjustment> adjustment_adherence;
-	Gtk::SpinButton entry_adherence;
 	Glib::RefPtr<Gtk::Adjustment> adjustment_angle;
-	Gtk::SpinButton entry_angle;
 
 	Gtk::Switch toggle_pparea;
-	Gtk::Switch toggle_pparea2;
+	Gtk::Switch *toggle_pparea2;
 	Gtk::Switch toggle_add_border;
 
-	Gtk::Grid *Outline_setting_grid = manage(new Gtk::Grid());
-	Gtk::Grid *Centerline_setting_grid = manage(new Gtk::Grid());
+	Gtk::Grid *Outline_setting_grid;
+	Gtk::Grid *Centerline_setting_grid;
 
   	Gtk::Separator Separator;
 
+	const Glib::RefPtr<Gtk::Builder>& builder;
+
 	Gtk::ComboBoxText comboboxtext_mode;
-	const etl::handle<synfig::Layer_Bitmap> layer_bitmap_;
+	etl::handle<synfig::Layer_Bitmap> layer_bitmap_;
 	etl::handle<synfig::Layer> reference_layer_;
-	const etl::handle<Instance> instance;
+	etl::handle<Instance> instance;
 	std::unordered_map <std::string,int>* config_map;
 
 public:
 
 	bool isOutline;
-	VectorizerSettings(Gtk::Window& parent, etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
-			etl::handle<Instance> selected_instance,std::unordered_map <std::string,int>& configmap,etl::handle<synfig::Layer> reference_layer);
+	VectorizerSettings(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade);
+	static VectorizerSettings * create(Gtk::Window& parent,etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
+			etl::handle<studio::Instance> selected_instance,std::unordered_map <std::string,int>& configmap, etl::handle<synfig::Layer> reference_layer);
 	~VectorizerSettings();
 
 	// CenterlineConfiguration getCenterlineConfiguration() const;
@@ -102,7 +97,10 @@ public:
     //                    : (VectorizerConfiguration *)new CenterlineConfiguration(getCenterlineConfiguration());
   	// }
 	
-private:
+private:	
+	void initialize_parameters(etl::handle<synfig::Layer_Bitmap>& my_layer_bitmap,
+		etl::handle<studio::Instance>& selected_instance,std::unordered_map <std::string,int>& configmap, etl::handle<synfig::Layer>& reference_layer);
+
 	void on_comboboxtext_mode_changed();
 
 	void on_threshold_changed();

@@ -5,6 +5,7 @@ set(UI_FILES
 	dialog_workspaces.glade
 	preview_options.glade
 	shortcuts_window.glade
+	vectorizer_settings.glade
 	history_toolbar.glade
 	right_toolbar.glade
 	file_top_toolbar.glade
