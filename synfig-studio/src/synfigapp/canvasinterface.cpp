@@ -98,7 +98,7 @@ using namespace synfigapp;
 
 /* === M E T H O D S ======================================================= */
 
-CanvasInterface::CanvasInterface(etl::loose_handle<Instance> instance,etl::handle<synfig::Canvas> canvas):
+CanvasInterface::CanvasInterface(etl::loose_handle<Instance> instance,Canvas::Handle canvas):
 	instance_(instance),
 	canvas_(canvas),
 	cur_time_(canvas->rend_desc().get_frame_start()),
@@ -154,7 +154,7 @@ CanvasInterface::refresh_current_values()
 }
 
 etl::handle<CanvasInterface>
-CanvasInterface::create(etl::loose_handle<Instance> instance, etl::handle<synfig::Canvas> canvas)
+CanvasInterface::create(etl::loose_handle<Instance> instance, Canvas::Handle canvas)
 {
 	etl::handle<CanvasInterface> intrfc;
 	intrfc=new CanvasInterface(instance,canvas);
@@ -917,7 +917,7 @@ CanvasInterface::import(
 
 		//get_selection_manager()->set_selected_layer(layer);
 
-		//etl::handle<synfig::Canvas> canvas = get_canvas();
+		//Canvas::Handle canvas = get_canvas();
 		//etl::handle<CanvasView> view = get_instance()->find_canvas_view(canvas);
 		//view->layer_tree->select_layer(layer);
 

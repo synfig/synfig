@@ -242,7 +242,7 @@ LayerTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int column
 						layer->get_parent_paste_canvas_layer() );
 				if(paste)
 				{
-					//etl::handle<synfig::Canvas> sub_canvas=paste->get_param("canvas").get(sub_canvas);
+					//Canvas::Handle sub_canvas=paste->get_param("canvas").get(sub_canvas);
 					Canvas::Handle sub_canvas=paste->get_param("canvas").get(Canvas::Handle());
 					if(sub_canvas && !sub_canvas->is_inline())
 					{

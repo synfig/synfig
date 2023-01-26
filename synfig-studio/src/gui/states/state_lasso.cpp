@@ -1473,7 +1473,7 @@ StateLasso_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synf
                 
                 synfigapp::Action::Handle action(synfigapp::Action::create("LayerEncapsulate"));
                
-                etl::handle<synfig::Canvas> cv( layer_list.back()->get_canvas() );
+                Canvas::Handle cv( layer_list.back()->get_canvas() );
                         
                 action->set_param("layer",*(layer_list.rbegin()));
                 layer_list.pop_back();

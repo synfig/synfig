@@ -361,7 +361,7 @@ public:
 	static void set_selected_instance(etl::loose_handle<Instance> instance);
 	static void set_selected_canvas_view(etl::loose_handle<CanvasView>);
 
-	static etl::loose_handle<Instance> get_instance(etl::handle<synfig::Canvas> canvas);
+	static etl::loose_handle<Instance> get_instance(synfig::Canvas::Handle canvas);
 
 	static etl::loose_handle<Instance> get_selected_instance() { return selected_instance; }
 	static etl::loose_handle<CanvasView> get_selected_canvas_view() { return selected_canvas_view; }

@@ -122,7 +122,7 @@ public:
 	}
 
 	virtual bool async_render_tile(
-		etl::handle<Canvas> canvas,
+		Canvas::Handle canvas,
 		ContextParams context_params,
 		RectInt rect,
 		RendDesc tile_desc,
@@ -149,7 +149,7 @@ public:
 	}
 
 	bool sync_render_tile(
-		etl::handle<Canvas> canvas,
+		Canvas::Handle canvas,
 		ContextParams context_params,
 		RectInt rect,
 		RendDesc tile_desc,

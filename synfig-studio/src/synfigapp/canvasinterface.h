@@ -70,11 +70,11 @@ public:
 
 private:
 	// Constructor is private to force the use of the "create()" constructor.
-	CanvasInterface(etl::loose_handle<Instance> instance,etl::handle<synfig::Canvas> canvas);
+	CanvasInterface(etl::loose_handle<Instance> instance,synfig::Canvas::Handle canvas);
 
 private:
 	etl::loose_handle<Instance> instance_;
-	etl::handle<synfig::Canvas> canvas_;
+	synfig::Canvas::Handle canvas_;
 	etl::handle<SelectionManager> selection_manager_;
 	etl::handle<UIInterface> ui_interface_;
 	synfig::Time cur_time_;
@@ -146,10 +146,10 @@ public:	// Signal Interface
 	sigc::signal<void,synfig::Layer::Handle,bool>& signal_layer_z_range_changed() { return signal_layer_z_range_changed_; }
 	
 	//! Signal called when a canvas has been added.
-	sigc::signal<void,etl::handle<synfig::Canvas> >& signal_canvas_added() { return signal_canvas_added_; }
+	sigc::signal<void,synfig::Canvas::Handle>& signal_canvas_added() { return signal_canvas_added_; }
 
 	//! Signal called when a canvas has been removed.
-	sigc::signal<void,etl::handle<synfig::Canvas> >& signal_canvas_removed() { return signal_canvas_removed_; }
+	sigc::signal<void,synfig::Canvas::Handle>& signal_canvas_removed() { return signal_canvas_removed_; }
 
 	//! Signal called when a layer's parameter has been changed
 	sigc::signal<void,synfig::Layer::Handle,synfig::String>& signal_layer_param_changed() { return signal_layer_param_changed_; }
@@ -239,7 +239,7 @@ public:
 	const etl::handle<UIInterface> &get_ui_interface() { return ui_interface_; }
 
 	//! Returns the Canvas associated with this interface
-	const etl::handle<synfig::Canvas>& get_canvas()const { return canvas_; }
+	const synfig::Canvas::Handle& get_canvas()const { return canvas_; }
 
 	//! Returns the Instance associated with this interface
 	const etl::loose_handle<Instance>& get_instance()const { return instance_; }
@@ -353,7 +353,7 @@ public:
 
 	~CanvasInterface();
 
-	static etl::handle<CanvasInterface> create(etl::loose_handle<Instance> instance,etl::handle<synfig::Canvas> canvas);
+	static etl::handle<CanvasInterface> create(etl::loose_handle<Instance> instance,synfig::Canvas::Handle canvas);
 }; // END of class CanvasInterface
 
 /*!	\class PushMode

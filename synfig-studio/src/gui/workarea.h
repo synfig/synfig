@@ -128,7 +128,7 @@ private:
 	std::set<etl::handle<WorkAreaRenderer> > renderer_set_;
 
 	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface;
-	etl::handle<synfig::Canvas> canvas;
+	synfig::Canvas::Handle canvas;
 	etl::loose_handle<studio::Instance> instance;
 	etl::loose_handle<studio::CanvasView> canvas_view;
 	etl::handle<Renderer_Canvas> renderer_canvas;
@@ -343,9 +343,9 @@ public:
 	Glib::RefPtr<const Gtk::Adjustment> get_scrolly_adjustment() const { return scrolly_adjustment; }
 
 	void set_instance(etl::loose_handle<studio::Instance> x) { instance=x; }
-	void set_canvas(etl::handle<synfig::Canvas> x) { canvas=x; }
+	void set_canvas(synfig::Canvas::Handle x) { canvas=x; }
 	void set_canvas_view(etl::loose_handle<studio::CanvasView> x) { canvas_view=x; }
-	const etl::handle<synfig::Canvas>& get_canvas() const { return canvas; }
+	const synfig::Canvas::Handle& get_canvas() const { return canvas; }
 	const etl::loose_handle<studio::Instance>& get_instance() const { return instance; }
 	const etl::loose_handle<studio::CanvasView>& get_canvas_view() const { return canvas_view; }
 	const etl::handle<Renderer_Canvas>& get_renderer_canvas() const { return renderer_canvas; }

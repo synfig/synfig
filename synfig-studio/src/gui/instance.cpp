@@ -206,7 +206,7 @@ Instance::create(synfig::Canvas::Handle canvas, synfig::FileSystem::Handle conta
 }
 
 handle<CanvasView>
-Instance::find_canvas_view(etl::handle<synfig::Canvas> canvas)
+Instance::find_canvas_view(Canvas::Handle canvas)
 {
 	if(!canvas)
 		return 0;
@@ -224,7 +224,7 @@ Instance::find_canvas_view(etl::handle<synfig::Canvas> canvas)
 }
 
 void
-Instance::focus(etl::handle<synfig::Canvas> canvas)
+Instance::focus(Canvas::Handle canvas)
 {
 	handle<CanvasView> canvas_view=find_canvas_view(canvas);
 	assert(canvas_view);
