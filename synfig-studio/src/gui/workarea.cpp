@@ -1083,7 +1083,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 	// Handle input stuff
 	if (event->any.type==GDK_MOTION_NOTIFY)
 	{
-		GdkDevice *device = event->motion.device;
+		GdkDevice *device = gdk_event_get_source_device(event);
 		modifier = Gdk::ModifierType(event->motion.state);
 
 		// Calculate the position of the
@@ -1148,7 +1148,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		event->any.type==GDK_3BUTTON_PRESS ||
 		event->any.type==GDK_BUTTON_RELEASE )
 	{
-		GdkDevice *device = event->button.device;
+		GdkDevice *device = gdk_event_get_source_device(event);
 		modifier = Gdk::ModifierType(event->button.state);
 		drawing_area->grab_focus();
 
