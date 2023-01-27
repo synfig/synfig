@@ -1085,30 +1085,9 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 	{
 		GdkDevice *device = event->motion.device;
 		modifier = Gdk::ModifierType(event->motion.state);
-
-		// Calculate the position of the
-		// input device in canvas coordinates
-
-		/*std::string axes_str;
-		int n_axes = gdk_device_get_n_axes(device);
-		for (int i=0; i < n_axes; i++)
-		{
-			axes_str += synfig::strprintf(" %f", event->motion.axes[i]);
-		}
-		synfig::warning("axes info: %s", axes_str.c_str());*/
-		//for(...) axesstr += synfig::strprintf(" %f", event->motion.axes[i])
-
-		double x = 0.0, y = 0.0, p = 0.0;
-		int ox = 0, oy = 0;
-		#ifndef _WIN32
-		Gtk::Container *toplevel = drawing_frame->get_toplevel();
-		if (toplevel) drawing_frame->translate_coordinates(*toplevel, 0, 0, ox, oy);
-		#endif
-
-		if (gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_X, &x))
-			x -= ox; else x = event->motion.x;
-		if (gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_Y, &y))
-			y -= oy; else y = event->motion.y;
+		double x = event->motion.x;
+		double y = event->motion.y;
+		double p = 0.0;
 
 		// Make sure we recognize the device
 		if(curr_input_device)
@@ -1131,10 +1110,9 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 		assert(curr_input_device);
 
-
-		//synfig::warning("coord (%3.f, %3.f) \t motion (%3.f, %3.f) / %s / axes(%d)", x, y, event->motion.x, event->motion.y, gdk_device_get_name(device), gdk_device_get_n_axes(device));
-		if (gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_PRESSURE, &p))
-			p = std::max(0.0, (p - 0.04)/(1.0 - 0.04)); else p = 1.0;
+		if (!gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_PRESSURE, &p)) {
+			p = 1.0;
+		}
 
 		if(std::isnan(x) || std::isnan(y) || std::isnan(p))
 			return false;
@@ -1151,26 +1129,13 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		GdkDevice *device = event->button.device;
 		modifier = Gdk::ModifierType(event->button.state);
 		drawing_area->grab_focus();
+		double x = event->button.x;
+		double y = event->button.y;
+		double p = 0.0;
 
-		// Calculate the position of the
-		// input device in canvas coordinates
-		// and the buttons
-
-		double x = 0.0, y = 0.0, p = 0.0;
-		int ox = 0, oy = 0;
-		#ifndef _WIN32
-		Gtk::Container *toplevel = drawing_frame->get_toplevel();
-		if (toplevel) drawing_frame->translate_coordinates(*toplevel, 0, 0, ox, oy);
-		#endif
-
-		if (gdk_device_get_axis(device, event->button.axes, GDK_AXIS_X, &x))
-			x -= ox; else x = event->button.x;
-		if (gdk_device_get_axis(device, event->button.axes, GDK_AXIS_Y, &y))
-			y -= oy; else y = event->button.y;
-		
-		//synfig::warning("coord2 (%3.f, %3.f) \t motion (%3.f, %3.f) / %s / axes(%d)", x, y, event->button.x, event->button.y, gdk_device_get_name(device), gdk_device_get_n_axes(device));
-		if (gdk_device_get_axis(device, event->button.axes, GDK_AXIS_PRESSURE, &p))
-			p = std::max(0.0, (p - 0.04)/(1.0 - 0.04)); else p = 1.0;
+		if (!gdk_device_get_axis(device, event->button.axes, GDK_AXIS_PRESSURE, &p)) {
+			p = 1.0;
+		}
 
 		// Make sure we recognize the device
 		if(curr_input_device)
