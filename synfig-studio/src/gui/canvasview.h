@@ -71,6 +71,7 @@
 
 #include "dialogs/canvasoptions.h"
 #include "dialogs/canvasproperties.h"
+#include "dialogs/canvasresize.h"
 #include "dialogs/dialog_keyframe.h"
 #include "dialogs/dialog_preview.h"
 #include "dialogs/dialog_waypoint.h"
@@ -406,6 +407,7 @@ private:
 public:
 
 	CanvasProperties canvas_properties;
+	CanvasResize canvas_resize;
 	CanvasOptions *canvas_options;
 	RenderSettings render_settings;
 	Dialog_Waypoint waypoint_dialog;

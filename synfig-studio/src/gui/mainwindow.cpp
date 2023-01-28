@@ -50,6 +50,7 @@
 #include <gui/docks/dockmanager.h>
 #include <gui/exception_guard.h>
 #include <gui/localization.h>
+#include <gui/widgets/widget_link.h>
 #include <gui/widgets/widget_time.h>
 #include <gui/widgets/widget_vector.h>
 #include <gui/workspacehandler.h>
@@ -265,8 +266,9 @@ MainWindow::init_menus()
 
 void MainWindow::register_custom_widget_types()
 {
-	Widget_Vector::register_type();
+	Widget_Link::register_type();
 	Widget_Time::register_type();
+	Widget_Vector::register_type();
 }
 
 void

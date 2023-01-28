@@ -1,7 +1,9 @@
 set(INSTALL_DESTINATION "share/synfig/ui")
 set(UI_FILES
 	canvas_options.glade
+	canvas_resize.glade
 	dialog_canvasdependencies.glade
+	preview_options.glade
 	dialog_workspaces.glade
 	preview_options.glade
 	shortcuts_window.glade
