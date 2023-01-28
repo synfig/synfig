@@ -223,7 +223,7 @@ Layer_PasteCanvas::childs_changed()
 }
 
 void
-Layer_PasteCanvas::set_sub_canvas(etl::handle<synfig::Canvas> x)
+Layer_PasteCanvas::set_sub_canvas(Canvas::Handle x)
 {
 	if (sub_canvas)
 		remove_child(sub_canvas.get());

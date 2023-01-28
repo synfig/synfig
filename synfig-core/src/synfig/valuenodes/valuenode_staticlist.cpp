@@ -307,7 +307,7 @@ ValueNode_StaticList::create_on_canvas(Type &type, Canvas::LooseHandle canvas)
 }
 
 ValueNode_StaticList*
-ValueNode_StaticList::create(const ValueBase& value, etl::loose_handle<Canvas>)
+ValueNode_StaticList::create(const ValueBase& value, Canvas::LooseHandle)
 {
 	std::vector<ValueBase> value_list(value.get_list());
 
@@ -492,7 +492,7 @@ ValueNode_StaticList::get_children_vocab_vfunc() const
 }
 
 void
-ValueNode_StaticList::set_member_canvas(etl::loose_handle<Canvas> canvas) // line 723
+ValueNode_StaticList::set_member_canvas(Canvas::LooseHandle canvas) // line 723
 {
 	for (std::vector<ReplaceableListEntry>::iterator iter = list.begin(); iter != list.end(); iter++)
 	{

@@ -142,7 +142,7 @@ ValueNode::on_changed()
 	DEBUG_LOG("SYNFIG_DEBUG_ON_CHANGED",
 		"%s:%d ValueNode::on_changed()\n", __FILE__, __LINE__);
 
-	etl::loose_handle<Canvas> parent_canvas = get_parent_canvas();
+	Canvas::LooseHandle parent_canvas = get_parent_canvas();
 	if(parent_canvas)
 		do						// signal to all the ancestor canvases
 			parent_canvas->signal_value_node_changed()(this);
@@ -154,7 +154,7 @@ ValueNode::on_changed()
 }
 
 int
-ValueNode::replace(etl::handle<ValueNode> x)
+ValueNode::replace(ValueNode::Handle x)
 {
 	if(x.get()==this)
 		return 0;
@@ -586,7 +586,7 @@ ValueNode::get_relative_id(etl::loose_handle<const Canvas> x)const
 	return canvas_->_get_relative_id(x)+':'+get_id();
 }
 
-etl::loose_handle<Canvas>
+Canvas::LooseHandle
 ValueNode::get_parent_canvas()const
 {
 	DEBUG_LOG("SYNFIG_DEBUG_GET_PARENT_CANVAS",
@@ -595,7 +595,7 @@ ValueNode::get_parent_canvas()const
 	return canvas_;
 }
 
-etl::loose_handle<Canvas>
+Canvas::LooseHandle
 ValueNode::get_root_canvas()const
 {
 	DEBUG_LOG("SYNFIG_DEBUG_GET_PARENT_CANVAS",
@@ -604,14 +604,14 @@ ValueNode::get_root_canvas()const
 	return root_canvas_;
 }
 
-etl::loose_handle<Canvas>
+Canvas::LooseHandle
 ValueNode::get_non_inline_ancestor_canvas()const
 {
-	etl::loose_handle<Canvas> parent(get_parent_canvas());
+	Canvas::LooseHandle parent(get_parent_canvas());
 
 	if (parent)
 	{
-		etl::loose_handle<Canvas> ret(parent->get_non_inline_ancestor());
+		Canvas::LooseHandle ret(parent->get_non_inline_ancestor());
 
 		DEBUG_LOG("SYNFIG_DEBUG_GET_PARENT_CANVAS",
 			"%s:%d get_non_inline_ancestor_canvas of %p is %p\n", __FILE__, __LINE__, this, ret.get());
@@ -623,7 +623,7 @@ ValueNode::get_non_inline_ancestor_canvas()const
 }
 
 void
-ValueNode::set_parent_canvas(etl::loose_handle<Canvas> x)
+ValueNode::set_parent_canvas(Canvas::LooseHandle x)
 {
 	DEBUG_LOG("SYNFIG_DEBUG_SET_PARENT_CANVAS",
 		"%s:%d set_parent_canvas of %p to %p\n", __FILE__, __LINE__, this, x.get());
@@ -637,7 +637,7 @@ ValueNode::set_parent_canvas(etl::loose_handle<Canvas> x)
 }
 
 void
-ValueNode::set_root_canvas(etl::loose_handle<Canvas> x)
+ValueNode::set_root_canvas(Canvas::LooseHandle x)
 {
 	DEBUG_LOG("SYNFIG_DEBUG_SET_PARENT_CANVAS",
 		"%s:%d set_root_canvas of %p to %p - ", __FILE__, __LINE__, this, x.get());
@@ -800,7 +800,7 @@ LinkableValueNode::init_children_vocab()
 }
 
 void
-LinkableValueNode::set_root_canvas(etl::loose_handle<Canvas> x)
+LinkableValueNode::set_root_canvas(Canvas::LooseHandle x)
 {
 	ValueNode::set_root_canvas(x);
 	for(int i = 0; i < link_count(); ++i)

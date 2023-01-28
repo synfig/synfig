@@ -177,7 +177,7 @@ private:
 	//! Generic Value Base Parsing Function
 	ValueBase parse_value(xmlpp::Element *node,Canvas::Handle canvas);
 	//! Generic Value Node Parsing Function
-	etl::handle<ValueNode> parse_value_node(xmlpp::Element *node,Canvas::Handle canvas);
+	ValueNode::Handle parse_value_node(xmlpp::Element *node,Canvas::Handle canvas);
 
 	//! Real Value Base Parsing Function
 	Real parse_real(xmlpp::Element *node);

@@ -134,7 +134,7 @@ public:
 
 	const Model model;
 
-	//std::multimap<etl::handle<ValueNode>, sigc::connection> connection_map;
+	//std::multimap<ValueNode::Handle, sigc::connection> connection_map;
 
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------

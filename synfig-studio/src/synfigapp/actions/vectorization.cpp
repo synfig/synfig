@@ -241,7 +241,7 @@ Action::Vectorization::perform()
 	gamma.invert();
 
     const etl::handle<UIInterface> ui_interface = get_canvas_interface()->get_ui_interface();
-    std::vector< etl::handle<synfig::Layer> > Result = vCore.vectorize(image_layer,ui_interface, configuration, gamma);
+    std::vector<synfig::Layer::Handle> Result = vCore.vectorize(image_layer,ui_interface, configuration, gamma);
 
     synfig::Canvas::Handle child_canvas;
     child_canvas=synfig::Canvas::create_inline(layer->get_canvas());

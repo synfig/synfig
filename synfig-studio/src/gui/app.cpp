@@ -3529,7 +3529,7 @@ void App::open_img_in_external(const std::string &uri)
 
 static std::unordered_map<std::string, int> vectorizer_configmap({ { "threshold", 8 },{ "accuracy", 9 },{ "despeckling", 5 },{ "maxthickness", 200 }});
 
-void App::open_vectorizerpopup(const etl::handle<synfig::Layer_Bitmap> my_layer_bitmap, const etl::handle<synfig::Layer> reference_layer)
+void App::open_vectorizerpopup(const etl::handle<synfig::Layer_Bitmap> my_layer_bitmap, const synfig::Layer::Handle reference_layer)
 {
 	String desc = my_layer_bitmap->get_description();
 	synfig::info("Opening Vectorizerpopup for :"+desc);
@@ -3773,7 +3773,7 @@ App::open(std::string filename, /* std::string as, */ synfig::FileContainerZip::
 		// file to open inside canvas file-system
 		String canvas_filename = CanvasFileNaming::project_file(filename);
 
-		etl::handle<synfig::Canvas> canvas = open_canvas_as(canvas_file_system ->get_identifier(canvas_filename), filename, errors, warnings);
+		Canvas::Handle canvas = open_canvas_as(canvas_file_system ->get_identifier(canvas_filename), filename, errors, warnings);
 		if(canvas && get_instance(canvas))
 		{
 			get_instance(canvas)->find_canvas_view(canvas)->present();
@@ -3878,7 +3878,7 @@ App::open_from_temporary_filesystem(std::string temporary_filename)
 		// file to open inside canvas file system
 		String canvas_filename = CanvasFileNaming::project_file(canvas_file_system);
 
-		etl::handle<synfig::Canvas> canvas(open_canvas_as(canvas_file_system->get_identifier(canvas_filename), as, errors, warnings));
+		Canvas::Handle canvas(open_canvas_as(canvas_file_system->get_identifier(canvas_filename), as, errors, warnings));
 		if(canvas && get_instance(canvas))
 		{
 			get_instance(canvas)->find_canvas_view(canvas)->present();
@@ -4079,7 +4079,7 @@ App::open_from_plugin(const std::string& filename, const std::string& importer_i
 			FileSystem::Handle canvas_file_system = CanvasFileNaming::make_filesystem(container);
 			canvas_file_system = wrap_into_temporary_filesystem(canvas_file_system, filename_processed, filename, 0);
 			String canvas_filename = CanvasFileNaming::project_file(filename_processed);
-			etl::handle<synfig::Canvas> canvas = open_canvas_as(canvas_file_system->get_identifier(canvas_filename), filename, errors, warnings);
+			Canvas::Handle canvas = open_canvas_as(canvas_file_system->get_identifier(canvas_filename), filename, errors, warnings);
 			if ( !canvas )
 			{
 				errors += strprintf(_("Unable to load \"%s\":\n\n"),filename.c_str());
@@ -4224,7 +4224,7 @@ App::set_selected_canvas_view(etl::loose_handle<CanvasView> canvas_view)
 }
 
 etl::loose_handle<Instance>
-App::get_instance(etl::handle<synfig::Canvas> canvas)
+App::get_instance(Canvas::Handle canvas)
 {
 	if(!canvas) return nullptr;
 	canvas=canvas->get_root();

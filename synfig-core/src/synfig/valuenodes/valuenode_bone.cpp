@@ -132,7 +132,7 @@ ValueNode_Bone::get_bone_map(Canvas::ConstHandle canvas)
 }
 
 ValueNode_Bone::BoneList
-ValueNode_Bone::get_ordered_bones(etl::handle<const Canvas> canvas)
+ValueNode_Bone::get_ordered_bones(Canvas::ConstHandle canvas)
 {
 	std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle> uses;
 	std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle> is_used_by;
@@ -236,7 +236,7 @@ ValueNode_Bone::ValueNode_Bone():
 		"%s:%d ValueNode_Bone::ValueNode_Bone() this line should only appear once guid %s\n", __FILE__, __LINE__, get_guid().get_string().c_str());
 }
 
-ValueNode_Bone::ValueNode_Bone(const ValueBase &value, etl::loose_handle<Canvas> canvas):
+ValueNode_Bone::ValueNode_Bone(const ValueBase &value, Canvas::LooseHandle canvas):
 	LinkableValueNode(value.get_type())
 {
 	if (DEBUG_GETENV("SYNFIG_DEBUG_BONE_CONSTRUCTORS"))
@@ -339,7 +339,7 @@ ValueNode_Bone::set_guid(const GUID& new_guid)
 }
 
 void
-ValueNode_Bone::set_root_canvas(etl::loose_handle<Canvas> canvas)
+ValueNode_Bone::set_root_canvas(Canvas::LooseHandle canvas)
 {
 	GUID guid(get_guid());
 	Canvas::LooseHandle old_canvas(get_root_canvas());
@@ -645,7 +645,7 @@ ValueNode_Bone::find(const String& name)const
 }
 
 ValueNode_Bone::LooseHandle
-ValueNode_Bone::find(const String& name, etl::loose_handle<Canvas> canvas)
+ValueNode_Bone::find(const String& name, Canvas::LooseHandle canvas)
 {
 	// printf("%s:%d finding '%s' : ", __FILE__, __LINE__, name.c_str());
 
@@ -1017,7 +1017,7 @@ ValueNode_Bone_Root::set_guid(const GUID& new_guid)
 }
 
 void
-ValueNode_Bone_Root::set_root_canvas(etl::loose_handle<Canvas> canvas)
+ValueNode_Bone_Root::set_root_canvas(Canvas::LooseHandle canvas)
 {
 	DEBUG_LOG("SYNFIG_DEBUG_ROOT_BONE",
 		"%s:%d bypass set_root_canvas() for root bone\n", __FILE__, __LINE__);
@@ -1025,7 +1025,7 @@ ValueNode_Bone_Root::set_root_canvas(etl::loose_handle<Canvas> canvas)
 }
 
 ValueNode_Bone*
-ValueNode_Bone_Root::create(const ValueBase& /*x*/, etl::loose_handle<Canvas>)
+ValueNode_Bone_Root::create(const ValueBase& /*x*/, Canvas::LooseHandle)
 {
 	return get_root_bone().get();
 }

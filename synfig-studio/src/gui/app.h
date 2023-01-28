@@ -361,7 +361,7 @@ public:
 	static void set_selected_instance(etl::loose_handle<Instance> instance);
 	static void set_selected_canvas_view(etl::loose_handle<CanvasView>);
 
-	static etl::loose_handle<Instance> get_instance(etl::handle<synfig::Canvas> canvas);
+	static etl::loose_handle<Instance> get_instance(synfig::Canvas::Handle canvas);
 
 	static etl::loose_handle<Instance> get_selected_instance() { return selected_instance; }
 	static etl::loose_handle<CanvasView> get_selected_canvas_view() { return selected_canvas_view; }
@@ -467,7 +467,7 @@ public:
 	static void open_uri(const std::string &uri);
 	static void open_img_in_external(const std::string &uri);
 	static void open_vectorizerpopup(const etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
-	const etl::handle<synfig::Layer> reference_layer);
+	const synfig::Layer::Handle reference_layer);
 
 
 

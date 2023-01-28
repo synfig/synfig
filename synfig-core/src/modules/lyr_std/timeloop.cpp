@@ -216,7 +216,7 @@ Layer_TimeLoop::reset_version()
 	if (dpl.count("start_time") == 0 && dpl.count("end_time") == 0)
 		return;
 
-	etl::rhandle<ValueNode> start_time_value_node, end_time_value_node;
+	ValueNode::RHandle start_time_value_node, end_time_value_node;
 	LinkableValueNode* duration_value_node;
 
 	if (dpl.count("start_time"))

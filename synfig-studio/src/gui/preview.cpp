@@ -251,7 +251,7 @@ void studio::Preview::clear()
 	frames.clear();
 }
 
-const etl::handle<synfig::Canvas>&
+const Canvas::Handle&
 studio::Preview::get_canvas() const
 	{return canvasview->get_canvas();}
 

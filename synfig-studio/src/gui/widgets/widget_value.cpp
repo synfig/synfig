@@ -325,7 +325,7 @@ Widget_ValueBase::set_value(const synfig::ValueBase &data)
 		{
 			assert(canvas);
 			canvas_widget->set_parent_canvas(canvas);
-			canvas_widget->set_value(value.get(etl::loose_handle<synfig::Canvas>()));
+			canvas_widget->set_value(value.get(Canvas::LooseHandle()));
 			canvas_widget->show();
 		}
 		else
@@ -373,7 +373,7 @@ Widget_ValueBase::set_value(const synfig::ValueBase &data)
 }
 
 void
-Widget_ValueBase::set_canvas(etl::handle<synfig::Canvas> x)
+Widget_ValueBase::set_canvas(Canvas::Handle x)
 {
 	assert(x);
 	canvas=x;

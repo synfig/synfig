@@ -75,7 +75,7 @@ inline void deleteSkeletonList(SkeletonList *skeleton) {
 
 // takes two arguments ( image layer handle, config )
 
-std::vector< etl::handle<synfig::Layer> > 
+std::vector<synfig::Layer::Handle> 
 VectorizerCore::centerlineVectorize(etl::handle<synfig::Layer_Bitmap> &image,const etl::handle<synfigapp::UIInterface> &ui_interface, 
 const CenterlineConfiguration &configuration,const Gamma &gamma)
  {
@@ -109,7 +109,7 @@ const CenterlineConfiguration &configuration,const Gamma &gamma)
   ui_interface->amount_complete(8,10);
 
 
-  std::vector< etl::handle<synfig::Layer> > sortibleResult;
+  std::vector<synfig::Layer::Handle> sortibleResult;
   
   // step 5
   // Take samples of image colors to associate each sequence to its corresponding
@@ -125,10 +125,10 @@ const CenterlineConfiguration &configuration,const Gamma &gamma)
   return sortibleResult;
 }
 
-std::vector< etl::handle<synfig::Layer> > 
+std::vector<synfig::Layer::Handle> 
 VectorizerCore::vectorize(const etl::handle<synfig::Layer_Bitmap> &img,const etl::handle<synfigapp::UIInterface> &ui_interface, const VectorizerConfiguration &c, const Gamma &gamma) 
 {
-  std::vector< etl::handle<synfig::Layer> > result;
+  std::vector<synfig::Layer::Handle> result;
 
   if (c.m_outline)
   {

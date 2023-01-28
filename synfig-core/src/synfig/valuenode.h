@@ -255,7 +255,7 @@ public:
 	//! Notice that it is called twice and the second time it uses
 	//! a replaceable handle to the Node
 	//! \see etl::rhandle
-	int replace(etl::handle<ValueNode> x);
+	int replace(ValueNode::Handle x);
 	
 	//! Get the default interpolation for Value Nodes
 	virtual Interpolation get_interpolation()const { return INTERPOLATION_UNDEFINED; }

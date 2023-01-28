@@ -206,7 +206,7 @@ synfig::Layer::~Layer()
 }
 
 void
-synfig::Layer::set_canvas(etl::loose_handle<Canvas> x)
+synfig::Layer::set_canvas(Canvas::LooseHandle x)
 {
 	if(canvas_!=x)
 	{
@@ -220,7 +220,7 @@ synfig::Layer::set_canvas(etl::loose_handle<Canvas> x)
 						*this,
 						&Layer::set_canvas
 					),
-					etl::loose_handle<synfig::Canvas>(0)
+					Canvas::LooseHandle(0)
 				)
 			);
 		}
@@ -247,7 +247,7 @@ synfig::Layer::on_dynamic_param_changed(const String & /* param */)
 	{ }
 
 
-etl::loose_handle<synfig::Canvas>
+Canvas::LooseHandle
 synfig::Layer::get_canvas()const
 {
 	return canvas_;
@@ -312,7 +312,7 @@ Layer::dynamic_param_changed(const String &param)
 }
 
 bool
-Layer::connect_dynamic_param(const String& param, etl::loose_handle<ValueNode> value_node)
+Layer::connect_dynamic_param(const String& param, ValueNode::LooseHandle value_node)
 {
 	if (!value_node) return disconnect_dynamic_param(param);
 

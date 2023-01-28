@@ -569,7 +569,7 @@ public:
 	void set_time(synfig::Time t) { time_model()->set_time(t); }
 	synfig::Time get_time() { return time_model()->get_time(); }
 
-	const etl::handle<synfig::Canvas>& get_canvas()const { return canvas_interface_->get_canvas(); }
+	const synfig::Canvas::Handle& get_canvas()const { return canvas_interface_->get_canvas(); }
 	const etl::loose_handle<Instance>& get_instance()const { return instance_; }
 
 	const etl::handle<synfigapp::CanvasInterface>& canvas_interface() { return canvas_interface_; }
@@ -705,7 +705,7 @@ protected:
  -- ** -- S T A T I C   P U B L I C   M E T H O D S ---------------------------
 	*/
 public:
-	static etl::handle<studio::CanvasView> create(etl::loose_handle<Instance> instance,etl::handle<synfig::Canvas> canvas);
+	static etl::handle<studio::CanvasView> create(etl::loose_handle<Instance> instance,synfig::Canvas::Handle canvas);
 	static std::list<int>& get_pixel_sizes();
 
 private:

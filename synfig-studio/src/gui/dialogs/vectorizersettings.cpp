@@ -255,7 +255,7 @@ VectorizerSettings::on_convert_pressed()
 	action->set_param("maxthickness",((int)adjustment_maxthickness->get_value()) / 2);
 	action->set_param("pparea",toggle_pparea.get_state());
 	action->set_param("addborder",toggle_add_border.get_state());
-	etl::handle<synfig::Canvas> canvas;
+	Canvas::Handle canvas;
 
 	// in case the "convert to vector" was clicked for layer inside a switch
 	// and pass canvas accordingly
