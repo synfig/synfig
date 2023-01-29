@@ -132,6 +132,8 @@ private:
 		const std::string& name, std::vector<ImportExport>& output
 	);
 
+	static bool check_and_run_dialog(const PluginScript& script, std::string& dialog_args);
+
 public:
 	void load_dir( const std::string &pluginsprefix );
 	void load_plugin( const std::string &file, const std::string &plugindir );
