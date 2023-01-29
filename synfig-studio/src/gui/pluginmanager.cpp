@@ -49,6 +49,25 @@
 
 #endif
 
+static bool
+parse_boolean_string(const std::string& str)
+{
+	auto s = synfig::trim(str);
+	synfig::strtolower(s);
+	return s[0] != '0' && s != "false" && s != "off";
+}
+
+static bool
+parse_boolean_attribute(const xmlpp::Element& element, const std::string& attribute_name, bool default_value)
+{
+	std::string attr = element.get_attribute_value(attribute_name);
+	if ( !attr.empty() )
+	{
+		return parse_boolean_string(attr);
+	}
+	return default_value;
+}
+
 
 studio::PluginString::PluginString(std::string fallback)
 	: fallback_(std::move(fallback))
@@ -119,7 +138,13 @@ studio::PluginScript studio::PluginScript::load(const xmlpp::Node& node, const s
 	script.working_directory = working_directory;
 
 	if ( const xmlpp::TextNode* text = element.get_child_text() )
-		script.script = text->get_content();
+		script.script = synfig::trim(text->get_content());
+
+	script.modify_document = parse_boolean_attribute(element, "modify-doc", true);
+
+	script.extra_info = 0;
+	script.extra_info |= parse_boolean_attribute(element, "current-time", false) ? NEED_CURRENT_TIME : 0;
+	script.extra_info |= parse_boolean_attribute(element, "layers", false) ? NEED_SELECTED_LAYERS : 0;
 
 	return script;
 }
@@ -220,6 +245,24 @@ studio::PluginManager::load_plugin( const std::string &file, const std::string &
 			plugin.name = PluginString::load(*pNode, "name");
 			PluginScript script = PluginScript::load(*execlist[0], plugindir);
 			plugin.id = id;
+
+			plugin.release = PluginString::load(*pNode, "release");
+			for ( const xmlpp::Node* node : pNode->find("./author") )
+			{
+				if ( node ) {
+					const xmlpp::Element* element = dynamic_cast<const xmlpp::Element*>(node);
+					if ( const xmlpp::TextNode* text = element->get_child_text() )
+						plugin.author = text->get_content();
+				}
+			}
+			for ( const xmlpp::Node* node : pNode->find("./version") )
+			{
+				if ( node ) {
+					const xmlpp::Element* element = dynamic_cast<const xmlpp::Element*>(node);
+					if ( const xmlpp::TextNode* text = element->get_child_text() )
+						plugin.version = std::atoi(text->get_content().c_str());
+				}
+			}
 
 			if ( !plugin.is_valid() || !script.is_valid() )
 			{
@@ -324,7 +367,7 @@ std::string studio::PluginManager::interpreter_executable(const std::string& int
 	return command;
 }
 
-bool studio::PluginManager::run(const studio::PluginScript& script, std::vector<std::string> args) const
+bool studio::PluginManager::run(const studio::PluginScript& script, std::vector<std::string> args, const std::unordered_map<std::string,std::string>& view_state) const
 {
 	std::string exec = interpreter_executable(script.interpreter);
 	if ( exec.empty() )
@@ -334,6 +377,21 @@ bool studio::PluginManager::run(const studio::PluginScript& script, std::vector<
 
 	args.insert(args.begin(), script.script);
 	args.insert(args.begin(), exec);
+
+	if (script.extra_info) {
+		std::string data;
+		if (script.extra_info & PluginScript::NEED_CURRENT_TIME) {
+			if (!data.empty())
+				data.append(",");
+			data += "\"time\":" + view_state.at("time");
+		}
+		if (script.extra_info & PluginScript::NEED_SELECTED_LAYERS) {
+			if (!data.empty())
+				data.append(",");
+			data += "\"sel_layers\":[" + view_state.at("sel_layers") + "]";
+		}
+		args.push_back("{" + data + "}");
+	}
 
 	std::string stdout_str;
 	std::string stderr_str;
@@ -385,12 +443,31 @@ void studio::PluginManager::handle_stream(studio::PluginStream behaviour, const 
 	}
 }
 
-bool studio::PluginManager::run(const std::string& script_id, const std::vector<std::string>& args) const
+bool studio::PluginManager::run(const std::string& script_id, const std::vector<std::string>& args, const std::unordered_map<std::string,std::string>& view_state) const
 {
 	auto it = scripts_.find(script_id);
 	if ( it != scripts_.end() )
-		return run(it->second, args);
+		return run(it->second, args, view_state);
 
 	studio::App::dialog_message_1b("Error", _("Plugin not found"), "details", _("Close"));
 	return false;
+}
+
+studio::Plugin studio::PluginManager::get_plugin(const std::string& id) const
+{
+	if (!id.empty()) {
+		for (const auto& plugin : plugins_) {
+			if (plugin.id == id)
+				return plugin;
+		}
+	}
+	return Plugin();
+}
+
+int studio::PluginManager::get_script_args(const std::string& script_id) const
+{
+	auto it = scripts_.find(script_id);
+	if ( it != scripts_.end() )
+		return it->second.extra_info;
+	return 0;
 }

@@ -74,6 +74,16 @@ struct PluginScript
 	std::string script;
 	std::string working_directory;
 
+	// Behavior
+	bool modify_document = true;
+	// Required arguments
+
+	static const unsigned int NEED_CURRENT_TIME       = 0x01;
+	static const unsigned int NEED_SELECTED_LAYERS    = 0x04;
+
+	/** Bitwise-OR flags NEED_* above */
+	unsigned int extra_info = 0;
+
 	static PluginScript load(const xmlpp::Node& node, const std::string& working_directory);
 	static PluginStream stream_from_name(const std::string& name, PluginStream default_value);
 
@@ -100,6 +110,10 @@ public:
 	std::string id;
 	PluginString name;
 
+	std::string author;
+	PluginString release;
+	int version;
+
 	bool is_valid() const;
 };
 
@@ -122,10 +136,13 @@ public:
 	void load_dir( const std::string &pluginsprefix );
 	void load_plugin( const std::string &file, const std::string &plugindir );
 
-	bool run(const PluginScript& script, std::vector<std::string> args) const;
-	bool run(const std::string& script_id, const std::vector<std::string>& args) const;
+	bool run(const PluginScript& script, std::vector<std::string> args, const std::unordered_map<std::string,std::string>& view_state) const;
+	bool run(const std::string& script_id, const std::vector<std::string>& args, const std::unordered_map<std::string,std::string>& view_state = {}) const;
 
 	const std::vector<Plugin>& plugins() const { return plugins_; };
+
+	Plugin get_plugin(const std::string& id) const;
+	int get_script_args(const std::string& script_id) const;
 
 	const std::vector<ImportExport>& exporters() { return exporters_; };
 
