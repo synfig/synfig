@@ -539,6 +539,29 @@ bool studio::PluginManager::run(const studio::PluginScript& script, std::vector<
 	if (!check_and_run_dialog(script, dialog_args))
 		return false;
 
+	struct TmpFileDB
+	{
+		std::vector<std::string> filenames;
+		const void* random_ptr;
+
+		std::string add(const std::string& tag, const std::string& extension)
+		{
+			std::string file_tag = synfig::strprintf("plugin-%p-%s", random_ptr, tag.c_str());
+			std::string filename = synfig::FileSystemTemporary::generate_system_temporary_filename(file_tag, extension);
+			filenames.push_back(filename);
+			return filename;
+		}
+
+		TmpFileDB(const void* random_ptr)
+			: random_ptr(random_ptr)
+		{ }
+		~TmpFileDB()
+		{
+			for (const auto& filename : filenames)
+				synfig::FileSystemNative::instance()->file_remove(filename);
+		}
+	} tmp_files(&script);
+
 	args.insert(args.begin(), script.script);
 	args.insert(args.begin(), exec);
 
@@ -554,10 +577,18 @@ bool studio::PluginManager::run(const studio::PluginScript& script, std::vector<
 				data.append(",");
 			data += "\"sel_layers\":[" + view_state.at("sel_layers") + "]";
 		}
-		args.push_back("{" + data + "}");
+
+		std::string filename = tmp_files.add("view-state", "json");
+		auto stream = synfig::FileSystemNative::instance()->get_write_stream(filename);
+		*stream << "{" + data + "}";
+		args.push_back(filename);
 	}
-	if (!dialog_args.empty())
-		args.push_back(dialog_args);
+	if (!dialog_args.empty()) {
+		std::string filename = tmp_files.add("dialog-data", "json");
+		auto stream = synfig::FileSystemNative::instance()->get_write_stream(filename);
+		*stream << "{" + dialog_args + "}";
+		args.push_back(filename);
+	}
 
 	std::string stdout_str;
 	std::string stderr_str;
