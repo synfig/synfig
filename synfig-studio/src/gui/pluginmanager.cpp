@@ -36,6 +36,7 @@
 
 #include <libxml++/libxml++.h>
 #include <glibmm/fileutils.h>
+#include <glibmm/markup.h>
 #include <glibmm/miscutils.h>
 #include <glibmm/spawn.h>
 
@@ -525,8 +526,8 @@ bool studio::PluginManager::check_and_run_dialog(const PluginScript& script, std
 				}
 			} catch (const Glib::FileError& ex) {
 				error_msg = ex.what();
-//			} catch (const Glib::MarkupError& ex) {
-//				error_msg = ex.what();
+			} catch (const Glib::MarkupError& ex) {
+				error_msg = ex.what();
 			} catch (const Gtk::BuilderError& ex) {
 				error_msg = ex.what();
 			} catch(...) {
