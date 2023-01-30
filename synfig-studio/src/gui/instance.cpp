@@ -360,7 +360,7 @@ studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vec
 						auto& sel_layers = view_state["sel_layers"];
 						if (!sel_layers.empty())
 							sel_layers.append(",");
-						sel_layers += '"' + xpath + '"';
+						sel_layers += '"' + JSON::escape_string(xpath) + '"';
 					}
 				}
 

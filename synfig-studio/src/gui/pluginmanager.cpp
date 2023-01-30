@@ -65,6 +65,33 @@
 
 #endif
 
+std::string
+JSON::escape_string(const std::string& str)
+{
+	std::string value;
+	for (char c : str) {
+		switch (c) {
+		case '"':  value += "\\\""; break;
+		case '\\': value += "\\\\"; break;
+		case '/':  value += "\\/"; break;
+		case '\b': value += "\\b"; break;
+		case '\f': value += "\\f"; break;
+		case '\n': value += "\\n"; break;
+		case '\r': value += "\\r"; break;
+		case '\t': value += "\\t"; break;
+		default:
+			if ((unsigned char)c >= 0x20)
+				value.push_back(c);
+			else {
+				char unicode[8];
+				snprintf(unicode, 8, "\\u00%02x", (unsigned char)c);
+				value += unicode;
+			}
+		}
+	}
+	return value;
+}
+
 static bool
 parse_boolean_string(const std::string& str)
 {
@@ -476,7 +503,7 @@ bool studio::PluginManager::check_and_run_dialog(const PluginScript& script, std
 					for (const auto& d : dialog_data) {
 						if (!dialog_args.empty())
 							dialog_args.push_back(',');
-						dialog_args += synfig::strprintf("\"%s\":\"%s\"", d.first.c_str(), d.second.c_str());
+						dialog_args += synfig::strprintf("\"%s\":\"%s\"", JSON::escape_string(d.first).c_str(), JSON::escape_string(d.second).c_str());
 					}
 					dialog_args = "{" + dialog_args + "}";
 				}

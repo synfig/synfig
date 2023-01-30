@@ -38,8 +38,11 @@ namespace xmlpp {
 	class Node;
 } // namespace xmlpp
 
-namespace studio {
+namespace JSON {
+std::string escape_string(const std::string& str);
+}
 
+namespace studio {
 
 class PluginString
 {
