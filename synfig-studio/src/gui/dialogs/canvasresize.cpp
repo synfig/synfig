@@ -167,8 +167,8 @@ void CanvasResize::on_dialog_shown()
 	if (is_image_checked) set_image_flags(toggle_ratio_wh->get_active());
 
 	// Always enable width/height link
-	set_canvas_flags(true);
-	refresh_wh_toggle_widgets();
+//	set_canvas_flags(true);
+//	refresh_wh_toggle_widgets();
 }
 
 void CanvasResize::on_rend_desc_changed()
