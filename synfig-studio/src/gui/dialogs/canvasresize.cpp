@@ -61,6 +61,7 @@ CanvasResize::CanvasResize(Gtk::Window &parent, etl::handle<synfigapp::CanvasInt
 	, rsz_im_chbox      (nullptr)
 	, toggle_ratio_wh   (nullptr)
 	, canvas_center     (canvas_buttons[4])
+	, is_toggle_unique  (true)
 	, old_width         (0)
 	, old_height        (0)
 	, new_width         (0)
@@ -166,9 +167,21 @@ void CanvasResize::on_dialog_shown()
 {
 	if (is_image_checked) set_image_flags(toggle_ratio_wh->get_active());
 
-	// Always enable width/height link
-//	set_canvas_flags(true);
-//	refresh_wh_toggle_widgets();
+	/*
+	 * Default enable width/height link because rend_desc object doens't
+	 *
+	 * Also, we couldn't easily set the object flags ourselves because
+	 * this dialog and Canvas Properties dialog differ in that the latter
+	 * resizes both canvas & content while this dialog resizes canvas only
+	 * And both dialogs share the same rend_desc object
+	 *
+	 * Hence, we track our dialog is_toggle_unique state and appropriately
+	 * turn it off when user interacts with the button
+	 * That way we don't mess up the rend_desc object flags
+	 */
+	if (!is_toggle_unique) return;
+	set_canvas_flags(true);
+	refresh_wh_toggle_widgets();
 }
 
 void CanvasResize::on_rend_desc_changed()
@@ -183,6 +196,8 @@ void CanvasResize::on_action_signal_response(int response_id)
 	refresh_old_new_wh_values();
 
 	auto rend_desc_old = canvas_interface->get_canvas()->rend_desc();
+	auto is_toggled    = toggle_ratio_wh->get_active();
+	auto was_toggled   = rend_desc_old.get_flags() & RendDesc::LINK_IM_ASPECT;
 
 	switch (response_id) {
 	case ADVANCED:
@@ -195,7 +210,11 @@ void CanvasResize::on_action_signal_response(int response_id)
 		refresh_content();
 		break;
 	case OKAY:
-		if (new_width == old_width && new_height == old_height) break;
+		if (new_width == old_width && new_height == old_height)
+			if (is_toggled == was_toggled && is_toggle_unique) break;
+		// Default toggle's no longer unique because user modified its state. Update it
+		if (is_toggled != was_toggled)
+			is_toggle_unique = false;
 		/*
 		 * Set canvas resize direction
 		 *
@@ -205,7 +224,6 @@ void CanvasResize::on_action_signal_response(int response_id)
 		// Old state
 		rend_desc = rend_desc_old;
 		// New state
-		auto is_toggled = toggle_ratio_wh->get_active();
 		is_image_checked ? set_image_flags(is_toggled) : set_canvas_flags(is_toggled);
 		set_canvas_center_point();
 		rend_desc.set_pixel_ratio(new_width, new_height);

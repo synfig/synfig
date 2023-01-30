@@ -72,6 +72,9 @@ class CanvasResize : public Gtk::Dialog
 	std::array<Gtk::Button*, 9> canvas_buttons;
 	Gtk::Button *canvas_center;
 
+	// Force width/height toggle on
+	bool is_toggle_unique;
+
 	bool was_image_checked;
 	bool is_image_checked;
 
