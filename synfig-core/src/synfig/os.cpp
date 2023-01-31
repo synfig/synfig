@@ -77,6 +77,36 @@ class RunPipeUnix;
 
 /* === P R O C E D U R E S ================================================= */
 
+#ifdef _WIN32
+
+std::string
+utf16_to_utf8(const wchar_t* src, size_t src_length = 0)
+{
+	std::string utf8;
+
+	if (!src)
+		return utf8;
+
+	if (src_length == 0)
+		src_length = wcslen(src);
+
+	const int length = WideCharToMultiByte(CP_UTF8, 0, src, src_length, 0, 0, nullptr, nullptr);
+	utf8.resize(length + 1);
+
+	WideCharToMultiByte(CP_UTF8, 0, src, src_length, &utf8[0], length, nullptr, nullptr);
+	utf8[length] = 0;
+
+	return utf8;
+}
+
+std::string
+utf16_to_utf8(const std::wstring& src)
+{
+	return utf16_to_utf8(src.c_str(), src.size());
+}
+
+#endif
+
 /* === M E T H O D S ======================================================= */
 
 void
@@ -674,4 +704,73 @@ OS::launch_file_async(const std::string& file)
 #else
 	return 0 == system(strprintf("xdg-open \"%s\"", file.c_str()).c_str());
 #endif
+}
+
+const std::vector<std::string>&
+OS::get_user_lang()
+{
+	static std::vector<std::string> language_list;
+	if (!language_list.empty())
+		return language_list;
+
+	{
+		std::string language_list_str = trim(getenv("LANGUAGE"));
+		if (!language_list_str.empty()) {
+			std::string::size_type pos = 0, prev_pos = 0;
+			while ((pos = language_list_str.find(':', pos)) != std::string::npos) {
+				auto lang = trim(language_list_str.substr(prev_pos, pos - prev_pos));
+				if (!lang.empty())
+					language_list.push_back(lang);
+				++pos;
+				prev_pos = pos;
+			}
+			if (prev_pos != std::string::npos) {
+				auto lang = trim(language_list_str.substr(prev_pos));
+				if (!lang.empty())
+					language_list.push_back(lang);
+			}
+		}
+	}
+
+	{
+		std::string lang = trim(getenv("LANG"));
+		if (!lang.empty()) {
+			// remove encoding info
+			auto dot_pos = lang.find('.');
+			if (dot_pos != std::string::npos)
+				lang = lang.substr(0, dot_pos);
+			if (!lang.empty())
+				language_list.push_back(lang);
+		}
+	}
+
+#ifdef _WIN32
+	// https://learn.microsoft.com/en-us/windows/win32/intl/locale-names
+	WCHAR lpLocaleName[LOCALE_NAME_MAX_LENGTH];
+
+	if (0 != GetUserDefaultLocaleName(lpLocaleName, LOCALE_NAME_MAX_LENGTH)) {
+		std::string language_str = utf16_to_utf8(lpLocaleName);
+		auto first_dash_pos = language_str.find('-');
+		auto second_dash_pos = first_dash_pos == std::string::npos ? std::string::npos : language_str.find('-', first_dash_pos + 1);
+		if (second_dash_pos != std::string::npos) { // Script code
+			// lang-Script-REGION
+			language_list.push_back(language_str.substr(0, first_dash_pos) + '_' + language_str.substr(second_dash_pos + 1));
+		} else if (first_dash_pos == std::string::npos) {
+			// lang
+			language_list.push_back(language_str);
+		} else {
+			// lang-REGION or lang-Script
+			// script code has 4 chars... https://www.unicode.org/iso15924/iso15924-codes.html
+			if (second_dash_pos - first_dash_pos >= 5) {
+				// discard script code
+				language_list.push_back(language_str.substr(0, first_dash_pos));
+			} else {
+				// lang-REGION -> lang_REGION
+				language_str[first_dash_pos] = '_';
+				language_list.push_back(language_str);
+			}
+		}
+	}
+#endif
+	return language_list;
 }
