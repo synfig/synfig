@@ -398,21 +398,13 @@ LayerTree::create_param_tree()
 }
 
 bool
-LayerTree::search_param_tree(const Glib::RefPtr<Gtk::TreeModel>& model,int column,const Glib::ustring& search_string,const Gtk::TreeModel::iterator& iter)//make sure it is indeed search string
+LayerTree::search_param_tree(const Glib::RefPtr<Gtk::TreeModel>& model,int column,const Glib::ustring& search_string,const Gtk::TreeModel::iterator& iter)
 {
-	Gtk::TreePath path(iter);
-	if(match_found && (path != match_path))// when match is found dont bother with others
-		return true;
-
 	Gtk::TreeModel::Row row = *iter;
 	Gtk::TreeModel::Children children = row.children();
 	Glib::ustring substr(search_string.uppercase());
 	Glib::ustring label((*iter)[param_model.label]);
 	label=label.uppercase();
-	if(label.find(substr)!=Glib::ustring::npos){//i.e. match found
-		match_found=false;
-		return false;
-	}
 
 	for(Gtk::TreeModel::Children::iterator iter_child = children.begin(); iter_child != children.end(); ++iter_child ){//looking for a match in rows children
 		Gtk::TreePath path_child(iter_child);
@@ -421,12 +413,11 @@ LayerTree::search_param_tree(const Glib::RefPtr<Gtk::TreeModel>& model,int colum
 		label_child=label_child.uppercase();
 			if(label_child.find(substr)!=Glib::ustring::npos){
 				param_tree_view().expand_to_path(path_child);//this way expands matched row if its expandable, if not desired replace with previous path
-				match_found=true;
-				match_path=path_child;
 				break;
 			} else
 				search_param_tree(model,column,search_string,iter_child);//if not found inc search depth if possible on row
 	}
+
 	return (label.find(substr)==Glib::ustring::npos);
 }
 
