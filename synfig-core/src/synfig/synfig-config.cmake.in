@@ -1,0 +1,21 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+find_dependency(ZLIB REQUIRED)
+find_dependency(PkgConfig REQUIRED)
+
+pkg_check_modules(SIGCPP REQUIRED IMPORTED_TARGET sigc++-2.0)
+pkg_check_modules(GLIB REQUIRED IMPORTED_TARGET glib-2.0)
+pkg_check_modules(GLIBMM REQUIRED IMPORTED_TARGET glibmm-2.4)
+pkg_check_modules(GIOMM REQUIRED IMPORTED_TARGET giomm-2.4)
+pkg_check_modules(XMLPP REQUIRED IMPORTED_TARGET libxml++-2.6)
+pkg_check_modules(FFTW REQUIRED IMPORTED_TARGET fftw3)
+
+set(WITH_MLT "@MLT_FOUND@")
+
+if(WITH_MLT)
+    pkg_search_module(MLT IMPORTED_TARGET mlt++-7 mlt++)
+endif()
+
+include("${CMAKE_CURRENT_LIST_DIR}/@LIBSYNFIG_CMAKE_CONFIG_FILE_NAME@")
