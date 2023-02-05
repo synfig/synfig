@@ -319,6 +319,10 @@ public:
 	template<typename U>
 	bool type_equal() const
 	{ return typeid(*obj) == typeid(U); }
+
+	template <typename U>
+	bool type_equal(const etl::handle<U> handle) const
+	{ return typeid(*obj) == typeid(*handle.get()); }
 }; // END of template class handle
 
 // ========================================================================
@@ -589,9 +593,13 @@ public:
 //		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		assert(obj);
 		assert(x.get()!=obj);
+		assert(this->type_equal(x));
 
 		if(x.get()==obj)
 			return 0;
+
+		if(!this->type_equal(x))
+			return -1;
 
 		rhandle<value_type> *iter;
 		rhandle<value_type> *next;
