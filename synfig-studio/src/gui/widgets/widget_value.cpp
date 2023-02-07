@@ -65,7 +65,7 @@ using namespace studio;
 
 Widget_ValueBase::Widget_ValueBase():
 	Glib::ObjectBase	(typeid(Widget_ValueBase)),
-	Gtk::HBox(),
+	Gtk::Box(Gtk::ORIENTATION_HORIZONTAL),
 	real_adjustment(Gtk::Adjustment::create(0,-2000000000,2000000000,0.05,0.05,0)),
 	integer_adjustment(Gtk::Adjustment::create(0,-2000000000,2000000000,1,1,0)),
 	angle_adjustment(Gtk::Adjustment::create(0,-2000000000,2000000000,1,1,0))
@@ -187,7 +187,7 @@ Widget_ValueBase::inside_cellrenderer()
 void
 Widget_ValueBase::set_sensitive(bool x)
 {
-	Gtk::HBox::set_sensitive(x);
+	Gtk::Box::set_sensitive(x);
 	label->set_sensitive(x);
 	vector_widget->set_sensitive(x);
 	real_widget->set_sensitive(x);

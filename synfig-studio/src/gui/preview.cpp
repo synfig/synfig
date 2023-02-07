@@ -397,7 +397,7 @@ Widget_Preview::Widget_Preview():
 	#if 1
 
 	//2nd row: prevframe play/pause nextframe loop | halt-render re-preview erase-all
-	toolbar = Gtk::manage(new class Gtk::HBox(false, 0));
+	toolbar = Gtk::manage(new class Gtk::Box(Gtk::ORIENTATION_HORIZONTAL));
 
 	//prev rendered frame
 	Gtk::Button* prev_framebutton = create_tool_button("animate_seek_prev_frame_icon", _("Seek to previous frame"));
@@ -505,7 +505,7 @@ Widget_Preview::Widget_Preview():
 	show_toolbar();
 
 	//3rd row: previewing frame numbering and rendered frame numbering
-	Gtk::HBox *status = manage(new Gtk::HBox);
+	Gtk::Box *status = manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL));
 	status->pack_start(l_currenttime, Gtk::PACK_SHRINK, 5);
 	Gtk::Label *separator = manage(new Gtk::Label(" / "));
 	status->pack_start(*separator, Gtk::PACK_SHRINK, 0);

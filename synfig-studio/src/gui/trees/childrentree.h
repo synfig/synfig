@@ -78,7 +78,7 @@ private:
 
 	Gtk::TreeView tree_view;
 
-	Gtk::HBox *hbox;
+	Gtk::Box *hbox;
 
 	Glib::RefPtr<ChildrenTreeStore> children_tree_store_;
 
@@ -126,7 +126,7 @@ private:
 
 public:
 
-	Gtk::HBox& get_hbox() { return *hbox; }
+	Gtk::Box& get_hbox() { return *hbox; }
 
 	Gtk::TreeView& get_tree_view() { return tree_view; }
 
