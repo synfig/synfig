@@ -65,7 +65,7 @@ using namespace studio;
 
 Widget_ValueBase::Widget_ValueBase():
 	Glib::ObjectBase	(typeid(Widget_ValueBase)),
-	Gtk::Box(Gtk::ORIENTATION_HORIZONTAL),
+	Gtk::Box(),
 	real_adjustment(Gtk::Adjustment::create(0,-2000000000,2000000000,0.05,0.05,0)),
 	integer_adjustment(Gtk::Adjustment::create(0,-2000000000,2000000000,1,1,0)),
 	angle_adjustment(Gtk::Adjustment::create(0,-2000000000,2000000000,1,1,0))

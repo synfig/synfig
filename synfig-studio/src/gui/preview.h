@@ -303,7 +303,6 @@ protected:
 private:
 
 	Gtk::Box *toolbar;
-	
 	Gtk::Button *play_button;
 	Gtk::Button *pause_button;
 	bool on_key_pressed(GdkEventKey*);

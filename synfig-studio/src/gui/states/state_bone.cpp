@@ -111,7 +111,7 @@ class studio::StateBone_Context : public sigc::trackable
 
 	// layer name:
 	Gtk::Label id_label;
-	Gtk::HBox id_box;
+	Gtk::Box id_box;
 	Gtk::Entry id_entry;
 
 	//  bone width

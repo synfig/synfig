@@ -150,7 +150,7 @@ ChildrenTree::ChildrenTree()
 
 	attach(*scroll_children_tree, 0, 3, 0, 1, Gtk::EXPAND|Gtk::FILL,Gtk::EXPAND|Gtk::FILL, 0, 0);
 
-	hbox=manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL));
+	hbox=manage(new Gtk::Box());
 
 	attach(*hbox, 0, 1, 1, 2, Gtk::FILL|Gtk::SHRINK, Gtk::SHRINK, 0, 0);
 
