@@ -23,6 +23,11 @@ if(TCMALLOC_LIBRARY)
     target_link_libraries(synfig_bin PRIVATE ${TCMALLOC_LIBRARY})
 endif()
 
+if (EMBED_PYTHON)
+    target_sources(synfig_bin PRIVATE "${CMAKE_CURRENT_LIST_DIR}/synfig_python_module.cpp")
+    target_link_libraries(synfig_bin PRIVATE pybind11::embed)
+endif()
+
 install (
     TARGETS synfig_bin
     DESTINATION bin
