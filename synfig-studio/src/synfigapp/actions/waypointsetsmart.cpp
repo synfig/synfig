@@ -83,9 +83,9 @@ Action::WaypointSetSmart::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
 
-	ret.push_back(ParamDesc("value_node",Param::TYPE_VALUENODE)
-		.set_local_name(_("Destination ValueNode (Animated)"))
-	);
+//	ret.push_back(ParamDesc("value_node",Param::TYPE_VALUENODE)
+//		.set_local_name(_("Destination ValueNode (Animated)"))
+//	);
 
 	ret.push_back(ParamDesc("waypoint",Param::TYPE_WAYPOINT)
 		.set_local_name(_("New Waypoint"))
@@ -110,11 +110,14 @@ Action::WaypointSetSmart::get_param_vocab()
 bool
 Action::WaypointSetSmart::is_candidate(const ParamList &x)
 {
+	value_desc = x.find("value_desc")->second.get_value_desc();
+
 	return (candidate_check(get_param_vocab(),x) &&
-			// We need an animated valuenode.
-			ValueNode_Animated::Handle::cast_dynamic(x.find("value_node")->second.get_value_node()) &&
+//			// We need an animated valuenode.
+//            ValueNode_Animated::Handle::cast_dynamic(x.find("value_node")->second.get_value_node()) &&
 			// We need either a waypoint or a time.
-			(x.count("waypoint") || x.count("time")));
+			(x.count("waypoint") || x.count("time")) &&
+			!value_desc.get_static());
 }
 
 bool
@@ -162,13 +165,13 @@ Action::WaypointSetSmart::set_param(const synfig::String& name, const Action::Pa
 bool
 Action::WaypointSetSmart::is_ready()const
 {
-	if(!value_node)
-		synfig::error("Missing value_node");
+//	if(!value_node)
+//		synfig::error("Missing value_node");
 
 	if(waypoint.get_time()==(Time::begin()-1))
 		synfig::error("Missing waypoint");
 
-	if(!value_node || waypoint.get_time()==(Time::begin()-1))
+	if(/*!value_node ||*/ waypoint.get_time()==(Time::begin()-1))
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }
@@ -312,8 +315,9 @@ Action::WaypointSetSmart::enclose_waypoint(const synfig::Waypoint& waypoint)
 				//synfig::info("FUTURE keyframe.get_time()=%s",keyframe.get_time().get_string().c_str());
 				curr_time=keyframe.get_time();
 
-				if(times.count(keyframe.get_time())|| waypoint.get_time().is_equal(keyframe.get_time()))
+				if(times.count(keyframe.get_time())|| waypoint.get_time().is_equal(keyframe.get_time())){
 					throw int();
+				}
 				else
 					times.insert(keyframe.get_time());
 
@@ -363,6 +367,24 @@ Action::WaypointSetSmart::enclose_waypoint(const synfig::Waypoint& waypoint)
 void
 Action::WaypointSetSmart::prepare()
 {
+	if(!value_node){//this is the first addition of a waypoint, redirect to valuedesctset action
+		synfigapp::Action::Handle action(synfigapp::Action::create("ValueDescSet"));
+		if(!action)
+		{
+			return;
+		}
+
+		action->set_param("canvas",get_canvas());
+		action->set_param("canvas_interface",get_canvas_interface());
+		action->set_param("time",waypoint.get_time());
+		action->set_param("value_desc",WaypointSetSmart::value_desc);// how to get value_desc in a better way ??
+		action->set_param("new_value",value_desc.get_value(waypoint.get_time()));
+		action->set_param("add_waypoint_initial",true);
+
+        add_action(action);
+		return;
+	}
+
 	clear();
 	times.clear();
 

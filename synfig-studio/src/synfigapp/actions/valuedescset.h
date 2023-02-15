@@ -56,6 +56,7 @@ private:
 	bool recursive;
 	bool animate;
 	bool lock_animation;
+	bool add_waypoint_initial;
 	synfig::ValueNode_Animated::Handle value_node_animated;
 
 	/// convenient method to create a ValueDescSet action and and it to stack
