@@ -62,7 +62,7 @@ private:
 
 	std::set<synfig::Time> times;
 
-    inline static ValueDesc value_desc;
+	ValueDesc value_desc;
 
 public:
 

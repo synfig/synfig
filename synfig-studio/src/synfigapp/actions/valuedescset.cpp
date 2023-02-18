@@ -157,6 +157,7 @@ Action::ValueDescSet::set_param(const synfig::String& name, const Action::Param 
 	if(name=="add_waypoint_initial" && param.get_type()==Param::TYPE_BOOL)
 	{
 		add_waypoint_initial = param.get_bool();
+		return true;
 	}
 	if(name=="value_desc" && param.get_type()==Param::TYPE_VALUEDESC)
 	{
@@ -807,7 +808,7 @@ Action::ValueDescSet::prepare()
 
 	// If we are in animate editing mode or adding the first waypoint for a parameter from parameter menu
 	// TODO: Can we replace local_value to value after all parameters will be converted into ValueBase type?
-	if((add_waypoint_initial ||(( animate || (get_edit_mode()&MODE_ANIMATE)))) && !value_desc.get_static())
+	if((add_waypoint_initial ||( animate || (get_edit_mode()&MODE_ANIMATE))) && !value_desc.get_static())
 	{
 		ValueNode_Animated::Handle& value_node(value_node_animated);
 		// If this value isn't a ValueNode_Animated, but
