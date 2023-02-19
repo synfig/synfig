@@ -381,7 +381,7 @@ Action::WaypointSetSmart::prepare()
 		action->set_param("time",waypoint.get_time());
 		action->set_param("value_desc",value_desc);
 		action->set_param("new_value",value_desc.get_value(waypoint.get_time()));
-		action->set_param("add_waypoint_initial",true);
+		action->set_param("animate",true);
 
 		add_action(action);
 		return;
