@@ -115,7 +115,9 @@ Action::WaypointSetSmart::is_candidate(const ParamList &x)
 			// We need either a waypoint or a time.
 			(x.count("waypoint") || x.count("time")) &&
 			// Parameter has to be animatable
-			!(x.find("value_desc")->second.get_value_desc()).get_static());
+			!(x.find("value_desc")->second.get_value_desc()).get_static() &&
+			//no expandable parameters
+			!(LinkableValueNode::Handle::cast_dynamic(x.find("value_desc")->second.get_value_desc().get_value_node())));
 }
 
 bool
@@ -185,6 +187,10 @@ Action::WaypointSetSmart::is_ready()const
 void
 Action::WaypointSetSmart::calc_waypoint()
 {
+	if(!value_node){
+		redirect_value_desc_set_action();
+		return;
+	}
 	Time time=waypoint.get_time();
 	try
 	{
@@ -369,21 +375,8 @@ Action::WaypointSetSmart::enclose_waypoint(const synfig::Waypoint& waypoint)
 void
 Action::WaypointSetSmart::prepare()
 {
-	if(!value_node){//this is the first addition of a waypoint, redirect to valuedesctset action
-		synfigapp::Action::Handle action(synfigapp::Action::create("ValueDescSet"));
-		if(!action)
-		{
-			return;
-		}
-
-		action->set_param("canvas",get_canvas());
-		action->set_param("canvas_interface",get_canvas_interface());
-		action->set_param("time",waypoint.get_time());
-		action->set_param("value_desc",value_desc);
-		action->set_param("new_value",value_desc.get_value(waypoint.get_time()));
-		action->set_param("animate",true);
-
-		add_action(action);
+	if(!value_node){
+		redirect_value_desc_set_action();
 		return;
 	}
 
@@ -476,3 +469,21 @@ Action::WaypointSetSmart::prepare()
 
 	throw Error(_("Unable to determine how to proceed. This is a bug."));
 }
+void
+Action::WaypointSetSmart::redirect_value_desc_set_action()
+{
+	synfigapp::Action::Handle action(synfigapp::Action::create("ValueDescSet"));
+	if(!action)
+	{
+		return;
+	}
+	action->set_param("canvas",get_canvas());
+	action->set_param("canvas_interface",get_canvas_interface());
+	action->set_param("time",waypoint.get_time());
+	action->set_param("value_desc",value_desc);
+	action->set_param("new_value",value_desc.get_value(waypoint.get_time()));
+	action->set_param("animate",true);
+
+	add_action(action);
+}
+
