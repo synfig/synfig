@@ -61,7 +61,7 @@ class Widget_Time;
 class Widget_Distance;
 class Widget_FontFamily;
 
-class Widget_ValueBase : public Gtk::HBox
+class Widget_ValueBase : public Gtk::Box
 {
 	Gtk::Label *label;
 	synfig::ValueBase value;
