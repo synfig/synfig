@@ -1,0 +1,19 @@
+commit d6278a9ca91f11e4a672f4dd2c47c45accf3e2f5
+Author: Hesham Essam <hesham.essam.mail@gmail.com>
+Date:   Sat Jul 2 11:58:00 2022 +0200
+
+    Use lt__dirent only if dirent is not available
+
+diff --git a/libltdl/lt__dirent.c b/libltdl/lt__dirent.c
+index bb5a180..a426bfc 100644
+--- a/libltdl/lt__dirent.c
++++ b/libltdl/lt__dirent.c
+@@ -35,7 +35,7 @@ or obtained by writing to the Free Software Foundation, Inc.,
+ 
+ #include "lt__dirent.h"
+ 
+-#if defined __WINDOWS__
++#if defined __WINDOWS__ && !defined(HAVE_DIRENT_H)
+ 
+ void
+ closedir (DIR *entry)

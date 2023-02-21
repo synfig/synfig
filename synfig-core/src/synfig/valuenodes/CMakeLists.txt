@@ -1,4 +1,4 @@
-target_sources(synfig
+target_sources(libsynfig
     PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_add.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_and.cpp"
@@ -70,7 +70,6 @@ target_sources(synfig
 )
 
 file(GLOB VALUENODES_HEADERS "${CMAKE_CURRENT_LIST_DIR}/*.h")
-target_include_directories(synfig PRIVATE ${Boost_INCLUDE_DIRS})
 
 install(
     FILES ${VALUENODES_HEADERS}

@@ -1,6 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 
 CSSFILES = \
+  synfig_dialog.css \
   synfig.css \
   synfig.mac.css
 

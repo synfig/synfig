@@ -59,8 +59,7 @@ REGISTER_VALUENODE(ValueNode_BoneLink, RELEASE_VERSION_1_0, "bone_link", N_("Bon
 ValueNode_BoneLink::ValueNode_BoneLink(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 
 	set_link("bone",			ValueNode_Const::create(ValueNode_Bone::get_root_bone()));
 	set_link("base_value",		ValueNode_Const::create(x));
@@ -176,8 +175,8 @@ ValueNode_BoneLink::get_bone_transformation(Time t)const
 ValueBase
 ValueNode_BoneLink::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 	return ValueTransformation::transform(
 		get_bone_transformation(t), (*base_value_)(t) );
 }

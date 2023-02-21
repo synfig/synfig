@@ -38,13 +38,12 @@
 #include "keyframe.h"
 #include "general.h"
 #include <synfig/localization.h>
-#include <ETL/misc>
+#include <synfig/misc.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */

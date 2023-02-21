@@ -223,7 +223,7 @@ Layer_PasteCanvas::childs_changed()
 }
 
 void
-Layer_PasteCanvas::set_sub_canvas(etl::handle<synfig::Canvas> x)
+Layer_PasteCanvas::set_sub_canvas(Canvas::Handle x)
 {
 	if (sub_canvas)
 		remove_child(sub_canvas.get());
@@ -362,8 +362,15 @@ Layer_PasteCanvas::apply_z_range_to_params(ContextParams &cp)const
 synfig::Layer::Handle
 Layer_PasteCanvas::hit_check(synfig::Context context, const synfig::Point &pos)const
 {
-	if(!sub_canvas || !get_amount())
+	bool check_myself_first;
+	auto layer = basic_hit_check(context, pos, check_myself_first);
+
+	if (!check_myself_first)
+		return layer;
+
+	if (!sub_canvas)
 		return context.hit_check(pos);
+
 	if (depth == MAX_DEPTH)
 		return 0;
 	depth_counter counter(depth);

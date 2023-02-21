@@ -41,6 +41,7 @@
 #include <synfig/string.h>
 #include <synfig/time.h>
 #include <synfig/context.h>
+#include <synfig/misc.h>
 #include <synfig/paramdesc.h>
 #include <synfig/renddesc.h>
 #include <synfig/surface.h>
@@ -49,11 +50,9 @@
 #include <synfig/segment.h>
 
 #include <cstring>
-#include <ETL/misc>
 
 #endif
 
-using namespace etl;
 using namespace synfig;
 using namespace modules;
 using namespace lyr_std;
@@ -266,7 +265,7 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 
 	RendDesc	workdesc = get_sub_renddesc(renddesc);
 	Surface		worksurface;
-	etl::surface<float> blurred;
+	synfig::surface<float> blurred;
 
 	const Real	pw = renddesc.get_pw(),
 				ph = renddesc.get_ph();

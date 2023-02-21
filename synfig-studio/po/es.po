@@ -2275,7 +2275,7 @@ msgstr "Nombre:"
 #: ../src/gui/states/state_rectangle.cpp:482
 #: ../src/gui/states/state_star.cpp:595 ../src/gui/states/state_text.cpp:388
 msgid "Layer Type:"
-msgstr "Tipio de Capa:"
+msgstr "Tipo de Capa:"
 
 #: ../src/gui/states/state_bline.cpp:514
 #: ../src/gui/states/state_circle.cpp:538 ../src/gui/states/state_draw.cpp:620

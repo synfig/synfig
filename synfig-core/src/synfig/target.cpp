@@ -99,7 +99,7 @@ Target::Target():
 }
 
 void
-synfig::Target::set_canvas(etl::handle<Canvas> c)
+synfig::Target::set_canvas(Canvas::Handle c)
 {
 	canvas=c;
 	RendDesc desc=canvas->rend_desc();

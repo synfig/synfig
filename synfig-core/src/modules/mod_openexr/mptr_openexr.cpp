@@ -69,7 +69,7 @@ exr_mptr::get_frame(synfig::Surface &out_surface, const synfig::RendDesc &/*rend
     //int dx = in.dataWindow().min.x;
     //int dy = in.dataWindow().min.y;
 
-	etl::surface<Imf::Rgba> in_surface;
+	synfig::surface<Imf::Rgba> in_surface;
 	in_surface.set_wh(w,h);
 	in.setFrameBuffer (reinterpret_cast<Imf::Rgba *>(in_surface[0]), 1, w);
 

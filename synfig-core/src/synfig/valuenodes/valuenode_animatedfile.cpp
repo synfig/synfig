@@ -335,7 +335,7 @@ ValueNode_AnimatedFile::ValueNode_AnimatedFile(Type &t):
 {
 	ValueNode_AnimatedInterfaceConst::set_interpolation(INTERPOLATION_CONSTANT);
 	ValueNode_AnimatedInterfaceConst::set_type(t);
-	set_children_vocab(get_children_vocab());
+	init_children_vocab();
 	set_link("filename", ValueNode_Const::create(String()));
 }
 
@@ -353,7 +353,7 @@ ValueNode_AnimatedFile::create_new() const
 	{ return new ValueNode_AnimatedFile(get_type()); }
 
 ValueNode_AnimatedFile*
-ValueNode_AnimatedFile::create(const ValueBase& x, etl::loose_handle<Canvas>)
+ValueNode_AnimatedFile::create(const ValueBase& x, Canvas::LooseHandle)
 	{ return new ValueNode_AnimatedFile(x.get_type()); }
 
 

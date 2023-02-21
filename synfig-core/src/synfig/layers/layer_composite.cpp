@@ -97,7 +97,7 @@ Layer_Composite::basic_hit_check(synfig::Context context, const synfig::Point &p
 		// then it misses everything
 		return nullptr;
 
-	// otherwise the click may hit us: caller function must check if it does it me or not
+	// otherwise the click may hit us: caller function must check if point does hit me or not
 	check_myself_first = true;
 	return nullptr;
 }

@@ -60,8 +60,7 @@ REGISTER_VALUENODE(ValueNode_VectorX, RELEASE_VERSION_0_61_09, "vectorx", N_("Ve
 ValueNode_VectorX::ValueNode_VectorX(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	if (value.get_type() == type_real)
 		set_link("vector",ValueNode_Const::create(Vector(value.get(Real()), 0)));
 	else
@@ -88,8 +87,8 @@ ValueNode_VectorX::~ValueNode_VectorX()
 ValueBase
 ValueNode_VectorX::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	return (*vector_)(t).get(Vector())[0];
 }

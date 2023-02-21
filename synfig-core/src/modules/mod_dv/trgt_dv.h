@@ -30,11 +30,9 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/target_scanline.h>
+#include <synfig/os.h>
 #include <synfig/string.h>
-#include <synfig/targetparam.h>
-#include <sys/types.h>
-#include <cstdio>
+#include <synfig/target_scanline.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -46,28 +44,28 @@
 class dv_trgt : public synfig::Target_Scanline
 {
 	SYNFIG_TARGET_MODULE_EXT
+
 private:
-#ifdef HAVE_FORK
-	pid_t pid = -1;
-#endif
 	int imagecount;
 	bool wide_aspect;
-	FILE *file;
+	synfig::OS::RunPipe::Handle pipe;
 	synfig::String filename;
 	unsigned char *buffer;
 	synfig::Color *color_buffer;
+
 public:
+
 	dv_trgt(const char *filename, const synfig::TargetParam& /* params */);
 	virtual ~dv_trgt();
 
+	bool set_rend_desc(synfig::RendDesc* desc) override;
+	bool init(synfig::ProgressCallback* cb) override;
 
-	virtual bool set_rend_desc(synfig::RendDesc *desc);
-	virtual bool init(synfig::ProgressCallback *cb);
-	virtual bool start_frame(synfig::ProgressCallback *cb);
-	virtual void end_frame();
+	bool start_frame(synfig::ProgressCallback* cb) override;
+	void end_frame() override;
 
-	virtual synfig::Color * start_scanline(int scanline);
-	virtual bool end_scanline();
+	synfig::Color* start_scanline(int scanline) override;
+	bool end_scanline() override;
 };
 
 /* === E N D =============================================================== */

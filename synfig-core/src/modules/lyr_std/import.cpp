@@ -166,8 +166,10 @@ Import::set_param(const String & param, const ValueBase &value)
 		if (!newimporter->is_animated())
 			time = Time(0);
 
-		rendering_surface = new rendering::SurfaceResource(
-			newimporter->get_frame(get_canvas()->rend_desc(), time) );
+		rendering::Surface::Handle surface = newimporter->get_frame(get_canvas()->rend_desc(), time);
+		if (!surface)
+			return false;
+		rendering_surface = new rendering::SurfaceResource(surface);
 		importer=newimporter;
 		param_filename.set(filename);
 
@@ -223,8 +225,14 @@ void
 Import::load_resources_vfunc(IndependentContext context, Time time)const
 {
 	Time time_offset=param_time_offset.get(Time());
-	if(get_amount() && importer && importer->is_animated())
-		rendering_surface = new rendering::SurfaceResource(
-			importer->get_frame(get_canvas()->rend_desc(), time+time_offset) );
+	if(get_amount() && importer && importer->is_animated()) {
+		rendering::Surface::Handle surface = importer->get_frame(get_canvas()->rend_desc(), time+time_offset);
+		if (!surface) {
+			synfig::error(_("Couldn't load resources: couldn't get frame at %s"), (time + time_offset).get_string().c_str());
+			rendering_surface = nullptr;
+			return;
+		}
+		rendering_surface = new rendering::SurfaceResource(surface);
+	}
 	context.load_resources(time);
 }

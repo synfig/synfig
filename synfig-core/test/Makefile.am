@@ -9,16 +9,22 @@ check_PROGRAMS=$(TESTS)
 TESTS = \
 	angle \
 	benchmark \
+	bezier \
 	bline \
 	bone \
 	clock \
 	keyframe \
 	node \
-	string
+	pen \
+	reference_counter \
+	string \
+	surface_etl
 
 angle_SOURCES=angle.cpp
 
 benchmark_SOURCES=benchmark.cpp
+
+bezier_SOURCES=hermite.cpp
 
 bone_SOURCES=bone.cpp
 
@@ -30,4 +36,11 @@ keyframe_SOURCES=keyframe.cpp
 
 node_SOURCES=node.cpp
 
+pen_SOURCES=pen.cpp
+
+reference_counter_SOURCES=reference_counter.cpp
+
 string_SOURCES=string.cpp
+
+surface_etl_SOURCES=surface_etl.cpp
+

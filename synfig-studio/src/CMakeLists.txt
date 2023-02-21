@@ -14,29 +14,14 @@ if (Gettext_FOUND)
     set(GETTEXT_PACKAGE ${PROJECT_NAME})
 endif()
 
-if(VCPKG_TOOLCHAIN)
-	set(GTKMM_LIBRARIES
-		${ATK_LIBRARY} ${ATKMM_LIBRARY}
-		${GDK_LIBRARY}
-		${GDKMM_LIBRARY}
-		${GIOMM_LIBRARY}
-		${GLIB_LIBRARIES}
-		${GLIBMM_LIBRARY}
-		${GTK_LIBRARY}
-		${GTKMM_LIBRARY}
-	)
-else()
-	## TODO: check if we really need to find deps common with synfig core
-	include(FindPkgConfig)
-	if(PKG_CONFIG_FOUND)
-		pkg_check_modules(SIGCPP REQUIRED IMPORTED_TARGET sigc++-2.0)
-		pkg_check_modules(GTKMM3 REQUIRED IMPORTED_TARGET gtkmm-3.0)
-		pkg_check_modules(XMLPP REQUIRED IMPORTED_TARGET libxml++-2.6)
-		pkg_check_modules(FONTCONFIG IMPORTED_TARGET fontconfig) # for FontConfig
-		pkg_check_modules(JACK IMPORTED_TARGET jack)
-		pkg_search_module(MLT IMPORTED_TARGET mlt++-7 mlt++) # required for widget_soundwave
-	endif()
-endif()
+## TODO: check if we really need to find deps common with synfig core
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(SIGCPP REQUIRED IMPORTED_TARGET sigc++-2.0)
+pkg_check_modules(GTKMM3 REQUIRED IMPORTED_TARGET gtkmm-3.0)
+pkg_check_modules(XMLPP REQUIRED IMPORTED_TARGET libxml++-2.6)
+pkg_check_modules(FONTCONFIG IMPORTED_TARGET fontconfig) # for FontConfig
+pkg_check_modules(JACK IMPORTED_TARGET jack)
+pkg_search_module(MLT IMPORTED_TARGET mlt++-7 mlt++) # required for widget_soundwave
 
 if(FONTCONFIG_FOUND)
 	add_definitions(-DWITH_FONTCONFIG)

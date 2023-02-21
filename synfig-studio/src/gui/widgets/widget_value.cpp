@@ -65,7 +65,7 @@ using namespace studio;
 
 Widget_ValueBase::Widget_ValueBase():
 	Glib::ObjectBase	(typeid(Widget_ValueBase)),
-	Gtk::HBox(),
+	Gtk::Box(),
 	real_adjustment(Gtk::Adjustment::create(0,-2000000000,2000000000,0.05,0.05,0)),
 	integer_adjustment(Gtk::Adjustment::create(0,-2000000000,2000000000,1,1,0)),
 	angle_adjustment(Gtk::Adjustment::create(0,-2000000000,2000000000,1,1,0))
@@ -187,7 +187,7 @@ Widget_ValueBase::inside_cellrenderer()
 void
 Widget_ValueBase::set_sensitive(bool x)
 {
-	Gtk::HBox::set_sensitive(x);
+	Gtk::Box::set_sensitive(x);
 	label->set_sensitive(x);
 	vector_widget->set_sensitive(x);
 	real_widget->set_sensitive(x);
@@ -325,7 +325,7 @@ Widget_ValueBase::set_value(const synfig::ValueBase &data)
 		{
 			assert(canvas);
 			canvas_widget->set_parent_canvas(canvas);
-			canvas_widget->set_value(value.get(etl::loose_handle<synfig::Canvas>()));
+			canvas_widget->set_value(value.get(Canvas::LooseHandle()));
 			canvas_widget->show();
 		}
 		else
@@ -373,7 +373,7 @@ Widget_ValueBase::set_value(const synfig::ValueBase &data)
 }
 
 void
-Widget_ValueBase::set_canvas(etl::handle<synfig::Canvas> x)
+Widget_ValueBase::set_canvas(Canvas::Handle x)
 {
 	assert(x);
 	canvas=x;

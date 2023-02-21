@@ -549,10 +549,11 @@ StateText_Context::make_text(const Point& _point)
 	blend_param_value.set_static(true);
 
 	String text;
-	if (get_paragraph_flag())
-		App::dialog_paragraph(_("Text Paragraph"), _("Enter text here:"), text);
-	else
+	if (get_paragraph_flag()) {
+		if (!App::dialog_paragraph(_("Text Paragraph"), _("Enter text here:"), text)) return;
+	} else {
 		if (!App::dialog_entry(_("Input text"), _("Text: "), text, _("Cancel"), _("Ok"))) return;
+	}
 
 	egress_on_selection_change=false;
 	layer=get_canvas_interface()->add_layer_to("text",canvas,depth);

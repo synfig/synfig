@@ -79,8 +79,7 @@ ValueNode_Reverse::ValueNode_Reverse(Type &x):
 ValueNode_Reverse::ValueNode_Reverse(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	Type &type(x.get_type());
 	if(x.empty()) {
 		set_link("link", ValueNode_Const::create(x));
@@ -267,8 +266,8 @@ reverse_value(const ValueBase &value)
 ValueBase
 ValueNode_Reverse::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	return reverse_value((*link_)(t));
 }

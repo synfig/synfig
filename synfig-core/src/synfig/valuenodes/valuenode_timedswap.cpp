@@ -41,15 +41,13 @@
 #include "valuenode_const.h"
 #include <stdexcept>
 #include <synfig/color.h>
+#include <synfig/misc.h>
 #include <synfig/vector.h>
-
-#include <ETL/misc>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -65,8 +63,7 @@ REGISTER_VALUENODE(ValueNode_TimedSwap, RELEASE_VERSION_0_61_07, "timed_swap", N
 ValueNode_TimedSwap::ValueNode_TimedSwap(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	Type &type(get_type());
 	if (type == type_angle)
 	{
@@ -132,8 +129,8 @@ synfig::ValueNode_TimedSwap::~ValueNode_TimedSwap()
 synfig::ValueBase
 synfig::ValueNode_TimedSwap::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	Time swptime=(*swap_time)(t).get(Time());
 	Time swplength=(*swap_length)(t).get(Time());

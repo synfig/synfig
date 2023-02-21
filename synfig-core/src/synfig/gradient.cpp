@@ -105,7 +105,7 @@ Gradient::operator+(const Gradient &rhs) const
 		if (i == end())
 			current = pj = j++, left = right = pi;
 		else
-		if (j == end())
+		if (j == rhs.end())
 			current = pi = i++, left = right = pj;
 		else
 		if (i->pos < j->pos)
@@ -310,14 +310,14 @@ CompiledGradient::set(const Gradient &gradient, bool repeat, bool zigzag) {
 	}
 
 	// add flipped points for zigzag
-	// memory for points already reserved enough, so all iterators will stay valid
 	if (zigzag) {
 		// add mirror in order:
 		//    0 1 2 3 4
 		//    0 1 2 3 4 - 4 3 2 1 0
-		for(Gradient::reverse_iterator ri = cpoints.rbegin(); ri != cpoints.rend(); ++ri) {
-			ri->pos *= 0.5;
-			cpoints.push_back(*ri);
+		for (int index = cpoints.size(); index > 0; --index) {
+			auto& elem = cpoints[index-1];
+			elem.pos *= 0.5;
+			cpoints.push_back(elem);
 			cpoints.back().pos = 1.0 - cpoints.back().pos;
 		}
 	}

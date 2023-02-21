@@ -1,0 +1,89 @@
+commit 6050ff9e4c3f5f6bf4138ad01cb5e58300c08928
+Author: Hesham Essam <hesham.essam.mail@gmail.com>
+Date:   Sun Jul 3 23:24:52 2022 +0200
+
+    Don't include win32config.h
+    
+    vcpkg doesn't export libxml2's win32config.h, and it is not needed
+    for successful compilation
+
+diff --git a/MagickCore/magick.c b/MagickCore/magick.c
+index 956af5e70..86d416531 100644
+--- a/MagickCore/magick.c
++++ b/MagickCore/magick.c
+@@ -94,11 +94,6 @@
+ #include "MagickCore/utility-private.h"
+ #include "MagickCore/xwindow-private.h"
+ #if defined(MAGICKCORE_XML_DELEGATE)
+-#  if defined(MAGICKCORE_WINDOWS_SUPPORT)
+-#    if !defined(__MINGW32__)
+-#      include <win32config.h>
+-#    endif
+-#  endif
+ #  include <libxml/parser.h>
+ #endif
+ 
+diff --git a/MagickCore/profile.c b/MagickCore/profile.c
+index bed2bfb4b..e5f2b944b 100644
+--- a/MagickCore/profile.c
++++ b/MagickCore/profile.c
+@@ -78,11 +78,6 @@
+ #endif
+ #endif
+ #if defined(MAGICKCORE_XML_DELEGATE)
+-#  if defined(MAGICKCORE_WINDOWS_SUPPORT)
+-#    if !defined(__MINGW32__)
+-#      include <win32config.h>
+-#    endif
+-#  endif
+ #  include <libxml/parser.h>
+ #  include <libxml/tree.h>
+ #endif
+diff --git a/coders/msl.c b/coders/msl.c
+index 513c7cf09..04de629a6 100644
+--- a/coders/msl.c
++++ b/coders/msl.c
+@@ -93,11 +93,6 @@
+ #include "MagickCore/utility.h"
+ #include "MagickCore/visual-effects.h"
+ #if defined(MAGICKCORE_XML_DELEGATE)
+-#  if defined(MAGICKCORE_WINDOWS_SUPPORT)
+-#    if !defined(__MINGW32__)
+-#      include <win32config.h>
+-#    endif
+-#  endif
+ #  include <libxml/xmlmemory.h>
+ #  include <libxml/parserInternals.h>
+ #  include <libxml/xmlerror.h>
+diff --git a/coders/svg.c b/coders/svg.c
+index e52e009a5..3376280d0 100644
+--- a/coders/svg.c
++++ b/coders/svg.c
+@@ -79,11 +79,6 @@
+ #include "coders/coders-private.h"
+ 
+ #if defined(MAGICKCORE_XML_DELEGATE)
+-#  if defined(MAGICKCORE_WINDOWS_SUPPORT)
+-#    if !defined(__MINGW32__)
+-#      include <win32config.h>
+-#    endif
+-#  endif
+ #  include <libxml/xmlmemory.h>
+ #  include <libxml/parserInternals.h>
+ #  include <libxml/xmlerror.h>
+diff --git a/coders/url.c b/coders/url.c
+index 2adfd89de..bf0031446 100644
+--- a/coders/url.c
++++ b/coders/url.c
+@@ -58,11 +58,6 @@
+ #include "MagickCore/string_.h"
+ #include "MagickCore/utility.h"
+ #if defined(MAGICKCORE_XML_DELEGATE)
+-#  if defined(MAGICKCORE_WINDOWS_SUPPORT)
+-#    if !defined(__MINGW32__)
+-#      include <win32config.h>
+-#    endif
+-#  endif
+ #  include <libxml/parser.h>
+ #  include <libxml/xmlmemory.h>
+ #if defined(LIBXML_FTP_ENABLED)

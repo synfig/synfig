@@ -33,8 +33,8 @@
 #endif
 
 #include <synfig/general.h>
+#include <synfig/misc.h>
 
-#include <ETL/misc>
 #include <ETL/stringf>
 #include "trgt_magickpp.h"
 
@@ -98,7 +98,7 @@ magickpp_trgt::~magickpp_trgt()
 		if (multiple_images)
 		{
 			// check whether this file format supports multiple-image files
-			Magick::Image image(*(images.begin()));
+			Magick::Image image(images.front());
 			image.fileName(filename);
 			try
 			{
@@ -199,9 +199,6 @@ magickpp_trgt::~magickpp_trgt()
 		synfig::error("unknown exception");
 	}
 
-	if (buffer1) delete [] buffer1;
-	if (buffer2) delete [] buffer2;
-	if (color_buffer) delete [] color_buffer;
 	//exceptionInfo = MagickCore::DestroyExceptionInfo(exceptionInfo);
 	MagickCore::DestroyExceptionInfo(exceptionInfo);
 }
@@ -219,26 +216,18 @@ magickpp_trgt::init(synfig::ProgressCallback*)
 	width = desc.get_w();
 	height = desc.get_h();
 
-	start_pointer = nullptr;
+	buffer_pointer = nullptr;
 
-	buffer1 = new unsigned char[4*width*height];
-	if (!buffer1)
-		return false;
+	std::string extension = filename_extension(filename);
+	strtolower(extension);
+	is_gif = extension == ".gif";
 
-	buffer2 = new unsigned char[4*width*height];
-	if (!buffer2)
-	{
-		delete [] buffer1;
-		return false;
-	}
+	std::size_t buffer_size = static_cast<std::size_t>(4) * width * height;
+	buffer1.resize(buffer_size);
+	if (is_gif)
+		buffer2.resize(buffer_size);
 
-	color_buffer = new Color[width];
-	if (!color_buffer)
-	{
-		delete [] buffer1;
-		delete [] buffer2;
-		return false;
-	}
+	color_buffer.resize(width);
 
 	return true;
 }
@@ -246,52 +235,54 @@ magickpp_trgt::init(synfig::ProgressCallback*)
 void
 magickpp_trgt::end_frame()
 {
-	Magick::Image image(width, height, "RGBA", Magick::CharPixel, start_pointer);
-	if (transparent && images.begin() != images.end())
-		(images.end()-1)->gifDisposeMethod(Magick::BackgroundDispose);
+	Magick::Image image(width, height, "RGBA", Magick::CharPixel, buffer_pointer);
+	if (is_gif && transparent && images.size() > 1)
+		images.back().gifDisposeMethod(Magick::BackgroundDispose);
 	images.push_back(image);
 }
 
 bool
 magickpp_trgt::start_frame(synfig::ProgressCallback */*callback*/)
 {
-	if (start_pointer == buffer1)
-		start_pointer = buffer_pointer = buffer2;
-	else
-		start_pointer = buffer_pointer = buffer1;
+	if (is_gif)
+		previous_row_buffer_pointer = buffer_pointer;
 
-	previous_buffer_pointer = start_pointer;
+	if (is_gif && buffer_pointer == buffer1.data())
+		buffer_pointer = current_row_buffer_pointer = buffer2.data();
+	else
+		buffer_pointer = current_row_buffer_pointer = buffer1.data();
 
 	transparent = false;
+
 	return true;
 }
 
 Color*
 magickpp_trgt::start_scanline(int /*scanline*/)
 {
-	return color_buffer;
+	return color_buffer.data();
 }
 
 bool
 magickpp_trgt::end_scanline()
 {
-	if (previous_buffer_pointer)
-		color_to_pixelformat(previous_buffer_pointer, color_buffer, PF_RGB|PF_A, 0, width);
+	color_to_pixelformat(current_row_buffer_pointer, color_buffer.data(), PF_RGB|PF_A, 0, width);
 
-	if (!transparent)
-		for (int i = 0; i < width; i++)
-			if (previous_buffer_pointer &&					// this isn't the first frame
-				buffer_pointer[i*4 + 3] < 128 &&			// our pixel is transparent
-				!(previous_buffer_pointer[i*4 + 3] < 128))	// the previous frame's pixel wasn't
+	if (!transparent && previous_row_buffer_pointer) {
+		for (int i = 0; i < width; i++) {
+			if (current_row_buffer_pointer[i*4 + 3] < 128 &&	// our pixel is transparent
+				!(previous_row_buffer_pointer[i*4 + 3] < 128))	// the previous frame's pixel wasn't
 			{
 				transparent = true;
 				break;
 			}
+		}
+	}
 
-	buffer_pointer += 4 * width;
+	current_row_buffer_pointer += 4 * width;
 
-	if (previous_buffer_pointer)
-		previous_buffer_pointer += 4 * width;
+	if (previous_row_buffer_pointer)
+		previous_row_buffer_pointer += 4 * width;
 
 	return true;
 }

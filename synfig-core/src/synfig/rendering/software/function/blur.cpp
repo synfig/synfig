@@ -721,8 +721,8 @@ software::Blur::blur(Params params)
 		{ blur_box(params); return; }
 
 	if ( params.type == rendering::Blur::DISC
-      && fabs(params.extra_size[0]) < 8
-      && fabs(params.extra_size[1]) < 8 )
+	  && std::abs(params.extra_size[0]) < 8
+	  && std::abs(params.extra_size[1]) < 8 )
 		{ blur_pattern(params); return; }
 
 	if ( params.type == rendering::Blur::DISC

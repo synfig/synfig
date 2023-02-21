@@ -230,11 +230,11 @@ public:
 
 	//! Flag this node has changed.
 	//! This way programmer can batch its changes and call it only once
-	//! It emmits signal_changed()
+	//! It emits signal_changed()
 	void changed();
 	//! Flag the child node \p x has changed.
 	//! This way programmer can batch its changes and call it only once
-	//! It emmits signal_child_changed() and signal_changed()
+	//! It emits signal_child_changed() and signal_changed()
 	void child_changed(const Node *x);
 
 	//! Gets the GUID for this Node
@@ -264,8 +264,8 @@ public:
 
 	//! Callback function for a foreach method.
 	//! If it returns true, the foreach iteration is halted.
-	using ForeachFunc = sigc::slot<bool(Node*)>;
-	using ConstForeachFunc = sigc::slot<bool(const Node*)>;
+	using ForeachFunc = sigc::slot1<bool, Node*>;
+	using ConstForeachFunc = sigc::slot1<bool, const Node*>;
 
 	//! Call function func for each of the parents of the current Node
 	//! Do not add or remove any parent node while doing this foreach call
@@ -302,7 +302,7 @@ public:
 	//! Return the first parent of a given type with an additional match condition
 	//! The CompareFunc should return true when match is satisfied
 	//! Example: node->find_first_parent_of_type<MyType>([](MyType::Handle v) -> bool { return v.prop == 1;});
-	template<typename T> etl::handle<T> find_first_parent_of_type(const sigc::slot<bool(const etl::handle<T>&)> &CompareFunc) const {
+	template<typename T> etl::handle<T> find_first_parent_of_type(sigc::slot1<bool, const etl::handle<T>&> CompareFunc) const {
 		T* parent = nullptr;
 		foreach_parent([&parent, CompareFunc](const Node* node) -> bool {
 			if (auto item = dynamic_cast<T*>(const_cast<Node*>(node)))

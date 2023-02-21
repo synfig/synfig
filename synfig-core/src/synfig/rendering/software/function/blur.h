@@ -34,9 +34,9 @@
 
 #include "../../primitive/blur.h"
 
-#include <synfig/vector.h>
-#include <synfig/complex.h>
+#include <synfig/rect.h>
 #include <synfig/surface.h>
+#include <synfig/vector.h>
 
 /* === M A C R O S ========================================================= */
 

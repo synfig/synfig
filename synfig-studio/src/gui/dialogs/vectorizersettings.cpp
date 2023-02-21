@@ -27,7 +27,12 @@
 
 #include <gui/dialogs/vectorizersettings.h>
 
+#include <glibmm/fileutils.h>
+#include <glibmm/markup.h>
+
+#include <gui/exception_guard.h>
 #include <gui/localization.h>
+#include <gui/resourcehelper.h>
 
 #include <synfig/debug/log.h>
 
@@ -47,185 +52,152 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-VectorizerSettings::VectorizerSettings(Gtk::Window& parent,etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
- etl::handle<studio::Instance> selected_instance,std::unordered_map <std::string,int>& configmap, etl::handle<synfig::Layer> reference_layer):
-	Gtk::Dialog(_("Convert-to-Vector Settings"),parent),
-	adjustment_accuracy(Gtk::Adjustment::create(configmap["accuracy"],1,10)),
-	entry_accuracy(adjustment_accuracy,1,0),
-	adjustment_accuracy2(Gtk::Adjustment::create(5,1,10)),
-	entry_accuracy2(adjustment_accuracy2,1,0),
-	adjustment_threshold(Gtk::Adjustment::create(configmap["threshold"],1,10)),
-	entry_threshold(adjustment_threshold,1,0),
-	adjustment_despeckling(Gtk::Adjustment::create(configmap["despeckling"],0,500)),
-	entry_despeckling(adjustment_despeckling,1,0),
-	adjustment_despeckling2(Gtk::Adjustment::create(3,0,500)),
-	entry_despeckling2(adjustment_despeckling2,1,0),
-	adjustment_maxthickness(Gtk::Adjustment::create(configmap["maxthickness"],0,500)),
-	entry_maxthickness(adjustment_maxthickness,1,0),
-	adjustment_radius(Gtk::Adjustment::create(100,1,100)),
-	entry_radius(adjustment_radius,1,0),
-	adjustment_adherence(Gtk::Adjustment::create(100,1,100)),
-	entry_adherence(adjustment_adherence,1,0),
-	adjustment_angle(Gtk::Adjustment::create(100,1,100)),
-	entry_angle(adjustment_angle,1,0),
-	layer_bitmap_(my_layer_bitmap),
-	reference_layer_(reference_layer),
-	instance(selected_instance)
-
+VectorizerSettings::VectorizerSettings(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade) :
+	Gtk::Dialog(cobject),
+	builder(refGlade)
 {
-	//Centerline and Outline option in the comboboxtext
-	// comboboxtext_mode.append(_("Centerline"));
-	// comboboxtext_mode.append("Outline");
-	// //set Centerline Method active by default
-	// comboboxtext_mode.set_active(0);
+	Gtk::ComboBoxText * comboboxtext_mode;
+	refGlade->get_widget("comboboxtext_mode", comboboxtext_mode);
 	// comboboxtext_mode.signal_changed().connect(
 	// 	sigc::mem_fun(this, &VectorizerSettings::on_comboboxtext_mode_changed));
-	config_map = &configmap;
-	Gtk::VBox *dialogBox = manage(new Gtk::VBox(false, 12));
-	dialogBox->set_valign(Gtk::ALIGN_END);
-	dialogBox->set_halign(Gtk::ALIGN_END);
-	dialogBox->set_hexpand(1);
-	dialogBox->set_vexpand(1);
-	get_vbox()->pack_start(*dialogBox, false, false, 0);
 
-	// Gtk::Frame *target_frame=manage(new Gtk::Frame());
-	// target_frame->set_shadow_type(Gtk::SHADOW_NONE);
-	// dialogBox->pack_start(*target_frame);
-	// Gtk::Grid *mode_grid = manage(new Gtk::Grid());
-	// Gtk::Label *mode_label = manage(new Gtk::Label(_("_Mode"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
-	// mode_label->set_mnemonic_widget(comboboxtext_mode);
-	// mode_label->set_margin_right(10);
-	// mode_grid->attach(*mode_label, 0, 0, 1, 1);
-	// mode_grid->attach(comboboxtext_mode, 1, 0, 1, 1);
-	// mode_grid->set_column_homogeneous(true);
-	// target_frame->add(*mode_grid);
+	Gtk::Grid *mode_grid;
+	refGlade->get_widget("mode_grid", mode_grid);
 
+	refGlade->get_widget("Outline_setting_grid", Outline_setting_grid);
+	refGlade->get_widget("Centerline_setting_grid", Centerline_setting_grid);
 
-	Gtk::Box *settings_box=manage(new Gtk::Box());
-	dialogBox->pack_start(*settings_box);
+	//---------------------------------Centerline--------------------------------------//
+	Gtk::SpinButton * thresholdSpinner;
+	refGlade->get_widget("threshold_spinner", thresholdSpinner);
+	if (thresholdSpinner){
+		adjustment_threshold = thresholdSpinner->get_adjustment();
+	}
 
-	//-----------------------------------Centerline--------------------------------------//
-	Gtk::Label *threshold_label = manage(new Gtk::Label(_("_Threshold"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
-	threshold_label->set_mnemonic_widget(entry_threshold);
-	threshold_label->set_margin_end(10);
-	threshold_label->set_tooltip_text("sets value of the darkest pixels to be taken into account to detect lines to be converted to vector strokes");
+	Gtk::SpinButton * accuracySpinner;
+	refGlade->get_widget("accuracy_spinner", accuracySpinner);
+	if (accuracySpinner){
+		adjustment_accuracy = accuracySpinner->get_adjustment();
+	}
 
-	Centerline_setting_grid->attach(*threshold_label, 0, 0, 1, 1);
-	Centerline_setting_grid->attach(entry_threshold, 1, 0, 1, 1);
-	
-	Gtk::Label *accuracy_label = manage(new Gtk::Label(_("_Accuracy"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
-	accuracy_label->set_mnemonic_widget(entry_accuracy);
-	accuracy_label->set_margin_end(10);
-	accuracy_label->set_tooltip_text("sets how much the vector stroke will follow the shape of the original drawing lines");
+	Gtk::SpinButton * despecklingSpinner;
+	refGlade->get_widget("despeckling_spinner", despecklingSpinner);
+	if (despecklingSpinner){
+		adjustment_despeckling = despecklingSpinner->get_adjustment();
+	}
 
-	Centerline_setting_grid->attach(*accuracy_label, 0, 1, 1, 1);
-	Centerline_setting_grid->attach(entry_accuracy, 1, 1, 1, 1);
-
-	Gtk::Label *despeckling_label = manage(new Gtk::Label(_("_Despeckling"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
-	despeckling_label->set_mnemonic_widget(entry_despeckling);
-	despeckling_label->set_margin_end(10);
-	despeckling_label->set_tooltip_text("sets value to ignore small areas generated by the image noise");
-
-	Centerline_setting_grid->attach(*despeckling_label, 0, 2, 1, 1);
-	Centerline_setting_grid->attach(entry_despeckling, 1, 2, 1, 1);
-
-	Gtk::Label *thickness_label = manage(new Gtk::Label(_("_Max Thickness"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
-	thickness_label->set_mnemonic_widget(entry_maxthickness);
-	thickness_label->set_margin_end(10);
-	thickness_label->set_tooltip_text("sets the maximum vector stroke thickness");
-
-	Centerline_setting_grid->attach(*thickness_label, 0, 3, 1, 1);
-	Centerline_setting_grid->attach(entry_maxthickness, 1, 3, 1, 1);
-
-	// Gtk::Label *ppa_label = manage(new Gtk::Label(_("_Preserve Painted Areas(Not yet working)"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
-	// ppa_label->set_mnemonic_widget(toggle_pparea);
-	// ppa_label->set_margin_right(10);
-
-	// toggle_pparea.set_halign(Gtk::ALIGN_START);
-	// Centerline_setting_grid->attach(*ppa_label, 0, 6, 1, 1);
-	// Centerline_setting_grid->attach(toggle_pparea, 1, 6, 1, 1);
-	
-	// Gtk::Label *add_border_label = manage(new Gtk::Label(_("_Add Border(Not yet working)"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
-	// add_border_label->set_mnemonic_widget(toggle_add_border);
-	// add_border_label->set_margin_right(10);
-
-	// toggle_add_border.set_halign(Gtk::ALIGN_START);
-	// Centerline_setting_grid->attach(*add_border_label, 0, 7, 1, 1);
-	// Centerline_setting_grid->attach(toggle_add_border, 1, 7, 1, 1);
-	
-	Centerline_setting_grid->set_column_homogeneous(true);	
-	Centerline_setting_grid->set_row_homogeneous(true);
-
-	Centerline_setting_grid->set_hexpand(true);
-	settings_box->add(*Centerline_setting_grid);
-
+	Gtk::SpinButton * maxthicknessSpinner;
+	refGlade->get_widget("maxthickness_spinner", maxthicknessSpinner);
+	if (maxthicknessSpinner){
+		adjustment_maxthickness = maxthicknessSpinner->get_adjustment();
+	}
 
 	//-----------------------------------Outline--------------------------------------//
-	Gtk::Label *lab = manage(new Gtk::Label(_("_Under Development"), true));
-	Outline_setting_grid->attach(*lab, 0, 0, 2, 1);
+	///Gtk::Label *lab = manage(new Gtk::Label(_("_Under Development"), true));
+	///Outline_setting_grid->attach(*lab, 0, 0, 2, 1);
 	// --> The below lines are for Outline params but outline vectorization is not yet implemented
-	// Gtk::Label *accuracy_label2 = manage(new Gtk::Label(_("_Accuracy"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
-	// accuracy_label2->set_mnemonic_widget(entry_accuracy2);
-	// accuracy_label2->set_margin_right(10);
-	// Outline_setting_grid->attach(*accuracy_label2, 0, 0, 1, 1);
-	// Outline_setting_grid->attach(entry_accuracy2, 1, 0, 1, 1);
 
-	// Gtk::Label *despeckling_label2 = manage(new Gtk::Label(_("_Despeckling"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
-	// despeckling_label2->set_mnemonic_widget(entry_despeckling2);
-	// despeckling_label2->set_margin_right(10);
-	// Outline_setting_grid->attach(*despeckling_label2, 0, 1, 1, 1);
-	// Outline_setting_grid->attach(entry_despeckling2, 1, 1, 1, 1);
+	Gtk::SpinButton * accuracy2Spinner;
+	refGlade->get_widget("accuracy2_spinner", accuracy2Spinner);
+	if (accuracy2Spinner){
+		adjustment_accuracy2 = accuracy2Spinner->get_adjustment();
+	}
 
-	// Gtk::Label *ppa_label2 = manage(new Gtk::Label(_("_Preserve Painted Areas"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
-	// ppa_label2->set_mnemonic_widget(toggle_pparea2);
-	// ppa_label2->set_margin_right(10);
-	// toggle_pparea2.set_halign(Gtk::ALIGN_START);
-	// Outline_setting_grid->attach(*ppa_label2, 0, 2, 1, 1);
-	// Outline_setting_grid->attach(toggle_pparea2, 1, 2, 1, 1);
-	
-	// Gtk::Label *adherence_label = manage(new Gtk::Label(_("_Corners Adherenece"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
-	// adherence_label->set_mnemonic_widget(entry_adherence);
-	// adherence_label->set_margin_right(10);
-	// Outline_setting_grid->attach(*adherence_label, 0, 3, 1, 1);
-	// Outline_setting_grid->attach(entry_adherence, 1, 3, 1, 1);
+	Gtk::SpinButton * despeckling2Spinner;
+	refGlade->get_widget("despeckling2_spinner", despeckling2Spinner);
+	if (despeckling2Spinner){
+		adjustment_despeckling2 = despeckling2Spinner->get_adjustment();
+	}
 
-	// Gtk::Label *angle_label = manage(new Gtk::Label(_("_Corners Angle"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
-	// angle_label->set_mnemonic_widget(entry_angle);
-	// angle_label->set_margin_right(10);
-	// Outline_setting_grid->attach(*angle_label, 0, 4, 1, 1);
-	// Outline_setting_grid->attach(entry_angle, 1, 4, 1, 1);
+	refGlade->get_widget("toggle_pparea2", toggle_pparea2);
 
-	// Gtk::Label *radius_label = manage(new Gtk::Label(_("_Corners Curve Radius"), Gtk::ALIGN_END,Gtk::ALIGN_FILL, true));
-	// radius_label->set_mnemonic_widget(entry_radius);
-	// radius_label->set_margin_right(10);
-	// Outline_setting_grid->attach(*radius_label, 0, 5, 1, 1);
-	// Outline_setting_grid->attach(entry_radius, 1, 5, 1, 1);
+	Gtk::SpinButton * adherenceSpinner;
+	refGlade->get_widget("adherence_spinner", adherenceSpinner);
+	if (adherenceSpinner){
+		adjustment_adherence = adherenceSpinner->get_adjustment();
+	}
 
-	Outline_setting_grid->set_column_homogeneous(true);
-	Outline_setting_grid->set_hexpand(true);
+	Gtk::SpinButton * angleSpinner;
+	refGlade->get_widget("angle_spinner", angleSpinner);
+	if (angleSpinner){
+		adjustment_angle = angleSpinner->get_adjustment();
+	}
 
-	settings_box->add(*Outline_setting_grid);
+	Gtk::SpinButton * radiusSpinner;
+	refGlade->get_widget("radius_spinner", radiusSpinner);
+	if (radiusSpinner){
+		adjustment_radius = radiusSpinner->get_adjustment();
+	}
+
 	//---------------------------------------------------------------------------------//
-	
-	Gtk::Button *convert_button(manage(new class Gtk::Button("_Convert",true)));
-	convert_button->set_tooltip_text("Perform vectorization");
-	convert_button->show();
-	add_action_widget(*convert_button,1);
-	convert_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::VectorizerSettings::on_convert_pressed));
+	Gtk::Button *button = nullptr;
 
-	Gtk::Button *cancel_button(manage(new Gtk::Button(_("_Cancel"), true)));
-	cancel_button->set_tooltip_text("Close the dialog");
-	cancel_button->show();
-	add_action_widget(*cancel_button,0);
-	cancel_button->signal_clicked().connect(sigc::mem_fun(*this, &studio::VectorizerSettings::on_cancel_pressed));
+	refGlade->get_widget("cancel_button", button);
+	if (button)
+		button->signal_clicked().connect(sigc::mem_fun(*this, &VectorizerSettings::on_cancel_pressed));
 
+	refGlade->get_widget("convert_button", button);
+	if (button)
+		button->signal_clicked().connect(sigc::mem_fun(*this, &VectorizerSettings::on_convert_pressed));
 
+	Outline_setting_grid->hide();
+	mode_grid->hide();
+	///on_comboboxtext_mode_changed();
+}
+
+static Glib::RefPtr<Gtk::Builder> load_interface(const char *filename) {
+	auto refBuilder = Gtk::Builder::create();
+	try
+	{
+		refBuilder->add_from_file(ResourceHelper::get_ui_path(filename));
+	}
+	catch(const Glib::FileError& ex)
+	{
+		synfig::error("FileError: " + ex.what());
+		return Glib::RefPtr<Gtk::Builder>();
+	}
+	catch(const Glib::MarkupError& ex)
+	{
+		synfig::error("MarkupError: " + ex.what());
+		return Glib::RefPtr<Gtk::Builder>();
+	}
+	catch(const Gtk::BuilderError& ex)
+	{
+		synfig::error("BuilderError: " + ex.what());
+		return Glib::RefPtr<Gtk::Builder>();
+	}
+	return refBuilder;
+}
+
+void VectorizerSettings::initialize_parameters(etl::handle<synfig::Layer_Bitmap>& my_layer_bitmap,
+	etl::handle<studio::Instance>& selected_instance,std::unordered_map <std::string,int>& configmap, etl::handle<synfig::Layer>& reference_layer)
+{
+	layer_bitmap_ = my_layer_bitmap;
 	set_title(_("Vectorizer Settings - ")+ layer_bitmap_->get_description());
 
-	get_vbox()->show_all();
-	Outline_setting_grid->hide();
-	on_comboboxtext_mode_changed();
+	reference_layer_ = reference_layer;
+	instance = selected_instance;
 
+	config_map = &configmap;
+	adjustment_threshold->set_value(configmap["threshold"]);
+	adjustment_accuracy->set_value(configmap["accuracy"]);
+	adjustment_despeckling->set_value(configmap["despeckling"]);
+	adjustment_maxthickness->set_value(configmap["maxthickness"]);
+}
+
+VectorizerSettings * VectorizerSettings::create(Gtk::Window& parent, etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
+	etl::handle<studio::Instance> selected_instance,std::unordered_map <std::string,int>& configmap, etl::handle<synfig::Layer> reference_layer)
+{
+	auto refBuilder = load_interface("vectorizer_settings.glade");
+	if (!refBuilder)
+		return nullptr;
+	VectorizerSettings * dialog = nullptr;
+	refBuilder->get_widget_derived("vectorizer_settings", dialog);
+	if (dialog) {
+		dialog->initialize_parameters(my_layer_bitmap, selected_instance, configmap, reference_layer);
+		dialog->set_transient_for(parent);
+	}
+	return dialog;
 }
 
 VectorizerSettings::~VectorizerSettings()
@@ -283,7 +255,7 @@ VectorizerSettings::on_convert_pressed()
 	action->set_param("maxthickness",((int)adjustment_maxthickness->get_value()) / 2);
 	action->set_param("pparea",toggle_pparea.get_state());
 	action->set_param("addborder",toggle_add_border.get_state());
-	etl::handle<synfig::Canvas> canvas;
+	Canvas::Handle canvas;
 
 	// in case the "convert to vector" was clicked for layer inside a switch
 	// and pass canvas accordingly

@@ -36,12 +36,11 @@
 
 #include "valuenode_segcalcvertex.h"
 #include "valuenode_const.h"
-#include "valuenode_composite.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
 #include <synfig/valuenode_registry.h>
 #include <synfig/exception.h>
-#include <ETL/hermite>
+#include <synfig/bezier.h>
 #include <synfig/segment.h>
 
 #endif
@@ -63,8 +62,7 @@ REGISTER_VALUENODE(ValueNode_SegCalcVertex, RELEASE_VERSION_0_61_06, "segcalcver
 ValueNode_SegCalcVertex::ValueNode_SegCalcVertex(Type &x):
 	LinkableValueNode(x)
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	if(x!=type_vector)
 		throw Exception::BadType(x.description.local_name);
 
@@ -86,12 +84,12 @@ ValueNode_SegCalcVertex::~ValueNode_SegCalcVertex()
 ValueBase
 ValueNode_SegCalcVertex::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	Segment segment((*segment_)(t).get(Segment()));
 
-	etl::hermite<Vector> curve(segment.p1,segment.p2,segment.t1,segment.t2);
+	hermite<Vector> curve(segment.p1,segment.p2,segment.t1,segment.t2);
 
 	return curve((*amount_)(t).get(Real()));
 }

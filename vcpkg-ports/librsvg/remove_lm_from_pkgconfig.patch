@@ -1,0 +1,16 @@
+Author: Hesham Essam <hesham.essam.mail@gmail.com>
+Date:   Fri Jul 22 16:53:13 2022 +0200
+
+    Remove math library from pkgconfig file
+
+diff --git a/librsvg.pc.in b/librsvg.pc.in
+index a451de05..06bae43d 100644
+--- a/librsvg.pc.in
++++ b/librsvg.pc.in
+@@ -11,5 +11,5 @@ Description: library that renders svg files
+ Version: @VERSION@
+ Requires: glib-2.0 gio-2.0 gdk-pixbuf-2.0 cairo
+ Requires.private:
+-Libs: -L${libdir} -lrsvg-@RSVG_API_MAJOR_VERSION@ -lm
++Libs: -L${libdir} -lrsvg-@RSVG_API_MAJOR_VERSION@
+ Cflags: -I${includedir}/librsvg-@RSVG_API_VERSION@

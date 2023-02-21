@@ -42,23 +42,20 @@
 #include <synfig/general.h>
 
 #include <synfig/angle.h>
-#include <synfig/string.h>
+#include <synfig/bezier.h>
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
 #include <synfig/renddesc.h>
+#include <synfig/string.h>
 #include <synfig/surface.h>
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
 
-#include <ETL/calculus>
-#include <ETL/hermite>
 #include <vector>
 
 #include <synfig/valuenodes/valuenode_bline.h>
 
 #endif
-
-using namespace etl;
 
 /* === M A C R O S ========================================================= */
 
@@ -241,7 +238,7 @@ Plant::sync()const
 
 	std::vector<synfig::BLinePoint>::const_iterator iter,next;
 
-	etl::hermite<Vector> curve;
+	hermite<Vector> curve;
 
 	Real step(std::fabs(step_));
 
@@ -263,7 +260,6 @@ Plant::sync()const
 		curve.p2()=next->get_vertex();
 		curve.t2()=next->get_tangent1();
 		curve.sync();
-		etl::derivative<etl::hermite<Vector> > deriv(curve);
 
 		Real f;
 
@@ -283,7 +279,7 @@ Plant::sync()const
 			stunt_growth*=stunt_growth;
 
 			if((((i+1)*sprouts + steps/2) / steps) > branch_count) {
-				Vector branch_velocity(deriv(f).norm()*velocity + deriv(f).perp().norm()*perp_velocity);
+				Vector branch_velocity(curve.derivative(f).norm()*velocity + curve.derivative(f).perp().norm()*perp_velocity);
 
 				if (std::isnan(branch_velocity[0]) || std::isnan(branch_velocity[1]))
 					continue;

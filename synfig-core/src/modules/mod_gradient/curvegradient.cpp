@@ -41,15 +41,13 @@
 
 #include <synfig/string.h>
 #include <synfig/time.h>
+#include <synfig/bezier.h>
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
 #include <synfig/renddesc.h>
 #include <synfig/surface.h>
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
-#include <ETL/bezier>
-#include <ETL/hermite>
-#include <ETL/calculus>
 
 #endif
 
@@ -95,7 +93,7 @@ inline Real calculate_distance(const std::vector<synfig::BLinePoint>& bline, boo
 	for(;next!=end;iter=next++)
 	{
 		// Setup the curve
-		etl::hermite<Vector> curve(
+		hermite<Vector> curve(
 			iter->get_vertex(),
 			next->get_vertex(),
 			iter->get_tangent2(),
@@ -123,7 +121,7 @@ find_closest(bool fast, const std::vector<synfig::BLinePoint>& bline,const Point
 	//Real best_bline_len(0);
 	Real total_bline_dist(0);
 	Real best_pos(0);
-	etl::hermite<Vector> best_curve;
+	hermite<Vector> best_curve;
 
 	if(loop)
 		iter=--bline.end();
@@ -135,7 +133,7 @@ find_closest(bool fast, const std::vector<synfig::BLinePoint>& bline,const Point
 	for(;next!=end;iter=next++)
 	{
 		// Setup the curve
-		etl::hermite<Vector> curve(
+		hermite<Vector> curve(
 			iter->get_vertex(),
 			next->get_vertex(),
 			iter->get_tangent2(),
@@ -298,15 +296,12 @@ CurveGradient::color_func(const Point &point_, int quality, Real supersample)con
 		if(next==bline.end()) next=bline.begin();
 
 		// Setup the curve
-		etl::hermite<Vector> curve(
+		hermite<Vector> curve(
 			iter->get_vertex(),
 			next->get_vertex(),
 			iter->get_tangent2(),
 			next->get_tangent1()
 			);
-
-		// Setup the derivative function
-		etl::derivative<etl::hermite<Vector> > deriv(curve);
 
 		int search_iterations(7);
 
@@ -332,8 +327,8 @@ CurveGradient::color_func(const Point &point_, int quality, Real supersample)con
 			t = curve.find_closest(fast, point,search_iterations);
 
 		// Calculate our values
-		p1=curve(t);			 // the closest point on the curve
-		tangent=deriv(t);		 // the tangent at that point
+		p1=curve(t);                 // the closest point on the curve
+		tangent=curve.derivative(t); // the tangent at that point
 
 		// if the point we're nearest to is at either end of the
 		// bline, our distance from the curve is the distance from the
@@ -361,7 +356,7 @@ CurveGradient::color_func(const Point &point_, int quality, Real supersample)con
 						else if (loop) (prev = bline.end())--;
 						else prev = iter;
 
-						etl::hermite<Vector> other_curve(prev->get_vertex(), iter->get_vertex(), prev->get_tangent2(), iter->get_tangent1());
+						hermite<Vector> other_curve(prev->get_vertex(), iter->get_vertex(), prev->get_tangent2(), iter->get_tangent1());
 						other_tangent = other_curve(1) - other_curve(1-FAKE_TANGENT_STEP);
 					}
 
@@ -389,7 +384,7 @@ CurveGradient::color_func(const Point &point_, int quality, Real supersample)con
 							else next2 = next;
 						}
 
-						etl::hermite<Vector> other_curve(next->get_vertex(), next2->get_vertex(), next->get_tangent2(), next2->get_tangent1());
+						hermite<Vector> other_curve(next->get_vertex(), next2->get_vertex(), next->get_tangent2(), next2->get_tangent1());
 						other_tangent = other_curve(FAKE_TANGENT_STEP) - other_curve(0);
 					}
 
@@ -464,10 +459,14 @@ CurveGradient::calc_supersample(const synfig::Point &/*x*/, Real pw, Real /*ph*/
 synfig::Layer::Handle
 CurveGradient::hit_check(synfig::Context context, const synfig::Point &point)const
 {
+	bool check_myself_first;
+	auto layer = basic_hit_check(context, point, check_myself_first);
+
+	if (!check_myself_first)
+		return layer;
+
 	if(get_blend_method()==Color::BLEND_STRAIGHT && get_amount()>=0.5)
 		return const_cast<CurveGradient*>(this);
-	if(get_amount()==0.0)
-		return context.hit_check(point);
 	if((get_blend_method()==Color::BLEND_STRAIGHT || get_blend_method()==Color::BLEND_COMPOSITE|| get_blend_method()==Color::BLEND_ONTO) && color_func(point).get_a()>0.5)
 		return const_cast<CurveGradient*>(this);
 	return context.hit_check(point);

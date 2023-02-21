@@ -34,7 +34,8 @@
 # endif
 
 # include "timeplotdata.h"
-# include <ETL/misc>
+
+#include <synfig/misc.h>
 
 #endif
 
@@ -233,7 +234,7 @@ TimePlotData::is_y_visible(synfig::Real y) const
 int
 TimePlotData::get_pixel_t_coord(const synfig::Time& t) const
 {
-	return etl::round_to_int((t - lower_ex) * k);
+	return synfig::round_to_int((t - lower_ex) * k);
 }
 
 double
@@ -245,7 +246,7 @@ TimePlotData::get_double_pixel_t_coord(const synfig::Time& t) const
 int
 TimePlotData::get_pixel_y_coord(synfig::Real y) const
 {
-	return etl::round_to_int(-(y + range_lower) * range_k);
+	return synfig::round_to_int(-(y + range_lower) * range_k);
 }
 
 synfig::Time

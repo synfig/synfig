@@ -61,6 +61,17 @@ public:
 	virtual String get_local_name() const override;
 	static bool check_type(Type &type);
 
+	ValueNode::LooseHandle get_bline_handle(bool& bline_loop) {
+		ValueNode::LooseHandle bline = this->get_link("bline");
+		if (bline) {
+			ValueBase v = (*bline)(Time(0));
+
+			if (v.get_contained_type() == type_bline_point)
+				bline_loop = v.get_loop();
+		}
+		return bline;
+	}
+
 protected:
 	LinkableValueNode* create_new() const override;
 

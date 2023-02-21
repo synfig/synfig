@@ -42,16 +42,15 @@
 #include <stdexcept>
 #include <synfig/color.h>
 #include <synfig/gradient.h>
+#include <synfig/misc.h>
 #include <synfig/vector.h>
 #include <synfig/angle.h>
 #include <synfig/real.h>
-#include <ETL/misc>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -67,8 +66,7 @@ REGISTER_VALUENODE(ValueNode_Subtract, RELEASE_VERSION_0_61_06, "subtract", N_("
 synfig::ValueNode_Subtract::ValueNode_Subtract(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	set_link("scalar",ValueNode_Const::create(Real(1.0)));
 	Type &type(value.get_type());
 
@@ -144,8 +142,8 @@ synfig::ValueNode_Subtract::~ValueNode_Subtract()
 synfig::ValueBase
 synfig::ValueNode_Subtract::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	if(!ref_a || !ref_b)
 		throw std::runtime_error(strprintf("ValueNode_Subtract: %s",_("One or both of my parameters aren't set!")));

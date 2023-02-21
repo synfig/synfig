@@ -118,8 +118,6 @@ class Module;
 
 class StateManager;
 
-class WorkspaceHandler;
-
 class App : public Gtk::Application, private IconController
 {
 	class Preferences;
@@ -179,8 +177,6 @@ private:
 	static int jack_locks_;
 
 //	static std::list< etl::handle< Module > > module_list_;
-
-	static WorkspaceHandler *workspaces;
 
 	static std::string icon_theme_name;
 
@@ -250,8 +246,6 @@ public:
 
 	static Dock_Info* dock_info_; //For Render ProgressBar
 
-	static WorkspaceHandler * get_workspace_handler() {return workspaces;}
-
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
 	*/
@@ -280,8 +274,6 @@ public:
 	static sigc::signal<void> &signal_present_all();
 
 	static sigc::signal<void> &signal_recent_files_changed();
-
-	static sigc::signal<void> &signal_custom_workspaces_changed();
 
 	static sigc::signal<
 		void,
@@ -351,16 +343,8 @@ public:
 	static void save_accel_map();
 	/// \param[out] map Maps AccelKey to Action
 	static const std::map<const char*, const char*>& get_default_accel_map();
-	static void load_file_window_size();
+	static void load_recent_files();
 	static void load_language_settings();
-	static void set_workspace_default();
-	static void set_workspace_compositing();
-	static void set_workspace_animating();
-	static void set_workspace_from_template(const std::string &tpl);
-	static void set_workspace_from_name(const std::string &name);
-	static void load_custom_workspaces();
-	static void save_custom_workspace();
-	static void edit_custom_workspace_list();
 	static void apply_gtk_settings();
 
 	// Get the currently used icon theme name
@@ -371,15 +355,13 @@ public:
 
 	static const std::list<std::string>& get_recent_files();
 
-	static const std::vector<std::string> get_workspaces();
-
 	static const etl::handle<synfigapp::UIInterface>& get_ui_interface();
 
 
 	static void set_selected_instance(etl::loose_handle<Instance> instance);
 	static void set_selected_canvas_view(etl::loose_handle<CanvasView>);
 
-	static etl::loose_handle<Instance> get_instance(etl::handle<synfig::Canvas> canvas);
+	static etl::loose_handle<Instance> get_instance(synfig::Canvas::Handle canvas);
 
 	static etl::loose_handle<Instance> get_selected_instance() { return selected_instance; }
 	static etl::loose_handle<CanvasView> get_selected_canvas_view() { return selected_canvas_view; }
@@ -465,7 +447,7 @@ public:
 	static void dialog_message_1b(
 			const std::string &type,
 			const std::string &message,
-			const std::string &detials,
+			const std::string &details,
 			const std::string &button1,
 			const std::string &long_details = "long_details");
 
@@ -485,7 +467,7 @@ public:
 	static void open_uri(const std::string &uri);
 	static void open_img_in_external(const std::string &uri);
 	static void open_vectorizerpopup(const etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
-	const etl::handle<synfig::Layer> reference_layer);
+	const synfig::Layer::Handle reference_layer);
 
 
 

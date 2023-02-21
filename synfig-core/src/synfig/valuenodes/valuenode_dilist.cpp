@@ -34,9 +34,7 @@
 #endif
 
 #include "valuenode_dilist.h"
-#include "valuenode_const.h"
 #include "valuenode_composite.h"
-#include "valuenode_bline.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
 #include <synfig/valuenode_registry.h>
@@ -130,8 +128,8 @@ ValueNode_DIList::create_list_entry(int index, Time time, Real /*origin*/)
 ValueBase
 ValueNode_DIList::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	std::vector<DashItem> ret_list;
 
@@ -172,8 +170,6 @@ ValueNode_DIList::link_local_name(int i)const
 	return strprintf(_("DashItem %03d"),i+1);
 }
 
-
-
 LinkableValueNode*
 ValueNode_DIList::create_new()const
 {
@@ -185,16 +181,3 @@ ValueNode_DIList::check_type(Type &type)
 {
 	return type==type_list;
 }
-
-ValueNode::LooseHandle
-ValueNode_DIList::get_bline()const
-{
-	return bline_;
-}
-
-void
-ValueNode_DIList::set_bline(ValueNode::Handle b)
-{
-	bline_=b;
-}
-

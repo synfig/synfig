@@ -63,7 +63,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -136,7 +135,7 @@ class studio::StateLasso_Context : public sigc::trackable
 
 	// layer name:
 	Gtk::Label id_label;
-	Gtk::HBox id_box;
+	Gtk::Box id_box;
 	Gtk::Entry id_entry;
 
 	// layer types to create:
@@ -144,11 +143,11 @@ class studio::StateLasso_Context : public sigc::trackable
 	Gtk::ToggleButton layer_region_togglebutton;
 	//Gtk::ToggleButton layer_outline_togglebutton;
 	//Gtk::ToggleButton layer_advanced_outline_togglebutton;
-	Gtk::HBox layer_types_box;
+	Gtk::Box layer_types_box;
 
 	// blend method
 	//Gtk::Label blend_label;
-	///Gtk::HBox blend_box;
+	///Gtk::Box blend_box;
 	//Widget_Enum blend_enum;
 
 	// opacity
@@ -162,16 +161,16 @@ class studio::StateLasso_Context : public sigc::trackable
 	// pressure width
 	Gtk::Label pressure_width_label;
 	Gtk::CheckButton pressure_width_checkbutton;
-	Gtk::HBox pressure_width_box;
+	Gtk::Box pressure_width_box;
 
 	// min pressure, sub option of pressure width
 	Gtk::Label min_pressure_label;
-	Gtk::HBox min_pressure_label_box;
+	Gtk::Box min_pressure_label_box;
 
 	Gtk::CheckButton min_pressure_checkbutton;
 	Glib::RefPtr<Gtk::Adjustment> min_pressure_adj;
 	Gtk::SpinButton  min_pressure_spin;
-	Gtk::HBox min_pressure_box;
+	Gtk::Box min_pressure_box;
 
 	// smoothness
 	Gtk::Label smoothness_label;
@@ -189,7 +188,7 @@ class studio::StateLasso_Context : public sigc::trackable
 
 	// width max error advanced outline layer
 	Gtk::Label width_max_error_label;
-	Gtk::HBox width_max_error_box;
+	Gtk::Box width_max_error_box;
 	Glib::RefPtr<Gtk::Adjustment> width_max_error_adj;
 	Gtk::SpinButton width_max_error_spin;
 
@@ -197,22 +196,22 @@ class studio::StateLasso_Context : public sigc::trackable
 	// round ends
 	Gtk::Label round_ends_label;
 	Gtk::CheckButton round_ends_checkbutton;
-	Gtk::HBox round_ends_box;
+	Gtk::Box round_ends_box;
 
 	// whether to loop new strokes which start and end in the same place
 	Gtk::Label auto_loop_label;
 	Gtk::CheckButton auto_loop_checkbutton;
-	Gtk::HBox auto_loop_box;
+	Gtk::Box auto_loop_box;
 
 	// whether to extend existing lines
 	Gtk::Label auto_extend_label;
 	Gtk::CheckButton auto_extend_checkbutton;
-	Gtk::HBox auto_extend_box;
+	Gtk::Box auto_extend_box;
 
 	// whether to link new ducks to existing ducks
 	Gtk::Label auto_link_label;
 	Gtk::CheckButton auto_link_checkbutton;
-	Gtk::HBox auto_link_box;
+	Gtk::Box auto_link_box;
 
 	// feather size
 	Gtk::Label feather_label;
@@ -221,7 +220,7 @@ class studio::StateLasso_Context : public sigc::trackable
 	// auto export
 	Gtk::Label auto_export_label;
 	Gtk::CheckButton auto_export_checkbutton;
-	Gtk::HBox auto_export_box;
+	Gtk::Box auto_export_box;
 
 	// toolbar buttons
 	Gtk::Button fill_last_stroke_button;
@@ -664,7 +663,7 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 	options_grid.set_margin_bottom(0);
 	options_grid.show_all();
 
-	fill_last_stroke_button.signal_pressed().connect(
+	fill_last_stroke_button.signal_clicked().connect(
 		sigc::mem_fun(*this, &StateLasso_Context::fill_last_stroke));
 	pressure_width_checkbutton.signal_toggled().connect(
 		sigc::mem_fun(*this, &StateLasso_Context::UpdateUsePressure));
@@ -809,19 +808,6 @@ StateLasso_Context::event_mouse_down_handler(const Smach::event& x)
 }
 
 #define SIMILAR_TANGENT_THRESHOLD	(0.2)
-
-struct debugclass
-{
-	synfig::String x;
-	debugclass(const synfig::String &x):x(x)
-	{
-//		synfig::warning(">>>>>>>>>>>>>>>>>>> "+x);
-	}
-	~debugclass()
-	{
-//		synfig::warning("<<<<<<<<<<<<<<<<<<< "+x);
-	}
-};
 
 struct DepthCounter
 {
@@ -1487,7 +1473,7 @@ StateLasso_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synf
                 
                 synfigapp::Action::Handle action(synfigapp::Action::create("LayerEncapsulate"));
                
-                etl::handle<synfig::Canvas> cv( layer_list.back()->get_canvas() );
+                Canvas::Handle cv( layer_list.back()->get_canvas() );
                         
                 action->set_param("layer",*(layer_list.rbegin()));
                 layer_list.pop_back();

@@ -5,7 +5,7 @@ add_library(mod_png MODULE
         "${CMAKE_CURRENT_LIST_DIR}/trgt_png.cpp"
 )
 
-target_link_libraries(mod_png synfig PkgConfig::LIBPNG)
+target_link_libraries(mod_png libsynfig PkgConfig::LIBPNG)
 
 install (
     TARGETS mod_png

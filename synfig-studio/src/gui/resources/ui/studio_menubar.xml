@@ -473,7 +473,7 @@
                     <attribute name="accel">U</attribute>
                 </item>
                 <item>
-                    <attribute name="label" translatable="yes">_Eyedrop Tool</attribute>
+                    <attribute name="label" translatable="yes">_Eyedropper Tool</attribute>
                     <attribute name="action">app.state-eyedrop</attribute>
                     <attribute name="icon">tool_eyedrop_icon</attribute>
                     <attribute name="accel">D</attribute>
@@ -583,8 +583,8 @@
 						    <attribute name="action">app.workspace-default</attribute>
 						</item>
 						<item>
-						    <attribute name="label" translatable="yes">_Composting</attribute>
-						    <attribute name="action">app.workspace-composting</attribute>
+						    <attribute name="label" translatable="yes">_Compositing</attribute>
+						    <attribute name="action">app.workspace-compositing</attribute>
 						</item>
 						<item>
 						    <attribute name="label" translatable="yes">_Animating</attribute>

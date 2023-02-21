@@ -26,17 +26,14 @@
 
 #include <cstdio>
 
-#include <ETL/hermite>
-#include <ETL/surface>
-#include <ETL/gaussian>
-#include <ETL/calculus>
-
 #include <synfig/angle.h>
+#include <synfig/bezier.h>
 #include <synfig/clock.h>
+#include <synfig/surface_etl.h>
 
 /* === M A C R O S ========================================================= */
 
-using namespace etl;
+using namespace synfig;
 
 #define HERMITE_TEST_ITERATIONS		(100000)
 
@@ -125,33 +122,6 @@ void angle_atan2_speed_test(void)
 		}
 }
 
-
-int surface_and_gaussian_blur_test()
-{
-	int ret=0;
-	synfig::clock MyTimer;
-	float endtime;
-
-	{
-		surface<float> my_surface(1000,1000);
-
-		MyTimer.reset();
-		gaussian_blur(my_surface.begin(),my_surface.end(),30,30);
-		endtime=MyTimer();
-		printf("surface_and_gaussian_blur_test<float>: %f seconds\n",endtime);
-	}
-
-	{
-		surface<double> my_surface(1000,1000);
-
-		MyTimer.reset();
-		gaussian_blur(my_surface.begin(),my_surface.end(),30,30);
-		endtime=MyTimer();
-		printf("surface_and_gaussian_blur_test<double>: %f seconds\n",endtime);
-	}
-
-	return ret;
-}
 
 int hermite_int_test()
 {
@@ -318,7 +288,6 @@ int main()
 {
 	int error=0;
 
-	error+=surface_and_gaussian_blur_test();
 	error+=hermite_float_test();
 	error+=hermite_double_test();
 	error+=hermite_int_test();

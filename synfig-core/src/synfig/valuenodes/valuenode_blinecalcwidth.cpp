@@ -42,7 +42,6 @@
 #include <synfig/localization.h>
 #include <synfig/valuenode_registry.h>
 #include <synfig/exception.h>
-#include <ETL/hermite>
 
 #endif
 
@@ -64,8 +63,7 @@ REGISTER_VALUENODE(ValueNode_BLineCalcWidth, RELEASE_VERSION_0_61_08, "blinecalc
 ValueNode_BLineCalcWidth::ValueNode_BLineCalcWidth(Type &x):
 	LinkableValueNode(x)
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	if(x!=type_real)
 		throw Exception::BadType(x.description.local_name);
 
@@ -97,8 +95,8 @@ ValueNode_BLineCalcWidth::~ValueNode_BLineCalcWidth()
 ValueBase
 ValueNode_BLineCalcWidth::operator()(Time t, Real amount)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	const ValueBase::List bline = (*bline_)(t).get_list();
 	const ValueBase bline_value_node = (*bline_)(t);

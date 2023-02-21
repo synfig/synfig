@@ -32,10 +32,12 @@
 #	include <config.h>
 #endif
 
-#include "curve_helper.h"
 #include "curveset.h"
+
+#include <synfig/bezier.h>
 #include "blinepoint.h"
-#include <ETL/bezier>
+#include "curve_helper.h"
+
 #include <vector>
 #include <list>
 #include <set>
@@ -44,7 +46,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */

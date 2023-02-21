@@ -246,12 +246,32 @@ namespace synfig
 #endif
 			typedef std::basic_string<value_type> string_type;
 
+			/**
+			 * Store a file system path
+			 * @param path the path in UTF-8 encoding
+			 */
 			Path(const std::string& path);
 
+			// Format observers ------------------
+
+			/** Path as a character string in native encoding */
 			const value_type* c_str() const noexcept;
+			/** Path as a character string in native encoding */
+			const string_type& native() const noexcept;
+			/** Path as a character string in UTF-8 encoding */
+			const std::string& u8string() const;
 
 		private:
-			string_type path_;
+			/** Path in the native encoding */
+			string_type native_path_;
+			/** Path in UTF-8 encoding */
+			std::string path_;
+
+			/** Convert a UTF-8 encoded string into a native-encoded string
+			 *  @param utf8 the string to be converted
+			 *  @return a string in native encoding
+			 */
+			static string_type utf8_to_native(const std::string& utf8);
 		};
 	}
 }

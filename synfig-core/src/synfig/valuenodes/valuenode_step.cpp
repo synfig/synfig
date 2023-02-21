@@ -59,8 +59,7 @@ REGISTER_VALUENODE(ValueNode_Step, RELEASE_VERSION_0_61_08, "step", N_("Step"))
 ValueNode_Step::ValueNode_Step(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	set_link("duration",     ValueNode_Const::create(Time(1)));
 	set_link("start_time",   ValueNode_Const::create(Time(0)));
 	set_link("intersection", ValueNode_Const::create(Real(0.5)));
@@ -107,8 +106,8 @@ ValueNode_Step::~ValueNode_Step()
 ValueBase
 ValueNode_Step::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	Time duration    ((*duration_    )(t).get(Time()));
 	Time start_time  ((*start_time_  )(t).get(Time()));

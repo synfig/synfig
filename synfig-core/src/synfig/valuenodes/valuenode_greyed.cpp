@@ -64,8 +64,7 @@ ValueNode_Greyed::ValueNode_Greyed(Type &x):
 ValueNode_Greyed::ValueNode_Greyed(const ValueNode::Handle &x):
 	ValueNode_Reference(x->get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	set_link("link",x);
 }
 

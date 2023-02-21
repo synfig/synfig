@@ -54,6 +54,7 @@ MODULE_DESC_END
 MODULE_INVENTORY_BEGIN(mod_imagemagick)
 	BEGIN_TARGETS
 		TARGET(imagemagick_trgt)
+		TARGET_EXT(imagemagick_trgt,"ico")
 		TARGET_EXT(imagemagick_trgt,"jpg")
 		TARGET_EXT(imagemagick_trgt,"jpeg")
 		TARGET_EXT(imagemagick_trgt,"png")

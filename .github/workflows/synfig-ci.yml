@@ -28,25 +28,26 @@ jobs:
           name: macOS 11 Big Sur (Autotools)
           toolchain: autotools
           allow_failures: false
-#        - os: macos-11.0
+
         - os: macos-11
-#          name: MacOS 11.0 Big Sur (CMake+Ninja)
           name: macOS 11 Big Sur (CMake+Ninja)
           toolchain: cmake-ninja
           allow_failures: true
-        - os: ubuntu-18.04
-          name: Ubuntu 18.04 Bionic (Autotools)
+
+        - os: ubuntu-20.04
+          name: Ubuntu 20.04 Focal (Autotools)
           allow_failures: false
           toolchain: autotools
-        - os: ubuntu-20.04
-          name: Ubuntu 20.04 Focal (CMake+Ninja)
+
+        - os: ubuntu-22.04
+          name: Ubuntu 22.04 Jammy (CMake+Ninja)
           toolchain: cmake-ninja
           allow_failures: false
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Prepare ccache timestamp
         id: ccache_timestamp
@@ -54,7 +55,7 @@ jobs:
 
       - name: Download ccache archive
         id: ccache-archive
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: .ccache
           key: ${{ matrix.os }}-ccache-${{ matrix.toolchain }}-${{ steps.ccache_timestamp.outputs.timestamp }}

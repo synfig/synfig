@@ -1,0 +1,16 @@
+{
+  "name": "glibmm",
+  "version": "2.66.4",
+  "description": "This is glibmm, a C++ API for parts of glib that are useful for C++.",
+  "homepage": "https://gitlab.gnome.org/GNOME/glibmm",
+  "license": "LGPL-2.1",
+  "dependencies": [
+    "glib",
+    "libsigcpp-2",
+    {
+      "name": "vcpkg-tool-meson",
+      "host": true
+    }
+  ]
+}
+

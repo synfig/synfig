@@ -4,7 +4,7 @@ add_library(mod_imagemagick MODULE
         "${CMAKE_CURRENT_LIST_DIR}/trgt_imagemagick.cpp"
 )
 
-target_link_libraries(mod_imagemagick synfig)
+target_link_libraries(mod_imagemagick libsynfig)
 
 install (
     TARGETS mod_imagemagick

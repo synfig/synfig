@@ -33,8 +33,6 @@
 #	include <config.h>
 #endif
 
-#include <ETL/misc>
-
 #include "layer_bitmap.h"
 
 #include <synfig/time.h>
@@ -44,6 +42,7 @@
 #include <synfig/context.h>
 #include <synfig/time.h>
 #include <synfig/color.h>
+#include <synfig/misc.h>
 #include <synfig/surface.h>
 #include <synfig/renddesc.h>
 #include <synfig/target.h>
@@ -62,7 +61,6 @@
 /* === U S I N G =========================================================== */
 
 using namespace synfig;
-using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 

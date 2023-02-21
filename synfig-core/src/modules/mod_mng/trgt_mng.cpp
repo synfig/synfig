@@ -41,15 +41,15 @@
 #include <glib/gstdio.h>
 #include "trgt_mng.h"
 #include <libmng.h>
-#include <ETL/misc>
 #include <ETL/stringf>
+
+#include <synfig/misc.h>
 
 #endif
 
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
-using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 

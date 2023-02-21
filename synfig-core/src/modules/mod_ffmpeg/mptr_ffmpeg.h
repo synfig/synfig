@@ -31,13 +31,13 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfig/importer.h>
-#include <sys/types.h>
-#include <cstdio>
+#include <synfig/os.h>
+#include <synfig/surface.h>
+
 #ifdef HAVE_TERMIOS_H
 #include <termios.h>
 #endif
 
-#include <synfig/surface.h>
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -47,12 +47,8 @@
 class ffmpeg_mptr : public synfig::Importer
 {
 	SYNFIG_IMPORTER_MODULE_EXT
-public:
 private:
-#ifdef HAVE_FORK
-	pid_t pid = -1;
-#endif
-	FILE *file;
+	synfig::OS::RunPipe::Handle pipe;
 	int cur_frame;
 	synfig::Surface frame;
 	float fps;

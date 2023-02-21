@@ -42,23 +42,19 @@
 
 #include <algorithm>
 
-#include <ETL/misc>
-
 #include "general.h"
 #include "real.h"
 
 #include "time.h"
 
 #include <synfig/localization.h>
+#include <synfig/misc.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
-
-#define tolower ::tolower
 
 /* === M A C R O S ========================================================= */
 
@@ -70,7 +66,7 @@ Time::Time(const String &str_, float fps):
 	value_(0)
 {
 	String str(str_);
-	std::transform(str.begin(),str.end(),str.begin(),&tolower);
+	strtolower(str);
 
 	// Start/Begin Of Time
 	if(str=="sot" || str=="bot")

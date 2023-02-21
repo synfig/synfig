@@ -28,6 +28,7 @@
 #define SYNFIG_STRING_HELPER_H
 
 #include <string>
+#include "real.h"
 
 namespace synfig
 {
@@ -36,6 +37,8 @@ namespace synfig
 /// It respects decimal point defined by locale and leave at least one decimal place
 /// \param force_decimal_point The result string will always show the decimal point even if it isn't needed (e.g. 4 -> 4.0)
 std::string remove_trailing_zeroes(const std::string& text, bool force_decimal_point = true);
+
+std::string float_presentation(Real value, int num_decimals = 6);
 
 /// Remove whitespaces from both ends of a string
 std::string trim(const std::string& text);
@@ -55,6 +58,9 @@ int strscanf(const std::string& data, const char* format, ...);
 
 double stratof(const std::string& str);
 int stratoi(const std::string& str);
+
+void strtolower(std::string& str);
+void strtoupper(std::string& str);
 
 }; // END of namespace synfig
 

@@ -255,7 +255,7 @@ public:
 	//! Notice that it is called twice and the second time it uses
 	//! a replaceable handle to the Node
 	//! \see etl::rhandle
-	int replace(etl::handle<ValueNode> x);
+	int replace(ValueNode::Handle x);
 	
 	//! Get the default interpolation for Value Nodes
 	virtual Interpolation get_interpolation()const { return INTERPOLATION_UNDEFINED; }
@@ -423,7 +423,7 @@ public:
 	String get_description(bool show_exported_name = true)const;
 
 	//! Gets the children vocabulary for linkable value nodes
-	virtual Vocab get_children_vocab()const;
+	virtual const Vocab& get_children_vocab()const;
 
 	virtual void set_root_canvas(etl::loose_handle<Canvas> x);
 
@@ -465,6 +465,7 @@ protected:
 
 	//! Virtual member to set the children vocabulary to a given value
 	virtual void set_children_vocab(const Vocab& rvocab);
+	virtual void init_children_vocab();
 
 	virtual void get_values_vfunc(std::map<Time, ValueBase> &x) const;
 }; // END of class LinkableValueNode

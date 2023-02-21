@@ -116,7 +116,7 @@ StateEyedrop_Context::StateEyedrop_Context(CanvasView *canvasView):
 	canvas_view->get_work_area()->set_cursor(Gdk::Cursor::create(Gdk::CROSSHAIR));
 
 	// Toolbox widgets
-	title_label.set_label(_("Eyedrop Tool"));
+	title_label.set_label(_("Eyedropper Tool"));
 	Pango::AttrList list;
 	Pango::AttrInt attr = Pango::Attribute::create_attr_weight(Pango::WEIGHT_BOLD);
 	list.insert(attr);
@@ -128,9 +128,9 @@ StateEyedrop_Context::StateEyedrop_Context(CanvasView *canvasView):
 	// Toolbox layout
 	options_grid.attach(title_label,
 		0, 0, 2, 1);
-	options_grid.attach(*manage(new Gtk::Label(_("Click to assign Outline Color"), Gtk::ALIGN_START)),
+	options_grid.attach(*manage(new Gtk::Label(_("Click to assign Fill Color"), Gtk::ALIGN_START)),
 		0, 1, 2, 1);
-	options_grid.attach(*manage(new Gtk::Label(_("Ctrl + Click to assign Fill Color"), Gtk::ALIGN_START)),
+	options_grid.attach(*manage(new Gtk::Label(_("Ctrl + Click to assign Outline Color"), Gtk::ALIGN_START)),
 		0, 2, 2, 1);
 
 	options_grid.set_border_width(GAP*2);
@@ -156,7 +156,7 @@ StateEyedrop_Context::refresh_tool_options()
 {
 	App::dialog_tool_options->clear();
 	App::dialog_tool_options->set_widget(options_grid);
-	App::dialog_tool_options->set_local_name(_("Eyedrop Tool"));
+	App::dialog_tool_options->set_local_name(_("Eyedropper Tool"));
 	App::dialog_tool_options->set_name("eyedrop");
 }
 
@@ -195,10 +195,10 @@ StateEyedrop_Context::event_workarea_mouse_button_down_handler(const Smach::even
 	{
 		Color color(canvas_view->get_canvas()->get_context(canvas_view->get_context_params()).get_color(event.pos));
 		if((event.modifier&GDK_CONTROL_MASK) == GDK_CONTROL_MASK) {
-		    synfigapp::Main::set_fill_color(color);
+			synfigapp::Main::set_outline_color(color);
 		}
 		else {
-		    synfigapp::Main::set_outline_color(color);
+			synfigapp::Main::set_fill_color(color);
 		}
 		studio::App::dialog_color->set_color(color);
 		return Smach::RESULT_ACCEPT;

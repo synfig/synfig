@@ -49,7 +49,7 @@ class Widget_Filename : public Gtk::Grid
 {
 	Gtk::Entry *entry_filename;
 	Gtk::Button *button_choose;
-	etl::handle<synfig::Canvas> canvas;
+	synfig::Canvas::Handle canvas;
 
 	void on_button_choose_pressed();
 
@@ -61,7 +61,7 @@ public:
 
 	void on_value_changed();
 
-	void set_canvas(etl::handle<synfig::Canvas> x) { canvas=x; assert(canvas); }
+	void set_canvas(synfig::Canvas::Handle x) { canvas=x; assert(canvas); }
 	void set_value(const  std::string &data);
 	std::string get_value() const;
 	void set_has_frame(bool x);

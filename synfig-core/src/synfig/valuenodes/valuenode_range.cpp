@@ -49,7 +49,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -65,8 +64,7 @@ REGISTER_VALUENODE(ValueNode_Range, RELEASE_VERSION_0_61_07, "range", N_("Range"
 synfig::ValueNode_Range::ValueNode_Range(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	Type &type(value.get_type());
 
 	if (type == type_angle)
@@ -128,8 +126,8 @@ synfig::ValueNode_Range::~ValueNode_Range()
 synfig::ValueBase
 synfig::ValueNode_Range::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	if(!min_ || !max_ || !link_)
 		throw std::runtime_error(strprintf("ValueNode_Range: %s",_("Some of my parameters aren't set!")));

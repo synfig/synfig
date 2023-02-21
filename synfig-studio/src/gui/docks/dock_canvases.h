@@ -54,7 +54,7 @@ private:
 
 	etl::loose_handle<studio::Instance> get_selected_instance() { return selected_instance; }
 
-	etl::loose_handle<synfig::Canvas> get_selected_canvas();
+	synfig::Canvas::LooseHandle get_selected_canvas();
 
 	etl::loose_handle<studio::CanvasView> get_selected_canvas_view();
 

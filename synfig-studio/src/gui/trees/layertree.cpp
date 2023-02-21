@@ -146,8 +146,8 @@ LayerTree::LayerTree()
 
 LayerTree::~LayerTree()
 {
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
-		synfig::info("LayerTree::~LayerTree(): Deleted");
+	DEBUG_LOG("SYNFIG_DEBUG_DESTRUCTORS",
+		"LayerTree::~LayerTree(): Deleted");
 }
 
 void
@@ -204,6 +204,12 @@ LayerTree::create_layer_tree()
 		column_z_depth->set_clickable();
 
 		column_z_depth->set_sort_column(layer_model.z_depth);
+		auto cell_renderer = layer_tree_view().get_column_cell_renderer(index-1);
+
+		column_z_depth->set_cell_data_func(*cell_renderer, (sigc::track_obj([this](Gtk::CellRenderer* cell, const Gtk::TreeIter& it){
+			Glib::ustring text = remove_trailing_zeroes(std::to_string(it->get_value(layer_model.z_depth)));
+			dynamic_cast<Gtk::CellRendererText*>(cell)->property_text()=text;
+		}, *this)));
 	}
 
 	layer_tree_view().set_enable_search(true);
@@ -415,14 +421,8 @@ LayerTree::select_layer(synfig::Layer::Handle layer)
 			iter=sorted_layer_tree_store_->convert_child_iter_to_iter(iter);
 
 		Gtk::TreePath path(iter);
-		for(size_t i=path.size();i;i--)
-		{
-			path=Gtk::TreePath(iter);
-			for(size_t j=i;j;j--)
-				path.up();
-			layer_tree_view().expand_row(path,false);
-		}
-		layer_tree_view().scroll_to_row(Gtk::TreePath(iter));
+		layer_tree_view().expand_to_path(path);
+		layer_tree_view().scroll_to_row(path);
 		layer_tree_view().get_selection()->select(iter);
 	}
 }

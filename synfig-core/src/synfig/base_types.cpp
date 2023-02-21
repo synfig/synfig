@@ -148,6 +148,7 @@ public:
 		mutable Time t;
 		Real r;
 		Inner(): f(0.f), t(0.0), r(0.0) { }
+		Inner(const Inner& other) { r = other.r; }
 
 		bool operator== (const Inner &other) const { return r == other.r; }
 		Inner& operator= (const Inner &other) { return *this = other.r; }
@@ -407,8 +408,8 @@ class TypeCanvas: public Type
 #ifdef TRY_FIX_FOR_BUG_27
 		bool fake_handle;
 #endif
-		etl::handle<Canvas> h;
-		etl::loose_handle<Canvas> lh;
+		Canvas::Handle h;
+		Canvas::LooseHandle lh;
 		mutable CanvasPtr p;
 #ifdef TRY_FIX_FOR_BUG_27
 		Inner(): fake_handle(false), p(nullptr) { }
@@ -416,7 +417,9 @@ class TypeCanvas: public Type
 #else
 		Inner(): p(nullptr) { }
 #endif
-		Inner& operator= (const etl::loose_handle<Canvas> &other)
+		Inner(const Inner& other) { *this = other; }
+
+		Inner& operator= (const Canvas::LooseHandle &other)
 		{
 #ifdef TRY_FIX_FOR_BUG_27
 			if (fake_handle) h->ref();
@@ -429,17 +432,17 @@ class TypeCanvas: public Type
 #endif
 			return *this;
 		}
-		Inner& operator= (const etl::handle<Canvas> &other)
-			{ return *this = etl::loose_handle<Canvas>(other); }
+		Inner& operator= (const Canvas::Handle &other)
+			{ return *this = Canvas::LooseHandle(other); }
 		Inner& operator= (const CanvasPtr &other)
-			{ return *this = etl::loose_handle<Canvas>(other); }
+			{ return *this = Canvas::LooseHandle(other); }
 		Inner& operator= (const Inner &other)
 			{ return *this = other.lh; }
 		bool operator== (const Inner &other) const
 			{ return lh == other.lh; }
 
-		operator const etl::loose_handle<Canvas>&() const { return lh; }
-		operator const etl::handle<Canvas>&() const { return h; }
+		operator const Canvas::LooseHandle&() const { return lh; }
+		operator const Canvas::Handle&() const { return h; }
 		operator const CanvasPtr &() const { return p = &*lh; }
 	};
 	static String to_string(const Inner &x) { return strprintf("Canvas (%s)", x.lh ? x.lh->get_id().c_str() : "NULL"); }
@@ -448,16 +451,16 @@ class TypeCanvas: public Type
 		Type::initialize_vfunc(description);
 		description.name = "canvas";
 		description.local_name = N_("canvas");
-		register_all<Inner, etl::loose_handle<Canvas>, to_string>();
-		register_alias< Inner, etl::handle<Canvas> >();
+		register_all<Inner, Canvas::LooseHandle, to_string>();
+		register_alias< Inner, Canvas::Handle >();
 		register_alias<Inner, Canvas*>();
 	}
 public:
 	static TypeCanvas instance;
 };
 TypeCanvas TypeCanvas::instance;
-SYNFIG_IMPLEMENT_TYPE_ALIAS(etl::loose_handle<Canvas>, TypeCanvas)
-SYNFIG_IMPLEMENT_TYPE_ALIAS(etl::handle<Canvas>, TypeCanvas)
+SYNFIG_IMPLEMENT_TYPE_ALIAS(Canvas::LooseHandle, TypeCanvas)
+SYNFIG_IMPLEMENT_TYPE_ALIAS(Canvas::Handle, TypeCanvas)
 SYNFIG_IMPLEMENT_TYPE_ALIAS(Canvas*, TypeCanvas)
 
 
@@ -542,6 +545,7 @@ class TypeBoneValueNode: public Type
 		mutable ValueNode_BonePtr p;
 
 		Inner(): p(nullptr) { }
+		Inner(const Inner& other) { h = other.h; }
 		Inner& operator= (const etl::handle<ValueNode_Bone> &other) { h = other; return *this; }
 		Inner& operator= (const etl::loose_handle<ValueNode_Bone> &other) { h = other; return *this; }
 		Inner& operator= (const ValueNode_BonePtr &other) { h = other; return *this; }

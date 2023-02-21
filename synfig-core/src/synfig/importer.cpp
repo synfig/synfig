@@ -121,7 +121,7 @@ Importer::open(const FileSystem::Identifier &identifier, bool force)
 
 	String ext(filename_extension(identifier.filename));
 	if (ext.size()) ext = ext.substr(1); // skip initial '.'
-	std::transform(ext.begin(),ext.end(),ext.begin(),&::tolower);
+	strtolower(ext);
 
 
 	if(!Importer::book().count(ext))
@@ -170,8 +170,10 @@ Importer::get_frame(const RendDesc & /* renddesc */, const Time &time)
 		return last_surface_;
 
 	Surface surface;
-	if(!get_frame(surface, RendDesc(), time))
-		warning(strprintf("Unable to get frame from \"%s\"", identifier.filename.c_str()));
+	if(!get_frame(surface, RendDesc(), time)) {
+		warning(strprintf(_("Unable to get frame from \"%s\" [%s]"), identifier.filename.c_str(), time.get_string().c_str()));
+		return nullptr;
+	}
 
 	const char *s = getenv("SYNFIG_PACK_IMAGES");
 	if (s == nullptr || atoi(s) != 0)

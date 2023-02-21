@@ -45,7 +45,7 @@
 #include <glibmm/uriutils.h>
 
 #include <gtkmm/eventbox.h>
-#include <gtkmm/hvseparator.h>
+#include <gtkmm/separator.h>
 #include <gtkmm/imagemenuitem.h>
 #include <gtkmm/label.h>
 #include <gtkmm/messagedialog.h>
@@ -61,6 +61,7 @@
 #include <ETL/stringf>
 
 #include <gui/app.h>
+#include <gui/dialogs/dialog_canvasdependencies.h>
 #include <gui/dials/keyframedial.h>
 #include <gui/dials/resolutiondial.h>
 #include <gui/docks/dockbook.h>
@@ -79,6 +80,7 @@
 #include <sstream>
 #include <string>
 
+#include <synfig/rendering/renderer.h>
 #include <synfig/valuenodes/valuenode_animated.h>
 
 #include <synfigapp/canvasinterface.h>
@@ -99,47 +101,22 @@ using namespace studio;
 
 #define DEFAULT_TIME_WINDOW_SIZE (10.0)
 
-// use do { } while(0) to avoid problems with: if (...) XXXXX_BUTTON(a, b, c);
-#ifndef SMALL_BUTTON
-#define SMALL_BUTTON(button, stockid, tooltip) \
-	do { \
-		button = manage(new class Gtk::Button()); \
-		icon=manage(new Gtk::Image(Gtk::StockID(stockid),iconsize)); \
-		button->add(*icon); \
-		button->set_tooltip_text(tooltip); \
-		icon->set_margin_start(0); \
-		icon->set_margin_end(0); \
-		icon->set_margin_top(0); \
-		icon->set_margin_bottom(0); \
-		icon->show(); \
-		button->set_relief(Gtk::RELIEF_NONE); \
-		button->show() \
-	} while(0)
-#endif
-
-#ifndef NORMAL_BUTTON
-#define NORMAL_BUTTON(button, stockid, tooltip) \
-	do { \
-		button = manage(new class Gtk::Button()); \
-		icon=manage(new Gtk::Image(Gtk::StockID(stockid),Gtk::ICON_SIZE_BUTTON)); \
-		button->add(*icon); \
-		button->set_tooltip_text(tooltip); \
-		icon->set_margin_start(0); \
-		icon->set_margin_end(0); \
-		icon->set_margin_top(0); \
-		icon->set_margin_bottom(0); \
-		icon->show(); \
-		/*button->set_relief(Gtk::RELIEF_NONE);*/ \
-		button->show(); \
-	} while(0)
-#endif
-
-#define NEW_SMALL_BUTTON(x,y,z)	\
-	Gtk::Button *SMALL_BUTTON(x,y,z)
-#define NOT_IMPLEMENTED_SLOT \
-	sigc::mem_fun(*reinterpret_cast<CanvasViewUIInterface*>(get_ui_interface().get()),&CanvasViewUIInterface::not_implemented)
 #define SLOT_EVENT(x) \
 	sigc::hide_return(sigc::bind(sigc::mem_fun(*this, &CanvasView::process_event_key), x))
+
+/* === P R O C E D U R E S ================================================= */
+
+static Gtk::Image*
+create_image_from_icon(const std::string& icon_name, Gtk::IconSize icon_size)
+{
+#if GTK_CHECK_VERSION(3,24,0)
+	return new Gtk::Image(icon_name, icon_size);
+#else
+	Gtk::Image* image = new Gtk::Image();
+	image->set_from_icon_name(icon_name, icon_size);
+	return image;
+#endif
+}
 
 /* === C L A S S E S ======================================================= */
 
@@ -511,7 +488,7 @@ LockDucks::~LockDucks() {
 
 CanvasView::ActivationIndex CanvasView::ActivationIndex::last__;
 
-CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasInterface> canvas_interface_):
+CanvasView::CanvasView(etl::loose_handle<studio::Instance> instance,etl::handle<CanvasInterface> canvas_interface_):
 	Dockable(synfig::GUID().get_string(),_("Canvas View")),
 	work_area                (),
 	activation_index_        (true),
@@ -554,6 +531,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	cancel                   (false),
 
 	canvas_properties        (*App::main_window,canvas_interface_),
+	canvas_resize            (*App::main_window,canvas_interface_,canvas_properties),
 	render_settings          (*App::main_window,canvas_interface_),
 	waypoint_dialog          (*App::main_window,canvas_interface_->get_canvas()),
 	keyframe_dialog          (*App::main_window,canvas_interface_),
@@ -561,6 +539,7 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 {
 	// Make this toolbar small for space efficiency
 	get_style_context()->add_class("synfigstudio-efficient-workspace");
+	set_name("canvasview");
 
 	canvas_options = CanvasOptions::create(*App::main_window, this);
 
@@ -643,9 +622,9 @@ CanvasView::CanvasView(etl::loose_handle<Instance> instance,etl::handle<CanvasIn
 	work_area->signal_meta_data_changed().connect(sigc::mem_fun(*this,&CanvasView::on_meta_data_changed));
 
 	canvas_interface()->signal_canvas_added().connect(
-		sigc::hide( sigc::mem_fun(*instance,&Instance::refresh_canvas_tree)));
+		sigc::hide( sigc::mem_fun(*instance,&studio::Instance::refresh_canvas_tree)));
 	canvas_interface()->signal_canvas_removed().connect(
-		sigc::hide( sigc::mem_fun(*instance,&Instance::refresh_canvas_tree)));
+		sigc::hide( sigc::mem_fun(*instance,&studio::Instance::refresh_canvas_tree)));
 	canvas_interface()->signal_layer_param_changed().connect(
 		sigc::hide(sigc::hide( SLOT_EVENT(EVENT_REFRESH_DUCKS))));
 	canvas_interface()->signal_keyframe_properties().connect(
@@ -720,15 +699,15 @@ CanvasView::~CanvasView()
 	delete canvas_options;
 	delete resolutiondial_;
 
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
-		info("CanvasView::~CanvasView(): Deleted");
+	DEBUG_LOG("SYNFIG_DEBUG_DESTRUCTORS",
+		"CanvasView::~CanvasView(): Deleted");
 
 	SYNFIG_EXCEPTION_GUARD_END()
 }
 
 void CanvasView::save_all()
 {
-	std::list<etl::handle<Instance> >::iterator iter;
+	std::list<etl::handle<studio::Instance> >::iterator iter;
 	for(iter=App::instance_list.begin();iter!=App::instance_list.end();iter++)
 		(*iter)->save();
 }
@@ -871,16 +850,14 @@ CanvasView::create_time_bar()
 	//Setup the Animation Mode Button and the Keyframe Lock button
 	{
 		Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-animate_mode_off"), iconsize));
-		animatebutton = Gtk::manage(new class Gtk::ToggleButton());
+		animatebutton = Gtk::manage(new Gtk::ToggleButton());
+		animatebutton->set_image_from_icon_name("animate_mode_off_icon", iconsize);
 		animatebutton->set_tooltip_text(_("Turn on animate editing mode"));
-		icon->show();
 
 		// Set hotkey to toggle animate button on and off
 		auto accel_group = App::ui_manager()->get_accel_group();
 		animatebutton->set_accel_path("<Actions>/canvasview/animate", accel_group);
 
-		animatebutton->add(*icon);
 		animatebutton->signal_toggled().connect(sigc::mem_fun(*this, &CanvasView::toggle_animatebutton));
 		animatebutton->set_relief(Gtk::RELIEF_NONE);
 		animatebutton->show();
@@ -888,11 +865,10 @@ CanvasView::create_time_bar()
 
 	{
 		Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-timetrack"), iconsize));
-		timetrackbutton = Gtk::manage(new class Gtk::ToggleButton());
+		timetrackbutton = Gtk::manage(new Gtk::ToggleButton());
+		timetrackbutton->set_image_from_icon_name("time_track_icon", iconsize);
 		timetrackbutton->set_tooltip_text(_("Toggle timebar"));
-		icon->show();
-		timetrackbutton->add(*icon);
+
 		timetrackbutton->signal_toggled().connect(sigc::mem_fun(*this, &CanvasView::toggle_timetrackbutton));
 		timetrackbutton->set_relief(Gtk::RELIEF_NONE);
 		timetrackbutton->show();
@@ -1069,84 +1045,72 @@ void CanvasView::toggle_render_combobox()
 Gtk::Widget*
 CanvasView::create_top_toolbar()
 {
-	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
-
-	displaybar = manage(new class Gtk::Toolbar());
-	displaybar->set_icon_size(iconsize);
-	displaybar->set_toolbar_style(Gtk::TOOLBAR_BOTH_HORIZ);
+	top_toolbar = manage(new Gtk::Toolbar());
+	top_toolbar->set_icon_size(Gtk::IconSize::from_name("synfig-small_icon_16x16"));
+	top_toolbar->set_toolbar_style(Gtk::TOOLBAR_BOTH_HORIZ);
 
 	// File buttons
 	if (App::show_file_toolbar) {
-		displaybar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/new")));
-		displaybar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/open")));
-		displaybar->append(*create_action_toolbutton(action_group->get_action("save")));
-		displaybar->append(*create_action_toolbutton(action_group->get_action("save-as")));
-		displaybar->append(*create_action_toolbutton(action_group->get_action("save-all")));
+		top_toolbar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/new")));
+		top_toolbar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/open")));
+		top_toolbar->append(*create_action_toolbutton(action_group->get_action("save")));
+		top_toolbar->append(*create_action_toolbutton(action_group->get_action("save-as")));
+		top_toolbar->append(*create_action_toolbutton(action_group->get_action("save-all")));
 
 		// Separator
-		displaybar->append( *create_tool_separator() );
+		top_toolbar->append( *create_tool_separator() );
 	}
 
 	// Undo/Redo buttons
-	displaybar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/undo")));
-	displaybar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/redo")));
+	top_toolbar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/undo")));
+	top_toolbar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/redo")));
 
 	// Separator
-	displaybar->append(*create_tool_separator());
+	top_toolbar->append(*create_tool_separator());
 
 	{ // Preview Settings dialog button
-		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("synfig-preview_options"), iconsize));
-		icon->show();
-
-		preview_options_button = Gtk::manage(new class Gtk::ToolButton());
-		preview_options_button->set_icon_widget(*icon);
+		preview_options_button = Gtk::manage(new Gtk::ToolButton());
+		preview_options_button->set_icon_name("preview_options_icon");
 		preview_options_button->signal_clicked().connect(
 			sigc::mem_fun(*this,&CanvasView::on_preview_option));
 		preview_options_button->set_label(_("Preview"));
 		preview_options_button->set_tooltip_text(_("Shows the Preview Settings Dialog"));
 		preview_options_button->show();
 
-		displaybar->append(*preview_options_button);
+		top_toolbar->append(*preview_options_button);
 	}
 
 	{ // Render Settings dialog button
-		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("synfig-render_options"), iconsize));
-		icon->show();
-
-		render_options_button = Gtk::manage(new class Gtk::ToolButton());
-		render_options_button->set_icon_widget(*icon);
+		render_options_button = Gtk::manage(new Gtk::ToolButton());
+		render_options_button->set_icon_name("render_options_icon");
 		render_options_button->signal_clicked().connect(
 			sigc::mem_fun0(render_settings,&RenderSettings::present));
 		render_options_button->set_label(_("Render"));
 		render_options_button->set_tooltip_text(_("Shows the Render Settings Dialog"));
 		render_options_button->show();
 
-		displaybar->append(*render_options_button);
+		top_toolbar->append(*render_options_button);
 	}
 
 	// Separator
-	displaybar->append(*create_tool_separator());
+	top_toolbar->append(*create_tool_separator());
 
 	{ // Refresh button
-		Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("gtk-refresh"), iconsize));
-		icon->show();
-
-		refreshbutton = Gtk::manage(new class Gtk::ToolButton());
-		refreshbutton->set_icon_widget(*icon);
+		refreshbutton = Gtk::manage(new Gtk::ToolButton());
+		refreshbutton->set_icon_name("view-refresh");
 		refreshbutton->signal_clicked().connect(SLOT_EVENT(EVENT_REFRESH));
 		refreshbutton->set_label(_("Refresh"));
 		refreshbutton->set_tooltip_text( _("Refresh workarea"));
 		refreshbutton->show();
 
-		displaybar->append(*refreshbutton);
+		top_toolbar->append(*refreshbutton);
 	}
 
 	{ // Rendering mode ComboBox
 		render_combobox = Gtk::manage(new class Gtk::ComboBoxText());
 		render_combobox->append("software-draft", _("Draft"));
-#ifdef WITH_OPENGL
-		render_combobox->append("gl", _("GL"));
-#endif
+		if (synfig::rendering::Renderer::get_renderers().count("gl") != 0)
+			render_combobox->append("gl", _("GL"));
 		render_combobox->append("software-preview", _("Preview"));
 		render_combobox->append("software", _("Final"));
 		render_combobox->signal_changed().connect(sigc::mem_fun(*this, &CanvasView::toggle_render_combobox));
@@ -1157,27 +1121,24 @@ CanvasView::create_top_toolbar()
 		container->add(*render_combobox);
 
 		container->show();
-		displaybar->add(*container);
+		top_toolbar->add(*container);
 	}
 
 	{ // Background rendering button
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_background_rendering"), iconsize));
-		icon->show();
-
-		background_rendering_button = Gtk::manage(new class Gtk::ToggleToolButton());
+		background_rendering_button = Gtk::manage(new Gtk::ToggleToolButton());
 		background_rendering_button->set_active(work_area->get_background_rendering());
-		background_rendering_button->set_icon_widget(*icon);
+		background_rendering_button->set_icon_name("background_rendering_icon");
 		background_rendering_button->signal_toggled().connect(
 			sigc::mem_fun(*this, &CanvasView::toggle_background_rendering));
 		background_rendering_button->set_label(_("Background rendering"));
 		background_rendering_button->set_tooltip_text(_("Render future and past frames in background when enabled"));
 		background_rendering_button->show();
 
-		displaybar->append(*background_rendering_button);
+		top_toolbar->append(*background_rendering_button);
 	}
 
 	// Separator
-	displaybar->append(*create_tool_separator());
+	top_toolbar->append(*create_tool_separator());
 
 	// ResolutionDial widget
 	resolutiondial_->update_lowres(work_area->get_low_resolution_flag());
@@ -1187,25 +1148,22 @@ CanvasView::create_top_toolbar()
 		sigc::mem_fun(*this, &CanvasView::increase_low_res_pixel_size));
 	resolutiondial_->signal_use_low_resolution().connect(
 		sigc::mem_fun(*this, &CanvasView::toggle_low_res_pixel_flag));
-	resolutiondial_->insert_to_toolbar(*displaybar);
+	resolutiondial_->insert_to_toolbar(*top_toolbar);
 
 	// Separator
-	displaybar->append(*create_tool_separator());
+	top_toolbar->append(*create_tool_separator());
 
 	{ // Onion skin toggle button
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_onion_skin"), iconsize));
-		icon->show();
-
-		onion_skin = Gtk::manage(new class Gtk::ToggleToolButton());
+		onion_skin = Gtk::manage(new Gtk::ToggleToolButton());
 		onion_skin->set_active(work_area->get_onion_skin());
-		onion_skin->set_icon_widget(*icon);
+		onion_skin->set_icon_name("onion_skin_icon");
 		onion_skin->signal_toggled().connect(
 			sigc::mem_fun(*this, &CanvasView::toggle_onion_skin));
 		onion_skin->set_label(_("Onion Skin"));
 		onion_skin->set_tooltip_text(_("Show Onion Skin when enabled"));
 		onion_skin->show();
 
-		displaybar->append(*onion_skin);
+		top_toolbar->append(*onion_skin);
 	}
 
 	{ // Past onion skin spin button
@@ -1221,7 +1179,7 @@ CanvasView::create_top_toolbar()
 		toolitem->set_is_important(true);
 		toolitem->show();
 
-		displaybar->append(*toolitem);
+		top_toolbar->append(*toolitem);
 	}
 
 	{ // Future onion skin spin button
@@ -1237,44 +1195,36 @@ CanvasView::create_top_toolbar()
 		toolitem->set_is_important(true);
 		toolitem->show();
 
-		displaybar->append(*toolitem);
+		top_toolbar->append(*toolitem);
 	}
 
 	{ // Onion skin on Keyframes/Frames toggle button
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-keyframes"), iconsize));
-		icon->show();
-
-		onion_skin_keyframes = Gtk::manage(new class Gtk::ToggleToolButton());
+		onion_skin_keyframes = Gtk::manage(new Gtk::ToggleToolButton());
 		onion_skin_keyframes->set_active(work_area->get_onion_skin_keyframes());
-		onion_skin_keyframes->set_icon_widget(*icon);
+		onion_skin_keyframes->set_icon_name("keyframe_icon");
 		onion_skin_keyframes->signal_toggled().connect(
 			sigc::mem_fun(*this, &CanvasView::toggle_onion_skin_keyframes));
 		onion_skin_keyframes->set_label(_("Keyframes"));
 		onion_skin_keyframes->set_tooltip_text(_("Show Onion Skin on Keyframes when enabled, on Frames when disabled"));
 		onion_skin_keyframes->show();
 
-		displaybar->append(*onion_skin_keyframes);
+		top_toolbar->append(*onion_skin_keyframes);
 	}
 
 	if(App::enable_mainwin_toolbar)
-		displaybar->show();
+		top_toolbar->show();
 	else
-		displaybar->hide();
+		top_toolbar->hide();
 	cancel=false;
 
-	return displaybar;
+	return top_toolbar;
 }
 
 Gtk::Widget*
 CanvasView::create_stop_button()
 {
-	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
-
-	Gtk::Image *icon = Gtk::manage(new Gtk::Image(Gtk::StockID("gtk-stop"), iconsize));
-	icon->show();
-
-	stopbutton = Gtk::manage(new class Gtk::Button());
-	stopbutton->set_image(*icon);
+	stopbutton = Gtk::manage(new Gtk::Button());
+	stopbutton->set_image_from_icon_name("process-stop");
 	stopbutton->signal_clicked().connect(SLOT_EVENT(EVENT_STOP));
 	stopbutton->set_relief(Gtk::RELIEF_NONE);
 	stopbutton->set_tooltip_text(_("Stop current operation"));
@@ -1287,79 +1237,65 @@ CanvasView::create_stop_button()
 Gtk::Widget*
 CanvasView::create_right_toolbar()
 {
-	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
-
-	displaybar = manage(new class Gtk::Toolbar());
-	displaybar->set_icon_size(iconsize);
-	displaybar->set_toolbar_style(Gtk::TOOLBAR_ICONS);
-	displaybar->set_property("orientation", Gtk::ORIENTATION_VERTICAL);
+	right_toolbar = manage(new Gtk::Toolbar());
+	right_toolbar->set_icon_size(Gtk::IconSize::from_name("synfig-small_icon_16x16"));
+	right_toolbar->set_toolbar_style(Gtk::TOOLBAR_ICONS);
+	right_toolbar->set_property("orientation", Gtk::ORIENTATION_VERTICAL);
 
 	{ // Show grid toggle button
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_show_grid"), iconsize));
-		icon->show();
-
-		show_grid = Gtk::manage(new class Gtk::ToggleToolButton());
+		show_grid = Gtk::manage(new Gtk::ToggleToolButton());
 		show_grid->set_active(work_area->grid_status());
-		show_grid->set_icon_widget(*icon);
+		show_grid->set_icon_name("show_grid_icon");
 		show_grid->signal_toggled().connect(
 			sigc::mem_fun(*this, &CanvasView::toggle_show_grid));
 		show_grid->set_label(_("Show Grid"));
 		show_grid->set_tooltip_text(_("Show Grid when enabled"));
 		show_grid->show();
 
-		displaybar->append(*show_grid);
+		right_toolbar->append(*show_grid);
 	}
 
 	{ // Snap to grid toggle button
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_snap_grid"), iconsize));
-		icon->show();
-
-		snap_grid = Gtk::manage(new class Gtk::ToggleToolButton());
+		snap_grid = Gtk::manage(new Gtk::ToggleToolButton());
 		snap_grid->set_active(work_area->grid_status());
-		snap_grid->set_icon_widget(*icon);
+		snap_grid->set_icon_name("snap_grid_icon");
 		snap_grid->signal_toggled().connect(
 			sigc::mem_fun(*this, &CanvasView::toggle_snap_grid));
 		snap_grid->set_label(_("Snap to Grid"));
 		snap_grid->set_tooltip_text(_("Snap to Grid when enabled"));
 		snap_grid->show();
 
-		displaybar->append(*snap_grid);
+		right_toolbar->append(*snap_grid);
 	}
 
 	{ // Show guide toggle button
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_show_guide"), iconsize));
-		icon->show();
-
-		show_guides = Gtk::manage(new class Gtk::ToggleToolButton());
+		show_guides = Gtk::manage(new Gtk::ToggleToolButton());
 		show_guides->set_active(work_area->get_show_guides());
-		show_guides->set_icon_widget(*icon);
+		show_guides->set_icon_name("show_guideline_icon");
 		show_guides->signal_toggled().connect(
 			sigc::mem_fun(*this, &CanvasView::toggle_show_guides));
 		show_guides->set_label(_("Show Guides"));
 		show_guides->set_tooltip_text(_("Show Guides when enabled"));
 		show_guides->show();
 
-		displaybar->append(*show_guides);
+		right_toolbar->append(*show_guides);
 	}
 
 	{ // Snap to guides toggle button
-		Gtk::Image *icon = manage(new Gtk::Image(Gtk::StockID("synfig-toggle_snap_guide"), iconsize));
-		icon->show();
-
-		snap_guides = Gtk::manage(new class Gtk::ToggleToolButton());
+		snap_guides = Gtk::manage(new Gtk::ToggleToolButton());
 		snap_guides->set_active(work_area->get_guide_snap());
-		snap_guides->set_icon_widget(*icon);
+		snap_guides->set_icon_name("snap_guideline_icon");
 		snap_guides->signal_toggled().connect(
 			sigc::mem_fun(*this, &CanvasView::toggle_snap_guides));
 		snap_guides->set_label(_("Snap to Guides"));
 		snap_guides->set_tooltip_text(_("Snap to Guides when enabled"));
 		snap_guides->show();
 
-		displaybar->append(*snap_guides);
+		right_toolbar->append(*snap_guides);
 	}
 
 	// Separator
-	displaybar->append(*create_tool_separator());
+	right_toolbar->append(*create_tool_separator());
 
 	// ToggleDuckDial widget
 	Duck::Type m = work_area->get_type_mask();
@@ -1376,11 +1312,11 @@ CanvasView::create_right_toolbar()
 		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_WIDTH));
 	toggleducksdial.signal_ducks_angle().connect(
 		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_ANGLE));
-	toggleducksdial.insert_to_toolbar(*displaybar);
+	toggleducksdial.insert_to_toolbar(*right_toolbar);
 
-	displaybar->show();
+	right_toolbar->show();
 
-	return displaybar;
+	return right_toolbar;
 }
 
 void CanvasView::grab_focus()
@@ -1429,19 +1365,19 @@ CanvasView::init_menus()
 	action_group = Gtk::ActionGroup::create("canvasview");
 
 	action_group->add( Gtk::Action::create("save", Gtk::StockID("synfig-save"), _("Save"), _("Save")),
-		hide_return(sigc::mem_fun(*get_instance().get(), &Instance::save))
+		hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::save))
 	);
 	action_group->add( Gtk::Action::create_with_icon_name("save-as", "action_doc_saveas_icon", _("Save As..."), _("Save As")),
-		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::dialog_save_as))
+		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::dialog_save_as))
 	);
 	action_group->add( Gtk::Action::create("export", Gtk::StockID("synfig-export"), _("Export..."), _("Export")),
-		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::dialog_export))
+		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::dialog_export))
 	);
 	action_group->add( Gtk::Action::create("save-all", Gtk::StockID("synfig-save_all"), _("Save All"), _("Save all opened documents")),
 		sigc::ptr_fun(save_all)
 	);
 	action_group->add( Gtk::Action::create("revert", Gtk::Stock::REVERT_TO_SAVED),
-		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &Instance::safe_revert))
+		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::safe_revert))
 	);
 	action_group->add( Gtk::Action::create("import", _("Import...")),
 		sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_file))
@@ -1460,6 +1396,9 @@ CanvasView::init_menus()
 	);
 	action_group->add( Gtk::Action::create("close-document", Gtk::StockID("gtk-close"), _("Close Document")),
 		sigc::hide_return(sigc::mem_fun(*this,&CanvasView::close_instance))
+	);
+	action_group->add( Gtk::Action::create("show-dependencies", _("Show Dependencies...")),
+		sigc::hide_return(sigc::mem_fun(*this,&CanvasView::show_dependencies))
 	);
 	action_group->add( Gtk::Action::create("quit", Gtk::StockID("gtk-quit"), _("Quit")),
 		sigc::hide_return(sigc::ptr_fun(&App::quit))
@@ -1496,6 +1435,11 @@ CanvasView::init_menus()
 	action_group->add( Gtk::Action::create("properties", Gtk::StockID("gtk-properties"), _("Properties...")),
 		sigc::mem_fun0(canvas_properties,&CanvasProperties::present)
 	);
+
+	action_group->add( Gtk::Action::create("resize", _("Resize...")),
+		sigc::mem_fun0(canvas_resize, &CanvasResize::present)
+	);
+
 
     auto instance = get_instance().get();
 	for ( const auto& plugin : App::plugin_manager.plugins() )
@@ -1541,6 +1485,11 @@ CanvasView::init_menus()
 
 	{
 		Glib::RefPtr<Gtk::ToggleAction> action;
+
+		rulers_show_toggle = Gtk::ToggleAction::create("toggle-rulers-show", _("Show Rulers"));
+		rulers_show_toggle->set_active(work_area->get_show_rulers());
+		work_area->set_show_rulers(work_area->get_show_rulers());
+		action_group->add(rulers_show_toggle, sigc::mem_fun(*this, &CanvasView::toggle_show_ruler));
 
 		grid_show_toggle = Gtk::ToggleAction::create("toggle-grid-show", _("Show Grid"));
 		grid_show_toggle->set_active(work_area->grid_status());
@@ -1757,23 +1706,24 @@ CanvasView::popup_layer_menu(Layer::Handle layer)
 	param_list.add("canvas",Canvas::Handle(layer->get_canvas()));
 	param_list.add("canvas_interface",canvas_interface());
 
-	SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
-	SelectionManager::LayerList::iterator iter;
+	SelectionManager::LayerList layer_list = get_selection_manager()->get_selected_layers();
 
-	for(iter=layer_list.begin();iter!=layer_list.end();++iter)
-		param_list.add("layer",Layer::Handle(*iter));
-
-	//Gtk::Menu *newlayers(manage(new Gtk::Menu()));
-	//build_new_layer_menu(*newlayers);
-
-	//parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("New Layer"),*newlayers));
+	auto found = std::find(layer_list.cbegin(), layer_list.cend(), layer);
+	if (found == layer_list.cend())	{
+		// if the layer is not in the list of already selected layers, then clear selection and select it
+		get_selection_manager()->clear_selected_layers();
+		get_selection_manager()->set_selected_layer(layer);
+		param_list.add("layer", layer);
+	} else {
+		for (auto& layer_handle : layer_list) {
+			param_list.add("layer", layer_handle);
+		}
+	}
 
 	if(etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
 	{
 		Gtk::MenuItem *item = manage(new Gtk::ImageMenuItem(
-			*manage(new Gtk::Image(
-				Gtk::StockID("synfig-select_all_child_layers"),
-				Gtk::ICON_SIZE_MENU )),
+			*manage(create_image_from_icon("select_all_child_layers_icon", Gtk::ICON_SIZE_MENU)),
 			_("Select All Children") ));
 		item->signal_activate().connect(
 			sigc::bind(
@@ -1789,55 +1739,6 @@ CanvasView::popup_layer_menu(Layer::Handle layer)
 	get_instance()->add_special_layer_actions_to_menu(menu, layer);
 
 	menu->popup(3,gtk_get_current_event_time());
-}
-
-void
-CanvasView::register_layer_type(Layer::Book::value_type &/*lyr*/,std::map<String,Gtk::Menu*>* /*category_map*/)
-{
-/*	if(lyr.second.category==CATEGORY_DO_NOT_USE)
-		return;
-
-	if(category_map->count(lyr.second.category)==0)
-		(*category_map)[lyr.second.category]=manage(new Gtk::Menu());
-
-	(*category_map)[lyr.second.category]->items().push_back(Gtk::Menu_Helpers::MenuElem(lyr.second.local_name,
-		sigc::hide_return(
-			sigc::bind(
-				sigc::mem_fun(*this,&CanvasView::add_layer),
-				lyr.first
-			)
-		)
-	));
-*/
-}
-
-void
-CanvasView::build_new_layer_menu(Gtk::Menu &/*menu*/)
-{
-/*
-	std::map<String,Gtk::Menu*> category_map;
-
-	std::for_each(
-		Layer::book().begin(),
-		Layer::book().end(),
-		sigc::bind(
-			sigc::mem_fun(
-				*this,
-				&CanvasView::register_layer_type
-			),
-			&category_map
-		)
-	);
-
-	menu.items().clear();
-	menu.items().push_back(Gtk::Menu_Helpers::TearoffMenuElem());
-
-	std::map<String,Gtk::Menu*>::iterator iter;
-	for(iter=category_map.begin();iter!=category_map.end();++iter)
-		menu.items().push_back(Gtk::Menu_Helpers::MenuElem(iter->first,*iter->second));
-
-	menu.show();
-*/
 }
 
 void
@@ -1924,13 +1825,13 @@ CanvasView::close_instance()
 	Glib::signal_timeout().connect(
 		sigc::bind(
 			sigc::ptr_fun(_close_instance),
-			(etl::handle<Instance>)get_instance() ),
+			(etl::handle<studio::Instance>)get_instance() ),
 		250 );
 	return false;
 }
 
 etl::handle<CanvasView>
-CanvasView::create(etl::loose_handle<Instance> instance, etl::handle<Canvas> canvas)
+CanvasView::create(etl::loose_handle<studio::Instance> instance, Canvas::Handle canvas)
 	{ return new CanvasView(instance,instance->Instance::find_canvas_interface(canvas)); }
 
 void
@@ -1991,10 +1892,7 @@ CanvasView::create_tab_label()
 	// Margin is needed to make sure the button is not partially hidden with Adwaita theme
 	closebutton->set_margin_end(4);
 	grid->attach(*closebutton, 1, 0, 1, 1);
-	Gtk::Image* closebutton_image(manage(new Gtk::Image(
-			Gtk::StockID("gtk-close"),
-			Gtk::IconSize::from_name("synfig-small_icon") )));
-	closebutton->add(*closebutton_image);
+	closebutton->set_image_from_icon_name("window-close");
 	closebutton->signal_clicked().connect(
 		sigc::hide_return(sigc::mem_fun(*this,&CanvasView::close_view)));
 	closebutton->set_relief(Gtk::RELIEF_NONE);
@@ -2145,110 +2043,7 @@ CanvasView::on_layer_user_click(int button, Gtk::TreeRow /*row*/, LayerTree::Col
 				menu->get_submenu()->popup(button,gtk_get_current_event_time());
 			#endif
 			}
-
-			#if 0
-			bool multiple_selected=true;
-
-			if(layer_tree->get_selection()->count_selected_rows()<=1)
-				multiple_selected=false;
-
-			// If the clicked row is not selected, then unselect
-			// everything that isn't selected and select this row
-			if(multiple_selected && !layer_tree->get_selection()->is_selected(row))
-			{
-				layer_tree->get_selection()->unselect_all();
-				layer_tree->get_selection()->select(row);
-				multiple_selected=false;
-			}
-
-			if(column_id==COLUMNID_TIME_TRACK)
-				return false;
-
-			//ValueDesc value_desc(row[layer_param_tree_model.value_desc]);
-			//ValueNode::Handle value_node(row[layer_param_tree_model.value_node]);
-			//ValueNode::Handle parent_value_node;
-			//ValueBase value=row[layer_param_tree_model.value];
-
-			//if(row.parent())
-			//{
-			//	parent_value_node=(*row.parent())[layer_tree_model.value_node];
-			//}
-
-			{
-				Layer::Handle layer(row[layer_tree_model.layer]);
-				Action::ParamList param_list;
-				param_list.add("time",canvas_interface()->get_time());
-				param_list.add("canvas",Canvas::Handle(row[layer_tree_model.canvas]));
-				param_list.add("canvas_interface",canvas_interface());
-				if(!multiple_selected)
-					param_list.add("layer",layer);
-				else
-				{
-					SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
-					SelectionManager::LayerList::iterator iter;
-
-					for(iter=layer_list.begin();iter!=layer_list.end();++iter)
-						param_list.add("layer",Layer::Handle(*iter));
-				}
-
-				parammenu.items().clear();
-
-				Gtk::Menu *newlayers(manage(new Gtk::Menu()));
-				// do we need this?  the code is all #ifdef'ed out anyway
-				// newlayers->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), newlayers));
-				build_new_layer_menu(*newlayers);
-
-				parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("New Layer"),*newlayers));
-				if(!multiple_selected && etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
-				{
-					parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Select All Children"),
-						sigc::bind(
-							sigc::mem_fun(
-								*layer_tree,
-								&LayerTree::select_all_children_layers
-							),
-							layer
-						)
-					));
-				}
-
-				add_actions_to_menu(&parammenu, param_list,Action::CATEGORY_LAYER);
-				parammenu.popup(button,gtk_get_current_event_time());
-				return true;
-			}
-/*
-			else if(column_id==LayerTree::COLUMNID_TIME_TRACK && value_node && handle<ValueNode_Animated>::cast_dynamic(value_node))
-			{
-				// Right-click on time track with animated
-//				trackmenu.popup(0,0);
-				return true;
-			}
-			else
-			{
-				if(!multiple_selected)
-				{
-					popup_param_menu(value_desc);
-					return true;
-				}
-				else
-				{
-#warning update me!
-#if 0
-					parammenu.items().clear();
-					parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Connect"),
-						hide_return(sigc::mem_fun(*canvas_interface().get(),&CanvasInterface::connect_selected_layer_params))
-					));
-					parammenu.items().push_back(Gtk::Menu_Helpers::MenuElem(_("Disconnect"),
-						hide_return(sigc::mem_fun(*canvas_interface().get(),&CanvasInterface::disconnect_selected_layer_params))
-					));
-					parammenu.popup(0,0);
-#endif
-				}
-				return true;
-			}
-		*/
-#endif
-}
+		}
 		return true;
 
 	default:
@@ -2386,25 +2181,16 @@ CanvasView::on_mode_changed(CanvasInterface::Mode mode)
 		return;
 	toggling_animate_mode_=true;
 	// If the animate flag was set in mode...
-	Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
 	if(mode&MODE_ANIMATE)
 	{
-		Gtk::Image *icon;
-		icon=manage(new Gtk::Image(Gtk::StockID("synfig-animate_mode_on"),iconsize));
-		animatebutton->remove();
-		animatebutton->add(*icon);
+		animatebutton->set_image_from_icon_name("animate_mode_on_icon");
 		animatebutton->set_tooltip_text(_("Turn off animate editing mode"));
-		icon->show();
 		animatebutton->set_active(true);
 	}
 	else
 	{
-		Gtk::Image *icon;
-		icon=manage(new Gtk::Image(Gtk::StockID("synfig-animate_mode_off"),iconsize));
-		animatebutton->remove();
-		animatebutton->add(*icon);
+		animatebutton->set_image_from_icon_name("animate_mode_off_icon");
 		animatebutton->set_tooltip_text(_("Turn on animate editing mode"));
-		icon->show();
 		animatebutton->set_active(false);
 	}
 	//Keyframe lock icons
@@ -2625,6 +2411,13 @@ CanvasView::set_onion_skins()
 	onion_skins[0]=past_onion_spin->get_value();
 	onion_skins[1]=future_onion_spin->get_value();
 	work_area->set_onion_skins(onion_skins);
+}
+
+void
+CanvasView::toggle_show_ruler()
+{
+	bool visible = !(work_area->get_show_rulers());
+	work_area->set_show_rulers(visible);
 }
 
 void
@@ -3034,17 +2827,8 @@ CanvasView::on_waypoint_clicked_canvasview(ValueDesc value_desc,
 			Waypoint::Model model;
 			Gtk::Image *image;
 
-#if GTK_CHECK_VERSION(3,24,0)
-			#define CREATE_IMAGE(ImageVar, IconName, IconSize) \
-					ImageVar = manage(new Gtk::Image(IconName, IconSize));
-#else
-			#define CREATE_IMAGE(ImageVar, IconName, IconSize) \
-					ImageVar = manage(new Gtk::Image()); \
-					ImageVar->set_from_icon_name(IconName, IconSize);
-#endif
-
 			#define APPEND_MENU_ITEM(menu, IconName, Text) \
-				CREATE_IMAGE(image, IconName, Gtk::IconSize::from_name("synfig-small_icon")); \
+				image = manage(create_image_from_icon(IconName, Gtk::IconSize::from_name("synfig-small_icon"))); \
 				item = manage(new Gtk::ImageMenuItem( \
 					*image, \
 					_(Text) )); \
@@ -3073,7 +2857,6 @@ CanvasView::on_waypoint_clicked_canvasview(ValueDesc value_desc,
 			APPEND_ITEMS_TO_ALL_MENUS3(INTERPOLATION_HALT, "interpolation_type_ease_icon", _("_Ease In"), _("_Ease Out"), _("_Ease In/Out"))
 			APPEND_ITEMS_TO_ALL_MENUS(INTERPOLATION_LINEAR, "interpolation_type_linear_icon", _("_Linear"))
 
-			#undef CREATE_IMAGE
 			#undef APPEND_ITEMS_TO_ALL_MENUS
 			#undef APPEND_ITEMS_TO_ALL_MENUS3
 			#undef APPEND_MENU_ITEM
@@ -3626,6 +3409,10 @@ CanvasView::on_input_device_changed(GdkDevice* device)
 
 	InputDevice::Handle input_device;
 	input_device = synfigapp::Main::select_input_device(gdk_device_get_name(device));
+
+	if (!input_device) {
+		return;
+	}
 	App::dock_toolbox->change_state(input_device->get_state(), true);
 	process_event_key(EVENT_INPUT_DEVICE_CHANGED);
 }
@@ -3638,10 +3425,6 @@ CanvasView::on_preview_option()
 		RendDesc &r = canv->rend_desc();
 		if(r.get_frame_rate())
 		{
-			float rate = 1/r.get_frame_rate();
-			float beg = r.get_time_start() + r.get_frame_start()*rate;
-			float end = r.get_time_start() + r.get_frame_end()*rate;
-
 			Dialog_PreviewOptions *po = dynamic_cast<Dialog_PreviewOptions *>( get_ext_widget("prevoptions") );
 			if(!po)
 			{
@@ -3651,9 +3434,9 @@ CanvasView::on_preview_option()
 			}
 
 			if (!po->get_begin_override())
-				po->set_begintime(beg);
+				po->set_begintime(r.get_time_start());
 			if (!po->get_end_override())
-				po->set_endtime(end);
+				po->set_endtime(r.get_time_end());
 
 			po->set_global_fps(r.get_frame_rate());
 			po->signal_finish().connect(sigc::mem_fun(*this, &CanvasView::on_preview_create));
@@ -3925,7 +3708,25 @@ CanvasView::jack_sync_callback(jack_transport_state_t /* state */, jack_position
 	canvasView->jack_dispatcher.emit();
 	return 1;
 }
+
 #endif
+
+void
+CanvasView::show_dependencies() const
+{
+	Canvas::ConstHandle canvas = get_canvas();
+	if (!canvas)
+		return;
+
+	Dialog_CanvasDependencies* dialog = Dialog_CanvasDependencies::create(*App::main_window);
+	if (!dialog) {
+		synfig::warning("Can't load Dialog_CanvasDependencies");
+		return;
+	}
+	dialog->set_canvas(get_canvas());
+	dialog->run();
+	delete dialog;
+}
 
 void
 CanvasView::interpolation_refresh()
@@ -3936,9 +3737,8 @@ CanvasView::on_interpolation_changed()
 	{ synfigapp::Main::set_interpolation(Waypoint::Interpolation(widget_interpolation->get_value())); }
 
 void 
-CanvasView::toggle_show_toolbar(){
-	if(App::enable_mainwin_toolbar)
-		displaybar->show();
-	else
-		displaybar->hide();
+CanvasView::set_show_toolbars(bool show)
+{
+	top_toolbar->set_visible(show);
+	right_toolbar->set_visible(show);
 };

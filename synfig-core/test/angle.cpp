@@ -25,8 +25,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfig/angle.h>
-
-#include <ETL/hermite>
+#include <synfig/bezier.h>
 
 #include "test_base.h"
 
@@ -97,7 +96,7 @@ void test_angle_affine_combo_and_hermite()
 
 	affine_combo<Angle> combo;
 
-	etl::hermite<Angle> hermie(a,b,b.dist(a),b.dist(a));
+	hermite<Angle> hermie(a,b,b.dist(a),b.dist(a));
 
 	for(float f=0;f<1.001;f+=0.1)
 	{

@@ -42,8 +42,6 @@
 #include <synfig/localization.h>
 #include <synfig/valuenode_registry.h>
 #include <synfig/exception.h>
-#include <ETL/hermite>
-#include <ETL/calculus>
 
 #endif
 
@@ -69,8 +67,7 @@ ValueNode_BLineRevTangent::ValueNode_BLineRevTangent(Type &x):
 ValueNode_BLineRevTangent::ValueNode_BLineRevTangent(const ValueNode::Handle &x):
 	LinkableValueNode(x->get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	if(x->get_type()!=type_bline_point)
 		throw Exception::BadType(x->get_type().description.local_name);
 
@@ -98,8 +95,8 @@ ValueNode_BLineRevTangent::~ValueNode_BLineRevTangent()
 ValueBase
 ValueNode_BLineRevTangent::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	if ((*reverse_)(t).get(bool()))
 	{

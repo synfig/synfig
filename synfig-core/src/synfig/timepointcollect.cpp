@@ -58,7 +58,8 @@ using namespace synfig;
 int
 synfig::waypoint_collect(std::set<Waypoint, std::less<UniqueID> >	&waypoint_set,
 						 const Time								&time,
-						 const etl::handle<Node>				&node)
+						 const etl::handle<Node>				&node,
+                         bool ignore_dynamic_parameters)
 {
 	const TimePointSet& timepoint_set(node->get_times());
 
@@ -87,13 +88,15 @@ synfig::waypoint_collect(std::set<Waypoint, std::less<UniqueID> >	&waypoint_set,
 		const Layer::DynamicParamList& dyn_param_list(layer->dynamic_param_list());
 		Layer::DynamicParamList::const_iterator iter;
 		int ret(0);
-		for(iter=dyn_param_list.begin();iter!=dyn_param_list.end();++iter)
-			ret+=waypoint_collect(waypoint_set,time,iter->second);
+		etl::handle<Layer_PasteCanvas> p = etl::handle<Layer_PasteCanvas>::cast_dynamic(layer);
+		if (!p || !ignore_dynamic_parameters){
+			for(iter=dyn_param_list.begin();iter!=dyn_param_list.end();++iter)
+				ret+=waypoint_collect(waypoint_set,time,iter->second);
+		}
 
 		ValueBase canvas_value(layer->get_param("canvas"));
 		if(canvas_value.get_type()==type_canvas)
 		{
-			etl::handle<Layer_PasteCanvas> p = etl::handle<Layer_PasteCanvas>::cast_dynamic(layer);
 			if (p)
 				ret+=waypoint_collect(waypoint_set, time + p->get_time_offset(),
 									  Canvas::Handle(canvas_value.get(Canvas::Handle())));
@@ -112,7 +115,7 @@ synfig::waypoint_collect(std::set<Waypoint, std::less<UniqueID> >	&waypoint_set,
 		Canvas::const_iterator iter;
 		int ret(0);
 		for(iter=canvas->begin();iter!=canvas->end();++iter)
-			ret+=waypoint_collect(waypoint_set,time,*iter);
+			ret+=waypoint_collect(waypoint_set,time,*iter, ignore_dynamic_parameters);
 		return ret;
 	}
 

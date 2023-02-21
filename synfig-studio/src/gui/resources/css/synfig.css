@@ -1,3 +1,5 @@
+@import url("synfig_dialog.css");
+
 #render-progress * {
 	min-height: 30px;
 }
@@ -88,4 +90,12 @@
 
 .indentation{
 	margin-left : 6px;
+}
+
+/*
+ * Let WorkArea/Canvas background be the
+ * default system background
+ */
+#canvasview {
+	background: @theme_unfocused_bg_color;
 }

@@ -39,6 +39,7 @@
 
 #include <algorithm>
 #include <locale>
+#include <cctype>
 
 #include "general.h"
 #endif
@@ -78,6 +79,14 @@ synfig::remove_trailing_zeroes(const std::string& text, bool force_decimal_point
 		result = result.substr(0, std::max(decimal_point_pos+1, last_non_zero_pos) + 1);
 	}
 	return result;
+}
+
+std::string
+synfig::float_presentation(Real value, int num_decimals)
+{
+	std::string format = strprintf("%%.%df", num_decimals);
+	std::string text = remove_trailing_zeroes(strprintf(format.c_str(), value));
+	return text;
 }
 
 std::string
@@ -194,4 +203,16 @@ int
 synfig::stratoi(const std::string &str)
 {
 	return atoi(str.c_str());
+}
+
+void
+synfig::strtolower(std::string& str)
+{
+	std::transform(str.begin(), str.end(), str.begin(), &::tolower);
+}
+
+void
+synfig::strtoupper(std::string& str)
+{
+	std::transform(str.begin(), str.end(), str.begin(), &::toupper);
 }

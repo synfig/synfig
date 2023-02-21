@@ -64,8 +64,7 @@ ValueNode_Switch::ValueNode_Switch(Type &x):
 ValueNode_Switch::ValueNode_Switch(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	set_link("link_off",ValueNode_Const::create(x));
 	set_link("link_on",ValueNode_Const::create(x));
 	set_link("switch",ValueNode_Const::create(bool(false)));
@@ -119,8 +118,8 @@ ValueNode_Switch::get_link_vfunc(int i)const
 ValueBase
 ValueNode_Switch::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	return (*switch_)(t).get(bool()) ? (*link_on_)(t) : (*link_off_)(t);
 }

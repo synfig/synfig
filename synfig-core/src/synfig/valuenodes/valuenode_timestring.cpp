@@ -60,8 +60,7 @@ REGISTER_VALUENODE(ValueNode_TimeString, RELEASE_VERSION_0_61_09, "timestring", 
 ValueNode_TimeString::ValueNode_TimeString(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	if (value.get_type() == type_string)
 		set_link("time",ValueNode_Const::create(Time(0)));
 	else
@@ -75,7 +74,7 @@ ValueNode_TimeString::create_new()const
 }
 
 ValueNode_TimeString*
-ValueNode_TimeString::create(const ValueBase& x, etl::loose_handle<Canvas>)
+ValueNode_TimeString::create(const ValueBase& x, Canvas::LooseHandle)
 {
 	return new ValueNode_TimeString(x);
 }
@@ -88,8 +87,8 @@ ValueNode_TimeString::~ValueNode_TimeString()
 ValueBase
 ValueNode_TimeString::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	Time time((*time_)(t).get(Time()));
 

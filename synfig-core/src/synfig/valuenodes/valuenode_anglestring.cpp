@@ -45,7 +45,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -61,8 +60,7 @@ REGISTER_VALUENODE(ValueNode_AngleString, RELEASE_VERSION_0_61_09, "anglestring"
 ValueNode_AngleString::ValueNode_AngleString(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	if (value.get_type() == type_string)
 	{
 		set_link("angle",ValueNode_Const::create(Angle::deg(0)));
@@ -83,7 +81,7 @@ ValueNode_AngleString::create_new()const
 }
 
 ValueNode_AngleString*
-ValueNode_AngleString::create(const ValueBase& x, etl::loose_handle<Canvas>)
+ValueNode_AngleString::create(const ValueBase& x, Canvas::LooseHandle)
 {
 	return new ValueNode_AngleString(x);
 }
@@ -96,8 +94,8 @@ ValueNode_AngleString::~ValueNode_AngleString()
 ValueBase
 ValueNode_AngleString::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	Real angle(Angle::deg((*angle_)(t).get(Angle())).get());
 	int width((*width_)(t).get(int()));

@@ -70,7 +70,6 @@ parts:
       - libmlt-dev
       - libmlt++-dev
       - libmlt-data
-      - libboost-system-dev
       - libmng-dev
       - git
       - libxml2-utils # to extract version from appdata file

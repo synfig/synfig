@@ -52,10 +52,8 @@
 
 #endif
 
-using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
-using namespace Action;
 
 /* === M A C R O S ========================================================= */
 

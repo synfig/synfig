@@ -162,7 +162,6 @@
 
 #endif
 
-using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
 using namespace Action;
@@ -471,8 +470,8 @@ Super::perform()
 	ActionList::const_iterator iter;
 	for(iter=action_list_.begin();iter!=action_list_.end();++iter)
 	{
-		if (getenv("SYNFIG_DEBUG_ACTIONS"))
-			synfig::info("%s:%d action: '%s'", __FILE__, __LINE__, (*iter)->get_name().c_str());
+		DEBUG_LOG("SYNFIG_DEBUG_ACTIONS",
+			"%s:%d action: '%s'", __FILE__, __LINE__, (*iter)->get_name().c_str());
 
 		try
 		{
@@ -650,8 +649,8 @@ Undoable::~Undoable() {
 void
 Undoable::ref()const
 {
-	if (getenv("SYNFIG_DEBUG_ACTION_REFCOUNT"))
-		printf("%s:%d %lx   ref undoable %*s -> %2d\n", __FILE__, __LINE__, uintptr_t(this), (count()*2), "", count()+1);
+	DEBUG_LOG("SYNFIG_DEBUG_ACTION_REFCOUNT",
+		"%s:%d %lx   ref undoable %*s -> %2d\n", __FILE__, __LINE__, uintptr_t(this), (count()*2), "", count()+1);
 
 	Base::ref();
 }
@@ -659,8 +658,8 @@ Undoable::ref()const
 bool
 Undoable::unref()const
 {
-	if (getenv("SYNFIG_DEBUG_ACTION_REFCOUNT"))
-		printf("%s:%d %lx unref undoable %*s%2d <-\n", __FILE__, __LINE__, uintptr_t(this), ((count()-1)*2), "", count()-1);
+	DEBUG_LOG("SYNFIG_DEBUG_ACTION_REFCOUNT",
+		"%s:%d %lx unref undoable %*s%2d <-\n", __FILE__, __LINE__, uintptr_t(this), ((count()-1)*2), "", count()-1);
 
 	return Base::unref();
 }

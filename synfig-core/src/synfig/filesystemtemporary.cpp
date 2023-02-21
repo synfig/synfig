@@ -89,9 +89,9 @@ FileSystemTemporary::get_system_temporary_directory()
 }
 
 String
-FileSystemTemporary::generate_temporary_filename_base(const String &tag)
+FileSystemTemporary::generate_temporary_filename_base(const String &tag, const String &extension)
 {
-    return "synfig_" + tag + "_" + GUID().get_string();
+	return "synfig_" + tag + "_" + GUID().get_string() + (extension.size() && extension[0] != '.' ? "." : "") + extension;
 }
 
 bool
@@ -112,9 +112,9 @@ FileSystemTemporary::scan_temporary_directory(const String &tag, FileList &out_f
 }
 
 String
-FileSystemTemporary::generate_system_temporary_filename(const String &tag)
+FileSystemTemporary::generate_system_temporary_filename(const String &tag, const String &extension)
 {
-    return get_system_temporary_directory() + ETL_DIRECTORY_SEPARATOR + generate_temporary_filename_base(tag);
+	return get_system_temporary_directory() + ETL_DIRECTORY_SEPARATOR + generate_temporary_filename_base(tag, extension);
 }
 
 bool

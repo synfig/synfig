@@ -85,7 +85,7 @@ public:
 	virtual bool render(ProgressCallback* cb = nullptr);
 
 	virtual bool async_render_tile(
-		etl::handle<Canvas> canvas,
+		Canvas::Handle canvas,
 		ContextParams context_params,
 		RectInt rect,
 		RendDesc tile_desc,
@@ -140,7 +140,7 @@ public:
 
 private:
 	//! Renders the context to the surface
-	bool render_frame_(etl::handle<Canvas> canvas, ContextParams context_params, ProgressCallback *cb);
+	bool render_frame_(Canvas::Handle canvas, ContextParams context_params, ProgressCallback *cb);
 
 }; // END of class Target_Tile
 

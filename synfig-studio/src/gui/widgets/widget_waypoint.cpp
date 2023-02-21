@@ -57,7 +57,7 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-Widget_Waypoint::Widget_Waypoint(etl::handle<synfig::Canvas> canvas):
+Widget_Waypoint::Widget_Waypoint(Canvas::Handle canvas):
 	Gtk::Box(Gtk::ORIENTATION_VERTICAL),
 	waypoint(synfig::ValueBase(),0),
 	adj_tension(Gtk::Adjustment::create(0.0,-20,20,0.1,1)),

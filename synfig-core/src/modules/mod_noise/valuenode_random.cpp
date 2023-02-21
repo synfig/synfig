@@ -39,16 +39,14 @@
 #include <synfig/valuenode_registry.h>
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/misc.h>
 #include "synfig/color.h"
 #include <synfig/vector.h>
-
-#include <ETL/misc>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -64,8 +62,7 @@ REGISTER_VALUENODE(ValueNode_Random, RELEASE_VERSION_0_61_08, "random", N_("Rand
 ValueNode_Random::ValueNode_Random(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	random.set_seed(time(nullptr));
 
 	set_link("radius",ValueNode_Const::create(Real(1)));

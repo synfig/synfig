@@ -37,8 +37,8 @@
 
 #include "blineconvert.h"
 #include <vector>
-#include <ETL/gaussian>
-#include <ETL/hermite>
+#include <synfig/blur/gaussian.h>
+#include <synfig/bezier.h>
 #include <float.h>
 #include <algorithm>
 #include <cassert>
@@ -49,7 +49,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -317,7 +316,7 @@ int tessellate_curves(const std::vector<cpindex> &inds, const std::vector<Point>
 	if(inds.size() < 2)
 		return 0;
 
-	etl::hermite<Point>	curve;
+	synfig::hermite<Point> curve;
 	int ntess = 0;
 
 	std::vector<cpindex>::const_iterator j = inds.begin(),j2, end = inds.end();

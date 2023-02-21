@@ -47,7 +47,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -140,10 +139,10 @@ ValueNode::~ValueNode()
 void
 ValueNode::on_changed()
 {
-	if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
-		printf("%s:%d ValueNode::on_changed()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_ON_CHANGED",
+		"%s:%d ValueNode::on_changed()\n", __FILE__, __LINE__);
 
-	etl::loose_handle<Canvas> parent_canvas = get_parent_canvas();
+	Canvas::LooseHandle parent_canvas = get_parent_canvas();
 	if(parent_canvas)
 		do						// signal to all the ancestor canvases
 			parent_canvas->signal_value_node_changed()(this);
@@ -155,7 +154,7 @@ ValueNode::on_changed()
 }
 
 int
-ValueNode::replace(etl::handle<ValueNode> x)
+ValueNode::replace(ValueNode::Handle x)
 {
 	if(x.get()==this)
 		return 0;
@@ -527,8 +526,8 @@ PlaceholderValueNode::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)c
 PlaceholderValueNode::Handle
 PlaceholderValueNode::create(Type &type)
 {
-	if (getenv("SYNFIG_DEBUG_PLACEHOLDER_VALUENODE"))
-		printf("%s:%d PlaceholderValueNode::create\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_PLACEHOLDER_VALUENODE",
+		"%s:%d PlaceholderValueNode::create\n", __FILE__, __LINE__);
 	return new PlaceholderValueNode(type);
 }
 
@@ -587,35 +586,35 @@ ValueNode::get_relative_id(etl::loose_handle<const Canvas> x)const
 	return canvas_->_get_relative_id(x)+':'+get_id();
 }
 
-etl::loose_handle<Canvas>
+Canvas::LooseHandle
 ValueNode::get_parent_canvas()const
 {
-	if (getenv("SYNFIG_DEBUG_GET_PARENT_CANVAS"))
-		printf("%s:%d get_parent_canvas of %p is %p\n", __FILE__, __LINE__, this, canvas_.get());
+	DEBUG_LOG("SYNFIG_DEBUG_GET_PARENT_CANVAS",
+		"%s:%d get_parent_canvas of %p is %p\n", __FILE__, __LINE__, this, canvas_.get());
 
 	return canvas_;
 }
 
-etl::loose_handle<Canvas>
+Canvas::LooseHandle
 ValueNode::get_root_canvas()const
 {
-	if (getenv("SYNFIG_DEBUG_GET_PARENT_CANVAS"))
-		printf("%s:%d get_root_canvas of %p is %p\n", __FILE__, __LINE__, this, root_canvas_.get());
+	DEBUG_LOG("SYNFIG_DEBUG_GET_PARENT_CANVAS",
+		"%s:%d get_root_canvas of %p is %p\n", __FILE__, __LINE__, this, root_canvas_.get());
 
 	return root_canvas_;
 }
 
-etl::loose_handle<Canvas>
+Canvas::LooseHandle
 ValueNode::get_non_inline_ancestor_canvas()const
 {
-	etl::loose_handle<Canvas> parent(get_parent_canvas());
+	Canvas::LooseHandle parent(get_parent_canvas());
 
 	if (parent)
 	{
-		etl::loose_handle<Canvas> ret(parent->get_non_inline_ancestor());
+		Canvas::LooseHandle ret(parent->get_non_inline_ancestor());
 
-		if (getenv("SYNFIG_DEBUG_GET_PARENT_CANVAS"))
-			printf("%s:%d get_non_inline_ancestor_canvas of %p is %p\n", __FILE__, __LINE__, this, ret.get());
+		DEBUG_LOG("SYNFIG_DEBUG_GET_PARENT_CANVAS",
+			"%s:%d get_non_inline_ancestor_canvas of %p is %p\n", __FILE__, __LINE__, this, ret.get());
 
 		return ret;
 	}
@@ -624,29 +623,29 @@ ValueNode::get_non_inline_ancestor_canvas()const
 }
 
 void
-ValueNode::set_parent_canvas(etl::loose_handle<Canvas> x)
+ValueNode::set_parent_canvas(Canvas::LooseHandle x)
 {
-	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-		printf("%s:%d set_parent_canvas of %p to %p\n", __FILE__, __LINE__, this, x.get());
+	DEBUG_LOG("SYNFIG_DEBUG_SET_PARENT_CANVAS",
+		"%s:%d set_parent_canvas of %p to %p\n", __FILE__, __LINE__, this, x.get());
 
 	canvas_=x;
 
-	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-		printf("%s:%d now %p\n", __FILE__, __LINE__, canvas_.get());
+	DEBUG_LOG("SYNFIG_DEBUG_SET_PARENT_CANVAS",
+		"%s:%d now %p\n", __FILE__, __LINE__, canvas_.get());
 
 	if(x) set_root_canvas(x);
 }
 
 void
-ValueNode::set_root_canvas(etl::loose_handle<Canvas> x)
+ValueNode::set_root_canvas(Canvas::LooseHandle x)
 {
-	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-		printf("%s:%d set_root_canvas of %p to %p - ", __FILE__, __LINE__, this, x.get());
+	DEBUG_LOG("SYNFIG_DEBUG_SET_PARENT_CANVAS",
+		"%s:%d set_root_canvas of %p to %p - ", __FILE__, __LINE__, this, x.get());
 
 	root_canvas_=x->get_root();
 
-	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-		printf("now %p\n", root_canvas_.get());
+	DEBUG_LOG("SYNFIG_DEBUG_SET_PARENT_CANVAS",
+		"now %p\n", root_canvas_.get());
 }
 
 String
@@ -748,8 +747,8 @@ LinkableValueNode::get_description(bool show_exported_name)const
 String
 LinkableValueNode::link_name(int i)const
 {
-	Vocab vocab(get_children_vocab());
-	Vocab::iterator iter(vocab.begin());
+	const auto& vocab = children_vocab;
+	Vocab::const_iterator iter(vocab.begin());
 	int j=0;
 	for(;iter!=vocab.end() && j<i; iter++, j++) {}
 	return iter!=vocab.end()?iter->get_name():String();
@@ -758,8 +757,8 @@ LinkableValueNode::link_name(int i)const
 String
 LinkableValueNode::link_local_name(int i)const
 {
-	Vocab vocab(get_children_vocab());
-	Vocab::iterator iter(vocab.begin());
+	const auto& vocab = children_vocab;
+	Vocab::const_iterator iter(vocab.begin());
 	int j=0;
 	for(;iter!=vocab.end() && j<i; iter++, j++) {}
 	return iter!=vocab.end()?iter->get_local_name():String();
@@ -768,8 +767,8 @@ LinkableValueNode::link_local_name(int i)const
 int
 LinkableValueNode::get_link_index_from_name(const String &name)const
 {
-	Vocab vocab(get_children_vocab());
-	Vocab::iterator iter(vocab.begin());
+	const auto& vocab = children_vocab;
+	Vocab::const_iterator iter(vocab.begin());
 	int j=0;
 	for(; iter!=vocab.end(); iter++, j++)
 		if(iter->get_name()==name) return j;
@@ -779,13 +778,13 @@ LinkableValueNode::get_link_index_from_name(const String &name)const
 int
 LinkableValueNode::link_count()const
 {
-	return get_children_vocab().size();
+	return children_vocab.size();
 }
 
-LinkableValueNode::Vocab
+const LinkableValueNode::Vocab&
 LinkableValueNode::get_children_vocab()const
 {
-	return get_children_vocab_vfunc();
+	return children_vocab;
 }
 
 void
@@ -795,7 +794,13 @@ LinkableValueNode::set_children_vocab(const Vocab &newvocab)
 }
 
 void
-LinkableValueNode::set_root_canvas(etl::loose_handle<Canvas> x)
+LinkableValueNode::init_children_vocab()
+{
+	set_children_vocab(get_children_vocab_vfunc());
+}
+
+void
+LinkableValueNode::set_root_canvas(Canvas::LooseHandle x)
 {
 	ValueNode::set_root_canvas(x);
 	for(int i = 0; i < link_count(); ++i)

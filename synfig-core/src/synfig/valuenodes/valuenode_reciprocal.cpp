@@ -59,8 +59,7 @@ REGISTER_VALUENODE(ValueNode_Reciprocal, RELEASE_VERSION_0_61_08, "reciprocal", 
 ValueNode_Reciprocal::ValueNode_Reciprocal(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	Real value(x.get(Real()));
 	Real infinity(999999.0);
 	Real epsilon(0.000001);
@@ -121,8 +120,8 @@ ValueNode_Reciprocal::get_link_vfunc(int i)const
 ValueBase
 ValueNode_Reciprocal::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	Real link     = (*link_)    (t).get(Real());
 	Real epsilon  = (*epsilon_) (t).get(Real());

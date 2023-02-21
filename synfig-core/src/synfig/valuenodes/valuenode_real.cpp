@@ -45,7 +45,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -66,8 +65,7 @@ ValueNode_Real::ValueNode_Real(Type &x):
 ValueNode_Real::ValueNode_Real(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	Type &type(x.get_type());
 	if (type == type_angle)
 		set_link("link", ValueNode_Const::create(Angle::deg(x.get(Angle())).get()));
@@ -129,8 +127,8 @@ ValueNode_Real::get_link_vfunc(int i)const
 ValueBase
 ValueNode_Real::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	float real = (*real_)(t).get(float());
 

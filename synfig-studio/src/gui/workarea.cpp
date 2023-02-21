@@ -39,7 +39,6 @@
 
 #include <gui/workarea.h>
 
-#include <gtkmm/arrow.h>
 #include <gtkmm/scrollbar.h>
 
 #include <ETL/stringf>
@@ -145,6 +144,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	drag_mode(DRAG_NONE),
 	active_bone_(0),
 	highlight_active_bone(false),
+	show_rulers(true),
 	show_grid(false),
 	show_guides(true),
 	background_size(15,15),
@@ -229,16 +229,10 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 
 	// Create the menu button
 
-	Gtk::Arrow *menubutton = manage(new Gtk::Arrow(Gtk::ARROW_RIGHT, Gtk::SHADOW_OUT));
-	menubutton->set_size_request(18, 18);
-	Gtk::EventBox *menubutton_box = manage(new Gtk::EventBox());
-	menubutton_box->add(*menubutton);
-	menubutton_box->add_events(Gdk::BUTTON_RELEASE_MASK);
-	menubutton_box->signal_button_release_event().connect(
-		sigc::bind_return(
-			sigc::hide(
-				sigc::mem_fun(*this, &WorkArea::popup_menu) ), true));
-	menubutton_box->set_hexpand(false);
+	menubutton_box = manage(new Gtk::Button());
+	menubutton_box->set_image_from_icon_name("pan-end-symbolic");
+	menubutton_box->set_relief(Gtk::RELIEF_NONE);
+	menubutton_box->signal_clicked().connect(sigc::mem_fun(*this, &WorkArea::popup_menu));
 	menubutton_box->show_all();
 
 	// Create scrollbars
@@ -296,6 +290,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	get_canvas()->signal_meta_data_changed("grid_color").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("grid_snap").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("grid_show").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
+	get_canvas()->signal_meta_data_changed("status_ruler").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_show").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("background_rendering").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
@@ -336,8 +331,8 @@ WorkArea::~WorkArea()
 	set_drag_mode(DRAG_NONE);
 	while(!renderer_set_.empty())
 		erase_renderer(*renderer_set_.begin());
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
-		info("WorkArea::~WorkArea(): Deleted");
+	DEBUG_LOG("SYNFIG_DEBUG_DESTRUCTORS",
+		"WorkArea::~WorkArea(): Deleted");
 }
 
 void
@@ -373,6 +368,7 @@ WorkArea::save_meta_data()
 	canvas_interface->set_meta_data("guide_snap", get_guide_snap() ? "1" : "0");
 	canvas_interface->set_meta_data("guide_show", get_show_guides() ? "1" : "0");
 	canvas_interface->set_meta_data("grid_show", show_grid ? "1" : "0");
+	canvas_interface->set_meta_data("status_ruler", show_rulers ? "1" : "0");
 	canvas_interface->set_meta_data("jack_offset", strprintf("%f", (double)jack_offset));
 	canvas_interface->set_meta_data("onion_skin", onion_skin ? "1" : "0");
 	canvas_interface->set_meta_data("onion_skin_past", strprintf("%d", onion_skins[0]));
@@ -535,6 +531,12 @@ WorkArea::load_meta_data()
 
 		set_guides_color(synfig::Color(gr,gg,gb));
 	}
+
+	data=canvas->get_meta_data("status_ruler");
+	if(data.size() && (data=="1" || data[0]=='t' || data[0]=='T'))
+		show_rulers=true;
+	if(data.size() && (data=="0" || data[0]=='f' || data[0]=='F'))
+		show_rulers=false;
 
 	data=canvas->get_meta_data("grid_show");
 	if(data.size() && (data=="1" || data[0]=='t' || data[0]=='T'))
@@ -783,6 +785,16 @@ WorkArea::set_background_rendering(bool x)
 	background_rendering = x;
 	save_meta_data();
 	queue_draw();
+}
+
+void
+WorkArea::set_show_rulers(bool visible)
+{
+	show_rulers = visible;
+	hruler->set_visible(visible);
+	vruler->set_visible(visible);
+	menubutton_box->set_visible(visible);
+	save_meta_data();
 }
 
 void
@@ -1054,32 +1066,11 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 	// Handle input stuff
 	if (event->any.type==GDK_MOTION_NOTIFY)
 	{
-		GdkDevice *device = event->motion.device;
+		GdkDevice *device = gdk_event_get_source_device(event);
 		modifier = Gdk::ModifierType(event->motion.state);
-
-		// Calculate the position of the
-		// input device in canvas coordinates
-
-		/*std::string axes_str;
-		int n_axes = gdk_device_get_n_axes(device);
-		for (int i=0; i < n_axes; i++)
-		{
-			axes_str += synfig::strprintf(" %f", event->motion.axes[i]);
-		}
-		synfig::warning("axes info: %s", axes_str.c_str());*/
-		//for(...) axesstr += synfig::strprintf(" %f", event->motion.axes[i])
-
-		double x = 0.0, y = 0.0, p = 0.0;
-		int ox = 0, oy = 0;
-		#ifndef _WIN32
-		Gtk::Container *toplevel = drawing_frame->get_toplevel();
-		if (toplevel) drawing_frame->translate_coordinates(*toplevel, 0, 0, ox, oy);
-		#endif
-
-		if (gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_X, &x))
-			x -= ox; else x = event->motion.x;
-		if (gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_Y, &y))
-			y -= oy; else y = event->motion.y;
+		double x = event->motion.x;
+		double y = event->motion.y;
+		double p = 0.0;
 
 		// Make sure we recognize the device
 		if(curr_input_device)
@@ -1102,10 +1093,9 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 		assert(curr_input_device);
 
-
-		//synfig::warning("coord (%3.f, %3.f) \t motion (%3.f, %3.f) / %s / axes(%d)", x, y, event->motion.x, event->motion.y, gdk_device_get_name(device), gdk_device_get_n_axes(device));
-		if (gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_PRESSURE, &p))
-			p = std::max(0.0, (p - 0.04)/(1.0 - 0.04)); else p = 1.0;
+		if (!gdk_device_get_axis(device, event->motion.axes, GDK_AXIS_PRESSURE, &p)) {
+			p = 1.0;
+		}
 
 		if(std::isnan(x) || std::isnan(y) || std::isnan(p))
 			return false;
@@ -1119,29 +1109,16 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		event->any.type==GDK_3BUTTON_PRESS ||
 		event->any.type==GDK_BUTTON_RELEASE )
 	{
-		GdkDevice *device = event->button.device;
+		GdkDevice *device = gdk_event_get_source_device(event);
 		modifier = Gdk::ModifierType(event->button.state);
 		drawing_area->grab_focus();
+		double x = event->button.x;
+		double y = event->button.y;
+		double p = 0.0;
 
-		// Calculate the position of the
-		// input device in canvas coordinates
-		// and the buttons
-
-		double x = 0.0, y = 0.0, p = 0.0;
-		int ox = 0, oy = 0;
-		#ifndef _WIN32
-		Gtk::Container *toplevel = drawing_frame->get_toplevel();
-		if (toplevel) drawing_frame->translate_coordinates(*toplevel, 0, 0, ox, oy);
-		#endif
-
-		if (gdk_device_get_axis(device, event->button.axes, GDK_AXIS_X, &x))
-			x -= ox; else x = event->button.x;
-		if (gdk_device_get_axis(device, event->button.axes, GDK_AXIS_Y, &y))
-			y -= oy; else y = event->button.y;
-		
-		//synfig::warning("coord2 (%3.f, %3.f) \t motion (%3.f, %3.f) / %s / axes(%d)", x, y, event->button.x, event->button.y, gdk_device_get_name(device), gdk_device_get_n_axes(device));
-		if (gdk_device_get_axis(device, event->button.axes, GDK_AXIS_PRESSURE, &p))
-			p = std::max(0.0, (p - 0.04)/(1.0 - 0.04)); else p = 1.0;
+		if (!gdk_device_get_axis(device, event->button.axes, GDK_AXIS_PRESSURE, &p)) {
+			p = 1.0;
+		}
 
 		// Make sure we recognize the device
 		if(curr_input_device)
@@ -1983,7 +1960,7 @@ WorkArea::refresh(const Cairo::RefPtr<Cairo::Context> &/*cr*/)
 
 	assert(get_canvas());
 
-	//!Check if the window we want draw is ready
+	// Check if the window we want draw is ready
 	Glib::RefPtr<Gdk::Window> draw_area_window = drawing_area->get_window();
 	if (!draw_area_window) return false;
 
@@ -2258,7 +2235,7 @@ studio::WorkArea::set_zoom(float z)
 }
 
 void
-WorkArea::set_selected_value_node(etl::loose_handle<synfig::ValueNode> x)
+WorkArea::set_selected_value_node(synfig::ValueNode::LooseHandle x)
 {
 	if(x!=selected_value_node_)
 	{
@@ -2268,7 +2245,7 @@ WorkArea::set_selected_value_node(etl::loose_handle<synfig::ValueNode> x)
 }
 
 void
-WorkArea::set_active_bone_value_node(etl::loose_handle<synfig::ValueNode> x)
+WorkArea::set_active_bone_value_node(synfig::ValueNode::LooseHandle x)
 {
 	if(x!=active_bone_)
 	{

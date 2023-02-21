@@ -60,8 +60,7 @@ REGISTER_VALUENODE(ValueNode_Pow, RELEASE_VERSION_0_62_00, "power", N_("Power"))
 ValueNode_Pow::ValueNode_Pow(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	Real value(x.get(Real()));
 	Real infinity(999999.0);
 	Real epsilon(0.000001);
@@ -119,8 +118,8 @@ ValueNode_Pow::get_link_vfunc(int i)const
 ValueBase
 ValueNode_Pow::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	Real base     = (*base_)    (t).get(Real());
 	Real power    = (*power_)   (t).get(Real());

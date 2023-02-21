@@ -4,7 +4,8 @@
 
 ## Main target: libsynfig
 ## TODO: optional static linking?
-add_library(synfig SHARED "")
+add_library(libsynfig SHARED "")
+set_target_properties(libsynfig PROPERTIES PREFIX "")
 
 add_definitions(-DVERSION="${STUDIO_VERSION_MAJOR}.${STUDIO_VERSION_MINOR}.${STUDIO_VERSION_PATCH}")
 
@@ -24,9 +25,9 @@ else()
     set(LTDL_LIBRARIES ltdl)
 endif()
 
-target_include_directories(synfig PUBLIC ${LTDL_INCLUDE_DIRS})
+target_include_directories(libsynfig PUBLIC ${LTDL_INCLUDE_DIRS})
 
-target_sources(synfig
+target_sources(libsynfig
     PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/activepoint.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/bone.cpp"
@@ -45,6 +46,7 @@ target_sources(synfig
         "${CMAKE_CURRENT_LIST_DIR}/main.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/module.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/node.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/os.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/palette.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/paramdesc.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/polynomial_root.cpp"
@@ -81,19 +83,17 @@ target_sources(synfig
 
 ## these were added seprately in autotools build, preserving this for now
 ## TODO: either merge with main list or create new target
-target_sources(synfig
+target_sources(libsynfig
     PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/target_multi.cpp"
-        "${CMAKE_CURRENT_LIST_DIR}/target_null.cpp"
-        "${CMAKE_CURRENT_LIST_DIR}/target_null_tile.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/target_scanline.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/target_tile.cpp"
 )
-target_sources(synfig
+target_sources(libsynfig
     PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/listimporter.cpp"
 )
-target_sources(synfig
+target_sources(libsynfig
     PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/blinepoint.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/widthpoint.cpp"
@@ -117,7 +117,7 @@ include(valuenodes/CMakeLists.txt)
 ## TODO: check if we need this for release build
 include(debug/CMakeLists.txt)
 
-target_link_libraries(synfig PUBLIC
+target_link_libraries(libsynfig PUBLIC
 	PkgConfig::SIGCPP
 	PkgConfig::GLIBMM
 	PkgConfig::GIOMM
@@ -126,10 +126,11 @@ target_link_libraries(synfig PUBLIC
 	ZLIB::ZLIB
 	${LTDL_LIBRARIES}
 	${CMAKE_THREAD_LIBS_INIT}
+	${Intl_LIBRARIES}
 )
 
 if (MLT_FOUND)
-	target_link_libraries(synfig PUBLIC PkgConfig::MLT)
+	target_link_libraries(libsynfig PUBLIC PkgConfig::MLT)
 endif ()
 
 ## Install headers
@@ -142,18 +143,34 @@ install(
 )
 
 install(
-    TARGETS synfig
-    EXPORT synfig
+    TARGETS libsynfig
+    EXPORT libsynfig
     LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin
 )
 
+set (LIBSYNFIG_CMAKE_CONFIG_FILE_NAME synfig-libsynfig-config.cmake)
 export(
-    EXPORT synfig
-    FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/${PROJECT_NAME}-config.cmake"
+    TARGETS libsynfig
+    NAMESPACE synfig::
+    FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/${LIBSYNFIG_CMAKE_CONFIG_FILE_NAME}"
 )
 
 install(
-    EXPORT synfig
-    FILE "${PROJECT_NAME}-config.cmake"
-    DESTINATION "lib/cmake/${PROJECT_NAME}"
+    EXPORT libsynfig
+    NAMESPACE synfig::
+    FILE "${LIBSYNFIG_CMAKE_CONFIG_FILE_NAME}"
+    DESTINATION "lib/cmake/synfig"
+)
+
+include(CMakePackageConfigHelpers)
+configure_package_config_file(
+    ${CMAKE_CURRENT_LIST_DIR}/synfig-config.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/synfig-config.cmake
+    INSTALL_DESTINATION synfig
+)
+
+install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/synfig-config.cmake
+    DESTINATION "lib/cmake/synfig"
 )

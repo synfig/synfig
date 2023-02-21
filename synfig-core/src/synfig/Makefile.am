@@ -22,8 +22,6 @@ TARGETHEADERS = \
 
 TARGETSOURCES = \
 	target_multi.cpp \
-	target_null.cpp \
-	target_null_tile.cpp \
 	target_scanline.cpp \
 	target_tile.cpp
 
@@ -59,6 +57,7 @@ VALUESOURCES = \
 
 SYNFIGHEADERS = \
 	angle.h \
+	bezier.h \
 	canvasbase.h \
 	clock.h \
 	general.h \
@@ -81,10 +80,13 @@ SYNFIGHEADERS = \
 	boneweightpair.h \
 	activepoint.h \
 	blur.h \
+	blur/boxblur.h \
+	blur/gaussian.h \
 	bone.h \
 	canvas.h \
 	color.h \
 	context.h \
+	_curve_func.h \
 	curve.h \
 	curve_helper.h \
 	curveset.h \
@@ -96,15 +98,19 @@ SYNFIGHEADERS = \
 	layer.h \
 	loadcanvas.h \
 	main.h \
+	misc.h \
 	module.h \
 	node.h \
 	palette.h \
 	paramdesc.h \
+	pen.h \
 	polynomial_root.h \
 	rect.h \
+	reference_counter.h \
 	renddesc.h \
 	render.h \
 	savecanvas.h \
+	surface_etl.h \
 	surface.h \
 	synfig_iterations.h \
 	target.h \
@@ -127,6 +133,7 @@ SYNFIGHEADERS = \
 	valuetransformation.h \
 	soundprocessor.h \
 	canvasfilenaming.h \
+	os.h \
 	token.h \
 	threadpool.h
 
@@ -178,6 +185,7 @@ SYNFIGSOURCES = \
 	valueoperations.cpp \
 	soundprocessor.cpp \
 	canvasfilenaming.cpp \
+	os.cpp \
 	token.cpp \
 	threadpool.cpp
 
