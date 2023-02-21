@@ -121,6 +121,7 @@ WorkArea::DirtyTrap::~DirtyTrap()
 WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interface):
 	Gtk::Grid(), /* 3 columns by 3 rows*/
 	Duckmatic(canvas_interface),
+	guide_dialog(*App::main_window,canvas_interface->get_canvas(),this),
 	canvas_interface(canvas_interface),
 	canvas(canvas_interface->get_canvas()),
 	drawing_area(0),
@@ -167,8 +168,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	timecode_width(0),
 	timecode_height(0),
 	bonesetup_width(0),
-	bonesetup_height(0),
-	guide_dialog(*App::main_window,canvas_interface->get_canvas(),this)
+	bonesetup_height(0)
 {
 	// default onion
 	onion_skins[0] = 1;
@@ -976,7 +976,7 @@ bool
 WorkArea::on_key_press_event(GdkEventKey* event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
-	if (event->state == GDK_CONTROL_MASK)
+	if (guide_highlighted && (event->keyval == GDK_KEY_Control_L || event->keyval == GDK_KEY_Control_R))
 		rotate_guide=true;
 
 	auto event_result = canvas_view->get_smach().process_event(
