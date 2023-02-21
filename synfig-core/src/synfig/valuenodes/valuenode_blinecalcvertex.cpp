@@ -42,7 +42,6 @@
 #include <synfig/localization.h>
 #include <synfig/valuenode_registry.h>
 #include <synfig/exception.h>
-#include <ETL/hermite>
 
 #endif
 
@@ -64,8 +63,7 @@ REGISTER_VALUENODE(ValueNode_BLineCalcVertex, RELEASE_VERSION_0_61_07, "blinecal
 ValueNode_BLineCalcVertex::ValueNode_BLineCalcVertex(Type &x):
 	LinkableValueNode(x)
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	if(x!=type_vector)
 		throw Exception::BadType(x.description.local_name);
 
@@ -96,8 +94,8 @@ ValueNode_BLineCalcVertex::~ValueNode_BLineCalcVertex()
 ValueBase
 ValueNode_BLineCalcVertex::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	const ValueBase::List bline = (*bline_)(t).get_list();
 	const ValueBase bline_value_node = (*bline_)(t);
@@ -124,7 +122,7 @@ ValueNode_BLineCalcVertex::operator()(Time t)const
 	const BLinePoint &blinepoint0 = bline[i0].get(BLinePoint());
 	const BLinePoint &blinepoint1 = bline[i1].get(BLinePoint());
 
-	etl::hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
+	hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
 							   blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
 	return curve(part);
 }

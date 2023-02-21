@@ -51,7 +51,7 @@ class LayerEmbed :
 {
 private:
 	etl::handle<synfig::Layer_PasteCanvas> layer_pastecanvas;
-	etl::handle<synfig::Layer> layer_import;
+	synfig::Layer::Handle layer_import;
 
 public:
 	static ParamVocab get_param_vocab();

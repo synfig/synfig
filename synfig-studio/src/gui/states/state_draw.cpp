@@ -64,7 +64,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -737,7 +736,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	options_grid.set_margin_bottom(0);
 	options_grid.show_all();
 
-	fill_last_stroke_button.signal_pressed().connect(
+	fill_last_stroke_button.signal_clicked().connect(
 		sigc::mem_fun(*this, &StateDraw_Context::fill_last_stroke));
 	pressure_width_checkbutton.signal_toggled().connect(
 		sigc::mem_fun(*this, &StateDraw_Context::UpdateUsePressure));
@@ -882,19 +881,6 @@ StateDraw_Context::event_mouse_down_handler(const Smach::event& x)
 }
 
 #define SIMILAR_TANGENT_THRESHOLD	(0.2)
-
-struct debugclass
-{
-	synfig::String x;
-	debugclass(const synfig::String &x):x(x)
-	{
-//		synfig::warning(">>>>>>>>>>>>>>>>>>> "+x);
-	}
-	~debugclass()
-	{
-//		synfig::warning("<<<<<<<<<<<<<<<<<<< "+x);
-	}
-};
 
 struct DepthCounter
 {

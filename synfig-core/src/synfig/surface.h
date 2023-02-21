@@ -32,8 +32,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include "color.h"
-#include "renddesc.h"
-#include <ETL/surface>
+#include "surface_etl.h"
 #include <ETL/handle>
 
 /* === M A C R O S ========================================================= */
@@ -51,14 +50,14 @@ class Target_Tile;
 class ColorPrep
 {
 public:
-	static ColorAccumulator cook_static(Color x)
+	static Color cook_static(Color x)
 	{
 		x.set_r(x.get_r()*x.get_a());
 		x.set_g(x.get_g()*x.get_a());
 		x.set_b(x.get_b()*x.get_a());
 		return x;
 	}
-	static Color uncook_static(ColorAccumulator x)
+	static Color uncook_static(Color x)
 	{
 		if(!x.get_a())
 			return Color::alpha();
@@ -71,9 +70,9 @@ public:
 		return x;
 	}
 
-	ColorAccumulator cook(Color x)const
+	Color cook(Color x)const
 		{ return cook_static(x); }
-	Color uncook(ColorAccumulator x)const
+	Color uncook(Color x)const
 		{ return uncook_static(x); }
 };
 
@@ -82,7 +81,7 @@ public:
 **	\brief Bitmap Surface
 **	\todo writeme
 */
-class Surface : public etl::surface<Color, ColorAccumulator, ColorPrep>
+class Surface : public surface<Color, ColorPrep>
 {
 public:
 	typedef Color value_type;
@@ -91,14 +90,14 @@ public:
 	Surface() { }
 
 	Surface(const size_type::value_type &w, const size_type::value_type &h):
-		etl::surface<Color, ColorAccumulator,ColorPrep>(w,h) { }
+		surface<Color, ColorPrep>(w,h) { }
 
 	Surface(const size_type &s):
-		etl::surface<Color, ColorAccumulator,ColorPrep>(s) { }
+		surface<Color, ColorPrep>(s) { }
 
 	template <typename _pen>
 	Surface(const _pen &_begin, const _pen &_end):
-		etl::surface<Color, ColorAccumulator,ColorPrep>(_begin,_end) { }
+		surface<Color, ColorPrep>(_begin,_end) { }
 
 	template <class _pen> void blit_to(_pen &pen)
 	{ return blit_to(pen,0,0, get_w(),get_h()); }
@@ -106,7 +105,7 @@ public:
 	template <class _pen> void
 	blit_to(_pen& DEST_PEN,	int x, int y, int w, int h)
 	{
-		etl::surface<Color, ColorAccumulator, ColorPrep>::blit_to(DEST_PEN,x,y,w,h);
+		surface<Color, ColorPrep>::blit_to(DEST_PEN,x,y,w,h);
 	}
 
 	void clear();
@@ -142,16 +141,16 @@ struct _BlendFunc
 **	The default blending method is Color::BLEND_COMPOSITE.
 **	\see Color::BlendMethod
 */
-class Surface::alpha_pen : public etl::alpha_pen< etl::generic_pen<Color, ColorAccumulator>, Color::value_type, _BlendFunc<Color> >
+class Surface::alpha_pen : public synfig::alpha_pen< synfig::generic_pen<Color>, Color::value_type, _BlendFunc<Color> >
 {
 public:
 	alpha_pen() { }
-	alpha_pen(const etl::alpha_pen< etl::generic_pen<Color, ColorAccumulator>, Color::value_type, _BlendFunc<Color> > &x):
-		etl::alpha_pen< etl::generic_pen<Color, ColorAccumulator>, Color::value_type, _BlendFunc<Color> >(x)
+	alpha_pen(const synfig::alpha_pen< generic_pen<Color>, Color::value_type, _BlendFunc<Color> > &x):
+		synfig::alpha_pen< generic_pen<Color>, Color::value_type, _BlendFunc<Color> >(x)
 	{ }
 
-	alpha_pen(const etl::generic_pen<Color, ColorAccumulator>& pen, const Color::value_type &a = 1, const _BlendFunc<Color> &func = _BlendFunc<Color>()):
-		etl::alpha_pen< etl::generic_pen<Color, ColorAccumulator>, Color::value_type, _BlendFunc<Color> >(pen,a,func)
+	alpha_pen(const synfig::generic_pen<Color>& pen, const Color::value_type &a = 1, const _BlendFunc<Color> &func = _BlendFunc<Color>()):
+		synfig::alpha_pen< synfig::generic_pen<Color>, Color::value_type, _BlendFunc<Color> >(pen,a,func)
 	{ }
 
 	//! Sets the blend method to that described by \a method

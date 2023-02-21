@@ -48,13 +48,7 @@
 
 #define ETL_DIRECTORY_SEPARATOR		'/'
 
-#ifdef _WIN32
-#define POPEN_BINARY_READ_TYPE "rb"
 #define POPEN_BINARY_WRITE_TYPE "wb"
-#else
-#define POPEN_BINARY_READ_TYPE "r"
-#define POPEN_BINARY_WRITE_TYPE "w"
-#endif
 
 /* === T Y P E D E F S ===================================================== */
 
@@ -129,6 +123,12 @@ dirname(const std::string &str)
 		   return ".";
 	}
 
+#ifdef _WIN32
+	// leave the trailing separator after windows drive name
+	if (std::distance(str.begin(), iter) == 2 && str.size() >= 3 && str[1] == ':' && is_separator(str[2]))
+		++iter;
+#endif
+
 	return std::string(str.begin(),iter);
 }
 
@@ -164,27 +164,6 @@ is_absolute_path(const std::string &path)
 	if(!path.empty() && is_separator(path[0]))
 		return true;
 	return false;
-}
-
-inline std::string
-unix_to_local_path(const std::string &path)
-{
-	std::string ret;
-	std::string::const_iterator iter;
-	for(iter=path.begin();iter!=path.end();iter++)
-		if (is_separator(*iter))
-			ret+=ETL_DIRECTORY_SEPARATOR;
-		else
-		switch(*iter)
-		{
-		case '~':
-			ret+='~';
-			break;
-		default:
-			ret+=*iter;
-			break;
-		}
-	return ret;
 }
 
 inline std::string

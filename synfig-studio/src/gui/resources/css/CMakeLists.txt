@@ -1,5 +1,6 @@
 set(INSTALL_DESTINATION "share/synfig/css")
 set(CSS_FILES
+	synfig_dialog.css
 	synfig.css
 	synfig.mac.css
 )

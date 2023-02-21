@@ -25,6 +25,7 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include "localization.h"
 #ifdef USING_PCH
 #	include "pch.h"
 #else
@@ -34,7 +35,6 @@
 #ifdef _WIN32
 #include <codecvt>
 #include <locale>
-#include "general.h" // synfig::error(...)
 #endif
 
 #include <glibmm.h>
@@ -43,6 +43,8 @@
 #include <ETL/stringf>
 
 #include "filesystem.h"
+
+#include "general.h" // synfig::error(...)
 
 #endif
 
@@ -251,25 +253,44 @@ String FileSystem::get_real_filename(const String &filename) {
 
 filesystem::Path::Path(const std::string& path)
 {
-#ifdef _WIN32
-	// Windows uses UTF-16 for filenames, so we need to convert it from UTF-8 before using it.
-	try {
-		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> wcu8;
-		path_ = wcu8.from_bytes(path);
-	} catch (const std::range_error& exception) {
-		synfig::error("Failed to convert path (%s)", path.c_str());
-		throw;
-	}
-#else
-	// For other OS, just return the file name as is
 	path_ = path;
-#endif
+	native_path_ = utf8_to_native(path);
 }
 
 const filesystem::Path::value_type*
 filesystem::Path::c_str() const noexcept
 {
-	return path_.c_str();
+	return native().c_str();
+}
+
+const filesystem::Path::string_type&
+filesystem::Path::native() const noexcept
+{
+	return native_path_;
+}
+
+const std::string&
+filesystem::Path::u8string() const
+{
+	return path_;
+}
+
+filesystem::Path::string_type
+filesystem::Path::utf8_to_native(const std::string& utf8)
+{
+#ifdef _WIN32
+	// Windows uses UTF-16 for filenames, so we need to convert it from UTF-8.
+	try {
+		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> wcu8;
+		return wcu8.from_bytes(utf8);
+	} catch (const std::range_error& exception) {
+		synfig::error("Failed to convert UTF-8 string (%s)", utf8.c_str());
+		throw;
+	}
+#else
+	// For other OS, it's the file name as it is
+	return utf8;
+#endif
 }
 
 /* === E N T R Y P O I N T ================================================= */

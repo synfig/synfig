@@ -132,7 +132,7 @@ Layer::subsys_init()
 				  class::get_register_version())
 
 	INCLUDE_LAYER(Layer_SolidColor);
-		LAYER_ALIAS(Layer_SolidColor,	"solid_color");
+		LAYER_ALIAS(Layer_SolidColor,	"SolidColor"); // old name, previous to version 1.5.2
 	INCLUDE_LAYER(Layer_FilterGroup);
 	INCLUDE_LAYER(Layer_Group);
 		LAYER_ALIAS(Layer_Group,		"paste_canvas");
@@ -141,7 +141,7 @@ Layer::subsys_init()
 	INCLUDE_LAYER(Layer_Polygon);
 		LAYER_ALIAS(Layer_Polygon,		"Polygon");
 	INCLUDE_LAYER(Layer_MotionBlur);
-		LAYER_ALIAS(Layer_MotionBlur,	"motion_blur");
+		LAYER_ALIAS(Layer_MotionBlur,	"MotionBlur"); // old name, previous to version 1.5.2
 	INCLUDE_LAYER(Layer_Duplicate);
 	INCLUDE_LAYER(Layer_Skeleton);
 	INCLUDE_LAYER(Layer_SkeletonDeformation);
@@ -206,7 +206,7 @@ synfig::Layer::~Layer()
 }
 
 void
-synfig::Layer::set_canvas(etl::loose_handle<Canvas> x)
+synfig::Layer::set_canvas(Canvas::LooseHandle x)
 {
 	if(canvas_!=x)
 	{
@@ -220,7 +220,7 @@ synfig::Layer::set_canvas(etl::loose_handle<Canvas> x)
 						*this,
 						&Layer::set_canvas
 					),
-					etl::loose_handle<synfig::Canvas>(0)
+					Canvas::LooseHandle(0)
 				)
 			);
 		}
@@ -247,7 +247,7 @@ synfig::Layer::on_dynamic_param_changed(const String & /* param */)
 	{ }
 
 
-etl::loose_handle<synfig::Canvas>
+Canvas::LooseHandle
 synfig::Layer::get_canvas()const
 {
 	return canvas_;
@@ -312,7 +312,7 @@ Layer::dynamic_param_changed(const String &param)
 }
 
 bool
-Layer::connect_dynamic_param(const String& param, etl::loose_handle<ValueNode> value_node)
+Layer::connect_dynamic_param(const String& param, ValueNode::LooseHandle value_node)
 {
 	if (!value_node) return disconnect_dynamic_param(param);
 
@@ -382,8 +382,8 @@ Layer::disconnect_dynamic_param(const String& param)
 void
 Layer::on_changed()
 {
-	if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
-		printf("%s:%d Layer::on_changed()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_ON_CHANGED",
+		"%s:%d Layer::on_changed()\n", __FILE__, __LINE__);
 
 	clear_time_mark();
 	Node::on_changed();

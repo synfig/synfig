@@ -1,0 +1,23 @@
+commit ac12794e733dc463255c01d0e41a9a254061a1ff
+Author: Hesham Essam <hesham.essam.mail@gmail.com>
+Date:   Fri Jul 15 15:06:48 2022 +0200
+
+    Fix make dependency
+    
+    the target "install-exec-local-utilities" depends on "install-binPROGRAMS"
+    it happens to work when using one job (make install -j1), as it executes
+    "install-binPROGRAMS" first, but it isn't guaranteed when using multiple jobs
+
+diff --git a/Makefile.in b/Makefile.in
+index 51f0a5fc1..d46feef9b 100644
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -13724,7 +13724,7 @@ uninstall-man: uninstall-man1
+ @MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_TRUE@$(libMagickCore_threshold_target): MagickCore/threshold-map.h
+ @MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_TRUE@MagickCore/threshold-map.h: config/thresholds.xml Makefile
+ @MAGICKCORE_ZERO_CONFIGURATION_SUPPORT_TRUE@	$(AM_V_GEN){ printf '%s\n  %s=\n' 'static const char *const' BuiltinMap; sed -e 's/"/\\"/g; s/^.*$$/    "&\\n"/; $$s/$$/;/' $<; } >$@
+-install-exec-local-utilities:
++install-exec-local-utilities: install-binPROGRAMS
+ 	$(mkinstalldirs) $(DESTDIR)$(bindir)
+ 	cd $(DESTDIR)$(bindir) ; \
+ 	magick=`echo "magick" | sed 's,^.*/,,;s/$(EXEEXT)$$//;$(transform);s/$$/$(EXEEXT)/'`; \

@@ -21,7 +21,7 @@ fi
 #START="upstream/changelog"
 
 # Get list of all commits
-COMMITS=`git log ${START}...upstream/master --pretty=format:'%H' --reverse`
+COMMITS=`git log ${START}...upstream/master --first-parent --pretty=format:'%H' --reverse`
 
 if [ -f "${CHANGELOG}" ]; then
     tac "${CHANGELOG}" > "${CHANGELOG}.new"
@@ -31,8 +31,8 @@ if [ ! -z "${COMMITS}" ]; then
 while IFS= read -r CMT; do
     TAGS=""
     # Get list of changed files
-    #echo "... ${CMT} ..."
-    FILES=`git diff-tree --no-commit-id --name-only -r ${CMT}`
+    MESSAGE=`git log --format=%B -n 1 ${CMT} | head -n 1`
+    FILES=`git log -m -1 --name-only --pretty="format:" ${CMT}`
     while IFS= read -r FILENAME; do
 	# check if filename starts with "ETL" "synfig-core" or "synfig-studio"
 	if [[ $FILENAME == ETL/* ]]; then
@@ -50,7 +50,6 @@ while IFS= read -r CMT; do
 	fi
 	#echo "...     ${FILENAME}"
     done <<< "$FILES"
-    MESSAGE=`git log --format=%B -n 1 ${CMT} | head -n 1`
     MESSAGE=`echo "$MESSAGE" | sed -e "s/#\([0-9]\+\)/\[\\\#\1\]\(https\:\/\/github\.com\/synfig\/synfig\/issues\/\1\)/g" | sed -e "s/\*/\\\*/g" | sed -e "s/\_/\\\_/g"`
     echo "- [\`${CMT:0:7}\`](https://github.com/synfig/synfig/commit/${CMT}) ${MESSAGE}${TAGS}" >> "${CHANGELOG}.new"
 done <<< "$COMMITS"

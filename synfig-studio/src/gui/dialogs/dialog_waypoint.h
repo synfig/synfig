@@ -50,7 +50,7 @@ class Widget_Waypoint;
 class Dialog_Waypoint : public Gtk::Dialog
 {
 	Widget_Waypoint *waypointwidget;
-	etl::handle<synfig::Canvas> canvas;
+	synfig::Canvas::Handle canvas;
 	synfigapp::ValueDesc value_desc_;
 
 	sigc::signal<void> signal_changed_;
@@ -65,7 +65,7 @@ class Dialog_Waypoint : public Gtk::Dialog
 	void refresh();
 
 public:
-	Dialog_Waypoint(Gtk::Window& parent,etl::handle<synfig::Canvas> canvas);
+	Dialog_Waypoint(Gtk::Window& parent,synfig::Canvas::Handle canvas);
 	~Dialog_Waypoint();
 
     void reset();

@@ -36,6 +36,7 @@
 #include "valuenode_bone.h"
 #include "valuenode_boneweightpair.h"
 #include "valuenode_composite.h"
+#include "synfig/general.h"
 #include <synfig/canvas.h>
 #include <synfig/localization.h>
 #include <synfig/pair.h>
@@ -44,7 +45,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -64,8 +64,8 @@ ValueNode_Const::ValueNode_Const(const ValueBase &x, Canvas::LooseHandle canvas)
 	ValueNode	(x.get_type()),
 	value		(x)
 {
-	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-		printf("%s:%d set parent canvas for const %p to %p\n", __FILE__, __LINE__, this, canvas.get());
+	DEBUG_LOG("SYNFIG_DEBUG_SET_PARENT_CANVAS",
+		"%s:%d set parent canvas for const %p to %p\n", __FILE__, __LINE__, this, canvas.get());
 
 	if (x.get_type() == type_bone_valuenode)
 		add_child(x.get(ValueNode_Bone::Handle()).get());
@@ -103,7 +103,7 @@ ValueNode_Const::create(const ValueBase& x, Canvas::LooseHandle canvas)
 
 
 ValueNode::Handle
-ValueNode_Const::clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid)const
+ValueNode_Const::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)const
 {
 	{ ValueNode* x(find_value_node(get_guid()^deriv_guid).get()); if(x)return x; }
 	ValueNode* ret(new ValueNode_Const(value));
@@ -123,8 +123,8 @@ ValueNode_Const::~ValueNode_Const()
 ValueBase
 ValueNode_Const::operator()(Time /*t*/)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	return value;
 }

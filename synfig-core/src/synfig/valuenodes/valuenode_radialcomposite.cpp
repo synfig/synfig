@@ -46,7 +46,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -62,8 +61,7 @@ REGISTER_VALUENODE(ValueNode_RadialComposite, RELEASE_VERSION_0_61_06, "radial_c
 synfig::ValueNode_RadialComposite::ValueNode_RadialComposite(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	Type &type(get_type());
 	if (type == type_vector)
 	{
@@ -92,7 +90,7 @@ ValueNode_RadialComposite::~ValueNode_RadialComposite()
 }
 
 ValueNode_RadialComposite*
-ValueNode_RadialComposite::create(const ValueBase& value, etl::loose_handle<Canvas>)
+ValueNode_RadialComposite::create(const ValueBase& value, Canvas::LooseHandle)
 {
 	return new ValueNode_RadialComposite(value);
 }
@@ -106,8 +104,8 @@ ValueNode_RadialComposite::create_new()const
 ValueBase
 synfig::ValueNode_RadialComposite::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	Type &type(get_type());
 	if (type == type_vector)

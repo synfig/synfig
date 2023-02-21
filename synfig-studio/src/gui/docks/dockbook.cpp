@@ -97,7 +97,7 @@ DockBook::clear()
 	// i didn't know why this happens, possibly because clear() is called from destructor
 	// and 'this' is already deleted. Or, this function maybe never work right.
 	// So here quick-hack again. Btw, as you can see from commented code later newly created 
-	// dockbook is works fine, so this situation is reqired more detailed investigation.
+	// dockbook is works fine, so this situation is required more detailed investigation.
 	if (!GTK_IS_NOTEBOOK (this)) return; // because we always fail if 'this' is not notebook
 
 	/*Gtk::Notebook note;
@@ -301,7 +301,7 @@ DockBook::tab_button_pressed(GdkEventButton* event, Dockable* dockable)
 void
 DockBook::on_switch_page(Gtk::Widget* page, guint page_num)
 {
-	if (page && this->page_num(*page)) {
+	if (page && this->page_num(*page) != -1) {
 		CanvasView *canvas_view = dynamic_cast<CanvasView*>(page);
 		if (canvas_view && canvas_view != App::get_selected_canvas_view())
 			App::set_selected_canvas_view(canvas_view);

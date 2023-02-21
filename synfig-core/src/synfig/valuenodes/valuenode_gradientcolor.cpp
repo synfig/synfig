@@ -60,8 +60,7 @@ REGISTER_VALUENODE(ValueNode_GradientColor, RELEASE_VERSION_0_61_09, "gradientco
 ValueNode_GradientColor::ValueNode_GradientColor(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	if (value.get_type() ==  type_color)
 	{
 		set_link("gradient", ValueNode_Const::create(Gradient(value.get(Color()),value.get(Color()))));
@@ -94,8 +93,8 @@ ValueNode_GradientColor::~ValueNode_GradientColor()
 ValueBase
 ValueNode_GradientColor::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	Real index((*index_)(t).get(Real()));
 	bool loop((*loop_)(t).get(bool()));

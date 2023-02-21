@@ -42,8 +42,7 @@
 #include <synfig/localization.h>
 #include <synfig/valuenode_registry.h>
 #include <synfig/exception.h>
-#include <ETL/hermite>
-#include <ETL/calculus>
+#include <synfig/bezier.h>
 #include <synfig/segment.h>
 #include <synfig/curve_helper.h>
 #include <algorithm> // for std::swap
@@ -52,7 +51,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -261,7 +259,7 @@ synfig::std_to_hom(const ValueBase &bline, Real pos, bool index_loop, bool bline
 	size_t next_vertex = (from_vertex + 1) % size;
 	const BLinePoint &blinepoint0 = list[from_vertex];
 	const BLinePoint &blinepoint1 = list[next_vertex];
-	etl::hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
+	hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
 							blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
 	// add the distance on the bezier we are on.
 	partial_length += curve.find_distance(0.0, pos*count - from_vertex);
@@ -318,7 +316,7 @@ synfig::hom_to_std(const ValueBase &bline, Real pos, bool index_loop, bool bline
 	// set up the curve
 	const BLinePoint &blinepoint0 = list[from_vertex];
 	const BLinePoint &blinepoint1 = list[(from_vertex+1) % size];
-	etl::hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
+	hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
 	                           blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
 	// Find the solution to which is the standard position which matches the current
 	// homogeneous position
@@ -369,7 +367,7 @@ synfig::bline_length(const ValueBase &bline, bool bline_loop, std::vector<Real> 
 		size_t i1 = (i0 + 1)%list.size();
 		const BLinePoint &blinepoint0 = list[i0];
 		const BLinePoint &blinepoint1 = list[i1];
-		etl::hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
+		hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
 							blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
 		Real l=curve.length();
 		if(lengths) lengths->push_back(l);
@@ -384,8 +382,8 @@ synfig::bline_length(const ValueBase &bline, bool bline_loop, std::vector<Real> 
 ValueNode_BLine::ValueNode_BLine(Canvas::LooseHandle canvas):
 	ValueNode_DynamicList(type_bline_point, canvas)
 {
-	if (getenv("SYNFIG_DEBUG_SET_PARENT_CANVAS"))
-		printf("%s:%d should have already set parent canvas for bline %p to %p (using dynamic_list constructor)\n", __FILE__, __LINE__, this, canvas.get());
+	DEBUG_LOG("SYNFIG_DEBUG_SET_PARENT_CANVAS",
+		"%s:%d should have already set parent canvas for bline %p to %p (using dynamic_list constructor)\n", __FILE__, __LINE__, this, canvas.get());
 }
 
 ValueNode_BLine::~ValueNode_BLine()
@@ -526,9 +524,9 @@ ValueNode_BLine::create_list_entry(int index, Time time, Real origin)
 		prev_i=find_prev_valid_entry(index,time);
 		next=(*list[next_i].value_node)(time).get(BLinePoint());
 		prev=(*list[prev_i].value_node)(time).get(BLinePoint());
-		etl::hermite<Vector> curve(prev.get_vertex(),next.get_vertex(),prev.get_tangent2(),next.get_tangent1());
-		etl::hermite<Vector> left;
-		etl::hermite<Vector> right;
+		hermite<Vector> curve(prev.get_vertex(),next.get_vertex(),prev.get_tangent2(),next.get_tangent1());
+		hermite<Vector> left;
+		hermite<Vector> right;
 		curve.subdivide(&left, &right, origin);
 		bline_point.set_vertex(left[3]);
 		bline_point.set_width((next.get_width()-prev.get_width())*origin+prev.get_width());
@@ -549,8 +547,8 @@ ValueNode_BLine::create_list_entry(int index, Time time, Real origin)
 ValueBase
 ValueNode_BLine::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	std::vector<BLinePoint> ret_list;
 
@@ -705,16 +703,15 @@ ValueNode_BLine::operator()(Time t)const
 			}
 
 			// this is how the curve looks when we have completely vanished
-			etl::hermite<Vector> curve(blp_prev_off.get_vertex(),   blp_next_off.get_vertex(),
+			hermite<Vector> curve(blp_prev_off.get_vertex(),   blp_next_off.get_vertex(),
 									   blp_prev_off.get_tangent2(), blp_next_off.get_tangent1());
-			etl::derivative< etl::hermite<Vector> > deriv(curve);
 
 			// where would we be on this curve, how wide will we be, and
 			// where will our tangents point (all assuming that we hadn't vanished)
 			blp_here_off.set_vertex(curve(blp_here_on.get_origin()));
 			blp_here_off.set_width((blp_next_off.get_width()-blp_prev_off.get_width())*blp_here_on.get_origin()+blp_prev_off.get_width());
-			blp_here_off.set_tangent1(deriv(blp_here_on.get_origin()));
-			blp_here_off.set_tangent2(deriv(blp_here_on.get_origin()));
+			blp_here_off.set_tangent1(curve.derivative(blp_here_on.get_origin()));
+			blp_here_off.set_tangent2(curve.derivative(blp_here_on.get_origin()));
 
 			float prev_tangent_scalar(1.0f);
 			float next_tangent_scalar(1.0f);
@@ -999,8 +996,8 @@ ValueNode_BLine::get_blinepoint(std::vector<ListEntry>::const_iterator current, 
 void
 ValueNode_BLine::ref()const
 {
-	if (getenv("SYNFIG_DEBUG_BLINE_REFCOUNT"))
-		printf("%s:%d %lx   ref bline %*s -> %2d\n", __FILE__, __LINE__, uintptr_t(this), (count()*2), "", count()+1);
+	DEBUG_LOG("SYNFIG_DEBUG_BLINE_REFCOUNT",
+		"%s:%d %lx   ref bline %*s -> %2d\n", __FILE__, __LINE__, uintptr_t(this), (count()*2), "", count()+1);
 
 	LinkableValueNode::ref();
 }
@@ -1008,8 +1005,8 @@ ValueNode_BLine::ref()const
 bool
 ValueNode_BLine::unref()const
 {
-	if (getenv("SYNFIG_DEBUG_BLINE_REFCOUNT"))
-		printf("%s:%d %lx unref bline %*s%2d <-\n", __FILE__, __LINE__, uintptr_t(this), ((count()-1)*2), "", count()-1);
+	DEBUG_LOG("SYNFIG_DEBUG_BLINE_REFCOUNT",
+		"%s:%d %lx unref bline %*s%2d <-\n", __FILE__, __LINE__, uintptr_t(this), ((count()-1)*2), "", count()-1);
 
 	return LinkableValueNode::unref();
 }

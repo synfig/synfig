@@ -18,7 +18,7 @@ target_sources(synfig_bin
         "${CMAKE_CURRENT_LIST_DIR}/renderprogress.cpp"
 )
 
-target_link_libraries(synfig_bin PRIVATE synfig)
+target_link_libraries(synfig_bin PRIVATE libsynfig)
 if(TCMALLOC_LIBRARY)
     target_link_libraries(synfig_bin PRIVATE ${TCMALLOC_LIBRARY})
 endif()

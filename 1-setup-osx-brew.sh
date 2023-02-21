@@ -27,7 +27,6 @@ PACKAGES="\
 adwaita-icon-theme \
 autoconf \
 automake \
-boost \
 ccache \
 cmake \
 fftw \

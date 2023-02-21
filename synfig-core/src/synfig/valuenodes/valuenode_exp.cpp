@@ -59,8 +59,7 @@ REGISTER_VALUENODE(ValueNode_Exp, RELEASE_VERSION_0_61_07, "exp", N_("Exponentia
 ValueNode_Exp::ValueNode_Exp(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	if (value.get_type() == type_real)
 	{
 		set_link("exp",ValueNode_Const::create(Real(0)));
@@ -92,7 +91,7 @@ ValueNode_Exp::~ValueNode_Exp()
 ValueBase
 ValueNode_Exp::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
+	if (DEBUG_GETENV("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
 		printf("%s:%d operator()\n", __FILE__, __LINE__);
 
 	return (exp((*exp_)(t).get(Real())) *

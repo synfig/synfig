@@ -1,0 +1,7 @@
+{
+  "name": "hicolor-icon-theme",
+  "version": "0.17",
+  "description": "Default icon theme for gtk",
+  "homepage": "https://www.freedesktop.org/wiki/Software/icon-theme/",
+  "license": "GPL-2.0"
+}

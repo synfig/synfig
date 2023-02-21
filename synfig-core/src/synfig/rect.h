@@ -101,6 +101,14 @@ public:
 			minx(o.minx), miny(o.miny), maxx(o.maxx), maxy(o.maxy) { }
 	rect(const rect<T> &o):
 			minx(o.minx), miny(o.miny), maxx(o.maxx), maxy(o.maxy) { }
+	rect<T>& operator=(const rect<T>& o)
+	{
+		minx = o.minx;
+		maxx = o.maxx;
+		miny = o.miny;
+		maxy = o.maxy;
+		return *this;
+	}
 
 	template<typename F>
 	rect(

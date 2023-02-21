@@ -133,8 +133,8 @@ Duckmatic::~Duckmatic()
 {
 	clear_ducks();
 
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
-		synfig::info("Duckmatic::~Duckmatic(): Deleted");
+	DEBUG_LOG("SYNFIG_DEBUG_DESTRUCTORS",
+		"Duckmatic::~Duckmatic(): Deleted");
 }
 
 void
@@ -606,11 +606,16 @@ Duckmatic::update_ducks()
 			{
 				synfig::Real radius = 0.0;
 				synfig::Point point(0.0, 0.0);
-				ValueNode_BLine::Handle bline(ValueNode_BLine::Handle::cast_dynamic(bline_vertex->get_link("bline")));
-				Real amount = synfig::find_closest_point((*bline)(time), duck->get_point(), radius, bline->get_loop(), &point);
+				bool bline_loop = false;
+				ValueNode::LooseHandle bline = bline_vertex->get_bline_handle(bline_loop);
+				if (!bline) {
+					warning(_("Internal error: duckmatic: It is a BLine Vertex, but it has not a BLine link"));
+					return;
+				}
+				Real amount = synfig::find_closest_point((*bline)(time), duck->get_point(), radius, bline_loop, &point);
 				bool homogeneous((*(bline_vertex->get_link("homogeneous")))(time).get(bool()));
 				if(homogeneous)
-					amount=std_to_hom((*bline)(time), amount, ((*(bline_vertex->get_link("loop")))(time).get(bool())), bline->get_loop() );
+					amount=std_to_hom((*bline)(time), amount, ((*(bline_vertex->get_link("loop")))(time).get(bool())), bline_loop );
 				ValueNode::Handle vertex_amount_value_node(bline_vertex->get_link("amount"));
 				duck->set_point(point);
 
@@ -1355,7 +1360,7 @@ Duckmatic::find_duck(synfig::Point point, synfig::Real radius, Duck::Type type)
 		}
 	}
 
-	// Priorization of duck selection when are in the same place.
+	// Prioritization of duck selection when are in the same place.
 	bool found(false);
 	if(ret_vector.size())
 	{
@@ -2930,6 +2935,28 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 			return false;
 		}
 
+		bool do_not_show_bone_width = false;
+		{
+			bool is_skeleton_deformation_layer_in_pose_mode = false;
+			bool is_skeleton_layer = false;
+
+			const synfig::Node* node = bone_value_node.get();
+			Layer::ConstHandle parent_layer;
+			while (node->parent_count() && !(parent_layer = dynamic_cast<const Layer*>(node)))
+			{
+				node = node->get_first_parent();
+			}
+			if (parent_layer) {
+				if (parent_layer->get_name() == "skeleton") {
+					is_skeleton_layer = true;
+				} else if (parent_layer->get_name() == "skeleton_deformation") {
+					if (parent_layer->active())
+						is_skeleton_deformation_layer_in_pose_mode = true;
+				}
+			}
+			do_not_show_bone_width = is_skeleton_layer || is_skeleton_deformation_layer_in_pose_mode;
+		}
+
 		synfig::GUID guid(bone_value_node->get_guid());
 		Time time(get_time());
 		Bone bone((*bone_value_node)(time).get(Bone()));
@@ -3130,6 +3157,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		}
 
 		// origin width
+		if (!do_not_show_bone_width)
 		{
 
 			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name("width"), orig_value_desc);
@@ -3158,6 +3186,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		}
 
 		// tip width
+		if (!do_not_show_bone_width)
 		{
 
 			synfigapp::ValueDesc value_desc(bone_value_node, bone_value_node->get_link_index_from_name("tipwidth"), orig_value_desc);

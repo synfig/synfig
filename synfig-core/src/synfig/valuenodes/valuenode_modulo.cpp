@@ -38,12 +38,11 @@
 
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/misc.h>
 #include <synfig/valuenode_registry.h>
 #include <synfig/vector.h>
 #include <synfig/angle.h>
 #include <synfig/real.h>
-
-#include <ETL/misc>
 
 #include <stdexcept>
 
@@ -51,7 +50,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -67,8 +65,7 @@ REGISTER_VALUENODE(ValueNode_Modulo, RELEASE_VERSION_1_6_0, "modulo", N_("Modulo
 ValueNode_Modulo::ValueNode_Modulo(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	set_link("divisor",ValueNode_Const::create(int(2)));
 	set_link("scalar",ValueNode_Const::create(Real(1.0)));
 	Type& type(value.get_type());
@@ -101,8 +98,8 @@ synfig::ValueNode_Modulo::~ValueNode_Modulo()
 synfig::ValueBase
 synfig::ValueNode_Modulo::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	if(!dividend || !divisor)
 		throw std::runtime_error(strprintf("ValueNode_Modulo: %s",_("One or both of my parameters aren't set!")));
@@ -216,7 +213,7 @@ ValueNode_Modulo::get_inverse(const Time& t, const ValueBase& target_value) cons
 	const int max_value = (*divisor)(t).get(int()) - 1;
 
 	if (type == type_angle) {
-		int int_target = etl::round_to_int(Angle::deg(target_value.get(Angle())).get()) / scalar_value;
+		int int_target = round_to_int(Angle::deg(target_value.get(Angle())).get()) / scalar_value;
 		Angle::deg ret = Angle::deg(int_target / scalar_value);
 		return synfig::clamp(ret, Angle::deg(-max_value), Angle::deg(max_value));
 	}
@@ -225,12 +222,12 @@ ValueNode_Modulo::get_inverse(const Time& t, const ValueBase& target_value) cons
 		return synfig::clamp(ret, -max_value, max_value);
 	}
 	if (type == type_real) {
-		int int_target = etl::round_to_int(target_value.get(Real()));
+		int int_target = round_to_int(target_value.get(Real()));
 		Real ret = int_target / scalar_value;
 		return synfig::clamp(ret, Real(-max_value), Real(max_value));
 	}
 	if (type == type_time) {
-		int int_target = etl::round_to_int(target_value.get(Time()));
+		int int_target = round_to_int(target_value.get(Time()));
 		Time ret = int_target / scalar_value;
 		return synfig::clamp(ret, Time(-max_value), Time(-max_value));
 	}

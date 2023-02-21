@@ -39,6 +39,9 @@ set(IMG_SOURCE_keyframe_lock_past_off_icon keyframe_lock_icons 1)
 set(IMG_SOURCE_keyframe_lock_future_on_icon keyframe_lock_icons 2)
 set(IMG_SOURCE_keyframe_lock_future_off_icon keyframe_lock_icons 3)
 
+set(IMG_SOURCE_tangent_merge_icon tangent_merge_split_icons 0)
+set(IMG_SOURCE_tangent_split_icon tangent_merge_split_icons 1)
+
 set(IMG_SOURCE_utils_chain_link_on_icon utils_chain_link_icons 0)
 set(IMG_SOURCE_utils_chain_link_off_icon utils_chain_link_icons 1)
 
@@ -82,6 +85,9 @@ set(ICONS
 	keyframe_lock_future_on_icon
 	keyframe_lock_future_off_icon
 
+	tangent_merge_icon
+	tangent_split_icon
+
 	utils_chain_link_on_icon
 	utils_chain_link_off_icon
 
@@ -90,8 +96,10 @@ set(ICONS
 	action_flat_interpolation_icon
 	action_interpolate_interpolation_icon
 	action_peak_interpolation_icon
+	action_offpeak_interpolation_icon
 	action_remove_from_set_icon
 	action_rounded_interpolation_icon
+	action_innerrounded_interpolation_icon
 	action_set_layer_description_icon
 	action_squared_interpolation_icon
 	action_unexport_icon
@@ -118,6 +126,7 @@ set(ICONS
 	layer_distortion_curvewarp_icon
 	layer_distortion_insideout_icon
 	layer_distortion_noise_icon
+	layer_distortion_skeletondeformation_icon
 	layer_distortion_spherize_icon
 	layer_distortion_stretch_icon
 	layer_distortion_twirl_icon
@@ -148,11 +157,14 @@ set(ICONS
 	layer_gradient_spiral_icon
 	layer_icon
 	layer_other_duplicate_icon
+	layer_other_filtergroup_icon
 	layer_other_group_icon
+	layer_other_ghostgroup_icon
 	layer_other_importimage_icon
 	layer_other_plant_icon
 	layer_other_skeleton_icon
 	layer_other_sound_icon
+	layer_other_freetime_icon
 	layer_other_stroboscope_icon
 	layer_other_supersample_icon
 	layer_other_switch_icon
@@ -187,14 +199,15 @@ set(ICONS
 	resize_down_right_icon
 	resize_transparent_icon
 	select_all_child_layers_icon
-	set_fill_color
+	set_fill_color_icon
 	set_icon
-	set_outline_color
+	set_outline_color_icon
 	show_grid_icon
 	show_guideline_icon
 	sif_icon
 	snap_grid_icon
 	snap_guideline_icon
+	sound_icon
 	swap_colors_icon
 	time_track_icon
 	tool_brush_icon

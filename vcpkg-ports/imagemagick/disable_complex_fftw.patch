@@ -1,0 +1,24 @@
+Author: Hesham Essam <hesham.essam.mail@gmail.com>
+Date:   Sun Jul 3 22:37:27 2022 +0200
+
+    Disable complex for fftw and use float[2]/double[2] instead
+    
+    fftw defines fftw_complex as
+    - #define float _Complex fftw_complex
+    but msvc does not understand _Complex synatx
+
+diff --git a/MagickCore/fourier.c b/MagickCore/fourier.c
+index 0813b3627..798c41c8d 100644
+--- a/MagickCore/fourier.c
++++ b/MagickCore/fourier.c
+@@ -61,6 +61,10 @@
+ #include "MagickCore/resource_.h"
+ #include "MagickCore/string-private.h"
+ #include "MagickCore/thread-private.h"
++#if _MSC_VER
++#undef MAGICKCORE_HAVE_COMPLEX_H
++#define FFTW_NO_Complex
++#endif
+ #if defined(MAGICKCORE_FFTW_DELEGATE)
+ #if defined(MAGICKCORE_HAVE_COMPLEX_H)
+ #include <complex.h>

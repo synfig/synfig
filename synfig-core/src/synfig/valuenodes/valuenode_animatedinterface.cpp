@@ -41,14 +41,13 @@
 #include <list>
 #include <stdexcept>
 
-#include <ETL/bezier>
-#include <ETL/hermite>
 #include <ETL/handle>
-#include <ETL/misc>
 
+#include <synfig/bezier.h>
 #include <synfig/canvas.h>
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/misc.h>
 #include <synfig/exception.h>
 #include <synfig/gradient.h>
 
@@ -59,7 +58,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -310,8 +308,8 @@ public:
 			is_angle_type<value_type> is_angle;
 			subtractor<value_type> subtract_func;
 
-			mutable etl::hermite<Time, Time> first;
-			mutable etl::hermite<value_type, Time> second;
+			mutable hermite<Time, Time> first;
+			mutable hermite<value_type, Time> second;
 			WaypointList::iterator start;
 			WaypointList::iterator end;
 
@@ -398,8 +396,8 @@ public:
 
 		virtual void on_changed()
 		{
-			if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
-				printf("%s:%d _Hermite::on_changed()\n", __FILE__, __LINE__);
+			DEBUG_LOG("SYNFIG_DEBUG_ON_CHANGED",
+				"%s:%d _Hermite::on_changed()\n", __FILE__, __LINE__);
 
 			if(animated.waypoint_list_.size()<=1)
 				return;
@@ -729,8 +727,8 @@ public:
 
 		virtual void on_changed()
 		{
-			if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
-				printf("%s:%d _Constant::on_changed()\n", __FILE__, __LINE__);
+			DEBUG_LOG("SYNFIG_DEBUG_ON_CHANGED",
+				"%s:%d _Constant::on_changed()\n", __FILE__, __LINE__);
 
 			if(animated.waypoint_list_.size()<=1)
 				return;
@@ -820,8 +818,8 @@ public:
 
 		virtual void on_changed()
 		{
-			if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
-				printf("%s:%d _AnimBool::on_changed()\n", __FILE__, __LINE__);
+			DEBUG_LOG("SYNFIG_DEBUG_ON_CHANGED",
+				"%s:%d _AnimBool::on_changed()\n", __FILE__, __LINE__);
 
 			if(animated.waypoint_list_.size()<=1)
 				return;

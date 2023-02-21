@@ -37,9 +37,7 @@
 #include "valuenode.h"
 #include "vector.h"
 #include "value.h"
-#include "valuenodes/valuenode_subtract.h"
 #include "valuenodes/valuenode_animated.h"
-#include "valuenodes/valuenode_composite.h"
 #include "valuenodes/valuenode_staticlist.h"
 #include "valuenodes/valuenode_dynamiclist.h"
 #include "keyframe.h"
@@ -179,7 +177,7 @@ private:
 	//! Generic Value Base Parsing Function
 	ValueBase parse_value(xmlpp::Element *node,Canvas::Handle canvas);
 	//! Generic Value Node Parsing Function
-	etl::handle<ValueNode> parse_value_node(xmlpp::Element *node,Canvas::Handle canvas);
+	ValueNode::Handle parse_value_node(xmlpp::Element *node,Canvas::Handle canvas);
 
 	//! Real Value Base Parsing Function
 	Real parse_real(xmlpp::Element *node);

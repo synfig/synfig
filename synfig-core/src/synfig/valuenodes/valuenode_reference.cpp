@@ -64,8 +64,7 @@ ValueNode_Reference::ValueNode_Reference(Type &x):
 ValueNode_Reference::ValueNode_Reference(const ValueNode::Handle &x):
 	LinkableValueNode(x->get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	set_link("link",x);
 }
 
@@ -109,8 +108,8 @@ ValueNode_Reference::get_link_vfunc(int i)const
 ValueBase
 ValueNode_Reference::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	return (*link_)(t);
 }

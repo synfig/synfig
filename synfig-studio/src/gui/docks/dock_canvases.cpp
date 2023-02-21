@@ -144,7 +144,7 @@ Dock_Canvases::get_selected_canvas_view()
 	return get_selected_instance()->find_canvas_view(get_selected_canvas());
 }
 
-etl::loose_handle<synfig::Canvas>
+Canvas::LooseHandle
 Dock_Canvases::get_selected_canvas()
 {
 	Glib::RefPtr<Gtk::TreeSelection> selection=canvas_tree->get_selection();
@@ -154,7 +154,7 @@ Dock_Canvases::get_selected_canvas()
 
 	studio::Instance::CanvasTreeModel canvas_tree_model;
 
-	return static_cast<etl::handle<synfig::Canvas> >((*selection->get_selected())[canvas_tree_model.canvas]);
+	return static_cast<Canvas::Handle>((*selection->get_selected())[canvas_tree_model.canvas]);
 }
 
 

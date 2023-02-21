@@ -60,8 +60,7 @@ REGISTER_VALUENODE(ValueNode_DotProduct, RELEASE_VERSION_0_61_09, "dotproduct", 
 ValueNode_DotProduct::ValueNode_DotProduct(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	Type &type(value.get_type());
 	if (type == type_real)
 	{
@@ -98,8 +97,8 @@ ValueNode_DotProduct::~ValueNode_DotProduct()
 ValueBase
 ValueNode_DotProduct::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	Vector lhs((*lhs_)(t).get(Vector()));
 	Vector rhs((*rhs_)(t).get(Vector()));

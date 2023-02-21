@@ -68,7 +68,7 @@ using namespace synfigapp;
 
 /* === S T A T I C S ======================================================= */
 
-static etl::reference_counter synfigapp_ref_count_(0);
+static ReferenceCounter synfigapp_ref_count_(0);
 static synfigapp::Action::Main* action_main;
 
 static Color outline_;
@@ -369,7 +369,7 @@ synfigapp::Main::find_input_device(const synfig::String id)
 	for(iter=input_devices_.begin();iter!=input_devices_.end();++iter)
 		if((*iter)->get_id()==id)
 			return *iter;
-	return 0;
+	return nullptr;
 }
 
 InputDevice::Handle
@@ -377,9 +377,9 @@ synfigapp::Main::select_input_device(const synfig::String id)
 {
 	InputDevice::Handle input_device(find_input_device(id));
 	if(!input_device)
-		return 0;
+		return nullptr;
 	if(!select_input_device(input_device))
-		return 0;
+		return nullptr;
 	return input_device;
 }
 

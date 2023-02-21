@@ -33,7 +33,6 @@
 #endif
 
 #include <algorithm> //std::sort
-#include <ETL/hermite>
 
 #include <synfig/curve.h>
 

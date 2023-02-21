@@ -1,0 +1,29 @@
+Author: Hesham Essam <hesham.essam.mail@gmail.com>
+Date:   Sun Jul 31 01:18:42 2022 +0200
+
+    Define IMATH_DLL macro in the pkgconfig file
+
+diff --git a/config/CMakeLists.txt b/config/CMakeLists.txt
+index d51c25b..f9a84f6 100644
+--- a/config/CMakeLists.txt
++++ b/config/CMakeLists.txt
+@@ -40,6 +40,9 @@ if(IMATH_INSTALL_PKG_CONFIG)
+     string(TOUPPER "${CMAKE_BUILD_TYPE}" uppercase_CMAKE_BUILD_TYPE)
+     set(LIB_SUFFIX_DASH ${IMATH_LIB_SUFFIX}${CMAKE_${uppercase_CMAKE_BUILD_TYPE}_POSTFIX})
+     string(REPLACE ".in" "" pcout ${pcinfile})
++    if(BUILD_SHARED_LIBS)
++      set(IMATH_CFLAGS "-DIMATH_DLL")
++    endif()
+     configure_file(${pcinfile} ${CMAKE_CURRENT_BINARY_DIR}/${pcout} @ONLY)
+     install(
+         FILES ${CMAKE_CURRENT_BINARY_DIR}/${pcout}
+diff --git a/config/Imath.pc.in b/config/Imath.pc.in
+index df11cfd..b90aecb 100644
+--- a/config/Imath.pc.in
++++ b/config/Imath.pc.in
+@@ -14,4 +14,4 @@ Version: @IMATH_VERSION@
+ Requires:
+ Conflicts:
+ Libs: -L${libdir} -lImath${libsuffix}
+-Cflags: -I${includedir} -I${includedir}/Imath
++Cflags: -I${includedir} -I${includedir}/Imath @IMATH_CFLAGS@

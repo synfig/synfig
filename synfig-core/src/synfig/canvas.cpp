@@ -47,15 +47,10 @@
 #include "context.h"
 #include "exception.h"
 #include "filesystemnative.h"
-#include "importer.h"
 #include "layer.h"
 #include "loadcanvas.h"
-#include "valuenode_registry.h"
 
-#include "debug/measure.h"
 #include "layers/layer_pastecanvas.h"
-#include "valuenodes/valuenode_const.h"
-#include "valuenodes/valuenode_scale.h"
 #include "rendering/common/task/taskpixelprocessor.h"
 
 #endif
@@ -105,8 +100,8 @@ Canvas::Canvas(const String &id):
 void
 Canvas::on_changed()
 {
-	if (getenv("SYNFIG_DEBUG_ON_CHANGED"))
-		printf("%s:%d Canvas::on_changed()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_ON_CHANGED",
+		"%s:%d Canvas::on_changed()\n", __FILE__, __LINE__);
 
 	is_dirty_=true;
 	Node::on_changed();
@@ -148,21 +143,27 @@ Canvas::indexof(const const_iterator &iter) const
 Canvas::iterator
 Canvas::byindex(int index)
 {
-	for(iterator i = begin(); i != end(); ++i, --index)
-		if (!index) return i;
+	if (index >= 0) {
+		for (iterator i = begin(); i != end(); ++i, --index)
+			if (index == 0)
+				return i;
+	}
 	return end();
 }
 
 Canvas::const_iterator
 Canvas::byindex(int index) const
 {
-	for(const_iterator i = begin(); i != end(); ++i, --index)
-		if (!index) return i;
+	if (index >= 0) {
+		for (const_iterator i = begin(); i != end(); ++i, --index)
+			if (index == 0)
+				return i;
+	}
 	return end();
 }
 
 Canvas::iterator
-Canvas::find_index(const etl::handle<Layer> &layer, int &index)
+Canvas::find_index(const Layer::Handle &layer, int &index)
 {
 	index = -1;
 	int idx = 0;
@@ -172,7 +173,7 @@ Canvas::find_index(const etl::handle<Layer> &layer, int &index)
 }
 
 Canvas::const_iterator
-Canvas::find_index(const etl::handle<Layer> &layer, int &index) const
+Canvas::find_index(const Layer::Handle &layer, int &index) const
 {
 	index = -1;
 	int idx = 0;
@@ -394,7 +395,7 @@ Canvas::keyframe_list()const
 	return keyframe_list_;
 }
 
-etl::handle<Layer>
+Layer::Handle
 Canvas::find_layer(const ContextParams &context_params, const Point &pos)
 {
 	return get_context(context_params).hit_check(pos);
@@ -520,7 +521,7 @@ Canvas::get_non_inline_ancestor()const
 }
 
 int
-Canvas::get_depth(etl::handle<Layer> layer)const
+Canvas::get_depth(Layer::Handle layer)const
 {
 	const_iterator iter;
 	int i(0);
@@ -754,7 +755,7 @@ Canvas::surefind_canvas(const String &id, String &warnings)
 		String file_name(id,0,id.find_first_of('#'));
 		String external_id(id,id.find_first_of('#')+1);
 
-		file_name=unix_to_local_path(file_name);
+		file_name=FileSystem::fix_slashes(file_name);
 
 		Canvas::Handle external_canvas;
 
@@ -843,7 +844,7 @@ Canvas::find_canvas(const String &id, String &warnings)const
 		String file_name(id,0,id.find_first_of('#'));
 		String external_id(id,id.find_first_of('#')+1);
 
-		file_name=unix_to_local_path(file_name);
+		file_name=FileSystem::fix_slashes(file_name);
 
 		Canvas::Handle external_canvas;
 
@@ -903,7 +904,7 @@ Canvas::create()
 }
 
 void
-Canvas::push_back(etl::handle<Layer> x)
+Canvas::push_back(Layer::Handle x)
 {
 //	int i(x->count());
 	insert(end(),x);
@@ -911,7 +912,7 @@ Canvas::push_back(etl::handle<Layer> x)
 }
 
 void
-Canvas::push_front(etl::handle<Layer> x)
+Canvas::push_front(Layer::Handle x)
 {
 //	int i(x->count());
 	insert(begin(),x);
@@ -919,7 +920,7 @@ Canvas::push_front(etl::handle<Layer> x)
 }
 
 void
-Canvas::insert(iterator iter,etl::handle<Layer> x)
+Canvas::insert(iterator iter,Layer::Handle x)
 {
 //	int i(x->count());
 	CanvasBase::insert(iter,x);
@@ -944,7 +945,7 @@ Canvas::insert(iterator iter,etl::handle<Layer> x)
 }
 
 void
-Canvas::push_back_simple(etl::handle<Layer> x)
+Canvas::push_back_simple(Layer::Handle x)
 {
 	CanvasBase::insert(end(),x);
 	changed();
@@ -1052,7 +1053,7 @@ Canvas::set_inline(LooseHandle parent)
 	is_inline_=true;
 
 	// Have the parent inherit all of the group stuff
-	std::map<String,std::set<etl::handle<Layer> > >::const_iterator iter;
+	std::map<String,std::set<Layer::Handle> >::const_iterator iter;
 	for(iter=group_db_.begin();iter!=group_db_.end();++iter)
 		parent->group_db_[iter->first].insert(iter->second.begin(),iter->second.end());
 	rend_desc()=parent->rend_desc();
@@ -1297,14 +1298,14 @@ Canvas::get_times_vfunc(Node::time_set &set) const
 	}
 }
 
-std::set<etl::handle<Layer> >
+std::set<Layer::Handle>
 Canvas::get_layers_in_group(const String&group)
 {
 	if(is_inline() && parent_)
 		return parent_->get_layers_in_group(group);
 
 	if(group_db_.count(group)==0)
-		return std::set<etl::handle<Layer> >();
+		return std::set<Layer::Handle>();
 	return group_db_.find(group)->second;
 }
 
@@ -1315,7 +1316,7 @@ Canvas::get_groups()const
 		return parent_->get_groups();
 
 	std::set<String> ret;
-	std::map<String,std::set<etl::handle<Layer> > >::const_iterator iter;
+	std::map<String,std::set<Layer::Handle> >::const_iterator iter;
 	for(iter=group_db_.begin();iter!=group_db_.end();++iter)
 		ret.insert(iter->first);
 	return ret;
@@ -1331,7 +1332,7 @@ Canvas::get_group_count()const
 }
 
 void
-Canvas::add_group_pair(String group, etl::handle<Layer> layer)
+Canvas::add_group_pair(String group, Layer::Handle layer)
 {
 	group_db_[group].insert(layer);
 	if(group_db_[group].size()==1)
@@ -1346,7 +1347,7 @@ Canvas::add_group_pair(String group, etl::handle<Layer> layer)
 }
 
 void
-Canvas::remove_group_pair(String group, etl::handle<Layer> layer)
+Canvas::remove_group_pair(String group, Layer::Handle layer)
 {
 	group_db_[group].erase(layer);
 
@@ -1365,7 +1366,7 @@ Canvas::remove_group_pair(String group, etl::handle<Layer> layer)
 }
 
 void
-Canvas::add_connections(etl::loose_handle<Layer> layer)
+Canvas::add_connections(Layer::LooseHandle layer)
 {
 	LooseHandle correct_canvas(this);
 	//while(correct_canvas->is_inline())correct_canvas=correct_canvas->parent();
@@ -1388,7 +1389,7 @@ Canvas::add_connections(etl::loose_handle<Layer> layer)
 }
 
 void
-Canvas::disconnect_connections(etl::loose_handle<Layer> layer)
+Canvas::disconnect_connections(Layer::LooseHandle layer)
 {
 	for(sigc::connection& connection : connections_[layer])
 		connection.disconnect();
@@ -1411,11 +1412,11 @@ Canvas::rename_group(const String&old_name,const String&new_name)
 	{
 		size_t pos = 0;
 		while ((pos = new_name.find(GROUP_NEST_CHAR, pos)) != std::string::npos) {
-			std::map<String,std::set<etl::handle<Layer> > >::iterator iter;
+			std::map<String,std::set<Layer::Handle> >::iterator iter;
 			String name(new_name, 0, pos);
 			iter=group_db_.find(name);
 			if (iter == group_db_.end()) {
-				group_db_[name] = std::set<etl::handle<Layer> >();
+				group_db_[name] = std::set<Layer::Handle>();
 				signal_group_added()(name);
 			}
 			pos++;
@@ -1426,7 +1427,7 @@ Canvas::rename_group(const String&old_name,const String&new_name)
 	{
 		const std::string old_name_prefix = old_name + GROUP_NEST_CHAR;
 
-		std::map<String,std::set<etl::handle<Layer> > >::iterator iter;
+		std::map<String,std::set<Layer::Handle> >::iterator iter;
 
 		iter=group_db_.find(old_name);
 		if(iter!=group_db_.end()) {
@@ -1439,8 +1440,8 @@ Canvas::rename_group(const String&old_name,const String&new_name)
 		}
 	}
 
-	std::set<etl::handle<Layer> > layers(get_layers_in_group(old_name));
-	std::set<etl::handle<Layer> >::iterator iter;
+	std::set<Layer::Handle> layers(get_layers_in_group(old_name));
+	std::set<Layer::Handle>::iterator iter;
 
 	for(iter=layers.begin();iter!=layers.end();++iter)
 	{
@@ -1450,7 +1451,7 @@ Canvas::rename_group(const String&old_name,const String&new_name)
 	// if empty group, rename it
 	if (layers.size() == 0) {
 		group_db_.erase(group_db_.find(old_name));
-		group_db_[new_name] = std::set<etl::handle<Layer> >();
+		group_db_[new_name] = std::set<Layer::Handle>();
 		signal_group_removed()(old_name);
 		signal_group_added()(new_name);
 	}
@@ -1472,7 +1473,7 @@ Canvas::show_externals(String file, int line, String text) const
 	for (iter = externals_.begin(); iter != externals_.end(); iter++)
 	{
 		synfig::String first(iter->first);
-		etl::loose_handle<Canvas> second(iter->second);
+		Canvas::LooseHandle second(iter->second);
 		printf("  |    %40s : %lx (%d)\n", first.c_str(), uintptr_t(&*second), second->count());
 	}
 	printf("  `-----\n\n");
@@ -1508,7 +1509,7 @@ Canvas::show_structure(int i) const
 // the container is a ValueNode_{Static,Dynamic}List
 // the content is the entry
 void
-Canvas::invoke_signal_value_node_child_removed(etl::handle<ValueNode> container, etl::handle<ValueNode> content)
+Canvas::invoke_signal_value_node_child_removed(ValueNode::Handle container, ValueNode::Handle content)
 {
 	signal_value_node_child_removed()(container, content);
 	Canvas::Handle canvas(this);

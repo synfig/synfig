@@ -84,11 +84,10 @@ public:
 	virtual Vocab get_param_vocab()const;
 
 	//! Connects the parameter to another Value Node. Implementation for this layer
-	virtual bool connect_dynamic_param(const synfig::String& param, etl::loose_handle<synfig::ValueNode> x );
+	virtual bool connect_dynamic_param(const synfig::String& param, synfig::ValueNode::LooseHandle x );
 
 private:
-	bool connect_bline_to_wplist(etl::loose_handle<synfig::ValueNode> x);
-	bool connect_bline_to_dilist(etl::loose_handle<synfig::ValueNode> x);
+	bool connect_bline_to_wplist(synfig::ValueNode::LooseHandle x);
 	
 protected:
 	virtual void sync_vfunc();

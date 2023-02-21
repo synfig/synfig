@@ -45,7 +45,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -61,8 +60,7 @@ REGISTER_VALUENODE(ValueNode_RealString, RELEASE_VERSION_0_61_09, "realstring", 
 ValueNode_RealString::ValueNode_RealString(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	if (value.get_type() == type_string)
 	{
 		set_link("real",ValueNode_Const::create(Real(0)));
@@ -83,7 +81,7 @@ ValueNode_RealString::create_new()const
 }
 
 ValueNode_RealString*
-ValueNode_RealString::create(const ValueBase& x, etl::loose_handle<Canvas>)
+ValueNode_RealString::create(const ValueBase& x, Canvas::LooseHandle)
 {
 	return new ValueNode_RealString(x);
 }
@@ -96,8 +94,8 @@ ValueNode_RealString::~ValueNode_RealString()
 ValueBase
 ValueNode_RealString::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	Real real((*real_)(t).get(Real()));
 	int width((*width_)(t).get(int()));

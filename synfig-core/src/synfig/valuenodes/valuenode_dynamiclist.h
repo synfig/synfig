@@ -121,8 +121,8 @@ public:
 
 	private:
 		int index;
-		etl::loose_handle<ValueNode> parent_;
-		void set_parent_value_node(const etl::loose_handle<ValueNode> &x) { parent_=x; }
+		ValueNode::LooseHandle parent_;
+		void set_parent_value_node(const ValueNode::LooseHandle& x) { parent_=x; }
 
 	public:
 
@@ -160,13 +160,13 @@ public:
 
 		int find(const Time& begin,const Time& end,std::vector<Activepoint*>& list);
 
-		const synfig::Node::time_set	&get_times() const;
+		const synfig::Node::time_set& get_times() const;
 
-		const etl::loose_handle<ValueNode> &get_parent_value_node()const { return parent_; }
+		const ValueNode::LooseHandle& get_parent_value_node() const { return parent_; }
 
 		ListEntry();
-		ListEntry(const ValueNode::Handle &value_node);
-		ListEntry(const ValueNode::Handle &value_node,Time begin, Time end);
+		ListEntry(const ValueNode::Handle& value_node);
+		ListEntry(const ValueNode::Handle& value_node, Time begin, Time end);
 	}; // END of struct ValueNode_DynamicList::ListEntry
 
 	std::vector<ListEntry> list;

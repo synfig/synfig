@@ -51,10 +51,8 @@
 
 #endif
 
-using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
-using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
@@ -128,7 +126,7 @@ Action::ValueDescLink::set_param(const synfig::String& name, const Action::Param
 				String param_name;
 				if (value_desc.parent_is_value_desc() && !value_desc.get_sub_name().empty())
 				{
-					LinkableValueNode::Vocab vocab = compo->get_children_vocab();
+					const LinkableValueNode::Vocab& vocab = compo->get_children_vocab();
 					for(LinkableValueNode::Vocab::const_iterator i = vocab.begin(); i != vocab.end(); ++i)
 						if (i->get_name() == value_desc.get_sub_name())
 							param_name = value_desc.get_sub_name();

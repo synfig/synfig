@@ -61,8 +61,7 @@ REGISTER_VALUENODE(ValueNode_Join, RELEASE_VERSION_0_61_09, "join", N_("Joined L
 ValueNode_Join::ValueNode_Join(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	if (value.get_type() == type_string)
 	{
 		std::vector<ValueBase> v(1, value.get(String()));
@@ -89,7 +88,7 @@ ValueNode_Join::create_new()const
 }
 
 ValueNode_Join*
-ValueNode_Join::create(const ValueBase& x, etl::loose_handle<Canvas>)
+ValueNode_Join::create(const ValueBase& x, Canvas::LooseHandle)
 {
 	return new ValueNode_Join(x);
 }
@@ -102,8 +101,8 @@ ValueNode_Join::~ValueNode_Join()
 ValueBase
 ValueNode_Join::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	const std::vector<ValueBase> strings((*strings_)(t).get_list());
 	const String before((*before_)(t).get(String()));

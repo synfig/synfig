@@ -35,14 +35,14 @@
 
 #include "renderer_grid.h"
 
-#include <ETL/misc>
 #include <gui/workarea.h>
+
+#include <synfig/misc.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 

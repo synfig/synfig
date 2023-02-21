@@ -42,10 +42,8 @@
 
 #endif
 
-using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
-using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
@@ -158,7 +156,7 @@ Action::LayerMove::perform()
 
 	// Find the iterator for the layer
 	Canvas::iterator iter = src_canvas->find_index(layer, old_index);
-	if (*iter != layer)
+	if (iter == src_canvas->end() || *iter != layer)
 		throw Error(_("This layer doesn't exist anymore."));
 
 	// synfig::info(__FILE__":%d: layer->count()=%d",__LINE__,layer.count());
@@ -227,7 +225,7 @@ Action::LayerMove::undo()
 	Canvas::iterator iter=dest_canvas->find_index(layer, index);
 
 	// If we couldn't find the layer in the canvas, then bail
-	if(*iter!=layer || (get_canvas()!=dest_canvas && !dest_canvas->is_inline()))
+	if(iter == dest_canvas->end() || *iter!=layer || (get_canvas()!=dest_canvas && !dest_canvas->is_inline()))
 		throw Error(_("This layer doesn't exist anymore."));
 
 	// If we were to move it to where it is

@@ -250,7 +250,7 @@ Dockable::reset_container()
 	//App::process_all_events();
 	// Update:
 	// Seems bug in other place, process_all_events() here produces
-	// a concurrent event processing and collissions
+	// a concurrent event processing and collisions
 }
 
 void

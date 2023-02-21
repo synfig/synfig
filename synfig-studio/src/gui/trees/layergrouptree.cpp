@@ -36,12 +36,11 @@
 
 #include <gui/trees/layergrouptree.h>
 
-#include <ETL/misc>
-
 #include <gui/exception_guard.h>
 #include <gui/localization.h>
 
 #include <synfig/layer.h>
+#include <synfig/misc.h>
 
 #endif
 
@@ -122,8 +121,8 @@ LayerGroupTree::LayerGroupTree()
 
 LayerGroupTree::~LayerGroupTree()
 {
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
-		synfig::info("LayerGroupTree::~LayerGroupTree(): Deleted");
+	DEBUG_LOG("SYNFIG_DEBUG_DESTRUCTORS",
+		"LayerGroupTree::~LayerGroupTree(): Deleted");
 }
 
 void

@@ -28,14 +28,13 @@
 
 #include <cairomm/cairomm.h>
 
-#include <ETL/misc>
-
 #include <glibmm.h>
 
 #include <gtkmm/drawingarea.h>
 
 #include <synfig/context.h>
 #include <synfig/general.h>
+#include <synfig/misc.h>
 #include <synfig/rendering/task.h>
 #include <synfig/rendering/common/task/tasktransformation.h>
 
@@ -279,7 +278,7 @@ VisualizationWindow::on_content_draw(const Cairo::RefPtr<Cairo::Context> &contex
 	
 	++rendered_frames;
 	if(real_time) {
-		frame = (frame + etl::round_to_int((g_get_monotonic_time() - bef_render_time) / (frame_duration * 1000000ll))) %
+		frame = (frame + synfig::round_to_int((g_get_monotonic_time() - bef_render_time) / (frame_duration * 1000000ll))) %
 				frames_count;
 	}else{
 		frame = (frame + 1) % frames_count;

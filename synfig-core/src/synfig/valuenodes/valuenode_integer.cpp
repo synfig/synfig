@@ -39,14 +39,13 @@
 #include "valuenode_const.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
+#include <synfig/misc.h>
 #include <synfig/valuenode_registry.h>
-#include <ETL/misc>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -67,8 +66,7 @@ ValueNode_Integer::ValueNode_Integer(Type &x):
 ValueNode_Integer::ValueNode_Integer(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	Type &type(x.get_type());
 	if (type == type_angle)
 		set_link("link", ValueNode_Const::create(round_to_int(Angle::deg(x.get(Angle())).get())));
@@ -130,8 +128,8 @@ ValueNode_Integer::get_link_vfunc(int i)const
 ValueBase
 ValueNode_Integer::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	int integer = (*integer_)(t).get(int());
 

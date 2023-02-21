@@ -93,7 +93,7 @@ using namespace synfigapp;
 
 /* === G L O B A L S ======================================================= */
 
-static std::map<loose_handle<Canvas>, loose_handle<Instance> > instance_map_;
+static std::map<Canvas::LooseHandle, loose_handle<Instance>> instance_map_;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -124,7 +124,7 @@ synfigapp::is_editable(synfig::ValueNode::Handle value_node)
 }
 
 etl::handle<Instance>
-synfigapp::find_instance(etl::handle<synfig::Canvas> canvas)
+synfigapp::find_instance(Canvas::Handle canvas)
 {
 	if(instance_map_.count(canvas)==0)
 		return 0;
@@ -133,7 +133,7 @@ synfigapp::find_instance(etl::handle<synfig::Canvas> canvas)
 
 /* === M E T H O D S ======================================================= */
 
-Instance::Instance(etl::handle<synfig::Canvas> canvas, synfig::FileSystem::Handle container):
+Instance::Instance(Canvas::Handle canvas, synfig::FileSystem::Handle container):
 	canvas_(canvas),
 	container_(container)
 {
@@ -145,7 +145,7 @@ Instance::Instance(etl::handle<synfig::Canvas> canvas, synfig::FileSystem::Handl
 } // END of synfigapp::Instance::Instance()
 
 handle<Instance>
-Instance::create(etl::handle<synfig::Canvas> canvas, synfig::FileSystem::Handle container)
+Instance::create(Canvas::Handle canvas, synfig::FileSystem::Handle container)
 {
 	// Construct a new instance
 	handle<Instance> instance(new Instance(canvas, container));
@@ -169,8 +169,8 @@ Instance::~Instance()
 {
 	instance_map_.erase(canvas_);
 
-	if (getenv("SYNFIG_DEBUG_DESTRUCTORS"))
-		synfig::info("Instance::~Instance(): Deleted");
+	DEBUG_LOG("SYNFIG_DEBUG_DESTRUCTORS",
+		"Instance::~Instance(): Deleted");
 }
 
 handle<CanvasInterface>
@@ -504,7 +504,7 @@ Instance::process_filenames(const ProcessFilenamesParams &params, const synfig::
 		  && linkable->get_parent_canvas()->get_root() != params.canvas)
 			return;
 
-		const ParamVocab vocab = linkable->get_children_vocab();
+		const ParamVocab& vocab = linkable->get_children_vocab();
 		for(ParamVocab::const_iterator i = vocab.begin(); i != vocab.end(); ++i)
 			process_filenames(params, ValueNode::Handle(linkable->get_link(i->get_name())), i->get_hint() == "filename");
 

@@ -27,7 +27,6 @@
 
 #include "test_base.h"
 
-using namespace etl;
 using namespace synfig;
 
 struct NodeX : public Node

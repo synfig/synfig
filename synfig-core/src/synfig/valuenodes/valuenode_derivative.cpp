@@ -148,8 +148,7 @@ REGISTER_VALUENODE(ValueNode_Derivative, RELEASE_VERSION_1_0, "derivative", N_("
 ValueNode_Derivative::ValueNode_Derivative(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	set_link("interval",      ValueNode_Const::create(Real(0.01))); // Default interval
 	set_link("accuracy",      ValueNode_Const::create((int)(NORMAL)));
 	set_link("order",         ValueNode_Const::create((int)(FIRST)));
@@ -190,8 +189,8 @@ ValueNode_Derivative::~ValueNode_Derivative()
 ValueBase
 ValueNode_Derivative::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	Type &type(get_type());
 	if (type == type_real)

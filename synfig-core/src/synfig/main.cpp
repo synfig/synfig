@@ -52,6 +52,7 @@
 // Includes used by get_binary_path():
 #ifdef _WIN32
 #include <windows.h>
+#include <process.h>
 #elif defined(__APPLE__)
 #include <mach-o/dyld.h>
 #include <sys/param.h>
@@ -88,7 +89,6 @@
 #define PATH_MAX 4096
 #endif
 
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -97,7 +97,7 @@ using namespace synfig;
 
 /* === S T A T I C S ======================================================= */
 
-static etl::reference_counter synfig_ref_count_(0);
+static ReferenceCounter synfig_ref_count_(false);
 Main *Main::instance = nullptr;
 
 class GeneralIOMutexHolder {
@@ -232,6 +232,12 @@ synfig::Main::Main(const synfig::String& rootpath,ProgressCallback *cb):
 	lib_synfig_path = lib_path   + "/synfig";
 
 	// Add initialization after this point
+
+#ifdef _MSC_VER
+	String module_location = get_binary_path("");
+	_putenv(strprintf("FONTCONFIG_PATH=%s/../../etc/fonts", module_location.c_str()).c_str());
+	_putenv("FONTCONFIG_FILE=fonts.conf");
+#endif
 
 #ifdef ENABLE_NLS
 	bindtextdomain("synfig", Glib::locale_from_utf8(locale_path).c_str() );
@@ -541,7 +547,7 @@ synfig::get_binary_path(const String &fallback_path)
 	if (start_pos != std::string::npos)
 		result.replace(start_pos, artifact.length(), "/");
 	
-#elif !defined(__OpenBSD__)
+#else
 
 	size_t buf_size = PATH_MAX - 1;
 	char* path = (char*)malloc(buf_size);
@@ -551,9 +557,17 @@ synfig::get_binary_path(const String &fallback_path)
 	FILE *f;
 
 	/* Read from /proc/self/exe (symlink) */
-	//char* path2 = (char*)malloc(buf_size);
 	char* path2 = new char[buf_size];
-	strncpy(path2, "/proc/self/exe", buf_size - 1);
+	const char* procfs_path =
+#if defined(__FreeBSD__) || defined (__DragonFly__) || defined (__OpenBSD__)
+		"/proc/curproc/file";
+#elif defined(__NetBSD__)
+		"/proc/curproc/exe";
+#else
+		"/proc/self/exe";
+#endif
+
+	strncpy(path2, procfs_path, buf_size - 1);
 
 	while (1) {
 		int i;
@@ -588,9 +602,9 @@ synfig::get_binary_path(const String &fallback_path)
 		strncpy(path, path2, buf_size - 1);
 	}
 	
-	//free(path2);
 	delete[] path2;
 
+#if ! (defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined (__OpenBSD__))
 	if (result == "")
 	{
 		/* readlink() or stat() failed; this can happen when the program is
@@ -632,7 +646,7 @@ synfig::get_binary_path(const String &fallback_path)
 		free(line);
 		fclose(f);
 	}
-	
+#endif
 	free(path);
 
 	result = Glib::filename_to_utf8(result);

@@ -2,6 +2,8 @@ DIALOGS_HH = \
 	dialogs/about.h \
 	dialogs/canvasoptions.h \
 	dialogs/canvasproperties.h \
+	dialogs/canvasresize.h \
+	dialogs/dialog_canvasdependencies.h \
 	dialogs/dialog_color.h \
 	dialogs/dialog_gradient.h \
 	dialogs/dialog_input.h \
@@ -22,6 +24,8 @@ DIALOGS_CC = \
 	dialogs/about.cpp \
 	dialogs/canvasoptions.cpp \
 	dialogs/canvasproperties.cpp \
+	dialogs/canvasresize.cpp \
+	dialogs/dialog_canvasdependencies.cpp \
 	dialogs/dialog_color.cpp \
 	dialogs/dialog_gradient.cpp \
 	dialogs/dialog_input.cpp \

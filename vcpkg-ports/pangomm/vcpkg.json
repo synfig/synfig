@@ -1,0 +1,16 @@
+{
+  "name": "pangomm",
+  "version": "2.46.2",
+  "description": "pangomm is the official C++ interface for the Pango font layout library",
+  "homepage": "https://gitlab.gnome.org/GNOME/pangomm",
+  "license": "LGPL-2.1",
+  "dependencies": [
+    "cairomm",
+    "glibmm",
+    "pango",
+    {
+      "name": "vcpkg-tool-meson",
+      "host": true
+    }
+  ]
+}

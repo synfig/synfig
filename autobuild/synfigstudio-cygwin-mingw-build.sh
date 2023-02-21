@@ -953,7 +953,6 @@ rpm -Uhv --force --ignoreos --nodeps yum-utils-1.1.31-18.fc20.noarch.rpm
 fedora-mingw-install mingw${ARCH}-libxml++
 fedora-mingw-install mingw${ARCH}-cairo
 fedora-mingw-install mingw${ARCH}-pango
-fedora-mingw-install mingw${ARCH}-boost
 fedora-mingw-install mingw${ARCH}-libjpeg-turbo
 fedora-mingw-install mingw${ARCH}-gtkmm30
 fedora-mingw-install mingw${ARCH}-SDL
@@ -1010,7 +1009,7 @@ cd $SRCPREFIX/synfig-core
 --build=i686-pc-cygwin --host=${TOOLCHAIN_HOST} \
 --enable-shared --disable-static \
 --with-libiconv-prefix=no --with-libintl-prefix=no \
---with-magickpp=yes --with-boost=${MINGWPREFIX} \
+--with-magickpp=yes \
 --enable-maintainer-mode $DEBUG
 make -j$THREADS
 make install
@@ -1088,10 +1087,6 @@ for file in \
    iconv.dll \
    libatk-\*.dll \
    libatkmm-1.6-1.dll \
-   libboost_chrono\*.dll \
-   libboost_filesystem\*.dll \
-   libboost_program_options\*.dll \
-   libboost_system\*.dll \
    libbz2\*.dll \
    libcairo\*.dll \
    libdl.dll \

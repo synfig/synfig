@@ -31,12 +31,9 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <cstdio> // FILE*
-#include <vector>
-
-#include <synfig/target_scanline.h>
+#include <synfig/os.h>
 #include <synfig/string.h>
-#include <synfig/targetparam.h>
+#include <synfig/target_scanline.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -49,13 +46,11 @@ class TargetParam;
 class ffmpeg_trgt : public synfig::Target_Scanline
 {
 	SYNFIG_TARGET_MODULE_EXT
+
 private:
-#ifdef HAVE_FORK
-	pid_t pid = -1;
-#endif
 	int imagecount;
 	bool multi_image;
-	FILE *file;
+	synfig::OS::RunPipe::Handle pipe;
 	synfig::String filename;
 	synfig::String sound_filename;
 	std::vector<unsigned char> buffer;
@@ -66,21 +61,21 @@ private:
 	bool does_video_codec_support_alpha_channel(const synfig::String& video_codec) const;
 
 public:
+
 	ffmpeg_trgt(const char *filename,
 				const synfig::TargetParam& params);
-
-	virtual bool set_rend_desc(synfig::RendDesc *desc);
-	virtual bool start_frame(synfig::ProgressCallback *cb);
-	virtual void end_frame();
-
 	virtual ~ffmpeg_trgt();
 
-	virtual synfig::Color * start_scanline(int scanline);
-	virtual bool end_scanline();
-	
+	bool set_rend_desc(synfig::RendDesc* desc) override;
 	//! Initialization tasks of ffmpeg target.
 	//! @returns true if the initialization has no errors
-	virtual bool init(synfig::ProgressCallback *cb);
+	bool init(synfig::ProgressCallback* cb) override;
+
+	bool start_frame(synfig::ProgressCallback* cb) override;
+	void end_frame() override;
+
+	synfig::Color* start_scanline(int scanline) override;
+	bool end_scanline() override;
 };
 
 /* === E N D =============================================================== */

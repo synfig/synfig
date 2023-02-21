@@ -1,0 +1,24 @@
+vcpkg_download_distfile(ARCHIVE
+    URLS "https://ftp.gnu.org/gnu/libtool/libtool-2.4.7.tar.xz"
+    FILENAME "libtool-2.4.7.tar.xz"
+    SHA512 47F4C6DE40927254FF9BA452612C0702AEA6F4EDC7E797F0966C8C6BF0340D533598976CDBA17F0BDC64545572E71CD319BBB587AA5F47CD2E7C1D96F873A3DA
+)
+
+vcpkg_extract_source_archive_ex(
+    OUT_SOURCE_PATH SOURCE_PATH
+    ARCHIVE "${ARCHIVE}"
+    PATCHES
+      dirent_fix.patch
+)
+
+vcpkg_configure_make(
+  SOURCE_PATH "${SOURCE_PATH}"
+  DETERMINE_BUILD_TRIPLET
+  USE_WRAPPERS
+  OPTIONS
+    ${OPTIONS}
+)
+
+vcpkg_install_make()
+
+file(INSTALL "${SOURCE_PATH}/COPYING" DESTINATION "${CURRENT_PACKAGES_DIR}/share/${PORT}" RENAME copyright)

@@ -87,7 +87,7 @@ public:
 
 	public:
 		Token(const DescBase &desc):
-			synfig::Token(token.handle()),
+			synfig::Token(Surface::token.handle()),
 			DescBase(desc) { }
 
 		inline Handle handle() const

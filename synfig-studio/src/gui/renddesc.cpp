@@ -36,7 +36,7 @@
 
 #include <gui/renddesc.h>
 
-#include <ETL/misc>
+#include <synfig/misc.h>
 
 #include <gtkmm/box.h>
 #include <gtkmm/drawingarea.h>
@@ -51,7 +51,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 

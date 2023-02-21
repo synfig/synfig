@@ -59,8 +59,7 @@ REGISTER_VALUENODE(ValueNode_Sine, RELEASE_VERSION_0_61_06, "sine", N_("Sine"))
 ValueNode_Sine::ValueNode_Sine(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
-	Vocab ret(get_children_vocab());
-	set_children_vocab(ret);
+	init_children_vocab();
 	if (value.get_type() == type_real)
 	{
 		set_link("angle",ValueNode_Const::create(Angle::deg(90)));
@@ -92,8 +91,8 @@ ValueNode_Sine::~ValueNode_Sine()
 ValueBase
 ValueNode_Sine::operator()(Time t)const
 {
-	if (getenv("SYNFIG_DEBUG_VALUENODE_OPERATORS"))
-		printf("%s:%d operator()\n", __FILE__, __LINE__);
+	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
+		"%s:%d operator()\n", __FILE__, __LINE__);
 
 	return
 		Angle::sin(

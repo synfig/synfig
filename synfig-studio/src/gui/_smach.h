@@ -39,7 +39,7 @@
 #include <stdexcept>
 #include <vector>
 
-#include <ETL/misc>
+#include <synfig/misc.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -142,6 +142,12 @@ public:
 
 		//! Copy constructor
 		event_def_internal(const event_def_internal &x):id(x.id),handler(x.handler) { }
+		event_def_internal& operator=(const event_def_internal& x)
+		{
+			id = x.id;
+			handler = x.handler;
+			return *this;
+		}
 
 	};
 
@@ -221,8 +227,8 @@ public:
 				high=x.id;
 		}
 
-		typename std::vector<event_def>::iterator find(const event_key &x) { return etl::binary_find(event_list.begin(),event_list.end(),x); }
-		typename std::vector<event_def>::const_iterator find(const event_key &x)const { return etl::binary_find(event_list.begin(),event_list.end(),x); }
+		typename std::vector<event_def>::iterator find(const event_key &x) { return synfig::binary_find(event_list.begin(),event_list.end(),x); }
+		typename std::vector<event_def>::const_iterator find(const event_key &x)const { return synfig::binary_find(event_list.begin(),event_list.end(),x); }
 
 	protected:
 

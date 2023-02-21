@@ -4,7 +4,7 @@ add_library(mod_ppm MODULE
         "${CMAKE_CURRENT_LIST_DIR}/mptr_ppm.cpp"
 )
 
-target_link_libraries(mod_ppm synfig)
+target_link_libraries(mod_ppm libsynfig)
 
 install (
     TARGETS mod_ppm

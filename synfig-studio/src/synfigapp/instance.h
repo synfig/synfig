@@ -142,7 +142,7 @@ private:
 	void process_filenames_undo(const ProcessFilenamesParams &params);
 
 protected:
-	Instance(etl::handle<synfig::Canvas>, synfig::FileSystem::Handle container);
+	Instance(synfig::Canvas::Handle, synfig::FileSystem::Handle container);
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -203,10 +203,10 @@ public:
 
 
 public:	// Constructor interfaces
-	static etl::handle<Instance> create(etl::handle<synfig::Canvas> canvas, synfig::FileSystem::Handle container);
+	static etl::handle<Instance> create(synfig::Canvas::Handle canvas, synfig::FileSystem::Handle container);
 }; // END class Instance
 
-etl::handle<Instance> find_instance(etl::handle<synfig::Canvas> canvas);
+etl::handle<Instance> find_instance(synfig::Canvas::Handle canvas);
 
 bool is_editable(synfig::ValueNode::Handle value_node);
 

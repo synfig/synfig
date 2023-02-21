@@ -35,11 +35,6 @@
 #include <synfig/color/color.h>
 #include <synfig/color/gamma.h>
 
-
-namespace synfig {
-typedef Color ColorAccumulator;
-}
-
 #include <synfig/color/pixelformat.h>
 
 #endif // __SYNFIG_COLOR_H

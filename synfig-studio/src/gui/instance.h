@@ -150,8 +150,6 @@ public:
 	sigc::signal<void,CanvasView*>& signal_canvas_view_created() { return signal_canvas_view_created_; }
 	sigc::signal<void,CanvasView*>& signal_canvas_view_deleted() { return signal_canvas_view_deleted_; }
 
-	bool is_img(synfig::String ext) const;
-
 	synfig::Layer::Handle layer_inside_switch(synfig::Layer_Switch::Handle paste) const;
 
 	bool get_undo_status()const { return undo_status_; }
@@ -171,12 +169,12 @@ public:
 	//! Returns the number of instances that are currently open in the program
 	static int get_count() { return instance_count_; }
 
-	//etl::handle<synfig::Canvas> get_canvas()const { return synfigapp::Instance::get_canvas(); }
+	//Canvas::Handle get_canvas()const { return synfigapp::Instance::get_canvas(); }
 
-	etl::handle<CanvasView>	find_canvas_view(etl::handle<synfig::Canvas> canvas);
+	etl::handle<CanvasView>	find_canvas_view(synfig::Canvas::Handle canvas);
 
 	//! Sets the focus to a specific canvas
-	void focus(etl::handle<synfig::Canvas> canvas);
+	void focus(synfig::Canvas::Handle canvas);
 
 	CanvasViewList & canvas_view_list() { return canvas_view_list_; }
 
