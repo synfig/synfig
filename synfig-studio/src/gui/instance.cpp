@@ -339,43 +339,39 @@ studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vec
 
 	std::unordered_map<std::string,std::string> view_state;
 
-	auto required_args = App::plugin_manager.get_script_args(plugin_id);
+	const auto required_args = App::plugin_manager.get_script_args(plugin_id);
 
-	const bool require_selected_layers = required_args & PluginScript::NEED_SELECTED_LAYERS;
+	if (auto canvas_interface = find_canvas_interface(get_canvas())) {
 
-	if (required_args) {
-		if (auto canvas_interface = find_canvas_interface(get_canvas())) {
+		// Current Time
 
-			// Current Time
+		view_state["current_time"] = canvas_interface->get_time();
 
-			view_state["time"] = canvas_interface->get_time();
+		// Selected Layers
 
-			if (auto selection = canvas_interface->get_selection_manager()) {
+		if (auto selection = canvas_interface->get_selection_manager()) {
 
-				// Layers
-				if (require_selected_layers) {
-					for (const auto& layer : selection->get_selected_layers()) {
-						std::string xpath;
-						get_layer_path(layer, get_canvas(), xpath);
-						auto& sel_layers = view_state["sel_layers"];
-						if (!sel_layers.empty())
-							sel_layers.append(",");
-						sel_layers += '"' + JSON::escape_string(xpath) + '"';
-					}
+			// Layers
+			if (required_args.selected_layers != PluginScript::ArgNecessity::ARGUMENT_UNUSED) {
+				for (const auto& layer : selection->get_selected_layers()) {
+					std::string xpath;
+					get_layer_path(layer, get_canvas(), xpath);
+					auto& selected_layers = view_state["selected_layers"];
+					if (!selected_layers.empty())
+						selected_layers.append(",");
+					selected_layers += '"' + JSON::escape_string(xpath) + '"';
 				}
-
-
 			}
 		}
+	}
 
-		if (require_selected_layers && view_state.count("sel_layers") == 0) {
-			App::dialog_message_1b(
-					"ERROR",
-					_("The plugin operation has failed."),
-					_("You must select layer(s)"),
-					_("Close"));
-			return;
-		}
+	if (required_args.selected_layers == PluginScript::ArgNecessity::ARGUMENT_MANDATORY && view_state.count("selected_layers") == 0) {
+		App::dialog_message_1b(
+				"ERROR",
+				_("The plugin operation has failed."),
+				_("This plugin requires layer(s) to be selected.\nSelect one or more layers and re-run the plugin."),
+				_("Close"));
+		return;
 	}
 
 	if ( modify_canvas )

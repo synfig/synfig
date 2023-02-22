@@ -128,6 +128,25 @@ parse_boolean_attribute(const xmlpp::Element& element, const std::string& attrib
 	return default_value;
 }
 
+static studio::PluginScript::ArgNecessity
+parse_argument_necessity(const xmlpp::Element& element, const std::string& attribute_name, studio::PluginScript::ArgNecessity default_value)
+{
+	std::string attr = element.get_attribute_value(attribute_name);
+	if ( !attr.empty() )
+	{
+		auto s = synfig::trim(attr);
+		synfig::strtolower(s);
+		if (s == "optional")
+			return studio::PluginScript::ArgNecessity::ARGUMENT_OPTIONAL;
+		if (s == "mandatory")
+			return studio::PluginScript::ArgNecessity::ARGUMENT_MANDATORY;
+		if (s != "unused")
+			synfig::error("Invalid value for attribute '%s' : '%s'. Valid values are 'optional', 'mandatory', 'unused'.", attribute_name.c_str(), attr.c_str());
+		return studio::PluginScript::ArgNecessity::ARGUMENT_UNUSED;
+	}
+	return default_value;
+}
+
 static void
 fetch_data_in_widget(const Gtk::Widget* w, std::map<std::string, std::string>& data)
 {
@@ -263,11 +282,10 @@ studio::PluginScript studio::PluginScript::load(const xmlpp::Node& node, const s
 	if ( const xmlpp::TextNode* text = element.get_child_text() )
 		script.script = synfig::trim(text->get_content());
 
-	script.modify_document = parse_boolean_attribute(element, "modify-doc", true);
+	script.modify_document = parse_boolean_attribute(element, "modify_doc", true);
 
-	script.extra_info = 0;
-	script.extra_info |= parse_boolean_attribute(element, "current-time", false) ? NEED_CURRENT_TIME : 0;
-	script.extra_info |= parse_boolean_attribute(element, "layers", false) ? NEED_SELECTED_LAYERS : 0;
+	script.extra_args.current_time = parse_argument_necessity(element, "current_time", ArgNecessity::ARGUMENT_UNUSED);
+	script.extra_args.selected_layers = parse_argument_necessity(element, "selected_layers", ArgNecessity::ARGUMENT_UNUSED);
 
 	return script;
 }
@@ -561,20 +579,19 @@ bool studio::PluginManager::run(const studio::PluginScript& script, std::vector<
 
 	std::string canvas_state;
 
-	if (script.extra_info) {
-		if (script.extra_info & PluginScript::NEED_CURRENT_TIME) {
-			if (!canvas_state.empty())
-				canvas_state.append(",");
-			canvas_state += "\"time\":" + view_state.at("time");
-		}
-		if (script.extra_info & PluginScript::NEED_SELECTED_LAYERS) {
-			if (!canvas_state.empty())
-				canvas_state.append(",");
-			canvas_state += "\"sel_layers\":[" + view_state.at("sel_layers") + "]";
-		}
-
-		canvas_state = "{" + canvas_state + "}";
+	if (script.extra_args.current_time != PluginScript::ArgNecessity::ARGUMENT_UNUSED) {
+//		if (!canvas_state.empty())
+//			canvas_state.append(",");
+		canvas_state += "\"current_time\":" + view_state.at("current_time");
 	}
+	if (script.extra_args.selected_layers != PluginScript::ArgNecessity::ARGUMENT_UNUSED) {
+		if (!canvas_state.empty())
+			canvas_state.append(",");
+		canvas_state += "\"selected_layers\":[" + view_state.at("selected_layers") + "]";
+	}
+	if (!canvas_state.empty())
+		canvas_state = "{" + canvas_state + "}";
+
 	if (dialog_data == "{}") {
 		dialog_data.clear();
 	}
@@ -585,7 +602,7 @@ bool studio::PluginManager::run(const studio::PluginScript& script, std::vector<
 		auto stream = stream2;
 		*stream << "{";
 		if (!canvas_state.empty()) {
-			*stream << "\"canvasState\":" << canvas_state;
+			*stream << "\"canvas_state\":" << canvas_state;
 			if (!dialog_data.empty())
 				*stream << ",";
 		}
@@ -668,10 +685,10 @@ studio::Plugin studio::PluginManager::get_plugin(const std::string& id) const
 	return Plugin();
 }
 
-int studio::PluginManager::get_script_args(const std::string& script_id) const
+studio::PluginScript::ScriptArgs studio::PluginManager::get_script_args(const std::string& script_id) const
 {
 	auto it = scripts_.find(script_id);
 	if ( it != scripts_.end() )
-		return it->second.extra_info;
-	return 0;
+		return it->second.extra_args;
+	return {};
 }
