@@ -110,8 +110,8 @@ Renderer_Guides::render_vfunc(
 		for (iter = get_work_area()->get_guide_list().begin(); iter!=get_work_area()->get_guide_list().end(); ++iter)
 		{
 
-			const float x_center((iter->point[0]-window_startx)/pw);
-			const float y_center((iter->point[1]-window_starty)/ph);
+			float x_center((iter->point[0]-window_startx)/pw);
+			float y_center((iter->point[1]-window_starty)/ph);
 			bool current_guide = false;
 
 			if(iter==get_work_area()->curr_guide){
@@ -122,7 +122,8 @@ Renderer_Guides::render_vfunc(
 				cr->set_source_rgb(guides_color.get_r(),guides_color.get_g(),guides_color.get_b());
 				current_guide = false;
 			}
-			if(iter->angle.get() != 0 && synfig::Angle::deg(iter->angle).get() != 90){
+			if((iter->angle.get() != 0 && !iter->isVertical) ||
+					(synfig::Angle::deg(iter->angle).get() != 90 && iter->isVertical)){
 				//draw the center of rotation for the selected guide
 				if (current_guide) {
 					cr->save();
@@ -140,6 +141,11 @@ Renderer_Guides::render_vfunc(
 					cr->restore();
 				}
 				float slope = -tan(iter->angle.get());
+				//handling exception of when ruler is parallel to its center of rotation axis
+				if (std::isinf(x_center))
+					x_center = 1;
+				if (std::isinf(y_center))
+					y_center = 0;
 				synfig::Point point1;
 				synfig::Point point2;
 				bool point1_done = false, point2_done = false;

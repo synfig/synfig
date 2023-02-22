@@ -1471,7 +1471,10 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 					curr_guide->point[0] = mouse_pos[0];
 				} else if (!rotate_guide) { //case 2: rotated ruler being moved
 					float center_x_new= (mouse_pos[0])+((-mouse_pos[1]+curr_guide->point[1])/(tan(curr_guide->angle.get())));
-					curr_guide->point[0] = center_x_new;
+					if (std::isinf(center_x_new))
+						curr_guide->point[1] = mouse_pos[1];
+					else
+						curr_guide->point[0] = center_x_new;
 				}
 			}
 			else{
@@ -1479,7 +1482,10 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 					curr_guide->point[1] = mouse_pos[1];
 				} else if (!rotate_guide) {
 					float center_y_new = (mouse_pos[1])-((mouse_pos[0]-curr_guide->point[0])*(tan(curr_guide->angle.get())));
-					curr_guide->point[1] = center_y_new;
+					if (std::isinf(center_y_new))
+						curr_guide->point[0] = mouse_pos[0];
+					else
+						curr_guide->point[1] = center_y_new;
 				}
 			}
 			if(rotate_guide && !from_ruler_event) {// case: 3 ruler being rotated   ---- dont rotate if center of rotation isnt in screen
