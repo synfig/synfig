@@ -146,34 +146,9 @@ void Dock_Toolbox::read_layout_string(const std::string& params) const
 void
 Dock_Toolbox::set_active_state(const synfig::String& statename)
 {
-	std::map<synfig::String,Gtk::ToggleToolButton *>::iterator iter;
-
 	changing_state_=true;
 
 	synfigapp::Main::set_state(statename);
-
-	try
-	{
-
-		for(iter=state_button_map.begin();iter!=state_button_map.end();++iter)
-		{
-			if(iter->first==statename)
-			{
-				if(!iter->second->get_active())
-					iter->second->set_active(true);
-			}
-			else
-			{
-				if(iter->second->get_active())
-					iter->second->set_active(false);
-			}
-		}
-	}
-	catch(...)
-	{
-		changing_state_=false;
-		throw;
-	}
 	changing_state_=false;
 }
 
@@ -237,13 +212,11 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 
 	Gtk::StockItem stock_item;
 	Gtk::Stock::lookup(Gtk::StockID("synfig-"+name),stock_item);
-
-	Gtk::ToggleToolButton *tool_button = manage(new class Gtk::ToggleToolButton(
-		*manage(new Gtk::Image(
-			stock_item.get_stock_id(),
-			Gtk::IconSize::from_name("synfig-small_icon_16x16") )),
-		stock_item.get_label() ));
-
+	Gtk::IconSize tool_icon_size = Gtk::IconSize::from_name("synfig-small_icon_16x16");
+	Gtk::Image *tool_icon = manage(new Gtk::Image(stock_item.get_stock_id(), tool_icon_size));
+	Glib::ustring tool_label = stock_item.get_label();
+	Gtk::RadioToolButton *tool_button = manage(new Gtk::RadioToolButton(*tool_icon, tool_label));
+	tool_button->set_group(radio_tool_button_group);
 	Gtk::AccelKey key;
 	//Have a look to global function init_ui_manager() from app.cpp for "accel_path" definition
 	Gtk::AccelMap::lookup_entry ("<Actions>/action_group_state_manager/state-"+name, key);

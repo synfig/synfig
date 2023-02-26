@@ -33,7 +33,7 @@
 #include <gui/docks/dockable.h>
 #include <gui/smach.h>
 
-#include <gtkmm/toggletoolbutton.h>
+#include <gtkmm/radiotoolbutton.h>
 #include <gtkmm/toolitemgroup.h>
 #include <gtkmm/box.h>
 
@@ -65,6 +65,8 @@ class Dock_Toolbox : public Dockable
 	std::map<synfig::String,Gtk::ToggleToolButton *> state_button_map;
 
 	bool changing_state_;
+
+	Gtk::RadioToolButton::Group radio_tool_button_group;
 
 	void on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
 
