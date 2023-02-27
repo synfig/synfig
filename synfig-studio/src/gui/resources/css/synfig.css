@@ -99,3 +99,15 @@
 #canvasview {
 	background: @theme_unfocused_bg_color;
 }
+
+.color-red {
+        color : #FF0000;
+}
+
+.color-black {
+        color : #000000;
+}
+
+.color-white {
+        color : #FFFFFF;
+}
