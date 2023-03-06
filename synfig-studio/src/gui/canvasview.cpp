@@ -2148,13 +2148,11 @@ CanvasView::on_time_changed()
 	{
 		KeyframeList::iterator iter;
 		if (get_canvas()->keyframe_list().find(time, iter)) {
-			// Widget::override_color() is deprecated since Gtkmm 3.16: Use a custom style provider and style classes instead.
-			// This function is very slow!
-			current_time_widget->override_color(Gdk::RGBA("#FF0000"));
+			current_time_widget->get_style_context()->remove_class("color-black");
+			current_time_widget->get_style_context()->add_class("color-red");
 		} else {
-			// Widget::override_color() is deprecated since Gtkmm 3.16: Use a custom style provider and style classes instead.
-			// This function is very slow!
-			current_time_widget->override_color(Gdk::RGBA(0));
+			current_time_widget->get_style_context()->remove_class("color-red");
+			current_time_widget->get_style_context()->add_class("color-black");
 		}
 
 		// Shouldn't these trees just hook into
@@ -2542,9 +2540,6 @@ CanvasView::play_async()
 	if (timeout < 10) timeout = 10;
 
 	framedial->toggle_play_pause_button(is_playing());
-	// Widget::override_color() is deprecated since Gtkmm 3.16: Use a custom style provider and style classes instead.
-	// Also, this function is heavily slowdowns playback.
-	//current_time_widget->override_color(Gdk::RGBA(0));
 
 	soundProcessor.clear();
 	canvas_interface()->get_canvas()->fill_sound_processor(soundProcessor);

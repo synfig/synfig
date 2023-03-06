@@ -179,7 +179,7 @@ Splash::Splash():
 	versionlabel->set_label("" VERSION);
 	versionlabel->set_size_request(image_w,24);
 	versionlabel->set_use_underline(false);
-	versionlabel->override_color(Gdk::RGBA("#FFFFFF"));
+	versionlabel->get_style_context()->add_class("color-white");
 	versionlabel->show();
 
 	// Create the Gtk::Fixed container and put all of the widgets into it
