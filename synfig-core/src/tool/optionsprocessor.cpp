@@ -107,6 +107,7 @@ SynfigCommandLineParser::SynfigCommandLineParser() :
 	set_dpi(),
 	set_dpi_x(),
 	set_dpi_y(),
+	set_repeats(),
 
 	// Switch group
 	sw_verbosity(),
@@ -165,6 +166,7 @@ SynfigCommandLineParser::SynfigCommandLineParser() :
 	add_option(og_set, "dpi",         ' ', set_dpi, 		_("Set the physical resolution (Dots-per-inch)"), "NUM");
 	add_option(og_set, "dpi-x",       ' ', set_dpi_x, 		_("Set the physical X resolution (Dots-per-inch)"), "NUM");
 	add_option(og_set, "dpi-y",       ' ', set_dpi_y, 		_("Set the physical Y resolution (Dots-per-inch)"), "NUM");
+	add_option(og_set, "repeats",	  ' ', set_repeats,		_("Set the number of times to render the same target"), "NUM");
 
 	// Switch options
 	//og_switch("switch", _("Switch options"), "Show switch help");
@@ -347,6 +349,11 @@ void SynfigCommandLineParser::process_settings_options() const
 	if (sw_print_benchmarks)
 	{
 		SynfigToolGeneralOptions::instance()->set_should_print_benchmarks(true);
+	}
+
+	if(set_repeats > 0)
+	{
+		SynfigToolGeneralOptions::instance()->set_repeats(set_repeats);
 	}
 
 	if (sw_quiet)

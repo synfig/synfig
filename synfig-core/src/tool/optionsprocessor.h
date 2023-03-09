@@ -116,6 +116,7 @@ private:
 	double			set_dpi;
 	double			set_dpi_x;
 	double			set_dpi_y;
+	int				set_repeats;
 
 	// Switch group
 	int				sw_verbosity;
