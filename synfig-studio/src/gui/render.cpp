@@ -547,7 +547,6 @@ RenderSettings::submit_next_render_pass()
 		async_renderer->start();
 		App::dock_info_->set_async_render(async_renderer);
 	}
-	return;
 }
 
 void
