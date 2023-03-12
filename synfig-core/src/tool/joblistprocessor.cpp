@@ -266,13 +266,14 @@ void process_job (Job& job)
 		VERBOSE_OUT(1) << _("Rendering...") << std::endl;
 
 		bool should_print_benchmarks = SynfigToolGeneralOptions::instance()->should_print_benchmarks();
-		double dur = 0.f;
+
+		double total_duration = 0.f;
 		int repeats = SynfigToolGeneralOptions::instance()->get_repeats();
 
 		for(int i = 0; i < repeats; i++)
 		{
-			std::chrono::system_clock::time_point start_timepoint =
-				std::chrono::system_clock::now();
+			std::chrono::steady_clock::time_point start_timepoint =
+				std::chrono::steady_clock::now();
 
 			// Call the render member of the target
 			if(!job.target->render(&p))
@@ -280,10 +281,10 @@ void process_job (Job& job)
 
 			if(should_print_benchmarks)
 			{
-				std::chrono::duration<double> duration =
-					std::chrono::system_clock::now() - start_timepoint;
+				std::chrono::duration<double, std::milli> duration =
+					std::chrono::steady_clock::now() - start_timepoint;
 
-				dur += duration.count();
+				total_duration += duration.count();
 			}
 		}
 
@@ -293,11 +294,11 @@ void process_job (Job& job)
 				<< _(": Rendered ")
 				<< repeats
 				<< _( " times in ")
-				<< dur
-				<< _(" seconds.")
+				<< total_duration
+				<< _(" ms.")
 				<< _(" Average time per render: ")
-				<< dur / repeats
-				<< "." << std::endl;
+				<< total_duration / repeats
+				<< _(" ms.") << std::endl;
 		}
 	}
 
