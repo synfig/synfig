@@ -264,23 +264,42 @@ void process_job (Job& job)
 	else
 	{
 		VERBOSE_OUT(1) << _("Rendering...") << std::endl;
-		std::chrono::system_clock::time_point start_timepoint =
-            std::chrono::system_clock::now();
 
-		// Call the render member of the target
-		if(!job.target->render(&p))
-			throw (SynfigToolException(SYNFIGTOOL_RENDERFAILURE, _("Render Failure.")));
+		bool should_print_benchmarks = SynfigToolGeneralOptions::instance()->should_print_benchmarks();
 
-		if(SynfigToolGeneralOptions::instance()->should_print_benchmarks())
-        {
-            std::chrono::duration<double> duration =
-                std::chrono::system_clock::now() - start_timepoint;
+		double total_duration = 0.f;
+		int repeats = SynfigToolGeneralOptions::instance()->get_repeats();
 
-            std::cout << job.filename.c_str()
-                      << _(": Rendered in ")
-                      << duration.count()
-                      << _(" seconds.") << std::endl;
-        }
+		for(int i = 0; i < repeats; i++)
+		{
+			std::chrono::steady_clock::time_point start_timepoint =
+				std::chrono::steady_clock::now();
+
+			// Call the render member of the target
+			if(!job.target->render(&p))
+				throw (SynfigToolException(SYNFIGTOOL_RENDERFAILURE, _("Render Failure.")));
+
+			if(should_print_benchmarks)
+			{
+				std::chrono::duration<double, std::milli> duration =
+					std::chrono::steady_clock::now() - start_timepoint;
+
+				total_duration += duration.count();
+			}
+		}
+
+		if(should_print_benchmarks)
+		{
+			std::cout << job.filename.c_str()
+				<< _(": Rendered ")
+				<< repeats
+				<< _( " times in ")
+				<< total_duration
+				<< _(" ms.")
+				<< _(" Average time per render: ")
+				<< total_duration / repeats
+				<< _(" ms.") << std::endl;
+		}
 	}
 
 	VERBOSE_OUT(1) << _("Done.") << std::endl;
