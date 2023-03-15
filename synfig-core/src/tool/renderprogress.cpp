@@ -58,7 +58,10 @@ bool RenderProgress::amount_complete(int current_frame, int frames_count)
 
     std::ostringstream outputStream;
 
-    const bool isFinished = (current_frame == frames_count);
+	if(current_frame >= frames_count) repeated_++;
+
+	const int total_repeats = SynfigToolGeneralOptions::instance()->get_repeats();
+	const bool isFinished = (repeated_ >= total_repeats);
     if (!isFinished)
     {
         // avoid reporting the progress too often
@@ -69,15 +72,18 @@ bool RenderProgress::amount_complete(int current_frame, int frames_count)
         }
         last_timepoint_ = Clock::now();
 
+		int total_frames_count = total_repeats * frames_count;
+		int r_current_frame = current_frame + frames_count * repeated_;
+
         int percentage_completed = 100;
-        if (frames_count > 0)
+        if (total_frames_count > 0)
         {
-            percentage_completed = 100 * current_frame / frames_count;
+            percentage_completed = (100 * r_current_frame) / total_frames_count;
         }
 
         outputStream << "\r"
-					 << synfig::strprintf(_("%s: Frame %d of %d (%d%%). Remaining time: "),
-                        taskname_.c_str(), current_frame, frames_count, percentage_completed);
+					 << synfig::strprintf(_("%s: Iteration %d: Frame %d of %d (%d%%). Remaining time: "),
+                        taskname_.c_str(), repeated_, current_frame, frames_count, percentage_completed);
 
         if (current_frame != last_frame_)
         {
