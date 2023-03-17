@@ -151,11 +151,6 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 	if(total_frames<=0)total_frames=1;
 
 	try {
-
-	//synfig::info("1time_set_to %s",t.get_string().c_str());
-
-	if(total_frames>=1)
-	{
 		do{
 			// Grab the time
 			frames=next_frame(t);
@@ -269,122 +264,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 				}
 				#endif
 			}
-		}while(frames);
-	}
-    else
-    {
-		// Set the time that we wish to render
-		if(!get_avoid_time_sync() || canvas->get_time()!=t) {
-			canvas->set_time(t);
-			canvas->load_resources(t);
-		}
-		canvas->set_outline_grow(desc.get_outline_grow());
-
-		// If quality is set otherwise, then we use the accelerated renderer
-		{
-			#if USE_PIXELRENDERING_LIMIT
-			if(desc.get_w()*desc.get_h() > PIXEL_RENDERING_LIMIT)
-			{
-				SurfaceResource::Handle surface(new SurfaceResource());
-
-				int totalheight = desc.get_h();
-				int rowheight = PIXEL_RENDERING_LIMIT/desc.get_w();
-				if (!rowheight) rowheight = 1; // TODO: render partial lines to stay within the limit?
-				int rows = desc.get_h()/rowheight;
-				int lastrowheight = desc.get_h() - rows*rowheight;
-
-				rows++;
-
-				synfig::info("Render split to %d block%s %d pixels tall, and a final block %d pixels tall",
-							 rows-1, rows==2?"":"s", rowheight, lastrowheight);
-
-				// loop through all the full rows
-				if(!start_frame())
-				{
-//					throw(string("render(): target panic on start_frame()"));
-					if(cb)
-						cb->error(_("render(): target panic on start_frame()"));
-					return false;
-				}
-
-				for(int i=0; i < rows; ++i)
-				{
-					surface->reset();
-					RendDesc blockrd = desc;
-
-					//render the strip at the normal size unless it's the last one...
-					if(i == rows-1)
-					{
-						if(!lastrowheight) break;
-						blockrd.set_subwindow(0,i*rowheight,desc.get_w(),lastrowheight);
-					}
-					else
-					{
-						blockrd.set_subwindow(0,i*rowheight,desc.get_w(),rowheight);
-					}
-
-					//synfig::info( " -- block %d/%d left, top, width, height: %d, %d, %d, %d",
-					//	i+1, rows, 0, i*rowheight, blockrd.get_w(), blockrd.get_h() );
-
-					if (!call_renderer(surface, *canvas, context_params, blockrd))
-					{
-						if(cb)cb->error(_("Accelerated Renderer Failure"));
-						return false;
-					}
-
-					SurfaceResource::LockRead<SurfaceSW> lock(surface);
-
-					if(!lock)
-					{
-						if(cb)cb->error(_("Bad surface"));
-						return false;
-					}
-
-					const synfig::Surface &s = lock->get_surface();
-
-					int yoff = i*rowheight;
-
-					if(!process_block_alpha(s, s.get_w(), blockrd.get_h(), yoff, cb)) return false;
-
-					//I'm done with this part
-					if (cb) cb->amount_complete((i+1)*rowheight, totalheight);
-				}
-				surface->reset();
-
-				end_frame();
-
-			}else
-			{
-			#endif
-				SurfaceResource::Handle surface = new SurfaceResource();
-
-				if (!call_renderer(surface, *canvas, context_params, desc))
-				{
-					if(cb)cb->error(_("Accelerated Renderer Failure"));
-					return false;
-				}
-
-				SurfaceResource::LockRead<SurfaceSW> lock(surface);
-
-				if(!lock)
-				{
-					if(cb)cb->error(_("Bad surface"));
-					return false;
-				}
-
-				// Put the surface we renderer
-				// onto the target.
-				if(!add_frame(&lock->get_surface(), cb))
-				{
-					if(cb)cb->error(_("Unable to put surface on target"));
-					return false;
-				}
-			#if USE_PIXELRENDERING_LIMIT
-			}
-			#endif
-		}
-	}
-
+		} while(frames);
 	}
 	catch(const String& str)
 	{
