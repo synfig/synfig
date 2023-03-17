@@ -230,53 +230,9 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 
 							const synfig::Surface &s = lock->get_surface();
 
-							int y;
-							int rowspan=sizeof(Color)*s.get_w();
-							Surface::const_pen pen = s.begin();
-
 							int yoff = i*rowheight;
 
-							for(y = 0; y < blockrd.get_h(); y++, pen.inc_y())
-							{
-								Color *colordata= start_scanline(y + yoff);
-								if(!colordata)
-								{
-//									throw(string("add_frame(): call to start_scanline(y) returned nullptr"));
-									if(cb)
-										cb->error(_("add_frame(): call to start_scanline(y) returned nullptr"));
-									return false;
-								}
-
-								switch(get_alpha_mode())
-								{
-									case TARGET_ALPHA_MODE_FILL:
-										for(int i = 0; i < s.get_w(); i++)
-											colordata[i] = Color::blend(s[y][i], desc.get_bg_color(), 1.0f);
-										break;
-									case TARGET_ALPHA_MODE_EXTRACT:
-										for(int i = 0; i < s.get_w(); i++)
-										{
-											float a=s[y][i].get_a();
-											colordata[i] = Color(a,a,a,a);
-										}
-										break;
-									case TARGET_ALPHA_MODE_REDUCE:
-										for(int i = 0; i < s.get_w(); i++)
-											colordata[i] = Color(s[y][i].get_r(), s[y][i].get_g(), s[y][i].get_b(), 1.f);
-										break;
-									case TARGET_ALPHA_MODE_KEEP:
-										memcpy(colordata, s[y], rowspan);
-										break;
-								}
-
-								if(!end_scanline())
-								{
-//									throw(string("render(): target panic on end_scanline()"));
-									if(cb)
-										cb->error(_("render(): target panic on end_scanline()"));
-									return false;
-								}
-							}
+							if(!process_block_alpha(s, s.get_w(), blockrd.get_h(), yoff, cb)) return false;
 						}
 					}
 					surface->reset();
@@ -386,53 +342,9 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 
 					const synfig::Surface &s = lock->get_surface();
 
-					int y;
-					int rowspan=sizeof(Color)*s.get_w();
-					Surface::const_pen pen = s.begin();
-
 					int yoff = i*rowheight;
 
-					for(y = 0; y < blockrd.get_h(); y++, pen.inc_y())
-					{
-						Color *colordata= start_scanline(y + yoff);
-						if(!colordata)
-						{
-//							throw(string("add_frame(): call to start_scanline(y) returned nullptr"));
-							if(cb)
-								cb->error(_("add_frame(): call to start_scanline(y) returned nullptr"));
-							return false;
-						}
-
-						switch(get_alpha_mode())
-						{
-							case TARGET_ALPHA_MODE_FILL:
-								for(int i = 0; i < s.get_w(); i++)
-									colordata[i] = Color::blend(s[y][i], desc.get_bg_color(), 1.0f);
-								break;
-							case TARGET_ALPHA_MODE_EXTRACT:
-								for(int i = 0; i < s.get_w(); i++)
-								{
-									float a=s[y][i].get_a();
-									colordata[i] = Color(a,a,a,a);
-								}
-								break;
-							case TARGET_ALPHA_MODE_REDUCE:
-								for(int i = 0; i < s.get_w(); i++)
-									colordata[i] = Color(s[y][i].get_r(), s[y][i].get_g(), s[y][i].get_b(), 1.0f);
-								break;
-							case TARGET_ALPHA_MODE_KEEP:
-								memcpy(colordata,s[y], rowspan);
-								break;
-						}
-
-						if(!end_scanline())
-						{
-//							throw(string("render(): target panic on end_scanline()"));
-							if(cb)
-								cb->error(_("render(): target panic on end_scanline()"));
-							return false;
-						}
-					}
+					if(!process_block_alpha(s, s.get_w(), blockrd.get_h(), yoff, cb)) return false;
 
 					//I'm done with this part
 					if (cb) cb->amount_complete((i+1)*rowheight, totalheight);
@@ -497,11 +409,6 @@ Target_Scanline::add_frame(const synfig::Surface *surface, ProgressCallback *cb)
 {
 	assert(surface);
 
-
-	int y;
-	int rowspan=sizeof(Color)*surface->get_w();
-	Surface::const_pen pen=surface->begin();
-
 	if(!start_frame(cb))
 	{
 //		throw(string("add_frame(): target panic on start_frame()"));
@@ -510,49 +417,60 @@ Target_Scanline::add_frame(const synfig::Surface *surface, ProgressCallback *cb)
 		return false;
 	}
 
-	for(y=0;y<surface->get_h();y++,pen.inc_y())
+	if(!process_block_alpha(*surface, surface->get_w(), surface->get_h(), 0, cb)) return false;
+	end_frame();
+	return true;
+}
+
+bool
+Target_Scanline::process_block_alpha(const synfig::Surface& surface, int width, int height, int yOffset, ProgressCallback* cb)
+{
+	int rowspan = sizeof(Color) * width;
+	Surface::const_pen pen = surface.begin();
+
+	for(int y = 0; y < height; y++, pen.inc_y())
 	{
-		Color *colordata= start_scanline(y);
+		Color *colordata = start_scanline(y + yOffset);
 		if(!colordata)
 		{
-//			throw(string("add_frame(): call to start_scanline(y) returned nullptr"));
-			if (cb)
+			if(cb)
 				cb->error(_("add_frame(): call to start_scanline(y) returned nullptr"));
 			return false;
 		}
 
 		switch(get_alpha_mode())
 		{
-			case TARGET_ALPHA_MODE_FILL:
-				for(int i=0;i<surface->get_w();i++)
-					colordata[i]=Color::blend((*surface)[y][i],desc.get_bg_color(),1.0f);
-				break;
-			case TARGET_ALPHA_MODE_EXTRACT:
-				for(int i=0;i<surface->get_w();i++)
+			case TARGET_ALPHA_MODE_KEEP:
+				for(int i = 0; i < width; i++)
 				{
-					float a=(*surface)[y][i].get_a();
-					colordata[i] = Color(a,a,a,a);
+					colordata[i] = Color::blend(surface[y][i], desc.get_bg_color(), 1.0f);
+				}
+				break;
+			case TARGET_ALPHA_MODE_FILL:
+				for(int i = 0; i < width; i++)
+				{
+					float a = surface[y][i].get_a();
+					colordata[i] = Color(a, a, a, a);
 				}
 				break;
 			case TARGET_ALPHA_MODE_REDUCE:
-				for(int i = 0; i < surface->get_w(); i++)
-					colordata[i] = Color((*surface)[y][i].get_r(),(*surface)[y][i].get_g(),(*surface)[y][i].get_b(),1.0f);
+				for(int i = 0; i < width; i++)
+				{
+					colordata[i] = surface[y][i];
+					colordata[i].set_a(1.f);
+				}
 				break;
-			case TARGET_ALPHA_MODE_KEEP:
-				memcpy(colordata,(*surface)[y],rowspan);
+			case TARGET_ALPHA_MODE_EXTRACT:
+				memcpy(colordata, surface[y], rowspan);
 				break;
 		}
 
 		if(!end_scanline())
 		{
-//			throw(string("add_frame(): target panic on end_scanline()"));
-			if (cb)
-				cb->error(_("add_frame(): target panic on end_scanline()"));
+			if(cb)
+				cb->error(_("render(): target panic on end_scanline()"));
 			return false;
 		}
 	}
-
-	end_frame();
-
 	return true;
 }

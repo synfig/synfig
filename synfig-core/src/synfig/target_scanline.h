@@ -113,6 +113,7 @@ public:
 	//! Puts the rendered surface onto the target.
 	bool add_frame(const synfig::Surface *surface, ProgressCallback* cb);
 private:
+	bool process_block_alpha(const synfig::Surface& surface, int width, int height, int yOffset, ProgressCallback* cb);
 }; // END of class Target_Scanline
 
 }; // END of namespace synfig
