@@ -59,6 +59,7 @@ REGISTER_VALUENODE(ValueNode_Greyed, RELEASE_VERSION_0_62_00, "greyed", N_("Grey
 ValueNode_Greyed::ValueNode_Greyed(Type &x):
 	ValueNode_Reference(x)
 {
+	init_children_vocab();
 }
 
 ValueNode_Greyed::ValueNode_Greyed(const ValueNode::Handle &x):
