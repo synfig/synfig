@@ -2107,7 +2107,7 @@ App::load_language_settings()
 	}
 	catch(...)
 	{
-		synfig::warning("Caught exception when attempting to loading language settings.");
+		synfig::warning("Caught exception when attempting to load language settings.");
 	}
 }
 
