@@ -314,7 +314,7 @@ Target_Scanline::process_block_alpha(const synfig::Surface& surface, int width, 
 		if(!colordata)
 		{
 			if(cb)
-				cb->error(_("add_frame(): call to start_scanline(y) returned nullptr"));
+				cb->error(_("process_block_alpha(): call to start_scanline(y) returned nullptr"));
 			return false;
 		}
 
@@ -348,7 +348,7 @@ Target_Scanline::process_block_alpha(const synfig::Surface& surface, int width, 
 		if(!end_scanline())
 		{
 			if(cb)
-				cb->error(_("render(): target panic on end_scanline()"));
+				cb->error(_("process_block_alpha(): target panic on end_scanline()"));
 			return false;
 		}
 	}
