@@ -320,13 +320,13 @@ Target_Scanline::process_block_alpha(const synfig::Surface& surface, int width, 
 
 		switch(get_alpha_mode())
 		{
-			case TARGET_ALPHA_MODE_KEEP:
+			case TARGET_ALPHA_MODE_FILL:
 				for(int i = 0; i < width; i++)
 				{
 					colordata[i] = Color::blend(surface[y][i], desc.get_bg_color(), 1.0f);
 				}
 				break;
-			case TARGET_ALPHA_MODE_FILL:
+			case TARGET_ALPHA_MODE_EXTRACT:
 				for(int i = 0; i < width; i++)
 				{
 					float a = surface[y][i].get_a();
@@ -340,7 +340,7 @@ Target_Scanline::process_block_alpha(const synfig::Surface& surface, int width, 
 					colordata[i].set_a(1.f);
 				}
 				break;
-			case TARGET_ALPHA_MODE_EXTRACT:
+			case TARGET_ALPHA_MODE_KEEP:
 				memcpy(colordata, surface[y], rowspan);
 				break;
 		}
