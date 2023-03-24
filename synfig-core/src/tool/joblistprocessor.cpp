@@ -162,6 +162,25 @@ bool check_permissions(Job& job)
 	return true;
 }
 
+bool create_target(Job& job, const TargetParam& target_parameters)
+{
+	VERBOSE_OUT(4) << _("Creating the target...") << std::endl;
+	job.target =
+			synfig::Target::create(job.target_name,
+								   job.outfilename,
+								   target_parameters);
+
+	if(!job.target)
+	{
+		synfig::error(_("Unknown target for \"%s\": %s"), job.filename.c_str(), strerror(errno));
+		synfig::error(_("Throwing out job..."));
+		return false;
+	}
+
+	job.sifout = job.target_name == "sif";
+	return true;
+}
+
 bool setup_job(Job& job, const TargetParam& target_parameters)
 {
 	VERBOSE_OUT(4) << _("Attempting to determine target/outfile...") << std::endl;
@@ -185,29 +204,8 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 		return false;
 	}
 
-	VERBOSE_OUT(4) << _("Creating the target...") << std::endl;
-	job.target =
-		synfig::Target::create(job.target_name,
-							   job.outfilename,
-							   target_parameters);
-
-	if(job.target_name == "sif")
-		job.sifout=true;
-	else
-	{
-		if(!job.target)
-		{
-		    /*const std::string message =
-                (boost::format(_("Unknown target for \"%s\": %s"))
-                               % job.filename % strerror(errno)).str();
-		    synfig::error(message.c_str());*/
-
-			synfig::error(_("Unknown target for \"%s\": %s"), job.filename.c_str(), strerror(errno));
-			synfig::error(_("Throwing out job..."));
-			return false;
-		}
-
-		job.sifout=false;
+	if (!create_target(job, target_parameters)) {
+		return false;
 	}
 
 	// Set the Canvas on the Target
