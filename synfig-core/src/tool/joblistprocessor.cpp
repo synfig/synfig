@@ -196,6 +196,19 @@ void set_canvas_quality_and_alpha_mode(Job& job)
 	}
 }
 
+void set_target_engine_and_threads(Job& job)
+{
+	if(auto scanline_target = Target_Scanline::Handle::cast_dynamic(job.target))
+	{
+		scanline_target->set_threads(SynfigToolGeneralOptions::instance()->get_threads());
+		scanline_target->set_engine(job.render_engine);
+	} else if(auto tile_target = Target_Tile::Handle::cast_dynamic(job.target))
+	{
+		tile_target->set_threads(SynfigToolGeneralOptions::instance()->get_threads());
+		tile_target->set_engine(job.render_engine);
+	}
+}
+
 bool setup_job(Job& job, const TargetParam& target_parameters)
 {
 	VERBOSE_OUT(4) << _("Attempting to determine target/outfile...") << std::endl;
@@ -227,18 +240,7 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 	set_canvas_quality_and_alpha_mode(job);
 
 	// Set the threads and render engine for the target
-	if (job.target)
-	{
-		if(auto scanline_target = Target_Scanline::Handle::cast_dynamic(job.target))
-		{
-			scanline_target->set_threads(SynfigToolGeneralOptions::instance()->get_threads());
-			scanline_target->set_engine(job.render_engine);
-		} else if(auto tile_target = Target_Tile::Handle::cast_dynamic(job.target))
-		{
-			tile_target->set_threads(SynfigToolGeneralOptions::instance()->get_threads());
-			tile_target->set_engine(job.render_engine);
-		}
-	}
+	set_target_engine_and_threads(job);
 
 	return true;
 }
