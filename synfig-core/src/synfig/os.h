@@ -218,6 +218,9 @@ bool run_sync(std::string binary_path, const RunArgs& binary_args, const std::st
 /** Launch a file with its default application */
 bool launch_file_async(const std::string& file);
 
+/** Get the system language */
+const std::vector<std::string>& get_user_lang();
+
 } // END of namespace OS
 
 } // END of namespace synfig

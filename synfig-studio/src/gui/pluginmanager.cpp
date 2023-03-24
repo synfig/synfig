@@ -45,6 +45,7 @@
 #include <gui/onemoment.h>
 
 #include <synfig/general.h>
+#include <synfig/os.h>
 
 #endif
 
@@ -79,10 +80,18 @@ void studio::PluginString::add_translation(const std::string& locale, const std:
 
 std::string studio::PluginString::get() const
 {
-	auto it = translations_.find(studio::App::ui_language);
-	if ( it == translations_.end() )
-		return fallback_;
-	return it->second;
+	std::vector<std::string> langs;
+	if (studio::App::ui_language == "os_LANG")
+		langs = synfig::OS::get_user_lang();
+	else
+		langs.push_back(studio::App::ui_language);
+
+	for (const auto& lang : langs) {
+		auto it = translations_.find(lang);
+		if ( it != translations_.end() )
+			return it->second;
+	}
+	return fallback_;
 }
 
 studio::PluginStream studio::PluginScript::stream_from_name(const std::string& name, PluginStream default_value)
