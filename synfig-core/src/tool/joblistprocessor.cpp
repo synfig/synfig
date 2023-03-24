@@ -152,6 +152,16 @@ void create_output_filename(Job& job)
 	VERBOSE_OUT(4) << "Outfilename = " << job.outfilename.c_str() << std::endl;
 }
 
+bool check_permissions(Job& job)
+{
+	if (g_access(get_absolute_path(job.outfilename + "/../").c_str(), W_OK) == -1) {
+		synfig::error(_("Unable to create output for \"%s\": %s"), job.filename.c_str(), strerror(errno));
+		synfig::error(_("Throwing out job..."));
+		return false;
+	}
+	return true;
+}
+
 bool setup_job(Job& job, const TargetParam& target_parameters)
 {
 	VERBOSE_OUT(4) << _("Attempting to determine target/outfile...") << std::endl;
@@ -171,17 +181,7 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 	// (ie: change the extension)
 	create_output_filename(job);
 
-	// Check permissions
-	//if (access(bfs::canonical(bfs::path(job.outfilename).parent_path()).string().c_str(), W_OK) == -1)
-	// az: fixme
-	if (g_access(get_absolute_path(job.outfilename + "/../").c_str(), W_OK) == -1)
-	{
-	    /*const std::string message =
-            (boost::format(_("Unable to create output for \"%s\": %s"))
-                           % job.filename % strerror(errno)).str();
-		synfig::error(message.c_str());*/
-		synfig::error(_("Unable to create output for \"%s\": %s"), job.filename.c_str(), strerror(errno));
-		synfig::error(_("Throwing out job..."));
+	if (!check_permissions(job)) {
 		return false;
 	}
 
