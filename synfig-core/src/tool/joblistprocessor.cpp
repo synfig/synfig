@@ -181,6 +181,21 @@ bool create_target(Job& job, const TargetParam& target_parameters)
 	return true;
 }
 
+void set_canvas_quality_and_alpha_mode(Job& job)
+{
+	VERBOSE_OUT(4) << _("Setting the canvas on the target...") << std::endl;
+	job.target->set_canvas(job.canvas);
+
+	VERBOSE_OUT(4) << _("Setting the quality of the target...") << std::endl;
+	job.target->set_quality(job.quality);
+
+	if (job.alpha_mode!=TARGET_ALPHA_MODE_KEEP)
+	{
+		VERBOSE_OUT(4) << _("Setting the alpha mode of the target...") << std::endl;
+		job.target->set_alpha_mode(job.alpha_mode);
+	}
+}
+
 bool setup_job(Job& job, const TargetParam& target_parameters)
 {
 	VERBOSE_OUT(4) << _("Attempting to determine target/outfile...") << std::endl;
@@ -209,20 +224,7 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 	}
 
 	// Set the Canvas on the Target
-	if(job.target)
-	{
-		VERBOSE_OUT(4) << _("Setting the canvas on the target...") << std::endl;
-		job.target->set_canvas(job.canvas);
-
-		VERBOSE_OUT(4) << _("Setting the quality of the target...") << std::endl;
-		job.target->set_quality(job.quality);
-
-		if (job.alpha_mode!=TARGET_ALPHA_MODE_KEEP)
-		{
-			VERBOSE_OUT(4) << _("Setting the alpha mode of the target...") << std::endl;
-			job.target->set_alpha_mode(job.alpha_mode);
-		}
-	}
+	set_canvas_quality_and_alpha_mode(job);
 
 	// Set the threads and render engine for the target
 	if (job.target)
