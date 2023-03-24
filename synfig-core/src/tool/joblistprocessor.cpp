@@ -126,6 +126,15 @@ void try_to_determine_target_from_outfile(Job& job)
 	}
 }
 
+void set_default_target(Job& job)
+{
+	if(job.target_name.empty())
+	{
+		VERBOSE_OUT(2) << _("Defaulting to PNG target...") << std::endl;
+		job.target_name = "png";
+	}
+}
+
 bool setup_job(Job& job, const TargetParam& target_parameters)
 {
 	VERBOSE_OUT(4) << _("Attempting to determine target/outfile...") << std::endl;
@@ -138,11 +147,7 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 
 	// If the target type is STILL not yet defined, then
 	// set it to a some sort of default
-	if(job.target_name.empty())
-	{
-		VERBOSE_OUT(2) << _("Defaulting to PNG target...") << std::endl;
-		job.target_name = "png";
-	}
+	set_default_target(job);
 
 	// If no output filename was provided, then create a output filename
 	// based on the given input filename and the selected target.
