@@ -251,6 +251,41 @@ void save_canvas_to_file(const std::string& filename, const synfig::Canvas::Hand
 	}
 }
 
+void render_job(const Job& job, RenderProgress& progress, bool should_print_benchmarks, int repeats) {
+	double total_duration = 0.f;
+
+	for(int i = 0; i < repeats; i++)
+	{
+		std::chrono::steady_clock::time_point start_timepoint =
+				std::chrono::steady_clock::now();
+
+		// Call the render member of the target
+		if(!job.target->render(&progress)) {
+			throw (SynfigToolException(SYNFIGTOOL_RENDERFAILURE, _("Render Failure.")));
+		}
+
+		if(should_print_benchmarks)	{
+			std::chrono::duration<double, std::milli> duration =
+					std::chrono::steady_clock::now() - start_timepoint;
+
+			total_duration += duration.count();
+		}
+	}
+
+	if(should_print_benchmarks)
+	{
+		std::cout << job.filename.c_str()
+				  << _(": Rendered ")
+				  << repeats
+				  << _( " times in ")
+				  << total_duration
+				  << _(" ms.")
+				  << _(" Average time per render: ")
+				  << total_duration / repeats
+				  << _(" ms.") << std::endl;
+	}
+}
+
 void process_job (Job& job)
 {
 	print_job_info(job);
@@ -267,40 +302,9 @@ void process_job (Job& job)
 		VERBOSE_OUT(1) << _("Rendering...") << std::endl;
 
 		bool should_print_benchmarks = SynfigToolGeneralOptions::instance()->should_print_benchmarks();
-
-		double total_duration = 0.f;
 		int repeats = SynfigToolGeneralOptions::instance()->get_repeats();
 
-		for(int i = 0; i < repeats; i++)
-		{
-			std::chrono::steady_clock::time_point start_timepoint =
-				std::chrono::steady_clock::now();
-
-			// Call the render member of the target
-			if(!job.target->render(&p))
-				throw (SynfigToolException(SYNFIGTOOL_RENDERFAILURE, _("Render Failure.")));
-
-			if(should_print_benchmarks)
-			{
-				std::chrono::duration<double, std::milli> duration =
-					std::chrono::steady_clock::now() - start_timepoint;
-
-				total_duration += duration.count();
-			}
-		}
-
-		if(should_print_benchmarks)
-		{
-			std::cout << job.filename.c_str()
-				<< _(": Rendered ")
-				<< repeats
-				<< _( " times in ")
-				<< total_duration
-				<< _(" ms.")
-				<< _(" Average time per render: ")
-				<< total_duration / repeats
-				<< _(" ms.") << std::endl;
-		}
+		render_job(job, p, should_print_benchmarks, repeats);
 	}
 
 	VERBOSE_OUT(1) << _("Done.") << std::endl;
