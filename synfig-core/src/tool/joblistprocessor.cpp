@@ -231,37 +231,22 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 	return true;
 }
 
-void process_job (Job& job)
-{
+void print_job_info(const Job& job) {
 	VERBOSE_OUT(3) << job.filename.c_str() << " -- " << std::endl;
-	synfig::info("\tw: %d, h: %d, a: %d, pxaspect: %f, imaspect: %f, span: %f", 
-		job.desc.get_w(), job.desc.get_h(), job.desc.get_antialias(),
-		job.desc.get_pixel_aspect(), job.desc.get_image_aspect(), job.desc.get_span());
-	/*VERBOSE_OUT(3) << '\t'
-				   << boost::format("w:%d, h:%d, a:%d, pxaspect:%f, imaspect:%f, span:%f")
-                                    % job.desc.get_w()
-                                    % job.desc.get_h()
-                                    % job.desc.get_antialias()
-                                    % job.desc.get_pixel_aspect()
-                                    % job.desc.get_image_aspect()
-                                    % job.desc.get_span()
-                    << std::endl;*/
+	synfig::info("\tw: %d, h: %d, a: %d, pxaspect: %f, imaspect: %f, span: %f",
+				 job.desc.get_w(), job.desc.get_h(), job.desc.get_antialias(),
+				 job.desc.get_pixel_aspect(), job.desc.get_image_aspect(), job.desc.get_span());
 
 	synfig::info("\ttl: [%f,%f], br: [%f,%f], focus: [%f,%f]",
-				job.desc.get_tl()[0], job.desc.get_tl()[1],
-				job.desc.get_br()[0], job.desc.get_br()[1],
-				job.desc.get_focus()[0], job.desc.get_focus()[1]
+				 job.desc.get_tl()[0], job.desc.get_tl()[1],
+				 job.desc.get_br()[0], job.desc.get_br()[1],
+				 job.desc.get_focus()[0], job.desc.get_focus()[1]
 	);
+}
 
-	/*VERBOSE_OUT(3) << '\t'
-				   << boost::format("tl:[%f,%f], br:[%f,%f], focus:[%f,%f]")
-                                    % job.desc.get_tl()[0]
-                                    % job.desc.get_tl()[1]
-                                    % job.desc.get_br()[0]
-                                    % job.desc.get_br()[1]
-                                    % job.desc.get_focus()[0]
-                                    % job.desc.get_focus()[1]
-                    << std::endl;*/
+void process_job (Job& job)
+{
+	print_job_info(job);
 
 	RenderProgress p;
 	p.task(job.filename + " ==> " + job.outfilename);
