@@ -98,39 +98,42 @@ std::string get_absolute_path(std::string relative_path) {
   return file->get_path();
 }
 
+void try_to_determine_target_from_outfile(Job& job)
+{
+	VERBOSE_OUT(3) << _("Target name undefined, attempting to figure it out")
+				   << std::endl;
+	std::string ext = get_extension(job.outfilename);
+	if (ext.length())
+		ext = ext.substr(1);
+
+	if(Target::ext_book().count(ext))
+	{
+		job.target_name = Target::ext_book()[ext];
+		info("target name not specified - using %s", job.target_name.c_str());
+	}
+	else
+	{
+		std::string lower_ext(ext);
+		strtolower(lower_ext);
+
+		if(Target::ext_book().count(lower_ext))
+		{
+			job.target_name=Target::ext_book()[lower_ext];
+			info("target name not specified - using %s", job.target_name.c_str());
+		}
+		else
+			job.target_name=ext;
+	}
+}
+
 bool setup_job(Job& job, const TargetParam& target_parameters)
 {
 	VERBOSE_OUT(4) << _("Attempting to determine target/outfile...") << std::endl;
 
 	// If the target type is not yet defined,
 	// try to figure it out from the outfile.
-	if(job.target_name.empty() && !job.outfilename.empty())
-	{
-		VERBOSE_OUT(3) << _("Target name undefined, attempting to figure it out")
-					   << std::endl;
-		//std::string ext = bfs::path(job.outfilename).extension().string();
-		std::string ext = get_extension(job.outfilename);
-		if (ext.length())
-			ext = ext.substr(1);
-
-		if(Target::ext_book().count(ext))
-		{
-			job.target_name = Target::ext_book()[ext];
-			info("target name not specified - using %s", job.target_name.c_str());
-		}
-		else
-		{
-			std::string lower_ext(ext);
-			strtolower(lower_ext);
-
-			if(Target::ext_book().count(lower_ext))
-			{
-				job.target_name=Target::ext_book()[lower_ext];
-				info("target name not specified - using %s", job.target_name.c_str());
-			}
-			else
-				job.target_name=ext;
-		}
+	if (job.target_name.empty() && !job.outfilename.empty()) {
+		try_to_determine_target_from_outfile(job);
 	}
 
 	// If the target type is STILL not yet defined, then
