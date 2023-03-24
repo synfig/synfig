@@ -88,7 +88,7 @@ bool RenderProgress::amount_complete(int current_frame, int frames_count)
         if (current_frame != last_frame_)
         {
             remaining_rendered_proportion_ =
-                double(frames_count-current_frame)/(current_frame-last_frame_);
+                double(total_frames_count - r_current_frame) / (r_current_frame);
         }
         Duration time_since_start(Clock::now() - start_timepoint_);
         double remaining_seconds =
