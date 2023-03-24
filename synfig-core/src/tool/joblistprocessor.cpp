@@ -244,6 +244,13 @@ void print_job_info(const Job& job) {
 	);
 }
 
+void save_canvas_to_file(const std::string& filename, const synfig::Canvas::Handle& canvas) {
+	// todo: support containers
+	if(!synfig::save_canvas(FileSystemNative::instance()->get_identifier(filename), canvas)) {
+		throw (SynfigToolException(SYNFIGTOOL_RENDERFAILURE, _("Render Failure.")));
+	}
+}
+
 void process_job (Job& job)
 {
 	print_job_info(job);
@@ -253,9 +260,7 @@ void process_job (Job& job)
 
 	if(job.sifout)
 	{
-		// todo: support containers
-		if(!save_canvas(FileSystemNative::instance()->get_identifier(job.outfilename), job.canvas))
-			throw (SynfigToolException(SYNFIGTOOL_RENDERFAILURE, _("Render Failure.")));
+		save_canvas_to_file(job.outfilename, job.canvas);
 	}
 	else
 	{
