@@ -135,6 +135,23 @@ void set_default_target(Job& job)
 	}
 }
 
+void create_output_filename(Job& job)
+{
+	if(job.outfilename.empty())
+	{
+		std::string new_extension;
+		if(Target::book().count(job.target_name))
+			new_extension = Target::book()[job.target_name].filename;
+		else
+			new_extension = job.target_name;
+
+		job.outfilename = replace_extension(job.filename, new_extension);
+	}
+
+	VERBOSE_OUT(4) << "Target name = " << job.target_name.c_str() << std::endl;
+	VERBOSE_OUT(4) << "Outfilename = " << job.outfilename.c_str() << std::endl;
+}
+
 bool setup_job(Job& job, const TargetParam& target_parameters)
 {
 	VERBOSE_OUT(4) << _("Attempting to determine target/outfile...") << std::endl;
@@ -152,20 +169,7 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 	// If no output filename was provided, then create a output filename
 	// based on the given input filename and the selected target.
 	// (ie: change the extension)
-	if(job.outfilename.empty())
-	{
-        std::string new_extension;
-		if(Target::book().count(job.target_name))
-			new_extension = Target::book()[job.target_name].filename;
-		else
-			new_extension = job.target_name;
-
-        //job.outfilename = bfs::path(job.filename).replace_extension(new_extension).string();
-		job.outfilename = replace_extension(job.filename, new_extension);
-	}
-
-	VERBOSE_OUT(4) << "Target name = " << job.target_name.c_str() << std::endl;
-	VERBOSE_OUT(4) << "Outfilename = " << job.outfilename.c_str() << std::endl;
+	create_output_filename(job);
 
 	// Check permissions
 	//if (access(bfs::canonical(bfs::path(job.outfilename).parent_path()).string().c_str(), W_OK) == -1)
