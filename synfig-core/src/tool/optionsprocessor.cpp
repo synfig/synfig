@@ -709,7 +709,7 @@ Job SynfigCommandLineParser::extract_job()
 		{
 			synfig::error(_("Invalid renderer: %s"), set_renderer.c_str()); 
 			for(const auto& iter : synfig::rendering::Renderer::get_renderers()) {
-				std::cout << (iter.first).c_str() << " - " << iter.second->get_name() << std::endl;
+				std::cerr << (iter.first).c_str() << " - " << iter.second->get_name() << std::endl;
 			}
 			throw SynfigToolException(SYNFIGTOOL_INVALIDJOB);
 		}

@@ -141,7 +141,7 @@ int main(int argc, char **argv)
 	if (ri == renderers.end() || !ri->second) {
 		error("unknown renderer: %s", renderer_name.c_str());
 		for(const auto& iter : synfig::rendering::Renderer::get_renderers()) {
-			std::cout << (iter.first).c_str() << " - " << iter.second->get_name() << std::endl;
+			std::cerr << (iter.first).c_str() << " - " << iter.second->get_name() << std::endl;
 		}
 		return 1;
 	}
