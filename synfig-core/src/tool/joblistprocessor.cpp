@@ -32,14 +32,11 @@
 #	include <config.h>
 #endif
 
-#include <iostream>
-#include <algorithm>
-#include <errno.h>
-#include <cstring>
-
+#include <cerrno>
 #include <chrono>
+#include <cstring>
+#include <iostream>
 
-#include <autorevision.h>
 #include <synfig/general.h>
 #include <synfig/localization.h>
 #include <synfig/target.h>
@@ -93,7 +90,7 @@ std::string replace_extension(const std::string &filename, const std::string &ne
 	return filename.substr(0, found) + "." + new_extension;
 }
 
-std::string get_absolute_path(std::string relative_path) {
+std::string get_absolute_path(const std::string& relative_path) {
   Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(relative_path);
   return file->get_path();
 }
