@@ -4,6 +4,7 @@ target_sources(libsynfig
         "${CMAKE_CURRENT_LIST_DIR}/renderergl.cpp"
 )
 
+add_definitions("-DWITH_OPENGL")
 include(${CMAKE_CURRENT_LIST_DIR}/internal/CMakeLists.txt)
 include(${CMAKE_CURRENT_LIST_DIR}/task/CMakeLists.txt)
 

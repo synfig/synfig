@@ -20,8 +20,6 @@ include(${CMAKE_CURRENT_LIST_DIR}/common/CMakeLists.txt)
 
 if(WITH_OPENGL)
 	include(${CMAKE_CURRENT_LIST_DIR}/opengl/CMakeLists.txt)
-	set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DWITH_OPENGL")
-	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DWITH_OPENGL")
 endif(WITH_OPENGL)
 
 include(${CMAKE_CURRENT_LIST_DIR}/primitive/CMakeLists.txt)
