@@ -95,7 +95,7 @@ std::string get_absolute_path(const std::string& relative_path) {
   return file->get_path();
 }
 
-void try_to_determine_target_from_outfile(Job& job)
+static void try_to_determine_target_from_outfile(Job& job)
 {
 	VERBOSE_OUT(3) << _("Target name undefined, attempting to figure it out")
 				   << std::endl;
@@ -123,7 +123,7 @@ void try_to_determine_target_from_outfile(Job& job)
 	}
 }
 
-void set_default_target(Job& job)
+static void set_default_target(Job& job)
 {
 	if(job.target_name.empty())
 	{
@@ -132,7 +132,7 @@ void set_default_target(Job& job)
 	}
 }
 
-void create_output_filename(Job& job)
+static void create_output_filename(Job& job)
 {
 	if(job.outfilename.empty())
 	{
@@ -149,7 +149,7 @@ void create_output_filename(Job& job)
 	VERBOSE_OUT(4) << "Outfilename = " << job.outfilename.c_str() << std::endl;
 }
 
-bool check_permissions(Job& job)
+static bool check_permissions(Job& job)
 {
 	if (g_access(get_absolute_path(job.outfilename + "/../").c_str(), W_OK) == -1) {
 		synfig::error(_("Unable to create output for \"%s\": %s"), job.filename.c_str(), strerror(errno));
@@ -159,7 +159,7 @@ bool check_permissions(Job& job)
 	return true;
 }
 
-bool create_target(Job& job, const TargetParam& target_parameters)
+static bool create_target(Job& job, const TargetParam& target_parameters)
 {
 	VERBOSE_OUT(4) << _("Creating the target...") << std::endl;
 	job.target =
@@ -178,7 +178,7 @@ bool create_target(Job& job, const TargetParam& target_parameters)
 	return true;
 }
 
-void set_canvas_quality_and_alpha_mode(Job& job)
+static void set_canvas_quality_and_alpha_mode(Job& job)
 {
 	VERBOSE_OUT(4) << _("Setting the canvas on the target...") << std::endl;
 	job.target->set_canvas(job.canvas);
@@ -193,7 +193,7 @@ void set_canvas_quality_and_alpha_mode(Job& job)
 	}
 }
 
-void set_target_engine_and_threads(Job& job)
+static void set_target_engine_and_threads(Job& job)
 {
 	if(auto scanline_target = Target_Scanline::Handle::cast_dynamic(job.target))
 	{
@@ -242,7 +242,7 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 	return true;
 }
 
-void print_job_info(const Job& job) {
+static void print_job_info(const Job& job) {
 	VERBOSE_OUT(3) << job.filename.c_str() << " -- " << std::endl;
 	synfig::info("\tw: %d, h: %d, a: %d, pxaspect: %f, imaspect: %f, span: %f",
 				 job.desc.get_w(), job.desc.get_h(), job.desc.get_antialias(),
@@ -255,7 +255,7 @@ void print_job_info(const Job& job) {
 	);
 }
 
-void save_canvas_to_file(const std::string& filename, const synfig::Canvas::Handle& canvas) {
+static void save_canvas_to_file(const std::string& filename, const synfig::Canvas::Handle& canvas) {
 	// todo: support containers
 	if(!synfig::save_canvas(FileSystemNative::instance()->get_identifier(filename), canvas)) {
 		throw (SynfigToolException(SYNFIGTOOL_RENDERFAILURE, _("Render Failure.")));
