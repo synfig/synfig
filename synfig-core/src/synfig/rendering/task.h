@@ -560,7 +560,7 @@ public:
 
 
 //! Tasks in TaskList executes sequentially and all of them draws at TaskList target surface.
-//! So all tasks inside TaskList should have the same target surface
+//! So all tasks inside TaskList should to have the same target surface
 //! which should be same as TaskList target surface.
 class TaskList: public Task
 {

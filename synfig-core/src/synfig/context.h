@@ -58,7 +58,7 @@ class Time;
 class Rect;
 
 /*!	\class IndependentContext
-**	\brief IndependentContext is a class to wrap the iterator for a double queue of layers
+**	\brief IndependentContext is a class to warp the iterator for a double queue of layers
 * (that is the CanvasBase).
 **	\see Layer, Canvas, CanvasBase, Context */
 class IndependentContext: public CanvasBase::const_iterator

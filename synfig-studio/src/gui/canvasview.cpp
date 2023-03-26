@@ -1777,10 +1777,10 @@ CanvasView::refresh_rend_desc()
 	float current_frame_rate = get_canvas()->rend_desc().get_frame_rate();
 
 	// "responsive" current time widget width on time format
-	const int current_time_min_length = 6;
-	int current_time_length = current_time_widget->get_value().get_string(current_frame_rate, App::get_time_format()).length();
-	current_time_length = current_time_length < current_time_min_length ? current_time_min_length : current_time_length;
-	current_time_widget->set_width_chars(current_time_length);
+	const int current_time_min_lenght = 6;
+	int current_time_lenght = current_time_widget->get_value().get_string(current_frame_rate, App::get_time_format()).length();
+	current_time_lenght = current_time_lenght < current_time_min_lenght ? current_time_min_lenght : current_time_lenght;
+	current_time_widget->set_width_chars(current_time_lenght);
 
 	current_time_widget->set_fps(current_frame_rate);
 	jackdial->set_fps(current_frame_rate);
