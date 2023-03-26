@@ -657,6 +657,8 @@ public:
 	/** show or hide both toolbars */
 	void set_show_toolbars(bool show);
 
+	void set_duck_buttons_sensitivity(bool sensitivity);
+
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------
 	*/

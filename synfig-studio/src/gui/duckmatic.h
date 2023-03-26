@@ -170,6 +170,8 @@ private:
 
 	synfig::GUIDSet selected_ducks;
 
+	synfig::GUIDSet selected_movement_ducks;
+
 	synfig::GUID last_duck_guid;
 
 	std::list<etl::handle<Bezier> > bezier_list_;
@@ -340,6 +342,9 @@ public:
      ** \sa get_selected_duck, clear_selected_ducks, count_selected_ducks
     */
 	DuckList get_selected_ducks()const;
+
+	DuckList get_selected_movement_ducks()const;
+
     //! Return list of box contained ducks (handles). The box is defined by a vector's pair
     /*!
      ** \param tl The top left canvas coordinate has const synfig::Vector
@@ -352,6 +357,8 @@ public:
 	void refresh_selected_ducks();
     //! Clear all selected ducks
 	void clear_selected_ducks();
+	//! clears selected movement ducks set (used in select tool)
+	void clear_selected_movement_ducks();
 	//! Return the number of selected ducks
     /*!
      ** \return the number of selected ducks (handles) has int
@@ -440,6 +447,8 @@ public:
 	/*! Updates corresponding valuenodes after a drag */
 	void signal_edited_selected_ducks(bool moving = false);
 
+	void signal_edited_selected_movement_ducks(bool moving = false);
+
 	bool on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& value_desc);
 
 	etl::handle<Duck> find_similar_duck(etl::handle<Duck> duck);
@@ -506,6 +515,9 @@ public:
 
 	void select_all_ducks();
 	void unselect_all_ducks();
+
+	//ToDo: maybe use a more descriptive name the "movement"
+	void select_all_movement_ducks(etl::loose_handle<CanvasView> canvas_view, synfig::Layer::Handle layer);
 
 	void clear_ducks();
 
