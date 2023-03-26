@@ -62,13 +62,6 @@ public:
 };
 
 
-void print_renderers(const RendererMap& renderers) {
-	std::cout << "available renderers: " << std::endl;
-	for(RendererMap::const_iterator i = renderers.begin(); i != renderers.end(); ++i)
-		if (i->second)
-			std::cout << "  " << i->first << " - " << i->second->get_name() << std::endl;
-}
-
 
 int main(int argc, char **argv)
 {
@@ -124,7 +117,9 @@ int main(int argc, char **argv)
 		std::cout << "Options:"<<std::endl;
 		std::cout << "  --benchmark - Ignore real-time synchronization and render every frame (used for benchmarks)."<<std::endl;
 		std::cout << std::endl;
-		print_renderers(renderers);
+		for(const auto& iter : synfig::rendering::Renderer::get_renderers()) {
+			std::cout << (iter.first).c_str() << " - " << iter.second->get_name() << std::endl;
+		}
 		return 0;
 	}
 
@@ -145,7 +140,9 @@ int main(int argc, char **argv)
 	RendererMap::const_iterator ri = renderers.find(renderer_name);
 	if (ri == renderers.end() || !ri->second) {
 		error("unknown renderer: %s", renderer_name.c_str());
-		print_renderers(renderers);
+		for(const auto& iter : synfig::rendering::Renderer::get_renderers()) {
+			std::cerr << (iter.first).c_str() << " - " << iter.second->get_name() << std::endl;
+		}
 		return 1;
 	}
 	rendering::Renderer::Handle renderer = ri->second;
