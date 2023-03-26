@@ -36,6 +36,7 @@
 #include "os.h"
 
 #include <cstdarg>
+#include <cstdlib>
 
 #include <synfig/filesystem.h>
 #include <synfig/general.h>
@@ -714,7 +715,8 @@ OS::get_user_lang()
 		return language_list;
 
 	{
-		std::string language_list_str = trim(getenv("LANGUAGE"));
+		const char* lang_env = getenv("LANGUAGE");
+		std::string language_list_str = lang_env ? trim(lang_env) : "";
 		if (!language_list_str.empty()) {
 			std::string::size_type pos = 0, prev_pos = 0;
 			while ((pos = language_list_str.find(':', pos)) != std::string::npos) {
@@ -733,7 +735,8 @@ OS::get_user_lang()
 	}
 
 	{
-		std::string lang = trim(getenv("LANG"));
+		const char* lang_env = getenv("LANG");
+		std::string lang = lang_env ? trim(lang_env) : "";
 		if (!lang.empty()) {
 			// remove encoding info
 			auto dot_pos = lang.find('.');
