@@ -1323,6 +1323,25 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				//	selected_bezier->signal_user_click(0)(bezier_click_pos);
 				//}
 
+				//check for a layer click
+				if (Layer::Handle layer = get_canvas()->find_layer(get_canvas_view()->get_context_params(), mouse_pos)) {//make a new event layer pressed
+					if (canvas_view->get_smach().process_event(EventLayerClick(layer, BUTTON_LEFT, mouse_pos)) == Smach::RESULT_OK)
+						return false;
+					std::string select_state = "select";
+					if ( std::string(get_canvas_view()->get_smach().get_state_name())==select_state && get_duck_dragger()){
+						//hack move ducks
+						select_all_ducks();
+						if (!get_selected_ducks().empty()){
+							set_drag_mode(DRAG_DUCK);
+							drag_point=mouse_pos;
+							//drawing_area->queue_draw();
+							start_duck_drag(mouse_pos);
+							get_canvas_view()->reset_cancel_status();
+						}
+					}
+					return true;
+				}
+
 				// Check for a guide click
 				if (show_guides) {
 					GuideList::iterator iter = find_guide_x(mouse_pos,radius);

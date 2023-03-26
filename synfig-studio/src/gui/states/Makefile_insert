@@ -12,6 +12,7 @@ STATES_HH = \
 	states/state_polygon.h \
 	states/state_rectangle.h \
 	states/state_rotate.h \
+        states/state_select.h \
 	states/state_scale.h \
 	states/state_sketch.h \
 	states/state_smoothmove.h \
@@ -32,10 +33,11 @@ STATES_CC = \
 	states/state_fill.cpp \
 	states/state_gradient.cpp \
 	states/state_mirror.cpp \
-	states/state_normal.cpp \
 	states/state_polygon.cpp \
 	states/state_rectangle.cpp \
 	states/state_rotate.cpp \
+        states/state_normal.cpp \
+        states/state_select.cpp \
 	states/state_scale.cpp \
 	states/state_sketch.cpp \
 	states/state_smoothmove.cpp \

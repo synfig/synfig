@@ -35,16 +35,17 @@
 #endif
 
 #include <gui/states/state_normal.h>
+#include <states/state_select.h>
+
+#include <synfig/general.h>
 
 #include <gui/app.h>
-#include <gui/canvasview.h>
 #include <gui/event_keyboard.h>
 #include <gui/event_layerclick.h>
 #include <gui/event_mouse.h>
 #include <gui/docks/dialog_tooloptions.h>
 #include <gui/docks/dock_toolbox.h>
 #include <gui/localization.h>
-#include <gui/workarea.h>
 
 #include <synfig/angle.h>
 
@@ -70,39 +71,6 @@ const int GAP = 3;
 StateNormal studio::state_normal;
 
 /* === C L A S S E S & S T R U C T S ======================================= */
-
-class DuckDrag_Combo : public DuckDrag_Base
-{
-	synfig::Vector last_move;
-	synfig::Vector drag_offset;
-	synfig::Vector center;
-	synfig::Vector snap;
-
-	synfig::Angle original_angle;
-	synfig::Real original_mag;
-
-	std::vector<synfig::Vector> last_;
-	std::vector<synfig::Vector> positions;
-
-
-	bool bad_drag;
-	bool move_only;
-
-	bool is_moving;
-
-public:
-	CanvasView* canvas_view_;
-	bool scale;
-	bool rotate;
-	bool constrain;
-	DuckDrag_Combo();
-	void begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& begin);
-	bool end_duck_drag(Duckmatic* duckmatic);
-	void duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector);
-
-	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
-};
-
 
 class studio::StateNormal_Context : public sigc::trackable
 {
