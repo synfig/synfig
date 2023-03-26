@@ -610,7 +610,7 @@ Layer::set_time(IndependentContext context, Time time)const
 {
 	Layer::ParamList params;
 	Layer::DynamicParamList::const_iterator iter;
-	// For each parameter of the layer sets the time by the operator()(time)
+	// For each parameter of the layer sets the value by the operator()(time)
 	for(iter=dynamic_param_list().begin();iter!=dynamic_param_list().end();iter++)
 		params[iter->first]=(*iter->second)(time);
 	// Sets the modified parameter list to the current context layer
