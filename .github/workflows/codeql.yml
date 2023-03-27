@@ -41,6 +41,26 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
+      
+    - name: Prepare ccache timestamp
+      id: ccache_timestamp
+      run: echo "::set-output name=timestamp::`date "+%Y%m%d-%H%M%S"`"
+
+    - name: Download ccache archive
+      id: ccache-archive
+      uses: actions/cache@v3
+      with:
+        path: .ccache
+        key: ${{ matrix.os }}-ccache-${{ matrix.toolchain }}-${{ steps.ccache_timestamp.outputs.timestamp }}
+        restore-keys:
+          ${{ matrix.os }}-ccache-${{ matrix.toolchain }}-
+
+    - name: Install dependencies (apt)
+      if: runner.os == 'Linux'
+      run: |
+        ./1-setup-linux-native.sh
+        sudo apt-get install ccache ninja-build
+      
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
