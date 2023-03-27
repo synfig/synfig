@@ -51,16 +51,16 @@ jobs:
       uses: actions/cache@v3
       with:
         path: .ccache
-        key: ${{ matrix.os }}-ccache-${{ matrix.toolchain }}-${{ steps.ccache_timestamp.outputs.timestamp }}
+        key: ${{ matrix.os }}-ccache-cmake-ninja-${{ steps.ccache_timestamp.outputs.timestamp }}
         restore-keys:
-          ${{ matrix.os }}-ccache-${{ matrix.toolchain }}-
+          ${{ matrix.os }}-ccache-cmake-ninja-
 
     - name: Install dependencies (apt)
-      if: runner.os == 'Linux'
+      if: runner.os == 'Linux' && matrix.language == 'cpp'
       run: |
         ./1-setup-linux-native.sh
         sudo apt-get install ccache ninja-build
-      
+
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
@@ -86,15 +86,21 @@ jobs:
     #   If the Autobuild fails above, remove it and uncomment the following three lines.
     #   modify them (or add more) to build your code if your project, please refer to the EXAMPLE below for guidance.
 
-    - run: |
-        echo "Run, Build Application using script"
+    - if: matrix.language == 'javascript' || matrix.language == 'python'
+      name: Autobuild
+      uses: github/codeql-action/autobuild@v2
+
+    - if: matrix.language == 'cpp'
+      name: Build C++
+      run: |
         mkdir build-cmake && cd build-cmake
         cmake -GNinja -DENABLE_TESTS=ON -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_BUILD_TYPE=Debug ..
         ninja
-        ctest --output-on-failure        
-        # ./location_of_script_within_repo/buildscript.sh
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
       with:
         category: "/language:${{matrix.language}}"
+
+    - name: ccache statistics
+      run: ccache --show-stats
