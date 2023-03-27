@@ -55,7 +55,7 @@ class JackDial : public Gtk::Box
 public:
 	JackDial();
 	void set_state(bool enabled);
-	Glib::SignalProxy<void> signal_toggle_jack() { return toggle_jack_button->signal_toggled(); }
+	Glib::SignalProxy0<void> signal_toggle_jack() { return toggle_jack_button->signal_toggled(); }
 
 	sigc::signal<void>& signal_offset_changed()      { return offset_widget->signal_value_changed(); }
 

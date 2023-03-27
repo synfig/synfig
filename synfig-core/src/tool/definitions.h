@@ -103,6 +103,10 @@ public:
 
 	void set_should_print_benchmarks(bool print_benchmarks);
 
+	int get_repeats() const;
+
+	void set_repeats(int repeats);
+
 private:
 	SynfigToolGeneralOptions();
 	std::string _binary_path;
@@ -110,6 +114,8 @@ private:
 	size_t _threads;
 	bool _should_be_quiet,
 		 _should_print_benchmarks;
+
+	int _repeats;
 };
 
 #endif

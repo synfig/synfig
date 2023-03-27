@@ -38,6 +38,7 @@ SynfigToolGeneralOptions::SynfigToolGeneralOptions()
 	_should_be_quiet = false;
 	_should_print_benchmarks = false;
 	_threads = 1;
+	_repeats = 1;
 }
 
 std::string SynfigToolGeneralOptions::get_binary_path() const
@@ -88,4 +89,14 @@ bool SynfigToolGeneralOptions::should_print_benchmarks() const
 void SynfigToolGeneralOptions::set_should_print_benchmarks(bool print_benchmarks)
 {
 	_should_print_benchmarks = print_benchmarks;
+}
+
+int SynfigToolGeneralOptions::get_repeats() const
+{
+	return _repeats;
+}
+
+void SynfigToolGeneralOptions::set_repeats(int repeats)
+{
+	_repeats = repeats;
 }

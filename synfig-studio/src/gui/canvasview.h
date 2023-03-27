@@ -71,6 +71,7 @@
 
 #include "dialogs/canvasoptions.h"
 #include "dialogs/canvasproperties.h"
+#include "dialogs/canvasresize.h"
 #include "dialogs/dialog_keyframe.h"
 #include "dialogs/dialog_preview.h"
 #include "dialogs/dialog_waypoint.h"
@@ -284,7 +285,8 @@ private:
 	Gtk::ToolButton *refreshbutton;
 	Gtk::ComboBoxText *render_combobox;
 	Gtk::Grid *timebar;
-	Gtk::Toolbar *displaybar;
+	Gtk::Toolbar *top_toolbar;
+	Gtk::Toolbar *right_toolbar;
 	Widget_Enum *widget_interpolation;
 	Gtk::ToggleButton *animatebutton;
 	Gtk::ToggleButton *timetrackbutton;
@@ -405,6 +407,7 @@ private:
 public:
 
 	CanvasProperties canvas_properties;
+	CanvasResize canvas_resize;
 	CanvasOptions *canvas_options;
 	RenderSettings render_settings;
 	Dialog_Waypoint waypoint_dialog;
@@ -457,11 +460,6 @@ private:
 	void workarea_layer_selected(synfig::Layer::Handle layer);
 
 	void selected_layer_color_set(synfig::Color color);
-
-	void register_layer_type(synfig::Layer::Book::value_type &lyr,std::map<synfig::String,Gtk::Menu*>*);
-
-	//! Rebuilds the "new layer" menu
-	void build_new_layer_menu(Gtk::Menu &menu);
 
 	void decrease_low_res_pixel_size();
 	void increase_low_res_pixel_size();
@@ -571,7 +569,7 @@ public:
 	void set_time(synfig::Time t) { time_model()->set_time(t); }
 	synfig::Time get_time() { return time_model()->get_time(); }
 
-	const etl::handle<synfig::Canvas>& get_canvas()const { return canvas_interface_->get_canvas(); }
+	const synfig::Canvas::Handle& get_canvas()const { return canvas_interface_->get_canvas(); }
 	const etl::loose_handle<Instance>& get_instance()const { return instance_; }
 
 	const etl::handle<synfigapp::CanvasInterface>& canvas_interface() { return canvas_interface_; }
@@ -656,8 +654,8 @@ public:
 	//! Toggle between none/last visible handles
 	//! \Sa             DuckMatic::set_type_mask_state(), DuckMatic::get_type_mask_state()
 	void toggle_duck_mask_all();
-	// Toggle displaybar according to App::enable_mainwin_toolbar
-	void toggle_show_toolbar();
+	/** show or hide both toolbars */
+	void set_show_toolbars(bool show);
 
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------
@@ -707,7 +705,7 @@ protected:
  -- ** -- S T A T I C   P U B L I C   M E T H O D S ---------------------------
 	*/
 public:
-	static etl::handle<studio::CanvasView> create(etl::loose_handle<Instance> instance,etl::handle<synfig::Canvas> canvas);
+	static etl::handle<studio::CanvasView> create(etl::loose_handle<Instance> instance,synfig::Canvas::Handle canvas);
 	static std::list<int>& get_pixel_sizes();
 
 private:

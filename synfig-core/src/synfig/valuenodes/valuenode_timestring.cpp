@@ -74,7 +74,7 @@ ValueNode_TimeString::create_new()const
 }
 
 ValueNode_TimeString*
-ValueNode_TimeString::create(const ValueBase& x, etl::loose_handle<Canvas>)
+ValueNode_TimeString::create(const ValueBase& x, Canvas::LooseHandle)
 {
 	return new ValueNode_TimeString(x);
 }

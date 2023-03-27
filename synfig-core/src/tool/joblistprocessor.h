@@ -43,6 +43,6 @@ bool setup_job(Job& job, const synfig::TargetParam& target_parameters);
 /// Process an individual job
 void process_job(Job& job);
 
-std::string get_absolute_path(std::string relative_path);
+std::string get_absolute_path(const std::string& relative_path);
 
 #endif // __SYNFIG_JOBLISTPROCESSOR_H

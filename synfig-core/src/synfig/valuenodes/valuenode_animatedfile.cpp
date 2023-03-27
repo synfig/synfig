@@ -353,7 +353,7 @@ ValueNode_AnimatedFile::create_new() const
 	{ return new ValueNode_AnimatedFile(get_type()); }
 
 ValueNode_AnimatedFile*
-ValueNode_AnimatedFile::create(const ValueBase& x, etl::loose_handle<Canvas>)
+ValueNode_AnimatedFile::create(const ValueBase& x, Canvas::LooseHandle)
 	{ return new ValueNode_AnimatedFile(x.get_type()); }
 
 

@@ -69,7 +69,7 @@ CanvasFileNaming::filename_extension_lower(const String &filename)
 {
 	String ext = etl::filename_extension(filename);
 	if (!ext.empty()) ext = ext.substr(1); // skip initial '.'
-	std::transform(ext.begin(), ext.end(), ext.begin(), &::tolower);
+	strtolower(ext);
 	return ext;
 }
 

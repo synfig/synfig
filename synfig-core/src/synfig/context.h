@@ -58,7 +58,7 @@ class Time;
 class Rect;
 
 /*!	\class IndependentContext
-**	\brief IndependentContext is a class to warp the iterator for a double queue of layers
+**	\brief IndependentContext is a class to wrap the iterator for a double queue of layers
 * (that is the CanvasBase).
 **	\see Layer, Canvas, CanvasBase, Context */
 class IndependentContext: public CanvasBase::const_iterator
@@ -174,7 +174,7 @@ public:
 	Rect get_full_bounding_rect()const;
 
 	//! Returns the first context's layer's handle that intesects the given \point */
-	etl::handle<Layer> hit_check(const Point &point)const;
+	Layer::Handle hit_check(const Point &point)const;
 
 	//! Returns \c true if layer is active with this context_params
 	static inline bool active(const ContextParams &context_params, const Layer &layer) {

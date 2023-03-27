@@ -28,6 +28,7 @@ src/gui/dialogs/canvasproperties.cpp
 src/gui/dialogs/canvasproperties.h
 src/gui/dialogs/dialog_canvasdependencies.cpp
 src/gui/dialogs/dialog_canvasdependencies.h
+src/gui/dialogs/canvasresize.cpp
 src/gui/dialogs/dialog_color.cpp
 src/gui/dialogs/dialog_color.h
 src/gui/dialogs/dialog_ffmpegparam.cpp
@@ -523,10 +524,12 @@ src/synfigapp/value_desc.h
 
 # Now, UI xml files
 src/gui/resources/ui/canvas_options.glade
+src/gui/resources/ui/canvas_resize.glade
 src/gui/resources/ui/dialog_canvasdependencies.glade
 src/gui/resources/ui/dialog_workspaces.glade
 src/gui/resources/ui/preview_options.glade
 src/gui/resources/ui/shortcuts_window.glade
+src/gui/resources/ui/vectorizer_settings.glade
 src/gui/resources/ui/file_top_toolbar.glade
 src/gui/resources/ui/history_toolbar.glade
 src/gui/resources/ui/right_toolbar.glade

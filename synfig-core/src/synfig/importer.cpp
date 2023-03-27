@@ -121,7 +121,7 @@ Importer::open(const FileSystem::Identifier &identifier, bool force)
 
 	String ext(filename_extension(identifier.filename));
 	if (ext.size()) ext = ext.substr(1); // skip initial '.'
-	std::transform(ext.begin(),ext.end(),ext.begin(),&::tolower);
+	strtolower(ext);
 
 
 	if(!Importer::book().count(ext))

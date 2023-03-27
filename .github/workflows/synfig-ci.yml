@@ -28,16 +28,17 @@ jobs:
           name: macOS 11 Big Sur (Autotools)
           toolchain: autotools
           allow_failures: false
-#        - os: macos-11.0
+
         - os: macos-11
-#          name: MacOS 11.0 Big Sur (CMake+Ninja)
           name: macOS 11 Big Sur (CMake+Ninja)
           toolchain: cmake-ninja
           allow_failures: true
+
         - os: ubuntu-20.04
           name: Ubuntu 20.04 Focal (Autotools)
           allow_failures: false
           toolchain: autotools
+
         - os: ubuntu-22.04
           name: Ubuntu 22.04 Jammy (CMake+Ninja)
           toolchain: cmake-ninja
@@ -85,7 +86,7 @@ jobs:
         if: matrix.toolchain == 'cmake-ninja'
         run: |
           mkdir build-cmake && cd build-cmake
-          cmake -GNinja -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_BUILD_TYPE=Release -DWITHOUT_MAGICPP=ON ..
+          cmake -GNinja -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_BUILD_TYPE=Release ..
           ninja
 
       - name: Build (Autotools+Make)

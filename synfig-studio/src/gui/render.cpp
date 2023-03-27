@@ -237,7 +237,7 @@ RenderSettings::set_entry_filename()
 	String filename(filename_sans_extension(canvas_interface_->get_canvas()->get_file_name()));
 
 	// if this isn't the root canvas, append (<canvasname>) to the filename
-	etl::handle<synfig::Canvas> canvas = canvas_interface_->get_canvas();
+	Canvas::Handle canvas = canvas_interface_->get_canvas();
 	if (!canvas->is_root())
 	{
 		if(canvas->get_name().empty())
@@ -574,7 +574,6 @@ RenderSettings::submit_next_render_pass()
 		async_renderer->start();
 		App::dock_info_->set_async_render(async_renderer);
 	}
-	return;
 }
 
 void

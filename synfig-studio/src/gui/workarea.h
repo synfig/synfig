@@ -128,7 +128,7 @@ private:
 	std::set<etl::handle<WorkAreaRenderer> > renderer_set_;
 
 	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface;
-	etl::handle<synfig::Canvas> canvas;
+	synfig::Canvas::Handle canvas;
 	etl::loose_handle<studio::Instance> instance;
 	etl::loose_handle<studio::CanvasView> canvas_view;
 	etl::handle<Renderer_Canvas> renderer_canvas;
@@ -178,7 +178,7 @@ private:
 	synfig::Point previous_focus;
 
 	//! Active Bone
-	etl::loose_handle<synfig::ValueNode> active_bone_;
+	synfig::ValueNode::LooseHandle active_bone_;
 	bool highlight_active_bone;
 
 	//! This state is true if ruler should be shown
@@ -222,7 +222,7 @@ private:
 	// render future and past frames in background
 	bool background_rendering;
 
-	etl::loose_handle<synfig::ValueNode> selected_value_node_;
+	synfig::ValueNode::LooseHandle selected_value_node_;
 
 	bool allow_duck_clicks;
 	bool allow_bezier_clicks;
@@ -260,7 +260,7 @@ private:
 	sigc::signal<void, GdkDevice*> signal_input_device_changed_;
 	sigc::signal<void> signal_popup_menu_;
 	sigc::signal<void, synfig::Point> signal_user_click_[5]; //!< One signal per button
-	sigc::signal<void, etl::handle<synfig::Layer> > signal_layer_selected_; //!< Signal for when the user clicks on a layer
+	sigc::signal<void, synfig::Layer::Handle> signal_layer_selected_; //!< Signal for when the user clicks on a layer
 
 public:
 	sigc::signal<void>& signal_rendering() { return signal_rendering_; }
@@ -271,7 +271,7 @@ public:
 	sigc::signal<void, GdkDevice*>& signal_input_device_changed() { return signal_input_device_changed_; }
 	sigc::signal<void> &signal_popup_menu() { return signal_popup_menu_; }
 	sigc::signal<void, synfig::Point> &signal_user_click(int button=0){ return signal_user_click_[button]; } //!< One signal per button (5 buttons)
-	sigc::signal<void, etl::handle<synfig::Layer> >& signal_layer_selected() { return signal_layer_selected_; }
+	sigc::signal<void, synfig::Layer::Handle>& signal_layer_selected() { return signal_layer_selected_; }
 
 private:
 	/*
@@ -280,7 +280,7 @@ private:
 
 	void set_drag_mode(DragMode mode);
 
-	void set_active_bone_value_node(etl::loose_handle<synfig::ValueNode> x);
+	void set_active_bone_value_node(synfig::ValueNode::LooseHandle x);
 
 public:
 	/*
@@ -292,7 +292,7 @@ public:
 
 	void view_window_changed() { signal_view_window_changed()(); }
 
-	const etl::loose_handle<synfig::ValueNode>& get_selected_value_node() { return  selected_value_node_; }
+	const synfig::ValueNode::LooseHandle& get_selected_value_node() { return  selected_value_node_; }
 	const synfig::Point& get_drag_point()const { return drag_point; }
 
 	synfig::VectorInt get_windows_offset() const;
@@ -322,9 +322,9 @@ public:
 	void set_background_rendering(bool x);
 	bool get_background_rendering() const { return background_rendering; }
 
-	void set_selected_value_node(etl::loose_handle<synfig::ValueNode> x);
+	void set_selected_value_node(synfig::ValueNode::LooseHandle x);
 
-	const etl::loose_handle<synfig::ValueNode>& get_active_bone_value_node(){return active_bone_;}
+	const synfig::ValueNode::LooseHandle& get_active_bone_value_node(){return active_bone_;}
 	bool get_active_bone_display(){return highlight_active_bone;}
 	void set_active_bone_display(bool x){highlight_active_bone=x;}
 
@@ -343,9 +343,9 @@ public:
 	Glib::RefPtr<const Gtk::Adjustment> get_scrolly_adjustment() const { return scrolly_adjustment; }
 
 	void set_instance(etl::loose_handle<studio::Instance> x) { instance=x; }
-	void set_canvas(etl::handle<synfig::Canvas> x) { canvas=x; }
+	void set_canvas(synfig::Canvas::Handle x) { canvas=x; }
 	void set_canvas_view(etl::loose_handle<studio::CanvasView> x) { canvas_view=x; }
-	const etl::handle<synfig::Canvas>& get_canvas() const { return canvas; }
+	const synfig::Canvas::Handle& get_canvas() const { return canvas; }
 	const etl::loose_handle<studio::Instance>& get_instance() const { return instance; }
 	const etl::loose_handle<studio::CanvasView>& get_canvas_view() const { return canvas_view; }
 	const etl::handle<Renderer_Canvas>& get_renderer_canvas() const { return renderer_canvas; }

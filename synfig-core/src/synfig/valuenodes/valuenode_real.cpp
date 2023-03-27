@@ -60,6 +60,7 @@ REGISTER_VALUENODE(ValueNode_Real, RELEASE_VERSION_0_64_0, "fromreal", N_("Real"
 ValueNode_Real::ValueNode_Real(Type &x):
 	LinkableValueNode(x)
 {
+	init_children_vocab();
 }
 
 ValueNode_Real::ValueNode_Real(const ValueBase &x):

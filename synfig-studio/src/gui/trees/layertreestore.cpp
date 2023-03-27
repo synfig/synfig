@@ -242,7 +242,7 @@ LayerTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int column
 						layer->get_parent_paste_canvas_layer() );
 				if(paste)
 				{
-					//etl::handle<synfig::Canvas> sub_canvas=paste->get_param("canvas").get(sub_canvas);
+					//Canvas::Handle sub_canvas=paste->get_param("canvas").get(sub_canvas);
 					Canvas::Handle sub_canvas=paste->get_param("canvas").get(Canvas::Handle());
 					if(sub_canvas && !sub_canvas->is_inline())
 					{
@@ -919,7 +919,7 @@ LayerTreeStore::set_row_layer(Gtk::TreeRow &row, const synfig::Layer::Handle &ha
 		}
 
 		/*
-		etl::handle<ValueNode> value_node;
+		ValueNode::Handle value_node;
 		if(handle.constant()->dynamic_param_list().count(iter->get_name()))
 			value_node=handle->dynamic_param_list()[iter->get_name()];
 

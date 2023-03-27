@@ -74,6 +74,7 @@ REGISTER_VALUENODE(ValueNode_Reverse, RELEASE_VERSION_1_0_2, "reverse", N_("Reve
 ValueNode_Reverse::ValueNode_Reverse(Type &x):
 	LinkableValueNode(x)
 {
+	init_children_vocab();
 }
 
 ValueNode_Reverse::ValueNode_Reverse(const ValueBase &x):

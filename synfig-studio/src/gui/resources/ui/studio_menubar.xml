@@ -583,8 +583,8 @@
 						    <attribute name="action">app.workspace-default</attribute>
 						</item>
 						<item>
-						    <attribute name="label" translatable="yes">_Composting</attribute>
-						    <attribute name="action">app.workspace-composting</attribute>
+						    <attribute name="label" translatable="yes">_Compositing</attribute>
+						    <attribute name="action">app.workspace-compositing</attribute>
 						</item>
 						<item>
 						    <attribute name="label" translatable="yes">_Animating</attribute>

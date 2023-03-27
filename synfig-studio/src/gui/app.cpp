@@ -82,7 +82,6 @@
 #include <gui/dialogs/dialog_gradient.h>
 #include <gui/dialogs/dialog_input.h>
 #include <gui/dialogs/dialog_setup.h>
-#include <gui/dialogs/dialog_workspaces.h>
 #include <gui/dialogs/vectorizersettings.h>
 
 #include <gui/docks/dialog_tooloptions.h>
@@ -134,7 +133,6 @@
 #include <gui/states/state_zoom.h>
 
 #include <gui/widgets/widget_enum.h>
-#include <gui/workspacehandler.h>
 
 #include <ETL/stringf>
 
@@ -197,13 +195,6 @@ static sigc::signal<void> signal_recent_files_changed_;
 sigc::signal<void>&
 App::signal_recent_files_changed() { return signal_recent_files_changed_; }
 
-static sigc::signal<void> signal_custom_workspaces_changed_;
-sigc::signal<void>&
-App::signal_custom_workspaces_changed()
-{
-	return signal_custom_workspaces_changed_;
-}
-
 static sigc::signal<void,etl::loose_handle<CanvasView> > signal_canvas_view_focus_;
 sigc::signal<void,etl::loose_handle<CanvasView> >&
 App::signal_canvas_view_focus() { return signal_canvas_view_focus_; }
@@ -224,15 +215,6 @@ App::signal_instance_deleted() { return signal_instance_deleted_; }
 
 static std::list<std::string>           recent_files;
 const  std::list<std::string>& App::get_recent_files() { return recent_files; }
-
-const std::vector<std::string>
-App::get_workspaces()
-{
-	std::vector<std::string> list;
-	if (workspaces)
-		workspaces->get_name_list(list);
-	return list;
-}
 
 int	 App::Busy::count;
 bool App::shutdown_in_progress;
@@ -327,8 +309,6 @@ SoundProcessor *App::sound_render_done = nullptr;
 bool App::use_render_done_sound = true;
 
 static StateManager* state_manager;
-
-studio::WorkspaceHandler *studio::App::workspaces = nullptr;
 
 static bool
 really_delete_widget(Gtk::Widget *widget)
@@ -504,8 +484,8 @@ public:
 			}
 			if(key=="animation_thumbnail_preview")
 			{
-			        value=strprintf("%i",(int)App::animation_thumbnail_preview);
-			        return true;
+				value=strprintf("%i",(int)App::animation_thumbnail_preview);
+				return true;
 			}
 			if(key=="enable_experimental_features")
 			{
@@ -588,7 +568,7 @@ public:
 			}
 			if (key == "default_background_layer_type")
 			{
-                value = strprintf("%s", App::default_background_layer_type.c_str());
+				value = strprintf("%s", App::default_background_layer_type.c_str());
 				return true;
 			}
 			if (key == "default_background_layer_color")
@@ -692,9 +672,9 @@ public:
 			}
 			if(key=="animation_thumbnail_preview")
 			{
-			        int i(atoi(value.c_str()));
-			        App::animation_thumbnail_preview=i;
-			        return true;
+				int i(atoi(value.c_str()));
+				App::animation_thumbnail_preview=i;
+				return true;
 			}
 			if(key=="enable_experimental_features")
 			{
@@ -1028,6 +1008,7 @@ DEFINE_ACTION("canvas-zoom-fit-2",  Gtk::StockID("gtk-zoom-fit"))
 // actions in Canvas menu
 DEFINE_ACTION("properties", _("Properties..."))
 DEFINE_ACTION("options",    _("Options..."))
+DEFINE_ACTION("resize",     _("Resize..."))
 
 // actions in Layer menu
 DEFINE_ACTION("amount-inc", _("Increase Layer Amount"))
@@ -1169,6 +1150,7 @@ DEFINE_ACTION("switch-to-rightmost-tab",  _("Switch to Rightmost Tab"))
 "	<menu action='menu-canvas'>"
 "		<menuitem action='properties'/>"
 "		<menuitem action='options'/>"
+"		<menuitem action='resize'/>"
 "	</menu>"
 "	<menu action='menu-toolbox'>"
 "	</menu>"
@@ -1391,6 +1373,7 @@ App::get_default_accel_map()
 		{"<Control>parenleft" ,     "<Actions>/canvasview/decrease-low-res-pixel-size"},
 		{"<Control>parenright" ,    "<Actions>/canvasview/increase-low-res-pixel-size"},
 		{"<Primary>g",              "<Actions>/action_group_layer_action_manager/action-LayerEncapsulate"},
+		{"<Primary>u",              "<Actions>/action_group_layer_action_manager/action-LayerDuplicate"},
 		{"<Control><Mod1>parenleft",  "<Actions>/action_group_layer_action_manager/amount-dec"},
 		{"<Control><Mod1>parenright", "<Actions>/action_group_layer_action_manager/amount-inc"},
 		{"equal",                   "<Actions>/canvasview/canvas-zoom-in"},
@@ -1595,7 +1578,7 @@ void App::init(const synfig::String& rootpath)
 		state_manager=new StateManager();
 
 		studio_init_cb.task(_("Init Main Window..."));
-		main_window=new studio::MainWindow();
+		main_window=new studio::MainWindow(App::instance());
 		main_window->add_accel_group(App::ui_manager_->get_accel_group());
 
 		studio_init_cb.task(_("Init Toolbox..."));
@@ -1691,9 +1674,7 @@ void App::init(const synfig::String& rootpath)
 		dialog_input->signal_apply().connect( sigc::mem_fun( *device_tracker, &DeviceTracker::save_preferences) );
 
 		studio_init_cb.task(_("Loading Custom Workspace List..."));
-		workspaces = new WorkspaceHandler();
-		workspaces->signal_list_changed().connect( sigc::mem_fun(signal_custom_workspaces_changed_, &sigc::signal<void>::emit) );
-		load_custom_workspaces();
+		MainWindow::load_custom_workspaces();
 
 		studio_init_cb.task(_("Init auto recovery..."));
 		auto_recover=new AutoRecover();
@@ -1702,10 +1683,10 @@ void App::init(const synfig::String& rootpath)
 		studio_init_cb.task(_("Loading Settings..."));
 		load_accel_map();
 		if (!load_settings())
-			set_workspace_default();
+			MainWindow::set_workspace_default();
 		if (!load_settings("workspace.layout"))
-			set_workspace_default();
-		load_file_window_size();
+			MainWindow::set_workspace_default();
+		load_recent_files();
 
 		// Init Tools must be done after load_accel_map() : accelerators keys
 		// are displayed in toolbox labels
@@ -1727,7 +1708,7 @@ void App::init(const synfig::String& rootpath)
 		/* bline tools */
 		state_manager->add_state(&state_bline);
 		if(!getenv("SYNFIG_DISABLE_DRAW"   )) state_manager->add_state(&state_draw ); // Enabled for now.  Let's see whether they're good enough yet.
-                state_manager->add_state(&state_lasso); // Enabled for now.  Let's see whether they're good enough yet.
+		state_manager->add_state(&state_lasso);
 		if(!getenv("SYNFIG_DISABLE_WIDTH"  )) state_manager->add_state(&state_width); // Enabled since 0.61.09
 		state_manager->add_state(&state_fill);
 		state_manager->add_state(&state_eyedrop);
@@ -1866,8 +1847,6 @@ App::on_shutdown()
 	delete dialog_input;
 
 	delete dock_manager;
-
-	delete workspaces;
 
 	instance_list.clear();
 
@@ -2027,10 +2006,7 @@ App::save_settings()
 		std::string filename=get_config_file("settings-1.4");
 		synfigapp::Main::settings().save_to_file(filename);
 
-		{
-			std::string filename = get_config_file("workspaces");
-			workspaces->save(filename);
-		}
+		MainWindow::save_custom_workspaces();
 	}
 	catch(...)
 	{
@@ -2077,11 +2053,8 @@ App::save_accel_map()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		{
-			std::string filename=get_config_file("accelrc");
-			Gtk::AccelMap::save(filename);
-		}
+		std::string filename=get_config_file("accelrc");
+		Gtk::AccelMap::save(filename);
 	}
 	catch(...)
 	{
@@ -2090,29 +2063,25 @@ App::save_accel_map()
 }
 
 void
-App::load_file_window_size()
+App::load_recent_files()
 {
 	try
 	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+		std::string filename=get_config_file("recentfiles");
+		std::ifstream file(synfig::filesystem::Path(filename).c_str());
+
+		while(file)
 		{
-			std::string filename=get_config_file("recentfiles");
-			std::ifstream file(synfig::filesystem::Path(filename).c_str());
-
-			while(file)
-			{
-				std::string recent_file;
-				getline(file,recent_file);
-				if(!recent_file.empty() && FileSystemNative::instance()->is_file(recent_file))
-					add_recent_file(recent_file, false);
-			}
-			signal_recent_files_changed()();
+			std::string recent_file;
+			getline(file,recent_file);
+			if(!recent_file.empty() && FileSystemNative::instance()->is_file(recent_file))
+				add_recent_file(recent_file, false);
 		}
-
+		signal_recent_files_changed()();
 	}
 	catch(...)
 	{
-		synfig::warning("Caught exception when attempting to load window settings.");
+		synfig::warning("Caught exception when attempting to load recent file list.");
 	}
 }
 
@@ -2138,164 +2107,8 @@ App::load_language_settings()
 	}
 	catch(...)
 	{
-		synfig::warning("Caught exception when attempting to loading language settings.");
+		synfig::warning("Caught exception when attempting to load language settings.");
 	}
-}
-
-void
-App::set_workspace_default()
-{
-	std::string tpl =
-	"[mainwindow|%0X|%0Y|%100x|%90y|"
-		"[hor|%75x"
-			"|[vert|%70y"
-				"|[hor|%10x"
-					"|[book|toolbox]"
-					"|[mainnotebook]"
-				"]"
-				"|[hor|%25x"
-					"|[book|params|keyframes]"
-					"|[book|timetrack|curves|children|meta_data|soundwave]"
-				"]"
-			"]"
-			"|[vert|%20y"
-				"|[book|canvases|pal_edit|navigator|info]"
-				"|[vert|%25y"
-					"|[book|tool_options|history]"
-                                        "|[book|layers|groups]"
-				"]"
-			"]"
-		"]"
-	"]";
-
-	set_workspace_from_template(tpl);
-}
-
-void
-App::set_workspace_compositing()
-{
-	std::string tpl =
-	"[mainwindow|%0X|%0Y|%100x|%90y|"
-		"[hor|%1x"
-			"|[vert|%1y|[book|toolbox]|[book|tool_options]]"
-			"|[hor|%60x|[mainnotebook]"
-				"|[hor|%50x|[book|params]"
-					"|[vert|%30y|[book|history|groups]|[book|layers|canvases]]"
-			"]"
-		"]"
-	"]";
-
-	set_workspace_from_template(tpl);
-}
-
-void
-App::set_workspace_animating()
-{
-	std::string tpl =
-	"[mainwindow|%0X|%0Y|%100x|%90y|"
-		"[hor|%70x"
-			"|[vert|%1y"
-				"|[hor|%1x|[book|toolbox]|[mainnotebook]]"
-				"|[hor|%25x|[book|params|children]|[book|timetrack|curves|soundwave|]]"
-			"]"
-			"|[vert|%30y"
-				"|[book|keyframes|history|groups]|[book|layers|canvases]]"
-			"]"
-		"]"
-	"]";
-
-	set_workspace_from_template(tpl);
-}
-
-void App::set_workspace_from_template(const std::string& tpl)
-{
-	Glib::RefPtr<Gdk::Display> display(Gdk::Display::get_default());
-	Glib::RefPtr<const Gdk::Screen> screen(display->get_default_screen());
-	Gdk::Rectangle rect;
-	// A proper way to obtain the primary monitor is to use the
-	// Gdk::Screen::get_primary_monitor () const member. But as it
-	// was introduced in gtkmm 2.20 I assume that the monitor 0 is the
-	// primary one.
-	screen->get_monitor_geometry(0,rect);
-	float dx = (float)rect.get_x();
-	float dy = (float)rect.get_y();
-	float sx = (float)rect.get_width();
-	float sy = (float)rect.get_height();
-
-	std::string layout = DockManager::layout_from_template(tpl, dx, dy, sx, sy);
-	dock_manager->load_layout_from_string(layout);
-	dock_manager->show_all_dock_dialogs();
-}
-
-void App::set_workspace_from_name(const std::string& name)
-{
-	std::string tpl;
-	bool ok = workspaces->get_workspace(name, tpl);
-	if (!ok)
-		return;
-	set_workspace_from_template(tpl);
-}
-
-void App::load_custom_workspaces()
-{
-	workspaces->clear();
-	std::string filename = get_config_file("workspaces");
-	workspaces->load(filename);
-}
-
-void App::save_custom_workspace()
-{
-	Gtk::MessageDialog dialog(*App::main_window, _("Type a name for this custom workspace:"), false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_NONE);
-
-	dialog.add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
-	Gtk::Button * ok_button = dialog.add_button(_("Ok"), Gtk::RESPONSE_OK);
-	ok_button->set_sensitive(false);
-
-	Gtk::Entry * name_entry = Gtk::manage(new Gtk::Entry());
-	name_entry->set_margin_start(16);
-	name_entry->set_margin_end(16);
-	name_entry->signal_changed().connect(sigc::track_obj([&](){
-		std::string name = synfig::trim(name_entry->get_text());
-		bool has_equal_sign = name.find('=') != std::string::npos;
-		ok_button->set_sensitive(!name.empty() && !has_equal_sign);
-		if (ok_button->is_sensitive())
-			ok_button->grab_default();
-	}, dialog));
-	name_entry->signal_activate().connect(sigc::mem_fun(*ok_button, &Gtk::Button::clicked));
-
-	dialog.get_content_area()->set_spacing(12);
-	dialog.get_content_area()->add(*name_entry);
-
-	ok_button->set_can_default(true);
-
-	dialog.show_all();
-
-	int response = dialog.run();
-	if (response != Gtk::RESPONSE_OK)
-		return;
-
-	std::string name = synfig::trim(name_entry->get_text());
-
-	std::string tpl = dock_manager->save_layout_to_string();
-	if (!workspaces->has_workspace(name))
-		workspaces->add_workspace(name, tpl);
-	else {
-		Gtk::MessageDialog confirm_dlg(dialog, _("Do you want to overwrite this workspace?"), false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL);
-		if (confirm_dlg.run() != Gtk::RESPONSE_OK)
-			return;
-		workspaces->set_workspace(name, tpl);
-	}
-}
-
-void App::edit_custom_workspace_list()
-{
-	Dialog_Workspaces * dlg = Dialog_Workspaces::create(*App::main_window);
-	if (!dlg) {
-		synfig::warning("Can't load Dialog_Workspaces");
-		return;
-	}
-	dlg->run();
-	delete dlg;
 }
 
 void
@@ -3258,10 +3071,10 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 	_preferences.set_value(preference, dirname(filename));
 	delete dialog;
 	return true;
-    }
+	}
 
-    delete dialog;
-    return false;
+	delete dialog;
+	return false;
 #endif
 }
 
@@ -3289,9 +3102,8 @@ App::dialog_export_file(const std::string &title, std::string &filename, std::st
 
 	if (filename.empty()) {
 		dialog->set_filename(prev_path);
-
 	} else {
-        dialog->set_current_name(filename_sans_extension(basename(filename)));
+		dialog->set_current_name(filename_sans_extension(basename(filename)));
 	}
 
 	// set focus to the file name entry(box) of dialog instead to avoid the name
@@ -3315,10 +3127,10 @@ App::dialog_export_file(const std::string &title, std::string &filename, std::st
 				return exporter.id;
 			}
 		}
-    }
+	}
 
-    delete dialog;
-    return {};
+	delete dialog;
+	return {};
 }
 
 bool
@@ -3661,7 +3473,7 @@ try_open_uri(const std::string &uri)
 {
 #if GTK_CHECK_VERSION(3, 22, 0)
 	return gtk_show_uri_on_window(
-		App::main_window ? App::main_window->gobj() : nullptr,
+		App::main_window ? GTK_WINDOW(App::main_window->gobj()) : nullptr,
 		uri.c_str(), GDK_CURRENT_TIME, nullptr );
 #else
 	return gtk_show_uri(nullptr, uri.c_str(), GDK_CURRENT_TIME, nullptr);
@@ -3723,12 +3535,22 @@ void App::open_img_in_external(const std::string &uri)
 
 static std::unordered_map<std::string, int> vectorizer_configmap({ { "threshold", 8 },{ "accuracy", 9 },{ "despeckling", 5 },{ "maxthickness", 200 }});
 
-void App::open_vectorizerpopup(const etl::handle<synfig::Layer_Bitmap> my_layer_bitmap, const etl::handle<synfig::Layer> reference_layer)
+void App::open_vectorizerpopup(const etl::handle<synfig::Layer_Bitmap> my_layer_bitmap, const synfig::Layer::Handle reference_layer)
 {
 	String desc = my_layer_bitmap->get_description();
 	synfig::info("Opening Vectorizerpopup for :"+desc);
-	App::vectorizerpopup = new studio::VectorizerSettings(*App::main_window,my_layer_bitmap,selected_instance,vectorizer_configmap,reference_layer);
-	App::vectorizerpopup->show();
+	App::vectorizerpopup = studio::VectorizerSettings::create(*App::main_window,my_layer_bitmap,selected_instance,vectorizer_configmap,reference_layer);
+	if(!vectorizerpopup){
+		App::dialog_message_1b(
+			"ERROR",
+			_("Glade file could not be found!"),
+			"details",
+			_("Ok"),
+			"long_details"
+		);
+	}
+	else
+		App::vectorizerpopup->show();
 }
 
 void App::open_uri(const std::string &uri)
@@ -3957,7 +3779,7 @@ App::open(std::string filename, /* std::string as, */ synfig::FileContainerZip::
 		// file to open inside canvas file-system
 		String canvas_filename = CanvasFileNaming::project_file(filename);
 
-		etl::handle<synfig::Canvas> canvas = open_canvas_as(canvas_file_system ->get_identifier(canvas_filename), filename, errors, warnings);
+		Canvas::Handle canvas = open_canvas_as(canvas_file_system ->get_identifier(canvas_filename), filename, errors, warnings);
 		if(canvas && get_instance(canvas))
 		{
 			get_instance(canvas)->find_canvas_view(canvas)->present();
@@ -3968,6 +3790,9 @@ App::open(std::string filename, /* std::string as, */ synfig::FileContainerZip::
 		{
 			if(!canvas)
 				throw (String)strprintf(_("Unable to load \"%s\":\n\n"),filename.c_str()) + errors;
+
+			// Set new pixel ratio
+			canvas->rend_desc().set_pixel_ratio(canvas->rend_desc().get_w(), canvas->rend_desc().get_h());
 
 			if (!warnings.empty())
 				dialog_message_1b(
@@ -4059,7 +3884,7 @@ App::open_from_temporary_filesystem(std::string temporary_filename)
 		// file to open inside canvas file system
 		String canvas_filename = CanvasFileNaming::project_file(canvas_file_system);
 
-		etl::handle<synfig::Canvas> canvas(open_canvas_as(canvas_file_system->get_identifier(canvas_filename), as, errors, warnings));
+		Canvas::Handle canvas(open_canvas_as(canvas_file_system->get_identifier(canvas_filename), as, errors, warnings));
 		if(canvas && get_instance(canvas))
 		{
 			get_instance(canvas)->find_canvas_view(canvas)->present();
@@ -4161,10 +3986,10 @@ App::new_instance()
 
 	handle<Instance> instance = Instance::create(canvas, container);
 
-    if (App::default_background_layer_type == "solid_color")
-    {
+	if (App::default_background_layer_type == "solid_color")
+	{
 		//Create a SolidColor layer
-		synfig::Layer::Handle layer(instance->find_canvas_interface(canvas)->add_layer_to("SolidColor",
+		synfig::Layer::Handle layer(instance->find_canvas_interface(canvas)->add_layer_to("solid_color",
 			                        canvas,
 			                        0)); //target_depth
 
@@ -4228,7 +4053,7 @@ App::new_instance()
 		instance->find_canvas_view(canvas)->add_layer("skeleton");
 
 	if (getenv("SYNFIG_AUTO_ADD_MOTIONBLUR_LAYER"))
-		instance->find_canvas_view(canvas)->add_layer("MotionBlur");
+		instance->find_canvas_view(canvas)->add_layer("motion_blur");
 
 	if (getenv("SYNFIG_ENABLE_NEW_CANVAS_EDIT_PROPERTIES"))
 		instance->find_canvas_view(canvas)->canvas_properties.present();
@@ -4260,7 +4085,7 @@ App::open_from_plugin(const std::string& filename, const std::string& importer_i
 			FileSystem::Handle canvas_file_system = CanvasFileNaming::make_filesystem(container);
 			canvas_file_system = wrap_into_temporary_filesystem(canvas_file_system, filename_processed, filename, 0);
 			String canvas_filename = CanvasFileNaming::project_file(filename_processed);
-			etl::handle<synfig::Canvas> canvas = open_canvas_as(canvas_file_system->get_identifier(canvas_filename), filename, errors, warnings);
+			Canvas::Handle canvas = open_canvas_as(canvas_file_system->get_identifier(canvas_filename), filename, errors, warnings);
 			if ( !canvas )
 			{
 				errors += strprintf(_("Unable to load \"%s\":\n\n"),filename.c_str());
@@ -4405,7 +4230,7 @@ App::set_selected_canvas_view(etl::loose_handle<CanvasView> canvas_view)
 }
 
 etl::loose_handle<Instance>
-App::get_instance(etl::handle<synfig::Canvas> canvas)
+App::get_instance(Canvas::Handle canvas)
 {
 	if(!canvas) return nullptr;
 	canvas=canvas->get_root();

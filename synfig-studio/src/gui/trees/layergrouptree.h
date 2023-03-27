@@ -69,7 +69,7 @@ private:
 
 	Glib::RefPtr<LayerGroupTreeStore> layer_group_tree_store_;
 
-	sigc::signal<void,etl::handle<synfig::Layer> > signal_popup_layer_menu_;
+	sigc::signal<void,synfig::Layer::Handle> signal_popup_layer_menu_;
 
 	Glib::RefPtr<Gtk::TreeSelection> tree_selection;
 	/*
@@ -100,7 +100,7 @@ public:
 
 	Glib::RefPtr<LayerGroupTreeStore> get_model() { return layer_group_tree_store_; }
 
-	sigc::signal<void,etl::handle<synfig::Layer> >& signal_popup_layer_menu() { return signal_popup_layer_menu_; }
+	sigc::signal<void,synfig::Layer::Handle>& signal_popup_layer_menu() { return signal_popup_layer_menu_; }
 
 	void set_model(Glib::RefPtr<LayerGroupTreeStore> layer_group_tree_store_);
 

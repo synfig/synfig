@@ -259,7 +259,7 @@ void Dialog_CanvasDependencies::refresh()
 				ext = ext.substr(1);
 			const std::vector<std::string> audio_ext = {"wav", "wave", "mp3", "ogg", "ogm", "oga", "wma", "m4a", "aiff", "aif", "aifc"};
 			const std::vector<std::string> image_ext = {"png", "bmp", "jpg", "jpeg", "gif", "tiff", "tif", "dib", "ppm", "pbm", "pgm", "pnm", "webp"};
-			const std::vector<std::string> lipsync_ext = {"ppo", "tsv", "xml"};
+			const std::vector<std::string> lipsync_ext = {"pgo", "tsv", "xml"};
 			const std::vector<std::string> video_ext = {"mpg", "mpeg", "mp2", "m2v", "m4v", "mp4", "m4p", "ogv", "avi", "mov", "webm", "wmv", "mkv", "vob", "mng"};
 			if (std::find(image_ext.begin(), image_ext.end(), ext) != image_ext.end())
 				pixbuf = get_tree_pixbuf_layer("import");

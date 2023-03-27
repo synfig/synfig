@@ -70,7 +70,7 @@ public:
 	template<typename TT>
 	inline ConstRef<TT> as() const
 	{
-		TT *p = dynamic_cast<TT*>(pointer);
+		const TT *p = dynamic_cast<const TT*>(pointer);
 		return p ? ConstRef<TT>(*p) : ConstRef<TT>();
 	}
 

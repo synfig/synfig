@@ -54,7 +54,7 @@ using namespace synfig;
 /* === G L O B A L S ======================================================= */
 
 SYNFIG_LAYER_INIT(Layer_MotionBlur);
-SYNFIG_LAYER_SET_NAME(Layer_MotionBlur,"MotionBlur"); // todo: use motion_blur
+SYNFIG_LAYER_SET_NAME(Layer_MotionBlur,"motion_blur");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_MotionBlur,N_("Motion Blur"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_MotionBlur,N_("Blurs"));
 SYNFIG_LAYER_SET_VERSION(Layer_MotionBlur,"0.1");

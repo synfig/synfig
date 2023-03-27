@@ -35,7 +35,6 @@
 #include <algorithm> // std::sort
 #include <cstdlib>
 #include <climits>
-
 #include <typeinfo>
 
 #include <synfig/general.h>

@@ -55,7 +55,7 @@ class CellRenderer_ValueBase : public Gtk::CellRendererText
 	sigc::signal<void, const Glib::ustring&, synfig::ValueBase> signal_edited_;
 
 	Glib::Property<synfig::ValueBase>            property_value_;
-	Glib::Property<etl::handle<synfig::Canvas> > property_canvas_;
+	Glib::Property<synfig::Canvas::Handle>       property_canvas_;
 	Glib::Property<synfig::ParamDesc>            property_param_desc_;
 	Glib::Property<synfigapp::ValueDesc>         property_value_desc_;
 	Glib::Property<synfig::ParamDesc>            property_child_param_desc_;
@@ -76,13 +76,13 @@ public:
 	{return signal_edited_; }
 
 	Glib::PropertyProxy<synfig::ValueBase>            property_value()            { return property_value_.get_proxy();}
-	Glib::PropertyProxy<etl::handle<synfig::Canvas> > property_canvas()           { return property_canvas_.get_proxy();}
+	Glib::PropertyProxy<synfig::Canvas::Handle>       property_canvas()           { return property_canvas_.get_proxy();}
 	Glib::PropertyProxy<synfig::ParamDesc>            property_param_desc()       { return property_param_desc_.get_proxy(); }
 	Glib::PropertyProxy<synfigapp::ValueDesc>         property_value_desc()       { return property_value_desc_.get_proxy(); }
 	Glib::PropertyProxy<synfig::ParamDesc>            property_child_param_desc() { return property_child_param_desc_.get_proxy(); }
 	Glib::PropertyProxy<bool>                         property_inconsistent()     { return property_foreground_set(); }
 
-	etl::handle<synfig::Canvas> get_canvas()const           { return property_canvas_; }
+	synfig::Canvas::Handle      get_canvas()const           { return property_canvas_; }
 	synfig::ParamDesc           get_param_desc()const       { return property_param_desc_; }
 	synfigapp::ValueDesc        get_value_desc()const       { return property_value_desc_; }
 	synfig::ParamDesc           get_child_param_desc()const { return property_child_param_desc_; }

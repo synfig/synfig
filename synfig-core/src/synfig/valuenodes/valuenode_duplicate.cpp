@@ -60,6 +60,7 @@ ValueNode_Duplicate::ValueNode_Duplicate(Type &x):
 	LinkableValueNode(x),
 	index()
 {
+	init_children_vocab();
 }
 
 ValueNode_Duplicate::ValueNode_Duplicate(const ValueBase &x):

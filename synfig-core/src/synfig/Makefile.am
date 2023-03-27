@@ -80,6 +80,8 @@ SYNFIGHEADERS = \
 	boneweightpair.h \
 	activepoint.h \
 	blur.h \
+	blur/boxblur.h \
+	blur/gaussian.h \
 	bone.h \
 	canvas.h \
 	color.h \
@@ -104,6 +106,7 @@ SYNFIGHEADERS = \
 	pen.h \
 	polynomial_root.h \
 	rect.h \
+	reference_counter.h \
 	renddesc.h \
 	render.h \
 	savecanvas.h \

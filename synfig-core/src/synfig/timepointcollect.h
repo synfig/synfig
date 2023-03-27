@@ -45,7 +45,7 @@
 namespace synfig {
 
 //! \writeme
-int waypoint_collect(std::set<Waypoint, std::less<UniqueID> >& waypoint_set,const Time& time, const etl::handle<Node>& node);
+int waypoint_collect(std::set<Waypoint, std::less<UniqueID> >& waypoint_set, const Time& time, const etl::handle<Node>& node, bool ignore_dynamic_parameters = false);
 
 //! Search for a specific waypoint (by its uid) in node.
 bool waypoint_search(Waypoint& waypoint, const UniqueID& uid, const etl::handle<Node>& node);

@@ -279,9 +279,7 @@ has_valid_font_extension(const std::string &filename) {
 static void
 get_possible_font_filenames(synfig::String family, int style, int weight, std::vector<std::string>& list)
 {
-	// string :: tolower
-	std::transform(family.begin(), family.end(), family.begin(),
-		[](unsigned char c){ return std::tolower(c); });
+	strtolower(family);
 
 	enum FontSuffixStyle {FONT_SUFFIX_NONE, FONT_SUFFIX_BI_BD, FONT_SUFFIX_BI_BD_IT, FONT_SUFFIX_BI_RI};
 	enum FontClassification {FONT_SANS_SERIF, FONT_SERIF, FONT_MONOSPACED, FONT_SCRIPT};
@@ -571,7 +569,11 @@ static std::string fontconfig_get_filename(const std::string& font_fam, int styl
 		case SYNFIG_TO_FC(THIN);
 		case SYNFIG_TO_FC(ULTRALIGHT);
 		case SYNFIG_TO_FC(LIGHT);
+#if FC_VERSION >= 21191
 		case SYNFIG_TO_FC(SEMILIGHT);
+#else
+		case TEXT_WEIGHT_SEMILIGHT : fc_weight = FC_WEIGHT_LIGHT ; break;
+#endif
 		case SYNFIG_TO_FC(BOOK);
 		case SYNFIG_TO_FC(MEDIUM);
 		case SYNFIG_TO_FC(SEMIBOLD);

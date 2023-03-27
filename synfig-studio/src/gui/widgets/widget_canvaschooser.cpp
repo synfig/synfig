@@ -120,7 +120,7 @@ Widget_CanvasChooser::set_value(synfig::Canvas::Handle data)
 		set_active(0);
 }
 
-const etl::handle<synfig::Canvas> &
+const Canvas::Handle &
 Widget_CanvasChooser::get_value()
 {
 	return canvas;

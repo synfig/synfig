@@ -32,18 +32,16 @@
 #	include <config.h>
 #endif
 
-#include <iostream>
-#include <algorithm>
-#include <errno.h>
-#include <cstring>
-
+#include <cerrno>
 #include <chrono>
+#include <cstring>
+#include <iostream>
 
-#include <autorevision.h>
 #include <synfig/general.h>
 #include <synfig/localization.h>
 #include <synfig/target.h>
 #include <synfig/target_scanline.h>
+#include <synfig/target_tile.h>
 #include <synfig/savecanvas.h>
 #include <synfig/filesystemnative.h>
 
@@ -92,9 +90,120 @@ std::string replace_extension(const std::string &filename, const std::string &ne
 	return filename.substr(0, found) + "." + new_extension;
 }
 
-std::string get_absolute_path(std::string relative_path) {
+std::string get_absolute_path(const std::string& relative_path) {
   Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(relative_path);
   return file->get_path();
+}
+
+static void try_to_determine_target_from_outfile(Job& job)
+{
+	VERBOSE_OUT(3) << _("Target name undefined, attempting to figure it out")
+				   << std::endl;
+	std::string ext = get_extension(job.outfilename);
+	if (ext.length())
+		ext = ext.substr(1);
+
+	if(Target::ext_book().count(ext))
+	{
+		job.target_name = Target::ext_book()[ext];
+		info("target name not specified - using %s", job.target_name.c_str());
+	}
+	else
+	{
+		std::string lower_ext(ext);
+		strtolower(lower_ext);
+
+		if(Target::ext_book().count(lower_ext))
+		{
+			job.target_name=Target::ext_book()[lower_ext];
+			info("target name not specified - using %s", job.target_name.c_str());
+		}
+		else
+			job.target_name=ext;
+	}
+}
+
+static void set_default_target(Job& job)
+{
+	if(job.target_name.empty())
+	{
+		VERBOSE_OUT(2) << _("Defaulting to PNG target...") << std::endl;
+		job.target_name = "png";
+	}
+}
+
+static void create_output_filename(Job& job)
+{
+	if(job.outfilename.empty())
+	{
+		std::string new_extension;
+		if(Target::book().count(job.target_name))
+			new_extension = Target::book()[job.target_name].filename;
+		else
+			new_extension = job.target_name;
+
+		job.outfilename = replace_extension(job.filename, new_extension);
+	}
+
+	VERBOSE_OUT(4) << "Target name = " << job.target_name.c_str() << std::endl;
+	VERBOSE_OUT(4) << "Outfilename = " << job.outfilename.c_str() << std::endl;
+}
+
+static bool check_permissions(Job& job)
+{
+	if (g_access(get_absolute_path(job.outfilename + "/../").c_str(), W_OK) == -1) {
+		synfig::error(_("Unable to create output for \"%s\": %s"), job.filename.c_str(), strerror(errno));
+		synfig::error(_("Throwing out job..."));
+		return false;
+	}
+	return true;
+}
+
+static bool create_target(Job& job, const TargetParam& target_parameters)
+{
+	VERBOSE_OUT(4) << _("Creating the target...") << std::endl;
+	job.target =
+			synfig::Target::create(job.target_name,
+								   job.outfilename,
+								   target_parameters);
+
+	if(!job.target)
+	{
+		synfig::error(_("Unknown target for \"%s\": %s"), job.filename.c_str(), strerror(errno));
+		synfig::error(_("Throwing out job..."));
+		return false;
+	}
+
+	job.sifout = job.target_name == "sif";
+	return true;
+}
+
+static void set_canvas_quality_and_alpha_mode(Job& job)
+{
+	VERBOSE_OUT(4) << _("Setting the canvas on the target...") << std::endl;
+	job.target->set_canvas(job.canvas);
+
+	VERBOSE_OUT(4) << _("Setting the quality of the target...") << std::endl;
+	job.target->set_quality(job.quality);
+
+	if (job.alpha_mode!=TARGET_ALPHA_MODE_KEEP)
+	{
+		VERBOSE_OUT(4) << _("Setting the alpha mode of the target...") << std::endl;
+		job.target->set_alpha_mode(job.alpha_mode);
+	}
+}
+
+static void set_target_engine_and_threads(Job& job)
+{
+	if(auto scanline_target = Target_Scanline::Handle::cast_dynamic(job.target))
+	{
+		scanline_target->set_threads(SynfigToolGeneralOptions::instance()->get_threads());
+		scanline_target->set_engine(job.render_engine);
+	} else if(auto tile_target = Target_Tile::Handle::cast_dynamic(job.target))
+	{
+		tile_target->set_threads(SynfigToolGeneralOptions::instance()->get_threads());
+		tile_target->set_engine(job.render_engine);
+	}
 }
 
 bool setup_job(Job& job, const TargetParam& target_parameters)
@@ -103,184 +212,110 @@ bool setup_job(Job& job, const TargetParam& target_parameters)
 
 	// If the target type is not yet defined,
 	// try to figure it out from the outfile.
-	if(job.target_name.empty() && !job.outfilename.empty())
-	{
-		VERBOSE_OUT(3) << _("Target name undefined, attempting to figure it out")
-					   << std::endl;
-		//std::string ext = bfs::path(job.outfilename).extension().string();
-		std::string ext = get_extension(job.outfilename);
-		if (ext.length())
-			ext = ext.substr(1);
-
-		if(Target::ext_book().count(ext))
-		{
-			job.target_name = Target::ext_book()[ext];
-			info("target name not specified - using %s", job.target_name.c_str());
-		}
-		else
-		{
-			std::string lower_ext;
-			std::transform(ext.begin(), ext.end(), std::back_inserter(lower_ext), ::tolower);
-
-			if(Target::ext_book().count(lower_ext))
-			{
-				job.target_name=Target::ext_book()[lower_ext];
-				info("target name not specified - using %s", job.target_name.c_str());
-			}
-			else
-				job.target_name=ext;
-		}
+	if (job.target_name.empty() && !job.outfilename.empty()) {
+		try_to_determine_target_from_outfile(job);
 	}
 
 	// If the target type is STILL not yet defined, then
 	// set it to a some sort of default
-	if(job.target_name.empty())
-	{
-		VERBOSE_OUT(2) << _("Defaulting to PNG target...") << std::endl;
-		job.target_name = "png";
-	}
+	set_default_target(job);
 
 	// If no output filename was provided, then create a output filename
 	// based on the given input filename and the selected target.
 	// (ie: change the extension)
-	if(job.outfilename.empty())
-	{
-        std::string new_extension;
-		if(Target::book().count(job.target_name))
-			new_extension = Target::book()[job.target_name].filename;
-		else
-			new_extension = job.target_name;
+	create_output_filename(job);
 
-        //job.outfilename = bfs::path(job.filename).replace_extension(new_extension).string();
-		job.outfilename = replace_extension(job.filename, new_extension);
-	}
-
-	VERBOSE_OUT(4) << "Target name = " << job.target_name.c_str() << std::endl;
-	VERBOSE_OUT(4) << "Outfilename = " << job.outfilename.c_str() << std::endl;
-
-	// Check permissions
-	//if (access(bfs::canonical(bfs::path(job.outfilename).parent_path()).string().c_str(), W_OK) == -1)
-	// az: fixme
-	if (g_access(get_absolute_path(job.outfilename + "/../").c_str(), W_OK) == -1)
-	{
-	    /*const std::string message =
-            (boost::format(_("Unable to create output for \"%s\": %s"))
-                           % job.filename % strerror(errno)).str();
-		synfig::error(message.c_str());*/
-		synfig::error(_("Unable to create output for \"%s\": %s"), job.filename.c_str(), strerror(errno));
-		synfig::error(_("Throwing out job..."));
+	if (!check_permissions(job)) {
 		return false;
 	}
 
-	VERBOSE_OUT(4) << _("Creating the target...") << std::endl;
-	job.target =
-		synfig::Target::create(job.target_name,
-							   job.outfilename,
-							   target_parameters);
-
-	if(job.target_name == "sif")
-		job.sifout=true;
-	else
-	{
-		if(!job.target)
-		{
-		    /*const std::string message =
-                (boost::format(_("Unknown target for \"%s\": %s"))
-                               % job.filename % strerror(errno)).str();
-		    synfig::error(message.c_str());*/
-
-			synfig::error(_("Unknown target for \"%s\": %s"), job.filename.c_str(), strerror(errno));
-			synfig::error(_("Throwing out job..."));
-			return false;
-		}
-
-		job.sifout=false;
+	if (!create_target(job, target_parameters)) {
+		return false;
 	}
 
 	// Set the Canvas on the Target
-	if(job.target)
-	{
-		VERBOSE_OUT(4) << _("Setting the canvas on the target...") << std::endl;
-		job.target->set_canvas(job.canvas);
+	set_canvas_quality_and_alpha_mode(job);
 
-		VERBOSE_OUT(4) << _("Setting the quality of the target...") << std::endl;
-		job.target->set_quality(job.quality);
-
-		if (job.alpha_mode!=TARGET_ALPHA_MODE_KEEP)
-		{
-			VERBOSE_OUT(4) << _("Setting the alpha mode of the target...") << std::endl;
-			job.target->set_alpha_mode(job.alpha_mode);
-		}
-	}
-
-	// Set the threads for the target
-	if (job.target && Target_Scanline::Handle::cast_dynamic(job.target))
-		Target_Scanline::Handle::cast_dynamic(job.target)->set_threads(SynfigToolGeneralOptions::instance()->get_threads());
+	// Set the threads and render engine for the target
+	set_target_engine_and_threads(job);
 
 	return true;
 }
 
-void process_job (Job& job)
-{
+static void print_job_info(const Job& job) {
 	VERBOSE_OUT(3) << job.filename.c_str() << " -- " << std::endl;
-	synfig::info("\tw: %d, h: %d, a: %d, pxaspect: %f, imaspect: %f, span: %f", 
-		job.desc.get_w(), job.desc.get_h(), job.desc.get_antialias(),
-		job.desc.get_pixel_aspect(), job.desc.get_image_aspect(), job.desc.get_span());
-	/*VERBOSE_OUT(3) << '\t'
-				   << boost::format("w:%d, h:%d, a:%d, pxaspect:%f, imaspect:%f, span:%f")
-                                    % job.desc.get_w()
-                                    % job.desc.get_h()
-                                    % job.desc.get_antialias()
-                                    % job.desc.get_pixel_aspect()
-                                    % job.desc.get_image_aspect()
-                                    % job.desc.get_span()
-                    << std::endl;*/
+	synfig::info("\tw: %d, h: %d, a: %d, pxaspect: %f, imaspect: %f, span: %f",
+				 job.desc.get_w(), job.desc.get_h(), job.desc.get_antialias(),
+				 job.desc.get_pixel_aspect(), job.desc.get_image_aspect(), job.desc.get_span());
 
 	synfig::info("\ttl: [%f,%f], br: [%f,%f], focus: [%f,%f]",
-				job.desc.get_tl()[0], job.desc.get_tl()[1],
-				job.desc.get_br()[0], job.desc.get_br()[1],
-				job.desc.get_focus()[0], job.desc.get_focus()[1]
+				 job.desc.get_tl()[0], job.desc.get_tl()[1],
+				 job.desc.get_br()[0], job.desc.get_br()[1],
+				 job.desc.get_focus()[0], job.desc.get_focus()[1]
 	);
+}
 
-	/*VERBOSE_OUT(3) << '\t'
-				   << boost::format("tl:[%f,%f], br:[%f,%f], focus:[%f,%f]")
-                                    % job.desc.get_tl()[0]
-                                    % job.desc.get_tl()[1]
-                                    % job.desc.get_br()[0]
-                                    % job.desc.get_br()[1]
-                                    % job.desc.get_focus()[0]
-                                    % job.desc.get_focus()[1]
-                    << std::endl;*/
+static void save_canvas_to_file(const std::string& filename, const synfig::Canvas::Handle& canvas) {
+	// todo: support containers
+	if(!synfig::save_canvas(FileSystemNative::instance()->get_identifier(filename), canvas)) {
+		throw (SynfigToolException(SYNFIGTOOL_RENDERFAILURE, _("Render Failure.")));
+	}
+}
+
+void render_job(const Job& job, RenderProgress& progress, bool should_print_benchmarks, int repeats) {
+	double total_duration = 0.f;
+
+	for(int i = 0; i < repeats; i++)
+	{
+		std::chrono::steady_clock::time_point start_timepoint =
+				std::chrono::steady_clock::now();
+
+		// Call the render member of the target
+		if(!job.target->render(&progress)) {
+			throw (SynfigToolException(SYNFIGTOOL_RENDERFAILURE, _("Render Failure.")));
+		}
+
+		if(should_print_benchmarks)	{
+			std::chrono::duration<double, std::milli> duration =
+					std::chrono::steady_clock::now() - start_timepoint;
+
+			total_duration += duration.count();
+		}
+	}
+
+	if(should_print_benchmarks)
+	{
+		std::cout << job.filename.c_str()
+				  << _(": Rendered ")
+				  << repeats
+				  << _( " times in ")
+				  << total_duration
+				  << _(" ms.")
+				  << _(" Average time per render: ")
+				  << total_duration / repeats
+				  << _(" ms.") << std::endl;
+	}
+}
+
+void process_job (Job& job)
+{
+	print_job_info(job);
 
 	RenderProgress p;
 	p.task(job.filename + " ==> " + job.outfilename);
 
 	if(job.sifout)
 	{
-		// todo: support containers
-		if(!save_canvas(FileSystemNative::instance()->get_identifier(job.outfilename), job.canvas))
-			throw (SynfigToolException(SYNFIGTOOL_RENDERFAILURE, _("Render Failure.")));
+		save_canvas_to_file(job.outfilename, job.canvas);
 	}
 	else
 	{
 		VERBOSE_OUT(1) << _("Rendering...") << std::endl;
-		std::chrono::system_clock::time_point start_timepoint =
-            std::chrono::system_clock::now();
 
-		// Call the render member of the target
-		if(!job.target->render(&p))
-			throw (SynfigToolException(SYNFIGTOOL_RENDERFAILURE, _("Render Failure.")));
+		bool should_print_benchmarks = SynfigToolGeneralOptions::instance()->should_print_benchmarks();
+		int repeats = SynfigToolGeneralOptions::instance()->get_repeats();
 
-		if(SynfigToolGeneralOptions::instance()->should_print_benchmarks())
-        {
-            std::chrono::duration<double> duration =
-                std::chrono::system_clock::now() - start_timepoint;
-
-            std::cout << job.filename.c_str()
-                      << _(": Rendered in ")
-                      << duration.count()
-                      << _(" seconds.") << std::endl;
-        }
+		render_job(job, p, should_print_benchmarks, repeats);
 	}
 
 	VERBOSE_OUT(1) << _("Done.") << std::endl;

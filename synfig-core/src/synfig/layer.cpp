@@ -132,7 +132,7 @@ Layer::subsys_init()
 				  class::get_register_version())
 
 	INCLUDE_LAYER(Layer_SolidColor);
-		LAYER_ALIAS(Layer_SolidColor,	"solid_color");
+		LAYER_ALIAS(Layer_SolidColor,	"SolidColor"); // old name, previous to version 1.5.2
 	INCLUDE_LAYER(Layer_FilterGroup);
 	INCLUDE_LAYER(Layer_Group);
 		LAYER_ALIAS(Layer_Group,		"paste_canvas");
@@ -141,7 +141,7 @@ Layer::subsys_init()
 	INCLUDE_LAYER(Layer_Polygon);
 		LAYER_ALIAS(Layer_Polygon,		"Polygon");
 	INCLUDE_LAYER(Layer_MotionBlur);
-		LAYER_ALIAS(Layer_MotionBlur,	"motion_blur");
+		LAYER_ALIAS(Layer_MotionBlur,	"MotionBlur"); // old name, previous to version 1.5.2
 	INCLUDE_LAYER(Layer_Duplicate);
 	INCLUDE_LAYER(Layer_Skeleton);
 	INCLUDE_LAYER(Layer_SkeletonDeformation);
@@ -206,7 +206,7 @@ synfig::Layer::~Layer()
 }
 
 void
-synfig::Layer::set_canvas(etl::loose_handle<Canvas> x)
+synfig::Layer::set_canvas(Canvas::LooseHandle x)
 {
 	if(canvas_!=x)
 	{
@@ -220,7 +220,7 @@ synfig::Layer::set_canvas(etl::loose_handle<Canvas> x)
 						*this,
 						&Layer::set_canvas
 					),
-					etl::loose_handle<synfig::Canvas>(0)
+					Canvas::LooseHandle(0)
 				)
 			);
 		}
@@ -247,7 +247,7 @@ synfig::Layer::on_dynamic_param_changed(const String & /* param */)
 	{ }
 
 
-etl::loose_handle<synfig::Canvas>
+Canvas::LooseHandle
 synfig::Layer::get_canvas()const
 {
 	return canvas_;
@@ -312,7 +312,7 @@ Layer::dynamic_param_changed(const String &param)
 }
 
 bool
-Layer::connect_dynamic_param(const String& param, etl::loose_handle<ValueNode> value_node)
+Layer::connect_dynamic_param(const String& param, ValueNode::LooseHandle value_node)
 {
 	if (!value_node) return disconnect_dynamic_param(param);
 
@@ -610,7 +610,7 @@ Layer::set_time(IndependentContext context, Time time)const
 {
 	Layer::ParamList params;
 	Layer::DynamicParamList::const_iterator iter;
-	// For each parameter of the layer sets the time by the operator()(time)
+	// For each parameter of the layer sets the value by the operator()(time)
 	for(iter=dynamic_param_list().begin();iter!=dynamic_param_list().end();iter++)
 		params[iter->first]=(*iter->second)(time);
 	// Sets the modified parameter list to the current context layer

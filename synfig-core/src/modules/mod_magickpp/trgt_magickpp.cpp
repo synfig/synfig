@@ -219,7 +219,7 @@ magickpp_trgt::init(synfig::ProgressCallback*)
 	buffer_pointer = nullptr;
 
 	std::string extension = filename_extension(filename);
-	std::transform(extension.begin(), extension.end(), extension.begin(), [](unsigned char c) { return std::tolower(c); });
+	strtolower(extension);
 	is_gif = extension == ".gif";
 
 	std::size_t buffer_size = static_cast<std::size_t>(4) * width * height;
