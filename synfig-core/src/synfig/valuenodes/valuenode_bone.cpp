@@ -72,7 +72,6 @@ static int bone_counter;
 // static map<ValueNode_Bone::Handle, Matrix> animated_matrix_map;
 static Time last_time = Time::begin();
 
-static ValueNode_Bone_Root::Handle rooot;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -317,7 +316,12 @@ ValueNode_Bone::~ValueNode_Bone()
 
 	DEBUG_LOG("SYNFIG_DEBUG_BONE_MAP",
 		"%s:%d removing from canvas_map\n", __FILE__, __LINE__);
-	canvas_map[get_root_canvas()].erase(get_guid());
+	// ValueNode_Bone_Root does not have a GUID and does not belong to any canvas.
+	// Calling get_guid() for `ValueNode_Bone_Root` leads to an attempt to insert
+	// it into a canvas (it calls `global_node_map()` for this purpose).
+	// And if `global_node_map()` is already destroyed at that moment, it leads to a crash.
+	if (!is_root())
+		canvas_map[get_root_canvas()].erase(get_guid());
 
 	show_bone_map(get_root_canvas(), __FILE__, __LINE__, "in destructor");
 
@@ -927,8 +931,8 @@ ValueNode_Bone::get_possible_parent_bones(ValueNode::Handle value_node)
 ValueNode_Bone::Handle
 ValueNode_Bone::get_root_bone()
 {
-	if (!rooot) rooot = new ValueNode_Bone_Root();
-	return rooot;
+	static ValueNode_Bone_Root::Handle root_bone = new ValueNode_Bone_Root();
+	return root_bone;
 }
 
 
@@ -1115,7 +1119,7 @@ LinkableValueNode*
 ValueNode_Bone_Root::create_new()const
 {
 	assert(0);
-	return rooot.get();
+	return get_root_bone().get();
 }
 
 Matrix
