@@ -103,4 +103,5 @@ jobs:
         category: "/language:${{matrix.language}}"
 
     - name: ccache statistics
+      if: runner.os == 'Linux' && matrix.language == 'cpp'
       run: ccache --show-stats
