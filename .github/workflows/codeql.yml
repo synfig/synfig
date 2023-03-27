@@ -23,7 +23,7 @@ on:
 jobs:
   analyze:
     name: Analyze
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     permissions:
       actions: read
       contents: read
@@ -51,9 +51,9 @@ jobs:
       uses: actions/cache@v3
       with:
         path: .ccache
-        key: ${{ matrix.os }}-ccache-cmake-ninja-${{ steps.ccache_timestamp.outputs.timestamp }}
+        key: ubuntu-22.04-ccache-cmake-ninja-${{ steps.ccache_timestamp.outputs.timestamp }}
         restore-keys:
-          ${{ matrix.os }}-ccache-cmake-ninja-
+          ubuntu-22.04-ccache-cmake-ninja-
 
     - name: Install dependencies (apt)
       if: runner.os == 'Linux' && matrix.language == 'cpp'
