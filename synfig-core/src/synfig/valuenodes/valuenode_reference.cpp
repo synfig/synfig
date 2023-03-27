@@ -59,6 +59,7 @@ REGISTER_VALUENODE(ValueNode_Reference, RELEASE_VERSION_0_61_06, "reference", N_
 ValueNode_Reference::ValueNode_Reference(Type &x):
 	LinkableValueNode(x)
 {
+	init_children_vocab();
 }
 
 ValueNode_Reference::ValueNode_Reference(const ValueNode::Handle &x):
