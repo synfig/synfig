@@ -412,6 +412,10 @@ test_fetch_relative_path_regular_case()
 	Path p4("bar/");
 	ASSERT(p4.has_relative_path())
 	ASSERT_EQUAL("bar/", p4.relative_path().u8string());
+
+	Path p5("/bar.txt");
+	ASSERT(p5.has_relative_path())
+	ASSERT_EQUAL("bar.txt", p5.relative_path().u8string());
 }
 
 void
@@ -620,7 +624,7 @@ test_fetch_parent_path_skips_consecutive_separators()
 }
 
 void
-test_fetch_parent_path_when_relative_path_has_only_one_component()
+test_fetch_parent_path_when_relative_path_has_only_one_component_and_it_is_not_an_absolute_path()
 {
 	Path p1("var");
 	ASSERT_FALSE(p1.has_parent_path())
@@ -633,6 +637,22 @@ test_fetch_parent_path_when_relative_path_has_only_one_component()
 	Path p3("..");
 	ASSERT_FALSE(p3.has_parent_path())
 	ASSERT_EQUAL("", p3.parent_path().u8string())
+}
+
+void
+test_fetch_parent_path_when_relative_path_has_only_one_component_and_it_is_an_absolute_path()
+{
+	Path p1("/var");
+	ASSERT(p1.has_parent_path())
+	ASSERT_EQUAL("/", p1.parent_path().u8string())
+
+	Path p2("/.");
+	ASSERT(p2.has_parent_path())
+	ASSERT_EQUAL("/", p2.parent_path().u8string())
+
+	Path p3("/var.txt");
+	ASSERT(p3.has_parent_path())
+	ASSERT_EQUAL("/", p3.parent_path().u8string())
 }
 
 void
@@ -1301,7 +1321,8 @@ int main() {
 	TEST_FUNCTION(test_fetch_parent_path_when_it_ends_with_dot_filename)
 	TEST_FUNCTION(test_fetch_parent_path_when_it_ends_with_dot_dot_filename)
 	TEST_FUNCTION(test_fetch_parent_path_skips_consecutive_separators)
-	TEST_FUNCTION(test_fetch_parent_path_when_relative_path_has_only_one_component)
+	TEST_FUNCTION(test_fetch_parent_path_when_relative_path_has_only_one_component_and_it_is_not_an_absolute_path)
+	TEST_FUNCTION(test_fetch_parent_path_when_relative_path_has_only_one_component_and_it_is_an_absolute_path)
 
 	TEST_FUNCTION(test_fetch_path_filename_regular_case)
 	TEST_FUNCTION(test_does_not_fetch_path_filename_when_path_is_empty)
