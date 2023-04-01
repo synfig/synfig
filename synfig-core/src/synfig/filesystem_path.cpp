@@ -550,7 +550,7 @@ filesystem::Path::get_filename_pos() const
 		return std::string::npos;
 	auto separator_pos = path_.find_last_of("/\\");
 	if (separator_pos == std::string::npos)
-		return 0;
+		return get_relative_path_pos();
 	if (separator_pos + 1 == path_.size())
 		return std::string::npos;
 	return separator_pos + 1;
