@@ -518,7 +518,7 @@ std::size_t
 filesystem::Path::get_root_name_length() const
 {
 #ifdef _WIN32
-	if (path_.size() >= 2 && path_[1]==':')
+	if (path_.size() >= 2 && path_[1]==':' && ((path_[0] >= 'A' && path_[0] <= 'Z') || (path_[0] >= 'a' && path_[0] <= 'z')))
 		return 2;
 	if (path_.size() >= 3 && path_[0] == '\\' && path_[1] == '\\' && path_[2] != '\\') {
 		auto root_name_end_pos = path_.find_first_of("/\\", 3);
