@@ -57,6 +57,25 @@ using namespace synfig;
 
 /* === P R O C E D U R E S ================================================= */
 
+static std::string
+native_to_utf8(const filesystem::Path::string_type& native)
+{
+#ifdef _WIN32
+	// Windows uses UTF-16 for filenames, so we do need to convert it to UTF-8.
+	try {
+		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> wcu16;
+		return wcu16.to_bytes(native);
+	} catch (const std::range_error& exception) {
+		synfig::error("Failed to convert UTF-16 string (%s)", native.c_str());
+		throw;
+	}
+#else
+	// For other OS, it's the file name as it is
+	return native;
+#endif
+}
+
+
 /* === M E T H O D S ======================================================= */
 
 filesystem::Path::Path()
@@ -66,6 +85,12 @@ filesystem::Path::Path()
 filesystem::Path::Path(const std::string& path)
 	: path_(path), native_path_dirty_(true)
 {
+}
+
+filesystem::Path
+filesystem::Path::from_native(const string_type& native_path)
+{
+	return Path(native_to_utf8(native_path));
 }
 
 filesystem::Path&
@@ -148,6 +173,21 @@ filesystem::Path::replace_extension(const Path& replacement)
 		path_.append(replacement.u8string());
 		native_path_dirty_ = true;
 	}
+	return *this;
+}
+
+filesystem::Path&
+filesystem::Path::add_suffix(const std::string& suffix)
+{
+	auto ext_pos = get_extension_pos();
+	if (ext_pos == std::string::npos) {
+		auto file_name = filename().u8string();
+		if (file_name != "." && file_name != "..")
+			path_.append(suffix);
+	} else {
+		path_.insert(ext_pos, suffix);
+	}
+	native_path_dirty_ = true;
 	return *this;
 }
 

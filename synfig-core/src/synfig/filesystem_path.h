@@ -67,6 +67,12 @@ public:
 	 */
 	Path(const std::string& path);
 
+	/**
+	 * Store a file system path from a string in native encoding.
+	 * @param path the path in native encoding
+	 */
+	static Path from_native(const string_type& native_path);
+
 	// Concatenation ---------------------
 
 	/** Equivalent to append() */
@@ -109,6 +115,19 @@ public:
 	 * @return @c *this
 	 */
 	Path& replace_extension(const Path& replacement = Path());
+	/**
+	 * Add a suffix to filename stem.
+	 * Example:
+	 * @code{.cpp}
+	 * auto path = synfig::filesystem::Path("a/b.png");
+	 * path.add_suffix("-000");
+	 * // now variable 'path' contains "a/b-000.png".
+	 * @endcode
+	 *
+	 * @param suffix the string to be appended in filename stem
+	 * @return @c *this
+	 */
+	Path& add_suffix(const std::string& suffix);
 	/**
 	 * Swaps two paths
 	 * @param other

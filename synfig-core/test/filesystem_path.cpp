@@ -148,6 +148,47 @@ test_replace_extension()
 }
 
 void
+test_add_suffix()
+{
+	ASSERT_EQUAL("/foo/bar-000.jpg", Path("/foo/bar.jpg").add_suffix("-000").u8string())
+	ASSERT_EQUAL("foo/bar-000.jpg", Path("foo/bar.jpg").add_suffix("-000").u8string())
+	ASSERT_EQUAL("/bar-000.jpg", Path("/bar.jpg").add_suffix("-000").u8string())
+	ASSERT_EQUAL("bar-000.jpg", Path("bar.jpg").add_suffix("-000").u8string())
+
+	ASSERT_EQUAL(".hidden-000", Path(".hidden").add_suffix("-000").u8string())
+	ASSERT_EQUAL(".hidden-000.txt", Path(".hidden.txt").add_suffix("-000").u8string())
+
+	ASSERT_EQUAL("/foo/bar-000.", Path("/foo/bar.").add_suffix("-000").u8string())
+	ASSERT_EQUAL("foo/bar-000.", Path("foo/bar.").add_suffix("-000").u8string())
+	ASSERT_EQUAL("/bar-000.", Path("/bar.").add_suffix("-000").u8string())
+	ASSERT_EQUAL("bar-000.", Path("bar.").add_suffix("-000").u8string())
+
+	ASSERT_EQUAL("/foo/bar-000", Path("/foo/bar").add_suffix("-000").u8string())
+	ASSERT_EQUAL("foo/bar-000", Path("foo/bar").add_suffix("-000").u8string())
+	ASSERT_EQUAL("/bar-000", Path("/bar").add_suffix("-000").u8string())
+	ASSERT_EQUAL("bar-000", Path("bar").add_suffix("-000").u8string())
+	ASSERT_EQUAL("-000", Path().add_suffix("-000").u8string())
+
+	ASSERT_EQUAL("bar-000-001.jpg", Path("bar.jpg").add_suffix("-000").add_suffix("-001").u8string())
+}
+
+void
+test_try_to_add_suffix_to_dot_file_does_not_work()
+{
+	ASSERT_EQUAL(".", Path(".").add_suffix("-000").u8string())
+	ASSERT_EQUAL("/.", Path("/.").add_suffix("-000").u8string())
+	ASSERT_EQUAL("a/.", Path("a/.").add_suffix("-000").u8string())
+}
+
+void
+test_try_to_add_suffix_to_dotdot_file_does_not_work()
+{
+	ASSERT_EQUAL("..", Path("..").add_suffix("-000").u8string())
+	ASSERT_EQUAL("/..", Path("/..").add_suffix("-000").u8string())
+	ASSERT_EQUAL("a/..", Path("a/..").add_suffix("-000").u8string())
+}
+
+void
 test_compare_path_both_empty()
 {
 	Path p1, p2;
@@ -1278,6 +1319,10 @@ int main() {
 	TEST_FUNCTION(test_replace_filename)
 
 	TEST_FUNCTION(test_replace_extension)
+
+	TEST_FUNCTION(test_add_suffix)
+	TEST_FUNCTION(test_try_to_add_suffix_to_dot_file_does_not_work)
+	TEST_FUNCTION(test_try_to_add_suffix_to_dotdot_file_does_not_work)
 
 	TEST_FUNCTION(test_compare_path_both_empty)
 	TEST_FUNCTION(test_compare_path_different_root_name)
