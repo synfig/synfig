@@ -253,9 +253,8 @@ test_fetch_path_root_name_regular_drive_on_windows()
 }
 
 void
-test_fetch_path_root_name_network_samba_folder_on_windows()
+test_fetch_path_root_name_network_samba_folder()
 {
-#ifdef _WIN32
 	Path p1("\\\\host");
 	ASSERT(p1.has_root_name())
 	ASSERT_EQUAL("\\\\host", p1.root_name().u8string());
@@ -271,7 +270,6 @@ test_fetch_path_root_name_network_samba_folder_on_windows()
 	Path p4("\\\\host4\\foo\\bar.txt");
 	ASSERT(p4.has_root_name())
 	ASSERT_EQUAL("\\\\host4", p4.root_name().u8string());
-#endif
 }
 
 void
@@ -325,9 +323,8 @@ test_fetch_path_root_directory_regular_drive_on_windows()
 }
 
 void
-test_fetch_path_root_directory_network_samba_folder_on_windows()
+test_fetch_path_root_directory_network_samba_folder()
 {
-#ifdef _WIN32
 	Path p1("\\\\host");
 	ASSERT_FALSE(p1.has_root_directory())
 	ASSERT_EQUAL("", p1.root_directory().u8string());
@@ -343,7 +340,6 @@ test_fetch_path_root_directory_network_samba_folder_on_windows()
 	Path p4("\\\\host4\\foo\\bar.txt");
 	ASSERT(p4.has_root_directory())
 	ASSERT_EQUAL("\\", p4.root_directory().u8string());
-#endif
 }
 
 void
@@ -449,9 +445,8 @@ test_fetch_relative_path_regular_case_on_windows()
 }
 
 void
-test_fetch_relative_path_with_network_samba_folder_on_windows()
+test_fetch_relative_path_with_network_samba_folder()
 {
-#ifdef _WIN32
 	Path p1("\\\\host/foo/bar.txt");
 	ASSERT(p1.has_relative_path())
 	ASSERT_EQUAL("foo/bar.txt", p1.relative_path().u8string());
@@ -467,7 +462,6 @@ test_fetch_relative_path_with_network_samba_folder_on_windows()
 	Path p4("\\\\host4\\bar/");
 	ASSERT(p4.has_relative_path())
 	ASSERT_EQUAL("bar/", p4.relative_path().u8string());
-#endif
 }
 
 void
@@ -493,6 +487,7 @@ test_does_not_fetch_relative_path_when_path_is_root()
 	Path p2("C:\\");
 	ASSERT_FALSE(p2.has_relative_path())
 	ASSERT_EQUAL("", p2.relative_path().u8string());
+#endif
 
 	Path p3("\\\\host");
 	ASSERT_FALSE(p3.has_relative_path())
@@ -501,7 +496,6 @@ test_does_not_fetch_relative_path_when_path_is_root()
 	Path p4("\\\\host\\");
 	ASSERT_FALSE(p4.has_relative_path())
 	ASSERT_EQUAL("", p4.relative_path().u8string());
-#endif
 }
 
 void
@@ -572,6 +566,7 @@ test_parent_path_returns_copy_when_path_is_root()
 	Path p2("C:\\");
 	ASSERT(p2.has_parent_path())
 	ASSERT_EQUAL("C:\\", p2.parent_path().u8string())
+#endif
 
 	Path p3("\\\\host\\");
 	ASSERT(p3.has_parent_path())
@@ -580,7 +575,6 @@ test_parent_path_returns_copy_when_path_is_root()
 	Path p4("\\\\host");
 	ASSERT(p4.has_parent_path())
 	ASSERT_EQUAL("\\\\host", p4.parent_path().u8string())
-#endif
 }
 
 void
@@ -1106,7 +1100,6 @@ test_is_absolute_on_windows_with_drive()
 void
 test_is_absolute_on_windows_with_network_samba_folder()
 {
-#ifdef _WIN32
 	Path p1("\\\\host\\");
 	ASSERT(p1.is_absolute())
 	ASSERT_FALSE(p1.is_relative())
@@ -1130,7 +1123,6 @@ test_is_absolute_on_windows_with_network_samba_folder()
 	Path p6("\\\\host\\foo/bar");
 	ASSERT(p6.is_absolute())
 	ASSERT_FALSE(p6.is_relative())
-#endif
 }
 
 void
@@ -1294,12 +1286,12 @@ int main() {
 	TEST_FUNCTION(test_compare_path_both_has_same_relative_path_size)
 
 	TEST_FUNCTION(test_fetch_path_root_name_regular_drive_on_windows)
-	TEST_FUNCTION(test_fetch_path_root_name_network_samba_folder_on_windows)
+	TEST_FUNCTION(test_fetch_path_root_name_network_samba_folder)
 	TEST_FUNCTION(test_does_not_fetch_root_name_when_path_is_empty)
 	TEST_FUNCTION(test_does_not_fetch_root_name_when_not_absolute)
 
 	TEST_FUNCTION(test_fetch_path_root_directory_regular_drive_on_windows)
-	TEST_FUNCTION(test_fetch_path_root_directory_network_samba_folder_on_windows)
+	TEST_FUNCTION(test_fetch_path_root_directory_network_samba_folder)
 	TEST_FUNCTION(test_fetch_path_root_directory_prepended_slash)
 	TEST_FUNCTION(test_does_not_fetch_root_directory_when_path_is_empty)
 	TEST_FUNCTION(test_does_not_fetch_root_directory_when_not_absolute)
@@ -1307,7 +1299,7 @@ int main() {
 	TEST_FUNCTION(test_fetch_relative_path_regular_case)
 	TEST_FUNCTION(test_fetch_relative_path_root_with_multiple_separators)
 	TEST_FUNCTION(test_fetch_relative_path_regular_case_on_windows)
-	TEST_FUNCTION(test_fetch_relative_path_with_network_samba_folder_on_windows)
+	TEST_FUNCTION(test_fetch_relative_path_with_network_samba_folder)
 	TEST_FUNCTION(test_does_not_fetch_relative_path_when_path_is_empty)
 	TEST_FUNCTION(test_does_not_fetch_relative_path_when_path_is_root)
 	TEST_FUNCTION(test_fetch_relative_path_when_path_ends_with_slash)
