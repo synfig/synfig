@@ -74,7 +74,6 @@
 #include <synfig/target_scanline.h>
 #include "actions/valuedescexport.h"
 #include "actions/layerparamset.h"
-#include "actions/layerembed.h"
 #include <map>
 
 #include <synfigapp/localization.h>

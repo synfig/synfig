@@ -47,7 +47,6 @@
 #include "general.h"
 #include <synfig/localization.h>
 
-#include "canvas.h"
 #include "importer.h"
 #include "string.h"
 #include "surface.h"
