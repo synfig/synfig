@@ -37,7 +37,6 @@
 #include <ETL/stringf>
 
 #include "general.h"
-#include "localization.h"
 
 #include "filesystemtemporary.h"
 
