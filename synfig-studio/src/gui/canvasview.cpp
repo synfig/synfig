@@ -1720,7 +1720,7 @@ CanvasView::popup_layer_menu(Layer::Handle layer)
 		}
 	}
 
-	if(etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
+	if(Layer_PasteCanvas::Handle::cast_dynamic(layer))
 	{
 		Gtk::MenuItem *item = manage(new Gtk::ImageMenuItem(
 			*manage(create_image_from_icon("select_all_child_layers_icon", Gtk::ICON_SIZE_MENU)),

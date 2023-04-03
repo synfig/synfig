@@ -326,7 +326,7 @@ LayerActionManager::refresh()
 				}
 			}
 
-			if(!multiple_selected && etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
+			if(!multiple_selected && Layer_PasteCanvas::Handle::cast_dynamic(layer))
 			{
 				if (select_all_child_layers_connection)
 					select_all_child_layers_connection.disconnect();
@@ -462,7 +462,7 @@ LayerActionManager::paste()
 			return;
 		}
 
-		etl::handle<Layer_PasteCanvas> paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(layer);
+		Layer_PasteCanvas::Handle paste = Layer_PasteCanvas::Handle::cast_dynamic(layer);
 		if (paste) paste->update_renddesc();
 
 		// synfig::info("DEPTH=%d",depth);

@@ -239,7 +239,7 @@ Duckmatic::is_duck_group_selectable(const etl::handle<Duck>& x)const
 			layer_name == "polygon" || layer_name == "curve_gradient" || layer_name == "advanced_outline")
 			return false;
 
-		if(etl::handle<Layer_PasteCanvas>::cast_dynamic(layer) &&
+		if(Layer_PasteCanvas::Handle::cast_dynamic(layer) &&
 			!layer->get_param("children_lock").get(bool()))
 			return false;
 	}
@@ -1046,7 +1046,7 @@ Duckmatic::on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& 
 		  && duck.get_origin_duck()
 		  && duck.get_value_desc().is_valid()
 		  && duck.get_value_desc().parent_is_layer()
-		  && etl::handle<Layer_PasteCanvas>::cast_dynamic(duck.get_value_desc().get_layer())
+		  && Layer_PasteCanvas::Handle::cast_dynamic(duck.get_value_desc().get_layer())
 		  && duck.get_value_desc().get_param_name() == "origin" )
 		{
 			Point origin = duck.get_value_desc().get_value(get_time()).get(Point());
@@ -1610,7 +1610,7 @@ Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Laye
 			synfig::Rect& bbox = canvas_view->get_bbox();
 
 			// special calculations for Layer_PasteCanvas
-			etl::handle<Layer_PasteCanvas> layer_pastecanvas( etl::handle<Layer_PasteCanvas>::cast_dynamic(layer) );
+			Layer_PasteCanvas::Handle layer_pastecanvas( Layer_PasteCanvas::Handle::cast_dynamic(layer) );
 			synfig::Rect layer_bounds = layer_pastecanvas
 									  ? layer_pastecanvas->get_bounding_rect_context_dependent(canvas_view->get_context_params())
 									  : layer->get_bounding_rect();
@@ -1645,7 +1645,7 @@ Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Laye
 
 		// If this is a paste canvas layer, then we need to
 		// descend into it
-		if(etl::handle<Layer_PasteCanvas> layer_pastecanvas = etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
+		if(Layer_PasteCanvas::Handle layer_pastecanvas = Layer_PasteCanvas::Handle::cast_dynamic(layer))
 		{
 			transform_stack.push_back(
 				new Transform_Matrix(
@@ -1742,7 +1742,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					add_to_ducks(value_desc_origin,canvas_view, transform_stack);
 
 					Layer::Handle layer=value_desc.get_layer();
-					if(etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
+					if(Layer_PasteCanvas::Handle::cast_dynamic(layer))
 					{
 						Vector focus(layer->get_param("focus").get(Vector()));
 						duck->set_origin(last_duck()->get_point() + focus);
@@ -1847,9 +1847,9 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 	else
 	if (type == type_vector)
 	{
-		etl::handle<Layer_PasteCanvas> layer;
+		Layer_PasteCanvas::Handle layer;
 		if (value_desc.parent_is_layer())
-			layer = etl::handle<Layer_PasteCanvas>::cast_dynamic(value_desc.get_layer());
+			layer = Layer_PasteCanvas::Handle::cast_dynamic(value_desc.get_layer());
 		if (!layer) {
 			etl::handle<Duck> duck=new Duck();
 			set_duck_value_desc(*duck, value_desc, transform_stack);
@@ -1969,7 +1969,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 	{
 		if (value_desc.parent_is_layer() && param_desc)
 		{
-			etl::handle<Layer_PasteCanvas> layer = etl::handle<Layer_PasteCanvas>::cast_dynamic(value_desc.get_layer());
+			Layer_PasteCanvas::Handle layer = Layer_PasteCanvas::Handle::cast_dynamic(value_desc.get_layer());
 			if (layer)
 			{
 				synfigapp::ValueDesc origin_value_desc(value_desc.get_layer(), "origin");

@@ -197,7 +197,7 @@ Instance::import_external_canvas(Canvas::Handle canvas, std::map<Canvas*, Canvas
 
 	for(IndependentContext i = canvas->get_independent_context(); *i; i++)
 	{
-		etl::handle<Layer_PasteCanvas> paste_canvas = etl::handle<Layer_PasteCanvas>::cast_dynamic(*i);
+		Layer_PasteCanvas::Handle paste_canvas = Layer_PasteCanvas::Handle::cast_dynamic(*i);
 		if (!paste_canvas) continue;
 
 		Canvas::Handle sub_canvas = paste_canvas->get_sub_canvas();
@@ -315,8 +315,8 @@ bool Instance::save_surface(const synfig::Surface &surface, const synfig::String
 	ext.erase(0, 1);
 	String tmpfile = FileSystemTemporary::generate_system_temporary_filename("surface");
 
-	etl::handle<Target_Scanline> target =
-		etl::handle<Target_Scanline>::cast_dynamic(
+	Target_Scanline::Handle target =
+		Target_Scanline::Handle::cast_dynamic(
 			Target::create(Target::ext_book()[ext],tmpfile,TargetParam()) );
 	if (!target)
 		return false;
