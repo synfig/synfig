@@ -240,6 +240,9 @@ public:
 	friend Path operator+(const Path& lhs, const Path& rhs)
 		{ return Path(lhs) += rhs; }
 
+	/** check if character @a c is a path separator **/
+	static bool is_separator(std::string::value_type c);
+
 private:
 	/** Path in the native encoding */
 	string_type native_path_;
@@ -266,8 +269,6 @@ private:
 	 * @return the normalized path in UTF-8 encoding
 	 */
 	static std::string normalize(std::string path);
-
-	static inline bool is_separator(std::string::value_type c);
 }; // END of class Path
 
 // Non-member functions --------------

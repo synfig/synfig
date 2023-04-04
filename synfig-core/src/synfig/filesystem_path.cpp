@@ -758,7 +758,7 @@ filesystem::Path::normalize(std::string path)
 	return path;
 }
 
-inline bool
+bool
 filesystem::Path::is_separator(std::string::value_type c)
 {
 	return c == '/' || c == '\\';

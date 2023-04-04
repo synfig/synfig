@@ -67,10 +67,10 @@ const FileSystemGroup::Entry* FileSystemGroup::find_system(const String &filenam
 		if ( clean_filename.substr(0, i->prefix.size()) == i->prefix
 		  && ( i->is_separator
 			|| clean_filename.size() == i->prefix.size()
-			|| etl::is_separator(clean_filename[i->prefix.size()] )))
+			|| filesystem::Path::is_separator(clean_filename[i->prefix.size()] )))
 		{
 			String sub_name = clean_filename.substr(i->prefix.size());
-			if (!i->prefix.empty() && !sub_name.empty() && etl::is_separator(sub_name[0]))
+			if (!i->prefix.empty() && !sub_name.empty() && filesystem::Path::is_separator(sub_name[0]))
 				sub_name = sub_name.substr(1);
 			out_file_system = i->sub_file_system;
 			out_filename = i->sub_prefix.empty() || sub_name.empty()
