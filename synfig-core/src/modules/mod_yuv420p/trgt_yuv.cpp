@@ -61,9 +61,9 @@ SYNFIG_TARGET_SET_VERSION(yuv,"0.1");
 
 /* === M E T H O D S ======================================================= */
 
-yuv::yuv(const char *FILENAME, const synfig::TargetParam& /* params */):
+yuv::yuv(const synfig::filesystem::Path& FILENAME, const synfig::TargetParam& /* params */):
 	filename(FILENAME),
-	file( filename == "-" ? stdout : SmartFILE(filename, POPEN_BINARY_WRITE_TYPE) ),
+	file( filename.u8string() == "-" ? stdout : SmartFILE(filename, POPEN_BINARY_WRITE_TYPE) ),
 	dithering(true)
 {
 	// YUV420P doesn't have an alpha channel

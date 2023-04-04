@@ -84,7 +84,7 @@ private:
 	synfig::SmartFILE out_file_pointer;
 	unsigned int cur_out_image_row;
 	PngImage in_image;
-	synfig::String filename;
+	synfig::filesystem::Path filename;
 	synfig::String sequence_separator;
 	synfig::Color * overflow_buff;
 
@@ -93,7 +93,7 @@ private:
 
 public:
 
-	png_trgt_spritesheet(const char *filename, const synfig::TargetParam& /* params */);
+	png_trgt_spritesheet(const synfig::filesystem::Path& filename, const synfig::TargetParam& /* params */);
 	virtual ~png_trgt_spritesheet();
 
 	bool set_rend_desc(synfig::RendDesc* desc) override;

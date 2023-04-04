@@ -91,7 +91,7 @@ std::string png_trgt_spritesheet::get_image_size_error_message() const
 				sheet_width, sheet_height, sheet_width * sheet_height);
 }
 
-png_trgt_spritesheet::png_trgt_spritesheet(const char *Filename, const synfig::TargetParam &params):
+png_trgt_spritesheet::png_trgt_spritesheet(const synfig::filesystem::Path& Filename, const synfig::TargetParam& params):
 	ready(false),
 	//initialized(false),
 	imagecount(),
@@ -165,7 +165,7 @@ png_trgt_spritesheet::set_rend_desc(RendDesc *given_desc)
 	{
 		in_file_pointer = SmartFILE(filename, "rb");
 		if (!in_file_pointer)
-			synfig::error(strprintf("[read_png_file] File %s could not be opened for reading", filename.c_str())); //u8_str()
+			synfig::error(strprintf("[read_png_file] File %s could not be opened for reading", filename.u8_str()));
 		else
 		{
 			is_loaded = load_png_file();
@@ -243,7 +243,7 @@ png_trgt_spritesheet::start_frame(synfig::ProgressCallback *callback)
 	}
 
     if(callback)
-		callback->task(strprintf("%s, (frame %d/%d)", filename.c_str(), 
+		callback->task(strprintf("%s, (frame %d/%d)", filename.u8_str(),
 								 imagecount - (lastimage - numimages), numimages));
     return true;
 }
@@ -281,7 +281,7 @@ png_trgt_spritesheet::load_png_file()
 	int length = fread(header, 1, 8, in_file_pointer.get());
     if ((length != 8) || png_sig_cmp((unsigned char *)header, 0, 8))
 	{
-		synfig::error(strprintf("[read_png_file] File %s is not recognized as a PNG file", filename.c_str()));
+		synfig::error(strprintf("[read_png_file] File %s is not recognized as a PNG file", filename.u8_str()));
 		return false;
 	}
 
@@ -394,7 +394,7 @@ png_trgt_spritesheet::write_png_file()
 	png_infop info_ptr;
 
 	
-    if (filename == "-")
+	if (filename.u8string() == "-")
 		out_file_pointer = stdout;
     else
 		out_file_pointer = SmartFILE(filename, POPEN_BINARY_WRITE_TYPE);

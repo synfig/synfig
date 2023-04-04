@@ -682,7 +682,7 @@ OS::run_sync(std::string binary_path, const RunArgs& binary_args, const std::str
 	auto run_pipe = OS::RunPipe::create();
 	if (!run_pipe)
 		return false;
-	run_pipe->open(binary_path, binary_args, OS::RunMode::RUN_MODE_READ, {stderr_redir_file, stdout_redir_file, ""});
+	run_pipe->open(binary_path, binary_args, OS::RunMode::RUN_MODE_READ, {stderr_redir_file, stdout_redir_file, synfig::filesystem::Path()});
 	if (!run_pipe->is_open())
 		return false;
 

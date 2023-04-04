@@ -215,9 +215,15 @@ filesystem::Path::native() const noexcept
 }
 
 const std::string&
-filesystem::Path::u8string() const
+filesystem::Path::u8string() const noexcept
 {
 	return path_;
+}
+
+const std::string::value_type*
+filesystem::Path::u8_str() const noexcept
+{
+	return path_.c_str();
 }
 
 int

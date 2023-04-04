@@ -58,12 +58,12 @@ private:
 
 	bool multi_image,ready;
 	int imagecount;
-	synfig::String filename;
+	synfig::filesystem::Path filename;
 	std::vector<unsigned char> buffer;
 	std::vector<synfig::Color> color_buffer;
 	synfig::String sequence_separator;
 public:
-	jpeg_trgt(const char *filename, const synfig::TargetParam& /* params */);
+	jpeg_trgt(const synfig::filesystem::Path& filename, const synfig::TargetParam& /* params */);
 	virtual ~jpeg_trgt();
 
 	bool set_rend_desc(synfig::RendDesc* desc) override;

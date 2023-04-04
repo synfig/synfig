@@ -51,7 +51,7 @@ private:
 
 	bool multi_image;
 	int imagecount,scanline;
-	synfig::String filename;
+	synfig::filesystem::Path filename;
 	Imf::RgbaOutputFile *exr_file;
 	//std::vector<Imf::Rgba> buffer;
 	synfig::surface<Imf::Rgba> out_surface;
@@ -62,7 +62,7 @@ private:
 
 public:
 
-	exr_trgt(const char *filename, const synfig::TargetParam& /* params */);
+	exr_trgt(const synfig::filesystem::Path& filename, const synfig::TargetParam& /* params */);
 	virtual ~exr_trgt();
 
 	bool set_rend_desc(synfig::RendDesc* desc) override;

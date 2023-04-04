@@ -141,7 +141,9 @@ public:
 	/** Path as a character string in native encoding */
 	const string_type& native() const noexcept;
 	/** Path as a character string in UTF-8 encoding */
-	const std::string& u8string() const;
+	const std::string::value_type* u8_str() const noexcept;
+	/** Path as a character string in UTF-8 encoding */
+	const std::string& u8string() const noexcept;
 
 	// Compare ---------------------------
 

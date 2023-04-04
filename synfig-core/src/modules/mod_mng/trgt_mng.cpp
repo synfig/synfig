@@ -96,7 +96,7 @@ mng_error_proc(mng_handle /*mng*/, mng_int32 /*error*/,
 	return MNG_TRUE;
 }
 
-mng_trgt::mng_trgt(const char *Filename, const synfig::TargetParam & /* params */):
+mng_trgt::mng_trgt(const synfig::filesystem::Path& Filename, const synfig::TargetParam& /* params */):
 	w(),
 	h(),
 	mng(nullptr),

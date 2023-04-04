@@ -42,7 +42,6 @@
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
-using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
@@ -59,7 +58,7 @@ exr_trgt::ready()
 	return (bool)exr_file;
 }
 
-exr_trgt::exr_trgt(const char *Filename, const synfig::TargetParam &params):
+exr_trgt::exr_trgt(const synfig::filesystem::Path& Filename, const synfig::TargetParam& params):
 	multi_image(false),
 	imagecount(0),
 	scanline(),
@@ -96,18 +95,16 @@ exr_trgt::start_frame(synfig::ProgressCallback *cb)
 	if (exr_file)
 		delete exr_file;
 
-	String frame_name = filename;
+	synfig::filesystem::Path frame_name = filename;
 
 	if (multi_image) {
-		frame_name = (filename_sans_extension(filename) +
-					  sequence_separator +
-					  strprintf("%04d",imagecount) +
-					  filename_extension(filename));
+		frame_name.add_suffix(sequence_separator + strprintf("%04d",imagecount));
 	}
 	if (cb)
-		cb->task(frame_name);
+		cb->task(frame_name.u8string());
 
-	exr_file=new Imf::RgbaOutputFile(frame_name.c_str(),w,h,Imf::WRITE_RGBA,desc.get_pixel_aspect());
+	// OpenEXR implementation does not support wchar_t, so MS Windows users will have troubles sometimes
+	exr_file=new Imf::RgbaOutputFile(frame_name.u8_str(),w,h,Imf::WRITE_RGBA,desc.get_pixel_aspect());
 	buffer_color.resize(w);
 	//buffer.resize(w);
 	out_surface.set_wh(w,h);

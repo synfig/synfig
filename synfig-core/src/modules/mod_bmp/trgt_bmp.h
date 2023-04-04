@@ -50,14 +50,14 @@ private:
 	int imagecount;
 	bool multi_image;
 	synfig::SmartFILE file;
-	synfig::String filename;
+	synfig::filesystem::Path filename;
 	std::vector<unsigned char> buffer;
 	std::vector<synfig::Color> color_buffer;
 	synfig::PixelFormat pf;
 	synfig::String sequence_separator;
 
 public:
-	bmp(const char *filename, const synfig::TargetParam& /* params */);
+	bmp(const synfig::filesystem::Path& filename, const synfig::TargetParam& /* params */);
 	virtual ~bmp();
 
 	bool set_rend_desc(synfig::RendDesc* desc) override;

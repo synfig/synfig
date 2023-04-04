@@ -48,7 +48,6 @@
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
-using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
@@ -78,8 +77,7 @@ png_trgt::png_out_warning(png_struct *png_data,const char *msg)
 
 //Target *png_trgt::New(const char *filename){	return new png_trgt(filename);}
 
-png_trgt::png_trgt(const char *Filename, const synfig::TargetParam &params):
-	file(nullptr),
+png_trgt::png_trgt(const synfig::filesystem::Path& Filename, const synfig::TargetParam& params):
 	png_ptr(nullptr),
 	info_ptr(nullptr),
 	multi_image(),
@@ -125,21 +123,18 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 {
 	int w=desc.get_w(),h=desc.get_h();
 
-	if (filename == "-") {
+	if (filename.u8string() == "-") {
 		if (callback)
 			callback->task(strprintf("(stdout) %d", imagecount));
 		file = stdout;
 	} else {
-		String newfilename(filename);
+		synfig::filesystem::Path newfilename(filename);
 		if (multi_image) {
-			newfilename = (filename_sans_extension(filename) +
-							   sequence_separator +
-							   strprintf("%04d", imagecount) +
-							   filename_extension(filename));
+			newfilename.add_suffix(sequence_separator + strprintf("%04d", imagecount));
 		}
 		file = SmartFILE(newfilename, POPEN_BINARY_WRITE_TYPE);
 		if (callback)
-			callback->task(newfilename);
+			callback->task(newfilename.u8string());
 	}
 
 	if (!file) {

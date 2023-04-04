@@ -40,7 +40,6 @@
 #include <ETL/handle>
 
 #include "canvas.h"
-#include "color.h"
 #include "progresscallback.h"
 #include "renddesc.h"
 #include "string.h"
@@ -52,7 +51,7 @@
 //! To be used in the private part of the target class definition.
 #define SYNFIG_TARGET_MODULE_EXT \
 		public: static const char name__[], version__[], ext__[];\
-		static Target* create (const char *filename, const synfig::TargetParam& p);
+		static Target* create (const synfig::filesystem::Path& filename, const synfig::TargetParam& p);
 
 //! Sets the name of the target
 #define SYNFIG_TARGET_SET_NAME(class,x) const char class::name__[]=x
@@ -67,7 +66,7 @@
 //! \param filename The file name to be created by the target.
 //! \param p The parameters passed to the target (bit rate and vcodec)
 #define SYNFIG_TARGET_INIT(class)										\
-	synfig::Target* class::create (const char *filename,				\
+	synfig::Target* class::create (const synfig::filesystem::Path& filename,	\
 								   const synfig::TargetParam& p)		\
 	{ return new class(filename, p); }
 
@@ -133,7 +132,7 @@ public:
 	/*! As a pointer to the constructor, it represents a "factory" of targets.
 	**  Receives the output filename (including path) and the parameters of the target.
 	*/
-	typedef Target* (*Factory)(const char *filename, const TargetParam& p);
+	typedef Target* (*Factory)(const filesystem::Path& filename, const TargetParam& p);
 
 	struct BookEntry
 	{
@@ -230,7 +229,7 @@ public:
 	virtual bool init(ProgressCallback* cb = nullptr) { (void)cb; return true; }
 
 	//! Creates a new Target described by \a type, outputting to a file described by \a filename.
-	static Handle create(const String &type, const String &filename,
+	static Handle create(const String& type, const filesystem::Path& filename,
 						 const synfig::TargetParam& params);
 	
 	//!	Sets the time for the next frame at \a time

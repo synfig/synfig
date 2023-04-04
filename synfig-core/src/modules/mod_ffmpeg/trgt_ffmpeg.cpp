@@ -67,12 +67,10 @@ ffmpeg_trgt::does_video_codec_support_alpha_channel(const synfig::String &video_
 	return std::find(valid_codecs.begin(), valid_codecs.end(), video_codec) != valid_codecs.end();
 }
 
-ffmpeg_trgt::ffmpeg_trgt(const char *Filename, const synfig::TargetParam &params):
+ffmpeg_trgt::ffmpeg_trgt(const synfig::filesystem::Path& Filename, const synfig::TargetParam &params):
 	imagecount(0),
 	multi_image(false),
-	pipe(nullptr),
 	filename(Filename),
-	sound_filename(""),
 	bitrate()
 {
 	// Set default video codec and bitrate if they weren't given.
@@ -101,9 +99,9 @@ ffmpeg_trgt::~ffmpeg_trgt()
 	pipe = nullptr;
 
 	// Remove temporary sound file
-	if (FileSystemNative::instance()->is_file(sound_filename.c_str())) {
-		if(FileSystemNative::instance()->remove_recursive(sound_filename.c_str())) {
-			synfig::warning("Error deleting temporary sound file (%s).", sound_filename.c_str());
+	if (FileSystemNative::instance()->is_file(sound_filename.u8string())) {
+		if(FileSystemNative::instance()->remove_recursive(sound_filename.u8string())) {
+			synfig::warning("Error deleting temporary sound file (%s).", sound_filename.u8_str());
 		}
 	}
 }
@@ -149,7 +147,7 @@ bool
 ffmpeg_trgt::init(ProgressCallback* cb = nullptr)
 {
 	bool with_sound = false;
-	const std::string extension = etl::filename_extension(filename);
+	const std::string extension = filename.extension().u8string();
 	const std::vector<const char*> image_only_extensions{".gif", ".mng"};
 	const bool does_file_format_support_audio = std::find(image_only_extensions.begin(), image_only_extensions.end(), extension) == image_only_extensions.end();
 
@@ -166,22 +164,23 @@ ffmpeg_trgt::init(ProgressCallback* cb = nullptr)
 		// Generate random filename here
 		do {
 			synfig::GUID guid;
-			sound_filename = String(filename)+"."+guid.get_string().substr(0,8)+".wav";
-		} while (fs->is_exists(sound_filename));
+			sound_filename = filename;
+			sound_filename.replace_extension("." + guid.get_string().substr(0,8) + ".wav");
+		} while (fs->is_exists(sound_filename.u8string()));
 
-		soundProcessor.do_export(sound_filename);
+		soundProcessor.do_export(sound_filename.u8string());
 
-		if (!fs->is_exists(sound_filename)) {
+		if (!fs->is_exists(sound_filename.u8string())) {
 			with_sound = false;
 		}
 	}
 
-	String ffmpeg_binary_path;
+	synfig::filesystem::Path ffmpeg_binary_path;
 #ifdef _WIN32
 	// Windows always have ffmpeg
-	ffmpeg_binary_path = etl::dirname(synfig::get_binary_path(".")) + "/ffmpeg.exe";
-	if (!FileSystemNative::instance()->is_file(ffmpeg_binary_path)) {
-		synfig::error("Expected FFmpeg binary not found: %s", ffmpeg_binary_path.c_str());
+	ffmpeg_binary_path = synfig::filesystem::Path(etl::dirname(synfig::get_binary_path(".")) + "/ffmpeg.exe");
+	if (!FileSystemNative::instance()->is_file(ffmpeg_binary_path.u8string())) {
+		synfig::error("Expected FFmpeg binary not found: %s", ffmpeg_binary_path.u8_str());
 		ffmpeg_binary_path.clear();
 	}
 #else
@@ -221,7 +220,7 @@ ffmpeg_trgt::init(ProgressCallback* cb = nullptr)
 	OS::RunArgs vargs;
 	if (with_sound) {
 		vargs.push_back("-i");
-		vargs.push_back(filesystem::Path(sound_filename));
+		vargs.push_back(sound_filename);
 	}
 	vargs.push_back("-f");
 	vargs.push_back("image2pipe");
@@ -269,12 +268,12 @@ ffmpeg_trgt::init(ProgressCallback* cb = nullptr)
 		vargs.push_back(desc.get_duration().get_string(Time::Format::FORMAT_VIDEO));
 	}
 	// We need "--" to separate filename from arguments (for the case when filename starts with "-")
-	if ( filename.substr(0,1) == "-" )
+	if ( filename.u8string().substr(0,1) == "-" )
 		vargs.push_back("--");
 
-	vargs.push_back(filesystem::Path(filename));
+	vargs.push_back(filename);
 
-	pipe = OS::run_async(ffmpeg_binary_path, vargs, OS::RUN_MODE_WRITE);
+	pipe = OS::run_async(ffmpeg_binary_path.u8string(), vargs, OS::RUN_MODE_WRITE);
 
 	if(!pipe || !pipe->is_writable())
 	{

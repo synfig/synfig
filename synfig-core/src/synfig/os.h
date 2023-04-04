@@ -100,9 +100,9 @@ enum RunMode {
  */
 struct RunRedirectionFiles
 {
-	std::string std_err;
-	std::string std_out;
-	std::string std_in;
+	synfig::filesystem::Path std_err;
+	synfig::filesystem::Path std_out;
+	synfig::filesystem::Path std_in;
 };
 
 /**
