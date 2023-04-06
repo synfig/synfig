@@ -94,12 +94,12 @@ ffmpeg_mptr::seek_to(const Time& time)
 		args.push_back("-");
 
 #ifdef _WIN32
-		String binary_path = synfig::get_binary_path("");
-		if (binary_path != "")
-			binary_path = etl::dirname(binary_path)+ETL_DIRECTORY_SEPARATOR;
-		binary_path += "ffmpeg.exe";
+		synfig::filesystem::Path binary_path = synfig::get_binary_path("");
+		if (!binary_path.empty())
+			binary_path = binary_path.parent_path();
+		binary_path /= filesystem::Path("ffmpeg.exe");
 #else
-		String binary_path = "ffmpeg";
+		synfig::filesystem::Path binary_path("ffmpeg");
 #endif
 		pipe = OS::run_async(binary_path, args, OS::RUN_MODE_READ);
 

@@ -189,7 +189,7 @@ ffmpeg_trgt::init(ProgressCallback* cb = nullptr)
 	for (const auto& bin_name : binary_choices) {
 		OS::RunArgs args;
 		args.push_back(bin_name);
-		OS::RunPipe::Handle pipe = OS::run_async("which", args, OS::RUN_MODE_READ);
+		OS::RunPipe::Handle pipe = OS::run_async({"which"}, args, OS::RUN_MODE_READ);
 		if (!pipe) {
 			synfig::error(_("%s: Internal error: couldn't run 'which' async"), "trgt_ffmpeg");
 			continue;
@@ -273,7 +273,7 @@ ffmpeg_trgt::init(ProgressCallback* cb = nullptr)
 
 	vargs.push_back(filename);
 
-	pipe = OS::run_async(ffmpeg_binary_path.u8string(), vargs, OS::RUN_MODE_WRITE);
+	pipe = OS::run_async(ffmpeg_binary_path, vargs, OS::RUN_MODE_WRITE);
 
 	if(!pipe || !pipe->is_writable())
 	{

@@ -119,7 +119,7 @@ dv_trgt::init(synfig::ProgressCallback * /* cb */)
 		args.push_back({"-w", "1"});
 	args.push_back("-");
 
-	pipe = OS::run_async("encodedv", args, OS::RUN_MODE_WRITE, {{}, filename, {}});
+	pipe = OS::run_async({"encodedv"}, args, OS::RUN_MODE_WRITE, {{}, filename, {}});
 	if (!pipe || !pipe->is_writable()) {
 		synfig::error(_("Unable to open pipe to encodedv"));
 		return false;
