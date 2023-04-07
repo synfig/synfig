@@ -50,8 +50,8 @@ private:
 	bool multi_image;
 	synfig::SmartFILE file;
 	synfig::String filename;
-	synfig::Color *color_buffer;
-	unsigned char *buffer;
+	std::vector<unsigned char> buffer;
+	std::vector<synfig::Color> color_buffer;
 	synfig::String sequence_separator;
 
 public:

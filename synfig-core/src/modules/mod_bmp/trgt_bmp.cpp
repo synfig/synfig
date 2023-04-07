@@ -154,8 +154,6 @@ bmp::bmp(const char *Filename, const synfig::TargetParam& params):
 	multi_image(false),
 	file(nullptr),
 	filename(Filename),
-	buffer(nullptr),
-	color_buffer(nullptr),
 	pf()
 {
 	set_alpha_mode(TARGET_ALPHA_MODE_FILL);
@@ -167,8 +165,6 @@ bmp::~bmp()
 	if(file)
 		fclose(file);
 	file = nullptr;
-	delete [] buffer;
-	delete [] color_buffer;
 }
 
 bool
@@ -205,9 +201,8 @@ bmp::end_frame()
 {
 	if(file)
 		fclose(file);
-	delete [] color_buffer;
-	color_buffer=0;
 	file = nullptr;
+	color_buffer.clear();
 	imagecount++;
 }
 
@@ -278,11 +273,8 @@ bmp::start_frame(synfig::ProgressCallback *callback)
 		return false;
 	}
 
-	delete [] buffer;
-	buffer=new unsigned char[rowspan];
-
-	delete [] color_buffer;
-	color_buffer=new Color[desc.get_w()];
+	buffer.resize(rowspan);
+	color_buffer.resize(desc.get_w());
 
 	return true;
 }
@@ -290,7 +282,7 @@ bmp::start_frame(synfig::ProgressCallback *callback)
 Color *
 bmp::start_scanline(int /*scanline*/)
 {
-	return color_buffer;
+	return color_buffer.empty() ? nullptr : color_buffer.data();
 }
 
 bool
@@ -299,9 +291,9 @@ bmp::end_scanline()
 	if(!file)
 		return false;
 
-	color_to_pixelformat(buffer, color_buffer, pf, 0, desc.get_w());
+	color_to_pixelformat(buffer.data(), color_buffer.data(), pf, 0, desc.get_w());
 
-	if(!fwrite(buffer,1,rowspan,file))
+	if (!fwrite(buffer.data(), 1, rowspan, file))
 		return false;
 
 	return true;

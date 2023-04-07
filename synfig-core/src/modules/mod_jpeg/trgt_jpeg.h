@@ -59,8 +59,8 @@ private:
 	bool multi_image,ready;
 	int imagecount;
 	synfig::String filename;
-	unsigned char *buffer;
-	synfig::Color *color_buffer;
+	std::vector<unsigned char> buffer;
+	std::vector<synfig::Color> color_buffer;
 	synfig::String sequence_separator;
 public:
 	jpeg_trgt(const char *filename, const synfig::TargetParam& /* params */);

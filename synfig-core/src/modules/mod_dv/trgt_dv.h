@@ -50,8 +50,8 @@ private:
 	bool wide_aspect;
 	synfig::OS::RunPipe::Handle pipe;
 	synfig::String filename;
-	unsigned char *buffer;
-	synfig::Color *color_buffer;
+	std::vector<unsigned char> buffer;
+	std::vector<synfig::Color> color_buffer;
 
 public:
 

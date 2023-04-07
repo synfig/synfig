@@ -87,8 +87,6 @@ png_trgt::png_trgt(const char *Filename, const synfig::TargetParam &params):
 	ready(false),
 	imagecount(),
 	filename(Filename),
-	buffer(nullptr),
-	color_buffer(nullptr),
 	sequence_separator(params.sequence_separator)
 { }
 
@@ -97,8 +95,6 @@ png_trgt::~png_trgt()
 	if(file)
 		fclose(file);
 	file=nullptr;
-	delete [] buffer;
-	delete [] color_buffer;
 }
 
 bool
@@ -160,11 +156,8 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 	if(!file)
 		return false;
 
-	delete [] buffer;
-	buffer=new unsigned char[4*w];
-
-	delete [] color_buffer;
-	color_buffer=new Color[w];
+	buffer.resize(4*w);
+	color_buffer.resize(w);
 
 	png_ptr=png_create_write_struct(PNG_LIBPNG_VER_STRING, (png_voidp)this,png_out_error, png_out_warning);
 	if (!png_ptr)
@@ -240,7 +233,7 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 Color *
 png_trgt::start_scanline(int /*scanline*/)
 {
-	return color_buffer;
+	return color_buffer.empty() ? nullptr : color_buffer.data();
 }
 
 bool
@@ -250,10 +243,10 @@ png_trgt::end_scanline()
 		return false;
 
 	PixelFormat pf = get_alpha_mode()==TARGET_ALPHA_MODE_KEEP ? PF_RGB|PF_A : PF_RGB;
-	color_to_pixelformat(buffer, color_buffer, pf, 0, desc.get_w());
+	color_to_pixelformat(buffer.data(), color_buffer.data(), pf, 0, desc.get_w());
 
 	setjmp(png_jmpbuf(png_ptr));
-	png_write_row(png_ptr,buffer);
+	png_write_row(png_ptr, buffer.data());
 
 	return true;
 }

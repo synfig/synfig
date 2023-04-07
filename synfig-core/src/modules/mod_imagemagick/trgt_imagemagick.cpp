@@ -62,16 +62,12 @@ imagemagick_trgt::imagemagick_trgt(const char *Filename,  const synfig::TargetPa
 	multi_image(false),
 	pipe(nullptr),
 	filename(Filename),
-	buffer(nullptr),
-	color_buffer(nullptr),
 	pf(),
 	sequence_separator(params.sequence_separator)
 { }
 
 imagemagick_trgt::~imagemagick_trgt()
 {
-	delete [] buffer;
-	delete [] color_buffer;
 }
 
 bool
@@ -93,10 +89,8 @@ imagemagick_trgt::init(synfig::ProgressCallback * /* cb */)
 	if(desc.get_frame_end()-desc.get_frame_start()>0)
 		multi_image=true;
 
-	delete [] buffer;
-	buffer=new unsigned char[pixel_size(pf)*desc.get_w()];
-	delete [] color_buffer;
-	color_buffer=new Color[desc.get_w()];
+	buffer.resize(pixel_size(pf)*desc.get_w());
+	color_buffer.resize(desc.get_w());
 	return true;
 }
 
@@ -146,7 +140,7 @@ imagemagick_trgt::start_frame(synfig::ProgressCallback *cb)
 Color*
 imagemagick_trgt::start_scanline(int /*scanline*/)
 {
-	return color_buffer;
+	return color_buffer.empty() ? nullptr : color_buffer.data();
 }
 
 bool
@@ -155,9 +149,9 @@ imagemagick_trgt::end_scanline(void)
 	if (!pipe)
 		return false;
 
-	color_to_pixelformat(buffer, color_buffer, pf, 0, desc.get_w());
+	color_to_pixelformat(buffer.data(), color_buffer.data(), pf, 0, desc.get_w());
 
-	if (!pipe->write(buffer, pixel_size(pf), desc.get_w()))
+	if (!pipe->write(buffer.data(), pixel_size(pf), desc.get_w()))
 		return false;
 
 	return true;

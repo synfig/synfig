@@ -57,8 +57,6 @@ ppm::ppm(const char *Filename, const synfig::TargetParam &params):
 	multi_image(false),
 	file(),
 	filename(Filename),
-	color_buffer(nullptr),
-	buffer(nullptr),
 	sequence_separator(params.sequence_separator)
 {
 	set_alpha_mode(TARGET_ALPHA_MODE_FILL);
@@ -66,8 +64,6 @@ ppm::ppm(const char *Filename, const synfig::TargetParam &params):
 
 ppm::~ppm()
 {
-	delete [] buffer;
-	delete [] color_buffer;
 }
 
 bool
@@ -121,11 +117,8 @@ ppm::start_frame(synfig::ProgressCallback *callback)
 	fprintf(file.get(), "%d %d\n", w, h);
 	fprintf(file.get(), "%d\n", 255);
 
-	delete [] buffer;
-	buffer=new unsigned char[3*w];
-
-	delete [] color_buffer;
-	color_buffer=new Color[desc.get_w()];
+	buffer.resize(3*w);
+	color_buffer.resize(desc.get_w());
 
 	return true;
 }
@@ -133,7 +126,7 @@ ppm::start_frame(synfig::ProgressCallback *callback)
 Color *
 ppm::start_scanline(int /*scanline*/)
 {
-	return color_buffer;
+	return color_buffer.empty() ? nullptr : color_buffer.data();
 }
 
 bool
@@ -142,9 +135,9 @@ ppm::end_scanline()
 	if(!file)
 		return false;
 
-	color_to_pixelformat(buffer, color_buffer, PF_RGB, 0, desc.get_w());
+	color_to_pixelformat(buffer.data(), color_buffer.data(), PF_RGB, 0, desc.get_w());
 
-	if(!fwrite(buffer,1,desc.get_w()*3,file.get()))
+	if (!fwrite(buffer.data(), 1, desc.get_w()*3, file.get()))
 		return false;
 
 	return true;

@@ -62,8 +62,6 @@ jpeg_trgt::jpeg_trgt(const char *Filename, const synfig::TargetParam &params):
 	ready(false),
 	imagecount(),
 	filename(Filename),
-	buffer(nullptr),
-	color_buffer(nullptr),
 	sequence_separator(params.sequence_separator)
 {
 	set_alpha_mode(TARGET_ALPHA_MODE_FILL);
@@ -80,8 +78,6 @@ jpeg_trgt::~jpeg_trgt()
 	if(file)
 		fclose(file);
 	file=nullptr;
-	delete [] buffer;
-	delete [] color_buffer;
 }
 
 bool
@@ -126,11 +122,8 @@ jpeg_trgt::start_frame(synfig::ProgressCallback *callback)
 	if(!file)
 		return false;
 
-	delete [] buffer;
-	buffer=new unsigned char[3*w];
-
-	delete [] color_buffer;
-	color_buffer=new Color[w];
+	buffer.resize(3*w);
+	color_buffer.resize(w);
 
 
 	cinfo.err = jpeg_std_error(&jerr);
@@ -181,7 +174,7 @@ jpeg_trgt::end_frame()
 Color *
 jpeg_trgt::start_scanline(int /*scanline*/)
 {
-	return color_buffer;
+	return color_buffer.empty() ? nullptr : color_buffer.data();
 }
 
 bool
@@ -190,10 +183,10 @@ jpeg_trgt::end_scanline()
 	if(!file || !ready)
 		return false;
 
-	color_to_pixelformat(buffer, color_buffer, PF_RGB, nullptr, desc.get_w());
+	color_to_pixelformat(buffer.data(), color_buffer.data(), PF_RGB, nullptr, desc.get_w());
 
-	JSAMPROW *row_pointer(&buffer);
-	jpeg_write_scanlines(&cinfo, row_pointer, 1);
+	JSAMPROW row_pointer(buffer.data());
+	jpeg_write_scanlines(&cinfo, &row_pointer, 1);
 
 	return true;
 }
