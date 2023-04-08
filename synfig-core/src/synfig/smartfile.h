@@ -68,7 +68,7 @@ private:
 	{
 		void operator()(FILE* x) const
 		{
-			if (x && (x != stdout && x != stdin))
+			if (x && (x != stdout && x != stdin && x != stderr))
 				fclose(x);
 		}
 	};
