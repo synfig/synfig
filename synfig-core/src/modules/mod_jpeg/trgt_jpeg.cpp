@@ -33,9 +33,10 @@
 #	include <config.h>
 #endif
 
+#include "trgt_jpeg.h"
+
 #include <ETL/stringf>
 
-#include "trgt_jpeg.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
 
@@ -95,13 +96,11 @@ jpeg_trgt::start_frame(synfig::ProgressCallback *callback)
 {
 	int w=desc.get_w(),h=desc.get_h();
 
-	if(filename=="-")
-	{
-		if(callback)callback->task(strprintf("(stdout) %d",imagecount).c_str());
-		file=stdout;
-	}
-	else if(multi_image)
-	{
+	if (filename == "-") {
+		if (callback)
+			callback->task(strprintf("(stdout) %d", imagecount));
+		file = stdout;
+	} else {
 		String newfilename(filename);
 		if (multi_image) {
 			newfilename = (filename_sans_extension(filename) +

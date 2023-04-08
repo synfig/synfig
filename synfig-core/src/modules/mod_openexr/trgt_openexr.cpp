@@ -93,23 +93,20 @@ exr_trgt::start_frame(synfig::ProgressCallback *cb)
 {
 	int w=desc.get_w(),h=desc.get_h();
 
-	String frame_name;
-
-	if(exr_file)
+	if (exr_file)
 		delete exr_file;
-	if(multi_image)
-	{
+
+	String frame_name = filename;
+
+	if (multi_image) {
 		frame_name = (filename_sans_extension(filename) +
 					  sequence_separator +
 					  strprintf("%04d",imagecount) +
 					  filename_extension(filename));
-		if(cb)cb->task(frame_name);
 	}
-	else
-	{
-		frame_name=filename;
-		if(cb)cb->task(filename);
-	}
+	if (cb)
+		cb->task(frame_name);
+
 	exr_file=new Imf::RgbaOutputFile(frame_name.c_str(),w,h,Imf::WRITE_RGBA,desc.get_pixel_aspect());
 	buffer_color.resize(w);
 	//buffer.resize(w);

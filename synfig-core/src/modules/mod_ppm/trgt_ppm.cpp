@@ -34,6 +34,7 @@
 #endif
 
 #include "trgt_ppm.h"
+
 #include <ETL/stringf>
 
 #include <synfig/general.h>
@@ -93,24 +94,21 @@ ppm::start_frame(synfig::ProgressCallback *callback)
 {
 	int w=desc.get_w(),h=desc.get_h();
 
-	if(filename=="-")
-	{
-		if(callback)callback->task(strprintf("(stdout) %d",imagecount).c_str());
-		file=SmartFILE(stdout);
-	}
-	else if(multi_image)
-	{
-		String newfilename(filename_sans_extension(filename) +
+	if (filename == "-") {
+		if (callback)
+			callback->task(strprintf("(stdout) %d", imagecount));
+		file = SmartFILE(stdout);
+	} else {
+		String newfilename(filename);
+		if (multi_image) {
+			newfilename = filename_sans_extension(filename) +
 						   sequence_separator +
-						   strprintf("%04d",imagecount) +
-						   filename_extension(filename));
+						   strprintf("%04d", imagecount) +
+						   filename_extension(filename);
+		}
 		file = SmartFILE(newfilename, POPEN_BINARY_WRITE_TYPE);
-		if(callback)callback->task(newfilename);
-	}
-	else
-	{
-		file = SmartFILE(filename, POPEN_BINARY_WRITE_TYPE);
-		if(callback)callback->task(filename);
+		if (callback)
+			callback->task(newfilename);
 	}
 
 	if (!file) {

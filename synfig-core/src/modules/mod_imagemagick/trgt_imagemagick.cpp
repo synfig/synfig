@@ -129,8 +129,10 @@ imagemagick_trgt::start_frame(synfig::ProgressCallback *cb)
 	pipe = OS::run_async("convert", args, OS::RUN_MODE_WRITE);
 
 	if (!pipe) {
-		if(cb)cb->error(N_(msg));
-		else synfig::error(N_(msg));
+		if (cb)
+			cb->error(N_(msg));
+		else
+			synfig::error(N_(msg));
 		return false;
 	}
 

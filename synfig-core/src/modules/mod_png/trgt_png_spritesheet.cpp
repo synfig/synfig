@@ -244,7 +244,7 @@ png_trgt_spritesheet::start_frame(synfig::ProgressCallback *callback)
 
     if(callback)
 		callback->task(strprintf("%s, (frame %d/%d)", filename.c_str(), 
-		                         imagecount - (lastimage - numimages), numimages).c_str());
+								 imagecount - (lastimage - numimages), numimages));
     return true;
 }
 

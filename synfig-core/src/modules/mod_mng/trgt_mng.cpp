@@ -152,15 +152,12 @@ mng_trgt::init(synfig::ProgressCallback * /* cb */)
 	int frame_rate, num_frames, play_time;
 	int num_layers = 1;
 
-	if (multi_image)
-	{
+	if (multi_image) {
 		frame_rate = int(desc.get_frame_rate());
 		printf("frame rt %d\n", frame_rate);
 		num_frames = desc.get_frame_end()-desc.get_frame_start();
 		play_time = num_frames;// / frame_rate;
-	}
-	else
-	{
+	} else {
 		frame_rate = 0;
 		num_frames = 1;
 		play_time = 0;
