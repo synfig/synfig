@@ -99,17 +99,16 @@ jpeg_trgt::start_frame(synfig::ProgressCallback *callback)
 	}
 	else if(multi_image)
 	{
-		String newfilename(filename_sans_extension(filename) +
-						   sequence_separator +
-						   strprintf("%04d",imagecount) +
-						   filename_extension(filename));
+		String newfilename(filename);
+		if (multi_image) {
+			newfilename = (filename_sans_extension(filename) +
+							   sequence_separator +
+							   strprintf("%04d", imagecount) +
+							   filename_extension(filename));
+		}
 		file = SmartFILE(newfilename, POPEN_BINARY_WRITE_TYPE);
-		if(callback)callback->task(newfilename);
-	}
-	else
-	{
-		file = SmartFILE(filename, POPEN_BINARY_WRITE_TYPE);
-		if(callback)callback->task(filename);
+		if (callback)
+			callback->task(newfilename);
 	}
 
 	if(!file)

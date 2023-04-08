@@ -205,25 +205,33 @@ bmp::start_frame(synfig::ProgressCallback *callback)
 	int w=desc.get_w(),h=desc.get_h();
 
 	rowspan=4*((w*(pixel_size(pf)*8)+31)/32);
-	if(multi_image)
-	{
-		String newfilename(filename_sans_extension(filename) +
-						   sequence_separator +
-						   strprintf("%04d",imagecount) +
-						   filename_extension(filename));
+
+	String newfilename = filename;
+
+	if (filename == "-") {
+		if (callback)
+			callback->task(strprintf("(stdout) %d",imagecount));
+		file = stdout;
+	} else {
+		if (multi_image) {
+			newfilename = (filename_sans_extension(filename) +
+							   sequence_separator +
+							   strprintf("%04d",imagecount) +
+							   filename_extension(filename));
+			if (callback)
+				callback->task(newfilename + _(" (animated)"));
+		} else {
+			if (callback)
+				callback->task(newfilename);
+		}
 		file = SmartFILE(newfilename, POPEN_BINARY_WRITE_TYPE);
-		if(callback)callback->task(newfilename+_(" (animated)"));
-	}
-	else
-	{
-		file = SmartFILE(filename, POPEN_BINARY_WRITE_TYPE);
-		if(callback)callback->task(filename);
 	}
 
-	if(!file)
-	{
-		if(callback)callback->error(_("Unable to open file"));
-		else synfig::error(_("Unable to open file"));
+	if (!file) {
+		if (callback)
+			callback->error(_("Unable to open file"));
+		else
+			synfig::error(_("Unable to open file"));
 		return false;
 	}
 
