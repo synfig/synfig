@@ -31,8 +31,8 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfig/target_scanline.h>
+#include <synfig/smartfile.h>
 #include <synfig/string.h>
-#include <cstdio>
 
 extern "C" {
 	#include <jpeglib.h>
@@ -50,7 +50,7 @@ class jpeg_trgt : public synfig::Target_Scanline
 
 private:
 
-	FILE *file;
+	synfig::SmartFILE file;
 	int /*w,h,*/quality;
 	struct jpeg_compress_struct cinfo;
 	struct jpeg_error_mgr jerr;

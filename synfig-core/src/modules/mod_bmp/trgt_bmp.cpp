@@ -33,7 +33,6 @@
 #	include <config.h>
 #endif
 
-#include <glib/gstdio.h>
 #include "trgt_bmp.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
@@ -152,7 +151,6 @@ bmp::bmp(const char *Filename, const synfig::TargetParam& params):
 	rowspan(),
 	imagecount(),
 	multi_image(false),
-	file(nullptr),
 	filename(Filename),
 	pf()
 {
@@ -162,9 +160,6 @@ bmp::bmp(const char *Filename, const synfig::TargetParam& params):
 
 bmp::~bmp()
 {
-	if(file)
-		fclose(file);
-	file = nullptr;
 }
 
 bool
@@ -199,9 +194,7 @@ bmp::set_rend_desc(RendDesc *given_desc)
 void
 bmp::end_frame()
 {
-	if(file)
-		fclose(file);
-	file = nullptr;
+	file.reset();
 	color_buffer.clear();
 	imagecount++;
 }
@@ -218,12 +211,12 @@ bmp::start_frame(synfig::ProgressCallback *callback)
 						   sequence_separator +
 						   strprintf("%04d",imagecount) +
 						   filename_extension(filename));
-		file=g_fopen(newfilename.c_str(),POPEN_BINARY_WRITE_TYPE);
+		file = SmartFILE(newfilename, POPEN_BINARY_WRITE_TYPE);
 		if(callback)callback->task(newfilename+_(" (animated)"));
 	}
 	else
 	{
-		file=g_fopen(filename.c_str(),POPEN_BINARY_WRITE_TYPE);
+		file = SmartFILE(filename, POPEN_BINARY_WRITE_TYPE);
 		if(callback)callback->task(filename);
 	}
 
@@ -259,14 +252,14 @@ bmp::start_frame(synfig::ProgressCallback *callback)
 	//fprintf(file,"BM");
 
 	//if (!fwrite(&fileheader.bfSize,sizeof(synfig::BITMAPFILEHEADER)-4,1,file))
-	if (!fwrite(&fileheader, sizeof(synfig::BITMAP::FILEHEADER), 1, file))
+	if (!fwrite(&fileheader, sizeof(synfig::BITMAP::FILEHEADER), 1, file.get()))
 	{
 		if(callback)callback->error(_("Unable to write file header to file"));
 		else synfig::error(_("Unable to write file header to file"));
 		return false;
 	}
 
-	if (!fwrite(&infoheader, sizeof(synfig::BITMAP::INFOHEADER), 1, file))
+	if (!fwrite(&infoheader, sizeof(synfig::BITMAP::INFOHEADER), 1, file.get()))
 	{
 		if(callback)callback->error(_("Unable to write info header"));
 		else synfig::error(_("Unable to write info header"));
@@ -293,7 +286,7 @@ bmp::end_scanline()
 
 	color_to_pixelformat(buffer.data(), color_buffer.data(), pf, 0, desc.get_w());
 
-	if (!fwrite(buffer.data(), 1, rowspan, file))
+	if (!fwrite(buffer.data(), 1, rowspan, file.get()))
 		return false;
 
 	return true;

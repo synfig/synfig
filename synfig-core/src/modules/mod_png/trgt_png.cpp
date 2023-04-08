@@ -35,10 +35,8 @@
 
 #include <synfig/general.h>
 
-#include <glib/gstdio.h>
 #include "trgt_png.h"
 #include <png.h>
-#include <cstdio>
 #include <ETL/stringf>
 #include <string.h>
 
@@ -92,9 +90,6 @@ png_trgt::png_trgt(const char *Filename, const synfig::TargetParam &params):
 
 png_trgt::~png_trgt()
 {
-	if(file)
-		fclose(file);
-	file=nullptr;
 }
 
 bool
@@ -119,9 +114,7 @@ png_trgt::end_frame()
 		png_destroy_write_struct(&png_ptr, &info_ptr);
 	}
 
-	if(file && file!=stdout)
-		fclose(file);
-	file=nullptr;
+	file.reset();
 	imagecount++;
 	ready=false;
 }
@@ -131,8 +124,6 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 {
 	int w=desc.get_w(),h=desc.get_h();
 
-	if(file && file!=stdout)
-		fclose(file);
 	if(filename=="-")
 	{
 		if(callback)callback->task(strprintf("(stdout) %d",imagecount).c_str());
@@ -144,12 +135,12 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 						   sequence_separator +
 						   strprintf("%04d",imagecount) +
 						   filename_extension(filename));
-		file=g_fopen(newfilename.c_str(),POPEN_BINARY_WRITE_TYPE);
+		file = SmartFILE(newfilename, POPEN_BINARY_WRITE_TYPE);
 		if(callback)callback->task(newfilename);
 	}
 	else
 	{
-		file=g_fopen(filename.c_str(),POPEN_BINARY_WRITE_TYPE);
+		file = SmartFILE(filename, POPEN_BINARY_WRITE_TYPE);
 		if(callback)callback->task(filename);
 	}
 
@@ -163,7 +154,7 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 	if (!png_ptr)
 	{
 		synfig::error("Unable to setup PNG struct");
-		fclose(file);
+		file.reset();
 		return false;
 	}
 
@@ -171,7 +162,7 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 	if (!info_ptr)
 	{
 		synfig::error("Unable to setup PNG info struct");
-		fclose(file);
+		file.reset();
 		png_destroy_write_struct(&png_ptr, nullptr);
 		return false;
 	}
@@ -180,10 +171,10 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 	{
 		synfig::error("Unable to setup longjump");
 		png_destroy_write_struct(&png_ptr, &info_ptr);
-		fclose(file);
+		file.reset();
 		return false;
 	}
-	png_init_io(png_ptr,file);
+	png_init_io(png_ptr, file.get());
 	png_set_filter(png_ptr,0,PNG_FILTER_NONE);
 
 	setjmp(png_jmpbuf(png_ptr));

@@ -31,8 +31,8 @@
 /* === H E A D E R S ======================================================= */
 
 #include <png.h>
+#include <synfig/smartfile.h>
 #include <synfig/target_scanline.h>
-#include <cstdio>
 
 /* === M A C R O S ========================================================= */
 
@@ -46,7 +46,7 @@ class png_trgt : public synfig::Target_Scanline
 
 private:
 
-	FILE *file;
+	synfig::SmartFILE file;
 	//int w,h;
 	png_structp png_ptr;
 	png_infop info_ptr;

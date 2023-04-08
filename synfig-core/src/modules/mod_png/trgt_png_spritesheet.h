@@ -36,8 +36,8 @@
 
 #include <png.h>
 #include <synfig/target_scanline.h>
+#include <synfig/smartfile.h>
 #include <synfig/string.h>
-#include <cstdio>
 
 /* === M A C R O S ========================================================= */
 
@@ -80,8 +80,8 @@ private:
 	synfig::Color ** color_data;
 	unsigned int sheet_width;
 	unsigned int sheet_height;
-	FILE * in_file_pointer;
-	FILE * out_file_pointer;
+	synfig::SmartFILE in_file_pointer;
+	synfig::SmartFILE out_file_pointer;
 	unsigned int cur_out_image_row;
 	PngImage in_image;
 	synfig::String filename;

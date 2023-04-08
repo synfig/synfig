@@ -35,7 +35,6 @@
 
 #include <ETL/stringf>
 
-#include <glib/gstdio.h>
 #include "trgt_jpeg.h"
 #endif
 
@@ -54,7 +53,6 @@ SYNFIG_TARGET_SET_VERSION(jpeg_trgt,"0.1");
 /* === M E T H O D S ======================================================= */
 
 jpeg_trgt::jpeg_trgt(const char *Filename, const synfig::TargetParam &params):
-	file(nullptr),
 	quality(95),
 	cinfo(),
 	jerr(),
@@ -75,9 +73,6 @@ jpeg_trgt::~jpeg_trgt()
 		jpeg_destroy_compress(&cinfo);
 		ready=false;
 	}
-	if(file)
-		fclose(file);
-	file=nullptr;
 }
 
 bool
@@ -97,8 +92,6 @@ jpeg_trgt::start_frame(synfig::ProgressCallback *callback)
 {
 	int w=desc.get_w(),h=desc.get_h();
 
-	if(file && file!=stdout)
-		fclose(file);
 	if(filename=="-")
 	{
 		if(callback)callback->task(strprintf("(stdout) %d",imagecount).c_str());
@@ -110,12 +103,12 @@ jpeg_trgt::start_frame(synfig::ProgressCallback *callback)
 						   sequence_separator +
 						   strprintf("%04d",imagecount) +
 						   filename_extension(filename));
-		file=g_fopen(newfilename.c_str(),POPEN_BINARY_WRITE_TYPE);
+		file = SmartFILE(newfilename, POPEN_BINARY_WRITE_TYPE);
 		if(callback)callback->task(newfilename);
 	}
 	else
 	{
-		file=g_fopen(filename.c_str(),POPEN_BINARY_WRITE_TYPE);
+		file = SmartFILE(filename, POPEN_BINARY_WRITE_TYPE);
 		if(callback)callback->task(filename);
 	}
 
@@ -128,7 +121,7 @@ jpeg_trgt::start_frame(synfig::ProgressCallback *callback)
 
 	cinfo.err = jpeg_std_error(&jerr);
 	jpeg_create_compress(&cinfo);
-	jpeg_stdio_dest(&cinfo, file);
+	jpeg_stdio_dest(&cinfo, file.get());
 
 	cinfo.image_width = w; 	/* image width and height, in pixels */
 	cinfo.image_height = h;
@@ -165,9 +158,7 @@ jpeg_trgt::end_frame()
 		ready=false;
 	}
 
-	if(file && file!=stdout)
-		fclose(file);
-	file=nullptr;
+	file.reset();
 	imagecount++;
 }
 

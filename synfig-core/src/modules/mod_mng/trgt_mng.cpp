@@ -38,7 +38,6 @@
 
 #include <synfig/general.h>
 
-#include <glib/gstdio.h>
 #include "trgt_mng.h"
 #include <libmng.h>
 #include <ETL/stringf>
@@ -98,7 +97,6 @@ mng_error_proc(mng_handle /*mng*/, mng_int32 /*error*/,
 }
 
 mng_trgt::mng_trgt(const char *Filename, const synfig::TargetParam & /* params */):
-	file(nullptr),
 	w(),
 	h(),
 	mng(nullptr),
@@ -130,7 +128,6 @@ mng_trgt::~mng_trgt()
 		}
 		mng_cleanup (&mng);
 	}
-	if (file) { fclose(file); file=nullptr; }
 	if (zbuffer) { free(zbuffer); zbuffer = nullptr; zbuffer_len = 0; }
 }
 
@@ -172,9 +169,9 @@ mng_trgt::init(synfig::ProgressCallback * /* cb */)
 	time_t t = time(nullptr);
 	struct tm* gmt = gmtime(&t);
 	w=desc.get_w(); h=desc.get_h();
-	file = g_fopen(filename.c_str(), POPEN_BINARY_WRITE_TYPE);
+	file = SmartFILE(filename, POPEN_BINARY_WRITE_TYPE);
 	if (!file) goto cleanup_on_error;
-	mng = mng_initialize((mng_ptr)file, mng_alloc_proc, mng_free_proc, MNG_NULL);
+	mng = mng_initialize((mng_ptr)file.get(), mng_alloc_proc, mng_free_proc, MNG_NULL);
 	if (mng == MNG_NULL) goto cleanup_on_error;
 	if (mng_setcb_errorproc(mng, mng_error_proc) != 0) goto cleanup_on_error;
 	if (mng_setcb_writedata(mng, mng_write_proc) != 0) goto cleanup_on_error;
@@ -224,9 +221,7 @@ cleanup_on_error:
 		mng_cleanup (&mng);
 	}
 
-	if (file && file!=stdout)
-		fclose(file);
-	file=nullptr;
+	file.reset();
 
 	buffer.clear();
 	color_buffer.clear();
