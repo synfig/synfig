@@ -35,6 +35,10 @@
 
 #include "trgt_ppm.h"
 #include <ETL/stringf>
+
+#include <synfig/general.h>
+#include <synfig/localization.h>
+
 #endif
 
 /* === M A C R O S ========================================================= */
@@ -109,8 +113,13 @@ ppm::start_frame(synfig::ProgressCallback *callback)
 		if(callback)callback->task(filename);
 	}
 
-	if(!file)
+	if (!file) {
+		if (callback)
+			callback->error(_("Unable to open file"));
+		else
+			synfig::error(_("Unable to open file"));
 		return false;
+	}
 
 	fprintf(file.get(), "P6\n");
 	fprintf(file.get(), "%d %d\n", w, h);

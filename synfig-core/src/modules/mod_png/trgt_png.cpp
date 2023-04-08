@@ -40,6 +40,8 @@
 #include <ETL/stringf>
 #include <string.h>
 
+#include <synfig/general.h>
+#include <synfig/localization.h>
 #include <synfig/misc.h>
 
 #endif
@@ -144,8 +146,13 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 		if(callback)callback->task(filename);
 	}
 
-	if(!file)
+	if (!file) {
+		if (callback)
+			callback->error(_("Unable to open file"));
+		else
+			synfig::error(_("Unable to open file"));
 		return false;
+	}
 
 	buffer.resize(4*w);
 	color_buffer.resize(w);

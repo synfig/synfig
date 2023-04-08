@@ -36,6 +36,9 @@
 #include <ETL/stringf>
 
 #include "trgt_jpeg.h"
+#include <synfig/general.h>
+#include <synfig/localization.h>
+
 #endif
 
 /* === M A C R O S ========================================================= */
@@ -111,8 +114,13 @@ jpeg_trgt::start_frame(synfig::ProgressCallback *callback)
 			callback->task(newfilename);
 	}
 
-	if(!file)
+	if (!file) {
+		if (callback)
+			callback->error(_("Unable to open file"));
+		else
+			synfig::error(_("Unable to open file"));
 		return false;
+	}
 
 	buffer.resize(3*w);
 	color_buffer.resize(w);
