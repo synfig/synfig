@@ -32,13 +32,15 @@
 #	include <config.h>
 #endif
 
+#include "filesystemnative.h"
+
 #include <giomm.h>
 #include <glibmm.h>
 #include <glib/gstdio.h>
 
 #include <ETL/stringf>
 
-#include "filesystemnative.h"
+#include "smartfile.h"
 
 #endif
 
@@ -138,7 +140,7 @@ bool FileSystemNative::file_rename(const String &from_filename, const String &to
 
 FileSystem::ReadStream::Handle FileSystemNative::get_read_stream(const String &filename)
 {
-	FILE *f = g_fopen(filename.c_str(), "rb");
+	FILE* f = SmartFILE::open_file(filename, "rb");
 	return f == nullptr
 	     ? FileSystem::ReadStream::Handle()
 	     : FileSystem::ReadStream::Handle(new ReadStream(this, f));
@@ -146,7 +148,7 @@ FileSystem::ReadStream::Handle FileSystemNative::get_read_stream(const String &f
 
 FileSystem::WriteStream::Handle FileSystemNative::get_write_stream(const String &filename)
 {
-	FILE *f = g_fopen(filename.c_str(), "wb");
+	FILE* f = SmartFILE::open_file(filename, "wb");
 	return f == nullptr
 	     ? FileSystem::WriteStream::Handle()
 	     : FileSystem::WriteStream::Handle(new WriteStream(this, f));

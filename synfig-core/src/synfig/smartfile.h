@@ -51,13 +51,17 @@ class SmartFILE : public std::shared_ptr<FILE>
 public:
 	SmartFILE() : std::shared_ptr<FILE>(nullptr, _FILE_deleter()) {}
 	SmartFILE(FILE* f) : std::shared_ptr<FILE>(f, _FILE_deleter()) {}
-	SmartFILE(const filesystem::Path& name, const char* mode)
+	SmartFILE(const filesystem::Path& name, const char* mode) : std::shared_ptr<FILE>(open_file(name, mode), _FILE_deleter()) {}
+
+	static FILE*
+	open_file(const filesystem::Path& name, const char* mode)
+	{
 #ifdef _WIN32
-		: std::shared_ptr<FILE>(_wfopen(name.c_str(), filesystem::Path(mode).c_str()), _FILE_deleter())
+		return _wfopen(name.c_str(), filesystem::Path(mode).c_str());
 #else
-		: std::shared_ptr<FILE>(fopen(name.c_str(), mode), _FILE_deleter())
+		return fopen(name.c_str(), mode);
 #endif
-	{}
+	}
 
 private:
 	struct _FILE_deleter
