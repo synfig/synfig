@@ -255,14 +255,21 @@ void
 synfig::replace_value_nodes(Layer::LooseHandle layer, std::function<ValueNode::LooseHandle(const ValueNode::LooseHandle&)> fetch_replacement_for)
 {
 	auto replace_value_nodes_from_layer = [fetch_replacement_for](Layer::LooseHandle layer, const TraverseLayerStatus& /*status*/) {
+		// parameter name -> new valuenode
+		std::vector<std::pair<String, ValueNode::LooseHandle>> pending_replacements;
+
 		const Layer::DynamicParamList& dyn_param_list = layer->dynamic_param_list();
 		for (const auto& dyn_param : dyn_param_list) {
 			if (ValueNode::LooseHandle new_vn = fetch_replacement_for(dyn_param.second)) {
-				layer->disconnect_dynamic_param(dyn_param.first);
-				layer->connect_dynamic_param(dyn_param.first, new_vn);
+				pending_replacements.emplace_back(dyn_param.first, new_vn);
 			} else {
 				replace_value_nodes(dyn_param.second, fetch_replacement_for);
 			}
+		}
+
+		for (const auto& item : pending_replacements) {
+			layer->disconnect_dynamic_param(item.first);
+			layer->connect_dynamic_param(item.first, item.second);
 		}
 	};
 	traverse_layers(layer, replace_value_nodes_from_layer);
