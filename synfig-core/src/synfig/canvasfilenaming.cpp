@@ -32,7 +32,6 @@
 #	include <config.h>
 #endif
 
-#include <algorithm> // std::transform
 #include "canvasfilenaming.h"
 
 #include <ETL/stringf>
@@ -70,12 +69,6 @@ CanvasFileNaming::filename_extension_lower(const String &filename)
 	if (!ext.empty()) ext = ext.substr(1); // skip initial '.'
 	strtolower(ext);
 	return ext;
-}
-
-String
-CanvasFileNaming::append_directory_separator(const String &path)
-{
-	return path.empty() ? String() : path + container_directory_separator;
 }
 
 String
