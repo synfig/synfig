@@ -39,7 +39,6 @@
 #include <synfig/localization.h>
 #include <synfig/general.h>
 
-#include <glib/gstdio.h>
 #include "trgt_png_spritesheet.h"
 #include <png.h>
 #include <cstdio>
@@ -105,8 +104,6 @@ png_trgt_spritesheet::png_trgt_spritesheet(const char *Filename, const synfig::T
 	color_data(0),
 	sheet_width(0),
 	sheet_height(0),
-	in_file_pointer(0),
-	out_file_pointer(0),
 	cur_out_image_row(0),
 	filename(Filename),
 	sequence_separator(params.sequence_separator),
@@ -166,14 +163,14 @@ png_trgt_spritesheet::set_rend_desc(RendDesc *given_desc)
 
 	if (params.append)
 	{
-		in_file_pointer = g_fopen(filename.c_str(), "rb");
+		in_file_pointer = SmartFILE(filename, "rb");
 		if (!in_file_pointer)
-			synfig::error(strprintf("[read_png_file] File %s could not be opened for reading", filename.c_str()));
+			synfig::error(strprintf("[read_png_file] File %s could not be opened for reading", filename.c_str())); //u8_str()
 		else
 		{
 			is_loaded = load_png_file();
 			if (!is_loaded)
-				fclose(in_file_pointer);
+				in_file_pointer.reset();
 		}
 	}
 		
@@ -247,7 +244,7 @@ png_trgt_spritesheet::start_frame(synfig::ProgressCallback *callback)
 
     if(callback)
 		callback->task(strprintf("%s, (frame %d/%d)", filename.c_str(), 
-		                         imagecount - (lastimage - numimages), numimages).c_str());
+								 imagecount - (lastimage - numimages), numimages));
     return true;
 }
 
@@ -281,7 +278,7 @@ png_trgt_spritesheet::load_png_file()
     char header[8];    // 8 is the maximum size that can be checked
 
 	//Reads header for next checking.
-    int length = fread(header, 1, 8, in_file_pointer);
+	int length = fread(header, 1, 8, in_file_pointer.get());
     if ((length != 8) || png_sig_cmp((unsigned char *)header, 0, 8))
 	{
 		synfig::error(strprintf("[read_png_file] File %s is not recognized as a PNG file", filename.c_str()));
@@ -310,7 +307,7 @@ png_trgt_spritesheet::load_png_file()
 		return false;
 	}
 
-    png_init_io(in_image.png_ptr, in_file_pointer);
+	png_init_io(in_image.png_ptr, in_file_pointer.get());
     png_set_sig_bytes(in_image.png_ptr, 8);
 
     png_read_info(in_image.png_ptr, in_image.info_ptr);
@@ -398,17 +395,16 @@ png_trgt_spritesheet::write_png_file()
 
 	
     if (filename == "-")
-    	out_file_pointer=stdout;
+		out_file_pointer = stdout;
     else
-    	out_file_pointer=g_fopen(filename.c_str(), POPEN_BINARY_WRITE_TYPE);
+		out_file_pointer = SmartFILE(filename, POPEN_BINARY_WRITE_TYPE);
 
 	
     png_ptr=png_create_write_struct(PNG_LIBPNG_VER_STRING, (png_voidp)this,png_out_error, png_out_warning);
     if (!png_ptr)
     {
         synfig::error("Unable to setup PNG struct");
-        fclose(out_file_pointer);
-		out_file_pointer=nullptr;
+		out_file_pointer.reset();
         return false;
     }
 
@@ -417,8 +413,7 @@ png_trgt_spritesheet::write_png_file()
     if (!info_ptr)
     {
         synfig::error("Unable to setup PNG info struct");
-        fclose(out_file_pointer);
-		out_file_pointer=nullptr;
+		out_file_pointer.reset();
 		png_destroy_write_struct(&png_ptr,(png_infopp)nullptr);
         return false;
     }
@@ -428,11 +423,10 @@ png_trgt_spritesheet::write_png_file()
     {
         synfig::error("Unable to setup longjump");
         png_destroy_write_struct(&png_ptr, &info_ptr);
-        fclose(out_file_pointer);
-		out_file_pointer=nullptr;
+		out_file_pointer.reset();
         return false;
     }
-    png_init_io(png_ptr,out_file_pointer);
+	png_init_io(png_ptr, out_file_pointer.get());
     png_set_filter(png_ptr,0,PNG_FILTER_NONE);
 
 	
@@ -499,8 +493,7 @@ png_trgt_spritesheet::write_png_file()
     {
         png_write_end(png_ptr,info_ptr);
         png_destroy_write_struct(&png_ptr, &info_ptr);
-        fclose(out_file_pointer);
-		out_file_pointer=nullptr;
+		out_file_pointer.reset();
 
     }
 	return true;

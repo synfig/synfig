@@ -38,7 +38,6 @@
 
 #include <synfig/general.h>
 
-#include <glib/gstdio.h>
 #include "trgt_mng.h"
 #include <libmng.h>
 #include <ETL/stringf>
@@ -98,7 +97,6 @@ mng_error_proc(mng_handle /*mng*/, mng_int32 /*error*/,
 }
 
 mng_trgt::mng_trgt(const char *Filename, const synfig::TargetParam & /* params */):
-	file(nullptr),
 	w(),
 	h(),
 	mng(nullptr),
@@ -106,8 +104,6 @@ mng_trgt::mng_trgt(const char *Filename, const synfig::TargetParam & /* params *
 	ready(false),
 	imagecount(),
 	filename(Filename),
-	buffer(nullptr),
-	color_buffer(nullptr),
 	zstream(),
 	zbuffer(nullptr),
 	zbuffer_len(0)
@@ -132,9 +128,6 @@ mng_trgt::~mng_trgt()
 		}
 		mng_cleanup (&mng);
 	}
-	if (file) { fclose(file); file=nullptr; }
-	if (buffer) { delete [] buffer; buffer = nullptr; }
-	if (color_buffer) { delete [] color_buffer; color_buffer = nullptr; }
 	if (zbuffer) { free(zbuffer); zbuffer = nullptr; zbuffer_len = 0; }
 }
 
@@ -159,15 +152,12 @@ mng_trgt::init(synfig::ProgressCallback * /* cb */)
 	int frame_rate, num_frames, play_time;
 	int num_layers = 1;
 
-	if (multi_image)
-	{
+	if (multi_image) {
 		frame_rate = int(desc.get_frame_rate());
 		printf("frame rt %d\n", frame_rate);
 		num_frames = desc.get_frame_end()-desc.get_frame_start();
 		play_time = num_frames;// / frame_rate;
-	}
-	else
-	{
+	} else {
 		frame_rate = 0;
 		num_frames = 1;
 		play_time = 0;
@@ -176,9 +166,9 @@ mng_trgt::init(synfig::ProgressCallback * /* cb */)
 	time_t t = time(nullptr);
 	struct tm* gmt = gmtime(&t);
 	w=desc.get_w(); h=desc.get_h();
-	file = g_fopen(filename.c_str(), POPEN_BINARY_WRITE_TYPE);
+	file = SmartFILE(filename, POPEN_BINARY_WRITE_TYPE);
 	if (!file) goto cleanup_on_error;
-	mng = mng_initialize((mng_ptr)file, mng_alloc_proc, mng_free_proc, MNG_NULL);
+	mng = mng_initialize((mng_ptr)file.get(), mng_alloc_proc, mng_free_proc, MNG_NULL);
 	if (mng == MNG_NULL) goto cleanup_on_error;
 	if (mng_setcb_errorproc(mng, mng_error_proc) != 0) goto cleanup_on_error;
 	if (mng_setcb_writedata(mng, mng_write_proc) != 0) goto cleanup_on_error;
@@ -205,10 +195,12 @@ mng_trgt::init(synfig::ProgressCallback * /* cb */)
 	}
 	if (mng_putchunk_phys(mng, MNG_FALSE, round_to_int(desc.get_x_res()),round_to_int(desc.get_y_res()), MNG_UNIT_METER) != 0) goto cleanup_on_error;
 	if (mng_putchunk_time(mng, gmt->tm_year + 1900, gmt->tm_mon + 1, gmt->tm_mday, gmt->tm_hour, gmt->tm_min, gmt->tm_sec) != 0) goto cleanup_on_error;
-	buffer=new unsigned char[(4*w)+1];
-	if (!buffer) goto cleanup_on_error;
-	color_buffer=new Color[w];
-	if (!color_buffer) goto cleanup_on_error;
+	try {
+		buffer.resize((4*w)+1);
+		color_buffer.resize(w);
+	} catch (...) {
+		goto cleanup_on_error;
+	}
 	return true;
 
 cleanup_on_error:
@@ -226,21 +218,10 @@ cleanup_on_error:
 		mng_cleanup (&mng);
 	}
 
-	if (file && file!=stdout)
-		fclose(file);
-	file=nullptr;
+	file.reset();
 
-	if (buffer)
-	{
-		delete [] buffer;
-		buffer = nullptr;
-	}
-
-	if (color_buffer)
-	{
-		delete [] color_buffer;
-		color_buffer = nullptr;
-	}
+	buffer.clear();
+	color_buffer.clear();
 
 	return false;
 }
@@ -313,7 +294,7 @@ mng_trgt::start_frame(synfig::ProgressCallback */*callback*/)
 Color*
 mng_trgt::start_scanline(int /*scanline*/)
 {
-	return color_buffer;
+	return color_buffer.empty() ? nullptr : color_buffer.data();
 }
 
 bool
@@ -325,10 +306,10 @@ mng_trgt::end_scanline()
 		return false;
 	}
 
-	*buffer = MNG_FILTER_NONE;
-	color_to_pixelformat(buffer+1, color_buffer, PF_RGB|PF_A, 0, desc.get_w());
+	*buffer.data() = MNG_FILTER_NONE;
+	color_to_pixelformat(buffer.data()+1, color_buffer.data(), PF_RGB|PF_A, 0, desc.get_w());
 
-	zstream.next_in = buffer;
+	zstream.next_in = buffer.data();
 	zstream.avail_in = (4*w)+1;
 
 	if (deflate(&zstream,Z_NO_FLUSH) != Z_OK) {

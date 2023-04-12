@@ -32,6 +32,8 @@
 #	include <config.h>
 #endif
 
+#include "filecontainerzip.h"
+
 #include <cstring>
 #include <stdint.h>
 #include <cstddef>
@@ -41,9 +43,8 @@
 
 #include <ETL/stringf>
 
+#include "smartfile.h"
 #include "zstreambuf.h"
-
-#include "filecontainerzip.h"
 
 #endif
 
@@ -377,7 +378,7 @@ std::list<FileContainerZip::HistoryRecord> FileContainerZip::read_history(const 
 {
 	std::list<HistoryRecord> list;
 	
-	FILE *f = g_fopen(fix_slashes(container_filename).c_str(), "rb");
+	FILE *f = SmartFILE::open_file(container_filename, "rb");
 	if (!f) return list;
 
 	fseek(f, 0, SEEK_END);
@@ -395,7 +396,7 @@ std::list<FileContainerZip::HistoryRecord> FileContainerZip::read_history(const 
 bool FileContainerZip::create(const String &container_filename)
 {
 	if (is_opened()) return false;
-	storage_file_ = g_fopen(fix_slashes(container_filename).c_str(), "w+b");
+	storage_file_ = SmartFILE::open_file(container_filename, "w+b");
 	
 	if (is_opened()) changed_ = true;
 	return is_opened();
@@ -403,7 +404,8 @@ bool FileContainerZip::create(const String &container_filename)
 
 bool FileContainerZip::open_from_history(const String &container_filename, file_size_t truncate_storage_size) {
 	if (is_opened()) return false;
-	FILE *f = g_fopen(fix_slashes(container_filename).c_str(), "r+b");
+	// Maybe we should make f and storage_file_ as SmartFILE objects
+	FILE* f = SmartFILE::open_file(container_filename, "r+b");
 
 	if (!f) return false;
 

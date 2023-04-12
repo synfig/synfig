@@ -33,7 +33,6 @@
 #	include <config.h>
 #endif
 
-#include <glib/gstdio.h>
 #include "trgt_bmp.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
@@ -152,10 +151,7 @@ bmp::bmp(const char *Filename, const synfig::TargetParam& params):
 	rowspan(),
 	imagecount(),
 	multi_image(false),
-	file(nullptr),
 	filename(Filename),
-	buffer(nullptr),
-	color_buffer(nullptr),
 	pf()
 {
 	set_alpha_mode(TARGET_ALPHA_MODE_FILL);
@@ -164,11 +160,6 @@ bmp::bmp(const char *Filename, const synfig::TargetParam& params):
 
 bmp::~bmp()
 {
-	if(file)
-		fclose(file);
-	file = nullptr;
-	delete [] buffer;
-	delete [] color_buffer;
 }
 
 bool
@@ -203,11 +194,8 @@ bmp::set_rend_desc(RendDesc *given_desc)
 void
 bmp::end_frame()
 {
-	if(file)
-		fclose(file);
-	delete [] color_buffer;
-	color_buffer=0;
-	file = nullptr;
+	file.reset();
+	color_buffer.clear();
 	imagecount++;
 }
 
@@ -217,25 +205,33 @@ bmp::start_frame(synfig::ProgressCallback *callback)
 	int w=desc.get_w(),h=desc.get_h();
 
 	rowspan=4*((w*(pixel_size(pf)*8)+31)/32);
-	if(multi_image)
-	{
-		String newfilename(filename_sans_extension(filename) +
-						   sequence_separator +
-						   strprintf("%04d",imagecount) +
-						   filename_extension(filename));
-		file=g_fopen(newfilename.c_str(),POPEN_BINARY_WRITE_TYPE);
-		if(callback)callback->task(newfilename+_(" (animated)"));
-	}
-	else
-	{
-		file=g_fopen(filename.c_str(),POPEN_BINARY_WRITE_TYPE);
-		if(callback)callback->task(filename);
+
+	String newfilename = filename;
+
+	if (filename == "-") {
+		if (callback)
+			callback->task(strprintf("(stdout) %d",imagecount));
+		file = stdout;
+	} else {
+		if (multi_image) {
+			newfilename = (filename_sans_extension(filename) +
+							   sequence_separator +
+							   strprintf("%04d",imagecount) +
+							   filename_extension(filename));
+			if (callback)
+				callback->task(newfilename + _(" (animated)"));
+		} else {
+			if (callback)
+				callback->task(newfilename);
+		}
+		file = SmartFILE(newfilename, POPEN_BINARY_WRITE_TYPE);
 	}
 
-	if(!file)
-	{
-		if(callback)callback->error(_("Unable to open file"));
-		else synfig::error(_("Unable to open file"));
+	if (!file) {
+		if (callback)
+			callback->error(_("Unable to open file"));
+		else
+			synfig::error(_("Unable to open file"));
 		return false;
 	}
 
@@ -264,25 +260,22 @@ bmp::start_frame(synfig::ProgressCallback *callback)
 	//fprintf(file,"BM");
 
 	//if (!fwrite(&fileheader.bfSize,sizeof(synfig::BITMAPFILEHEADER)-4,1,file))
-	if (!fwrite(&fileheader, sizeof(synfig::BITMAP::FILEHEADER), 1, file))
+	if (!fwrite(&fileheader, sizeof(synfig::BITMAP::FILEHEADER), 1, file.get()))
 	{
 		if(callback)callback->error(_("Unable to write file header to file"));
 		else synfig::error(_("Unable to write file header to file"));
 		return false;
 	}
 
-	if (!fwrite(&infoheader, sizeof(synfig::BITMAP::INFOHEADER), 1, file))
+	if (!fwrite(&infoheader, sizeof(synfig::BITMAP::INFOHEADER), 1, file.get()))
 	{
 		if(callback)callback->error(_("Unable to write info header"));
 		else synfig::error(_("Unable to write info header"));
 		return false;
 	}
 
-	delete [] buffer;
-	buffer=new unsigned char[rowspan];
-
-	delete [] color_buffer;
-	color_buffer=new Color[desc.get_w()];
+	buffer.resize(rowspan);
+	color_buffer.resize(desc.get_w());
 
 	return true;
 }
@@ -290,7 +283,7 @@ bmp::start_frame(synfig::ProgressCallback *callback)
 Color *
 bmp::start_scanline(int /*scanline*/)
 {
-	return color_buffer;
+	return color_buffer.empty() ? nullptr : color_buffer.data();
 }
 
 bool
@@ -299,9 +292,9 @@ bmp::end_scanline()
 	if(!file)
 		return false;
 
-	color_to_pixelformat(buffer, color_buffer, pf, 0, desc.get_w());
+	color_to_pixelformat(buffer.data(), color_buffer.data(), pf, 0, desc.get_w());
 
-	if(!fwrite(buffer,1,rowspan,file))
+	if (!fwrite(buffer.data(), 1, rowspan, file.get()))
 		return false;
 
 	return true;

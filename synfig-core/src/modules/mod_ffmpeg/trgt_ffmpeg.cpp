@@ -332,7 +332,7 @@ ffmpeg_trgt::start_frame(synfig::ProgressCallback */*callback*/)
 Color *
 ffmpeg_trgt::start_scanline(int /*scanline*/)
 {
-	return color_buffer.data();
+	return color_buffer.empty() ? nullptr : color_buffer.data();
 }
 
 bool

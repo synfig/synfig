@@ -63,9 +63,7 @@ dv_trgt::dv_trgt(const char *Filename, const synfig::TargetParam & /* params */)
 	imagecount(0),
 	wide_aspect(false),
 	pipe(nullptr),
-	filename(Filename),
-	buffer(nullptr),
-	color_buffer(nullptr)
+	filename(Filename)
 {
 	set_alpha_mode(TARGET_ALPHA_MODE_FILL);
 }
@@ -73,8 +71,6 @@ dv_trgt::dv_trgt(const char *Filename, const synfig::TargetParam & /* params */)
 dv_trgt::~dv_trgt()
 {
 	pipe = nullptr;
-	delete [] buffer;
-	delete [] color_buffer;
 }
 
 bool
@@ -156,11 +152,8 @@ dv_trgt::start_frame(synfig::ProgressCallback */*callback*/)
 	pipe->printf("%d %d\n", w, h);
 	pipe->printf("%d\n", 255);
 
-	delete [] buffer;
-	buffer=new unsigned char[3*w];
-
-	delete [] color_buffer;
-	color_buffer=new Color[w];
+	buffer.resize(3*w);
+	color_buffer.resize(w);
 
 	return true;
 }
@@ -168,7 +161,7 @@ dv_trgt::start_frame(synfig::ProgressCallback */*callback*/)
 Color *
 dv_trgt::start_scanline(int /*scanline*/)
 {
-	return color_buffer;
+	return color_buffer.empty() ? nullptr : color_buffer.data();
 }
 
 bool
@@ -177,9 +170,9 @@ dv_trgt::end_scanline()
 	if (!pipe)
 		return false;
 
-	color_to_pixelformat(buffer, color_buffer, PF_RGB, 0, desc.get_w());
+	color_to_pixelformat(buffer.data(), color_buffer.data(), PF_RGB, 0, desc.get_w());
 
-	if (!pipe->write(buffer, 1, desc.get_w() * 3))
+	if (!pipe->write(buffer.data(), 1, desc.get_w() * 3))
 		return false;
 
 	return true;

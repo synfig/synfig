@@ -554,7 +554,6 @@ synfig::get_binary_path(const String &fallback_path)
 
 	ssize_t size;
 	struct stat stat_buf;
-	FILE *f;
 
 	/* Read from /proc/self/exe (symlink) */
 	char* path2 = new char[buf_size];
@@ -613,7 +612,7 @@ synfig::get_binary_path(const String &fallback_path)
 		buf_size = PATH_MAX + 128;
 		char* line = (char*)malloc(buf_size);
 
-		f = fopen("/proc/self/maps", "r");
+		FILE* f = fopen("/proc/self/maps", "r");
 		if (!f) {
 			synfig::error("Cannot open /proc/self/maps.");
 		}

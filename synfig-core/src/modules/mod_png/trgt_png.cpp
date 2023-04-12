@@ -33,15 +33,14 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
-#include <glib/gstdio.h>
 #include "trgt_png.h"
-#include <png.h>
-#include <cstdio>
-#include <ETL/stringf>
-#include <string.h>
 
+#include <png.h>
+
+#include <ETL/stringf>
+
+#include <synfig/general.h>
+#include <synfig/localization.h>
 #include <synfig/misc.h>
 
 #endif
@@ -87,18 +86,11 @@ png_trgt::png_trgt(const char *Filename, const synfig::TargetParam &params):
 	ready(false),
 	imagecount(),
 	filename(Filename),
-	buffer(nullptr),
-	color_buffer(nullptr),
 	sequence_separator(params.sequence_separator)
 { }
 
 png_trgt::~png_trgt()
 {
-	if(file)
-		fclose(file);
-	file=nullptr;
-	delete [] buffer;
-	delete [] color_buffer;
 }
 
 bool
@@ -123,9 +115,7 @@ png_trgt::end_frame()
 		png_destroy_write_struct(&png_ptr, &info_ptr);
 	}
 
-	if(file && file!=stdout)
-		fclose(file);
-	file=nullptr;
+	file.reset();
 	imagecount++;
 	ready=false;
 }
@@ -135,42 +125,39 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 {
 	int w=desc.get_w(),h=desc.get_h();
 
-	if(file && file!=stdout)
-		fclose(file);
-	if(filename=="-")
-	{
-		if(callback)callback->task(strprintf("(stdout) %d",imagecount).c_str());
-		file=stdout;
-	}
-	else if(multi_image)
-	{
-		String newfilename(filename_sans_extension(filename) +
-						   sequence_separator +
-						   strprintf("%04d",imagecount) +
-						   filename_extension(filename));
-		file=g_fopen(newfilename.c_str(),POPEN_BINARY_WRITE_TYPE);
-		if(callback)callback->task(newfilename);
-	}
-	else
-	{
-		file=g_fopen(filename.c_str(),POPEN_BINARY_WRITE_TYPE);
-		if(callback)callback->task(filename);
+	if (filename == "-") {
+		if (callback)
+			callback->task(strprintf("(stdout) %d", imagecount));
+		file = stdout;
+	} else {
+		String newfilename(filename);
+		if (multi_image) {
+			newfilename = (filename_sans_extension(filename) +
+							   sequence_separator +
+							   strprintf("%04d", imagecount) +
+							   filename_extension(filename));
+		}
+		file = SmartFILE(newfilename, POPEN_BINARY_WRITE_TYPE);
+		if (callback)
+			callback->task(newfilename);
 	}
 
-	if(!file)
+	if (!file) {
+		if (callback)
+			callback->error(_("Unable to open file"));
+		else
+			synfig::error(_("Unable to open file"));
 		return false;
+	}
 
-	delete [] buffer;
-	buffer=new unsigned char[4*w];
-
-	delete [] color_buffer;
-	color_buffer=new Color[w];
+	buffer.resize(4*w);
+	color_buffer.resize(w);
 
 	png_ptr=png_create_write_struct(PNG_LIBPNG_VER_STRING, (png_voidp)this,png_out_error, png_out_warning);
 	if (!png_ptr)
 	{
 		synfig::error("Unable to setup PNG struct");
-		fclose(file);
+		file.reset();
 		return false;
 	}
 
@@ -178,7 +165,7 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 	if (!info_ptr)
 	{
 		synfig::error("Unable to setup PNG info struct");
-		fclose(file);
+		file.reset();
 		png_destroy_write_struct(&png_ptr, nullptr);
 		return false;
 	}
@@ -187,10 +174,10 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 	{
 		synfig::error("Unable to setup longjump");
 		png_destroy_write_struct(&png_ptr, &info_ptr);
-		fclose(file);
+		file.reset();
 		return false;
 	}
-	png_init_io(png_ptr,file);
+	png_init_io(png_ptr, file.get());
 	png_set_filter(png_ptr,0,PNG_FILTER_NONE);
 
 	setjmp(png_jmpbuf(png_ptr));
@@ -240,7 +227,7 @@ png_trgt::start_frame(synfig::ProgressCallback *callback)
 Color *
 png_trgt::start_scanline(int /*scanline*/)
 {
-	return color_buffer;
+	return color_buffer.empty() ? nullptr : color_buffer.data();
 }
 
 bool
@@ -250,10 +237,10 @@ png_trgt::end_scanline()
 		return false;
 
 	PixelFormat pf = get_alpha_mode()==TARGET_ALPHA_MODE_KEEP ? PF_RGB|PF_A : PF_RGB;
-	color_to_pixelformat(buffer, color_buffer, pf, 0, desc.get_w());
+	color_to_pixelformat(buffer.data(), color_buffer.data(), pf, 0, desc.get_w());
 
 	setjmp(png_jmpbuf(png_ptr));
-	png_write_row(png_ptr,buffer);
+	png_write_row(png_ptr, buffer.data());
 
 	return true;
 }

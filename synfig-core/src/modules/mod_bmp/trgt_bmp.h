@@ -31,8 +31,8 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfig/target_scanline.h>
+#include <synfig/smartfile.h>
 #include <synfig/string.h>
-#include <cstdio>
 
 /* === M A C R O S ========================================================= */
 
@@ -49,10 +49,10 @@ private:
 	int rowspan;
 	int imagecount;
 	bool multi_image;
-	FILE *file;
+	synfig::SmartFILE file;
 	synfig::String filename;
-	unsigned char *buffer;
-	synfig::Color *color_buffer;
+	std::vector<unsigned char> buffer;
+	std::vector<synfig::Color> color_buffer;
 	synfig::PixelFormat pf;
 	synfig::String sequence_separator;
 
