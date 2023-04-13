@@ -178,7 +178,7 @@ ffmpeg_trgt::init(ProgressCallback* cb = nullptr)
 	synfig::filesystem::Path ffmpeg_binary_path;
 #ifdef _WIN32
 	// Windows always have ffmpeg
-	ffmpeg_binary_path = synfig::filesystem::Path(etl::dirname(synfig::get_binary_path(".")) + "/ffmpeg.exe");
+	ffmpeg_binary_path = synfig::OS::get_binary_path(".").parent_path() / filesystem::Path("ffmpeg.exe");
 	if (!FileSystemNative::instance()->is_file(ffmpeg_binary_path.u8string())) {
 		synfig::error("Expected FFmpeg binary not found: %s", ffmpeg_binary_path.u8_str());
 		ffmpeg_binary_path.clear();

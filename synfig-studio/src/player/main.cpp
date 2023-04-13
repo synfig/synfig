@@ -34,6 +34,7 @@
 #include <synfig/general.h>
 #include <synfig/loadcanvas.h>
 #include <synfig/main.h>
+#include <synfig/os.h>
 
 #include <vector>
 
@@ -92,11 +93,10 @@ int main(int argc, char **argv)
 
 	bool r_time;
 
-	String binary_path = get_binary_path(argv[0]);
-	String base_dir = etl::dirname(binary_path);
+	filesystem::Path base_dir = OS::get_binary_path(argv[0]).parent_path();
 	TestCallback callback;
 
-	Main main(base_dir, &callback);
+	Main main(base_dir.u8string(), &callback);
 
 	info("Visualization test");
 

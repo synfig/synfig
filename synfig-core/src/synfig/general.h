@@ -97,9 +97,6 @@ extern void info(const String &str);
 #define DEBUG_GETENV(name) false
 #endif
 
-//! Returns absolute path to the binary
-extern String get_binary_path(const String &fallback_path);
-
 }; // END of namespace synfig
 
 /* === E N D =============================================================== */

@@ -221,6 +221,12 @@ bool launch_file_async(const std::string& file);
 /** Get the system language */
 const std::vector<std::string>& get_user_lang();
 
+/**
+ * Return the absolute path to the current binary
+ * @param fallback_path : if we can't figure out the binary path, use this value instead
+ */
+filesystem::Path get_binary_path(const std::string& fallback_path);
+
 } // END of namespace OS
 
 } // END of namespace synfig
