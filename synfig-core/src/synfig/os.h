@@ -35,7 +35,7 @@
 #include <string>
 #include <vector>
 
-#include <synfig/filesystem.h> // synfig::filesystem::Path
+#include <synfig/filesystem_path.h>
 
 /* === M A C R O S ========================================================= */
 
