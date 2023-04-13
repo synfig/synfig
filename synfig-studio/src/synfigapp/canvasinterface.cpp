@@ -35,8 +35,6 @@
 #	include <config.h>
 #endif
 
-#include <ETL/stringf>
-
 #include <synfig/general.h>
 
 #include <synfig/canvasfilenaming.h>
@@ -754,8 +752,7 @@ CanvasInterface::import(
 
 	synfig::info("Attempting to import %s", filename.c_str());
 	
-	String ext(filename_extension(filename));
-	//if (filename_extension(filename) == "")
+	String ext(filesystem::Path::filename_extension(filename));
 	if (ext == "")
 	{
 		get_ui_interface()->error(_("File name must have an extension!"));
@@ -780,7 +777,7 @@ CanvasInterface::import(
 			throw String(_("Unable to create \"Switch\" layer"));
 
 		layer_set_defaults(layer_switch);
-		layer_switch->set_description(etl::basename(filename));
+		layer_switch->set_description(filesystem::Path::basename(filename));
 
 		ValueNode_AnimatedFile::Handle animatedfile_node = ValueNode_AnimatedFile::create(String());
 		animatedfile_node->set_link("filename", ValueNode_Const::create(short_filename));
@@ -803,7 +800,7 @@ CanvasInterface::import(
 				throw String(_("Unable to create \"Sound\" layer"));
 
 			layer_set_defaults(layer_sound);
-			layer_sound->set_description(etl::basename(filename));
+			layer_sound->set_description(filesystem::Path::basename(filename));
 			layer_sound->set_param("filename", ValueBase(short_soundfile));
 
 			if (!layer_add_action(layer_sound))
@@ -820,7 +817,7 @@ CanvasInterface::import(
 			throw String(_("Unable to create \"Sound\" layer"));
 
 		layer_set_defaults(layer);
-		layer->set_description(etl::basename(filename));
+		layer->set_description(filesystem::Path::basename(filename));
 		layer->set_param("filename", ValueBase(short_filename));
 
 		if (!layer_add_action(layer))
@@ -853,7 +850,7 @@ CanvasInterface::import(
 				return 0;
 			}
 		}
-		signal_layer_new_description()(_new_layer,etl::basename(filename));
+		signal_layer_new_description()(_new_layer,filesystem::Path::basename(filename));
 		return _new_layer;
 	}
 
@@ -878,7 +875,7 @@ CanvasInterface::import(
 		get_canvas()->register_external_canvas(full_filename, outside_canvas);
 
 		//layer->set_description(basename(filename));
-		signal_layer_new_description()(layer,etl::basename(filename));
+		signal_layer_new_description()(layer,filesystem::Path::basename(filename));
 		return layer;
 	}
 	catch (const String& x)
@@ -907,7 +904,7 @@ CanvasInterface::import(
 			throw int();
 		update_layer_size(get_canvas()->rend_desc(), layer, resize_image);
 		layer->monitor(filename);
-		String desc = etl::basename(filename);
+		String desc = filesystem::Path::basename(filename);
 		layer->set_description(desc);
 		signal_layer_new_description()(layer, desc);
 		//get_instance()->set_selected_layer(get_canvas(), layer);
@@ -989,7 +986,7 @@ CanvasInterface::import_sequence(
 			const String &filename = *c2;
 			synfig::info("Attempting to import '%s' into sequence", filename.c_str());
 			
-			String ext(filename_extension(filename));
+			String ext(filesystem::Path::filename_extension(filename));
 			if (!ext.empty()) ext = ext.substr(1); // skip initial '.'
 			strtolower(ext);
 			
@@ -1037,7 +1034,7 @@ CanvasInterface::import_sequence(
 				}
 				update_layer_size(get_canvas()->rend_desc(), layer, resize_image);
 				layer->monitor(filename);
-				String desc = etl::basename(filename);
+				String desc = filesystem::Path::basename(filename);
 				layer->set_description(desc);
 				signal_layer_new_description()(layer, desc);
 

@@ -36,8 +36,6 @@
 
 #include "savecanvas.h"
 
-#include <ETL/stringf>
-
 #include "general.h"
 #include <synfig/localization.h>
 #include "valuenode.h"
@@ -71,7 +69,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -844,7 +841,7 @@ xmlpp::Element* encode_layer(xmlpp::Element* root,Layer::ConstHandle layer)
 			xmlpp::Element *node=root->add_child("param");
 			node->set_attribute("name",iter->get_name());
 
-			handle<const ValueNode> value_node=dynamic_param_list.find(iter->get_name())->second;
+			ValueNode::ConstHandle value_node=dynamic_param_list.find(iter->get_name())->second;
 
 			// If the valuenode has no ID, then it must be defined in-place
 			if(value_node->get_id().empty())
@@ -897,7 +894,7 @@ xmlpp::Element* encode_layer(xmlpp::Element* root,Layer::ConstHandle layer)
 			 && value.get_type() == type_string)
 			{
 				std::string filename( value.get(String()) );
-				std::string ext = filename_extension(filename);
+				std::string ext = filesystem::Path::filename_extension(filename);
 				if (!ext.empty()) ext = ext.substr(1); // skip initial '.'
 				bool registered_in_importer = Importer::book().count(ext) > 0;
 				bool supports_by_importer = registered_in_importer
@@ -1092,7 +1089,7 @@ synfig::save_canvas(const FileSystem::Identifier &identifier, Canvas::ConstHandl
 			return false;
 		}
 
-		if (filename_extension(identifier.filename) == ".sifz")
+		if (filesystem::Path::filename_extension(identifier.filename) == ".sifz")
 			stream = FileSystem::WriteStream::Handle(new ZWriteStream(stream));
 
 		document.write_to_stream_formatted(*stream, "UTF-8");

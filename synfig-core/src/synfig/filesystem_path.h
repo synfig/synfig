@@ -245,6 +245,19 @@ public:
 	/** check if character @a c is a path separator **/
 	static bool is_separator(std::string::value_type c);
 
+	///// Temporary methods, for future replacement with equivalents
+	static std::string basename(const std::string& str);
+	static std::string dirname(const std::string& str);
+
+	static std::string filename_extension(const std::string& str);
+	static std::string filename_sans_extension(const std::string& str);
+	static bool is_absolute_path(const std::string& path);
+
+	static std::string cleanup_path(std::string path);
+
+	static std::string absolute_path(const std::string& curr_path, const std::string& path);
+	static std::string absolute_path(const std::string& path);
+
 private:
 	/** Path in the native encoding */
 	string_type native_path_;

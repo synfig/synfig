@@ -174,12 +174,12 @@ FileSystemTemporary::directory_scan(const String &dirname, FileList &out_files)
 	}
 
 	for(FileMap::iterator i = files.begin(); i != files.end(); i++)
-		if (etl::dirname(i->second.name) == clean_dirname)
+		if (filesystem::Path::dirname(i->second.name) == clean_dirname)
 		{
 			if (i->second.is_removed)
-				files_set.erase(etl::basename(i->second.name));
+				files_set.erase(filesystem::Path::basename(i->second.name));
 			else
-				files_set.insert(etl::basename(i->second.name));
+				files_set.insert(filesystem::Path::basename(i->second.name));
 		}
 
 	for(std::set<String>::const_iterator i = files_set.begin(); i != files_set.end(); ++i)
@@ -516,7 +516,7 @@ FileSystemTemporary::save_temporary() const
 	{
 		xmlpp::Element *entry = files_node->add_child("entry");
 		entry->add_child("name")->set_child_text(i->second.name);
-		entry->add_child("tmp-basename")->set_child_text(basename(i->second.tmp_filename));
+		entry->add_child("tmp-basename")->set_child_text(filesystem::Path::basename(i->second.tmp_filename));
 		entry->add_child("is-directory")->set_child_text(i->second.is_directory ? "true" : "false");
 		entry->add_child("is-removed")->set_child_text(i->second.is_removed ? "true" : "false");
 	}
@@ -565,8 +565,8 @@ FileSystemTemporary::open_temporary(const String &filename)
 	discard_changes();
 
 	String tag;
-	String temporary_directory = etl::dirname(filename);
-	String temporary_filename_base = etl::basename(filename);
+	String temporary_directory = filesystem::Path::dirname(filename);
+	String temporary_filename_base = filesystem::Path::basename(filename);
 
 	size_t tag_begin = temporary_filename_base.find_first_of('_');
 	size_t tag_end   = temporary_filename_base.find_last_of('_');
@@ -646,8 +646,8 @@ FileSystemTemporary::open_temporary(const String &filename)
 String
 FileSystemTemporary::generate_indexed_temporary_filename(const FileSystem::Handle &fs, const String &filename)
 {
-	String extension = filename_extension(filename);
-	String sans_extension = filename_sans_extension(filename);
+	String extension = filesystem::Path::filename_extension(filename);
+	String sans_extension = filesystem::Path::filename_sans_extension(filename);
 	for(int index = 1; index < 10000; ++index)
 	{
 		String indexed_filename = strprintf("%s_%04d%s", sans_extension.c_str(), index, extension.c_str());

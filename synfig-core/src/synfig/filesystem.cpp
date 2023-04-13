@@ -25,7 +25,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "localization.h"
 #ifdef USING_PCH
 #	include "pch.h"
 #else
@@ -127,7 +126,7 @@ bool FileSystem::file_rename(const String &from_filename, const String &to_filen
 
 bool FileSystem::directory_create_recursive(const String &dirname) {
 	return is_directory(dirname)
-		|| (directory_create_recursive(etl::dirname(dirname)) && directory_create(dirname));
+		|| (directory_create_recursive(filesystem::Path::dirname(dirname)) && directory_create(dirname));
 }
 
 bool FileSystem::remove_recursive(const String &filename)
@@ -186,7 +185,7 @@ bool FileSystem::copy_recursive(Handle from_file_system, const String &from_file
 
 String FileSystem::fix_slashes(const String &filename)
 {
-	String fixed = etl::cleanup_path(filename);
+	String fixed = filesystem::Path::cleanup_path(filename);
 	if (fixed == ".")
 		return String();
 

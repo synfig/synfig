@@ -50,8 +50,6 @@
 #include <gui/autorecover.h>
 #include <synfig/threadpool.h>
 
-#include <ETL/stringf>
-
 #include <synfig/rendering/renderer.h>
 
 #include <synfigapp/main.h>
@@ -62,7 +60,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -668,7 +665,7 @@ Dialog_Setup::select_path_dialog(const std::string &title, std::string &filepath
 	dialog->add_button(_("Select"), Gtk::RESPONSE_OK);
   	if(dialog->run() == Gtk::RESPONSE_OK) {
 		filepath = dialog->get_filename();
-		filepath = absolute_path(filepath);	//get the absolute path
+		filepath = filesystem::Path::absolute_path(filepath);	//get the absolute path
 		delete dialog;
 		return true;
 	}

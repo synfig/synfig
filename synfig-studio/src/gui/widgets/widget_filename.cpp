@@ -124,8 +124,8 @@ Widget_Filename::on_button_choose_pressed()
 	if(filename.empty())
 		filename=".";
 	else
-		filename = etl::absolute_path(
-			etl::dirname(App::get_selected_canvas_view()->get_canvas()->get_file_name()) +
+		filename = synfig::filesystem::Path::absolute_path(
+			synfig::filesystem::Path::dirname(App::get_selected_canvas_view()->get_canvas()->get_file_name()) +
 			ETL_DIRECTORY_SEPARATOR +
 			filename);
 

@@ -38,6 +38,8 @@
 # include <algorithm>
 # include <vector>
 
+#include <glibmm/miscutils.h>
+
 # ifdef _WIN32
 #  include <codecvt>
 #  include <locale>
@@ -775,3 +777,196 @@ filesystem::swap(Path& lhs, Path& rhs) noexcept
 {
 	return lhs.swap(rhs);
 }
+
+std::string
+filesystem::Path::basename(const std::string& str)
+{
+	std::string::const_iterator iter;
+
+	if(str.empty())
+		return std::string();
+
+	if(str.size() == 1 && is_separator(str[0]))
+		return str;
+
+	//if(is_separator((&*str.end())[-1]))
+	//if (is_separator(*str.rbegin()))
+	if(is_separator(*(str.end()-1)))
+		iter=str.end()-2;
+	else
+		iter=str.end()-1;
+
+	for(;iter!=str.begin();--iter)
+		if(is_separator(*iter))
+			break;
+
+	if (is_separator(*iter))
+		++iter;
+
+	//if(is_separator((&*str.end())[-1]))
+	if (is_separator(*(str.end()-1)))
+		return std::string(iter,str.end()-1);
+
+	return std::string(iter,str.end());
+}
+
+std::string
+filesystem::Path::dirname(const std::string& str)
+{
+	std::string::const_iterator iter;
+
+	if(str.empty())
+		return std::string();
+
+	if(str.size() == 1 && is_separator(str[0]))
+		return str;
+
+	//if(is_separator((&*str.end())[-1]))
+	if(is_separator(*(str.end()-1)))
+	//if (is_separator(*str.rbegin()))
+		iter=str.end()-2;
+	else
+		iter=str.end()-1;
+
+	for(;iter!=str.begin();--iter)
+		if(is_separator(*iter))
+			break;
+
+	if(iter==str.begin())
+	{
+	   if (is_separator(*iter))
+		   return std::string() + "/";
+	   else
+		   return ".";
+	}
+
+#ifdef _WIN32
+	// leave the trailing separator after windows drive name
+	if (std::distance(str.begin(), iter) == 2 && str.size() >= 3 && str[1] == ':' && is_separator(str[2]))
+		++iter;
+#endif
+
+	return std::string(str.begin(),iter);
+}
+
+std::string
+filesystem::Path::filename_extension(const std::string& str)
+{
+	std::string base = basename(str);
+	std::string::size_type pos = base.find_last_of('.');
+	if (pos == std::string::npos) return std::string();
+	return base.substr(pos);
+}
+
+std::string
+filesystem::Path::filename_sans_extension(const std::string& str)
+{
+	std::string base = basename(str);
+	std::string::size_type pos = base.find_last_of('.');
+	if (pos == std::string::npos) return str;
+	std::string dir = dirname(str);
+	if (dir == ".") return base.substr(0,pos);
+	return dir + "/" + base.substr(0,pos);
+}
+
+bool
+filesystem::Path::is_absolute_path(const std::string& path)
+{
+#ifdef _WIN32
+	if(path.size()>=3 && path[1]==':' && is_separator(path[2]))
+		return true;
+#endif
+	if(!path.empty() && is_separator(path[0]))
+		return true;
+	return false;
+}
+
+std::string
+filesystem::Path::cleanup_path(std::string path)
+{
+	// remove '.'
+	for(int i = 0; i < (int)path.size();)
+	{
+		if ( path[i] == '.'
+		  && (i-1 <  0                || is_separator(path[i-1]))
+		  && (i+1 >= (int)path.size() || is_separator(path[i+1])) )
+		{
+			path.erase(i, i+1 < (int)path.size() ? 2 : 1);
+		} else {
+			++i;
+		}
+	}
+
+	// remove double separators
+	for(int i = 0; i < (int)path.size()-1;)
+		if ( is_separator(path[i]) && is_separator(path[i+1]) )
+			path.erase(i+1, 1); else ++i;
+
+	// solve '..'
+	for(int i = 0; i < (int)path.size()-3;)
+	{
+		if ( is_separator(path[i])
+		  && path[i+1] == '.'
+		  && path[i+2] == '.'
+		  && (i+3 >= (int)path.size() || is_separator(path[i+3])) )
+		{
+			// case "/../some/path", remove "../"
+			if (i == 0) {
+				path.erase(i+1, i+3 >= (int)path.size() ? 2 : 3);
+			}
+			else
+			// case "../../some/path", skip
+			if ( i-2 >= 0
+			  && path[i-1] == '.'
+			  && path[i-2] == '.'
+			  && (i-3 < 0 || is_separator(path[i-3])) )
+			{
+				++i;
+			}
+			// case "some/thing/../some/path", remove "thing/../"
+			else
+			{
+				// so now we have:
+				// i > 0, see first case,
+				// path[i-1] is not a separator (double separators removed already),
+				// so path[i-1] is part of valid directory entry,
+				// also is not a special entry ('.' or '..'), see previous case and stage "remove '.'"
+				size_t dir_separator_pos = path.find_last_of("/\\", i-1);
+				if (dir_separator_pos == std::string::npos) {
+					path.erase(0, i+3 >= (int)path.size() ? i+3 : i+4);
+					i = 0;
+				}
+				else
+				{
+					path.erase(dir_separator_pos + 1, (i+3 >= (int)path.size() ? i+3 : i+4) - (int)dir_separator_pos - 1);
+					i = (int)dir_separator_pos;
+				}
+			}
+		}
+		else
+		{
+			++i;
+		}
+	}
+
+	// remove separator from end of path
+	if (path.size() > 1u && is_separator(path[path.size() - 1]))
+		path.erase(path.size() - 1, 1);
+
+	return path;
+}
+
+std::string
+filesystem::Path::absolute_path(const std::string& curr_path, const std::string& path)
+{
+	std::string ret(curr_path);
+	if(path.empty())
+		return cleanup_path(ret);
+	if(is_absolute_path(path))
+		return cleanup_path(path);
+	return cleanup_path(ret+"/"+path);
+}
+
+std::string
+filesystem::Path::absolute_path(const std::string& path)
+	{ return absolute_path(Glib::get_current_dir(), path); }

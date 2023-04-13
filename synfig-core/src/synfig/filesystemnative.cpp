@@ -38,8 +38,6 @@
 #include <glibmm.h>
 #include <glib/gstdio.h>
 
-#include <ETL/stringf>
-
 #include "smartfile.h"
 
 #endif
@@ -157,7 +155,7 @@ FileSystem::WriteStream::Handle FileSystemNative::get_write_stream(const String 
 String FileSystemNative::get_real_uri(const String &filename)
 {
 	if (filename.empty()) return String();
-	return Glib::filename_to_uri(etl::absolute_path(filename));
+	return Glib::filename_to_uri(filesystem::Path::absolute_path(filename));
 }
 
 

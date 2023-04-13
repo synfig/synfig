@@ -58,8 +58,6 @@
 #include <gtkmm/toolbutton.h>
 #include <gtkmm/toolitem.h>
 
-#include <ETL/stringf>
-
 #include <gui/app.h>
 #include <gui/dialogs/dialog_canvasdependencies.h>
 #include <gui/dials/keyframedial.h>
@@ -1840,7 +1838,7 @@ CanvasView::update_title()
 	bool modified = get_instance()->get_action_count() > 0;
 	bool is_root = get_canvas()->is_root();
 	String filename = get_instance()->has_real_filename()
-					? etl::basename(get_instance()->get_file_name()) : "";
+					? filesystem::Path::basename(get_instance()->get_file_name()) : "";
 	String canvas_name = get_canvas()->get_name();
 	String canvas_id = get_canvas()->get_id();
 	String &canvas_title = canvas_name.empty() ? canvas_id : canvas_name;
@@ -2964,7 +2962,7 @@ CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& con
 					continue;
 				}
 
-				String ext = etl::filename_extension(filename);
+				String ext = filesystem::Path::filename_extension(filename);
 				if (!ext.empty()) ext = ext.substr(1); // skip initial '.'
 
 				// If this is a SIF file, then we need to do things slightly differently

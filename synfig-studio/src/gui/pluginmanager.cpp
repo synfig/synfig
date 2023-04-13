@@ -36,9 +36,9 @@
 
 #include <libxml++/libxml++.h>
 #include <glibmm/fileutils.h>
+#include <glibmm/miscutils.h>
 #include <glibmm/spawn.h>
 
-#include <ETL/stringf>
 
 #include <gui/app.h>
 #include <gui/localization.h>
@@ -188,7 +188,7 @@ studio::PluginManager::load_dir( const std::string &pluginsprefix )
 void
 studio::PluginManager::load_plugin( const std::string &file, const std::string &plugindir )
 {
-	synfig::info("   Loading plugin: %s", etl::basename(plugindir).c_str());
+	synfig::info("   Loading plugin: %s", synfig::filesystem::Path::basename(plugindir).c_str());
 
 	static int plugin_count = 0;
 	const std::string id = "plugin" + std::to_string(++plugin_count);

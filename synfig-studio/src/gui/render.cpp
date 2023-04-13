@@ -72,7 +72,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -233,7 +232,7 @@ RenderSettings::~RenderSettings()
 void
 RenderSettings::set_entry_filename()
 {
-	String filename(filename_sans_extension(canvas_interface_->get_canvas()->get_file_name()));
+	String filename(filesystem::Path::filename_sans_extension(canvas_interface_->get_canvas()->get_file_name()));
 
 	// if this isn't the root canvas, append (<canvasname>) to the filename
 	Canvas::Handle canvas = canvas_interface_->get_canvas();
@@ -245,7 +244,7 @@ RenderSettings::set_entry_filename()
 			filename+=" ("+canvas->get_name()+')';
 	}
 
-	if (!is_absolute_path(filename))
+	if (!filesystem::Path::is_absolute_path(filename))
 		filename = Glib::get_home_dir() + ETL_DIRECTORY_SEPARATOR + filename;
 	
 	try
@@ -346,7 +345,7 @@ RenderSettings::on_render_pressed()
 		
 	if(toggle_extract_alpha.get_active())
 	{
-		String filename_alpha(filename_sans_extension(filename)+"-alpha"+filename_extension(filename));
+		String filename_alpha(filesystem::Path::filename_sans_extension(filename)+"-alpha"+filesystem::Path::filename_extension(filename));
 
 		render_passes.push_back(make_pair(TARGET_ALPHA_MODE_EXTRACT, filename_alpha));
 		render_passes.push_back(make_pair(TARGET_ALPHA_MODE_REDUCE, filename));
@@ -384,7 +383,7 @@ RenderSettings::check_target_destination()
 	{
 		try
 		{
-			String ext(filename_extension(filename));
+			String ext(filesystem::Path::filename_extension(filename));
 			if (ext.size()) ext=ext.substr(1); // skip initial '.'
 			synfig::info("render target filename: '%s'; extension: '%s'", filename.c_str(), ext.c_str());
 			if(Target::ext_book().count(ext))
@@ -411,7 +410,7 @@ RenderSettings::check_target_destination()
 		return false;
 	}
 	
-	String extension(filename_extension(filename));
+	String extension(filesystem::Path::filename_extension(filename));
 	bool ext_multi_file = false; //output target is an image sequence
 	int n_frames_overwrite = 0;
 	
@@ -443,7 +442,7 @@ RenderSettings::check_target_destination()
 					{".jpg"},{".exr"},{".ppm"}};
 	
 			ext_multi_file = (find(ext_multi_auto.begin(), ext_multi_auto.end(),
-					filename_extension(filename)) != ext_multi_auto.end());
+					filesystem::Path::filename_extension(filename)) != ext_multi_auto.end());
 		}
 
 		//Image sequence: filename + sequence_separator + time
@@ -452,7 +451,7 @@ RenderSettings::check_target_destination()
 					n_frame <= rend_desc.get_frame_end();
 					n_frame++)
 			{
-				if(Glib::file_test(filename_sans_extension(filename) +
+				if(Glib::file_test(filesystem::Path::filename_sans_extension(filename) +
 					tparam.sequence_separator +
 					synfig::strprintf("%04d", n_frame) +
 					extension, Glib::FILE_TEST_EXISTS))
@@ -467,11 +466,11 @@ RenderSettings::check_target_destination()
 	{
 		message = strprintf(_("A file named \"%s\" already exists. "
 							"Do you want to replace it?"),
-							basename(filename).c_str());
+							filesystem::Path::basename(filename).c_str());
 	
 		details = strprintf(_("The file already exists in \"%s\". "
 							"Replacing it will overwrite its contents."),
-							dirname(filename).c_str());
+							filesystem::Path::dirname(filename).c_str());
 	}
 	else
 	{
@@ -481,7 +480,7 @@ RenderSettings::check_target_destination()
 	
 		details = strprintf(_("The files already exist in \"%s\". "
 							"Replacing them will overwrite their contents."),
-							dirname(filename).c_str());
+							filesystem::Path::dirname(filename).c_str());
 	}
 
 	//Ask user whether to overwrite file with same name
@@ -517,7 +516,7 @@ RenderSettings::submit_next_render_pass()
 			return;
 		}
 		// Test whether the output file is writable (path exists or has write permit)
-		if (g_access(dirname(pass_filename).c_str(), W_OK) == -1) {
+		if (g_access(filesystem::Path::dirname(pass_filename).c_str(), W_OK) == -1) {
 			canvas_interface_->get_ui_interface()->error(_("Unable to create file for ")+pass_filename+": "+strerror( errno ));
 			return;
 		}

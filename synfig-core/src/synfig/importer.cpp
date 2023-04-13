@@ -42,8 +42,6 @@
 
 #include <glibmm.h>
 
-#include <ETL/stringf>
-
 #include "general.h"
 #include <synfig/localization.h>
 
@@ -60,7 +58,6 @@
 
 /* === G L O B A L S ======================================================= */
 
-using namespace etl;
 using namespace synfig;
 
 Importer::Book* synfig::Importer::book_;
@@ -112,13 +109,13 @@ Importer::open(const FileSystem::Identifier &identifier, bool force)
 		return (*__open_importers)[identifier];
 	}
 
-	if(filename_extension(identifier.filename) == "")
+	if(filesystem::Path::filename_extension(identifier.filename) == "")
 	{
 		synfig::error(_("Importer::open(): Couldn't find extension"));
 		return nullptr;
 	}
 
-	String ext(filename_extension(identifier.filename));
+	String ext(filesystem::Path::filename_extension(identifier.filename));
 	if (ext.size()) ext = ext.substr(1); // skip initial '.'
 	strtolower(ext);
 

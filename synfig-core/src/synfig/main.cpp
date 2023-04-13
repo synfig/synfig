@@ -37,8 +37,6 @@
 #include <cstring>
 #include <ctime>
 
-#include <ETL/stringf>
-
 #include <synfig/localization.h>
 #include <synfig/general.h>
 
@@ -656,7 +654,7 @@ synfig::OS::get_binary_path(const String &fallback_path)
 	{
 		// In worst case use value specified as fallback 
 		// (usually should come from argv[0])
-		result = etl::absolute_path(fallback_path);
+		result = filesystem::Path::absolute_path(fallback_path);
 	}
 	
 	

@@ -155,15 +155,15 @@ Action::LayerExtract::prepare()
 		if (new_filename.empty())
 			new_filename = get_canvas()->get_file_path() + ETL_DIRECTORY_SEPARATOR + old_filename;
 		else
-		if (CanvasFileNaming::is_embeded(new_filename) && !etl::is_absolute_path(new_filename))
-			new_filename = etl::absolute_path(get_canvas()->get_file_path(), new_filename);
+		if (CanvasFileNaming::is_embeded(new_filename) && !filesystem::Path::is_absolute_path(new_filename))
+			new_filename = filesystem::Path::absolute_path(get_canvas()->get_file_path(), new_filename);
 
 		String new_filename_param = CanvasFileNaming::make_short_filename(get_canvas()->get_file_name(), new_filename);
 
 		FileSystem::Handle file_system = get_canvas()->get_file_system();
 
 		// try to create directory
-		if (!file_system->directory_create_recursive(etl::dirname(new_filename)))
+		if (!file_system->directory_create_recursive(filesystem::Path::dirname(new_filename)))
 			throw Error(_("Cannot create directory"));
 		// try to copy file
 		if (!FileSystem::copy(file_system, old_filename, file_system, new_filename))

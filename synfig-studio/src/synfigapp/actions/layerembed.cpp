@@ -32,8 +32,6 @@
 #	include <config.h>
 #endif
 
-#include <ETL/stringf>
-
 #include <synfig/general.h>
 #include <synfig/string.h>
 #include <synfig/canvasfilenaming.h>
@@ -166,7 +164,7 @@ Action::LayerEmbed::prepare()
 		Canvas::Handle sub_canvas = layer_pastecanvas->get_sub_canvas();
 
 		// generate name
-		std::string fname = filename_sans_extension(basename(sub_canvas->get_file_name()));
+		std::string fname = filesystem::Path::filename_sans_extension(filesystem::Path::basename(sub_canvas->get_file_name()));
 		static const char bad_chars[]=" :#@$^&()*";
 		for(std::string::iterator j = fname.begin(); j != fname.end(); j++)
 			for(const char *k = bad_chars; *k != 0; k++)
@@ -228,7 +226,7 @@ Action::LayerEmbed::prepare()
 			layer_bitmap->reset_surface_modification_id();
 		} else {
 			// try to create directory
-			if (!file_system->directory_create_recursive(etl::dirname(new_filename)))
+			if (!file_system->directory_create_recursive(filesystem::Path::dirname(new_filename)))
 				throw Error(_("Cannot create directory in container"));
 			// try to copy file
 			if (!FileSystem::copy(file_system, filename, file_system, new_filename))

@@ -14,12 +14,8 @@ if(PKG_CONFIG_FOUND)
 	pkg_check_modules(GLIBMM REQUIRED IMPORTED_TARGET glibmm-2.4)
 endif()
 
-add_executable(stringf stringf.cpp)
-target_link_libraries(stringf PRIVATE PkgConfig::GLIBMM)
-add_test(NAME test_stringf COMMAND stringf)
-
 set_target_properties(
-		handle stringf
+		handle
 		PROPERTIES
 		RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test
 )

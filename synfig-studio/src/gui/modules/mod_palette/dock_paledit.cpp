@@ -49,8 +49,6 @@
 #include <gui/localization.h>
 #include <gui/widgets/widget_color.h>
 
-#include <ETL/stringf>
-
 #include <synfig/general.h>
 #include <synfigapp/main.h>
 #include <synfigapp/uimanager.h>
@@ -245,7 +243,7 @@ Dock_PalEdit::on_save_pressed()
 	{
 		// If the filename still has wildcards, then we should
 		// continue looking for the file we want
-		if (etl::basename(filename).find('*') != std::string::npos) {
+		if (filesystem::Path::basename(filename).find('*') != std::string::npos) {
 			continue;
 		}
 
@@ -266,11 +264,11 @@ Dock_PalEdit::on_save_pressed()
 			// if the file exists and the user doesn't want to overwrite it, keep prompting for a filename
 			std::string message = synfig::strprintf(_("A file named \"%s\" already exists. "
 							"Do you want to replace it?"),
-							etl::basename(filename).c_str());
+							filesystem::Path::basename(filename).c_str());
 
 			std::string details = synfig::strprintf(_("The file already exists in \"%s\". "
 							"Replacing it will overwrite its contents."),
-							etl::basename(etl::dirname(filename)).c_str());
+							filesystem::Path::basename(filesystem::Path::dirname(filename)).c_str());
 
 			if ((stat_return == 0) && !App::dialog_message_2b(
 				message,

@@ -56,7 +56,6 @@
 #endif
 
 using namespace synfig;
-using namespace etl;
 
 namespace synfig { extern Canvas::Handle open_canvas_as(const FileSystem::Identifier &identifier, const String &as, String &errors, String &warnings); };
 
@@ -746,7 +745,7 @@ Canvas::surefind_canvas(const String &id, String &warnings)
 
 		Canvas::Handle external_canvas;
 
-		if(!is_absolute_path(file_name))
+		if(!filesystem::Path::is_absolute_path(file_name))
 			file_name = get_file_path()+ETL_DIRECTORY_SEPARATOR+file_name;
 		// Before look up the external canvases
 		// let's check if this is the current canvas
@@ -835,7 +834,7 @@ Canvas::find_canvas(const String &id, String &warnings)const
 
 		Canvas::Handle external_canvas;
 
-		if(!is_absolute_path(file_name))
+		if(!filesystem::Path::is_absolute_path(file_name))
 			file_name = get_file_path()+ETL_DIRECTORY_SEPARATOR+file_name;
 
 		// If the composition is already open, then use it.
@@ -1208,7 +1207,7 @@ Canvas::get_file_path()const
 {
 	if(parent())
 		return parent()->get_file_path();
-	return dirname(file_name_);
+	return filesystem::Path::dirname(file_name_);
 }
 
 FileSystem::Handle
@@ -1447,7 +1446,7 @@ Canvas::rename_group(const String&old_name,const String&new_name)
 void
 Canvas::register_external_canvas(String file_name, Handle canvas)
 {
-	if(!is_absolute_path(file_name)) file_name = get_file_path()+ETL_DIRECTORY_SEPARATOR+file_name;
+	if(!filesystem::Path::is_absolute_path(file_name)) file_name = get_file_path()+ETL_DIRECTORY_SEPARATOR+file_name;
 	externals_[file_name] = canvas;
 }
 

@@ -51,8 +51,6 @@
 
 #include "loadcanvas.h"
 
-#include <ETL/stringf>
-
 #include "general.h"
 #include "localization.h"
 
@@ -128,7 +126,7 @@ static void _canvas_file_name_changed(Canvas *x)
 	if (canvas_map.find(x) == canvas_map.end()) {
 		return;
 	}
-	canvas_map[x] = etl::absolute_path(x->get_file_name());
+	canvas_map[x] = filesystem::Path::absolute_path(x->get_file_name());
 }
 
 Canvas::Handle
@@ -3449,7 +3447,7 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 void
 CanvasParser::register_canvas_in_map(Canvas::Handle canvas, String as)
 {
-	get_open_canvas_map()[canvas.get()]=etl::absolute_path(as);
+	get_open_canvas_map()[canvas.get()]=filesystem::Path::absolute_path(as);
 	canvas->signal_deleted().connect(sigc::bind(sigc::ptr_fun(_remove_from_open_canvas_map),canvas.get()));
 	canvas->signal_file_name_changed().connect(sigc::bind(sigc::ptr_fun(_canvas_file_name_changed),canvas.get()));
 }
@@ -3476,7 +3474,7 @@ CanvasParser::parse_from_file_as(const FileSystem::Identifier &identifier,const 
 
 	try
 	{
-		const std::string absolute_path = etl::absolute_path(as);
+		const std::string absolute_path = filesystem::Path::absolute_path(as);
 		for (const auto& it : get_open_canvas_map()) {
 			if (it.second == absolute_path) {
 				return it.first;
@@ -3490,7 +3488,7 @@ CanvasParser::parse_from_file_as(const FileSystem::Identifier &identifier,const 
 		FileSystem::ReadStream::Handle stream = identifier.get_read_stream();
 		if (stream)
 		{
-			if (filename_extension(identifier.filename) == ".sifz")
+			if (filesystem::Path::filename_extension(identifier.filename) == ".sifz")
 				stream = FileSystem::ReadStream::Handle(new ZReadStream(stream, zstreambuf::compression::gzip));
 
 			xmlpp::DomParser parser;
