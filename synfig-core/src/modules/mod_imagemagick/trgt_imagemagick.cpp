@@ -39,8 +39,6 @@
 
 #include "trgt_imagemagick.h"
 
-#include <ETL/stringf>
-
 #endif
 
 /* === M A C R O S ========================================================= */

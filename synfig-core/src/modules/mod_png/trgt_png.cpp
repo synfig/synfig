@@ -37,8 +37,6 @@
 
 #include <png.h>
 
-#include <ETL/stringf>
-
 #include <synfig/general.h>
 #include <synfig/localization.h>
 #include <synfig/misc.h>

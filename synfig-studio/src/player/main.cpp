@@ -28,8 +28,6 @@
 
 #include <iostream>
 
-#include <ETL/stringf>
-
 #include <synfig/filesystemnative.h>
 #include <synfig/general.h>
 #include <synfig/loadcanvas.h>

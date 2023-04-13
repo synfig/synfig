@@ -36,8 +36,6 @@
 
 #include "trgt_ffmpeg.h"
 
-#include <ETL/stringf>
-
 #include <synfig/filesystemnative.h>
 #include <synfig/general.h>
 #include <synfig/localization.h>

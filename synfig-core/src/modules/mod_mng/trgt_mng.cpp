@@ -40,7 +40,6 @@
 
 #include "trgt_mng.h"
 #include <libmng.h>
-#include <ETL/stringf>
 
 #include <synfig/misc.h>
 

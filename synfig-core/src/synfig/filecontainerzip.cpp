@@ -41,8 +41,6 @@
 #include <libxml++/libxml++.h>
 #include <glib/gstdio.h>
 
-#include <ETL/stringf>
-
 #include "smartfile.h"
 #include "zstreambuf.h"
 

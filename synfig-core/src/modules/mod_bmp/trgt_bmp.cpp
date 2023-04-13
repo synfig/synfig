@@ -41,7 +41,6 @@
 #include <algorithm>
 #include <functional>
 
-#include <ETL/stringf>
 #endif
 
 /* === U S I N G =========================================================== */

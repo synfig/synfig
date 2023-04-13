@@ -35,7 +35,6 @@
 
 #include "trgt_openexr.h"
 #include <cstdio>
-#include <ETL/stringf>
 
 #endif
 
