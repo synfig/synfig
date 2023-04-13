@@ -221,7 +221,7 @@ bmp::start_frame(synfig::ProgressCallback *callback)
 			if (callback)
 				callback->task(newfilename.u8string());
 		}
-		file = SmartFILE(newfilename, POPEN_BINARY_WRITE_TYPE);
+		file = SmartFILE(newfilename, "wb");
 	}
 
 	if (!file) {

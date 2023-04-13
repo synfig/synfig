@@ -48,8 +48,6 @@
 
 #define ETL_DIRECTORY_SEPARATOR		'/'
 
-#define POPEN_BINARY_WRITE_TYPE "wb"
-
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */

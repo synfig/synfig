@@ -104,7 +104,7 @@ jpeg_trgt::start_frame(synfig::ProgressCallback *callback)
 		if (multi_image) {
 			newfilename.add_suffix(sequence_separator + strprintf("%04d", imagecount));
 		}
-		file = SmartFILE(newfilename, POPEN_BINARY_WRITE_TYPE);
+		file = SmartFILE(newfilename, "wb");
 		if (callback)
 			callback->task(newfilename.u8string());
 	}

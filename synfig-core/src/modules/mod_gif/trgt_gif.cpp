@@ -61,7 +61,7 @@ SYNFIG_TARGET_SET_VERSION(gif,"0.1");
 gif::gif(const synfig::filesystem::Path& filename_, const synfig::TargetParam & /* params */):
 	bs(),
 	filename(filename_),
-	file( filename.u8string() == "-" ? stdout : synfig::SmartFILE(filename_, POPEN_BINARY_WRITE_TYPE) ),
+	file( filename.u8string() == "-" ? stdout : synfig::SmartFILE(filename_, "wb") ),
 	codesize(),
 	rootsize(),
 	nextcode(),

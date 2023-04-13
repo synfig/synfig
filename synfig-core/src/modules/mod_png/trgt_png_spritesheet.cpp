@@ -397,7 +397,7 @@ png_trgt_spritesheet::write_png_file()
 	if (filename.u8string() == "-")
 		out_file_pointer = stdout;
     else
-		out_file_pointer = SmartFILE(filename, POPEN_BINARY_WRITE_TYPE);
+		out_file_pointer = SmartFILE(filename, "wb");
 
 	
     png_ptr=png_create_write_struct(PNG_LIBPNG_VER_STRING, (png_voidp)this,png_out_error, png_out_warning);
