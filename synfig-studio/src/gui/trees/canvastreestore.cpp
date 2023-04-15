@@ -242,25 +242,27 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 	if(column==model.is_editable.index())
 	{
 		synfigapp::ValueDesc value_desc((*iter)[model.value_desc]);
+		if (value_desc) {
+			Glib::Value<bool> x;
+			g_value_init(x.gobj(),x.value_type());
 
-		Glib::Value<bool> x;
-		g_value_init(x.gobj(),x.value_type());
+			x.set(
+				// Temporary fix crash when trying to edit bline point
+				// https://github.com/synfig/synfig/issues/264
+				// TODO: move this check into a more proper place
+					value_desc.get_value_type() != type_bline_point
+				&&	value_desc.get_value_type() != type_width_point
+				&&	value_desc.get_value_type() != type_dash_item
+				&&	(
+					!value_desc.is_value_node()
+				||	synfigapp::is_editable(value_desc.get_value_node())
+				)
+			);
 
-		x.set(
-			// Temporary fix crash when trying to edit bline point
-			// https://github.com/synfig/synfig/issues/264
-			// TODO: move this check into a more proper place
-				value_desc.get_value_type() != type_bline_point
-			&&	value_desc.get_value_type() != type_width_point
-			&&	value_desc.get_value_type() != type_dash_item
-			&&	(
-				!value_desc.is_value_node()
-			||	synfigapp::is_editable(value_desc.get_value_node())
-			)
-		);
-
-		g_value_init(value.gobj(),x.value_type());
-		g_value_copy(x.gobj(),value.gobj());
+			g_value_init(value.gobj(),x.value_type());
+			g_value_copy(x.gobj(),value.gobj());
+		} else
+			return Gtk::TreeStore::get_value_vfunc(iter,column,value);
 	}
 	else
 	if(column==model.type.index())
