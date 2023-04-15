@@ -874,7 +874,7 @@ Dialog_Setup::on_restore_pressed()
 		toggle_clear_redo_stack_on_new_action.set_active(true);
 		toggle_use_dark_theme.set_active(false);
 		toggle_show_file_toolbar.set_active(true);
-		listviewtext_brushes_path->clear_items();
+		listviewtext_brushes_path->remove_all();
 		textbox_custom_filename_prefix.set_text(DEFAULT_FILENAME_PREFIX);
 		image_editor_path_entry.set_text("");
 		adj_pref_x_size->set_value(480);
