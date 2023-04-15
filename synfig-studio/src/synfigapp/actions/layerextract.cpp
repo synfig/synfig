@@ -32,8 +32,6 @@
 #	include <config.h>
 #endif
 
-#include <ETL/stringf>
-
 #include <synfig/general.h>
 #include <synfig/string.h>
 #include <synfig/canvasfilenaming.h>

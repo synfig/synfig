@@ -35,8 +35,6 @@
 #include <glibmm.h>
 #include <cstdio>
 
-#include <ETL/stringf>
-
 #include "filesystem.h"
 
 #endif

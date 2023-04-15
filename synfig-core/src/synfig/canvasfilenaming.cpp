@@ -34,8 +34,6 @@
 
 #include "canvasfilenaming.h"
 
-#include <ETL/stringf>
-
 #include "filecontainerzip.h"
 #include "filesystemnative.h"
 #include "filesystemgroup.h"

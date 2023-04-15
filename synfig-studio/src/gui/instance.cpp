@@ -51,8 +51,6 @@
 #include <gtkmm/separatormenuitem.h>
 #include <gtkmm/stock.h>
 
-#include <ETL/stringf>
-
 #include <gui/app.h>
 #include <gui/autorecover.h>
 #include <gui/canvasview.h>

@@ -46,8 +46,6 @@
 #include <gtkmm/frame.h>
 #include <gtkmm/grid.h>
 
-#include <ETL/stringf>
-
 #include <gui/app.h>
 #include <gui/asyncrenderer.h>
 #include <gui/dialogs/dialog_ffmpegparam.h>

@@ -34,8 +34,6 @@
 
 #include <set>
 
-#include <ETL/stringf>
-
 #include "filesystemgroup.h"
 
 #endif

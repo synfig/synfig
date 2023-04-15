@@ -35,8 +35,6 @@
 
 #include "listimporter.h"
 
-#include <ETL/stringf>
-
 #include "general.h"
 #include <synfig/localization.h>
 

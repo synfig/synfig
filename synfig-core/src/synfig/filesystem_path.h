@@ -35,6 +35,9 @@
 
 /* === M A C R O S ========================================================= */
 
+// temporary macro until we replace strings with Path. Then we can get rid of it.
+#define ETL_DIRECTORY_SEPARATOR	'/'
+
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */

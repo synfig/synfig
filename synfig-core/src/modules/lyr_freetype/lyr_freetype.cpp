@@ -53,8 +53,6 @@
 #include <hb-ft.h>
 #endif
 
-#include <ETL/stringf>
-
 #include <synfig/canvasfilenaming.h>
 #include <synfig/context.h>
 #include <synfig/general.h>
