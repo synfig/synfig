@@ -34,6 +34,8 @@
 
 #include <gui/dialogs/dialog_canvasdependencies.h>
 
+#include <glibmm/fileutils.h>
+
 #include <gtkmm/label.h>
 #include <gtkmm/treeview.h>
 
@@ -211,6 +213,7 @@ void Dialog_CanvasDependencies::refresh()
 			auto filename = CanvasFileNaming::make_short_filename(canvas->get_file_name(), pair.first);
 			row->set_value(0, filename);
 			row->set_value(1, pair.second.total);
+			row->set_value(3, !Glib::file_test(pair.first, Glib::FILE_TEST_EXISTS | Glib::FILE_TEST_IS_REGULAR));
 			for (const auto &vn_pair : pair.second.per_valuenode) {
 				if (vn_pair.first->get_id().empty())
 					continue;
@@ -218,6 +221,7 @@ void Dialog_CanvasDependencies::refresh()
 				child->set_value(0, vn_pair.first->get_id());
 				child->set_value(1, vn_pair.second);
 				child->set_value(2, get_tree_pixbuf(vn_pair.first->get_type()));
+				child->set_value(3, false);
 			}
 		}
 	}
@@ -245,6 +249,7 @@ void Dialog_CanvasDependencies::refresh()
 			else if (std::find(lipsync_ext.begin(), lipsync_ext.end(), ext) != lipsync_ext.end())
 				pixbuf = get_tree_pixbuf_layer("text");
 			row->set_value(2, pixbuf);
+			row->set_value(3, !Glib::file_test(pair.first, Glib::FILE_TEST_EXISTS | Glib::FILE_TEST_IS_REGULAR));
 		}
 	}
 }

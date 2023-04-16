@@ -35,6 +35,8 @@ Author: Rodolfo Ribeiro Gomes
       <column type="gint"/>
       <!-- column-name Type_Icon -->
       <column type="GdkPixbuf"/>
+      <!-- column-name Exists -->
+      <column type="gboolean"/>
     </columns>
   </object>
   <object class="GtkTreeStore" id="external_resources_treestore">
@@ -45,6 +47,8 @@ Author: Rodolfo Ribeiro Gomes
       <column type="gint"/>
       <!-- column-name Type_Icon -->
       <column type="GdkPixbuf"/>
+      <!-- column-name Exists -->
+      <column type="gboolean"/>
     </columns>
   </object>
   <object class="GtkDialog" id="dialog_canvasdependencies">
@@ -169,6 +173,19 @@ Author: Rodolfo Ribeiro Gomes
                     </child>
                   </object>
                 </child>
+                <child>
+                  <object class="GtkTreeViewColumn">
+                    <property name="title" translatable="yes">Status</property>
+                    <child>
+                      <object class="GtkCellRendererPixbuf">
+                        <property name="icon-name">image-missing</property>
+                      </object>
+                      <attributes>
+                        <attribute name="visible">3</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
               </object>
             </child>
           </object>
@@ -243,6 +260,19 @@ Author: Rodolfo Ribeiro Gomes
                       <object class="GtkCellRendererText"/>
                       <attributes>
                         <attribute name="text">1</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn">
+                    <property name="title" translatable="yes">Status</property>
+                    <child>
+                      <object class="GtkCellRendererPixbuf">
+                        <property name="icon-name">image-missing</property>
+                      </object>
+                      <attributes>
+                        <attribute name="visible">3</attribute>
                       </attributes>
                     </child>
                   </object>
