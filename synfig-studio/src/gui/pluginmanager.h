@@ -122,6 +122,9 @@ public:
 	std::string author;
 	PluginString release;
 	int version;
+	std::string url;
+
+	PluginString description;
 
 	bool is_valid() const;
 };

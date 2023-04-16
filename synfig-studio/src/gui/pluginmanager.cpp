@@ -404,10 +404,19 @@ studio::PluginManager::load_plugin( const std::string &file, const std::string &
 						plugin.version = std::atoi(text->get_content().c_str());
 				}
 			}
+			for ( const xmlpp::Node* node : pNode->find("./url") )
+			{
+				if ( node ) {
+					const xmlpp::Element* element = dynamic_cast<const xmlpp::Element*>(node);
+					if ( const xmlpp::TextNode* text = element->get_child_text() )
+						plugin.url = text->get_content();
+				}
+			}
+			plugin.description = PluginString::load(*pNode, "description");
 
 			if ( !plugin.is_valid() || !script.is_valid() )
 			{
-				synfig::warning("Invalid plugin description");
+				synfig::warning("Invalid plugin metadata description");
 			}
 			else
 			{
