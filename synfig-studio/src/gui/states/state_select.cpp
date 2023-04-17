@@ -101,7 +101,7 @@ public:
 		}
 	}
 
-	StateSelect_Context(CanvasView* canvas_view);
+	explicit StateSelect_Context(CanvasView* canvas_view);
 
 	~StateSelect_Context();
 
