@@ -387,7 +387,7 @@ void Dialog_PasteOptions::refresh_row_status(size_t row_index)
 			for (auto w : linked_ascendent_value_nodes) {
 				names += w->get_id() + ", ";
 			}
-			names = names.substr(0, names.size()-2);
+			names.resize(names.size() - 2);
 			std::string msg = strprintf(_("Some exported values depend on this one, and you chose to keep them linked to external file.\n"
                            "Therefore, this value must be linked too.\n"
                            "These are the values: %s"), names.c_str());
