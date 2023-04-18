@@ -185,7 +185,6 @@ void CanvasResize::on_action_signal_response(int response_id)
 
 	auto rend_desc_old = canvas_interface->get_canvas()->rend_desc();
 	auto is_toggled    = toggle_ratio_wh->get_active();
-	auto was_toggled   = rend_desc_old.get_flags() & RendDesc::LINK_IM_ASPECT;
 
 	switch (response_id) {
 	case ADVANCED:
