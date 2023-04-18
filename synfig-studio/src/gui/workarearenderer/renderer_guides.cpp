@@ -122,8 +122,7 @@ Renderer_Guides::render_vfunc(
 				cr->set_source_rgb(guides_color.get_r(),guides_color.get_g(),guides_color.get_b());
 				current_guide = false;
 			}
-			if((iter->angle.get() != 0 && !iter->isVertical) ||
-					(synfig::Angle::deg(iter->angle).get() != 90 && iter->isVertical)){
+			if((iter->angle.get() != 0)  && (synfig::Angle::deg(iter->angle).get() != 90)){
 				//draw the center of rotation for the selected guide
 				if (current_guide) {
 					cr->save();
@@ -194,7 +193,7 @@ Renderer_Guides::render_vfunc(
 				);
 				cr->stroke();
 			} else {
-				if (iter->isVertical){
+				if (synfig::Angle::deg(iter->angle).get() == 90){
 					cr->move_to(
 						x_center,
 						0

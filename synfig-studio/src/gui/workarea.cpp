@@ -389,7 +389,7 @@ WorkArea::save_meta_data()
 		for (iter = get_guide_list().begin(); iter != get_guide_list().end(); ++iter){
 			if(!data.empty())
 				data+=' ';
-			data+=strprintf(" %f*%f*%f*%d", (*iter).point[0], (*iter).point[1], (*iter).angle.get(), (*iter).isVertical);
+			data+=strprintf(" %f*%f*%f", (*iter).point[0], (*iter).point[1], (*iter).angle.get());
 		}
 		if(!data.empty())
 			canvas_interface->set_meta_data("guide",data);
@@ -617,14 +617,14 @@ WorkArea::load_meta_data()
 	if(data.size() && (data=="0" || data[0]=='f' || data[0]=='F'))
 		set_background_rendering(false);
 
-	//for the guide to be stored we have to store 2 floats x,y + 1 float angle in rad + a true or false
+	//for the guide to be stored we have to store 2 floats x,y + 1 float angle in rad
 	data=canvas->get_meta_data("guide");
 	get_guide_list().clear();
 	while(!data.empty())
 	{
 		String::iterator iter(find(data.begin(),data.end(),' '));
 		String guide(data.begin(),iter);//this now contains the four items
-		std::vector<String> guide_components(4);
+		std::vector<String> guide_components(3);
 		int i = 0;
 		for (auto character: guide){
 			if(character != '*')
@@ -634,9 +634,9 @@ WorkArea::load_meta_data()
 		}
 		if(!guide.empty()){
 			ChangeLocale change_locale(LC_NUMERIC, "C");
-			Guide obj = {synfig::Point{stratof(guide_components.at(0)),stratof(guide_components.at(1))},
-						 synfig::Angle::rad(stratof(guide_components.at(2))),
-						 (bool)stratoi(guide_components.at(3))};
+			Guide obj = { synfig::Point{stratof(guide_components.at(0)),stratof(guide_components.at(1))},
+						  synfig::Angle::rad(stratof(guide_components.at(2)))
+						};
 			get_guide_list().push_back(obj);
 		}
 
@@ -1466,34 +1466,14 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 	        break;
 		}
 		case DRAG_GUIDE: {
-			if (curr_guide->isVertical) {
-				if((!rotate_guide && (synfig::Angle::deg(curr_guide->angle).get() == 90))){// case 1: unrotated ruler (vertical)
-					curr_guide->point[0] = mouse_pos[0];
-				} else if (!rotate_guide) { //case 2: rotated ruler being moved
-					float center_x_new= (mouse_pos[0])+((-mouse_pos[1]+curr_guide->point[1])/(tan(curr_guide->angle.get())));
-					if (std::isinf(center_x_new))
-						curr_guide->point[1] = mouse_pos[1];
-					else
-						curr_guide->point[0] = center_x_new;
-				}
+			if (!rotate_guide){
+				curr_guide->point[0] = mouse_pos[0];
+				curr_guide->point[1] = mouse_pos[1];
+			} else if(rotate_guide && !from_ruler_event) {
+					float slope = (mouse_pos[1] - curr_guide->point[1])/(mouse_pos[0] - curr_guide->point[0]);
+					//just change the angle of the ruler
+					curr_guide->angle = synfig::Angle::rad(atan(slope));
 			}
-			else{
-				if( ((!rotate_guide) && ((synfig::Angle::deg(curr_guide->angle).get() == 0)))){
-					curr_guide->point[1] = mouse_pos[1];
-				} else if (!rotate_guide) {
-					float center_y_new = (mouse_pos[1])-((mouse_pos[0]-curr_guide->point[0])*(tan(curr_guide->angle.get())));
-					if (std::isinf(center_y_new))
-						curr_guide->point[0] = mouse_pos[0];
-					else
-						curr_guide->point[1] = center_y_new;
-				}
-			}
-			if(rotate_guide && !from_ruler_event) {// case: 3 ruler being rotated   ---- dont rotate if center of rotation isnt in screen
-								float slope = (mouse_pos[1] - curr_guide->point[1])/(mouse_pos[0] - curr_guide->point[0]);
-								//just change the angle of the ruler
-								curr_guide->angle = synfig::Angle::rad(atan(slope));
-			}
-
 			drawing_area->queue_draw();
 	        break;
 		}
@@ -1776,12 +1756,12 @@ WorkArea::on_hruler_event(GdkEvent *event)
 		if (get_drag_mode() == DRAG_NONE && show_guides) {
 			set_drag_mode(DRAG_GUIDE);
 			curr_guide = get_guide_list().insert(get_guide_list().begin(),{synfig::Point(((1.0/2.0)*(drawing_area->get_window()->get_width())*get_pw())+ get_window_tl()[0], 0),
-																			   synfig::Angle::rad(0), false});
+																			   synfig::Angle::rad(0)});
 		}
 		return true;
 	case GDK_MOTION_NOTIFY:
 		// Guide movement
-		if (get_drag_mode() == DRAG_GUIDE && !curr_guide->isVertical) {
+		if (get_drag_mode() == DRAG_GUIDE) {
 			// Event is in the hruler, which has a slightly different
 			// coordinate system from the canvas.
 			event->motion.y -= hruler->get_height()+2;
@@ -1792,7 +1772,7 @@ WorkArea::on_hruler_event(GdkEvent *event)
 		return true;
 	case GDK_BUTTON_RELEASE:
 		from_ruler_event = false;
-		if (get_drag_mode() == DRAG_GUIDE && !curr_guide->isVertical) {
+		if (get_drag_mode() == DRAG_GUIDE) {
 			set_drag_mode(DRAG_NONE);
 			save_meta_data();
 		}
@@ -1814,12 +1794,12 @@ WorkArea::on_vruler_event(GdkEvent *event)
 		if (get_drag_mode() == DRAG_NONE && show_guides) {
 			set_drag_mode(DRAG_GUIDE);
 			curr_guide = get_guide_list().insert(get_guide_list().begin(),{synfig::Point(0 ,((1.0/2.0)*(drawing_area->get_window()->get_height())*get_ph())+ get_window_tl()[1]),
-																			   synfig::Angle::deg(90), true});
+																			   synfig::Angle::deg(90)});
 		}
 		return true;
 	case GDK_MOTION_NOTIFY:
 		// Guide movement
-		if (get_drag_mode() == DRAG_GUIDE && curr_guide->isVertical) {
+		if (get_drag_mode() == DRAG_GUIDE) {
 			// Event is in the vruler, which has a slightly different
 			// coordinate system from the canvas.
 			event->motion.x -= vruler->get_width()+2;
@@ -1829,7 +1809,7 @@ WorkArea::on_vruler_event(GdkEvent *event)
 		return true;
 	case GDK_BUTTON_RELEASE:
 			from_ruler_event = false;
-		if (get_drag_mode() == DRAG_GUIDE && curr_guide->isVertical) {
+		if (get_drag_mode() == DRAG_GUIDE) {
 			set_drag_mode(DRAG_NONE);
 			save_meta_data();
 		}

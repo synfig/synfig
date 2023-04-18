@@ -118,7 +118,6 @@ struct Guide
 {
 	synfig::Point point;
 	synfig::Angle::rad angle;
-	bool isVertical;
 };
 
 /*! \class Duckmatic
