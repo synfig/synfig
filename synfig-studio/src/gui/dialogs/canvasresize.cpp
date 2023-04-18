@@ -198,11 +198,8 @@ void CanvasResize::on_action_signal_response(int response_id)
 		refresh_content();
 		break;
 	case OKAY:
-		if (new_width == old_width && new_height == old_height)
-			if (is_toggled == was_toggled && is_toggle_unique) break;
-		// Default toggle's no longer unique because user modified its state. Update it
-		if (is_toggled != was_toggled)
-			is_toggle_unique = false;
+		if (new_width == old_width && new_height == old_height) break;
+		if (is_toggle_unique) break;
 		/*
 		 * Set canvas resize direction
 		 *
@@ -232,6 +229,8 @@ void CanvasResize::on_width_changed()
 	rend_desc.set_w(width->get_value_as_int());
 
 	refresh_wh_toggle_widgets();
+
+	is_toggle_unique = false;
 }
 
 void CanvasResize::on_height_changed()
@@ -242,6 +241,8 @@ void CanvasResize::on_height_changed()
 	rend_desc.set_h(height->get_value_as_int());
 
 	refresh_wh_toggle_widgets();
+
+	is_toggle_unique = false;
 }
 
 void CanvasResize::on_canvas_button_clicked(Gtk::Button *button)
@@ -320,8 +321,11 @@ void CanvasResize::on_wh_ratio_toggled()
 		rend_desc.set_pixel_ratio(width->get_value_as_int(), height->get_value_as_int());
 
 		is_image_checked ? set_image_flags(true) : set_canvas_flags(true);
-	} else
+	} else {
+		is_toggle_unique = false;
+
 		is_image_checked ? set_image_flags(false) : set_canvas_flags(false);
+	}
 }
 
 void CanvasResize::on_spinbutton_updated(Gtk::SpinButton *widget)
