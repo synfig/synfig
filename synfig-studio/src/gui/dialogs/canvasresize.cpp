@@ -167,18 +167,6 @@ void CanvasResize::on_dialog_shown()
 {
 	if (is_image_checked) set_image_flags(toggle_ratio_wh->get_active());
 
-	/*
-	 * Default enable width/height link because rend_desc object doens't
-	 *
-	 * Also, we couldn't easily set the object flags ourselves because
-	 * this dialog and Canvas Properties dialog differ in that the latter
-	 * resizes both canvas & content while this dialog resizes canvas only
-	 * And both dialogs share the same rend_desc object
-	 *
-	 * Hence, we track our dialog is_toggle_unique state and appropriately
-	 * turn it off when user interacts with the button
-	 * That way we don't mess up the rend_desc object flags
-	 */
 	if (!is_toggle_unique) return;
 	set_canvas_flags(true);
 	refresh_wh_toggle_widgets();

@@ -72,7 +72,16 @@ class CanvasResize : public Gtk::Dialog
 	std::array<Gtk::Button*, 9> canvas_buttons;
 	Gtk::Button *canvas_center;
 
-	// Force width/height toggle on
+	// Force width/height toggle on because rend_desc object doens't
+	//
+	// Also, we couldn't easily set the object flags ourselves because
+	// this dialog and Canvas Properties dialog differ in that the latter
+	// resizes both canvas & content while this dialog resizes canvas only
+	// And both dialogs share the same rend_desc object
+	//
+	// Hence, we track our dialog is_toggle_unique state and appropriately
+	// turn it off when user interacts with the button
+	// That way we don't mess up the rend_desc object flags
 	bool is_toggle_unique;
 
 	bool was_image_checked;
