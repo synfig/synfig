@@ -19,6 +19,9 @@ echo "Selected ARCH: ${MINGW_PACKAGE_PREFIX}"
 
 # dlfcn is still required to MLT build, so don't remove it
 echo "Installing development tools"
+
+pacman -Syu --noconfirm --color=auto
+
 # install basic development system, compiler toolchain and build tools
 pacman -S --needed --noconfirm --color=auto \
 autoconf \
