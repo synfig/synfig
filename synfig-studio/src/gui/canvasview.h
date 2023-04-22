@@ -273,9 +273,6 @@ private:
 	ChildrenTree *children_tree;
 	KeyframeTree *keyframe_tree;
 
-	Gtk::TreeRow children_canvas_row;
-	Gtk::TreeRow children_valuenode_row;
-
 	Gtk::Statusbar *statusbar;
 	Gtk::ProgressBar *progressbar;
 
