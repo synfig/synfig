@@ -229,6 +229,8 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 	if(column==model.is_editable.index())
 	{
 		synfigapp::ValueDesc value_desc((*iter)[model.value_desc]);
+		if (!value_desc)
+			return Gtk::TreeStore::get_value_vfunc(iter,column,value);
 
 		Glib::Value<bool> x;
 		g_value_init(x.gobj(),x.value_type());

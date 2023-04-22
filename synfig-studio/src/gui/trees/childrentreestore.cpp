@@ -82,11 +82,13 @@ ChildrenTreeStore::ChildrenTreeStore(etl::loose_handle<synfigapp::CanvasInterfac
 	canvas_row[model.label]=_("Canvases");
 	canvas_row[model.is_canvas] = false;
 	canvas_row[model.is_value_node] = false;
+	canvas_row[model.is_editable] = false;
 
 	value_node_row=*append();
 	value_node_row[model.label]=_("ValueBase Nodes");
 	value_node_row[model.is_canvas] = false;
 	value_node_row[model.is_value_node] = false;
+	value_node_row[model.is_editable] = false;
 
 	// Connect all the signals
 	canvas_interface()->signal_value_node_changed().connect(sigc::mem_fun(*this,&studio::ChildrenTreeStore::on_value_node_changed));
