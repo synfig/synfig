@@ -192,9 +192,52 @@ elif [ "$ID_LIKE" == "arch" ]; then
     echo "Running pacman (root privileges are needed)..."
     echo
     sudo pacman -S --needed --noconfirm $PKG_LIST || true
-
+elif [ -f /etc/altlinux-release ]; then
+            #  ALT Linux case
+            PKG_LIST=" \
+                gcc-c++ \
+                git-core \
+                shared-mime-info \
+                intltool \
+                gettext \
+                libjpeg-devel \
+                fontconfig \
+                libfreetype-devel \
+                libfribidi-devel \
+                fontconfig-devel \
+                libxml2-devel \
+                libtiff-devel \
+                libjasper-devel \
+                libdirectfb-devel \
+                libfftw3-devel \
+                libXfixes-devel \
+                libXinerama-devel \
+                libXdamage-devel \
+                libXcomposite-devel \
+                libXcursor-devel \
+                libXft-devel \
+                libXrender-devel \
+                libXt-devel \
+                libXrandr-devel \
+                libXi-devel \
+                libXext-devel \
+                libX11-devel \
+                libatk-devel \
+                libpng-devel \
+                bzip2 \
+                libjack-devel \
+                libmng-devel \
+                libgtkmm3-devel \
+                libglibmm-devel \
+                libsigc++2-devel \
+                libxml++2-devel \
+                libImageMagick-devel \
+                libmlt++-devel \
+                libxslt-devel python-devel python-module-lxml"
+    echo "Running apt-get (root privileges required)..."
+    echo
+    su -c "( apt-get update || true ) && apt-get install -y -q $PKG_LIST"
 elif [ "$ID_LIKE" == "debian" ] || [ "$ID_LIKE" == "ubuntu" ] || [ "$ID_LIKE" == "ubuntu debian" ]; then
-    if [ ! -f /etc/altlinux-release ]; then
             #  Debian / Ubuntu
             PKG_LIST=" \
                 build-essential \
@@ -227,47 +270,6 @@ elif [ "$ID_LIKE" == "debian" ] || [ "$ID_LIKE" == "ubuntu" ] || [ "$ID_LIKE" ==
                 libxml++2.6-dev \
                 libmagick++-dev \
                 libxslt-dev python3 python3-lxml"
-        else
-            #  ALT Linux case
-            PKG_LIST=" \
-                rpm-build \
-                git-core \
-                shared-mime-info \
-                libltdl3-devel \
-                intltool \
-                gettext \
-                libpng12-devel \
-                libjpeg-devel \
-                fontconfig \
-                libfreetype-devel \
-                libfribidi-devel \
-                fontconfig-devel \
-                libxml2-devel \
-                libtiff-devel \
-                libjasper-devel \
-                libdirectfb-devel \
-                libfftw3-dev \
-                libXfixes-devel \
-                libXinerama-devel \
-                libXdamage-devel \
-                libXcomposite-devel \
-                libXcursor-devel \
-                libXft-devel \
-                libXrender-devel \
-                libXt-devel \
-                libXrandr-devel \
-                libXi-devel \
-                libXext-devel \
-                libX11-devel \
-                libatk-devel \
-                bzip2 \
-                libmng-devel \
-                libgtkmm3-devel \
-                libglibmm-devel \
-                libsigc++2-devel \
-                libxml++2-devel \
-                libxslt-devel python-devel python3-lxml"
-        fi
 
     echo "Running apt-get (root privileges are needed)..."
     echo
