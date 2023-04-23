@@ -44,6 +44,7 @@
 #include <synfig/general.h>
 #include <synfig/layers/layer_pastecanvas.h>
 #include <synfig/layers/layer_skeleton.h>
+#include <synfig/synfig_iterations.h>
 #include <synfigapp/selectionmanager.h>
 
 #endif
@@ -508,46 +509,25 @@ LayerActionManager::paste()
 void
 LayerActionManager::export_dup_nodes(synfig::Layer::Handle layer, Canvas::Handle canvas, int &index)
 {
-	// automatically export the Index parameter of Duplicate layers when pasting
-	if (layer->get_name() == "duplicate")
-		while (true)
+	traverse_layers(layer, [&](Layer::LooseHandle layer, const TraverseLayerStatus&) {
+		// automatically export the Index parameter of Duplicate layers when pasting
+		if (layer->get_name() == "duplicate")
 		{
-			String name = strprintf(_("Index %d"), index++);
-			try
+			while (true)
 			{
-				canvas->find_value_node(name, true);
-			}
-			catch (const Exception::IDNotFound& x)
-			{
-				get_canvas_interface()->add_value_node(layer->dynamic_param_list().find("index")->second, name);
-				break;
+				String name = strprintf(_("Index %d"), index++);
+				try
+				{
+					canvas->find_value_node(name, true);
+				}
+				catch (const Exception::IDNotFound& x)
+				{
+					get_canvas_interface()->add_value_node(layer->dynamic_param_list().find("index")->second, name);
+					break;
+				}
 			}
 		}
-	else
-	{
-		Layer::ParamList param_list(layer->get_param_list());
-		for (Layer::ParamList::const_iterator iter(param_list.begin())
-				 ; iter != param_list.end()
-				 ; iter++)
-			if (layer->dynamic_param_list().count(iter->first)==0 && iter->second.get_type()==type_canvas)
-			{
-				Canvas::Handle subcanvas(iter->second.get(Canvas::Handle()));
-				if (subcanvas && subcanvas->is_inline())
-					for (IndependentContext iter = subcanvas->get_independent_context(); iter != subcanvas->end(); iter++)
-						export_dup_nodes(*iter, canvas, index);
-			}
-
-		for (Layer::DynamicParamList::const_iterator iter(layer->dynamic_param_list().begin())
-				 ; iter != layer->dynamic_param_list().end()
-				 ; iter++)
-			if (iter->second->get_type()==type_canvas)
-			{
-				Canvas::Handle canvas((*iter->second)(0).get(Canvas::Handle()));
-				if (canvas->is_inline())
-					//! \todo do we need to implement this?  and if so, shouldn't we check all canvases, not just the one at t=0s?
-					warning("%s:%d not yet implemented - do we need to export duplicate valuenodes in dynamic canvas parameters?", __FILE__, __LINE__);
-			}
-	}
+	});
 }
 
 void
