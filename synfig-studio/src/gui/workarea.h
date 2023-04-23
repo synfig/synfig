@@ -231,6 +231,9 @@ private:
 
 	etl::handle<LockDucks> lock_ducks;
 
+	// stores the previously set cursor; used for restoring the cursor after dragging
+	Glib::RefPtr<Gdk::Cursor> previous_cursor;
+
 public:
 	/*
  -- ** -- P U B L I C   D A T A -----------------------------------------------
@@ -478,6 +481,9 @@ private:
 	bool on_hruler_event(GdkEvent* event);
 	bool on_vruler_event(GdkEvent* event);
 	void on_duck_selection_single(const etl::handle<Duck>& duck_guid);
+
+	// Sets the current cursor regardless of drag mode
+	void set_cursor_forced(const Glib::RefPtr<Gdk::Cursor> &x);
 }; // END of class WorkArea
 
 
