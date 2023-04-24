@@ -89,7 +89,7 @@ Dialog_Guide::Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canv
 	point_y_widget->show();
 	point_y_widget->set_hexpand(); */
 
-	Gtk::Frame* angleFrame = manage(new Gtk::Frame(_("Rotate By Setting an Angle")));
+	Gtk::Frame* angleFrame = manage(new Gtk::Frame(_("Rotate Guide")));
 	angleFrame->set_shadow_type(Gtk::SHADOW_NONE);
 	(static_cast<Gtk::Label*>(angleFrame->get_label_widget()))->set_markup(_("<b>Rotate By Setting an Angle</b>"));
 	angleFrame->set_margin_bottom(5);
