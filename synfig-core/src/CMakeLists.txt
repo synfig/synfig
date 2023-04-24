@@ -5,6 +5,11 @@
 find_package(ZLIB REQUIRED)
 find_package(Intl REQUIRED)
 
+if(EMBED_PYTHON)
+	find_package(pybind11 REQUIRED)  # or add_subdirectory(pybind11)
+	add_definitions(-DEMBED_PYTHON)
+endif()
+
 ## ETL doesn't install a package configuration so find package will fail
 # find_package(ETL REQUIRED)
 

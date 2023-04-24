@@ -226,7 +226,7 @@ elif [ "$ID_LIKE" == "debian" ] || [ "$ID_LIKE" == "ubuntu" ] || [ "$ID_LIKE" ==
                 libsigc++-2.0-dev \
                 libxml++2.6-dev \
                 libmagick++-dev \
-                libxslt-dev python3 python3-lxml"
+                libxslt-dev python3 python3-lxml pybind11-dev python3-dev"
         else
             #  ALT Linux case
             PKG_LIST=" \

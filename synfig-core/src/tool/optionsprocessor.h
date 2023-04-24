@@ -147,6 +147,7 @@ private:
 	bool			show_codecs;
 	bool			show_value_nodes;
 	bool			show_version;
+	bool			show_python_output;
 
 	// Debug group
 #ifdef _DEBUG

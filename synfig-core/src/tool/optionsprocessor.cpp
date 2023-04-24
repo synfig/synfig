@@ -53,6 +53,11 @@
 #include "printing_functions.h"
 #include "optionsprocessor.h"
 #include <glibmm/init.h>
+
+#ifdef EMBED_PYTHON
+#include <pybind11/embed.h>
+namespace py = pybind11;
+#endif
 #endif
 
 using namespace synfig;
@@ -200,6 +205,7 @@ SynfigCommandLineParser::SynfigCommandLineParser() :
 	add_option(og_info, "target-video-codecs",' ', show_codecs, _("Print out the list of available video codecs when encoding through FFMPEG"), "");
 	add_option(og_info, "valuenodes", ' ', show_value_nodes, 	_("Print out the list of available ValueNodes"), "");
 	add_option(og_info, "version",    ' ', show_version, 		_("Print out version information"), "");
+	add_option(og_info, "python-test", ' ', show_python_output, 		_("Print test python output"), "");
 
 #ifdef _DEBUG
 	//SynfigOptionGroup og_debug("debug", _("Synfig debug flags"), "Show Synfig debug flags help");
@@ -511,6 +517,22 @@ void SynfigCommandLineParser::process_info_options()
 			std::cout << (iter.first).c_str() << std::endl;
 		}
 
+		throw (SynfigToolException(SYNFIGTOOL_HELP));
+	}
+
+	if (show_python_output) {
+#ifdef EMBED_PYTHON
+		py::scoped_interpreter guard{}; // start the interpreter and keep it alive
+
+		py::exec(R"(
+import synfig
+
+result = synfig.add(10, 11)
+synfig.info(f"synfig result: {result}")
+synfig.warning(f"synfig result: {result}")
+synfig.error(f"synfig result: {result}")
+)");
+#endif
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
 }
