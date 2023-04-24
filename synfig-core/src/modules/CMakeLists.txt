@@ -26,6 +26,7 @@ set(MODS_ENABLED
     mod_dv
     mod_example
     mod_ffmpeg
+    mod_webp
     mod_filter
     mod_geometry
     mod_gif

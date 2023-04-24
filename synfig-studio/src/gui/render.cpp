@@ -51,6 +51,7 @@
 #include <gui/app.h>
 #include <gui/asyncrenderer.h>
 #include <gui/dialogs/dialog_ffmpegparam.h>
+#include <gui/dialogs/dialog_webpparam.h>
 #include <gui/dialogs/dialog_spritesheetparam.h>
 #include <gui/docks/dockmanager.h>
 #include <gui/docks/dock_info.h>
@@ -247,7 +248,7 @@ RenderSettings::set_entry_filename()
 
 	if (!is_absolute_path(filename))
 		filename = Glib::get_home_dir() + ETL_DIRECTORY_SEPARATOR + filename;
-	
+
 	try
 	{
 		if(!comboboxtext_target.get_active_row_number())
@@ -265,16 +266,29 @@ RenderSettings::set_entry_filename()
 void
 RenderSettings::on_comboboxtext_target_changed()
 {
-	std::map<std::string,std::string> ext = {{"bmp",".bmp"}, {"dv",".dv"},
-					{"ffmpeg",".avi"},{"gif",".gif"},{"imagemagick",".png"}, {"jpeg",".jpg"},
-					{"magick++",".gif"},{"mng",".mng"},{"openexr",".exr"},{"png",".png"},
-					{"png-spritesheet",".png"},{"ppm",".ppm"}, {"yuv420p",".yuv"}, {"libav",".avi"}};
+	std::map<std::string,std::string> ext = {
+		{"bmp",            ".bmp"},
+		{"dv",             ".dv" },
+		{"ffmpeg",         ".avi"},
+		{"gif",            ".gif"},
+		{"imagemagick",    ".png"},
+		{"jpeg",           ".jpg"},
+		{"magick++",       ".gif"},
+		{"mng",            ".mng"},
+		{"openexr",        ".exr"},
+		{"png",            ".png"},
+		{"png-spritesheet",".png"},
+		{"ppm",            ".ppm"},
+		{"yuv420p",        ".yuv"},
+		{"libav",          ".avi"},
+		{"libwebp",        ".webp"}
+	};
 	int i = comboboxtext_target.get_active_row_number();
 	if (i < 0 || i >= (int)target_names.size()) return;
 	if (target_name == target_names[i]) return;
 	auto itr = ext.find(target_names[i]); 
-    // check if target_name is there in map
-    if(itr != ext.end())
+	// check if target_name is there in map
+	if(itr != ext.end())
 	{
 		String filename = entry_filename.get_text();
 		String newfilename = filename.substr(0,filename.find_last_of('.'))+itr->second;
@@ -294,7 +308,13 @@ RenderSettings::set_target(synfig::String name)
 {
 	target_name=name;
 	//TODO: Replace this condition
-	tparam_button->set_sensitive(!(target_name.compare("ffmpeg") && target_name.compare("png-spritesheet")));
+	tparam_button->set_sensitive(
+		!(
+			target_name.compare("ffmpeg"         ) &&
+			target_name.compare("png-spritesheet") &&
+			target_name.compare("libwebp"        )
+		)
+	);
 }
 
 void
@@ -312,12 +332,10 @@ RenderSettings::on_targetparam_pressed()
 {
 	Dialog_TargetParam * dialogtp;
 	//TODO: Replace this conditions too
-	if (!target_name.compare("ffmpeg"))
-		dialogtp = new Dialog_FFmpegParam (*this);
-	else if (!target_name.compare("png-spritesheet"))
-		dialogtp = new Dialog_SpriteSheetParam (*this);
-	else
-		return;
+	if      (!target_name.compare("ffmpeg"         )) dialogtp = new Dialog_FFmpegParam      (*this);
+	else if (!target_name.compare("png-spritesheet")) dialogtp = new Dialog_SpriteSheetParam (*this);
+	else if (!target_name.compare("libwebp"        )) dialogtp = new Dialog_WebpParam        (*this);
+	else return;
 
 	RendDesc rend_desc(widget_rend_desc.get_rend_desc());
 	dialogtp->set_desc(rend_desc);
@@ -332,18 +350,18 @@ RenderSettings::on_render_pressed()
 {
 	String filename=entry_filename.get_text();
 	tparam.sequence_separator = App::sequence_separator;
-	
+
 	if(!check_target_destination())
 	{
 		present();
 		entry_filename.grab_focus();
 		return;
 	}
-	
+
 	hide();
-		
+
 	render_passes.clear();
-		
+
 	if(toggle_extract_alpha.get_active())
 	{
 		String filename_alpha(filename_sans_extension(filename)+"-alpha"+filename_extension(filename));
@@ -410,26 +428,34 @@ RenderSettings::check_target_destination()
 		canvas_interface_->get_ui_interface()->error(_("A filename is required for this target"));
 		return false;
 	}
-	
+
 	String extension(filename_extension(filename));
 	bool ext_multi_file = false; //output target is an image sequence
 	int n_frames_overwrite = 0;
-	
+
 	//Retrieve current render settings
 	RendDesc rend_desc(widget_rend_desc.get_rend_desc());
-	
-	if(!toggle_single_frame.get_active() && (calculated_target_name != "png-spritesheet")
-			&& (rend_desc.get_frame_end() - rend_desc.get_frame_start()) > 0)
+
+	if (!toggle_single_frame.get_active() &&
+	   ( calculated_target_name != "png-spritesheet") &&
+	   ( rend_desc.get_frame_end() - rend_desc.get_frame_start()) > 0)
 	{
 		//Check format which could have an image sequence as output
 		//If format is selected in comboboxtext_target
-		std::map<std::string,std::string> ext_multi = {{"bmp",".bmp"},
-					{"imagemagick",".png"}, {"jpeg",".jpg"},{"mng",".mng"},
-					{"openexr",".exr"},{"png",".png"},{"ppm",".ppm"}};
-	
+		std::map<std::string,std::string> ext_multi = {
+			{"bmp",         ".bmp" },
+			{"imagemagick", ".png" },
+			{"jpeg",        ".jpg" },
+			{"mng",         ".mng" },
+			{"openexr",     ".exr" },
+			{"png",         ".png" },
+			{"ppm",         ".ppm" },
+			{"libwebp",     ".webp"}
+		};
+
 		std::map<std::string,std::string>::iterator ext_multi_it;
 		ext_multi_it = ext_multi.find(calculated_target_name);
-	
+
 		//calculated_target_name is a candidate with known output target (not Auto)
 		if(ext_multi_it != ext_multi.end())
 		{
@@ -439,18 +465,19 @@ RenderSettings::check_target_destination()
 		//otherwise Auto is selected
 		else
 		{
-			std::list<std::string> ext_multi_auto = {{".bmp"}, {".png"},
-					{".jpg"},{".exr"},{".ppm"}};
-	
+			std::list<std::string> ext_multi_auto = {
+				{".bmp"}, {".png"},{".jpg"},{".exr"},{".ppm"},{".webp"}
+			};
+
 			ext_multi_file = (find(ext_multi_auto.begin(), ext_multi_auto.end(),
 					filename_extension(filename)) != ext_multi_auto.end());
 		}
 
 		//Image sequence: filename + sequence_separator + time
-		if(ext_multi_file)
-			for(int n_frame = rend_desc.get_frame_start();
-					n_frame <= rend_desc.get_frame_end();
-					n_frame++)
+		if (ext_multi_file)
+			for (int n_frame  = rend_desc.get_frame_start();
+			         n_frame <= rend_desc.get_frame_end();
+			         n_frame++ )
 			{
 				if(Glib::file_test(filename_sans_extension(filename) +
 					tparam.sequence_separator +
@@ -462,13 +489,13 @@ RenderSettings::check_target_destination()
 
 	String message;
 	String details;
-	
+
 	if(n_frames_overwrite == 0)
 	{
 		message = strprintf(_("A file named \"%s\" already exists. "
 							"Do you want to replace it?"),
 							basename(filename).c_str());
-	
+
 		details = strprintf(_("The file already exists in \"%s\". "
 							"Replacing it will overwrite its contents."),
 							dirname(filename).c_str());
@@ -478,7 +505,7 @@ RenderSettings::check_target_destination()
 		message = strprintf(_("%d files with the same name already exist. "
 							"Do you want to replace them?"),
 							n_frames_overwrite);
-	
+
 		details = strprintf(_("The files already exist in \"%s\". "
 							"Replacing them will overwrite their contents."),
 							dirname(filename).c_str());
@@ -493,7 +520,7 @@ RenderSettings::check_target_destination()
 		_("Use Another Name…"),
 		_("Replace")))
 		return false;
-	
+
 	return true;
 }
 
@@ -506,7 +533,7 @@ RenderSettings::submit_next_render_pass()
 
 		App::dock_info_->set_n_passes_pending(render_passes.size()); //! Decrease until 0
 		App::dock_info_->set_render_progress(0.0); //For this pass
-		
+
 		TargetAlphaMode pass_alpha_mode = pass_info.first;
 		String pass_filename = pass_info.second;
 
@@ -563,7 +590,7 @@ RenderSettings::on_finished(std::string error_message)
 	canvas_interface_->get_ui_interface()->amount_complete(0,10000);
 
 	bool really_finished = (render_passes.size() == 0); //Must be checked BEFORE submit_next_render_pass();
-	
+
 	submit_next_render_pass();
 
 	if (really_finished) { // Because of multi-pass render

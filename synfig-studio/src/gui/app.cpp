@@ -2316,6 +2316,7 @@ App::dialog_open_file_ext(const std::string &title, std::vector<std::string> &fi
 	filter_supported->add_mime_type("image/svg+xml");
 	filter_supported->add_mime_type("application/x-krita");
 	filter_supported->add_mime_type("image/openraster");
+	filter_supported->add_mime_type("image/webp");
 	filter_supported->add_pattern("*.png");
 	filter_supported->add_pattern("*.jpeg");
 	filter_supported->add_pattern("*.jpg");
@@ -2324,6 +2325,7 @@ App::dialog_open_file_ext(const std::string &title, std::vector<std::string> &fi
 	filter_supported->add_pattern("*.lst");
 	filter_supported->add_pattern("*.kra");
 	filter_supported->add_pattern("*.ora");
+	filter_supported->add_pattern("*.webp");
 	// 0.3 Audio files
 	filter_supported->add_mime_type("audio/x-vorbis+ogg");
 	filter_supported->add_mime_type("audio/mpeg");
@@ -2350,17 +2352,19 @@ App::dialog_open_file_ext(const std::string &title, std::vector<std::string> &fi
 
 	// 2.1 Image files
 	Glib::RefPtr<Gtk::FileFilter> filter_image = Gtk::FileFilter::create();
-	filter_image->set_name(_("Images (*.png, *.jpeg, *.bmp, *.svg)"));
+	filter_image->set_name(_("Images (*.png, *.jpeg, *.bmp, *.svg, *.webp)"));
 	filter_image->add_mime_type("image/png");
 	filter_image->add_mime_type("image/jpeg");
 	filter_image->add_mime_type("image/jpg");
 	filter_image->add_mime_type("image/bmp");
 	filter_image->add_mime_type("image/svg+xml");
+	filter_image->add_mime_type("image/webp");
 	filter_image->add_pattern("*.png");
 	filter_image->add_pattern("*.jpeg");
 	filter_image->add_pattern("*.jpg");
 	filter_image->add_pattern("*.bmp");
 	filter_image->add_pattern("*.svg");
+	filter_image->add_pattern("*.webp");
 
 	// 2.2 Image sequence/list files
 	Glib::RefPtr<Gtk::FileFilter> filter_image_list = Gtk::FileFilter::create();
@@ -2552,18 +2556,20 @@ App::dialog_open_file_image(const std::string &title, std::string &filename, std
 
 	// show only images
 	Glib::RefPtr<Gtk::FileFilter> filter_image = Gtk::FileFilter::create();
-	filter_image->set_name(_("Images and sequence files (*.png, *.jpg, *.jpeg, *.bmp, *.svg, *.lst)"));
+	filter_image->set_name(_("Images and sequence files (*.png, *.jpg, *.jpeg, *.bmp, *.svg, *.lst, *.webp"));
 	filter_image->add_mime_type("image/png");
 	filter_image->add_mime_type("image/jpeg");
 	filter_image->add_mime_type("image/jpg");
 	filter_image->add_mime_type("image/bmp");
 	filter_image->add_mime_type("image/svg+xml");
+	filter_image->add_mime_type("image/webp");
 	filter_image->add_pattern("*.png");
 	filter_image->add_pattern("*.jpeg");
 	filter_image->add_pattern("*.jpg");
 	filter_image->add_pattern("*.bmp");
 	filter_image->add_pattern("*.svg");
 	filter_image->add_pattern("*.lst");
+	filter_image->add_pattern("*.webp");
 	dialog->add_filter(filter_image);
 
 	// Any files

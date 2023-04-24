@@ -12,6 +12,7 @@ mod_mng
 mod_noise
 mod_filter
 mod_ffmpeg
+mod_webp
 mod_bmp
 mod_dv
 mod_png
