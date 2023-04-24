@@ -816,7 +816,7 @@ Duckmatic::set_guides_color(const synfig::Color &c)
 	}
 }
 double
-Duckmatic::calculate_distance_from_guide(const Guide& guide, const Point& point)
+Duckmatic::calculate_distance_from_guide(const Guide& guide, const Point& point)const
 {
 	return std::fabs((cos(guide.angle.get())*(guide.point[1]-point[1])) - (sin(guide.angle.get())*(guide.point[0] - point[0])));
 }

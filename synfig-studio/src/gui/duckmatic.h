@@ -251,8 +251,7 @@ private:
 
 	void connect_signals(const Duck::Handle &duck, const synfigapp::ValueDesc& value_desc, CanvasView &canvas_view);
 
-	double calculate_distance_from_guide(const Guide& guide, const synfig::Point& point);
-	double calculate_distance_from_guide(const Guide& guide, const synfig::Point& point)const { return const_cast<Duckmatic*>(this)->calculate_distance_from_guide(guide,point); }
+	double calculate_distance_from_guide(const Guide& guide, const synfig::Point& point)const;
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -473,6 +472,8 @@ public:
 	/*!	A radius of "zero" will have an unlimited radius */
 	etl::handle<Duck> find_duck(synfig::Point pos, synfig::Real radius=0, Duck::Type type=Duck::TYPE_DEFAULT);
 
+	//! returns the closest guide to mouse position if there is one with distance less than radius
+	//! `second_best_guide_match` is an optional argument that can be used to access the second closest guide
 	GuideList::iterator find_guide(synfig::Point pos, float radius=0.1, Guide** second_best_guide_match = nullptr);
 	GuideList::const_iterator find_guide(synfig::Point pos, float radius=0.1, Guide** second_best_guide_match = nullptr)const {
 		return const_cast<Duckmatic*>(this)->find_guide(pos,radius, second_best_guide_match);
