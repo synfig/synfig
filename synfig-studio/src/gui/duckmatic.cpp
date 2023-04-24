@@ -874,7 +874,7 @@ Duckmatic::snap_point_to_grid(const synfig::Point& x)const
 						float bestX = guide->point[0], bestY = guide->point[1], lastBestX = second_best_guide_match->point[0], lastBestY = second_best_guide_match->point[1];
 						guides_intersection_x = ( bestY - lastBestY + slope_second_best_guide_match*lastBestX - slope_best*bestX )/(slope_second_best_guide_match - slope_best);
 						guides_intersection_y = slope_best*(guides_intersection_x - bestX) + bestY;
-						possible_intersection_close = (pow(pow(guide->point[1] - guides_intersection_y, 2.0) + pow(guide->point[0] - guides_intersection_x, 2.0), 0.5)) <= radius;
+						possible_intersection_close = (pow(pow(ret[1] - guides_intersection_y, 2.0) + pow(ret[0] - guides_intersection_x, 2.0), 0.5)) <= radius*3;
 					} else if (guide->angle != second_best_guide_match->angle){
 						if (synfig::Angle::deg(guide->angle).get() == 90){
 							guides_intersection_x = guide->point[0];
@@ -883,11 +883,11 @@ Duckmatic::snap_point_to_grid(const synfig::Point& x)const
 							guides_intersection_x = second_best_guide_match->point[0];
 							guides_intersection_y = tan(guide->angle.get())*(guide->point[0]) + guide->point[1];
 						}
-						possible_intersection_close = (pow(pow(ret[1] - guides_intersection_y, 2.0) + pow(ret[0] - guides_intersection_x, 2.0), 0.5)) <= radius;
+						possible_intersection_close = (pow(pow(ret[1] - guides_intersection_y, 2.0) + pow(ret[0] - guides_intersection_x, 2.0), 0.5)) <= radius*3;
 					}
 					if (possible_intersection_close) {
-					ret[0] = guides_intersection_x;
-					ret[1] = guides_intersection_y;
+						ret[0] = guides_intersection_x;
+						ret[1] = guides_intersection_y;
 					}
 				}
 		if (!possible_intersection_close && guide->angle == synfig::Angle::deg(90))
@@ -895,7 +895,6 @@ Duckmatic::snap_point_to_grid(const synfig::Point& x)const
 		else if (!possible_intersection_close && guide->angle == synfig::Angle::deg(0))
 			ret[1]=guide->point[1];
 		else if (!possible_intersection_close){
-			std::cout<<"do we reach here"<<std::endl;
 			float slope1 = tan(guide->angle.get());
 			float slope2 = -1.0/slope1;
 			float x1 = guide->point[0], y1 = guide->point[1];
