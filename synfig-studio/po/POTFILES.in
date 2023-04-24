@@ -37,6 +37,8 @@ src/gui/dialogs/dialog_gradient.h
 src/gui/dialogs/dialog_input.cpp
 src/gui/dialogs/dialog_keyframe.cpp
 src/gui/dialogs/dialog_keyframe.h
+src/gui/dialogs/dialog_pasteoptions.cpp
+src/gui/dialogs/dialog_pasteoptions.h
 src/gui/dialogs/dialog_preview.cpp
 src/gui/dialogs/dialog_preview.h
 src/gui/dialogs/dialog_setup.cpp
@@ -526,6 +528,7 @@ src/synfigapp/value_desc.h
 src/gui/resources/ui/canvas_options.glade
 src/gui/resources/ui/canvas_resize.glade
 src/gui/resources/ui/dialog_canvasdependencies.glade
+src/gui/resources/ui/dialog_pasteoptions.glade
 src/gui/resources/ui/dialog_workspaces.glade
 src/gui/resources/ui/preview_options.glade
 src/gui/resources/ui/shortcuts_window.glade
