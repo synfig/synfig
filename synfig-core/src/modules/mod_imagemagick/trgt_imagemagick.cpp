@@ -107,7 +107,7 @@ imagemagick_trgt::end_frame()
 bool
 imagemagick_trgt::start_frame(synfig::ProgressCallback *cb)
 {
-	const char *msg=_("Unable to open pipe to imagemagick's convert utility");
+	const char *msg=_("Unable to open pipe to imagemagick's magick utility");
 
 	std::string newfilename;
 
@@ -120,13 +120,14 @@ imagemagick_trgt::start_frame(synfig::ProgressCallback *cb)
 		newfilename = filename;
 
 	OS::RunArgs args;
+	args.push_back({"convert"});
 	args.push_back({"-depth", "8"});
 	args.push_back({"-size", strprintf("%dx%d", desc.get_w(), desc.get_h())});
 	args.push_back(pixel_size(pf) == 4 ? "rgba:-[0]" : "rgb:-[0]");
 	args.push_back({"-density", strprintf("%dx%d", round_to_int(desc.get_x_res()/39.3700787402), round_to_int(desc.get_y_res()/39.3700787402))});
 	args.push_back(filesystem::Path(newfilename));
 
-	pipe = OS::run_async("convert", args, OS::RUN_MODE_WRITE);
+	pipe = OS::run_async("magick", args, OS::RUN_MODE_WRITE);
 
 	if (!pipe) {
 		if (cb)
