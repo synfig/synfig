@@ -25,8 +25,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_DIALOG_GUIDE_H
-#define __SYNFIG_STUDIO_DIALOG_GUIDE_H
+#ifndef SYNFIG_STUDIO_DIALOG_GUIDE_H
+#define SYNFIG_STUDIO_DIALOG_GUIDE_H
 
 
 /* === H E A D E R S ======================================================= */
@@ -61,22 +61,9 @@ class Dialog_Guide : public Gtk::Dialog
 	Gtk::SpinButton* angle_widget;
 	Glib::RefPtr<Gtk::Adjustment> angle_adjustment;
 
-//	Gtk::SpinButton *center_x_widget;
-//	Glib::RefPtr<Gtk::Adjustment> center_x_widget_adjust;
-
-//	Gtk::SpinButton *center_y_widget;
-//	Glib::RefPtr<Gtk::Adjustment> center_y_widget_adjust;
-
-//	Gtk::SpinButton *point_x_widget;
-//	Glib::RefPtr<Gtk::Adjustment> point_x_widget_adjust;
-
-//	Gtk::SpinButton *point_y_widget;
-//	Glib::RefPtr<Gtk::Adjustment> point_y_widget_adjust;
-
 	Gtk::ComboBoxText angle_type_picker;
 
 	void on_ok_or_apply_pressed(bool ok);
-//	void set_new_coordinates();
 	void set_angle_type();
 	void init_widget_values();
 

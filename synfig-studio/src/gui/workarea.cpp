@@ -387,9 +387,8 @@ WorkArea::save_meta_data()
 		String data;
 		GuideList::const_iterator iter;
 		for (const auto& guide : get_guide_list()){
-			if(!data.empty())
-				data+=' ';
-			data+=strprintf(" %f*%f*%f", guide.point[0], guide.point[1], guide.angle.get());
+			data+=strprintf("%f*%f*%f", guide.point[0], guide.point[1], guide.angle.get());
+			data+=' ';
 		}
 		if(!data.empty())
 			canvas_interface->set_meta_data("guide",data);
@@ -632,14 +631,14 @@ WorkArea::load_meta_data()
 			else
 				++i;
 		}
-		if(!guide.empty()){
+		if(i == 2){
 			ChangeLocale change_locale(LC_NUMERIC, "C");
 			Guide obj = { synfig::Point{stratof(guide_components.at(0)),stratof(guide_components.at(1))},
 						  synfig::Angle::rad(stratof(guide_components.at(2)))
 						};
 			get_guide_list().push_back(obj);
-		} else{
-			synfig::warning("Error on trying to restore guide meta data");
+		} else {
+			synfig::warning("Error on trying to restore guide meta data: got %d components", i+1);
 		}
 
 		if(iter==data.end())
