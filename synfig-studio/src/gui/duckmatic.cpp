@@ -823,17 +823,18 @@ Duckmatic::calculate_distance_from_guide(const Guide& guide, const Point& point)
 
 
 Duckmatic::GuideList::iterator
-Duckmatic::find_guide(synfig::Point pos, float radius, Guide* second_best_guide_match)
+Duckmatic::find_guide(synfig::Point pos, float radius, Guide** second_best_guide_match)
 {
 	GuideList::iterator iter,best(guide_list_.end());
-	second_best_guide_match = nullptr;
+	if (second_best_guide_match != nullptr)
+		*second_best_guide_match = nullptr;
 	float dist(radius);
 	for(iter=guide_list_.begin();iter!=guide_list_.end();++iter){
 		float amount = calculate_distance_from_guide(*iter,pos);
 		if (amount<dist){
 			dist = amount;
-			if (best != guide_list_.end())
-				second_best_guide_match = &(*best);
+			if (best != guide_list_.end() && second_best_guide_match != nullptr)
+				*second_best_guide_match = &(*best);
 			best = iter;
 		}
 	}
@@ -848,7 +849,7 @@ Duckmatic::snap_point_to_grid(const synfig::Point& x)const
 
 	GuideList::const_iterator guide;
 	Guide* second_best_guide_match = nullptr;
-	guide = find_guide(ret,radius, second_best_guide_match);
+	guide = find_guide(ret,radius, &second_best_guide_match);
 	bool has_guide = guide != guide_list_.end();
 
 	if(get_grid_snap())
@@ -894,6 +895,7 @@ Duckmatic::snap_point_to_grid(const synfig::Point& x)const
 		else if (!possible_intersection_close && guide->angle == synfig::Angle::deg(0))
 			ret[1]=guide->point[1];
 		else if (!possible_intersection_close){
+			std::cout<<"do we reach here"<<std::endl;
 			float slope1 = tan(guide->angle.get());
 			float slope2 = -1.0/slope1;
 			float x1 = guide->point[0], y1 = guide->point[1];

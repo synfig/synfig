@@ -56,7 +56,7 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-Dialog_Guide::Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canvas, WorkArea *work_area):
+Dialog_Guide::Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canvas, WorkArea* work_area):
 	Dialog(_("Guide Editor"),parent),
 	canvas(canvas),
 	current_work_area(work_area),
@@ -73,25 +73,25 @@ Dialog_Guide::Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canv
 	//Box start
 	Gtk::Box *guide_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 
-	angle_widget=manage(new class Gtk::SpinButton(angle_adjustment,15,2));
+	angle_widget=manage(new Gtk::SpinButton(angle_adjustment,15,2));
 	angle_widget->show();
 
-/*	center_x_widget=manage(new class Gtk::SpinButton(center_x_widget_adjust,15,2));
+/*	center_x_widget=manage(new Gtk::SpinButton(center_x_widget_adjust,15,2));
 	center_x_widget->show();
 	center_x_widget->set_hexpand();
-	center_y_widget=manage(new class Gtk::SpinButton(center_y_widget_adjust,15,2));
+	center_y_widget=manage(new Gtk::SpinButton(center_y_widget_adjust,15,2));
 	center_y_widget->show();
 	center_y_widget->set_hexpand();
-	point_x_widget=manage(new class Gtk::SpinButton(point_x_widget_adjust,15,2));
+	point_x_widget=manage(new Gtk::SpinButton(point_x_widget_adjust,15,2));
 	point_x_widget->show();
 	point_x_widget->set_hexpand();
-	point_y_widget=manage(new class Gtk::SpinButton(point_y_widget_adjust,15,2));
+	point_y_widget=manage(new Gtk::SpinButton(point_y_widget_adjust,15,2));
 	point_y_widget->show();
 	point_y_widget->set_hexpand(); */
 
-	Gtk::Frame *angleFrame = manage(new Gtk::Frame(_("Rotate By Setting an Angle")));
+	Gtk::Frame* angleFrame = manage(new Gtk::Frame(_("Rotate By Setting an Angle")));
 	angleFrame->set_shadow_type(Gtk::SHADOW_NONE);
-	((Gtk::Label *) angleFrame->get_label_widget())->set_markup(_("<b>Rotate By Setting an Angle</b>"));
+	(static_cast<Gtk::Label*>(angleFrame->get_label_widget()))->set_markup(_("<b>Rotate By Setting an Angle</b>"));
 	angleFrame->set_margin_bottom(5);
 	angleFrame->set_margin_top(5);
 
@@ -101,12 +101,12 @@ Dialog_Guide::Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canv
 	guideGrid->set_row_spacing(6);
 	guideGrid->set_column_spacing(8);
 
-	angle_type_picker.append(_("Degree"));
-	angle_type_picker.append(_("Radian"));
+	angle_type_picker.append("Degree", _("Degree"));
+	angle_type_picker.append("Radian", _("Radian"));
 	angle_type_picker.set_active(0);
 	angle_type_picker.signal_changed().connect(sigc::mem_fun(*this, &Dialog_Guide::set_angle_type));
 
-	Gtk::Label *rotationAngleLabel = manage(new Gtk::Label(_("_Rotation Angle"), true));
+	Gtk::Label* rotationAngleLabel = manage(new Gtk::Label(_("_Rotation Angle"), true));
 	rotationAngleLabel->set_halign(Gtk::ALIGN_CENTER);
 	rotationAngleLabel->set_mnemonic_widget(*angle_widget);
 	guideGrid->attach(*rotationAngleLabel, 0, 0, 1, 1);
@@ -151,12 +151,12 @@ Dialog_Guide::Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canv
 
 	Gtk::Button *apply_button(manage(new Gtk::Button(_("_Apply"), true)));
 	apply_button->show();
-	add_action_widget(*apply_button,0);
+	add_action_widget(*apply_button, Gtk::RESPONSE_APPLY);
 	apply_button->signal_clicked().connect(sigc::bind(sigc::mem_fun(*this, &Dialog_Guide::on_ok_or_apply_pressed), false));
 
 	Gtk::Button *ok_button(manage(new Gtk::Button(_("_OK"), true)));
 	ok_button->show();
-	add_action_widget(*ok_button,1);
+	add_action_widget(*ok_button, Gtk::RESPONSE_OK);
 	ok_button->signal_clicked().connect(sigc::bind(sigc::mem_fun(*this, &Dialog_Guide::on_ok_or_apply_pressed), true));
 
 	guide_box->show_all();
@@ -169,7 +169,7 @@ Dialog_Guide::~Dialog_Guide()
 }
 
 void
-Dialog_Guide::set_current_guide_and_init(GuideList::iterator current_guide)
+Dialog_Guide::set_current_guide(GuideList::iterator current_guide)
 {
 	curr_guide = current_guide;
 	init_widget_values();
@@ -179,10 +179,10 @@ Dialog_Guide::set_current_guide_and_init(GuideList::iterator current_guide)
 void
 Dialog_Guide::on_ok_or_apply_pressed(bool ok)
 {
-	if (synfig::Angle::deg((*curr_guide).angle).get() != angle_widget->get_value() && degrees) {
-		(*curr_guide).angle = synfig::Angle::deg(angle_widget->get_value());
-	} else if ((*curr_guide).angle.get() != angle_widget->get_value() && !degrees) {
-		(*curr_guide).angle = synfig::Angle::rad(angle_widget->get_value());
+	if (synfig::Angle::deg(curr_guide->angle).get() != angle_widget->get_value() && degrees) {
+		curr_guide->angle = synfig::Angle::deg(angle_widget->get_value());
+	} else if (curr_guide->angle.get() != angle_widget->get_value() && !degrees) {
+		curr_guide->angle = synfig::Angle::rad(angle_widget->get_value());
 	} /*else
 		set_new_coordinates();*/
 
@@ -214,14 +214,14 @@ Dialog_Guide::set_new_coordinates()
 
 	float point_y_new = synfig::Distance(point_y_widget->get_value() , App::distance_system).get(synfig::Distance::SYSTEM_UNITS, canvas->rend_desc());
 
-	if ((*curr_guide).isVertical) {
-		float slope = (point_y_new - (*curr_guide).point[1])/(point_x_new - center_x_new);
-		(*curr_guide).point[0] = center_x_new;
-		(*curr_guide).angle = synfig::Angle::rad(atan(slope));
+	if (curr_guide->isVertical) {
+		float slope = (point_y_new - curr_guide->point[1])/(point_x_new - center_x_new);
+		curr_guide->point[0] = center_x_new;
+		curr_guide->angle = synfig::Angle::rad(atan(slope));
 	} else {
-		float slope = (point_y_new - center_y_new)/(point_x_new - (*curr_guide).point[0]);
-		(*curr_guide).point[1] = center_y_new;
-		(*curr_guide).angle = synfig::Angle::rad(atan(slope));
+		float slope = (point_y_new - center_y_new)/(point_x_new - curr_guide->point[0]);
+		curr_guide->point[1] = center_y_new;
+		curr_guide->angle = synfig::Angle::rad(atan(slope));
 	}
 }
 */
@@ -229,22 +229,22 @@ Dialog_Guide::set_new_coordinates()
 void
 Dialog_Guide::init_widget_values()
 {
-//	float center_x = (*curr_guide).point[0];
-//	float center_y = (*curr_guide).point[1];
+//	float center_x = curr_guide->point[0];
+//	float center_y = curr_guide->point[1];
 //	float rotated_x = center_x + 2;
-//	float rotated_y = center_y + (2.0)*(tan((*curr_guide).angle.get()));
+//	float rotated_y = center_y + (2.0)*(tan(curr_guide->angle.get()));
 
 	if(degrees)
-		angle_widget->set_value(synfig::Angle::deg((*curr_guide).angle).get());
+		angle_widget->set_value(synfig::Angle::deg(curr_guide->angle).get());
 	else
-		angle_widget->set_value((*curr_guide).angle.get());
+		angle_widget->set_value(curr_guide->angle.get());
 /*
 	double center_x_ruler_unit = synfig::Distance(center_x , synfig::Distance::SYSTEM_UNITS).get(App::distance_system, canvas->rend_desc());
 	double center_y_ruler_unit = synfig::Distance(center_y , synfig::Distance::SYSTEM_UNITS).get(App::distance_system, canvas->rend_desc());
 	double rotated_x_ruler_unit = synfig::Distance(rotated_x , synfig::Distance::SYSTEM_UNITS).get(App::distance_system, canvas->rend_desc());
 	double rotated_y_ruler_unit = synfig::Distance(rotated_y , synfig::Distance::SYSTEM_UNITS).get(App::distance_system, canvas->rend_desc());
 
-	if ((*curr_guide).isVertical) {
+	if (curr_guide->isVertical) {
 		center_x_widget->set_sensitive(true);
 		center_x_widget->set_value(center_x_ruler_unit);
 		point_x_widget->set_value(rotated_x_ruler_unit);

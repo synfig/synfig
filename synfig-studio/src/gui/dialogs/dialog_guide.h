@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file dialogs/Dialog_Guide.h
-**	\brief Template Header
+**	\brief Dialog for editing guides.
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -25,8 +25,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_GTKMM_DIALOG_GUIDE_H
-#define __SYNFIG_GTKMM_DIALOG_GUIDE_H
+#ifndef __SYNFIG_STUDIO_DIALOG_GUIDE_H
+#define __SYNFIG_STUDIO_DIALOG_GUIDE_H
 
 
 /* === H E A D E R S ======================================================= */
@@ -55,10 +55,10 @@ class Dialog_Guide : public Gtk::Dialog
 {
 	typedef std::list<Guide> GuideList;
 
-	etl::handle<synfig::Canvas> canvas;
-	WorkArea *current_work_area;
+	synfig::Canvas::Handle canvas;
+	WorkArea* current_work_area;
 
-	Gtk::SpinButton *angle_widget;
+	Gtk::SpinButton* angle_widget;
 	Glib::RefPtr<Gtk::Adjustment> angle_adjustment;
 
 //	Gtk::SpinButton *center_x_widget;
@@ -86,9 +86,9 @@ class Dialog_Guide : public Gtk::Dialog
 	bool degrees;
 
 public:
-	Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canvas, WorkArea *work_area);
+	Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canvas, WorkArea* work_area);
 	~Dialog_Guide();
-	void set_current_guide_and_init(GuideList::iterator current_guide);
+	void set_current_guide(GuideList::iterator current_guide);
 
 }; // END of Dialog_Guide
 

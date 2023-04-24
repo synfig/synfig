@@ -124,12 +124,13 @@ public:
 	friend class WorkAreaRenderer;
 	friend class WorkAreaProgress;
 
-	Dialog_Guide guide_dialog;
 
 private:
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
 	*/
+
+	Dialog_Guide guide_dialog;
 
 	std::set<etl::handle<WorkAreaRenderer> > renderer_set_;
 

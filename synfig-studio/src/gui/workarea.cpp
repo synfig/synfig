@@ -386,10 +386,10 @@ WorkArea::save_meta_data()
 	{
 		String data;
 		GuideList::const_iterator iter;
-		for (iter = get_guide_list().begin(); iter != get_guide_list().end(); ++iter){
+		for (const auto& guide : get_guide_list()){
 			if(!data.empty())
 				data+=' ';
-			data+=strprintf(" %f*%f*%f", (*iter).point[0], (*iter).point[1], (*iter).angle.get());
+			data+=strprintf(" %f*%f*%f", guide.point[0], guide.point[1], guide.angle.get());
 		}
 		if(!data.empty())
 			canvas_interface->set_meta_data("guide",data);
@@ -623,7 +623,7 @@ WorkArea::load_meta_data()
 	while(!data.empty())
 	{
 		String::iterator iter(find(data.begin(),data.end(),' '));
-		String guide(data.begin(),iter);//this now contains the four items
+		String guide(data.begin(),iter);//this now contains the three items
 		std::vector<String> guide_components(3);
 		int i = 0;
 		for (auto character: guide){
@@ -638,6 +638,8 @@ WorkArea::load_meta_data()
 						  synfig::Angle::rad(stratof(guide_components.at(2)))
 						};
 			get_guide_list().push_back(obj);
+		} else{
+			synfig::warning("Error on trying to restore guide meta data");
 		}
 
 		if(iter==data.end())
@@ -1375,7 +1377,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				}, *this));
 				guide_menu->append(*item);
 				guide_menu->popup(3, gtk_get_current_event_time());
-				guide_dialog.set_current_guide_and_init(curr_guide);
+				guide_dialog.set_current_guide(curr_guide);
 				return true;
 			}
 
@@ -1808,7 +1810,7 @@ WorkArea::on_vruler_event(GdkEvent *event)
 		}
 		return true;
 	case GDK_BUTTON_RELEASE:
-			from_ruler_event = false;
+		from_ruler_event = false;
 		if (get_drag_mode() == DRAG_GUIDE) {
 			set_drag_mode(DRAG_NONE);
 			save_meta_data();
