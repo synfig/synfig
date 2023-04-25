@@ -868,32 +868,32 @@ Duckmatic::snap_point_to_grid(const synfig::Point& x)const
 	{
 		bool possible_intersection_close = second_best_guide_match != nullptr && (second_best_guide_match->angle != guide->angle);
 		if (possible_intersection_close){
-					float guides_intersection_x = 0, guides_intersection_y = 0;
-					if (guide->angle != synfig::Angle::deg(90) && second_best_guide_match->angle != synfig::Angle::deg(90)){
-						float slope_best = tan(guide->angle.get()), slope_second_best_guide_match = tan(second_best_guide_match->angle.get());
-						float bestX = guide->point[0], bestY = guide->point[1], lastBestX = second_best_guide_match->point[0], lastBestY = second_best_guide_match->point[1];
-						guides_intersection_x = ( bestY - lastBestY + slope_second_best_guide_match*lastBestX - slope_best*bestX )/(slope_second_best_guide_match - slope_best);
-						guides_intersection_y = slope_best*(guides_intersection_x - bestX) + bestY;
-						possible_intersection_close = (pow(pow(ret[1] - guides_intersection_y, 2.0) + pow(ret[0] - guides_intersection_x, 2.0), 0.5)) <= radius*3;
-					} else if (guide->angle != second_best_guide_match->angle){
-						if (synfig::Angle::deg(guide->angle).get() == 90){
-							guides_intersection_x = guide->point[0];
-							guides_intersection_y = tan(second_best_guide_match->angle.get())*(second_best_guide_match->point[0]) + second_best_guide_match->point[1];
-						} else if (synfig::Angle::deg(second_best_guide_match->angle).get() == 90){
-							guides_intersection_x = second_best_guide_match->point[0];
-							guides_intersection_y = tan(guide->angle.get())*(guide->point[0]) + guide->point[1];
-						}
-						possible_intersection_close = (pow(pow(ret[1] - guides_intersection_y, 2.0) + pow(ret[0] - guides_intersection_x, 2.0), 0.5)) <= radius*3;
-					}
-					if (possible_intersection_close) {
-						ret[0] = guides_intersection_x;
-						ret[1] = guides_intersection_y;
-					}
+			float guides_intersection_x = 0, guides_intersection_y = 0;
+			if (guide->angle != synfig::Angle::deg(90) && second_best_guide_match->angle != synfig::Angle::deg(90)){
+				float slope_best = tan(guide->angle.get()), slope_second_best_guide_match = tan(second_best_guide_match->angle.get());
+				float bestX = guide->point[0], bestY = guide->point[1], lastBestX = second_best_guide_match->point[0], lastBestY = second_best_guide_match->point[1];
+				guides_intersection_x = ( bestY - lastBestY + slope_second_best_guide_match*lastBestX - slope_best*bestX )/(slope_second_best_guide_match - slope_best);
+				guides_intersection_y = slope_best*(guides_intersection_x - bestX) + bestY;
+				possible_intersection_close = (pow(pow(ret[1] - guides_intersection_y, 2.0) + pow(ret[0] - guides_intersection_x, 2.0), 0.5)) <= radius*3;
+			} else if (guide->angle != second_best_guide_match->angle){
+				if (synfig::Angle::deg(guide->angle).get() == 90){
+					guides_intersection_x = guide->point[0];
+					guides_intersection_y = tan(second_best_guide_match->angle.get())*(second_best_guide_match->point[0]) + second_best_guide_match->point[1];
+				} else if (synfig::Angle::deg(second_best_guide_match->angle).get() == 90){
+					guides_intersection_x = second_best_guide_match->point[0];
+					guides_intersection_y = tan(guide->angle.get())*(guide->point[0]) + guide->point[1];
 				}
+				possible_intersection_close = (pow(pow(ret[1] - guides_intersection_y, 2.0) + pow(ret[0] - guides_intersection_x, 2.0), 0.5)) <= radius*3;
+			}
+			if (possible_intersection_close) {
+				ret[0] = guides_intersection_x;
+				ret[1] = guides_intersection_y;
+			}
+		}
 		if (!possible_intersection_close && guide->angle == synfig::Angle::deg(90))
-			ret[0]=guide->point[0];
+			ret[0] = guide->point[0];
 		else if (!possible_intersection_close && guide->angle == synfig::Angle::deg(0))
-			ret[1]=guide->point[1];
+			ret[1] = guide->point[1];
 		else if (!possible_intersection_close){
 			float slope1 = tan(guide->angle.get());
 			float slope2 = -1.0/slope1;

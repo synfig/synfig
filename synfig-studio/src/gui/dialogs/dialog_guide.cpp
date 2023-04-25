@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file Dialog_Guide.cpp
-**	\brief Template Header
+**	\brief Dialog for editing guides.
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
