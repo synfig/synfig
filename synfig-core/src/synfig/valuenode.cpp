@@ -184,9 +184,6 @@ ValueNode::set_id(const String &x)
 String
 ValueNode::get_description(bool show_exported_name)const
 {
-	if (const LinkableValueNode* value_node = dynamic_cast<const LinkableValueNode*>(this))
-		return value_node->get_description(-1, show_exported_name);
-
 	String ret(_("ValueNode"));
 
 	if (show_exported_name && !is_exported())
@@ -674,7 +671,7 @@ void LinkableValueNode::get_times_vfunc(Node::time_set &set) const
 }
 
 String
-LinkableValueNode::get_description(int index, bool show_exported_name)const
+LinkableValueNode::get_link_description(int index, bool show_exported_name)const
 {
 	String description;
 
@@ -741,7 +738,7 @@ LinkableValueNode::get_description(int index, bool show_exported_name)const
 String
 LinkableValueNode::get_description(bool show_exported_name)const
 {
-	return get_description(-1, show_exported_name);
+	return get_link_description(-1, show_exported_name);
 }
 
 String
