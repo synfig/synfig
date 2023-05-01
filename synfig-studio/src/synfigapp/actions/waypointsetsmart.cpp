@@ -83,6 +83,10 @@ Action::WaypointSetSmart::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
 
+	ret.push_back(ParamDesc("value_desc",Param::TYPE_VALUEDESC)
+		.set_local_name(_("ValueDesc"))
+	);
+
 	ret.push_back(ParamDesc("value_node",Param::TYPE_VALUENODE)
 		.set_local_name(_("Destination ValueNode (Animated)"))
 		.set_optional()
@@ -188,7 +192,7 @@ void
 Action::WaypointSetSmart::calc_waypoint()
 {
 	if(!value_node){
-		redirect_value_desc_set_action();
+		redirect_to_value_desc_set_action();
 		return;
 	}
 	Time time=waypoint.get_time();
@@ -376,7 +380,7 @@ void
 Action::WaypointSetSmart::prepare()
 {
 	if(!value_node){
-		redirect_value_desc_set_action();
+		redirect_to_value_desc_set_action();
 		return;
 	}
 
@@ -470,7 +474,7 @@ Action::WaypointSetSmart::prepare()
 	throw Error(_("Unable to determine how to proceed. This is a bug."));
 }
 void
-Action::WaypointSetSmart::redirect_value_desc_set_action()
+Action::WaypointSetSmart::redirect_to_value_desc_set_action()
 {
 	synfigapp::Action::Handle action(synfigapp::Action::create("ValueDescSet"));
 	if(!action)

@@ -59,7 +59,7 @@ private:
 
 	void calc_waypoint();
 	void enclose_waypoint(const synfig::Waypoint& waypoint);
-	void redirect_value_desc_set_action();
+	void redirect_to_value_desc_set_action();
 
 	std::set<synfig::Time> times;
 
