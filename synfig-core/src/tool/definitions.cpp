@@ -26,6 +26,7 @@
 #include "definitions.h"
 #include "synfigtoolexception.h"
 #include <synfig/general.h>
+#include <synfig/os.h>
 
 SynfigToolGeneralOptions* SynfigToolGeneralOptions::instance() {
 	static SynfigToolGeneralOptions instance;
@@ -47,7 +48,7 @@ std::string SynfigToolGeneralOptions::get_binary_path() const
 }
 
 void SynfigToolGeneralOptions::set_binary_path(const std::string& path) {
-	_binary_path = synfig::get_binary_path(path);
+	_binary_path = synfig::OS::get_binary_path(path).u8string();
 }
 
 size_t SynfigToolGeneralOptions::get_threads() const

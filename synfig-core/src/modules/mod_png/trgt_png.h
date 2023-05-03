@@ -55,14 +55,14 @@ private:
 	static void png_out_warning(png_struct *png,const char *msg);
 	bool multi_image,ready;
 	int imagecount;
-	synfig::String filename;
+	synfig::filesystem::Path filename;
 	std::vector<unsigned char> buffer;
 	std::vector<synfig::Color> color_buffer;
 	synfig::String sequence_separator;
 
 public:
 
-	png_trgt(const char *filename, const synfig::TargetParam& /* params */);
+	png_trgt(const synfig::filesystem::Path& filename, const synfig::TargetParam& /* params */);
 	virtual ~png_trgt();
 
 	bool set_rend_desc(synfig::RendDesc* desc) override;

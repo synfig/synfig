@@ -35,8 +35,6 @@
 
 #include "trgt_ppm.h"
 
-#include <ETL/stringf>
-
 #include <synfig/general.h>
 #include <synfig/localization.h>
 
@@ -45,7 +43,6 @@
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
-using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
@@ -56,7 +53,7 @@ SYNFIG_TARGET_SET_VERSION(ppm,"0.1");
 
 /* === M E T H O D S ======================================================= */
 
-ppm::ppm(const char *Filename, const synfig::TargetParam &params):
+ppm::ppm(const synfig::filesystem::Path& Filename, const synfig::TargetParam& params):
 	imagecount(),
 	multi_image(false),
 	file(),
@@ -94,21 +91,18 @@ ppm::start_frame(synfig::ProgressCallback *callback)
 {
 	int w=desc.get_w(),h=desc.get_h();
 
-	if (filename == "-") {
+	if (filename.u8string() == "-") {
 		if (callback)
 			callback->task(strprintf("(stdout) %d", imagecount));
 		file = SmartFILE(stdout);
 	} else {
-		String newfilename(filename);
+		synfig::filesystem::Path newfilename(filename);
 		if (multi_image) {
-			newfilename = filename_sans_extension(filename) +
-						   sequence_separator +
-						   strprintf("%04d", imagecount) +
-						   filename_extension(filename);
+			newfilename.add_suffix(sequence_separator + strprintf("%04d", imagecount));
 		}
-		file = SmartFILE(newfilename, POPEN_BINARY_WRITE_TYPE);
+		file = SmartFILE(newfilename, "wb");
 		if (callback)
-			callback->task(newfilename);
+			callback->task(newfilename.u8string());
 	}
 
 	if (!file) {

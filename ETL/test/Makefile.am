@@ -11,15 +11,10 @@ AM_CPPFLAGS = \
 	-I$(top_builddir)
 
 TESTS = \
-	handle \
-	stringf
+	handle
 
 check_PROGRAMS = \
-	handle \
-	stringf
+	handle
 
 handle_SOURCES=handle.cpp
-stringf_SOURCES=stringf.cpp
 
-stringf_CXXFLAGS = @GLIBMM_CFLAGS@
-stringf_LDADD = @GLIBMM_LIBS@

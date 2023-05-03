@@ -35,7 +35,7 @@
 #include <string>
 #include <vector>
 
-#include <synfig/filesystem.h> // synfig::filesystem::Path
+#include <synfig/filesystem_path.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -100,9 +100,9 @@ enum RunMode {
  */
 struct RunRedirectionFiles
 {
-	std::string std_err;
-	std::string std_out;
-	std::string std_in;
+	synfig::filesystem::Path std_err;
+	synfig::filesystem::Path std_out;
+	synfig::filesystem::Path std_in;
 };
 
 /**
@@ -162,7 +162,7 @@ struct RunPipe {
 	 *                    If an filename is provided to stdin, it will be the data source for this channel.
 	 * @return true if success; false otherwise.
 	 */
-	virtual bool open(std::string binary_path, const RunArgs& binary_args, RunMode mode, const RunRedirectionFiles& redir_files = {}) = 0;
+	virtual bool open(const filesystem::Path& binary_path, const RunArgs& binary_args, RunMode mode, const RunRedirectionFiles& redir_files = {}) = 0;
 	/**
 	 * Stop running the external software.
 	 * @return the exit status.
@@ -204,7 +204,7 @@ protected:
 };
 
 /** Run an executable binary with pipes for communication or stdout/stdin redirection to files */
-RunPipe::Handle run_async(std::string binary_path, const RunArgs& binary_args, RunMode mode, const RunRedirectionFiles& redir_files = {});
+RunPipe::Handle run_async(const filesystem::Path& binary_path, const RunArgs& binary_args, RunMode mode, const RunRedirectionFiles& redir_files = {});
 
 /**
  * Run an executable binary.
@@ -213,13 +213,19 @@ RunPipe::Handle run_async(std::string binary_path, const RunArgs& binary_args, R
  * Like system() call, but without wchar problems and the chance to log stdout/stderr via redir_files.
  * @see run_async()
  */
-bool run_sync(std::string binary_path, const RunArgs& binary_args, const std::string& stdout_redir_file = "", const std::string& stderr_redir_file = "");
+bool run_sync(const filesystem::Path& binary_path, const RunArgs& binary_args, const filesystem::Path& stdout_redir_file = {}, const filesystem::Path& stderr_redir_file = {});
 
 /** Launch a file with its default application */
 bool launch_file_async(const std::string& file);
 
 /** Get the system language */
 const std::vector<std::string>& get_user_lang();
+
+/**
+ * Return the absolute path to the current binary
+ * @param fallback_path : if we can't figure out the binary path, use this value instead
+ */
+filesystem::Path get_binary_path(const std::string& fallback_path);
 
 } // END of namespace OS
 

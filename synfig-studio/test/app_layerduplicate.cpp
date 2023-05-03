@@ -24,7 +24,6 @@
 
 #include "test_base.h"
 
-#include <ETL/stringf>
 #include <synfig/canvas.h>
 #include <synfig/general.h>
 #include <synfig/valuenode_registry.h>
@@ -752,9 +751,9 @@ int main(int argc, const char* argv[])
 // test binaries are in `bin/test` folder, but for Windows they should be in `bin`
 // folder, because there is no RPATH on Windows, and it can't find required dll's
 #ifdef _WIN32
-	const std::string root_path = etl::absolute_path(std::string(argv[0]) + "/../../");
+	const std::string root_path = synfig::filesystem::Path::absolute_path(std::string(argv[0]) + "/../../");
 #else
-	const std::string root_path = etl::absolute_path(std::string(argv[0]) + "/../../../");
+	const std::string root_path = synfig::filesystem::Path::absolute_path(std::string(argv[0]) + "/../../../");
 #endif
 	synfigapp::Main Main(root_path);
 

@@ -41,13 +41,11 @@
 #include <algorithm>
 #include <functional>
 
-#include <ETL/stringf>
 #endif
 
 /* === U S I N G =========================================================== */
 
 using namespace synfig;
-using namespace etl;
 
 /* === I N F O ============================================================= */
 
@@ -147,7 +145,7 @@ inline short little_endian_short(const short &x)
 #define little_endian_short(x)	(x)
 #endif
 
-bmp::bmp(const char *Filename, const synfig::TargetParam& params):
+bmp::bmp(const synfig::filesystem::Path& Filename, const synfig::TargetParam& params):
 	rowspan(),
 	imagecount(),
 	multi_image(false),
@@ -206,25 +204,23 @@ bmp::start_frame(synfig::ProgressCallback *callback)
 
 	rowspan=4*((w*(pixel_size(pf)*8)+31)/32);
 
-	String newfilename = filename;
+	synfig::filesystem::Path newfilename = filename;
 
-	if (filename == "-") {
+	if (filename.u8string() == "-") {
 		if (callback)
 			callback->task(strprintf("(stdout) %d",imagecount));
 		file = stdout;
 	} else {
 		if (multi_image) {
-			newfilename = (filename_sans_extension(filename) +
-							   sequence_separator +
-							   strprintf("%04d",imagecount) +
-							   filename_extension(filename));
+			newfilename.add_suffix(strprintf("%s%04d", sequence_separator.c_str(), imagecount));
+
 			if (callback)
-				callback->task(newfilename + _(" (animated)"));
+				callback->task(newfilename.u8string() + _(" (animated)"));
 		} else {
 			if (callback)
-				callback->task(newfilename);
+				callback->task(newfilename.u8string());
 		}
-		file = SmartFILE(newfilename, POPEN_BINARY_WRITE_TYPE);
+		file = SmartFILE(newfilename, "wb");
 	}
 
 	if (!file) {

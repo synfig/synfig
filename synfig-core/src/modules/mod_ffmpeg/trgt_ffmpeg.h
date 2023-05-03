@@ -51,8 +51,8 @@ private:
 	int imagecount;
 	bool multi_image;
 	synfig::OS::RunPipe::Handle pipe;
-	synfig::String filename;
-	synfig::String sound_filename;
+	synfig::filesystem::Path filename;
+	synfig::filesystem::Path sound_filename;
 	std::vector<unsigned char> buffer;
 	std::vector<synfig::Color> color_buffer;
 	std::string video_codec;
@@ -62,7 +62,7 @@ private:
 
 public:
 
-	ffmpeg_trgt(const char *filename,
+	ffmpeg_trgt(const synfig::filesystem::Path& filename,
 				const synfig::TargetParam& params);
 	virtual ~ffmpeg_trgt();
 

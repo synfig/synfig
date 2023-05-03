@@ -33,12 +33,9 @@
 #	include <config.h>
 #endif
 
-#include <ETL/stringf>
-
 #include <synfig/localization.h>
 #include <synfig/general.h>
 
-#include <glib/gstdio.h>
 #include "trgt_dv.h"
 #include <algorithm>
 #include <thread>
@@ -59,7 +56,7 @@ SYNFIG_TARGET_SET_VERSION(dv_trgt,"0.1");
 /* === M E T H O D S ======================================================= */
 
 
-dv_trgt::dv_trgt(const char *Filename, const synfig::TargetParam & /* params */):
+dv_trgt::dv_trgt(const synfig::filesystem::Path& Filename, const synfig::TargetParam & /* params */):
 	imagecount(0),
 	wide_aspect(false),
 	pipe(nullptr),
@@ -120,7 +117,7 @@ dv_trgt::init(synfig::ProgressCallback * /* cb */)
 		args.push_back({"-w", "1"});
 	args.push_back("-");
 
-	pipe = OS::run_async("encodedv", args, OS::RUN_MODE_WRITE, {"", filename, ""});
+	pipe = OS::run_async({"encodedv"}, args, OS::RUN_MODE_WRITE, {{}, filename, {}});
 	if (!pipe || !pipe->is_writable()) {
 		synfig::error(_("Unable to open pipe to encodedv"));
 		return false;

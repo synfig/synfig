@@ -41,8 +41,6 @@
 
 #include <gtkmm/scrollbar.h>
 
-#include <ETL/stringf>
-
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/event_keyboard.h>
@@ -63,7 +61,6 @@
 #include <gui/workarearenderer/renderer_guides.h>
 #include <gui/workarearenderer/renderer_timecode.h>
 
-#include <ETL/stringf>
 #include <synfig/blinepoint.h>
 #include <synfig/valuenodes/valuenode_bone.h>
 #include <synfig/valuenodes/valuenode_composite.h>
@@ -320,7 +317,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 		String data(canvas->get_meta_data("sketch"));
 		if (!data.empty())
 			if (!load_sketch(data))
-				load_sketch(dirname(canvas->get_file_name()) + ETL_DIRECTORY_SEPARATOR + basename(data));
+				load_sketch(filesystem::Path::dirname(canvas->get_file_name()) + ETL_DIRECTORY_SEPARATOR + filesystem::Path::basename(data));
 	}
 
 	drawing_area->set_can_focus(true);
@@ -413,8 +410,8 @@ WorkArea::save_meta_data()
 
 	if(get_sketch_filename().size())
 	{
-		if(dirname(canvas->get_file_name())==dirname(get_sketch_filename()))
-			canvas_interface->set_meta_data("sketch",basename(get_sketch_filename()));
+		if(filesystem::Path::dirname(canvas->get_file_name())==filesystem::Path::dirname(get_sketch_filename()))
+			canvas_interface->set_meta_data("sketch",filesystem::Path::basename(get_sketch_filename()));
 		else
 			canvas_interface->set_meta_data("sketch",get_sketch_filename());
 	}

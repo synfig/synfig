@@ -34,8 +34,6 @@
 
 #include <gui/dialogs/dialog_canvasdependencies.h>
 
-#include <ETL/stringf>
-
 #include <glibmm/fileutils.h>
 #include <glibmm/markup.h>
 
@@ -258,7 +256,7 @@ void Dialog_CanvasDependencies::refresh()
 			row->set_value(0, filename);
 			row->set_value(1, pair.second);
 			Glib::RefPtr<Gdk::Pixbuf> pixbuf;
-			std::string ext = Glib::ustring(etl::filename_extension(pair.first)).lowercase();
+			std::string ext = Glib::ustring(filesystem::Path::filename_extension(pair.first)).lowercase();
 			if (!ext.empty())
 				ext = ext.substr(1);
 			const std::vector<std::string> audio_ext = {"wav", "wave", "mp3", "ogg", "ogm", "oga", "wma", "m4a", "aiff", "aif", "aifc"};

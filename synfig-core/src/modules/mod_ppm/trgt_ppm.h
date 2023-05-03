@@ -49,14 +49,14 @@ private:
 	int imagecount;
 	bool multi_image;
 	synfig::SmartFILE file;
-	synfig::String filename;
+	synfig::filesystem::Path filename;
 	std::vector<unsigned char> buffer;
 	std::vector<synfig::Color> color_buffer;
 	synfig::String sequence_separator;
 
 public:
 
-	ppm(const char *filename, const synfig::TargetParam& /* params */);
+	ppm(const synfig::filesystem::Path& filename, const synfig::TargetParam& /* params */);
 	virtual ~ppm();
 
 	bool set_rend_desc(synfig::RendDesc* desc) override;

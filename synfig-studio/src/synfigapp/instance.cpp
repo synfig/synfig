@@ -34,8 +34,6 @@
 #	include <config.h>
 #endif
 
-#include <ETL/stringf>
-
 #include <synfig/general.h>
 
 #include "instance.h"
@@ -230,7 +228,7 @@ Instance::import_external_canvas(Canvas::Handle canvas, std::map<Canvas*, Canvas
 			imported[sub_canvas.get()] = nullptr;
 
 			// generate name
-			std::string fname = filename_sans_extension(basename(sub_canvas->get_file_name()));
+			std::string fname = filesystem::Path::filename_sans_extension(filesystem::Path::basename(sub_canvas->get_file_name()));
 			static const char bad_chars[]=" :#@$^&()*";
 			for(std::string::iterator j = fname.begin(); j != fname.end(); j++)
 				for(const char *k = bad_chars; *k != 0; k++)
@@ -307,7 +305,7 @@ bool Instance::save_surface(const synfig::Surface &surface, const synfig::String
 	if (surface.get_h() <= 0 || surface.get_w() <= 0)
 		return false;
 
-	String ext = filename_extension(filename);
+	String ext = filesystem::Path::filename_extension(filename);
 	if (ext.empty())
 		return false;
 
@@ -335,7 +333,7 @@ bool Instance::save_surface(const synfig::Surface &surface, const synfig::String
 	target = nullptr;
 
 	if (success)
-		success = get_canvas()->get_file_system()->directory_create(etl::dirname(filename));
+		success = get_canvas()->get_file_system()->directory_create(filesystem::Path::dirname(filename));
 	if (success)
 		success = FileSystem::copy(FileSystemNative::instance(), tmpfile, get_canvas()->get_file_system(), filename);
 
@@ -732,7 +730,7 @@ Instance::generate_new_name(
 	if (layer->get_param_list().count("filename")) {
 		ValueBase value = layer->get_param("filename");
 		if (value.same_type_as(String()))
-			filename = basename(value.get(String()));
+			filename = filesystem::Path::basename(value.get(String()));
 	}
 
 	if (filename.empty())
@@ -745,7 +743,7 @@ Instance::generate_new_name(
 	assert(get_canvas()->get_file_system());
 	String short_filename = CanvasFileNaming::generate_container_filename(get_canvas()->get_file_system(), filename);
 	String full_filename = CanvasFileNaming::make_full_filename(get_canvas()->get_file_name(), short_filename);
-	String base = etl::filename_sans_extension(CanvasFileNaming::filename_base(short_filename));
+	String base = filesystem::Path::filename_sans_extension(CanvasFileNaming::filename_base(short_filename));
 
 	out_description = base;
 	out_filename = full_filename;

@@ -50,15 +50,12 @@
 #include <gui/states/state_stroke.h>
 #include <gui/workarea.h>
 
-#include <ETL/stringf>
-
 #include <synfigapp/main.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -150,7 +147,7 @@ void* StateSketch::enter_state(studio::CanvasView* machine_context) const
 void
 StateSketch_Context::save_sketch()
 {
-	synfig::String filename(basename(get_canvas()->get_file_name())+".sketch");
+	synfig::String filename(filesystem::Path::basename(get_canvas()->get_file_name())+".sketch");
 
 	while(App::dialog_save_file_sketch(_("Save Sketch"), filename, SKETCH_DIR_PREFERENCE))
 	{
@@ -169,7 +166,7 @@ StateSketch_Context::save_sketch()
 void
 StateSketch_Context::load_sketch()
 {
-	synfig::String filename(basename(get_canvas()->get_file_name())+".sketch");
+	synfig::String filename(filesystem::Path::basename(get_canvas()->get_file_name())+".sketch");
 
 	while(App::dialog_open_file_sketch(_("Load Sketch"), filename, SKETCH_DIR_PREFERENCE))
 	{

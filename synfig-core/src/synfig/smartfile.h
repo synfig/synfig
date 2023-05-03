@@ -33,7 +33,7 @@
 #include <cstdio>
 #include <memory>
 
-#include "synfig/filesystem.h"
+#include "synfig/filesystem_path.h"
 
 /* === M A C R O S ========================================================= */
 

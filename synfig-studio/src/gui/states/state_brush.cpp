@@ -50,8 +50,6 @@
 #include <gui/states/state_normal.h>
 #include <gui/workarea.h>
 
-#include <ETL/stringf>
-
 #include <synfig/general.h>
 
 #include <synfigapp/main.h>
@@ -61,7 +59,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -612,10 +609,10 @@ StateBrush_Context::refresh_tool_options()
 	Gtk::ToggleToolButton* first_button = nullptr;
 	for(std::set<String>::const_iterator i = files.begin(); i != files.end(); ++i)
 	{
-		if (!brush_buttons.count(*i) && filename_extension(*i) == ".myb")
+		if (!brush_buttons.count(*i) && filesystem::Path::filename_extension(*i) == ".myb")
 		{
 			const String &brush_file = *i;
-			const String icon_file = filename_sans_extension(brush_file) + "_prev.png";
+			const String icon_file = filesystem::Path::filename_sans_extension(brush_file) + "_prev.png";
 			if (files.count(icon_file))
 			{
 				// create a single brush button

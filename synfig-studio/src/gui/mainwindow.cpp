@@ -39,8 +39,6 @@
 #include <gtkmm/stock.h>
 #include <gtkmm/textview.h>
 
-#include <ETL/stringf>
-
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/dialogs/dialog_input.h>
@@ -352,7 +350,7 @@ MainWindow::make_short_filenames(
 	if (fullnames.size() == 1)
 	{
 		shortnames.resize(1);
-		shortnames[0] = etl::basename(fullnames[0]);
+		shortnames[0] = filesystem::Path::basename(fullnames[0]);
 		return;
 	}
 

@@ -33,7 +33,6 @@
 #include <synfig/target_scanline.h>
 #include <synfig/string.h>
 #include <synfig/targetparam.h>
-#include <cstdio>
 #include "synfig/surface.h"
 
 /* === M A C R O S ========================================================= */
@@ -51,13 +50,13 @@ private:
 	class Internal;
 	Internal *internal;
 
-	synfig::String filename;
+	synfig::filesystem::Path filename;
 	synfig::Surface	surface;
 
 public:
 
 	Target_LibAVCodec(
-		const char *filename,
+		const synfig::filesystem::Path& filename,
 		const synfig::TargetParam &params );
 	virtual ~Target_LibAVCodec();
 

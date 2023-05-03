@@ -76,7 +76,7 @@ private:
 
 	bool multi_image,ready;
 	int imagecount;
-	synfig::String filename;
+	synfig::filesystem::Path filename;
 	std::vector<unsigned char> buffer;
 	std::vector<synfig::Color> color_buffer;
 
@@ -86,7 +86,7 @@ private:
 
 public:
 
-	mng_trgt(const char *filename, const synfig::TargetParam& /* params */);
+	mng_trgt(const synfig::filesystem::Path& filename, const synfig::TargetParam& /* params */);
 	virtual ~mng_trgt();
 
 	bool set_rend_desc(synfig::RendDesc* desc) override;

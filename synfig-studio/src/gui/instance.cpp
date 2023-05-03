@@ -51,8 +51,6 @@
 #include <gtkmm/separatormenuitem.h>
 #include <gtkmm/stock.h>
 
-#include <ETL/stringf>
-
 #include <gui/app.h>
 #include <gui/autorecover.h>
 #include <gui/canvasview.h>
@@ -136,7 +134,7 @@ static bool
 is_img(const synfig::String& filename)
 {
 	static const std::set<String> img_ext{".jpg",".jpeg",".png",".bmp",".gif",".tiff",".tif",".dib",".ppm",".pbm",".pgm",".pnm",".webp"};
-	return img_ext.find(Glib::ustring(etl::filename_extension(filename)).lowercase()) != img_ext.end();
+	return img_ext.find(Glib::ustring(filesystem::Path::filename_extension(filename)).lowercase()) != img_ext.end();
 }
 
 synfig::Layer::Handle
@@ -285,7 +283,7 @@ studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vec
 	String filename_original = get_canvas()->get_file_name();
 	String filename_processed;
 	String filename_prefix;
-	if ( !is_absolute_path(filename_original) )
+	if ( !filesystem::Path::is_absolute_path(filename_original) )
 		filename_prefix = temporary_filesystem->get_temporary_directory() + ETL_DIRECTORY_SEPARATOR;
 	struct stat buf;
 	do {
@@ -312,7 +310,7 @@ studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vec
 	} else {
 
 		// Save file copy
-		String filename_ext = filename_extension(filename_original);
+		String filename_ext = filesystem::Path::filename_extension(filename_original);
 		if ( filename_ext.empty() || ( filename_ext != ".sif" && filename_ext != ".sifz") )
 			filename_ext = ".sifz";
 		FileSystem::ReadStream::Handle stream_in = temporary_filesystem->get_read_stream("#project"+filename_ext);
@@ -511,7 +509,7 @@ studio::Instance::dialog_save_as()
 	}
 
 	if (has_real_filename())
-		filename = absolute_path(filename);
+		filename = filesystem::Path::absolute_path(filename);
 
 	// show the canvas' name if it has one, else its ID
 	while (App::dialog_save_file((_("Please choose a file name") +
@@ -522,19 +520,19 @@ studio::Instance::dialog_save_as()
 	{
 		// If the filename still has wildcards, then we should
 		// continue looking for the file we want
-		std::string base_filename = basename(filename);
+		std::string base_filename = filesystem::Path::basename(filename);
 		if (find(base_filename.begin(),base_filename.end(),'*')!=base_filename.end())
 			continue;
 
 		// if file extension is not recognized, then forced to .sifz
-		if (filename_extension(filename) == "")
+		if (filesystem::Path::filename_extension(filename) == "")
 			filename+=".sifz";
 
 		canvas->set_name(base_filename);
 		// forced to .sifz, the below code is not need anymore
 		try
 		{
-			String ext(filename_extension(filename));
+			String ext(filesystem::Path::filename_extension(filename));
 			// todo: ".sfg" literal and others
 			if (ext != ".sif" && ext != ".sifz" && ext != ".sfg" && !App::dialog_message_2b(
 				_("Unknown extension"),
@@ -573,11 +571,11 @@ studio::Instance::dialog_save_as()
 			// If the file exists and the user doesn't want to overwrite it, keep prompting for a filename
 			std::string message = strprintf(_("A file named \"%s\" already exists. "
 							"Do you want to replace it?"),
-							basename(filename).c_str());
+							filesystem::Path::basename(filename).c_str());
 
 			std::string details = strprintf(_("The file already exists in \"%s\". "
 							"Replacing it will overwrite its contents."),
-							dirname(filename).c_str());
+							filesystem::Path::dirname(filename).c_str());
 
 			if ((stat_return == 0) && !App::dialog_message_2b(
 				message,
@@ -613,7 +611,7 @@ studio::Instance::dialog_export()
 	Canvas::Handle canvas(get_canvas());
 
 	if (has_real_filename())
-		filename = absolute_path(filename);
+		filename = filesystem::Path::absolute_path(filename);
 
 	// show the canvas' name if it has one, else its ID
 	std::string plugin_id = App::dialog_export_file(
@@ -717,7 +715,7 @@ Instance::insert_canvas(Gtk::TreeRow row, synfig::Canvas::Handle canvas)
 	row[canvas_tree_model.id] = canvas->get_id();
 	row[canvas_tree_model.name] = canvas->get_name();
 	if(canvas->is_root())
-		row[canvas_tree_model.label] = basename(canvas->get_file_name());
+		row[canvas_tree_model.label] = filesystem::Path::basename(canvas->get_file_name());
 	else
 	if(!canvas->get_id().empty())
 		row[canvas_tree_model.label] = canvas->get_id();
@@ -822,7 +820,7 @@ Instance::safe_close()
 		do
 		{
 			std::string message = strprintf(_("Save changes to document \"%s\" before closing?"),
-					basename(get_file_name()).c_str() );
+					filesystem::Path::basename(get_file_name()).c_str() );
 
 			std::string details = (_("If you don't save, changes from the last time you saved "
 					"will be permanently lost."));
@@ -1608,7 +1606,7 @@ Instance::gather_uri(std::set<synfig::String> &x, const synfig::Layer::Handle &l
 			{
 				String filename = v.get(String());
 				if (!filename.empty() && filename[0] != '#')
-					filename = etl::absolute_path(layer->get_canvas()->get_file_path() + "/", filename);
+					filename = filesystem::Path::absolute_path(layer->get_canvas()->get_file_path() + "/", filename);
 				String uri = file_system->get_real_uri(filename);
 				if (!uri.empty()) x.insert(uri);
 			}

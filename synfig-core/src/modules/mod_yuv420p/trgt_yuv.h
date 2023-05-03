@@ -48,7 +48,7 @@ class yuv : public synfig::Target_Scanline
 
 private:
 
-	synfig::String filename;
+	synfig::filesystem::Path filename;
 	synfig::SmartFILE file;
 	synfig::Surface surface;
 
@@ -56,7 +56,7 @@ private:
 
 public:
 
-	yuv(const char *filename, const synfig::TargetParam& /* params */);
+	yuv(const synfig::filesystem::Path& filename, const synfig::TargetParam& /* params */);
 	virtual ~yuv();
 
 	bool set_rend_desc(synfig::RendDesc* desc) override;

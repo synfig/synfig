@@ -34,8 +34,6 @@
 
 #include <set>
 
-#include <ETL/stringf>
-
 #include "filesystemgroup.h"
 
 #endif
@@ -61,16 +59,16 @@ FileSystemGroup::FileSystemGroup(FileSystem::Handle default_file_system)
 
 const FileSystemGroup::Entry* FileSystemGroup::find_system(const String &filename, FileSystem::Handle &out_file_system, String &out_filename)
 {
-	String clean_filename = etl::cleanup_path(filename);
+	String clean_filename = filesystem::Path::cleanup_path(filename);
 	for(std::list< Entry >::iterator i = entries_.begin(); i != entries_.end(); i++)
 	{
 		if ( clean_filename.substr(0, i->prefix.size()) == i->prefix
 		  && ( i->is_separator
 			|| clean_filename.size() == i->prefix.size()
-			|| etl::is_separator(clean_filename[i->prefix.size()] )))
+			|| filesystem::Path::is_separator(clean_filename[i->prefix.size()] )))
 		{
 			String sub_name = clean_filename.substr(i->prefix.size());
-			if (!i->prefix.empty() && !sub_name.empty() && etl::is_separator(sub_name[0]))
+			if (!i->prefix.empty() && !sub_name.empty() && filesystem::Path::is_separator(sub_name[0]))
 				sub_name = sub_name.substr(1);
 			out_file_system = i->sub_file_system;
 			out_filename = i->sub_prefix.empty() || sub_name.empty()
@@ -159,14 +157,14 @@ bool FileSystemGroup::directory_scan(const String &dirname, FileList &out_files)
 			files.insert(*i);
 	}
 
-	String clean_dirname = etl::cleanup_path(dirname);
+	String clean_dirname = filesystem::Path::cleanup_path(dirname);
 	for(std::list< Entry >::iterator i = entries_.begin(); i != entries_.end(); i++)
-		if (!i->is_separator && !i->prefix.empty() && clean_dirname == etl::dirname(i->prefix))
+		if (!i->is_separator && !i->prefix.empty() && clean_dirname == filesystem::Path::dirname(i->prefix))
 		{
 			if (is_exists(i->prefix))
-				files.insert(etl::basename(i->prefix));
+				files.insert(filesystem::Path::basename(i->prefix));
 			else
-				files.erase(etl::basename(i->prefix));
+				files.erase(filesystem::Path::basename(i->prefix));
 		}
 
 	for(std::set<String>::const_iterator i = files.begin(); i != files.end(); ++i)

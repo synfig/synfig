@@ -40,7 +40,6 @@
 
 #include "trgt_mng.h"
 #include <libmng.h>
-#include <ETL/stringf>
 
 #include <synfig/misc.h>
 
@@ -96,7 +95,7 @@ mng_error_proc(mng_handle /*mng*/, mng_int32 /*error*/,
 	return MNG_TRUE;
 }
 
-mng_trgt::mng_trgt(const char *Filename, const synfig::TargetParam & /* params */):
+mng_trgt::mng_trgt(const synfig::filesystem::Path& Filename, const synfig::TargetParam& /* params */):
 	w(),
 	h(),
 	mng(nullptr),
@@ -166,7 +165,7 @@ mng_trgt::init(synfig::ProgressCallback * /* cb */)
 	time_t t = time(nullptr);
 	struct tm* gmt = gmtime(&t);
 	w=desc.get_w(); h=desc.get_h();
-	file = SmartFILE(filename, POPEN_BINARY_WRITE_TYPE);
+	file = SmartFILE(filename, "wb");
 	if (!file) goto cleanup_on_error;
 	mng = mng_initialize((mng_ptr)file.get(), mng_alloc_proc, mng_free_proc, MNG_NULL);
 	if (mng == MNG_NULL) goto cleanup_on_error;
