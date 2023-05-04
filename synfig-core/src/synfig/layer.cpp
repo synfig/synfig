@@ -51,7 +51,6 @@
 #include "transform.h"
 
 #include "layers/layer_composite.h"
-#include "layers/layer_bitmap.h"
 #include "layers/layer_duplicate.h"
 #include "layers/layer_filtergroup.h"
 #include "layers/layer_group.h"
@@ -167,8 +166,8 @@ Layer::Layer():
 	optimized_(false),
 	exclude_from_rendering_(false),
 	param_z_depth(Real(0.0f)),
-	time_mark(Time::end()),
-	outline_grow_mark(0.0)
+	time_mark_(Time::end()),
+	outline_grow_mark_(0.0)
 {
 	_layer_counter.counter++;
 	SET_INTERPOLATION_DEFAULTS();
@@ -606,7 +605,7 @@ Layer::reset_version()
 
 
 void
-Layer::set_time(IndependentContext context, Time time)const
+Layer::set_time(IndependentContext context, Time time)
 {
 	Layer::ParamList params;
 	Layer::DynamicParamList::const_iterator iter;
@@ -640,14 +639,14 @@ Layer::load_resources_vfunc(IndependentContext context, Time time)const
 }
 
 void
-Layer::set_outline_grow(IndependentContext context, Real outline_grow)const
+Layer::set_outline_grow(IndependentContext context, Real outline_grow)
 {
 	set_outline_grow_mark(outline_grow);
 	set_outline_grow_vfunc(context, outline_grow);
 }
 
 void
-Layer::set_outline_grow_vfunc(IndependentContext context, Real outline_grow)const
+Layer::set_outline_grow_vfunc(IndependentContext context, Real outline_grow)
 {
 	context.set_outline_grow(outline_grow);
 }
