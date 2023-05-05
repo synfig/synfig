@@ -79,7 +79,7 @@ WPListConverter::operator()(std::list<synfig::WidthPoint> &wp_out, const std::li
 	Point c(*p_iter);
 	points.push_back(c);
 	widths.push_back(*w_iter);
-	p_iter++;
+	++p_iter;
 	for(;p_iter != end; ++p_iter,++w_iter)
 		if (*p_iter != c)
 		{
@@ -100,8 +100,13 @@ WPListConverter::operator()(std::list<synfig::WidthPoint> &wp_out, const std::li
 		p1=p2;
 	}
 	// Calculate the normalized cumulative distances
-	for(i=0;i<n;i++)
-		norm_distances.push_back(distances[i]/distances[n-1]);
+	if (synfig::approximate_zero(distances[n-1])) {
+		norm_distances.push_back(0.);
+	} else {
+		int total_length = distances[n-1];
+		for(i=0;i<n;i++)
+			norm_distances.push_back(distances[i]/total_length);
+	}
 	// Prepare the output
 	work_out.resize(n);
 	// Prepare the errors
