@@ -193,8 +193,8 @@ static sigc::signal<void> signal_recent_files_changed_;
 sigc::signal<void>&
 App::signal_recent_files_changed() { return signal_recent_files_changed_; }
 
-static sigc::signal<void,etl::loose_handle<CanvasView> > signal_canvas_view_focus_;
-sigc::signal<void,etl::loose_handle<CanvasView> >&
+static sigc::signal<void,CanvasView::LooseHandle > signal_canvas_view_focus_;
+sigc::signal<void,CanvasView::LooseHandle >&
 App::signal_canvas_view_focus() { return signal_canvas_view_focus_; }
 
 static sigc::signal<void,etl::handle<Instance> > signal_instance_selected_;
@@ -4196,12 +4196,12 @@ App::set_selected_instance(etl::loose_handle<Instance> instance)
 }
 
 void
-App::set_selected_canvas_view(etl::loose_handle<CanvasView> canvas_view)
+App::set_selected_canvas_view(CanvasView::LooseHandle canvas_view)
 {
 	if (selected_canvas_view == canvas_view)
 		return;
 
-	etl::loose_handle<CanvasView> prev = selected_canvas_view;
+	CanvasView::LooseHandle prev = selected_canvas_view;
 	etl::loose_handle<Instance> prev_instance = selected_instance;
 
 	selected_canvas_view.reset();
@@ -4239,7 +4239,7 @@ App::get_instance(Canvas::Handle canvas)
 Gamma
 App::get_selected_canvas_gamma()
 {
-	if (etl::loose_handle<CanvasView> canvas_view = App::get_selected_canvas_view())
+	if (CanvasView::LooseHandle canvas_view = App::get_selected_canvas_view())
 		return canvas_view->get_canvas()->rend_desc().get_gamma();
 	return Gamma();
 }
