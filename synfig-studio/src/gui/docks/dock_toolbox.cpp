@@ -146,10 +146,23 @@ void Dock_Toolbox::read_layout_string(const std::string& params) const
 void
 Dock_Toolbox::set_active_state(const synfig::String& statename)
 {
-	changing_state_=true;
+	changing_state_ = true;
 
 	synfigapp::Main::set_state(statename);
-	changing_state_=false;
+
+	try {
+		for (const auto& item : state_button_map) {
+			if (item.first == statename && !item.second->get_active()) {
+				item.second->set_active(true);
+				break;
+			}
+		}
+	} catch (...) {
+		changing_state_ = false;
+		throw;
+	}
+
+	changing_state_ = false;
 }
 
 void
