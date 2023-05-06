@@ -228,7 +228,7 @@ static etl::handle<synfigapp::UIInterface>           ui_interface_;
 const  etl::handle<synfigapp::UIInterface>& App::get_ui_interface() { return ui_interface_; }
 
 etl::handle<Instance>   App::selected_instance;
-etl::handle<CanvasView> App::selected_canvas_view;
+CanvasView::Handle      App::selected_canvas_view;
 
 studio::About              *studio::App::about          = nullptr;
 studio::AutoRecover        *studio::App::auto_recover   = nullptr;

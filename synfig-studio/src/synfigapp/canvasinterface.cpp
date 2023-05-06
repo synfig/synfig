@@ -915,7 +915,7 @@ CanvasInterface::import(
 		//get_selection_manager()->set_selected_layer(layer);
 
 		//Canvas::Handle canvas = get_canvas();
-		//etl::handle<CanvasView> view = get_instance()->find_canvas_view(canvas);
+		//CanvasView::Handle view = get_instance()->find_canvas_view(canvas);
 		//view->layer_tree->select_layer(layer);
 
 		// add imported layer into switch
