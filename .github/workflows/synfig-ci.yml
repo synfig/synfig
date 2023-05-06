@@ -95,7 +95,7 @@ jobs:
         run: |
           export PATH="/usr/lib/ccache/:${PATH}"
           echo ${PATH}
-          ./2-build-debug.sh
+          ./autobuild/synfigstudio-release.sh
 
       - name: ccache statistics
         run: ccache --show-stats
