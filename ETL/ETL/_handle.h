@@ -235,7 +235,7 @@ public:
 	//! Returns true if there is only one instance of the object
 	bool
 	unique()const
-		{ assert(obj); return count()==1; }
+		{ /*assert(obj);*/ return count() == 1; }
 
 	reference
 	operator*()const
