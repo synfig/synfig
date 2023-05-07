@@ -8,7 +8,7 @@ check_PROGRAMS=$(TESTS)
 
 TESTS=app_layerduplicate smach
 
-app_layerduplicate_SOURCES=app_layerduplicate.cpp
+app_layerduplicate_SOURCES=app_layerduplicate.cpp test_base.h
 
 smach_SOURCES=smach.cpp
 

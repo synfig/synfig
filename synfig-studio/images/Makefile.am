@@ -204,7 +204,7 @@ EXTRA_DIST = \
 	navigator_icon.sif \
 	palette_icon.sif \
 	parameters_icon.sif \
-	sound_icon \
+	sound_icon.sif \
 	time_track_icon.sif \
 	\
 	utils_chain_link_icons.sif \
@@ -463,10 +463,10 @@ appicondir= $(datadir)/icons/hicolor
 imagedir = $(synfig_datadir)/images
 image_DATA = $(IMAGES)
 
-classicthemedir="${synfig_datadir}/icons/classic"
-dist_classictheme_DATA=index.theme
+classicthemedir = ${synfig_datadir}/icons/classic
+dist_classictheme_DATA = index.theme
 
-iconsdir="${classicthemedir}/128x128"
+iconsdir = ${classicthemedir}/128x128
 icons_DATA = $(ICONS)
 
 win32iconsdir = $(datadir)/pixmaps
