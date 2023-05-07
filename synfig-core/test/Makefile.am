@@ -1,7 +1,7 @@
 MAINTAINERCLEANFILES=Makefile.in
-AM_CXXFLAGS=@CXXFLAGS@ @ETL_CFLAGS@ @SYNFIG_CFLAGS@ -I$(top_builddir) -I$(top_srcdir)/src
+AM_CXXFLAGS=@CXXFLAGS@ @ETL_CFLAGS@ @SYNFIG_CFLAGS@ -I$(top_builddir) -I$(top_srcdir)/src -I$(top_srcdir)/test
 AM_LDFLAGS = \
-	../src/synfig/libsynfig.la \
+	$(top_builddir)/src/synfig/libsynfig.la \
 	@SYNFIG_LIBS@
 
 check_PROGRAMS=$(TESTS)
