@@ -37,36 +37,36 @@
 
 /* === C L A S S E S ======================================================= */
 
-struct my_test_obj : public etl::rshared_object
+struct MyTestObj : public etl::rshared_object
 {
 	static int instance_count;
 	int my_id;
-	my_test_obj(int my_id=0):my_id(my_id)
+	explicit MyTestObj(int my_id=0):my_id(my_id)
 	{
 		instance_count++;
 	}
 
-	virtual ~my_test_obj()
+	virtual ~MyTestObj()
 	{
 		if(instance_count==0)
 			printf("Error, instance count is going past zero!\n");
 		instance_count--;
 	}
 
-	bool operator<(const my_test_obj &rhs)const
+	bool operator<(const MyTestObj &rhs)const
 	{
 		return my_id<rhs.my_id;
 	}
 };
 
-struct my_other_test_obj : public my_test_obj
+struct MyOtherTestObj : public MyTestObj
 {
 	static int instance_count;
-	my_other_test_obj(int my_id=0):my_test_obj(my_id)
+	explicit MyOtherTestObj(int my_id=0):MyTestObj(my_id)
 	{
 		instance_count++;
 	}
-	virtual ~my_other_test_obj()
+	virtual ~MyOtherTestObj()
 	{
 		if(instance_count==0)
 			printf("Error, instance count is going past zero!\n");
@@ -74,38 +74,39 @@ struct my_other_test_obj : public my_test_obj
 	}
 };
 
-int my_test_obj::instance_count=0;
-int my_other_test_obj::instance_count=0;
+int MyTestObj::instance_count=0;
+int MyOtherTestObj::instance_count=0;
 
-typedef etl::handle<my_test_obj> obj_handle;
-typedef etl::rhandle<my_test_obj> robj_handle;
-typedef etl::handle<my_other_test_obj> other_obj_handle;
-typedef std::list< obj_handle > obj_list;
-typedef std::list< other_obj_handle > other_obj_list;
-typedef std::list< robj_handle > robj_list;
+typedef etl::handle<MyTestObj> ObjHandle;
+typedef etl::rhandle<MyTestObj> RObjHandle;
+typedef etl::handle<MyOtherTestObj> OtherObjHandle;
+typedef std::list<ObjHandle> ObjList;
+typedef std::list<OtherObjHandle> OtherObjList;
+typedef std::list<RObjHandle> RObjList;
+
 
 /* === P R O C E D U R E S ================================================= */
 
 void
 handle_basic_test()
 {
-	my_test_obj::instance_count=0;
+	MyTestObj::instance_count=0;
 
 	{
-		etl::handle<my_test_obj> obj_handle(new my_test_obj(rand()));
+		etl::handle<MyTestObj> obj_handle(new MyTestObj(rand()));
 	}
 
-	ASSERT_EQUAL(0, my_test_obj::instance_count);
+	ASSERT_EQUAL(0, MyTestObj::instance_count);
 
 	{
-		std::map<std::string, etl::handle<my_test_obj> > my_map;
-		etl::handle<my_test_obj> obj_handle(new my_test_obj(rand()));
+		std::map<std::string, etl::handle<MyTestObj> > my_map;
+		etl::handle<MyTestObj> obj_handle(new MyTestObj(rand()));
 		my_map["bleh"]=obj_handle;
 	}
 
-	ASSERT_EQUAL(0, my_test_obj::instance_count);
+	ASSERT_EQUAL(0, MyTestObj::instance_count);
 
-	etl::handle<my_test_obj> obj_handle(new my_test_obj(rand()));
+	etl::handle<MyTestObj> obj_handle(new MyTestObj(rand()));
 
 	ASSERT(obj_handle == obj_handle.constant());
 }
@@ -113,56 +114,56 @@ handle_basic_test()
 void
 handle_general_use_test()
 {
-	my_test_obj::instance_count=0;
+	MyTestObj::instance_count=0;
 
-	obj_list my_list, my_other_list;
+	ObjList my_list, my_other_list;
 	int i;
 
 	for(i=0;i<NUMBER_OF_OBJECTS;i++)
-		my_list.push_back( obj_handle(new my_test_obj(rand())) );
+		my_list.push_back( ObjHandle(new MyTestObj(rand())) );
 
 	my_other_list=my_list;
-	ASSERT_EQUAL(NUMBER_OF_OBJECTS, my_test_obj::instance_count);
+	ASSERT_EQUAL(NUMBER_OF_OBJECTS, MyTestObj::instance_count);
 
 	my_list.sort();
-	ASSERT_EQUAL(NUMBER_OF_OBJECTS, my_test_obj::instance_count);
+	ASSERT_EQUAL(NUMBER_OF_OBJECTS, MyTestObj::instance_count);
 
 	my_list.clear();
-	ASSERT_EQUAL(NUMBER_OF_OBJECTS, my_test_obj::instance_count);
+	ASSERT_EQUAL(NUMBER_OF_OBJECTS, MyTestObj::instance_count);
 
 	{
-		obj_handle a(new my_test_obj(27)), b(new my_test_obj(42));
+		ObjHandle a(new MyTestObj(27)), b(new MyTestObj(42));
 		a.swap(b);
 		ASSERT_EQUAL(42, a->my_id);
 		ASSERT_EQUAL(27, b->my_id);
 	}
 
 	my_other_list.clear();
-	ASSERT_EQUAL(0, my_test_obj::instance_count);
+	ASSERT_EQUAL(0, MyTestObj::instance_count);
 }
 
 struct ListItem
 {
-	robj_handle obj;
+	RObjHandle obj;
 	int bleh;
 	int blah;
-	ListItem(robj_handle obj,int bleh=1, int blah=2):
+	explicit ListItem(RObjHandle obj,int bleh=1, int blah=2):
 		obj(obj),bleh(bleh),blah(blah) { }
 };
 
 void
 rhandle_general_use_test()
 {
-	my_test_obj::instance_count = 0;
+	MyTestObj::instance_count = 0;
 
-	robj_list my_list;
+	RObjList my_list;
 	int i;
 
-	robj_handle obj = new my_test_obj(rand());
+	RObjHandle obj = new MyTestObj(rand());
 	for(i=0;i<NUMBER_OF_OBJECTS;i++)
 		my_list.push_back(obj);
 
-	obj_list my_other_list(my_list.begin(),my_list.end());
+	ObjList my_other_list(my_list.begin(),my_list.end());
 
 
 
@@ -173,7 +174,7 @@ rhandle_general_use_test()
 	my_list.sort();
 	ASSERT_EQUAL(NUMBER_OF_OBJECTS+1, obj.rcount());
 
-	{robj_handle bleh(obj);}
+	{RObjHandle bleh(obj);}
 
 	ASSERT_EQUAL(NUMBER_OF_OBJECTS+1, obj.rcount());
 
@@ -183,7 +184,7 @@ rhandle_general_use_test()
 
 	ASSERT_EQUAL(NUMBER_OF_OBJECTS + 1, obj.rcount());
 
-	robj_handle new_obj = new my_test_obj(rand());
+	RObjHandle new_obj = new MyTestObj(rand());
 
 	int replacements = obj.replace(new_obj);
 
@@ -192,8 +193,8 @@ rhandle_general_use_test()
 	ASSERT(obj == new_obj);
 
 	{
-		robj_handle bleh(obj);
-		robj_handle blah(obj.get());
+		RObjHandle bleh(obj);
+		RObjHandle blah(obj.get());
 	}
 
 
@@ -201,11 +202,11 @@ rhandle_general_use_test()
 	obj.detach();
 	new_obj.detach();
 
-	ASSERT_EQUAL(0, my_test_obj::instance_count);
+	ASSERT_EQUAL(0, MyTestObj::instance_count);
 
 	std::vector<ListItem> my_item_list;
 	for(i=0;i<NUMBER_OF_OBJECTS;i++)
-		my_item_list.push_back(ListItem(new my_test_obj(rand()),3,4));
+		my_item_list.push_back(ListItem(new MyTestObj(rand()),3,4));
 
 
 	for(i=0;i<100;i++)
@@ -223,41 +224,41 @@ rhandle_general_use_test()
 
 	my_item_list.clear();
 
-	ASSERT_EQUAL(0, my_test_obj::instance_count);
+	ASSERT_EQUAL(0, MyTestObj::instance_count);
 }
 
 void
 handle_inheritance_test()
 {
-	my_test_obj::instance_count = 0;
-	my_other_test_obj::instance_count = 0;
+	MyTestObj::instance_count = 0;
+	MyOtherTestObj::instance_count = 0;
 
-	other_obj_list my_other_list;
+	OtherObjList my_other_list;
 	int i;
 
 	for(i=0;i<NUMBER_OF_OBJECTS;i++)
-		my_other_list.push_back( other_obj_handle(new my_other_test_obj(rand())) );
+		my_other_list.push_back( OtherObjHandle(new MyOtherTestObj(rand())) );
 
-	obj_list my_list(my_other_list.begin(),my_other_list.end());
-	ASSERT_EQUAL(NUMBER_OF_OBJECTS, my_test_obj::instance_count);
+	ObjList my_list(my_other_list.begin(),my_other_list.end());
+	ASSERT_EQUAL(NUMBER_OF_OBJECTS, MyTestObj::instance_count);
 
 	for(i=0;i<NUMBER_OF_OBJECTS;i++)
-		my_list.push_back( other_obj_handle(new my_other_test_obj(rand())) );
-	ASSERT_EQUAL(NUMBER_OF_OBJECTS * 2, my_other_test_obj::instance_count);
-	ASSERT(my_test_obj::instance_count == my_other_test_obj::instance_count);
+		my_list.push_back( OtherObjHandle(new MyOtherTestObj(rand())) );
+	ASSERT_EQUAL(NUMBER_OF_OBJECTS * 2, MyOtherTestObj::instance_count);
+	ASSERT(MyTestObj::instance_count == MyOtherTestObj::instance_count);
 
 	my_list.sort();
 	my_other_list.sort();
-	ASSERT_EQUAL(NUMBER_OF_OBJECTS * 2, my_test_obj::instance_count);
+	ASSERT_EQUAL(NUMBER_OF_OBJECTS * 2, MyTestObj::instance_count);
 
 	my_list.clear();
-	ASSERT_EQUAL(NUMBER_OF_OBJECTS, my_test_obj::instance_count);
+	ASSERT_EQUAL(NUMBER_OF_OBJECTS, MyTestObj::instance_count);
 
 	my_other_list.clear();
-	ASSERT_EQUAL(0, my_test_obj::instance_count);
+	ASSERT_EQUAL(0, MyTestObj::instance_count);
 }
 
-void test_func(etl::handle<my_test_obj> handle)
+void test_func(etl::handle<MyTestObj> handle)
 {
 	if(handle) { int i=handle.count(); i++; }
 }
@@ -265,46 +266,46 @@ void test_func(etl::handle<my_test_obj> handle)
 void
 loose_handle_test()
 {
-	my_test_obj::instance_count=0;
+	MyTestObj::instance_count=0;
 
-	etl::loose_handle<my_test_obj> obj_handle_loose;
-	etl::handle<my_test_obj> obj_handle2;
+	etl::loose_handle<MyTestObj> obj_handle_loose;
+	etl::handle<MyTestObj> obj_handle2;
 
 	{
-		etl::handle<my_test_obj> obj_handle(new my_test_obj(rand()));
-		ASSERT_EQUAL(1, my_test_obj::instance_count);
+		etl::handle<MyTestObj> obj_handle(new MyTestObj(rand()));
+		ASSERT_EQUAL(1, MyTestObj::instance_count);
 
 		obj_handle_loose=obj_handle;
 		ASSERT(obj_handle == obj_handle_loose);
 
 		obj_handle2=obj_handle_loose;
-		ASSERT_EQUAL(1, my_test_obj::instance_count);
+		ASSERT_EQUAL(1, MyTestObj::instance_count);
 
 		test_func(obj_handle_loose);
-		ASSERT_EQUAL(1, my_test_obj::instance_count);
+		ASSERT_EQUAL(1, MyTestObj::instance_count);
 	}
 
 	{
-		etl::loose_handle<my_test_obj> a(new my_test_obj(27)), b(new my_test_obj(42));
+		etl::loose_handle<MyTestObj> a(new MyTestObj(27)), b(new MyTestObj(42));
 		a.swap(b);
 		ASSERT_EQUAL(42, a->my_id);
 		ASSERT_EQUAL(27, b->my_id);
 	}
 
-	ASSERT_EQUAL(3, my_test_obj::instance_count);
+	ASSERT_EQUAL(3, MyTestObj::instance_count);
 }
 
 void
 handle_cast_test()
 {
-	etl::handle<my_test_obj> obj;
-	etl::handle<my_other_test_obj> other_obj;
-	etl::loose_handle<my_other_test_obj> loose_obj;
+	etl::handle<MyTestObj> obj;
+	etl::handle<MyOtherTestObj> other_obj;
+	etl::loose_handle<MyOtherTestObj> loose_obj;
 
 	other_obj.spawn();
 	loose_obj = other_obj;
 
-	obj = etl::handle<my_test_obj>::cast_dynamic(loose_obj);
+	obj = etl::handle<MyTestObj>::cast_dynamic(loose_obj);
 
 	ASSERT(obj == other_obj);
 }
