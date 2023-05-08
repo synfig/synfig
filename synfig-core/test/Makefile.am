@@ -47,3 +47,4 @@ string_SOURCES=string.cpp
 
 surface_etl_SOURCES=surface_etl.cpp
 
+EXTRA_DIST = test_base.h
