@@ -129,6 +129,8 @@ Layer_Bevel::set_param(const String &param, const ValueBase &value)
 	IMPORT_VALUE(param_type);
 	IMPORT_VALUE(param_use_luma);
 	IMPORT_VALUE(param_solid);
+	if (param == "fake_origin")
+		return true;
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -144,6 +146,10 @@ Layer_Bevel::get_param(const String &param)const
 	EXPORT_VALUE(param_angle);
 	EXPORT_VALUE(param_use_luma);
 	EXPORT_VALUE(param_solid);
+	if (param == "fake_origin")
+	{
+		return Vector();
+	}
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -441,20 +447,27 @@ Layer_Bevel::get_param_vocab(void)const
 	);
 	ret.push_back(ParamDesc("angle")
 		.set_local_name(_("Light Angle"))
+		.set_origin("fake_origin")
 	);
 	ret.push_back(ParamDesc("depth")
 		.set_is_distance()
 		.set_local_name(_("Depth of Bevel"))
+		.set_origin("fake_origin")
 	);
 	ret.push_back(ParamDesc("softness")
 		.set_is_distance()
 		.set_local_name(_("Softness"))
+		.set_origin("fake_origin")
 	);
 	ret.push_back(ParamDesc("use_luma")
 		.set_local_name(_("Use Luma"))
 	);
 	ret.push_back(ParamDesc("solid")
 		.set_local_name(_("Solid"))
+	);
+
+	ret.push_back(ParamDesc("fake_origin")
+		.hidden()
 	);
 
 	return ret;
