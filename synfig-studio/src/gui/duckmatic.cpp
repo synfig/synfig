@@ -2923,7 +2923,6 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		bool do_not_show_bone_width = false;
 		{
 			bool is_skeleton_deformation_layer_in_pose_mode = false;
-			bool is_skeleton_layer = false;
 
 			const synfig::Node* node = bone_value_node.get();
 			Layer::ConstHandle parent_layer;
@@ -2932,14 +2931,12 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				node = node->get_first_parent();
 			}
 			if (parent_layer) {
-				if (parent_layer->get_name() == "skeleton") {
-					is_skeleton_layer = true;
-				} else if (parent_layer->get_name() == "skeleton_deformation") {
+				if (parent_layer->get_name() == "skeleton_deformation") {
 					if (parent_layer->active())
 						is_skeleton_deformation_layer_in_pose_mode = true;
 				}
 			}
-			do_not_show_bone_width = is_skeleton_layer || is_skeleton_deformation_layer_in_pose_mode;
+			do_not_show_bone_width = is_skeleton_deformation_layer_in_pose_mode;
 		}
 
 		synfig::GUID guid(bone_value_node->get_guid());
