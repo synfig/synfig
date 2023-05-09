@@ -204,7 +204,7 @@ public:
 	bool open(const filesystem::Path& binary_path, const OS::RunArgs& binary_args, OS::RunMode run_mode, const OS::RunRedirectionFiles& redir_files) override
 	{
 		if (initialized) {
-			synfig::error("A pipe should not be initialized twice! Ignored...");
+			synfig::error(_("A pipe should not be initialized twice! Ignored..."));
 			return false;
 		}
 		initialized = true;
@@ -341,14 +341,14 @@ public:
 		DWORD num_written = 0;
 		BOOL ok = WriteFile(child_STDIN_Write, text.c_str(), text.size(), &num_written, NULL);
 		if (!ok)
-			synfig::error("synfig::OS::Pipe : fail to print");
+			synfig::error(_("synfig::OS::Pipe : fail to print"));
 	}
 	size_t write(const void* ptr, size_t size, size_t n) override
 	{
 		DWORD num_written = 0;
 		BOOL ok = WriteFile(child_STDIN_Write, ptr, size * n, &num_written, NULL);
 		if (!ok)
-			synfig::error("synfig::OS::Pipe : fail to write");
+			synfig::error(_("synfig::OS::Pipe : fail to write"));
 		return num_written;
 	}
 
@@ -357,7 +357,7 @@ public:
 	std::string read_contents() override
 	{
 		if (!read_file) {
-			synfig::error("Should not try to readline() a non-readable pipe");
+			synfig::error(_("Should not try to readline() a non-readable pipe"));
 			return "";
 		}
 		std::string result;
@@ -371,7 +371,7 @@ public:
 	std::string read_contents(size_t max_bytes) override
 	{
 		if (!read_file) {
-			synfig::error("Should not try to readline(size_t max_bytes) a non-readable pipe");
+			synfig::error(_("Should not try to readline(size_t max_bytes) a non-readable pipe"));
 			return "";
 		}
 		std::string result;
@@ -492,7 +492,7 @@ public:
 	bool open(const filesystem::Path& binary_path, const OS::RunArgs& binary_args, OS::RunMode run_mode, const OS::RunRedirectionFiles& redir_files) override
 	{
 		if (initialized) {
-			synfig::error("A pipe should not be initialized twice! Ignored...");
+			synfig::error(_("A pipe should not be initialized twice! Ignored..."));
 			return false;
 		}
 		initialized = true;
@@ -660,7 +660,7 @@ public:
 	std::string read_contents() override
 	{
 		if (!read_file) {
-			synfig::error("Should not try to readline() a non-readable pipe");
+			synfig::error(_("Should not try to readline() a non-readable pipe"));
 			return "";
 		}
 		std::string result;
@@ -674,7 +674,7 @@ public:
 	std::string read_contents(size_t max_bytes) override
 	{
 		if (!read_file) {
-			synfig::error("Should not try to readline(size_t max_bytes) a non-readable pipe");
+			synfig::error(_("Should not try to readline(size_t max_bytes) a non-readable pipe"));
 			return "";
 		}
 		std::string result;
@@ -711,16 +711,16 @@ OS::run_async(const filesystem::Path& binary_path, const RunArgs& binary_args, R
 {
 	auto run_pipe = OS::RunPipe::create();
 	if (!run_pipe) {
-		synfig::warning("couldn't create pipe for %s %s", binary_path.u8_str(), binary_args.get_string().c_str());
+		synfig::warning(_("Couldn't create pipe for %s %s"), binary_path.u8_str(), binary_args.get_string().c_str());
 		return nullptr;
 	}
 	bool ok = run_pipe->open(binary_path, binary_args, mode, redir_files);
 	if (!ok) {
-		synfig::warning("couldn't open pipe for %s %s", binary_path.u8_str(), binary_args.get_string().c_str());
+		synfig::warning(_("Couldn't open pipe for %s %s"), binary_path.u8_str(), binary_args.get_string().c_str());
 		return nullptr;
 	}
 	if (!run_pipe->is_open()) {
-		synfig::warning("couldn't really open pipe for %s %s", binary_path.c_str(), binary_args.get_string().c_str());
+		synfig::warning(_("Couldn't really open pipe for %s %s"), binary_path.c_str(), binary_args.get_string().c_str());
 		return nullptr;
 	}
 	return run_pipe;
