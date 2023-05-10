@@ -1828,7 +1828,7 @@ CanvasView::close_instance()
 	return false;
 }
 
-etl::handle<CanvasView>
+CanvasView::Handle
 CanvasView::create(etl::loose_handle<studio::Instance> instance, Canvas::Handle canvas)
 	{ return new CanvasView(instance,instance->Instance::find_canvas_interface(canvas)); }
 

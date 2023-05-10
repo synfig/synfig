@@ -1580,7 +1580,7 @@ Duckmatic::load_sketch(const synfig::String& filename)
 
 
 void
-Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Layer::Handle>& selected_layer_set, etl::handle<CanvasView> canvas_view, synfig::TransformStack& transform_stack, int *out_transform_count)
+Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Layer::Handle>& selected_layer_set, CanvasView::Handle canvas_view, synfig::TransformStack& transform_stack, int *out_transform_count)
 {
 	int transforms(0);
 
@@ -1694,7 +1694,7 @@ Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Laye
 -- ** -- -----------------------------------------------------------------------
 */
 bool
-Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<CanvasView> canvas_view, const synfig::TransformStack& transform_stack, synfig::ParamDesc *param_desc)
+Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,CanvasView::Handle canvas_view, const synfig::TransformStack& transform_stack, synfig::ParamDesc *param_desc)
 {
 	synfig::Type &type=value_desc.get_value_type();
 #define REAL_COOKIE		reinterpret_cast<synfig::ParamDesc*>(28)

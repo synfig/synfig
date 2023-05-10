@@ -203,7 +203,7 @@ Instance::create(synfig::Canvas::Handle canvas, synfig::FileSystem::Handle conta
 	return instance;
 }
 
-handle<CanvasView>
+CanvasView::Handle
 Instance::find_canvas_view(Canvas::Handle canvas)
 {
 	if(!canvas)
@@ -224,7 +224,7 @@ Instance::find_canvas_view(Canvas::Handle canvas)
 void
 Instance::focus(Canvas::Handle canvas)
 {
-	handle<CanvasView> canvas_view=find_canvas_view(canvas);
+	CanvasView::Handle canvas_view = find_canvas_view(canvas);
 	assert(canvas_view);
 	canvas_view->present();
 }
@@ -397,8 +397,8 @@ studio::Instance::save_as(const synfig::String &file_name)
 	if(synfigapp::Instance::save_as(file_name))
 	{
 		// after changing the filename, update the render settings with the new filename
-		for (std::list<handle<CanvasView> >::iterator iter = canvas_view_list().begin(); iter!=canvas_view_list().end(); iter++)
-			(*iter)->render_settings.set_entry_filename();
+		for (const auto& canvas_view : canvas_view_list())
+			canvas_view->render_settings.set_entry_filename();
 		App::add_recent_file(etl::handle<Instance>(this));
 
 		// check for unsaved layers (external bitmaps, etc)
@@ -633,9 +633,8 @@ studio::Instance::dialog_export()
 void
 Instance::update_all_titles()
 {
-	std::list<handle<CanvasView> >::iterator iter;
-	for(iter=canvas_view_list().begin();iter!=canvas_view_list().end();iter++)
-		(*iter)->update_title();
+	for (const auto& canvas_view : canvas_view_list())
+		canvas_view->update_title();
 }
 
 void
@@ -651,7 +650,7 @@ Instance::close(bool remove_temporary_files)
 	 1) the list is scrolled down
 	 2) user closes file
 	*/
-	handle<CanvasView> canvas_view=find_canvas_view(get_canvas());
+	CanvasView::Handle canvas_view = find_canvas_view(get_canvas());
 	Gtk::Widget* tree_view_keyframes = canvas_view->get_ext_widget("keyframes");
 	tree_view_keyframes->hide();
 
@@ -678,8 +677,8 @@ Instance::close(bool remove_temporary_files)
 	studio::App::signal_instance_deleted()(this);
 
 	// Hide all of the canvas views
-	for(std::list<etl::handle<CanvasView> >::iterator iter=canvas_view_list().begin();iter!=canvas_view_list().end();iter++)
-		(*iter)->hide();
+	for (const auto& canvas_view : canvas_view_list())
+		canvas_view->hide();
 
 	// Consume pending events before deleting the canvas views
 	App::process_all_events();
@@ -800,7 +799,7 @@ Instance::safe_revert()
 bool
 Instance::safe_close()
 {
-	handle<CanvasView> canvas_view = find_canvas_view(get_canvas());
+	CanvasView::Handle canvas_view = find_canvas_view(get_canvas());
 	handle<synfigapp::UIInterface> uim=canvas_view->get_ui_interface();
 
 	// if the animation is currently playing, closing the window will cause a crash,
@@ -1110,7 +1109,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 	Gtk::Menu& parammenu(*menu);
 	synfigapp::ValueDesc value_desc2(value_desc);
 	etl::handle<synfigapp::CanvasInterface> canvas_interface(find_canvas_interface(canvas));
-	etl::handle<CanvasView> canvas_view(find_canvas_view(canvas));
+	CanvasView::Handle canvas_view(find_canvas_view(canvas));
 	if(!canvas_interface)
 		return;
 
@@ -1399,7 +1398,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 }
 
 void
-edit_several_waypoints(etl::handle<CanvasView> canvas_view, std::list<synfigapp::ValueDesc> value_desc_list)
+edit_several_waypoints(CanvasView::Handle canvas_view, std::list<synfigapp::ValueDesc> value_desc_list)
 {
 	etl::handle<synfigapp::CanvasInterface> canvas_interface(canvas_view->canvas_interface());
 

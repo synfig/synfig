@@ -78,7 +78,7 @@ class Grid_SoundWave : public Gtk::Grid {
 	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface;
 
 public:
-	Grid_SoundWave(etl::loose_handle<CanvasView> canvas_view)
+	Grid_SoundWave(CanvasView::LooseHandle canvas_view)
 		: Gtk::Grid(),
 		  open_dialog_disabled(false),
 		  canvas_interface(canvas_view->canvas_interface())
@@ -148,7 +148,7 @@ private:
 		file_box.show();
 	}
 
-	void setup_soundwave_widget(etl::loose_handle<CanvasView> canvas_view) {
+	void setup_soundwave_widget(CanvasView::LooseHandle canvas_view) {
 		widget_sound.set_time_model(canvas_view->time_model());
 		widget_sound.show();
 		widget_sound.set_size_request(100, 100);
@@ -490,14 +490,14 @@ Dock_SoundWave::Dock_SoundWave()
 				&Dock_SoundWave::on_drop_drag_data_received) );
 }
 
-void Dock_SoundWave::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+void Dock_SoundWave::init_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 {
 	Grid_SoundWave *grid_sound = new Grid_SoundWave(canvas_view);
 	grid_sound->show();
 	canvas_view->set_ext_widget(get_name(), grid_sound);
 }
 
-void Dock_SoundWave::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+void Dock_SoundWave::changed_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 {
 	std::lock_guard<std::mutex> lock(mutex);
 

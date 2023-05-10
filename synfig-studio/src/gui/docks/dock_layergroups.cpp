@@ -99,7 +99,7 @@ Dock_LayerGroups::~Dock_LayerGroups()
 }
 
 void
-Dock_LayerGroups::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+Dock_LayerGroups::init_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 {
 	Glib::RefPtr<LayerGroupTreeStore> layer_group_tree_store;
 	layer_group_tree_store=LayerGroupTreeStore::create(canvas_view->canvas_interface());
@@ -113,7 +113,7 @@ Dock_LayerGroups::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_vi
 }
 
 void
-Dock_LayerGroups::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+Dock_LayerGroups::changed_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 {
 	if(canvas_view)
 	{

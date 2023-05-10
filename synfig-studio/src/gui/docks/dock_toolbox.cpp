@@ -275,7 +275,7 @@ void
 Dock_Toolbox::update_tools()
 {
 	etl::handle<Instance> instance = App::get_selected_instance();
-	etl::handle<CanvasView> canvas_view = App::get_selected_canvas_view();
+	CanvasView::Handle canvas_view = App::get_selected_canvas_view();
 
 	// These next several lines just adjust the tool buttons
 	// so that they are only clickable when they should be.
