@@ -237,8 +237,8 @@ LayerTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int column
 			{
 				Pango::Weight weight = Pango::WEIGHT_NORMAL;
 
-				etl::handle<Layer_PasteCanvas> paste=
-					etl::handle<Layer_PasteCanvas>::cast_dynamic(
+				Layer_PasteCanvas::Handle paste=
+					Layer_PasteCanvas::Handle::cast_dynamic(
 						layer->get_parent_paste_canvas_layer() );
 				if(paste)
 				{
@@ -249,7 +249,7 @@ LayerTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int column
 						Gtk::TreeRow row=*iter;
 						if(*row.parent() && RECORD_TYPE_LAYER == (RecordType)(*row.parent())[model.record_type])
 						{
-							paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(
+							paste = Layer_PasteCanvas::Handle::cast_dynamic(
 									Layer::Handle((*row.parent())[model.layer]) );
 						}
 					}
@@ -836,7 +836,7 @@ LayerTreeStore::refresh_row(Gtk::TreeModel::Row &row)
 void
 LayerTreeStore::set_row_layer(Gtk::TreeRow &row, const synfig::Layer::Handle &handle)
 {
-	if (etl::handle<Layer_PasteCanvas> layer_paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(handle))
+	if (Layer_PasteCanvas::Handle layer_paste = Layer_PasteCanvas::Handle::cast_dynamic(handle))
 	{
 		subcanvas_changed_connections[layer_paste].disconnect();
 		subcanvas_changed_connections[layer_paste] =
@@ -970,7 +970,7 @@ LayerTreeStore::on_layer_added(synfig::Layer::Handle layer)
 void
 LayerTreeStore::on_layer_removed(synfig::Layer::Handle handle)
 {
-	if (etl::handle<Layer_PasteCanvas>::cast_dynamic(handle))
+	if (Layer_PasteCanvas::Handle::cast_dynamic(handle))
 	{
 		subcanvas_changed_connections[handle].disconnect();
 		subcanvas_changed_connections.erase(handle);

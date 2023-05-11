@@ -1860,7 +1860,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 	}
 
 	DEBUG_LOG("SYNFIG_DEBUG_LOAD_CANVAS", "%s:%d creating linkable '%s' type '%s'\n", __FILE__, __LINE__, element->get_name().c_str(), type.description.name.c_str());
-	handle<LinkableValueNode> value_node=ValueNodeRegistry::create(element->get_name(),type);
+	LinkableValueNode::Handle value_node=ValueNodeRegistry::create(element->get_name(),type);
 	//ValueNode::Handle c[value_node->link_count()]; changed because of clang complain
 	std::vector<ValueNode::Handle> c(value_node->link_count());
 
@@ -2171,7 +2171,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 	{
 		if (version == "0.1" || version == "0.2" || version == "0.3")
 		{
-			handle<LinkableValueNode> scale_value_node=ValueNodeRegistry::create("scale",type);
+			LinkableValueNode::Handle scale_value_node=ValueNodeRegistry::create("scale",type);
 			scale_value_node->set_link("link", value_node);
 			scale_value_node->set_link("scalar", ValueNode_Const::create(Real(0.5)));
 
@@ -2183,7 +2183,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 	return value_node;
 }
 
-handle<ValueNode_StaticList>
+ValueNode_StaticList::Handle
 CanvasParser::parse_static_list(xmlpp::Element *element,Canvas::Handle canvas)
 {
 	assert(element->get_name()=="static_list");
@@ -2191,7 +2191,7 @@ CanvasParser::parse_static_list(xmlpp::Element *element,Canvas::Handle canvas)
 	if(!element->get_attribute("type"))
 	{
 		error(element,"Missing attribute \"type\" in <list>");
-		return handle<ValueNode_StaticList>();
+		return ValueNode_StaticList::Handle();
 	}
 
 	Type &type=ValueBase::ident_type(element->get_attribute("type")->get_value());
@@ -2199,17 +2199,17 @@ CanvasParser::parse_static_list(xmlpp::Element *element,Canvas::Handle canvas)
 	if(type == type_nil)
 	{
 		error(element,"Bad type in <list>");
-		return handle<ValueNode_StaticList>();
+		return ValueNode_StaticList::Handle();
 	}
 
-	handle<ValueNode_StaticList> value_node;
+	ValueNode_StaticList::Handle value_node;
 
 	value_node=ValueNode_StaticList::create_on_canvas(type);
 
 	if(!value_node)
 	{
 		error(element,strprintf(_("Unable to create <list>")));
-		return handle<ValueNode_StaticList>();
+		return ValueNode_StaticList::Handle();
 	}
 
 	value_node->set_root_canvas(canvas->get_root());
@@ -2282,7 +2282,7 @@ static bool is_bool_attribute_true(xmlpp::Element* element, const char* name) {
 }
 
 // This will also parse a bline
-handle<ValueNode_DynamicList>
+ValueNode_DynamicList::Handle
 CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 {
 	assert(element->get_name()=="dynamic_list" ||
@@ -2297,7 +2297,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 	if(!element->get_attribute("type"))
 	{
 		error(element,"Missing attribute \"type\" in <dynamic_list>");
-		return handle<ValueNode_DynamicList>();
+		return ValueNode_DynamicList::Handle();
 	}
 
 	Type &type = ValueBase::ident_type(element->get_attribute("type")->get_value());
@@ -2305,10 +2305,10 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 	if(type == type_nil)
 	{
 		error(element,"Bad type in <dynamic_list>");
-		return handle<ValueNode_DynamicList>();
+		return ValueNode_DynamicList::Handle();
 	}
 
-	handle<ValueNode_DynamicList> value_node;
+	ValueNode_DynamicList::Handle value_node;
 
 	bool must_rotate_point_list = false;
 
@@ -2342,7 +2342,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 	if(!value_node)
 	{
 		error(element,strprintf(_("Unable to create <dynamic_list>")));
-		return handle<ValueNode_DynamicList>();
+		return ValueNode_DynamicList::Handle();
 	}
 
 	value_node->set_root_canvas(canvas->get_root());
@@ -2775,7 +2775,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 		layer->set_exclude_from_rendering(!is_false(element->get_attribute("exclude_from_rendering")->get_value()));
 
 	// Load old groups
-	etl::handle<Layer_PasteCanvas> layer_pastecanvas = etl::handle<Layer_Group>::cast_dynamic(layer);
+	Layer_PasteCanvas::Handle layer_pastecanvas = etl::handle<Layer_Group>::cast_dynamic(layer);
 	bool old_pastecanvas = layer_pastecanvas && version=="0.1";
 	ValueNode::Handle origin_node;
 	ValueNode_Composite::Handle transformation_node;

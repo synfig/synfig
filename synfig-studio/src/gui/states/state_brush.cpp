@@ -711,7 +711,7 @@ StateBrush_Context::build_transform_stack(
 
 		// If this is a paste canvas layer, then we need to
 		// descend into it
-		if(etl::handle<Layer_PasteCanvas> layer_pastecanvas = etl::handle<Layer_PasteCanvas>::cast_dynamic(*i))
+		if(Layer_PasteCanvas::Handle layer_pastecanvas = Layer_PasteCanvas::Handle::cast_dynamic(*i))
 		{
 			transform_stack.push_back(
 				new Transform_Matrix(
@@ -739,11 +739,11 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 		{
 			// Enter the stroke state to get the stroke
 			Layer::Handle selected_layer = canvas_view_->get_selection_manager()->get_selected_layer();
-			etl::handle<Layer_Bitmap> layer = etl::handle<Layer_Bitmap>::cast_dynamic(selected_layer);
+			Layer_Bitmap::Handle layer = Layer_Bitmap::Handle::cast_dynamic(selected_layer);
 			if (!layer)
 			{
 				etl::handle<Layer_Switch> layer_switch = etl::handle<Layer_Switch>::cast_dynamic(selected_layer);
-				if (layer_switch) layer = etl::handle<Layer_Bitmap>::cast_dynamic(layer_switch->get_current_layer());
+				if (layer_switch) layer = Layer_Bitmap::Handle::cast_dynamic(layer_switch->get_current_layer());
 			}
 
 			// No image found to draw in, add it.
@@ -751,7 +751,7 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 			{
 				canvas_view_->add_layer("import");
 				selected_layer = canvas_view_->get_selection_manager()->get_selected_layer();
-				layer = etl::handle<Layer_Bitmap>::cast_dynamic(selected_layer);
+				layer = Layer_Bitmap::Handle::cast_dynamic(selected_layer);
 
 				// Set temporary description to generate the name
 				String temp_description(_("brush image"));

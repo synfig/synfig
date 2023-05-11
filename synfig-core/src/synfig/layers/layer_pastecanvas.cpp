@@ -270,7 +270,7 @@ Layer_PasteCanvas::update_renddesc()
 	sub_canvas->rend_desc()=get_canvas()->rend_desc();
 	for (IndependentContext iter = sub_canvas->get_independent_context(); !iter->empty(); iter++)
 	{
-		etl::handle<Layer_PasteCanvas> paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(*iter);
+		Layer_PasteCanvas::Handle paste = Layer_PasteCanvas::Handle::cast_dynamic(*iter);
 		if (paste) paste->update_renddesc();
 	}
 }

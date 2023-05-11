@@ -235,7 +235,7 @@ CanvasInterface::layer_create(
 		}
 
 	layer->set_canvas(canvas);
-	if (etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
+	if (Layer_PasteCanvas::Handle::cast_dynamic(layer))
 		layer->set_param("canvas", Canvas::create_inline(canvas));
 
 	return layer;

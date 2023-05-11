@@ -1620,7 +1620,7 @@ Instance::gather_uri(std::set<synfig::String> &x, const synfig::Layer::Handle &l
 	if (etl::handle<Layer_Switch> layer_switch = etl::handle<Layer_Switch>::cast_dynamic(layer))
 		gather_uri(x, layer_inside_switch(layer_switch));
 
-	//if (etl::handle<Layer_PasteCanvas> paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
+	//if (Layer_PasteCanvas::Handle paste = Layer_PasteCanvas::Handle::cast_dynamic(layer))
 	//	gather_uri(x, paste->get_param("canvas").get(Canvas::Handle()));
 }
 
