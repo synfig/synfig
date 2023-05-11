@@ -175,6 +175,9 @@ MainWindow::init_menus()
 	action_group->add( Gtk::Action::create("open", Gtk::StockID("synfig-open"), _("Open"), _("Open an existing document")),
 		sigc::hide_return(sigc::bind(sigc::ptr_fun(&studio::App::dialog_open), ""))
 	);
+	action_group->add( Gtk::Action::create("save-all", Gtk::StockID("synfig-save_all"), _("Save All"), _("Save all opened documents")),
+		sigc::ptr_fun(&save_all)
+	);
 	action_group->add( Gtk::Action::create("quit", Gtk::StockID("gtk-quit"), _("Quit")),
 		sigc::hide_return(sigc::ptr_fun(&studio::App::quit))
 	);
@@ -292,6 +295,13 @@ MainWindow::toggle_show_toolbar()
 		for (auto& canvas_view : views)
 			canvas_view->set_show_toolbars(App::enable_mainwin_toolbar);
 	}
+}
+
+void
+MainWindow::save_all()
+{
+	for (auto& instance : App::instance_list)
+		instance->save();
 }
 
 void MainWindow::add_custom_workspace_menu_item_handlers()
