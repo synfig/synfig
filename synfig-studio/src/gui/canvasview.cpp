@@ -3024,7 +3024,7 @@ CanvasView::on_keyframe_toggle()
 
 		Keyframe keyframe(row[keyframe_tree->model.keyframe]);
 
-		Action::Handle action(Action::create("KeyframeToggl"));
+		Action::Handle action(Action::create("KeyframeToggle"));
 
 		if(!action)
 			return;

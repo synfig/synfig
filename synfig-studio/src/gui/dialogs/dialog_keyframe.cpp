@@ -185,7 +185,7 @@ Dialog_Keyframe::on_apply_pressed()
 	{
 		keyframe_.set_active(entry_toogle.get_active());
 
-		synfigapp::Action::Handle action(synfigapp::Action::create("KeyframeToggl"));
+		synfigapp::Action::Handle action(synfigapp::Action::create("KeyframeToggle"));
 		assert(action);
 
 		action->set_param("canvas",canvas_interface->get_canvas());

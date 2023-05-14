@@ -39,8 +39,6 @@
 #include <synfigapp/canvasinterface.h>
 #include <synfig/valuenodes/valuenode_dynamiclist.h>
 #include <synfig/valuenodes/valuenode_animated.h>
-#include "activepointremove.h"
-#include "waypointremove.h"
 
 #include <synfigapp/localization.h>
 
@@ -52,7 +50,7 @@ using namespace synfigapp;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT_NO_GET_LOCAL_NAME(Action::KeyframeToggl);
-ACTION_SET_NAME(Action::KeyframeToggl,"KeyframeToggl");
+ACTION_SET_NAME(Action::KeyframeToggl,"KeyframeToggle");
 ACTION_SET_LOCAL_NAME(Action::KeyframeToggl,N_("Activate/Deactivate Keyframe"));
 ACTION_SET_TASK(Action::KeyframeToggl,"disconnect");
 ACTION_SET_CATEGORY(Action::KeyframeToggl,Action::CATEGORY_KEYFRAME);
