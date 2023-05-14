@@ -1309,7 +1309,7 @@ CanvasInterface::set_meta_data(const synfig::String& key,const synfig::String& d
 	if (get_canvas()->get_meta_data(key) == data)
 		return;
 
-	if (key=="guide_x" || key=="guide_y")
+	if (key=="guide")
 	{
 		// Create an undoable action
 

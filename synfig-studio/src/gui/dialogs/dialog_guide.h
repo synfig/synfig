@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file renderer_guides.h
-**	\brief Template Header
+/*!	\file dialogs/Dialog_Guide.h
+**	\brief Dialog for editing guides.
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -25,35 +25,62 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERER_GUIDES_H
-#define __SYNFIG_RENDERER_GUIDES_H
+#ifndef SYNFIG_STUDIO_DIALOG_GUIDE_H
+#define SYNFIG_STUDIO_DIALOG_GUIDE_H
+
 
 /* === H E A D E R S ======================================================= */
 
-#include "workarearenderer.h"
+#include <gtkmm/dialog.h>
+#include <gtkmm/spinbutton.h>
+#include <gtkmm/comboboxtext.h>
+
+#include <synfigapp/value_desc.h>
 
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
 
+
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace studio {
 
-class Renderer_Guides : public studio::WorkAreaRenderer
+class Widget_Waypoint;
+class Widget_ValueBase;
+class WorkArea;
+struct Guide;
+
+class Dialog_Guide : public Gtk::Dialog
 {
+	typedef std::list<Guide> GuideList;
+
+	synfig::Canvas::Handle canvas;
+	WorkArea* current_work_area;
+
+	Gtk::SpinButton* angle_widget;
+	Glib::RefPtr<Gtk::Adjustment> angle_adjustment;
+
+	Gtk::ComboBoxText angle_type_picker;
+
+	void on_ok_or_apply_pressed(bool ok);
+	void set_angle_type();
+	void init_widget_values();
+
+	GuideList::iterator curr_guide;
+
+	bool menu_guide_is_x;
+	bool degrees;
+
 public:
-	~Renderer_Guides();
+	Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canvas, WorkArea* work_area);
+	~Dialog_Guide();
+	void set_current_guide(GuideList::iterator current_guide);
 
-protected:
-	void render_vfunc(const Glib::RefPtr<Gdk::Window>& drawable, const Gdk::Rectangle& expose_area);
-	bool event_vfunc(GdkEvent* event);
-
-	bool get_enabled_vfunc()const;
-};
+}; // END of Dialog_Guide
 
 }; // END of namespace studio
 
 /* === E N D =============================================================== */
 
-#endif
+#endif // DIALOG_GUIDE_H
