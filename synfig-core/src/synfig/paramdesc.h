@@ -150,14 +150,14 @@ public:
    	ParamDesc &set_invisible_duck(bool x=true) { invisible_duck_=x; return *this; }
 
    	//! Returns the flag regarding duck visibility
-   	bool get_invisible_duck() { return invisible_duck_; }
+	bool get_invisible_duck() const { return invisible_duck_; }
 
 
    	//! \writeme
    	ParamDesc &set_animation_only(bool x=true) { animation_only_=x; return *this; }
 
    	//! \writeme
-   	bool get_animation_only() { return animation_only_; }
+	bool get_animation_only() const { return animation_only_; }
 
 
    	//! Sets which parameter is to be used as the origin when the user edits visually.
