@@ -397,6 +397,9 @@ ValueNode_DynamicList::ListEntry::amount_at_time(const Time &t,bool *rising)cons
 {
 	typedef synfig::ValueNode_DynamicList::ListEntry::ActivepointList ActivepointList;
 
+	if (rising)
+		*rising = false;
+
 	if(timing_info.empty())
 		return 1.0f;
 
