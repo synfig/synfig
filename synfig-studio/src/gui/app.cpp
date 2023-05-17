@@ -963,7 +963,7 @@ DEFINE_ACTION("mask-bone-setup-ducks",          _("Show Bone Setup Handles"))
 DEFINE_ACTION("mask-bone-recursive-ducks",      _("Show Recursive Scale Bone Handles"))
 DEFINE_ACTION("mask-bone-ducks",                _("Next Bone Handles"))
 
-for(std::list<int>::iterator iter = CanvasView::get_pixel_sizes().begin(); iter != CanvasView::get_pixel_sizes().end(); iter++)
+for (std::list<int>::iterator iter = CanvasView::get_pixel_sizes().begin(); iter != CanvasView::get_pixel_sizes().end(); ++iter)
 DEFINE_ACTION(strprintf("lowres-pixel-%d", *iter), strprintf(_("Set Low-Res pixel size to %d"), *iter))
 
 DEFINE_ACTION("toggle-rulers-show",  _("Toggle Rulers Show"))
@@ -1121,7 +1121,7 @@ DEFINE_ACTION("switch-to-rightmost-tab",  _("Switch to Rightmost Tab"))
 "			<separator name='pixel-size-separator'/>"
 ;
 
-	for (std::list<int>::iterator iter = CanvasView::get_pixel_sizes().begin(); iter != CanvasView::get_pixel_sizes().end(); iter++)
+	for (std::list<int>::iterator iter = CanvasView::get_pixel_sizes().begin(); iter != CanvasView::get_pixel_sizes().end(); ++iter)
 		ui_info_menu += strprintf("			<menuitem action='lowres-pixel-%d' />", *iter);
 
 	ui_info_menu +=
@@ -1888,13 +1888,13 @@ App::add_recent_file(const std::string &file_name, bool emit_signal = true)
 	std::list<std::string>::iterator iter;
 	// Check to see if the file is already on the list.
 	// If it is, then remove it from the list
-	for(iter=recent_files.begin();iter!=recent_files.end();iter++)
+	for (iter = recent_files.begin(); iter != recent_files.end(); ++iter) {
 		if(*iter==filename)
 		{
 			recent_files.erase(iter);
 			break;
 		}
-
+	}
 
 	// Push the filename to the front of the list
 	recent_files.push_front(filename);
@@ -3310,7 +3310,7 @@ App::dialog_select_list_item(const std::string &title, const std::string &messag
 	Glib::RefPtr<Gtk::ListStore> list_store = Gtk::ListStore::create(model_columns);
 
 	int k = 0;
-	for(std::list<std::string>::const_iterator i = list.begin(); i != list.end(); i++) {
+	for(std::list<std::string>::const_iterator i = list.begin(); i != list.end(); ++i) {
 		Gtk::ListStore::iterator j = list_store->append();
 		j->set_value(model_columns.column_index, k++);
 		j->set_value(model_columns.column_main, Glib::ustring(*i));
@@ -4156,7 +4156,7 @@ App::dialog_open(std::string filename)
 			// build list of history entries for dialog (descending)
 			std::list<std::string> list;
 			int index = 0;
-			for(std::list<FileContainerZip::HistoryRecord>::const_iterator i = history.begin(); i != history.end(); ++i)
+			for (std::list<FileContainerZip::HistoryRecord>::const_iterator i = history.begin(); i != history.end(); ++i)
 				list.push_front(strprintf("%s%d", _("History entry #"), ++index));
 
 			// show dialog
@@ -4165,7 +4165,7 @@ App::dialog_open(std::string filename)
 				continue;
 
 			// find selected entry in list (descending)
-			for(std::list<FileContainerZip::HistoryRecord>::const_reverse_iterator i = history.rbegin(); i != history.rend(); i++)
+			for (std::list<FileContainerZip::HistoryRecord>::const_reverse_iterator i = history.rbegin(); i != history.rend(); ++i)
 				if (0 == index--)
 					truncate_storage_size = i->storage_size;
 		}

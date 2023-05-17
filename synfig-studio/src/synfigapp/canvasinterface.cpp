@@ -130,7 +130,7 @@ CanvasInterface::set_time(synfig::Time x)
 	// update the time in all the child canvases
 	Canvas::Children children = get_canvas()->get_root()->children();
 	handle<CanvasInterface> interface;
-	for (Canvas::Children::iterator iter = children.begin(); iter != children.end(); iter++)
+	for (Canvas::Children::iterator iter = children.begin(); iter != children.end(); ++iter)
 		if ((interface = get_instance()->find_canvas_interface(*iter)) != this)
 			interface->set_time(interface->get_canvas()->get_time());
 
@@ -316,7 +316,7 @@ CanvasInterface::layer_set_defaults(const synfig::Layer::Handle &layer)
 				{
 					std::vector<ValueBase>::iterator iter2 = list.begin();
 					Type &type(iter2->get_type());
-					for (iter2++; iter2 != list.end(); iter2++)
+					for (++iter2; iter2 != list.end(); ++iter2)
 						if (iter2->get_type() != type)
 							break;
 					if (iter2 == list.end())

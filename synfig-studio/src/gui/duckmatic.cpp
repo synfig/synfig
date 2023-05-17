@@ -494,8 +494,7 @@ Duckmatic::update_ducks()
 				int index(c1->get_value_desc().get_index());
 				etl::handle<Duck> origin_duck=c1->get_origin_duck();
 				// Search all the rest of ducks
-				DuckList::iterator iter;
-				for (iter=duck_list.begin(); iter!=duck_list.end(); iter++)
+				for (DuckList::iterator iter = duck_list.begin(); iter != duck_list.end(); ++iter)
 					// if the other duck has the same origin and it is tangent type
 					if ( (*iter)->get_origin_duck()==origin_duck && (*iter)->get_type() == Duck::TYPE_TANGENT)
 					{
@@ -543,8 +542,7 @@ Duckmatic::update_ducks()
 				int index(c2->get_value_desc().get_index());
 				etl::handle<Duck> origin_duck=c2->get_origin_duck();
 				// Search all the rest of ducks
-				DuckList::iterator iter;
-				for (iter=duck_list.begin(); iter!=duck_list.end(); iter++)
+				for (DuckList::iterator iter = duck_list.begin(); iter != duck_list.end(); ++iter) {
 					// if the other duck has the same origin and it is tangent type
 					if ( (*iter)->get_origin_duck()==origin_duck && (*iter)->get_type() == Duck::TYPE_TANGENT)
 					{
@@ -580,6 +578,7 @@ Duckmatic::update_ducks()
 							}
 						}
 					}
+				}
 			}
 		}
 	}
@@ -619,9 +618,7 @@ Duckmatic::update_ducks()
 				ValueNode::Handle vertex_amount_value_node(bline_vertex->get_link("amount"));
 				duck->set_point(point);
 
-				DuckList::iterator iter;
-				for (iter=duck_list.begin(); iter!=duck_list.end(); iter++)
-				{
+				for (DuckList::iterator iter = duck_list.begin(); iter != duck_list.end(); ++iter) {
 					if ( (*iter)->get_origin_duck()==duck /*&& !duck_is_selected(*iter)*/ )
 					{
 						ValueNode::Handle duck_value_node = (*iter)->get_value_desc().get_value_node();
@@ -683,9 +680,7 @@ Duckmatic::update_ducks()
 						int index(duck->get_value_desc().get_index());
 						etl::handle<Duck> origin_duck=duck->get_origin_duck();
 						// Search all the rest of ducks
-						DuckList::iterator iter;
-						for (iter=duck_list.begin(); iter!=duck_list.end(); iter++)
-						{
+						for (DuckList::iterator iter = duck_list.begin(); iter != duck_list.end(); ++iter) {
 							// if the other duck has the same origin and it is tangent type
 							if ( (*iter)->get_origin_duck()==origin_duck && (*iter)->get_type() == Duck::TYPE_TANGENT)
 							{
@@ -1637,8 +1632,7 @@ Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Laye
 			Layer::Vocab vocab=layer->get_param_vocab();
 			Layer::Vocab::iterator iter;
 
-			for(iter=vocab.begin();iter!=vocab.end();iter++)
-			{
+			for (iter = vocab.begin(); iter != vocab.end(); ++iter) {
 				if(!iter->get_hidden() && !iter->get_invisible_duck())
 				{
 					synfigapp::ValueDesc value_desc(layer,iter->get_name());

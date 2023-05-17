@@ -214,7 +214,7 @@ Instance::find_canvas_view(Canvas::Handle canvas)
 
 	CanvasViewList::iterator iter;
 
-	for(iter=canvas_view_list().begin();iter!=canvas_view_list().end();iter++)
+	for (iter = canvas_view_list().begin(); iter != canvas_view_list().end(); ++iter)
 		if((*iter)->get_canvas()==canvas)
 			return *iter;
 
@@ -666,7 +666,7 @@ Instance::close(bool remove_temporary_files)
 
 	// Remove us from the active instance list
 	std::list<etl::handle<studio::Instance> >::iterator iter;
-	for(iter=studio::App::instance_list.begin();iter!=studio::App::instance_list.end();iter++)
+	for (iter = studio::App::instance_list.begin(); iter != studio::App::instance_list.end(); ++iter)
 		if(*iter==this)
 			break;
 	assert(iter!=studio::App::instance_list.end());
@@ -732,7 +732,7 @@ Instance::insert_canvas(Gtk::TreeRow row, synfig::Canvas::Handle canvas)
 		synfig::Canvas::Children::iterator iter;
 		synfig::Canvas::Children &children(canvas->children());
 
-		for(iter=children.begin();iter!=children.end();iter++)
+		for (iter = children.begin(); iter != children.end(); ++iter)
 			insert_canvas(*(canvas_tree_store()->append(row.children())),*iter);
 	}
 }

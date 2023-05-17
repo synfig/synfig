@@ -1743,7 +1743,7 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 				//note: commented out as part of bones branch merge
 
 				// Warn if there is trash after the param value
-				for(iter++; iter != list.end(); ++iter)
+				for (++iter; iter != list.end(); ++iter)
 					if(dynamic_cast<xmlpp::Element*>(*iter))
 						warning((*iter),strprintf(_("Unexpected element <%s> after <waypoint> data, ignoring..."),(*iter)->get_name().c_str()));
 			}
@@ -1811,8 +1811,7 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 			bool first = true;
 			Real angle, prev = 0;
 			WaypointList &wl = value_node->editable_waypoint_list();
-			for (WaypointList::iterator iter = wl.begin(); iter != wl.end(); iter++)
-			{
+			for (WaypointList::iterator iter = wl.begin(); iter != wl.end(); ++iter) {
 				angle = Angle::deg(iter->get_value(iter->get_time()).get(Angle())).get();
 				if (first)
 					first = false;
@@ -1888,8 +1887,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 		int index;
 		String id, name;
 		xmlpp::Element::AttributeList attrib_list(element->get_attributes());
-		for(xmlpp::Element::AttributeList::iterator iter = attrib_list.begin(); iter != attrib_list.end(); iter++)
-		{
+		for (xmlpp::Element::AttributeList::iterator iter = attrib_list.begin(); iter != attrib_list.end(); ++iter) {
 			name = (*iter)->get_name();
 			id = (*iter)->get_value();
 
@@ -3017,7 +3015,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 			}
 
 			// Warn if there is trash after the param value
-			for(iter++; iter != list.end(); ++iter)
+			for (++iter; iter != list.end(); ++iter)
 				if(dynamic_cast<xmlpp::Element*>(*iter))
 					warning((*iter),strprintf(_("Unexpected element <%s> after <param> data, ignoring..."),(*iter)->get_name().c_str()));
 			continue;
@@ -3428,12 +3426,13 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 	if(canvas->value_node_list().placeholder_count())
 	{
 		String nodes;
-		for (ValueNodeList::const_iterator iter = canvas->value_node_list().begin(); iter != canvas->value_node_list().end(); iter++)
+		for (ValueNodeList::const_iterator iter = canvas->value_node_list().begin(); iter != canvas->value_node_list().end(); ++iter) {
 			if(PlaceholderValueNode::Handle::cast_dynamic(*iter))
 			{
 				if (nodes != "") nodes += ", ";
 				nodes += "'" + (*iter)->get_id() + "'";
 			}
+		}
 		error(element,strprintf(_("Canvas '%s' has undefined %s: %s"),
 								canvas->get_id().c_str(),
 								canvas->value_node_list().placeholder_count() == 1 ? _("ValueNode") : _("ValueNodes"),

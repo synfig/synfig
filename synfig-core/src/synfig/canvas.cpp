@@ -772,7 +772,7 @@ Canvas::surefind_canvas(const String &id, String &warnings)
 
 		// Search for the image in the image list,
 		// and return it if it is found
-		for(iter=children().begin();iter!=children().end();iter++)
+		for (iter = children().begin(); iter != children().end(); ++iter)
 			if(id==(*iter)->get_id())
 				return *iter;
 
@@ -858,7 +858,7 @@ Canvas::find_canvas(const String &id, String &warnings)const
 
 		// Search for the image in the image list,
 		// and return it if it is found
-		for(iter=children().begin();iter!=children().end();iter++)
+		for (iter = children().begin(); iter != children().end(); ++iter)
 			if(id==(*iter)->get_id())
 				return *iter;
 
@@ -1454,7 +1454,7 @@ Canvas::show_externals(String file, int line, String text) const
 {
 	printf("  .----- (externals for %lx '%s')\n  |  %s:%d %s\n", uintptr_t(this), get_name().c_str(), file.c_str(), line, text.c_str());
 	std::map<String, Handle>::iterator iter;
-	for (iter = externals_.begin(); iter != externals_.end(); iter++)
+	for (iter = externals_.begin(); iter != externals_.end(); ++iter)
 	{
 		synfig::String first(iter->first);
 		Canvas::LooseHandle second(iter->second);
@@ -1469,7 +1469,7 @@ Canvas::show_structure(int i) const
 	if(i==0)
 		printf("---Canvas Structure----\n");
 	IndependentContext iter;
-	for(iter=get_independent_context();*iter;iter++)
+	for (iter = get_independent_context(); *iter; ++iter)
 	{
 		Layer::Handle layer=*iter;
 		printf("%d: %s : %s", i, layer->get_name().c_str(), layer->get_non_empty_description().c_str());

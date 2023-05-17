@@ -1397,10 +1397,6 @@ StateBLine_Context::refresh_ducks(bool button_down)
 			bezier=0;
 		}
 
-		// Now we see if we need to create a bezier
-		std::list<ValueNode_Const::Handle>::iterator next(iter);
-		next++;
-
 		bezier=new WorkArea::Bezier();
 
 		// Add the tangent2 duck

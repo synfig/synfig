@@ -610,14 +610,12 @@ FileSystemTemporary::open_temporary(const String &filename)
 		if ((*i)->get_name() == "files")
 		{
 			xmlpp::Element::NodeList files_list = (*i)->get_children();
-			for(xmlpp::Element::NodeList::iterator j = files_list.begin(); j != files_list.end(); j++)
-			{
+			for (xmlpp::Element::NodeList::iterator j = files_list.begin(); j != files_list.end(); ++j) {
 				if ((*j)->get_name() == "entry")
 				{
 					FileInfo info;
 					xmlpp::Element::NodeList fields_list = (*j)->get_children();
-					for(xmlpp::Element::NodeList::iterator k = fields_list.begin(); k != fields_list.end(); k++)
-					{
+					for (xmlpp::Element::NodeList::iterator k = fields_list.begin(); k != fields_list.end(); ++k) {
 						if ((*k)->get_name() == "name")
 							info.name = fix_slashes(get_xml_node_text(*k));
 						if ((*k)->get_name() == "tmp-basename")

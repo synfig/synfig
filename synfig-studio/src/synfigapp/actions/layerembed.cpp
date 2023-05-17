@@ -166,8 +166,8 @@ Action::LayerEmbed::prepare()
 		// generate name
 		std::string fname = filesystem::Path::filename_sans_extension(filesystem::Path::basename(sub_canvas->get_file_name()));
 		static const char bad_chars[]=" :#@$^&()*";
-		for(std::string::iterator j = fname.begin(); j != fname.end(); j++)
-			for(const char *k = bad_chars; *k != 0; k++)
+		for (std::string::iterator j = fname.begin(); j != fname.end(); ++j)
+			for (const char *k = bad_chars; *k != 0; ++k)
 				if (*j == *k) { *j = '_'; break; }
 		if (fname.empty()) fname = "canvas";
 		if (fname[0]>='0' && fname[0]<='9')
@@ -175,13 +175,12 @@ Action::LayerEmbed::prepare()
 
 		std::string name;
 		bool found = false;
-		for(int j = 1; j < 1000; j++)
-		{
+		for (int j = 1; j < 1000; ++j) {
 			name = j == 1 ? fname : strprintf("%s_%d", fname.c_str(), j);
 			if (get_canvas()->value_node_list().count(name) == false)
 			{
 				found = true;
-				for(std::list<Canvas::Handle>::const_iterator iter=get_canvas()->children().begin();iter!=get_canvas()->children().end();iter++)
+				for (std::list<Canvas::Handle>::const_iterator iter = get_canvas()->children().begin(); iter != get_canvas()->children().end(); ++iter)
 					if(name==(*iter)->get_id())
 						{ found = false; break; }
 				if (found) break;
