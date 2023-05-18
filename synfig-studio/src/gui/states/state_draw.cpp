@@ -987,15 +987,12 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 		// returned widths are homogeneous position
 		// let's convert it to standard position
 		// as it is the default for new adv. outlines layers
-		std::list<synfig::WidthPoint>::iterator iter;
-		for(iter=wplist.begin(); iter!=wplist.end(); iter++)
+		for (std::list<synfig::WidthPoint>::iterator iter = wplist.begin(); iter != wplist.end(); ++iter)
 			iter->set_position(hom_to_std(ValueBase::List(bline.begin(), bline.end()), iter->get_position(), false, false));
 	}
 	// print out resutls
 	//synfig::info("-----------widths");
-	//std::list<synfig::WidthPoint>::iterator iter;
-	//for(iter=wplist.begin();iter!=wplist.end();iter++)
-	//{
+	//for (std::list<synfig::WidthPoint>::iterator iter = wplist.begin(); iter != wplist.end(); ++iter) {
 		//if(!iter->get_dash())
 			//synfig::info("Widthpoint W=%f, P=%f", iter->get_width(), iter->get_position());
 	//}
@@ -1025,9 +1022,8 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 			tangent=bline.back().get_tangent1();
 			width=bline.back().get_width();
 			bline.pop_back();
-			std::list<synfig::WidthPoint>::iterator iter;
 			if(get_layer_advanced_outline_flag())
-				for(iter=wplist.begin(); iter!=wplist.end(); iter++)
+				for (std::list<synfig::WidthPoint>::iterator iter = wplist.begin(); iter != wplist.end(); ++iter)
 					iter->set_position(iter->get_position()+1/(size-1));
 		}
 
@@ -1597,8 +1593,7 @@ debug_show_vertex_list(int iteration, std::list<synfigapp::ValueDesc>& vertex_li
 	int prev;
 	int dir = 0;
 	bool started = false;
-	for(;i!=vertex_list.end();i++,c++)
-	{
+	for ( ; i != vertex_list.end(); ++i, ++c) {
 		synfigapp::ValueDesc value_desc(*i);
 
 		if (value_desc.parent_is_value_node()) {
@@ -1854,13 +1849,14 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 		// rearrange the list so that the first and last node are on different blines
 		std::list<synfigapp::ValueDesc>::iterator iter, start;
 		ValueNode::Handle last_value_node = vertex_list.back().get_parent_value_node();
-		for(iter = vertex_list.begin(); iter!=vertex_list.end(); iter++)
+		for (iter = vertex_list.begin(); iter != vertex_list.end(); ++iter) {
 			if (iter->get_parent_value_node() != last_value_node)
 			{
 				vertex_list.insert(vertex_list.end(), vertex_list.begin(), iter);
 				vertex_list.erase(vertex_list.begin(), iter);
 				break;
 			}
+		}
 
 		debug_show_vertex_list(0, vertex_list, "before detecting direction and limits", -1);
 		// rearrange the list so that the first and last node are on different blines
@@ -1880,7 +1876,7 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 			// printf("there are %d points in this line - first is index %d\n", points_in_line, last_index);
 
 			// while we're looking at the same bline, keep going
-			iter++;
+			++iter;
 			while (iter != vertex_list.end() && iter->get_parent_value_node() == parent_value_node)
 			{
 				this_index = iter->get_index();
@@ -1905,7 +1901,7 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 					direction--;
 
 				last_index = this_index;
-				iter++;
+				++iter;
 			}
 
 			// printf("min %d and max %d\n", min_index, max_index);
@@ -2000,8 +1996,7 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 			iter=next++; // Set iter to the first value desc, and next to the second
 
 			int current = 0;
-			for(;iter!=vertex_list.end();prev=iter,iter++,next++,current++)
-			{
+			for ( ; iter != vertex_list.end(); prev = iter++, ++next, ++current) {
 				// we need to be able to erase(next) and can't do that if next is end()
 				if (next == vertex_list.end()) next = vertex_list.begin();
 				debug_show_vertex_list(i, vertex_list, "in loop around vertices", current);
@@ -2373,8 +2368,7 @@ StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,st
 				old_wplist.push_back(i->get(synfig::WidthPoint()));
 			std::list<synfig::WidthPoint>::iterator witer;
 			int i;
-			for(i=0, witer=old_wplist.begin(); witer!=old_wplist.end(); witer++, i++)
-			{
+			for (i = 0, witer = old_wplist.begin(); witer != old_wplist.end(); ++witer, ++i) {
 				synfigapp::Action::Handle action(synfigapp::Action::create("ValueDescSet"));
 				assert(action);
 				action->set_param("canvas", get_canvas());
@@ -2425,8 +2419,7 @@ StateDraw_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,st
 			// Don't add the widthpoint with position equal to 0.0 if doing
 			// complete loops.
 			//
-			for(witer=wplist.begin(); witer!=wplist.end();witer++)
-			{
+			for (witer = wplist.begin(); witer != wplist.end(); ++witer) {
 				if(witer->get_position() == 1.0)
 					continue;
 				if(complete_loop && witer->get_position() == 0.0)
@@ -2556,8 +2549,7 @@ StateDraw_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std:
 				old_wplist.push_back(i->get(synfig::WidthPoint()));
 			std::list<synfig::WidthPoint>::iterator witer;
 			int i;
-			for(i=0, witer=old_wplist.begin(); witer!=old_wplist.end(); witer++, i++)
-			{
+			for (i = 0, witer = old_wplist.begin(); witer != old_wplist.end(); ++witer, ++i) {
 				synfigapp::Action::Handle action(synfigapp::Action::create("ValueDescSet"));
 				assert(action);
 				action->set_param("canvas", get_canvas());
@@ -2608,8 +2600,7 @@ StateDraw_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std:
 			// Don't add the widthpoint with position equal to 0.0 if doing
 			// complete loops.
 			//
-			for(witer=wplist.begin(); witer!=wplist.end();witer++)
-			{
+			for (witer = wplist.begin(); witer != wplist.end(); ++witer) {
 				if(witer->get_position() == 0.0)
 					continue;
 				if(complete_loop && witer->get_position() == 1.0)
@@ -2701,9 +2692,8 @@ StateDraw_Context::reverse_bline(std::list<synfig::BLinePoint> &bline)
 	std::list<synfig::BLinePoint>::iterator iter,eiter;
 	iter=bline.begin();
 	eiter=bline.end();
-	eiter--;
-	for(i=0;i<(int)bline.size()/2;++iter,--eiter,i++)
-	{
+	--eiter;
+	for (i = 0; i < (int)bline.size()/2; ++iter, --eiter, ++i) {
 		iter_swap(iter,eiter);
 		iter->reverse();
 		eiter->reverse();
@@ -2713,8 +2703,7 @@ StateDraw_Context::reverse_bline(std::list<synfig::BLinePoint> &bline)
 void
 StateDraw_Context::reverse_wplist(std::list<synfig::WidthPoint> &wplist)
 {
-	std::list<synfig::WidthPoint>::iterator iter;
-	for(iter=wplist.begin();iter!=wplist.end();iter++)
+	for (std::list<synfig::WidthPoint>::iterator iter = wplist.begin(); iter != wplist.end(); ++iter)
 		iter->reverse();
 }
 

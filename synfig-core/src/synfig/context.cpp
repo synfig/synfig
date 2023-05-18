@@ -312,7 +312,8 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 			!composite->reads_context())
 		{
 			Layer::Handle layer = *context;
-			while (!context->empty()) context++; // skip the context
+			while (!context->empty())
+				++context; // skip the context
 			return layer->accelerated_render(context,surface,quality,renddesc, cb);
 		}
 		// Break out of the loop--we have found a good layer

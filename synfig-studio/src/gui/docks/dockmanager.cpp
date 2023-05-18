@@ -800,7 +800,7 @@ std::string DockManager::layout_from_template(const std::string &tpl, float dx, 
 
 void DockManager::set_dock_area_visibility(bool visible, DockBook* source)
 {
-	for(auto iter=dockable_list_.begin();iter!=dockable_list_.end();++iter) {
+	for (auto iter = dockable_list_.begin(); iter != dockable_list_.end(); ++iter) {
 		Dockable * dockable = *iter;
 		if (!dockable->is_visible())
 			continue;
@@ -818,8 +818,7 @@ DockManager::update_window_titles()
 	typedef std::map< Glib::RefPtr<Gdk::Window>, std::string > TitleMap;
 	CanvasViewMap canvas_view_map;
 	TitleMap title_map;
-	for(std::list<Dockable*>::iterator i = dockable_list_.begin(); i != dockable_list_.end(); i++)
-	{
+	for (std::list<Dockable*>::iterator i = dockable_list_.begin(); i != dockable_list_.end(); ++i) {
 		if ((*i)->get_parent_window())
 		{
 			title_map[(*i)->get_parent_window()] = (*i)->get_parent_window() == App::main_window->get_window()
@@ -831,11 +830,11 @@ DockManager::update_window_titles()
 	}
 
 	// prepare titles
-	for(CanvasViewMap::iterator i = canvas_view_map.begin(); i != canvas_view_map.end(); i++)
+	for (CanvasViewMap::iterator i = canvas_view_map.begin(); i != canvas_view_map.end(); ++i)
 		title_map[ i->second->get_parent_window() ] =
 			i->second->get_local_name() + " - " + _("Synfig Studio");
 
 	// set titles
-	for(TitleMap::iterator i = title_map.begin(); i != title_map.end(); i++)
+	for (TitleMap::iterator i = title_map.begin(); i != title_map.end(); ++i)
 		i->first->set_title(i->second);
 }

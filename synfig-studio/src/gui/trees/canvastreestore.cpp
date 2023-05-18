@@ -549,8 +549,7 @@ CanvasTreeStore::set_row(Gtk::TreeRow row,synfigapp::ValueDesc value_desc, bool 
 				row[model.link_count] = linkable->link_count();
 				const LinkableValueNode::Vocab& vocab(linkable->get_children_vocab());
 				LinkableValueNode::Vocab::const_iterator iter(vocab.begin());
-				for(int i=0;i<linkable->link_count();i++, iter++)
-				{
+				for (int i = 0; i < linkable->link_count(); ++i, ++iter) {
 					if(iter->get_hidden())
 						continue;
 					Gtk::TreeRow child_row=*(append(row.children()));

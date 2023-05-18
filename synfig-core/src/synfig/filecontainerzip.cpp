@@ -309,13 +309,12 @@ FileContainerZip::HistoryRecord FileContainerZip::decode_history(const String &c
 		if (root->get_name() == "history")
 		{
 			xmlpp::Element::NodeList list = root->get_children();
-			for(xmlpp::Element::NodeList::iterator i = list.begin(); i != list.end(); i++)
-			{
+			for (xmlpp::Element::NodeList::iterator i = list.begin(); i != list.end(); ++i) {
 				if ((*i)->get_name() == "prev_storage_size")
 				{
 					String s;
 					xmlpp::Element::NodeList list = (*i)->get_children();
-					for(xmlpp::Element::NodeList::iterator j = list.begin(); j != list.end(); j++)
+					for(xmlpp::Element::NodeList::iterator j = list.begin(); j != list.end(); ++j)
 						if (dynamic_cast<xmlpp::TextNode*>(*j))
 							s += dynamic_cast<xmlpp::TextNode*>(*j)->get_content();
 					history_record.prev_storage_size = strtoll(s.c_str(), nullptr, 10);
@@ -495,7 +494,7 @@ bool FileContainerZip::open_from_history(const String &container_filename, file_
 			files[ info.name ] = info;
 			i = files.begin();
 		}
-		else i++;
+		else ++i;
 	}
 
 	// loaded
@@ -522,7 +521,7 @@ bool FileContainerZip::save()
 	fseek(storage_file_, 0, SEEK_END);
 
 	// write headers of new directories
-	for(FileMap::iterator i = files_.begin(); i != files_.end(); i++)
+	for(FileMap::iterator i = files_.begin(); i != files_.end(); ++i)
 	{
 		FileInfo &info = i->second;
 		if (info.is_directory && !info.directory_saved)
