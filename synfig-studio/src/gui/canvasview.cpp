@@ -1547,7 +1547,7 @@ void
 CanvasView::on_select_layers()
 {
 	Canvas::Handle canvas(get_canvas());
-	for (CanvasBase::iterator iter = canvas->begin(); iter != canvas->end(); iter++)
+	for (CanvasBase::iterator iter = canvas->begin(); iter != canvas->end(); ++iter)
 		layer_tree->select_all_children_layers(*iter);
 }
 
@@ -2297,7 +2297,7 @@ CanvasView::increase_low_res_pixel_size()
 		return;
 	}
 
-	for (std::list<int>::iterator iter = sizes.begin(); iter != sizes.end(); iter++)
+	for (std::list<int>::iterator iter = sizes.begin(); iter != sizes.end(); ++iter)
 		if (*iter == pixel_size) {
 			if (++iter != sizes.end()) {
 				Glib::RefPtr<Gtk::Action> action = action_group->get_action(synfig::strprintf("lowres-pixel-%d", *iter));
@@ -2622,8 +2622,7 @@ duplicate_waypoints(std::set<Waypoint, std::less<UniqueID> > waypoints,
 	Action::PassiveGrouper group(canvas_interface->get_instance().get(),_("Duplicate Waypoints"));
 
 	std::set<Waypoint, std::less<UniqueID> >::const_iterator iter;
-	for (iter = waypoints.begin(); iter != waypoints.end(); iter++)
-	{
+	for (iter = waypoints.begin(); iter != waypoints.end(); ++iter) {
 		Waypoint waypoint(*iter);
 		ValueNode::Handle value_node(iter->get_parent_value_node());
 		canvas_interface->waypoint_duplicate(value_node, waypoint);
@@ -2638,8 +2637,7 @@ remove_waypoints(std::set<Waypoint, std::less<UniqueID> > waypoints,
 	Action::PassiveGrouper group(canvas_interface->get_instance().get(),_("Remove Waypoints"));
 
 	std::set<Waypoint, std::less<UniqueID> >::const_iterator iter;
-	for (iter = waypoints.begin(); iter != waypoints.end(); iter++)
-	{
+	for (iter = waypoints.begin(); iter != waypoints.end(); ++iter) {
 		Waypoint waypoint(*iter);
 		ValueNode::Handle value_node(iter->get_parent_value_node());
 		canvas_interface->waypoint_remove(value_node, waypoint);

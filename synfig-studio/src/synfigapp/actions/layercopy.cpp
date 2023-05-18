@@ -94,7 +94,7 @@ Action::LayerCopy::is_candidate(const ParamList &x)
 		return false;
 
 	bool there_is_a_bitmap_layer = false;
-	for(ParamList::const_iterator i = x.begin(); i != x.end(); i++) {
+	for (ParamList::const_iterator i = x.begin(); i != x.end(); ++i) {
 		if (i->first == "layer") {
 			if (i->second.get_type() != Param::TYPE_LAYER)
 				return false;
@@ -136,8 +136,7 @@ Action::LayerCopy::prepare()
 	if(!first_time())
 		return;
 
-	for(std::list<Layer::Handle>::iterator i = layers.begin(); i != layers.end(); ++i)
-	{
+	for (std::list<Layer::Handle>::iterator i = layers.begin(); i != layers.end(); ++i) {
 		Layer::Handle layer(*i);
 
 		Canvas::Handle subcanvas(layer->get_canvas());

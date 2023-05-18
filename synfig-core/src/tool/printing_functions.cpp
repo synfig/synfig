@@ -59,7 +59,7 @@ void print_child_canvases(const std::string& prefix,
 {
 	const synfig::Canvas::Children& children(canvas->children());
 	for (synfig::Canvas::Children::const_iterator child_canvas = children.begin();
-		 child_canvas != children.end(); child_canvas++)
+		 child_canvas != children.end(); ++child_canvas)
 	{
 		std::string new_prefix = prefix + ":" + (*child_canvas)->get_id();
 		std::cout << new_prefix << std::endl;
@@ -256,7 +256,7 @@ void print_canvas_info(const Job& job)
 		std::cout << std::endl << "# " << _("Metadata") << std::endl;
 
 		for (std::list<String>::iterator key = keys.begin();
-			 key != keys.end(); key++)
+			 key != keys.end(); ++key)
 			std::cout << (*key).c_str() << "=" << canvas->get_meta_data(*key).c_str()<< std::endl;
 	}
 }

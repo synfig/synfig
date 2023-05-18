@@ -723,7 +723,7 @@ LinkableValueNode::get_link_description(int index, bool show_exported_name)const
 		String param;
 		const Layer::DynamicParamList &dynamic_param_list(parent_layer->dynamic_param_list());
 		// loop to find the parameter in the dynamic parameter list - this gives us its name
-		for (Layer::DynamicParamList::const_iterator iter = dynamic_param_list.begin(); iter != dynamic_param_list.end(); iter++)
+		for (Layer::DynamicParamList::const_iterator iter = dynamic_param_list.begin(); iter != dynamic_param_list.end(); ++iter)
 			if (iter->second == parent_linkable_vn)
 				param = String(":") + parent_layer->get_param_local_name(iter->first);
 		description = strprintf("(%s)%s>%s",
@@ -747,7 +747,8 @@ LinkableValueNode::link_name(int i)const
 	const auto& vocab = children_vocab;
 	Vocab::const_iterator iter(vocab.begin());
 	int j=0;
-	for(;iter!=vocab.end() && j<i; iter++, j++) {}
+	for( ; iter != vocab.end() && j < i; ++iter, ++j)
+	{}
 	return iter!=vocab.end()?iter->get_name():String();
 }
 
@@ -757,7 +758,8 @@ LinkableValueNode::link_local_name(int i)const
 	const auto& vocab = children_vocab;
 	Vocab::const_iterator iter(vocab.begin());
 	int j=0;
-	for(;iter!=vocab.end() && j<i; iter++, j++) {}
+	for( ; iter != vocab.end() && j < i; ++iter, ++j)
+	{}
 	return iter!=vocab.end()?iter->get_local_name():String();
 }
 
@@ -767,7 +769,7 @@ LinkableValueNode::get_link_index_from_name(const String &name)const
 	const auto& vocab = children_vocab;
 	Vocab::const_iterator iter(vocab.begin());
 	int j=0;
-	for(; iter!=vocab.end(); iter++, j++)
+	for( ; iter != vocab.end(); ++iter, ++j)
 		if(iter->get_name()==name) return j;
 	throw Exception::BadLinkName(name);
 }

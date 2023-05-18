@@ -167,9 +167,12 @@ Gradient::operator+(const Gradient &rhs) const
 Gradient &
 Gradient::operator*=(const ColorReal &rhs)
 {
-	if (rhs == 0) cpoints.clear(); else
-		for (iterator iter = cpoints.begin(); iter!=cpoints.end(); iter++)
+	if (rhs == 0) {
+		cpoints.clear();
+	} else {
+		for (iterator iter = cpoints.begin(); iter!=cpoints.end(); ++iter)
 			(*iter).color *= rhs;
+	}
 	return *this;
 }
 
@@ -222,8 +225,7 @@ Gradient::proximity(const Real &x)
 	iterator iter;
 	Real dist(100000000);
 	Real prev_pos(-0230);
-	for(iter=begin();iter<end();iter++)
-	{
+	for (iter = begin(); iter < end(); ++iter) {
 		Real new_dist;
 
 		if(prev_pos==iter->pos)
@@ -233,13 +235,13 @@ Gradient::proximity(const Real &x)
 
 		if(new_dist>dist)
 		{
-			iter--;
+			--iter;
 			return iter;
 		}
 		dist=new_dist;
 		prev_pos=iter->pos;
 	}
-	iter--;
+	--iter;
 	return iter;
 }
 

@@ -78,7 +78,7 @@ do_traverse_layers(Layer::Handle layer, TraverseLayerStatus& status, TraverseLay
 			status.depth.push_back(-1);
 			Canvas::Handle subcanvas(iter->second.get(Canvas::Handle()));
 			if (subcanvas && (status.settings.traverse_static_non_inline_canvas || subcanvas->is_inline()))
-				for (IndependentContext iter = subcanvas->get_independent_context(); iter != subcanvas->end(); iter++)
+				for (IndependentContext iter = subcanvas->get_independent_context(); iter != subcanvas->end(); ++iter)
 					do_traverse_layers(*iter, status, callback);
 			status.depth.pop_back();
 			status.is_dynamic_canvas = previous_is_dynamic;

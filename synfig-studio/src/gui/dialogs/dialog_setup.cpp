@@ -980,8 +980,7 @@ Dialog_Setup::on_apply_pressed()
 			listviewtext_brushes_path->get_model());
 
 		for(Gtk::TreeIter ui_iter = liststore->children().begin();
-			ui_iter!=liststore->children().end();ui_iter++)
-		{
+			ui_iter != liststore->children().end(); ++ui_iter) {
 			const Gtk::TreeRow row = *(ui_iter);
 			// TODO utf_8 path : care to other locale than english ?
 			synfig::String path((row[prefs_brushpath.path]));
@@ -1312,8 +1311,7 @@ Dialog_Setup::refresh()
 		}
 	}
 	for (std::set<synfig::String>::iterator setiter = App::brushes_path.begin();
-			setiter != App::brushes_path.end(); setiter++)
-	{
+			setiter != App::brushes_path.end(); ++setiter) {
 		ui_iter = liststore->append();
 		(*ui_iter)[prefs_brushpath.path]=*setiter;
 	}

@@ -178,9 +178,7 @@ Instance::find_canvas_interface(synfig::Canvas::Handle canvas)
 	while(canvas->is_inline())
 		canvas=canvas->parent();
 
-	CanvasInterfaceList::iterator iter;
-
-	for(iter=canvas_interface_list().begin();iter!=canvas_interface_list().end();iter++)
+	for (CanvasInterfaceList::iterator iter = canvas_interface_list().begin(); iter != canvas_interface_list().end(); ++iter)
 		if((*iter)->get_canvas()==canvas)
 			return *iter;
 
@@ -230,8 +228,8 @@ Instance::import_external_canvas(Canvas::Handle canvas, std::map<Canvas*, Canvas
 			// generate name
 			std::string fname = filesystem::Path::filename_sans_extension(filesystem::Path::basename(sub_canvas->get_file_name()));
 			static const char bad_chars[]=" :#@$^&()*";
-			for(std::string::iterator j = fname.begin(); j != fname.end(); j++)
-				for(const char *k = bad_chars; *k != 0; k++)
+			for(std::string::iterator j = fname.begin(); j != fname.end(); ++j)
+				for (const char* k = bad_chars; *k != 0; ++k)
 					if (*j == *k) { *j = '_'; break; }
 			if (fname.empty()) fname = "canvas";
 			if (fname[0]>='0' && fname[0]<='9')
@@ -245,7 +243,7 @@ Instance::import_external_canvas(Canvas::Handle canvas, std::map<Canvas*, Canvas
 				if (canvas->value_node_list().count(name) == false)
 				{
 					found = true;
-					for(std::list<Canvas::Handle>::const_iterator iter=canvas->children().begin();iter!=canvas->children().end();iter++)
+					for (std::list<Canvas::Handle>::const_iterator iter = canvas->children().begin(); iter != canvas->children().end(); ++iter)
 						if(name==(*iter)->get_id())
 							{ found = false; break; }
 					if (found) break;
@@ -277,7 +275,7 @@ Instance::import_external_canvas(Canvas::Handle canvas, std::map<Canvas*, Canvas
 		}
 	}
 
-	for(std::list<Canvas::Handle>::const_iterator i = canvas->children().begin(); i != canvas->children().end(); i++)
+	for (std::list<Canvas::Handle>::const_iterator i = canvas->children().begin(); i != canvas->children().end(); ++i)
 		if (import_external_canvas(*i, imported))
 			return true;
 

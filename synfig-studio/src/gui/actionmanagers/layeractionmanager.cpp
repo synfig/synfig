@@ -627,18 +627,18 @@ LayerActionManager::export_dup_nodes(synfig::Layer::Handle layer, Canvas::Handle
 		Layer::ParamList param_list(layer->get_param_list());
 		for (Layer::ParamList::const_iterator iter(param_list.begin())
 				 ; iter != param_list.end()
-				 ; iter++)
+				 ; ++iter)
 			if (layer->dynamic_param_list().count(iter->first)==0 && iter->second.get_type()==type_canvas)
 			{
 				Canvas::Handle subcanvas(iter->second.get(Canvas::Handle()));
 				if (subcanvas && subcanvas->is_inline())
-					for (IndependentContext iter = subcanvas->get_independent_context(); iter != subcanvas->end(); iter++)
+					for (IndependentContext iter = subcanvas->get_independent_context(); iter != subcanvas->end(); ++iter)
 						export_dup_nodes(*iter, canvas, index);
 			}
 
 		for (Layer::DynamicParamList::const_iterator iter(layer->dynamic_param_list().begin())
 				 ; iter != layer->dynamic_param_list().end()
-				 ; iter++)
+				 ; ++iter)
 			if (iter->second->get_type()==type_canvas)
 			{
 				Canvas::Handle canvas((*iter->second)(0).get(Canvas::Handle()));
