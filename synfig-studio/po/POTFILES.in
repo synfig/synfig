@@ -366,7 +366,7 @@ src/synfigapp/actions/keyframeset.cpp
 src/synfigapp/actions/keyframeset.h
 src/synfigapp/actions/keyframesetdelta.cpp
 src/synfigapp/actions/keyframesetdelta.h
-src/synfigapp/actions/keyframetoggl.cpp
+src/synfigapp/actions/keyframetoggle.cpp
 src/synfigapp/actions/keyframewaypointset.cpp
 src/synfigapp/actions/keyframewaypointset.h
 src/synfigapp/actions/layeractivate.cpp

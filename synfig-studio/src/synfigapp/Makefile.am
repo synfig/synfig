@@ -208,7 +208,7 @@ KEYFRAME_ACTION_HH = \
 	actions/keyframeadd.h \
 	actions/keyframeduplicate.h \
 	actions/keyframeremove.h \
-	actions/keyframetoggl.h \
+	actions/keyframetoggle.h \
 	actions/keyframeset.h \
 	actions/keyframesetdelta.h \
 	actions/keyframewaypointset.h
@@ -217,7 +217,7 @@ KEYFRAME_ACTION_CC = \
 	actions/keyframeadd.cpp \
 	actions/keyframeduplicate.cpp \
 	actions/keyframeremove.cpp \
-	actions/keyframetoggl.cpp \
+	actions/keyframetoggle.cpp \
 	actions/keyframeset.cpp \
 	actions/keyframesetdelta.cpp \
 	actions/keyframewaypointset.cpp

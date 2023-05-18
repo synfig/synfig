@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file keyframetoggl.cpp
+/*!	\file keyframetoggle.cpp
 **	\brief Template File
 **
 **	\legal
@@ -35,7 +35,7 @@
 
 #include <synfig/general.h>
 
-#include "keyframetoggl.h"
+#include "keyframetoggle.h"
 #include <synfigapp/canvasinterface.h>
 #include <synfig/valuenodes/valuenode_dynamiclist.h>
 #include <synfig/valuenodes/valuenode_animated.h>
