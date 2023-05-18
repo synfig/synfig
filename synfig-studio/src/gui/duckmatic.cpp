@@ -1710,7 +1710,7 @@ Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Laye
 -- ** -- -----------------------------------------------------------------------
 */
 bool
-Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,CanvasView::Handle canvas_view, const synfig::TransformStack& transform_stack, synfig::ParamDesc *param_desc)
+Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Handle canvas_view, const synfig::TransformStack& transform_stack, const synfig::ParamDesc* param_desc)
 {
 	synfig::Type &type=value_desc.get_value_type();
 #define REAL_COOKIE		reinterpret_cast<synfig::ParamDesc*>(28)
