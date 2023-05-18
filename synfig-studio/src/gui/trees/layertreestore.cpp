@@ -740,11 +740,11 @@ LayerTreeStore::rebuild()
 
 	// disconnect any subcanvas_changed connections
 	std::map<synfig::Layer::Handle, sigc::connection>::iterator iter;
-	for (iter = subcanvas_changed_connections.begin(); iter != subcanvas_changed_connections.end(); iter++)
+	for (iter = subcanvas_changed_connections.begin(); iter != subcanvas_changed_connections.end(); ++iter)
 		iter->second.disconnect();
 	subcanvas_changed_connections.clear();
 
-	for (iter = switch_changed_connections.begin(); iter != switch_changed_connections.end(); iter++)
+	for (iter = switch_changed_connections.begin(); iter != switch_changed_connections.end(); ++iter)
 		iter->second.disconnect();
 	switch_changed_connections.clear();
 
@@ -1079,7 +1079,7 @@ LayerTreeStore::on_layer_lowered(synfig::Layer::Handle layer)
 		// Save the selection data
 		//synfigapp::SelectionManager::LayerList layer_list=canvas_interface()->get_selection_manager()->get_selected_layers();
 		iter2=iter;
-		iter2++;
+		++iter2;
 		if(!iter2 || RECORD_TYPE_LAYER != (*iter2)[model.record_type])
 		{
 			rebuild();
@@ -1115,7 +1115,7 @@ LayerTreeStore::on_layer_raised(synfig::Layer::Handle layer)
 			synfig::Layer::Handle layer2=row2[model.layer];
 
 			erase(iter2);
-			iter++;
+			++iter;
 			row2=*insert(iter);
 			set_row_layer(row2,layer2);
 

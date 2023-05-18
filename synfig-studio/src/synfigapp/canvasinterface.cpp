@@ -369,7 +369,7 @@ CanvasInterface::layer_set_defaults(const synfig::Layer::Handle &layer)
 							}
 						}
 					}
-					for (iter2 = list.begin(); iter2 != list.end(); iter2++)
+					for (iter2 = list.begin(); iter2 != list.end(); ++iter2)
 						if (iter2->get_type() != type_width_point)
 							break;
 					if (iter2 == list.end())
@@ -377,7 +377,7 @@ CanvasInterface::layer_set_defaults(const synfig::Layer::Handle &layer)
 						value_node=ValueNodeRegistry::create("wplist",iter->second);
 						ValueNode_WPList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
 					}
-					for (iter2 = list.begin(); iter2 != list.end(); iter2++)
+					for (iter2 = list.begin(); iter2 != list.end(); ++iter2)
 						if (iter2->get_type() != type_dash_item)
 							break;
 					if (iter2 == list.end())
@@ -583,8 +583,7 @@ CanvasInterface::generate_param_list(const std::list<synfigapp::ValueDesc> &valu
 	param_list.add("canvas",get_canvas());
 
 	std::list<synfigapp::ValueDesc>::const_iterator iter;
-	for(iter=value_desc_list.begin();iter!=value_desc_list.end();++iter)
-	{
+	for (iter = value_desc_list.begin(); iter != value_desc_list.end(); ++iter) {
 		param_list.add("value_desc",*iter);
 		if(iter->is_value_node())
 		{
@@ -1388,9 +1387,7 @@ _process_value_desc(const synfigapp::ValueDesc& value_desc,std::vector<synfigapp
 			}
 			// Process the linkable ValueNode's children
 			LinkableValueNode::Handle value_node_copy(LinkableValueNode::Handle::cast_dynamic(value_node));
-			int i;
-			for(i=0;i<value_node_copy->link_count();i++)
-			{
+			for (int i = 0; i < value_node_copy->link_count(); i++) {
 				ValueNode::Handle link(value_node_copy->get_link(i));
 				if(!link->is_exported())
 					ret+=_process_value_desc(ValueDesc(value_node_copy,i),out,guid_set);
@@ -1423,8 +1420,7 @@ CanvasInterface::find_important_value_descs(synfig::Canvas::Handle canvas,std::v
 
 	IndependentContext iter;
 
-	for(iter=canvas->get_independent_context();iter!=canvas->end();++iter)
-	{
+	for (iter = canvas->get_independent_context(); iter != canvas->end(); ++iter) {
 		Layer::Handle layer(*iter);
 
 		Layer::DynamicParamList::const_iterator iter;

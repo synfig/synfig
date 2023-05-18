@@ -105,8 +105,7 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 	target_names.push_back(String());
 	synfig::Target::Book::iterator iter;
 	synfig::Target::Book book(synfig::Target::book());
-	for(iter=book.begin();iter!=book.end();iter++)
-	{
+	for (iter = book.begin(); iter != book.end(); ++iter) {
 		comboboxtext_target.append(iter->first);
 		target_names.push_back(iter->first);
 	}

@@ -1989,7 +1989,8 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 			done=true;
 
 			std::list<synfigapp::ValueDesc>::iterator prev,next;
-			prev=vertex_list.end();prev--;	// Set prev to the last ValueDesc
+			prev=vertex_list.end();
+			--prev;	// Set prev to the last ValueDesc
 			next=vertex_list.begin();
 			iter=next++; // Set iter to the first value desc, and next to the second
 

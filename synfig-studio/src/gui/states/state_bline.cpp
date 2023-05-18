@@ -1735,7 +1735,7 @@ StateBLine_Context::bline_insert_vertex(synfig::ValueNode_Const::Handle value_no
 {
 	std::list<ValueNode_Const::Handle>::iterator iter;
 
-	for(iter=bline_point_list.begin();iter!=bline_point_list.end();++iter)
+	for (iter = bline_point_list.begin(); iter != bline_point_list.end(); ++iter) {
 		if(*iter==value_node)
 		{
 			BLinePoint bline_point;
@@ -1748,7 +1748,7 @@ StateBLine_Context::bline_insert_vertex(synfig::ValueNode_Const::Handle value_no
 				assert(loop_);
 				prev = bline_point_list.end();
 			}
-			prev--;
+			--prev;
 
 			prev_bline_point=(*prev)->get_value().get(BLinePoint());
 
@@ -1768,6 +1768,7 @@ StateBLine_Context::bline_insert_vertex(synfig::ValueNode_Const::Handle value_no
 
 			break;
 		}
+	}
 
 	if(iter==bline_point_list.end())
 	{

@@ -248,8 +248,7 @@ Gradient::proximity(const Real &x)
 Gradient::iterator
 Gradient::find(const UniqueID &id)
 {
-	// TODO: return end() instead of exception
-	for(iterator i = begin(); i < end(); i++)
+	for (iterator i = begin(); i != end(); ++i)
 		if (id == *i) return i;
 	return end();
 }

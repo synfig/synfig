@@ -167,11 +167,11 @@ FileSystemTemporary::directory_scan(const String &dirname, FileList &out_files)
 		FileList list;
 		if (!get_sub_file_system()->directory_scan(clean_dirname, list))
 			return false;
-		for(FileList::const_iterator i = list.begin(); i != list.end(); ++i)
+		for (FileList::const_iterator i = list.begin(); i != list.end(); ++i)
 			files_set.insert(*i);
 	}
 
-	for(FileMap::iterator i = files.begin(); i != files.end(); i++)
+	for (FileMap::iterator i = files.begin(); i != files.end(); ++i) {
 		if (filesystem::Path::dirname(i->second.name) == clean_dirname)
 		{
 			if (i->second.is_removed)
@@ -179,8 +179,9 @@ FileSystemTemporary::directory_scan(const String &dirname, FileList &out_files)
 			else
 				files_set.insert(filesystem::Path::basename(i->second.name));
 		}
+	}
 
-	for(std::set<String>::const_iterator i = files_set.begin(); i != files_set.end(); ++i)
+	for (std::set<String>::const_iterator i = files_set.begin(); i != files_set.end(); ++i)
 		out_files.push_back(*i);
 	return true;
 }
@@ -195,7 +196,7 @@ FileSystemTemporary::file_remove(const String &filename)
 		// NB: This code can check temporary files only,
 		//     but directory may contain other not tracked real files.
 		String prefix = fix_slashes(filename + "/");
-		for(FileMap::iterator i = files.begin(); i != files.end(); i++)
+		for (FileMap::iterator i = files.begin(); i != files.end(); ++i)
 			if ( !i->second.is_removed
 			  && i->second.name.substr(0, prefix.size()) == prefix )
 				return false;
@@ -338,8 +339,7 @@ FileSystemTemporary::save_changes(
 	while(processed)
 	{
 		processed = false;
-		for(FileMap::iterator i = files.begin(); i != files.end(); i++)
-		{
+		for (FileMap::iterator i = files.begin(); i != files.end(); ++i) {
 			bool to_remove = i->second.is_directory
 					       ? target_file_system->is_file(i->second.name)
 					       : target_file_system->is_directory(i->second.name);
@@ -358,8 +358,7 @@ FileSystemTemporary::save_changes(
 	while(processed)
 	{
 		processed = false;
-		for(FileMap::iterator i = files.begin(); i != files.end(); i++)
-		{
+		for (FileMap::iterator i = files.begin(); i != files.end(); ++i) {
 			if (!i->second.is_removed
 			 && i->second.is_directory
 			 && target_file_system->directory_create(i->second.name))
@@ -372,8 +371,7 @@ FileSystemTemporary::save_changes(
 	}
 
 	// create files
-	for(FileMap::iterator i = files.begin(); i != files.end();)
-	{
+	for (FileMap::iterator i = files.begin(); i != files.end(); ) {
 		if (!i->second.is_removed
 		 && !i->second.is_directory
 		 && !i->second.tmp_filename.empty()
@@ -384,7 +382,7 @@ FileSystemTemporary::save_changes(
 				
 			files.erase(i++);
 		}
-		else i++;
+		else ++i;
 	}
 
 	return files.empty();
@@ -421,8 +419,7 @@ void
 FileSystemTemporary::discard_changes()
 {
 	// remove temporary files
-	for(FileMap::iterator i = files.begin(); i != files.end(); i++)
-	{
+	for (FileMap::iterator i = files.begin(); i != files.end(); ++i) {
 		if (!i->second.is_removed
 		 && !i->second.is_directory
 		 && !i->second.tmp_filename.empty())
@@ -502,16 +499,14 @@ FileSystemTemporary::save_temporary() const
 	xmlpp::Element *root = document.create_root_node("temporary-file-system");
 
 	xmlpp::Element *meta_node = root->add_child("meta");
-	for(std::map<String, String>::const_iterator i = meta.begin(); i != meta.end(); i++)
-	{
+	for (std::map<String, String>::const_iterator i = meta.begin(); i != meta.end(); ++i) {
 		xmlpp::Element *entry = meta_node->add_child("entry");
 		entry->add_child("key")->set_child_text(i->first);
 		entry->add_child("value")->set_child_text(i->second);
 	}
 
 	xmlpp::Element *files_node = root->add_child("files");
-	for(FileMap::const_iterator i = files.begin(); i != files.end(); i++)
-	{
+	for (FileMap::const_iterator i = files.begin(); i != files.end(); ++i) {
 		xmlpp::Element *entry = files_node->add_child("entry");
 		entry->add_child("name")->set_child_text(i->second.name);
 		entry->add_child("tmp-basename")->set_child_text(filesystem::Path::basename(i->second.tmp_filename));
@@ -549,7 +544,7 @@ FileSystemTemporary::get_xml_node_text(xmlpp::Node *node)
 	if (node)
 	{
 		xmlpp::Element::NodeList list = node->get_children();
-		for(xmlpp::Element::NodeList::iterator i = list.begin(); i != list.end(); i++)
+		for (xmlpp::Element::NodeList::iterator i = list.begin(); i != list.end(); ++i)
 			if (dynamic_cast<xmlpp::TextNode*>(*i))
 				s += dynamic_cast<xmlpp::TextNode*>(*i)->get_content();
 	}
@@ -584,19 +579,16 @@ FileSystemTemporary::open_temporary(const String &filename)
 	if (root->get_name() != "temporary-file-system") return false;
 
 	xmlpp::Element::NodeList list = root->get_children();
-	for(xmlpp::Element::NodeList::iterator i = list.begin(); i != list.end(); i++)
-	{
+	for (xmlpp::Element::NodeList::iterator i = list.begin(); i != list.end(); ++i) {
 		if ((*i)->get_name() == "meta")
 		{
 			xmlpp::Element::NodeList meta_list = (*i)->get_children();
-			for(xmlpp::Element::NodeList::iterator j = meta_list.begin(); j != meta_list.end(); j++)
-			{
+			for (xmlpp::Element::NodeList::iterator j = meta_list.begin(); j != meta_list.end(); ++j) {
 				if ((*j)->get_name() == "entry")
 				{
 					String key, value;
 					xmlpp::Element::NodeList fields_list = (*j)->get_children();
-					for(xmlpp::Element::NodeList::iterator k = fields_list.begin(); k != fields_list.end(); k++)
-					{
+					for (xmlpp::Element::NodeList::iterator k = fields_list.begin(); k != fields_list.end(); ++k) {
 						if ((*k)->get_name() == "key")
 							key = get_xml_node_text(*k);
 						if ((*k)->get_name() == "value")
@@ -644,8 +636,7 @@ FileSystemTemporary::generate_indexed_temporary_filename(const FileSystem::Handl
 {
 	String extension = filesystem::Path::filename_extension(filename);
 	String sans_extension = filesystem::Path::filename_sans_extension(filename);
-	for(int index = 1; index < 10000; ++index)
-	{
+	for (int index = 1; index < 10000; ++index) {
 		String indexed_filename = strprintf("%s_%04d%s", sans_extension.c_str(), index, extension.c_str());
 		if (!fs->is_exists(indexed_filename))
 			return indexed_filename;

@@ -163,8 +163,7 @@
 { \
 	Vocab vocab(get_param_vocab()); \
 	Vocab::const_iterator viter; \
-	for(viter=vocab.begin();viter!=vocab.end();viter++) \
-	{ \
+	for (viter = vocab.begin(); viter != vocab.end(); ++viter) { \
 		ValueBase v=get_param(viter->get_name()); \
 		v.set_static(viter->get_static()); \
 		set_param(viter->get_name(), v); \

@@ -1912,7 +1912,8 @@ StateLasso_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real
 			done=true;
 
 			std::list<synfigapp::ValueDesc>::iterator prev,next;
-			prev=vertex_list.end();prev--;	// Set prev to the last ValueDesc
+			prev=vertex_list.end();
+			--prev;	// Set prev to the last ValueDesc
 			next=vertex_list.begin();
 			iter=next++; // Set iter to the first value desc, and next to the second
 
@@ -2140,8 +2141,7 @@ StateLasso_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real
 		value_node_bline=ValueNode_BLine::create();
 
 		std::list<synfigapp::ValueDesc>::iterator iter;
-		for(iter=vertex_list.begin();iter!=vertex_list.end();++iter)
-		{
+		for (iter = vertex_list.begin(); iter != vertex_list.end(); ++iter) {
 			// Ensure that the vertex is exported.
 			get_canvas_interface()->auto_export(*iter);
 
@@ -2220,8 +2220,7 @@ StateLasso_Context::refresh_ducks()
 
 	std::list<std::shared_ptr<std::list<synfig::Point>>>::iterator iter;
 
-	for(iter=stroke_list.begin();iter!=stroke_list.end();++iter)
-	{
+	for (iter = stroke_list.begin(); iter != stroke_list.end(); ++iter) {
 		get_work_area()->add_stroke(*iter);
 	}
 
@@ -2273,7 +2272,7 @@ StateLasso_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,s
 			std::list<synfig::WidthPoint> old_wplist;
 			ValueBase wplist_value_base((*wplist_value_node)(get_canvas()->get_time()));
 			const ValueBase::List &wplist_value_base_list = wplist_value_base.get_list();
-			for(ValueBase::List::const_iterator i = wplist_value_base_list.begin(); i != wplist_value_base_list.end(); ++i)
+			for (ValueBase::List::const_iterator i = wplist_value_base_list.begin(); i != wplist_value_base_list.end(); ++i)
 				old_wplist.push_back(i->get(synfig::WidthPoint()));
 			std::list<synfig::WidthPoint>::iterator witer;
 			int i;
@@ -2385,8 +2384,7 @@ StateLasso_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,s
 	}
 
 	std::list<synfig::BLinePoint>::reverse_iterator iter;
-	for(iter=bline.rbegin();!(iter==bline.rend());++iter)
-	{
+	for (iter = bline.rbegin(); iter != bline.rend(); ++iter) {
 		ValueNode_Composite::Handle composite(ValueNode_Composite::create(*iter));
 
 		synfigapp::Action::Handle action(synfigapp::Action::create("ValueNodeDynamicListInsert"));
@@ -2454,7 +2452,7 @@ StateLasso_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std
 			std::list<synfig::WidthPoint> old_wplist;
 			ValueBase wplist_value_base((*wplist_value_node)(get_canvas()->get_time()));
 			const ValueBase::List &wplist_value_base_list = wplist_value_base.get_list();
-			for(ValueBase::List::const_iterator i = wplist_value_base_list.begin(); i != wplist_value_base_list.end(); ++i)
+			for (ValueBase::List::const_iterator i = wplist_value_base_list.begin(); i != wplist_value_base_list.end(); ++i)
 				old_wplist.push_back(i->get(synfig::WidthPoint()));
 			std::list<synfig::WidthPoint>::iterator witer;
 			int i;
@@ -2566,8 +2564,7 @@ StateLasso_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std
 	}
 
 	std::list<synfig::BLinePoint>::iterator iter;
-	for(iter=bline.begin();iter!=bline.end();++iter)
-	{
+	for (iter = bline.begin(); iter != bline.end(); ++iter) {
 		ValueNode_Composite::Handle composite(ValueNode_Composite::create(*iter));
 
 		synfigapp::Action::Handle action(synfigapp::Action::create("ValueNodeDynamicListInsert"));

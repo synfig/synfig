@@ -60,8 +60,7 @@ FileSystemGroup::FileSystemGroup(FileSystem::Handle default_file_system)
 const FileSystemGroup::Entry* FileSystemGroup::find_system(const String &filename, FileSystem::Handle &out_file_system, String &out_filename)
 {
 	String clean_filename = filesystem::Path::cleanup_path(filename);
-	for(std::list< Entry >::iterator i = entries_.begin(); i != entries_.end(); i++)
-	{
+	for (std::list< Entry >::iterator i = entries_.begin(); i != entries_.end(); ++i) {
 		if ( clean_filename.substr(0, i->prefix.size()) == i->prefix
 		  && ( i->is_separator
 			|| clean_filename.size() == i->prefix.size()
@@ -88,8 +87,7 @@ void FileSystemGroup::register_system(const String &prefix, const FileSystem::Ha
 	if (sub_file_system)
 	{
 		// keep list sorted by length of prefix desc
-		for(std::list< Entry >::iterator i = entries_.begin(); i != entries_.end(); i++)
-		{
+		for (std::list< Entry >::iterator i = entries_.begin(); i != entries_.end(); ++i) {
 			if (i->prefix == prefix)
 			{
 				i->sub_file_system = sub_file_system;
@@ -109,9 +107,10 @@ void FileSystemGroup::register_system(const String &prefix, const FileSystem::Ha
 
 void FileSystemGroup::unregister_system(const String &prefix)
 {
-	for(std::list< Entry >::iterator i = entries_.begin(); i != entries_.end();)
+	for (std::list< Entry >::iterator i = entries_.begin(); i != entries_.end(); )
 		if (i->prefix == prefix)
-			i = entries_.erase(i); else i++;
+			i = entries_.erase(i);
+		else ++i;
 }
 
 bool FileSystemGroup::is_file(const String &filename)
@@ -153,12 +152,12 @@ bool FileSystemGroup::directory_scan(const String &dirname, FileList &out_files)
 		FileList list;
 		if (!file_system->directory_scan(internal_dirname, list))
 			return false;
-		for(FileList::const_iterator i = list.begin(); i != list.end(); ++i)
+		for (FileList::const_iterator i = list.begin(); i != list.end(); ++i)
 			files.insert(*i);
 	}
 
 	String clean_dirname = filesystem::Path::cleanup_path(dirname);
-	for(std::list< Entry >::iterator i = entries_.begin(); i != entries_.end(); i++)
+	for (std::list< Entry >::iterator i = entries_.begin(); i != entries_.end(); ++i)
 		if (!i->is_separator && !i->prefix.empty() && clean_dirname == filesystem::Path::dirname(i->prefix))
 		{
 			if (is_exists(i->prefix))
@@ -167,7 +166,7 @@ bool FileSystemGroup::directory_scan(const String &dirname, FileList &out_files)
 				files.erase(filesystem::Path::basename(i->prefix));
 		}
 
-	for(std::set<String>::const_iterator i = files.begin(); i != files.end(); ++i)
+	for (std::set<String>::const_iterator i = files.begin(); i != files.end(); ++i)
 		out_files.push_back(*i);
 
 	return true;
