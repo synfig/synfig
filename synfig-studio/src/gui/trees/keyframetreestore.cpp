@@ -665,7 +665,7 @@ KeyframeTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& gtk_iter, in
 		synfig::Keyframe keyframe;
 		{
 			KeyframeList::iterator tmp(iter->iter);
-			tmp++;
+			++tmp;
 			if(tmp==get_canvas()->keyframe_list().end())
 			{
 				x.set(Time(0));

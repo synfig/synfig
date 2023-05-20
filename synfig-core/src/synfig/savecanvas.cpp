@@ -249,10 +249,8 @@ xmlpp::Element* encode_dash_item(xmlpp::Element* root, DashItem dash_item)
 xmlpp::Element* encode_gradient(xmlpp::Element* root,Gradient x)
 {
 	root->set_name("gradient");
-	Gradient::const_iterator iter;
 	x.sort();
-	for(iter=x.begin();iter!=x.end();iter++)
-	{
+	for (Gradient::const_iterator iter = x.begin(); iter != x.end(); ++iter) {
 		xmlpp::Element *cpoint(encode_color(root->add_child("color"),iter->color));
 		cpoint->set_attribute("pos",strprintf("%f",iter->pos));
 	}
@@ -677,10 +675,9 @@ xmlpp::Element* encode_linkable_value_node(xmlpp::Element* root,LinkableValueNod
 
 	root->set_attribute("type",value_node->get_type().description.name);
 
-	int i;
 	synfig::ParamVocab child_vocab(value_node->get_children_vocab());
 	synfig::ParamVocab::iterator iter(child_vocab.begin());
-	for(i=0;i<value_node->link_count();i++, iter++)
+	for (int i = 0; i < value_node->link_count(); ++i, ++iter)
 	{
 		// printf("saving link %d : %s\n", i, value_node->link_local_name(i).c_str());
 		ValueNode::ConstHandle link=value_node->get_link(i).constant();

@@ -3638,7 +3638,7 @@ App::dialog_sets_entry(const std::string &action, const std::string &content, st
 	m_refTreeModel = Gtk::TreeStore::create(m_columns);
 	combo_entry->set_model(m_refTreeModel);
 
-	for(std::set<std::string>::iterator i = available_sets.begin(); i != available_sets.end(); i++){
+	for (std::set<std::string>::iterator i = available_sets.begin(); i != available_sets.end(); ++i) {
 		Gtk::TreeModel::Row row = *(m_refTreeModel->append());
 		row[m_columns.entry_set_name] = *i;
 	}

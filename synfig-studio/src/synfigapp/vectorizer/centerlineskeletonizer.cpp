@@ -837,7 +837,7 @@ inline void Event::calculateSplitEvent()
   for (i = 0; i < activeTable.m_columns.size(); ++i) 
   {
     for (currentContour = activeTable[i]->begin();
-         currentContour != activeTable[i]->end(); currentContour++) 
+		 currentContour != activeTable[i]->end(); ++currentContour)
     {
       // Da spostare sopra il 2o for
       if (activeTable.m_identifiers[(*currentContour)->m_ancestorContour] !=

@@ -755,8 +755,7 @@ Gtk::Widget* DockManager::load_widget_from_string(const std::string &x)
 std::string DockManager::save_layout_to_string()
 {
 	std::string res;
-	for(std::list<DockDialog*>::iterator i = dock_dialog_list_.begin(); i != dock_dialog_list_.end(); i++)
-	{
+	for (std::list<DockDialog*>::iterator i = dock_dialog_list_.begin(); i != dock_dialog_list_.end(); ++i) {
 		write_widget(res, *i);
 		write_separator(res);
 	}
