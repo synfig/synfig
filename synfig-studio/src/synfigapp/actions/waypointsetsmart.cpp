@@ -141,7 +141,6 @@ Action::WaypointSetSmart::set_param(const synfig::String& name, const Action::Pa
 
 	if(name=="value_desc" && param.get_type()==Param::TYPE_VALUEDESC)
 	{
-		std::cout<<"value desc called"<<std::endl;
 		if(param.get_value_desc().is_value_node())
 			return false;
 
