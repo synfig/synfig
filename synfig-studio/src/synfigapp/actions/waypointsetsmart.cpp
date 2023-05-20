@@ -185,12 +185,12 @@ Action::WaypointSetSmart::is_ready()const
 	//we either need a valuedesc for the inital waypoint added
 	//or a valuenode to add more waypoints to the parameter
 	if(!value_desc && !value_node){
-		synfig::error("Missing both value_desc and value_node");
+		synfig::error(_("Either value_desc or value_node must be set"));
 		return false;
 	}
 
 	if(waypoint.get_time()==(Time::begin()-1)){
-		synfig::error("Missing waypoint");
+		synfig::error(_("Missing waypoint"));
 		return false;
 	}
 	return Action::CanvasSpecific::is_ready();
