@@ -54,11 +54,13 @@ private:
 
 	synfig::ValueNode_Animated::Handle value_node;
 	synfig::Waypoint waypoint;
+	ValueDesc value_desc;
 	//synfig::WaypointModel waypoint_model;
 	bool time_set;
 
 	void calc_waypoint();
 	void enclose_waypoint(const synfig::Waypoint& waypoint);
+	void redirect_to_value_desc_set_action();
 
 	std::set<synfig::Time> times;
 
