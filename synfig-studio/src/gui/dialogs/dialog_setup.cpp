@@ -140,11 +140,12 @@ Dialog_Setup::create_system_page(PageInfo pi)
 	attach_label_section(pi.grid, _("Units"), row);
 	// System - 0 Timestamp
 	attach_label(pi.grid, _("Timestamp"), ++row);
-	pi.grid->attach(timestamp_comboboxtext, 1, row, 1, 1);
-	timestamp_comboboxtext.set_hexpand(true);
+	timestamp_comboboxtext = Gtk::manage(new Gtk::ComboBoxText());
+	pi.grid->attach(*timestamp_comboboxtext, 1, row, 1, 1);
+	timestamp_comboboxtext->set_hexpand(true);
 
 	#define ADD_TIMESTAMP(desc,x) {				\
-		timestamp_comboboxtext.append(desc);	\
+		timestamp_comboboxtext->append(desc);	\
 		time_formats[desc] = x;					\
 	}
 
@@ -157,7 +158,7 @@ Dialog_Setup::create_system_page(PageInfo pi)
 
 	#undef ADD_TIMESTAMP
 
-	timestamp_comboboxtext.signal_changed().connect(
+	timestamp_comboboxtext->signal_changed().connect(
 		sigc::mem_fun(*this, &Dialog_Setup::on_time_format_changed) );
 
 	// System - 1 Unit system
@@ -188,15 +189,17 @@ Dialog_Setup::create_system_page(PageInfo pi)
 
 	// System - Auto backup interval
 	attach_label_section(pi.grid, _("Autosave"), ++row);
-	pi.grid->attach(toggle_autobackup, 1, row, 1, 1);
-	toggle_autobackup.set_hexpand(false);
-	toggle_autobackup.set_halign(Gtk::ALIGN_START);
-	toggle_autobackup.property_active().signal_changed().connect(
+	toggle_autobackup = Gtk::manage(new Gtk::Switch());
+	pi.grid->attach(*toggle_autobackup, 1, row, 1, 1);
+	toggle_autobackup->set_hexpand(false);
+	toggle_autobackup->set_halign(Gtk::ALIGN_START);
+	toggle_autobackup->property_active().signal_changed().connect(
 			sigc::mem_fun(*this, &Dialog_Setup::on_autobackup_changed));
 
 	attach_label(pi.grid, _("Interval"), ++row);
-	pi.grid->attach(auto_backup_interval, 1, row, 1, 1);
-	auto_backup_interval.set_hexpand(false);
+	auto_backup_interval = Gtk::manage(new Widget_Time());
+	pi.grid->attach(*auto_backup_interval, 1, row, 1, 1);
+	auto_backup_interval->set_hexpand(false);
 
 	// System - Brushes path
 	{
@@ -230,20 +233,22 @@ Dialog_Setup::create_system_page(PageInfo pi)
 	}
 	// System - 11 enable_experimental_features
 	attach_label_section(pi.grid, _("Experimental features (requires restart)"), ++row);
-	pi.grid->attach(toggle_enable_experimental_features, 1, row, 1, 1);
-	toggle_enable_experimental_features.set_halign(Gtk::ALIGN_START);
-	toggle_enable_experimental_features.set_hexpand(false);
+	toggle_enable_experimental_features = Gtk::manage(new Gtk::Switch());
+	pi.grid->attach(*toggle_enable_experimental_features, 1, row, 1, 1);
+	toggle_enable_experimental_features->set_halign(Gtk::ALIGN_START);
+	toggle_enable_experimental_features->set_hexpand(false);
 
 	// System - clear_redo_stack_on_new_action
 	attach_label_section(pi.grid, _("Clear redo history on new action"), ++row);
-	pi.grid->attach(toggle_clear_redo_stack_on_new_action, 1, row, 1, 1);
-	toggle_clear_redo_stack_on_new_action.set_halign(Gtk::ALIGN_START);
-	toggle_clear_redo_stack_on_new_action.set_hexpand(false);
+	toggle_clear_redo_stack_on_new_action = Gtk::manage(new Gtk::Switch());
+	pi.grid->attach(*toggle_clear_redo_stack_on_new_action, 1, row, 1, 1);
+	toggle_clear_redo_stack_on_new_action->set_halign(Gtk::ALIGN_START);
+	toggle_clear_redo_stack_on_new_action->set_hexpand(false);
 
 	// signal for change resume
-	auto_backup_interval.signal_changed().connect(
+	auto_backup_interval->signal_changed().connect(
 			sigc::bind<int>(sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_AUTOBACKUP));
-	toggle_autobackup.property_active().signal_changed().connect(
+	toggle_autobackup->property_active().signal_changed().connect(
 			sigc::bind<int>(sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_AUTOBACKUP));
 }
 
@@ -268,9 +273,10 @@ Dialog_Setup::create_document_page(PageInfo pi)
 	attach_label_section(pi.grid, _("New Canvas"), row);
 	// Document - Preferred file name prefix
 	attach_label(pi.grid, _("Name prefix"), ++row);
-	pi.grid->attach(textbox_custom_filename_prefix, 1, row, 2, 1);
-	textbox_custom_filename_prefix.set_tooltip_text( _("File name prefix for the new created document"));
-	textbox_custom_filename_prefix.set_hexpand(true);
+	textbox_custom_filename_prefix = Gtk::manage(new Gtk::Entry());
+	pi.grid->attach(*textbox_custom_filename_prefix, 1, row, 2, 1);
+	textbox_custom_filename_prefix->set_tooltip_text( _("File name prefix for the new created document"));
+	textbox_custom_filename_prefix->set_hexpand(true);
 
 	// TODO add label with some FPS description ( ex : 23.976 FPS->NTSC television , 25 PAL, 48->Film Industrie, 30->cinematic-like appearance ...)
 	// Document - New Document FPS
@@ -353,37 +359,42 @@ Dialog_Setup::create_document_page(PageInfo pi)
 	attach_label_section(pi.grid, _("Default Background"), ++row);
 	//attach_label(pi.grid, _("Name prefix"), ++row);
 	//pi.grid->attach(textbox_custom_filename_prefix, 1, row, 2, 1);
-	//textbox_custom_filename_prefix.set_tooltip_text( _("File name prefix for the new created document"));
-	//textbox_custom_filename_prefix.set_hexpand(true);
+	//textbox_custom_filename_prefix->set_tooltip_text( _("File name prefix for the new created document"));
+	//textbox_custom_filename_prefix->set_hexpand(true);
 
 	//Gtk::RadioButton::Group group_def_background;
-	def_background_none.set_label(_("None (Transparent)"));
-	def_background_none.set_group(group_def_background);
-	pi.grid->attach(def_background_none,  0, ++row, 1, 1);
-	def_background_none.signal_clicked().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_def_background_type_changed) );
+	def_background_none = Gtk::manage(new Gtk::RadioButton());
+	def_background_none->set_label(_("None (Transparent)"));
+	def_background_none->set_group(group_def_background);
+	pi.grid->attach(*def_background_none,  0, ++row, 1, 1);
+	def_background_none->signal_clicked().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_def_background_type_changed) );
 
-	def_background_color.set_label(_("Solid Color"));
-	def_background_color.set_group(group_def_background);
-	pi.grid->attach(def_background_color, 0, ++row, 1, 1);
-	def_background_color.signal_clicked().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_def_background_type_changed) );
+	def_background_color = Gtk::manage(new Gtk::RadioButton());
+	def_background_color->set_label(_("Solid Color"));
+	def_background_color->set_group(group_def_background);
+	pi.grid->attach(*def_background_color, 0, ++row, 1, 1);
+	def_background_color->signal_clicked().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_def_background_type_changed) );
 
 	Gdk::RGBA m_color;
 	m_color.set_rgba( App::default_background_layer_color.get_r(),
 					  App::default_background_layer_color.get_g(),
 					  App::default_background_layer_color.get_b(),
 					  App::default_background_layer_color.get_a());
-	def_background_color_button.set_rgba(m_color);
-	pi.grid->attach(def_background_color_button, 1,   row, 1, 1);
-	def_background_color_button.signal_color_set().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_def_background_color_changed) );
+	def_background_color_button = Gtk::manage(new Gtk::ColorButton());
+	def_background_color_button->set_rgba(m_color);
+	pi.grid->attach(*def_background_color_button, 1,   row, 1, 1);
+	def_background_color_button->signal_color_set().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_def_background_color_changed) );
 
-	def_background_image.set_label(_("Image"));
-	def_background_image.set_group(group_def_background);
-	pi.grid->attach(def_background_image,      0, ++row, 1, 1);
-	def_background_image.signal_clicked().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_def_background_type_changed) );
+	def_background_image = Gtk::manage(new Gtk::RadioButton());
+	def_background_image->set_label(_("Image"));
+	def_background_image->set_group(group_def_background);
+	pi.grid->attach(*def_background_image,      0, ++row, 1, 1);
+	def_background_image->signal_clicked().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_def_background_type_changed) );
 	//<!- Button to select the image
-	fcbutton_image.set_title(_("Select"));
-	fcbutton_image.set_action(Gtk::FILE_CHOOSER_ACTION_OPEN);
-	fcbutton_image.set_filename(App::default_background_layer_image);
+	fcbutton_image = Gtk::manage(new Gtk::FileChooserButton());
+	fcbutton_image->set_title(_("Select"));
+	fcbutton_image->set_action(Gtk::FILE_CHOOSER_ACTION_OPEN);
+	fcbutton_image->set_filename(App::default_background_layer_image);
 	/*
 	filter_images.set_name(_("Images (*.bmp,*.jpg,*.jpeg,*.png,*.svg,*.lst)"));
 		filter_images.add_pattern("*.bmp");
@@ -395,19 +406,19 @@ Dialog_Setup::create_document_page(PageInfo pi)
 		filter_any.set_name(_("Any file (*.*)"));
 		filter_any.add_pattern("*.*");
 
-	fcbutton_image.add_filter(filter_images);
-	fcbutton_image.add_filter(filter_any);
+	fcbutton_image->add_filter(filter_images);
+	fcbutton_image->add_filter(filter_any);
 	*/
 	//-> Button to select the image
-	pi.grid->attach(fcbutton_image,            1,   row, 2, 1);
-	fcbutton_image.signal_file_set().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_def_background_image_set) );
+	pi.grid->attach(*fcbutton_image,            1,   row, 2, 1);
+	fcbutton_image->signal_file_set().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_def_background_image_set) );
 
 	if (App::default_background_layer_type == "none")
-		def_background_none.set_active();
+		def_background_none->set_active();
 	if (App::default_background_layer_type == "solid_color")
-		def_background_color.set_active();
+		def_background_color->set_active();
 	if (App::default_background_layer_type == "image")
-		def_background_image.set_active();
+		def_background_image->set_active();
 
 }
 
@@ -432,20 +443,22 @@ Dialog_Setup::create_editing_page(PageInfo pi)
 
 	// Editing - Show animation thumbnail preview
 	attach_label(pi.grid, _("Thumbnail preview"), ++row);
-	pi.grid->attach(toggle_animation_thumbnail_preview, 1, row, 1, 1);
-	toggle_animation_thumbnail_preview.set_tooltip_text(_("Turn on/off animation thumbnail preview when you hover your mouse over the timetrack panel."));
-	toggle_animation_thumbnail_preview.set_halign(Gtk::ALIGN_START);
-	toggle_animation_thumbnail_preview.set_hexpand(false);
+	toggle_animation_thumbnail_preview = Gtk::manage(new Gtk::Switch());
+	pi.grid->attach(*toggle_animation_thumbnail_preview, 1, row, 1, 1);
+	toggle_animation_thumbnail_preview->set_tooltip_text(_("Turn on/off animation thumbnail preview when you hover your mouse over the timetrack panel."));
+	toggle_animation_thumbnail_preview->set_halign(Gtk::ALIGN_START);
+	toggle_animation_thumbnail_preview->set_hexpand(false);
 
 	// Editing Other section
 	attach_label_section(pi.grid, _("Other"), ++row);
 
 	// Editing - Restrict Real-value Handles to Top Right Quadrant
 	attach_label(pi.grid,_("Restrict real value handles to top right quadrant"), ++row);
-	pi.grid->attach(toggle_restrict_radius_ducks, 1, row, 1, 1);
-	toggle_restrict_radius_ducks.set_halign(Gtk::ALIGN_START);
-	toggle_restrict_radius_ducks.set_hexpand(false);
-	toggle_restrict_radius_ducks.set_tooltip_text(_("Restrict the position of the handle \
+	toggle_restrict_radius_ducks = Gtk::manage(new Gtk::Switch());
+	pi.grid->attach(*toggle_restrict_radius_ducks, 1, row, 1, 1);
+	toggle_restrict_radius_ducks->set_halign(Gtk::ALIGN_START);
+	toggle_restrict_radius_ducks->set_hexpand(false);
+	toggle_restrict_radius_ducks->set_tooltip_text(_("Restrict the position of the handle \
 (especially for radius) to be in the top right quadrant of the 2D space. Allow to set \
 the real value to any number and also easily reach the value of 0.0 just \
 dragging the handle to the left bottom part of your 2D space."));
@@ -461,10 +474,11 @@ dragging the handle to the left bottom part of your 2D space."));
 	
 	//create a function to launch the dialog
 	choose_button->signal_clicked().connect(sigc::mem_fun(*this,&Dialog_Setup::on_choose_editor_pressed));
-	pi.grid->attach(image_editor_path_entry, 1, row, 1, 1);
+	image_editor_path_entry = Gtk::manage(new Gtk::Entry());
+	pi.grid->attach(*image_editor_path_entry, 1, row, 1, 1);
 	pi.grid->attach(*choose_button, 2,row,1,1);
-	image_editor_path_entry.set_hexpand(true);
-	image_editor_path_entry.set_text(App::image_editor_path);
+	image_editor_path_entry->set_hexpand(true);
+	image_editor_path_entry->set_text(App::image_editor_path);
 	
 }
 
@@ -639,9 +653,9 @@ void
 Dialog_Setup::on_choose_editor_pressed()
 {
 	//set the image editor path = filepath from dialog
-	String filepath = image_editor_path_entry.get_text();
+	String filepath = image_editor_path_entry->get_text();
 	if (select_path_dialog(_("Select Editor"), filepath)) {
-		image_editor_path_entry.set_text(filepath);
+		image_editor_path_entry->set_text(filepath);
 	}
 }
 
@@ -693,28 +707,31 @@ Dialog_Setup::create_render_page(PageInfo pi)
 	number_of_threads_select->set_hexpand(true);
 	// Render - Image sequence separator
 	attach_label(pi.grid, _("Image Sequence Separator String"), ++row);
-	pi.grid->attach(image_sequence_separator, 1, row, 1, 1);
-	image_sequence_separator.set_hexpand(true);
+	image_sequence_separator = Gtk::manage(new Gtk::Entry());
+	pi.grid->attach(*image_sequence_separator, 1, row, 1, 1);
+	image_sequence_separator->set_hexpand(true);
 	// Render - WorkArea
 	attach_label(pi.grid, _("WorkArea renderer"), ++row);
-	pi.grid->attach(workarea_renderer_combo, 1, row, 1, 1);
+	workarea_renderer_combo = Gtk::manage(new Gtk::ComboBoxText());
+	pi.grid->attach(*workarea_renderer_combo, 1, row, 1, 1);
 	// Render - Render Done sound
 	attach_label(pi.grid, _("Chime on render done"), ++row);
-	pi.grid->attach(toggle_play_sound_on_render_done, 1, row, 1, 1);
-	toggle_play_sound_on_render_done.set_halign(Gtk::ALIGN_START);
-	toggle_play_sound_on_render_done.set_hexpand(false);
-	toggle_play_sound_on_render_done.set_tooltip_text(_("A chime is played when render has finished."));
-	toggle_play_sound_on_render_done.property_active().signal_changed().connect(
+	toggle_play_sound_on_render_done = Gtk::manage(new Gtk::Switch());
+	pi.grid->attach(*toggle_play_sound_on_render_done, 1, row, 1, 1);
+	toggle_play_sound_on_render_done->set_halign(Gtk::ALIGN_START);
+	toggle_play_sound_on_render_done->set_hexpand(false);
+	toggle_play_sound_on_render_done->set_tooltip_text(_("A chime is played when render has finished."));
+	toggle_play_sound_on_render_done->property_active().signal_changed().connect(
 			sigc::mem_fun(*this, &Dialog_Setup::on_play_sound_on_render_done_changed));
 
 	synfig::rendering::Renderer::Handle default_renderer = synfig::rendering::Renderer::get_renderer("");
-	workarea_renderer_combo.append("", String() + _("Default") + " - " + default_renderer->get_name());
+	workarea_renderer_combo->append("", String() + _("Default") + " - " + default_renderer->get_name());
 	typedef std::map<synfig::String, synfig::rendering::Renderer::Handle> RendererMap;
 	const RendererMap &renderers = synfig::rendering::Renderer::get_renderers();
 	for(RendererMap::const_iterator i = renderers.begin(); i != renderers.end(); ++i)
 	{
 		assert(!i->first.empty());
-		workarea_renderer_combo.append(i->first, i->second->get_name());
+		workarea_renderer_combo->append(i->first, i->second->get_name());
 	}
 
 	attach_label(pi.grid, _("Preview Background Color"), ++row);
@@ -724,9 +741,10 @@ Dialog_Setup::create_render_page(PageInfo pi)
 	                  App::preview_background_color.get_g(),
 	                  App::preview_background_color.get_b(),
 	                  App::preview_background_color.get_a());
-	preview_background_color_button.set_rgba(m_color);
-	pi.grid->attach(preview_background_color_button, 1, row, 1, 1);
-	preview_background_color_button.signal_color_set().connect(
+	preview_background_color_button = Gtk::manage(new Gtk::ColorButton());
+	preview_background_color_button->set_rgba(m_color);
+	pi.grid->attach(*preview_background_color_button, 1, row, 1, 1);
+	preview_background_color_button->signal_color_set().connect(
 		sigc::mem_fun(*this, &studio::Dialog_Setup::on_preview_background_color_changed) );
 
 }
@@ -756,96 +774,105 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 		{ nullptr, nullptr } // final entry without comma to avoid misunderstanding
 	};
 
-	ui_language_combo.append("os_LANG", Glib::ustring("(") + _("System Language") + ")");
+	ui_language_combo = Gtk::manage(new Gtk::ComboBoxText());
+	ui_language_combo->append("os_LANG", Glib::ustring("(") + _("System Language") + ")");
 	for(int i = 0; i < (int)(sizeof(languages)/sizeof(languages[0])) - 1; ++i)
 		if (languages[i][1] == Glib::ustring())
-			ui_language_combo.append(languages[i][0], Glib::ustring("[") + languages[i][0] + "]");
+			ui_language_combo->append(languages[i][0], Glib::ustring("[") + languages[i][0] + "]");
 		else
-			ui_language_combo.append(languages[i][0], languages[i][1]);
-	ui_language_combo.set_active_id(App::ui_language);
-	ui_language_combo.signal_changed().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_ui_language_combo_change));
+			ui_language_combo->append(languages[i][0], languages[i][1]);
+	ui_language_combo->set_active_id(App::ui_language);
+	ui_language_combo->signal_changed().connect(sigc::mem_fun(*this, &studio::Dialog_Setup::on_ui_language_combo_change));
 
 	int row = 1;
 
 	// Interface - Language section
 	attach_label_section(pi.grid, _("Language"), row);
-	pi.grid->attach(ui_language_combo, 0, ++row, 4, 1);
-	ui_language_combo.set_hexpand(true);
-	ui_language_combo.set_margin_start(10);
+	pi.grid->attach(*ui_language_combo, 0, ++row, 4, 1);
+	ui_language_combo->set_hexpand(true);
+	ui_language_combo->set_margin_start(10);
 
 	// Interface - Color Theme section
 	attach_label_section(pi.grid, _("Color Theme"), ++row);
 	// Interface - Dark UI theme
 	attach_label(pi.grid, _("Dark UI theme (if available)"), ++row);
-	pi.grid->attach(toggle_use_dark_theme, 1, row, 1, 1);
-	toggle_use_dark_theme.set_halign(Gtk::ALIGN_START);
-	toggle_use_dark_theme.set_hexpand(false);
+	toggle_use_dark_theme = Gtk::manage(new Gtk::Switch());
+	pi.grid->attach(*toggle_use_dark_theme, 1, row, 1, 1);
+	toggle_use_dark_theme->set_halign(Gtk::ALIGN_START);
+	toggle_use_dark_theme->set_hexpand(false);
 
 	{
 	FileSystem::FileList files;
 	FileSystemNative::instance()->directory_scan(ResourceHelper::get_themes_path(), files);
+	icon_theme_combo = Gtk::manage(new Gtk::ComboBoxText);
 	for (const auto& dir : files)
-		icon_theme_combo.append(dir);
-	icon_theme_combo.set_active_text(App::get_icon_theme_name());
+		icon_theme_combo->append(dir);
+	icon_theme_combo->set_active_text(App::get_icon_theme_name());
 	}
 
 	// Interface - Icon theme
 	attach_label(pi.grid, _("Icon theme"), ++row);
-	pi.grid->attach(icon_theme_combo, 0, ++row, 1, 1);
-	icon_theme_combo.set_hexpand(true);
-	icon_theme_combo.set_margin_start(10);
+	pi.grid->attach(*icon_theme_combo, 0, ++row, 1, 1);
+	icon_theme_combo->set_hexpand(true);
+	icon_theme_combo->set_margin_start(10);
 
 	// Interface - Toolbars section
 	attach_label_section(pi.grid, _("Toolbars"), ++row);
 	// Interface - File Toolbar
 	attach_label(pi.grid, _("Show file toolbar (requires restart)"), ++row);
-	pi.grid->attach(toggle_show_file_toolbar, 1, row, 1, 1);
-	toggle_show_file_toolbar.set_halign(Gtk::ALIGN_START);
-	toggle_show_file_toolbar.set_hexpand(false);
+	toggle_show_file_toolbar = Gtk::manage(new Gtk::Switch());
+	pi.grid->attach(*toggle_show_file_toolbar, 1, row, 1, 1);
+	toggle_show_file_toolbar->set_halign(Gtk::ALIGN_START);
+	toggle_show_file_toolbar->set_hexpand(false);
 
 	// Interface - Handle tooltip section
 	attach_label_section(pi.grid, _("Handle Tooltips"), ++row);
 	// Interface - width point tooltip
 	attach_label(pi.grid, _("Width point"), ++row);
-	pi.grid->attach(toggle_handle_tooltip_widthpoint, 1, row, 1, 1);
-	toggle_handle_tooltip_widthpoint.set_halign(Gtk::ALIGN_START);
-	toggle_handle_tooltip_widthpoint.set_hexpand(false);
+	toggle_handle_tooltip_widthpoint = Gtk::manage(new Gtk::Switch());
+	pi.grid->attach(*toggle_handle_tooltip_widthpoint, 1, row, 1, 1);
+	toggle_handle_tooltip_widthpoint->set_halign(Gtk::ALIGN_START);
+	toggle_handle_tooltip_widthpoint->set_hexpand(false);
 	// Interface - radius tooltip
 	attach_label(pi.grid, _("Radius"), ++row);
-	pi.grid->attach(toggle_handle_tooltip_radius, 1, row, 1, 1);
-	toggle_handle_tooltip_radius.set_halign(Gtk::ALIGN_START);
-	toggle_handle_tooltip_radius.set_hexpand(false);
+	toggle_handle_tooltip_radius = Gtk::manage(new Gtk::Switch());
+	pi.grid->attach(*toggle_handle_tooltip_radius, 1, row, 1, 1);
+	toggle_handle_tooltip_radius->set_halign(Gtk::ALIGN_START);
+	toggle_handle_tooltip_radius->set_hexpand(false);
 	// Interface - transformation widget tooltip
 	attach_label_section(pi.grid, _("Transformation widget tooltips"), ++row);
-	pi.grid->attach(toggle_handle_tooltip_transformation, 1, row, 1, 1);
-	toggle_handle_tooltip_transformation.set_halign(Gtk::ALIGN_START);
-	toggle_handle_tooltip_transformation.set_hexpand(false);
-	toggle_handle_tooltip_transformation.property_active().signal_changed().connect(
+	toggle_handle_tooltip_transformation = Gtk::manage(new Gtk::Switch());
+	pi.grid->attach(*toggle_handle_tooltip_transformation, 1, row, 1, 1);
+	toggle_handle_tooltip_transformation->set_halign(Gtk::ALIGN_START);
+	toggle_handle_tooltip_transformation->set_hexpand(false);
+	toggle_handle_tooltip_transformation->property_active().signal_changed().connect(
 		sigc::mem_fun(*this, &Dialog_Setup::on_tooltip_transformation_changed));
 
 	attach_label(pi.grid, _("Name"), ++row);// HANDLE_TOOLTIP_TRANSFO_NAME
-	pi.grid->attach(toggle_handle_tooltip_transfo_name, 1, row, 1, 1);
-	toggle_handle_tooltip_transfo_name.set_halign(Gtk::ALIGN_START);
-	toggle_handle_tooltip_transfo_name.set_hexpand(false);
+	toggle_handle_tooltip_transfo_name = Gtk::manage(new Gtk::Switch());
+	pi.grid->attach(*toggle_handle_tooltip_transfo_name, 1, row, 1, 1);
+	toggle_handle_tooltip_transfo_name->set_halign(Gtk::ALIGN_START);
+	toggle_handle_tooltip_transfo_name->set_hexpand(false);
 	attach_label(pi.grid, _("Value"), ++row);// HANDLE_TOOLTIP_TRANSFO_VALUE
-	pi.grid->attach(toggle_handle_tooltip_transfo_value, 1, row, 1, 1);
-	toggle_handle_tooltip_transfo_value.set_halign(Gtk::ALIGN_START);
-	toggle_handle_tooltip_transfo_value.set_hexpand(false);
+	toggle_handle_tooltip_transfo_value = Gtk::manage(new Gtk::Switch());
+	pi.grid->attach(*toggle_handle_tooltip_transfo_value, 1, row, 1, 1);
+	toggle_handle_tooltip_transfo_value->set_halign(Gtk::ALIGN_START);
+	toggle_handle_tooltip_transfo_value->set_hexpand(false);
 
 	//! change resume signal connection
-	ui_language_combo.signal_changed().connect(
+	ui_language_combo->signal_changed().connect(
 			sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_LANGUAGE));
-	toggle_use_dark_theme.property_active().signal_changed().connect(
+	toggle_use_dark_theme->property_active().signal_changed().connect(
 			sigc::mem_fun(*this, &Dialog_Setup::on_theme_changed));
-	toggle_handle_tooltip_widthpoint.property_active().signal_changed().connect(
+	toggle_handle_tooltip_widthpoint->property_active().signal_changed().connect(
 		sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_HANDLE_TOOLTIP));
-	toggle_handle_tooltip_radius.property_active().signal_changed().connect(
+	toggle_handle_tooltip_radius->property_active().signal_changed().connect(
 		sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_HANDLE_TOOLTIP));
-	toggle_handle_tooltip_transformation.property_active().signal_changed().connect(
+	toggle_handle_tooltip_transformation->property_active().signal_changed().connect(
 		sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_HANDLE_TOOLTIP));
-	toggle_handle_tooltip_transfo_name.property_active().signal_changed().connect(
+	toggle_handle_tooltip_transfo_name->property_active().signal_changed().connect(
 		sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_HANDLE_TOOLTIP));
-	toggle_handle_tooltip_transfo_value.property_active().signal_changed().connect(
+	toggle_handle_tooltip_transfo_value->property_active().signal_changed().connect(
 		sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_HANDLE_TOOLTIP));
 }
 
@@ -861,44 +888,44 @@ Dialog_Setup::on_restore_pressed()
 	{
 		// Assign (without applying) default values
 		adj_recent_files->set_value(25);
-		timestamp_comboboxtext.set_active(5);
-		toggle_autobackup.set_active(true);
-		auto_backup_interval.set_value(15);
+		timestamp_comboboxtext->set_active(5);
+		toggle_autobackup->set_active(true);
+		auto_backup_interval->set_value(15);
 		widget_enum->set_value(Distance::SYSTEM_POINTS);
-		toggle_restrict_radius_ducks.set_active(true);
-		toggle_animation_thumbnail_preview.set_active(true);
-		toggle_enable_experimental_features.set_active(false);
-		toggle_clear_redo_stack_on_new_action.set_active(true);
-		toggle_use_dark_theme.set_active(false);
-		toggle_show_file_toolbar.set_active(true);
+		toggle_restrict_radius_ducks->set_active(true);
+		toggle_animation_thumbnail_preview->set_active(true);
+		toggle_enable_experimental_features->set_active(false);
+		toggle_clear_redo_stack_on_new_action->set_active(true);
+		toggle_use_dark_theme->set_active(false);
+		toggle_show_file_toolbar->set_active(true);
 		listviewtext_brushes_path->clear_items();
-		textbox_custom_filename_prefix.set_text(DEFAULT_FILENAME_PREFIX);
-		image_editor_path_entry.set_text("");
+		textbox_custom_filename_prefix->set_text(DEFAULT_FILENAME_PREFIX);
+		image_editor_path_entry->set_text("");
 		adj_pref_x_size->set_value(480);
 		adj_pref_y_size->set_value(270);
 		size_template_combo->set_active_text(DEFAULT_PREDEFINED_SIZE);
 		fps_template_combo->set_active_text(DEFAULT_PREDEFINED_FPS);
 		adj_pref_fps->set_value(24.0);
-		image_sequence_separator.set_text(".");
+		image_sequence_separator->set_text(".");
 		adj_number_of_threads->set_value(std::thread::hardware_concurrency());
 
-		workarea_renderer_combo.set_active_id("");
-		def_background_none.set_active();
+		workarea_renderer_combo->set_active_id("");
+		def_background_none->set_active();
 		
 		Gdk::RGBA m_color;
 		m_color.set_rgba(1.000000, 1.000000, 1.000000, 1.000000);
-		def_background_color_button.set_rgba(m_color);
+		def_background_color_button->set_rgba(m_color);
 		m_color.set_rgba(0.742187, 0.742187, 0.742187, 1.000000);
-		preview_background_color_button.set_rgba(m_color);
-		fcbutton_image.unselect_all();
+		preview_background_color_button->set_rgba(m_color);
+		fcbutton_image->unselect_all();
 		
-		toggle_play_sound_on_render_done.set_active(true);
-		ui_language_combo.set_active_id(App::ui_language);
-		toggle_handle_tooltip_widthpoint.set_active(true);
-		toggle_handle_tooltip_radius.set_active(true);
-		toggle_handle_tooltip_transformation.set_active(false);
-		toggle_handle_tooltip_transfo_name.set_active(false);
-		toggle_handle_tooltip_transfo_value.set_active(false);
+		toggle_play_sound_on_render_done->set_active(true);
+		ui_language_combo->set_active_id(App::ui_language);
+		toggle_handle_tooltip_widthpoint->set_active(true);
+		toggle_handle_tooltip_radius->set_active(true);
+		toggle_handle_tooltip_transformation->set_active(false);
+		toggle_handle_tooltip_transfo_name->set_active(false);
+		toggle_handle_tooltip_transfo_value->set_active(false);
 
 		// Keyboard accels
 		auto accel_rows = treeview_accels->get_model()->children();
@@ -941,33 +968,33 @@ Dialog_Setup::on_apply_pressed()
 	// TODO catch change event on auto_backup_interval before use CHANGE_AUTOBACKUP
 	{
 		// Set the auto backup status
-		App::auto_recover->set_enabled(toggle_autobackup.get_active());
+		App::auto_recover->set_enabled(toggle_autobackup->get_active());
 		// Set the auto backup interval
-		App::auto_recover->set_timeout_ms(auto_backup_interval.get_value() * 1000);
+		App::auto_recover->set_timeout_ms(auto_backup_interval->get_value() * 1000);
 	}
 
 	App::distance_system              = Distance::System(widget_enum->get_value());
 
 	// Set the restrict_radius_ducks flag
-	App::restrict_radius_ducks        = toggle_restrict_radius_ducks.get_active();
+	App::restrict_radius_ducks        = toggle_restrict_radius_ducks->get_active();
 
 	// Set the animation_thumbnail_preview flag
-	App::animation_thumbnail_preview  = toggle_animation_thumbnail_preview.get_active();
+	App::animation_thumbnail_preview  = toggle_animation_thumbnail_preview->get_active();
 
 	// Set the experimental features flag
-	App::enable_experimental_features = toggle_enable_experimental_features.get_active();
+	App::enable_experimental_features = toggle_enable_experimental_features->get_active();
 
 	// Set the advanced and risky flag that keeps the Redo stack on new action, instead of clear it
-	synfigapp::Main::settings().set_value("pref.clear_redo_stack_on_new_action", toggle_clear_redo_stack_on_new_action.get_active());
+	synfigapp::Main::settings().set_value("pref.clear_redo_stack_on_new_action", toggle_clear_redo_stack_on_new_action->get_active());
 
 	// Set the dark theme flag
-	App::use_dark_theme               = toggle_use_dark_theme.get_active();
+	App::use_dark_theme               = toggle_use_dark_theme->get_active();
 	// Set the icon theme
-	App::set_icon_theme(icon_theme_combo.get_active_text());
+	App::set_icon_theme(icon_theme_combo->get_active_text());
 	App::apply_gtk_settings();
 
 	// Set file toolbar flag
-	App::show_file_toolbar=toggle_show_file_toolbar.get_active();
+	App::show_file_toolbar=toggle_show_file_toolbar->get_active();
 
 	//! TODO Create Change mechanism has Class for being used elsewhere
 	// Set the preferred brush path(s)
@@ -991,10 +1018,10 @@ Dialog_Setup::on_apply_pressed()
 	}
 
 	// Set the preferred file name prefix
-	App::custom_filename_prefix = textbox_custom_filename_prefix.get_text();
+	App::custom_filename_prefix = textbox_custom_filename_prefix->get_text();
 
 	// Set the preferred image editor
-	App::image_editor_path		= image_editor_path_entry.get_text();
+	App::image_editor_path		= image_editor_path_entry->get_text();
 
 	// Set the preferred new Document X dimension
 	App::preferred_x_size       = int(adj_pref_x_size->get_value());
@@ -1012,37 +1039,37 @@ Dialog_Setup::on_apply_pressed()
 	App::preferred_fps          = Real(adj_pref_fps->get_value());
 
 	// Set the background color
-	Gdk::RGBA m_color = def_background_color_button.get_rgba();
+	Gdk::RGBA m_color = def_background_color_button->get_rgba();
 
 	App::default_background_layer_color = synfig::Color(m_color.get_red(),
 														m_color.get_green(),
 														m_color.get_blue(),
 														m_color.get_alpha());
 	
-	if (def_background_none.get_active())
+	if (def_background_none->get_active())
 		App::default_background_layer_type = "none";
-	if (def_background_color.get_active())
+	if (def_background_color->get_active())
 		App::default_background_layer_type = "solid_color";
-	if (def_background_image.get_active())
+	if (def_background_image->get_active())
 		App::default_background_layer_type = "image";
 	
 	// Set the background image
-	App::default_background_layer_image = fcbutton_image.get_filename();
+	App::default_background_layer_image = fcbutton_image->get_filename();
 	
 	// Set the preferred image sequence separator
-	App::sequence_separator     = image_sequence_separator.get_text();
+	App::sequence_separator     = image_sequence_separator->get_text();
 
 	// Set the number of threads
 	App::number_of_threads = int(adj_number_of_threads->get_value());
 
 	// Set the workarea render and navigator render flag
-	App::navigator_renderer = App::workarea_renderer  = workarea_renderer_combo.get_active_id();
+	App::navigator_renderer = App::workarea_renderer  = workarea_renderer_combo->get_active_id();
 
 	// Set the use of a render done sound
-	App::use_render_done_sound  = toggle_play_sound_on_render_done.get_active();
+	App::use_render_done_sound  = toggle_play_sound_on_render_done->get_active();
 	
 	// Set the preview background color
-	m_color = preview_background_color_button.get_rgba();
+	m_color = preview_background_color_button->get_rgba();
 
 	App::preview_background_color = synfig::Color(m_color.get_red(),
 												  m_color.get_green(),
@@ -1051,22 +1078,22 @@ Dialog_Setup::on_apply_pressed()
 
 	// Set ui language
 	if (pref_modification_flag & CHANGE_UI_LANGUAGE)
-		App::ui_language = ui_language_combo.get_active_id().c_str();
+		App::ui_language = ui_language_combo->get_active_id().c_str();
 
 	if (pref_modification_flag & CHANGE_UI_HANDLE_TOOLTIP)
 	{
 		// Set ui tooltip on width point
-		App::ui_handle_tooltip_flag=toggle_handle_tooltip_widthpoint.get_active()?Duck::STRUCT_WIDTHPOINT:Duck::STRUCT_NONE;
+		App::ui_handle_tooltip_flag=toggle_handle_tooltip_widthpoint->get_active()?Duck::STRUCT_WIDTHPOINT:Duck::STRUCT_NONE;
 		// Set ui tooltip on radius
-		App::ui_handle_tooltip_flag |= toggle_handle_tooltip_radius.get_active()?Duck::STRUCT_RADIUS:Duck::STRUCT_NONE;
+		App::ui_handle_tooltip_flag |= toggle_handle_tooltip_radius->get_active()?Duck::STRUCT_RADIUS:Duck::STRUCT_NONE;
 		// Set ui tooltip on transformation
-		if(toggle_handle_tooltip_transformation.get_active())
+		if(toggle_handle_tooltip_transformation->get_active())
 		{
-			if(toggle_handle_tooltip_transfo_name.get_active())
+			if(toggle_handle_tooltip_transfo_name->get_active())
 			{
 				App::ui_handle_tooltip_flag |= Duck::STRUCT_TRANSFORMATION;
 			}
-			if(toggle_handle_tooltip_transfo_value.get_active())
+			if(toggle_handle_tooltip_transfo_value->get_active())
 			{
 				App::ui_handle_tooltip_flag |= Duck::STRUCT_TRANSFO_BY_VALUE;
 			}
@@ -1155,7 +1182,7 @@ void
 Dialog_Setup::on_time_format_changed()
 {
 	std::map<std::string, synfig::Time::Format>::iterator i =
-		time_formats.find(timestamp_comboboxtext.get_active_text());
+		time_formats.find(timestamp_comboboxtext->get_active_text());
 	if (i != time_formats.end())
 		time_format = i->second;
 }
@@ -1163,7 +1190,7 @@ Dialog_Setup::on_time_format_changed()
 void
 Dialog_Setup::on_autobackup_changed()
 {
-	auto_backup_interval.set_sensitive(toggle_autobackup.get_active());
+	auto_backup_interval->set_sensitive(toggle_autobackup->get_active());
 }
 
 void
@@ -1207,8 +1234,8 @@ Dialog_Setup::on_resize_imported_changed()
 void
 Dialog_Setup::on_tooltip_transformation_changed()
 {
-	toggle_handle_tooltip_transfo_name.set_sensitive(toggle_handle_tooltip_transformation.get_active());
-	toggle_handle_tooltip_transfo_value.set_sensitive(toggle_handle_tooltip_transformation.get_active());
+	toggle_handle_tooltip_transfo_name->set_sensitive(toggle_handle_tooltip_transformation->get_active());
+	toggle_handle_tooltip_transfo_value->set_sensitive(toggle_handle_tooltip_transformation->get_active());
 }
 
 void
@@ -1220,50 +1247,50 @@ Dialog_Setup::refresh()
 	adj_recent_files->set_value(App::get_max_recent_files());
 
 	// Refresh the ui language
-	ui_language_combo.set_active_id(App::ui_language);
+	ui_language_combo->set_active_id(App::ui_language);
 	
 	// Refresh the time format
 	set_time_format(App::get_time_format());
 
 	widget_enum->set_value(App::distance_system);
 
-	toggle_autobackup.set_active(App::auto_recover->get_enabled());
+	toggle_autobackup->set_active(App::auto_recover->get_enabled());
 	// Refresh the value of the auto backup interval
-	auto_backup_interval.set_value(App::auto_recover->get_timeout_ms() / 1000);
-	auto_backup_interval.set_sensitive(App::auto_recover->get_enabled());
+	auto_backup_interval->set_value(App::auto_recover->get_timeout_ms() / 1000);
+	auto_backup_interval->set_sensitive(App::auto_recover->get_enabled());
 
 	// Refresh the status of the restrict_radius_ducks flag
-	toggle_restrict_radius_ducks.set_active(App::restrict_radius_ducks);
+	toggle_restrict_radius_ducks->set_active(App::restrict_radius_ducks);
 
 	// Refresh the status of animation_thumbnail_preview flag
-	toggle_animation_thumbnail_preview.set_active(App::animation_thumbnail_preview);
+	toggle_animation_thumbnail_preview->set_active(App::animation_thumbnail_preview);
 
 	// Refresh the status of the experimental features flag
-	toggle_enable_experimental_features.set_active(App::enable_experimental_features);
+	toggle_enable_experimental_features->set_active(App::enable_experimental_features);
 
 	// Refresh the status of the experimental features flag
 	{
 		bool active = synfigapp::Main::settings().get_value("pref.clear_redo_stack_on_new_action", true);
-		toggle_clear_redo_stack_on_new_action.set_active(active);
+		toggle_clear_redo_stack_on_new_action->set_active(active);
 	}
 
 	// Refresh the status of the theme flag
-	toggle_use_dark_theme.set_active(App::use_dark_theme);
+	toggle_use_dark_theme->set_active(App::use_dark_theme);
 	// Refresh the choice of the icon theme
-	icon_theme_combo.set_active_text(App::get_icon_theme_name());
+	icon_theme_combo->set_active_text(App::get_icon_theme_name());
 
 	// Refresh the status of the render done sound flag
-	toggle_play_sound_on_render_done.set_active(App::use_render_done_sound);
+	toggle_play_sound_on_render_done->set_active(App::use_render_done_sound);
 	
 	// Refresh the default background
 	if (App::default_background_layer_type == "none")
-		def_background_none.set_active();
+		def_background_none->set_active();
 	if (App::default_background_layer_type == "solid_color")
-		def_background_color.set_active();
+		def_background_color->set_active();
 	if (App::default_background_layer_type == "image")
-		def_background_image.set_active();
+		def_background_image->set_active();
 	
-	fcbutton_image.set_filename(App::default_background_layer_image);
+	fcbutton_image->set_filename(App::default_background_layer_image);
 	
 	// Refresh the colors of background and preview background buttons
 	Gdk::RGBA m_color;
@@ -1271,19 +1298,19 @@ Dialog_Setup::refresh()
 					  App::default_background_layer_color.get_g(),
 					  App::default_background_layer_color.get_b(),
 					  App::default_background_layer_color.get_a());
-	def_background_color_button.set_rgba(m_color);
+	def_background_color_button->set_rgba(m_color);
 	
 	m_color.set_rgba( App::preview_background_color.get_r(),
 					  App::preview_background_color.get_g(),
 					  App::preview_background_color.get_b(),
 					  App::preview_background_color.get_a());
-	preview_background_color_button.set_rgba(m_color);
+	preview_background_color_button->set_rgba(m_color);
 
 	// Refresh the status of file toolbar flag
-	toggle_show_file_toolbar.set_active(App::show_file_toolbar);
+	toggle_show_file_toolbar->set_active(App::show_file_toolbar);
 
 	// Refresh the preferred image editor path
-	image_editor_path_entry.set_text(App::image_editor_path);
+	image_editor_path_entry->set_text(App::image_editor_path);
 
 	// Refresh the brush path(s)
 	Glib::RefPtr<Gtk::ListStore> liststore = Glib::RefPtr<Gtk::ListStore>::cast_dynamic(
@@ -1320,7 +1347,7 @@ Dialog_Setup::refresh()
 	//		listviewtext_brushes_path->get_model()->children().begin());
 
 	// Refresh the preferred filename prefix
-	textbox_custom_filename_prefix.set_text(App::custom_filename_prefix);
+	textbox_custom_filename_prefix->set_text(App::custom_filename_prefix);
 
 	// Refresh the preferred new Document X dimension
 	adj_pref_x_size->set_value(App::preferred_x_size);
@@ -1338,35 +1365,35 @@ Dialog_Setup::refresh()
 	fps_template_combo->set_active_text(App::predefined_fps);
 
 	// Refresh the sequence separator
-	image_sequence_separator.set_text(App::sequence_separator);
+	image_sequence_separator->set_text(App::sequence_separator);
 
 	// Refresh the number of threads
 	number_of_threads_select->set_value(App::number_of_threads);
 
 	// Refresh the status of the workarea_renderer
-	workarea_renderer_combo.set_active_id(App::workarea_renderer);
+	workarea_renderer_combo->set_active_id(App::workarea_renderer);
 
 	// Refresh ui tooltip handle info
-	toggle_handle_tooltip_widthpoint.set_active(App::ui_handle_tooltip_flag&Duck::STRUCT_WIDTHPOINT);
-	toggle_handle_tooltip_radius.set_active(App::ui_handle_tooltip_flag&Duck::STRUCT_RADIUS);
+	toggle_handle_tooltip_widthpoint->set_active(App::ui_handle_tooltip_flag&Duck::STRUCT_WIDTHPOINT);
+	toggle_handle_tooltip_radius->set_active(App::ui_handle_tooltip_flag&Duck::STRUCT_RADIUS);
 	
 	// Refresh widget tooltip
 	if((App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFORMATION) ||
 			(App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFO_BY_VALUE))
 	{
-		toggle_handle_tooltip_transformation.set_active(true);
-		toggle_handle_tooltip_transfo_name.set_active(
+		toggle_handle_tooltip_transformation->set_active(true);
+		toggle_handle_tooltip_transfo_name->set_active(
 			(App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFORMATION));
-		toggle_handle_tooltip_transfo_value.set_active(
+		toggle_handle_tooltip_transfo_value->set_active(
 			(App::ui_handle_tooltip_flag&Duck::STRUCT_TRANSFO_BY_VALUE));
 	}
 	else
 	{
-		toggle_handle_tooltip_transformation.set_active(false);
-		toggle_handle_tooltip_transfo_name.set_active(false);
-		toggle_handle_tooltip_transfo_name.set_sensitive(false);
-		toggle_handle_tooltip_transfo_value.set_active(false);
-		toggle_handle_tooltip_transfo_value.set_sensitive(false);
+		toggle_handle_tooltip_transformation->set_active(false);
+		toggle_handle_tooltip_transfo_name->set_active(false);
+		toggle_handle_tooltip_transfo_name->set_sensitive(false);
+		toggle_handle_tooltip_transfo_value->set_active(false);
+		toggle_handle_tooltip_transfo_value->set_sensitive(false);
 	}
 
 	// Refresh keyboard accels for actions
@@ -1401,19 +1428,19 @@ Dialog_Setup::set_time_format(synfig::Time::Format x)
 {
 	time_format=x;
 	if (x == (Time::FORMAT_NORMAL))
-		timestamp_comboboxtext.set_active(1);
+		timestamp_comboboxtext->set_active(1);
 	else if (x == (Time::FORMAT_NORMAL | Time::FORMAT_NOSPACES))
-		timestamp_comboboxtext.set_active(2);
+		timestamp_comboboxtext->set_active(2);
 	else if (x == (Time::FORMAT_NORMAL | Time::FORMAT_FULL))
-		timestamp_comboboxtext.set_active(3);
+		timestamp_comboboxtext->set_active(3);
 	else if (x == (Time::FORMAT_NORMAL | Time::FORMAT_NOSPACES | Time::FORMAT_FULL))
-		timestamp_comboboxtext.set_active(4);
+		timestamp_comboboxtext->set_active(4);
 	else if (x == (Time::FORMAT_FRAMES))
-		timestamp_comboboxtext.set_active(5);
+		timestamp_comboboxtext->set_active(5);
 	else if (x <= Time::FORMAT_VIDEO)
-		timestamp_comboboxtext.set_active(0);
+		timestamp_comboboxtext->set_active(0);
 	else
-		timestamp_comboboxtext.set_active(1);
+		timestamp_comboboxtext->set_active(1);
 }
 
 void

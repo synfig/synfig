@@ -119,7 +119,7 @@ class Dialog_Setup : public Dialog_Template
 	synfigapp::Settings &input_settings;
 
 	// Widget for pages
-	Gtk::ComboBoxText timestamp_comboboxtext;
+	Gtk::ComboBoxText* timestamp_comboboxtext;
 	std::map<std::string, synfig::Time::Format> time_formats;
 
 	Glib::RefPtr<Gtk::Adjustment> adj_recent_files;
@@ -129,14 +129,14 @@ class Dialog_Setup : public Dialog_Template
 
 	Widget_Enum *widget_enum;
 
-	Widget_Time auto_backup_interval;
+	Widget_Time *auto_backup_interval;
 
-	Gtk::Switch toggle_restrict_radius_ducks;
-	Gtk::Switch toggle_animation_thumbnail_preview;
-	Gtk::Switch toggle_enable_experimental_features;
-	Gtk::Switch toggle_clear_redo_stack_on_new_action;
-	Gtk::Switch toggle_use_dark_theme;
-	Gtk::Switch toggle_show_file_toolbar;
+	Gtk::Switch* toggle_restrict_radius_ducks;
+	Gtk::Switch* toggle_animation_thumbnail_preview;
+	Gtk::Switch* toggle_enable_experimental_features;
+	Gtk::Switch* toggle_clear_redo_stack_on_new_action;
+	Gtk::Switch* toggle_use_dark_theme;
+	Gtk::Switch* toggle_show_file_toolbar;
 
 	Gtk::Entry textbox_brushe_path;
 	Gtk::ListViewText* listviewtext_brushes_path;
@@ -144,12 +144,12 @@ class Dialog_Setup : public Dialog_Template
 
 	Gtk::ComboBoxText* size_template_combo;
 	Gtk::ComboBoxText* fps_template_combo;
-	Gtk::ComboBoxText ui_language_combo;
-	Gtk::ComboBoxText icon_theme_combo;
-	Gtk::Switch toggle_handle_tooltip_transfo_value;
-	Gtk::Switch toggle_handle_tooltip_transfo_name;
+	Gtk::ComboBoxText* ui_language_combo;
+	Gtk::ComboBoxText* icon_theme_combo;
+	Gtk::Switch* toggle_handle_tooltip_transfo_value;
+	Gtk::Switch* toggle_handle_tooltip_transfo_name;
 
-	Gtk::Entry textbox_custom_filename_prefix;
+	Gtk::Entry* textbox_custom_filename_prefix;
 	Glib::RefPtr<Gtk::Adjustment> adj_pref_x_size;
 	Glib::RefPtr<Gtk::Adjustment> adj_pref_y_size;
 	Glib::RefPtr<Gtk::Adjustment> adj_pref_fps;
@@ -158,26 +158,26 @@ class Dialog_Setup : public Dialog_Template
 	Gtk::SpinButton* pref_x_size_spinbutton;
 
 	Gtk::RadioButton::Group group_def_background;
-	Gtk::RadioButton        def_background_none;
-	Gtk::RadioButton        def_background_color;
-	Gtk::RadioButton        def_background_image;
-	Gtk::ColorButton        def_background_color_button;
-	Gtk::FileChooserButton  fcbutton_image;
-	Gtk::ColorButton        preview_background_color_button;
+	Gtk::RadioButton*       def_background_none;
+	Gtk::RadioButton*       def_background_color;
+	Gtk::RadioButton*       def_background_image;
+	Gtk::ColorButton*       def_background_color_button;
+	Gtk::FileChooserButton* fcbutton_image;
+	Gtk::ColorButton*       preview_background_color_button;
 	//Gtk::FileFilter         filter_images;
 	//Gtk::FileFilter         filter_any;
 
-	Gtk::Entry        image_sequence_separator;
-	Gtk::ComboBoxText workarea_renderer_combo;
-	Gtk::Switch       toggle_play_sound_on_render_done;
+	Gtk::Entry*        image_sequence_separator;
+	Gtk::ComboBoxText* workarea_renderer_combo;
+	Gtk::Switch*       toggle_play_sound_on_render_done;
 	Glib::RefPtr<Gtk::Adjustment> adj_number_of_threads;
 	Gtk::SpinButton*  number_of_threads_select;	
 
-	Gtk::Switch toggle_handle_tooltip_widthpoint;
-	Gtk::Switch toggle_handle_tooltip_radius;
-	Gtk::Switch toggle_handle_tooltip_transformation;
-	Gtk::Switch toggle_autobackup;
-	Gtk::Entry image_editor_path_entry;
+	Gtk::Switch* toggle_handle_tooltip_widthpoint;
+	Gtk::Switch* toggle_handle_tooltip_radius;
+	Gtk::Switch* toggle_handle_tooltip_transformation;
+	Gtk::Switch* toggle_autobackup;
+	Gtk::Entry*  image_editor_path_entry;
 	long pref_modification_flag;
 	//! Do not update state flag on refreshing
 	bool refreshing;
