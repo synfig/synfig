@@ -67,6 +67,7 @@
 #include <synfig/general.h>
 #include <synfig/layers/layer_switch.h>
 #include <synfig/savecanvas.h>
+#include <synfig/synfig_iterations.h>
 #include <synfig/valuenode_registry.h>
 #include <synfig/valuenodes/valuenode_composite.h>
 #include <synfig/valuenodes/valuenode_duplicate.h>
@@ -101,6 +102,92 @@ create_image_from_icon(const std::string& icon_name, Gtk::IconSize icon_size)
 	image->set_from_icon_name(icon_name, icon_size);
 	return image;
 #endif
+}
+
+static void get_layer_path(const Layer::Handle& l, const Canvas::LooseHandle root_canvas, std::string& path);
+
+struct ValueNodePathBuilder {
+
+	const Canvas::LooseHandle& canvas;
+	std::string path;
+	std::string link_name;
+
+	synfig::TraverseCallbackAction
+	operator() (ValueNode::Handle vn)
+	{
+		if (vn->get_type() != type_canvas)
+			return TRAVERSE_CALLBACK_SKIP;
+
+		if ((*vn)(canvas->get_time()).get(Canvas::Handle()) != canvas)
+			return TRAVERSE_CALLBACK_SKIP;
+
+		if (!link_name.empty())
+			path += "/" + link_name;
+
+		if (const auto constvn = ValueNode_Const::Handle::cast_dynamic(vn))
+			return TRAVERSE_CALLBACK_ABORT;
+
+		if (const auto linkable = LinkableValueNode::Handle::cast_dynamic(vn)) {
+			path += "/" + linkable->get_name();
+			for (int i=0; i < linkable->link_count(); i++) {
+				auto ith_link = linkable->get_link(i);
+				ValueNodePathBuilder builder {canvas};
+				builder.link_name = linkable->link_name(i);
+				traverse_valuenodes(ith_link, [&builder](ValueNode::Handle vn) -> synfig::TraverseCallbackAction {
+					auto action = builder(vn);
+					return action;
+				});
+				if (!builder.path.empty()) {
+					path += builder.path;
+					break;
+				}
+			}
+			return TRAVERSE_CALLBACK_ABORT; // hacked RECURSIVE above;
+		}
+		return TRAVERSE_CALLBACK_ABORT;
+	}
+};
+
+static void
+get_canvas_path(Canvas::LooseHandle canvas, const Canvas::LooseHandle root_canvas, std::string& path)
+{
+	if (canvas->is_inline()) {
+		if (auto layer = canvas->find_first_parent_of_type<Layer>()) {
+			for (const auto& param_item : layer->get_param_list()) {
+				if (param_item.second.get_type() == type_canvas) {
+					if (param_item.second.get(Canvas::LooseHandle()) == canvas) {
+						std::string dynamic_str;
+						auto dynamic_param_iter = layer->dynamic_param_list().find(param_item.first);
+						if (dynamic_param_iter != layer->dynamic_param_list().end()) {
+							ValueNodePathBuilder vn_path_builder {canvas};
+							traverse_valuenodes(dynamic_param_iter->second, [&vn_path_builder](ValueNode::Handle vn) -> TraverseCallbackAction {
+								return vn_path_builder(vn);
+							});
+							dynamic_str = vn_path_builder.path;
+						}
+						path = strprintf("/param[@name='%s']%s/canvas%s", param_item.first.c_str(), dynamic_str.c_str(), path.c_str());
+					}
+				}
+			}
+			get_layer_path(layer, root_canvas, path);
+		}
+	} else {
+		path = canvas->get_relative_id(root_canvas) + path;
+	}
+}
+
+static void
+get_layer_path(const Layer::Handle& l, const Canvas::LooseHandle root_canvas, std::string& path)
+{
+	if (l) {
+		auto canvas = l->get_canvas();
+		if (!canvas) {
+			warning("layer without canvas!");
+		} else {
+			path = strprintf("/layer[%i]", canvas->size() - canvas->get_depth(l)) + path;
+			get_canvas_path(canvas, root_canvas, path);
+		}
+	}
 }
 
 /* === M E T H O D S ======================================================= */
@@ -250,6 +337,43 @@ studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vec
 {
 	handle<synfigapp::UIInterface> uim = this->find_canvas_view(this->get_canvas())->get_ui_interface();
 
+	std::unordered_map<std::string,std::string> view_state;
+
+	const auto required_args = App::plugin_manager.get_script_args(plugin_id);
+
+	if (auto canvas_interface = find_canvas_interface(get_canvas())) {
+
+		// Current Time
+
+		view_state["current_time"] = canvas_interface->get_time();
+
+		// Selected Layers
+
+		if (auto selection = canvas_interface->get_selection_manager()) {
+
+			// Layers
+			if (required_args.selected_layers != PluginScript::ArgNecessity::ARGUMENT_UNUSED) {
+				for (const auto& layer : selection->get_selected_layers()) {
+					std::string xpath;
+					get_layer_path(layer, get_canvas(), xpath);
+					auto& selected_layers = view_state["selected_layers"];
+					if (!selected_layers.empty())
+						selected_layers.append(",");
+					selected_layers += '"' + JSON::escape_string(xpath) + '"';
+				}
+			}
+		}
+	}
+
+	if (required_args.selected_layers == PluginScript::ArgNecessity::ARGUMENT_MANDATORY && view_state.count("selected_layers") == 0) {
+		App::dialog_message_1b(
+				"ERROR",
+				_("The plugin operation has failed."),
+				_("This plugin requires layer(s) to be selected.\nSelect one or more layers and re-run the plugin."),
+				_("Close"));
+		return;
+	}
+
 	if ( modify_canvas )
 	{
 		String message = strprintf(_("Do you really want to run plugin for file \"%s\"?" ),
@@ -343,7 +467,8 @@ studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vec
 
 		one_moment.hide();
 		extra_args.insert(extra_args.begin(), filename_processed);
-		bool result = App::plugin_manager.run(plugin_id, extra_args);
+
+		bool result = App::plugin_manager.run(plugin_id, extra_args, view_state);
 
 		if (result && modify_canvas){
 			// Restore file copy
