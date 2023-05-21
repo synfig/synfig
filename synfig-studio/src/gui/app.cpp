@@ -1053,7 +1053,7 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 // actions: move to tab
 for (int i = 1; i <= 8; ++i) {
 	const std::string tab = std::to_string(i);
-	DEFINE_ACTION("switch-to-tab-" + tab, _("Switch to Tab ") + tab)
+	DEFINE_ACTION("switch-to-tab-" + tab, strprintf(_("Switch to Tab %i"), i))
 }
 DEFINE_ACTION("switch-to-rightmost-tab",  _("Switch to Rightmost Tab"))
 
