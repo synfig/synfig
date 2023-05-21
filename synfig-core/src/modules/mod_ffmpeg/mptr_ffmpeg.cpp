@@ -166,15 +166,13 @@ ffmpeg_mptr::grab_frame(void)
 	return true;
 }
 
-ffmpeg_mptr::ffmpeg_mptr(const synfig::FileSystem::Identifier &identifier):
-	synfig::Importer(identifier)
+ffmpeg_mptr::ffmpeg_mptr(const synfig::FileSystem::Identifier& identifier)
+	: synfig::Importer(identifier),
+	  pipe(nullptr), cur_frame(-1), fps(23.98)
 {
 #ifdef HAVE_TERMIOS_H
 	tcgetattr (0, &oldtty);
 #endif
-	pipe=nullptr;
-	fps=23.98;
-	cur_frame=-1;
 }
 
 ffmpeg_mptr::~ffmpeg_mptr()

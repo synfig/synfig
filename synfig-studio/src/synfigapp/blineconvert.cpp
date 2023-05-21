@@ -369,11 +369,8 @@ int tessellate_curves(const std::vector<cpindex> &inds, const std::vector<Point>
 }
 
 synfigapp::BLineConverter::BLineConverter()
-{
-	pixelwidth = 1;
-	smoothness = 0.70f;
-	width = 0;
-};
+	: width(0), pixelwidth(1), smoothness(0.70f)
+{ }
 
 void
 synfigapp::BLineConverter::clear()

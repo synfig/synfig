@@ -545,7 +545,7 @@ class TypeBoneValueNode: public Type
 		mutable ValueNode_BonePtr p;
 
 		Inner(): p(nullptr) { }
-		Inner(const Inner& other) { h = other.h; }
+		Inner(const Inner& other) : h(other.h) { }
 		Inner& operator= (const etl::handle<ValueNode_Bone> &other) { h = other; return *this; }
 		Inner& operator= (const etl::loose_handle<ValueNode_Bone> &other) { h = other; return *this; }
 		Inner& operator= (const ValueNode_BonePtr &other) { h = other; return *this; }
