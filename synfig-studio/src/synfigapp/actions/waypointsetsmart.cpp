@@ -318,7 +318,7 @@ Action::WaypointSetSmart::enclose_waypoint(const synfig::Waypoint& waypoint)
 			}
 		}
 	}
-	catch(Error &x) { throw x; }
+	catch(Error &x) { throw; }
 	catch(synfig::Exception::NotFound&) { }
 	catch(int&) { }
 	catch(...) { }
