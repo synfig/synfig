@@ -122,11 +122,10 @@ StateStroke_Context::StateStroke_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
 	duckmatic_push(get_work_area()),
+	stroke_data(std::make_shared<std::list<synfig::Point>>()),
+	width_data(std::make_shared<std::list<synfig::Real>>()),
 	modifier()
 {
-	width_data = std::make_shared<std::list<synfig::Real>>();
-	stroke_data = std::make_shared<std::list<synfig::Point>>();
-
 	get_work_area()->add_stroke(stroke_data, synfigapp::Main::get_outline_color());
 }
 

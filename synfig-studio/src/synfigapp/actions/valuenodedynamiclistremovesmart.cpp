@@ -37,7 +37,6 @@
 #include <synfig/general.h>
 
 #include "valuenodedynamiclistremovesmart.h"
-#include "valuenodedynamiclistremove.h"
 #include <synfigapp/canvasinterface.h>
 
 #include <synfigapp/localization.h>
@@ -66,10 +65,8 @@ ACTION_SET_VERSION(Action::ValueNodeDynamicListRemoveSmart,"0.0");
 /* === M E T H O D S ======================================================= */
 
 Action::ValueNodeDynamicListRemoveSmart::ValueNodeDynamicListRemoveSmart()
+	: time(0), origin(0.5f), index(0)
 {
-	index=0;
-	time=0;
-	origin=0.5f;
 	set_dirty(true);
 }
 

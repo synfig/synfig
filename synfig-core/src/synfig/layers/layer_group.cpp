@@ -69,12 +69,11 @@ SYNFIG_LAYER_SET_VERSION(Layer_Group,"0.3");
 /* === M E T H O D S ======================================================= */
 
 Layer_Group::Layer_Group()
+	: param_z_range(ValueBase(bool(false))),
+	  param_z_range_position(ValueBase(Real(0.0))),
+	  param_z_range_depth(ValueBase(Real(0.0))),
+	  param_z_range_blur(ValueBase(Real(0.0)))
 {
-	param_z_range=ValueBase(bool(false));
-	param_z_range_position=ValueBase(Real(0.0));
-	param_z_range_depth=ValueBase(Real(0.0));
-	param_z_range_blur=ValueBase(Real(0.0));
-
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
 }

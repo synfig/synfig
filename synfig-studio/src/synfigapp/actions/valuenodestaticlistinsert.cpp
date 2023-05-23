@@ -63,10 +63,8 @@ ACTION_SET_VERSION(Action::ValueNodeStaticListInsert,"0.0");
 /* === M E T H O D S ======================================================= */
 
 Action::ValueNodeStaticListInsert::ValueNodeStaticListInsert()
+	: time(0), origin(0.5f), index(0)
 {
-	index=0;
-	time=0;
-	origin=0.5f;
 	set_dirty(true);
 }
 

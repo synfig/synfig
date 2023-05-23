@@ -66,9 +66,9 @@ SYNFIG_LAYER_SET_VERSION(Layer_Switch,"0.0");
 /* === M E T H O D S ======================================================= */
 
 Layer_Switch::Layer_Switch()
+	: param_layer_name(ValueBase(String())),
+	  param_layer_depth(ValueBase(int(-1)))
 {
-	param_layer_name=ValueBase(String());
-	param_layer_depth=ValueBase(int(-1));
 	set_param("children_lock",ValueBase(true));
 
 	SET_INTERPOLATION_DEFAULTS();
