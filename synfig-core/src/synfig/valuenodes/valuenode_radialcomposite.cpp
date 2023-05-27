@@ -245,16 +245,16 @@ ValueNode_RadialComposite::get_children_vocab_vfunc()const
 	Type &type(get_type());
 	if (type == type_color)
 	{
-		ret.push_back(ParamDesc(ValueBase(),"y_luma")
+		ret.push_back(ParamDesc("y_luma")
 		.set_local_name(_("Luma"))
 		);
-		ret.push_back(ParamDesc(ValueBase(),"saturation")
+		ret.push_back(ParamDesc("saturation")
 		.set_local_name(_("Saturation"))
 		);
-		ret.push_back(ParamDesc(ValueBase(),"hue")
+		ret.push_back(ParamDesc("hue")
 		.set_local_name(_("Hue"))
 		);
-		ret.push_back(ParamDesc(ValueBase(),"alpha")
+		ret.push_back(ParamDesc("alpha")
 		.set_local_name(_("Alpha"))
 		);
 		return ret;
@@ -262,11 +262,11 @@ ValueNode_RadialComposite::get_children_vocab_vfunc()const
 	else
 	if (type == type_vector)
 	{
-		ret.push_back(ParamDesc(ValueBase(),"radius")
+		ret.push_back(ParamDesc("radius")
 		.set_local_name(_("Radius"))
 		.set_description(_("The length of the vector"))
 		);
-		ret.push_back(ParamDesc(ValueBase(),"theta")
+		ret.push_back(ParamDesc("theta")
 		.set_local_name(_("Theta"))
 		.set_description(_("The angle of the vector with the X axis"))
 		);

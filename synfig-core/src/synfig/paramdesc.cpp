@@ -35,9 +35,7 @@
 
 #include "paramdesc.h"
 
-#include "general.h"
 #include <synfig/localization.h>
-#include "value.h"
 
 #endif
 
@@ -53,46 +51,44 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-ParamDesc::ParamDesc(const ValueBase&, const String &a):
-	name_           (a),
-	local_name_     (a),
-	scalar_         (1.0),
-	exponential_    (false),
-	critical_       (true),
-	hidden_         (false),
-	invisible_duck_ (false),
-	is_distance_    (false),
-	animation_only_ (false),
-	static_         (false),
-	interpolation_  (INTERPOLATION_UNDEFINED)
+ParamDesc::ParamDesc(const String& name)
+	: name_           (name),
+	  local_name_     (name),
+	  scalar_         (1.0),
+	  exponential_    (false),
+	  critical_       (true),
+	  hidden_         (false),
+	  invisible_duck_ (false),
+	  is_distance_    (false),
+	  animation_only_ (false),
+	  static_         (false),
+	  interpolation_  (INTERPOLATION_UNDEFINED)
 {
-	if(a == "blend_method")
-	{
-		set_local_name(_("Blend Method"))
-		.set_hint("enum")		// used shortcuts: A B C D E F G H I K L M N O P R S T U V Y; free: J Q W X Z
-		.add_enum_value(Color::BLEND_COMPOSITE,      "composite",    _("Composite"))
-		.add_enum_value(Color::BLEND_STRAIGHT,       "straight",     _("Straight"))
-		.add_enum_value(Color::BLEND_ONTO,           "onto",         _("Onto"))
-		.add_enum_value(Color::BLEND_STRAIGHT_ONTO,  "straightonto", _("Straight Onto"))
-		.add_enum_value(Color::BLEND_BEHIND,         "behind",       _("Behind"))
-		.add_enum_value(Color::BLEND_SCREEN,         "screen",       _("Screen"))
-		.add_enum_value(Color::BLEND_OVERLAY,        "overlay",      _("Overlay"))
-		.add_enum_value(Color::BLEND_HARD_LIGHT,     "hard_light",   _("Hard Light"))
-		.add_enum_value(Color::BLEND_MULTIPLY,       "multiply",     _("Multiply"))
-		.add_enum_value(Color::BLEND_DIVIDE,         "divide",       _("Divide"))
-		.add_enum_value(Color::BLEND_ADD,            "add",          _("Add"))
-		.add_enum_value(Color::BLEND_SUBTRACT,       "subtract",     _("Subtract"))
-		.add_enum_value(Color::BLEND_DIFFERENCE,     "difference",   _("Difference"))
-		.add_enum_value(Color::BLEND_BRIGHTEN,       "brighten",     _("Brighten"))
-		.add_enum_value(Color::BLEND_DARKEN,         "darken",       _("Darken"))
-		.add_enum_value(Color::BLEND_COLOR,          "color",        _("Color"))
-		.add_enum_value(Color::BLEND_HUE,            "hue",          _("Hue"))
-		.add_enum_value(Color::BLEND_SATURATION,     "saturation",   _("Saturation"))
-		.add_enum_value(Color::BLEND_LUMINANCE,      "luminance",    _("Luminance"))
-		.add_enum_value(Color::BLEND_ALPHA_OVER,     "alphaover",    _("Alpha Over"))
-		.add_enum_value(Color::BLEND_ALPHA_BRIGHTEN, "alphabrighten",_("Alpha Brighten"))
-		.add_enum_value(Color::BLEND_ALPHA_DARKEN,   "alphadarken",  _("Alpha Darken"))
-		.add_enum_value(Color::BLEND_ALPHA,          "alpha",        _("Alpha"))
-		; // end of enums
+	if (name == "blend_method") {
+		set_local_name(_("Blend Method"));
+		set_hint("enum");
+		add_enum_value(Color::BLEND_COMPOSITE,      "composite",    _("Composite"));
+		add_enum_value(Color::BLEND_STRAIGHT,       "straight",     _("Straight"));
+		add_enum_value(Color::BLEND_ONTO,           "onto",         _("Onto"));
+		add_enum_value(Color::BLEND_STRAIGHT_ONTO,  "straightonto", _("Straight Onto"));
+		add_enum_value(Color::BLEND_BEHIND,         "behind",       _("Behind"));
+		add_enum_value(Color::BLEND_SCREEN,         "screen",       _("Screen"));
+		add_enum_value(Color::BLEND_OVERLAY,        "overlay",      _("Overlay"));
+		add_enum_value(Color::BLEND_HARD_LIGHT,     "hard_light",   _("Hard Light"));
+		add_enum_value(Color::BLEND_MULTIPLY,       "multiply",     _("Multiply"));
+		add_enum_value(Color::BLEND_DIVIDE,         "divide",       _("Divide"));
+		add_enum_value(Color::BLEND_ADD,            "add",          _("Add"));
+		add_enum_value(Color::BLEND_SUBTRACT,       "subtract",     _("Subtract"));
+		add_enum_value(Color::BLEND_DIFFERENCE,     "difference",   _("Difference"));
+		add_enum_value(Color::BLEND_BRIGHTEN,       "brighten",     _("Brighten"));
+		add_enum_value(Color::BLEND_DARKEN,         "darken",       _("Darken"));
+		add_enum_value(Color::BLEND_COLOR,          "color",        _("Color"));
+		add_enum_value(Color::BLEND_HUE,            "hue",          _("Hue"));
+		add_enum_value(Color::BLEND_SATURATION,     "saturation",   _("Saturation"));
+		add_enum_value(Color::BLEND_LUMINANCE,      "luminance",    _("Luminance"));
+		add_enum_value(Color::BLEND_ALPHA_OVER,     "alphaover",    _("Alpha Over"));
+		add_enum_value(Color::BLEND_ALPHA_BRIGHTEN, "alphabrighten",_("Alpha Brighten"));
+		add_enum_value(Color::BLEND_ALPHA_DARKEN,   "alphadarken",  _("Alpha Darken"));
+		add_enum_value(Color::BLEND_ALPHA,          "alpha",        _("Alpha"));
 	}
 }

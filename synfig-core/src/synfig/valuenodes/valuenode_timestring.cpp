@@ -146,7 +146,7 @@ ValueNode_TimeString::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"time")
+	ret.push_back(ParamDesc("time")
 		.set_local_name(_("Time"))
 		.set_description(_("The time that is converted to string"))
 	);

@@ -930,7 +930,7 @@ Layer::get_param_vocab()const
 {
 	Layer::Vocab ret;
 
-	ret.push_back(ParamDesc(param_z_depth,"z_depth")
+	ret.push_back(ParamDesc("z_depth")
 		.set_local_name(_("Z Depth"))
 		.set_animation_only(true)
 		.set_description(_("Modifies the position of the layer in the layer stack"))

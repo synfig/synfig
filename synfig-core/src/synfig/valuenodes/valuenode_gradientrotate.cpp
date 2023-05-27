@@ -154,12 +154,12 @@ ValueNode_GradientRotate::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"gradient")
+	ret.push_back(ParamDesc("gradient")
 		.set_local_name(_("Gradient"))
 		.set_description(_("The source gradient to rotate"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"offset")
+	ret.push_back(ParamDesc("offset")
 		.set_local_name(_("Offset"))
 		.set_description(_("The amount to offset the gradient"))
 	);

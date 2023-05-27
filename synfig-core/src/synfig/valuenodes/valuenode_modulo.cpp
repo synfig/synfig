@@ -159,17 +159,17 @@ ValueNode_Modulo::get_children_vocab_vfunc() const
 {
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"link")
+	ret.push_back(ParamDesc("link")
 		.set_local_name(_("Link"))
 		.set_description(_("Left hand side of the modulo (dividend or numerator)"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"divisor")
+	ret.push_back(ParamDesc("divisor")
 		.set_local_name(_("Divisor"))
 		.set_description(_("Right hand side of the modulo (divisor or denominator)"))
 	);
 
-		ret.push_back(ParamDesc(ValueBase(),"scalar")
+		ret.push_back(ParamDesc("scalar")
 		.set_local_name(_("Scalar"))
 		.set_description(_("Value to multiply the result of modulo operation"))
 	);

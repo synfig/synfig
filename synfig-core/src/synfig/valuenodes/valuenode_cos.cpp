@@ -145,12 +145,12 @@ ValueNode_Cos::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"angle")
+	ret.push_back(ParamDesc("angle")
 		.set_local_name(_("Angle"))
 		.set_description(_("Value to calculate the cosine"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"amp")
+	ret.push_back(ParamDesc("amp")
 		.set_local_name(_("Amplitude"))
 		.set_description(_("Multiplier of the resulting cosine"))
 	);

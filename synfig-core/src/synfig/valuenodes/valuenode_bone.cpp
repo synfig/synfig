@@ -584,56 +584,56 @@ ValueNode_Bone::get_children_vocab_vfunc() const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"name")
+	ret.push_back(ParamDesc("name")
 		.set_local_name(_("Name"))
 		.set_description(_("The name of the bone"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"parent")
+	ret.push_back(ParamDesc("parent")
 		.set_local_name(_("Parent"))
 		.set_description(_("The parent bone of the bone"))
 		.set_static(true)
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"origin")
+	ret.push_back(ParamDesc("origin")
 		.set_local_name(_("Origin"))
 		.set_description(_("The rotating origin of the bone relative to its parent"))
 		.set_is_distance()
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"angle")
+	ret.push_back(ParamDesc("angle")
 		.set_local_name(_("Angle"))
 		.set_description(_("The rotating angle of the bone relative to its parent"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"scalelx")
+	ret.push_back(ParamDesc("scalelx")
 		.set_local_name(_("Local Length Scale"))
 		.set_description(_("The scale of the bone aligned to its length"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"width")
+	ret.push_back(ParamDesc("width")
 		.set_local_name(_("Bone Width"))
 		.set_description(_("Bone width at its origin"))
 		.set_is_distance()
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"scalex")
+	ret.push_back(ParamDesc("scalex")
 		.set_local_name(_("Recursive Length Scale"))
 		.set_description(_("The scale of the bone and its children aligned to its length"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"tipwidth")
+	ret.push_back(ParamDesc("tipwidth")
 		.set_local_name(_("Tip Width"))
 		.set_description(_("Bone width at its tip"))
 		.set_is_distance()
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"bone_depth")
+	ret.push_back(ParamDesc("bone_depth")
 		.set_local_name(_("Z-Depth"))
 		.set_description(_("The z-depth of the bone"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"length")
+	ret.push_back(ParamDesc("length")
 		.set_local_name(_("Length Setup"))
 		.set_description(_("The length of the bone at setup"))
 		.set_is_distance()
