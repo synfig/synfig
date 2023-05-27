@@ -77,10 +77,6 @@
 namespace synfig {
 
 class Surface;
-class RendDesc;
-class Canvas;
-class ProgressCallback;
-struct TargetParam;
 
 enum TargetAlphaMode
 {
@@ -138,7 +134,6 @@ public:
 	{
 		Factory factory;
 		String filename; ///< Output filename including path
-		TargetParam target_param; ///< Target module parameters
 	};
 
 	//! Book of types of targets indexed by the name of the Target.

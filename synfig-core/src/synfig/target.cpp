@@ -55,13 +55,11 @@ Target::subsys_init()
 	book()["null"].factory =
 		reinterpret_cast<synfig::Target::Factory>(&Target_Null::create);
 	book()["null"].filename = "null";
-	book()["null"].target_param = TargetParam();
 	ext_book()["null"]="null";
 
 	book()["null-tile"].factory =
 		reinterpret_cast<synfig::Target::Factory>(&Target_Null_Tile::create);
 	book()["null-tile"].filename = "null-tile";
-	book()["null-tile"].target_param = TargetParam();
 	ext_book()["null-tile"]="null-tile";
 
 	return true;
