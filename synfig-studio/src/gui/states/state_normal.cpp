@@ -76,7 +76,6 @@ class DuckDrag_Combo : public DuckDrag_Base
 	synfig::Vector last_move;
 	synfig::Vector drag_offset;
 	synfig::Vector center;
-	synfig::Vector snap;
 
 	synfig::Angle original_angle;
 	synfig::Real original_mag;
@@ -84,8 +83,6 @@ class DuckDrag_Combo : public DuckDrag_Base
 	std::vector<synfig::Vector> last_;
 	std::vector<synfig::Vector> positions;
 
-
-	bool bad_drag;
 	bool move_only;
 
 	bool is_moving;
@@ -335,7 +332,6 @@ StateNormal_Context::~StateNormal_Context()
 DuckDrag_Combo::DuckDrag_Combo():
 	original_angle(),
 	original_mag(),
-	bad_drag(),
 	move_only(),
 	is_moving(false),
 	canvas_view_(nullptr),
@@ -353,18 +349,11 @@ DuckDrag_Combo::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& offs
 	const DuckList selected_ducks(duckmatic->get_selected_ducks());
 	DuckList::const_iterator iter;
 
-	bad_drag=false;
-
-		drag_offset=duckmatic->find_duck(offset)->get_trans_point();
-
-		//snap=drag_offset-duckmatic->snap_point_to_grid(drag_offset);
-		//snap=offset-drag_offset_;
-		snap=Vector(0,0);
+	drag_offset=duckmatic->find_duck(offset)->get_trans_point();
 
 	// Calculate center
 	Point vmin(100000000,100000000);
 	Point vmax(-100000000,-100000000);
-	//std::set<etl::handle<Duck> >::iterator iter;
 	positions.clear();
 	int i;
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
@@ -394,31 +383,36 @@ DuckDrag_Combo::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 {
 	if (!duckmatic) return;
 
-	if(bad_drag)
-		return;
-
-	// this is quick-hack mostly, so need to check if nothing broken
-	//if (!move_only && !scale && !rotate) return; // nothing to do
-
 	//Override axis lock set in workarea when holding down the shift key
 	if (!move_only && (scale || rotate))
 		duckmatic->set_axis_lock(false);
 
 	synfig::Vector vect;
 	if (move_only || (!scale && !rotate))
-		vect= duckmatic->snap_point_to_grid(vector)-drag_offset+snap;
+		vect= duckmatic->snap_point_to_grid(vector)-drag_offset;
 	else
-		vect= duckmatic->snap_point_to_grid(vector)-center+snap;
+		vect= duckmatic->snap_point_to_grid(vector)-center;
 
 	last_move=vect;
 
 	const DuckList selected_ducks(duckmatic->get_selected_ducks());
+
+	bool constrain_single_rotating_handle = false;
+
+	if (constrain && selected_ducks.size() == 1) {
+		auto& duck = selected_ducks.front();
+		auto duck_type = duck->get_type();
+		if (duck_type == Duck::TYPE_ANGLE || duck_type == Duck::TYPE_TANGENT) {
+			constrain_single_rotating_handle = true;
+		}
+	}
+
 	DuckList::const_iterator iter;
 
 	Time time(duckmatic->get_time());
 
 	int i;
-	if( move_only || (!scale && !rotate) )
+	if( !constrain_single_rotating_handle && (move_only || (!scale && !rotate)) )
 	{
 		for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
 		{
@@ -432,7 +426,18 @@ DuckDrag_Combo::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 		}
 	}
 
-	if (rotate)
+	if (constrain_single_rotating_handle)
+	{
+		auto duck = selected_ducks.front();
+		auto origin = duck->get_trans_origin();
+		auto p = duck->get_trans_point();
+		Vector v = vector - origin;
+		Angle::deg angle(Angle::tan(v[1], v[0]));
+		float degrees = angle.get()/15;
+		angle = Angle::deg(15 * (degrees > 0 ? std::floor(degrees) : std::ceil(degrees)));
+		v = origin + Vector(v.mag(),0).rotate(angle);
+		duck->set_trans_point(v, time);
+	} else if (rotate)
 	{
 		Angle::deg angle(Angle::tan(vect[1],vect[0]));
 		angle=original_angle-angle;
@@ -538,10 +543,6 @@ DuckDrag_Combo::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 bool
 DuckDrag_Combo::end_duck_drag(Duckmatic* duckmatic)
 {
-	if(bad_drag)return false;
-
-	//synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Rotate Ducks"));
-
 	if(is_moving)
 	{
 		duckmatic->signal_edited_selected_ducks();
@@ -564,7 +565,6 @@ StateNormal_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 Smach::event_result
 StateNormal_Context::event_stop_handler(const Smach::event& /*x*/)
 {
-	// synfig::info("STATE NORMAL: Received Stop Event");
 	canvas_view_->stop();
 	return Smach::RESULT_ACCEPT;
 }
@@ -572,7 +572,6 @@ StateNormal_Context::event_stop_handler(const Smach::event& /*x*/)
 Smach::event_result
 StateNormal_Context::event_refresh_handler(const Smach::event& /*x*/)
 {
-	// synfig::info("STATE NORMAL: Received Refresh Event");
 	canvas_view_->rebuild_tables();
 	canvas_view_->get_work_area()->queue_render();
 	return Smach::RESULT_ACCEPT;
@@ -581,7 +580,6 @@ StateNormal_Context::event_refresh_handler(const Smach::event& /*x*/)
 Smach::event_result
 StateNormal_Context::event_refresh_ducks_handler(const Smach::event& /*x*/)
 {
-	// synfig::info("STATE NORMAL: Received Refresh Ducks");
 	canvas_view_->queue_rebuild_ducks();
 	return Smach::RESULT_ACCEPT;
 }
@@ -589,7 +587,6 @@ StateNormal_Context::event_refresh_ducks_handler(const Smach::event& /*x*/)
 Smach::event_result
 StateNormal_Context::event_undo_handler(const Smach::event& /*x*/)
 {
-	// synfig::info("STATE NORMAL: Received Undo Event");
 	canvas_view_->get_instance()->undo();
 	return Smach::RESULT_ACCEPT;
 }
@@ -597,7 +594,6 @@ StateNormal_Context::event_undo_handler(const Smach::event& /*x*/)
 Smach::event_result
 StateNormal_Context::event_redo_handler(const Smach::event& /*x*/)
 {
-	// synfig::info("STATE NORMAL: Received Redo Event");
 	canvas_view_->get_instance()->redo();
 	return Smach::RESULT_ACCEPT;
 }
@@ -605,8 +601,6 @@ StateNormal_Context::event_redo_handler(const Smach::event& /*x*/)
 Smach::event_result
 StateNormal_Context::event_mouse_button_down_handler(const Smach::event& x)
 {
-	// synfig::info("STATE NORMAL: Received mouse button down Event");
-
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
 
 	switch(event.button)
@@ -622,8 +616,6 @@ StateNormal_Context::event_mouse_button_down_handler(const Smach::event& x)
 Smach::event_result
 StateNormal_Context::event_mouse_motion_handler(const Smach::event& x)
 {
-	// synfig::info("STATE NORMAL: Received mouse button down Event");
-
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
 
 	set_ctrl_pressed(event.modifier&GDK_CONTROL_MASK);
@@ -641,8 +633,7 @@ StateNormal_Context::set_ctrl_pressed(bool value)
 
 	if (ctrl_pressed)
 	{
-		if (get_canvas_view()->get_work_area()->get_selected_ducks().size() <= 1
-		 /* && get_canvas_view()->get_work_area()->get_selected_duck()->get_value_desc().get_value_type() == synfig::type_transformation */ )
+		if (get_canvas_view()->get_work_area()->get_selected_ducks().size() <= 1)
 		{
 			set_rotate_flag(false);
 			set_alternative_flag(true);
@@ -755,15 +746,6 @@ StateNormal_Context::event_layer_click(const Smach::event& x)
 {
 	const EventLayerClick& event(*reinterpret_cast<const EventLayerClick*>(&x));
 
-	if(event.layer)
-	{
-		// synfig::info("STATE NORMAL: Received layer click Event, \"%s\"",event.layer->get_name().c_str());
-	}
-	else
-	{
-		// synfig::info("STATE NORMAL: Received layer click Event with an empty layer.");
-	}
-
 	switch(event.button)
 	{
 	case BUTTON_LEFT:
@@ -797,10 +779,6 @@ StateNormal_Context::event_layer_click(const Smach::event& x)
 Smach::event_result
 StateNormal_Context::event_multiple_ducks_clicked_handler(const Smach::event& x)
 {
-	// synfig::info("STATE NORMAL: Received multiple duck click event");
-
-	//const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
-
 	std::list<synfigapp::ValueDesc> value_desc_list;
 
 	// Create a list of value_descs associated with selection
@@ -830,5 +808,3 @@ StateNormal_Context::event_multiple_ducks_clicked_handler(const Smach::event& x)
 
 	return Smach::RESULT_ACCEPT;
 }
-
-

@@ -74,7 +74,6 @@ class DuckDrag_SmoothMove : public DuckDrag_Base
 
 	synfig::Vector last_translate_;
 	synfig::Vector drag_offset_;
-	synfig::Vector snap;
 
 	std::vector<synfig::Vector> last_;
 	std::vector<synfig::Vector> positions;
@@ -94,8 +93,6 @@ class studio::StateSmoothMove_Context : public sigc::trackable
 {
 	CanvasView::Handle canvas_view_;
 	CanvasView::IsWorking is_working;
-
-	//Duckmatic::Push duckmatic_push;
 
 	synfigapp::Settings& settings;
 
@@ -182,7 +179,6 @@ StateSmoothMove_Context::save_settings()
 StateSmoothMove_Context::StateSmoothMove_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
-//	duckmatic_push(get_work_area()),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	duck_dragger_(new DuckDrag_SmoothMove()),
 	adj_radius(Gtk::Adjustment::create(1,0,100000,0.01,0.1)),
@@ -233,7 +229,6 @@ StateSmoothMove_Context::StateSmoothMove_Context(CanvasView* canvas_view):
 	App::dock_toolbox->refresh();
 
 	get_work_area()->set_cursor(Gdk::FLEUR);
-	//get_work_area()->reset_cursor();
 }
 
 void
@@ -282,11 +277,7 @@ void
 DuckDrag_SmoothMove::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& offset)
 {
 	last_translate_=Vector(0,0);
-		drag_offset_=duckmatic->find_duck(offset)->get_trans_point();
-
-		//snap=drag_offset-duckmatic->snap_point_to_grid(drag_offset);
-		//snap=offset-drag_offset_;
-		snap=Vector(0,0);
+	drag_offset_=duckmatic->find_duck(offset)->get_trans_point();
 
 	last_.clear();
 	positions.clear();
@@ -305,7 +296,7 @@ DuckDrag_SmoothMove::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vecto
 {
 	const DuckList selected_ducks(duckmatic->get_selected_ducks());
 	DuckList::const_iterator iter;
-	synfig::Vector vect(duckmatic->snap_point_to_grid(vector)-drag_offset_+snap);
+	synfig::Vector vect(duckmatic->snap_point_to_grid(vector)-drag_offset_);
 
 	int i;
 
@@ -355,7 +346,6 @@ DuckDrag_SmoothMove::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vecto
 bool
 DuckDrag_SmoothMove::end_duck_drag(Duckmatic* duckmatic)
 {
-	//synfig::info("end_duck_drag(): Diff= %f",last_translate_.mag());
 	if(last_translate_.mag()>0.0001)
 	{
 		const DuckList selected_ducks(duckmatic->get_selected_ducks());
@@ -411,8 +401,6 @@ DuckDrag_SmoothMove::end_duck_drag(Duckmatic* duckmatic)
 					}
 				}
 		}
-		//duckmatic->get_selected_ducks()=new_set;
-		//duckmatic->refresh_selected_ducks();
 		return true;
 	}
 	else

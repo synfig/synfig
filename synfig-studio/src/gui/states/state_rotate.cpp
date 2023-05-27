@@ -76,15 +76,12 @@ class DuckDrag_Rotate : public DuckDrag_Base
 	synfig::Vector last_rotate;
 	synfig::Vector drag_offset;
 	synfig::Vector center;
-	synfig::Vector snap;
 
 	Angle original_angle;
 	Real original_mag;
 
 	std::vector<synfig::Vector> positions;
 
-
-	bool bad_drag;
 	bool move_only;
 
 public:
@@ -258,8 +255,6 @@ StateRotate_Context::event_stop_handler(const Smach::event& /*x*/)
 {
 	canvas_view_->stop();
 	return Smach::RESULT_ACCEPT;
-	//throw &state_normal;
-	//return Smach::RESULT_OK;
 }
 
 StateRotate_Context::~StateRotate_Context()
@@ -280,7 +275,6 @@ StateRotate_Context::~StateRotate_Context()
 DuckDrag_Rotate::DuckDrag_Rotate():
 	original_angle(),
 	original_mag(),
-	bad_drag(),
 	move_only(),
 	use_magnitude(true)
 { }
@@ -293,20 +287,7 @@ DuckDrag_Rotate::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& off
 	const DuckList selected_ducks(duckmatic->get_selected_ducks());
 	DuckList::const_iterator iter;
 
-/*
-	if(duckmatic->get_selected_ducks().size()<2)
-	{
-		bad_drag=true;
-		return;
-	}
-*/
-	bad_drag=false;
-
-		drag_offset=duckmatic->find_duck(offset)->get_trans_point();
-
-		//snap=drag_offset-duckmatic->snap_point_to_grid(drag_offset);
-		//snap=offset-drag_offset;
-		snap=Vector(0,0);
+	drag_offset=duckmatic->find_duck(offset)->get_trans_point();
 
 	// Calculate center
 	Point vmin(100000000,100000000);
@@ -339,11 +320,7 @@ DuckDrag_Rotate::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& off
 void
 DuckDrag_Rotate::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 {
-	if(bad_drag)
-		return;
-
-	//std::set<etl::handle<Duck> >::iterator iter;
-	synfig::Vector vect(duckmatic->snap_point_to_grid(vector)-center+snap);
+	synfig::Vector vect(duckmatic->snap_point_to_grid(vector)-center);
 
 	const DuckList selected_ducks(duckmatic->get_selected_ducks());
 	DuckList::const_iterator iter;
@@ -407,13 +384,11 @@ DuckDrag_Rotate::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 	}
 
 	last_rotate=vect;
-	//snap=Vector(0,0);
 }
 
 bool
 DuckDrag_Rotate::end_duck_drag(Duckmatic* duckmatic)
 {
-	if(bad_drag)return false;
 	if(move_only)
 	{
 		synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Move Handle"));
