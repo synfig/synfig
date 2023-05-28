@@ -345,11 +345,11 @@ RenderSettings::on_render_pressed()
 		filesystem::Path filename_alpha(filename);
 		filename_alpha.add_suffix("-alpha");
 
-		render_passes.push_back(make_pair(TARGET_ALPHA_MODE_EXTRACT, filename_alpha));
-		render_passes.push_back(make_pair(TARGET_ALPHA_MODE_REDUCE, filename));
+		render_passes.push_back({TARGET_ALPHA_MODE_EXTRACT, filename_alpha});
+		render_passes.push_back({TARGET_ALPHA_MODE_REDUCE, filename});
 
 	} else {
-		render_passes.push_back(make_pair(TARGET_ALPHA_MODE_KEEP, filename));
+		render_passes.push_back({TARGET_ALPHA_MODE_KEEP, filename});
 	}
 
 	App::dock_info_->set_n_passes_requested(render_passes.size());
