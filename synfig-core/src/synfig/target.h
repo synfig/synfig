@@ -133,7 +133,7 @@ public:
 	struct BookEntry
 	{
 		Factory factory;
-		String filename; ///< Output filename including path
+		String file_extension; ///< Output filename extension
 	};
 
 	//! Book of types of targets indexed by the name of the Target.

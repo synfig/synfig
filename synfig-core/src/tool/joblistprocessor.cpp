@@ -138,7 +138,7 @@ static void create_output_filename(Job& job)
 	{
 		std::string new_extension;
 		if(Target::book().count(job.target_name))
-			new_extension = Target::book()[job.target_name].filename;
+			new_extension = Target::book()[job.target_name].file_extension;
 		else
 			new_extension = job.target_name;
 

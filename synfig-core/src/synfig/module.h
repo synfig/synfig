@@ -124,7 +124,7 @@
 #define TARGET(x)														\
 	synfig::Target::book()[synfig::String(x::name__)].factory =			\
 		reinterpret_cast<synfig::Target::Factory> (x::create);			\
-	synfig::Target::book()[synfig::String(x::name__)].filename =		\
+	synfig::Target::book()[synfig::String(x::name__)].file_extension =	\
 		synfig::String(x::ext__);										\
 	synfig::Target::ext_book()[synfig::String(x::ext__)]=x::name__;
 
