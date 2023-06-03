@@ -469,6 +469,27 @@ studio::get_action_stock_id(const synfigapp::Action::BookEntry& action)
 }
 
 std::string
+studio::get_action_icon_name(const synfigapp::Action::BookEntry& action)
+{
+	try {
+		if(action.task=="add")				return "list-add";
+		else if(action.task=="connect")		return "gtk-connect"; // DEPRECATED
+		else if(action.task=="disconnect")	return "gtk-disconnect"; // DEPRECATED
+		else if(action.task=="insert")		return "list-add";
+		else if(action.task=="lower")		return "go-down";
+		else if(action.task=="move_bottom")	return "go-bottom";
+		else if(action.task=="move_top")	return "go-top";
+		else if(action.task=="raise")		return "go-up";
+		else if(action.task=="remove")		return "edit-delete";
+		else if(action.task=="set_off")		return "gtk-no"; // DEPRECATED
+		else if(action.task=="set_on")		return "gtk-yes"; // DEPRECATED
+		else								return known_icon_list.at(action.task).first;
+	} catch (const std::out_of_range& ex) {
+		return "";
+	}
+}
+
+std::string
 studio::layer_icon_name(const synfig::String& layer_name)
 {
 	auto iter = layer_icon_names.find(layer_name);

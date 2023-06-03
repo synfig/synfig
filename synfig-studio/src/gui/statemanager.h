@@ -32,7 +32,6 @@
 
 #include <glibmm/refptr.h>
 #include <gui/smach.h>
-#include <vector>
 
 /* === M A C R O S ========================================================= */
 
@@ -40,29 +39,19 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace Gtk { class ActionGroup; }
-
-typedef unsigned int guint;
-
 namespace studio {
-	class StateManager
+
+class StateManager
 {
 private:
-	Glib::RefPtr<Gtk::ActionGroup> state_group;
-
-	guint merge_id;
-	std::vector<guint> merge_id_list;
-
-	void change_state_(const Smach::state_base *state);
+	void change_state_(const Smach::state_base* state);
 
 public:
 	StateManager();
 
 	~StateManager();
 
-	void add_state(const Smach::state_base *state);
-
-	Glib::RefPtr<Gtk::ActionGroup> get_action_group();
+	void add_state(const Smach::state_base* state);
 };
 
 }; // END of namespace studio
