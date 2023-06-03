@@ -46,6 +46,8 @@
 # define UNIX_PIPE_TO_PROCESSES
 # include <cstdlib> // for system()
 # include <fcntl.h> // for O_ flags
+# include <limits.h> // PATH_MAX
+# include <sys/stat.h> // for S_ISDIR() and stat()
 # include <sys/wait.h> // for waitpid()
 # include <unistd.h> // for popen()
 #elif defined(_WIN32)
@@ -777,4 +779,39 @@ OS::get_user_lang()
 	}
 #endif
 	return language_list;
+}
+
+filesystem::Path
+OS::get_current_working_directory()
+{
+#ifdef _WIN32
+	DWORD length = GetCurrentDirectoryW(0, nullptr);
+
+	std::vector<filesystem::Path::value_type> current_dir_str(length);
+	if (GetCurrentDirectoryW(length, current_dir_str.data()) != length - 1)
+		return filesystem::Path("/");
+
+	return filesystem::Path::from_native(current_dir_str.data()).lexically_normal();
+#else
+
+	struct stat st;
+	if (char* pwd = getenv("PWD")) {
+		if (stat(pwd, &st) == 0 && S_ISDIR(st.st_mode)) {
+			return filesystem::Path::from_native(pwd).lexically_normal();
+		}
+	}
+
+	std::vector<char> buffer(PATH_MAX);
+	char* ptr = nullptr;
+
+	while (!ptr) {
+		ptr = getcwd(buffer.data(), buffer.size());
+		if (!ptr) {
+			if (errno != ERANGE)
+				return filesystem::Path("/");
+			buffer.resize(buffer.size() * 2);
+		}
+	}
+	return filesystem::Path::from_native(buffer.data()).lexically_normal();
+#endif
 }
