@@ -61,20 +61,6 @@
 #endif
 
 
-std::string _appendAlphaToFilename(std::string input_filename)
-{
-
-	std::size_t found = input_filename.rfind('.');
-	if (found == std::string::npos) return input_filename + "-alpha"; // extension not found, just add to the end
-	
-	return input_filename.substr(0, found) + "-alpha" + input_filename.substr(found);
-
-    /*bfs::path filename(input_filename);
-    bfs::path alpha_filename(filename.stem().string() + "-alpha" +
-        filename.extension().string());
-    return bfs::path(filename.parent_path() / alpha_filename).string();*/
-}
-
 int main(int argc, char* argv[])
 {
 	setlocale(LC_ALL, "");
@@ -285,7 +271,7 @@ int main(int argc, char* argv[])
 			job.alpha_mode = synfig::TARGET_ALPHA_MODE_REDUCE;
 			job_list.push_front(job);
 			job.alpha_mode = synfig::TARGET_ALPHA_MODE_EXTRACT;
-			job.outfilename = _appendAlphaToFilename(job.outfilename);
+			job.outfilename.add_suffix("-alpha");
 			job_list.push_front(job);
 		} else {
 			job_list.push_front(job);
