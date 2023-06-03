@@ -132,7 +132,7 @@ public:
 		std::vector<InputDevice::AxisUse> axes = input_device->get_axes();
 		value = strprintf("%zu", axes.size());
 		std::vector<InputDevice::AxisUse>::const_iterator itr;
-		for (itr = axes.begin(); itr != axes.end(); itr++)
+		for (itr = axes.begin(); itr != axes.end(); ++itr)
 			value += strprintf(" %u", (unsigned int) *itr);
 	}
 
@@ -141,7 +141,7 @@ public:
 		std::vector<InputDevice::DeviceKey> keys = input_device->get_keys();
 		value = strprintf("%zu", keys.size());
 		std::vector<InputDevice::DeviceKey>::const_iterator itr;
-		for (itr = keys.begin(); itr != keys.end(); itr++)
+		for (itr = keys.begin(); itr != keys.end(); ++itr)
 			value += strprintf(" %u %u", itr->keyval, itr->modifiers);
 	}
 

@@ -63,8 +63,8 @@ ACTION_SET_VERSION(Action::ValueNodeStaticListRemove,"0.0");
 /* === M E T H O D S ======================================================= */
 
 Action::ValueNodeStaticListRemove::ValueNodeStaticListRemove()
+	: index(0)
 {
-	index=0;
 	set_dirty(true);
 }
 

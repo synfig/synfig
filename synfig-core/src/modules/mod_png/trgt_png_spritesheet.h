@@ -36,8 +36,8 @@
 
 #include <png.h>
 #include <synfig/target_scanline.h>
+#include <synfig/smartfile.h>
 #include <synfig/string.h>
-#include <cstdio>
 
 /* === M A C R O S ========================================================= */
 
@@ -80,11 +80,11 @@ private:
 	synfig::Color ** color_data;
 	unsigned int sheet_width;
 	unsigned int sheet_height;
-	FILE * in_file_pointer;
-	FILE * out_file_pointer;
+	synfig::SmartFILE in_file_pointer;
+	synfig::SmartFILE out_file_pointer;
 	unsigned int cur_out_image_row;
 	PngImage in_image;
-	synfig::String filename;
+	synfig::filesystem::Path filename;
 	synfig::String sequence_separator;
 	synfig::Color * overflow_buff;
 
@@ -93,7 +93,7 @@ private:
 
 public:
 
-	png_trgt_spritesheet(const char *filename, const synfig::TargetParam& /* params */);
+	png_trgt_spritesheet(const synfig::filesystem::Path& filename, const synfig::TargetParam& /* params */);
 	virtual ~png_trgt_spritesheet();
 
 	bool set_rend_desc(synfig::RendDesc* desc) override;

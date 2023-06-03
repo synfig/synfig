@@ -50,8 +50,6 @@
 #include <gui/autorecover.h>
 #include <synfig/threadpool.h>
 
-#include <ETL/stringf>
-
 #include <synfig/rendering/renderer.h>
 
 #include <synfigapp/main.h>
@@ -62,7 +60,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -668,7 +665,7 @@ Dialog_Setup::select_path_dialog(const std::string &title, std::string &filepath
 	dialog->add_button(_("Select"), Gtk::RESPONSE_OK);
   	if(dialog->run() == Gtk::RESPONSE_OK) {
 		filepath = dialog->get_filename();
-		filepath = absolute_path(filepath);	//get the absolute path
+		filepath = filesystem::Path::absolute_path(filepath);	//get the absolute path
 		delete dialog;
 		return true;
 	}
@@ -983,8 +980,7 @@ Dialog_Setup::on_apply_pressed()
 			listviewtext_brushes_path->get_model());
 
 		for(Gtk::TreeIter ui_iter = liststore->children().begin();
-			ui_iter!=liststore->children().end();ui_iter++)
-		{
+			ui_iter != liststore->children().end(); ++ui_iter) {
 			const Gtk::TreeRow row = *(ui_iter);
 			// TODO utf_8 path : care to other locale than english ?
 			synfig::String path((row[prefs_brushpath.path]));
@@ -1315,8 +1311,7 @@ Dialog_Setup::refresh()
 		}
 	}
 	for (std::set<synfig::String>::iterator setiter = App::brushes_path.begin();
-			setiter != App::brushes_path.end(); setiter++)
-	{
+			setiter != App::brushes_path.end(); ++setiter) {
 		ui_iter = liststore->append();
 		(*ui_iter)[prefs_brushpath.path]=*setiter;
 	}

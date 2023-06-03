@@ -67,6 +67,7 @@ target_sources(libsynfig
         "${CMAKE_CURRENT_LIST_DIR}/waypoint.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/matrix.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/filesystem.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/filesystem_path.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/filesystemnative.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/filesystemgroup.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/filesystemtemporary.cpp"
@@ -149,13 +150,28 @@ install(
     RUNTIME DESTINATION bin
 )
 
+set (LIBSYNFIG_CMAKE_CONFIG_FILE_NAME synfig-libsynfig-config.cmake)
 export(
-    EXPORT libsynfig
-    FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/${PROJECT_NAME}-config.cmake"
+    TARGETS libsynfig
+    NAMESPACE synfig::
+    FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/${LIBSYNFIG_CMAKE_CONFIG_FILE_NAME}"
 )
 
 install(
     EXPORT libsynfig
-    FILE "${PROJECT_NAME}-config.cmake"
-    DESTINATION "lib/cmake/${PROJECT_NAME}"
+    NAMESPACE synfig::
+    FILE "${LIBSYNFIG_CMAKE_CONFIG_FILE_NAME}"
+    DESTINATION "lib/cmake/synfig"
+)
+
+include(CMakePackageConfigHelpers)
+configure_package_config_file(
+    ${CMAKE_CURRENT_LIST_DIR}/synfig-config.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/synfig-config.cmake
+    INSTALL_DESTINATION synfig
+)
+
+install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/synfig-config.cmake
+    DESTINATION "lib/cmake/synfig"
 )

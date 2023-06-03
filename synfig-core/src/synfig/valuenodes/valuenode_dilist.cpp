@@ -34,9 +34,7 @@
 #endif
 
 #include "valuenode_dilist.h"
-#include "valuenode_const.h"
 #include "valuenode_composite.h"
-#include "valuenode_bline.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
 #include <synfig/valuenode_registry.h>

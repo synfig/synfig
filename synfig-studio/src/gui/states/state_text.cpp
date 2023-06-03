@@ -82,7 +82,7 @@ StateText studio::state_text;
 
 class studio::StateText_Context
 {
-	etl::handle<CanvasView> canvas_view;
+	CanvasView::Handle canvas_view;
 	CanvasView::IsWorking is_working;
 
 	Duckmatic::Push duckmatic_push;
@@ -167,7 +167,7 @@ public:
 	StateText_Context(CanvasView *canvas_view);
 	~StateText_Context();
 
-	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view;}
+	const CanvasView::Handle& get_canvas_view()const{return canvas_view;}
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view->canvas_interface();}
 	WorkArea * get_work_area()const{return canvas_view->get_work_area();}
 

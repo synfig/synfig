@@ -51,7 +51,6 @@
 #include "transform.h"
 
 #include "layers/layer_composite.h"
-#include "layers/layer_bitmap.h"
 #include "layers/layer_duplicate.h"
 #include "layers/layer_filtergroup.h"
 #include "layers/layer_group.h"
@@ -167,8 +166,8 @@ Layer::Layer():
 	optimized_(false),
 	exclude_from_rendering_(false),
 	param_z_depth(Real(0.0f)),
-	time_mark(Time::end()),
-	outline_grow_mark(0.0)
+	time_mark_(Time::end()),
+	outline_grow_mark_(0.0)
 {
 	_layer_counter.counter++;
 	SET_INTERPOLATION_DEFAULTS();
@@ -206,7 +205,7 @@ synfig::Layer::~Layer()
 }
 
 void
-synfig::Layer::set_canvas(etl::loose_handle<Canvas> x)
+synfig::Layer::set_canvas(Canvas::LooseHandle x)
 {
 	if(canvas_!=x)
 	{
@@ -220,7 +219,7 @@ synfig::Layer::set_canvas(etl::loose_handle<Canvas> x)
 						*this,
 						&Layer::set_canvas
 					),
-					etl::loose_handle<synfig::Canvas>(0)
+					Canvas::LooseHandle(0)
 				)
 			);
 		}
@@ -247,7 +246,7 @@ synfig::Layer::on_dynamic_param_changed(const String & /* param */)
 	{ }
 
 
-etl::loose_handle<synfig::Canvas>
+Canvas::LooseHandle
 synfig::Layer::get_canvas()const
 {
 	return canvas_;
@@ -312,7 +311,7 @@ Layer::dynamic_param_changed(const String &param)
 }
 
 bool
-Layer::connect_dynamic_param(const String& param, etl::loose_handle<ValueNode> value_node)
+Layer::connect_dynamic_param(const String& param, ValueNode::LooseHandle value_node)
 {
 	if (!value_node) return disconnect_dynamic_param(param);
 
@@ -333,7 +332,7 @@ Layer::connect_dynamic_param(const String& param, etl::loose_handle<ValueNode> v
 		// connection was being deleted.  now we search the parameter
 		// list to see if another parameter uses the same valuenode
 		DynamicParamList::const_iterator iter;
-		for (iter = dynamic_param_list().begin(); iter != dynamic_param_list().end(); iter++)
+		for (iter = dynamic_param_list().begin(); iter != dynamic_param_list().end(); ++iter)
 			if (iter->second == previous)
 				break;
 		if (iter == dynamic_param_list().end())
@@ -366,7 +365,7 @@ Layer::disconnect_dynamic_param(const String& param)
 		// connection was being deleted.  now we search the parameter
 		// list to see if another parameter uses the same valuenode
 		DynamicParamList::const_iterator iter;
-		for (iter = dynamic_param_list().begin(); iter != dynamic_param_list().end(); iter++)
+		for (iter = dynamic_param_list().begin(); iter != dynamic_param_list().end(); ++iter)
 			if (iter->second == previous)
 				break;
 		if (iter == dynamic_param_list().end())
@@ -606,12 +605,12 @@ Layer::reset_version()
 
 
 void
-Layer::set_time(IndependentContext context, Time time)const
+Layer::set_time(IndependentContext context, Time time)
 {
 	Layer::ParamList params;
 	Layer::DynamicParamList::const_iterator iter;
-	// For each parameter of the layer sets the time by the operator()(time)
-	for(iter=dynamic_param_list().begin();iter!=dynamic_param_list().end();iter++)
+	// For each parameter of the layer sets the value by the operator()(time)
+	for (iter = dynamic_param_list().begin(); iter != dynamic_param_list().end(); ++iter)
 		params[iter->first]=(*iter->second)(time);
 	// Sets the modified parameter list to the current context layer
 	const_cast<Layer*>(this)->set_param_list(params);
@@ -640,14 +639,14 @@ Layer::load_resources_vfunc(IndependentContext context, Time time)const
 }
 
 void
-Layer::set_outline_grow(IndependentContext context, Real outline_grow)const
+Layer::set_outline_grow(IndependentContext context, Real outline_grow)
 {
 	set_outline_grow_mark(outline_grow);
 	set_outline_grow_vfunc(context, outline_grow);
 }
 
 void
-Layer::set_outline_grow_vfunc(IndependentContext context, Real outline_grow)const
+Layer::set_outline_grow_vfunc(IndependentContext context, Real outline_grow)
 {
 	context.set_outline_grow(outline_grow);
 }
@@ -992,7 +991,7 @@ Layer::get_param_local_name(const String &param_name)const
 {
 	ParamVocab vocab = get_param_vocab();
 	// loop to find the parameter in the parameter vocab - this gives us its local name
-	for (ParamVocab::iterator iter = vocab.begin(); iter != vocab.end(); iter++)
+	for (ParamVocab::iterator iter = vocab.begin(); iter != vocab.end(); ++iter)
 		if (iter->get_name() == param_name)
 			return iter->get_local_name();
 	return String();

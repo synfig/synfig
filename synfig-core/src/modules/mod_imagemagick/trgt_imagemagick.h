@@ -48,15 +48,15 @@ private:
 	int imagecount;
 	bool multi_image;
 	synfig::OS::RunPipe::Handle pipe;
-	synfig::String filename;
-	unsigned char *buffer;
-	synfig::Color *color_buffer;
+	synfig::filesystem::Path filename;
+	std::vector<unsigned char> buffer;
+	std::vector<synfig::Color> color_buffer;
 	synfig::PixelFormat pf;
 	synfig::String sequence_separator;
 
 public:
 
-	imagemagick_trgt(const char *filename,
+	imagemagick_trgt(const synfig::filesystem::Path& filename,
 					 const synfig::TargetParam& /* params */);
 	virtual ~imagemagick_trgt();
 

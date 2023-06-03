@@ -86,8 +86,9 @@ jobs:
         if: matrix.toolchain == 'cmake-ninja'
         run: |
           mkdir build-cmake && cd build-cmake
-          cmake -GNinja -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_BUILD_TYPE=Release ..
+          cmake -GNinja -DENABLE_TESTS=ON -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_BUILD_TYPE=Release ..
           ninja
+          ctest --output-on-failure
 
       - name: Build (Autotools+Make)
         if: matrix.toolchain == 'autotools'

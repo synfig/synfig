@@ -58,8 +58,6 @@
 #include <gtkmm/toolbutton.h>
 #include <gtkmm/toolitem.h>
 
-#include <ETL/stringf>
-
 #include <gui/app.h>
 #include <gui/dialogs/dialog_canvasdependencies.h>
 #include <gui/dials/keyframedial.h>
@@ -531,6 +529,7 @@ CanvasView::CanvasView(etl::loose_handle<studio::Instance> instance,etl::handle<
 	cancel                   (false),
 
 	canvas_properties        (*App::main_window,canvas_interface_),
+	canvas_resize            (*App::main_window,canvas_interface_,canvas_properties),
 	render_settings          (*App::main_window,canvas_interface_),
 	waypoint_dialog          (*App::main_window,canvas_interface_->get_canvas()),
 	keyframe_dialog          (*App::main_window,canvas_interface_),
@@ -702,13 +701,6 @@ CanvasView::~CanvasView()
 		"CanvasView::~CanvasView(): Deleted");
 
 	SYNFIG_EXCEPTION_GUARD_END()
-}
-
-void CanvasView::save_all()
-{
-	std::list<etl::handle<studio::Instance> >::iterator iter;
-	for(iter=App::instance_list.begin();iter!=App::instance_list.end();iter++)
-		(*iter)->save();
 }
 
 void CanvasView::activate()
@@ -1361,245 +1353,189 @@ CanvasView::init_menus()
 	- canvasmenu
 	- viewmenu
 	*/
+
+	struct ActionMetadata {
+		std::string name;
+		std::string icon;
+		std::string label;
+		std::string tooltip;
+		std::function<void()> slot;
+	};
+
+	const std::vector<ActionMetadata> action_list = {
+		{"save",    "action_doc_save_icon",   N_("Save"),      N_("Save"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::save)) },
+		{"save-as", "action_doc_saveas_icon", N_("Save As..."), N_("Save As"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::dialog_save_as)) },
+
+		{"export",            "action_doc_saveas_icon", N_("Export..."),            N_("Export"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::dialog_export)) },
+		{"revert",            "document-revert",        N_("Revert"),               N_("Revert document as it was last saved"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::safe_revert)) },
+		{"import",            "",                       N_("Import..."),            "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_file)) },
+		{"import-sequence",   "",                       N_("Import Sequence..."),   "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_sequence)) },
+		{"show-dependencies", "",                       N_("Show Dependencies..."), "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::show_dependencies)) },
+		{"render",            "render_options_icon",    N_("Render..."),            "", sigc::mem_fun0(render_settings, &RenderSettings::present) },
+		{"preview",           "preview_options_icon",   N_("Preview..."),           "", sigc::mem_fun(*this, &CanvasView::on_preview_option) },
+		{"options",           "",                       N_("Options..."),           "", sigc::mem_fun0(canvas_options, &CanvasOptions::present) },
+		{"close-document",    "window-close",           N_("Close Document"),       "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::close_instance)) },
+		{"quit",              "application-exit",       N_("Quit"),                 "",  sigc::hide_return(sigc::ptr_fun(&App::quit)) },
+
+		{"select-all-ducks",    "", N_("Select All Handles"), "", sigc::mem_fun(*work_area, &WorkArea::select_all_ducks) },
+		{"unselect-all-ducks",  "", N_("Unselect All Handles"), "", sigc::mem_fun(*work_area, &WorkArea::unselect_all_ducks) },
+		{"select-all-layers",   "", N_("Select All Layers"), "", sigc::mem_fun(*this, &CanvasView::on_select_layers) },
+		{"unselect-all-layers", "", N_("Unselect All Layers"), "", sigc::mem_fun(*this, &CanvasView::on_unselect_layers) },
+		{"select-parent-layer", "", N_("Select Parent Layer"), "", sigc::mem_fun(*this, &CanvasView::on_select_parent_layer) },
+
+		{"pause",               "animate_pause_icon",  N_("Pause"), "", sigc::mem_fun(*this, &CanvasView::stop_async) },
+		{"refresh",             "view-refresh",        N_("Refresh"), "", sigc::hide_return(sigc::bind(sigc::mem_fun(*this, &CanvasView::process_event_key), EVENT_REFRESH)) },
+		{"properties",          "document-properties", N_("Properties..."), "", sigc::mem_fun0(canvas_properties, &CanvasProperties::present) },
+		{"resize-canvas",       "",                    N_("Resize..."), "", sigc::mem_fun0(canvas_resize, &CanvasResize::present)},
+
+		{"decrease-low-res-pixel-size", "", N_("Decrease Low-Res Pixel Size"), "", sigc::mem_fun(this, &CanvasView::decrease_low_res_pixel_size) },
+		{"increase-low-res-pixel-size", "", N_("Increase Low-Res Pixel Size"), "",  sigc::mem_fun(this, &CanvasView::increase_low_res_pixel_size) },
+
+		{"play",            "media-playback-start", N_("_Play"),          N_("Play"), sigc::mem_fun(*this, &CanvasView::on_play_pause_pressed) },
+		{"dialog-flipbook", "",                     N_("Preview Window"), "", sigc::mem_fun0(preview_dialog, &Dialog_Preview::present) },
+
+		{"canvas-zoom-fit",   "zoom-fit-best", N_("Best _Fit"),    N_("Best Fit"), sigc::mem_fun(*work_area, &WorkArea::zoom_fit) },
+		{"canvas-zoom-100",   "zoom-original", N_("_Normal Size"), N_("Normal Size"), sigc::mem_fun(*work_area, &WorkArea::zoom_norm) },
+		{"canvas-zoom-fit-2", "zoom-fit-best", N_("Best _Fit"),    N_("Best Fit"), sigc::mem_fun(*work_area, &WorkArea::zoom_fit) },
+		{"canvas-zoom-in",    "zoom-in",       N_("Zoom _In"),     N_("Zoom In"), sigc::mem_fun(*work_area, &WorkArea::zoom_in) },
+		{"canvas-zoom-in-2",  "zoom-in",       N_("Zoom _In"),     N_("Zoom In"), sigc::mem_fun(*work_area, &WorkArea::zoom_in) },
+		{"canvas-zoom-out",   "zoom-out",      N_("Zoom _Out"),    N_("Zoom Out"), sigc::mem_fun(*work_area, &WorkArea::zoom_out) },
+		{"canvas-zoom-out-2", "zoom-out",      N_("Zoom _Out"),    N_("Zoom Out"), sigc::mem_fun(*work_area, &WorkArea::zoom_out) },
+
+		{"time-zoom-in",  "zoom-in",  N_("Zoom In on Timeline"),  "", sigc::mem_fun(*this, &CanvasView::time_zoom_in) },
+		{"time-zoom-out", "zoom-out", N_("Zoom Out on Timeline"), "", sigc::mem_fun(*this, &CanvasView::time_zoom_out) },
+
+		{"seek-next-frame", "animate_seek_next_frame_icon", N_("Seek to Next frame"),     "", sigc::bind(sigc::mem_fun(*canvas_interface(), &CanvasInterface::seek_frame),1) },
+		{"seek-prev-frame", "animate_seek_prev_frame_icon", N_("Seek to Previous Frame"), "", sigc::bind(sigc::mem_fun(*canvas_interface(), &CanvasInterface::seek_frame),-1) },
+
+		{"seek-next-second", "go-next",     N_("Seek Forward"),  N_("Seek Forward"), sigc::bind(sigc::mem_fun(*canvas_interface(), &CanvasInterface::seek_time),Time(1)) },
+		{"seek-prev-second", "go-previous", N_("Seek Backward"), N_("Seek Backward"), sigc::bind(sigc::mem_fun(*canvas_interface(), &CanvasInterface::seek_time),Time(-1)) },
+
+		{"seek-end",   "animate_seek_end_icon",   N_("Seek to End"),   "", sigc::mem_fun(*this, &CanvasView::on_seek_end_pressed) },
+		{"seek-begin", "animate_seek_begin_icon", N_("Seek to Begin"), "", sigc::mem_fun(*this, &CanvasView::on_seek_begin_pressed) },
+
+		{"jump-next-keyframe", "animate_seek_next_keyframe_icon", N_("Seek to Next Keyframe"),      "", sigc::mem_fun(*canvas_interface(), &CanvasInterface::jump_to_next_keyframe) },
+		{"jump-prev-keyframe", "animate_seek_prev_keyframe_icon", N_("Seek to Previous Keyframe") , "", sigc::mem_fun(*canvas_interface(), &CanvasInterface::jump_to_prev_keyframe) },
+
+	};
+
 	action_group = Gtk::ActionGroup::create("canvasview");
 
-	action_group->add( Gtk::Action::create("save", Gtk::StockID("synfig-save"), _("Save"), _("Save")),
-		hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::save))
-	);
-	action_group->add( Gtk::Action::create_with_icon_name("save-as", "action_doc_saveas_icon", _("Save As..."), _("Save As")),
-		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::dialog_save_as))
-	);
-	action_group->add( Gtk::Action::create("export", Gtk::StockID("synfig-export"), _("Export..."), _("Export")),
-		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::dialog_export))
-	);
-	action_group->add( Gtk::Action::create("save-all", Gtk::StockID("synfig-save_all"), _("Save All"), _("Save all opened documents")),
-		sigc::ptr_fun(save_all)
-	);
-	action_group->add( Gtk::Action::create("revert", Gtk::Stock::REVERT_TO_SAVED),
-		sigc::hide_return(sigc::mem_fun(*get_instance().get(), &studio::Instance::safe_revert))
-	);
-	action_group->add( Gtk::Action::create("import", _("Import...")),
-		sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_file))
-	);
-	action_group->add( Gtk::Action::create("import-sequence", _("Import Sequence...")),
-		sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_sequence))
-	);
-	action_group->add( Gtk::Action::create("render", Gtk::StockID("synfig-render_options"), _("Render...")),
-		sigc::mem_fun0(render_settings,&RenderSettings::present)
-	);
-	action_group->add( Gtk::Action::create("preview", Gtk::StockID("synfig-preview_options"), _("Preview...")),
-		sigc::mem_fun(*this,&CanvasView::on_preview_option)
-	);
-	action_group->add( Gtk::Action::create("options", _("Options...")),
-		sigc::mem_fun0(canvas_options,&CanvasOptions::present)
-	);
-	action_group->add( Gtk::Action::create("close-document", Gtk::StockID("gtk-close"), _("Close Document")),
-		sigc::hide_return(sigc::mem_fun(*this,&CanvasView::close_instance))
-	);
-	action_group->add( Gtk::Action::create("show-dependencies", _("Show Dependencies...")),
-		sigc::hide_return(sigc::mem_fun(*this,&CanvasView::show_dependencies))
-	);
-	action_group->add( Gtk::Action::create("quit", Gtk::StockID("gtk-quit"), _("Quit")),
-		sigc::hide_return(sigc::ptr_fun(&App::quit))
-	);
-
-	action_group->add( Gtk::Action::create("select-all-ducks", _("Select All Handles")),
-		sigc::mem_fun(*work_area,&WorkArea::select_all_ducks)
-	);
-
-	action_group->add( Gtk::Action::create("unselect-all-ducks", _("Unselect All Handles")),
-		sigc::mem_fun(*work_area,&WorkArea::unselect_all_ducks)
-	);
-
-	action_group->add( Gtk::Action::create("select-all-layers", _("Select All Layers")),
-		sigc::mem_fun(*this,&CanvasView::on_select_layers)
-	);
-
-	action_group->add( Gtk::Action::create("unselect-all-layers", _("Unselect All Layers")),
-		sigc::mem_fun(*this,&CanvasView::on_unselect_layers)
-	);
-
-	action_group->add( Gtk::Action::create("select-parent-layer", _("Select Parent Layer")),
-		sigc::mem_fun(*this,&CanvasView::on_select_parent_layer)
-	);
-
-	action_group->add( Gtk::Action::create("pause", Gtk::StockID("synfig-animate_pause")),
-		sigc::mem_fun(*this, &CanvasView::stop_async)
-	);
-
-	action_group->add( Gtk::Action::create("refresh", Gtk::StockID("gtk-refresh")),
-		SLOT_EVENT(EVENT_REFRESH)
-	);
-
-	action_group->add( Gtk::Action::create("properties", Gtk::StockID("gtk-properties"), _("Properties...")),
-		sigc::mem_fun0(canvas_properties,&CanvasProperties::present)
-	);
-
-    auto instance = get_instance().get();
-	for ( const auto& plugin : App::plugin_manager.plugins() )
-    {
-		std::string id = plugin.id;
-		action_group->add(
-			Gtk::Action::create(id, plugin.name.get()),
-			[instance, id](){instance->run_plugin(id, true);}
-        );
-    }
-
-	// Low-Res Quality Menu
-	for(std::list<int>::iterator i = get_pixel_sizes().begin(); i != get_pixel_sizes().end(); ++i) {
-		Glib::RefPtr<Gtk::RadioAction> action = Gtk::RadioAction::create(
-			low_res_pixel_size_group,
-			synfig::strprintf("lowres-pixel-%d", *i),
-			synfig::strprintf(_("Set Low-Res pixel size to %d"), *i) );
-		if (*i == 2) { // default pixel size
-			action->set_active();
-			work_area->set_low_res_pixel_size(*i);
+	for (const auto& item : action_list) {
+		if (!item.icon.empty()) {
+			action_group->add( Gtk::Action::create_with_icon_name(item.name, item.icon, _(item.label.c_str()), _(item.tooltip.c_str())),
+				item.slot
+			);
+		} else {
+			action_group->add( Gtk::Action::create(item.name, _(item.label.c_str()), _(item.tooltip.c_str())), item.slot);
 		}
-		action_group->add(
-			action,
-			sigc::bind(sigc::mem_fun(*work_area, &WorkArea::set_low_res_pixel_size), *i) );
 	}
-	action_group->add(
-		Gtk::Action::create("decrease-low-res-pixel-size", _("Decrease Low-Res Pixel Size")),
-		sigc::mem_fun(this, &CanvasView::decrease_low_res_pixel_size) );
-	action_group->add(
-		Gtk::Action::create("increase-low-res-pixel-size",  _("Increase Low-Res Pixel Size")),
-		sigc::mem_fun(this, &CanvasView::increase_low_res_pixel_size) );
-
-
-	action_group->add(
-		Gtk::Action::create("play", Gtk::Stock::MEDIA_PLAY),
-		sigc::mem_fun(*this, &CanvasView::on_play_pause_pressed) );
-	action_group->add(
-		Gtk::Action::create("dialog-flipbook", _("Preview Window")),
-		sigc::mem_fun0(preview_dialog, &Dialog_Preview::present) );
 
 	// Prevent call to preview window before preview option has created the preview window
 	action_group->get_action("dialog-flipbook")->set_sensitive(false);
 
+	auto instance = get_instance().get();
+	for ( const auto& plugin : App::plugin_manager.plugins() )
 	{
-		Glib::RefPtr<Gtk::ToggleAction> action;
-
-		rulers_show_toggle = Gtk::ToggleAction::create("toggle-rulers-show", _("Show Rulers"));
-		rulers_show_toggle->set_active(work_area->get_show_rulers());
-		work_area->set_show_rulers(work_area->get_show_rulers());
-		action_group->add(rulers_show_toggle, sigc::mem_fun(*this, &CanvasView::toggle_show_ruler));
-
-		grid_show_toggle = Gtk::ToggleAction::create("toggle-grid-show", _("Show Grid"));
-		grid_show_toggle->set_active(work_area->grid_status());
-		action_group->add(grid_show_toggle, sigc::mem_fun(*this, &CanvasView::toggle_show_grid));
-
-		grid_snap_toggle = Gtk::ToggleAction::create("toggle-grid-snap", _("Snap to Grid"));
-		grid_snap_toggle->set_active(work_area->get_grid_snap());
-		action_group->add(grid_snap_toggle, sigc::mem_fun(*this, &CanvasView::toggle_snap_grid));
-
-		guides_show_toggle = Gtk::ToggleAction::create("toggle-guide-show", _("Show Guides"));
-		guides_show_toggle->set_active(work_area->get_show_guides());
-		action_group->add(guides_show_toggle, sigc::mem_fun(*this, &CanvasView::toggle_show_guides));
-
-		guides_snap_toggle = Gtk::ToggleAction::create("toggle-guide-snap", _("Snap to Guides"));
-		guides_snap_toggle->set_active(work_area->get_guide_snap());
-		action_group->add(guides_snap_toggle, sigc::mem_fun(*this, &CanvasView::toggle_snap_guides));
-
-		action = Gtk::ToggleAction::create("toggle-low-res", _("Use Low-Res"));
-		action->set_active(work_area->get_low_resolution_flag());
-		action_group->add(action, sigc::mem_fun(*this, &CanvasView::toggle_low_res_pixel_flag));
-
-		background_rendering_toggle = Gtk::ToggleAction::create("toggle-background-rendering", _("Enable rendering in background"));
-		background_rendering_toggle->set_active(work_area->get_background_rendering());
-		action_group->add(background_rendering_toggle, sigc::mem_fun(*this, &CanvasView::toggle_background_rendering));
-
-		onion_skin_toggle = Gtk::ToggleAction::create("toggle-onion-skin", _("Show Onion Skin"));
-		onion_skin_toggle->set_active(work_area->get_onion_skin());
-		action_group->add(onion_skin_toggle, sigc::mem_fun(*this, &CanvasView::toggle_onion_skin));
-
-		onion_skin_keyframes_toggle = Gtk::ToggleAction::create("toggle-onion-skin-keyframes", _("Onion Skin on Keyframes"));
-		onion_skin_keyframes_toggle->set_active(work_area->get_onion_skin_keyframes());
-		action_group->add(onion_skin_keyframes_toggle, sigc::mem_fun(*this, &CanvasView::toggle_onion_skin_keyframes));
+		std::string id = plugin.id;
+		action_group->add(
+			Gtk::Action::create(id, plugin.name.get()),
+			[instance, id](){instance->run_plugin(id, true);}
+		);
 	}
 
-	action_group->add(
-		Gtk::Action::create("canvas-zoom-fit", Gtk::StockID("gtk-zoom-fit")),
-		sigc::mem_fun(*work_area, &WorkArea::zoom_fit) );
-	action_group->add(
-		Gtk::Action::create("canvas-zoom-100", Gtk::StockID("gtk-zoom-100")),
-		sigc::mem_fun(*work_area, &WorkArea::zoom_norm) );
-	action_group->add(
-		Gtk::Action::create("canvas-zoom-fit-2", Gtk::StockID("gtk-zoom-fit")),
-		sigc::mem_fun(*work_area, &WorkArea::zoom_fit) );		
-
-	{
-		Glib::RefPtr<Gtk::Action> action;
-
-		action=Gtk::Action::create("seek-next-frame", Gtk::StockID("synfig-animate_seek_next_frame"));
-		action_group->add(action,sigc::bind(sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::seek_frame),1));
-		action=Gtk::Action::create("seek-prev-frame", Gtk::StockID("synfig-animate_seek_prev_frame"));
-		action_group->add( action, sigc::bind(sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::seek_frame),-1));
-
-		action=Gtk::Action::create("seek-next-second", Gtk::Stock::GO_FORWARD,_("Seek Forward"),_("Seek Forward"));
-		action_group->add(action,sigc::bind(sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::seek_time),Time(1)));
-		action=Gtk::Action::create("seek-prev-second", Gtk::Stock::GO_BACK,_("Seek Backward"),_("Seek Backward"));
-		action_group->add( action, sigc::bind(sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::seek_time),Time(-1)));
-
-		action=Gtk::Action::create("seek-end", Gtk::StockID("synfig-animate_seek_end"));
-		action_group->add(action, sigc::mem_fun(*this, &CanvasView::on_seek_end_pressed));
-
-		action=Gtk::Action::create("seek-begin", Gtk::StockID("synfig-animate_seek_begin"));
-		action_group->add( action, sigc::mem_fun(*this, &CanvasView::on_seek_begin_pressed));
-
-		action=Gtk::Action::create("jump-next-keyframe", Gtk::StockID("synfig-animate_seek_next_keyframe"));
-		action_group->add( action,sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::jump_to_next_keyframe));
-
-		action=Gtk::Action::create("jump-prev-keyframe", Gtk::StockID("synfig-animate_seek_prev_keyframe"));
-		action_group->add( action,sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::jump_to_prev_keyframe));
-
-		action=Gtk::Action::create("canvas-zoom-in", Gtk::Stock::ZOOM_IN);
-		action_group->add( action,sigc::mem_fun(*work_area, &WorkArea::zoom_in));
-		
-		action=Gtk::Action::create("canvas-zoom-in-2", Gtk::Stock::ZOOM_IN);
-		action_group->add( action,sigc::mem_fun(*work_area, &WorkArea::zoom_in));		
-
-		action=Gtk::Action::create("canvas-zoom-out", Gtk::Stock::ZOOM_OUT);
-		action_group->add( action, sigc::mem_fun(*work_area, &WorkArea::zoom_out) );
-		
-		action=Gtk::Action::create("canvas-zoom-out-2", Gtk::Stock::ZOOM_OUT);
-		action_group->add( action, sigc::mem_fun(*work_area, &WorkArea::zoom_out) );		
-
-		action=Gtk::Action::create("time-zoom-in", Gtk::Stock::ZOOM_IN, _("Zoom In on Timeline"));
-		action_group->add( action, sigc::mem_fun(*this, &CanvasView::time_zoom_in) );
-
-		action=Gtk::Action::create("time-zoom-out", Gtk::Stock::ZOOM_OUT, _("Zoom Out on Timeline"));
-		action_group->add( action, sigc::mem_fun(*this, &CanvasView::time_zoom_out) );
-
+	// Low-Res Quality Menu
+	for (int i : get_pixel_sizes()) {
+		Glib::RefPtr<Gtk::RadioAction> action = Gtk::RadioAction::create(
+			low_res_pixel_size_group,
+			synfig::strprintf("lowres-pixel-%d", i),
+			synfig::strprintf(_("Set Low-Res pixel size to %d"), i) );
+		if (i == 2) { // default pixel size
+			action->set_active();
+			work_area->set_low_res_pixel_size(i);
+		}
+		action_group->add(
+			action,
+			sigc::bind(sigc::mem_fun(*work_area, &WorkArea::set_low_res_pixel_size), i) );
 	}
+
+	struct BoolActionMetadata {
+		std::string name;
+		std::string icon;
+		std::string label;
+		std::string tooltip;
+		bool (WorkArea::*slot_to_get)(void) const;
+		void (CanvasView::*slot_to_toogle)(void);
+	};
+
+	static const std::vector<BoolActionMetadata> bool_action_list = {
+		{"toggle-rulers-show",          "",                          N_("Show Rulers"),             "", &WorkArea::get_show_rulers, &CanvasView::toggle_show_ruler },
+		{"toggle-grid-show",            "show_grid_icon",            N_("Show Grid"),               "", &WorkArea::grid_status, &CanvasView::toggle_show_grid },
+		{"toggle-grid-snap",            "snap_grid_icon",            N_("Snap to Grid"),            "", &WorkArea::get_grid_snap, &CanvasView::toggle_snap_grid },
+		{"toggle-guide-show",           "show_guideline_icon",       N_("Show Guides"),             "", &WorkArea::get_show_guides, &CanvasView::toggle_show_guides },
+		{"toggle-guide-snap",           "snap_guideline_icon",       N_("Snap to Guides"),          "", &WorkArea::get_guide_snap, &CanvasView::toggle_snap_guides },
+		{"toggle-low-res",              "",                          N_("Use Low-Res"),             "", &WorkArea::get_low_resolution_flag, &CanvasView::toggle_low_res_pixel_flag },
+		{"toggle-background-rendering", "background_rendering_icon", N_("Enable rendering in background"), "", &WorkArea::get_background_rendering, &CanvasView::toggle_background_rendering },
+		{"toggle-onion-skin",           "onion_skin_icon",           N_("Show Onion Skin"),         "", &WorkArea::get_onion_skin, &CanvasView::toggle_onion_skin },
+		{"toggle-onion-skin-keyframes", "keyframe_icon",             N_("Onion Skin on Keyframes"), "", &WorkArea::get_onion_skin_keyframes, &CanvasView::toggle_onion_skin_keyframes },
+	};
+
+	for (const auto& item : bool_action_list) {
+		bool current_value = (work_area->*item.slot_to_get)();
+
+		auto action = Gtk::ToggleAction::create(item.name, _(item.label.c_str()));
+		action->set_active(current_value);
+		if (!item.icon.empty())
+			action->set_icon_name(item.icon);
+		if (!item.tooltip.empty())
+			action->set_tooltip(_(item.tooltip.c_str()));
+		action_group->add(action, sigc::mem_fun(*this, item.slot_to_toogle));
+	}
+	work_area->set_show_rulers(work_area->get_show_rulers());
+
+	rulers_show_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-rulers-show"));
+	grid_show_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-grid-show"));
+	grid_snap_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-grid-snap"));
+	guides_show_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-guide-show"));
+	guides_snap_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-guide-snap"));
+	background_rendering_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-background-rendering"));
+	onion_skin_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-onion-skin"));
+	onion_skin_keyframes_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-onion-skin-keyframes"));
 
 	{
 		Glib::RefPtr<Gtk::ToggleAction> action;
-		//! toggle none/last visible
+		// toggle none/last visible
 		action= Gtk::ToggleAction::create("mask-none-ducks", _("Toggle None/Last visible Handles"));
 		action->set_active(false);
 		action_group->add(action,  sigc::mem_fun(*this,&CanvasView::toggle_duck_mask_all));
+		struct DuckActionMetaData {
+			std::string action;
+			Duck::Type type;
+			const char* label;
+		};
 
-#define DUCK_MASK(lower,upper,string)												\
-		action=Gtk::ToggleAction::create("mask-" #lower "-ducks", string);			\
-		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_##upper));	\
-		action_group->add(action,													\
-			sigc::bind(																\
-				sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),		\
-				Duck::TYPE_##upper))
+		static const std::vector<DuckActionMetaData> duck_action_list = {
+			{"mask-position-ducks",            Duck::TYPE_POSITION,            N_("Show Position Handles")},
+			{"mask-tangent-ducks",             Duck::TYPE_TANGENT,             N_("Show Tangent Handles")},
+			{"mask-vertex-ducks",              Duck::TYPE_VERTEX,              N_("Show Vertex Handles")},
+			{"mask-radius-ducks",              Duck::TYPE_RADIUS,              N_("Show Radius Handles")},
+			{"mask-width-ducks",               Duck::TYPE_WIDTH,               N_("Show Width Handles")},
+			{"mask-widthpoint-position-ducks", Duck::TYPE_WIDTHPOINT_POSITION, N_("Show WidthPoint Position Handles")},
+			{"mask-angle-ducks",               Duck::TYPE_ANGLE,               N_("Show Angle Handles")},
+			{"mask-bone-recursive-ducks",      Duck::TYPE_BONE_RECURSIVE,      N_("Show Recursive Scale Bone Handles")},
+		};
 
-		DUCK_MASK(position,POSITION,_("Show Position Handles"));
-		DUCK_MASK(tangent,TANGENT,_("Show Tangent Handles"));
-		DUCK_MASK(vertex,VERTEX,_("Show Vertex Handles"));
-		DUCK_MASK(radius,RADIUS,_("Show Radius Handles"));
-		DUCK_MASK(width,WIDTH,_("Show Width Handles"));
-		DUCK_MASK(widthpoint-position, WIDTHPOINT_POSITION, _("Show WidthPoints Position Handles"));
-		DUCK_MASK(angle,ANGLE,_("Show Angle Handles"));
-		action_mask_bone_setup_ducks = action;
-		DUCK_MASK(bone-recursive,BONE_RECURSIVE,_("Show Recursive Scale Bone Handles"));
-		action_mask_bone_recursive_ducks = action;
-
-#undef DUCK_MASK
+		for (const auto& item : duck_action_list) {
+			bool duck_active = work_area->get_type_mask() & item.type;
+			auto duck_slot = sigc::bind(
+						sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),
+						item.type);
+			action=Gtk::ToggleAction::create(item.action, _(item.label));
+			action->set_active(duck_active);
+			action_group->add(action, duck_slot);
+		}
+		action_mask_bone_setup_ducks = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("mask-angle-ducks"));
+		action_mask_bone_recursive_ducks = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("mask-bone-recursive-ducks"));
 
 		action_group->add(Gtk::Action::create("mask-bone-ducks", _("Next Bone Handles")),
 						  sigc::mem_fun(*this,&CanvasView::mask_bone_ducks));
@@ -1611,7 +1547,7 @@ void
 CanvasView::on_select_layers()
 {
 	Canvas::Handle canvas(get_canvas());
-	for (CanvasBase::iterator iter = canvas->begin(); iter != canvas->end(); iter++)
+	for (CanvasBase::iterator iter = canvas->begin(); iter != canvas->end(); ++iter)
 		layer_tree->select_all_children_layers(*iter);
 }
 
@@ -1714,7 +1650,7 @@ CanvasView::popup_layer_menu(Layer::Handle layer)
 		}
 	}
 
-	if(etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
+	if(Layer_PasteCanvas::Handle::cast_dynamic(layer))
 	{
 		Gtk::MenuItem *item = manage(new Gtk::ImageMenuItem(
 			*manage(create_image_from_icon("select_all_child_layers_icon", Gtk::ICON_SIZE_MENU)),
@@ -1771,10 +1707,10 @@ CanvasView::refresh_rend_desc()
 	float current_frame_rate = get_canvas()->rend_desc().get_frame_rate();
 
 	// "responsive" current time widget width on time format
-	const int current_time_min_lenght = 6;
-	int current_time_lenght = current_time_widget->get_value().get_string(current_frame_rate, App::get_time_format()).length();
-	current_time_lenght = current_time_lenght < current_time_min_lenght ? current_time_min_lenght : current_time_lenght;
-	current_time_widget->set_width_chars(current_time_lenght);
+	const int current_time_min_length = 6;
+	int current_time_length = current_time_widget->get_value().get_string(current_frame_rate, App::get_time_format()).length();
+	current_time_length = current_time_length < current_time_min_length ? current_time_min_length : current_time_length;
+	current_time_widget->set_width_chars(current_time_length);
 
 	current_time_widget->set_fps(current_frame_rate);
 	jackdial->set_fps(current_frame_rate);
@@ -1824,8 +1760,8 @@ CanvasView::close_instance()
 	return false;
 }
 
-etl::handle<CanvasView>
-CanvasView::create(etl::loose_handle<studio::Instance> instance, etl::handle<Canvas> canvas)
+CanvasView::Handle
+CanvasView::create(etl::loose_handle<studio::Instance> instance, Canvas::Handle canvas)
 	{ return new CanvasView(instance,instance->Instance::find_canvas_interface(canvas)); }
 
 void
@@ -1834,7 +1770,7 @@ CanvasView::update_title()
 	bool modified = get_instance()->get_action_count() > 0;
 	bool is_root = get_canvas()->is_root();
 	String filename = get_instance()->has_real_filename()
-					? etl::basename(get_instance()->get_file_name()) : "";
+					? filesystem::Path::basename(get_instance()->get_file_name()) : "";
 	String canvas_name = get_canvas()->get_name();
 	String canvas_id = get_canvas()->get_id();
 	String &canvas_title = canvas_name.empty() ? canvas_id : canvas_name;
@@ -2142,13 +2078,11 @@ CanvasView::on_time_changed()
 	{
 		KeyframeList::iterator iter;
 		if (get_canvas()->keyframe_list().find(time, iter)) {
-			// Widget::override_color() is deprecated since Gtkmm 3.16: Use a custom style provider and style classes instead.
-			// This function is very slow!
-			current_time_widget->override_color(Gdk::RGBA("#FF0000"));
+			current_time_widget->get_style_context()->remove_class("color-black");
+			current_time_widget->get_style_context()->add_class("color-red");
 		} else {
-			// Widget::override_color() is deprecated since Gtkmm 3.16: Use a custom style provider and style classes instead.
-			// This function is very slow!
-			current_time_widget->override_color(Gdk::RGBA(0));
+			current_time_widget->get_style_context()->remove_class("color-red");
+			current_time_widget->get_style_context()->add_class("color-black");
 		}
 
 		// Shouldn't these trees just hook into
@@ -2363,7 +2297,7 @@ CanvasView::increase_low_res_pixel_size()
 		return;
 	}
 
-	for (std::list<int>::iterator iter = sizes.begin(); iter != sizes.end(); iter++)
+	for (std::list<int>::iterator iter = sizes.begin(); iter != sizes.end(); ++iter)
 		if (*iter == pixel_size) {
 			if (++iter != sizes.end()) {
 				Glib::RefPtr<Gtk::Action> action = action_group->get_action(synfig::strprintf("lowres-pixel-%d", *iter));
@@ -2536,9 +2470,6 @@ CanvasView::play_async()
 	if (timeout < 10) timeout = 10;
 
 	framedial->toggle_play_pause_button(is_playing());
-	// Widget::override_color() is deprecated since Gtkmm 3.16: Use a custom style provider and style classes instead.
-	// Also, this function is heavily slowdowns playback.
-	//current_time_widget->override_color(Gdk::RGBA(0));
 
 	soundProcessor.clear();
 	canvas_interface()->get_canvas()->fill_sound_processor(soundProcessor);
@@ -2691,8 +2622,7 @@ duplicate_waypoints(std::set<Waypoint, std::less<UniqueID> > waypoints,
 	Action::PassiveGrouper group(canvas_interface->get_instance().get(),_("Duplicate Waypoints"));
 
 	std::set<Waypoint, std::less<UniqueID> >::const_iterator iter;
-	for (iter = waypoints.begin(); iter != waypoints.end(); iter++)
-	{
+	for (iter = waypoints.begin(); iter != waypoints.end(); ++iter) {
 		Waypoint waypoint(*iter);
 		ValueNode::Handle value_node(iter->get_parent_value_node());
 		canvas_interface->waypoint_duplicate(value_node, waypoint);
@@ -2707,8 +2637,7 @@ remove_waypoints(std::set<Waypoint, std::less<UniqueID> > waypoints,
 	Action::PassiveGrouper group(canvas_interface->get_instance().get(),_("Remove Waypoints"));
 
 	std::set<Waypoint, std::less<UniqueID> >::const_iterator iter;
-	for (iter = waypoints.begin(); iter != waypoints.end(); iter++)
-	{
+	for (iter = waypoints.begin(); iter != waypoints.end(); ++iter) {
 		Waypoint waypoint(*iter);
 		ValueNode::Handle value_node(iter->get_parent_value_node());
 		canvas_interface->waypoint_remove(value_node, waypoint);
@@ -2963,7 +2892,7 @@ CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& con
 					continue;
 				}
 
-				String ext = etl::filename_extension(filename);
+				String ext = filesystem::Path::filename_extension(filename);
 				if (!ext.empty()) ext = ext.substr(1); // skip initial '.'
 
 				// If this is a SIF file, then we need to do things slightly differently
@@ -3093,7 +3022,7 @@ CanvasView::on_keyframe_toggle()
 
 		Keyframe keyframe(row[keyframe_tree->model.keyframe]);
 
-		Action::Handle action(Action::create("KeyframeToggl"));
+		Action::Handle action(Action::create("KeyframeToggle"));
 
 		if(!action)
 			return;
@@ -3403,6 +3332,10 @@ CanvasView::on_input_device_changed(GdkDevice* device)
 
 	InputDevice::Handle input_device;
 	input_device = synfigapp::Main::select_input_device(gdk_device_get_name(device));
+
+	if (!input_device) {
+		return;
+	}
 	App::dock_toolbox->change_state(input_device->get_state(), true);
 	process_event_key(EVENT_INPUT_DEVICE_CHANGED);
 }

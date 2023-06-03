@@ -464,17 +464,17 @@ namespace {
 Advanced_Outline::Advanced_Outline():
 	param_bline(ValueBase(std::vector<synfig::BLinePoint>())),
 	param_wplist(ValueBase(std::vector<synfig::WidthPoint>())),
-	param_dilist(ValueBase(std::vector<synfig::DashItem>()))
+	param_dilist(ValueBase(std::vector<synfig::DashItem>())),
+	param_start_tip(ValueBase(int(WidthPoint::TYPE_ROUNDED))),
+	param_end_tip(ValueBase(int(WidthPoint::TYPE_ROUNDED))),
+	param_cusp_type(ValueBase(int(TYPE_SHARP))),
+	param_width(ValueBase(Real(1.0f))),
+	param_expand(ValueBase(Real(0))),
+	param_smoothness(ValueBase(Real(1))),
+	param_homogeneous(ValueBase(false)),
+	param_dash_offset(ValueBase(Real(0))),
+	param_dash_enabled(ValueBase(false))
 {
-	param_cusp_type = ValueBase(int(TYPE_SHARP));
-	param_start_tip = param_end_tip = ValueBase(int(WidthPoint::TYPE_ROUNDED));
-	param_width = ValueBase(Real(1.0f));
-	param_expand = ValueBase(Real(0));
-	param_smoothness = ValueBase(Real(1));
-	param_dash_offset = ValueBase(Real(0));
-	param_homogeneous = ValueBase(false);
-	param_dash_enabled = ValueBase(false);
-	
 	clear();
 
 	std::vector<BLinePoint> bline_point_list;
@@ -808,7 +808,7 @@ Advanced_Outline::get_param_vocab()const
 }
 
 bool
-Advanced_Outline::connect_dynamic_param(const String& param, etl::loose_handle<ValueNode> x)
+Advanced_Outline::connect_dynamic_param(const String& param, ValueNode::LooseHandle x)
 {
 	if(param=="bline")
 	{
@@ -845,7 +845,7 @@ Advanced_Outline::connect_dynamic_param(const String& param, etl::loose_handle<V
 }
 
 bool
-Advanced_Outline::connect_bline_to_wplist(etl::loose_handle<ValueNode> x)
+Advanced_Outline::connect_bline_to_wplist(ValueNode::LooseHandle x)
 {
 	// connect_dynamic_param() makes sure x is a list of blinepoints.
 	ValueNode::LooseHandle vnode;

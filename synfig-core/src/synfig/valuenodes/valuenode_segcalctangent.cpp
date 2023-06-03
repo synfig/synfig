@@ -36,7 +36,6 @@
 
 #include "valuenode_segcalctangent.h"
 #include "valuenode_const.h"
-#include "valuenode_composite.h"
 #include <synfig/general.h>
 #include <synfig/localization.h>
 #include <synfig/valuenode_registry.h>

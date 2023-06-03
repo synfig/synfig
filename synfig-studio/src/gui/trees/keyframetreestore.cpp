@@ -346,7 +346,7 @@ KeyframeTreeStore::set_value_impl(const Gtk::TreeModel::iterator& row, int colum
 			g_value_init(x.gobj(),model.active.type());
 			g_value_copy(value.gobj(),x.gobj());
 			
-			synfigapp::Action::Handle action(synfigapp::Action::create("KeyframeToggl"));
+			synfigapp::Action::Handle action(synfigapp::Action::create("KeyframeToggle"));
 
 			if(!action)
 				return;
@@ -665,7 +665,7 @@ KeyframeTreeStore::get_value_vfunc (const Gtk::TreeModel::iterator& gtk_iter, in
 		synfig::Keyframe keyframe;
 		{
 			KeyframeList::iterator tmp(iter->iter);
-			tmp++;
+			++tmp;
 			if(tmp==get_canvas()->keyframe_list().end())
 			{
 				x.set(Time(0));

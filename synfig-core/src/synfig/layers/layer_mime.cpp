@@ -120,8 +120,7 @@ Layer_Mime::get_param_vocab()const
 
 	// Construct the vocabulary from the stored
 	// parameters
-	for(iter=param_list.begin();iter!=param_list.end();iter++)
-	{
+	for (iter = param_list.begin(); iter != param_list.end(); ++iter) {
 		// Make sure that we don't add the version
 		// into the vocabulary
 		if(iter->first!="Version")

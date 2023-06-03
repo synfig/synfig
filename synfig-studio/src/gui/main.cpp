@@ -35,7 +35,7 @@
 
 #include <glibmm/convert.h>
 
-#include <ETL/stringf>
+#include <synfig/os.h>
 
 #include <gui/app.h>
 #include <gui/exception_guard.h>
@@ -63,14 +63,13 @@ using namespace studio;
 int main(int argc, char **argv)
 {
 
-	const String binary_path = synfig::get_binary_path(String(argv[0]));
-	const String rootpath = etl::dirname(etl::dirname(binary_path));
+	const filesystem::Path rootpath = synfig::OS::get_binary_path(String(argv[0])).parent_path().parent_path();
 	
 #ifdef ENABLE_NLS
-	String locale_dir;
-	locale_dir = rootpath + "/share/locale";
+	filesystem::Path locale_dir;
+	locale_dir = rootpath / filesystem::Path("share/locale");
 	setlocale(LC_ALL, "");
-	bindtextdomain(GETTEXT_PACKAGE,  Glib::locale_from_utf8(locale_dir).c_str() );
+	bindtextdomain(GETTEXT_PACKAGE, locale_dir.u8_str() );
 	bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
 	textdomain(GETTEXT_PACKAGE);
 #endif
@@ -83,7 +82,7 @@ int main(int argc, char **argv)
 	Glib::RefPtr<studio::App> app = studio::App::instance();
 
 	app->signal_startup().connect([app, rootpath]() {
-		app->init(rootpath);
+		app->init(rootpath.u8string());
 	});
 
 	app->register_application();

@@ -71,8 +71,8 @@ ACTION_SET_VERSION(Action::TimepointsCopy,"0.0");
 /* === M E T H O D S ======================================================= */
 
 Action::TimepointsCopy::TimepointsCopy()
+	: timedelta(0)
 {
-	timedelta = 0;
 	set_dirty(false);
 }
 

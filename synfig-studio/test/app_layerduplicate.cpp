@@ -322,13 +322,13 @@ static void test_synfigapp_layerduplicate_both_layer_duplicate_and_linked_layers
 
 	auto layer2 = synfig::Layer::create("translate");
 	canvas->push_back(layer2);
-	ASSERT(layer2->connect_dynamic_param("origin", etl::handle<synfig::ValueNode>::cast_static(composite2)))
+	ASSERT(layer2->connect_dynamic_param("origin", synfig::ValueNode::Handle::cast_static(composite2)))
 
 	auto layer3 = synfig::Layer::create("circle");
 	canvas->push_back(layer3);
 	layer3->connect_dynamic_param("radius", valuenode);
 	auto composite3 = composite2->clone(canvas);
-	ASSERT(layer3->connect_dynamic_param("origin", etl::handle<synfig::ValueNode>::cast_static(composite3)))
+	ASSERT(layer3->connect_dynamic_param("origin", synfig::ValueNode::Handle::cast_static(composite3)))
 
 	synfigapp::Action::Handle action = synfigapp::Action::create("LayerDuplicate");
 	action->set_param("layer", layer1);
@@ -746,9 +746,16 @@ static void test_synfigapp_layerduplicate_skeleton_with_animated_bone_link()
 	ASSERT_EQUAL(cloned_bone1_name, (*cloned_bone_link_animated)(1.0).get(synfig::ValueNode_Bone::Handle())->get_bone_name(synfig::Time()))
 }
 
-int main()
+int main(int argc, const char* argv[])
 {
-	synfigapp::Main Main("");
+// test binaries are in `bin/test` folder, but for Windows they should be in `bin`
+// folder, because there is no RPATH on Windows, and it can't find required dll's
+#ifdef _WIN32
+	const std::string root_path = synfig::filesystem::Path::absolute_path(std::string(argv[0]) + "/../../");
+#else
+	const std::string root_path = synfig::filesystem::Path::absolute_path(std::string(argv[0]) + "/../../../");
+#endif
+	synfigapp::Main Main(root_path);
 
 	TEST_SUITE_BEGIN()
 		TEST_FUNCTION(test_synfigapp_layerduplicate_one_regular_layer)

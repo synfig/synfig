@@ -64,11 +64,9 @@ ACTION_SET_VERSION(Action::ValueDescRemoveSmart,"0.0");
 /* === M E T H O D S ======================================================= */
 
 Action::ValueDescRemoveSmart::ValueDescRemoveSmart()
+	: time(0), origin(0.5f)
 {
-	time=0;
-	origin=0.5f;
 	set_dirty(true);
-	value_nodes.clear();
 }
 
 Action::ParamVocab

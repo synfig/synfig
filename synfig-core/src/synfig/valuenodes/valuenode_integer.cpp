@@ -61,6 +61,7 @@ REGISTER_VALUENODE(ValueNode_Integer, RELEASE_VERSION_0_61_08, "fromint", N_("In
 ValueNode_Integer::ValueNode_Integer(Type &x):
 	LinkableValueNode(x)
 {
+	init_children_vocab();
 }
 
 ValueNode_Integer::ValueNode_Integer(const ValueBase &x):

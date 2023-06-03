@@ -40,7 +40,6 @@
 
 #include "mptr_png.h"
 
-#include <ETL/stringf>
 #include <synfig/filecontainerzip.h>
 #include <synfig/general.h>
 
@@ -102,7 +101,7 @@ png_mptr::read_callback(png_structp png_ptr, png_bytep out_bytes, png_size_t byt
 png_mptr::png_mptr(const synfig::FileSystem::Identifier &identifier):
 	Importer(identifier)
 {
-	std::string file_ext = etl::filename_extension(identifier.filename);
+	std::string file_ext = filesystem::Path::filename_extension(identifier.filename);
 	if (file_ext == ".kra" || file_ext == ".ora") {
 		zip_fs = new FileContainerZip();
 		if (!zip_fs->open(identifier.filename)) {

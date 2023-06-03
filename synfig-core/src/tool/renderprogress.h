@@ -60,6 +60,8 @@ private:
     Clock::time_point last_timepoint_;
     double remaining_rendered_proportion_ = 0.l;
 
+	int repeated_ = 0;
+
     void printRemainingTime(std::ostream& os, double remaining_seconds) const;
 
     void printRemainingTime(std::ostream& os,

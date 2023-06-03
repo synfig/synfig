@@ -71,8 +71,8 @@ ACTION_SET_VERSION(Action::TimepointsMove,"0.0");
 /* === M E T H O D S ======================================================= */
 
 Action::TimepointsMove::TimepointsMove()
+	: timemove(0)
 {
-	timemove = 0;
 	set_dirty(false);
 }
 

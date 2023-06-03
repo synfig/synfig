@@ -76,7 +76,6 @@ static int bone_counter;
 // static map<ValueNode_Bone::Handle, Matrix> animated_matrix_map;
 static Time last_time = Time::begin();
 
-static ValueNode_Bone_Root::Handle rooot;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -132,7 +131,7 @@ ValueNode_Bone::get_bone_map(Canvas::ConstHandle canvas)
 }
 
 ValueNode_Bone::BoneList
-ValueNode_Bone::get_ordered_bones(etl::handle<const Canvas> canvas)
+ValueNode_Bone::get_ordered_bones(Canvas::ConstHandle canvas)
 {
 	std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle> uses;
 	std::multimap<ValueNode_Bone::Handle, ValueNode_Bone::Handle> is_used_by;
@@ -236,7 +235,7 @@ ValueNode_Bone::ValueNode_Bone():
 		"%s:%d ValueNode_Bone::ValueNode_Bone() this line should only appear once guid %s\n", __FILE__, __LINE__, get_guid().get_string().c_str());
 }
 
-ValueNode_Bone::ValueNode_Bone(const ValueBase &value, etl::loose_handle<Canvas> canvas):
+ValueNode_Bone::ValueNode_Bone(const ValueBase &value, Canvas::LooseHandle canvas):
 	LinkableValueNode(value.get_type())
 {
 	if (DEBUG_GETENV("SYNFIG_DEBUG_BONE_CONSTRUCTORS"))
@@ -319,7 +318,12 @@ ValueNode_Bone::~ValueNode_Bone()
 
 	DEBUG_LOG("SYNFIG_DEBUG_BONE_MAP",
 		"%s:%d removing from canvas_map\n", __FILE__, __LINE__);
-	canvas_map[get_root_canvas()].erase(get_guid());
+	// ValueNode_Bone_Root does not have a GUID and does not belong to any canvas.
+	// Calling get_guid() for `ValueNode_Bone_Root` leads to an attempt to insert
+	// it into a canvas (it calls `global_node_map()` for this purpose).
+	// And if `global_node_map()` is already destroyed at that moment, it leads to a crash.
+	if (!is_root())
+		canvas_map[get_root_canvas()].erase(get_guid());
 
 	show_bone_map(get_root_canvas(), __FILE__, __LINE__, "in destructor");
 
@@ -339,7 +343,7 @@ ValueNode_Bone::set_guid(const GUID& new_guid)
 }
 
 void
-ValueNode_Bone::set_root_canvas(etl::loose_handle<Canvas> canvas)
+ValueNode_Bone::set_root_canvas(Canvas::LooseHandle canvas)
 {
 	GUID guid(get_guid());
 	Canvas::LooseHandle old_canvas(get_root_canvas());
@@ -645,7 +649,7 @@ ValueNode_Bone::find(const String& name)const
 }
 
 ValueNode_Bone::LooseHandle
-ValueNode_Bone::find(const String& name, etl::loose_handle<Canvas> canvas)
+ValueNode_Bone::find(const String& name, Canvas::LooseHandle canvas)
 {
 	// printf("%s:%d finding '%s' : ", __FILE__, __LINE__, name.c_str());
 
@@ -937,8 +941,8 @@ ValueNode_Bone::get_possible_parent_bones(ValueNode::Handle value_node)
 ValueNode_Bone::Handle
 ValueNode_Bone::get_root_bone()
 {
-	if (!rooot) rooot = new ValueNode_Bone_Root();
-	return rooot;
+	static ValueNode_Bone_Root::Handle root_bone = new ValueNode_Bone_Root();
+	return root_bone;
 }
 
 #ifdef _DEBUG
@@ -1017,7 +1021,7 @@ ValueNode_Bone_Root::set_guid(const GUID& new_guid)
 }
 
 void
-ValueNode_Bone_Root::set_root_canvas(etl::loose_handle<Canvas> canvas)
+ValueNode_Bone_Root::set_root_canvas(Canvas::LooseHandle canvas)
 {
 	DEBUG_LOG("SYNFIG_DEBUG_ROOT_BONE",
 		"%s:%d bypass set_root_canvas() for root bone\n", __FILE__, __LINE__);
@@ -1025,7 +1029,7 @@ ValueNode_Bone_Root::set_root_canvas(etl::loose_handle<Canvas> canvas)
 }
 
 ValueNode_Bone*
-ValueNode_Bone_Root::create(const ValueBase& /*x*/, etl::loose_handle<Canvas>)
+ValueNode_Bone_Root::create(const ValueBase& /*x*/, Canvas::LooseHandle)
 {
 	return get_root_bone().get();
 }
@@ -1048,7 +1052,7 @@ LinkableValueNode*
 ValueNode_Bone_Root::create_new()const
 {
 	assert(0);
-	return rooot.get();
+	return get_root_bone().get();
 }
 
 Matrix

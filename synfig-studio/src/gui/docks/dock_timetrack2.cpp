@@ -74,7 +74,7 @@ Dock_Timetrack2::Dock_Timetrack2()
 	add(grid);
 }
 
-void Dock_Timetrack2::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+void Dock_Timetrack2::init_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 {
 	Widget_Timetrack *widget_timetrack = new Widget_Timetrack();
 	widget_timetrack->use_canvas_view(canvas_view);
@@ -105,7 +105,7 @@ void Dock_Timetrack2::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canva
 	widget_timetrack->signal_waypoint_selection_changed().connect(sigc::mem_fun(*this, &Dock_Timetrack2::set_interp_buttons_sensitivity));
 }
 
-void Dock_Timetrack2::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+void Dock_Timetrack2::changed_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 {
 	const std::vector<Gtk::Widget*> children = grid.get_children();
 	for (Gtk::Widget * widget : children) {

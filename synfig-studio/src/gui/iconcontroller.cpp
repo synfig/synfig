@@ -237,6 +237,7 @@ static const std::map<std::string, std::string> layer_icon_names = {
 	{"metaballs",            "layer_example_metaballs_icon"},
 	{"simple_circle",        "layer_example_simplecircle_icon"},
 	// Filter Layers
+	{"chromakey",    "layer_filter_chromakey_icon"},
 	{"clamp",        "layer_filter_clamp_icon"},
 	{"colorcorrect", "layer_filter_colorcorrect_icon"},
 	{"halftone2",    "layer_filter_halftone2_icon"},

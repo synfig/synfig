@@ -95,21 +95,18 @@ class studio::StateLasso_Context : public sigc::trackable
 	StrokeQueue stroke_queue;
 
 
-	etl::handle<CanvasView> canvas_view_;
+	CanvasView::Handle canvas_view_;
 	CanvasView::IsWorking is_working;
 
 	WorkArea::PushState push_state;
 
 	bool prev_table_status;
-	//bool loop_;
 
 	int nested;
 	sigc::connection process_queue_connection;
 
 	ValueNode_BLine::Handle last_stroke;
 	synfig::String last_stroke_id;
-
-	Gtk::Menu menu;
 
 	std::list<std::shared_ptr<std::list<synfig::Point>>> stroke_list;
 
@@ -135,7 +132,7 @@ class studio::StateLasso_Context : public sigc::trackable
 
 	// layer name:
 	Gtk::Label id_label;
-	Gtk::HBox id_box;
+	Gtk::Box id_box;
 	Gtk::Entry id_entry;
 
 	// layer types to create:
@@ -143,11 +140,11 @@ class studio::StateLasso_Context : public sigc::trackable
 	Gtk::ToggleButton layer_region_togglebutton;
 	//Gtk::ToggleButton layer_outline_togglebutton;
 	//Gtk::ToggleButton layer_advanced_outline_togglebutton;
-	Gtk::HBox layer_types_box;
+	Gtk::Box layer_types_box;
 
 	// blend method
 	//Gtk::Label blend_label;
-	///Gtk::HBox blend_box;
+	///Gtk::Box blend_box;
 	//Widget_Enum blend_enum;
 
 	// opacity
@@ -161,16 +158,16 @@ class studio::StateLasso_Context : public sigc::trackable
 	// pressure width
 	Gtk::Label pressure_width_label;
 	Gtk::CheckButton pressure_width_checkbutton;
-	Gtk::HBox pressure_width_box;
+	Gtk::Box pressure_width_box;
 
 	// min pressure, sub option of pressure width
 	Gtk::Label min_pressure_label;
-	Gtk::HBox min_pressure_label_box;
+	Gtk::Box min_pressure_label_box;
 
 	Gtk::CheckButton min_pressure_checkbutton;
 	Glib::RefPtr<Gtk::Adjustment> min_pressure_adj;
 	Gtk::SpinButton  min_pressure_spin;
-	Gtk::HBox min_pressure_box;
+	Gtk::Box min_pressure_box;
 
 	// smoothness
 	Gtk::Label smoothness_label;
@@ -188,7 +185,7 @@ class studio::StateLasso_Context : public sigc::trackable
 
 	// width max error advanced outline layer
 	Gtk::Label width_max_error_label;
-	Gtk::HBox width_max_error_box;
+	Gtk::Box width_max_error_box;
 	Glib::RefPtr<Gtk::Adjustment> width_max_error_adj;
 	Gtk::SpinButton width_max_error_spin;
 
@@ -196,22 +193,22 @@ class studio::StateLasso_Context : public sigc::trackable
 	// round ends
 	Gtk::Label round_ends_label;
 	Gtk::CheckButton round_ends_checkbutton;
-	Gtk::HBox round_ends_box;
+	Gtk::Box round_ends_box;
 
 	// whether to loop new strokes which start and end in the same place
 	Gtk::Label auto_loop_label;
 	Gtk::CheckButton auto_loop_checkbutton;
-	Gtk::HBox auto_loop_box;
+	Gtk::Box auto_loop_box;
 
 	// whether to extend existing lines
 	Gtk::Label auto_extend_label;
 	Gtk::CheckButton auto_extend_checkbutton;
-	Gtk::HBox auto_extend_box;
+	Gtk::Box auto_extend_box;
 
 	// whether to link new ducks to existing ducks
 	Gtk::Label auto_link_label;
 	Gtk::CheckButton auto_link_checkbutton;
-	Gtk::HBox auto_link_box;
+	Gtk::Box auto_link_box;
 
 	// feather size
 	Gtk::Label feather_label;
@@ -220,7 +217,7 @@ class studio::StateLasso_Context : public sigc::trackable
 	// auto export
 	Gtk::Label auto_export_label;
 	Gtk::CheckButton auto_export_checkbutton;
-	Gtk::HBox auto_export_box;
+	Gtk::Box auto_export_box;
 
 	// toolbar buttons
 	Gtk::Button fill_last_stroke_button;
@@ -332,7 +329,7 @@ public:
 
 	~StateLasso_Context();
 
-	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view_;}
+	const CanvasView::Handle& get_canvas_view()const{return canvas_view_;}
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Time get_time()const { return get_canvas_interface()->get_time(); }
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
@@ -506,7 +503,6 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
 	push_state(*get_work_area()),
-	//loop_(false),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	opacity_hscl(Gtk::Adjustment::create(1.0, 0.0, 1.0, 0.01, 0.1)),
 	min_pressure_adj(Gtk::Adjustment::create(0,0,1,0.01,0.1)),
@@ -669,10 +665,10 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 		sigc::mem_fun(*this, &StateLasso_Context::UpdateUsePressure));
 	//layer_advanced_outline_togglebutton.signal_toggled().connect(
 	//	sigc::mem_fun(*this, &StateLasso_Context::UpdateCreateAdvancedOutline));
-	localthres_spin.signal_value_changed().connect(sigc::mem_fun(*this,
-		&StateLasso_Context::UpdateSmoothness));
-	globalthres_spin.signal_value_changed().connect(sigc::mem_fun(*this,
-		&StateLasso_Context::UpdateSmoothness));
+	localthres_spin.signal_value_changed().connect(
+		sigc::mem_fun(*this, &StateLasso_Context::UpdateSmoothness));
+	globalthres_spin.signal_value_changed().connect(
+		sigc::mem_fun(*this, &StateLasso_Context::UpdateSmoothness));
 
 	refresh_tool_options();
 	App::dialog_tool_options->present();
@@ -704,7 +700,6 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 	refresh_ducks();
 }
 
-
 void
 StateLasso_Context::UpdateUsePressure()
 {
@@ -721,14 +716,12 @@ StateLasso_Context::UpdateCreateAdvancedOutline()
 	width_max_error_spin.set_sensitive(get_layer_advanced_outline_flag());
 }
 
-
 void
 StateLasso_Context::UpdateSmoothness()
 {
 	localthres_radiobutton.set_active(localthres_spin.is_focus());
 	globalthres_radiobutton.set_active(globalthres_spin.is_focus());
 }
-
 
 void
 StateLasso_Context::refresh_tool_options()
@@ -912,15 +905,12 @@ StateLasso_Context::process_stroke(StrokeData stroke_data, WidthData width_data,
 		// returned widths are homogeneous position
 		// let's convert it to standard position
 		// as it is the default for new adv. outlines layers
-		std::list<synfig::WidthPoint>::iterator iter;
-		for(iter=wplist.begin(); iter!=wplist.end(); iter++)
+		for (std::list<synfig::WidthPoint>::iterator iter = wplist.begin(); iter != wplist.end(); ++iter)
 			iter->set_position(hom_to_std(ValueBase::List(bline.begin(), bline.end()), iter->get_position(), false, false));
 	}
 	// print out resutls
 	//synfig::info("-----------widths");
-	//std::list<synfig::WidthPoint>::iterator iter;
-	//for(iter=wplist.begin();iter!=wplist.end();iter++)
-	//{
+	//for (std::list<synfig::WidthPoint>::iterator iter = wplist.begin(); iter != wplist.end(); ++iter) {
 		//if(!iter->get_dash())
 			//synfig::info("Widthpoint W=%f, P=%f", iter->get_width(), iter->get_position());
 	//}
@@ -950,9 +940,8 @@ StateLasso_Context::process_stroke(StrokeData stroke_data, WidthData width_data,
 			tangent=bline.back().get_tangent1();
 			width=bline.back().get_width();
 			bline.pop_back();
-			std::list<synfig::WidthPoint>::iterator iter;
 			if(get_layer_advanced_outline_flag())
-				for(iter=wplist.begin(); iter!=wplist.end(); iter++)
+				for (std::list<synfig::WidthPoint>::iterator iter = wplist.begin(); iter != wplist.end(); ++iter)
 					iter->set_position(iter->get_position()+1/(size-1));
 		}
 
@@ -1473,7 +1462,7 @@ StateLasso_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synf
                 
                 synfigapp::Action::Handle action(synfigapp::Action::create("LayerEncapsulate"));
                
-                etl::handle<synfig::Canvas> cv( layer_list.back()->get_canvas() );
+                Canvas::Handle cv( layer_list.back()->get_canvas() );
                         
                 action->set_param("layer",*(layer_list.rbegin()));
                 layer_list.pop_back();
@@ -1518,8 +1507,7 @@ debug_show_vertex_list(int iteration, std::list<synfigapp::ValueDesc>& vertex_li
 	int prev;
 	int dir = 0;
 	bool started = false;
-	for(;i!=vertex_list.end();i++,c++)
-	{
+	for ( ; i != vertex_list.end(); ++i, ++c) {
 		synfigapp::ValueDesc value_desc(*i);
 
 		if (value_desc.parent_is_value_node()) {
@@ -1775,13 +1763,14 @@ StateLasso_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real
 		// rearrange the list so that the first and last node are on different blines
 		std::list<synfigapp::ValueDesc>::iterator iter, start;
 		ValueNode::Handle last_value_node = vertex_list.back().get_parent_value_node();
-		for(iter = vertex_list.begin(); iter!=vertex_list.end(); iter++)
+		for (iter = vertex_list.begin(); iter != vertex_list.end(); ++iter) {
 			if (iter->get_parent_value_node() != last_value_node)
 			{
 				vertex_list.insert(vertex_list.end(), vertex_list.begin(), iter);
 				vertex_list.erase(vertex_list.begin(), iter);
 				break;
 			}
+		}
 
 		debug_show_vertex_list(0, vertex_list, "before detecting direction and limits", -1);
 		// rearrange the list so that the first and last node are on different blines
@@ -1801,7 +1790,7 @@ StateLasso_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real
 			// printf("there are %d points in this line - first is index %d\n", points_in_line, last_index);
 
 			// while we're looking at the same bline, keep going
-			iter++;
+			++iter;
 			while (iter != vertex_list.end() && iter->get_parent_value_node() == parent_value_node)
 			{
 				this_index = iter->get_index();
@@ -1826,7 +1815,7 @@ StateLasso_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real
 					direction--;
 
 				last_index = this_index;
-				iter++;
+				++iter;
 			}
 
 			// printf("min %d and max %d\n", min_index, max_index);
@@ -1916,13 +1905,13 @@ StateLasso_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real
 			done=true;
 
 			std::list<synfigapp::ValueDesc>::iterator prev,next;
-			prev=vertex_list.end();prev--;	// Set prev to the last ValueDesc
+			prev=vertex_list.end();
+			--prev;	// Set prev to the last ValueDesc
 			next=vertex_list.begin();
 			iter=next++; // Set iter to the first value desc, and next to the second
 
 			int current = 0;
-			for(;iter!=vertex_list.end();prev=iter,iter++,next++,current++)
-			{
+			for ( ; iter != vertex_list.end(); prev = iter++, ++next, ++current) {
 				// we need to be able to erase(next) and can't do that if next is end()
 				if (next == vertex_list.end()) next = vertex_list.begin();
 				debug_show_vertex_list(i, vertex_list, "in loop around vertices", current);
@@ -2145,8 +2134,7 @@ StateLasso_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real
 		value_node_bline=ValueNode_BLine::create();
 
 		std::list<synfigapp::ValueDesc>::iterator iter;
-		for(iter=vertex_list.begin();iter!=vertex_list.end();++iter)
-		{
+		for (iter = vertex_list.begin(); iter != vertex_list.end(); ++iter) {
 			// Ensure that the vertex is exported.
 			get_canvas_interface()->auto_export(*iter);
 
@@ -2225,8 +2213,7 @@ StateLasso_Context::refresh_ducks()
 
 	std::list<std::shared_ptr<std::list<synfig::Point>>>::iterator iter;
 
-	for(iter=stroke_list.begin();iter!=stroke_list.end();++iter)
-	{
+	for (iter = stroke_list.begin(); iter != stroke_list.end(); ++iter) {
 		get_work_area()->add_stroke(*iter);
 	}
 
@@ -2278,12 +2265,11 @@ StateLasso_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,s
 			std::list<synfig::WidthPoint> old_wplist;
 			ValueBase wplist_value_base((*wplist_value_node)(get_canvas()->get_time()));
 			const ValueBase::List &wplist_value_base_list = wplist_value_base.get_list();
-			for(ValueBase::List::const_iterator i = wplist_value_base_list.begin(); i != wplist_value_base_list.end(); ++i)
+			for (ValueBase::List::const_iterator i = wplist_value_base_list.begin(); i != wplist_value_base_list.end(); ++i)
 				old_wplist.push_back(i->get(synfig::WidthPoint()));
 			std::list<synfig::WidthPoint>::iterator witer;
 			int i;
-			for(i=0, witer=old_wplist.begin(); witer!=old_wplist.end(); witer++, i++)
-			{
+			for (i = 0, witer = old_wplist.begin(); witer != old_wplist.end(); ++witer, ++i) {
 				synfigapp::Action::Handle action(synfigapp::Action::create("ValueDescSet"));
 				assert(action);
 				action->set_param("canvas", get_canvas());
@@ -2334,8 +2320,7 @@ StateLasso_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,s
 			// Don't add the widthpoint with position equal to 0.0 if doing
 			// complete loops.
 			//
-			for(witer=wplist.begin(); witer!=wplist.end();witer++)
-			{
+			for (witer = wplist.begin(); witer != wplist.end(); ++witer) {
 				if(witer->get_position() == 1.0)
 					continue;
 				if(complete_loop && witer->get_position() == 0.0)
@@ -2392,8 +2377,7 @@ StateLasso_Context::extend_bline_from_begin(ValueNode_BLine::Handle value_node,s
 	}
 
 	std::list<synfig::BLinePoint>::reverse_iterator iter;
-	for(iter=bline.rbegin();!(iter==bline.rend());++iter)
-	{
+	for (iter = bline.rbegin(); iter != bline.rend(); ++iter) {
 		ValueNode_Composite::Handle composite(ValueNode_Composite::create(*iter));
 
 		synfigapp::Action::Handle action(synfigapp::Action::create("ValueNodeDynamicListInsert"));
@@ -2461,12 +2445,11 @@ StateLasso_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std
 			std::list<synfig::WidthPoint> old_wplist;
 			ValueBase wplist_value_base((*wplist_value_node)(get_canvas()->get_time()));
 			const ValueBase::List &wplist_value_base_list = wplist_value_base.get_list();
-			for(ValueBase::List::const_iterator i = wplist_value_base_list.begin(); i != wplist_value_base_list.end(); ++i)
+			for (ValueBase::List::const_iterator i = wplist_value_base_list.begin(); i != wplist_value_base_list.end(); ++i)
 				old_wplist.push_back(i->get(synfig::WidthPoint()));
 			std::list<synfig::WidthPoint>::iterator witer;
 			int i;
-			for(i=0, witer=old_wplist.begin(); witer!=old_wplist.end(); witer++, i++)
-			{
+			for (i = 0, witer = old_wplist.begin(); witer != old_wplist.end(); ++witer, ++i) {
 				synfigapp::Action::Handle action(synfigapp::Action::create("ValueDescSet"));
 				assert(action);
 				action->set_param("canvas", get_canvas());
@@ -2517,8 +2500,7 @@ StateLasso_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std
 			// Don't add the widthpoint with position equal to 0.0 if doing
 			// complete loops.
 			//
-			for(witer=wplist.begin(); witer!=wplist.end();witer++)
-			{
+			for (witer = wplist.begin(); witer != wplist.end(); ++witer) {
 				if(witer->get_position() == 0.0)
 					continue;
 				if(complete_loop && witer->get_position() == 1.0)
@@ -2575,8 +2557,7 @@ StateLasso_Context::extend_bline_from_end(ValueNode_BLine::Handle value_node,std
 	}
 
 	std::list<synfig::BLinePoint>::iterator iter;
-	for(iter=bline.begin();iter!=bline.end();++iter)
-	{
+	for (iter = bline.begin(); iter != bline.end(); ++iter) {
 		ValueNode_Composite::Handle composite(ValueNode_Composite::create(*iter));
 
 		synfigapp::Action::Handle action(synfigapp::Action::create("ValueNodeDynamicListInsert"));
@@ -2610,9 +2591,8 @@ StateLasso_Context::reverse_bline(std::list<synfig::BLinePoint> &bline)
 	std::list<synfig::BLinePoint>::iterator iter,eiter;
 	iter=bline.begin();
 	eiter=bline.end();
-	eiter--;
-	for(i=0;i<(int)bline.size()/2;++iter,--eiter,i++)
-	{
+	--eiter;
+	for (i = 0; i < (int)bline.size()/2; ++iter, --eiter, ++i) {
 		iter_swap(iter,eiter);
 		iter->reverse();
 		eiter->reverse();
@@ -2622,8 +2602,7 @@ StateLasso_Context::reverse_bline(std::list<synfig::BLinePoint> &bline)
 void
 StateLasso_Context::reverse_wplist(std::list<synfig::WidthPoint> &wplist)
 {
-	std::list<synfig::WidthPoint>::iterator iter;
-	for(iter=wplist.begin();iter!=wplist.end();iter++)
+	for (std::list<synfig::WidthPoint>::iterator iter = wplist.begin(); iter != wplist.end(); ++iter)
 		iter->reverse();
 }
 

@@ -62,6 +62,7 @@ REGISTER_VALUENODE(ValueNode_BLineRevTangent, RELEASE_VERSION_0_61_08, "blinerev
 ValueNode_BLineRevTangent::ValueNode_BLineRevTangent(Type &x):
 	LinkableValueNode(x)
 {
+	init_children_vocab();
 }
 
 ValueNode_BLineRevTangent::ValueNode_BLineRevTangent(const ValueNode::Handle &x):

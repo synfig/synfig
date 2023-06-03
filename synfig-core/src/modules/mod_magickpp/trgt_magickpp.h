@@ -55,7 +55,7 @@ private:
 
 	int width, height;
 
-	synfig::String filename;
+	synfig::filesystem::Path filename;
 	std::vector<unsigned char> buffer1, buffer2;
 	unsigned char* buffer_pointer;
 	unsigned char* current_row_buffer_pointer;
@@ -68,7 +68,7 @@ private:
 
 public:
 
-	magickpp_trgt(const char *filename, const synfig::TargetParam &params):
+	magickpp_trgt(const synfig::filesystem::Path& filename, const synfig::TargetParam& params):
 		width(),
 		height(),
 		filename(filename),

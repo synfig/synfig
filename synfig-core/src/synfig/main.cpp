@@ -37,8 +37,6 @@
 #include <cstring>
 #include <ctime>
 
-#include <ETL/stringf>
-
 #include <synfig/localization.h>
 #include <synfig/general.h>
 
@@ -77,6 +75,8 @@
 #include "loadcanvas.h"
 
 #include <giomm.h>
+
+#include <synfig/os.h>
 #include <synfig/synfig_export.h>
 
 #ifdef HAVE_SIGNAL_H
@@ -510,11 +510,9 @@ synfig::info(const String &str)
 	general_io_mutex.unlock();
 }
 
-// synfig::get_binary_path()
 // See also: http://libsylph.sourceforge.net/wiki/Full_path_to_binary
-
-String
-synfig::get_binary_path(const String &fallback_path)
+filesystem::Path
+synfig::OS::get_binary_path(const String &fallback_path)
 {
 	
 	String result;
@@ -554,7 +552,6 @@ synfig::get_binary_path(const String &fallback_path)
 
 	ssize_t size;
 	struct stat stat_buf;
-	FILE *f;
 
 	/* Read from /proc/self/exe (symlink) */
 	char* path2 = new char[buf_size];
@@ -613,7 +610,7 @@ synfig::get_binary_path(const String &fallback_path)
 		buf_size = PATH_MAX + 128;
 		char* line = (char*)malloc(buf_size);
 
-		f = fopen("/proc/self/maps", "r");
+		FILE* f = fopen("/proc/self/maps", "r");
 		if (!f) {
 			synfig::error("Cannot open /proc/self/maps.");
 		}
@@ -657,7 +654,7 @@ synfig::get_binary_path(const String &fallback_path)
 	{
 		// In worst case use value specified as fallback 
 		// (usually should come from argv[0])
-		result = etl::absolute_path(fallback_path);
+		result = filesystem::Path::absolute_path(fallback_path);
 	}
 	
 	

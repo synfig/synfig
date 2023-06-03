@@ -35,8 +35,6 @@
 
 #include "listimporter.h"
 
-#include <ETL/stringf>
-
 #include "general.h"
 #include <synfig/localization.h>
 
@@ -81,7 +79,7 @@ Importer(identifier)
 	}
 
 	String line;
-	String prefix=etl::dirname(identifier.filename)+ETL_DIRECTORY_SEPARATOR;
+	String prefix=filesystem::Path::dirname(identifier.filename)+ETL_DIRECTORY_SEPARATOR;
 
 	///! read first line and check whether it is a Papagayo lip sync file
 	if(!FileSystem::safe_get_line(*stream, line).eof())

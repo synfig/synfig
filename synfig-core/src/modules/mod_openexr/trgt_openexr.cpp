@@ -35,14 +35,12 @@
 
 #include "trgt_openexr.h"
 #include <cstdio>
-#include <ETL/stringf>
 
 #endif
 
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
-using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
@@ -59,24 +57,20 @@ exr_trgt::ready()
 	return (bool)exr_file;
 }
 
-exr_trgt::exr_trgt(const char *Filename, const synfig::TargetParam &params):
+exr_trgt::exr_trgt(const synfig::filesystem::Path& Filename, const synfig::TargetParam& params):
 	multi_image(false),
 	imagecount(0),
 	scanline(),
 	filename(Filename),
 	exr_file(nullptr),
-	buffer(nullptr),
-	buffer_color(nullptr)
+	sequence_separator(params.sequence_separator)
 {
 	// OpenEXR uses linear gamma
-	sequence_separator = params.sequence_separator;
 }
 
 exr_trgt::~exr_trgt()
 {
 	if(exr_file) delete exr_file;
-	if(buffer) delete [] buffer;
-	if(buffer_color) delete [] buffer_color;
 }
 
 bool
@@ -97,28 +91,21 @@ exr_trgt::start_frame(synfig::ProgressCallback *cb)
 {
 	int w=desc.get_w(),h=desc.get_h();
 
-	String frame_name;
-
-	if(exr_file)
+	if (exr_file)
 		delete exr_file;
-	if(multi_image)
-	{
-		frame_name = (filename_sans_extension(filename) +
-					  sequence_separator +
-					  strprintf("%04d",imagecount) +
-					  filename_extension(filename));
-		if(cb)cb->task(frame_name);
+
+	synfig::filesystem::Path frame_name = filename;
+
+	if (multi_image) {
+		frame_name.add_suffix(sequence_separator + strprintf("%04d",imagecount));
 	}
-	else
-	{
-		frame_name=filename;
-		if(cb)cb->task(filename);
-	}
-	exr_file=new Imf::RgbaOutputFile(frame_name.c_str(),w,h,Imf::WRITE_RGBA,desc.get_pixel_aspect());
-	if(buffer_color) delete [] buffer_color;
-	buffer_color=new Color[w];
-	//if(buffer) delete [] buffer;
-	//buffer=new Imf::Rgba[w];
+	if (cb)
+		cb->task(frame_name.u8string());
+
+	// OpenEXR implementation does not support wchar_t, so MS Windows users will have troubles sometimes
+	exr_file=new Imf::RgbaOutputFile(frame_name.u8_str(),w,h,Imf::WRITE_RGBA,desc.get_pixel_aspect());
+	buffer_color.resize(w);
+	//buffer.resize(w);
 	out_surface.set_wh(w,h);
 
 	return true;
@@ -144,7 +131,7 @@ Color *
 exr_trgt::start_scanline(int i)
 {
 	scanline=i;
-	return reinterpret_cast<Color *>(buffer_color);
+	return buffer_color.data();
 }
 
 bool

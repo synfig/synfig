@@ -108,26 +108,6 @@ public:
 }; // END of class shared_object
 
 // ========================================================================
-/*!	\class	virtual_shared_object _handle.h	ETL/handle
-**	\brief	Virtual Shared Object Base Class
-**	\see handle, loose_handle
-**	\writeme
-*/
-class virtual_shared_object
-{
-protected:
-	virtual_shared_object() { }
-public:
-	virtual_shared_object(const virtual_shared_object&) = delete;
-	virtual_shared_object& operator= (const virtual_shared_object&) = delete;
-	virtual ~virtual_shared_object() { }
-	virtual void ref()const=0;
-	virtual bool unref()const=0;
-	virtual bool unref_inactive()const=0;
-	virtual int count()const=0;
-}; // END of class virtual_shared_object
-
-// ========================================================================
 /*!	\class	handle _handle.h	ETL/handle
 **	\brief	Object Handle
 **	\see shared_object, loose_handle

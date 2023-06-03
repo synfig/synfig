@@ -179,6 +179,7 @@ cd ETL
 make -j$MAKE_THREADS
 sed -i.bak "s|^Cflags: -I\\\${includedir}|Cflags: -I$REPO_DIR\/ETL -I\\\${includedir}|" ETL.pc
 make install
+make check
 cd ..
 
 ccache_show_stats
@@ -247,6 +248,7 @@ cd synfig-core
 make -j$MAKE_THREADS
 sed -i.bak "s|^includedir=.*$|includedir=$REPO_DIR\/synfig-core\/src|" synfig.pc
 make install
+make check
 cd ..
 
 ccache_show_stats
@@ -310,6 +312,7 @@ cd synfig-studio
 
 make -j$MAKE_THREADS
 make install
+make check
 
 ccache_show_stats
 

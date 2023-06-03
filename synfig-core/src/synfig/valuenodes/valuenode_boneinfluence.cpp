@@ -68,6 +68,7 @@ ValueNode_BoneInfluence::ValueNode_BoneInfluence(Type &x):
 	checked_inverse_(),
 	has_inverse_()
 {
+	init_children_vocab();
 }
 
 ValueNode_BoneInfluence::ValueNode_BoneInfluence(const ValueNode::Handle &x, Canvas::LooseHandle canvas):
@@ -75,6 +76,7 @@ ValueNode_BoneInfluence::ValueNode_BoneInfluence(const ValueNode::Handle &x, Can
 	checked_inverse_(),
 	has_inverse_()
 {
+	init_children_vocab();
 	Type &type(x->get_type());
 	if (type == type_vector || type == type_bline_point)
 	{

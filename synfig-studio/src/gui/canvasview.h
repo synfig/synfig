@@ -71,6 +71,7 @@
 
 #include "dialogs/canvasoptions.h"
 #include "dialogs/canvasproperties.h"
+#include "dialogs/canvasresize.h"
 #include "dialogs/dialog_keyframe.h"
 #include "dialogs/dialog_preview.h"
 #include "dialogs/dialog_waypoint.h"
@@ -272,9 +273,6 @@ private:
 	ChildrenTree *children_tree;
 	KeyframeTree *keyframe_tree;
 
-	Gtk::TreeRow children_canvas_row;
-	Gtk::TreeRow children_valuenode_row;
-
 	Gtk::Statusbar *statusbar;
 	Gtk::ProgressBar *progressbar;
 
@@ -406,6 +404,7 @@ private:
 public:
 
 	CanvasProperties canvas_properties;
+	CanvasResize canvas_resize;
 	CanvasOptions *canvas_options;
 	RenderSettings render_settings;
 	Dialog_Waypoint waypoint_dialog;
@@ -481,8 +480,6 @@ private:
 
 	void interpolation_refresh();
 	void on_interpolation_changed();
-
-	static void save_all();
 
 	//helper function for import_file()
 	bool is_same_file(const std::string &filename);
@@ -567,7 +564,7 @@ public:
 	void set_time(synfig::Time t) { time_model()->set_time(t); }
 	synfig::Time get_time() { return time_model()->get_time(); }
 
-	const etl::handle<synfig::Canvas>& get_canvas()const { return canvas_interface_->get_canvas(); }
+	const synfig::Canvas::Handle& get_canvas()const { return canvas_interface_->get_canvas(); }
 	const etl::loose_handle<Instance>& get_instance()const { return instance_; }
 
 	const etl::handle<synfigapp::CanvasInterface>& canvas_interface() { return canvas_interface_; }
@@ -703,7 +700,7 @@ protected:
  -- ** -- S T A T I C   P U B L I C   M E T H O D S ---------------------------
 	*/
 public:
-	static etl::handle<studio::CanvasView> create(etl::loose_handle<Instance> instance,etl::handle<synfig::Canvas> canvas);
+	static etl::handle<studio::CanvasView> create(etl::loose_handle<Instance> instance,synfig::Canvas::Handle canvas);
 	static std::list<int>& get_pixel_sizes();
 
 private:

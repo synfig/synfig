@@ -80,7 +80,7 @@ ValueNode_IntString::create_new()const
 }
 
 ValueNode_IntString*
-ValueNode_IntString::create(const ValueBase& x, etl::loose_handle<Canvas>)
+ValueNode_IntString::create(const ValueBase& x, Canvas::LooseHandle)
 {
 	return new ValueNode_IntString(x);
 }

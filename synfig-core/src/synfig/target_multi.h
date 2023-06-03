@@ -59,7 +59,7 @@ public:
 	Color * start_scanline(int scanline) override;
 	bool end_scanline() override;
 
-	void set_canvas(etl::handle<Canvas> c) override;
+	void set_canvas(Canvas::Handle c) override;
 	bool set_rend_desc(RendDesc* d) override;
 	bool init(ProgressCallback* cb = nullptr) override;
 }; // END of class Target_Multi

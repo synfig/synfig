@@ -35,8 +35,6 @@
 #include "main.h"
 #include "action.h"
 
-#include <ETL/stringf>
-
 #include <synfig/general.h>
 
 #include <synfig/color.h>
@@ -369,7 +367,7 @@ synfigapp::Main::find_input_device(const synfig::String id)
 	for(iter=input_devices_.begin();iter!=input_devices_.end();++iter)
 		if((*iter)->get_id()==id)
 			return *iter;
-	return 0;
+	return nullptr;
 }
 
 InputDevice::Handle
@@ -377,9 +375,9 @@ synfigapp::Main::select_input_device(const synfig::String id)
 {
 	InputDevice::Handle input_device(find_input_device(id));
 	if(!input_device)
-		return 0;
+		return nullptr;
 	if(!select_input_device(input_device))
-		return 0;
+		return nullptr;
 	return input_device;
 }
 

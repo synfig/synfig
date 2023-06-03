@@ -59,6 +59,7 @@ REGISTER_VALUENODE(ValueNode_Switch, RELEASE_VERSION_0_61_08, "switch", N_("Swit
 ValueNode_Switch::ValueNode_Switch(Type &x):
 	LinkableValueNode(x)
 {
+	init_children_vocab();
 }
 
 ValueNode_Switch::ValueNode_Switch(const ValueBase &x):

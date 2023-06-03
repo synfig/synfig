@@ -34,7 +34,6 @@
 #endif
 
 #include "valuenode_wplist.h"
-#include "valuenode_const.h"
 #include "valuenode_composite.h"
 #include "valuenode_bline.h"
 #include <synfig/general.h>

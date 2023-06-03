@@ -26,6 +26,7 @@
 #include "definitions.h"
 #include "synfigtoolexception.h"
 #include <synfig/general.h>
+#include <synfig/os.h>
 
 SynfigToolGeneralOptions* SynfigToolGeneralOptions::instance() {
 	static SynfigToolGeneralOptions instance;
@@ -38,6 +39,7 @@ SynfigToolGeneralOptions::SynfigToolGeneralOptions()
 	_should_be_quiet = false;
 	_should_print_benchmarks = false;
 	_threads = 1;
+	_repeats = 1;
 }
 
 std::string SynfigToolGeneralOptions::get_binary_path() const
@@ -46,7 +48,7 @@ std::string SynfigToolGeneralOptions::get_binary_path() const
 }
 
 void SynfigToolGeneralOptions::set_binary_path(const std::string& path) {
-	_binary_path = synfig::get_binary_path(path);
+	_binary_path = synfig::OS::get_binary_path(path).u8string();
 }
 
 size_t SynfigToolGeneralOptions::get_threads() const
@@ -88,4 +90,14 @@ bool SynfigToolGeneralOptions::should_print_benchmarks() const
 void SynfigToolGeneralOptions::set_should_print_benchmarks(bool print_benchmarks)
 {
 	_should_print_benchmarks = print_benchmarks;
+}
+
+int SynfigToolGeneralOptions::get_repeats() const
+{
+	return _repeats;
+}
+
+void SynfigToolGeneralOptions::set_repeats(int repeats)
+{
+	_repeats = repeats;
 }

@@ -53,8 +53,6 @@
 #include <hb-ft.h>
 #endif
 
-#include <ETL/stringf>
-
 #include <synfig/canvasfilenaming.h>
 #include <synfig/context.h>
 #include <synfig/general.h>
@@ -271,7 +269,7 @@ public:
 
 static bool
 has_valid_font_extension(const std::string &filename) {
-	std::string extension = etl::filename_extension(filename);
+	std::string extension = filesystem::Path::filename_extension(filename);
 	return std::find(known_font_extensions.begin(), known_font_extensions.end(), extension) != known_font_extensions.end();
 }
 
@@ -461,7 +459,7 @@ Layer_Freetype::on_canvas_set()
 	synfig::String family=param_family.get(synfig::String());
 
 	// Is it a font family or an absolute path for a font file? No need to reload it
-	if (!has_valid_font_extension(family) || etl::is_absolute_path(family))
+	if (!has_valid_font_extension(family) || filesystem::Path::is_absolute_path(family))
 		return;
 
 	int style=param_style.get(int());
@@ -729,8 +727,8 @@ Layer_Freetype::set_shape_param(const String & param, const ValueBase &value)
 /*
 	if(param=="font" && value.same_type_as(font))
 	{
-		new_font(etl::basename(value.get(font)),style,weight);
-		family=etl::basename(value.get(font));
+		new_font(filesystem::Path::basename(value.get(font)),style,weight);
+		family=filesystem::Path::basename(value.get(font));
 		return true;
 	}
 */
@@ -943,7 +941,7 @@ Layer_Freetype::sync_vfunc()
 
 	if(text=="@_FILENAME_@" && get_canvas() && !get_canvas()->get_file_name().empty())
 	{
-		auto text=basename(get_canvas()->get_file_name());
+		auto text = filesystem::Path::basename(get_canvas()->get_file_name());
 		lines = fetch_text_lines(text, direction);
 	}
 

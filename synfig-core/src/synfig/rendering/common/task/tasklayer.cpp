@@ -52,8 +52,7 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 
-Task::Token TaskLayer::token(
-	DescAbstract<TaskLayer>("Contour") );
+Task::Token TaskLayer::token(DescAbstract<TaskLayer>("Layer"));
 
 
 Rect

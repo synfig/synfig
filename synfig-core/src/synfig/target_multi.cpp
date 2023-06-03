@@ -65,7 +65,7 @@ Target_Multi::~Target_Multi()
 }
 
 void
-Target_Multi::set_canvas(etl::handle<Canvas> c)
+Target_Multi::set_canvas(Canvas::Handle c)
 {
 	canvas=c;
 	RendDesc desc=canvas->rend_desc();

@@ -39,11 +39,9 @@
 
 #include <synfig/module.h>
 #include <synfig/string.h>
-#include <synfig/canvas.h>
-
-#include <synfig/rendering/renderer.h>
 
 #include "blur.h"
+#include "chromakey.h"
 #include "colorcorrect.h"
 #include "halftone2.h"
 #include "halftone3.h"
@@ -69,6 +67,7 @@ MODULE_DESC_END
 MODULE_INVENTORY_BEGIN(libmod_filter)
 	BEGIN_LAYERS
 		LAYER(Blur_Layer)
+		LAYER(ChromaKey)
 		LAYER(Halftone2)
 		LAYER(Halftone3)
 		LAYER(LumaKey)

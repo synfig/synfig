@@ -36,6 +36,7 @@
 #include "os.h"
 
 #include <cstdarg>
+#include <cstdlib>
 
 #include <synfig/filesystem.h>
 #include <synfig/general.h>
@@ -76,6 +77,36 @@ class RunPipeUnix;
 #endif
 
 /* === P R O C E D U R E S ================================================= */
+
+#ifdef _WIN32
+
+std::string
+utf16_to_utf8(const wchar_t* src, size_t src_length = 0)
+{
+	std::string utf8;
+
+	if (!src)
+		return utf8;
+
+	if (src_length == 0)
+		src_length = wcslen(src);
+
+	const int length = WideCharToMultiByte(CP_UTF8, 0, src, src_length, 0, 0, nullptr, nullptr);
+	utf8.resize(length + 1);
+
+	WideCharToMultiByte(CP_UTF8, 0, src, src_length, &utf8[0], length, nullptr, nullptr);
+	utf8[length] = 0;
+
+	return utf8;
+}
+
+std::string
+utf16_to_utf8(const std::wstring& src)
+{
+	return utf16_to_utf8(src.c_str(), src.size());
+}
+
+#endif
 
 /* === M E T H O D S ======================================================= */
 
@@ -170,7 +201,7 @@ public:
 		RunPipeWin32::close();
 	}
 
-	bool open(std::string binary_path, const OS::RunArgs& binary_args, OS::RunMode run_mode, const OS::RunRedirectionFiles& redir_files) override
+	bool open(const filesystem::Path& binary_path, const OS::RunArgs& binary_args, OS::RunMode run_mode, const OS::RunRedirectionFiles& redir_files) override
 	{
 		if (initialized) {
 			synfig::error("A pipe should not be initialized twice! Ignored...");
@@ -181,7 +212,7 @@ public:
 		is_reader = run_mode == OS::RUN_MODE_READ || run_mode == OS::RUN_MODE_READWRITE;
 		is_writer = run_mode == OS::RUN_MODE_WRITE || run_mode == OS::RUN_MODE_READWRITE;
 
-		String command = '"' + binary_path + '"';
+		String command = '"' + binary_path.u8string() + '"';
 		command += " " + binary_args.get_string();
 
 		full_command_ = command;
@@ -192,7 +223,7 @@ public:
 		saAttr.lpSecurityDescriptor = NULL;
 
 		if (!redir_files.std_err.empty()) {
-			child_STDERR_Write = CreateFileW(synfig::filesystem::Path(redir_files.std_err).c_str(),
+			child_STDERR_Write = CreateFileW(redir_files.std_err.c_str(),
 											 GENERIC_WRITE,
 											 FILE_SHARE_READ,
 											 &saAttr,
@@ -207,7 +238,7 @@ public:
 		}
 
 		if (!redir_files.std_out.empty()) {
-			child_STDOUT_Write = CreateFileW(synfig::filesystem::Path(redir_files.std_out).c_str(),
+			child_STDOUT_Write = CreateFileW(redir_files.std_out.c_str(),
 											 GENERIC_WRITE,
 											 FILE_SHARE_READ,
 											 &saAttr,
@@ -244,7 +275,7 @@ public:
 		}
 
 		if (!redir_files.std_in.empty()) {
-			child_STDIN_Read = CreateFileW(synfig::filesystem::Path(redir_files.std_in).c_str(),
+			child_STDIN_Read = CreateFileW(redir_files.std_in.c_str(),
 											 GENERIC_READ,
 											 0,
 											 &saAttr,
@@ -437,7 +468,7 @@ public:
 		RunPipeUnix::close();
 	}
 
-	bool open(std::string binary_path, const OS::RunArgs& binary_args, OS::RunMode run_mode, const OS::RunRedirectionFiles& redir_files) override
+	bool open(const filesystem::Path& binary_path, const OS::RunArgs& binary_args, OS::RunMode run_mode, const OS::RunRedirectionFiles& redir_files) override
 	{
 		if (initialized) {
 			synfig::error("A pipe should not be initialized twice! Ignored...");
@@ -445,7 +476,7 @@ public:
 		}
 		initialized = true;
 
-		full_command_ = binary_path + " " + binary_args.get_string();
+		full_command_ = binary_path.u8string() + " " + binary_args.get_string();
 
 		int p[2];
 
@@ -524,8 +555,9 @@ public:
 			::close(p[0]);
 
 			char *args[binary_args.size()+2];
+			std::string copy_binary_path = binary_path.u8string();
 			size_t idx = 0;
-			args[idx++] = &binary_path[0];
+			args[idx++] = &copy_binary_path[0];
 			for (size_t i = 0; i < binary_args.size(); i++)
 			{
 				const auto& arg = binary_args[i];
@@ -630,28 +662,28 @@ OS::RunPipe::create()
 }
 
 OS::RunPipe::Handle
-OS::run_async(std::string binary_path, const RunArgs& binary_args, RunMode mode, const RunRedirectionFiles& redir_files)
+OS::run_async(const filesystem::Path& binary_path, const RunArgs& binary_args, RunMode mode, const RunRedirectionFiles& redir_files)
 {
 	auto run_pipe = OS::RunPipe::create();
 	if (!run_pipe) {
-		synfig::warning("couldn't create pipe for %s %s", binary_path.c_str(), binary_args.get_string().c_str());
+		synfig::warning("couldn't create pipe for %s %s", binary_path.u8_str(), binary_args.get_string().c_str());
 		return nullptr;
 	}
 	run_pipe->open(binary_path, binary_args, mode, redir_files);
 	if (!run_pipe->is_open()) {
-		synfig::warning("couldn't open pipe for %s %s", binary_path.c_str(), binary_args.get_string().c_str());
+		synfig::warning("couldn't open pipe for %s %s", binary_path.u8_str(), binary_args.get_string().c_str());
 		return nullptr;
 	}
 	return run_pipe;
 }
 
 bool
-OS::run_sync(std::string binary_path, const RunArgs& binary_args, const std::string& stdout_redir_file, const std::string& stderr_redir_file)
+OS::run_sync(const filesystem::Path& binary_path, const RunArgs& binary_args, const filesystem::Path& stdout_redir_file, const filesystem::Path& stderr_redir_file)
 {
 	auto run_pipe = OS::RunPipe::create();
 	if (!run_pipe)
 		return false;
-	run_pipe->open(binary_path, binary_args, OS::RunMode::RUN_MODE_READ, {stderr_redir_file, stdout_redir_file, ""});
+	run_pipe->open(binary_path, binary_args, OS::RunMode::RUN_MODE_READ, {stderr_redir_file, stdout_redir_file, synfig::filesystem::Path()});
 	if (!run_pipe->is_open())
 		return false;
 
@@ -674,4 +706,75 @@ OS::launch_file_async(const std::string& file)
 #else
 	return 0 == system(strprintf("xdg-open \"%s\"", file.c_str()).c_str());
 #endif
+}
+
+const std::vector<std::string>&
+OS::get_user_lang()
+{
+	static std::vector<std::string> language_list;
+	if (!language_list.empty())
+		return language_list;
+
+	{
+		const char* lang_env = getenv("LANGUAGE");
+		std::string language_list_str = lang_env ? trim(lang_env) : "";
+		if (!language_list_str.empty()) {
+			std::string::size_type pos = 0, prev_pos = 0;
+			while ((pos = language_list_str.find(':', pos)) != std::string::npos) {
+				auto lang = trim(language_list_str.substr(prev_pos, pos - prev_pos));
+				if (!lang.empty())
+					language_list.push_back(lang);
+				++pos;
+				prev_pos = pos;
+			}
+			if (prev_pos != std::string::npos) {
+				auto lang = trim(language_list_str.substr(prev_pos));
+				if (!lang.empty())
+					language_list.push_back(lang);
+			}
+		}
+	}
+
+	{
+		const char* lang_env = getenv("LANG");
+		std::string lang = lang_env ? trim(lang_env) : "";
+		if (!lang.empty()) {
+			// remove encoding info
+			auto dot_pos = lang.find('.');
+			if (dot_pos != std::string::npos)
+				lang = lang.substr(0, dot_pos);
+			if (!lang.empty())
+				language_list.push_back(lang);
+		}
+	}
+
+#ifdef _WIN32
+	// https://learn.microsoft.com/en-us/windows/win32/intl/locale-names
+	WCHAR lpLocaleName[LOCALE_NAME_MAX_LENGTH];
+
+	if (0 != GetUserDefaultLocaleName(lpLocaleName, LOCALE_NAME_MAX_LENGTH)) {
+		std::string language_str = utf16_to_utf8(lpLocaleName);
+		auto first_dash_pos = language_str.find('-');
+		auto second_dash_pos = first_dash_pos == std::string::npos ? std::string::npos : language_str.find('-', first_dash_pos + 1);
+		if (second_dash_pos != std::string::npos) { // Script code
+			// lang-Script-REGION
+			language_list.push_back(language_str.substr(0, first_dash_pos) + '_' + language_str.substr(second_dash_pos + 1));
+		} else if (first_dash_pos == std::string::npos) {
+			// lang
+			language_list.push_back(language_str);
+		} else {
+			// lang-REGION or lang-Script
+			// script code has 4 chars... https://www.unicode.org/iso15924/iso15924-codes.html
+			if (second_dash_pos - first_dash_pos >= 5) {
+				// discard script code
+				language_list.push_back(language_str.substr(0, first_dash_pos));
+			} else {
+				// lang-REGION -> lang_REGION
+				language_str[first_dash_pos] = '_';
+				language_list.push_back(language_str);
+			}
+		}
+	}
+#endif
+	return language_list;
 }

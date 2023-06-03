@@ -39,8 +39,6 @@
 #include <gtkmm/stock.h>
 #include <gtkmm/textview.h>
 
-#include <ETL/stringf>
-
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/dialogs/dialog_input.h>
@@ -50,6 +48,7 @@
 #include <gui/docks/dockmanager.h>
 #include <gui/exception_guard.h>
 #include <gui/localization.h>
+#include <gui/widgets/widget_link.h>
 #include <gui/widgets/widget_time.h>
 #include <gui/widgets/widget_vector.h>
 #include <gui/workspacehandler.h>
@@ -176,6 +175,9 @@ MainWindow::init_menus()
 	action_group->add( Gtk::Action::create("open", Gtk::StockID("synfig-open"), _("Open"), _("Open an existing document")),
 		sigc::hide_return(sigc::bind(sigc::ptr_fun(&studio::App::dialog_open), ""))
 	);
+	action_group->add( Gtk::Action::create("save-all", Gtk::StockID("synfig-save_all"), _("Save All"), _("Save all opened documents")),
+		sigc::ptr_fun(&save_all)
+	);
 	action_group->add( Gtk::Action::create("quit", Gtk::StockID("gtk-quit"), _("Quit")),
 		sigc::hide_return(sigc::ptr_fun(&studio::App::quit))
 	);
@@ -265,8 +267,9 @@ MainWindow::init_menus()
 
 void MainWindow::register_custom_widget_types()
 {
-	Widget_Vector::register_type();
+	Widget_Link::register_type();
 	Widget_Time::register_type();
+	Widget_Vector::register_type();
 }
 
 void
@@ -292,6 +295,13 @@ MainWindow::toggle_show_toolbar()
 		for (auto& canvas_view : views)
 			canvas_view->set_show_toolbars(App::enable_mainwin_toolbar);
 	}
+}
+
+void
+MainWindow::save_all()
+{
+	for (auto& instance : App::instance_list)
+		instance->save();
 }
 
 void MainWindow::add_custom_workspace_menu_item_handlers()
@@ -350,7 +360,7 @@ MainWindow::make_short_filenames(
 	if (fullnames.size() == 1)
 	{
 		shortnames.resize(1);
-		shortnames[0] = etl::basename(fullnames[0]);
+		shortnames[0] = filesystem::Path::basename(fullnames[0]);
 		return;
 	}
 

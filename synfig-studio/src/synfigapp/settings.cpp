@@ -312,6 +312,13 @@ Settings::get_value(const synfig::String &key, const synfig::Distance &default_v
 	return get_raw_value(key, value) ? Distance(value) : default_value;
 }
 
+synfig::filesystem::Path
+Settings::get_value(const synfig::String &key, const synfig::filesystem::Path& default_value) const
+{
+	synfig::String value;
+	return get_raw_value(key, value) ? filesystem::Path(value) : default_value;
+}
+
 synfig::String
 Settings::get_value(const synfig::String& key, const synfig::String& default_value) const {
 	synfig::String value;
@@ -352,6 +359,12 @@ Settings::set_value(const synfig::String &key, const synfig::Distance &value)
 {
 	ChangeLocale change_locale(LC_NUMERIC, "C");
 	return set_value(key, value.get_string());
+}
+
+bool
+Settings::set_value(const synfig::String &key, const synfig::filesystem::Path& value)
+{
+	return set_value(key, value.u8string());
 }
 
 bool

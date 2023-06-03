@@ -89,7 +89,7 @@ StateBLine studio::state_bline;
 
 class studio::StateBLine_Context : public sigc::trackable
 {
-	etl::handle<CanvasView> canvas_view_;
+	CanvasView::Handle canvas_view_;
 	CanvasView::IsWorking is_working;
 
 	bool prev_table_status;
@@ -258,7 +258,7 @@ public:
 
 	~StateBLine_Context();
 
-	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view_;}
+	const CanvasView::Handle& get_canvas_view()const{return canvas_view_;}
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
@@ -1397,10 +1397,6 @@ StateBLine_Context::refresh_ducks(bool button_down)
 			bezier=0;
 		}
 
-		// Now we see if we need to create a bezier
-		std::list<ValueNode_Const::Handle>::iterator next(iter);
-		next++;
-
 		bezier=new WorkArea::Bezier();
 
 		// Add the tangent2 duck
@@ -1739,7 +1735,7 @@ StateBLine_Context::bline_insert_vertex(synfig::ValueNode_Const::Handle value_no
 {
 	std::list<ValueNode_Const::Handle>::iterator iter;
 
-	for(iter=bline_point_list.begin();iter!=bline_point_list.end();++iter)
+	for (iter = bline_point_list.begin(); iter != bline_point_list.end(); ++iter) {
 		if(*iter==value_node)
 		{
 			BLinePoint bline_point;
@@ -1752,7 +1748,7 @@ StateBLine_Context::bline_insert_vertex(synfig::ValueNode_Const::Handle value_no
 				assert(loop_);
 				prev = bline_point_list.end();
 			}
-			prev--;
+			--prev;
 
 			prev_bline_point=(*prev)->get_value().get(BLinePoint());
 
@@ -1772,6 +1768,7 @@ StateBLine_Context::bline_insert_vertex(synfig::ValueNode_Const::Handle value_no
 
 			break;
 		}
+	}
 
 	if(iter==bline_point_list.end())
 	{

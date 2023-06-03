@@ -239,7 +239,7 @@ Duckmatic::is_duck_group_selectable(const etl::handle<Duck>& x)const
 			layer_name == "polygon" || layer_name == "curve_gradient" || layer_name == "advanced_outline")
 			return false;
 
-		if(etl::handle<Layer_PasteCanvas>::cast_dynamic(layer) &&
+		if(Layer_PasteCanvas::Handle::cast_dynamic(layer) &&
 			!layer->get_param("children_lock").get(bool()))
 			return false;
 	}
@@ -494,8 +494,7 @@ Duckmatic::update_ducks()
 				int index(c1->get_value_desc().get_index());
 				etl::handle<Duck> origin_duck=c1->get_origin_duck();
 				// Search all the rest of ducks
-				DuckList::iterator iter;
-				for (iter=duck_list.begin(); iter!=duck_list.end(); iter++)
+				for (DuckList::iterator iter = duck_list.begin(); iter != duck_list.end(); ++iter)
 					// if the other duck has the same origin and it is tangent type
 					if ( (*iter)->get_origin_duck()==origin_duck && (*iter)->get_type() == Duck::TYPE_TANGENT)
 					{
@@ -543,8 +542,7 @@ Duckmatic::update_ducks()
 				int index(c2->get_value_desc().get_index());
 				etl::handle<Duck> origin_duck=c2->get_origin_duck();
 				// Search all the rest of ducks
-				DuckList::iterator iter;
-				for (iter=duck_list.begin(); iter!=duck_list.end(); iter++)
+				for (DuckList::iterator iter = duck_list.begin(); iter != duck_list.end(); ++iter) {
 					// if the other duck has the same origin and it is tangent type
 					if ( (*iter)->get_origin_duck()==origin_duck && (*iter)->get_type() == Duck::TYPE_TANGENT)
 					{
@@ -580,6 +578,7 @@ Duckmatic::update_ducks()
 							}
 						}
 					}
+				}
 			}
 		}
 	}
@@ -619,9 +618,7 @@ Duckmatic::update_ducks()
 				ValueNode::Handle vertex_amount_value_node(bline_vertex->get_link("amount"));
 				duck->set_point(point);
 
-				DuckList::iterator iter;
-				for (iter=duck_list.begin(); iter!=duck_list.end(); iter++)
-				{
+				for (DuckList::iterator iter = duck_list.begin(); iter != duck_list.end(); ++iter) {
 					if ( (*iter)->get_origin_duck()==duck /*&& !duck_is_selected(*iter)*/ )
 					{
 						ValueNode::Handle duck_value_node = (*iter)->get_value_desc().get_value_node();
@@ -683,9 +680,7 @@ Duckmatic::update_ducks()
 						int index(duck->get_value_desc().get_index());
 						etl::handle<Duck> origin_duck=duck->get_origin_duck();
 						// Search all the rest of ducks
-						DuckList::iterator iter;
-						for (iter=duck_list.begin(); iter!=duck_list.end(); iter++)
-						{
+						for (DuckList::iterator iter = duck_list.begin(); iter != duck_list.end(); ++iter) {
 							// if the other duck has the same origin and it is tangent type
 							if ( (*iter)->get_origin_duck()==origin_duck && (*iter)->get_type() == Duck::TYPE_TANGENT)
 							{
@@ -815,36 +810,27 @@ Duckmatic::set_guides_color(const synfig::Color &c)
 		signal_grid_changed().emit();
 	}
 }
-
-Duckmatic::GuideList::iterator
-Duckmatic::find_guide_x(synfig::Point pos, float radius)
+double
+Duckmatic::calculate_distance_from_guide(const Guide& guide, const Point& point)const
 {
-	GuideList::iterator iter,best(guide_list_x_.end());
-	float dist(radius);
-	for(iter=guide_list_x_.begin();iter!=guide_list_x_.end();++iter)
-	{
-		float amount(std::fabs(*iter-pos[0]));
-		if(amount<dist)
-		{
-			dist=amount;
-			best=iter;
-		}
-	}
-	return best;
+	return std::fabs((cos(guide.angle.get())*(guide.point[1]-point[1])) - (sin(guide.angle.get())*(guide.point[0] - point[0])));
 }
 
+
 Duckmatic::GuideList::iterator
-Duckmatic::find_guide_y(synfig::Point pos, float radius)
+Duckmatic::find_guide(synfig::Point pos, float radius, Guide** second_best_guide_match)
 {
-	GuideList::iterator iter,best(guide_list_y_.end());
+	GuideList::iterator iter,best(guide_list_.end());
+	if (second_best_guide_match != nullptr)
+		*second_best_guide_match = nullptr;
 	float dist(radius);
-	for(iter=guide_list_y_.begin();iter!=guide_list_y_.end();++iter)
-	{
-		float amount(std::fabs(*iter-pos[1]));
-		if(amount<=dist)
-		{
-			dist=amount;
-			best=iter;
+	for(iter=guide_list_.begin();iter!=guide_list_.end();++iter){
+		float amount = calculate_distance_from_guide(*iter,pos);
+		if (amount<dist){
+			dist = amount;
+			if (best != guide_list_.end() && second_best_guide_match != nullptr)
+				*second_best_guide_match = &(*best);
+			best = iter;
 		}
 	}
 	return best;
@@ -856,35 +842,60 @@ Duckmatic::snap_point_to_grid(const synfig::Point& x)const
 	Point ret(x);
 	float radius(0.1/zoom);
 
-	GuideList::const_iterator guide_x,guide_y;
-	bool has_guide_x(false), has_guide_y(false);
-
-	guide_x=find_guide_x(ret,radius);
-	if(guide_x!=guide_list_x_.end())
-		has_guide_x=true;
-
-	guide_y=find_guide_y(ret,radius);
-	if(guide_y!=guide_list_y_.end())
-		has_guide_y=true;
+	GuideList::const_iterator guide;
+	Guide* second_best_guide_match = nullptr;
+	guide = find_guide(ret,radius, &second_best_guide_match);
+	bool has_guide = guide != guide_list_.end();
 
 	if(get_grid_snap())
 	{
 		Point snap(
 			floor(ret[0]/get_grid_size()[0]+0.5)*get_grid_size()[0],
 			floor(ret[1]/get_grid_size()[1]+0.5)*get_grid_size()[1]);
-
-		if(std::fabs(snap[0]-ret[0])<=radius && (!has_guide_x || std::fabs(snap[0]-ret[0])<=std::fabs(*guide_x-ret[0])))
-			ret[0]=snap[0],has_guide_x=false;
-		if(std::fabs(snap[1]-ret[1])<=radius && (!has_guide_y || std::fabs(snap[1]-ret[1])<=std::fabs(*guide_y-ret[1])))
-			ret[1]=snap[1],has_guide_y=false;
+		float distance_from_guide = calculate_distance_from_guide(*guide, ret);
+		if(std::fabs(snap[0]-ret[0])<=radius && (!has_guide || std::fabs(snap[0]-ret[0])<=distance_from_guide))
+			ret[0]=snap[0],has_guide=false;
+		if(std::fabs(snap[1]-ret[1])<=radius && (!has_guide || std::fabs(snap[1]-ret[1])<=distance_from_guide))
+			ret[1]=snap[1],has_guide=false;
 	}
 
-	if(guide_snap)
+	if(guide_snap && has_guide)
 	{
-		if(has_guide_x)
-			ret[0]=*guide_x;
-		if(has_guide_y)
-			ret[1]=*guide_y;
+		bool possible_intersection_close = second_best_guide_match != nullptr && (second_best_guide_match->angle != guide->angle);
+		if (possible_intersection_close){
+			float guides_intersection_x = 0, guides_intersection_y = 0;
+			if (guide->angle != synfig::Angle::deg(90) && second_best_guide_match->angle != synfig::Angle::deg(90)){
+				float slope_best = tan(guide->angle.get()), slope_second_best_guide_match = tan(second_best_guide_match->angle.get());
+				float bestX = guide->point[0], bestY = guide->point[1], lastBestX = second_best_guide_match->point[0], lastBestY = second_best_guide_match->point[1];
+				guides_intersection_x = ( bestY - lastBestY + slope_second_best_guide_match*lastBestX - slope_best*bestX )/(slope_second_best_guide_match - slope_best);
+				guides_intersection_y = slope_best*(guides_intersection_x - bestX) + bestY;
+				possible_intersection_close = (pow(pow(ret[1] - guides_intersection_y, 2.0) + pow(ret[0] - guides_intersection_x, 2.0), 0.5)) <= radius*3;
+			} else if (guide->angle != second_best_guide_match->angle){
+				if (synfig::Angle::deg(guide->angle).get() == 90){
+					guides_intersection_x = guide->point[0];
+					guides_intersection_y = tan(second_best_guide_match->angle.get())*(second_best_guide_match->point[0]) + second_best_guide_match->point[1];
+				} else if (synfig::Angle::deg(second_best_guide_match->angle).get() == 90){
+					guides_intersection_x = second_best_guide_match->point[0];
+					guides_intersection_y = tan(guide->angle.get())*(guide->point[0]) + guide->point[1];
+				}
+				possible_intersection_close = (pow(pow(ret[1] - guides_intersection_y, 2.0) + pow(ret[0] - guides_intersection_x, 2.0), 0.5)) <= radius*3;
+			}
+			if (possible_intersection_close) {
+				ret[0] = guides_intersection_x;
+				ret[1] = guides_intersection_y;
+			}
+		}
+		if (!possible_intersection_close && guide->angle == synfig::Angle::deg(90))
+			ret[0] = guide->point[0];
+		else if (!possible_intersection_close && guide->angle == synfig::Angle::deg(0))
+			ret[1] = guide->point[1];
+		else if (!possible_intersection_close){
+			float slope1 = tan(guide->angle.get());
+			float slope2 = -1.0/slope1;
+			float x1 = guide->point[0], y1 = guide->point[1];
+			ret[0] = (x[1] - y1 + slope1*x1 - slope2*x[0])/(slope1 - slope2);
+			ret[1] = slope1*(ret[0] - x1) + y1;
+		}
 	}
 
 	if(axis_lock)
@@ -1046,7 +1057,7 @@ Duckmatic::on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& 
 		  && duck.get_origin_duck()
 		  && duck.get_value_desc().is_valid()
 		  && duck.get_value_desc().parent_is_layer()
-		  && etl::handle<Layer_PasteCanvas>::cast_dynamic(duck.get_value_desc().get_layer())
+		  && Layer_PasteCanvas::Handle::cast_dynamic(duck.get_value_desc().get_layer())
 		  && duck.get_value_desc().get_param_name() == "origin" )
 		{
 			Point origin = duck.get_value_desc().get_value(get_time()).get(Point());
@@ -1580,7 +1591,7 @@ Duckmatic::load_sketch(const synfig::String& filename)
 
 
 void
-Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Layer::Handle>& selected_layer_set, etl::handle<CanvasView> canvas_view, synfig::TransformStack& transform_stack, int *out_transform_count)
+Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Layer::Handle>& selected_layer_set, CanvasView::Handle canvas_view, synfig::TransformStack& transform_stack, int *out_transform_count)
 {
 	int transforms(0);
 
@@ -1610,7 +1621,7 @@ Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Laye
 			synfig::Rect& bbox = canvas_view->get_bbox();
 
 			// special calculations for Layer_PasteCanvas
-			etl::handle<Layer_PasteCanvas> layer_pastecanvas( etl::handle<Layer_PasteCanvas>::cast_dynamic(layer) );
+			Layer_PasteCanvas::Handle layer_pastecanvas( Layer_PasteCanvas::Handle::cast_dynamic(layer) );
 			synfig::Rect layer_bounds = layer_pastecanvas
 									  ? layer_pastecanvas->get_bounding_rect_context_dependent(canvas_view->get_context_params())
 									  : layer->get_bounding_rect();
@@ -1621,8 +1632,7 @@ Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Laye
 			Layer::Vocab vocab=layer->get_param_vocab();
 			Layer::Vocab::iterator iter;
 
-			for(iter=vocab.begin();iter!=vocab.end();iter++)
-			{
+			for (iter = vocab.begin(); iter != vocab.end(); ++iter) {
 				if(!iter->get_hidden() && !iter->get_invisible_duck())
 				{
 					synfigapp::ValueDesc value_desc(layer,iter->get_name());
@@ -1645,7 +1655,7 @@ Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Laye
 
 		// If this is a paste canvas layer, then we need to
 		// descend into it
-		if(etl::handle<Layer_PasteCanvas> layer_pastecanvas = etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
+		if(Layer_PasteCanvas::Handle layer_pastecanvas = Layer_PasteCanvas::Handle::cast_dynamic(layer))
 		{
 			transform_stack.push_back(
 				new Transform_Matrix(
@@ -1694,7 +1704,7 @@ Duckmatic::add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Laye
 -- ** -- -----------------------------------------------------------------------
 */
 bool
-Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<CanvasView> canvas_view, const synfig::TransformStack& transform_stack, synfig::ParamDesc *param_desc)
+Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Handle canvas_view, const synfig::TransformStack& transform_stack, const synfig::ParamDesc* param_desc)
 {
 	synfig::Type &type=value_desc.get_value_type();
 #define REAL_COOKIE		reinterpret_cast<synfig::ParamDesc*>(28)
@@ -1742,7 +1752,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 					add_to_ducks(value_desc_origin,canvas_view, transform_stack);
 
 					Layer::Handle layer=value_desc.get_layer();
-					if(etl::handle<Layer_PasteCanvas>::cast_dynamic(layer))
+					if(Layer_PasteCanvas::Handle::cast_dynamic(layer))
 					{
 						Vector focus(layer->get_param("focus").get(Vector()));
 						duck->set_origin(last_duck()->get_point() + focus);
@@ -1847,9 +1857,9 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 	else
 	if (type == type_vector)
 	{
-		etl::handle<Layer_PasteCanvas> layer;
+		Layer_PasteCanvas::Handle layer;
 		if (value_desc.parent_is_layer())
-			layer = etl::handle<Layer_PasteCanvas>::cast_dynamic(value_desc.get_layer());
+			layer = Layer_PasteCanvas::Handle::cast_dynamic(value_desc.get_layer());
 		if (!layer) {
 			etl::handle<Duck> duck=new Duck();
 			set_duck_value_desc(*duck, value_desc, transform_stack);
@@ -1969,7 +1979,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 	{
 		if (value_desc.parent_is_layer() && param_desc)
 		{
-			etl::handle<Layer_PasteCanvas> layer = etl::handle<Layer_PasteCanvas>::cast_dynamic(value_desc.get_layer());
+			Layer_PasteCanvas::Handle layer = Layer_PasteCanvas::Handle::cast_dynamic(value_desc.get_layer());
 			if (layer)
 			{
 				synfigapp::ValueDesc origin_value_desc(value_desc.get_layer(), "origin");
@@ -2923,7 +2933,6 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 		bool do_not_show_bone_width = false;
 		{
 			bool is_skeleton_deformation_layer_in_pose_mode = false;
-			bool is_skeleton_layer = false;
 
 			const synfig::Node* node = bone_value_node.get();
 			Layer::ConstHandle parent_layer;
@@ -2932,14 +2941,12 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<Canva
 				node = node->get_first_parent();
 			}
 			if (parent_layer) {
-				if (parent_layer->get_name() == "skeleton") {
-					is_skeleton_layer = true;
-				} else if (parent_layer->get_name() == "skeleton_deformation") {
+				if (parent_layer->get_name() == "skeleton_deformation") {
 					if (parent_layer->active())
 						is_skeleton_deformation_layer_in_pose_mode = true;
 				}
 			}
-			do_not_show_bone_width = is_skeleton_layer || is_skeleton_deformation_layer_in_pose_mode;
+			do_not_show_bone_width = is_skeleton_deformation_layer_in_pose_mode;
 		}
 
 		synfig::GUID guid(bone_value_node->get_guid());

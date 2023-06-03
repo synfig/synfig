@@ -223,7 +223,7 @@ Layer_PasteCanvas::childs_changed()
 }
 
 void
-Layer_PasteCanvas::set_sub_canvas(etl::handle<synfig::Canvas> x)
+Layer_PasteCanvas::set_sub_canvas(Canvas::Handle x)
 {
 	if (sub_canvas)
 		remove_child(sub_canvas.get());
@@ -270,7 +270,7 @@ Layer_PasteCanvas::update_renddesc()
 	sub_canvas->rend_desc()=get_canvas()->rend_desc();
 	for (IndependentContext iter = sub_canvas->get_independent_context(); !iter->empty(); iter++)
 	{
-		etl::handle<Layer_PasteCanvas> paste = etl::handle<Layer_PasteCanvas>::cast_dynamic(*iter);
+		Layer_PasteCanvas::Handle paste = Layer_PasteCanvas::Handle::cast_dynamic(*iter);
 		if (paste) paste->update_renddesc();
 	}
 }
@@ -335,7 +335,7 @@ Layer_PasteCanvas::load_resources_vfunc(IndependentContext context, Time time)co
 }
 
 void
-Layer_PasteCanvas::set_outline_grow_vfunc(IndependentContext context, Real outline_grow)const
+Layer_PasteCanvas::set_outline_grow_vfunc(IndependentContext context, Real outline_grow)
 {
 	context.set_outline_grow(outline_grow);
 

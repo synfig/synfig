@@ -99,7 +99,7 @@ Target::Target():
 }
 
 void
-synfig::Target::set_canvas(etl::handle<Canvas> c)
+synfig::Target::set_canvas(Canvas::Handle c)
 {
 	canvas=c;
 	RendDesc desc=canvas->rend_desc();
@@ -108,13 +108,13 @@ synfig::Target::set_canvas(etl::handle<Canvas> c)
 
 
 Target::Handle
-Target::create(const String &name, const String &filename,
+Target::create(const String& name, const filesystem::Path& filename,
 			   const synfig::TargetParam& params)
 {
 	if(!book().count(name))
 		return handle<Target>();
 
-	return Target::Handle(book()[name].factory(filename.c_str(), params));
+	return Target::Handle(book()[name].factory(filename, params));
 }
 
 int

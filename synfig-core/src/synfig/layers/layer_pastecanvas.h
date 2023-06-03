@@ -63,8 +63,8 @@ private:
 	ValueBase param_origin;
 	//! Parameter: (Transformation) Position, rotation and scale of the paste canvas layer
 	ValueBase param_transformation;
-	//! Parameter: (etl::loose_handle<synfig::Canvas>) The canvas parameter
-	etl::loose_handle<synfig::Canvas> sub_canvas;
+	//! Parameter: (Canvas::LooseHandle) The canvas parameter
+	Canvas::LooseHandle sub_canvas;
 	//! Parameter: (Real) Time dilation of the paste canvas layer
 	ValueBase param_time_dilation;
 	//! Parameter: (Time) Time offset of the paste canvas layer
@@ -141,10 +141,10 @@ public:
 
 	//! Gets the canvas parameter. It is called sub_canvas to avoid confusion
 	//! with the get_canvas from the Layer class.
-	etl::handle<synfig::Canvas> get_sub_canvas()const { return sub_canvas; }
+	Canvas::Handle get_sub_canvas()const { return sub_canvas; }
 	//! Sets the canvas parameter.
 	//! \see get_sub_canvas()
-	void set_sub_canvas(etl::handle<synfig::Canvas> x);
+	void set_sub_canvas(Canvas::Handle x);
 	//! Gets time dilation parameter
 	Real get_time_dilation()const { return param_time_dilation.get(Real()); }
 	//! Gets time offset parameter
@@ -197,7 +197,7 @@ protected:
 	//! Loads external resources (frames) for child layers of the Paste Canvas Layer
 	virtual void load_resources_vfunc(IndependentContext context, Time time)const;
 	//! Sets the outline_grow of the Paste Canvas Layer and those under it
-	virtual void set_outline_grow_vfunc(IndependentContext context, Real outline_grow)const;
+	virtual void set_outline_grow_vfunc(IndependentContext context, Real outline_grow);
 	//!	Function to be overloaded that fills the Time Point Set with
 	//! all the children Time Points. In this case the children Time Points
 	//! are the canvas parameter children layers Time points and the Paste Canvas
