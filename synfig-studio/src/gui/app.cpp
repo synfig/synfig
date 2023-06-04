@@ -2306,19 +2306,7 @@ App::dialog_open_file_ext(const std::string &title, std::vector<std::string> &fi
 	return false;
 
 #else   // not USE_WIN32_FILE_DIALOGS
-	synfig::String prev_path;
-
-	prev_path = _preferences.get_value(preference, Glib::get_home_dir());
-	prev_path = filesystem::Path::absolute_path(prev_path);
-
-	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,
-				title, Gtk::FILE_CHOOSER_ACTION_OPEN);
-
-	dialog->set_transient_for(*App::main_window);
-	dialog->set_current_folder(prev_path);
-	dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
-	dialog->add_button(_("Import"), Gtk::RESPONSE_ACCEPT)->set_image_from_icon_name("gtk-open",   Gtk::ICON_SIZE_BUTTON);
-	dialog->set_select_multiple(allow_multiple_selection);
+	filesystem::Path prev_path = _preferences.get_value(preference, Glib::get_home_dir());
 
 	// 0 All supported files
 	// 0.1 Synfig documents. sfg is not supported to import
@@ -2416,34 +2404,20 @@ App::dialog_open_file_ext(const std::string &title, std::vector<std::string> &fi
 	filter_any->set_name(_("Any files"));
 	filter_any->add_pattern("*");
 
-	dialog->add_filter(filter_supported);
-	dialog->add_filter(filter_synfig);
-	dialog->add_filter(filter_image);
-	dialog->add_filter(filter_image_list);
-	dialog->add_filter(filter_audio);
-	dialog->add_filter(filter_video);
-	dialog->add_filter(filter_lipsync);
-	dialog->add_filter(filter_any);
+	std::string filename = filenames.empty() ? std::string() : *filenames.begin();
 
+	auto dialog = create_dialog_open_file(title, filename, prev_path, {filter_supported, filter_synfig, filter_image, filter_image_list, filter_audio, filter_video, filter_lipsync, filter_any});
+	static_cast<Gtk::Button*>(dialog->get_widget_for_response(Gtk::RESPONSE_ACCEPT))->set_label(_("Import"));
+	dialog->set_select_multiple(allow_multiple_selection);
 	dialog->set_extra_widget(*scale_imported_box());
 
-	if (filenames.empty())
-		dialog->set_filename(prev_path);
-	else if (filesystem::Path::is_absolute_path(filenames.front()))
-		dialog->set_filename(filenames.front());
-	else
-		dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filenames.front());
-
-	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
+	if (dialog->run() == Gtk::RESPONSE_ACCEPT) {
 		filenames = dialog->get_filenames();
-		if(!filenames.empty()){
-			// info("Saving preference %s = '%s' in App::dialog_open_file()", preference.c_str(), filesystem::Path::dirname(filename).c_str());
+		if (!filenames.empty()) {
 			_preferences.set_value(preference, filesystem::Path::dirname(filenames.front()));
 		}
-		delete dialog;
 		return true;
 	}
-	delete dialog;
 	return false;
 #endif   // not USE_WIN32_FILE_DIALOGS
 }
