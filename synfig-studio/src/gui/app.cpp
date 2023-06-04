@@ -2699,18 +2699,6 @@ bool
 App::dialog_open_file_with_history_button(const std::string &title, std::string &filename, bool &show_history, std::string preference, std::string& plugin_importer)
 {
 	synfig::String prev_path = _preferences.get_value(preference, Glib::get_home_dir());
-	prev_path = filesystem::Path::absolute_path(prev_path);
-
-	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window,
-				title, Gtk::FILE_CHOOSER_ACTION_OPEN);
-
-	dialog->set_transient_for(*App::main_window);
-	dialog->set_current_folder(prev_path);
-	Gtk::Button* history_button = dialog->add_button(_("Open history"), RESPONSE_ACCEPT_WITH_HISTORY);
-	// TODO: the Open history button should be file type sensitive one.
-	dialog->set_response_sensitive(RESPONSE_ACCEPT_WITH_HISTORY, true);
-	dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
-	dialog->add_button(_("Open"),   Gtk::RESPONSE_ACCEPT)->set_image_from_icon_name("gtk-open", Gtk::ICON_SIZE_BUTTON);
 
 	// File filters
 	// Synfig Documents
@@ -2720,13 +2708,11 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 	filter_builtin->add_pattern("*.sif");
 	filter_builtin->add_pattern("*.sifz");
 	filter_builtin->add_pattern("*.sfg");
-	dialog->add_filter(filter_builtin);
 
 	// Any files
 	Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
 	filter_any->set_name(_("Any files"));
 	filter_any->add_pattern("*");
-	dialog->add_filter(filter_any);
 
 	// Supported files
 	Glib::RefPtr<Gtk::FileFilter> filter_supported = Gtk::FileFilter::create();
@@ -2734,9 +2720,9 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 	filter_supported->add_pattern("*.sif");
 	filter_supported->add_pattern("*.sifz");
 	filter_supported->add_pattern("*.sfg");
-	dialog->add_filter(filter_supported);
-	dialog->set_filter(filter_supported);
 
+	auto dialog = create_dialog_open_file(title, filename, prev_path, {filter_builtin, filter_any, filter_supported});
+	dialog->set_filter(filter_supported);
 
 	for ( const ImportExport& exp : plugin_manager.importers() )
 	{
@@ -2750,15 +2736,13 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 		dialog->add_filter(filter);
 	}
 
-	if (filename.empty())
-		dialog->set_filename(prev_path);
-	else if (filesystem::Path::is_absolute_path(filename))
-		dialog->set_filename(filename);
-	else
-		dialog->set_filename(prev_path + ETL_DIRECTORY_SEPARATOR + filename);
+	Gtk::Button* history_button = dialog->add_button(_("Open history"), RESPONSE_ACCEPT_WITH_HISTORY);
+	// TODO: the Open history button should be file type sensitive one.
+	dialog->set_response_sensitive(RESPONSE_ACCEPT_WITH_HISTORY, true);
+	static_cast<Gtk::Button*>(dialog->get_widget_for_response(Gtk::RESPONSE_ACCEPT))->set_label(_("Open"));
 
 	// this ptr is't available to a static member fnc, connect to global function.
-	sigc::connection connection_sc = dialog->signal_selection_changed().connect(sigc::bind(sigc::ptr_fun(on_open_dialog_with_history_selection_changed), dialog, history_button));
+	sigc::connection connection_sc = dialog->signal_selection_changed().connect(sigc::bind(sigc::ptr_fun(on_open_dialog_with_history_selection_changed), dialog.get(), history_button));
 
 	int response = dialog->run();
 	if (response == Gtk::RESPONSE_ACCEPT || response == RESPONSE_ACCEPT_WITH_HISTORY) {
@@ -2787,12 +2771,10 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 
 		// info("Saving preference %s = '%s' in App::dialog_open_file()", preference.c_str(), filesystem::Path::dirname(filename).c_str());
 		_preferences.set_value(preference, filesystem::Path::dirname(filename));
-		delete dialog;
 		return true;
 	}
 
 	connection_sc.disconnect();
-	delete dialog;
 	return false;
 }
 
