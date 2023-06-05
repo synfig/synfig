@@ -2907,7 +2907,7 @@ void
 on_open_dialog_with_history_selection_changed(Gtk::FileChooserDialog *dialog, Gtk::Button* history_button)
 {
 	// activate the history button when something is selected
-	history_button->set_sensitive(!dialog->get_filename().empty());
+	history_button->set_sensitive(filename_extension(dialog->get_filename())==".sfg");
 }
 
 bool
