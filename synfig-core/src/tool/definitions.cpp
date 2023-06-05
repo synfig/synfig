@@ -43,10 +43,12 @@ SynfigToolGeneralOptions::SynfigToolGeneralOptions()
 
 std::string SynfigToolGeneralOptions::get_binary_path() const
 {
+	if (_binary_path.empty())
+		return synfig::OS::get_binary_path("").u8string();
 	return _binary_path;
 }
 
-void SynfigToolGeneralOptions::set_binary_path(const std::string& path) {
+void SynfigToolGeneralOptions::set_fallback_binary_path(const std::string& path) {
 	_binary_path = synfig::OS::get_binary_path(path).u8string();
 }
 
