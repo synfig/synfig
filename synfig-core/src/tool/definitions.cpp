@@ -34,13 +34,12 @@ SynfigToolGeneralOptions* SynfigToolGeneralOptions::instance() {
 }
 
 SynfigToolGeneralOptions::SynfigToolGeneralOptions()
-{
-	_verbosity = 0;
-	_should_be_quiet = false;
-	_should_print_benchmarks = false;
-	_threads = 1;
-	_repeats = 1;
-}
+	: _verbosity(0),
+	  _threads(1),
+	  _should_be_quiet(false),
+	  _should_print_benchmarks(false),
+	  _repeats(1)
+{ }
 
 std::string SynfigToolGeneralOptions::get_binary_path() const
 {
