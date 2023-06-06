@@ -2779,6 +2779,31 @@ App::dialog_open_folder(const std::string &title, std::string &foldername, std::
 	return false;
 }
 
+static std::unique_ptr<Gtk::FileChooserDialog>
+create_dialog_save_file(const std::string& title, const filesystem::Path& filename, const filesystem::Path& prev_path, const std::vector<Glib::RefPtr<Gtk::FileFilter>>& filters)
+{
+	std::unique_ptr<Gtk::FileChooserDialog> dialog(new Gtk::FileChooserDialog(*App::main_window, title, Gtk::FILE_CHOOSER_ACTION_SAVE));
+
+	dialog->set_transient_for(*App::main_window);
+	dialog->set_current_folder(prev_path.u8string());
+	dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
+	dialog->add_button(_("Save"),   Gtk::RESPONSE_ACCEPT)->set_image_from_icon_name("gtk-save", Gtk::ICON_SIZE_BUTTON);
+
+	for (const auto& filter : filters)
+		dialog->add_filter(filter);
+
+	filesystem::Path full_path = prev_path;
+	if (!filename.empty())
+		full_path /= filename;
+
+	dialog->set_filename(filesystem::absolute(full_path).u8string());
+
+	// set focus to the file name entry(box) of dialog instead to avoid the name
+	// we are going to save changes while changing file filter each time.
+	dialog->set_current_name(filename.filename().u8string());
+
+	return dialog;
+}
 
 bool
 App::dialog_save_file(const std::string &title, std::string &filename, std::string preference)
@@ -2829,9 +2854,6 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 	return false;
 #else
 	synfig::String prev_path = _preferences.get_value(preference, Glib::get_home_dir());
-	prev_path = filesystem::Path::absolute_path(prev_path);
-
-	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window, title, Gtk::FILE_CHOOSER_ACTION_SAVE);
 
 	// file type filters
 	Glib::RefPtr<Gtk::FileFilter> filter_sif = Gtk::FileFilter::create();
@@ -2850,13 +2872,7 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 	filter_sfg->set_name(_("Container format file (*.sfg)"));
 	filter_sfg->add_pattern("*.sfg");
 
-	dialog->set_current_folder(prev_path);
-	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-	dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
-
-	dialog->add_filter(filter_sifz);
-	dialog->add_filter(filter_sif);
-	dialog->add_filter(filter_sfg);
+	auto dialog = create_dialog_save_file(title, filename, prev_path, {filter_sifz, filter_sif, filter_sfg});
 
 	Widget_Enum *file_type_enum = nullptr;
 	if (preference == ANIMATION_DIR_PREFERENCE)
@@ -2896,25 +2912,6 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 		dialog->set_extra_widget(*grid);
 	}
 
-	if (filename.empty()) {
-		dialog->set_filename(prev_path);
-
-	}else{
-		std::string full_path;
-		if (filesystem::Path::is_absolute_path(filename))
-			full_path = filename;
-		else
-			full_path = prev_path + ETL_DIRECTORY_SEPARATOR + filename;
-
-		// select the file if it exists
-		dialog->set_filename(full_path);
-
-		// if the file doesn't exist, put its name into the filename box
-		struct stat s;
-		if(stat(full_path.c_str(),&s) == -1 && errno == ENOENT)
-			dialog->set_current_name(filesystem::Path::basename(filename));
-
-	}
 	// set file filter according to previous file format
 	if (filesystem::Path::filename_extension(filename) == ".sif" ) dialog->set_filter(filter_sif);
 	if (filesystem::Path::filename_extension(filename)== ".sifz" ) dialog->set_filter(filter_sifz);
@@ -2948,13 +2945,10 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 				filename = dialog->get_filename() + ".sfg";
 		}
 
-	// info("Saving preference %s = '%s' in App::dialog_save_file()", preference.c_str(), filesystem::Path::dirname(filename).c_str());
-	_preferences.set_value(preference, filesystem::Path::dirname(filename));
-	delete dialog;
-	return true;
+		_preferences.set_value(preference, filesystem::Path::dirname(filename));
+		return true;
 	}
 
-	delete dialog;
 	return false;
 #endif
 }
@@ -3018,40 +3012,13 @@ bool
 App::dialog_save_file_spal(const std::string &title, std::string &filename, std::string preference)
 {
 	synfig::String prev_path = _preferences.get_value(preference, Glib::get_home_dir());
-	prev_path = filesystem::Path::absolute_path(prev_path);
-
-	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window, title, Gtk::FILE_CHOOSER_ACTION_SAVE);
 
 	// file type filters
 	Glib::RefPtr<Gtk::FileFilter> filter_spal = Gtk::FileFilter::create();
 	filter_spal->set_name(_("Synfig palette files (*.spal)"));
 	filter_spal->add_pattern("*.spal");
 
-	dialog->set_current_folder(prev_path);
-	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-	dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
-
-	dialog->add_filter(filter_spal);
-
-	if (filename.empty()) {
-		dialog->set_filename(prev_path);
-
-	}else{
-		std::string full_path;
-		if (filesystem::Path::is_absolute_path(filename))
-			full_path = filename;
-		else
-			full_path = prev_path + ETL_DIRECTORY_SEPARATOR + filename;
-
-		// select the file if it exists
-		dialog->set_filename(full_path);
-
-		// if the file doesn't exist, put its name into the filename box
-		struct stat s;
-		if(stat(full_path.c_str(),&s) == -1 && errno == ENOENT)
-			dialog->set_current_name(filesystem::Path::basename(filename));
-
-	}
+	auto dialog = create_dialog_save_file(title, filename, prev_path, {filter_spal});
 
 	dialog->set_filter(filter_spal);
 
@@ -3059,18 +3026,16 @@ App::dialog_save_file_spal(const std::string &title, std::string &filename, std:
 	// we are going to save changes while changing file filter each time.
 	dialog->set_current_name(filesystem::Path::basename(filename));
 
-	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
+	if (dialog->run() == Gtk::RESPONSE_ACCEPT) {
 
 		// add file extension according to file filter selected by user
 		filename = dialog->get_filename();
 		if (filesystem::Path::filename_extension(filename) != ".spal")
 			filename = dialog->get_filename() + ".spal";
 
-	delete dialog;
-	return true;
+		return true;
 	}
 
-	delete dialog;
 	return false;
 }
 
@@ -3078,59 +3043,26 @@ bool
 App::dialog_save_file_sketch(const std::string &title, std::string &filename, std::string preference)
 {
 	synfig::String prev_path = _preferences.get_value(preference, Glib::get_home_dir());
-	prev_path = filesystem::Path::absolute_path(prev_path);
-
-	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window, title, Gtk::FILE_CHOOSER_ACTION_SAVE);
 
 	// file type filters
 	Glib::RefPtr<Gtk::FileFilter> filter_sketch = Gtk::FileFilter::create();
 	filter_sketch->set_name(_("Synfig sketch files (*.sketch)"));
 	filter_sketch->add_pattern("*.sketch");
 
-	dialog->set_current_folder(prev_path);
-	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-	dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
-
-	dialog->add_filter(filter_sketch);
-
-	if (filename.empty()) {
-		dialog->set_filename(prev_path);
-
-	}else{
-		std::string full_path;
-		if (filesystem::Path::is_absolute_path(filename))
-			full_path = filename;
-		else
-			full_path = prev_path + ETL_DIRECTORY_SEPARATOR + filename;
-
-		// select the file if it exists
-		dialog->set_filename(full_path);
-
-		// if the file doesn't exist, put its name into the filename box
-		struct stat s;
-		if(stat(full_path.c_str(),&s) == -1 && errno == ENOENT)
-			dialog->set_current_name(filesystem::Path::basename(filename));
-
-	}
+	auto dialog = create_dialog_save_file(title, filename, prev_path, {filter_sketch});
 
 	dialog->set_filter(filter_sketch);
 
-	// set focus to the file name entry(box) of dialog instead to avoid the name
-	// we are going to save changes while changing file filter each time.
-	dialog->set_current_name(filesystem::Path::basename(filename));
-
-	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
+	if (dialog->run() == Gtk::RESPONSE_ACCEPT) {
 
 		// add file extension according to file filter selected by user
 		filename = dialog->get_filename();
 		if (filesystem::Path::filename_extension(filename) != ".sketch")
 			filename = dialog->get_filename() + ".sketch";
 
-	delete dialog;
-	return true;
+		return true;
 	}
 
-	delete dialog;
 	return false;
 }
 
@@ -3139,43 +3071,16 @@ bool
 App::dialog_save_file_render(const std::string &title, std::string &filename, std::string preference)
 {
 	synfig::String prev_path = _preferences.get_value(preference, Glib::get_home_dir());
-	prev_path = filesystem::Path::absolute_path(prev_path);
 
-	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window, title, Gtk::FILE_CHOOSER_ACTION_SAVE);
-
-	dialog->set_current_folder(prev_path);
-	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-	dialog->add_button(Gtk::Stock::OK,   Gtk::RESPONSE_ACCEPT);
-
-	if (filename.empty()) {
-		dialog->set_filename(prev_path);
-
-	}else{
-		std::string full_path;
-		if (filesystem::Path::is_absolute_path(filename))
-			full_path = filename;
-		else
-			full_path = prev_path + ETL_DIRECTORY_SEPARATOR + filename;
-
-		// select the file if it exists
-		dialog->set_filename(full_path);
-
-		// if the file doesn't exist, put its name into the filename box
-		struct stat s;
-		if(stat(full_path.c_str(),&s) == -1 && errno == ENOENT)
-			dialog->set_current_name(filesystem::Path::basename(filename));
-
-	}
+	auto dialog = create_dialog_save_file(title, filename, prev_path, {});
 
 	if(dialog->run() == Gtk::RESPONSE_ACCEPT)
 	{
 		filename = dialog->get_filename();
 
-		delete dialog;
 		return true;
 	}
 
-	delete dialog;
 	return false;
 }
 
