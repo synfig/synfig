@@ -2250,10 +2250,11 @@ create_dialog_open_file(const std::string& title, const filesystem::Path& filena
 	for (const auto& filter : filters)
 		dialog->add_filter(filter);
 
-	if (filename.empty())
-		dialog->set_filename(filesystem::Path::absolute_path(prev_path.u8string()));
-	else
-		dialog->set_filename(filesystem::Path::absolute_path((prev_path / filename).u8string()));
+	filesystem::Path full_path = prev_path;
+	if (!filename.empty())
+		full_path /= filename;
+
+	dialog->set_filename(filesystem::absolute(full_path).u8string());
 
 	return dialog;
 }

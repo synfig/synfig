@@ -789,6 +789,8 @@ filesystem::current_path()
 filesystem::Path
 filesystem::absolute(const Path& p)
 {
+	if (p.is_absolute()) // avoid current_path() computation
+		return p;
 	return current_path() / p;
 }
 
