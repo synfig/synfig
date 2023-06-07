@@ -58,7 +58,7 @@ using namespace rendering;
 
 /* === M A C R O S ========================================================= */
 
-#define PIXEL_RENDERING_LIMIT 1500000
+#define PIXEL_RENDERING_LIMIT 2073600
 
 #define USE_PIXELRENDERING_LIMIT 1
 

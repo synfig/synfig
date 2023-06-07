@@ -25,6 +25,7 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <cmath>
 #ifdef USING_PCH
 #	include "pch.h"
 #else
@@ -61,7 +62,8 @@ void
 OptimizerSplit::run(const RunParams &params) const
 {
 	if (!params.list) return;
-	const int min_area = 256*256;
+	const int tile_height = 270;
+
 	for(Task::List::iterator i = params.list->begin(); i != params.list->end(); ++i)
 	{
 		if (TaskInterfaceSplit *split = i->type_pointer<TaskInterfaceSplit>())
@@ -70,10 +72,10 @@ OptimizerSplit::run(const RunParams &params) const
 			RectInt r = (*i)->target_rect;
 			int w = r.maxx - r.minx;
 			int h = r.maxy - r.miny;
-			int t = std::min(h/10, w*h/min_area);
+			int t = std::round((float)h / tile_height);
 			if (t >= 2)
 			{
-				int hh = h/t;
+				int hh = tile_height;
 				int y = r.miny;
 				for(int j = 1; j < t; ++j, y += hh)
 				{
