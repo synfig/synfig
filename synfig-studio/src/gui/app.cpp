@@ -2260,7 +2260,7 @@ create_dialog_open_file(const std::string& title, const filesystem::Path& filena
 }
 
 bool
-App::dialog_open_file_ext(const std::string &title, std::vector<std::string> &filenames, std::string preference, bool allow_multiple_selection)
+App::dialog_open_file_ext(const std::string& title, std::vector<std::string>& filenames, const std::string& preference, bool allow_multiple_selection)
 {
 	// info("App::dialog_open_file('%s', '%s', '%s')", title.c_str(), filename.c_str(), preference.c_str());
 	// TODO: Win32 native dialod not ready yet
@@ -2424,7 +2424,7 @@ App::dialog_open_file_ext(const std::string &title, std::vector<std::string> &fi
 }
 
 bool
-App::dialog_open_file(const std::string &title, std::string &filename, std::string preference)
+App::dialog_open_file(const std::string& title, std::string& filename, const std::string& preference)
 {
 	std::vector<std::string> filenames;
 	if (!filename.empty())
@@ -2436,13 +2436,13 @@ App::dialog_open_file(const std::string &title, std::string &filename, std::stri
 	return false;
 }
 
-bool App::dialog_open_file(const std::string &title, std::vector<std::string> &filenames, std::string preference)
+bool App::dialog_open_file(const std::string& title, std::vector<std::string>& filenames, const std::string& preference)
 {
 	return dialog_open_file_ext(title, filenames, preference, true);
 }
 
 bool
-App::dialog_open_file_spal(const std::string &title, std::string &filename, std::string preference)
+App::dialog_open_file_spal(const std::string& title, std::string& filename, const std::string& preference)
 {
 	filesystem::Path prev_path = _preferences.get_value(preference, Glib::get_home_dir());
 
@@ -2472,7 +2472,7 @@ App::dialog_open_file_spal(const std::string &title, std::string &filename, std:
 }
 
 bool
-App::dialog_open_file_sketch(const std::string &title, std::string &filename, std::string preference)
+App::dialog_open_file_sketch(const std::string& title, std::string& filename, const std::string& preference)
 {
 	synfig::String prev_path = _preferences.get_value(preference, Glib::get_home_dir());
 
@@ -2494,7 +2494,7 @@ App::dialog_open_file_sketch(const std::string &title, std::string &filename, st
 
 
 bool
-App::dialog_open_file_image(const std::string &title, std::string &filename, std::string preference)
+App::dialog_open_file_image(const std::string& title, std::string& filename, const std::string& preference)
 {
 	synfig::String prev_path = _preferences.get_value(preference, Glib::get_home_dir());
 
@@ -2533,7 +2533,7 @@ App::dialog_open_file_image(const std::string &title, std::string &filename, std
 
 
 bool
-App::dialog_open_file_audio(const std::string &title, std::string &filename, std::string preference)
+App::dialog_open_file_audio(const std::string& title, std::string& filename, const std::string& preference)
 {
 	synfig::String prev_path = _preferences.get_value(preference, Glib::get_home_dir());
 
@@ -2564,7 +2564,7 @@ App::dialog_open_file_audio(const std::string &title, std::string &filename, std
 }
 
 bool
-App::dialog_open_file_image_sequence(const std::string &title, std::set<synfig::String> &filenames, std::string preference)
+App::dialog_open_file_image_sequence(const std::string& title, std::set<synfig::String>& filenames, const std::string& preference)
 {
 	synfig::String prev_path = _preferences.get_value(preference, Glib::get_home_dir());
 
@@ -2671,7 +2671,7 @@ App::dialog_select_importer(const std::string& filename, std::string& plugin)
 }
 
 bool
-App::dialog_open_file_with_history_button(const std::string &title, std::string &filename, bool &show_history, std::string preference, std::string& plugin_importer)
+App::dialog_open_file_with_history_button(const std::string& title, std::string& filename, bool& show_history, const std::string& preference, std::string& plugin_importer)
 {
 	synfig::String prev_path = _preferences.get_value(preference, Glib::get_home_dir());
 
@@ -2754,7 +2754,7 @@ App::dialog_open_file_with_history_button(const std::string &title, std::string 
 }
 
 bool
-App::dialog_open_folder(const std::string &title, std::string &foldername, std::string preference, Gtk::Window& transientwind)
+App::dialog_open_folder(const std::string& title, std::string& foldername, const std::string& preference, Gtk::Window& transientwind)
 {
 	synfig::String prev_path;
 	synfigapp::Settings settings;
@@ -2806,7 +2806,7 @@ create_dialog_save_file(const std::string& title, const filesystem::Path& filena
 }
 
 bool
-App::dialog_save_file(const std::string &title, std::string &filename, std::string preference)
+App::dialog_save_file(const std::string& title, std::string& filename, const std::string& preference)
 {
 	// info("App::dialog_save_file('%s', '%s', '%s')", title.c_str(), filename.c_str(), preference.c_str());
 
@@ -2955,7 +2955,7 @@ App::dialog_save_file(const std::string &title, std::string &filename, std::stri
 
 
 std::string
-App::dialog_export_file(const std::string &title, std::string &filename, std::string preference)
+App::dialog_export_file(const std::string& title, std::string& filename, const std::string& preference)
 {
 	synfig::String prev_path = _preferences.get_value(preference, Glib::get_home_dir());
 	prev_path = filesystem::Path::absolute_path(prev_path);
@@ -3009,7 +3009,7 @@ App::dialog_export_file(const std::string &title, std::string &filename, std::st
 }
 
 bool
-App::dialog_save_file_spal(const std::string &title, std::string &filename, std::string preference)
+App::dialog_save_file_spal(const std::string& title, std::string& filename, const std::string& preference)
 {
 	synfig::String prev_path = _preferences.get_value(preference, Glib::get_home_dir());
 
@@ -3040,7 +3040,7 @@ App::dialog_save_file_spal(const std::string &title, std::string &filename, std:
 }
 
 bool
-App::dialog_save_file_sketch(const std::string &title, std::string &filename, std::string preference)
+App::dialog_save_file_sketch(const std::string& title, std::string& filename, const std::string& preference)
 {
 	synfig::String prev_path = _preferences.get_value(preference, Glib::get_home_dir());
 
@@ -3068,7 +3068,7 @@ App::dialog_save_file_sketch(const std::string &title, std::string &filename, st
 
 
 bool
-App::dialog_save_file_render(const std::string &title, std::string &filename, std::string preference)
+App::dialog_save_file_render(const std::string& title, std::string& filename, const std::string& preference)
 {
 	synfig::String prev_path = _preferences.get_value(preference, Glib::get_home_dir());
 
