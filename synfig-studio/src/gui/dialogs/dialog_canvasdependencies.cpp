@@ -302,66 +302,64 @@ void Dialog_CanvasDependencies::refresh()
 			replace_btn->set_tooltip_text(_("Change the resource file"));
 			replace_btn->set_hexpand(false);
 			replace_btn->set_halign(Gtk::ALIGN_END);
-			replace_btn->signal_clicked().connect([&,collector, pair]() {
-				auto item = collector.external_resource_stats.find(pair.first);
-				if (item == collector.external_resource_stats.end()) {
-					synfig::error(_("Internal error: external resource statistics not found: %s"), pair.first.c_str());
-					return;
-				}
-
-				// Check if it is in one or more dynamic parameters
-				// TODO: Check if it is animated; it could easily be replaced
-				if (item->second.dynamic) {
-					App::dialog_message_1b("ERROR", _("Change resource file path"),
-										   _("This resource file path is used %i times as parameter of value nodes.\n"
-											 "For now, it is not supported, so this file path replacement is aborted."), _("OK"));
-					return;
-				}
-
-				// Warn user about Undoing when it handles missing files
-				if (!Glib::file_test(item->first.u8string(), Glib::FILE_TEST_EXISTS | Glib::FILE_TEST_IS_REGULAR)) {
-					bool accepted = App::dialog_message_2b(_("Change resource file path"),
-														   _("You are about to replace a missing file path to an existent one.\n"
-															 "You would be able to undo this task. Are you sure you want to proceed?"), Gtk::MESSAGE_WARNING, _("Cancel"), _("OK"));
-					if (!accepted)
-						return;
-				}
-
-				synfig::filesystem::Path new_filename = item->first;
-				bool selected = App::dialog_open_file(_("Please choose a replacement file"), new_filename, IMAGE_DIR_PREFERENCE);
-				if (!selected)
-					return;
-
-				// Warn user about the selected file does not exist!
-				while (!Glib::file_test(new_filename.u8string(), Glib::FILE_TEST_EXISTS | Glib::FILE_TEST_IS_REGULAR)) {
-					synfig::warning(_("Replacement file does not exist: %s"), new_filename.u8_str());
-
-					bool accepted = App::dialog_message_2b(_("File not found"), _("Do you really want to change resource to an inexisting file?"), Gtk::MESSAGE_WARNING, _("Cancel"), _("Replace"));
-					if (accepted)
-						break;
-
-					bool selected = App::dialog_open_file(_("Please choose a replacement file"), new_filename, IMAGE_DIR_PREFERENCE);
-					if (!selected)
-						return;
-				}
-
-				synfigapp::Action::PassiveGrouper group(canvas_interface->get_instance().get(), strprintf(_("Change resource file %s to %s"), item->first.u8_str(), new_filename.u8_str()));
-				{
-					synfigapp::PushMode push_mode(canvas_interface, synfigapp::MODE_NORMAL);
-					for (const auto& param_item : item->second.per_parameter) {
-						auto layer = param_item.first.first;
-						auto param_name = param_item.first.second;
-						synfig::filesystem::Path canvas_dir(layer->get_canvas()->get_file_name());
-						auto short_path = new_filename.proximate_to(canvas_dir.parent_path()).lexically_normal();
-						canvas_interface->change_value(synfigapp::ValueDesc(layer, param_name), short_path.u8string());
-					}
-				}
-				refresh();
-			});
+			replace_btn->signal_clicked().connect(sigc::bind(sigc::bind(sigc::bind(sigc::mem_fun(*this, &Dialog_CanvasDependencies::on_replace_button_pressed), pair.second.dynamic), pair.second.per_parameter), pair.first));
 			box->pack_start(*replace_btn, Gtk::PACK_SHRINK);
 			box->show_all();
 			box->set_hexpand();
 			resources_listbox->append(*box);
 		}
 	}
+}
+
+void
+Dialog_CanvasDependencies::on_replace_button_pressed(const synfig::filesystem::Path& filename, const std::map<std::pair<synfig::Layer::LooseHandle, std::string>, int>& parameter_list, int is_dynamic)
+{
+	// Check if it is in one or more dynamic parameters
+	// TODO: Check if it is animated; it could easily be replaced
+	if (is_dynamic) {
+		App::dialog_message_1b("ERROR", _("Change resource file path"),
+							   _("This resource file path is used %i times as parameter of value nodes.\n"
+								 "For now, it is not supported, so this file path replacement is aborted."), _("OK"));
+		return;
+	}
+
+	// Warn user about Undoing when it handles missing files
+	if (!Glib::file_test(filename.u8string(), Glib::FILE_TEST_EXISTS | Glib::FILE_TEST_IS_REGULAR)) {
+		bool accepted = App::dialog_message_2b(_("Change resource file path"),
+											   _("You are about to replace a missing file path to an existent one.\n"
+												 "You would be able to undo this task. Are you sure you want to proceed?"), Gtk::MESSAGE_WARNING, _("Cancel"), _("OK"));
+		if (!accepted)
+			return;
+	}
+
+	synfig::filesystem::Path new_filename = filename;
+	bool selected = App::dialog_open_file(_("Please choose a replacement file"), new_filename, IMAGE_DIR_PREFERENCE);
+	if (!selected)
+		return;
+
+	// Warn user about the selected file does not exist!
+	while (!Glib::file_test(new_filename.u8string(), Glib::FILE_TEST_EXISTS | Glib::FILE_TEST_IS_REGULAR)) {
+		synfig::warning(_("Replacement file does not exist: %s"), new_filename.u8_str());
+
+		bool accepted = App::dialog_message_2b(_("File not found"), _("Do you really want to change resource to an inexisting file?"), Gtk::MESSAGE_WARNING, _("Cancel"), _("Replace"));
+		if (accepted)
+			break;
+
+		bool selected = App::dialog_open_file(_("Please choose a replacement file"), new_filename, IMAGE_DIR_PREFERENCE);
+		if (!selected)
+			return;
+	}
+
+	synfigapp::Action::PassiveGrouper group(canvas_interface->get_instance().get(), strprintf(_("Change resource file %s to %s"), filename.u8_str(), new_filename.u8_str()));
+	{
+		synfigapp::PushMode push_mode(canvas_interface, synfigapp::MODE_NORMAL);
+		for (const auto& param_item : parameter_list) {
+			auto layer = param_item.first.first;
+			auto param_name = param_item.first.second;
+			synfig::filesystem::Path canvas_dir(layer->get_canvas()->get_file_name());
+			auto short_path = new_filename.proximate_to(canvas_dir.parent_path());
+			canvas_interface->change_value(synfigapp::ValueDesc(layer, param_name), short_path.u8string());
+		}
+	}
+	refresh();
 }

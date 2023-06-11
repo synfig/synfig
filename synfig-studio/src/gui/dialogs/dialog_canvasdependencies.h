@@ -72,6 +72,8 @@ public:
 
 private:
 	void refresh();
+
+	void on_replace_button_pressed(const synfig::filesystem::Path& filename, const std::map<std::pair<synfig::Layer::LooseHandle, std::string>, int>& parameter_list, int is_dynamic);
 };
 
 };
