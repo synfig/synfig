@@ -3835,12 +3835,6 @@ App::new_instance()
 				_("Close"));
 	}
 
-	if (getenv("SYNFIG_AUTO_ADD_SKELETON_LAYER"))
-		instance->find_canvas_view(canvas)->add_layer("skeleton");
-
-	if (getenv("SYNFIG_AUTO_ADD_MOTIONBLUR_LAYER"))
-		instance->find_canvas_view(canvas)->add_layer("motion_blur");
-
 	if (getenv("SYNFIG_ENABLE_NEW_CANVAS_EDIT_PROPERTIES"))
 		instance->find_canvas_view(canvas)->canvas_properties.present();
 }
