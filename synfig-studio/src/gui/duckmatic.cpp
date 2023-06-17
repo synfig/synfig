@@ -297,6 +297,23 @@ Duckmatic::unselect_all_ducks()
 		unselect_duck(iter->second);
 }
 
+void Duckmatic::select_all_movement_ducks(Layer::Handle layer)
+{
+	//yea this definetly needs to be edited to only select the movement ducks of the current layer
+	DuckMap::const_iterator iter;
+	for(iter=duck_map.begin();iter!=duck_map.end();++iter){
+		if(iter->second){
+			//why would a duck of a layer not have the layer as it's parent ?? (this happens in polygon layers)
+			if (iter->second->get_value_desc().parent_is_layer() && iter->second->get_value_desc().get_layer() == layer)
+				selected_movement_ducks.insert((iter->second)->get_guid());
+			else
+				selected_movement_ducks.erase(iter->first);
+		}
+		//std::cout<<"iterating all ducks"<<std::endl;
+	}
+
+}
+
 void
 Duckmatic::toggle_select_ducks_in_box(const synfig::Vector& tl,const synfig::Vector& br)
 {
@@ -384,6 +401,31 @@ Duckmatic::get_selected_ducks()const
 	return ret;
 }
 
+DuckList Duckmatic::get_selected_movement_ducks() const
+{
+	DuckList ret;
+	GUIDSet::const_iterator iter;
+	const Type type(get_type_mask());
+
+	//std::cout<<"num selected movement ducks from select all"<<selected_movement_ducks.size()<<std::endl;
+
+	for(iter=selected_movement_ducks.begin();iter!=selected_movement_ducks.end();++iter)
+	{
+		const DuckMap::const_iterator d_iter(duck_map.find(*iter));
+		//if this duck isnt even in the duck map then continue its wrong
+		if(d_iter==duck_map.end())
+			continue;
+
+		//if this type is not shown I think -- instead just use this to only get the movement related ducks
+//		if(( d_iter->second->get_type() && (!(type & d_iter->second->get_type())) ) )
+//			continue;
+		if (d_iter->second)
+			ret.push_back(d_iter->second);
+	}
+	//std::cout<<"num selected movement ducks"<<ret.size()<<std::endl;
+	return ret;
+}
+
 
 DuckList
 Duckmatic::get_ducks_in_box(const synfig::Vector& tl,const synfig::Vector& br)const
@@ -462,7 +504,9 @@ Duckmatic::start_duck_drag(const synfig::Vector& offset)
 		duck_dragger_->begin_duck_drag(this,offset);
 
 	//drag_offset_=offset;
-	drag_offset_=find_duck(offset)->get_trans_point();
+	//in the case of using the select tool there are no ducks visible
+	if (find_duck(offset))
+		drag_offset_=find_duck(offset)->get_trans_point();
 }
 
 bool
@@ -988,6 +1032,30 @@ Duckmatic::signal_edited_selected_ducks(bool moving)
 		}
 	}
 	selected_ducks=old_set;
+}
+
+void Duckmatic::signal_edited_selected_movement_ducks(bool moving)
+{
+
+	const DuckList ducks(get_selected_movement_ducks());
+	DuckList::const_iterator iter;
+
+	synfig::GUIDSet old_set(selected_movement_ducks);
+
+	for(iter=ducks.begin();iter!=ducks.end();++iter)
+	{
+		try
+		{
+			if (!moving || (*iter)->get_edit_immediatelly())
+				signal_edited_duck(*iter);
+		}
+		catch (const String&)
+		{
+			selected_movement_ducks=old_set;
+			synfig::warning("signals must not throw exceptions");
+		}
+	}
+	selected_movement_ducks=old_set;
 }
 
 bool

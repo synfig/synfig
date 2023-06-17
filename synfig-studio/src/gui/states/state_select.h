@@ -59,6 +59,8 @@ class DuckDrag_Select : public DuckDrag_Combo
 public:
 	DuckDrag_Select();
 	void begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& begin);
+	bool end_duck_drag(Duckmatic* duckmatic);
+	void duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector);
 };
 
 }; // END of namespace studio

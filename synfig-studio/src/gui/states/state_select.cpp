@@ -216,7 +216,8 @@ DuckDrag_Select::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& off
 	is_moving = false;
 	last_move=Vector(1,1);
 
-	const DuckList selected_ducks(duckmatic->get_selected_ducks());
+	std::cout<<"begin duck drag"<<std::endl;
+	const DuckList selected_movement_ducks(duckmatic->get_selected_movement_ducks());
 	DuckList::const_iterator iter;
 
 	bad_drag=false;
@@ -233,7 +234,7 @@ DuckDrag_Select::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& off
 	//std::set<etl::handle<Duck> >::iterator iter;
 	positions.clear();
 	int i;
-	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
+	for(i=0,iter=selected_movement_ducks.begin();iter!=selected_movement_ducks.end();++iter,i++)
 	{
 		Point p((*iter)->get_trans_point());
 		vmin[0]=std::min(vmin[0],p[0]);
@@ -252,6 +253,170 @@ DuckDrag_Select::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& off
 	synfig::Vector vect(offset-center);
 	original_angle=Angle::tan(vect[1],vect[0]);
 	original_mag=vect.mag();
+}
+
+bool DuckDrag_Select::end_duck_drag(Duckmatic *duckmatic)
+{
+	if(bad_drag)return false;
+
+	//synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Rotate Ducks"));
+
+	if(is_moving)
+	{
+		duckmatic->signal_edited_selected_movement_ducks();
+		return true;
+	}
+	else
+	{
+		//probably dont need this idk
+		duckmatic->signal_user_click_selected_ducks(0);
+		return false;
+	}
+}
+
+void DuckDrag_Select::duck_drag(Duckmatic *duckmatic, const synfig::Vector &vector)
+{
+	if (!duckmatic) return;
+
+	if(bad_drag)
+		return;
+
+	// this is quick-hack mostly, so need to check if nothing broken
+	//if (!move_only && !scale && !rotate) return; // nothing to do
+
+	//Override axis lock set in workarea when holding down the shift key
+	if (!move_only && (scale || rotate))
+		duckmatic->set_axis_lock(false);
+
+	synfig::Vector vect;
+	if (move_only || (!scale && !rotate))
+		vect= duckmatic->snap_point_to_grid(vector)-drag_offset+snap;
+	else
+		vect= duckmatic->snap_point_to_grid(vector)-center+snap;
+
+	last_move=vect;
+
+	const DuckList selected_movement_ducks(duckmatic->get_selected_movement_ducks());
+	DuckList::const_iterator iter;
+
+	Time time(duckmatic->get_time());
+	int i;
+	if( move_only || (!scale && !rotate) )
+	{
+		for(i=0,iter=selected_movement_ducks.begin();iter!=selected_movement_ducks.end();++iter,i++)
+		{
+			if((*iter)->get_type()==Duck::TYPE_VERTEX || (*iter)->get_type()==Duck::TYPE_POSITION)
+				(*iter)->set_trans_point(positions[i]+vect, time);
+		}
+		for(i=0,iter=selected_movement_ducks.begin();iter!=selected_movement_ducks.end();++iter,i++)
+		{
+			if((*iter)->get_type()!=Duck::TYPE_VERTEX&&(*iter)->get_type()!=Duck::TYPE_POSITION)
+				(*iter)->set_trans_point(positions[i]+vect, time);
+		}
+	}
+
+	if (rotate)
+	{
+		Angle::deg angle(Angle::tan(vect[1],vect[0]));
+		angle=original_angle-angle;
+		if (constrain)
+		{
+			float degrees = angle.get()/15;
+			angle= Angle::deg (degrees>0?std::floor(degrees)*15:std::ceil(degrees)*15);
+		}
+		Real mag(vect.mag()/original_mag);
+		Real sine(Angle::sin(angle).get());
+		Real cosine(Angle::cos(angle).get());
+
+		for(i=0,iter=selected_movement_ducks.begin();iter!=selected_movement_ducks.end();++iter,i++)
+		{
+			if((*iter)->get_type()!=Duck::TYPE_VERTEX&&(*iter)->get_type()!=Duck::TYPE_POSITION)continue;
+
+			Vector x(positions[i]-center),p;
+
+			p[0]=cosine*x[0]+sine*x[1];
+			p[1]=-sine*x[0]+cosine*x[1];
+			if(scale)p*=mag;
+			p+=center;
+			(*iter)->set_trans_point(p, time);
+		}
+		for(i=0,iter=selected_movement_ducks.begin();iter!=selected_movement_ducks.end();++iter,i++)
+		{
+			if(!((*iter)->get_type()!=Duck::TYPE_VERTEX&&(*iter)->get_type()!=Duck::TYPE_POSITION))continue;
+
+			Vector x(positions[i]-center),p;
+
+			p[0]=cosine*x[0]+sine*x[1];
+			p[1]=-sine*x[0]+cosine*x[1];
+			if(scale)p*=mag;
+			p+=center;
+			(*iter)->set_trans_point(p, time);
+		}
+	} else if (scale)
+	{
+		if(!constrain)
+		{
+			if(std::fabs(drag_offset[0]-center[0])>EPSILON)
+				vect[0]/=drag_offset[0]-center[0];
+			else
+				vect[0]=1;
+			if(std::fabs(drag_offset[1]-center[1])>EPSILON)
+				vect[1]/=drag_offset[1]-center[1];
+			else
+				vect[1]=1;
+			}
+		else
+		{
+			Real amount;
+			if((drag_offset-center).mag() < EPSILON)
+				amount = 1;
+			else
+				amount = vect.mag()/(drag_offset-center).mag();
+
+			vect[0]=vect[1]=amount;
+		}
+
+		if(vect[0]<EPSILON && vect[0]>-EPSILON)
+			vect[0]=1;
+		if(vect[1]<EPSILON && vect[1]>-EPSILON)
+			vect[1]=1;
+
+		for(i=0,iter=selected_movement_ducks.begin();iter!=selected_movement_ducks.end();++iter,i++)
+		{
+			if(((*iter)->get_type()!=Duck::TYPE_VERTEX&&(*iter)->get_type()!=Duck::TYPE_POSITION))continue;
+
+			Vector p(positions[i]-center);
+
+			p[0]*=vect[0];
+			p[1]*=vect[1];
+			p+=center;
+			(*iter)->set_trans_point(p, time);
+		}
+		for(i=0,iter=selected_movement_ducks.begin();iter!=selected_movement_ducks.end();++iter,i++)
+		{
+			if(!((*iter)->get_type()!=Duck::TYPE_VERTEX&&(*iter)->get_type()!=Duck::TYPE_POSITION))continue;
+
+			Vector p(positions[i]-center);
+
+			p[0]*=vect[0];
+			p[1]*=vect[1];
+			p+=center;
+			(*iter)->set_trans_point(p, time);
+		}
+
+	}
+
+	last_move=vect;
+
+	if((last_move-Vector(1,1)).mag()>0.0001)
+		is_moving = true;
+
+	if (is_moving)
+		duckmatic->signal_edited_selected_movement_ducks(true);
+
+	// then patch up the tangents for the vertices we've moved
+	duckmatic->update_ducks();
+
 }
 
 Smach::event_result

@@ -1330,8 +1330,14 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 					std::string select_state = "select";
 					if ( std::string(get_canvas_view()->get_smach().get_state_name())==select_state && get_duck_dragger()){
 						//hack move ducks
-						select_all_ducks();
-						if (!get_selected_ducks().empty()){
+//						select_all_ducks();
+						select_all_movement_ducks(layer);
+						//instead of selecting the ducks make a similar method that ends up storing all the layers ducks so we can then move them
+						//also we would access them from select state through the work area then we can change all the
+						//instance of selected_ducks in begin/drag/end draggers to use that instead
+//						if (!get_selected_ducks().empty()){
+
+						if (!get_selected_movement_ducks().empty()){
 							set_drag_mode(DRAG_DUCK);
 							drag_point=mouse_pos;
 							//drawing_area->queue_draw();
