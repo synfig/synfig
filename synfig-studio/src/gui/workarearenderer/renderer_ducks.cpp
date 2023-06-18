@@ -47,6 +47,7 @@
 #include <gui/app.h>
 #include <gui/duckmatic.h>
 #include <gui/workarea.h>
+#include <gui/canvasview.h>
 
 #endif
 
@@ -154,6 +155,8 @@ Renderer_Ducks::render_vfunc(
 	if(!get_work_area())
 		return;
 
+	bool isStateSelect = std::string(get_work_area()->get_canvas_view()->get_smach().get_state_name()) == "select";
+
 	const synfig::Point window_start(get_work_area()->get_window_tl());
 	const float pw(get_pw()),ph(get_ph());
 
@@ -258,8 +261,8 @@ Renderer_Ducks::render_vfunc(
 	for(std::list<handle<Duck> >::const_iterator iter=duck_list.begin();iter!=duck_list.end();++iter)
 	{
 
-		// If this type of duck has been masked, then skip it
-		if(!(*iter)->get_type() || (!(get_work_area()->get_type_mask() & (*iter)->get_type())))
+		// If this type of duck has been masked, then skip it. Unless we are in select state then we only draw the ducks that bound the layer.
+		if( (!(*iter)->get_type() || (!(get_work_area()->get_type_mask() & (*iter)->get_type()))) && !isStateSelect )
 			continue;
 
 		Point sub_trans_point((*iter)->get_sub_trans_point());
@@ -875,57 +878,58 @@ Renderer_Ducks::render_vfunc(
 		}//! end if hover
 
 	}
-
-	for(;!screen_duck_list.empty();screen_duck_list.pop_front())
-	{
-		Gdk::RGBA color(screen_duck_list.front().color);
-		double radius = 4;
-		double outline = 1;
-		bool duck_alternative = alternative && screen_duck_list.front().has_alternative;
-		bool duck_move_origin = screen_duck_list.front().has_move_origin;
-
-		// Draw the hovered duck last (on top of everything)
-		if(screen_duck_list.front().hover && !screen_duck_list.back().hover && screen_duck_list.size()>1)
+	if (!isStateSelect){
+		for(;!screen_duck_list.empty();screen_duck_list.pop_front())
 		{
-			screen_duck_list.push_back(screen_duck_list.front());
-			continue;
+			Gdk::RGBA color(screen_duck_list.front().color);
+			double radius = 4;
+			double outline = 1;
+			bool duck_alternative = alternative && screen_duck_list.front().has_alternative;
+			bool duck_move_origin = screen_duck_list.front().has_move_origin;
+
+			// Draw the hovered duck last (on top of everything)
+			if(screen_duck_list.front().hover && !screen_duck_list.back().hover && screen_duck_list.size()>1)
+			{
+				screen_duck_list.push_back(screen_duck_list.front());
+				continue;
+			}
+
+			cr->save();
+
+			if(!screen_duck_list.front().selected)
+			{
+				color.set_rgba(color.get_red()*2/3,
+								color.get_green()*2/3,
+								color.get_blue()*2/3);
+			}
+
+			if(screen_duck_list.front().hover)
+			{
+				radius += 1;
+				outline += 1;
+			}
+
+			cr->arc(
+				screen_duck_list.front().pos[0],
+				screen_duck_list.front().pos[1],
+				radius,
+				0,
+				M_PI*2
+				);
+
+			cr->set_source_rgba(
+				color.get_red(),
+				color.get_green(),
+				color.get_blue(),
+				duck_alternative || duck_move_origin ? 0.5 : 1.0
+				);
+			cr->fill_preserve();
+
+			cr->set_line_width(outline);
+			cr->set_source_rgba(GDK_COLOR_TO_RGB(DUCK_COLOR_OUTLINE),1); //DUCK_COLOR_OUTLINE
+			cr->stroke();
+
+			cr->restore();
 		}
-
-		cr->save();
-
-		if(!screen_duck_list.front().selected)
-		{
-		    color.set_rgba(color.get_red()*2/3,
-		                    color.get_green()*2/3,
-		                    color.get_blue()*2/3);
-		}
-
-		if(screen_duck_list.front().hover)
-		{
-			radius += 1;
-			outline += 1;
-		}
-
-		cr->arc(
-			screen_duck_list.front().pos[0],
-			screen_duck_list.front().pos[1],
-			radius,
-			0,
-			M_PI*2
-			);
-
-		cr->set_source_rgba(
-			color.get_red(),
-			color.get_green(),
-			color.get_blue(),
-			duck_alternative || duck_move_origin ? 0.5 : 1.0
-			);
-		cr->fill_preserve();
-
-		cr->set_line_width(outline);
-		cr->set_source_rgba(GDK_COLOR_TO_RGB(DUCK_COLOR_OUTLINE),1); //DUCK_COLOR_OUTLINE
-		cr->stroke();
-
-		cr->restore();
 	}
 }
