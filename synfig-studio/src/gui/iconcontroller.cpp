@@ -446,29 +446,31 @@ studio::get_tree_pixbuf(Type &type)
 	return _tree_pixbuf_table_value_type[type.identifier];
 }
 
-#ifdef _WIN32
-#define TEMPORARY_DELETE_MACRO DELETE
-#undef DELETE
-#endif
-
-Gtk::StockID
-studio::get_action_stock_id(const synfigapp::Action::BookEntry& action)
+std::string
+studio::get_action_icon_name(const synfigapp::Action::BookEntry& action)
 {
-	Gtk::StockID stock_id;
-	if(action.task=="add")				stock_id=Gtk::Stock::ADD;
-	else if(action.task=="connect")		stock_id=Gtk::Stock::CONNECT;
-	else if(action.task=="disconnect")	stock_id=Gtk::Stock::DISCONNECT;
-	else if(action.task=="insert")		stock_id=Gtk::Stock::ADD;
-	else if(action.task=="lower")		stock_id=Gtk::Stock::GO_DOWN;
-	else if(action.task=="move_bottom")	stock_id=Gtk::Stock::GOTO_BOTTOM;
-	else if(action.task=="move_top")	stock_id=Gtk::Stock::GOTO_TOP;
-	else if(action.task=="raise")		stock_id=Gtk::Stock::GO_UP;
-	else if(action.task=="remove")		stock_id=Gtk::Stock::DELETE;
-	else if(action.task=="set_off")		stock_id=Gtk::Stock::NO;
-	else if(action.task=="set_on")		stock_id=Gtk::Stock::YES;
-	else								stock_id=Gtk::StockID("synfig-"+
-															  action.task);
-	return stock_id;
+	// maps action task -> icon name
+	const std::map<std::string, std::string> action_icon_map = {
+		{"add",         "list-add"},
+		{"insert",      "list-add"},
+		{"remove",      "gtk-delete"},
+		{"connect",     "gtk-connect"},
+		{"disconnect",  "gtk-disconnect"},
+		{"raise",       "go-up"},
+		{"lower",       "go-down"},
+		{"move_top",    "go-top"},
+		{"move_bottom", "go-bottom"},
+		{"set_on",      "gtk-yes"},
+		{"set_off",     "gtk-no"},
+	};
+	auto iter = action_icon_map.find(action.task);
+	if (iter != action_icon_map.end())
+		return iter->second;
+
+	auto iter2 = known_icon_list.find(action.task);
+	if (iter2 != known_icon_list.end())
+		return iter2->second.first;
+	return "image-missing";
 }
 
 std::string

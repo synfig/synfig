@@ -95,6 +95,9 @@ int studio::Instance::instance_count_=0;
 static Gtk::Image*
 create_image_from_icon(const std::string& icon_name, Gtk::IconSize icon_size)
 {
+	if (icon_name == "image-missing")
+		return new Gtk::Image();
+
 #if GTK_CHECK_VERSION(3,24,0)
 	return new Gtk::Image(icon_name, icon_size);
 #else
@@ -990,13 +993,13 @@ Instance::add_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_grou
 
 	for(iter=candidate_list.begin();iter!=candidate_list.end();++iter)
 	{
-		Gtk::StockID stock_id(get_action_stock_id(*iter));
+		std::string icon_name(get_action_icon_name(*iter));
 
 		if(!(iter->category&synfigapp::Action::CATEGORY_HIDDEN))
 		{
-			action_group->add(Gtk::Action::create(
+			action_group->add(Gtk::Action::create_with_icon_name(
 				"action-"+iter->name,
-				stock_id,
+				icon_name,
 				iter->local_name,iter->local_name
 			),
 				sigc::bind(
@@ -1047,8 +1050,9 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamLis
 				continue;
 
 			Gtk::MenuItem *item = Gtk::manage(new Gtk::ImageMenuItem(
-				*Gtk::manage(new Gtk::Image(get_action_stock_id(*iter),Gtk::ICON_SIZE_MENU)),
+				*Gtk::manage(create_image_from_icon(get_action_icon_name(*iter), Gtk::ICON_SIZE_MENU)),
 				iter->local_name ));
+
 			item->signal_activate().connect(
 				sigc::bind(
 					sigc::bind(
@@ -1094,7 +1098,7 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamLis
 		if(!(iter->category&synfigapp::Action::CATEGORY_HIDDEN))
 		{
 			Gtk::MenuItem *item = Gtk::manage(new Gtk::ImageMenuItem(
-				*Gtk::manage(new Gtk::Image(get_action_stock_id(*iter),Gtk::ICON_SIZE_MENU)),
+				*Gtk::manage(create_image_from_icon(get_action_icon_name(*iter), Gtk::ICON_SIZE_MENU)),
 				iter->local_name ));
 			item->signal_activate().connect(
 				sigc::bind(
@@ -1114,7 +1118,7 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamLis
 		if(!(iter->category&synfigapp::Action::CATEGORY_HIDDEN))
 		{
 			Gtk::MenuItem *item = Gtk::manage(new Gtk::ImageMenuItem(
-				*Gtk::manage(new Gtk::Image(get_action_stock_id(*iter),Gtk::ICON_SIZE_MENU)),
+				*Gtk::manage(create_image_from_icon(get_action_icon_name(*iter), Gtk::ICON_SIZE_MENU)),
 				iter->local_name ));
 			item->signal_activate().connect(
 				sigc::bind(
@@ -1294,9 +1298,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		}
 
 		item = Gtk::manage(new Gtk::ImageMenuItem(
-			*manage(new Gtk::Image(
-				Gtk::StockID("gtk-convert"),
-				Gtk::ICON_SIZE_MENU )),
+			*Gtk::manage(create_image_from_icon("gtk-convert", Gtk::ICON_SIZE_MENU )),
 			_("Convert") ));
 		item->set_submenu(*convert_menu);
 		item->show();
@@ -1330,22 +1332,10 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		param_interpolation_menu->append(*item);
 		param_list.erase("new_value");
 
-		Gtk::Image *image;
-
-#if GTK_CHECK_VERSION(3,24,0)
-	#define CREATE_IMAGE(ImageVar, IconName, IconSize) \
-		ImageVar = manage(new Gtk::Image(IconName, IconSize));
-#else
-	#define CREATE_IMAGE(ImageVar, IconName, IconSize) \
-		ImageVar = manage(new Gtk::Image()); \
-		ImageVar->set_from_icon_name(IconName, IconSize);
-#endif
-
 		#define ADD_IMAGE_MENU_ITEM(Interpolation, IconName, Text) \
 		param_list.add("new_value", Interpolation); \
-		CREATE_IMAGE(image, IconName, Gtk::IconSize::from_name("synfig-small_icon")); \
 		item = Gtk::manage(new Gtk::ImageMenuItem( \
-			*image, \
+			*Gtk::manage(create_image_from_icon(IconName, Gtk::IconSize::from_name("synfig-small_icon"))), \
 			_(Text) )); \
 		item->signal_activate().connect( \
 			sigc::bind( \
