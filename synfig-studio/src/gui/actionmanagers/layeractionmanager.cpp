@@ -246,9 +246,9 @@ LayerActionManager::LayerActionManager():
 		)
 	);
 
-	action_select_all_child_layers_=Gtk::Action::create(
+	action_select_all_child_layers_=Gtk::Action::create_with_icon_name(
 		"select-all-child-layers",
-		Gtk::StockID("synfig-select_all_child_layers"),
+		"select_all_child_layers_icon",
 		_("Select All Child Layers"),_("Select All Child Layers")
 	);
 	action_select_all_child_layers_->set_sensitive(false);
