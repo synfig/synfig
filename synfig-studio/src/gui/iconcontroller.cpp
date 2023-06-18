@@ -341,10 +341,13 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	int width_small_toolbar, height_small_toolbar;
 	Gtk::IconSize::lookup(Gtk::ICON_SIZE_SMALL_TOOLBAR, width_small_toolbar, height_small_toolbar);
 
-	for(Type *type = Type::get_first(); type != nullptr; type = type->get_next()) {
-		Glib::RefPtr<Gdk::Pixbuf> icon = Gtk::IconTheme::get_default()->load_icon(value_icon_name(*type), height_small_toolbar, Gtk::ICON_LOOKUP_FORCE_SIZE);
-		if (!icon)
-			icon = Gtk::IconTheme::get_default()->load_icon("image-missing", height_small_toolbar, Gtk::ICON_LOOKUP_FORCE_SIZE);
+	for (Type *type = Type::get_first(); type != nullptr; type = type->get_next()) {
+		std::string icon_name = value_icon_name(*type);
+
+		if (!Gtk::IconTheme::get_default()->has_icon(icon_name))
+			icon_name = "image-missing";
+
+		Glib::RefPtr<Gdk::Pixbuf> icon = Gtk::IconTheme::get_default()->load_icon(icon_name, height_small_toolbar, Gtk::ICON_LOOKUP_FORCE_SIZE);
 		_tree_pixbuf_table_value_type[type->identifier] = icon;
 	}
 }
