@@ -492,3 +492,14 @@ studio::get_tree_pixbuf_layer(const synfig::String &layer)
 	return icon;
 }
 
+
+std::string
+studio::state_icon_name(const synfig::String& state)
+{
+	auto iter = known_icon_list.find(state);
+	if (iter == known_icon_list.end()) {
+		synfig::warning(_("state icon name not defined: %s"), state.c_str());
+		return "image-missing";
+	}
+	return iter->second.first;
+}
