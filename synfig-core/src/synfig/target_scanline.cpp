@@ -308,6 +308,8 @@ Target_Scanline::process_block_alpha(const synfig::Surface& surface, int width, 
 	int rowspan = sizeof(Color) * width;
 	Surface::const_pen pen = surface.begin();
 
+	Color bg = desc.get_bg_color();
+
 	for(int y = 0; y < height; y++, pen.inc_y())
 	{
 		Color *colordata = start_scanline(y + yOffset);
@@ -323,7 +325,7 @@ Target_Scanline::process_block_alpha(const synfig::Surface& surface, int width, 
 			case TARGET_ALPHA_MODE_FILL:
 				for(int i = 0; i < width; i++)
 				{
-					colordata[i] = Color::blend(surface[y][i], desc.get_bg_color(), 1.0f);
+					colordata[i] = Color::blend(surface[y][i], bg, 1.0f);
 				}
 				break;
 			case TARGET_ALPHA_MODE_EXTRACT:

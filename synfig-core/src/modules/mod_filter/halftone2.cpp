@@ -231,18 +231,18 @@ Halftone2::accelerated_render(Context context,Surface *surface,int quality, cons
 	}
 	else
 	{
+		const Color::blendfunc blend = Color::get_blend_func(get_amount(), get_blend_method());
 		for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)
 			for(x=0,pos[0]=tl[0];x<w;x++,pen.inc_x(),pos[0]+=pw)
 				pen.put_value(
-					Color::blend(
+					blend(
 				 		color_func(
 							pos,
 							supersample_size,
 							pen.get_value()
 						),
 						pen.get_value(),
-						get_amount(),
-						get_blend_method()
+						get_amount()
 					)
 				);
 	}

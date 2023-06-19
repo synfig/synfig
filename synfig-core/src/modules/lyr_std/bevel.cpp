@@ -351,6 +351,9 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 	//be sure the surface is of the correct size
 	surface->set_wh(renddesc.get_w(),renddesc.get_h());
 
+	const Color::blendfunc blend = Color::get_blend_func(get_amount(), get_blend_method());
+	const Color::blendfunc straight = Color::get_blend_func(0.5f, Color::BLEND_STRAIGHT);
+
 	int v = halfsizey+std::abs(offset_v);
 	for(y=0;y<renddesc.get_h();y++,v++)
 	{
@@ -389,7 +392,7 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 			{
 				alpha/=4.0f;
 				alpha+=0.5f;
-				shade=Color::blend(color1,color2,alpha,Color::BLEND_STRAIGHT);
+				shade = straight(color1, color2, alpha);
 			}
 			else
 			{
@@ -404,7 +407,7 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 
 			if(shade.get_a())
 			{
-				(*surface)[y][x]=Color::blend(shade,worksurface[v][u],get_amount(),get_blend_method());
+				(*surface)[y][x]= blend(shade, worksurface[v][u], get_amount());
 			}
 			else (*surface)[y][x] = worksurface[v][u];
 		}

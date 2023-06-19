@@ -50,6 +50,34 @@ using namespace synfig;
 
 #define COLOR_EPSILON	(0.000001f)
 
+const static blendfunc vtable[Color::BLEND_END]=
+{
+	blendfunc_COMPOSITE<Color>,	// 0
+	blendfunc_STRAIGHT<Color>,
+	blendfunc_BRIGHTEN<Color>,
+	blendfunc_DARKEN<Color>,
+	blendfunc_ADD<Color>,
+	blendfunc_SUBTRACT<Color>,		// 5
+	blendfunc_MULTIPLY<Color>,
+	blendfunc_DIVIDE<Color>,
+	blendfunc_COLOR<Color>,
+	blendfunc_HUE<Color>,
+	blendfunc_SATURATION<Color>,	// 10
+	blendfunc_LUMINANCE<Color>,
+	blendfunc_BEHIND<Color>,
+	blendfunc_ONTO<Color>,
+	blendfunc_ALPHA_BRIGHTEN<Color>,
+	blendfunc_ALPHA_DARKEN<Color>,	// 15
+	blendfunc_SCREEN<Color>,
+	blendfunc_HARD_LIGHT<Color>,
+	blendfunc_DIFFERENCE<Color>,
+	blendfunc_ALPHA_OVER<Color>,
+	blendfunc_OVERLAY<Color>,		// 20
+	blendfunc_STRAIGHT_ONTO<Color>,
+	blendfunc_ADD_COMPOSITE<Color>,
+	blendfunc_ALPHA<Color>,
+};
+
 /* === M E T H O D S ======================================================= */
 
 ColorReal
@@ -210,34 +238,46 @@ Color::blend(Color a, Color b, float amount, Color::BlendMethod type)
 
 	assert(type<BLEND_END);
 
-	const static blendfunc vtable[BLEND_END]=
-	{
-		blendfunc_COMPOSITE<Color>,	// 0
-		blendfunc_STRAIGHT<Color>,
-		blendfunc_BRIGHTEN<Color>,
-		blendfunc_DARKEN<Color>,
-		blendfunc_ADD<Color>,
-		blendfunc_SUBTRACT<Color>,		// 5
-		blendfunc_MULTIPLY<Color>,
-		blendfunc_DIVIDE<Color>,
-		blendfunc_COLOR<Color>,
-		blendfunc_HUE<Color>,
-		blendfunc_SATURATION<Color>,	// 10
-		blendfunc_LUMINANCE<Color>,
-		blendfunc_BEHIND<Color>,
-		blendfunc_ONTO<Color>,
-		blendfunc_ALPHA_BRIGHTEN<Color>,
-		blendfunc_ALPHA_DARKEN<Color>,	// 15
-		blendfunc_SCREEN<Color>,
-		blendfunc_HARD_LIGHT<Color>,
-		blendfunc_DIFFERENCE<Color>,
-		blendfunc_ALPHA_OVER<Color>,
-		blendfunc_OVERLAY<Color>,		// 20
-		blendfunc_STRAIGHT_ONTO<Color>,
-		blendfunc_ADD_COMPOSITE<Color>,
-		blendfunc_ALPHA<Color>,
-	};
-
 	return vtable[type](a,b,amount);
 }
 
+Color
+Color::blend(Color fg, Color bg, float amount)
+{
+	float a_fg = fg.get_a() * amount;
+	float a_bg = bg.get_a();
+
+	const float one(Color::ceil); 
+
+	// Scale the source and bgination by their alpha values
+	fg *= a_fg;
+	bg *= a_bg;
+
+	bg = fg + bg * (one - a_fg);
+
+	a_bg = a_fg + a_bg * (one - a_fg);
+
+	if(fabsf(a_bg) > COLOR_EPSILON)
+	{
+		bg /= a_bg;
+		bg.set_a(a_bg);
+	}
+	else
+	{
+		bg = Color::alpha();
+	}
+	assert(bg.is_valid());
+	return bg;
+}
+
+Color::blendfunc
+Color::get_blend_func(float amount, BlendMethod type)
+{
+	if(fabsf(amount)<=COLOR_EPSILON) return blendfunc_bg;
+
+	assert(type<BLEND_END);
+
+	if(type == BLEND_STRAIGHT && fabsf(1.f - fabsf(amount)) <= COLOR_EPSILON) return blendfunc_fg;
+
+	return vtable[type];
+}

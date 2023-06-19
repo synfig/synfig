@@ -242,9 +242,11 @@ SpiralGradient::accelerated_render(Context context,Surface *surface,int quality,
 	}
 	else
 	{
+		const float amount = get_amount();
+		const Color::blendfunc blend = Color::get_blend_func(amount, get_blend_method());
 		for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)
 			for(x=0,pos[0]=tl[0];x<w;x++,pen.inc_x(),pos[0]+=pw)
-				pen.put_value(Color::blend(color_func(pos,calc_supersample(pos,pw,ph)),pen.get_value(),get_amount(),get_blend_method()));
+				pen.put_value(blend(color_func(pos,calc_supersample(pos,pw,ph)),pen.get_value(),amount));
 	}
 
 	// Mark our progress as finished
