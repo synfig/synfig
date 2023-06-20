@@ -77,12 +77,23 @@ class studio::StateSelect_Context : public sigc::trackable
 {
 	CanvasView* canvas_view_;
 
+	synfigapp::Settings& settings;
+
 	etl::handle<DuckDrag_Select> duck_dragger_;
 	Gtk::Grid options_grid;
 	Gtk::Label title_label;
+	//i think not needed anymore
 	bool pressed = false;
 
+	Gtk::Label prioritize_groups_label;
+	Gtk::CheckButton prioritize_groups_checkbutton;
+	Gtk::Box prioritize_groups_box;
+
 public:
+
+	explicit StateSelect_Context(CanvasView* canvas_view);
+
+	~StateSelect_Context();
 
 	bool get_lock_animation_flag()const
 	{
@@ -101,9 +112,11 @@ public:
 		}
 	}
 
-	explicit StateSelect_Context(CanvasView* canvas_view);
+	void load_settings();
+	void save_settings();
 
-	~StateSelect_Context();
+	//maybe from we here we can update a flag in work area... orr we can just use settings there ?
+//	void set_group_priority(bool status){ prioritize_groups_checkbutton.set_active(status);}
 
 	CanvasView* get_canvas_view()const{return canvas_view_;}
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
@@ -155,6 +168,7 @@ void* StateSelect::enter_state(studio::CanvasView* machine_context) const
 
 StateSelect_Context::StateSelect_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
+	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	duck_dragger_(new DuckDrag_Select())
 {
 	duck_dragger_->canvas_view_=get_canvas_view();
@@ -169,9 +183,22 @@ StateSelect_Context::StateSelect_Context(CanvasView* canvas_view):
 	title_label.set_halign(Gtk::ALIGN_START);
 	title_label.set_valign(Gtk::ALIGN_CENTER);
 
+	//should words be capitalized like this ?
+	prioritize_groups_label.set_label(_("Priotirize Group Selection"));
+	prioritize_groups_label.set_hexpand();
+	prioritize_groups_label.set_halign(Gtk::ALIGN_START);
+	prioritize_groups_label.set_valign(Gtk::ALIGN_CENTER);
+	prioritize_groups_box.pack_start(prioritize_groups_label, true, true, 0);
+	prioritize_groups_box.pack_start(prioritize_groups_checkbutton, false, false, 0);
+
+	prioritize_groups_checkbutton.signal_toggled().connect(sigc::mem_fun(*this,&StateSelect_Context::save_settings));
+
 	// Toolbox layout
 	options_grid.attach(title_label,
 		0, 0, 1, 1);
+	options_grid.attach(prioritize_groups_box,
+		0, 1, 2, 1);
+
 
 	options_grid.set_border_width(GAP*2);
 	options_grid.set_row_spacing(GAP);
@@ -184,6 +211,8 @@ StateSelect_Context::StateSelect_Context(CanvasView* canvas_view):
 	get_work_area()->set_duck_dragger(duck_dragger_);
 
 	App::dock_toolbox->refresh();
+
+	load_settings();
 }
 
 void
@@ -193,17 +222,46 @@ StateSelect_Context::refresh_tool_options()
 	App::dialog_tool_options->set_widget(options_grid);
 	App::dialog_tool_options->set_local_name(_("Select Tool"));
 	App::dialog_tool_options->set_icon("tool_select_icon");
+	canvas_view_->set_duck_buttons_sensitivity(false);
 }
 
 
 
 StateSelect_Context::~StateSelect_Context()
 {
+	save_settings();
+
 	get_work_area()->reset_cursor();
 
 	App::dialog_tool_options->clear();
 
 	App::dock_toolbox->refresh();
+
+	canvas_view_->set_duck_buttons_sensitivity(true);
+}
+
+void StateSelect_Context::load_settings()
+{
+	try
+	{
+		prioritize_groups_checkbutton.set_active(settings.get_value("select.group_selection_priority", false));
+	}
+	catch(...)
+	{
+		synfig::warning("State Select: Caught exception when attempting to load settings.");
+	}
+}
+
+void StateSelect_Context::save_settings()
+{
+	try
+	{
+		settings.set_value("select.group_selection_priority", prioritize_groups_checkbutton.get_active());
+	}
+	catch(...)
+	{
+		synfig::warning("State Select: Caught exception when attempting to save settings.");
+	}
 }
 
 DuckDrag_Select::DuckDrag_Select(){
@@ -216,7 +274,6 @@ DuckDrag_Select::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& off
 	is_moving = false;
 	last_move=Vector(1,1);
 
-	std::cout<<"begin duck drag"<<std::endl;
 	const DuckList selected_movement_ducks(duckmatic->get_selected_movement_ducks());
 	DuckList::const_iterator iter;
 

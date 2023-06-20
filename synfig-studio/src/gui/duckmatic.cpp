@@ -299,15 +299,25 @@ Duckmatic::unselect_all_ducks()
 
 void Duckmatic::select_all_movement_ducks(Layer::Handle layer)
 {
+	// check if we need to add additional check to avoid a problem if the parent group is exported or something
+	etl::loose_handle<Layer> parent_group = layer->get_parent_paste_canvas_layer();
+
 	//yea this definetly needs to be edited to only select the movement ducks of the current layer
 	DuckMap::const_iterator iter;
 	for(iter=duck_map.begin();iter!=duck_map.end();++iter){
-		if(iter->second){
+		if(iter->second && iter->second->get_value_desc().parent_is_layer()){
 			//why would a duck of a layer not have the layer as it's parent ?? (this happens in polygon layers)
-			if (iter->second->get_value_desc().parent_is_layer() && iter->second->get_value_desc().get_layer() == layer)
+			if ( iter->second->get_value_desc().get_layer() == layer || (parent_group &&
+				 iter->second->get_value_desc().get_layer()->get_parent_paste_canvas_layer() == parent_group)
+				 ){
+				//maybe check first if they're not already in ? or is this a set or something. it is a set ok.
 				selected_movement_ducks.insert((iter->second)->get_guid());
-			else
+				std::cout<<"inserting duck of"<<iter->second->get_value_desc().get_layer()->get_name()<<std::endl;
+			}
+			else {
 				selected_movement_ducks.erase(iter->first);
+				std::cout<<"removin duck of"<<iter->second->get_value_desc().get_layer()->get_name()<<std::endl;
+			}
 		}
 		//std::cout<<"iterating all ducks"<<std::endl;
 	}
