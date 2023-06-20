@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/renderersw.cpp
+/*!	\file synfig/rendering/software/rendererexperimentalsw.cpp
 **	\brief RendererSW
 **
 **	\legal
@@ -34,7 +34,7 @@
 
 #include <synfig/localization.h>
 
-#include "renderersw.h"
+#include "rendererexperimentalsw.h"
 
 #include  "task/tasksw.h"
 
@@ -42,6 +42,7 @@
 #include "../common/optimizer/optimizerblendmerge.h"
 #include "../common/optimizer/optimizerblendtotarget.h"
 #include "../common/optimizer/optimizerlist.h"
+#include "../common/optimizer/optimizersplit.h"
 #include "../common/optimizer/optimizertransformation.h"
 #include "../common/optimizer/optimizerpass.h"
 
@@ -60,7 +61,7 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-RendererSW::RendererSW()
+RendererExperimentalSW::RendererExperimentalSW()
 {
 	register_mode(TaskSW::mode_token.handle());
 
@@ -73,18 +74,19 @@ RendererSW::RendererSW()
 	register_optimizer(new OptimizerList());
 	register_optimizer(new OptimizerBlendToTarget());
 	register_optimizer(new OptimizerBlendAssociative());
+	register_optimizer(new OptimizerSplit());
 }
 
-RendererSW::~RendererSW() { }
+RendererExperimentalSW::~RendererExperimentalSW() { }
 
-String RendererSW::get_name() const { return _("Cobra (software)"); }
+String RendererExperimentalSW::get_name() const { return _("Experimetal Cobra (software)"); }
 
-void RendererSW::initialize()
+void RendererExperimentalSW::initialize()
 {
 	software::FFT::initialize();
 }
 
-void RendererSW::deinitialize()
+void RendererExperimentalSW::deinitialize()
 {
 	software::FFT::deinitialize();
 }
