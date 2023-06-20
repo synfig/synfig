@@ -62,15 +62,14 @@ void
 OptimizerSplit::run(const RunParams &params) const
 {
 	if (!params.list) return;
-	const int tile_height = 270;
 
+	const int tile_height = 270;
 	for(Task::List::iterator i = params.list->begin(); i != params.list->end(); ++i)
 	{
 		if (TaskInterfaceSplit *split = i->type_pointer<TaskInterfaceSplit>())
 		if (split->is_splittable())
 		{
 			RectInt r = (*i)->target_rect;
-			int w = r.maxx - r.minx;
 			int h = r.maxy - r.miny;
 			int t = std::round((float)h / tile_height);
 			if (t >= 2)
