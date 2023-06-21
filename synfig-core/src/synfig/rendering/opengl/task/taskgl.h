@@ -4,6 +4,7 @@
 **
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin
+**	......... ... 2023 Bharat Sahlot
 **
 **	This file is part of Synfig.
 **
@@ -33,7 +34,6 @@
 #include "../../task.h"
 
 #include "../surfacegl.h"
-#include "../internal/predeclarations.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -57,9 +57,7 @@ public:
 	virtual Surface::Token::Handle get_mode_target_token() const
 		{ return TargetSurface::token.handle(); }
 	virtual bool get_mode_allow_multithreading() const
-		{ return false; }
-protected:
-	gl::Environment& env() const;
+		{ return true; }
 };
 
 } /* end namespace rendering */

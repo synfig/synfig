@@ -4,6 +4,7 @@
 **
 **	\legal
 **	......... ... 2015 Ivan Mahonin
+**	......... ... 2023 Bharat Sahlot
 **
 **	This file is part of Synfig.
 **
@@ -46,7 +47,5 @@ using namespace rendering;
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
-
-gl::Environment* gl::Environment::instance = nullptr;
 
 /* === E N T R Y P O I N T ================================================= */

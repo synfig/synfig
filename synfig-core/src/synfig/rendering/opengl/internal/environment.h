@@ -4,6 +4,7 @@
 **
 **	\legal
 **	......... ... 2015 Ivan Mahonin
+**	......... ... 2023 Bharat Sahlot
 **
 **	This file is part of Synfig.
 **
@@ -30,20 +31,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/rendering/opengl/internal/samplers.h>
-#include <cassert>
-
-#include "antialiasing.h"
-#include "buffers.h"
-#include "context.h"
-#ifdef WITH_OPENCL
-#include "clcontext.h"
-#endif
-#include "framebuffers.h"
-#include "misc.h"
-#include "samplers.h"
-#include "shaders.h"
-
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -57,42 +44,8 @@ namespace rendering
 namespace gl
 {
 
-class Environment
+class Enviroment
 {
-private:
-	static Environment *instance;
-
-public:
-	Context context;
-#ifdef WITH_OPENCL
-	ClContext clcontext;
-#endif
-	Samplers samplers;
-	Buffers buffers;
-	Shaders shaders;
-	Antialiasing antialiasing;
-	Framebuffers framebuffers;
-	Misc misc;
-
-	Environment():
-		context(),
-#ifdef WITH_OPENCL
-		clcontext(),
-#endif
-		samplers(context),
-		buffers(context),
-		shaders(context),
-		antialiasing(context),
-		framebuffers(context),
-		misc(context)
-	{ }
-
-	static Environment& get_instance()
-		{ assert(instance); return *instance; }
-	static void initialize()
-		{ assert(!instance); instance = new Environment(); }
-	static void deinitialize()
-		{ assert(instance); delete instance; }
 };
 
 }; /* end namespace gl */

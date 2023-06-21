@@ -1,9 +1,9 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/internal/misc.h
-**	\brief Misc Header
+/*!	\file synfig/rendering/opengl/internal/framebuffer.h
+**	\brief Framebuffer Header
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2023 Bharat Sahlot
 **
 **	This file is part of Synfig.
 **
@@ -25,17 +25,10 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_GL_MISC_H
-#define __SYNFIG_RENDERING_GL_MISC_H
+#ifndef __SYNFIG_RENDERING_GL_FRAMEBUFFER_H
+#define __SYNFIG_RENDERING_GL_FRAMEBUFFER_H
 
 /* === H E A D E R S ======================================================= */
-
-#include <list>
-#include <vector>
-
-#include <synfig/color.h>
-
-#include "context.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -50,18 +43,8 @@ namespace rendering
 namespace gl
 {
 
-class Misc
+class Framebuffer
 {
-public:
-	Context &context;
-
-private:
-
-public:
-	Misc(Context &context);
-	~Misc();
-
-	void clear(const Color &color);
 };
 
 }; /* end namespace gl */

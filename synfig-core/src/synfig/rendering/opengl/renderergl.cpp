@@ -69,12 +69,12 @@ String RendererGL::get_name() const { return _("Cobra (hardware)"); }
 
 void
 RendererGL::initialize() {
-	gl::Environment::initialize();
+	// gl::Environment::initialize();
 }
 
 void
 RendererGL::deinitialize() {
-	gl::Environment::deinitialize();
+	// gl::Environment::deinitialize();
 }
 
 

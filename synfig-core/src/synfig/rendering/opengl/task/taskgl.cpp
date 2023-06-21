@@ -4,6 +4,7 @@
 **
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin
+**	......... ... 2023 Bharat Sahlot
 **
 **	This file is part of Synfig.
 **
@@ -50,7 +51,5 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 ModeToken TaskGL::mode_token("opengl");
-
-gl::Environment& TaskGL::env() const { return gl::Environment::get_instance(); }
 
 /* === E N T R Y P O I N T ================================================= */

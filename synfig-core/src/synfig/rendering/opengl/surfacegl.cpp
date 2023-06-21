@@ -4,6 +4,7 @@
 **
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin
+**	......... ... 2023 Bharat Sahlot
 **
 **	This file is part of Synfig.
 **
@@ -33,11 +34,6 @@
 #endif
 
 #include "surfacegl.h"
-
-#include "internal/environment.h"
-
-#define GL_GLEXT_PROTOTYPES
-#include <GL/glext.h>
 #endif
 
 using namespace synfig;
@@ -56,94 +52,34 @@ rendering::Surface::Token SurfaceGL::token(
 	Desc<SurfaceGL>("SurfaceGL") );
 
 
-SurfaceGL::SurfaceGL(): id()
-	{ }
-
-SurfaceGL::SurfaceGL(const Surface &other): id()
+SurfaceGL::SurfaceGL(const Surface &other)
 	{ assign(other); }
 
 SurfaceGL::~SurfaceGL()
 	{ reset(); }
 
-gl::Environment& SurfaceGL::env() const
-	{ return gl::Environment::get_instance(); }
-
 bool
 SurfaceGL::create_vfunc(int width, int height)
 {
-	gl::Context::Lock lock(env().context);
-	glGenTextures(1, &id);
-	glBindTexture(GL_TEXTURE_2D, id);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA, GL_FLOAT, nullptr);
-
-	{
-		// clear texture
-		gl::Framebuffers::FramebufferLock framebuffer = env().framebuffers.get_framebuffer();
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer.get_id());
-		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, id, 0);
-		env().framebuffers.check("SurfaceGL::create_vfunc");
-		glViewport(0, 0, get_width(), get_height());
-		glClear(GL_COLOR_BUFFER_BIT);
-		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	}
-
-	env().context.check("SurfaceGL::create_vfunc");
-	return true;
+	return false;
 }
 
 bool
 SurfaceGL::assign_vfunc(const rendering::Surface &surface)
 {
-	std::vector<Color> data;
-	const Color *pixels = surface.get_pixels_pointer();
-	if (!pixels) {
-		data.resize(get_pixels_count());
-		if (!surface.get_pixels(&data.front()))
-			return false;
-		pixels = &data.front();
-	}
-
-	gl::Context::Lock lock(env().context);
-	glGenTextures(1, &id);
-	glBindTexture(GL_TEXTURE_2D, id);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, surface.get_width(), surface.get_height(), 0, GL_RGBA, GL_FLOAT, pixels);
-
-	env().context.check("SurfaceGL::assign_vfunc");
-	return true;
+	return false;
 }
 
 bool
 SurfaceGL::reset_vfunc()
 {
-	gl::Context::Lock lock(env().context);
-	glDeleteTextures(1, &id);
-	id = 0;
-	env().context.check("SurfaceGL::destroy_vfunc");
-	return true;
+	return false;
 }
 
-bool
-SurfaceGL::get_pixels_vfunc(Color *buffer) const
+const Color*
+SurfaceGL::get_pixels_pointer_vfunc() const
 {
-	gl::Context::Lock lock(env().context);
-
-	gl::Framebuffers::FramebufferLock framebuffer = env().framebuffers.get_framebuffer();
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer.get_id());
-	glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, id, 0);
-	env().framebuffers.check("SurfaceGL::get_pixels_vfunc");
-
-	glReadPixels(0, 0, get_width(), get_height(), GL_RGBA, GL_FLOAT, buffer);
-
-	glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
-
-	env().context.check("SurfaceGL::get_pixels_vfunc");
-	return true;
+	return nullptr;
 }
 
 /* === E N T R Y P O I N T ================================================= */

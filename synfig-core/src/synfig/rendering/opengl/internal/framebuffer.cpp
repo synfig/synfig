@@ -1,9 +1,9 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/internal/glsl/texture_vertex.glsl
-**	\brief Texture Vertex Shader
+/*!	\file synfig/rendering/opengl/internal/framebuffer.cpp
+**	\brief Framebuffer
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2023 Bharat Sahlot
 **
 **	This file is part of Synfig.
 **
@@ -23,15 +23,28 @@
 */
 /* ========================================================================= */
 
-#version 330 core
+/* === H E A D E R S ======================================================= */
 
-layout(location = 0) in vec2 position;
-layout(location = 1) in vec2 vertext_texcoord;
+#ifdef USING_PCH
+#	include "pch.h"
+#else
+#ifdef HAVE_CONFIG_H
+#	include <config.h>
+#endif
 
-out vec2 texcoord;
+#include "framebuffer.h"
 
-void main()
-{
-	gl_Position = vec4(position, 0.0, 1.0);
-	texcoord = vertext_texcoord;
-}
+#endif
+
+using namespace synfig;
+using namespace rendering;
+
+/* === M A C R O S ========================================================= */
+
+/* === G L O B A L S ======================================================= */
+
+/* === P R O C E D U R E S ================================================= */
+
+/* === M E T H O D S ======================================================= */
+
+/* === E N T R Y P O I N T ================================================= */

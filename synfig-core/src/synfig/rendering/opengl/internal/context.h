@@ -4,6 +4,7 @@
 **
 **	\legal
 **	......... ... 2015 Ivan Mahonin
+**	......... ... 2023 Bharat Sahlot
 **
 **	This file is part of Synfig.
 **
@@ -30,18 +31,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <cassert>
-
-#include <vector>
-#include <utility>
-
-#include <mutex>
-
-#include <GL/gl.h>
-#include <GL/glx.h>
-
-#include <synfig/string.h>
-
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -57,72 +46,6 @@ namespace gl
 
 class Context
 {
-public:
-	class Lock {
-	private:
-		Context &context;
-	public:
-		Lock(Context &context): context(context) { context.use(); }
-		Lock(Lock &other): context(other.context) { context.use(); }
-		~Lock() { context.unuse(); }
-
-		Context& get() const { return context; }
-		Context* operator-> () const { return &get(); }
-	};
-
-	struct ContextInfo {
-		Display *display;
-		GLXDrawable drawable;
-		GLXDrawable read_drawable;
-		GLXContext context;
-
-		ContextInfo():
-			display(nullptr),
-			drawable(None),
-			read_drawable(None),
-			context(nullptr) { }
-
-		bool operator== (const ContextInfo &other) const
-		{
-			return display == other.display
-				&& drawable == other.drawable
-				&& read_drawable == other.read_drawable
-				&& context == other.context;
-		}
-
-		bool operator!= (const ContextInfo &other) const
-		{
-			return !(*this == other);
-		}
-
-		void make_current() const;
-		static ContextInfo get_current(Display *default_display);
-	};
-
-private:
-	std::recursive_mutex rec_mutex;
-
-	Display *display;
-	GLXFBConfig config;
-	GLXPbuffer pbuffer;
-	GLXContext context;
-
-	ContextInfo context_info;
-	std::vector<ContextInfo> context_stack;
-
-	static std::pair<GLenum, const char*> enum_strings[];
-
-public:
-	Context();
-	~Context();
-
-	bool is_valid() const { return context; }
-	bool is_current() const;
-	void use();
-	void unuse();
-
-	void check(const char *s = "");
-	const char* get_enum_string(GLenum x);
 };
 
 }; /* end namespace gl */

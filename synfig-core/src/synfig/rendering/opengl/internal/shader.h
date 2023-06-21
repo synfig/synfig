@@ -1,9 +1,9 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/internal/clcontext.h
-**	\brief ClContext Header
+/*!	\file synfig/rendering/opengl/internal/shaders.h
+**	\brief Shader Header
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2023 Bharat Sahlot
 **
 **	This file is part of Synfig.
 **
@@ -25,14 +25,10 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_GL_CLCONTEXT_H
-#define __SYNFIG_RENDERING_GL_CLCONTEXT_H
+#ifndef __SYNFIG_RENDERING_GL_SHADER_H
+#define __SYNFIG_RENDERING_GL_SHADER_H
 
 /* === H E A D E R S ======================================================= */
-
-#include <CL/opencl.h>
-
-#include <synfig/string.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -47,20 +43,12 @@ namespace rendering
 namespace gl
 {
 
-class ClContext
+class Shader
 {
-public:
-	cl_context context;
-	cl_device_id device;
-	cl_command_queue queue;
+};
 
-	ClContext();
-	~ClContext();
-
-	cl_program load_program(const String &source);
-
-private:
-	static void callback(const char *, const void *, size_t, void *);
+class ShaderProgram
+{
 };
 
 }; /* end namespace gl */
