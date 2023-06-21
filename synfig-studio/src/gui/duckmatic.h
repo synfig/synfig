@@ -515,7 +515,7 @@ public:
 	void unselect_all_ducks();
 
 	//ToDo: maybe use a more descriptive name the "movement"
-	void select_all_movement_ducks(synfig::Layer::Handle layer);
+	void select_all_movement_ducks(etl::loose_handle<CanvasView> canvas_view, synfig::Layer::Handle layer);
 
 	void clear_ducks();
 

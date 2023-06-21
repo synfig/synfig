@@ -297,8 +297,12 @@ Duckmatic::unselect_all_ducks()
 		unselect_duck(iter->second);
 }
 
-void Duckmatic::select_all_movement_ducks(Layer::Handle layer)
+void Duckmatic::select_all_movement_ducks(etl::loose_handle<studio::CanvasView> canvas_view, Layer::Handle layer)
 {
+	//first make sure the layer is selected as if it is not then its ducks will not be in the ducks map
+	canvas_view->get_selection_manager()->set_selected_layer(layer);
+	canvas_view->rebuild_ducks();
+
 	// check if we need to add additional check to avoid a problem if the parent group is exported or something
 	etl::loose_handle<Layer> parent_group = layer->get_parent_paste_canvas_layer();
 

@@ -213,6 +213,8 @@ StateSelect_Context::StateSelect_Context(CanvasView* canvas_view):
 	App::dock_toolbox->refresh();
 
 	load_settings();
+	get_work_area()->set_cursor(Gdk::FLEUR);
+
 }
 
 void

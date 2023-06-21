@@ -1329,7 +1329,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				if (Layer::Handle layer = get_canvas()->find_layer(get_canvas_view()->get_context_params(), mouse_pos)) {//make a new event layer pressed
 					if (canvas_view->get_smach().process_event(EventLayerClick(layer, BUTTON_LEFT, mouse_pos)) == Smach::RESULT_OK)
 						return false;
-					std::string select_state = "select";
+
 					if ( std::string(get_canvas_view()->get_smach().get_state_name()) == "select" && get_duck_dragger()){
 
 						//select the other layers of the parent group as well
@@ -1345,7 +1345,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 						}
 
 						//if layer is part of a group does it have a handle to the "parent" group ?
-						select_all_movement_ducks(layer);
+						select_all_movement_ducks(canvas_view, layer);
 
 						if (!get_selected_movement_ducks().empty()){
 							set_drag_mode(DRAG_DUCK);
