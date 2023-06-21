@@ -312,10 +312,9 @@ void Duckmatic::select_all_movement_ducks(etl::loose_handle<studio::CanvasView> 
 	canvas_view->get_selection_manager()->set_selected_layer(layer);
 	canvas_view->rebuild_ducks();
 
-	// check if we need to add additional check to avoid a problem if the parent group is exported or something
+	//TODO!: check if we need to add additional check to avoid a problem if the parent group is exported or something
 	etl::loose_handle<Layer> parent_group = layer->get_parent_paste_canvas_layer();
 
-	//yea this definetly needs to be edited to only select the movement ducks of the current layer
 	DuckMap::const_iterator iter;
 	for(iter=duck_map.begin();iter!=duck_map.end();++iter){
 		if (iter->second->get_type() != Duck::TYPE_VERTEX &&
@@ -326,16 +325,12 @@ void Duckmatic::select_all_movement_ducks(etl::loose_handle<studio::CanvasView> 
 			if ( iter->second->get_value_desc().get_layer() == layer || (parent_group &&
 				 iter->second->get_value_desc().get_layer()->get_parent_paste_canvas_layer() == parent_group)
 				 ){
-				//maybe check first if they're not already in ? or is this a set or something. it is a set ok.
 				selected_movement_ducks.insert((iter->second)->get_guid());
-				std::cout<<"inserting duck of"<<iter->second->get_value_desc().get_layer()->get_name()<<std::endl;
 			}
 			else {
 				selected_movement_ducks.erase(iter->first);
-				std::cout<<"removin duck of"<<iter->second->get_value_desc().get_layer()->get_name()<<std::endl;
 			}
 		}
-		//std::cout<<"iterating all ducks"<<std::endl;
 	}
 
 }
@@ -433,22 +428,16 @@ DuckList Duckmatic::get_selected_movement_ducks() const
 	GUIDSet::const_iterator iter;
 	const Type type(get_type_mask());
 
-	//std::cout<<"num selected movement ducks from select all"<<selected_movement_ducks.size()<<std::endl;
-
 	for(iter=selected_movement_ducks.begin();iter!=selected_movement_ducks.end();++iter)
 	{
 		const DuckMap::const_iterator d_iter(duck_map.find(*iter));
-		//if this duck isnt even in the duck map then continue its wrong
+
 		if(d_iter==duck_map.end())
 			continue;
 
-		//if this type is not shown I think -- instead just use this to only get the movement related ducks
-//		if(( d_iter->second->get_type() && (!(type & d_iter->second->get_type())) ) )
-//			continue;
 		if (d_iter->second)
 			ret.push_back(d_iter->second);
 	}
-	//std::cout<<"num selected movement ducks"<<ret.size()<<std::endl;
 	return ret;
 }
 
