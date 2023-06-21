@@ -171,6 +171,15 @@ Duckmatic::clear_selected_ducks()
 	signal_duck_selection_changed_();
 }
 
+//TODO!:
+//"selected movement ducks" should probably be renamed to stored movement ducks
+// as they are just stored to be used by the select tool. They are not actually
+// selected. Also this way it would avoid confusion
+void Duckmatic::clear_selected_movement_ducks()
+{
+	selected_movement_ducks.clear();
+}
+
 etl::handle<Duckmatic::Duck>
 Duckmatic::get_selected_duck()const
 {
@@ -309,6 +318,9 @@ void Duckmatic::select_all_movement_ducks(etl::loose_handle<studio::CanvasView> 
 	//yea this definetly needs to be edited to only select the movement ducks of the current layer
 	DuckMap::const_iterator iter;
 	for(iter=duck_map.begin();iter!=duck_map.end();++iter){
+		if (iter->second->get_type() != Duck::TYPE_VERTEX &&
+			 iter->second->get_type() != Duck::TYPE_POSITION)
+			continue;
 		if(iter->second && iter->second->get_value_desc().parent_is_layer()){
 			//why would a duck of a layer not have the layer as it's parent ?? (this happens in polygon layers)
 			if ( iter->second->get_value_desc().get_layer() == layer || (parent_group &&
