@@ -905,9 +905,9 @@ init_ui_manager()
 	synfigapp::Action::Book::iterator iter;
 	for(iter=synfigapp::Action::book().begin();iter!=synfigapp::Action::book().end();++iter)
 	{
-		actions_action_group->add(Gtk::Action::create(
+		actions_action_group->add(Gtk::Action::create_with_icon_name(
 			"action-"+iter->second.name,
-			get_action_stock_id(iter->second),
+			get_action_icon_name(iter->second),
 			iter->second.local_name,iter->second.local_name
 		));
 	}
