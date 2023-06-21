@@ -82,9 +82,6 @@ class studio::StateSelect_Context : public sigc::trackable
 	etl::handle<DuckDrag_Select> duck_dragger_;
 	Gtk::Grid options_grid;
 	Gtk::Label title_label;
-	//i think not needed anymore
-	bool pressed = false;
-
 	Gtk::Label prioritize_groups_label;
 	Gtk::CheckButton prioritize_groups_checkbutton;
 	Gtk::Box prioritize_groups_box;
@@ -94,23 +91,6 @@ public:
 	explicit StateSelect_Context(CanvasView* canvas_view);
 
 	~StateSelect_Context();
-
-	bool get_lock_animation_flag()const
-	{
-		return get_canvas_view()
-			&& get_canvas_view()->get_work_area()
-			&& get_canvas_view()->get_work_area()->get_lock_animation_mode();
-	}
-	void set_lock_animation_flag(bool x)
-	{
-		if ( get_canvas_view()
-		  && get_canvas_view()->get_work_area()
-		  && get_canvas_view()->get_work_area()->get_lock_animation_mode() != x )
-		{
-			get_canvas_view()->get_work_area()->set_lock_animation_mode(x);
-			get_canvas_view()->get_work_area()->queue_draw();
-		}
-	}
 
 	void load_settings();
 	void save_settings();
@@ -129,7 +109,6 @@ public:
 	Smach::event_result event_redo_handler(const Smach::event& x);
 	Smach::event_result event_refresh_ducks_handler(const Smach::event& x);
 	Smach::event_result event_mouse_button_down_handler(const Smach::event& x);
-//	Smach::event_result event_mouse_motion_handler(const Smach::event& x);
 	Smach::event_result event_mouse_release_handler(const Smach::event& x);
 	Smach::event_result event_refresh_tool_options(const Smach::event& x);
 	void refresh_tool_options();
@@ -150,8 +129,6 @@ StateSelect::StateSelect():
 	insert(event_def(EVENT_REDO,&StateSelect_Context::event_redo_handler));
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,&StateSelect_Context::event_mouse_button_down_handler));
 	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StateSelect_Context::event_refresh_tool_options));
-//	insert(event_def(EVENT_WORKAREA_MOUSE_MOTION,		&StateSelect_Context::event_mouse_motion_handler));
-//	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DRAG,	&StateSelect_Context::event_mouse_motion_handler));
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_UP,	&StateSelect_Context::event_mouse_release_handler));
 	insert(event_def(EVENT_WORKAREA_LAYER_CLICKED,&StateSelect_Context::event_layer_click));
 }
@@ -542,15 +519,6 @@ StateSelect_Context::event_mouse_button_down_handler(const Smach::event& x)
 	}
 }
 
-//Smach::event_result
-//StateSelect_Context::event_mouse_motion_handler(const Smach::event& x)
-//{
-//	//synfig::info("STATE SELECT: Received mouse button motion Event");
-//	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
-
-//	return Smach::RESULT_OK;
-//}
-
 Smach::event_result
 StateSelect_Context::event_mouse_release_handler(const Smach::event& x){
 	return Smach::RESULT_OK;
@@ -560,16 +528,6 @@ Smach::event_result
 StateSelect_Context::event_layer_click(const Smach::event& x)
 {
 	const EventLayerClick& event(*reinterpret_cast<const EventLayerClick*>(&x));
-
-	if(event.layer)
-	{
-		//synfig::info("STATE SELECT: Received layer click Event, \"%s\"",event.layer->get_name().c_str());
-		 pressed = true;
-	}
-	else
-	{
-		//synfig::info("STATE SELECT: Received layer click Event with an empty layer.");
-	}
 
 	switch(event.button)
 	{

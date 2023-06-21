@@ -357,6 +357,8 @@ public:
 	void refresh_selected_ducks();
     //! Clear all selected ducks
 	void clear_selected_ducks();
+	//! clears selected movement ducks set (used in select tool)
+	void clear_selected_movement_ducks();
 	//! Return the number of selected ducks
     /*!
      ** \return the number of selected ducks (handles) has int
