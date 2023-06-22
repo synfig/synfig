@@ -1,4 +1,5 @@
 RENDERING_OPENGL_INTERNAL_HH = \
+	rendering/opengl/internal/headers.h \
 	rendering/opengl/internal/context.h \
 	rendering/opengl/internal/environment.h \
 	rendering/opengl/internal/framebuffer.h \

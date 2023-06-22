@@ -31,6 +31,8 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <cassert>
+
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -44,8 +46,37 @@ namespace rendering
 namespace gl
 {
 
-class Enviroment
+class Environment
 {
+public:
+	Environment();
+
+	static Environment& get_instance()
+	{
+		assert(is_valid(instance));
+		return *instance;
+	}
+
+	static void initialize()
+	{
+		assert(is_valid(instance));
+		instance = new Environment();
+	}
+
+	static void deinitialize()
+	{
+		assert(is_valid(instance));
+		delete instance;
+	}
+
+	static bool is_valid(Environment* instance)
+	{
+		return instance && instance->valid;
+	}
+
+private:
+	bool valid;
+	static Environment* instance;
 };
 
 }; /* end namespace gl */

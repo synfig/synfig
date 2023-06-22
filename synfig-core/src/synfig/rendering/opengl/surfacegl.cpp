@@ -51,12 +51,17 @@ using namespace rendering;
 rendering::Surface::Token SurfaceGL::token(
 	Desc<SurfaceGL>("SurfaceGL") );
 
+SurfaceGL::SurfaceGL() {}
 
 SurfaceGL::SurfaceGL(const Surface &other)
-	{ assign(other); }
+{
+	assign(other);
+}
 
 SurfaceGL::~SurfaceGL()
-	{ reset(); }
+{
+	reset();
+}
 
 bool
 SurfaceGL::create_vfunc(int width, int height)
@@ -66,6 +71,12 @@ SurfaceGL::create_vfunc(int width, int height)
 
 bool
 SurfaceGL::assign_vfunc(const rendering::Surface &surface)
+{
+	return false;
+}
+
+bool
+SurfaceGL::clear_vfunc()
 {
 	return false;
 }
