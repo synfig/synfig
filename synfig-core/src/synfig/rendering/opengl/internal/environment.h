@@ -31,7 +31,12 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include "context.h"
+
 #include <cassert>
+#include <thread>
+
+#include <map>
 
 /* === M A C R O S ========================================================= */
 
@@ -50,6 +55,7 @@ class Environment
 {
 public:
 	Environment();
+	~Environment();
 
 	static Environment& get_instance()
 	{
@@ -59,13 +65,14 @@ public:
 
 	static void initialize()
 	{
-		assert(is_valid(instance));
+		assert(!is_valid(instance));
 		instance = new Environment();
 	}
 
 	static void deinitialize()
 	{
 		assert(is_valid(instance));
+
 		delete instance;
 	}
 
@@ -74,9 +81,16 @@ public:
 		return instance && instance->valid;
 	}
 
+	Context& get_or_create_context(std::thread::id id);
+
 private:
 	bool valid;
 	static Environment* instance;
+
+	Context* mainContext = nullptr;
+	std::thread mainThread;
+
+	std::map<std::thread::id, Context*> contexts;
 };
 
 }; /* end namespace gl */

@@ -30,6 +30,9 @@
 #define __SYNFIG_RENDERING_GL_CONTEXT_H
 
 /* === H E A D E R S ======================================================= */
+#include "headers.h"
+
+#include <mutex>
 
 /* === M A C R O S ========================================================= */
 
@@ -46,6 +49,20 @@ namespace gl
 
 class Context
 {
+public:
+	Context(Context* par);
+	~Context();
+
+	void use();
+	void unuse();
+
+private:
+	static unsigned int cnt;
+
+	std::mutex mutex;
+
+	unsigned int id;
+	GLFWwindow* glfwWindow;
 };
 
 }; /* end namespace gl */
