@@ -31,6 +31,7 @@
 
 /* === H E A D E R S ======================================================= */
 #include "headers.h"
+#include "shaders.h"
 
 #include <mutex>
 
@@ -47,11 +48,14 @@ namespace rendering
 namespace gl
 {
 
+// all internal objects assume a valid bound opengl context
 class Context
 {
 public:
 	Context(Context* par);
 	~Context();
+
+	bool initialize();
 
 	void use();
 	void unuse();
@@ -61,8 +65,13 @@ private:
 
 	std::mutex mutex;
 
+	bool initialized = false;
+	bool load_programs = false;
+
 	unsigned int id;
 	GLFWwindow* glfwWindow;
+
+	Programs* programs = nullptr;
 };
 
 }; /* end namespace gl */

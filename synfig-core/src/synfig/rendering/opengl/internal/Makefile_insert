@@ -3,13 +3,13 @@ RENDERING_OPENGL_INTERNAL_HH = \
 	rendering/opengl/internal/context.h \
 	rendering/opengl/internal/environment.h \
 	rendering/opengl/internal/framebuffer.h \
-	rendering/opengl/internal/shader.h
+	rendering/opengl/internal/shaders.h
 
 RENDERING_OPENGL_INTERNAL_CC = \
 	rendering/opengl/internal/context.cpp \
 	rendering/opengl/internal/environment.cpp \
 	rendering/opengl/internal/framebuffer.cpp \
-	rendering/opengl/internal/shader.cpp
+	rendering/opengl/internal/shaders.cpp
 
 RENDERING_HH += \
     $(RENDERING_OPENGL_INTERNAL_HH)

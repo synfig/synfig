@@ -108,9 +108,7 @@ Renderer::initialize_renderers()
 void
 Renderer::deinitialize_renderers()
 {
-#ifdef WITH_OPENGL
 	RendererGL::deinitialize();
-#endif
 	RendererSW::deinitialize();
 }
 

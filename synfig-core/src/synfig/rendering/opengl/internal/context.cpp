@@ -38,6 +38,8 @@
 #include "context.h"
 #include "headers.h"
 
+#include "environment.h"
+
 #include "synfig/general.h"
 
 #endif
@@ -48,8 +50,6 @@ using namespace rendering;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
-
-#define OPENGL_DEBUG_OUTPUT
 
 #ifdef OPENGL_DEBUG_OUTPUT
 void APIENTRY glDebugOutput(GLenum source, 
@@ -111,8 +111,10 @@ void APIENTRY glDebugOutput(GLenum source,
 /* === M E T H O D S ======================================================= */
 unsigned int gl::Context::cnt = 0;
 
-gl::Context::Context(gl::Context* par) : id(cnt++)
+gl::Context::Context(gl::Context* par) : initialized(false), id(cnt++)
 {
+	load_programs = par != nullptr;
+
 	if(par == nullptr)
 	{
 		glfwInit();
@@ -135,6 +137,8 @@ gl::Context::Context(gl::Context* par) : id(cnt++)
 		info("Opengl[N-%d]: GLFW Initialized", id);
 	}
 
+	assert(par == NULL || (par != NULL && par->glfwWindow != NULL));
+
     glfwWindow = glfwCreateWindow(400, 400, "opengl main hidden window", 
 			NULL, 
 			par != NULL ? par->glfwWindow : NULL);
@@ -151,6 +155,7 @@ gl::Context::Context(gl::Context* par) : id(cnt++)
 		if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 		{
 			error("Opengl[H-%d]: Failed to initialize GLAD", id);
+			glfwMakeContextCurrent(NULL);
 			return;
 		}
 		info("Opengl[N-%d]: GLAD Initialized", id);
@@ -167,23 +172,55 @@ gl::Context::Context(gl::Context* par) : id(cnt++)
         glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
     }
 #endif
+	glfwMakeContextCurrent(NULL);
 }
 
 gl::Context::~Context()
 {
 	glfwDestroyWindow(glfwWindow);
+	if(programs)
+	{
+		programs->deinitialize();
+		delete programs;
+	}
+}
+
+bool gl::Context::initialize()
+{
+	assert(glfwWindow);
+	assert(!initialized);
+
+	if(load_programs)
+	{
+		programs = new Programs();
+		programs->initialize(Environment::get_instance().get_shaders());
+
+		if(!programs->is_valid())
+		{
+			error("Opengl[H-%d]: Failed to initialize programs", id);
+			programs->deinitialize();
+			delete programs;
+			return false;
+		}
+	}
+
+	info("Opengl[N]: Context initialized");
+	initialized = true;
+	return initialized;
 }
 
 void gl::Context::use()
 {
 	mutex.lock();
-	assert(glfwWindow);
 	glfwMakeContextCurrent(glfwWindow);
+
+	if(!initialized) initialize();
+
+	assert(initialized);
 }
 
 void gl::Context::unuse()
 {
-	assert(glfwWindow);
 	glfwMakeContextCurrent(NULL);
 	mutex.unlock();
 }

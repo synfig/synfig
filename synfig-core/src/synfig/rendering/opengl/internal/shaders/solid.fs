@@ -1,8 +1,9 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/internal/shader.cpp
-**	\brief Shader
+/*!	\file synfig/rendering/opengl/internal/glsl/solid.fs
+**	\brief Solid Color Fragment Shader
 **
 **	\legal
+**	......... ... 2015 Ivan Mahonin
 **	......... ... 2023 Bharat Sahlot
 **
 **	This file is part of Synfig.
@@ -23,28 +24,12 @@
 */
 /* ========================================================================= */
 
-/* === H E A D E R S ======================================================= */
+#version 330 core
 
-#ifdef USING_PCH
-#	include "pch.h"
-#else
-#ifdef HAVE_CONFIG_H
-#	include <config.h>
-#endif
+uniform vec4 color;
+layout(location = 0) out vec4 out_color;
 
-#include "shader.h"
-
-#endif
-
-using namespace synfig;
-using namespace rendering;
-
-/* === M A C R O S ========================================================= */
-
-/* === G L O B A L S ======================================================= */
-
-/* === P R O C E D U R E S ================================================= */
-
-/* === M E T H O D S ======================================================= */
-
-/* === E N T R Y P O I N T ================================================= */
+void main()
+{
+	out_color = color;
+}

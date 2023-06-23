@@ -1,8 +1,9 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/internal/headers.h
-**	\brief Headers
+/*!	\file synfig/rendering/opengl/internal/glsl/basic.vs
+**	\brief Simple Vertex Shader
 **
 **	\legal
+**	......... ... 2015 Ivan Mahonin
 **	......... ... 2023 Bharat Sahlot
 **
 **	This file is part of Synfig.
@@ -23,12 +24,11 @@
 */
 /* ========================================================================= */
 
-#ifndef __SYNFIG_RENDERING_GL_HEADERS_H
-#define __SYNFIG_RENDERING_GL_HEADERS_H
+#version 330 core
 
-#include "glad/glad.h"
-#include <GLFW/glfw3.h>
+layout(location = 0) in vec2 position;
 
-#define OPENGL_DEBUG_OUTPUT
-
-#endif
+void main()
+{
+	gl_Position = vec4(position, 0.0, 1.0);
+}

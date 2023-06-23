@@ -32,9 +32,11 @@
 /* === H E A D E R S ======================================================= */
 
 #include "context.h"
+#include "shaders.h"
 
 #include <cassert>
 #include <thread>
+#include <mutex>
 
 #include <map>
 
@@ -71,8 +73,6 @@ public:
 
 	static void deinitialize()
 	{
-		assert(is_valid(instance));
-
 		delete instance;
 	}
 
@@ -82,13 +82,18 @@ public:
 	}
 
 	Context& get_or_create_context(std::thread::id id);
+	const Shaders& get_shaders() const { assert(shaders); return *shaders; }
 
 private:
+	std::mutex mutex;
+
 	bool valid;
 	static Environment* instance;
 
-	Context* mainContext = nullptr;
 	std::thread mainThread;
+	Context* mainContext = nullptr;
+
+	Shaders* shaders = nullptr;
 
 	std::map<std::thread::id, Context*> contexts;
 };
