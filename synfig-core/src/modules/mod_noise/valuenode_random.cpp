@@ -65,10 +65,14 @@ ValueNode_Random::ValueNode_Random(const ValueBase &value):
 	init_children_vocab();
 	random.set_seed(time(nullptr));
 
+	ValueNode_Const::Handle val_smooth;
+	val_smooth = ValueNode_Const::Handle::cast_static(ValueNode_Const::create(int(RandomNoise::SMOOTH_CUBIC)));
+	val_smooth->set_static(true);
+
 	set_link("radius",ValueNode_Const::create(Real(1)));
 	set_link("seed",ValueNode_Const::create(random.get_seed()));
 	set_link("speed",ValueNode_Const::create(Real(1)));
-	set_link("smooth",ValueNode_Const::create(int(RandomNoise::SMOOTH_CUBIC)));
+	set_link("smooth",val_smooth);
 	set_link("loop",ValueNode_Const::create(Real(0)));
 
 	Type &type(get_type());
@@ -269,7 +273,6 @@ ValueNode_Random::get_children_vocab_vfunc()const
 		.add_enum_value(RandomNoise::SMOOTH_SPLINE,"spline",_("Spline"))
 		.add_enum_value(RandomNoise::SMOOTH_CUBIC,"cubic",_("Cubic"))
 	);
-
 
 	ret.push_back(ParamDesc(ValueBase(),"loop")
 		.set_local_name(_("Loop Time"))
