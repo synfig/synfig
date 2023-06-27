@@ -26,6 +26,7 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include "synfig/rendering/opengl/internal/context.h"
 #ifdef USING_PCH
 #	include "pch.h"
 #else
@@ -58,23 +59,23 @@ gl::Environment::Environment()
 {
 	valid = false;
 
+	mainContext = new gl::Context();
+	assert(mainContext);
+	mainContext->initialize();
+
+	valid = true;
+
 	mainThread = std::thread([&]() {
 		std::lock_guard<std::mutex> lock(mutex);
 
 		// HACK: If glfw context is created before GTK application then the GTK application fails to register
 		std::this_thread::sleep_for(std::chrono::duration<double, std::milli>(2000));
 
-		mainContext = new gl::Context(nullptr);
-		assert(mainContext);
-
-		mainContext->use();
-		shaders = new Shaders();
-		shaders->initialize();
-		assert(shaders->is_valid());
-		info("Opengl[N]: Shaders loaded");
-		mainContext->unuse();
-
-		valid = true;
+		// mainContext = new gl::Context();
+		// assert(mainContext);
+		// mainContext->initialize();
+		//
+		// valid = true;
 	});
 }
 
@@ -83,41 +84,46 @@ gl::Environment::~Environment()
 	mainThread.join();
 	std::lock_guard<std::mutex> lock(mutex);
 
-	if(shaders)
-	{
-		mainContext->use();
-		shaders->deinitialize();
-		delete shaders;
-		mainContext->unuse();
-	}
-
-	for(auto x: contexts) delete x.second;
 	delete mainContext;
 }
 
-gl::Context& gl::Environment::get_or_create_context(std::thread::id id)
+gl::Context& gl::Environment::get_or_create_context()
 {
 	std::lock_guard<std::mutex> lock(mutex);
-
 	if(mainContext == nullptr)
 	{
-		mainContext = new gl::Context(nullptr);
+		mainContext = new gl::Context();
 		assert(mainContext);
-
-		mainContext->use();
-		shaders = new Shaders();
-		shaders->initialize();
-		assert(shaders->is_valid());
-		info("Opengl[N]: Shaders loaded");
-		mainContext->unuse();
+		mainContext->initialize();
 
 		valid = true;
 	}
-
-	if(contexts.count(id) != 0) return *contexts[id];
-
-	Context* context = new Context(instance->mainContext);
-	contexts[id] = context;
-	return *context;
+	return *mainContext;
 }
+
+// gl::Context& gl::Environment::get_or_create_context(std::thread::id id)
+// {
+// 	std::lock_guard<std::mutex> lock(mutex);
+//
+// 	if(mainContext == nullptr)
+// 	{
+// 		mainContext = new gl::Context(nullptr);
+// 		assert(mainContext);
+//
+// 		mainContext->use();
+// 		shaders = new Shaders();
+// 		shaders->initialize();
+// 		assert(shaders->is_valid());
+// 		info("Opengl[N]: Shaders loaded");
+// 		mainContext->unuse();
+//
+// 		valid = true;
+// 	}
+//
+// 	if(contexts.count(id) != 0) return *contexts[id];
+//
+// 	Context* context = new Context(instance->mainContext);
+// 	contexts[id] = context;
+// 	return *context;
+// }
 /* === E N T R Y P O I N T ================================================= */

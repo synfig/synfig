@@ -52,7 +52,7 @@ namespace gl
 class Context
 {
 public:
-	Context(Context* par);
+	Context();
 	~Context();
 
 	bool initialize();
@@ -61,17 +61,15 @@ public:
 	void unuse();
 
 private:
-	static unsigned int cnt;
-
 	std::mutex mutex;
 
 	bool initialized = false;
-	bool load_programs = false;
 
-	unsigned int id;
-	GLFWwindow* glfwWindow;
+	GLFWwindow* glfwWindow = nullptr;
 
 	Programs* programs = nullptr;
+
+	Shaders* shaders = nullptr;
 };
 
 }; /* end namespace gl */

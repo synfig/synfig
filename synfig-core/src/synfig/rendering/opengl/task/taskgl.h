@@ -57,7 +57,7 @@ public:
 	virtual Surface::Token::Handle get_mode_target_token() const
 		{ return TargetSurface::token.handle(); }
 	virtual bool get_mode_allow_multithreading() const
-		{ return true; }
+		{ return false; }
 };
 
 } /* end namespace rendering */

@@ -65,8 +65,6 @@ void APIENTRY glDebugOutput(GLenum source,
 	const char* sourceStr = "Other";
 	const char* typeStr = "Other";
 
-	const int ctx_id = *((int*)userParam);
-
     switch (source)
     {
         case GL_DEBUG_SOURCE_API:             sourceStr = "API"; break;
@@ -91,16 +89,16 @@ void APIENTRY glDebugOutput(GLenum source,
 	
 	switch (severity) {
 		case GL_DEBUG_SEVERITY_HIGH:
-			error("Opengl[H-%d](%s:%s:%d): %s", ctx_id, sourceStr, typeStr, id, message);
+			error("Opengl[H](%s:%s:%u) -> %s", sourceStr, typeStr, id, message);
 			break;
 		case GL_DEBUG_SEVERITY_MEDIUM:
-			warning("Opengl[M-%d](%s:%s:%d): %s", ctx_id, sourceStr, typeStr, id, message);
+			warning("Opengl[M](%s:%s:%u) -> %s", sourceStr, typeStr, id, message);
 			break;
 		case GL_DEBUG_SEVERITY_LOW:
-			warning("Opengl[L-%d](%s:%s:%d): %s", ctx_id, sourceStr, typeStr, id, message);
+			warning("Opengl[L](%s:%s:%u) -> %s", sourceStr, typeStr, id, message);
 			break;
 		case GL_DEBUG_SEVERITY_NOTIFICATION:
-			info("Opengl[N-%d](%s:%s:%d): %s", ctx_id, sourceStr, typeStr, id, message);
+			info("Opengl[N](%s:%s:%u) -> %s", sourceStr, typeStr, id, message);
 			break;
 	}
 }
@@ -109,71 +107,8 @@ void APIENTRY glDebugOutput(GLenum source,
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
-unsigned int gl::Context::cnt = 0;
 
-gl::Context::Context(gl::Context* par) : initialized(false), id(cnt++)
-{
-	load_programs = par != nullptr;
-
-	if(par == nullptr)
-	{
-		glfwInit();
-
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-#ifdef OPENGL_DEBUG_OUTPUT
-		glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
-#endif
-
-#ifdef __APPLE__
-		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-		glfwWindowHint(GLFW_COCOA_MENUBAR, GL_FALSE);
-#endif
-
-		glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
-
-		info("Opengl[N-%d]: GLFW Initialized", id);
-	}
-
-	assert(par == NULL || (par != NULL && par->glfwWindow != NULL));
-
-    glfwWindow = glfwCreateWindow(400, 400, "opengl main hidden window", 
-			NULL, 
-			par != NULL ? par->glfwWindow : NULL);
-
-    if(glfwWindow == NULL)
-    {
-        error("Opengl[H-%d]: Failed to create opengl context", id);
-		return;
-    }
-
-	if(par == nullptr)
-	{
-		glfwMakeContextCurrent(glfwWindow);
-		if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-		{
-			error("Opengl[H-%d]: Failed to initialize GLAD", id);
-			glfwMakeContextCurrent(NULL);
-			return;
-		}
-		info("Opengl[N-%d]: GLAD Initialized", id);
-	}
-
-#ifdef OPENGL_DEBUG_OUTPUT
-	glfwMakeContextCurrent(glfwWindow);
-    int flags; glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
-    if (flags & GL_CONTEXT_FLAG_DEBUG_BIT)
-    {
-        glEnable(GL_DEBUG_OUTPUT);
-        glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS); 
-        glDebugMessageCallback(glDebugOutput, &id);
-        glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
-    }
-#endif
-	glfwMakeContextCurrent(NULL);
-}
+gl::Context::Context() : initialized(false) {}
 
 gl::Context::~Context()
 {
@@ -183,28 +118,80 @@ gl::Context::~Context()
 		programs->deinitialize();
 		delete programs;
 	}
+
+	if(shaders)
+	{
+		shaders->deinitialize();
+		delete shaders;
+	}
 }
 
 bool gl::Context::initialize()
 {
-	assert(glfwWindow);
-	assert(!initialized);
+	glfwInit();
 
-	if(load_programs)
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+#ifdef OPENGL_DEBUG_OUTPUT
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
+#endif
+
+#ifdef __APPLE__
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	glfwWindowHint(GLFW_COCOA_MENUBAR, GL_FALSE);
+#endif
+
+	glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
+
+    glfwWindow = glfwCreateWindow(400, 400, "opengl main hidden window", NULL, NULL);
+    if(glfwWindow == NULL)
+    {
+        error("Opengl[H] -> Failed to create opengl context");
+		return false;
+    }
+
+	info("Opengl[N] -> GLFW Initialized");
+
+	glfwMakeContextCurrent(glfwWindow);
+	if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 	{
-		programs = new Programs();
-		programs->initialize(Environment::get_instance().get_shaders());
-
-		if(!programs->is_valid())
-		{
-			error("Opengl[H-%d]: Failed to initialize programs", id);
-			programs->deinitialize();
-			delete programs;
-			return false;
-		}
+		error("Opengl[H] -> Failed to initialize GLAD");
+		glfwMakeContextCurrent(NULL);
+		return false;
 	}
+	info("Opengl[N] -> GLAD Initialized");
 
-	info("Opengl[N]: Context initialized");
+#ifdef OPENGL_DEBUG_OUTPUT
+    int flags; glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
+    if (flags & GL_CONTEXT_FLAG_DEBUG_BIT)
+    {
+        glEnable(GL_DEBUG_OUTPUT);
+        glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS); 
+        glDebugMessageCallback(glDebugOutput, NULL);
+        glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+    }
+#endif
+
+	shaders = new Shaders();
+	shaders->initialize();
+	assert(shaders->is_valid());
+	info("Opengl[N] -> Shaders loaded");
+
+	programs = new Programs();
+	programs->initialize(*shaders);
+
+	if(!programs->is_valid())
+	{
+		error("Opengl[H] -> Failed to initialize programs");
+		programs->deinitialize();
+		delete programs;
+		return false;
+	}
+	glfwMakeContextCurrent(NULL);
+
+	info("Opengl[N] -> Context initialized");
 	initialized = true;
 	return initialized;
 }
@@ -212,11 +199,11 @@ bool gl::Context::initialize()
 void gl::Context::use()
 {
 	mutex.lock();
-	glfwMakeContextCurrent(glfwWindow);
 
 	if(!initialized) initialize();
-
 	assert(initialized);
+
+	glfwMakeContextCurrent(glfwWindow);
 }
 
 void gl::Context::unuse()

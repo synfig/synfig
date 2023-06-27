@@ -81,8 +81,9 @@ public:
 		return instance && instance->valid;
 	}
 
-	Context& get_or_create_context(std::thread::id id);
-	const Shaders& get_shaders() const { assert(shaders); return *shaders; }
+	// Context& get_or_create_context(std::thread::id id);
+
+	Context& get_or_create_context();
 
 private:
 	std::mutex mutex;
@@ -93,9 +94,9 @@ private:
 	std::thread mainThread;
 	Context* mainContext = nullptr;
 
-	Shaders* shaders = nullptr;
+	// Shaders* shaders = nullptr;
 
-	std::map<std::thread::id, Context*> contexts;
+	// std::map<std::thread::id, Context*> contexts;
 };
 
 }; /* end namespace gl */
