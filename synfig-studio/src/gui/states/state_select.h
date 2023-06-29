@@ -33,6 +33,7 @@
 
 #include "smach.h"
 #include <gui/states/state_normal.h>
+#include <gui/states/state_rotate.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -58,6 +59,15 @@ class DuckDrag_Select : public DuckDrag_Combo
 {
 public:
 	DuckDrag_Select();
+};
+
+class DuckDrag_NonVertex_Rotate : public DuckDrag_Rotate
+{
+public:
+	DuckDrag_NonVertex_Rotate();
+	void begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& begin);
+	bool end_duck_drag(Duckmatic* duckmatic);
+	void duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector);
 };
 
 }; // END of namespace studio

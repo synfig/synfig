@@ -317,8 +317,8 @@ void Duckmatic::select_all_movement_ducks(etl::loose_handle<studio::CanvasView> 
 
 	DuckMap::const_iterator iter;
 	for(iter=duck_map.begin();iter!=duck_map.end();++iter){
-		if (iter->second->get_type() != Duck::TYPE_VERTEX &&
-			 iter->second->get_type() != Duck::TYPE_POSITION)
+		if (iter->second->get_type() != Duck::TYPE_VERTEX /*&&
+			 iter->second->get_type() != Duck::TYPE_POSITION*/)
 			continue;
 
 		if (iter->second){
