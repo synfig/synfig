@@ -26,6 +26,7 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include "synfig/rendering/opengl/internal/framebuffer.h"
 #ifdef USING_PCH
 #	include "pch.h"
 #else
@@ -37,6 +38,7 @@
 
 #include "context.h"
 #include "headers.h"
+#include "framebuffer.h"
 
 #include "environment.h"
 
@@ -189,6 +191,12 @@ bool gl::Context::initialize()
 		delete programs;
 		return false;
 	}
+
+	Framebuffer buf(1080, 1920);
+	buf.use_write();
+	buf.unuse();
+	buf.use_read(3);
+	buf.unuse();
 	glfwMakeContextCurrent(NULL);
 
 	info("Opengl[N] -> Context initialized");

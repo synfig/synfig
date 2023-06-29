@@ -33,6 +33,8 @@
 #endif
 
 #include "framebuffer.h"
+#include "synfig/general.h"
+#include <cassert>
 
 #endif
 
@@ -46,5 +48,74 @@ using namespace rendering;
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
+// TODO: make it configurable like: allow depth testing by using a depth texture
+gl::Framebuffer::Framebuffer(int width, int height)
+{
+	valid = false;
+
+	glGenFramebuffers(1, &id);
+	glBindFramebuffer(GL_FRAMEBUFFER, id);
+
+	glGenTextures(1, &texId);
+	glBindTexture(GL_TEXTURE_2D, texId);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_FLOAT, nullptr);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);  
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texId, 0);
+
+	if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) return;
+
+	valid = true;
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void gl::Framebuffer::use_write()
+{
+	assert(is_valid());
+
+	glBindFramebuffer(GL_FRAMEBUFFER, id);
+	glClearColor(0.f, 0.f, 0.f, 0.f);
+	glClear(GL_COLOR_BUFFER_BIT);
+	is_writing = true;
+}
+
+void gl::Framebuffer::use_read(int tex)
+{
+	assert(is_valid());
+
+	if(is_writing)
+	{
+		warning("Opengl[M] -> Attempting to read from a framebuffer while it is used for writing: %d", id);
+	}
+
+	// TODO: confirm this works
+	glActiveTexture(GL_TEXTURE0 + tex);
+	glBindTexture(GL_TEXTURE_2D, texId);
+	is_reading = true;
+	activeTexSlot = tex;
+}
+
+void gl::Framebuffer::unuse()
+{
+	assert(is_valid());
+
+	// TODO: potential bug where glActiveTexture is called somewhere else and we still unbind in unuse, which unbinds some other texture
+	if(is_writing)
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+
+	if(is_reading)
+	{
+		glActiveTexture(GL_TEXTURE0 + activeTexSlot);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
+	is_writing = is_reading = false;
+}
 
 /* === E N T R Y P O I N T ================================================= */

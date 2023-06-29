@@ -29,6 +29,9 @@
 #define __SYNFIG_RENDERING_GL_FRAMEBUFFER_H
 
 /* === H E A D E R S ======================================================= */
+#include "synfig/color/color.h"
+
+#include "headers.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -45,6 +48,25 @@ namespace gl
 
 class Framebuffer
 {
+public:
+	Framebuffer(int width, int height);
+
+	// remember to call glViewport once to set appropiate viewport settings
+	void use_write();
+	void use_read(int tex);
+
+	void unuse();
+
+	Color* get_pixels();
+
+	bool is_valid() const { return valid; }
+
+private:
+	GLuint id, texId, activeTexSlot;
+
+	bool valid = false;
+	bool is_writing = false;
+	bool is_reading = false;
 };
 
 }; /* end namespace gl */

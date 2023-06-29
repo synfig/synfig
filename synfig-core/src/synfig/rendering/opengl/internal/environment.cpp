@@ -59,11 +59,11 @@ gl::Environment::Environment()
 {
 	valid = false;
 
-	mainContext = new gl::Context();
-	assert(mainContext);
-	mainContext->initialize();
-
-	valid = true;
+	// mainContext = new gl::Context();
+	// assert(mainContext);
+	// mainContext->initialize();
+	//
+	// valid = true;
 
 	mainThread = std::thread([&]() {
 		std::lock_guard<std::mutex> lock(mutex);
@@ -71,11 +71,11 @@ gl::Environment::Environment()
 		// HACK: If glfw context is created before GTK application then the GTK application fails to register
 		std::this_thread::sleep_for(std::chrono::duration<double, std::milli>(2000));
 
-		// mainContext = new gl::Context();
-		// assert(mainContext);
-		// mainContext->initialize();
-		//
-		// valid = true;
+		mainContext = new gl::Context();
+		assert(mainContext);
+		mainContext->initialize();
+
+		valid = true;
 	});
 }
 
