@@ -241,9 +241,7 @@ LayerParamTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
 				LayerList mylist(layer_list);
 				LayerList::iterator iter2(mylist.begin());
 
-				//for(;iter2!=layer_list.end();++iter2)
-				for(;iter2!=mylist.end();iter2++)
-				{
+				for ( ; iter2 != mylist.end(); ++iter2) {
 					if(!canvas_interface()->change_value(synfigapp::ValueDesc(*iter2,param_desc.get_name()),x.get()))
 					{
 						// ERROR!
@@ -348,7 +346,7 @@ LayerParamTreeStore::rebuild()
 			ParamVocab x = layer_n->get_param_vocab();
 			ParamVocab::iterator iter;
 
-			for(iter=vocab.begin();iter!=vocab.end();++iter)
+			for (iter = vocab.begin(); iter != vocab.end(); ++iter)
 			{
 				String name(iter->get_name());
 				ParamVocab::iterator iter2(find_param_desc(x,name));
@@ -358,7 +356,7 @@ LayerParamTreeStore::rebuild()
 					// remove it and start over
 					vocab.erase(iter);
 					iter=vocab.begin();
-					iter--;
+					--iter;
 					continue;
 				}
 			}

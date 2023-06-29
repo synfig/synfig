@@ -67,9 +67,7 @@ studio::render_gradient_to_window(const Cairo::RefPtr<Cairo::Context>& cr,const 
 	Cairo::RefPtr<Cairo::LinearGradient> gpattern = Cairo::LinearGradient::create(ca.get_x(), ca.get_y(), ca.get_x()+width, ca.get_y());
 	double a, r, g, b;
 	Gradient::CPoint cp;
-	Gradient::const_iterator iter;
-	for(iter=gradient.begin();iter!=gradient.end(); iter++)
-	{
+	for (Gradient::const_iterator iter = gradient.begin(); iter != gradient.end(); ++iter) {
 		cp=*iter;
 		a=cp.color.get_a();
 		r=cp.color.get_r();
@@ -130,10 +128,9 @@ Widget_Gradient::on_draw(const ::Cairo::RefPtr< ::Cairo::Context>& cr)
 
 	render_gradient_to_window(cr,Gdk::Rectangle(0,0,w,h),gradient_);
 
-	Gradient::iterator iter,selected_iter;
+	Gradient::iterator selected_iter;
 	bool show_selected(false);
-	for(iter=gradient_.begin();iter!=gradient_.end();iter++)
-	{
+	for (Gradient::iterator iter = gradient_.begin(); iter != gradient_.end(); ++iter) {
 		if(*iter!=selected_cpoint)
 		{
 			get_style_context()->render_arrow(
@@ -286,10 +283,10 @@ Widget_Gradient::on_event(GdkEvent *event)
 				{
 					float begin(-100000000),end(100000000);
 					Gradient::iterator before(iter),after(iter);
-					after++;
+					++after;
 					if(iter!=gradient_.begin())
 					{
-						before--;
+						--before;
 						begin=before->pos;
 					}
 					if(after!=gradient_.end())

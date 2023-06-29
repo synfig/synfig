@@ -74,22 +74,6 @@ void process_job_list(std::list<Job>& job_list, const TargetParam& target_params
 	}
 }
 
-std::string get_extension(const std::string &filename)
-{
-	std::size_t found = filename.rfind('.');
-	if (found == std::string::npos) return ""; // extension not found
-
-	return filename.substr(found);
-}
-
-std::string replace_extension(const std::string &filename, const std::string &new_extension)
-{
-	std::size_t found = filename.rfind('.');
-	if (found == std::string::npos) return filename + "." + new_extension; // extension not found
-	
-	return filename.substr(0, found) + "." + new_extension;
-}
-
 std::string get_absolute_path(const std::string& relative_path) {
   Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(relative_path);
   return file->get_path();
@@ -99,7 +83,7 @@ static void try_to_determine_target_from_outfile(Job& job)
 {
 	VERBOSE_OUT(3) << _("Target name undefined, attempting to figure it out")
 				   << std::endl;
-	std::string ext = get_extension(job.outfilename);
+	std::string ext = job.outfilename.extension().u8string();
 	if (ext.length())
 		ext = ext.substr(1);
 
@@ -138,20 +122,21 @@ static void create_output_filename(Job& job)
 	{
 		std::string new_extension;
 		if(Target::book().count(job.target_name))
-			new_extension = Target::book()[job.target_name].filename;
+			new_extension = Target::book()[job.target_name].file_extension;
 		else
 			new_extension = job.target_name;
 
-		job.outfilename = replace_extension(job.filename, new_extension);
+		job.outfilename = job.filename;
+		job.outfilename.replace_extension(new_extension);
 	}
 
 	VERBOSE_OUT(4) << "Target name = " << job.target_name.c_str() << std::endl;
-	VERBOSE_OUT(4) << "Outfilename = " << job.outfilename.c_str() << std::endl;
+	VERBOSE_OUT(4) << "Outfilename = " << job.outfilename.u8_str() << std::endl;
 }
 
 static bool check_permissions(Job& job)
 {
-	if (g_access(get_absolute_path(job.outfilename + "/../").c_str(), W_OK) == -1) {
+	if (g_access(filesystem::Path::absolute_path(job.outfilename.parent_path().u8string()).c_str(), W_OK) == -1) {
 		synfig::error(_("Unable to create output for \"%s\": %s"), job.filename.c_str(), strerror(errno));
 		synfig::error(_("Throwing out job..."));
 		return false;
@@ -302,11 +287,11 @@ void process_job (Job& job)
 	print_job_info(job);
 
 	RenderProgress p;
-	p.task(job.filename + " ==> " + job.outfilename);
+	p.task(job.filename.u8string() + " ==> " + job.outfilename.u8string());
 
 	if(job.sifout)
 	{
-		save_canvas_to_file(job.outfilename, job.canvas);
+		save_canvas_to_file(job.outfilename.u8string(), job.canvas);
 	}
 	else
 	{

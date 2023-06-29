@@ -4,30 +4,17 @@ MAINTAINERCLEANFILES = \
 AM_CXXFLAGS = \
 	@CXXFLAGS@ \
 	-I$(top_srcdir) \
-	-I$(top_builddir)/ETL
+	-I$(top_builddir)
 
 AM_CPPFLAGS = \
 	-I$(top_srcdir) \
-	-I$(top_builddir)/ETL
+	-I$(top_builddir)
 
 TESTS = \
-	handle \
-	hermite \
-	stringf \
-	pen \
-	surface
+	handle
 
 check_PROGRAMS = \
-	handle \
-	hermite \
-	stringf \
-	pen \
-	surface
+	handle
 
-surface_SOURCES=surface.cpp
-pen_SOURCES=pen.cpp
 handle_SOURCES=handle.cpp
-stringf_SOURCES=stringf.cpp
 
-stringf_CXXFLAGS = @GLIBMM_CFLAGS@
-stringf_LDADD = @GLIBMM_LIBS@

@@ -94,7 +94,7 @@ Action::LayerCopy::is_candidate(const ParamList &x)
 		return false;
 
 	bool there_is_a_bitmap_layer = false;
-	for(ParamList::const_iterator i = x.begin(); i != x.end(); i++) {
+	for (ParamList::const_iterator i = x.begin(); i != x.end(); ++i) {
 		if (i->first == "layer") {
 			if (i->second.get_type() != Param::TYPE_LAYER)
 				return false;
@@ -136,8 +136,7 @@ Action::LayerCopy::prepare()
 	if(!first_time())
 		return;
 
-	for(std::list<Layer::Handle>::iterator i = layers.begin(); i != layers.end(); ++i)
-	{
+	for (std::list<Layer::Handle>::iterator i = layers.begin(); i != layers.end(); ++i) {
 		Layer::Handle layer(*i);
 
 		Canvas::Handle subcanvas(layer->get_canvas());
@@ -174,7 +173,7 @@ Action::LayerCopy::prepare()
 		new_layer->set_description(description);
 
 		// copy file
-		etl::handle<Layer_Bitmap> layer_bitmap = etl::handle<Layer_Bitmap>::cast_dynamic(layer);
+		Layer_Bitmap::Handle layer_bitmap = Layer_Bitmap::Handle::cast_dynamic(layer);
 		if (layer_bitmap && !filename.empty())
 		{
 			get_canvas_interface()

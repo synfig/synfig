@@ -106,8 +106,10 @@ calc_divisions(float fps, double range, double sub_range, double &out_step, int 
 	{
 		std::vector<double>::iterator next = synfig::binary_find(ranges.begin(), ranges.end(), mid_range);
 		std::vector<double>::iterator iter = next++;
-		if (iter == ranges.end()) iter--;
-		if (next == ranges.end()) next--;
+		if (iter == ranges.end())
+			--iter;
+		if (next == ranges.end())
+			--next;
 		if (fabs(*next - mid_range) < fabs(*iter - mid_range))
 			iter = next;
 		scale = *iter;

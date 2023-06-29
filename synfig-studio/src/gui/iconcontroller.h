@@ -66,11 +66,12 @@ public:
 std::string layer_icon_name(const synfig::String &layer);
 Glib::RefPtr<Gdk::Pixbuf> get_tree_pixbuf_layer(const synfig::String &layer);
 
+std::string state_icon_name(const synfig::String& state);
 std::string value_icon_name(synfig::Type &type);
 std::string interpolation_icon_name(synfig::Interpolation type);
 std::string valuenode_icon_name(etl::handle<synfig::ValueNode> value_node);
 Glib::RefPtr<Gdk::Pixbuf> get_tree_pixbuf(synfig::Type &type);
-Gtk::StockID get_action_stock_id(const synfigapp::Action::BookEntry& action);
+std::string get_action_icon_name(const synfigapp::Action::BookEntry& action);
 
 }; // END of namespace studio
 

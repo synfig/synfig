@@ -62,6 +62,7 @@ REGISTER_VALUENODE(ValueNode_BoneWeightPair, RELEASE_VERSION_0_62_00, "boneweigh
 ValueNode_BoneWeightPair::ValueNode_BoneWeightPair(const ValueBase &value, Canvas::LooseHandle canvas):
 	LinkableValueNode(value.get_type())
 {
+	init_children_vocab();
 	if (value.get_type() == type_bone_weight_pair)
 	{
 		BoneWeightPair bone_weight_pair(value.get(BoneWeightPair()));

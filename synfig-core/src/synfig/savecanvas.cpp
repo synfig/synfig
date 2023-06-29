@@ -36,23 +36,17 @@
 
 #include "savecanvas.h"
 
-#include <ETL/stringf>
-
 #include "general.h"
 #include <synfig/localization.h>
 #include "valuenode.h"
 #include "valuenode_registry.h"
 #include "valuenodes/valuenode_animated.h"
 #include "valuenodes/valuenode_const.h"
-#include "valuenodes/valuenode_linear.h"
 #include "valuenodes/valuenode_staticlist.h"
 #include "valuenodes/valuenode_dynamiclist.h"
-#include "valuenodes/valuenode_reference.h"
 #include "valuenodes/valuenode_subtract.h"
 #include "valuenodes/valuenode_bline.h"
 #include "valuenodes/valuenode_bone.h"
-#include "valuenodes/valuenode_wplist.h"
-#include "valuenodes/valuenode_dilist.h"
 #include "dashitem.h"
 #include "time.h"
 #include "keyframe.h"
@@ -75,7 +69,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -256,10 +249,8 @@ xmlpp::Element* encode_dash_item(xmlpp::Element* root, DashItem dash_item)
 xmlpp::Element* encode_gradient(xmlpp::Element* root,Gradient x)
 {
 	root->set_name("gradient");
-	Gradient::const_iterator iter;
 	x.sort();
-	for(iter=x.begin();iter!=x.end();iter++)
-	{
+	for (Gradient::const_iterator iter = x.begin(); iter != x.end(); ++iter) {
 		xmlpp::Element *cpoint(encode_color(root->add_child("color"),iter->color));
 		cpoint->set_attribute("pos",strprintf("%f",iter->pos));
 	}
@@ -684,10 +675,9 @@ xmlpp::Element* encode_linkable_value_node(xmlpp::Element* root,LinkableValueNod
 
 	root->set_attribute("type",value_node->get_type().description.name);
 
-	int i;
 	synfig::ParamVocab child_vocab(value_node->get_children_vocab());
 	synfig::ParamVocab::iterator iter(child_vocab.begin());
-	for(i=0;i<value_node->link_count();i++, iter++)
+	for (int i = 0; i < value_node->link_count(); ++i, ++iter)
 	{
 		// printf("saving link %d : %s\n", i, value_node->link_local_name(i).c_str());
 		ValueNode::ConstHandle link=value_node->get_link(i).constant();
@@ -848,7 +838,7 @@ xmlpp::Element* encode_layer(xmlpp::Element* root,Layer::ConstHandle layer)
 			xmlpp::Element *node=root->add_child("param");
 			node->set_attribute("name",iter->get_name());
 
-			handle<const ValueNode> value_node=dynamic_param_list.find(iter->get_name())->second;
+			ValueNode::ConstHandle value_node=dynamic_param_list.find(iter->get_name())->second;
 
 			// If the valuenode has no ID, then it must be defined in-place
 			if(value_node->get_id().empty())
@@ -901,7 +891,7 @@ xmlpp::Element* encode_layer(xmlpp::Element* root,Layer::ConstHandle layer)
 			 && value.get_type() == type_string)
 			{
 				std::string filename( value.get(String()) );
-				std::string ext = filename_extension(filename);
+				std::string ext = filesystem::Path::filename_extension(filename);
 				if (!ext.empty()) ext = ext.substr(1); // skip initial '.'
 				bool registered_in_importer = Importer::book().count(ext) > 0;
 				bool supports_by_importer = registered_in_importer
@@ -1096,7 +1086,7 @@ synfig::save_canvas(const FileSystem::Identifier &identifier, Canvas::ConstHandl
 			return false;
 		}
 
-		if (filename_extension(identifier.filename) == ".sifz")
+		if (filesystem::Path::filename_extension(identifier.filename) == ".sifz")
 			stream = FileSystem::WriteStream::Handle(new ZWriteStream(stream));
 
 		document.write_to_stream_formatted(*stream, "UTF-8");

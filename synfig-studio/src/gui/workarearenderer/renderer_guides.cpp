@@ -62,18 +62,6 @@ Renderer_Guides::get_enabled_vfunc()const
 	return get_work_area()->get_show_guides();
 }
 
-std::list<float>&
-Renderer_Guides::get_guide_list_x()
-{
-	return get_work_area()->get_guide_list_x();
-}
-
-std::list<float>&
-Renderer_Guides::get_guide_list_y()
-{
-	return get_work_area()->get_guide_list_y();
-}
-
 bool
 Renderer_Guides::event_vfunc(GdkEvent* /*event*/)
 {
@@ -106,8 +94,6 @@ Renderer_Guides::render_vfunc(
 
 	// Draw out the guides
 	{
-		Duckmatic::GuideList::const_iterator iter;
-
 		cr->save();
 		cr->set_line_cap(Cairo::LINE_CAP_BUTT);
 		cr->set_line_join(Cairo::LINE_JOIN_MITER);
@@ -119,44 +105,116 @@ Renderer_Guides::render_vfunc(
 		dashes[1]=5.0;
 		cr->set_dash(dashes, 0);
 
-		// vertical
-		for(iter=get_guide_list_x().begin();iter!=get_guide_list_x().end();++iter)
+		Duckmatic::GuideList::const_iterator iter;
+
+		for (iter = get_work_area()->get_guide_list().begin(); iter!=get_work_area()->get_guide_list().end(); ++iter)
 		{
-			const float x((*iter-window_startx)/pw);
 
-			if(iter==get_work_area()->curr_guide)
+			float x_center((iter->point[0]-window_startx)/pw);
+			float y_center((iter->point[1]-window_starty)/ph);
+			bool current_guide = false;
+
+			if(iter==get_work_area()->curr_guide){
 				cr->set_source_rgb(GDK_COLOR_TO_RGB(GUIDE_COLOR_CURRENT));
-			else
+				current_guide = true;
+			}
+			else{
 				cr->set_source_rgb(guides_color.get_r(),guides_color.get_g(),guides_color.get_b());
-
-			cr->move_to(
-				x,
-				0
+				current_guide = false;
+			}
+			if((iter->angle.get() != 0)  && (synfig::Angle::deg(iter->angle).get() != 90)){
+				//draw the center of rotation for the selected guide
+				if (current_guide) {
+					cr->save();
+					cr->unset_dash();
+					cr->set_source_rgb(0,0,1.0);
+					cr->set_line_width(1.0);
+					cr->move_to(x_center + 6.0, y_center);
+					cr->line_to(x_center - 6.0, y_center);
+					cr->stroke();
+					cr->move_to(x_center, y_center + 6.0);
+					cr->line_to(x_center, y_center - 6.0);
+//					cr->set_source_rgb(0,1,0); //should it instead be a circle ?
+//					cr->arc(x_center, y_center, 3.0, 0, 6.82);
+					cr->stroke();
+					cr->restore();
+				}
+				float slope = -tan(iter->angle.get());
+				//handling exception of when ruler is parallel to its center of rotation axis
+				if (std::isinf(x_center))
+					x_center = 1;
+				if (std::isinf(y_center))
+					y_center = 0;
+				synfig::Point point1;
+				synfig::Point point2;
+				bool point1_done = false, point2_done = false;
+				float temp =0;
+				// equation of guide: y = slope*(x - x_center) + y_center
+				// intersection with x = 0
+				temp =  slope * (-x_center) + y_center;
+				if (temp>0 && temp < drawable_h){
+					point1_done = true;
+					point1 = synfig::Point(0.0, temp);
+				}
+				//intersection with x = drawable_w
+				temp =  slope * (drawable_w - x_center) + y_center;
+				if (temp>0 && temp < drawable_h){
+					if (point1_done){
+						point2 = synfig::Point(drawable_w, temp);
+						point2_done = true;
+					} else{
+						point1 = synfig::Point(drawable_w, temp);
+						point1_done = true;
+					}
+				}
+				if (!point2_done) {
+					//intersection with y = 0
+					temp = x_center + (-y_center)/slope;
+					if (temp>0.0 && temp < drawable_w){
+						if (point1_done){
+							point2 = synfig::Point(temp, 0.0);
+							point2_done = true;
+						} else {
+							point1 = synfig::Point(temp, 0.0);
+						}
+					}
+				}
+				if (!point2_done){
+					//intersection with y = drawable_h
+					temp = x_center + (drawable_h - y_center)/slope;
+					if (temp>0.0 && temp < drawable_w){
+						point2 = synfig::Point(temp, drawable_h);
+					}
+				}
+				cr->move_to(point1[0],point1[1]);
+				cr->line_to(
+				point2[0],
+				point2[1]
 				);
-			cr->line_to(
-				x,
-				drawable_h
-			);
-			cr->stroke();
-		}
-		// horizontal
-		for(iter=get_guide_list_y().begin();iter!=get_guide_list_y().end();++iter)
-		{
-			const float y((*iter-window_starty)/ph);
-			if(iter==get_work_area()->curr_guide)
-				cr->set_source_rgb(GDK_COLOR_TO_RGB(GUIDE_COLOR_CURRENT));
-			else
-				cr->set_source_rgb(guides_color.get_r(),guides_color.get_g(),guides_color.get_b());
-
-			cr->move_to(
-				0,
-				y
-				);
-			cr->line_to(
-				drawable_w,
-				y
-			);
-			cr->stroke();
+				cr->stroke();
+			} else {
+				if (synfig::Angle::deg(iter->angle).get() == 90){
+					cr->move_to(
+						x_center,
+						0
+						);
+					cr->line_to(
+						x_center,
+						drawable_h
+					);
+					cr->stroke();
+				} else {
+					cr->move_to(
+						0,
+						y_center
+						);
+					cr->line_to(
+						drawable_w,
+						y_center
+					);
+					cr->stroke();
+				}
+			}
 		}
 
 		cr->restore();

@@ -84,12 +84,11 @@ Widget_Enum::set_param_desc(const synfig::ParamDesc &x)
 	std::list<synfig::ParamDesc::EnumData> enum_list=param_desc.get_enum_list();
 	std::list<synfig::ParamDesc::EnumData>::iterator iter;
 	// Fill the combo with the values
-	for(iter=enum_list.begin();iter!=enum_list.end();iter++)
-		{
-			Gtk::TreeModel::Row row = *(enum_TreeModel->append());
-			row[enum_model.value] = iter->value;
-			row[enum_model.local_name] = iter->local_name;
-		}
+	for (iter = enum_list.begin(); iter != enum_list.end(); ++iter) {
+		Gtk::TreeModel::Row row = *(enum_TreeModel->append());
+		row[enum_model.value] = iter->value;
+		row[enum_model.local_name] = iter->local_name;
+	}
 	refresh();
 }
 
@@ -109,7 +108,7 @@ Widget_Enum::refresh()
 {
 	typedef Gtk::TreeModel::Children type_children;
 	type_children children = enum_TreeModel->children();
-	for(type_children::iterator iter = children.begin();
+	for (type_children::iterator iter = children.begin();
 		iter != children.end(); ++iter)
 	{
 		Gtk::TreeModel::Row row = *iter;

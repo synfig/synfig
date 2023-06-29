@@ -242,6 +242,8 @@ CanvasTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int colum
 	if(column==model.is_editable.index())
 	{
 		synfigapp::ValueDesc value_desc((*iter)[model.value_desc]);
+		if (!value_desc)
+			return Gtk::TreeStore::get_value_vfunc(iter,column,value);
 
 		Glib::Value<bool> x;
 		g_value_init(x.gobj(),x.value_type());
@@ -547,8 +549,7 @@ CanvasTreeStore::set_row(Gtk::TreeRow row,synfigapp::ValueDesc value_desc, bool 
 				row[model.link_count] = linkable->link_count();
 				const LinkableValueNode::Vocab& vocab(linkable->get_children_vocab());
 				LinkableValueNode::Vocab::const_iterator iter(vocab.begin());
-				for(int i=0;i<linkable->link_count();i++, iter++)
-				{
+				for (int i = 0; i < linkable->link_count(); ++i, ++iter) {
 					if(iter->get_hidden())
 						continue;
 					Gtk::TreeRow child_row=*(append(row.children()));

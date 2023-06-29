@@ -32,6 +32,8 @@
 #	include <config.h>
 #endif
 
+#include "filecontainerzip.h"
+
 #include <cstring>
 #include <stdint.h>
 #include <cstddef>
@@ -39,11 +41,8 @@
 #include <libxml++/libxml++.h>
 #include <glib/gstdio.h>
 
-#include <ETL/stringf>
-
+#include "smartfile.h"
 #include "zstreambuf.h"
-
-#include "filecontainerzip.h"
 
 #endif
 
@@ -310,13 +309,12 @@ FileContainerZip::HistoryRecord FileContainerZip::decode_history(const String &c
 		if (root->get_name() == "history")
 		{
 			xmlpp::Element::NodeList list = root->get_children();
-			for(xmlpp::Element::NodeList::iterator i = list.begin(); i != list.end(); i++)
-			{
+			for (xmlpp::Element::NodeList::iterator i = list.begin(); i != list.end(); ++i) {
 				if ((*i)->get_name() == "prev_storage_size")
 				{
 					String s;
 					xmlpp::Element::NodeList list = (*i)->get_children();
-					for(xmlpp::Element::NodeList::iterator j = list.begin(); j != list.end(); j++)
+					for (xmlpp::Element::NodeList::iterator j = list.begin(); j != list.end(); ++j)
 						if (dynamic_cast<xmlpp::TextNode*>(*j))
 							s += dynamic_cast<xmlpp::TextNode*>(*j)->get_content();
 					history_record.prev_storage_size = strtoll(s.c_str(), nullptr, 10);
@@ -345,8 +343,7 @@ void FileContainerZip::read_history(std::list<HistoryRecord> &list, FILE *f, fil
 	bool found = false;
 	HistoryRecord history_record;
 
-	for(int i = read_size - sizeof(EndOfCentralDirectory); i >= 0; i--)
-	{
+	for (int i = read_size - sizeof(EndOfCentralDirectory); i >= 0; i--) {
 		EndOfCentralDirectory *e = (EndOfCentralDirectory*)&buffer[i];
 		if (e->signature == EndOfCentralDirectory::valid_signature__
 		 && e->comment_length == (uint16_t)(read_size - sizeof(EndOfCentralDirectory) - i))
@@ -377,7 +374,7 @@ std::list<FileContainerZip::HistoryRecord> FileContainerZip::read_history(const 
 {
 	std::list<HistoryRecord> list;
 	
-	FILE *f = g_fopen(fix_slashes(container_filename).c_str(), "rb");
+	FILE *f = SmartFILE::open_file(container_filename, "rb");
 	if (!f) return list;
 
 	fseek(f, 0, SEEK_END);
@@ -395,7 +392,7 @@ std::list<FileContainerZip::HistoryRecord> FileContainerZip::read_history(const 
 bool FileContainerZip::create(const String &container_filename)
 {
 	if (is_opened()) return false;
-	storage_file_ = g_fopen(fix_slashes(container_filename).c_str(), "w+b");
+	storage_file_ = SmartFILE::open_file(container_filename, "w+b");
 	
 	if (is_opened()) changed_ = true;
 	return is_opened();
@@ -403,7 +400,8 @@ bool FileContainerZip::create(const String &container_filename)
 
 bool FileContainerZip::open_from_history(const String &container_filename, file_size_t truncate_storage_size) {
 	if (is_opened()) return false;
-	FILE *f = g_fopen(fix_slashes(container_filename).c_str(), "r+b");
+	// Maybe we should make f and storage_file_ as SmartFILE objects
+	FILE* f = SmartFILE::open_file(container_filename, "r+b");
 
 	if (!f) return false;
 
@@ -426,8 +424,7 @@ bool FileContainerZip::open_from_history(const String &container_filename, file_
 	fseek(f, filesize - (long int)read_size, SEEK_SET);
 	read_size = fread(&buffer, 1, read_size, f);
 	bool found = false;
-	for(int i = read_size - sizeof(EndOfCentralDirectory); i >= 0; i--)
-	{
+	for (int i = read_size - sizeof(EndOfCentralDirectory); i >= 0; i--) {
 		EndOfCentralDirectory *e = (EndOfCentralDirectory*)&buffer[i];
 		if (e->signature == EndOfCentralDirectory::valid_signature__
 		 && e->comment_length == (uint16_t)(read_size - sizeof(EndOfCentralDirectory) - i))
@@ -443,8 +440,7 @@ bool FileContainerZip::open_from_history(const String &container_filename, file_
 	// read "central directory"
 	FileMap files;
 	fseek(f, ecd.offset, SEEK_SET);
-	for(int i = 0; i < ecd.current_records; i++)
-	{
+	for (int i = 0; i < ecd.current_records; i++) {
 		CentralDirectoryFileHeader cdfh;
 		if (sizeof(cdfh) != fread(&cdfh, 1, sizeof(cdfh), f))
 			{ fclose(f); return false; }
@@ -482,8 +478,7 @@ bool FileContainerZip::open_from_history(const String &container_filename, file_
 	}
 
 	// create directories
-	for(FileMap::iterator i = files.begin(); i != files.end();)
-	{
+	for (FileMap::iterator i = files.begin(); i != files.end(); ) {
 		if (!i->second.name_part_directory.empty()
 		 && files.find( i->second.name_part_directory ) == files.end())
 		{
@@ -495,7 +490,7 @@ bool FileContainerZip::open_from_history(const String &container_filename, file_
 			files[ info.name ] = info;
 			i = files.begin();
 		}
-		else i++;
+		else ++i;
 	}
 
 	// loaded
@@ -522,8 +517,7 @@ bool FileContainerZip::save()
 	fseek(storage_file_, 0, SEEK_END);
 
 	// write headers of new directories
-	for(FileMap::iterator i = files_.begin(); i != files_.end(); i++)
-	{
+	for (FileMap::iterator i = files_.begin(); i != files_.end(); ++i) {
 		FileInfo &info = i->second;
 		if (info.is_directory && !info.directory_saved)
 		{
@@ -548,8 +542,7 @@ bool FileContainerZip::save()
 
 	// write central directory
 	uint32_t central_directory_offset = (uint32_t)ftell(storage_file_);
-	for(FileMap::iterator i = files_.begin(); i != files_.end(); i++)
-	{
+	for (FileMap::iterator i = files_.begin(); i != files_.end(); ++i) {
 		FileInfo &info = i->second;
 		CentralDirectoryFileHeader cdfh;
 		cdfh.min_version = 20;
@@ -668,7 +661,7 @@ bool FileContainerZip::directory_scan(const String &dirname, FileList &out_files
 {
 	out_files.clear();
 	if (!is_directory(dirname)) return false;
-	for(FileMap::iterator i = files_.begin(); i != files_.end(); i++)
+	for (FileMap::iterator i = files_.begin(); i != files_.end(); ++i)
 		if (i->second.name_part_directory == fix_slashes(dirname))
 			out_files.push_back(i->second.name_part_localname);
 	return true;

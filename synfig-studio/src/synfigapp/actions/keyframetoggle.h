@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file keyframetoggl.h
+/*!	\file keyframetoggle.h
 **	\brief Template File
 **
 **	\legal

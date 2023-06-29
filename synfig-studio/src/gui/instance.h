@@ -70,7 +70,7 @@ public:
 	class CanvasTreeModel : public Gtk::TreeModel::ColumnRecord
 	{
 	public:
-		Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf> > icon;
+		Gtk::TreeModelColumn<Glib::ustring> icon_name;
 		Gtk::TreeModelColumn<Glib::ustring> label;
 		Gtk::TreeModelColumn<Glib::ustring> name;
 		Gtk::TreeModelColumn<Glib::ustring> id;
@@ -94,7 +94,7 @@ public:
 			add(value);
 			add(name);
 			add(label);
-			add(icon);
+			add(icon_name);
 			add(type);
 			add(id);
 			add(canvas);

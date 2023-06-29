@@ -59,6 +59,7 @@ REGISTER_VALUENODE(ValueNode_TimeLoop, RELEASE_VERSION_0_61_08, "timeloop", N_("
 ValueNode_TimeLoop::ValueNode_TimeLoop(Type &x):
 	LinkableValueNode(x)
 {
+	init_children_vocab();
 }
 
 ValueNode_TimeLoop::ValueNode_TimeLoop(const ValueNode::Handle &x):

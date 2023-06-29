@@ -119,8 +119,7 @@ Action::LayerPaint::PaintStroke::paint_self(synfig::Surface &surface)
 	paint_prev(surface);
 	brushlib::SurfaceWrapper wrapper(&surface);
 	if (!points.empty()) reset(points.front());
-	for(std::vector<PaintPoint>::const_iterator i = points.begin(); i != points.end(); i++)
-	{
+	for (std::vector<PaintPoint>::const_iterator i = points.begin(); i != points.end(); ++i) {
 		brush_.stroke_to(&wrapper, i->x, i->y, i->pressure, 0.f, 0.f, i->dtime);
 		wrapper.offset_x = 0;
 		wrapper.offset_y = 0;

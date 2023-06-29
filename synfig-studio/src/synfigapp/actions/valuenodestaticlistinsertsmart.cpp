@@ -36,7 +36,6 @@
 #include <synfig/general.h>
 
 #include "valuenodestaticlistinsertsmart.h"
-#include "valuenodestaticlistinsert.h"
 #include <synfigapp/canvasinterface.h>
 
 #include <synfigapp/localization.h>
@@ -64,10 +63,8 @@ ACTION_SET_VERSION(Action::ValueNodeStaticListInsertSmart,"0.0");
 /* === M E T H O D S ======================================================= */
 
 Action::ValueNodeStaticListInsertSmart::ValueNodeStaticListInsertSmart()
+	: time(0), origin(0.5f), index(0)
 {
-	index=0;
-	time=0;
-	origin=0.5f;
 	set_dirty(true);
 }
 

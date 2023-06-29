@@ -69,10 +69,9 @@ CurvePoint::CurvePoint(const Point &pin, const Vector &left, const Vector &right
 {
 }
 
-CurvePoint::CurvePoint(const BLinePoint &bpoint)
+CurvePoint::CurvePoint(const BLinePoint& bpoint)
+	: p(bpoint.get_vertex())
 {
-	p = bpoint.get_vertex();
-
 	l = p + bpoint.get_tangent1()*(1/3.0f);
 	r = p + bpoint.get_tangent2()*(1/3.0f);
 }

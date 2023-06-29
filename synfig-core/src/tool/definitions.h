@@ -85,7 +85,14 @@ public:
 
 	std::string get_binary_path() const;
 
-	void set_binary_path(const std::string& path);
+	/**
+	 * In the improbable case Synfig is unable to retrieve the current process filepath,
+	 * use this instead.
+	 * @param path the fallback to the binary path
+	 *
+	 * @see synfig::OS::get_binary_path()
+	 */
+	void set_fallback_binary_path(const std::string& path);
 
 	size_t get_threads() const;
 

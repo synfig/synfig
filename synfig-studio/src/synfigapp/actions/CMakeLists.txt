@@ -92,7 +92,7 @@ target_sources(synfigapp
         "${CMAKE_CURRENT_LIST_DIR}/keyframeadd.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/keyframeduplicate.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/keyframeremove.cpp"
-        "${CMAKE_CURRENT_LIST_DIR}/keyframetoggl.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/keyframetoggle.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/keyframeset.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/keyframesetdelta.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/keyframewaypointset.cpp"

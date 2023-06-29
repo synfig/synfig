@@ -151,8 +151,7 @@
 { \
 	Vocab vocab(get_param_vocab()); \
 	Vocab::const_iterator viter; \
-	for(viter=vocab.begin();viter!=vocab.end();viter++) \
-	{ \
+	for (viter = vocab.begin(); viter != vocab.end(); ++viter) { \
 		ValueBase v=get_param(viter->get_name()); \
 		v.set_interpolation(viter->get_interpolation()); \
 		set_param(viter->get_name(), v); \
@@ -164,8 +163,7 @@
 { \
 	Vocab vocab(get_param_vocab()); \
 	Vocab::const_iterator viter; \
-	for(viter=vocab.begin();viter!=vocab.end();viter++) \
-	{ \
+	for (viter = vocab.begin(); viter != vocab.end(); ++viter) { \
 		ValueBase v=get_param(viter->get_name()); \
 		v.set_static(viter->get_static()); \
 		set_param(viter->get_name(), v); \
@@ -303,8 +301,8 @@ private:
 	ValueBase param_z_depth;
 
 	//! \writeme
-	mutable Time time_mark;
-	mutable Real outline_grow_mark;
+	Time time_mark_;
+	Real outline_grow_mark_;
 
 	//! Contains the name of the group that this layer belongs to
 	String group_;
@@ -553,20 +551,20 @@ public:
 	//! Get a list of all of the parameters and their values
 	virtual ParamList get_param_list()const;
 
-	Time get_time_mark() const { return time_mark; }
-	void set_time_mark(Time time) const { time_mark = time; }
-	void clear_time_mark() const { time_mark = Time::end(); }
+	Time get_time_mark() const { return time_mark_; }
+	void set_time_mark(Time time) { time_mark_ = time; }
+	void clear_time_mark() { time_mark_ = Time::end(); }
 
-	Real get_outline_grow_mark() const { return outline_grow_mark; }
-	void set_outline_grow_mark(Real outline_grow) const { outline_grow_mark = outline_grow; }
-	void clear_outline_grow_mark() const { outline_grow_mark = 0.0; }
+	Real get_outline_grow_mark() const { return outline_grow_mark_; }
+	void set_outline_grow_mark(Real outline_grow) { outline_grow_mark_ = outline_grow; }
+	void clear_outline_grow_mark() { outline_grow_mark_ = 0.0; }
 
 	//! Sets the \a time for the Layer and those under it
 	/*!	\param context		Context iterator referring to next Layer.
 	**	\param time			writeme
 	**	\see Context::set_time()
 	*/
-	void set_time(IndependentContext context, Time time)const;
+	void set_time(IndependentContext context, Time time);
 	
 	//! Loads external resources (frames) for the Layer recursively
 	/*!	\param context		Context iterator referring to next Layer.
@@ -580,7 +578,7 @@ public:
 	**	\param outline_grow	writeme
 	**	\see Context::set_outline_grow()
 	*/
-	void set_outline_grow(IndependentContext context, Real outline_grow)const;
+	void set_outline_grow(IndependentContext context, Real outline_grow);
 
 	//! Gets the blend color of the Layer in the context at \a pos
 	/*!	\param context		Context iterator referring to next Layer.
@@ -606,7 +604,7 @@ public:
 protected:
 	virtual void set_time_vfunc(IndependentContext context, Time time) const;
 	virtual void load_resources_vfunc(IndependentContext context, Time time) const;
-	virtual void set_outline_grow_vfunc(IndependentContext context, Real outline_grow) const;
+	virtual void set_outline_grow_vfunc(IndependentContext context, Real outline_grow);
 	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context) const;
 
 	virtual RendDesc get_sub_renddesc_vfunc(const RendDesc &renddesc) const;

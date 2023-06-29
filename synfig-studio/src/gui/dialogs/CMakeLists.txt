@@ -9,6 +9,7 @@ target_sources(synfigstudio
 		"${CMAKE_CURRENT_LIST_DIR}/dialog_gradient.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/dialog_input.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/dialog_keyframe.cpp"
+		"${CMAKE_CURRENT_LIST_DIR}/dialog_pasteoptions.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/dialog_preview.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/dialog_setup.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/dialog_soundselect.cpp"
@@ -16,7 +17,9 @@ target_sources(synfigstudio
 		"${CMAKE_CURRENT_LIST_DIR}/dialog_ffmpegparam.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/dialog_spritesheetparam.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/dialog_waypoint.cpp"
+                "${CMAKE_CURRENT_LIST_DIR}/dialog_guide.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/dialog_workspaces.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/dialog_template.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/vectorizersettings.cpp"
+    
 )

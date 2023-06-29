@@ -34,6 +34,7 @@
 #include <map>
 
 #include <synfig/distance.h>
+#include <synfig/filesystem_path.h>
 #include <synfig/string.h>
 
 /* === M A C R O S ========================================================= */
@@ -70,6 +71,7 @@ public:
 	int get_value(const synfig::String& key, int default_value) const;
 	bool get_value(const synfig::String& key, bool default_value) const;
 	synfig::Distance get_value(const synfig::String& key, const synfig::Distance& default_value) const;
+	synfig::filesystem::Path get_value(const synfig::String& key, const synfig::filesystem::Path& default_value) const;
 	synfig::String get_value(const synfig::String& key, const synfig::String& default_value) const;
 	synfig::String get_value(const synfig::String& key, const char* default_value) const;
 
@@ -77,6 +79,7 @@ public:
 	bool set_value(const synfig::String& key, int value);
 	bool set_value(const synfig::String& key, bool value);
 	bool set_value(const synfig::String& key, const synfig::Distance& value);
+	bool set_value(const synfig::String& key, const synfig::filesystem::Path& value);
 	bool set_value(const synfig::String& key, const char* value);
 	// avoid implicit conversion
 	template <typename T> bool set_value(const synfig::String& key, T value) = delete;
@@ -92,7 +95,7 @@ public:
 	//! \sa		set_value
 	//! \Param[in] filename, the synfig settings format filename. Should be absolute path.
 	//! \Param[in] key_filter, optional, string use to filter the settings key. No wildcard only full equal string test.
-	bool load_from_file(const synfig::String& filename, const synfig::String& key_filter = "" );
+	bool load_from_file(const synfig::String& filename, const synfig::String& key_filter = "");
 	bool save_to_file(const synfig::String& filename)const;
 }; // END of class Settings
 

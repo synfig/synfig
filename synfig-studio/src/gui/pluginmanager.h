@@ -38,8 +38,11 @@ namespace xmlpp {
 	class Node;
 } // namespace xmlpp
 
-namespace studio {
+namespace JSON {
+std::string escape_string(const std::string& str);
+}
 
+namespace studio {
 
 class PluginString
 {
@@ -74,6 +77,22 @@ struct PluginScript
 	std::string script;
 	std::string working_directory;
 
+	// Behavior
+	bool modify_document = true;
+
+	enum class ArgNecessity {
+		ARGUMENT_OPTIONAL,
+		ARGUMENT_MANDATORY,
+		ARGUMENT_UNUSED,
+	};
+
+	// Required arguments
+	struct ScriptArgs
+	{
+		ArgNecessity current_time = ArgNecessity::ARGUMENT_UNUSED;
+		ArgNecessity selected_layers = ArgNecessity::ARGUMENT_UNUSED;
+	} extra_args;
+
 	static PluginScript load(const xmlpp::Node& node, const std::string& working_directory);
 	static PluginStream stream_from_name(const std::string& name, PluginStream default_value);
 
@@ -100,6 +119,13 @@ public:
 	std::string id;
 	PluginString name;
 
+	std::string author;
+	PluginString release;
+	int version;
+	std::string url;
+
+	PluginString description;
+
 	bool is_valid() const;
 };
 
@@ -118,14 +144,19 @@ private:
 		const std::string& name, std::vector<ImportExport>& output
 	);
 
+	static bool check_and_run_dialog(const PluginScript& script, std::string& dialog_args);
+
 public:
 	void load_dir( const std::string &pluginsprefix );
 	void load_plugin( const std::string &file, const std::string &plugindir );
 
-	bool run(const PluginScript& script, std::vector<std::string> args) const;
-	bool run(const std::string& script_id, const std::vector<std::string>& args) const;
+	bool run(const PluginScript& script, std::vector<std::string> args, const std::unordered_map<std::string,std::string>& view_state) const;
+	bool run(const std::string& script_id, const std::vector<std::string>& args, const std::unordered_map<std::string,std::string>& view_state = {}) const;
 
 	const std::vector<Plugin>& plugins() const { return plugins_; };
+
+	Plugin get_plugin(const std::string& id) const;
+	PluginScript::ScriptArgs get_script_args(const std::string& script_id) const;
 
 	const std::vector<ImportExport>& exporters() { return exporters_; };
 

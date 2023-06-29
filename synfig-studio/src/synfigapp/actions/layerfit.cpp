@@ -83,7 +83,7 @@ Action::LayerFit::is_candidate(const ParamList &x)
 {
 	if (!candidate_check(get_param_vocab(),x))
 		return false;
-	for(ParamList::const_iterator i = x.begin(); i != x.end(); i++) {
+	for (ParamList::const_iterator i = x.begin(); i != x.end(); ++i) {
 		if (i->first == "layer") {
 			if (i->second.get_type() != Param::TYPE_LAYER) return false;
 			const Layer::Handle layer = i->second.get_layer();

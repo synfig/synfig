@@ -76,7 +76,7 @@ public:
 
 	LayerParamTreeStore::Model model;
 
-	void set_canvas_view(handle<CanvasView> canvas_view)
+	void set_canvas_view(CanvasView::Handle canvas_view)
 	{
 		cellrenderer_time_track->set_time_model(canvas_view->time_model());
 		cellrenderer_time_track->set_canvas_interface(canvas_view->canvas_interface());
@@ -382,7 +382,7 @@ Dock_Timetrack_Old::~Dock_Timetrack_Old()
 }
 
 void
-Dock_Timetrack_Old::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+Dock_Timetrack_Old::init_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 {
 	LayerParamTreeStore::Model model;
 
@@ -410,7 +410,7 @@ Dock_Timetrack_Old::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_
 }
 
 void
-Dock_Timetrack_Old::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+Dock_Timetrack_Old::changed_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 {
 	if (grid_)
 	{

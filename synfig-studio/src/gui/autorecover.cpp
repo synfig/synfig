@@ -37,8 +37,6 @@
 
 #include <glibmm/main.h>
 
-#include <ETL/stringf>
-
 #include <gui/app.h>
 #include <gui/instance.h>
 

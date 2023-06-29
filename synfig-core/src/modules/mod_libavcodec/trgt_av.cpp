@@ -430,7 +430,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 Target_LibAVCodec::Target_LibAVCodec(
-	const char *filename,
+	const synfig::filesystem::Path& filename,
 	const synfig::TargetParam &/*params*/
 ):
 	internal(new Internal()),
@@ -495,7 +495,7 @@ Target_LibAVCodec::end_scanline()
 bool Target_LibAVCodec::init(synfig::ProgressCallback */*cb*/)
 {
 	surface.set_wh(desc.get_w(), desc.get_h());
-	if (!internal->open(filename, desc)) {
+	if (!internal->open(filename.u8string(), desc)) {
 		synfig::warning("Target_LibAVCodec: unable to initialize encoders");
 		return false;
 	}

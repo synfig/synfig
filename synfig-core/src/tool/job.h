@@ -31,8 +31,8 @@
 
 struct Job
 {
-	std::string filename;
-	std::string outfilename;
+	synfig::filesystem::Path filename;
+	synfig::filesystem::Path outfilename;
 	std::string target_name;
 	std::string render_engine;
         

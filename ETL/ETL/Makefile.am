@@ -9,8 +9,6 @@ etldir = $(etlincludedir)/ETL
 
 etl_HEADERS = \
 	handle \
-	stringf \
-	_stringf.h \
 	_handle.h \
 	$(top_builddir)/ETL/etl_profile.h
 

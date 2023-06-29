@@ -20,7 +20,7 @@
                 </item>
 
 <!-- Open Recent submenu -->
-                <submenu id="recent-file">
+                <submenu id="menu-recent-files">
                     <attribute name="label" translatable="yes">_Open Recent</attribute>
                 </submenu>
 
@@ -29,54 +29,58 @@
 	        <section>
                 <item>
                     <attribute name="label" translatable="yes">_Save</attribute>
-                    <attribute name="action">app.save</attribute>
+                    <attribute name="action">doc.save</attribute>
                     <attribute name="accel">&lt;Control&gt;s</attribute>
                     <attribute name="icon">action_doc_save_icon</attribute>
                 </item>
                 <item>
                     <attribute name="label" translatable="yes">_Save As...</attribute>
-                    <attribute name="action">app.save-as</attribute>
+                    <attribute name="action">doc.save-as</attribute>
                     <attribute name="accel">&lt;Control&gt;&lt;Shift&gt;s</attribute>
                     <attribute name="icon">action_doc_saveas_icon</attribute>
                 </item>
                 <item>
                     <attribute name="label" translatable="yes">_Save All...</attribute>
-                    <attribute name="action">app.save-all</attribute>
+                    <attribute name="action">win.save-all</attribute>
                     <attribute name="accel">&lt;Control&gt;e</attribute>
                     <attribute name="icon">action_doc_saveall_icon</attribute>
                 </item>
                 <item>
                     <attribute name="label" translatable="yes">_Export...</attribute>
-                    <attribute name="action">app.export</attribute>
+                    <attribute name="action">doc.export</attribute>
                     <attribute name="icon">action_export_icon</attribute>
                 </item>
                 <item>
                     <attribute name="label" translatable="yes">_Revert...</attribute>
-                    <attribute name="action">app.revert</attribute>
+                    <attribute name="action">doc.revert</attribute>
                     <attribute name="icon">document-revert</attribute>
                 </item>
             </section>
 	        <section>
 	            <item>
                     <attribute name="label" translatable="yes">_Import...</attribute>
-                    <attribute name="action">app.import</attribute>
+                    <attribute name="action">doc.import</attribute>
                     <attribute name="accel">&lt;Control&gt;i</attribute>
                 </item>
                 <item>
                     <attribute name="label" translatable="yes">_Import Sequence...</attribute>
-                    <attribute name="action">app.import-sequence</attribute>
+                    <attribute name="action">doc.import-sequence</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">Show _Dependencies...</attribute>
+                    <attribute name="action">doc.show-dependencies</attribute>
                 </item>
             </section>
             <section>
                 <item>
                     <attribute name="label" translatable="yes">_Preview...</attribute>
-                    <attribute name="action">app.preview</attribute>
+                    <attribute name="action">doc.preview</attribute>
                     <attribute name="accel">F11</attribute>
                     <attribute name="icon">preview_options_icon</attribute>
                 </item>
                 <item>
                     <attribute name="label" translatable="yes">_Render...</attribute>
-                    <attribute name="action">app.render</attribute>
+                    <attribute name="action">doc.render</attribute>
                     <attribute name="accel">F9</attribute>
                     <attribute name="icon">render_options_icon</attribute>
                 </item>
@@ -84,7 +88,7 @@
 			<section>
 				<item>
 					<attribute name="label" translatable="yes">_Close Document</attribute>
-					<attribute name="action">app.close-document</attribute>
+					<attribute name="action">doc.close-document</attribute>
               		<attribute name="accel">&lt;Primary&gt;w</attribute>
 	          		<attribute name="icon">window-close</attribute>
 				</item>
@@ -105,14 +109,14 @@
 			<section>
 				<item>
 					<attribute name="label" translatable="yes">_Undo</attribute>
-					<attribute name="action">app.undo</attribute>
+					<attribute name="action">doc.undo</attribute>
 					<attribute name="accel">&lt;Primary&gt;z</attribute>
 					<attribute name="sensitive">True</attribute>
 					<attribute name="icon">action_doc_undo_icon</attribute>
 				</item>
 				<item>
 					<attribute name="label" translatable="yes">_Redo</attribute>
-					<attribute name="action">app.redo</attribute>
+					<attribute name="action">doc.redo</attribute>
 					<attribute name="accel">&lt;Shift&gt;&lt;Primary&gt;z</attribute>
 					<attribute name="icon">action_doc_redo_icon</attribute>
 				</item>
@@ -120,19 +124,19 @@
 			<section>
 				<item>
 					<attribute name="label" translatable="yes">_Cut</attribute>
-					<attribute name="action">app.cut</attribute>
+					<attribute name="action">doc.cut</attribute>
 					<attribute name="accel">&lt;Primary&gt;x</attribute>
 					<attribute name="icon">edit-cut</attribute>
 				</item>
 				<item>
 					<attribute name="label" translatable="yes">_Copy</attribute>
-					<attribute name="action">app.copy</attribute>
+					<attribute name="action">doc.copy</attribute>
 					<attribute name="accel">&lt;Primary&gt;c</attribute>
 					<attribute name="icon">edit-copy</attribute>
 				</item>
 				<item>
 					<attribute name="label" translatable="yes">_Paste</attribute>
-					<attribute name="action">app.paste</attribute>
+					<attribute name="action">doc.paste</attribute>
 					<attribute name="accel">&lt;Primary&gt;v</attribute>
 					<attribute name="icon">edit-paste</attribute>
 				</item>
@@ -140,34 +144,34 @@
 			<section>
 				<item>
 					<attribute name="label" translatable="yes">_Select All Layers</attribute>
-					<attribute name="action">app.select-all-layers</attribute>
+					<attribute name="action">doc.select-all-layers</attribute>
 					<attribute name="accel">&lt;Control&gt;&lt;Shift&gt;a</attribute>
 				</item>
 				<item>
 					<attribute name="label" translatable="yes">_Unselect All Layers</attribute>
-					<attribute name="action">app.unselect-all-layers</attribute>
+					<attribute name="action">doc.unselect-all-layers</attribute>
 					<attribute name="accel">&lt;Control&gt;&lt;Shift&gt;d</attribute>
 				</item>
 				<item>
 					<attribute name="label" translatable="yes">_Select All Handles</attribute>
-					<attribute name="action">app.select-all-ducks</attribute>
+					<attribute name="action">doc.select-all-ducks</attribute>
 					<attribute name="accel">&lt;Control&gt;a</attribute>
 				</item>
 				<item>
 					<attribute name="label" translatable="yes">_Unselect All Handles</attribute>
-					<attribute name="action">app.unselect-all-ducks</attribute>
+					<attribute name="action">doc.unselect-all-ducks</attribute>
 					<attribute name="accel">&lt;Control&gt;d</attribute>
 				</item>
 				<item>
 					<attribute name="label" translatable="yes">_Select Parent Layer</attribute>
-					<attribute name="action">app.select-parent-layer</attribute>
+					<attribute name="action">doc.select-parent-layer</attribute>
 					<attribute name="accel">&lt;Alt&gt;Page_Up</attribute>
 				</item>
 			</section>
 			<section>
 				<item>
 					<attribute name="label" translatable="yes">_Input Devices...</attribute>
-					<attribute name="action">app.input-devices</attribute>
+					<attribute name="action">win.input-devices</attribute>
 				</item>
 				<item>
 					<attribute name="label" translatable="yes">_Preferences...</attribute>
@@ -182,11 +186,11 @@
 			<section id="view-section-0">
 				<item>
 					<attribute name="label" translatable="yes">_Show Menubar</attribute>
-					<attribute name="action">app.show-menubar</attribute>
+					<attribute name="action">win.show-menubar</attribute>
 				</item>
 				<item>
 					<attribute name="label" translatable="yes">_Toolbar</attribute>
-					<attribute name="action">app.show-toolbar</attribute>
+					<attribute name="action">win.show-toolbar</attribute>
 				</item>
 			</section>
 			<section>
@@ -195,57 +199,57 @@
 					<attribute name="label" translatable="yes">_Show/Hide Handles</attribute>
 						<item>
 							<attribute name="label" translatable="yes">_Toggle None/Last visible Handles</attribute>
-							<attribute name="action">app.mask-none-ducks</attribute>
+							<attribute name="action">doc.mask-none-ducks</attribute>
 							<attribute name="accel">&lt;Alt&gt;0</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Show Position Handles</attribute>
-							<attribute name="action">app.mask-position-ducks</attribute>
+							<attribute name="action">doc.mask-position-ducks</attribute>
 							<attribute name="accel">&lt;Alt&gt;1</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Show Vertex Handles</attribute>
-							<attribute name="action">app.mask-vertex-ducks</attribute>
+							<attribute name="action">doc.mask-vertex-ducks</attribute>
 							<attribute name="accel">&lt;Alt&gt;2</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Show Tangent Handles</attribute>
-							<attribute name="action">app.mask-tangent-ducks</attribute>
+							<attribute name="action">doc.mask-tangent-ducks</attribute>
 							<attribute name="accel">&lt;Alt&gt;3</attribute>
 						</item>
 
 						<item>
 							<attribute name="label" translatable="yes">_Show Radius Handles</attribute>
-							<attribute name="action">app.mask-radius-ducks</attribute>
+							<attribute name="action">doc.mask-radius-ducks</attribute>
 							<attribute name="accel">&lt;Alt&gt;4</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Show Width Handles</attribute>
-							<attribute name="action">app.mask-width-ducks</attribute>
+							<attribute name="action">doc.mask-width-ducks</attribute>
 							<attribute name="accel">&lt;Alt&gt;5</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Show WidthPoints Position Handles</attribute>
-							<attribute name="action">app.mask-widthpoint-position-ducks</attribute>
+							<attribute name="action">doc.mask-widthpoint-position-ducks</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Show Angle Handles</attribute>
-							<attribute name="action">app.mask-angle-ducks</attribute>
+							<attribute name="action">doc.mask-angle-ducks</attribute>
 							<attribute name="accel">&lt;Alt&gt;6</attribute>
 						</item>
 						<item>
 	<!-- WHAT DOES SHOW BONE SETUP HANDLES DO?? -->
 							<attribute name="label" translatable="yes">_Show Bone Setup Handles</attribute>
-	<!-- 						<attribute name="action">app.mask-angle-ducks</attribute> -->
+	<!-- 						<attribute name="action">doc.mask-angle-ducks</attribute> -->
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Show Recursive Scale Bone Handles</attribute>
-							<attribute name="action">app.mask-bone-recursive-ducks</attribute>
+							<attribute name="action">doc.mask-bone-recursive-ducks</attribute>
 							<attribute name="accel">&lt;Alt&gt;8</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Next Bone Handles</attribute>
-							<attribute name="action">app.mask-bone-ducks</attribute>
+							<attribute name="action">doc.mask-bone-ducks</attribute>
 							<attribute name="accel">&lt;Alt&gt;9</attribute>
 						</item>
 				</submenu>
@@ -254,34 +258,34 @@
 					<section>
 						<item>
 							<attribute name="label" translatable="yes">_Decrease Low-Res Pixel Size</attribute>
-							<attribute name="action">app.dec-lowres-pixel</attribute>
+							<attribute name="action">doc.dec-lowres-pixel</attribute>
 	          				<attribute name="accel">&lt;Control&gt;parenleft</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Increase Low-Res Pixel Size</attribute>
-							<attribute name="action">app.inc-lowres-pixel</attribute>
+							<attribute name="action">doc.inc-lowres-pixel</attribute>
 	          				<attribute name="accel">&lt;Control&gt;parenright</attribute>
 						</item>
 					</section>
 					<section>
 						<item>
 							<attribute name="label" translatable="yes">_Set Low-Res pixel size to 2</attribute>
-							<attribute name="action">app.lowres-pixel</attribute>
+							<attribute name="action">doc.lowres-pixel</attribute>
 	          				<attribute name="target" type="i">2</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Set Low-Res pixel size to 4</attribute>
-							<attribute name="action">app.lowres-pixel</attribute>
+							<attribute name="action">doc.lowres-pixel</attribute>
 	          				<attribute name="target" type="i">4</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Set Low-Res pixel size to 8</attribute>
-							<attribute name="action">app.lowres-pixel</attribute>
+							<attribute name="action">doc.lowres-pixel</attribute>
 	          				<attribute name="target" type="i">8</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Set Low-Res pixel size to 16</attribute>
-							<attribute name="action">app.lowres-pixel</attribute>
+							<attribute name="action">doc.lowres-pixel</attribute>
 	          				<attribute name="target" type="i">16</attribute>
 						</item>
 					</section>
@@ -289,77 +293,81 @@
 			</section>
 			<section>
 						<item>
+							<attribute name="label" translatable="yes">_Show Ruler</attribute>
+							<attribute name="action">doc.show-ruler</attribute>
+						</item>
+						<item>
 							<attribute name="label" translatable="yes">_Show Grid</attribute>
-							<attribute name="action">app.show-grid</attribute>
+							<attribute name="action">doc.show-grid</attribute>
 	          				<attribute name="accel">numbersign</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Snap to Grid</attribute>
-							<attribute name="action">app.snap-grid</attribute>
+							<attribute name="action">doc.snap-grid</attribute>
 	          				<attribute name="accel">&lt;Control&gt;L</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Show Guides</attribute>
-							<attribute name="action">app.show-guides</attribute>
+							<attribute name="action">doc.show-guides</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Snap to Guides</attribute>
-							<attribute name="action">app.snap-guides</attribute>
+							<attribute name="action">doc.snap-guides</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Use Low-Res</attribute>
-							<attribute name="action">app.toggle-low-res</attribute>
+							<attribute name="action">doc.toggle-low-res</attribute>
 	          				<attribute name="accel">&lt;Control&gt;grave</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Enable rendering in background</attribute>
-							<attribute name="action">app.background-rendering</attribute>
+							<attribute name="action">doc.background-rendering</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Show Onion Skin</attribute>
-							<attribute name="action">app.onion-skin</attribute>
+							<attribute name="action">doc.onion-skin</attribute>
 	          				<attribute name="accel">&lt;Alt&gt;O</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Onion Skin on Keyframes</attribute>
-							<attribute name="action">app.onion-skin-keyframes</attribute>
+							<attribute name="action">doc.onion-skin-keyframes</attribute>
 						</item>
 				</section>
 				<section>
                     <item>
                         <attribute name="label" translatable="yes">_Zoom In</attribute>
-                        <attribute name="action">app.zoom-in</attribute>
+                        <attribute name="action">doc.zoom-in</attribute>
                         <attribute name="accel">equal</attribute>
                         <attribute name="icon">zoom-in</attribute>
                     </item>
                     <item>
                         <attribute name="label" translatable="yes">_Zoom Out</attribute>
-                        <attribute name="action">app.zoom-out</attribute>
+                        <attribute name="action">doc.zoom-out</attribute>
                         <attribute name="accel">minus</attribute>
                         <attribute name="icon">zoom-out</attribute>
                     </item>
                     <item>
                         <attribute name="label" translatable="yes">_Best Fit</attribute>
-                        <attribute name="action">app.zoom-fit</attribute>
+                        <attribute name="action">doc.zoom-fit</attribute>
                         <attribute name="accel">0</attribute>
                         <attribute name="icon">zoom-fit-best</attribute>
                     </item>
                     <item>
                         <attribute name="label" translatable="yes">_Normal Size</attribute>
-                        <attribute name="action">app.zoom-norm</attribute>
+                        <attribute name="action">doc.zoom-norm</attribute>
                         <attribute name="icon">zoom-original</attribute>
                     </item>
 				</section>
                 <section>
                     <item>
                         <attribute name="label" translatable="yes">_Zoom In on Timeline</attribute>
-                        <attribute name="action">app.time-zoom-in</attribute>
+                        <attribute name="action">doc.time-zoom-in</attribute>
                         <attribute name="accel">&lt;Control&gt;plus</attribute>
                         <attribute name="icon">zoom-in</attribute>
                     </item>
                     <item>
                         <attribute name="label" translatable="yes">_Zoom Out on Timeline</attribute>
-                        <attribute name="action">app.time-zoom-out</attribute>
+                        <attribute name="action">doc.time-zoom-out</attribute>
                         <attribute name="accel">&lt;Control&gt;minus</attribute>
                         <attribute name="icon">zoom-out</attribute>
                     </item>
@@ -369,18 +377,22 @@
 			<attribute name="label" translatable="yes">_Canvas</attribute>
 				<item>
 					<attribute name="label" translatable="yes">_Properties...</attribute>
-					<attribute name="action">app.properties</attribute>
+					<attribute name="action">doc.properties</attribute>
 					<attribute name="accel">F8</attribute>
 					<attribute name="icon">document-properties</attribute>
 				</item>
 				<item>
 					<attribute name="label" translatable="yes">_Options...</attribute>
-					<attribute name="action">app.options</attribute>
+					<attribute name="action">doc.options</attribute>
 					<attribute name="accel">F12</attribute>
+				</item>
+				<item>
+					<attribute name="label" translatable="yes">_Resize...</attribute>
+					<attribute name="action">doc.resize-canvas</attribute>
 				</item>
 		</submenu>
 <!-- toolbox -->
-		<submenu id="toolbox">
+		<submenu id="menu-tools">
 			<attribute name="label" translatable="yes">_Toolbox</attribute>
                 <item>
                     <attribute name="label" translatable="yes">_Transform Tool</attribute>
@@ -557,25 +569,25 @@
                 <section>
                     <item>
                         <attribute name="label" translatable="yes">_Cut</attribute>
-                        <attribute name="action">app.cut</attribute>
+                        <attribute name="action">doc.cut</attribute>
                         <attribute name="accel">&lt;Primary&gt;x</attribute>
                         <attribute name="icon">edit-cut</attribute>
                     </item>
                     <item>
                         <attribute name="label" translatable="yes">_Copy</attribute>
-                        <attribute name="action">app.copy</attribute>
+                        <attribute name="action">doc.copy</attribute>
                         <attribute name="accel">&lt;Primary&gt;c</attribute>
                         <attribute name="icon">edit-copy</attribute>
                     </item>
                     <item>
                         <attribute name="label" translatable="yes">_Paste</attribute>
-                        <attribute name="action">app.paste</attribute>
+                        <attribute name="action">doc.paste</attribute>
                         <attribute name="accel">&lt;Primary&gt;v</attribute>
                         <attribute name="icon">edit-paste</attribute>
                     </item>
                 </section>
 		</submenu>
-		<submenu id="plugins">
+		<submenu id="menu-plugins">
 			<attribute name="label" translatable="yes">_Plug-Ins</attribute>
 		</submenu>
 		<submenu id="menu-window">
@@ -586,26 +598,28 @@
 					<section>
 						<item>
 						    <attribute name="label" translatable="yes">_Default</attribute>
-						    <attribute name="action">app.workspace-default</attribute>
+						    <attribute name="action">win.workspace-default</attribute>
 						</item>
 						<item>
 						    <attribute name="label" translatable="yes">_Compositing</attribute>
-						    <attribute name="action">app.workspace-compositing</attribute>
+						    <attribute name="action">win.workspace-compositing</attribute>
 						</item>
 						<item>
 						    <attribute name="label" translatable="yes">_Animating</attribute>
-						    <attribute name="action">app.workspace-animating</attribute>
+						    <attribute name="action">win.workspace-animating</attribute>
 						</item>
+					</section>
+					<section id="menu-window-custom-workspaces">
 					</section>
 					<section>
 						<item>
 						    <attribute name="label" translatable="yes">_Save Workspace...</attribute>
-						    <attribute name="action">app.save-workspace</attribute>
+						    <attribute name="action">win.save-workspace</attribute>
 						    <attribute name="icon">action_doc_saveas_icon</attribute>
 						</item>
 						<item>
 						    <attribute name="label" translatable="yes">_Edit Workspaces...</attribute>
-						    <attribute name="action">app.edit-workspacelist</attribute>
+						    <attribute name="action">win.edit-workspacelist</attribute>
 						</item>
 					</section>
 				</submenu>
@@ -613,7 +627,7 @@
 			<section id="menu-window-docks">
 						<item>
 						    <attribute name="label" translatable="yes">_Preview Window</attribute>
-						    <attribute name="action">app.dialog-flipbook</attribute>
+						    <attribute name="action">doc.dialog-flipbook</attribute>
 						</item>
 			</section>
 			<section id="menu-window-canvas">

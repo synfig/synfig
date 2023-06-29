@@ -114,8 +114,7 @@ Widget_BoneChooser::set_value(synfig::ValueNode_Bone::Handle data)
 			append(_("<None>"));
 		}
 
-		for (ValueNode_Bone::BoneSet::iterator iter=parent_set.begin(); iter!=parent_set.end(); iter++)
-		{
+		for (ValueNode_Bone::BoneSet::iterator iter = parent_set.begin(); iter != parent_set.end(); ++iter) {
 			ValueNode_Bone::Handle bone_value_node(*iter);
 
 			String label((*(bone_value_node->get_link("name")))(time).get(String()));

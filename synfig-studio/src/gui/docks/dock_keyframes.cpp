@@ -129,7 +129,7 @@ Dock_Keyframes::refresh_rend_desc()
 }
 
 void
-Dock_Keyframes::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+Dock_Keyframes::init_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 {
 	Glib::RefPtr<KeyframeTreeStore> keyframe_tree_store;
 	keyframe_tree_store = KeyframeTreeStore::create(canvas_view->canvas_interface());
@@ -147,7 +147,7 @@ Dock_Keyframes::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view
 }
 
 void
-Dock_Keyframes::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+Dock_Keyframes::changed_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 {
 	if (canvas_view) {
 		Gtk::Widget* tree_view = canvas_view->get_ext_widget(get_name());

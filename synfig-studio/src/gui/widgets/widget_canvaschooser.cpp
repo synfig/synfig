@@ -91,7 +91,6 @@ Widget_CanvasChooser::set_value(synfig::Canvas::Handle data)
 	assert(parent_canvas);
 	canvas=data;
 
-	synfig::Canvas::Children::iterator iter;
 	synfig::Canvas::Children &children(parent_canvas->children());
 	String label;
 
@@ -106,13 +105,14 @@ Widget_CanvasChooser::set_value(synfig::Canvas::Handle data)
 		append(label);
 	}
 
-	for(iter=children.begin();iter!=children.end();iter++)
+	for (synfig::Canvas::Children::iterator iter = children.begin(); iter != children.end(); ++iter) {
 		if(*iter!=canvas)
 		{
 			label=(*iter)->get_name().empty()?(*iter)->get_id():(*iter)->get_name();
 			canvases.push_back(*iter);
 			append(label);
 		}
+	}
 
 	append(_("Other..."));
 

@@ -304,7 +304,7 @@ Time::get_string(float fps, Time::Format format)const
 				// skip trailing zeros
 				int count = 0;
 				String::reverse_iterator i = seconds.rbegin();
-				for ( ; (*i) == '0'; i++)
+				for ( ; (*i) == '0'; ++i)
 					count++;
 
 				// if we removed too many, go back one place, leaving one zero

@@ -108,15 +108,12 @@ Dock_Canvases::create_canvas_tree()
 	canvas_tree=manage(new class Gtk::TreeView());
 	{
 		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_("ID")) );
-//		Gtk::CellRendererPixbuf* icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
+		Gtk::CellRendererPixbuf* icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
 
-		//column->pack_start(*icon_cellrenderer,false);
-		column->pack_start(canvas_tree_model.icon, false); //false = don't expand.
+		column->pack_start(*icon_cellrenderer, false); // false = dont expand.
 		column->pack_start(canvas_tree_model.label);
 
-//#ifdef NDEBUG
-//		column->add_attribute(icon_cellrenderer->property_pixbuf(), canvas_tree_model.icon);
-//#endif
+		column->add_attribute(*icon_cellrenderer, "icon_name", canvas_tree_model.icon_name);
 
 		canvas_tree->append_column(*column);
 	}

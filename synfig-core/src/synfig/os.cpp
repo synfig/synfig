@@ -46,6 +46,8 @@
 # define UNIX_PIPE_TO_PROCESSES
 # include <cstdlib> // for system()
 # include <fcntl.h> // for O_ flags
+# include <limits.h> // PATH_MAX
+# include <sys/stat.h> // for S_ISDIR() and stat()
 # include <sys/wait.h> // for waitpid()
 # include <unistd.h> // for popen()
 #elif defined(_WIN32)
@@ -201,7 +203,7 @@ public:
 		RunPipeWin32::close();
 	}
 
-	bool open(std::string binary_path, const OS::RunArgs& binary_args, OS::RunMode run_mode, const OS::RunRedirectionFiles& redir_files) override
+	bool open(const filesystem::Path& binary_path, const OS::RunArgs& binary_args, OS::RunMode run_mode, const OS::RunRedirectionFiles& redir_files) override
 	{
 		if (initialized) {
 			synfig::error("A pipe should not be initialized twice! Ignored...");
@@ -212,7 +214,7 @@ public:
 		is_reader = run_mode == OS::RUN_MODE_READ || run_mode == OS::RUN_MODE_READWRITE;
 		is_writer = run_mode == OS::RUN_MODE_WRITE || run_mode == OS::RUN_MODE_READWRITE;
 
-		String command = '"' + binary_path + '"';
+		String command = '"' + binary_path.u8string() + '"';
 		command += " " + binary_args.get_string();
 
 		full_command_ = command;
@@ -223,7 +225,7 @@ public:
 		saAttr.lpSecurityDescriptor = NULL;
 
 		if (!redir_files.std_err.empty()) {
-			child_STDERR_Write = CreateFileW(synfig::filesystem::Path(redir_files.std_err).c_str(),
+			child_STDERR_Write = CreateFileW(redir_files.std_err.c_str(),
 											 GENERIC_WRITE,
 											 FILE_SHARE_READ,
 											 &saAttr,
@@ -238,7 +240,7 @@ public:
 		}
 
 		if (!redir_files.std_out.empty()) {
-			child_STDOUT_Write = CreateFileW(synfig::filesystem::Path(redir_files.std_out).c_str(),
+			child_STDOUT_Write = CreateFileW(redir_files.std_out.c_str(),
 											 GENERIC_WRITE,
 											 FILE_SHARE_READ,
 											 &saAttr,
@@ -275,7 +277,7 @@ public:
 		}
 
 		if (!redir_files.std_in.empty()) {
-			child_STDIN_Read = CreateFileW(synfig::filesystem::Path(redir_files.std_in).c_str(),
+			child_STDIN_Read = CreateFileW(redir_files.std_in.c_str(),
 											 GENERIC_READ,
 											 0,
 											 &saAttr,
@@ -468,7 +470,7 @@ public:
 		RunPipeUnix::close();
 	}
 
-	bool open(std::string binary_path, const OS::RunArgs& binary_args, OS::RunMode run_mode, const OS::RunRedirectionFiles& redir_files) override
+	bool open(const filesystem::Path& binary_path, const OS::RunArgs& binary_args, OS::RunMode run_mode, const OS::RunRedirectionFiles& redir_files) override
 	{
 		if (initialized) {
 			synfig::error("A pipe should not be initialized twice! Ignored...");
@@ -476,7 +478,7 @@ public:
 		}
 		initialized = true;
 
-		full_command_ = binary_path + " " + binary_args.get_string();
+		full_command_ = binary_path.u8string() + " " + binary_args.get_string();
 
 		int p[2];
 
@@ -555,8 +557,9 @@ public:
 			::close(p[0]);
 
 			char *args[binary_args.size()+2];
+			std::string copy_binary_path = binary_path.u8string();
 			size_t idx = 0;
-			args[idx++] = &binary_path[0];
+			args[idx++] = &copy_binary_path[0];
 			for (size_t i = 0; i < binary_args.size(); i++)
 			{
 				const auto& arg = binary_args[i];
@@ -661,28 +664,28 @@ OS::RunPipe::create()
 }
 
 OS::RunPipe::Handle
-OS::run_async(std::string binary_path, const RunArgs& binary_args, RunMode mode, const RunRedirectionFiles& redir_files)
+OS::run_async(const filesystem::Path& binary_path, const RunArgs& binary_args, RunMode mode, const RunRedirectionFiles& redir_files)
 {
 	auto run_pipe = OS::RunPipe::create();
 	if (!run_pipe) {
-		synfig::warning("couldn't create pipe for %s %s", binary_path.c_str(), binary_args.get_string().c_str());
+		synfig::warning("couldn't create pipe for %s %s", binary_path.u8_str(), binary_args.get_string().c_str());
 		return nullptr;
 	}
 	run_pipe->open(binary_path, binary_args, mode, redir_files);
 	if (!run_pipe->is_open()) {
-		synfig::warning("couldn't open pipe for %s %s", binary_path.c_str(), binary_args.get_string().c_str());
+		synfig::warning("couldn't open pipe for %s %s", binary_path.u8_str(), binary_args.get_string().c_str());
 		return nullptr;
 	}
 	return run_pipe;
 }
 
 bool
-OS::run_sync(std::string binary_path, const RunArgs& binary_args, const std::string& stdout_redir_file, const std::string& stderr_redir_file)
+OS::run_sync(const filesystem::Path& binary_path, const RunArgs& binary_args, const filesystem::Path& stdout_redir_file, const filesystem::Path& stderr_redir_file)
 {
 	auto run_pipe = OS::RunPipe::create();
 	if (!run_pipe)
 		return false;
-	run_pipe->open(binary_path, binary_args, OS::RunMode::RUN_MODE_READ, {stderr_redir_file, stdout_redir_file, ""});
+	run_pipe->open(binary_path, binary_args, OS::RunMode::RUN_MODE_READ, {stderr_redir_file, stdout_redir_file, synfig::filesystem::Path()});
 	if (!run_pipe->is_open())
 		return false;
 
@@ -776,4 +779,39 @@ OS::get_user_lang()
 	}
 #endif
 	return language_list;
+}
+
+filesystem::Path
+OS::get_current_working_directory()
+{
+#ifdef _WIN32
+	DWORD length = GetCurrentDirectoryW(0, nullptr);
+
+	std::vector<filesystem::Path::value_type> current_dir_str(length);
+	if (GetCurrentDirectoryW(length, current_dir_str.data()) != length - 1)
+		return filesystem::Path("/");
+
+	return filesystem::Path::from_native(current_dir_str.data()).lexically_normal();
+#else
+
+	struct stat st;
+	if (char* pwd = getenv("PWD")) {
+		if (stat(pwd, &st) == 0 && S_ISDIR(st.st_mode)) {
+			return filesystem::Path::from_native(pwd).lexically_normal();
+		}
+	}
+
+	std::vector<char> buffer(PATH_MAX);
+	char* ptr = nullptr;
+
+	while (!ptr) {
+		ptr = getcwd(buffer.data(), buffer.size());
+		if (!ptr) {
+			if (errno != ERANGE)
+				return filesystem::Path("/");
+			buffer.resize(buffer.size() * 2);
+		}
+	}
+	return filesystem::Path::from_native(buffer.data()).lexically_normal();
+#endif
 }

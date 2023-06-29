@@ -33,13 +33,10 @@
 #	include <config.h>
 #endif
 
-#include <ETL/stringf>
-
 #include <synfig/localization.h>
 #include <synfig/general.h>
 #include <synfig/color.h>
 
-#include <glib/gstdio.h>
 #include "trgt_gif.h"
 #include <cstdio>
 #endif
@@ -59,10 +56,10 @@ SYNFIG_TARGET_SET_VERSION(gif,"0.1");
 
 /* === M E T H O D S ======================================================= */
 
-gif::gif(const char *filename_, const synfig::TargetParam & /* params */):
+gif::gif(const synfig::filesystem::Path& filename_, const synfig::TargetParam & /* params */):
 	bs(),
 	filename(filename_),
-	file( (filename=="-")?stdout:g_fopen(filename_,POPEN_BINARY_WRITE_TYPE) ),
+	file( filename.u8string() == "-" ? stdout : synfig::SmartFILE(filename_, "wb") ),
 	codesize(),
 	rootsize(),
 	nextcode(),
@@ -112,7 +109,7 @@ gif::init(synfig::ProgressCallback * /* cb */)
 
 	if(!file)
 	{
-		synfig::error(strprintf(_("Unable to open \"%s\" for write access!"),filename.c_str()));
+		synfig::error(strprintf(_("Unable to open \"%s\" for write access!"), filename.u8_str()));
 		return false;
 	}
 
@@ -197,7 +194,7 @@ gif::start_frame(synfig::ProgressCallback *callback)
 		return false;
 	}
 
-	if(callback)callback->task(filename+strprintf(" %d",imagecount));
+	if (callback) callback->task(filename.u8string() + strprintf(" %d", imagecount));
 
 
 
