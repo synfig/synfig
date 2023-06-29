@@ -37,14 +37,11 @@
 #include <gui/states/state_rotate.h>
 
 #include <gui/app.h>
-#include <gui/canvasview.h>
 #include <gui/docks/dock_toolbox.h>
 #include <gui/docks/dialog_tooloptions.h>
 #include <gui/duck.h>
 #include <gui/localization.h>
-#include <gui/workarea.h>
 
-#include <synfig/angle.h>
 #include <synfig/general.h>
 
 #include <synfigapp/main.h>
@@ -69,35 +66,6 @@ const int GAP = 3;
 StateRotate studio::state_rotate;
 
 /* === C L A S S E S & S T R U C T S ======================================= */
-
-class DuckDrag_Rotate : public DuckDrag_Base
-{
-
-	synfig::Vector last_rotate;
-	synfig::Vector drag_offset;
-	synfig::Vector center;
-	synfig::Vector snap;
-
-	Angle original_angle;
-	Real original_mag;
-
-	std::vector<synfig::Vector> positions;
-
-
-	bool bad_drag;
-	bool move_only;
-
-public:
-	etl::handle<CanvasView> canvas_view_;
-	bool use_magnitude;
-	DuckDrag_Rotate();
-	void begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& begin);
-	bool end_duck_drag(Duckmatic* duckmatic);
-	void duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector);
-
-	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
-};
-
 
 class studio::StateRotate_Context : public sigc::trackable
 {

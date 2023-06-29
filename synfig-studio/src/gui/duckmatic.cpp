@@ -317,21 +317,28 @@ void Duckmatic::select_all_movement_ducks(etl::loose_handle<studio::CanvasView> 
 
 	DuckMap::const_iterator iter;
 	for(iter=duck_map.begin();iter!=duck_map.end();++iter){
-		if (iter->second->get_type() != Duck::TYPE_VERTEX &&
-			 iter->second->get_type() != Duck::TYPE_POSITION)
+		if (iter->second->get_type() != Duck::TYPE_VERTEX /*&&
+			 iter->second->get_type() != Duck::TYPE_POSITION*/)
 			continue;
-		if(iter->second && iter->second->get_value_desc().parent_is_layer()){
-			//why would a duck of a layer not have the layer as it's parent ?? (this happens in polygon layers)
-			if ( iter->second->get_value_desc().get_layer() == layer || (parent_group &&
-				 iter->second->get_value_desc().get_layer()->get_parent_paste_canvas_layer() == parent_group)
-				 ){
-				selected_movement_ducks.insert((iter->second)->get_guid());
-			}
-			else {
-				selected_movement_ducks.erase(iter->first);
-			}
+
+		if (iter->second){
+			selected_movement_ducks.insert((iter->second)->get_guid());
+		} else {
+			selected_movement_ducks.erase(iter->first);
 		}
+//		if(iter->second && iter->second->get_value_desc().parent_is_layer()){
+//			//why would a duck of a layer not have the layer as it's parent ?? (this happens in polygon layers)
+//			if ( iter->second->get_value_desc().get_layer() == layer || (parent_group &&
+//				 iter->second->get_value_desc().get_layer()->get_parent_paste_canvas_layer() == parent_group)
+//				 ){
+//				selected_movement_ducks.insert((iter->second)->get_guid());
+//			}
+//			else {
+//				selected_movement_ducks.erase(iter->first);
+//			}
+//		}
 	}
+	std::cout<<"num ducks selected"<<selected_movement_ducks.size()<<std::endl;
 
 }
 
