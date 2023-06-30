@@ -91,7 +91,7 @@ private:
 	bool valid;
 	static Environment* instance;
 
-	std::thread mainThread;
+	// std::thread mainThread;
 	Context* mainContext = nullptr;
 
 	// Shaders* shaders = nullptr;

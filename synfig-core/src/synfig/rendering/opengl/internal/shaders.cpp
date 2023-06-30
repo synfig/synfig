@@ -59,6 +59,8 @@ using Program = gl::Programs::Program;
 
 // loads and compiles shader, file extension used to determine shader type
 
+// SHADER
+
 Shader
 compile_shader(GLenum type, const std::string& content)
 {
@@ -134,6 +136,9 @@ gl::Shaders::initialize()
 	map["solid.fs"] = load_shader("solid.fs");
 	assert(map["solid.fs"].valid);
 
+	map["colormatrix.fs"] = load_shader("colormatrix.fs");
+	assert(map["colormatrix.fs"].valid);
+
 	valid = true;
 	return true;
 }
@@ -158,6 +163,8 @@ gl::Shaders::get_shader(const std::string &str) const
 	if(itr != map.end()) return itr->second;
 	return { 0, false };
 }
+
+// PROGRAMS
 
 Program
 create_program(std::vector<Shader> shaders)
@@ -223,6 +230,9 @@ gl::Programs::initialize(const Shaders& shaders)
 	map["solid"] = create_program({ shaders.get_shader("basic.vs"), shaders.get_shader("solid.fs") });
 	assert(map["solid"].valid);
 
+	map["colormatrix"] = create_program({ shaders.get_shader("basic.vs"), shaders.get_shader("colormatrix.fs") });
+	assert(map["colormatrix"].valid);
+
 	valid = true;
 	return true;
 }
@@ -249,6 +259,65 @@ gl::Programs::clone() const
 	}
 
 	return programs;
+}
+
+Program
+gl::Programs::get_program(const std::string &str) const
+{
+	if(map.count(str) == 0) return {0, false};
+
+	Program p = map.at(str);
+	p.shaders = {};
+	return p;
+}
+
+// PROGRAM
+
+void
+gl::Programs::Program::set_1i(const std::string &name, int value)
+{
+	assert(valid);
+
+	int loc = glGetUniformLocation(id, name.c_str());
+	glUniform1i(loc, value);
+}
+
+void
+gl::Programs::Program::set_1f(const std::string &name, float value)
+{
+	assert(valid);
+
+	int loc = glGetUniformLocation(id, name.c_str());
+	glUniform1f(loc, value);
+}
+
+void
+gl::Programs::Program::set_color(const std::string &name, Color value)
+{
+	assert(valid);
+
+	int loc = glGetUniformLocation(id, name.c_str());
+	glUniform4f(loc, value.get_r(), value.get_g(), value.get_b(), value.get_a());
+}
+
+void
+gl::Programs::Program::set_mat5x5(const std::string &name, ColorMatrix mat)
+{
+	assert(valid);
+
+	set_1f(name + ".m00", mat[0][0]); set_1f(name + ".m01", mat[0][1]);	set_1f(name + ".m02", mat[0][2]); set_1f(name + ".m03", mat[0][3]);	set_1f(name + ".m04", mat[0][4]);
+	set_1f(name + ".m10", mat[1][0]); set_1f(name + ".m11", mat[1][1]);	set_1f(name + ".m12", mat[1][2]); set_1f(name + ".m13", mat[1][3]);	set_1f(name + ".m14", mat[1][4]);
+	set_1f(name + ".m20", mat[2][0]); set_1f(name + ".m21", mat[2][1]);	set_1f(name + ".m22", mat[2][2]); set_1f(name + ".m23", mat[2][3]);	set_1f(name + ".m24", mat[2][4]);
+	set_1f(name + ".m30", mat[3][0]); set_1f(name + ".m31", mat[3][1]);	set_1f(name + ".m32", mat[3][2]); set_1f(name + ".m33", mat[3][3]);	set_1f(name + ".m34", mat[3][4]);
+	set_1f(name + ".m40", mat[4][0]); set_1f(name + ".m41", mat[4][1]);	set_1f(name + ".m42", mat[4][2]); set_1f(name + ".m43", mat[4][3]);	set_1f(name + ".m44", mat[4][4]);
+}
+
+void
+gl::Programs::Program::use()
+{
+	assert(valid);
+
+	glUseProgram(id);
 }
 
 /* === E N T R Y P O I N T ================================================= */

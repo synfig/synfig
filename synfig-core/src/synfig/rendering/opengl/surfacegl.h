@@ -69,7 +69,7 @@ public:
 	explicit SurfaceGL(const Surface &other);
 	~SurfaceGL();
 
-	gl::Framebuffer& get_framebuffer();
+	gl::Framebuffer& get_framebuffer() const;
 };
 
 } /* end namespace rendering */

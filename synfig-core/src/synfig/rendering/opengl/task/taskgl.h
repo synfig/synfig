@@ -33,6 +33,8 @@
 
 #include "../../task.h"
 
+#include "../internal/environment.h"
+
 #include "../surfacegl.h"
 
 /* === M A C R O S ========================================================= */
@@ -58,6 +60,8 @@ public:
 		{ return TargetSurface::token.handle(); }
 	virtual bool get_mode_allow_multithreading() const
 		{ return false; }
+protected:
+	gl::Environment& env() const;
 };
 
 } /* end namespace rendering */

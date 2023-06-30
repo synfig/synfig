@@ -70,6 +70,8 @@ public:
 
 	bool initialize();
 
+	gl::Programs::Program get_program(const std::string& str) const;
+
 	void use();
 	void unuse();
 

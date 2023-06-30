@@ -114,4 +114,10 @@ SurfaceGL::get_pixels_pointer_vfunc() const
 	return framebuffer.get_pixels();
 }
 
+gl::Framebuffer&
+SurfaceGL::get_framebuffer() const
+{
+	return framebuffer;
+}
+
 /* === E N T R Y P O I N T ================================================= */

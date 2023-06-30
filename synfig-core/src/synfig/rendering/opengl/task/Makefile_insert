@@ -3,6 +3,7 @@ RENDERING_OPENGL_TASK_HH = \
 
 RENDERING_OPENGL_TASK_CC = \
 	rendering/opengl/task/taskgl.cpp
+	rendering/opengl/task/taskpixelcolormatrixgl.cpp
 
 RENDERING_HH += \
     $(RENDERING_OPENGL_TASK_HH)

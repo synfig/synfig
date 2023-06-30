@@ -31,6 +31,8 @@
 
 /* === H E A D E R S ======================================================= */
 #include "headers.h"
+#include "synfig/color/color.h"
+#include "synfig/color/colormatrix.h"
 
 #include <map>
 #include <string>
@@ -82,6 +84,12 @@ public:
 		bool valid;
 		std::vector<Shaders::Shader> shaders;
 
+		void use();
+		void set_1i(const std::string& name, int value);
+		void set_1f(const std::string& name, float value);
+		void set_color(const std::string& name, Color value);
+		void set_mat5x5(const std::string& name, ColorMatrix mat);
+
 	private:
 	};
 
@@ -89,6 +97,8 @@ public:
 	void deinitialize();
 
 	Programs clone() const;
+
+	Program get_program(const std::string& str) const;
 
 	bool is_valid() const { return valid; }
 

@@ -200,6 +200,14 @@ gl::Context::initialize()
 	return initialized;
 }
 
+gl::Programs::Program
+gl::Context::get_program(const std::string &str) const
+{
+	assert(initialized);
+
+	return programs->get_program(str);
+}
+
 void
 gl::Context::use()
 {

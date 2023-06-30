@@ -52,4 +52,9 @@ using namespace rendering;
 
 ModeToken TaskGL::mode_token("opengl");
 
+gl::Environment& TaskGL::env() const
+{
+	return gl::Environment::get_instance();
+}
+
 /* === E N T R Y P O I N T ================================================= */
