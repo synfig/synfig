@@ -59,7 +59,8 @@ using Program = gl::Programs::Program;
 
 // loads and compiles shader, file extension used to determine shader type
 
-Shader compile_shader(GLenum type, const std::string& content)
+Shader
+compile_shader(GLenum type, const std::string& content)
 {
 	Shader s;
 	s.valid = false;
@@ -92,12 +93,14 @@ Shader compile_shader(GLenum type, const std::string& content)
 	return s;
 }
 
-std::string get_shader_path(const std::string& file)
+std::string
+get_shader_path(const std::string& file)
 {
 	return Main::get_instance().bin_path + "/shaders/" + file;
 }
 
-Shader load_shader(const std::string& file)
+Shader
+load_shader(const std::string& file)
 {
 	const std::string ext = file.substr(file.find('.'));
 
@@ -115,13 +118,15 @@ Shader load_shader(const std::string& file)
 	return { 0, false };
 }
 
-void delete_shader(Shader s)
+void
+delete_shader(Shader s)
 {
 	assert(s.valid);
 	glDeleteShader(s.id);
 }
 
-bool gl::Shaders::initialize()
+bool
+gl::Shaders::initialize()
 {
 	map["basic.vs"] = load_shader("basic.vs");
 	assert(map["basic.vs"].valid);
@@ -133,7 +138,8 @@ bool gl::Shaders::initialize()
 	return true;
 }
 
-void gl::Shaders::deinitialize()
+void
+gl::Shaders::deinitialize()
 {
 	for(auto shader: map)
 	{
@@ -145,14 +151,16 @@ void gl::Shaders::deinitialize()
 	info("Shaders deinitialized");
 }
 
-Shader gl::Shaders::get_shader(const std::string &str) const
+Shader
+gl::Shaders::get_shader(const std::string &str) const
 {
 	auto itr = map.find(str);
 	if(itr != map.end()) return itr->second;
 	return { 0, false };
 }
 
-Program create_program(std::vector<Shader> shaders)
+Program
+create_program(std::vector<Shader> shaders)
 {
 	Program p;
 	p.valid = false;
@@ -193,19 +201,22 @@ Program create_program(std::vector<Shader> shaders)
 	return p;
 }
 
-Program clone_program(const Program& p)
+Program
+clone_program(const Program& p)
 {
 	assert(p.valid);
 	return create_program(p.shaders);
 }
 
-void delete_program(Program p)
+void
+delete_program(Program p)
 {
 	assert(p.valid);
 	glDeleteProgram(p.id);
 }
 
-bool gl::Programs::initialize(const Shaders& shaders)
+bool
+gl::Programs::initialize(const Shaders& shaders)
 {
 	assert(shaders.is_valid());
 
@@ -216,7 +227,8 @@ bool gl::Programs::initialize(const Shaders& shaders)
 	return true;
 }
 
-void gl::Programs::deinitialize()
+void
+gl::Programs::deinitialize()
 {
 	for(auto program: map)
 	{
@@ -225,7 +237,8 @@ void gl::Programs::deinitialize()
 	valid = false;
 }
 
-gl::Programs gl::Programs::clone() const
+gl::Programs
+gl::Programs::clone() const
 {
 	gl::Programs programs = *this;
 

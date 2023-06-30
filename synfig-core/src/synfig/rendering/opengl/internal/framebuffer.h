@@ -49,20 +49,27 @@ namespace gl
 class Framebuffer
 {
 public:
-	Framebuffer(int width, int height);
-
 	// remember to call glViewport once to set appropiate viewport settings
+	bool from_pixels(int width, int height, const Color* pixels = nullptr);
+	
 	void use_write();
 	void use_read(int tex);
 
 	void unuse();
 
-	Color* get_pixels();
+	void clear();
+
+	void reset();
+
+	// TODO: move texture data to a PBO before this function is called so that gpu can transfer in background
+	const Color* get_pixels() const;
 
 	bool is_valid() const { return valid; }
 
 private:
 	GLuint id, texId, activeTexSlot;
+
+	int width, height;
 
 	bool valid = false;
 	bool is_writing = false;

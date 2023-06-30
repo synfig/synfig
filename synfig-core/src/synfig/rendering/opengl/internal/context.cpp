@@ -128,7 +128,8 @@ gl::Context::~Context()
 	}
 }
 
-bool gl::Context::initialize()
+bool
+gl::Context::initialize()
 {
 	glfwInit();
 
@@ -192,11 +193,6 @@ bool gl::Context::initialize()
 		return false;
 	}
 
-	Framebuffer buf(1080, 1920);
-	buf.use_write();
-	buf.unuse();
-	buf.use_read(3);
-	buf.unuse();
 	glfwMakeContextCurrent(NULL);
 
 	info("Opengl[N] -> Context initialized");
@@ -204,19 +200,33 @@ bool gl::Context::initialize()
 	return initialized;
 }
 
-void gl::Context::use()
+void
+gl::Context::use()
 {
 	mutex.lock();
+	lock_count++;
 
-	if(!initialized) initialize();
-	assert(initialized);
+	// only lock the first time use is called on this thread
+	if(lock_count == 1)
+	{
+		if(!initialized) initialize();
+		assert(initialized);
 
-	glfwMakeContextCurrent(glfwWindow);
+		glfwMakeContextCurrent(glfwWindow);
+	}
 }
 
-void gl::Context::unuse()
+void
+gl::Context::unuse()
 {
-	glfwMakeContextCurrent(NULL);
+	lock_count--;
+
+	// only remove the context the last time unlock is called
+	if(lock_count == 0)
+	{
+		glfwMakeContextCurrent(NULL);
+	}
+
 	mutex.unlock();
 }
 

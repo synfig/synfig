@@ -49,9 +49,13 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 // TODO: make it configurable like: allow depth testing by using a depth texture
-gl::Framebuffer::Framebuffer(int width, int height)
+bool
+gl::Framebuffer::from_pixels(int width, int height, const Color* pixels)
 {
 	valid = false;
+
+	this->width = width;
+	this->height = height;
 
 	glGenFramebuffers(1, &id);
 	glBindFramebuffer(GL_FRAMEBUFFER, id);
@@ -59,21 +63,23 @@ gl::Framebuffer::Framebuffer(int width, int height)
 	glGenTextures(1, &texId);
 	glBindTexture(GL_TEXTURE_2D, texId);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_FLOAT, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA, GL_FLOAT, pixels);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);  
 
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texId, 0);
 
-	if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) return;
+	if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) return false;
 
 	valid = true;
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	return true;
 }
 
-void gl::Framebuffer::use_write()
+void
+gl::Framebuffer::use_write()
 {
 	assert(is_valid());
 
@@ -83,7 +89,8 @@ void gl::Framebuffer::use_write()
 	is_writing = true;
 }
 
-void gl::Framebuffer::use_read(int tex)
+void
+gl::Framebuffer::use_read(int tex)
 {
 	assert(is_valid());
 
@@ -99,7 +106,8 @@ void gl::Framebuffer::use_read(int tex)
 	activeTexSlot = tex;
 }
 
-void gl::Framebuffer::unuse()
+void
+gl::Framebuffer::unuse()
 {
 	assert(is_valid());
 
@@ -116,6 +124,46 @@ void gl::Framebuffer::unuse()
 	}
 
 	is_writing = is_reading = false;
+}
+
+void
+gl::Framebuffer::clear()
+{
+	assert(is_valid());
+
+	use_write();
+	unuse();
+}
+
+void
+gl::Framebuffer::reset()
+{
+	if(valid)
+	{
+		if(is_writing || is_reading)
+		{
+			warning("Opengl[W] -> Attempting to reset a framebuffer which is currently used for reading or writing");
+		}
+
+		glDeleteTextures(1, &texId);
+		glDeleteFramebuffers(1, &id);
+	}
+	valid = false;
+}
+
+const Color*
+gl::Framebuffer::get_pixels() const
+{
+	assert(is_valid());
+
+	Color* color = new Color[width * height];
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texId);
+	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_FLOAT, color);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	return color;
 }
 
 /* === E N T R Y P O I N T ================================================= */

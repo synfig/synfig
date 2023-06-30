@@ -87,7 +87,8 @@ gl::Environment::~Environment()
 	delete mainContext;
 }
 
-gl::Context& gl::Environment::get_or_create_context()
+gl::Context&
+gl::Environment::get_or_create_context()
 {
 	std::lock_guard<std::mutex> lock(mutex);
 	if(mainContext == nullptr)

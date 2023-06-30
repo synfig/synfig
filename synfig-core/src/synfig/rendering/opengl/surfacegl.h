@@ -32,6 +32,8 @@
 /* === H E A D E R S ======================================================= */
 
 #include "../surface.h"
+#include "synfig/rendering/opengl/internal/framebuffer.h"
+#include <memory>
 
 /* === M A C R O S ========================================================= */
 
@@ -53,6 +55,7 @@ public:
 		{ return token.handle(); }
 
 private:
+	gl::Framebuffer framebuffer;
 
 protected:
 	virtual bool create_vfunc(int width, int height);
@@ -65,6 +68,8 @@ public:
 	SurfaceGL();
 	explicit SurfaceGL(const Surface &other);
 	~SurfaceGL();
+
+	gl::Framebuffer& get_framebuffer();
 };
 
 } /* end namespace rendering */

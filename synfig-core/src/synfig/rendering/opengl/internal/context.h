@@ -52,6 +52,19 @@ namespace gl
 class Context
 {
 public:
+	class Lock {
+	public:
+		Lock(Context& ctx) : ctx(ctx) {
+			ctx.use();
+		}
+		~Lock() {
+			ctx.unuse();
+		}
+	private:
+		Context& ctx;
+	};
+
+public:
 	Context();
 	~Context();
 
@@ -61,7 +74,9 @@ public:
 	void unuse();
 
 private:
-	std::mutex mutex;
+	std::recursive_mutex mutex;
+
+	int lock_count = 0;
 
 	bool initialized = false;
 

@@ -34,6 +34,10 @@
 #endif
 
 #include "surfacegl.h"
+
+#include "internal/context.h"
+#include "internal/environment.h"
+
 #endif
 
 using namespace synfig;
@@ -66,31 +70,48 @@ SurfaceGL::~SurfaceGL()
 bool
 SurfaceGL::create_vfunc(int width, int height)
 {
-	return false;
+	// TODO: shorter way
+	gl::Context::Lock lock(gl::Environment::get_instance().get_or_create_context());
+
+	framebuffer.reset();
+	return framebuffer.from_pixels(width, height);
 }
 
 bool
 SurfaceGL::assign_vfunc(const rendering::Surface &surface)
 {
-	return false;
+	gl::Context::Lock lock(gl::Environment::get_instance().get_or_create_context());
+
+	framebuffer.reset();
+	return framebuffer.from_pixels(surface.get_width(), surface.get_height(), surface.get_pixels_pointer());
 }
 
 bool
 SurfaceGL::clear_vfunc()
 {
-	return false;
+	gl::Context::Lock lock(gl::Environment::get_instance().get_or_create_context());
+
+	if(!framebuffer.is_valid()) return false;
+
+	framebuffer.clear();
+	return true;
 }
 
 bool
 SurfaceGL::reset_vfunc()
 {
-	return false;
+	gl::Context::Lock lock(gl::Environment::get_instance().get_or_create_context());
+
+	framebuffer.reset();
+	return true;
 }
 
 const Color*
 SurfaceGL::get_pixels_pointer_vfunc() const
 {
-	return nullptr;
+	gl::Context::Lock lock(gl::Environment::get_instance().get_or_create_context());
+
+	return framebuffer.get_pixels();
 }
 
 /* === E N T R Y P O I N T ================================================= */
