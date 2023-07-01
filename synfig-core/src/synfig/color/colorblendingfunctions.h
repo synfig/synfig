@@ -61,8 +61,7 @@ C blendfunc_COMPOSITE(C fg, C bg, float amount)
 
 	const float a = a_fg + a_bg * (one - a_fg);
 
-	if(fabsf(a) > COLOR_EPSILON)
-	{
+	if(fabsf(a) > COLOR_EPSILON) {
 		// Scale the source and bgination by their alpha values
 		fg *= a_fg;
 		bg *= a_bg;
@@ -72,8 +71,7 @@ C blendfunc_COMPOSITE(C fg, C bg, float amount)
 		bg /= a;
 		bg.set_a(a);
 	}
-	else
-	{
+	else { 
 		bg = C::alpha();
 	}
 	assert(bg.is_valid());
@@ -87,8 +85,7 @@ C blendfunc_STRAIGHT(C fg, C bg, float amount)
 
 	float a_out((fg.get_a() - bg.get_a()) * amount + bg.get_a());
 
-	if(fabsf(a_out) > COLOR_EPSILON)
-	{
+	if(fabsf(a_out) > COLOR_EPSILON) {
 		bg *= bg.get_a();
 		out = ((fg * fg.get_a() - bg) * amount + bg) / a_out;
 		out.set_a(a_out);
