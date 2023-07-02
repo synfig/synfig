@@ -308,6 +308,9 @@ Duckmatic::unselect_all_ducks()
 
 void Duckmatic::select_all_movement_ducks(etl::loose_handle<studio::CanvasView> canvas_view, Layer::Handle layer)
 {
+	//clear any previously selected ducks
+	selected_movement_ducks.clear();
+
 	//first make sure the layer is selected as if it is not then its ducks will not be in the ducks map
 	canvas_view->get_selection_manager()->set_selected_layer(layer);
 	canvas_view->rebuild_ducks();
@@ -323,23 +326,9 @@ void Duckmatic::select_all_movement_ducks(etl::loose_handle<studio::CanvasView> 
 
 		if (iter->second){
 			selected_movement_ducks.insert((iter->second)->get_guid());
-		} else {
-			selected_movement_ducks.erase(iter->first);
 		}
-//		if(iter->second && iter->second->get_value_desc().parent_is_layer()){
-//			//why would a duck of a layer not have the layer as it's parent ?? (this happens in polygon layers)
-//			if ( iter->second->get_value_desc().get_layer() == layer || (parent_group &&
-//				 iter->second->get_value_desc().get_layer()->get_parent_paste_canvas_layer() == parent_group)
-//				 ){
-//				selected_movement_ducks.insert((iter->second)->get_guid());
-//			}
-//			else {
-//				selected_movement_ducks.erase(iter->first);
-//			}
-//		}
-	}
-	std::cout<<"num ducks selected"<<selected_movement_ducks.size()<<std::endl;
 
+	}
 }
 
 void
