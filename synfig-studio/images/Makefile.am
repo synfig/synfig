@@ -167,6 +167,7 @@ EXTRA_DIST = \
 	tool_gradient_icon.sif \
 	tool_mirror_icon.sif \
 	tool_normal_icon.sif \
+	tool_select_icon.sif \
 	tool_polyline_icon.sif \
 	tool_rectangle_icon.sif \
 	tool_rotate_icon.sif \
@@ -377,6 +378,7 @@ ICONS = \
 	tool_gradient_icon.$(EXT) \
 	tool_mirror_icon.$(EXT) \
 	tool_normal_icon.$(EXT) \
+	tool_select_icon.$(EXT) \
 	tool_polyline_icon.$(EXT) \
 	tool_rectangle_icon.$(EXT) \
 	tool_rotate_icon.$(EXT) \
