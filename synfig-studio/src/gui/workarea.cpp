@@ -1339,9 +1339,12 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 							if (etl::loose_handle<Layer> parent_group = layer->get_parent_paste_canvas_layer()){
 								if (etl::handle<synfig::Layer_PasteCanvas> p = etl::handle<synfig::Layer_PasteCanvas>::cast_dynamic(parent_group)){
 									//selecting children of the parent group -- assuming here that double selection should be handled
-									for ( auto iter = p->get_sub_canvas()->begin(); iter != p->get_sub_canvas()->end(); iter++)
-											get_canvas_view()->get_selection_manager()->set_selected_layer(*iter);
-									}
+									//make sure parent isnt root canvas
+									if(!layer->get_canvas()->is_root()){
+										for ( auto iter = p->get_sub_canvas()->begin(); iter != p->get_sub_canvas()->end(); iter++)
+												get_canvas_view()->get_selection_manager()->set_selected_layer(*iter);
+										}
+								}
 							}
 						}
 
