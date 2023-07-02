@@ -272,6 +272,8 @@ StateSelect_Context::~StateSelect_Context()
 {
 	save_settings();
 
+	get_work_area()->clear_duck_dragger();
+
 	get_work_area()->reset_cursor();
 
 	App::dialog_tool_options->clear();
