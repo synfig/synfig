@@ -179,22 +179,22 @@ ValueNode_Stripes::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"color1")
+	ret.push_back(ParamDesc("color1")
 		.set_local_name(_("Color 1"))
 		.set_description(_("One color of the gradient stripes"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"color2")
+	ret.push_back(ParamDesc("color2")
 		.set_local_name(_("Color 2"))
 		.set_description(_("Other color of the gradient stripes"))
 	);
 
-		ret.push_back(ParamDesc(ValueBase(),"stripes")
+		ret.push_back(ParamDesc("stripes")
 		.set_local_name(_("Stripe Count"))
 		.set_description(_("Number of stripes in the gradient"))
 	);
 
-		ret.push_back(ParamDesc(ValueBase(),"width")
+		ret.push_back(ParamDesc("width")
 		.set_local_name(_("Width"))
 		.set_description(_("Width of stripes in the gradient between [0,1]"))
 	);

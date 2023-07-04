@@ -148,17 +148,17 @@ ValueNode_GradientColor::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"gradient")
+	ret.push_back(ParamDesc("gradient")
 		.set_local_name(_("Gradient"))
 		.set_description(_("The gradient where the color is picked from"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"index")
+	ret.push_back(ParamDesc("index")
 		.set_local_name(_("Index"))
 		.set_description(_("The position of the color at the gradient (0,1]"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"loop")
+	ret.push_back(ParamDesc("loop")
 		.set_local_name(_("Loop"))
 		.set_description(_("When checked, the index would loop"))
 	);

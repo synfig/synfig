@@ -137,12 +137,12 @@ ValueNode_And::get_children_vocab_vfunc() const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"link1")
+	ret.push_back(ParamDesc("link1")
 		.set_local_name(_("Link1"))
 		.set_description(_("First operand of the AND operation"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"link2")
+	ret.push_back(ParamDesc("link2")
 		.set_local_name(_("Link2"))
 		.set_description(_("Second operand of the AND operation"))
 	);

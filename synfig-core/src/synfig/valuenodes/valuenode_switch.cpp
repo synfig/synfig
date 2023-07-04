@@ -144,17 +144,17 @@ ValueNode_Switch::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"link_off")
+	ret.push_back(ParamDesc("link_off")
 		.set_local_name(_("Link Off"))
 		.set_description(_("The value node returned when the switch is off"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"link_on")
+	ret.push_back(ParamDesc("link_on")
 		.set_local_name(_("Link On"))
 		.set_description(_("The value node returned when the switch is on"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"switch")
+	ret.push_back(ParamDesc("switch")
 		.set_local_name(_("Switch"))
 		.set_description(_("When checked, returns 'Link On', otherwise returns 'Link Off'"))
 	);

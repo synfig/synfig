@@ -237,12 +237,12 @@ ValueNode_Scale::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"link")
+	ret.push_back(ParamDesc("link")
 		.set_local_name(_("Link"))
 		.set_description(_("The value node used to scale"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"scalar")
+	ret.push_back(ParamDesc("scalar")
 		.set_local_name(_("Scalar"))
 		.set_description(_("Value that multiplies the value node"))
 	);

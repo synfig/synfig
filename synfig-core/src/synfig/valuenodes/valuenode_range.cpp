@@ -296,17 +296,17 @@ ValueNode_Range::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"min")
+	ret.push_back(ParamDesc("min")
 		.set_local_name(_("Min"))
 		.set_description(_("Returned value when 'Link' is smaller"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"max")
+	ret.push_back(ParamDesc("max")
 		.set_local_name(_("Max"))
 		.set_description(_("Returned value when 'Link' is greater"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"link")
+	ret.push_back(ParamDesc("link")
 		.set_local_name(_("Link"))
 		.set_description(_("The value node to limit its range"))
 	);

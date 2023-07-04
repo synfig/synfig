@@ -155,17 +155,17 @@ ValueNode_Reciprocal::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"link")
+	ret.push_back(ParamDesc("link")
 		.set_local_name(_("Link"))
 		.set_description(_("The value node used to calculate its reciprocal"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"epsilon")
+	ret.push_back(ParamDesc("epsilon")
 		.set_local_name(_("Epsilon"))
 		.set_description(_("The value used to decide whether 'Link' is too small to obtain its reciprocal"))
 	);
 
-		ret.push_back(ParamDesc(ValueBase(),"infinite")
+		ret.push_back(ParamDesc("infinite")
 		.set_local_name(_("Infinite"))
 		.set_description(_("The resulting value when 'Link' < 'Epsilon'"))
 	);

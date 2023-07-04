@@ -210,17 +210,17 @@ ValueNode_Add::get_children_vocab_vfunc() const
 {
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"lhs")
+	ret.push_back(ParamDesc("lhs")
 		.set_local_name(_("Link"))
 		.set_description(_("Left Hand Side of the add"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"rhs")
+	ret.push_back(ParamDesc("rhs")
 		.set_local_name(_("Addition"))
 		.set_description(_("Right Hand Side of the add"))
 	);
 
-		ret.push_back(ParamDesc(ValueBase(),"scalar")
+		ret.push_back(ParamDesc("scalar")
 		.set_local_name(_("Scalar"))
 		.set_description(_("Value that multiplies the add"))
 	);

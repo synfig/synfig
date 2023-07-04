@@ -154,12 +154,12 @@ ValueNode_BoneWeightPair::get_children_vocab_vfunc() const
 {
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"bone")
+	ret.push_back(ParamDesc("bone")
 		.set_local_name(_("Bone"))
 		.set_description(_("Bone used to make influence"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"weight")
+	ret.push_back(ParamDesc("weight")
 		.set_local_name(_("Weight"))
 		.set_description(_("The relative value of influence of the bone"))
 	);

@@ -357,15 +357,15 @@ ValueNode_Derivative::get_children_vocab_vfunc()const
 		return children_vocab;
 
 	LinkableValueNode::Vocab ret;
-	ret.push_back(ParamDesc(ValueBase(),"link")
+	ret.push_back(ParamDesc("link")
 		.set_local_name(_("Link"))
 		.set_description(_("Value to calculate the derivative"))
 	);
-	ret.push_back(ParamDesc(ValueBase(),"interval")
+	ret.push_back(ParamDesc("interval")
 		.set_local_name(_("Interval"))
 		.set_description(_("Interval of time to calculate the finite differences"))
 	);
-	ret.push_back(ParamDesc(ValueBase(),"accuracy")
+	ret.push_back(ParamDesc("accuracy")
 		.set_local_name(_("Accuracy"))
 		.set_description(_("Accuracy of the derivative"))
 		.set_hint("enum")
@@ -374,7 +374,7 @@ ValueNode_Derivative::get_children_vocab_vfunc()const
 		.add_enum_value(FINE,"fine",_("Fine"))
 		.add_enum_value(EXTREME,"extreme",_("Extreme"))
 	);
-	ret.push_back(ParamDesc(ValueBase(),"order")
+	ret.push_back(ParamDesc("order")
 		.set_local_name(_("Order"))
 		.set_description(_("Order of the derivative"))
 		.set_hint("enum")

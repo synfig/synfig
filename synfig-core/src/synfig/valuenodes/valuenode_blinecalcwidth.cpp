@@ -181,27 +181,27 @@ ValueNode_BLineCalcWidth::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"bline")
+	ret.push_back(ParamDesc("bline")
 		.set_local_name(_("Spline"))
 		.set_description(_("The spline where the width is linked to"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"loop")
+	ret.push_back(ParamDesc("loop")
 		.set_local_name(_("Loop"))
 		.set_description(_("When checked, the amount would loop"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"amount")
+	ret.push_back(ParamDesc("amount")
 		.set_local_name(_("Amount"))
 		.set_description(_("The position of the linked width on the spline (0,1]"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"scale")
+	ret.push_back(ParamDesc("scale")
 		.set_local_name(_("Scale"))
 		.set_description(_("Scale of the width"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"homogeneous")
+	ret.push_back(ParamDesc("homogeneous")
 		.set_local_name(_("Homogeneous"))
 		.set_description(_("When checked, the width is spline length based"))
 	);

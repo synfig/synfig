@@ -742,7 +742,7 @@ Advanced_Outline::get_param_vocab()const
 		.set_local_name(_("Expand"))
 		.set_description(_("Value to add to the global width"))
 	);
-	ret.push_back(ParamDesc(ValueBase(),"start_tip")
+	ret.push_back(ParamDesc("start_tip")
 		.set_local_name(_("Tip Type at Start"))
 		.set_description(_("Defines the Tip type of the first spline point when spline is unlooped"))
 		.set_hint("enum")
@@ -754,7 +754,7 @@ Advanced_Outline::get_param_vocab()const
 		.add_enum_value(WidthPoint::TYPE_INNER_ROUNDED,"inner_rounded", _("Inner Rounded Stop"))
 		.add_enum_value(WidthPoint::TYPE_INNER_PEAK,"inner_peak", _("Off-Peak Stop"))
 		);
-	ret.push_back(ParamDesc(ValueBase(),"end_tip")
+	ret.push_back(ParamDesc("end_tip")
 		.set_local_name(_("Tip Type at End"))
 		.set_description(_("Defines the Tip type of the last spline point when spline is unlooped"))
 		.set_hint("enum")

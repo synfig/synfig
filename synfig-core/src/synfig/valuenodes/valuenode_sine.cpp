@@ -144,12 +144,12 @@ ValueNode_Sine::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"angle")
+	ret.push_back(ParamDesc("angle")
 		.set_local_name(_("Angle"))
 		.set_description(_("The angle where the sine is calculated from"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"amp")
+	ret.push_back(ParamDesc("amp")
 		.set_local_name(_("Amplitude"))
 		.set_description(_("The value that multiplies the resulting sine"))
 	);

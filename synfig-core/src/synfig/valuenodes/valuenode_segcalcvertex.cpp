@@ -143,12 +143,12 @@ ValueNode_SegCalcVertex::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"segment")
+	ret.push_back(ParamDesc("segment")
 		.set_local_name(_("Segment"))
 		.set_description(_("The Segment where the vertex is linked to"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"amount")
+	ret.push_back(ParamDesc("amount")
 		.set_local_name(_("Amount"))
 		.set_description(_("The position of the linked vertex on the Segment (0,1]"))
 	);

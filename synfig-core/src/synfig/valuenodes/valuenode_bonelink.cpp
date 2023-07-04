@@ -197,37 +197,37 @@ ValueNode_BoneLink::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"bone")
+	ret.push_back(ParamDesc("bone")
 		.set_local_name(_("Bone"))
 		.set_description(_("The linked bone"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"base_value")
+	ret.push_back(ParamDesc("base_value")
 		.set_local_name(_("Base value"))
 		.set_description(_("Base value"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"translate")
+	ret.push_back(ParamDesc("translate")
 		.set_local_name(_("Translate"))
 		.set_description(_("Make translation"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"rotate")
+	ret.push_back(ParamDesc("rotate")
 		.set_local_name(_("Rotate"))
 		.set_description(_("Make rotation"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"skew")
+	ret.push_back(ParamDesc("skew")
 		.set_local_name(_("Skew"))
 		.set_description(_("Make skew"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"scale_x")
+	ret.push_back(ParamDesc("scale_x")
 		.set_local_name(_("Scale X"))
 		.set_description(_("Make scaling by X-axis"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"scale_y")
+	ret.push_back(ParamDesc("scale_y")
 		.set_local_name(_("Scale Y"))
 		.set_description(_("Make scaling by Y-axis"))
 	);

@@ -149,17 +149,17 @@ ValueNode_Logarithm::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"link")
+	ret.push_back(ParamDesc("link")
 		.set_local_name(_("Link"))
 		.set_description(_("Value node used to calculate the Neperian logarithm"))
 	);
 
-		ret.push_back(ParamDesc(ValueBase(),"epsilon")
+		ret.push_back(ParamDesc("epsilon")
 		.set_local_name(_("Epsilon"))
 		.set_description(_("Value used to compare 'Link' with zero "))
 	);
 
-		ret.push_back(ParamDesc(ValueBase(),"infinite")
+		ret.push_back(ParamDesc("infinite")
 		.set_local_name(_("Infinite"))
 		.set_description(_("Returned value when result tends to infinite"))
 	);
