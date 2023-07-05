@@ -160,8 +160,7 @@ StateSelect_Context::StateSelect_Context(CanvasView* canvas_view):
 	title_label.set_halign(Gtk::ALIGN_START);
 	title_label.set_valign(Gtk::ALIGN_CENTER);
 
-	//should words be capitalized like this ?
-	prioritize_groups_label.set_label(_("Priotirize Group Selection"));
+	prioritize_groups_label.set_label(_("Prioritize Group Selection"));
 	prioritize_groups_label.set_hexpand();
 	prioritize_groups_label.set_halign(Gtk::ALIGN_START);
 	prioritize_groups_label.set_valign(Gtk::ALIGN_CENTER);
