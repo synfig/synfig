@@ -300,9 +300,32 @@ StateNormal_Context::~StateNormal_Context()
 	App::dock_toolbox->refresh();
 }
 
-DuckDrag_Combo::DuckDrag_Combo():
+DuckList
+DuckDrag_Combo::get_selected_ducks(const Duckmatic& duckmatic) const
+{
+	if(duck_independent_move){
+
+		DuckList selected_ducks = duckmatic.get_selected_movement_ducks();
+		DuckList position_duck;
+		// if position ducks are present we only need them for movement
+		for(Duck::Handle duck : selected_ducks){
+			if (duck->get_type() == Duck::TYPE_POSITION){
+				position_duck.push_back(duck);
+			}
+		}
+		if (position_duck.empty())
+			return selected_ducks;
+		else
+			return position_duck;
+	}
+
+	return duckmatic.get_selected_ducks();
+}
+
+DuckDrag_Combo::DuckDrag_Combo(bool duck_independent_drag):
 	original_angle(),
 	original_mag(),
+	duck_independent_move(duck_independent_drag),
 	bad_drag(),
 	move_only(),
 	is_moving(false),
@@ -318,16 +341,19 @@ DuckDrag_Combo::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& offs
 	is_moving = false;
 	last_move=Vector(1,1);
 
-	const DuckList selected_ducks(duckmatic->get_selected_ducks());
+	const DuckList selected_ducks(get_selected_ducks(*duckmatic));
 	DuckList::const_iterator iter;
 
 	bad_drag=false;
 
+	if (duck_independent_move)
+		drag_offset=offset;
+	else
 		drag_offset=duckmatic->find_duck(offset)->get_trans_point();
 
-		//snap=drag_offset-duckmatic->snap_point_to_grid(drag_offset);
-		//snap=offset-drag_offset_;
-		snap=Vector(0,0);
+	//snap=drag_offset-duckmatic->snap_point_to_grid(drag_offset);
+	//snap=offset-drag_offset_;
+	snap=Vector(0,0);
 
 	// Calculate center
 	Point vmin(100000000,100000000);
@@ -380,7 +406,7 @@ DuckDrag_Combo::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 
 	last_move=vect;
 
-	const DuckList selected_ducks(duckmatic->get_selected_ducks());
+	const DuckList selected_ducks(get_selected_ducks(*duckmatic));
 	DuckList::const_iterator iter;
 
 	Time time(duckmatic->get_time());
@@ -496,7 +522,9 @@ DuckDrag_Combo::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 	if((last_move-Vector(1,1)).mag()>0.0001)
 		is_moving = true;
 
-	if (is_moving)
+	if (is_moving && duck_independent_move)
+		duckmatic->signal_edited_selected_movement_ducks(true);
+	else
 		duckmatic->signal_edited_selected_ducks(true);
 
 	// then patch up the tangents for the vertices we've moved
@@ -512,12 +540,16 @@ DuckDrag_Combo::end_duck_drag(Duckmatic* duckmatic)
 
 	if(is_moving)
 	{
-		duckmatic->signal_edited_selected_ducks();
+		if (duck_independent_move)
+			duckmatic->signal_edited_selected_movement_ducks();
+		else
+			duckmatic->signal_edited_selected_ducks();
 		return true;
 	}
 	else
 	{
-		duckmatic->signal_user_click_selected_ducks(0);
+		if (!duck_independent_move)
+			duckmatic->signal_user_click_selected_ducks(0);
 		return false;
 	}
 }

@@ -535,7 +535,7 @@ Renderer_Ducks::render_vfunc(
 
 		screen_duck_list.push_front(screen_duck);
 
-		if(has_connect)
+		if(has_connect && !isStateSelect)
 		{
 			cr->save();
 

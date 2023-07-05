@@ -317,16 +317,14 @@ void Duckmatic::select_all_movement_ducks(etl::loose_handle<studio::CanvasView> 
 
 	DuckMap::const_iterator iter;
 	for(iter=duck_map.begin();iter!=duck_map.end();++iter){
-		if (iter->second->get_type() != Duck::TYPE_VERTEX /*&&
-			 iter->second->get_type() != Duck::TYPE_POSITION*/)
+		if (iter->second->get_type() != Duck::TYPE_VERTEX &&
+			 iter->second->get_type() != Duck::TYPE_POSITION)
 			continue;
 
 		if (iter->second){
 			selected_movement_ducks.insert((iter->second)->get_guid());
 		}
-
 	}
-
 }
 
 void
@@ -420,7 +418,6 @@ DuckList Duckmatic::get_selected_movement_ducks() const
 {
 	DuckList ret;
 	GUIDSet::const_iterator iter;
-	const Type type(get_type_mask());
 
 	for(iter=selected_movement_ducks.begin();iter!=selected_movement_ducks.end();++iter)
 	{

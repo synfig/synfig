@@ -72,18 +72,21 @@ class DuckDrag_Combo : public DuckDrag_Base
 	std::vector<synfig::Vector> last_;
 	std::vector<synfig::Vector> positions;
 
+	bool duck_independent_move;
 
 	bool bad_drag;
 	bool move_only;
 
 	bool is_moving;
 
+	DuckList get_selected_ducks(const Duckmatic& duckmatic) const;
+
 public:
 	CanvasView* canvas_view_;
 	bool scale;
 	bool rotate;
 	bool constrain;
-	DuckDrag_Combo();
+	DuckDrag_Combo(bool duck_independent_drag = false);
 	void begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& begin);
 	bool end_duck_drag(Duckmatic* duckmatic);
 	void duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector);
