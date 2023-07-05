@@ -40,6 +40,17 @@ uniform mat5 mat;
 
 layout(location = 0) out vec4 out_color;
 
+in vec2 frag_pos;
+
 void main()
 {
+	vec4 col = texture(tex, frag_pos);
+	vec4 outc = vec4(0, 0, 0, 0);
+
+	outc.r = col.r * mat.m00 + col.g * mat.m10 + col.b * mat.m20 + col.a * mat.m30 + mat.m40;
+	outc.g = col.r * mat.m01 + col.g * mat.m11 + col.b * mat.m21 + col.a * mat.m31 + mat.m41;
+	outc.b = col.r * mat.m02 + col.g * mat.m12 + col.b * mat.m22 + col.a * mat.m32 + mat.m42;
+	outc.a = col.r * mat.m03 + col.g * mat.m13 + col.b * mat.m23 + col.a * mat.m33 + mat.m43;
+
+	out_color = outc;
 }

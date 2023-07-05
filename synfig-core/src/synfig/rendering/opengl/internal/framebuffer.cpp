@@ -35,6 +35,7 @@
 #include "framebuffer.h"
 #include "synfig/general.h"
 #include <cassert>
+#include <vector>
 
 #endif
 
@@ -73,8 +74,8 @@ gl::Framebuffer::from_pixels(int width, int height, const Color* pixels)
 
 	valid = true;
 
-	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 	return true;
 }
 

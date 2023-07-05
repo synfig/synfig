@@ -1,9 +1,8 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/surfacegl.cpp
-**	\brief SurfaceGL
+/*!	\file synfig/rendering/opengl/internal/plane.cpp
+**	\brief Plane
 **
 **	\legal
-**	......... ... 2015-2018 Ivan Mahonin
 **	......... ... 2023 Bharat Sahlot
 **
 **	This file is part of Synfig.
@@ -33,10 +32,10 @@
 #	include <config.h>
 #endif
 
-#include "surfacegl.h"
-
-#include "internal/context.h"
-#include "internal/environment.h"
+#include "plane.h"
+#include "synfig/general.h"
+#include <cassert>
+#include <vector>
 
 #endif
 
@@ -46,78 +45,62 @@ using namespace rendering;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+std::vector<float> vertices({
+		1, 1, 1, 1,
+		1, -1, 1, 0,
+		-1, -1, 0, 0,
+		-1, 1, 0, 1
+		});
+
+std::vector<int> indices({
+		0, 1, 2,
+		0, 3, 2
+		});
 
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
 
-
-rendering::Surface::Token SurfaceGL::token(
-	Desc<SurfaceGL>("SurfaceGL") );
-
-SurfaceGL::SurfaceGL() {}
-
-SurfaceGL::SurfaceGL(const Surface &other)
+gl::Plane::Plane()
 {
-	assign(other);
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+
+	glGenBuffers(1, &VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER,
+			vertices.size() * sizeof(float),
+			vertices.data(),
+			GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+	glGenBuffers(1, &EBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+			indices.size() * sizeof(int),
+			indices.data(),
+			GL_STATIC_DRAW);
+
+	glBindVertexArray(0);
 }
 
-SurfaceGL::~SurfaceGL()
+gl::Plane::~Plane()
 {
-	reset();
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &EBO);
 }
 
-bool
-SurfaceGL::create_vfunc(int width, int height)
+void
+gl::Plane::render()
 {
-	// TODO: shorter way
-	gl::Context::Lock lock(gl::Environment::get_instance().get_or_create_context());
-
-	framebuffer.reset();
-	return framebuffer.from_pixels(width, height);
-}
-
-bool
-SurfaceGL::assign_vfunc(const rendering::Surface &surface)
-{
-	gl::Context::Lock lock(gl::Environment::get_instance().get_or_create_context());
-
-	framebuffer.reset();
-	return framebuffer.from_pixels(surface.get_width(), surface.get_height(), surface.get_pixels_pointer());
-}
-
-bool
-SurfaceGL::clear_vfunc()
-{
-	gl::Context::Lock lock(gl::Environment::get_instance().get_or_create_context());
-
-	if(!framebuffer.is_valid()) return false;
-
-	framebuffer.clear();
-	return true;
-}
-
-bool
-SurfaceGL::reset_vfunc()
-{
-	gl::Context::Lock lock(gl::Environment::get_instance().get_or_create_context());
-
-	framebuffer.reset();
-	return true;
-}
-
-const Color*
-SurfaceGL::get_pixels_pointer_vfunc() const
-{
-	gl::Context::Lock lock(gl::Environment::get_instance().get_or_create_context());
-
-	return framebuffer.get_pixels();
-}
-
-gl::Framebuffer&
-SurfaceGL::get_framebuffer()
-{
-	return framebuffer;
+	glBindVertexArray(VAO);
+	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 }
 
 /* === E N T R Y P O I N T ================================================= */

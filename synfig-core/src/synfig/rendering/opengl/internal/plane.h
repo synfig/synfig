@@ -1,9 +1,8 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/surfacegl.h
-**	\brief SurfaceGL Header
+/*!	\file synfig/rendering/opengl/internal/plane.h
+**	\brief Plane Header
 **
 **	\legal
-**	......... ... 2015-2018 Ivan Mahonin
 **	......... ... 2023 Bharat Sahlot
 **
 **	This file is part of Synfig.
@@ -26,14 +25,11 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_SURFACEGL_H
-#define __SYNFIG_RENDERING_SURFACEGL_H
+#ifndef __SYNFIG_RENDERING_GL_PLANE_H
+#define __SYNFIG_RENDERING_GL_PLANE_H
 
 /* === H E A D E R S ======================================================= */
-
-#include "../surface.h"
-#include "synfig/rendering/opengl/internal/framebuffer.h"
-#include <memory>
+#include "headers.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -45,35 +41,24 @@ namespace synfig
 {
 namespace rendering
 {
+namespace gl
+{
 
-class SurfaceGL: public Surface
+class Plane
 {
 public:
-	typedef etl::handle<SurfaceGL> Handle;
-	static Token token;
-	virtual Token::Handle get_token() const
-		{ return token.handle(); }
+	Plane();
+	~Plane();
+
+	void render();
 
 private:
-	gl::Framebuffer framebuffer;
-
-protected:
-	virtual bool create_vfunc(int width, int height);
-	virtual bool assign_vfunc(const Surface &surface);
-	virtual bool clear_vfunc();
-	virtual bool reset_vfunc();
-	virtual const Color* get_pixels_pointer_vfunc() const;
-
-public:
-	SurfaceGL();
-	explicit SurfaceGL(const Surface &other);
-	~SurfaceGL();
-
-	gl::Framebuffer& get_framebuffer();
+	GLuint VAO, VBO, EBO;
 };
 
-} /* end namespace rendering */
-} /* end namespace synfig */
+}; /* end namespace gl */
+}; /* end namespace rendering */
+}; /* end namespace synfig */
 
 /* -- E N D ----------------------------------------------------------------- */
 

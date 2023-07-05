@@ -26,7 +26,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "synfig/rendering/opengl/internal/framebuffer.h"
 #ifdef USING_PCH
 #	include "pch.h"
 #else
@@ -42,6 +41,7 @@
 
 #include "environment.h"
 
+#include "synfig/debug/measure.h"
 #include "synfig/general.h"
 
 #endif
@@ -165,6 +165,9 @@ gl::Context::initialize()
 		return false;
 	}
 	info("Opengl[N] -> GLAD Initialized");
+
+	glDisable(GL_CULL_FACE);
+	glDisable(GL_DEPTH_TEST);
 
 #ifdef OPENGL_DEBUG_OUTPUT
     int flags; glGetIntegerv(GL_CONTEXT_FLAGS, &flags);

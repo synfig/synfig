@@ -43,6 +43,7 @@
 #include "../internal/context.h"
 #include "../internal/environment.h"
 #include "../internal/shaders.h"
+#include "../internal/plane.h"
 
 #include "../../common/task/taskpixelprocessor.h"
 
@@ -76,56 +77,42 @@ public:
 		if(!ldst) return false;
 
 		gl::Context::Lock lock(env().get_or_create_context());
-		gl::Framebuffer& framebuffer = ldst->get_framebuffer();
 
-		framebuffer.use_write();
+		if(is_constant())
+		{
+			gl::Framebuffer& framebuffer = ldst->get_framebuffer();
 
-		GLuint VAO, VBO, EBO;
+			framebuffer.use_write();
+			glViewport(0, 0, ldst->get_width(), ldst->get_height());
 
-		std::vector<float> vertices({
-			1, 1, 0, 1, 1,
-			1, -1, 0, 1, 0,
-			-1, -1, 0, 0, 0,
-			-1, 1, 0, 0, 1
-		});
+			const Color col = matrix.get_constant();
 
-		std::vector<int> indices({
-			0, 1, 2,
-			0, 3, 2
-		});
+			glClearColor(col.get_r(), col.get_g(), col.get_b(), col.get_a());
+			glClear(GL_COLOR_BUFFER_BIT);
 
-		glGenVertexArrays(1, &VAO);
-		glBindVertexArray(VAO);
-
-		glGenBuffers(1, &VBO);
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER,
-				vertices.size() * sizeof(float),
-				vertices.data(),
-				GL_STATIC_DRAW);
-
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(0);
-
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-		glEnableVertexAttribArray(1);
-
-		glGenBuffers(1, &EBO);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-				indices.size() * sizeof(int),
-				indices.data(),
-				GL_STATIC_DRAW);
+			framebuffer.unuse();
+			return true;
+		}
 
 		if(sub_task() && sub_task()->is_valid())
 		{
+			// NOTE: for some reason this resets the current framebuffer
 			LockRead lsrc(sub_task());
 			if(!lsrc) {
-				framebuffer.unuse();
 				return false;
 			}
 
-			gl::Framebuffer& src = lsrc->get_framebuffer();
+			gl::Framebuffer& framebuffer = ldst->get_framebuffer();
+
+			framebuffer.use_write();
+			glViewport(0, 0, ldst->get_width(), ldst->get_height());
+
+			const Color col = matrix.get_constant();
+
+			glClearColor(col.get_r(), col.get_g(), col.get_b(), col.get_a());
+			glClear(GL_COLOR_BUFFER_BIT);
+
+			gl::Framebuffer& src = lsrc.cast_handle()->get_framebuffer();
 			src.use_read(0);
 
 			gl::Programs::Program shader = env().get_or_create_context().get_program("colormatrix");
@@ -133,27 +120,12 @@ public:
 			shader.set_1i("tex", 0);
 			shader.set_mat5x5("mat", matrix);
 
-			glViewport(0, 0, ldst->get_width(), ldst->get_height());
-
-			glBindVertexArray(VAO);
-			glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+			gl::Plane plane;
+			plane.render();
 
 			src.unuse();
 			framebuffer.unuse();
-			return true;
 		}
-
-		gl::Programs::Program shader = env().get_or_create_context().get_program("solid");
-		shader.use();
-		shader.set_color("color", matrix.get_constant());
-
-		glViewport(0, 0, ldst->get_width(), ldst->get_height());
-
-		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-
-		framebuffer.unuse();
-
 		return true;
 	}
 };
