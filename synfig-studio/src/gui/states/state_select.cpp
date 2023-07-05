@@ -85,7 +85,14 @@ class studio::StateSelect_Context : public sigc::trackable
 	Gtk::Label prioritize_groups_label;
 	Gtk::CheckButton prioritize_groups_checkbutton;
 	Gtk::Box prioritize_groups_box;
+	//select tool functionality
+	Gtk::Label functionality_label;
+	Gtk::ToggleButton move_button;
+	Gtk::ToggleButton mirror_button;
+	Gtk::Box functionality_box;
 
+	void toggle_move_button();
+	void toggle_mirror_button();
 public:
 
 	explicit StateSelect_Context(CanvasView* canvas_view);
@@ -142,6 +149,27 @@ void* StateSelect::enter_state(studio::CanvasView* machine_context) const
 	return new StateSelect_Context(machine_context);
 }
 
+void StateSelect_Context::toggle_move_button()
+{
+	//if move button is pressed then make all other not pressed
+	if (move_button.get_active()){
+		mirror_button.set_active(false);
+
+		get_work_area()->set_duck_dragger(duck_dragger_);
+		get_work_area()->set_cursor(Gdk::FLEUR);
+	}
+}
+
+void StateSelect_Context::toggle_mirror_button()
+{
+	//if mirror button is pressed them make all others not pressed
+	if (mirror_button.get_active()){
+		move_button.set_active(false);
+
+		//get_work_area()->set_duck_dragger(duck_dragger_mirror_);
+		get_work_area()->set_cursor(Gdk::SB_H_DOUBLE_ARROW);
+	}
+}
 
 StateSelect_Context::StateSelect_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
@@ -167,13 +195,29 @@ StateSelect_Context::StateSelect_Context(CanvasView* canvas_view):
 	prioritize_groups_box.pack_start(prioritize_groups_label, true, true, 0);
 	prioritize_groups_box.pack_start(prioritize_groups_checkbutton, false, false, 0);
 
+	functionality_label.set_label(_("Functionality:"));
+	functionality_label.set_hexpand();
+	functionality_label.set_halign(Gtk::ALIGN_START);
+	functionality_label.set_valign(Gtk::ALIGN_CENTER);
+	//initially move functionality is selected
+	//ToDo: maybe it's better to save which functionality was prev
+	//selected
+	move_button.set_active(true);
+	functionality_box.pack_start(functionality_label, true, true, 0);
+	functionality_box.pack_start(move_button, false, false, 0);
+	functionality_box.pack_start(mirror_button, false, false, 0);
+
 	prioritize_groups_checkbutton.signal_toggled().connect(sigc::mem_fun(*this,&StateSelect_Context::save_settings));
+	move_button.signal_toggled().connect(sigc::mem_fun(*this, &StateSelect_Context::toggle_move_button));
+	mirror_button.signal_toggled().connect(sigc::mem_fun(*this, &StateSelect_Context::toggle_mirror_button));
 
 	// Toolbox layout
 	options_grid.attach(title_label,
 		0, 0, 1, 1);
 	options_grid.attach(prioritize_groups_box,
 		0, 1, 2, 1);
+	options_grid.attach(functionality_box,
+		0, 2, 2, 1);
 
 
 	options_grid.set_border_width(GAP*2);
