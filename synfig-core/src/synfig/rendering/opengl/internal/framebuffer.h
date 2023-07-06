@@ -52,7 +52,7 @@ public:
 	// remember to call glViewport once to set appropiate viewport settings
 	bool from_pixels(int width, int height, const Color* pixels = nullptr);
 	
-	void use_write();
+	void use_write(bool clear = true);
 	void use_read(int tex);
 
 	void unuse();

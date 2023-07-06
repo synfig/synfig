@@ -80,13 +80,16 @@ gl::Framebuffer::from_pixels(int width, int height, const Color* pixels)
 }
 
 void
-gl::Framebuffer::use_write()
+gl::Framebuffer::use_write(bool clear)
 {
 	assert(is_valid());
 
 	glBindFramebuffer(GL_FRAMEBUFFER, id);
-	glClearColor(0.f, 0.f, 0.f, 0.f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	if(clear)
+	{
+		glClearColor(0.f, 0.f, 0.f, 0.f);
+		glClear(GL_COLOR_BUFFER_BIT);
+	}
 	is_writing = true;
 }
 

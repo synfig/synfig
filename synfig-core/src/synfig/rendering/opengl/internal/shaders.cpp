@@ -127,6 +127,22 @@ delete_shader(Shader s)
 	glDeleteShader(s.id);
 }
 
+void
+gl::Shaders::load_blend(Color::BlendMethod method, const String &name)
+{
+	std::ifstream f(get_shader_path("blend.fs"));
+	assert(f.good());
+
+	std::string src = String( std::istreambuf_iterator<char>(f),
+			       std::istreambuf_iterator<char>() );
+
+	size_t pos = src.find("#0");
+	if (pos != String::npos)
+		src = src.substr(0, pos) + name + src.substr(pos + 2);
+
+	blend_shaders[method] = compile_shader(GL_FRAGMENT_SHADER, src);
+}
+
 bool
 gl::Shaders::initialize()
 {
@@ -138,6 +154,36 @@ gl::Shaders::initialize()
 
 	map["colormatrix.fs"] = load_shader("colormatrix.fs");
 	assert(map["colormatrix.fs"].valid);
+
+	map["blit.fs"] = load_shader("blit.fs");
+	assert(map["blit.fs"].valid);
+
+	// blend
+	load_blend(Color::BLEND_COMPOSITE,      "composite");
+	load_blend(Color::BLEND_STRAIGHT,       "straight");
+	load_blend(Color::BLEND_ONTO,           "onto");
+	load_blend(Color::BLEND_STRAIGHT_ONTO,  "straightonto");
+	load_blend(Color::BLEND_BEHIND,         "behind");
+	load_blend(Color::BLEND_SCREEN,         "screen");
+	load_blend(Color::BLEND_OVERLAY,        "overlay");
+	load_blend(Color::BLEND_HARD_LIGHT,     "hardlight");
+	load_blend(Color::BLEND_MULTIPLY,       "multiply");
+	load_blend(Color::BLEND_DIVIDE,         "divide");
+	load_blend(Color::BLEND_ADD,            "add");
+	load_blend(Color::BLEND_SUBTRACT,       "subtract");
+	load_blend(Color::BLEND_DIFFERENCE,     "difference");
+	load_blend(Color::BLEND_BRIGHTEN,       "brighten");
+	load_blend(Color::BLEND_DARKEN,         "darken");
+	load_blend(Color::BLEND_COLOR,          "color");
+	load_blend(Color::BLEND_HUE,            "hue");
+	load_blend(Color::BLEND_SATURATION,     "saturation");
+	load_blend(Color::BLEND_LUMINANCE,      "luminance");
+	load_blend(Color::BLEND_ALPHA_OVER,     "alphaover");
+	load_blend(Color::BLEND_ALPHA_BRIGHTEN, "alphabrighten");
+	load_blend(Color::BLEND_ALPHA_DARKEN,   "alphadarken");
+	load_blend(Color::BLEND_ADD_COMPOSITE,  "add_composite");
+	load_blend(Color::BLEND_ALPHA,          "alpha");
+
 
 	valid = true;
 	return true;
@@ -152,6 +198,14 @@ gl::Shaders::deinitialize()
 		if(!shader.second.valid) continue;
 		delete_shader(shader.second);
 	}
+
+	for(int method = 0; method < Color::BLEND_END; method++)
+	{
+		Shader& shader = blend_shaders[method];
+		if(!shader.valid) continue;
+		delete_shader(shader);
+	}
+
 	valid = false;
 	info("Shaders deinitialized");
 }
@@ -162,6 +216,12 @@ gl::Shaders::get_shader(const std::string &str) const
 	auto itr = map.find(str);
 	if(itr != map.end()) return itr->second;
 	return { 0, false };
+}
+
+Shader
+gl::Shaders::get_blend_shader(Color::BlendMethod method) const
+{
+	return blend_shaders[method];
 }
 
 // PROGRAMS
@@ -222,6 +282,13 @@ delete_program(Program p)
 	glDeleteProgram(p.id);
 }
 
+void
+gl::Programs::load_blend(const Shaders& shaders, Color::BlendMethod method, const String &name)
+{
+	blend_programs[method] = create_program({ shaders.get_blend_shader(method), shaders.get_shader("basic.vs") });
+	assert(blend_programs[method].valid);
+}
+
 bool
 gl::Programs::initialize(const Shaders& shaders)
 {
@@ -233,6 +300,35 @@ gl::Programs::initialize(const Shaders& shaders)
 	map["colormatrix"] = create_program({ shaders.get_shader("basic.vs"), shaders.get_shader("colormatrix.fs") });
 	assert(map["colormatrix"].valid);
 
+	map["blit"] = create_program({ shaders.get_shader("basic.vs"), shaders.get_shader("blit.fs") });
+	assert(map["blit"].valid);
+
+	// blend
+	load_blend(shaders, Color::BLEND_COMPOSITE,      "composite");
+	load_blend(shaders, Color::BLEND_STRAIGHT,       "straight");
+	load_blend(shaders, Color::BLEND_ONTO,           "onto");
+	load_blend(shaders, Color::BLEND_STRAIGHT_ONTO,  "straightonto");
+	load_blend(shaders, Color::BLEND_BEHIND,         "behind");
+	load_blend(shaders, Color::BLEND_SCREEN,         "screen");
+	load_blend(shaders, Color::BLEND_OVERLAY,        "overlay");
+	load_blend(shaders, Color::BLEND_HARD_LIGHT,     "hardlight");
+	load_blend(shaders, Color::BLEND_MULTIPLY,       "multiply");
+	load_blend(shaders, Color::BLEND_DIVIDE,         "divide");
+	load_blend(shaders, Color::BLEND_ADD,            "add");
+	load_blend(shaders, Color::BLEND_SUBTRACT,       "subtract");
+	load_blend(shaders, Color::BLEND_DIFFERENCE,     "difference");
+	load_blend(shaders, Color::BLEND_BRIGHTEN,       "brighten");
+	load_blend(shaders, Color::BLEND_DARKEN,         "darken");
+	load_blend(shaders, Color::BLEND_COLOR,          "color");
+	load_blend(shaders, Color::BLEND_HUE,            "hue");
+	load_blend(shaders, Color::BLEND_SATURATION,     "saturation");
+	load_blend(shaders, Color::BLEND_LUMINANCE,      "luminance");
+	load_blend(shaders, Color::BLEND_ALPHA_OVER,     "alphaover");
+	load_blend(shaders, Color::BLEND_ALPHA_BRIGHTEN, "alphabrighten");
+	load_blend(shaders, Color::BLEND_ALPHA_DARKEN,   "alphadarken");
+	load_blend(shaders, Color::BLEND_ADD_COMPOSITE,  "add_composite");
+	load_blend(shaders, Color::BLEND_ALPHA,          "alpha");
+
 	valid = true;
 	return true;
 }
@@ -243,6 +339,13 @@ gl::Programs::deinitialize()
 	for(auto program: map)
 	{
 		delete_program(program.second);
+	}
+
+	for(int method = 0; method < Color::BLEND_END; method++)
+	{
+		Program& program = blend_programs[method];
+		if(!program.valid) continue;
+		delete_program(program);
 	}
 	valid = false;
 }
@@ -269,6 +372,12 @@ gl::Programs::get_program(const std::string &str) const
 	Program p = map.at(str);
 	p.shaders = {};
 	return p;
+}
+
+Program
+gl::Programs::get_blend_program(Color::BlendMethod method) const
+{
+	return blend_programs[method];
 }
 
 // PROGRAM

@@ -2,8 +2,9 @@ RENDERING_OPENGL_TASK_HH = \
 	rendering/opengl/task/taskgl.h
 
 RENDERING_OPENGL_TASK_CC = \
-	rendering/opengl/task/taskgl.cpp
-	rendering/opengl/task/taskpixelcolormatrixgl.cpp
+	rendering/opengl/task/taskgl.cpp \
+	rendering/opengl/task/taskpixelcolormatrixgl.cpp \
+	rendering/opengl/task/taskblendgl.cpp
 
 RENDERING_HH += \
     $(RENDERING_OPENGL_TASK_HH)

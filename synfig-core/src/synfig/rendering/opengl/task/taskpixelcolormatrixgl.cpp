@@ -1,7 +1,6 @@
-
 /* === S Y N F I G ========================================================= */
 /*!	\file synfig/rendering/software/task/taskpixelcolormatrixsw.cpp
-**	\brief TaskPixelColorMatrixSW
+**	\brief TaskPixelColorMatrixGL
 **
 **	\legal
 **	......... ... 2023 Bharat Sahlot

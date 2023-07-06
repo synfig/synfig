@@ -10,6 +10,8 @@ target_sources(libsynfig
 set(RENDERING_OPENGL_INTERNAL_SHADER_FILES
 	"shaders/solid.fs"
 	"shaders/colormatrix.fs"
+	"shaders/blend.fs"
+	"shaders/blit.fs"
 	"shaders/basic.vs"
 )
 

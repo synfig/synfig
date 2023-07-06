@@ -71,6 +71,7 @@ public:
 	bool initialize();
 
 	gl::Programs::Program get_program(const std::string& str) const;
+	gl::Programs::Program get_blend_program(Color::BlendMethod method) const;
 
 	void use();
 	void unuse();

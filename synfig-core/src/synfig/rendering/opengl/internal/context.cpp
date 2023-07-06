@@ -211,6 +211,14 @@ gl::Context::get_program(const std::string &str) const
 	return programs->get_program(str);
 }
 
+gl::Programs::Program
+gl::Context::get_blend_program(Color::BlendMethod method) const
+{
+	assert(initialized);
+
+	return programs->get_blend_program(method);
+}
+
 void
 gl::Context::use()
 {

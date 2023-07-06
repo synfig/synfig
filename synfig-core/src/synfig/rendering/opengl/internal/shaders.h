@@ -65,6 +65,7 @@ public:
 	void deinitialize();
 
 	Shader get_shader(const std::string& str) const;
+	Shader get_blend_shader(Color::BlendMethod blend) const;
 
 	bool is_valid() const { return valid; }
 
@@ -72,6 +73,9 @@ private:
 	bool valid = false;
 
 	std::map<std::string, Shader> map;
+	Shader blend_shaders[Color::BLEND_END];
+
+	void load_blend(Color::BlendMethod method, const String &name);
 };
 
 class Programs
@@ -99,15 +103,17 @@ public:
 	Programs clone() const;
 
 	Program get_program(const std::string& str) const;
+	Program get_blend_program(Color::BlendMethod blend) const;
 
 	bool is_valid() const { return valid; }
 
 private:
 	bool valid = false;
 
-	const Shaders* shaders = nullptr;
-
 	std::map<std::string, Program> map;
+	Program blend_programs[Color::BLEND_END];
+
+	void load_blend(const Shaders& shaders, Color::BlendMethod method, const String &name);
 };
 
 }; /* end namespace gl */
