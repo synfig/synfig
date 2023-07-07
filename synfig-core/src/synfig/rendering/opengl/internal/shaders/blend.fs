@@ -27,12 +27,17 @@
 #version 330 core
 #define method_#0
 
+uniform bool use_a;
+uniform bool use_b;
+
 uniform float amount;
-uniform sampler2D sampler_dest;
-uniform sampler2D sampler_src;
+uniform sampler2D sampler_a;
+uniform sampler2D sampler_b;
+uniform ivec2 offset_a;
+uniform ivec2 offset_b;
 layout(location = 0) out vec4 out_color;
 
-const float epsilon = 1e-6;
+const float epsilon = 0.000001;
 
 const mat3 encode_yuv = mat3(
 	0.299f, 0.587f, 0.114f,
@@ -44,43 +49,163 @@ const mat3 decode_yuv = mat3(
 	1, -0.344136, -0.714136,
 	1, 1.772, 0 );
 
+float get_y(vec4 col)
+{
+	return col.r * encode_yuv[0][0]
+		 + col.g * encode_yuv[0][1]
+		 + col.b * encode_yuv[0][2];
+}
+
+float get_u(vec4 col)
+{
+	return col.r * encode_yuv[1][0]
+		 + col.g * encode_yuv[1][1]
+		 + col.b * encode_yuv[1][2];
+}
+
+float get_v(vec4 col)
+{
+	return col.r * encode_yuv[2][0]
+		 + col.g * encode_yuv[2][1]
+		 + col.b * encode_yuv[2][2];
+}
+
+float get_s(vec4 col)
+{
+	float u = get_u(col);
+	float v = get_v(col);
+
+	return sqrt(u * u + v * v);
+}
+
+vec3 from_yuv(float y, float u, float v)
+{
+	vec3 col = vec3(0);
+	col.r = y * decode_yuv[0][0] + u * decode_yuv[0][1] + v * decode_yuv[0][2];
+	col.g = y * decode_yuv[1][0] + u * decode_yuv[1][1] + v * decode_yuv[1][2];
+	col.b = y * decode_yuv[2][0] + u * decode_yuv[2][1] + v * decode_yuv[2][2];
+	return col;
+}
+
+vec4 set_s(vec4 col, float x)
+{
+	float u = get_u(col);
+	float v = get_v(col);
+	float s = sqrt(u * u + v * v);
+
+    if(s > 0)
+    {
+        u = (u / s) * x;
+        v = (v / s) * x;
+        return vec4(from_yuv(get_y(col), u, v), col.a);
+    }
+    return col;
+}
+
+vec3 rgb2hsv(vec3 c)
+{
+    vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
+    vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
+    vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
+
+    float d = q.x - min(q.w, q.y);
+    float e = 1.0e-10;
+    return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
+}
+
+vec3 hsv2rgb(vec3 c)
+{
+    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
+    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+}
+
+vec4 blend_composite(vec4 src, vec4 dest, float amount)
+{
+	float a_src = src.a * amount;
+	float a_dest = dest.a;
+
+	src *= a_src;
+	dest *= a_dest;
+
+	dest = src + dest * (1 - a_src);
+
+	a_dest = a_src + a_dest * (1 - a_src);
+
+	if(abs(a_dest) > epsilon)
+	{
+		dest /= a_dest;
+		dest.a = a_dest;
+	}
+	else
+	{
+		dest = vec4(0);
+	}
+    return dest;
+}
+
+vec4 blend_straight(vec4 src, vec4 dest, float amount)
+{
+    float a_out = (src.a - dest.a) * amount + dest.a;
+	if (abs(a_out) > epsilon)
+    {
+		dest = ((src * src.a - dest * dest.a) * amount + dest * dest.a) / a_out;
+        dest.a = a_out;
+    }
+	else
+    {
+		dest = vec4(0);
+    }
+
+    return dest;
+}
 
 void main()
 {
-	ivec2 coord = ivec2(floor(gl_FragCoord)); 
-	vec4 dest = texelFetch(sampler_dest, coord, 0);
-	vec4 src = texelFetch(sampler_src, coord, 0);
+	ivec2 coord = ivec2(floor(gl_FragCoord));
+
+	vec4 src = vec4(0, 0, 0, 0);
+	if(use_a) src = texelFetch(sampler_a, coord + offset_a, 0);
+
+	vec4 dest = vec4(0, 0, 0, 0);
+	if(use_b) dest = texelFetch(sampler_b, coord + offset_b, 0);
 
 #ifdef method_composite
 
-	src.a *= amount;
-	dest.rgb *= dest.a;
-	dest.a = src.a + dest.a - src.a*dest.a;
-	if (abs(dest.a) > epsilon)
-		dest.rgb = ((src.rgb - dest.rgb)*src.a + dest.rgb)/dest.a;
-	else
-		dest = vec4(0);
+    dest = blend_composite(src, dest, amount);
 
 #endif
 #ifdef method_behind
 
-	dest.a *= amount;
-	src.rgb *= src.a;
-	src.a = src.a + dest.a - src.a*dest.a;
-	if (abs(src.a) > epsilon)
-		dest = vec4(((dest.rgb - src.rgb)*dest.a + src.rgb)/src.a, src.a);
-	else
-		dest = vec4(0);
+	src.a *= amount;
 
+	vec4 temp = dest;
+	dest = src;
+	src = temp;
+
+	float a_src = src.a;
+	float a_dest = dest.a;
+
+	src *= a_src;
+	dest *= a_dest;
+
+	dest = src + dest * (1 - a_src);
+
+	a_dest = a_src + a_dest * (1 - a_src);
+
+	if(abs(a_dest) > epsilon)
+	{
+		dest /= a_dest;
+		dest.a = a_dest;
+	}
+	else
+	{
+		dest = vec4(0);
+	}
 #endif
 #ifdef method_straight
 
-	dest.rgb *= dest.a;
-	dest.a = (src.a - dest.a)*amount + dest.a;
-	if (abs(dest.a) > epsilon)
-		dest.rgb =((src.rgb*src.a - dest.rgb)*amount + dest.rgb)/dest.a;
-	else
-		dest = vec4(0);
+    dest = blend_straight(src, dest, amount);
 
 #endif
 #ifdef method_onto
@@ -90,11 +215,8 @@ void main()
 #endif
 #ifdef method_straightonto
 
-	dest.a = src.a*amount - amount + 1;
-	if (abs(dest.a) > epsilon)
-		dest.rgb =((src.rgb*src.a - dest.rgb)*amount + dest.rgb)/dest.a;
-	else
-		dest = vec4(0);
+    src.a = src.a * dest.a;
+    dest = blend_straight(src, dest, amount);
 
 #endif
 #ifdef method_brighten
@@ -104,25 +226,25 @@ void main()
 #endif
 #ifdef method_darken
 
-	dest.rgb = min(dest.rgb, src.rgb*(src.a*amount) + vec3(1 - amount));
+	float alpha = src.a * amount;
+	dest.r = min(dest.r, (src.r - 1) * alpha + 1);
+	dest.g = min(dest.g, (src.g - 1) * alpha + 1);
+	dest.b = min(dest.b, (src.b - 1) * alpha + 1);
 
 #endif
 #ifdef method_add
 
-	dest.a = dest.a + src.a*amount;
-	dest.rgb = (dest.rgb*dest.a + src.rgb*(src.a*amount))/dest.a;
+	dest.rgb = (dest.rgb*dest.a + src.rgb*(src.a*amount));
 
 #endif
 #ifdef method_subtract
 
-	dest.a = dest.a - src.a*amount;
-	dest.rgb = (dest.rgb*dest.a - src.rgb*(src.a*amount))/dest.a;
+	dest.rgb = (dest.rgb * dest.a - src.rgb * src.a * amount);
 
 #endif
 #ifdef method_difference
 
-	dest.a = abs(dest.a - src.a*amount);
-	dest.rgb = abs(dest.rgb*dest.a - src.rgb*(src.a*amount))/dest.a;
+	dest.rgb = abs(dest.rgb*dest.a - src.rgb*(src.a*amount));
 
 #endif
 #ifdef method_multiply
@@ -157,19 +279,21 @@ void main()
 #endif
 #ifdef method_hue
 
-	vec4 tmp = vec4(dest.rgb*encode_yuv, dest.a); 
-	tmp.yz = normalize(vec2( dot(src.rgb, encode_yuv[1]),
-	                         dot(src.rgb, encode_yuv[2]) ))*length(tmp.yz);
-	tmp.xyz *= decode_yuv;
-	dest = (tmp - dest)*(amount*src.a) + dest;
+	vec4 temp = dest;
+	float h = atan(get_u(src), get_v(src));
+	float s = get_s(dest);
+	float u = s * sin(h);
+	float v = s * cos(h);
+
+	temp.rgb = from_yuv(get_y(temp), u, v);
+
+	dest = (temp - dest) * amount * src.a + dest;
 	
 #endif
 #ifdef method_saturation
 
-	vec4 tmp = vec4(dest.rgb*encode_yuv, dest.a);
-	tmp.yz = length(vec2( dot(src.rgb, encode_yuv[1]),
-	                      dot(src.rgb, encode_yuv[2]) ))*normalize(tmp.yz);
-	dest = (tmp - dest)*(amount*src.a) + dest;
+    vec4 temp = set_s(dest, get_s(src));
+    dest = (temp - dest) * amount * src.a + dest;
 
 #endif
 #ifdef method_alphabrighten
@@ -193,9 +317,18 @@ void main()
 #endif
 #ifdef method_overlay
 
-	if (amount < 0) src = vec4(1) - src;
-	src.rgb *= (vec3(1) - src.rgb)*2*dest.rgb - src.rgb;
-	dest.rgb = (src.rgb - dest.rgb)*(src.a*abs(amount)) + dest.rgb;
+    float amt = amount;
+	if (amt < 0) {
+        src.rgb = vec3(1) - src.rgb;
+        amt = -amt;
+    }
+
+    vec3 rm = dest.rgb * src.rgb;
+    vec3 rs = vec3(1) - ((vec3(1) - src.rgb) * (vec3(1) - dest.rgb));
+    vec4 ret = src;
+    ret.rgb = src.rgb * rs + ((vec3(1) - src.rgb) * rm.rgb);
+
+	dest.rgb = (ret.rgb - dest.rgb)*(ret.a*amt) + dest.rgb;
 
 #endif
 #ifdef method_hardlight
@@ -209,11 +342,9 @@ void main()
 #endif
 #ifdef method_alphaover
 
-	dest.a = 1 - amount*src.a;
-	if (abs(dest.a) > epsilon)
-		dest.rgb *= (1 + amount*src.a)/dest.a;
-	else
-		dest = vec4(0);
+	vec4 rm = dest;
+	rm.a = (1 - src.a) * dest.a;
+    dest = blend_straight(rm, dest, amount);
 
 #endif
 #ifdef method_add_composite
@@ -228,13 +359,7 @@ void main()
 
 	vec4 rm = dest;
 	rm.a = src.a * dest.a;
-	src = rm;
-	// copied from alpha_over
-	dest.a = 1 - amount*src.a;
-	if (abs(dest.a) > epsilon)
-		dest.rgb *= (1 + amount*src.a)/dest.a;
-	else
-		dest = vec4(0);
+    dest = blend_straight(rm, dest, amount);
 
 #endif
 

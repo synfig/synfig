@@ -77,6 +77,11 @@ public:
 
 		gl::Context::Lock lock(env().get_or_create_context());
 
+		glEnable(GL_SCISSOR_TEST);
+
+		glViewport(0, 0, ldst->get_width(), ldst->get_height());
+		glScissor(target_rect.minx, target_rect.miny, target_rect.get_width(), target_rect.get_height());
+
 		if(is_constant())
 		{
 			gl::Framebuffer& framebuffer = ldst->get_framebuffer();
@@ -95,36 +100,49 @@ public:
 
 		if(sub_task() && sub_task()->is_valid())
 		{
-			// NOTE: for some reason this resets the current framebuffer
-			LockRead lsrc(sub_task());
-			if(!lsrc) {
-				return false;
+			VectorInt oa = get_offset();
+			RectInt ra = sub_task()->target_rect - oa;
+
+			if(ra.is_valid())
+			{
+				rect_set_intersect(ra, ra, target_rect);
+
+				// NOTE: for some reason this resets the current framebuffer
+				LockRead lsrc(sub_task());
+				if(!lsrc) {
+					return false;
+				}
+
+				gl::Framebuffer& framebuffer = ldst->get_framebuffer();
+
+				glViewport(0, 0, ldst->get_width(), ldst->get_height());
+
+				framebuffer.use_write();
+
+				const Color col = matrix.get_constant();
+
+				glClearColor(col.get_r(), col.get_g(), col.get_b(), col.get_a());
+				glClear(GL_COLOR_BUFFER_BIT);
+
+				glScissor(ra.minx, ra.miny, ra.get_width(), ra.get_height());
+
+				gl::Framebuffer& src = lsrc.cast_handle()->get_framebuffer();
+				src.use_read(0);
+
+				gl::Programs::Program shader = env().get_or_create_context().get_program("colormatrix");
+				shader.use();
+				shader.set_1i("tex", 0);
+				shader.set_mat5x5("mat", matrix);
+				shader.set_2i("offset", oa);
+
+				gl::Plane plane;
+				plane.render();
+
+				src.unuse();
+				framebuffer.unuse();
 			}
-
-			gl::Framebuffer& framebuffer = ldst->get_framebuffer();
-
-			framebuffer.use_write();
-			glViewport(0, 0, ldst->get_width(), ldst->get_height());
-
-			const Color col = matrix.get_constant();
-
-			glClearColor(col.get_r(), col.get_g(), col.get_b(), col.get_a());
-			glClear(GL_COLOR_BUFFER_BIT);
-
-			gl::Framebuffer& src = lsrc.cast_handle()->get_framebuffer();
-			src.use_read(0);
-
-			gl::Programs::Program shader = env().get_or_create_context().get_program("colormatrix");
-			shader.use();
-			shader.set_1i("tex", 0);
-			shader.set_mat5x5("mat", matrix);
-
-			gl::Plane plane;
-			plane.render();
-
-			src.unuse();
-			framebuffer.unuse();
 		}
+		glDisable(GL_SCISSOR_TEST);
 		return true;
 	}
 };

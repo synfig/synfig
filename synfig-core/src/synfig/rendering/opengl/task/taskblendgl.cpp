@@ -71,16 +71,18 @@ public:
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 
-	bool blit_sub_task(gl::Framebuffer& framebuffer, const Task::Handle& sub) const
+	bool blit_sub_task(gl::Framebuffer& framebuffer, const Task::Handle& sub, bool use_blend, bool use_b = false) const
 	{
 		RectInt r = target_rect;
 		if(sub && sub->is_valid())
 		{
-			RectInt ra = sub->target_rect;
-			rect_set_intersect(ra, ra, r);
+			VectorInt oa = TaskList::calc_target_offset(*this, *sub);
+			RectInt ra = sub->target_rect - oa;
 
 			if(ra.is_valid())
 			{
+				rect_set_intersect(ra, ra, r);
+
 				// blit sub_task_a in the intersection
 				LockRead lsrc(sub);
 				if(!lsrc) {
@@ -94,9 +96,31 @@ public:
 
 				glScissor(ra.minx, ra.miny, ra.get_width(), ra.get_height());
 
-				gl::Programs::Program shader = env().get_or_create_context().get_program("blit");
-				shader.use();
-				shader.set_1i("tex", 0);
+				if(!use_blend)
+				{
+					gl::Programs::Program shader = env().get_or_create_context().get_program("blit");
+					shader.use();
+					shader.set_1i("tex", 0);
+					shader.set_2i("offset", oa);
+				} else
+				{
+					gl::Programs::Program shader = env().get_or_create_context().get_blend_program(blend_method);
+					shader.use();
+					shader.set_1f("amount", amount);
+                    if(use_b)
+                    {
+                        shader.set_1i("use_a", 0);
+                        shader.set_1i("use_b", 1);
+                        shader.set_1i("sampler_b", 0);
+                        shader.set_2i("offset_b", oa);
+                    } else
+                    {
+                        shader.set_1i("use_a", 1);
+                        shader.set_1i("use_b", 0);
+                        shader.set_1i("sampler_a", 0);
+                        shader.set_2i("offset_a", oa);
+                    }
+				}
 
 				gl::Plane plane;
 				plane.render();
@@ -115,22 +139,30 @@ public:
 		if(!ldst) return false;
 
 		gl::Context::Lock lock(env().get_or_create_context());
-
 		gl::Framebuffer& framebuffer = ldst->get_framebuffer();
 
 		glEnable(GL_SCISSOR_TEST);
 
 		glViewport(0, 0, ldst->get_width(), ldst->get_height());
-		glScissor(0, 0, ldst->get_width(), ldst->get_height());
+		glScissor(target_rect.minx, target_rect.miny, target_rect.get_width(), target_rect.get_height());
 
 		framebuffer.use_write();
-		if(!blit_sub_task(framebuffer, sub_task_a()))
-		{
-			framebuffer.unuse();
-			return false;
-		}
+        if(Color::is_straight(blend_method))
+        {
+            if(!blit_sub_task(framebuffer, sub_task_a(), true, true))
+            {
+                framebuffer.unuse();
+                return false;
+            }
+        } else {
+            if(!blit_sub_task(framebuffer, sub_task_a(), false))
+            {
+                framebuffer.unuse();
+                return false;
+            }
+        }
 
-		if(!blit_sub_task(framebuffer, sub_task_b()))
+		if(!blit_sub_task(framebuffer, sub_task_b(), true))
 		{
 			framebuffer.unuse();
 			return false;
@@ -139,12 +171,18 @@ public:
 		if(sub_task_a() && sub_task_a()->is_valid() &&
 			sub_task_b() && sub_task_b()->is_valid())
 		{
-			RectInt ra = target_rect;
-			rect_set_intersect(ra, ra, sub_task_a()->target_rect);
-			rect_set_intersect(ra, ra, sub_task_b()->target_rect);
+			VectorInt oa = TaskList::calc_target_offset(*this, *sub_task_a());
+			RectInt ra = sub_task_a()->target_rect - oa;
 
-			if(ra.is_valid())
+			VectorInt ob = TaskList::calc_target_offset(*this, *sub_task_b());
+			RectInt rb = sub_task_b()->target_rect - ob;
+
+			if(ra.is_valid() && rb.is_valid())
 			{
+				RectInt r = target_rect;
+				rect_set_intersect(r, r, ra);
+				rect_set_intersect(r, r, rb);
+
 				LockRead lsrc_a(sub_task_a()), lsrc_b(sub_task_b());
 				if(!lsrc_a || !lsrc_b) {
 					framebuffer.unuse();
@@ -153,7 +191,7 @@ public:
 
 				framebuffer.use_write(false);
 
-				glScissor(ra.minx, ra.miny, ra.get_width(), ra.get_height());
+				glScissor(r.minx, r.miny, r.get_width(), r.get_height());
 
 				gl::Framebuffer& src_a = lsrc_a.cast_handle()->get_framebuffer();
 				src_a.use_read(0);
@@ -164,8 +202,12 @@ public:
 				gl::Programs::Program shader = env().get_or_create_context().get_blend_program(blend_method);
 				shader.use();
 				shader.set_1f("amount", amount);
-				shader.set_1i("sampler_src", 1);
-				shader.set_1i("sampler_dest", 0);
+				shader.set_1i("use_a", 1);
+				shader.set_1i("use_b", 1);
+				shader.set_1i("sampler_a", 1);
+				shader.set_2i("offset_a", ob);
+				shader.set_1i("sampler_b", 0);
+				shader.set_2i("offset_b", oa);
 
 				gl::Plane plane;
 				plane.render();

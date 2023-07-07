@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/internal/glsl/solid.fs
-**	\brief Solid Color Fragment Shader
+/*!	\file synfig/rendering/opengl/internal/glsl/blit.fs
+**	\brief Blit Fragment Shader
 **
 **	\legal
 **	......... ... 2023 Bharat Sahlot
@@ -26,13 +26,14 @@
 #version 330 core
 
 uniform sampler2D tex;
+uniform ivec2 offset;
 
 layout (location = 0) out vec4 out_color;
 
 void main()
 {
-	ivec2 coord = ivec2(floor(gl_FragCoord)); 
-	vec4 col = texelFetch(tex, coord, 0);
+	ivec2 coord = ivec2(floor(gl_FragCoord));
+	vec4 col = texelFetch(tex, coord + offset, 0);
 
 	out_color = col;
 }

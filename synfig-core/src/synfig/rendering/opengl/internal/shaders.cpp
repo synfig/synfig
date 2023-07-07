@@ -401,6 +401,15 @@ gl::Programs::Program::set_1f(const std::string &name, float value)
 }
 
 void
+gl::Programs::Program::set_2i(const std::string &name, VectorInt value)
+{
+	assert(valid);
+
+	int loc = glGetUniformLocation(id, name.c_str());
+	glUniform2i(loc, value[0], value[1]);
+}
+
+void
 gl::Programs::Program::set_color(const std::string &name, Color value)
 {
 	assert(valid);

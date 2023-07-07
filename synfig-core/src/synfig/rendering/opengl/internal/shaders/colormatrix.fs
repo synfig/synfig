@@ -37,6 +37,7 @@ struct mat5
 
 uniform sampler2D tex;
 uniform mat5 mat;
+uniform ivec2 offset;
 
 layout(location = 0) out vec4 out_color;
 
@@ -44,7 +45,7 @@ in vec2 frag_pos;
 
 void main()
 {
-	ivec2 coord = ivec2(floor(gl_FragCoord)); 
+	ivec2 coord = ivec2(floor(gl_FragCoord)) + offset; 
 	vec4 col = texelFetch(tex, coord, 0);
 	vec4 outc = vec4(0, 0, 0, 0);
 

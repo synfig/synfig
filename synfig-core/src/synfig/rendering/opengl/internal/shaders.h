@@ -33,6 +33,7 @@
 #include "headers.h"
 #include "synfig/color/color.h"
 #include "synfig/color/colormatrix.h"
+#include "synfig/vector.h"
 
 #include <map>
 #include <string>
@@ -91,6 +92,7 @@ public:
 		void use();
 		void set_1i(const std::string& name, int value);
 		void set_1f(const std::string& name, float value);
+		void set_2i(const std::string& name, VectorInt value);
 		void set_color(const std::string& name, Color value);
 		void set_mat5x5(const std::string& name, ColorMatrix mat);
 
