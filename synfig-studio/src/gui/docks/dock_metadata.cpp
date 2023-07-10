@@ -77,9 +77,9 @@ Dock_MetaData::Dock_MetaData():
 		)
 	);
 
-	action_group->add(Gtk::Action::create(
+	action_group->add(Gtk::Action::create_with_icon_name(
 		"action-MetadataRemove",
-		Gtk::StockID("gtk-delete"),
+		"edit-delete",
 		_("Remove selected MetaData entry"),
 		_("Remove the selected MetaData entry")
 	),
