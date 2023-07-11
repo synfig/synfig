@@ -453,7 +453,7 @@ studio::get_action_icon_name(const synfigapp::Action::BookEntry& action)
 	const std::map<std::string, std::string> action_icon_map = {
 		{"add",         "list-add"},
 		{"insert",      "list-add"},
-		{"remove",      "gtk-delete"},
+		{"remove",      "edit-delete"},
 		{"connect",     "gtk-connect"},
 		{"disconnect",  "gtk-disconnect"},
 		{"raise",       "go-up"},
