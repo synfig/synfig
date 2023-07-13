@@ -91,7 +91,7 @@ public:
 	CanvasView::Handle canvas_view_;
 	bool use_magnitude;
 	DuckDrag_Rotate();
-	void begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& begin);
+	void begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& offset);
 	bool end_duck_drag(Duckmatic* duckmatic);
 	void duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector);
 
