@@ -312,7 +312,7 @@ void Duckmatic::select_all_movement_ducks(etl::loose_handle<studio::CanvasView> 
 	selected_movement_ducks.clear();
 
 	//first make sure the layer is selected as if it is not then its ducks will not be in the ducks map
-	canvas_view->get_selection_manager()->set_selected_layer(layer);
+	//canvas_view->get_selection_manager()->set_selected_layer(layer);
 	canvas_view->rebuild_ducks();
 
 	DuckMap::const_iterator iter;

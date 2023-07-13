@@ -331,17 +331,12 @@ StateSelect_Context::event_layer_click(const Smach::event& x)
 		{
 			std::list<Layer::Handle> layer_list(canvas_view_->get_selection_manager()->get_selected_layers());
 			std::set<Layer::Handle> layers(layer_list.begin(),layer_list.end());
-			if(layers.count(event.layer))
-			{
-				layers.erase(event.layer);
-				layer_list=std::list<Layer::Handle>(layers.begin(),layers.end());
-				canvas_view_->get_selection_manager()->clear_selected_layers();
-				canvas_view_->get_selection_manager()->set_selected_layers(layer_list);
-			}
-			else
+
+			if(!layers.count(event.layer))
 			{
 				canvas_view_->get_selection_manager()->set_selected_layer(event.layer);
 			}
+
 		}
 		return Smach::RESULT_ACCEPT;
 	case BUTTON_RIGHT:

@@ -1328,7 +1328,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				clear_selected_movement_ducks();
 				//check for a layer click
 				if (Layer::Handle layer = get_canvas()->find_layer(get_canvas_view()->get_context_params(), mouse_pos)) {//make a new event layer pressed
-					if (canvas_view->get_smach().process_event(EventLayerClick(layer, BUTTON_LEFT, mouse_pos)) == Smach::RESULT_OK)
+					if (canvas_view->get_smach().process_event(EventLayerClick(layer, BUTTON_LEFT, mouse_pos, modifier)) == Smach::RESULT_OK)
 						return false;
 
 					if ( std::string(get_canvas_view()->get_smach().get_state_name()) == "select" && get_duck_dragger()){
