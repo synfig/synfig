@@ -1378,7 +1378,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			}
 
 			if (Layer::Handle layer = get_canvas()->find_layer(get_canvas_view()->get_context_params(), mouse_pos)) {
-				if (canvas_view->get_smach().process_event(EventLayerClick(layer, BUTTON_RIGHT, mouse_pos)) == Smach::RESULT_OK)
+				if (canvas_view->get_smach().process_event(EventLayerClick(layer, BUTTON_RIGHT, mouse_pos, modifier)) == Smach::RESULT_OK)
 					return false;
 				return true;
 			}
