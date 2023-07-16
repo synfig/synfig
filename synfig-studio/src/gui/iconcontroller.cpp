@@ -467,14 +467,8 @@ studio::layer_icon_name(const synfig::String& layer_name)
 Glib::RefPtr<Gdk::Pixbuf>
 studio::get_tree_pixbuf_layer(const synfig::String &layer)
 {
-	int width, height;
-	Gtk::IconSize::lookup(Gtk::ICON_SIZE_SMALL_TOOLBAR, width, height);
-	Glib::RefPtr<Gdk::Pixbuf> icon = Gtk::IconTheme::get_default()->load_icon(layer_icon_name(layer), height, Gtk::ICON_LOOKUP_FORCE_SIZE);
-	if (!icon)
-		icon = Gtk::IconTheme::get_default()->load_icon("image-missing", height, Gtk::ICON_LOOKUP_FORCE_SIZE);
-	return icon;
+	return get_tree_pixbuf_from_icon_name(layer_icon_name(layer));
 }
-
 
 std::string
 studio::state_icon_name(const synfig::String& state)
@@ -485,4 +479,15 @@ studio::state_icon_name(const synfig::String& state)
 		return "image-missing";
 	}
 	return iter->second.first;
+}
+
+Glib::RefPtr<Gdk::Pixbuf>
+studio::get_tree_pixbuf_from_icon_name(const synfig::String& icon_name)
+{
+	int width, height;
+	Gtk::IconSize::lookup(Gtk::ICON_SIZE_SMALL_TOOLBAR, width, height);
+	Glib::RefPtr<Gdk::Pixbuf> icon = Gtk::IconTheme::get_default()->load_icon(icon_name, height, Gtk::ICON_LOOKUP_FORCE_SIZE);
+	if (!icon)
+		icon = Gtk::IconTheme::get_default()->load_icon("image-missing", height, Gtk::ICON_LOOKUP_FORCE_SIZE);
+	return icon;
 }
