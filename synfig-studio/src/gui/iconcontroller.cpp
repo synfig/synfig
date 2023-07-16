@@ -352,25 +352,6 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	}
 }
 
-Glib::RefPtr<Gdk::Cursor>
-IconController::get_normal_cursor()
-{
-	return Gdk::Cursor::create(Gdk::TOP_LEFT_ARROW);
-}
-
-Glib::RefPtr<Gdk::Cursor>
-IconController::get_tool_cursor(const Glib::ustring& name,const Glib::RefPtr<Gdk::Window>& window)
-{
-	//this function is never called
-	//it is commented out in WorkArea::refresh_cursor()
-	assert(0);
-	// \todo Do we still need it?
-
-	Glib::RefPtr<Gdk::Pixbuf> pixbuf =
-		Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-"+name),Gtk::ICON_SIZE_SMALL_TOOLBAR);
-  	return Gdk::Cursor::create(window->get_display(), pixbuf, 0, 0);
-}
-
 std::string
 studio::value_icon_name(Type &type)
 {
