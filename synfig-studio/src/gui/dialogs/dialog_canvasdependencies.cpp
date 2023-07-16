@@ -268,7 +268,7 @@ void Dialog_CanvasDependencies::refresh()
 			else if (std::find(audio_ext.begin(), audio_ext.end(), ext) != audio_ext.end())
 				pixbuf = get_tree_pixbuf_layer("sound");
 			else if (std::find(video_ext.begin(), video_ext.end(), ext) != video_ext.end())
-				pixbuf = Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-toggle_background_rendering"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+				pixbuf = get_tree_pixbuf_from_icon_name("toggle_background_rendering_icon");
 			else if (std::find(lipsync_ext.begin(), lipsync_ext.end(), ext) != lipsync_ext.end())
 				pixbuf = get_tree_pixbuf_layer("text");
 			row->set_value(2, pixbuf);
