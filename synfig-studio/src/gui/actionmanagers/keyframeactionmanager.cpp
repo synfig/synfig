@@ -238,7 +238,7 @@ KeyframeActionManager::refresh()
 		action_group_->remove(action_kf_add);
 	}
 
-	action_kf_add = Gtk::Action::create("action-KeyframeAdd",Gtk::StockID("gtk-add"),
+	action_kf_add = Gtk::Action::create_with_icon_name("action-KeyframeAdd", "list-add",
 										_("Add New Keyframe"),_("Add New Keyframe"));
 	action_group_->add(action_kf_add, sigc::mem_fun(*this,&KeyframeActionManager::on_add_keyframe));
 

@@ -222,9 +222,9 @@ LayerActionManager::LayerActionManager():
 	);
 
 
-	action_amount_inc_=Gtk::Action::create(
+	action_amount_inc_=Gtk::Action::create_with_icon_name(
 		"amount-inc",
-		Gtk::StockID("gtk-add"),
+		"list-add",
 		_("Increase Amount"),_("Increase Amount")
 	);
 	action_amount_inc_->signal_activate().connect(
@@ -234,9 +234,9 @@ LayerActionManager::LayerActionManager():
 		)
 	);
 
-	action_amount_dec_=Gtk::Action::create(
+	action_amount_dec_=Gtk::Action::create_with_icon_name(
 		"amount-dec",
-		Gtk::StockID("gtk-remove"),
+		"list-remove",
 		_("Decrease Amount"),_("Decrease Amount")
 	);
 	action_amount_dec_->signal_activate().connect(
