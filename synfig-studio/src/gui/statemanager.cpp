@@ -92,7 +92,7 @@ StateManager::add_state(const Smach::state_base *state)
 			"state-"+name,
 			state_icon_name(name),
 			stock_item.get_label(),
-			stock_item.get_label()
+			""
 		)
 	);
 	/*action->set_sensitive(false);*/

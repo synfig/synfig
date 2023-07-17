@@ -215,8 +215,10 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 
 	Gtk::RadioToolButton *tool_button = manage(new Gtk::RadioToolButton());
 	tool_button->set_group(radio_tool_button_group);
-	tool_button->set_related_action(App::get_state_manager()->get_action_group()->get_action("state-"+name));
-	
+	Glib::RefPtr<Gtk::Action> related_action = App::get_state_manager()->get_action_group()->get_action("state-"+name);
+	tool_button->set_related_action(related_action);
+	related_action->property_tooltip() = "";
+
 	// Keeps updating the tooltip if user changes the shortcut at runtime
 	tool_button->property_has_tooltip() = true;
 	tool_button->signal_query_tooltip().connect([name](int,int,bool,const Glib::RefPtr<Gtk::Tooltip>& tooltip) -> bool
