@@ -317,8 +317,9 @@ void Duckmatic::select_all_movement_ducks(etl::loose_handle<studio::CanvasView> 
 
 	DuckMap::const_iterator iter;
 	for(iter=duck_map.begin();iter!=duck_map.end();++iter){
-		if (iter->second->get_type() != Duck::TYPE_VERTEX /*&&
-			 iter->second->get_type() != Duck::TYPE_POSITION*/)
+		if (iter->second->get_type() != Duck::TYPE_VERTEX &&
+			iter->second->get_type() != Duck::TYPE_POSITION &&
+			iter->second->get_type() != Duck::TYPE_SELECT_ROTATE)
 			continue;
 
 		if (iter->second){
@@ -429,9 +430,9 @@ DuckList Duckmatic::get_selected_movement_ducks() const
 		if (d_iter->second)
 			ret.push_back(d_iter->second);
 	}
+
 	return ret;
 }
-
 
 DuckList
 Duckmatic::get_ducks_in_box(const synfig::Vector& tl,const synfig::Vector& br)const
@@ -3314,6 +3315,29 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 	}
 
 	return false;
+}
+
+bool Duckmatic::add_select_tool_ducks(std::list<synfig::Layer::Handle> layer_list, etl::handle<CanvasView> canvas_view, const synfig::TransformStack &transform_stack_)
+{
+	//for each layer no matter the type we want to add rotation ducks at the corners
+	for (auto layer: layer_list){
+		// add offset duck
+		Rect boundingRect = layer->get_bounding_rect();
+		std::vector<Point> points = {boundingRect.get_min(), boundingRect.get_max(),
+								Point(boundingRect.minx, boundingRect.maxy),
+								Point(boundingRect.maxx, boundingRect.miny)};
+		for (int i = 0; i < 4; ++i){
+			Duck::Handle duck = new Duck();
+			//is this even necessary
+			set_duck_value_desc(*duck, synfigapp::ValueDesc(layer, "rotate_handle" + std::to_string(i)), transform_stack_);
+			duck->set_point(points[i]);
+			duck->set_editable(true);
+			duck->set_type(Duck::TYPE_SELECT_ROTATE);
+//			connect_signals(duck, duck->get_value_desc(), *canvas_view);
+			add_duck(duck);
+		}
+	}
+	return true;
 }
 
 

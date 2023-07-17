@@ -94,7 +94,6 @@ class studio::StateSelect_Context : public sigc::trackable
 	Gtk::ToggleButton rotate_button;
 	Gtk::Box functionality_box;
 
-
 	enum class InnerState {
 		MOVE,
 		ROTATE

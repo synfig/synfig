@@ -504,6 +504,8 @@ public:
 
 	bool add_to_ducks(const synfigapp::ValueDesc& value_desc, etl::handle<CanvasView> canvas_view, const synfig::TransformStack& transform_stack_, const synfig::ParamDesc* param_desc = nullptr);
 
+	bool add_select_tool_ducks(std::list<synfig::Layer::Handle> layer_list, etl::handle<CanvasView> canvas_view, const synfig::TransformStack& transform_stack_);
+
 	//! Set the type mask, which determines what types of ducks are shown
 	//! \Param[in]   x   Duck::Type set to backup when toggling handles
 	//! \Sa              get_type_mask(), CanvasView::toggle_duck_all()

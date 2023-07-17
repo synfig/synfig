@@ -135,13 +135,15 @@ struct ScreenDuck
 	bool hover;
 	bool has_alternative;
 	bool has_move_origin;
+	bool select_tool_transformation;
 
 	ScreenDuck():
 	    width(0),
 		selected(),
 		hover(),
 		has_alternative(false),
-		has_move_origin(false)
+		has_move_origin(false),
+		select_tool_transformation(false)
 	{ }
 };
 
@@ -262,7 +264,8 @@ Renderer_Ducks::render_vfunc(
 	{
 
 		// If this type of duck has been masked, then skip it. Unless we are in select state then we only draw the ducks that bound the layer.
-		if( (!(*iter)->get_type() || (!(get_work_area()->get_type_mask() & (*iter)->get_type()))) && !isStateSelect )
+		if( (!(*iter)->get_type() || (!(get_work_area()->get_type_mask() & (*iter)->get_type())))
+				&& (!isStateSelect /*|| (*iter)->get_type() != Duck::TYPE_SELECT_ROTATE)*/) )
 			continue;
 
 		Point sub_trans_point((*iter)->get_sub_trans_point());
@@ -530,7 +533,10 @@ Renderer_Ducks::render_vfunc(
 			screen_duck.color=(DUCK_COLOR_WIDTHPOINT_POSITION);
 		else if ((*iter)->get_move_origin())
 			screen_duck.color=(DUCK_COLOR_WIDTHPOINT_POSITION);
-		else
+		else if ((*iter)->get_type()&Duck::TYPE_SELECT_ROTATE){
+			screen_duck.color=DUCK_COLOR_OTHER;//make a color for this
+			screen_duck.select_tool_transformation = true;
+		} else
 			screen_duck.color=DUCK_COLOR_OTHER;
 
 		screen_duck_list.push_front(screen_duck);
@@ -878,58 +884,60 @@ Renderer_Ducks::render_vfunc(
 		}//! end if hover
 
 	}
-	if (!isStateSelect){
-		for(;!screen_duck_list.empty();screen_duck_list.pop_front())
+
+	for(;!screen_duck_list.empty();screen_duck_list.pop_front())
+	{
+		if (isStateSelect && !screen_duck_list.front().select_tool_transformation)
+			continue;
+
+		Gdk::RGBA color(screen_duck_list.front().color);
+		double radius = 4;
+		double outline = 1;
+		bool duck_alternative = alternative && screen_duck_list.front().has_alternative;
+		bool duck_move_origin = screen_duck_list.front().has_move_origin;
+
+		// Draw the hovered duck last (on top of everything)
+		if(screen_duck_list.front().hover && !screen_duck_list.back().hover && screen_duck_list.size()>1)
 		{
-			Gdk::RGBA color(screen_duck_list.front().color);
-			double radius = 4;
-			double outline = 1;
-			bool duck_alternative = alternative && screen_duck_list.front().has_alternative;
-			bool duck_move_origin = screen_duck_list.front().has_move_origin;
-
-			// Draw the hovered duck last (on top of everything)
-			if(screen_duck_list.front().hover && !screen_duck_list.back().hover && screen_duck_list.size()>1)
-			{
-				screen_duck_list.push_back(screen_duck_list.front());
-				continue;
-			}
-
-			cr->save();
-
-			if(!screen_duck_list.front().selected)
-			{
-				color.set_rgba(color.get_red()*2/3,
-								color.get_green()*2/3,
-								color.get_blue()*2/3);
-			}
-
-			if(screen_duck_list.front().hover)
-			{
-				radius += 1;
-				outline += 1;
-			}
-
-			cr->arc(
-				screen_duck_list.front().pos[0],
-				screen_duck_list.front().pos[1],
-				radius,
-				0,
-				M_PI*2
-				);
-
-			cr->set_source_rgba(
-				color.get_red(),
-				color.get_green(),
-				color.get_blue(),
-				duck_alternative || duck_move_origin ? 0.5 : 1.0
-				);
-			cr->fill_preserve();
-
-			cr->set_line_width(outline);
-			cr->set_source_rgba(GDK_COLOR_TO_RGB(DUCK_COLOR_OUTLINE),1); //DUCK_COLOR_OUTLINE
-			cr->stroke();
-
-			cr->restore();
+			screen_duck_list.push_back(screen_duck_list.front());
+			continue;
 		}
+
+		cr->save();
+
+		if(!screen_duck_list.front().selected)
+		{
+			color.set_rgba(color.get_red()*2/3,
+							color.get_green()*2/3,
+							color.get_blue()*2/3);
+		}
+
+		if(screen_duck_list.front().hover)
+		{
+			radius += 1;
+			outline += 1;
+		}
+
+		cr->arc(
+			screen_duck_list.front().pos[0],
+			screen_duck_list.front().pos[1],
+			radius,
+			0,
+			M_PI*2
+			);
+
+		cr->set_source_rgba(
+			color.get_red(),
+			color.get_green(),
+			color.get_blue(),
+			duck_alternative || duck_move_origin ? 0.5 : 1.0
+			);
+		cr->fill_preserve();
+
+		cr->set_line_width(outline);
+		cr->set_source_rgba(GDK_COLOR_TO_RGB(DUCK_COLOR_OUTLINE),1); //DUCK_COLOR_OUTLINE
+		cr->stroke();
+
+		cr->restore();
 	}
 }
