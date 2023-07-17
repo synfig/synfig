@@ -150,7 +150,7 @@ Dock_Layers::Dock_Layers():
 
 	action_group_layer_ops->add( Gtk::Action::create("toolbar-layer", _("Layer Ops")) );
 
-	action_new_layer = Gtk::Action::create("popup-layer-new", Gtk::StockID("gtk-add"), _("New Layer"), _("New Layer"));
+	action_new_layer = Gtk::Action::create_with_icon_name("popup-layer-new", "list-add", _("New Layer"), _("New Layer"));
 	action_new_layer->signal_activate().connect(sigc::mem_fun(*this, &Dock_Layers::popup_add_layer_menu));
 
 	action_group_layer_ops->add( action_new_layer );
@@ -231,12 +231,6 @@ Dock_Layers::init_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 
 	layer_tree->set_model(layer_tree_store); // (b)
 	canvas_view->set_tree_model("params", layer_tree->param_tree_view().get_model()); // (c)
-
-	/*
-	canvas_view->layermenu.items().push_back(Gtk::Menu_Helpers::StockMenuElem(Gtk::StockID("gtk-delete"),Gtk::AccelKey("Delete"),
-		sigc::mem_fun(*layer_tree, &LayerTree::on_delete_pressed))
-	);
-	*/
 
 	// Hide the time bar
 	//if(canvas_view->get_canvas()->rend_desc().get_time_start()==canvas_view->get_canvas()->rend_desc().get_time_end())

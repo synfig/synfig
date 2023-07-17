@@ -71,6 +71,8 @@ std::string valuenode_icon_name(etl::handle<synfig::ValueNode> value_node);
 Glib::RefPtr<Gdk::Pixbuf> get_tree_pixbuf(synfig::Type &type);
 std::string get_action_icon_name(const synfigapp::Action::BookEntry& action);
 
+Glib::RefPtr<Gdk::Pixbuf> get_tree_pixbuf_from_icon_name(const synfig::String& icon_name);
+
 }; // END of namespace studio
 
 /* === E N D =============================================================== */
