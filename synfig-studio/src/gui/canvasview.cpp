@@ -2237,6 +2237,10 @@ CanvasView::rebuild_ducks()
 	std::set<Layer::Handle> layer_set(selected_layers.begin(), selected_layers.end());
 	work_area->add_ducks_layers(get_canvas(), layer_set, this, transform_stack);
 
+	// if in select state add select ducks
+	if (std::string(get_work_area()->get_canvas_view()->get_smach().get_state_name()) == "select")
+		work_area->add_select_tool_ducks(selected_layers, this, transform_stack);
+
 	// Now do the children
 	transform_stack.clear();
 	SelectionManager::ChildrenList selected_children = get_selection_manager()->get_selected_children();

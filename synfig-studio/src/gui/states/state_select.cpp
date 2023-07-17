@@ -94,7 +94,6 @@ class studio::StateSelect_Context : public sigc::trackable
 	Gtk::ToggleButton rotate_button;
 	Gtk::Box functionality_box;
 
-
 	enum class InnerState {
 		MOVE,
 		ROTATE
@@ -361,6 +360,14 @@ DuckDrag_Select::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& off
 	synfig::Vector vect(offset-center);
 	original_angle=Angle::tan(vect[1],vect[0]);
 	original_mag=vect.mag();
+
+	if (duckmatic->find_duck(offset, 0.1) && duckmatic->find_duck(offset)->get_type() == Duck::TYPE_SELECT_ROTATE){
+		rotate = true;
+		move_only = false;
+	} else {
+		rotate = false;
+	}
+
 }
 
 bool DuckDrag_Select::end_duck_drag(Duckmatic *duckmatic)
