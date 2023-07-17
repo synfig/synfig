@@ -472,11 +472,11 @@ RenderSettings::check_target_destination()
 	{
 		message = strprintf(_("A file named \"%s\" already exists. "
 							"Do you want to replace it?"),
-							filename.filename().c_str());
+							filename.filename().u8_str());
 	
 		details = strprintf(_("The file already exists in \"%s\". "
 							"Replacing it will overwrite its contents."),
-							filename.parent_path().c_str());
+							filename.parent_path().u8_str());
 	}
 	else
 	{
@@ -486,7 +486,7 @@ RenderSettings::check_target_destination()
 	
 		details = strprintf(_("The files already exist in \"%s\". "
 							"Replacing them will overwrite their contents."),
-							filename.parent_path().c_str());
+							filename.parent_path().u8_str());
 	}
 
 	//Ask user whether to overwrite file with same name
