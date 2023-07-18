@@ -59,8 +59,6 @@ extern StateNormal state_normal;
 //better to just have this class in a separate or other file
 class DuckDrag_Combo : public DuckDrag_Base
 {
-	friend class DuckDrag_Select;
-
 	synfig::Vector last_move;
 	synfig::Vector drag_offset;
 	synfig::Vector center;

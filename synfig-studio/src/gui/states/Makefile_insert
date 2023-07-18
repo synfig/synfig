@@ -33,14 +33,14 @@ STATES_CC = \
 	states/state_fill.cpp \
 	states/state_gradient.cpp \
 	states/state_mirror.cpp \
+	states/state_normal.cpp \
 	states/state_polygon.cpp \
 	states/state_rectangle.cpp \
 	states/state_rotate.cpp \
-        states/state_normal.cpp \
-        states/state_select.cpp \
 	states/state_scale.cpp \
 	states/state_sketch.cpp \
 	states/state_smoothmove.cpp \
+	states/state_select.cpp \
 	states/state_star.cpp \
 	states/state_stroke.cpp \
 	states/state_text.cpp \

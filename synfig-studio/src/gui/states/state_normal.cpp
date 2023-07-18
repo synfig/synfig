@@ -35,7 +35,6 @@
 #endif
 
 #include <gui/states/state_normal.h>
-#include <states/state_select.h>
 
 #include <synfig/general.h>
 
