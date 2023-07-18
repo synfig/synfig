@@ -43,6 +43,7 @@
 #include <gui/canvasview.h>
 #include <gui/cellrenderer/cellrenderer_timetrack.h>
 #include <gui/exception_guard.h>
+#include <gui/iconcontroller.h>
 #include <gui/instance.h>
 #include <gui/localization.h>
 #include <gui/trees/layertree.h>
@@ -76,7 +77,7 @@ public:
 
 	LayerParamTreeStore::Model model;
 
-	void set_canvas_view(handle<CanvasView> canvas_view)
+	void set_canvas_view(CanvasView::Handle canvas_view)
 	{
 		cellrenderer_time_track->set_time_model(canvas_view->time_model());
 		cellrenderer_time_track->set_canvas_interface(canvas_view->canvas_interface());
@@ -122,9 +123,7 @@ public:
 			// Add a fixed size (1pixel width, same height than value_type icon) empty (alpha) icon
 			// to align the rows with params dock when the text is smaller than value_type icons height
 			Gtk::CellRendererPixbuf* icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
-			Glib::RefPtr<Gdk::Pixbuf> pixbuf;
-			pixbuf=Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-utils_timetrack_align"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
-			icon_cellrenderer->property_pixbuf() = pixbuf;
+			icon_cellrenderer->property_pixbuf() = get_tree_pixbuf_from_icon_name("utils_timetrack_align_icon");
 			column2->pack_end(*icon_cellrenderer,false);
 			icon_cellrenderer->set_fixed_size(1,-1);
 
@@ -382,7 +381,7 @@ Dock_Timetrack_Old::~Dock_Timetrack_Old()
 }
 
 void
-Dock_Timetrack_Old::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+Dock_Timetrack_Old::init_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 {
 	LayerParamTreeStore::Model model;
 
@@ -410,7 +409,7 @@ Dock_Timetrack_Old::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_
 }
 
 void
-Dock_Timetrack_Old::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+Dock_Timetrack_Old::changed_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 {
 	if (grid_)
 	{

@@ -238,6 +238,7 @@ static const std::map<std::string, std::string> layer_icon_names = {
 	{"metaballs",            "layer_example_metaballs_icon"},
 	{"simple_circle",        "layer_example_simplecircle_icon"},
 	// Filter Layers
+	{"chromakey",    "layer_filter_chromakey_icon"},
 	{"clamp",        "layer_filter_clamp_icon"},
 	{"colorcorrect", "layer_filter_colorcorrect_icon"},
 	{"halftone2",    "layer_filter_halftone2_icon"},
@@ -341,31 +342,15 @@ IconController::init_icons(const synfig::String& path_to_icons)
 	int width_small_toolbar, height_small_toolbar;
 	Gtk::IconSize::lookup(Gtk::ICON_SIZE_SMALL_TOOLBAR, width_small_toolbar, height_small_toolbar);
 
-	for(Type *type = Type::get_first(); type != nullptr; type = type->get_next()) {
-		Glib::RefPtr<Gdk::Pixbuf> icon = Gtk::IconTheme::get_default()->load_icon(value_icon_name(*type), height_small_toolbar, Gtk::ICON_LOOKUP_FORCE_SIZE);
-		if (!icon)
-			icon = Gtk::IconTheme::get_default()->load_icon("image-missing", height_small_toolbar, Gtk::ICON_LOOKUP_FORCE_SIZE);
+	for (Type *type = Type::get_first(); type != nullptr; type = type->get_next()) {
+		std::string icon_name = value_icon_name(*type);
+
+		if (!Gtk::IconTheme::get_default()->has_icon(icon_name))
+			icon_name = "image-missing";
+
+		Glib::RefPtr<Gdk::Pixbuf> icon = Gtk::IconTheme::get_default()->load_icon(icon_name, height_small_toolbar, Gtk::ICON_LOOKUP_FORCE_SIZE);
 		_tree_pixbuf_table_value_type[type->identifier] = icon;
 	}
-}
-
-Glib::RefPtr<Gdk::Cursor>
-IconController::get_normal_cursor()
-{
-	return Gdk::Cursor::create(Gdk::TOP_LEFT_ARROW);
-}
-
-Glib::RefPtr<Gdk::Cursor>
-IconController::get_tool_cursor(const Glib::ustring& name,const Glib::RefPtr<Gdk::Window>& window)
-{
-	//this function is never called
-	//it is commented out in WorkArea::refresh_cursor()
-	assert(0);
-	// \todo Do we still need it?
-
-	Glib::RefPtr<Gdk::Pixbuf> pixbuf =
-		Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-"+name),Gtk::ICON_SIZE_SMALL_TOOLBAR);
-  	return Gdk::Cursor::create(window->get_display(), pixbuf, 0, 0);
 }
 
 std::string
@@ -443,29 +428,31 @@ studio::get_tree_pixbuf(Type &type)
 	return _tree_pixbuf_table_value_type[type.identifier];
 }
 
-#ifdef _WIN32
-#define TEMPORARY_DELETE_MACRO DELETE
-#undef DELETE
-#endif
-
-Gtk::StockID
-studio::get_action_stock_id(const synfigapp::Action::BookEntry& action)
+std::string
+studio::get_action_icon_name(const synfigapp::Action::BookEntry& action)
 {
-	Gtk::StockID stock_id;
-	if(action.task=="add")				stock_id=Gtk::Stock::ADD;
-	else if(action.task=="connect")		stock_id=Gtk::Stock::CONNECT;
-	else if(action.task=="disconnect")	stock_id=Gtk::Stock::DISCONNECT;
-	else if(action.task=="insert")		stock_id=Gtk::Stock::ADD;
-	else if(action.task=="lower")		stock_id=Gtk::Stock::GO_DOWN;
-	else if(action.task=="move_bottom")	stock_id=Gtk::Stock::GOTO_BOTTOM;
-	else if(action.task=="move_top")	stock_id=Gtk::Stock::GOTO_TOP;
-	else if(action.task=="raise")		stock_id=Gtk::Stock::GO_UP;
-	else if(action.task=="remove")		stock_id=Gtk::Stock::DELETE;
-	else if(action.task=="set_off")		stock_id=Gtk::Stock::NO;
-	else if(action.task=="set_on")		stock_id=Gtk::Stock::YES;
-	else								stock_id=Gtk::StockID("synfig-"+
-															  action.task);
-	return stock_id;
+	// maps action task -> icon name
+	const std::map<std::string, std::string> action_icon_map = {
+		{"add",         "list-add"},
+		{"insert",      "list-add"},
+		{"remove",      "edit-delete"},
+		{"connect",     "gtk-connect"},
+		{"disconnect",  "gtk-disconnect"},
+		{"raise",       "go-up"},
+		{"lower",       "go-down"},
+		{"move_top",    "go-top"},
+		{"move_bottom", "go-bottom"},
+		{"set_on",      "gtk-yes"},
+		{"set_off",     "gtk-no"},
+	};
+	auto iter = action_icon_map.find(action.task);
+	if (iter != action_icon_map.end())
+		return iter->second;
+
+	auto iter2 = known_icon_list.find(action.task);
+	if (iter2 != known_icon_list.end())
+		return iter2->second.first;
+	return "image-missing";
 }
 
 std::string
@@ -481,11 +468,27 @@ studio::layer_icon_name(const synfig::String& layer_name)
 Glib::RefPtr<Gdk::Pixbuf>
 studio::get_tree_pixbuf_layer(const synfig::String &layer)
 {
+	return get_tree_pixbuf_from_icon_name(layer_icon_name(layer));
+}
+
+std::string
+studio::state_icon_name(const synfig::String& state)
+{
+	auto iter = known_icon_list.find(state);
+	if (iter == known_icon_list.end()) {
+		synfig::warning(_("state icon name not defined: %s"), state.c_str());
+		return "image-missing";
+	}
+	return iter->second.first;
+}
+
+Glib::RefPtr<Gdk::Pixbuf>
+studio::get_tree_pixbuf_from_icon_name(const synfig::String& icon_name)
+{
 	int width, height;
 	Gtk::IconSize::lookup(Gtk::ICON_SIZE_SMALL_TOOLBAR, width, height);
-	Glib::RefPtr<Gdk::Pixbuf> icon = Gtk::IconTheme::get_default()->load_icon(layer_icon_name(layer), height, Gtk::ICON_LOOKUP_FORCE_SIZE);
+	Glib::RefPtr<Gdk::Pixbuf> icon = Gtk::IconTheme::get_default()->load_icon(icon_name, height, Gtk::ICON_LOOKUP_FORCE_SIZE);
 	if (!icon)
 		icon = Gtk::IconTheme::get_default()->load_icon("image-missing", height, Gtk::ICON_LOOKUP_FORCE_SIZE);
 	return icon;
 }
-

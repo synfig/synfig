@@ -167,7 +167,7 @@ Widget_CanvasTimeslider::on_button_press_event(GdkEventButton *event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	if (event->button == 1 && canvas_view && canvas_view->get_work_area()) {
-		lock_ducks = new LockDucks(etl::handle<CanvasView>(canvas_view));
+		lock_ducks = new LockDucks(CanvasView::Handle(canvas_view));
 		canvas_view->get_work_area()->clear_ducks();
 		canvas_view->queue_rebuild_ducks();
 	}

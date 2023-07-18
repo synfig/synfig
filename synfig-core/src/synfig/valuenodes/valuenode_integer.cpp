@@ -61,6 +61,7 @@ REGISTER_VALUENODE(ValueNode_Integer, RELEASE_VERSION_0_61_08, "fromint", N_("In
 ValueNode_Integer::ValueNode_Integer(Type &x):
 	LinkableValueNode(x)
 {
+	init_children_vocab();
 }
 
 ValueNode_Integer::ValueNode_Integer(const ValueBase &x):
@@ -192,7 +193,7 @@ ValueNode_Integer::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"link")
+	ret.push_back(ParamDesc("link")
 		.set_local_name(_("Link"))
 		.set_description(_("The integer value to be converted"))
 	);

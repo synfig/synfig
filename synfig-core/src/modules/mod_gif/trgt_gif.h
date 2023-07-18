@@ -165,7 +165,7 @@ private:
 
 
 	bitstream bs;
-	synfig::String filename;
+	synfig::filesystem::Path filename;
 	synfig::SmartFILE file;
 	int
 		codesize,	// Current code size
@@ -195,7 +195,7 @@ private:
 	void output_curr_palette();
 
 public:
-	gif(const char *filename, const synfig::TargetParam& /* params */);
+	gif(const synfig::filesystem::Path& filename, const synfig::TargetParam& /* params */);
 
 	virtual ~gif();
 

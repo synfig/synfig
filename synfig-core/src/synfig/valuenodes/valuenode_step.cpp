@@ -181,22 +181,22 @@ ValueNode_Step::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"link")
+	ret.push_back(ParamDesc("link")
 		.set_local_name(_("Link"))
 		.set_description(_("The value node used to make the step"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"duration")
+	ret.push_back(ParamDesc("duration")
 		.set_local_name(_("Duration"))
 		.set_description(_("The duration of the step"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"start_time")
+	ret.push_back(ParamDesc("start_time")
 		.set_local_name(_("Start Time"))
 		.set_description(_("The time when the step conversion starts"))
 	);
 
-		ret.push_back(ParamDesc(ValueBase(),"intersection")
+		ret.push_back(ParamDesc("intersection")
 		.set_local_name(_("Intersection"))
 		.set_description(_("Value that define whether the step is centered on the value [0,1]"))
 	);

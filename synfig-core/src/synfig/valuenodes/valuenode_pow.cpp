@@ -170,22 +170,22 @@ ValueNode_Pow::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"base")
+	ret.push_back(ParamDesc("base")
 		.set_local_name(_("Base"))
 		.set_description(_("The base to be raised to the power"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"power")
+	ret.push_back(ParamDesc("power")
 		.set_local_name(_("Power"))
 		.set_description(_("The power used to raise the base"))
 	);
 
-		ret.push_back(ParamDesc(ValueBase(),"epsilon")
+		ret.push_back(ParamDesc("epsilon")
 		.set_local_name(_("Epsilon"))
 		.set_description(_("Value used to compare base or power with zero "))
 	);
 
-		ret.push_back(ParamDesc(ValueBase(),"infinite")
+		ret.push_back(ParamDesc("infinite")
 		.set_local_name(_("Infinite"))
 		.set_description(_("Returned value when result tends to infinite"))
 	);

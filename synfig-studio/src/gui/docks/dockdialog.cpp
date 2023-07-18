@@ -130,8 +130,7 @@ bool
 DockDialog::on_delete_event(GdkEventAny * /* event */)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
-	for(std::list<Dockable*>::iterator i = App::dock_manager->dockable_list_.begin(); i != App::dock_manager->dockable_list_.end(); i++)
-	{
+	for (std::list<Dockable*>::iterator i = App::dock_manager->dockable_list_.begin(); i != App::dock_manager->dockable_list_.end(); ++i) {
 		if ((*i)->get_parent_window() == get_window())
 		{
 			CanvasView *canvas_view = dynamic_cast<CanvasView*>(*i);

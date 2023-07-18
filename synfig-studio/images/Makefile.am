@@ -101,6 +101,7 @@ EXTRA_DIST = \
 	layer_distortion_warp_icon.sif \
 	layer_example_metaballs_icon.sif \
 	layer_example_simplecircle_icon.sif \
+	layer_filter_chromakey_icon.sif \
 	layer_filter_clamp_icon.sif \
 	layer_filter_colorcorrect_icon.sif \
 	layer_filter_halftone2_icon.sif \
@@ -204,7 +205,7 @@ EXTRA_DIST = \
 	navigator_icon.sif \
 	palette_icon.sif \
 	parameters_icon.sif \
-	sound_icon \
+	sound_icon.sif \
 	time_track_icon.sif \
 	\
 	utils_chain_link_icons.sif \
@@ -310,6 +311,7 @@ ICONS = \
 	layer_distortion_warp_icon.$(EXT) \
 	layer_example_metaballs_icon.$(EXT) \
 	layer_example_simplecircle_icon.$(EXT) \
+	layer_filter_chromakey_icon.$(EXT) \
 	layer_filter_clamp_icon.$(EXT) \
 	layer_filter_colorcorrect_icon.$(EXT) \
 	layer_filter_halftone2_icon.$(EXT) \
@@ -463,10 +465,10 @@ appicondir= $(datadir)/icons/hicolor
 imagedir = $(synfig_datadir)/images
 image_DATA = $(IMAGES)
 
-classicthemedir="${synfig_datadir}/icons/classic"
-dist_classictheme_DATA=index.theme
+classicthemedir = ${synfig_datadir}/icons/classic
+dist_classictheme_DATA = index.theme
 
-iconsdir="${classicthemedir}/128x128"
+iconsdir = ${classicthemedir}/128x128
 icons_DATA = $(ICONS)
 
 win32iconsdir = $(datadir)/pixmaps

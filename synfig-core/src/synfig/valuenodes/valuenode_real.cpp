@@ -60,6 +60,7 @@ REGISTER_VALUENODE(ValueNode_Real, RELEASE_VERSION_0_64_0, "fromreal", N_("Real"
 ValueNode_Real::ValueNode_Real(Type &x):
 	LinkableValueNode(x)
 {
+	init_children_vocab();
 }
 
 ValueNode_Real::ValueNode_Real(const ValueBase &x):
@@ -188,7 +189,7 @@ ValueNode_Real::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"link")
+	ret.push_back(ParamDesc("link")
 		.set_local_name(_("Link"))
 		.set_description(_("The real value to be converted"))
 	);

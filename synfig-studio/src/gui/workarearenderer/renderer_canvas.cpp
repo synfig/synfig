@@ -589,7 +589,7 @@ Renderer_Canvas::enqueue_render()
 		RectInt        window_rect    = get_work_area()->get_window_rect();
 		bool           bg_rendering   = get_work_area()->get_background_rendering();
 		Canvas::Handle canvas         = get_work_area()->get_canvas();
-		etl::handle<CanvasView> canvas_view = get_work_area()->get_canvas_view();
+		CanvasView::Handle canvas_view = get_work_area()->get_canvas_view();
 		etl::handle<TimeModel> time_model = canvas_view->time_model();
 		bool			is_playing = canvas_view->is_playing();
 		bool			is_bounded = time_model->get_play_bounds_enabled();

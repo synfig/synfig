@@ -62,6 +62,7 @@ REGISTER_VALUENODE(ValueNode_BLineRevTangent, RELEASE_VERSION_0_61_08, "blinerev
 ValueNode_BLineRevTangent::ValueNode_BLineRevTangent(Type &x):
 	LinkableValueNode(x)
 {
+	init_children_vocab();
 }
 
 ValueNode_BLineRevTangent::ValueNode_BLineRevTangent(const ValueNode::Handle &x):
@@ -152,12 +153,12 @@ ValueNode_BLineRevTangent::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"reference")
+	ret.push_back(ParamDesc("reference")
 		.set_local_name(_("Reference"))
 		.set_description(_("The referenced tangent to reverse"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"reverse")
+	ret.push_back(ParamDesc("reverse")
 		.set_local_name(_("Reverse"))
 		.set_description(_("When checked, the reference is reversed"))
 	);

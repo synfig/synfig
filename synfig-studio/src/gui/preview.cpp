@@ -147,7 +147,7 @@ public:
 	}
 };
 
-studio::Preview::Preview(const etl::loose_handle<CanvasView> &h, float zoom, float f):
+studio::Preview::Preview(const CanvasView::LooseHandle &h, float zoom, float f):
 	canvasview(h),
 	zoom(zoom),
 	fps(f),
@@ -160,7 +160,7 @@ studio::Preview::Preview(const etl::loose_handle<CanvasView> &h, float zoom, flo
 	global_fps()
 { }
 
-void studio::Preview::set_canvasview(const etl::loose_handle<CanvasView> &h)
+void studio::Preview::set_canvasview(const CanvasView::LooseHandle &h)
 {
 	canvasview = h;
 
@@ -255,7 +255,7 @@ const Canvas::Handle&
 studio::Preview::get_canvas() const
 	{return canvasview->get_canvas();}
 
-const etl::loose_handle<CanvasView>&
+const CanvasView::LooseHandle&
 studio::Preview::get_canvasview() const
 	{return canvasview;}
 

@@ -33,16 +33,16 @@
 #	include <config.h>
 #endif
 
-#include <ETL/stringf>
-
-#include <glib/gstdio.h>
 #include "trgt_jpeg.h"
+
+#include <synfig/general.h>
+#include <synfig/localization.h>
+
 #endif
 
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
-using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
@@ -53,8 +53,7 @@ SYNFIG_TARGET_SET_VERSION(jpeg_trgt,"0.1");
 
 /* === M E T H O D S ======================================================= */
 
-jpeg_trgt::jpeg_trgt(const char *Filename, const synfig::TargetParam &params):
-	file(nullptr),
+jpeg_trgt::jpeg_trgt(const synfig::filesystem::Path& Filename, const synfig::TargetParam& params):
 	quality(95),
 	cinfo(),
 	jerr(),
@@ -62,8 +61,6 @@ jpeg_trgt::jpeg_trgt(const char *Filename, const synfig::TargetParam &params):
 	ready(false),
 	imagecount(),
 	filename(Filename),
-	buffer(nullptr),
-	color_buffer(nullptr),
 	sequence_separator(params.sequence_separator)
 {
 	set_alpha_mode(TARGET_ALPHA_MODE_FILL);
@@ -77,11 +74,6 @@ jpeg_trgt::~jpeg_trgt()
 		jpeg_destroy_compress(&cinfo);
 		ready=false;
 	}
-	if(file)
-		fclose(file);
-	file=nullptr;
-	delete [] buffer;
-	delete [] color_buffer;
 }
 
 bool
@@ -101,41 +93,35 @@ jpeg_trgt::start_frame(synfig::ProgressCallback *callback)
 {
 	int w=desc.get_w(),h=desc.get_h();
 
-	if(file && file!=stdout)
-		fclose(file);
-	if(filename=="-")
-	{
-		if(callback)callback->task(strprintf("(stdout) %d",imagecount).c_str());
-		file=stdout;
-	}
-	else if(multi_image)
-	{
-		String newfilename(filename_sans_extension(filename) +
-						   sequence_separator +
-						   strprintf("%04d",imagecount) +
-						   filename_extension(filename));
-		file=g_fopen(newfilename.c_str(),POPEN_BINARY_WRITE_TYPE);
-		if(callback)callback->task(newfilename);
-	}
-	else
-	{
-		file=g_fopen(filename.c_str(),POPEN_BINARY_WRITE_TYPE);
-		if(callback)callback->task(filename);
+	if (filename.u8string() == "-") {
+		if (callback)
+			callback->task(strprintf("(stdout) %d", imagecount));
+		file = stdout;
+	} else {
+		synfig::filesystem::Path newfilename(filename);
+		if (multi_image) {
+			newfilename.add_suffix(sequence_separator + strprintf("%04d", imagecount));
+		}
+		file = SmartFILE(newfilename, "wb");
+		if (callback)
+			callback->task(newfilename.u8string());
 	}
 
-	if(!file)
+	if (!file) {
+		if (callback)
+			callback->error(_("Unable to open file"));
+		else
+			synfig::error(_("Unable to open file"));
 		return false;
+	}
 
-	delete [] buffer;
-	buffer=new unsigned char[3*w];
-
-	delete [] color_buffer;
-	color_buffer=new Color[w];
+	buffer.resize(3*w);
+	color_buffer.resize(w);
 
 
 	cinfo.err = jpeg_std_error(&jerr);
 	jpeg_create_compress(&cinfo);
-	jpeg_stdio_dest(&cinfo, file);
+	jpeg_stdio_dest(&cinfo, file.get());
 
 	cinfo.image_width = w; 	/* image width and height, in pixels */
 	cinfo.image_height = h;
@@ -172,16 +158,14 @@ jpeg_trgt::end_frame()
 		ready=false;
 	}
 
-	if(file && file!=stdout)
-		fclose(file);
-	file=nullptr;
+	file.reset();
 	imagecount++;
 }
 
 Color *
 jpeg_trgt::start_scanline(int /*scanline*/)
 {
-	return color_buffer;
+	return color_buffer.empty() ? nullptr : color_buffer.data();
 }
 
 bool
@@ -190,10 +174,10 @@ jpeg_trgt::end_scanline()
 	if(!file || !ready)
 		return false;
 
-	color_to_pixelformat(buffer, color_buffer, PF_RGB, nullptr, desc.get_w());
+	color_to_pixelformat(buffer.data(), color_buffer.data(), PF_RGB, nullptr, desc.get_w());
 
-	JSAMPROW *row_pointer(&buffer);
-	jpeg_write_scanlines(&cinfo, row_pointer, 1);
+	JSAMPROW row_pointer(buffer.data());
+	jpeg_write_scanlines(&cinfo, &row_pointer, 1);
 
 	return true;
 }

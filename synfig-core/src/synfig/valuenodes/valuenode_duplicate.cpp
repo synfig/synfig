@@ -60,6 +60,7 @@ ValueNode_Duplicate::ValueNode_Duplicate(Type &x):
 	LinkableValueNode(x),
 	index()
 {
+	init_children_vocab();
 }
 
 ValueNode_Duplicate::ValueNode_Duplicate(const ValueBase &x):
@@ -184,17 +185,17 @@ ValueNode_Duplicate::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"from")
+	ret.push_back(ParamDesc("from")
 		.set_local_name(_("From"))
 		.set_description(_("Initial value of the index "))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"to")
+	ret.push_back(ParamDesc("to")
 		.set_local_name(_("To"))
 		.set_description(_("Final value of the index"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"step")
+	ret.push_back(ParamDesc("step")
 		.set_local_name(_("Step"))
 		.set_description(_("Amount increment of the index"))
 	);

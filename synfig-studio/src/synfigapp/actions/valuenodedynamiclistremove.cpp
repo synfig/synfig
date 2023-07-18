@@ -63,8 +63,8 @@ ACTION_SET_VERSION(Action::ValueNodeDynamicListRemove,"0.0");
 /* === M E T H O D S ======================================================= */
 
 Action::ValueNodeDynamicListRemove::ValueNodeDynamicListRemove()
+	: index(0)
 {
-	index=0;
 	set_dirty(true);
 }
 

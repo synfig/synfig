@@ -217,17 +217,17 @@ ValueNode_Subtract::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"lhs")
+	ret.push_back(ParamDesc("lhs")
 		.set_local_name(_("LHS"))
 		.set_description(_("Left Hand Side of the subtraction"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"rhs")
+	ret.push_back(ParamDesc("rhs")
 		.set_local_name(_("RHS"))
 		.set_description(_("Right Hand Side of the subtraction"))
 	);
 
-		ret.push_back(ParamDesc(ValueBase(),"scalar")
+		ret.push_back(ParamDesc("scalar")
 		.set_local_name(_("Scalar"))
 		.set_description(_("Value that multiplies the subtraction"))
 	);

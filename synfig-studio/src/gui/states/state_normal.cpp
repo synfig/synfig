@@ -350,9 +350,6 @@ DuckDrag_Combo::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& offs
 	else
 		drag_offset=duckmatic->find_duck(offset)->get_trans_point();
 
-	//snap=drag_offset-duckmatic->snap_point_to_grid(drag_offset);
-	//snap=offset-drag_offset_;
-	snap=Vector(0,0);
 
 	// Calculate center
 	Point vmin(100000000,100000000);
@@ -399,9 +396,9 @@ DuckDrag_Combo::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 
 	synfig::Vector vect;
 	if (move_only || (!scale && !rotate))
-		vect= duckmatic->snap_point_to_grid(vector)-drag_offset+snap;
+		vect = duckmatic->snap_point_to_grid(vector) - drag_offset;
 	else
-		vect= duckmatic->snap_point_to_grid(vector)-center+snap;
+		vect = duckmatic->snap_point_to_grid(vector) - center;
 
 	last_move=vect;
 

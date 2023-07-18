@@ -69,7 +69,7 @@ public:
 	Gtk::TreeView * get_params_view() const;
 	Glib::RefPtr<LayerParamTreeStore> get_params_model() const;
 
-	bool use_canvas_view(etl::loose_handle<CanvasView> canvas_view);
+	bool use_canvas_view(CanvasView::LooseHandle canvas_view);
 
 	void delete_selected();
 	void interpolate_selected(synfig::Interpolation type);

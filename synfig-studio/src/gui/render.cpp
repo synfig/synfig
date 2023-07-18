@@ -46,8 +46,6 @@
 #include <gtkmm/frame.h>
 #include <gtkmm/grid.h>
 
-#include <ETL/stringf>
-
 #include <gui/app.h>
 #include <gui/asyncrenderer.h>
 #include <gui/dialogs/dialog_ffmpegparam.h>
@@ -72,7 +70,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -104,14 +101,10 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 
 	canvas_interface->signal_rend_desc_changed().connect(sigc::mem_fun(*this,&RenderSettings::on_rend_desc_changed));
 
-	comboboxtext_target.append(_("Auto"));
-	target_names.push_back(String());
-	synfig::Target::Book::iterator iter;
+	comboboxtext_target.append("", _("Auto"));
 	synfig::Target::Book book(synfig::Target::book());
-	for(iter=book.begin();iter!=book.end();iter++)
-	{
-		comboboxtext_target.append(iter->first);
-		target_names.push_back(iter->first);
+	for (const auto& item : book) {
+		comboboxtext_target.append(item.first, item.first);
 	}
 	comboboxtext_target.set_active(0);
 	comboboxtext_target.signal_changed().connect(sigc::mem_fun(this, &RenderSettings::on_comboboxtext_target_changed));
@@ -233,25 +226,25 @@ RenderSettings::~RenderSettings()
 void
 RenderSettings::set_entry_filename()
 {
-	String filename(filename_sans_extension(canvas_interface_->get_canvas()->get_file_name()));
+	synfig::filesystem::Path filename(canvas_interface_->get_canvas()->get_file_name());
 
 	// if this isn't the root canvas, append (<canvasname>) to the filename
 	Canvas::Handle canvas = canvas_interface_->get_canvas();
 	if (!canvas->is_root())
 	{
 		if(canvas->get_name().empty())
-			filename+=" ("+canvas->get_id()+')';
+			filename.add_suffix(" (" + canvas->get_id() + ')');
 		else
-			filename+=" ("+canvas->get_name()+')';
+			filename.add_suffix(" (" + canvas->get_name() + ')');
 	}
 
-	if (!is_absolute_path(filename))
-		filename = Glib::get_home_dir() + ETL_DIRECTORY_SEPARATOR + filename;
+	if (!filename.is_absolute())
+		filename = Glib::get_home_dir() / filename;
 	
 	try
 	{
-		if(!comboboxtext_target.get_active_row_number())
-			entry_filename.set_text(filename + ".avi");
+		if (!comboboxtext_target.get_active_row_number()) // "Auto"
+			entry_filename.set_text(filename.replace_extension(std::string(".avi")).u8string());
 		// in case the file was saved and loaded again then .ext should be according to target
 		else on_comboboxtext_target_changed();
 	}
@@ -265,22 +258,34 @@ RenderSettings::set_entry_filename()
 void
 RenderSettings::on_comboboxtext_target_changed()
 {
-	std::map<std::string,std::string> ext = {{"bmp",".bmp"}, {"dv",".dv"},
-					{"ffmpeg",".avi"},{"gif",".gif"},{"imagemagick",".png"}, {"jpeg",".jpg"},
-					{"magick++",".gif"},{"mng",".mng"},{"openexr",".exr"},{"png",".png"},
-					{"png-spritesheet",".png"},{"ppm",".ppm"}, {"yuv420p",".yuv"}, {"libav",".avi"}};
-	int i = comboboxtext_target.get_active_row_number();
-	if (i < 0 || i >= (int)target_names.size()) return;
-	if (target_name == target_names[i]) return;
-	auto itr = ext.find(target_names[i]); 
-    // check if target_name is there in map
-    if(itr != ext.end())
-	{
-		String filename = entry_filename.get_text();
-		String newfilename = filename.substr(0,filename.find_last_of('.'))+itr->second;
-		entry_filename.set_text(newfilename);
+	std::string active_target_id = comboboxtext_target.get_active_id();
+
+	if (active_target_id.empty())
+		return;
+
+	if (target_name == active_target_id)
+		return;
+
+	std::string extension;
+
+	if (active_target_id == "imagemagick") {
+		extension = ".png";
+	} else if (active_target_id == "ffmpeg") {
+		extension = ".avi";
+	} else {
+		auto itr = Target::book().find(active_target_id);
+		// check if target_name is there in map
+		if (itr != Target::book().end())
+			extension = itr->second.file_extension;
 	}
-	set_target(target_names[i]);
+
+	if (!extension.empty()) {
+		filesystem::Path filename(entry_filename.get_text());
+		filename.replace_extension(extension);
+		entry_filename.set_text(filename.u8string());
+	}
+
+	set_target(active_target_id);
 }
 
 void
@@ -330,7 +335,7 @@ RenderSettings::on_targetparam_pressed()
 void
 RenderSettings::on_render_pressed()
 {
-	String filename=entry_filename.get_text();
+	filesystem::Path filename(entry_filename.get_text());
 	tparam.sequence_separator = App::sequence_separator;
 	
 	if(!check_target_destination())
@@ -346,13 +351,14 @@ RenderSettings::on_render_pressed()
 		
 	if(toggle_extract_alpha.get_active())
 	{
-		String filename_alpha(filename_sans_extension(filename)+"-alpha"+filename_extension(filename));
+		filesystem::Path filename_alpha(filename);
+		filename_alpha.add_suffix("-alpha");
 
-		render_passes.push_back(make_pair(TARGET_ALPHA_MODE_EXTRACT, filename_alpha));
-		render_passes.push_back(make_pair(TARGET_ALPHA_MODE_REDUCE, filename));
+		render_passes.push_back({TARGET_ALPHA_MODE_EXTRACT, filename_alpha});
+		render_passes.push_back({TARGET_ALPHA_MODE_REDUCE, filename});
 
 	} else {
-		render_passes.push_back(make_pair(TARGET_ALPHA_MODE_KEEP, filename));
+		render_passes.push_back({TARGET_ALPHA_MODE_KEEP, filename});
 	}
 
 	App::dock_info_->set_n_passes_requested(render_passes.size());
@@ -369,7 +375,7 @@ RenderSettings::on_render_pressed()
 bool
 RenderSettings::check_target_destination()
 {
-	String filename=entry_filename.get_text();
+	filesystem::Path filename(entry_filename.get_text());
 	calculated_target_name=target_name;
 
 	if(filename.empty())
@@ -384,9 +390,9 @@ RenderSettings::check_target_destination()
 	{
 		try
 		{
-			String ext(filename_extension(filename));
+			String ext(filename.extension().u8string());
 			if (ext.size()) ext=ext.substr(1); // skip initial '.'
-			synfig::info("render target filename: '%s'; extension: '%s'", filename.c_str(), ext.c_str());
+			synfig::info("render target filename: '%s'; extension: '%s'", filename.u8_str(), ext.c_str());
 			if(Target::ext_book().count(ext))
 			{
 				calculated_target_name=Target::ext_book()[ext];
@@ -411,7 +417,6 @@ RenderSettings::check_target_destination()
 		return false;
 	}
 	
-	String extension(filename_extension(filename));
 	bool ext_multi_file = false; //output target is an image sequence
 	int n_frames_overwrite = 0;
 	
@@ -433,7 +438,7 @@ RenderSettings::check_target_destination()
 		//calculated_target_name is a candidate with known output target (not Auto)
 		if(ext_multi_it != ext_multi.end())
 		{
-			extension = ext_multi_it->second;
+			filename.replace_extension(ext_multi_it->second);
 			ext_multi_file = true;
 		}
 		//otherwise Auto is selected
@@ -443,7 +448,7 @@ RenderSettings::check_target_destination()
 					{".jpg"},{".exr"},{".ppm"}};
 	
 			ext_multi_file = (find(ext_multi_auto.begin(), ext_multi_auto.end(),
-					filename_extension(filename)) != ext_multi_auto.end());
+					filename.extension()) != ext_multi_auto.end());
 		}
 
 		//Image sequence: filename + sequence_separator + time
@@ -452,10 +457,10 @@ RenderSettings::check_target_destination()
 					n_frame <= rend_desc.get_frame_end();
 					n_frame++)
 			{
-				if(Glib::file_test(filename_sans_extension(filename) +
+				if(Glib::file_test(filesystem::Path(filename).add_suffix(
 					tparam.sequence_separator +
-					synfig::strprintf("%04d", n_frame) +
-					extension, Glib::FILE_TEST_EXISTS))
+					synfig::strprintf("%04d", n_frame)).u8string(),
+					Glib::FILE_TEST_EXISTS))
 					n_frames_overwrite++;
 			}
 	}
@@ -467,11 +472,11 @@ RenderSettings::check_target_destination()
 	{
 		message = strprintf(_("A file named \"%s\" already exists. "
 							"Do you want to replace it?"),
-							basename(filename).c_str());
+							filename.filename().u8_str());
 	
 		details = strprintf(_("The file already exists in \"%s\". "
 							"Replacing it will overwrite its contents."),
-							dirname(filename).c_str());
+							filename.parent_path().u8_str());
 	}
 	else
 	{
@@ -481,11 +486,11 @@ RenderSettings::check_target_destination()
 	
 		details = strprintf(_("The files already exist in \"%s\". "
 							"Replacing them will overwrite their contents."),
-							dirname(filename).c_str());
+							filename.parent_path().u8_str());
 	}
 
 	//Ask user whether to overwrite file with same name
-	if(((Glib::file_test(filename, Glib::FILE_TEST_EXISTS)) || n_frames_overwrite > 0)
+	if(((Glib::file_test(filename.u8string(), Glib::FILE_TEST_EXISTS)) || n_frames_overwrite > 0)
 			&& !App::dialog_message_2b(
 		message,
 		details,
@@ -501,24 +506,24 @@ void
 RenderSettings::submit_next_render_pass()
 {
 	if (render_passes.size()>0) {
-		std::pair<TargetAlphaMode,String> pass_info = render_passes.back();
+		std::pair<TargetAlphaMode, filesystem::Path> pass_info = render_passes.back();
 		render_passes.pop_back();
 
 		App::dock_info_->set_n_passes_pending(render_passes.size()); //! Decrease until 0
 		App::dock_info_->set_render_progress(0.0); //For this pass
 		
 		TargetAlphaMode pass_alpha_mode = pass_info.first;
-		String pass_filename = pass_info.second;
+		const filesystem::Path& pass_filename = pass_info.second;
 
 		Target::Handle target=Target::create(calculated_target_name,pass_filename, tparam);
 		if(!target)
 		{
-			canvas_interface_->get_ui_interface()->error(_("Unable to create target for ")+pass_filename);
+			canvas_interface_->get_ui_interface()->error(strprintf(_("Unable to create target for %s"), pass_filename.u8_str()));
 			return;
 		}
 		// Test whether the output file is writable (path exists or has write permit)
-		if (g_access(dirname(pass_filename).c_str(), W_OK) == -1) {
-			canvas_interface_->get_ui_interface()->error(_("Unable to create file for ")+pass_filename+": "+strerror( errno ));
+		if (g_access(pass_filename.parent_path().u8_str(), W_OK) == -1) {
+			canvas_interface_->get_ui_interface()->error(strprintf(_("Unable to create file for %s: %s"), pass_filename.u8_str(), strerror( errno )));
 			return;
 		}
 
@@ -540,7 +545,7 @@ RenderSettings::submit_next_render_pass()
 		if(pass_alpha_mode!=TARGET_ALPHA_MODE_KEEP)
 			target->set_alpha_mode(pass_alpha_mode);
 
-		canvas_interface_->get_ui_interface()->task(strprintf(_("Rendering %s"), pass_filename.c_str()));
+		canvas_interface_->get_ui_interface()->task(strprintf(_("Rendering %s"), pass_filename.u8_str()));
 
 		async_renderer=new AsyncRenderer(target, progress_logger.get());
 		async_renderer->signal_finished().connect( sigc::mem_fun(*this,&RenderSettings::on_finished));

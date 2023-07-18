@@ -373,7 +373,7 @@ CellRenderer_ValueBase::render_vfunc(
 				enum_list = ((synfig::ParamDesc) property_child_param_desc_).get_enum_list();
 
 			std::list<synfig::ParamDesc::EnumData>::iterator iter;
-			for (iter = enum_list.begin(); iter != enum_list.end(); iter++)
+			for (iter = enum_list.begin(); iter != enum_list.end(); ++iter) {
 				if (iter->value == data.get(int()))
 				{
 					// don't show the key_board s_hortcut under_scores
@@ -385,6 +385,7 @@ CellRenderer_ValueBase::render_vfunc(
 						property_text() = local_name;
 					break;
 				}
+			}
 		}
 	}
 	else

@@ -333,20 +333,20 @@ private:
 
 public:
 
-	virtual ValueBase operator()(Time t)const;
+	ValueBase operator()(Time t) const override;
 
-	virtual String get_name()const;
+	String get_name() const override;
 
-	virtual String get_local_name()const;
+	String get_local_name() const override;
 
-	String get_string()const;
+	String get_string() const override;
 
-	virtual ValueNode::Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
+	ValueNode::Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid = GUID()) const override;
 
 	static Handle create(Type &type=type_nil);
 
 protected:
-	virtual void get_times_vfunc(Node::time_set &/*set*/) const {}
+	void get_times_vfunc(Node::time_set &/*set*/) const override {}
 }; // END of class PlaceholderValueNode
 
 
@@ -405,7 +405,7 @@ public:
 	virtual int get_link_index_from_name(const String &name)const;
 
 	//! Clones a Value Node
-	virtual ValueNode::Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
+	ValueNode::Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID()) const override;
 
 	//! Sets a new Value Node link by its index
 	bool set_link(int i,ValueNode::Handle x);
@@ -417,15 +417,14 @@ public:
 	//! Returns a Loose Handle to the Value Node based on the link's name
 	ValueNode::LooseHandle get_link(const String &name)const { return get_link(get_link_index_from_name(name)); }
 	//! Return a full description of the linked ValueNode given by the index
-	String get_description(int index = -1, bool show_exported_name = true)const;
-	//! Return a full description of the linked ValueNode given by the index
-	//! Proper overload of the inherited function
-	String get_description(bool show_exported_name = true)const;
+	String get_link_description(int index, bool show_exported_name = true)const;
+	//! Return a full description of this linkable ValueNode
+	String get_description(bool show_exported_name = true)const override;
 
 	//! Gets the children vocabulary for linkable value nodes
 	virtual const Vocab& get_children_vocab()const;
 
-	virtual void set_root_canvas(etl::loose_handle<Canvas> x);
+	void set_root_canvas(etl::loose_handle<Canvas> x) override;
 
 	//! If get_inverse() can be called
 	enum InvertibleStatus {
@@ -458,7 +457,7 @@ protected:
 	virtual LinkableValueNode* create_new()const=0;
 
 	//! Returns the cached times values for all the children (linked Value Nodes)
-	virtual void get_times_vfunc(Node::time_set &set) const;
+	void get_times_vfunc(Node::time_set &set) const override;
 
 	//! Pure Virtual member to get the children vocabulary
 	virtual Vocab get_children_vocab_vfunc()const=0;
@@ -467,7 +466,7 @@ protected:
 	virtual void set_children_vocab(const Vocab& rvocab);
 	virtual void init_children_vocab();
 
-	virtual void get_values_vfunc(std::map<Time, ValueBase> &x) const;
+	void get_values_vfunc(std::map<Time, ValueBase> &x) const override;
 }; // END of class LinkableValueNode
 
 /*!	\class ValueNodeList

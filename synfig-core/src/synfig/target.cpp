@@ -54,14 +54,12 @@ Target::subsys_init()
 	// At least one target must be available.
 	book()["null"].factory =
 		reinterpret_cast<synfig::Target::Factory>(&Target_Null::create);
-	book()["null"].filename = "null";
-	book()["null"].target_param = TargetParam();
+	book()["null"].file_extension = "null";
 	ext_book()["null"]="null";
 
 	book()["null-tile"].factory =
 		reinterpret_cast<synfig::Target::Factory>(&Target_Null_Tile::create);
-	book()["null-tile"].filename = "null-tile";
-	book()["null-tile"].target_param = TargetParam();
+	book()["null-tile"].file_extension = "null-tile";
 	ext_book()["null-tile"]="null-tile";
 
 	return true;
@@ -108,13 +106,13 @@ synfig::Target::set_canvas(Canvas::Handle c)
 
 
 Target::Handle
-Target::create(const String &name, const String &filename,
+Target::create(const String& name, const filesystem::Path& filename,
 			   const synfig::TargetParam& params)
 {
 	if(!book().count(name))
 		return handle<Target>();
 
-	return Target::Handle(book()[name].factory(filename.c_str(), params));
+	return Target::Handle(book()[name].factory(filename, params));
 }
 
 int

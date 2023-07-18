@@ -57,7 +57,7 @@ public:
 	bool start_frame(ProgressCallback* /*cb*/ = nullptr) override{ return true; }
 	void end_frame() override { }
 
-	static Target* create(const char* /*filename*/, const synfig::TargetParam&) { return new Target_Null_Tile(); }
+	static Target* create(const synfig::filesystem::Path& /*filename*/, const synfig::TargetParam&) { return new Target_Null_Tile(); }
 }; // END of class Target_Null_Tile
 
 }; // END of namespace synfig

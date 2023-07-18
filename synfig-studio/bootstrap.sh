@@ -30,7 +30,7 @@ AUTOPOINT='intltoolize --automake --copy' autoreconf --force --install --verbose
 #       is fixed in intltool
 
 echo "patching po/Makefile.in.in..."
-sed 's/itlocaledir = $(prefix)\/$(DATADIRNAME)\/locale/itlocaledir = $(datarootdir)\/locale/' < po/Makefile.in.in > po/Makefile.in.in.tmp
+sed 's/itlocaledir = $(prefix)\/$(DATADIRNAME)\/locale/itlocaledir = $(datarootdir)\/locale/;s/rm -f .intltool-merge-cache/rm -f .intltool-merge-cache .intltool-merge-cache.lock/' < po/Makefile.in.in > po/Makefile.in.in.tmp
 # -- force didn't work under MacOS
 mv -f po/Makefile.in.in.tmp po/Makefile.in.in
 

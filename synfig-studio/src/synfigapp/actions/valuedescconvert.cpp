@@ -73,9 +73,8 @@ ACTION_SET_VERSION(Action::ValueDescConvert,"0.0");
 /* === M E T H O D S ======================================================= */
 
 Action::ValueDescConvert::ValueDescConvert()
-{
-	time=(Time::begin()-1);
-}
+	: time(Time::begin() - 1)
+{ }
 
 synfig::String
 Action::ValueDescConvert::get_local_name()const

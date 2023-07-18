@@ -38,8 +38,6 @@
 
 #include <sigc++/bind.h>
 
-#include <ETL/stringf>
-
 #include "general.h"
 #include <synfig/localization.h>
 
@@ -56,7 +54,6 @@
 #endif
 
 using namespace synfig;
-using namespace etl;
 
 namespace synfig { extern Canvas::Handle open_canvas_as(const FileSystem::Identifier &identifier, const String &as, String &errors, String &warnings); };
 
@@ -564,20 +561,7 @@ Canvas::_get_relative_id(etl::loose_handle<const Canvas> x)const
 
 	if(x && get_root()!=x->get_root())
 	{
-		//String file_name=get_file_name();
-		//String file_path=x->get_file_path();
-
-		String file_name;
-		if(is_absolute_path(get_file_name()))
-			file_name=etl::relative_path(x->get_file_path(),get_file_name());
-		else
-			file_name=get_file_name();
-
-		// If the path of X is inside of file_name,
-		// then remove it.
-		//if(file_name.size()>file_path.size())
-		//	if(file_path==String(file_name,0,file_path.size()))
-		//		file_name.erase(0,file_path.size()+1);
+		String file_name = filesystem::Path(get_file_name()).relative_to(x->get_file_path()).u8string();
 
 		id=file_name+'#'+id;
 	}
@@ -759,7 +743,7 @@ Canvas::surefind_canvas(const String &id, String &warnings)
 
 		Canvas::Handle external_canvas;
 
-		if(!is_absolute_path(file_name))
+		if(!filesystem::Path::is_absolute_path(file_name))
 			file_name = get_file_path()+ETL_DIRECTORY_SEPARATOR+file_name;
 		// Before look up the external canvases
 		// let's check if this is the current canvas
@@ -788,7 +772,7 @@ Canvas::surefind_canvas(const String &id, String &warnings)
 
 		// Search for the image in the image list,
 		// and return it if it is found
-		for(iter=children().begin();iter!=children().end();iter++)
+		for (iter = children().begin(); iter != children().end(); ++iter)
 			if(id==(*iter)->get_id())
 				return *iter;
 
@@ -848,7 +832,7 @@ Canvas::find_canvas(const String &id, String &warnings)const
 
 		Canvas::Handle external_canvas;
 
-		if(!is_absolute_path(file_name))
+		if(!filesystem::Path::is_absolute_path(file_name))
 			file_name = get_file_path()+ETL_DIRECTORY_SEPARATOR+file_name;
 
 		// If the composition is already open, then use it.
@@ -874,7 +858,7 @@ Canvas::find_canvas(const String &id, String &warnings)const
 
 		// Search for the image in the image list,
 		// and return it if it is found
-		for(iter=children().begin();iter!=children().end();iter++)
+		for (iter = children().begin(); iter != children().end(); ++iter)
 			if(id==(*iter)->get_id())
 				return *iter;
 
@@ -1221,7 +1205,7 @@ Canvas::get_file_path()const
 {
 	if(parent())
 		return parent()->get_file_path();
-	return dirname(file_name_);
+	return filesystem::Path::dirname(file_name_);
 }
 
 FileSystem::Handle
@@ -1460,7 +1444,7 @@ Canvas::rename_group(const String&old_name,const String&new_name)
 void
 Canvas::register_external_canvas(String file_name, Handle canvas)
 {
-	if(!is_absolute_path(file_name)) file_name = get_file_path()+ETL_DIRECTORY_SEPARATOR+file_name;
+	if(!filesystem::Path::is_absolute_path(file_name)) file_name = get_file_path()+ETL_DIRECTORY_SEPARATOR+file_name;
 	externals_[file_name] = canvas;
 }
 
@@ -1470,7 +1454,7 @@ Canvas::show_externals(String file, int line, String text) const
 {
 	printf("  .----- (externals for %lx '%s')\n  |  %s:%d %s\n", uintptr_t(this), get_name().c_str(), file.c_str(), line, text.c_str());
 	std::map<String, Handle>::iterator iter;
-	for (iter = externals_.begin(); iter != externals_.end(); iter++)
+	for (iter = externals_.begin(); iter != externals_.end(); ++iter)
 	{
 		synfig::String first(iter->first);
 		Canvas::LooseHandle second(iter->second);
@@ -1485,7 +1469,7 @@ Canvas::show_structure(int i) const
 	if(i==0)
 		printf("---Canvas Structure----\n");
 	IndependentContext iter;
-	for(iter=get_independent_context();*iter;iter++)
+	for (iter = get_independent_context(); *iter; ++iter)
 	{
 		Layer::Handle layer=*iter;
 		printf("%d: %s : %s", i, layer->get_name().c_str(), layer->get_non_empty_description().c_str());

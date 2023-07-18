@@ -35,8 +35,6 @@
 
 #include "mptr_ffmpeg.h"
 
-#include <ETL/stringf>
-
 #include <synfig/general.h>
 #include <synfig/localization.h>
 
@@ -94,12 +92,12 @@ ffmpeg_mptr::seek_to(const Time& time)
 		args.push_back("-");
 
 #ifdef _WIN32
-		String binary_path = synfig::get_binary_path("");
-		if (binary_path != "")
-			binary_path = etl::dirname(binary_path)+ETL_DIRECTORY_SEPARATOR;
-		binary_path += "ffmpeg.exe";
+		synfig::filesystem::Path binary_path = synfig::OS::get_binary_path("");
+		if (!binary_path.empty())
+			binary_path = binary_path.parent_path();
+		binary_path /= filesystem::Path("ffmpeg.exe");
 #else
-		String binary_path = "ffmpeg";
+		synfig::filesystem::Path binary_path("ffmpeg");
 #endif
 		pipe = OS::run_async(binary_path, args, OS::RUN_MODE_READ);
 
@@ -168,15 +166,13 @@ ffmpeg_mptr::grab_frame(void)
 	return true;
 }
 
-ffmpeg_mptr::ffmpeg_mptr(const synfig::FileSystem::Identifier &identifier):
-	synfig::Importer(identifier)
+ffmpeg_mptr::ffmpeg_mptr(const synfig::FileSystem::Identifier& identifier)
+	: synfig::Importer(identifier),
+	  pipe(nullptr), cur_frame(-1), fps(23.98)
 {
 #ifdef HAVE_TERMIOS_H
 	tcgetattr (0, &oldtty);
 #endif
-	pipe=nullptr;
-	fps=23.98;
-	cur_frame=-1;
 }
 
 ffmpeg_mptr::~ffmpeg_mptr()

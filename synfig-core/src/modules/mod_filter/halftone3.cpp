@@ -68,12 +68,11 @@ SYNFIG_LAYER_SET_VERSION(Halftone3,"0.0");
 
 /* === M E T H O D S ======================================================= */
 
-Halftone3::Halftone3():
-Layer_CompositeFork(1.0,Color::BLEND_STRAIGHT)
+Halftone3::Halftone3()
+	: Layer_CompositeFork(1.0, Color::BLEND_STRAIGHT),
+	  param_size(ValueBase(Vector(0.25, 0.25))),
+	  param_type(ValueBase(int(TYPE_SYMMETRIC)))
 {
-	param_size=ValueBase(synfig::Vector(0.25,0.25));
-	param_type=ValueBase(int(TYPE_SYMMETRIC));
-
 	for(int i=0;i<3;i++)
 	{
 		tone[i].param_size=param_size;

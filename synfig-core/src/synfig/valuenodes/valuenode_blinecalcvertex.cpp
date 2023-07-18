@@ -172,22 +172,22 @@ ValueNode_BLineCalcVertex::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"bline")
+	ret.push_back(ParamDesc("bline")
 		.set_local_name(_("Spline"))
 		.set_description(_("The spline where the vertex is linked to"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"loop")
+	ret.push_back(ParamDesc("loop")
 		.set_local_name(_("Loop"))
 		.set_description(_("When checked, the amount would loop"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"amount")
+	ret.push_back(ParamDesc("amount")
 		.set_local_name(_("Amount"))
 		.set_description(_("The position of the linked vertex on the Spline (0,1]"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"homogeneous")
+	ret.push_back(ParamDesc("homogeneous")
 		.set_local_name(_("Homogeneous"))
 		.set_description(_("When checked, the position is Spline length based"))
 	);

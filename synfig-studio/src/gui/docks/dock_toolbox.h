@@ -62,7 +62,7 @@ class Dock_Toolbox : public Dockable
 	Gtk::ToolItemGroup *tool_item_group;
 	Gtk::Paned *tool_box_paned;
 
-	std::map<synfig::String,Gtk::ToggleToolButton *> state_button_map;
+	std::map<synfig::String, Gtk::RadioToolButton*> state_button_map;
 
 	bool changing_state_;
 

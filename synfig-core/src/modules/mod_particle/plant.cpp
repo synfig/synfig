@@ -96,9 +96,12 @@ Plant::Plant():
 	param_random_factor(ValueBase(Real(0.2))),
 	param_drag(ValueBase(Real(0.1))),
 	param_use_width(ValueBase(true)),
+	bline_loop(true),
+	bounding_rect(Rect::zero()),
+	mass(0.5),
+	needs_sync_(true),
 	version(get_register_version())
 {
-	bounding_rect=Rect::zero();
 	Random random;
 	random.set_seed(time(nullptr));
 	param_random.set(random.get_seed());
@@ -118,9 +121,6 @@ Plant::Plant():
 	bline[2].set_width(1.0f);
 	param_bline.set_list_of(bline);
 	
-	bline_loop=true;
-	mass=(0.5);
-	needs_sync_=true;
 	sync();
 	
 	SET_INTERPOLATION_DEFAULTS();

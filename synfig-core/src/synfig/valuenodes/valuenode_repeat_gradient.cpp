@@ -193,37 +193,37 @@ ValueNode_Repeat_Gradient::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"gradient")
+	ret.push_back(ParamDesc("gradient")
 		.set_local_name(_("Gradient"))
 		.set_description(_("The source gradient to repeat"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"count")
+	ret.push_back(ParamDesc("count")
 		.set_local_name(_("Count"))
 		.set_description(_("The number of repetition of the gradient"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"width")
+	ret.push_back(ParamDesc("width")
 		.set_local_name(_("Width"))
 		.set_description(_("Specifies how much biased is the source gradient in the repetition [0,1]"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"specify_start")
+	ret.push_back(ParamDesc("specify_start")
 		.set_local_name(_("Specify Start"))
 		.set_description(_("When checked, 'Start Color' is used as the start of the resulting gradient"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"specify_end")
+	ret.push_back(ParamDesc("specify_end")
 		.set_local_name(_("Specify End"))
 		.set_description(_("When checked, 'End Color' is used as the start of the resulting gradient"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"start_color")
+	ret.push_back(ParamDesc("start_color")
 		.set_local_name(_("Start Color"))
 		.set_description(_("Used as the start of the resulting gradient"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"end_color")
+	ret.push_back(ParamDesc("end_color")
 		.set_local_name(_("End Color"))
 		.set_description(_("Used as the end of the resulting gradient"))
 	);

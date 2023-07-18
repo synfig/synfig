@@ -217,10 +217,8 @@ clamped_tangent<Gradient>(Gradient p1, Gradient p2, Gradient p3, Time t1, Time t
 {
 	Color c1, c2, c3;
 	Gradient::CPoint cp;
-	Gradient::const_iterator iter;
 	Gradient ret;
-	for(iter=p2.begin();iter!=p2.end();iter++)
-	{
+	for (Gradient::const_iterator iter = p2.begin(); iter != p2.end(); ++iter) {
 		cp=*iter;
 		c1=p1(cp.pos);
 		c2=cp.color;
@@ -1090,11 +1088,12 @@ ValueNode_AnimatedInterfaceConst::waypoint_is_only_use_of_valuenode(Waypoint &wa
 	assert(value_node);
 	WaypointList wp_list(waypoint_list());
 	WaypointList::iterator iter;
-	for (iter = wp_list.begin(); iter != wp_list.end(); iter++)
+	for (iter = wp_list.begin(); iter != wp_list.end(); ++iter) {
 		if (*iter == waypoint)
 			continue;
 		else if (iter->get_value_node() == value_node)
 			return false;
+	}
 	return true;
 }
 

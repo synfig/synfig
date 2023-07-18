@@ -70,7 +70,7 @@ public:
 private:
 	value_type value_;
 
-	static value_type epsilon_() { return static_cast<value_type>(0.0005); }
+	static const value_type epsilon_;
 
 public:
 	Time(): value_() { }
@@ -100,19 +100,15 @@ public:
 	static const Time zero() { return static_cast<synfig::Time>(0); }
 
 	//! The amount of allowable error in calculations
-	static Time epsilon() { return static_cast<synfig::Time>(epsilon_()); }
+	static Time epsilon() { return static_cast<synfig::Time>(epsilon_); }
 
 	//! The duration of discrete tick used for values comparison
-	static value_type tick() { return static_cast<value_type>(0.1*epsilon_()); }
+	static value_type tick() { return static_cast<value_type>(0.1*epsilon_); }
 
 	//! Returns a string describing the current time value
 	/*!	\see Format */
 	String get_string(float fps=0, Time::Format format=FORMAT_NORMAL) const;
 	std::string get_string(Time::Format format) const;
-
-#ifdef _DEBUG
-	const char *c_str()const;
-#endif
 
 	//! \writeme
 	bool is_valid()const;

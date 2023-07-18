@@ -60,6 +60,18 @@ using namespace studio;
 
 /* === P R O C E D U R E S ================================================= */
 
+static Gtk::Image*
+create_image_from_icon(const std::string& icon_name, Gtk::IconSize icon_size)
+{
+#if GTK_CHECK_VERSION(3,24,0)
+	return new Gtk::Image(icon_name, icon_size);
+#else
+	Gtk::Image* image = new Gtk::Image();
+	image->set_from_icon_name(icon_name, icon_size);
+	return image;
+#endif
+}
+
 /* === M E T H O D S ======================================================= */
 
 DockBook::DockBook():
@@ -286,7 +298,9 @@ DockBook::tab_button_pressed(GdkEventButton* event, Dockable* dockable)
 		tabmenu->append(*item);
 	}
 
-	Gtk::MenuItem *item = manage(new Gtk::ImageMenuItem(Gtk::StockID("gtk-close")));
+	Gtk::MenuItem *item = manage(new Gtk::ImageMenuItem(
+		*Gtk::manage(create_image_from_icon("window-close", Gtk::ICON_SIZE_MENU)),
+		_("Close")));
 	item->signal_activate().connect(
 		sigc::bind(sigc::ptr_fun(&DockManager::remove_widget_by_pointer_recursive), dockable) );
 	item->show();

@@ -248,22 +248,22 @@ ValueNode_TimedSwap::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"before")
+	ret.push_back(ParamDesc("before")
 		.set_local_name(_("Before"))
 		.set_description(_("The value node returned when current time is before 'time' - 'length'"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"after")
+	ret.push_back(ParamDesc("after")
 		.set_local_name(_("After"))
 		.set_description(_("The value node returned when current time is after 'time'"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"time")
+	ret.push_back(ParamDesc("time")
 		.set_local_name(_("Time"))
 		.set_description(_("The time when the linear interpolation ends"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"length")
+	ret.push_back(ParamDesc("length")
 		.set_local_name(_("Length"))
 		.set_description(_("The length of time when the linear interpolation between 'Before' and 'After' is made"))
 	);

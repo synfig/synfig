@@ -662,20 +662,20 @@ Job SynfigCommandLineParser::extract_job()
 	// Common input file loading
 	if (!set_input_file.empty())
 	{
-		job.filename = set_input_file;
+		job.filename = filesystem::Path(set_input_file);
 
 		// Open the composition
 		std::string errors, warnings;
 		try
 		{
-			if (FileSystem::Handle file_system = CanvasFileNaming::make_filesystem(job.filename))
+			if (FileSystem::Handle file_system = CanvasFileNaming::make_filesystem(job.filename.u8string()))
 			{
-				FileSystem::Identifier identifier = file_system->get_identifier(CanvasFileNaming::project_file(job.filename));
-				job.root = open_canvas_as(identifier, job.filename, errors, warnings);
+				FileSystem::Identifier identifier = file_system->get_identifier(CanvasFileNaming::project_file(job.filename.u8string()));
+				job.root = open_canvas_as(identifier, job.filename.u8string(), errors, warnings);
 			}
 			else
 			{
-				errors.append("Cannot open container " + job.filename + "\n");
+				errors.append("Cannot open container " + job.filename.u8string() + "\n");
 			}
 		}
 		catch(std::runtime_error& /*x*/)
@@ -690,7 +690,7 @@ Job SynfigCommandLineParser::extract_job()
 		if(!job.canvas)
 		{
 		    throw SynfigToolException(SYNFIGTOOL_FILENOTFOUND,
-                                      strprintf(_("Unable to load file '%s'."), job.filename.c_str()));
+									  strprintf(_("Unable to load file '%s'."), job.filename.u8_str()));
 		}
 
 		job.root->set_time(0);
@@ -726,7 +726,7 @@ Job SynfigCommandLineParser::extract_job()
 	// Determine output
 	if (!set_output_file.empty())
 	{
-		job.outfilename = set_output_file;
+		job.outfilename = filesystem::Path(set_output_file);
 	}
 
 	if (sw_extract_alpha)
@@ -813,7 +813,7 @@ Job SynfigCommandLineParser::extract_job()
 	//if (_vm.count("list-canvases") || misc_canvases)
 	if (misc_canvases)
 	{
-		print_child_canvases(job.filename + "#", job.root);
+		print_child_canvases(job.filename.u8string() + "#", job.root);
 		std::cerr << std::endl;
 
 		throw SynfigToolException(SYNFIGTOOL_OK);
