@@ -892,7 +892,7 @@ init_ui_manager()
 	menus_action_group->add( Gtk::Action::create("menu-plugins",         _("Plug-Ins")));
 
 	menus_action_group->add( Gtk::Action::create("menu-window",          _("_Window")));
-	menus_action_group->add( Gtk::Action::create("menu-arrange",         _("_Arrange")));
+
 	menus_action_group->add( Gtk::Action::create("menu-workspace",       _("Work_space")));
 
 	menus_action_group->add( Gtk::Action::create("menu-help",            _("_Help")));
@@ -1170,7 +1170,6 @@ DEFINE_ACTION("switch-to-rightmost-tab",  _("Switch to Rightmost Tab"))
 	ui_info_menu +=
 "	</menu>"
 "	<menu action='menu-window'>"
-"		<menu action='menu-arrange'> </menu>"
 "		<menu action='menu-workspace'>"
 "			<menuitem action='workspace-default' />"
 "			<menuitem action='workspace-compositing' />"

@@ -187,7 +187,6 @@ LayerActionManager::LayerActionManager():
 	action_group_(Gtk::ActionGroup::create("action_group_layer_action_manager")),
 	menu_popup_id_(no_prev_popup),
 	menu_main_id_(no_prev_popup),
-	action_group_copy_paste(Gtk::ActionGroup::create("action_group_copy_paste")),
 	queued(false)
 {
 	action_cut_=Gtk::Action::create_with_icon_name(
