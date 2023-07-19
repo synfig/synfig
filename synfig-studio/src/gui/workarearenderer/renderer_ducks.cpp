@@ -65,6 +65,8 @@ using namespace studio;
 #define DUCK_COLOR_ORIGIN        Gdk::RGBA("#00ff00") // green
 /** DUCK_COLOR_ANGLE : blue */
 #define DUCK_COLOR_ANGLE		Gdk::RGBA("#0000ff") // blue
+/** DUCK_COLOR_ROTATE : blue */
+#define DUCK_COLOR_ROTATE		Gdk::RGBA("#0000ff") // blue
 /** DUCK_COLOR_RADIUS : cyan */
 #define DUCK_COLOR_RADIUS		Gdk::RGBA("#00ffff") // cyan
 /** DUCK_COLOR_LINEAR : cyan for linear radius ducks */
@@ -534,7 +536,7 @@ Renderer_Ducks::render_vfunc(
 		else if ((*iter)->get_move_origin())
 			screen_duck.color=(DUCK_COLOR_WIDTHPOINT_POSITION);
 		else if ((*iter)->get_type()&Duck::TYPE_SELECT_ROTATE){
-			screen_duck.color=DUCK_COLOR_OTHER;//make a color for this
+			screen_duck.color=DUCK_COLOR_ROTATE;//make a color for this
 			screen_duck.select_tool_transformation = true;
 		} else
 			screen_duck.color=DUCK_COLOR_OTHER;
