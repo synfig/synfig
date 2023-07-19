@@ -1319,7 +1319,13 @@ App::get_default_accel_map()
 		{"k",             "<Actions>/action_group_state_manager/state-sketch"},
 		{"w",             "<Actions>/action_group_state_manager/state-width"},
 
+		// Classic edit
+		{"<Primary>x",              "<Actions>/action_group_layer_action_manager/cut"},
+		{"<Primary>c",              "<Actions>/action_group_layer_action_manager/copy"},
+		{"<Primary>v",              "<Actions>/action_group_layer_action_manager/paste"},
+
 		// Everything else
+		{"<Primary>q",              "<Actions>/mainwindow/quit"},
 		{"<Control>a",              "<Actions>/canvasview/select-all-ducks"},
 		{"<Control>d",              "<Actions>/canvasview/unselect-all-ducks"},
 		{"<Control><Shift>a",       "<Actions>/canvasview/select-all-layers"},
