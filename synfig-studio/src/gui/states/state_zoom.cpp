@@ -39,6 +39,7 @@
 #include <gui/canvasview.h>
 #include <gui/docks/dock_toolbox.h>
 #include <gui/event_mouse.h>
+#include <gui/localization.h>
 #include <gui/states/state_normal.h>
 #include <gui/workarea.h>
 
@@ -93,7 +94,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateZoom::StateZoom():
-	Smach::state<StateZoom_Context>("zoom")
+	Smach::state<StateZoom_Context>("zoom", N_("Zoom Tool"))
 {
 	insert(event_def(EVENT_STOP,&StateZoom_Context::event_stop_handler));
 	insert(event_def(EVENT_REFRESH,&StateZoom_Context::event_refresh_handler));

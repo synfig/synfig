@@ -221,26 +221,19 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 
 	// Keeps updating the tooltip if user changes the shortcut at runtime
 	tool_button->property_has_tooltip() = true;
-	tool_button->signal_query_tooltip().connect([name](int,int,bool,const Glib::RefPtr<Gtk::Tooltip>& tooltip) -> bool
+	tool_button->signal_query_tooltip().connect([state](int,int,bool,const Glib::RefPtr<Gtk::Tooltip>& tooltip) -> bool
 	{
-		Gtk::StockItem stock_item;
-		if (Gtk::Stock::lookup(Gtk::StockID("synfig-"+name), stock_item)) {
-			std::string tooltip_string = stock_item.get_label();
+		std::string tooltip_string = state->get_local_name();
 
-			Gtk::AccelKey key;
-			if (Gtk::AccelMap::lookup_entry("<Actions>/action_group_state_manager/state-" + name, key)) {
-				tooltip_string += "  ";
-				tooltip_string += gtk_accelerator_get_label(key.get_key(), GdkModifierType(key.get_mod()));
-			}
-
-			tooltip->set_text(tooltip_string);
-		} else {
-			synfig::warning("There is no StockItem named 'synfig-%s", name.c_str());
+		Gtk::AccelKey key;
+		if (Gtk::AccelMap::lookup_entry(std::string("<Actions>/action_group_state_manager/state-") + state->get_name(), key)) {
+			tooltip_string += "  ";
+			tooltip_string += gtk_accelerator_get_label(key.get_key(), GdkModifierType(key.get_mod()));
 		}
-
+		tooltip->set_text(tooltip_string);
 		return true;
 	});
-
+//	tool_button->set_tooltip_text(get_tooltip(name));
 	tool_button->show();
 
 	tool_item_group->insert(*tool_button);

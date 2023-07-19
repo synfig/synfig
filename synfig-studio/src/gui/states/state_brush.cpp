@@ -232,7 +232,7 @@ const char * StateBrush_Context::BrushConfig::input_names[] = {
 
 
 StateBrush::StateBrush():
-	Smach::state<StateBrush_Context>("brush")
+	Smach::state<StateBrush_Context>("brush", N_("Brush Tool"))
 {
 	insert(event_def(EVENT_STOP,&StateBrush_Context::event_stop_handler));
 	insert(event_def(EVENT_REFRESH,&StateBrush_Context::event_refresh_handler));
