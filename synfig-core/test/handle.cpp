@@ -139,7 +139,7 @@ shared_object_initial_refcount_is_zero()
 	BasicSharedObject* obj = new BasicSharedObject();
 	DeleteGuard<BasicSharedObject> guard(obj);
 
-	ASSERT_EQUAL(0, obj->count());
+	ASSERT_EQUAL(0, obj->use_count());
 }
 
 void
@@ -149,9 +149,9 @@ shared_object_ref_increases_refcount()
 	DeleteGuard<BasicSharedObject> guard(obj);
 
 	obj->ref();
-	ASSERT_EQUAL(1, obj->count());
+	ASSERT_EQUAL(1, obj->use_count());
 	obj->ref();
-	ASSERT_EQUAL(2, obj->count());
+	ASSERT_EQUAL(2, obj->use_count());
 }
 
 void
@@ -164,7 +164,7 @@ shared_object_unref_decreases_refcount()
 	obj->ref();
 
 	obj->unref();
-	ASSERT_EQUAL(1, obj->count());
+	ASSERT_EQUAL(1, obj->use_count());
 }
 
 void
@@ -177,10 +177,10 @@ shared_object_unref_inactive_does_not_change_refcount()
 	obj->ref();
 
 	obj->unref_inactive();
-	ASSERT_EQUAL(1, obj->count());
+	ASSERT_EQUAL(1, obj->use_count());
 
 	obj->unref_inactive();
-	ASSERT_EQUAL(0, obj->count());
+	ASSERT_EQUAL(0, obj->use_count());
 }
 
 void
@@ -193,7 +193,7 @@ shared_object_auto_deletes_itself_on_zero_refcount()
 	obj->ref();
 	obj->ref();
 	obj->unref();
-	ASSERT_EQUAL(1, obj->count());
+	ASSERT_EQUAL(1, obj->use_count());
 
 	obj->unref();
 	ASSERT_EQUAL(1, delete_counter);
@@ -213,8 +213,8 @@ handle_constructor_increases_refcount()
 {
 	BasicSharedObject::Handle obj(new BasicSharedObject());
 
-	ASSERT_EQUAL(1, obj.count());
-	ASSERT_EQUAL(1, obj.get()->count());
+	ASSERT_EQUAL(1, obj.use_count());
+	ASSERT_EQUAL(1, obj.get()->use_count());
 }
 
 void
@@ -227,10 +227,10 @@ handle_destructor_decreases_refcount()
 
 	{
 		BasicSharedObject::Handle obj(real_obj);
-		ASSERT_EQUAL(2, real_obj->count());
+		ASSERT_EQUAL(2, real_obj->use_count());
 	}
 
-	ASSERT_EQUAL(1, real_obj->count());
+	ASSERT_EQUAL(1, real_obj->use_count());
 }
 
 void
@@ -287,7 +287,7 @@ empty_handle_has_refcount_zero()
 {
 	BasicSharedObject::Handle obj;
 
-	ASSERT_EQUAL(0, obj.count());
+	ASSERT_EQUAL(0, obj.use_count());
 }
 
 void
@@ -308,7 +308,7 @@ handle_reset_decreases_refcount()
 	BasicSharedObject::Handle obj2(real_obj);
 
 	obj2.reset();
-	ASSERT_EQUAL(1, real_obj->count());
+	ASSERT_EQUAL(1, real_obj->use_count());
 }
 
 void
@@ -347,7 +347,7 @@ handle_self_assignment_does_not_increase_refcount()
 
 	BasicSharedObject::Handle obj(real_obj);
 	obj = obj;
-	ASSERT_EQUAL(1, real_obj->count());
+	ASSERT_EQUAL(1, real_obj->use_count());
 }
 
 void
@@ -358,7 +358,7 @@ handle_assignment_increases_refcount()
 	BasicSharedObject::Handle obj1(real_obj);
 	BasicSharedObject::Handle obj2 = obj1;
 
-	ASSERT_EQUAL(2, real_obj->count());
+	ASSERT_EQUAL(2, real_obj->use_count());
 }
 
 void
@@ -381,7 +381,7 @@ handle_assignment_an_object_stores_the_same_object()
 	BasicSharedObject::Handle obj2 = real_obj;
 
 	ASSERT(obj2.get() == real_obj);
-	ASSERT_EQUAL(2, real_obj->count());
+	ASSERT_EQUAL(2, real_obj->use_count());
 }
 
 void
@@ -396,7 +396,7 @@ handle_assignment_from_empty_handle_discards_previous_object()
 
 	obj1 = BasicSharedObject::Handle();
 	ASSERT(obj1.empty());
-	ASSERT_EQUAL(0, obj1.count());
+	ASSERT_EQUAL(0, obj1.use_count());
 }
 
 void
@@ -409,10 +409,10 @@ handle_assignment_from_empty_handle_decreases_previous_object_refcount()
 
 	BasicSharedObject::Handle obj1(real_obj);
 
-	ASSERT_EQUAL(2, real_obj->count());
+	ASSERT_EQUAL(2, real_obj->use_count());
 
 	obj1 = BasicSharedObject::Handle();
-	ASSERT_EQUAL(1, real_obj->count());
+	ASSERT_EQUAL(1, real_obj->use_count());
 }
 
 void
@@ -424,7 +424,7 @@ handle_assignment_from_empty_deletes_previous_object_if_it_is_time()
 
 	RIPSharedObject::Handle obj1(real_obj);
 
-	ASSERT_EQUAL(1, real_obj->count());
+	ASSERT_EQUAL(1, real_obj->use_count());
 
 	obj1 = RIPSharedObject::Handle();
 	ASSERT_EQUAL(1, delete_counter);
@@ -462,7 +462,7 @@ handle_assignment_from_other_handle_decreases_previous_object_refcount()
 
 	obj1 = obj2;
 
-	ASSERT_EQUAL(1, real_obj1->count());
+	ASSERT_EQUAL(1, real_obj1->use_count());
 }
 
 void
@@ -477,12 +477,12 @@ handle_assignment_from_other_handle_with_same_object_does_not_decrease_object_re
 
 	BasicSharedObject::Handle obj2(real_obj1);
 
-	ASSERT_EQUAL(3, obj1->count());
-	ASSERT_EQUAL(3, obj2->count());
+	ASSERT_EQUAL(3, obj1->use_count());
+	ASSERT_EQUAL(3, obj2->use_count());
 
 	obj1 = obj2;
 
-	ASSERT_EQUAL(3, real_obj1->count());
+	ASSERT_EQUAL(3, real_obj1->use_count());
 }
 
 void
@@ -496,8 +496,8 @@ handle_assignment_from_other_handle_deletes_previous_object_if_it_is_time()
 
 	RIPSharedObject::Handle obj2(new RIPSharedObject(delete_counter2));
 
-	ASSERT_EQUAL(1, obj1->count());
-	ASSERT_EQUAL(1, obj2->count());
+	ASSERT_EQUAL(1, obj1->use_count());
+	ASSERT_EQUAL(1, obj2->use_count());
 
 	obj1 = obj2;
 
@@ -592,8 +592,8 @@ handle_swap_does_not_change_refcounts()
 	BasicSharedObject::Handle obj2(real_obj2);
 
 	obj1.swap(obj2);
-	ASSERT_EQUAL(1, real_obj1->count());
-	ASSERT_EQUAL(1, real_obj2->count());
+	ASSERT_EQUAL(1, real_obj1->use_count());
+	ASSERT_EQUAL(1, real_obj2->use_count());
 }
 
 
@@ -612,14 +612,14 @@ loose_handle_constructor_does_not_increase_refcount()
 	DeleteGuard<BasicSharedObject> guard(real_obj);
 	BasicSharedObject::LooseHandle obj1(real_obj);
 
-	ASSERT_EQUAL(0, obj1.count());
-	ASSERT_EQUAL(0, obj1.get()->count());
+	ASSERT_EQUAL(0, obj1.use_count());
+	ASSERT_EQUAL(0, obj1.get()->use_count());
 
 	real_obj->ref();
 	BasicSharedObject::LooseHandle obj2(real_obj);
 
-	ASSERT_EQUAL(1, obj2.count());
-	ASSERT_EQUAL(1, obj2.get()->count());
+	ASSERT_EQUAL(1, obj2.use_count());
+	ASSERT_EQUAL(1, obj2.get()->use_count());
 }
 
 void
@@ -632,10 +632,10 @@ loose_handle_destructor_does_not_decrease_refcount()
 
 	{
 		BasicSharedObject::LooseHandle obj(real_obj);
-		ASSERT_EQUAL(1, real_obj->count());
+		ASSERT_EQUAL(1, real_obj->use_count());
 	}
 
-	ASSERT_EQUAL(1, real_obj->count());
+	ASSERT_EQUAL(1, real_obj->use_count());
 }
 
 void
@@ -678,7 +678,7 @@ empty_loose_handle_has_refcount_zero()
 {
 	BasicSharedObject::LooseHandle obj;
 
-	ASSERT_EQUAL(0, obj.count());
+	ASSERT_EQUAL(0, obj.use_count());
 }
 
 void
@@ -691,7 +691,7 @@ loose_handle_reset_does_not_decrease_refcount()
 	BasicSharedObject::LooseHandle obj2(real_obj);
 
 	obj2.reset();
-	ASSERT_EQUAL(0, real_obj->count());
+	ASSERT_EQUAL(0, real_obj->use_count());
 }
 
 void
@@ -735,7 +735,7 @@ loose_handle_self_assignment_does_not_increase_refcount()
 
 	BasicSharedObject::LooseHandle obj(real_obj);
 	obj = obj;
-	ASSERT_EQUAL(0, real_obj->count());
+	ASSERT_EQUAL(0, real_obj->use_count());
 }
 
 void
@@ -747,7 +747,7 @@ loose_handle_assignment_does_not_increase_refcount()
 	BasicSharedObject::LooseHandle obj1(real_obj);
 	BasicSharedObject::LooseHandle obj2 = obj1;
 
-	ASSERT_EQUAL(0, real_obj->count());
+	ASSERT_EQUAL(0, real_obj->use_count());
 	ASSERT_FALSE(obj2.empty());
 }
 
@@ -773,7 +773,7 @@ loose_handle_assignment_an_object_stores_the_same_object()
 	BasicSharedObject::LooseHandle obj2 = real_obj;
 
 	ASSERT(obj2.get() == real_obj);
-	ASSERT_EQUAL(0, real_obj->count());
+	ASSERT_EQUAL(0, real_obj->use_count());
 }
 
 void
@@ -788,7 +788,7 @@ loose_handle_assignment_from_empty_loose_handle_discards_previous_object()
 
 	obj1 = BasicSharedObject::LooseHandle();
 	ASSERT(obj1.empty());
-	ASSERT_EQUAL(0, obj1.count());
+	ASSERT_EQUAL(0, obj1.use_count());
 }
 
 void
@@ -801,10 +801,10 @@ loose_handle_assignment_from_empty_loose_handle_does_not_decrease_previous_objec
 
 	BasicSharedObject::LooseHandle obj1(real_obj);
 
-	ASSERT_EQUAL(1, real_obj->count());
+	ASSERT_EQUAL(1, real_obj->use_count());
 
 	obj1 = BasicSharedObject::LooseHandle();
-	ASSERT_EQUAL(1, real_obj->count());
+	ASSERT_EQUAL(1, real_obj->use_count());
 }
 
 void
@@ -845,7 +845,7 @@ loose_handle_assignment_from_other_loose_handle_does_not_decrease_previous_objec
 
 	obj1 = obj2;
 
-	ASSERT_EQUAL(1, real_obj1->count());
+	ASSERT_EQUAL(1, real_obj1->use_count());
 }
 
 void
@@ -860,12 +860,12 @@ loose_handle_assignment_from_other_loose_handle_with_same_object_does_not_decrea
 
 	BasicSharedObject::LooseHandle obj2(real_obj1);
 
-	ASSERT_EQUAL(1, obj1->count());
-	ASSERT_EQUAL(1, obj2->count());
+	ASSERT_EQUAL(1, obj1->use_count());
+	ASSERT_EQUAL(1, obj2->use_count());
 
 	obj1 = obj2;
 
-	ASSERT_EQUAL(1, real_obj1->count());
+	ASSERT_EQUAL(1, real_obj1->use_count());
 }
 
 void
@@ -969,8 +969,8 @@ loose_handle_swap_does_not_change_refcounts()
 	BasicSharedObject::LooseHandle obj2(real_obj2);
 
 	obj1.swap(obj2);
-	ASSERT_EQUAL(0, real_obj1->count());
-	ASSERT_EQUAL(0, real_obj2->count());
+	ASSERT_EQUAL(0, real_obj1->use_count());
+	ASSERT_EQUAL(0, real_obj2->use_count());
 }
 
 void
@@ -1014,12 +1014,12 @@ loose_handle_assignment_from_handle_does_not_increase_refcount()
 
 	BasicSharedObject::Handle obj(real_obj);
 
-	ASSERT_EQUAL(1, real_obj->count());
+	ASSERT_EQUAL(1, real_obj->use_count());
 
 	BasicSharedObject::LooseHandle loose_obj = obj;
 
-	ASSERT_EQUAL(1, real_obj->count());
-	ASSERT_EQUAL(1, loose_obj.count());
+	ASSERT_EQUAL(1, real_obj->use_count());
+	ASSERT_EQUAL(1, loose_obj.use_count());
 }
 
 void
@@ -1041,11 +1041,11 @@ handle_assignment_from_loose_handle_increases_refcount()
 
 	BasicSharedObject::LooseHandle loose_obj(real_obj);
 
-	ASSERT_EQUAL(0, real_obj->count());
+	ASSERT_EQUAL(0, real_obj->use_count());
 
 	BasicSharedObject::Handle obj = loose_obj;
 
-	ASSERT_EQUAL(1, real_obj->count());
+	ASSERT_EQUAL(1, real_obj->use_count());
 }
 
 
@@ -1129,7 +1129,7 @@ rhandle_general_use_test()
 
 
 
-	ASSERT_EQUAL(NUMBER_OF_OBJECTS*2+1, obj.count());
+	ASSERT_EQUAL(NUMBER_OF_OBJECTS*2+1, obj.use_count());
 
 	ASSERT_EQUAL(NUMBER_OF_OBJECTS+1, obj.rcount());
 
@@ -1142,7 +1142,7 @@ rhandle_general_use_test()
 
 	my_other_list.clear();
 
-	ASSERT(obj.rcount() == obj.count());
+	ASSERT(obj.rcount() == obj.use_count());
 
 	ASSERT_EQUAL(NUMBER_OF_OBJECTS + 1, obj.rcount());
 
@@ -1237,7 +1237,7 @@ int test_func(etl::handle<MyTestObj> handle)
 	};
 
 	if (handle) {
-		Bogus b(handle.count());
+		Bogus b(handle.use_count());
 		return b.b;
 	}
 	return 5;

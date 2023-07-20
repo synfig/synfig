@@ -412,7 +412,7 @@ synfig::Main::~Main()
 	{
 		synfig::warning("Canvases still open!");
 		for (const auto& iter : get_open_canvas_map()) {
-			synfig::warning("%s: count()=%d",iter.second.c_str(), iter.first->count());
+			synfig::warning("%s: count()=%d", iter.second.c_str(), iter.first->use_count());
 		}
 	}
 

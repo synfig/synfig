@@ -118,7 +118,7 @@ ValueNode_Bone::show_bone_map(Canvas::LooseHandle canvas, const char *file, int 
 		printf("    %-20s : parent %-20s (%d refs, %d rrefs)%s\n",
 			   GET_NODE_DESC_CSTR(bone,t),
 			   GET_NODE_DESC_CSTR(parent,t),
-			   bone->count(), bone->rcount(),
+			   bone->use_count(), bone->rcount(),
 			   id.c_str());
 	}
 	printf("\n");

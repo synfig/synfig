@@ -103,7 +103,7 @@ public:
 		return (bool)(--refcount);
 	}
 
-	int count()const { return refcount; }
+	int use_count() const { return refcount; }
 
 }; // END of class shared_object
 
@@ -202,13 +202,13 @@ public:
 
 	//! Returns number of instances
 	count_type
-	count()const
-		{ return obj?obj->count():0; }
+	use_count() const
+		{ return obj ? obj->use_count() : 0; }
 
 	//! Returns true if there is only one instance of the object
 	bool
-	unique()const
-		{ /*assert(obj);*/ return count() == 1; }
+	unique() const
+		{ /* assert(obj); */ return use_count() == 1; }
 
 	reference
 	operator*()const
@@ -325,7 +325,7 @@ public:
 	typedef int count_type;
 	typedef int size_type;
 
-	using handle<value_type>::count;
+	using handle<value_type>::use_count;
 	using handle<value_type>::unique;
 	using handle<value_type>::operator bool;
 	using handle<value_type>::get;
@@ -616,8 +616,8 @@ public:
 
 	//! Returns number of instances
 	count_type
-	count()const
-		{ return obj?obj->count():0; }
+	use_count() const
+		{ return obj ? obj->use_count() : 0; }
 
 	reference
 	operator*()const
