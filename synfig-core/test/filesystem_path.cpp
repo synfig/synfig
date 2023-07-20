@@ -1298,6 +1298,32 @@ test_relative()
 }
 
 void
+test_relative_to_empty_path_returns_itself()
+{
+	ASSERT_EQUAL("a/e.fg", Path("a/e.fg").lexically_relative(Path()).u8string());
+	ASSERT_EQUAL("e.fg", Path("e.fg").lexically_relative(Path()).u8string());
+	// exception: absolute path
+#ifdef _WIN32
+	ASSERT_EQUAL("", Path("C:/a/d").lexically_relative(Path()).u8string());
+#else
+	ASSERT_EQUAL("", Path("/a/d").lexically_relative(Path()).u8string());
+#endif
+}
+
+void
+test_empty_path_relative_to_another_returns_as_it_was_special_dot_file()
+{
+	ASSERT_EQUAL("../..", Path().lexically_relative(Path("a/e.fg")).u8string());
+	ASSERT_EQUAL("..", Path().lexically_relative(Path("e.fg")).u8string());
+	// exception: absolute path
+#ifdef _WIN32
+	ASSERT_EQUAL("", Path().lexically_relative(Path("C:/a/d")).u8string());
+#else
+	ASSERT_EQUAL("", Path().lexically_relative(Path("/a/d")).u8string());
+#endif
+}
+
+void
 test_relative_ported_from_old_etl_stringf()
 {
 	ASSERT_EQUAL("myfile.txt", Path("/home/darco/projects/voria/myfile.txt").lexically_relative(Path("/home/darco/projects/voria")).u8string())
@@ -1424,6 +1450,8 @@ int main() {
 	TEST_FUNCTION(test_normalize_examples_from_cpp_reference_dot_com)
 
 	TEST_FUNCTION(test_relative)
+	TEST_FUNCTION(test_relative_to_empty_path_returns_itself)
+	TEST_FUNCTION(test_empty_path_relative_to_another_returns_as_it_was_special_dot_file)
 	TEST_FUNCTION(test_relative_ported_from_old_etl_stringf)
 
 	TEST_SUITE_END()

@@ -288,88 +288,83 @@ filesystem::Path::lexically_relative(const Path& base) const
 
 	auto a_pos = get_relative_path_pos();
 	auto b_pos = base.get_relative_path_pos();
-	auto a_end = std::string::npos;
-	bool different = false;
-	while (a_pos != std::string::npos
-		   && a_pos < path_.length()
-		   && b_pos != std::string::npos
-		   && b_pos < base.path_.length())
-	{
-		a_end = path_.find_first_of("/\\", a_pos);
-		auto b_end = base.path_.find_first_of("/\\", b_pos);
+
+	auto next_element = [](const filesystem::Path& p, std::size_t pos) -> std::pair<std::size_t, std::string> {
+		if (pos == std::string::npos || pos >= p.path_.length())
+			return {std::string::npos, ""};
+
+		// root path element ignored
+
+		auto end = p.path_.find_first_of("/\\", pos);
+		if (end == std::string::npos)
+			return {std::string::npos, ""};
+
+		auto next = p.path_.find_first_not_of("/\\", end + 1);
+		if (next == std::string::npos)
+			return {p.path_.length(), ""};
+
+		end = p.path_.find_first_of("/\\", next);
+		if (end == std::string::npos)
+			return {next, p.path_.substr(next)};
+
+		return {next, p.path_.substr(next, end - next)};
+	};
+
+	std::pair<std::size_t, std::string> a;
+	if (path_.empty()) {
+		a = {std::string::npos, ""};
+	} else {
+		auto a_end = path_.find_first_of("/\\", a_pos);
 		if (a_end == std::string::npos)
-			a_end = path_.length();
-		if (b_end == std::string::npos)
-			b_end = base.path_.length();
-		if (a_end - a_pos != b_end - b_pos
-			|| path_.compare(a_pos, a_end - a_pos, base.path_, b_pos, b_end - b_pos) != 0)
-		{
-			different = true;
-			break;
-		}
-		a_pos = path_.find_first_not_of("/\\", a_end + 1);
-		b_pos = base.path_.find_first_not_of("/\\", b_end + 1);
-	}
-	if (!different) {
-		bool a_ended = a_pos == std::string::npos;
-		bool b_ended = b_pos == std::string::npos;
-		if (a_ended ^ b_ended) {
-			different = true;
-		} else {
-			// check last component
-			a_pos = path_.find_last_not_of("/\\");
-			b_pos = base.path_.find_last_not_of("/\\");
-			if (path_.compare(a_pos, path_.length() - a_pos, base.path_, b_pos, base.path_.length() - b_pos) != 0) {
-				different = true;
-				a_end = path_.length();
-			}
-		}
+			a = {a_pos, path_.substr(a_pos)};
+		else
+			a = {a_pos, path_.substr(a_pos, a_end - a_pos)};
 	}
 
-	if (!different)
-		return Path(".");
-
-	int b_N = 0;
-	while (b_pos != std::string::npos
-		   && b_pos < base.path_.length())
-	{
+	std::pair<std::size_t, std::string> b;
+	if (base.path_.empty()) {
+		b = {std::string::npos, ""};
+	} else {
 		auto b_end = base.path_.find_first_of("/\\", b_pos);
 		if (b_end == std::string::npos)
-			b_end = base.path_.length();
-		const auto b_length = b_end - b_pos;
-		if (b_length == 2
-			&& base.path_[b_pos] == '.'
-			&& base.path_[b_pos + 1] == '.')
-		{
-			--b_N;
-		}
-		if (b_length != 1
-			|| base.path_[b_pos] != '.')
-		{
-			++b_N;
-		}
-		b_pos = base.path_.find_first_not_of("/\\", b_end + 1);
+			b = {b_pos, base.path_.substr(b_pos)};
+		else
+			b = {b_pos, base.path_.substr(b_pos, b_end - b_pos)};
 	}
 
-	if (b_N < 0)
-		return Path();
-	if (b_N == 0
-		&& (a_pos == std::string::npos
-			|| a_pos == path_.length()
-			|| a_end == a_pos + 1))
-	{
-		return Path(".");
+	while (a.first != std::string::npos && b.first != std::string::npos && a.second == b.second) {
+		a = next_element(*this, a.first);
+		b = next_element(base, b.first);
 	}
-	std::string p;
-	if (b_N > 0)
-		p = "..";
-	for (auto i = b_N - 1; i > 0; --i)
-		p += "/..";
-	if (!p.empty() && a_pos < path_.length())
-		p += '/';
-	if (a_pos != std::string::npos)
-		p.append(path_, a_pos, std::string::npos);
-	return Path(p);
+
+	if (a.first == std::string::npos && b.first == std::string::npos)
+		return Path(".");
+
+	int N = 0;
+	while (b.first != std::string::npos) {
+		if (b.second == "..")
+			--N;
+		else if (b.second != ".")
+			++N;
+		b = next_element(base, b.first);
+	}
+
+	if (N < 0)
+		return Path();
+
+	if (N == 0 && (a.first == std::string::npos || a.second.empty()))
+		return Path(".");
+
+	Path q;
+	while (N > 0) {
+		q /= Path("..");
+		--N;
+	}
+
+	if (a.first != std::string::npos && !a.second.empty())
+		q /= path_.substr(a.first);
+
+	return q;
 }
 
 filesystem::Path filesystem::Path::relative_to(const Path& base) const
