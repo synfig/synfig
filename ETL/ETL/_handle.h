@@ -149,7 +149,7 @@ public:
 	}
 
 	//! Handle is released on deletion
-	~handle() { detach(); }
+	~handle() { reset(); }
 
 	//! Assignment operator
 	handle<value_type> &
@@ -160,7 +160,7 @@ public:
 		// add reference before detach
 		pointer xobj(x.get());
 		if(xobj) xobj->ref();
-		detach();
+		reset();
 		obj=xobj;
 		return *this;
 	}
@@ -178,7 +178,7 @@ public:
 	//! Handle detach procedure
 	/*! unref()'s the object and sets the internal object pointer to \c nullptr */
 	void
-	detach()
+	reset()
 	{
 		pointer xobj(obj);
 		obj = nullptr;
@@ -190,8 +190,6 @@ public:
 			delete xobj;
 #endif
 	}
-
-	void reset() { detach(); }
 
 	bool empty()const { return obj==0; }
 
@@ -406,7 +404,7 @@ public:
 	}
 
 	//! Handle is released on deletion
-	~rhandle() { detach(); }
+	~rhandle() { reset(); }
 
 	//! Assignment operator
 	rhandle<value_type> &
@@ -415,7 +413,7 @@ public:
 		if(x.get()==obj)
 			return *this;
 
-		detach();
+		reset();
 
 		obj=x.get();
 		if(obj)
@@ -432,7 +430,7 @@ public:
 		if(x.get()==obj)
 			return *this;
 
-		detach();
+		reset();
 
 		obj=x.get();
 		if(obj)
@@ -449,7 +447,7 @@ public:
 		if(x==obj)
 			return *this;
 
-		detach();
+		reset();
 
 		obj=x;
 		if(obj)
@@ -463,14 +461,12 @@ public:
 	//! Handle release procedure
 	/*! unref()'s the object and sets the internal object pointer to \c nullptr */
 	void
-	detach()
+	reset()
 	{
 		if(obj)del_from_rlist();
-		handle<value_type>::detach();
+		handle<value_type>::reset();
 		obj = nullptr;
 	}
-
-	void reset() { detach(); }
 
 	//! Creates a new instance of a T object and puts it in the handle.
 	/*! Uses the default constructor */
@@ -608,10 +604,10 @@ public:
 	}
 
 	//! Handle release procedure
-	void detach() { obj=0;	}
-
-
-	void reset() { detach(); }
+	void reset()
+	{
+		obj = nullptr;
+	}
 
 	bool empty()const { return obj==0; }
 

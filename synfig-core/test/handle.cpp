@@ -300,43 +300,43 @@ empty_handle_is_not_unique()
 
 
 void
-handle_detach_decreases_refcount()
+handle_reset_decreases_refcount()
 {
 	BasicSharedObject* real_obj = new BasicSharedObject();
 
 	BasicSharedObject::Handle obj1(real_obj);
 	BasicSharedObject::Handle obj2(real_obj);
 
-	obj2.detach();
+	obj2.reset();
 	ASSERT_EQUAL(1, real_obj->count());
 }
 
 void
-handle_detach_makes_itself_empty()
+handle_reset_makes_itself_empty()
 {
 	BasicSharedObject* real_obj = new BasicSharedObject();
 
 	BasicSharedObject::Handle obj1(real_obj);
 	BasicSharedObject::Handle obj2(real_obj);
 
-	obj2.detach();
+	obj2.reset();
 	ASSERT(obj2.empty());
 	ASSERT_FALSE(obj1.empty());
-	obj1.detach();
+	obj1.reset();
 	ASSERT(obj1.empty());
 }
 
 void
-handle_detach_an_already_empty_handle_does_nothing()
+handle_reset_an_already_empty_handle_does_nothing()
 {
 	BasicSharedObject::Handle obj1(new BasicSharedObject());
-	obj1.detach();
+	obj1.reset();
 	ASSERT(obj1.empty());
-	obj1.detach();
+	obj1.reset();
 	ASSERT(obj1.empty());
 
 	BasicSharedObject::Handle obj2;
-	obj2.detach();
+	obj2.reset();
 	ASSERT(obj2.empty());
 }
 
@@ -682,7 +682,7 @@ empty_loose_handle_has_refcount_zero()
 }
 
 void
-loose_handle_detach_does_not_decrease_refcount()
+loose_handle_reset_does_not_decrease_refcount()
 {
 	BasicSharedObject* real_obj = new BasicSharedObject();
 	DeleteGuard<BasicSharedObject> guard(real_obj);
@@ -690,12 +690,12 @@ loose_handle_detach_does_not_decrease_refcount()
 	BasicSharedObject::LooseHandle obj1(real_obj);
 	BasicSharedObject::LooseHandle obj2(real_obj);
 
-	obj2.detach();
+	obj2.reset();
 	ASSERT_EQUAL(0, real_obj->count());
 }
 
 void
-loose_handle_detach_makes_itself_empty()
+loose_handle_reset_makes_itself_empty()
 {
 	BasicSharedObject* real_obj = new BasicSharedObject();
 	DeleteGuard<BasicSharedObject> guard(real_obj);
@@ -703,27 +703,27 @@ loose_handle_detach_makes_itself_empty()
 	BasicSharedObject::LooseHandle obj1(real_obj);
 	BasicSharedObject::LooseHandle obj2(real_obj);
 
-	obj2.detach();
+	obj2.reset();
 	ASSERT(obj2.empty());
 	ASSERT_FALSE(obj1.empty());
-	obj1.detach();
+	obj1.reset();
 	ASSERT(obj1.empty());
 }
 
 void
-loose_handle_detach_an_already_empty_loose_handle_does_nothing()
+loose_handle_reset_an_already_empty_loose_handle_does_nothing()
 {
 	BasicSharedObject* real_obj = new BasicSharedObject();
 	DeleteGuard<BasicSharedObject> guard(real_obj);
 
 	BasicSharedObject::LooseHandle obj1(real_obj);
-	obj1.detach();
+	obj1.reset();
 	ASSERT(obj1.empty());
-	obj1.detach();
+	obj1.reset();
 	ASSERT(obj1.empty());
 
 	BasicSharedObject::LooseHandle obj2;
-	obj2.detach();
+	obj2.reset();
 	ASSERT(obj2.empty());
 }
 
@@ -1161,8 +1161,8 @@ rhandle_general_use_test()
 
 
 	my_list.clear();
-	obj.detach();
-	new_obj.detach();
+	obj.reset();
+	new_obj.reset();
 
 	ASSERT_EQUAL(0, MyTestObj::instance_count);
 
@@ -1319,9 +1319,9 @@ int main()
 	TEST_FUNCTION(handle_destructor_deletes_the_object_if_no_more_references);
 	TEST_FUNCTION(empty_handle_has_refcount_zero);
 	TEST_FUNCTION(empty_handle_is_not_unique);
-	TEST_FUNCTION(handle_detach_decreases_refcount);
-	TEST_FUNCTION(handle_detach_makes_itself_empty);
-	TEST_FUNCTION(handle_detach_an_already_empty_handle_does_nothing);
+	TEST_FUNCTION(handle_reset_decreases_refcount);
+	TEST_FUNCTION(handle_reset_makes_itself_empty);
+	TEST_FUNCTION(handle_reset_an_already_empty_handle_does_nothing);
 	TEST_FUNCTION(handle_self_assignment_does_not_increase_refcount);
 	TEST_FUNCTION(handle_assignment_increases_refcount);
 	TEST_FUNCTION(handle_assignment_stores_the_same_object);
@@ -1348,9 +1348,9 @@ int main()
 	TEST_FUNCTION(loose_handle_constructor_stores_the_same_object);
 	TEST_FUNCTION(loose_handle_destructor_does_not_delete_the_object_if_no_more_references);
 	TEST_FUNCTION(empty_loose_handle_has_refcount_zero);
-	TEST_FUNCTION(loose_handle_detach_does_not_decrease_refcount);
-	TEST_FUNCTION(loose_handle_detach_makes_itself_empty);
-	TEST_FUNCTION(loose_handle_detach_an_already_empty_loose_handle_does_nothing);
+	TEST_FUNCTION(loose_handle_reset_does_not_decrease_refcount);
+	TEST_FUNCTION(loose_handle_reset_makes_itself_empty);
+	TEST_FUNCTION(loose_handle_reset_an_already_empty_loose_handle_does_nothing);
 	TEST_FUNCTION(loose_handle_self_assignment_does_not_increase_refcount);
 	TEST_FUNCTION(loose_handle_assignment_does_not_increase_refcount);
 	TEST_FUNCTION(loose_handle_assignment_stores_the_same_object);
