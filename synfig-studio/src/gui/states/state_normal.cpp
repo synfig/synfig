@@ -304,18 +304,37 @@ DuckDrag_Combo::get_selected_ducks(const Duckmatic& duckmatic) const
 {
 	if(duck_independent_move){
 
-		DuckList selected_ducks = duckmatic.get_selected_movement_ducks();
-		DuckList position_duck;
-		// if position ducks are present we only need them for movement
-		for(Duck::Handle duck : selected_ducks){
-			if (duck->get_type() == Duck::TYPE_POSITION){
-				position_duck.push_back(duck);
+		if (rotate){
+			//we only need the vertex ducks for rotation of region layers
+			//as for other non-region layers it looks like so far rotate
+			//functionality isn't implemented in them.
+			DuckList selected_ducks = duckmatic.get_selected_movement_ducks();
+			DuckList vertex_ducks;
+			for(Duck::Handle duck : selected_ducks){
+				if (duck->get_type() == Duck::TYPE_VERTEX){
+					vertex_ducks.push_back(duck);
+				}
 			}
+			if (vertex_ducks.empty())
+				return selected_ducks;
+			else
+				return vertex_ducks;
+
+		} else {
+
+			DuckList selected_ducks = duckmatic.get_selected_movement_ducks();
+			DuckList position_duck;
+			// if position ducks are present we only need them for movement
+			for(Duck::Handle duck : selected_ducks){
+				if (duck->get_type() == Duck::TYPE_POSITION){
+					position_duck.push_back(duck);
+				}
+			}
+			if (position_duck.empty())
+				return selected_ducks;
+			else
+				return position_duck;
 		}
-		if (position_duck.empty())
-			return selected_ducks;
-		else
-			return position_duck;
 	}
 
 	return duckmatic.get_selected_ducks();
@@ -339,6 +358,15 @@ DuckDrag_Combo::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& offs
 {
 	is_moving = false;
 	last_move=Vector(1,1);
+
+	if (duck_independent_move){
+		if (duckmatic->find_duck(offset, 0.1) && duckmatic->find_duck(offset)->get_type() == Duck::TYPE_SELECT_ROTATE){
+			rotate = true;
+			move_only = false;
+		} else {
+			rotate = false;
+		}
+	}
 
 	const DuckList selected_ducks(get_selected_ducks(*duckmatic));
 	DuckList::const_iterator iter;
@@ -520,7 +548,7 @@ DuckDrag_Combo::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 
 	if (is_moving && duck_independent_move)
 		duckmatic->signal_edited_selected_movement_ducks(true);
-	else
+	else if (is_moving)
 		duckmatic->signal_edited_selected_ducks(true);
 
 	// then patch up the tangents for the vertices we've moved

@@ -56,36 +56,6 @@ public:
 
 extern StateRotate state_rotate;
 
-class DuckDrag_Rotate : public DuckDrag_Base
-{
-	friend class DuckDrag_NonVertex_Rotate;
-
-	synfig::Vector last_rotate;
-	synfig::Vector drag_offset;
-	synfig::Vector center;
-	synfig::Vector snap;
-
-	synfig::Angle original_angle;
-	synfig::Real original_mag;
-
-	std::vector<synfig::Vector> positions;
-
-
-	bool bad_drag;
-	bool move_only;
-
-public:
-	etl::handle<CanvasView> canvas_view_;
-	bool use_magnitude;
-	DuckDrag_Rotate();
-	void begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& begin);
-	bool end_duck_drag(Duckmatic* duckmatic);
-	void duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector);
-
-	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
-};
-
-
 }; // END of namespace studio
 
 /* === E N D =============================================================== */
