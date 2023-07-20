@@ -286,73 +286,104 @@ filesystem::Path::lexically_relative(const Path& base) const
 		return Path();
 	}
 
-	auto a_pos = get_relative_path_pos();
-	auto b_pos = base.get_relative_path_pos();
+	class simple_iterator {
+		const Path& path_;
+		std::size_t pos_;
+		std::string element_;
 
-	auto next_element = [](const filesystem::Path& p, std::size_t pos) -> std::pair<std::size_t, std::string> {
-		if (pos == std::string::npos || pos >= p.path_.length())
-			return {std::string::npos, ""};
+	public:
+		explicit simple_iterator(const Path& p)
+			: path_(p), pos_(p.get_relative_path_pos())
+		{
+			if (p.empty()) {
+				pos_ = std::string::npos;
+				return;
+			}
 
-		// root path element ignored
+			element_ = fetch_current_element(pos_);
+		}
 
-		auto end = p.path_.find_first_of("/\\", pos);
-		if (end == std::string::npos)
-			return {std::string::npos, ""};
+		simple_iterator& operator++()
+		{
+			// at end already?
+			if (pos_ == std::string::npos || pos_ >= path_.path_.length()) {
+				pos_ = std::string::npos;
+				element_.clear();
+				return *this;
+			}
 
-		auto next = p.path_.find_first_not_of("/\\", end + 1);
-		if (next == std::string::npos)
-			return {p.path_.length(), ""};
+			// note: root path element ignored
 
-		end = p.path_.find_first_of("/\\", next);
-		if (end == std::string::npos)
-			return {next, p.path_.substr(next)};
+			// skip current element string
+			auto end = pos_ + element_.length();
+			if (end >= path_.path_.length()) {
+				pos_ = std::string::npos;
+				element_.clear();
+				return *this;
+			}
 
-		return {next, p.path_.substr(next, end - next)};
+			// search for next element string beginning
+			auto next = path_.path_.find_first_not_of("/\\", end + 1);
+			if (next == std::string::npos) {
+				pos_ = path_.path_.length();
+				element_.clear();
+				return *this;
+			}
+
+			element_ = fetch_current_element(next);
+			pos_ = next;
+
+			return *this;
+		}
+
+		const std::string& operator*()
+		{
+			return element_;
+		}
+
+		const std::string* operator->()
+		{
+			return &element_;
+		}
+
+		bool is_end() const
+		{
+			return element_.empty() && pos_ == std::string::npos;
+		}
+
+	private:
+		std::string fetch_current_element(std::size_t pos)
+		{
+			if (pos == std::string::npos)
+				return "";
+			auto end = path_.path_.find_first_of("/\\", pos);
+			auto length = end == std::string::npos ? end : (end - pos);
+			return path_.path_.substr(pos, length);
+		}
 	};
 
-	std::pair<std::size_t, std::string> a;
-	if (path_.empty()) {
-		a = {std::string::npos, ""};
-	} else {
-		auto a_end = path_.find_first_of("/\\", a_pos);
-		if (a_end == std::string::npos)
-			a = {a_pos, path_.substr(a_pos)};
-		else
-			a = {a_pos, path_.substr(a_pos, a_end - a_pos)};
+	simple_iterator a(*this), b(base);
+	while (!a.is_end() && !b.is_end() && *a == *b) {
+		++a;
+		++b;
 	}
 
-	std::pair<std::size_t, std::string> b;
-	if (base.path_.empty()) {
-		b = {std::string::npos, ""};
-	} else {
-		auto b_end = base.path_.find_first_of("/\\", b_pos);
-		if (b_end == std::string::npos)
-			b = {b_pos, base.path_.substr(b_pos)};
-		else
-			b = {b_pos, base.path_.substr(b_pos, b_end - b_pos)};
-	}
-
-	while (a.first != std::string::npos && b.first != std::string::npos && a.second == b.second) {
-		a = next_element(*this, a.first);
-		b = next_element(base, b.first);
-	}
-
-	if (a.first == std::string::npos && b.first == std::string::npos)
+	if (a.is_end() && b.is_end())
 		return Path(".");
 
 	int N = 0;
-	while (b.first != std::string::npos) {
-		if (b.second == "..")
+	while (!b.is_end()) {
+		if (*b == "..")
 			--N;
-		else if (b.second != ".")
+		else if (*b != ".")
 			++N;
-		b = next_element(base, b.first);
+		++b;
 	}
 
 	if (N < 0)
 		return Path();
 
-	if (N == 0 && (a.first == std::string::npos || a.second.empty()))
+	if (N == 0 && (a.is_end() || a->empty()))
 		return Path(".");
 
 	Path q;
@@ -361,8 +392,10 @@ filesystem::Path::lexically_relative(const Path& base) const
 		--N;
 	}
 
-	if (a.first != std::string::npos && !a.second.empty())
-		q /= path_.substr(a.first);
+	while (!a.is_end()) {
+		q /= *a;
+		++a;
+	}
 
 	return q;
 }
