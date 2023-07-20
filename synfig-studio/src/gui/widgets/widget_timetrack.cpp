@@ -961,7 +961,7 @@ bool Widget_Timetrack::fetch_waypoints(const WaypointItem &wi, std::set<synfig::
 		if (node)
 			synfig::waypoint_collect(waypoint_set, wi.time_point.get_time(), node, true);
 
-		return node;
+		return static_cast<bool>(node);
 	} catch (std::out_of_range& ex) {
 		synfig::error(_("Timetrack: trying to fetch waypoints of not-mapped parameter: %s [%f]"), wi.path.to_string().c_str(), wi.time_point.get_time());
 	} catch (...) {

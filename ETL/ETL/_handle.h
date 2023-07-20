@@ -221,7 +221,7 @@ public:
 		{ assert(obj); return obj; }
 
 	//! More explicit bool cast
-	operator bool()const
+	explicit operator bool() const noexcept
 		{ return obj != nullptr; }
 
 	operator handle<const value_type>()const
@@ -253,10 +253,6 @@ public:
 
 	//! Returns pointer to the object that is being wrapped
 	pointer get()const { return obj; }
-
-	bool
-	operator!()const
-		{ return !obj; }
 
 	//! static_cast<> overload -- Useful for implicit casts
 	template <class U>
@@ -649,12 +645,8 @@ public:
 	pointer get()const { return obj; }
 
 	//! More explicit bool cast
-	operator bool()const
-		{ return obj!=0; }
-
-	bool
-	operator!()const
-		{ return !obj; }
+	explicit operator bool() const noexcept
+		{ return obj != nullptr; }
 
 	template<typename U>
 	bool type_is() const
