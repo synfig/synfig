@@ -127,9 +127,6 @@ public:
 	typedef int size_type;
 
 protected:
-#ifdef _DEBUG
-public:
-#endif
 	value_type *obj;		//!< Pointer to object
 
 public:
@@ -153,25 +150,6 @@ public:
 
 	//! Handle is released on deletion
 	~handle() { detach(); }
-
-	//! Template Assignment operator
-	/*! \note This class may not be necessary, and may be removed
-	**		at some point in the future.
-	*/
-	/*
-	template <class U> handle<value_type> &
-	operator=(const handle<U> &x)
-	{
-		if(x.get()==obj)
-			return *this;
-
-		detach();
-
-		obj=static_cast<value_type*>(x.get());
-		if(obj)obj->ref();
-		return *this;
-	}
-	*/
 
 	//! Assignment operator
 	handle<value_type> &
@@ -212,9 +190,6 @@ public:
 			delete xobj;
 #endif
 	}
-
-	// This will be reintroduced with a new function
-	//void release() { detach(); }
 
 	void reset() { detach(); }
 
@@ -356,18 +331,12 @@ public:
 	typedef int count_type;
 	typedef int size_type;
 
-
 	using handle<value_type>::count;
 	using handle<value_type>::unique;
 	using handle<value_type>::operator bool;
 	using handle<value_type>::get;
 	using handle<value_type>::operator*;
 	using handle<value_type>::operator->;
-
-	/*
-	operator const handle<value_type>&()const
-	{ return *this; }
-	*/
 
 private:
 	using handle<value_type>::obj;
@@ -377,8 +346,6 @@ private:
 
 	void add_to_rlist()
 	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
-
 		assert(obj);
 		obj->rref();
 
@@ -398,7 +365,6 @@ private:
 
 	void del_from_rlist()
 	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		assert(obj);
 		obj->runref();
 
@@ -429,54 +395,27 @@ public:
 	//! Constructor that constructs from a pointer to new object
 	rhandle(pointer x):handle<T>(x)
 	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		if(obj)add_to_rlist();
 	}
 
 	rhandle(const handle<value_type> &x):handle<T>(x)
 	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		if(obj)add_to_rlist();
 	}
 
 	//! Default copy constructor
 	rhandle(const rhandle<value_type> &x):handle<T>(x)
 	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		if(obj)add_to_rlist();
 	}
 
 	//! Handle is released on deletion
 	~rhandle() { detach(); }
 
-	//! Template Assignment operator
-	/*! \note This class may not be necessary, and may be removed
-	**		at some point in the future.
-	*/
-	/*
-	template <class U> const handle<value_type> &
-	operator=(const handle<U> &x)
-	{
-		if(x.get()==obj)
-			return *this;
-
-		detach();
-
-		obj=static_cast<value_type*>(x.get());
-		if(obj)
-		{
-			obj->ref();
-			add_to_rlist();
-		}
-		return *this;
-	}
-	*/
-
 	//! Assignment operator
 	rhandle<value_type> &
 	operator=(const rhandle<value_type> &x)
 	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		if(x.get()==obj)
 			return *this;
 
@@ -494,7 +433,6 @@ public:
 	rhandle<value_type>&
 	operator=(const handle<value_type> &x)
 	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		if(x.get()==obj)
 			return *this;
 
@@ -512,7 +450,6 @@ public:
 	rhandle<value_type>&
 	operator=(value_type* x)
 	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		if(x==obj)
 			return *this;
 
@@ -532,14 +469,10 @@ public:
 	void
 	detach()
 	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		if(obj)del_from_rlist();
 		handle<value_type>::detach();
 		obj = nullptr;
 	}
-
-	// This will be reintroduced with a new function
-	//void release() { detach(); }
 
 	void reset() { detach(); }
 
@@ -551,7 +484,6 @@ public:
 	count_type
 	rcount()const
 	{
-//		value_type*const& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		return obj?obj->rcount():0;
 	}
 
@@ -559,14 +491,12 @@ public:
 	bool
 	runique()const
 	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		assert(obj); return obj->front_==obj->back_;
 	}
 
 	//! \writeme
 	int replace(const handle<value_type> &x)
 	{
-//		value_type*& obj(handle<T>::obj); // Required to keep gcc 3.4.2 from barfing
 		assert(obj);
 		assert(x.get()!=obj);
 
@@ -602,15 +532,6 @@ public:
 	/*!	\warning not yet implemented. \writeme */
 	handle<value_type> &
 	swap(handle<value_type> &x);
-	/*
-	{
-		assert(0);
-		pointer ptr=x.obj;
-		x.obj=obj;
-		obj=ptr;
-		return *this;
-	}
-	*/
 }; // END of template class rhandle
 
 
@@ -634,9 +555,6 @@ public:
 	typedef int size_type;
 
 protected:
-#ifdef _DEBUG
-public:
-#endif
 	value_type *obj;		//!< Pointer to object
 
 public:
@@ -696,8 +614,6 @@ public:
 	//! Handle release procedure
 	void detach() { obj=0;	}
 
-	// This will be reintroduced with a new function
-	//void release() { detach(); }
 
 	void reset() { detach(); }
 
@@ -718,11 +634,6 @@ public:
 	pointer
 	operator->()const
 		{ assert(obj); return obj; }
-
-	//! static_cast<> overload
-	//template <class U>
-	//operator loose_handle<U>()const
-	//{ return loose_handle<U>(static_cast<U*>(obj)); }
 
 	//! static_cast<> overload (for consts)
 	operator loose_handle<const value_type>()const
