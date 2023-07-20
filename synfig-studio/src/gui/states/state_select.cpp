@@ -188,7 +188,6 @@ StateSelect_Context::StateSelect_Context(CanvasView* canvas_view):
 	duck_dragger_(new DuckDrag_Select())
 {
 	duck_dragger_->canvas_view_=get_canvas_view();
-	duck_dragger_rotate_->canvas_view_=get_canvas_view();
 
 	// Toolbox widgets
 	title_label.set_label(_("Select Tool"));
@@ -242,9 +241,6 @@ StateSelect_Context::StateSelect_Context(CanvasView* canvas_view):
 	get_work_area()->set_allow_layer_clicks(true);
 	//test rotate for now dont forget to return it back
 	get_work_area()->set_duck_dragger(duck_dragger_);
-
-	//make a refresh scale flag thing instead of this
-	duck_dragger_rotate_->use_magnitude=false;
 
 	App::dock_toolbox->refresh();
 
@@ -406,164 +402,4 @@ StateSelect_Context::event_layer_click(const Smach::event& x)
 	default:
 		return Smach::RESULT_OK;
 	}
-}
-
-DuckDrag_NonVertex_Rotate::DuckDrag_NonVertex_Rotate()
-{
-
-}
-
-void DuckDrag_NonVertex_Rotate::begin_duck_drag(Duckmatic *duckmatic, const synfig::Vector &offset)
-{
-	last_rotate=Vector(1,1);
-
-	const DuckList selected_ducks(duckmatic->get_selected_movement_ducks());
-	DuckList::const_iterator iter;
-
-/*
-	if(duckmatic->get_selected_ducks().size()<2)
-	{
-		bad_drag=true;
-		return;
-	}
-*/
-	bad_drag=false;
-
-		drag_offset=offset;
-
-		//snap=drag_offset-duckmatic->snap_point_to_grid(drag_offset);
-		//snap=offset-drag_offset;
-		snap=Vector(0,0);
-
-	// Calculate center
-	Point vmin(100000000,100000000);
-	Point vmax(-100000000,-100000000);
-	//std::set<etl::handle<Duck> >::iterator iter;
-	positions.clear();
-	int i;
-	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
-	{
-		std::cout<<"iterating"<<std::endl;
-		//we dont want position duck to be taken into
-		//account as usually it can be far and gives
-		//an unexpected center of rotation
-		if ((*iter)->get_type()!=Duck::TYPE_VERTEX)
-			return;
-		Point p((*iter)->get_trans_point());
-		vmin[0]=std::min(vmin[0],p[0]);
-		vmin[1]=std::min(vmin[1],p[1]);
-		vmax[0]=std::max(vmax[0],p[0]);
-		vmax[1]=std::max(vmax[1],p[1]);
-		positions.push_back(p);
-	}
-	center=(vmin+vmax)*0.5;
-	if((vmin-vmax).mag()<=EPSILON)
-		move_only=true;
-	else
-		move_only=false;
-
-
-	synfig::Vector vect(offset-center);
-	original_angle=Angle::tan(vect[1],vect[0]);
-	original_mag=vect.mag();
-
-}
-
-bool DuckDrag_NonVertex_Rotate::end_duck_drag(Duckmatic *duckmatic)
-{
-	if(bad_drag)return false;
-		if(move_only)
-		{
-			synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Move Handle"));
-			duckmatic->signal_edited_selected_movement_ducks();
-			return true;
-		}
-
-		synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Rotate Handle"));
-
-		if((last_rotate-Vector(1,1)).mag()>0.0001)
-		{
-			duckmatic->signal_edited_selected_movement_ducks();
-			return true;
-		}
-		else
-		{
-	//		duckmatic->signal_user_click_selected_ducks(0);
-			return false;
-		}
-}
-
-void DuckDrag_NonVertex_Rotate::duck_drag(Duckmatic *duckmatic, const synfig::Vector &vector)
-{
-
-	if(bad_drag)
-		return;
-
-	//std::set<etl::handle<Duck> >::iterator iter;
-	synfig::Vector vect(duckmatic->snap_point_to_grid(vector)-center+snap);
-
-	const DuckList selected_ducks(duckmatic->get_selected_movement_ducks());
-	DuckList::const_iterator iter;
-
-	if(move_only)
-	{
-		std::cout<<"move only"<<std::endl;
-		int i;
-		for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
-		{
-			if((*iter)->get_type()!=Duck::TYPE_VERTEX&&(*iter)->get_type()!=Duck::TYPE_POSITION)continue;
-
-			Vector p(positions[i]);
-
-			p[0]+=vect[0];
-			p[1]+=vect[1];
-			(*iter)->set_trans_point(p);
-		}
-		for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
-		{
-			if(!((*iter)->get_type()!=Duck::TYPE_VERTEX&&(*iter)->get_type()!=Duck::TYPE_POSITION))continue;
-
-			Vector p(positions[i]);
-
-			p[0]+=vect[0];
-			p[1]+=vect[1];
-			(*iter)->set_trans_point(p);
-		}
-		return;
-	}
-
-	Angle::tan angle(vect[1],vect[0]);
-	angle=original_angle-angle;
-	Real mag(vect.mag()/original_mag);
-	Real sine(Angle::sin(angle).get());
-	Real cosine(Angle::cos(angle).get());
-
-	int i;
-	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
-	{
-		if((*iter)->get_type()!=Duck::TYPE_VERTEX&&(*iter)->get_type()!=Duck::TYPE_POSITION)continue;
-
-		Vector x(positions[i]-center),p;
-
-		p[0]=cosine*x[0]+sine*x[1];
-		p[1]=-sine*x[0]+cosine*x[1];
-		if(use_magnitude)p*=mag;
-		p+=center;
-		(*iter)->set_trans_point(p);
-	}
-	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
-	{
-		if(!((*iter)->get_type()!=Duck::TYPE_VERTEX&&(*iter)->get_type()!=Duck::TYPE_POSITION))continue;
-
-		Vector x(positions[i]-center),p;
-
-		p[0]=cosine*x[0]+sine*x[1];
-		p[1]=-sine*x[0]+cosine*x[1];
-		if(use_magnitude)p*=mag;
-		p+=center;
-		(*iter)->set_trans_point(p);
-	}
-
-	last_rotate=vect;
-	//snap=Vector(0,0);
 }
