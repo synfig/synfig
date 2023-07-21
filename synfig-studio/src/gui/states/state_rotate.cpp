@@ -119,6 +119,8 @@ class studio::StateRotate_Context : public sigc::trackable
 	Gtk::CheckButton scale_checkbutton;
 	Gtk::Box scale_box;
 
+	Gtk::Label constrain_label;
+
 	bool shift_pressed;
 
 	void set_shift_pressed(bool value);
@@ -226,11 +228,17 @@ StateRotate_Context::StateRotate_Context(CanvasView* canvas_view):
 	scale_box.pack_start(scale_label, true, true, 0);
 	scale_box.pack_start(scale_checkbutton, false, false, 0);
 
+	constrain_label.set_label(_("Shift to constrain"));
+	constrain_label.set_halign(Gtk::ALIGN_START);
+	constrain_label.set_valign(Gtk::ALIGN_CENTER);
+
 	// Toolbox layout
 	options_grid.attach(title_label,
 		0, 0, 2, 1);
 	options_grid.attach(scale_box,
 		0, 1, 2, 1);
+	options_grid.attach(constrain_label,
+		0, 2, 2, 1);
 
 	scale_checkbutton.signal_toggled().connect(sigc::mem_fun(*this,&StateRotate_Context::refresh_scale_flag));
 
