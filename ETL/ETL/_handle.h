@@ -70,8 +70,9 @@ private:
 public:
 	shared_object(const shared_object&) = delete;
 	shared_object& operator= (const shared_object&) = delete;
+
 protected:
-	shared_object():refcount(0) { }
+	shared_object() noexcept : refcount(0) { }
 
 #ifdef ETL_SELF_DELETING_SHARED_OBJECT
 	virtual ~shared_object() { }
@@ -80,7 +81,7 @@ protected:
 #endif
 
 public:
-	virtual void ref()const
+	virtual void ref() const noexcept
 	{
 		++refcount;
 	}
@@ -103,7 +104,7 @@ public:
 		return (bool)(--refcount);
 	}
 
-	int use_count() const { return refcount; }
+	int use_count() const noexcept { return refcount; }
 
 }; // END of class shared_object
 
@@ -132,7 +133,7 @@ protected:
 public:
 
 	//! Default constructor - empty handle
-	handle() : obj(nullptr) {}
+	handle() noexcept : obj(nullptr) { }
 
 	//! Constructor that constructs from a pointer to new object
 	handle(pointer x):obj(x)
@@ -142,7 +143,7 @@ public:
 	}
 
 	//! Default copy constructor
-	handle(const handle<value_type> &x):obj(x.get())
+	handle(const handle<value_type>& x) noexcept : obj(x.get())
 	{
 		if(obj)
 			obj->ref();
@@ -152,8 +153,8 @@ public:
 	~handle() { reset(); }
 
 	//! Assignment operator
-	handle<value_type> &
-	operator=(const handle<value_type> &x)
+	handle<value_type>&
+	operator=(const handle<value_type>& x) noexcept
 	{
 		if(x.get()==obj)
 			return *this;
@@ -166,8 +167,8 @@ public:
 	}
 
 	//! Swaps the values of two handles without reference counts
-	handle<value_type> &
-	swap(handle<value_type> &x)
+	handle<value_type>&
+	swap(handle<value_type>& x) noexcept
 	{
 		pointer ptr=x.obj;
 		x.obj=obj;
@@ -178,7 +179,7 @@ public:
 	//! Handle detach procedure
 	/*! unref()'s the object and sets the internal object pointer to \c nullptr */
 	void
-	reset()
+	reset() noexcept
 	{
 		pointer xobj(obj);
 		obj = nullptr;
@@ -191,7 +192,7 @@ public:
 #endif
 	}
 
-	bool empty()const { return obj==0; }
+	bool empty() const noexcept { return !obj; }
 
 	//! Creates a new instance of a T object and puts it in the handle.
 	/*! Uses the default constructor */
@@ -202,20 +203,20 @@ public:
 
 	//! Returns number of instances
 	count_type
-	use_count() const
+	use_count() const noexcept
 		{ return obj ? obj->use_count() : 0; }
 
 	//! Returns true if there is only one instance of the object
 	bool
-	unique() const
+	unique() const noexcept
 		{ /* assert(obj); */ return use_count() == 1; }
 
 	reference
-	operator*()const
+	operator*() const noexcept
 		{ assert(obj); return *obj; }
 
 	pointer
-	operator->()const
+	operator->() const noexcept
 		{ assert(obj); return obj; }
 
 	//! More explicit bool cast
@@ -250,7 +251,7 @@ public:
 	template <class U> static handle<T> cast_reinterpret(U* x);
 
 	//! Returns pointer to the object that is being wrapped
-	pointer get()const { return obj; }
+	pointer get() const noexcept { return obj; }
 
 	//! static_cast<> overload -- Useful for implicit casts
 	template <class U>
@@ -286,7 +287,9 @@ public:
 	void *back_;
 
 protected:
-	rshared_object():rrefcount(0),front_(0),back_(0) { }
+	rshared_object() noexcept
+		: rrefcount(0), front_(nullptr), back_(nullptr)
+	{ }
 
 public:
 	rshared_object(const rshared_object &other) = delete;
@@ -384,7 +387,7 @@ private:
 public:
 
 	//! Default constructor - empty handle
-	rhandle() {}
+	rhandle() noexcept {}
 
 	//! Constructor that constructs from a pointer to new object
 	rhandle(pointer x):handle<T>(x)
@@ -461,7 +464,7 @@ public:
 	//! Handle release procedure
 	/*! unref()'s the object and sets the internal object pointer to \c nullptr */
 	void
-	reset()
+	reset() noexcept
 	{
 		if(obj)del_from_rlist();
 		handle<value_type>::reset();
@@ -474,14 +477,14 @@ public:
 
 	//! Returns number of reversible instances
 	count_type
-	rcount()const
+	rcount() const noexcept
 	{
 		return obj?obj->rcount():0;
 	}
 
 	//! Returns true if there is only one instance of the object
 	bool
-	runique()const
+	runique() const noexcept
 	{
 		assert(obj); return obj->front_==obj->back_;
 	}
@@ -552,18 +555,18 @@ protected:
 public:
 
 	//! Default constructor - empty handle
-	loose_handle():obj(0) {}
+	loose_handle() noexcept : obj(nullptr) { }
 
 	//! Constructor that constructs from a pointer to new object
-	loose_handle(pointer x):obj(x) { }
+	loose_handle(pointer x) noexcept : obj(x) { }
 
 	//! Default copy constructor
-	loose_handle(const loose_handle<value_type> &x):obj(x.get()) { }
+	loose_handle(const loose_handle<value_type>& x) noexcept : obj(x.get()) { }
 
-	loose_handle(const handle<value_type> &x):obj(x.get()) { }
+	loose_handle(const handle<value_type> &x) noexcept : obj(x.get()) { }
 
-	template <class U> const loose_handle<value_type> &
-	operator=(const handle<U> &x)
+	template <class U> const loose_handle<value_type>&
+	operator=(const handle<U>& x) noexcept
 	{
 		if(x.get()==obj)
 			return *this;
@@ -572,8 +575,8 @@ public:
 		return *this;
 	}
 
-	template <class U> const loose_handle<value_type> &
-	operator=(const loose_handle<U> &x)
+	template <class U> const loose_handle<value_type>&
+	operator=(const loose_handle<U>& x) noexcept
 	{
 		if(x.get()==obj)
 			return *this;
@@ -583,8 +586,8 @@ public:
 	}
 
 	//! Assignment operator
-	const loose_handle<value_type> &
-	operator=(const loose_handle<value_type> &x)
+	const loose_handle<value_type>&
+	operator=(const loose_handle<value_type>& x) noexcept
 	{
 		if(x.get()==obj)
 			return *this;
@@ -594,8 +597,8 @@ public:
 	}
 
 	//! Swaps the values of two handles without reference counts
-	loose_handle<value_type> &
-	swap(loose_handle<value_type> &x)
+	loose_handle<value_type>&
+	swap(loose_handle<value_type>& x) noexcept
 	{
 		pointer ptr=x.obj;
 		x.obj=obj;
@@ -604,27 +607,27 @@ public:
 	}
 
 	//! Handle release procedure
-	void reset()
+	void reset() noexcept
 	{
 		obj = nullptr;
 	}
 
-	bool empty()const { return obj==0; }
+	bool empty() const noexcept { return !obj; }
 
 	//! Returns a constant handle to our object
 	loose_handle<const value_type> constant()const { return *this; }
 
 	//! Returns number of instances
 	count_type
-	use_count() const
+	use_count() const noexcept
 		{ return obj ? obj->use_count() : 0; }
 
 	reference
-	operator*()const
+	operator*() const noexcept
 		{ assert(obj); return *obj; }
 
 	pointer
-	operator->()const
+	operator->() const noexcept
 		{ assert(obj); return obj; }
 
 	//! static_cast<> overload (for consts)
@@ -638,7 +641,7 @@ public:
 	{ return rhandle<value_type>(obj); }
 
 	//! Returns pointer to the object that is being wrapped
-	pointer get()const { return obj; }
+	pointer get() const noexcept { return obj; }
 
 	//! More explicit bool cast
 	explicit operator bool() const noexcept

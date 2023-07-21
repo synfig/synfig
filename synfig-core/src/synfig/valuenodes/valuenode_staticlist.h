@@ -119,8 +119,8 @@ public:
 //	void insert_time(const Time& location, const Time& delta);
 
 #ifdef _DEBUG
-	virtual void ref() const override;
-	virtual bool unref() const override;
+	void ref() const noexcept override;
+	bool unref() const override;
 #endif
 
 }; // END of class ValueNode_StaticList
