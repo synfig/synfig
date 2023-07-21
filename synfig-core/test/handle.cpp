@@ -61,21 +61,21 @@ struct MyTestObj : public etl::rshared_object
 
 struct MyOtherTestObj : public MyTestObj
 {
-	static int instance_count;
+	static int other_instance_count;
 	explicit MyOtherTestObj(int my_id=0):MyTestObj(my_id)
 	{
-		instance_count++;
+		other_instance_count++;
 	}
 	virtual ~MyOtherTestObj()
 	{
-		if(instance_count==0)
+		if (other_instance_count == 0)
 			printf("Error, instance count is going past zero!\n");
-		instance_count--;
+		other_instance_count--;
 	}
 };
 
 int MyTestObj::instance_count=0;
-int MyOtherTestObj::instance_count=0;
+int MyOtherTestObj::other_instance_count=0;
 
 typedef etl::handle<MyTestObj> ObjHandle;
 typedef etl::rhandle<MyTestObj> RObjHandle;
@@ -1193,7 +1193,7 @@ void
 handle_inheritance_test()
 {
 	MyTestObj::instance_count = 0;
-	MyOtherTestObj::instance_count = 0;
+	MyOtherTestObj::other_instance_count = 0;
 
 	OtherObjList my_other_list;
 	int i;
@@ -1206,18 +1206,21 @@ handle_inheritance_test()
 
 	for(i=0;i<NUMBER_OF_OBJECTS;i++)
 		my_list.push_back( OtherObjHandle(new MyOtherTestObj(rand())) );
-	ASSERT_EQUAL(NUMBER_OF_OBJECTS * 2, MyOtherTestObj::instance_count);
-	ASSERT(MyTestObj::instance_count == MyOtherTestObj::instance_count);
+	ASSERT_EQUAL(NUMBER_OF_OBJECTS * 2, MyOtherTestObj::other_instance_count);
+	ASSERT(MyTestObj::instance_count == MyOtherTestObj::other_instance_count);
 
 	my_list.sort();
 	my_other_list.sort();
 	ASSERT_EQUAL(NUMBER_OF_OBJECTS * 2, MyTestObj::instance_count);
+	ASSERT(MyTestObj::instance_count == MyOtherTestObj::other_instance_count);
 
 	my_list.clear();
 	ASSERT_EQUAL(NUMBER_OF_OBJECTS, MyTestObj::instance_count);
+	ASSERT(MyTestObj::instance_count == MyOtherTestObj::other_instance_count);
 
 	my_other_list.clear();
 	ASSERT_EQUAL(0, MyTestObj::instance_count);
+	ASSERT(MyTestObj::instance_count == MyOtherTestObj::other_instance_count);
 }
 
 int test_func(etl::handle<MyTestObj> handle)
