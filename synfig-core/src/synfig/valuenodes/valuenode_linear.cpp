@@ -197,20 +197,20 @@ ValueNode_Linear::get_children_vocab_vfunc()const
 	 || type == type_real
 	 || type == type_time)
 	{
-		ret.push_back(ParamDesc(ValueBase(),"slope")
+		ret.push_back(ParamDesc("slope")
 			.set_local_name(_("Rate"))
 			.set_description(_("Value that is multiplied by the current time (in seconds)"))
 		);
 	}
 	else
 	{
-		ret.push_back(ParamDesc(ValueBase(),"slope")
+		ret.push_back(ParamDesc("slope")
 			.set_local_name(_("Slope"))
 			.set_description(_("Value that is multiplied by the current time (in seconds)"))
 		);
 	}
 
-	ret.push_back(ParamDesc(ValueBase(),"offset")
+	ret.push_back(ParamDesc("offset")
 		.set_local_name(_("Offset"))
 		.set_description(_("Returned value when the current time is zero"))
 	);

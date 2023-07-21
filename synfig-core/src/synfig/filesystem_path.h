@@ -293,6 +293,28 @@ private:
 
 void swap(synfig::filesystem::Path& lhs, synfig::filesystem::Path& rhs) noexcept;
 
+/**
+ * Returns the current path, also known as current working directory.
+ *
+ * It just calls the synfig::OS::get_current_working_directory().
+ * It is defined here for convinience and to imitate the C++17 filesystem namespace.
+ *
+ * @return the current working directory
+ */
+Path current_path();
+
+/**
+ * The absolute path of relative (or absolute) path @a p.
+ *
+ * If @a p is an absolute path, returns itself.
+ * Otherwise, resolves the rlative path p based on the current working directory.
+ * @see synfig::filesystem::current_path()
+ *
+ * @param p the path to find its absolute path version
+ * @return current_path() / p
+ */
+Path absolute(const synfig::filesystem::Path& p);
+
 inline bool operator==(const Path& lhs, const Path& rhs) noexcept
 	{ return lhs.compare(rhs) == 0; }
 

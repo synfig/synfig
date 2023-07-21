@@ -140,12 +140,12 @@ ValueNode_Exp::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"exp")
+	ret.push_back(ParamDesc("exp")
 		.set_local_name(_("Exponent"))
 		.set_description(_("The value to raise the constant 'e'"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"scale")
+	ret.push_back(ParamDesc("scale")
 		.set_local_name(_("Scale"))
 		.set_description(_("Multiplier of the resulting exponent"))
 	);

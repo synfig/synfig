@@ -117,11 +117,11 @@ Layer_Composite::get_param_vocab()const
 	//! First fills the returning vocabulary with the ancestor class
 	Layer::Vocab ret(Layer::get_param_vocab());
 	//! Now inserts the two parameters that this layer knows.
-	ret.push_back(ParamDesc(param_amount,"amount")
+	ret.push_back(ParamDesc("amount")
 		.set_local_name(_("Opacity"))
 		.set_description(_("Alpha channel of the layer"))
 	);
-	ret.push_back(ParamDesc(param_blend_method,"blend_method")
+	ret.push_back(ParamDesc("blend_method")
 		.set_local_name(_("Blend Method"))
 		.set_description(_("Blending method used to composite on the layers below"))
 		.set_static(true)

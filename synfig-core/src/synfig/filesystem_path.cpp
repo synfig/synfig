@@ -40,6 +40,8 @@
 
 #include <glibmm/miscutils.h>
 
+#include <synfig/os.h>
+
 # ifdef _WIN32
 #  include <codecvt>
 #  include <locale>
@@ -776,6 +778,20 @@ void
 filesystem::swap(Path& lhs, Path& rhs) noexcept
 {
 	return lhs.swap(rhs);
+}
+
+filesystem::Path
+filesystem::current_path()
+{
+	return synfig::OS::get_current_working_directory();
+}
+
+filesystem::Path
+filesystem::absolute(const Path& p)
+{
+	if (p.is_absolute()) // avoid current_path() computation
+		return p;
+	return current_path() / p;
 }
 
 std::string

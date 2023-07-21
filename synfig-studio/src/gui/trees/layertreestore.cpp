@@ -165,7 +165,7 @@ LayerTreeStore::create(etl::loose_handle<synfigapp::CanvasInterface> canvas_inte
 }
 
 template<typename T>
-void LayerTreeStore::set_gvalue_tpl(Glib::ValueBase& value, const T &v, bool use_assign_operator) const
+void LayerTreeStore::set_gvalue_tpl(Glib::ValueBase& value, const T& v, bool use_assign_operator) const
 {
 	Glib::Value<T> x;
 	g_value_init(x.gobj(), x.value_type());
@@ -180,7 +180,7 @@ void LayerTreeStore::set_gvalue_tpl(Glib::ValueBase& value, const T &v, bool use
 }
 
 void
-LayerTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int column, Glib::ValueBase& value)const
+LayerTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int column, Glib::ValueBase& value) const
 {
 	if ( column != model.record_type.index()
 	  && column != model.layer.index()
@@ -477,7 +477,7 @@ LayerTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int column,
 }
 
 bool
-LayerTreeStore::row_draggable_vfunc(const TreeModel::Path& path)const
+LayerTreeStore::row_draggable_vfunc(const TreeModel::Path& path) const
 {
 	Gtk::TreeIter iter = const_cast<LayerTreeStore*>(this)->get_iter(path);
 	if (!iter) return false;
@@ -489,7 +489,7 @@ LayerTreeStore::row_draggable_vfunc(const TreeModel::Path& path)const
 }
 
 bool
-LayerTreeStore::drag_data_get_vfunc(const TreeModel::Path& path, Gtk::SelectionData& selection_data)const
+LayerTreeStore::drag_data_get_vfunc(const TreeModel::Path& path, Gtk::SelectionData& selection_data) const
 {
 	if(!const_cast<LayerTreeStore*>(this)->get_iter(path)) return false;
 	//synfig::info("Dragged data of type \"%s\"",selection_data.get_data_type());
@@ -538,7 +538,7 @@ LayerTreeStore::drag_data_delete_vfunc (const TreeModel::Path& /*path*/)
 }
 
 bool
-LayerTreeStore::row_drop_possible_vfunc (const TreeModel::Path& dest, const Gtk::SelectionData& selection_data)const
+LayerTreeStore::row_drop_possible_vfunc (const TreeModel::Path& dest, const Gtk::SelectionData& selection_data) const
 {
 	//synfig::info("possible_drop -- data of type \"%s\"",selection_data.get_data_type().c_str());
 	//synfig::info("possible_drop -- data of target \"%s\"",selection_data.get_target().c_str());

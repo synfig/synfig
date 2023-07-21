@@ -46,6 +46,8 @@
 # define UNIX_PIPE_TO_PROCESSES
 # include <cstdlib> // for system()
 # include <fcntl.h> // for O_ flags
+# include <limits.h> // PATH_MAX
+# include <sys/stat.h> // for S_ISDIR() and stat()
 # include <sys/wait.h> // for waitpid()
 # include <unistd.h> // for popen()
 #elif defined(_WIN32)
@@ -204,7 +206,7 @@ public:
 	bool open(const filesystem::Path& binary_path, const OS::RunArgs& binary_args, OS::RunMode run_mode, const OS::RunRedirectionFiles& redir_files) override
 	{
 		if (initialized) {
-			synfig::error("A pipe should not be initialized twice! Ignored...");
+			synfig::error(_("A pipe should not be initialized twice! Ignored..."));
 			return false;
 		}
 		initialized = true;
@@ -232,7 +234,7 @@ public:
 											 NULL
 								 );
 			if (child_STDERR_Write == INVALID_HANDLE_VALUE) {
-				synfig::error(_("Unable to open file to be stdout: %s [errno: %d]"), redir_files.std_err.c_str(), errno);
+				synfig::error(_("Unable to open file to be stdout: %s [errno: %d]"), redir_files.std_err.u8_str(), errno);
 				return false;
 			}
 		}
@@ -247,7 +249,7 @@ public:
 											 NULL
 								 );
 			if (child_STDOUT_Write == INVALID_HANDLE_VALUE) {
-				synfig::error(_("Unable to open file to be stdout: %s [errno: %d]"), redir_files.std_out.c_str(), errno);
+				synfig::error(_("Unable to open file to be stdout: %s [errno: %d]"), redir_files.std_out.u8_str(), errno);
 				return false;
 			}
 		} else if (is_reader) {
@@ -284,7 +286,7 @@ public:
 											 NULL
 								 );
 			if (child_STDIN_Read == INVALID_HANDLE_VALUE) {
-				synfig::error(_("Unable to open file to be stdin: %s [errno: %d]"), redir_files.std_in.c_str(), errno);
+				synfig::error(_("Unable to open file to be stdin: %s [errno: %d]"), redir_files.std_in.u8_str(), errno);
 				return false;
 			}
 		} else if (is_writer) {
@@ -341,14 +343,14 @@ public:
 		DWORD num_written = 0;
 		BOOL ok = WriteFile(child_STDIN_Write, text.c_str(), text.size(), &num_written, NULL);
 		if (!ok)
-			synfig::error("synfig::OS::Pipe : fail to print");
+			synfig::error(_("synfig::OS::Pipe : fail to print"));
 	}
 	size_t write(const void* ptr, size_t size, size_t n) override
 	{
 		DWORD num_written = 0;
 		BOOL ok = WriteFile(child_STDIN_Write, ptr, size * n, &num_written, NULL);
 		if (!ok)
-			synfig::error("synfig::OS::Pipe : fail to write");
+			synfig::error(_("synfig::OS::Pipe : fail to write"));
 		return num_written;
 	}
 
@@ -357,7 +359,7 @@ public:
 	std::string read_contents() override
 	{
 		if (!read_file) {
-			synfig::error("Should not try to readline() a non-readable pipe");
+			synfig::error(_("Should not try to readline() a non-readable pipe"));
 			return "";
 		}
 		std::string result;
@@ -371,7 +373,7 @@ public:
 	std::string read_contents(size_t max_bytes) override
 	{
 		if (!read_file) {
-			synfig::error("Should not try to readline(size_t max_bytes) a non-readable pipe");
+			synfig::error(_("Should not try to readline(size_t max_bytes) a non-readable pipe"));
 			return "";
 		}
 		std::string result;
@@ -460,6 +462,27 @@ class RunPipeUnix : public OS::RunPipe
 	bool initialized = false;
 	pid_t pid = -1;
 
+	enum class OpenError {
+		NO_ERROR = 0,
+		ON_SET_CLOEXEC = -10000,
+		ON_OPEN_STDERR_REDIR_FILE = -8000,
+		ON_DUP2_STDERR_FILENO = -9000,
+		ON_OPEN_STDOUT_REDIR_FILE = -1000,
+		ON_DUP2_STDOUT_FILENO = -2000,
+		ON_OPEN_STDIN_REDIR_FILE = -5000,
+		ON_DUP2_STDIN_FILENO = -6000,
+		ON_EXEC = EXIT_FAILURE,
+	};
+
+	static void print_error_and_exit(int error_fd, const std::string& msg, OpenError exit_number, bool print_perror)
+	{
+		synfig::error(msg);
+		if (print_perror)
+			perror(_("System error message:"));
+		::write(error_fd, &exit_number, sizeof(exit_number));
+		_exit(static_cast<int>(exit_number));
+	}
+
 	// RunPipe interface
 public:
 	RunPipeUnix() = default;
@@ -471,7 +494,7 @@ public:
 	bool open(const filesystem::Path& binary_path, const OS::RunArgs& binary_args, OS::RunMode run_mode, const OS::RunRedirectionFiles& redir_files) override
 	{
 		if (initialized) {
-			synfig::error("A pipe should not be initialized twice! Ignored...");
+			synfig::error(_("A pipe should not be initialized twice! Ignored..."));
 			return false;
 		}
 		initialized = true;
@@ -481,14 +504,21 @@ public:
 		int p[2];
 
 		if (pipe(p)) {
-			synfig::error(_("Unable to open pipe to %s (no pipe)"), binary_path.c_str());
+			synfig::error(_("Unable to open pipe to %s (no pipe)"), binary_path.u8_str());
+			return false;
+		}
+
+		// pipe to comunicate error to parent process
+		int error_message_pipe[2];
+		if (pipe(error_message_pipe)) {
+			synfig::error(_("Unable to open exec error pipes to %s (no pipe)"), binary_path.u8_str());
 			return false;
 		}
 
 		pid = fork();
 
 		if (pid == -1) {
-			synfig::error(_("Unable to open pipe to %s (pid == -1)"), binary_path.c_str());
+			synfig::error(_("Unable to open pipe to %s (pid == -1)"), binary_path.u8_str());
 			return false;
 		}
 		const bool is_reader = run_mode == OS::RUN_MODE_READ || run_mode == OS::RUN_MODE_READWRITE;
@@ -497,19 +527,24 @@ public:
 		if (pid == 0) {
 			// Child process
 
+			// Child process does not read, only writes on error message pipe
+			::close(error_message_pipe[0]);
+			// close error message pipe on exec in order to parent process know exec was succeed
+			if (-1 == fcntl(error_message_pipe[1], F_SETFD, FD_CLOEXEC))
+				print_error_and_exit(error_message_pipe[1], _("Can't set FD_CLOEXEC on error message pipe"), OpenError::ON_SET_CLOEXEC, true);
+
 			// If requested, redirect stderr to a file
 			if (!redir_files.std_err.empty()) {
 				mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
 				int err_fd = ::open(redir_files.std_err.c_str(), O_WRONLY | O_CREAT | O_TRUNC, mode);
 				if (err_fd == -1) {
-					synfig::error(_("Unable to open file to be stderr: %s [errno: %d]"), redir_files.std_err.c_str(), errno);
-					perror(_("System error message:"));
-					exit(-8000);
+					auto msg = strprintf(_("Unable to open file to be stderr: %s [errno: %d]"), redir_files.std_err.u8_str(), errno);
+					print_error_and_exit(error_message_pipe[1], msg, OpenError::ON_OPEN_STDERR_REDIR_FILE, true);
 				}
 				// Map err_fd as stderr
 				if (dup2(err_fd, STDERR_FILENO) == -1) {
-					synfig::error(_("Unable to open pipe to %s (dup2( err_fd, STDERR_FILENO ) == -1)"), binary_path.c_str());
-					exit(-9000);
+					auto msg = strprintf(_("Unable to open pipe to %s (dup2( err_fd, STDERR_FILENO ) == -1)"), binary_path.u8_str());
+					print_error_and_exit(error_message_pipe[1], msg, OpenError::ON_DUP2_STDERR_FILENO, true);
 				}
 			}
 
@@ -520,15 +555,14 @@ public:
 					mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
 					p[1] = ::open(redir_files.std_out.c_str(), O_WRONLY | O_CREAT | O_TRUNC, mode);
 					if (p[1] == -1) {
-						synfig::error(_("Unable to open file to be stdout: %s [errno: %d]"), redir_files.std_out.c_str(), errno);
-						perror(_("System error message:"));
-						exit(-1000);
+						auto msg = strprintf(_("Unable to open file to be stdout: %s [errno: %d]"), redir_files.std_out.u8_str(), errno);
+						print_error_and_exit(error_message_pipe[1], msg, OpenError::ON_OPEN_STDOUT_REDIR_FILE, true);
 					}
 				}
 				// Map pipeout as stdout
 				if (dup2(p[1], STDOUT_FILENO) == -1) {
-					synfig::error(_("Unable to open pipe to %s (dup2( p[1], STDOUT_FILENO ) == -1)"), binary_path.c_str());
-					exit(-2000);
+					auto msg = strprintf(_("Unable to open pipe to %s (dup2( p[1], STDOUT_FILENO ) == -1)"), binary_path.u8_str());
+					print_error_and_exit(error_message_pipe[1], msg, OpenError::ON_DUP2_STDOUT_FILENO, true);
 				}
 			}
 			// Close the unneeded pipeout/file descriptor
@@ -541,14 +575,13 @@ public:
 					mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
 					p[0] = ::open(redir_files.std_in.c_str(), O_RDONLY, mode);
 					if (p[0] == -1) {
-						synfig::error(_("Unable to open file to be stdin: %s [errno: %d]"), redir_files.std_in.c_str(), errno);
-						perror(_("System error message:"));
-						exit(-5000);
+						auto msg = strprintf(_("Unable to open file to be stdin: %s [errno: %d]"), redir_files.std_in.u8_str(), errno);
+						print_error_and_exit(error_message_pipe[1], msg, OpenError::ON_OPEN_STDIN_REDIR_FILE, true);
 					}
 				}
 				if (dup2(p[0], STDIN_FILENO) == -1) {
-					synfig::error(_("Unable to open pipe to %s (dup2( p[0], STDIN_FILENO ) == -1)"), binary_path.c_str());
-					exit(-6000);
+					auto msg = strprintf(_("Unable to open pipe to %s (dup2( p[0], STDIN_FILENO ) == -1)"), binary_path.u8_str());
+					print_error_and_exit(error_message_pipe[1], msg, OpenError::ON_DUP2_STDIN_FILENO, true);
 				}
 			}
 			// Close the unneeded pipein
@@ -568,10 +601,24 @@ public:
 			execvp(binary_path.c_str(), args);
 
 			// We should never reach here unless the exec failed
-			synfig::error(_("Unable to open pipe to %s (exec failed)"), binary_path.c_str());
+			auto msg = strprintf(_("Unable to open pipe to %s (exec failed)"), binary_path.u8_str());
+			print_error_and_exit(error_message_pipe[1], msg, OpenError::ON_EXEC, true);
 			return false;
 		} else {
 			// Parent process
+
+			// Parent process does not write to error message pipe
+			::close(error_message_pipe[1]);
+
+			// Check for any error message from pipe
+			OpenError error_code = OpenError::NO_ERROR;
+			auto r = ::read(error_message_pipe[0], &error_code, sizeof(error_code));
+			::close(error_message_pipe[0]);
+			if (r != 0 || error_code != OpenError::NO_ERROR) {
+				synfig::error(_("Error #%i on executing \"%s\""), error_code, full_command_.c_str());
+				return false;
+			}
+
 			// Close pipein, not needed
 			if (is_reader)
 				read_file = fdopen(p[0], "r");
@@ -615,7 +662,7 @@ public:
 	std::string read_contents() override
 	{
 		if (!read_file) {
-			synfig::error("Should not try to readline() a non-readable pipe");
+			synfig::error(_("Should not try to readline() a non-readable pipe"));
 			return "";
 		}
 		std::string result;
@@ -629,7 +676,7 @@ public:
 	std::string read_contents(size_t max_bytes) override
 	{
 		if (!read_file) {
-			synfig::error("Should not try to readline(size_t max_bytes) a non-readable pipe");
+			synfig::error(_("Should not try to readline(size_t max_bytes) a non-readable pipe"));
 			return "";
 		}
 		std::string result;
@@ -666,12 +713,16 @@ OS::run_async(const filesystem::Path& binary_path, const RunArgs& binary_args, R
 {
 	auto run_pipe = OS::RunPipe::create();
 	if (!run_pipe) {
-		synfig::warning("couldn't create pipe for %s %s", binary_path.u8_str(), binary_args.get_string().c_str());
+		synfig::warning(_("Couldn't create pipe for %s %s"), binary_path.u8_str(), binary_args.get_string().c_str());
 		return nullptr;
 	}
-	run_pipe->open(binary_path, binary_args, mode, redir_files);
+	bool ok = run_pipe->open(binary_path, binary_args, mode, redir_files);
+	if (!ok) {
+		synfig::warning(_("Couldn't open pipe for %s %s"), binary_path.u8_str(), binary_args.get_string().c_str());
+		return nullptr;
+	}
 	if (!run_pipe->is_open()) {
-		synfig::warning("couldn't open pipe for %s %s", binary_path.u8_str(), binary_args.get_string().c_str());
+		synfig::warning(_("Couldn't really open pipe for %s %s"), binary_path.c_str(), binary_args.get_string().c_str());
 		return nullptr;
 	}
 	return run_pipe;
@@ -683,7 +734,9 @@ OS::run_sync(const filesystem::Path& binary_path, const RunArgs& binary_args, co
 	auto run_pipe = OS::RunPipe::create();
 	if (!run_pipe)
 		return false;
-	run_pipe->open(binary_path, binary_args, OS::RunMode::RUN_MODE_READ, {stderr_redir_file, stdout_redir_file, synfig::filesystem::Path()});
+	bool ok = run_pipe->open(binary_path, binary_args, OS::RunMode::RUN_MODE_READ, {stderr_redir_file, stdout_redir_file, synfig::filesystem::Path()});
+	if (!ok)
+		return false;
 	if (!run_pipe->is_open())
 		return false;
 
@@ -777,4 +830,39 @@ OS::get_user_lang()
 	}
 #endif
 	return language_list;
+}
+
+filesystem::Path
+OS::get_current_working_directory()
+{
+#ifdef _WIN32
+	DWORD length = GetCurrentDirectoryW(0, nullptr);
+
+	std::vector<filesystem::Path::value_type> current_dir_str(length);
+	if (GetCurrentDirectoryW(length, current_dir_str.data()) != length - 1)
+		return filesystem::Path("/");
+
+	return filesystem::Path::from_native(current_dir_str.data()).lexically_normal();
+#else
+
+	struct stat st;
+	if (char* pwd = getenv("PWD")) {
+		if (stat(pwd, &st) == 0 && S_ISDIR(st.st_mode)) {
+			return filesystem::Path::from_native(pwd).lexically_normal();
+		}
+	}
+
+	std::vector<char> buffer(PATH_MAX);
+	char* ptr = nullptr;
+
+	while (!ptr) {
+		ptr = getcwd(buffer.data(), buffer.size());
+		if (!ptr) {
+			if (errno != ERANGE)
+				return filesystem::Path("/");
+			buffer.resize(buffer.size() * 2);
+		}
+	}
+	return filesystem::Path::from_native(buffer.data()).lexically_normal();
+#endif
 }

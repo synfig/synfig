@@ -27,6 +27,7 @@
 
 #include <gtkmm/cellrenderertext.h>
 #include <gtkmm/cellrenderertoggle.h>
+#include <gtkmm/icontheme.h>
 #include <gtkmm/label.h>
 #include <gtkmm/liststore.h>
 
@@ -94,11 +95,13 @@ Dialog_PasteOptions::Dialog_PasteOptions(Gtk::Dialog::BaseObjectType* cobject, c
 		cellrendererer_name->signal_edited().connect(sigc::mem_fun(*this, &Dialog_PasteOptions::on_valuenode_name_edited));
 	}
 
-	// if via icon-theme : no equivalent!
-	pixbuf_link = Gtk::Button().render_icon_pixbuf(Gtk::StockID("gtk-connect"), Gtk::ICON_SIZE_SMALL_TOOLBAR);
-	pixbuf_external_link = Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-value_node"), Gtk::ICON_SIZE_SMALL_TOOLBAR);
-	// if via icon-theme : dialog-error only
-	pixbuf_conflict = Gtk::Button().render_icon_pixbuf(Gtk::StockID("gtk-dialog-error"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+	Gtk::IconSize icon_size(Gtk::ICON_SIZE_SMALL_TOOLBAR);
+	int window_scale_factor = get_window() ? get_window()->get_scale_factor() : 1;
+	auto theme = Gtk::IconTheme::get_default();
+
+	pixbuf_link = theme->load_icon("gtk-connect", Gtk::ICON_SIZE_SMALL_TOOLBAR, window_scale_factor, Gtk::ICON_LOOKUP_USE_BUILTIN);
+	pixbuf_external_link = theme->load_icon("valuenode_icon", Gtk::ICON_SIZE_SMALL_TOOLBAR, window_scale_factor, Gtk::ICON_LOOKUP_USE_BUILTIN);
+	pixbuf_conflict = theme->load_icon("dialog-error", Gtk::ICON_SIZE_SMALL_TOOLBAR, window_scale_factor, Gtk::ICON_LOOKUP_USE_BUILTIN);
 	pixbuf_empty = Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, true, pixbuf_link->get_bits_per_sample(), pixbuf_link->get_width(), pixbuf_link->get_height());
 	pixbuf_empty->fill(0);
 }

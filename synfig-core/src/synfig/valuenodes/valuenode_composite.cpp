@@ -636,19 +636,19 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 	Type &type(get_type());
 	if (type == type_color)
 	{
-		ret.push_back(ParamDesc(ValueBase(),"red")
+		ret.push_back(ParamDesc("red")
 			.set_local_name(_("Red"))
 			.set_description(_("The red component of the color"))
 		);
-		ret.push_back(ParamDesc(ValueBase(),"green")
+		ret.push_back(ParamDesc("green")
 			.set_local_name(_("Green"))
 			.set_description(_("The green component of the color"))
 		);
-		ret.push_back(ParamDesc(ValueBase(),"blue")
+		ret.push_back(ParamDesc("blue")
 			.set_local_name(_("Blue"))
 			.set_description(_("The blue component of the color"))
 		);
-		ret.push_back(ParamDesc(ValueBase(),"alpha")
+		ret.push_back(ParamDesc("alpha")
 			.set_local_name(_("Alpha"))
 			.set_description(_("The alpha of the color"))
 		);
@@ -657,19 +657,19 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 	else
 	if (type == type_segment)
 	{
-		ret.push_back(ParamDesc(ValueBase(),"p1")
+		ret.push_back(ParamDesc("p1")
 			.set_local_name(_("Vertex 1"))
 			.set_description(_("The first vertex of the segment"))
 		);
-		ret.push_back(ParamDesc(ValueBase(),"t1")
+		ret.push_back(ParamDesc("t1")
 			.set_local_name(_("Tangent 1"))
 			.set_description(_("The first tangent of the segment"))
 		);
-		ret.push_back(ParamDesc(ValueBase(),"p2")
+		ret.push_back(ParamDesc("p2")
 			.set_local_name(_("Vertex 2"))
 			.set_description(_("The second vertex of the segment"))
 		);
-		ret.push_back(ParamDesc(ValueBase(),"t2")
+		ret.push_back(ParamDesc("t2")
 			.set_local_name(_("Tangent 2"))
 			.set_description(_("The second tangent of the segment"))
 		);
@@ -678,11 +678,11 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 	else
 	if (type == type_vector)
 	{
-		ret.push_back(ParamDesc(ValueBase(),"x")
+		ret.push_back(ParamDesc("x")
 			.set_local_name(_("X-Axis"))
 			.set_description(_("The X-Axis component of the vector"))
 		);
-		ret.push_back(ParamDesc(ValueBase(),"y")
+		ret.push_back(ParamDesc("y")
 			.set_local_name(_("Y-Axis"))
 			.set_description(_("The Y-Axis component of the vector"))
 		);
@@ -691,38 +691,38 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 	else
 	if (type == type_bline_point)
 	{
-		ret.push_back(ParamDesc(ValueBase(),"point")
+		ret.push_back(ParamDesc("point")
 			.set_local_name(_("Vertex"))
 			.set_description(_("The vertex of the Spline Point"))
 			.set_is_distance()
 		);
-		ret.push_back(ParamDesc(ValueBase(),"width")
+		ret.push_back(ParamDesc("width")
 			.set_local_name(_("Width"))
 			.set_description(_("The width of the Spline Point"))
 			.set_is_distance()
 		);
-		ret.push_back(ParamDesc(ValueBase(),"origin")
+		ret.push_back(ParamDesc("origin")
 			.set_local_name(_("Origin"))
 			.set_description(_("Defines the Off and On position relative to neighbours"))
 		);
-		ret.push_back(ParamDesc(ValueBase(),"split")
+		ret.push_back(ParamDesc("split")
 			.set_local_name(_("Split"))
 			.set_description(_("When checked, tangents are independent"))
 			.hidden()
 		);
-		ret.push_back(ParamDesc(ValueBase(),"t1")
+		ret.push_back(ParamDesc("t1")
 			.set_local_name(_("Tangent 1"))
 			.set_description(_("The first tangent of the Spline Point"))
 		);
-		ret.push_back(ParamDesc(ValueBase(),"t2")
+		ret.push_back(ParamDesc("t2")
 			.set_local_name(_("Tangent 2"))
 			.set_description(_("The second tangent of the Spline Point"))
 		);
-		ret.push_back(ParamDesc(ValueBase(),"split_radius")
+		ret.push_back(ParamDesc("split_radius")
 			.set_local_name(_("Radius Split"))
 			.set_description(_("When checked, tangent's radii are independent"))
 		);
-		ret.push_back(ParamDesc(ValueBase(),"split_angle")
+		ret.push_back(ParamDesc("split_angle")
 			.set_local_name(_("Angle Split"))
 			.set_description(_("When checked, tangent's angles are independent"))
 		);
@@ -731,15 +731,15 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 	else
 	if (type == type_width_point)
 	{
-		ret.push_back(ParamDesc(ValueBase(),"position")
+		ret.push_back(ParamDesc("position")
 			.set_local_name(_("Position"))
 			.set_description(_("The [0,1] position of the Width Point over the Spline"))
 		);
-		ret.push_back(ParamDesc(ValueBase(),"width")
+		ret.push_back(ParamDesc("width")
 			.set_local_name(_("Width"))
 			.set_description(_("The relative width of the Width Point"))
 		);
-		ret.push_back(ParamDesc(ValueBase(),"side_before")
+		ret.push_back(ParamDesc("side_before")
 			.set_local_name(_("Side Type Before"))
 			.set_description(_("Defines the interpolation type of the width point"))
 			.set_hint("enum")
@@ -752,7 +752,7 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 			.add_enum_value(WidthPoint::TYPE_INNER_ROUNDED,"inner_rounded", _("Inner Rounded Stop"))
 			.add_enum_value(WidthPoint::TYPE_INNER_PEAK,"inner_peak", _("Off-Peak Stop"))
 			);
-		ret.push_back(ParamDesc(ValueBase(),"side_after")
+		ret.push_back(ParamDesc("side_after")
 			.set_local_name(_("Side Type After"))
 			.set_description(_("Defines the interpolation type of the width point"))
 			.set_hint("enum")
@@ -765,11 +765,11 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 			.add_enum_value(WidthPoint::TYPE_INNER_ROUNDED,"inner_rounded", _("Inner Rounded Stop"))
 			.add_enum_value(WidthPoint::TYPE_INNER_PEAK,"inner_peak", _("Off-Peak Stop"))
 		);
-		ret.push_back(ParamDesc(ValueBase(),"lower_bound")
+		ret.push_back(ParamDesc("lower_bound")
 			.set_local_name(_("Lower Boundary"))
 			.set_description(_("Defines the position at start of the Spline"))
 		);
-		ret.push_back(ParamDesc(ValueBase(),"upper_bound")
+		ret.push_back(ParamDesc("upper_bound")
 			.set_local_name(_("Upper Boundary"))
 			.set_description(_("Defines the position at end of the Spline"))
 		);
@@ -778,17 +778,17 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 	else
 	if (type == type_dash_item)
 	{
-		ret.push_back(ParamDesc(ValueBase(),"offset")
+		ret.push_back(ParamDesc("offset")
 			.set_local_name(_("Offset"))
 			.set_description(_("The offset length of the Dash Item over the Spline"))
 			.set_is_distance()
 		);
-		ret.push_back(ParamDesc(ValueBase(),"length")
+		ret.push_back(ParamDesc("length")
 			.set_local_name(_("Length"))
 			.set_description(_("The length of the Dash Item"))
 			.set_is_distance()
 		);
-		ret.push_back(ParamDesc(ValueBase(),"side_before")
+		ret.push_back(ParamDesc("side_before")
 			.set_local_name(_("Side Type Before"))
 			.set_description(_("Defines the side type of the dash item"))
 			.set_hint("enum")
@@ -799,7 +799,7 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 			.add_enum_value(WidthPoint::TYPE_INNER_ROUNDED,"inner_rounded", _("Inner Rounded Stop"))
 			.add_enum_value(WidthPoint::TYPE_INNER_PEAK,"inner_peak", _("Off-Peak Stop"))
 			);
-		ret.push_back(ParamDesc(ValueBase(),"side_after")
+		ret.push_back(ParamDesc("side_after")
 			.set_local_name(_("Side Type After"))
 			.set_description(_("Defines the side type of the dash item"))
 			.set_hint("enum")
@@ -815,20 +815,20 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 	else
 	if (type == type_transformation)
 	{
-		ret.push_back(ParamDesc(ValueBase(),"offset")
+		ret.push_back(ParamDesc("offset")
 			.set_local_name(_("Offset"))
 			.set_description(_("The Offset component of the transformation"))
 			.set_is_distance()
 		);
-		ret.push_back(ParamDesc(ValueBase(),"angle")
+		ret.push_back(ParamDesc("angle")
 			.set_local_name(_("Angle"))
 			.set_description(_("The Angle component of the transformation"))
 		);
-		ret.push_back(ParamDesc(ValueBase(),"skew_angle")
+		ret.push_back(ParamDesc("skew_angle")
 			.set_local_name(_("Skew Angle"))
 			.set_description(_("The Skew Angle component of the transformation"))
 		);
-		ret.push_back(ParamDesc(ValueBase(),"scale")
+		ret.push_back(ParamDesc("scale")
 			.set_local_name(_("Scale"))
 			.set_description(_("The Scale component of the transformation"))
 		);
@@ -837,11 +837,11 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 	else
 	if (dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type) != nullptr)
 	{
-		ret.push_back(ParamDesc(ValueBase(),"weight")
+		ret.push_back(ParamDesc("weight")
 			.set_local_name(_("Weight"))
 			.set_description(_("The Weight of the value"))
 		);
-		ret.push_back(ParamDesc(ValueBase(),"value")
+		ret.push_back(ParamDesc("value")
 			.set_local_name(_("Value"))
 			.set_description(_("The Value"))
 		);
@@ -850,11 +850,11 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 	else
 	if (dynamic_cast<types_namespace::TypePairBase*>(&type) != nullptr)
 	{
-		ret.push_back(ParamDesc(ValueBase(),"first")
+		ret.push_back(ParamDesc("first")
 			.set_local_name(_("First"))
 			.set_description(_("The First Value"))
 		);
-		ret.push_back(ParamDesc(ValueBase(),"second")
+		ret.push_back(ParamDesc("second")
 			.set_local_name(_("Second"))
 			.set_description(_("The Second Value"))
 		);

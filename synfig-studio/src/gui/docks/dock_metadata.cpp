@@ -65,9 +65,9 @@ Dock_MetaData::Dock_MetaData():
 	// Make Canvas MetaData toolbar small for space efficiency
 	get_style_context()->add_class("synfigstudio-efficient-workspace");
 
-	action_group->add(Gtk::Action::create(
+	action_group->add(Gtk::Action::create_with_icon_name(
 		"action-MetadataAdd",
-		Gtk::StockID("gtk-add"),
+		"list-add",
 		_("Add new MetaData entry"),
 		_("Add a new MetaData entry to the canvas")
 	),
@@ -77,9 +77,9 @@ Dock_MetaData::Dock_MetaData():
 		)
 	);
 
-	action_group->add(Gtk::Action::create(
+	action_group->add(Gtk::Action::create_with_icon_name(
 		"action-MetadataRemove",
-		Gtk::StockID("gtk-delete"),
+		"edit-delete",
 		_("Remove selected MetaData entry"),
 		_("Remove the selected MetaData entry")
 	),

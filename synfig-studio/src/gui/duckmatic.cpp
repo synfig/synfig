@@ -823,14 +823,36 @@ Duckmatic::find_guide(synfig::Point pos, float radius, Guide** second_best_guide
 	GuideList::iterator iter,best(guide_list_.end());
 	if (second_best_guide_match != nullptr)
 		*second_best_guide_match = nullptr;
+
 	float dist(radius);
-	for(iter=guide_list_.begin();iter!=guide_list_.end();++iter){
+	float second_dist(radius);
+
+	for (iter=guide_list_.begin();iter!=guide_list_.end();++iter) {
 		float amount = calculate_distance_from_guide(*iter,pos);
-		if (amount<dist){
-			dist = amount;
-			if (best != guide_list_.end() && second_best_guide_match != nullptr)
+		if (amount < dist) {
+			if (second_best_guide_match != nullptr && best != guide_list_.end()) {
 				*second_best_guide_match = &(*best);
+				second_dist = dist;
+			}
+			dist = amount;
 			best = iter;
+		} else if (second_best_guide_match != nullptr && amount < second_dist) {
+
+			// Is distance equal best match? It could be the current best match guide or another guide with same distance.
+			// If the former, skip it.
+			if (approximate_equal(amount, dist)) {
+				// If it is a equivalent linear equation of the current best match, ignore it
+				// equivalent linear equation : same slope/angle, and the pivot point matches the other equation
+
+				// same slope?
+				if (approximate_zero(fmod(Angle::rad(best->angle - iter->angle).get(), Angle::rad(Angle::one()).get()))) {
+					// y - y0 == slope * (x - x0)
+					if (approximate_equal(best->point[1] - iter->point[1], tan(iter->angle.get()) * (best->point[0] - iter->point[0])))
+						continue;
+				}
+			}
+			*second_best_guide_match = &(*iter);
+			second_dist = amount;
 		}
 	}
 	return best;

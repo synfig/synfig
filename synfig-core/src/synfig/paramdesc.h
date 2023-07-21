@@ -45,8 +45,6 @@
 
 namespace synfig {
 
-class ValueBase;
-
 /*!	\class ParamDesc
 **	\brief Parameter Description Class
 **	\todo writeme
@@ -100,9 +98,9 @@ private:
 
 public:
 
-   	ParamDesc(const String &a="IM_A_BUG_SO_REPORT_ME"):
-		name_           (a),
-		local_name_     (a),
+	ParamDesc():
+		name_           ("IM_A_BUG_SO_REPORT_ME"),
+		local_name_     ("IM_A_BUG_SO_REPORT_ME"),
 		scalar_         (1.0),
 		exponential_    (false),
 		critical_       (true),
@@ -114,10 +112,7 @@ public:
 		interpolation_  (INTERPOLATION_UNDEFINED)
 	{ }
 
-   	ParamDesc(const ValueBase&, const String &a);
-
-   	ParamDesc(const String &name, const ParamDesc &blank)
-   		{ *this = blank; name_ = name; }
+	ParamDesc(const String& name);
 
 	/*
  --	** -- M E M B E R   F U N C T I O N S -------------------------------------

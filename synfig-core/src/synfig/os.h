@@ -227,6 +227,17 @@ const std::vector<std::string>& get_user_lang();
  */
 filesystem::Path get_binary_path(const std::string& fallback_path);
 
+/**
+ * Returns the current working directory.
+ *
+ * The current working directory is that used as the starting point in pathname
+ * resolution. It is initially defined by OS and associated to the current process
+ * at its launch, but it can be changed at runtime.
+ *
+ * @return the current working directory
+ */
+filesystem::Path get_current_working_directory();
+
 } // END of namespace OS
 
 } // END of namespace synfig

@@ -101,13 +101,10 @@ RenderSettings::RenderSettings(Gtk::Window& parent, etl::handle<synfigapp::Canva
 
 	canvas_interface->signal_rend_desc_changed().connect(sigc::mem_fun(*this,&RenderSettings::on_rend_desc_changed));
 
-	comboboxtext_target.append(_("Auto"));
-	target_names.push_back(String());
-	synfig::Target::Book::iterator iter;
+	comboboxtext_target.append("", _("Auto"));
 	synfig::Target::Book book(synfig::Target::book());
-	for (iter = book.begin(); iter != book.end(); ++iter) {
-		comboboxtext_target.append(iter->first);
-		target_names.push_back(iter->first);
+	for (const auto& item : book) {
+		comboboxtext_target.append(item.first, item.first);
 	}
 	comboboxtext_target.set_active(0);
 	comboboxtext_target.signal_changed().connect(sigc::mem_fun(this, &RenderSettings::on_comboboxtext_target_changed));
@@ -246,7 +243,7 @@ RenderSettings::set_entry_filename()
 	
 	try
 	{
-		if (!comboboxtext_target.get_active_row_number())
+		if (!comboboxtext_target.get_active_row_number()) // "Auto"
 			entry_filename.set_text(filename.replace_extension(std::string(".avi")).u8string());
 		// in case the file was saved and loaded again then .ext should be according to target
 		else on_comboboxtext_target_changed();
@@ -261,22 +258,34 @@ RenderSettings::set_entry_filename()
 void
 RenderSettings::on_comboboxtext_target_changed()
 {
-	std::map<std::string,std::string> ext = {{"bmp",".bmp"}, {"dv",".dv"},
-					{"ffmpeg",".avi"},{"gif",".gif"},{"imagemagick",".png"}, {"jpeg",".jpg"},
-					{"magick++",".gif"},{"mng",".mng"},{"openexr",".exr"},{"png",".png"},
-					{"png-spritesheet",".png"},{"ppm",".ppm"}, {"yuv420p",".yuv"}, {"libav",".avi"}};
-	int i = comboboxtext_target.get_active_row_number();
-	if (i < 0 || i >= (int)target_names.size()) return;
-	if (target_name == target_names[i]) return;
-	auto itr = ext.find(target_names[i]); 
-    // check if target_name is there in map
-    if(itr != ext.end())
-	{
+	std::string active_target_id = comboboxtext_target.get_active_id();
+
+	if (active_target_id.empty())
+		return;
+
+	if (target_name == active_target_id)
+		return;
+
+	std::string extension;
+
+	if (active_target_id == "imagemagick") {
+		extension = ".png";
+	} else if (active_target_id == "ffmpeg") {
+		extension = ".avi";
+	} else {
+		auto itr = Target::book().find(active_target_id);
+		// check if target_name is there in map
+		if (itr != Target::book().end())
+			extension = itr->second.file_extension;
+	}
+
+	if (!extension.empty()) {
 		filesystem::Path filename(entry_filename.get_text());
-		filename.replace_extension(itr->second);
+		filename.replace_extension(extension);
 		entry_filename.set_text(filename.u8string());
 	}
-	set_target(target_names[i]);
+
+	set_target(active_target_id);
 }
 
 void
@@ -463,11 +472,11 @@ RenderSettings::check_target_destination()
 	{
 		message = strprintf(_("A file named \"%s\" already exists. "
 							"Do you want to replace it?"),
-							filename.filename().c_str());
+							filename.filename().u8_str());
 	
 		details = strprintf(_("The file already exists in \"%s\". "
 							"Replacing it will overwrite its contents."),
-							filename.parent_path().c_str());
+							filename.parent_path().u8_str());
 	}
 	else
 	{
@@ -477,7 +486,7 @@ RenderSettings::check_target_destination()
 	
 		details = strprintf(_("The files already exist in \"%s\". "
 							"Replacing them will overwrite their contents."),
-							filename.parent_path().c_str());
+							filename.parent_path().u8_str());
 	}
 
 	//Ask user whether to overwrite file with same name

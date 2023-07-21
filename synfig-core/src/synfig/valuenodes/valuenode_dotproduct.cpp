@@ -158,12 +158,12 @@ ValueNode_DotProduct::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"lhs")
+	ret.push_back(ParamDesc("lhs")
 		.set_local_name(_("LHS"))
 		.set_description(_("The left side of the dot product"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"rhs")
+	ret.push_back(ParamDesc("rhs")
 		.set_local_name(_("RHS"))
 		.set_description(_("The right side of the dot product"))
 	);

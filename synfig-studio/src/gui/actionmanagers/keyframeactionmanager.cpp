@@ -238,12 +238,12 @@ KeyframeActionManager::refresh()
 		action_group_->remove(action_kf_add);
 	}
 
-	action_kf_add = Gtk::Action::create("action-KeyframeAdd",Gtk::StockID("gtk-add"),
+	action_kf_add = Gtk::Action::create_with_icon_name("action-KeyframeAdd", "list-add",
 										_("Add New Keyframe"),_("Add New Keyframe"));
 	action_group_->add(action_kf_add, sigc::mem_fun(*this,&KeyframeActionManager::on_add_keyframe));
 
 	//Keyframe properties definition
-	Glib::RefPtr<Gtk::Action> action_kf_properties(Gtk::Action::create("keyframe-properties", Gtk::StockID("gtk-properties"),
+	Glib::RefPtr<Gtk::Action> action_kf_properties(Gtk::Action::create_with_icon_name("keyframe-properties", "document-properties",
 														 _("Keyframe Properties"), _("Keyframe Properties")));
 	action_group_->add(action_kf_properties,sigc::mem_fun(*this,&KeyframeActionManager::on_keyframe_properties));
 

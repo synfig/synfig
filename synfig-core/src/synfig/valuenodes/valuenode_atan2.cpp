@@ -138,12 +138,12 @@ ValueNode_Atan2::get_children_vocab_vfunc()const
 {
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"x")
+	ret.push_back(ParamDesc("x")
 		.set_local_name(_("X"))
 		.set_description(_("Cosine of the angle"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"y")
+	ret.push_back(ParamDesc("y")
 		.set_local_name(_("Y"))
 		.set_description(_("Sine of the angle"))
 	);

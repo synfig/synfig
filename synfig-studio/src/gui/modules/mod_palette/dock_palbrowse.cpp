@@ -52,7 +52,7 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dock_PalBrowse::Dock_PalBrowse():
-	Dockable("pal_browse",_("Palette Browser")/*,Gtk::StockID("gtk-select-color")*/)
+	Dockable("pal_browse",_("Palette Browser"))
 {
 }
 

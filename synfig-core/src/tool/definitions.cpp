@@ -34,20 +34,21 @@ SynfigToolGeneralOptions* SynfigToolGeneralOptions::instance() {
 }
 
 SynfigToolGeneralOptions::SynfigToolGeneralOptions()
-{
-	_verbosity = 0;
-	_should_be_quiet = false;
-	_should_print_benchmarks = false;
-	_threads = 1;
-	_repeats = 1;
-}
+	: _verbosity(0),
+	  _threads(1),
+	  _should_be_quiet(false),
+	  _should_print_benchmarks(false),
+	  _repeats(1)
+{ }
 
 std::string SynfigToolGeneralOptions::get_binary_path() const
 {
+	if (_binary_path.empty())
+		return synfig::OS::get_binary_path("").u8string();
 	return _binary_path;
 }
 
-void SynfigToolGeneralOptions::set_binary_path(const std::string& path) {
+void SynfigToolGeneralOptions::set_fallback_binary_path(const std::string& path) {
 	_binary_path = synfig::OS::get_binary_path(path).u8string();
 }
 

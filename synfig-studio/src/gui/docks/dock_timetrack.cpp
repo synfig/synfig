@@ -43,6 +43,7 @@
 #include <gui/canvasview.h>
 #include <gui/cellrenderer/cellrenderer_timetrack.h>
 #include <gui/exception_guard.h>
+#include <gui/iconcontroller.h>
 #include <gui/instance.h>
 #include <gui/localization.h>
 #include <gui/trees/layertree.h>
@@ -122,9 +123,7 @@ public:
 			// Add a fixed size (1pixel width, same height than value_type icon) empty (alpha) icon
 			// to align the rows with params dock when the text is smaller than value_type icons height
 			Gtk::CellRendererPixbuf* icon_cellrenderer = Gtk::manage( new Gtk::CellRendererPixbuf() );
-			Glib::RefPtr<Gdk::Pixbuf> pixbuf;
-			pixbuf=Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-utils_timetrack_align"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
-			icon_cellrenderer->property_pixbuf() = pixbuf;
+			icon_cellrenderer->property_pixbuf() = get_tree_pixbuf_from_icon_name("utils_timetrack_align_icon");
 			column2->pack_end(*icon_cellrenderer,false);
 			icon_cellrenderer->set_fixed_size(1,-1);
 

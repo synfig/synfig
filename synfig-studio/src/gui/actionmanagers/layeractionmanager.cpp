@@ -187,12 +187,11 @@ LayerActionManager::LayerActionManager():
 	action_group_(Gtk::ActionGroup::create("action_group_layer_action_manager")),
 	menu_popup_id_(no_prev_popup),
 	menu_main_id_(no_prev_popup),
-	action_group_copy_paste(Gtk::ActionGroup::create("action_group_copy_paste")),
 	queued(false)
 {
-	action_cut_=Gtk::Action::create(
+	action_cut_=Gtk::Action::create_with_icon_name(
 		"cut",
-		Gtk::StockID("gtk-cut")
+		"edit-cut", _("Cu_t"), _("Cut")
 	);
 	action_cut_->signal_activate().connect(
 		sigc::mem_fun(
@@ -200,9 +199,9 @@ LayerActionManager::LayerActionManager():
 			&LayerActionManager::cut
 		)
 	);
-	action_copy_=Gtk::Action::create(
+	action_copy_=Gtk::Action::create_with_icon_name(
 		"copy",
-		Gtk::StockID("gtk-copy")
+		"gtk-copy", _("_Copy"), _("Copy")
 	);
 	action_copy_->signal_activate().connect(
 		sigc::mem_fun(
@@ -210,9 +209,9 @@ LayerActionManager::LayerActionManager():
 			&LayerActionManager::copy
 		)
 	);
-	action_paste_=Gtk::Action::create(
+	action_paste_=Gtk::Action::create_with_icon_name(
 		"paste",
-		Gtk::StockID("gtk-paste")
+		"edit-paste", _("_Paste"), _("Paste")
 	);
 	action_paste_->signal_activate().connect(
 		sigc::mem_fun(
@@ -222,9 +221,9 @@ LayerActionManager::LayerActionManager():
 	);
 
 
-	action_amount_inc_=Gtk::Action::create(
+	action_amount_inc_=Gtk::Action::create_with_icon_name(
 		"amount-inc",
-		Gtk::StockID("gtk-add"),
+		"list-add",
 		_("Increase Amount"),_("Increase Amount")
 	);
 	action_amount_inc_->signal_activate().connect(
@@ -234,9 +233,9 @@ LayerActionManager::LayerActionManager():
 		)
 	);
 
-	action_amount_dec_=Gtk::Action::create(
+	action_amount_dec_=Gtk::Action::create_with_icon_name(
 		"amount-dec",
-		Gtk::StockID("gtk-remove"),
+		"list-remove",
 		_("Decrease Amount"),_("Decrease Amount")
 	);
 	action_amount_dec_->signal_activate().connect(
@@ -246,9 +245,9 @@ LayerActionManager::LayerActionManager():
 		)
 	);
 
-	action_select_all_child_layers_=Gtk::Action::create(
+	action_select_all_child_layers_=Gtk::Action::create_with_icon_name(
 		"select-all-child-layers",
-		Gtk::StockID("synfig-select_all_child_layers"),
+		"select_all_child_layers_icon",
 		_("Select All Child Layers"),_("Select All Child Layers")
 	);
 	action_select_all_child_layers_->set_sensitive(false);
