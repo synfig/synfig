@@ -489,44 +489,6 @@ xmlpp::Element* encode_animated(xmlpp::Element* root,ValueNode_Animated::ConstHa
 }
 
 
-xmlpp::Element* encode_subtract(xmlpp::Element* root,ValueNode_Subtract::ConstHandle value_node,Canvas::ConstHandle canvas=nullptr)
-{
-	assert(value_node);
-	root->set_name("subtract");
-
-	ValueNode::ConstHandle lhs=value_node->get_lhs();
-	ValueNode::ConstHandle rhs=value_node->get_rhs();
-	ValueNode::ConstHandle scalar=value_node->get_scalar();
-
-	assert(lhs);
-	assert(rhs);
-
-	root->set_attribute("type",value_node->get_type().description.name);
-
-	if(lhs==rhs)
-		warning("LHS is equal to RHS, this <subtract> will always be zero!");
-
-	//if(value_node->get_scalar()!=1)
-	//	root->set_attribute("scalar",strprintf(VECTOR_VALUE_TYPE_FORMAT,value_node->get_scalar()));
-
-	if(!scalar->get_id().empty())
-		root->set_attribute("scalar",scalar->get_relative_id(canvas));
-	else
-		encode_value_node(root->add_child("scalar")->add_child("value_node"),scalar,canvas);
-
-	if(!lhs->get_id().empty())
-		root->set_attribute("lhs",lhs->get_relative_id(canvas));
-	else
-		encode_value_node(root->add_child("lhs")->add_child("value_node"),lhs,canvas);
-
-	if(!rhs->get_id().empty())
-		root->set_attribute("rhs",rhs->get_relative_id(canvas));
-	else
-		encode_value_node(root->add_child("rhs")->add_child("value_node"),rhs,canvas);
-
-	return root;
-}
-
 xmlpp::Element* encode_static_list(xmlpp::Element* root,ValueNode_StaticList::ConstHandle value_node,Canvas::ConstHandle canvas=nullptr)
 {
 	DEBUG_LOG("SYNFIG_DEBUG_SAVE_CANVAS", "%s:%d encode_static_list %s\n", __FILE__, __LINE__, value_node->get_string().c_str());
@@ -715,9 +677,6 @@ xmlpp::Element* encode_value_node(xmlpp::Element* root,ValueNode::ConstHandle va
 	else
 	if (ValueNode_Animated::ConstHandle animated_value_node = ValueNode_Animated::ConstHandle::cast_dynamic(value_node))
 		encode_animated(root,animated_value_node,canvas);
-	else
-	if (ValueNode_Subtract::ConstHandle subtract_value_node = ValueNode_Subtract::ConstHandle::cast_dynamic(value_node))
-		encode_subtract(root,subtract_value_node,canvas);
 	else
 	if (ValueNode_StaticList::ConstHandle static_list_value_node = ValueNode_StaticList::ConstHandle::cast_dynamic(value_node))
 		encode_static_list(root,static_list_value_node,canvas);
