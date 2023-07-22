@@ -1,9 +1,10 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file state_rotate.h
+/*!	\file state_select.h
 **	\brief Template Header
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2009 Nikita Kitaev
 **
 **	This file is part of Synfig.
 **
@@ -25,16 +26,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_STATE_ROTATE_H
-#define __SYNFIG_STUDIO_STATE_ROTATE_H
+#ifndef __SYNFIG_STUDIO_STATE_SELECT_H
+#define __SYNFIG_STUDIO_STATE_SELECT_H
 
 /* === H E A D E R S ======================================================= */
 
 #include "smach.h"
-#include <gui/workarea.h>
-#include <gui/canvasview.h>
-#include <synfig/angle.h>
-
+#include <gui/states/state_normal.h>
+#include <gui/states/state_rotate.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -44,47 +43,23 @@
 
 namespace studio {
 
-class StateRotate_Context;
+class StateSelect_Context;
 
-class StateRotate : public Smach::state<StateRotate_Context>
+class StateSelect : public Smach::state<StateSelect_Context>
 {
 public:
-	StateRotate();
-	~StateRotate();
+	StateSelect();
+	~StateSelect();
 	virtual void* enter_state(studio::CanvasView* machine_context) const;
-}; // END of class StateRotate
+}; // END of class StateSelect
 
-extern StateRotate state_rotate;
+extern StateSelect state_select;
 
-class DuckDrag_Rotate : public DuckDrag_Base
+class DuckDrag_Select : public DuckDrag_Combo
 {
-	friend class DuckDrag_NonVertex_Rotate;
-
-	synfig::Vector last_rotate;
-	synfig::Vector drag_offset;
-	synfig::Vector center;
-	synfig::Vector snap;
-
-	synfig::Angle original_angle;
-	synfig::Real original_mag;
-
-	std::vector<synfig::Vector> positions;
-
-
-	bool bad_drag;
-	bool move_only;
-
 public:
-	etl::handle<CanvasView> canvas_view_;
-	bool use_magnitude;
-	DuckDrag_Rotate();
-	void begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& begin);
-	bool end_duck_drag(Duckmatic* duckmatic);
-	void duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector);
-
-	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
+	DuckDrag_Select();
 };
-
 
 }; // END of namespace studio
 

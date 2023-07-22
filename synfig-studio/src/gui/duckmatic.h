@@ -344,6 +344,7 @@ public:
      ** \sa get_selected_duck, clear_selected_ducks, count_selected_ducks
     */
 	DuckList get_selected_ducks()const;
+
     //! Return list of box contained ducks (handles). The box is defined by a vector's pair
     /*!
      ** \param tl The top left canvas coordinate has const synfig::Vector
@@ -444,6 +445,8 @@ public:
 	/*! Updates corresponding valuenodes after a drag */
 	void signal_edited_selected_ducks(bool moving = false);
 
+	void signal_edited_ducks_list(const DuckList &ducks, bool moving = false);
+
 	bool on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& value_desc);
 
 	etl::handle<Duck> find_similar_duck(etl::handle<Duck> duck);
@@ -494,6 +497,8 @@ public:
 	void add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Layer::Handle>& selected_layer_set, etl::handle<CanvasView> canvas_view, synfig::TransformStack& transform_stack, int* transform_count = nullptr);
 
 	bool add_to_ducks(const synfigapp::ValueDesc& value_desc, etl::handle<CanvasView> canvas_view, const synfig::TransformStack& transform_stack_, const synfig::ParamDesc* param_desc = nullptr);
+
+	bool add_select_tool_ducks(std::list<synfig::Layer::Handle> layer_list, etl::handle<CanvasView> canvas_view, const synfig::TransformStack& transform_stack_);
 
 	//! Set the type mask, which determines what types of ducks are shown
 	//! \Param[in]   x   Duck::Type set to backup when toggling handles

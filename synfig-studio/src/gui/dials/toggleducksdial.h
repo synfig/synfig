@@ -64,6 +64,7 @@ public:
 
 	void insert_to_toolbar(Gtk::Toolbar &toolbar, int index = -1);
 	void remove_from_toolbar(Gtk::Toolbar &toolbar);
+	void set_duck_buttons_sensitivity(bool sensitivity);
 
 	Glib::SignalProxy0<void> signal_ducks_position()  { return ducks_position.signal_toggled(); }
 	Glib::SignalProxy0<void> signal_ducks_vertex()    { return ducks_vertex.  signal_toggled(); }
