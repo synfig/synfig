@@ -784,13 +784,16 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 	{
 	FileSystem::FileList files;
 	FileSystemNative::instance()->directory_scan(ResourceHelper::get_themes_path(), files);
-	for (const auto& dir : files)
-		icon_theme_combo.append(dir);
+	for (const auto& dir : files) {
+		std::string full_filename = ResourceHelper::get_themes_path() + "/" + dir + "/index.theme";
+		if (FileSystemNative::instance()->is_file(full_filename))
+			icon_theme_combo.append(dir);
+	}
 	icon_theme_combo.set_active_text(App::get_icon_theme_name());
 	}
 
 	// Interface - Icon theme
-	attach_label(pi.grid, _("Icon theme"), ++row);
+	attach_label_section(pi.grid, _("Icon theme"), ++row);
 	pi.grid->attach(icon_theme_combo, 0, ++row, 1, 1);
 	icon_theme_combo.set_hexpand(true);
 	icon_theme_combo.set_margin_start(10);
