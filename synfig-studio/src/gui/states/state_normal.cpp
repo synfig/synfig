@@ -305,39 +305,60 @@ DuckDrag_Combo::get_selected_ducks(const Duckmatic& duckmatic) const
 	if(duck_independent_move){
 
 		if (rotate){
-			//we only need the vertex ducks for rotation of region layers
+			//we only need the vertex + non position ducks for rotation of region layers
 			//as for other non-region layers it looks like so far rotate
 			//functionality isn't implemented in them.
-			DuckList selected_ducks = duckmatic.get_selected_movement_ducks();
+			DuckList ret;
 			DuckList vertex_ducks;
-			for(Duck::Handle duck : selected_ducks){
+			for(Duck::Handle duck : selectedDucks){
 				if (duck->get_type() == Duck::TYPE_VERTEX){
 					vertex_ducks.push_back(duck);
 				}
+				ret.push_back(duck);
 			}
 			if (vertex_ducks.empty())
-				return selected_ducks;
+				return ret;
 			else
 				return vertex_ducks;
 
 		} else {
-
-			DuckList selected_ducks = duckmatic.get_selected_movement_ducks();
+			DuckList ret;
 			DuckList position_duck;
 			// if position ducks are present we only need them for movement
-			for(Duck::Handle duck : selected_ducks){
+			for(Duck::Handle duck : selectedDucks){
 				if (duck->get_type() == Duck::TYPE_POSITION){
 					position_duck.push_back(duck);
 				}
+				ret.push_back(duck);
 			}
+
 			if (position_duck.empty())
-				return selected_ducks;
+				return ret;
 			else
 				return position_duck;
 		}
 	}
 
 	return duckmatic.get_selected_ducks();
+}
+
+void DuckDrag_Combo::select_all_ducks(const Duckmatic& duckmatic)
+{
+	//clear any previously selected ducks
+	selectedDucks.clear();
+
+	DuckList duckList = duckmatic.get_duck_list();
+	for(auto iter: duckList){
+		if (iter->get_type() != Duck::TYPE_VERTEX &&
+			iter->get_type() != Duck::TYPE_POSITION /*&&
+			iter->get_type() != Duck::TYPE_SELECT_ROTATE*/)
+			continue;
+
+		if (iter){
+			selectedDucks.insert(iter);
+		}
+	}
+
 }
 
 DuckDrag_Combo::DuckDrag_Combo(bool duck_independent_drag):
@@ -366,6 +387,7 @@ DuckDrag_Combo::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& offs
 		} else {
 			rotate = false;
 		}
+		select_all_ducks(*duckmatic);
 	}
 
 	const DuckList selected_ducks(get_selected_ducks(*duckmatic));
@@ -547,7 +569,7 @@ DuckDrag_Combo::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 		is_moving = true;
 
 	if (is_moving && duck_independent_move)
-		duckmatic->signal_edited_selected_movement_ducks(true);
+		duckmatic->signal_edited_ducks_list(DuckList(selectedDucks.begin(), selectedDucks.end()), true);
 	else if (is_moving)
 		duckmatic->signal_edited_selected_ducks(true);
 
@@ -565,7 +587,7 @@ DuckDrag_Combo::end_duck_drag(Duckmatic* duckmatic)
 	if(is_moving)
 	{
 		if (duck_independent_move)
-			duckmatic->signal_edited_selected_movement_ducks();
+			duckmatic->signal_edited_ducks_list(DuckList(selectedDucks.begin(), selectedDucks.end()));
 		else
 			duckmatic->signal_edited_selected_ducks();
 		return true;
