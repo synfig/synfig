@@ -271,7 +271,7 @@ private:
 	void on_delay_changed()
 	{
 		std::string guid = file_combo.get_active_id();
-		if (auto sound_layer = layer_map[guid]) {
+		if (auto& sound_layer = layer_map[guid]) {
 			bool ok = canvas_interface->change_value(synfigapp::ValueDesc(synfig::Layer::LooseHandle(sound_layer), std::string("delay")), synfig::ValueBase(delay_widget.get_value()));
 			if (ok)
 				widget_sound.set_delay(delay_widget.get_value());
@@ -306,7 +306,7 @@ private:
 	{
 		std::vector<etl::handle<synfig::Layer_Sound>> layers;
 		fetch_sound_layers(canvas, layers);
-		for (auto &layer : layers) {
+		for (const auto &layer : layers) {
 			add_layer_to_combo(layer);
 		}
 	}
@@ -326,7 +326,7 @@ private:
 			}
 		}
 		if (!canvas->children().empty()) {
-			for (auto inner_canvas : canvas->children()) {
+			for (const auto& inner_canvas : canvas->children()) {
 				fetch_sound_layers(inner_canvas, layers);
 			}
 		}

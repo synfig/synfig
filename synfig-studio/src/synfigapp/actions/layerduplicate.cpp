@@ -207,7 +207,7 @@ Action::LayerDuplicate::prepare()
 	// pair (canvas, last exported valuenode "Index #" -> Layer_Duplicate parameter: index )
 	std::map<Canvas::LooseHandle, int> last_index;
 
-	for(auto layer : clean_layer_list)
+	for(const auto& layer : clean_layer_list)
 	{
 		Canvas::Handle subcanvas(layer->get_canvas());
 
@@ -273,7 +273,7 @@ Action::LayerDuplicate::prepare()
 	// Known cases are currently:
 	// - Index of Duplicate Layer
 	// - Bone list of Skeleton Layer
-	for (auto& layer_pair : cloned_layer_map) {
+	for (const auto& layer_pair : cloned_layer_map) {
 		Canvas::LooseHandle src_layer_canvas = layer_pair.first->get_canvas();
 		std::vector<ValueNode::RHandle> src_valuenodes = get_special_layer_valuenodes(layer_pair.first, get_canvas(), src_layer_canvas);
 		std::vector<ValueNode::RHandle> cloned_valuenodes = get_special_layer_valuenodes(layer_pair.second, get_canvas(), src_layer_canvas);
