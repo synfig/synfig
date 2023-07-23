@@ -19,6 +19,7 @@ _debug/
 _production/
 _packages/
 
+.cache
 .kdev4/
 
 # ---- MacOS thumbnails ------------
