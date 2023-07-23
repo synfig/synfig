@@ -86,6 +86,7 @@ static const std::map<std::string, std::pair<const char*, const char*>> known_ic
 
 	// ToolBox Tools
 	{"normal", {"tool_normal_icon", N_("Transform Tool")}},
+	{"select", {"tool_select_icon", N_("select Tool")}},
 	{"polygon", {"tool_polyline_icon", N_("Polygon Tool")}},
 	{"bline", {"tool_spline_icon", N_("Spline Tool")}},
 	{"bone", {"tool_skeleton_icon", N_("Skeleton Tool")}},

@@ -81,6 +81,8 @@ public:
 		TYPE_SCALE_Y				=	(1 << 10),	// 1024
 		TYPE_SKEW					=	(1 << 11),	// 2048
 		TYPE_FIRST_VERTEX			=	(1 << 12),	// 4096
+		TYPE_SELECT_ROTATE			=	(1 << 13),	// 8192
+		TYPE_SELECT_SCALE			=	(1 << 14),	//16384
 
 		TYPE_ALL					=	(~0),
 

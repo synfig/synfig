@@ -65,6 +65,8 @@
 #include <synfig/valuenodes/valuenode_bone.h>
 #include <synfig/valuenodes/valuenode_composite.h>
 
+#include <synfigapp/main.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -1276,7 +1278,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				return true;
 			} else
 			if (canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,BUTTON_LEFT,mouse_pos,pressure,modifier))==Smach::RESULT_OK) {
-				if (selected_bezier) {
+				if (selected_bezier && std::string(get_canvas_view()->get_smach().get_state_name()) != "select") {
 					synfig::Point distance_1 = selected_bezier->p1->get_trans_point() - mouse_pos;
 					synfig::Point distance_2 = selected_bezier->p2->get_trans_point() - mouse_pos;
 					if ( distance_1.mag() > radius*2
@@ -1302,6 +1304,43 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				//	selected_duck=0;
 				//	selected_bezier->signal_user_click(0)(bezier_click_pos);
 				//}
+
+//				clear_selected_movement_ducks();
+				//check for a layer click
+				if (Layer::Handle layer = get_canvas()->find_layer(get_canvas_view()->get_context_params(), mouse_pos)) {//make a new event layer pressed
+					if (canvas_view->get_smach().process_event(EventLayerClick(layer, BUTTON_LEFT, mouse_pos, modifier)) == Smach::RESULT_OK)
+						return false;
+
+					if ( std::string(get_canvas_view()->get_smach().get_state_name()) == "select" && get_duck_dragger()){
+
+						//select the other layers of the parent group as well
+						bool group_prioritized = synfigapp::Main::get_selected_input_device()->settings().get_value("select.group_selection_priority", false);
+						if(group_prioritized){
+							if (etl::loose_handle<Layer> parent_group = layer->get_parent_paste_canvas_layer()){
+								if (etl::handle<synfig::Layer_PasteCanvas> p = etl::handle<synfig::Layer_PasteCanvas>::cast_dynamic(parent_group)){
+									//selecting children of the parent group -- assuming here that double selection should be handled
+									//make sure parent isnt root canvas
+									if(!layer->get_canvas()->is_root()){
+										for ( auto iter = p->get_sub_canvas()->begin(); iter != p->get_sub_canvas()->end(); iter++)
+												get_canvas_view()->get_selection_manager()->set_selected_layer(*iter);
+										}
+								}
+							}
+						}
+						//to allow duck map to have the needed ducks before we start dragging
+						canvas_view->rebuild_ducks();
+
+						if (!get_duck_list().empty()){
+							set_drag_mode(DRAG_DUCK);
+							drag_point=mouse_pos;
+							//drawing_area->queue_draw();
+							start_duck_drag(mouse_pos);
+							get_canvas_view()->reset_cancel_status();
+						}
+
+					}
+					return true;
+				}
 
 				// Check for a guide click
 				if (show_guides) {

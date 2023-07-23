@@ -47,6 +47,7 @@
 #include <gui/app.h>
 #include <gui/duckmatic.h>
 #include <gui/workarea.h>
+#include <gui/canvasview.h>
 
 #endif
 
@@ -64,6 +65,8 @@ using namespace studio;
 #define DUCK_COLOR_ORIGIN        Gdk::RGBA("#00ff00") // green
 /** DUCK_COLOR_ANGLE : blue */
 #define DUCK_COLOR_ANGLE		Gdk::RGBA("#0000ff") // blue
+/** DUCK_COLOR_ROTATE : blue */
+#define DUCK_COLOR_ROTATE		Gdk::RGBA("#0000ff") // blue
 /** DUCK_COLOR_RADIUS : cyan */
 #define DUCK_COLOR_RADIUS		Gdk::RGBA("#00ffff") // cyan
 /** DUCK_COLOR_LINEAR : cyan for linear radius ducks */
@@ -74,6 +77,8 @@ using namespace studio;
 #define DUCK_COLOR_TANGENT_2	Gdk::RGBA("#ff0000") // red
 /** DUCK_COLOR_SKEW : red */
 #define DUCK_COLOR_SKEW         Gdk::RGBA("#ff0000") // red
+/** DUCK_COLOR_SCALE : red*/
+#define DUCK_COLOR_SCALE	Gdk::RGBA("#ff0000") // red
 /** DUCK_COLOR_VERTEX : orange */
 #define DUCK_COLOR_VERTEX		Gdk::RGBA("#ff7f00") // orange
 /** DUCK_COLOR_WIDTH : magenta */
@@ -134,13 +139,15 @@ struct ScreenDuck
 	bool hover;
 	bool has_alternative;
 	bool has_move_origin;
+	bool select_tool_transformation;
 
 	ScreenDuck():
 	    width(0),
 		selected(),
 		hover(),
 		has_alternative(false),
-		has_move_origin(false)
+		has_move_origin(false),
+		select_tool_transformation(false)
 	{ }
 };
 
@@ -153,6 +160,8 @@ Renderer_Ducks::render_vfunc(
 	assert(get_work_area());
 	if(!get_work_area())
 		return;
+
+	bool isStateSelect = std::string(get_work_area()->get_canvas_view()->get_smach().get_state_name()) == "select";
 
 	const synfig::Point window_start(get_work_area()->get_window_tl());
 	const float pw(get_pw()),ph(get_ph());
@@ -258,8 +267,9 @@ Renderer_Ducks::render_vfunc(
 	for(std::list<handle<Duck> >::const_iterator iter=duck_list.begin();iter!=duck_list.end();++iter)
 	{
 
-		// If this type of duck has been masked, then skip it
-		if(!(*iter)->get_type() || (!(get_work_area()->get_type_mask() & (*iter)->get_type())))
+		// If this type of duck has been masked, then skip it. Unless we are in select state then we only draw the ducks that bound the layer.
+		if( (!(*iter)->get_type() || (!(get_work_area()->get_type_mask() & (*iter)->get_type())))
+				&& (!isStateSelect /*|| (*iter)->get_type() != Duck::TYPE_SELECT_ROTATE)*/) )
 			continue;
 
 		Point sub_trans_point((*iter)->get_sub_trans_point());
@@ -527,12 +537,18 @@ Renderer_Ducks::render_vfunc(
 			screen_duck.color=(DUCK_COLOR_WIDTHPOINT_POSITION);
 		else if ((*iter)->get_move_origin())
 			screen_duck.color=(DUCK_COLOR_WIDTHPOINT_POSITION);
-		else
+		else if ((*iter)->get_type()&Duck::TYPE_SELECT_ROTATE){
+			screen_duck.color=DUCK_COLOR_ROTATE;
+			screen_duck.select_tool_transformation = true;
+		} else if ((*iter)->get_type()&Duck::TYPE_SELECT_SCALE){
+			screen_duck.color=DUCK_COLOR_SCALE;
+			screen_duck.select_tool_transformation = true;
+		} else
 			screen_duck.color=DUCK_COLOR_OTHER;
 
 		screen_duck_list.push_front(screen_duck);
 
-		if(has_connect)
+		if(has_connect && !isStateSelect)
 		{
 			cr->save();
 
@@ -878,6 +894,9 @@ Renderer_Ducks::render_vfunc(
 
 	for(;!screen_duck_list.empty();screen_duck_list.pop_front())
 	{
+		if (isStateSelect && !screen_duck_list.front().select_tool_transformation)
+			continue;
+
 		Gdk::RGBA color(screen_duck_list.front().color);
 		double radius = 4;
 		double outline = 1;
@@ -895,9 +914,9 @@ Renderer_Ducks::render_vfunc(
 
 		if(!screen_duck_list.front().selected)
 		{
-		    color.set_rgba(color.get_red()*2/3,
-		                    color.get_green()*2/3,
-		                    color.get_blue()*2/3);
+			color.set_rgba(color.get_red()*2/3,
+							color.get_green()*2/3,
+							color.get_blue()*2/3);
 		}
 
 		if(screen_duck_list.front().hover)

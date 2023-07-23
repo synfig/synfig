@@ -32,7 +32,8 @@
 /* === H E A D E R S ======================================================= */
 
 #include "smach.h"
-
+#include <gui/workarea.h>
+#include <gui/canvasview.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -43,6 +44,7 @@
 namespace studio {
 
 class StateNormal_Context;
+class DuckDrag_Base;
 
 class StateNormal : public Smach::state<StateNormal_Context>
 {
@@ -53,6 +55,44 @@ public:
 }; // END of class StateNormal
 
 extern StateNormal state_normal;
+
+//better to just have this class in a separate or other file
+class DuckDrag_Combo : public DuckDrag_Base
+{
+	synfig::Vector last_move;
+	synfig::Vector drag_offset;
+	synfig::Vector center;
+	synfig::Vector snap;
+
+	synfig::Angle original_angle;
+	synfig::Real original_mag;
+
+	std::vector<synfig::Vector> last_;
+	std::vector<synfig::Vector> positions;
+	std::set<Duck::Handle> selectedDucks;
+
+	bool duck_independent_move;
+
+	bool bad_drag;
+	bool move_only;
+
+	bool is_moving;
+
+	DuckList get_selected_ducks(const Duckmatic& duckmatic) const;
+	void select_all_ducks(const Duckmatic& duckmatic);
+
+public:
+	CanvasView* canvas_view_;
+	bool scale;
+	bool rotate;
+	bool constrain;
+	DuckDrag_Combo(bool duck_independent_drag = false);
+	void begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& begin);
+	bool end_duck_drag(Duckmatic* duckmatic);
+	void duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector);
+
+	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
+};
 
 }; // END of namespace studio
 
