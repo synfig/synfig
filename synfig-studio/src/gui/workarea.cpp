@@ -1305,7 +1305,6 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				//	selected_bezier->signal_user_click(0)(bezier_click_pos);
 				//}
 
-				clear_selected_movement_ducks();
 				//check for a layer click
 				if (Layer::Handle layer = get_canvas()->find_layer(get_canvas_view()->get_context_params(), mouse_pos)) {//make a new event layer pressed
 					if (canvas_view->get_smach().process_event(EventLayerClick(layer, BUTTON_LEFT, mouse_pos, modifier)) == Smach::RESULT_OK)
@@ -1328,10 +1327,10 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 							}
 						}
 
-						//if layer is part of a group does it have a handle to the "parent" group ?
-						select_all_movement_ducks(canvas_view, layer);
+						//to allow duck map to have the needed ducks before we start dragging
+						canvas_view->rebuild_ducks();
 
-						if (!get_selected_movement_ducks().empty()){
+						if (!get_duck_list().empty()){
 							set_drag_mode(DRAG_DUCK);
 							drag_point=mouse_pos;
 							//drawing_area->queue_draw();

@@ -171,14 +171,6 @@ Duckmatic::clear_selected_ducks()
 	signal_duck_selection_changed_();
 }
 
-//TODO!:
-//"selected movement ducks" should probably be renamed to stored movement ducks
-// as they are just stored to be used by the select tool. They are not actually
-// selected. Also this way it would avoid confusion
-void Duckmatic::clear_selected_movement_ducks()
-{
-	selected_movement_ducks.clear();
-}
 
 etl::handle<Duckmatic::Duck>
 Duckmatic::get_selected_duck()const
@@ -306,27 +298,6 @@ Duckmatic::unselect_all_ducks()
 		unselect_duck(iter->second);
 }
 
-void Duckmatic::select_all_movement_ducks(etl::loose_handle<studio::CanvasView> canvas_view, Layer::Handle layer)
-{
-	//clear any previously selected ducks
-	selected_movement_ducks.clear();
-
-	//first make sure the layer is selected as if it is not then its ducks will not be in the ducks map
-	//canvas_view->get_selection_manager()->set_selected_layer(layer);
-	canvas_view->rebuild_ducks();
-
-	DuckMap::const_iterator iter;
-	for(iter=duck_map.begin();iter!=duck_map.end();++iter){
-		if (iter->second->get_type() != Duck::TYPE_VERTEX &&
-			 iter->second->get_type() != Duck::TYPE_POSITION)
-			continue;
-
-		if (iter->second){
-			selected_movement_ducks.insert((iter->second)->get_guid());
-		}
-	}
-}
-
 void
 Duckmatic::toggle_select_ducks_in_box(const synfig::Vector& tl,const synfig::Vector& br)
 {
@@ -410,24 +381,6 @@ Duckmatic::get_selected_ducks()const
 			continue;
 
 		ret.push_back(d_iter->second);
-	}
-	return ret;
-}
-
-DuckList Duckmatic::get_selected_movement_ducks() const
-{
-	DuckList ret;
-	GUIDSet::const_iterator iter;
-
-	for(iter=selected_movement_ducks.begin();iter!=selected_movement_ducks.end();++iter)
-	{
-		const DuckMap::const_iterator d_iter(duck_map.find(*iter));
-
-		if(d_iter==duck_map.end())
-			continue;
-
-		if (d_iter->second)
-			ret.push_back(d_iter->second);
 	}
 	return ret;
 }
@@ -1073,15 +1026,9 @@ Duckmatic::signal_edited_selected_ducks(bool moving)
 	selected_ducks=old_set;
 }
 
-void Duckmatic::signal_edited_selected_movement_ducks(bool moving)
+void Duckmatic::signal_edited_ducks_list(const DuckList& ducks, bool moving)
 {
-
-	const DuckList ducks(get_selected_movement_ducks());
-	DuckList::const_iterator iter;
-
-	synfig::GUIDSet old_set(selected_movement_ducks);
-
-	for(iter=ducks.begin();iter!=ducks.end();++iter)
+	for(DuckList::const_iterator iter=ducks.begin();iter!=ducks.end();++iter)
 	{
 		try
 		{
@@ -1090,11 +1037,9 @@ void Duckmatic::signal_edited_selected_movement_ducks(bool moving)
 		}
 		catch (const String&)
 		{
-			selected_movement_ducks=old_set;
 			synfig::warning("signals must not throw exceptions");
 		}
 	}
-	selected_movement_ducks=old_set;
 }
 
 bool
