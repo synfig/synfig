@@ -3267,19 +3267,36 @@ bool Duckmatic::add_select_tool_ducks(std::list<synfig::Layer::Handle> layer_lis
 	for (auto layer: layer_list){
 		// add offset duck
 		Rect boundingRect = layer->get_bounding_rect();
-		std::vector<Point> points = {boundingRect.get_min(), boundingRect.get_max(),
-								Point(boundingRect.minx, boundingRect.maxy),
-								Point(boundingRect.maxx, boundingRect.miny)};
+		std::vector<Point> cornerPoints = {boundingRect.get_min(), boundingRect.get_max(),
+											Point(boundingRect.minx, boundingRect.maxy),
+											Point(boundingRect.maxx, boundingRect.miny)};
+
+		std::vector<Point> midPoints = { Point(boundingRect.minx, boundingRect.miny + (boundingRect.maxy-boundingRect.miny)/2.0),
+											Point(boundingRect.minx + (boundingRect.maxx-boundingRect.minx)/2.0, boundingRect.miny),
+											Point(boundingRect.minx + (boundingRect.maxx-boundingRect.minx)/2.0, boundingRect.maxy),
+											Point(boundingRect.maxx,boundingRect.miny + (boundingRect.maxy-boundingRect.miny)/2.0)};
+
 		for (int i = 0; i < 4; ++i){
+			//add rotation handles
 			Duck::Handle duck = new Duck();
 			//is this even necessary
 			set_duck_value_desc(*duck, synfigapp::ValueDesc(layer, "rotate_handle" + std::to_string(i)), transform_stack_);
-			duck->set_point(points[i]);
+			duck->set_point(cornerPoints[i]);
 			duck->set_editable(true);
 			duck->set_type(Duck::TYPE_SELECT_ROTATE);
-//			connect_signals(duck, duck->get_value_desc(), *canvas_view);
 			add_duck(duck);
+
+			//add scale handles
+			duck = new Duck();
+			//is this even necessary
+			set_duck_value_desc(*duck, synfigapp::ValueDesc(layer, "scale_handle" + std::to_string(i)), transform_stack_);
+			duck->set_point(midPoints[i]);
+			duck->set_editable(true);
+			duck->set_type(Duck::TYPE_SELECT_SCALE);
+			add_duck(duck);
+
 		}
+
 	}
 	return true;
 }

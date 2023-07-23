@@ -304,7 +304,7 @@ DuckDrag_Combo::get_selected_ducks(const Duckmatic& duckmatic) const
 {
 	if(duck_independent_move){
 
-		if (rotate){
+		if (rotate || scale){
 			//we only need the vertex + non position ducks for rotation of region layers
 			//as for other non-region layers it looks like so far rotate
 			//functionality isn't implemented in them.
@@ -384,8 +384,18 @@ DuckDrag_Combo::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& offs
 		if (duckmatic->find_duck(offset, 0.1) && duckmatic->find_duck(offset)->get_type() == Duck::TYPE_SELECT_ROTATE){
 			rotate = true;
 			move_only = false;
+			scale = false;
+			constrain = false;
+		} else if (duckmatic->find_duck(offset, 0.1) && duckmatic->find_duck(offset)->get_type() == Duck::TYPE_SELECT_SCALE){
+			std::cout<<"scale"<<std::endl;
+			scale = true;
+			move_only = false;
+			rotate = false;
+			constrain = true;
 		} else {
 			rotate = false;
+			scale = false;
+			constrain = false;
 		}
 		select_all_ducks(*duckmatic);
 	}

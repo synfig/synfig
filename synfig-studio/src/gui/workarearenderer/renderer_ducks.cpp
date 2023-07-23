@@ -77,6 +77,8 @@ using namespace studio;
 #define DUCK_COLOR_TANGENT_2	Gdk::RGBA("#ff0000") // red
 /** DUCK_COLOR_SKEW : red */
 #define DUCK_COLOR_SKEW         Gdk::RGBA("#ff0000") // red
+/** DUCK_COLOR_SCALE : red*/
+#define DUCK_COLOR_SCALE	Gdk::RGBA("#ff0000") // red
 /** DUCK_COLOR_VERTEX : orange */
 #define DUCK_COLOR_VERTEX		Gdk::RGBA("#ff7f00") // orange
 /** DUCK_COLOR_WIDTH : magenta */
@@ -536,7 +538,10 @@ Renderer_Ducks::render_vfunc(
 		else if ((*iter)->get_move_origin())
 			screen_duck.color=(DUCK_COLOR_WIDTHPOINT_POSITION);
 		else if ((*iter)->get_type()&Duck::TYPE_SELECT_ROTATE){
-			screen_duck.color=DUCK_COLOR_ROTATE;//make a color for this
+			screen_duck.color=DUCK_COLOR_ROTATE;
+			screen_duck.select_tool_transformation = true;
+		} else if ((*iter)->get_type()&Duck::TYPE_SELECT_SCALE){
+			screen_duck.color=DUCK_COLOR_SCALE;
 			screen_duck.select_tool_transformation = true;
 		} else
 			screen_duck.color=DUCK_COLOR_OTHER;
