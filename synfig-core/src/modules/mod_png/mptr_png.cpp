@@ -221,12 +221,12 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 	png_uint_32 rowbytes = png_get_rowbytes(png_ptr, info_ptr);
 
 	// allocate buffer to read image data into
-	png_bytep *row_pointers=new png_bytep[height];
-	png_byte *data = new png_byte[rowbytes*height];
+	std::vector<png_bytep> row_pointers(height);
+	std::vector<png_byte> data(rowbytes * height);
 	for (png_uint_32 i = 0; i < height; i++)
 		row_pointers[i] = &(data[rowbytes*i]);
 
-	png_read_image(png_ptr, row_pointers);
+	png_read_image(png_ptr, row_pointers.data());
 
 	surface.set_wh(width, height);
 	switch(color_type)
@@ -235,24 +235,24 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 		for(int y = 0; y < surface.get_h(); ++y)
 			for(int x = 0; x < surface.get_w(); ++x)
 				surface[y][x]=gamma.apply(Color(
-					get_channel(row_pointers, bit_depth, y, x*3+0),
-					get_channel(row_pointers, bit_depth, y, x*3+1),
-					get_channel(row_pointers, bit_depth, y, x*3+2) ));
+					get_channel(row_pointers.data(), bit_depth, y, x*3+0),
+					get_channel(row_pointers.data(), bit_depth, y, x*3+1),
+					get_channel(row_pointers.data(), bit_depth, y, x*3+2) ));
 		break;
 	case PNG_COLOR_TYPE_RGB_ALPHA:
 		for(int y = 0; y < surface.get_h(); ++y)
 			for(int x = 0; x < surface.get_w(); ++x)
 				surface[y][x]=gamma.apply(Color(
-					get_channel(row_pointers, bit_depth, y, x*4+0),
-					get_channel(row_pointers, bit_depth, y, x*4+1),
-					get_channel(row_pointers, bit_depth, y, x*4+2),
-					get_channel(row_pointers, bit_depth, y, x*4+3) ));
+					get_channel(row_pointers.data(), bit_depth, y, x*4+0),
+					get_channel(row_pointers.data(), bit_depth, y, x*4+1),
+					get_channel(row_pointers.data(), bit_depth, y, x*4+2),
+					get_channel(row_pointers.data(), bit_depth, y, x*4+3) ));
 		break;
 	case PNG_COLOR_TYPE_GRAY:
 		for(int y = 0; y < surface.get_h(); ++y)
 			for(int x = 0; x < surface.get_w(); ++x)
 			{
-				ColorReal gray = get_channel(row_pointers, bit_depth, y, x);
+				ColorReal gray = get_channel(row_pointers.data(), bit_depth, y, x);
 				surface[y][x] = gamma.apply(Color(gray, gray, gray));
 			}
 		break;
@@ -260,8 +260,8 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 		for(int y = 0; y < surface.get_h(); ++y)
 			for(int x = 0; x < surface.get_w(); ++x)
 			{
-				ColorReal gray = get_channel(row_pointers, bit_depth, y, x*2+0);
-				ColorReal a    = get_channel(row_pointers, bit_depth, y, x*2+1);
+				ColorReal gray = get_channel(row_pointers.data(), bit_depth, y, x*2+0);
+				ColorReal a    = get_channel(row_pointers.data(), bit_depth, y, x*2+1);
 				surface[y][x] = gamma.apply(Color(gray, gray, gray, a));
 			}
 		break;
