@@ -158,7 +158,7 @@ void Dialog_Workspaces::on_delete_clicked()
 	// get_selected_rows() return TreePath not TreeIter
 	// So, deleting an item, invalidates the other TreePaths (they point to wrong items)
 	std::vector<std::string> names;
-	for (auto selected_path : current_selection->get_selected_rows()) {
+	for (const auto& selected_path : current_selection->get_selected_rows()) {
 		std::string name;
 		workspace_model->get_iter(selected_path)->get_value(0, name);
 		names.push_back(name);

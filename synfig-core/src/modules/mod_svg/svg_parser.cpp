@@ -2737,7 +2737,7 @@ Style::merge(const xmlpp::Element *elem)
 	//   - if a 'clip-path' property is specified on an ancestor element, and the current element
 	//       has a 'clip-path' of none, the ancestor's clipping path still applies to current element
 
-	for (auto prop : style.data) {
+	for (const auto& prop : style.data) {
 		if (prop.first == "clip-path" && prop.second == "none")
 			continue;
 		// TODO: Relative values?

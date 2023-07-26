@@ -84,7 +84,7 @@ bool LayerRemove::is_child_of_another_layer_in_list(Layer::LooseHandle layer) co
 void LayerRemove::filter_layer_list()
 {
 	std::list<std::tuple<synfig::Layer::Handle, int, synfig::Canvas::Handle> > filtered_layer_list;
-	for (auto layer_tuple : layer_list) {
+	for (auto& layer_tuple : layer_list) {
 		if (!is_child_of_another_layer_in_list(std::get<0>(layer_tuple)))
 			filtered_layer_list.push_back(layer_tuple);
 	}

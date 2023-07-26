@@ -83,7 +83,7 @@ _curve_selection_changed(Gtk::TreeView* param_tree_view, Widget_Curves* curves, 
 
 	auto path_list = param_tree_view->get_selection()->get_selected_rows();
 	auto model = param_tree_view->get_model();
-	for (auto path_it : path_list) {
+	for (const auto& path_it : path_list) {
 		auto iter = model->get_iter(path_it);
 		std::string name;
 
