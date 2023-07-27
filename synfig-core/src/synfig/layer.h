@@ -33,6 +33,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <map>
+#include <unordered_map>
 
 #include <ETL/handle>
 
@@ -318,6 +319,8 @@ private:
 	void on_file_changed(const Glib::RefPtr<Gio::File>&, const Glib::RefPtr<Gio::File>&, Gio::FileMonitorEvent);
 	sigc::connection monitor_connection;
 	std::string monitored_path;
+
+	std::unordered_map<std::string, std::unordered_map<std::string, ValueBase>> parameter_cache;
 public:
 	bool monitor(const std::string& path); // append file monitor (returns true on success, false on fail)
 

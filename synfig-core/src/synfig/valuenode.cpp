@@ -71,7 +71,7 @@ ValueNode::breakpoint()
 	return;
 }
 
-ValueNode::ValueNode(Type &type):type(&type)
+ValueNode::ValueNode(Type &type):type(&type), valueNodeChanged(true)
 {
 	value_node_count++;
 }

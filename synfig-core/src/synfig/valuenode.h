@@ -115,6 +115,9 @@ public:
 
 	static void breakpoint();
 
+	//! used for valuenode caching
+	bool valueNodeChanged;
+
 	/*
  --	** -- D A T A -------------------------------------------------------------
 	*/

@@ -876,6 +876,7 @@ Action::ValueDescSet::prepare()
 		action->set_param("waypoint",waypoint);
 		if(!action->is_ready())
 			throw Error(Error::TYPE_NOTREADY);
+		value_node->valueNodeChanged = true;
 		add_action(action);
 		return;
 	}
@@ -893,6 +894,7 @@ Action::ValueDescSet::prepare()
 				if(!action->is_ready())
 					throw Error(Error::TYPE_NOTREADY);
 				add_action_front(action);
+				value_node->valueNodeChanged = true;
 				return;
 			}
 			else
@@ -954,6 +956,8 @@ Action::ValueDescSet::prepare()
 						action->set_param("waypoint",waypoint);
 						if(!action->is_ready())
 							throw Error(Error::TYPE_NOTREADY);
+						value_node->valueNodeChanged = true;
+
 						add_action(action);
 					}
 					return;
