@@ -158,6 +158,9 @@ gl::Shaders::initialize()
 	map["blit.fs"] = load_shader("blit.fs");
 	assert(map["blit.fs"].valid);
 
+	map["box_blur.fs"] = load_shader("blurs/box_blur.fs");
+	assert(map["box_blur.fs"].valid);
+
 	// blend
 	load_blend(Color::BLEND_COMPOSITE,      "composite");
 	load_blend(Color::BLEND_STRAIGHT,       "straight");
@@ -303,6 +306,9 @@ gl::Programs::initialize(const Shaders& shaders)
 	map["blit"] = create_program({ shaders.get_shader("basic.vs"), shaders.get_shader("blit.fs") });
 	assert(map["blit"].valid);
 
+	map["box_blur"] = create_program({ shaders.get_shader("basic.vs"), shaders.get_shader("box_blur.fs") });
+	assert(map["box_blur"].valid);
+
 	// blend
 	load_blend(shaders, Color::BLEND_COMPOSITE,      "composite");
 	load_blend(shaders, Color::BLEND_STRAIGHT,       "straight");
@@ -407,6 +413,15 @@ gl::Programs::Program::set_2i(const std::string &name, VectorInt value)
 
 	int loc = glGetUniformLocation(id, name.c_str());
 	glUniform2i(loc, value[0], value[1]);
+}
+
+void
+gl::Programs::Program::set_4i(const std::string &name, int a, int b, int c, int d)
+{
+	assert(valid);
+
+	int loc = glGetUniformLocation(id, name.c_str());
+	glUniform4i(loc, a, b, c, d);
 }
 
 void

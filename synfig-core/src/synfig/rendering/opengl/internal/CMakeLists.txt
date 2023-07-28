@@ -13,6 +13,7 @@ set(RENDERING_OPENGL_INTERNAL_SHADER_FILES
 	"shaders/blend.fs"
 	"shaders/blit.fs"
 	"shaders/basic.vs"
+	"shaders/blurs/box_blur.fs"
 )
 
 foreach (SHADER IN ITEMS ${RENDERING_OPENGL_INTERNAL_SHADER_FILES})
