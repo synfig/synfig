@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/internal/glsl/blurs/box_blur.fs
-**	\brief Box Blur Fragment Shader
+/*!	\file synfig/rendering/opengl/internal/glsl/blurs/cross_blur.fs
+**	\brief Cross Hatch Blur Fragment Shader
 **
 **	\legal
 **	......... ... 2023 Bharat Sahlot
@@ -29,7 +29,6 @@ uniform sampler2D tex;
 
 uniform ivec2 size;
 uniform ivec4 rect;
-uniform bool horizontal; // can possibly make this a define
 
 layout (location = 0) out vec4 out_color;
 
@@ -37,29 +36,29 @@ void main()
 {
 	ivec2 coord = ivec2(floor(gl_FragCoord));
 
-    if(horizontal) {
-        int minx = max(coord.x - size.x, rect[0]);
-        int maxx = min(coord.x + size.x, rect[1] - 1);
+    int minx = max(coord.x - size.x, rect[0]);
+    int maxx = min(coord.x + size.x, rect[1] - 1);
+    int miny = max(coord.y - size.y, rect[2]);
+    int maxy = min(coord.y + size.y, rect[3] - 1);
 
-        int total = 0;
-        vec4 sum = vec4(0);
-        for(int x = minx; x <= maxx; x++, total++)
-        {
-            sum += texelFetch(tex, ivec2(x, coord.y), 0);
-        }
-        sum /= total;
-        out_color = sum;
-    } else {
-        int miny = max(coord.y - size.y, rect[2]);
-        int maxy = min(coord.y + size.y, rect[3] - 1);
+    int total_size = 0;
 
-        int total = 0;
-        vec4 sum = vec4(0);
-        for(int y = miny; y <= maxy; y++, total++)
-        {
-            sum += texelFetch(tex, ivec2(coord.x, y), 0);
-        }
-        sum /= total;
-        out_color = sum;
+    vec4 sumy = vec4(0);
+    for(int y = miny; y <= maxy; y++)
+    {
+        sumy += texelFetch(tex, ivec2(coord.x, y), 0);
+        total_size++;
     }
+    sumy /= total_size;
+
+    total_size = 0;
+    vec4 sumx = vec4(0);
+    for(int x = minx; x <= maxx; x++)
+    {
+        sumx += texelFetch(tex, ivec2(x, coord.y), 0);
+        total_size++;
+    }
+    sumx /= total_size;
+
+    out_color = (sumx + sumy) / 2;
 }

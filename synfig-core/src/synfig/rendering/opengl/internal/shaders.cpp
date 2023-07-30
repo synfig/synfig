@@ -161,6 +161,12 @@ gl::Shaders::initialize()
 	map["box_blur.fs"] = load_shader("blurs/box_blur.fs");
 	assert(map["box_blur.fs"].valid);
 
+	map["cross_blur.fs"] = load_shader("blurs/cross_blur.fs");
+	assert(map["cross_blur.fs"].valid);
+
+	map["disc_blur.fs"] = load_shader("blurs/disc_blur.fs");
+	assert(map["disc_blur.fs"].valid);
+
 	// blend
 	load_blend(Color::BLEND_COMPOSITE,      "composite");
 	load_blend(Color::BLEND_STRAIGHT,       "straight");
@@ -308,6 +314,12 @@ gl::Programs::initialize(const Shaders& shaders)
 
 	map["box_blur"] = create_program({ shaders.get_shader("basic.vs"), shaders.get_shader("box_blur.fs") });
 	assert(map["box_blur"].valid);
+
+	map["cross_blur"] = create_program({ shaders.get_shader("basic.vs"), shaders.get_shader("cross_blur.fs") });
+	assert(map["cross_blur"].valid);
+
+	map["disc_blur"] = create_program({ shaders.get_shader("basic.vs"), shaders.get_shader("disc_blur.fs") });
+	assert(map["disc_blur"].valid);
 
 	// blend
 	load_blend(shaders, Color::BLEND_COMPOSITE,      "composite");

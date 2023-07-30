@@ -46,6 +46,8 @@
 #include "../../common/task/taskpixelprocessor.h"
 #include "../../common/task/taskblur.h"
 
+#include "../../software/function/blur.h"
+
 #include "synfig/angle.h"
 #include <math.h>
 #include <vector>
@@ -121,52 +123,85 @@ public:
 		gl::Context::Lock lock(env().get_or_create_context());
 		gl::Framebuffer& framebuffer = ldst->get_framebuffer();
 
+		// const float precision(1e-10);
+
+        Vector ppu = get_pixels_per_unit();
+        Vector s = blur.size.multiply_coords(ppu) * software::Blur::get_size_amplifier(blur.type);
+        VectorInt size;
+        size[0] = round(s[0]);
+        size[1] = round(s[1]);
+
 		glEnable(GL_SCISSOR_TEST);
 
         gl::Framebuffer blitBuffer;
         blitBuffer.from_pixels(ldst->get_width(), ldst->get_height(), nullptr);
 
+        gl::Framebuffer* fbos[] = { &framebuffer, &blitBuffer };
+        int cfbo = 1;
+        if(blur.type == Blur::BOX) cfbo = 0;
+
 		glViewport(0, 0, ldst->get_width(), ldst->get_height());
 
-        blitBuffer.use_write();
+        fbos[cfbo]->use_write();
         // first blit sub task to a new framebuffer then
-        if(!blit_sub_task(blitBuffer, sub_task()))
+        if(!blit_sub_task(*fbos[cfbo], sub_task()))
         {
-            blitBuffer.unuse();
+            fbos[0]->unuse();
+            fbos[1]->unuse();
+            fbos[1]->reset();
             return false;
         }
-        blitBuffer.unuse();
-
-        // blur the framebuffer
-        framebuffer.use_write();
-        blitBuffer.use_read(0);
+        fbos[cfbo]->unuse();
+        cfbo = (cfbo + 1) % 2;
 
         glScissor(target_rect.minx, target_rect.miny, target_rect.get_width(), target_rect.get_height());
 
-		const float precision(1e-10);
+        gl::Programs::Program shader;
+        switch (blur.type) {
+            case Blur::BOX:
+                shader = env().get_or_create_context().get_program("box_blur");
+                break;
+            case Blur::DISC:
+                shader = env().get_or_create_context().get_program("disc_blur");
+                break;
+            case Blur::CROSS:
+                shader = env().get_or_create_context().get_program("cross_blur");
+            case Blur::FASTGAUSSIAN:
+            case Blur::GAUSSIAN:
+                break;
+        }
+        assert(shader.valid);
 
-        if(blur.type == Blur::Type::BOX)
+        shader.use();
+        shader.set_1i("tex", 0);
+        shader.set_2i("size", size);
+        shader.set_1i("horizontal", true);
+        shader.set_4i("rect", target_rect.minx, target_rect.maxx, target_rect.miny, target_rect.maxy);
+
+        fbos[cfbo]->use_write();
+        fbos[(cfbo + 1) % 2]->use_read(0);
+        cfbo = (cfbo + 1) % 2;
+
+        gl::Plane plane;
+        plane.render();
+
+        fbos[0]->unuse();
+        fbos[1]->unuse();
+
+        if(blur.type == Blur::BOX)
         {
-            Vector ppu = get_pixels_per_unit();
-            Vector s = blur.size.multiply_coords(ppu) * 0.25 * sqrt(PI);
+            fbos[cfbo]->use_write();
+            fbos[(cfbo + 1) % 2]->use_read(0);
 
-            VectorInt size;
-            size[0] = 1 + floor(s[0] + precision);
-            size[1] = 1 + floor(s[1] + precision);
+            shader.set_1i("horizontal", false);
 
-            gl::Programs::Program shader = env().get_or_create_context().get_program("box_blur");
-            assert(shader.valid);
-            shader.use();
-            shader.set_1i("tex", 0);
-            shader.set_2i("size", size);
-            shader.set_4i("rect", target_rect.minx, target_rect.maxx, target_rect.miny, target_rect.maxy);
-
-            gl::Plane plane;
             plane.render();
+
+            fbos[0]->unuse();
+            fbos[1]->unuse();
         }
 
-        blitBuffer.unuse();
-		framebuffer.unuse();
+        fbos[1]->reset();
 
 		glDisable(GL_SCISSOR_TEST);
 		return true;
