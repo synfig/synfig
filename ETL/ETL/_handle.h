@@ -44,8 +44,6 @@
 
 /* === T Y P E D E F S ===================================================== */
 
-#define ETL_SELF_DELETING_SHARED_OBJECT
-
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace etl {
@@ -74,11 +72,7 @@ public:
 protected:
 	shared_object() noexcept : refcount(0) { }
 
-#ifdef ETL_SELF_DELETING_SHARED_OBJECT
 	virtual ~shared_object() { }
-#else
-	~shared_object() { }
-#endif
 
 public:
 	virtual void ref() const noexcept
@@ -90,10 +84,8 @@ public:
 	virtual bool unref()const
 	{
 		bool ret = (bool)(--refcount);
-#ifdef ETL_SELF_DELETING_SHARED_OBJECT
 		if (!ret)
 			delete this;
-#endif
 		return ret;
 	}
 
@@ -183,13 +175,8 @@ public:
 	{
 		pointer xobj(obj);
 		obj = nullptr;
-#ifdef ETL_SELF_DELETING_SHARED_OBJECT
 		if(xobj)
 			xobj->unref();
-#else
-		if(xobj && !xobj->unref())
-			delete xobj;
-#endif
 	}
 
 	bool empty() const noexcept { return !obj; }
