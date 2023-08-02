@@ -59,6 +59,8 @@ class Dialog_Guide : public Gtk::Dialog
 	WorkArea* current_work_area;
 
 	Gtk::SpinButton* angle_widget;
+	Gtk::SpinButton* x_widget;
+	Gtk::SpinButton* y_widget;
 	Glib::RefPtr<Gtk::Adjustment> angle_adjustment;
 
 	Gtk::ComboBoxText angle_type_picker;
