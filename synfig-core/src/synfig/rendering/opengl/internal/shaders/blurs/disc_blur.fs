@@ -27,50 +27,81 @@
 
 uniform sampler2D tex;
 
-uniform ivec2 size;
+uniform vec2 size;
 
 layout (location = 0) out vec4 out_color;
+
+const float preci = 0.0000000001;
 
 void main()
 {
 	ivec2 coord = ivec2(floor(gl_FragCoord));
 
-    int minx = coord.x - size.x;
-    int maxx = coord.x + size.x;
-    int miny = coord.y - size.y;
-    int maxy = coord.y + size.y;
+    int sx = int(ceil(size.x - preci));
+    int sy = int(ceil(size.y - preci));
 
-    int total_size = 0;
+    float k0x = size.x, k0y = size.y;
+    float k1x = size.x + 1, k1y = size.y + 1;
 
-    vec4 sum = vec4(0);
-    for(int y = miny; y <= maxy; y++)
+    float kk0x = 1.0 / k0x;
+    float kk0y = 1.0 / k0y;
+    float kk1x = 1.0 / k1x;
+    float kk1y = 1.0 / k1y;
+
+    float pp0x = 0, pp0y = 0;
+    float pp1x = 0, pp1y = 0;
+
+    int minx = coord.x - sx;
+    int maxx = coord.x + sx;
+    int miny = coord.y - sy;
+    int maxy = coord.y + sy;
+
+    vec4 sum = texelFetch(tex, coord, 0);
+    float total_weight = 1;
+    for(int y = 0; y <= maxy; y++)
     {
-        for(int x = minx; x <= maxx; x++)
+        for(int x = 0; x <= maxx; x++)
         {
-            float dx = abs(x - coord.x + 0.5) / size.x;
-            float dy = abs(y - coord.y + 0.5) / size.y;
-            float d = dx * dx + dy * dy;
+            if(x == 0 && y == 0) continue;
 
-            if(d >= 1.0) continue;
+            float r1s = pp1x * pp1x + pp1y * pp1y;
+            if(r1s >= 1) continue;
 
-            float d1x = abs(x - coord.x - 0.5) / size.x;
-            float d1y = abs(y - coord.y - 0.5) / size.y;
-            float d1 = d1x * d1x + d1y * d1y;
-
-            float weight = 1;
-            if(d1 > 1.0) {
-                float r0 = sqrt(d1);
-                float r1 = sqrt(d);
-                float dr = r0 - r1;
-                if(dr > 0) weight = r0 * (1.0 - r1);
-                else weight = 0;
+            float weight = 0.0;
+            float r0s = pp0x * pp0x + pp0y * pp0y;
+            if(r0s <= 1.0) weight = 1.0;
+            else {
+                float rr0 = sqrt(r0s);
+                float rr1 = sqrt(r1s);
+                float drr = rr0 - rr1;
+                if(drr > 0) weight = (rr0 * (1.0 - rr1)) / drr;
             }
 
-            sum += weight * texelFetch(tex, ivec2(x, y), 0);
-            total_size++;
+            if(x == 0) {
+                // weight *= 2;
+                sum += weight * texelFetch(tex, coord + ivec2(x, y), 0);
+                sum += weight * texelFetch(tex, coord + ivec2(x, -y), 0);
+                total_weight += 2 * weight;
+            } else if(y == 0) {
+                sum += weight * texelFetch(tex, coord + ivec2(x, y), 0);
+                sum += weight * texelFetch(tex, coord + ivec2(-x, y), 0);
+                total_weight += 2 * weight;
+            } else {
+                sum += weight * texelFetch(tex, coord + ivec2(x, y), 0);
+                sum += weight * texelFetch(tex, coord + ivec2(-x, y), 0);
+                sum += weight * texelFetch(tex, coord + ivec2(x, -y), 0);
+                sum += weight * texelFetch(tex, coord + ivec2(-x, -y), 0);
+                total_weight += 4 * weight;
+            }
+            pp0x += kk0x;
+            pp1x += kk1x;
+            // sum += weight * texelFetch(tex, ivec2(x, y), 0);
         }
+        pp0x = 0; pp0y += kk0y;
+        pp1x = 0; pp1y += kk1y;
     }
-    sum /= total_size;
+    sum /= total_weight;
+    // sum /= total_size;
 
     out_color = sum;
 }

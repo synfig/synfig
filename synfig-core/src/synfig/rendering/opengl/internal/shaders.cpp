@@ -428,6 +428,15 @@ gl::Programs::Program::set_2i(const std::string &name, VectorInt value)
 }
 
 void
+gl::Programs::Program::set_2f(const std::string &name, Vector value)
+{
+	assert(valid);
+
+	int loc = glGetUniformLocation(id, name.c_str());
+	glUniform2f(loc, value[0], value[1]);
+}
+
+void
 gl::Programs::Program::set_4i(const std::string &name, int a, int b, int c, int d)
 {
 	assert(valid);

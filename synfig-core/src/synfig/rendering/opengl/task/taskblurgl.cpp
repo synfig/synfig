@@ -209,7 +209,8 @@ public:
         assert(shader.valid);
         shader.use();
         shader.set_1i("tex", 0);
-        shader.set_2i("size", size);
+        if(blur.type == Blur::DISC) shader.set_2f("size", s);
+        else shader.set_2i("size", size);
 
 		glDisable(GL_SCISSOR_TEST);
 
