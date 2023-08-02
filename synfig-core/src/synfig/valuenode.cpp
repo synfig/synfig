@@ -141,6 +141,7 @@ ValueNode::on_changed()
 {
 	DEBUG_LOG("SYNFIG_DEBUG_ON_CHANGED",
 		"%s:%d ValueNode::on_changed()\n", __FILE__, __LINE__);
+	valueNodeChanged = true;
 
 	Canvas::LooseHandle parent_canvas = get_parent_canvas();
 	if(parent_canvas)
