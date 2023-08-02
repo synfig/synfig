@@ -28,8 +28,8 @@
 uniform sampler2D tex;
 
 uniform ivec2 size;
-uniform ivec4 rect;
-uniform bool horizontal; // can possibly make this a define
+// uniform ivec4 rect;
+uniform bool horizontal;
 
 layout (location = 0) out vec4 out_color;
 
@@ -38,8 +38,8 @@ void main()
 	ivec2 coord = ivec2(floor(gl_FragCoord));
 
     if(horizontal) {
-        int minx = max(coord.x - size.x, rect[0]);
-        int maxx = min(coord.x + size.x, rect[1] - 1);
+        int minx = coord.x - size.x;
+        int maxx = coord.x + size.x;
 
         int total = 0;
         vec4 sum = vec4(0);
@@ -50,8 +50,8 @@ void main()
         sum /= total;
         out_color = sum;
     } else {
-        int miny = max(coord.y - size.y, rect[2]);
-        int maxy = min(coord.y + size.y, rect[3] - 1);
+        int miny = coord.y - size.y;
+        int maxy = coord.y + size.y;
 
         int total = 0;
         vec4 sum = vec4(0);

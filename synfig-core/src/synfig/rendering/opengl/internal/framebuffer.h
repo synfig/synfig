@@ -32,6 +32,7 @@
 #include "synfig/color/color.h"
 
 #include "headers.h"
+#include <cassert>
 
 /* === M A C R O S ========================================================= */
 
@@ -51,6 +52,8 @@ class Framebuffer
 public:
 	// remember to call glViewport once to set appropiate viewport settings
 	bool from_pixels(int width, int height, const Color* pixels = nullptr);
+
+    bool from_dims(int width, int height);
 	
 	void use_write(bool clear = true);
 	void use_read(int tex);
@@ -65,6 +68,11 @@ public:
 	const Color* get_pixels() const;
 
 	bool is_valid() const { return valid; }
+
+    int get_w() const { assert(valid); return width; }
+    int get_h() const { assert(valid); return height; }
+
+    GLuint get_id() const { assert(valid); return id; }
 
 private:
 	GLuint id, texId, activeTexSlot;

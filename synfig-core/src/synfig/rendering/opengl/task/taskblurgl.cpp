@@ -25,6 +25,7 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <algorithm>
 #ifdef USING_PCH
 #	include "pch.h"
 #else
@@ -76,7 +77,13 @@ public:
 
 	bool blit_sub_task(gl::Framebuffer& framebuffer, const Task::Handle& sub) const
 	{
+        VectorInt extraSize = software::Blur::get_extra_size(blur.type, blur.size);
+
 		RectInt r = target_rect;
+        r.minx -= extraSize[0];
+        r.miny -= extraSize[1];
+        r.maxx += extraSize[0];
+        r.maxy += extraSize[1];
 		if(sub && sub->is_valid())
 		{
 			VectorInt oa = TaskList::calc_target_offset(*this, *sub);
@@ -121,89 +128,136 @@ public:
 		if(!ldst) return false;
 
 		gl::Context::Lock lock(env().get_or_create_context());
-		gl::Framebuffer& framebuffer = ldst->get_framebuffer();
+        LockRead lsrc(sub_task());
+        if(!lsrc) {
+            return false;
+        }
 
-		// const float precision(1e-10);
+        gl::Framebuffer destBuf = ldst->get_framebuffer();
+        gl::Framebuffer srcBuf = lsrc.cast_handle()->get_framebuffer();
+
+        gl::Plane plane;
 
         Vector ppu = get_pixels_per_unit();
         Vector s = blur.size.multiply_coords(ppu) * software::Blur::get_size_amplifier(blur.type);
+        if(blur.type == Blur::FASTGAUSSIAN)
+        {
+            s *= 1.662155813;
+        }
+
         VectorInt size;
         size[0] = round(s[0]);
         size[1] = round(s[1]);
 
-		glEnable(GL_SCISSOR_TEST);
+        VectorInt extraSize = software::Blur::get_extra_size(blur.type, blur.size);
 
-        gl::Framebuffer blitBuffer;
-        blitBuffer.from_pixels(ldst->get_width(), ldst->get_height(), nullptr);
+        VectorInt offset = TaskList::calc_target_offset(*this, *sub_task());
 
-        gl::Framebuffer* fbos[] = { &framebuffer, &blitBuffer };
-        int cfbo = 1;
-        if(blur.type == Blur::BOX) cfbo = 0;
+        RectInt blitRect, srcRect, destRect;
+        blitRect = lsrc.rect;
 
-		glViewport(0, 0, ldst->get_width(), ldst->get_height());
+        destRect = target_rect;
+        rect_set_intersect(destRect, destRect, RectInt(0, 0, target_rect.get_width(), target_rect.get_height()));
+        if(!destRect.valid()) return false;
 
-        fbos[cfbo]->use_write();
-        // first blit sub task to a new framebuffer then
-        if(!blit_sub_task(*fbos[cfbo], sub_task()))
-        {
-            fbos[0]->unuse();
-            fbos[1]->unuse();
-            fbos[1]->reset();
-            return false;
+        srcRect = destRect + offset;
+        srcRect.minx -= extraSize[0];
+        srcRect.miny -= extraSize[1];
+        srcRect.maxx += extraSize[0];
+        srcRect.maxy += extraSize[1];
+        if(!srcRect.valid()) return false;
+        rect_set_intersect(srcRect, srcRect, RectInt(0, 0, srcBuf.get_w(), srcBuf.get_h()));
+        if(!srcRect.valid()) return false;
+
+        destRect = srcRect - offset;
+        destRect.minx += extraSize[0];
+        destRect.miny += extraSize[1];
+        destRect.maxx -= extraSize[0];
+        destRect.maxy -= extraSize[1];
+        if(!destRect.valid()) return false;
+        if(!rect_contains(RectInt(0, 0, target_rect.get_width(), target_rect.get_height()), destRect)) return false;
+
+        gl::Framebuffer fbos[2];
+        for(int i = 0; i < 2; i++) {
+            fbos[i].from_dims(blitRect.get_width(), blitRect.get_height());
+            fbos[i].clear();
         }
-        fbos[cfbo]->unuse();
-        cfbo = (cfbo + 1) % 2;
-
-        glScissor(target_rect.minx, target_rect.miny, target_rect.get_width(), target_rect.get_height());
 
         gl::Programs::Program shader;
+        int count = 1;
+        bool separable = true;
+
         switch (blur.type) {
             case Blur::BOX:
                 shader = env().get_or_create_context().get_program("box_blur");
                 break;
             case Blur::DISC:
+                separable = false;
                 shader = env().get_or_create_context().get_program("disc_blur");
                 break;
             case Blur::CROSS:
+                separable = false;
                 shader = env().get_or_create_context().get_program("cross_blur");
+                break;
             case Blur::FASTGAUSSIAN:
+                count = 2;
+                shader = env().get_or_create_context().get_program("box_blur");
+                break;
             case Blur::GAUSSIAN:
                 break;
         }
         assert(shader.valid);
-
         shader.use();
         shader.set_1i("tex", 0);
         shader.set_2i("size", size);
-        shader.set_1i("horizontal", true);
-        shader.set_4i("rect", target_rect.minx, target_rect.maxx, target_rect.miny, target_rect.maxy);
-
-        fbos[cfbo]->use_write();
-        fbos[(cfbo + 1) % 2]->use_read(0);
-        cfbo = (cfbo + 1) % 2;
-
-        gl::Plane plane;
-        plane.render();
-
-        fbos[0]->unuse();
-        fbos[1]->unuse();
-
-        if(blur.type == Blur::BOX)
-        {
-            fbos[cfbo]->use_write();
-            fbos[(cfbo + 1) % 2]->use_read(0);
-
-            shader.set_1i("horizontal", false);
-
-            plane.render();
-
-            fbos[0]->unuse();
-            fbos[1]->unuse();
-        }
-
-        fbos[1]->reset();
 
 		glDisable(GL_SCISSOR_TEST);
+
+        glViewport(0, 0, blitRect.get_width(), blitRect.get_height());
+
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, srcBuf.get_id());
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbos[0].get_id());
+
+        glBlitFramebuffer(0, 0, blitRect.get_width(), blitRect.get_height(), 0, 0, blitRect.get_width(), blitRect.get_height(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+        int lastBuf = 0, curBuf = 1;
+
+        bool horizontal = !separable;
+        for(int j = 0; j < separable + 1; j++)
+        {
+            for(int i = 0; i < count; i++)
+            {
+                // blit to fill the whole buffer and then blur the inner rect
+                glBindFramebuffer(GL_READ_FRAMEBUFFER, fbos[lastBuf].get_id());
+                glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbos[curBuf].get_id());
+                glBlitFramebuffer(0, 0, fbos[lastBuf].get_w(), fbos[lastBuf].get_h(), 0, 0, fbos[lastBuf].get_w(), fbos[lastBuf].get_h(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+                if(separable) shader.set_1i("horizontal", horizontal);
+
+                glEnable(GL_SCISSOR_TEST);
+                glScissor(srcRect.minx, srcRect.miny, srcRect.get_width(), srcRect.get_height());
+
+                fbos[curBuf].use_write();
+                fbos[lastBuf].use_read(0);
+
+                plane.render();
+
+                fbos[curBuf].unuse();
+                fbos[lastBuf].unuse();
+
+                glDisable(GL_SCISSOR_TEST);
+
+                lastBuf = curBuf;
+                curBuf = (curBuf + 1) % 2;
+            }
+            horizontal = true;
+        }
+
+        destBuf.clear();
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, fbos[lastBuf].get_id());
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, destBuf.get_id());
+        glBlitFramebuffer(destRect.minx + offset[0], destRect.miny + offset[1], destRect.maxx + offset[0], destRect.maxy + offset[1], destRect.minx, destRect.miny, destRect.maxx, destRect.maxy, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
 		return true;
 	}
 };

@@ -28,7 +28,7 @@
 uniform sampler2D tex;
 
 uniform ivec2 size;
-uniform ivec4 rect;
+// uniform ivec4 rect;
 
 layout (location = 0) out vec4 out_color;
 
@@ -36,10 +36,10 @@ void main()
 {
 	ivec2 coord = ivec2(floor(gl_FragCoord));
 
-    int minx = max(coord.x - size.x, rect[0]);
-    int maxx = min(coord.x + size.x, rect[1] - 1);
-    int miny = max(coord.y - size.y, rect[2]);
-    int maxy = min(coord.y + size.y, rect[3] - 1);
+    int minx = coord.x - size.x;
+    int maxx = coord.x + size.x;
+    int miny = coord.y - size.y;
+    int maxy = coord.y + size.y;
 
     int total_size = 0;
 

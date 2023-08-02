@@ -82,6 +82,12 @@ gl::Framebuffer::from_pixels(int width, int height, const Color* pixels)
 	return true;
 }
 
+bool
+gl::Framebuffer::from_dims(int width, int height)
+{
+    return from_pixels(width, height);
+}
+
 void
 gl::Framebuffer::use_write(bool clear)
 {
