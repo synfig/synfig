@@ -216,6 +216,8 @@ public:
                 // blit to fill the whole buffer and then blur the inner rect
                 blit_framebuffer(fbos[lastBuf], fbos[curBuf], VectorInt(0, 0), false, false);
 
+                shader.use();
+
                 if(separable) shader.set_1i("horizontal", horizontal);
 
                 glEnable(GL_SCISSOR_TEST);
@@ -224,7 +226,6 @@ public:
                 fbos[curBuf].use_write();
                 fbos[lastBuf].use_read(0);
 
-                shader.use();
                 plane.render();
 
                 fbos[curBuf].unuse();
