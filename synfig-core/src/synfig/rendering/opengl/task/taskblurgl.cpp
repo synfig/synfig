@@ -75,51 +75,7 @@ public:
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 
-	bool blit_sub_task(gl::Framebuffer& framebuffer, const Task::Handle& sub) const
-	{
-        VectorInt extraSize = software::Blur::get_extra_size(blur.type, blur.size);
-
-		RectInt r = target_rect;
-        r.minx -= extraSize[0];
-        r.miny -= extraSize[1];
-        r.maxx += extraSize[0];
-        r.maxy += extraSize[1];
-		if(sub && sub->is_valid())
-		{
-			VectorInt oa = TaskList::calc_target_offset(*this, *sub);
-			RectInt ra = sub->target_rect - oa;
-
-			if(ra.is_valid())
-			{
-				rect_set_intersect(ra, ra, r);
-
-				// blit sub_task_a in the intersection
-				LockRead lsrc(sub);
-				if(!lsrc) {
-					return false;
-				}
-
-				gl::Framebuffer& src = lsrc.cast_handle()->get_framebuffer();
-				src.use_read(0);
-
-				framebuffer.use_write(false);
-
-				glScissor(ra.minx, ra.miny, ra.get_width(), ra.get_height());
-
-                gl::Programs::Program shader = env().get_or_create_context().get_program("blit");
-                shader.use();
-                shader.set_1i("tex", 0);
-                shader.set_2i("offset", oa);
-
-				gl::Plane plane;
-				plane.render();
-
-				src.unuse();
-			}
-		}
-		return true;
-	}
-
+    // TODO: fix the case when target_rect is bigger than sub_task rect, happens when blurring is used for feathered edges
 	virtual bool run(RunParams&) const
 	{
 		if(!is_valid()) return true;
@@ -139,19 +95,22 @@ public:
         gl::Plane plane;
 
         Vector ppu = get_pixels_per_unit();
-        Vector s = blur.size.multiply_coords(ppu) * software::Blur::get_size_amplifier(blur.type);
+        Vector orig_size = blur.size.multiply_coords(ppu);
+
+        Vector s = orig_size * software::Blur::get_size_amplifier(blur.type);
         if(blur.type == Blur::FASTGAUSSIAN)
         {
             s *= 1.662155813;
         }
 
+        VectorInt extraSize = software::Blur::get_extra_size(blur.type, orig_size);
+
         VectorInt size;
         size[0] = round(s[0]);
         size[1] = round(s[1]);
 
-        VectorInt extraSize = software::Blur::get_extra_size(blur.type, blur.size);
-
         VectorInt offset = TaskList::calc_target_offset(*this, *sub_task());
+        offset += target_rect.get_min();
 
         RectInt blitRect, srcRect, destRect;
         blitRect = lsrc.rect;
@@ -177,6 +136,8 @@ public:
         if(!destRect.valid()) return false;
         if(!rect_contains(RectInt(0, 0, target_rect.get_width(), target_rect.get_height()), destRect)) return false;
 
+        offset = srcRect.get_min() + extraSize;
+
         gl::Framebuffer fbos[2];
         for(int i = 0; i < 2; i++) {
             fbos[i].from_dims(blitRect.get_width(), blitRect.get_height());
@@ -186,6 +147,7 @@ public:
         gl::Programs::Program shader;
         int count = 1;
         bool separable = true;
+        bool floatSize = false;
 
         switch (blur.type) {
             case Blur::BOX:
@@ -193,6 +155,7 @@ public:
                 break;
             case Blur::DISC:
                 separable = false;
+                floatSize = true;
                 shader = env().get_or_create_context().get_program("disc_blur");
                 break;
             case Blur::CROSS:
@@ -204,13 +167,17 @@ public:
                 shader = env().get_or_create_context().get_program("box_blur");
                 break;
             case Blur::GAUSSIAN:
+                floatSize = true;
+                shader = env().get_or_create_context().get_program("gauss_blur");
                 break;
         }
         assert(shader.valid);
         shader.use();
         shader.set_1i("tex", 0);
-        if(blur.type == Blur::DISC) shader.set_2f("size", s);
+        if(floatSize) shader.set_2f("size", s);
         else shader.set_2i("size", size);
+
+        if(blur.type == Blur::GAUSSIAN) shader.set_2i("psize", extraSize);
 
 		glDisable(GL_SCISSOR_TEST);
 
@@ -231,7 +198,7 @@ public:
                 // blit to fill the whole buffer and then blur the inner rect
                 glBindFramebuffer(GL_READ_FRAMEBUFFER, fbos[lastBuf].get_id());
                 glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbos[curBuf].get_id());
-                glBlitFramebuffer(0, 0, fbos[lastBuf].get_w(), fbos[lastBuf].get_h(), 0, 0, fbos[lastBuf].get_w(), fbos[lastBuf].get_h(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+                glBlitFramebuffer(0, 0, blitRect.get_width(), blitRect.get_height(), 0, 0, blitRect.get_width(), blitRect.get_height(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
                 if(separable) shader.set_1i("horizontal", horizontal);
 

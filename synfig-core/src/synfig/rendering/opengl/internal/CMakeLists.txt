@@ -16,6 +16,7 @@ set(RENDERING_OPENGL_INTERNAL_SHADER_FILES
 	"shaders/blurs/box_blur.fs"
 	"shaders/blurs/cross_blur.fs"
 	"shaders/blurs/disc_blur.fs"
+	"shaders/blurs/gauss_blur.fs"
 )
 
 foreach (SHADER IN ITEMS ${RENDERING_OPENGL_INTERNAL_SHADER_FILES})

@@ -167,6 +167,9 @@ gl::Shaders::initialize()
 	map["disc_blur.fs"] = load_shader("blurs/disc_blur.fs");
 	assert(map["disc_blur.fs"].valid);
 
+	map["gauss_blur.fs"] = load_shader("blurs/gauss_blur.fs");
+	assert(map["gauss_blur.fs"].valid);
+
 	// blend
 	load_blend(Color::BLEND_COMPOSITE,      "composite");
 	load_blend(Color::BLEND_STRAIGHT,       "straight");
@@ -320,6 +323,9 @@ gl::Programs::initialize(const Shaders& shaders)
 
 	map["disc_blur"] = create_program({ shaders.get_shader("basic.vs"), shaders.get_shader("disc_blur.fs") });
 	assert(map["disc_blur"].valid);
+
+	map["gauss_blur"] = create_program({ shaders.get_shader("basic.vs"), shaders.get_shader("gauss_blur.fs") });
+	assert(map["gauss_blur"].valid);
 
 	// blend
 	load_blend(shaders, Color::BLEND_COMPOSITE,      "composite");

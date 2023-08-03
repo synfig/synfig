@@ -51,10 +51,10 @@ void main()
     float pp0x = 0, pp0y = 0;
     float pp1x = 0, pp1y = 0;
 
-    int minx = coord.x - sx;
-    int maxx = coord.x + sx;
-    int miny = coord.y - sy;
-    int maxy = coord.y + sy;
+    int minx = -sx;
+    int maxx = +sx;
+    int miny = -sy;
+    int maxy = +sy;
 
     vec4 sum = texelFetch(tex, coord, 0);
     float total_weight = 1;
@@ -78,7 +78,6 @@ void main()
             }
 
             if(x == 0) {
-                // weight *= 2;
                 sum += weight * texelFetch(tex, coord + ivec2(x, y), 0);
                 sum += weight * texelFetch(tex, coord + ivec2(x, -y), 0);
                 total_weight += 2 * weight;
@@ -95,7 +94,6 @@ void main()
             }
             pp0x += kk0x;
             pp1x += kk1x;
-            // sum += weight * texelFetch(tex, ivec2(x, y), 0);
         }
         pp0x = 0; pp0y += kk0y;
         pp1x = 0; pp1y += kk1y;
