@@ -61,8 +61,8 @@ Dialog_Guide::Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canv
 	canvas(canvas),
 	current_work_area(work_area),
 	angle_adjustment(Gtk::Adjustment::create(0,-2000000000,2000000000,1,1,0)),
-	x_adjustment(Gtk::Adjustment::create(0,-200,200,1,1,0)),
-	y_adjustment(Gtk::Adjustment::create(0,-200,200,1,1,0)),
+	x_adjustment(Gtk::Adjustment::create(0,-2000000000,2000000000,1,1,0)),
+	y_adjustment(Gtk::Adjustment::create(0,-2000000000,2000000000,1,1,0)),
 	degrees(true)
 {
 	this->set_resizable(false);
@@ -165,11 +165,12 @@ Dialog_Guide::on_ok_or_apply_pressed(bool ok)
 	} else if (!degrees && curr_guide->angle.get() != angle_widget->get_value()) {
 		curr_guide->angle = synfig::Angle::rad(angle_widget->get_value());
 	}
-	if(curr_guide->point[0] != x_widget->get_value()){
-		curr_guide->point[0] =  x_widget->get_value();
+
+	if(curr_guide->point[0] != (x_widget->get_value())/60){
+		curr_guide->point[0] =  (x_widget->get_value())/60;
 	}
-	if(curr_guide->point[1] != y_widget->get_value()){
-		curr_guide->point[1] =  y_widget->get_value();
+	if(curr_guide->point[1] != (y_widget->get_value())/60){
+		curr_guide->point[1] =  (y_widget->get_value())/60;
 	}
 	if (ok)
 		hide();
@@ -194,6 +195,6 @@ Dialog_Guide::init_widget_values()
 		angle_widget->set_value(synfig::Angle::deg(curr_guide->angle).get());
 	else
 		angle_widget->set_value(curr_guide->angle.get());
-	x_widget->set_value(curr_guide->point[0]); //needs proper formatting
-	y_widget->set_value(curr_guide->point[1]);
+	x_widget->set_value((curr_guide->point[0])*60);
+	y_widget->set_value(curr_guide->point[1]*60);
 }
