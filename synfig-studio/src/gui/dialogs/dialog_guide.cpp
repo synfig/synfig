@@ -43,7 +43,7 @@
 #include <gui/workarea.h>
 #include <gui/duckmatic.h>
 #include <gui/app.h>
-
+#include <iostream>
 #endif
 
 using namespace synfig;
@@ -61,6 +61,8 @@ Dialog_Guide::Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canv
 	canvas(canvas),
 	current_work_area(work_area),
 	angle_adjustment(Gtk::Adjustment::create(0,-2000000000,2000000000,1,1,0)),
+	x_adjustment(Gtk::Adjustment::create(0,-200,200,1,1,0)),
+	y_adjustment(Gtk::Adjustment::create(0,-200,200,1,1,0)),
 	degrees(true)
 {
 	this->set_resizable(false);
@@ -77,7 +79,6 @@ Dialog_Guide::Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canv
 	(static_cast<Gtk::Label*>(angleFrame->get_label_widget()))->set_markup(_("<b>Rotate Guide</b>"));
 	angleFrame->set_margin_bottom(5);
 	angleFrame->set_margin_top(5);
-
 
 	auto guideGrid = manage(new Gtk::Grid());
 	guideGrid->get_style_context()->add_class("dialog-secondary-content");
@@ -96,8 +97,35 @@ Dialog_Guide::Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canv
 	guideGrid->attach(*angle_widget      , 1, 0, 1, 1);
 	guideGrid->attach(angle_type_picker  , 2, 0, 1, 1);
 
+	Gtk::Frame* pivotFrame = manage(new Gtk::Frame(_("Set Pivot Position")));
+	pivotFrame->set_shadow_type(Gtk::SHADOW_NONE);
+	(static_cast<Gtk::Label*>(pivotFrame->get_label_widget()))->set_markup(_("<b>Set Pivot Position</b>"));
+	pivotFrame->set_margin_bottom(5);
+	pivotFrame->set_margin_top(5);
+	pivotFrame->set_margin_left(5);
+
+	auto posGrid = manage(new Gtk::Grid());
+	posGrid->get_style_context()->add_class("dialog-secondary-content");
+	posGrid->set_row_spacing(6);
+	posGrid->set_column_spacing(8);
+	
+
+	Gtk::Label* xPosLabel = manage(new Gtk::Label(_("_X:"), true));
+	Gtk::Label* yPosLabel = manage(new Gtk::Label(_("_Y:"), true));
+	x_widget=manage(new Gtk::SpinButton(x_adjustment,15,2));
+	x_widget->show();
+	y_widget=manage(new Gtk::SpinButton(y_adjustment,15,2));
+	y_widget->show();
+	
+	posGrid->attach(*xPosLabel, 0, 0, 1, 1);
+	posGrid->attach(*x_widget, 1,0,1,1);
+	posGrid->attach(*yPosLabel, 2, 0, 1, 1);
+	posGrid->attach(*y_widget, 3, 0, 1, 1);
+
 	guide_box->add(*angleFrame);
 	guide_box->add(*guideGrid);
+	guide_box->add(*pivotFrame);
+	guide_box->add(*posGrid);
 	guide_box->set_margin_bottom(5);
 
 	//Box end
@@ -136,7 +164,12 @@ Dialog_Guide::on_ok_or_apply_pressed(bool ok)
 	} else if (!degrees && curr_guide->angle.get() != angle_widget->get_value()) {
 		curr_guide->angle = synfig::Angle::rad(angle_widget->get_value());
 	}
-
+	if(curr_guide->point[0] != x_widget->get_value()){
+		curr_guide->point[0] =  x_widget->get_value();
+	}
+	if(curr_guide->point[1] != y_widget->get_value()){
+		curr_guide->point[1] =  y_widget->get_value();
+	}
 	if (ok)
 		hide();
 	else
@@ -160,4 +193,6 @@ Dialog_Guide::init_widget_values()
 		angle_widget->set_value(synfig::Angle::deg(curr_guide->angle).get());
 	else
 		angle_widget->set_value(curr_guide->angle.get());
+	x_widget->set_value(curr_guide->point[0]); //needs proper formatting
+	y_widget->set_value(curr_guide->point[1]);
 }

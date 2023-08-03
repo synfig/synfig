@@ -62,6 +62,8 @@ class Dialog_Guide : public Gtk::Dialog
 	Gtk::SpinButton* x_widget;
 	Gtk::SpinButton* y_widget;
 	Glib::RefPtr<Gtk::Adjustment> angle_adjustment;
+	Glib::RefPtr<Gtk::Adjustment> x_adjustment;
+	Glib::RefPtr<Gtk::Adjustment> y_adjustment;
 
 	Gtk::ComboBoxText angle_type_picker;
 
