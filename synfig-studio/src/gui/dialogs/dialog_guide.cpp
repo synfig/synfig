@@ -43,7 +43,7 @@
 #include <gui/workarea.h>
 #include <gui/duckmatic.h>
 #include <gui/app.h>
-#include <iostream>
+
 #endif
 
 using namespace synfig;
@@ -79,6 +79,7 @@ Dialog_Guide::Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canv
 	(static_cast<Gtk::Label*>(angleFrame->get_label_widget()))->set_markup(_("<b>Rotate Guide</b>"));
 	angleFrame->set_margin_bottom(5);
 	angleFrame->set_margin_top(5);
+
 
 	auto guideGrid = manage(new Gtk::Grid());
 	guideGrid->get_style_context()->add_class("dialog-secondary-content");
