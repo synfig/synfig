@@ -1190,6 +1190,11 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 					}
 				}
 			}
+			if(guide_highlighted){	
+				guide_dialog.show();
+				guide_dialog.set_current_guide(curr_guide);
+				return true;
+			}
 		}
 		break;
 	}
