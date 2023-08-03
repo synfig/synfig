@@ -75,7 +75,28 @@ public:
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 
-    // TODO: fix the case when target_rect is bigger than sub_task rect, happens when blurring is used for feathered edges
+    void blit_framebuffer(gl::Framebuffer& src, gl::Framebuffer& dest, VectorInt offset, bool mul_alpha, bool inverse_alpha) const
+    {
+        glDisable(GL_SCISSOR_TEST);
+
+        src.use_read(0);
+        dest.use_write(true);
+
+        glViewport(0, 0, dest.get_w(), dest.get_h());
+
+        gl::Programs::Program shader = env().get_or_create_context().get_program(mul_alpha ? "blit_alpha" : "blit");
+        shader.use();
+        shader.set_1i("tex", 0);
+        shader.set_2i("offset", offset);
+        if(mul_alpha) shader.set_1i("inverse_alpha", inverse_alpha);
+
+        gl::Plane plane;
+        plane.render();
+
+        src.unuse();
+        dest.unuse();
+    }
+
 	virtual bool run(RunParams&) const
 	{
 		if(!is_valid()) return true;
@@ -116,7 +137,7 @@ public:
         blitRect = lsrc.rect;
 
         destRect = target_rect;
-        rect_set_intersect(destRect, destRect, RectInt(0, 0, target_rect.get_width(), target_rect.get_height()));
+        rect_set_intersect(destRect, destRect, RectInt(0, 0, destBuf.get_w(), destBuf.get_h()));
         if(!destRect.valid()) return false;
 
         srcRect = destRect + offset;
@@ -134,13 +155,13 @@ public:
         destRect.maxx -= extraSize[0];
         destRect.maxy -= extraSize[1];
         if(!destRect.valid()) return false;
-        if(!rect_contains(RectInt(0, 0, target_rect.get_width(), target_rect.get_height()), destRect)) return false;
+        if(!rect_contains(RectInt(0, 0, destBuf.get_w(), destBuf.get_h()), destRect)) return false;
 
         offset = srcRect.get_min() + extraSize;
 
         gl::Framebuffer fbos[2];
         for(int i = 0; i < 2; i++) {
-            fbos[i].from_dims(blitRect.get_width(), blitRect.get_height());
+            fbos[i].from_dims(srcBuf.get_w(), srcBuf.get_h());
             fbos[i].clear();
         }
 
@@ -181,12 +202,9 @@ public:
 
 		glDisable(GL_SCISSOR_TEST);
 
-        glViewport(0, 0, blitRect.get_width(), blitRect.get_height());
+        glViewport(0, 0, srcBuf.get_w(), srcBuf.get_h());
 
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, srcBuf.get_id());
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbos[0].get_id());
-
-        glBlitFramebuffer(0, 0, blitRect.get_width(), blitRect.get_height(), 0, 0, blitRect.get_width(), blitRect.get_height(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+        blit_framebuffer(srcBuf, fbos[0], VectorInt(0, 0), true, false);
 
         int lastBuf = 0, curBuf = 1;
 
@@ -196,9 +214,7 @@ public:
             for(int i = 0; i < count; i++)
             {
                 // blit to fill the whole buffer and then blur the inner rect
-                glBindFramebuffer(GL_READ_FRAMEBUFFER, fbos[lastBuf].get_id());
-                glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbos[curBuf].get_id());
-                glBlitFramebuffer(0, 0, blitRect.get_width(), blitRect.get_height(), 0, 0, blitRect.get_width(), blitRect.get_height(), GL_COLOR_BUFFER_BIT, GL_NEAREST);
+                blit_framebuffer(fbos[lastBuf], fbos[curBuf], VectorInt(0, 0), false, false);
 
                 if(separable) shader.set_1i("horizontal", horizontal);
 
@@ -208,6 +224,7 @@ public:
                 fbos[curBuf].use_write();
                 fbos[lastBuf].use_read(0);
 
+                shader.use();
                 plane.render();
 
                 fbos[curBuf].unuse();
@@ -222,9 +239,7 @@ public:
         }
 
         destBuf.clear();
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, fbos[lastBuf].get_id());
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, destBuf.get_id());
-        glBlitFramebuffer(destRect.minx + offset[0], destRect.miny + offset[1], destRect.maxx + offset[0], destRect.maxy + offset[1], destRect.minx, destRect.miny, destRect.maxx, destRect.maxy, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+        blit_framebuffer(fbos[lastBuf], destBuf, TaskList::calc_target_offset(*this, *sub_task()), true, true);
 
 		return true;
 	}
