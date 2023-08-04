@@ -213,13 +213,13 @@ Dialog_Setup::create_system_page(PageInfo pi)
 		// Brushes path buttons
 		Gtk::Grid* brush_path_btn_grid(manage (new Gtk::Grid()));
 		Gtk::Button* brush_path_add(manage (new Gtk::Button()));
-		brush_path_add->set_image_from_icon_name("add", Gtk::ICON_SIZE_BUTTON);
+		brush_path_add->set_image_from_icon_name("list-add", Gtk::ICON_SIZE_BUTTON);
 		brush_path_btn_grid->attach(*brush_path_add, 0, 0, 1, 1);
 		brush_path_add->set_halign(Gtk::ALIGN_END);
 		brush_path_add->signal_clicked().connect(
 				sigc::mem_fun(*this, &Dialog_Setup::on_brush_path_add_clicked));
 		Gtk::Button* brush_path_remove(manage (new Gtk::Button()));
-		brush_path_remove->set_image_from_icon_name("remove", Gtk::ICON_SIZE_BUTTON);
+		brush_path_remove->set_image_from_icon_name("list-remove", Gtk::ICON_SIZE_BUTTON);
 		brush_path_btn_grid->attach(*brush_path_remove, 0, 1, 1, 1);
 		brush_path_remove->set_halign(Gtk::ALIGN_END);
 		brush_path_remove->signal_clicked().connect(
