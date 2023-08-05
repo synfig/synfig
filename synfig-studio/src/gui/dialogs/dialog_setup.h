@@ -106,6 +106,7 @@ class Dialog_Setup : public Dialog_Template
 	void on_preview_background_color_changed();
 	void on_brush_path_add_clicked();
 	void on_brush_path_remove_clicked();
+	void on_plugin_path_change_clicked();
 	void on_choose_editor_pressed();
 	bool select_path_dialog(const std::string &title, std::string &filename);
 
@@ -141,6 +142,8 @@ class Dialog_Setup : public Dialog_Template
 	Gtk::Entry textbox_brushe_path;
 	Gtk::ListViewText* listviewtext_brushes_path;
 	Glib::RefPtr<Gtk::ListStore> brushpath_refmodel;
+
+	Gtk::Entry textbox_plugin_path;
 
 	Gtk::ComboBoxText* size_template_combo;
 	Gtk::ComboBoxText* fps_template_combo;

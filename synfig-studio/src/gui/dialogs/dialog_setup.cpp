@@ -58,6 +58,13 @@
 
 #endif
 
+#ifdef _WIN32
+#include <Windows.h>
+#elif __linux__
+#include <cstdlib>
+#elif __APPLE__
+#include <cstdlib>
+#endif
 /* === U S I N G =========================================================== */
 
 using namespace synfig;
@@ -227,6 +234,20 @@ Dialog_Setup::create_system_page(PageInfo pi)
 		pi.grid->attach(*brush_path_btn_grid, 0, ++row, 1, 2);
 		brush_path_btn_grid->set_halign(Gtk::ALIGN_END);
 		++row;
+	}
+	//System Plugins path
+	{
+		attach_label_section(pi.grid, _("Plug-ins Path"), ++row);
+		pi.grid->attach(textbox_plugin_path, 1, row, 1, 1);
+		textbox_plugin_path.set_editable(false);
+		textbox_plugin_path.set_text(ResourceHelper::get_plugin_path());
+
+		Gtk::Button* plugin_path_change(manage(new Gtk::Button()));
+		plugin_path_change->set_image_from_icon_name("action_doc_open_icon", Gtk::ICON_SIZE_BUTTON);
+		pi.grid->attach(*plugin_path_change,0,row,1,1); 
+		plugin_path_change->set_halign(Gtk::ALIGN_END);
+		plugin_path_change->signal_clicked().connect(
+			sigc::mem_fun(*this, &Dialog_Setup::on_plugin_path_change_clicked));
 	}
 	// System - 11 enable_experimental_features
 	attach_label_section(pi.grid, _("Experimental features (requires restart)"), ++row);
@@ -1446,6 +1467,28 @@ Dialog_Setup::on_brush_path_remove_clicked()
 	//! TODO if list size == 0: push warning to warning zone
 }
 
+void
+Dialog_Setup::on_plugin_path_change_clicked()
+{
+	String foldername = ResourceHelper::get_plugin_path();
+	//processes the path from get_plugin_path()
+	size_t pos = foldername.find('/');
+    while (pos != std::string::npos) {
+        foldername.replace(pos, 1, "\\");
+        pos = foldername.find('/', pos + 2);
+    }
+	#ifdef _WIN32
+    ShellExecuteA(NULL, "open", "explorer.exe", foldername.c_str(), NULL, SW_SHOWDEFAULT);
+	#elif __linux__
+    std::string command = "xdg-open " + foldername;
+    std::system(command.c_str());
+	#elif __APPLE__
+    std::string command = "open " + foldername;
+    std::system(command.c_str());
+	#else
+	return 0;
+	#endif
+}
 void
 Dialog_Setup::on_value_change(int valueflag)
 {
