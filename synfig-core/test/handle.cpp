@@ -596,6 +596,210 @@ handle_swap_does_not_change_refcounts()
 	ASSERT_EQUAL(1, real_obj2->use_count());
 }
 
+void
+handle_move_constructor_stores_the_same_object()
+{
+	BasicSharedObject* real_obj = new BasicSharedObject();
+
+	BasicSharedObject::Handle obj((BasicSharedObject::Handle(real_obj)));
+
+	ASSERT(obj.get() == real_obj);
+}
+
+void
+handle_move_constructor_does_not_increase_refcount()
+{
+	BasicSharedObject* real_obj = new BasicSharedObject();
+
+	BasicSharedObject::Handle obj((BasicSharedObject::Handle(real_obj)));
+
+	ASSERT_EQUAL(1, real_obj->use_count());
+	ASSERT_EQUAL(1, obj->use_count());
+}
+
+void
+handle_move_constructor_removes_from_source_handle()
+{
+	BasicSharedObject* real_obj = new BasicSharedObject();
+
+	BasicSharedObject::Handle obj1(real_obj);
+	BasicSharedObject::Handle obj2(std::move(obj1));
+
+	ASSERT_FALSE(obj1);
+	ASSERT(obj1.get() == nullptr);
+	ASSERT(obj2.get() == real_obj);
+}
+
+void
+handle_move_assignment_stores_the_same_object()
+{
+	BasicSharedObject* real_obj = new BasicSharedObject();
+
+	BasicSharedObject::Handle obj1(real_obj);
+	BasicSharedObject::Handle obj2 = std::move(obj1);
+
+	ASSERT(obj2.get() == real_obj);
+}
+
+void
+handle_move_assignment_does_not_increase_refcount()
+{
+	BasicSharedObject* real_obj = new BasicSharedObject();
+
+	BasicSharedObject::Handle obj1(real_obj);
+	BasicSharedObject::Handle obj2 = std::move(obj1);
+
+	ASSERT_EQUAL(1, real_obj->use_count());
+}
+
+void
+handle_move_assignment_safely_moves_to_itself()
+{
+	BasicSharedObject* real_obj = new BasicSharedObject();
+
+	BasicSharedObject::Handle obj1(real_obj);
+	obj1 = std::move(obj1);
+
+	ASSERT_EQUAL(1, real_obj->use_count());
+	ASSERT(obj1.get() == real_obj);
+}
+
+void
+handle_move_assignment_from_empty_handle_discards_previous_object()
+{
+	BasicSharedObject* real_obj = new BasicSharedObject();
+	DeleteGuard<BasicSharedObject> guard(real_obj);
+
+	real_obj->ref();
+
+	BasicSharedObject::Handle obj1(real_obj);
+
+	obj1 = std::move(BasicSharedObject::Handle());
+	ASSERT(obj1.empty());
+	ASSERT_EQUAL(0, obj1.use_count());
+}
+
+void
+handle_move_assignment_from_empty_handle_decreases_previous_object_refcount()
+{
+	BasicSharedObject* real_obj1 = new BasicSharedObject();
+	DeleteGuard<BasicSharedObject> guard(real_obj1);
+
+	real_obj1->ref();
+
+	BasicSharedObject::Handle obj1(real_obj1);
+
+	BasicSharedObject::Handle obj2(new BasicSharedObject());
+
+	ASSERT_EQUAL(2, real_obj1->use_count());
+
+	obj1 = std::move(obj2);
+
+	ASSERT_EQUAL(1, real_obj1->use_count());
+}
+
+void
+handle_move_assignment_from_empty_deletes_previous_object_if_it_is_time()
+{
+	int delete_counter = 0;
+
+	RIPSharedObject* real_obj = new RIPSharedObject(delete_counter);
+
+	RIPSharedObject::Handle obj1(real_obj);
+
+	ASSERT_EQUAL(1, real_obj->use_count());
+
+	obj1 = std::move(RIPSharedObject::Handle());
+	ASSERT_EQUAL(1, delete_counter);
+}
+
+void
+handle_move_assignment_removes_from_source_handle()
+{
+	BasicSharedObject* real_obj = new BasicSharedObject();
+
+	BasicSharedObject::Handle obj1(real_obj);
+	BasicSharedObject::Handle obj2 = std::move(obj1);
+
+	ASSERT_FALSE(obj1);
+	ASSERT(obj1.get() == nullptr);
+}
+
+void
+handle_move_assignment_from_other_handle_discards_previous_object()
+{
+	BasicSharedObject* real_obj1 = new BasicSharedObject();
+	BasicSharedObject* real_obj2 = new BasicSharedObject();
+	DeleteGuard<BasicSharedObject> guard(real_obj1);
+
+	real_obj1->ref();
+
+	BasicSharedObject::Handle obj1(real_obj1);
+
+	BasicSharedObject::Handle obj2(real_obj2);
+
+	obj1 = std::move(obj2);
+
+	ASSERT_FALSE(obj1.get() == real_obj1);
+	ASSERT(obj1.get() == real_obj2);
+}
+
+void
+handle_move_assignment_from_other_handle_decreases_previous_object_refcount()
+{
+	BasicSharedObject* real_obj1 = new BasicSharedObject();
+	DeleteGuard<BasicSharedObject> guard(real_obj1);
+
+	real_obj1->ref();
+
+	BasicSharedObject::Handle obj1(real_obj1);
+
+	BasicSharedObject::Handle obj2(new BasicSharedObject());
+
+	obj1 = std::move(obj2);
+
+	ASSERT_EQUAL(1, real_obj1->use_count());
+}
+
+void
+handle_move_assignment_from_other_handle_with_same_object_does_not_decrease_object_refcount()
+{
+	BasicSharedObject* real_obj1 = new BasicSharedObject();
+	DeleteGuard<BasicSharedObject> guard(real_obj1);
+
+	real_obj1->ref();
+
+	BasicSharedObject::Handle obj1(real_obj1);
+
+	BasicSharedObject::Handle obj2(real_obj1);
+
+	ASSERT_EQUAL(3, obj1->use_count());
+	ASSERT_EQUAL(3, obj2->use_count());
+
+	obj1 = std::move(obj2);
+
+	ASSERT_EQUAL(3, real_obj1->use_count());
+}
+
+void
+handle_move_assignment_from_other_handle_deletes_previous_object_if_it_is_time()
+{
+	int delete_counter1 = 0;
+	int delete_counter2 = 0;
+	RIPSharedObject* real_obj1 = new RIPSharedObject(delete_counter1);
+
+	RIPSharedObject::Handle obj1(real_obj1);
+
+	RIPSharedObject::Handle obj2(new RIPSharedObject(delete_counter2));
+
+	ASSERT_EQUAL(1, obj1->use_count());
+	ASSERT_EQUAL(1, obj2->use_count());
+
+	obj1 = std::move(obj2);
+
+	ASSERT_EQUAL(1, delete_counter1);
+	ASSERT_EQUAL(0, delete_counter2);
+}
 
 void
 loose_handle_default_constructor_means_empty()
@@ -1340,6 +1544,20 @@ int main()
 	TEST_FUNCTION(handle_comparing_to_a_different_object_means_always_false);
 	TEST_FUNCTION(handle_swap_does_its_job);
 	TEST_FUNCTION(handle_swap_does_not_change_refcounts);
+	TEST_FUNCTION(handle_move_constructor_stores_the_same_object);
+	TEST_FUNCTION(handle_move_constructor_does_not_increase_refcount);
+	TEST_FUNCTION(handle_move_constructor_removes_from_source_handle);
+	TEST_FUNCTION(handle_move_assignment_stores_the_same_object);
+	TEST_FUNCTION(handle_move_assignment_does_not_increase_refcount);
+	TEST_FUNCTION(handle_move_assignment_safely_moves_to_itself);
+	TEST_FUNCTION(handle_move_assignment_from_empty_handle_discards_previous_object);
+	TEST_FUNCTION(handle_move_assignment_from_empty_handle_decreases_previous_object_refcount);
+	TEST_FUNCTION(handle_move_assignment_from_empty_deletes_previous_object_if_it_is_time);
+	TEST_FUNCTION(handle_move_assignment_removes_from_source_handle);
+	TEST_FUNCTION(handle_move_assignment_from_other_handle_discards_previous_object);
+	TEST_FUNCTION(handle_move_assignment_from_other_handle_decreases_previous_object_refcount);
+	TEST_FUNCTION(handle_move_assignment_from_other_handle_with_same_object_does_not_decrease_object_refcount);
+	TEST_FUNCTION(handle_move_assignment_from_other_handle_deletes_previous_object_if_it_is_time);
 
 	TEST_FUNCTION(loose_handle_default_constructor_means_empty);
 	TEST_FUNCTION(loose_handle_constructor_does_not_increase_refcount);
