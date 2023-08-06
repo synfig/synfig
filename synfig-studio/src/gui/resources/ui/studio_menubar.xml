@@ -61,14 +61,17 @@
                     <attribute name="label" translatable="yes">_Import...</attribute>
                     <attribute name="action">doc.import</attribute>
                     <attribute name="accel">&lt;Control&gt;i</attribute>
+                    <attribute name="icon">action_import_icon</attribute>
                 </item>
                 <item>
                     <attribute name="label" translatable="yes">_Import Sequence...</attribute>
                     <attribute name="action">doc.import-sequence</attribute>
+                    <attribute name="icon">action_import_sequence_icon</attribute>
                 </item>
                 <item>
                     <attribute name="label" translatable="yes">Show _Dependencies...</attribute>
                     <attribute name="action">doc.show-dependencies</attribute>
+                    <attribute name="icon">action_show_dependencies_icon</attribute>
                 </item>
             </section>
             <section>

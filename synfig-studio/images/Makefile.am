@@ -79,6 +79,10 @@ EXTRA_DIST = \
 	document-options.sif \
 	document-properties.sif \
 	document-resize.sif \
+	document-revert.sif \
+	action_import_icon.sif \
+	action_import_sequence_icon.sif \
+	action_show_dependencies_icon.sif \
 	action_flat_interpolation_icon.sif \
 	action_interpolate_interpolation_icon.sif \
 	action_peak_interpolation_icon.sif \
@@ -281,6 +285,10 @@ ICONS = \
 	document-options.$(EXT) \
 	document-properties.$(EXT) \
 	document-resize.$(EXT) \
+	document-revert.$(EXT) \
+	action_import_icon.$(EXT) \
+	action_import_sequence_icon.$(EXT) \
+	action_show_dependencies_icon.$(EXT) \
 	action_flat_interpolation_icon.$(EXT) \
 	action_interpolate_interpolation_icon.$(EXT) \
 	action_peak_interpolation_icon.$(EXT) \

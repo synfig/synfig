@@ -106,6 +106,10 @@ set(ICONS
 	document-options
 	document-properties
 	document-resize
+	document-revert
+	action_import_icon
+	action_import_sequence_icon
+	action_show_dependencies_icon
 	clear_redo_icon
 	clear_undo_icon
 	decr_resolution_icon

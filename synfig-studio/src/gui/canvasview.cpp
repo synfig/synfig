@@ -1368,9 +1368,9 @@ CanvasView::init_menus()
 
 		{"export",            "action_doc_saveas_icon", N_("Export..."),            N_("Export"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::dialog_export)) },
 		{"revert",            "document-revert",        N_("Revert"),               N_("Revert document as it was last saved"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::safe_revert)) },
-		{"import",            "",                       N_("Import..."),            "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_file)) },
-		{"import-sequence",   "",                       N_("Import Sequence..."),   "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_sequence)) },
-		{"show-dependencies", "",                       N_("Show Dependencies..."), "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::show_dependencies)) },
+		{"import",            "action_import_icon",                       N_("Import..."),            "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_file)) },
+		{"import-sequence",   "action_import_sequence_icon",                       N_("Import Sequence..."),   "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_sequence)) },
+		{"show-dependencies", "action_show_dependencies_icon",                       N_("Show Dependencies..."), "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::show_dependencies)) },
 		{"render",            "render_options_icon",    N_("Render..."),            "", sigc::mem_fun0(render_settings, &RenderSettings::present) },
 		{"preview",           "preview_options_icon",   N_("Preview..."),           "", sigc::mem_fun(*this, &CanvasView::on_preview_option) },
 		{"options",           "document-options", N_("Options..."),           "", sigc::mem_fun0(canvas_options, &CanvasOptions::present) },
