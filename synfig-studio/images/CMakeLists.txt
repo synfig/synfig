@@ -110,6 +110,8 @@ set(ICONS
 	action_import_icon
 	action_import_sequence_icon
 	action_show_dependencies_icon
+	input_devices_icon
+	preferences_icon
 	clear_redo_icon
 	clear_undo_icon
 	decr_resolution_icon

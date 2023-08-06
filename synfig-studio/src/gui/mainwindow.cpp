@@ -183,10 +183,10 @@ MainWindow::init_menus()
 	);
 
 	// Edit menu
-	action_group->add( Gtk::Action::create("input-devices", _("Input Devices...")),
+	action_group->add( Gtk::Action::create_with_icon_name("input-devices", "input_devices_icon", _("Input Devices..."), _("Open Input Devices options")),
 		sigc::ptr_fun(&MainWindow::show_dialog_input)
 	);
-	action_group->add( Gtk::Action::create("setup", _("Preferences...")),
+	action_group->add( Gtk::Action::create_with_icon_name("setup", "preferences_icon", _("Preferences..."), _("Open Synfig Preferences")),
 		sigc::ptr_fun(&studio::App::show_setup)
 	);
 

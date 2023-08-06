@@ -83,6 +83,8 @@ EXTRA_DIST = \
 	action_import_icon.sif \
 	action_import_sequence_icon.sif \
 	action_show_dependencies_icon.sif \
+	input_devices_icon.sif \
+	preferences_icon.sif \
 	action_flat_interpolation_icon.sif \
 	action_interpolate_interpolation_icon.sif \
 	action_peak_interpolation_icon.sif \
@@ -289,6 +291,8 @@ ICONS = \
 	action_import_icon.$(EXT) \
 	action_import_sequence_icon.$(EXT) \
 	action_show_dependencies_icon.$(EXT) \
+	input_devices_icon.$(EXT) \
+	preferences_icon.$(EXT) \
 	action_flat_interpolation_icon.$(EXT) \
 	action_interpolate_interpolation_icon.$(EXT) \
 	action_peak_interpolation_icon.$(EXT) \

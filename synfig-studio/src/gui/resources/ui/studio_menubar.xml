@@ -175,10 +175,12 @@
 				<item>
 					<attribute name="label" translatable="yes">_Input Devices...</attribute>
 					<attribute name="action">win.input-devices</attribute>
+                    <attribute name="icon">input_devices_icon</attribute>
 				</item>
 				<item>
 					<attribute name="label" translatable="yes">_Preferences...</attribute>
 					<attribute name="action">app.setup</attribute>
+                    <attribute name="icon">preferences_icon</attribute>
 				</item>
 			</section>
 		</submenu>
