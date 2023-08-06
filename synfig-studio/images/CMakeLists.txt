@@ -245,6 +245,7 @@ set(ICONS
 	type_string_icon
 	type_time_icon
 	type_vector_icon
+	type_transformation_icon
 	utils_timetrack_align_icon
 	valuenode_icon
 )
