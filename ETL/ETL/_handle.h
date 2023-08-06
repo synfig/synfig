@@ -570,6 +570,9 @@ public:
 	//! Default copy constructor
 	loose_handle(const loose_handle<value_type>& x) noexcept : obj(x.get()) { }
 
+	//! Move constructor
+	loose_handle(loose_handle<value_type>&& x) noexcept : obj(x.get()) { }
+
 	loose_handle(const handle<value_type> &x) noexcept : obj(x.get()) { }
 
 	template <class U> const loose_handle<value_type>&
@@ -600,6 +603,17 @@ public:
 			return *this;
 
 		obj=x.get();
+		return *this;
+	}
+
+	//! Move operator
+	const loose_handle<value_type>&
+	operator=(loose_handle<value_type>&& x) noexcept
+	{
+		if (x.get() == obj)
+			return *this;
+
+		obj = x.get();
 		return *this;
 	}
 
