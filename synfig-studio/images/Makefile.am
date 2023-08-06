@@ -76,6 +76,9 @@ EXTRA_DIST = \
 	action_remove_from_set_icon.sif \
 	action_export_icon.sif \
 	action_unexport_icon.sif \
+	document-options.sif \
+	document-properties.sif \
+	document-resize.sif \
 	action_flat_interpolation_icon.sif \
 	action_interpolate_interpolation_icon.sif \
 	action_peak_interpolation_icon.sif \
@@ -275,6 +278,9 @@ ICONS = \
 	action_remove_from_set_icon.$(EXT) \
 	action_export_icon.$(EXT) \
 	action_unexport_icon.$(EXT) \
+	document-options.$(EXT) \
+	document-properties.$(EXT) \
+	document-resize.$(EXT) \
 	action_flat_interpolation_icon.$(EXT) \
 	action_interpolate_interpolation_icon.$(EXT) \
 	action_peak_interpolation_icon.$(EXT) \

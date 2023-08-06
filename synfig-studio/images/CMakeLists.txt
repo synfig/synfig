@@ -103,6 +103,9 @@ set(ICONS
 	action_set_layer_description_icon
 	action_squared_interpolation_icon
 	action_unexport_icon
+	document-options
+	document-properties
+	document-resize
 	clear_redo_icon
 	clear_undo_icon
 	decr_resolution_icon

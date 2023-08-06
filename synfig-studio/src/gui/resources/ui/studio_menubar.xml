@@ -385,10 +385,12 @@
 					<attribute name="label" translatable="yes">_Options...</attribute>
 					<attribute name="action">doc.options</attribute>
 					<attribute name="accel">F12</attribute>
+                    <attribute name="icon">document-options</attribute>
 				</item>
 				<item>
 					<attribute name="label" translatable="yes">_Resize...</attribute>
 					<attribute name="action">doc.resize-canvas</attribute>
+                    <attribute name="icon">document-resize</attribute>
 				</item>
 		</submenu>
 <!-- toolbox -->
