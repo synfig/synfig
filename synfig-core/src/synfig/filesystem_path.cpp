@@ -109,7 +109,7 @@ filesystem::Path::operator/=(const Path& p)
 		path_.erase(get_root_name_length());
 	else if (has_filename() || (!has_root_directory() && is_absolute()))
 		path_.push_back('/');
-	path_.append(p.path_, p.get_root_name_length());
+	path_.append(p.path_, p.get_root_name_length(), std::string::npos);
 	native_path_dirty_ = true;
 	return *this;
 }
@@ -368,7 +368,7 @@ filesystem::Path::lexically_relative(const Path& base) const
 	if (!p.empty() && a_pos < path_.length())
 		p += '/';
 	if (a_pos != std::string::npos)
-		p.append(path_, a_pos);
+		p.append(path_, a_pos, std::string::npos);
 	return Path(p);
 }
 
