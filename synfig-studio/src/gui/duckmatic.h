@@ -193,11 +193,10 @@ private:
 
 	sigc::signal<void> signal_grid_changed_;
 
-	mutable sigc::signal<void> signal_sketch_saved_;
-
 	GuideList guide_list_;
 
-	mutable synfig::String sketch_filename_;
+	mutable sigc::signal<void> signal_sketch_saved_;
+	mutable synfig::filesystem::Path sketch_filename_;
 
 	synfig::TransformStack curr_transform_stack;
 	bool curr_transform_stack_set = false;
@@ -516,9 +515,9 @@ public:
 
 	void clear_ducks();
 
-	bool save_sketch(const synfig::String& filename)const;
-	bool load_sketch(const synfig::String& filename);
-	const synfig::String& get_sketch_filename()const { return sketch_filename_; }
+	bool save_sketch(const synfig::filesystem::Path& filename) const;
+	bool load_sketch(const synfig::filesystem::Path& filename);
+	const synfig::filesystem::Path& get_sketch_filename() const { return sketch_filename_; }
 
 	void set_duck_dragger(etl::handle<DuckDrag_Base> x) { duck_dragger_=x; }
 	etl::handle<DuckDrag_Base> get_duck_dragger()const { return duck_dragger_; }
