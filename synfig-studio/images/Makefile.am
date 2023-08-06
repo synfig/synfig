@@ -226,7 +226,9 @@ EXTRA_DIST = \
 	go-up.sif \
 	go-down.sif \
 	list-add.sif \
-	list-remove.sif
+	list-remove.sif \
+	brush_size_increase_icon.sif \
+	brush_size_decrease_icon.sif
 
 IMAGES = \
 	installer_logo.bmp \
@@ -457,7 +459,9 @@ ICONS = \
 	go-up.$(EXT) \
 	go-down.$(EXT) \
 	list-add.$(EXT) \
-	list-remove.$(EXT)
+	list-remove.$(EXT) \
+	brush_size_increase_icon.$(EXT) \
+	brush_size_decrease_icon.$(EXT)
 
 if WIN32_PKG
 WIN32_ICONS = \

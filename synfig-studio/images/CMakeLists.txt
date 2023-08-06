@@ -264,6 +264,8 @@ set(ICONS
 	go-down
 	list-add
 	list-remove
+	brush_size_increase_icon
+	brush_size_decrease_icon
 )
 
 set(IMAGES
