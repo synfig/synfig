@@ -77,7 +77,7 @@ public:
 class DefaultState : public Smach::state<DefaultStateContext>
 {
 public:
-	DefaultState():Smach::state<DefaultStateContext>("DefaultState")
+	DefaultState():Smach::state<DefaultStateContext>("DefaultState", "Default")
 	{
 		insert(event_def(EVENT_1,&DefaultStateContext::event1_handler));
 	}
@@ -113,7 +113,7 @@ public:
 class State1 : public Smach::state<State1Context>
 {
 public:
-	State1():Smach::state<State1Context>("State1")
+	State1():Smach::state<State1Context>("State1", "State1")
 	{
 		insert(event_def(EVENT_1,&State1Context::event1_handler));
 		insert(event_def(EVENT_3,&State1Context::event3_handler));
@@ -154,7 +154,7 @@ public:
 class State2 : public Smach::state<State2Context>
 {
 public:
-	State2():Smach::state<State2Context>("State2")
+	State2():Smach::state<State2Context>("State2", "State2")
 	{
 		insert(event_def(EVENT_1,&State2Context::event1_handler));
 		insert(event_def(EVENT_2,&State2Context::event2_handler));

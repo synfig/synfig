@@ -301,7 +301,7 @@ create_image_from_icon(const std::string& icon_name, Gtk::IconSize icon_size)
 /* === M E T H O D S ======================================================= */
 
 StateBLine::StateBLine():
-	Smach::state<StateBLine_Context>("bline")
+	Smach::state<StateBLine_Context>("bline", N_("Spline Tool"))
 {
 	insert(event_def(EVENT_LAYER_SELECTION_CHANGED,		&StateBLine_Context::event_layer_selection_changed_handler));
 	insert(event_def(EVENT_STOP,						&StateBLine_Context::event_stop_handler));
