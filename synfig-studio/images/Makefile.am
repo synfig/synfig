@@ -218,7 +218,15 @@ EXTRA_DIST = \
 	time_track_icon.sif \
 	\
 	utils_chain_link_icons.sif \
-	utils_timetrack_align_icon.sif
+	utils_timetrack_align_icon.sif \
+	\
+	edit-delete.sif \
+	window-close.sif \
+	application-exit.sif \
+	go-up.sif \
+	go-down.sif \
+	list-add.sif \
+	list-remove.sif
 
 IMAGES = \
 	installer_logo.bmp \
@@ -441,7 +449,15 @@ ICONS = \
 	\
 	utils_chain_link_on_icon.$(EXT) \
 	utils_chain_link_off_icon.$(EXT) \
-	utils_timetrack_align_icon.$(EXT)
+	utils_timetrack_align_icon.$(EXT) \
+	\
+	edit-delete.$(EXT) \
+	window-close.$(EXT) \
+	application-exit.$(EXT) \
+	go-up.$(EXT) \
+	go-down.$(EXT) \
+	list-add.$(EXT) \
+	list-remove.$(EXT)
 
 if WIN32_PKG
 WIN32_ICONS = \

@@ -257,6 +257,13 @@ set(ICONS
 	type_transformation_icon
 	utils_timetrack_align_icon
 	valuenode_icon
+	edit-delete
+	window-close
+	application-exit
+	go-up
+	go-down
+	list-add
+	list-remove
 )
 
 set(IMAGES
