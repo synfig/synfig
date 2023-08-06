@@ -179,6 +179,7 @@ MainWindow::init_menus()
 		sigc::ptr_fun(&save_all)
 	);
 	action_group->add( Gtk::Action::create_with_icon_name("quit", "application-exit", _("Quit"), _("Quit Synfig")),
+		sigc::hide_return(sigc::ptr_fun(&studio::App::quit))
 	);
 
 	// Edit menu
