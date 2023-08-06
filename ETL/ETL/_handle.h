@@ -140,6 +140,12 @@ public:
 			obj->ref();
 	}
 
+	//! Move constructor
+	handle(handle<value_type>&& x) noexcept : obj(x.get())
+	{
+		x.obj = nullptr;
+	}
+
 	//! Handle is released on deletion
 	~handle() { reset(); }
 
@@ -154,6 +160,22 @@ public:
 		if(xobj) xobj->ref();
 		reset();
 		obj=xobj;
+		return *this;
+	}
+
+	//! Move assignment operator
+	handle<value_type>&
+	operator=(handle<value_type>&& x) noexcept
+	{
+		if (this == &x || obj == x.get())
+			return *this;
+
+		if (obj)
+			obj->unref();
+
+		obj = x.get();
+		x.obj = nullptr;
+
 		return *this;
 	}
 
