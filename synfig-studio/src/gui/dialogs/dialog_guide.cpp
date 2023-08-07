@@ -44,7 +44,6 @@
 #include <gui/duckmatic.h>
 #include <gui/app.h>
 
-#include <synfig/canvas.h>
 #endif
 
 using namespace synfig;
@@ -166,11 +165,9 @@ Dialog_Guide::on_ok_or_apply_pressed(bool ok)
 	} else if (!degrees && curr_guide->angle.get() != angle_widget->get_value()) {
 		curr_guide->angle = synfig::Angle::rad(angle_widget->get_value());
 	}
-	void set_rend_desc(const synfig::RendDesc &rend_desc);
-	float factor = std::fabs((rend_desc.get_w()/2)/rend_desc.get_tl()[0]);
-	//logic for the factor will go here once i figure it out 
-	curr_guide->point[0] = x_widget->get_value()/60;
-	curr_guide->point[1] = y_widget->get_value()/60;
+
+	curr_guide->point[0] = x_widget->get_value()/factor;
+	curr_guide->point[1] = y_widget->get_value()/factor;
 	
 	if (ok)
 		hide();
@@ -195,6 +192,9 @@ Dialog_Guide::init_widget_values()
 		angle_widget->set_value(synfig::Angle::deg(curr_guide->angle).get());
 	else
 		angle_widget->set_value(curr_guide->angle.get());
-	x_widget->set_value(curr_guide->point[0]*60);
-	y_widget->set_value(curr_guide->point[1]*60);
+		
+	synfig::RendDesc &rend_desc(canvas->rend_desc());
+	factor = std::fabs((rend_desc.get_w()/2)/rend_desc.get_tl()[0]);
+	x_widget->set_value(curr_guide->point[0]*factor);
+	y_widget->set_value(curr_guide->point[1]*factor);
 }
