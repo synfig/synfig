@@ -232,7 +232,7 @@ public:
 
 #ifdef _DEBUG
 	virtual void ref() const noexcept;
-	virtual bool unref()const;
+	virtual void unref()const;
 #endif
 }; // END of class Action::Undoable
 

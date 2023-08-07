@@ -120,7 +120,7 @@ public:
 
 #ifdef _DEBUG
 	void ref() const noexcept override;
-	bool unref() const override;
+	void unref() const override;
 #endif
 
 }; // END of class ValueNode_StaticList

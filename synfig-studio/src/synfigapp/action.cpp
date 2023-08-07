@@ -655,12 +655,12 @@ Undoable::ref() const noexcept
 	Base::ref();
 }
 
-bool
+void
 Undoable::unref()const
 {
 	DEBUG_LOG("SYNFIG_DEBUG_ACTION_REFCOUNT",
 		"%s:%d %lx unref undoable %*s%2d <-\n", __FILE__, __LINE__, uintptr_t(this), ((count()-1)*2), "", count()-1);
 
-	return Base::unref();
+	Base::unref();
 }
 #endif

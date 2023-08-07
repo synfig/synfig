@@ -955,13 +955,13 @@ ValueNode_Bone::ref() const noexcept
 	LinkableValueNode::ref();
 }
 
-bool
+void
 ValueNode_Bone::unref()const
 {
 	DEBUG_LOG("SYNFIG_DEBUG_BONE_REFCOUNT",
 		"%s:%d %s unref valuenode_bone %*s%2d <-\n", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), ((count()-1)*2), "", count()-1);
 
-	return LinkableValueNode::unref();
+	LinkableValueNode::unref();
 }
 
 void
@@ -1077,13 +1077,13 @@ ValueNode_Bone_Root::ref() const noexcept
 	LinkableValueNode::ref();
 }
 
-bool
+void
 ValueNode_Bone_Root::unref()const
 {
 	DEBUG_LOG("SYNFIG_DEBUG_BONE_REFCOUNT",
 		"%s:%d %s unref valuenode_bone_root %*s%2d <-\n", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), ((count()-1)*2), "", count()-1);
 
-	return LinkableValueNode::unref();
+	LinkableValueNode::unref();
 }
 
 void

@@ -1002,13 +1002,13 @@ ValueNode_BLine::ref() const noexcept
 	LinkableValueNode::ref();
 }
 
-bool
+void
 ValueNode_BLine::unref()const
 {
 	DEBUG_LOG("SYNFIG_DEBUG_BLINE_REFCOUNT",
 		"%s:%d %lx unref bline %*s%2d <-\n", __FILE__, __LINE__, uintptr_t(this), ((count()-1)*2), "", count()-1);
 
-	return LinkableValueNode::unref();
+	LinkableValueNode::unref();
 }
 #endif
 

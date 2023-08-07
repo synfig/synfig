@@ -124,7 +124,7 @@ public:
 
 #ifdef _DEBUG
 	void ref() const noexcept override;
-	bool unref() const override;
+	void unref() const override;
 	void rref() const override;
 	void runref() const override;
 #endif
@@ -164,7 +164,7 @@ public:
 
 #ifdef _DEBUG
 	void ref() const noexcept override;
-	bool unref() const override;
+	void unref() const override;
 	void rref() const override;
 	void runref() const override;
 #endif

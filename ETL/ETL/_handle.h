@@ -81,19 +81,18 @@ public:
 	}
 
 	//! Returns \c false if object needs to be deleted
-	virtual bool unref()const
+	virtual void unref() const
 	{
-		bool ret = (bool)(--refcount);
-		if (!ret)
+		--refcount;
+		if (refcount == 0)
 			delete this;
-		return ret;
 	}
 
 	//! Decrease reference counter without deletion of object
 	//! Returns \c false if references exceed and object should be deleted
-	virtual bool unref_inactive()const
+	virtual void unref_inactive() const noexcept
 	{
-		return (bool)(--refcount);
+		--refcount;
 	}
 
 	int use_count() const noexcept { return refcount; }
