@@ -44,6 +44,7 @@
 #include <gui/duckmatic.h>
 #include <gui/app.h>
 
+#include <synfig/canvas.h>
 #endif
 
 using namespace synfig;
@@ -113,13 +114,13 @@ Dialog_Guide::Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canv
 
 	Gtk::Label* xPosLabel = manage(new Gtk::Label(_("_X:"), true));
 	Gtk::Label* yPosLabel = manage(new Gtk::Label(_("_Y:"), true));
-	x_widget=manage(new Gtk::SpinButton(x_adjustment,15,2));
+	x_widget = manage(new Gtk::SpinButton(x_adjustment,15,2));
 	x_widget->show();
-	y_widget=manage(new Gtk::SpinButton(y_adjustment,15,2));
+	y_widget = manage(new Gtk::SpinButton(y_adjustment,15,2));
 	y_widget->show();
 	
 	posGrid->attach(*xPosLabel, 0, 0, 1, 1);
-	posGrid->attach(*x_widget, 1,0,1,1);
+	posGrid->attach(*x_widget, 1, 0, 1, 1);
 	posGrid->attach(*yPosLabel, 2, 0, 1, 1);
 	posGrid->attach(*y_widget, 3, 0, 1, 1);
 
@@ -165,13 +166,12 @@ Dialog_Guide::on_ok_or_apply_pressed(bool ok)
 	} else if (!degrees && curr_guide->angle.get() != angle_widget->get_value()) {
 		curr_guide->angle = synfig::Angle::rad(angle_widget->get_value());
 	}
-
-	if(curr_guide->point[0] != (x_widget->get_value())/60){
-		curr_guide->point[0] =  (x_widget->get_value())/60;
-	}
-	if(curr_guide->point[1] != (y_widget->get_value())/60){
-		curr_guide->point[1] =  (y_widget->get_value())/60;
-	}
+	void set_rend_desc(const synfig::RendDesc &rend_desc);
+	float factor = std::fabs((rend_desc.get_w()/2)/rend_desc.get_tl()[0]);
+	//logic for the factor will go here once i figure it out 
+	curr_guide->point[0] = x_widget->get_value()/60;
+	curr_guide->point[1] = y_widget->get_value()/60;
+	
 	if (ok)
 		hide();
 	else
@@ -195,6 +195,6 @@ Dialog_Guide::init_widget_values()
 		angle_widget->set_value(synfig::Angle::deg(curr_guide->angle).get());
 	else
 		angle_widget->set_value(curr_guide->angle.get());
-	x_widget->set_value((curr_guide->point[0])*60);
+	x_widget->set_value(curr_guide->point[0]*60);
 	y_widget->set_value(curr_guide->point[1]*60);
 }
