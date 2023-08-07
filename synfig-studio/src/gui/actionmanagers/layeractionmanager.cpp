@@ -191,7 +191,7 @@ LayerActionManager::LayerActionManager():
 {
 	action_cut_=Gtk::Action::create_with_icon_name(
 		"cut",
-		"edit-cut", _("_Cut"), _("Cut")
+		"edit-cut", _("Cu_t"), _("Cut")
 	);
 	action_cut_->signal_activate().connect(
 		sigc::mem_fun(
