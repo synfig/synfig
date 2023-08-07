@@ -110,7 +110,6 @@ Dialog_Guide::Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canv
 	posGrid->set_row_spacing(6);
 	posGrid->set_column_spacing(8);
 	
-
 	Gtk::Label* xPosLabel = manage(new Gtk::Label(_("_X:"), true));
 	Gtk::Label* yPosLabel = manage(new Gtk::Label(_("_Y:"), true));
 	x_widget = manage(new Gtk::SpinButton(x_adjustment,15,2));
@@ -192,7 +191,7 @@ Dialog_Guide::init_widget_values()
 		angle_widget->set_value(synfig::Angle::deg(curr_guide->angle).get());
 	else
 		angle_widget->set_value(curr_guide->angle.get());
-		
+
 	synfig::RendDesc &rend_desc(canvas->rend_desc());
 	factor = std::fabs((rend_desc.get_w()/2)/rend_desc.get_tl()[0]);
 	x_widget->set_value(curr_guide->point[0]*factor);
