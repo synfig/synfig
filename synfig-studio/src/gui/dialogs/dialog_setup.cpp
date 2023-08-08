@@ -60,9 +60,7 @@
 
 #ifdef _WIN32
 #include <Windows.h>
-#elif __linux__
-#include <cstdlib>
-#elif __APPLE__
+#else
 #include <cstdlib>
 #endif
 /* === U S I N G =========================================================== */
@@ -1485,8 +1483,6 @@ Dialog_Setup::on_plugin_path_change_clicked()
 	#elif __APPLE__
     std::string command = "open " + foldername;
     std::system(command.c_str());
-	#else
-	return 0;
 	#endif
 }
 void
