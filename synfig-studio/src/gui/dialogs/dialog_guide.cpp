@@ -98,9 +98,9 @@ Dialog_Guide::Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canv
 	guideGrid->attach(*angle_widget      , 1, 0, 1, 1);
 	guideGrid->attach(angle_type_picker  , 2, 0, 1, 1);
 
-	Gtk::Frame* pivotFrame = manage(new Gtk::Frame(_("Set Pivot Position")));
+	Gtk::Frame* pivotFrame = manage(new Gtk::Frame(_("Set Pivot Position (px)")));
 	pivotFrame->set_shadow_type(Gtk::SHADOW_NONE);
-	(static_cast<Gtk::Label*>(pivotFrame->get_label_widget()))->set_markup(_("<b>Set Pivot Position</b>"));
+	(static_cast<Gtk::Label*>(pivotFrame->get_label_widget()))->set_markup(_("<b>Set Pivot Position</b> <span size='small'>(px)</span>"));
 	pivotFrame->set_margin_bottom(5);
 	pivotFrame->set_margin_top(5);
 	pivotFrame->set_margin_left(5);
@@ -194,7 +194,7 @@ Dialog_Guide::init_widget_values()
 
 	const synfig::RendDesc& rend_desc(canvas->rend_desc());
 	x_factor = std::fabs(rend_desc.get_w()/(rend_desc.get_tl()[0]-rend_desc.get_br()[0]));
-	y_factor = std::fabs(rend_desc.get_w()/(rend_desc.get_tl()[1]-rend_desc.get_br()[1]));
+	y_factor = std::fabs(rend_desc.get_h()/(rend_desc.get_tl()[1]-rend_desc.get_br()[1]));
 	x_widget->set_value(curr_guide->point[0]*x_factor);
 	y_widget->set_value(curr_guide->point[1]*y_factor);
 }
