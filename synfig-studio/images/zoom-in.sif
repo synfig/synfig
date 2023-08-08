@@ -36,7 +36,7 @@
       </color>
     </param>
   </layer>
-  <layer type="group" active="true" exclude_from_rendering="false" version="0.3" desc="zoom">
+  <layer type="group" active="true" exclude_from_rendering="false" version="0.3" desc="zoom-in">
     <param name="z_depth">
       <real value="0.0000000000"/>
     </param>
@@ -1527,7 +1527,7 @@
                         </bline>
                       </param>
                       <param name="width">
-                        <real value="0.0568625935"/>
+                        <real value="0.1000000312"/>
                       </param>
                       <param name="expand">
                         <real value="0.0000000000"/>
@@ -1570,15 +1570,15 @@
                       <param name="gradient">
                         <gradient>
                           <color pos="0.000000">
-                            <r>0.481952</r>
-                            <g>0.481952</g>
-                            <b>0.481952</b>
+                            <r>0.349356</r>
+                            <g>0.349356</g>
+                            <b>0.349356</b>
                             <a>1.000000</a>
                           </color>
                           <color pos="1.000000">
-                            <r>0.118329</r>
-                            <g>0.118329</g>
-                            <b>0.118329</b>
+                            <r>0.060780</r>
+                            <g>0.060780</g>
+                            <b>0.060780</b>
                             <a>1.000000</a>
                           </color>
                         </gradient>
@@ -1617,7 +1617,7 @@
                   <real value="0.0000000000"/>
                 </param>
               </layer>
-              <layer type="outline" active="true" exclude_from_rendering="false" version="0.3" desc="path7892">
+              <layer type="outline" active="true" exclude_from_rendering="false" version="0.3" desc="highlight">
                 <param name="z_depth">
                   <real value="0.0000000000"/>
                 </param>
@@ -2021,7 +2021,7 @@
                   </bline>
                 </param>
                 <param name="width">
-                  <real value="0.0568625935"/>
+                  <real value="0.0666666875"/>
                 </param>
                 <param name="expand">
                   <real value="0.0000000000"/>
@@ -2066,7 +2066,7 @@
             <real value="0.0000000000"/>
           </param>
         </layer>
-        <layer type="group" active="true" exclude_from_rendering="false" version="0.3" desc="plus">
+        <layer type="group" active="true" exclude_from_rendering="false" version="0.3" desc="in">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -2690,7 +2690,7 @@
                   </bline>
                 </param>
                 <param name="width">
-                  <real value="0.1833333906"/>
+                  <real value="0.2333334062"/>
                 </param>
                 <param name="expand">
                   <real value="0.0000000000"/>
@@ -3916,7 +3916,7 @@
                         </bline>
                       </param>
                       <param name="width">
-                        <real value="0.0568626667"/>
+                        <real value="0.1000000312"/>
                       </param>
                       <param name="expand">
                         <real value="0.0000000000"/>
@@ -3959,15 +3959,15 @@
                       <param name="gradient">
                         <gradient>
                           <color pos="0.000000">
-                            <r>0.481952</r>
-                            <g>0.481952</g>
-                            <b>0.481952</b>
+                            <r>0.349356</r>
+                            <g>0.349356</g>
+                            <b>0.349356</b>
                             <a>1.000000</a>
                           </color>
                           <color pos="1.000000">
-                            <r>0.118329</r>
-                            <g>0.118329</g>
-                            <b>0.118329</b>
+                            <r>0.060780</r>
+                            <g>0.060780</g>
+                            <b>0.060780</b>
                             <a>1.000000</a>
                           </color>
                         </gradient>
