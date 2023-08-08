@@ -76,7 +76,8 @@ class Dialog_Guide : public Gtk::Dialog
 	bool menu_guide_is_x;
 	bool degrees;
 
-	float factor;
+	float x_factor;
+	float y_factor;
 
 public:
 	Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canvas, WorkArea* work_area);

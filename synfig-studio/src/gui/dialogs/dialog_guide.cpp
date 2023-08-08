@@ -165,8 +165,8 @@ Dialog_Guide::on_ok_or_apply_pressed(bool ok)
 		curr_guide->angle = synfig::Angle::rad(angle_widget->get_value());
 	}
 
-	curr_guide->point[0] = x_widget->get_value()/factor;
-	curr_guide->point[1] = y_widget->get_value()/factor;
+	curr_guide->point[0] = x_widget->get_value()/x_factor;
+	curr_guide->point[1] = y_widget->get_value()/y_factor;
 	
 	if (ok)
 		hide();
@@ -192,8 +192,9 @@ Dialog_Guide::init_widget_values()
 	else
 		angle_widget->set_value(curr_guide->angle.get());
 
-	synfig::RendDesc &rend_desc(canvas->rend_desc());
-	factor = std::fabs((rend_desc.get_w()/2)/rend_desc.get_tl()[0]);
-	x_widget->set_value(curr_guide->point[0]*factor);
-	y_widget->set_value(curr_guide->point[1]*factor);
+	const synfig::RendDesc& rend_desc(canvas->rend_desc());
+	x_factor = std::fabs(rend_desc.get_w()/(rend_desc.get_tl()[0]-rend_desc.get_br()[0]));
+	y_factor = std::fabs(rend_desc.get_w()/(rend_desc.get_tl()[1]-rend_desc.get_br()[1]));
+	x_widget->set_value(curr_guide->point[0]*x_factor);
+	y_widget->set_value(curr_guide->point[1]*y_factor);
 }
