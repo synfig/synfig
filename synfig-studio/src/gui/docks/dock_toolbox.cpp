@@ -257,9 +257,19 @@ Dock_Toolbox::update_tools()
 	for (const auto& item : state_button_map)
 		item.second->set_sensitive(sensitive);
 
-	if (canvas_view && canvas_view->get_smach().get_state_name())
-		set_active_state(canvas_view->get_smach().get_state_name());
-	else
+	const char* canvasview_state_name = canvas_view ? canvas_view->get_smach().get_state_name() : nullptr;
+	if (canvasview_state_name) {
+		set_active_state(canvasview_state_name);
+		auto radio_button = state_button_map[canvasview_state_name];
+		if (radio_button) {
+			Glib::RefPtr<Gtk::ActionGroup> state_action_group = App::get_state_manager()->get_action_group();
+			bool previous_sensitive = state_action_group->get_sensitive();
+			state_action_group->set_sensitive(false);
+			if (!radio_button->get_active())
+				radio_button->set_active(true);
+			state_action_group->set_sensitive(previous_sensitive);
+		}
+	} else
 		set_active_state("none");
 }
 
