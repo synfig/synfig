@@ -58,12 +58,6 @@
 
 #endif
 
-#ifdef _WIN32
-#include <Windows.h>
-#else
-#include <cstdlib>
-#endif
-
 #include <synfig/os.h>
 /* === U S I N G =========================================================== */
 
