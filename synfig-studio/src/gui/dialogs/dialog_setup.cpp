@@ -49,7 +49,7 @@
 #include <gui/widgets/widget_enum.h>
 #include <gui/autorecover.h>
 #include <synfig/threadpool.h>
-
+#include <synfig/os.h>
 #include <synfig/rendering/renderer.h>
 
 #include <synfigapp/main.h>
@@ -58,7 +58,6 @@
 
 #endif
 
-#include <synfig/os.h>
 /* === U S I N G =========================================================== */
 
 using namespace synfig;
@@ -1465,12 +1464,6 @@ void
 Dialog_Setup::on_plugin_path_change_clicked()
 {
 	String foldername = ResourceHelper::get_plugin_path();
-	//processes the path from get_plugin_path()
-	size_t pos = foldername.find('/');
-    while (pos != std::string::npos) {
-        foldername.replace(pos, 1, "\\");
-        pos = foldername.find('/', pos + 2);
-    }
 	synfig::OS::launch_file_async(foldername);
 }
 void
