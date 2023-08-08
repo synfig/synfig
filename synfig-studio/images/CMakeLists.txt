@@ -266,6 +266,11 @@ set(ICONS
 	list-remove
 	brush_size_increase_icon
 	brush_size_decrease_icon
+	document-open
+	document-save
+	edit-clear
+	process-stop
+	view-refresh
 )
 
 set(IMAGES

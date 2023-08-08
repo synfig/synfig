@@ -228,7 +228,12 @@ EXTRA_DIST = \
 	list-add.sif \
 	list-remove.sif \
 	brush_size_increase_icon.sif \
-	brush_size_decrease_icon.sif
+	brush_size_decrease_icon.sif \
+	document-open.sif \
+	document-save.sif \
+	edit-clear.sif \
+	process-stop.sif \
+	view-refresh.sif
 
 IMAGES = \
 	installer_logo.bmp \
@@ -461,7 +466,12 @@ ICONS = \
 	list-add.$(EXT) \
 	list-remove.$(EXT) \
 	brush_size_increase_icon.$(EXT) \
-	brush_size_decrease_icon.$(EXT)
+	brush_size_decrease_icon.$(EXT) \
+	document-open.$(EXT) \
+	document-save.$(EXT) \
+	edit-clear.$(EXT) \
+	process-stop.$(EXT) \
+	view-refresh.$(EXT)
 
 if WIN32_PKG
 WIN32_ICONS = \
