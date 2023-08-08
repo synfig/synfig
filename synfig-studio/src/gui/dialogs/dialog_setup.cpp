@@ -60,10 +60,6 @@
 
 #include <gui/resourcehelper.h>
 
-#include <synfigapp/main.h>
-
-#include <gui/resourcehelper.h>
-
 #endif
 
 /* === U S I N G =========================================================== */
