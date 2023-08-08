@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <canvas version="1.1" width="128" height="128" xres="2952.755900" yres="2952.755900" gamma-r="2.200000" gamma-g="2.200000" gamma-b="2.200000" view-box="-1.000000 1.000000 1.000000 -1.000000" antialias="1" fps="30.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
   <name>edit-delete.sif</name>
-  <desc>Placed in the Public Domain in 2022 by Pablo Gil Fernández</desc>
+  <desc>original design by Adwaita team, ported to Synfig by Pablo Gil Fernández in 2023</desc>
   <meta name="background_first_color" content="0.880000 0.880000 0.880000"/>
   <meta name="background_rendering" content="0"/>
   <meta name="background_second_color" content="0.650000 0.650000 0.650000"/>
   <meta name="background_size" content="15.000000 15.000000"/>
   <meta name="grid_color" content="0.500000 0.500000 0.500000"/>
-  <meta name="grid_show" content="0"/>
+  <meta name="grid_show" content="1"/>
   <meta name="grid_size" content="0.062500 0.062500"/>
   <meta name="grid_snap" content="1"/>
   <meta name="guide_color" content="0.000000 0.000000 0.000000"/>
@@ -3699,11 +3699,11 @@
           <param name="bline">
             <bline type="bline_point">
               <entry>
-                <composite guid="342A70FE88AF02FF43808D2A12D4EB17" type="bline_point">
+                <composite guid="670E88C2F09A1A9B3FD4923E0C00A264" type="bline_point">
                   <point>
                     <vector>
-                      <x>-0.3749999702</x>
-                      <y>0.4375000000</y>
+                      <x>-0.3124999702</x>
+                      <y>0.3750000000</y>
                     </vector>
                   </point>
                   <width>
@@ -3744,11 +3744,11 @@
                 </composite>
               </entry>
               <entry>
-                <composite guid="949514D88E4CCD0A7D3B2BAC30457DD2" type="bline_point">
+                <composite guid="C7B1ECE4F679D56E016F34B82E9134A1" type="bline_point">
                   <point>
                     <vector>
-                      <x>0.3750000000</x>
-                      <y>-0.3125000000</y>
+                      <x>0.3125000000</x>
+                      <y>-0.2500000000</y>
                     </vector>
                   </point>
                   <width>
@@ -3791,7 +3791,7 @@
             </bline>
           </param>
           <param name="width">
-            <real value="0.1093750000"/>
+            <real value="0.1562500000"/>
           </param>
           <param name="expand">
             <real value="0.0000000000"/>
@@ -3851,11 +3851,11 @@
           <param name="bline">
             <bline type="bline_point">
               <entry>
-                <composite guid="4FDF6F09779A56AC1A234E4D3F063972" type="bline_point">
+                <composite guid="1CFB97350FAF4EC86677515921D27001" type="bline_point">
                   <point>
                     <vector>
-                      <x>0.3750000298</x>
-                      <y>0.4375000000</y>
+                      <x>0.3125000298</x>
+                      <y>0.3750000000</y>
                     </vector>
                   </point>
                   <width>
@@ -3896,11 +3896,11 @@
                 </composite>
               </entry>
               <entry>
-                <composite guid="6D017CC12C3C240F582B1A71FF157BFF" type="bline_point">
+                <composite guid="3E2584FD54093C6B247F0565E1C1328C" type="bline_point">
                   <point>
                     <vector>
-                      <x>-0.3750000000</x>
-                      <y>-0.3125000000</y>
+                      <x>-0.3125000000</x>
+                      <y>-0.2500000000</y>
                     </vector>
                   </point>
                   <width>
@@ -3943,7 +3943,7 @@
             </bline>
           </param>
           <param name="width">
-            <real value="0.1093750000"/>
+            <real value="0.1562500000"/>
           </param>
           <param name="expand">
             <real value="0.0000000000"/>
