@@ -63,6 +63,8 @@
 #else
 #include <cstdlib>
 #endif
+
+#include <synfig/os.h>
 /* === U S I N G =========================================================== */
 
 using namespace synfig;
@@ -1475,15 +1477,7 @@ Dialog_Setup::on_plugin_path_change_clicked()
         foldername.replace(pos, 1, "\\");
         pos = foldername.find('/', pos + 2);
     }
-	#ifdef _WIN32
-    ShellExecuteA(NULL, "open", "explorer.exe", foldername.c_str(), NULL, SW_SHOWDEFAULT);
-	#elif __linux__
-    std::string command = "xdg-open " + foldername;
-    std::system(command.c_str());
-	#elif __APPLE__
-    std::string command = "open " + foldername;
-    std::system(command.c_str());
-	#endif
+	synfig::OS::launch_file_async(foldername);
 }
 void
 Dialog_Setup::on_value_change(int valueflag)
