@@ -152,7 +152,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateWidth::StateWidth():
-	Smach::state<StateWidth_Context>("width")
+	Smach::state<StateWidth_Context>("width", N_("Width Tool"))
 {
 	insert(event_def(EVENT_STOP,&StateWidth_Context::event_stop_handler));
 	insert(event_def(EVENT_REFRESH,&StateWidth_Context::event_refresh_handler));

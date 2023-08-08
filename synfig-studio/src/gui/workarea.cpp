@@ -313,10 +313,10 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 
 	// Load sketch
 	{
-		String data(canvas->get_meta_data("sketch"));
+		filesystem::Path data(canvas->get_meta_data("sketch"));
 		if (!data.empty())
 			if (!load_sketch(data))
-				load_sketch(filesystem::Path::dirname(canvas->get_file_name()) + ETL_DIRECTORY_SEPARATOR + filesystem::Path::basename(data));
+				load_sketch(filesystem::Path::dirname(canvas->get_file_name()) + ETL_DIRECTORY_SEPARATOR + data.filename());
 	}
 
 	drawing_area->set_can_focus(true);
@@ -393,12 +393,11 @@ WorkArea::save_meta_data()
 			canvas_interface->erase_meta_data("guide");
 	}
 
-	if(get_sketch_filename().size())
-	{
-		if(filesystem::Path::dirname(canvas->get_file_name())==filesystem::Path::dirname(get_sketch_filename()))
-			canvas_interface->set_meta_data("sketch",filesystem::Path::basename(get_sketch_filename()));
+	if (!get_sketch_filename().empty()) {
+		if (filesystem::Path::dirname(canvas->get_file_name()) == get_sketch_filename().parent_path())
+			canvas_interface->set_meta_data("sketch", get_sketch_filename().filename().u8string());
 		else
-			canvas_interface->set_meta_data("sketch",get_sketch_filename());
+			canvas_interface->set_meta_data("sketch", get_sketch_filename().u8string());
 	}
 
 	meta_data_lock=false;
