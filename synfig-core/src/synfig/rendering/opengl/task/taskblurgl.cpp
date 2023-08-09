@@ -184,7 +184,7 @@ public:
                 shader = env().get_or_create_context().get_program("cross_blur");
                 break;
             case Blur::FASTGAUSSIAN:
-                count = 2;
+                // count = 2;
                 shader = env().get_or_create_context().get_program("box_blur");
                 break;
             case Blur::GAUSSIAN:
