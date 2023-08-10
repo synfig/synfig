@@ -236,7 +236,8 @@ EXTRA_DIST = \
 	document-save.sif \
 	edit-clear.sif \
 	process-stop.sif \
-	view-refresh.sif
+	view-refresh.sif \
+	keyframe_properties_icon.sif
 
 IMAGES = \
 	installer_logo.bmp \
@@ -477,7 +478,8 @@ ICONS = \
 	document-save.$(EXT) \
 	edit-clear.$(EXT) \
 	process-stop.$(EXT) \
-	view-refresh.$(EXT)
+	view-refresh.$(EXT) \
+	keyframe_properties_icon.$(EXT)
 
 if WIN32_PKG
 WIN32_ICONS = \

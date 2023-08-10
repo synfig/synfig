@@ -274,6 +274,7 @@ set(ICONS
 	edit-clear
 	process-stop
 	view-refresh
+	keyframe_properties_icon
 )
 
 set(IMAGES
