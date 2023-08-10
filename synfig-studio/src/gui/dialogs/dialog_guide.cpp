@@ -176,6 +176,7 @@ Dialog_Guide::on_ok_or_apply_pressed(bool ok)
 			curr_guide->point[1] = y_widget->get_value()/y_factor;
 			break;
 		default: //meter system 
+			break;
 			//working on this 
 	}
 	
