@@ -95,6 +95,9 @@ EXTRA_DIST = \
 	\
 	action_doc_icons.sif \
 	\
+	worspace_saveas_icon.sif \
+	worspace_edit_icon.sif \
+	\
 	interpolation_type_icons.sif\
 	\
 	layer_blur_blur_icon.sif \
@@ -323,6 +326,9 @@ ICONS = \
 	action_doc_saveall_icon.$(EXT) \
 	action_doc_redo_icon.$(EXT) \
 	action_doc_undo_icon.$(EXT) \
+	\
+	workspace_saveas_icon.$(EXT) \
+	workspace_edit_icon.$(EXT) \
 	\
 	interpolation_type_tcb_icon.$(EXT)\
 	interpolation_type_ease_icon.$(EXT)\

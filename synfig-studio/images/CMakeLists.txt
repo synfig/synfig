@@ -64,6 +64,9 @@ set(ICONS
 	action_doc_undo_icon
 	action_doc_redo_icon
 
+	workspace_saveas_icon
+	workspace_edit_icon
+
 	canvas_icon
 
 	animate_seek_next_keyframe_icon

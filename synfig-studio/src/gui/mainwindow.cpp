@@ -209,11 +209,11 @@ MainWindow::init_menus()
 	action_group->add( Gtk::Action::create("workspace-default", _("Default")),
 		sigc::ptr_fun(MainWindow::set_workspace_default)
 	);
-	action_group->add( Gtk::Action::create_with_icon_name("save-workspace", "action_doc_saveas_icon", _("Save workspace..."), _("Save workspace...")),
+	action_group->add( Gtk::Action::create_with_icon_name("save-workspace", "workspace_saveas_icon", _("Save workspace..."), _("Save workspace...")),
 		sigc::mem_fun(*this, &MainWindow::save_custom_workspace)
 	);
 
-	action_group->add( Gtk::Action::create("edit-workspacelist", _("Edit workspaces...")),
+	action_group->add( Gtk::Action::create_with_icon_name("edit-workspacelist", "workspace_edit_icon", _("Edit workspaces..."), _("Edit workspaces...")),
 		sigc::ptr_fun(MainWindow::edit_custom_workspace_list)
 	);
 

@@ -616,11 +616,12 @@
 						<item>
 							<attribute name="label" translatable="yes">_Save Workspace...</attribute>
 							<attribute name="action">win.save-workspace</attribute>
-							<attribute name="icon">action_doc_saveas_icon</attribute>
+							<attribute name="icon">workspace_saveas_icon</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Edit Workspaces...</attribute>
 							<attribute name="action">win.edit-workspacelist</attribute>
+							<attribute name="icon">workspace_edit_icon</attribute>
 						</item>
 					</section>
 				</submenu>
