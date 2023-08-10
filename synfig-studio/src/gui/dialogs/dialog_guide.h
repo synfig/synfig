@@ -36,6 +36,7 @@
 #include <gtkmm/comboboxtext.h>
 
 #include <synfigapp/value_desc.h>
+#include <synfig/real.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -76,8 +77,8 @@ class Dialog_Guide : public Gtk::Dialog
 	bool menu_guide_is_x;
 	bool degrees;
 
-	float x_factor;
-	float y_factor;
+	synfig::Real x_factor;
+	synfig::Real y_factor;
 
 public:
 	Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canvas, WorkArea* work_area);

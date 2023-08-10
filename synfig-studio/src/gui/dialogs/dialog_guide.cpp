@@ -35,7 +35,7 @@
 #include <gui/dialogs/dialog_guide.h>
 
 #include <gui/localization.h>
-
+#include <synfig/distance.h>
 #include <gtkmm/box.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/grid.h>
@@ -100,7 +100,7 @@ Dialog_Guide::Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canv
 
 	Gtk::Frame* pivotFrame = manage(new Gtk::Frame(_("Set Pivot Position (px)")));
 	pivotFrame->set_shadow_type(Gtk::SHADOW_NONE);
-	(static_cast<Gtk::Label*>(pivotFrame->get_label_widget()))->set_markup(_("<b>Set Pivot Position</b> <span size='small'>(px)</span>"));
+	(static_cast<Gtk::Label*>(pivotFrame->get_label_widget()))->set_markup(_("<b>Set Pivot Position</b>"));
 	pivotFrame->set_margin_bottom(5);
 	pivotFrame->set_margin_top(5);
 	pivotFrame->set_margin_left(5);
@@ -165,8 +165,19 @@ Dialog_Guide::on_ok_or_apply_pressed(bool ok)
 		curr_guide->angle = synfig::Angle::rad(angle_widget->get_value());
 	}
 
-	curr_guide->point[0] = x_widget->get_value()/x_factor;
-	curr_guide->point[1] = y_widget->get_value()/y_factor;
+	switch (App::distance_system)
+	{
+		case 0: //units system
+			curr_guide->point[0] = x_widget->get_value();
+			curr_guide->point[1] = y_widget->get_value();
+			break;
+		case 1: //pixel system
+			curr_guide->point[0] = x_widget->get_value()/x_factor;
+			curr_guide->point[1] = y_widget->get_value()/y_factor;
+			break;
+		default: //meter system 
+			//working on this 
+	}
 	
 	if (ok)
 		hide();
@@ -193,8 +204,23 @@ Dialog_Guide::init_widget_values()
 		angle_widget->set_value(curr_guide->angle.get());
 
 	const synfig::RendDesc& rend_desc(canvas->rend_desc());
-	x_factor = std::fabs(rend_desc.get_w()/(rend_desc.get_tl()[0]-rend_desc.get_br()[0]));
-	y_factor = std::fabs(rend_desc.get_h()/(rend_desc.get_tl()[1]-rend_desc.get_br()[1]));
-	x_widget->set_value(curr_guide->point[0]*x_factor);
-	y_widget->set_value(curr_guide->point[1]*y_factor);
+
+	switch (App::distance_system)
+	{
+		case 0: //units system
+			x_widget->set_value(curr_guide->point[0]);
+			y_widget->set_value(curr_guide->point[1]);
+			break;
+		case 1: //pixel system
+			x_factor = std::fabs(rend_desc.get_w()/(rend_desc.get_tl()[0]-rend_desc.get_br()[0])); //factor for pixel-point conversion 
+			y_factor = std::fabs(rend_desc.get_h()/(rend_desc.get_tl()[1]-rend_desc.get_br()[1]));
+			x_widget->set_value(curr_guide->point[0]*x_factor);
+			y_widget->set_value(curr_guide->point[1]*y_factor);
+			break;
+		default: //meter system 
+			x_factor = std::fabs(rend_desc.get_physical_w()/(rend_desc.get_tl()[0]-rend_desc.get_br()[0])); //factor for meter-point conversion
+			y_factor = std::fabs(rend_desc.get_physical_h()/(rend_desc.get_tl()[1]-rend_desc.get_br()[1]));
+			x_widget->set_value(Distance::meters_to_system(curr_guide->point[0]*x_factor, App::distance_system));
+			y_widget->set_value(Distance::meters_to_system(curr_guide->point[1]*y_factor, App::distance_system));
+	}
 }
