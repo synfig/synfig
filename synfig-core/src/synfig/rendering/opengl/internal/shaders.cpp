@@ -161,6 +161,9 @@ gl::Shaders::initialize()
 	map["blit_alpha.fs"] = load_shader("blit_alpha.fs");
 	assert(map["blit_alpha.fs"].valid);
 
+	map["blit_gamma.fs"] = load_shader("blit_gamma.fs");
+	assert(map["blit_gamma.fs"].valid);
+
 	map["box_blur.fs"] = load_shader("blurs/box_blur.fs");
 	assert(map["box_blur.fs"].valid);
 
@@ -321,6 +324,9 @@ gl::Programs::initialize(const Shaders& shaders)
 	map["blit_alpha"] = create_program({ shaders.get_shader("basic.vs"), shaders.get_shader("blit_alpha.fs") });
 	assert(map["blit_alpha"].valid);
 
+	map["blit_gamma"] = create_program({ shaders.get_shader("basic.vs"), shaders.get_shader("blit_gamma.fs") });
+	assert(map["blit_gamma"].valid);
+
 	map["box_blur"] = create_program({ shaders.get_shader("basic.vs"), shaders.get_shader("box_blur.fs") });
 	assert(map["box_blur"].valid);
 
@@ -446,6 +452,15 @@ gl::Programs::Program::set_2f(const std::string &name, Vector value)
 
 	int loc = glGetUniformLocation(id, name.c_str());
 	glUniform2f(loc, value[0], value[1]);
+}
+
+void
+gl::Programs::Program::set_3f(const std::string &name, float a, float b, float c)
+{
+	assert(valid);
+
+	int loc = glGetUniformLocation(id, name.c_str());
+	glUniform3f(loc, a, b, c);
 }
 
 void

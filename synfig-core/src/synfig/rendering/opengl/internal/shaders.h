@@ -94,6 +94,7 @@ public:
 		void set_1f(const std::string& name, float value);
 		void set_2i(const std::string& name, VectorInt value);
 		void set_2f(const std::string& name, Vector value);
+		void set_3f(const std::string &name, float a, float b, float c);
 		void set_4i(const std::string &name, int a, int b, int c, int d);
 		void set_color(const std::string& name, Color value);
 		void set_mat5x5(const std::string& name, ColorMatrix mat);

@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/internal/glsl/blit_alpha.fs
-**	\brief Blit Alpha Fragment Shader
+/*!	\file synfig/rendering/opengl/internal/glsl/blit_gamma.fs
+**	\brief Blit Gamma Fragment Shader
 **
 **	\legal
 **	......... ... 2023 Bharat Sahlot
@@ -27,7 +27,8 @@
 
 uniform sampler2D tex;
 uniform ivec2 offset;
-uniform bool inverse_alpha;
+
+uniform vec3 gamma;
 
 layout (location = 0) out vec4 out_color;
 
@@ -35,9 +36,8 @@ void main()
 {
 	ivec2 coord = ivec2(floor(gl_FragCoord));
 	vec4 col = texelFetch(tex, coord + offset, 0);
-
-    if(inverse_alpha) col.rgb = col.a > 0 ? col.rgb / col.a : vec3(0, 0, 0);
-    else col.rgb *= col.a;
-
+    col.r = col.r < 0 ? -pow(-col.r, gamma.r) : pow(col.r, gamma.r);
+    col.g = col.g < 0 ? -pow(-col.g, gamma.g) : pow(col.g, gamma.g);
+    col.b = col.b < 0 ? -pow(-col.b, gamma.b) : pow(col.b, gamma.b);
 	out_color = col;
 }

@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/task/taskpixelcolormatrixgl.cpp
+/*!	\file synfig/rendering/software/task/taskpixelgammagl.cpp
 **	\brief TaskPixelColorMatrixGL
 **
 **	\legal
@@ -61,12 +61,18 @@ using namespace rendering;
 
 namespace {
 
-class TaskPixelColorMatrixGL: public TaskPixelColorMatrix, public TaskGL
+class TaskPixelGammaGL: public TaskPixelGamma, public TaskGL
 {
 public:
-	typedef etl::handle<TaskPixelColorMatrixGL> Handle;
+	typedef etl::handle<TaskPixelGammaGL> Handle;
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
+
+	static inline ColorReal clamp_positive(const ColorReal &x)
+	{
+		const ColorReal max = ColorReal(1.0)/real_low_precision<ColorReal>();
+		return synfig::clamp(x, real_low_precision<ColorReal>(), max);
+	}
 
 	virtual bool run(RunParams&) const
 	{
@@ -82,74 +88,57 @@ public:
 		glViewport(0, 0, ldst->get_width(), ldst->get_height());
 		glScissor(target_rect.minx, target_rect.miny, target_rect.get_width(), target_rect.get_height());
 
-		if(is_constant())
+		gl::Framebuffer& framebuffer = ldst->get_framebuffer();
+
+        const Task::Handle& sub = sub_task();
+
+		RectInt r = target_rect;
+		if(sub && sub->is_valid())
 		{
-			gl::Framebuffer& framebuffer = ldst->get_framebuffer();
-
-			framebuffer.use_write();
-			glViewport(0, 0, ldst->get_width(), ldst->get_height());
-
-			const Color col = matrix.get_constant();
-
-			glClearColor(col.get_r(), col.get_g(), col.get_b(), col.get_a());
-			glClear(GL_COLOR_BUFFER_BIT);
-
-			framebuffer.unuse();
-			return true;
-		}
-
-		if(sub_task() && sub_task()->is_valid())
-		{
-			VectorInt oa = get_offset();
-			RectInt ra = sub_task()->target_rect - oa;
+			VectorInt oa = TaskList::calc_target_offset(*this, *sub);
+			RectInt ra = sub->target_rect - oa;
 
 			if(ra.is_valid())
 			{
-				rect_set_intersect(ra, ra, target_rect);
+				rect_set_intersect(ra, ra, r);
 
-				// NOTE: for some reason this resets the current framebuffer
-				LockRead lsrc(sub_task());
+				// blit sub_task_a in the intersection
+				LockRead lsrc(sub);
 				if(!lsrc) {
 					return false;
 				}
 
-				gl::Framebuffer& framebuffer = ldst->get_framebuffer();
-
-				glViewport(0, 0, ldst->get_width(), ldst->get_height());
-
-				framebuffer.use_write();
-
-				const Color col = matrix.get_constant();
-
-				glClearColor(col.get_r(), col.get_g(), col.get_b(), col.get_a());
-				glClear(GL_COLOR_BUFFER_BIT);
-
-				glScissor(ra.minx, ra.miny, ra.get_width(), ra.get_height());
-
 				gl::Framebuffer& src = lsrc.cast_handle()->get_framebuffer();
 				src.use_read(0);
 
-				gl::Programs::Program shader = env().get_or_create_context().get_program("colormatrix");
-				shader.use();
-				shader.set_1i("tex", 0);
-				shader.set_mat5x5("mat", matrix);
-				shader.set_2i("offset", oa);
+				framebuffer.use_write();
+
+				glScissor(ra.minx, ra.miny, ra.get_width(), ra.get_height());
+
+                gl::Programs::Program shader = env().get_or_create_context().get_program("blit_gamma");
+                shader.use();
+                shader.set_1i("tex", 0);
+                shader.set_2i("offset", oa);
+                shader.set_3f("gamma",
+                        clamp_positive(gamma.get_r()),
+                        clamp_positive(gamma.get_g()),
+                        clamp_positive(gamma.get_b()));
 
 				gl::Plane plane;
 				plane.render();
 
 				src.unuse();
-				framebuffer.unuse();
 			}
 		}
+
 		glDisable(GL_SCISSOR_TEST);
 		return true;
 	}
 };
 
 
-Task::Token TaskPixelColorMatrixGL::token(
-	DescReal<TaskPixelColorMatrixGL, TaskPixelColorMatrix>("PixelColorMatrixGL") );
+Task::Token TaskPixelGammaGL::token(
+	DescReal<TaskPixelGammaGL, TaskPixelGamma>("TaskPixelGammaGL") );
 
 } // end of anonimous namespace
 
