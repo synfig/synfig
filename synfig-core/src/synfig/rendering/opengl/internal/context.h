@@ -30,8 +30,8 @@
 #define __SYNFIG_RENDERING_GL_CONTEXT_H
 
 /* === H E A D E R S ======================================================= */
-#include "headers.h"
 #include "shaders.h"
+#include "headers.h"
 
 #include <mutex>
 

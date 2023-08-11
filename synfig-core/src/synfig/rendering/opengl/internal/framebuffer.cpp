@@ -32,6 +32,7 @@
 #	include <config.h>
 #endif
 
+#include "headers.h"
 #include "framebuffer.h"
 #include "synfig/general.h"
 #include <cassert>

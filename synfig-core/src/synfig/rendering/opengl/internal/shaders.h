@@ -30,10 +30,11 @@
 #define __SYNFIG_RENDERING_GL_SHADERS_H
 
 /* === H E A D E R S ======================================================= */
-#include "headers.h"
 #include "synfig/color/color.h"
 #include "synfig/color/colormatrix.h"
 #include "synfig/vector.h"
+
+#include "headers.h"
 
 #include <map>
 #include <string>
@@ -93,7 +94,8 @@ public:
 		void set_1i(const std::string& name, int value);
 		void set_1f(const std::string& name, float value);
 		void set_2i(const std::string& name, VectorInt value);
-		void set_2f(const std::string& name, Vector value);
+        void set_2f(const std::string& name, Vector value);
+		void set_2f(const std::string& name, float a, float b);
 		void set_3f(const std::string &name, float a, float b, float c);
 		void set_4i(const std::string &name, int a, int b, int c, int d);
 		void set_color(const std::string& name, Color value);

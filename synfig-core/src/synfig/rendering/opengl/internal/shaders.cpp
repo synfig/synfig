@@ -455,6 +455,15 @@ gl::Programs::Program::set_2f(const std::string &name, Vector value)
 }
 
 void
+gl::Programs::Program::set_2f(const std::string &name, float a, float b)
+{
+	assert(valid);
+
+	int loc = glGetUniformLocation(id, name.c_str());
+	glUniform2f(loc, a, b);
+}
+
+void
 gl::Programs::Program::set_3f(const std::string &name, float a, float b, float c)
 {
 	assert(valid);
