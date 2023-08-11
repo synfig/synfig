@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/task/taskblursw.cpp
+/*!	\file synfig/rendering/software/task/taskblurgl.cpp
 **	\brief TaskBlurGL
 **
 **	\legal
