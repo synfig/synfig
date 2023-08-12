@@ -167,17 +167,19 @@ Dialog_Guide::on_ok_or_apply_pressed(bool ok)
 
 	switch (App::distance_system)
 	{
-		case 0: //units system
+		case Distance::SYSTEM_UNITS: 
 			curr_guide->point[0] = x_widget->get_value();
 			curr_guide->point[1] = y_widget->get_value();
 			break;
-		case 1: //pixel system
+		case Distance::SYSTEM_PIXELS: 
 			curr_guide->point[0] = x_widget->get_value()/x_factor;
 			curr_guide->point[1] = y_widget->get_value()/y_factor;
 			break;
 		default: //meter system 
-			break;
-			//working on this 
+			Distance x_cord(x_widget->get_value(), App::distance_system);
+			Distance y_cord(y_widget->get_value(), App::distance_system);
+			curr_guide->point[0] = x_cord.meters()/x_factor;
+			curr_guide->point[1] = y_cord.meters()/y_factor;
 	}
 	
 	if (ok)
@@ -208,11 +210,11 @@ Dialog_Guide::init_widget_values()
 
 	switch (App::distance_system)
 	{
-		case 0: //units system
+		case Distance::SYSTEM_UNITS: 
 			x_widget->set_value(curr_guide->point[0]);
 			y_widget->set_value(curr_guide->point[1]);
 			break;
-		case 1: //pixel system
+		case Distance::SYSTEM_PIXELS: 
 			x_factor = std::fabs(rend_desc.get_w()/(rend_desc.get_tl()[0]-rend_desc.get_br()[0])); //factor for pixel-point conversion 
 			y_factor = std::fabs(rend_desc.get_h()/(rend_desc.get_tl()[1]-rend_desc.get_br()[1]));
 			x_widget->set_value(curr_guide->point[0]*x_factor);
