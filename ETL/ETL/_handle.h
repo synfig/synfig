@@ -335,12 +335,12 @@ private:
 		if(!obj->front_)
 		{
 			obj->front_=obj->back_=this;
-			prev_=next_=0;
+			prev_ = next_ = nullptr;
 			return;
 		}
 
 		prev_=reinterpret_cast<rhandle<value_type>*>(obj->back_);
-		next_=0;
+		next_ = nullptr;
 		prev_->next_=this;
 		obj->back_=this;
 	}
@@ -353,8 +353,8 @@ private:
 		// If this is the last reversible handle
 		if(obj->front_==obj->back_)
 		{
-			obj->front_=obj->back_=0;
-			prev_=next_=0;
+			obj->front_ = obj->back_ = nullptr;
+			prev_ = next_ = nullptr;
 			return;
 		}
 
@@ -497,7 +497,7 @@ public:
 		pointer obj_=obj;
 		#endif
 
-		for(;iter;iter=next,next=iter?iter->next_:0,i++)
+		for(; iter; iter = next, next = iter ? iter->next_ : nullptr, i++)
 		{
 			assert(iter->get()==obj_);
 			(*iter)=x;
