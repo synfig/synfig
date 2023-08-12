@@ -265,10 +265,10 @@ public:
 */
 class rshared_object : public shared_object
 {
-private:
-	mutable int rrefcount;
+	template<class T> friend class rhandle;
 
-public:
+	mutable std::atomic<int> rrefcount;
+
 	void *front_;
 	void *back_;
 
@@ -303,7 +303,6 @@ public:
 template <class T>
 class rhandle : public handle<T>
 {
-	friend class rshared_object;
 public:
 
 	typedef T value_type;
