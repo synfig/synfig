@@ -268,12 +268,3 @@ CMakeSettings.json
 # ------------------------------------------------------------------------ 
 build-synfig-*
 CMakeLists.txt.user
-*.bin
-*.out
-*.c
-*.check_cache
-*.log
-*.make
-*.ts
-*.marks
-*.internal
