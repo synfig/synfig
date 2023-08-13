@@ -167,6 +167,9 @@ gl::Shaders::initialize()
 	map["chroma_key.fs"] = load_shader("chroma_key.fs");
 	assert(map["chroma_key.fs"].valid);
 
+	map["luma_key.fs"] = load_shader("luma_key.fs");
+	assert(map["luma_key.fs"].valid);
+
 	map["box_blur.fs"] = load_shader("blurs/box_blur.fs");
 	assert(map["box_blur.fs"].valid);
 
@@ -332,6 +335,9 @@ gl::Programs::initialize(const Shaders& shaders)
 
 	map["chroma_key"] = create_program({ shaders.get_shader("basic.vs"), shaders.get_shader("chroma_key.fs") });
 	assert(map["chroma_key"].valid);
+
+	map["luma_key"] = create_program({ shaders.get_shader("basic.vs"), shaders.get_shader("luma_key.fs") });
+	assert(map["luma_key"].valid);
 
 	map["box_blur"] = create_program({ shaders.get_shader("basic.vs"), shaders.get_shader("box_blur.fs") });
 	assert(map["box_blur"].valid);

@@ -15,6 +15,7 @@ set(RENDERING_OPENGL_INTERNAL_SHADER_FILES
 	"shaders/blit_alpha.fs"
 	"shaders/blit_gamma.fs"
 	"shaders/chroma_key.fs"
+	"shaders/luma_key.fs"
 	"shaders/basic.vs"
 	"shaders/blurs/box_blur.fs"
 	"shaders/blurs/cross_blur.fs"
