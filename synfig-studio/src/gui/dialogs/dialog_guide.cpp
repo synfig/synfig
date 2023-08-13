@@ -165,22 +165,15 @@ Dialog_Guide::on_ok_or_apply_pressed(bool ok)
 		curr_guide->angle = synfig::Angle::rad(angle_widget->get_value());
 	}
 
-	switch (App::distance_system)
-	{
-		case Distance::SYSTEM_UNITS: 
-			curr_guide->point[0] = x_widget->get_value();
-			curr_guide->point[1] = y_widget->get_value();
-			break;
-		case Distance::SYSTEM_PIXELS: 
-			curr_guide->point[0] = x_widget->get_value()/x_factor;
-			curr_guide->point[1] = y_widget->get_value()/y_factor;
-			break;
-		default: //meter system 
-			Distance x_cord(x_widget->get_value(), App::distance_system);
-			Distance y_cord(y_widget->get_value(), App::distance_system);
-			curr_guide->point[0] = x_cord.meters()/x_factor;
-			curr_guide->point[1] = y_cord.meters()/y_factor;
-	}
+	const synfig::RendDesc& rend_desc(canvas->rend_desc());
+	Distance x_cord(x_widget->get_value(), App::distance_system);
+	Distance y_cord(y_widget->get_value(), App::distance_system);
+
+	x_cord.convert(Distance::SYSTEM_UNITS, rend_desc);
+	y_cord.convert(Distance::SYSTEM_UNITS, rend_desc);
+
+	curr_guide->point[0] = x_cord;
+	curr_guide->point[1] = y_cord;
 	
 	if (ok)
 		hide();
@@ -207,23 +200,12 @@ Dialog_Guide::init_widget_values()
 		angle_widget->set_value(curr_guide->angle.get());
 
 	const synfig::RendDesc& rend_desc(canvas->rend_desc());
+	Distance x_cord(curr_guide->point[0], Distance::SYSTEM_UNITS);
+	Distance y_cord(curr_guide->point[1], Distance::SYSTEM_UNITS);
 
-	switch (App::distance_system)
-	{
-		case Distance::SYSTEM_UNITS: 
-			x_widget->set_value(curr_guide->point[0]);
-			y_widget->set_value(curr_guide->point[1]);
-			break;
-		case Distance::SYSTEM_PIXELS: 
-			x_factor = std::fabs(rend_desc.get_w()/(rend_desc.get_tl()[0]-rend_desc.get_br()[0])); //factor for pixel-point conversion 
-			y_factor = std::fabs(rend_desc.get_h()/(rend_desc.get_tl()[1]-rend_desc.get_br()[1]));
-			x_widget->set_value(curr_guide->point[0]*x_factor);
-			y_widget->set_value(curr_guide->point[1]*y_factor);
-			break;
-		default: //meter system 
-			x_factor = std::fabs(rend_desc.get_physical_w()/(rend_desc.get_tl()[0]-rend_desc.get_br()[0])); //factor for meter-point conversion
-			y_factor = std::fabs(rend_desc.get_physical_h()/(rend_desc.get_tl()[1]-rend_desc.get_br()[1]));
-			x_widget->set_value(Distance::meters_to_system(curr_guide->point[0]*x_factor, App::distance_system));
-			y_widget->set_value(Distance::meters_to_system(curr_guide->point[1]*y_factor, App::distance_system));
-	}
+	x_cord.convert(App::distance_system, rend_desc);
+	y_cord.convert(App::distance_system, rend_desc);
+
+	x_widget->set_value(x_cord);
+	y_widget->set_value(y_cord);
 }
