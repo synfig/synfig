@@ -164,6 +164,9 @@ gl::Shaders::initialize()
 	map["blit_gamma.fs"] = load_shader("blit_gamma.fs");
 	assert(map["blit_gamma.fs"].valid);
 
+	map["chroma_key.fs"] = load_shader("chroma_key.fs");
+	assert(map["chroma_key.fs"].valid);
+
 	map["box_blur.fs"] = load_shader("blurs/box_blur.fs");
 	assert(map["box_blur.fs"].valid);
 
@@ -326,6 +329,9 @@ gl::Programs::initialize(const Shaders& shaders)
 
 	map["blit_gamma"] = create_program({ shaders.get_shader("basic.vs"), shaders.get_shader("blit_gamma.fs") });
 	assert(map["blit_gamma"].valid);
+
+	map["chroma_key"] = create_program({ shaders.get_shader("basic.vs"), shaders.get_shader("chroma_key.fs") });
+	assert(map["chroma_key"].valid);
 
 	map["box_blur"] = create_program({ shaders.get_shader("basic.vs"), shaders.get_shader("box_blur.fs") });
 	assert(map["box_blur"].valid);

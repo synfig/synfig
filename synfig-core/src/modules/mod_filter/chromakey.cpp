@@ -38,6 +38,8 @@
 #include <synfig/context.h>
 #include <synfig/localization.h>
 
+#include <synfig/rendering/opengl/api.h>
+
 #endif
 
 using namespace synfig;
@@ -60,6 +62,8 @@ rendering::Task::Token TaskChromaKey::token(
 	DescAbstract<TaskChromaKey>("ChromaKey") );
 rendering::Task::Token TaskChromaKeySW::token(
 	DescReal<TaskChromaKeySW, TaskChromaKey>("TaskChromaKeySW") );
+rendering::Task::Token TaskChromaKeyGL::token(
+	DescReal<TaskChromaKeyGL, TaskChromaKey>("TaskChromaKeyGL") );
 
 bool
 TaskChromaKey::is_transparent() const
@@ -125,6 +129,68 @@ TaskChromaKeySW::run(RunParams&) const
 	}
 
 	return true;
+}
+
+bool
+TaskChromaKeyGL::run(RunParams&) const
+{
+    if(!is_valid()) return true;
+
+    LockWrite ldst(this);
+    if(!ldst) return false;
+
+    rendering::gl::Context::Lock lock(env().get_or_create_context());
+
+    glEnable(GL_SCISSOR_TEST);
+
+    glViewport(0, 0, ldst->get_width(), ldst->get_height());
+    glScissor(target_rect.minx, target_rect.miny, target_rect.get_width(), target_rect.get_height());
+
+    rendering::gl::Framebuffer& framebuffer = ldst->get_framebuffer();
+
+    const Task::Handle& sub = sub_task();
+
+    RectInt r = target_rect;
+    if(sub && sub->is_valid())
+    {
+        VectorInt oa = rendering::TaskList::calc_target_offset(*this, *sub);
+        RectInt ra = sub->target_rect - oa;
+
+        if(ra.is_valid())
+        {
+            rect_set_intersect(ra, ra, r);
+
+            // blit sub_task_a in the intersection
+            LockRead lsrc(sub);
+            if(!lsrc) {
+                return false;
+            }
+
+            rendering::gl::Framebuffer& src = lsrc.cast_handle()->get_framebuffer();
+            src.use_read(0);
+
+            framebuffer.use_write();
+
+            glScissor(ra.minx, ra.miny, ra.get_width(), ra.get_height());
+
+            rendering::gl::Programs::Program shader = env().get_or_create_context().get_program("chroma_key");
+            shader.use();
+            shader.set_1i("tex", 0);
+            shader.set_2i("offset", oa);
+            shader.set_2f("key", key_color.get_u(), key_color.get_v());
+            shader.set_2f("bounds", lower_bound, upper_bound);
+            shader.set_1i("desaturate", desaturate);
+
+            rendering::gl::Plane plane;
+            plane.render();
+
+            src.unuse();
+            framebuffer.unuse();
+        }
+    }
+
+    glDisable(GL_SCISSOR_TEST);
+    return true;
 }
 
 ChromaKey::ChromaKey():

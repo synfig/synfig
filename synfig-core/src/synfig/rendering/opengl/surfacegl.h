@@ -32,7 +32,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include "../surface.h"
-#include "synfig/rendering/opengl/internal/framebuffer.h"
+#include "internal/framebuffer.h"
 #include <memory>
 
 /* === M A C R O S ========================================================= */

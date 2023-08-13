@@ -30,6 +30,7 @@ uniform ivec2 offset;
 
 uniform vec2 key; // u and v key
 uniform vec2 bounds; // lower and upper bound
+uniform bool desaturate; // lower and upper bound
 
 layout (location = 0) out vec4 out_color;
 
@@ -101,10 +102,10 @@ void main()
 	ivec2 coord = ivec2(floor(gl_FragCoord));
 	vec4 col = texelFetch(tex, coord + offset, 0);
 
-    float dist = pow(get_u(col) - key.u, 2) + pow(get_v(col) - key.v, 2);
-    if(dist < bound.x * bound.x) col.a = 0;
-    else if(dist < bound.y * bound.y) {
-        col.a = (col.a * (sqrt(dist) - bound.x) / (bound.y - bound.x));
+    float dist = pow(get_u(col) - key.x, 2) + pow(get_v(col) - key.y, 2);
+    if(dist < bounds.x * bounds.x) col.a = 0;
+    else if(dist < bounds.y * bounds.y) {
+        col.a = (col.a * (sqrt(dist) - bounds.x) / (bounds.y - bounds.x));
         if(desaturate) col = set_s(col, 0);
     }
 	out_color = col;

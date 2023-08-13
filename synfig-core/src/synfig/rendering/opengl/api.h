@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/internal/headers.h
-**	\brief Headers
+/*!	\file synfig/rendering/opengl/internal/api.h
+**	\brief API header
 **
 **	\legal
 **	......... ... 2023 Bharat Sahlot
@@ -23,11 +23,15 @@
 */
 /* ========================================================================= */
 
-#ifndef __SYNFIG_RENDERING_GL_HEADERS_H
-#define __SYNFIG_RENDERING_GL_HEADERS_H
+#ifndef __SYNFIG_RENDERING_API_HEADERS_H
+#define __SYNFIG_RENDERING_API_HEADERS_H
 
-#include "../glad/include/glad/glad.h"
-#include <GLFW/glfw3.h>
+#include "./internal/headers.h"
+#include "./internal/context.h"
+#include "./internal/plane.h"
+#include "./internal/shaders.h"
+#include "./internal/framebuffer.h"
+#include "./internal/environment.h"
 
 #define OPENGL_DEBUG_OUTPUT
 
