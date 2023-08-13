@@ -21,6 +21,7 @@ target_sources(synfigapp
         "${CMAKE_CURRENT_LIST_DIR}/layerparamsetstatic.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layerparamunsetstatic.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layerraise.cpp"
+		 "${CMAKE_CURRENT_LIST_DIR}/layerraisemax.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layerremove.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layerresetpose.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layersetdesc.cpp"

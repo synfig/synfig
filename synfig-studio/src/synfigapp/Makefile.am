@@ -27,6 +27,7 @@ LAYER_ACTION_HH = \
 	actions/layerparamsetstatic.h\
 	actions/layerparamunsetstatic.h\
 	actions/layerraise.h \
+	actions/layerraisemax.h \
 	actions/layerremove.h \
 	actions/layerresetpose.h \
 	actions/layersetdesc.h \
@@ -57,6 +58,7 @@ LAYER_ACTION_CC = \
 	actions/layerparamsetstatic.cpp\
 	actions/layerparamunsetstatic.cpp\
 	actions/layerraise.cpp \
+	actions/layerraisemax.cpp \
 	actions/layerremove.cpp \
 	actions/layerresetpose.cpp \
 	actions/layersetdesc.cpp \

@@ -410,6 +410,8 @@ src/synfigapp/actions/layerparamunsetstatic.cpp
 src/synfigapp/actions/layerparamunsetstatic.h
 src/synfigapp/actions/layerraise.cpp
 src/synfigapp/actions/layerraise.h
+src/synfigapp/actions/layerraisemax.cpp
+src/synfigapp/actions/layerraisemax.h
 src/synfigapp/actions/layerremove.cpp
 src/synfigapp/actions/layerremove.h
 src/synfigapp/actions/layerresetpose.cpp
