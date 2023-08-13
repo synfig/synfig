@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file layerraisemax.cpp
+/*!	\file layerlowermax.cpp
 **	\brief Template File
 **
 **	\legal
@@ -34,7 +34,7 @@
 
 #include <synfig/general.h>
 
-#include "layerraisemax.h"
+#include "layerlowermax.h"
 #include "layermove.h"
 #include <synfigapp/canvasinterface.h>
 
@@ -48,13 +48,13 @@ using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
-ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerRaiseMax);
-ACTION_SET_NAME(Action::LayerRaiseMax,"LayerRaiseMax");
-ACTION_SET_LOCAL_NAME(Action::LayerRaiseMax,N_("Raise Layer to Top"));
-ACTION_SET_TASK(Action::LayerRaiseMax,"raise to top");
-ACTION_SET_CATEGORY(Action::LayerRaiseMax,Action::CATEGORY_LAYER);
-ACTION_SET_PRIORITY(Action::LayerRaiseMax,9);
-ACTION_SET_VERSION(Action::LayerRaiseMax,"0.0");
+ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerLowerMax);
+ACTION_SET_NAME(Action::LayerLowerMax,"LayerLowerMax");
+ACTION_SET_LOCAL_NAME(Action::LayerLowerMax,N_("Lower Layer to Bottom"));
+ACTION_SET_TASK(Action::LayerLowerMax,"lower to bottom");
+ACTION_SET_CATEGORY(Action::LayerLowerMax,Action::CATEGORY_LAYER);
+ACTION_SET_PRIORITY(Action::LayerLowerMax,9);
+ACTION_SET_VERSION(Action::LayerLowerMax,"0.0");
 
 /* === G L O B A L S ======================================================= */
 
@@ -62,25 +62,25 @@ ACTION_SET_VERSION(Action::LayerRaiseMax,"0.0");
 
 /* === M E T H O D S ======================================================= */
 
-LayerRaiseMax::LayerRaiseMax()
+LayerLowerMax::LayerLowerMax()
 {
 
 }
 
 synfig::String
-Action::LayerRaiseMax::get_local_name()const
+Action::LayerLowerMax::get_local_name()const
 {
-	return get_layer_descriptions(layers, _("Raise Layer to Top"), _("Raise Layers to Top"));
+	return get_layer_descriptions(layers, _("Lower Layer to Bottom"), _("Lower Layers to Bottom"));
 }
 
 Action::ParamVocab
-Action::LayerRaiseMax::get_param_vocab()
+Action::LayerLowerMax::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
 
 	ret.push_back(ParamDesc("layer",Param::TYPE_LAYER)
 		.set_local_name(_("Layer"))
-		.set_desc(_("Layer to be raised"))
+		.set_desc(_("Layer to be lowered"))
 		.set_supports_multiple()
 	);
 
@@ -88,17 +88,18 @@ Action::LayerRaiseMax::get_param_vocab()
 }
 
 bool
-Action::LayerRaiseMax::is_candidate(const ParamList &x)
+Action::LayerLowerMax::is_candidate(const ParamList &x)
 {
 	if(!candidate_check(get_param_vocab(),x))
 		return false;
-	if(x.find("layer")->second.get_layer()->get_depth()==0)
+	Layer::Handle layer(x.find("layer")->second.get_layer());
+	if(layer->get_depth()+1>=layer->get_canvas()->size())
 		return false;
 	return true;
 }
 
 bool
-Action::LayerRaiseMax::set_param(const synfig::String& name, const Action::Param &param)
+Action::LayerLowerMax::set_param(const synfig::String& name, const Action::Param &param)
 {
 	if(name=="layer" && param.get_type()==Param::TYPE_LAYER)
 	{
@@ -111,7 +112,7 @@ Action::LayerRaiseMax::set_param(const synfig::String& name, const Action::Param
 }
 
 bool
-Action::LayerRaiseMax::is_ready()const
+Action::LayerLowerMax::is_ready()const
 {
 	if(layers.empty())
 		return false;
@@ -119,7 +120,7 @@ Action::LayerRaiseMax::is_ready()const
 }
 
 void
-Action::LayerRaiseMax::prepare()
+Action::LayerLowerMax::prepare()
 {
 	std::list<synfig::Layer::Handle>::iterator i;
 
@@ -137,11 +138,11 @@ Action::LayerRaiseMax::prepare()
 		if (*iter != layer)
 			throw Error(_("This layer doesn't exist anymore."));
 
-		if(new_index==0)
+		// If this lowers the layer past the bottom then don't bother
+		if(iter == subcanvas->end())
 			continue;
 
-
-		new_index = 0;
+		new_index = subcanvas->size()-1;
 
 		Action::Handle layer_move(LayerMove::create());
 

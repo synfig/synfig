@@ -44,6 +44,7 @@
 #include "actions/layerraise.h"
 #include "actions/layerraisemax.h"
 #include "actions/layerlower.h"
+#include "actions/layerlowermax.h"
 #include "actions/layeradd.h"
 #include "actions/layeraddframe.h"
 #include "actions/layeractivate.h"
@@ -197,6 +198,7 @@ Action::Main::Main()
 	ADD_ACTION(Action::LayerRaise);
 	ADD_ACTION(Action::LayerRaiseMax);
 	ADD_ACTION(Action::LayerLower);
+	ADD_ACTION(Action::LayerLowerMax);
 	ADD_ACTION(Action::LayerAdd);
 	ADD_ACTION(Action::LayerActivate);
 	ADD_ACTION(Action::LayerFit);

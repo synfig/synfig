@@ -12,6 +12,7 @@ target_sources(synfigapp
         "${CMAKE_CURRENT_LIST_DIR}/layerextract.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layerfit.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layerlower.cpp"
+				"${CMAKE_CURRENT_LIST_DIR}/layerlowermax.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layermove.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layermakebline.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layerpaint.cpp"

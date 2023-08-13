@@ -18,6 +18,7 @@ LAYER_ACTION_HH = \
 	actions/layerextract.h \
 	actions/layerfit.h \
 	actions/layerlower.h \
+	actions/layerlowermax.h \
 	actions/layermove.h \
 	actions/layermakebline.h \
 	actions/layerpaint.h \
@@ -49,6 +50,7 @@ LAYER_ACTION_CC = \
 	actions/layerextract.cpp \
 	actions/layerfit.cpp \
 	actions/layerlower.cpp \
+	actions/layerlowermax.cpp \
 	actions/layermove.cpp \
 	actions/layermakebline.cpp \
 	actions/layerpaint.cpp \

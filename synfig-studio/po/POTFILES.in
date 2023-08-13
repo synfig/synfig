@@ -392,6 +392,8 @@ src/synfigapp/actions/layerfit.cpp
 src/synfigapp/actions/layerfit.h
 src/synfigapp/actions/layerlower.cpp
 src/synfigapp/actions/layerlower.h
+src/synfigapp/actions/layerlowermax.cpp
+src/synfigapp/actions/layerlowermax.h
 src/synfigapp/actions/layermakebline.cpp
 src/synfigapp/actions/layermakebline.h
 src/synfigapp/actions/layermove.cpp
