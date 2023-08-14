@@ -122,11 +122,11 @@ Action::LayerLowerMax::is_ready()const
 void
 Action::LayerLowerMax::prepare()
 {
-	std::list<synfig::Layer::Handle>::iterator i;
+	std::list<synfig::Layer::Handle>::reverse_iterator i;
 
 	clear();
 
-	for(i=layers.begin();!(i==layers.end());++i)
+	for(i=layers.rbegin();!(i==layers.rend());++i)
 	{
 		Layer::Handle layer(*i);
 
@@ -143,6 +143,7 @@ Action::LayerLowerMax::prepare()
 			continue;
 
 		new_index = subcanvas->size()-1;
+		std::cout<<new_index<<std::endl;
 
 		Action::Handle layer_move(LayerMove::create());
 
