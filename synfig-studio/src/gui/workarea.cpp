@@ -1484,12 +1484,11 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 	        break;
 		}
 		case DRAG_GUIDE: {
-			if(!get_lock_guides()){
-				if (!rotate_guide){
-						curr_guide->point[0] = mouse_pos[0];
-						curr_guide->point[1] = mouse_pos[1];
-					} else 
-				if(rotate_guide && !from_ruler_event) {
+			if(!get_lock_guides()) {
+				if (!rotate_guide) {
+					curr_guide->point[0] = mouse_pos[0];
+					curr_guide->point[1] = mouse_pos[1];
+				} else if(rotate_guide && !from_ruler_event) {
 					float slope = (mouse_pos[1] - curr_guide->point[1])/(mouse_pos[0] - curr_guide->point[0]);
 					//just change the angle of the ruler
 					curr_guide->angle = synfig::Angle::rad(atan(slope));
