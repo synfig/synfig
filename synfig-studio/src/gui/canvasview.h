@@ -228,6 +228,7 @@ public:
 	void set_grid_show_toggle(bool flag) { grid_show_toggle->set_active(flag); }
 	void set_guides_snap_toggle(bool flag) { guides_snap_toggle->set_active(flag); }
 	void set_guides_show_toggle(bool flag) { guides_show_toggle->set_active(flag); }
+	void set_guides_lock_toggle(bool flag) { guides_lock_toggle->set_active(flag); }
 	void set_onion_skin_toggle(bool flag) { onion_skin_toggle->set_active(flag); }
 	void set_onion_skin_keyframes_toggle(bool flag) { onion_skin_keyframes_toggle->set_active(flag); }
 	void set_background_rendering_toggle(bool flag) { background_rendering_toggle->set_active(flag); }
@@ -305,6 +306,7 @@ private:
 	Gtk::ToggleToolButton *snap_grid;
 	Gtk::ToggleToolButton *show_guides;
 	Gtk::ToggleToolButton *snap_guides;
+	Gtk::ToggleToolButton *lock_guides;
 	Gtk::ToggleToolButton *onion_skin;
 	Gtk::ToolButton *render_options_button;
 	Gtk::ToolButton *preview_options_button;
@@ -313,6 +315,7 @@ private:
 	bool toggling_snap_grid;
 	bool toggling_show_guides;
 	bool toggling_snap_guides;
+	bool toggling_lock_guides;
 	bool toggling_onion_skin;
 	bool toggling_onion_skin_keyframes;
 	bool toggling_background_rendering;
@@ -342,6 +345,7 @@ private:
 	Glib::RefPtr<Gtk::ToggleAction> rulers_show_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> guides_snap_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> guides_show_toggle;
+	Glib::RefPtr<Gtk::ToggleAction> guides_lock_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> onion_skin_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> onion_skin_keyframes_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> background_rendering_toggle;
@@ -467,6 +471,7 @@ private:
 	void toggle_snap_grid();
 	void toggle_show_guides();
 	void toggle_snap_guides();
+	void toggle_lock_guides();
 	void toggle_onion_skin();
 	void toggle_onion_skin_keyframes();
 	void toggle_background_rendering();

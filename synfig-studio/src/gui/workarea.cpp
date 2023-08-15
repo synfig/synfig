@@ -289,6 +289,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	get_canvas()->signal_meta_data_changed("grid_show").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("status_ruler").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_show").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
+	get_canvas()->signal_meta_data_changed("guide_lock").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("background_rendering").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("onion_skin").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
@@ -364,6 +365,7 @@ WorkArea::save_meta_data()
 	canvas_interface->set_meta_data("grid_snap", get_grid_snap() ? "1" : "0");
 	canvas_interface->set_meta_data("guide_snap", get_guide_snap() ? "1" : "0");
 	canvas_interface->set_meta_data("guide_show", get_show_guides() ? "1" : "0");
+	canvas_interface->set_meta_data("guide_lock", get_lock_guides() ? "1" : "0");
 	canvas_interface->set_meta_data("grid_show", show_grid ? "1" : "0");
 	canvas_interface->set_meta_data("status_ruler", show_rulers ? "1" : "0");
 	canvas_interface->set_meta_data("jack_offset", strprintf("%f", (double)jack_offset));
@@ -550,6 +552,12 @@ WorkArea::load_meta_data()
 		show_guides=true;
 	if(data.size() && (data=="0" || data[0]=='f' || data[0]=='F'))
 		show_guides=false;
+
+	data=canvas->get_meta_data("guide_lock");
+	if(data.size() && (data=="1" || data[0]=='t' || data[0]=='T'))
+		lock_guides=true;
+	if(data.size() && (data=="0" || data[0]=='f' || data[0]=='F'))
+		lock_guides=false;
 
 	data=canvas->get_meta_data("grid_snap");
 	if(data.size() && (data=="1" || data[0]=='t' || data[0]=='T'))
@@ -830,6 +838,14 @@ void
 WorkArea::set_show_guides(bool x)
 {
 	show_guides=x;
+	save_meta_data();
+	queue_draw();
+}
+
+void
+WorkArea::set_lock_guides(bool x)
+{
+	lock_guides=x;
 	save_meta_data();
 	queue_draw();
 }
@@ -1424,7 +1440,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				drawing_area->queue_draw();
 			}
 
-			guide_highlighted = iter != get_guide_list().end();
+			guide_highlighted = !get_lock_guides() ? iter != get_guide_list().end() : false;
 
             etl::handle<Duck> duck = find_duck(mouse_pos, radius);
             if (duck != hover_duck) {
@@ -1468,15 +1484,18 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 	        break;
 		}
 		case DRAG_GUIDE: {
-			if (!rotate_guide){
-				curr_guide->point[0] = mouse_pos[0];
-				curr_guide->point[1] = mouse_pos[1];
-			} else if(rotate_guide && !from_ruler_event) {
+			if(!get_lock_guides()){
+				if (!rotate_guide){
+						curr_guide->point[0] = mouse_pos[0];
+						curr_guide->point[1] = mouse_pos[1];
+					} else 
+				if(rotate_guide && !from_ruler_event) {
 					float slope = (mouse_pos[1] - curr_guide->point[1])/(mouse_pos[0] - curr_guide->point[0]);
 					//just change the angle of the ruler
 					curr_guide->angle = synfig::Angle::rad(atan(slope));
+				}
+				drawing_area->queue_draw();
 			}
-			drawing_area->queue_draw();
 	        break;
 		}
 		default: break;
@@ -1516,7 +1535,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			double y(event->button.y), x(event->button.x);
 
 			// Erase the guides if dragged into the rulers
-			if((!std::isnan(x) && x<0.0) || (!std::isnan(y) && y<0.0))
+			if(((!std::isnan(x) && x<0.0) || (!std::isnan(y) && y<0.0)) && !get_lock_guides())
 				get_guide_list().erase(curr_guide);
 
 			drawing_area->queue_draw();
@@ -1755,7 +1774,7 @@ WorkArea::on_hruler_event(GdkEvent *event)
 	switch(event->type) {
 	case GDK_BUTTON_PRESS:
 		from_ruler_event = true;
-		if (get_drag_mode() == DRAG_NONE && show_guides) {
+		if (get_drag_mode() == DRAG_NONE && show_guides && !get_lock_guides()) {
 			set_drag_mode(DRAG_GUIDE);
 			curr_guide = get_guide_list().insert(get_guide_list().begin(),{synfig::Point(((1.0/2.0)*(drawing_area->get_window()->get_width())*get_pw())+ get_window_tl()[0], 0),
 																			   synfig::Angle::rad(0)});
@@ -1793,7 +1812,7 @@ WorkArea::on_vruler_event(GdkEvent *event)
 	switch(event->type) {
 	case GDK_BUTTON_PRESS:
 		from_ruler_event = true;
-		if (get_drag_mode() == DRAG_NONE && show_guides) {
+		if (get_drag_mode() == DRAG_NONE && show_guides && !get_lock_guides()) {
 			set_drag_mode(DRAG_GUIDE);
 			curr_guide = get_guide_list().insert(get_guide_list().begin(),{synfig::Point(0 ,((1.0/2.0)*(drawing_area->get_window()->get_height())*get_ph())+ get_window_tl()[1]),
 																			   synfig::Angle::deg(90)});
