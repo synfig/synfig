@@ -2411,7 +2411,6 @@ CanvasView::toggle_lock_guides()
 	set_guides_lock_toggle(work_area->get_lock_guides());
 	lock_guides->set_active(work_area->get_lock_guides());
 	toggling_lock_guides=false;
-	std::cout << work_area->get_lock_guides();
 }
 
 void
