@@ -976,6 +976,10 @@ WorkArea::on_key_press_event(GdkEventKey* event)
 	if (guide_highlighted && (event->keyval == GDK_KEY_Control_L || event->keyval == GDK_KEY_Control_R))
 		rotate_guide=true;
 
+	if (event->keyval == GDK_KEY_x){
+		//deleting logic goes here
+	} 
+
 	auto event_result = canvas_view->get_smach().process_event(
 		EventKeyboard(EVENT_WORKAREA_KEY_DOWN, event->keyval, Gdk::ModifierType(event->state)));
 	if (event_result != Smach::RESULT_OK)
