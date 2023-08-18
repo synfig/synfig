@@ -652,7 +652,7 @@ CellRenderer_ValueBase::start_editing_vfunc(
 
 		saved_data = data;
 
-		value_entry = manage(new ValueBase_Entry());
+		value_entry = new ValueBase_Entry();
 		value_entry->set_path(path);
 		value_entry->set_canvas(get_canvas());
 		value_entry->set_param_desc(get_param_desc());
@@ -672,8 +672,11 @@ CellRenderer_ValueBase::start_editing_vfunc(
 void
 CellRenderer_ValueBase::on_value_editing_done()
 {
-	if (value_entry && value_entry->property_editing_canceled())
+	if (value_entry && value_entry->property_editing_canceled()){
+		delete value_entry;
+		value_entry = nullptr;
 		return;
+	}
 
 	if (edit_value_done_called)
 	{
@@ -689,5 +692,7 @@ CellRenderer_ValueBase::on_value_editing_done()
 
 		if (saved_data != value)
 			signal_edited_(value_entry->get_path(), value);
+		delete value_entry;
+		value_entry = nullptr;
 	}
 }
