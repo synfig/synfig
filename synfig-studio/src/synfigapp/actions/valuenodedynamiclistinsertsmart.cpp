@@ -36,7 +36,6 @@
 #include <synfig/general.h>
 
 #include "valuenodedynamiclistinsertsmart.h"
-#include "valuenodedynamiclistinsert.h"
 #include <synfigapp/canvasinterface.h>
 
 #include <synfigapp/localization.h>
@@ -71,12 +70,9 @@ ACTION_SET_VERSION(Action::ValueNodeDynamicListInsertSmartKeepShape,"0.0");
 
 /* === M E T H O D S ======================================================= */
 ///////////// VALUENODEDYNAMICLISTINSERTITEMSMART
-Action::ValueNodeDynamicListInsertSmart::ValueNodeDynamicListInsertSmart() :
-	keep_shape(false)
+Action::ValueNodeDynamicListInsertSmart::ValueNodeDynamicListInsertSmart()
+	: time(0), origin(0.5f), index(0), keep_shape(false)
 {
-	index=0;
-	time=0;
-	origin=0.5f;
 	set_dirty(true);
 }
 

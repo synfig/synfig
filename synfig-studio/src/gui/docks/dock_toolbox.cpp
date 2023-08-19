@@ -42,6 +42,7 @@
 #include <gtkmm/stock.h>
 #include <gtkmm/toolpalette.h>
 
+#include <gui/statemanager.h>
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/docks/dialog_tooloptions.h>
@@ -146,10 +147,12 @@ void Dock_Toolbox::read_layout_string(const std::string& params) const
 void
 Dock_Toolbox::set_active_state(const synfig::String& statename)
 {
-	changing_state_=true;
+	changing_state_ = true;
 
 	synfigapp::Main::set_state(statename);
-	changing_state_=false;
+
+
+	changing_state_ = false;
 }
 
 void
@@ -210,20 +213,27 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 
 	String name=state->get_name();
 
-	Gtk::StockItem stock_item;
-	Gtk::Stock::lookup(Gtk::StockID("synfig-"+name),stock_item);
-	Gtk::IconSize tool_icon_size = Gtk::IconSize::from_name("synfig-small_icon_16x16");
-	Gtk::Image *tool_icon = manage(new Gtk::Image(stock_item.get_stock_id(), tool_icon_size));
-	Glib::ustring tool_label = stock_item.get_label();
-	Gtk::RadioToolButton *tool_button = manage(new Gtk::RadioToolButton(*tool_icon, tool_label));
+	Gtk::RadioToolButton *tool_button = manage(new Gtk::RadioToolButton());
 	tool_button->set_group(radio_tool_button_group);
-	Gtk::AccelKey key;
-	//Have a look to global function init_ui_manager() from app.cpp for "accel_path" definition
-	Gtk::AccelMap::lookup_entry ("<Actions>/action_group_state_manager/state-"+name, key);
-	//Gets the, is exist, accelerator representation for labels
-	Glib::ustring accel_path = key.is_null() ? "" : gtk_accelerator_get_label(key.get_key(), GdkModifierType(key.get_mod()));
-	
-	tool_button->set_tooltip_text(stock_item.get_label()+"  "+accel_path);
+	Glib::RefPtr<Gtk::Action> related_action = App::get_state_manager()->get_action_group()->get_action("state-"+name);
+	tool_button->set_related_action(related_action);
+	related_action->property_tooltip() = "";
+
+	// Keeps updating the tooltip if user changes the shortcut at runtime
+	tool_button->property_has_tooltip() = true;
+	tool_button->signal_query_tooltip().connect([state](int,int,bool,const Glib::RefPtr<Gtk::Tooltip>& tooltip) -> bool
+	{
+		std::string tooltip_string = state->get_local_name();
+
+		Gtk::AccelKey key;
+		if (Gtk::AccelMap::lookup_entry(std::string("<Actions>/action_group_state_manager/state-") + state->get_name(), key)) {
+			tooltip_string += "  ";
+			tooltip_string += gtk_accelerator_get_label(key.get_key(), GdkModifierType(key.get_mod()));
+		}
+		tooltip->set_text(tooltip_string);
+		return true;
+	});
+//	tool_button->set_tooltip_text(get_tooltip(name));
 	tool_button->show();
 
 	tool_item_group->insert(*tool_button);
@@ -231,12 +241,6 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 
 	state_button_map[name] = tool_button;
 
-	tool_button->signal_clicked().connect(
-		sigc::bind(
-			sigc::mem_fun(*this,&studio::Dock_Toolbox::change_state_),
-			state
-		)
-	);
 
 	refresh();
 }
@@ -246,14 +250,12 @@ void
 Dock_Toolbox::update_tools()
 {
 	etl::handle<Instance> instance = App::get_selected_instance();
-	etl::handle<CanvasView> canvas_view = App::get_selected_canvas_view();
+	CanvasView::Handle canvas_view = App::get_selected_canvas_view();
 
-	// These next several lines just adjust the tool buttons
-	// so that they are only clickable when they should be.
+	// Disable buttons if there isn't any open document instance
 	bool sensitive = instance && canvas_view;
-	std::map<synfig::String,Gtk::ToggleToolButton *>::iterator iter;
-	for(iter=state_button_map.begin();iter!=state_button_map.end();++iter)
-		iter->second->set_sensitive(sensitive);
+	for (const auto& item : state_button_map)
+		item.second->set_sensitive(sensitive);
 
 	if (canvas_view && canvas_view->get_smach().get_state_name())
 		set_active_state(canvas_view->get_smach().get_state_name());

@@ -86,7 +86,7 @@ public:
 
 class studio::StateMirror_Context : public sigc::trackable
 {
-	etl::handle<CanvasView> canvas_view_;
+	CanvasView::Handle canvas_view_;
 	CanvasView::IsWorking is_working;
 
 	etl::handle<DuckDrag_Mirror> duck_dragger_;
@@ -130,7 +130,7 @@ public:
 
 	~StateMirror_Context();
 
-	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view_;}
+	const CanvasView::Handle& get_canvas_view()const{return canvas_view_;}
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
@@ -144,7 +144,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateMirror::StateMirror():
-	Smach::state<StateMirror_Context>("mirror")
+	Smach::state<StateMirror_Context>("mirror", N_("Mirror Tool"))
 {
 	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StateMirror_Context::event_refresh_tool_options));
 	insert(event_def(EVENT_STOP,&StateMirror_Context::event_stop_handler));

@@ -31,8 +31,8 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfig/target_scanline.h>
+#include <synfig/smartfile.h>
 #include <synfig/string.h>
-#include <cstdio>
 
 /* === M A C R O S ========================================================= */
 
@@ -49,15 +49,15 @@ private:
 	int rowspan;
 	int imagecount;
 	bool multi_image;
-	FILE *file;
-	synfig::String filename;
-	unsigned char *buffer;
-	synfig::Color *color_buffer;
+	synfig::SmartFILE file;
+	synfig::filesystem::Path filename;
+	std::vector<unsigned char> buffer;
+	std::vector<synfig::Color> color_buffer;
 	synfig::PixelFormat pf;
 	synfig::String sequence_separator;
 
 public:
-	bmp(const char *filename, const synfig::TargetParam& /* params */);
+	bmp(const synfig::filesystem::Path& filename, const synfig::TargetParam& /* params */);
 	virtual ~bmp();
 
 	bool set_rend_desc(synfig::RendDesc* desc) override;

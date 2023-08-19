@@ -49,13 +49,13 @@ private:
 	int imagecount;
 	bool wide_aspect;
 	synfig::OS::RunPipe::Handle pipe;
-	synfig::String filename;
-	unsigned char *buffer;
-	synfig::Color *color_buffer;
+	synfig::filesystem::Path filename;
+	std::vector<unsigned char> buffer;
+	std::vector<synfig::Color> color_buffer;
 
 public:
 
-	dv_trgt(const char *filename, const synfig::TargetParam& /* params */);
+	dv_trgt(const synfig::filesystem::Path& filename, const synfig::TargetParam& /* params */);
 	virtual ~dv_trgt();
 
 	bool set_rend_desc(synfig::RendDesc* desc) override;

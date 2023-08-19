@@ -82,7 +82,7 @@ Color::set_hex(String& str)
 	String hex;
 
 	// use just the hex characters
-	for (String::const_iterator iter = str.begin(); iter != str.end(); iter++)
+	for (String::const_iterator iter = str.begin(); iter != str.end(); ++iter)
 		if (isxdigit(*iter))
 			hex.push_back(*iter);
 

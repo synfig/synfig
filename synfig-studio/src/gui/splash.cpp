@@ -174,7 +174,7 @@ Splash::Splash():
 	tasklabel->set_size_request(image_w,24);
 	tasklabel->set_use_underline(false);
 
-	// Create the current task label
+	// Create the version label
 	versionlabel = manage(new class Gtk::Label());
 	versionlabel->set_label("" VERSION);
 	versionlabel->set_size_request(image_w,24);

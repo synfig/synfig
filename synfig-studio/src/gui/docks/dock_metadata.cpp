@@ -65,9 +65,9 @@ Dock_MetaData::Dock_MetaData():
 	// Make Canvas MetaData toolbar small for space efficiency
 	get_style_context()->add_class("synfigstudio-efficient-workspace");
 
-	action_group->add(Gtk::Action::create(
+	action_group->add(Gtk::Action::create_with_icon_name(
 		"action-MetadataAdd",
-		Gtk::StockID("gtk-add"),
+		"list-add",
 		_("Add new MetaData entry"),
 		_("Add a new MetaData entry to the canvas")
 	),
@@ -77,9 +77,9 @@ Dock_MetaData::Dock_MetaData():
 		)
 	);
 
-	action_group->add(Gtk::Action::create(
+	action_group->add(Gtk::Action::create_with_icon_name(
 		"action-MetadataRemove",
-		Gtk::StockID("gtk-delete"),
+		"edit-delete",
 		_("Remove selected MetaData entry"),
 		_("Remove the selected MetaData entry")
 	),
@@ -115,7 +115,7 @@ Dock_MetaData::~Dock_MetaData()
 }
 
 void
-Dock_MetaData::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+Dock_MetaData::init_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 {
 	Glib::RefPtr<MetaDataTreeStore> metadata_tree_store;
 	metadata_tree_store=MetaDataTreeStore::create(canvas_view->canvas_interface());
@@ -127,7 +127,7 @@ Dock_MetaData::init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
 }
 
 void
-Dock_MetaData::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+Dock_MetaData::changed_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 {
 	if(canvas_view)
 	{
@@ -159,7 +159,7 @@ Dock_MetaData::on_add_pressed()
 void
 Dock_MetaData::on_delete_pressed()
 {
-	etl::loose_handle<CanvasView> canvas_view(get_canvas_view());
+	CanvasView::LooseHandle canvas_view(get_canvas_view());
 	if(!canvas_view) return;
 	Gtk::TreeView* tree_view(static_cast<Gtk::TreeView*>(canvas_view->get_ext_widget(get_name())));
 	if(tree_view)

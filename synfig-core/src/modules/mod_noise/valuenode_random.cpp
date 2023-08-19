@@ -116,7 +116,7 @@ ValueNode_Random::~ValueNode_Random()
 ValueBase
 ValueNode_Random::operator()(Time t)const
 {
-	typedef const RandomNoise::SmoothType Smooth;
+	typedef RandomNoise::SmoothType Smooth;
 
 	Real	radius	= (*radius_)(t).get(Real());
 	int		seed	= (*seed_)(t).get(int());
@@ -239,27 +239,27 @@ ValueNode_Random::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"link")
+	ret.push_back(ParamDesc("link")
 		.set_local_name(_("Link"))
 		.set_description(_("The value node source that provides the central value"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"radius")
+	ret.push_back(ParamDesc("radius")
 		.set_local_name(_("Radius"))
 		.set_description(_("The value of the maximum random difference"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"seed")
+	ret.push_back(ParamDesc("seed")
 		.set_local_name(_("Seed"))
 		.set_description(_("Seeds the random number generator"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"speed")
+	ret.push_back(ParamDesc("speed")
 		.set_local_name(_("Speed"))
 		.set_description(_("Defines how often a new random value is chosen (in choices per second) "))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"smooth")
+	ret.push_back(ParamDesc("smooth")
 		.set_local_name(_("Interpolation"))
 		.set_description(_("Determines how the value is interpolated from one random choice to the next"))
 		.set_hint("enum")
@@ -271,7 +271,7 @@ ValueNode_Random::get_children_vocab_vfunc()const
 	);
 
 
-	ret.push_back(ParamDesc(ValueBase(),"loop")
+	ret.push_back(ParamDesc("loop")
 		.set_local_name(_("Loop Time"))
 		.set_description(_("Makes the random value repeat after the given time"))
 	);

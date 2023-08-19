@@ -46,6 +46,22 @@ using namespace rendering;
 
 /* === M A C R O S ========================================================= */
 
+#ifdef __has_cpp_attribute
+# if __has_cpp_attribute(fallthrough)
+#  define fallthrough__ [[fallthrough]]
+# elif __has_cpp_attribute(noreturn)
+[[noreturn]] void fake_fallthrough___() {}
+#  define fallthrough__ fake_falthrough___()
+# endif
+#endif
+#ifndef fallthrough__
+# if __has_attribute(__fallthrough__)
+#  define fallthrough__ __attribute__((__fallthrough__))
+#else
+# define fallthrough__ do {} while (0)  /* fallthrough */
+#endif
+#endif
+
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
@@ -550,12 +566,15 @@ Contour::calc_bounds() const
 		switch(i->type) {
 		case CUBIC:
 			bounds.expand(i->pp1);
+			fallthrough__;
 		case CONIC:
 			bounds.expand(i->pp0);
+			fallthrough__;
 		case CLOSE:
 		case MOVE:
 		case LINE:
 			bounds.expand(i->p1);
+			fallthrough__;
 		default:
 			break;
 		}
@@ -571,12 +590,15 @@ Contour::calc_bounds(const Matrix &transform_matrix) const
 		switch(i->type) {
 		case CUBIC:
 			bounds.expand( transform_matrix.get_transformed(i->pp1) );
+			fallthrough__;
 		case CONIC:
 			bounds.expand( transform_matrix.get_transformed(i->pp0) );
+			fallthrough__;
 		case CLOSE:
 		case MOVE:
 		case LINE:
 			bounds.expand( transform_matrix.get_transformed(i->p1) );
+			fallthrough__;
 		default:
 			break;
 		}

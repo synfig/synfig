@@ -207,7 +207,7 @@ Action::LayerDuplicate::prepare()
 	// pair (canvas, last exported valuenode "Index #" -> Layer_Duplicate parameter: index )
 	std::map<Canvas::LooseHandle, int> last_index;
 
-	for(auto layer : clean_layer_list)
+	for(const auto& layer : clean_layer_list)
 	{
 		Canvas::Handle subcanvas(layer->get_canvas());
 
@@ -273,7 +273,7 @@ Action::LayerDuplicate::prepare()
 	// Known cases are currently:
 	// - Index of Duplicate Layer
 	// - Bone list of Skeleton Layer
-	for (auto& layer_pair : cloned_layer_map) {
+	for (const auto& layer_pair : cloned_layer_map) {
 		Canvas::LooseHandle src_layer_canvas = layer_pair.first->get_canvas();
 		std::vector<ValueNode::RHandle> src_valuenodes = get_special_layer_valuenodes(layer_pair.first, get_canvas(), src_layer_canvas);
 		std::vector<ValueNode::RHandle> cloned_valuenodes = get_special_layer_valuenodes(layer_pair.second, get_canvas(), src_layer_canvas);
@@ -325,7 +325,7 @@ Action::LayerDuplicate::export_dup_nodes(synfig::Layer::Handle layer, Canvas::Ha
 		Layer::ParamList param_list(layer->get_param_list());
 		for (Layer::ParamList::const_iterator iter(param_list.begin())
 				 ; iter != param_list.end()
-				 ; iter++)
+				 ; ++iter) {
 			if (layer->dynamic_param_list().count(iter->first)==0 && iter->second.get_type()==type_canvas)
 			{
 				Canvas::Handle subcanvas(iter->second.get(Canvas::Handle()));
@@ -333,10 +333,11 @@ Action::LayerDuplicate::export_dup_nodes(synfig::Layer::Handle layer, Canvas::Ha
 					for (IndependentContext iter = subcanvas->get_independent_context(); iter != subcanvas->end(); iter++)
 						export_dup_nodes(*iter, canvas, index);
 			}
+		}
 
 		for (Layer::DynamicParamList::const_iterator iter(layer->dynamic_param_list().begin())
 				 ; iter != layer->dynamic_param_list().end()
-				 ; iter++)
+				 ; ++iter) {
 			if (iter->second->get_type()==type_canvas)
 			{
 				Canvas::Handle canvas((*iter->second)(0).get(Canvas::Handle()));
@@ -344,6 +345,7 @@ Action::LayerDuplicate::export_dup_nodes(synfig::Layer::Handle layer, Canvas::Ha
 					//! \todo do we need to implement this?  and if so, shouldn't we check all canvases, not just the one at t=0s?
 					warning("%s:%d not yet implemented - do we need to export duplicate valuenodes in dynamic canvas parameters?", __FILE__, __LINE__);
 			}
+		}
 	}
 }
 

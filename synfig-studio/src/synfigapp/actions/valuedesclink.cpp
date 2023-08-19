@@ -476,8 +476,7 @@ Action::ValueDescLinkOpposite::is_candidate(const ParamList &x)
 	int total_tangents=0;
 	ParamList::const_iterator iter;
 	//Search thru all the Param and pick up the value descriptions
-	for(iter=x.begin(); iter!=x.end(); iter++)
-	{
+	for (iter = x.begin(); iter != x.end(); ++iter) {
 		if(iter->first == "value_desc")
 		{
 			ValueDesc v_desc(iter->second.get_value_desc());

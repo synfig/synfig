@@ -62,7 +62,7 @@ StateStroke studio::state_stroke;
 
 class studio::StateStroke_Context : public sigc::trackable
 {
-	etl::handle<CanvasView> canvas_view_;
+	CanvasView::Handle canvas_view_;
 	CanvasView::IsWorking is_working;
 
 	Duckmatic::Push duckmatic_push;
@@ -88,7 +88,7 @@ public:
 
 	~StateStroke_Context();
 
-	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view_;}
+	const CanvasView::Handle& get_canvas_view()const{return canvas_view_;}
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
@@ -99,7 +99,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateStroke::StateStroke():
-	Smach::state<StateStroke_Context>("stroke")
+	Smach::state<StateStroke_Context>("stroke", "")
 {
 	insert(event_def(EVENT_STOP,&StateStroke_Context::event_stop_handler));
 	insert(event_def(EVENT_REFRESH,&StateStroke_Context::event_refresh_handler));
@@ -122,11 +122,10 @@ StateStroke_Context::StateStroke_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
 	duckmatic_push(get_work_area()),
+	stroke_data(std::make_shared<std::list<synfig::Point>>()),
+	width_data(std::make_shared<std::list<synfig::Real>>()),
 	modifier()
 {
-	width_data = std::make_shared<std::list<synfig::Real>>();
-	stroke_data = std::make_shared<std::list<synfig::Point>>();
-
 	get_work_area()->add_stroke(stroke_data, synfigapp::Main::get_outline_color());
 }
 

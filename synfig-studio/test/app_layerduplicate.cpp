@@ -746,9 +746,16 @@ static void test_synfigapp_layerduplicate_skeleton_with_animated_bone_link()
 	ASSERT_EQUAL(cloned_bone1_name, (*cloned_bone_link_animated)(1.0).get(synfig::ValueNode_Bone::Handle())->get_bone_name(synfig::Time()))
 }
 
-int main()
+int main(int argc, const char* argv[])
 {
-	synfigapp::Main Main("");
+// test binaries are in `bin/test` folder, but for Windows they should be in `bin`
+// folder, because there is no RPATH on Windows, and it can't find required dll's
+#ifdef _WIN32
+	const std::string root_path = synfig::filesystem::Path::absolute_path(std::string(argv[0]) + "/../../");
+#else
+	const std::string root_path = synfig::filesystem::Path::absolute_path(std::string(argv[0]) + "/../../../");
+#endif
+	synfigapp::Main Main(root_path);
 
 	TEST_SUITE_BEGIN()
 		TEST_FUNCTION(test_synfigapp_layerduplicate_one_regular_layer)

@@ -165,7 +165,7 @@ void Action::ValueDescExport::scan_canvas(synfig::Canvas::Handle prev_canvas, sy
 {
 	{ // scan children
 		std::list<Canvas::Handle> &children = canvas->children();
-		for(std::list<Canvas::Handle>::iterator i = children.begin(); i != children.end(); i++)
+		for (std::list<Canvas::Handle>::iterator i = children.begin(); i != children.end(); ++i)
 			scan_canvas(prev_canvas, new_canvas, *i);
 	}
 
@@ -186,8 +186,7 @@ void Action::ValueDescExport::scan_canvas(synfig::Canvas::Handle prev_canvas, sy
 
 	{ // scan values
 		const ValueNodeList &value_node_list = canvas->value_node_list();
-		for(ValueNodeList::const_iterator i = value_node_list.begin(); i != value_node_list.end(); i++)
-		{
+		for (ValueNodeList::const_iterator i = value_node_list.begin(); i != value_node_list.end(); ++i) {
 			LinkableValueNode::Handle linkable_value_node = etl::handle<LinkableValueNode>::cast_dynamic(*i);
 			if (linkable_value_node)
 				scan_linkable_value_node(prev_canvas, new_canvas, linkable_value_node);
@@ -199,8 +198,7 @@ void Action::ValueDescExport::scan_layer(synfig::Canvas::Handle prev_canvas, syn
 {
 	// dynamic params
 	const Layer::DynamicParamList &dynamic_param_list = layer->dynamic_param_list();
-	for(Layer::DynamicParamList::const_iterator i = dynamic_param_list.begin(); i != dynamic_param_list.end(); i++)
-	{
+	for (Layer::DynamicParamList::const_iterator i = dynamic_param_list.begin(); i != dynamic_param_list.end(); ++i) {
 		if (i->second->get_parent_canvas() == prev_canvas)
 		{
 			// create action
@@ -274,8 +272,7 @@ Action::ValueDescExport::prepare()
 		{
 			// clone value nodes
 			const ValueNodeList &value_node_list = prev_canvas->value_node_list();
-			for(ValueNodeList::const_iterator i = value_node_list.begin(); i != value_node_list.end(); i++)
-			{
+			for (ValueNodeList::const_iterator i = value_node_list.begin(); i != value_node_list.end(); ++i) {
 				ValueNode::Handle new_node = (*i)->clone(canvas, guid);
 				assert(new_node);
 				if (new_node)

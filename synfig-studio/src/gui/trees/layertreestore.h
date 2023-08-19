@@ -151,16 +151,16 @@ private:
 
 private:
 	template<typename T>
-	void set_gvalue_tpl(Glib::ValueBase& value, const T &v, bool use_assign_operator = false) const;
+	void set_gvalue_tpl(Glib::ValueBase& value, const T& v, bool use_assign_operator = false) const;
 
-	virtual void  set_value_impl (const Gtk::TreeModel::iterator& row, int column, const Glib::ValueBase& value);
-	void get_value_vfunc (const Gtk::TreeModel::iterator& iter, int column, Glib::ValueBase& value) const override;
+	void set_value_impl(const Gtk::TreeModel::iterator& row, int column, const Glib::ValueBase& value) override;
+	void get_value_vfunc(const Gtk::TreeModel::iterator& iter, int column, Glib::ValueBase& value) const override;
 
-	virtual bool  row_draggable_vfunc (const TreeModel::Path& path)const;
-	virtual bool  drag_data_get_vfunc (const TreeModel::Path& path, Gtk::SelectionData& selection_data)const;
-	virtual bool  drag_data_delete_vfunc (const TreeModel::Path& path);
-	virtual bool  drag_data_received_vfunc (const TreeModel::Path& dest, const Gtk::SelectionData& selection_data);
-	virtual bool  row_drop_possible_vfunc (const TreeModel::Path& dest, const Gtk::SelectionData& selection_data)const;
+	bool row_draggable_vfunc(const TreeModel::Path& path) const override;
+	bool drag_data_get_vfunc(const TreeModel::Path& path, Gtk::SelectionData& selection_data) const override;
+	bool drag_data_delete_vfunc(const TreeModel::Path& path) override;
+	bool drag_data_received_vfunc(const TreeModel::Path& dest, const Gtk::SelectionData& selection_data) override;
+	bool row_drop_possible_vfunc(const TreeModel::Path& dest, const Gtk::SelectionData& selection_data) const override;
 
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------

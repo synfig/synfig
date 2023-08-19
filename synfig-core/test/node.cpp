@@ -24,6 +24,7 @@
 /* ========================================================================= */
 
 #include <synfig/node.h>
+#include <thread>
 
 #include "test_base.h"
 
@@ -240,6 +241,9 @@ void marking_node_as_changed_changes_the_last_time_changed() {
 	NodeX node;
 
 	auto last_time = node.get_time_last_changed();
+	// Issue if less than 1ms
+	// https://developercommunity.visualstudio.com/t/stdthis-threadsleep-forstdchronomicroseconds999/1351851
+	std::this_thread::sleep_for(std::chrono::microseconds(1000));
 	node.changed();
 
 	ASSERT(last_time < node.get_time_last_changed());

@@ -160,22 +160,22 @@ ValueNode_RealString::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"real")
+	ret.push_back(ParamDesc("real")
 		.set_local_name(_("Real"))
 		.set_description(_("Value to convert to string"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"width")
+	ret.push_back(ParamDesc("width")
 		.set_local_name(_("Width"))
 		.set_description(_("Width of the string"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"precision")
+	ret.push_back(ParamDesc("precision")
 		.set_local_name(_("Precision"))
 		.set_description(_("Number of decimal places"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"zero_pad")
+	ret.push_back(ParamDesc("zero_pad")
 		.set_local_name(_("Zero Padded"))
 		.set_description(_("When checked, the string is left filled with zeros to match the width"))
 	);

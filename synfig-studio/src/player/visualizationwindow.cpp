@@ -60,6 +60,7 @@ VisualizationWindow::VisualizationWindow(
 ):
 	canvas(canvas),
 	renderer(renderer),
+	rend_desc(canvas->rend_desc()),
 	transform(false),
 	frame(0),
 	frames_count(1),
@@ -74,7 +75,6 @@ VisualizationWindow::VisualizationWindow(
 	closed(false)
 {
 	// prepare rend desc
-	rend_desc = canvas->rend_desc();
 	rend_desc.set_wh(
 		std::max(1, rend_desc.get_w()),
 		std::max(1, rend_desc.get_h()) );

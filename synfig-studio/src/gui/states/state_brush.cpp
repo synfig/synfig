@@ -50,8 +50,6 @@
 #include <gui/states/state_normal.h>
 #include <gui/workarea.h>
 
-#include <ETL/stringf>
-
 #include <synfig/general.h>
 
 #include <synfigapp/main.h>
@@ -61,7 +59,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -120,7 +117,7 @@ public:
 	};
 
 private:
-	etl::handle<CanvasView> canvas_view_;
+	CanvasView::Handle canvas_view_;
 	CanvasView::IsWorking is_working;
 	WorkArea::PushState push_state;
 
@@ -165,7 +162,7 @@ public:
 	StateBrush_Context(CanvasView* canvas_view);
 	~StateBrush_Context();
 
-	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view_;}
+	const CanvasView::Handle& get_canvas_view()const{return canvas_view_;}
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Time get_time()const { return get_canvas_interface()->get_time(); }
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
@@ -235,7 +232,7 @@ const char * StateBrush_Context::BrushConfig::input_names[] = {
 
 
 StateBrush::StateBrush():
-	Smach::state<StateBrush_Context>("brush")
+	Smach::state<StateBrush_Context>("brush", N_("Brush Tool"))
 {
 	insert(event_def(EVENT_STOP,&StateBrush_Context::event_stop_handler));
 	insert(event_def(EVENT_REFRESH,&StateBrush_Context::event_refresh_handler));
@@ -612,10 +609,10 @@ StateBrush_Context::refresh_tool_options()
 	Gtk::ToggleToolButton* first_button = nullptr;
 	for(std::set<String>::const_iterator i = files.begin(); i != files.end(); ++i)
 	{
-		if (!brush_buttons.count(*i) && filename_extension(*i) == ".myb")
+		if (!brush_buttons.count(*i) && filesystem::Path::filename_extension(*i) == ".myb")
 		{
 			const String &brush_file = *i;
-			const String icon_file = filename_sans_extension(brush_file) + "_prev.png";
+			const String icon_file = filesystem::Path::filename_sans_extension(brush_file) + "_prev.png";
 			if (files.count(icon_file))
 			{
 				// create a single brush button
@@ -714,7 +711,7 @@ StateBrush_Context::build_transform_stack(
 
 		// If this is a paste canvas layer, then we need to
 		// descend into it
-		if(etl::handle<Layer_PasteCanvas> layer_pastecanvas = etl::handle<Layer_PasteCanvas>::cast_dynamic(*i))
+		if(Layer_PasteCanvas::Handle layer_pastecanvas = Layer_PasteCanvas::Handle::cast_dynamic(*i))
 		{
 			transform_stack.push_back(
 				new Transform_Matrix(
@@ -742,11 +739,11 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 		{
 			// Enter the stroke state to get the stroke
 			Layer::Handle selected_layer = canvas_view_->get_selection_manager()->get_selected_layer();
-			etl::handle<Layer_Bitmap> layer = etl::handle<Layer_Bitmap>::cast_dynamic(selected_layer);
+			Layer_Bitmap::Handle layer = Layer_Bitmap::Handle::cast_dynamic(selected_layer);
 			if (!layer)
 			{
 				etl::handle<Layer_Switch> layer_switch = etl::handle<Layer_Switch>::cast_dynamic(selected_layer);
-				if (layer_switch) layer = etl::handle<Layer_Bitmap>::cast_dynamic(layer_switch->get_current_layer());
+				if (layer_switch) layer = Layer_Bitmap::Handle::cast_dynamic(layer_switch->get_current_layer());
 			}
 
 			// No image found to draw in, add it.
@@ -754,31 +751,34 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 			{
 				canvas_view_->add_layer("import");
 				selected_layer = canvas_view_->get_selection_manager()->get_selected_layer();
-				layer = etl::handle<Layer_Bitmap>::cast_dynamic(selected_layer);
 
-				// Set temporary description to generate the name
-				String temp_description(_("brush image"));
-				layer->set_description(temp_description);
+				if (layer = Layer_Bitmap::Handle::cast_dynamic(selected_layer)){
+					// Set temporary description to generate the name
+					String temp_description(_("brush image"));
+					layer->set_description(temp_description);
 
-				if (selected_layer->get_param_list().count("filename") != 0)
-				{
-					// generate name based on description
-					String description, filename, filename_param;
-					get_canvas_interface()
-						->get_instance()
-						->generate_new_name(
-							layer,
-							description,
-							filename,
-							filename_param );
+					if (selected_layer->get_param_list().count("filename") != 0)
+					{
+						// generate name based on description
+						String description, filename, filename_param;
+						get_canvas_interface()
+							->get_instance()
+							->generate_new_name(
+								layer,
+								description,
+								filename,
+								filename_param );
 
-					// create and save surface
-					get_canvas_interface()
-						->get_instance()
-						->save_surface(layer->rendering_surface, filename);
+						// create and save surface
+						get_canvas_interface()
+							->get_instance()
+							->save_surface(layer->rendering_surface, filename);
 
-					selected_layer->set_param("filename", filename_param);
-					selected_layer->set_description(description);
+						selected_layer->set_param("filename", filename_param);
+						selected_layer->set_description(description);
+					}
+				} else {
+					return Smach::RESULT_ACCEPT;
 				}
 			}
 

@@ -79,10 +79,9 @@ class RenderSettings : public Gtk::Dialog
 	Gtk::ComboBoxText comboboxtext_target;
 	Gtk::Button *tparam_button;
 
-	std::vector<synfig::String> target_names;
 	synfig::String target_name;
 	synfig::String calculated_target_name;
-	std::vector< std::pair<synfig::TargetAlphaMode,synfig::String> > render_passes;
+	std::vector< std::pair<synfig::TargetAlphaMode,synfig::filesystem::Path> > render_passes;
 
 	void set_target(synfig::String name);
 

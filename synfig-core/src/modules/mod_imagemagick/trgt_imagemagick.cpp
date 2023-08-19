@@ -39,14 +39,11 @@
 
 #include "trgt_imagemagick.h"
 
-#include <ETL/stringf>
-
 #endif
 
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
-using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
@@ -57,27 +54,22 @@ SYNFIG_TARGET_SET_VERSION(imagemagick_trgt,"0.1");
 
 /* === M E T H O D S ======================================================= */
 
-imagemagick_trgt::imagemagick_trgt(const char *Filename,  const synfig::TargetParam &params):
+imagemagick_trgt::imagemagick_trgt(const synfig::filesystem::Path& Filename, const synfig::TargetParam& params):
 	imagecount(),
 	multi_image(false),
-	pipe(nullptr),
 	filename(Filename),
-	buffer(nullptr),
-	color_buffer(nullptr),
 	pf(),
 	sequence_separator(params.sequence_separator)
 { }
 
 imagemagick_trgt::~imagemagick_trgt()
 {
-	delete [] buffer;
-	delete [] color_buffer;
 }
 
 bool
 imagemagick_trgt::set_rend_desc(RendDesc *given_desc)
 {
-	if(filename_extension(filename) == ".xpm")
+	if (filename.extension().u8string() == ".xpm")
 		pf=PF_RGB;
 	else
 		pf=PF_RGB|PF_A;
@@ -93,10 +85,8 @@ imagemagick_trgt::init(synfig::ProgressCallback * /* cb */)
 	if(desc.get_frame_end()-desc.get_frame_start()>0)
 		multi_image=true;
 
-	delete [] buffer;
-	buffer=new unsigned char[pixel_size(pf)*desc.get_w()];
-	delete [] color_buffer;
-	color_buffer=new Color[desc.get_w()];
+	buffer.resize(pixel_size(pf)*desc.get_w());
+	color_buffer.resize(desc.get_w());
 	return true;
 }
 
@@ -115,28 +105,25 @@ imagemagick_trgt::start_frame(synfig::ProgressCallback *cb)
 {
 	const char *msg=_("Unable to open pipe to imagemagick's convert utility");
 
-	std::string newfilename;
+	synfig::filesystem::Path newfilename = filename;
 
 	if (multi_image)
-		newfilename = (filename_sans_extension(filename) +
-					   sequence_separator +
-					   strprintf("%04d",imagecount) +
-					   filename_extension(filename));
-	else
-		newfilename = filename;
+		newfilename.add_suffix(sequence_separator + strprintf("%04d", imagecount));
 
 	OS::RunArgs args;
 	args.push_back({"-depth", "8"});
 	args.push_back({"-size", strprintf("%dx%d", desc.get_w(), desc.get_h())});
 	args.push_back(pixel_size(pf) == 4 ? "rgba:-[0]" : "rgb:-[0]");
 	args.push_back({"-density", strprintf("%dx%d", round_to_int(desc.get_x_res()/39.3700787402), round_to_int(desc.get_y_res()/39.3700787402))});
-	args.push_back(filesystem::Path(newfilename));
+	args.push_back(newfilename);
 
-	pipe = OS::run_async("convert", args, OS::RUN_MODE_WRITE);
+	pipe = OS::run_async({"convert"}, args, OS::RUN_MODE_WRITE);
 
 	if (!pipe) {
-		if(cb)cb->error(N_(msg));
-		else synfig::error(N_(msg));
+		if (cb)
+			cb->error(N_(msg));
+		else
+			synfig::error(N_(msg));
 		return false;
 	}
 
@@ -146,7 +133,7 @@ imagemagick_trgt::start_frame(synfig::ProgressCallback *cb)
 Color*
 imagemagick_trgt::start_scanline(int /*scanline*/)
 {
-	return color_buffer;
+	return color_buffer.empty() ? nullptr : color_buffer.data();
 }
 
 bool
@@ -155,9 +142,9 @@ imagemagick_trgt::end_scanline(void)
 	if (!pipe)
 		return false;
 
-	color_to_pixelformat(buffer, color_buffer, pf, 0, desc.get_w());
+	color_to_pixelformat(buffer.data(), color_buffer.data(), pf, 0, desc.get_w());
 
-	if (!pipe->write(buffer, pixel_size(pf), desc.get_w()))
+	if (!pipe->write(buffer.data(), pixel_size(pf), desc.get_w()))
 		return false;
 
 	return true;

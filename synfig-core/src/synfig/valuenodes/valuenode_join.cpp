@@ -177,22 +177,22 @@ ValueNode_Join::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"strings")
+	ret.push_back(ParamDesc("strings")
 		.set_local_name(_("Strings"))
 		.set_description(_("The List of strings to join"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"before")
+	ret.push_back(ParamDesc("before")
 		.set_local_name(_("Before"))
 		.set_description(_("The string to place before the joined strings"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"separator")
+	ret.push_back(ParamDesc("separator")
 		.set_local_name(_("Separator"))
 		.set_description(_("The string to place between each string joined"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"after")
+	ret.push_back(ParamDesc("after")
 		.set_local_name(_("After"))
 		.set_description(_("The string to place after the joined strings"))
 	);

@@ -53,7 +53,6 @@ public:
 
 	static String filename_base(const String &filename);
 	static String filename_extension_lower(const String &filename);
-	static String append_directory_separator(const String &path);
 
 	static String content_folder_by_extension(const String &ext);
 	static String content_folder_by_filename(const String &filename)

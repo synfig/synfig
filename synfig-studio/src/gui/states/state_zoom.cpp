@@ -39,6 +39,7 @@
 #include <gui/canvasview.h>
 #include <gui/docks/dock_toolbox.h>
 #include <gui/event_mouse.h>
+#include <gui/localization.h>
 #include <gui/states/state_normal.h>
 #include <gui/workarea.h>
 
@@ -62,7 +63,7 @@ const float ZOOMFACTOR = 1.25f;
 
 class studio::StateZoom_Context : public sigc::trackable
 {
-	etl::handle<CanvasView> canvas_view_;
+	CanvasView::Handle canvas_view_;
 	CanvasView::IsWorking is_working;
 
 	WorkArea::PushState push_state;
@@ -81,7 +82,7 @@ public:
 	~StateZoom_Context();
 
 	//Canvas interaction
-	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view_;}
+	const CanvasView::Handle& get_canvas_view()const{return canvas_view_;}
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
@@ -93,7 +94,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateZoom::StateZoom():
-	Smach::state<StateZoom_Context>("zoom")
+	Smach::state<StateZoom_Context>("zoom", N_("Zoom Tool"))
 {
 	insert(event_def(EVENT_STOP,&StateZoom_Context::event_stop_handler));
 	insert(event_def(EVENT_REFRESH,&StateZoom_Context::event_refresh_handler));

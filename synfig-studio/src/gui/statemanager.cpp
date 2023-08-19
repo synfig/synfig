@@ -37,6 +37,7 @@
 
 #include <gtkmm/action.h>
 #include <gtkmm/actiongroup.h>
+#include <gtkmm/radioaction.h>
 #include <gtkmm/stock.h>
 
 #include <gui/app.h>
@@ -83,15 +84,12 @@ StateManager::add_state(const Smach::state_base *state)
 {
 	String name(state->get_name());
 
-	Gtk::StockItem stock_item;
-	Gtk::Stock::lookup(Gtk::StockID("synfig-"+name),stock_item);
-
-	Glib::RefPtr<Gtk::Action> action(
-		Gtk::Action::create(
+	Glib::RefPtr<Gtk::RadioAction> action(
+		Gtk::RadioAction::create_with_icon_name(radio_action_group,
 			"state-"+name,
-			stock_item.get_stock_id(),
-			stock_item.get_label(),
-			stock_item.get_label()
+			state_icon_name(name),
+			state->get_local_name(),
+			""
 		)
 	);
 	/*action->set_sensitive(false);*/

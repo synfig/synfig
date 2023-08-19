@@ -88,10 +88,10 @@ class DuckDrag_Rotate : public DuckDrag_Base
 	bool move_only;
 
 public:
-	etl::handle<CanvasView> canvas_view_;
+	CanvasView::Handle canvas_view_;
 	bool use_magnitude;
 	DuckDrag_Rotate();
-	void begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& begin);
+	void begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& offset);
 	bool end_duck_drag(Duckmatic* duckmatic);
 	void duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector);
 
@@ -101,7 +101,7 @@ public:
 
 class studio::StateRotate_Context : public sigc::trackable
 {
-	etl::handle<CanvasView> canvas_view_;
+	CanvasView::Handle canvas_view_;
 	CanvasView::IsWorking is_working;
 
 	synfigapp::Settings& settings;
@@ -131,7 +131,7 @@ public:
 
 	~StateRotate_Context();
 
-	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view_;}
+	const CanvasView::Handle& get_canvas_view()const{return canvas_view_;}
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
@@ -143,7 +143,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateRotate::StateRotate():
-	Smach::state<StateRotate_Context>("rotate")
+	Smach::state<StateRotate_Context>("rotate", N_("Rotate Tool"))
 {
 	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StateRotate_Context::event_refresh_tool_options));
 	insert(event_def(EVENT_STOP,&StateRotate_Context::event_stop_handler));

@@ -64,12 +64,9 @@ ACTION_SET_VERSION(Action::ValueNodeDynamicListInsert,"0.0");
 /* === M E T H O D S ======================================================= */
 
 Action::ValueNodeDynamicListInsert::ValueNodeDynamicListInsert()
+	: time(0), origin(0.5f), index(0), force_link_radius(false)
 {
-	index=0;
-	time=0;
-	origin=0.5f;
 	set_dirty(true);
-	force_link_radius = false;
 }
 
 Action::ParamVocab

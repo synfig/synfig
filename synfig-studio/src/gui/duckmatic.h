@@ -114,6 +114,12 @@ public:
 	void bezier_drag(Duckmatic* duckmatic, const synfig::Vector& vector);
 };
 
+struct Guide
+{
+	synfig::Point point;
+	synfig::Angle::rad angle;
+};
+
 /*! \class Duckmatic
 **
 **	This class helps organize any of the devices displayed in
@@ -148,8 +154,7 @@ public:
 
 	typedef Duck::Type Type;
 
-	typedef std::list<float> GuideList;
-
+	typedef std::list<Guide> GuideList;
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
 	*/
@@ -188,12 +193,10 @@ private:
 
 	sigc::signal<void> signal_grid_changed_;
 
+	GuideList guide_list_;
+
 	mutable sigc::signal<void> signal_sketch_saved_;
-
-	GuideList guide_list_x_;
-	GuideList guide_list_y_;
-
-	mutable synfig::String sketch_filename_;
+	mutable synfig::filesystem::Path sketch_filename_;
 
 	synfig::TransformStack curr_transform_stack;
 	bool curr_transform_stack_set = false;
@@ -247,6 +250,8 @@ private:
 
 	void connect_signals(const Duck::Handle &duck, const synfigapp::ValueDesc& value_desc, CanvasView &canvas_view);
 
+	double calculate_distance_from_guide(const Guide& guide, const synfig::Point& point)const;
+
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
 	*/
@@ -268,10 +273,8 @@ public:
 	sigc::signal<void>& signal_grid_changed() { return signal_grid_changed_; }
 	sigc::signal<void>& signal_sketch_saved() { return signal_sketch_saved_; }
 
-	GuideList& get_guide_list_x() { return guide_list_x_; }
-	GuideList& get_guide_list_y() { return guide_list_y_; }
-	const GuideList& get_guide_list_x()const { return guide_list_x_; }
-	const GuideList& get_guide_list_y()const { return guide_list_y_; }
+	GuideList& get_guide_list() { return guide_list_; }
+	const GuideList& get_guide_list()const { return guide_list_; }
 
 	void set_guide_snap(bool x=true);
 	bool get_guide_snap()const { return guide_snap; }
@@ -468,10 +471,13 @@ public:
 	/*!	A radius of "zero" will have an unlimited radius */
 	etl::handle<Duck> find_duck(synfig::Point pos, synfig::Real radius=0, Duck::Type type=Duck::TYPE_DEFAULT);
 
-	GuideList::iterator find_guide_x(synfig::Point pos, float radius=0.1);
-	GuideList::iterator find_guide_y(synfig::Point pos, float radius=0.1);
-	GuideList::const_iterator find_guide_x(synfig::Point pos, float radius=0.1)const { return const_cast<Duckmatic*>(this)->find_guide_x(pos,radius); }
-	GuideList::const_iterator find_guide_y(synfig::Point pos, float radius=0.1)const { return const_cast<Duckmatic*>(this)->find_guide_y(pos,radius); }
+	//! returns the closest guide to mouse position if there is one with distance less than radius
+	//! `second_best_guide_match` is an optional argument that can be used to access the second closest guide
+	GuideList::iterator find_guide(synfig::Point pos, float radius=0.1, Guide** second_best_guide_match = nullptr);
+	GuideList::const_iterator find_guide(synfig::Point pos, float radius=0.1, Guide** second_best_guide_match = nullptr)const {
+		return const_cast<Duckmatic*>(this)->find_guide(pos,radius, second_best_guide_match);
+	}
+
 
 	//! \note parameter is in canvas coordinates
 	/*!	A radius of "zero" will have an unlimited radius */
@@ -486,7 +492,7 @@ public:
 	//! if transform_count is set function will not restore transporm stack
 	void add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Layer::Handle>& selected_layer_set, etl::handle<CanvasView> canvas_view, synfig::TransformStack& transform_stack, int* transform_count = nullptr);
 
-	bool add_to_ducks(const synfigapp::ValueDesc& value_desc,etl::handle<CanvasView> canvas_view, const synfig::TransformStack& transform_stack_, synfig::ParamDesc *param_desc=0);
+	bool add_to_ducks(const synfigapp::ValueDesc& value_desc, etl::handle<CanvasView> canvas_view, const synfig::TransformStack& transform_stack_, const synfig::ParamDesc* param_desc = nullptr);
 
 	//! Set the type mask, which determines what types of ducks are shown
 	//! \Param[in]   x   Duck::Type set to backup when toggling handles
@@ -509,9 +515,9 @@ public:
 
 	void clear_ducks();
 
-	bool save_sketch(const synfig::String& filename)const;
-	bool load_sketch(const synfig::String& filename);
-	const synfig::String& get_sketch_filename()const { return sketch_filename_; }
+	bool save_sketch(const synfig::filesystem::Path& filename) const;
+	bool load_sketch(const synfig::filesystem::Path& filename);
+	const synfig::filesystem::Path& get_sketch_filename() const { return sketch_filename_; }
 
 	void set_duck_dragger(etl::handle<DuckDrag_Base> x) { duck_dragger_=x; }
 	etl::handle<DuckDrag_Base> get_duck_dragger()const { return duck_dragger_; }

@@ -1018,7 +1018,7 @@ ValueNode_BLine::get_children_vocab_vfunc()const
 	LinkableValueNode::Vocab ret;
 	for(unsigned int i=0; i<list.size();i++)
 	{
-		ret.push_back(ParamDesc(ValueBase(),strprintf("item%04d",i))
+		ret.push_back(ParamDesc(strprintf("item%04d",i))
 			.set_local_name(strprintf(_("Vertex %03d"),i+1))
 		);
 	}

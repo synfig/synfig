@@ -58,7 +58,7 @@ using namespace synfig;
 
 void studio::Dock_Info::on_mouse_move()
 {
-	etl::loose_handle<CanvasView> canvas_view(get_canvas_view());
+	CanvasView::LooseHandle canvas_view(get_canvas_view());
 	if(!canvas_view) return;
 	Point pos = canvas_view->get_work_area()->get_cursor_pos();
 
@@ -217,7 +217,7 @@ void studio::Dock_Info::on_stop_button_clicked()
 		async_renderer->stop(studio::AsyncRenderer::INTERACTION_BY_USER);
 }
 
-void studio::Dock_Info::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+void studio::Dock_Info::changed_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 {
 	mousecon.disconnect();
 

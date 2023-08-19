@@ -928,8 +928,7 @@ Action::ValueDescSet::prepare()
 					}
 
 					synfig::ValueNode_Animated::WaypointList::const_iterator iter;
-					for(iter=animated->waypoint_list().begin(); iter<animated->waypoint_list().end(); iter++)
-					{
+					for (iter = animated->waypoint_list().begin(); iter < animated->waypoint_list().end(); ++iter) {
 						waypoint=*iter;
 						ValueBase waypoint_value(waypoint.get_value());
 						if (type == type_integer)

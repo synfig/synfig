@@ -82,7 +82,7 @@ StateRectangle studio::state_rectangle;
 
 class studio::StateRectangle_Context : public sigc::trackable
 {
-	etl::handle<CanvasView> canvas_view_;
+	CanvasView::Handle canvas_view_;
 	CanvasView::IsWorking is_working;
 
 	Duckmatic::Push duckmatic_push;
@@ -230,7 +230,7 @@ public:
 	~StateRectangle_Context();
 
 	//Canvas interaction
-	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view_;}
+	const CanvasView::Handle& get_canvas_view()const{return canvas_view_;}
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view_->get_work_area();}
@@ -257,7 +257,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateRectangle::StateRectangle():
-	Smach::state<StateRectangle_Context>("rectangle")
+	Smach::state<StateRectangle_Context>("rectangle", N_("Rectangle Tool"))
 {
 	insert(event_def(EVENT_STOP,&StateRectangle_Context::event_stop_handler));
 	insert(event_def(EVENT_LAYER_SELECTION_CHANGED,&StateRectangle_Context::event_layer_selection_changed_handler));
@@ -462,7 +462,7 @@ StateRectangle_Context::StateRectangle_Context(CanvasView* canvas_view):
 	blend_label.get_style_context()->add_class("gap");
 	blend_box.pack_start(blend_label, false, false, 0);
 
-	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
+	blend_enum.set_param_desc(ParamDesc("blend_method")
 		.set_local_name(_("Blend Method"))
 		.set_description(_("Defines the blend method to be used for rectangles")));
 

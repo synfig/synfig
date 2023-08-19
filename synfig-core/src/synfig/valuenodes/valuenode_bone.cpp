@@ -76,7 +76,6 @@ static int bone_counter;
 // static map<ValueNode_Bone::Handle, Matrix> animated_matrix_map;
 static Time last_time = Time::begin();
 
-static ValueNode_Bone_Root::Handle rooot;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -319,7 +318,12 @@ ValueNode_Bone::~ValueNode_Bone()
 
 	DEBUG_LOG("SYNFIG_DEBUG_BONE_MAP",
 		"%s:%d removing from canvas_map\n", __FILE__, __LINE__);
-	canvas_map[get_root_canvas()].erase(get_guid());
+	// ValueNode_Bone_Root does not have a GUID and does not belong to any canvas.
+	// Calling get_guid() for `ValueNode_Bone_Root` leads to an attempt to insert
+	// it into a canvas (it calls `global_node_map()` for this purpose).
+	// And if `global_node_map()` is already destroyed at that moment, it leads to a crash.
+	if (!is_root())
+		canvas_map[get_root_canvas()].erase(get_guid());
 
 	show_bone_map(get_root_canvas(), __FILE__, __LINE__, "in destructor");
 
@@ -580,56 +584,56 @@ ValueNode_Bone::get_children_vocab_vfunc() const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"name")
+	ret.push_back(ParamDesc("name")
 		.set_local_name(_("Name"))
 		.set_description(_("The name of the bone"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"parent")
+	ret.push_back(ParamDesc("parent")
 		.set_local_name(_("Parent"))
 		.set_description(_("The parent bone of the bone"))
 		.set_static(true)
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"origin")
+	ret.push_back(ParamDesc("origin")
 		.set_local_name(_("Origin"))
 		.set_description(_("The rotating origin of the bone relative to its parent"))
 		.set_is_distance()
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"angle")
+	ret.push_back(ParamDesc("angle")
 		.set_local_name(_("Angle"))
 		.set_description(_("The rotating angle of the bone relative to its parent"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"scalelx")
+	ret.push_back(ParamDesc("scalelx")
 		.set_local_name(_("Local Length Scale"))
 		.set_description(_("The scale of the bone aligned to its length"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"width")
+	ret.push_back(ParamDesc("width")
 		.set_local_name(_("Bone Width"))
 		.set_description(_("Bone width at its origin"))
 		.set_is_distance()
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"scalex")
+	ret.push_back(ParamDesc("scalex")
 		.set_local_name(_("Recursive Length Scale"))
 		.set_description(_("The scale of the bone and its children aligned to its length"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"tipwidth")
+	ret.push_back(ParamDesc("tipwidth")
 		.set_local_name(_("Tip Width"))
 		.set_description(_("Bone width at its tip"))
 		.set_is_distance()
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"bone_depth")
+	ret.push_back(ParamDesc("bone_depth")
 		.set_local_name(_("Z-Depth"))
 		.set_description(_("The z-depth of the bone"))
 	);
 
-	ret.push_back(ParamDesc(ValueBase(),"length")
+	ret.push_back(ParamDesc("length")
 		.set_local_name(_("Length Setup"))
 		.set_description(_("The length of the bone at setup"))
 		.set_is_distance()
@@ -937,8 +941,8 @@ ValueNode_Bone::get_possible_parent_bones(ValueNode::Handle value_node)
 ValueNode_Bone::Handle
 ValueNode_Bone::get_root_bone()
 {
-	if (!rooot) rooot = new ValueNode_Bone_Root();
-	return rooot;
+	static ValueNode_Bone_Root::Handle root_bone = new ValueNode_Bone_Root();
+	return root_bone;
 }
 
 #ifdef _DEBUG
@@ -1048,7 +1052,7 @@ LinkableValueNode*
 ValueNode_Bone_Root::create_new()const
 {
 	assert(0);
-	return rooot.get();
+	return get_root_bone().get();
 }
 
 Matrix

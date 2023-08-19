@@ -25,26 +25,17 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "localization.h"
 #ifdef USING_PCH
 #	include "pch.h"
 #else
 #ifdef HAVE_CONFIG_H
 #	include <config.h>
 #endif
-#ifdef _WIN32
-#include <codecvt>
-#include <locale>
-#endif
 
 #include <glibmm.h>
 #include <cstdio>
 
-#include <ETL/stringf>
-
 #include "filesystem.h"
-
-#include "general.h" // synfig::error(...)
 
 #endif
 
@@ -133,7 +124,7 @@ bool FileSystem::file_rename(const String &from_filename, const String &to_filen
 
 bool FileSystem::directory_create_recursive(const String &dirname) {
 	return is_directory(dirname)
-		|| (directory_create_recursive(etl::dirname(dirname)) && directory_create(dirname));
+		|| (directory_create_recursive(filesystem::Path::dirname(dirname)) && directory_create(dirname));
 }
 
 bool FileSystem::remove_recursive(const String &filename)
@@ -192,7 +183,7 @@ bool FileSystem::copy_recursive(Handle from_file_system, const String &from_file
 
 String FileSystem::fix_slashes(const String &filename)
 {
-	String fixed = etl::cleanup_path(filename);
+	String fixed = filesystem::Path::cleanup_path(filename);
 	if (fixed == ".")
 		return String();
 
@@ -249,48 +240,6 @@ String FileSystem::get_real_uri(const String & /* filename */)
 
 String FileSystem::get_real_filename(const String &filename) {
 	return Glib::filename_from_uri(get_real_uri(filename));
-}
-
-filesystem::Path::Path(const std::string& path)
-{
-	path_ = path;
-	native_path_ = utf8_to_native(path);
-}
-
-const filesystem::Path::value_type*
-filesystem::Path::c_str() const noexcept
-{
-	return native().c_str();
-}
-
-const filesystem::Path::string_type&
-filesystem::Path::native() const noexcept
-{
-	return native_path_;
-}
-
-const std::string&
-filesystem::Path::u8string() const
-{
-	return path_;
-}
-
-filesystem::Path::string_type
-filesystem::Path::utf8_to_native(const std::string& utf8)
-{
-#ifdef _WIN32
-	// Windows uses UTF-16 for filenames, so we need to convert it from UTF-8.
-	try {
-		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> wcu8;
-		return wcu8.from_bytes(utf8);
-	} catch (const std::range_error& exception) {
-		synfig::error("Failed to convert UTF-8 string (%s)", utf8.c_str());
-		throw;
-	}
-#else
-	// For other OS, it's the file name as it is
-	return utf8;
-#endif
 }
 
 /* === E N T R Y P O I N T ================================================= */

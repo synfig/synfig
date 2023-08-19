@@ -37,8 +37,6 @@
 #include <cstring>
 #include <ctime>
 
-#include <ETL/stringf>
-
 #include <synfig/localization.h>
 #include <synfig/general.h>
 
@@ -77,6 +75,8 @@
 #include "loadcanvas.h"
 
 #include <giomm.h>
+
+#include <synfig/os.h>
 #include <synfig/synfig_export.h>
 
 #ifdef HAVE_SIGNAL_H
@@ -510,11 +510,9 @@ synfig::info(const String &str)
 	general_io_mutex.unlock();
 }
 
-// synfig::get_binary_path()
 // See also: http://libsylph.sourceforge.net/wiki/Full_path_to_binary
-
-String
-synfig::get_binary_path(const String &fallback_path)
+filesystem::Path
+synfig::OS::get_binary_path(const String &fallback_path)
 {
 	
 	String result;
@@ -530,16 +528,14 @@ synfig::get_binary_path(const String &fallback_path)
 #elif defined(__APPLE__)
 	
 	uint32_t buf_size = MAXPATHLEN;
-	char* path = (char*)malloc(MAXPATHLEN);
+	std::vector<char> path(MAXPATHLEN);
 	
-	if(_NSGetExecutablePath(path, &buf_size) == -1 ) {
-		path = (char*)realloc(path, buf_size);
-		_NSGetExecutablePath(path, &buf_size);
+	if(_NSGetExecutablePath(path.data(), &buf_size) == -1 ) {
+		path.resize(buf_size);
+		_NSGetExecutablePath(path.data(), &buf_size);
 	}
 	
-	result = String(path);
-	
-	free(path);
+	result = String(path.data());
 	
 	// "./synfig" case workaround
 	String artifact("/./");
@@ -550,14 +546,13 @@ synfig::get_binary_path(const String &fallback_path)
 #else
 
 	size_t buf_size = PATH_MAX - 1;
-	char* path = (char*)malloc(buf_size);
+	std::vector<char> path(buf_size);
 
 	ssize_t size;
 	struct stat stat_buf;
-	FILE *f;
 
 	/* Read from /proc/self/exe (symlink) */
-	char* path2 = new char[buf_size];
+	std::vector<char> path2(buf_size);
 	const char* procfs_path =
 #if defined(__FreeBSD__) || defined (__DragonFly__) || defined (__OpenBSD__)
 		"/proc/curproc/file";
@@ -567,12 +562,12 @@ synfig::get_binary_path(const String &fallback_path)
 		"/proc/self/exe";
 #endif
 
-	strncpy(path2, procfs_path, buf_size - 1);
+	strncpy(path2.data(), procfs_path, buf_size - 1);
 
 	while (1) {
 		int i;
 
-		size = readlink(path2, path, buf_size - 1);
+		size = readlink(path2.data(), path.data(), buf_size - 1);
 		if (size == -1) {
 			/* Error. */
 			break;
@@ -583,7 +578,7 @@ synfig::get_binary_path(const String &fallback_path)
 
 		/* Check whether the symlink's target is also a symlink.
 		 * We want to get the final target. */
-		i = stat(path, &stat_buf);
+		i = stat(path.data(), &stat_buf);
 		if (i == -1) {
 			/* Error. */
 			break;
@@ -593,19 +588,20 @@ synfig::get_binary_path(const String &fallback_path)
 		if (!S_ISLNK(stat_buf.st_mode)) {
 
 			/* path is not a symlink. Done. */
-			result = String(path);
+			result = String(path.data());
 			
 			break;
 		}
 
 		/* path is a symlink. Continue loop and resolve this. */
-		strncpy(path, path2, buf_size - 1);
+		strncpy(path.data(), path2.data(), buf_size - 1);
 	}
 	
-	delete[] path2;
+	path2.clear();
+	path.clear();
 
 #if ! (defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined (__OpenBSD__))
-	if (result == "")
+	if (result.empty())
 	{
 		/* readlink() or stat() failed; this can happen when the program is
 		 * running in Valgrind 2.2. Read from /proc/self/maps as fallback. */
@@ -613,7 +609,7 @@ synfig::get_binary_path(const String &fallback_path)
 		buf_size = PATH_MAX + 128;
 		char* line = (char*)malloc(buf_size);
 
-		f = fopen("/proc/self/maps", "r");
+		FILE* f = fopen("/proc/self/maps", "r");
 		if (!f) {
 			synfig::error("Cannot open /proc/self/maps.");
 		}
@@ -635,19 +631,18 @@ synfig::get_binary_path(const String &fallback_path)
 			line[buf_size - 1] = 0;
 
 		/* Extract the filename; it is always an absolute path. */
-		path = strchr(line, '/');
+		char* path3 = strchr(line, '/');
 
 		/* Sanity check. */
-		if (strstr(line, " r-xp ") == nullptr || !path) {
+		if (strstr(line, " r-xp ") == nullptr || !path3) {
 			synfig::error("Invalid /proc/self/maps.");
 		}
 
-		result = String(path);
+		result = String(path3);
 		free(line);
 		fclose(f);
 	}
 #endif
-	free(path);
 
 	result = Glib::filename_to_utf8(result);
 
@@ -657,7 +652,7 @@ synfig::get_binary_path(const String &fallback_path)
 	{
 		// In worst case use value specified as fallback 
 		// (usually should come from argv[0])
-		result = etl::absolute_path(fallback_path);
+		result = filesystem::Path::absolute_path(fallback_path);
 	}
 	
 	

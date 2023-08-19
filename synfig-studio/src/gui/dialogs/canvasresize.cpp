@@ -47,6 +47,26 @@
 using namespace studio;
 using namespace synfig;
 
+/* === M A C R O S ========================================================= */
+
+#ifdef __has_cpp_attribute
+# if __has_cpp_attribute(fallthrough)
+#  define fallthrough__ [[fallthrough]]
+# elif __has_cpp_attribute(noreturn)
+[[noreturn]] void fake_fallthrough___() {}
+#  define fallthrough__ fake_falthrough___()
+# endif
+#endif
+#ifndef fallthrough__
+# if __has_attribute(__fallthrough__)
+#  define fallthrough__ __attribute__((__fallthrough__))
+#else
+# define fallthrough__ do {} while (0)  /* fallthrough */
+#endif
+#endif
+
+/* === M E T H O D S ======================================================= */
+
 CanvasResize::CanvasResize(Gtk::Window &parent, etl::handle<synfigapp::CanvasInterface> &ci, CanvasProperties &cp)
 	: Gtk::Dialog       ("", parent)
 	, canvas_interface  (ci)
@@ -187,6 +207,7 @@ void CanvasResize::on_action_signal_response(int response_id)
 	switch (response_id) {
 	case ADVANCED:
 		canvas_properties.present();
+		fallthrough__;
 	case CANCEL:
 	case CLOSE:
 		is_image_checked = was_image_checked;

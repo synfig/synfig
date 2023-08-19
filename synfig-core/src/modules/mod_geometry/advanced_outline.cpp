@@ -65,6 +65,22 @@ using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
+#ifdef __has_cpp_attribute
+# if __has_cpp_attribute(fallthrough)
+#  define fallthrough__ [[fallthrough]]
+# elif __has_cpp_attribute(noreturn)
+[[noreturn]] void fake_fallthrough___() {}
+#  define fallthrough__ fake_falthrough___()
+# endif
+#endif
+#ifndef fallthrough__
+# if __has_attribute(__fallthrough__)
+#  define fallthrough__ __attribute__((__fallthrough__))
+#else
+# define fallthrough__ do {} while (0)  /* fallthrough */
+#endif
+#endif
+
 /* === G L O B A L S ======================================================= */
 
 SYNFIG_LAYER_INIT(Advanced_Outline);
@@ -385,12 +401,14 @@ namespace {
 						break;
 					case WidthPoint::TYPE_INNER_PEAK:
 						s = -1;
+						fallthrough__;
 					case WidthPoint::TYPE_PEAK:
 						dst.move_to( Vector(i->first - s*i->second.w, 0) );
 						dst.line_to( Vector(i->first, i->second.w ) );
 						break;
 					case WidthPoint::TYPE_INNER_ROUNDED:
 						s = -1;
+						fallthrough__;
 					case WidthPoint::TYPE_ROUNDED:
 						dst.move_to( Vector(i->first - s*i->second.w, 0) );
 						dst.conic_to(
@@ -434,12 +452,14 @@ namespace {
 						break;
 					case WidthPoint::TYPE_INNER_PEAK:
 						s = -1;
+						fallthrough__;
 					case WidthPoint::TYPE_PEAK:
 						dst.line_to( Vector(i->first + s*i->second.w, 0) );
 						dst.close_mirrored_vert();
 						break;
 					case WidthPoint::TYPE_INNER_ROUNDED:
 						s = -1;
+						fallthrough__;
 					case WidthPoint::TYPE_ROUNDED:
 						dst.conic_to(
 							Vector(i->first + s*i->second.w*round_k0, i->second.w*round_k0),
@@ -464,17 +484,17 @@ namespace {
 Advanced_Outline::Advanced_Outline():
 	param_bline(ValueBase(std::vector<synfig::BLinePoint>())),
 	param_wplist(ValueBase(std::vector<synfig::WidthPoint>())),
-	param_dilist(ValueBase(std::vector<synfig::DashItem>()))
+	param_dilist(ValueBase(std::vector<synfig::DashItem>())),
+	param_start_tip(ValueBase(int(WidthPoint::TYPE_ROUNDED))),
+	param_end_tip(ValueBase(int(WidthPoint::TYPE_ROUNDED))),
+	param_cusp_type(ValueBase(int(TYPE_SHARP))),
+	param_width(ValueBase(Real(1.0f))),
+	param_expand(ValueBase(Real(0))),
+	param_smoothness(ValueBase(Real(1))),
+	param_homogeneous(ValueBase(false)),
+	param_dash_offset(ValueBase(Real(0))),
+	param_dash_enabled(ValueBase(false))
 {
-	param_cusp_type = ValueBase(int(TYPE_SHARP));
-	param_start_tip = param_end_tip = ValueBase(int(WidthPoint::TYPE_ROUNDED));
-	param_width = ValueBase(Real(1.0f));
-	param_expand = ValueBase(Real(0));
-	param_smoothness = ValueBase(Real(1));
-	param_dash_offset = ValueBase(Real(0));
-	param_homogeneous = ValueBase(false);
-	param_dash_enabled = ValueBase(false);
-	
 	clear();
 
 	std::vector<BLinePoint> bline_point_list;
@@ -742,7 +762,7 @@ Advanced_Outline::get_param_vocab()const
 		.set_local_name(_("Expand"))
 		.set_description(_("Value to add to the global width"))
 	);
-	ret.push_back(ParamDesc(ValueBase(),"start_tip")
+	ret.push_back(ParamDesc("start_tip")
 		.set_local_name(_("Tip Type at Start"))
 		.set_description(_("Defines the Tip type of the first spline point when spline is unlooped"))
 		.set_hint("enum")
@@ -754,7 +774,7 @@ Advanced_Outline::get_param_vocab()const
 		.add_enum_value(WidthPoint::TYPE_INNER_ROUNDED,"inner_rounded", _("Inner Rounded Stop"))
 		.add_enum_value(WidthPoint::TYPE_INNER_PEAK,"inner_peak", _("Off-Peak Stop"))
 		);
-	ret.push_back(ParamDesc(ValueBase(),"end_tip")
+	ret.push_back(ParamDesc("end_tip")
 		.set_local_name(_("Tip Type at End"))
 		.set_description(_("Defines the Tip type of the last spline point when spline is unlooped"))
 		.set_hint("enum")

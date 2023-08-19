@@ -74,7 +74,7 @@ public:
 	Smach::event_result event_workarea_layer_clicked_handler(const Smach::event& x);
 
 
-	etl::handle<CanvasView> get_canvas_view()const{return canvas_view;}
+	CanvasView::Handle get_canvas_view()const{return canvas_view;}
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view->canvas_interface();}
 	synfig::Canvas::Handle get_canvas()const{return canvas_view->get_canvas();}
 	WorkArea * get_work_area()const{return canvas_view->get_work_area();}
@@ -91,7 +91,7 @@ StateFill studio::state_fill;
 /* === M E T H O D S ======================================================= */
 
 StateFill::StateFill():
-	Smach::state<StateFill_Context>("fill")
+	Smach::state<StateFill_Context>("fill", N_("Fill Tool"))
 {
 	insert(event_def(EVENT_LAYER_SELECTION_CHANGED,&StateFill_Context::event_stop_handler));
 	insert(event_def(EVENT_STOP,&StateFill_Context::event_stop_handler));

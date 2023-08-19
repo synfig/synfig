@@ -36,8 +36,6 @@
 
 #include "palette.h"
 
-#include <ETL/stringf>
-
 #include "surface.h"
 #include "general.h"
 #include "filesystemnative.h"
@@ -50,7 +48,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -329,7 +326,7 @@ Palette::load_from_file(const synfig::String& filename)
 
 	Palette ret;
 	std::string line("");
-	const std::string ext(filename_extension(filename));
+	const std::string ext(filesystem::Path::filename_extension(filename));
 
 
 	if (ext==PALETTE_SYNFIG_EXT)

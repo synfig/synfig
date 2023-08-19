@@ -102,7 +102,7 @@ Widget_NavView::~Widget_NavView()
 	{ set_canvas_view( CanvasView::LooseHandle() ); }
 
 void
-Widget_NavView::set_canvas_view(const etl::loose_handle<CanvasView> &x)
+Widget_NavView::set_canvas_view(const CanvasView::LooseHandle &x)
 {
 	if (canvas_view == x) return;
 
@@ -314,7 +314,7 @@ Dock_Navigator::~Dock_Navigator()
 { }
 
 void
-Dock_Navigator::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+Dock_Navigator::changed_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 {
 	navview.set_canvas_view(canvas_view);
 }

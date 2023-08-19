@@ -101,8 +101,7 @@ Action::LayerZDepthRangeSet::is_candidate(const ParamList &x)
 		return false;
 	// Check if all layers belong to the same canvas
 	Canvas::Handle canvas=0;
-	for(ParamList::const_iterator i = x.begin(); i != x.end(); i++) 
-	{
+	for (ParamList::const_iterator i = x.begin(); i != x.end(); ++i) {
 		if (i->first == "layer" && i->second.get_type() == Param::TYPE_LAYER) 
 		{
 			const Layer::Handle layer = i->second.get_layer();

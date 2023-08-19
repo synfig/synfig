@@ -34,8 +34,6 @@
 
 #include <gui/dialogs/dialog_canvasdependencies.h>
 
-#include <ETL/stringf>
-
 #include <glibmm/fileutils.h>
 #include <glibmm/markup.h>
 
@@ -46,6 +44,7 @@
 #include <gui/localization.h>
 #include <gui/resourcehelper.h>
 
+#include <synfig/canvasfilenaming.h>
 #include <synfig/general.h>
 #include <synfig/synfig_iterations.h>
 
@@ -130,21 +129,22 @@ struct ExternalValueNodeCollector {
 		for (const auto& param_desc : vocab) {
 			if (param_desc.get_hint() == "filename" || param_desc.get_name() == "filename") {
 				const std::string& param_name = param_desc.get_name();
+
+				std::set<ValueBase> values;
 				auto it = layer->dynamic_param_list().find(param_name);
 				if (it != layer->dynamic_param_list().end()) {
-					std::set<ValueBase> values;
 					it->second->get_values(values);
-					for (const auto& v : values) {
-						auto str_value = v.get(String());
-						if (!str_value.empty())
-							external_resource_stats[str_value]++;
-					}
 				} else {
 					ValueBase v = layer->get_param(param_name);
-					if (v.is_valid()) {
-						auto str_value = v.get(String());
-						if (!str_value.empty())
-							external_resource_stats[str_value]++;
+					if (v.is_valid())
+						values.insert(v);
+				}
+
+				for (const auto& v : values) {
+					auto filename_str = v.get(String());
+					if (!filename_str.empty()) {
+						filename_str = CanvasFileNaming::make_full_filename(layer->get_canvas()->get_file_name(), filename_str);
+						external_resource_stats[filename_str]++;
 					}
 				}
 			}
@@ -235,7 +235,8 @@ void Dialog_CanvasDependencies::refresh()
 	if (external_canvas_model) {
 		for (const auto& pair : collector.external_canvas_stats) {
 			Gtk::TreeIter row = external_canvas_model->append();
-			row->set_value(0, pair.first);
+			auto filename = CanvasFileNaming::make_short_filename(canvas->get_file_name(), pair.first);
+			row->set_value(0, filename);
 			row->set_value(1, pair.second.total);
 			for (const auto &vn_pair : pair.second.per_valuenode) {
 				if (vn_pair.first->get_id().empty())
@@ -251,10 +252,11 @@ void Dialog_CanvasDependencies::refresh()
 	if (external_resource_model) {
 		for (const auto& pair : collector.external_resource_stats) {
 			Gtk::TreeIter row = external_resource_model->append();
-			row->set_value(0, pair.first);
+			auto filename = CanvasFileNaming::make_short_filename(canvas->get_file_name(), pair.first);
+			row->set_value(0, filename);
 			row->set_value(1, pair.second);
 			Glib::RefPtr<Gdk::Pixbuf> pixbuf;
-			std::string ext = Glib::ustring(etl::filename_extension(pair.first)).lowercase();
+			std::string ext = Glib::ustring(filesystem::Path::filename_extension(pair.first)).lowercase();
 			if (!ext.empty())
 				ext = ext.substr(1);
 			const std::vector<std::string> audio_ext = {"wav", "wave", "mp3", "ogg", "ogm", "oga", "wma", "m4a", "aiff", "aif", "aifc"};
@@ -266,7 +268,7 @@ void Dialog_CanvasDependencies::refresh()
 			else if (std::find(audio_ext.begin(), audio_ext.end(), ext) != audio_ext.end())
 				pixbuf = get_tree_pixbuf_layer("sound");
 			else if (std::find(video_ext.begin(), video_ext.end(), ext) != video_ext.end())
-				pixbuf = Gtk::Button().render_icon_pixbuf(Gtk::StockID("synfig-toggle_background_rendering"),Gtk::ICON_SIZE_SMALL_TOOLBAR);
+				pixbuf = get_tree_pixbuf_from_icon_name("toggle_background_rendering_icon");
 			else if (std::find(lipsync_ext.begin(), lipsync_ext.end(), ext) != lipsync_ext.end())
 				pixbuf = get_tree_pixbuf_layer("text");
 			row->set_value(2, pixbuf);

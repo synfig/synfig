@@ -35,7 +35,6 @@
 #include <synfig/general.h>
 #include <synfig/misc.h>
 
-#include <ETL/stringf>
 #include "trgt_magickpp.h"
 
 #endif
@@ -43,7 +42,6 @@
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
-using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
@@ -99,7 +97,7 @@ magickpp_trgt::~magickpp_trgt()
 		{
 			// check whether this file format supports multiple-image files
 			Magick::Image image(images.front());
-			image.fileName(filename);
+			image.fileName(filename.u8string());
 			try
 			{
 				SetImageInfo(image.imageInfo(),Magick::MagickTrue,exceptionInfo);
@@ -176,13 +174,13 @@ magickpp_trgt::~magickpp_trgt()
 			// include '%04d' in the filename, so the files will be numbered
 			// with a fixed width, '0'-padded number
 			synfig::info("can't join images of this type - numbering instead");
-			filename = (filename_sans_extension(filename) + sequence_separator + "%04d" + filename_extension(filename));
+			filename.add_suffix(sequence_separator + "%04d");
 		}
 
 		synfig::info("writing %d image%s to %s", images.size(), images.size() == 1 ? "" : "s", filename.c_str());
 		try
 		{
-			Magick::writeImages(images.begin(), images.end(), filename);
+			Magick::writeImages(images.begin(), images.end(), filename.u8string());
 			synfig::info("done");
 		}
 		catch(Magick::Warning &warning) {
@@ -218,7 +216,7 @@ magickpp_trgt::init(synfig::ProgressCallback*)
 
 	buffer_pointer = nullptr;
 
-	std::string extension = filename_extension(filename);
+	std::string extension = filename.extension().u8string();
 	strtolower(extension);
 	is_gif = extension == ".gif";
 
@@ -260,7 +258,7 @@ magickpp_trgt::start_frame(synfig::ProgressCallback */*callback*/)
 Color*
 magickpp_trgt::start_scanline(int /*scanline*/)
 {
-	return color_buffer.data();
+	return color_buffer.empty() ? nullptr : color_buffer.data();
 }
 
 bool

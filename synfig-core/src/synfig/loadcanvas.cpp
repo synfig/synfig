@@ -51,8 +51,6 @@
 
 #include "loadcanvas.h"
 
-#include <ETL/stringf>
-
 #include "general.h"
 #include "localization.h"
 
@@ -128,7 +126,7 @@ static void _canvas_file_name_changed(Canvas *x)
 	if (canvas_map.find(x) == canvas_map.end()) {
 		return;
 	}
-	canvas_map[x] = etl::absolute_path(x->get_file_name());
+	canvas_map[x] = filesystem::Path::absolute_path(x->get_file_name());
 }
 
 Canvas::Handle
@@ -1745,7 +1743,7 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 				//note: commented out as part of bones branch merge
 
 				// Warn if there is trash after the param value
-				for(iter++; iter != list.end(); ++iter)
+				for (++iter; iter != list.end(); ++iter)
 					if(dynamic_cast<xmlpp::Element*>(*iter))
 						warning((*iter),strprintf(_("Unexpected element <%s> after <waypoint> data, ignoring..."),(*iter)->get_name().c_str()));
 			}
@@ -1813,8 +1811,7 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 			bool first = true;
 			Real angle, prev = 0;
 			WaypointList &wl = value_node->editable_waypoint_list();
-			for (WaypointList::iterator iter = wl.begin(); iter != wl.end(); iter++)
-			{
+			for (WaypointList::iterator iter = wl.begin(); iter != wl.end(); ++iter) {
 				angle = Angle::deg(iter->get_value(iter->get_time()).get(Angle())).get();
 				if (first)
 					first = false;
@@ -1862,7 +1859,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 	}
 
 	DEBUG_LOG("SYNFIG_DEBUG_LOAD_CANVAS", "%s:%d creating linkable '%s' type '%s'\n", __FILE__, __LINE__, element->get_name().c_str(), type.description.name.c_str());
-	handle<LinkableValueNode> value_node=ValueNodeRegistry::create(element->get_name(),type);
+	LinkableValueNode::Handle value_node=ValueNodeRegistry::create(element->get_name(),type);
 	//ValueNode::Handle c[value_node->link_count()]; changed because of clang complain
 	std::vector<ValueNode::Handle> c(value_node->link_count());
 
@@ -1890,8 +1887,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 		int index;
 		String id, name;
 		xmlpp::Element::AttributeList attrib_list(element->get_attributes());
-		for(xmlpp::Element::AttributeList::iterator iter = attrib_list.begin(); iter != attrib_list.end(); iter++)
-		{
+		for (xmlpp::Element::AttributeList::iterator iter = attrib_list.begin(); iter != attrib_list.end(); ++iter) {
 			name = (*iter)->get_name();
 			id = (*iter)->get_value();
 
@@ -2173,7 +2169,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 	{
 		if (version == "0.1" || version == "0.2" || version == "0.3")
 		{
-			handle<LinkableValueNode> scale_value_node=ValueNodeRegistry::create("scale",type);
+			LinkableValueNode::Handle scale_value_node=ValueNodeRegistry::create("scale",type);
 			scale_value_node->set_link("link", value_node);
 			scale_value_node->set_link("scalar", ValueNode_Const::create(Real(0.5)));
 
@@ -2185,7 +2181,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 	return value_node;
 }
 
-handle<ValueNode_StaticList>
+ValueNode_StaticList::Handle
 CanvasParser::parse_static_list(xmlpp::Element *element,Canvas::Handle canvas)
 {
 	assert(element->get_name()=="static_list");
@@ -2193,7 +2189,7 @@ CanvasParser::parse_static_list(xmlpp::Element *element,Canvas::Handle canvas)
 	if(!element->get_attribute("type"))
 	{
 		error(element,"Missing attribute \"type\" in <list>");
-		return handle<ValueNode_StaticList>();
+		return ValueNode_StaticList::Handle();
 	}
 
 	Type &type=ValueBase::ident_type(element->get_attribute("type")->get_value());
@@ -2201,17 +2197,17 @@ CanvasParser::parse_static_list(xmlpp::Element *element,Canvas::Handle canvas)
 	if(type == type_nil)
 	{
 		error(element,"Bad type in <list>");
-		return handle<ValueNode_StaticList>();
+		return ValueNode_StaticList::Handle();
 	}
 
-	handle<ValueNode_StaticList> value_node;
+	ValueNode_StaticList::Handle value_node;
 
 	value_node=ValueNode_StaticList::create_on_canvas(type);
 
 	if(!value_node)
 	{
 		error(element,strprintf(_("Unable to create <list>")));
-		return handle<ValueNode_StaticList>();
+		return ValueNode_StaticList::Handle();
 	}
 
 	value_node->set_root_canvas(canvas->get_root());
@@ -2284,7 +2280,7 @@ static bool is_bool_attribute_true(xmlpp::Element* element, const char* name) {
 }
 
 // This will also parse a bline
-handle<ValueNode_DynamicList>
+ValueNode_DynamicList::Handle
 CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 {
 	assert(element->get_name()=="dynamic_list" ||
@@ -2299,7 +2295,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 	if(!element->get_attribute("type"))
 	{
 		error(element,"Missing attribute \"type\" in <dynamic_list>");
-		return handle<ValueNode_DynamicList>();
+		return ValueNode_DynamicList::Handle();
 	}
 
 	Type &type = ValueBase::ident_type(element->get_attribute("type")->get_value());
@@ -2307,10 +2303,10 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 	if(type == type_nil)
 	{
 		error(element,"Bad type in <dynamic_list>");
-		return handle<ValueNode_DynamicList>();
+		return ValueNode_DynamicList::Handle();
 	}
 
-	handle<ValueNode_DynamicList> value_node;
+	ValueNode_DynamicList::Handle value_node;
 
 	bool must_rotate_point_list = false;
 
@@ -2344,7 +2340,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 	if(!value_node)
 	{
 		error(element,strprintf(_("Unable to create <dynamic_list>")));
-		return handle<ValueNode_DynamicList>();
+		return ValueNode_DynamicList::Handle();
 	}
 
 	value_node->set_root_canvas(canvas->get_root());
@@ -2777,7 +2773,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 		layer->set_exclude_from_rendering(!is_false(element->get_attribute("exclude_from_rendering")->get_value()));
 
 	// Load old groups
-	etl::handle<Layer_PasteCanvas> layer_pastecanvas = etl::handle<Layer_Group>::cast_dynamic(layer);
+	Layer_PasteCanvas::Handle layer_pastecanvas = etl::handle<Layer_Group>::cast_dynamic(layer);
 	bool old_pastecanvas = layer_pastecanvas && version=="0.1";
 	ValueNode::Handle origin_node;
 	ValueNode_Composite::Handle transformation_node;
@@ -3019,7 +3015,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 			}
 
 			// Warn if there is trash after the param value
-			for(iter++; iter != list.end(); ++iter)
+			for (++iter; iter != list.end(); ++iter)
 				if(dynamic_cast<xmlpp::Element*>(*iter))
 					warning((*iter),strprintf(_("Unexpected element <%s> after <param> data, ignoring..."),(*iter)->get_name().c_str()));
 			continue;
@@ -3430,12 +3426,13 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 	if(canvas->value_node_list().placeholder_count())
 	{
 		String nodes;
-		for (ValueNodeList::const_iterator iter = canvas->value_node_list().begin(); iter != canvas->value_node_list().end(); iter++)
+		for (ValueNodeList::const_iterator iter = canvas->value_node_list().begin(); iter != canvas->value_node_list().end(); ++iter) {
 			if(PlaceholderValueNode::Handle::cast_dynamic(*iter))
 			{
 				if (nodes != "") nodes += ", ";
 				nodes += "'" + (*iter)->get_id() + "'";
 			}
+		}
 		error(element,strprintf(_("Canvas '%s' has undefined %s: %s"),
 								canvas->get_id().c_str(),
 								canvas->value_node_list().placeholder_count() == 1 ? _("ValueNode") : _("ValueNodes"),
@@ -3449,7 +3446,7 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 void
 CanvasParser::register_canvas_in_map(Canvas::Handle canvas, String as)
 {
-	get_open_canvas_map()[canvas.get()]=etl::absolute_path(as);
+	get_open_canvas_map()[canvas.get()]=filesystem::Path::absolute_path(as);
 	canvas->signal_deleted().connect(sigc::bind(sigc::ptr_fun(_remove_from_open_canvas_map),canvas.get()));
 	canvas->signal_file_name_changed().connect(sigc::bind(sigc::ptr_fun(_canvas_file_name_changed),canvas.get()));
 }
@@ -3476,7 +3473,7 @@ CanvasParser::parse_from_file_as(const FileSystem::Identifier &identifier,const 
 
 	try
 	{
-		const std::string absolute_path = etl::absolute_path(as);
+		const std::string absolute_path = filesystem::Path::absolute_path(as);
 		for (const auto& it : get_open_canvas_map()) {
 			if (it.second == absolute_path) {
 				return it.first;
@@ -3490,7 +3487,7 @@ CanvasParser::parse_from_file_as(const FileSystem::Identifier &identifier,const 
 		FileSystem::ReadStream::Handle stream = identifier.get_read_stream();
 		if (stream)
 		{
-			if (filename_extension(identifier.filename) == ".sifz")
+			if (filesystem::Path::filename_extension(identifier.filename) == ".sifz")
 				stream = FileSystem::ReadStream::Handle(new ZReadStream(stream, zstreambuf::compression::gzip));
 
 			xmlpp::DomParser parser;

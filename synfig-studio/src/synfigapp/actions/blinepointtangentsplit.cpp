@@ -112,8 +112,8 @@ static ValueNode_Composite::Handle search_for_related_blinepoint(const Action::P
 
 //// BLINEPOINT TANGENT SPLIT //////////
 Action::BLinePointTangentSplit::BLinePointTangentSplit()
+	: time(Time::begin() - 1)
 {
-	time=(Time::begin()-1);
 	set_dirty(true);
 }
 

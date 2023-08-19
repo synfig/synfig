@@ -82,7 +82,7 @@ StateText studio::state_text;
 
 class studio::StateText_Context
 {
-	etl::handle<CanvasView> canvas_view;
+	CanvasView::Handle canvas_view;
 	CanvasView::IsWorking is_working;
 
 	Duckmatic::Push duckmatic_push;
@@ -167,7 +167,7 @@ public:
 	StateText_Context(CanvasView *canvas_view);
 	~StateText_Context();
 
-	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view;}
+	const CanvasView::Handle& get_canvas_view()const{return canvas_view;}
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view->canvas_interface();}
 	WorkArea * get_work_area()const{return canvas_view->get_work_area();}
 
@@ -194,7 +194,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateText::StateText():
-	Smach::state<StateText_Context>("text")
+	Smach::state<StateText_Context>("text", N_("Text Tool"))
 {
 	insert(event_def(EVENT_LAYER_SELECTION_CHANGED,&StateText_Context::event_layer_selection_changed_handler));
 	insert(event_def(EVENT_STOP,&StateText_Context::event_stop_handler));
@@ -368,7 +368,7 @@ StateText_Context::StateText_Context(CanvasView *canvasView):
 	blend_label.get_style_context()->add_class("gap");
 	blend_box.pack_start(blend_label, false, false, 0);
 
-	blend_enum.set_param_desc(ParamDesc(Color::BLEND_COMPOSITE,"blend_method")
+	blend_enum.set_param_desc(ParamDesc("blend_method")
 		.set_local_name(_("Blend Method"))
 		.set_description(_("Defines the blend method to be used for texts")));
 

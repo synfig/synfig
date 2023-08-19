@@ -132,7 +132,7 @@ ValueNode_VectorLength::get_children_vocab_vfunc()const
 
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc(ValueBase(),"vector")
+	ret.push_back(ParamDesc("vector")
 		.set_local_name(_("Vector"))
 		.set_description(_("The vector where the length is calculated from"))
 	);

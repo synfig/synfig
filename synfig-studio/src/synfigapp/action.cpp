@@ -125,7 +125,7 @@
 #include "actions/keyframeadd.h"
 #include "actions/keyframeset.h"
 #include "actions/keyframeremove.h"
-#include "actions/keyframetoggl.h"
+#include "actions/keyframetoggle.h"
 #include "actions/keyframeduplicate.h"
 #include "actions/keyframewaypointset.h"
 #include "actions/keyframesetdelta.h"

@@ -33,6 +33,8 @@
 #include <cstdio>
 #include <memory>
 
+#include "synfig/filesystem_path.h"
+
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -49,13 +51,24 @@ class SmartFILE : public std::shared_ptr<FILE>
 public:
 	SmartFILE() : std::shared_ptr<FILE>(nullptr, _FILE_deleter()) {}
 	SmartFILE(FILE* f) : std::shared_ptr<FILE>(f, _FILE_deleter()) {}
+	SmartFILE(const filesystem::Path& name, const char* mode) : std::shared_ptr<FILE>(open_file(name, mode), _FILE_deleter()) {}
+
+	static FILE*
+	open_file(const filesystem::Path& name, const char* mode)
+	{
+#ifdef _WIN32
+		return _wfopen(name.c_str(), filesystem::Path(mode).c_str());
+#else
+		return fopen(name.c_str(), mode);
+#endif
+	}
 
 private:
 	struct _FILE_deleter
 	{
 		void operator()(FILE* x) const
 		{
-			if (x && (x != stdout && x != stdin))
+			if (x && (x != stdout && x != stdin && x != stderr))
 				fclose(x);
 		}
 	};

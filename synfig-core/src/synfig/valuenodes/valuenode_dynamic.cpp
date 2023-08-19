@@ -354,56 +354,56 @@ ValueNode_Dynamic::get_children_vocab_vfunc()const
 		return children_vocab;
 
 	LinkableValueNode::Vocab ret;
-	ret.push_back(ParamDesc(ValueBase(),"tip_static")
+	ret.push_back(ParamDesc("tip_static")
 		.set_local_name(_("Tip static"))
 		.set_description(_("Equilibrium tip position without external forces"))
 	);
-	ret.push_back(ParamDesc(ValueBase(),"origin")
+	ret.push_back(ParamDesc("origin")
 		.set_local_name(_("Origin"))
 		.set_description(_("Basement of the dynamic system"))
 		.set_is_distance()
 	);
-	ret.push_back(ParamDesc(ValueBase(),"force")
+	ret.push_back(ParamDesc("force")
 		.set_local_name(_("Force"))
 		.set_description(_("External force applied on the mass center of gravity"))
 	);
-	ret.push_back(ParamDesc(ValueBase(),"torque")
+	ret.push_back(ParamDesc("torque")
 		.set_local_name(_("Torque"))
 		.set_description(_("External momentum applied at the center of inertia"))
 	);
-	ret.push_back(ParamDesc(ValueBase(),"damping")
+	ret.push_back(ParamDesc("damping")
 		.set_local_name(_("Damping coefficient"))
 		.set_description(_("Radial damping coefficient of the dynamic system"))
 	);
-	ret.push_back(ParamDesc(ValueBase(),"friction")
+	ret.push_back(ParamDesc("friction")
 		.set_local_name(_("Friction coefficient"))
 		.set_description(_("Rotational friction coefficient of the dynamic system"))
 	);
-	ret.push_back(ParamDesc(ValueBase(),"spring")
+	ret.push_back(ParamDesc("spring")
 		.set_local_name(_("Spring coefficient"))
 		.set_description(_("Radial spring coefficient of the dynamic system"))
 	);
-	ret.push_back(ParamDesc(ValueBase(),"torsion")
+	ret.push_back(ParamDesc("torsion")
 		.set_local_name(_("Torsion coefficient"))
 		.set_description(_("Torsion coefficient of the dynamic system"))
 	);
-	ret.push_back(ParamDesc(ValueBase(),"mass")
+	ret.push_back(ParamDesc("mass")
 		.set_local_name(_("Mass"))
 		.set_description(_("Mass of the dynamic system"))
 	);
-	ret.push_back(ParamDesc(ValueBase(),"inertia")
+	ret.push_back(ParamDesc("inertia")
 		.set_local_name(_("Moment of Inertia"))
 		.set_description(_("Moment of inertia of the dynamic system"))
 	);
-	ret.push_back(ParamDesc(ValueBase(),"spring_rigid")
+	ret.push_back(ParamDesc("spring_rigid")
 		.set_local_name(_("Spring rigid"))
 		.set_description(_("When checked, linear spring is rigid"))
 	);
-	ret.push_back(ParamDesc(ValueBase(),"torsion_rigid")
+	ret.push_back(ParamDesc("torsion_rigid")
 		.set_local_name(_("Torsion rigid"))
 		.set_description(_("When checked, torsion spring is rigid"))
 	);
-	ret.push_back(ParamDesc(ValueBase(),"origin_drags_tip")
+	ret.push_back(ParamDesc("origin_drags_tip")
 		.set_local_name(_("Origin drags tip"))
 		.set_description(_("When checked, result is origin + tip otherwise result is just tip"))
 	);

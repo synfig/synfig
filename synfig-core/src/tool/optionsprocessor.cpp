@@ -45,6 +45,7 @@
 #include <synfig/importer.h>
 #include <synfig/loadcanvas.h>
 #include <synfig/valuenode_registry.h>
+#include <synfig/rendering/renderer.h>
 
 #include "definitions.h"
 #include "job.h"
@@ -133,6 +134,7 @@ SynfigCommandLineParser::SynfigCommandLineParser() :
 	show_license(),
 	show_modules(),
 	show_targets(),
+	show_renderers(),
 	show_codecs(),
 	show_value_nodes(),
 	show_version()
@@ -156,6 +158,7 @@ SynfigCommandLineParser::SynfigCommandLineParser() :
 	add_option(og_set, "threads",     'T', set_num_threads, _("Enable multithreaded renderer using the specified number of threads"), "NUM");
 	add_option(og_set, "input-file",  'i', set_input_file, 	_("Specify input filename"), "filename");
 	add_option(og_set, "output-file", 'o', set_output_file, _("Specify output filename"), "filename");
+	add_option(og_set, "renderer",    ' ', set_renderer,    _("Specify which renderer to use"), "string");
 	add_option(og_set, "sequence-separator", ' ', set_sequence_separator, _("Output file sequence separator string (Use double quotes if you want to use spaces)"), "string");
 	add_option(og_set, "canvas",      'c', set_canvas_id, 	_("Render the canvas with the given id instead of the root."), "id");
 	add_option(og_set, "fps",         ' ', set_fps, 		_("Set the frame rate"), "NUM");
@@ -193,6 +196,7 @@ SynfigCommandLineParser::SynfigCommandLineParser() :
 	add_option(og_info, "license",    ' ', show_license, 		_("Print out license information"), "");
 	add_option(og_info, "modules",    ' ', show_modules, 		_("Print out the list of loaded modules"), "");
 	add_option(og_info, "targets",    ' ', show_targets, 		_("Print out the list of available targets"), "");
+	add_option(og_info, "renderers",  ' ', show_renderers, 		_("Print out the list of available renderers"), "");
 	add_option(og_info, "target-video-codecs",' ', show_codecs, _("Print out the list of available video codecs when encoding through FFMPEG"), "");
 	add_option(og_info, "valuenodes", ' ', show_value_nodes, 	_("Print out the list of available ValueNodes"), "");
 	add_option(og_info, "version",    ' ', show_version, 		_("Print out version information"), "");
@@ -485,6 +489,14 @@ void SynfigCommandLineParser::process_info_options()
 
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
 	}
+        
+	if(show_renderers) {
+		for(const auto& iter : synfig::rendering::Renderer::get_renderers()) {
+			std::cout << (iter.first).c_str() << " - " << iter.second->get_name() << std::endl;
+		}
+
+		throw (SynfigToolException(SYNFIGTOOL_HELP));
+	}
 
 	if (show_value_nodes) {
 		for(const auto& iter : synfig::ValueNodeRegistry::book()) {
@@ -650,20 +662,20 @@ Job SynfigCommandLineParser::extract_job()
 	// Common input file loading
 	if (!set_input_file.empty())
 	{
-		job.filename = set_input_file;
+		job.filename = filesystem::Path(set_input_file);
 
 		// Open the composition
 		std::string errors, warnings;
 		try
 		{
-			if (FileSystem::Handle file_system = CanvasFileNaming::make_filesystem(job.filename))
+			if (FileSystem::Handle file_system = CanvasFileNaming::make_filesystem(job.filename.u8string()))
 			{
-				FileSystem::Identifier identifier = file_system->get_identifier(CanvasFileNaming::project_file(job.filename));
-				job.root = open_canvas_as(identifier, job.filename, errors, warnings);
+				FileSystem::Identifier identifier = file_system->get_identifier(CanvasFileNaming::project_file(job.filename.u8string()));
+				job.root = open_canvas_as(identifier, job.filename.u8string(), errors, warnings);
 			}
 			else
 			{
-				errors.append("Cannot open container " + job.filename + "\n");
+				errors.append("Cannot open container " + job.filename.u8string() + "\n");
 			}
 		}
 		catch(std::runtime_error& /*x*/)
@@ -678,7 +690,7 @@ Job SynfigCommandLineParser::extract_job()
 		if(!job.canvas)
 		{
 		    throw SynfigToolException(SYNFIGTOOL_FILENOTFOUND,
-                                      strprintf(_("Unable to load file '%s'."), job.filename.c_str()));
+									  strprintf(_("Unable to load file '%s'."), job.filename.u8_str()));
 		}
 
 		job.root->set_time(0);
@@ -687,6 +699,22 @@ Job SynfigCommandLineParser::extract_job()
 	{
 	    throw SynfigToolException(SYNFIGTOOL_MISSINGARGUMENT,
                                   _("No input file provided."));
+	}
+        
+	if(!set_renderer.empty())
+	{
+		auto renderers = rendering::Renderer::get_renderers();
+		auto ri = renderers.find(set_renderer);
+		if (ri == renderers.end() || !ri->second)
+		{
+			synfig::error(_("Invalid renderer: %s"), set_renderer.c_str()); 
+			for(const auto& iter : synfig::rendering::Renderer::get_renderers()) {
+				std::cerr << (iter.first).c_str() << " - " << iter.second->get_name() << std::endl;
+			}
+			throw SynfigToolException(SYNFIGTOOL_INVALIDJOB);
+		}
+		job.render_engine = set_renderer;
+		VERBOSE_OUT(1) << _("Renderer set to: ") << job.render_engine << std::endl;
 	}
 
 	if (!set_target.empty())
@@ -698,7 +726,7 @@ Job SynfigCommandLineParser::extract_job()
 	// Determine output
 	if (!set_output_file.empty())
 	{
-		job.outfilename = set_output_file;
+		job.outfilename = filesystem::Path(set_output_file);
 	}
 
 	if (sw_extract_alpha)
@@ -785,7 +813,7 @@ Job SynfigCommandLineParser::extract_job()
 	//if (_vm.count("list-canvases") || misc_canvases)
 	if (misc_canvases)
 	{
-		print_child_canvases(job.filename + "#", job.root);
+		print_child_canvases(job.filename.u8string() + "#", job.root);
 		std::cerr << std::endl;
 
 		throw SynfigToolException(SYNFIGTOOL_OK);
@@ -798,7 +826,6 @@ Job SynfigCommandLineParser::extract_job()
 
 		throw SynfigToolException(SYNFIGTOOL_OK);
 	}
-
 	return job;
 }
 

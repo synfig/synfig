@@ -50,15 +50,12 @@
 #include <gui/states/state_stroke.h>
 #include <gui/workarea.h>
 
-#include <ETL/stringf>
-
 #include <synfigapp/main.h>
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -74,7 +71,7 @@ StateSketch studio::state_sketch;
 
 class studio::StateSketch_Context : public sigc::trackable
 {
-	etl::handle<CanvasView> canvas_view_;
+	CanvasView::Handle canvas_view_;
 	CanvasView::IsWorking is_working;
 
 	WorkArea::PushState push_state;
@@ -116,7 +113,7 @@ public:
 
 	~StateSketch_Context();
 
-	const etl::handle<CanvasView>& get_canvas_view()const{return canvas_view_;}
+	const CanvasView::Handle& get_canvas_view()const{return canvas_view_;}
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
 	synfig::Time get_time()const { return get_canvas_interface()->get_time(); }
 	synfig::Canvas::Handle get_canvas()const{return canvas_view_->get_canvas();}
@@ -128,7 +125,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateSketch::StateSketch():
-	Smach::state<StateSketch_Context>("sketch")
+	Smach::state<StateSketch_Context>("sketch", N_("Sketch Tool"))
 {
 	insert(event_def(EVENT_STOP,&StateSketch_Context::event_stop_handler));
 	//insert(event_def(EVENT_REFRESH,&StateSketch_Context::event_refresh_handler));
@@ -150,7 +147,7 @@ void* StateSketch::enter_state(studio::CanvasView* machine_context) const
 void
 StateSketch_Context::save_sketch()
 {
-	synfig::String filename(basename(get_canvas()->get_file_name())+".sketch");
+	synfig::String filename(filesystem::Path::basename(get_canvas()->get_file_name())+".sketch");
 
 	while(App::dialog_save_file_sketch(_("Save Sketch"), filename, SKETCH_DIR_PREFERENCE))
 	{
@@ -169,7 +166,7 @@ StateSketch_Context::save_sketch()
 void
 StateSketch_Context::load_sketch()
 {
-	synfig::String filename(basename(get_canvas()->get_file_name())+".sketch");
+	synfig::String filename(filesystem::Path::basename(get_canvas()->get_file_name())+".sketch");
 
 	while(App::dialog_open_file_sketch(_("Load Sketch"), filename, SKETCH_DIR_PREFERENCE))
 	{

@@ -36,8 +36,6 @@
 
 #include "mptr_imagemagick.h"
 
-#include <ETL/stringf>
-
 #include <synfig/general.h>
 #include <synfig/localization.h>
 #include <synfig/filesystemnative.h>
@@ -83,7 +81,7 @@ imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &re
 	std::string filename=identifier.file_system->get_real_filename(identifier.filename);
 	std::string target_filename=FileSystemTemporary::generate_system_temporary_filename("imagemagick", ".png");
 
-	std::string filename_extension = etl::filename_extension(identifier.filename);
+	std::string filename_extension = filesystem::Path::filename_extension(identifier.filename);
 
 	if (filename.empty()) {
 		is_temporary_file = true;
@@ -106,7 +104,7 @@ imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &re
 
 	args.push_back(strprintf("png32:%s", target_filename.c_str()));
 
-	bool success = OS::run_sync("convert", args);
+	bool success = OS::run_sync({"convert"}, args);
 	if (!success) {
 		synfig::error(_("Unable to open convert [ImageMagick]"));
 		return false;

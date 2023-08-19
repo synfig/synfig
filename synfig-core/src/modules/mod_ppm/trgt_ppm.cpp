@@ -33,15 +33,16 @@
 #	include <config.h>
 #endif
 
-#include <glib/gstdio.h>
 #include "trgt_ppm.h"
-#include <ETL/stringf>
+
+#include <synfig/general.h>
+#include <synfig/localization.h>
+
 #endif
 
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
-using namespace etl;
 
 /* === G L O B A L S ======================================================= */
 
@@ -52,13 +53,11 @@ SYNFIG_TARGET_SET_VERSION(ppm,"0.1");
 
 /* === M E T H O D S ======================================================= */
 
-ppm::ppm(const char *Filename, const synfig::TargetParam &params):
+ppm::ppm(const synfig::filesystem::Path& Filename, const synfig::TargetParam& params):
 	imagecount(),
 	multi_image(false),
 	file(),
 	filename(Filename),
-	color_buffer(nullptr),
-	buffer(nullptr),
 	sequence_separator(params.sequence_separator)
 {
 	set_alpha_mode(TARGET_ALPHA_MODE_FILL);
@@ -66,8 +65,6 @@ ppm::ppm(const char *Filename, const synfig::TargetParam &params):
 
 ppm::~ppm()
 {
-	delete [] buffer;
-	delete [] color_buffer;
 }
 
 bool
@@ -94,38 +91,34 @@ ppm::start_frame(synfig::ProgressCallback *callback)
 {
 	int w=desc.get_w(),h=desc.get_h();
 
-	if(filename=="-")
-	{
-		if(callback)callback->task(strprintf("(stdout) %d",imagecount).c_str());
-		file=SmartFILE(stdout);
-	}
-	else if(multi_image)
-	{
-		String newfilename(filename_sans_extension(filename) +
-						   sequence_separator +
-						   strprintf("%04d",imagecount) +
-						   filename_extension(filename));
-		file=SmartFILE(g_fopen(newfilename.c_str(),POPEN_BINARY_WRITE_TYPE));
-		if(callback)callback->task(newfilename);
-	}
-	else
-	{
-		file=SmartFILE(g_fopen(filename.c_str(),POPEN_BINARY_WRITE_TYPE));
-		if(callback)callback->task(filename);
+	if (filename.u8string() == "-") {
+		if (callback)
+			callback->task(strprintf("(stdout) %d", imagecount));
+		file = SmartFILE(stdout);
+	} else {
+		synfig::filesystem::Path newfilename(filename);
+		if (multi_image) {
+			newfilename.add_suffix(sequence_separator + strprintf("%04d", imagecount));
+		}
+		file = SmartFILE(newfilename, "wb");
+		if (callback)
+			callback->task(newfilename.u8string());
 	}
 
-	if(!file)
+	if (!file) {
+		if (callback)
+			callback->error(_("Unable to open file"));
+		else
+			synfig::error(_("Unable to open file"));
 		return false;
+	}
 
 	fprintf(file.get(), "P6\n");
 	fprintf(file.get(), "%d %d\n", w, h);
 	fprintf(file.get(), "%d\n", 255);
 
-	delete [] buffer;
-	buffer=new unsigned char[3*w];
-
-	delete [] color_buffer;
-	color_buffer=new Color[desc.get_w()];
+	buffer.resize(3*w);
+	color_buffer.resize(desc.get_w());
 
 	return true;
 }
@@ -133,7 +126,7 @@ ppm::start_frame(synfig::ProgressCallback *callback)
 Color *
 ppm::start_scanline(int /*scanline*/)
 {
-	return color_buffer;
+	return color_buffer.empty() ? nullptr : color_buffer.data();
 }
 
 bool
@@ -142,9 +135,9 @@ ppm::end_scanline()
 	if(!file)
 		return false;
 
-	color_to_pixelformat(buffer, color_buffer, PF_RGB, 0, desc.get_w());
+	color_to_pixelformat(buffer.data(), color_buffer.data(), PF_RGB, 0, desc.get_w());
 
-	if(!fwrite(buffer,1,desc.get_w()*3,file.get()))
+	if (!fwrite(buffer.data(), 1, desc.get_w()*3, file.get()))
 		return false;
 
 	return true;

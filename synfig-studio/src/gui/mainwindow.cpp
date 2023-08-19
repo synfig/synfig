@@ -39,8 +39,6 @@
 #include <gtkmm/stock.h>
 #include <gtkmm/textview.h>
 
-#include <ETL/stringf>
-
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/dialogs/dialog_input.h>
@@ -171,13 +169,16 @@ MainWindow::init_menus()
 	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create("mainwindow");
 
 	// file
-	action_group->add( Gtk::Action::create("new", Gtk::StockID("synfig-new_doc"), _("New"), _("Create a new document")),
+	action_group->add( Gtk::Action::create_with_icon_name("new", "action_doc_new_icon", _("New"), _("Create a new document")),
 		sigc::hide_return(sigc::ptr_fun(&studio::App::new_instance))
 	);
-	action_group->add( Gtk::Action::create("open", Gtk::StockID("synfig-open"), _("Open"), _("Open an existing document")),
+	action_group->add( Gtk::Action::create_with_icon_name("open", "action_doc_open_icon", _("Open"), _("Open an existing document")),
 		sigc::hide_return(sigc::bind(sigc::ptr_fun(&studio::App::dialog_open), ""))
 	);
-	action_group->add( Gtk::Action::create("quit", Gtk::StockID("gtk-quit"), _("Quit")),
+	action_group->add( Gtk::Action::create_with_icon_name("save-all", "action_doc_saveall_icon", _("Save All"), _("Save all opened documents")),
+		sigc::ptr_fun(&save_all)
+	);
+	action_group->add( Gtk::Action::create_with_icon_name("quit", "application-exit", _("_Quit"), _("Quit")),
 		sigc::hide_return(sigc::ptr_fun(&studio::App::quit))
 	);
 
@@ -208,7 +209,7 @@ MainWindow::init_menus()
 	action_group->add( Gtk::Action::create("workspace-default", _("Default")),
 		sigc::ptr_fun(MainWindow::set_workspace_default)
 	);
-	action_group->add( Gtk::Action::create("save-workspace", Gtk::StockID("synfig-save_as"), _("Save workspace...")),
+	action_group->add( Gtk::Action::create_with_icon_name("save-workspace", "action_doc_saveas_icon", _("Save workspace..."), _("Save workspace...")),
 		sigc::mem_fun(*this, &MainWindow::save_custom_workspace)
 	);
 
@@ -251,8 +252,8 @@ MainWindow::init_menus()
 	URL("help-faq",		_("Frequently Asked Questions"),	_("https://wiki.synfig.org/FAQ")				);
 	URL("help-support",		_("Get Support"),				_("https://forums.synfig.org/")	);
 
-	action_group->add( Gtk::Action::create(
-			"help-about", Gtk::StockID("synfig-about"), _("About Synfig Studio")),
+	action_group->add( Gtk::Action::create_with_icon_name(
+			"help-about", "about_icon", _("About Synfig Studio"), _("About Synfig Studio")),
 		sigc::ptr_fun(studio::App::dialog_about)
 	);
 
@@ -294,6 +295,13 @@ MainWindow::toggle_show_toolbar()
 		for (auto& canvas_view : views)
 			canvas_view->set_show_toolbars(App::enable_mainwin_toolbar);
 	}
+}
+
+void
+MainWindow::save_all()
+{
+	for (auto& instance : App::instance_list)
+		instance->save();
 }
 
 void MainWindow::add_custom_workspace_menu_item_handlers()
@@ -352,7 +360,7 @@ MainWindow::make_short_filenames(
 	if (fullnames.size() == 1)
 	{
 		shortnames.resize(1);
-		shortnames[0] = etl::basename(fullnames[0]);
+		shortnames[0] = filesystem::Path::basename(fullnames[0]);
 		return;
 	}
 
