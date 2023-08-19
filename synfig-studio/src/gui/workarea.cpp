@@ -1376,7 +1376,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				item->set_use_underline(true);
 				item->show();
 				item->signal_activate().connect(sigc::track_obj([this](){
-					get_guide_list().erase(this->curr_guide); 
+					get_guide_list().erase(this->curr_guide);
 				}, *this));
 				guide_menu->append(*item);
 				guide_menu->popup(3, gtk_get_current_event_time());
