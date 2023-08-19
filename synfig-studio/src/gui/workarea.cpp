@@ -976,10 +976,6 @@ WorkArea::on_key_press_event(GdkEventKey* event)
 	if (guide_highlighted && (event->keyval == GDK_KEY_Control_L || event->keyval == GDK_KEY_Control_R))
 		rotate_guide=true;
 
-	if (event->keyval == GDK_KEY_x){
-		//deleting logic goes here
-	} 
-
 	auto event_result = canvas_view->get_smach().process_event(
 		EventKeyboard(EVENT_WORKAREA_KEY_DOWN, event->keyval, Gdk::ModifierType(event->state)));
 	if (event_result != Smach::RESULT_OK)
@@ -1046,6 +1042,9 @@ WorkArea::on_key_release_event(GdkEventKey* event)
 		EventKeyboard(EVENT_WORKAREA_KEY_UP, event->keyval, Gdk::ModifierType(event->state)) );
 	if (event_result != Smach::RESULT_OK)
 		return true;
+
+	if (event->keyval == GDK_KEY_x && guide_highlighted)
+		get_guide_list().erase(curr_guide);
 
 	// Other possible actions if current state doesn't accept the event but not forbids it
 	// - currently none
@@ -1377,7 +1376,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				item->set_use_underline(true);
 				item->show();
 				item->signal_activate().connect(sigc::track_obj([this](){
-					get_guide_list().erase(this->curr_guide);
+					get_guide_list().erase(this->curr_guide); 
 				}, *this));
 				guide_menu->append(*item);
 				guide_menu->popup(3, gtk_get_current_event_time());
