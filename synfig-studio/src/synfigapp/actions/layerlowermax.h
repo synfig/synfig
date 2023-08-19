@@ -4,6 +4,7 @@
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2023 Synfig Contributors
 **
 **	This file is part of Synfig.
 **
@@ -44,8 +45,7 @@ namespace synfigapp {
 
 namespace Action {
 
-class LayerLowerMax :
-		public Super
+class LayerLowerMax : public Super
 {
 private:
 
@@ -58,10 +58,10 @@ public:
 	static ParamVocab get_param_vocab();
 	static bool is_candidate(const ParamList &x);
 
-	virtual bool set_param(const synfig::String& name, const Param &);
-	virtual bool is_ready()const;
+	bool set_param(const synfig::String& name, const Param &) override;
+	bool is_ready() const override;
 
-	virtual void prepare();
+	void prepare() override;
 
 	ACTION_MODULE_EXT
 };

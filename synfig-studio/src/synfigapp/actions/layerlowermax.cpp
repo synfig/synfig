@@ -5,6 +5,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
+**	Copyright (c) 2023 Synfig Contributors
 **
 **	This file is part of Synfig.
 **
@@ -32,13 +33,12 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include "layerlowermax.h"
-#include "layermove.h"
+#include <synfig/general.h>
 #include <synfigapp/canvasinterface.h>
-
 #include <synfigapp/localization.h>
+#include "layermove.h"
+
 
 #endif
 
@@ -68,7 +68,7 @@ LayerLowerMax::LayerLowerMax()
 }
 
 synfig::String
-Action::LayerLowerMax::get_local_name()const
+Action::LayerLowerMax::get_local_name() const
 {
 	return get_layer_descriptions(layers, _("Lower Layer to Bottom"), _("Lower Layers to Bottom"));
 }
@@ -90,10 +90,10 @@ Action::LayerLowerMax::get_param_vocab()
 bool
 Action::LayerLowerMax::is_candidate(const ParamList &x)
 {
-	if(!candidate_check(get_param_vocab(),x))
+	if (!candidate_check(get_param_vocab(), x))
 		return false;
 	Layer::Handle layer(x.find("layer")->second.get_layer());
-	if(layer->get_depth()+1>=layer->get_canvas()->size())
+	if (layer->get_depth()+1 >= layer->get_canvas()->size())
 		return false;
 	return true;
 }
@@ -122,19 +122,17 @@ Action::LayerLowerMax::is_ready()const
 void
 Action::LayerLowerMax::prepare()
 {
-	std::list<synfig::Layer::Handle>::reverse_iterator i;
-
 	clear();
 
-	for(i=layers.rbegin();!(i==layers.rend());++i)
+	for (auto i = layers.rbegin(); i != layers.rend(); ++i)
 	{
 		Layer::Handle layer(*i);
 
 		Canvas::Handle subcanvas(layer->get_canvas());
 
 		// Find the index of the layer
-		int new_index = -1;
-		Canvas::iterator iter = subcanvas->find_index(layer, new_index);
+		int current_index = -1;
+		Canvas::iterator iter = subcanvas->find_index(layer, current_index);
 		if (*iter != layer)
 			throw Error(_("This layer doesn't exist anymore."));
 
@@ -142,15 +140,12 @@ Action::LayerLowerMax::prepare()
 		if(iter == subcanvas->end())
 			continue;
 
-		new_index = subcanvas->size()-1;
-		std::cout<<new_index<<std::endl;
-
 		Action::Handle layer_move(LayerMove::create());
 
 		layer_move->set_param("canvas",get_canvas());
 		layer_move->set_param("canvas_interface",get_canvas_interface());
 		layer_move->set_param("layer",layer);
-		layer_move->set_param("new_index",new_index);
+		layer_move->set_param("new_index",subcanvas->size()-1);
 
 		add_action_front(layer_move);
 	}

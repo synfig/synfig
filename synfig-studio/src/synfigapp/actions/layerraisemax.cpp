@@ -5,6 +5,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
+**	Copyright (c) 2023 Synfig Contributors
 **
 **	This file is part of Synfig.
 **
@@ -32,13 +33,11 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include "layerraisemax.h"
-#include "layermove.h"
+#include <synfig/general.h>
 #include <synfigapp/canvasinterface.h>
-
 #include <synfigapp/localization.h>
+#include "layermove.h"
 
 #endif
 
@@ -68,7 +67,7 @@ LayerRaiseMax::LayerRaiseMax()
 }
 
 synfig::String
-Action::LayerRaiseMax::get_local_name()const
+Action::LayerRaiseMax::get_local_name() const
 {
 	return get_layer_descriptions(layers, _("Raise Layer to Top"), _("Raise Layers to Top"));
 }
@@ -90,9 +89,9 @@ Action::LayerRaiseMax::get_param_vocab()
 bool
 Action::LayerRaiseMax::is_candidate(const ParamList &x)
 {
-	if(!candidate_check(get_param_vocab(),x))
+	if (!candidate_check(get_param_vocab(), x))
 		return false;
-	if(x.find("layer")->second.get_layer()->get_depth()==0)
+	if (x.find("layer")->second.get_layer()->get_depth() == 0)
 		return false;
 	return true;
 }
@@ -100,7 +99,7 @@ Action::LayerRaiseMax::is_candidate(const ParamList &x)
 bool
 Action::LayerRaiseMax::set_param(const synfig::String& name, const Action::Param &param)
 {
-	if(name=="layer" && param.get_type()==Param::TYPE_LAYER)
+	if(name=="layer" && param.get_type() == Param::TYPE_LAYER)
 	{
 		layers.push_back(param.get_layer());
 
@@ -113,7 +112,7 @@ Action::LayerRaiseMax::set_param(const synfig::String& name, const Action::Param
 bool
 Action::LayerRaiseMax::is_ready()const
 {
-	if(layers.empty())
+	if (layers.empty())
 		return false;
 	return Action::CanvasSpecific::is_ready();
 }
@@ -121,34 +120,29 @@ Action::LayerRaiseMax::is_ready()const
 void
 Action::LayerRaiseMax::prepare()
 {
-	std::list<synfig::Layer::Handle>::iterator i;
-
 	clear();
 
-	for(i=layers.begin();!(i==layers.end());++i)
+	for (auto i = layers.begin(); i!=layers.end(); ++i)
 	{
 		Layer::Handle layer(*i);
 
 		Canvas::Handle subcanvas(layer->get_canvas());
 
 		// Find the index of the layer
-		int new_index = -1;
-		Canvas::iterator iter = subcanvas->find_index(layer, new_index);
+		int current_index = -1;
+		Canvas::iterator iter = subcanvas->find_index(layer, current_index);
 		if (*iter != layer)
 			throw Error(_("This layer doesn't exist anymore."));
 
-		if(new_index==0)
+		if (current_index == 0)
 			continue;
-
-
-		new_index = 0;
 
 		Action::Handle layer_move(LayerMove::create());
 
-		layer_move->set_param("canvas",get_canvas());
-		layer_move->set_param("canvas_interface",get_canvas_interface());
-		layer_move->set_param("layer",layer);
-		layer_move->set_param("new_index",new_index);
+		layer_move->set_param("canvas", get_canvas());
+		layer_move->set_param("canvas_interface", get_canvas_interface());
+		layer_move->set_param("layer", layer);
+		layer_move->set_param("new_index", 0);
 
 		add_action_front(layer_move);
 	}
