@@ -596,7 +596,8 @@ bool studio::PluginManager::run(const studio::PluginScript& script, std::vector<
 	if (script.extra_args.selected_layers != PluginScript::ArgNecessity::ARGUMENT_UNUSED) {
 		if (!canvas_state.empty())
 			canvas_state.append(",");
-		canvas_state += "\"selected_layers\":[" + view_state.at("selected_layers") + "]";
+		auto iter = view_state.find("selected_layers");
+		canvas_state += "\"selected_layers\":[" + (iter != view_state.end() ? iter->second : "") + "]";
 	}
 	if (!canvas_state.empty())
 		canvas_state = "{" + canvas_state + "}";
