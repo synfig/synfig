@@ -48,6 +48,7 @@ private:
 	value_type r_, g_, b_, a_;
 
 public:
+	typedef Color (*blendfunc)(Color, Color, float);
 	
 	static constexpr value_type ceil  = 1.0f;
 	static constexpr value_type floor = 0.0f;
@@ -321,8 +322,12 @@ public:
 		BLEND_METHODS_ALL = (1 << BLEND_END) - 1
 	};
 
-	/* Other */
-	static Color blend(Color a, Color b, float amount, BlendMethod type=BLEND_COMPOSITE);
+	// Composite blend
+	static Color blend(Color a, Color b, float amount);
+
+	static Color blend(Color a, Color b, float amount, BlendMethod type);
+
+	static blendfunc get_blend_func(float amount, BlendMethod type);
 
 	static bool is_onto(BlendMethod x)
 		{ return BLEND_METHODS_ONTO & (1 << x); }

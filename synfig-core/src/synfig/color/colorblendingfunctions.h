@@ -37,87 +37,82 @@
 
 namespace synfig {
 
-typedef Color (*blendfunc)(Color &,Color &,float);
+typedef Color (*blendfunc)(Color, Color, float);
 
 template <class C>
-C blendfunc_COMPOSITE(C &src,C &dest,float amount)
+C blendfunc_fg(C fg, C bg, float amount)
 {
-	//c_dest'=c_src+(1.0-a_src)*c_dest
-	//a_dest'=a_src+(1.0-a_src)*a_dest
-
-	float a_src=src.get_a()*amount;
-	float a_dest=dest.get_a();
-	const float one(C::ceil); 
-
-	// if a_arc==0.0
-	//if(fabsf(a_src)<COLOR_EPSILON) return dest;
-
-	// Scale the source and destination by their alpha values
-	src*=a_src;
-	dest*=a_dest;
-
-	dest=src + dest*(one-a_src);
-
-	a_dest=a_src + a_dest*(one-a_src);
-
-	// if a_dest!=0.0
-	if(fabsf(a_dest)>COLOR_EPSILON)
-	{
-		dest/=a_dest;
-		dest.set_a(a_dest);
-	}
-	else
-	{
-		dest=C::alpha();
-	}
-	assert(dest.is_valid());
-	return dest;
+	return fg;
 }
 
 template <class C>
-C blendfunc_STRAIGHT(C &src,C &bg,float amount)
+C blendfunc_bg(C fg, C bg, float amount)
 {
-	//a_out'=(a_src-a_bg)*amount+a_bg
-	//c_out'=(((c_src*a_src)-(c_bg*a_bg))*amount+(c_bg*a_bg))/a_out'
+	return bg;
+}
 
-	// ie: if(amount==1.0)
-	//if(fabsf(amount-1.0f)<COLOR_EPSILON)return src;
+template <class C>
+C blendfunc_COMPOSITE(C fg, C bg, float amount)
+{
+	const float a_fg = fg.get_a() * amount;
+	const float a_bg = bg.get_a();
 
+	const float one(C::ceil); 
+
+	const float a = a_fg + a_bg * (one - a_fg);
+
+	if(fabsf(a) > COLOR_EPSILON) {
+		// Scale the source and bgination by their alpha values
+		fg *= a_fg;
+		bg *= a_bg;
+
+		bg = fg + bg * (one - a_fg);
+
+		bg /= a;
+		bg.set_a(a);
+	}
+	else { 
+		bg = C::alpha();
+	}
+	assert(bg.is_valid());
+	return bg;
+}
+
+template <class C>
+C blendfunc_STRAIGHT(C fg, C bg, float amount)
+{
 	C out;
 
-	float a_out((src.get_a()-bg.get_a())*amount+bg.get_a());
+	float a_out((fg.get_a() - bg.get_a()) * amount + bg.get_a());
 
-	// if a_out!=0.0
-	if(fabsf(a_out)>COLOR_EPSILON)
-//	if(a_out>COLOR_EPSILON || a_out<-COLOR_EPSILON)
-	{
-		out=((src*src.get_a()-bg*bg.get_a())*amount+bg*bg.get_a())/a_out;
+	if(fabsf(a_out) > COLOR_EPSILON) {
+		bg *= bg.get_a();
+		out = ((fg * fg.get_a() - bg) * amount + bg) / a_out;
 		out.set_a(a_out);
 	}
-	else
-		out=C::alpha();
+	else out = C::alpha();
 
 	assert(out.is_valid());
 	return out;
 }
 
 template <class C>
-C blendfunc_ONTO(C &a,C &b,float amount)
+C blendfunc_ONTO(C a, C b, float amount)
 {
 	float alpha(b.get_a());
 	const float one(C::ceil);
-	return blendfunc_COMPOSITE(a,b.set_a(one),amount).set_a(alpha);
+	return blendfunc_COMPOSITE(a, b.set_a(one), amount).set_a(alpha);
 }
 
 template <class C>
-C blendfunc_STRAIGHT_ONTO(C &a,C &b,float amount)
+C blendfunc_STRAIGHT_ONTO(C a, C b, float amount)
 {
-	a.set_a(a.get_a()*b.get_a());
-	return blendfunc_STRAIGHT(a,b,amount);
+	a.set_a(a.get_a() * b.get_a());
+	return blendfunc_STRAIGHT(a, b, amount);
 }
 
 template <class C>
-C blendfunc_BRIGHTEN(C &a,C &b,float amount)
+C blendfunc_BRIGHTEN(C a,C b,float amount)
 {
 	const float alpha(a.get_a()*amount);
 
@@ -134,7 +129,7 @@ C blendfunc_BRIGHTEN(C &a,C &b,float amount)
 }
 
 template <class C>
-C blendfunc_DARKEN(C &a,C &b,float amount)
+C blendfunc_DARKEN(C a,C b,float amount)
 {
 	const float alpha(a.get_a()*amount);
 	const float one(C::ceil);
@@ -153,7 +148,7 @@ C blendfunc_DARKEN(C &a,C &b,float amount)
 }
 
 template <class C>
-C blendfunc_ADD(C &a,C &b,float amount)
+C blendfunc_ADD(C a,C b,float amount)
 {
 	// Color b = background color
 	// Color a = color to blend on b
@@ -174,7 +169,7 @@ C blendfunc_ADD(C &a,C &b,float amount)
 }
 
 template <class C>
-C blendfunc_ADD_COMPOSITE(C &a,C &b,float amount)
+C blendfunc_ADD_COMPOSITE(C a,C b,float amount)
 {
 	float ba(b.get_a());
 	float aa(a.get_a()*amount);
@@ -191,7 +186,7 @@ C blendfunc_ADD_COMPOSITE(C &a,C &b,float amount)
 }
 
 template <class C>
-C blendfunc_SUBTRACT(C &a,C &b,float amount)
+C blendfunc_SUBTRACT(C a,C b,float amount)
 {
 	// Color b = background color
 	// Color a = color to blend on b
@@ -212,7 +207,7 @@ C blendfunc_SUBTRACT(C &a,C &b,float amount)
 }
 
 template <class C>
-C blendfunc_DIFFERENCE(C &a,C &b,float amount)
+C blendfunc_DIFFERENCE(C a,C b,float amount)
 {
 	// Color b = background color
 	// Color a = color to blend on b
@@ -233,7 +228,7 @@ C blendfunc_DIFFERENCE(C &a,C &b,float amount)
 }
 
 template <class C>
-C blendfunc_MULTIPLY(C &a,C &b,float amount)
+C blendfunc_MULTIPLY(C a,C b,float amount)
 {
 	if(amount<0) a=~a, amount=-amount;
 
@@ -245,7 +240,7 @@ C blendfunc_MULTIPLY(C &a,C &b,float amount)
 }
 
 template <class C>
-C blendfunc_DIVIDE(C &a,C &b,float amount)
+C blendfunc_DIVIDE(C a,C b,float amount)
 {
 	amount*=a.get_a();
 
@@ -262,7 +257,7 @@ C blendfunc_DIVIDE(C &a,C &b,float amount)
 }
 
 template <class C>
-C blendfunc_COLOR(C &a,C &b,float amount)
+C blendfunc_COLOR(C a,C b,float amount)
 {
 	C temp(b);
 	temp.set_uv(a.get_u(),a.get_v());
@@ -270,7 +265,7 @@ C blendfunc_COLOR(C &a,C &b,float amount)
 }
 
 template <class C>
-C blendfunc_HUE(C &a,C &b,float amount)
+C blendfunc_HUE(C a,C b,float amount)
 {
 	C temp(b);
 	temp.set_hue(a.get_hue());
@@ -278,7 +273,7 @@ C blendfunc_HUE(C &a,C &b,float amount)
 }
 
 template <class C>
-C blendfunc_SATURATION(C &a,C &b,float amount)
+C blendfunc_SATURATION(C a,C b,float amount)
 {
 	C temp(b);
 	temp.set_s(a.get_s());
@@ -286,7 +281,7 @@ C blendfunc_SATURATION(C &a,C &b,float amount)
 }
 
 template <class C>
-C blendfunc_LUMINANCE(C &a,C &b,float amount)
+C blendfunc_LUMINANCE(C a,C b,float amount)
 {
 	C temp(b);
 	temp.set_y(a.get_y());
@@ -294,7 +289,7 @@ C blendfunc_LUMINANCE(C &a,C &b,float amount)
 }
 
 template <class C>
-C blendfunc_BEHIND(C &a,C &b,float amount)
+C blendfunc_BEHIND(C a,C b,float amount)
 {
 	if(a.get_a()==0)
 		a.set_a(COLOR_EPSILON*amount);		//!< \todo this is a hack
@@ -304,7 +299,7 @@ C blendfunc_BEHIND(C &a,C &b,float amount)
 }
 
 template <class C>
-C blendfunc_ALPHA_BRIGHTEN(C &a,C &b,float amount)
+C blendfunc_ALPHA_BRIGHTEN(C a,C b,float amount)
 {
 	// \todo can this be right, multiplying amount by *b*'s alpha?
 	// compare with blendfunc_BRIGHTEN where it is multiplied by *a*'s
@@ -314,7 +309,7 @@ C blendfunc_ALPHA_BRIGHTEN(C &a,C &b,float amount)
 }
 
 template <class C>
-C blendfunc_ALPHA_DARKEN(C &a,C &b,float amount)
+C blendfunc_ALPHA_DARKEN(C a,C b,float amount)
 {
 	if(a.get_a()*amount > b.get_a())
 		return a.set_a(a.get_a()*amount);
@@ -322,7 +317,7 @@ C blendfunc_ALPHA_DARKEN(C &a,C &b,float amount)
 }
 
 template <class C>
-C blendfunc_SCREEN(C &a,C &b,float amount)
+C blendfunc_SCREEN(C a,C b,float amount)
 {
 	const float one(C::ceil);
 	if(amount<0) a=~a, amount=-amount;
@@ -335,7 +330,7 @@ C blendfunc_SCREEN(C &a,C &b,float amount)
 }
 
 template <class C>
-C blendfunc_OVERLAY(C &a,C &b,float amount)
+C blendfunc_OVERLAY(C a,C b,float amount)
 {
 	const float one(C::ceil);
 	if(amount<0) a=~a, amount=-amount;
@@ -361,7 +356,7 @@ C blendfunc_OVERLAY(C &a,C &b,float amount)
 
 
 template <class C>
-C blendfunc_HARD_LIGHT(C &a,C &b,float amount)
+C blendfunc_HARD_LIGHT(C a,C b,float amount)
 {
 	const float one(C::ceil);
 	const float half((one-C::floor)/2);
@@ -378,7 +373,7 @@ C blendfunc_HARD_LIGHT(C &a,C &b,float amount)
 }
 
 template <class C>
-C blendfunc_ALPHA(C &a,C &b,float amount)
+C blendfunc_ALPHA(C a,C b,float amount)
 {
 	//const float one(C::ceil);
 	C rm(b);
@@ -390,7 +385,7 @@ C blendfunc_ALPHA(C &a,C &b,float amount)
 }
 
 template <class C>
-C blendfunc_ALPHA_OVER(C &a,C &b,float amount)
+C blendfunc_ALPHA_OVER(C a,C b,float amount)
 {
 	const float one(C::ceil);
 	C rm(b);

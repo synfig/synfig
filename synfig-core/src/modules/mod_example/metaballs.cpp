@@ -246,11 +246,13 @@ Metaballs::accelerated_render(Context context,Surface *surface,int quality, cons
 		return false;
 	}
 
+	const Color::blendfunc blend = Color::get_blend_func(get_amount(), get_blend_method());
+
 	for(int y = 0; y < h; y++, pos[1] += ph)
 	{
 		pos[0] = tl[0];
 		for(int x = 0; x < w; x++, pos[0] += pw)
-			(*surface)[y][x] = Color::blend(gradient(totaldensity(pos)),(*surface)[y][x],get_amount(),get_blend_method());
+			(*surface)[y][x] = blend(gradient(totaldensity(pos)), (*surface)[y][x], get_amount());
 	}
 
 	// Mark our progress as finished
