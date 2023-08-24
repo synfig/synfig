@@ -122,8 +122,6 @@ void Dock_Timetrack2::changed_canvas_view_vfunc(CanvasView::LooseHandle canvas_v
 		current_widget_timetrack = nullptr; // deleted by its studio::CanvasView::~CanvasView()
 
 		hscrollbar.unset_adjustment();
-
-		toolbar->hide();
 	} else {
 		widget_kf_list.set_time_model(canvas_view->time_model());
 		widget_kf_list.set_canvas_interface(canvas_view->canvas_interface());
@@ -139,7 +137,6 @@ void Dock_Timetrack2::changed_canvas_view_vfunc(CanvasView::LooseHandle canvas_v
 
 		update_toolbar_action();
 		set_interp_buttons_sensitivity(current_widget_timetrack->get_num_waypoints_selected());
-		toolbar->show_all();
 
 		grid.attach(widget_kf_list,            0, 0, 1, 1);
 		grid.attach(widget_timeslider,         0, 1, 1, 1);
