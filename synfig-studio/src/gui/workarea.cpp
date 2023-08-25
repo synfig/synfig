@@ -1044,7 +1044,10 @@ WorkArea::on_key_release_event(GdkEventKey* event)
 		return true;
 
 	if (event->keyval == GDK_KEY_Escape && guide_highlighted)
+	{
 		get_guide_list().erase(curr_guide);
+		drawing_area->queue_draw();
+	}
 
 	// Other possible actions if current state doesn't accept the event but not forbids it
 	// - currently none
@@ -1424,7 +1427,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 			if (iter != curr_guide) {
 				curr_guide = iter;
-				drawing_area->queue_draw();
+				drawing_area->queue_draw(); 
 			}
 
 			guide_highlighted = iter != get_guide_list().end();
