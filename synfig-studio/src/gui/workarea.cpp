@@ -1427,7 +1427,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 			if (iter != curr_guide) {
 				curr_guide = iter;
-				drawing_area->queue_draw(); 
+				drawing_area->queue_draw();
 			}
 
 			guide_highlighted = iter != get_guide_list().end();
