@@ -3658,11 +3658,7 @@ App::open_from_temporary_filesystem(std::string temporary_filename)
 		String truncate = file_system_temporary->get_meta("truncate");
 		if (filename.empty() || as.empty() || truncate.empty())
 			throw (String)strprintf(_("Original filename was not set in temporary container \"%s\"\n\n"), temporary_filename.c_str());
-#ifdef __APPLE__
-		FileContainerZip::file_size_t truncate_storage_size = atoll(truncate.c_str());
-#else
 		FileContainerZip::file_size_t truncate_storage_size = stoll(truncate);
-#endif
 
 		// make canvas file-system
 		FileSystem::Handle canvas_container = CanvasFileNaming::make_filesystem_container(filename, truncate_storage_size);
