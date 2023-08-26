@@ -1046,7 +1046,8 @@ WorkArea::on_key_release_event(GdkEventKey* event)
 	if (event->keyval == GDK_KEY_Escape && guide_highlighted)
 	{
 		get_guide_list().erase(curr_guide);
-		guide_highlighted = !guide_highlighted;
+		guide_highlighted = false;
+		curr_guide = get_guide_list().end();
 		drawing_area->queue_draw();
 	}
 
