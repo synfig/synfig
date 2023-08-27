@@ -84,14 +84,11 @@ StateManager::add_state(const Smach::state_base *state)
 {
 	String name(state->get_name());
 
-	Gtk::StockItem stock_item;
-	Gtk::Stock::lookup(Gtk::StockID("synfig-"+name),stock_item);
-
 	Glib::RefPtr<Gtk::RadioAction> action(
 		Gtk::RadioAction::create_with_icon_name(radio_action_group,
 			"state-"+name,
 			state_icon_name(name),
-			stock_item.get_label(),
+			state->get_local_name(),
 			""
 		)
 	);

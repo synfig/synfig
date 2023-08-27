@@ -2078,11 +2078,9 @@ CanvasView::on_time_changed()
 	{
 		KeyframeList::iterator iter;
 		if (get_canvas()->keyframe_list().find(time, iter)) {
-			current_time_widget->get_style_context()->remove_class("color-black");
 			current_time_widget->get_style_context()->add_class("color-red");
 		} else {
 			current_time_widget->get_style_context()->remove_class("color-red");
-			current_time_widget->get_style_context()->add_class("color-black");
 		}
 
 		// Shouldn't these trees just hook into

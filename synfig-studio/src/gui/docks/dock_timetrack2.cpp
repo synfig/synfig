@@ -122,8 +122,6 @@ void Dock_Timetrack2::changed_canvas_view_vfunc(CanvasView::LooseHandle canvas_v
 		current_widget_timetrack = nullptr; // deleted by its studio::CanvasView::~CanvasView()
 
 		hscrollbar.unset_adjustment();
-
-		toolbar->hide();
 	} else {
 		widget_kf_list.set_time_model(canvas_view->time_model());
 		widget_kf_list.set_canvas_interface(canvas_view->canvas_interface());

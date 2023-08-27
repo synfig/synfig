@@ -201,7 +201,7 @@ LayerActionManager::LayerActionManager():
 	);
 	action_copy_=Gtk::Action::create_with_icon_name(
 		"copy",
-		"gtk-copy", _("_Copy"), _("Copy")
+		"edit-copy", _("_Copy"), _("Copy")
 	);
 	action_copy_->signal_activate().connect(
 		sigc::mem_fun(

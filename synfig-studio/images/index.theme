@@ -2,7 +2,7 @@
 
 Name=Classic
 Comment=Synfig classic icon theme
-Hidden=true
+Hidden=false
 Directories=128x128
 Example=synfig_icon
 

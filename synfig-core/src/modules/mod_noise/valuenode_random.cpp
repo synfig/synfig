@@ -116,7 +116,7 @@ ValueNode_Random::~ValueNode_Random()
 ValueBase
 ValueNode_Random::operator()(Time t)const
 {
-	typedef const RandomNoise::SmoothType Smooth;
+	typedef RandomNoise::SmoothType Smooth;
 
 	Real	radius	= (*radius_)(t).get(Real());
 	int		seed	= (*seed_)(t).get(int());

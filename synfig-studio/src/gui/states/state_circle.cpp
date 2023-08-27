@@ -229,12 +229,12 @@ public:
 	bool get_layer_origins_at_center_flag()const { return layer_origins_at_center_checkbutton.get_active(); }
 	void set_layer_origins_at_center_flag(bool x) { return layer_origins_at_center_checkbutton.set_active(x); }
 
-  bool layer_circle_flag;
-  bool layer_region_flag;
-  bool layer_outline_flag;
-  bool layer_advanced_outline_flag;
-  bool layer_curve_gradient_flag;
-  bool layer_plant_flag;
+	bool layer_circle_flag;
+	bool layer_region_flag;
+	bool layer_outline_flag;
+	bool layer_advanced_outline_flag;
+	bool layer_curve_gradient_flag;
+	bool layer_plant_flag;
 
 	void refresh_tool_options(); //to refresh the toolbox
 
@@ -276,7 +276,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateCircle::StateCircle():
-	Smach::state<StateCircle_Context>("circle")
+	Smach::state<StateCircle_Context>("circle", N_("Circle Tool"))
 {
 	insert(event_def(EVENT_LAYER_SELECTION_CHANGED,&StateCircle_Context::event_layer_selection_changed_handler));
 	insert(event_def(EVENT_STOP,&StateCircle_Context::event_stop_handler));
@@ -1297,20 +1297,20 @@ void
 StateCircle_Context::toggle_layer_creation()
 {
   // don't allow none layer creation
-  if (get_layer_circle_flag() +
-     get_layer_region_flag() +
-     get_layer_outline_flag() +
-     get_layer_advanced_outline_flag() +
-     get_layer_curve_gradient_flag() +
-     get_layer_plant_flag() == 0)
-  {
-    if(layer_circle_flag) set_layer_circle_flag(true);
-    else if(layer_region_flag) set_layer_region_flag(true);
-    else if(layer_outline_flag) set_layer_outline_flag(true);
-    else if(layer_advanced_outline_flag) set_layer_advanced_outline_flag(true);
-    else if(layer_curve_gradient_flag) set_layer_curve_gradient_flag(true);
-    else if(layer_plant_flag) set_layer_plant_flag(true);
-  }
+	if (get_layer_circle_flag() +
+		get_layer_region_flag() +
+		get_layer_outline_flag() +
+		get_layer_advanced_outline_flag() +
+		get_layer_curve_gradient_flag() +
+		get_layer_plant_flag() == 0)
+	{
+		if(layer_circle_flag) set_layer_circle_flag(true);
+		else if(layer_region_flag) set_layer_region_flag(true);
+		else if(layer_outline_flag) set_layer_outline_flag(true);
+		else if(layer_advanced_outline_flag) set_layer_advanced_outline_flag(true);
+		else if(layer_curve_gradient_flag) set_layer_curve_gradient_flag(true);
+		else if(layer_plant_flag) set_layer_plant_flag(true);
+	}
 
 	// brush size
 	if (get_layer_outline_flag() ||
@@ -1372,7 +1372,7 @@ StateCircle_Context::toggle_layer_creation()
 		feather_dist.set_sensitive(false);
 	}
 
-	// orignis at center
+	// orign is at center
 	if (get_layer_region_flag() ||
 		get_layer_outline_flag() ||
 		get_layer_advanced_outline_flag() ||
@@ -1396,11 +1396,11 @@ StateCircle_Context::toggle_layer_creation()
 		}
 	else link_origins_box.set_sensitive(false);
 
-  // update layer flags
-  layer_circle_flag = get_layer_circle_flag();
-  layer_region_flag = get_layer_region_flag();
-  layer_outline_flag = get_layer_outline_flag();
-  layer_advanced_outline_flag = get_layer_advanced_outline_flag();
-  layer_curve_gradient_flag = get_layer_curve_gradient_flag();
-  layer_plant_flag = get_layer_plant_flag();
+	// update layer flags
+	layer_circle_flag = get_layer_circle_flag();
+	layer_region_flag = get_layer_region_flag();
+	layer_outline_flag = get_layer_outline_flag();
+	layer_advanced_outline_flag = get_layer_advanced_outline_flag();
+	layer_curve_gradient_flag = get_layer_curve_gradient_flag();
+	layer_plant_flag = get_layer_plant_flag();
 }

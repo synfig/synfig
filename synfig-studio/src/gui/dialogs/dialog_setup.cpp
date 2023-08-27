@@ -38,6 +38,9 @@
 
 #include <gui/dialogs/dialog_setup.h>
 
+#include <glibmm/fileutils.h>
+#include <glibmm/keyfile.h>
+
 #include <gtkmm/accelmap.h>
 #include <gtkmm/filechooserdialog.h>
 
@@ -49,7 +52,8 @@
 #include <gui/widgets/widget_enum.h>
 #include <gui/autorecover.h>
 #include <synfig/threadpool.h>
-
+#include <synfig/os.h>
+#include <synfig/general.h>
 #include <synfig/rendering/renderer.h>
 
 #include <synfigapp/main.h>
@@ -213,13 +217,13 @@ Dialog_Setup::create_system_page(PageInfo pi)
 		// Brushes path buttons
 		Gtk::Grid* brush_path_btn_grid(manage (new Gtk::Grid()));
 		Gtk::Button* brush_path_add(manage (new Gtk::Button()));
-		brush_path_add->set_image_from_icon_name("add", Gtk::ICON_SIZE_BUTTON);
+		brush_path_add->set_image_from_icon_name("list-add", Gtk::ICON_SIZE_BUTTON);
 		brush_path_btn_grid->attach(*brush_path_add, 0, 0, 1, 1);
 		brush_path_add->set_halign(Gtk::ALIGN_END);
 		brush_path_add->signal_clicked().connect(
 				sigc::mem_fun(*this, &Dialog_Setup::on_brush_path_add_clicked));
 		Gtk::Button* brush_path_remove(manage (new Gtk::Button()));
-		brush_path_remove->set_image_from_icon_name("remove", Gtk::ICON_SIZE_BUTTON);
+		brush_path_remove->set_image_from_icon_name("list-remove", Gtk::ICON_SIZE_BUTTON);
 		brush_path_btn_grid->attach(*brush_path_remove, 0, 1, 1, 1);
 		brush_path_remove->set_halign(Gtk::ALIGN_END);
 		brush_path_remove->signal_clicked().connect(
@@ -227,6 +231,20 @@ Dialog_Setup::create_system_page(PageInfo pi)
 		pi.grid->attach(*brush_path_btn_grid, 0, ++row, 1, 2);
 		brush_path_btn_grid->set_halign(Gtk::ALIGN_END);
 		++row;
+	}
+	//System Plugins path
+	{
+		attach_label_section(pi.grid, _("Plug-ins Path"), ++row);
+		pi.grid->attach(textbox_plugin_path, 1, row, 1, 1);
+		textbox_plugin_path.set_editable(false);
+		textbox_plugin_path.set_text(ResourceHelper::get_plugin_path());
+
+		Gtk::Button* plugin_path_change(manage(new Gtk::Button()));
+		plugin_path_change->set_image_from_icon_name("action_doc_open_icon", Gtk::ICON_SIZE_BUTTON);
+		pi.grid->attach(*plugin_path_change,0,row,1,1); 
+		plugin_path_change->set_halign(Gtk::ALIGN_END);
+		plugin_path_change->signal_clicked().connect(
+			sigc::mem_fun(*this, &Dialog_Setup::on_plugin_path_change_clicked));
 	}
 	// System - 11 enable_experimental_features
 	attach_label_section(pi.grid, _("Experimental features (requires restart)"), ++row);
@@ -784,13 +802,43 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 	{
 	FileSystem::FileList files;
 	FileSystemNative::instance()->directory_scan(ResourceHelper::get_themes_path(), files);
-	for (const auto& dir : files)
-		icon_theme_combo.append(dir);
-	icon_theme_combo.set_active_text(App::get_icon_theme_name());
+	for (const auto& dir : files) {
+		std::string theme_name = dir;
+
+		std::string full_filename = ResourceHelper::get_themes_path() + "/" + dir + "/index.theme";
+
+		if (!FileSystemNative::instance()->is_file(full_filename))
+			continue;
+
+		try {
+			Glib::KeyFile theme_file;
+			theme_file.load_from_file(full_filename);
+			if (theme_file.has_group("Icon Theme")) {
+				if (theme_file.has_key("Icon Theme", "Hidden")) {
+					std::string hidden = theme_file.get_value("Icon Theme", "Hidden");
+					strtolower(hidden);
+					if (hidden == "true" || hidden == "t")
+						continue;
+				}
+				if (theme_file.has_key("Icon Theme", "Name")) {
+					theme_name = theme_file.get_value("Icon Theme", "Name");
+				}
+			}
+			icon_theme_combo.append(dir, strprintf("%s (%s)", theme_name.c_str(), dir.c_str()));
+		} catch (Glib::FileError& ex) {
+			synfig::warning(_("Error reading file %s: %s"), full_filename.c_str(), ex.what().c_str());
+		} catch (Glib::KeyFileError& ex) {
+			synfig::warning(_("Parsing error on reading file %s: %s"), full_filename.c_str(), ex.what().c_str());
+		} catch (...) {
+			synfig::error(_("Unknown error on reading file %s"), full_filename.c_str());
+		}
+	}
+
+	icon_theme_combo.set_active_id(App::get_icon_theme_name());
 	}
 
 	// Interface - Icon theme
-	attach_label(pi.grid, _("Icon theme"), ++row);
+	attach_label_section(pi.grid, _("Icon theme"), ++row);
 	pi.grid->attach(icon_theme_combo, 0, ++row, 1, 1);
 	icon_theme_combo.set_hexpand(true);
 	icon_theme_combo.set_margin_start(10);
@@ -963,7 +1011,7 @@ Dialog_Setup::on_apply_pressed()
 	// Set the dark theme flag
 	App::use_dark_theme               = toggle_use_dark_theme.get_active();
 	// Set the icon theme
-	App::set_icon_theme(icon_theme_combo.get_active_text());
+	App::set_icon_theme(icon_theme_combo.get_active_id());
 	App::apply_gtk_settings();
 
 	// Set file toolbar flag
@@ -1250,7 +1298,7 @@ Dialog_Setup::refresh()
 	// Refresh the status of the theme flag
 	toggle_use_dark_theme.set_active(App::use_dark_theme);
 	// Refresh the choice of the icon theme
-	icon_theme_combo.set_active_text(App::get_icon_theme_name());
+	icon_theme_combo.set_active_id(App::get_icon_theme_name());
 
 	// Refresh the status of the render done sound flag
 	toggle_play_sound_on_render_done.set_active(App::use_render_done_sound);
@@ -1446,6 +1494,12 @@ Dialog_Setup::on_brush_path_remove_clicked()
 	//! TODO if list size == 0: push warning to warning zone
 }
 
+void
+Dialog_Setup::on_plugin_path_change_clicked()
+{
+	String foldername = ResourceHelper::get_plugin_path();
+	synfig::OS::launch_file_async(foldername);
+}
 void
 Dialog_Setup::on_value_change(int valueflag)
 {
