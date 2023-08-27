@@ -31,7 +31,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/vector.h>
 #include <synfig/layers/layer_composite.h>
 #include <synfig/gradient.h>
 
@@ -46,6 +45,8 @@ using namespace synfig;
 class LinearGradient : public Layer_Composite, public Layer_NoDeform
 {
 	SYNFIG_LAYER_MODULE_EXT
+
+	friend class TaskLinearGradient;
 
 private:
 	//! Parameter: (Point)
@@ -70,7 +71,6 @@ private:
 
 	void fill_params(Params &params)const;
 	synfig::Color color_func(const Params &params, const synfig::Point &x, synfig::Real supersample = 0.0)const;
-	synfig::Real calc_supersample(const Params &params, synfig::Real pw, synfig::Real ph)const;
 
 public:
 	LinearGradient();
@@ -78,11 +78,13 @@ public:
 	virtual bool set_param(const String &param, const ValueBase &value);
 	virtual ValueBase get_param(const String &param)const;
 	virtual Color get_color(Context context, const Point &pos)const;
-	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 
 	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
 
 	virtual Vocab get_param_vocab()const;
+
+protected:
+	virtual rendering::Task::Handle build_composite_task_vfunc(synfig::ContextParams context_params) const;
 };
 
 /* === E N D =============================================================== */
