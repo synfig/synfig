@@ -186,7 +186,7 @@ MainWindow::init_menus()
 	action_group->add( Gtk::Action::create("input-devices", _("Input Devices...")),
 		sigc::ptr_fun(&MainWindow::show_dialog_input)
 	);
-	action_group->add( Gtk::Action::create("setup", _("Preferences...")),
+	action_group->add( Gtk::Action::create("preferences", _("Preferences...")),
 		sigc::ptr_fun(&studio::App::show_setup)
 	);
 
@@ -253,7 +253,7 @@ MainWindow::init_menus()
 	URL("help-support",		_("Get Support"),				_("https://forums.synfig.org/")	);
 
 	action_group->add( Gtk::Action::create_with_icon_name(
-			"help-about", "about_icon", _("About Synfig Studio"), _("About Synfig Studio")),
+			"about", "about_icon", _("About Synfig Studio"), _("About Synfig Studio")),
 		sigc::ptr_fun(studio::App::dialog_about)
 	);
 
