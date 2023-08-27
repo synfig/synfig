@@ -74,9 +74,14 @@ StateManager::~StateManager()
 }
 
 void
-StateManager::change_state_(const Smach::state_base *state)
+StateManager::change_state_(const Glib::RefPtr<Gtk::RadioAction>& current, const Smach::state_base* state)
 {
-	App::dock_toolbox->change_state_(state);
+	auto state_action = Glib::RefPtr<Gtk::RadioAction>::cast_static(state_group->get_action(String("state-") + state->get_name()));
+	if (state_action) {
+		if (state_action == current) {
+			App::dock_toolbox->change_state_(state);
+		}
+	}
 }
 
 void
@@ -95,7 +100,7 @@ StateManager::add_state(const Smach::state_base *state)
 	/*action->set_sensitive(false);*/
 	state_group->add(action);
 
-	action->signal_activate().connect(
+	action->signal_changed().connect(
 		sigc::bind(
 			sigc::mem_fun(*this,&studio::StateManager::change_state_),
 			state
