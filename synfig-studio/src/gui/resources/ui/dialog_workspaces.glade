@@ -104,7 +104,7 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="workspaces_delete_button">
-                    <property name="label">gtk-delete</property>
+                    <property name="label" translatable="yes">_Delete</property>
                     <property name="visible">True</property>
                     <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
@@ -119,7 +119,7 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="workspaces_close_button">
-                    <property name="label">gtk-close</property>
+                    <property name="label" translatable="yes">_Close</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
