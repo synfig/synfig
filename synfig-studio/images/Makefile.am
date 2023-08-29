@@ -88,6 +88,12 @@ EXTRA_DIST = \
 	\
 	interpolation_type_icons.sif\
 	\
+	document-open.sif \
+	document-save.sif \
+	edit-clear.sif \
+	process-stop.sif \
+	view-refresh.sif \
+	\
 	layer_blur_blur_icon.sif \
 	layer_blur_motion_icon.sif \
 	layer_blur_radial_icon.sif \
@@ -296,6 +302,12 @@ ICONS = \
 	interpolation_type_linear_icon.$(EXT)\
 	interpolation_type_clamped_icon.$(EXT)\
 	valuenode_forbidanimation_icon.$(EXT)\
+	\
+	document-open.$(EXT) \
+	document-save.$(EXT) \
+	edit-clear.$(EXT) \
+	process-stop.$(EXT) \
+	view-refresh.$(EXT) \
 	\
 	layer_blur_blur_icon.$(EXT) \
 	layer_blur_motion_icon.$(EXT) \
