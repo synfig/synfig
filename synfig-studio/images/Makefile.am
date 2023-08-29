@@ -93,6 +93,13 @@ EXTRA_DIST = \
 	edit-clear.sif \
 	process-stop.sif \
 	view-refresh.sif \
+	edit-delete.sif \
+	window-close.sif \
+	application-exit.sif \
+	go-up.sif \
+	go-down.sif \
+	list-add.sif \
+	list-remove.sif \
 	\
 	layer_blur_blur_icon.sif \
 	layer_blur_motion_icon.sif \
@@ -308,6 +315,13 @@ ICONS = \
 	edit-clear.$(EXT) \
 	process-stop.$(EXT) \
 	view-refresh.$(EXT) \
+	edit-delete.$(EXT) \
+	window-close.$(EXT) \
+	application-exit.$(EXT) \
+	go-up.$(EXT) \
+	go-down.$(EXT) \
+	list-add.$(EXT) \
+	list-remove.$(EXT) \
 	\
 	layer_blur_blur_icon.$(EXT) \
 	layer_blur_motion_icon.$(EXT) \
