@@ -137,7 +137,7 @@ public:
 		return (this->*selected_get_color_method)(p);
 	}
 
-	void pre_run(const Matrix3& matrix, const Matrix3& inverse_matrix) const override
+	void pre_run(const Matrix3& matrix, const Matrix3& /*inverse_matrix*/) const override
 	{
 		kx = matrix.axis_x().mag()*0.5;
 		ky = matrix.axis_y().mag()*0.5;
