@@ -106,6 +106,8 @@ Action::System::perform_action(etl::handle<Action::Base> action)
 
 	Action::CanvasSpecific *canvas_specific = dynamic_cast<Action::CanvasSpecific*>(action.get());
 
+	DirtySignalBlocker dirtyBlocker(canvas_specific);
+
 	if (canvas_specific && canvas_specific->get_canvas())
 		uim = static_cast<Instance*>(this)->find_canvas_interface(canvas_specific->get_canvas())->get_ui_interface();
 
@@ -179,10 +181,6 @@ Action::System::perform_action(etl::handle<Action::Base> action)
 
 	uim->task(action->get_local_name()+' '+_("Successful"));
 
-	// If the action has "dirtied" the preview, signal it.
-	if (canvas_specific && canvas_specific->is_dirty())
-		request_redraw(canvas_specific->get_canvas_interface());
-
 	return true;
 }
 
@@ -239,6 +237,8 @@ synfigapp::Action::System::undo()
 	etl::handle<Action::Undoable> action = undo_action_stack().front();
 	Action::CanvasSpecific *canvas_specific = dynamic_cast<Action::CanvasSpecific*>(action.get());
 
+	DirtySignalBlocker dirtyBlocker(canvas_specific);
+
 	etl::handle<UIInterface> uim = get_ui_interface();
 	if (canvas_specific && canvas_specific->get_canvas())
 		uim = static_cast<Instance*>(this)->find_canvas_interface(canvas_specific->get_canvas())->get_ui_interface();
@@ -247,10 +247,6 @@ synfigapp::Action::System::undo()
 		uim->error(undo_action_stack_.front()->get_local_name()+": "+_("Failed to undo."));
 		return false;
 	}
-
-	// If the action has "dirtied" the preview, signal it.
-	if(action->is_active() && canvas_specific && canvas_specific->is_dirty())
-		request_redraw(canvas_specific->get_canvas_interface());
 
 	return true;
 }
@@ -308,6 +304,8 @@ Action::System::redo()
 	etl::handle<Action::Undoable> action = redo_action_stack().front();
 	Action::CanvasSpecific *canvas_specific = dynamic_cast<Action::CanvasSpecific*>(action.get());
 
+	DirtySignalBlocker dirtyBlocker(canvas_specific);
+
 	etl::handle<UIInterface> uim = get_ui_interface();
 	if (canvas_specific && canvas_specific->get_canvas())
 		uim = static_cast<Instance*>(this)->find_canvas_interface(canvas_specific->get_canvas())->get_ui_interface();
@@ -316,10 +314,6 @@ Action::System::redo()
 		uim->error(redo_action_stack_.front()->get_local_name()+": "+_("Failed to redo."));
 		return false;
 	}
-
-	// If the action has "dirtied" the preview, signal it.
-	if (action->is_active() && canvas_specific && canvas_specific->is_dirty())
-		request_redraw(canvas_specific->get_canvas_interface());
 
 	return true;
 }
@@ -529,4 +523,32 @@ Action::PassiveGrouper::cancel()
 		redraw_set_.clear();
 	else
 		instance_->get_ui_interface()->error(_("State restore failure"));
+}
+
+Action::System::DirtySignalBlocker::DirtySignalBlocker(Action::CanvasSpecific* canvas_specific)
+	: canvas_specific_(canvas_specific)
+{
+	if (canvas_specific_)
+	{
+		etl::handle<synfigapp::CanvasInterface> canvas_interface = canvas_specific_->get_canvas_interface();
+
+		if (canvas_interface)
+			canvas_interface->signal_dirty_preview().block();
+	}
+}
+
+Action::System::DirtySignalBlocker::~DirtySignalBlocker()
+{
+	if (canvas_specific_)
+	{
+		etl::handle<synfigapp::CanvasInterface> canvas_interface = canvas_specific_->get_canvas_interface();
+
+		if (canvas_interface)
+		{
+			canvas_interface->signal_dirty_preview().unblock();
+
+			if (canvas_specific_->is_dirty())
+				canvas_interface->signal_dirty_preview()();
+		}
+	}
 }
