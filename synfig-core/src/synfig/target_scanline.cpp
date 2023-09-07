@@ -41,7 +41,6 @@
 
 #include "canvas.h"
 #include "context.h"
-#include "render.h"
 #include "string.h"
 #include "surface.h"
 #include "rendering/renderer.h"
@@ -58,9 +57,7 @@ using namespace rendering;
 
 /* === M A C R O S ========================================================= */
 
-#define PIXEL_RENDERING_LIMIT 1500000
-
-#define USE_PIXELRENDERING_LIMIT 1
+#define DEFAULT_PIXEL_RENDERING_LIMIT 1500000
 
 /* === G L O B A L S ======================================================= */
 
@@ -68,8 +65,9 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-Target_Scanline::Target_Scanline():
-	threads_(2)
+Target_Scanline::Target_Scanline()
+	: threads_(2),
+	  pixel_rendering_limit_(DEFAULT_PIXEL_RENDERING_LIMIT)
 {
 	curr_frame_=0;
 	if (const char *s = getenv("SYNFIG_TARGET_DEFAULT_ENGINE"))
@@ -144,6 +142,13 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 	// Calculate the number of frames
 	const int total_frames = frame_end >= frame_start ? (frame_end - frame_start + 1) : 1;
 
+	// Stuff related to render split if image is too large
+	const int total_pixels = desc.get_w() * desc.get_h();
+	const bool is_rendering_split = pixel_rendering_limit_ > 0 && total_pixels > pixel_rendering_limit_;
+
+	const int rowheight = std::max(1, pixel_rendering_limit_ / desc.get_w());
+	const int rows = 1 + desc.get_h() / rowheight;
+	const int lastrowheight = desc.get_h() - (rows - 1) * rowheight;
 
 	try {
 		do{
@@ -162,19 +167,9 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 			}
 			canvas->set_outline_grow(desc.get_outline_grow());
 
-			// If quality is set otherwise, then we use the accelerated renderer
 			{
-				#if USE_PIXELRENDERING_LIMIT
-				if(desc.get_w()*desc.get_h() > PIXEL_RENDERING_LIMIT)
-				{
+				if (is_rendering_split) {
 					SurfaceResource::Handle surface = new SurfaceResource();
-
-					int rowheight = PIXEL_RENDERING_LIMIT/desc.get_w();
-					if (!rowheight) rowheight = 1; // TODO: render partial lines to stay within the limit?
-					int rows = desc.get_h()/rowheight;
-					int lastrowheight = desc.get_h() - rows*rowheight;
-
-					rows++;
 
 					synfig::info("Render split to %d block%s %d pixels tall, and a final block %d pixels tall",
 								 rows-1, rows==2?"":"s", rowheight, lastrowheight);
@@ -230,7 +225,6 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 
 				}else //use normal rendering...
 				{
-				#endif
 					SurfaceResource::Handle surface = new SurfaceResource();
 
 					if (!call_renderer(surface, *canvas, context_params, desc))
@@ -254,9 +248,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 						if(cb)cb->error(_("Unable to put surface on target"));
 						return false;
 					}
-				#if USE_PIXELRENDERING_LIMIT
 				}
-				#endif
 			}
 		} while(frames);
 	}
