@@ -94,7 +94,7 @@ synfig::Target_Scanline::call_renderer(
 	{
 		rendering::Renderer::Handle renderer = rendering::Renderer::get_renderer(get_engine());
 		if (!renderer)
-			throw "Renderer '" + get_engine() + "' not found";
+			throw strprintf(_("Renderer '%s' not found"), get_engine().c_str());
 
 		Vector p0 = renddesc.get_tl();
 		Vector p1 = renddesc.get_br();
@@ -171,8 +171,8 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 				if (is_rendering_split) {
 					SurfaceResource::Handle surface = new SurfaceResource();
 
-					synfig::info("Render split to %d block%s %d pixels tall, and a final block %d pixels tall",
-								 rows-1, rows==2?"":"s", rowheight, lastrowheight);
+					synfig::info(_("Render split to %d blocks %d pixels tall, and a final block %d pixels tall"),
+								 rows-1, rowheight, lastrowheight);
 
 					// loop through all the full rows
 					if(!start_frame())
