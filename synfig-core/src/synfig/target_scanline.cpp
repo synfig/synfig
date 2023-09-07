@@ -122,10 +122,6 @@ synfig::Target_Scanline::call_renderer(
 bool
 synfig::Target_Scanline::render(ProgressCallback *cb)
 {
-	SuperCallback super_cb;
-	int frames = 0;
-	Time t = 0;
-
 	assert(canvas);
 	curr_frame_=0;
 
@@ -151,6 +147,8 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 	const int lastrowheight = desc.get_h() - (rows - 1) * rowheight;
 
 	try {
+		Time t = 0;
+		int frames = 0;
 		do{
 			// Grab the time
 			frames=next_frame(t);
