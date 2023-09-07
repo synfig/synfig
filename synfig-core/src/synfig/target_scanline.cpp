@@ -57,7 +57,7 @@ using namespace rendering;
 
 /* === M A C R O S ========================================================= */
 
-#define DEFAULT_PIXEL_RENDERING_LIMIT 1500000
+#define DEFAULT_PIXEL_RENDERING_LIMIT 9000000 // 1500000 - original limit, 2100000 - full HD 1920x1080, 8300000 - 4k UHD, 33200000 - 8k UHD
 
 /* === G L O B A L S ======================================================= */
 
