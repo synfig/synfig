@@ -125,13 +125,8 @@ bool
 synfig::Target_Scanline::render(ProgressCallback *cb)
 {
 	SuperCallback super_cb;
-	int
-		frames=0,
-		total_frames,
-		frame_start,
-		frame_end;
-	Time
-		t=0;
+	int frames = 0;
+	Time t = 0;
 
 	assert(canvas);
 	curr_frame_=0;
@@ -141,14 +136,14 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 		return false;
 	}
 
-	frame_start=desc.get_frame_start();
-	frame_end=desc.get_frame_end();
+	const int frame_start = desc.get_frame_start();
+	const int frame_end = desc.get_frame_end();
 
 	ContextParams context_params(desc.get_render_excluded_contexts());
 
 	// Calculate the number of frames
-	total_frames=frame_end-frame_start+1;
-	if(total_frames<=0)total_frames=1;
+	const int total_frames = frame_end >= frame_start ? (frame_end - frame_start + 1) : 1;
+
 
 	try {
 		do{
@@ -195,6 +190,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 
 					for(int i=0; i < rows; ++i)
 					{
+						const int y_offset = i * rowheight;
 						surface->reset();
 						RendDesc blockrd = desc;
 
@@ -202,11 +198,11 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 						if(i == rows-1)
 						{
 							if(!lastrowheight) break;
-							blockrd.set_subwindow(0,i*rowheight,desc.get_w(),lastrowheight);
+							blockrd.set_subwindow(0, y_offset, desc.get_w(), lastrowheight);
 						}
 						else
 						{
-							blockrd.set_subwindow(0,i*rowheight,desc.get_w(),rowheight);
+							blockrd.set_subwindow(0, y_offset, desc.get_w(), rowheight);
 						}
 
 						//synfig::info( " -- block %d/%d left, top, width, height: %d, %d, %d, %d",
@@ -225,9 +221,7 @@ synfig::Target_Scanline::render(ProgressCallback *cb)
 
 							const synfig::Surface &s = lock->get_surface();
 
-							int yoff = i*rowheight;
-
-							if(!process_block_alpha(s, s.get_w(), blockrd.get_h(), yoff, cb)) return false;
+							if(!process_block_alpha(s, s.get_w(), blockrd.get_h(), y_offset, cb)) return false;
 						}
 					}
 					surface->reset();
