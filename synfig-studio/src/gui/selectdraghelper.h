@@ -48,6 +48,7 @@ class SelectDragHelper
 {
 public:
 	enum State {POINTER_NONE, POINTER_DRAGGING, POINTER_SELECTING, POINTER_PANNING};
+	bool has_hovered_item;
 
 private:
 	etl::handle<synfigapp::CanvasInterface> canvas_interface;
@@ -58,7 +59,6 @@ private:
 	bool dragging_started_by_key;
 
 	T hovered_item;
-	bool has_hovered_item;
 	std::vector<T> selected_items;
 	const T* active_item;
 

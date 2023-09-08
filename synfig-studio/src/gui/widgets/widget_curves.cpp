@@ -823,7 +823,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	}
 
 	// Draw info about hovered item
-	if (channel_point_sd.get_hovered_item().is_valid() || channel_point_sd.get_state() == channel_point_sd.POINTER_DRAGGING) {
+	if (channel_point_sd.has_hovered_item || channel_point_sd.get_state() == channel_point_sd.POINTER_DRAGGING) {
 		const ChannelPoint* inspected_item = &channel_point_sd.get_hovered_item();
 		if (!inspected_item->is_valid() || channel_point_sd.get_state() == channel_point_sd.POINTER_DRAGGING)
 			inspected_item = channel_point_sd.get_active_item();
