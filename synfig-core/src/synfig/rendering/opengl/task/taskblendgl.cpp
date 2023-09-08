@@ -183,37 +183,40 @@ public:
 				rect_set_intersect(r, r, ra);
 				rect_set_intersect(r, r, rb);
 
-				LockRead lsrc_a(sub_task_a()), lsrc_b(sub_task_b());
-				if(!lsrc_a || !lsrc_b) {
-					framebuffer.unuse();
-					return false;
-				}
+                if(r.is_valid())
+                {
+                    LockRead lsrc_a(sub_task_a()), lsrc_b(sub_task_b());
+                    if(!lsrc_a || !lsrc_b) {
+                        framebuffer.unuse();
+                        return false;
+                    }
 
-				framebuffer.use_write(false);
+                    framebuffer.use_write(false);
 
-				glScissor(r.minx, r.miny, r.get_width(), r.get_height());
+                    glScissor(r.minx, r.miny, r.get_width(), r.get_height());
 
-				gl::Framebuffer& src_a = lsrc_a.cast_handle()->get_framebuffer();
-				src_a.use_read(0);
+                    gl::Framebuffer& src_a = lsrc_a.cast_handle()->get_framebuffer();
+                    src_a.use_read(0);
 
-				gl::Framebuffer& src_b = lsrc_b.cast_handle()->get_framebuffer();
-				src_b.use_read(1);
+                    gl::Framebuffer& src_b = lsrc_b.cast_handle()->get_framebuffer();
+                    src_b.use_read(1);
 
-				gl::Programs::Program shader = env().get_or_create_context().get_blend_program(blend_method);
-				shader.use();
-				shader.set_1f("amount", amount);
-				shader.set_1i("use_a", 1);
-				shader.set_1i("use_b", 1);
-				shader.set_1i("sampler_a", 1);
-				shader.set_2i("offset_a", ob);
-				shader.set_1i("sampler_b", 0);
-				shader.set_2i("offset_b", oa);
+                    gl::Programs::Program shader = env().get_or_create_context().get_blend_program(blend_method);
+                    shader.use();
+                    shader.set_1f("amount", amount);
+                    shader.set_1i("use_a", 1);
+                    shader.set_1i("use_b", 1);
+                    shader.set_1i("sampler_a", 1);
+                    shader.set_2i("offset_a", ob);
+                    shader.set_1i("sampler_b", 0);
+                    shader.set_2i("offset_b", oa);
 
-				gl::Plane plane;
-				plane.render();
+                    gl::Plane plane;
+                    plane.render();
 
-				src_a.unuse();
-				src_b.unuse();
+                    src_a.unuse();
+                    src_b.unuse();
+                }
 			}
 		}
 		glDisable(GL_SCISSOR_TEST);
