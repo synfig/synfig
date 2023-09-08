@@ -53,7 +53,7 @@ public:
 	// remember to call glViewport once to set appropiate viewport settings
 	bool from_pixels(int width, int height, const Color* pixels = nullptr);
 
-    bool from_dims(int width, int height);
+    bool from_dims(int width, int height, bool hasStencil = false);
 	
 	void use_write(bool clear = true);
 	void use_read(int tex);
@@ -75,7 +75,7 @@ public:
     GLuint get_id() const { assert(valid); return id; }
 
 private:
-	GLuint id, texId, activeTexSlot;
+	GLuint id, texId, activeTexSlot, stencilId = -1;
 
 	int width, height;
 

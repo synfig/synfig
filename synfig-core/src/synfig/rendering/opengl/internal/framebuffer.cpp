@@ -84,9 +84,40 @@ gl::Framebuffer::from_pixels(int width, int height, const Color* pixels)
 }
 
 bool
-gl::Framebuffer::from_dims(int width, int height)
+gl::Framebuffer::from_dims(int width, int height, bool hasStencil)
 {
-    return from_pixels(width, height);
+    if(!hasStencil) return from_pixels(width, height);
+
+	valid = false;
+
+	this->width = width;
+	this->height = height;
+
+	glGenFramebuffers(1, &id);
+	glBindFramebuffer(GL_FRAMEBUFFER, id);
+
+	glGenTextures(1, &texId);
+	glBindTexture(GL_TEXTURE_2D, texId);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); 
+
+    glGenTextures(1, &stencilId);
+    glBindTexture(GL_TEXTURE_2D, stencilId);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, width, height, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texId, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, stencilId, 0);
+
+	if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) return false;
+
+	valid = true;
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	return true;
 }
 
 void
@@ -98,7 +129,14 @@ gl::Framebuffer::use_write(bool clear)
 	if(clear)
 	{
 		glClearColor(0.f, 0.f, 0.f, 0.f);
-		glClear(GL_COLOR_BUFFER_BIT);
+
+        if(stencilId != -1)
+        {
+            glClearStencil(0);
+            glStencilMask(~0);
+
+            glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        } else glClear(GL_COLOR_BUFFER_BIT);
 	}
 	is_writing = true;
 }
@@ -160,6 +198,7 @@ gl::Framebuffer::reset()
 		}
 
 		glDeleteTextures(1, &texId);
+		glDeleteTextures(1, &stencilId);
 		glDeleteFramebuffers(1, &id);
 	}
 	valid = false;
