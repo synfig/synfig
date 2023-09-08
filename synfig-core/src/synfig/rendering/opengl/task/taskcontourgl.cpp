@@ -26,6 +26,8 @@
 /* === H E A D E R S ======================================================= */
 
 #include "synfig/color/color.h"
+#include "synfig/matrix.h"
+#include "synfig/vector.h"
 #include <vector>
 #ifdef USING_PCH
 #	include "pch.h"
@@ -69,11 +71,99 @@ public:
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 
+    enum CurveType {
+        SERPENTINE,
+        CUSP,
+        LOOP,
+        QUADRATIC,
+        LINE,
+        POINT
+    };
+
     int CrossDir(Vector p0, Vector p1, Vector p2) const
     {
         Vector a = p1 - p0, b = p2 - p1;
         float z = a[0] * b[1] - a[1] * b[0];
         return z < 0 ? -1 : 1;
+    }
+
+    Vector3 Cross(Vector3 a, Vector3 b) const
+    {
+        float cx = a[1] * b[2] - a[2] * b[1];
+        float cy = a[2] * b[0] - a[0] * b[2];
+        float cz = a[0] * b[1] - a[1] * b[0];
+        return Vector3(cx, cy, cz);
+    }
+
+    bool ApproxZero(float a) const
+    {
+        return std::abs(a) < std::numeric_limits<float>::epsilon();
+    }
+
+    template<typename T>
+    std::vector<std::vector<T>> MultiplyMatrices(const std::vector<std::vector<T>>& mat1,
+            const std::vector<std::vector<T>>& mat2) const {
+        int rows1 = mat1.size();
+        int cols1 = mat1[0].size();
+        int cols2 = mat2[0].size();
+
+        std::vector<std::vector<T>> result(rows1, std::vector<T>(cols2, 0.0));
+
+        if (cols1 != mat2.size()) {
+            std::cerr << "Matrix multiplication not possible. Inner dimensions must match." << std::endl;
+            return result;
+        }
+
+        for (int i = 0; i < rows1; ++i) {
+            for (int j = 0; j < cols2; ++j) {
+                for (int k = 0; k < cols1; ++k) {
+                    result[i][j] += mat1[i][k] * mat2[k][j];
+                }
+            }
+        }
+
+        return result;
+    }
+
+    CurveType GetCurveType(Vector p0, Vector p1, Vector p2, Vector p3) const
+    {
+        auto B = MultiplyMatrices(
+            std::vector<std::vector<double>>({
+                {1, 0, 0, 0},
+                {1, 1.0 / 3.0, 0, 0},
+                {1, 2.0 / 3.0, 1.0 / 3.0, 0},
+                {1, 1, 1, 1},
+            }),
+            std::vector<std::vector<double>>({
+                {p0[0], p0[1], 1},
+                {p1[0], p1[1], 1},
+                {p2[0], p2[1], 1},
+                {p3[0], p3[1], 1},
+            })
+        );
+
+        Vector3 b0(B[0][0], B[0][1], B[0][2]);
+        Vector3 b1(B[1][0], B[1][1], B[1][2]);
+        Vector3 b2(B[2][0], B[2][1], B[2][2]);
+        Vector3 b3(B[3][0], B[3][1], B[3][2]);
+
+        float d0 = Matrix3(b3, b2, b1).det();
+        float d1 = -Matrix3(b3, b2, b0).det();
+        float d2 = Matrix3(b3, b1, b0).det();
+        float d3 = -Matrix3(b2, b1, b0).det();
+
+        float dI = d1 * d1 * (3 * d2 * d2 - 4 * d3 * d1);
+
+        info("dI: %f", dI);
+
+        if(ApproxZero(dI))
+        {
+            return CurveType::CUSP;
+        }
+
+        if(dI < 0) return CurveType::LOOP;
+
+        return CurveType::SERPENTINE;
     }
 
 	virtual bool run(RunParams&) const
@@ -139,6 +229,9 @@ public:
         Vector p0 = matrix.get_transformed(chunks[0].p1), p3 = matrix.get_transformed(chunks[1].p1);
         Vector p1 = matrix.get_transformed(chunks[1].pp0), p2 = matrix.get_transformed(chunks[1].pp1);
 
+        CurveType curveType = GetCurveType(p0, p1, p2, p3);
+        info("CurveType: %d", curveType);
+
         p0[0] = -(1.0f - 2.0f * (p0[0] / ldst->get_width()));
         p1[0] = -(1.0f - 2.0f * (p1[0] / ldst->get_width()));
         p2[0] = -(1.0f - 2.0f * (p2[0] / ldst->get_width()));
@@ -156,8 +249,6 @@ public:
             convex = false;
         }
 
-        // info(std::string("Convex: ") + (convex ? "yes" : "no"));
-        
         std::vector<float> vertices({
             float(p0[0]), float(p0[1]),
             float(p1[0]), float(p1[1]),
