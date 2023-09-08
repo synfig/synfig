@@ -1037,6 +1037,7 @@ bool
 WorkArea::on_key_release_event(GdkEventKey* event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
+	const float radius((std::fabs(pw)+std::fabs(ph))*4);
 	rotate_guide = false;
 	auto event_result = canvas_view->get_smach().process_event(
 		EventKeyboard(EVENT_WORKAREA_KEY_UP, event->keyval, Gdk::ModifierType(event->state)) );
@@ -1046,9 +1047,11 @@ WorkArea::on_key_release_event(GdkEventKey* event)
 	if (event->keyval == GDK_KEY_Escape && guide_highlighted)
 	{
 		get_guide_list().erase(curr_guide);
-		guide_highlighted = false;
-		curr_guide = get_guide_list().end();
 		drawing_area->queue_draw();
+		GuideList::iterator iter = find_guide(get_cursor_pos(), radius);
+		curr_guide = iter;
+		drawing_area->queue_draw();
+		guide_highlighted = iter != get_guide_list().end();
 	}
 
 	// Other possible actions if current state doesn't accept the event but not forbids it
@@ -1767,6 +1770,7 @@ WorkArea::on_hruler_event(GdkEvent *event)
 			set_drag_mode(DRAG_GUIDE);
 			curr_guide = get_guide_list().insert(get_guide_list().begin(),{synfig::Point(((1.0/2.0)*(drawing_area->get_window()->get_width())*get_pw())+ get_window_tl()[0], 0),
 																			   synfig::Angle::rad(0)});
+			guide_highlighted = true;
 		}
 		return true;
 	case GDK_MOTION_NOTIFY:
@@ -1805,6 +1809,7 @@ WorkArea::on_vruler_event(GdkEvent *event)
 			set_drag_mode(DRAG_GUIDE);
 			curr_guide = get_guide_list().insert(get_guide_list().begin(),{synfig::Point(0 ,((1.0/2.0)*(drawing_area->get_window()->get_height())*get_ph())+ get_window_tl()[1]),
 																			   synfig::Angle::deg(90)});
+			guide_highlighted = true;
 		}
 		return true;
 	case GDK_MOTION_NOTIFY:
