@@ -3266,12 +3266,13 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 
 	if(element->get_attribute("focus"))
 	{
-		std::string values=element->get_attribute("focus")->get_value();
+		std::string values = trim(element->get_attribute("focus")->get_value());
+		const auto separator_pos = values.find(' ');
 		Vector focus;
-
-		focus[0]=atof(std::string(values.data(),values.find(' ')).c_str());
-		values=std::string(values.begin()+values.find(' ')+1,values.end());
-		focus[1]=atof(values.c_str());
+		if (separator_pos != std::string::npos) {
+			focus[0] = atof(values.substr(0, separator_pos).c_str());
+			focus[1] = atof(values.substr(separator_pos + 1).c_str());
+		}
 
 		canvas->rend_desc().set_focus(focus);
 	}
