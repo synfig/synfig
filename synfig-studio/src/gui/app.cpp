@@ -2474,7 +2474,7 @@ App::dialog_open_file_spal(const std::string& title, synfig::filesystem::Path& f
 }
 
 bool
-App::dialog_open_file_sketch(const std::string& title, std::string& filename, const std::string& preference)
+App::dialog_open_file_sketch(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference)
 {
 	synfig::String prev_path = _preferences.get_value(preference, Glib::get_home_dir());
 
@@ -2487,7 +2487,7 @@ App::dialog_open_file_sketch(const std::string& title, std::string& filename, co
 
 	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
 		filename = dialog->get_filename();
-		_preferences.set_value(preference, filesystem::Path::dirname(filename));
+		_preferences.set_value(preference, filename.parent_path());
 		return true;
 	}
 
@@ -3042,7 +3042,7 @@ App::dialog_save_file_spal(const std::string& title, synfig::filesystem::Path& f
 }
 
 bool
-App::dialog_save_file_sketch(const std::string& title, std::string& filename, const std::string& preference)
+App::dialog_save_file_sketch(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference)
 {
 	synfig::String prev_path = _preferences.get_value(preference, Glib::get_home_dir());
 
@@ -3059,7 +3059,7 @@ App::dialog_save_file_sketch(const std::string& title, std::string& filename, co
 
 		// add file extension according to file filter selected by user
 		filename = dialog->get_filename();
-		if (filesystem::Path::filename_extension(filename) != ".sketch")
+		if (filename.extension().u8string() != ".sketch")
 			filename = dialog->get_filename() + ".sketch";
 
 		return true;
