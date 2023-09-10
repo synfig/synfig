@@ -741,27 +741,25 @@ static void update_layer_size(const RendDesc& rend_desc, Layer::Handle& layer, b
 
 Layer::Handle
 CanvasInterface::import(
-	const synfig::String &filename,
-	synfig::String &errors,
-	synfig::String &warnings,
-	bool resize_image )
+	const synfig::filesystem::Path& filename,
+	synfig::String& errors,
+	synfig::String& warnings,
+	bool resize_image)
 {
 	Action::PassiveGrouper group(get_instance().get(),_("Import"));
 
 	synfig::info("Attempting to import %s", filename.c_str());
 	
-	String ext(filesystem::Path::filename_extension(filename));
-	if (ext == "")
-	{
+	String ext(filename.extension().u8string());
+	if (ext.empty()) {
 		get_ui_interface()->error(_("File name must have an extension!"));
 		return nullptr;
 	}
 
-	
 	if (ext.size()) ext = ext.substr(1); // skip initial '.'
 	strtolower(ext);
 
-	String short_filename = CanvasFileNaming::make_short_filename(get_canvas()->get_file_name(), filename);
+	String short_filename = CanvasFileNaming::make_short_filename(get_canvas()->get_file_name(), filename.u8string());
 	String full_filename = CanvasFileNaming::make_full_filename(get_canvas()->get_file_name(), short_filename);
 
 	if (ext=="pgo" || ext=="tsv" || ext=="xml")
@@ -775,7 +773,7 @@ CanvasInterface::import(
 			throw String(_("Unable to create \"Switch\" layer"));
 
 		layer_set_defaults(layer_switch);
-		layer_switch->set_description(filesystem::Path::basename(filename));
+		layer_switch->set_description(filename.filename().u8string());
 
 		ValueNode_AnimatedFile::Handle animatedfile_node = ValueNode_AnimatedFile::create(String());
 		animatedfile_node->set_link("filename", ValueNode_Const::create(short_filename));
@@ -798,7 +796,7 @@ CanvasInterface::import(
 				throw String(_("Unable to create \"Sound\" layer"));
 
 			layer_set_defaults(layer_sound);
-			layer_sound->set_description(filesystem::Path::basename(filename));
+			layer_sound->set_description(filename.filename().u8string());
 			layer_sound->set_param("filename", ValueBase(short_soundfile));
 
 			if (!layer_add_action(layer_sound))
@@ -815,7 +813,7 @@ CanvasInterface::import(
 			throw String(_("Unable to create \"Sound\" layer"));
 
 		layer_set_defaults(layer);
-		layer->set_description(filesystem::Path::basename(filename));
+		layer->set_description(filename.filename().u8string());
 		layer->set_param("filename", ValueBase(short_filename));
 
 		if (!layer_add_action(layer))
@@ -848,7 +846,7 @@ CanvasInterface::import(
 				return 0;
 			}
 		}
-		signal_layer_new_description()(_new_layer,filesystem::Path::basename(filename));
+		signal_layer_new_description()(_new_layer, filename.filename().u8string());
 		return _new_layer;
 	}
 
@@ -873,23 +871,23 @@ CanvasInterface::import(
 		get_canvas()->register_external_canvas(full_filename, outside_canvas);
 
 		//layer->set_description(basename(filename));
-		signal_layer_new_description()(layer,filesystem::Path::basename(filename));
+		signal_layer_new_description()(layer, filename.filename().u8string());
 		return layer;
 	}
 	catch (const String& x)
 	{
-		get_ui_interface()->error(filename + ": " + x);
+		get_ui_interface()->error(filename.u8string() + ": " + x);
 		return nullptr;
 	}
 	catch (...)
 	{
-		get_ui_interface()->error(_("Uncaught exception when attempting\nto open this composition -- ")+filename);
+		get_ui_interface()->error(_("Uncaught exception when attempting\nto open this composition -- ") + filename.u8string());
 		return nullptr;
 	}
 
 	if(!Importer::book().count(ext))
 	{
-		get_ui_interface()->error(_("I don't know how to open images of this type -- ")+ext);
+		get_ui_interface()->error(_("I don't know how to open images of this type -- ") + ext);
 		return nullptr;
 	}
 
@@ -902,7 +900,7 @@ CanvasInterface::import(
 			throw int();
 		update_layer_size(get_canvas()->rend_desc(), layer, resize_image);
 		layer->monitor(filename);
-		String desc = filesystem::Path::basename(filename);
+		String desc = filename.filename().u8string();
 		layer->set_description(desc);
 		signal_layer_new_description()(layer, desc);
 		//get_instance()->set_selected_layer(get_canvas(), layer);
@@ -938,7 +936,7 @@ CanvasInterface::import(
 	}
 	catch(...)
 	{
-		get_ui_interface()->error("Unable to import "+filename);
+		get_ui_interface()->error(strprintf(_("Unable to import %s"), filename.u8_str()));
 		group.cancel();
 		return nullptr;
 	}

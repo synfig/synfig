@@ -323,9 +323,9 @@ public:
 	void set_rend_desc(const synfig::RendDesc &rend_desc);
 
 	synfig::Layer::Handle import(
-		const synfig::String &filename,
-		synfig::String &errors,
-		synfig::String &warnings,
+		const synfig::filesystem::Path& filename,
+		synfig::String& errors,
+		synfig::String& warnings,
 		bool resize_image = false );
 	
 	bool import_sequence(

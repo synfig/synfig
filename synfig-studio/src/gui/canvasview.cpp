@@ -1601,7 +1601,7 @@ CanvasView::add_layer(String x)
 		if (selected)
 		{
 			String errors, warnings;
-			layer = canvas_interface()->import(filename.u8string(), errors, warnings, App::resize_imported_images);
+			layer = canvas_interface()->import(filename, errors, warnings, App::resize_imported_images);
 			if (!warnings.empty()) {
 				App::dialog_message_1b("WARNING", synfig::strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
 					"details",	_("Close"));
