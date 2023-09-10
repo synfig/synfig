@@ -2866,31 +2866,27 @@ CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& con
 				if(URI.empty())
 					continue;
 
-				// Extract protocol name from URI.
-				String protocol( Glib::uri_parse_scheme(URI) );
-				if(protocol.empty())
-				{
+				// Extract scheme name from URI.
+				auto scheme_end_pos = URI.find("://");
+				if (scheme_end_pos == std::string::npos) {
 					warning("Cannot extract protocol from URI \"%s\"", URI.c_str());
 					continue;
 				}
 
-				// Only 'file' protocol supported
-				if(protocol != "file")
-				{
-					warning("Protocol \"%s\" is unsupported (URI \"%s\")", protocol.c_str(), URI.c_str());
+				// Only 'file' scheme supported
+				const String scheme = URI.substr(0, scheme_end_pos);
+				if (scheme != "file") {
+					warning("Protocol \"%s\" is unsupported (URI \"%s\")", scheme.c_str(), URI.c_str());
 					continue;
 				}
 
-				// Converts an escaped UTF-8 encoded URI to a local filename
-				// in the encoding used for filenames.
-				String filename( Glib::filename_from_uri(URI) );
-				if(filename.empty())
-				{
+				filesystem::Path filename(URI.substr(scheme_end_pos + 3)); // scheme name + "://"
+				if (filename.empty()) {
 					warning("Cannot extract filename from URI \"%s\"", URI.c_str());
 					continue;
 				}
 
-				String ext = filesystem::Path::filename_extension(filename);
+				String ext = filename.extension().u8string();
 				if (!ext.empty()) ext = ext.substr(1); // skip initial '.'
 
 				// If this is a SIF file, then we need to do things slightly differently
