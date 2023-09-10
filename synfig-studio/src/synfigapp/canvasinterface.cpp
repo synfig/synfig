@@ -945,9 +945,9 @@ CanvasInterface::import(
 
 bool
 CanvasInterface::import_sequence(
-	const std::set<synfig::String> &filenames,
-	synfig::String &errors,
-	synfig::String &/*warnings*/,
+	const std::set<synfig::filesystem::Path>& filenames,
+	synfig::String& errors,
+	synfig::String& /*warnings*/,
 	bool resize_image,
 	bool remove_dups)
 {
@@ -975,30 +975,30 @@ CanvasInterface::import_sequence(
 		rendering::Surface::Handle  cur_surface,prev_surface= rendering::Surface::Handle();
 		bool first_time=true;
 		int layers_count = 0;
-		std::set<String>::const_iterator c1= filenames.begin();
-		std::set<String>::const_iterator c2= filenames.begin();
+		std::set<filesystem::Path>::const_iterator c1 = filenames.begin();
+		std::set<filesystem::Path>::const_iterator c2 = filenames.begin();
 
-		while(c2!=filenames.end()){
-			const String &filename = *c2;
-			synfig::info("Attempting to import '%s' into sequence", filename.c_str());
+		while (c2 != filenames.end()) {
+			const filesystem::Path& filename = *c2;
+			synfig::info("Attempting to import '%s' into sequence", filename.u8_str());
 			
-			String ext(filesystem::Path::filename_extension(filename));
+			String ext(filename.extension().u8string());
 			if (!ext.empty()) ext = ext.substr(1); // skip initial '.'
 			strtolower(ext);
 			
 			if (ext.empty())
 			{
-				errors += synfig::strprintf(_("Cannot import file without extension: %s\n"), filename.c_str());
+				errors += synfig::strprintf(_("Cannot import file without extension: %s\n"), filename.u8_str());
 				continue;
 			}
 			
 			if(!Importer::book().count(ext))
 			{
-				errors += synfig::strprintf(_("Cannot import file of type '%s': %s\n"), ext.c_str(), filename.c_str());
+				errors += synfig::strprintf(_("Cannot import file of type '%s': %s\n"), ext.c_str(), filename.u8_str());
 				continue;
 			}
 			
-			String short_filename = CanvasFileNaming::make_short_filename(get_canvas()->get_file_name(), filename);
+			String short_filename = CanvasFileNaming::make_short_filename(get_canvas()->get_file_name(), filename.u8string());
 			
 			try {
 				layer = add_layer_to("Import",get_canvas());
@@ -1030,7 +1030,7 @@ CanvasInterface::import_sequence(
 				}
 				update_layer_size(get_canvas()->rend_desc(), layer, resize_image);
 				layer->monitor(filename);
-				String desc = filesystem::Path::basename(filename);
+				String desc = filename.filename().u8string();
 				layer->set_description(desc);
 				signal_layer_new_description()(layer, desc);
 
@@ -1047,7 +1047,7 @@ CanvasInterface::import_sequence(
 				prev_surface=cur_surface;
 				advance(c2,1);
 			} catch(...) {
-				errors += synfig::strprintf(_("Unable to import file: %s"), filename.c_str());
+				errors += synfig::strprintf(_("Unable to import file: %s"), filename.u8_str());
 				group.cancel();
 				return false;
 			}

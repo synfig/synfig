@@ -2566,7 +2566,7 @@ App::dialog_open_file_audio(const std::string& title, synfig::filesystem::Path& 
 }
 
 bool
-App::dialog_open_file_image_sequence(const std::string& title, std::set<synfig::String>& filenames, const std::string& preference)
+App::dialog_open_file_image_sequence(const std::string& title, std::set<synfig::filesystem::Path>& filenames, const std::string& preference)
 {
 	synfig::String prev_path = _preferences.get_value(preference, Glib::get_home_dir());
 
@@ -2588,7 +2588,7 @@ App::dialog_open_file_image_sequence(const std::string& title, std::set<synfig::
 	filter_any->set_name(_("Any files"));
 	filter_any->add_pattern("*");
 
-	std::string filename = filenames.empty() ? std::string() : *filenames.begin();
+	filesystem::Path filename = filenames.empty() ? filesystem::Path() : *filenames.begin();
 
 	auto dialog = create_dialog_open_file(title, filename, prev_path, {filter_image, filter_any});
 	dialog->set_select_multiple(true);
@@ -2599,7 +2599,7 @@ App::dialog_open_file_image_sequence(const std::string& title, std::set<synfig::
 	if (dialog->run() == Gtk::RESPONSE_ACCEPT) {
 		std::vector<std::string> files = dialog->get_filenames();
 		filenames.insert(files.begin(), files.end());
-		_preferences.set_value(preference, filesystem::Path::dirname(dialog->get_filename()));
+		_preferences.set_value(preference, filesystem::Path(dialog->get_filename()).parent_path());
 		return true;
 	}
 

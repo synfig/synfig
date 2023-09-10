@@ -329,11 +329,11 @@ public:
 		bool resize_image = false );
 	
 	bool import_sequence(
-		const std::set<synfig::String> &filenames,
-		synfig::String &errors,
-		synfig::String &warnings,
+		const std::set<synfig::filesystem::Path>& filenames,
+		synfig::String& errors,
+		synfig::String& warnings,
 		bool resize_image = false,
-		bool remove_dups=false);
+		bool remove_dups = false);
 
 	void waypoint_set_value_node(synfig::ValueNode::Handle value_node, const synfig::Waypoint& waypoint);
 	void waypoint_move(const ValueDesc& value_desc, const synfig::Time& time, const synfig::Time& deltatime);

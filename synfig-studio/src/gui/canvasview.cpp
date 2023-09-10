@@ -3283,7 +3283,7 @@ CanvasView::is_same_file(const std::string &filename)
 void
 CanvasView::import_sequence()
 {
-	std::set<String> filenames;
+	std::set<filesystem::Path> filenames;
 	String errors, warnings;
 	if(App::dialog_open_file_image_sequence(_("Please select a file"), filenames, IMAGE_DIR_PREFERENCE))
 	{
