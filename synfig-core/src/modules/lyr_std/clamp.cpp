@@ -132,7 +132,8 @@ TaskClampSW::run(RunParams&) const
 	if (r.valid())
 	{
 		VectorInt offset = get_offset();
-		RectInt ra = sub_task()->target_rect + r.get_min() + get_offset();
+		// FIXME: commented code results in crash
+		RectInt ra = sub_task()->target_rect; // + r.get_min() + get_offset();
 		if (ra.valid())
 		{
 			rect_set_intersect(ra, ra, r);
@@ -148,7 +149,9 @@ TaskClampSW::run(RunParams&) const
 
 				for(int y = ra.miny; y < ra.maxy; ++y)
 				{
-					const Color *ca = &a[y - r.miny + offset[1]][ra.minx - r.minx + offset[0]];
+					// const Color *ca = &a[y - r.miny + offset[1]][ra.minx - r.minx + offset[0]];
+					
+					const Color *ca = &a[y][ra.minx];
 					Color *cc = &c[y][ra.minx];
 					for(int x = ra.minx; x < ra.maxx; ++x, ++ca, ++cc)
 						clamp_pixel(*cc, *ca);

@@ -42,7 +42,6 @@
 #include "../common/optimizer/optimizerblendmerge.h"
 #include "../common/optimizer/optimizerblendtotarget.h"
 #include "../common/optimizer/optimizerlist.h"
-#include "../common/optimizer/optimizersplit.h"
 #include "../common/optimizer/optimizertransformation.h"
 #include "../common/optimizer/optimizerpass.h"
 
@@ -74,7 +73,6 @@ RendererSW::RendererSW()
 	register_optimizer(new OptimizerList());
 	register_optimizer(new OptimizerBlendToTarget());
 	register_optimizer(new OptimizerBlendAssociative());
-	//register_optimizer(new OptimizerSplit());
 }
 
 RendererSW::~RendererSW() { }

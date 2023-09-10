@@ -48,6 +48,7 @@
 #include "renderqueue.h"
 
 #include "software/renderersw.h"
+#include "software/rendererexperimentalsw.h"
 #include "software/rendererdraftsw.h"
 #include "software/rendererpreviewsw.h"
 #include "software/rendererlowressw.h"
@@ -101,6 +102,7 @@ Renderer::initialize_renderers()
 
 	// register renderers
 	register_renderer("software", new RendererSW());
+	register_renderer("software-experimental", new RendererExperimentalSW());
 	register_renderer("software-preview", new RendererPreviewSW());
 	register_renderer("software-draft", new RendererDraftSW());
 	register_renderer("software-low2",  new RendererLowResSW(2));

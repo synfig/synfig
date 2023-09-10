@@ -1104,6 +1104,7 @@ CanvasView::create_top_toolbar()
 			render_combobox->append("gl", _("GL"));
 		render_combobox->append("software-preview", _("Preview"));
 		render_combobox->append("software", _("Final"));
+		render_combobox->append("software-experimental", _("Experimental"));
 		render_combobox->signal_changed().connect(sigc::mem_fun(*this, &CanvasView::toggle_render_combobox));
 		render_combobox->set_tooltip_text(_("Select rendering mode"));
 		render_combobox->set_active(1);

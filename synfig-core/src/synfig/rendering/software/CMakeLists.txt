@@ -5,6 +5,7 @@ target_sources(libsynfig
         "${CMAKE_CURRENT_LIST_DIR}/renderersafe.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/rendererpreviewsw.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/renderersw.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/rendererexperimentalsw.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/surfacesw.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/surfaceswpacked.cpp"
 )

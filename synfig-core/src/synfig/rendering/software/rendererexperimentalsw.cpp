@@ -1,9 +1,9 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/software/rendererlowressw.cpp
-**	\brief RendererLowResSW
+/*!	\file synfig/rendering/software/rendererexperimentalsw.cpp
+**	\brief RendererSW
 **
 **	\legal
-**	......... ... 2017 Ivan Mahonin
+**	......... ... 2015 Ivan Mahonin
 **
 **	This file is part of Synfig.
 **
@@ -34,18 +34,19 @@
 
 #include <synfig/localization.h>
 
-#include "rendererlowressw.h"
+#include "rendererexperimentalsw.h"
 
-#include "task/tasksw.h"
+#include  "task/tasksw.h"
 
 #include "../common/optimizer/optimizerblendassociative.h"
 #include "../common/optimizer/optimizerblendmerge.h"
 #include "../common/optimizer/optimizerblendtotarget.h"
-#include "../common/optimizer/optimizerdraft.h"
 #include "../common/optimizer/optimizerlist.h"
 #include "../common/optimizer/optimizersplit.h"
 #include "../common/optimizer/optimizertransformation.h"
 #include "../common/optimizer/optimizerpass.h"
+
+#include "function/fft.h"
 
 #endif
 
@@ -60,28 +61,34 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-RendererLowResSW::RendererLowResSW(int level):
-	level(level)
+RendererExperimentalSW::RendererExperimentalSW()
 {
 	register_mode(TaskSW::mode_token.handle());
 
 	// register optimizers
-	register_optimizer(new OptimizerDraftLowRes(level));
 	register_optimizer(new OptimizerTransformation());
-	register_optimizer(new OptimizerDraftTransformation());
 
 	register_optimizer(new OptimizerPass(false));
 	register_optimizer(new OptimizerPass(true));
 	register_optimizer(new OptimizerBlendMerge());
-	register_optimizer(new OptimizerBlendToTarget());
 	register_optimizer(new OptimizerList());
+	register_optimizer(new OptimizerBlendToTarget());
 	register_optimizer(new OptimizerBlendAssociative());
-	// register_optimizer(new OptimizerSplit());
+	register_optimizer(new OptimizerSplit());
 }
 
-String RendererLowResSW::get_name() const
+RendererExperimentalSW::~RendererExperimentalSW() { }
+
+String RendererExperimentalSW::get_name() const { return _("Experimetal Cobra (software)"); }
+
+void RendererExperimentalSW::initialize()
 {
-	return _("Cobra LowRes (software)") + strprintf(" x%d", level);
+	software::FFT::initialize();
+}
+
+void RendererExperimentalSW::deinitialize()
+{
+	software::FFT::deinitialize();
 }
 
 /* === E N T R Y P O I N T ================================================= */
