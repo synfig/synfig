@@ -210,8 +210,8 @@ App::signal_instance_deleted() { return signal_instance_deleted_; }
 
 /* === G L O B A L S ======================================================= */
 
-static std::list<std::string>           recent_files;
-const  std::list<std::string>& App::get_recent_files() { return recent_files; }
+static std::list<synfig::filesystem::Path> recent_files;
+const std::list<synfig::filesystem::Path>& App::get_recent_files() { return recent_files; }
 
 int	 App::Busy::count;
 bool App::shutdown_in_progress;
@@ -1870,13 +1870,13 @@ App::get_config_file(const synfig::String& file)
 void
 App::add_recent_file(const etl::handle<Instance> instance)
 {
-	add_recent_file(filesystem::Path::absolute_path(instance->get_file_name()), true);
+	add_recent_file(filesystem::absolute(instance->get_file_name()), true);
 }
 
 void
-App::add_recent_file(const std::string &file_name, bool emit_signal = true)
+App::add_recent_file(const synfig::filesystem::Path& file_name, bool emit_signal = true)
 {
-	std::string filename(FileSystem::fix_slashes(file_name));
+	filesystem::Path filename(file_name.cleanup());
 
 	assert(!filename.empty());
 
@@ -1884,19 +1884,16 @@ App::add_recent_file(const std::string &file_name, bool emit_signal = true)
 		return;
 
 	// Toss out any "hidden" files
-	if(filesystem::Path::basename(filename)[0]=='.')
+	if (filename.filename().u8string()[0] == '.')
 		return;
 
 	// If we aren't an absolute path, turn ourselves into one
-	if(!filesystem::Path::is_absolute_path(filename))
-		filename=filesystem::Path::absolute_path(filename);
+	filename = filesystem::absolute(filename);
 
-	std::list<std::string>::iterator iter;
 	// Check to see if the file is already on the list.
 	// If it is, then remove it from the list
-	for (iter = recent_files.begin(); iter != recent_files.end(); ++iter) {
-		if(*iter==filename)
-		{
+	for (auto iter = recent_files.begin(); iter != recent_files.end(); ++iter) {
+		if (*iter == filename) {
 			recent_files.erase(iter);
 			break;
 		}
@@ -2000,8 +1997,8 @@ App::save_settings()
 
 			std::list<std::string>::reverse_iterator iter;
 
-			for(iter=recent_files.rbegin();iter!=recent_files.rend();++iter)
-				file<<(*iter).c_str() << std::endl;
+			for (const auto& recent_file : recent_files)
+				file << recent_file.u8string() << std::endl;
 		} while (false);
 		std::string filename=get_config_file("settings-1.4");
 		synfigapp::Main::settings().save_to_file(filename);
@@ -2626,9 +2623,9 @@ or an empty string if the file should be opened as a normal sif file
 
 */
 bool
-App::dialog_select_importer(const std::string& filename, std::string& plugin)
+App::dialog_select_importer(const synfig::filesystem::Path& filename, std::string& plugin)
 {
-	synfig::String ext = filesystem::Path::filename_extension(filename);
+	synfig::String ext = filename.extension().u8string();
 
 	Gtk::Dialog dialog(_("Select importer"), true);
 	dialog.add_button(_("Cancel"), Gtk::RESPONSE_REJECT)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
@@ -3897,16 +3894,16 @@ App::open_from_plugin(const std::string& filename, const std::string& importer_i
 }
 
 void
-App::open_recent(const std::string& filename)
+App::open_recent(const filesystem::Path& filename)
 {
 	std::string importer;
 	if ( !dialog_select_importer(filename, importer) )
 		return;
 
 	if ( importer.empty() )
-		open(filename);
+		open(filename.u8string());
 	else
-		open_from_plugin(filename, importer);
+		open_from_plugin(filename.u8string(), importer);
 }
 
 void

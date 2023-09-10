@@ -32,6 +32,8 @@
 
 #include <gtkmm/actiongroup.h>
 #include <gtkmm/applicationwindow.h>
+
+#include <synfig/filesystem_path.h>
 #include <synfig/string.h>
 
 /* === M A C R O S ========================================================= */
@@ -105,8 +107,8 @@ namespace studio {
 		static sigc::signal<void>& signal_custom_workspaces_changed();
 
 		static void make_short_filenames(
-			const std::vector<synfig::String> &fullnames,
-			std::vector<synfig::String> &shortnames );
+			const std::vector<synfig::filesystem::Path>& fullnames,
+			std::vector<synfig::String>& shortnames );
 	};
 }; // END of namespace studio
 

@@ -300,7 +300,7 @@ public:
 	*/
 
 private:
-	static void add_recent_file(const std::string &filename, bool emit_signal);
+	static void add_recent_file(const synfig::filesystem::Path& filename, bool emit_signal);
 	static bool dialog_open_file_ext(const std::string &title, std::vector<synfig::filesystem::Path>& filenames, const std::string& preference, bool allow_multiple_selection);
 
 	App();
@@ -353,7 +353,7 @@ public:
 	static std::string get_raw_icon_theme_name();
 	static void set_icon_theme(const std::string &theme_name);
 
-	static const std::list<std::string>& get_recent_files();
+	static const std::list<synfig::filesystem::Path>& get_recent_files();
 
 	static const etl::handle<synfigapp::UIInterface>& get_ui_interface();
 
@@ -375,7 +375,7 @@ public:
 		std::string as,
 		synfig::FileContainerZip::file_size_t truncate_storage_size = 0 );
 
-	static void 	open_recent(const std::string& filename);
+	static void open_recent(const synfig::filesystem::Path& filename);
 
 	static bool open(
 		std::string filename,
@@ -413,7 +413,7 @@ public:
 
 //	static bool dialog_file(const std::string &title, std::string &filename);
 
-	static bool dialog_select_importer(const std::string& filename, std::string& plugin);
+	static bool dialog_select_importer(const synfig::filesystem::Path& filename, std::string& plugin);
 	static bool dialog_open_file(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference);
 	static bool dialog_open_file(const std::string& title, std::vector<synfig::filesystem::Path>& filenames, const std::string& preference);
 	static bool dialog_open_file_spal(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference);

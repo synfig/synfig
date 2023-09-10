@@ -354,13 +354,13 @@ MainWindow::on_key_press_event(GdkEventKey* key_event)
 
 void
 MainWindow::make_short_filenames(
-	const std::vector<synfig::String> &fullnames,
+	const std::vector<synfig::filesystem::Path> &fullnames,
 	std::vector<synfig::String> &shortnames )
 {
 	if (fullnames.size() == 1)
 	{
 		shortnames.resize(1);
-		shortnames[0] = filesystem::Path::basename(fullnames[0]);
+		shortnames[0] = fullnames[0].filename().u8string();
 		return;
 	}
 
@@ -373,7 +373,7 @@ MainWindow::make_short_filenames(
 	// build dir lists
 	for(int i = 0; i < count; ++i) {
 		int j = 0;
-		String fullname = fullnames[i];
+		String fullname = fullnames[i].u8string();
 		if (fullname.substr(0, 7) == "file://")
 			fullname = fullname.substr(7);
 		while(j < (int)fullname.size())
@@ -444,7 +444,7 @@ MainWindow::on_recent_files_changed()
 	// TODO(ice0): switch to GtkRecentChooserMenu?
 	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create("mainwindow-recentfiles");
 
-	std::vector<String> fullnames(App::get_recent_files().begin(), App::get_recent_files().end());
+	std::vector<filesystem::Path> fullnames(App::get_recent_files().begin(), App::get_recent_files().end());
 	std::vector<String> shortnames;
 	make_short_filenames(fullnames, shortnames);
 
@@ -457,8 +457,8 @@ MainWindow::on_recent_files_changed()
 		const std::string action_name = synfig::strprintf("file-recent-%d", i);
 		menu_items += "<menuitem action='" + action_name +"' />";
 
-		std::string filename = fullnames[i];
-		action_group->add( Gtk::Action::create(action_name, quoted, fullnames[i]),
+		filesystem::Path filename = fullnames[i];
+		action_group->add( Gtk::Action::create(action_name, quoted, filename.u8string()),
 			[filename](){App::open_recent(filename);}
 		);
 	}
