@@ -1596,9 +1596,7 @@ CanvasView::add_layer(String x)
 		if (x == "sound") {
 			selected = App::dialog_open_file_audio(_("Please choose an audio file"), filename, ANIMATION_DIR_PREFERENCE);
 		} else {
-			std::string filename_str;
-			selected = App::dialog_open_file_image(_("Please choose an image file"), filename_str, IMAGE_DIR_PREFERENCE);
-			filename = filename_str;
+			selected = App::dialog_open_file_image(_("Please choose an image file"), filename, IMAGE_DIR_PREFERENCE);
 		}
 		if (selected)
 		{

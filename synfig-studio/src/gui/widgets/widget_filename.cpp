@@ -134,12 +134,12 @@ Widget_Filename::on_button_choose_pressed()
 	if (layer->get_name() == "sound")
 		selected = App::dialog_open_file_audio(_("Please choose an audio file"), filename, ANIMATION_DIR_PREFERENCE);
 	else
-	{
-	std::string filename_str = filename.u8string();
 	// Import Image layer
 	if (layer->get_name() == "import")
-		selected = App::dialog_open_file_image(_("Please choose an image file"), filename_str, IMAGE_DIR_PREFERENCE);
+		selected = App::dialog_open_file_image(_("Please choose an image file"), filename, IMAGE_DIR_PREFERENCE);
 	else
+	{
+	std::string filename_str = filename.u8string();
 		selected = App::dialog_open_file(_("Please choose a file"), filename_str, ANIMATION_DIR_PREFERENCE);
 	filename = filename_str;
 	}
