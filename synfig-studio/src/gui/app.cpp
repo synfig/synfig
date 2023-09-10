@@ -855,6 +855,8 @@ public:
 
 		return ret;
 	}
+
+	using synfigapp::Settings::set_value;
 };
 
 App::Preferences App::_preferences;
@@ -2442,7 +2444,7 @@ bool App::dialog_open_file(const std::string& title, std::vector<std::string>& f
 }
 
 bool
-App::dialog_open_file_spal(const std::string& title, std::string& filename, const std::string& preference)
+App::dialog_open_file_spal(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference)
 {
 	filesystem::Path prev_path = _preferences.get_value(preference, Glib::get_home_dir());
 
@@ -2467,7 +2469,7 @@ App::dialog_open_file_spal(const std::string& title, std::string& filename, cons
 		return false;
 
 	filename = dialog->get_filename();
-	_preferences.set_value(preference, filesystem::Path::dirname(filename));
+	_preferences.set_value(preference, filename.parent_path());
 	return true;
 }
 
@@ -3009,7 +3011,7 @@ App::dialog_export_file(const std::string& title, std::string& filename, const s
 }
 
 bool
-App::dialog_save_file_spal(const std::string& title, std::string& filename, const std::string& preference)
+App::dialog_save_file_spal(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference)
 {
 	synfig::String prev_path = _preferences.get_value(preference, Glib::get_home_dir());
 
@@ -3024,13 +3026,13 @@ App::dialog_save_file_spal(const std::string& title, std::string& filename, cons
 
 	// set focus to the file name entry(box) of dialog instead to avoid the name
 	// we are going to save changes while changing file filter each time.
-	dialog->set_current_name(filesystem::Path::basename(filename));
+	dialog->set_current_name(filename.filename().u8string());
 
 	if (dialog->run() == Gtk::RESPONSE_ACCEPT) {
 
 		// add file extension according to file filter selected by user
 		filename = dialog->get_filename();
-		if (filesystem::Path::filename_extension(filename) != ".spal")
+		if (filename.extension().u8string() != ".spal")
 			filename = dialog->get_filename() + ".spal";
 
 		return true;
