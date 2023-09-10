@@ -116,15 +116,15 @@ Widget_Filename::on_value_changed()
 void
 Widget_Filename::on_button_choose_pressed()
 {
-	std::string filename=entry_filename->get_text();
-	filename = synfig::CanvasFileNaming::make_full_filename(canvas->get_file_name(), filename);
+	synfig::filesystem::Path filename(entry_filename->get_text());
+	filename = synfig::CanvasFileNaming::make_full_filename(canvas->get_file_name(), filename.u8string());
 
 	if(filename.empty())
-		filename=".";
+		filename = synfig::filesystem::Path(".");
 	else
 		filename = synfig::filesystem::absolute(
 			synfig::filesystem::Path(App::get_selected_canvas_view()->get_canvas()->get_file_name()).parent_path() /
-			filename).u8string();
+			filename);
 
 	synfig::Layer::Handle layer(App::get_selected_canvas_view()->get_selection_manager()->get_selected_layer());
 
@@ -134,16 +134,20 @@ Widget_Filename::on_button_choose_pressed()
 	if (layer->get_name() == "sound")
 		selected = App::dialog_open_file_audio(_("Please choose an audio file"), filename, ANIMATION_DIR_PREFERENCE);
 	else
+	{
+	std::string filename_str = filename.u8string();
 	// Import Image layer
 	if (layer->get_name() == "import")
-		selected = App::dialog_open_file_image(_("Please choose an image file"), filename, IMAGE_DIR_PREFERENCE);
+		selected = App::dialog_open_file_image(_("Please choose an image file"), filename_str, IMAGE_DIR_PREFERENCE);
 	else
-		selected = App::dialog_open_file(_("Please choose a file"), filename, ANIMATION_DIR_PREFERENCE);
+		selected = App::dialog_open_file(_("Please choose a file"), filename_str, ANIMATION_DIR_PREFERENCE);
+	filename = filename_str;
+	}
 
 	if (selected)
 	{
-		filename = synfig::CanvasFileNaming::make_short_filename(canvas->get_file_name(), filename);
-		entry_filename->set_text(filename);
+		filename = synfig::CanvasFileNaming::make_short_filename(canvas->get_file_name(), filename.u8string());
+		entry_filename->set_text(filename.u8string());
 		entry_filename->activate();
 	}
 }

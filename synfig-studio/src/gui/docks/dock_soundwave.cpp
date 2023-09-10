@@ -95,7 +95,7 @@ public:
 		return widget_sound;
 	}
 
-	bool append_and_set_audio(const std::string &filename) {
+	bool append_and_set_audio(const synfig::filesystem::Path& filename) {
 		if (filename.empty()) {
 			file_combo.set_active_id(item_no_audio_id);
 			return true;
@@ -182,8 +182,8 @@ private:
 	}
 
 	static std::string create_layer_item_label(etl::loose_handle<synfig::Layer_Sound> layer_sound) {
-		const std::string sound_filename = layer_sound->get_param("filename").get(std::string());
-		std::string short_filename = synfig::CanvasFileNaming::make_short_filename(layer_sound->get_canvas()->get_file_name(), sound_filename);
+		const synfig::filesystem::Path sound_filename = layer_sound->get_param("filename").get(std::string());
+		std::string short_filename = synfig::CanvasFileNaming::make_short_filename(layer_sound->get_canvas()->get_file_name(), sound_filename.u8string());
 		const std::string layer_name = layer_sound->get_description();
 
 		// Ellipsize long "short_filename"...
@@ -196,10 +196,10 @@ private:
 		return synfig::strprintf("[%s] %s", layer_name.c_str(), short_filename.c_str());
 	}
 
-	bool import_file(const std::string &filename) {
+	bool import_file(const synfig::filesystem::Path& filename) {
 		std::string errors, warnings;
 
-		bool ok = canvas_interface->import(filename, errors, warnings);
+		bool ok = canvas_interface->import(filename.u8string(), errors, warnings);
 
 		if (!errors.empty())
 			App::dialog_message_1b(
@@ -214,7 +214,7 @@ private:
 				"details",
 				_("Close"));
 		if (!ok) {
-			synfig::warning("Could not load audio: %s", filename.c_str());
+			synfig::warning("Could not load audio: %s", filename.u8_str());
 		}
 		return ok;
 	}
@@ -234,7 +234,7 @@ private:
 		} else if (guid == item_audio_file_id) {
 			if (open_dialog_disabled)
 				return;
-			std::string filename("*.*");
+			synfig::filesystem::Path filename("*.*");
 			if (App::dialog_open_file_audio(_("Please choose an audio file"), filename, ANIMATION_DIR_PREFERENCE))
 			{
 				import_file(filename);
@@ -244,13 +244,13 @@ private:
 			}
 		} else {
 			const auto & layer_sound = layer_map[guid];
-			std::string filename = layer_sound->get_param("filename").get(std::string());
+			synfig::filesystem::Path filename = layer_sound->get_param("filename").get(std::string());
 			if (canvas_interface) {
 				synfig::Canvas::LooseHandle canvas = canvas_interface->get_canvas();
 				if (canvas) {
-					filename = synfig::CanvasFileNaming::make_full_filename(canvas->get_file_name(), filename);
-					filename = canvas->get_file_system()->get_real_uri(filename);
-					filename = Glib::filename_from_uri(filename);
+					filename = synfig::CanvasFileNaming::make_full_filename(canvas->get_file_name(), filename.u8string());
+					filename = canvas->get_file_system()->get_real_uri(filename.u8string());
+					filename = Glib::filename_from_uri(filename.u8string());
 				}
 			}
 
@@ -278,7 +278,7 @@ private:
 		}
 	}
 
-	bool load_sound_file(const std::string& filename, const synfig::Time &delay = synfig::Time::zero())
+	bool load_sound_file(const synfig::filesystem::Path& filename, const synfig::Time& delay = synfig::Time::zero())
 	{
 		file_combo.set_sensitive(false);
 		std::lock_guard<std::mutex> lock(mutex);
@@ -290,12 +290,12 @@ private:
 				setup_file_setting_data();
 				file_settings_box.show();
 			} else {
-				synfig::warning(_("Audio file not supported: %s"), filename.c_str());
+				synfig::warning(_("Audio file not supported: %s"), filename.u8_str());
 			}
 		} catch (const std::string & a) {
-			synfig::error(_("Error loading audio file: %s\n\t%s"), filename.c_str(), a.c_str());
+			synfig::error(_("Error loading audio file: %s\n\t%s"), filename.u8_str(), a.c_str());
 		} catch (...) {
-			synfig::error(_("Error loading audio file: %s\n\tReason unknown"), filename.c_str());
+			synfig::error(_("Error loading audio file: %s\n\tReason unknown"), filename.u8_str());
 		}
 
 		file_combo.set_sensitive(true);
@@ -353,7 +353,7 @@ private:
 		return found_iter;
 	}
 
-	void on_file_loaded(const std::string &filename)
+	void on_file_loaded(const synfig::filesystem::Path& filename)
 	{
 		if (!filename.empty()) {
 //				file_button.set_uri(filename);
@@ -418,7 +418,7 @@ private:
 		if (found_iter) {
 			std::string guid = layer_sound->get_guid().get_string();
 			if (param_name == "filename") {
-				std::string filename = layer_sound->get_param("filename").get(std::string());
+				synfig::filesystem::Path filename = layer_sound->get_param("filename").get(std::string());
 				found_iter->set_value(0, create_layer_item_label(layer_sound));
 				if (guid == file_combo.get_active_id()) {
 					load_sound_file(filename);
@@ -565,9 +565,9 @@ void Dock_SoundWave::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragCont
 			std::string failed_uris;
 
 			for (const std::string &uri : uris) {
-				std::string filename = Glib::filename_from_uri(uri);
+				synfig::filesystem::Path filename = Glib::filename_from_uri(uri);
 				if (!current_grid_sound->append_and_set_audio(filename))
-					failed_uris += filename + "\n";
+					failed_uris += filename.u8string() + "\n";
 			}
 
 			if (failed_uris.empty()) {
