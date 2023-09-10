@@ -2262,7 +2262,7 @@ create_dialog_open_file(const std::string& title, const filesystem::Path& filena
 }
 
 bool
-App::dialog_open_file_ext(const std::string& title, std::vector<std::string>& filenames, const std::string& preference, bool allow_multiple_selection)
+App::dialog_open_file_ext(const std::string& title, std::vector<synfig::filesystem::Path>& filenames, const std::string& preference, bool allow_multiple_selection)
 {
 	// info("App::dialog_open_file('%s', '%s', '%s')", title.c_str(), filename.c_str(), preference.c_str());
 	// TODO: Win32 native dialod not ready yet
@@ -2407,7 +2407,7 @@ App::dialog_open_file_ext(const std::string& title, std::vector<std::string>& fi
 	filter_any->set_name(_("Any files"));
 	filter_any->add_pattern("*");
 
-	std::string filename = filenames.empty() ? std::string() : *filenames.begin();
+	filesystem::Path filename = filenames.empty() ? filesystem::Path() : *filenames.begin();
 
 	auto dialog = create_dialog_open_file(title, filename, prev_path, {filter_supported, filter_synfig, filter_image, filter_image_list, filter_audio, filter_video, filter_lipsync, filter_any});
 	static_cast<Gtk::Button*>(dialog->get_widget_for_response(Gtk::RESPONSE_ACCEPT))->set_label(_("Import"));
@@ -2415,9 +2415,10 @@ App::dialog_open_file_ext(const std::string& title, std::vector<std::string>& fi
 	dialog->set_extra_widget(*scale_imported_box());
 
 	if (dialog->run() == Gtk::RESPONSE_ACCEPT) {
-		filenames = dialog->get_filenames();
+		std::vector<std::string> files = dialog->get_filenames();
+		filenames.assign(files.begin(), files.end());
 		if (!filenames.empty()) {
-			_preferences.set_value(preference, filesystem::Path::dirname(filenames.front()));
+			_preferences.set_value(preference, filenames.front().parent_path());
 		}
 		return true;
 	}
@@ -2426,9 +2427,9 @@ App::dialog_open_file_ext(const std::string& title, std::vector<std::string>& fi
 }
 
 bool
-App::dialog_open_file(const std::string& title, std::string& filename, const std::string& preference)
+App::dialog_open_file(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference)
 {
-	std::vector<std::string> filenames;
+	std::vector<synfig::filesystem::Path> filenames;
 	if (!filename.empty())
 		filenames.push_back(filename);
 	if(dialog_open_file_ext(title, filenames, preference, false)) {
@@ -2438,7 +2439,7 @@ App::dialog_open_file(const std::string& title, std::string& filename, const std
 	return false;
 }
 
-bool App::dialog_open_file(const std::string& title, std::vector<std::string>& filenames, const std::string& preference)
+bool App::dialog_open_file(const std::string& title, std::vector<synfig::filesystem::Path>& filenames, const std::string& preference)
 {
 	return dialog_open_file_ext(title, filenames, preference, true);
 }

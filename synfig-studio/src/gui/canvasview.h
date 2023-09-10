@@ -482,7 +482,7 @@ private:
 	void on_interpolation_changed();
 
 	//helper function for import_file()
-	bool is_same_file(const std::string &filename);
+	bool is_same_file(const synfig::filesystem::Path& filename);
 	
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------

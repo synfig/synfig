@@ -3206,14 +3206,13 @@ CanvasView::on_meta_data_changed()
 void
 CanvasView::import_file()
 {
-	// String filename(dirname(get_canvas()->get_file_name()));
-	std::vector<std::string> filenames;
+	std::vector<filesystem::Path> filenames;
 	LayerTree::LayerList layers;
-	filenames.push_back("*.*");
+	filenames.push_back({"*.*"});
 	String errors, warnings;
 	if(App::dialog_open_file(_("Please select files"), filenames, IMAGE_DIR_PREFERENCE))
 	{
-		for(const std::string &filename : filenames){
+		for(const filesystem::Path& filename : filenames){
 		// Don't let user import a file to itself
 		// Check if it's the same file of this canvas
 		{
@@ -3253,7 +3252,7 @@ CanvasView::import_file()
 }
 
 bool
-CanvasView::is_same_file(const std::string &filename)
+CanvasView::is_same_file(const filesystem::Path& filename)
 {
 	bool is_same_file = get_canvas()->get_file_name() == filename;
 	if (!is_same_file) {
@@ -3261,7 +3260,7 @@ CanvasView::is_same_file(const std::string &filename)
 		try {
 			current_file = Gio::File::create_for_path(get_canvas()->get_file_name());
 			if (current_file) {
-				Glib::RefPtr<Gio::File> import_file = Gio::File::create_for_path(filename);
+				Glib::RefPtr<Gio::File> import_file = Gio::File::create_for_path(filename.u8string());
 				is_same_file = current_file->equal(import_file);
 				if (!is_same_file && import_file) {
 					// One more sanity check

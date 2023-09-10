@@ -301,7 +301,7 @@ public:
 
 private:
 	static void add_recent_file(const std::string &filename, bool emit_signal);
-	static bool dialog_open_file_ext(const std::string &title, std::vector<std::string>& filenames, const std::string& preference, bool allow_multiple_selection);
+	static bool dialog_open_file_ext(const std::string &title, std::vector<synfig::filesystem::Path>& filenames, const std::string& preference, bool allow_multiple_selection);
 
 	App();
 
@@ -414,8 +414,8 @@ public:
 //	static bool dialog_file(const std::string &title, std::string &filename);
 
 	static bool dialog_select_importer(const std::string& filename, std::string& plugin);
-	static bool dialog_open_file(const std::string& title, std::string& filename, const std::string& preference);
-	static bool dialog_open_file(const std::string& title, std::vector<std::string>& filenames, const std::string& preference);
+	static bool dialog_open_file(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference);
+	static bool dialog_open_file(const std::string& title, std::vector<synfig::filesystem::Path>& filenames, const std::string& preference);
 	static bool dialog_open_file_spal(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference);
 	static bool dialog_open_file_sketch(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference);
 	static bool dialog_open_file_image(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference);

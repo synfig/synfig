@@ -138,11 +138,7 @@ Widget_Filename::on_button_choose_pressed()
 	if (layer->get_name() == "import")
 		selected = App::dialog_open_file_image(_("Please choose an image file"), filename, IMAGE_DIR_PREFERENCE);
 	else
-	{
-	std::string filename_str = filename.u8string();
-		selected = App::dialog_open_file(_("Please choose a file"), filename_str, ANIMATION_DIR_PREFERENCE);
-	filename = filename_str;
-	}
+		selected = App::dialog_open_file(_("Please choose a file"), filename, ANIMATION_DIR_PREFERENCE);
 
 	if (selected)
 	{
