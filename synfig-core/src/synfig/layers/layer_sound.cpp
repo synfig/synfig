@@ -139,6 +139,8 @@ Layer_Sound::fill_sound_processor(SoundProcessor &soundProcessor) const
 	String filename = param_filename.get(String());
 	filename = CanvasFileNaming::make_full_filename(get_canvas()->get_file_name(), filename);
 	filename = get_canvas()->get_file_system()->get_real_uri(filename);
+	if (filename.empty())
+		return;
 	filename = Glib::filename_from_uri(filename);
 	if (filename.empty())
 		return;
