@@ -412,13 +412,11 @@ CellRenderer_ValueBase::render_vfunc(
 		x.convert( App::distance_system, get_canvas()->rend_desc() );
 		y.convert( App::distance_system, get_canvas()->rend_desc() );
 
-		Distance sx( scale[0], Distance::SYSTEM_UNITS ), sy( scale[1], Distance::SYSTEM_UNITS );
-		sx.convert( App::distance_system, get_canvas()->rend_desc() );
-		sy.convert( App::distance_system, get_canvas()->rend_desc() );
-
-		property_text() = x.get_string(real_num_decimals) + "," + y.get_string(real_num_decimals) +
-						float_presentation(angle.get(), angle_num_decimals) + "°" +
-					sx.get_string(real_num_decimals) + "," + sy.get_string(real_num_decimals);
+		property_text() = strprintf("%s,%s %s° %s,%s",
+			x.get_string(real_num_decimals).c_str(), y.get_string(real_num_decimals).c_str(),
+			float_presentation(angle.get(), angle_num_decimals).c_str(),
+			synfig::float_presentation(scale[0], real_num_decimals).c_str(), synfig::float_presentation(scale[1], real_num_decimals).c_str()
+		);
 	}
 	else
 	if (type == type_string)
