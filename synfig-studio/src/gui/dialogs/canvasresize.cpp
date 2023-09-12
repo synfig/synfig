@@ -280,8 +280,8 @@ void CanvasResize::on_height_changed()
 void CanvasResize::on_size_template_changed(){
 	String selection(combo_box->get_active_text());
 	if(selection == "Custom Size"){
-		width->set_active(true);
-		height->set_active(true);
+		width->set_sensitive(true);
+		height->set_sensitive(true);
 		return;
 	}
 	String::size_type locx=selection.find_first_of('x');
