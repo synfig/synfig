@@ -78,20 +78,23 @@ imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &re
 	}
 
 	bool is_temporary_file = false;
-	std::string filename=identifier.file_system->get_real_filename(identifier.filename);
+	std::string filename = identifier.file_system->get_real_filename(identifier.filename.u8string());
 	std::string target_filename=FileSystemTemporary::generate_system_temporary_filename("imagemagick", ".png");
 
-	std::string filename_extension = filesystem::Path::filename_extension(identifier.filename);
+	std::string filename_extension = identifier.filename.extension().u8string();
 
 	if (filename.empty()) {
 		is_temporary_file = true;
 		filename = FileSystemTemporary::generate_system_temporary_filename("imagemagick", filename_extension);
 
 		// try to copy file to a temp file
-		if (!FileSystem::copy(identifier.file_system, identifier.filename, identifier.file_system, filename))
+		if (!FileSystem::copy(identifier.file_system, identifier.filename.u8string(), identifier.file_system, filename))
 		{
-			if(cb)cb->error(_("Cannot create temporary file of ")+ identifier.filename);
-			else synfig::error(_("Cannot create temporary file of ")+ identifier.filename);
+			std::string msg = strprintf(_("Cannot create temporary file of %s"), identifier.filename.u8_str());
+			if (cb)
+				cb->error(msg);
+			else
+				synfig::error(msg);
 			return false;
 		}
 	}

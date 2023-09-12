@@ -62,7 +62,8 @@ exr_mptr::get_frame(synfig::Surface &out_surface, const synfig::RendDesc &/*rend
     try
     {
 
-	Imf::RgbaInputFile in(identifier.filename.c_str());
+	// OpenEXR implementation does not support wchar_t, so MS Windows users will have troubles sometimes
+	Imf::RgbaInputFile in(identifier.filename.u8_str());
 
     int w = in.dataWindow().max.x - in.dataWindow().min.x + 1;
     int h = in.dataWindow().max.y - in.dataWindow().min.y + 1;

@@ -37,6 +37,8 @@
 
 #include <png.h>
 
+#include <cstring> // memset and strlen
+
 #include <synfig/general.h>
 #include <synfig/localization.h>
 #include <synfig/misc.h>
