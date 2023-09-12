@@ -80,7 +80,7 @@ CanvasResize::CanvasResize(Gtk::Window &parent, etl::handle<synfigapp::CanvasInt
 	, rsz_im_label      (nullptr)
 	, rsz_im_chbox      (nullptr)
 	, toggle_ratio_wh   (nullptr)
-	, combo_box 		(nullptr)
+	, combo_box         (nullptr)
 	, canvas_center     (canvas_buttons[4])
 	, old_width         (0)
 	, old_height        (0)
