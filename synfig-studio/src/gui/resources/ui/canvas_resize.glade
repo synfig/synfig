@@ -377,7 +377,7 @@
             <property name="margin-bottom">22</property>
             <property name="active">0</property>
             <items>
-              <item translatable="yes">placeholder</item>
+              <item translatable="yes">Custom Size</item>
             </items>
           </object>
           <packing>

@@ -111,6 +111,7 @@ class CanvasResize : public Gtk::Dialog
 	void on_action_signal_response(int response_id);
 	void on_width_changed();
 	void on_height_changed();
+	void on_size_template_changed();
 	void on_canvas_button_clicked(Gtk::Button *button);
 
 	bool on_image_label_enter_event(GdkEventCrossing *event);

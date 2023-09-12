@@ -41,7 +41,7 @@
 
 #include <gtkmm/icontheme.h>
 #include <gdkmm/pixbuf.h>
-
+#include <iostream>
 #endif
 
 using namespace studio;
@@ -175,6 +175,8 @@ void CanvasResize::set_up_signals()
 			sigc::mem_fun(*this, &CanvasResize::on_spinbutton_updated), height));
 	height->signal_value_changed().connect(
 			sigc::mem_fun(*this, &CanvasResize::on_height_changed));
+	combo_box->signal_changed().connect(
+			sigc::mem_fun(*this, &studio::CanvasResize::on_size_template_changed));
 	rsz_im_chbox->signal_toggled().connect(
 			sigc::mem_fun(*this, &CanvasResize::on_resize_image_checked));
 	rsz_im_label->add_events(Gdk::ENTER_NOTIFY_MASK | Gdk::LEAVE_NOTIFY_MASK);
@@ -273,6 +275,28 @@ void CanvasResize::on_height_changed()
 	rend_desc.set_h(height->get_value_as_int());
 
 	refresh_wh_toggle_widgets();
+}
+
+void CanvasResize::on_size_template_changed(){
+	String selection(combo_box->get_active_text());
+	if(selection == "Custom Size"){
+		width->set_active(true);
+		height->set_active(true);
+		return;
+	}
+	String::size_type locx=selection.find_first_of('x');
+	String::size_type locspace=selection.find_first_of(' ');
+	String x_size(selection.substr(0,locx));
+	String y_size(selection.substr(locx+1,locspace));
+	int x=atoi(x_size.c_str());
+	int y=atoi(y_size.c_str());
+	toggle_ratio_wh->set_active(false);
+	width->set_value(x);
+	height->set_value(y);
+	width->set_sensitive(false);
+	height->set_sensitive(false);
+	toggle_ratio_wh->set_active(true);
+	return;
 }
 
 void CanvasResize::on_canvas_button_clicked(Gtk::Button *button)
