@@ -80,6 +80,7 @@ CanvasResize::CanvasResize(Gtk::Window &parent, etl::handle<synfigapp::CanvasInt
 	, rsz_im_label      (nullptr)
 	, rsz_im_chbox      (nullptr)
 	, toggle_ratio_wh   (nullptr)
+	, combo_box 		(nullptr)
 	, canvas_center     (canvas_buttons[4])
 	, old_width         (0)
 	, old_height        (0)
@@ -114,7 +115,7 @@ void CanvasResize::set_up_builder_widgets()
 	builder->get_widget("height"      , height);
 	builder->get_widget("rsz_im_chbox", rsz_im_chbox);
 	builder->get_widget("rsz_im_label", rsz_im_label);
-
+	builder->get_widget("combo_box"   , combo_box);
 	builder->get_widget_derived("toggle_ratio_wh", toggle_ratio_wh);
 
 	int index = 0;
@@ -124,6 +125,21 @@ void CanvasResize::set_up_builder_widgets()
 			canvas_buttons[index++] = static_cast<Gtk::Button*>(widget);
 		}
 	}
+
+	combo_box->prepend(_("4096x3112 Full Aperture 4K"));
+	combo_box->prepend(_("2048x1556 Full Aperture Native 2K"));
+	combo_box->prepend(_("1920x1080 HDTV 1080p/i"));
+	combo_box->prepend(_("1280x720  HDTV 720p"));
+	combo_box->prepend(_("720x576   DVD PAL"));
+	combo_box->prepend(_("720x480   DVD NTSC"));
+	combo_box->prepend(_("720x540   Web 720x"));
+	combo_box->prepend(_("720x405   Web 720x HD"));
+	combo_box->prepend(_("640x480   Web 640x"));
+	combo_box->prepend(_("640x360   Web 640x HD"));
+	combo_box->prepend(_("480x360   Web 480x"));
+	combo_box->prepend(_("480x270   Web 480x HD"));
+	combo_box->prepend(_("360x270   Web 360x"));
+	combo_box->prepend(_("360x203   Web 360x HD"));
 }
 
 void CanvasResize::set_up_toggle_tooltips()
