@@ -41,7 +41,7 @@
 
 #include <gtkmm/icontheme.h>
 #include <gdkmm/pixbuf.h>
-#include <iostream>
+
 #endif
 
 using namespace studio;
