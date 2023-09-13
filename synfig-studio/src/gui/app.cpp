@@ -1365,9 +1365,9 @@ App::get_default_accel_map()
 		{"<Mod1>9",                 "<Actions>/canvasview/mask-bone-ducks"},
 		{"<Mod1>5",                 "<Actions>/canvasview/mask-widthpoint-position-ducks"},
 		{"<Shift>Page_Up",          "<Actions>/action_group_layer_action_manager/action-LayerRaise"},
-		{"Page_Up",                 "<Actions>/action_group_layer_action_manager/action-LayerRaiseMax"},
 		{"<Shift>Page_Down",        "<Actions>/action_group_layer_action_manager/action-LayerLower"},
-		{"Page_Down",               "<Actions>/action_group_layer_action_manager/action-LayerLowerMax"},
+		{"Page_Down",               "<Actions>/action_group_layer_action_manager/action-LayerToBottom"},
+		{"Page_Up",                 "<Actions>/action_group_layer_action_manager/action-LayerToTop"},
 		{"<Primary>z",              "<Actions>/action_group_dock_history/undo"},
 #ifdef _WIN32
 		{"<Control>y",              "<Actions>/action_group_dock_history/redo"},

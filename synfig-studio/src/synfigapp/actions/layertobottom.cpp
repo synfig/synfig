@@ -48,13 +48,13 @@ using namespace Action;
 
 /* === M A C R O S ========================================================= */
 
-ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerLowerMax);
-ACTION_SET_NAME(Action::LayerLowerMax,"LayerLowerMax");
-ACTION_SET_LOCAL_NAME(Action::LayerLowerMax,N_("Lower Layer to Bottom"));
-ACTION_SET_TASK(Action::LayerLowerMax,"lower to bottom");
-ACTION_SET_CATEGORY(Action::LayerLowerMax,Action::CATEGORY_LAYER);
-ACTION_SET_PRIORITY(Action::LayerLowerMax,9);
-ACTION_SET_VERSION(Action::LayerLowerMax,"0.0");
+ACTION_INIT_NO_GET_LOCAL_NAME(Action::LayerToBottom);
+ACTION_SET_NAME(Action::LayerToBottom,"LayerToBottom");
+ACTION_SET_LOCAL_NAME(Action::LayerToBottom,N_("Lower Layer to Bottom"));
+ACTION_SET_TASK(Action::LayerToBottom,"lower to bottom");
+ACTION_SET_CATEGORY(Action::LayerToBottom,Action::CATEGORY_LAYER);
+ACTION_SET_PRIORITY(Action::LayerToBottom,9);
+ACTION_SET_VERSION(Action::LayerToBottom,"0.0");
 
 /* === G L O B A L S ======================================================= */
 
@@ -62,19 +62,19 @@ ACTION_SET_VERSION(Action::LayerLowerMax,"0.0");
 
 /* === M E T H O D S ======================================================= */
 
-LayerLowerMax::LayerLowerMax()
+LayerToBottom::LayerToBottom()
 {
 
 }
 
 synfig::String
-Action::LayerLowerMax::get_local_name() const
+Action::LayerToBottom::get_local_name() const
 {
 	return get_layer_descriptions(layers, _("Lower Layer to Bottom"), _("Lower Layers to Bottom"));
 }
 
 Action::ParamVocab
-Action::LayerLowerMax::get_param_vocab()
+Action::LayerToBottom::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
 
@@ -88,7 +88,7 @@ Action::LayerLowerMax::get_param_vocab()
 }
 
 bool
-Action::LayerLowerMax::is_candidate(const ParamList &x)
+Action::LayerToBottom::is_candidate(const ParamList &x)
 {
 	if (!candidate_check(get_param_vocab(), x))
 		return false;
@@ -99,7 +99,7 @@ Action::LayerLowerMax::is_candidate(const ParamList &x)
 }
 
 bool
-Action::LayerLowerMax::set_param(const synfig::String& name, const Action::Param &param)
+Action::LayerToBottom::set_param(const synfig::String& name, const Action::Param &param)
 {
 	if(name=="layer" && param.get_type()==Param::TYPE_LAYER)
 	{
@@ -112,7 +112,7 @@ Action::LayerLowerMax::set_param(const synfig::String& name, const Action::Param
 }
 
 bool
-Action::LayerLowerMax::is_ready()const
+Action::LayerToBottom::is_ready()const
 {
 	if(layers.empty())
 		return false;
@@ -120,7 +120,7 @@ Action::LayerLowerMax::is_ready()const
 }
 
 void
-Action::LayerLowerMax::prepare()
+Action::LayerToBottom::prepare()
 {
 	clear();
 

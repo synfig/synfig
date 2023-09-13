@@ -196,9 +196,9 @@ Action::Main::Main()
 	ADD_ACTION(Action::LayerRemove);
 	ADD_ACTION(Action::LayerMove);
 	ADD_ACTION(Action::LayerRaise);
-	ADD_ACTION(Action::LayerRaiseMax);
+	ADD_ACTION(Action::LayerToTop);
 	ADD_ACTION(Action::LayerLower);
-	ADD_ACTION(Action::LayerLowerMax);
+	ADD_ACTION(Action::LayerToBottom);
 	ADD_ACTION(Action::LayerAdd);
 	ADD_ACTION(Action::LayerActivate);
 	ADD_ACTION(Action::LayerFit);

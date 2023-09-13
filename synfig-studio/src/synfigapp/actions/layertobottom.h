@@ -45,7 +45,7 @@ namespace synfigapp {
 
 namespace Action {
 
-class LayerLowerMax : public Super
+class LayerToBottom : public Super
 {
 private:
 
@@ -53,7 +53,7 @@ private:
 
 public:
 
-	LayerLowerMax();
+	LayerToBottom();
 
 	static ParamVocab get_param_vocab();
 	static bool is_candidate(const ParamList &x);

@@ -45,7 +45,7 @@ namespace synfigapp {
 
 namespace Action {
 
-class LayerRaiseMax : public Super
+class LayerToTop : public Super
 {
 private:
 
@@ -53,7 +53,7 @@ private:
 
 public:
 
-	LayerRaiseMax();
+	LayerToTop();
 
 	static ParamVocab get_param_vocab();
 	static bool is_candidate(const ParamList &x);
