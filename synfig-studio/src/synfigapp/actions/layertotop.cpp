@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file layerraisemax.cpp
+/*!	\file layertotop.cpp
 **	\brief Template File
 **
 **	\legal
@@ -33,7 +33,7 @@
 #	include <config.h>
 #endif
 
-#include "layerraisemax.h"
+#include "layertotop.h"
 #include <synfig/general.h>
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/localization.h>

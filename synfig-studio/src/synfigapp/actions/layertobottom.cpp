@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file layerlowermax.cpp
-**	\brief Template File
+/*!	\file layertobottom.cpp
+**	\brief Action to lower layer to bottom of the layer stack
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -33,7 +33,7 @@
 #	include <config.h>
 #endif
 
-#include "layerlowermax.h"
+#include "layertobottom.h"
 #include <synfig/general.h>
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/localization.h>

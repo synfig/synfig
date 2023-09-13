@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file layerlowermax.h
-**	\brief Action to lower layer to bottom of the layer stack
+/*!	\file layertotop.h
+**	\brief Action to raise layer to top of the layer stack
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -26,8 +26,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef LAYERLOWERMAX_H
-#define LAYERLOWERMAX_H
+#ifndef LAYERTOTOP_H
+#define LAYERTOTOP_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -45,7 +45,7 @@ namespace synfigapp {
 
 namespace Action {
 
-class LayerLowerMax : public Super
+class LayerRaiseMax : public Super
 {
 private:
 
@@ -53,13 +53,13 @@ private:
 
 public:
 
-	LayerLowerMax();
+	LayerRaiseMax();
 
 	static ParamVocab get_param_vocab();
 	static bool is_candidate(const ParamList &x);
 
 	bool set_param(const synfig::String& name, const Param &) override;
-	bool is_ready() const override;
+	bool is_ready()const override;
 
 	void prepare() override;
 
@@ -71,4 +71,4 @@ public:
 
 /* === E N D =============================================================== */
 
-#endif // LAYERLOWERMAX_H
+#endif // LAYERTOTOP_H

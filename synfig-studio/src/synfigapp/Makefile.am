@@ -18,7 +18,6 @@ LAYER_ACTION_HH = \
 	actions/layerextract.h \
 	actions/layerfit.h \
 	actions/layerlower.h \
-	actions/layerlowermax.h \
 	actions/layermove.h \
 	actions/layermakebline.h \
 	actions/layerpaint.h \
@@ -28,11 +27,12 @@ LAYER_ACTION_HH = \
 	actions/layerparamsetstatic.h\
 	actions/layerparamunsetstatic.h\
 	actions/layerraise.h \
-	actions/layerraisemax.h \
 	actions/layerremove.h \
 	actions/layerresetpose.h \
 	actions/layersetdesc.h \
 	actions/layersetexcludefromrendering.h \
+	actions/layertobottom.h \
+	actions/layertotop.h \
 	actions/layerzdepthrangeset.h\
 	actions/vectorization.h
 	
@@ -50,7 +50,6 @@ LAYER_ACTION_CC = \
 	actions/layerextract.cpp \
 	actions/layerfit.cpp \
 	actions/layerlower.cpp \
-	actions/layerlowermax.cpp \
 	actions/layermove.cpp \
 	actions/layermakebline.cpp \
 	actions/layerpaint.cpp \
@@ -60,11 +59,12 @@ LAYER_ACTION_CC = \
 	actions/layerparamsetstatic.cpp\
 	actions/layerparamunsetstatic.cpp\
 	actions/layerraise.cpp \
-	actions/layerraisemax.cpp \
 	actions/layerremove.cpp \
 	actions/layerresetpose.cpp \
 	actions/layersetdesc.cpp \
 	actions/layersetexcludefromrendering.cpp \
+	actions/layertobottom.cpp \
+	actions/layertotop.cpp \
 	actions/layerzdepthrangeset.cpp \
 	actions/vectorization.cpp
 

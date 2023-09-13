@@ -392,8 +392,6 @@ src/synfigapp/actions/layerfit.cpp
 src/synfigapp/actions/layerfit.h
 src/synfigapp/actions/layerlower.cpp
 src/synfigapp/actions/layerlower.h
-src/synfigapp/actions/layerlowermax.cpp
-src/synfigapp/actions/layerlowermax.h
 src/synfigapp/actions/layermakebline.cpp
 src/synfigapp/actions/layermakebline.h
 src/synfigapp/actions/layermove.cpp
@@ -412,14 +410,16 @@ src/synfigapp/actions/layerparamunsetstatic.cpp
 src/synfigapp/actions/layerparamunsetstatic.h
 src/synfigapp/actions/layerraise.cpp
 src/synfigapp/actions/layerraise.h
-src/synfigapp/actions/layerraisemax.cpp
-src/synfigapp/actions/layerraisemax.h
 src/synfigapp/actions/layerremove.cpp
 src/synfigapp/actions/layerremove.h
 src/synfigapp/actions/layerresetpose.cpp
 src/synfigapp/actions/layersetdesc.cpp
 src/synfigapp/actions/layersetdesc.h
 src/synfigapp/actions/layersetexcludefromrendering.cpp
+src/synfigapp/actions/layertobottom.cpp
+src/synfigapp/actions/layertobottom.h
+src/synfigapp/actions/layertotop.cpp
+src/synfigapp/actions/layertotop.h
 src/synfigapp/actions/layerzdepthrangeset.cpp
 src/synfigapp/actions/timepointscopy.cpp
 src/synfigapp/actions/timepointscopy.h
