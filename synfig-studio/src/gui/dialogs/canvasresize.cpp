@@ -125,21 +125,6 @@ void CanvasResize::set_up_builder_widgets()
 			canvas_buttons[index++] = static_cast<Gtk::Button*>(widget);
 		}
 	}
-
-	combo_box->prepend(_("4096x3112 Full Aperture 4K"));
-	combo_box->prepend(_("2048x1556 Full Aperture Native 2K"));
-	combo_box->prepend(_("1920x1080 HDTV 1080p/i"));
-	combo_box->prepend(_("1280x720  HDTV 720p"));
-	combo_box->prepend(_("720x576   DVD PAL"));
-	combo_box->prepend(_("720x480   DVD NTSC"));
-	combo_box->prepend(_("720x540   Web 720x"));
-	combo_box->prepend(_("720x405   Web 720x HD"));
-	combo_box->prepend(_("640x480   Web 640x"));
-	combo_box->prepend(_("640x360   Web 640x HD"));
-	combo_box->prepend(_("480x360   Web 480x"));
-	combo_box->prepend(_("480x270   Web 480x HD"));
-	combo_box->prepend(_("360x270   Web 360x"));
-	combo_box->prepend(_("360x203   Web 360x HD"));
 }
 
 void CanvasResize::set_up_toggle_tooltips()
@@ -278,18 +263,18 @@ void CanvasResize::on_height_changed()
 }
 
 void CanvasResize::on_size_template_changed(){
-	String selection(combo_box->get_active_text());
-	if(selection == "Custom Size"){
+	String selection(combo_box->get_active_id());
+	if(selection == "custom"){
 		width->set_sensitive(true);
 		height->set_sensitive(true);
 		return;
 	}
 	String::size_type locx=selection.find_first_of('x');
-	String::size_type locspace=selection.find_first_of(' ');
+	String::size_type strSize=selection.size();
 	String x_size(selection.substr(0,locx));
-	String y_size(selection.substr(locx+1,locspace));
-	int x=atoi(x_size.c_str());
-	int y=atoi(y_size.c_str());
+	String y_size(selection.substr(locx+1,strSize-1));
+	int x=stoi(x_size);
+	int y=stoi(y_size);
 	toggle_ratio_wh->set_active(false);
 	width->set_value(x);
 	height->set_value(y);

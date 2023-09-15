@@ -377,7 +377,19 @@
             <property name="margin-bottom">22</property>
             <property name="active">0</property>
             <items>
-              <item translatable="yes">Custom Size</item>
+              <item id="custom" translatable="yes">Custom Size</item>
+              <item id="4096x3112" translatable="yes">4096x3112 Full Aperture 4K</item>
+              <item id="2048x1556" translatable="yes">2048x1556 Full Aperture Native 2K</item>
+              <item id="1920x1080" translatable="yes">1920x1080 HDTV 1080p/i</item>
+              <item id="1280x720" translatable="yes">1280x720  HDTV 720p</item>
+              <item id="720x576" translatable="yes">720x576   DVD PAL</item>
+              <item id="720x480" translatable="yes">720x480   DVD NTSC</item>
+              <item id="720x540" translatable="yes">720x540   Web 720x</item>
+              <item id="720x405" translatable="yes">720x405   Web 720x HD</item>
+              <item id="640x480" translatable="yes">640x480   Web 640x</item>
+              <item id="480x360" translatable="yes">480x360   Web 480x</item>
+              <item id="480x270" translatable="yes">480x270   Web 480x HD</item>
+              <item id="360x270" translatable="yes">360x270   Web 360x</item>
             </items>
           </object>
           <packing>
