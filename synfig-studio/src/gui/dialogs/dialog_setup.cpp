@@ -52,7 +52,7 @@
 #include <gui/widgets/widget_enum.h>
 #include <gui/autorecover.h>
 #include <synfig/threadpool.h>
-
+#include <synfig/os.h>
 #include <synfig/general.h>
 #include <synfig/rendering/renderer.h>
 
@@ -231,6 +231,20 @@ Dialog_Setup::create_system_page(PageInfo pi)
 		pi.grid->attach(*brush_path_btn_grid, 0, ++row, 1, 2);
 		brush_path_btn_grid->set_halign(Gtk::ALIGN_END);
 		++row;
+	}
+	//System Plugins path
+	{
+		attach_label_section(pi.grid, _("Plug-ins Path"), ++row);
+		pi.grid->attach(textbox_plugin_path, 1, row, 1, 1);
+		textbox_plugin_path.set_editable(false);
+		textbox_plugin_path.set_text(ResourceHelper::get_plugin_path());
+
+		Gtk::Button* plugin_path_change(manage(new Gtk::Button()));
+		plugin_path_change->set_image_from_icon_name("action_doc_open_icon", Gtk::ICON_SIZE_BUTTON);
+		pi.grid->attach(*plugin_path_change,0,row,1,1); 
+		plugin_path_change->set_halign(Gtk::ALIGN_END);
+		plugin_path_change->signal_clicked().connect(
+			sigc::mem_fun(*this, &Dialog_Setup::on_plugin_path_change_clicked));
 	}
 	// System - 11 enable_experimental_features
 	attach_label_section(pi.grid, _("Experimental features (requires restart)"), ++row);
@@ -1480,6 +1494,12 @@ Dialog_Setup::on_brush_path_remove_clicked()
 	//! TODO if list size == 0: push warning to warning zone
 }
 
+void
+Dialog_Setup::on_plugin_path_change_clicked()
+{
+	String foldername = ResourceHelper::get_plugin_path();
+	synfig::OS::launch_file_async(foldername);
+}
 void
 Dialog_Setup::on_value_change(int valueflag)
 {

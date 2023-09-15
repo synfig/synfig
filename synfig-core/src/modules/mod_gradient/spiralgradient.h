@@ -31,11 +31,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfig/layers/layer_composite.h>
-#include <synfig/color.h>
-#include <synfig/vector.h>
-#include <synfig/value.h>
 #include <synfig/gradient.h>
-#include <synfig/angle.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -65,7 +61,6 @@ private:
 
 	void compile();
 	Color color_func(const Point &x, Real supersample=0)const;
-	Real calc_supersample(const Point &x, Real pw, Real ph)const;
 
 public:
 
@@ -77,10 +72,12 @@ public:
 
 	virtual Color get_color(Context context, const Point &pos)const;
 
-	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	Layer::Handle hit_check(Context context, const Point &point)const;
 
 	virtual Vocab get_param_vocab()const;
+
+protected:
+	virtual rendering::Task::Handle build_composite_task_vfunc(synfig::ContextParams context_params) const;
 }; // END of class SpiralGradient
 
 /* === E N D =============================================================== */

@@ -34,16 +34,12 @@
 #	include <config.h>
 #endif
 
+#include "radialgradient.h"
+
+#include <synfig/context.h>
 #include <synfig/localization.h>
 
-#include <synfig/string.h>
-#include <synfig/context.h>
-#include <synfig/paramdesc.h>
-#include <synfig/renddesc.h>
-#include <synfig/surface.h>
-#include <synfig/value.h>
-
-#include "radialgradient.h"
+#include <synfig/rendering/software/task/taskpaintpixelsw.h>
 
 #endif
 
@@ -57,13 +53,64 @@ SYNFIG_LAYER_INIT(RadialGradient);
 SYNFIG_LAYER_SET_NAME(RadialGradient,"radial_gradient");
 SYNFIG_LAYER_SET_LOCAL_NAME(RadialGradient,N_("Radial Gradient"));
 SYNFIG_LAYER_SET_CATEGORY(RadialGradient,N_("Gradients"));
-SYNFIG_LAYER_SET_VERSION(RadialGradient,"0.1");
+SYNFIG_LAYER_SET_VERSION(RadialGradient,"0.2");
 
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
 
-/* === E N T R Y P O I N T ================================================= */
+class TaskRadialGradient: public rendering::Task, public rendering::TaskInterfaceTransformation
+{
+public:
+	typedef etl::handle<TaskRadialGradient> Handle;
+	static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
+
+	Point center;
+	Real radius;
+	CompiledGradient compiled_gradient;
+	rendering::Holder<rendering::TransformationAffine> transformation;
+
+	TaskRadialGradient() { }
+	virtual rendering::Transformation::Handle get_transformation() const override
+		{ return transformation.handle(); }
+};
+
+
+class TaskRadialGradientSW: public TaskRadialGradient, public rendering::TaskPaintPixelSW
+{
+public:
+	typedef etl::handle<TaskRadialGradientSW> Handle;
+	static Token token;
+	virtual Token::Handle get_token() const override { return token.handle(); }
+
+	mutable Real supersample = 0.;
+
+	void pre_run(const Matrix3& /*matrix*/, const Matrix3& /*inverse_matrix*/) const override
+	{
+		supersample = 1.2*get_units_per_pixel()[0]/radius;
+		supersample *= 0.5;
+	}
+
+	bool run(RunParams&) const override
+	{
+		return run_task();
+	}
+
+	Color get_color(const Vector& p) const override
+	{
+		Real dist((p-center).mag()/radius);
+
+		return compiled_gradient.average(dist - supersample, dist + supersample);
+		//return params.gradient.color(dist);
+	}
+};
+
+rendering::Task::Token TaskRadialGradient::token(
+	DescAbstract<TaskRadialGradient>("TaskRadialGradient") );
+rendering::Task::Token TaskRadialGradientSW::token(
+	DescReal<TaskRadialGradientSW, TaskRadialGradient>("TaskRadialGradientSW") );
+
 
 RadialGradient::RadialGradient():
 	Layer_Composite(1.0,Color::BLEND_COMPOSITE),
@@ -161,15 +208,6 @@ RadialGradient::color_func(const Point &point, Real supersample)const
 	return compiled_gradient.average(dist - supersample, dist + supersample);
 }
 
-
-Real
-RadialGradient::calc_supersample(const synfig::Point &/*x*/, Real pw, Real /*ph*/)const
-{
-	Real radius=param_radius.get(Real());
-//	return sqrt(pw*pw+ph*ph)/radius;
-	return 1.2*pw/radius;
-}
-
 synfig::Layer::Handle
 RadialGradient::hit_check(synfig::Context context, const synfig::Point &point)const
 {
@@ -197,53 +235,14 @@ RadialGradient::get_color(Context context, const Point &pos)const
 		return Color::blend(color,context.get_color(pos),get_amount(),get_blend_method());
 }
 
-bool
-RadialGradient::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+rendering::Task::Handle
+RadialGradient::build_composite_task_vfunc(ContextParams /*context_params*/) const
 {
-	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
+	TaskRadialGradient::Handle task(new TaskRadialGradient());
+	task->center = param_center.get(Point());
+	task->radius = param_radius.get(Real());
+	task->compiled_gradient = compiled_gradient;
 
-	SuperCallback supercb(cb,0,9500,10000);
-
-	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
-	{
-		surface->set_wh(renddesc.get_w(),renddesc.get_h());
-	}
-	else
-	{
-		if(!context.accelerated_render(surface,quality,renddesc,&supercb))
-			return false;
-		if(get_amount()==0)
-			return true;
-	}
-
-
-	int x,y;
-
-	Surface::pen pen(surface->begin());
-	const Real pw(renddesc.get_pw()),ph(renddesc.get_ph());
-	Point pos;
-	Point tl(renddesc.get_tl());
-	const int w(surface->get_w());
-	const int h(surface->get_h());
-
-	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
-	{
-		for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)
-			for(x=0,pos[0]=tl[0];x<w;x++,pen.inc_x(),pos[0]+=pw)
-				pen.put_value(color_func(pos,calc_supersample(pos,pw,ph)));
-	}
-	else
-	{
-		for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)
-			for(x=0,pos[0]=tl[0];x<w;x++,pen.inc_x(),pos[0]+=pw)
-				pen.put_value(Color::blend(color_func(pos,calc_supersample(pos,pw,ph)),pen.get_value(),get_amount(),get_blend_method()));
-	}
-
-	// Mark our progress as finished
-	if(cb && !cb->amount_complete(10000,10000))
-		return false;
-
-	return true;
+	return task;
 }
-
 

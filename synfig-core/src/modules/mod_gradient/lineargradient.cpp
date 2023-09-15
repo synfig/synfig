@@ -35,14 +35,10 @@
 
 #include "lineargradient.h"
 
+#include <synfig/context.h>
 #include <synfig/localization.h>
 
-#include <synfig/string.h>
-#include <synfig/context.h>
-#include <synfig/paramdesc.h>
-#include <synfig/renddesc.h>
-#include <synfig/surface.h>
-#include <synfig/value.h>
+#include <synfig/rendering/software/task/taskpaintpixelsw.h>
 
 #endif
 
@@ -54,11 +50,59 @@ SYNFIG_LAYER_INIT(LinearGradient);
 SYNFIG_LAYER_SET_NAME(LinearGradient,"linear_gradient");
 SYNFIG_LAYER_SET_LOCAL_NAME(LinearGradient,N_("Linear Gradient"));
 SYNFIG_LAYER_SET_CATEGORY(LinearGradient,N_("Gradients"));
-SYNFIG_LAYER_SET_VERSION(LinearGradient,"0.0");
+SYNFIG_LAYER_SET_VERSION(LinearGradient,"0.1");
 
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
+
+class TaskLinearGradient: public rendering::Task, public rendering::TaskInterfaceTransformation
+{
+public:
+	typedef etl::handle<TaskLinearGradient> Handle;
+	static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
+
+	LinearGradient::Params params;
+	rendering::Holder<rendering::TransformationAffine> transformation;
+
+	TaskLinearGradient() { }
+	virtual rendering::Transformation::Handle get_transformation() const override
+		{ return transformation.handle(); }
+};
+
+
+class TaskLinearGradientSW: public TaskLinearGradient, public rendering::TaskPaintPixelSW
+{
+public:
+	typedef etl::handle<TaskLinearGradientSW> Handle;
+	static Token token;
+	virtual Token::Handle get_token() const override { return token.handle(); }
+
+	mutable Real supersample = 0.;
+
+	void pre_run(const Matrix3& /*matrix*/, const Matrix3& /*inverse_matrix*/) const override
+	{
+		supersample = get_units_per_pixel()[0]*.1;
+	}
+
+	bool run(RunParams&) const override
+	{
+		return run_task();
+	}
+
+	Color get_color(const Vector& p) const override
+	{
+		Real dist((p - params.p1)*params.diff);
+		return params.gradient.average(dist - supersample, dist + supersample);
+		//return params.gradient.color(dist);
+	}
+};
+
+rendering::Task::Token TaskLinearGradient::token(
+	DescAbstract<TaskLinearGradient>("TaskLinearGradient") );
+rendering::Task::Token TaskLinearGradientSW::token(
+	DescReal<TaskLinearGradientSW, TaskLinearGradient>("TaskLinearGradientSW") );
 
 inline void
 LinearGradient::Params::calc_diff()
@@ -98,14 +142,6 @@ LinearGradient::color_func(const Params &params, const Point &point, synfig::Rea
 	Real dist(point*params.diff - params.p1*params.diff);
 	supersample *= 0.5;
 	return params.gradient.average(dist - supersample, dist + supersample);
-}
-
-inline synfig::Real
-LinearGradient::calc_supersample(const Params &params, synfig::Real pw, synfig::Real /*ph*/)const
-{
-	// it's copy of code
-	// see also other calc_supersample overload
-	return pw/(params.p2-params.p1).mag();
 }
 
 synfig::Layer::Handle
@@ -200,75 +236,13 @@ LinearGradient::get_color(Context context, const Point &point)const
 		return Color::blend(color,context.get_color(point),get_amount(),get_blend_method());
 }
 
-bool
-LinearGradient::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+rendering::Task::Handle
+LinearGradient::build_composite_task_vfunc(ContextParams /*context_params*/) const
 {
+	TaskLinearGradient::Handle task(new TaskLinearGradient());
 	Params params;
 	fill_params(params);
+	task->params = params;
 
-	if (!renddesc.get_transformation_matrix().is_identity())
-	{
-		Point origin = params.p1;
-		Point axis_x = params.p2 - origin;
-		Point axis_y = axis_x.perp();
-		origin = renddesc.get_transformation_matrix().get_transformed(origin);
-		axis_x = renddesc.get_transformation_matrix().get_transformed(axis_x, false);
-		axis_y = renddesc.get_transformation_matrix().get_transformed(axis_y, false);
-
-		Point valid_axis_x = -axis_y.perp();
-		Real mag_squared = valid_axis_x.mag_squared();
-		if (mag_squared > 0.0)
-			valid_axis_x *= (valid_axis_x * axis_x)/mag_squared;
-		else
-			valid_axis_x = axis_x;
-
-		params.p1 = origin;
-		params.p2 = origin + valid_axis_x;
-		params.calc_diff();
-	}
-
-	SuperCallback supercb(cb,0,9500,10000);
-
-	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
-	{
-		surface->set_wh(renddesc.get_w(),renddesc.get_h());
-	}
-	else
-	{
-		if(!context.accelerated_render(surface,quality,renddesc,&supercb))
-			return false;
-		if(get_amount()==0)
-			return true;
-	}
-
-
-	int x,y;
-
-	Surface::pen pen(surface->begin());
-	const Real pw(renddesc.get_pw()),ph(renddesc.get_ph());
-	Point pos;
-	Point tl(renddesc.get_tl());
-	const int w(surface->get_w());
-	const int h(surface->get_h());
-	synfig::Real supersample = calc_supersample(params, pw, ph);
-
-	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
-	{
-		for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)
-			for(x=0,pos[0]=tl[0];x<w;x++,pen.inc_x(),pos[0]+=pw)
-				pen.put_value(color_func(params,pos,supersample));
-	}
-	else
-	{
-		for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)
-			for(x=0,pos[0]=tl[0];x<w;x++,pen.inc_x(),pos[0]+=pw)
-				pen.put_value(Color::blend(color_func(params,pos,supersample),pen.get_value(),get_amount(),get_blend_method()));
-	}
-
-	// Mark our progress as finished
-	if(cb && !cb->amount_complete(10000,10000))
-		return false;
-
-	return true;
+	return task;
 }
-

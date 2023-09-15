@@ -33,17 +33,12 @@
 #	include <config.h>
 #endif
 
+#include "conicalgradient.h"
+
+#include <synfig/context.h>
 #include <synfig/localization.h>
 
-#include <synfig/string.h>
-#include <synfig/context.h>
-#include <synfig/paramdesc.h>
-#include <synfig/renddesc.h>
-#include <synfig/surface.h>
-#include <synfig/value.h>
-#include <synfig/angle.h>
-
-#include "conicalgradient.h"
+#include <synfig/rendering/software/task/taskpaintpixelsw.h>
 
 #endif
 
@@ -57,13 +52,76 @@ SYNFIG_LAYER_INIT(ConicalGradient);
 SYNFIG_LAYER_SET_NAME(ConicalGradient,"conical_gradient");
 SYNFIG_LAYER_SET_LOCAL_NAME(ConicalGradient,N_("Conical Gradient"));
 SYNFIG_LAYER_SET_CATEGORY(ConicalGradient,N_("Gradients"));
-SYNFIG_LAYER_SET_VERSION(ConicalGradient,"0.1");
+SYNFIG_LAYER_SET_VERSION(ConicalGradient,"0.2");
 
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
 
-/* === E N T R Y P O I N T ================================================= */
+class TaskConicalGradient: public rendering::Task, public rendering::TaskInterfaceTransformation
+{
+public:
+	typedef etl::handle<TaskConicalGradient> Handle;
+	static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
+
+	Point center;
+	Angle angle;
+	CompiledGradient compiled_gradient;
+	rendering::Holder<rendering::TransformationAffine> transformation;
+
+	TaskConicalGradient() { }
+	virtual rendering::Transformation::Handle get_transformation() const override
+		{ return transformation.handle(); }
+};
+
+
+class TaskConicalGradientSW: public TaskConicalGradient, public rendering::TaskPaintPixelSW
+{
+public:
+	typedef etl::handle<TaskConicalGradientSW> Handle;
+	static Token token;
+	virtual Token::Handle get_token() const override { return token.handle(); }
+
+	mutable Real pw = 0;
+	mutable Real ph = 0;
+
+	void pre_run(const Matrix3&, const Matrix3&) const override
+	{
+		pw = get_units_per_pixel()[0];
+		ph = get_units_per_pixel()[1];
+	}
+
+	bool run(RunParams&) const override
+	{
+		return run_task();
+	}
+
+	Color get_color(const Vector& p) const override
+	{
+		const Point centered(p-center);
+		Real supersample;
+		if(std::fabs(centered[0])<std::fabs(pw*0.5) && std::fabs(centered[1])<std::fabs(ph*0.5))
+			supersample = 0.5;
+		else
+			supersample = (pw/centered.mag())/(PI*2);
+
+		Angle::rot a = Angle::tan(-centered[1],centered[0]).mod();
+		a += angle;
+		Real dist(a.mod().get());
+
+		supersample *= 0.5;
+		return compiled_gradient.average(dist - supersample, dist + supersample);
+		//return compiled_gradient.color(dist);
+	}
+};
+
+rendering::Task::Token TaskConicalGradient::token(
+	DescAbstract<TaskConicalGradient>("TaskConicalGradient") );
+rendering::Task::Token TaskConicalGradientSW::token(
+	DescReal<TaskConicalGradientSW, TaskConicalGradient>("TaskConicalGradientSW") );
+
+
 
 ConicalGradient::ConicalGradient():
 	Layer_Composite(1.0,Color::BLEND_COMPOSITE),
@@ -154,17 +212,6 @@ ConicalGradient::color_func(const Point &pos, Real supersample)const
 	return compiled_gradient.average(dist - supersample, dist + supersample);
 }
 
-Real
-ConicalGradient::calc_supersample(const synfig::Point &x, Real pw, Real ph)const
-{
-	Point center=param_center.get(Point());
-
-	Point adj(x-center);
-	if(std::fabs(adj[0])<std::fabs(pw*0.5) && std::fabs(adj[1])<std::fabs(ph*0.5))
-		return 0.5;
-	return (pw/Point(x-center).mag())/(PI*2);
-}
-
 synfig::Layer::Handle
 ConicalGradient::hit_check(synfig::Context context, const synfig::Point &point)const
 {
@@ -192,69 +239,13 @@ ConicalGradient::get_color(Context context, const Point &pos)const
 		return Color::blend(color,context.get_color(pos),get_amount(),get_blend_method());
 }
 
-bool
-ConicalGradient::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+rendering::Task::Handle
+ConicalGradient::build_composite_task_vfunc(ContextParams /*context_params*/) const
 {
-	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
+	TaskConicalGradient::Handle task(new TaskConicalGradient());
+	task->center = param_center.get(Point());
+	task->angle = param_angle.get(Angle());
+	task->compiled_gradient = compiled_gradient;
 
-	SuperCallback supercb(cb,0,9500,10000);
-
-	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
-	{
-		surface->set_wh(renddesc.get_w(),renddesc.get_h());
-	}
-	else
-	{
-		if(!context.accelerated_render(surface,quality,renddesc,&supercb))
-			return false;
-		if(get_amount()==0)
-			return true;
-	}
-
-
-	int x,y;
-
-	Surface::pen pen(surface->begin());
-	const Real pw(renddesc.get_pw()),ph(renddesc.get_ph());
-	Point pos;
-	Point tl(renddesc.get_tl());
-	const int w(surface->get_w());
-	const int h(surface->get_h());
-
-	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
-	{
-		if(quality<9)
-		{
-			for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)
-				for(x=0,pos[0]=tl[0];x<w;x++,pen.inc_x(),pos[0]+=pw)
-					pen.put_value(color_func(pos,calc_supersample(pos,pw,ph)));
-		}
-		else
-		{
-			for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)
-				for(x=0,pos[0]=tl[0];x<w;x++,pen.inc_x(),pos[0]+=pw)
-					pen.put_value(color_func(pos,0));
-		}
-	}
-	else
-	{
-		if(quality<9)
-		{
-			for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)
-				for(x=0,pos[0]=tl[0];x<w;x++,pen.inc_x(),pos[0]+=pw)
-					pen.put_value(Color::blend(color_func(pos,calc_supersample(pos,pw,ph)),pen.get_value(),get_amount(),get_blend_method()));
-		}
-		else
-		{
-			for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)
-				for(x=0,pos[0]=tl[0];x<w;x++,pen.inc_x(),pos[0]+=pw)
-					pen.put_value(Color::blend(color_func(pos,0),pen.get_value(),get_amount(),get_blend_method()));
-		}
-	}
-
-	// Mark our progress as finished
-	if(cb && !cb->amount_complete(10000,10000))
-		return false;
-
-	return true;
+	return task;
 }

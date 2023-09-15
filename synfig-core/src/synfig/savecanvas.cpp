@@ -1029,7 +1029,9 @@ synfig::save_canvas(const FileSystem::Identifier &identifier, Canvas::ConstHandl
 {
     ChangeLocale change_locale(LC_NUMERIC, "C");
 
-    synfig::String tmp_filename(safe ? identifier.filename+".TMP" : identifier.filename);
+	synfig::String tmp_filename(identifier.filename.u8string());
+	if (safe)
+		tmp_filename.append(".TMP");
 
 	try
 	{
@@ -1045,7 +1047,7 @@ synfig::save_canvas(const FileSystem::Identifier &identifier, Canvas::ConstHandl
 			return false;
 		}
 
-		if (filesystem::Path::filename_extension(identifier.filename) == ".sifz")
+		if (identifier.filename.extension().u8string() == ".sifz")
 			stream = FileSystem::WriteStream::Handle(new ZWriteStream(stream));
 
 		document.write_to_stream_formatted(*stream, "UTF-8");
@@ -1055,8 +1057,7 @@ synfig::save_canvas(const FileSystem::Identifier &identifier, Canvas::ConstHandl
 
 		if (safe)
 		{
-			if(!identifier.file_system->file_rename(tmp_filename, identifier.filename))
-			{
+			if (!identifier.file_system->file_rename(tmp_filename, identifier.filename.u8string())) {
 				synfig::error("synfig::save_canvas(): Unable to rename file to correct filename");
 				return false;
 			}

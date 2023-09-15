@@ -112,8 +112,6 @@ Dock_Toolbox::Dock_Toolbox():
 	drag_dest_set(listTargets);
 	signal_drag_data_received().connect( sigc::mem_fun(*this, &studio::Dock_Toolbox::on_drop_drag_data_received) );
 
-	changing_state_=false;
-
 	App::signal_present_all().connect(sigc::mem_fun0(*this,&Dock_Toolbox::present));
 }
 
@@ -147,12 +145,7 @@ void Dock_Toolbox::read_layout_string(const std::string& params) const
 void
 Dock_Toolbox::set_active_state(const synfig::String& statename)
 {
-	changing_state_ = true;
-
 	synfigapp::Main::set_state(statename);
-
-
-	changing_state_ = false;
 }
 
 void
@@ -180,9 +173,6 @@ Dock_Toolbox::change_state(const synfig::String& statename, bool force)
 void
 Dock_Toolbox::change_state_(const Smach::state_base *state)
 {
-	if(changing_state_)
-		return;
-	changing_state_=true;
 
 	try
 	{
@@ -194,11 +184,8 @@ Dock_Toolbox::change_state_(const Smach::state_base *state)
 	}
 	catch(...)
 	{
-		changing_state_=false;
 		throw;
 	}
-
-	changing_state_=false;
 }
 
 
@@ -257,9 +244,19 @@ Dock_Toolbox::update_tools()
 	for (const auto& item : state_button_map)
 		item.second->set_sensitive(sensitive);
 
-	if (canvas_view && canvas_view->get_smach().get_state_name())
-		set_active_state(canvas_view->get_smach().get_state_name());
-	else
+	const char* canvasview_state_name = canvas_view ? canvas_view->get_smach().get_state_name() : nullptr;
+	if (canvasview_state_name) {
+		set_active_state(canvasview_state_name);
+		auto radio_button = state_button_map[canvasview_state_name];
+		if (radio_button) {
+			Glib::RefPtr<Gtk::ActionGroup> state_action_group = App::get_state_manager()->get_action_group();
+			bool previous_sensitive = state_action_group->get_sensitive();
+			state_action_group->set_sensitive(false);
+			if (!radio_button->get_active())
+				radio_button->set_active(true);
+			state_action_group->set_sensitive(previous_sensitive);
+		}
+	} else
 		set_active_state("none");
 }
 

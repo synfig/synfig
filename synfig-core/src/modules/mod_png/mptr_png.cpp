@@ -101,11 +101,11 @@ png_mptr::read_callback(png_structp png_ptr, png_bytep out_bytes, png_size_t byt
 png_mptr::png_mptr(const synfig::FileSystem::Identifier &identifier):
 	Importer(identifier)
 {
-	std::string file_ext = filesystem::Path::filename_extension(identifier.filename);
+	std::string file_ext = identifier.filename.extension().u8string();
 	if (file_ext == ".kra" || file_ext == ".ora") {
 		zip_fs = new FileContainerZip();
-		if (!zip_fs->open(identifier.filename)) {
-			synfig::error("Can't find the file %s", identifier.filename.c_str());
+		if (!zip_fs->open(identifier.filename.u8string())) {
+			synfig::error("Can't find the file %s", identifier.filename.u8_str());
 			return;
 		}
 		zipped_file = FileSystem::Identifier(zip_fs, "mergedimage.png");
