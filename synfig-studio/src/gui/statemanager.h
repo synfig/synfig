@@ -53,7 +53,7 @@ private:
 	guint merge_id;
 	std::vector<guint> merge_id_list;
 
-	void change_state_(const Smach::state_base *state);
+	void change_state_(const Glib::RefPtr<Gtk::RadioAction>& current, const Smach::state_base* state);
 
 public:
 	StateManager();

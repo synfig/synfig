@@ -74,12 +74,12 @@ Importer(identifier)
 	// TODO(ice0): There is no way to report about error to GUI. We can't
 	//  throw error from constructor (bad practice), and can't return error code.
 	if(!stream)	{
-		synfig::error("Unable to open "+identifier.filename);
+		synfig::error("Unable to open " + identifier.filename.u8string());
 		return;
 	}
 
 	String line;
-	String prefix=filesystem::Path::dirname(identifier.filename)+ETL_DIRECTORY_SEPARATOR;
+	String prefix = identifier.filename.parent_path().u8string() + ETL_DIRECTORY_SEPARATOR;
 
 	///! read first line and check whether it is a Papagayo lip sync file
 	if(!FileSystem::safe_get_line(*stream, line).eof())

@@ -654,7 +654,7 @@ Instance::save_as(const synfig::String &file_name)
 
 		// remove previous canvas file
 		if (previous_canvas_identifier.filename != new_canvas_identifier.filename)
-			new_canvas_filesystem->file_remove(previous_canvas_identifier.filename);
+			new_canvas_filesystem->file_remove(previous_canvas_identifier.filename.u8string());
 
 		// set new canvas filename
 		canvas->set_file_name(new_canvas_filename);

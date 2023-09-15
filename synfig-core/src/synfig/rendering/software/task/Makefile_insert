@@ -1,5 +1,6 @@
 RENDERING_SOFTWARE_TASK_HH = \
-	rendering/software/task/tasksw.h
+	rendering/software/task/tasksw.h \
+	rendering/software/task/taskpaintpixelsw.h
 
 RENDERING_SOFTWARE_TASK_CC = \
 	rendering/software/task/taskblendsw.cpp \
@@ -7,6 +8,7 @@ RENDERING_SOFTWARE_TASK_CC = \
 	rendering/software/task/taskcontoursw.cpp \
 	rendering/software/task/tasklayersw.cpp \
 	rendering/software/task/taskmeshsw.cpp \
+	rendering/software/task/taskpaintpixelsw.cpp \
 	rendering/software/task/taskpixelcolormatrixsw.cpp \
 	rendering/software/task/taskpixelgammasw.cpp \
 	rendering/software/task/tasksw.cpp \
