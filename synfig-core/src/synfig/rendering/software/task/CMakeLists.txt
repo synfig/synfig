@@ -5,6 +5,7 @@ target_sources(libsynfig
         "${CMAKE_CURRENT_LIST_DIR}/taskcontoursw.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/tasklayersw.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/taskmeshsw.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/taskpaintpixelsw.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/taskpixelcolormatrixsw.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/taskpixelgammasw.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/tasktransformationaffinesw.cpp"

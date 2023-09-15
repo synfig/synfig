@@ -348,7 +348,7 @@ studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vec
 
 		// Current Time
 
-		view_state["current_time"] = canvas_interface->get_time();
+		view_state["current_time"] = canvas_interface->get_time().get_string(synfig::Time::FORMAT_VIDEO);
 
 		// Selected Layers
 

@@ -114,7 +114,7 @@ jpeg_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddes
 	FileSystem::ReadStream::Handle stream = identifier.get_read_stream();
 	if (!stream)
 	{
-		throw String("Error on jpeg importer, unable to physically open "+identifier.filename);
+		throw String("Error on jpeg importer, unable to physically open " + identifier.filename.u8string());
 		return false;
 	}
 

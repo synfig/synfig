@@ -118,6 +118,15 @@ public:
 
 private:
 
+	class DirtySignalBlocker
+	{
+		Action::CanvasSpecific* canvas_specific_;
+
+	public:
+		DirtySignalBlocker(Action::CanvasSpecific* canvas_specific);
+		~DirtySignalBlocker();
+	};
+
 	Stack undo_action_stack_;
 	Stack redo_action_stack_;
 
