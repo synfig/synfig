@@ -98,6 +98,14 @@ Dialog_Guide::Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canv
 	guideGrid->attach(*angle_widget      , 1, 0, 1, 1);
 	guideGrid->attach(angle_type_picker  , 2, 0, 1, 1);
 
+	distance_system_picker.append("Units", _("Units"));
+	distance_system_picker.append("Pixels", _("Pixels"));
+	distance_system_picker.append("Points", _("Points"));
+	distance_system_picker.append("Inches", _("Inches"));
+	distance_system_picker.append("Centimeters", _("Centimeters"));
+	distance_system_picker.append("Millimeters", _("Millimeters"));
+	distance_system_picker.signal_changed().connect(sigc::mem_fun(*this, &Dialog_Guide::set_distance_system));
+
 	Gtk::Frame* pivotFrame = manage(new Gtk::Frame(_("Set Pivot Position (px)")));
 	pivotFrame->set_shadow_type(Gtk::SHADOW_NONE);
 	(static_cast<Gtk::Label*>(pivotFrame->get_label_widget()))->set_markup(_("<b>Set Pivot Position</b>"));
@@ -110,17 +118,20 @@ Dialog_Guide::Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canv
 	posGrid->set_row_spacing(6);
 	posGrid->set_column_spacing(8);
 	
+	Gtk::Label* unitLabel = manage(new Gtk::Label(_("_Unit"), true));
 	Gtk::Label* xPosLabel = manage(new Gtk::Label(_("_X:"), true));
 	Gtk::Label* yPosLabel = manage(new Gtk::Label(_("_Y:"), true));
-	x_widget = manage(new Gtk::SpinButton(x_adjustment,15,2));
+	x_widget = new Widget_Distance();
 	x_widget->show();
-	y_widget = manage(new Gtk::SpinButton(y_adjustment,15,2));
+	y_widget = new Widget_Distance();
 	y_widget->show();
 	
 	posGrid->attach(*xPosLabel, 0, 0, 1, 1);
 	posGrid->attach(*x_widget, 1, 0, 1, 1);
-	posGrid->attach(*yPosLabel, 2, 0, 1, 1);
-	posGrid->attach(*y_widget, 3, 0, 1, 1);
+	posGrid->attach(*yPosLabel, 0, 1, 1, 1);
+	posGrid->attach(*y_widget, 1, 1, 1, 1);
+	posGrid->attach(*unitLabel, 2, 0, 1, 1);
+	posGrid->attach(distance_system_picker, 2, 1, 1, 1);
 
 	guide_box->add(*angleFrame);
 	guide_box->add(*guideGrid);
@@ -189,6 +200,12 @@ Dialog_Guide::set_angle_type()
 		degrees=true;
 	else if (text == "Radian")
 		degrees=false;
+}
+
+void
+Dialog_Guide::set_distance_system()
+{
+	//add logic here
 }
 
 void
