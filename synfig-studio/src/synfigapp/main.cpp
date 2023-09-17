@@ -412,12 +412,12 @@ synfigapp::Main::set_state(synfig::String state)
 		selected_input_device_->set_state(state);
 }
 
-synfig::String
+synfig::filesystem::Path
 synfigapp::Main::get_user_app_directory()
 {
 	std::string dir = Glib::getenv("SYNFIG_USER_SETTINGS");
 	if (!dir.empty()) {
-		return dir;
+		return filesystem::Path(dir);
 	}
-	return Glib::get_home_dir()+ETL_DIRECTORY_SEPARATOR+SYNFIG_USER_APP_DIR;
+	return filesystem::Path(Glib::get_home_dir()).append(SYNFIG_USER_APP_DIR);
 }

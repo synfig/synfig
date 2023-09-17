@@ -1473,7 +1473,7 @@ void App::init(const synfig::String& rootpath)
 
 	String path_to_plugins = ResourceHelper::get_plugin_path();
 
-	String path_to_user_plugins = synfigapp::Main::get_user_app_directory() + "/plugins";
+	filesystem::Path path_to_user_plugins = synfigapp::Main::get_user_app_directory() / filesystem::Path("plugins");
 
 	ui_interface_=new GlobalUIInterface();
 
@@ -1491,10 +1491,10 @@ void App::init(const synfig::String& rootpath)
 	SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX | SEM_NOOPENFILEERRORBOX);
 #endif
 
-	if (FileSystemNative::instance()->directory_create(synfigapp::Main::get_user_app_directory())) {
-		synfig::info("Created directory \"%s\"",synfigapp::Main::get_user_app_directory().c_str());
+	if (FileSystemNative::instance()->directory_create(synfigapp::Main::get_user_app_directory().u8string())) {
+		synfig::info("Created directory \"%s\"", synfigapp::Main::get_user_app_directory().u8_str());
 	} else {
-		synfig::error("UNABLE TO CREATE \"%s\"",synfigapp::Main::get_user_app_directory().c_str());
+		synfig::error("UNABLE TO CREATE \"%s\"", synfigapp::Main::get_user_app_directory().u8_str());
 	}
 
 
@@ -1569,7 +1569,7 @@ void App::init(const synfig::String& rootpath)
 
 		studio_init_cb.task(_("Loading Plugins..."));
 		plugin_manager.load_dir(path_to_plugins);
-		plugin_manager.load_dir(path_to_user_plugins);
+		plugin_manager.load_dir(path_to_user_plugins.u8string());
 
 		studio_init_cb.task(_("Init UI Manager..."));
 		App::ui_manager_=studio::UIManager::create();
@@ -1864,7 +1864,7 @@ App::on_shutdown()
 synfig::String
 App::get_config_file(const synfig::String& file)
 {
-	return Glib::build_filename(synfigapp::Main::get_user_app_directory(),file);
+	return (synfigapp::Main::get_user_app_directory() / filesystem::Path(file)).u8string();
 }
 
 void
@@ -3514,7 +3514,7 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
 std::string
 App::get_temporary_directory()
 {
-	return synfigapp::Main::get_user_app_directory() + "/tmp";
+	return synfigapp::Main::get_user_app_directory().append("tmp").u8string();
 }
 
 synfig::FileSystemTemporary::Handle

@@ -105,7 +105,7 @@ public:
 	static sigc::signal<void>& signal_gradient_changed();
 	static sigc::signal<void>& signal_bline_width_changed();
 	
-	static synfig::String get_user_app_directory();
+	static synfig::filesystem::Path get_user_app_directory();
 
 }; // END of class Main
 
