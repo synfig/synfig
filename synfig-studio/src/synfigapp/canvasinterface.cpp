@@ -84,7 +84,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
 
@@ -129,7 +128,7 @@ CanvasInterface::set_time(synfig::Time x)
 
 	// update the time in all the child canvases
 	Canvas::Children children = get_canvas()->get_root()->children();
-	handle<CanvasInterface> interface;
+	etl::handle<CanvasInterface> interface;
 	for (Canvas::Children::iterator iter = children.begin(); iter != children.end(); ++iter)
 		if ((interface = get_instance()->find_canvas_interface(*iter)) != this)
 			interface->set_time(interface->get_canvas()->get_time());
