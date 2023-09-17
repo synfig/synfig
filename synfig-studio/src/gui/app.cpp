@@ -1861,10 +1861,10 @@ App::on_shutdown()
 	delete main_window;
 }
 
-synfig::String
+synfig::filesystem::Path
 App::get_config_file(const synfig::String& file)
 {
-	return (synfigapp::Main::get_user_app_directory() / filesystem::Path(file)).u8string();
+	return synfigapp::Main::get_user_app_directory() / filesystem::Path(file);
 }
 
 void
@@ -1969,29 +1969,29 @@ App::save_settings()
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		{
-			std::string filename=get_config_file("accelrc");
-			Gtk::AccelMap::save(filename);
+			filesystem::Path filename = get_config_file("accelrc");
+			Gtk::AccelMap::save(filename.u8string());
 		}
 		{
-			std::string filename=get_config_file("language");
+			filesystem::Path filename = get_config_file("language");
 
-			std::ofstream file(synfig::filesystem::Path(filename).c_str());
+			std::ofstream file(filename.c_str());
 
 			if(!file)
 			{
-				synfig::warning("Unable to save %s",filename.c_str());
+				synfig::warning("Unable to save %s", filename.u8_str());
 			} else {
 				file<<App::ui_language.c_str()<<std::endl;
 			}
 		}
 		do{
-			std::string filename=get_config_file("recentfiles");
+			filesystem::Path filename = get_config_file("recentfiles");
 
-			std::ofstream file(synfig::filesystem::Path(filename).c_str());
+			std::ofstream file(filename.c_str());
 
 			if(!file)
 			{
-				synfig::warning("Unable to save %s",filename.c_str());
+				synfig::warning("Unable to save %s", filename.u8_str());
 				break;
 			}
 
@@ -2000,7 +2000,7 @@ App::save_settings()
 			for (const auto& recent_file : recent_files)
 				file << recent_file.u8string() << std::endl;
 		} while (false);
-		std::string filename=get_config_file("settings-1.4");
+		filesystem::Path filename = get_config_file("settings-1.4");
 		synfigapp::Main::settings().save_to_file(filename);
 
 		MainWindow::save_custom_workspaces();
@@ -2018,7 +2018,7 @@ App::load_settings(const synfig::String& key_filter)
 	try
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		std::string filename=get_config_file("settings-1.4");
+		filesystem::Path filename = get_config_file("settings-1.4");
 		ret=synfigapp::Main::settings().load_from_file(filename, key_filter);
 	}
 	catch(...)
@@ -2035,8 +2035,8 @@ App::load_accel_map()
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		{
-			std::string filename=get_config_file("accelrc");
-			Gtk::AccelMap::load(filename);
+			filesystem::Path filename = get_config_file("accelrc");
+			Gtk::AccelMap::load(filename.u8string());
 		}
 	}
 	catch(...)
@@ -2050,8 +2050,8 @@ App::save_accel_map()
 {
 	try
 	{
-		std::string filename=get_config_file("accelrc");
-		Gtk::AccelMap::save(filename);
+		filesystem::Path filename = get_config_file("accelrc");
+		Gtk::AccelMap::save(filename.u8string());
 	}
 	catch(...)
 	{
@@ -2064,8 +2064,8 @@ App::load_recent_files()
 {
 	try
 	{
-		std::string filename=get_config_file("recentfiles");
-		std::ifstream file(synfig::filesystem::Path(filename).c_str());
+		filesystem::Path filename = get_config_file("recentfiles");
+		std::ifstream file(filename.c_str());
 
 		while(file)
 		{
@@ -2089,8 +2089,8 @@ App::load_language_settings()
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		{
-			std::string filename=get_config_file("language");
-			std::ifstream file(synfig::filesystem::Path(filename).c_str());
+			filesystem::Path filename = get_config_file("language");
+			std::ifstream file(filename.c_str());
 
 			while(file)
 			{

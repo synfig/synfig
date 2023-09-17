@@ -471,7 +471,7 @@ public:
 
 
 
-	static synfig::String get_config_file(const synfig::String& file);
+	static synfig::filesystem::Path get_config_file(const synfig::String& file);
 	// This will spread the changes made in preferences.
 	// (By now it updates the System Units or Time Format for all the canvases).
 	// This fixes bug 1890020
