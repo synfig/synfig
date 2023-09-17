@@ -36,6 +36,7 @@
 #include <gui/widgets/widget_distance.h>
 #include <gtkmm/comboboxtext.h>
 
+#include <synfig/distance.h>
 #include <synfigapp/value_desc.h>
 #include <synfig/real.h>
 
@@ -61,6 +62,9 @@ class Dialog_Guide : public Gtk::Dialog
 	WorkArea* current_work_area;
 
 	Gtk::SpinButton* angle_widget;
+
+	synfig::Distance::System prev_system;
+	synfig::Distance::System curr_system;
 	Widget_Distance* x_widget;
 	Widget_Distance* y_widget;
 	Glib::RefPtr<Gtk::Adjustment> angle_adjustment;
