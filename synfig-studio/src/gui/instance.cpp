@@ -407,16 +407,19 @@ studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vec
 	cur_time = canvas->get_time();
 
 	// Generate temporary file name
-	String filename_original = get_canvas()->get_file_name();
-	String filename_processed;
-	String filename_prefix;
-	if ( !filesystem::Path::is_absolute_path(filename_original) )
-		filename_prefix = temporary_filesystem->get_temporary_directory() + ETL_DIRECTORY_SEPARATOR;
-	struct stat buf;
-	do {
-		synfig::GUID guid;
-		filename_processed = filename_prefix + filename_original + "." + guid.get_string().substr(0,8) + ".sif";
-	} while (stat(filename_processed.c_str(), &buf) != -1);
+	filesystem::Path canvas_file = filesystem::Path(get_canvas()->get_file_name());
+	filesystem::Path filename_dir = canvas_file.parent_path();
+	if (!filename_dir.is_absolute())
+		filename_dir = temporary_filesystem->get_temporary_directory();
+
+	auto temp_lock = FileSystemTemporary::reserve_temporary_filename(filename_dir, canvas_file.filename().u8string(), ".sif");
+	if (!temp_lock.second) {
+		App::dialog_message_1b("ERROR", _("The plugin operation has failed."), _("Couldn't create a temporary file"), _("Close"));
+		return;
+	}
+
+	filesystem::Path filename_processed = temp_lock.first;
+
 
 	if ( modify_canvas )
 		close(false);
@@ -437,14 +440,14 @@ studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vec
 	} else {
 
 		// Save file copy
-		String filename_ext = filesystem::Path::filename_extension(filename_original);
+		String filename_ext = canvas_file.extension().u8string();
 		if ( filename_ext.empty() || ( filename_ext != ".sif" && filename_ext != ".sifz") )
 			filename_ext = ".sifz";
 		FileSystem::ReadStream::Handle stream_in = temporary_filesystem->get_read_stream("#project"+filename_ext);
 		if (!stream_in)
 		{
 			synfig::error(strprintf("run_plugin(): Unable to open file for reading - %s", temporary_filesystem->get_real_uri("#project"+filename_ext).c_str()));
-			FileSystemTemporary::Identifier identifier(temporary_filesystem, filename_processed);
+			FileSystemTemporary::Identifier identifier(temporary_filesystem, filename_processed.u8string());
 			if ( !save_canvas(identifier, get_canvas(), true) )
 			{
 				App::dialog_message_1b(
@@ -461,7 +464,7 @@ studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vec
 			if (filename_ext == ".sifz")
 				stream_in = new ZReadStream(stream_in, synfig::zstreambuf::gzip);
 
-			FileSystem::WriteStream::Handle outfile = FileSystemNative::instance()->get_write_stream(filename_processed);
+			FileSystem::WriteStream::Handle outfile = FileSystemNative::instance()->get_write_stream(filename_processed.u8string());
 			*outfile << stream_in->rdbuf();
 			outfile.reset();
 
@@ -469,7 +472,7 @@ studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vec
 		}
 
 		one_moment.hide();
-		extra_args.insert(extra_args.begin(), filename_processed);
+		extra_args.insert(extra_args.begin(), filename_processed.u8string());
 
 		bool result = App::plugin_manager.run(plugin_id, extra_args, view_state);
 
@@ -483,13 +486,13 @@ studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vec
 			{
 				synfig::error("run_plugin(): Unable to open file for write");
 			} else {
-				FileSystem::ReadStream::Handle infile = FileSystemNative::instance()->get_read_stream(filename_processed);
+				FileSystem::ReadStream::Handle infile = FileSystemNative::instance()->get_read_stream(filename_processed.u8string());
 				*stream << infile->rdbuf();
 				infile.reset();
 				stream.reset();
 			}
 		}
-		FileSystemNative::instance()->file_remove(filename_processed);
+		FileSystemNative::instance()->file_remove(filename_processed.u8string());
 	}
 
 	canvas=0;
