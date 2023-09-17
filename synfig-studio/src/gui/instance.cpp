@@ -263,11 +263,11 @@ Instance::get_visible_canvases()const
 	return count;
 }
 
-handle<Instance>
+etl::handle<Instance>
 Instance::create(synfig::Canvas::Handle canvas, synfig::FileSystem::Handle container)
 {
 	// Construct a new instance
-	handle<Instance> instance(new Instance(canvas, container));
+	etl::handle<Instance> instance(new Instance(canvas, container));
 
 	// Set the user preference regarding redo-history behavior
 	{
@@ -770,7 +770,7 @@ Instance::close(bool remove_temporary_files)
 {
 	// This will increase the reference count so we don't get DELETED
 	// until we are ready
-	handle<Instance> me(this);
+	etl::handle<Instance> me(this);
 
 	/*
 	We need to hide some panels when instance is closed.

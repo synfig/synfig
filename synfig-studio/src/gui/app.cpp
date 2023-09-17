@@ -3596,7 +3596,7 @@ App::open(std::string filename, /* std::string as, */ synfig::FileContainerZip::
 			if (filename.find(custom_filename_prefix) != 0)
 				add_recent_file(filename);
 
-			handle<Instance> instance(Instance::create(canvas, container));
+			etl::handle<Instance> instance(Instance::create(canvas, container));
 
 			if(!instance)
 				throw (String)strprintf(_("Unable to create instance for \"%s\""),filename.c_str());
@@ -3693,7 +3693,7 @@ App::open_from_temporary_filesystem(std::string temporary_filename)
 			if (as.find(custom_filename_prefix.c_str()) != 0)
 				add_recent_file(as);
 
-			handle<Instance> instance(Instance::create(canvas, canvas_container));
+			etl::handle<Instance> instance(Instance::create(canvas, canvas_container));
 
 			if(!instance)
 				throw (String)strprintf(_("Unable to create instance for \"%s\""), temporary_filename.c_str());
@@ -3771,7 +3771,7 @@ App::new_instance()
 	String canvas_filename = CanvasFileNaming::project_file(filename);
 	canvas->set_identifier(file_system->get_identifier(canvas_filename));
 
-	handle<Instance> instance = Instance::create(canvas, container);
+	etl::handle<Instance> instance = Instance::create(canvas, container);
 
 	if (App::default_background_layer_type == "solid_color")
 	{
@@ -3878,7 +3878,7 @@ App::open_from_plugin(const std::string& filename, const std::string& importer_i
 					if (warnings != "")
 						dialog_message_1b("WARNING", _("Warning"), "details", _("Close"), warnings);
 
-					handle<Instance> instance(Instance::create(canvas, container));
+					etl::handle<Instance> instance(Instance::create(canvas, container));
 
 					if ( !instance ) {
 						errors += strprintf(_("Unable to create instance for \"%s\""), filename.c_str());

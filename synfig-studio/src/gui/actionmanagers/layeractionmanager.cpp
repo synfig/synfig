@@ -54,7 +54,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -430,11 +429,13 @@ LayerActionManager::refresh()
 			else
 				action_select_all_child_layers_->set_sensitive(false);
 
-			handle<studio::Instance>::cast_static(get_canvas_interface()->get_instance())->
+			auto instance = etl::handle<studio::Instance>::cast_static(get_canvas_interface()->get_instance());
+
+			instance->
 				add_actions_to_group(action_group_, ui_info, param_list, synfigapp::Action::CATEGORY_LAYER);
 
 			ui_info+="<separator/>";
-			handle<studio::Instance>::cast_static(get_canvas_interface()->get_instance())->
+			instance->
 				add_special_layer_actions_to_group(action_group_, ui_info, layer_list);
 		}
 	}
