@@ -43,7 +43,7 @@
 #include <gui/workarea.h>
 #include <gui/duckmatic.h>
 #include <gui/app.h>
-#include <iostream>
+
 #endif
 
 using namespace synfig;
@@ -205,7 +205,6 @@ Dialog_Guide::set_angle_type()
 void
 Dialog_Guide::set_distance_system()
 {
-	std::cout << prev_system << std::endl;
 	const synfig::RendDesc& rend_desc(canvas->rend_desc());
 	curr_system = (synfig::Distance::System) stratoi(distance_system_picker.get_active_id());
 	Distance x_cord(x_widget->get_value(), prev_system);
