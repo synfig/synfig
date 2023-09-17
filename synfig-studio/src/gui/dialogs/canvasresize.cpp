@@ -264,7 +264,7 @@ void CanvasResize::on_height_changed()
 
 void CanvasResize::on_size_template_changed(){
 	String selection(combo_box->get_active_id());
-	if(selection == "custom"){
+	if(selection == "custom") {
 		width->set_sensitive(true);
 		height->set_sensitive(true);
 		return;
@@ -281,7 +281,6 @@ void CanvasResize::on_size_template_changed(){
 	width->set_sensitive(false);
 	height->set_sensitive(false);
 	toggle_ratio_wh->set_active(true);
-	return;
 }
 
 void CanvasResize::on_canvas_button_clicked(Gtk::Button *button)
