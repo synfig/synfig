@@ -32,6 +32,8 @@
 #include <vector>
 #include <sigc++/signal.h>
 
+#include <synfig/filesystem_path.h>
+
 namespace studio {
 
 /// Deal with custom workspaces
@@ -58,9 +60,9 @@ public:
 	void get_name_list(std::vector<std::string>& list);
 
 	/// load custom workspace layouts from a config file
-	void load(const std::string& filename);
+	void load(const synfig::filesystem::Path& filename);
 	/// stores custom workspace layouts in a config file
-	bool save(const std::string& filename);
+	bool save(const synfig::filesystem::Path& filename);
 
 	sigc::signal<void> & signal_list_changed();
 
