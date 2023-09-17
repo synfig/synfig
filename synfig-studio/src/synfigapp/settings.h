@@ -95,8 +95,8 @@ public:
 	//! \sa		set_value
 	//! \Param[in] filename, the synfig settings format filename. Should be absolute path.
 	//! \Param[in] key_filter, optional, string use to filter the settings key. No wildcard only full equal string test.
-	bool load_from_file(const synfig::String& filename, const synfig::String& key_filter = "");
-	bool save_to_file(const synfig::String& filename)const;
+	bool load_from_file(const synfig::filesystem::Path& filename, const synfig::String& key_filter = "");
+	bool save_to_file(const synfig::filesystem::Path& filename)const;
 }; // END of class Settings
 
 }; // END of namespace synfigapp
