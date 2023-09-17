@@ -55,7 +55,6 @@
 
 #endif
 
-using namespace etl;
 using namespace synfig;
 using namespace modules;
 using namespace lyr_std;
@@ -144,7 +143,7 @@ Import::set_param(const String & param, const ValueBase &value)
 
 		this->independent_filename = independent_filename;
 
-		handle<Importer> newimporter;
+		Importer::Handle newimporter;
 		newimporter = Importer::open(get_canvas()->get_file_system()->get_identifier(full_filename));
 
 		if (!newimporter)

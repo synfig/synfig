@@ -75,7 +75,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
@@ -835,7 +834,7 @@ Layer::accelerated_render(Context context,Surface *surface,int quality, const Re
 {
 	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
 
-	handle<Target_Scanline> target=surface_target_scanline(surface);
+	Target_Scanline::Handle target = surface_target_scanline(surface);
 	if(!target)
 	{
 		if(cb)cb->error(_("Unable to create surface target"));
