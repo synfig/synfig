@@ -1181,7 +1181,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			} else if (event_result == Smach::RESULT_OK) {
 				set_drag_mode(DRAG_NONE);
 
-				if (etl::handle<Bezier> bezier = find_bezier(mouse_pos, radius, &bezier_click_pos)) {
+				if (Bezier::Handle bezier = find_bezier(mouse_pos, radius, &bezier_click_pos)) {
 					if (selected_bezier == bezier) {
 						bezier->signal_user_doubleclick(1)(bezier_click_pos);
 						return true;
@@ -1327,11 +1327,10 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		}
 		case 2:	{ // Attempt to drag and move the window
 			etl::handle<Duck> duck = find_duck(mouse_pos, radius);
-			etl::handle<Bezier> bezier = find_bezier(mouse_pos, radius, &bezier_click_pos);
 			if (duck)
 				duck->signal_user_click(1)();
 			else
-			if(bezier)
+			if(Bezier::Handle bezier = find_bezier(mouse_pos, radius, &bezier_click_pos))
 				bezier->signal_user_click(1)(bezier_click_pos);
 
 			if (canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,BUTTON_MIDDLE,mouse_pos,pressure,modifier))==Smach::RESULT_OK) {
@@ -1354,7 +1353,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				return true;
 			}
 
-			if (etl::handle<Bezier> bezier = find_bezier(mouse_pos, radius, &bezier_click_pos)) {
+			if (Bezier::Handle bezier = find_bezier(mouse_pos, radius, &bezier_click_pos)) {
 				bezier->signal_user_click(2)(bezier_click_pos);
 				return true;
 			}

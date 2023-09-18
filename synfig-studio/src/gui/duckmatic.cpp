@@ -80,7 +80,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -179,7 +178,7 @@ Duckmatic::get_selected_duck()const
 	return duck_map.find(*selected_ducks.begin())->second;
 }
 
-etl::handle<Duckmatic::Bezier>
+Duckmatic::Bezier::Handle
 Duckmatic::get_selected_bezier()const
 {
 	return selected_bezier;
@@ -1210,7 +1209,7 @@ Duckmatic::add_duck(const Duck::Handle& duck)
 }
 
 void
-Duckmatic::add_bezier(const etl::handle<Bezier> &bezier)
+Duckmatic::add_bezier(const Bezier::Handle& bezier)
 {
 	bezier_list_.push_back(bezier);
 }
@@ -1303,11 +1302,9 @@ Duckmatic::add_similar_duck(Duck::Handle duck)
 }
 
 void
-Duckmatic::erase_bezier(const etl::handle<Bezier> &bezier)
+Duckmatic::erase_bezier(const Bezier::Handle& bezier)
 {
-	std::list<handle<Bezier> >::iterator iter;
-
-	for(iter=bezier_list_.begin();iter!=bezier_list_.end();++iter)
+	for(auto iter = bezier_list_.begin(); iter != bezier_list_.end(); ++iter)
 	{
 		if(*iter==bezier)
 		{
@@ -1327,7 +1324,7 @@ Duckmatic::last_duck()const
 	return 0;
 }
 
-etl::handle<Duckmatic::Bezier>
+Duckmatic::Bezier::Handle
 Duckmatic::last_bezier()const
 {
 	return bezier_list_.back();
@@ -1445,18 +1442,18 @@ Duckmatic::find_duck(synfig::Point point, synfig::Real radius, Duck::Type type)
 	return 0;
 }
 
-etl::handle<Duckmatic::Bezier>
+Duckmatic::Bezier::Handle
 Duckmatic::find_bezier(synfig::Point point, synfig::Real radius,float* location)
 {
 	return find_bezier(point,radius,radius,location);
 }
 
-etl::handle<Duckmatic::Bezier>
+Duckmatic::Bezier::Handle
 Duckmatic::find_bezier(synfig::Point pos, synfig::Real scale, synfig::Real radius, float* location)
 {
 	if(radius==0)radius=10000000;
 	Real closest(10000000);
-	etl::handle<Bezier> ret;
+	Bezier::Handle ret;
 
 	bezier<Point>	curve;
 
@@ -1464,12 +1461,11 @@ Duckmatic::find_bezier(synfig::Point pos, synfig::Real scale, synfig::Real radiu
 	float	time = 0;
 	float	best_time = 0;
 
-	for(std::list<handle<Bezier> >::const_iterator iter=bezier_list().begin();iter!=bezier_list().end();++iter)
-	{
-		curve[0] = (*iter)->p1->get_trans_point();
-		curve[1] = (*iter)->c1->get_trans_point();
-		curve[2] = (*iter)->c2->get_trans_point();
-		curve[3] = (*iter)->p2->get_trans_point();
+	for (const auto& item : bezier_list()) {
+		curve[0] = item->p1->get_trans_point();
+		curve[1] = item->c1->get_trans_point();
+		curve[2] = item->c2->get_trans_point();
+		curve[3] = item->p2->get_trans_point();
 		curve.sync();
 
 #if 0
@@ -1492,7 +1488,7 @@ Duckmatic::find_bezier(synfig::Point pos, synfig::Real scale, synfig::Real radiu
 		if(d < closest)
 		{
 			closest = d;
-			ret = *iter;
+			ret = item;
 			best_time=time;
 		}
 	}
@@ -2138,7 +2134,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 	if (type == type_segment)
 	{
 		int index;
-		etl::handle<Bezier> bezier(new Bezier());
+		Bezier::Handle bezier(new Bezier());
 		ValueNode_Composite::Handle value_node;
 
 		if(value_desc.is_value_node() &&
@@ -2283,7 +2279,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 
 			int i,first=-1;
 
-			etl::handle<Bezier> bezier;
+			Bezier::Handle bezier;
 			Duck::Handle first_duck, first_tangent2_duck;
 
 			for (i = 0; i < value_node->link_count(); i++)
@@ -2623,7 +2619,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 
 					if (first != i)
 					{
-						handle<Bezier> bezier_(new Bezier());
+						Bezier::Handle bezier_(new Bezier());
 						bezier_->p1=bezier.p1;
 						bezier_->c1=bezier.c1;
 						bezier_->p2=bezier.p2;
@@ -2645,7 +2641,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 					bezier.p1=bezier.p2;bezier.c1=bezier.c2;
 					bezier.p2=bezier.c2=duck;
 
-					handle<Bezier> bezier_(new Bezier());
+					Bezier::Handle bezier_(new Bezier());
 					bezier_->p1=bezier.p1;
 					bezier_->c1=bezier.c1;
 					bezier_->p2=bezier.p2;
@@ -2866,7 +2862,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 
 					if (first != i)
 					{
-						handle<Bezier> bezier_(new Bezier());
+						Bezier::Handle bezier_(new Bezier());
 						bezier_->p1=bezier.p1;
 						bezier_->c1=bezier.c1;
 						bezier_->p2=bezier.p2;
@@ -2890,7 +2886,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 					bezier.p2 = duck;
 					bezier.c2 = duck;
 
-					handle<Bezier> bezier_(new Bezier());
+					Bezier::Handle bezier_(new Bezier());
 					bezier_->p1 = bezier.p1;
 					bezier_->c1 = bezier.c1;
 					bezier_->p2 = bezier.p2;
@@ -3023,7 +3019,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 			}
 		}
 
-		etl::handle<Bezier> bezier = new Bezier();
+		Bezier::Handle bezier = new Bezier();
 
 		bone_transform_stack.push(new Transform_Rotate(guid, bone.get_angle()));
 

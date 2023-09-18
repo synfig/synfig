@@ -558,6 +558,9 @@ private:
 	sigc::signal<void,float> signal_user_doubleclick_[5];
 public:
 
+	typedef etl::handle<Bezier> Handle;
+	typedef etl::loose_handle<Bezier> LooseHandle;
+
 	Duck::Handle p1, p2, c1, c2;
 	bool is_valid()const { return p1 && p2 && c1 && c2; }
 

@@ -61,7 +61,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -1319,7 +1318,7 @@ StateBLine_Context::refresh_ducks(bool button_down)
 
 	std::list<ValueNode_Const::Handle>::iterator iter;
 
-	handle<WorkArea::Bezier> bezier;
+	WorkArea::Bezier::Handle bezier;
 	WorkArea::Duck::Handle duck,tduck1,tduck2,first_tduck1,first_tduck2;
 	BLinePoint bline_point;
 

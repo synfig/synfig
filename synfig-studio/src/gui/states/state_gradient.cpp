@@ -54,7 +54,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -658,7 +657,7 @@ StateGradient_Context::event_mouse_click_handler(const Smach::event& x)
 		point2_duck->set_type(Duck::TYPE_POSITION);
 		get_work_area()->add_duck(point2_duck);
 
-		handle<Duckmatic::Bezier> bezier(new Duckmatic::Bezier());
+		Duckmatic::Bezier::Handle bezier(new Duckmatic::Bezier());
 		bezier->p1=bezier->c1=duck;
 		bezier->p2=bezier->c2=point2_duck;
 		get_work_area()->add_bezier(bezier);

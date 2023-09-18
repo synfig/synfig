@@ -58,7 +58,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
 using namespace studio;
@@ -111,7 +110,7 @@ class studio::StateWidth_Context : public sigc::trackable
 	Gtk::Label growth_label;
 	Gtk::Label radius_label;
 
-	void AdjustWidth(handle<Duckmatic::Bezier> c, float t, Real mult, bool invert);
+	void AdjustWidth(Duckmatic::Bezier::Handle c, float t, Real mult, bool invert);
 
 public:
 
@@ -365,7 +364,7 @@ StateWidth_Context::event_refresh_handler(const Smach::event& /*x*/)
 }
 
 void
-StateWidth_Context::AdjustWidth(handle<Duckmatic::Bezier> c, float t, Real mult, bool invert)
+StateWidth_Context::AdjustWidth(Duckmatic::Bezier::Handle c, float t, Real mult, bool invert)
 {
 	//Leave the function if there is no curve
 	if(!c)return;
@@ -552,7 +551,7 @@ StateWidth_Context::event_mouse_handler(const Smach::event& x)
 		closestpoint->set_point(event.pos);
 		if(!added)get_work_area()->add_duck(closestpoint);
 		//get the closest curve...
-		handle<Duckmatic::Bezier>	c;
+		Duckmatic::Bezier::Handle c;
 		if(event.pressure >= threshold)
 			c = get_work_area()->find_bezier(event.pos,scale*8,rad,&t);
 		//run algorithm on event.pos to get 2nd placement

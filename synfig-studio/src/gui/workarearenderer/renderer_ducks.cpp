@@ -160,7 +160,7 @@ Renderer_Ducks::render_vfunc(
 	const bool solid_lines(get_work_area()->solid_lines);
 	bool alternative = get_work_area()->get_alternative_mode();
 
-	const std::list<etl::handle<Duckmatic::Bezier> >& bezier_list(get_work_area()->bezier_list());
+	const std::list<Duckmatic::Bezier::Handle>& bezier_list(get_work_area()->bezier_list());
 	const std::list<handle<Duckmatic::Stroke> >& stroke_list(get_work_area()->stroke_list());
 	Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_work_area()->get_pango_context()));
 
@@ -194,8 +194,7 @@ Renderer_Ducks::render_vfunc(
 
 
 	// Render the beziers
-	for(std::list<handle<Duckmatic::Bezier> >::const_iterator iter=bezier_list.begin();iter!=bezier_list.end();++iter)
-	{
+	for (auto iter = bezier_list.begin(); iter != bezier_list.end(); ++iter) {
 		Point p1((*iter)->p1->get_trans_point()-window_start);
 		Point p2((*iter)->p2->get_trans_point()-window_start);
 		Point c1((*iter)->c1->get_trans_point()-window_start);
