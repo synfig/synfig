@@ -103,15 +103,15 @@ class studio::StateBLine_Context : public sigc::trackable
 
 	Duckmatic::Push duckmatic_push;
 
-	etl::handle<Duck> curr_duck;
+	Duck::Handle curr_duck;
 
-	etl::handle<Duck> next_duck;
+	Duck::Handle next_duck;
 
 	std::list<synfig::ValueNode_Const::Handle> bline_point_list;
 
 	bool on_vertex_change(const studio::Duck &duck, synfig::ValueNode_Const::Handle value_node);
-	bool on_tangent1_change(const studio::Duck &duck, handle<WorkArea::Duck> other_duck, synfig::ValueNode_Const::Handle value_node);
-	bool on_tangent2_change(const studio::Duck &duck, handle<WorkArea::Duck> other_duck, synfig::ValueNode_Const::Handle value_node);
+	bool on_tangent1_change(const studio::Duck& duck, WorkArea::Duck::Handle other_duck, synfig::ValueNode_Const::Handle value_node);
+	bool on_tangent2_change(const studio::Duck& duck, WorkArea::Duck::Handle other_duck, synfig::ValueNode_Const::Handle value_node);
 	void on_first_duck_clicked();
 
 	void popup_handle_menu(synfig::ValueNode_Const::Handle value_node);
@@ -1320,7 +1320,7 @@ StateBLine_Context::refresh_ducks(bool button_down)
 	std::list<ValueNode_Const::Handle>::iterator iter;
 
 	handle<WorkArea::Bezier> bezier;
-	handle<WorkArea::Duck> duck,tduck1,tduck2,first_tduck1,first_tduck2;
+	WorkArea::Duck::Handle duck,tduck1,tduck2,first_tduck1,first_tduck2;
 	BLinePoint bline_point;
 
 	for(iter=bline_point_list.begin();iter!=bline_point_list.end();++iter)
@@ -1529,7 +1529,7 @@ StateBLine_Context::on_vertex_change(const studio::Duck &duck, synfig::ValueNode
 }
 
 bool
-StateBLine_Context::on_tangent1_change(const studio::Duck &duck, handle<WorkArea::Duck> other_duck, synfig::ValueNode_Const::Handle value_node)
+StateBLine_Context::on_tangent1_change(const studio::Duck& duck, WorkArea::Duck::Handle other_duck, synfig::ValueNode_Const::Handle value_node)
 {
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
 	bline_point.set_tangent1(duck.get_point());
@@ -1544,7 +1544,7 @@ StateBLine_Context::on_tangent1_change(const studio::Duck &duck, handle<WorkArea
 }
 
 bool
-StateBLine_Context::on_tangent2_change(const studio::Duck &duck, handle<WorkArea::Duck> other_duck, synfig::ValueNode_Const::Handle value_node)
+StateBLine_Context::on_tangent2_change(const studio::Duck& duck, WorkArea::Duck::Handle other_duck, synfig::ValueNode_Const::Handle value_node)
 {
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
 

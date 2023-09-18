@@ -558,7 +558,7 @@ private:
 	sigc::signal<void,float> signal_user_doubleclick_[5];
 public:
 
-	etl::handle<Duck> p1,p2,c1,c2;
+	Duck::Handle p1, p2, c1, c2;
 	bool is_valid()const { return p1 && p2 && c1 && c2; }
 
 	sigc::signal<void,float> &signal_user_click(int i=0) { assert(i>=0); assert(i<5); return signal_user_click_[i]; }

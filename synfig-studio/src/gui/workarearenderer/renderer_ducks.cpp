@@ -252,10 +252,10 @@ Renderer_Ducks::render_vfunc(
 	std::list<ScreenDuck> screen_duck_list;
 	const float radius((std::fabs(pw)+std::fabs(ph))*4);
 
-	etl::handle<Duck> hover_duck(get_work_area()->find_duck(get_work_area()->get_cursor_pos(),radius, get_work_area()->get_type_mask()));
+	Duck::Handle hover_duck(get_work_area()->find_duck(get_work_area()->get_cursor_pos(), radius, get_work_area()->get_type_mask()));
 
 	// Render the ducks
-	for(std::list<handle<Duck> >::const_iterator iter=duck_list.begin();iter!=duck_list.end();++iter)
+	for(std::list<Duck::Handle>::const_iterator iter = duck_list.begin(); iter!=duck_list.end(); ++iter)
 	{
 
 		// If this type of duck has been masked, then skip it

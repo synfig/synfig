@@ -79,11 +79,11 @@ class studio::StateWidth_Context : public sigc::trackable
 	CanvasView::IsWorking is_working;
 
 	//Point mouse_pos;
-	handle<Duck> center;
-	handle<Duck> radius;
-	handle<Duck> closestpoint;
+	Duck::Handle center;
+	Duck::Handle radius;
+	Duck::Handle closestpoint;
 
-	std::map<handle<Duck>,Real>	changetable;
+	std::map<Duck::Handle,Real>	changetable;
 
 	synfig::clock	clocktime;
 
@@ -395,10 +395,10 @@ StateWidth_Context::AdjustWidth(handle<Duckmatic::Bezier> c, float t, Real mult,
 		amount2 *= -1;
 	}
 	// ducks for the bezier vertexes
-	handle<Duck>	p1 = c->p1;
-	handle<Duck>	p2 = c->p2;
+	Duck::Handle	p1 = c->p1;
+	Duck::Handle	p2 = c->p2;
 	// ducks for the widths of the bezier vertexes
-	handle<Duck>	w1,w2;
+	Duck::Handle	w1,w2;
 	//find w1,w2
 	{
 		const DuckList dl = get_work_area()->get_duck_list();
@@ -472,8 +472,8 @@ StateWidth_Context::AdjustWidth(handle<Duckmatic::Bezier> c, float t, Real mult,
 		DuckList::const_iterator i = dl.begin();
 		for(;i != dl.end(); ++i)
 		{
-			handle<Duck> iduck(*i);
-			handle<Duck> iduck_origin(iduck->get_origin_duck());
+			Duck::Handle iduck(*i);
+			Duck::Handle iduck_origin(iduck->get_origin_duck());
 			// If we find a width duck
 			if(iduck->get_type() == Duck::TYPE_WIDTH && iduck_origin)
 			{
@@ -598,7 +598,7 @@ StateWidth_Context::event_mouse_handler(const Smach::event& x)
 			added = false;
 		}
 		//Affect the width changes here...
-		std::map<handle<Duck>,Real>::iterator i = changetable.begin();
+		std::map<Duck::Handle,Real>::iterator i = changetable.begin();
 		synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Sketch Width"));
 		for(; i != changetable.end(); ++i)
 		{
