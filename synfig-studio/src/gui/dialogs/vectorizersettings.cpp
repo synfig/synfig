@@ -169,7 +169,7 @@ static Glib::RefPtr<Gtk::Builder> load_interface(const char *filename) {
 	return refBuilder;
 }
 
-void VectorizerSettings::initialize_parameters(etl::handle<synfig::Layer_Bitmap>& my_layer_bitmap,
+void VectorizerSettings::initialize_parameters(synfig::Layer_Bitmap::Handle& my_layer_bitmap,
 	etl::handle<studio::Instance>& selected_instance,std::unordered_map <std::string,int>& configmap, etl::handle<synfig::Layer>& reference_layer)
 {
 	layer_bitmap_ = my_layer_bitmap;
@@ -185,7 +185,7 @@ void VectorizerSettings::initialize_parameters(etl::handle<synfig::Layer_Bitmap>
 	adjustment_maxthickness->set_value(configmap["maxthickness"]);
 }
 
-VectorizerSettings * VectorizerSettings::create(Gtk::Window& parent, etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
+VectorizerSettings * VectorizerSettings::create(Gtk::Window& parent, synfig::Layer_Bitmap::Handle my_layer_bitmap,
 	etl::handle<studio::Instance> selected_instance,std::unordered_map <std::string,int>& configmap, etl::handle<synfig::Layer> reference_layer)
 {
 	auto refBuilder = load_interface("vectorizer_settings.glade");
