@@ -295,7 +295,7 @@ DuckDrag_Scale::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& offs
 	// Calculate center
 	Point vmin(100000000,100000000);
 	Point vmax(-100000000,-100000000);
-	//std::set<etl::handle<Duck> >::iterator iter;
+	//std::set<Duck::Handle>::iterator iter;
 	positions.clear();
 	int i;
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
@@ -325,7 +325,7 @@ DuckDrag_Scale::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 	if(bad_drag)
 		return;
 
-	//std::set<etl::handle<Duck> >::iterator iter;
+	//std::set<Duck::Handle>::iterator iter;
 	synfig::Vector vect(duckmatic->snap_point_to_grid(vector)-center);
 	last_scale=vect;
 

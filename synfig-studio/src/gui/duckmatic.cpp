@@ -1275,7 +1275,7 @@ Duckmatic::find_similar_duck(Duck::Handle duck)
 		return iter->second;
 	return 0;
 
-/*  std::list<handle<Duck> >::reverse_iterator iter;
+/*  std::list<Duck::Handle>::reverse_iterator iter;
 
 	for(iter=duck_list_.rbegin();iter!=duck_list_.rend();++iter)
 	{

@@ -87,7 +87,7 @@ class studio::StateGradient_Context : public sigc::trackable
 
 	Point point_holder;
 
-	etl::handle<Duck> point2_duck;
+	Duck::Handle point2_duck;
 
 	void refresh_ducks();
 
@@ -645,7 +645,7 @@ StateGradient_Context::event_mouse_click_handler(const Smach::event& x)
 	if(event.key==EVENT_WORKAREA_MOUSE_BUTTON_DOWN && event.button==BUTTON_LEFT)
 	{
 		point_holder=get_work_area()->snap_point_to_grid(event.pos);
-		etl::handle<Duck> duck=new Duck();
+		Duck::Handle duck = new Duck();
 		duck->set_point(point_holder);
 		duck->set_name("p1");
 		duck->set_type(Duck::TYPE_POSITION);
