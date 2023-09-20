@@ -290,7 +290,7 @@ void synfigapp::recurse_valuedesc(synfigapp::ValueDesc h, const std::set<Time> &
 
 	//the linkable case...
 	{
-		etl::handle<synfig::LinkableValueNode> p = etl::handle<synfig::LinkableValueNode>::cast_dynamic(h.get_value_node());
+		LinkableValueNode::Handle p = LinkableValueNode::Handle::cast_dynamic(h.get_value_node());
 
 		if(p)
 		{
