@@ -264,13 +264,14 @@ void CanvasResize::on_height_changed()
 
 void CanvasResize::on_size_template_changed(){
 	String selection(combo_box->get_active_id());
-	if(selection == "custom") {
+	if (selection == "custom") {
 		width->set_sensitive(true);
 		height->set_sensitive(true);
 		return;
 	}
-	String::size_type locx=selection.find_first_of('x');
-	String::size_type strSize=selection.size();
+	String::size_type locx = selection.find_first_of('x');
+	String::size_type strSize = selection.size();
+	if (locx == std::string::npos) return;
 	String x_size(selection.substr(0,locx));
 	String y_size(selection.substr(locx+1,strSize-1));
 	int x=stoi(x_size);
