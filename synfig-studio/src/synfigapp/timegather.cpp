@@ -127,7 +127,7 @@ void synfigapp::recurse_layer(synfig::Layer::Handle h, const std::set<Time> &tli
 {
 	// iterate through the layers
 	//check for special case of paste canvas
-	etl::handle<synfig::Layer_PasteCanvas> p = etl::handle<synfig::Layer_PasteCanvas>::cast_dynamic(h);
+	auto p = Layer_PasteCanvas::Handle::cast_dynamic(h);
 
 	//synfig::info("Layer...");
 

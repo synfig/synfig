@@ -260,13 +260,10 @@ VectorizerSettings::on_convert_pressed()
 	// in case the "convert to vector" was clicked for layer inside a switch
 	// and pass canvas accordingly
 	
-	if(etl::handle<synfig::Layer_PasteCanvas> paste = Layer_PasteCanvas::Handle::cast_dynamic(reference_layer_))
-	{
-			canvas = layer_bitmap_->get_canvas()->parent();
-			action->set_param("reference_layer",reference_layer_);
-	}
-	else
-	{
+	if (auto paste = Layer_PasteCanvas::Handle::cast_dynamic(reference_layer_)) {
+		canvas = layer_bitmap_->get_canvas()->parent();
+		action->set_param("reference_layer",reference_layer_);
+	} else {
 		canvas = layer_bitmap_->get_canvas();
 	}
 
