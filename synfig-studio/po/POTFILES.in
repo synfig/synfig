@@ -126,6 +126,7 @@ src/gui/states/state_bone.h
 src/gui/states/state_brush.cpp
 src/gui/states/state_brush.h
 src/gui/states/state_circle.cpp
+src/gui/states/state_select.cpp
 src/gui/states/state_circle.h
 src/gui/states/state_draw.cpp
 src/gui/states/state_draw.h

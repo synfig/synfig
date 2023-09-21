@@ -401,6 +401,12 @@
                     <attribute name="accel">S</attribute>
                 </item>
                 <item>
+                    <attribute name="label" translatable="yes">_Select Tool</attribute>
+                    <attribute name="action">app.state-select</attribute>
+                    <attribute name="icon">tool_normal_icon</attribute>
+                    <attribute name="accel">S</attribute>
+                </item>
+                <item>
                     <attribute name="label" translatable="yes">_SmoothMove Tool</attribute>
                     <attribute name="action">app.state-smooth-move</attribute>
                     <attribute name="icon">tool_smooth_move_icon</attribute>

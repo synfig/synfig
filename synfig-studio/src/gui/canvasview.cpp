@@ -3662,4 +3662,9 @@ CanvasView::set_show_toolbars(bool show)
 {
 	top_toolbar->set_visible(show);
 	right_toolbar->set_visible(show);
-};
+}
+
+void CanvasView::set_duck_buttons_sensitivity(bool sensitivity)
+{
+	toggleducksdial.set_duck_buttons_sensitivity(sensitivity);
+}

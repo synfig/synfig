@@ -94,6 +94,14 @@ ToggleDucksDial::remove_from_toolbar(Gtk::Toolbar &toolbar)
 	toolbar.remove(ducks_angle);
 }
 
+void ToggleDucksDial::set_duck_buttons_sensitivity(bool sensitivity)
+{
+	std::vector<Gtk::ToggleToolButton*> duck_buttons = {&ducks_position, &ducks_vertex, &ducks_tangent, &ducks_radius
+														, &ducks_width, &ducks_angle};
+	for (const auto button: duck_buttons)
+		button->set_sensitive(sensitivity);
+}
+
 void
 ToggleDucksDial::update_toggles(Duck::Type mask)
 {

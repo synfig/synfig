@@ -220,6 +220,7 @@ set(ICONS
 	tool_gradient_icon
 	tool_mirror_icon
 	tool_normal_icon
+	tool_select_icon
 	tool_polyline_icon
 	tool_rectangle_icon
 	tool_rotate_icon

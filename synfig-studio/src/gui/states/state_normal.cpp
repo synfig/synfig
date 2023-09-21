@@ -36,15 +36,15 @@
 
 #include <gui/states/state_normal.h>
 
+#include <synfig/general.h>
+
 #include <gui/app.h>
-#include <gui/canvasview.h>
 #include <gui/event_keyboard.h>
 #include <gui/event_layerclick.h>
 #include <gui/event_mouse.h>
 #include <gui/docks/dialog_tooloptions.h>
 #include <gui/docks/dock_toolbox.h>
 #include <gui/localization.h>
-#include <gui/workarea.h>
 
 #include <synfig/angle.h>
 
@@ -70,38 +70,6 @@ const int GAP = 3;
 StateNormal studio::state_normal;
 
 /* === C L A S S E S & S T R U C T S ======================================= */
-
-class DuckDrag_Combo : public DuckDrag_Base
-{
-	synfig::Vector last_move;
-	synfig::Vector drag_offset;
-	synfig::Vector center;
-
-	synfig::Angle original_angle;
-	synfig::Real original_mag;
-
-	std::vector<synfig::Vector> last_;
-	std::vector<synfig::Vector> positions;
-
-
-	bool bad_drag;
-	bool move_only;
-
-	bool is_moving;
-
-public:
-	CanvasView* canvas_view_;
-	bool scale;
-	bool rotate;
-	bool constrain;
-	DuckDrag_Combo();
-	void begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& begin);
-	bool end_duck_drag(Duckmatic* duckmatic);
-	void duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector);
-
-	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
-};
-
 
 class studio::StateNormal_Context : public sigc::trackable
 {
@@ -331,9 +299,72 @@ StateNormal_Context::~StateNormal_Context()
 	App::dock_toolbox->refresh();
 }
 
-DuckDrag_Combo::DuckDrag_Combo():
+DuckList
+DuckDrag_Combo::get_selected_ducks(const Duckmatic& duckmatic) const
+{
+	if(duck_independent_move){
+
+		if (rotate){
+			//we only need the vertex + non position ducks for rotation of region layers
+			//as for other non-region layers it looks like so far rotate
+			//functionality isn't implemented in them.
+			DuckList ret;
+			DuckList vertex_ducks;
+			for(Duck::Handle duck : selectedDucks){
+				if (duck->get_type() == Duck::TYPE_VERTEX){
+					vertex_ducks.push_back(duck);
+				}
+				ret.push_back(duck);
+			}
+			if (vertex_ducks.empty())
+				return ret;
+			else
+				return vertex_ducks;
+
+		} else {
+			DuckList ret;
+			DuckList position_duck;
+			// if position ducks are present we only need them for movement
+			for(Duck::Handle duck : selectedDucks){
+				if (duck->get_type() == Duck::TYPE_POSITION){
+					position_duck.push_back(duck);
+				}
+				ret.push_back(duck);
+			}
+
+			if (position_duck.empty())
+				return ret;
+			else
+				return position_duck;
+		}
+	}
+
+	return duckmatic.get_selected_ducks();
+}
+
+void DuckDrag_Combo::select_all_ducks(const Duckmatic &duckmatic)
+{
+	//clear any previously selected ducks
+	selectedDucks.clear();
+
+	DuckList duckList = duckmatic.get_duck_list();
+	for(auto iter: duckList){
+		if (iter->get_type() != Duck::TYPE_VERTEX &&
+			iter->get_type() != Duck::TYPE_POSITION /*&&
+			iter->get_type() != Duck::TYPE_SELECT_ROTATE*/)
+			continue;
+
+		if (iter){
+			selectedDucks.insert(iter);
+		}
+	}
+
+}
+
+DuckDrag_Combo::DuckDrag_Combo(bool duck_independent_drag):
 	original_angle(),
 	original_mag(),
+	duck_independent_move(duck_independent_drag),
 	bad_drag(),
 	move_only(),
 	is_moving(false),
@@ -349,12 +380,19 @@ DuckDrag_Combo::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& offs
 	is_moving = false;
 	last_move=Vector(1,1);
 
-	const DuckList selected_ducks(duckmatic->get_selected_ducks());
+	if (duck_independent_move)
+		select_all_ducks(*duckmatic);
+
+	const DuckList selected_ducks(get_selected_ducks(*duckmatic));
 	DuckList::const_iterator iter;
 
 	bad_drag=false;
 
-	drag_offset = duckmatic->find_duck(offset)->get_trans_point();
+	if (duck_independent_move)
+		drag_offset=offset;
+	else
+		drag_offset=duckmatic->find_duck(offset)->get_trans_point();
+
 
 	// Calculate center
 	Point vmin(100000000,100000000);
@@ -407,7 +445,7 @@ DuckDrag_Combo::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 
 	last_move=vect;
 
-	const DuckList selected_ducks(duckmatic->get_selected_ducks());
+	const DuckList selected_ducks(get_selected_ducks(*duckmatic));
 	DuckList::const_iterator iter;
 
 	Time time(duckmatic->get_time());
@@ -523,7 +561,9 @@ DuckDrag_Combo::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 	if((last_move-Vector(1,1)).mag()>0.0001)
 		is_moving = true;
 
-	if (is_moving)
+	if (is_moving && duck_independent_move)
+		duckmatic->signal_edited_ducks_list(DuckList(selectedDucks.begin(), selectedDucks.end()), true);
+	else if (is_moving)
 		duckmatic->signal_edited_selected_ducks(true);
 
 	// then patch up the tangents for the vertices we've moved
@@ -539,12 +579,16 @@ DuckDrag_Combo::end_duck_drag(Duckmatic* duckmatic)
 
 	if(is_moving)
 	{
-		duckmatic->signal_edited_selected_ducks();
+		if (duck_independent_move)
+			duckmatic->signal_edited_ducks_list(DuckList(selectedDucks.begin(), selectedDucks.end()));
+		else
+			duckmatic->signal_edited_selected_ducks();
 		return true;
 	}
 	else
 	{
-		duckmatic->signal_user_click_selected_ducks(0);
+		if (!duck_independent_move)
+			duckmatic->signal_user_click_selected_ducks(0);
 		return false;
 	}
 }

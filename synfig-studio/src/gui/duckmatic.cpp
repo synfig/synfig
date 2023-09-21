@@ -171,6 +171,7 @@ Duckmatic::clear_selected_ducks()
 	signal_duck_selection_changed_();
 }
 
+
 etl::handle<Duckmatic::Duck>
 Duckmatic::get_selected_duck()const
 {
@@ -462,7 +463,9 @@ Duckmatic::start_duck_drag(const synfig::Vector& offset)
 		duck_dragger_->begin_duck_drag(this,offset);
 
 	//drag_offset_=offset;
-	drag_offset_=find_duck(offset)->get_trans_point();
+	//in the case of using the select tool there are no ducks visible
+	if (find_duck(offset))
+		drag_offset_=find_duck(offset)->get_trans_point();
 }
 
 bool
@@ -1021,6 +1024,22 @@ Duckmatic::signal_edited_selected_ducks(bool moving)
 		}
 	}
 	selected_ducks=old_set;
+}
+
+void Duckmatic::signal_edited_ducks_list(const DuckList& ducks, bool moving)
+{
+	for(DuckList::const_iterator iter=ducks.begin();iter!=ducks.end();++iter)
+	{
+		try
+		{
+			if (!moving || (*iter)->get_edit_immediatelly())
+				signal_edited_duck(*iter);
+		}
+		catch (const String&)
+		{
+			synfig::warning("signals must not throw exceptions");
+		}
+	}
 }
 
 bool

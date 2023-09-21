@@ -343,6 +343,7 @@ public:
      ** \sa get_selected_duck, clear_selected_ducks, count_selected_ducks
     */
 	DuckList get_selected_ducks()const;
+
     //! Return list of box contained ducks (handles). The box is defined by a vector's pair
     /*!
      ** \param tl The top left canvas coordinate has const synfig::Vector
@@ -442,6 +443,8 @@ public:
 	//! Calls all of the ducks' edited signals
 	/*! Updates corresponding valuenodes after a drag */
 	void signal_edited_selected_ducks(bool moving = false);
+
+	void signal_edited_ducks_list(const DuckList &ducks, bool moving = false);
 
 	bool on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& value_desc);
 

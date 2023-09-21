@@ -121,6 +121,7 @@
 #include <gui/states/state_lasso.h>
 #include <gui/states/state_mirror.h>
 #include <gui/states/state_normal.h>
+#include <gui/states/state_select.h>
 #include <gui/states/state_polygon.h>
 #include <gui/states/state_rectangle.h>
 #include <gui/states/state_rotate.h>
@@ -1700,6 +1701,7 @@ void App::init(const synfig::String& rootpath)
 		state_manager->add_state(&state_scale);
 		state_manager->add_state(&state_rotate);
 		state_manager->add_state(&state_mirror);
+		state_manager->add_state(&state_select);
 
 		/* geometry */
 		state_manager->add_state(&state_circle);

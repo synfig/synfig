@@ -13,6 +13,7 @@ target_sources(synfigstudio
         "${CMAKE_CURRENT_LIST_DIR}/state_polygon.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_rectangle.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_rotate.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/state_select.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_scale.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_sketch.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_smoothmove.cpp"
