@@ -1836,7 +1836,7 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 	return value_node;
 }
 
-etl::handle<LinkableValueNode>
+LinkableValueNode::Handle
 CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 {
 	DEBUG_LOG("SYNFIG_DEBUG_LOAD_CANVAS", "%s:%d parse_linkable_value_node\n", __FILE__, __LINE__);

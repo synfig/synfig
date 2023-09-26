@@ -80,7 +80,6 @@
 
 #endif
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -263,11 +262,11 @@ Instance::get_visible_canvases()const
 	return count;
 }
 
-handle<Instance>
+etl::handle<Instance>
 Instance::create(synfig::Canvas::Handle canvas, synfig::FileSystem::Handle container)
 {
 	// Construct a new instance
-	handle<Instance> instance(new Instance(canvas, container));
+	etl::handle<Instance> instance(new Instance(canvas, container));
 
 	// Set the user preference regarding redo-history behavior
 	{
@@ -338,7 +337,7 @@ Instance::set_redo_status(bool x)
 void
 studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vector<std::string> extra_args)
 {
-	handle<synfigapp::UIInterface> uim = this->find_canvas_view(this->get_canvas())->get_ui_interface();
+	etl::handle<synfigapp::UIInterface> uim = this->find_canvas_view(this->get_canvas())->get_ui_interface();
 
 	std::unordered_map<std::string,std::string> view_state;
 
@@ -770,7 +769,7 @@ Instance::close(bool remove_temporary_files)
 {
 	// This will increase the reference count so we don't get DELETED
 	// until we are ready
-	handle<Instance> me(this);
+	etl::handle<Instance> me(this);
 
 	/*
 	We need to hide some panels when instance is closed.
@@ -928,7 +927,7 @@ bool
 Instance::safe_close()
 {
 	CanvasView::Handle canvas_view = find_canvas_view(get_canvas());
-	handle<synfigapp::UIInterface> uim=canvas_view->get_ui_interface();
+	etl::handle<synfigapp::UIInterface> uim = canvas_view->get_ui_interface();
 
 	// if the animation is currently playing, closing the window will cause a crash,
 	// so don't allow it

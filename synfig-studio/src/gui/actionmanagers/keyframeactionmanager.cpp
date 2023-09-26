@@ -46,7 +46,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -222,7 +221,7 @@ KeyframeActionManager::refresh()
 			param_list.add("keyframe",keyframe);
 		}
 
-		handle<studio::Instance>::cast_static(
+		etl::handle<studio::Instance>::cast_static(
 			get_canvas_interface()->get_instance()
 		)->add_actions_to_group(
 			action_group_,

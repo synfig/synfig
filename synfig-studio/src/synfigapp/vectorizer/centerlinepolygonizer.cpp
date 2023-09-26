@@ -46,7 +46,6 @@
 using namespace studio;
 using namespace synfig;
 
-typedef etl::handle<synfig::Layer_Bitmap> Handle;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
@@ -165,7 +164,7 @@ class Signaturemap
   int m_colSize;
 
 public:
-  Signaturemap(const Handle &ras, int threshold);
+  Signaturemap(const synfig::Layer_Bitmap::Handle& ras, int threshold);
 
   //not needed 
   //void readRasterData(const Handle &ras, int threshold);
@@ -198,7 +197,7 @@ public:
 
 //--------------------------------------------------------------------------
 
-Signaturemap::Signaturemap(const Handle &ras, int threshold)
+Signaturemap::Signaturemap(const synfig::Layer_Bitmap::Handle& ras, int threshold)
 {
 	// read the raster data
 	unsigned char *currByte;
@@ -376,7 +375,7 @@ static RawBorder *extractPath(Signaturemap &ras, int x0, int y0, int pathType,
 
 //--------------------------------------------------------------------------
 
-static BorderList *extractBorders(const Handle &ras, int threshold, int despeckling)
+static BorderList *extractBorders(const synfig::Layer_Bitmap::Handle& ras, int threshold, int despeckling)
 {
   Signaturemap byteImage(ras, threshold);
 
@@ -884,7 +883,7 @@ inline void reduceBorders(BorderList &borders, Contours &result,bool ambiguities
 
 //Extracts a polygonal, minimal yet faithful representation of image contours
 
-void studio::polygonize(const etl::handle<synfig::Layer_Bitmap> &ras, Contours &polygons, VectorizerCoreGlobals &g)
+void studio::polygonize(const synfig::Layer_Bitmap::Handle& ras, Contours& polygons, const VectorizerCoreGlobals& g)
 {
 	
 	BorderList *borders;
