@@ -416,16 +416,16 @@ public:
 	static bool dialog_select_importer(const std::string& filename, std::string& plugin);
 	static bool dialog_open_file(const std::string& title, std::string& filename, const std::string& preference);
 	static bool dialog_open_file(const std::string& title, std::vector<std::string>& filenames, const std::string& preference);
-	static bool dialog_open_file_spal(const std::string& title, std::string& filename, const std::string& preference);
-	static bool dialog_open_file_sketch(const std::string& title, std::string& filename, const std::string& preference);
+	static bool dialog_open_file_spal(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference);
+	static bool dialog_open_file_sketch(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference);
 	static bool dialog_open_file_image(const std::string& title, std::string& filename, const std::string& preference);
 	static bool dialog_open_file_audio(const std::string& title, std::string& filename, const std::string& preference);
 	static bool dialog_open_file_with_history_button(const std::string& title, std::string& filename, bool& show_history, const std::string& preference, std::string& plugin_importer);
 	static bool dialog_open_folder(const std::string& title, std::string& filename, const std::string& preference, Gtk::Window& transientwind);
 	static bool dialog_save_file(const std::string& title, std::string& filename, const std::string& preference);
 	static std::string dialog_export_file(const std::string& title, std::string& filename, const std::string& preference);
-	static bool dialog_save_file_spal(const std::string& title, std::string& filename, const std::string& preference);
-	static bool dialog_save_file_sketch(const std::string& title, std::string& filename, const std::string& preference);
+	static bool dialog_save_file_spal(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference);
+	static bool dialog_save_file_sketch(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference);
 	static bool dialog_save_file_render(const std::string& title, std::string& filename, const std::string& preference);
 	static bool dialog_open_file_image_sequence(const std::string& title, std::set<synfig::String>& filenames, const std::string& preference);
 

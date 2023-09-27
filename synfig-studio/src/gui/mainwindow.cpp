@@ -641,7 +641,7 @@ MainWindow::load_custom_workspaces()
 		workspaces->signal_list_changed().connect( sigc::mem_fun(signal_custom_workspaces_changed_, &sigc::signal<void>::emit) );
 	}
 	workspaces->clear();
-	std::string filename = App::get_config_file("workspaces");
+	filesystem::Path filename = App::get_config_file("workspaces");
 	workspaces->load(filename);
 }
 
@@ -649,7 +649,7 @@ void
 MainWindow::save_custom_workspaces()
 {
 	if (workspaces) {
-		std::string filename = App::get_config_file("workspaces");
+		filesystem::Path filename = App::get_config_file("workspaces");
 		workspaces->save(filename);
 	}
 }
