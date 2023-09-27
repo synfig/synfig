@@ -122,10 +122,9 @@ Widget_Filename::on_button_choose_pressed()
 	if(filename.empty())
 		filename=".";
 	else
-		filename = synfig::filesystem::Path::absolute_path(
-			synfig::filesystem::Path::dirname(App::get_selected_canvas_view()->get_canvas()->get_file_name()) +
-			ETL_DIRECTORY_SEPARATOR +
-			filename);
+		filename = synfig::filesystem::absolute(
+			synfig::filesystem::Path(App::get_selected_canvas_view()->get_canvas()->get_file_name()).parent_path() /
+			filename).u8string();
 
 	synfig::Layer::Handle layer(App::get_selected_canvas_view()->get_selection_manager()->get_selected_layer());
 

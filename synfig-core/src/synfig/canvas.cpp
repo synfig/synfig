@@ -561,7 +561,7 @@ Canvas::_get_relative_id(etl::loose_handle<const Canvas> x)const
 
 	if(x && get_root()!=x->get_root())
 	{
-		String file_name = filesystem::Path(get_file_name()).relative_to(x->get_file_path()).u8string();
+		String file_name = filesystem::Path(get_file_name()).proximate_to(x->get_file_path()).u8string();
 
 		id=file_name+'#'+id;
 	}
