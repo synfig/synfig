@@ -1160,15 +1160,13 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 	// Handle the renderables
 	{
-		std::set<etl::handle<WorkAreaRenderer> >::iterator iter;
-		for(iter=renderer_set_.begin();iter!=renderer_set_.end();++iter)
-		{
-			if((*iter)->get_enabled())
-				if((*iter)->event_vfunc(event))
-				{
+		for (const auto& workarea_renderer : renderer_set_) {
+			if (workarea_renderer->get_enabled()) {
+				if (workarea_renderer->event_vfunc(event)) {
 					// Event handled. Return true.
 					return true;
 				}
+			}
 		}
 	}
 	// Event hasn't been handled, pass it down
@@ -1956,14 +1954,13 @@ WorkArea::refresh(const Cairo::RefPtr<Cairo::Context> &/*cr*/)
 
 	// Draw out the renderables
 	{
-		std::set<etl::handle<WorkAreaRenderer> >::iterator iter;
-		for(iter=renderer_set_.begin();iter!=renderer_set_.end();++iter)
-		{
-			if((*iter)->get_enabled())
-				(*iter)->render_vfunc(
+		for (const auto& workarea_renderer : renderer_set_) {
+			if (workarea_renderer->get_enabled()) {
+				workarea_renderer->render_vfunc(
 					draw_area_window,
 					Gdk::Rectangle(0, 0, draw_area_window->get_width(), draw_area_window->get_height())
 				);
+			}
 		}
 	}
 

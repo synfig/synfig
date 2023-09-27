@@ -52,7 +52,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -161,7 +160,7 @@ Renderer_Ducks::render_vfunc(
 	bool alternative = get_work_area()->get_alternative_mode();
 
 	const std::list<Duckmatic::Bezier::Handle>& bezier_list(get_work_area()->bezier_list());
-	const std::list<handle<Duckmatic::Stroke> >& stroke_list(get_work_area()->stroke_list());
+	const std::list<etl::handle<Duckmatic::Stroke> >& stroke_list(get_work_area()->stroke_list());
 	Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_work_area()->get_pango_context()));
 
 	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
@@ -172,19 +171,18 @@ Renderer_Ducks::render_vfunc(
 
 	// Render the strokes
 	Gamma gamma = App::get_selected_canvas_gamma().get_inverted();
-	for(std::list<handle<Duckmatic::Stroke> >::const_iterator iter=stroke_list.begin();iter!=stroke_list.end();++iter)
-	{
+	for (const auto& stroke : stroke_list) {
 		cr->save();
 
-		std::list<synfig::Point>::iterator iter2;
-		for(iter2=(*iter)->stroke_data->begin();iter2!=(*iter)->stroke_data->end();++iter2)
-			if (!iter2->is_nan_or_inf())
+		for (const auto& point : *stroke->stroke_data) {
+			if (!point.is_nan_or_inf())
 				cr->line_to(
-					((*iter2)[0]-window_start[0])/pw,
-					((*iter2)[1]-window_start[1])/ph );
+					(point[0]-window_start[0])/pw,
+					(point[1]-window_start[1])/ph );
+		}
 
 		cr->set_line_width(1.0);
-		synfig::Color c = gamma.apply((*iter)->color);
+		synfig::Color c = gamma.apply(stroke->color);
 		cr->set_source_rgb(c.get_r(), c.get_g(), c.get_b());
 		cr->stroke();
 

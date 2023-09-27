@@ -151,7 +151,7 @@ Dock_Toolbox::set_active_state(const synfig::String& statename)
 void
 Dock_Toolbox::change_state(const synfig::String& statename, bool force)
 {
-	etl::handle<studio::CanvasView> canvas_view(studio::App::get_selected_canvas_view());
+	studio::CanvasView::Handle canvas_view(studio::App::get_selected_canvas_view());
 	if(canvas_view)
 	{
 		if(!force && statename==canvas_view->get_smach().get_state_name())
@@ -176,7 +176,7 @@ Dock_Toolbox::change_state_(const Smach::state_base *state)
 
 	try
 	{
-		etl::handle<studio::CanvasView> canvas_view(studio::App::get_selected_canvas_view());
+		studio::CanvasView::Handle canvas_view(studio::App::get_selected_canvas_view());
 		if(canvas_view)
 				canvas_view->get_smach().enter(state);
 		else
