@@ -700,7 +700,7 @@ protected:
  -- ** -- S T A T I C   P U B L I C   M E T H O D S ---------------------------
 	*/
 public:
-	static etl::handle<studio::CanvasView> create(etl::loose_handle<Instance> instance,synfig::Canvas::Handle canvas);
+	static studio::CanvasView::Handle create(etl::loose_handle<Instance> instance, synfig::Canvas::Handle canvas);
 	static std::list<int>& get_pixel_sizes();
 
 private:

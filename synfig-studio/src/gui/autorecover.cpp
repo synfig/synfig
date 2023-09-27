@@ -98,16 +98,17 @@ AutoRecover::auto_backup()
 	int count = 0;
 	try
 	{
-		for(std::list< etl::handle<Instance> >::iterator i = App::instance_list.begin(); i != App::instance_list.end(); ++i)
+		for (const auto& instance : App::instance_list) {
 			try
 			{
-				if ((*i)->backup())
+				if (instance->backup())
 					++count;
 			}
 			catch(...)
 			{
 				synfig::error("AutoRecover::auto_backup(): UNKNOWN EXCEPTION THROWN.");
 			}
+		}
 	}
 	catch(...)
 	{

@@ -1219,11 +1219,8 @@ Duckmatic::add_stroke(std::shared_ptr<std::list<synfig::Point>> stroke_point_lis
 {
 	assert(stroke_point_list);
 
-	std::list<etl::handle<Stroke> >::iterator iter;
-
-	for(iter=stroke_list_.begin();iter!=stroke_list_.end();++iter)
-	{
-		if((*iter)->stroke_data==stroke_point_list)
+	for (const auto& stroke : stroke_list_)	{
+		if (stroke->stroke_data == stroke_point_list)
 			return;
 	}
 
@@ -1518,21 +1515,16 @@ Duckmatic::save_sketch(const synfig::filesystem::Path& filename) const
 
 	file<<"SKETCH"<<std::endl;
 
-	std::list<etl::handle<Stroke> >::const_iterator iter;
-
-	for(iter=persistent_stroke_list_.begin();iter!=persistent_stroke_list_.end();++iter)
-	{
+	for (const auto& persistent_stroke : persistent_stroke_list_) {
 		file<<"C "
-			<<(*iter)->color.get_r()<<' '
-			<<(*iter)->color.get_g()<<' '
-			<<(*iter)->color.get_b()
+			<< persistent_stroke->color.get_r() << ' '
+			<< persistent_stroke->color.get_g() << ' '
+			<< persistent_stroke->color.get_b()
 		<< std::endl;
-		std::list<synfig::Point>::const_iterator viter;
-		for(viter=(*iter)->stroke_data->begin();viter!=(*iter)->stroke_data->end();++viter)
-		{
+		for (const auto& point : *persistent_stroke->stroke_data) {
 			file<<"V "
-				<<(*viter)[0]<<' '
-				<<(*viter)[1]
+				<< point[0] << ' '
+				<< point[1]
 			<< std::endl;
 		}
 	}

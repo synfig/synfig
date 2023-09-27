@@ -176,7 +176,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -1929,11 +1928,9 @@ void App::jack_lock()
 	if (jack_locks_ == 1)
 	{
 		// lock jack in instances
-		for(std::list< etl::handle<Instance> >::const_iterator i = instance_list.begin(); i != instance_list.end(); ++i)
-		{
-			const Instance::CanvasViewList &views = (*i)->canvas_view_list();
-			for(Instance::CanvasViewList::const_iterator j = views.begin(); j != views.end(); ++j)
-				(*j)->jack_lock();
+		for (const auto& instance : instance_list) {
+			for (const auto& canvas_view : instance->canvas_view_list())
+				canvas_view->jack_lock();
 		}
 	}
 }
@@ -1945,11 +1942,9 @@ void App::jack_unlock()
 	if (jack_locks_ == 0)
 	{
 		// unlock jack in instances
-		for(std::list< etl::handle<Instance> >::const_iterator i = instance_list.begin(); i != instance_list.end(); ++i)
-		{
-			const Instance::CanvasViewList &views = (*i)->canvas_view_list();
-			for(Instance::CanvasViewList::const_iterator j = views.begin(); j != views.end(); ++j)
-				(*j)->jack_unlock();
+		for (const auto& instance : instance_list) {
+			for (const auto& canvas_view : instance->canvas_view_list())
+				canvas_view->jack_unlock();
 		}
 	}
 }
@@ -3742,7 +3737,7 @@ App::open_from_temporary_filesystem(std::string temporary_filename)
 void
 App::new_instance()
 {
-	handle<synfig::Canvas> canvas=synfig::Canvas::create();
+	Canvas::Handle canvas = Canvas::create();
 
 	String filename(strprintf("%s%d", App::custom_filename_prefix.c_str(), Instance::get_count()+1));
 	canvas->set_name(filename);
@@ -4016,11 +4011,9 @@ App::get_instance(Canvas::Handle canvas)
 	if(!canvas) return nullptr;
 	canvas=canvas->get_root();
 
-	std::list<etl::handle<Instance> >::iterator iter;
-	for(iter=instance_list.begin();iter!=instance_list.end();++iter)
-	{
-		if((*iter)->get_canvas()==canvas)
-			return *iter;
+	for (const auto& instance : instance_list) {
+		if(instance->get_canvas()==canvas)
+			return instance;
 	}
 	return nullptr;
 }
@@ -4085,15 +4078,10 @@ studio::App::get_base_path()
 void
 studio::App::setup_changed()
 {
-	std::list<etl::handle<Instance> >::iterator iter;
-	for(iter=instance_list.begin();iter!=instance_list.end();++iter)
-	{
-		std::list< etl::handle<synfigapp::CanvasInterface> >::iterator citer;
-		std::list< etl::handle<synfigapp::CanvasInterface> >& cilist((*iter)->canvas_interface_list());
-		for(citer=cilist.begin();citer!=cilist.end();++citer)
-			{
-				(*citer)->signal_rend_desc_changed()();
-			}
+	for (const auto& instance : instance_list) {
+		for (const auto& canvas_interface : instance->canvas_interface_list()) {
+			canvas_interface->signal_rend_desc_changed()();
+		}
 	}
 }
 
