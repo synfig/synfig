@@ -3843,29 +3843,28 @@ App::new_instance()
 void
 App::open_from_plugin(const std::string& filename, const std::string& importer_id)
 {
-	String tmp_filename = get_temporary_directory() + "/synfig";
+	auto temp_lock = FileSystemTemporary::reserve_temporary_filename(get_temporary_directory(), "synfig", ".sif");
+	if (!temp_lock.second) {
+		dialog_message_1b("ERROR", _("Couldn't create a temporary file"), "details", _("Close"));
+		return;
+	}
 
-	String filename_processed;
-	struct stat buf;
-	do {
-		synfig::GUID guid;
-		filename_processed = tmp_filename + "." + guid.get_string().substr(0,8) + ".sif";
-	} while (stat(filename_processed.c_str(), &buf) != -1);
+	filesystem::Path tmp_filename = temp_lock.first;
 
-	bool result = plugin_manager.run(importer_id, {filename, filename_processed});
+	bool result = plugin_manager.run(importer_id, {filename, tmp_filename.u8string()});
 
 	if ( result ) {
 		OneMoment one_moment;
 		String errors, warnings;
 
 		// try open container
-		FileSystem::Handle container = CanvasFileNaming::make_filesystem_container(filename_processed, 0);
+		FileSystem::Handle container = CanvasFileNaming::make_filesystem_container(tmp_filename.u8string(), 0);
 		if ( !container ) {
-			errors += strprintf(_("Unable to open container \"%s\"\n\n"), filename_processed.c_str());
+			errors += strprintf(_("Unable to open container \"%s\"\n\n"), tmp_filename.u8_str());
 		} else {
 			FileSystem::Handle canvas_file_system = CanvasFileNaming::make_filesystem(container);
-			canvas_file_system = wrap_into_temporary_filesystem(canvas_file_system, filename_processed, filename, 0);
-			String canvas_filename = CanvasFileNaming::project_file(filename_processed);
+			canvas_file_system = wrap_into_temporary_filesystem(canvas_file_system, tmp_filename.u8string(), filename, 0);
+			String canvas_filename = CanvasFileNaming::project_file(tmp_filename.u8string());
 			Canvas::Handle canvas = open_canvas_as(canvas_file_system->get_identifier(canvas_filename), filename, errors, warnings);
 			if ( !canvas )
 			{
@@ -3895,7 +3894,8 @@ App::open_from_plugin(const std::string& filename, const std::string& importer_i
 			dialog_message_1b("ERROR", errors, "details", _("Close"));
 	}
 
-	remove(filename_processed.c_str());
+	FileSystemNative::instance()->remove_recursive(tmp_filename.u8_str());
+	// lock file (temp_lock.second) is auto-deleted
 }
 
 void
