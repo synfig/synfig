@@ -601,7 +601,7 @@ studio::Instance::has_real_filename()
 bool
 studio::Instance::dialog_save_as()
 {
-	std::string filename = get_file_name();
+	filesystem::Path filename = get_file_name();
 	Canvas::Handle canvas(get_canvas());
 
 	{
@@ -638,30 +638,33 @@ studio::Instance::dialog_save_as()
 	}
 
 	if (has_real_filename())
-		filename = filesystem::Path::absolute_path(filename);
+		filename = filesystem::absolute(filename);
+
+	std::string filename_str = filename.u8string();
 
 	// show the canvas' name if it has one, else its ID
 	while (App::dialog_save_file((_("Please choose a file name") +
 								  String(" (") +
 								  (canvas->get_name().empty() ? canvas->get_id() : canvas->get_name()) +
 								  ")"),
-								 filename, ANIMATION_DIR_PREFERENCE))
+								 filename_str, ANIMATION_DIR_PREFERENCE))
 	{
+		filename = filename_str;
 		// If the filename still has wildcards, then we should
 		// continue looking for the file we want
-		std::string base_filename = filesystem::Path::basename(filename);
-		if (find(base_filename.begin(),base_filename.end(),'*')!=base_filename.end())
+		std::string base_filename = filename.filename().u8string();
+		if (base_filename.find('*') != std::string::npos)
 			continue;
 
 		// if file extension is not recognized, then forced to .sifz
-		if (filesystem::Path::filename_extension(filename) == "")
-			filename+=".sifz";
+		if (filename.extension().empty())
+			filename.concat(".sifz");
 
 		canvas->set_name(base_filename);
 		// forced to .sifz, the below code is not need anymore
 		try
 		{
-			String ext(filesystem::Path::filename_extension(filename));
+			String ext(filename.extension().u8string());
 			// todo: ".sfg" literal and others
 			if (ext != ".sif" && ext != ".sifz" && ext != ".sfg" && !App::dialog_message_2b(
 				_("Unknown extension"),
@@ -678,55 +681,34 @@ studio::Instance::dialog_save_as()
 			continue;
 		}
 
-		{
-			struct stat	s;
-			int stat_return = stat(filename.c_str(), &s);
-
-			// if stat() fails with something other than 'file doesn't exist', there's been a real
-			// error of some kind.  let's give up now and ask for a new path.
-			if (stat_return == -1 && errno != ENOENT)
-			{
-				perror(filename.c_str());
-				std::string msg(strprintf(_("Unable to check whether '%s' exists."), filename.c_str()));
-				App::dialog_message_1b(
-						"ERROR",
-						msg.c_str(),
-						"details",
-						_("Close"));
-
+		bool file_exists = FileSystemNative::instance()->is_file(filename.u8string());
+		if (!file_exists) {
+			if (FileSystemNative::instance()->is_exists(filename.u8string())) {
+				std::string msg(strprintf(_("There is a folder with the same name '%s'.\nPlease choose another name"), filename.u8_str()));
+				App::dialog_message_1b("ERROR", msg.c_str(), "details", _("Close"));
 				continue;
 			}
-
+		} else {
 			// If the file exists and the user doesn't want to overwrite it, keep prompting for a filename
 			std::string message = strprintf(_("A file named \"%s\" already exists. "
 							"Do you want to replace it?"),
-							filesystem::Path::basename(filename).c_str());
+							filename.filename().u8_str());
 
 			std::string details = strprintf(_("The file already exists in \"%s\". "
 							"Replacing it will overwrite its contents."),
-							filesystem::Path::dirname(filename).c_str());
+							filename.parent_path().u8_str());
 
-			if ((stat_return == 0) && !App::dialog_message_2b(
-				message,
-				details,
-				Gtk::MESSAGE_QUESTION,
-				_("Use Another Name…"),
-				_("Replace"))
-			)
+			if (!App::dialog_message_2b(message, details, Gtk::MESSAGE_QUESTION, _("Use Another Name…"), _("Replace")))
 				continue;
 		}
 
-		if(save_as(filename))
+		if (save_as(filename.u8string()))
 		{
 			synfig::set_file_version(synfig::RELEASE_VERSION_CURRENT);
 			return true;
 		}
-		std::string msg(strprintf(_("Unable to save to '%s'"), filename.c_str()));
-		App::dialog_message_1b(
-				"ERROR",
-				msg.c_str(),
-				"details",
-				_("Close"));
+		std::string msg(strprintf(_("Unable to save to '%s'"), filename.u8_str()));
+		App::dialog_message_1b("ERROR", msg.c_str(), "details", _("Close"));
 	}
 
 	return false;
