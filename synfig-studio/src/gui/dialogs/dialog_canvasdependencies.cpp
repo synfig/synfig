@@ -327,7 +327,7 @@ void Dialog_CanvasDependencies::refresh()
 				missing->set_halign(Gtk::ALIGN_END);
 			}
 			auto label = Gtk::manage(new Gtk::Label());
-			label->set_markup(strprintf(_("%s\t<small>(%d references)</small>"), filename.c_str(), pair.second.total));
+			label->set_markup(strprintf(_n("%s\t<small>(%d reference)</small>", "%s\t<small>(%d references)</small>", pair.second.total), filename.c_str(), pair.second.total));
 			label->set_halign(Gtk::ALIGN_START);
 			label->set_hexpand(true);
 			box->pack_start(*label);

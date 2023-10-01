@@ -40,9 +40,11 @@
 #define _(x) gettext(x)
 #define gettext_noop(x) x
 #define N_(x) gettext_noop(x)
+#define _n(x,y,n) ngettext(x, y, n)
 #else
 #define _(x) (x)
 #define N_(x) (x)
+#define _n(x,y,n) (y)
 #endif
 
 /* === T Y P E D E F S ===================================================== */
