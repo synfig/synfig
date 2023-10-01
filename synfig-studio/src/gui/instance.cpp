@@ -640,16 +640,13 @@ studio::Instance::dialog_save_as()
 	if (has_real_filename())
 		filename = filesystem::absolute(filename);
 
-	std::string filename_str = filename.u8string();
-
 	// show the canvas' name if it has one, else its ID
 	while (App::dialog_save_file((_("Please choose a file name") +
 								  String(" (") +
 								  (canvas->get_name().empty() ? canvas->get_id() : canvas->get_name()) +
 								  ")"),
-								 filename_str, ANIMATION_DIR_PREFERENCE))
+								 filename, ANIMATION_DIR_PREFERENCE))
 	{
-		filename = filename_str;
 		// If the filename still has wildcards, then we should
 		// continue looking for the file we want
 		std::string base_filename = filename.filename().u8string();

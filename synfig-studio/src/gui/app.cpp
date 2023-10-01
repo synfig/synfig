@@ -2806,7 +2806,7 @@ create_dialog_save_file(const std::string& title, const filesystem::Path& filena
 }
 
 bool
-App::dialog_save_file(const std::string& title, std::string& filename, const std::string& preference)
+App::dialog_save_file(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference)
 {
 	// info("App::dialog_save_file('%s', '%s', '%s')", title.c_str(), filename.c_str(), preference.c_str());
 
@@ -2920,14 +2920,14 @@ App::dialog_save_file(const std::string& title, std::string& filename, const std
 	};
 
 	{
-		auto filter_iter = filter_map.find(filesystem::Path::filename_extension(filename));
+		auto filter_iter = filter_map.find(filename.extension().u8string());
 		if (filter_iter != filter_map.end())
 			dialog->set_filter(filter_iter->second);
 	}
 
 	// set focus to the file name entry(box) of dialog instead to avoid the name
 	// we are going to save changes while changing file filter each time.
-	dialog->set_current_name(filesystem::Path::basename(filename));
+	dialog->set_current_name(filename.filename().u8string());
 
 	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
 
@@ -2941,7 +2941,7 @@ App::dialog_save_file(const std::string& title, std::string& filename, const std
 		// dialog->property_filter().signal_changed().connect(sigc::mem_fun(*this, &App::on_save_dialog_filter_changed));
 		filename = dialog->get_filename();
 
-		auto filter_iter = filter_map.find(filesystem::Path::filename_extension(filename));
+		auto filter_iter = filter_map.find(filename.extension().u8string());
 
 		// No known extension; get it from the selected filter
 		if (filter_iter == filter_map.end()) {
@@ -2953,7 +2953,7 @@ App::dialog_save_file(const std::string& title, std::string& filename, const std
 			}
 		}
 
-		_preferences.set_value(preference, filesystem::Path::dirname(filename));
+		_preferences.set_value(preference, filename.parent_path());
 		return true;
 	}
 
