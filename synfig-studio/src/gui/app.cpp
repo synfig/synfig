@@ -3076,7 +3076,7 @@ App::dialog_save_file_sketch(const std::string& title, synfig::filesystem::Path&
 
 
 bool
-App::dialog_save_file_render(const std::string& title, std::string& filename, const std::string& preference)
+App::dialog_save_file_render(const std::string& title, filesystem::Path& filename, const std::string& preference)
 {
 	synfig::String prev_path = _preferences.get_value(preference, Glib::get_home_dir());
 
