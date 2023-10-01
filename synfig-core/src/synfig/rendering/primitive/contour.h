@@ -30,15 +30,14 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <mutex>
 #include <vector>
 
-#include <ETL/handle>
-
+#include <synfig/handle.h>
 #include <synfig/vector.h>
 #include <synfig/rect.h>
 #include <synfig/matrix.h>
 #include <synfig/color.h>
-#include <mutex>
 
 /* === M A C R O S ========================================================= */
 

@@ -24,7 +24,7 @@ in
 stdenv.mkDerivation rec {
   name = "synfigstudio-${version}";
 
-  src = [ ../autobuild ../ETL  ../synfig-core ../synfig-studio ] ;
+  src = [ ../autobuild ../synfig-core ../synfig-studio ] ;
 
   nativeBuildInputs = [ pkgconfig autoreconfHook gettext gnumake makeWrapper ];
   buildInputs = [
