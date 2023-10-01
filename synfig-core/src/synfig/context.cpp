@@ -63,11 +63,11 @@ using namespace synfig;
 /* === G L O B A L S ======================================================= */
 
 #ifdef SYNFIG_PROFILE_LAYERS
-#include <ETL/clock>
+#include <synfig/clock.h>
 static int depth(0);
 static std::map<String,float> time_table;
 static std::map<String,int> run_table;
-static etl::clock profile_timer;
+static synfig::clock profile_timer;
 static String curr_layer;
 static void
 _print_profile_report()
