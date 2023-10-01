@@ -718,7 +718,7 @@ studio::Instance::dialog_save_as()
 
 		if(save_as(filename))
 		{
-			synfig::set_file_version(ReleaseVersion(RELEASE_VERSION_END-1));
+			synfig::set_file_version(synfig::RELEASE_VERSION_CURRENT);
 			return true;
 		}
 		std::string msg(strprintf(_("Unable to save to '%s'"), filename.c_str()));
