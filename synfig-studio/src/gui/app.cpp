@@ -2913,9 +2913,17 @@ App::dialog_save_file(const std::string& title, std::string& filename, const std
 	}
 
 	// set file filter according to previous file format
-	if (filesystem::Path::filename_extension(filename) == ".sif" ) dialog->set_filter(filter_sif);
-	if (filesystem::Path::filename_extension(filename)== ".sifz" ) dialog->set_filter(filter_sifz);
-	if (filesystem::Path::filename_extension(filename) == ".sfg" ) dialog->set_filter(filter_sfg);
+	const std::map<std::string, Glib::RefPtr<Gtk::FileFilter>> filter_map = {
+		{".sif", filter_sif},
+		{".sifz", filter_sifz},
+		{".sfg", filter_sfg}
+	};
+
+	{
+		auto filter_iter = filter_map.find(filesystem::Path::filename_extension(filename));
+		if (filter_iter != filter_map.end())
+			dialog->set_filter(filter_iter->second);
+	}
 
 	// set focus to the file name entry(box) of dialog instead to avoid the name
 	// we are going to save changes while changing file filter each time.
@@ -2933,16 +2941,16 @@ App::dialog_save_file(const std::string& title, std::string& filename, const std
 		// dialog->property_filter().signal_changed().connect(sigc::mem_fun(*this, &App::on_save_dialog_filter_changed));
 		filename = dialog->get_filename();
 
-		if (filesystem::Path::filename_extension(filename) != ".sif" &&
-			filesystem::Path::filename_extension(filename) != ".sifz" &&
-			filesystem::Path::filename_extension(filename) != ".sfg")
-		{
-			if (dialog->get_filter() == filter_sif)
-				filename = dialog->get_filename() + ".sif";
-			else if (dialog->get_filter() == filter_sifz)
-				filename = dialog->get_filename() + ".sifz";
-			else if (dialog->get_filter() == filter_sfg)
-				filename = dialog->get_filename() + ".sfg";
+		auto filter_iter = filter_map.find(filesystem::Path::filename_extension(filename));
+
+		// No known extension; get it from the selected filter
+		if (filter_iter == filter_map.end()) {
+			for (const auto& filter_item : filter_map) {
+				if (filter_item.second == dialog->get_filter()) {
+					filename = filename + filter_item.first;
+					break;
+				}
+			}
 		}
 
 		_preferences.set_value(preference, filesystem::Path::dirname(filename));
