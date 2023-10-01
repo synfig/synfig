@@ -47,6 +47,7 @@
 
 #include <synfig/canvasfilenaming.h>
 #include <synfig/general.h>
+#include <synfig/loadcanvas.h>
 #include <synfig/synfig_iterations.h>
 
 #endif
@@ -124,7 +125,36 @@ struct ExternalValueNodeCollector {
 		// Has filename? External resource
 		Layer::Vocab vocab = layer->get_param_vocab();
 		for (const auto& param_desc : vocab) {
-			if (param_desc.get_hint() == "filename" || param_desc.get_name() == "filename") {
+			if (param_desc.get_name() == "canvas") {
+				const std::string& param_name = param_desc.get_name();
+
+				std::set<ValueBase> values;
+				bool is_from_dynamic_param_list = false;
+				auto it = layer->dynamic_param_list().find(param_name);
+				if (it != layer->dynamic_param_list().end()) {
+					it->second->get_values(values);
+					is_from_dynamic_param_list = true;
+				} else {
+					ValueBase v = layer->get_param(param_name);
+					if (v.is_valid())
+						values.insert(v);
+				}
+
+				for (const auto& v : values) {
+					if (v.get_type() != type_canvas)
+						continue; // or break ?
+					if (auto canvas = v.get(Canvas::Handle())) {
+						if (canvas->is_inline() || canvas == this->canvas || canvas->get_root() == this->canvas)
+							continue;
+						auto filename_str = canvas->get_file_name();
+						if (!filename_str.empty()) {
+							filename_str = CanvasFileNaming::make_full_filename(layer->get_canvas()->get_file_name(), filename_str);
+							external_resource_stats[filename_str].record_usage(layer, param_name, is_from_dynamic_param_list);
+						}
+					}
+				}
+			}
+			else if (param_desc.get_hint() == "filename" || param_desc.get_name() == "filename") {
 				const std::string& param_name = param_desc.get_name();
 
 				std::set<ValueBase> values;
@@ -272,7 +302,10 @@ void Dialog_CanvasDependencies::refresh()
 			const std::vector<std::string> image_ext = {"png", "bmp", "jpg", "jpeg", "gif", "tiff", "tif", "dib", "ppm", "pbm", "pgm", "pnm", "webp"};
 			const std::vector<std::string> lipsync_ext = {"pgo", "tsv", "xml"};
 			const std::vector<std::string> video_ext = {"mpg", "mpeg", "mp2", "m2v", "m4v", "mp4", "m4p", "ogv", "avi", "mov", "webm", "wmv", "mkv", "vob", "mng"};
-			if (std::find(image_ext.begin(), image_ext.end(), ext) != image_ext.end())
+			const std::vector<std::string> synfig_ext = {"sif", "sifz", "sfg"};
+			if (std::find(synfig_ext.begin(), synfig_ext.end(), ext) != synfig_ext.end())
+				pixbuf = get_tree_pixbuf_from_icon_name("about_icon");
+			else if (std::find(image_ext.begin(), image_ext.end(), ext) != image_ext.end())
 				pixbuf = get_tree_pixbuf_layer("import");
 			else if (std::find(audio_ext.begin(), audio_ext.end(), ext) != audio_ext.end())
 				pixbuf = get_tree_pixbuf_layer("sound");
@@ -356,9 +389,30 @@ Dialog_CanvasDependencies::on_replace_button_pressed(const synfig::filesystem::P
 		for (const auto& param_item : parameter_list) {
 			auto layer = param_item.first.first;
 			auto param_name = param_item.first.second;
-			synfig::filesystem::Path canvas_dir(layer->get_canvas()->get_file_name());
-			auto short_path = new_filename.proximate_to(canvas_dir.parent_path());
-			canvas_interface->change_value(synfigapp::ValueDesc(layer, param_name), short_path.u8string());
+			if (param_name != "canvas") {
+				synfig::filesystem::Path canvas_dir(layer->get_canvas()->get_file_name());
+				auto short_path = new_filename.proximate_to(canvas_dir.parent_path());
+				canvas_interface->change_value(synfigapp::ValueDesc(layer, param_name), short_path.u8string());
+			} else {
+
+				String short_filename = CanvasFileNaming::make_short_filename(canvas->get_file_name(), new_filename.u8string());
+				String full_filename = CanvasFileNaming::make_full_filename(canvas->get_file_name(), short_filename);
+
+				FileSystem::Handle file_system = CanvasFileNaming::make_filesystem(full_filename);
+				if (!file_system)
+					throw strprintf(_("Unable to open container:\n%s\n"), full_filename.c_str()) + "\n\n";
+
+				synfig::String errors;
+				synfig::String warnings;
+
+				Canvas::Handle new_canvas(synfig::open_canvas_as(file_system->get_identifier(CanvasFileNaming::project_file(full_filename)), full_filename, errors, warnings));
+				if (!new_canvas)
+					throw String(_("Unable to open this composition")) + ":\n\n" + errors;
+
+				canvas_interface->change_value(synfigapp::ValueDesc(layer, param_name), new_canvas);
+				canvas->register_external_canvas(full_filename, new_canvas);
+				canvas_interface->signal_layer_new_description()(layer, new_filename.filename().u8string());
+			}
 		}
 	}
 	refresh();
