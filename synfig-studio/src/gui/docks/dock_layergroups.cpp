@@ -64,6 +64,8 @@ Dock_LayerGroups::Dock_LayerGroups():
 	action_group_group_ops(Gtk::ActionGroup::create("action_group_dock_layergroups")),
 	group_action_manager(new GroupActionManager)
 {
+	set_name("layersets_panel");
+
 	// Make Sets toolbar buttons small for space efficiency
 	get_style_context()->add_class("synfigstudio-efficient-workspace");
 

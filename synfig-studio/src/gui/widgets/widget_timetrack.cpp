@@ -59,6 +59,8 @@ Widget_Timetrack::Widget_Timetrack()
 	  is_update_param_list_geometries_queued(false),
 	  action_state(NONE)
 {
+	get_style_context()->add_class("timetrack");
+
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::SCROLL_MASK | Gdk::POINTER_MOTION_MASK | Gdk::KEY_PRESS_MASK | Gdk::KEY_RELEASE_MASK);
 	set_can_focus(true);
 	setup_mouse_handler();
@@ -123,11 +125,6 @@ bool Widget_Timetrack::use_canvas_view(CanvasView::LooseHandle canvas_view)
 		synfig::error(_("Params treeview widget doesn't exist"));
 		return false;
 	}
-
-	// This parameter dock is connected to timetrack
-	// We have to set padding to this widget to achieve our intended padding
-	// behavior for our timetrack
-	params_treeview->set_name("timetrack");
 
 	set_time_model(canvas_view->time_model());
 	set_canvas_interface(canvas_view->canvas_interface());

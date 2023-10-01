@@ -61,6 +61,7 @@ Dock_Params::Dock_Params():
 	action_group( Gtk::ActionGroup::create("action_group_dock_params") ),
 	vadjustment( Gtk::Adjustment::create(0, 0, 1, 1, 1) )
 {
+	set_name("parameters_panel");
 }
 
 Dock_Params::~Dock_Params()
