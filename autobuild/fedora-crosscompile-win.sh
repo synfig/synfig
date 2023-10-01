@@ -217,7 +217,7 @@ do
 done
 
 # cleaning source tree
-for dir in ETL synfig-core synfig-studio; do
+for dir in synfig-core synfig-studio; do
 	pushd $SCRIPTPATH/../$dir > /dev/null
 	make clean || true
 	popd > /dev/null
@@ -571,16 +571,6 @@ if ! pkg-config ${PKG_NAME} --exact-version=${PKG_VERSION}  --print-errors; then
 fi
 }
 
-#ETL
-mketl()
-{
-cd $SCRIPTPATH/../ETL
-make clean || true
-autoreconf --install --force
-${TOOLCHAIN}-configure --prefix=${PREFIX} --includedir=${PREFIX}/include --libdir=${PREFIX}/lib --bindir=${PREFIX}/bin $DEBUG
-make install
-}
-
 #synfig-core
 mksynfig()
 {
@@ -730,7 +720,6 @@ mkall()
 	mkprep
 	mkimagemagick
 	mkmlt
-	mketl
 	mksynfig
 	mksynfigstudio
 	mkpackage

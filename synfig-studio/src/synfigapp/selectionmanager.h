@@ -32,7 +32,7 @@
 
 #include <list>
 #include <set>
-#include <ETL/handle>
+#include <synfig/handle.h>
 #include <synfig/layer.h>
 #include <synfig/valuenode.h>
 #include "value_desc.h"

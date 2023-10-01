@@ -31,22 +31,21 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/string.h>
-#include <synfig/canvas.h>
-#include <ETL/handle>
-
 #include <list>
 
-#include <synfig/layer.h>
 #include <synfig/canvas.h>
+#include <synfig/handle.h>
+#include <synfig/string.h>
+
+#include <synfig/layer.h>
 #include <synfig/valuenode.h>
-#include <synfigapp/value_desc.h>
 #include <synfig/value.h>
 #include <synfig/activepoint.h>
 #include <synfig/valuenodes/valuenode_animated.h>
 #include <synfig/keyframe.h>
 #include <synfig/waypoint.h>
 
+#include <synfigapp/value_desc.h>
 #include "editmode.h"
 
 /* === M A C R O S ========================================================= */

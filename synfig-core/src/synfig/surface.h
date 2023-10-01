@@ -32,8 +32,8 @@
 /* === H E A D E R S ======================================================= */
 
 #include "color.h"
+#include "handle.h"
 #include "surface_etl.h"
-#include <ETL/handle>
 
 /* === M A C R O S ========================================================= */
 

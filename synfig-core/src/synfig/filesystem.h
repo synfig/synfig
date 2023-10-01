@@ -35,9 +35,8 @@
 #include <streambuf>
 #include <vector>
 
-#include <ETL/handle>
-
 #include "filesystem_path.h"
+#include "handle.h"
 #include "string.h"
 
 /* === M A C R O S ========================================================= */

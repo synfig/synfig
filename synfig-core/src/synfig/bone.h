@@ -33,7 +33,7 @@
 #include "matrix.h"
 #include "uniqueid.h"
 #include "string.h"
-#include <ETL/handle>
+#include <synfig/handle.h>
 
 /* === M A C R O S ========================================================= */
 

@@ -16,15 +16,12 @@ VERSION_NEW="$1"
 # Get current version
 VERSION_CURRENT=`cat synfig-studio/configure.ac | grep "AC_INIT(\[Synfig Studio\]" | sed 's/.*Studio\],\[\(.*\)\],\[http.*/\1/'`
 
-sed -i "s|Library\],\[${VERSION_CURRENT}\],\[http|Library\],\[${VERSION_NEW}\],\[http|" ETL/configure.ac
 
 sed -i "s|Core\],\[${VERSION_CURRENT}\],\[http|Core\],\[${VERSION_NEW}\],\[http|" synfig-core/configure.ac
-sed -i "s|ETL >= ${VERSION_CURRENT}|ETL >= ${VERSION_NEW}|" synfig-core/configure.ac
 sed -i "s|version ${VERSION_CURRENT} or|version ${VERSION_NEW} or|" synfig-core/configure.ac
 
 
 sed -i "s|Studio\],\[${VERSION_CURRENT}\],\[http|Studio\],\[${VERSION_NEW}\],\[http|" synfig-studio/configure.ac
-sed -i "s|ETL >= ${VERSION_CURRENT}|ETL >= ${VERSION_NEW}|" synfig-studio/configure.ac
 sed -i "s|synfig >= ${VERSION_CURRENT}|synfig >= ${VERSION_NEW}|" synfig-studio/configure.ac
 
 VERSION_NEW_MAJOR=$(echo "$VERSION_NEW" | cut -d'.' -f1)
@@ -46,7 +43,6 @@ sed -i "s|date=\".*\">|date=\"${DATE}\">|" synfig-studio/org.synfig.SynfigStudio
 sed -i "s|  \"version\": \"${VERSION_CURRENT}\",|  \"version\": \"${VERSION_NEW}\",|" vcpkg.json
 
 git add \
-	ETL/configure.ac \
 	synfig-core/configure.ac \
 	synfig-studio/configure.ac \
 	synfig-studio/src/gui/CMakeLists.txt \
