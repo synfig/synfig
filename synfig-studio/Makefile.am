@@ -54,7 +54,6 @@ EXTRA_DIST = \
 	config/package \
 	config/depcomp \
 	m4/cxx_macros.m4 \
-	m4/ETL.m4 \
 	ChangeLog.old \
 	org.synfig.SynfigStudio.desktop.in \
 	org.synfig.SynfigStudio.appdata.xml.in \

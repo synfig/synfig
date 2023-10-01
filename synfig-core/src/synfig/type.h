@@ -34,7 +34,12 @@
 #include <vector>
 #include <map>
 #include <typeinfo>
+
+#include "angle.h"
+#include "handle.h"
+#include "real.h"
 #include "string.h"
+#include "synfig_export.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -55,12 +60,6 @@ namespace synfig {
 		TypeAlias(Type &type): type(type) { }
 	};
 }
-
-#include "real.h"
-#include "string.h"
-#include "angle.h"
-#include <ETL/handle>
-#include "synfig_export.h"
 
 namespace synfig {
 

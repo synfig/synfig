@@ -24,7 +24,7 @@ fi
 
 # Update NEWS files
 ./ChangeLog-split.sh
-git add ETL/NEWS synfig-core/NEWS synfig-studio/NEWS
+git add synfig-core/NEWS synfig-studio/NEWS
 
 DATE=`date +%Y-%m-%d`
 sed -i "s|date=\".*\">|date=\"${DATE}\">|" synfig-studio/org.synfig.SynfigStudio.appdata.xml.in

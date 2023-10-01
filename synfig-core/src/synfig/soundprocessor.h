@@ -30,10 +30,10 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/handle>
 #include <map>
 #include <limits>
 
+#include <synfig/handle.h>
 #include "time.h"
 #include "real.h"
 #include "filesystem.h"

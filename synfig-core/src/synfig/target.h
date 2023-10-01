@@ -37,9 +37,8 @@
 
 #include <sigc++/signal.h>
 
-#include <ETL/handle>
-
 #include "canvas.h"
+#include "handle.h"
 #include "progresscallback.h"
 #include "renddesc.h"
 #include "string.h"

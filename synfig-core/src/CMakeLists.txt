@@ -5,9 +5,6 @@
 find_package(ZLIB REQUIRED)
 find_package(Intl REQUIRED)
 
-## ETL doesn't install a package configuration so find package will fail
-# find_package(ETL REQUIRED)
-
 
 ## TODO: investigate these more closely
 set(CMAKE_THREAD_PREFER_PTHREAD ON)
