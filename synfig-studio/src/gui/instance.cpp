@@ -715,11 +715,11 @@ studio::Instance::dialog_save_as()
 bool
 studio::Instance::dialog_export()
 {
-	std::string filename = get_file_name();
+	filesystem::Path filename = get_file_name();
 	Canvas::Handle canvas(get_canvas());
 
 	if (has_real_filename())
-		filename = filesystem::Path::absolute_path(filename);
+		filename = filesystem::absolute(filename);
 
 	// show the canvas' name if it has one, else its ID
 	std::string plugin_id = App::dialog_export_file(
@@ -731,7 +731,7 @@ studio::Instance::dialog_export()
 	);
 	if ( !plugin_id.empty() )
 	{
-		run_plugin(plugin_id, false, {filename});
+		run_plugin(plugin_id, false, {filename.u8string()});
 		return true;
 	}
 

@@ -2963,10 +2963,10 @@ App::dialog_save_file(const std::string& title, synfig::filesystem::Path& filena
 
 
 std::string
-App::dialog_export_file(const std::string& title, std::string& filename, const std::string& preference)
+App::dialog_export_file(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference)
 {
-	synfig::String prev_path = _preferences.get_value(preference, Glib::get_home_dir());
-	prev_path = filesystem::Path::absolute_path(prev_path);
+	filesystem::Path prev_path = _preferences.get_value(preference, Glib::get_home_dir());
+	prev_path = filesystem::absolute(prev_path);
 
 	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window, title, Gtk::FILE_CHOOSER_ACTION_SAVE);
 
@@ -2979,14 +2979,14 @@ App::dialog_export_file(const std::string& title, std::string& filename, const s
 		dialog->add_filter(filter);
 	}
 
-	dialog->set_current_folder(prev_path);
+	dialog->set_current_folder(prev_path.u8string());
 	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
 	dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
 
 	if (filename.empty()) {
-		dialog->set_filename(prev_path);
+		dialog->set_filename(prev_path.u8string());
 	} else {
-		dialog->set_current_name(filesystem::Path::filename_sans_extension(filesystem::Path::basename(filename)));
+		dialog->set_current_name(filename.stem().u8string());
 	}
 
 	// set focus to the file name entry(box) of dialog instead to avoid the name
@@ -2996,14 +2996,14 @@ App::dialog_export_file(const std::string& title, std::string& filename, const s
 
 		filename = dialog->get_filename();
 
-		_preferences.set_value(preference, filesystem::Path::dirname(filename));
+		_preferences.set_value(preference, filename.parent_path());
 
 		auto filter = dialog->get_filter();
 		for ( const auto& exporter : App::plugin_manager.exporters() )
 		{
 			if ( filter->get_name() == exporter.description.get() )
 			{
-				if ( !exporter.has_extension(filesystem::Path::filename_extension(filename)) )
+				if ( !exporter.has_extension(filename.extension().u8string()) )
 					filename += exporter.extensions[0];
 
 				delete dialog;
