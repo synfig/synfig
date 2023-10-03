@@ -427,8 +427,10 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 	// instead of iterate over entire param list
 	//	Gtk::TreePath start_path, end_path;
 	//	params_treeview->get_visible_range(start_path, end_path);
+	int row_number = 0;
+	params_store->foreach_path([=, &row_number](const Gtk::TreeModel::Path &path) -> bool {
+		++row_number;
 
-	params_store->foreach_path([=](const Gtk::TreeModel::Path &path) -> bool {
 		const RowInfo &row_info = param_info_map[path.to_string()];
 		if (!row_info.is_valid()) {
 			queue_rebuild_param_info_list();
@@ -441,6 +443,15 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 
 		if (geometry.y + geometry.h < 0 || geometry.y > get_height())
 			return false;
+
+		// alternate even-odd row colors
+		{
+			const std::string class_name = row_number % 2 == 0 ? "even" : "odd";
+			auto context = get_style_context();
+			context->add_class(class_name);
+			context->render_background(cr, 0, geometry.y, get_width(), geometry.h);
+			context->remove_class(class_name);
+		}
 
 		// is param selected?
 		draw_selected_background(cr, path, row_info);
