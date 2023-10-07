@@ -362,6 +362,18 @@ LayerTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int column,
 				if (new_desc == layer->get_description())
 					return;
 
+				if(iter->parent())
+				{
+					Layer::Handle parent_layer((*iter->parent())[model.layer]);
+					etl::handle<Layer_Switch> layer_switch = etl::handle<Layer_Switch>::cast_dynamic(parent_layer);
+					if(layer_switch)
+					{
+						if(layer_switch->get_param("layer_name").get(String()) == layer->get_description())
+						{
+							layer_switch->set_param("layer_name", ValueBase(new_desc));
+						}
+					}
+				}
 				synfigapp::Action::Handle action(synfigapp::Action::create("LayerSetDesc"));
 				if (!action) return;
 
