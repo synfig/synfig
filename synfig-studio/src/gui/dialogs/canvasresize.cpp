@@ -81,6 +81,7 @@ CanvasResize::CanvasResize(Gtk::Window &parent, etl::handle<synfigapp::CanvasInt
 	, rsz_im_chbox      (nullptr)
 	, toggle_ratio_wh   (nullptr)
 	, canvas_center     (canvas_buttons[4])
+	, is_toggle_unique  (true)
 	, old_width         (0)
 	, old_height        (0)
 	, new_width         (0)
@@ -186,7 +187,7 @@ void CanvasResize::on_dialog_shown()
 {
 	if (is_image_checked) set_image_flags(toggle_ratio_wh->get_active());
 
-	// Always enable width/height link
+	if (!is_toggle_unique) return;
 	set_canvas_flags(true);
 	refresh_wh_toggle_widgets();
 }
@@ -203,6 +204,7 @@ void CanvasResize::on_action_signal_response(int response_id)
 	refresh_old_new_wh_values();
 
 	auto rend_desc_old = canvas_interface->get_canvas()->rend_desc();
+	auto is_toggled    = toggle_ratio_wh->get_active();
 
 	switch (response_id) {
 	case ADVANCED:
@@ -217,6 +219,7 @@ void CanvasResize::on_action_signal_response(int response_id)
 		break;
 	case OKAY:
 		if (new_width == old_width && new_height == old_height) break;
+		if (is_toggle_unique) break;
 		/*
 		 * Set canvas resize direction
 		 *
@@ -226,7 +229,6 @@ void CanvasResize::on_action_signal_response(int response_id)
 		// Old state
 		rend_desc = rend_desc_old;
 		// New state
-		auto is_toggled = toggle_ratio_wh->get_active();
 		is_image_checked ? set_image_flags(is_toggled) : set_canvas_flags(is_toggled);
 		set_canvas_center_point();
 		rend_desc.set_pixel_ratio(new_width, new_height);
@@ -247,6 +249,8 @@ void CanvasResize::on_width_changed()
 	rend_desc.set_w(width->get_value_as_int());
 
 	refresh_wh_toggle_widgets();
+
+	is_toggle_unique = false;
 }
 
 void CanvasResize::on_height_changed()
@@ -257,6 +261,8 @@ void CanvasResize::on_height_changed()
 	rend_desc.set_h(height->get_value_as_int());
 
 	refresh_wh_toggle_widgets();
+
+	is_toggle_unique = false;
 }
 
 void CanvasResize::on_canvas_button_clicked(Gtk::Button *button)
@@ -335,8 +341,11 @@ void CanvasResize::on_wh_ratio_toggled()
 		rend_desc.set_pixel_ratio(width->get_value_as_int(), height->get_value_as_int());
 
 		is_image_checked ? set_image_flags(true) : set_canvas_flags(true);
-	} else
+	} else {
+		is_toggle_unique = false;
+
 		is_image_checked ? set_image_flags(false) : set_canvas_flags(false);
+	}
 }
 
 void CanvasResize::on_spinbutton_updated(Gtk::SpinButton *widget)
