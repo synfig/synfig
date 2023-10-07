@@ -24,7 +24,7 @@ export SRCPREFIX=`dirname "$SCRIPTPATH"`
 
 BUILD_RELEASE_DIR=${SRCPREFIX}/_release/
 
-export PREFIX="$HOME/local-synfig"
+export PREFIX="$BUILD_RELEASE_DIR/build"
 export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$PREFIX/lib/pkgconfig"
 export PATH="$PREFIX/bin:$PATH"
 export ETL_VERSION=`cat $SRCPREFIX/ETL/configure.ac |egrep "AC_INIT\(\[Extended Template Library\],"| sed "s|.*Library\],\[||" | sed "s|\],\[.*||"`
@@ -80,7 +80,7 @@ l10n()
 	end_stage "l10n"
 }
 
-pack-etl()
+pack_etl()
 {
 	start_stage "Pack ETL"
 	cd $SRCPREFIX/ETL
@@ -88,32 +88,12 @@ pack-etl()
 	mkdir -p ${BUILD_RELEASE_DIR}/ETL && cd $BUILD_RELEASE_DIR/ETL
 	$SRCPREFIX/ETL/configure --prefix="$PREFIX"
 	make V=0 CXXFLAGS="-w" distcheck -j${THREADS}
+	make V=0 CXXFLAGS="-w" install -j${THREADS}
 	mv ETL-${ETL_VERSION}.tar.gz ${BUILD_RELEASE_DIR}
 	end_stage "Pack ETL"
 }
 
-test-etl()
-{
-	start_stage "Test ETL"
-	cd ${BUILD_RELEASE_DIR}
-	tar xf ETL-${ETL_VERSION}.tar.gz
-	cd ETL-${ETL_VERSION}
-	./configure --prefix="$PREFIX"
-	make V=0 CXXFLAGS="-w" install -j${THREADS}
-	cd ..
-	rm -rf ${BUILD_RELEASE_DIR}/ETL-${ETL_VERSION}
-	end_stage "Test ETL"
-}
-
-etl()
-{
-	start_stage "ETL"
-	pack-etl
-	test-etl
-	end_stage "ETL"
-}
-
-pack-core()
+pack_core()
 {
 	start_stage "Pack Synfig Core"
 	cd $SRCPREFIX/synfig-core
@@ -122,32 +102,12 @@ pack-core()
 	$SRCPREFIX/synfig-core/configure --prefix="$PREFIX"
 	echo "------------------------------------- pack-core make"
 	make V=0 CXXFLAGS="-w" distcheck -j${THREADS}
+	make V=0 CXXFLAGS="-w" install -j${THREADS}
 	mv synfig-${CORE_VERSION}.tar.gz ${BUILD_RELEASE_DIR}
 	end_stage "Pack Synfig Core"
 }
 
-test-core()
-{
-	start_stage "Test Synfig Core"
-	cd ${BUILD_RELEASE_DIR}
-	tar xf synfig-${CORE_VERSION}.tar.gz
-	cd synfig-${CORE_VERSION}
-	./configure --prefix="$PREFIX"
-	make V=0 CXXFLAGS="-w" install -j${THREADS}
-	cd ..
-	rm -rf ${BUILD_RELEASE_DIR}/synfig-${CORE_VERSION}
-	end_stage "Test Synfig Core"
-}
-
-core()
-{
-	start_stage "Synfig Core"
-	pack-core
-	test-core
-	end_stage "Synfig Core"
-}
-
-pack-studio()
+pack_studio()
 {
 	start_stage "Pack Synfig Studio"
 	cd $SRCPREFIX/synfig-studio
@@ -159,33 +119,12 @@ pack-studio()
 	end_stage "Pack Synfig Studio"
 }
 
-test-studio()
-{
-	start_stage "Test Synfig Studio"
-	cd ${BUILD_RELEASE_DIR}
-	tar xf synfigstudio-${STUDIO_VERSION}.tar.gz
-	cd synfigstudio-${STUDIO_VERSION}
-	./configure --prefix="$PREFIX"
-	make install -j${THREADS}
-	cd ..
-	rm -rf ${BUILD_RELEASE_DIR}/synfigstudio-${STUDIO_VERSION}
-	end_stage "Test Synfig Studio"
-}
-
-studio()
-{
-	start_stage "Synfig Studio"
-	pack-studio
-	test-studio
-	end_stage "Synfig Studio"
-}
-
 mkall()
 {
 	l10n
-	etl
-	core
-	studio
+	pack_etl
+	pack_core
+	pack_studio
 }
 
 do_cleanup()
