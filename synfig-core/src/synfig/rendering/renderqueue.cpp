@@ -104,7 +104,7 @@ RenderQueue::start()
 	count = 2;
 	#endif
 
-	if (const char *s = getenv("SYNFIG_RENDERING_THREADS"))
+	if (const char *s = DEBUG_ENV("SYNFIG_RENDERING_THREADS"))
 		count = atoi(s) + 1;
 
 	if (count > SYNFIG_RENDERING_MAX_THREADS) count = SYNFIG_RENDERING_MAX_THREADS;
