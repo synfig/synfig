@@ -130,6 +130,8 @@ private:
 	etl::loose_handle<Canvas> canvas_;
 	//! The root canvas this Value Node belongs to
 	etl::loose_handle<Canvas> root_canvas_;
+	//! used for valuenode caching
+	bool valueNodeChanged;
 
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------

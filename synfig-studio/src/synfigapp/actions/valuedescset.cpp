@@ -954,6 +954,7 @@ Action::ValueDescSet::prepare()
 						action->set_param("waypoint",waypoint);
 						if(!action->is_ready())
 							throw Error(Error::TYPE_NOTREADY);
+
 						add_action(action);
 					}
 					return;

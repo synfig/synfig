@@ -609,8 +609,31 @@ Layer::set_time(IndependentContext context, Time time)
 	Layer::ParamList params;
 	Layer::DynamicParamList::const_iterator iter;
 	// For each parameter of the layer sets the value by the operator()(time)
-	for (iter = dynamic_param_list().begin(); iter != dynamic_param_list().end(); ++iter)
-		params[iter->first]=(*iter->second)(time);
+	for (iter = dynamic_param_list().begin(); iter != dynamic_param_list().end(); ++iter){
+		bool paramInMap = parameter_cache.find(iter->first) != parameter_cache.end();
+
+		//if parameter has changed remove it from the parameter list
+		if(paramInMap && iter->second->valueNodeChanged){
+			parameter_cache.erase(iter->first);
+		}
+
+		if (iter->second->valueNodeChanged)
+			iter->second->valueNodeChanged = false;
+
+		if(iter->first != "bline"){
+			//if this time is alread cached
+			if(paramInMap && parameter_cache[iter->first].find(time.get_string()) !=
+							  (parameter_cache[iter->first]).end()){
+				params[iter->first]=(parameter_cache[iter->first])[time.get_string()];
+			} else {
+				(parameter_cache[iter->first])[time.get_string()] = (*iter->second)(time);
+				params[iter->first]=(parameter_cache[iter->first])[time.get_string()];
+			}
+		} else{
+			params[iter->first]=(*iter->second)(time);
+		}
+	}
+
 	// Sets the modified parameter list to the current context layer
 	const_cast<Layer*>(this)->set_param_list(params);
 
