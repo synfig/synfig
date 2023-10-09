@@ -138,6 +138,8 @@ KeyframeTree::KeyframeTree() : editable_(false)
 	// This makes things easier to read.
 	set_rules_hint();
 
+	get_style_context()->add_class("keyframes");
+
 	// Make us more sensitive to several events
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK);
 

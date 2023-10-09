@@ -223,6 +223,8 @@ LayerTree::create_layer_tree()
 	// This makes things easier to read.
 	layer_tree_view().set_rules_hint();
 
+	layer_tree_view().get_style_context()->add_class("layers");
+
 	// Make us more sensitive to several events
 	//layer_tree_view().add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK|Gdk::POINTER_MOTION_MASK);
 
@@ -379,6 +381,8 @@ LayerTree::create_param_tree()
 
 	// This makes things easier to read.
 	param_tree_view().set_rules_hint();
+
+	param_tree_view().get_style_context()->add_class("parameters");
 
 	// Make us more sensitive to several events
 	param_tree_view().add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK|Gdk::POINTER_MOTION_MASK);

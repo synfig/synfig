@@ -65,6 +65,8 @@ Dock_Layers::Dock_Layers():
 	Dock_CanvasSpecific("layers",_("Layers"),"layer_icon"),
 	layer_action_manager(new LayerActionManager)
 {
+	set_name("layers_panel");
+
 	// Make Layers button small for space efficiency
 	get_style_context()->add_class("synfigstudio-efficient-workspace");
 

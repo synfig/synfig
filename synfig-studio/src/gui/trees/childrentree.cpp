@@ -134,6 +134,8 @@ ChildrenTree::ChildrenTree()
 	// This makes things easier to read.
 	tree_view.set_rules_hint();
 
+	get_style_context()->add_class("library");
+
 	// Make us more sensitive to several events
 	tree_view.add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK|Gdk::POINTER_MOTION_MASK);
 

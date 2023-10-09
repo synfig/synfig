@@ -59,7 +59,7 @@
  * Our timetrack ruler is tight
  * Set some padding below to give it more space
  */
-#timetrack button {
+#timetrack_panel button {
 	padding-bottom: 5px;
 }
 

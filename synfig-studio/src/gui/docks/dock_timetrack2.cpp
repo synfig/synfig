@@ -47,6 +47,8 @@ Dock_Timetrack2::Dock_Timetrack2()
 	: Dock_CanvasSpecific("timetrack", _("Timetrack"), "time_track_icon"),
 	  current_widget_timetrack(nullptr)
 {
+	set_name("timetrack_panel");
+
 	set_use_scrolled(false);
 
 	widget_kf_list.set_hexpand();
