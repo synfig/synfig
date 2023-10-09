@@ -210,8 +210,8 @@ App::signal_instance_deleted() { return signal_instance_deleted_; }
 
 /* === G L O B A L S ======================================================= */
 
-static std::list<std::string>           recent_files;
-const  std::list<std::string>& App::get_recent_files() { return recent_files; }
+static std::list<synfig::filesystem::Path> recent_files;
+const std::list<synfig::filesystem::Path>& App::get_recent_files() { return recent_files; }
 
 int	 App::Busy::count;
 bool App::shutdown_in_progress;
@@ -1473,7 +1473,7 @@ void App::init(const synfig::String& rootpath)
 
 	String path_to_plugins = ResourceHelper::get_plugin_path();
 
-	String path_to_user_plugins = synfigapp::Main::get_user_app_directory() + "/plugins";
+	filesystem::Path path_to_user_plugins = synfigapp::Main::get_user_app_directory() / filesystem::Path("plugins");
 
 	ui_interface_=new GlobalUIInterface();
 
@@ -1491,10 +1491,10 @@ void App::init(const synfig::String& rootpath)
 	SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX | SEM_NOOPENFILEERRORBOX);
 #endif
 
-	if (FileSystemNative::instance()->directory_create(synfigapp::Main::get_user_app_directory())) {
-		synfig::info("Created directory \"%s\"",synfigapp::Main::get_user_app_directory().c_str());
+	if (FileSystemNative::instance()->directory_create(synfigapp::Main::get_user_app_directory().u8string())) {
+		synfig::info("Created directory \"%s\"", synfigapp::Main::get_user_app_directory().u8_str());
 	} else {
-		synfig::error("UNABLE TO CREATE \"%s\"",synfigapp::Main::get_user_app_directory().c_str());
+		synfig::error("UNABLE TO CREATE \"%s\"", synfigapp::Main::get_user_app_directory().u8_str());
 	}
 
 
@@ -1569,7 +1569,7 @@ void App::init(const synfig::String& rootpath)
 
 		studio_init_cb.task(_("Loading Plugins..."));
 		plugin_manager.load_dir(path_to_plugins);
-		plugin_manager.load_dir(path_to_user_plugins);
+		plugin_manager.load_dir(path_to_user_plugins.u8string());
 
 		studio_init_cb.task(_("Init UI Manager..."));
 		App::ui_manager_=studio::UIManager::create();
@@ -1861,22 +1861,22 @@ App::on_shutdown()
 	delete main_window;
 }
 
-synfig::String
+synfig::filesystem::Path
 App::get_config_file(const synfig::String& file)
 {
-	return Glib::build_filename(synfigapp::Main::get_user_app_directory(),file);
+	return synfigapp::Main::get_user_app_directory() / filesystem::Path(file);
 }
 
 void
 App::add_recent_file(const etl::handle<Instance> instance)
 {
-	add_recent_file(filesystem::Path::absolute_path(instance->get_file_name()), true);
+	add_recent_file(filesystem::absolute(instance->get_file_name()), true);
 }
 
 void
-App::add_recent_file(const std::string &file_name, bool emit_signal = true)
+App::add_recent_file(const synfig::filesystem::Path& file_name, bool emit_signal = true)
 {
-	std::string filename(FileSystem::fix_slashes(file_name));
+	filesystem::Path filename(file_name.cleanup());
 
 	assert(!filename.empty());
 
@@ -1884,19 +1884,16 @@ App::add_recent_file(const std::string &file_name, bool emit_signal = true)
 		return;
 
 	// Toss out any "hidden" files
-	if(filesystem::Path::basename(filename)[0]=='.')
+	if (filename.filename().u8string()[0] == '.')
 		return;
 
 	// If we aren't an absolute path, turn ourselves into one
-	if(!filesystem::Path::is_absolute_path(filename))
-		filename=filesystem::Path::absolute_path(filename);
+	filename = filesystem::absolute(filename);
 
-	std::list<std::string>::iterator iter;
 	// Check to see if the file is already on the list.
 	// If it is, then remove it from the list
-	for (iter = recent_files.begin(); iter != recent_files.end(); ++iter) {
-		if(*iter==filename)
-		{
+	for (auto iter = recent_files.begin(); iter != recent_files.end(); ++iter) {
+		if (*iter == filename) {
 			recent_files.erase(iter);
 			break;
 		}
@@ -1972,38 +1969,38 @@ App::save_settings()
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		{
-			std::string filename=get_config_file("accelrc");
-			Gtk::AccelMap::save(filename);
+			filesystem::Path filename = get_config_file("accelrc");
+			Gtk::AccelMap::save(filename.u8string());
 		}
 		{
-			std::string filename=get_config_file("language");
+			filesystem::Path filename = get_config_file("language");
 
-			std::ofstream file(synfig::filesystem::Path(filename).c_str());
+			std::ofstream file(filename.c_str());
 
 			if(!file)
 			{
-				synfig::warning("Unable to save %s",filename.c_str());
+				synfig::warning("Unable to save %s", filename.u8_str());
 			} else {
 				file<<App::ui_language.c_str()<<std::endl;
 			}
 		}
 		do{
-			std::string filename=get_config_file("recentfiles");
+			filesystem::Path filename = get_config_file("recentfiles");
 
-			std::ofstream file(synfig::filesystem::Path(filename).c_str());
+			std::ofstream file(filename.c_str());
 
 			if(!file)
 			{
-				synfig::warning("Unable to save %s",filename.c_str());
+				synfig::warning("Unable to save %s", filename.u8_str());
 				break;
 			}
 
 			std::list<std::string>::reverse_iterator iter;
 
-			for(iter=recent_files.rbegin();iter!=recent_files.rend();++iter)
-				file<<(*iter).c_str() << std::endl;
+			for (const auto& recent_file : recent_files)
+				file << recent_file.u8string() << std::endl;
 		} while (false);
-		std::string filename=get_config_file("settings-1.4");
+		filesystem::Path filename = get_config_file("settings-1.4");
 		synfigapp::Main::settings().save_to_file(filename);
 
 		MainWindow::save_custom_workspaces();
@@ -2021,7 +2018,7 @@ App::load_settings(const synfig::String& key_filter)
 	try
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		std::string filename=get_config_file("settings-1.4");
+		filesystem::Path filename = get_config_file("settings-1.4");
 		ret=synfigapp::Main::settings().load_from_file(filename, key_filter);
 	}
 	catch(...)
@@ -2038,8 +2035,8 @@ App::load_accel_map()
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		{
-			std::string filename=get_config_file("accelrc");
-			Gtk::AccelMap::load(filename);
+			filesystem::Path filename = get_config_file("accelrc");
+			Gtk::AccelMap::load(filename.u8string());
 		}
 	}
 	catch(...)
@@ -2053,8 +2050,8 @@ App::save_accel_map()
 {
 	try
 	{
-		std::string filename=get_config_file("accelrc");
-		Gtk::AccelMap::save(filename);
+		filesystem::Path filename = get_config_file("accelrc");
+		Gtk::AccelMap::save(filename.u8string());
 	}
 	catch(...)
 	{
@@ -2067,8 +2064,8 @@ App::load_recent_files()
 {
 	try
 	{
-		std::string filename=get_config_file("recentfiles");
-		std::ifstream file(synfig::filesystem::Path(filename).c_str());
+		filesystem::Path filename = get_config_file("recentfiles");
+		std::ifstream file(filename.c_str());
 
 		while(file)
 		{
@@ -2092,8 +2089,8 @@ App::load_language_settings()
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		{
-			std::string filename=get_config_file("language");
-			std::ifstream file(synfig::filesystem::Path(filename).c_str());
+			filesystem::Path filename = get_config_file("language");
+			std::ifstream file(filename.c_str());
 
 			while(file)
 			{
@@ -2262,7 +2259,7 @@ create_dialog_open_file(const std::string& title, const filesystem::Path& filena
 }
 
 bool
-App::dialog_open_file_ext(const std::string& title, std::vector<std::string>& filenames, const std::string& preference, bool allow_multiple_selection)
+App::dialog_open_file_ext(const std::string& title, std::vector<synfig::filesystem::Path>& filenames, const std::string& preference, bool allow_multiple_selection)
 {
 	// info("App::dialog_open_file('%s', '%s', '%s')", title.c_str(), filename.c_str(), preference.c_str());
 	// TODO: Win32 native dialod not ready yet
@@ -2407,7 +2404,7 @@ App::dialog_open_file_ext(const std::string& title, std::vector<std::string>& fi
 	filter_any->set_name(_("Any files"));
 	filter_any->add_pattern("*");
 
-	std::string filename = filenames.empty() ? std::string() : *filenames.begin();
+	filesystem::Path filename = filenames.empty() ? filesystem::Path() : *filenames.begin();
 
 	auto dialog = create_dialog_open_file(title, filename, prev_path, {filter_supported, filter_synfig, filter_image, filter_image_list, filter_audio, filter_video, filter_lipsync, filter_any});
 	static_cast<Gtk::Button*>(dialog->get_widget_for_response(Gtk::RESPONSE_ACCEPT))->set_label(_("Import"));
@@ -2415,9 +2412,10 @@ App::dialog_open_file_ext(const std::string& title, std::vector<std::string>& fi
 	dialog->set_extra_widget(*scale_imported_box());
 
 	if (dialog->run() == Gtk::RESPONSE_ACCEPT) {
-		filenames = dialog->get_filenames();
+		std::vector<std::string> files = dialog->get_filenames();
+		filenames.assign(files.begin(), files.end());
 		if (!filenames.empty()) {
-			_preferences.set_value(preference, filesystem::Path::dirname(filenames.front()));
+			_preferences.set_value(preference, filenames.front().parent_path());
 		}
 		return true;
 	}
@@ -2426,9 +2424,9 @@ App::dialog_open_file_ext(const std::string& title, std::vector<std::string>& fi
 }
 
 bool
-App::dialog_open_file(const std::string& title, std::string& filename, const std::string& preference)
+App::dialog_open_file(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference)
 {
-	std::vector<std::string> filenames;
+	std::vector<synfig::filesystem::Path> filenames;
 	if (!filename.empty())
 		filenames.push_back(filename);
 	if(dialog_open_file_ext(title, filenames, preference, false)) {
@@ -2438,7 +2436,7 @@ App::dialog_open_file(const std::string& title, std::string& filename, const std
 	return false;
 }
 
-bool App::dialog_open_file(const std::string& title, std::vector<std::string>& filenames, const std::string& preference)
+bool App::dialog_open_file(const std::string& title, std::vector<synfig::filesystem::Path>& filenames, const std::string& preference)
 {
 	return dialog_open_file_ext(title, filenames, preference, true);
 }
@@ -2496,7 +2494,7 @@ App::dialog_open_file_sketch(const std::string& title, synfig::filesystem::Path&
 
 
 bool
-App::dialog_open_file_image(const std::string& title, std::string& filename, const std::string& preference)
+App::dialog_open_file_image(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference)
 {
 	synfig::String prev_path = _preferences.get_value(preference, Glib::get_home_dir());
 
@@ -2526,7 +2524,7 @@ App::dialog_open_file_image(const std::string& title, std::string& filename, con
 
 	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
 		filename = dialog->get_filename();
-		_preferences.set_value(preference, filesystem::Path::dirname(filename));
+		_preferences.set_value(preference, filename.parent_path());
 		return true;
 	}
 
@@ -2535,7 +2533,7 @@ App::dialog_open_file_image(const std::string& title, std::string& filename, con
 
 
 bool
-App::dialog_open_file_audio(const std::string& title, std::string& filename, const std::string& preference)
+App::dialog_open_file_audio(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference)
 {
 	synfig::String prev_path = _preferences.get_value(preference, Glib::get_home_dir());
 
@@ -2558,7 +2556,7 @@ App::dialog_open_file_audio(const std::string& title, std::string& filename, con
 
 	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
 		filename = dialog->get_filename();
-		_preferences.set_value(preference, filesystem::Path::dirname(filename));
+		_preferences.set_value(preference, filename.parent_path());
 		return true;
 	}
 
@@ -2566,7 +2564,7 @@ App::dialog_open_file_audio(const std::string& title, std::string& filename, con
 }
 
 bool
-App::dialog_open_file_image_sequence(const std::string& title, std::set<synfig::String>& filenames, const std::string& preference)
+App::dialog_open_file_image_sequence(const std::string& title, std::set<synfig::filesystem::Path>& filenames, const std::string& preference)
 {
 	synfig::String prev_path = _preferences.get_value(preference, Glib::get_home_dir());
 
@@ -2588,7 +2586,7 @@ App::dialog_open_file_image_sequence(const std::string& title, std::set<synfig::
 	filter_any->set_name(_("Any files"));
 	filter_any->add_pattern("*");
 
-	std::string filename = filenames.empty() ? std::string() : *filenames.begin();
+	filesystem::Path filename = filenames.empty() ? filesystem::Path() : *filenames.begin();
 
 	auto dialog = create_dialog_open_file(title, filename, prev_path, {filter_image, filter_any});
 	dialog->set_select_multiple(true);
@@ -2599,7 +2597,7 @@ App::dialog_open_file_image_sequence(const std::string& title, std::set<synfig::
 	if (dialog->run() == Gtk::RESPONSE_ACCEPT) {
 		std::vector<std::string> files = dialog->get_filenames();
 		filenames.insert(files.begin(), files.end());
-		_preferences.set_value(preference, filesystem::Path::dirname(dialog->get_filename()));
+		_preferences.set_value(preference, filesystem::Path(dialog->get_filename()).parent_path());
 		return true;
 	}
 
@@ -2625,9 +2623,9 @@ or an empty string if the file should be opened as a normal sif file
 
 */
 bool
-App::dialog_select_importer(const std::string& filename, std::string& plugin)
+App::dialog_select_importer(const synfig::filesystem::Path& filename, std::string& plugin)
 {
-	synfig::String ext = filesystem::Path::filename_extension(filename);
+	synfig::String ext = filename.extension().u8string();
 
 	Gtk::Dialog dialog(_("Select importer"), true);
 	dialog.add_button(_("Cancel"), Gtk::RESPONSE_REJECT)->set_image_from_icon_name("gtk-cancel", Gtk::ICON_SIZE_BUTTON);
@@ -3516,7 +3514,7 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
 std::string
 App::get_temporary_directory()
 {
-	return synfigapp::Main::get_user_app_directory() + "/tmp";
+	return synfigapp::Main::get_user_app_directory().append("tmp").u8string();
 }
 
 synfig::FileSystemTemporary::Handle
@@ -3896,16 +3894,16 @@ App::open_from_plugin(const std::string& filename, const std::string& importer_i
 }
 
 void
-App::open_recent(const std::string& filename)
+App::open_recent(const filesystem::Path& filename)
 {
 	std::string importer;
 	if ( !dialog_select_importer(filename, importer) )
 		return;
 
 	if ( importer.empty() )
-		open(filename);
+		open(filename.u8string());
 	else
-		open_from_plugin(filename, importer);
+		open_from_plugin(filename.u8string(), importer);
 }
 
 void

@@ -1770,7 +1770,7 @@ Instance::gather_uri(std::map<synfig::String, synfig::String> &x, const synfigap
 	std::set<String> uri_set;
 	gather_uri(uri_set, layers);
 	std::vector<String> uri_list;
-	std::vector<String> filename_list;
+	std::vector<filesystem::Path> filename_list;
 	for(std::set<String>::const_iterator i = uri_set.begin(); i != uri_set.end(); ++i)
 	{
 		String filename = Glib::filename_from_uri(*i);
