@@ -418,6 +418,15 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 	if (Widget_TimeGraphBase::on_draw(cr))
 		return true;
 
+	bool use_selected_color_from_parameter_tree = false;
+	{
+		auto context = get_style_context();
+		// if this widget style doesn't differentiate selected from not selected (default, as it is DrawingArea), we get it from param_treeview style
+		// Uses a deprecated method, but whatever... In Gtk4 we take care of it in a different way
+		if (context->get_background_color(context->get_state()) == context->get_background_color(context->get_state() | Gtk::STATE_FLAG_SELECTED))
+			use_selected_color_from_parameter_tree = true;
+	}
+
 	// Draw waypoints
 
 	// Maybe it's possible to be more efficient by redrawing only for the visible paths,
@@ -440,7 +449,7 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 			return false;
 
 		// is param selected?
-		draw_selected_background(cr, path, row_info);
+		draw_selected_background(cr, path, row_info, use_selected_color_from_parameter_tree);
 
 		const synfigapp::ValueDesc &value_desc = row_info.get_value_desc();
 
@@ -861,23 +870,22 @@ void Widget_Timetrack::draw_waypoints(const Cairo::RefPtr<Cairo::Context>& cr, c
 	}
 }
 
-void Widget_Timetrack::draw_selected_background(const Cairo::RefPtr<Cairo::Context>& cr, const Gtk::TreePath& path, const RowInfo &row_info) const
+void Widget_Timetrack::draw_selected_background(const Cairo::RefPtr<Cairo::Context>& cr, const Gtk::TreePath& path, const RowInfo& row_info, bool use_selected_color_from_parameter_tree) const
 {
 	if (!params_treeview)
 		return;
 	std::vector<Gtk::TreePath> path_list = params_treeview->get_selection()->get_selected_rows();
-	size_t n_drawn_selected_rows = 0;
+	if (path_list.empty())
+		return;
 
-	if (n_drawn_selected_rows < path_list.size() // avoid searching if all selected rows have been drawn yet
-		&& std::find(path_list.begin(), path_list.end(), path) != path_list.end())
-	{
+	if (std::find(path_list.begin(), path_list.end(), path) != path_list.end()) {
+		auto context = use_selected_color_from_parameter_tree ? params_treeview->get_style_context() : get_style_context();
+
 		Geometry geometry = row_info.get_geometry();
-		auto foreign_context = params_treeview->get_style_context();
-		Gtk::StateFlags old_state = foreign_context->get_state();
-		foreign_context->set_state(Gtk::STATE_FLAG_SELECTED);
-		foreign_context->render_background(cr, 0, geometry.y, get_width(), geometry.h);
-		foreign_context->set_state(old_state);
-		n_drawn_selected_rows++;
+		Gtk::StateFlags old_state = context->get_state();
+		context->set_state(Gtk::STATE_FLAG_SELECTED);
+		context->render_background(cr, 0, geometry.y, get_width(), geometry.h);
+		context->set_state(old_state);
 	}
 }
 
