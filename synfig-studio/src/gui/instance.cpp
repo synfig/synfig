@@ -423,8 +423,7 @@ studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vec
 	if ( modify_canvas )
 		close(false);
 
-	if(canvas->count() != 1 && modify_canvas)
-	{
+	if (canvas->use_count() != 1 && modify_canvas) {
 		one_moment.hide();
 		App::dialog_message_1b(
 				"ERROR",
@@ -886,8 +885,7 @@ Instance::revert()
 
 	close();
 
-	if(canvas->count()!=1)
-	{
+	if (canvas->use_count() != 1) {
 		one_moment.hide();
 		App::dialog_message_1b(
 				"ERROR",

@@ -488,7 +488,7 @@ ValueNodeList::audit()
 	iterator iter,next;
 
 	for(next=begin(),iter=next++;iter!=end();iter=next++)
-		if(iter->count()==1)
+		if (iter->use_count() == 1)
 			std::list<ValueNode::RHandle>::erase(iter);
 }
 

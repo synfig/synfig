@@ -3460,7 +3460,7 @@ CanvasParser::show_canvas_map(String file, int line, String text)
 	const auto& canvas_map = synfig::get_open_canvas_map();
 	for (const auto& iter : canvas_map)
 	{
-		printf("  |    %40s : %lx (%d)\n", iter.second.c_str(), uintptr_t(iter.first.get()), iter.first->count());
+		printf("  |    %40s : %lx (%d)\n", iter.second.c_str(), uintptr_t(iter.first.get()), iter.first->use_count());
 	}
 	printf("  `-----\n\n");
 }

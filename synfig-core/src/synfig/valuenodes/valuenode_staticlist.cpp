@@ -516,7 +516,7 @@ ValueNode_StaticList::create_new() const
 
 #ifdef _DEBUG
 void
-ValueNode_StaticList::ref()const
+ValueNode_StaticList::ref() const noexcept
 {
 	DEBUG_LOG("SYNFIG_DEBUG_STATICLIST_REFCOUNT",
 		"%s:%d %p   ref staticlist %*s -> %2d\n", __FILE__, __LINE__, this, (count()*2), "", count()+1);
@@ -524,12 +524,12 @@ ValueNode_StaticList::ref()const
 	LinkableValueNode::ref();
 }
 
-bool
+void
 ValueNode_StaticList::unref()const
 {
 	DEBUG_LOG("SYNFIG_DEBUG_STATICLIST_REFCOUNT",
 		"%s:%d %p unref staticlist %*s%2d <-\n", __FILE__, __LINE__, this, ((count()-1)*2), "", count()-1);
 
-	return LinkableValueNode::unref();
+	LinkableValueNode::unref();
 }
 #endif

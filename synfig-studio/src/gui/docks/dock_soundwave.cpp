@@ -199,7 +199,7 @@ private:
 	bool import_file(const synfig::filesystem::Path& filename) {
 		std::string errors, warnings;
 
-		bool ok = canvas_interface->import(filename, errors, warnings);
+		bool ok = static_cast<bool>(canvas_interface->import(filename, errors, warnings));
 
 		if (!errors.empty())
 			App::dialog_message_1b(

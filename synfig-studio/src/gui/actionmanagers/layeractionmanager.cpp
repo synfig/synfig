@@ -717,7 +717,7 @@ bool LayerActionManager::query_user_about_foreign_exported_value_nodes(Canvas::H
 					local_canvas_value_node = canvas->find_value_node(modified_id, true);
 				} catch (...) {
 				}
-				const bool link_to_local_canvas = local_canvas_value_node;
+				const bool link_to_local_canvas = static_cast<bool>(local_canvas_value_node);
 				if (link_to_local_canvas) {
 					valuenode_replacements[foreign_value_node] = std::pair<ValueNode::Handle, std::string>(local_canvas_value_node, "");
 				} else {

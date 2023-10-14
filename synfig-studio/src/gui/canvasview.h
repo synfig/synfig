@@ -640,7 +640,7 @@ public:
 
 	void preview_option() {on_preview_option();}
 
-	bool is_playing() { return ducks_playing_lock; }
+	bool is_playing() const { return static_cast<bool>(ducks_playing_lock); }
 
 	//! Toggle given handle type
 	//! \Param[in]  type The Duckmatic::Type to toggle

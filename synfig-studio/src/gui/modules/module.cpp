@@ -73,9 +73,8 @@ Module::start()
 bool
 Module::stop()
 {
-	if(get_status() && count()<=1 && stop_vfunc())
-	{
-		status_=false;
+	if (get_status() && use_count() <= 1 && stop_vfunc()) {
+		status_ = false;
 		return true;
 	}
 	return false;

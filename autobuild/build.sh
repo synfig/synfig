@@ -179,7 +179,6 @@ cd ETL
 make -j$MAKE_THREADS
 sed -i.bak "s|^Cflags: -I\\\${includedir}|Cflags: -I$REPO_DIR\/ETL -I\\\${includedir}|" ETL.pc
 make install
-make check
 cd ..
 
 ccache_show_stats

@@ -29,6 +29,10 @@ add_executable(test_synfig_filesystem_path filesystem_path.cpp)
 target_link_libraries(test_synfig_filesystem_path PRIVATE libsynfig)
 add_test(NAME test_synfig_filesystem_path COMMAND test_synfig_filesystem_path)
 
+add_executable(test_synfig_handle handle.cpp)
+target_link_libraries(test_synfig_handle PRIVATE libsynfig)
+add_test(NAME test_synfig_handle COMMAND test_synfig_handle)
+
 add_executable(test_synfig_keyframe keyframe.cpp)
 target_link_libraries(test_synfig_keyframe PRIVATE libsynfig)
 add_test(NAME test_synfig_keyframe COMMAND test_synfig_keyframe)
@@ -55,7 +59,7 @@ add_test(NAME test_synfig_surface_etl COMMAND test_synfig_surface_etl)
 
 if (NOT WIN32)
 set_target_properties(
-        test_synfig_angle test_synfig_benchmark test_synfig_bezier test_synfig_bline test_synfig_bone test_synfig_clock test_synfig_filesystem_path test_synfig_keyframe test_synfig_node test_synfig_pen test_synfig_reference_counter test_synfig_string test_synfig_surface_etl
+        test_synfig_angle test_synfig_benchmark test_synfig_bezier test_synfig_bline test_synfig_bone test_synfig_clock test_synfig_filesystem_path test_synfig_handle test_synfig_keyframe test_synfig_node test_synfig_pen test_synfig_reference_counter test_synfig_string test_synfig_surface_etl
         PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test
 )
