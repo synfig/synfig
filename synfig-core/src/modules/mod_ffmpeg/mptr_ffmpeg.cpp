@@ -92,7 +92,7 @@ ffmpeg_mptr::seek_to(const Time& time)
 		args.push_back("-");
 
 #ifdef _WIN32
-		synfig::filesystem::Path binary_path = synfig::OS::get_binary_path("");
+		synfig::filesystem::Path binary_path = synfig::OS::get_binary_path();
 		if (!binary_path.empty())
 			binary_path = binary_path.parent_path();
 		binary_path /= filesystem::Path("ffmpeg.exe");

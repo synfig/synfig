@@ -70,6 +70,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 /* === G L O B A L S ======================================================= */
 
+synfig::filesystem::Path synfig::OS::fallback_binary_path;
+
 /* === C L A S S E S ======================================================= */
 
 #ifdef WIN32_PIPE_TO_PROCCESSES

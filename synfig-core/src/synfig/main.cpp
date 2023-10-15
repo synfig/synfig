@@ -512,7 +512,7 @@ synfig::info(const String &str)
 
 // See also: http://libsylph.sourceforge.net/wiki/Full_path_to_binary
 filesystem::Path
-synfig::OS::get_binary_path(const String &fallback_path)
+synfig::OS::get_binary_path()
 {
 	
 	String result;
@@ -652,7 +652,7 @@ synfig::OS::get_binary_path(const String &fallback_path)
 	{
 		// In worst case use value specified as fallback 
 		// (usually should come from argv[0])
-		result = filesystem::Path::absolute_path(fallback_path);
+		return filesystem::absolute(OS::fallback_binary_path).u8string();
 	}
 	
 	
