@@ -44,7 +44,6 @@
 #include "valuenodes/valuenode_const.h"
 #include "valuenodes/valuenode_staticlist.h"
 #include "valuenodes/valuenode_dynamiclist.h"
-#include "valuenodes/valuenode_subtract.h"
 #include "valuenodes/valuenode_bline.h"
 #include "valuenodes/valuenode_bone.h"
 #include "dashitem.h"
