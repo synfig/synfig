@@ -751,8 +751,8 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 			{
 				canvas_view_->add_layer("import");
 				selected_layer = canvas_view_->get_selection_manager()->get_selected_layer();
-
-				if (layer = Layer_Bitmap::Handle::cast_dynamic(selected_layer)){
+				layer = Layer_Bitmap::Handle::cast_dynamic(selected_layer);
+				if (layer) {
 					// Set temporary description to generate the name
 					String temp_description(_("brush image"));
 					layer->set_description(temp_description);
