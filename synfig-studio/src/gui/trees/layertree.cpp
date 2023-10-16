@@ -154,7 +154,7 @@ void
 LayerTree::create_layer_tree()
 {
 	{	// --- O N / O F F ----------------------------------------------------
-		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column(_(" ")) );
+		Gtk::TreeView::Column* column = Gtk::manage( new Gtk::TreeView::Column("") );
 
 		// Set up the on/off cell-renderer
 		Gtk::CellRendererToggle* cellrenderer = Gtk::manage( new Gtk::CellRendererToggle() );
@@ -167,7 +167,7 @@ LayerTree::create_layer_tree()
 	{	// --- I C O N --------------------------------------------------------
 		// Set up the icon cell-renderer
 		Gtk::CellRendererPixbuf* pixbuf_cell_renderer = manage(new Gtk::CellRendererPixbuf());
-		Gtk::TreeViewColumn* column = manage(new Gtk::TreeViewColumn(_("Icon"), *pixbuf_cell_renderer));
+		Gtk::TreeViewColumn* column = manage(new Gtk::TreeViewColumn("", *pixbuf_cell_renderer));
 		layer_tree_view().append_column(*column);
 		column->add_attribute(*pixbuf_cell_renderer, "icon_name", layer_model.icon_name);
 		layer_tree_view().set_expander_column(*column);
