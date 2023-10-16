@@ -107,3 +107,15 @@
 .color-white {
         color : #FFFFFF;
 }
+
+#parameters_panel .odd,
+#timetrack_panel .odd,
+#layers_panel .odd {
+   background-color: rgba(255,255,255,0.05);
+}
+
+#parameters_panel .even,
+#timetrack_panel .even,
+#layers_panel .even {
+   background-color: rgba(0,0,0,0.05);
+}
