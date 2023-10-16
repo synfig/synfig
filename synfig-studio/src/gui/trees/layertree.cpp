@@ -186,6 +186,7 @@ LayerTree::create_layer_tree()
 		cellrenderer->signal_edited().connect(sigc::mem_fun(*this, &studio::LayerTree::on_layer_renamed));
 		cellrenderer->property_editable()=true;
 
+		column->set_expand();
 		column->set_reorderable();
 		column->set_resizable();
 		column->set_clickable(true);
