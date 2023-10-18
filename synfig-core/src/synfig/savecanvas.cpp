@@ -79,7 +79,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-ReleaseVersion save_canvas_version = ReleaseVersion(RELEASE_VERSION_END-1);
+ReleaseVersion save_canvas_version = synfig::RELEASE_VERSION_CURRENT;
 int valuenode_too_new_count;
 save_canvas_external_file_callback_t save_canvas_external_file_callback = nullptr;
 void *save_canvas_external_file_user_data = nullptr;

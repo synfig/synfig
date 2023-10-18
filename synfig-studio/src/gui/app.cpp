@@ -2806,7 +2806,7 @@ create_dialog_save_file(const std::string& title, const filesystem::Path& filena
 }
 
 bool
-App::dialog_save_file(const std::string& title, std::string& filename, const std::string& preference)
+App::dialog_save_file(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference)
 {
 	// info("App::dialog_save_file('%s', '%s', '%s')", title.c_str(), filename.c_str(), preference.c_str());
 
@@ -2901,7 +2901,7 @@ App::dialog_save_file(const std::string& title, std::string& filename, const std
 				.add_enum_value(synfig::RELEASE_VERSION_0_61_08, "0.61.08", "0.61.08")
 				.add_enum_value(synfig::RELEASE_VERSION_0_61_07, "0.61.07", "0.61.07")
 				.add_enum_value(synfig::RELEASE_VERSION_0_61_06, "0.61.06", strprintf("0.61.06 %s", _("and older"))));
-		file_type_enum->set_value(RELEASE_VERSION_END-1); // default to the most recent version
+		file_type_enum->set_value(RELEASE_VERSION_CURRENT); // default to the most recent version
 		file_type_enum->set_hexpand(false);
 
 		Gtk::Grid *grid = manage(new Gtk::Grid);
@@ -2913,13 +2913,21 @@ App::dialog_save_file(const std::string& title, std::string& filename, const std
 	}
 
 	// set file filter according to previous file format
-	if (filesystem::Path::filename_extension(filename) == ".sif" ) dialog->set_filter(filter_sif);
-	if (filesystem::Path::filename_extension(filename)== ".sifz" ) dialog->set_filter(filter_sifz);
-	if (filesystem::Path::filename_extension(filename) == ".sfg" ) dialog->set_filter(filter_sfg);
+	const std::map<std::string, Glib::RefPtr<Gtk::FileFilter>> filter_map = {
+		{".sif", filter_sif},
+		{".sifz", filter_sifz},
+		{".sfg", filter_sfg}
+	};
+
+	{
+		auto filter_iter = filter_map.find(filename.extension().u8string());
+		if (filter_iter != filter_map.end())
+			dialog->set_filter(filter_iter->second);
+	}
 
 	// set focus to the file name entry(box) of dialog instead to avoid the name
 	// we are going to save changes while changing file filter each time.
-	dialog->set_current_name(filesystem::Path::basename(filename));
+	dialog->set_current_name(filename.filename().u8string());
 
 	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
 
@@ -2933,19 +2941,19 @@ App::dialog_save_file(const std::string& title, std::string& filename, const std
 		// dialog->property_filter().signal_changed().connect(sigc::mem_fun(*this, &App::on_save_dialog_filter_changed));
 		filename = dialog->get_filename();
 
-		if (filesystem::Path::filename_extension(filename) != ".sif" &&
-			filesystem::Path::filename_extension(filename) != ".sifz" &&
-			filesystem::Path::filename_extension(filename) != ".sfg")
-		{
-			if (dialog->get_filter() == filter_sif)
-				filename = dialog->get_filename() + ".sif";
-			else if (dialog->get_filter() == filter_sifz)
-				filename = dialog->get_filename() + ".sifz";
-			else if (dialog->get_filter() == filter_sfg)
-				filename = dialog->get_filename() + ".sfg";
+		auto filter_iter = filter_map.find(filename.extension().u8string());
+
+		// No known extension; get it from the selected filter
+		if (filter_iter == filter_map.end()) {
+			for (const auto& filter_item : filter_map) {
+				if (filter_item.second == dialog->get_filter()) {
+					filename = filename + filter_item.first;
+					break;
+				}
+			}
 		}
 
-		_preferences.set_value(preference, filesystem::Path::dirname(filename));
+		_preferences.set_value(preference, filename.parent_path());
 		return true;
 	}
 
@@ -2955,10 +2963,10 @@ App::dialog_save_file(const std::string& title, std::string& filename, const std
 
 
 std::string
-App::dialog_export_file(const std::string& title, std::string& filename, const std::string& preference)
+App::dialog_export_file(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference)
 {
-	synfig::String prev_path = _preferences.get_value(preference, Glib::get_home_dir());
-	prev_path = filesystem::Path::absolute_path(prev_path);
+	filesystem::Path prev_path = _preferences.get_value(preference, Glib::get_home_dir());
+	prev_path = filesystem::absolute(prev_path);
 
 	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window, title, Gtk::FILE_CHOOSER_ACTION_SAVE);
 
@@ -2971,14 +2979,14 @@ App::dialog_export_file(const std::string& title, std::string& filename, const s
 		dialog->add_filter(filter);
 	}
 
-	dialog->set_current_folder(prev_path);
+	dialog->set_current_folder(prev_path.u8string());
 	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
 	dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
 
 	if (filename.empty()) {
-		dialog->set_filename(prev_path);
+		dialog->set_filename(prev_path.u8string());
 	} else {
-		dialog->set_current_name(filesystem::Path::filename_sans_extension(filesystem::Path::basename(filename)));
+		dialog->set_current_name(filename.stem().u8string());
 	}
 
 	// set focus to the file name entry(box) of dialog instead to avoid the name
@@ -2988,14 +2996,14 @@ App::dialog_export_file(const std::string& title, std::string& filename, const s
 
 		filename = dialog->get_filename();
 
-		_preferences.set_value(preference, filesystem::Path::dirname(filename));
+		_preferences.set_value(preference, filename.parent_path());
 
 		auto filter = dialog->get_filter();
 		for ( const auto& exporter : App::plugin_manager.exporters() )
 		{
 			if ( filter->get_name() == exporter.description.get() )
 			{
-				if ( !exporter.has_extension(filesystem::Path::filename_extension(filename)) )
+				if ( !exporter.has_extension(filename.extension().u8string()) )
 					filename += exporter.extensions[0];
 
 				delete dialog;
@@ -3068,7 +3076,7 @@ App::dialog_save_file_sketch(const std::string& title, synfig::filesystem::Path&
 
 
 bool
-App::dialog_save_file_render(const std::string& title, std::string& filename, const std::string& preference)
+App::dialog_save_file_render(const std::string& title, filesystem::Path& filename, const std::string& preference)
 {
 	synfig::String prev_path = _preferences.get_value(preference, Glib::get_home_dir());
 

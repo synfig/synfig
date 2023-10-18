@@ -422,11 +422,11 @@ public:
 	static bool dialog_open_file_audio(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference);
 	static bool dialog_open_file_with_history_button(const std::string& title, std::string& filename, bool& show_history, const std::string& preference, std::string& plugin_importer);
 	static bool dialog_open_folder(const std::string& title, std::string& filename, const std::string& preference, Gtk::Window& transientwind);
-	static bool dialog_save_file(const std::string& title, std::string& filename, const std::string& preference);
-	static std::string dialog_export_file(const std::string& title, std::string& filename, const std::string& preference);
+	static bool dialog_save_file(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference);
+	static std::string dialog_export_file(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference);
 	static bool dialog_save_file_spal(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference);
 	static bool dialog_save_file_sketch(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference);
-	static bool dialog_save_file_render(const std::string& title, std::string& filename, const std::string& preference);
+	static bool dialog_save_file_render(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference);
 	static bool dialog_open_file_image_sequence(const std::string& title, std::set<synfig::filesystem::Path>& filenames, const std::string& preference);
 
 	static bool dialog_select_list_item(const std::string &title, const std::string &message, const std::list<std::string> &list, int &item_index);
