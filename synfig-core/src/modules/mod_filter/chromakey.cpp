@@ -71,7 +71,8 @@ TaskChromaKey::is_transparent() const
 TaskChromaKey::TaskChromaKey()
 	: lower_bound(0.1),
 	  upper_bound(0.1),
-	  desaturate(true)
+	  desaturate(true),
+	  invert(false)
 {
 }
 
@@ -109,9 +110,9 @@ TaskChromaKeySW::run(RunParams&) const
 					for(int x = ra.minx; x < ra.maxx; ++x, ++ca, ++cc) {
 						*cc = *ca;
 						Real dist2 = (ca->get_u() - u_key)*(ca->get_u() - u_key) + (ca->get_v() - v_key)*(ca->get_v() - v_key);
-						if (approximate_less(dist2, lower_bound2))
+						if (approximate_less(dist2, lower_bound2) != invert)
 							cc->set_a(0.);
-						else if (approximate_less(dist2, upper_bound2)) {
+						else if (approximate_less(dist2, upper_bound2) != invert) {
 							cc->set_a(cc->get_a()*(sqrt(dist2)-lower_bound)/range);
 							if (desaturate)
 								cc->set_s(0);
@@ -134,7 +135,8 @@ ChromaKey::ChromaKey():
 	param_upper_bound(0.001),
 	param_supersample_width(int(2)),
 	param_supersample_height(int(2)),
-	param_desaturate(true)
+	param_desaturate(true),
+	param_invert(false)
 {
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
@@ -161,6 +163,7 @@ ChromaKey::set_param(const String &param, const ValueBase &value)
 		}
 		);
 	IMPORT_VALUE(param_desaturate);
+	IMPORT_VALUE(param_invert);
 
 	return Layer::set_param(param,value);
 }
@@ -174,6 +177,7 @@ ChromaKey::get_param(const String &param) const
 	EXPORT_VALUE(param_supersample_width);
 	EXPORT_VALUE(param_supersample_height);
 	EXPORT_VALUE(param_desaturate);
+	EXPORT_VALUE(param_invert);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -214,6 +218,11 @@ ChromaKey::get_param_vocab() const
 		.set_local_name(_("Desaturate"))
 		.set_description(_("When checked, it desaturates pixels whose chroma is near chroma key (difference is below upper bound)"))
 	);
+
+	ret.push_back(ParamDesc("invert")
+					  .set_local_name(_("Invert"))
+					  .set_description(_("When checked, make transparent what is NOT the Key Color"))
+				  );
 
 	return ret;
 }
@@ -266,6 +275,7 @@ ChromaKey::build_rendering_task_vfunc(Context context) const
 	task_chromakey->lower_bound = param_lower_bound.get(Real());
 	task_chromakey->upper_bound = param_upper_bound.get(Real());
 	task_chromakey->desaturate = param_desaturate.get(bool());
+	task_chromakey->invert = param_invert.get(bool());
 	task_chromakey->sub_task() = task;
 	task = task_chromakey;
 
