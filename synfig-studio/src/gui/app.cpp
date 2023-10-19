@@ -2753,7 +2753,7 @@ App::dialog_open_file_with_history_button(const std::string& title, filesystem::
 }
 
 bool
-App::dialog_open_folder(const std::string& title, std::string& foldername, const std::string& preference, Gtk::Window& transientwind)
+App::dialog_open_folder(const std::string& title, filesystem::Path& foldername, const std::string& preference, Gtk::Window& transientwind)
 {
 	synfig::String prev_path;
 	synfigapp::Settings settings;
