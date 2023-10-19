@@ -421,6 +421,13 @@ public:
 	static bool dialog_open_file_with_history_button(const std::string& title, synfig::filesystem::Path& filename, bool& show_history, const std::string& preference, std::string& plugin_importer);
 	static bool dialog_open_folder(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference, Gtk::Window& transientwind);
 	static bool dialog_save_file(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference);
+	/**
+	 * Open a dialog to export file with available plugins
+	 * @param title the dialog title
+	 * @param filename[in,out] the chosen filename
+	 * @param preference the initial folder
+	 * @return the exporter plugin id
+	 */
 	static std::string dialog_export_file(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference);
 	static bool dialog_save_file_spal(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference);
 	static bool dialog_save_file_sketch(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference);
