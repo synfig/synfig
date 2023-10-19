@@ -411,8 +411,6 @@ public:
 
 	static bool shutdown_request(GdkEventAny* bleh = nullptr);
 
-//	static bool dialog_file(const std::string &title, std::string &filename);
-
 	static bool dialog_select_importer(const synfig::filesystem::Path& filename, std::string& plugin);
 	static bool dialog_open_file(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference);
 	static bool dialog_open_file(const std::string& title, std::vector<synfig::filesystem::Path>& filenames, const std::string& preference);
