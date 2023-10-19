@@ -378,7 +378,7 @@ public:
 	static void open_recent(const synfig::filesystem::Path& filename);
 
 	static bool open(
-		std::string filename,
+		synfig::filesystem::Path filename,
 		/* std::string as, */
 		synfig::FileContainerZip::file_size_t truncate_storage_size = 0 );
 

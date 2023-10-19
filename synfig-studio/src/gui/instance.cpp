@@ -858,7 +858,7 @@ Instance::revert()
 {
 	OneMoment one_moment;
 
-	String filename(get_file_name());
+	filesystem::Path filename(get_file_name());
 
 	Canvas::Handle canvas(get_canvas());
 

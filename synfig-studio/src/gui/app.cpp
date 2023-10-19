@@ -3539,18 +3539,23 @@ App::wrap_into_temporary_filesystem(
 }
 
 bool
-App::open(std::string filename, /* std::string as, */ synfig::FileContainerZip::file_size_t truncate_storage_size)
+App::open(filesystem::Path filename, /* std::string as, */ synfig::FileContainerZip::file_size_t truncate_storage_size)
 {
 #ifdef _WIN32
-    size_t buf_size = MAX_PATH - 1;
-    char* long_name = (char*)malloc(buf_size);
-    long_name[0] = '\0';
-    if(GetLongPathName(filename.c_str(),long_name,sizeof(long_name)));
-    // when called from autorecover.cpp, filename doesn't exist, and so long_name is empty
-    // don't use it if that's the case
-    if (long_name[0] != '\0')
-        filename=String(long_name);
-    free(long_name);
+	{
+
+	size_t buf_size = MAX_PATH - 1;
+	std::vector<wchar_t> long_name;
+	long_name.resize(buf_size);
+	long_name[0] = 0;
+	if (GetLongPathNameW(filename.c_str(), long_name.data(), sizeof(long_name)) == 0)
+		;
+	// when called from autorecover.cpp, filename doesn't exist, and so long_name is empty
+	// don't use it if that's the case
+	if (long_name[0] != '\0')
+		filename = filesystem::Path::from_native(long_name.data());
+
+	}
 #endif
 
 	try
@@ -3559,20 +3564,20 @@ App::open(std::string filename, /* std::string as, */ synfig::FileContainerZip::
 		String errors, warnings;
 
 		// try open container
-		FileSystem::Handle container = CanvasFileNaming::make_filesystem_container(filename, truncate_storage_size);
+		FileSystem::Handle container = CanvasFileNaming::make_filesystem_container(filename.u8string(), truncate_storage_size);
 		if (!container)
-			throw (String)strprintf(_("Unable to open container \"%s\"\n\n"),filename.c_str());
+			throw (String)strprintf(_("Unable to open container \"%s\"\n\n"), filename.u8_str());
 
 		// make canvas file system
 		FileSystem::Handle canvas_file_system = CanvasFileNaming::make_filesystem(container);
 
 		// wrap into temporary file system
-		canvas_file_system = wrap_into_temporary_filesystem(canvas_file_system, filename, filename, truncate_storage_size);
+		canvas_file_system = wrap_into_temporary_filesystem(canvas_file_system, filename.u8string(), filename.u8string(), truncate_storage_size);
 
 		// file to open inside canvas file-system
-		String canvas_filename = CanvasFileNaming::project_file(filename);
+		String canvas_filename = CanvasFileNaming::project_file(filename.u8string());
 
-		Canvas::Handle canvas = open_canvas_as(canvas_file_system ->get_identifier(canvas_filename), filename, errors, warnings);
+		Canvas::Handle canvas = open_canvas_as(canvas_file_system ->get_identifier(canvas_filename), filename.u8string(), errors, warnings);
 		if(canvas && get_instance(canvas))
 		{
 			get_instance(canvas)->find_canvas_view(canvas)->present();
@@ -3582,7 +3587,7 @@ App::open(std::string filename, /* std::string as, */ synfig::FileContainerZip::
 		else
 		{
 			if(!canvas)
-				throw (String)strprintf(_("Unable to load \"%s\":\n\n"),filename.c_str()) + errors;
+				throw (String)strprintf(_("Unable to load \"%s\":\n\n"), filename.u8_str()) + errors;
 
 			// Set new pixel ratio
 			canvas->rend_desc().set_pixel_ratio(canvas->rend_desc().get_w(), canvas->rend_desc().get_h());
@@ -3595,13 +3600,13 @@ App::open(std::string filename, /* std::string as, */ synfig::FileContainerZip::
 					_("Close"),
 					warnings);
 
-			if (filename.find(custom_filename_prefix) != 0)
+			if (filename.u8string().find(custom_filename_prefix) != 0)
 				add_recent_file(filename);
 
 			etl::handle<Instance> instance(Instance::create(canvas, container));
 
 			if(!instance)
-				throw (String)strprintf(_("Unable to create instance for \"%s\""),filename.c_str());
+				throw (String)strprintf(_("Unable to create instance for \"%s\""), filename.u8_str());
 
 			one_moment.hide();
 		}
@@ -3908,7 +3913,7 @@ App::open_recent(const filesystem::Path& filename)
 		return;
 
 	if ( importer.empty() )
-		open(filename.u8string());
+		open(filename);
 	else
 		open_from_plugin(filename, importer);
 }
@@ -3961,7 +3966,7 @@ App::dialog_open(filesystem::Path filename)
 					truncate_storage_size = i->storage_size;
 		}
 
-		if (open(filename.u8string(), truncate_storage_size))
+		if (open(filename, truncate_storage_size))
 			break;
 
 		get_ui_interface()->error(_("Unable to open file"));
