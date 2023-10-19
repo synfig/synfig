@@ -3914,10 +3914,8 @@ App::open_recent(const filesystem::Path& filename)
 }
 
 void
-App::dialog_open(std::string filename_str)
+App::dialog_open(filesystem::Path filename)
 {
-	filesystem::Path filename(filename_str);
-
 	if (filename.empty()) {
 		filename = selected_instance ? selected_instance->get_file_name() : "*.sif";
 	}

@@ -386,7 +386,7 @@ public:
 
 	static void new_instance();
 
-	static void dialog_open(std::string filename = "");
+	static void dialog_open(synfig::filesystem::Path filename = {});
 
 	static void open_from_plugin(const synfig::filesystem::Path& filename, const std::string& importer_id);
 
