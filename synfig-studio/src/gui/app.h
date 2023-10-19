@@ -382,7 +382,7 @@ public:
 		/* std::string as, */
 		synfig::FileContainerZip::file_size_t truncate_storage_size = 0 );
 
-	static bool open_from_temporary_filesystem(std::string temporary_filename);
+	static bool open_from_temporary_filesystem(const synfig::filesystem::Path& temporary_filename);
 
 	static void new_instance();
 

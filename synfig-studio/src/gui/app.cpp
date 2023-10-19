@@ -3647,7 +3647,7 @@ App::open(filesystem::Path filename, /* std::string as, */ synfig::FileContainer
 
 // this is called from autorecover.cpp
 bool
-App::open_from_temporary_filesystem(std::string temporary_filename)
+App::open_from_temporary_filesystem(const filesystem::Path& temporary_filename)
 {
 	try
 	{
@@ -3656,15 +3656,15 @@ App::open_from_temporary_filesystem(std::string temporary_filename)
 
 		// try open temporary container
 		FileSystemTemporary::Handle file_system_temporary(new FileSystemTemporary(""));
-		if (!file_system_temporary->open_temporary(temporary_filename))
-			throw (String)strprintf(_("Unable to open temporary container \"%s\"\n\n"), temporary_filename.c_str());
+		if (!file_system_temporary->open_temporary(temporary_filename.u8string()))
+			throw (String)strprintf(_("Unable to open temporary container \"%s\"\n\n"), temporary_filename.u8_str());
 
 		// get original filename
 		String filename = file_system_temporary->get_meta("filename");
 		String as = file_system_temporary->get_meta("as");
 		String truncate = file_system_temporary->get_meta("truncate");
 		if (filename.empty() || as.empty() || truncate.empty())
-			throw (String)strprintf(_("Original filename was not set in temporary container \"%s\"\n\n"), temporary_filename.c_str());
+			throw (String)strprintf(_("Original filename was not set in temporary container \"%s\"\n\n"), temporary_filename.u8_str());
 		FileContainerZip::file_size_t truncate_storage_size = stoll(truncate);
 
 		// make canvas file-system
@@ -3688,7 +3688,7 @@ App::open_from_temporary_filesystem(std::string temporary_filename)
 		else
 		{
 			if(!canvas)
-				throw (String)strprintf(_("Unable to load \"%s\":\n\n"), temporary_filename.c_str()) + errors;
+				throw (String)strprintf(_("Unable to load \"%s\":\n\n"), temporary_filename.u8_str()) + errors;
 
 			if (warnings != "")
 				dialog_message_1b(
@@ -3703,7 +3703,7 @@ App::open_from_temporary_filesystem(std::string temporary_filename)
 			etl::handle<Instance> instance(Instance::create(canvas, canvas_container));
 
 			if(!instance)
-				throw (String)strprintf(_("Unable to create instance for \"%s\""), temporary_filename.c_str());
+				throw (String)strprintf(_("Unable to create instance for \"%s\""), temporary_filename.u8_str());
 
 			one_moment.hide();
 
