@@ -367,7 +367,7 @@ public:
 	static etl::loose_handle<CanvasView> get_selected_canvas_view() { return selected_canvas_view; }
 	static synfig::Gamma get_selected_canvas_gamma();
 
-	static std::string get_temporary_directory();
+	static synfig::filesystem::Path get_temporary_directory();
 
 	static synfig::FileSystemTemporary::Handle wrap_into_temporary_filesystem(
 		synfig::FileSystem::Handle canvas_file_system,

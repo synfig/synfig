@@ -128,7 +128,7 @@ bool
 AutoRecover::recovery_needed()const
 {
 	FileSystem::FileList files;
-	FileSystemTemporary::scan_temporary_directory("instance", files, App::get_temporary_directory());
+	FileSystemTemporary::scan_temporary_directory("instance", files, App::get_temporary_directory().u8string());
 	return !files.empty();
 }
 
@@ -139,11 +139,11 @@ AutoRecover::recover(int &number_recovered)
 	number_recovered = 0;
 
 	FileSystem::FileList files;
-	if (FileSystemTemporary::scan_temporary_directory("instance", files, App::get_temporary_directory()))
+	if (FileSystemTemporary::scan_temporary_directory("instance", files, App::get_temporary_directory().u8string()))
 	{
 		success = true;
 		for(FileSystem::FileList::const_iterator i = files.begin(); i != files.end(); ++i)
-			if (App::open_from_temporary_filesystem(App::get_temporary_directory() + ETL_DIRECTORY_SEPARATOR + *i))
+			if (App::open_from_temporary_filesystem(App::get_temporary_directory() / *i))
 				++number_recovered;
 			else
 				success=false;
@@ -156,22 +156,21 @@ AutoRecover::clear_backups()
 {
 	bool success = false;
 	FileSystem::FileList files;
-	if (FileSystemTemporary::scan_temporary_directory("instance", files, App::get_temporary_directory()))
+	if (FileSystemTemporary::scan_temporary_directory("instance", files, App::get_temporary_directory().u8string()))
 	{
 		success = true;
 		for(FileSystem::FileList::const_iterator i = files.begin(); i != files.end(); ++i)
 		{
 			// FileSystemTemporary will clear opened temporary files in destructor
-			String filename = App::get_temporary_directory() + ETL_DIRECTORY_SEPARATOR + *i;
+			filesystem::Path filename = App::get_temporary_directory() / *i;
 			bool s = false;
-			try { s = FileSystemTemporary("").open_temporary(filename); }
-			catch (...)
-			{
+			try {
+				s = FileSystemTemporary("").open_temporary(filename.u8string());
+			} catch (...) {
 				synfig::warning("Autobackup file is not recoverable. Forcing to remove.");
 			}
-			if (!s)
-			{
-				FileSystemNative::instance()->file_remove(filename);
+			if (!s) {
+				FileSystemNative::instance()->file_remove(filename.u8string());
 				success = false;
 			}
 		}
