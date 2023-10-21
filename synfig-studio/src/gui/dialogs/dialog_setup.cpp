@@ -1497,9 +1497,9 @@ Dialog_Setup::on_brush_path_remove_clicked()
 void
 Dialog_Setup::on_plugin_path_change_clicked()
 {
-	String foldername = ResourceHelper::get_plugin_path();
-	synfig::OS::launch_file_async(foldername);
+	synfig::OS::launch_file_async(ResourceHelper::get_plugin_path());
 }
+
 void
 Dialog_Setup::on_value_change(int valueflag)
 {
