@@ -276,7 +276,7 @@ String studio::App::predefined_size              (DEFAULT_PREDEFINED_SIZE);
 String studio::App::predefined_fps               (DEFAULT_PREDEFINED_FPS);
 float  studio::App::preferred_fps                = 24.0;
 PluginManager studio::App::plugin_manager;
-std::set< String > studio::App::brushes_path;
+std::set< filesystem::Path > studio::App::brushes_path;
 String studio::App::image_editor_path;
 
 String studio::App::sequence_separator(".");
@@ -509,8 +509,8 @@ public:
 			if(key=="brushes_path")
 			{
 				value="";
-				if(!App::brushes_path.empty())
-					value=*(App::brushes_path.begin());
+				if (!App::brushes_path.empty())
+					value = App::brushes_path.begin()->u8string();
 				return true;
 			}
 			if(key=="custom_filename_prefix")

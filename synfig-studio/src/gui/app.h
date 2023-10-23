@@ -220,7 +220,7 @@ public:
 
 	static PluginManager plugin_manager;
 	static synfig::String image_editor_path;
-	static std::set< synfig::String > brushes_path;
+	static std::set< synfig::filesystem::Path > brushes_path;
 	static synfig::String custom_filename_prefix;
 	static int preferred_x_size;
 	static int preferred_y_size;
