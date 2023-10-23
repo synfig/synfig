@@ -239,25 +239,25 @@ Dock_Toolbox::update_tools()
 	etl::handle<Instance> instance = App::get_selected_instance();
 	CanvasView::Handle canvas_view = App::get_selected_canvas_view();
 
-	// Disable buttons if there isn't any open document instance
-	bool sensitive = instance && canvas_view;
-	for (const auto& item : state_button_map)
-		item.second->set_sensitive(sensitive);
+	Glib::RefPtr<Gtk::ActionGroup> state_action_group = App::get_state_manager()->get_action_group();
+	// avoid unnecessary events for radio_button->set_active(true);
+	// this method is called on switching doc tabs, it is not actually activating an action
+	state_action_group->set_sensitive(false);
 
 	const char* canvasview_state_name = canvas_view ? canvas_view->get_smach().get_state_name() : nullptr;
 	if (canvasview_state_name) {
 		set_active_state(canvasview_state_name);
 		auto radio_button = state_button_map[canvasview_state_name];
 		if (radio_button) {
-			Glib::RefPtr<Gtk::ActionGroup> state_action_group = App::get_state_manager()->get_action_group();
-			bool previous_sensitive = state_action_group->get_sensitive();
-			state_action_group->set_sensitive(false);
 			if (!radio_button->get_active())
 				radio_button->set_active(true);
-			state_action_group->set_sensitive(previous_sensitive);
 		}
 	} else
 		set_active_state("none");
+
+	// Disable buttons if there isn't any open document instance
+	bool sensitive = instance && canvas_view;
+	state_action_group->set_sensitive(sensitive);
 }
 
 
