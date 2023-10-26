@@ -173,7 +173,7 @@ MainWindow::init_menus()
 		sigc::hide_return(sigc::ptr_fun(&studio::App::new_instance))
 	);
 	action_group->add( Gtk::Action::create_with_icon_name("open", "action_doc_open_icon", _("Open"), _("Open an existing document")),
-		sigc::hide_return(sigc::bind(sigc::ptr_fun(&studio::App::dialog_open), ""))
+		sigc::hide_return(sigc::bind(sigc::ptr_fun(&studio::App::dialog_open), filesystem::Path{}))
 	);
 	action_group->add( Gtk::Action::create_with_icon_name("save-all", "action_doc_saveall_icon", _("Save All"), _("Save all opened documents")),
 		sigc::ptr_fun(&save_all)

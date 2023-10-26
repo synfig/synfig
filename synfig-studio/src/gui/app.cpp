@@ -2671,7 +2671,7 @@ App::dialog_select_importer(const synfig::filesystem::Path& filename, std::strin
 }
 
 bool
-App::dialog_open_file_with_history_button(const std::string& title, std::string& filename, bool& show_history, const std::string& preference, std::string& plugin_importer)
+App::dialog_open_file_with_history_button(const std::string& title, filesystem::Path& filename, bool& show_history, const std::string& preference, std::string& plugin_importer)
 {
 	synfig::String prev_path = _preferences.get_value(preference, Glib::get_home_dir());
 
@@ -2744,8 +2744,7 @@ App::dialog_open_file_with_history_button(const std::string& title, std::string&
 			}
 		}
 
-		// info("Saving preference %s = '%s' in App::dialog_open_file()", preference.c_str(), filesystem::Path::dirname(filename).c_str());
-		_preferences.set_value(preference, filesystem::Path::dirname(filename));
+		_preferences.set_value(preference, filename.parent_path());
 		return true;
 	}
 
@@ -2754,7 +2753,7 @@ App::dialog_open_file_with_history_button(const std::string& title, std::string&
 }
 
 bool
-App::dialog_open_folder(const std::string& title, std::string& foldername, const std::string& preference, Gtk::Window& transientwind)
+App::dialog_open_folder(const std::string& title, filesystem::Path& foldername, const std::string& preference, Gtk::Window& transientwind)
 {
 	synfig::String prev_path;
 	synfigapp::Settings settings;
@@ -3519,10 +3518,10 @@ App::dialog_paragraph(const std::string &title, const std::string &message,std::
 	return true;
 }
 
-std::string
+synfig::filesystem::Path
 App::get_temporary_directory()
 {
-	return synfigapp::Main::get_user_app_directory().append("tmp").u8string();
+	return synfigapp::Main::get_user_app_directory().append("tmp");
 }
 
 synfig::FileSystemTemporary::Handle
@@ -3532,7 +3531,7 @@ App::wrap_into_temporary_filesystem(
 	std::string as,
 	synfig::FileContainerZip::file_size_t truncate_storage_size )
 {
-	FileSystemTemporary::Handle temporary_file_system = new FileSystemTemporary("instance", get_temporary_directory(), canvas_file_system);
+	FileSystemTemporary::Handle temporary_file_system = new FileSystemTemporary("instance", get_temporary_directory().u8string(), canvas_file_system);
 	temporary_file_system->set_meta("filename", filename);
 	temporary_file_system->set_meta("as", as);
 	temporary_file_system->set_meta("truncate", synfig::strprintf("%lld", truncate_storage_size));
@@ -3540,18 +3539,23 @@ App::wrap_into_temporary_filesystem(
 }
 
 bool
-App::open(std::string filename, /* std::string as, */ synfig::FileContainerZip::file_size_t truncate_storage_size)
+App::open(filesystem::Path filename, /* std::string as, */ synfig::FileContainerZip::file_size_t truncate_storage_size)
 {
 #ifdef _WIN32
-    size_t buf_size = MAX_PATH - 1;
-    char* long_name = (char*)malloc(buf_size);
-    long_name[0] = '\0';
-    if(GetLongPathName(filename.c_str(),long_name,sizeof(long_name)));
-    // when called from autorecover.cpp, filename doesn't exist, and so long_name is empty
-    // don't use it if that's the case
-    if (long_name[0] != '\0')
-        filename=String(long_name);
-    free(long_name);
+	{
+
+	size_t buf_size = MAX_PATH - 1;
+	std::vector<wchar_t> long_name;
+	long_name.resize(buf_size);
+	long_name[0] = 0;
+	if (GetLongPathNameW(filename.c_str(), long_name.data(), sizeof(long_name)) == 0)
+		;
+	// when called from autorecover.cpp, filename doesn't exist, and so long_name is empty
+	// don't use it if that's the case
+	if (long_name[0] != '\0')
+		filename = filesystem::Path::from_native(long_name.data());
+
+	}
 #endif
 
 	try
@@ -3560,20 +3564,20 @@ App::open(std::string filename, /* std::string as, */ synfig::FileContainerZip::
 		String errors, warnings;
 
 		// try open container
-		FileSystem::Handle container = CanvasFileNaming::make_filesystem_container(filename, truncate_storage_size);
+		FileSystem::Handle container = CanvasFileNaming::make_filesystem_container(filename.u8string(), truncate_storage_size);
 		if (!container)
-			throw (String)strprintf(_("Unable to open container \"%s\"\n\n"),filename.c_str());
+			throw (String)strprintf(_("Unable to open container \"%s\"\n\n"), filename.u8_str());
 
 		// make canvas file system
 		FileSystem::Handle canvas_file_system = CanvasFileNaming::make_filesystem(container);
 
 		// wrap into temporary file system
-		canvas_file_system = wrap_into_temporary_filesystem(canvas_file_system, filename, filename, truncate_storage_size);
+		canvas_file_system = wrap_into_temporary_filesystem(canvas_file_system, filename.u8string(), filename.u8string(), truncate_storage_size);
 
 		// file to open inside canvas file-system
-		String canvas_filename = CanvasFileNaming::project_file(filename);
+		String canvas_filename = CanvasFileNaming::project_file(filename.u8string());
 
-		Canvas::Handle canvas = open_canvas_as(canvas_file_system ->get_identifier(canvas_filename), filename, errors, warnings);
+		Canvas::Handle canvas = open_canvas_as(canvas_file_system ->get_identifier(canvas_filename), filename.u8string(), errors, warnings);
 		if(canvas && get_instance(canvas))
 		{
 			get_instance(canvas)->find_canvas_view(canvas)->present();
@@ -3583,7 +3587,7 @@ App::open(std::string filename, /* std::string as, */ synfig::FileContainerZip::
 		else
 		{
 			if(!canvas)
-				throw (String)strprintf(_("Unable to load \"%s\":\n\n"),filename.c_str()) + errors;
+				throw (String)strprintf(_("Unable to load \"%s\":\n\n"), filename.u8_str()) + errors;
 
 			// Set new pixel ratio
 			canvas->rend_desc().set_pixel_ratio(canvas->rend_desc().get_w(), canvas->rend_desc().get_h());
@@ -3596,13 +3600,13 @@ App::open(std::string filename, /* std::string as, */ synfig::FileContainerZip::
 					_("Close"),
 					warnings);
 
-			if (filename.find(custom_filename_prefix) != 0)
+			if (filename.u8string().find(custom_filename_prefix) != 0)
 				add_recent_file(filename);
 
 			etl::handle<Instance> instance(Instance::create(canvas, container));
 
 			if(!instance)
-				throw (String)strprintf(_("Unable to create instance for \"%s\""),filename.c_str());
+				throw (String)strprintf(_("Unable to create instance for \"%s\""), filename.u8_str());
 
 			one_moment.hide();
 		}
@@ -3643,7 +3647,7 @@ App::open(std::string filename, /* std::string as, */ synfig::FileContainerZip::
 
 // this is called from autorecover.cpp
 bool
-App::open_from_temporary_filesystem(std::string temporary_filename)
+App::open_from_temporary_filesystem(const filesystem::Path& temporary_filename)
 {
 	try
 	{
@@ -3652,15 +3656,15 @@ App::open_from_temporary_filesystem(std::string temporary_filename)
 
 		// try open temporary container
 		FileSystemTemporary::Handle file_system_temporary(new FileSystemTemporary(""));
-		if (!file_system_temporary->open_temporary(temporary_filename))
-			throw (String)strprintf(_("Unable to open temporary container \"%s\"\n\n"), temporary_filename.c_str());
+		if (!file_system_temporary->open_temporary(temporary_filename.u8string()))
+			throw (String)strprintf(_("Unable to open temporary container \"%s\"\n\n"), temporary_filename.u8_str());
 
 		// get original filename
 		String filename = file_system_temporary->get_meta("filename");
 		String as = file_system_temporary->get_meta("as");
 		String truncate = file_system_temporary->get_meta("truncate");
 		if (filename.empty() || as.empty() || truncate.empty())
-			throw (String)strprintf(_("Original filename was not set in temporary container \"%s\"\n\n"), temporary_filename.c_str());
+			throw (String)strprintf(_("Original filename was not set in temporary container \"%s\"\n\n"), temporary_filename.u8_str());
 		FileContainerZip::file_size_t truncate_storage_size = stoll(truncate);
 
 		// make canvas file-system
@@ -3684,7 +3688,7 @@ App::open_from_temporary_filesystem(std::string temporary_filename)
 		else
 		{
 			if(!canvas)
-				throw (String)strprintf(_("Unable to load \"%s\":\n\n"), temporary_filename.c_str()) + errors;
+				throw (String)strprintf(_("Unable to load \"%s\":\n\n"), temporary_filename.u8_str()) + errors;
 
 			if (warnings != "")
 				dialog_message_1b(
@@ -3699,7 +3703,7 @@ App::open_from_temporary_filesystem(std::string temporary_filename)
 			etl::handle<Instance> instance(Instance::create(canvas, canvas_container));
 
 			if(!instance)
-				throw (String)strprintf(_("Unable to create instance for \"%s\""), temporary_filename.c_str());
+				throw (String)strprintf(_("Unable to create instance for \"%s\""), temporary_filename.u8_str());
 
 			one_moment.hide();
 
@@ -3844,7 +3848,7 @@ App::new_instance()
 }
 
 void
-App::open_from_plugin(const std::string& filename, const std::string& importer_id)
+App::open_from_plugin(const filesystem::Path& filename, const std::string& importer_id)
 {
 	auto temp_lock = FileSystemTemporary::reserve_temporary_filename(get_temporary_directory(), "synfig", ".sif");
 	if (!temp_lock.second) {
@@ -3854,7 +3858,7 @@ App::open_from_plugin(const std::string& filename, const std::string& importer_i
 
 	filesystem::Path tmp_filename = temp_lock.first;
 
-	bool result = plugin_manager.run(importer_id, {filename, tmp_filename.u8string()});
+	bool result = plugin_manager.run(importer_id, {filename.u8string(), tmp_filename.u8string()});
 
 	if ( result ) {
 		OneMoment one_moment;
@@ -3866,12 +3870,12 @@ App::open_from_plugin(const std::string& filename, const std::string& importer_i
 			errors += strprintf(_("Unable to open container \"%s\"\n\n"), tmp_filename.u8_str());
 		} else {
 			FileSystem::Handle canvas_file_system = CanvasFileNaming::make_filesystem(container);
-			canvas_file_system = wrap_into_temporary_filesystem(canvas_file_system, tmp_filename.u8string(), filename, 0);
+			canvas_file_system = wrap_into_temporary_filesystem(canvas_file_system, tmp_filename.u8string(), filename.u8string(), 0);
 			String canvas_filename = CanvasFileNaming::project_file(tmp_filename.u8string());
-			Canvas::Handle canvas = open_canvas_as(canvas_file_system->get_identifier(canvas_filename), filename, errors, warnings);
+			Canvas::Handle canvas = open_canvas_as(canvas_file_system->get_identifier(canvas_filename), filename.u8string(), errors, warnings);
 			if ( !canvas )
 			{
-				errors += strprintf(_("Unable to load \"%s\":\n\n"),filename.c_str());
+				errors += strprintf(_("Unable to load \"%s\":\n\n"), filename.u8_str());
 			}
 			else
 			{
@@ -3883,7 +3887,7 @@ App::open_from_plugin(const std::string& filename, const std::string& importer_i
 					etl::handle<Instance> instance(Instance::create(canvas, container));
 
 					if ( !instance ) {
-						errors += strprintf(_("Unable to create instance for \"%s\""), filename.c_str());
+						errors += strprintf(_("Unable to create instance for \"%s\""), filename.u8_str());
 					}
 					one_moment.hide();
 				}
@@ -3897,7 +3901,7 @@ App::open_from_plugin(const std::string& filename, const std::string& importer_i
 			dialog_message_1b("ERROR", errors, "details", _("Close"));
 	}
 
-	FileSystemNative::instance()->remove_recursive(tmp_filename.u8_str());
+	FileSystemNative::instance()->remove_recursive(tmp_filename.u8string());
 	// lock file (temp_lock.second) is auto-deleted
 }
 
@@ -3909,13 +3913,13 @@ App::open_recent(const filesystem::Path& filename)
 		return;
 
 	if ( importer.empty() )
-		open(filename.u8string());
+		open(filename);
 	else
-		open_from_plugin(filename.u8string(), importer);
+		open_from_plugin(filename, importer);
 }
 
 void
-App::dialog_open(std::string filename)
+App::dialog_open(filesystem::Path filename)
 {
 	if (filename.empty()) {
 		filename = selected_instance ? selected_instance->get_file_name() : "*.sif";
@@ -3927,7 +3931,7 @@ App::dialog_open(std::string filename)
 	{
 		// If the filename still has wildcards, then we should
 		// continue looking for the file we want
-		if(std::find(filename.begin(),filename.end(),'*')!=filename.end())
+		if (filename.u8string().find('*') != std::string::npos)
 			continue;
 
 		if ( !plugin_importer.empty() )
@@ -3939,11 +3943,11 @@ App::dialog_open(std::string filename)
 		FileContainerZip::file_size_t truncate_storage_size = 0;
 
 		// TODO: ".sfg" literal
-		if (show_history && filesystem::Path::filename_extension(filename) == ".sfg")
+		if (show_history && filename.extension().u8string() == ".sfg")
 		{
 			// read history
 			std::list<FileContainerZip::HistoryRecord> history
-				= FileContainerZip::read_history(filename);
+				= FileContainerZip::read_history(filename.u8string());
 
 			// build list of history entries for dialog (descending)
 			std::list<std::string> list;
@@ -3962,7 +3966,7 @@ App::dialog_open(std::string filename)
 					truncate_storage_size = i->storage_size;
 		}
 
-		if(open(filename,truncate_storage_size))
+		if (open(filename, truncate_storage_size))
 			break;
 
 		get_ui_interface()->error(_("Unable to open file"));
