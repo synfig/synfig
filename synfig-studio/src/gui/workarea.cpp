@@ -1736,6 +1736,19 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		}
 		break;
 	}
+	case GDK_KEY_PRESS: {
+		GdkEventKey* key_event = (GdkEventKey*)event;
+		switch(key_event->keyval) {
+			case GDK_KEY_space: {
+				set_drag_mode(DRAG_WINDOW);
+				drag_point = synfig::Point(event->motion.x, event->motion.y);
+				signal_user_click(1)(mouse_pos);
+				break;
+			}
+			default:
+				break;
+		}
+	}
 	default: break;
 	}
 
