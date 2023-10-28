@@ -248,7 +248,8 @@ public:
 
 	// used in renderer_ducks.cpp
 	bool solid_lines;
-
+	bool space_pressed;
+	bool motion;
 	// used in renderer_guides.cpp
 	GuideList::iterator curr_guide;
 
