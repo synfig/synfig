@@ -1469,7 +1469,7 @@ void App::init(const synfig::String& rootpath)
 	}
 
 	// paths
-	String path_to_icons = ResourceHelper::get_icon_path();
+	filesystem::Path path_to_icons = ResourceHelper::get_icon_path();
 
 	String path_to_plugins = ResourceHelper::get_plugin_path();
 
@@ -1541,7 +1541,7 @@ void App::init(const synfig::String& rootpath)
 
 	// icons
 	init_icon_themes();
-	init_icons(path_to_icons + ETL_DIRECTORY_SEPARATOR);
+	init_icons(path_to_icons);
 
 	try
 	{
