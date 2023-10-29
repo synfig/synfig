@@ -1321,7 +1321,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				//}
 
 				// Check for a guide click
-				if (show_guides) {
+				if (!get_lock_guides() && show_guides) {
 					GuideList::iterator iter = find_guide(mouse_pos,radius);
 
 					if (iter != get_guide_list().end()) {
@@ -1479,17 +1479,15 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 	        break;
 		}
 		case DRAG_GUIDE: {
-			if(!get_lock_guides()) {
-				if (!rotate_guide) {
-					curr_guide->point[0] = mouse_pos[0];
-					curr_guide->point[1] = mouse_pos[1];
-				} else if(rotate_guide && !from_ruler_event) {
-					float slope = (mouse_pos[1] - curr_guide->point[1])/(mouse_pos[0] - curr_guide->point[0]);
-					//just change the angle of the ruler
-					curr_guide->angle = synfig::Angle::rad(atan(slope));
-				}
-				drawing_area->queue_draw();
+			if (!rotate_guide) {
+				curr_guide->point[0] = mouse_pos[0];
+				curr_guide->point[1] = mouse_pos[1];
+			} else if(rotate_guide && !from_ruler_event) {
+				float slope = (mouse_pos[1] - curr_guide->point[1])/(mouse_pos[0] - curr_guide->point[0]);
+				//just change the angle of the ruler
+				curr_guide->angle = synfig::Angle::rad(atan(slope));
 			}
+			drawing_area->queue_draw();
 	        break;
 		}
 		default: break;
@@ -1529,7 +1527,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			double y(event->button.y), x(event->button.x);
 
 			// Erase the guides if dragged into the rulers
-			if(((!std::isnan(x) && x<0.0) || (!std::isnan(y) && y<0.0)) && !get_lock_guides())
+			if((!std::isnan(x) && x<0.0) || (!std::isnan(y) && y<0.0))
 				get_guide_list().erase(curr_guide);
 
 			drawing_area->queue_draw();
@@ -1768,7 +1766,7 @@ WorkArea::on_hruler_event(GdkEvent *event)
 	switch(event->type) {
 	case GDK_BUTTON_PRESS:
 		from_ruler_event = true;
-		if (get_drag_mode() == DRAG_NONE && show_guides && !get_lock_guides()) {
+		if (!get_lock_guides() && get_drag_mode() == DRAG_NONE && show_guides) {
 			set_drag_mode(DRAG_GUIDE);
 			curr_guide = get_guide_list().insert(get_guide_list().begin(),{synfig::Point(((1.0/2.0)*(drawing_area->get_window()->get_width())*get_pw())+ get_window_tl()[0], 0),
 																			   synfig::Angle::rad(0)});
@@ -1806,7 +1804,7 @@ WorkArea::on_vruler_event(GdkEvent *event)
 	switch(event->type) {
 	case GDK_BUTTON_PRESS:
 		from_ruler_event = true;
-		if (get_drag_mode() == DRAG_NONE && show_guides && !get_lock_guides()) {
+		if (!get_lock_guides() && get_drag_mode() == DRAG_NONE && show_guides) {
 			set_drag_mode(DRAG_GUIDE);
 			curr_guide = get_guide_list().insert(get_guide_list().begin(),{synfig::Point(0 ,((1.0/2.0)*(drawing_area->get_window()->get_height())*get_ph())+ get_window_tl()[1]),
 																			   synfig::Angle::deg(90)});
