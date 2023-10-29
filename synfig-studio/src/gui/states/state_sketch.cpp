@@ -147,13 +147,13 @@ void* StateSketch::enter_state(studio::CanvasView* machine_context) const
 void
 StateSketch_Context::save_sketch()
 {
-	synfig::String filename(filesystem::Path::basename(get_canvas()->get_file_name())+".sketch");
+	synfig::filesystem::Path filename(filesystem::Path(get_canvas()->get_file_name()).filename() + std::string(".sketch"));
 
 	while(App::dialog_save_file_sketch(_("Save Sketch"), filename, SKETCH_DIR_PREFERENCE))
 	{
 		// If the filename still has wildcards, then we should
 		// continue looking for the file we want
-		if(find(filename.begin(),filename.end(),'*')!=filename.end())
+		if (filename.u8string().find('*') != std::string::npos)
 			continue;
 
 		if(get_work_area()->save_sketch(filename))
@@ -166,13 +166,13 @@ StateSketch_Context::save_sketch()
 void
 StateSketch_Context::load_sketch()
 {
-	synfig::String filename(filesystem::Path::basename(get_canvas()->get_file_name())+".sketch");
+	synfig::filesystem::Path filename(filesystem::Path(get_canvas()->get_file_name()) + std::string(".sketch"));
 
 	while(App::dialog_open_file_sketch(_("Load Sketch"), filename, SKETCH_DIR_PREFERENCE))
 	{
 		// If the filename still has wildcards, then we should
 		// continue looking for the file we want
-		if(find(filename.begin(),filename.end(),'*')!=filename.end())
+		if (filename.u8string().find('*') != std::string::npos)
 			continue;
 
 		if(get_work_area()->load_sketch(filename))

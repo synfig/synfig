@@ -89,7 +89,6 @@
 /* === U S I N G =========================================================== */
 
 using namespace synfig;
-using namespace etl;
 
 /* === M A C R O S ========================================================= */
 
@@ -1837,7 +1836,7 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 	return value_node;
 }
 
-etl::handle<LinkableValueNode>
+LinkableValueNode::Handle
 CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 {
 	DEBUG_LOG("SYNFIG_DEBUG_LOAD_CANVAS", "%s:%d parse_linkable_value_node\n", __FILE__, __LINE__);
@@ -3266,12 +3265,13 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 
 	if(element->get_attribute("focus"))
 	{
-		std::string values=element->get_attribute("focus")->get_value();
+		std::string values = trim(element->get_attribute("focus")->get_value());
+		const auto separator_pos = values.find(' ');
 		Vector focus;
-
-		focus[0]=atof(std::string(values.data(),values.find(' ')).c_str());
-		values=std::string(values.begin()+values.find(' ')+1,values.end());
-		focus[1]=atof(values.c_str());
+		if (separator_pos != std::string::npos) {
+			focus[0] = atof(values.substr(0, separator_pos).c_str());
+			focus[1] = atof(values.substr(separator_pos + 1).c_str());
+		}
 
 		canvas->rend_desc().set_focus(focus);
 	}
@@ -3460,7 +3460,7 @@ CanvasParser::show_canvas_map(String file, int line, String text)
 	const auto& canvas_map = synfig::get_open_canvas_map();
 	for (const auto& iter : canvas_map)
 	{
-		printf("  |    %40s : %lx (%d)\n", iter.second.c_str(), uintptr_t(iter.first.get()), iter.first->count());
+		printf("  |    %40s : %lx (%d)\n", iter.second.c_str(), uintptr_t(iter.first.get()), iter.first->use_count());
 	}
 	printf("  `-----\n\n");
 }
@@ -3487,7 +3487,7 @@ CanvasParser::parse_from_file_as(const FileSystem::Identifier &identifier,const 
 		FileSystem::ReadStream::Handle stream = identifier.get_read_stream();
 		if (stream)
 		{
-			if (filesystem::Path::filename_extension(identifier.filename) == ".sifz")
+			if (identifier.filename.extension().u8string() == ".sifz")
 				stream = FileSystem::ReadStream::Handle(new ZReadStream(stream, zstreambuf::compression::gzip));
 
 			xmlpp::DomParser parser;
@@ -3516,7 +3516,7 @@ CanvasParser::parse_from_file_as(const FileSystem::Identifier &identifier,const 
 				return canvas;
 			}
 		} else {
-			throw std::runtime_error(String("  * ") + _("Can't find linked file") + " \"" + identifier.filename + "\"");
+			throw std::runtime_error(String("  * ") + _("Can't find linked file") + " \"" + identifier.filename.u8string() + "\"");
 		}
 	}
 	catch(Exception::BadLinkName&) { synfig::error("BadLinkName Thrown"); }
@@ -3527,7 +3527,7 @@ CanvasParser::parse_from_file_as(const FileSystem::Identifier &identifier,const 
 	catch(xmlpp::internal_error &x)
 	{
 		if (!strcmp(x.what(), "Couldn't create parsing context"))
-			throw std::runtime_error(String("  * ") + _("Can't open file") + " \"" + identifier.filename + "\"");
+			throw std::runtime_error(String("  * ") + _("Can't open file") + " \"" + identifier.filename.u8string() + "\"");
 		throw;
 	}
 	catch(const std::exception& ex)

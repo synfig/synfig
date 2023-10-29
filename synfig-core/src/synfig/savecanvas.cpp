@@ -44,7 +44,6 @@
 #include "valuenodes/valuenode_const.h"
 #include "valuenodes/valuenode_staticlist.h"
 #include "valuenodes/valuenode_dynamiclist.h"
-#include "valuenodes/valuenode_subtract.h"
 #include "valuenodes/valuenode_bline.h"
 #include "valuenodes/valuenode_bone.h"
 #include "dashitem.h"
@@ -80,7 +79,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-ReleaseVersion save_canvas_version = ReleaseVersion(RELEASE_VERSION_END-1);
+ReleaseVersion save_canvas_version = synfig::RELEASE_VERSION_CURRENT;
 int valuenode_too_new_count;
 save_canvas_external_file_callback_t save_canvas_external_file_callback = nullptr;
 void *save_canvas_external_file_user_data = nullptr;
@@ -1029,7 +1028,9 @@ synfig::save_canvas(const FileSystem::Identifier &identifier, Canvas::ConstHandl
 {
     ChangeLocale change_locale(LC_NUMERIC, "C");
 
-    synfig::String tmp_filename(safe ? identifier.filename+".TMP" : identifier.filename);
+	synfig::String tmp_filename(identifier.filename.u8string());
+	if (safe)
+		tmp_filename.append(".TMP");
 
 	try
 	{
@@ -1045,7 +1046,7 @@ synfig::save_canvas(const FileSystem::Identifier &identifier, Canvas::ConstHandl
 			return false;
 		}
 
-		if (filesystem::Path::filename_extension(identifier.filename) == ".sifz")
+		if (identifier.filename.extension().u8string() == ".sifz")
 			stream = FileSystem::WriteStream::Handle(new ZWriteStream(stream));
 
 		document.write_to_stream_formatted(*stream, "UTF-8");
@@ -1055,8 +1056,7 @@ synfig::save_canvas(const FileSystem::Identifier &identifier, Canvas::ConstHandl
 
 		if (safe)
 		{
-			if(!identifier.file_system->file_rename(tmp_filename, identifier.filename))
-			{
+			if (!identifier.file_system->file_rename(tmp_filename, identifier.filename.u8string())) {
 				synfig::error("synfig::save_canvas(): Unable to rename file to correct filename");
 				return false;
 			}

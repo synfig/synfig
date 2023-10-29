@@ -300,8 +300,8 @@ public:
 	*/
 
 private:
-	static void add_recent_file(const std::string &filename, bool emit_signal);
-	static bool dialog_open_file_ext(const std::string &title, std::vector<std::string>& filenames, const std::string& preference, bool allow_multiple_selection);
+	static void add_recent_file(const synfig::filesystem::Path& filename, bool emit_signal);
+	static bool dialog_open_file_ext(const std::string &title, std::vector<synfig::filesystem::Path>& filenames, const std::string& preference, bool allow_multiple_selection);
 
 	App();
 
@@ -353,7 +353,7 @@ public:
 	static std::string get_raw_icon_theme_name();
 	static void set_icon_theme(const std::string &theme_name);
 
-	static const std::list<std::string>& get_recent_files();
+	static const std::list<synfig::filesystem::Path>& get_recent_files();
 
 	static const etl::handle<synfigapp::UIInterface>& get_ui_interface();
 
@@ -367,7 +367,7 @@ public:
 	static etl::loose_handle<CanvasView> get_selected_canvas_view() { return selected_canvas_view; }
 	static synfig::Gamma get_selected_canvas_gamma();
 
-	static std::string get_temporary_directory();
+	static synfig::filesystem::Path get_temporary_directory();
 
 	static synfig::FileSystemTemporary::Handle wrap_into_temporary_filesystem(
 		synfig::FileSystem::Handle canvas_file_system,
@@ -375,20 +375,20 @@ public:
 		std::string as,
 		synfig::FileContainerZip::file_size_t truncate_storage_size = 0 );
 
-	static void 	open_recent(const std::string& filename);
+	static void open_recent(const synfig::filesystem::Path& filename);
 
 	static bool open(
-		std::string filename,
+		synfig::filesystem::Path filename,
 		/* std::string as, */
 		synfig::FileContainerZip::file_size_t truncate_storage_size = 0 );
 
-	static bool open_from_temporary_filesystem(std::string temporary_filename);
+	static bool open_from_temporary_filesystem(const synfig::filesystem::Path& temporary_filename);
 
 	static void new_instance();
 
-	static void dialog_open(std::string filename = "");
+	static void dialog_open(synfig::filesystem::Path filename = {});
 
-	static void open_from_plugin(const std::string& filename, const std::string& importer_id);
+	static void open_from_plugin(const synfig::filesystem::Path& filename, const std::string& importer_id);
 
 	static void dialog_about();
 
@@ -411,23 +411,28 @@ public:
 
 	static bool shutdown_request(GdkEventAny* bleh = nullptr);
 
-//	static bool dialog_file(const std::string &title, std::string &filename);
-
-	static bool dialog_select_importer(const std::string& filename, std::string& plugin);
-	static bool dialog_open_file(const std::string& title, std::string& filename, const std::string& preference);
-	static bool dialog_open_file(const std::string& title, std::vector<std::string>& filenames, const std::string& preference);
-	static bool dialog_open_file_spal(const std::string& title, std::string& filename, const std::string& preference);
-	static bool dialog_open_file_sketch(const std::string& title, std::string& filename, const std::string& preference);
-	static bool dialog_open_file_image(const std::string& title, std::string& filename, const std::string& preference);
-	static bool dialog_open_file_audio(const std::string& title, std::string& filename, const std::string& preference);
-	static bool dialog_open_file_with_history_button(const std::string& title, std::string& filename, bool& show_history, const std::string& preference, std::string& plugin_importer);
-	static bool dialog_open_folder(const std::string& title, std::string& filename, const std::string& preference, Gtk::Window& transientwind);
-	static bool dialog_save_file(const std::string& title, std::string& filename, const std::string& preference);
-	static std::string dialog_export_file(const std::string& title, std::string& filename, const std::string& preference);
-	static bool dialog_save_file_spal(const std::string& title, std::string& filename, const std::string& preference);
-	static bool dialog_save_file_sketch(const std::string& title, std::string& filename, const std::string& preference);
-	static bool dialog_save_file_render(const std::string& title, std::string& filename, const std::string& preference);
-	static bool dialog_open_file_image_sequence(const std::string& title, std::set<synfig::String>& filenames, const std::string& preference);
+	static bool dialog_select_importer(const synfig::filesystem::Path& filename, std::string& plugin);
+	static bool dialog_open_file(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference);
+	static bool dialog_open_file(const std::string& title, std::vector<synfig::filesystem::Path>& filenames, const std::string& preference);
+	static bool dialog_open_file_spal(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference);
+	static bool dialog_open_file_sketch(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference);
+	static bool dialog_open_file_image(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference);
+	static bool dialog_open_file_audio(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference);
+	static bool dialog_open_file_with_history_button(const std::string& title, synfig::filesystem::Path& filename, bool& show_history, const std::string& preference, std::string& plugin_importer);
+	static bool dialog_open_folder(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference, Gtk::Window& transientwind);
+	static bool dialog_save_file(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference);
+	/**
+	 * Open a dialog to export file with available plugins
+	 * @param title the dialog title
+	 * @param filename[in,out] the chosen filename
+	 * @param preference the initial folder
+	 * @return the exporter plugin id
+	 */
+	static std::string dialog_export_file(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference);
+	static bool dialog_save_file_spal(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference);
+	static bool dialog_save_file_sketch(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference);
+	static bool dialog_save_file_render(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference);
+	static bool dialog_open_file_image_sequence(const std::string& title, std::set<synfig::filesystem::Path>& filenames, const std::string& preference);
 
 	static bool dialog_select_list_item(const std::string &title, const std::string &message, const std::list<std::string> &list, int &item_index);
 
@@ -466,12 +471,12 @@ public:
 
 	static void open_uri(const std::string &uri);
 	static void open_img_in_external(const std::string &uri);
-	static void open_vectorizerpopup(const etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
+	static void open_vectorizerpopup(const synfig::Layer_Bitmap::Handle my_layer_bitmap,
 	const synfig::Layer::Handle reference_layer);
 
 
 
-	static synfig::String get_config_file(const synfig::String& file);
+	static synfig::filesystem::Path get_config_file(const synfig::String& file);
 	// This will spread the changes made in preferences.
 	// (By now it updates the System Units or Time Format for all the canvases).
 	// This fixes bug 1890020

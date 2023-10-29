@@ -62,7 +62,6 @@
 
 #endif
 
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -663,7 +662,7 @@ Layer_Freetype::new_face(const String &newfont)
 std::vector<std::string>
 Layer_Freetype::get_possible_font_directories(const std::string& canvas_path)
 {
-	std::vector<std::string> possible_font_directories = {""};
+	std::vector<std::string> possible_font_directories = {std::string()};
 
 	if (!canvas_path.empty())
 		possible_font_directories.push_back(canvas_path);

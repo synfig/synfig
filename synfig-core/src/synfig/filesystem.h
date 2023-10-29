@@ -128,7 +128,7 @@ namespace synfig
 		class Identifier {
 		public:
 			FileSystem::Handle file_system;
-			String filename;
+			filesystem::Path filename;
 			Identifier() { }
 			Identifier(const FileSystem::Handle &file_system, const String &filename):
 				file_system(file_system), filename(filename) { }

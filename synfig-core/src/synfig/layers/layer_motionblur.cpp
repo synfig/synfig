@@ -57,7 +57,7 @@ SYNFIG_LAYER_INIT(Layer_MotionBlur);
 SYNFIG_LAYER_SET_NAME(Layer_MotionBlur,"motion_blur");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_MotionBlur,N_("Motion Blur"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_MotionBlur,N_("Blurs"));
-SYNFIG_LAYER_SET_VERSION(Layer_MotionBlur,"0.1");
+SYNFIG_LAYER_SET_VERSION(Layer_MotionBlur,"0.2");
 
 /* === M E M B E R S ======================================================= */
 
@@ -136,6 +136,7 @@ Layer_MotionBlur::get_param_vocab()const
 		.add_enum_value(SUBSAMPLING_CONSTANT,"constant",_("Constant"))
 		.add_enum_value(SUBSAMPLING_LINEAR,"linear",_("Linear"))
 		.add_enum_value(SUBSAMPLING_HYPERBOLIC,"hyperbolic",_("Hyperbolic"))
+		.add_enum_value(SUBSAMPLING_NONE,"none",_("None"))
 	);
 
 	ret.push_back(ParamDesc("subsample_start")
@@ -162,6 +163,8 @@ Layer_MotionBlur::build_rendering_task_vfunc(Context context) const
 	Real subsample_start = param_subsample_start.get(Real());
 	Real subsample_end = param_subsample_end.get(Real());
 
+	const bool no_blur_effect = subsampling_type == SUBSAMPLING_NONE;
+
 	int samples = (int)round(12.0 * fabs(subsamples_factor));
 	if (samples <= 1)
 		return context.build_rendering_task();
@@ -176,33 +179,39 @@ Layer_MotionBlur::build_rendering_task_vfunc(Context context) const
 
 	std::vector<Real> scales(samples, 0.0);
 	Real sum = 0.0;
-	for(int i = 0; i < samples; i++)
-	{
-		Real pos = (Real)i/(Real)(samples - 1);
-		Real ipos = 1.0 - pos;
-		Real scale = 0.0;
-		switch(subsampling_type)
+	if (!no_blur_effect) {
+		for(int i = 0; i < samples; i++)
 		{
-			case SUBSAMPLING_LINEAR:
-				scale = ipos*subsample_start + pos*subsample_end;
-				break;
-			case SUBSAMPLING_HYPERBOLIC:
-				scale = 1.0/(samples - i);
-				break;
-			case SUBSAMPLING_CONSTANT:
-			default:
-				scale = 1.0; // Weights don't matter for constant overall subsampling.
-				break;
+			Real pos = (Real)i/(Real)(samples - 1);
+			Real ipos = 1.0 - pos;
+			Real scale = 0.0;
+			switch(subsampling_type)
+			{
+				case SUBSAMPLING_LINEAR:
+					scale = ipos*subsample_start + pos*subsample_end;
+					break;
+				case SUBSAMPLING_HYPERBOLIC:
+					scale = 1.0/(samples - i);
+					break;
+				case SUBSAMPLING_CONSTANT:
+				default:
+					scale = 1.0; // Weights don't matter for constant overall subsampling.
+					break;
+			}
+			scales[i] = scale;
+			sum += scale;
 		}
-		scales[i] = scale;
-		sum += scale;
 	}
 
-	Real k = 1.0/sum;
+	const Color::BlendMethod blend_method = no_blur_effect ? Color::BLEND_COMPOSITE : Color::BLEND_ADD_COMPOSITE;
+	const Real k = no_blur_effect ? 1.0 : (1.0/sum);
+
 	rendering::Task::Handle task;
 	for(int i = 0; i < samples; i++)
 	{
-		if (fabs(scales[i]*k) < 1e-8)
+		const auto amount = no_blur_effect ? 1.0 : (scales[i]*k);
+
+		if (fabs(amount) < precision)
 			continue;
 
 		Real pos = (Real)i/(Real)(samples - 1);
@@ -210,8 +219,8 @@ Layer_MotionBlur::build_rendering_task_vfunc(Context context) const
 		context.set_time(get_time_mark() - aperture*ipos);
 
 		rendering::TaskBlend::Handle task_blend(new rendering::TaskBlend());
-		task_blend->amount = scales[i]*k;
-		task_blend->blend_method = Color::BLEND_ADD_COMPOSITE;
+		task_blend->amount = amount;
+		task_blend->blend_method = blend_method;
 		task_blend->sub_task_a() = task;
 		task_blend->sub_task_b() = context.build_rendering_task();
 		task = task_blend;

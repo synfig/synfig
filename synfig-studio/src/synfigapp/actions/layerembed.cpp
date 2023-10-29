@@ -47,7 +47,6 @@
 
 #endif
 
-using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
 
@@ -116,8 +115,8 @@ Action::LayerEmbed::set_param(const synfig::String& name, const Action::Param &p
 	{
 		Layer::Handle layer = param.get_layer();
 
-		etl::handle<synfig::Layer_PasteCanvas> layer_pastecanvas
-			= etl::handle<synfig::Layer_PasteCanvas>::cast_dynamic(layer);
+		Layer_PasteCanvas::Handle layer_pastecanvas
+			= Layer_PasteCanvas::Handle::cast_dynamic(layer);
 		if (layer_pastecanvas)
 		{
 			Canvas::Handle canvas = layer_pastecanvas->get_sub_canvas();

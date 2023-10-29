@@ -24,8 +24,7 @@ MAINTAINERCLEANFILES = \
 
 
 SUBDIRS = \
-	ETL \
-	test
+	ETL
 
 
 # Install the pkg-config file:

@@ -74,9 +74,14 @@ StateManager::~StateManager()
 }
 
 void
-StateManager::change_state_(const Smach::state_base *state)
+StateManager::change_state_(const Glib::RefPtr<Gtk::RadioAction>& current, const Smach::state_base* state)
 {
-	App::dock_toolbox->change_state_(state);
+	auto state_action = Glib::RefPtr<Gtk::RadioAction>::cast_static(state_group->get_action(String("state-") + state->get_name()));
+	if (state_action) {
+		if (state_action == current) {
+			App::dock_toolbox->change_state_(state);
+		}
+	}
 }
 
 void
@@ -95,17 +100,34 @@ StateManager::add_state(const Smach::state_base *state)
 	/*action->set_sensitive(false);*/
 	state_group->add(action);
 
-	action->signal_activate().connect(
+	action->signal_changed().connect(
 		sigc::bind(
 			sigc::mem_fun(*this,&studio::StateManager::change_state_),
 			state
 		)
 	);
 
+	Glib::RefPtr<Gtk::Action> regular_action(
+		Gtk::Action::create_with_icon_name("set-state-"+name,
+											state_icon_name(name),
+											state->get_local_name(),
+											""
+		)
+	);
+	/*regular_action->set_sensitive(false);*/
+	state_group->add(regular_action);
+
+	regular_action->signal_activate().connect(
+		sigc::bind(
+			sigc::mem_fun(*App::dock_toolbox, &studio::Dock_Toolbox::change_state_),
+			state
+			)
+		);
+
 	String uid_def;
-	uid_def = "<ui><popup action='menu-main'><menu action='menu-toolbox'><menuitem action='state-"+name+"' /></menu></popup></ui>";
+	uid_def = "<ui><popup action='menu-main'><menu action='menu-toolbox'><menuitem action='set-state-"+name+"' /></menu></popup></ui>";
 	merge_id_list.push_back(App::ui_manager()->add_ui_from_string(uid_def));
-	uid_def = "<ui><menubar action='menubar-main'><menu action='menu-toolbox'><menuitem action='state-"+name+"' /></menu></menubar></ui>";
+	uid_def = "<ui><menubar action='menubar-main'><menu action='menu-toolbox'><menuitem action='set-state-"+name+"' /></menu></menubar></ui>";
 	merge_id_list.push_back(App::ui_manager()->add_ui_from_string(uid_def));
 
 	App::ui_manager()->ensure_update();

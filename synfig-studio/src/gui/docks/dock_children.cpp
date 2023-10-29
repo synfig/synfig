@@ -58,7 +58,9 @@ using namespace studio;
 Dock_Children::Dock_Children():
 	Dock_CanvasSpecific("children",_("Library"),"library_icon")
 {
-    //! \todo the combination of set_use_scrolled(false) and
+	set_name("library_panel");
+
+	//! \todo the combination of set_use_scrolled(false) and
 	//!       add(*tree_view) causes crashes when
 	//!       Dockable::prev_widget_ is left referencing a
 	//!       ChildrenTree that has already been destroyed.

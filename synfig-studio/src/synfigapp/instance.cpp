@@ -82,7 +82,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace synfigapp;
 
@@ -90,7 +89,7 @@ using namespace synfigapp;
 
 /* === G L O B A L S ======================================================= */
 
-static std::map<Canvas::LooseHandle, loose_handle<Instance>> instance_map_;
+static std::map<Canvas::LooseHandle, etl::loose_handle<Instance>> instance_map_;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -141,14 +140,12 @@ Instance::Instance(Canvas::Handle canvas, synfig::FileSystem::Handle container):
 	instance_map_[canvas]=this;
 } // END of synfigapp::Instance::Instance()
 
-handle<Instance>
+etl::handle<Instance>
 Instance::create(Canvas::Handle canvas, synfig::FileSystem::Handle container)
 {
 	// Construct a new instance
-	handle<Instance> instance(new Instance(canvas, container));
-
-	return instance;
-} // END of synfigapp::Instance::create()
+	return new Instance(canvas, container);
+}
 
 synfig::String
 Instance::get_file_name()const
@@ -170,7 +167,7 @@ Instance::~Instance()
 		"Instance::~Instance(): Deleted");
 }
 
-handle<CanvasInterface>
+etl::handle<CanvasInterface>
 Instance::find_canvas_interface(synfig::Canvas::Handle canvas)
 {
 	if(!canvas)
@@ -654,7 +651,7 @@ Instance::save_as(const synfig::String &file_name)
 
 		// remove previous canvas file
 		if (previous_canvas_identifier.filename != new_canvas_identifier.filename)
-			new_canvas_filesystem->file_remove(previous_canvas_identifier.filename);
+			new_canvas_filesystem->file_remove(previous_canvas_identifier.filename.u8string());
 
 		// set new canvas filename
 		canvas->set_file_name(new_canvas_filename);

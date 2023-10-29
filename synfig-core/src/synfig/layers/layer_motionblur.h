@@ -44,11 +44,12 @@ class Layer_MotionBlur : public synfig::Layer_CompositeFork
 
 	enum SubsamplingType
 	{
-	    SUBSAMPLING_CONSTANT=0,		//!< weight each subsample equally
-	    SUBSAMPLING_LINEAR=1,		//!< fade in subsamples linearly
-	    SUBSAMPLING_HYPERBOLIC=2,	//!< fade in subsamples by a hyperbolic curve (default style of 0.62 and previous)
+		SUBSAMPLING_CONSTANT=0,     //!< weight each subsample equally
+		SUBSAMPLING_LINEAR=1,       //!< fade in subsamples linearly
+		SUBSAMPLING_HYPERBOLIC=2,   //!< fade in subsamples by a hyperbolic curve (default style of 0.62 and previous)
+		SUBSAMPLING_NONE=3,         //!< do not fade at all
 
-	    SUBSAMPLING_END=2				//!< \internal
+		SUBSAMPLING_END=3           //!< \internal
 	};
 
 private:

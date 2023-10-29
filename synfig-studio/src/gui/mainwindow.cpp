@@ -173,7 +173,7 @@ MainWindow::init_menus()
 		sigc::hide_return(sigc::ptr_fun(&studio::App::new_instance))
 	);
 	action_group->add( Gtk::Action::create_with_icon_name("open", "action_doc_open_icon", _("Open"), _("Open an existing document")),
-		sigc::hide_return(sigc::bind(sigc::ptr_fun(&studio::App::dialog_open), ""))
+		sigc::hide_return(sigc::bind(sigc::ptr_fun(&studio::App::dialog_open), filesystem::Path{}))
 	);
 	action_group->add( Gtk::Action::create_with_icon_name("save-all", "action_doc_saveall_icon", _("Save All"), _("Save all opened documents")),
 		sigc::ptr_fun(&save_all)
@@ -354,13 +354,13 @@ MainWindow::on_key_press_event(GdkEventKey* key_event)
 
 void
 MainWindow::make_short_filenames(
-	const std::vector<synfig::String> &fullnames,
+	const std::vector<synfig::filesystem::Path> &fullnames,
 	std::vector<synfig::String> &shortnames )
 {
 	if (fullnames.size() == 1)
 	{
 		shortnames.resize(1);
-		shortnames[0] = filesystem::Path::basename(fullnames[0]);
+		shortnames[0] = fullnames[0].filename().u8string();
 		return;
 	}
 
@@ -373,7 +373,7 @@ MainWindow::make_short_filenames(
 	// build dir lists
 	for(int i = 0; i < count; ++i) {
 		int j = 0;
-		String fullname = fullnames[i];
+		String fullname = fullnames[i].u8string();
 		if (fullname.substr(0, 7) == "file://")
 			fullname = fullname.substr(7);
 		while(j < (int)fullname.size())
@@ -444,7 +444,7 @@ MainWindow::on_recent_files_changed()
 	// TODO(ice0): switch to GtkRecentChooserMenu?
 	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create("mainwindow-recentfiles");
 
-	std::vector<String> fullnames(App::get_recent_files().begin(), App::get_recent_files().end());
+	std::vector<filesystem::Path> fullnames(App::get_recent_files().begin(), App::get_recent_files().end());
 	std::vector<String> shortnames;
 	make_short_filenames(fullnames, shortnames);
 
@@ -457,8 +457,8 @@ MainWindow::on_recent_files_changed()
 		const std::string action_name = synfig::strprintf("file-recent-%d", i);
 		menu_items += "<menuitem action='" + action_name +"' />";
 
-		std::string filename = fullnames[i];
-		action_group->add( Gtk::Action::create(action_name, quoted, fullnames[i]),
+		filesystem::Path filename = fullnames[i];
+		action_group->add( Gtk::Action::create(action_name, quoted, filename.u8string()),
 			[filename](){App::open_recent(filename);}
 		);
 	}
@@ -641,7 +641,7 @@ MainWindow::load_custom_workspaces()
 		workspaces->signal_list_changed().connect( sigc::mem_fun(signal_custom_workspaces_changed_, &sigc::signal<void>::emit) );
 	}
 	workspaces->clear();
-	std::string filename = App::get_config_file("workspaces");
+	filesystem::Path filename = App::get_config_file("workspaces");
 	workspaces->load(filename);
 }
 
@@ -649,7 +649,7 @@ void
 MainWindow::save_custom_workspaces()
 {
 	if (workspaces) {
-		std::string filename = App::get_config_file("workspaces");
+		filesystem::Path filename = App::get_config_file("workspaces");
 		workspaces->save(filename);
 	}
 }

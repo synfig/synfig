@@ -75,7 +75,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
@@ -835,7 +834,7 @@ Layer::accelerated_render(Context context,Surface *surface,int quality, const Re
 {
 	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
 
-	handle<Target_Scanline> target=surface_target_scanline(surface);
+	Target_Scanline::Handle target = surface_target_scanline(surface);
 	if(!target)
 	{
 		if(cb)cb->error(_("Unable to create surface target"));
@@ -1037,26 +1036,30 @@ using Glib::RefPtr;
 void Layer::on_file_changed(const RefPtr<Gio::File> &/*file*/, const RefPtr<Gio::File> &/*other_file*/, Gio::FileMonitorEvent event) {
 	if (event == Gio::FILE_MONITOR_EVENT_CHANGES_DONE_HINT)
 	{
-		synfig::warning("file changed! (" + monitored_path + ")");
+		synfig::warning("file changed! (%s)", monitored_path.u8_str());
 		set_param("filename", ValueBase("")); // first clear filename to force image reload
-		Importer::forget(get_canvas()->get_file_system()->get_identifier(monitored_path)); // clear file in list of loaded files
-		set_param("filename", ValueBase(monitored_path));
+		Importer::forget(get_canvas()->get_file_system()->get_identifier(monitored_path.u8string())); // clear file in list of loaded files
+		set_param("filename", ValueBase(monitored_path.u8string()));
 		get_canvas()->signal_changed()();
 	}
 }
 
-bool Layer::monitor(const std::string& path) { // append file monitor (returns true on success, false on fail)
+bool Layer::monitor(const filesystem::Path& path) { // append file monitor (returns true on success, false on fail)
 	if (file_monitor)
 	{
-		synfig::warning("File monitor for file '" + path + "' is already attached!");
+		synfig::warning("File monitor for file '%s' is already attached!", path.u8_str());
 		return false;
 	}
 
-	RefPtr<Gio::File> file = Gio::File::create_for_path(path);
+	const bool is_network_shared_folder = path.root_name().u8string().substr(0, 2) == "\\\\";
+	std::string uri = !is_network_shared_folder ? "file://" : "";
+	uri += path.cleanup().u8string();
+
+	RefPtr<Gio::File> file = Gio::File::create_for_uri(uri);
 	file_monitor = file->monitor_file(); // defaults to Gio::FileMonitorFlags::FILE_MONITOR_NONE
 	monitor_connection = file_monitor->signal_changed().connect(sigc::mem_fun(*this, &Layer::on_file_changed));
-	monitored_path = FileSystem::fix_slashes(path);
-	synfig::info("File monitor attached to file: (" + path + ")");
+	monitored_path = path.cleanup();
+	synfig::info("File monitor attached to file: (%s)", path.u8_str());
 
 	return true;
 }

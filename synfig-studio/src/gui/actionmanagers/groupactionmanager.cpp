@@ -47,7 +47,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -225,7 +224,7 @@ GroupActionManager::refresh()
 				canvas_set=true;
 			}
 
-			handle<studio::Instance>::cast_static(get_canvas_interface()->get_instance())->
+			etl::handle<studio::Instance>::cast_static(get_canvas_interface()->get_instance())->
 				add_actions_to_group(action_group_, ui_info,   param_list, synfigapp::Action::CATEGORY_GROUP);
 			}
 	}

@@ -60,9 +60,9 @@ struct EventMouse : public Smach::event
 	MouseButton button;
 	float pressure;
 	Gdk::ModifierType modifier;
-	etl::handle<Duck> duck;
+	Duck::Handle duck;
 
-	EventMouse(EventKey id, MouseButton button, const synfig::Point& pos, Gdk::ModifierType modifier=Gdk::ModifierType(0), etl::handle<Duck> duck = etl::handle<Duck>()):
+	EventMouse(EventKey id, MouseButton button, const synfig::Point& pos, Gdk::ModifierType modifier = Gdk::ModifierType(0), Duck::Handle duck = {}) :
 		Smach::event(id),
 		pos(pos),
 		button(button),
@@ -71,7 +71,7 @@ struct EventMouse : public Smach::event
 		duck(duck)
 	{ }
 
-	EventMouse(EventKey id, MouseButton button, const synfig::Point& pos, float pressure, Gdk::ModifierType modifier=Gdk::ModifierType(0), etl::handle<Duck> duck = etl::handle<Duck>()):
+	EventMouse(EventKey id, MouseButton button, const synfig::Point& pos, float pressure, Gdk::ModifierType modifier = Gdk::ModifierType(0), Duck::Handle duck = {}) :
 		Smach::event(id),
 		pos(pos),
 		button(button),

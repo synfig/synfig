@@ -109,14 +109,13 @@ Importer::open(const FileSystem::Identifier &identifier, bool force)
 		return (*__open_importers)[identifier];
 	}
 
-	if(filesystem::Path::filename_extension(identifier.filename) == "")
-	{
+	String ext(identifier.filename.extension().u8string());
+	if (ext.empty()) {
 		synfig::error(_("Importer::open(): Couldn't find extension"));
 		return nullptr;
 	}
 
-	String ext(filesystem::Path::filename_extension(identifier.filename));
-	if (ext.size()) ext = ext.substr(1); // skip initial '.'
+	ext = ext.substr(1); // skip initial '.'
 	strtolower(ext);
 
 

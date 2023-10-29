@@ -271,7 +271,8 @@ filesystem::Path::lexically_normal() const
 	return normalize(path_);
 }
 
-filesystem::Path filesystem::Path::cleanup() const
+filesystem::Path
+filesystem::Path::cleanup() const
 {
 	return lexically_normal();
 }
@@ -400,9 +401,25 @@ filesystem::Path::lexically_relative(const Path& base) const
 	return q;
 }
 
-filesystem::Path filesystem::Path::relative_to(const Path& base) const
+filesystem::Path
+filesystem::Path::relative_to(const Path& base) const
 {
 	return lexically_relative(base).lexically_normal();
+}
+
+filesystem::Path
+filesystem::Path::lexically_proximate(const Path& base) const
+{
+	Path rel(lexically_relative(base));
+	if (rel.empty())
+		return *this;
+	return rel;
+}
+#include <synfig/general.h>
+filesystem::Path
+filesystem::Path::proximate_to(const Path& base) const
+{
+	return /*absolute*/(*this).lexically_normal().lexically_proximate(/*absolute*/(base)).lexically_normal();
 }
 
 filesystem::Path

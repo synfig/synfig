@@ -561,7 +561,7 @@ Canvas::_get_relative_id(etl::loose_handle<const Canvas> x)const
 
 	if(x && get_root()!=x->get_root())
 	{
-		String file_name = filesystem::Path(get_file_name()).relative_to(x->get_file_path()).u8string();
+		String file_name = filesystem::Path(get_file_name()).proximate_to(x->get_file_path()).u8string();
 
 		id=file_name+'#'+id;
 	}
@@ -1000,18 +1000,17 @@ Canvas::clone(const GUID& deriv_guid, bool for_export)const
 		Layer::Handle layer((*iter)->clone(canvas, deriv_guid));
 		if(layer)
 		{
-			assert(layer.count()==1);
+			assert(layer.use_count() == 1);
 			int presize(size());
 			canvas->push_back(layer);
-			if(!(layer.count()>1))
-			{
+			if (layer.use_count() <= 1) {
 				synfig::error("Canvas::clone(): Cloned layer insertion failure!");
-				synfig::error("Canvas::clone(): \tlayer.count()=%d",layer.count());
-				synfig::error("Canvas::clone(): \tlayer->get_name()=%s",layer->get_name().c_str());
-				synfig::error("Canvas::clone(): \tbefore size()=%d",presize);
-				synfig::error("Canvas::clone(): \tafter size()=%d",size());
+				synfig::error("Canvas::clone(): \tlayer.count()=%d", layer.use_count());
+				synfig::error("Canvas::clone(): \tlayer->get_name()=%s", layer->get_name().c_str());
+				synfig::error("Canvas::clone(): \tbefore size()=%d", presize);
+				synfig::error("Canvas::clone(): \tafter size()=%d", size());
 			}
-			assert(layer.count()>1);
+			assert(layer.use_count() > 1);
 		}
 		else
 		{
@@ -1458,7 +1457,7 @@ Canvas::show_externals(String file, int line, String text) const
 	{
 		synfig::String first(iter->first);
 		Canvas::LooseHandle second(iter->second);
-		printf("  |    %40s : %lx (%d)\n", first.c_str(), uintptr_t(&*second), second->count());
+		printf("  |    %40s : %lx (%d)\n", first.c_str(), uintptr_t(&*second), second->use_count());
 	}
 	printf("  `-----\n\n");
 }

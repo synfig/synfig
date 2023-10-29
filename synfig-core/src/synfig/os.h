@@ -223,9 +223,15 @@ const std::vector<std::string>& get_user_lang();
 
 /**
  * Return the absolute path to the current binary
- * @param fallback_path : if we can't figure out the binary path, use this value instead
+ * @see synfig::OS::fallback_binary_path
  */
-filesystem::Path get_binary_path(const std::string& fallback_path);
+filesystem::Path get_binary_path();
+
+/**
+ * If OS::get_binary_path() fails, use this path instead.
+ * Normally set to argv[0]
+ */
+extern filesystem::Path fallback_binary_path;
 
 /**
  * Returns the current working directory.

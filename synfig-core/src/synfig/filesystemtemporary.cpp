@@ -32,20 +32,22 @@
 #	include <config.h>
 #endif
 
+#include "filesystemtemporary.h"
+
+#include <fcntl.h> // for open(), close(), remove()
+#include <sys/stat.h> // for S_IWRITE
+
 #include <libxml++/libxml++.h>
 
 #include "general.h"
-
-#include "filesystemtemporary.h"
-
 #include "guid.h"
+#include "localization.h"
 #include "zstreambuf.h"
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -645,6 +647,70 @@ FileSystemTemporary::generate_indexed_temporary_filename(const FileSystem::Handl
 	return String();
 }
 
-/* === E N T R Y P O I N T ================================================= */
+std::pair<filesystem::Path, SmartFILE>
+FileSystemTemporary::reserve_temporary_filename(const filesystem::Path& dir, const String& prefix, const String& suffix)
+{
+	if (!FileSystemNative::instance()->is_directory(dir.u8string())) {
+		synfig::error(_("Not a directory: %s"), dir.u8_str());
+		return {};
+	}
 
+	const auto lock_extension = ".lock";
+	const auto filename_format = strprintf("%s/%s.%%s%s", dir.u8_str(), prefix.c_str(), suffix.c_str());
 
+	auto open_non_existent_file = [](const filesystem::Path& filename) -> int {
+#if _WIN32
+		return ::_wopen(filename.c_str(), _O_CREAT | _O_EXCL | _O_WRONLY, _S_IWRITE);
+#else
+		return ::open(filename.c_str(), O_CREAT | O_EXCL | O_WRONLY, S_IWUSR);
+#endif
+	};
+
+	auto close_file = [](int fd) -> int {
+#if _WIN32
+		return ::_close(fd);
+#else
+		return ::close(fd);
+#endif
+	};
+
+	auto remove_file = [](const filesystem::Path& filename) -> int {
+#if _WIN32
+		return ::_wremove(filename.c_str());
+#else
+		return ::remove(filename.c_str());
+#endif
+	};
+
+	for (int i = 0; i < 25000; ++i) {
+		// Generates a random name
+		filesystem::Path filename = strprintf(filename_format.c_str(), GUID().get_string().substr(0,8).c_str());
+		filesystem::Path lock_filename = filename;
+		lock_filename.concat(lock_extension);
+
+		// Does lock file exist?
+		int lock_fd = open_non_existent_file(lock_filename);
+		if (lock_fd < 0) {
+			// Lock file already exists. Try another name
+		} else {
+			// Lock file just created. Does the file itself already exist?
+			int fd = open_non_existent_file(filename);
+			if (fd < 0) {
+				// the file already exists... Remove lock and try another name
+				close_file(lock_fd);
+				remove_file(lock_filename);
+			} else {
+				// We finally find a valid random filename
+				close_file(fd);
+				remove_file(filename);
+#if _WIN32
+				return {filename, SmartFILE(_fdopen(lock_fd, "w"))};
+#else
+				return {filename, SmartFILE(fdopen(lock_fd, "w"))};
+#endif
+			}
+		}
+	}
+
+	return {};
+}

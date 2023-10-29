@@ -50,7 +50,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -464,7 +463,7 @@ Dock_History::on_action_toggle(const Glib::ustring& path_string)
 
 	const Gtk::TreeRow row = *(selected_instance->history_tree_store()->get_iter(path));
 
-	handle<synfigapp::Action::Undoable> action=row[history_tree_model.action];
+	etl::handle<synfigapp::Action::Undoable> action = row[history_tree_model.action];
 
-	selected_instance->synfigapp::Instance::set_action_status(action,!action->is_active());
+	selected_instance->set_action_status(action, !action->is_active());
 }

@@ -185,6 +185,28 @@ public:
 	 */
 	Path relative_to(const Path& base) const;
 
+	/**
+	 * If the value of lexically_relative(@a base) is not an empty path, return it. Otherwise return *this.
+	 *
+	 * Examples:
+	 *     Path("a/b").lexically_relative("/a/b") returns empty
+	 *     Path("a/b").lexically_proximate("/a/b") returns "a/b"
+	 *
+	 *     Path("/a/b").lexically_relative("c") returns empty
+	 *     Path("/a/b").lexically_proximate("c") returns "/a/b"
+	 *
+	 * @param base the reference path
+	 * @return the path relative to base
+	 */
+	Path lexically_proximate(const Path& base) const;
+
+	/**
+	 * Convenient method that calls lexically_proximate() followed by lexically_normal().
+	 * @param base the reference path
+	 * @return the normalized path proximate to base
+	 */
+	Path proximate_to(const Path& base) const;
+
 	// Decomposition ---------------------
 
 	/**
