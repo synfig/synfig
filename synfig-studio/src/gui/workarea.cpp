@@ -76,11 +76,6 @@ using namespace studio;
 
 #define THUMB_SIZE 128
 
-#ifndef stratof
-#define stratof(X) (atof((X).c_str()))
-#define stratoi(X) (atoi((X).c_str()))
-#endif
-
 /* === G L O B A L S ======================================================= */
 
 /* === C L A S S E S ======================================================= */
