@@ -216,7 +216,7 @@ RunPipe::Handle run_async(const filesystem::Path& binary_path, const RunArgs& bi
 bool run_sync(const filesystem::Path& binary_path, const RunArgs& binary_args, const filesystem::Path& stdout_redir_file = {}, const filesystem::Path& stderr_redir_file = {});
 
 /** Launch a file with its default application */
-bool launch_file_async(const std::string& file);
+bool launch_file_async(const filesystem::Path& file);
 
 /** Get the system language */
 const std::vector<std::string>& get_user_lang();
