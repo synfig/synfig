@@ -34,9 +34,6 @@
 
 #include <gui/dialogs/dialog_canvasdependencies.h>
 
-#include <glibmm/fileutils.h>
-#include <glibmm/markup.h>
-
 #include <gtkmm/label.h>
 #include <gtkmm/treeview.h>
 
@@ -60,30 +57,6 @@ using namespace studio;
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
-
-static Glib::RefPtr<Gtk::Builder> load_interface() {
-	auto refBuilder = Gtk::Builder::create();
-	try
-	{
-		refBuilder->add_from_file(ResourceHelper::get_ui_path("dialog_canvasdependencies.glade"));
-	}
-	catch(const Glib::FileError& ex)
-	{
-		synfig::error("FileError: " + ex.what());
-		return Glib::RefPtr<Gtk::Builder>();
-	}
-	catch(const Glib::MarkupError& ex)
-	{
-		synfig::error("MarkupError: " + ex.what());
-		return Glib::RefPtr<Gtk::Builder>();
-	}
-	catch(const Gtk::BuilderError& ex)
-	{
-		synfig::error("BuilderError: " + ex.what());
-		return Glib::RefPtr<Gtk::Builder>();
-	}
-	return refBuilder;
-}
 
 struct ExternalValueNodeCollector {
 	struct Statistics {
@@ -182,7 +155,7 @@ Dialog_CanvasDependencies::Dialog_CanvasDependencies(Gtk::Dialog::BaseObjectType
 
 Dialog_CanvasDependencies* Dialog_CanvasDependencies::create(Gtk::Window& parent)
 {
-	auto refBuilder = load_interface();
+	auto refBuilder = ResourceHelper::load_interface("dialog_canvasdependencies.glade");
 	if (!refBuilder)
 		return nullptr;
 	Dialog_CanvasDependencies * dialog = nullptr;
