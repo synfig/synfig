@@ -1052,6 +1052,7 @@ WorkArea::on_key_release_event(GdkEventKey* event)
 	// - currently none
 	if(event->keyval==GDK_KEY_space && space_pressed)
 	{
+		motion = false;
 		space_pressed = false;
 		set_drag_mode(DRAG_NONE);
 	}
