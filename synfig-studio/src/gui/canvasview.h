@@ -482,7 +482,7 @@ private:
 	void on_interpolation_changed();
 
 	//helper function for import_file()
-	bool is_same_file(const std::string &filename);
+	bool is_same_file(const synfig::filesystem::Path& filename);
 	
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
@@ -640,7 +640,7 @@ public:
 
 	void preview_option() {on_preview_option();}
 
-	bool is_playing() { return ducks_playing_lock; }
+	bool is_playing() const { return static_cast<bool>(ducks_playing_lock); }
 
 	//! Toggle given handle type
 	//! \Param[in]  type The Duckmatic::Type to toggle
@@ -700,7 +700,7 @@ protected:
  -- ** -- S T A T I C   P U B L I C   M E T H O D S ---------------------------
 	*/
 public:
-	static etl::handle<studio::CanvasView> create(etl::loose_handle<Instance> instance,synfig::Canvas::Handle canvas);
+	static studio::CanvasView::Handle create(etl::loose_handle<Instance> instance, synfig::Canvas::Handle canvas);
 	static std::list<int>& get_pixel_sizes();
 
 private:

@@ -35,6 +35,8 @@
 
 #include "filesystemnative.h"
 
+#include "smartfile.h"
+
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -144,6 +146,27 @@ namespace synfig
 		static String generate_system_temporary_filename(const String &tag, const String &extension = String());
 		static String generate_indexed_temporary_filename(const FileSystem::Handle &fs, const String &filename);
 		static bool scan_temporary_directory(const String &tag, FileList &out_files, const String &dirname = String());
+
+		/**
+		 * Generate a random non-existent file name in @a dir.
+		 *
+		 * The filename will start with @a prefix and end with @a suffix.
+		 *
+		 * First step: it generates a randomized file name with @a prefix and @a suffix.
+		 * Then it tries to create a non-existent lock file with this random name but with an extra extension (.lock).
+		 * If such lock file already exists, it goes back to first step.
+		 * Otherwise, it then checks for the file with the random name.
+		 * If it exists, deletes the file lock and goes back to first step.
+		 * Otherwise, it finally returns the reserved filename and the lock file.
+		 *
+		 * Remember to delete the lock when it is not needed anymore.
+		 *
+		 * @param dir the directory where the temporary file should be stored
+		 * @param prefix the start string for the file name. It must be in UTF-8 and it shouldn't have any slash.
+		 * @param suffix the end string for the file name (it can be the file extension). It must be in UTF-8 and it shouldn't have any slash.
+		 * @return the reserved filename and the lock file
+		 */
+		static std::pair<filesystem::Path, SmartFILE> reserve_temporary_filename(const filesystem::Path& dir, const String& prefix = "", const String& suffix = "");
 	};
 
 }

@@ -933,10 +933,10 @@ inline synfig::Layer::Handle convert(const Sequence &s, double penalty)
 }
 
 // Converts each forward or single Sequence of the image in its corresponding
-// Stroke. 
-// In synfig we will be using outline layer instead of TStroke  
+// Stroke.
+// In synfig we will be using outline layer instead of TStroke
 
-void studio::conversionToStrokes(std::vector<synfig::Layer::Handle> &strokes, VectorizerCoreGlobals &g,const etl::handle<synfig::Layer_Bitmap> &image) 
+void studio::conversionToStrokes(std::vector<synfig::Layer::Handle>& strokes, VectorizerCoreGlobals& g,const synfig::Layer_Bitmap::Handle& image)
 {
   SequenceList &singleSequences           = g.singleSequences;
   JointSequenceGraphList &organizedGraphs = g.organizedGraphs;

@@ -70,6 +70,8 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 /* === G L O B A L S ======================================================= */
 
+synfig::filesystem::Path synfig::OS::fallback_binary_path;
+
 /* === C L A S S E S ======================================================= */
 
 #ifdef WIN32_PIPE_TO_PROCCESSES
@@ -749,15 +751,15 @@ OS::run_sync(const filesystem::Path& binary_path, const RunArgs& binary_args, co
 }
 
 bool
-OS::launch_file_async(const std::string& file)
+OS::launch_file_async(const filesystem::Path& file)
 {
 #ifdef _WIN32
-	return 32<= INT_PTR( ShellExecuteW(NULL, NULL, synfig::filesystem::Path(file).c_str(), NULL, NULL, SW_SHOW) );
+	return 32<= INT_PTR( ShellExecuteW(NULL, NULL, file.c_str(), NULL, NULL, SW_SHOW) );
 	// https://docs.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shellexecutew#return-value
 #elif defined(__APPLE__)
-	return 0 == system(strprintf("open \"%s\"", file.c_str()).c_str());
+	return 0 == system(strprintf("open \"%s\"", file.u8_str()).c_str());
 #else
-	return 0 == system(strprintf("xdg-open \"%s\"", file.c_str()).c_str());
+	return 0 == system(strprintf("xdg-open \"%s\"", file.u8_str()).c_str());
 #endif
 }
 

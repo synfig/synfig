@@ -63,8 +63,7 @@ Widget_Sublayer::set_value_desc(const synfigapp::ValueDesc &x)
 
 	remove_all();
 
-	if(etl::handle<synfig::Layer_PasteCanvas> p = etl::handle<synfig::Layer_PasteCanvas>::cast_dynamic(value_desc.get_layer()))
-	{
+	if (auto p = synfig::Layer_PasteCanvas::Handle::cast_dynamic(value_desc.get_layer())) {
 		synfig::Canvas::Handle canvas = p->get_sub_canvas();
 		if(canvas)
 		{

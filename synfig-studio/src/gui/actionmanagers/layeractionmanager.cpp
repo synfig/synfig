@@ -54,7 +54,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -430,11 +429,13 @@ LayerActionManager::refresh()
 			else
 				action_select_all_child_layers_->set_sensitive(false);
 
-			handle<studio::Instance>::cast_static(get_canvas_interface()->get_instance())->
+			auto instance = etl::handle<studio::Instance>::cast_static(get_canvas_interface()->get_instance());
+
+			instance->
 				add_actions_to_group(action_group_, ui_info, param_list, synfigapp::Action::CATEGORY_LAYER);
 
 			ui_info+="<separator/>";
-			handle<studio::Instance>::cast_static(get_canvas_interface()->get_instance())->
+			instance->
 				add_special_layer_actions_to_group(action_group_, ui_info, layer_list);
 		}
 	}
@@ -716,7 +717,7 @@ bool LayerActionManager::query_user_about_foreign_exported_value_nodes(Canvas::H
 					local_canvas_value_node = canvas->find_value_node(modified_id, true);
 				} catch (...) {
 				}
-				const bool link_to_local_canvas = local_canvas_value_node;
+				const bool link_to_local_canvas = static_cast<bool>(local_canvas_value_node);
 				if (link_to_local_canvas) {
 					valuenode_replacements[foreign_value_node] = std::pair<ValueNode::Handle, std::string>(local_canvas_value_node, "");
 				} else {

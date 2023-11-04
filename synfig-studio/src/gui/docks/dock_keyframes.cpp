@@ -64,6 +64,7 @@ Dock_Keyframes::Dock_Keyframes():
 	Dock_CanvasSpecific("keyframes", _("Keyframes"),"keyframe_icon"),
 	keyframe_action_manager(new KeyframeActionManager())
 {
+	set_name("keyframes_panel");
 	// Make Keyframes toolbar small for space efficiency
 	get_style_context()->add_class("synfigstudio-efficient-workspace");
 

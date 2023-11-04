@@ -24,13 +24,13 @@ jobs:
         include:
         # includes a new variable of npm with a value of 2
         # for the matrix leg matching the os and version
-        - os: macos-11
-          name: macOS 11 Big Sur (Autotools)
+        - os: macos-12
+          name: macOS 12 Monterey (Autotools)
           toolchain: autotools
           allow_failures: false
 
-        - os: macos-11
-          name: macOS 11 Big Sur (CMake+Ninja)
+        - os: macos-12
+          name: macOS 12 Monterey (CMake+Ninja)
           toolchain: cmake-ninja
           allow_failures: true
 
@@ -73,7 +73,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           ./1-setup-linux-native.sh
-          sudo apt-get install ccache ninja-build
+          sudo apt-get install ccache ninja-build gdb systemd-coredump
 
       - name: Setup ccache parameters and show statistics
         run: |
@@ -85,6 +85,7 @@ jobs:
       - name: Build (CMake+Ninja)
         if: matrix.toolchain == 'cmake-ninja'
         run: |
+          ulimit -c unlimited
           mkdir build-cmake && cd build-cmake
           cmake -GNinja -DENABLE_TESTS=ON -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_BUILD_TYPE=Release ..
           ninja
@@ -93,9 +94,14 @@ jobs:
       - name: Build (Autotools+Make)
         if: matrix.toolchain == 'autotools'
         run: |
+          ulimit -c unlimited # enable core dumps
           export PATH="/usr/lib/ccache/:${PATH}"
           echo ${PATH}
           ./2-build-debug.sh
+
+      - name: Collect core dump
+        if: runner.os == 'Linux' && failure()
+        run: sudo coredumpctl debug --debugger-arguments="-batch -ex 'thread apply all bt full'"
 
       - name: ccache statistics
         run: ccache --show-stats

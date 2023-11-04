@@ -489,7 +489,7 @@ private:
 	bool on_drawing_area_event(GdkEvent* event);
 	bool on_hruler_event(GdkEvent* event);
 	bool on_vruler_event(GdkEvent* event);
-	void on_duck_selection_single(const etl::handle<Duck>& duck_guid);
+	void on_duck_selection_single(const Duck::Handle& duck_guid);
 }; // END of class WorkArea
 
 

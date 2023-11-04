@@ -247,7 +247,7 @@ Renderer_Canvas::on_tile_finished(bool success, const Tile::Handle &tile)
 	// don't create handle if ref-count is zero
 	// it means that object was nether had a handles and will removed with handle
 	// or object is already in destruction phase
-	if (shared_object::count())
+	if (shared_object::use_count())
 		Glib::signal_idle().connect_once(
 			sigc::bind(sigc::ptr_fun(&on_post_tile_finished_callback), etl::handle<Renderer_Canvas>(this), tile),
 			visible_frames.count(tile->frame_id) ? Glib::PRIORITY_DEFAULT : Glib::PRIORITY_DEFAULT_IDLE );

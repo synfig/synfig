@@ -619,7 +619,7 @@ display_exists_p (int number)
        socket in /tmp exists or not.. (note: if the socket exists, the
        server may still not, so we need to try to connect in that case..) */
 
-    sprintf (buf, "/tmp/.X11-unix/X%d", number);
+    snprintf (buf, sizeof (buf), "/tmp/.X11-unix/X%d", number);
     if (access (buf, F_OK) != 0)
 	return FALSE;
 
@@ -627,7 +627,7 @@ display_exists_p (int number)
        but it's the best way to see if the server exists (without
        needing to hold the necessary authentication to use it) */
 
-    sprintf (buf, ":%d", number);
+    snprintf (buf, sizeof (buf), ":%d", number);
     conn = _X11TransConnectDisplay (buf, &fullname, &idisplay, &iscreen,
 				    &conn_auth_name, &conn_auth_namelen,
 				    &conn_auth_data, &conn_auth_datalen);
@@ -791,7 +791,7 @@ main (int argc, char **argv)
 	    exit (1);
 	}
 
-	sprintf (name, ":%d", i);
+	snprintf (name, sizeof (name), ":%d", i);
 	server_name = name;
     }
 

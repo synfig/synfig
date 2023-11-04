@@ -246,8 +246,8 @@ static void test_synfigapp_layerduplicate_encapsulated_layer_with_contents()
 	ASSERT_EQUAL("circle", src_canvas->front()->get_name())
 	ASSERT_EQUAL("rectangle", src_canvas->back()->get_name())
 
-	ASSERT_NOT_EQUAL(dup_canvas->front(), src_canvas->front())
-	ASSERT_NOT_EQUAL(dup_canvas->back(), src_canvas->back())
+	ASSERT_FALSE(dup_canvas->front() == src_canvas->front())
+	ASSERT_FALSE(dup_canvas->back() == src_canvas->back())
 }
 
 // Check if duplicated layer_duplicate has its (auto-exported) 'index' parameter renamed
@@ -600,8 +600,8 @@ static void test_synfigapp_layerduplicate_skeleton_with_bone_link()
 	ASSERT_EQUAL("skeleton", canvas->front()->get_name())
 	ASSERT_EQUAL("circle", (*std::next(canvas->begin(),1))->get_name())
 	ASSERT_EQUAL("circle", canvas->back()->get_name())
-	ASSERT_EQUAL(circle, canvas->back())
-	ASSERT_NOT_EQUAL(circle, (*std::next(canvas->begin(),1)))
+	ASSERT(circle == canvas->back())
+	ASSERT_FALSE(circle == *std::next(canvas->begin(), 1))
 
 	// check if bones were duplicated too: they would be automatically with different names
 	ASSERT_EQUAL("my bone 0", (*std::next(canvas->begin(),2))->get_param("bones").get_list_of(synfig::Bone())[0].get_name())
@@ -614,7 +614,7 @@ static void test_synfigapp_layerduplicate_skeleton_with_bone_link()
 	auto cloned_origin = cloned_origin_pair->second;
 	ASSERT_EQUAL("bone_link", cloned_origin->get_name())
 	auto cloned_bone_link = synfig::ValueNode_BoneLink::Handle::cast_static(cloned_origin);
-	ASSERT_NOT_EQUAL(bone_link, cloned_bone_link)
+	ASSERT_FALSE(bone_link == cloned_bone_link)
 
 	ASSERT_EQUAL("constant", bone_link->get_link("bone")->get_name())
 	auto bone_link_const = synfig::ValueNode_Const::Handle::cast_static(bone_link->get_link("bone"));
@@ -714,8 +714,8 @@ static void test_synfigapp_layerduplicate_skeleton_with_animated_bone_link()
 	ASSERT_EQUAL("skeleton", canvas->front()->get_name())
 	ASSERT_EQUAL("circle", (*std::next(canvas->begin(),1))->get_name())
 	ASSERT_EQUAL("circle", canvas->back()->get_name())
-	ASSERT_EQUAL(circle, canvas->back())
-	ASSERT_NOT_EQUAL(circle, (*std::next(canvas->begin(),1)))
+	ASSERT(circle == canvas->back())
+	ASSERT_FALSE(circle == *std::next(canvas->begin(), 1))
 
 	// check if bones were duplicated too: they would be automatically with different names
 	ASSERT_EQUAL("my bone 0", (*std::next(canvas->begin(),2))->get_param("bones").get_list_of(synfig::Bone())[0].get_name())
@@ -731,7 +731,7 @@ static void test_synfigapp_layerduplicate_skeleton_with_animated_bone_link()
 	auto cloned_origin = cloned_origin_pair->second;
 	ASSERT_EQUAL("bone_link", cloned_origin->get_name())
 	auto cloned_bone_link = synfig::ValueNode_BoneLink::Handle::cast_static(cloned_origin);
-	ASSERT_NOT_EQUAL(bone_link, cloned_bone_link)
+	ASSERT_FALSE(bone_link == cloned_bone_link)
 
 	ASSERT_EQUAL("animated", bone_link->get_link("bone")->get_name())
 	auto bone_link_animated = synfig::ValueNode_Animated::Handle::cast_static(bone_link->get_link("bone"));

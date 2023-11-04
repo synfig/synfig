@@ -52,7 +52,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -160,8 +159,8 @@ Renderer_Ducks::render_vfunc(
 	const bool solid_lines(get_work_area()->solid_lines);
 	bool alternative = get_work_area()->get_alternative_mode();
 
-	const std::list<etl::handle<Duckmatic::Bezier> >& bezier_list(get_work_area()->bezier_list());
-	const std::list<handle<Duckmatic::Stroke> >& stroke_list(get_work_area()->stroke_list());
+	const std::list<Duckmatic::Bezier::Handle>& bezier_list(get_work_area()->bezier_list());
+	const std::list<etl::handle<Duckmatic::Stroke> >& stroke_list(get_work_area()->stroke_list());
 	Glib::RefPtr<Pango::Layout> layout(Pango::Layout::create(get_work_area()->get_pango_context()));
 
 	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
@@ -172,19 +171,18 @@ Renderer_Ducks::render_vfunc(
 
 	// Render the strokes
 	Gamma gamma = App::get_selected_canvas_gamma().get_inverted();
-	for(std::list<handle<Duckmatic::Stroke> >::const_iterator iter=stroke_list.begin();iter!=stroke_list.end();++iter)
-	{
+	for (const auto& stroke : stroke_list) {
 		cr->save();
 
-		std::list<synfig::Point>::iterator iter2;
-		for(iter2=(*iter)->stroke_data->begin();iter2!=(*iter)->stroke_data->end();++iter2)
-			if (!iter2->is_nan_or_inf())
+		for (const auto& point : *stroke->stroke_data) {
+			if (!point.is_nan_or_inf())
 				cr->line_to(
-					((*iter2)[0]-window_start[0])/pw,
-					((*iter2)[1]-window_start[1])/ph );
+					(point[0]-window_start[0])/pw,
+					(point[1]-window_start[1])/ph );
+		}
 
 		cr->set_line_width(1.0);
-		synfig::Color c = gamma.apply((*iter)->color);
+		synfig::Color c = gamma.apply(stroke->color);
 		cr->set_source_rgb(c.get_r(), c.get_g(), c.get_b());
 		cr->stroke();
 
@@ -194,8 +192,7 @@ Renderer_Ducks::render_vfunc(
 
 
 	// Render the beziers
-	for(std::list<handle<Duckmatic::Bezier> >::const_iterator iter=bezier_list.begin();iter!=bezier_list.end();++iter)
-	{
+	for (auto iter = bezier_list.begin(); iter != bezier_list.end(); ++iter) {
 		Point p1((*iter)->p1->get_trans_point()-window_start);
 		Point p2((*iter)->p2->get_trans_point()-window_start);
 		Point c1((*iter)->c1->get_trans_point()-window_start);
@@ -252,10 +249,10 @@ Renderer_Ducks::render_vfunc(
 	std::list<ScreenDuck> screen_duck_list;
 	const float radius((std::fabs(pw)+std::fabs(ph))*4);
 
-	etl::handle<Duck> hover_duck(get_work_area()->find_duck(get_work_area()->get_cursor_pos(),radius, get_work_area()->get_type_mask()));
+	Duck::Handle hover_duck(get_work_area()->find_duck(get_work_area()->get_cursor_pos(), radius, get_work_area()->get_type_mask()));
 
 	// Render the ducks
-	for(std::list<handle<Duck> >::const_iterator iter=duck_list.begin();iter!=duck_list.end();++iter)
+	for(std::list<Duck::Handle>::const_iterator iter = duck_list.begin(); iter!=duck_list.end(); ++iter)
 	{
 
 		// If this type of duck has been masked, then skip it

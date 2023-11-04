@@ -299,12 +299,12 @@ Palette::grayscale(int steps, ColorReal gamma)
 }
 
 void
-Palette::save_to_file(const synfig::String& filename) const
+Palette::save_to_file(const synfig::filesystem::Path& filename) const
 {
-	FileSystem::WriteStream::Handle file = FileSystemNative::instance()->get_write_stream(filename);
+	FileSystem::WriteStream::Handle file = FileSystemNative::instance()->get_write_stream(filename.u8string());
 
 	if(!file)
-		throw strprintf(_("Unable to open %s for write"),filename.c_str());
+		throw strprintf(_("Unable to open %s for write"),filename.u8_str());
 
 	*file << PALETTE_SYNFIG_FILE_COOKIE << "\n" << name_ << "\n";
 	for (const_iterator iter=begin();iter!=end();++iter) {
@@ -317,16 +317,16 @@ Palette::save_to_file(const synfig::String& filename) const
 }
 
 Palette
-Palette::load_from_file(const synfig::String& filename)
+Palette::load_from_file(const synfig::filesystem::Path& filename)
 {
-	FileSystem::ReadStream::Handle file = FileSystemNative::instance()->get_read_stream(filename);
+	FileSystem::ReadStream::Handle file = FileSystemNative::instance()->get_read_stream(filename.u8string());
 
 	if(!file)
-		throw strprintf(_("Unable to open %s for read"),filename.c_str());
+		throw strprintf(_("Unable to open %s for read"), filename.u8_str());
 
 	Palette ret;
 	std::string line("");
-	const std::string ext(filesystem::Path::filename_extension(filename));
+	const std::string ext(filename.extension().u8string());
 
 
 	if (ext==PALETTE_SYNFIG_EXT)
@@ -334,7 +334,7 @@ Palette::load_from_file(const synfig::String& filename)
 		getline(*file, line);
 
 		if(line!=PALETTE_SYNFIG_FILE_COOKIE)
-			throw strprintf(_("%s does not appear to be a valid %s palette file"),filename.c_str(),"Synfig");
+			throw strprintf(_("%s does not appear to be a valid %s palette file"), filename.u8_str(), "Synfig");
 
 		getline(*file, ret.name_);
 
@@ -379,7 +379,7 @@ Palette::load_from_file(const synfig::String& filename)
 		} while (file->good() && line.empty());
 
 		if (line != PALETTE_GIMP_FILE_COOKIE)
-			throw strprintf(_("%s does not appear to be a valid %s palette file"),filename.c_str(),"GIMP");
+			throw strprintf(_("%s does not appear to be a valid %s palette file"), filename.u8_str(), "GIMP");
 
 		while (file->good())
 		{
@@ -423,11 +423,11 @@ Palette::load_from_file(const synfig::String& filename)
 			getline(*file, line);
 			line_num++;
 			if (!file->eof() && file->fail())
-				warning(_("could not properly load palette: error parsing line #%i (%s)"), line_num, filename.c_str());
+				warning(_("could not properly load palette: error parsing line #%i (%s)"), line_num, filename.u8_str());
 		}
 	}
 	else
-		throw strprintf(_("%s does not appear to be a supported palette file"),filename.c_str());
+		throw strprintf(_("%s does not appear to be a supported palette file"), filename.u8_str());
 
 	return ret;
 }

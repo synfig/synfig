@@ -80,7 +80,6 @@
 
 #endif
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -263,11 +262,11 @@ Instance::get_visible_canvases()const
 	return count;
 }
 
-handle<Instance>
+etl::handle<Instance>
 Instance::create(synfig::Canvas::Handle canvas, synfig::FileSystem::Handle container)
 {
 	// Construct a new instance
-	handle<Instance> instance(new Instance(canvas, container));
+	etl::handle<Instance> instance(new Instance(canvas, container));
 
 	// Set the user preference regarding redo-history behavior
 	{
@@ -338,7 +337,7 @@ Instance::set_redo_status(bool x)
 void
 studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vector<std::string> extra_args)
 {
-	handle<synfigapp::UIInterface> uim = this->find_canvas_view(this->get_canvas())->get_ui_interface();
+	etl::handle<synfigapp::UIInterface> uim = this->find_canvas_view(this->get_canvas())->get_ui_interface();
 
 	std::unordered_map<std::string,std::string> view_state;
 
@@ -407,22 +406,24 @@ studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vec
 	cur_time = canvas->get_time();
 
 	// Generate temporary file name
-	String filename_original = get_canvas()->get_file_name();
-	String filename_processed;
-	String filename_prefix;
-	if ( !filesystem::Path::is_absolute_path(filename_original) )
-		filename_prefix = temporary_filesystem->get_temporary_directory() + ETL_DIRECTORY_SEPARATOR;
-	struct stat buf;
-	do {
-		synfig::GUID guid;
-		filename_processed = filename_prefix + filename_original + "." + guid.get_string().substr(0,8) + ".sif";
-	} while (stat(filename_processed.c_str(), &buf) != -1);
+	filesystem::Path canvas_file = filesystem::Path(get_canvas()->get_file_name());
+	filesystem::Path filename_dir = canvas_file.parent_path();
+	if (!filename_dir.is_absolute())
+		filename_dir = temporary_filesystem->get_temporary_directory();
+
+	auto temp_lock = FileSystemTemporary::reserve_temporary_filename(filename_dir, canvas_file.filename().u8string(), ".sif");
+	if (!temp_lock.second) {
+		App::dialog_message_1b("ERROR", _("The plugin operation has failed."), _("Couldn't create a temporary file"), _("Close"));
+		return;
+	}
+
+	filesystem::Path filename_processed = temp_lock.first;
+
 
 	if ( modify_canvas )
 		close(false);
 
-	if(canvas->count() != 1 && modify_canvas)
-	{
+	if (canvas->use_count() != 1 && modify_canvas) {
 		one_moment.hide();
 		App::dialog_message_1b(
 				"ERROR",
@@ -437,14 +438,14 @@ studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vec
 	} else {
 
 		// Save file copy
-		String filename_ext = filesystem::Path::filename_extension(filename_original);
+		String filename_ext = canvas_file.extension().u8string();
 		if ( filename_ext.empty() || ( filename_ext != ".sif" && filename_ext != ".sifz") )
 			filename_ext = ".sifz";
 		FileSystem::ReadStream::Handle stream_in = temporary_filesystem->get_read_stream("#project"+filename_ext);
 		if (!stream_in)
 		{
 			synfig::error(strprintf("run_plugin(): Unable to open file for reading - %s", temporary_filesystem->get_real_uri("#project"+filename_ext).c_str()));
-			FileSystemTemporary::Identifier identifier(temporary_filesystem, filename_processed);
+			FileSystemTemporary::Identifier identifier(temporary_filesystem, filename_processed.u8string());
 			if ( !save_canvas(identifier, get_canvas(), true) )
 			{
 				App::dialog_message_1b(
@@ -461,7 +462,7 @@ studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vec
 			if (filename_ext == ".sifz")
 				stream_in = new ZReadStream(stream_in, synfig::zstreambuf::gzip);
 
-			FileSystem::WriteStream::Handle outfile = FileSystemNative::instance()->get_write_stream(filename_processed);
+			FileSystem::WriteStream::Handle outfile = FileSystemNative::instance()->get_write_stream(filename_processed.u8string());
 			*outfile << stream_in->rdbuf();
 			outfile.reset();
 
@@ -469,7 +470,7 @@ studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vec
 		}
 
 		one_moment.hide();
-		extra_args.insert(extra_args.begin(), filename_processed);
+		extra_args.insert(extra_args.begin(), filename_processed.u8string());
 
 		bool result = App::plugin_manager.run(plugin_id, extra_args, view_state);
 
@@ -483,13 +484,13 @@ studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vec
 			{
 				synfig::error("run_plugin(): Unable to open file for write");
 			} else {
-				FileSystem::ReadStream::Handle infile = FileSystemNative::instance()->get_read_stream(filename_processed);
+				FileSystem::ReadStream::Handle infile = FileSystemNative::instance()->get_read_stream(filename_processed.u8string());
 				*stream << infile->rdbuf();
 				infile.reset();
 				stream.reset();
 			}
 		}
-		FileSystemNative::instance()->file_remove(filename_processed);
+		FileSystemNative::instance()->file_remove(filename_processed.u8string());
 	}
 
 	canvas=0;
@@ -600,7 +601,7 @@ studio::Instance::has_real_filename()
 bool
 studio::Instance::dialog_save_as()
 {
-	std::string filename = get_file_name();
+	filesystem::Path filename = get_file_name();
 	Canvas::Handle canvas(get_canvas());
 
 	{
@@ -637,7 +638,7 @@ studio::Instance::dialog_save_as()
 	}
 
 	if (has_real_filename())
-		filename = filesystem::Path::absolute_path(filename);
+		filename = filesystem::absolute(filename);
 
 	// show the canvas' name if it has one, else its ID
 	while (App::dialog_save_file((_("Please choose a file name") +
@@ -648,19 +649,19 @@ studio::Instance::dialog_save_as()
 	{
 		// If the filename still has wildcards, then we should
 		// continue looking for the file we want
-		std::string base_filename = filesystem::Path::basename(filename);
-		if (find(base_filename.begin(),base_filename.end(),'*')!=base_filename.end())
+		std::string base_filename = filename.filename().u8string();
+		if (base_filename.find('*') != std::string::npos)
 			continue;
 
 		// if file extension is not recognized, then forced to .sifz
-		if (filesystem::Path::filename_extension(filename) == "")
-			filename+=".sifz";
+		if (filename.extension().empty())
+			filename.concat(".sifz");
 
 		canvas->set_name(base_filename);
 		// forced to .sifz, the below code is not need anymore
 		try
 		{
-			String ext(filesystem::Path::filename_extension(filename));
+			String ext(filename.extension().u8string());
 			// todo: ".sfg" literal and others
 			if (ext != ".sif" && ext != ".sifz" && ext != ".sfg" && !App::dialog_message_2b(
 				_("Unknown extension"),
@@ -677,55 +678,34 @@ studio::Instance::dialog_save_as()
 			continue;
 		}
 
-		{
-			struct stat	s;
-			int stat_return = stat(filename.c_str(), &s);
-
-			// if stat() fails with something other than 'file doesn't exist', there's been a real
-			// error of some kind.  let's give up now and ask for a new path.
-			if (stat_return == -1 && errno != ENOENT)
-			{
-				perror(filename.c_str());
-				std::string msg(strprintf(_("Unable to check whether '%s' exists."), filename.c_str()));
-				App::dialog_message_1b(
-						"ERROR",
-						msg.c_str(),
-						"details",
-						_("Close"));
-
+		bool file_exists = FileSystemNative::instance()->is_file(filename.u8string());
+		if (!file_exists) {
+			if (FileSystemNative::instance()->is_exists(filename.u8string())) {
+				std::string msg(strprintf(_("There is a folder with the same name '%s'.\nPlease choose another name"), filename.u8_str()));
+				App::dialog_message_1b("ERROR", msg.c_str(), "details", _("Close"));
 				continue;
 			}
-
+		} else {
 			// If the file exists and the user doesn't want to overwrite it, keep prompting for a filename
 			std::string message = strprintf(_("A file named \"%s\" already exists. "
 							"Do you want to replace it?"),
-							filesystem::Path::basename(filename).c_str());
+							filename.filename().u8_str());
 
 			std::string details = strprintf(_("The file already exists in \"%s\". "
 							"Replacing it will overwrite its contents."),
-							filesystem::Path::dirname(filename).c_str());
+							filename.parent_path().u8_str());
 
-			if ((stat_return == 0) && !App::dialog_message_2b(
-				message,
-				details,
-				Gtk::MESSAGE_QUESTION,
-				_("Use Another Name…"),
-				_("Replace"))
-			)
+			if (!App::dialog_message_2b(message, details, Gtk::MESSAGE_QUESTION, _("Use Another Name…"), _("Replace")))
 				continue;
 		}
 
-		if(save_as(filename))
+		if (save_as(filename.u8string()))
 		{
-			synfig::set_file_version(ReleaseVersion(RELEASE_VERSION_END-1));
+			synfig::set_file_version(synfig::RELEASE_VERSION_CURRENT);
 			return true;
 		}
-		std::string msg(strprintf(_("Unable to save to '%s'"), filename.c_str()));
-		App::dialog_message_1b(
-				"ERROR",
-				msg.c_str(),
-				"details",
-				_("Close"));
+		std::string msg(strprintf(_("Unable to save to '%s'"), filename.u8_str()));
+		App::dialog_message_1b("ERROR", msg.c_str(), "details", _("Close"));
 	}
 
 	return false;
@@ -735,11 +715,11 @@ studio::Instance::dialog_save_as()
 bool
 studio::Instance::dialog_export()
 {
-	std::string filename = get_file_name();
+	filesystem::Path filename = get_file_name();
 	Canvas::Handle canvas(get_canvas());
 
 	if (has_real_filename())
-		filename = filesystem::Path::absolute_path(filename);
+		filename = filesystem::absolute(filename);
 
 	// show the canvas' name if it has one, else its ID
 	std::string plugin_id = App::dialog_export_file(
@@ -751,7 +731,7 @@ studio::Instance::dialog_export()
 	);
 	if ( !plugin_id.empty() )
 	{
-		run_plugin(plugin_id, false, {filename});
+		run_plugin(plugin_id, false, {filename.u8string()});
 		return true;
 	}
 
@@ -770,7 +750,7 @@ Instance::close(bool remove_temporary_files)
 {
 	// This will increase the reference count so we don't get DELETED
 	// until we are ready
-	handle<Instance> me(this);
+	etl::handle<Instance> me(this);
 
 	/*
 	We need to hide some panels when instance is closed.
@@ -878,14 +858,13 @@ Instance::revert()
 {
 	OneMoment one_moment;
 
-	String filename(get_file_name());
+	filesystem::Path filename(get_file_name());
 
 	Canvas::Handle canvas(get_canvas());
 
 	close();
 
-	if(canvas->count()!=1)
-	{
+	if (canvas->use_count() != 1) {
 		one_moment.hide();
 		App::dialog_message_1b(
 				"ERROR",
@@ -928,7 +907,7 @@ bool
 Instance::safe_close()
 {
 	CanvasView::Handle canvas_view = find_canvas_view(get_canvas());
-	handle<synfigapp::UIInterface> uim=canvas_view->get_ui_interface();
+	etl::handle<synfigapp::UIInterface> uim = canvas_view->get_ui_interface();
 
 	// if the animation is currently playing, closing the window will cause a crash,
 	// so don't allow it
@@ -1768,7 +1747,7 @@ Instance::gather_uri(std::map<synfig::String, synfig::String> &x, const synfigap
 	std::set<String> uri_set;
 	gather_uri(uri_set, layers);
 	std::vector<String> uri_list;
-	std::vector<String> filename_list;
+	std::vector<filesystem::Path> filename_list;
 	for(std::set<String>::const_iterator i = uri_set.begin(); i != uri_set.end(); ++i)
 	{
 		String filename = Glib::filename_from_uri(*i);
