@@ -97,8 +97,8 @@ protected:
 
 public:
 #ifdef _DEBUG
-	virtual void ref() const override;
-	virtual bool unref() const override;
+	void ref() const noexcept override;
+	void unref() const override;
 #endif
 }; // END of class ValueNode_BLine
 

@@ -169,7 +169,7 @@ static Glib::RefPtr<Gtk::Builder> load_interface(const char *filename) {
 	return refBuilder;
 }
 
-void VectorizerSettings::initialize_parameters(etl::handle<synfig::Layer_Bitmap>& my_layer_bitmap,
+void VectorizerSettings::initialize_parameters(synfig::Layer_Bitmap::Handle& my_layer_bitmap,
 	etl::handle<studio::Instance>& selected_instance,std::unordered_map <std::string,int>& configmap, etl::handle<synfig::Layer>& reference_layer)
 {
 	layer_bitmap_ = my_layer_bitmap;
@@ -185,7 +185,7 @@ void VectorizerSettings::initialize_parameters(etl::handle<synfig::Layer_Bitmap>
 	adjustment_maxthickness->set_value(configmap["maxthickness"]);
 }
 
-VectorizerSettings * VectorizerSettings::create(Gtk::Window& parent, etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
+VectorizerSettings * VectorizerSettings::create(Gtk::Window& parent, synfig::Layer_Bitmap::Handle my_layer_bitmap,
 	etl::handle<studio::Instance> selected_instance,std::unordered_map <std::string,int>& configmap, etl::handle<synfig::Layer> reference_layer)
 {
 	auto refBuilder = load_interface("vectorizer_settings.glade");
@@ -260,13 +260,10 @@ VectorizerSettings::on_convert_pressed()
 	// in case the "convert to vector" was clicked for layer inside a switch
 	// and pass canvas accordingly
 	
-	if(etl::handle<synfig::Layer_PasteCanvas> paste = Layer_PasteCanvas::Handle::cast_dynamic(reference_layer_))
-	{
-			canvas = layer_bitmap_->get_canvas()->parent();
-			action->set_param("reference_layer",reference_layer_);
-	}
-	else
-	{
+	if (auto paste = Layer_PasteCanvas::Handle::cast_dynamic(reference_layer_)) {
+		canvas = layer_bitmap_->get_canvas()->parent();
+		action->set_param("reference_layer",reference_layer_);
+	} else {
 		canvas = layer_bitmap_->get_canvas();
 	}
 

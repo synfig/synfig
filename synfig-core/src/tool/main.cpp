@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
 	} argv_guard(&argv);
  #endif
 
-	SynfigToolGeneralOptions::instance()->set_fallback_binary_path(argv[0]);
+	SynfigToolGeneralOptions::instance()->set_fallback_binary_path(argv[0]); // on MS Windows, already converted to UTF-8 via ArgVGuarg
 
 	const std::string binary_path =
 		SynfigToolGeneralOptions::instance()->get_binary_path();

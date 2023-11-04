@@ -1358,10 +1358,9 @@ Dialog_Setup::refresh()
 			}
 		}
 	}
-	for (std::set<synfig::String>::iterator setiter = App::brushes_path.begin();
-			setiter != App::brushes_path.end(); ++setiter) {
+	for (const auto& item : App::brushes_path) {
 		ui_iter = liststore->append();
-		(*ui_iter)[prefs_brushpath.path]=*setiter;
+		(*ui_iter)[prefs_brushpath.path] = item.u8string();
 	}
 	// Select the first brush path entry
 	//listviewtext_brushes_path->get_selection()->select(
@@ -1467,7 +1466,7 @@ Dialog_Setup::set_time_format(synfig::Time::Format x)
 void
 Dialog_Setup::on_brush_path_add_clicked()
 {
-	synfig::String foldername;
+	synfig::filesystem::Path foldername;
 	//! TODO dialog_add_folder
 	if(App::dialog_open_folder(_("Select a new path for brush"), foldername, MISC_DIR_PREFERENCE, *this))
 	{
@@ -1475,7 +1474,7 @@ Dialog_Setup::on_brush_path_add_clicked()
 		Glib::RefPtr<Gtk::ListStore> liststore = Glib::RefPtr<Gtk::ListStore>::cast_dynamic(
 				listviewtext_brushes_path->get_model());
 		Gtk::TreeIter it(liststore->append());
-		(*it)[prefs_brushpath.path]=foldername;
+		(*it)[prefs_brushpath.path] = foldername.u8string();
 		// high light it in the brush path list
 		listviewtext_brushes_path->scroll_to_row(listviewtext_brushes_path->get_model()->get_path(*it));
 		listviewtext_brushes_path->get_selection()->select(listviewtext_brushes_path->get_model()->get_path(*it));
@@ -1497,9 +1496,9 @@ Dialog_Setup::on_brush_path_remove_clicked()
 void
 Dialog_Setup::on_plugin_path_change_clicked()
 {
-	String foldername = ResourceHelper::get_plugin_path();
-	synfig::OS::launch_file_async(foldername);
+	synfig::OS::launch_file_async(ResourceHelper::get_plugin_path());
 }
+
 void
 Dialog_Setup::on_value_change(int valueflag)
 {

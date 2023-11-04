@@ -46,7 +46,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -108,6 +107,8 @@ LayerGroupTree::LayerGroupTree()
 
 	// This makes things easier to read.
 	set_rules_hint();
+
+	get_style_context()->add_class("layersets");
 
 	// Make us more sensitive to several events
 	add_events(Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::BUTTON1_MOTION_MASK | Gdk::BUTTON2_MOTION_MASK|Gdk::POINTER_MOTION_MASK);

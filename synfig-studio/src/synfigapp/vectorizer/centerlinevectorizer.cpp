@@ -75,9 +75,9 @@ inline void deleteSkeletonList(SkeletonList *skeleton) {
 
 // takes two arguments ( image layer handle, config )
 
-std::vector<synfig::Layer::Handle> 
-VectorizerCore::centerlineVectorize(etl::handle<synfig::Layer_Bitmap> &image,const etl::handle<synfigapp::UIInterface> &ui_interface, 
-const CenterlineConfiguration &configuration,const Gamma &gamma)
+std::vector<synfig::Layer::Handle>
+VectorizerCore::centerlineVectorize(synfig::Layer_Bitmap::Handle& image, const etl::handle<synfigapp::UIInterface>& ui_interface,
+const CenterlineConfiguration& configuration, const Gamma& gamma)
  {
   synfig::debug::Log::info("","Inside CenterlineVectorize");
   VectorizerCoreGlobals globals;
@@ -126,7 +126,7 @@ const CenterlineConfiguration &configuration,const Gamma &gamma)
 }
 
 std::vector<synfig::Layer::Handle> 
-VectorizerCore::vectorize(const etl::handle<synfig::Layer_Bitmap> &img,const etl::handle<synfigapp::UIInterface> &ui_interface, const VectorizerConfiguration &c, const Gamma &gamma) 
+VectorizerCore::vectorize(const synfig::Layer_Bitmap::Handle& img, const etl::handle<synfigapp::UIInterface>& ui_interface, const VectorizerConfiguration& c, const Gamma& gamma)
 {
   std::vector<synfig::Layer::Handle> result;
 
@@ -136,7 +136,7 @@ VectorizerCore::vectorize(const etl::handle<synfig::Layer_Bitmap> &img,const etl
   }
   else 
   {
-    Handle img2(img);
+	synfig::Layer_Bitmap::Handle img2(img);
     result = centerlineVectorize(img2, ui_interface,static_cast<const CenterlineConfiguration &>(c), gamma);
     ui_interface->amount_complete(10,10);
 

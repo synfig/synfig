@@ -226,7 +226,7 @@ Action::ValueDescBoneSetParent::prepare()
 
 	// checks if user mixed skeleton bone and skeleton deformation bone and prevents it
 	const auto skeleton_deformation_new_parent_bone_pair = get_bone_pair_composite(value_desc);
-	const bool parent_has_sibbling_bone = skeleton_deformation_new_parent_bone_pair;
+	const bool parent_has_sibbling_bone = static_cast<bool>(skeleton_deformation_new_parent_bone_pair);
 
 	std::pair<ValueNode_Bone::Handle,ValueNode_Bone::Handle> child_bone_pair;
 	const bool child_has_sibbling_bone = get_sibbling_bone_pair(active_bone_, time, child_bone_pair);

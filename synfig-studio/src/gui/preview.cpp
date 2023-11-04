@@ -1029,7 +1029,7 @@ void studio::Widget_Preview::stoprender()
 		// don't crash if the render has already been stopped
 		if (!preview->renderer)
 			return;
-		preview->renderer.detach();
+		preview->renderer.reset();
 		App::dock_info_->set_render_progress(0.0);
 	}
 }

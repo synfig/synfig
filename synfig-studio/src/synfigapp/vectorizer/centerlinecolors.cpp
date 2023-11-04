@@ -137,7 +137,7 @@ static synfig::Point3 firstInkChangePosition(
 // Eventualm. to do outside.
 
 static void sampleColor(
-	const etl::handle<synfig::Layer_Bitmap> &ras,
+	const synfig::Layer_Bitmap::Handle& ras,
 	int threshold,
 	Sequence &seq,
 	Sequence &seqOpposite,
@@ -395,7 +395,7 @@ _getOut:
 
 /* === E N T R Y P O I N T ================================================= */
 
-void studio::calculateSequenceColors(const etl::handle<synfig::Layer_Bitmap> &ras, VectorizerCoreGlobals &g, const Gamma &gamma)
+void studio::calculateSequenceColors(const synfig::Layer_Bitmap::Handle& ras, VectorizerCoreGlobals& g, const Gamma& gamma)
 {
   int threshold                           = g.currConfig->m_threshold;
   SequenceList &singleSequences           = g.singleSequences;

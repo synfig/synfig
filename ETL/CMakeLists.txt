@@ -4,11 +4,5 @@ project(ETL)
 
 set(CMAKE_CXX_STANDARD 11)
 
-option(ENABLE_TESTS "Enable tests" OFF)
-
 add_subdirectory(ETL)
 
-if (${ENABLE_TESTS})
-    enable_testing()
-    add_subdirectory(test)
-endif()

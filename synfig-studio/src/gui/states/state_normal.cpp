@@ -359,7 +359,7 @@ DuckDrag_Combo::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& offs
 	// Calculate center
 	Point vmin(100000000,100000000);
 	Point vmax(-100000000,-100000000);
-	//std::set<etl::handle<Duck> >::iterator iter;
+	//std::set<Duck::Handle>::iterator iter;
 	positions.clear();
 	int i;
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
