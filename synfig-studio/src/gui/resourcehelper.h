@@ -27,6 +27,8 @@
 #ifndef SYNFIG_STUDIO_RESOURCEHELPER_H
 #define SYNFIG_STUDIO_RESOURCEHELPER_H
 
+#include <gtkmm/builder.h>
+
 #include <synfig/string.h>
 
 namespace studio {
@@ -56,6 +58,8 @@ public:
 
 	static synfig::String get_css_path();
 	static synfig::String get_css_path(const synfig::String& css_filename);
+
+	static Glib::RefPtr<Gtk::Builder> load_interface(const synfig::String& ui_filename);
 };
 
 };

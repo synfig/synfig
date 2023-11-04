@@ -27,10 +27,6 @@
 
 #include <gui/dialogs/vectorizersettings.h>
 
-#include <glibmm/fileutils.h>
-#include <glibmm/markup.h>
-
-#include <gui/exception_guard.h>
 #include <gui/localization.h>
 #include <gui/resourcehelper.h>
 
@@ -145,30 +141,6 @@ VectorizerSettings::VectorizerSettings(BaseObjectType* cobject, const Glib::RefP
 	///on_comboboxtext_mode_changed();
 }
 
-static Glib::RefPtr<Gtk::Builder> load_interface(const char *filename) {
-	auto refBuilder = Gtk::Builder::create();
-	try
-	{
-		refBuilder->add_from_file(ResourceHelper::get_ui_path(filename));
-	}
-	catch(const Glib::FileError& ex)
-	{
-		synfig::error("FileError: " + ex.what());
-		return Glib::RefPtr<Gtk::Builder>();
-	}
-	catch(const Glib::MarkupError& ex)
-	{
-		synfig::error("MarkupError: " + ex.what());
-		return Glib::RefPtr<Gtk::Builder>();
-	}
-	catch(const Gtk::BuilderError& ex)
-	{
-		synfig::error("BuilderError: " + ex.what());
-		return Glib::RefPtr<Gtk::Builder>();
-	}
-	return refBuilder;
-}
-
 void VectorizerSettings::initialize_parameters(synfig::Layer_Bitmap::Handle& my_layer_bitmap,
 	etl::handle<studio::Instance>& selected_instance,std::unordered_map <std::string,int>& configmap, etl::handle<synfig::Layer>& reference_layer)
 {
@@ -188,7 +160,7 @@ void VectorizerSettings::initialize_parameters(synfig::Layer_Bitmap::Handle& my_
 VectorizerSettings * VectorizerSettings::create(Gtk::Window& parent, synfig::Layer_Bitmap::Handle my_layer_bitmap,
 	etl::handle<studio::Instance> selected_instance,std::unordered_map <std::string,int>& configmap, etl::handle<synfig::Layer> reference_layer)
 {
-	auto refBuilder = load_interface("vectorizer_settings.glade");
+	auto refBuilder = ResourceHelper::load_interface("vectorizer_settings.glade");
 	if (!refBuilder)
 		return nullptr;
 	VectorizerSettings * dialog = nullptr;
