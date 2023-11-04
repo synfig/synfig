@@ -1358,10 +1358,9 @@ Dialog_Setup::refresh()
 			}
 		}
 	}
-	for (std::set<synfig::String>::iterator setiter = App::brushes_path.begin();
-			setiter != App::brushes_path.end(); ++setiter) {
+	for (const auto& item : App::brushes_path) {
 		ui_iter = liststore->append();
-		(*ui_iter)[prefs_brushpath.path]=*setiter;
+		(*ui_iter)[prefs_brushpath.path] = item.u8string();
 	}
 	// Select the first brush path entry
 	//listviewtext_brushes_path->get_selection()->select(
