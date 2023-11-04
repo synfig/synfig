@@ -1995,10 +1995,8 @@ App::save_settings()
 				break;
 			}
 
-			std::list<std::string>::reverse_iterator iter;
-
-			for (const auto& recent_file : recent_files)
-				file << recent_file.u8string() << std::endl;
+			for (auto r_iter = recent_files.rbegin(); r_iter != recent_files.rend(); ++r_iter)
+				file << r_iter->u8string() << std::endl;
 		} while (false);
 		filesystem::Path filename = get_config_file("settings-1.4");
 		synfigapp::Main::settings().save_to_file(filename);
