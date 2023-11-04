@@ -44,7 +44,6 @@
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
-typedef etl::handle<synfig::Layer_Bitmap> Handle;
 
 
 /* === C L A S S E S & S T R U C T S ======================================= */
@@ -81,10 +80,10 @@ public:
 
   /*!Calls the appropriate technique to convert \b image to vectors depending on c.*/
  
-  std::vector<synfig::Layer::Handle> vectorize(const etl::handle<synfig::Layer_Bitmap> &image, const etl::handle<synfigapp::UIInterface> &ui_interface,const VectorizerConfiguration &c,const synfig::Gamma &gamma);
+  std::vector<synfig::Layer::Handle> vectorize(const synfig::Layer_Bitmap::Handle& image, const etl::handle<synfigapp::UIInterface>& ui_interface,const VectorizerConfiguration &c,const synfig::Gamma& gamma);
 
 private:
-  std::vector<synfig::Layer::Handle> centerlineVectorize(Handle &image,const etl::handle<synfigapp::UIInterface> &ui_interface, const CenterlineConfiguration &configuration, const synfig::Gamma &gamma);
+  std::vector<synfig::Layer::Handle> centerlineVectorize(synfig::Layer_Bitmap::Handle& image,const etl::handle<synfigapp::UIInterface>& ui_interface, const CenterlineConfiguration &configuration, const synfig::Gamma& gamma);
 
 };
 

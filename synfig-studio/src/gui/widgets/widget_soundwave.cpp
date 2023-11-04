@@ -87,7 +87,7 @@ Widget_SoundWave::~Widget_SoundWave()
 	clear();
 }
 
-bool Widget_SoundWave::load(const std::string& filename)
+bool Widget_SoundWave::load(const synfig::filesystem::Path& filename)
 {
 	clear();
 
@@ -272,10 +272,10 @@ void Widget_SoundWave::setup_mouse_handler()
 	mouse_handler.signal_panning_requested().connect(sigc::mem_fun(*this, &Widget_SoundWave::pan));
 }
 
-bool Widget_SoundWave::do_load(const std::string& filename)
+bool Widget_SoundWave::do_load(const synfig::filesystem::Path& filename)
 {
 #ifndef WITHOUT_MLT	
-	std::string real_filename = Glib::filename_from_utf8(filename);
+	std::string real_filename = Glib::filename_from_utf8(filename.u8string());
 	Mlt::Profile profile;
 	Mlt::Producer *track = new Mlt::Producer(profile, (std::string("avformat:") + real_filename).c_str());
 	if (!track->get_producer() || track->get_length() <= 0) {

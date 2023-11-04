@@ -49,7 +49,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -164,7 +163,7 @@ Dialog_Gradient::on_values_adjusted()
 }
 
 static void
-dialog_gradient_value_desc_edit(synfig::Gradient /*g*/,synfigapp::ValueDesc /*x*/,handle<synfigapp::CanvasInterface> /*canvas_interface*/)
+dialog_gradient_value_desc_edit(synfig::Gradient /*g*/, synfigapp::ValueDesc /*x*/, etl::handle<synfigapp::CanvasInterface> /*canvas_interface*/)
 {
 //	canvas_interface->connect_value(x,ValueBase(g));
 }

@@ -88,7 +88,7 @@ public:
 	/**
 	 * In the improbable case Synfig is unable to retrieve the current process filepath,
 	 * use this instead.
-	 * @param path the fallback to the binary path
+	 * @param path the fallback to the binary path (UTF-8 encoding)
 	 *
 	 * @see synfig::OS::get_binary_path()
 	 */

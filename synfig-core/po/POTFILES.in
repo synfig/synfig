@@ -207,6 +207,7 @@ src/synfig/filesystemgroup.cpp
 src/synfig/filesystemgroup.h
 src/synfig/filesystemnative.cpp
 src/synfig/filesystemnative.h
+src/synfig/filesystemtemporary.cpp
 src/synfig/general.h
 src/synfig/gradient.cpp
 src/synfig/gradient.h

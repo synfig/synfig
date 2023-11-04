@@ -38,7 +38,6 @@
 #include "targetparam.h"
 
 using namespace synfig;
-using namespace etl;
 
 synfig::Target::Book* synfig::Target::book_;
 synfig::Target::ExtBook* synfig::Target::ext_book_;
@@ -110,7 +109,7 @@ Target::create(const String& name, const filesystem::Path& filename,
 			   const synfig::TargetParam& params)
 {
 	if(!book().count(name))
-		return handle<Target>();
+		return Target::Handle();
 
 	return Target::Handle(book()[name].factory(filename, params));
 }

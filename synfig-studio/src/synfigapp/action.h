@@ -231,8 +231,8 @@ public:
 	bool is_active()const { return active_; }
 
 #ifdef _DEBUG
-	virtual void ref()const;
-	virtual bool unref()const;
+	virtual void ref() const noexcept;
+	virtual void unref()const;
 #endif
 }; // END of class Action::Undoable
 

@@ -1333,6 +1333,65 @@ test_relative_ported_from_old_etl_stringf()
 	ASSERT_EQUAL("../../share", Path("/usr/share").lexically_relative(Path("/usr/local/bin/.")).u8string())
 }
 
+void
+test_fake_relative_from_cpp_reference_dot_com()
+{
+	// https://en.cppreference.com/w/cpp/filesystem/relative
+#ifdef _WIN32
+	ASSERT_EQUAL("c", Path("C:/a/b/c").relative_to(Path("C:/a/b")).u8string());
+	ASSERT_EQUAL("../c", Path("C:/a/c").relative_to(Path("C:/a/b")).u8string());
+	ASSERT_EQUAL("", Path("c").relative_to(Path("C:/a/b")).u8string());
+	ASSERT_EQUAL("", Path("C:/a/b").relative_to(Path("c")).u8string());
+#else
+	ASSERT_EQUAL("c", Path("/a/b/c").relative_to(Path("/a/b")).u8string());
+	ASSERT_EQUAL("../c", Path("/a/c").relative_to(Path("/a/b")).u8string());
+	ASSERT_EQUAL("", Path("c").relative_to(Path("/a/b")).u8string());
+	ASSERT_EQUAL("", Path("/a/b").relative_to(Path("c")).u8string());
+#endif
+}
+
+void
+test_relative_between_different_root_paths()
+{
+#ifdef _WIN32
+	ASSERT_EQUAL("", Path("D:/a/b/c").relative_to(Path("C:/a/b")).u8string());
+	ASSERT_EQUAL("", Path("D:/a/c").relative_to(Path("C:/a/b")).u8string());
+#endif
+}
+
+void
+test_lexically_proximate_from_cpp_reference_dot_com()
+{
+	// https://en.cppreference.com/w/cpp/filesystem/path/lexically_normal
+	ASSERT_EQUAL("a/b", Path("a/b").lexically_proximate(Path("/a/b")).u8string());
+}
+
+void
+test_fake_proximate_from_cpp_reference_dot_com()
+{
+	// https://en.cppreference.com/w/cpp/filesystem/relative
+#ifdef _WIN32
+	ASSERT_EQUAL("c", Path("C:/a/b/c").proximate_to(Path("C:/a/b")).u8string());
+	ASSERT_EQUAL("../c", Path("C:/a/c").proximate_to(Path("C:/a/b")).u8string());
+	ASSERT_EQUAL("c", Path("c").proximate_to(Path("C:/a/b")).u8string());
+	ASSERT_EQUAL("C:/a/b", Path("C:/a/b").proximate_to(Path("c")).u8string());
+#else
+	ASSERT_EQUAL("c", Path("/a/b/c").proximate_to(Path("/a/b")).u8string());
+	ASSERT_EQUAL("../c", Path("/a/c").proximate_to(Path("/a/b")).u8string());
+	ASSERT_EQUAL("c", Path("c").proximate_to(Path("/a/b")).u8string());
+	ASSERT_EQUAL("/a/b", Path("/a/b").proximate_to(Path("c")).u8string());
+#endif
+}
+
+void
+test_proximate_between_different_root_paths()
+{
+#ifdef _WIN32
+	ASSERT_EQUAL("D:/a/b/c", Path("D:/a/b/c").proximate_to(Path("C:/a/b")).u8string());
+	ASSERT_EQUAL("D:/a/c", Path("D:/a/c").proximate_to(Path("C:/a/b")).u8string());
+#endif
+}
+
 /* === E N T R Y P O I N T ================================================= */
 
 int main() {
@@ -1453,6 +1512,12 @@ int main() {
 	TEST_FUNCTION(test_relative_to_empty_path_returns_itself)
 	TEST_FUNCTION(test_empty_path_relative_to_another_returns_as_it_was_special_dot_file)
 	TEST_FUNCTION(test_relative_ported_from_old_etl_stringf)
+	TEST_FUNCTION(test_fake_relative_from_cpp_reference_dot_com)
+	TEST_FUNCTION(test_relative_between_different_root_paths)
+
+	TEST_FUNCTION(test_lexically_proximate_from_cpp_reference_dot_com)
+	TEST_FUNCTION(test_fake_proximate_from_cpp_reference_dot_com)
+	TEST_FUNCTION(test_proximate_between_different_root_paths)
 
 	TEST_SUITE_END()
 

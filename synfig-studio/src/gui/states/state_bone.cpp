@@ -60,7 +60,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace studio;
 using namespace synfig;
 using namespace synfigapp;
@@ -89,7 +88,7 @@ class studio::StateBone_Context : public sigc::trackable
 	Canvas::Handle canvas;
 
 	Duck::Handle  point2_duck,point1_duck;
-	handle<Duckmatic::Bezier> bone_bezier;
+	Duckmatic::Bezier::Handle bone_bezier;
 
 	Gtk::Menu menu;
 

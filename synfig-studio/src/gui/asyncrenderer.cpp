@@ -570,7 +570,7 @@ AsyncRenderer::start_()
 void
 AsyncRenderer::render_target()
 {
-	etl::handle<Target> target(AsyncRenderer::target);
+	Target::Handle target(AsyncRenderer::target);
 
 	std::string error_str;
 	try {

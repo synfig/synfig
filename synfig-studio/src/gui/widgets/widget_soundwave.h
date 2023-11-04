@@ -37,10 +37,10 @@ public:
 	Widget_SoundWave();
 	virtual ~Widget_SoundWave() override;
 
-	bool load(const std::string &filename);
+	bool load(const synfig::filesystem::Path& filename);
 	void clear();
 
-	std::string get_filename() const { return filename; }
+	synfig::filesystem::Path get_filename() const { return filename; }
 
 	// what sound channel to display
 	void set_channel_idx(int new_channel_idx);
@@ -54,7 +54,7 @@ public:
 
 	virtual void set_time_model(const etl::handle<TimeModel> &x) override;
 
-	sigc::signal<void, const std::string&> & signal_file_loaded() { return signal_file_loaded_; }
+	sigc::signal<void, const synfig::filesystem::Path&> & signal_file_loaded() { return signal_file_loaded_; }
 	sigc::signal<void> & signal_delay_changed() { return signal_delay_changed_; }
 	sigc::signal<void> & signal_specs_changed() { return signal_specs_changed_; }
 
@@ -66,7 +66,7 @@ protected:
 
 private:
 	std::mutex mutex;
-	std::string filename;
+	synfig::filesystem::Path filename;
 
 	// sound data
 	std::vector<unsigned char> buffer;
@@ -85,13 +85,13 @@ private:
 	synfig::Time previous_lower_time;
 	synfig::Time previous_upper_time;
 
-	sigc::signal<void, const std::string&> signal_file_loaded_;
+	sigc::signal<void, const synfig::filesystem::Path&> signal_file_loaded_;
 	sigc::signal<void> signal_delay_changed_;
 	sigc::signal<void> signal_specs_changed_;
 
 	void setup_mouse_handler();
 
-	bool do_load(const std::string& filename);
+	bool do_load(const synfig::filesystem::Path& filename);
 
 	// I'm too lazy to code/copy again mouse actions for panning/zooming/scrolling
 	struct MouseHandler : SelectDragHelper<int>

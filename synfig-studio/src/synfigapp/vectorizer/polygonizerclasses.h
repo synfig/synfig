@@ -474,7 +474,7 @@ const int infinity = 1000000;  // just a great enough number
 //    Function prototypes
 //===============================
 
-void polygonize(const etl::handle<synfig::Layer_Bitmap> &ras, Contours &polygons,VectorizerCoreGlobals &g);
+void polygonize(const synfig::Layer_Bitmap::Handle& ras, Contours& polygons, const VectorizerCoreGlobals& g);
 
 SkeletonList *skeletonize(Contours &contours,const etl::handle<synfigapp::UIInterface> &ui_interface, VectorizerCoreGlobals &g);
 
@@ -482,9 +482,9 @@ void organizeGraphs(SkeletonList *skeleton, VectorizerCoreGlobals &g);
 
 // void junctionRecovery(Contours *polygons, VectorizerCoreGlobals &g);
 
-void conversionToStrokes(std::vector<synfig::Layer::Handle> &strokes, VectorizerCoreGlobals &g, const etl::handle<synfig::Layer_Bitmap> &image) ;
+void conversionToStrokes(std::vector<synfig::Layer::Handle>& strokes, VectorizerCoreGlobals& g, const synfig::Layer_Bitmap::Handle& image) ;
 
- void calculateSequenceColors(const etl::handle<synfig::Layer_Bitmap> &ras, VectorizerCoreGlobals &g, const synfig::Gamma &gamma);
+ void calculateSequenceColors(const synfig::Layer_Bitmap::Handle& ras, VectorizerCoreGlobals& g, const synfig::Gamma& gamma);
 
 // void applyStrokeColors(std::vector<TStroke *> &strokes, const TRasterP &ras,
 //                        TPalette *palette, VectorizerCoreGlobals &g);

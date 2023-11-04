@@ -249,8 +249,8 @@ Action::Vectorization::perform()
 	new_layer->set_param("canvas",child_canvas);
     int move_depth = 0;
 
-    // if the vectorizer option was selected for switch group
-    if(etl::handle<synfig::Layer_PasteCanvas> paste = etl::handle<synfig::Layer_PasteCanvas>::cast_dynamic(reference_layer))
+	// if the vectorizer option was selected for switch group
+	if (auto paste = Layer_PasteCanvas::Handle::cast_dynamic(reference_layer))
     {
         // apply the transformation from switch group to result group
         new_layer->set_param("transformation",paste->get_param("transformation"));

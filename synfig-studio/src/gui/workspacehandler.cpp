@@ -121,9 +121,9 @@ WorkspaceHandler::get_name_list(std::vector<std::string>& list)
 }
 
 bool
-WorkspaceHandler::save(const std::string& filename)
+WorkspaceHandler::save(const synfig::filesystem::Path& filename)
 {
-	std::ofstream ofs(synfig::filesystem::Path(filename).c_str());
+	std::ofstream ofs(filename.c_str());
 	if (!ofs) {
 		synfig::error(_("Can't save custom workspaces"));
 		return false;
@@ -135,9 +135,9 @@ WorkspaceHandler::save(const std::string& filename)
 }
 
 void
-WorkspaceHandler::load(const std::string& filename)
+WorkspaceHandler::load(const synfig::filesystem::Path& filename)
 {
-	std::ifstream ifs(synfig::filesystem::Path(filename).c_str());
+	std::ifstream ifs(filename.c_str());
 	std::string line;
 	int count = 0;
 	while (ifs && !ifs.eof()) {

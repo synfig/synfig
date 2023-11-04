@@ -1098,8 +1098,8 @@ StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfi
 	// but having loops auto-connect can be useful as well)
 	if(get_auto_extend_flag() || get_auto_link_flag())
 	{
-		etl::handle<Duck> start_duck(get_work_area()->find_duck(bline.front().get_vertex(),radius,Duck::TYPE_VERTEX));
-		etl::handle<Duck> finish_duck(get_work_area()->find_duck(bline.back().get_vertex(),radius,Duck::TYPE_VERTEX));
+		Duck::Handle start_duck(get_work_area()->find_duck(bline.front().get_vertex(), radius, Duck::TYPE_VERTEX));
+		Duck::Handle finish_duck(get_work_area()->find_duck(bline.back().get_vertex(), radius, Duck::TYPE_VERTEX));
 
 		// check whether the start of the new line extends an
 		// existing line.  this is only the case if the new
@@ -1751,7 +1751,7 @@ StateDraw_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real 
 		std::list<synfig::BLinePoint>::iterator iter;
 		for(iter=bline.begin();iter!=bline.end();++iter)
 		{
-			etl::handle<Duck> duck(get_work_area()->find_duck(iter->get_vertex(),0,Duck::TYPE_VERTEX));
+			Duck::Handle duck(get_work_area()->find_duck(iter->get_vertex(), 0, Duck::TYPE_VERTEX));
 
 			if(!duck)
 			{

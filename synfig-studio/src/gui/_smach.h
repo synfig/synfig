@@ -283,15 +283,16 @@ public:
 			return new state_context_type(machine_context);
 		}*/
 
-		virtual bool leave_state(void* x)const
+		bool
+		leave_state(void* x) const override
 		{
 			state_context_type* state_context(reinterpret_cast<state_context_type*>(x));
 			delete state_context;
 			return true;
 		}
 
-		virtual event_result
-		process_event(void* x,const event& id)const
+		event_result
+		process_event(void* x, const event& id) const override
 		{
 			state_context_type* state_context(reinterpret_cast<state_context_type*>(x));
 
