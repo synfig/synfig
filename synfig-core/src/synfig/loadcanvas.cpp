@@ -84,6 +84,8 @@
 #include "valuenodes/valuenode_wplist.h"
 #include "valuenodes/valuenode_average.h"
 
+#include "canvasfilenaming.h"
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -1689,7 +1691,7 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 					warning(child,_("Found \"use\" attribute for <waypoint>, but it wasn't empty. Ignoring contents..."));
 
 				std::string use_id = use_attr->get_value();
-				fix_broken_use_id(use_id);
+				fix_broken_use_id(canvas->get_file_name(), use_id);
 
 				// the waypoint might look like this, in which case we won't find "mycanvas" in the list of valuenodes, 'cos it's a canvas
 				//
@@ -1907,10 +1909,11 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 		for (xmlpp::Element::AttributeList::iterator iter = attrib_list.begin(); iter != attrib_list.end(); ++iter) {
 			name = (*iter)->get_name();
 			id = (*iter)->get_value();
-			fix_broken_use_id(id);
 
 			if (name == "guid" || name == "id" || name == "type")
 				continue;
+
+			fix_broken_use_id(canvas->get_file_name(), id);
 
 			try {
 				bool load_old_weighted_bonelink = false;
@@ -2259,7 +2262,7 @@ CanvasParser::parse_static_list(xmlpp::Element *element,Canvas::Handle canvas)
 			{
 				// \todo does this need to be able to read 'use="canvas"', like waypoints can now?  (see 'surefind_canvas' in this file)
 				std::string use_id = use_attr->get_value();
-				fix_broken_use_id(use_id);
+				fix_broken_use_id(canvas->get_file_name(), use_id);
 
 				try
 				{
@@ -2520,7 +2523,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 			{
 				// \todo does this need to be able to read 'use="canvas"', like waypoints can now?  (see 'surefind_canvas' in this file)
 				std::string use_id = use_attr->get_value();
-				fix_broken_use_id(use_id);
+				fix_broken_use_id(canvas->get_file_name(), use_id);
 				try
 				{
 					list_entry.value_node=canvas->surefind_value_node(use_id, &filepath_fix_map);
@@ -2874,7 +2877,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 					warning(child,_("Found \"use\" attribute for <param>, but it wasn't empty. Ignoring contents..."));
 
 				std::string use_id = use_attr->get_value();
-				fix_broken_use_id(use_id);
+				fix_broken_use_id(canvas->get_file_name(), use_id);
 
 				if (use_id.empty())
 					error(child,_("Empty use=\"\" value in <param>"));
@@ -3686,8 +3689,9 @@ CanvasParser::set_broken_use_ids(const CanvasBrokenUseIdMap& map)
 }
 
 bool
-CanvasParser::fix_broken_use_id(std::string& use_id) const
+CanvasParser::fix_broken_use_id(const filesystem::Path& canvas_path, std::string& use_id) const
 {
+	use_id = CanvasFileNaming::make_full_filename(canvas_path.u8string(), use_id);
 	return filepath_fix_map.fix(use_id);
 }
 

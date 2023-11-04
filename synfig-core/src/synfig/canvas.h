@@ -153,7 +153,7 @@ typedef std::vector<std::pair<std::string, std::string>> CanvasMissingIdList;
 //! Map to fix broken links due to missing files
 //! (original_file_path, (new_file_path, [(valuenode_id, value_type), ...]))
 //! If new_file_path is null, there is no replacement file path to that item
-struct CanvasBrokenUseIdMap : std::map<std::string, std::pair<std::string, CanvasMissingIdList>>
+struct CanvasBrokenUseIdMap : std::map<filesystem::Path, std::pair<filesystem::Path, CanvasMissingIdList>>
 {
 	bool fix(std::string& use_id) const
 	{
@@ -162,9 +162,9 @@ struct CanvasBrokenUseIdMap : std::map<std::string, std::pair<std::string, Canva
 			return false;
 
 		try {
-			std::string filepath = use_id.substr(0, pos);
+			filesystem::Path filepath = use_id.substr(0, pos);
 			filepath = this->at(filepath).first;
-			use_id = filepath + use_id.substr(pos);
+			use_id = filepath.u8string() + use_id.substr(pos);
 			return true;
 		} catch (...) {
 			return false;
@@ -177,7 +177,12 @@ struct CanvasBrokenUseIdMap : std::map<std::string, std::pair<std::string, Canva
 		if (pos == std::string::npos || pos == 0)
 			return false;
 
-		(*this)[use_id.substr(0, pos)] = {"", {{use_id.substr(pos+1), type}}};
+		auto missing_file = filesystem::Path(use_id.substr(0, pos));
+		auto iter = find(missing_file);
+		if (iter == end())
+			(*this)[missing_file] = {{}, {{use_id.substr(pos+1), type}}};
+		else
+			iter->second.second.push_back({use_id.substr(pos+1), type});
 		return true;
 	}
 

@@ -79,6 +79,7 @@
 
 #include <gui/dialogs/about.h>
 #include <gui/dialogs/dialog_color.h>
+#include <gui/dialogs/dialog_fixmissingfiles.h>
 #include <gui/dialogs/dialog_gradient.h>
 #include <gui/dialogs/dialog_input.h>
 #include <gui/dialogs/dialog_setup.h>
@@ -3579,7 +3580,6 @@ App::open(filesystem::Path filename, /* std::string as, */ synfig::FileContainer
 		Canvas::Handle canvas;
 
 		do {
-			broken_links["DupBug-simplified.sif_"] = {"DupBug-simplified.sif", {}};
 			canvas = open_canvas_as(canvas_file_system ->get_identifier(canvas_filename), filename.u8string(), errors, warnings, &broken_links);
 			if(canvas && get_instance(canvas))
 			{
@@ -3592,13 +3592,21 @@ App::open(filesystem::Path filename, /* std::string as, */ synfig::FileContainer
 	info("else %zu", broken_links.size());
 				if(!canvas) {
 					for(const auto& pair : broken_links) {
-						warning("Missing file: %s", pair.first.c_str());
 						for (const auto& p : pair.second.second) {
 							warning("\t%s (%s)", p.first.c_str(), p.second.c_str());
 						}
 					}
 					if (!broken_links.empty()) {
 						// show dialog
+						auto dialog = Dialog_FixMissingFiles::create(*App::main_window);
+						if (!dialog) {
+							synfig::error(_("Couldn't open dialog for fixing missing files"));
+						} else {
+							dialog->set_broken_useids(broken_links);
+							if (dialog->run() == Gtk::RESPONSE_OK) {
+								continue;
+							}
+						}
 						// if dialog cancelled, resume loop
 						// if confirmed, continue;
 					}
@@ -3626,6 +3634,11 @@ App::open(filesystem::Path filename, /* std::string as, */ synfig::FileContainer
 					throw (String)strprintf(_("Unable to create instance for \"%s\""), filename.u8_str());
 
 				one_moment.hide();
+
+				if (!broken_links.empty()) {
+					// This file isn't saved! mark it as such
+					instance->inc_action_count();
+				}
 			}
 		} while (!canvas);
 	}

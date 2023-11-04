@@ -246,7 +246,7 @@ private:
 
 	//! Replace file path in use_id with the correspondent one in filepath_fix_map
 	//! \return true if replacement was done or use_id does not refer to an external canvas file
-	bool fix_broken_use_id(std::string& use_id) const;
+	bool fix_broken_use_id(const filesystem::Path& canvas_path, std::string& use_id) const;
 	//! Register file path in use_id as broken
 	//! \return true if use_id refers to an external canvas file.
 	bool register_broken_use_id(const std::string& use_id, const std::string& type);
