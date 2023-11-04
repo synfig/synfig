@@ -251,8 +251,8 @@ Svg_parser::parser_canvas(const xmlpp::Node* node)
 		double view_y = height/kux;
 		view_x /= 2.0;
 		view_y /= 2.0;
-		char attr_view_box[60];
-		sprintf(attr_view_box,"%f %f %f %f",-1.0*view_x,view_y,view_x,-1.0*view_y);
+		char attr_view_box[64];
+		snprintf(attr_view_box,sizeof(attr_view_box),"%f %f %f %f",-1.0*view_x,view_y,view_x,-1.0*view_y);
 		nodeRoot->set_attribute("view-box",attr_view_box);
 		ox = width/2;
 		oy = height/2;
