@@ -161,18 +161,15 @@ synfig::open_canvas_as(const FileSystem::Identifier &identifier, const String &a
 	}
 	catch (...)
 	{
-error("broken size _catach %zu", parser.get_broken_use_ids().size());
 		CanvasParser::loading_.erase(identifier);
 		if (broken_links)
 			*broken_links = parser.get_broken_use_ids();
 		throw;
 	}
-error("broken size not catach %zu", parser.get_broken_use_ids().size());
+
 	CanvasParser::loading_.erase(identifier);
 	if (broken_links)
 		*broken_links = parser.get_broken_use_ids();
-if (broken_links)
-	error("\t size not catach %zu", broken_links->size());
 
 	warnings = parser.get_warnings_text();
 
@@ -1950,7 +1947,6 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 
 				if(placeholders == canvas->value_node_list().placeholder_count()) {
 					if(PlaceholderValueNode::Handle::cast_dynamic(c[index]) ) {
-						synfig::error("broken value node link 2");
 						register_broken_use_id(id, type.description.name);
 						throw Exception::IDNotFound("parse_linkable_value_node()");
 					}
@@ -3564,8 +3560,7 @@ CanvasParser::parse_from_file_as(const FileSystem::Identifier &identifier,const 
 				return canvas;
 			}
 		} else {
-			bool ok = register_broken_use_id(as+"#", "file");
-			synfig::warning("registered? %i [%zu] %s", ok, filepath_fix_map.size(), as.c_str());
+			register_broken_use_id(as + "#", "file");
 			throw std::runtime_error(String("  * ") + _("Can't find linked file") + " \"" + identifier.filename.u8string() + "\"");
 		}
 	}

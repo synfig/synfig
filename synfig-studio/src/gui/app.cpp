@@ -3581,23 +3581,16 @@ App::open(filesystem::Path filename, /* std::string as, */ synfig::FileContainer
 
 		do {
 			canvas = open_canvas_as(canvas_file_system ->get_identifier(canvas_filename), filename.u8string(), errors, warnings, &broken_links);
-			if(canvas && get_instance(canvas))
-			{
+			if (canvas && get_instance(canvas)) {
 				get_instance(canvas)->find_canvas_view(canvas)->present();
 				info("%s is already open", canvas_filename.c_str());
 				// throw (String)strprintf(_("\"%s\" appears to already be open!"),filename.c_str());
-			}
-			else
-			{
-	info("else %zu", broken_links.size());
-				if(!canvas) {
-					for(const auto& pair : broken_links) {
-						for (const auto& p : pair.second.second) {
-							warning("\t%s (%s)", p.first.c_str(), p.second.c_str());
-						}
-					}
+			} else {
+				if (!canvas) {
 					if (!broken_links.empty()) {
 						// show dialog
+						// if dialog cancelled, resume loop;
+						// if confirmed, continue.
 						auto dialog = Dialog_FixMissingFiles::create(*App::main_window);
 						if (!dialog) {
 							synfig::error(_("Couldn't open dialog for fixing missing files"));
@@ -3607,10 +3600,7 @@ App::open(filesystem::Path filename, /* std::string as, */ synfig::FileContainer
 								continue;
 							}
 						}
-						// if dialog cancelled, resume loop
-						// if confirmed, continue;
 					}
-					warning("hey");
 					throw (String)strprintf(_("Unable to load \"%s\":\n\n"), filename.u8_str()) + errors;
 				}
 
@@ -3630,7 +3620,7 @@ App::open(filesystem::Path filename, /* std::string as, */ synfig::FileContainer
 
 				etl::handle<Instance> instance(Instance::create(canvas, container));
 
-				if(!instance)
+				if (!instance)
 					throw (String)strprintf(_("Unable to create instance for \"%s\""), filename.u8_str());
 
 				one_moment.hide();
@@ -3644,7 +3634,6 @@ App::open(filesystem::Path filename, /* std::string as, */ synfig::FileContainer
 	}
 	catch(String &x)
 	{
-info("STRING");
 		dialog_message_1b(
 			"ERROR",
 			x,
@@ -3655,7 +3644,6 @@ info("STRING");
 	}
 	catch(std::runtime_error &x)
 	{
-info("RUNTIME");
 		dialog_message_1b(
 			"ERROR",
 			x.what(),
@@ -3666,7 +3654,6 @@ info("RUNTIME");
 	}
 	catch(...)
 	{
-info("UNKNOWN");
 		dialog_message_1b(
 			"ERROR",
 			_("Uncaught error on file open (BUG)"),
