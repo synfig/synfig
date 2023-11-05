@@ -3546,7 +3546,7 @@ App::open(filesystem::Path filename, /* std::string as, */ synfig::FileContainer
 	std::vector<wchar_t> long_name;
 	long_name.resize(buf_size);
 	long_name[0] = 0;
-	if (GetLongPathNameW(filename.c_str(), long_name.data(), sizeof(long_name)) == 0)
+	if (GetLongPathNameW(filename.c_str(), long_name.data(), long_name.size()) == 0)
 		;
 	// when called from autorecover.cpp, filename doesn't exist, and so long_name is empty
 	// don't use it if that's the case
