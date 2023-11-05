@@ -3691,7 +3691,11 @@ CanvasParser::set_broken_use_ids(const CanvasBrokenUseIdMap& map)
 bool
 CanvasParser::fix_broken_use_id(const filesystem::Path& canvas_path, std::string& use_id) const
 {
-	use_id = CanvasFileNaming::make_full_filename(canvas_path.u8string(), use_id);
+	auto pos = use_id.find('#');
+	if (pos != std::string::npos) {
+		auto file = CanvasFileNaming::make_full_filename(canvas_path.u8string(), use_id.substr(0, pos));
+		use_id = file + '#' + use_id.substr(pos + 1);
+	}
 	return filepath_fix_map.fix(use_id);
 }
 
