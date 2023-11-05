@@ -36,6 +36,7 @@
 # include "dialog_fixmissingfiles.h"
 
 # include <gtkmm/button.h>
+# include <gtkmm/image.h>
 # include <gtkmm/label.h>
 # include <gtkmm/listbox.h>
 
@@ -56,6 +57,18 @@ using namespace studio;
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
+
+static Gtk::Image*
+create_image_from_icon(const std::string& icon_name, Gtk::IconSize icon_size)
+{
+#if GTK_CHECK_VERSION(3,24,0)
+	return new Gtk::Image(icon_name, icon_size);
+#else
+	Gtk::Image* image = new Gtk::Image();
+	image->set_from_icon_name(icon_name, icon_size);
+	return image;
+#endif
+}
 
 /* === M E T H O D S ======================================================= */
 
@@ -126,11 +139,26 @@ Dialog_FixMissingFiles::create_row(Dialog_FixMissingFiles::FileReplacerMap& repl
 	auto box = Gtk::manage(new Gtk::Box());
 	box->set_hexpand(true);
 
+	if (!synfig::FileSystemNative::instance()->is_file(missing_path.u8string())) {
+		auto icon = Gtk::manage(create_image_from_icon("image-missing", Gtk::ICON_SIZE_MENU));
+		icon->set_tooltip_text("Missing file");
+		box->pack_start(*icon);
+	}
+
 	auto label = Gtk::manage(new Gtk::Label(missing_path.u8string()));
 	label->set_hexpand(true);
 	label->set_xalign(0);
 	label->set_ellipsize(Pango::ELLIPSIZE_START);
-	label->set_tooltip_text(missing_path.u8string());
+	std::string reasons = _("Issues:");
+	for (const auto& item : iter->second.missing_items) {
+		reasons += '\n';
+		if (item.id.empty()) {
+			reasons += _("- Missing file");
+		} else {
+			reasons += synfig::strprintf(_("- Missing exported valuenode: %s (%s)"), item.id.c_str(), item.type_name.c_str());
+		}
+	}
+	label->set_tooltip_text(missing_path.u8string() + "\n\n" + reasons);
 	box->pack_start(*label);
 
 	label = Gtk::manage(new Gtk::Label());
