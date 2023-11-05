@@ -100,7 +100,7 @@ Dialog_FixMissingFiles::set_broken_useids(synfig::CanvasBrokenUseIdMap& map)
 		missing_file_list_->remove(*row);
 
 	for (auto iter = map_->begin(); iter != map.end(); ++iter) {
-		replacer_map_[iter->first] = iter->second.first;
+		replacer_map_[iter->first] = iter->second.replacement;
 
 		create_row(replacer_map_, iter);
 	}
@@ -113,7 +113,7 @@ Dialog_FixMissingFiles::on_response(int response_id)
 		return;
 
 	for (auto& item : *map_) {
-		item.second.first = replacer_map_.at(item.first);
+		item.second.replacement = replacer_map_.at(item.first);
 	}
 }
 
@@ -121,7 +121,7 @@ void
 Dialog_FixMissingFiles::create_row(Dialog_FixMissingFiles::FileReplacerMap& replacer_map, const synfig::CanvasBrokenUseIdMap::iterator& iter)
 {
 	synfig::filesystem::Path missing_path(iter->first.u8string());
-	const std::pair<synfig::filesystem::Path, synfig::CanvasMissingIdList>& uses = iter->second;
+	const synfig::BrokenUseIdInfo& uses = iter->second;
 
 	auto box = Gtk::manage(new Gtk::Box());
 	box->set_hexpand(true);
@@ -137,9 +137,9 @@ Dialog_FixMissingFiles::create_row(Dialog_FixMissingFiles::FileReplacerMap& repl
 	label->set_hexpand(true);
 	label->set_xalign(0);
 	label->set_ellipsize(Pango::ELLIPSIZE_START);
-	if (!uses.first.empty()) {
-		label->set_markup(synfig::strprintf("(<small>%s</small>)", uses.first.u8_str()));
-		label->set_tooltip_text(uses.first.u8string());
+	if (!uses.replacement.empty()) {
+		label->set_markup(synfig::strprintf("(<small>%s</small>)", uses.replacement.u8_str()));
+		label->set_tooltip_text(uses.replacement.u8string());
 	}
 	box->pack_start(*label);
 

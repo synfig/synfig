@@ -149,11 +149,29 @@ class GUID;
 class Canvas;
 class SoundProcessor;
 
-typedef std::vector<std::pair<std::string, std::string>> CanvasMissingIdList;
+struct CanvasMissingId
+{
+	std::string id;
+	std::string type_name;
+
+	bool operator==(const CanvasMissingId& other) const
+	{
+		return id == other.id && type_name == other.type_name;
+	}
+};
+
+typedef std::vector<CanvasMissingId> CanvasMissingIdList;
+
+struct BrokenUseIdInfo
+{
+	filesystem::Path replacement;
+	CanvasMissingIdList missing_items;
+};
+
 //! Map to fix broken links due to missing files
 //! (original_file_path, (new_file_path, [(valuenode_id, value_type), ...]))
 //! If new_file_path is null, there is no replacement file path to that item
-struct CanvasBrokenUseIdMap : std::map<filesystem::Path, std::pair<filesystem::Path, CanvasMissingIdList>>
+struct CanvasBrokenUseIdMap : std::map<filesystem::Path, BrokenUseIdInfo>
 {
 	bool fix(std::string& use_id) const
 	{
@@ -163,7 +181,7 @@ struct CanvasBrokenUseIdMap : std::map<filesystem::Path, std::pair<filesystem::P
 
 		try {
 			filesystem::Path filepath = use_id.substr(0, pos);
-			filepath = this->at(filepath).first;
+			filepath = this->at(filepath).replacement;
 			use_id = filepath.u8string() + use_id.substr(pos);
 			return true;
 		} catch (...) {
@@ -171,18 +189,23 @@ struct CanvasBrokenUseIdMap : std::map<filesystem::Path, std::pair<filesystem::P
 		}
 	}
 
-	bool add(const std::string& use_id, const std::string& type)
+	bool add(const std::string& use_id, const std::string& type_name)
 	{
 		auto pos = use_id.find('#');
 		if (pos == std::string::npos || pos == 0)
 			return false;
 
+		const CanvasMissingId item {use_id.substr(pos+1), type_name};
+
 		auto missing_file = filesystem::Path(use_id.substr(0, pos));
-		auto iter = find(missing_file);
-		if (iter == end())
-			(*this)[missing_file] = {{}, {{use_id.substr(pos+1), type}}};
-		else
-			iter->second.second.push_back({use_id.substr(pos+1), type});
+		auto missing_file_iter = find(missing_file);
+		if (missing_file_iter == end()) {
+			(*this)[missing_file] = {{}, {item}};
+		} else {
+			CanvasMissingIdList& missing_items = missing_file_iter->second.missing_items;
+			if (missing_items.end() == std::find(missing_items.begin(), missing_items.end(), item))
+				missing_items.push_back(item);
+		}
 		return true;
 	}
 

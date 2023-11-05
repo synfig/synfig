@@ -605,7 +605,7 @@ Canvas::find_value_node(const String &id, bool might_fail, CanvasBrokenUseIdMap*
 		return find_canvas(canvas_id, warnings, broken_links)->value_node_list_.find(value_node_id, might_fail);
 	} catch (...) {
 		if (broken_links)
-			(*broken_links)[canvas_id].second.push_back({value_node_id, ""});
+			(*broken_links)[canvas_id].missing_items.push_back({value_node_id, ""});
 		throw;
 	}
 }
@@ -634,7 +634,7 @@ Canvas::surefind_value_node(const String &id, CanvasBrokenUseIdMap* broken_links
 		return surefind_canvas(canvas_id,warnings, broken_links)->value_node_list_.surefind(value_node_id);
 	} catch (...) {
 		if (broken_links)
-			(*broken_links)[canvas_id].second.push_back({value_node_id, ""});
+			(*broken_links)[canvas_id].missing_items.push_back({value_node_id, ""});
 		throw;
 	}
 }
