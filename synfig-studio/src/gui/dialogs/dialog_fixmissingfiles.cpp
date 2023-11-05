@@ -147,7 +147,7 @@ Dialog_FixMissingFiles::create_row(Dialog_FixMissingFiles::FileReplacerMap& repl
 	button->set_hexpand(false);
 	box->pack_end(*button, Gtk::PACK_SHRINK);
 
-	button->signal_clicked().connect(sigc::track_object([label, missing_path, &replacer_map]() {
+	button->signal_clicked().connect(sigc::track_obj([label, missing_path, &replacer_map]() {
 		synfig::filesystem::Path replacement(missing_path);
 		if (App::dialog_open_file(replacer_map[missing_path].u8string(), replacement, "file")) {
 			label->set_markup(synfig::strprintf("(<small>%s</small>)", replacement.u8_str()));
