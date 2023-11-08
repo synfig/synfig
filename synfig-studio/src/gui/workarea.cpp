@@ -1129,8 +1129,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		}
 
 		assert(curr_input_device);
-			
-
+		
 		if(std::isnan(x) || std::isnan(y) || std::isnan(p))
 			return false;
 
@@ -1181,7 +1180,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 					}
 				}
 			}
-			if(guide_highlighted){	
+			if(guide_highlighted){
 				guide_dialog.show();
 				guide_dialog.set_current_guide(curr_guide);
 				return true;
@@ -1319,11 +1318,15 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			break;
 		}
 		case 2:	{ // Attempt to drag and move the window
-			if (Duck::Handle duck = find_duck(mouse_pos, radius))
-				duck->signal_user_click(1)();
-			else
-			if(Bezier::Handle bezier = find_bezier(mouse_pos, radius, &bezier_click_pos))
-				bezier->signal_user_click(1)(bezier_click_pos);
+			// if (Duck::Handle duck = find_duck(mouse_pos, radius))
+			// 	duck->signal_user_click(1)();
+			// else
+			// if(Bezier::Handle bezier = find_bezier(mouse_pos, radius, &bezier_click_pos))
+			//	bezier->signal_user_click(1)(bezier_click_pos);
+			if (get_drag_mode() == DRAG_DUCK){
+				end_duck_drag();
+				set_drag_mode(DRAG_NONE);
+			}
 
 			if (canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,BUTTON_MIDDLE,mouse_pos,pressure,modifier))==Smach::RESULT_OK) {
 				set_drag_mode(
@@ -1337,6 +1340,11 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			break;
 		}
 		case 3:	{ // Attempt to either get info on a duck, or open the menu
+			//if right mouse clicked while dragging a duck, end drag events
+			if (get_drag_mode() == DRAG_DUCK){
+				end_duck_drag();
+				set_drag_mode(DRAG_NONE);
+			}
 			if (Duck::Handle duck = find_duck(mouse_pos, radius)) {
 				if (get_selected_ducks().size() <= 1)
 					duck->signal_user_click(2)();
