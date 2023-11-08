@@ -1323,7 +1323,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			// else
 			// if(Bezier::Handle bezier = find_bezier(mouse_pos, radius, &bezier_click_pos))
 			//	bezier->signal_user_click(1)(bezier_click_pos);
-			if (get_drag_mode() == DRAG_DUCK){
+			if (get_drag_mode() == DRAG_DUCK) {
 				end_duck_drag();
 				set_drag_mode(DRAG_NONE);
 			}
@@ -1341,7 +1341,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		}
 		case 3:	{ // Attempt to either get info on a duck, or open the menu
 			//if right mouse clicked while dragging a duck, end drag events
-			if (get_drag_mode() == DRAG_DUCK){
+			if (get_drag_mode() == DRAG_DUCK) {
 				end_duck_drag();
 				set_drag_mode(DRAG_NONE);
 			}
