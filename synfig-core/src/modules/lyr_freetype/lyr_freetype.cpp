@@ -53,8 +53,8 @@
 #include <hb-ft.h>
 #endif
 
-#include <synfig/canvasfilenaming.h>
 #include <synfig/context.h>
+#include <synfig/filesystemnative.h>
 #include <synfig/general.h>
 #include <synfig/localization.h>
 #include <synfig/rendering/common/task/taskcontour.h>
@@ -618,32 +618,21 @@ Layer_Freetype::new_face(const String &newfont)
 	if(face)
 		face = nullptr;
 
-	if (newfont.empty())
-		return false;
-
-	std::vector<const char *> possible_font_extensions = {""};
-
-	// if newfont doesn't have a known extension, try to append those extensions
-	if (! has_valid_font_extension(newfont))
-		possible_font_extensions.insert(possible_font_extensions.end(), known_font_extensions.begin(), known_font_extensions.end());
-
 	std::string canvas_path;
 	if (get_canvas())
 		canvas_path = get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR;
 
-	std::vector<std::string> possible_font_directories = get_possible_font_directories(canvas_path);
+	std::vector<std::string> filenames = get_possible_font_files(newfont, canvas_path);
 
-	for (const std::string& directory : possible_font_directories) {
-		for (const char *extension : possible_font_extensions) {
-			std::string path = (directory + newfont + extension);
-			error = FT_New_Face(ft_library, path.c_str(), face_index, &face);
-			if (!error) {
-				font_path_from_canvas = !canvas_path.empty() && directory == canvas_path;
-				break;
-			}
-		}
-		if (!error)
+	if (filenames.empty())
+		return false;
+
+	for (const std::string& path : filenames) {
+		error = FT_New_Face(ft_library, path.c_str(), face_index, &face);
+		if (!error) {
+			font_path_from_canvas = !canvas_path.empty() && path.compare(0, canvas_path.size(), canvas_path) == 0;
 			break;
+		}
 	}
 
 	if(error)
@@ -698,6 +687,36 @@ Layer_Freetype::get_possible_font_directories(const std::string& canvas_path)
 #endif
 
 	return possible_font_directories;
+}
+
+std::vector<std::string>
+Layer_Freetype::get_possible_font_files(const std::string& newfont, const synfig::filesystem::Path& canvas_path)
+{
+	std::vector<std::string> possible_files;
+
+	if (newfont.empty())
+		return possible_files;
+
+	std::vector<const char*> possible_font_extensions = {""};
+
+	// if newfont doesn't have a known extension, try to append those extensions
+	if (! has_valid_font_extension(newfont))
+		possible_font_extensions.insert(possible_font_extensions.end(), known_font_extensions.begin(), known_font_extensions.end());
+
+//	std::string canvas_path;
+//	if (get_canvas())
+//		canvas_path = get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR;
+
+	std::vector<std::string> possible_font_directories = get_possible_font_directories(canvas_path.u8string());
+
+	for (const std::string& directory : possible_font_directories) {
+		for (const char *extension : possible_font_extensions) {
+			std::string path = (directory + newfont + extension);
+			if (FileSystemNative::instance()->is_file(path))
+				possible_files.push_back(path);
+		}
+	}
+	return possible_files;
 }
 
 bool
