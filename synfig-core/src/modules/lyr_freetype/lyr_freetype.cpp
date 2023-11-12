@@ -200,17 +200,11 @@ struct FontMeta {
 
 struct FaceInfo {
 	FT_Face face = nullptr;
-#if HAVE_HARFBUZZ
-	hb_font_t *font = nullptr;
-#endif
 
 	FaceInfo() = default;
 	explicit FaceInfo(FT_Face ft_face)
 		: face(ft_face)
 	{
-#if HAVE_HARFBUZZ
-		font = hb_ft_font_create(face, nullptr);
-#endif
 	}
 };
 
@@ -241,12 +235,6 @@ public:
 
 	void clear() {
 		std::lock_guard<std::mutex> lock(cache_mutex);
-		for (const auto& item : cache) {
-			FT_Done_Face(item.second.face);
-#if HAVE_HARFBUZZ
-			hb_font_destroy(item.second.font);
-#endif
-		}
 		cache.clear();
 	}
 
@@ -263,6 +251,100 @@ public:
 		clear();
 	}
 };
+
+/**
+ * Map font filenames to their FreeType faces
+ */
+struct FaceMap
+{
+	typedef std::map<filesystem::Path, FT_Face> MapType;
+	typedef MapType::const_iterator const_iterator;
+	typedef MapType::iterator iterator;
+
+	FaceMap() = default;
+
+	const_iterator
+	begin() const
+	{
+		return map_.begin();
+	}
+
+	const_iterator
+	end() const
+	{
+		return map_.end();
+	}
+
+	const_iterator
+	find(const filesystem::Path& path) const
+	{
+		return map_.find(path);
+	}
+
+	FT_Face&
+	operator[](const filesystem::Path& path)
+	{
+		return map_[path];
+	}
+
+	void clear()
+	{
+		for (const auto& item : map_)
+			FT_Done_Face(item.second);
+	}
+
+	~FaceMap()
+	{
+		clear();
+	}
+
+	FaceMap(const FaceMap&) = delete; // Copy prohibited
+	void operator=(const FaceMap&) = delete; // Assignment prohibited
+	FaceMap(FaceMap&&) = delete; // Move constructor prohibited
+	FaceMap& operator=(FaceMap&&) = delete; // Move assignment prohibited
+
+private:
+	std::map<filesystem::Path, FT_Face> map_;
+};
+
+/**
+ * Metadata to be stored in FT_Face->generic field
+ */
+struct FaceMetaData
+{
+	filesystem::Path path;
+#if HAVE_HARFBUZZ
+	hb_font_t* font{nullptr};
+#endif
+
+	static FaceMetaData&
+	get_from_face(FT_Face face)
+	{
+		return *static_cast<FaceMetaData*>(face->generic.data);
+	}
+
+	void
+	add_to_face(FT_Face face)
+	{
+		if (face->generic.data)
+			face->generic.finalizer(face);
+		face->generic.data = this;
+		face->generic.finalizer = FaceMetaData::self_destroy;
+	}
+
+private:
+	static void
+	self_destroy(void* object)
+	{
+		FT_Face face = static_cast<FT_Face>(object);
+		FaceMetaData* meta_data = static_cast<FaceMetaData*>(face->generic.data);
+        face->generic.data = nullptr;
+		hb_font_destroy(meta_data->font);
+		delete meta_data;
+	}
+};
+
+static FaceMap face_map;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -499,9 +581,9 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 			if (face != tmp_face)
 				need_sync |= SYNC_FONT;
 			face = tmp_face;
-	#if HAVE_HARFBUZZ
-			font = face_info.font;
-	#endif
+#if HAVE_HARFBUZZ
+			font = FaceMetaData::get_from_face(face).font;
+#endif
 			return true;
 		}
 	}
@@ -509,11 +591,7 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 	auto cache_face = [&](FT_Face face) {
 		if (!font_path_from_canvas)
 			meta.canvas_path.clear();
-		FaceInfo face_info(face);
 		face_cache.put(meta, FaceInfo(face));
-#if HAVE_HARFBUZZ
-		font = face_info.font;
-#endif
 	};
 
 	if (has_valid_font_extension(font_fam_))
@@ -628,8 +706,22 @@ Layer_Freetype::new_face(const String &newfont)
 		return false;
 
 	for (const std::string& path : filenames) {
+		filesystem::Path absolute_path = filesystem::absolute(path);
+		auto face_map_iter = face_map.find(absolute_path);
+		if (face_map_iter != face_map.end()) {
+			face = face_map_iter->second;
+			break;
+		}
 		error = FT_New_Face(ft_library, path.c_str(), face_index, &face);
 		if (!error) {
+			face_map[absolute_path] = face;
+			FaceMetaData* data = new FaceMetaData();
+			data->path = path;
+#if HAVE_HARFBUZZ
+			data->font = hb_ft_font_create(face, nullptr);
+			this->font = data->font;
+#endif
+			data->add_to_face(face);
 			font_path_from_canvas = !canvas_path.empty() && path.compare(0, canvas_path.size(), canvas_path) == 0;
 			break;
 		}
