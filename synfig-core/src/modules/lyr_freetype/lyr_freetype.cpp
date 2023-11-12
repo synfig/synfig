@@ -198,108 +198,104 @@ struct FontMeta {
 	}
 };
 
-/// Cache font faces for speeding up the text layer rendering
-class FaceCache {
-	std::map<FontMeta, FT_Face> cache;
-	mutable std::mutex cache_mutex;
-	FaceCache() = default; // Make constructor private to prevent instancing
-public:
-	FT_Face get(const FontMeta &meta) const {
-		std::lock_guard<std::mutex> lock(cache_mutex);
-		auto iter = cache.find(meta);
-		if (iter != cache.end())
+/**
+ * Map font filenames or font metadata to their FreeType faces
+ */
+struct FaceCache
+{
+	FaceCache() = default;
+
+	/**
+	 * Get the Face associated to @a meta.
+	 *
+	 * Returned value should not not be freed.
+	 * If you want to remove it from cache, use remove().
+	 */
+	FT_Face get(const FontMeta& meta) const {
+		std::lock_guard<std::mutex> lock(cache_mutex_);
+		auto iter = meta_cache_.find(meta);
+		if (iter != meta_cache_.end())
 			return iter->second;
 		return nullptr;
 	}
 
-	void put(const FontMeta &meta, FT_Face face) {
+	/**
+	 * Get the Face associated to @a path.
+	 *
+	 * Returned value should not not be freed.
+	 * If you want to remove it from cache, use remove().
+	 */
+	FT_Face get(const filesystem::Path& path) const {
+		std::lock_guard<std::mutex> lock(cache_mutex_);
+		auto iter = file_cache_.find(path);
+		if (iter != file_cache_.end())
+			return iter->second;
+		return nullptr;
+	}
+
+	void put(const FontMeta& meta, FT_Face face) {
 		if (!face) {
 			synfig::warning(_("Trying to cache a NULL face of font %s. Ignored."), meta.family.c_str());
 			return;
 		}
-		std::lock_guard<std::mutex> lock(cache_mutex);
-		cache[meta] = face;
+		std::lock_guard<std::mutex> lock(cache_mutex_);
+		meta_cache_[meta] = face;
 	}
 
-	bool has(const FontMeta &meta) const {
-		std::lock_guard<std::mutex> lock(cache_mutex);
-		auto iter = cache.find(meta);
-		return iter != cache.end();
+	void put(const filesystem::Path& path, FT_Face face) {
+		if (!face) {
+			synfig::warning(_("Trying to cache a NULL face of font %s. Ignored."), path.u8_str());
+			return;
+		}
+		std::lock_guard<std::mutex> lock(cache_mutex_);
+		file_cache_[path] = face;
 	}
 
-	void clear() {
-		std::lock_guard<std::mutex> lock(cache_mutex);
-		cache.clear();
+	bool has(const FontMeta& meta) const {
+		std::lock_guard<std::mutex> lock(cache_mutex_);
+		auto iter = meta_cache_.find(meta);
+		return iter != meta_cache_.end();
 	}
 
-	static FaceCache& instance() {
-		static FaceCache obj;
-		return obj;
+	bool has(const filesystem::Path& path) const {
+		std::lock_guard<std::mutex> lock(cache_mutex_);
+		auto iter = file_cache_.find(path);
+		return iter != file_cache_.end();
 	}
 
-	FaceCache(const FaceCache&) = delete; // Copy prohibited
-	void operator=(const FaceCache&) = delete; // Assignment prohibited
-	FaceCache& operator=(FaceCache&&) = delete; // Move assignment prohibited
-
-	~FaceCache() {
-		clear();
-	}
-};
-
-/**
- * Map font filenames to their FreeType faces
- */
-struct FaceMap
-{
-	typedef std::map<filesystem::Path, FT_Face> MapType;
-	typedef MapType::const_iterator const_iterator;
-	typedef MapType::iterator iterator;
-
-	FaceMap() = default;
-
-	const_iterator
-	begin() const
-	{
-		return file_map_.begin();
+	void remove(const FontMeta& meta) {
+		std::lock_guard<std::mutex> lock(cache_mutex_);
+		meta_cache_.erase(meta);
 	}
 
-	const_iterator
-	end() const
-	{
-		return file_map_.end();
-	}
-
-	const_iterator
-	find(const filesystem::Path& path) const
-	{
-		return file_map_.find(path);
-	}
-
-	FT_Face&
-	operator[](const filesystem::Path& path)
-	{
-		return file_map_[path];
+	void remove(const filesystem::Path& path) {
+		std::lock_guard<std::mutex> lock(cache_mutex_);
+		file_cache_.erase(path);
 	}
 
 	void clear()
 	{
-		for (const auto& item : file_map_)
+		std::lock_guard<std::mutex> lock(cache_mutex_);
+		for (const auto& item : file_cache_)
 			FT_Done_Face(item.second);
-		file_map_.clear();
+		file_cache_.clear();
+		meta_cache_.clear();
 	}
 
-	~FaceMap()
+	~FaceCache()
 	{
 		clear();
 	}
 
-	FaceMap(const FaceMap&) = delete; // Copy prohibited
-	void operator=(const FaceMap&) = delete; // Assignment prohibited
-	FaceMap(FaceMap&&) = delete; // Move constructor prohibited
-	FaceMap& operator=(FaceMap&&) = delete; // Move assignment prohibited
+	FaceCache(const FaceCache&) = delete; // Copy prohibited
+	void operator=(const FaceCache&) = delete; // Assignment prohibited
+	FaceCache(FaceCache&&) = delete; // Move constructor prohibited
+	FaceCache& operator=(FaceCache&&) = delete; // Move assignment prohibited
 
 private:
-	std::map<filesystem::Path, FT_Face> file_map_;
+	std::map<filesystem::Path, FT_Face> file_cache_;
+	std::map<FontMeta, FT_Face> meta_cache_;
+	mutable std::mutex cache_mutex_;
 };
 
 /**
@@ -339,7 +335,7 @@ private:
 	}
 };
 
-static FaceMap face_map;
+static FaceCache face_cache;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -567,8 +563,6 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 	if (get_canvas())
 		meta.canvas_path = get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR;
 
-	FaceCache &face_cache = FaceCache::instance();
-
 	{
 		FT_Face tmp_face = face_cache.get(meta);
 		if (tmp_face) {
@@ -701,14 +695,14 @@ Layer_Freetype::new_face(const String &newfont)
 
 	for (const std::string& path : filenames) {
 		filesystem::Path absolute_path = filesystem::absolute(path);
-		auto face_map_iter = face_map.find(absolute_path);
-		if (face_map_iter != face_map.end()) {
-			face = face_map_iter->second;
+		auto face_ptr = face_cache.get(absolute_path);
+		if (face_ptr) {
+			face = face_ptr;
 			break;
 		}
 		error = FT_New_Face(ft_library, path.c_str(), face_index, &face);
 		if (!error) {
-			face_map[absolute_path] = face;
+			face_cache.put(absolute_path, face);
 			FaceMetaData* data = new FaceMetaData();
 			data->path = path;
 #if HAVE_HARFBUZZ
