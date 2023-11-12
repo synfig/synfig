@@ -213,6 +213,10 @@ public:
 	}
 
 	void put(const FontMeta &meta, FT_Face face) {
+		if (!face) {
+			synfig::warning(_("Trying to cache a NULL face of font %s. Ignored."), meta.family.c_str());
+			return;
+		}
 		std::lock_guard<std::mutex> lock(cache_mutex);
 		cache[meta] = face;
 	}
