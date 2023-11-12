@@ -198,31 +198,21 @@ struct FontMeta {
 	}
 };
 
-struct FaceInfo {
-	FT_Face face = nullptr;
-
-	FaceInfo() = default;
-	explicit FaceInfo(FT_Face ft_face)
-		: face(ft_face)
-	{
-	}
-};
-
 /// Cache font faces for speeding up the text layer rendering
 class FaceCache {
-	std::map<FontMeta, FaceInfo> cache;
+	std::map<FontMeta, FT_Face> cache;
 	mutable std::mutex cache_mutex;
 	FaceCache() = default; // Make constructor private to prevent instancing
 public:
-	FaceInfo get(const FontMeta &meta) const {
+	FT_Face get(const FontMeta &meta) const {
 		std::lock_guard<std::mutex> lock(cache_mutex);
 		auto iter = cache.find(meta);
 		if (iter != cache.end())
 			return iter->second;
-		return FaceInfo();
+		return nullptr;
 	}
 
-	void put(const FontMeta &meta, FaceInfo face) {
+	void put(const FontMeta &meta, FT_Face face) {
 		std::lock_guard<std::mutex> lock(cache_mutex);
 		cache[meta] = face;
 	}
@@ -266,31 +256,32 @@ struct FaceMap
 	const_iterator
 	begin() const
 	{
-		return map_.begin();
+		return file_map_.begin();
 	}
 
 	const_iterator
 	end() const
 	{
-		return map_.end();
+		return file_map_.end();
 	}
 
 	const_iterator
 	find(const filesystem::Path& path) const
 	{
-		return map_.find(path);
+		return file_map_.find(path);
 	}
 
 	FT_Face&
 	operator[](const filesystem::Path& path)
 	{
-		return map_[path];
+		return file_map_[path];
 	}
 
 	void clear()
 	{
-		for (const auto& item : map_)
+		for (const auto& item : file_map_)
 			FT_Done_Face(item.second);
+		file_map_.clear();
 	}
 
 	~FaceMap()
@@ -304,7 +295,7 @@ struct FaceMap
 	FaceMap& operator=(FaceMap&&) = delete; // Move assignment prohibited
 
 private:
-	std::map<filesystem::Path, FT_Face> map_;
+	std::map<filesystem::Path, FT_Face> file_map_;
 };
 
 /**
@@ -575,8 +566,7 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 	FaceCache &face_cache = FaceCache::instance();
 
 	{
-		FaceInfo face_info = face_cache.get(meta);
-		FT_Face tmp_face = face_info.face;
+		FT_Face tmp_face = face_cache.get(meta);
 		if (tmp_face) {
 			if (face != tmp_face)
 				need_sync |= SYNC_FONT;
@@ -591,7 +581,7 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 	auto cache_face = [&](FT_Face face) {
 		if (!font_path_from_canvas)
 			meta.canvas_path.clear();
-		face_cache.put(meta, FaceInfo(face));
+		face_cache.put(meta, face);
 	};
 
 	if (has_valid_font_extension(font_fam_))
