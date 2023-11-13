@@ -1318,11 +1318,6 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			break;
 		}
 		case 2:	{ // Attempt to drag and move the window
-			// if (Duck::Handle duck = find_duck(mouse_pos, radius))
-			// 	duck->signal_user_click(1)();
-			// else
-			// if(Bezier::Handle bezier = find_bezier(mouse_pos, radius, &bezier_click_pos))
-			//	bezier->signal_user_click(1)(bezier_click_pos);
 			if (get_drag_mode() == DRAG_DUCK) {
 				end_duck_drag();
 				set_drag_mode(DRAG_NONE);
