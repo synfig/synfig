@@ -35,10 +35,9 @@
 
 #include <vector>
 
-#include <ETL/handle>
-
-#include <synfig/vector.h>
+#include <synfig/handle.h>
 #include <synfig/rect.h>
+#include <synfig/vector.h>
 
 /* === M A C R O S ========================================================= */
 

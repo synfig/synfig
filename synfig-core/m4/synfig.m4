@@ -7,7 +7,6 @@
 
 AC_DEFUN([SYNFIG_DEPS],
 [
-	USING_ETL(,$2)
 	AM_PATH_XML2(,,$2)
 	AC_CHECK_FUNCS([floor pow sqrt],,$2)
 	AM_LIBXMLPP(,$2)
