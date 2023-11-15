@@ -1323,6 +1323,12 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				set_drag_mode(DRAG_NONE);
 			}
 
+			if (Duck::Handle duck = find_duck(mouse_pos, radius))
+				duck->signal_user_click(1)();
+			else
+			if(Bezier::Handle bezier = find_bezier(mouse_pos, radius, &bezier_click_pos))
+				bezier->signal_user_click(1)(bezier_click_pos);
+
 			if (canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,BUTTON_MIDDLE,mouse_pos,pressure,modifier))==Smach::RESULT_OK) {
 				set_drag_mode(
 					(modifier & GDK_CONTROL_MASK) ? DRAG_ZOOM_WINDOW
