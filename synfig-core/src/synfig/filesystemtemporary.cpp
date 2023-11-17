@@ -633,18 +633,18 @@ FileSystemTemporary::open_temporary(const String &filename)
 	return true;
 }
 
-String
-FileSystemTemporary::generate_indexed_temporary_filename(const FileSystem::Handle &fs, const String &filename)
+filesystem::Path
+FileSystemTemporary::generate_indexed_temporary_filename(const FileSystem::Handle &fs, const filesystem::Path&filename)
 {
-	String extension = filesystem::Path::filename_extension(filename);
-	String sans_extension = filesystem::Path::filename_sans_extension(filename);
+    String extension = filename.extension().u8string();
+    String sans_extension = filename.stem().u8string();
 	for (int index = 1; index < 10000; ++index) {
 		String indexed_filename = strprintf("%s_%04d%s", sans_extension.c_str(), index, extension.c_str());
 		if (!fs->is_exists(indexed_filename))
 			return indexed_filename;
 	}
-	assert(false);
-	return String();
+    assert(false);
+    return {};
 }
 
 std::pair<filesystem::Path, SmartFILE>

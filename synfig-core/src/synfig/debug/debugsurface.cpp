@@ -60,18 +60,18 @@ void
 DebugSurface::save_to_file(const void *buffer, int width, int height, int pitch, const String &filename, bool overwrite)
 {
 	// generate filename
-	String actual_filename =
+    filesystem::Path actual_filename =
 		overwrite
 		? filename
 		: FileSystemTemporary::generate_indexed_temporary_filename(
-			FileSystemNative::instance(),
-			filename + ".tga" );
+            FileSystemNative::instance(),
+            filename + filesystem::Path{".tga"} );
 
 	if (!buffer || width <= 0 || height <= 0)
 	{
 		// save empty file for empty surface
 		FileSystemNative::instance()
-			->get_write_stream(actual_filename);
+            ->get_write_stream(actual_filename.u8string());
 	}
 	else
 	{
@@ -93,7 +93,7 @@ DebugSurface::save_to_file(const void *buffer, int width, int height, int pitch,
 		// create file
 		FileSystem::WriteStream::Handle ws =
 			FileSystemNative::instance()
-				->get_write_stream(actual_filename);
+                ->get_write_stream(actual_filename.u8string());
 
 		// write header
 		unsigned char targa_header[] = {

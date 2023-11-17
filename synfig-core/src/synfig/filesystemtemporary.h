@@ -144,7 +144,7 @@ namespace synfig
 		static String get_system_temporary_directory();
 		static String generate_temporary_filename_base(const String &tag, const String &extension = String());
 		static String generate_system_temporary_filename(const String &tag, const String &extension = String());
-		static String generate_indexed_temporary_filename(const FileSystem::Handle &fs, const String &filename);
+        static filesystem::Path generate_indexed_temporary_filename(const FileSystem::Handle &fs, const filesystem::Path& filename);
 		static bool scan_temporary_directory(const String &tag, FileList &out_files, const String &dirname = String());
 
 		/**
