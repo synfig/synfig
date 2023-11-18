@@ -625,7 +625,7 @@ Instance::save_as(const synfig::String &file_name)
 		{
 			FileSystemTemporary::Handle new_temporary_filesystem = new FileSystemTemporary(
 				previous_temporary_filesystem->get_tag(),
-				previous_temporary_filesystem->get_temporary_directory(),
+				previous_temporary_filesystem->get_temporary_directory().u8string(),
 				new_canvas_filesystem );
 			new_temporary_filesystem->set_meta("filename", new_canvas_filename);
 			new_temporary_filesystem->set_meta("as", new_canvas_filename);

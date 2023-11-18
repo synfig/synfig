@@ -119,7 +119,7 @@ FileSystemTemporary::generate_system_temporary_filename(const String &tag, const
 bool
 FileSystemTemporary::create_temporary_directory() const
 {
-	return file_system->directory_create_recursive(get_temporary_directory());
+	return file_system->directory_create_recursive(get_temporary_directory().u8string());
 }
 
 bool
@@ -277,9 +277,7 @@ FileSystemTemporary::get_write_stream(const String &filename)
 		create_temporary_directory();
 		FileInfo new_info;
 		new_info.name = fix_slashes(filename);
-		new_info.tmp_filename = get_temporary_directory()
-				              + ETL_DIRECTORY_SEPARATOR
-							  + generate_temporary_filename_base(tag + ".file");
+		new_info.tmp_filename = (get_temporary_directory() / generate_temporary_filename_base(tag + ".file")).u8string();
 		stream = file_system->get_write_stream(new_info.tmp_filename);
 		if (stream)
 		{
@@ -292,9 +290,7 @@ FileSystemTemporary::get_write_stream(const String &filename)
 	{
 		create_temporary_directory();
 		String tmp_filename = i->second.tmp_filename.empty()
-				            ? get_temporary_directory()
-							  + ETL_DIRECTORY_SEPARATOR
-							  + generate_temporary_filename_base(tag + ".file")
+							? (get_temporary_directory() / generate_temporary_filename_base(tag + ".file")).u8string()
 				            : i->second.tmp_filename;
 		stream = file_system->get_write_stream(tmp_filename);
 		if (stream)
@@ -440,7 +436,7 @@ FileSystemTemporary::discard_changes()
 }
 
 void
-FileSystemTemporary::reset_temporary_filename_base(const String &tag, const String &temporary_directory)
+FileSystemTemporary::reset_temporary_filename_base(const String& tag, const filesystem::Path& temporary_directory)
 {
 	// remove previous file
 	assert(empty());
@@ -493,7 +489,7 @@ FileSystemTemporary::save_temporary() const
 {
 	if (empty())
 	{
-		file_system->file_remove(get_temporary_directory() + ETL_DIRECTORY_SEPARATOR + get_temporary_filename_base());
+		file_system->file_remove((get_temporary_directory() / get_temporary_filename_base()).u8string());
 		return true;
 	}
 
@@ -519,9 +515,7 @@ FileSystemTemporary::save_temporary() const
 	create_temporary_directory();
 	FileSystem::WriteStream::Handle stream =
 		file_system->get_write_stream(
-			get_temporary_directory()
-		  + ETL_DIRECTORY_SEPARATOR
-		  + get_temporary_filename_base() );
+				(get_temporary_directory() / get_temporary_filename_base()).u8string() );
 	if (!stream) return false;
 
 	stream = new ZWriteStream(stream);

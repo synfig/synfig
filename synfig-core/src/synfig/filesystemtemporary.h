@@ -119,10 +119,10 @@ namespace synfig
 		void discard_changes();
 
 		const String& get_tag() const { return tag; }
-		const filesystem::Path& get_temporary_directory() const { return temporary_directory.u8string(); }
+		const filesystem::Path& get_temporary_directory() const { return temporary_directory; }
 		const String& get_temporary_filename_base() const { return temporary_filename_base; }
 		void reset_temporary_filename_base() { reset_temporary_filename_base(get_tag(), get_temporary_directory()); }
-		void reset_temporary_filename_base(const String &tag, const String &temporary_directory);
+		void reset_temporary_filename_base(const String& tag, const filesystem::Path& temporary_directory);
 
 		String get_meta(const String &key) const;
 		void set_meta(const String &key, const String &value);
