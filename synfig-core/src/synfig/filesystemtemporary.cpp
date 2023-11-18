@@ -61,7 +61,7 @@ using namespace synfig;
 FileSystemTemporary::FileSystemTemporary(const String &tag, const String &temporary_directory, const FileSystem::Handle &sub_file_system):
 	file_system(FileSystemNative::instance()),
 	tag(tag),
-	temporary_directory(temporary_directory.empty() ? get_system_temporary_directory().u8string() : temporary_directory),
+	temporary_directory(temporary_directory.empty() ? get_system_temporary_directory() : temporary_directory),
 	temporary_filename_base(generate_temporary_filename_base(tag)),
 	keep_files_when_destroyed(false),
 	autosave(true)

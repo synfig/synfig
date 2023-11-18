@@ -72,7 +72,7 @@ namespace synfig
 		FileSystem::Handle sub_file_system;
 
 		String tag;
-		String temporary_directory;
+		filesystem::Path temporary_directory;
 		String temporary_filename_base;
 
 		std::map<String, String> meta;
@@ -119,7 +119,7 @@ namespace synfig
 		void discard_changes();
 
 		const String& get_tag() const { return tag; }
-		const String& get_temporary_directory() const { return temporary_directory; }
+		const filesystem::Path& get_temporary_directory() const { return temporary_directory.u8string(); }
 		const String& get_temporary_filename_base() const { return temporary_filename_base; }
 		void reset_temporary_filename_base() { reset_temporary_filename_base(get_tag(), get_temporary_directory()); }
 		void reset_temporary_filename_base(const String &tag, const String &temporary_directory);
