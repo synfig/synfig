@@ -30,9 +30,10 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/handle>
-#include <synfig/string.h>
 #include <mutex>
+
+#include <synfig/filesystem_path.h>
+#include <synfig/string.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -51,23 +52,23 @@ private:
 
 public:
 
-static void append_line_to_file(const String &logfile, const String &str);
+static void append_line_to_file(const filesystem::Path& logfile, const String& str);
 
 
 //! Reports an error
 /*! Call this when an error occurs, describing what happened */
-static void error(const String &logfile, const String &str);
-static void error(const String &logfile, const char *format,...);
+static void error(const filesystem::Path& logfile, const String& str);
+static void error(const filesystem::Path& logfile, const char* format,...);
 
 //! Reports a warning
 /*! Call this when something questionable occurs, describing what happened */
-static void warning(const String &logfile, const String &str);
-static void warning(const String &logfile, const char *format,...);
+static void warning(const filesystem::Path& logfile, const String& str);
+static void warning(const filesystem::Path& logfile, const char* format,...);
 
 //! Reports some information
 /*! Call this to report various information. Please be sparse... */
-static void info(const String &logfile, const String &str);
-static void info(const String &logfile, const char *format,...);
+static void info(const filesystem::Path& logfile, const String& str);
+static void info(const filesystem::Path& logfile, const char* format,...);
 
 };
 
