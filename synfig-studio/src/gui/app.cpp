@@ -3654,7 +3654,7 @@ App::open_from_temporary_filesystem(const filesystem::Path& temporary_filename)
 
 		// try open temporary container
 		FileSystemTemporary::Handle file_system_temporary(new FileSystemTemporary(""));
-		if (!file_system_temporary->open_temporary(temporary_filename.u8string()))
+		if (!file_system_temporary->open_temporary(temporary_filename))
 			throw (String)strprintf(_("Unable to open temporary container \"%s\"\n\n"), temporary_filename.u8_str());
 
 		// get original filename

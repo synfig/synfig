@@ -139,7 +139,7 @@ namespace synfig
 			{ autosave = value; }
 
 		bool save_temporary() const;
-		bool open_temporary(const String &filename);
+		bool open_temporary(const filesystem::Path& filename);
 
 		static filesystem::Path get_system_temporary_directory();
 		static filesystem::Path generate_temporary_filename_base(const String &tag, const String &extension = String());

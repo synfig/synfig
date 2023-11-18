@@ -548,21 +548,21 @@ FileSystemTemporary::get_xml_node_text(xmlpp::Node *node)
 }
 
 bool
-FileSystemTemporary::open_temporary(const String &filename)
+FileSystemTemporary::open_temporary(const filesystem::Path& filename)
 {
 	assert(empty());
 	discard_changes();
 
 	String tag;
-	String temporary_directory = filesystem::Path::dirname(filename);
-	String temporary_filename_base = filesystem::Path::basename(filename);
+	filesystem::Path temporary_directory = filename.parent_path();
+	String temporary_filename_base = filename.filename().u8string();
 
 	size_t tag_begin = temporary_filename_base.find_first_of('_');
 	size_t tag_end   = temporary_filename_base.find_last_of('_');
 	if (tag_begin != String::npos && tag_end != String::npos && tag_end - tag_begin > 1)
 		tag = temporary_filename_base.substr(tag_begin + 1, tag_end - tag_begin - 1);
 
-	FileSystem::ReadStream::Handle stream = file_system->get_read_stream(filename);
+	FileSystem::ReadStream::Handle stream = file_system->get_read_stream(filename.u8string());
 	if (!stream) return false;
 	stream = new ZReadStream(stream, zstreambuf::compression::gzip);
 
@@ -614,7 +614,7 @@ FileSystemTemporary::open_temporary(const String &filename)
 							info.is_removed = get_xml_node_text(*k) == "true";
 					}
 					if (!info.tmp_filename.empty())
-						info.tmp_filename = temporary_directory + ETL_DIRECTORY_SEPARATOR + info.tmp_filename;
+						info.tmp_filename = (temporary_directory / info.tmp_filename).u8string();
 					files[info.name] = info;
 				}
 			}

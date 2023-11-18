@@ -165,7 +165,7 @@ AutoRecover::clear_backups()
 			filesystem::Path filename = App::get_temporary_directory() / *i;
 			bool s = false;
 			try {
-				s = FileSystemTemporary("").open_temporary(filename.u8string());
+				s = FileSystemTemporary("").open_temporary(filename);
 			} catch (...) {
 				synfig::warning("Autobackup file is not recoverable. Forcing to remove.");
 			}
