@@ -58,7 +58,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-FileSystemTemporary::FileSystemTemporary(const String &tag, const String &temporary_directory, const FileSystem::Handle &sub_file_system):
+FileSystemTemporary::FileSystemTemporary(const String& tag, const filesystem::Path& temporary_directory, const FileSystem::Handle& sub_file_system):
 	file_system(FileSystemNative::instance()),
 	tag(tag),
 	temporary_directory(temporary_directory.empty() ? get_system_temporary_directory() : temporary_directory),

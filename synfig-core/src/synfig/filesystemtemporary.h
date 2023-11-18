@@ -92,7 +92,7 @@ namespace synfig
 		static String get_xml_node_text(xmlpp::Node *node);
 
 	public:
-		explicit FileSystemTemporary(const String &tag, const String &temporary_directory = String(), const FileSystem::Handle &sub_file_system = FileSystem::Handle());
+		explicit FileSystemTemporary(const String& tag, const filesystem::Path& temporary_directory = {}, const FileSystem::Handle& sub_file_system = FileSystem::Handle());
 		~FileSystemTemporary();
 
 		virtual bool is_file(const String &filename);
