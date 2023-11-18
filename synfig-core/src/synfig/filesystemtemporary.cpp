@@ -87,7 +87,7 @@ FileSystemTemporary::get_system_temporary_directory()
     return String(tmpdir);
 }
 
-String
+filesystem::Path
 FileSystemTemporary::generate_temporary_filename_base(const String &tag, const String &extension)
 {
 	return "synfig_" + tag + "_" + GUID().get_string() + (extension.size() && extension[0] != '.' ? "." : "") + extension;

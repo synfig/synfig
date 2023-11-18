@@ -73,7 +73,7 @@ namespace synfig
 
 		String tag;
 		filesystem::Path temporary_directory;
-		String temporary_filename_base;
+		filesystem::Path temporary_filename_base;
 
 		std::map<String, String> meta;
 
@@ -120,7 +120,7 @@ namespace synfig
 
 		const String& get_tag() const { return tag; }
 		const filesystem::Path& get_temporary_directory() const { return temporary_directory; }
-		const String& get_temporary_filename_base() const { return temporary_filename_base; }
+		const filesystem::Path& get_temporary_filename_base() const { return temporary_filename_base; }
 		void reset_temporary_filename_base() { reset_temporary_filename_base(get_tag(), get_temporary_directory()); }
 		void reset_temporary_filename_base(const String& tag, const filesystem::Path& temporary_directory);
 
@@ -142,7 +142,7 @@ namespace synfig
 		bool open_temporary(const String &filename);
 
 		static filesystem::Path get_system_temporary_directory();
-		static String generate_temporary_filename_base(const String &tag, const String &extension = String());
+		static filesystem::Path generate_temporary_filename_base(const String &tag, const String &extension = String());
 		static String generate_system_temporary_filename(const String &tag, const String &extension = String());
         static filesystem::Path generate_indexed_temporary_filename(const FileSystem::Handle &fs, const filesystem::Path& filename);
 		static bool scan_temporary_directory(const String &tag, FileList &out_files, const String &dirname = String());
