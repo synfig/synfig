@@ -61,7 +61,7 @@ using namespace synfig;
 FileSystemTemporary::FileSystemTemporary(const String &tag, const String &temporary_directory, const FileSystem::Handle &sub_file_system):
 	file_system(FileSystemNative::instance()),
 	tag(tag),
-	temporary_directory(temporary_directory.empty() ? get_system_temporary_directory() : temporary_directory),
+	temporary_directory(temporary_directory.empty() ? get_system_temporary_directory().u8string() : temporary_directory),
 	temporary_filename_base(generate_temporary_filename_base(tag)),
 	keep_files_when_destroyed(false),
 	autosave(true)
@@ -76,7 +76,7 @@ FileSystemTemporary::~FileSystemTemporary()
 	}
 }
 
-String
+filesystem::Path
 FileSystemTemporary::get_system_temporary_directory()
 {
     const char *tmpdir;
@@ -96,7 +96,7 @@ FileSystemTemporary::generate_temporary_filename_base(const String &tag, const S
 bool
 FileSystemTemporary::scan_temporary_directory(const String &tag, FileList &out_files, const String &dirname)
 {
-	String tmpdir = dirname.empty() ? get_system_temporary_directory() : dirname;
+	String tmpdir = dirname.empty() ? get_system_temporary_directory().u8string() : dirname;
 
 	FileList files;
 	if (!FileSystemNative::instance()->directory_scan(dirname, files))
@@ -113,7 +113,7 @@ FileSystemTemporary::scan_temporary_directory(const String &tag, FileList &out_f
 String
 FileSystemTemporary::generate_system_temporary_filename(const String &tag, const String &extension)
 {
-	return get_system_temporary_directory() + ETL_DIRECTORY_SEPARATOR + generate_temporary_filename_base(tag, extension);
+	return (get_system_temporary_directory() / generate_temporary_filename_base(tag, extension)).u8string();
 }
 
 bool
