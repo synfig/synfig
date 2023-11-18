@@ -238,7 +238,7 @@ FileSystemTemporary::file_remove(const String &filename)
 			info.is_removed = true;
 			if (!info.tmp_filename.empty())
 			{
-				file_system->file_remove(info.tmp_filename);
+				file_system->file_remove(info.tmp_filename.u8string());
 				info.tmp_filename.clear();
 			}
 			autosave_temporary();
@@ -255,7 +255,7 @@ FileSystemTemporary::get_read_stream(const String &filename)
 	if (i != files.end())
 	{
 		if (!i->second.is_removed && !i->second.is_directory && !i->second.tmp_filename.empty())
-			return file_system->get_read_stream(i->second.tmp_filename);
+			return file_system->get_read_stream(i->second.tmp_filename.u8string());
 	}
 	else
 	{
@@ -277,8 +277,8 @@ FileSystemTemporary::get_write_stream(const String &filename)
 		create_temporary_directory();
 		FileInfo new_info;
 		new_info.name = fix_slashes(filename);
-		new_info.tmp_filename = (get_temporary_directory() / generate_temporary_filename_base(tag + ".file")).u8string();
-		stream = file_system->get_write_stream(new_info.tmp_filename);
+		new_info.tmp_filename = get_temporary_directory() / generate_temporary_filename_base(tag + ".file");
+		stream = file_system->get_write_stream(new_info.tmp_filename.u8string());
 		if (stream)
 		{
 			files[new_info.name] = new_info;
@@ -289,10 +289,10 @@ FileSystemTemporary::get_write_stream(const String &filename)
 	if (!i->second.is_directory || i->second.is_removed)
 	{
 		create_temporary_directory();
-		String tmp_filename = i->second.tmp_filename.empty()
-							? (get_temporary_directory() / generate_temporary_filename_base(tag + ".file")).u8string()
+		filesystem::Path tmp_filename = i->second.tmp_filename.empty()
+							? get_temporary_directory() / generate_temporary_filename_base(tag + ".file")
 				            : i->second.tmp_filename;
-		stream = file_system->get_write_stream(tmp_filename);
+		stream = file_system->get_write_stream(tmp_filename.u8string());
 		if (stream)
 		{
 			i->second.tmp_filename = tmp_filename;
@@ -312,7 +312,7 @@ FileSystemTemporary::get_real_uri(const String &filename)
 	if (i != files.end())
 	{
 		if (!i->second.tmp_filename.empty())
-			return file_system->get_real_uri(i->second.tmp_filename);
+			return file_system->get_real_uri(i->second.tmp_filename.u8string());
 	}
 	else
 	{
@@ -373,10 +373,10 @@ FileSystemTemporary::save_changes(
 		if (!i->second.is_removed
 		 && !i->second.is_directory
 		 && !i->second.tmp_filename.empty()
-		 && copy(file_system, i->second.tmp_filename, target_file_system, i->second.name))
+		 && copy(file_system, i->second.tmp_filename.u8string(), target_file_system, i->second.name))
 		{
 			if (remove_files)
-				file_system->file_remove(i->second.tmp_filename);
+				file_system->file_remove(i->second.tmp_filename.u8string());
 				
 			files.erase(i++);
 		}
@@ -422,7 +422,7 @@ FileSystemTemporary::discard_changes()
 		 && !i->second.is_directory
 		 && !i->second.tmp_filename.empty())
 		{
-			file_system->file_remove(i->second.tmp_filename);
+			file_system->file_remove(i->second.tmp_filename.u8string());
 		}
 	}
 
@@ -507,7 +507,7 @@ FileSystemTemporary::save_temporary() const
 	for (FileMap::const_iterator i = files.begin(); i != files.end(); ++i) {
 		xmlpp::Element *entry = files_node->add_child("entry");
 		entry->add_child("name")->set_child_text(i->second.name);
-		entry->add_child("tmp-basename")->set_child_text(filesystem::Path::basename(i->second.tmp_filename));
+		entry->add_child("tmp-basename")->set_child_text(i->second.tmp_filename.filename().u8string());
 		entry->add_child("is-directory")->set_child_text(i->second.is_directory ? "true" : "false");
 		entry->add_child("is-removed")->set_child_text(i->second.is_removed ? "true" : "false");
 	}
@@ -614,7 +614,7 @@ FileSystemTemporary::open_temporary(const filesystem::Path& filename)
 							info.is_removed = get_xml_node_text(*k) == "true";
 					}
 					if (!info.tmp_filename.empty())
-						info.tmp_filename = (temporary_directory / info.tmp_filename).u8string();
+						info.tmp_filename = temporary_directory / info.tmp_filename;
 					files[info.name] = info;
 				}
 			}

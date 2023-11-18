@@ -57,7 +57,7 @@ namespace synfig
 		struct FileInfo
 		{
 			String name;
-			String tmp_filename;
+			filesystem::Path tmp_filename;
 			bool is_directory;
 			bool is_removed;
 
