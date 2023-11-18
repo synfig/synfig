@@ -145,7 +145,7 @@ namespace synfig
 		static filesystem::Path generate_temporary_filename_base(const String &tag, const String &extension = String());
 		static filesystem::Path generate_system_temporary_filename(const String &tag, const String &extension = String());
         static filesystem::Path generate_indexed_temporary_filename(const FileSystem::Handle &fs, const filesystem::Path& filename);
-		static bool scan_temporary_directory(const String &tag, FileList &out_files, const String &dirname = String());
+		static bool scan_temporary_directory(const String& tag, FileList& out_files, const filesystem::Path& dirname = {});
 
 		/**
 		 * Generate a random non-existent file name in @a dir.

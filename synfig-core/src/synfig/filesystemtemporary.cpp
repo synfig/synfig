@@ -94,18 +94,18 @@ FileSystemTemporary::generate_temporary_filename_base(const String &tag, const S
 }
 
 bool
-FileSystemTemporary::scan_temporary_directory(const String &tag, FileList &out_files, const String &dirname)
+FileSystemTemporary::scan_temporary_directory(const String& tag, FileList& out_files, const filesystem::Path& dirname)
 {
-	String tmpdir = dirname.empty() ? get_system_temporary_directory().u8string() : dirname;
+	filesystem::Path tmpdir = dirname.empty() ? get_system_temporary_directory() : dirname;
 
 	FileList files;
-	if (!FileSystemNative::instance()->directory_scan(dirname, files))
+	if (!FileSystemNative::instance()->directory_scan(dirname.u8string(), files))
 		return false;
 
 	String prefix = "synfig_" + tag + "_";
 	for(FileList::const_iterator i = files.begin(); i != files.end(); ++i)
 		if (i->substr(0, prefix.size()) == prefix)
-			if (FileSystemNative::instance()->is_file(tmpdir + ETL_DIRECTORY_SEPARATOR + *i))
+			if (FileSystemNative::instance()->is_file((tmpdir / *i).u8string()))
 				out_files.push_back(*i);
 	return true;
 }
