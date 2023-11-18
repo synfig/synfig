@@ -110,10 +110,10 @@ FileSystemTemporary::scan_temporary_directory(const String &tag, FileList &out_f
 	return true;
 }
 
-String
+filesystem::Path
 FileSystemTemporary::generate_system_temporary_filename(const String &tag, const String &extension)
 {
-	return (get_system_temporary_directory() / generate_temporary_filename_base(tag, extension)).u8string();
+	return get_system_temporary_directory() / generate_temporary_filename_base(tag, extension);
 }
 
 bool
