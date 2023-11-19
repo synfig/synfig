@@ -278,9 +278,9 @@ StatePolygon_Context::load_settings()
 
 		set_opacity(settings.get_value("polygon.opacity", 1.0));
 
-		set_bline_width(settings.get_value("polygon.bline_width", Distance("1px")));
+		set_bline_width(settings.get_value("polygon.bline_width", Distance("1px")).as(App::distance_system, get_canvas()->rend_desc()));
 
-		set_feather_size(settings.get_value("polygon.feather", Distance("0px")));
+		set_feather_size(settings.get_value("polygon.feather", Distance("0px")).as(App::distance_system, get_canvas()->rend_desc()));
 
 		set_invert(settings.get_value("polygon.invert", false));
 

@@ -123,6 +123,15 @@ Distance::convert(Distance::System target, const RendDesc& rend_desc)
 	system_=target;
 }
 
+Distance
+Distance::as(System target, const RendDesc& rend_desc) const
+{
+	Distance d;
+	d.value_ = get(target, rend_desc);
+	d.system_ = target;
+	return d;
+}
+
 Real
 Distance::get(Distance::System target, const RendDesc& rend_desc)const
 {
