@@ -3529,7 +3529,7 @@ App::wrap_into_temporary_filesystem(
 	std::string as,
 	synfig::FileContainerZip::file_size_t truncate_storage_size )
 {
-	FileSystemTemporary::Handle temporary_file_system = new FileSystemTemporary("instance", get_temporary_directory().u8string(), canvas_file_system);
+	FileSystemTemporary::Handle temporary_file_system = new FileSystemTemporary("instance", get_temporary_directory(), canvas_file_system);
 	temporary_file_system->set_meta("filename", filename);
 	temporary_file_system->set_meta("as", as);
 	temporary_file_system->set_meta("truncate", synfig::strprintf("%lld", truncate_storage_size));
@@ -3654,7 +3654,7 @@ App::open_from_temporary_filesystem(const filesystem::Path& temporary_filename)
 
 		// try open temporary container
 		FileSystemTemporary::Handle file_system_temporary(new FileSystemTemporary(""));
-		if (!file_system_temporary->open_temporary(temporary_filename.u8string()))
+		if (!file_system_temporary->open_temporary(temporary_filename))
 			throw (String)strprintf(_("Unable to open temporary container \"%s\"\n\n"), temporary_filename.u8_str());
 
 		// get original filename

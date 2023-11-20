@@ -212,12 +212,12 @@ VectorizerSettings::on_convert_pressed()
 {
 	hide();
 	synfigapp::Action::Handle action(synfigapp::Action::create("Vectorization"));
-	synfig::debug::Log::info("","Action Created ");
+	synfig::debug::Log::info({},"Action Created ");
 	assert(action);
 	if(!action)
 		return;
 	savecurrconfig();
-	synfig::debug::Log::info("","Action Asserted ");
+	synfig::debug::Log::info({},"Action Asserted ");
 	// Add an if else to pass param according to outline /centerline
 	action->set_param("image",synfig::Layer::Handle::cast_dynamic(layer_bitmap_));
 	action->set_param("mode","centerline");
@@ -243,17 +243,17 @@ VectorizerSettings::on_convert_pressed()
 	action->set_param("canvas", canvas); 
 	action->set_param("canvas_interface", canvas_interface);
 
-	synfig::debug::Log::info("","Action param passed ");
+	synfig::debug::Log::info({},"Action param passed ");
 	if(!action->is_ready())
 	{
 		return;
 	}
-	synfig::debug::Log::info("","Action is ready ");
+	synfig::debug::Log::info({},"Action is ready ");
 	if(!instance->perform_action(action))
 	{
 		return;
 	}
-	synfig::debug::Log::info("","Convert Pressed....");
+	synfig::debug::Log::info({},"Convert Pressed....");
 }
 
 void

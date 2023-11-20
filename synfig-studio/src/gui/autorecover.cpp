@@ -128,7 +128,7 @@ bool
 AutoRecover::recovery_needed()const
 {
 	FileSystem::FileList files;
-	FileSystemTemporary::scan_temporary_directory("instance", files, App::get_temporary_directory().u8string());
+	FileSystemTemporary::scan_temporary_directory("instance", files, App::get_temporary_directory());
 	return !files.empty();
 }
 
@@ -139,7 +139,7 @@ AutoRecover::recover(int &number_recovered)
 	number_recovered = 0;
 
 	FileSystem::FileList files;
-	if (FileSystemTemporary::scan_temporary_directory("instance", files, App::get_temporary_directory().u8string()))
+	if (FileSystemTemporary::scan_temporary_directory("instance", files, App::get_temporary_directory()))
 	{
 		success = true;
 		for(FileSystem::FileList::const_iterator i = files.begin(); i != files.end(); ++i)
@@ -156,7 +156,7 @@ AutoRecover::clear_backups()
 {
 	bool success = false;
 	FileSystem::FileList files;
-	if (FileSystemTemporary::scan_temporary_directory("instance", files, App::get_temporary_directory().u8string()))
+	if (FileSystemTemporary::scan_temporary_directory("instance", files, App::get_temporary_directory()))
 	{
 		success = true;
 		for(FileSystem::FileList::const_iterator i = files.begin(); i != files.end(); ++i)
@@ -165,7 +165,7 @@ AutoRecover::clear_backups()
 			filesystem::Path filename = App::get_temporary_directory() / *i;
 			bool s = false;
 			try {
-				s = FileSystemTemporary("").open_temporary(filename.u8string());
+				s = FileSystemTemporary("").open_temporary(filename);
 			} catch (...) {
 				synfig::warning("Autobackup file is not recoverable. Forcing to remove.");
 			}

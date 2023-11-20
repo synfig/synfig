@@ -31,7 +31,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <ETL/handle>
-#include <synfig/string.h>
+#include <synfig/filesystem_path.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -50,11 +50,11 @@ namespace debug {
 class DebugSurface
 {
 public:
-	static void save_to_file(const void *buffer, int width, int height, int stride, const String &filename, bool overwrite = false);
-	static void save_to_file(const Surface &surface, const String &filename, bool overwrite = false);
-	static void save_to_file(const rendering::Surface &surface, const String &filename, bool overwrite = false);
-	static void save_to_file(const etl::handle<rendering::Surface> &surface, const String &filename, bool overwrite = false);
-	static void save_to_file(const etl::handle<rendering::SurfaceResource> &surface, const String &filename, bool overwrite = false);
+    static void save_to_file(const void *buffer, int width, int height, int stride, const synfig::filesystem::Path& filename, bool overwrite = false);
+    static void save_to_file(const Surface &surface, const filesystem::Path& filename, bool overwrite = false);
+    static void save_to_file(const rendering::Surface &surface, const filesystem::Path& filename, bool overwrite = false);
+    static void save_to_file(const etl::handle<rendering::Surface> &surface, const filesystem::Path& filename, bool overwrite = false);
+    static void save_to_file(const etl::handle<rendering::SurfaceResource> &surface, const filesystem::Path& filename, bool overwrite = false);
 };
 
 }; // END of namespace debug

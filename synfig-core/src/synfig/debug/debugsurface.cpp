@@ -57,21 +57,21 @@ using namespace debug;
 /* === M E T H O D S ======================================================= */
 
 void
-DebugSurface::save_to_file(const void *buffer, int width, int height, int pitch, const String &filename, bool overwrite)
+DebugSurface::save_to_file(const void *buffer, int width, int height, int pitch, const filesystem::Path& filename, bool overwrite)
 {
 	// generate filename
-	String actual_filename =
+    filesystem::Path actual_filename =
 		overwrite
 		? filename
 		: FileSystemTemporary::generate_indexed_temporary_filename(
-			FileSystemNative::instance(),
-			filename + ".tga" );
+            FileSystemNative::instance(),
+            filename + filesystem::Path{".tga"} );
 
 	if (!buffer || width <= 0 || height <= 0)
 	{
 		// save empty file for empty surface
 		FileSystemNative::instance()
-			->get_write_stream(actual_filename);
+            ->get_write_stream(actual_filename.u8string());
 	}
 	else
 	{
@@ -93,7 +93,7 @@ DebugSurface::save_to_file(const void *buffer, int width, int height, int pitch,
 		// create file
 		FileSystem::WriteStream::Handle ws =
 			FileSystemNative::instance()
-				->get_write_stream(actual_filename);
+                ->get_write_stream(actual_filename.u8string());
 
 		// write header
 		unsigned char targa_header[] = {
@@ -120,7 +120,7 @@ DebugSurface::save_to_file(const void *buffer, int width, int height, int pitch,
 }
 
 void
-DebugSurface::save_to_file(const Surface &surface, const String &filename, bool overwrite)
+DebugSurface::save_to_file(const Surface &surface, const filesystem::Path& filename, bool overwrite)
 {
 	if (surface.is_valid())
 		save_to_file(&surface[0][0], surface.get_w(), surface.get_h(), surface.get_pitch(), filename, overwrite);
@@ -129,7 +129,7 @@ DebugSurface::save_to_file(const Surface &surface, const String &filename, bool 
 }
 
 void
-DebugSurface::save_to_file(const rendering::Surface &surface, const String &filename, bool overwrite)
+DebugSurface::save_to_file(const rendering::Surface &surface, const filesystem::Path& filename, bool overwrite)
 {
 	if (surface.is_exists()) {
 		std::vector<Color> buffer(surface.get_pixels_count());
@@ -140,7 +140,7 @@ DebugSurface::save_to_file(const rendering::Surface &surface, const String &file
 }
 
 void
-DebugSurface::save_to_file(const rendering::Surface::Handle &surface, const String &filename, bool overwrite)
+DebugSurface::save_to_file(const rendering::Surface::Handle &surface, const filesystem::Path& filename, bool overwrite)
 {
 	if (surface)
 		save_to_file(*surface, filename, overwrite);
@@ -149,7 +149,7 @@ DebugSurface::save_to_file(const rendering::Surface::Handle &surface, const Stri
 }
 
 void
-DebugSurface::save_to_file(const rendering::SurfaceResource::Handle &surface, const String &filename, bool overwrite) {
+DebugSurface::save_to_file(const rendering::SurfaceResource::Handle &surface, const filesystem::Path& filename, bool overwrite) {
 	rendering::SurfaceResource::LockReadBase lock(surface);
 	if (lock.convert(rendering::Surface::Token::Handle(), false, true)) {
 		save_to_file(*lock.get_surface(), filename, overwrite);
