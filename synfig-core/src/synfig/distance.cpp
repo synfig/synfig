@@ -204,10 +204,11 @@ Distance::ident_system(const synfig::String& x)
 	synfig::String str;
 
 	// Make it all upper case, and remove white space
-	for(unsigned int i=0;i<x.size();i++)if(x[i]!=' ' && x[i]!='\t')str+=toupper(x[i]);
+	str = synfig::trim(x);
+	synfig::strtoupper(str);
 
 	// If it is plural, make it singular
-	if(str[str.size()-1]=='S')
+	if(!str.empty() && str.back()=='S')
 		str=synfig::String(str.begin(),str.end()-1);
 
 	if(str.empty() || str=="U" || str=="UNIT")
