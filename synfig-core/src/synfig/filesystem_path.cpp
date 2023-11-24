@@ -415,7 +415,7 @@ filesystem::Path::lexically_proximate(const Path& base) const
 		return *this;
 	return rel;
 }
-#include <synfig/general.h>
+
 filesystem::Path
 filesystem::Path::proximate_to(const Path& base) const
 {

@@ -243,9 +243,9 @@ StateBone_Context::load_settings()
 			set_id(settings.get_value("bone.skel_deform_id", _("NewSkeletonDeformation")));
 		}
 
-		set_skel_bone_width(settings.get_value("bone.skel_bone_width", Distance(DEFAULT_WIDTH)));
+		set_skel_bone_width(settings.get_value("bone.skel_bone_width", Distance(DEFAULT_WIDTH)).as(App::distance_system, get_canvas()->rend_desc()));
 
-		set_skel_deform_bone_width(settings.get_value("bone.skel_deform_bone_width", Distance(DEFAULT_WIDTH)));
+		set_skel_deform_bone_width(settings.get_value("bone.skel_deform_bone_width", Distance(DEFAULT_WIDTH)).as(App::distance_system, get_canvas()->rend_desc()));
 	}
 	catch(...)
 	{

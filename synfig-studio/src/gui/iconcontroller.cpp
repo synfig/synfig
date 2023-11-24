@@ -304,7 +304,7 @@ IconController::~IconController()
 }
 
 void
-IconController::init_icon(const synfig::String &name, const synfig::String &iconfile, const synfig::String& desc)
+IconController::init_icon(const synfig::String& name, const synfig::filesystem::Path& iconfile, const synfig::String& desc)
 {
 	Gtk::StockItem stockitem(Gtk::StockID("synfig-" + name), desc);
 	Gtk::Stock::add(stockitem);
@@ -313,24 +313,24 @@ IconController::init_icon(const synfig::String &name, const synfig::String &icon
 	icon_source.set_direction_wildcarded();
 	icon_source.set_state_wildcarded();
 	icon_source.set_size_wildcarded();
-	icon_source.set_filename(iconfile);
+	icon_source.set_filename(iconfile.u8string());
 	icon_set->add_source(icon_source);
 	icon_factory->add(stockitem.get_stock_id(), icon_set);
 }
 
 void
-IconController::init_icons(const synfig::String& path_to_icons)
+IconController::init_icons(const synfig::filesystem::Path& path_to_icons)
 {
+	std::string u8path = path_to_icons.u8string();
 	try{
-		Gtk::Window::set_default_icon_from_file(path_to_icons+"synfig_icon."+IMAGE_EXT);
-	} catch(...)
-	{
-		synfig::warning("Unable to open "+path_to_icons+"synfig_icon."+IMAGE_EXT);
+		Gtk::Window::set_default_icon_from_file(u8path + "/synfig_icon." IMAGE_EXT);
+	} catch(...) {
+		synfig::warning(_("Unable to open %s%s"), u8path.c_str(), "/synfig_icon." IMAGE_EXT);
 	}
 
 
 	for (const auto& item : known_icon_list)
-		init_icon(item.first, path_to_icons + item.second.first + "." IMAGE_EXT, _(item.second.second));
+		init_icon(item.first, u8path + '/' + item.second.first + "." IMAGE_EXT, _(item.second.second));
 
 	icon_factory->add_default();
 

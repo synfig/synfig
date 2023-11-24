@@ -79,7 +79,7 @@ std::vector<synfig::Layer::Handle>
 VectorizerCore::centerlineVectorize(synfig::Layer_Bitmap::Handle& image, const etl::handle<synfigapp::UIInterface>& ui_interface,
 const CenterlineConfiguration& configuration, const Gamma& gamma)
  {
-  synfig::debug::Log::info("","Inside CenterlineVectorize");
+  synfig::debug::Log::info({},"Inside CenterlineVectorize");
   VectorizerCoreGlobals globals;
   globals.currConfig = &configuration;
 

@@ -492,7 +492,7 @@ Renderer::optimize(Task::List &list) const
 	#endif
 
 	#ifdef DEBUG_OPTIMIZATION_COUNTERS
-	debug::Log::info("", "optimize %d tasks", count_tasks(list));
+	debug::Log::info({}, "optimize %d tasks", count_tasks(list));
 	#endif
 
 	int current_category_id = 0;
@@ -649,7 +649,7 @@ Renderer::optimize(Task::List &list) const
 		}
 
 		#ifdef DEBUG_OPTIMIZATION_COUNTERS
-		debug::Log::info("", "optimize category %d index %d: calls %d, changes %d",
+		debug::Log::info({}, "optimize category %d index %d: calls %d, changes %d",
 			current_category_id, current_optimizer_index, (int)calls_count, (int)optimizations_count );
 		#endif
 
@@ -870,8 +870,8 @@ void Renderer::cancel(const Task::List &list)
 
 void
 Renderer::log(
-	const String &logfile,
-	const Task::Handle &task,
+	const filesystem::Path& logfile,
+	const Task::Handle& task,
 	const Optimizer::RunParams* optimization_stack,
 	int level ) const
 {
@@ -959,9 +959,9 @@ Renderer::log(
 
 void
 Renderer::log(
-	const String &logfile,
-	const Task::List &list,
-	const String &name,
+	const filesystem::Path& logfile,
+	const Task::List& list,
+	const String& name,
 	const Optimizer::RunParams* optimization_stack ) const
 {
 	String line = "-------------------------------------------";
@@ -983,11 +983,11 @@ Renderer::initialize()
 
 	// init debug options
 	if (const char *s = getenv("SYNFIG_RENDERING_DEBUG_TASK_LIST_LOG"))
-		debug_options.task_list_log = s;
+		debug_options.task_list_log = {s};
 	if (const char *s = getenv("SYNFIG_RENDERING_DEBUG_TASK_LIST_OPTIMIZED_LOG"))
-		debug_options.task_list_optimized_log = s;
+		debug_options.task_list_optimized_log = {s};
 	if (const char *s = getenv("SYNFIG_RENDERING_DEBUG_RESULT_IMAGE"))
-		debug_options.result_image = s;
+		debug_options.result_image = {s};
 
 	renderers = new std::map<String, Handle>();
 	queue = new RenderQueue();

@@ -35,9 +35,6 @@
 #include <gui/resourcehelper.h>
 #include <gui/workspacehandler.h>
 
-#include <glibmm/fileutils.h>
-#include <glibmm/markup.h>
-
 #include <gtkmm/liststore.h>
 #include <gtkmm/messagedialog.h>
 #include <gtkmm/treeview.h>
@@ -48,30 +45,6 @@
 #endif
 
 using namespace studio;
-
-static Glib::RefPtr<Gtk::Builder> load_interface() {
-	auto refBuilder = Gtk::Builder::create();
-	try
-	{
-		refBuilder->add_from_file(ResourceHelper::get_ui_path("dialog_workspaces.glade"));
-	}
-	catch(const Glib::FileError& ex)
-	{
-		synfig::error("FileError: " + ex.what());
-		return Glib::RefPtr<Gtk::Builder>();
-	}
-	catch(const Glib::MarkupError& ex)
-	{
-		synfig::error("MarkupError: " + ex.what());
-		return Glib::RefPtr<Gtk::Builder>();
-	}
-	catch(const Gtk::BuilderError& ex)
-	{
-		synfig::error("BuilderError: " + ex.what());
-		return Glib::RefPtr<Gtk::Builder>();
-	}
-	return refBuilder;
-}
 
 class WorkspaceCols: public Gtk::TreeModel::ColumnRecord {
     public:
@@ -124,7 +97,7 @@ Dialog_Workspaces::Dialog_Workspaces(Gtk::Dialog::BaseObjectType* cobject, const
 
 Dialog_Workspaces* Dialog_Workspaces::create(Gtk::Window& parent)
 {
-	auto refBuilder = load_interface();
+	auto refBuilder = ResourceHelper::load_interface("dialog_workspaces.glade");
 	if (!refBuilder)
 		return nullptr;
 	Dialog_Workspaces * dialog = nullptr;
