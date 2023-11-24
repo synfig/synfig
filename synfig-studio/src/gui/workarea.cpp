@@ -1318,10 +1318,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			break;
 		}
 		case 2:	{ // Attempt to drag and move the window
-			if (get_drag_mode() == DRAG_DUCK) {
-				end_duck_drag();
-				set_drag_mode(DRAG_NONE);
-			}
+			cancel_drag_on_mBtn_press();
 
 			if (Duck::Handle duck = find_duck(mouse_pos, radius))
 				duck->signal_user_click(1)();
@@ -1341,11 +1338,8 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			break;
 		}
 		case 3:	{ // Attempt to either get info on a duck, or open the menu
-			//if right mouse clicked while dragging a duck, end drag events
-			if (get_drag_mode() == DRAG_DUCK) {
-				end_duck_drag();
-				set_drag_mode(DRAG_NONE);
-			}
+			cancel_drag_on_mBtn_press();
+
 			if (Duck::Handle duck = find_duck(mouse_pos, radius)) {
 				if (get_selected_ducks().size() <= 1)
 					duck->signal_user_click(2)();
@@ -2227,6 +2221,15 @@ WorkArea::set_selected_value_node(synfig::ValueNode::LooseHandle x)
 	{
 		selected_value_node_=x;
 		queue_draw();
+	}
+}
+
+void
+WorkArea::cancel_drag_on_mBtn_press()
+{
+	if (get_drag_mode() == DRAG_DUCK || get_drag_mode() == DRAG_BEZIER) {
+		set_drag_mode(DRAG_NONE);
+		canvas_view->queue_rebuild_ducks();
 	}
 }
 
