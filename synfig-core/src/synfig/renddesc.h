@@ -32,12 +32,13 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "vector.h"
-#include "color.h"
-#include "types.h"
 #include <cmath>
-#include "rect.h"
+
+#include "color.h"
 #include "matrix.h"
+#include "rect.h"
+#include "time.h"
+#include "vector.h"
 
 /* === M A C R O S ========================================================= */
 
