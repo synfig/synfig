@@ -44,7 +44,6 @@
 #include <synfig/surface.h>
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
-#include <synfig/segment.h>
 
 #include <synfig/rendering/common/task/tasktransformation.h>
 #include <synfig/rendering/software/task/taskpaintpixelsw.h>

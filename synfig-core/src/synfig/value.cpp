@@ -47,7 +47,6 @@
 
 #include "vector.h"
 #include "time.h"
-#include "segment.h"
 #include "color.h"
 
 #endif

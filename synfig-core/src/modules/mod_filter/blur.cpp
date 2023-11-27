@@ -44,7 +44,6 @@
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
 #include <synfig/value.h>
-#include <synfig/segment.h>
 
 #include <synfig/rendering/common/task/taskblend.h>
 #include <synfig/rendering/common/task/taskblur.h>

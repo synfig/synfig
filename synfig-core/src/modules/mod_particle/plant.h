@@ -34,12 +34,10 @@
 #include <list>
 #include <vector>
 #include <synfig/layers/layer_composite.h>
-#include <synfig/segment.h>
 #include <synfig/blinepoint.h>
 #include <synfig/value.h>
 #include <synfig/gradient.h>
 #include <synfig/angle.h>
-#include "random.h"
 #include <synfig/rect.h>
 
 /* === M A C R O S ========================================================= */
