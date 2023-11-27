@@ -1392,6 +1392,28 @@ test_proximate_between_different_root_paths()
 #endif
 }
 
+void
+test_from_uri()
+{
+	ASSERT_EQUAL("/path/to/file", Path::from_uri("file:///path/to/file").u8string());
+	ASSERT_EQUAL("/path/to/file", Path::from_uri("file:/path/to/file").u8string());
+	ASSERT_EQUAL("/path/to/file", Path::from_uri("file://localhost/path/to/file").u8string());
+
+	ASSERT_EQUAL("c:/path/to/file", Path::from_uri("file:c:/path/to/file").u8string());
+	ASSERT_EQUAL("c:/path/to/file", Path::from_uri("file:///c:/path/to/file").u8string());
+	ASSERT_EQUAL("c:/path/to/file", Path::from_uri("file:/c:/path/to/file").u8string());
+	ASSERT_EQUAL("c:/path/to/file", Path::from_uri("file://localhost/c:/path/to/file").u8string());
+
+	ASSERT_EQUAL("c:/path/to/file", Path::from_uri("file:c|/path/to/file").u8string());
+	ASSERT_EQUAL("c:/path/to/file", Path::from_uri("file:///c|/path/to/file").u8string());
+	ASSERT_EQUAL("c:/path/to/file", Path::from_uri("file:/c|/path/to/file").u8string());
+	ASSERT_EQUAL("c:/path/to/file", Path::from_uri("file://localhost/c|/path/to/file").u8string());
+
+	ASSERT_EQUAL("\\\\host.example.com/path/to/file", Path::from_uri("file://host.example.com/path/to/file").u8string());
+	ASSERT_EQUAL("\\\\host.example.com/path/to/file", Path::from_uri("file:////host.example.com/path/to/file").u8string());
+	ASSERT_EQUAL("\\\\host.example.com/path/to/file", Path::from_uri("file://///host.example.com/path/to/file").u8string());
+}
+
 /* === E N T R Y P O I N T ================================================= */
 
 int main() {
@@ -1518,6 +1540,8 @@ int main() {
 	TEST_FUNCTION(test_lexically_proximate_from_cpp_reference_dot_com)
 	TEST_FUNCTION(test_fake_proximate_from_cpp_reference_dot_com)
 	TEST_FUNCTION(test_proximate_between_different_root_paths)
+
+	TEST_FUNCTION(test_from_uri)
 
 	TEST_SUITE_END()
 
