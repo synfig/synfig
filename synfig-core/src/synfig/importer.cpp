@@ -166,7 +166,7 @@ Importer::get_frame(const RendDesc & /* renddesc */, const Time &time)
 
 	Surface surface;
 	if(!get_frame(surface, RendDesc(), time)) {
-		warning(strprintf(_("Unable to get frame from \"%s\" [%s]"), identifier.filename.c_str(), time.get_string().c_str()));
+		warning(strprintf(_("Unable to get frame from \"%s\" [%s]"), identifier.filename.u8_str(), time.get_string().c_str()));
 		return nullptr;
 	}
 
