@@ -5,6 +5,7 @@ target_sources(synfigstudio
         "${CMAKE_CURRENT_LIST_DIR}/layergrouptree.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layertree.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/metadatatree.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/widget_stripedtreeview.cpp"
 
         "${CMAKE_CURRENT_LIST_DIR}/canvastreestore.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/childrentreestore.cpp"
