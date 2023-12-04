@@ -134,7 +134,7 @@ synfig::open_canvas_as(const FileSystem::Identifier &identifier,const String &as
 	String filename = FileSystem::fix_slashes(as);
 	if (CanvasParser::loading_.count(identifier))
 	{
-		String warning(strprintf(_("cannot load '%s' recursively"), identifier.filename.c_str()));
+		String warning(strprintf(_("cannot load '%s' recursively"), identifier.filename.u8_str()));
 		synfig::warning(warning);
 		warnings = "  * " + warning + "\n";
 		Canvas::Handle canvas(Canvas::create());

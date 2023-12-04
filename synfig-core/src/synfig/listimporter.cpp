@@ -74,7 +74,7 @@ Importer(identifier)
 	// TODO(ice0): There is no way to report about error to GUI. We can't
 	//  throw error from constructor (bad practice), and can't return error code.
 	if(!stream)	{
-		synfig::error("Unable to open " + identifier.filename.u8string());
+		synfig::error(_("Unable to open %s"), identifier.filename.u8_str());
 		return;
 	}
 
@@ -178,8 +178,9 @@ ListImporter::get_sub_importer(const RendDesc &renddesc, Time time, ProgressCall
 	Importer::Handle importer(Importer::open(FileSystem::Identifier(FileSystemNative::instance(), filename)));
 	if(!importer)
 	{
-		if(cb)cb->error(_("Unable to open ")+filename);
-		else synfig::error(_("Unable to open ")+filename);
+		std::string error_msg = strprintf(_("Unable to open %s"), filename.c_str());
+		if(cb)cb->error(error_msg);
+		else synfig::error(error_msg);
 		return Importer::Handle();
 	}
 

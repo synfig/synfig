@@ -177,7 +177,7 @@ magickpp_trgt::~magickpp_trgt()
 			filename.add_suffix(sequence_separator + "%04d");
 		}
 
-		synfig::info("writing %d image%s to %s", images.size(), images.size() == 1 ? "" : "s", filename.c_str());
+		synfig::info("writing %d image%s to %s", images.size(), images.size() == 1 ? "" : "s", filename.u8_str());
 		try
 		{
 			Magick::writeImages(images.begin(), images.end(), filename.u8string());

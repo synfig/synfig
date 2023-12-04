@@ -121,7 +121,7 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 {
 	if (zip_fs && zipped_file.empty()) {
 		//! \todo THROW SOMETHING
-		throw strprintf("Unable to physically open %s: missing internal 'mergedimage.png'",identifier.filename.c_str());
+		throw strprintf("Unable to physically open %s: missing internal 'mergedimage.png'", identifier.filename.u8_str());
 		return false;
 	}
 	/* Open the file pointer */
@@ -129,7 +129,7 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
     if (!stream)
     {
         //! \todo THROW SOMETHING
-		throw strprintf("Unable to physically open %s",identifier.filename.c_str());
+		throw strprintf("Unable to physically open %s", identifier.filename.u8_str());
 		return false;
     }
 
@@ -138,14 +138,14 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 	if (!stream->read_variable(header))
 	{
         //! \todo THROW SOMETHING
-		throw strprintf("Cannot read header from \"%s\"",identifier.filename.c_str());
+		throw strprintf("Cannot read header from \"%s\"", identifier.filename.u8_str());
 		return false;
 	}
 
     if (0 != png_sig_cmp(header, 0, PNG_CHECK_BYTES))
     {
         //! \todo THROW SOMETHING
-		throw strprintf("This (\"%s\") doesn't appear to be a PNG file",identifier.filename.c_str());
+		throw strprintf("This (\"%s\") doesn't appear to be a PNG file", identifier.filename.u8_str());
 		return false;
     }
 
