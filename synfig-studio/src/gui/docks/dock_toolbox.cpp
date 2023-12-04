@@ -239,7 +239,7 @@ void Dock_Toolbox::new_layer(){
 	tool_button->set_group(radio_tool_button_group);
 	tool_button->set_related_action(action_new_layer);
 
-	tool_button->show();
+	
 
 	tool_item_group->insert(*tool_button);
 	tool_item_group->show_all();
@@ -250,11 +250,8 @@ void Dock_Toolbox::new_layer(){
 }
 void Dock_Toolbox::popup_add_layer_menu()
 {
-	if (!action_new_layer->is_sensitive())
-		return;
-	Gtk::Menu* menu = dynamic_cast<Gtk::Menu*>(App::ui_manager()->get_widget("/popup-layer-new"));
-	if (menu)
-		menu->popup(0, gtk_get_current_event_time());
+if (auto menu = dynamic_cast<Gtk::Menu*>(App::ui_manager()->get_widget("/popup-layer-new")))
+	menu->popup(0, gtk_get_current_event_time());
 }
 
 
