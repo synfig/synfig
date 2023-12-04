@@ -76,6 +76,15 @@ public:
 	 */
 	static Path from_native(const string_type& native_path);
 
+	/**
+	 * Store a file system path from a file URI string.
+	 *
+	 * Supports a file URI as defined in IEEE RFC 8089 Appendix F.
+	 *
+	 * @param uri a file URI string in UTF-8 encoding ("file:///a%20file.txt")
+	 */
+	static Path from_uri(const std::string& uri);
+
 	// Concatenation ---------------------
 
 	/** Equivalent to append() */

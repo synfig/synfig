@@ -444,8 +444,10 @@ bool Widget_Timetrack::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		}
 
 		const Geometry& geometry = row_info.get_geometry();
-		if (geometry.h == 0)
+		if (geometry.h == 0) {
+			--row_number;
 			return false;
+		}
 
 		if (geometry.y + geometry.h < 0 || geometry.y > get_height())
 			return false;
@@ -885,11 +887,8 @@ void Widget_Timetrack::draw_selected_background(const Cairo::RefPtr<Cairo::Conte
 {
 	if (!params_treeview)
 		return;
-	std::vector<Gtk::TreePath> path_list = params_treeview->get_selection()->get_selected_rows();
-	if (path_list.empty())
-		return;
 
-	if (std::find(path_list.begin(), path_list.end(), path) != path_list.end()) {
+	if (params_treeview->get_selection()->is_selected(path)) {
 		auto context = use_selected_color_from_parameter_tree ? params_treeview->get_style_context() : get_style_context();
 
 		Geometry geometry = row_info.get_geometry();

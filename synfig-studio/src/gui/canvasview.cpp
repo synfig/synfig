@@ -2893,21 +2893,7 @@ CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& con
 				if(URI.empty())
 					continue;
 
-				// Extract scheme name from URI.
-				auto scheme_end_pos = URI.find("://");
-				if (scheme_end_pos == std::string::npos) {
-					warning("Cannot extract protocol from URI \"%s\"", URI.c_str());
-					continue;
-				}
-
-				// Only 'file' scheme supported
-				const String scheme = URI.substr(0, scheme_end_pos);
-				if (scheme != "file") {
-					warning("Protocol \"%s\" is unsupported (URI \"%s\")", scheme.c_str(), URI.c_str());
-					continue;
-				}
-
-				filesystem::Path filename(URI.substr(scheme_end_pos + 3)); // scheme name + "://"
+				filesystem::Path filename = filesystem::Path::from_uri(URI);
 				if (filename.empty()) {
 					warning("Cannot extract filename from URI \"%s\"", URI.c_str());
 					continue;

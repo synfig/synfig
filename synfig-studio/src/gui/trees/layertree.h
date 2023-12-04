@@ -31,11 +31,10 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/treeview.h>
-
 #include <gui/timemodel.h>
 #include <gui/trees/layerparamtreestore.h>
 #include <gui/trees/layertreestore.h>
+#include <gui/trees/widget_stripedtreeview.h>
 #include <gui/widgets/widget_value.h>
 
 #include <synfigapp/value_desc.h>
@@ -83,8 +82,9 @@ public:
 	*/
 
 private:
-	Gtk::TreeView layer_tree_view_;
-	Gtk::TreeView param_tree_view_;
+
+	Widget_StripedTreeView layer_tree_view_;
+	Widget_StripedTreeView param_tree_view_;
 
 	Glib::RefPtr<LayerTreeStore> layer_tree_store_;
 

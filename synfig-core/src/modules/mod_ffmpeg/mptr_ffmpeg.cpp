@@ -123,7 +123,7 @@ ffmpeg_mptr::grab_frame(void)
 {
 	if(!pipe)
 	{
-		synfig::error(_("unable to open %s"), identifier.filename.c_str());
+		synfig::error(_("unable to open %s"), identifier.filename.u8_str());
 		return false;
 	}
 	int w,h;

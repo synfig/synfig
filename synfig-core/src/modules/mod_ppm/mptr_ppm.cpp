@@ -64,7 +64,7 @@ ppm_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 	SmartFILE file(identifier.filename,"rb");
 	if(!file)
 	{
-		if(cb)cb->error("pp_mptr::GetFrame(): "+strprintf(_("Unable to open %s"),identifier.filename.c_str()));
+		if (cb) cb->error("pp_mptr::GetFrame(): " + strprintf(_("Unable to open %s"), identifier.filename.u8_str()));
 		return false;
 	}
 	int w,h;
@@ -72,7 +72,7 @@ ppm_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 
 	if(fgetc(file.get())!='P' || fgetc(file.get())!='6')
 	{
-		if(cb)cb->error("pp_mptr::GetFrame(): "+strprintf(_("%s was not in PPM format"),identifier.filename.c_str()));
+		if (cb) cb->error("pp_mptr::GetFrame(): " + strprintf(_("%s was not in PPM format"), identifier.filename.u8_str()));
 		return false;
 	}
 
