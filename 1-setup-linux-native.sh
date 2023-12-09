@@ -62,7 +62,7 @@ fi
 # 2 - Install the required packages
 echo "Checking dependencies..."
 
-if ([ "$ID_LIKE" == "fedora" ] && [ VERSION_ID > 22 ]); then
+if ([ "$ID_LIKE" == "fedora" ] && [ "$VERSION_ID" > 22 ]); then
     PKG_LIST="git \
             intltool \
             libpng-devel \
@@ -107,7 +107,7 @@ if ([ "$ID_LIKE" == "fedora" ] && [ VERSION_ID > 22 ]); then
         sudo dnf install $PKG_LIST || true
     fi
 
-elif ([ "$ID_LIKE" == "fedora" ] && [ VERSION_ID <= 22]); then
+elif ( [ "$ID_LIKE" == "fedora" ] && [ "$VERSION_ID" <= 22 ] ) || ( [ "$ID_LIKE" == "rhel centos fedora" ] ); then
     PKG_LIST="git \
             intltool \
             libpng-devel \
