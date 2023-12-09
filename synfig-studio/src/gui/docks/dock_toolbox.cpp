@@ -236,12 +236,11 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 }
 
 void 
-Dock_Toolbox::new_layer_caller()
+Dock_Toolbox::button_new_layer_creator()
 {
 	Gtk::RadioToolButton *tool_button = manage(new Gtk::RadioToolButton());
 	tool_button->set_group(radio_tool_button_group);
 	tool_button->set_related_action(action_new_layer);
-
 
 	tool_item_group->insert(*tool_button);
 	tool_item_group->show_all();
