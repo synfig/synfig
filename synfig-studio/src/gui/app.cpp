@@ -1726,7 +1726,7 @@ void App::init(const synfig::String& rootpath)
 		if(!getenv("SYNFIG_DISABLE_BRUSH"  ) && App::enable_experimental_features) state_manager->add_state(&state_brush);
 		state_manager->add_state(&state_zoom);
 
-		App::dock_toolbox->new_layer();
+		App::dock_toolbox->new_layer_caller();
 		
 		device_tracker->load_preferences();
 		// If the default bline width is modified before focus a canvas

@@ -78,7 +78,7 @@ class Dock_Toolbox : public Dockable
 	void set_active_state(const synfig::String& statename);
 
 public:
-	void new_layer();
+	void new_layer_caller();
 
 	void change_state(const synfig::String& statename, bool force = false);
 

@@ -234,16 +234,17 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 
 	refresh();
 }
-void Dock_Toolbox::new_layer(){
+
+void 
+Dock_Toolbox::new_layer_caller()
+{
 	Gtk::RadioToolButton *tool_button = manage(new Gtk::RadioToolButton());
 	tool_button->set_group(radio_tool_button_group);
 	tool_button->set_related_action(action_new_layer);
 
-	
 
 	tool_item_group->insert(*tool_button);
 	tool_item_group->show_all();
-
 
 	refresh();
 
@@ -280,6 +281,7 @@ Dock_Toolbox::update_tools()
 	// Disable buttons if there isn't any open document instance
 	bool sensitive = instance && canvas_view;
 	state_action_group->set_sensitive(sensitive);
+	action_new_layer->set_sensitive(sensitive);
 }
 
 
