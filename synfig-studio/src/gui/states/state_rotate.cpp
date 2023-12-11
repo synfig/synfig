@@ -87,7 +87,6 @@ class DuckDrag_Rotate : public DuckDrag_Base
 
 	bool bad_drag;
 	bool move_only;
-	bool rotate;
 
 public:
 	CanvasView::Handle canvas_view_;
