@@ -99,7 +99,6 @@ public:
 	void duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector);
 
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const{return canvas_view_->canvas_interface();}
-
 };
 
 
@@ -315,7 +314,8 @@ StateRotate_Context::event_key_up_handler(const Smach::event &x)
 
 void StateRotate_Context::set_shift_pressed(bool value)
 {
-	if (shift_pressed == value) return;
+	if (shift_pressed == value)
+		return;
 	shift_pressed = value;
 	set_constrain_flag(shift_pressed);
 }
@@ -446,6 +446,7 @@ DuckDrag_Rotate::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 
 	Angle::tan angle(vect[1],vect[0]);
 	angle=original_angle-angle;
+
 	if (constrain){
 		Angle::deg angleDeg(static_cast<Angle>(angle));
 		float degrees = angleDeg.get()/15;
