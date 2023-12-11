@@ -14,6 +14,7 @@ TESTS = \
 	bone \
 	clock \
 	filesystem_path \
+	handle \
 	keyframe \
 	node \
 	pen \
@@ -34,6 +35,8 @@ bline_SOURCES=bline.cpp
 clock_SOURCES=clock.cpp
 
 filesystem_path_SOURCES=filesystem_path.cpp
+
+handle_SOURCES=handle.cpp
 
 keyframe_SOURCES=keyframe.cpp
 

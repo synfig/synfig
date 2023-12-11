@@ -3,14 +3,16 @@ TREEVIEW_HH = \
 	trees/keyframetree.h \
 	trees/layergrouptree.h \
 	trees/layertree.h \
-	trees/metadatatree.h
+	trees/metadatatree.h \
+	trees/widget_stripedtreeview.h
 
 TREEVIEW_CC = \
 	trees/childrentree.cpp \
 	trees/keyframetree.cpp \
 	trees/layergrouptree.cpp \
 	trees/layertree.cpp \
-	trees/metadatatree.cpp
+	trees/metadatatree.cpp \
+	trees/widget_stripedtreeview.cpp
 
 TREESTORE_HH = \
 	trees/canvastreestore.h \

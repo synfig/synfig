@@ -1591,7 +1591,7 @@ CanvasView::add_layer(String x)
 	// check if import or sound layer then show an input dialog window
 	if(x=="import"||x=="sound")
 	{
-		String filename;
+		filesystem::Path filename;
 		bool selected = false;
 		if (x == "sound") {
 			selected = App::dialog_open_file_audio(_("Please choose an audio file"), filename, ANIMATION_DIR_PREFERENCE);
@@ -2078,11 +2078,9 @@ CanvasView::on_time_changed()
 	{
 		KeyframeList::iterator iter;
 		if (get_canvas()->keyframe_list().find(time, iter)) {
-			current_time_widget->get_style_context()->remove_class("color-black");
 			current_time_widget->get_style_context()->add_class("color-red");
 		} else {
 			current_time_widget->get_style_context()->remove_class("color-red");
-			current_time_widget->get_style_context()->add_class("color-black");
 		}
 
 		// Shouldn't these trees just hook into
@@ -2868,31 +2866,13 @@ CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& con
 				if(URI.empty())
 					continue;
 
-				// Extract protocol name from URI.
-				String protocol( Glib::uri_parse_scheme(URI) );
-				if(protocol.empty())
-				{
-					warning("Cannot extract protocol from URI \"%s\"", URI.c_str());
-					continue;
-				}
-
-				// Only 'file' protocol supported
-				if(protocol != "file")
-				{
-					warning("Protocol \"%s\" is unsupported (URI \"%s\")", protocol.c_str(), URI.c_str());
-					continue;
-				}
-
-				// Converts an escaped UTF-8 encoded URI to a local filename
-				// in the encoding used for filenames.
-				String filename( Glib::filename_from_uri(URI) );
-				if(filename.empty())
-				{
+				filesystem::Path filename = filesystem::Path::from_uri(URI);
+				if (filename.empty()) {
 					warning("Cannot extract filename from URI \"%s\"", URI.c_str());
 					continue;
 				}
 
-				String ext = filesystem::Path::filename_extension(filename);
+				String ext = filename.extension().u8string();
 				if (!ext.empty()) ext = ext.substr(1); // skip initial '.'
 
 				// If this is a SIF file, then we need to do things slightly differently
@@ -3212,14 +3192,13 @@ CanvasView::on_meta_data_changed()
 void
 CanvasView::import_file()
 {
-	// String filename(dirname(get_canvas()->get_file_name()));
-	std::vector<std::string> filenames;
+	std::vector<filesystem::Path> filenames;
 	LayerTree::LayerList layers;
-	filenames.push_back("*.*");
+	filenames.push_back({"*.*"});
 	String errors, warnings;
 	if(App::dialog_open_file(_("Please select files"), filenames, IMAGE_DIR_PREFERENCE))
 	{
-		for(const std::string &filename : filenames){
+		for(const filesystem::Path& filename : filenames){
 		// Don't let user import a file to itself
 		// Check if it's the same file of this canvas
 		{
@@ -3259,7 +3238,7 @@ CanvasView::import_file()
 }
 
 bool
-CanvasView::is_same_file(const std::string &filename)
+CanvasView::is_same_file(const filesystem::Path& filename)
 {
 	bool is_same_file = get_canvas()->get_file_name() == filename;
 	if (!is_same_file) {
@@ -3267,7 +3246,7 @@ CanvasView::is_same_file(const std::string &filename)
 		try {
 			current_file = Gio::File::create_for_path(get_canvas()->get_file_name());
 			if (current_file) {
-				Glib::RefPtr<Gio::File> import_file = Gio::File::create_for_path(filename);
+				Glib::RefPtr<Gio::File> import_file = Gio::File::create_for_path(filename.u8string());
 				is_same_file = current_file->equal(import_file);
 				if (!is_same_file && import_file) {
 					// One more sanity check
@@ -3285,7 +3264,7 @@ CanvasView::is_same_file(const std::string &filename)
 void
 CanvasView::import_sequence()
 {
-	std::set<String> filenames;
+	std::set<filesystem::Path> filenames;
 	String errors, warnings;
 	if(App::dialog_open_file_image_sequence(_("Please select a file"), filenames, IMAGE_DIR_PREFERENCE))
 	{

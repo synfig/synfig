@@ -237,11 +237,11 @@ public:
 	operator bool()const { return is_valid(); }
 
 	bool
-	parent_is_layer()const
-		{ return layer; }
+	parent_is_layer() const
+		{ return static_cast<bool>(layer); }
 	bool
-	parent_is_value_node()const
-		{ return parent_value_node; }
+	parent_is_value_node() const
+		{ return static_cast<bool>(parent_value_node); }
 	bool
 	parent_is_linkable_value_node()const
 		{ return parent_is_value_node() && index>=0; }
@@ -252,8 +252,8 @@ public:
 	parent_is_waypoint()const
 		{ return parent_is_value_node() && index==IS_WAYPOINT; }
 	bool
-	parent_is_canvas()const
-		{ return canvas; }
+	parent_is_canvas() const
+		{ return static_cast<bool>(canvas); }
 	bool
 	parent_is_value_desc()const
 		{ return !sub_names.empty(); }

@@ -91,7 +91,8 @@ int main(int argc, char **argv)
 
 	bool r_time;
 
-	filesystem::Path base_dir = OS::get_binary_path(argv[0]).parent_path();
+	OS::fallback_binary_path = std::string(argv[0]); // on MS Windows, already converted to UTF-8 via ArgVGuarg
+	filesystem::Path base_dir = OS::get_binary_path().parent_path();
 	TestCallback callback;
 
 	Main main(base_dir.u8string(), &callback);

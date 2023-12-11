@@ -185,13 +185,13 @@ Settings::get_key_list()const
 }
 
 bool
-Settings::save_to_file(const synfig::String& filename)const
+Settings::save_to_file(const synfig::filesystem::Path& filename)const
 {
-	synfig::String tmp_filename(filename+".TMP");
+	synfig::filesystem::Path tmp_filename(filename + std::string(".TMP"));
 
 	try
 	{
-		std::ofstream file(synfig::filesystem::Path(tmp_filename).c_str());
+		std::ofstream file(tmp_filename.c_str());
 
 		if(!file) {
 			synfig::warning(_("Can't save settings to file %s!"), filename.c_str());
@@ -215,19 +215,19 @@ Settings::save_to_file(const synfig::String& filename)const
 			return false;
 	}catch(...) { return false; }
 
-	if (g_rename(tmp_filename.c_str(),filename.c_str())!=0)
+	if (g_rename(tmp_filename.u8_str(), filename.u8_str()) != 0)
 		return false;
 
 	return true;
 }
 
 bool
-Settings::load_from_file(const synfig::String& filename, const synfig::String& key_filter )
+Settings::load_from_file(const synfig::filesystem::Path& filename, const synfig::String& key_filter)
 {
-	std::ifstream file(synfig::filesystem::Path(filename).c_str());
+	std::ifstream file(filename.c_str());
 
 	if(!file) {
-		synfig::warning(_("Can't load settings from file %s!"), filename.c_str());
+		synfig::warning(_("Can't load settings from file %s!"), filename.u8_str());
 		return false;
 	}
 
@@ -358,7 +358,7 @@ bool
 Settings::set_value(const synfig::String &key, const synfig::Distance &value)
 {
 	ChangeLocale change_locale(LC_NUMERIC, "C");
-	return set_value(key, value.get_string());
+	return set_value(key, value.get_string(8));
 }
 
 bool

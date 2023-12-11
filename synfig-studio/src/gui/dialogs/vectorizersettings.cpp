@@ -27,10 +27,6 @@
 
 #include <gui/dialogs/vectorizersettings.h>
 
-#include <glibmm/fileutils.h>
-#include <glibmm/markup.h>
-
-#include <gui/exception_guard.h>
 #include <gui/localization.h>
 #include <gui/resourcehelper.h>
 
@@ -145,31 +141,7 @@ VectorizerSettings::VectorizerSettings(BaseObjectType* cobject, const Glib::RefP
 	///on_comboboxtext_mode_changed();
 }
 
-static Glib::RefPtr<Gtk::Builder> load_interface(const char *filename) {
-	auto refBuilder = Gtk::Builder::create();
-	try
-	{
-		refBuilder->add_from_file(ResourceHelper::get_ui_path(filename));
-	}
-	catch(const Glib::FileError& ex)
-	{
-		synfig::error("FileError: " + ex.what());
-		return Glib::RefPtr<Gtk::Builder>();
-	}
-	catch(const Glib::MarkupError& ex)
-	{
-		synfig::error("MarkupError: " + ex.what());
-		return Glib::RefPtr<Gtk::Builder>();
-	}
-	catch(const Gtk::BuilderError& ex)
-	{
-		synfig::error("BuilderError: " + ex.what());
-		return Glib::RefPtr<Gtk::Builder>();
-	}
-	return refBuilder;
-}
-
-void VectorizerSettings::initialize_parameters(etl::handle<synfig::Layer_Bitmap>& my_layer_bitmap,
+void VectorizerSettings::initialize_parameters(synfig::Layer_Bitmap::Handle& my_layer_bitmap,
 	etl::handle<studio::Instance>& selected_instance,std::unordered_map <std::string,int>& configmap, etl::handle<synfig::Layer>& reference_layer)
 {
 	layer_bitmap_ = my_layer_bitmap;
@@ -185,10 +157,10 @@ void VectorizerSettings::initialize_parameters(etl::handle<synfig::Layer_Bitmap>
 	adjustment_maxthickness->set_value(configmap["maxthickness"]);
 }
 
-VectorizerSettings * VectorizerSettings::create(Gtk::Window& parent, etl::handle<synfig::Layer_Bitmap> my_layer_bitmap,
+VectorizerSettings * VectorizerSettings::create(Gtk::Window& parent, synfig::Layer_Bitmap::Handle my_layer_bitmap,
 	etl::handle<studio::Instance> selected_instance,std::unordered_map <std::string,int>& configmap, etl::handle<synfig::Layer> reference_layer)
 {
-	auto refBuilder = load_interface("vectorizer_settings.glade");
+	auto refBuilder = ResourceHelper::load_interface("vectorizer_settings.glade");
 	if (!refBuilder)
 		return nullptr;
 	VectorizerSettings * dialog = nullptr;
@@ -240,12 +212,12 @@ VectorizerSettings::on_convert_pressed()
 {
 	hide();
 	synfigapp::Action::Handle action(synfigapp::Action::create("Vectorization"));
-	synfig::debug::Log::info("","Action Created ");
+	synfig::debug::Log::info({},"Action Created ");
 	assert(action);
 	if(!action)
 		return;
 	savecurrconfig();
-	synfig::debug::Log::info("","Action Asserted ");
+	synfig::debug::Log::info({},"Action Asserted ");
 	// Add an if else to pass param according to outline /centerline
 	action->set_param("image",synfig::Layer::Handle::cast_dynamic(layer_bitmap_));
 	action->set_param("mode","centerline");
@@ -260,13 +232,10 @@ VectorizerSettings::on_convert_pressed()
 	// in case the "convert to vector" was clicked for layer inside a switch
 	// and pass canvas accordingly
 	
-	if(etl::handle<synfig::Layer_PasteCanvas> paste = Layer_PasteCanvas::Handle::cast_dynamic(reference_layer_))
-	{
-			canvas = layer_bitmap_->get_canvas()->parent();
-			action->set_param("reference_layer",reference_layer_);
-	}
-	else
-	{
+	if (auto paste = Layer_PasteCanvas::Handle::cast_dynamic(reference_layer_)) {
+		canvas = layer_bitmap_->get_canvas()->parent();
+		action->set_param("reference_layer",reference_layer_);
+	} else {
 		canvas = layer_bitmap_->get_canvas();
 	}
 
@@ -274,17 +243,17 @@ VectorizerSettings::on_convert_pressed()
 	action->set_param("canvas", canvas); 
 	action->set_param("canvas_interface", canvas_interface);
 
-	synfig::debug::Log::info("","Action param passed ");
+	synfig::debug::Log::info({},"Action param passed ");
 	if(!action->is_ready())
 	{
 		return;
 	}
-	synfig::debug::Log::info("","Action is ready ");
+	synfig::debug::Log::info({},"Action is ready ");
 	if(!instance->perform_action(action))
 	{
 		return;
 	}
-	synfig::debug::Log::info("","Convert Pressed....");
+	synfig::debug::Log::info({},"Convert Pressed....");
 }
 
 void

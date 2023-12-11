@@ -35,7 +35,6 @@
 #include <list>
 #include <vector>
 #include <synfig/layers/layer_shape.h>
-#include <synfig/segment.h>
 #include <synfig/value.h>
 
 /* === M A C R O S ========================================================= */

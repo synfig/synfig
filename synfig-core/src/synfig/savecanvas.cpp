@@ -44,7 +44,6 @@
 #include "valuenodes/valuenode_const.h"
 #include "valuenodes/valuenode_staticlist.h"
 #include "valuenodes/valuenode_dynamiclist.h"
-#include "valuenodes/valuenode_subtract.h"
 #include "valuenodes/valuenode_bline.h"
 #include "valuenodes/valuenode_bone.h"
 #include "dashitem.h"
@@ -80,7 +79,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-ReleaseVersion save_canvas_version = ReleaseVersion(RELEASE_VERSION_END-1);
+ReleaseVersion save_canvas_version = synfig::RELEASE_VERSION_CURRENT;
 int valuenode_too_new_count;
 save_canvas_external_file_callback_t save_canvas_external_file_callback = nullptr;
 void *save_canvas_external_file_user_data = nullptr;
@@ -489,44 +488,6 @@ xmlpp::Element* encode_animated(xmlpp::Element* root,ValueNode_Animated::ConstHa
 }
 
 
-xmlpp::Element* encode_subtract(xmlpp::Element* root,ValueNode_Subtract::ConstHandle value_node,Canvas::ConstHandle canvas=nullptr)
-{
-	assert(value_node);
-	root->set_name("subtract");
-
-	ValueNode::ConstHandle lhs=value_node->get_lhs();
-	ValueNode::ConstHandle rhs=value_node->get_rhs();
-	ValueNode::ConstHandle scalar=value_node->get_scalar();
-
-	assert(lhs);
-	assert(rhs);
-
-	root->set_attribute("type",value_node->get_type().description.name);
-
-	if(lhs==rhs)
-		warning("LHS is equal to RHS, this <subtract> will always be zero!");
-
-	//if(value_node->get_scalar()!=1)
-	//	root->set_attribute("scalar",strprintf(VECTOR_VALUE_TYPE_FORMAT,value_node->get_scalar()));
-
-	if(!scalar->get_id().empty())
-		root->set_attribute("scalar",scalar->get_relative_id(canvas));
-	else
-		encode_value_node(root->add_child("scalar")->add_child("value_node"),scalar,canvas);
-
-	if(!lhs->get_id().empty())
-		root->set_attribute("lhs",lhs->get_relative_id(canvas));
-	else
-		encode_value_node(root->add_child("lhs")->add_child("value_node"),lhs,canvas);
-
-	if(!rhs->get_id().empty())
-		root->set_attribute("rhs",rhs->get_relative_id(canvas));
-	else
-		encode_value_node(root->add_child("rhs")->add_child("value_node"),rhs,canvas);
-
-	return root;
-}
-
 xmlpp::Element* encode_static_list(xmlpp::Element* root,ValueNode_StaticList::ConstHandle value_node,Canvas::ConstHandle canvas=nullptr)
 {
 	DEBUG_LOG("SYNFIG_DEBUG_SAVE_CANVAS", "%s:%d encode_static_list %s\n", __FILE__, __LINE__, value_node->get_string().c_str());
@@ -715,9 +676,6 @@ xmlpp::Element* encode_value_node(xmlpp::Element* root,ValueNode::ConstHandle va
 	else
 	if (ValueNode_Animated::ConstHandle animated_value_node = ValueNode_Animated::ConstHandle::cast_dynamic(value_node))
 		encode_animated(root,animated_value_node,canvas);
-	else
-	if (ValueNode_Subtract::ConstHandle subtract_value_node = ValueNode_Subtract::ConstHandle::cast_dynamic(value_node))
-		encode_subtract(root,subtract_value_node,canvas);
 	else
 	if (ValueNode_StaticList::ConstHandle static_list_value_node = ValueNode_StaticList::ConstHandle::cast_dynamic(value_node))
 		encode_static_list(root,static_list_value_node,canvas);
@@ -1070,7 +1028,9 @@ synfig::save_canvas(const FileSystem::Identifier &identifier, Canvas::ConstHandl
 {
     ChangeLocale change_locale(LC_NUMERIC, "C");
 
-    synfig::String tmp_filename(safe ? identifier.filename+".TMP" : identifier.filename);
+	synfig::String tmp_filename(identifier.filename.u8string());
+	if (safe)
+		tmp_filename.append(".TMP");
 
 	try
 	{
@@ -1086,7 +1046,7 @@ synfig::save_canvas(const FileSystem::Identifier &identifier, Canvas::ConstHandl
 			return false;
 		}
 
-		if (filesystem::Path::filename_extension(identifier.filename) == ".sifz")
+		if (identifier.filename.extension().u8string() == ".sifz")
 			stream = FileSystem::WriteStream::Handle(new ZWriteStream(stream));
 
 		document.write_to_stream_formatted(*stream, "UTF-8");
@@ -1096,8 +1056,7 @@ synfig::save_canvas(const FileSystem::Identifier &identifier, Canvas::ConstHandl
 
 		if (safe)
 		{
-			if(!identifier.file_system->file_rename(tmp_filename, identifier.filename))
-			{
+			if (!identifier.file_system->file_rename(tmp_filename, identifier.filename.u8string())) {
 				synfig::error("synfig::save_canvas(): Unable to rename file to correct filename");
 				return false;
 			}

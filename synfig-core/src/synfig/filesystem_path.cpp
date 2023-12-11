@@ -40,6 +40,7 @@
 
 #include <glibmm/miscutils.h>
 
+#include <synfig/general.h>
 #include <synfig/os.h>
 
 # ifdef _WIN32
@@ -97,6 +98,138 @@ filesystem::Path::from_native(const string_type& native_path)
 	return Path(native_to_utf8(native_path));
 }
 
+filesystem::Path
+filesystem::Path::from_uri(const std::string& uri)
+{
+	if (uri.empty())
+		return {};
+
+	if (uri.size() >= 5 && uri.compare(0, 5, "file:") != 0) {
+		synfig::warning("String is not a file URI \"%s\"", uri.c_str());
+		return {};
+	}
+
+	bool is_unc_auth = false;
+	bool is_file_auth = false;
+
+	auto auth_pos = std::string::npos;
+	auto path_absolute_pos = std::string::npos;
+
+	std::string auth;
+
+	if (uri.size() >= 9 && uri.compare(5, 4, "////") == 0) { // "file:////"
+		is_unc_auth = true;
+
+		if (uri.size() >= 10 && uri[9] == '/') // "file://///"
+			auth_pos = 10;
+		else
+			auth_pos = 9;
+	} else if (uri.size() >= 7 && uri.compare(5, 2, "//") == 0) { // "file://"
+		is_file_auth = true;
+
+		auth_pos = 7;
+	}
+
+	if (!is_file_auth && !is_unc_auth) {
+		path_absolute_pos = 5;
+	} else {
+		path_absolute_pos = uri.find('/', auth_pos);
+
+		if (path_absolute_pos == std::string::npos) {
+			synfig::warning("URI has authority part \"%s\", but does not have the file absolute path in URI \"%s\"", uri.substr(auth_pos).c_str(), uri.c_str());
+			return {};
+		}
+
+		auth = uri.substr(auth_pos, path_absolute_pos - auth_pos);
+	}
+
+
+	std::string drive_letter;
+
+	if (!is_unc_auth) {
+		auto get_drive_letter = [] (const char* str) -> char {
+			if (str[1] == ':' || str[1] == '|') {
+				char letter = str[0];
+				if ((letter >= 'A' && letter <= 'Z') || (letter >= 'a' && letter <= 'z')) {
+					//return letter < 'Z' ? letter : (letter - 'a' + 'A');
+					return letter;
+				}
+			}
+			return 0;
+		};
+
+		if (path_absolute_pos + 3 < uri.size()) {
+			if (uri[path_absolute_pos] == '/') {
+				char letter = get_drive_letter(&uri[path_absolute_pos+1]);
+				if (letter) {
+					drive_letter.push_back(letter);
+					drive_letter.push_back(':');
+					path_absolute_pos += 3;
+				}
+			}
+		}
+		if (drive_letter.empty() && !is_file_auth && path_absolute_pos + 2 < uri.size()) {
+			char letter = get_drive_letter(&uri[path_absolute_pos]);
+			if (letter) {
+				drive_letter.push_back(letter);
+				drive_letter.push_back(':');
+				path_absolute_pos += 2;
+			}
+		}
+	}
+
+	// Just for safety, eliminate (improbable) query and fragment components
+	auto path_absolute_end_pos = uri.size();
+	{
+		auto query_pos = uri.find('?', path_absolute_end_pos);
+		if (query_pos != std::string::npos) {
+			path_absolute_end_pos = query_pos;
+		} else {
+			auto fragment_pos = uri.find('#', path_absolute_end_pos);
+			if (fragment_pos != std::string::npos) {
+				path_absolute_end_pos = fragment_pos;
+			}
+		}
+	}
+	// Decode percent-encoding
+	std::string file_absolute;
+
+	for (auto p = path_absolute_pos; p < path_absolute_end_pos; ++p) {
+		if (uri[p] != '%') {
+			file_absolute.push_back(uri[p]);
+		} else {
+			if (p + 2 < path_absolute_end_pos) {
+				// decode char
+				char c1 = uri[++p];
+				char c2 = uri[++p];
+				if (c1 >= '0' && c1 <= '9')
+					c1 -= '0';
+				else
+					c1 -= (c1 >= 'a') ? 'a' : 'A';
+				if (c1 < 0 || c1 > 15) {
+					break;
+				}
+				if (c2 >= '0' && c2 <= '9')
+					c2 -= '0';
+				else
+					c2 -= (c2 >= 'a') ? 'a' : 'A';
+				if (c2 < 0 || c2 > 15) {
+					break;
+				}
+				file_absolute.push_back(c1 << 4 | c2);
+			} else {
+				break;
+			}
+		}
+	}
+
+	if (!auth.empty() && auth != "localhost") { // section 2 says "localhost" is interpreted exactly as if no authority were present
+		return Path{"\\\\" + auth + (!drive_letter.empty() ? '/' + drive_letter : "") + file_absolute};
+	} else {
+		return Path{drive_letter + file_absolute};
+	}
+}
+
 filesystem::Path&
 filesystem::Path::operator/=(const Path& p)
 {
@@ -109,7 +242,7 @@ filesystem::Path::operator/=(const Path& p)
 		path_.erase(get_root_name_length());
 	else if (has_filename() || (!has_root_directory() && is_absolute()))
 		path_.push_back('/');
-	path_.append(p.path_, p.get_root_name_length());
+	path_.append(p.path_, p.get_root_name_length(), std::string::npos);
 	native_path_dirty_ = true;
 	return *this;
 }
@@ -271,7 +404,8 @@ filesystem::Path::lexically_normal() const
 	return normalize(path_);
 }
 
-filesystem::Path filesystem::Path::cleanup() const
+filesystem::Path
+filesystem::Path::cleanup() const
 {
 	return lexically_normal();
 }
@@ -286,95 +420,139 @@ filesystem::Path::lexically_relative(const Path& base) const
 		return Path();
 	}
 
-	auto a_pos = get_relative_path_pos();
-	auto b_pos = base.get_relative_path_pos();
-	auto a_end = std::string::npos;
-	bool different = false;
-	while (a_pos != std::string::npos
-		   && a_pos < path_.length()
-		   && b_pos != std::string::npos
-		   && b_pos < base.path_.length())
-	{
-		a_end = path_.find_first_of("/\\", a_pos);
-		auto b_end = base.path_.find_first_of("/\\", b_pos);
-		if (a_end == std::string::npos)
-			a_end = path_.length();
-		if (b_end == std::string::npos)
-			b_end = base.path_.length();
-		if (a_end - a_pos != b_end - b_pos
-			|| path_.compare(a_pos, a_end - a_pos, base.path_, b_pos, b_end - b_pos) != 0)
+	class simple_iterator {
+		const Path& path_;
+		std::size_t pos_;
+		std::string element_;
+
+	public:
+		explicit simple_iterator(const Path& p)
+			: path_(p), pos_(p.get_relative_path_pos())
 		{
-			different = true;
-			break;
-		}
-		a_pos = path_.find_first_not_of("/\\", a_end + 1);
-		b_pos = base.path_.find_first_not_of("/\\", b_end + 1);
-	}
-	if (!different) {
-		bool a_ended = a_pos == std::string::npos;
-		bool b_ended = b_pos == std::string::npos;
-		if (a_ended ^ b_ended) {
-			different = true;
-		} else {
-			// check last component
-			a_pos = path_.find_last_not_of("/\\");
-			b_pos = base.path_.find_last_not_of("/\\");
-			if (path_.compare(a_pos, path_.length() - a_pos, base.path_, b_pos, base.path_.length() - b_pos) != 0) {
-				different = true;
-				a_end = path_.length();
+			if (p.empty()) {
+				pos_ = std::string::npos;
+				return;
 			}
+
+			element_ = fetch_current_element(pos_);
 		}
+
+		simple_iterator& operator++()
+		{
+			// at end already?
+			if (pos_ == std::string::npos || pos_ >= path_.path_.length()) {
+				pos_ = std::string::npos;
+				element_.clear();
+				return *this;
+			}
+
+			// note: root path element ignored
+
+			// skip current element string
+			auto end = pos_ + element_.length();
+			if (end >= path_.path_.length()) {
+				pos_ = std::string::npos;
+				element_.clear();
+				return *this;
+			}
+
+			// search for next element string beginning
+			auto next = path_.path_.find_first_not_of("/\\", end + 1);
+			if (next == std::string::npos) {
+				pos_ = path_.path_.length();
+				element_.clear();
+				return *this;
+			}
+
+			element_ = fetch_current_element(next);
+			pos_ = next;
+
+			return *this;
+		}
+
+		const std::string& operator*()
+		{
+			return element_;
+		}
+
+		const std::string* operator->()
+		{
+			return &element_;
+		}
+
+		bool is_end() const
+		{
+			return element_.empty() && pos_ == std::string::npos;
+		}
+
+	private:
+		std::string fetch_current_element(std::size_t pos)
+		{
+			if (pos == std::string::npos)
+				return "";
+			auto end = path_.path_.find_first_of("/\\", pos);
+			auto length = end == std::string::npos ? end : (end - pos);
+			return path_.path_.substr(pos, length);
+		}
+	};
+
+	simple_iterator a(*this), b(base);
+	while (!a.is_end() && !b.is_end() && *a == *b) {
+		++a;
+		++b;
 	}
 
-	if (!different)
+	if (a.is_end() && b.is_end())
 		return Path(".");
 
-	int b_N = 0;
-	while (b_pos != std::string::npos
-		   && b_pos < base.path_.length())
-	{
-		auto b_end = base.path_.find_first_of("/\\", b_pos);
-		if (b_end == std::string::npos)
-			b_end = base.path_.length();
-		const auto b_length = b_end - b_pos;
-		if (b_length == 2
-			&& base.path_[b_pos] == '.'
-			&& base.path_[b_pos + 1] == '.')
-		{
-			--b_N;
-		}
-		if (b_length != 1
-			|| base.path_[b_pos] != '.')
-		{
-			++b_N;
-		}
-		b_pos = base.path_.find_first_not_of("/\\", b_end + 1);
+	int N = 0;
+	while (!b.is_end()) {
+		if (*b == "..")
+			--N;
+		else if (*b != ".")
+			++N;
+		++b;
 	}
 
-	if (b_N < 0)
+	if (N < 0)
 		return Path();
-	if (b_N == 0
-		&& (a_pos == std::string::npos
-			|| a_pos == path_.length()
-			|| a_end == a_pos + 1))
-	{
+
+	if (N == 0 && (a.is_end() || a->empty()))
 		return Path(".");
+
+	Path q;
+	while (N > 0) {
+		q /= Path("..");
+		--N;
 	}
-	std::string p;
-	if (b_N > 0)
-		p = "..";
-	for (auto i = b_N - 1; i > 0; --i)
-		p += "/..";
-	if (!p.empty() && a_pos < path_.length())
-		p += '/';
-	if (a_pos != std::string::npos)
-		p.append(path_, a_pos);
-	return Path(p);
+
+	while (!a.is_end()) {
+		q /= *a;
+		++a;
+	}
+
+	return q;
 }
 
-filesystem::Path filesystem::Path::relative_to(const Path& base) const
+filesystem::Path
+filesystem::Path::relative_to(const Path& base) const
 {
 	return lexically_relative(base).lexically_normal();
+}
+
+filesystem::Path
+filesystem::Path::lexically_proximate(const Path& base) const
+{
+	Path rel(lexically_relative(base));
+	if (rel.empty())
+		return *this;
+	return rel;
+}
+
+filesystem::Path
+filesystem::Path::proximate_to(const Path& base) const
+{
+	return /*absolute*/(*this).lexically_normal().lexically_proximate(/*absolute*/(base)).lexically_normal();
 }
 
 filesystem::Path

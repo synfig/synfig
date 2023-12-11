@@ -35,6 +35,8 @@
 
 #include "filesystemnative.h"
 
+#include "smartfile.h"
+
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -55,7 +57,7 @@ namespace synfig
 		struct FileInfo
 		{
 			String name;
-			String tmp_filename;
+			filesystem::Path tmp_filename;
 			bool is_directory;
 			bool is_removed;
 
@@ -70,8 +72,8 @@ namespace synfig
 		FileSystem::Handle sub_file_system;
 
 		String tag;
-		String temporary_directory;
-		String temporary_filename_base;
+		filesystem::Path temporary_directory;
+		filesystem::Path temporary_filename_base;
 
 		std::map<String, String> meta;
 
@@ -90,7 +92,7 @@ namespace synfig
 		static String get_xml_node_text(xmlpp::Node *node);
 
 	public:
-		explicit FileSystemTemporary(const String &tag, const String &temporary_directory = String(), const FileSystem::Handle &sub_file_system = FileSystem::Handle());
+		explicit FileSystemTemporary(const String& tag, const filesystem::Path& temporary_directory = {}, const FileSystem::Handle& sub_file_system = FileSystem::Handle());
 		~FileSystemTemporary();
 
 		virtual bool is_file(const String &filename);
@@ -117,10 +119,10 @@ namespace synfig
 		void discard_changes();
 
 		const String& get_tag() const { return tag; }
-		const String& get_temporary_directory() const { return temporary_directory; }
-		const String& get_temporary_filename_base() const { return temporary_filename_base; }
+		const filesystem::Path& get_temporary_directory() const { return temporary_directory; }
+		const filesystem::Path& get_temporary_filename_base() const { return temporary_filename_base; }
 		void reset_temporary_filename_base() { reset_temporary_filename_base(get_tag(), get_temporary_directory()); }
-		void reset_temporary_filename_base(const String &tag, const String &temporary_directory);
+		void reset_temporary_filename_base(const String& tag, const filesystem::Path& temporary_directory);
 
 		String get_meta(const String &key) const;
 		void set_meta(const String &key, const String &value);
@@ -137,13 +139,34 @@ namespace synfig
 			{ autosave = value; }
 
 		bool save_temporary() const;
-		bool open_temporary(const String &filename);
+		bool open_temporary(const filesystem::Path& filename);
 
-		static String get_system_temporary_directory();
-		static String generate_temporary_filename_base(const String &tag, const String &extension = String());
-		static String generate_system_temporary_filename(const String &tag, const String &extension = String());
-		static String generate_indexed_temporary_filename(const FileSystem::Handle &fs, const String &filename);
-		static bool scan_temporary_directory(const String &tag, FileList &out_files, const String &dirname = String());
+		static filesystem::Path get_system_temporary_directory();
+		static filesystem::Path generate_temporary_filename_base(const String &tag, const String &extension = String());
+		static filesystem::Path generate_system_temporary_filename(const String &tag, const String &extension = String());
+        static filesystem::Path generate_indexed_temporary_filename(const FileSystem::Handle &fs, const filesystem::Path& filename);
+		static bool scan_temporary_directory(const String& tag, FileList& out_files, const filesystem::Path& dirname = {});
+
+		/**
+		 * Generate a random non-existent file name in @a dir.
+		 *
+		 * The filename will start with @a prefix and end with @a suffix.
+		 *
+		 * First step: it generates a randomized file name with @a prefix and @a suffix.
+		 * Then it tries to create a non-existent lock file with this random name but with an extra extension (.lock).
+		 * If such lock file already exists, it goes back to first step.
+		 * Otherwise, it then checks for the file with the random name.
+		 * If it exists, deletes the file lock and goes back to first step.
+		 * Otherwise, it finally returns the reserved filename and the lock file.
+		 *
+		 * Remember to delete the lock when it is not needed anymore.
+		 *
+		 * @param dir the directory where the temporary file should be stored
+		 * @param prefix the start string for the file name. It must be in UTF-8 and it shouldn't have any slash.
+		 * @param suffix the end string for the file name (it can be the file extension). It must be in UTF-8 and it shouldn't have any slash.
+		 * @return the reserved filename and the lock file
+		 */
+		static std::pair<filesystem::Path, SmartFILE> reserve_temporary_filename(const filesystem::Path& dir, const String& prefix = "", const String& suffix = "");
 	};
 
 }

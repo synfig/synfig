@@ -3,6 +3,7 @@
 <interface>
   <requires lib="gtk+" version="3.18"/>
   <requires lib="synfigstudio" version="0.3"/>
+  <object class="GtkListStore"/>
   <object class="GtkAdjustment" id="adjustment_height">
     <property name="lower">1</property>
     <property name="upper">2147483647</property>
@@ -58,136 +59,6 @@
   <object class="GtkGrid" id="grid_content">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
-    <child>
-      <!-- n-columns=3 n-rows=3 -->
-      <object class="GtkGrid">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-        <child>
-          <object class="GtkLabel">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="label" translatable="yes">Width</property>
-          </object>
-          <packing>
-            <property name="left-attach">0</property>
-            <property name="top-attach">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkSpinButton" id="width">
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="hexpand">True</property>
-            <property name="width-chars">10</property>
-            <property name="text" translatable="yes">2</property>
-            <property name="adjustment">adjustment_width</property>
-            <property name="climb-rate">1</property>
-            <property name="value">2</property>
-            <style>
-              <class name="succeeding-widget"/>
-            </style>
-          </object>
-          <packing>
-            <property name="left-attach">1</property>
-            <property name="top-attach">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="gtkmm__CustomObject_widget_link" id="toggle_ratio_wh">
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="focus-on-click">False</property>
-            <property name="receives-default">True</property>
-            <style>
-              <class name="succeeding-widget"/>
-            </style>
-          </object>
-          <packing>
-            <property name="left-attach">2</property>
-            <property name="top-attach">0</property>
-            <property name="height">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="label" translatable="yes">Height</property>
-          </object>
-          <packing>
-            <property name="left-attach">0</property>
-            <property name="top-attach">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkSpinButton" id="height">
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="hexpand">True</property>
-            <property name="width-chars">10</property>
-            <property name="text" translatable="yes">1</property>
-            <property name="adjustment">adjustment_height</property>
-            <property name="climb-rate">1</property>
-            <property name="value">1</property>
-            <style>
-              <class name="succeeding-widget"/>
-            </style>
-          </object>
-          <packing>
-            <property name="left-attach">1</property>
-            <property name="top-attach">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkCheckButton" id="rsz_im_chbox">
-            <property name="visible">True</property>
-            <property name="can-focus">True</property>
-            <property name="receives-default">False</property>
-            <property name="halign">center</property>
-            <property name="margin-top">6</property>
-            <property name="draw-indicator">True</property>
-            <style>
-              <class name="succeeding-widget"/>
-            </style>
-          </object>
-          <packing>
-            <property name="left-attach">2</property>
-            <property name="top-attach">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkEventBox" id="rsz_im_label">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="margin-top">12</property>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="halign">end</property>
-                <property name="valign">center</property>
-                <property name="label" translatable="yes">Resize with Content</property>
-              </object>
-            </child>
-          </object>
-          <packing>
-            <property name="left-attach">1</property>
-            <property name="top-attach">2</property>
-          </packing>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <style>
-          <class name="initial-widget"/>
-        </style>
-      </object>
-      <packing>
-        <property name="left-attach">1</property>
-        <property name="top-attach">0</property>
-      </packing>
-    </child>
     <child>
       <object class="GtkFrame">
         <property name="visible">True</property>
@@ -363,6 +234,179 @@
       </object>
       <packing>
         <property name="left-attach">0</property>
+        <property name="top-attach">0</property>
+      </packing>
+    </child>
+    <child>
+      <!-- n-columns=3 n-rows=4 -->
+      <object class="GtkGrid">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="xpad">10</property>
+            <property name="label" translatable="yes">Width</property>
+          </object>
+          <packing>
+            <property name="left-attach">0</property>
+            <property name="top-attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSpinButton" id="width">
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="hexpand">True</property>
+            <property name="width-chars">10</property>
+            <property name="text" translatable="yes">2</property>
+            <property name="adjustment">adjustment_width</property>
+            <property name="climb-rate">1</property>
+            <property name="value">2</property>
+            <style>
+              <class name="succeeding-widget"/>
+            </style>
+          </object>
+          <packing>
+            <property name="left-attach">1</property>
+            <property name="top-attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="gtkmm__CustomObject_widget_link" id="toggle_ratio_wh">
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="focus-on-click">False</property>
+            <property name="receives-default">True</property>
+            <style>
+              <class name="succeeding-widget"/>
+            </style>
+          </object>
+          <packing>
+            <property name="left-attach">2</property>
+            <property name="top-attach">0</property>
+            <property name="height">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="xpad">10</property>
+            <property name="label" translatable="yes">Height</property>
+          </object>
+          <packing>
+            <property name="left-attach">0</property>
+            <property name="top-attach">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSpinButton" id="height">
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="hexpand">True</property>
+            <property name="width-chars">10</property>
+            <property name="text" translatable="yes">1</property>
+            <property name="adjustment">adjustment_height</property>
+            <property name="climb-rate">1</property>
+            <property name="value">1</property>
+            <style>
+              <class name="succeeding-widget"/>
+            </style>
+          </object>
+          <packing>
+            <property name="left-attach">1</property>
+            <property name="top-attach">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkCheckButton" id="rsz_im_chbox">
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">False</property>
+            <property name="halign">center</property>
+            <property name="margin-top">6</property>
+            <property name="draw-indicator">True</property>
+            <style>
+              <class name="succeeding-widget"/>
+            </style>
+          </object>
+          <packing>
+            <property name="left-attach">2</property>
+            <property name="top-attach">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEventBox" id="rsz_im_label">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="margin-top">12</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="label" translatable="yes">Resize with Content</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="left-attach">1</property>
+            <property name="top-attach">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="xpad">10</property>
+            <property name="label" translatable="yes">Presets</property>
+          </object>
+          <packing>
+            <property name="left-attach">0</property>
+            <property name="top-attach">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkComboBoxText" id="combo_box">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="margin-top">22</property>
+            <property name="margin-bottom">22</property>
+            <property name="active">0</property>
+            <items>
+              <item id="custom" translatable="yes">Custom Size</item>
+              <item id="4096x3112" translatable="yes">4096x3112 Full Aperture 4K</item>
+              <item id="2048x1556" translatable="yes">2048x1556 Full Aperture Native 2K</item>
+              <item id="1920x1080" translatable="yes">1920x1080 HDTV 1080p/i</item>
+              <item id="1280x720" translatable="yes">1280x720  HDTV 720p</item>
+              <item id="720x576" translatable="yes">720x576   DVD PAL</item>
+              <item id="720x480" translatable="yes">720x480   DVD NTSC</item>
+              <item id="720x540" translatable="yes">720x540   Web 720x</item>
+              <item id="720x405" translatable="yes">720x405   Web 720x HD</item>
+              <item id="640x480" translatable="yes">640x480   Web 640x</item>
+              <item id="480x360" translatable="yes">480x360   Web 480x</item>
+              <item id="480x270" translatable="yes">480x270   Web 480x HD</item>
+              <item id="360x270" translatable="yes">360x270   Web 360x</item>
+            </items>
+          </object>
+          <packing>
+            <property name="left-attach">1</property>
+            <property name="top-attach">3</property>
+            <property name="width">2</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <style>
+          <class name="initial-widget"/>
+        </style>
+      </object>
+      <packing>
+        <property name="left-attach">1</property>
         <property name="top-attach">0</property>
       </packing>
     </child>

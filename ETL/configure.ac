@@ -85,7 +85,6 @@ AC_SUBST(LDFLAGS)
 AC_CONFIG_FILES([ETL-config
 Makefile
 ETL/Makefile
-test/Makefile
 ETL.pc
 doxygen.cfg
 ])

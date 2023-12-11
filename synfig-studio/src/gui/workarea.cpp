@@ -69,18 +69,12 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
 /* === M A C R O S ========================================================= */
 
 #define THUMB_SIZE 128
-
-#ifndef stratof
-#define stratof(X) (atof((X).c_str()))
-#define stratoi(X) (atoi((X).c_str()))
-#endif
 
 /* === G L O B A L S ======================================================= */
 
@@ -313,10 +307,10 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 
 	// Load sketch
 	{
-		String data(canvas->get_meta_data("sketch"));
+		filesystem::Path data(canvas->get_meta_data("sketch"));
 		if (!data.empty())
 			if (!load_sketch(data))
-				load_sketch(filesystem::Path::dirname(canvas->get_file_name()) + ETL_DIRECTORY_SEPARATOR + filesystem::Path::basename(data));
+				load_sketch(filesystem::Path::dirname(canvas->get_file_name()) + ETL_DIRECTORY_SEPARATOR + data.filename());
 	}
 
 	drawing_area->set_can_focus(true);
@@ -393,12 +387,11 @@ WorkArea::save_meta_data()
 			canvas_interface->erase_meta_data("guide");
 	}
 
-	if(get_sketch_filename().size())
-	{
-		if(filesystem::Path::dirname(canvas->get_file_name())==filesystem::Path::dirname(get_sketch_filename()))
-			canvas_interface->set_meta_data("sketch",filesystem::Path::basename(get_sketch_filename()));
+	if (!get_sketch_filename().empty()) {
+		if (filesystem::Path::dirname(canvas->get_file_name()) == get_sketch_filename().parent_path())
+			canvas_interface->set_meta_data("sketch", get_sketch_filename().filename().u8string());
 		else
-			canvas_interface->set_meta_data("sketch",get_sketch_filename());
+			canvas_interface->set_meta_data("sketch", get_sketch_filename().u8string());
 	}
 
 	meta_data_lock=false;
@@ -1136,8 +1129,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		}
 
 		assert(curr_input_device);
-			
-
+		
 		if(std::isnan(x) || std::isnan(y) || std::isnan(p))
 			return false;
 
@@ -1162,15 +1154,13 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 	// Handle the renderables
 	{
-		std::set<etl::handle<WorkAreaRenderer> >::iterator iter;
-		for(iter=renderer_set_.begin();iter!=renderer_set_.end();++iter)
-		{
-			if((*iter)->get_enabled())
-				if((*iter)->event_vfunc(event))
-				{
+		for (const auto& workarea_renderer : renderer_set_) {
+			if (workarea_renderer->get_enabled()) {
+				if (workarea_renderer->event_vfunc(event)) {
 					// Event handled. Return true.
 					return true;
 				}
+			}
 		}
 	}
 	// Event hasn't been handled, pass it down
@@ -1183,12 +1173,17 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			} else if (event_result == Smach::RESULT_OK) {
 				set_drag_mode(DRAG_NONE);
 
-				if (etl::handle<Bezier> bezier = find_bezier(mouse_pos, radius, &bezier_click_pos)) {
+				if (Bezier::Handle bezier = find_bezier(mouse_pos, radius, &bezier_click_pos)) {
 					if (selected_bezier == bezier) {
 						bezier->signal_user_doubleclick(1)(bezier_click_pos);
 						return true;
 					}
 				}
+			}
+			if(guide_highlighted){
+				guide_dialog.show();
+				guide_dialog.set_current_guide(curr_guide);
+				return true;
 			}
 		}
 		break;
@@ -1196,7 +1191,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 	case GDK_BUTTON_PRESS: {
 		switch(button_pressed) {
 		case 1:	{ // Attempt to click on a duck
-			etl::handle<Duck> duck;
+			Duck::Handle duck;
 			set_drag_mode(DRAG_NONE);
 
 			if(allow_duck_clicks) {
@@ -1323,12 +1318,12 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			break;
 		}
 		case 2:	{ // Attempt to drag and move the window
-			etl::handle<Duck> duck = find_duck(mouse_pos, radius);
-			etl::handle<Bezier> bezier = find_bezier(mouse_pos, radius, &bezier_click_pos);
-			if (duck)
+			cancel_drag_on_mBtn_press();
+
+			if (Duck::Handle duck = find_duck(mouse_pos, radius))
 				duck->signal_user_click(1)();
 			else
-			if(bezier)
+			if(Bezier::Handle bezier = find_bezier(mouse_pos, radius, &bezier_click_pos))
 				bezier->signal_user_click(1)(bezier_click_pos);
 
 			if (canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,BUTTON_MIDDLE,mouse_pos,pressure,modifier))==Smach::RESULT_OK) {
@@ -1343,7 +1338,9 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			break;
 		}
 		case 3:	{ // Attempt to either get info on a duck, or open the menu
-			if (etl::handle<Duck> duck = find_duck(mouse_pos, radius)) {
+			cancel_drag_on_mBtn_press();
+
+			if (Duck::Handle duck = find_duck(mouse_pos, radius)) {
 				if (get_selected_ducks().size() <= 1)
 					duck->signal_user_click(2)();
 				else
@@ -1351,7 +1348,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				return true;
 			}
 
-			if (etl::handle<Bezier> bezier = find_bezier(mouse_pos, radius, &bezier_click_pos)) {
+			if (Bezier::Handle bezier = find_bezier(mouse_pos, radius, &bezier_click_pos)) {
 				bezier->signal_user_click(2)(bezier_click_pos);
 				return true;
 			}
@@ -1422,7 +1419,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 			guide_highlighted = iter != get_guide_list().end();
 
-            etl::handle<Duck> duck = find_duck(mouse_pos, radius);
+            Duck::Handle duck = find_duck(mouse_pos, radius);
             if (duck != hover_duck) {
                 hover_duck = duck;
                 drawing_area->queue_draw();
@@ -1820,7 +1817,7 @@ WorkArea::on_vruler_event(GdkEvent *event)
 }
 
 void
-WorkArea::on_duck_selection_single(const etl::handle<Duck>& duck)
+WorkArea::on_duck_selection_single(const Duck::Handle& duck)
 {
 	if (get_drag_mode() == DRAG_NONE) {
 		studio::LayerTree* tree_layer(dynamic_cast<studio::LayerTree*>(canvas_view->get_ext_widget("layers_cmp")));
@@ -1955,14 +1952,13 @@ WorkArea::refresh(const Cairo::RefPtr<Cairo::Context> &/*cr*/)
 
 	// Draw out the renderables
 	{
-		std::set<etl::handle<WorkAreaRenderer> >::iterator iter;
-		for(iter=renderer_set_.begin();iter!=renderer_set_.end();++iter)
-		{
-			if((*iter)->get_enabled())
-				(*iter)->render_vfunc(
+		for (const auto& workarea_renderer : renderer_set_) {
+			if (workarea_renderer->get_enabled()) {
+				workarea_renderer->render_vfunc(
 					draw_area_window,
 					Gdk::Rectangle(0, 0, draw_area_window->get_width(), draw_area_window->get_height())
 				);
+			}
 		}
 	}
 
@@ -2225,6 +2221,15 @@ WorkArea::set_selected_value_node(synfig::ValueNode::LooseHandle x)
 	{
 		selected_value_node_=x;
 		queue_draw();
+	}
+}
+
+void
+WorkArea::cancel_drag_on_mBtn_press()
+{
+	if (get_drag_mode() == DRAG_DUCK || get_drag_mode() == DRAG_BEZIER) {
+		set_drag_mode(DRAG_NONE);
+		canvas_view->queue_rebuild_ducks();
 	}
 }
 

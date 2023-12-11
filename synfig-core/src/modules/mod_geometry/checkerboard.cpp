@@ -44,11 +44,9 @@
 #include <synfig/surface.h>
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
-#include <synfig/segment.h>
 
 #include <synfig/rendering/common/task/tasktransformation.h>
-#include <synfig/rendering/common/task/taskblend.h>
-#include <synfig/rendering/software/task/tasksw.h>
+#include <synfig/rendering/software/task/taskpaintpixelsw.h>
 
 #include "checkerboard.h"
 
@@ -89,93 +87,64 @@ public:
 };
 
 
-class TaskCheckerBoardSW: public TaskCheckerBoard, public rendering::TaskSW,
-	public rendering::TaskInterfaceBlendToTarget,
-	public rendering::TaskInterfaceSplit
+class TaskCheckerBoardSW: public TaskCheckerBoard, public rendering::TaskPaintPixelSW
 {
 public:
 	typedef etl::handle<TaskCheckerBoardSW> Handle;
 	static Token token;
-	virtual Token::Handle get_token() const { return token.handle(); }
+	virtual Token::Handle get_token() const override { return token.handle(); }
 
-	virtual void on_target_set_as_source() {
-		Task::Handle &subtask = sub_task(0);
-		if ( subtask
-		  && subtask->target_surface == target_surface
-		  && !Color::is_straight(blend_method) )
-		{
-			trunc_by_bounds();
-			subtask->source_rect = source_rect;
-			subtask->target_rect = target_rect;
-		}
+	typedef Color (TaskCheckerBoardSW::*GetColorFunction)(const Vector& p) const;
+
+	// constant values per run()
+	mutable ColorReal kx, ky;
+	mutable GetColorFunction selected_get_color_method;
+
+	Color get_color_antialias(const Vector& q) const
+	{
+		Point p(q);
+		p[0] -= floor(p[0]);
+		p[1] -= floor(p[1]);
+
+		ColorReal px = p[0]*ColorReal(2);
+		px -= floor(px);
+		px = std::min(px, ColorReal(1) - px)*kx;
+
+		ColorReal py = p[1]*ColorReal(2);
+		py -= floor(py);
+		py = std::min(py, ColorReal(1) - py)*ky;
+
+		ColorReal a = std::min(px, py);
+		if ((p[0] < 0.5) != (p[1] < 0.5)) a = -a;
+		a = synfig::clamp(a + ColorReal(0.5), ColorReal(0), ColorReal(1));
+
+		return Color(color).set_a(color.get_a()*a);
 	}
 
-	virtual Color::BlendMethodFlags get_supported_blend_methods() const
-		{ return Color::BLEND_METHODS_ALL; }
+	Color get_color_simple(const Vector& p) const
+	{
+		bool x = p[0] - floor(p[0]) < 0.5;
+		bool y = p[1] - floor(p[1]) < 0.5;
+		ColorReal a(x == y ? 1.0 : 0.0);
+		return Color(color).set_a(color.get_a()*a);
+	}
 
-	virtual bool run(RunParams&) const {
-		if (!is_valid())
-			return true;
+	Color get_color(const Vector& p) const override
+	{
+		// C++17:
+		//return std::invoke(selected_get_color_method, *this, p);
+		return (this->*selected_get_color_method)(p);
+	}
 
-		Vector ppu = get_pixels_per_unit();
+	void pre_run(const Matrix3& matrix, const Matrix3& /*inverse_matrix*/) const override
+	{
+		kx = matrix.axis_x().mag()*0.5;
+		ky = matrix.axis_y().mag()*0.5;
+		selected_get_color_method = antialias ? &TaskCheckerBoardSW::get_color_antialias : &TaskCheckerBoardSW::get_color_simple;
+	}
 
-		Matrix bounds_transfromation;
-		bounds_transfromation.m00 = ppu[0];
-		bounds_transfromation.m11 = ppu[1];
-		bounds_transfromation.m20 = target_rect.minx - ppu[0]*source_rect.minx;
-		bounds_transfromation.m21 = target_rect.miny - ppu[1]*source_rect.miny;
-
-		Matrix matrix = bounds_transfromation * transformation->matrix;
-		Matrix inv_matrix = matrix.get_inverted();
-
-		int tw = target_rect.get_width();
-		Vector dx = inv_matrix.axis_x();
-		Vector dy = inv_matrix.axis_y() - dx*(Real)tw;
-		Vector p = inv_matrix.get_transformed( Vector((Real)target_rect.minx, (Real)target_rect.miny) );
-
-		LockWrite la(this);
-		if (!la)
-			return false;
-
-		Surface::alpha_pen apen(la->get_surface().get_pen(target_rect.minx, target_rect.miny));
-		ColorReal amount = blend ? this->amount : ColorReal(1.0);
-		apen.set_blend_method(blend ? blend_method : Color::BLEND_COMPOSITE);
-		Color c = color;
-		if (antialias) {
-			ColorReal kx(matrix.axis_x().mag()*0.5);
-			ColorReal ky(matrix.axis_y().mag()*0.5);
-			for(int iy = target_rect.miny; iy < target_rect.maxy; ++iy, p += dy, apen.inc_y(), apen.dec_x(tw))
-				for(int ix = target_rect.minx; ix < target_rect.maxx; ++ix, p += dx, apen.inc_x()) {
-					p[0] -= floor(p[0]);
-					p[1] -= floor(p[1]);
-
-					ColorReal px = p[0]*ColorReal(2);
-					px -= floor(px);
-					px = std::min(px, ColorReal(1) - px)*kx;
-
-					ColorReal py = p[1]*ColorReal(2);
-					py -= floor(py);
-					py = std::min(py, ColorReal(1) - py)*ky;
-
-					ColorReal a = std::min(px, py);
-					if ((p[0] < 0.5) != (p[1] < 0.5)) a = -a;
-					a = synfig::clamp(a + ColorReal(0.5), ColorReal(0), ColorReal(1));
-
-					c.set_a(color.get_a()*a);
-					apen.put_value(c, amount);
-				}
-		} else {
-			for(int iy = target_rect.miny; iy < target_rect.maxy; ++iy, p += dy, apen.inc_y(), apen.dec_x(tw))
-				for(int ix = target_rect.minx; ix < target_rect.maxx; ++ix, p += dx, apen.inc_x()) {
-					p[0] -= floor(p[0]);
-					p[1] -= floor(p[1]);
-					ColorReal a((p[0] < 0.5) == (p[1] < 0.5) ? 1.0 : 0.0);
-					c.set_a(color.get_a()*a);
-					apen.put_value(c, amount);
-				}
-		}
-
-		return true;
+	bool run(RunParams&) const override {
+		return run_task();
 	}
 };
 

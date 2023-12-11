@@ -59,7 +59,7 @@
  * Our timetrack ruler is tight
  * Set some padding below to give it more space
  */
-#timetrack button {
+#timetrack_panel button {
 	padding-bottom: 5px;
 }
 
@@ -101,13 +101,21 @@
 }
 
 .color-red {
-        color : #FF0000;
-}
-
-.color-black {
-        color : #000000;
+	color : #FF0000;
 }
 
 .color-white {
-        color : #FFFFFF;
+	color : #FFFFFF;
+}
+
+#parameters_panel .odd,
+#timetrack_panel .odd,
+#layers_panel .odd {
+	background-color: rgba(255,255,255,0.05);
+}
+
+#parameters_panel .even,
+#timetrack_panel .even,
+#layers_panel .even {
+	background-color: rgba(0,0,0,0.05);
 }

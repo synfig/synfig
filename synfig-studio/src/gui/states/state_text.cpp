@@ -57,7 +57,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -194,7 +193,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateText::StateText():
-	Smach::state<StateText_Context>("text")
+	Smach::state<StateText_Context>("text", N_("Text Tool"))
 {
 	insert(event_def(EVENT_LAYER_SELECTION_CHANGED,&StateText_Context::event_layer_selection_changed_handler));
 	insert(event_def(EVENT_STOP,&StateText_Context::event_stop_handler));

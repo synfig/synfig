@@ -61,7 +61,6 @@
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 using namespace studio;
 
@@ -103,15 +102,15 @@ class studio::StateBLine_Context : public sigc::trackable
 
 	Duckmatic::Push duckmatic_push;
 
-	etl::handle<Duck> curr_duck;
+	Duck::Handle curr_duck;
 
-	etl::handle<Duck> next_duck;
+	Duck::Handle next_duck;
 
 	std::list<synfig::ValueNode_Const::Handle> bline_point_list;
 
 	bool on_vertex_change(const studio::Duck &duck, synfig::ValueNode_Const::Handle value_node);
-	bool on_tangent1_change(const studio::Duck &duck, handle<WorkArea::Duck> other_duck, synfig::ValueNode_Const::Handle value_node);
-	bool on_tangent2_change(const studio::Duck &duck, handle<WorkArea::Duck> other_duck, synfig::ValueNode_Const::Handle value_node);
+	bool on_tangent1_change(const studio::Duck& duck, WorkArea::Duck::Handle other_duck, synfig::ValueNode_Const::Handle value_node);
+	bool on_tangent2_change(const studio::Duck& duck, WorkArea::Duck::Handle other_duck, synfig::ValueNode_Const::Handle value_node);
 	void on_first_duck_clicked();
 
 	void popup_handle_menu(synfig::ValueNode_Const::Handle value_node);
@@ -301,7 +300,7 @@ create_image_from_icon(const std::string& icon_name, Gtk::IconSize icon_size)
 /* === M E T H O D S ======================================================= */
 
 StateBLine::StateBLine():
-	Smach::state<StateBLine_Context>("bline")
+	Smach::state<StateBLine_Context>("bline", N_("Spline Tool"))
 {
 	insert(event_def(EVENT_LAYER_SELECTION_CHANGED,		&StateBLine_Context::event_layer_selection_changed_handler));
 	insert(event_def(EVENT_STOP,						&StateBLine_Context::event_stop_handler));
@@ -337,7 +336,7 @@ StateBLine_Context::load_settings()
 
 		set_opacity(settings.get_value("bline.opacity", 1.0));
 
-		set_bline_width(settings.get_value("bline.bline_width", Distance("1px")));
+		set_bline_width(settings.get_value("bline.bline_width", Distance("1px")).as(App::distance_system, get_canvas()->rend_desc()));
 
 		set_layer_region_flag(settings.get_value("bline.layer_region", true));
 
@@ -353,7 +352,7 @@ StateBLine_Context::load_settings()
 
 		set_auto_export_flag(settings.get_value("bline.auto_export", false));
 
-		set_feather_size(settings.get_value("bline.feather", Distance("0px")));
+		set_feather_size(settings.get_value("bline.feather", Distance("0px")).as(App::distance_system, get_canvas()->rend_desc()));
 
 		// determine layer flags
 		layer_region_flag = get_layer_region_flag();
@@ -1319,8 +1318,8 @@ StateBLine_Context::refresh_ducks(bool button_down)
 
 	std::list<ValueNode_Const::Handle>::iterator iter;
 
-	handle<WorkArea::Bezier> bezier;
-	handle<WorkArea::Duck> duck,tduck1,tduck2,first_tduck1,first_tduck2;
+	WorkArea::Bezier::Handle bezier;
+	WorkArea::Duck::Handle duck,tduck1,tduck2,first_tduck1,first_tduck2;
 	BLinePoint bline_point;
 
 	for(iter=bline_point_list.begin();iter!=bline_point_list.end();++iter)
@@ -1529,7 +1528,7 @@ StateBLine_Context::on_vertex_change(const studio::Duck &duck, synfig::ValueNode
 }
 
 bool
-StateBLine_Context::on_tangent1_change(const studio::Duck &duck, handle<WorkArea::Duck> other_duck, synfig::ValueNode_Const::Handle value_node)
+StateBLine_Context::on_tangent1_change(const studio::Duck& duck, WorkArea::Duck::Handle other_duck, synfig::ValueNode_Const::Handle value_node)
 {
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
 	bline_point.set_tangent1(duck.get_point());
@@ -1544,7 +1543,7 @@ StateBLine_Context::on_tangent1_change(const studio::Duck &duck, handle<WorkArea
 }
 
 bool
-StateBLine_Context::on_tangent2_change(const studio::Duck &duck, handle<WorkArea::Duck> other_duck, synfig::ValueNode_Const::Handle value_node)
+StateBLine_Context::on_tangent2_change(const studio::Duck& duck, WorkArea::Duck::Handle other_duck, synfig::ValueNode_Const::Handle value_node)
 {
 	BLinePoint bline_point(value_node->get_value().get(BLinePoint()));
 

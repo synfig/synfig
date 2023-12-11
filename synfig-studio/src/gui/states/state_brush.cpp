@@ -232,7 +232,7 @@ const char * StateBrush_Context::BrushConfig::input_names[] = {
 
 
 StateBrush::StateBrush():
-	Smach::state<StateBrush_Context>("brush")
+	Smach::state<StateBrush_Context>("brush", N_("Brush Tool"))
 {
 	insert(event_def(EVENT_STOP,&StateBrush_Context::event_stop_handler));
 	insert(event_def(EVENT_REFRESH,&StateBrush_Context::event_refresh_handler));
@@ -477,8 +477,8 @@ StateBrush_Context::save_settings()
 	{
 		settings.set_value("brush.path_count", (int)App::brushes_path.size());
 		int j = 0;
-		for(std::set<String>::const_iterator i = App::brushes_path.begin(); i != App::brushes_path.end(); ++i)
-			settings.set_value(strprintf("brush.path_%d", j++), *i);
+		for (const auto& path : App::brushes_path)
+			settings.set_value(strprintf("brush.path_%d", j++), path);
 
 		settings.set_value("brush.selected_brush_filename", selected_brush_config.filename);
 		settings.set_value("brush.eraser", eraser_checkbox.get_active());
@@ -602,8 +602,8 @@ StateBrush_Context::refresh_tool_options()
 	// load brushes files definition
 	// scan directories
 	std::set<String> files;
-	for(std::set<String>::const_iterator i = App::brushes_path.begin(); i != App::brushes_path.end(); ++i)
-		scan_directory(*i, 1, files);
+	for (const auto& path : App::brushes_path)
+		scan_directory(path.u8string(), 1, files);
 
 	// run through brush definition and assign a button
 	Gtk::ToggleToolButton* first_button = nullptr;
@@ -752,30 +752,33 @@ StateBrush_Context::event_mouse_down_handler(const Smach::event& x)
 				canvas_view_->add_layer("import");
 				selected_layer = canvas_view_->get_selection_manager()->get_selected_layer();
 				layer = Layer_Bitmap::Handle::cast_dynamic(selected_layer);
+				if (layer) {
+					// Set temporary description to generate the name
+					String temp_description(_("brush image"));
+					layer->set_description(temp_description);
 
-				// Set temporary description to generate the name
-				String temp_description(_("brush image"));
-				layer->set_description(temp_description);
+					if (selected_layer->get_param_list().count("filename") != 0)
+					{
+						// generate name based on description
+						String description, filename, filename_param;
+						get_canvas_interface()
+							->get_instance()
+							->generate_new_name(
+								layer,
+								description,
+								filename,
+								filename_param );
 
-				if (selected_layer->get_param_list().count("filename") != 0)
-				{
-					// generate name based on description
-					String description, filename, filename_param;
-					get_canvas_interface()
-						->get_instance()
-						->generate_new_name(
-							layer,
-							description,
-							filename,
-							filename_param );
+						// create and save surface
+						get_canvas_interface()
+							->get_instance()
+							->save_surface(layer->rendering_surface, filename);
 
-					// create and save surface
-					get_canvas_interface()
-						->get_instance()
-						->save_surface(layer->rendering_surface, filename);
-
-					selected_layer->set_param("filename", filename_param);
-					selected_layer->set_description(description);
+						selected_layer->set_param("filename", filename_param);
+						selected_layer->set_description(description);
+					}
+				} else {
+					return Smach::RESULT_ACCEPT;
 				}
 			}
 

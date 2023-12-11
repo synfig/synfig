@@ -36,6 +36,7 @@
 #include <atomic>
 
 #include "optimizer.h"
+#include "synfig/filesystem_path.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -57,9 +58,9 @@ public:
 	typedef std::multimap<Real, ModeToken::Handle> ModeMap;
 
 	struct DebugOptions {
-		String task_list_log;
-		String task_list_optimized_log;
-		String result_image;
+		filesystem::Path task_list_log;
+		filesystem::Path task_list_optimized_log;
+		filesystem::Path result_image;
 	};
 
 private:
@@ -121,14 +122,14 @@ private:
 	void optimize(Optimizer::Category category, Task::List &list) const;
 
 	void log(
-		const String &logfile,
-		const Task::Handle &task,
+		const filesystem::Path& logfile,
+        const Task::Handle& task,
 		const Optimizer::RunParams* optimization_stack = nullptr,
 		int level = 0 ) const;
 	void log(
-		const String &logfile,
-		const Task::List &list,
-		const String &name = String(),
+		const filesystem::Path& logfile,
+        const Task::List& list,
+        const String& name = String(),
 		const Optimizer::RunParams* optimization_stack = nullptr ) const;
 
 	static void initialize_renderers();

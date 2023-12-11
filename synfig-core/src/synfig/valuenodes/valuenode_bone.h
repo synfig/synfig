@@ -123,10 +123,10 @@ public:
 	static ValueNode_Bone::Handle get_root_bone();
 
 #ifdef _DEBUG
-	virtual void ref() const override;
-	virtual bool unref() const override;
-	virtual void rref() const override;
-	virtual void runref() const override;
+	void ref() const noexcept override;
+	void unref() const override;
+	void rref() const override;
+	void runref() const override;
 #endif
 
 private:
@@ -163,10 +163,10 @@ public:
 	virtual bool is_root() const override { return true; }
 
 #ifdef _DEBUG
-	virtual void ref() const override;
-	virtual bool unref() const override;
-	virtual void rref() const override;
-	virtual void runref() const override;
+	void ref() const noexcept override;
+	void unref() const override;
+	void rref() const override;
+	void runref() const override;
 #endif
 
 private:

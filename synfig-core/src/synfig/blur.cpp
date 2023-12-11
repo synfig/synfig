@@ -40,7 +40,6 @@
 
 #include "blur.h"
 
-#include "general.h"
 #include <synfig/localization.h>
 
 #endif
@@ -50,6 +49,22 @@
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
+
+#if defined(__has_cpp_attribute)
+# if __has_cpp_attribute(fallthrough)
+#  define fallthrough__ [[fallthrough]]
+# endif
+#endif
+
+#ifndef fallthrough__
+# if __GNUC__ >= 7
+#  define fallthrough__ __attribute__((fallthrough))
+# elif __clang__
+#  define fallthrough__ [[clang::fallthrough]]
+# else
+#  define fallthrough__ ((void)0)
+# endif
+#endif
 
 /* === G L O B A L S ======================================================= */
 
@@ -378,6 +393,7 @@ bool Blur::operator()(const Surface &surface,
 			}
 
 			//if we don't qualify for disc blur just use box blur
+			fallthrough__;
 		}
 
 	case Blur::BOX: // B O X -------------------------------------------------------
@@ -778,6 +794,7 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 			}
 
 			//if we don't qualify for disc blur just use box blur
+			fallthrough__;
 		}
 
 	case Blur::BOX: // B O X -------------------------------------------------------

@@ -41,6 +41,7 @@
 
 #include "guid.h"
 #include "interpolation.h"
+#include "filesystem_path.h"
 #include "node.h"
 #include "paramdesc.h"
 #include "progresscallback.h"
@@ -317,9 +318,9 @@ private:
 	Glib::RefPtr<Gio::FileMonitor> file_monitor;
 	void on_file_changed(const Glib::RefPtr<Gio::File>&, const Glib::RefPtr<Gio::File>&, Gio::FileMonitorEvent);
 	sigc::connection monitor_connection;
-	std::string monitored_path;
+	filesystem::Path monitored_path;
 public:
-	bool monitor(const std::string& path); // append file monitor (returns true on success, false on fail)
+	bool monitor(const filesystem::Path& path); // append file monitor (returns true on success, false on fail)
 
 
 	/*

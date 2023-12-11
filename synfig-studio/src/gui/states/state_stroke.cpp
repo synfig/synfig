@@ -99,7 +99,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateStroke::StateStroke():
-	Smach::state<StateStroke_Context>("stroke")
+	Smach::state<StateStroke_Context>("stroke", "")
 {
 	insert(event_def(EVENT_STOP,&StateStroke_Context::event_stop_handler));
 	insert(event_def(EVENT_REFRESH,&StateStroke_Context::event_refresh_handler));

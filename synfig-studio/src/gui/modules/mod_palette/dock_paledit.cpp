@@ -238,24 +238,29 @@ Dock_PalEdit::on_save_pressed()
 	// it would be nice to have initial spal file name same as current canvas name, 
 	// use "My Palette" as temporary spal file name as a hack.
 	//synfig::String filename = selected_instance->get_file_name();
-	std::string filename = "My Palette";
+	synfig::filesystem::Path filename("My Palette");
 	while (App::dialog_save_file_spal(_("Please choose a file name"), filename, ANIMATION_DIR_PREFERENCE))
 	{
 		// If the filename still has wildcards, then we should
 		// continue looking for the file we want
-		if (filesystem::Path::basename(filename).find('*') != std::string::npos) {
+		if (filename.filename().u8string().find('*') != std::string::npos) {
 			continue;
 		}
 
 		{
-			struct stat	s;
+#if _WIN32
+			struct _stat s;
+			int stat_return = _wstat(filename.c_str(), &s);
+#else
+			struct stat s;
 			int stat_return = stat(filename.c_str(), &s);
+#endif
 
 			// if stat() fails with something other than 'file doesn't exist', there's been a real
 			// error of some kind.  let's give up now and ask for a new path.
 			if (stat_return == -1 && errno != ENOENT)
 			{
-				perror(filename.c_str());
+				perror(filename.u8_str());
 				std::string msg(synfig::strprintf(_("Unable to check whether '%s' exists."), filename.c_str()));
 				App::dialog_message_1b("ERROR", msg, "details", _("Close"));
 				continue;
@@ -264,11 +269,11 @@ Dock_PalEdit::on_save_pressed()
 			// if the file exists and the user doesn't want to overwrite it, keep prompting for a filename
 			std::string message = synfig::strprintf(_("A file named \"%s\" already exists. "
 							"Do you want to replace it?"),
-							filesystem::Path::basename(filename).c_str());
+							filename.filename().u8_str());
 
 			std::string details = synfig::strprintf(_("The file already exists in \"%s\". "
 							"Replacing it will overwrite its contents."),
-							filesystem::Path::basename(filesystem::Path::dirname(filename)).c_str());
+							filename.parent_path().filename().u8_str());
 
 			if ((stat_return == 0) && !App::dialog_message_2b(
 				message,
@@ -292,12 +297,12 @@ Dock_PalEdit::on_save_pressed()
 void
 Dock_PalEdit::on_open_pressed()
 {
-	synfig::String filename = "*.spal";
+	synfig::filesystem::Path filename("*.spal");
 	while(App::dialog_open_file_spal(_("Please select a palette file"), filename, ANIMATION_DIR_PREFERENCE))
 	{
 		// If the filename still has wildcards, then we should
 		// continue looking for the file we want
-		if (filename.find('*') != std::string::npos) {
+		if (filename.u8string().find('*') != std::string::npos) {
 			continue;
 		}
 
@@ -383,6 +388,11 @@ void
 Dock_PalEdit::refresh()
 {
 	const int width(12);
+
+	// Free table children from memory
+	std::vector<Widget*> children = table.get_children();
+	for(Widget* child : children)
+		delete child;
 
 	// Clear the table
 	table.foreach(sigc::mem_fun(table,&Gtk::Table::remove));

@@ -30,18 +30,18 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "action.h"
-#include <ETL/handle>
-#include <synfig/canvas.h>
-#include <synfig/string.h>
-#include <synfig/filesystemtemporary.h>
-#include <synfig/filesystemgroup.h>
 #include <list>
 #include <set>
-#include <sigc++/sigc++.h>
+
+#include <ETL/handle>
+
+#include <synfig/canvas.h>
+#include <synfig/rendering/surface.h>
+#include <synfig/string.h>
+
+#include "action.h"
 #include "action_system.h"
 #include "selectionmanager.h"
-#include <synfig/rendering/surface.h>
 
 /* === M A C R O S ========================================================= */
 

@@ -187,17 +187,16 @@ private:
 	etl::handle<BezierDrag_Base> bezier_dragger_;
 
 	sigc::signal<void> signal_duck_selection_changed_;
-	sigc::signal<void, const etl::handle<Duck>& > signal_duck_selection_single_;
+	sigc::signal<void, const Duck::Handle&> signal_duck_selection_single_;
 
 	sigc::signal<void> signal_strokes_changed_;
 
 	sigc::signal<void> signal_grid_changed_;
 
-	mutable sigc::signal<void> signal_sketch_saved_;
-
 	GuideList guide_list_;
 
-	mutable synfig::String sketch_filename_;
+	mutable sigc::signal<void> signal_sketch_saved_;
+	mutable synfig::filesystem::Path sketch_filename_;
 
 	synfig::TransformStack curr_transform_stack;
 	bool curr_transform_stack_set = false;
@@ -247,7 +246,7 @@ private:
 	synfig::Vector last_translate_;
 	synfig::Vector drag_offset_;
 
-	//etl::handle<Duck> selected_duck;
+	//Duck::Handle selected_duck;
 
 	void connect_signals(const Duck::Handle &duck, const synfigapp::ValueDesc& value_desc, CanvasView &canvas_view);
 
@@ -269,7 +268,7 @@ public:
 	bool get_lock_animation_mode()const { return lock_animation_mode_; }
 
 	sigc::signal<void>& signal_duck_selection_changed() { return signal_duck_selection_changed_; }
-	sigc::signal<void, const etl::handle<Duck>& >& signal_duck_selection_single() { return signal_duck_selection_single_; }
+	sigc::signal<void, const Duck::Handle&>& signal_duck_selection_single() { return signal_duck_selection_single_; }
 	sigc::signal<void>& signal_strokes_changed() { return signal_strokes_changed_; }
 	sigc::signal<void>& signal_grid_changed() { return signal_grid_changed_; }
 	sigc::signal<void>& signal_sketch_saved() { return signal_sketch_saved_; }
@@ -319,7 +318,7 @@ public:
 
 	void set_time(synfig::Time x) { cur_time=x; }
 
-	bool is_duck_group_selectable(const etl::handle<Duck>& x)const;
+	bool is_duck_group_selectable(const Duck::Handle& x) const;
 
 	//const DuckMap& duck_map()const { return duck_map; }
 	DuckList get_duck_list()const;
@@ -337,7 +336,7 @@ public:
     */
 
     //! Return first selected duck (handle) has const Duck etl::handle
-	etl::handle<Duck> get_selected_duck()const;
+	Duck::Handle get_selected_duck() const;
 	//! Return list of selected ducks (handles)
 	/*!
      ** \return ducks (handles) has const DuckList
@@ -365,22 +364,22 @@ public:
     /*!
      ** \return \a true if the given duck (handle) is currently selected
      */
-    bool duck_is_selected(const etl::handle<Duck> &duck)const;
+	bool duck_is_selected(const Duck::Handle& duck) const;
 	//! Toggle the duck (handle)
     /*!
      ** \param duck The duck (handle) to toggle has etl::handle parameter
      */
-	void toggle_select_duck(const etl::handle<Duck> &duck);
+	void toggle_select_duck(const Duck::Handle& duck);
     //! Select the duck (handle)
     /*!
      ** \param duck The duck (handle) to select has etl::handle parameter
      */
-	void select_duck(const etl::handle<Duck> &duck);
+	void select_duck(const Duck::Handle& duck);
     //! Unselect the duck (handle)
     /*!
      ** \param duck The duck (handle) to unselect has etl::handle parameter
      */
-	void unselect_duck(const etl::handle<Duck> &duck);
+	void unselect_duck(const Duck::Handle& duck);
 
     //! Toggle the ducks (handles) contained in the box defined by a pair of vectors
     /*!
@@ -438,7 +437,7 @@ public:
 
 	//! Calls a single duck's edited signal
 	/*! Updates the corresponding valuenodes after a drag */
-	void signal_edited_duck(const etl::handle<Duck> &duck, bool moving = false);
+	void signal_edited_duck(const Duck::Handle& duck, bool moving = false);
 
 	//! Calls all of the ducks' edited signals
 	/*! Updates corresponding valuenodes after a drag */
@@ -446,8 +445,8 @@ public:
 
 	bool on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& value_desc);
 
-	etl::handle<Duck> find_similar_duck(etl::handle<Duck> duck);
-	etl::handle<Duck> add_similar_duck(etl::handle<Duck> duck);
+	Duck::Handle find_similar_duck(Duck::Handle duck);
+	Duck::Handle add_similar_duck(Duck::Handle duck);
 
 	void add_stroke(std::shared_ptr<std::list<synfig::Point>> stroke_point_list, const synfig::Color& color=synfig::Color(0,0,0));
 
@@ -455,22 +454,22 @@ public:
 
 	void clear_persistent_strokes();
 
-	void add_duck(const etl::handle<Duck> &duck);
+	void add_duck(const Duck::Handle& duck);
 
 	void add_bezier(const etl::handle<Bezier> &bezier);
 
-	void erase_duck(const etl::handle<Duck> &duck);
+	void erase_duck(const Duck::Handle& duck);
 
 	void erase_bezier(const etl::handle<Bezier> &bezier);
 
 	//! Returns the last duck added
-	etl::handle<Duck> last_duck()const;
+	Duck::Handle last_duck() const;
 
 	etl::handle<Bezier> last_bezier()const;
 
 	//! \note parameter is in canvas coordinates
 	/*!	A radius of "zero" will have an unlimited radius */
-	etl::handle<Duck> find_duck(synfig::Point pos, synfig::Real radius=0, Duck::Type type=Duck::TYPE_DEFAULT);
+	Duck::Handle find_duck(synfig::Point pos, synfig::Real radius = 0, Duck::Type type = Duck::TYPE_DEFAULT);
 
 	//! returns the closest guide to mouse position if there is one with distance less than radius
 	//! `second_best_guide_match` is an optional argument that can be used to access the second closest guide
@@ -516,9 +515,9 @@ public:
 
 	void clear_ducks();
 
-	bool save_sketch(const synfig::String& filename)const;
-	bool load_sketch(const synfig::String& filename);
-	const synfig::String& get_sketch_filename()const { return sketch_filename_; }
+	bool save_sketch(const synfig::filesystem::Path& filename) const;
+	bool load_sketch(const synfig::filesystem::Path& filename);
+	const synfig::filesystem::Path& get_sketch_filename() const { return sketch_filename_; }
 
 	void set_duck_dragger(etl::handle<DuckDrag_Base> x) { duck_dragger_=x; }
 	etl::handle<DuckDrag_Base> get_duck_dragger()const { return duck_dragger_; }
@@ -559,7 +558,10 @@ private:
 	sigc::signal<void,float> signal_user_doubleclick_[5];
 public:
 
-	etl::handle<Duck> p1,p2,c1,c2;
+	typedef etl::handle<Bezier> Handle;
+	typedef etl::loose_handle<Bezier> LooseHandle;
+
+	Duck::Handle p1, p2, c1, c2;
 	bool is_valid()const { return p1 && p2 && c1 && c2; }
 
 	sigc::signal<void,float> &signal_user_click(int i=0) { assert(i>=0); assert(i<5); return signal_user_click_[i]; }

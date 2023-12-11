@@ -30,9 +30,10 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "color.h"
-#include "string.h"
 #include <vector>
+#include "color.h"
+#include "filesystem_path.h"
+#include "string.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -85,9 +86,9 @@ public:
 
 	static Palette grayscale(int steps, ColorReal gamma);
 
-	void save_to_file(const synfig::String& filename)const;
+	void save_to_file(const synfig::filesystem::Path& filename)const;
 
-	static Palette load_from_file(const synfig::String& filename);
+	static Palette load_from_file(const synfig::filesystem::Path& filename);
 }; // END of class Palette
 
 }; // END of namespace synfig

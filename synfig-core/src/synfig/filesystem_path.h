@@ -76,6 +76,15 @@ public:
 	 */
 	static Path from_native(const string_type& native_path);
 
+	/**
+	 * Store a file system path from a file URI string.
+	 *
+	 * Supports a file URI as defined in IEEE RFC 8089 Appendix F.
+	 *
+	 * @param uri a file URI string in UTF-8 encoding ("file:///a%20file.txt")
+	 */
+	static Path from_uri(const std::string& uri);
+
 	// Concatenation ---------------------
 
 	/** Equivalent to append() */
@@ -184,6 +193,28 @@ public:
 	 * @return the normalized path relative to base
 	 */
 	Path relative_to(const Path& base) const;
+
+	/**
+	 * If the value of lexically_relative(@a base) is not an empty path, return it. Otherwise return *this.
+	 *
+	 * Examples:
+	 *     Path("a/b").lexically_relative("/a/b") returns empty
+	 *     Path("a/b").lexically_proximate("/a/b") returns "a/b"
+	 *
+	 *     Path("/a/b").lexically_relative("c") returns empty
+	 *     Path("/a/b").lexically_proximate("c") returns "/a/b"
+	 *
+	 * @param base the reference path
+	 * @return the path relative to base
+	 */
+	Path lexically_proximate(const Path& base) const;
+
+	/**
+	 * Convenient method that calls lexically_proximate() followed by lexically_normal().
+	 * @param base the reference path
+	 * @return the normalized path proximate to base
+	 */
+	Path proximate_to(const Path& base) const;
 
 	// Decomposition ---------------------
 

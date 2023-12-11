@@ -34,9 +34,6 @@
 
 #include <gui/dialogs/dialog_preview.h>
 
-#include <glibmm/fileutils.h>
-#include <glibmm/markup.h>
-
 #include <gtkmm/spinbutton.h>
 
 #include <gui/exception_guard.h>
@@ -132,30 +129,6 @@ void Dialog_Preview::close_window_handler()
 	hide();
 }
 
-static Glib::RefPtr<Gtk::Builder> load_interface(const char *filename) {
-	auto refBuilder = Gtk::Builder::create();
-	try
-	{
-		refBuilder->add_from_file(ResourceHelper::get_ui_path(filename));
-	}
-	catch(const Glib::FileError& ex)
-	{
-		synfig::error("FileError: " + ex.what());
-		return Glib::RefPtr<Gtk::Builder>();
-	}
-	catch(const Glib::MarkupError& ex)
-	{
-		synfig::error("MarkupError: " + ex.what());
-		return Glib::RefPtr<Gtk::Builder>();
-	}
-	catch(const Gtk::BuilderError& ex)
-	{
-		synfig::error("BuilderError: " + ex.what());
-		return Glib::RefPtr<Gtk::Builder>();
-	}
-	return refBuilder;
-}
-
 Dialog_PreviewOptions::Dialog_PreviewOptions(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade) :
 	Gtk::Dialog(cobject),
 	settings(this, "prevoptions"),
@@ -196,7 +169,7 @@ Dialog_PreviewOptions::Dialog_PreviewOptions(BaseObjectType* cobject, const Glib
 
 Dialog_PreviewOptions* Dialog_PreviewOptions::create(/*Gtk::Window& parent*/)
 {
-	auto refBuilder = load_interface("preview_options.glade");
+	auto refBuilder = ResourceHelper::load_interface("preview_options.glade");
 	if (!refBuilder)
 		return nullptr;
 	Dialog_PreviewOptions * dialog = nullptr;

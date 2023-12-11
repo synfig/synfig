@@ -347,7 +347,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateLasso::StateLasso():
-	Smach::state<StateLasso_Context>("lasso")
+	Smach::state<StateLasso_Context>("lasso", N_("Cutout Tool"))
 {
 	insert(event_def(EVENT_STOP,&StateLasso_Context::event_stop_handler));
 	insert(event_def(EVENT_REFRESH,&StateLasso_Context::event_refresh_handler));
@@ -374,7 +374,7 @@ StateLasso_Context::load_settings()
 
 		set_opacity(settings.get_value("lasso.opacity", 1.0));
 
-		set_bline_width(settings.get_value("lasso.bline_width", Distance("1px")));
+		set_bline_width(settings.get_value("lasso.bline_width", Distance("1px")).as(App::distance_system, get_canvas()->rend_desc()));
 
 		set_pressure_width_flag(settings.get_value("lasso.pressure_width", true));
 
@@ -392,7 +392,7 @@ StateLasso_Context::load_settings()
 
 		set_min_pressure(settings.get_value("lasso.min_pressure", 0.0));
 
-		set_feather_size(settings.get_value("lasso.feather", Distance("0px")));
+		set_feather_size(settings.get_value("lasso.feather", Distance("0px")).as(App::distance_system, get_canvas()->rend_desc()));
 
 		set_gthres(settings.get_value("lasso.gthreshold", 0.7));
 
@@ -1014,8 +1014,8 @@ StateLasso_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synf
 	// but having loops auto-connect can be useful as well)
 	if(get_auto_extend_flag() || get_auto_link_flag())
 	{
-		etl::handle<Duck> start_duck(get_work_area()->find_duck(bline.front().get_vertex(),radius,Duck::TYPE_VERTEX));
-		etl::handle<Duck> finish_duck(get_work_area()->find_duck(bline.back().get_vertex(),radius,Duck::TYPE_VERTEX));
+		Duck::Handle start_duck(get_work_area()->find_duck(bline.front().get_vertex(), radius, Duck::TYPE_VERTEX));
+		Duck::Handle finish_duck(get_work_area()->find_duck(bline.back().get_vertex(), radius, Duck::TYPE_VERTEX));
 
 		// check whether the start of the new line extends an
 		// existing line.  this is only the case if the new
@@ -1674,7 +1674,7 @@ StateLasso_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real
 		std::list<synfig::BLinePoint>::iterator iter;
 		for(iter=bline.begin();iter!=bline.end();++iter)
 		{
-			etl::handle<Duck> duck(get_work_area()->find_duck(iter->get_vertex(),0,Duck::TYPE_VERTEX));
+			Duck::Handle duck(get_work_area()->find_duck(iter->get_vertex(), 0, Duck::TYPE_VERTEX));
 
 			if(!duck)
 			{

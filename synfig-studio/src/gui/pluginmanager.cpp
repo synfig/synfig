@@ -96,7 +96,7 @@ JSON::escape_string(const std::string& str)
 // Autodelete the file
 struct TmpFile
 {
-	std::string filename;
+	synfig::filesystem::Path filename;
 
 	TmpFile(const void* random_ptr, const std::string& tag, const std::string& extension)
 	{
@@ -105,7 +105,7 @@ struct TmpFile
 	}
 	~TmpFile()
 	{
-		synfig::FileSystemNative::instance()->file_remove(filename);
+		synfig::FileSystemNative::instance()->file_remove(filename.u8string());
 	}
 };
 
@@ -596,7 +596,8 @@ bool studio::PluginManager::run(const studio::PluginScript& script, std::vector<
 	if (script.extra_args.selected_layers != PluginScript::ArgNecessity::ARGUMENT_UNUSED) {
 		if (!canvas_state.empty())
 			canvas_state.append(",");
-		canvas_state += "\"selected_layers\":[" + view_state.at("selected_layers") + "]";
+		auto iter = view_state.find("selected_layers");
+		canvas_state += "\"selected_layers\":[" + (iter != view_state.end() ? iter->second : "") + "]";
 	}
 	if (!canvas_state.empty())
 		canvas_state = "{" + canvas_state + "}";
@@ -607,7 +608,7 @@ bool studio::PluginManager::run(const studio::PluginScript& script, std::vector<
 
 	TmpFile tmp_file(&script, "extra-data", "json");
 	if (!canvas_state.empty() || !dialog_data.empty()) {
-		auto stream2 = synfig::FileSystemNative::instance()->get_write_stream(tmp_file.filename);
+		auto stream2 = synfig::FileSystemNative::instance()->get_write_stream(tmp_file.filename.u8string());
 		auto stream = stream2;
 		*stream << "{";
 		if (!canvas_state.empty()) {
@@ -620,7 +621,7 @@ bool studio::PluginManager::run(const studio::PluginScript& script, std::vector<
 		}
 		*stream << "}";
 
-		args.push_back(tmp_file.filename);
+		args.push_back(tmp_file.filename.u8string());
 	}
 
 	std::string stdout_str;

@@ -32,20 +32,22 @@
 #	include <config.h>
 #endif
 
+#include "filesystemtemporary.h"
+
+#include <fcntl.h> // for open(), close(), remove()
+#include <sys/stat.h> // for S_IWRITE
+
 #include <libxml++/libxml++.h>
 
 #include "general.h"
-
-#include "filesystemtemporary.h"
-
 #include "guid.h"
+#include "localization.h"
 #include "zstreambuf.h"
 
 #endif
 
 /* === U S I N G =========================================================== */
 
-using namespace etl;
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
@@ -56,7 +58,7 @@ using namespace synfig;
 
 /* === M E T H O D S ======================================================= */
 
-FileSystemTemporary::FileSystemTemporary(const String &tag, const String &temporary_directory, const FileSystem::Handle &sub_file_system):
+FileSystemTemporary::FileSystemTemporary(const String& tag, const filesystem::Path& temporary_directory, const FileSystem::Handle& sub_file_system):
 	file_system(FileSystemNative::instance()),
 	tag(tag),
 	temporary_directory(temporary_directory.empty() ? get_system_temporary_directory() : temporary_directory),
@@ -74,7 +76,7 @@ FileSystemTemporary::~FileSystemTemporary()
 	}
 }
 
-String
+filesystem::Path
 FileSystemTemporary::get_system_temporary_directory()
 {
     const char *tmpdir;
@@ -85,39 +87,39 @@ FileSystemTemporary::get_system_temporary_directory()
     return String(tmpdir);
 }
 
-String
+filesystem::Path
 FileSystemTemporary::generate_temporary_filename_base(const String &tag, const String &extension)
 {
 	return "synfig_" + tag + "_" + GUID().get_string() + (extension.size() && extension[0] != '.' ? "." : "") + extension;
 }
 
 bool
-FileSystemTemporary::scan_temporary_directory(const String &tag, FileList &out_files, const String &dirname)
+FileSystemTemporary::scan_temporary_directory(const String& tag, FileList& out_files, const filesystem::Path& dirname)
 {
-	String tmpdir = dirname.empty() ? get_system_temporary_directory() : dirname;
+	filesystem::Path tmpdir = dirname.empty() ? get_system_temporary_directory() : dirname;
 
 	FileList files;
-	if (!FileSystemNative::instance()->directory_scan(dirname, files))
+	if (!FileSystemNative::instance()->directory_scan(dirname.u8string(), files))
 		return false;
 
 	String prefix = "synfig_" + tag + "_";
 	for(FileList::const_iterator i = files.begin(); i != files.end(); ++i)
 		if (i->substr(0, prefix.size()) == prefix)
-			if (FileSystemNative::instance()->is_file(tmpdir + ETL_DIRECTORY_SEPARATOR + *i))
+			if (FileSystemNative::instance()->is_file((tmpdir / *i).u8string()))
 				out_files.push_back(*i);
 	return true;
 }
 
-String
+filesystem::Path
 FileSystemTemporary::generate_system_temporary_filename(const String &tag, const String &extension)
 {
-	return get_system_temporary_directory() + ETL_DIRECTORY_SEPARATOR + generate_temporary_filename_base(tag, extension);
+	return get_system_temporary_directory() / generate_temporary_filename_base(tag, extension);
 }
 
 bool
 FileSystemTemporary::create_temporary_directory() const
 {
-	return file_system->directory_create_recursive(get_temporary_directory());
+	return file_system->directory_create_recursive(get_temporary_directory().u8string());
 }
 
 bool
@@ -236,7 +238,7 @@ FileSystemTemporary::file_remove(const String &filename)
 			info.is_removed = true;
 			if (!info.tmp_filename.empty())
 			{
-				file_system->file_remove(info.tmp_filename);
+				file_system->file_remove(info.tmp_filename.u8string());
 				info.tmp_filename.clear();
 			}
 			autosave_temporary();
@@ -253,7 +255,7 @@ FileSystemTemporary::get_read_stream(const String &filename)
 	if (i != files.end())
 	{
 		if (!i->second.is_removed && !i->second.is_directory && !i->second.tmp_filename.empty())
-			return file_system->get_read_stream(i->second.tmp_filename);
+			return file_system->get_read_stream(i->second.tmp_filename.u8string());
 	}
 	else
 	{
@@ -275,10 +277,8 @@ FileSystemTemporary::get_write_stream(const String &filename)
 		create_temporary_directory();
 		FileInfo new_info;
 		new_info.name = fix_slashes(filename);
-		new_info.tmp_filename = get_temporary_directory()
-				              + ETL_DIRECTORY_SEPARATOR
-							  + generate_temporary_filename_base(tag + ".file");
-		stream = file_system->get_write_stream(new_info.tmp_filename);
+		new_info.tmp_filename = get_temporary_directory() / generate_temporary_filename_base(tag + ".file");
+		stream = file_system->get_write_stream(new_info.tmp_filename.u8string());
 		if (stream)
 		{
 			files[new_info.name] = new_info;
@@ -289,12 +289,10 @@ FileSystemTemporary::get_write_stream(const String &filename)
 	if (!i->second.is_directory || i->second.is_removed)
 	{
 		create_temporary_directory();
-		String tmp_filename = i->second.tmp_filename.empty()
-				            ? get_temporary_directory()
-							  + ETL_DIRECTORY_SEPARATOR
-							  + generate_temporary_filename_base(tag + ".file")
+		filesystem::Path tmp_filename = i->second.tmp_filename.empty()
+							? get_temporary_directory() / generate_temporary_filename_base(tag + ".file")
 				            : i->second.tmp_filename;
-		stream = file_system->get_write_stream(tmp_filename);
+		stream = file_system->get_write_stream(tmp_filename.u8string());
 		if (stream)
 		{
 			i->second.tmp_filename = tmp_filename;
@@ -314,7 +312,7 @@ FileSystemTemporary::get_real_uri(const String &filename)
 	if (i != files.end())
 	{
 		if (!i->second.tmp_filename.empty())
-			return file_system->get_real_uri(i->second.tmp_filename);
+			return file_system->get_real_uri(i->second.tmp_filename.u8string());
 	}
 	else
 	{
@@ -375,10 +373,10 @@ FileSystemTemporary::save_changes(
 		if (!i->second.is_removed
 		 && !i->second.is_directory
 		 && !i->second.tmp_filename.empty()
-		 && copy(file_system, i->second.tmp_filename, target_file_system, i->second.name))
+		 && copy(file_system, i->second.tmp_filename.u8string(), target_file_system, i->second.name))
 		{
 			if (remove_files)
-				file_system->file_remove(i->second.tmp_filename);
+				file_system->file_remove(i->second.tmp_filename.u8string());
 				
 			files.erase(i++);
 		}
@@ -424,7 +422,7 @@ FileSystemTemporary::discard_changes()
 		 && !i->second.is_directory
 		 && !i->second.tmp_filename.empty())
 		{
-			file_system->file_remove(i->second.tmp_filename);
+			file_system->file_remove(i->second.tmp_filename.u8string());
 		}
 	}
 
@@ -438,7 +436,7 @@ FileSystemTemporary::discard_changes()
 }
 
 void
-FileSystemTemporary::reset_temporary_filename_base(const String &tag, const String &temporary_directory)
+FileSystemTemporary::reset_temporary_filename_base(const String& tag, const filesystem::Path& temporary_directory)
 {
 	// remove previous file
 	assert(empty());
@@ -491,7 +489,7 @@ FileSystemTemporary::save_temporary() const
 {
 	if (empty())
 	{
-		file_system->file_remove(get_temporary_directory() + ETL_DIRECTORY_SEPARATOR + get_temporary_filename_base());
+		file_system->file_remove((get_temporary_directory() / get_temporary_filename_base()).u8string());
 		return true;
 	}
 
@@ -509,7 +507,7 @@ FileSystemTemporary::save_temporary() const
 	for (FileMap::const_iterator i = files.begin(); i != files.end(); ++i) {
 		xmlpp::Element *entry = files_node->add_child("entry");
 		entry->add_child("name")->set_child_text(i->second.name);
-		entry->add_child("tmp-basename")->set_child_text(filesystem::Path::basename(i->second.tmp_filename));
+		entry->add_child("tmp-basename")->set_child_text(i->second.tmp_filename.filename().u8string());
 		entry->add_child("is-directory")->set_child_text(i->second.is_directory ? "true" : "false");
 		entry->add_child("is-removed")->set_child_text(i->second.is_removed ? "true" : "false");
 	}
@@ -517,9 +515,7 @@ FileSystemTemporary::save_temporary() const
 	create_temporary_directory();
 	FileSystem::WriteStream::Handle stream =
 		file_system->get_write_stream(
-			get_temporary_directory()
-		  + ETL_DIRECTORY_SEPARATOR
-		  + get_temporary_filename_base() );
+				(get_temporary_directory() / get_temporary_filename_base()).u8string() );
 	if (!stream) return false;
 
 	stream = new ZWriteStream(stream);
@@ -552,21 +548,21 @@ FileSystemTemporary::get_xml_node_text(xmlpp::Node *node)
 }
 
 bool
-FileSystemTemporary::open_temporary(const String &filename)
+FileSystemTemporary::open_temporary(const filesystem::Path& filename)
 {
 	assert(empty());
 	discard_changes();
 
 	String tag;
-	String temporary_directory = filesystem::Path::dirname(filename);
-	String temporary_filename_base = filesystem::Path::basename(filename);
+	filesystem::Path temporary_directory = filename.parent_path();
+	String temporary_filename_base = filename.filename().u8string();
 
 	size_t tag_begin = temporary_filename_base.find_first_of('_');
 	size_t tag_end   = temporary_filename_base.find_last_of('_');
 	if (tag_begin != String::npos && tag_end != String::npos && tag_end - tag_begin > 1)
 		tag = temporary_filename_base.substr(tag_begin + 1, tag_end - tag_begin - 1);
 
-	FileSystem::ReadStream::Handle stream = file_system->get_read_stream(filename);
+	FileSystem::ReadStream::Handle stream = file_system->get_read_stream(filename.u8string());
 	if (!stream) return false;
 	stream = new ZReadStream(stream, zstreambuf::compression::gzip);
 
@@ -618,7 +614,7 @@ FileSystemTemporary::open_temporary(const String &filename)
 							info.is_removed = get_xml_node_text(*k) == "true";
 					}
 					if (!info.tmp_filename.empty())
-						info.tmp_filename = temporary_directory + ETL_DIRECTORY_SEPARATOR + info.tmp_filename;
+						info.tmp_filename = temporary_directory / info.tmp_filename;
 					files[info.name] = info;
 				}
 			}
@@ -631,20 +627,84 @@ FileSystemTemporary::open_temporary(const String &filename)
 	return true;
 }
 
-String
-FileSystemTemporary::generate_indexed_temporary_filename(const FileSystem::Handle &fs, const String &filename)
+filesystem::Path
+FileSystemTemporary::generate_indexed_temporary_filename(const FileSystem::Handle &fs, const filesystem::Path&filename)
 {
-	String extension = filesystem::Path::filename_extension(filename);
-	String sans_extension = filesystem::Path::filename_sans_extension(filename);
+    String extension = filename.extension().u8string();
+    String sans_extension = filename.stem().u8string();
 	for (int index = 1; index < 10000; ++index) {
 		String indexed_filename = strprintf("%s_%04d%s", sans_extension.c_str(), index, extension.c_str());
 		if (!fs->is_exists(indexed_filename))
 			return indexed_filename;
 	}
-	assert(false);
-	return String();
+    assert(false);
+    return {};
 }
 
-/* === E N T R Y P O I N T ================================================= */
+std::pair<filesystem::Path, SmartFILE>
+FileSystemTemporary::reserve_temporary_filename(const filesystem::Path& dir, const String& prefix, const String& suffix)
+{
+	if (!FileSystemNative::instance()->is_directory(dir.u8string())) {
+		synfig::error(_("Not a directory: %s"), dir.u8_str());
+		return {};
+	}
 
+	const auto lock_extension = ".lock";
+	const auto filename_format = strprintf("%s/%s.%%s%s", dir.u8_str(), prefix.c_str(), suffix.c_str());
 
+	auto open_non_existent_file = [](const filesystem::Path& filename) -> int {
+#if _WIN32
+		return ::_wopen(filename.c_str(), _O_CREAT | _O_EXCL | _O_WRONLY, _S_IWRITE);
+#else
+		return ::open(filename.c_str(), O_CREAT | O_EXCL | O_WRONLY, S_IWUSR);
+#endif
+	};
+
+	auto close_file = [](int fd) -> int {
+#if _WIN32
+		return ::_close(fd);
+#else
+		return ::close(fd);
+#endif
+	};
+
+	auto remove_file = [](const filesystem::Path& filename) -> int {
+#if _WIN32
+		return ::_wremove(filename.c_str());
+#else
+		return ::remove(filename.c_str());
+#endif
+	};
+
+	for (int i = 0; i < 25000; ++i) {
+		// Generates a random name
+		filesystem::Path filename = strprintf(filename_format.c_str(), GUID().get_string().substr(0,8).c_str());
+		filesystem::Path lock_filename = filename;
+		lock_filename.concat(lock_extension);
+
+		// Does lock file exist?
+		int lock_fd = open_non_existent_file(lock_filename);
+		if (lock_fd < 0) {
+			// Lock file already exists. Try another name
+		} else {
+			// Lock file just created. Does the file itself already exist?
+			int fd = open_non_existent_file(filename);
+			if (fd < 0) {
+				// the file already exists... Remove lock and try another name
+				close_file(lock_fd);
+				remove_file(lock_filename);
+			} else {
+				// We finally find a valid random filename
+				close_file(fd);
+				remove_file(filename);
+#if _WIN32
+				return {filename, SmartFILE(_fdopen(lock_fd, "w"))};
+#else
+				return {filename, SmartFILE(fdopen(lock_fd, "w"))};
+#endif
+			}
+		}
+	}
+
+	return {};
+}

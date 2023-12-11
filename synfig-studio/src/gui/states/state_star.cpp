@@ -89,7 +89,7 @@ class studio::StateStar_Context : public sigc::trackable
 
 	Point point_holder;
 
-	etl::handle<Duck> point2_duck;
+	Duck::Handle point2_duck;
 
 	void refresh_ducks();
 
@@ -309,7 +309,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateStar::StateStar():
-	Smach::state<StateStar_Context>("star")
+	Smach::state<StateStar_Context>("star", N_("Star Tool"))
 {
 	insert(event_def(EVENT_LAYER_SELECTION_CHANGED,&StateStar_Context::event_layer_selection_changed_handler));
 	insert(event_def(EVENT_STOP,&StateStar_Context::event_stop_handler));
@@ -342,9 +342,9 @@ StateStar_Context::load_settings()
 
 		set_opacity(settings.get_value("star.opacity", 1.0));
 
-		set_bline_width(settings.get_value("star.bline_width", Distance("1px")));
+		set_bline_width(settings.get_value("star.bline_width", Distance("1px")).as(App::distance_system, get_canvas()->rend_desc()));
 
-		set_feather_size(settings.get_value("star.feather", Distance("0px")));
+		set_feather_size(settings.get_value("star.feather", Distance("0px")).as(App::distance_system, get_canvas()->rend_desc()));
 
 		set_number_of_points(settings.get_value("star.number_of_points", 5));
 
@@ -1367,7 +1367,7 @@ StateStar_Context::event_mouse_click_handler(const Smach::event& x)
 	if(event.key==EVENT_WORKAREA_MOUSE_BUTTON_DOWN && event.button==BUTTON_LEFT)
 	{
 		point_holder=get_work_area()->snap_point_to_grid(event.pos);
-		etl::handle<Duck> duck=new Duck();
+		Duck::Handle duck = new Duck();
 		duck->set_point(point_holder);
 		duck->set_name("p1");
 		duck->set_type(Duck::TYPE_POSITION);

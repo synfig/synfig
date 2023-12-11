@@ -92,7 +92,7 @@ ffmpeg_mptr::seek_to(const Time& time)
 		args.push_back("-");
 
 #ifdef _WIN32
-		synfig::filesystem::Path binary_path = synfig::OS::get_binary_path("");
+		synfig::filesystem::Path binary_path = synfig::OS::get_binary_path();
 		if (!binary_path.empty())
 			binary_path = binary_path.parent_path();
 		binary_path /= filesystem::Path("ffmpeg.exe");
@@ -123,7 +123,7 @@ ffmpeg_mptr::grab_frame(void)
 {
 	if(!pipe)
 	{
-		synfig::error(_("unable to open %s"), identifier.filename.c_str());
+		synfig::error(_("unable to open %s"), identifier.filename.u8_str());
 		return false;
 	}
 	int w,h;

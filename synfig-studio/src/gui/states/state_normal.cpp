@@ -203,7 +203,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateNormal::StateNormal():
-	Smach::state<StateNormal_Context>("normal")
+	Smach::state<StateNormal_Context>("normal", N_("Transform Tool"))
 {
 	insert(event_def(EVENT_STOP,&StateNormal_Context::event_stop_handler));
 	insert(event_def(EVENT_REFRESH,&StateNormal_Context::event_refresh_handler));
@@ -359,7 +359,7 @@ DuckDrag_Combo::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& offs
 	// Calculate center
 	Point vmin(100000000,100000000);
 	Point vmax(-100000000,-100000000);
-	//std::set<etl::handle<Duck> >::iterator iter;
+	//std::set<Duck::Handle>::iterator iter;
 	positions.clear();
 	int i;
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)

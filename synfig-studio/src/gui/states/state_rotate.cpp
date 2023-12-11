@@ -93,7 +93,7 @@ public:
 	bool use_magnitude;
 	bool constrain;
 	DuckDrag_Rotate();
-	void begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& begin);
+	void begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& offset);
 	bool end_duck_drag(Duckmatic* duckmatic);
 	void duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector);
 
@@ -156,7 +156,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateRotate::StateRotate():
-	Smach::state<StateRotate_Context>("rotate")
+	Smach::state<StateRotate_Context>("rotate", N_("Rotate Tool"))
 {
 	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StateRotate_Context::event_refresh_tool_options));
 	insert(event_def(EVENT_STOP,&StateRotate_Context::event_stop_handler));
@@ -378,7 +378,7 @@ DuckDrag_Rotate::begin_duck_drag(Duckmatic* duckmatic, const synfig::Vector& off
 	// Calculate center
 	Point vmin(100000000,100000000);
 	Point vmax(-100000000,-100000000);
-	//std::set<etl::handle<Duck> >::iterator iter;
+	//std::set<Duck::Handle>::iterator iter;
 	positions.clear();
 	int i;
 	for(i=0,iter=selected_ducks.begin();iter!=selected_ducks.end();++iter,i++)
@@ -409,7 +409,7 @@ DuckDrag_Rotate::duck_drag(Duckmatic* duckmatic, const synfig::Vector& vector)
 	if(bad_drag)
 		return;
 
-	//std::set<etl::handle<Duck> >::iterator iter;
+	//std::set<Duck::Handle>::iterator iter;
 	duckmatic->set_axis_lock(false);
 
 	synfig::Vector vect(duckmatic->snap_point_to_grid(vector)-center+snap);

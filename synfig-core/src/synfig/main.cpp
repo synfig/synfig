@@ -234,8 +234,12 @@ synfig::Main::Main(const synfig::String& rootpath,ProgressCallback *cb):
 	// Add initialization after this point
 
 #ifdef _MSC_VER
-	String module_location = get_binary_path("");
-	_putenv(strprintf("FONTCONFIG_PATH=%s/../../etc/fonts", module_location.c_str()).c_str());
+	{
+		synfig::filesystem::Path module_location = synfig::OS::get_binary_path();
+		synfig::filesystem::Path fontconfig_path = module_location.append("../../etc/fonts").cleanup();
+		std::basic_string<wchar_t> envstring = L"FONTCONFIG_PATH=" + fontconfig_path.native();
+		_wputenv(envstring.c_str());
+	}
 	_putenv("FONTCONFIG_FILE=fonts.conf");
 #endif
 
@@ -412,7 +416,7 @@ synfig::Main::~Main()
 	{
 		synfig::warning("Canvases still open!");
 		for (const auto& iter : get_open_canvas_map()) {
-			synfig::warning("%s: count()=%d",iter.second.c_str(), iter.first->count());
+			synfig::warning("%s: count()=%d", iter.second.c_str(), iter.first->use_count());
 		}
 	}
 
@@ -512,7 +516,7 @@ synfig::info(const String &str)
 
 // See also: http://libsylph.sourceforge.net/wiki/Full_path_to_binary
 filesystem::Path
-synfig::OS::get_binary_path(const String &fallback_path)
+synfig::OS::get_binary_path()
 {
 	
 	String result;
@@ -652,7 +656,7 @@ synfig::OS::get_binary_path(const String &fallback_path)
 	{
 		// In worst case use value specified as fallback 
 		// (usually should come from argv[0])
-		result = filesystem::Path::absolute_path(fallback_path);
+		return filesystem::absolute(OS::fallback_binary_path).u8string();
 	}
 	
 	

@@ -41,6 +41,8 @@
 
 #include <synfig/misc.h>
 
+#include <gui/localization.h>
+
 /* === M A C R O S ========================================================= */
 
 #define SMACH_STATE_STACK_SIZE		(32)
@@ -164,7 +166,8 @@ public:
 
 		virtual event_result process_event(void* state_context,const event& id)const=0;
 
-		virtual const char *get_name() const=0;
+		virtual const char* get_name() const = 0;
+		virtual const char* get_local_name() const = 0;
 	};
 
 	//! State class
@@ -183,16 +186,17 @@ public:
 
 		std::vector<event_def> event_list;
 
-		smach *nested;		//! Nested machine
-		event_key low,high;	//! Lowest and Highest event values
-		const char *name;	//! Name of the state
-		typename event_def::funcptr default_handler;	//! Default handler for unknown key
+		smach* nested;                               /*!< Nested machine */
+		event_key low, high;                         /*!< Lowest and Highest event values */
+		const char* name;                            /*!< Name of the state */
+		const char* local_name_;                     /*!< Local name (used by GUI) */
+		typename event_def::funcptr default_handler; /*!< Default handler for unknown key */
 
 	public:
 
 		//! Constructor
-		state(const char* n, smach* nest = nullptr)
-		    : nested(nest), name(n), default_handler(nullptr)
+		state(const char* n, const char* local_name, smach* nest = nullptr)
+			: nested(nest), name(n), local_name_(local_name), default_handler(nullptr)
 		{ }
 
 		virtual ~state() { }
@@ -204,8 +208,11 @@ public:
 		//! Sets the default handler
 		void set_default_handler(const typename event_def::funcptr &x) { default_handler=x; }
 
-		//! Returns given the name of the state
-		virtual const char *get_name() const { return name; }
+		//! Returns the name of the state
+		const char* get_name() const override { return name; }
+
+		//! Returns the localized name of the state
+		const char* get_local_name() const override { return _(local_name_); }
 
 		//! Adds an event_def onto the list and then make sure it is sorted correctly.
 		void
@@ -276,15 +283,16 @@ public:
 			return new state_context_type(machine_context);
 		}*/
 
-		virtual bool leave_state(void* x)const
+		bool
+		leave_state(void* x) const override
 		{
 			state_context_type* state_context(reinterpret_cast<state_context_type*>(x));
 			delete state_context;
 			return true;
 		}
 
-		virtual event_result
-		process_event(void* x,const event& id)const
+		event_result
+		process_event(void* x, const event& id) const override
 		{
 			state_context_type* state_context(reinterpret_cast<state_context_type*>(x));
 

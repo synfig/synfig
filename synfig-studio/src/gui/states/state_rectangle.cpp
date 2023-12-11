@@ -89,7 +89,7 @@ class studio::StateRectangle_Context : public sigc::trackable
 
 	Point point_holder;
 
-	etl::handle<Duck> point2_duck;
+	Duck::Handle point2_duck;
 
 	void refresh_ducks();
 
@@ -257,7 +257,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateRectangle::StateRectangle():
-	Smach::state<StateRectangle_Context>("rectangle")
+	Smach::state<StateRectangle_Context>("rectangle", N_("Rectangle Tool"))
 {
 	insert(event_def(EVENT_STOP,&StateRectangle_Context::event_stop_handler));
 	insert(event_def(EVENT_LAYER_SELECTION_CHANGED,&StateRectangle_Context::event_layer_selection_changed_handler));
@@ -290,11 +290,11 @@ StateRectangle_Context::load_settings()
 
 		set_opacity(settings.get_value("rectangle.opacity", 1.0));
 
-		set_bline_width(settings.get_value("rectangle.bline_width", Distance("1px")));
+		set_bline_width(settings.get_value("rectangle.bline_width", Distance("1px")).as(App::distance_system, get_canvas()->rend_desc()));
 
-		set_expand_size(settings.get_value("rectangle.expand", Distance("0px")));
+		set_expand_size(settings.get_value("rectangle.expand", Distance("0px")).as(App::distance_system, get_canvas()->rend_desc()));
 
-		set_feather_size(settings.get_value("rectangle.feather", Distance("0px")));
+		set_feather_size(settings.get_value("rectangle.feather", Distance("0px")).as(App::distance_system, get_canvas()->rend_desc()));
 
 		set_invert(settings.get_value("rectangle.invert", false));
 
@@ -1126,7 +1126,7 @@ StateRectangle_Context::event_mouse_click_handler(const Smach::event& x)
 	if(event.key==EVENT_WORKAREA_MOUSE_BUTTON_DOWN && event.button==BUTTON_LEFT)
 	{
 		point_holder=get_work_area()->snap_point_to_grid(event.pos);
-		etl::handle<Duck> duck=new Duck();
+		Duck::Handle duck = new Duck();
 		duck->set_point(point_holder);
 		duck->set_name("p1");
 		duck->set_type(Duck::TYPE_POSITION);

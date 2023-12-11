@@ -62,8 +62,8 @@ using namespace studio;
 
 int main(int argc, char **argv)
 {
-
-	const filesystem::Path rootpath = synfig::OS::get_binary_path(String(argv[0])).parent_path().parent_path();
+	synfig::OS::fallback_binary_path = filesystem::Path(Glib::filename_to_utf8(argv[0]));
+	const filesystem::Path rootpath = synfig::OS::get_binary_path().parent_path().parent_path();
 	
 #ifdef ENABLE_NLS
 	filesystem::Path locale_dir;

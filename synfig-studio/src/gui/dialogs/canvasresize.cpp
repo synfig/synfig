@@ -47,6 +47,26 @@
 using namespace studio;
 using namespace synfig;
 
+/* === M A C R O S ========================================================= */
+
+#if defined(__has_cpp_attribute)
+# if __has_cpp_attribute(fallthrough)
+#  define fallthrough__ [[fallthrough]]
+# endif
+#endif
+
+#ifndef fallthrough__
+# if __GNUC__ >= 7
+#  define fallthrough__ __attribute__((fallthrough))
+# elif __clang__
+#  define fallthrough__ [[clang::fallthrough]]
+# else
+#  define fallthrough__ ((void)0)
+# endif
+#endif
+
+/* === M E T H O D S ======================================================= */
+
 CanvasResize::CanvasResize(Gtk::Window &parent, etl::handle<synfigapp::CanvasInterface> &ci, CanvasProperties &cp)
 	: Gtk::Dialog       ("", parent)
 	, canvas_interface  (ci)
@@ -60,6 +80,7 @@ CanvasResize::CanvasResize(Gtk::Window &parent, etl::handle<synfigapp::CanvasInt
 	, rsz_im_label      (nullptr)
 	, rsz_im_chbox      (nullptr)
 	, toggle_ratio_wh   (nullptr)
+	, combo_box         (nullptr)
 	, canvas_center     (canvas_buttons[4])
 	, old_width         (0)
 	, old_height        (0)
@@ -94,7 +115,7 @@ void CanvasResize::set_up_builder_widgets()
 	builder->get_widget("height"      , height);
 	builder->get_widget("rsz_im_chbox", rsz_im_chbox);
 	builder->get_widget("rsz_im_label", rsz_im_label);
-
+	builder->get_widget("combo_box"   , combo_box);
 	builder->get_widget_derived("toggle_ratio_wh", toggle_ratio_wh);
 
 	int index = 0;
@@ -139,6 +160,8 @@ void CanvasResize::set_up_signals()
 			sigc::mem_fun(*this, &CanvasResize::on_spinbutton_updated), height));
 	height->signal_value_changed().connect(
 			sigc::mem_fun(*this, &CanvasResize::on_height_changed));
+	combo_box->signal_changed().connect(
+			sigc::mem_fun(*this, &studio::CanvasResize::on_size_template_changed));
 	rsz_im_chbox->signal_toggled().connect(
 			sigc::mem_fun(*this, &CanvasResize::on_resize_image_checked));
 	rsz_im_label->add_events(Gdk::ENTER_NOTIFY_MASK | Gdk::LEAVE_NOTIFY_MASK);
@@ -187,6 +210,7 @@ void CanvasResize::on_action_signal_response(int response_id)
 	switch (response_id) {
 	case ADVANCED:
 		canvas_properties.present();
+		fallthrough__;
 	case CANCEL:
 	case CLOSE:
 		is_image_checked = was_image_checked;
@@ -236,6 +260,28 @@ void CanvasResize::on_height_changed()
 	rend_desc.set_h(height->get_value_as_int());
 
 	refresh_wh_toggle_widgets();
+}
+
+void CanvasResize::on_size_template_changed(){
+	String selection(combo_box->get_active_id());
+	if (selection == "custom") {
+		width->set_sensitive(true);
+		height->set_sensitive(true);
+		return;
+	}
+	String::size_type locx = selection.find_first_of('x');
+	String::size_type strSize = selection.size();
+	if (locx == std::string::npos) return;
+	String x_size(selection.substr(0,locx));
+	String y_size(selection.substr(locx+1,strSize-1));
+	int x=stoi(x_size);
+	int y=stoi(y_size);
+	toggle_ratio_wh->set_active(false);
+	width->set_value(x);
+	height->set_value(y);
+	width->set_sensitive(false);
+	height->set_sensitive(false);
+	toggle_ratio_wh->set_active(true);
 }
 
 void CanvasResize::on_canvas_button_clicked(Gtk::Button *button)

@@ -99,9 +99,9 @@ FileSystem::WriteStream::overflow(int character)
 // Identifier
 
 FileSystem::ReadStream::Handle FileSystem::Identifier::get_read_stream() const
-	{ return file_system ? file_system->get_read_stream(filename) : ReadStream::Handle(); }
+	{ return file_system ? file_system->get_read_stream(filename.u8string()) : ReadStream::Handle(); }
 FileSystem::WriteStream::Handle FileSystem::Identifier::get_write_stream() const
-	{ return file_system ? file_system->get_write_stream(filename) : WriteStream::Handle(); }
+	{ return file_system ? file_system->get_write_stream(filename.u8string()) : WriteStream::Handle(); }
 
 
 // FileSystem

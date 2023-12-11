@@ -65,6 +65,21 @@ using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
+#if defined(__has_cpp_attribute)
+# if __has_cpp_attribute(fallthrough)
+#  define fallthrough__ [[fallthrough]]
+# endif
+#endif
+
+#ifndef fallthrough__
+# if __GNUC__ >= 7
+#  define fallthrough__ __attribute__((fallthrough))
+# elif __clang__
+#  define fallthrough__ [[clang::fallthrough]]
+# else
+#  define fallthrough__ ((void)0)
+# endif
+#endif
 /* === G L O B A L S ======================================================= */
 
 SYNFIG_LAYER_INIT(Advanced_Outline);
@@ -385,12 +400,14 @@ namespace {
 						break;
 					case WidthPoint::TYPE_INNER_PEAK:
 						s = -1;
+						fallthrough__;
 					case WidthPoint::TYPE_PEAK:
 						dst.move_to( Vector(i->first - s*i->second.w, 0) );
 						dst.line_to( Vector(i->first, i->second.w ) );
 						break;
 					case WidthPoint::TYPE_INNER_ROUNDED:
 						s = -1;
+						fallthrough__;
 					case WidthPoint::TYPE_ROUNDED:
 						dst.move_to( Vector(i->first - s*i->second.w, 0) );
 						dst.conic_to(
@@ -434,12 +451,14 @@ namespace {
 						break;
 					case WidthPoint::TYPE_INNER_PEAK:
 						s = -1;
+						fallthrough__;
 					case WidthPoint::TYPE_PEAK:
 						dst.line_to( Vector(i->first + s*i->second.w, 0) );
 						dst.close_mirrored_vert();
 						break;
 					case WidthPoint::TYPE_INNER_ROUNDED:
 						s = -1;
+						fallthrough__;
 					case WidthPoint::TYPE_ROUNDED:
 						dst.conic_to(
 							Vector(i->first + s*i->second.w*round_k0, i->second.w*round_k0),
