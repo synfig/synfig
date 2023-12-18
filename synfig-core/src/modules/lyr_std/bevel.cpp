@@ -48,6 +48,13 @@
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
 
+#include <synfig/rendering/primitive/transformationaffine.h>
+
+#include <synfig/rendering/common/task/taskblur.h>
+#include <synfig/rendering/common/task/tasktransformation.h>
+#include <synfig/rendering/common/task/taskpixelprocessor.h>
+#include <synfig/rendering/common/task/taskblend.h>
+
 #include <cstring>
 
 #endif
@@ -101,7 +108,8 @@ Layer_Bevel::Layer_Bevel():
 void
 Layer_Bevel::calc_offset()
 {
-	Angle angle=param_angle.get(Angle());
+	/*
+    Angle angle=param_angle.get(Angle());
 	Real depth=param_depth.get(Real());
 	
 	offset[0]=Angle::cos(angle).get()*depth;
@@ -109,6 +117,7 @@ Layer_Bevel::calc_offset()
 
 	offset45[0]=Angle::cos(angle-Angle::deg(45)).get()*depth*0.707106781;
 	offset45[1]=Angle::sin(angle-Angle::deg(45)).get()*depth*0.707106781;
+	 */
 }
 
 bool
@@ -159,7 +168,8 @@ Layer_Bevel::get_param(const String &param)const
 Color
 Layer_Bevel::get_color(Context context, const Point &pos)const
 {
-	Real softness=param_softness.get(Real());
+	/*
+    Real softness=param_softness.get(Real());
 	int type=param_type.get(int());
 	Color color1=param_color1.get(Color());
 	Color color2=param_color2.get(Color());
@@ -182,8 +192,11 @@ Layer_Bevel::get_color(Context context, const Point &pos)const
 		shade=color2,shade.set_a(-shade_alpha);
 
 	return Color::blend(shade,context.get_color(pos),get_amount(),get_blend_method());
+	 */
+    return Color();
 }
 
+/*
 RendDesc
 Layer_Bevel::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
 {
@@ -251,11 +264,13 @@ Layer_Bevel::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
 
 	return workdesc;
 }
+ */
 
 bool
 Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
 {
-	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
+	/*
+    RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
 
 	Real softness=param_softness.get(Real());
 	int type=param_type.get(int());
@@ -301,6 +316,7 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 		stagetwo = SuperCallback(cb,9999,10000,10000);
 	}
 
+    #define GAUSSIAN_ADJUSTMENT		(0.05)
 	switch(type)
 	{
 		case Blur::GAUSSIAN:
@@ -348,7 +364,7 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 	Blur(size,type,&stagetwo)(blurred,workdesc.get_br()-workdesc.get_tl(),blurred);
 
 	//be sure the surface is of the correct size
-	surface->set_wh(renddesc.get_w(),renddesc.get_h());
+	//surface->set_wh(renddesc.get_w(),renddesc.get_h());
 
 	int v = halfsizey+std::abs(offset_v);
 	for(y=0;y<renddesc.get_h();y++,v++)
@@ -414,6 +430,7 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 		//if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
 		return false;
 	}
+	 */
 
 	return true;
 }
@@ -493,6 +510,121 @@ Layer_Bevel::get_full_bounding_rect(Context context)const
 	return bounds;
 }
 
+rendering::TaskBlend::Handle
+Layer_Bevel::draw_sample(rendering::Task::Handle sub_task, Vector offset, Color color )const {
+
+    /*
+    rendering::TaskBlur::Handle task_blur1(new rendering::TaskBlur());
+    task_blur1->blur.size = Vector(0.0, 0.0);
+    task_blur1->blur.type = (rendering::Blur::Type)param_type.get(int());
+    //task_blur1->sub_task() = task_blend23;
+    task_blur1->sub_task() = sub_task->clone_recursive();
+     */
+
+    ColorMatrix matrix1;
+    matrix1 *= ColorMatrix().set_replace_color(color);
+    matrix1 *= ColorMatrix().set_invert_alpha();
+
+    rendering::TaskPixelColorMatrix::Handle task_colormatrix1(new rendering::TaskPixelColorMatrix());
+    task_colormatrix1->matrix = matrix1;
+    //task_colormatrix1->sub_task() = sub_task->clone_recursive();
+    task_colormatrix1->sub_task() = sub_task->clone_recursive();
+
+    rendering::TaskTransformationAffine::Handle task_transformation1(new rendering::TaskTransformationAffine());
+    task_transformation1->transformation->matrix.set_translate(-offset);
+    task_transformation1->sub_task() = task_colormatrix1;
+
+    rendering::TaskBlend::Handle task_alpha_over2(new rendering::TaskBlend());
+    task_alpha_over2->amount = 1;
+    task_alpha_over2->blend_method = Color::BLEND_COMPOSITE;
+    task_alpha_over2->sub_task_a() = task_transformation1;
+    task_alpha_over2->sub_task_b() = task_transformation1;
+
+    return task_alpha_over2;
+
+    ColorMatrix matrix2;
+    matrix2 *= ColorMatrix().set_replace_color(color);
+    matrix2 *= ColorMatrix().set_invert_alpha();
+    rendering::TaskPixelColorMatrix::Handle task_colormatrix2(new rendering::TaskPixelColorMatrix());
+    task_colormatrix2->matrix = matrix2;
+    task_colormatrix2->sub_task() = sub_task->clone_recursive();
+
+    rendering::TaskTransformationAffine::Handle task_transformation2(new rendering::TaskTransformationAffine());
+    task_transformation2->transformation->matrix.set_translate(offset);
+    task_transformation2->sub_task() = task_colormatrix2;
+
+    rendering::TaskBlend::Handle task_alpha_over(new rendering::TaskBlend());
+    task_alpha_over->amount = 1;
+    task_alpha_over->blend_method = Color::BLEND_ALPHA_OVER;
+    task_alpha_over->sub_task_a() = task_transformation2;
+    task_alpha_over->sub_task_b() = task_transformation1;
+
+    return task_alpha_over;
+
+}
+
 rendering::Task::Handle
-Layer_Bevel::build_rendering_task_vfunc(Context context) const
-	{ return Layer::build_rendering_task_vfunc(context); }
+Layer_Bevel::build_composite_fork_task_vfunc(ContextParams /* context_params */, rendering::Task::Handle sub_task)const
+{
+
+    Real softness=param_softness.get(Real());
+    //int type=param_type.get(int());
+    rendering::Blur::Type type = (rendering::Blur::Type)param_type.get(int());
+    Color color1=param_color1.get(Color());
+    Color color2=param_color2.get(Color());
+    bool use_luma=param_use_luma.get(bool());
+    bool solid=param_solid.get(bool());
+
+    Vector size = Vector(softness,softness);
+
+    //Color color1 = param_color1.get(Color());
+    Angle angle=param_angle.get(Angle());
+    Real depth=param_depth.get(Real());
+
+
+
+
+    //offset45[0]=Angle::cos(angle-Angle::deg(45)).get()*depth*0.707106781;
+    //offset45[1]=Angle::sin(angle-Angle::deg(45)).get()*depth*0.707106781;
+    bool invert = true;
+
+    if (!sub_task)
+        return sub_task;
+
+    Vector offset = Vector();
+    offset[0]=Angle::cos(angle+Angle::deg(180)).get()*depth;
+    offset[1]=Angle::sin(angle+Angle::deg(180)).get()*depth;
+    rendering::TaskBlend::Handle task_sample1 = draw_sample(sub_task, offset, color1);
+
+    return task_sample1;
+    /*
+    offset[0]=Angle::cos(angle+Angle::deg(180)-Angle::deg(45)).get()*depth*0.707106781;
+    offset[1]=Angle::sin(angle+Angle::deg(180)-Angle::deg(45)).get()*depth*0.707106781;
+    rendering::TaskBlend::Handle task_sample2 = draw_sample(sub_task, offset, color1);
+    offset[1]=Angle::cos(angle+Angle::deg(180)-Angle::deg(45)).get()*depth*0.707106781;
+    offset[0]=Angle::sin(angle+Angle::deg(180)-Angle::deg(45)).get()*depth*0.707106781;
+    rendering::TaskBlend::Handle task_sample3 = draw_sample(sub_task, offset, color1);
+
+    rendering::TaskBlend::Handle task_blend12(new rendering::TaskBlend());
+    task_blend12->amount = 0.5;
+    task_blend12->blend_method = Color::BLEND_COMPOSITE;
+    task_blend12->sub_task_a() = task_sample1;
+    task_blend12->sub_task_b() = task_sample2;
+
+    rendering::TaskBlend::Handle task_blend23(new rendering::TaskBlend());
+    task_blend23->amount = 0.5;
+    task_blend23->blend_method = Color::BLEND_COMPOSITE;
+    task_blend23->sub_task_a() = task_blend12;
+    task_blend23->sub_task_b() = task_sample3;
+     */
+
+
+
+    rendering::TaskBlur::Handle task_blur1(new rendering::TaskBlur());
+    task_blur1->blur.size = Vector(softness, softness);
+    task_blur1->blur.type = type;
+    //task_blur1->sub_task() = task_blend23;
+    task_blur1->sub_task() = task_sample1;
+
+    return task_blur1;
+}

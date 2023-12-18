@@ -33,6 +33,7 @@
 /* -- H E A D E R S --------------------------------------------------------- */
 
 #include <synfig/layers/layer_composite_fork.h>
+#include <synfig/rendering/common/task/taskblend.h>
 #include <synfig/color.h>
 #include <synfig/vector.h>
 #include <synfig/blur.h>
@@ -66,11 +67,13 @@ private:
 	//!Parameter: (bool) solid
 	ValueBase param_solid;
 	
-	Vector	offset;
-	Vector	offset45;
+	//Vector	offset;
+	//Vector	offset45;
 
 
 	void calc_offset();
+    rendering::TaskBlend::Handle draw_sample(rendering::Task::Handle sub_task, Vector offset, Color color )const;
+
 public:
 	Layer_Bevel();
 
@@ -87,8 +90,8 @@ public:
 	virtual bool reads_context()const { return true; }
 
 protected:
-	virtual RendDesc get_sub_renddesc_vfunc(const RendDesc &renddesc) const;
-	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context) const;
+	//virtual RendDesc get_sub_renddesc_vfunc(const RendDesc &renddesc) const;
+    rendering::Task::Handle build_composite_fork_task_vfunc(ContextParams context_params, rendering::Task::Handle sub_task)const override;
 }; // END of class Layer_Bevel
 
 }; // END of namespace lyr_std
