@@ -371,13 +371,13 @@ Layer_Bevel_Old::accelerated_render(Context context,Surface *surface,int quality
 				const float u2(offset45[0]/pw),v2(offset45[1]/ph);
 				alpha+=1.0f-blurred.linear_sample(u2+u,v2+v)*0.5f;
 			}
+            {
+                const float u2(-offset45[0]/pw),v2(-offset45[1]/ph);
+                alpha-=1.0f-blurred.linear_sample(u2+u,v2+v)*0.5f;
+            }
 			{
 				const float u2(offset45[1]/ph),v2(-offset45[0]/pw);
 				alpha+=1.0f-blurred.linear_sample(u2+u,v2+v)*0.5f;
-			}
-			{
-				const float u2(-offset45[0]/pw),v2(-offset45[1]/ph);
-				alpha-=1.0f-blurred.linear_sample(u2+u,v2+v)*0.5f;
 			}
 			{
 				const float u2(-offset45[1]/ph),v2(offset45[0]/pw);

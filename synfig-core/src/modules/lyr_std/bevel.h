@@ -72,7 +72,7 @@ private:
 
 
 	void calc_offset();
-    rendering::TaskBlend::Handle draw_sample(rendering::Task::Handle sub_task, Vector offset, Color color )const;
+    rendering::TaskBlend::Handle draw_sample(rendering::Task::Handle sub_task, Vector offset1, Vector offset2, Color color )const;
 
 public:
 	Layer_Bevel();
