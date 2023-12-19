@@ -151,7 +151,7 @@ private:
 	void setup_soundwave_widget(CanvasView::LooseHandle canvas_view) {
 		widget_sound.set_time_model(canvas_view->time_model());
 		widget_sound.show();
-		widget_sound.set_size_request(100, 100);
+		widget_sound.set_size_request(-1, -1);
 		widget_sound.set_hexpand(true);
 		widget_sound.set_vexpand(true);
 		widget_sound.signal_file_loaded().connect(sigc::mem_fun(*this, &Grid_SoundWave::on_file_loaded));
