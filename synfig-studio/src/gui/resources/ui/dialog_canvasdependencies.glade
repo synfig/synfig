@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.38.2 
+<!-- Generated with glade 3.40.0 
 
 Copyright (C) Synfig Contributors
 
@@ -35,16 +35,8 @@ Author: Rodolfo Ribeiro Gomes
       <column type="gint"/>
       <!-- column-name Type_Icon -->
       <column type="GdkPixbuf"/>
-    </columns>
-  </object>
-  <object class="GtkTreeStore" id="external_resources_treestore">
-    <columns>
-      <!-- column-name File -->
-      <column type="gchararray"/>
-      <!-- column-name Usage_Number -->
-      <column type="gint"/>
-      <!-- column-name Type_Icon -->
-      <column type="GdkPixbuf"/>
+      <!-- column-name Exists -->
+      <column type="gboolean"/>
     </columns>
   </object>
   <object class="GtkDialog" id="dialog_canvasdependencies">
@@ -169,6 +161,19 @@ Author: Rodolfo Ribeiro Gomes
                     </child>
                   </object>
                 </child>
+                <child>
+                  <object class="GtkTreeViewColumn">
+                    <property name="title" translatable="yes">Status</property>
+                    <child>
+                      <object class="GtkCellRendererPixbuf">
+                        <property name="icon-name">image-missing</property>
+                      </object>
+                      <attributes>
+                        <attribute name="visible">3</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
               </object>
             </child>
           </object>
@@ -199,51 +204,16 @@ Author: Rodolfo Ribeiro Gomes
             <property name="can-focus">True</property>
             <property name="shadow-type">in</property>
             <child>
-              <object class="GtkTreeView" id="external_resources_treeview">
+              <object class="GtkViewport">
                 <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <property name="model">external_resources_treestore</property>
-                <child internal-child="selection">
-                  <object class="GtkTreeSelection"/>
-                </child>
+                <property name="can-focus">False</property>
                 <child>
-                  <object class="GtkTreeViewColumn" id="filename_column">
-                    <property name="resizable">True</property>
-                    <property name="title" translatable="yes">Filename</property>
-                    <property name="expand">True</property>
-                    <property name="alignment">0.5</property>
-                    <property name="reorderable">True</property>
-                    <property name="sort-indicator">True</property>
-                    <property name="sort-column-id">0</property>
-                    <child>
-                      <object class="GtkCellRendererPixbuf"/>
-                      <attributes>
-                        <attribute name="pixbuf">2</attribute>
-                      </attributes>
-                    </child>
-                    <child>
-                      <object class="GtkCellRendererText">
-                        <property name="ellipsize">start</property>
-                      </object>
-                      <attributes>
-                        <attribute name="text">0</attribute>
-                      </attributes>
-                    </child>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkTreeViewColumn">
-                    <property name="sizing">fixed</property>
-                    <property name="title" translatable="yes">Usage</property>
-                    <property name="alignment">0.5</property>
-                    <property name="reorderable">True</property>
-                    <property name="sort-indicator">True</property>
-                    <property name="sort-column-id">1</property>
-                    <child>
-                      <object class="GtkCellRendererText"/>
-                      <attributes>
-                        <attribute name="text">1</attribute>
-                      </attributes>
+                  <object class="GtkListBox" id="external_resources_listbox">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="activate-on-single-click">False</property>
+                    <child type="placeholder">
+                      <placeholder/>
                     </child>
                   </object>
                 </child>
@@ -253,10 +223,22 @@ Author: Rodolfo Ribeiro Gomes
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="position">5</property>
+            <property name="position">4</property>
           </packing>
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkListStore" id="external_resources_liststore">
+    <columns>
+      <!-- column-name File -->
+      <column type="gchararray"/>
+      <!-- column-name Usage_Number -->
+      <column type="gint"/>
+      <!-- column-name Type_Icon -->
+      <column type="GdkPixbuf"/>
+      <!-- column-name Exists -->
+      <column type="gboolean"/>
+    </columns>
   </object>
 </interface>
