@@ -55,6 +55,8 @@
 
 using namespace synfig;
 
+
+
 /* === M A C R O S ========================================================= */
 
 //#define DEBUG_SET_TIME_MEASURE

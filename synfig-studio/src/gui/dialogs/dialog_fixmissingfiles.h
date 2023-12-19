@@ -34,7 +34,7 @@
 #include <gtkmm/builder.h>
 #include <gtkmm/dialog.h>
 
-#include <synfig/canvas.h>
+#include <synfig/loadcanvas.h>
 
 /* === M A C R O S ========================================================= */
 
