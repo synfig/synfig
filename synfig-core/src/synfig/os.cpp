@@ -419,6 +419,12 @@ private:
 		// If an error occurs, exit the application.
 		if (!bSuccess) {
 			synfig::error("synfig::OS::pipe: CreateProcess");
+
+			close_and_invalidate_handle(child_STDERR_Read);
+			close_and_invalidate_handle(child_STDERR_Write);
+			close_and_invalidate_handle(child_STDOUT_Write);
+			close_and_invalidate_handle(child_STDIN_Read);
+
 			return false;
 		}
 		// Close handles to the child process and its primary thread.
