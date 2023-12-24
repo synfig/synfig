@@ -117,6 +117,9 @@ Dialog_FixMissingFiles::set_broken_useids(synfig::CanvasBrokenUseIdMap& map)
 
 		create_row(replacer_map_, iter);
 	}
+
+	Gtk::Button* button = static_cast<Gtk::Button*>(get_widget_for_response(Gtk::RESPONSE_OK));
+	button->set_sensitive(is_replacer_map_complete());
 }
 
 void
@@ -175,15 +178,27 @@ Dialog_FixMissingFiles::create_row(Dialog_FixMissingFiles::FileReplacerMap& repl
 	button->set_hexpand(false);
 	box->pack_end(*button, Gtk::PACK_SHRINK);
 
-	button->signal_clicked().connect(sigc::track_obj([label, missing_path, &replacer_map]() {
+	button->signal_clicked().connect(sigc::track_obj([this, label, missing_path, &replacer_map]() {
 		synfig::filesystem::Path replacement(missing_path);
 		if (App::dialog_open_file(replacer_map[missing_path].u8string(), replacement, "file")) {
 			label->set_markup(synfig::strprintf("(<small>%s</small>)", replacement.u8_str()));
 			label->set_tooltip_text(replacement.u8string());
 			replacer_map[missing_path] = replacement;
 		}
+		Gtk::Button* button = static_cast<Gtk::Button*>(get_widget_for_response(Gtk::RESPONSE_OK));
+		button->set_sensitive(is_replacer_map_complete());
 	}, *label));
 
 	box->show_all();
 	missing_file_list_->append(*box);
+}
+
+bool
+Dialog_FixMissingFiles::is_replacer_map_complete() const
+{
+	for (const auto& item : replacer_map_) {
+		if (item.second.empty())
+			return false;
+	}
+	return true;
 }

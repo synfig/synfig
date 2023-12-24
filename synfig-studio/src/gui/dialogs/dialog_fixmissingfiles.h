@@ -74,6 +74,8 @@ private:
 	FileReplacerMap replacer_map_;
 
 	void create_row(FileReplacerMap& replacer_map_, const synfig::CanvasBrokenUseIdMap::iterator& iter);
+
+	bool is_replacer_map_complete() const;
 }; // END of Dialog_FixMissingFiles
 
 }; // END of namespace studio
