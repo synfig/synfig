@@ -103,21 +103,36 @@ imagemagick_trgt::end_frame()
 bool
 imagemagick_trgt::start_frame(synfig::ProgressCallback *cb)
 {
-	const char *msg=_("Unable to open pipe to imagemagick's convert utility");
+	const char *msg=_("Unable to open pipe to imagemagick utility");
 
 	synfig::filesystem::Path newfilename = filename;
 
 	if (multi_image)
 		newfilename.add_suffix(sequence_separator + strprintf("%04d", imagecount));
 
-	OS::RunArgs args;
-	args.push_back({"-depth", "8"});
-	args.push_back({"-size", strprintf("%dx%d", desc.get_w(), desc.get_h())});
-	args.push_back(pixel_size(pf) == 4 ? "rgba:-[0]" : "rgb:-[0]");
-	args.push_back({"-density", strprintf("%dx%d", round_to_int(desc.get_x_res()/39.3700787402), round_to_int(desc.get_y_res()/39.3700787402))});
-	args.push_back(newfilename);
+	// pair (binary name, first argument)
+	std::vector<std::pair<std::string, std::string>> binaries {
+		{"magick", "convert"}, // ImageMagick 7 with legacy syntax
+#ifdef _WIN32
+		{synfig::OS::get_binary_path().append("convert").u8string(), ""}, // legacy (version < 7) - Avoid Windows system "convert.exe"
+#else
+		{"convert", ""}, // legacy (version < 7)
+#endif
+	};
+	for (const auto& binary_info : binaries) {
+		OS::RunArgs args;
+		if (!binary_info.second.empty())
+			args.push_back(binary_info.second);
+		args.push_back({"-depth", "8"});
+		args.push_back({"-size", strprintf("%dx%d", desc.get_w(), desc.get_h())});
+		args.push_back(pixel_size(pf) == 4 ? "rgba:-[0]" : "rgb:-[0]");
+		args.push_back({"-density", strprintf("%dx%d", round_to_int(desc.get_x_res()/39.3700787402), round_to_int(desc.get_y_res()/39.3700787402))});
+		args.push_back(newfilename);
 
-	pipe = OS::run_async({"convert"}, args, OS::RUN_MODE_WRITE);
+		pipe = OS::run_async({binary_info.first}, args, OS::RUN_MODE_WRITE);
+		if (pipe)
+			break;
+	}
 
 	if (!pipe) {
 		if (cb)
