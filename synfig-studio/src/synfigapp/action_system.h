@@ -69,9 +69,10 @@ class PassiveGrouper
 	int depth_;
 	RedrawSet redraw_set_;
 	bool finished_;
+	bool repeated_action_group_;
 
 public:
-	PassiveGrouper(etl::loose_handle<System> instance_,synfig::String name_);
+	PassiveGrouper(etl::loose_handle<System> instance_, synfig::String name_, bool repeated_action = false);
 
 	~PassiveGrouper();
 
@@ -151,6 +152,8 @@ private:
 	etl::handle<UIInterface> ui_interface_;
 
 	bool clear_redo_stack_on_new_action_;
+
+	bool cancel_repeated_action_ = false;
 
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
@@ -235,6 +238,12 @@ public:
 	void set_ui_interface(const etl::handle<UIInterface> &uim) { assert(uim); ui_interface_=uim; }
 	void unset_ui_interface() { ui_interface_=new DefaultUIInterface(); }
 	const etl::handle<UIInterface> &get_ui_interface() { return ui_interface_; }
+
+	// call before destructing the repeated action group to cancel it
+	void cancel_repeated_action() { cancel_repeated_action_ = true; }
+
+	bool is_repeated_action_cancelled()const { return cancel_repeated_action_;  }
+	void reset_cancel_repeated_action() {  cancel_repeated_action_ = false; }
 
 	/*
  -- ** -- S I G N A L   I N T E R F A C E S -----------------------------------
