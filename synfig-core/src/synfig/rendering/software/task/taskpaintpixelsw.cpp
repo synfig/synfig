@@ -114,9 +114,17 @@ synfig::rendering::TaskPaintPixelSW::run_task() const
 	ColorReal amount = blend ? this->amount : ColorReal(1.0);
 	apen.set_blend_method(blend ? blend_method : Color::BLEND_COMPOSITE);
 
-	for(int iy = target_rect.miny; iy < target_rect.maxy; ++iy, p += dy, apen.inc_y(), apen.dec_x(tw)) {
-		for(int ix = target_rect.minx; ix < target_rect.maxx; ++ix, p += dx, apen.inc_x()) {
-			apen.put_value(get_color(p), amount);
+	if (! is_filter_) {
+		for (int iy = target_rect.miny; iy < target_rect.maxy; ++iy, p += dy, apen.inc_y(), apen.dec_x(tw)) {
+			for (int ix = target_rect.minx; ix < target_rect.maxx; ++ix, p += dx, apen.inc_x()) {
+				apen.put_value(get_color(p), amount);
+			}
+		}
+	} else {
+		for (int iy = target_rect.miny; iy < target_rect.maxy; ++iy, p += dy, apen.inc_y(), apen.dec_x(tw)) {
+			for (int ix = target_rect.minx; ix < target_rect.maxx; ++ix, p += dx, apen.inc_x()) {
+				apen.put_value(get_color(p, apen.get_value()), amount);
+			}
 		}
 	}
 
