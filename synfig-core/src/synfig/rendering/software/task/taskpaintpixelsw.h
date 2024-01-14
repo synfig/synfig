@@ -60,7 +60,6 @@ class TaskPaintPixelSW :
 		public TaskInterfaceSplit
 {
 public:
-
 	//! Called inside run() right before iterating over each pixel.
 	//! Useful for computing some parameters that are constant for all iterations.
 	//!
@@ -71,12 +70,37 @@ public:
 	//! Fetch color at position p (in synfig units) when antialias is false
 	virtual Color get_color(const Vector& p) const = 0;
 
+	/** Fetch color at position @a p (in synfig units) given a previous Color @a c at same point */
+	virtual Color get_color(const Vector& /*p*/, const Color& /*c*/) const {  return Color::cyan(); };
+
 	//! Call this method from run() method of the real task implementation
 	virtual bool run_task() const;
 
 	void on_target_set_as_source() override;
 
 	Color::BlendMethodFlags get_supported_blend_methods() const override;
+
+protected:
+	bool is_filter_ = false;
+};
+
+/**
+ * Paint each pixel depending on its position.
+ *
+ * The color of each pixel is defined by get_color() or get_color_antialias() calls.
+ *
+ * To use this abstract class, call run_task() inside of your implementation of Task::run().
+ *
+ */
+class TaskFilterPixelSW :
+		public TaskPaintPixelSW
+{
+public:
+	TaskFilterPixelSW() { is_filter_ = true; }
+	//! Fetch color at position p (in synfig units) when antialias is false
+	Color get_color(const Vector& /*p*/) const override { return Color::magenta(); };
+	/** Fetch color at position @a p (in synfig units) given a previous Color @a c at same point */
+	virtual Color get_color(const Vector& /*p*/, const Color& c) const override { return c; }
 };
 
 
