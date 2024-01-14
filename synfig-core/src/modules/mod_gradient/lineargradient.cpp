@@ -56,19 +56,16 @@ SYNFIG_LAYER_SET_VERSION(LinearGradient,"0.1");
 
 /* === M E T H O D S ======================================================= */
 
-class TaskLinearGradient: public rendering::Task, public rendering::TaskInterfaceTransformation
+class TaskLinearGradient: public rendering::Task
 {
 public:
 	typedef etl::handle<TaskLinearGradient> Handle;
-	static Token token;
+	SYNFIG_EXPORT static Token token;
 	Token::Handle get_token() const override { return token.handle(); }
 
 	LinearGradient::Params params;
-	rendering::Holder<rendering::TransformationAffine> transformation;
 
 	TaskLinearGradient() { }
-	virtual rendering::Transformation::Handle get_transformation() const override
-		{ return transformation.handle(); }
 };
 
 
@@ -76,8 +73,8 @@ class TaskLinearGradientSW: public TaskLinearGradient, public rendering::TaskPai
 {
 public:
 	typedef etl::handle<TaskLinearGradientSW> Handle;
-	static Token token;
-	virtual Token::Handle get_token() const override { return token.handle(); }
+	SYNFIG_EXPORT static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
 
 	mutable Real supersample = 0.;
 
@@ -99,9 +96,9 @@ public:
 	}
 };
 
-rendering::Task::Token TaskLinearGradient::token(
+SYNFIG_EXPORT rendering::Task::Token TaskLinearGradient::token(
 	DescAbstract<TaskLinearGradient>("TaskLinearGradient") );
-rendering::Task::Token TaskLinearGradientSW::token(
+SYNFIG_EXPORT rendering::Task::Token TaskLinearGradientSW::token(
 	DescReal<TaskLinearGradientSW, TaskLinearGradient>("TaskLinearGradientSW") );
 
 inline void
