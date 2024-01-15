@@ -1331,7 +1331,7 @@ CanvasInterface::set_meta_data(const synfig::String& key,const synfig::String& d
 void
 CanvasInterface::erase_meta_data(const synfig::String& key)
 {
-	if (key=="guide_x" || key=="guide_y")
+	if (key=="guide")
 	{
 		// Create an undoable action
 		synfigapp::Action::Handle action(synfigapp::Action::create("CanvasMetadataErase"));
