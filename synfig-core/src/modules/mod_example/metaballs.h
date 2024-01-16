@@ -76,11 +76,12 @@ public:
 
 	virtual synfig::Color get_color(synfig::Context context, const synfig::Point &pos)const;
 
-	virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
-
 	virtual Vocab get_param_vocab()const;
 
 	virtual synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
+
+protected:
+	synfig::rendering::Task::Handle build_composite_task_vfunc(synfig::ContextParams /*context_params*/) const;
 }; // END of class Metaballs
 
 /* === E N D =============================================================== */
