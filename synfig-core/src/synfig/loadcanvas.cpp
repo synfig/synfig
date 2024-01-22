@@ -103,6 +103,35 @@ std::set<FileSystem::Identifier> CanvasParser::loading_;
 
 /* === P R O C E D U R E S ================================================= */
 
+// Guide lines storage changed:
+// Before:
+//   guide_x -> list of X positions of vertical guide lines (separated by spaces)
+//   guide_y -> list of Y positions of horizontal guide lines (separated by spaces)
+// Now:
+//   guide -> list of X*Y*radian-angle coordinates of guide lines (data from same guide is separated by star *) (items separated by spaces)
+static void
+upgrade_guide_metadata(std::string& content, const std::string& metadata, bool is_x_guide)
+{
+	std::string new_content;
+	std::istringstream iss(content);
+	std::string item;
+	while (std::getline(iss, item, ' ')) {
+		if (!item.empty()) {
+			if (is_x_guide) {
+				// X * 0 * PI/2 radians -> vertical guide line
+				new_content += item + "*0*1.57079633 ";
+			} else {
+				// 0 * Y * 0 radians -> horizontal guide line
+				new_content += "0*" + item + "*0 ";
+			}
+		}
+	}
+	// new_content already has a blank space appended
+	content = new_content + metadata;
+	if (content.back() == ' ')
+		content.pop_back();
+}
+
 OpenCanvasMap& synfig::get_open_canvas_map()
 {
 	static OpenCanvasMap open_canvas_map_;
@@ -3331,6 +3360,9 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 					continue;
 				}
 				
+				std::string meta_name = child->get_attribute("name")->get_value();
+				std::string content = child->get_attribute("content")->get_value();
+
 				// In Synfig prior to version 1.0 we have messed decimal separator:
 				// some files use ".", but other ones use ","/
 				// Let's try to put a workaround for that.
@@ -3341,9 +3373,7 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 				replacelist.push_back("grid_color");
 				replacelist.push_back("grid_size");
 				replacelist.push_back("jack_offset");
-				String content;
-				content=child->get_attribute("content")->get_value();
-				if(std::find(replacelist.begin(), replacelist.end(), child->get_attribute("name")->get_value()) != replacelist.end()) 
+				if(std::find(replacelist.begin(), replacelist.end(), meta_name) != replacelist.end())
 				{
 					size_t index = 0;
 					while (true) {
@@ -3359,7 +3389,19 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 					}
 					
 				}
-				canvas->set_meta_data(child->get_attribute("name")->get_value(),content);
+
+				// Commit b172e37 (#2777) changed guide lines storage to give them rotation ability
+				if (meta_name == "guide_x") {
+					upgrade_guide_metadata(content, canvas->get_meta_data("guide"), true);
+					meta_name = "guide";
+				}
+
+				if (meta_name == "guide_y") {
+					upgrade_guide_metadata(content, canvas->get_meta_data("guide"), false);
+					meta_name = "guide";
+				}
+
+				canvas->set_meta_data(meta_name, content);
 			}
 			else if(child->get_name()=="name")
 			{
