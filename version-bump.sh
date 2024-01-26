@@ -27,8 +27,17 @@ sed -i "s|Studio\],\[${VERSION_CURRENT}\],\[http|Studio\],\[${VERSION_NEW}\],\[h
 sed -i "s|ETL >= ${VERSION_CURRENT}|ETL >= ${VERSION_NEW}|" synfig-studio/configure.ac
 sed -i "s|synfig >= ${VERSION_CURRENT}|synfig >= ${VERSION_NEW}|" synfig-studio/configure.ac
 
-
+VERSION_NEW_MAJOR=$(echo "$VERSION_NEW" | cut -d'.' -f1)
+VERSION_NEW_MINOR=$(echo "$VERSION_NEW" | cut -d'.' -f2)
+VERSION_NEW_PATCH=$(echo "$VERSION_NEW" | cut -d'.' -f3)
+VERSION_CURRENT_MAJOR=$(echo "$VERSION_CURRENT" | cut -d'.' -f1)
+VERSION_CURRENT_MINOR=$(echo "$VERSION_CURRENT" | cut -d'.' -f2)
+VERSION_CURRENT_PATCH=$(echo "$VERSION_CURRENT" | cut -d'.' -f3)
+sed -i "s|ETL_VERSION \"${VERSION_CURRENT}\"|ETL_VERSION \"${VERSION_NEW}\"|" CMakeLists.txt
 sed -i "s|STUDIO_VERSION \"${VERSION_CURRENT}\"|STUDIO_VERSION \"${VERSION_NEW}\"|" synfig-studio/src/gui/CMakeLists.txt
+sed -i "s|STUDIO_VERSION_MAJOR ${VERSION_CURRENT_MAJOR}|STUDIO_VERSION_MAJOR ${VERSION_NEW_MAJOR}|" CMakeLists.txt
+sed -i "s|STUDIO_VERSION_MINOR ${VERSION_CURRENT_MINOR}|STUDIO_VERSION_MINOR ${VERSION_NEW_MINOR}|" CMakeLists.txt
+sed -i "s|STUDIO_VERSION_PATCH ${VERSION_CURRENT_PATCH}|STUDIO_VERSION_PATCH ${VERSION_NEW_PATCH}|" CMakeLists.txt
 
 sed -i "s|version=\"${VERSION_CURRENT}\"|version=\"${VERSION_NEW}\"|" synfig-studio/org.synfig.SynfigStudio.appdata.xml.in
 DATE=`date +%Y-%m-%d`
@@ -40,6 +49,8 @@ git add \
 	synfig-studio/configure.ac \
 	synfig-studio/src/gui/CMakeLists.txt \
 	synfig-studio/org.synfig.SynfigStudio.appdata.xml.in \
+	CMakeLists.txt \
+	synfig-studio/src/gui/CMakeLists.txt \
 	# end
 
 git commit -m "Bump version to ${VERSION_NEW}"
