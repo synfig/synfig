@@ -8,7 +8,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 project(synfig-studio)
 set(STUDIO_VERSION_MAJOR 1)
 set(STUDIO_VERSION_MINOR 5)
-set(STUDIO_VERSION_PATCH 0)
+set(STUDIO_VERSION_PATCH 1)
 
 option(ENABLE_TCMALLOC "Enable use of tcmalloc library" OFF)
 
@@ -88,7 +88,7 @@ include_directories(ETL)
 include_directories(${PROJECT_BINARY_DIR}/ETL) # to find the generated etl_profile.h
 
 # Manually setting ETL Version.
-set(ETL_VERSION "1.5.0")
+set(ETL_VERSION "1.5.1")
 
 add_subdirectory(synfig-core)
 
