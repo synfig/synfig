@@ -133,7 +133,7 @@ Dock_PalEdit::Dock_PalEdit():
 		"palette-add-color",
 		"list-add",
 		_("Add Color"),
-		_("Add current outline color\nto the palette")
+		_("Add current fill color\nto the palette")
 	),
 		sigc::mem_fun(
 			*this,
@@ -229,7 +229,7 @@ Dock_PalEdit::set_palette(const synfig::Palette& x)
 void
 Dock_PalEdit::on_add_pressed()
 {
-	add_color(synfigapp::Main::get_outline_color());
+	add_color(synfigapp::Main::get_fill_color());
 }
 
 void
