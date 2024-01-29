@@ -34,7 +34,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Prepare ccache timestamp
         id: ccache_timestamp
@@ -42,7 +42,7 @@ jobs:
 
       - name: Download ccache archive
         id: ccache-archive
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: .ccache
           key: ${{ matrix.os }}-ccache-${{ matrix.toolchain }}-${{ steps.ccache_timestamp.outputs.timestamp }}
