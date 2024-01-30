@@ -375,12 +375,12 @@ RenderQueue::enqueue(const Task::List &tasks, const Task::RunParams &params)
 		if (*i)
 		{
 			bool mt = (*i)->get_allow_multithreading();
-			TaskQueue &queue = mt ? ready_tasks     : single_ready_tasks;
-			TaskSet   &wait  = mt ? not_ready_tasks : single_not_ready_tasks;
 			if ((*i)->renderer_data.deps.empty()) {
+				TaskQueue &queue = mt ? ready_tasks     : single_ready_tasks;
 				queue.push_back(*i);
 				++(mt ? signals : single_signals);
 			} else {
+				TaskSet   &wait  = mt ? not_ready_tasks : single_not_ready_tasks;
 				wait.insert(*i);
 			}
 		}
