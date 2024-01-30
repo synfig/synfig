@@ -124,6 +124,8 @@ src/modules/mod_libavcodec/mptr.h
 src/modules/mod_libavcodec/trgt_av.cpp
 src/modules/mod_libavcodec/trgt_av.h
 src/modules/mod_magickpp/main.cpp
+src/modules/mod_magickpp/mptr_magickpp.cpp
+src/modules/mod_magickpp/mptr_magickpp.h
 src/modules/mod_magickpp/trgt_magickpp.cpp
 src/modules/mod_magickpp/trgt_magickpp.h
 src/modules/mod_mng/main.cpp
