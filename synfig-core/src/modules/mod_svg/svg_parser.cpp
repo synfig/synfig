@@ -727,7 +727,6 @@ Svg_parser::parser_layer(const xmlpp::Node* node, xmlpp::Element* root, Style st
 		if(!nodeContent){
     		xmlpp::Node::NodeList list = node->get_children();
     		for(xmlpp::Node::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter){
-				Glib::ustring name =(*iter)->get_name();
 				parser_graphics (*iter,child_canvas,style,mtx);
     		}
   		}
