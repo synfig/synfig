@@ -128,30 +128,43 @@ magickpp_mptr::get_frame(synfig::Surface& surface, const synfig::RendDesc& /*ren
 		const auto height = image.size().height();
 		surface.set_wh(width, height);
 
-		const MagickCore::PixelPacket* packet = image.getConstPixels(0, 0, width, height);
+		image.type(Magick::TrueColorType);
+// Sadly Magick++ API is a mess with namespaces...
+{
+	using namespace Magick;
+	using namespace MagickCore;
+
+#if MagickLibVersion >= 0x701 // MAGICKCORE_CHECK_VERSION(7,0,0) does not work!
+		bool has_alpha = image.alpha();
+#else
+		bool has_alpha = image.matte();
+#endif
+		const auto packet = image.getConstPixels(0, 0, width, height);
+
 		if (!packet) {
 			synfig::error(_("Magick++ importer: couldn't get pixel packet"));
 			return false;
 		}
 
-		// Sadly ImageMagick is a mess with this QuantumRange macro - it needs Magick namespace in its parsing...
-		//		constexpr synfig::Color::value_type factor = 1. / QuantumRange;
-		// alternative way:
-		synfig::Color::value_type factor = 1.;
-		{
-			using namespace Magick;
-
-			factor = QuantumRange;
-		}
+		constexpr synfig::Color::value_type factor = QuantumRange;
 
 		for (size_t y = 0, i = 0; y < height; ++y) {
 			for (size_t x = 0; x < width; ++x, ++i) {
+#if MagickLibVersion >= 0x701 // MAGICKCORE_CHECK_VERSION(7,0,0) does not work!
+				if (has_alpha)
+					surface[y][x] = synfig::Color(packet[i++] / factor, packet[i++] / factor, packet[i++] / factor, packet[i] / factor);
+				else
+					surface[y][x] = synfig::Color(packet[i++] / factor, packet[i++] / factor, packet[i] / factor, 1.);
+#else
 				const auto& color = packet[i];
-				auto surface_color = synfig::Color(color.red / factor, color.green / factor, color.blue / factor, 1. - color.opacity / factor);
-
-				surface[y][x] = surface_color;
+				if (has_alpha)
+					surface[y][x] = synfig::Color(color.red / factor, color.green / factor, color.blue / factor, 1. - color.opacity / factor);
+				else
+					surface[y][x] = synfig::Color(color.red / factor, color.green / factor, color.blue / factor, 1.);
+#endif
 			}
 		}
+} // end Magick++ namespace mess
 	} catch (Magick::Error& err) {
 		synfig::error(_("Magick++ importer: error occurred fetching pixels: %s"), err.what());
 		return false;
