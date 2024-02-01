@@ -248,7 +248,9 @@ Dock_Toolbox::button_new_layer_creator()
 	refresh();
 
 }
-void Dock_Toolbox::popup_add_layer_menu()
+
+void
+Dock_Toolbox::popup_add_layer_menu()
 {
 	if (auto menu = dynamic_cast<Gtk::Menu*>(App::ui_manager()->get_widget("/popup-layer-new")))
 		menu->popup(0, gtk_get_current_event_time());
