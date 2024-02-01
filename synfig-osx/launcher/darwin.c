@@ -31,7 +31,9 @@
  * use or other dealings in this Software without prior written authorization.
  */
 /* $XFree86: xc/programs/Xserver/hw/darwin/darwin.c,v 1.45 2002/03/28 02:21:08 torrey Exp $ */
+#define LOGGING_ENABLED
 
+#include <synfig/general.h>>
 #include <CoreGraphics/CoreGraphics.h>
 
 #include "X.h"
@@ -311,7 +313,7 @@ DarwinFindLibraryFile (const char *file, const char *pathext)
 
     fullPath = xalloc(PATH_MAX);
 
-    home = getenv("HOME");
+    home = DEBUG_GETENV("HOME");
     if (home) {
         snprintf(fullPath, PATH_MAX, "%s/Library/%s/%s", home, pathext, file);
         if (!access(fullPath, F_OK))

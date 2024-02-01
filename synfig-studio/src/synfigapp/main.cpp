@@ -35,6 +35,7 @@
 #include "main.h"
 #include "action.h"
 
+#define LOGGING_ENABLED
 #include <synfig/general.h>
 
 #include <synfig/color.h>
@@ -415,7 +416,7 @@ synfigapp::Main::set_state(synfig::String state)
 synfig::filesystem::Path
 synfigapp::Main::get_user_app_directory()
 {
-	std::string dir = Glib::getenv("SYNFIG_USER_SETTINGS");
+	std::string dir = Glib::DEBUG_GETENV("SYNFIG_USER_SETTINGS");
 	if (!dir.empty()) {
 		return filesystem::Path(dir);
 	}

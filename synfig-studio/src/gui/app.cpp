@@ -137,6 +137,7 @@
 #include <synfig/canvasfilenaming.h>
 #include <synfig/color.h>
 #include <synfig/filesystemnative.h>
+#define LOGGING_ENABLED
 #include <synfig/general.h>
 #include <synfig/layer.h>
 #include <synfig/loadcanvas.h>
@@ -1436,7 +1437,7 @@ int App::on_handle_local_options(const Glib::RefPtr<Glib::VariantDict> &options)
 
 void App::on_activate()
 {
-	if (!getenv("SYNFIG_DISABLE_AUTOMATIC_DOCUMENT_CREATION") && !get_selected_instance())
+	if (!DEBUG_GETENV("SYNFIG_DISABLE_AUTOMATIC_DOCUMENT_CREATION") && !get_selected_instance())
 		new_instance();
 
 	if (get_windows().size() == 0) {
@@ -1706,14 +1707,14 @@ void App::init(const synfig::String& rootpath)
 		state_manager->add_state(&state_circle);
 		state_manager->add_state(&state_rectangle);
 		state_manager->add_state(&state_star);
-		if(!getenv("SYNFIG_DISABLE_POLYGON")) state_manager->add_state(&state_polygon); // Enabled - for working without ducks
+		if(!DEBUG_GETENV("SYNFIG_DISABLE_POLYGON")) state_manager->add_state(&state_polygon); // Enabled - for working without ducks
 		state_manager->add_state(&state_gradient);
 
 		/* bline tools */
 		state_manager->add_state(&state_bline);
-		if(!getenv("SYNFIG_DISABLE_DRAW"   )) state_manager->add_state(&state_draw ); // Enabled for now.  Let's see whether they're good enough yet.
+		if(!DEBUG_GETENV("SYNFIG_DISABLE_DRAW"   )) state_manager->add_state(&state_draw ); // Enabled for now.  Let's see whether they're good enough yet.
 		state_manager->add_state(&state_lasso);
-		if(!getenv("SYNFIG_DISABLE_WIDTH"  )) state_manager->add_state(&state_width); // Enabled since 0.61.09
+		if(!DEBUG_GETENV("SYNFIG_DISABLE_WIDTH"  )) state_manager->add_state(&state_width); // Enabled since 0.61.09
 		state_manager->add_state(&state_fill);
 		state_manager->add_state(&state_eyedrop);
 
@@ -1722,8 +1723,8 @@ void App::init(const synfig::String& rootpath)
 
 		/* other */
 		state_manager->add_state(&state_text);
-		if(!getenv("SYNFIG_DISABLE_SKETCH" )) state_manager->add_state(&state_sketch);
-		if(!getenv("SYNFIG_DISABLE_BRUSH"  ) && App::enable_experimental_features) state_manager->add_state(&state_brush);
+		if(!DEBUG_GETENV("SYNFIG_DISABLE_SKETCH" )) state_manager->add_state(&state_sketch);
+		if(!DEBUG_GETENV("SYNFIG_DISABLE_BRUSH"  ) && App::enable_experimental_features) state_manager->add_state(&state_brush);
 		state_manager->add_state(&state_zoom);
 
 
@@ -1740,7 +1741,7 @@ void App::init(const synfig::String& rootpath)
 
 		studio_init_cb.amount_complete(9900,10000);
 
-		if (!getenv("SYNFIG_DISABLE_AUTO_RECOVERY") && auto_recover->recovery_needed())
+		if (!DEBUG_GETENV("SYNFIG_DISABLE_AUTO_RECOVERY") && auto_recover->recovery_needed())
 		{
 			splash_screen.hide();
 			if (get_ui_interface()->confirmation(
@@ -2111,7 +2112,7 @@ App::apply_gtk_settings()
 {
 	Glib::RefPtr<Gtk::Settings> gtk_settings = Gtk::Settings::get_default();
 
-	const std::string theme_name = Glib::getenv("SYNFIG_GTK_THEME");
+	const std::string theme_name = Glib::DEBUG_GETENV("SYNFIG_GTK_THEME");
 	if (!theme_name.empty())
 		gtk_settings->property_gtk_theme_name() = theme_name;
 
@@ -2143,7 +2144,7 @@ void
 App::init_icon_themes()
 {
 	// If environment is not set then read theme name from preferences
-	if (Glib::getenv("SYNFIG_ICON_THEME").empty()) {
+	if (Glib::DEBUG_GETENV("SYNFIG_ICON_THEME").empty()) {
 		load_settings("pref.icon_theme_name");
 	}
 	auto icon_theme = Gtk::IconTheme::get_default();
@@ -2159,7 +2160,7 @@ App::get_icon_theme_name()
 	if (!icon_theme_name.empty())
 		return icon_theme_name;
 
-	auto env_icon_theme = Glib::getenv("SYNFIG_ICON_THEME");
+	auto env_icon_theme = Glib::DEBUG_GETENV("SYNFIG_ICON_THEME");
 	if (!env_icon_theme.empty()) {
 		return env_icon_theme;
 	}
@@ -3841,7 +3842,7 @@ App::new_instance()
 				_("Close"));
 	}
 
-	if (getenv("SYNFIG_ENABLE_NEW_CANVAS_EDIT_PROPERTIES"))
+	if (DEBUG_GETENV("SYNFIG_ENABLE_NEW_CANVAS_EDIT_PROPERTIES"))
 		instance->find_canvas_view(canvas)->canvas_properties.present();
 }
 

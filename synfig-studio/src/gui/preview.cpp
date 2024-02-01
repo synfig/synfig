@@ -52,6 +52,7 @@
 #include <synfig/string.h>
 #include <synfig/surface.h>
 #include <synfig/target_scanline.h>
+#include <synfig/general.h>
 
 #endif
 
@@ -459,7 +460,7 @@ Widget_Preview::Widget_Preview():
 	//FIXME: Hardcoded FPS!
 	jackdial->set_fps(24.f);
 	jackdial->set_offset(jack_offset);
-	if ( !getenv("SYNFIG_DISABLE_JACK") )
+	if ( !DEBUG_GETENV("SYNFIG_DISABLE_JACK") )
 		jackdial->show();
 	toolbar->pack_start(*jackdial, false, true);
 

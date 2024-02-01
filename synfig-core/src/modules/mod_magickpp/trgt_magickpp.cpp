@@ -129,7 +129,7 @@ magickpp_trgt::~magickpp_trgt()
 			synfig::info("clearing old image list");
 			images.clear();
 
-			if (!getenv("SYNFIG_DISABLE_REMOVE_DUPS"))
+			if (!DEBUG_GETENV("SYNFIG_DISABLE_REMOVE_DUPS"))
 			{
 				synfig::info("removing duplicate frames");
 				try
@@ -141,7 +141,7 @@ magickpp_trgt::~magickpp_trgt()
 				}
 			}
 
-			if (!getenv("SYNFIG_DISABLE_OPTIMIZE"))
+			if (!DEBUG_GETENV("SYNFIG_DISABLE_OPTIMIZE"))
 			{
 				synfig::info("optimizing layers");
 				try
@@ -153,7 +153,7 @@ magickpp_trgt::~magickpp_trgt()
 				}
 			}
 
-			if (!getenv("SYNFIG_DISABLE_OPTIMIZE_TRANS"))
+			if (!DEBUG_GETENV("SYNFIG_DISABLE_OPTIMIZE_TRANS"))
 			{
 				synfig::info("optimizing layer transparency");
 				try
