@@ -412,14 +412,14 @@ do_exec (void (*callback) (void *data), void *data)
 	    open ("/dev/null", O_RDONLY);
 
 	    /* cd $HOME */
-	    tem = getenv ("HOME");
+	    tem = DEBUG_GETENV ("HOME");
 	    if (tem != NULL)
 		chdir (tem);
 
 	    /* Setup environment */
 	    snprintf (buf, sizeof (buf), ":%s", display);
 	    setenv ("DISPLAY", buf, TRUE);
-	    tem = getenv ("PATH");
+	    tem = DEBUG_GETENV ("PATH");
 	    if (tem != NULL && tem[0] != NULL)
 		snprintf (buf, sizeof (buf), "%s:/usr/X11R6/bin", tem);
 	    else
@@ -454,7 +454,7 @@ QuartzRunClient (const char *command)
     const char *shell;
     const char *argv[5];
 
-    shell = getenv ("SHELL");
+    shell = DEBUG_GETENV ("SHELL");
     if (shell == NULL)
 	shell = "/bin/bash";
 

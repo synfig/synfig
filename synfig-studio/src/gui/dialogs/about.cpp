@@ -24,6 +24,7 @@
 /* ========================================================================= */
 
 /* === H E A D E R S ======================================================= */
+#define LOGGING_ENABLED
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -33,6 +34,7 @@
 #endif
 
 #include "about.h"
+#include <synfig/general.h>
 
 // This is generated at make time from .git or autorevision.conf
 #include <autorevision.h>
@@ -319,7 +321,7 @@ About::About()
 		char date_str[max_date_length];
 
 		// https://reproducible-builds.org/specs/source-date-epoch/
-		if (char* source_date_epoch = getenv("SOURCE_DATE_EPOCH")) {
+		if (char* source_date_epoch = DEBUG_GETENV("SOURCE_DATE_EPOCH")) {
 			std::istringstream iss(source_date_epoch);
 			std::time_t t;
 			iss >> t;

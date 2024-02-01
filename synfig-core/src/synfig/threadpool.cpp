@@ -24,6 +24,7 @@
 /* ========================================================================= */
 
 /* === H E A D E R S ======================================================= */
+#define LOGGING_ENABLED
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -145,7 +146,7 @@ ThreadPool::ThreadPool():
 {
 	max_running_threads = std::thread::hardware_concurrency();
 
-	if (const char *s = getenv("SYNFIG_GENERIC_THREADS"))
+	if (const char *s = DEBUG_GETENV("SYNFIG_GENERIC_THREADS"))
 		max_running_threads = atoi(s) + 1;
 
 	if (max_running_threads < 2) max_running_threads = 2;
@@ -284,7 +285,7 @@ ThreadPool::set_num_threads(int num_threads){
 	if(num_threads!=0){
 		max_running_threads = num_threads;
 	}
-	if (const char *s = getenv("SYNFIG_GENERIC_THREADS"))
+	if (const char *s = DEBUG_GETENV("SYNFIG_GENERIC_THREADS"))
 		max_running_threads = atoi(s) + 1;
 
 	if (max_running_threads < 2) max_running_threads = 2;

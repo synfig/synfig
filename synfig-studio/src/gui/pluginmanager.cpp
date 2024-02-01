@@ -24,6 +24,7 @@
 /* ========================================================================= */
 
 /* === H E A D E R S ======================================================= */
+#define LOGGING_ENABLED
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -471,7 +472,7 @@ std::string studio::PluginManager::interpreter_executable(const std::string& int
 	if ( interpreter == "python" )
 	{
 		std::vector<std::string> search_paths;
-		std::string custom_python_binary = Glib::getenv("SYNFIG_PYTHON_BINARY");
+		std::string custom_python_binary = Glib::DEBUG_GETENV("SYNFIG_PYTHON_BINARY");
 		if (!custom_python_binary.empty()) {
 			search_paths.emplace_back(custom_python_binary);
 		} else {

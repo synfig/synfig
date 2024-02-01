@@ -385,7 +385,7 @@ write_auth_file (int add_entries)
     if (auth_file == NULL)
 	return FALSE;
 
-    home = getenv ("HOME");
+    home = DEBUG_GETENV ("HOME");
     if (home == NULL)
     {
 	auth_file = NULL;
@@ -515,14 +515,14 @@ start_client (void)
 
     case 0:				/* child */
 	/* cd $HOME */
-	tem = getenv ("HOME");
+	tem = DEBUG_GETENV ("HOME");
 	if (tem != NULL)
 	    chdir (tem);
 
 	/* Setup environment */
 
 	setenv ("DISPLAY", server_name, TRUE);
-	tem = getenv ("PATH");
+	tem = DEBUG_GETENV ("PATH");
 	if (tem != NULL && tem[0] != NULL)
 	    snprintf (buf, sizeof (buf), "%s:/usr/X11R6/bin", tem);
 	else
@@ -537,7 +537,7 @@ start_client (void)
 #else
 	/* First look for .xinitrc in user's home directory. */
 
-	tem = getenv ("HOME");
+	tem = DEBUG_GETENV ("HOME");
 	if (tem != NULL)
 	{
 	    snprintf (buf, sizeof (buf), "%s/.xinitrc", tem);

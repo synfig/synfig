@@ -24,6 +24,7 @@
 /* ========================================================================= */
 
 /* === H E A D E R S ======================================================= */
+#define LOGGING_ENABLED
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -415,7 +416,7 @@ synfigapp::Main::set_state(synfig::String state)
 synfig::filesystem::Path
 synfigapp::Main::get_user_app_directory()
 {
-	std::string dir = Glib::getenv("SYNFIG_USER_SETTINGS");
+	std::string dir = Glib::DEBUG_GETENV("SYNFIG_USER_SETTINGS");
 	if (!dir.empty()) {
 		return filesystem::Path(dir);
 	}

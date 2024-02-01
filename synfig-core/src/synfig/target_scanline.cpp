@@ -26,7 +26,7 @@
 /* ========================================================================= */
 
 /* === H E A D E R S ======================================================= */
-
+#define LOGGING_ENABLED
 #ifdef USING_PCH
 #	include "pch.h"
 #else
@@ -70,7 +70,7 @@ Target_Scanline::Target_Scanline()
 	  pixel_rendering_limit_(DEFAULT_PIXEL_RENDERING_LIMIT)
 {
 	curr_frame_=0;
-	if (const char *s = getenv("SYNFIG_TARGET_DEFAULT_ENGINE"))
+	if (const char *s = DEBUG_GETENV("SYNFIG_TARGET_DEFAULT_ENGINE"))
 		set_engine(s);
 }
 
