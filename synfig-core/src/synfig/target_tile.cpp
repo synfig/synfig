@@ -26,7 +26,6 @@
 /* ========================================================================= */
 
 /* === H E A D E R S ======================================================= */
-#define LOGGING_ENABLED
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -88,7 +87,7 @@ Target_Tile::Target_Tile():
 	clipping_(true)
 {
 	curr_frame_=0;
-	if (const char *s = DEBUG_GETENV("SYNFIG_TARGET_DEFAULT_ENGINE"))
+	if (const char *s = getenv("SYNFIG_TARGET_DEFAULT_ENGINE"))
 		set_engine(s);
 }
 

@@ -25,7 +25,6 @@
 /* ========================================================================= */
 
 /* === H E A D E R S ======================================================= */
-#define LOGGING_ENABLED
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -171,7 +170,7 @@ Importer::get_frame(const RendDesc & /* renddesc */, const Time &time)
 		return nullptr;
 	}
 
-	const char *s = DEBUG_GETENV("SYNFIG_PACK_IMAGES");
+	const char *s = getenv("SYNFIG_PACK_IMAGES");
 	if (s == nullptr || atoi(s) != 0)
 		last_surface_ = new rendering::SurfaceSWPacked();
 	else

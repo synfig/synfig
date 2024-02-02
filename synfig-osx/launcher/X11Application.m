@@ -45,8 +45,6 @@
 #undef BOOL
 
 #include "xf86Version.h"
-#define LOGGING_ENABLED
-#include <general.h>
 
 #include <mach/mach.h>
 #include <unistd.h>
@@ -849,7 +847,7 @@ check_xinitrc (void)
     if ([X11App prefs_get_boolean:@PREFS_DONE_XINIT_CHECK default:NO])
 	return;
 
-    tem = DEBUG_GETENV ("HOME");
+    tem = getenv("HOME");
     if (tem == NULL)
 	goto done;
 

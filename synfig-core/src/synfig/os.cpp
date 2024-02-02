@@ -25,7 +25,6 @@
 /* ========================================================================= */
 
 /* === H E A D E R S ======================================================= */
-#define LOGGING_ENABLED
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -767,7 +766,7 @@ OS::get_user_lang()
 		return language_list;
 
 	{
-		const char* lang_env = DEBUG_GETENV("LANGUAGE");
+		const char* lang_env = getenv("LANGUAGE");
 		std::string language_list_str = lang_env ? trim(lang_env) : "";
 		if (!language_list_str.empty()) {
 			std::string::size_type pos = 0, prev_pos = 0;
@@ -787,7 +786,7 @@ OS::get_user_lang()
 	}
 
 	{
-		const char* lang_env = DEBUG_GETENV("LANG");
+		const char* lang_env = getenv("LANG");
 		std::string lang = lang_env ? trim(lang_env) : "";
 		if (!lang.empty()) {
 			// remove encoding info
@@ -844,7 +843,7 @@ OS::get_current_working_directory()
 #else
 
 	struct stat st;
-	if (char* pwd =  DEBUG_GETENV("PWD")) {
+	if (char* pwd =  getenv("PWD")) {
 		if (stat(pwd, &st) == 0 && S_ISDIR(st.st_mode)) {
 			return filesystem::Path::from_native(pwd).lexically_normal();
 		}

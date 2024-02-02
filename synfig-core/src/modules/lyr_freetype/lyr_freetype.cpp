@@ -27,7 +27,6 @@
 ** ========================================================================= */
 
 /* === H E A D E R S ======================================================= */
-#define LOGGING_ENABLED
 
 #define SYNFIG_LAYER
 
@@ -141,7 +140,7 @@ private:
 		config = FcInitLoadConfigAndFonts();
 #ifdef _WIN32
 		// Windows 10 (1809) Added local user fonts installed to C:\Users\%USERNAME%\AppData\Local\Microsoft\Windows\Fonts
-		std::string localdir = Glib::DEBUG_GETENV("LOCALAPPDATA");
+		std::string localdir = Glib::getenv("LOCALAPPDATA");
 		if (!localdir.empty()) {
 			localdir.append("\\Microsoft\\Windows\\Fonts\\");
 			FcConfigAppFontAddDir(config, (const FcChar8 *)localdir.c_str());
@@ -739,21 +738,21 @@ Layer_Freetype::get_possible_font_directories(const std::string& canvas_path)
 
 #ifdef _WIN32
 	// All users fonts
-	std::string windir = Glib::DEBUG_GETENV("windir");
+	std::string windir = Glib::getenv("windir");
 	if (windir.empty()) {
 		possible_font_directories.emplace_back("C:\\WINDOWS\\FONTS\\");
 	} else {
 		possible_font_directories.emplace_back(windir + "\\Fonts\\");
 	}
 	// Windows 10 (1809) Added local user fonts installed to C:\Users\%USERNAME%\AppData\Local\Microsoft\Windows\Fonts
-	std::string localdir = Glib::DEBUG_GETENV("LOCALAPPDATA");
+	std::string localdir = Glib::getenv("LOCALAPPDATA");
 	if (!localdir.empty()) {
 		possible_font_directories.emplace_back(localdir + "\\Microsoft\\Windows\\Fonts\\");
 	}
 #else
 
 #ifdef __APPLE__
-	std::string userdir = Glib::DEBUG_GETENV("HOME");
+	std::string userdir = Glib::getenv("HOME");
 	if (userdir.empty()) {
 		synfig::error(strprintf("Layer_Freetype: %s", _("Cannot retrieve user home folder")));
 	} else {

@@ -137,7 +137,6 @@
 #include <synfig/canvasfilenaming.h>
 #include <synfig/color.h>
 #include <synfig/filesystemnative.h>
-#define LOGGING_ENABLED
 #include <synfig/general.h>
 #include <synfig/layer.h>
 #include <synfig/loadcanvas.h>
@@ -2112,7 +2111,7 @@ App::apply_gtk_settings()
 {
 	Glib::RefPtr<Gtk::Settings> gtk_settings = Gtk::Settings::get_default();
 
-	const std::string theme_name = Glib::DEBUG_GETENV("SYNFIG_GTK_THEME");
+	const std::string theme_name = Glib::getenv("SYNFIG_GTK_THEME");
 	if (!theme_name.empty())
 		gtk_settings->property_gtk_theme_name() = theme_name;
 
@@ -2144,7 +2143,7 @@ void
 App::init_icon_themes()
 {
 	// If environment is not set then read theme name from preferences
-	if (Glib::DEBUG_GETENV("SYNFIG_ICON_THEME").empty()) {
+	if (Glib::getenv("SYNFIG_ICON_THEME").empty()) {
 		load_settings("pref.icon_theme_name");
 	}
 	auto icon_theme = Gtk::IconTheme::get_default();
@@ -2160,7 +2159,7 @@ App::get_icon_theme_name()
 	if (!icon_theme_name.empty())
 		return icon_theme_name;
 
-	auto env_icon_theme = Glib::DEBUG_GETENV("SYNFIG_ICON_THEME");
+	auto env_icon_theme = Glib::getenv("SYNFIG_ICON_THEME");
 	if (!env_icon_theme.empty()) {
 		return env_icon_theme;
 	}

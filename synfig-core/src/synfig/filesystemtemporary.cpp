@@ -24,7 +24,6 @@
 /* ========================================================================= */
 
 /* === H E A D E R S ======================================================= */
-#define LOGGING_ENABLED
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -81,9 +80,9 @@ filesystem::Path
 FileSystemTemporary::get_system_temporary_directory()
 {
     const char *tmpdir;
-	if (!(tmpdir = DEBUG_GETENV("TEMP")))
-	if (!(tmpdir = DEBUG_GETENV("TMP")))
-	if (!(tmpdir = DEBUG_GETENV("TMPDIR")))
+	if (!(tmpdir = getenv("TEMP")))
+	if (!(tmpdir = getenv("TMP")))
+	if (!(tmpdir = getenv("TMPDIR")))
     	 tmpdir = "/tmp";
     return String(tmpdir);
 }

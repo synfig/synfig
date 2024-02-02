@@ -24,7 +24,6 @@
 /* ========================================================================= */
 
 /* === H E A D E R S ======================================================= */
-#define LOGGING_ENABLED
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -54,7 +53,7 @@
 static void add_search_dir(const std::string& dir) {
 	lt_dladdsearchdir(dir.c_str());
 #ifdef _MSC_VER
-	const std::string path = Glib::DEBUG_GETENV("PATH");
+	const std::string path = Glib::getenv("PATH");
 	std::string new_path = path + ";" + dir;
 	Glib::setenv("PATH", new_path);
 #endif
@@ -72,19 +71,19 @@ synfig::Module::subsys_init(const std::string& prefix)
 
 	// user's synfig library path
 #ifdef _WIN32
-	std::string localappdata = Glib::DEBUG_GETENV("%LOCALAPPDATA%");
+	std::string localappdata = Glib::getenv("%LOCALAPPDATA%");
 	if (!localappdata.empty()) {
 		std::string user_module_path = localappdata + "/synfig/modules";
 		add_search_dir(user_module_path);
 	}
 #elif defined(__APPLE__)
-	std::string home = Glib::DEBUG_GETENV("HOME");
+	std::string home = Glib::getenv("HOME");
 	if (!home.empty())
 		add_search_dir(home + "/Library/Application Support/org.synfig.SynfigStudio/modules");
 
 	add_search_dir("/Library/Frameworks/synfig.framework/Resources/modules");
 #else
-	std::string home = Glib::DEBUG_GETENV("HOME");
+	std::string home = Glib::getenv("HOME");
 	if (!home.empty())
 		add_search_dir(home + "/.local/share/synfig/modules");
 #endif

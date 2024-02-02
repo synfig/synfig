@@ -26,7 +26,6 @@
 /* ========================================================================= */
 
 /* === H E A D E R S ======================================================= */
-#define LOGGING_ENABLED
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -136,7 +135,7 @@ synfig::get_build_date()
 
 	if (date_str[0] == 0) {
 		// https://reproducible-builds.org/specs/source-date-epoch/
-		if (char* source_date_epoch = DEBUG_GETENV("SOURCE_DATE_EPOCH")) {
+		if (char* source_date_epoch = getenv("SOURCE_DATE_EPOCH")) {
 			std::istringstream iss(source_date_epoch);
 			std::time_t t;
 			iss >> t;
@@ -344,11 +343,11 @@ synfig::Main::Main(const synfig::String& rootpath,ProgressCallback *cb):
 	std::vector<String> locations;
 
 	if(DEBUG_GETENV("SYNFIG_MODULE_LIST"))
-		locations.push_back(DEBUG_GETENV("SYNFIG_MODULE_LIST"));
+		locations.push_back(getenv("SYNFIG_MODULE_LIST"));
 	else
 	{
 		locations.push_back("./" MODULE_LIST_FILENAME);
-		const std::string home = Glib::DEBUG_GETENV("HOME");
+		const std::string home = Glib::getenv("HOME");
 		if (!home.empty()) {
 			locations.push_back(strprintf("%s/.local/share/synfig/%s", home.c_str(), MODULE_LIST_FILENAME));
 		}
@@ -364,7 +363,7 @@ synfig::Main::Main(const synfig::String& rootpath,ProgressCallback *cb):
 		locations.push_back("/Library/Frameworks/synfig.framework/Resources/" MODULE_LIST_FILENAME);
 		locations.push_back("/Library/Synfig/" MODULE_LIST_FILENAME);
 		if(DEBUG_GETENV("HOME"))
-			locations.push_back(strprintf("%s/Library/Synfig/%s", DEBUG_GETENV("HOME"), MODULE_LIST_FILENAME));
+			locations.push_back(strprintf("%s/Library/Synfig/%s", getenv("HOME"), MODULE_LIST_FILENAME));
 	#endif
 	}
 

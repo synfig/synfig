@@ -46,9 +46,6 @@
 #include <gui/resourcehelper.h>
 
 #include <synfig/version.h>
-#define LOGGING_ENABLED
-#include <synfig/general.h>
-
 #include <vector>
 
 #endif
@@ -321,7 +318,7 @@ About::About()
 		char date_str[max_date_length];
 
 		// https://reproducible-builds.org/specs/source-date-epoch/
-		if (char* source_date_epoch = DEBUG_GETENV("SOURCE_DATE_EPOCH")) {
+		if (char* source_date_epoch = getenv("SOURCE_DATE_EPOCH")) {
 			std::istringstream iss(source_date_epoch);
 			std::time_t t;
 			iss >> t;

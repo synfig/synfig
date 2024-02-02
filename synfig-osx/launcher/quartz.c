@@ -31,8 +31,6 @@
  * use or other dealings in this Software without prior written authorization.
  */
 /* $XFree86: xc/programs/Xserver/hw/darwin/quartz/quartz.c,v 1.1 2002/03/28 02:21:18 torrey Exp $ */
-#define LOGGING_ENABLED
-#include<general.h>
 
 #include "quartz.h"
 #include "darwin.h"
@@ -414,14 +412,14 @@ do_exec (void (*callback) (void *data), void *data)
 	    open ("/dev/null", O_RDONLY);
 
 	    /* cd $HOME */
-	    tem = DEBUG_GETENV ("HOME");
+	    tem = getenv ("HOME");
 	    if (tem != NULL)
 		chdir (tem);
 
 	    /* Setup environment */
 	    snprintf (buf, sizeof (buf), ":%s", display);
 	    setenv ("DISPLAY", buf, TRUE);
-	    tem = DEBUG_GETENV ("PATH");
+	    tem = getenv ("PATH");
 	    if (tem != NULL && tem[0] != NULL)
 		snprintf (buf, sizeof (buf), "%s:/usr/X11R6/bin", tem);
 	    else
@@ -456,7 +454,7 @@ QuartzRunClient (const char *command)
     const char *shell;
     const char *argv[5];
 
-    shell = DEBUG_GETENV ("SHELL");
+    shell = getenv ("SHELL");
     if (shell == NULL)
 	shell = "/bin/bash";
 

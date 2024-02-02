@@ -24,7 +24,6 @@
 /* ========================================================================= */
 
 /* === H E A D E R S ======================================================= */
-#define LOGGING_ENABLED
 
 #ifdef USING_PCH
 #	include "pch.h"
@@ -41,7 +40,6 @@
 
 #include "packedsurface.h"
 
-#include <synfig/general.h>
 #include <synfig/real.h>
 #include <synfig/zstreambuf.h>
 
@@ -405,8 +403,8 @@ PackedSurface::set_pixels(const Color *pixels, int width, int height, int pitch)
 	row_size = width * pixel_size;
 
 	const char *s;
-	bool gzip = (s = DEBUG_GETENV("SYNFIG_PACK_IMAGES_GZIP")) && atoi(s) != 0;
-	bool split = (s = DEBUG_GETENV("SYNFIG_PACK_IMAGES_SPLIT")) && atoi(s) != 0;
+	bool gzip = (s = getenv("SYNFIG_PACK_IMAGES_GZIP")) && atoi(s) != 0;
+	bool split = (s = getenv("SYNFIG_PACK_IMAGES_SPLIT")) && atoi(s) != 0;
 
 	if (pixel_size == 0) {
 		// do nothing
