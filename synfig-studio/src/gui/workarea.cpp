@@ -1031,7 +1031,6 @@ bool
 WorkArea::on_key_release_event(GdkEventKey* event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
-	const float radius((std::fabs(pw)+std::fabs(ph))*4);
 	rotate_guide = false;
 	auto event_result = canvas_view->get_smach().process_event(
 		EventKeyboard(EVENT_WORKAREA_KEY_UP, event->keyval, Gdk::ModifierType(event->state)) );
@@ -1040,11 +1039,11 @@ WorkArea::on_key_release_event(GdkEventKey* event)
 
 	if (event->keyval == GDK_KEY_Escape && guide_highlighted)
 	{
+		const float radius((std::fabs(pw)+std::fabs(ph))*4);
 		get_guide_list().erase(curr_guide);
 		drawing_area->queue_draw();
 		GuideList::iterator iter = find_guide(get_cursor_pos(), radius);
 		curr_guide = iter;
-		drawing_area->queue_draw();
 		guide_highlighted = iter != get_guide_list().end();
 	}
 
