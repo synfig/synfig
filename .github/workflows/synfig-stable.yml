@@ -34,20 +34,16 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-
-      - name: Prepare ccache timestamp
-        id: ccache_timestamp
-        run: echo "::set-output name=timestamp::`date "+%Y%m%d-%H%M%S"`"
+      - uses: actions/checkout@v4
 
       - name: Download ccache archive
-        id: ccache-archive
-        uses: actions/cache@v3
+        id: ccache-archive-restore
+        uses: actions/cache/restore@v4
         with:
           path: .ccache
-          key: ${{ matrix.os }}-ccache-${{ matrix.toolchain }}-${{ steps.ccache_timestamp.outputs.timestamp }}
+          key: synfig-ccache-${{ matrix.os }}-${{ matrix.toolchain }}
           restore-keys:
-            ${{ matrix.os }}-ccache-${{ matrix.toolchain }}-
+            synfig-ccache-${{ matrix.os }}-${{ matrix.toolchain }}
 
       - name: Install dependencies (Brew)
         if: runner.os == 'macOS'
@@ -78,3 +74,12 @@ jobs:
 
       - name: ccache statistics
         run: ccache --show-stats
+
+      - name: Save cache (only for master branch)
+        id: ccache-archive-save
+        if: github.ref_name == 'master'
+        uses: actions/cache/save@v4
+        with:
+          path: .ccache
+          key: synfig-ccache-${{ matrix.os }}-${{ matrix.toolchain }}
+

@@ -1,9 +1,10 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file gui/localization.h
-**	\brief Localization
+/*!	\file mptr_magickpp.h
+**	\brief Header for Magick++ Importer (magickpp_mptr)
 **
 **	\legal
-**	Copyright (c) 2007 Paul Wise
+**	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
+**	Copyright (c) 2024      Synfig Contributors
 **
 **	This file is part of Synfig.
 **
@@ -20,39 +21,51 @@
 **	You should have received a copy of the GNU General Public License
 **	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
-*/
-/* ========================================================================= */
+**
+** ========================================================================= */
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIGSTUDIO_LOCALIZATION_H
-#define __SYNFIGSTUDIO_LOCALIZATION_H
+#ifndef SYNFIG_MPTR_MAGICKPP_H
+#define SYNFIG_MPTR_MAGICKPP_H
 
 /* === H E A D E R S ======================================================= */
 
-#ifdef ENABLE_NLS
-#include <libintl.h>
-#endif
+#include <synfig/importer.h>
+#include <synfig/surface.h>
 
 /* === M A C R O S ========================================================= */
-
-#ifdef ENABLE_NLS
-#define _(x) gettext(x)
-#define gettext_noop(x) x
-#define N_(x) gettext_noop(x)
-#define _n(x,y,n) ngettext(x, y, n)
-#else
-#define _(x) (x)
-#define N_(x) (x)
-#define _n(x,y,n) (y)
-#endif
 
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-inline const char* synfiggui_localize(const char *x)
-	{ return _(x); }
+/**
+ * Import static images, animated images or, possibly, videos
+ * by using Magick++ library
+ */
+class magickpp_mptr : public synfig::Importer
+{
+	SYNFIG_IMPORTER_MODULE_EXT
+
+public:
+	magickpp_mptr(const synfig::FileSystem::Identifier& identifier);
+
+	~magickpp_mptr();
+
+	bool is_animated() override;
+
+	bool get_frame(synfig::Surface& surface, const synfig::RendDesc& renddesc, synfig::Time time, synfig::ProgressCallback* callback) override;
+
+private:
+	// Info for animations
+	/** number of repetitions. Zero means infinity */
+	ssize_t animation_repetitions_;
+	/** Initial time of each frame */
+	std::vector<synfig::Time> frame_time_list_;
+	/** Total duration of an animation cycle */
+	synfig::Time animation_length_;
+};
 
 /* === E N D =============================================================== */
 

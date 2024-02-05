@@ -33,9 +33,11 @@
 
 #include <gtkmm/builder.h>
 #include <gtkmm/dialog.h>
+#include <gtkmm/listbox.h>
+#include <gtkmm/liststore.h>
 #include <gtkmm/treestore.h>
 
-#include <synfig/canvas.h>
+#include <synfigapp/canvasinterface.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -54,20 +56,24 @@ class Dialog_CanvasDependencies : public Gtk::Dialog
 	const Glib::RefPtr<Gtk::Builder> builder;
 
 	Glib::RefPtr<Gtk::TreeStore> external_canvas_model;
-	Glib::RefPtr<Gtk::TreeStore> external_resource_model;
-	Gtk::Label * canvas_filepath_label;
+	Glib::RefPtr<Gtk::ListStore> external_resource_model;
+	Gtk::Label* canvas_filepath_label;
+	Gtk::ListBox* resources_listbox;
 
 	synfig::Canvas::Handle canvas;
+	etl::handle<synfigapp::CanvasInterface> canvas_interface;
 
 public:
 	Dialog_CanvasDependencies(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Builder>& refGlade);
-	static Dialog_CanvasDependencies * create(Gtk::Window& parent);
+	static Dialog_CanvasDependencies* create(Gtk::Window& parent);
 	virtual ~Dialog_CanvasDependencies();
 
-	void set_canvas(synfig::Canvas::Handle canvas);
+	void set_canvas_interface(etl::handle<synfigapp::CanvasInterface> canvas_interface);
 
 private:
 	void refresh();
+
+	void on_replace_button_pressed(const synfig::filesystem::Path& filename, const std::map<std::pair<synfig::Layer::LooseHandle, std::string>, int>& parameter_list, int is_dynamic);
 };
 
 };

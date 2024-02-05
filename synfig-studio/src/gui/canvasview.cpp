@@ -3658,7 +3658,8 @@ CanvasView::show_dependencies() const
 		synfig::warning("Can't load Dialog_CanvasDependencies");
 		return;
 	}
-	dialog->set_canvas(get_canvas());
+	dialog->set_modal();
+	dialog->set_canvas_interface(canvas_interface_);
 	dialog->run();
 	delete dialog;
 }

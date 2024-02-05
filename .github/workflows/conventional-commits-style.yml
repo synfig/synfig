@@ -16,14 +16,14 @@ jobs:
     name: Conventional commits style check
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Install conventional commits linter
         run: npm install --save-dev @commitlint/config-conventional @commitlint/cli
 
       - name: Configure commitlint
         run: |
-          echo "module.exports = {extends: ['@commitlint/config-conventional']}" > commitlint.config.js
+          echo "module.exports = {extends: ['@commitlint/config-conventional'], rules: {'subject-case': [0, 'never']}}" > commitlint.config.js
 
       - name: Lint current pull request title
         run: jq --raw-output ".pull_request.title" "$GITHUB_EVENT_PATH" | npx commitlint --verbose
