@@ -55,6 +55,8 @@
 
 #include <synfig/valuenodes/valuenode_bline.h>
 
+#include "random.h"
+
 #endif
 
 /* === M A C R O S ========================================================= */

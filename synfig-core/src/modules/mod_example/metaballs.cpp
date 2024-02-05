@@ -38,8 +38,7 @@
 #include <synfig/string.h>
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
-#include <synfig/renddesc.h>
-#include <synfig/surface.h>
+#include <synfig/rendering/software/task/taskpaintpixelsw.h>
 #include <synfig/value.h>
 
 #include "metaballs.h"
@@ -60,9 +59,79 @@ SYNFIG_LAYER_SET_VERSION(Metaballs,"0.1");
 
 /* === P R O C E D U R E S ================================================= */
 
-/* === M E T H O D S ======================================================= */
+class TaskMetaballs: public rendering::Task
+{
+public:
+	typedef etl::handle<TaskMetaballs> Handle;
+	SYNFIG_EXPORT static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
 
-/* === E N T R Y P O I N T ================================================= */
+	std::vector<synfig::Point> centers;
+	std::vector<synfig::Real> radii;
+	std::vector<synfig::Real> weights;
+	synfig::Real threshold;
+	synfig::Real threshold2;
+	bool positive;
+	Gradient gradient;
+};
+
+
+class TaskMetaballsSW: public TaskMetaballs, public rendering::TaskPaintPixelSW
+{
+public:
+	typedef etl::handle<TaskMetaballs> Handle;
+	SYNFIG_EXPORT static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
+
+	Color get_color(const Vector& p) const override
+	{
+		return gradient(totaldensity(p));
+	}
+
+	bool run(RunParams&) const override {
+		return run_task();
+	}
+
+	Real
+	densityfunc(const Point& p, const Point& c, Real R) const
+	{
+		const Real dx = p[0] - c[0];
+		const Real dy = p[1] - c[1];
+
+		const Real n = (1 - (dx*dx + dy*dy)/(R*R));
+		if (positive && n < 0)
+			return 0;
+		return n*n*n;
+
+		/*
+		f(d) = (1 - d^2)^3
+		f'(d) = -6d * (1 - d^2)^2
+
+		could use this too...
+		f(d) = (1 - d^2)^2
+		f'(d) = -6d * (1 - d^2)
+		*/
+	}
+
+	Real
+	totaldensity(const Point& pos) const
+	{
+		Real density = 0;
+
+		//sum up weighted functions
+		for (unsigned int i = 0; i < centers.size(); i++)
+			density += weights[i] * densityfunc(pos, centers[i], radii[i]);
+
+		return (density - threshold) / (threshold2 - threshold);
+	}
+};
+
+SYNFIG_EXPORT rendering::Task::Token TaskMetaballs::token(
+	DescAbstract<TaskMetaballs>("Metaballs") );
+SYNFIG_EXPORT rendering::Task::Token TaskMetaballsSW::token(
+	DescReal<TaskMetaballsSW, TaskMetaballs>("MetaballsSW") );
+
+/* === M E T H O D S ======================================================= */
 
 Metaballs::Metaballs():
 	Layer_Composite(1.0,Color::BLEND_COMPOSITE),
@@ -223,39 +292,17 @@ Metaballs::get_color(Context context, const Point &pos)const
 }
 
 
-
-bool
-Metaballs::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+rendering::Task::Handle
+Metaballs::build_composite_task_vfunc(ContextParams /*context_params*/) const
 {
-	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
+	TaskMetaballs::Handle task(new TaskMetaballs());
+	task->centers = param_centers.get_list_of(synfig::Point());
+	task->radii = param_radii.get_list_of(synfig::Real());
+	task->weights = param_weights.get_list_of(synfig::Real());
+	task->threshold = param_threshold.get(Real());
+	task->threshold2 = param_threshold2.get(Real());
+	task->gradient = param_gradient.get(Gradient());
+	task->positive = param_positive.get(bool());
 
-	Gradient gradient=param_gradient.get(Gradient());
-	
-	// Width and Height of a pixel
-	const Point /*br(renddesc.get_br()),*/ tl(renddesc.get_tl());
-	const int 	 w(renddesc.get_w()), 	h(renddesc.get_h());
-	const Real	pw(renddesc.get_pw()), ph(renddesc.get_ph());
-
-	SuperCallback supercb(cb,0,9000,10000);
-
-	Point pos(tl[0],tl[1]);
-
-	if(!context.accelerated_render(surface,quality,renddesc,&supercb))
-	{
-		if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
-		return false;
-	}
-
-	for(int y = 0; y < h; y++, pos[1] += ph)
-	{
-		pos[0] = tl[0];
-		for(int x = 0; x < w; x++, pos[0] += pw)
-			(*surface)[y][x] = Color::blend(gradient(totaldensity(pos)),(*surface)[y][x],get_amount(),get_blend_method());
-	}
-
-	// Mark our progress as finished
-	if(cb && !cb->amount_complete(10000,10000))
-		return false;
-
-	return true;
+	return task;
 }

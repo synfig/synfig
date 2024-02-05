@@ -34,6 +34,11 @@
 
 #include <resourcehelper.h>
 
+#include <glibmm/fileutils.h>
+#include <glibmm/markup.h>
+
+#include <synfig/general.h>
+
 #include <gui/app.h>
 
 #endif
@@ -131,4 +136,30 @@ synfig::String studio::ResourceHelper::get_css_path()
 synfig::String studio::ResourceHelper::get_css_path(const synfig::String& css_filename)
 {
 	return get_css_path() + '/' + css_filename;
+}
+
+Glib::RefPtr<Gtk::Builder>
+studio::ResourceHelper::load_interface(const synfig::String& ui_filename)
+{
+	auto refBuilder = Gtk::Builder::create();
+	try
+	{
+		refBuilder->add_from_file(ResourceHelper::get_ui_path(ui_filename));
+	}
+	catch(const Glib::FileError& ex)
+	{
+		synfig::error("FileError: " + ex.what());
+		return Glib::RefPtr<Gtk::Builder>();
+	}
+	catch(const Glib::MarkupError& ex)
+	{
+		synfig::error("MarkupError: " + ex.what());
+		return Glib::RefPtr<Gtk::Builder>();
+	}
+	catch(const Gtk::BuilderError& ex)
+	{
+		synfig::error("BuilderError: " + ex.what());
+		return Glib::RefPtr<Gtk::Builder>();
+	}
+	return refBuilder;
 }

@@ -18,13 +18,13 @@
 	<string>SynfigStudio</string>
 
 	<key>CFBundleGetInfoString</key>
-	<string>_VERSION_, © 2001-2023 Synfig developers &#38; contributors</string>
+	<string>_VERSION_, © 2001-2024 Synfig developers &#38; contributors</string>
 	<key>CFBundleShortVersionString</key>
 	<string>_VERSION_</string>
 	<key>CFBundleVersion</key>
 	<string>_VERSION_</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>© 2001-2023 Synfig developers &#38; contributors</string>
+	<string>© 2001-2024 Synfig developers &#38; contributors</string>
 	<key>CFBundleIconFile</key>
 	<string>SynfigStudio</string>
 	<key>CFBundleDocumentTypes</key>

@@ -371,7 +371,7 @@ StateDraw_Context::load_settings()
 
 		set_opacity(settings.get_value("draw.opacity", 1.0));
 
-		set_bline_width(settings.get_value("draw.bline_width", Distance("1px")));
+		set_bline_width(settings.get_value("draw.bline_width", Distance("1px")).as(App::distance_system, get_canvas()->rend_desc()));
 
 		set_pressure_width_flag(settings.get_value("draw.pressure_width", true));
 
@@ -395,7 +395,7 @@ StateDraw_Context::load_settings()
 
 		set_min_pressure(settings.get_value("draw.min_pressure", 0.0));
 
-		set_feather_size(settings.get_value("draw.feather", Distance("0px")));
+		set_feather_size(settings.get_value("draw.feather", Distance("0px")).as(App::distance_system, get_canvas()->rend_desc()));
 
 		set_gthres(settings.get_value("draw.gthreshold", 0.7));
 

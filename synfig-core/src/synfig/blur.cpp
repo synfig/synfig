@@ -50,20 +50,20 @@ using namespace synfig;
 
 /* === M A C R O S ========================================================= */
 
-#ifdef __has_cpp_attribute
+#if defined(__has_cpp_attribute)
 # if __has_cpp_attribute(fallthrough)
 #  define fallthrough__ [[fallthrough]]
-# elif __has_cpp_attribute(noreturn)
-[[noreturn]] void fake_fallthrough___() {}
-#  define fallthrough__ fake_falthrough___()
 # endif
 #endif
+
 #ifndef fallthrough__
-# if __has_attribute(__fallthrough__)
-#  define fallthrough__ __attribute__((__fallthrough__))
-#else
-# define fallthrough__ do {} while (0)  /* fallthrough */
-#endif
+# if __GNUC__ >= 7
+#  define fallthrough__ __attribute__((fallthrough))
+# elif __clang__
+#  define fallthrough__ [[clang::fallthrough]]
+# else
+#  define fallthrough__ ((void)0)
+# endif
 #endif
 
 /* === G L O B A L S ======================================================= */

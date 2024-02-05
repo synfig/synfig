@@ -47,7 +47,6 @@
 #include <synfig/surface.h>
 #include <synfig/value.h>
 #include <synfig/valuenode.h>
-#include <synfig/segment.h>
 
 #include <cstring>
 

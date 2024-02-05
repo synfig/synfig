@@ -35,20 +35,6 @@
 #endif
 
 #include "value.h"
-#include "general.h"
-#include <synfig/localization.h>
-#include "canvas.h"
-#include "valuenodes/valuenode_bone.h"
-#include "gradient.h"
-#include "matrix.h"
-#include "transformation.h"
-
-
-
-#include "vector.h"
-#include "time.h"
-#include "segment.h"
-#include "color.h"
 
 #endif
 

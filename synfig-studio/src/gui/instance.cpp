@@ -400,7 +400,7 @@ studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vec
 
 	backup(true);
 	FileSystemTemporary::Handle temporary_filesystem = FileSystemTemporary::Handle::cast_dynamic(get_canvas()->get_file_system());
-	String tmp_filename = temporary_filesystem->get_temporary_directory() + ETL_DIRECTORY_SEPARATOR + temporary_filesystem->get_temporary_filename_base();
+	filesystem::Path tmp_filename = temporary_filesystem->get_temporary_directory() / temporary_filesystem->get_temporary_filename_base();
 
 	Time cur_time;
 	cur_time = canvas->get_time();

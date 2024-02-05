@@ -234,8 +234,12 @@ synfig::Main::Main(const synfig::String& rootpath,ProgressCallback *cb):
 	// Add initialization after this point
 
 #ifdef _MSC_VER
-	String module_location = get_binary_path("");
-	_putenv(strprintf("FONTCONFIG_PATH=%s/../../etc/fonts", module_location.c_str()).c_str());
+	{
+		synfig::filesystem::Path module_location = synfig::OS::get_binary_path();
+		synfig::filesystem::Path fontconfig_path = module_location.append("../../etc/fonts").cleanup();
+		std::basic_string<wchar_t> envstring = L"FONTCONFIG_PATH=" + fontconfig_path.native();
+		_wputenv(envstring.c_str());
+	}
 	_putenv("FONTCONFIG_FILE=fonts.conf");
 #endif
 

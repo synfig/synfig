@@ -36,6 +36,7 @@
 #include <vector>
 
 #include <synfig/filesystem_path.h>
+#include <synfig/localization.h>
 
 /* === M A C R O S ========================================================= */
 

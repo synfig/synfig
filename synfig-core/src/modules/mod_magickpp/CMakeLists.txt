@@ -1,5 +1,6 @@
 add_library(mod_magickpp MODULE
         "${CMAKE_CURRENT_LIST_DIR}/main.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/mptr_magickpp.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/trgt_magickpp.cpp"
 )
 

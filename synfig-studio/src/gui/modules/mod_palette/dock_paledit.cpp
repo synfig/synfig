@@ -133,7 +133,7 @@ Dock_PalEdit::Dock_PalEdit():
 		"palette-add-color",
 		"list-add",
 		_("Add Color"),
-		_("Add current outline color\nto the palette")
+		_("Add current fill color\nto the palette")
 	),
 		sigc::mem_fun(
 			*this,
@@ -229,7 +229,7 @@ Dock_PalEdit::set_palette(const synfig::Palette& x)
 void
 Dock_PalEdit::on_add_pressed()
 {
-	add_color(synfigapp::Main::get_outline_color());
+	add_color(synfigapp::Main::get_fill_color());
 }
 
 void
@@ -388,6 +388,11 @@ void
 Dock_PalEdit::refresh()
 {
 	const int width(12);
+
+	// Free table children from memory
+	std::vector<Widget*> children = table.get_children();
+	for(Widget* child : children)
+		delete child;
 
 	// Clear the table
 	table.foreach(sigc::mem_fun(table,&Gtk::Table::remove));
