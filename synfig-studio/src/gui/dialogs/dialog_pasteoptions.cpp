@@ -22,9 +22,6 @@
 
 #include "dialog_pasteoptions.h"
 
-#include <glibmm/fileutils.h>
-#include <glibmm/markup.h>
-
 #include <gtkmm/cellrenderertext.h>
 #include <gtkmm/cellrenderertoggle.h>
 #include <gtkmm/icontheme.h>
@@ -39,30 +36,6 @@
 
 using namespace synfig;
 using namespace studio;
-
-static Glib::RefPtr<Gtk::Builder> load_interface() {
-	auto refBuilder = Gtk::Builder::create();
-	try
-	{
-		refBuilder->add_from_file(ResourceHelper::get_ui_path("dialog_pasteoptions.glade"));
-	}
-	catch(const Glib::FileError& ex)
-	{
-		synfig::error("FileError: " + ex.what());
-		return Glib::RefPtr<Gtk::Builder>();
-	}
-	catch(const Glib::MarkupError& ex)
-	{
-		synfig::error("MarkupError: " + ex.what());
-		return Glib::RefPtr<Gtk::Builder>();
-	}
-	catch(const Gtk::BuilderError& ex)
-	{
-		synfig::error("BuilderError: " + ex.what());
-		return Glib::RefPtr<Gtk::Builder>();
-	}
-	return refBuilder;
-}
 
 static ValueNode::LooseHandle find_valuenode_by_id(const std::vector<ValueNode::LooseHandle>& list, std::string id)
 {
@@ -108,7 +81,7 @@ Dialog_PasteOptions::Dialog_PasteOptions(Gtk::Dialog::BaseObjectType* cobject, c
 
 std::shared_ptr<Dialog_PasteOptions> Dialog_PasteOptions::create(Gtk::Window& parent)
 {
-	auto refBuilder = load_interface();
+	auto refBuilder = ResourceHelper::load_interface("dialog_pasteoptions.glade");
 	if (!refBuilder)
 		return nullptr;
 	Dialog_PasteOptions * dialog_ptr = nullptr;

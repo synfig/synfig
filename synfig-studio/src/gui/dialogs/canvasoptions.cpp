@@ -34,9 +34,6 @@
 
 #include "canvasoptions.h"
 
-#include <glibmm/fileutils.h> // Glib::FileError
-#include <glibmm/markup.h> // Glib::MarkupError
-
 #include <gui/canvasview.h>
 #include <gui/localization.h>
 #include <gui/resourcehelper.h>
@@ -58,30 +55,6 @@ using namespace studio;
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
-
-static Glib::RefPtr<Gtk::Builder> load_interface() {
-	auto refBuilder = Gtk::Builder::create();
-	try
-	{
-		refBuilder->add_from_file(ResourceHelper::get_ui_path("canvas_options.glade"));
-	}
-	catch(const Glib::FileError& ex)
-	{
-		synfig::error("FileError: " + ex.what());
-		return Glib::RefPtr<Gtk::Builder>();
-	}
-	catch(const Glib::MarkupError& ex)
-	{
-		synfig::error("MarkupError: " + ex.what());
-		return Glib::RefPtr<Gtk::Builder>();
-	}
-	catch(const Gtk::BuilderError& ex)
-	{
-		synfig::error("BuilderError: " + ex.what());
-		return Glib::RefPtr<Gtk::Builder>();
-	}
-	return refBuilder;
-}
 
 void CanvasOptions::set_canvas_view(CanvasView* canvas_view)
 {
@@ -129,7 +102,7 @@ CanvasOptions::CanvasOptions(BaseObjectType* cobject, const Glib::RefPtr<Gtk::Bu
 
 CanvasOptions* CanvasOptions::create(Gtk::Window& parent, CanvasView* canvas_view)
 {
-	auto refBuilder = load_interface();
+	auto refBuilder = ResourceHelper::load_interface("canvas_options.glade");
 	if (!refBuilder)
 		return nullptr;
 	CanvasOptions * dialog = nullptr;

@@ -42,6 +42,7 @@
 #include <gtkmm/grid.h>
 #include <gtkmm/image.h>
 #include <gtkmm/spinbutton.h>
+#include <gtkmm/comboboxtext.h>
 
 namespace studio
 {
@@ -65,6 +66,7 @@ class CanvasResize : public Gtk::Dialog
 	Gtk::CheckButton *rsz_im_chbox;
 
 	Widget_Link *toggle_ratio_wh;
+	Gtk::ComboBoxText *combo_box;
 
 	//    0  1  2
 	//    3  4  5    3x3 grid button indexes
@@ -109,6 +111,7 @@ class CanvasResize : public Gtk::Dialog
 	void on_action_signal_response(int response_id);
 	void on_width_changed();
 	void on_height_changed();
+	void on_size_template_changed();
 	void on_canvas_button_clicked(Gtk::Button *button);
 
 	bool on_image_label_enter_event(GdkEventCrossing *event);

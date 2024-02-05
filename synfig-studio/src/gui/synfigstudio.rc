@@ -15,7 +15,7 @@ BEGIN
             VALUE "FileDescription",  "Vector animation program" 
             VALUE "FileVersion",      "${STUDIO_VERSION}" 
             VALUE "InternalName",     "synfigstudio" 
-            VALUE "LegalCopyright",   " (c) Synfig developers & contributors 2001-2023"
+            VALUE "LegalCopyright",   " (c) Synfig developers & contributors 2001-2024"
             VALUE "OriginalFilename", "synfigstudio.exe" 
             VALUE "ProductName",      "synfigstudio.exe" 
             VALUE "ProductVersion",   "${STUDIO_VERSION}" 

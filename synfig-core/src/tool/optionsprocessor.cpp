@@ -671,7 +671,7 @@ Job SynfigCommandLineParser::extract_job()
 			if (FileSystem::Handle file_system = CanvasFileNaming::make_filesystem(job.filename.u8string()))
 			{
 				FileSystem::Identifier identifier = file_system->get_identifier(CanvasFileNaming::project_file(job.filename.u8string()));
-				job.root = open_canvas_as(identifier, job.filename.u8string(), errors, warnings);
+				job.root = open_canvas_as(identifier, filesystem::absolute(job.filename).u8string(), errors, warnings);
 			}
 			else
 			{

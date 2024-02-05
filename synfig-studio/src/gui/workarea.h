@@ -289,7 +289,7 @@ private:
 	*/
 
 	void set_drag_mode(DragMode mode);
-
+	void cancel_drag_on_mBtn_press();
 	void set_active_bone_value_node(synfig::ValueNode::LooseHandle x);
 
 public:

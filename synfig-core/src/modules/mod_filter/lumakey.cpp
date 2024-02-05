@@ -45,7 +45,6 @@
 #include <synfig/renddesc.h>
 #include <synfig/surface.h>
 #include <synfig/value.h>
-#include <synfig/segment.h>
 
 #endif
 

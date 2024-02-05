@@ -1,11 +1,10 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file outline.h
-**	\brief Header file for implementation of the "Outline" layer
+/*!	\file mptr_magickpp.h
+**	\brief Header for Magick++ Importer (magickpp_mptr)
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
-**	Copyright (c) 2012-2013 Carlos López
-**	......... ... 2018-2019 Ivan Mahonin
+**	Copyright (c) 2024      Synfig Contributors
 **
 **	This file is part of Synfig.
 **
@@ -22,20 +21,18 @@
 **	You should have received a copy of the GNU General Public License
 **	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
-*/
-/* ========================================================================= */
+**
+** ========================================================================= */
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_OUTLINE_H
-#define __SYNFIG_OUTLINE_H
+#ifndef SYNFIG_MPTR_MAGICKPP_H
+#define SYNFIG_MPTR_MAGICKPP_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <list>
-#include <vector>
-#include <synfig/layers/layer_shape.h>
-#include <synfig/value.h>
+#include <synfig/importer.h>
+#include <synfig/surface.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -43,40 +40,31 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class Outline : public synfig::Layer_Shape
+/**
+ * Import static images, animated images or, possibly, videos
+ * by using Magick++ library
+ */
+class magickpp_mptr : public synfig::Importer
 {
-	SYNFIG_LAYER_MODULE_EXT
-private:
-	//! Parameter: type list of BLinePoints
-	synfig::ValueBase param_bline;
-	//! Parameter: (bool)
-	synfig::ValueBase param_round_tip[2];
-	//! Parameter: (bool)
-	synfig::ValueBase param_sharp_cusps;
-	//! Parameter: (bool)
-	synfig::ValueBase param_loop;
-	//! Parameter: (Real)
-	synfig::ValueBase param_width;
-	//! Parameter: (Real)
-	synfig::ValueBase param_expand;
-	//! Parameter: (bool)
-	synfig::ValueBase param_homogeneous_width;
-
-	bool old_version;
+	SYNFIG_IMPORTER_MODULE_EXT
 
 public:
-	Outline();
+	magickpp_mptr(const synfig::FileSystem::Identifier& identifier);
 
-	virtual bool set_shape_param(const synfig::String & param, const synfig::ValueBase &value);
-	virtual synfig::ValueBase get_param(const synfig::String & param)const;
-	virtual Vocab get_param_vocab()const;
-	virtual bool set_version(const synfig::String &ver)
-		{ if (ver=="0.1") old_version = true; return true; }
-	virtual void reset_version()
-		{ old_version = false; }
+	~magickpp_mptr();
 
-protected:
-	virtual void sync_vfunc();
+	bool is_animated() override;
+
+	bool get_frame(synfig::Surface& surface, const synfig::RendDesc& renddesc, synfig::Time time, synfig::ProgressCallback* callback) override;
+
+private:
+	// Info for animations
+	/** number of repetitions. Zero means infinity */
+	ssize_t animation_repetitions_;
+	/** Initial time of each frame */
+	std::vector<synfig::Time> frame_time_list_;
+	/** Total duration of an animation cycle */
+	synfig::Time animation_length_;
 };
 
 /* === E N D =============================================================== */

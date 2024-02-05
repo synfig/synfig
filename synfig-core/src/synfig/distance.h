@@ -91,6 +91,7 @@ public:
 	Real get(System system, const RendDesc& rend_desc)const;
 
 	void convert(System system, const RendDesc& rend_desc);
+	Distance as(System system, const RendDesc& rend_desc) const;
 
 	Real meters()const;
 	Real meters(const RendDesc& rend_desc)const;

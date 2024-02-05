@@ -305,7 +305,7 @@ bool Instance::save_surface(const synfig::Surface &surface, const synfig::String
 		return false;
 
 	ext.erase(0, 1);
-	String tmpfile = FileSystemTemporary::generate_system_temporary_filename("surface");
+	filesystem::Path tmpfile = FileSystemTemporary::generate_system_temporary_filename("surface");
 
 	Target_Scanline::Handle target =
 		Target_Scanline::Handle::cast_dynamic(
@@ -330,9 +330,9 @@ bool Instance::save_surface(const synfig::Surface &surface, const synfig::String
 	if (success)
 		success = get_canvas()->get_file_system()->directory_create(filesystem::Path::dirname(filename));
 	if (success)
-		success = FileSystem::copy(FileSystemNative::instance(), tmpfile, get_canvas()->get_file_system(), filename);
+		success = FileSystem::copy(FileSystemNative::instance(), tmpfile.u8string(), get_canvas()->get_file_system(), filename);
 
-	FileSystemNative::instance()->file_remove(tmpfile);
+	FileSystemNative::instance()->file_remove(tmpfile.u8string());
 
 	return success;
 }

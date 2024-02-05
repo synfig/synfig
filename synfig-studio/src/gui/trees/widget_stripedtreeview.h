@@ -1,11 +1,10 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file outline.h
-**	\brief Header file for implementation of the "Outline" layer
+/*!	\file widget_stripedtreeview.h
+**	\brief Base class for TreeView widget with striped rows
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
-**	Copyright (c) 2012-2013 Carlos López
-**	......... ... 2018-2019 Ivan Mahonin
+**	Copyright (c) 2023 Synfig contributors
 **
 **	This file is part of Synfig.
 **
@@ -27,15 +26,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_OUTLINE_H
-#define __SYNFIG_OUTLINE_H
+#ifndef SYNFIG_STUDIO_WIDGETSTRIPEDTREEVIEW_H
+#define SYNFIG_STUDIO_WIDGETSTRIPEDTREEVIEW_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <list>
-#include <vector>
-#include <synfig/layers/layer_shape.h>
-#include <synfig/value.h>
+#include <gtkmm/treeview.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -43,42 +39,25 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-class Outline : public synfig::Layer_Shape
+namespace studio {
+
+/**
+ * A TreeView that allows CSS to alternate row colors.
+ *
+ * This ability is broken in native Gtk.
+ * https://gitlab.gnome.org/GNOME/gtk/-/issues/581
+ *
+ * Css classes "even" and "odd" are used to define the background colors. *
+ */
+class Widget_StripedTreeView : public Gtk::TreeView
 {
-	SYNFIG_LAYER_MODULE_EXT
-private:
-	//! Parameter: type list of BLinePoints
-	synfig::ValueBase param_bline;
-	//! Parameter: (bool)
-	synfig::ValueBase param_round_tip[2];
-	//! Parameter: (bool)
-	synfig::ValueBase param_sharp_cusps;
-	//! Parameter: (bool)
-	synfig::ValueBase param_loop;
-	//! Parameter: (Real)
-	synfig::ValueBase param_width;
-	//! Parameter: (Real)
-	synfig::ValueBase param_expand;
-	//! Parameter: (bool)
-	synfig::ValueBase param_homogeneous_width;
-
-	bool old_version;
-
 public:
-	Outline();
-
-	virtual bool set_shape_param(const synfig::String & param, const synfig::ValueBase &value);
-	virtual synfig::ValueBase get_param(const synfig::String & param)const;
-	virtual Vocab get_param_vocab()const;
-	virtual bool set_version(const synfig::String &ver)
-		{ if (ver=="0.1") old_version = true; return true; }
-	virtual void reset_version()
-		{ old_version = false; }
+	Widget_StripedTreeView();
 
 protected:
-	virtual void sync_vfunc();
+	bool on_draw(const ::Cairo::RefPtr<::Cairo::Context>& cr) override;
 };
 
-/* === E N D =============================================================== */
+}
 
-#endif
+#endif // SYNFIG_STUDIO_WIDGETSTRIPEDTREEVIEW_H

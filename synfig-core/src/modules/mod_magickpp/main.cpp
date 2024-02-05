@@ -4,6 +4,7 @@
 **
 **	\legal
 **	Copyright (c) 2007, 2008 Chris Moore
+**	Copyright (c) 2024       Synfig Contributors
 **
 **	This file is part of Synfig.
 **
@@ -37,6 +38,7 @@
 #include <synfig/general.h>
 
 #include <synfig/module.h>
+#include "mptr_magickpp.h"
 #include "trgt_magickpp.h"
 #endif
 
@@ -46,7 +48,7 @@ MODULE_DESC_BEGIN(mod_magickpp)
 	MODULE_NAME("Magick++ Module (libMagick++)")
 	MODULE_DESCRIPTION("Provides an animated GIF target")
 	MODULE_AUTHOR("Chris Moore")
-	MODULE_VERSION("1.0")
+	MODULE_VERSION("2.0")
 	MODULE_COPYRIGHT(SYNFIG_COPYRIGHT)
 MODULE_DESC_END
 
@@ -216,4 +218,36 @@ MODULE_INVENTORY_BEGIN(mod_magickpp)
 		TARGET_EXT(magickpp_trgt, "ycbcra")
 		TARGET_EXT(magickpp_trgt, "yuv")
 	END_TARGETS
+
+	BEGIN_IMPORTERS
+		IMPORTER_EXT(magickpp_mptr,"jpg")
+		IMPORTER_EXT(magickpp_mptr,"jpeg")
+		IMPORTER_EXT(magickpp_mptr,"png")
+		IMPORTER_EXT(magickpp_mptr,"bmp")
+		IMPORTER_EXT(magickpp_mptr,"gif")
+		IMPORTER_EXT(magickpp_mptr,"pcx")
+		IMPORTER_EXT(magickpp_mptr,"tif")
+		IMPORTER_EXT(magickpp_mptr,"tiff")
+		IMPORTER_EXT(magickpp_mptr,"tga")
+		IMPORTER_EXT(magickpp_mptr,"ps")
+		IMPORTER_EXT(magickpp_mptr,"pdf")
+		IMPORTER_EXT(magickpp_mptr,"pgm")
+		IMPORTER_EXT(magickpp_mptr,"psd")
+		IMPORTER_EXT(magickpp_mptr,"xcf")
+		IMPORTER_EXT(magickpp_mptr,"svg")
+		IMPORTER_EXT(magickpp_mptr,"tim")
+		IMPORTER_EXT(magickpp_mptr,"xpm")
+		IMPORTER_EXT(magickpp_mptr,"miff")
+		IMPORTER_EXT(magickpp_mptr,"ico")
+		IMPORTER_EXT(magickpp_mptr,"eps")
+		IMPORTER_EXT(magickpp_mptr,"ttf")
+		IMPORTER_EXT(magickpp_mptr,"pix")
+		IMPORTER_EXT(magickpp_mptr,"rla")
+		IMPORTER_EXT(magickpp_mptr,"mat")
+		IMPORTER_EXT(magickpp_mptr,"html")
+		IMPORTER_EXT(magickpp_mptr,"ept")
+		IMPORTER_EXT(magickpp_mptr,"dcm")
+		IMPORTER_EXT(magickpp_mptr,"fig")
+		IMPORTER_EXT(magickpp_mptr,"webp")
+	END_IMPORTERS
 MODULE_INVENTORY_END

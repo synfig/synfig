@@ -40,6 +40,7 @@
 
 #include <glibmm/miscutils.h>
 
+#include <synfig/general.h>
 #include <synfig/os.h>
 
 # ifdef _WIN32
@@ -95,6 +96,138 @@ filesystem::Path
 filesystem::Path::from_native(const string_type& native_path)
 {
 	return Path(native_to_utf8(native_path));
+}
+
+filesystem::Path
+filesystem::Path::from_uri(const std::string& uri)
+{
+	if (uri.empty())
+		return {};
+
+	if (uri.size() >= 5 && uri.compare(0, 5, "file:") != 0) {
+		synfig::warning("String is not a file URI \"%s\"", uri.c_str());
+		return {};
+	}
+
+	bool is_unc_auth = false;
+	bool is_file_auth = false;
+
+	auto auth_pos = std::string::npos;
+	auto path_absolute_pos = std::string::npos;
+
+	std::string auth;
+
+	if (uri.size() >= 9 && uri.compare(5, 4, "////") == 0) { // "file:////"
+		is_unc_auth = true;
+
+		if (uri.size() >= 10 && uri[9] == '/') // "file://///"
+			auth_pos = 10;
+		else
+			auth_pos = 9;
+	} else if (uri.size() >= 7 && uri.compare(5, 2, "//") == 0) { // "file://"
+		is_file_auth = true;
+
+		auth_pos = 7;
+	}
+
+	if (!is_file_auth && !is_unc_auth) {
+		path_absolute_pos = 5;
+	} else {
+		path_absolute_pos = uri.find('/', auth_pos);
+
+		if (path_absolute_pos == std::string::npos) {
+			synfig::warning("URI has authority part \"%s\", but does not have the file absolute path in URI \"%s\"", uri.substr(auth_pos).c_str(), uri.c_str());
+			return {};
+		}
+
+		auth = uri.substr(auth_pos, path_absolute_pos - auth_pos);
+	}
+
+
+	std::string drive_letter;
+
+	if (!is_unc_auth) {
+		auto get_drive_letter = [] (const char* str) -> char {
+			if (str[1] == ':' || str[1] == '|') {
+				char letter = str[0];
+				if ((letter >= 'A' && letter <= 'Z') || (letter >= 'a' && letter <= 'z')) {
+					//return letter < 'Z' ? letter : (letter - 'a' + 'A');
+					return letter;
+				}
+			}
+			return 0;
+		};
+
+		if (path_absolute_pos + 3 < uri.size()) {
+			if (uri[path_absolute_pos] == '/') {
+				char letter = get_drive_letter(&uri[path_absolute_pos+1]);
+				if (letter) {
+					drive_letter.push_back(letter);
+					drive_letter.push_back(':');
+					path_absolute_pos += 3;
+				}
+			}
+		}
+		if (drive_letter.empty() && !is_file_auth && path_absolute_pos + 2 < uri.size()) {
+			char letter = get_drive_letter(&uri[path_absolute_pos]);
+			if (letter) {
+				drive_letter.push_back(letter);
+				drive_letter.push_back(':');
+				path_absolute_pos += 2;
+			}
+		}
+	}
+
+	// Just for safety, eliminate (improbable) query and fragment components
+	auto path_absolute_end_pos = uri.size();
+	{
+		auto query_pos = uri.find('?', path_absolute_end_pos);
+		if (query_pos != std::string::npos) {
+			path_absolute_end_pos = query_pos;
+		} else {
+			auto fragment_pos = uri.find('#', path_absolute_end_pos);
+			if (fragment_pos != std::string::npos) {
+				path_absolute_end_pos = fragment_pos;
+			}
+		}
+	}
+	// Decode percent-encoding
+	std::string file_absolute;
+
+	for (auto p = path_absolute_pos; p < path_absolute_end_pos; ++p) {
+		if (uri[p] != '%') {
+			file_absolute.push_back(uri[p]);
+		} else {
+			if (p + 2 < path_absolute_end_pos) {
+				// decode char
+				char c1 = uri[++p];
+				char c2 = uri[++p];
+				if (c1 >= '0' && c1 <= '9')
+					c1 -= '0';
+				else
+					c1 -= (c1 >= 'a') ? 'a' : 'A';
+				if (c1 < 0 || c1 > 15) {
+					break;
+				}
+				if (c2 >= '0' && c2 <= '9')
+					c2 -= '0';
+				else
+					c2 -= (c2 >= 'a') ? 'a' : 'A';
+				if (c2 < 0 || c2 > 15) {
+					break;
+				}
+				file_absolute.push_back(c1 << 4 | c2);
+			} else {
+				break;
+			}
+		}
+	}
+
+	if (!auth.empty() && auth != "localhost") { // section 2 says "localhost" is interpreted exactly as if no authority were present
+		return Path{"\\\\" + auth + (!drive_letter.empty() ? '/' + drive_letter : "") + file_absolute};
+	} else {
+		return Path{drive_letter + file_absolute};
+	}
 }
 
 filesystem::Path&
@@ -415,7 +548,7 @@ filesystem::Path::lexically_proximate(const Path& base) const
 		return *this;
 	return rel;
 }
-#include <synfig/general.h>
+
 filesystem::Path
 filesystem::Path::proximate_to(const Path& base) const
 {

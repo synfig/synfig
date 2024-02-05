@@ -1469,7 +1469,7 @@ void App::init(const synfig::String& rootpath)
 	}
 
 	// paths
-	String path_to_icons = ResourceHelper::get_icon_path();
+	filesystem::Path path_to_icons = ResourceHelper::get_icon_path();
 
 	String path_to_plugins = ResourceHelper::get_plugin_path();
 
@@ -1541,7 +1541,7 @@ void App::init(const synfig::String& rootpath)
 
 	// icons
 	init_icon_themes();
-	init_icons(path_to_icons + ETL_DIRECTORY_SEPARATOR);
+	init_icons(path_to_icons);
 
 	try
 	{
@@ -3529,7 +3529,7 @@ App::wrap_into_temporary_filesystem(
 	std::string as,
 	synfig::FileContainerZip::file_size_t truncate_storage_size )
 {
-	FileSystemTemporary::Handle temporary_file_system = new FileSystemTemporary("instance", get_temporary_directory().u8string(), canvas_file_system);
+	FileSystemTemporary::Handle temporary_file_system = new FileSystemTemporary("instance", get_temporary_directory(), canvas_file_system);
 	temporary_file_system->set_meta("filename", filename);
 	temporary_file_system->set_meta("as", as);
 	temporary_file_system->set_meta("truncate", synfig::strprintf("%lld", truncate_storage_size));
@@ -3546,7 +3546,7 @@ App::open(filesystem::Path filename, /* std::string as, */ synfig::FileContainer
 	std::vector<wchar_t> long_name;
 	long_name.resize(buf_size);
 	long_name[0] = 0;
-	if (GetLongPathNameW(filename.c_str(), long_name.data(), sizeof(long_name)) == 0)
+	if (GetLongPathNameW(filename.c_str(), long_name.data(), long_name.size()) == 0)
 		;
 	// when called from autorecover.cpp, filename doesn't exist, and so long_name is empty
 	// don't use it if that's the case
@@ -3654,7 +3654,7 @@ App::open_from_temporary_filesystem(const filesystem::Path& temporary_filename)
 
 		// try open temporary container
 		FileSystemTemporary::Handle file_system_temporary(new FileSystemTemporary(""));
-		if (!file_system_temporary->open_temporary(temporary_filename.u8string()))
+		if (!file_system_temporary->open_temporary(temporary_filename))
 			throw (String)strprintf(_("Unable to open temporary container \"%s\"\n\n"), temporary_filename.u8_str());
 
 		// get original filename

@@ -278,39 +278,26 @@ Dock_Toolbox::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& c
 	{
 		synfig::String selection_data((gchar *)(selection_data_.get_data()));
 
-		// For some reason, GTK hands us a list of URLs separated
-		// by not only Carriage-Returns, but also Line-Feeds.
-		// Line-Feeds will mess us up. Remove all the line-feeds.
-		while(selection_data.find_first_of('\r')!=synfig::String::npos)
-			selection_data.erase(selection_data.begin()+selection_data.find_first_of('\r'));
-
 		std::stringstream stream(selection_data);
 
 		while(stream)
 		{
-			synfig::String filename,URI;
-			getline(stream,filename);
+			synfig::String line;
+			getline(stream, line);
+
+			line = trim(line);
 
 			// If we don't have a filename, move on.
-			if(filename.empty())
+			if (line.empty())
 				continue;
 
-			// Make sure this URL is of the "file://" type.
-			URI=String(filename.begin(),filename.begin()+sizeof("file://")-1);
-			if(URI!="file://")
-			{
-				synfig::warning("Unknown URI (%s) in \"%s\"",URI.c_str(),filename.c_str());
-				continue;
-			}
+			filesystem::Path filename = filesystem::Path::from_uri(line);
 
-			// Strip the "file://" part from the filename
-			filename=synfig::String(filename.begin()+sizeof("file://")-1,filename.end());
-
-			synfig::info("Attempting to open "+filename);
+			synfig::info("Attempting to open %s", filename.u8_str());
 			if(App::open(filename))
 				success=true;
 			else
-				synfig::error("Drop failed: Unable to open "+filename);
+				synfig::error("Drop failed: Unable to open %s", filename.u8_str());
 		}
 	}
 	else

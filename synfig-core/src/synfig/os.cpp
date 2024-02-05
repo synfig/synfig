@@ -309,30 +309,15 @@ public:
 	int close() override
 	{
 		int status = 0;
-		if (child_STDIN_Read != INVALID_HANDLE_VALUE) {
-			CloseHandle(child_STDIN_Read);
-			child_STDIN_Read = INVALID_HANDLE_VALUE;
-		}
-		if (child_STDIN_Write != INVALID_HANDLE_VALUE) {
-			CloseHandle(child_STDIN_Write);
-			child_STDIN_Write = INVALID_HANDLE_VALUE;
-		}
+		close_and_invalidate_handle(child_STDIN_Read);
+		close_and_invalidate_handle(child_STDIN_Write);
 		if (read_file) {
 			fclose(read_file);
 			read_file = nullptr;
 		}
-		if (child_STDOUT_Write != INVALID_HANDLE_VALUE) {
-			CloseHandle(child_STDOUT_Write);
-			child_STDOUT_Write = INVALID_HANDLE_VALUE;
-		}
-		if (child_STDERR_Read != INVALID_HANDLE_VALUE) {
-			CloseHandle(child_STDERR_Read);
-			child_STDERR_Read = INVALID_HANDLE_VALUE;
-		}
-		if (child_STDERR_Write != INVALID_HANDLE_VALUE) {
-			CloseHandle(child_STDERR_Write);
-			child_STDERR_Write = INVALID_HANDLE_VALUE;
-		}
+		close_and_invalidate_handle(child_STDOUT_Write);
+		close_and_invalidate_handle(child_STDERR_Read);
+		close_and_invalidate_handle(child_STDERR_Write);
 
 		//WaitForSingleObject(hThread, INFINITE);
 		//CloseHandle(hThread);
@@ -434,6 +419,12 @@ private:
 		// If an error occurs, exit the application.
 		if (!bSuccess) {
 			synfig::error("synfig::OS::pipe: CreateProcess");
+
+			close_and_invalidate_handle(child_STDERR_Read);
+			close_and_invalidate_handle(child_STDERR_Write);
+			close_and_invalidate_handle(child_STDOUT_Write);
+			close_and_invalidate_handle(child_STDIN_Read);
+
 			return false;
 		}
 		// Close handles to the child process and its primary thread.
@@ -446,14 +437,18 @@ private:
 		// Close handles to the stdin and stdout pipes no longer needed by the child process.
 		// If they are not explicitly closed, there is no way to recognize that the child process has ended.
 
-		CloseHandle(child_STDERR_Write);
-		child_STDERR_Write = INVALID_HANDLE_VALUE;
-		CloseHandle(child_STDOUT_Write);
-		child_STDOUT_Write = INVALID_HANDLE_VALUE;
-		CloseHandle(child_STDIN_Read);
-		child_STDIN_Read = INVALID_HANDLE_VALUE;
+		close_and_invalidate_handle(child_STDERR_Write);
+		close_and_invalidate_handle(child_STDOUT_Write);
+		close_and_invalidate_handle(child_STDIN_Read);
 
 		return true;
+	}
+
+	void close_and_invalidate_handle(HANDLE& handle) {
+		if (handle != INVALID_HANDLE_VALUE) {
+			CloseHandle(handle);
+			handle = INVALID_HANDLE_VALUE;
+		}
 	}
 };
 #else

@@ -358,7 +358,7 @@ bool
 Settings::set_value(const synfig::String &key, const synfig::Distance &value)
 {
 	ChangeLocale change_locale(LC_NUMERIC, "C");
-	return set_value(key, value.get_string());
+	return set_value(key, value.get_string(8));
 }
 
 bool

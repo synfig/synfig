@@ -53,6 +53,10 @@ Support this project with your organization. Your logo will show up here with a 
 <a href="https://opencollective.com/synfig/organization/8/website"><img src="https://opencollective.com/synfig/organization/8/avatar.svg"></a>
 <a href="https://opencollective.com/synfig/organization/9/website"><img src="https://opencollective.com/synfig/organization/9/avatar.svg"></a>
 
+## SAST Tools
+
+[PVS-Studio](https://pvs-studio.com/pvs-studio/?utm_source=website&utm_medium=github&utm_campaign=open_source) - static analyzer for C, C++, C#, and Java code.
+
 ## License
 
 This project is licensed under the [GNU General Public License v3.0](https://github.com/synfig/synfig/blob/master/LICENSE).

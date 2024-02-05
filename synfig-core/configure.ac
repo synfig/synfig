@@ -13,6 +13,18 @@ AC_CANONICAL_HOST
 AM_INIT_AUTOMAKE([nostdinc subdir-objects])
 AM_MAINTAINER_MODE
 
+dnl SUPPRESSED_CPPFLAGS=SUPPRESS_WARNINGS([$SOME_CPPFLAGS])
+dnl Replace -I with -isystem in $SOME_CPPFLAGS to suppress warnings from
+dnl headers from its include directories and return the result.
+dnl See -isystem documentation:
+dnl https://gcc.gnu.org/onlinedocs/gcc/Directory-Options.html
+dnl https://clang.llvm.org/docs/ClangCommandLineReference.html#cmdoption-clang-isystem-directory
+dnl Do not change "-I/usr/include" to "-isystem /usr/include" because that
+dnl is not necessary (/usr/include is already a system directory) and because
+dnl it would break GCC's #include_next.
+AC_DEFUN([SUPPRESS_WARNINGS],
+         [$(echo $1 |${SED} -E -e 's/(^| )-I/\1-isystem /g' -e 's;-isystem /usr/include([/ ]|$);-I/usr/include\1;g')])
+
 dnl override platform specific check for dependent libraries
 dnl otherwise libtool linking of shared libraries will
 dnl fail on anything other than pass_all.
@@ -349,6 +361,7 @@ PKG_CHECK_MODULES(GIOMM, [giomm-2.4 >= 2.18.2],[
 
 PKG_CHECK_MODULES(LIBXMLPP, libxml++-2.6,[
 	CONFIG_DEPS="$CONFIG_DEPS libxml++-2.6"
+	LIBXMLPP_CFLAGS=SUPPRESS_WARNINGS($LIBXMLPP_CFLAGS)
 ],[
 	PKG_CHECK_MODULES(LIBXMLPP, libxml++-1.0,[
 		CONFIG_DEPS="$CONFIG_DEPS libxml++-1.0"

@@ -53,8 +53,8 @@
 #include <hb-ft.h>
 #endif
 
-#include <synfig/canvasfilenaming.h>
 #include <synfig/context.h>
+#include <synfig/filesystemnative.h>
 #include <synfig/general.h>
 #include <synfig/localization.h>
 #include <synfig/rendering/common/task/taskcontour.h>
@@ -198,71 +198,144 @@ struct FontMeta {
 	}
 };
 
-struct FaceInfo {
-	FT_Face face = nullptr;
-#if HAVE_HARFBUZZ
-	hb_font_t *font = nullptr;
-#endif
+/**
+ * Map font filenames or font metadata to their FreeType faces
+ */
+struct FaceCache
+{
+	FaceCache() = default;
 
-	FaceInfo() = default;
-	explicit FaceInfo(FT_Face ft_face)
-		: face(ft_face)
-	{
-#if HAVE_HARFBUZZ
-		font = hb_ft_font_create(face, nullptr);
-#endif
-	}
-};
-
-/// Cache font faces for speeding up the text layer rendering
-class FaceCache {
-	std::map<FontMeta, FaceInfo> cache;
-	mutable std::mutex cache_mutex;
-	FaceCache() = default; // Make constructor private to prevent instancing
-public:
-	FaceInfo get(const FontMeta &meta) const {
-		std::lock_guard<std::mutex> lock(cache_mutex);
-		auto iter = cache.find(meta);
-		if (iter != cache.end())
+	/**
+	 * Get the Face associated to @a meta.
+	 *
+	 * Returned value should not not be freed.
+	 * If you want to remove it from cache, use remove().
+	 */
+	FT_Face get(const FontMeta& meta) const {
+		std::lock_guard<std::mutex> lock(cache_mutex_);
+		auto iter = meta_cache_.find(meta);
+		if (iter != meta_cache_.end())
 			return iter->second;
-		return FaceInfo();
+		return nullptr;
 	}
 
-	void put(const FontMeta &meta, FaceInfo face) {
-		std::lock_guard<std::mutex> lock(cache_mutex);
-		cache[meta] = face;
+	/**
+	 * Get the Face associated to @a path.
+	 *
+	 * Returned value should not not be freed.
+	 * If you want to remove it from cache, use remove().
+	 */
+	FT_Face get(const filesystem::Path& path) const {
+		std::lock_guard<std::mutex> lock(cache_mutex_);
+		auto iter = file_cache_.find(path);
+		if (iter != file_cache_.end())
+			return iter->second;
+		return nullptr;
 	}
 
-	bool has(const FontMeta &meta) const {
-		std::lock_guard<std::mutex> lock(cache_mutex);
-		auto iter = cache.find(meta);
-		return iter != cache.end();
-	}
-
-	void clear() {
-		std::lock_guard<std::mutex> lock(cache_mutex);
-		for (const auto& item : cache) {
-			FT_Done_Face(item.second.face);
-#if HAVE_HARFBUZZ
-			hb_font_destroy(item.second.font);
-#endif
+	void put(const FontMeta& meta, FT_Face face) {
+		if (!face) {
+			synfig::warning(_("Trying to cache a NULL face of font %s. Ignored."), meta.family.c_str());
+			return;
 		}
-		cache.clear();
+		std::lock_guard<std::mutex> lock(cache_mutex_);
+		meta_cache_[meta] = face;
 	}
 
-	static FaceCache& instance() {
-		static FaceCache obj;
-		return obj;
+	void put(const filesystem::Path& path, FT_Face face) {
+		if (!face) {
+			synfig::warning(_("Trying to cache a NULL face of font %s. Ignored."), path.u8_str());
+			return;
+		}
+		std::lock_guard<std::mutex> lock(cache_mutex_);
+		file_cache_[path] = face;
+	}
+
+	bool has(const FontMeta& meta) const {
+		std::lock_guard<std::mutex> lock(cache_mutex_);
+		auto iter = meta_cache_.find(meta);
+		return iter != meta_cache_.end();
+	}
+
+	bool has(const filesystem::Path& path) const {
+		std::lock_guard<std::mutex> lock(cache_mutex_);
+		auto iter = file_cache_.find(path);
+		return iter != file_cache_.end();
+	}
+
+	void remove(const FontMeta& meta) {
+		std::lock_guard<std::mutex> lock(cache_mutex_);
+		meta_cache_.erase(meta);
+	}
+
+	void remove(const filesystem::Path& path) {
+		std::lock_guard<std::mutex> lock(cache_mutex_);
+		file_cache_.erase(path);
+	}
+
+	void clear()
+	{
+		std::lock_guard<std::mutex> lock(cache_mutex_);
+		for (const auto& item : file_cache_)
+			FT_Done_Face(item.second);
+		file_cache_.clear();
+		meta_cache_.clear();
+	}
+
+	~FaceCache()
+	{
+		clear();
 	}
 
 	FaceCache(const FaceCache&) = delete; // Copy prohibited
 	void operator=(const FaceCache&) = delete; // Assignment prohibited
+	FaceCache(FaceCache&&) = delete; // Move constructor prohibited
 	FaceCache& operator=(FaceCache&&) = delete; // Move assignment prohibited
 
-	~FaceCache() {
-		clear();
+private:
+	std::map<filesystem::Path, FT_Face> file_cache_;
+	std::map<FontMeta, FT_Face> meta_cache_;
+	mutable std::mutex cache_mutex_;
+};
+
+/**
+ * Metadata to be stored in FT_Face->generic field
+ */
+struct FaceMetaData
+{
+	filesystem::Path path;
+#if HAVE_HARFBUZZ
+	hb_font_t* font{nullptr};
+#endif
+
+	static FaceMetaData&
+	get_from_face(FT_Face face)
+	{
+		return *static_cast<FaceMetaData*>(face->generic.data);
+	}
+
+	void
+	add_to_face(FT_Face face)
+	{
+		if (face->generic.data)
+			face->generic.finalizer(face);
+		face->generic.data = this;
+		face->generic.finalizer = FaceMetaData::self_destroy;
+	}
+
+private:
+	static void
+	self_destroy(void* object)
+	{
+		FT_Face face = static_cast<FT_Face>(object);
+		FaceMetaData* meta_data = static_cast<FaceMetaData*>(face->generic.data);
+        face->generic.data = nullptr;
+		hb_font_destroy(meta_data->font);
+		delete meta_data;
 	}
 };
+
+static FaceCache face_cache;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -490,18 +563,15 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 	if (get_canvas())
 		meta.canvas_path = get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR;
 
-	FaceCache &face_cache = FaceCache::instance();
-
 	{
-		FaceInfo face_info = face_cache.get(meta);
-		FT_Face tmp_face = face_info.face;
+		FT_Face tmp_face = face_cache.get(meta);
 		if (tmp_face) {
 			if (face != tmp_face)
 				need_sync |= SYNC_FONT;
 			face = tmp_face;
-	#if HAVE_HARFBUZZ
-			font = face_info.font;
-	#endif
+#if HAVE_HARFBUZZ
+			font = FaceMetaData::get_from_face(face).font;
+#endif
 			return true;
 		}
 	}
@@ -509,11 +579,7 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 	auto cache_face = [&](FT_Face face) {
 		if (!font_path_from_canvas)
 			meta.canvas_path.clear();
-		FaceInfo face_info(face);
-		face_cache.put(meta, FaceInfo(face));
-#if HAVE_HARFBUZZ
-		font = face_info.font;
-#endif
+		face_cache.put(meta, face);
 	};
 
 	if (has_valid_font_extension(font_fam_))
@@ -618,32 +684,35 @@ Layer_Freetype::new_face(const String &newfont)
 	if(face)
 		face = nullptr;
 
-	if (newfont.empty())
-		return false;
-
-	std::vector<const char *> possible_font_extensions = {""};
-
-	// if newfont doesn't have a known extension, try to append those extensions
-	if (! has_valid_font_extension(newfont))
-		possible_font_extensions.insert(possible_font_extensions.end(), known_font_extensions.begin(), known_font_extensions.end());
-
 	std::string canvas_path;
 	if (get_canvas())
 		canvas_path = get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR;
 
-	std::vector<std::string> possible_font_directories = get_possible_font_directories(canvas_path);
+	std::vector<std::string> filenames = get_possible_font_files(newfont, canvas_path);
 
-	for (const std::string& directory : possible_font_directories) {
-		for (const char *extension : possible_font_extensions) {
-			std::string path = (directory + newfont + extension);
-			error = FT_New_Face(ft_library, path.c_str(), face_index, &face);
-			if (!error) {
-				font_path_from_canvas = !canvas_path.empty() && directory == canvas_path;
-				break;
-			}
-		}
-		if (!error)
+	if (filenames.empty())
+		return false;
+
+	for (const std::string& path : filenames) {
+		filesystem::Path absolute_path = filesystem::absolute(path);
+		auto face_ptr = face_cache.get(absolute_path);
+		if (face_ptr) {
+			face = face_ptr;
 			break;
+		}
+		error = FT_New_Face(ft_library, path.c_str(), face_index, &face);
+		if (!error) {
+			face_cache.put(absolute_path, face);
+			FaceMetaData* data = new FaceMetaData();
+			data->path = path;
+#if HAVE_HARFBUZZ
+			data->font = hb_ft_font_create(face, nullptr);
+			this->font = data->font;
+#endif
+			data->add_to_face(face);
+			font_path_from_canvas = !canvas_path.empty() && path.compare(0, canvas_path.size(), canvas_path) == 0;
+			break;
+		}
 	}
 
 	if(error)
@@ -698,6 +767,36 @@ Layer_Freetype::get_possible_font_directories(const std::string& canvas_path)
 #endif
 
 	return possible_font_directories;
+}
+
+std::vector<std::string>
+Layer_Freetype::get_possible_font_files(const std::string& newfont, const synfig::filesystem::Path& canvas_path)
+{
+	std::vector<std::string> possible_files;
+
+	if (newfont.empty())
+		return possible_files;
+
+	std::vector<const char*> possible_font_extensions = {""};
+
+	// if newfont doesn't have a known extension, try to append those extensions
+	if (! has_valid_font_extension(newfont))
+		possible_font_extensions.insert(possible_font_extensions.end(), known_font_extensions.begin(), known_font_extensions.end());
+
+//	std::string canvas_path;
+//	if (get_canvas())
+//		canvas_path = get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR;
+
+	std::vector<std::string> possible_font_directories = get_possible_font_directories(canvas_path.u8string());
+
+	for (const std::string& directory : possible_font_directories) {
+		for (const char *extension : possible_font_extensions) {
+			std::string path = (directory + newfont + extension);
+			if (FileSystemNative::instance()->is_file(path))
+				possible_files.push_back(path);
+		}
+	}
+	return possible_files;
 }
 
 bool
