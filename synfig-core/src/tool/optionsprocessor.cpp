@@ -238,6 +238,8 @@ SynfigCommandLineParser::SynfigCommandLineParser() :
 	_allowed_video_codecs.push_back(VideoCodec("msmpeg4v2", "MPEG-4 part 2 Microsoft variant version 2."));
 	_allowed_video_codecs.push_back(VideoCodec("wmv1", "Windows Media Video 7."));
 	_allowed_video_codecs.push_back(VideoCodec("wmv2", "Windows Media Video 8."));
+	_allowed_video_codecs.push_back(VideoCodec("libvpx", "WebM VP8"));
+	_allowed_video_codecs.push_back(VideoCodec("libvpx-vp9", "WebM VP9"));
 
 }
 
