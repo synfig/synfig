@@ -67,6 +67,8 @@ static const std::map<const char*, const char*> known_video_codecs = {
 	{"msmpeg4v2",        _("MPEG-4 part 2 Microsoft variant version 2")},
 	{"wmv1",             _("Windows Media Video 7")},
 	{"wmv2",             _("Windows Media Video 8")},
+	{"libvpx",           _("WebM VP8")},
+	{"libvpx-vp9",       _("WebM VP9")},
 };
 
 /* === P R O C E D U R E S ================================================= */
