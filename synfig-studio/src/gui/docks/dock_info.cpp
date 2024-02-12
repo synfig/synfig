@@ -58,6 +58,8 @@ using namespace synfig;
 
 void studio::Dock_Info::on_mouse_move()
 {
+	if (!get_mapped())
+		return;
 	CanvasView::LooseHandle canvas_view(get_canvas_view());
 	if(!canvas_view) return;
 	Point pos = canvas_view->get_work_area()->get_cursor_pos();
@@ -197,6 +199,8 @@ studio::Dock_Info::Dock_Info()
 	set_n_passes_requested(1); //Default
 	set_n_passes_pending  (0); //Default
 	set_render_progress (0.0); //Default, 0.0%
+
+	signal_map().connect(sigc::mem_fun(*this, &Dock_Info::on_mouse_move));
 }
 
 studio::Dock_Info::~Dock_Info()
