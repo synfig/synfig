@@ -128,35 +128,45 @@ magickpp_mptr::get_frame(synfig::Surface& surface, const synfig::RendDesc& /*ren
 		const auto height = image.size().height();
 		surface.set_wh(width, height);
 
-		image.type(Magick::TrueColorType);
-// Sadly Magick++ API is a mess with namespaces...
-{
-	using namespace Magick;
-	using namespace MagickCore;
-
 #if MagickLibVersion >= 0x701 // MAGICKCORE_CHECK_VERSION(7,0,0) does not work!
-		bool has_alpha = image.alpha();
+		const bool has_alpha = image.alpha();
+		constexpr MagickCore::ImageType TrueColorAlphaType = Magick::TrueColorAlphaType;
 #else
-		bool has_alpha = image.matte();
+		const bool has_alpha = image.matte();
+		constexpr MagickCore::ImageType TrueColorAlphaType = Magick::TrueColorMatteType;
 #endif
+
+		if (has_alpha)
+			image.type(TrueColorAlphaType);
+		else
+			image.type(Magick::TrueColorType);
+
 		const auto packet = image.getConstPixels(0, 0, width, height);
 
 		if (!packet) {
 			synfig::error(_("Magick++ importer: couldn't get pixel packet"));
 			return false;
 		}
+// Sadly Magick++ API is a mess with namespaces...
+{
+	using namespace Magick;
+	using namespace MagickCore;
+
 
 		constexpr synfig::Color::value_type factor = QuantumRange;
 
 		for (size_t y = 0, i = 0; y < height; ++y) {
-			for (size_t x = 0; x < width; ++x, ++i) {
+			for (size_t x = 0; x < width; ++x) {
 #if MagickLibVersion >= 0x701 // MAGICKCORE_CHECK_VERSION(7,0,0) does not work!
-				if (has_alpha)
-					surface[y][x] = synfig::Color(packet[i++] / factor, packet[i++] / factor, packet[i++] / factor, packet[i] / factor);
-				else
-					surface[y][x] = synfig::Color(packet[i++] / factor, packet[i++] / factor, packet[i] / factor, 1.);
+				if (has_alpha) {
+					surface[y][x] = synfig::Color(packet[i] / factor, packet[i+1] / factor, packet[i+2] / factor, packet[i+3] / factor);
+					i += 4;
+				} else {
+					surface[y][x] = synfig::Color(packet[i] / factor, packet[i+1] / factor, packet[i+2] / factor, 1.);
+					i += 3;
+				}
 #else
-				const auto& color = packet[i];
+				const auto& color = packet[i++];
 				if (has_alpha)
 					surface[y][x] = synfig::Color(color.red / factor, color.green / factor, color.blue / factor, 1. - color.opacity / factor);
 				else
