@@ -54,17 +54,17 @@ if (LIBAVFORMAT_FOUND)
 endif()
 
 ## Magick++ support
-option(WITH_MAGICPP "Enable Magic++ module (output format support)" OFF)
-option(WITHOUT_MAGICPP "Disable Magic++ module (output format support)" OFF)
+option(WITH_MAGICKPP "Enable Magick++ module (output format support)" OFF)
+option(WITHOUT_MAGICKPP "Disable Magick++ module (output format support)" OFF)
 
-if (${WITH_MAGICPP} AND ${WITHOUT_MAGICPP})
-    message(FATAL_ERROR "You cannot request both WITH_MAGICPP and WITHOUT_MAGICPP!")
+if (${WITH_MAGICKPP} AND ${WITHOUT_MAGICKPP})
+    message(FATAL_ERROR "You cannot request both WITH_MAGICKPP and WITHOUT_MAGICKPP!")
 endif()
 
-if (NOT ${WITHOUT_MAGICPP} AND TARGET PkgConfig::MAGICKPP)
+if (NOT ${WITHOUT_MAGICKPP} AND TARGET PkgConfig::MAGICKPP)
     list(APPEND MODS_ENABLED mod_magickpp)
-elseif (${WITH_MAGICPP} AND NOT TARGET PkgConfig::MAGICKPP)
-    message(SEND_ERROR "Magic++ support is requested, but the package cannot be located.")
+elseif (${WITH_MAGICKPP} AND NOT TARGET PkgConfig::MAGICKPP)
+    message(SEND_ERROR "Magick++ support is requested, but the package cannot be located.")
 endif()
 ## Magick++ support (end)
 

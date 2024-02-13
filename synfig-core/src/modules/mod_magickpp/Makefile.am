@@ -19,7 +19,7 @@ module_LTLIBRARIES = libmod_magickpp.la
 libmod_magickpp_la_SOURCES = \
 	main.cpp \
 	mptr_magickpp.cpp \
-	mpte_magickpp.h \
+	mptr_magickpp.h \
 	trgt_magickpp.cpp \
 	trgt_magickpp.h
 
