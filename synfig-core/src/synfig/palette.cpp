@@ -431,3 +431,17 @@ Palette::load_from_file(const synfig::filesystem::Path& filename)
 
 	return ret;
 }
+
+bool
+Palette::is_color_present(const Color& color)
+{
+        iterator iter;
+
+	for(iter=begin();iter!=end();++iter)
+	{
+		if(iter->color == color)
+                    return true;
+	}
+        
+        return false;
+}
