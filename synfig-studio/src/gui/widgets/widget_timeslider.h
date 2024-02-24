@@ -83,7 +83,7 @@ protected: // implementation that other interfaces can see
 	virtual bool on_button_press_event(GdkEventButton *event); //for clicking
 	virtual bool on_button_release_event(GdkEventButton *event); //for clicking
 	virtual bool on_motion_notify_event(GdkEventMotion* event); //for dragging
-	virtual bool on_scroll_event(GdkEventScroll* event); //for zooming
+	virtual bool on_scroll_event(GdkEventScroll* event); //for moving timeline-bar
 	virtual bool on_leave_notify_event(GdkEventCrossing* event);
 	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 
