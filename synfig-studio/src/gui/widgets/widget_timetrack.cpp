@@ -966,7 +966,7 @@ bool Widget_Timetrack::fetch_waypoints(const WaypointItem &wi, std::set<synfig::
 		if (value_desc.is_value_node())
 			node = value_desc.get_value_node() ;
 		else if (value_desc.parent_is_layer() && value_desc.get_layer()->get_param(value_desc.get_param_name()).get_type() == synfig::type_canvas)
-			node = value_desc.get_canvas();
+			node = value_desc.get_layer()->get_param(value_desc.get_param_name()).get(synfig::Canvas::Handle());
 
 		if (node)
 			synfig::waypoint_collect(waypoint_set, wi.time_point.get_time(), node, true);
