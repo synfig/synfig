@@ -65,6 +65,7 @@ echo "Checking dependencies..."
 if ([ "$ID_LIKE" == "fedora" ] && [ "$VERSION_ID" > 22 ]); then
     PKG_LIST="git \
             intltool \
+            cmake \
             libpng-devel \
             libjpeg-devel \
             fftw-devel \
@@ -110,6 +111,7 @@ if ([ "$ID_LIKE" == "fedora" ] && [ "$VERSION_ID" > 22 ]); then
 elif ( [ "$ID_LIKE" == "fedora" ] && [ "$VERSION_ID" <= 22 ] ) || ( [ "$ID_LIKE" == "rhel centos fedora" ] ); then
     PKG_LIST="git \
             intltool \
+            cmake \
             libpng-devel \
             libjpeg-devel \
             fftw-devel \
@@ -198,6 +200,7 @@ elif [ -f /etc/altlinux-release ]; then
                 gcc-c++ \
                 git-core \
                 shared-mime-info \
+                cmake \
                 intltool \
                 gettext \
                 libjpeg-devel \
@@ -241,6 +244,7 @@ elif [ "$ID_LIKE" == "debian" ] || [ "$ID_LIKE" == "ubuntu" ] || [ "$ID_LIKE" ==
             #  Debian / Ubuntu
             PKG_LIST=" \
                 build-essential \
+                cmake \
                 autoconf automake autopoint \
                 shared-mime-info \
                 libltdl3-dev \
