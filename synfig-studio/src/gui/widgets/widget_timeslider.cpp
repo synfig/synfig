@@ -384,7 +384,7 @@ Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for dragging
 }
 
 bool
-Widget_Timeslider::on_scroll_event(GdkEventScroll* event) //for zooming
+Widget_Timeslider::on_scroll_event(GdkEventScroll* event) //for moving timeline-bar
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	etl::handle<TimeModel> &time_model = time_plot_data->time_model;
@@ -392,20 +392,26 @@ Widget_Timeslider::on_scroll_event(GdkEventScroll* event) //for zooming
 	if (!time_model || get_width() <= 0 || get_height() <= 0)
 		return false;
 
-	Time time = time_plot_data->get_t_from_pixel_coord(event->x);
+	Time time = time_model->get_time();
 
-	switch(event->direction) {
-	case GDK_SCROLL_UP: //zoom in
-		time_model->zoom(zoominfactor, time);
-		return true;
-	case GDK_SCROLL_DOWN: //zoom out
-		time_model->zoom(zoomoutfactor, time);
-		return true;
+//      modifies timeline-bar position, and scroll through the panel based on center
+	switch (event->direction)
+	{
+	case GDK_SCROLL_UP:
 	case GDK_SCROLL_RIGHT:
-		time_model->move_by(step);
+		time_model->set_time(time + step);
+		if (time >= time_model->get_visible_center())
+		{
+			time_model->move_by(step);
+		}
 		return true;
+	case GDK_SCROLL_DOWN:
 	case GDK_SCROLL_LEFT:
-		time_model->move_by(-step);
+		time_model->set_time(time - step);
+		if (time <= time_model->get_visible_center())
+		{
+			time_model->move_by(-step);
+		}
 		return true;
 	default:
 		break;
