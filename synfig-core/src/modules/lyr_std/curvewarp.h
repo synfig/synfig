@@ -27,15 +27,12 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_CURVEWARP_H
-#define __SYNFIG_CURVEWARP_H
+#ifndef SYNFIG_CURVEWARP_H
+#define SYNFIG_CURVEWARP_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <vector>
-#include <synfig/vector.h>
 #include <synfig/layer.h>
-#include <synfig/blinepoint.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -68,25 +65,27 @@ private:
 	//!Parameter: (bool)
 	ValueBase param_fast;
 
-	Vector perp_;
-	Real curve_length_;
-
 	void sync();
 
 public:
 	CurveWarp();
+	~CurveWarp();
 
-	virtual bool set_param(const String &param, const ValueBase &value);
-	virtual ValueBase get_param(const String &param)const;
-	virtual Point transform(const Point &point_, Real *dist=nullptr, Real *along=nullptr, int quality=10)const;
-	virtual Color get_color(Context context, const Point &pos)const;
-	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
-	Layer::Handle hit_check(Context context, const Point &point)const;
+	bool set_param(const String& param, const ValueBase& value) override;
+	ValueBase get_param(const String& param) const override;
+	Color get_color(Context context, const Point& pos) const override;
+	Layer::Handle hit_check(Context context, const Point& point) const override;
 
-	virtual Vocab get_param_vocab()const;
+	Vocab get_param_vocab() const override;
 
 protected:
-	virtual RendDesc get_sub_renddesc_vfunc(const RendDesc &renddesc) const;
+	rendering::Task::Handle build_rendering_task_vfunc(Context context) const override;
+
+public:
+	class Internal;
+
+private:
+	Internal* internal;
 };
 
 }; // END of namespace lyr_std

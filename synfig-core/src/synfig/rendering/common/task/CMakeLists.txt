@@ -3,6 +3,7 @@ target_sources(libsynfig
         "${CMAKE_CURRENT_LIST_DIR}/taskblend.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/taskblur.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/taskcontour.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/taskdistort.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/tasklayer.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/taskmesh.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/taskpixelprocessor.cpp"

@@ -36,12 +36,12 @@
 
 #include "curvewarp.h"
 
-#include <synfig/bezier.h>
+#include <synfig/blinepoint.h>
 #include <synfig/context.h>
 #include <synfig/localization.h>
-#include <synfig/paramdesc.h>
-#include <synfig/surface.h>
-#include <synfig/valuenode.h>
+
+#include <synfig/rendering/common/task/taskdistort.h>
+#include <synfig/rendering/software/task/taskdistortsw.h>
 
 #endif
 
@@ -51,22 +51,45 @@ using namespace lyr_std;
 
 /* === M A C R O S ========================================================= */
 
-#define FAKE_TANGENT_STEP 0.000001
-#define TOO_THIN 0.01
-
 /* === G L O B A L S ======================================================= */
 
 SYNFIG_LAYER_INIT(CurveWarp);
 SYNFIG_LAYER_SET_NAME(CurveWarp,"curve_warp");
 SYNFIG_LAYER_SET_LOCAL_NAME(CurveWarp,N_("Curve Warp"));
 SYNFIG_LAYER_SET_CATEGORY(CurveWarp,N_("Distortions"));
-SYNFIG_LAYER_SET_VERSION(CurveWarp,"0.0");
+SYNFIG_LAYER_SET_VERSION(CurveWarp,"0.1");
 
 /* === P R O C E D U R E S ================================================= */
 
-inline float calculate_distance(const std::vector<BLinePoint>& bline)
+/* === I N T E R N A L S =================================================== */
+
+struct CurveWarp::Internal
 {
-	std::vector<BLinePoint>::const_iterator iter,next/*,ret*/;
+	std::vector<BLinePoint> bline;
+	Point start_point;
+	Point end_point;
+	Point origin;
+	bool fast;
+	Real perp_width;
+
+	static constexpr double FAKE_TANGENT_STEP = 0.000001;
+	static constexpr double TOO_THIN = 0.01;
+
+	Point transform(const Point& point) const;
+	void sync();
+
+private:
+	Vector perp_;
+	Real curve_length_;
+
+	float calculate_distance() const;
+	std::vector<BLinePoint>::const_iterator find_closest_to_bline(const Point& p, float& t, float& len, bool& extreme) const;
+};
+
+float
+CurveWarp::Internal::calculate_distance() const
+{
+	std::vector<BLinePoint>::const_iterator iter, next;
 	std::vector<BLinePoint>::const_iterator end(bline.end());
 
 	float dist(0);
@@ -87,7 +110,7 @@ inline float calculate_distance(const std::vector<BLinePoint>& bline)
 }
 
 std::vector<BLinePoint>::const_iterator
-find_closest_to_bline(bool fast, const std::vector<BLinePoint>& bline,const Point& p,float& t, float& len, bool& extreme)
+CurveWarp::Internal::find_closest_to_bline(const Point& p,float& t, float& len, bool& extreme) const
 {
 	std::vector<BLinePoint>::const_iterator iter,next,ret;
 	std::vector<BLinePoint>::const_iterator end(bline.end());
@@ -149,53 +172,16 @@ find_closest_to_bline(bool fast, const std::vector<BLinePoint>& bline,const Poin
 	return ret;
 }
 
-/* === M E T H O D S ======================================================= */
-
-inline void
-CurveWarp::sync()
+void
+CurveWarp::Internal::sync()
 {
-	std::vector<BLinePoint> bline(param_bline.get_list_of(BLinePoint()));
-	Point start_point=param_start_point.get(Point());
-	Point end_point=param_end_point.get(Point());
-	
-	curve_length_=calculate_distance(bline);
+	curve_length_ = calculate_distance();
 	perp_ = (end_point - start_point).perp().norm();
 }
 
-CurveWarp::CurveWarp():
-	param_origin(ValueBase(Point(0,0))),
-	param_perp_width(ValueBase(Real(1))),
-	param_start_point(ValueBase(Point(-2.5,-0.5))),
-	param_end_point(ValueBase(Point(2.5,-0.3))),
-	param_bline(ValueBase(std::vector<BLinePoint>())),
-	param_fast(ValueBase(true))
+Point
+CurveWarp::Internal::transform(const Point &point_) const
 {
-	std::vector<BLinePoint> bline;
-	bline.push_back(BLinePoint());
-	bline.push_back(BLinePoint());
-	bline[0].set_vertex(Point(-2.5,0));
-	bline[1].set_vertex(Point( 2.5,0));
-	bline[0].set_tangent(Point(1,  0.1));
-	bline[1].set_tangent(Point(1, -0.1));
-	bline[0].set_width(1.0f);
-	bline[1].set_width(1.0f);
-	param_bline.set_list_of(bline);
-	sync();
-
-	SET_INTERPOLATION_DEFAULTS();
-	SET_STATIC_DEFAULTS();
-}
-
-inline Point
-CurveWarp::transform(const Point &point_, Real *dist, Real *along, int quality)const
-{
-	std::vector<BLinePoint> bline(param_bline.get_list_of(BLinePoint()));
-	Point start_point=param_start_point.get(Point());
-	Point end_point=param_end_point.get(Point());
-	Point origin=param_origin.get(Point());
-	bool fast=param_fast.get(bool());
-	Real perp_width=param_perp_width.get(Real());
-
 	Vector tangent;
 	Vector diff;
 	Point p1;
@@ -222,7 +208,7 @@ CurveWarp::transform(const Point &point_, Real *dist, Real *along, int quality)c
 		std::vector<BLinePoint>::const_iterator iter,next;
 
 		// Figure out the BLinePoint we will be using,
-		next=find_closest_to_bline(fast,bline,point,t,len,extreme);
+		next=find_closest_to_bline(point,t,len,extreme);
 
 		iter=next++;
 		if(next==bline.end()) next=bline.begin();
@@ -230,15 +216,8 @@ CurveWarp::transform(const Point &point_, Real *dist, Real *along, int quality)c
 		// Setup the curve
 		hermite<Vector> curve(iter->get_vertex(), next->get_vertex(), iter->get_tangent2(), next->get_tangent1());
 
-		int search_iterations(7);
-
-		if(quality<=6)search_iterations=7;
-		else if(quality<=7)search_iterations=6;
-		else if(quality<=8)search_iterations=5;
-		else search_iterations=4;
-
 		// Figure out the closest point on the curve
-		if (fast) t = curve.find_closest(fast, point,search_iterations);
+		if (fast) t = curve.find_closest(fast, point, 7);
 
 		// Calculate our values
 		p1=curve(t);			     // the closest point on the curve
@@ -346,26 +325,159 @@ CurveWarp::transform(const Point &point_, Real *dist, Real *along, int quality)c
 
 	// diff is a unit vector perpendicular to the bline
 	const Real unscaled_distance((point_-origin - p1)*diff);
-	if (dist) *dist = unscaled_distance;
-	if (along) *along = len;
 	return ((start_point + (end_point - start_point) * len / curve_length_) +
 			perp_ * unscaled_distance/(thickness*perp_width));
+}
+
+class TaskCurveWarp
+	: public rendering::TaskDistort
+{
+public:
+	typedef etl::handle<TaskCurveWarp> Handle;
+	static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
+
+	CurveWarp::Internal internal;
+	//	virtual bool get_allow_multithreading() const {
+	//		if (const Mode *mode = dynamic_cast<const Mode*>(this))
+	//			return mode->get_mode_allow_multithreading();
+	//		return true;
+	//	}
+	//	virtual bool get_mode_allow_source_as_target() const {
+	//		if (const Mode *mode = dynamic_cast<const Mode*>(this))
+	//			return mode->get_mode_allow_source_as_target();
+	//		return false;
+	//	}
+//		virtual bool get_mode_allow_simultaneous_write() const { //!< allow simultaneous write to the same target
+//	//		if (const Mode *mode = dynamic_cast<const Mode*>(this))
+//	//			return mode->get_mode_allow_simultaneous_write();
+//	//		return true;
+//		return false;
+//		}
+
+	Rect
+	compute_required_source_rect(const Rect& source_rect, const Matrix& inv_matrix) const override
+	{
+		const int tw = target_rect.get_width();
+		const int th = target_rect.get_height();
+		Vector dx = inv_matrix.axis_x();
+		Vector dy = inv_matrix.axis_y() - dx*(Real)tw;
+		Vector p = inv_matrix.get_transformed( Vector((Real)target_rect.minx, (Real)target_rect.miny) );
+
+		Rect sub_source_rect = source_rect;
+
+		// Check from where the boundary pixels come in source context (before transform)
+		// vertical borders
+		for (int iy = target_rect.miny; iy < target_rect.maxy; ++iy, p[1] += dy[1]) {
+			Point tmp = internal.transform(p);
+			sub_source_rect.expand(tmp);
+			tmp = internal.transform(Point(p[0] + dx[0]*(Real)tw, p[1]));
+			sub_source_rect.expand(tmp);
+		}
+
+		// horizontal borders
+		for (int ix = target_rect.minx; ix < target_rect.maxx; ++ix, p[0] += dx[0]) {
+			Point tmp = internal.transform(p);
+			sub_source_rect.expand(tmp);
+			tmp = internal.transform(Point(p[0], p[1] - dy[1]*(Real)th));
+			sub_source_rect.expand(tmp);
+		}
+
+		return sub_source_rect;
+	}
+
+};
+
+class TaskCurveWarpSW
+	: public TaskCurveWarp, public rendering::TaskDistortSW
+{
+public:
+	typedef etl::handle<TaskCurveWarp> Handle;
+	static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
+
+	Point
+	point_vfunc(const Point &point) const override
+	{
+		return internal.transform(point);
+	}
+
+	bool run(Task::RunParams& /*params*/) const override
+	{
+		return run_task(*this);
+	}
+};
+
+rendering::Task::Token TaskCurveWarp::token(
+	DescAbstract<TaskCurveWarp>("CurveWarp") );
+rendering::Task::Token TaskCurveWarpSW::token(
+	DescReal<TaskCurveWarpSW, TaskCurveWarp>("CurveWarpSW") );
+
+
+/* === M E T H O D S ======================================================= */
+
+void
+CurveWarp::sync()
+{
+	internal->bline = param_bline.get_list_of(BLinePoint());
+	internal->start_point = param_start_point.get(Point());
+	internal->end_point = param_end_point.get(Point());
+
+	internal->sync();
+}
+
+CurveWarp::CurveWarp():
+	param_origin(ValueBase(Point(0,0))),
+	param_perp_width(ValueBase(Real(1))),
+	param_start_point(ValueBase(Point(-2.5,-0.5))),
+	param_end_point(ValueBase(Point(2.5,-0.3))),
+	param_bline(ValueBase(std::vector<BLinePoint>())),
+	param_fast(ValueBase(true))
+{
+	std::vector<BLinePoint> bline;
+	bline.push_back(BLinePoint());
+	bline.push_back(BLinePoint());
+	bline[0].set_vertex(Point(-2.5,0));
+	bline[1].set_vertex(Point( 2.5,0));
+	bline[0].set_tangent(Point(1,  0.1));
+	bline[1].set_tangent(Point(1, -0.1));
+	bline[0].set_width(1.0f);
+	bline[1].set_width(1.0f);
+	param_bline.set_list_of(bline);
+
+	internal = new Internal();
+	internal->origin = {0,0};
+	internal->perp_width = 1.;
+	internal->start_point = {-2.5, -0.5};
+	internal->end_point = {2.5, -0.3};
+	internal->bline = bline;
+	internal->fast = true;
+
+	sync();
+
+	SET_INTERPOLATION_DEFAULTS();
+	SET_STATIC_DEFAULTS();
+}
+
+CurveWarp::~CurveWarp()
+{
+	delete internal;
 }
 
 Layer::Handle
 CurveWarp::hit_check(Context context, const Point &point)const
 {
-	return context.hit_check(transform(point));
+	return context.hit_check(internal->transform(point));
 }
 
 bool
 CurveWarp::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT_VALUE(param_origin);
-	IMPORT_VALUE(param_start_point);
-	IMPORT_VALUE(param_end_point);
-	IMPORT_VALUE(param_fast);
-	IMPORT_VALUE(param_perp_width);
+	IMPORT_VALUE_PLUS(param_origin, internal->origin = value.get(Point()));
+	IMPORT_VALUE_PLUS(param_start_point, sync());
+	IMPORT_VALUE_PLUS(param_end_point, sync());
+	IMPORT_VALUE_PLUS(param_fast, internal->fast = value.get(bool()));
+	IMPORT_VALUE_PLUS(param_perp_width, internal->perp_width = value.get(Real()));
 	IMPORT_VALUE_PLUS(param_bline, sync());
 
 	if(param=="offset")
@@ -432,203 +544,21 @@ CurveWarp::get_param_vocab()const
 Color
 CurveWarp::get_color(Context context, const Point &point)const
 {
-	return context.get_color(transform(point));
+	return context.get_color(internal->transform(point));
 }
 
-RendDesc
-CurveWarp::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
+
+rendering::Task::Handle
+CurveWarp::build_rendering_task_vfunc(Context context) const
 {
-	RendDesc desc(renddesc);
-	Real pw = desc.get_pw();
-	Real ph = desc.get_ph();
-	desc.set_tl(Vector(-10.0, -10.0));
-	desc.set_br(Vector( 10.0,  10.0));
-	desc.set_wh(
-		(int)approximate_ceil(fabs((desc.get_br()[0] - desc.get_tl()[0])/pw)),
-		(int)approximate_ceil(fabs((desc.get_br()[1] - desc.get_tl()[1])/ph)) );
-	return desc;
+	rendering::Task::Handle task = context.build_rendering_task();
+
+	TaskCurveWarp::Handle task_curvewarp(new TaskCurveWarp());
+	task_curvewarp->internal = *internal;
+
+	task_curvewarp->sub_task() = task;
+
+	task = task_curvewarp;
+
+	return task;
 }
-
-bool
-CurveWarp::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
-
-	Point start_point=param_start_point.get(Point());
-	Point end_point=param_end_point.get(Point());
-
-	SuperCallback stageone(cb,0,9000,10000);
-	SuperCallback stagetwo(cb,9000,10000,10000);
-
-	int x,y;
-
-	const Real pw(renddesc.get_pw()),ph(renddesc.get_ph());
-	Point tl(renddesc.get_tl());
-	Point br(renddesc.get_br());
-	const int w(renddesc.get_w());
-	const int h(renddesc.get_h());
-
-	// find a bounding rectangle for the context we need to render
-	// todo: find a better way of doing this - this way doesn't work
-	Rect src_rect(transform(tl));
-	Point pos1, pos2;
-	Real dist, along;
-	Real min_dist(999999), max_dist(-999999), min_along(999999), max_along(-999999);
-
-#define UPDATE_DIST \
-	if (dist < min_dist) min_dist = dist; \
-	if (dist > max_dist) max_dist = dist; \
-	if (along < min_along) min_along = along; \
-	if (along > max_along) max_along = along
-
-	// look along the top and bottom edges
-	pos1[0] = pos2[0] = tl[0]; pos1[1] = tl[1]; pos2[1] = br[1];
-	for (x = 0; x < w; x++, pos1[0] += pw, pos2[0] += pw)
-	{
-		src_rect.expand(transform(pos1, &dist, &along)); UPDATE_DIST;
-		src_rect.expand(transform(pos2, &dist, &along)); UPDATE_DIST;
-	}
-
-	// look along the left and right edges
-	pos1[0] = tl[0]; pos2[0] = br[0]; pos1[1] = pos2[1] = tl[1];
-	for (y = 0; y < h; y++, pos1[1] += ph, pos2[1] += ph)
-	{
-		src_rect.expand(transform(pos1, &dist, &along)); UPDATE_DIST;
-		src_rect.expand(transform(pos2, &dist, &along)); UPDATE_DIST;
-	}
-
-	// look along the diagonals
-	const int max_wh(std::max(w,h));
-	const Real inc_x((br[0]-tl[0])/max_wh),inc_y((br[1]-tl[1])/max_wh);
-	pos1[0] = pos2[0] = tl[0]; pos1[1] = tl[1]; pos2[1] = br[1];
-	for (x = 0; x < max_wh; x++, pos1[0] += inc_x, pos2[0] = pos1[0], pos1[1]+=inc_y, pos2[1]-=inc_y)
-	{
-		src_rect.expand(transform(pos1, &dist, &along)); UPDATE_DIST;
-		src_rect.expand(transform(pos2, &dist, &along)); UPDATE_DIST;
-	}
-
-#if 0
-	// look at each blinepoint
-	std::vector<BLinePoint>::const_iterator iter;
-	for (iter=bline.begin(); iter!=bline.end(); iter++)
-		src_rect.expand(transform(iter->get_vertex()+origin, &dist, &along)); UPDATE_DIST;
-#endif
-
-	Point src_tl(src_rect.get_min());
-	Point src_br(src_rect.get_max());
-
-	Vector ab((end_point - start_point).norm());
-	Angle::tan ab_angle(ab[1], ab[0]);
-
-	Real used_length = max_along - min_along;
-	Real render_width = max_dist - min_dist;
-
-	int src_w = (std::fabs(used_length*Angle::cos(ab_angle).get()) +
-				 std::fabs(render_width*Angle::sin(ab_angle).get())) / std::fabs(pw);
-	int src_h = (std::fabs(used_length*Angle::sin(ab_angle).get()) +
-				 std::fabs(render_width*Angle::cos(ab_angle).get())) / std::fabs(ph);
-
-	Real src_pw((src_br[0] - src_tl[0]) / src_w);
-	Real src_ph((src_br[1] - src_tl[1]) / src_h);
-
-	if (src_pw > std::fabs(pw))
-	{
-		src_w = int((src_br[0] - src_tl[0]) / std::fabs(pw));
-		src_pw = (src_br[0] - src_tl[0]) / src_w;
-	}
-
-	if (src_ph > std::fabs(ph))
-	{
-		src_h = int((src_br[1] - src_tl[1]) / std::fabs(ph));
-		src_ph = (src_br[1] - src_tl[1]) / src_h;
-	}
-
-#define MAXPIX 10000
-	if (src_w > MAXPIX) src_w = MAXPIX;
-	if (src_h > MAXPIX) src_h = MAXPIX;
-
-	// this is an attempt to remove artifacts around tile edges - the
-	// cubic interpolation uses at most 2 pixels either side of the
-	// target pixel, so add an extra 2 pixels around the tile on all
-	// sides
-	src_tl -= (Point(src_pw,src_ph)*2);
-	src_br += (Point(src_pw,src_ph)*2);
-	src_w += 4;
-	src_h += 4;
-	src_pw = (src_br[0] - src_tl[0]) / src_w;
-	src_ph = (src_br[1] - src_tl[1]) / src_h;
-
-	// set up a renddesc for the context to render
-	RendDesc src_desc(renddesc);
-	src_desc.clear_flags();
-	src_desc.set_tl(src_tl);
-	src_desc.set_br(src_br);
-	src_desc.set_wh(src_w, src_h);
-
-	// render the context onto a new surface
-	Surface source;
-	source.set_wh(src_w,src_h);
-	if(!context.accelerated_render(&source,quality,src_desc,&stageone))
-		return false;
-
-	float u,v;
-	Point pos, tmp;
-
-	surface->set_wh(w,h);
-	surface->clear();
-
-	if(quality<=4)				// CUBIC
-		for(y=0,pos[1]=tl[1];y<h;y++,pos[1]+=ph)
-		{
-			for(x=0,pos[0]=tl[0];x<w;x++,pos[0]+=pw)
-			{
-				tmp=transform(pos);
-				u=(tmp[0]-src_tl[0])/src_pw;
-				v=(tmp[1]-src_tl[1])/src_ph;
-				if(u<0 || v<0 || u>=src_w || v>=src_h || std::isnan(u) || std::isnan(v))
-					(*surface)[y][x]=context.get_color(tmp);
-				else
-					(*surface)[y][x]=source.cubic_sample(u,v);
-			}
-			if((y&31)==0 && cb && !stagetwo.amount_complete(y,h)) return false;
-		}
-	else if (quality<=6)		// INTERPOLATION_LINEAR
-		for(y=0,pos[1]=tl[1];y<h;y++,pos[1]+=ph)
-		{
-			for(x=0,pos[0]=tl[0];x<w;x++,pos[0]+=pw)
-			{
-				tmp=transform(pos);
-				u=(tmp[0]-src_tl[0])/src_pw;
-				v=(tmp[1]-src_tl[1])/src_ph;
-				if(u<0 || v<0 || u>=src_w || v>=src_h || std::isnan(u) || std::isnan(v))
-					(*surface)[y][x]=context.get_color(tmp);
-				else
-					(*surface)[y][x]=source.linear_sample(u,v);
-			}
-			if((y&31)==0 && cb && !stagetwo.amount_complete(y,h)) return false;
-		}
-	else						// NEAREST_NEIGHBOR
-		for(y=0,pos[1]=tl[1];y<h;y++,pos[1]+=ph)
-		{
-			for(x=0,pos[0]=tl[0];x<w;x++,pos[0]+=pw)
-			{
-				tmp=transform(pos);
-				u=(tmp[0]-src_tl[0])/src_pw;
-				v=(tmp[1]-src_tl[1])/src_ph;
-				if(u<0 || v<0 || u>=src_w || v>=src_h || std::isnan(u) || std::isnan(v))
-					(*surface)[y][x]=context.get_color(tmp);
-				else
-					(*surface)[y][x]=source[static_cast<int>(v)][static_cast<int>(u)]; // u >= 0 and v >= 0, so we can cast them to int
-			}
-			if((y&31)==0 && cb && !stagetwo.amount_complete(y,h)) return false;
-		}
-
-	// Mark our progress as finished
-	if(cb && !cb->amount_complete(10000,10000))
-		return false;
-
-	return true;
-}
-
-
-/////
