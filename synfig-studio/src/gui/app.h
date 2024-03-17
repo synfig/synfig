@@ -402,6 +402,9 @@ public:
 	static int get_max_recent_files();
 	static void set_max_recent_files(int x);
 
+	static int get_num_backup_files();
+	static void set_num_backup_files(int x);
+
 	static bool jack_is_locked();
 	static void jack_lock();
 	static void jack_unlock();

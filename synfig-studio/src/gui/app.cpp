@@ -300,6 +300,10 @@ static int max_recent_files_=25;
 int    studio::App::get_max_recent_files()      { return max_recent_files_; }
 void   studio::App::set_max_recent_files(int x) {        max_recent_files_ = x; }
 
+static int backup_files_ = 1;
+int    studio::App::get_num_backup_files()      { return backup_files_; }
+void   studio::App::set_num_backup_files(int x) {        backup_files_ = x; }
+
 static synfig::String app_base_path_;
 
 SoundProcessor *App::sound_render_done = nullptr;
@@ -452,6 +456,11 @@ public:
 			if(key=="file_history.size")
 			{
 				value=strprintf("%i",App::get_max_recent_files());
+				return true;
+			}
+			if(key=="backup.num")
+			{
+				value=strprintf("%i",App::get_num_backup_files());
 				return true;
 			}
 			if(key=="distance_system")
@@ -650,6 +659,12 @@ public:
 				App::set_max_recent_files(i);
 				return true;
 			}
+			if(key=="backup.num")
+			{
+				int i(atoi(value.c_str()));
+				App::set_num_backup_files(i);
+				return true;
+			}
 			if(key=="distance_system")
 			{
 				App::distance_system=Distance::ident_system(value);
@@ -822,6 +837,7 @@ public:
 		ret.push_back("time_format");
 		ret.push_back("distance_system");
 		ret.push_back("file_history.size");
+		ret.push_back("backup.num");
 		ret.push_back("autosave_backup");
 		ret.push_back("autosave_backup_interval");
 		ret.push_back("restrict_radius_ducks");
