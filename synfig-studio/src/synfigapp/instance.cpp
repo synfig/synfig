@@ -584,8 +584,136 @@ Instance::backup(bool save_even_if_unchanged)
 	//	save_all_layers();
 	if (!save_canvas(get_canvas()->get_identifier(), get_canvas(), false))
 		return false;
+
+	const synfig::String &file_name = "C:\\Users\\denwt\\Synfig\\backup.sif";
+	if (!save_backup(file_name)){
+		return false;
+	}
 	
 	return temporary_filesystem->save_temporary();
+}
+
+bool
+Instance::save_backup(const synfig::String &file_name)
+{
+	Canvas::Handle canvas = get_canvas();
+
+	FileSystem::Identifier previous_canvas_identifier = canvas->get_identifier();
+	FileSystem::Handle previous_canvas_filesystem = previous_canvas_identifier.file_system;
+	FileSystem::Handle previous_container = get_container();
+	String previous_canvas_filename = canvas->get_file_name();
+
+	FileSystem::Identifier new_canvas_identifier = previous_canvas_identifier;
+	FileSystem::Handle new_canvas_filesystem = previous_canvas_filesystem;
+	FileSystem::Handle new_container = previous_container;
+	String new_canvas_filename = file_name;
+
+	// save bitmaps
+	save_all_layers();
+
+	// find zip-container
+	FileContainerZip::Handle new_container_zip = FileContainerZip::Handle::cast_dynamic(new_container);
+	bool embed_files = (bool)new_container_zip;
+	bool save_files = true;
+
+	etl::handle<Action::Group> import_external_canvases_action;
+	if (embed_files)
+		import_external_canvases_action = import_external_canvases();
+
+	// process filenames
+	ProcessFilenamesParams params(
+		canvas,
+		previous_canvas_filesystem,
+		previous_canvas_filename,
+		(bool)embed_files,
+		save_files );
+	process_filenames(params, canvas);
+
+	// save
+	bool success = true;
+	if (success)
+		success = save_canvas(new_canvas_identifier, canvas, false);
+	if (success)
+		if (FileSystemTemporary::Handle temporary_filesystem = FileSystemTemporary::Handle::cast_dynamic(new_canvas_filesystem))
+			success = temporary_filesystem->save_changes();
+	if (success && new_container_zip)
+		success = new_container_zip->save();
+	if (success)
+		reset_action_count();
+
+	if (success)
+	{
+		signal_saved_();
+		signal_filename_changed_();
+	}
+
+	{
+		// new canvas filesystem
+		FileSystem::Handle new_container = CanvasFileNaming::make_filesystem_container(new_canvas_filename, 0, true);
+		if (!new_container)
+		{
+			warning("Cannot create container: %s", new_canvas_filename.c_str());
+			return false;
+		}
+		new_canvas_filesystem = CanvasFileNaming::make_filesystem(new_container);
+		if (!new_canvas_filesystem)
+		{
+			warning("Cannot create canvas filesysem for: %s", new_canvas_filename.c_str());
+			return false;
+		}
+
+		// wrap into temporary file system
+		if (FileSystemTemporary::Handle previous_temporary_filesystem = FileSystemTemporary::Handle::cast_dynamic(previous_canvas_filesystem))
+		{
+			FileSystemTemporary::Handle new_temporary_filesystem = new FileSystemTemporary(
+				previous_temporary_filesystem->get_tag(),
+				previous_temporary_filesystem->get_temporary_directory(),
+				new_canvas_filesystem );
+			new_temporary_filesystem->set_meta("filename", new_canvas_filename);
+			new_temporary_filesystem->set_meta("as", new_canvas_filename);
+			new_temporary_filesystem->set_meta("truncate", "0");
+			new_canvas_filesystem = new_temporary_filesystem;
+		}
+
+		new_canvas_identifier = new_canvas_filesystem->get_identifier(CanvasFileNaming::project_file(new_canvas_filename));
+
+		// copy embedded files
+		if (!FileSystem::copy_recursive(
+			previous_canvas_filesystem,
+			CanvasFileNaming::container_prefix,
+			new_canvas_filesystem,
+			CanvasFileNaming::container_prefix ))
+		{
+			//new_canvas_filesystem->remove_recursive(CanvasFileNaming::container_prefix);
+			new_canvas_filesystem.reset();
+			new_container.reset();
+			//FileSystemNative::instance()->file_remove(new_canvas_filename);
+			return false;
+		}
+
+		// remove previous canvas file
+		if (previous_canvas_identifier.filename != new_canvas_identifier.filename)
+			new_canvas_filesystem->file_remove(previous_canvas_identifier.filename.u8string());
+
+		// set new canvas filename
+		canvas->set_file_name(new_canvas_filename);
+		canvas->set_identifier(new_canvas_identifier);
+		container_ = new_container;
+	}
+
+	// undo
+	canvas->set_file_name(previous_canvas_filename);
+	canvas->set_identifier(previous_canvas_identifier);
+	container_ = previous_container;
+	process_filenames_undo(params);
+	//new_canvas_filesystem->remove_recursive(CanvasFileNaming::container_prefix);
+	new_canvas_filesystem.reset();
+	new_container.reset();
+	//FileSystemNative::instance()->file_remove(new_canvas_filename);
+	if (import_external_canvases_action)
+		import_external_canvases_action->undo();
+
+	return success;
 }
 
 bool
