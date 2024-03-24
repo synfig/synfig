@@ -300,7 +300,7 @@ static int max_recent_files_=25;
 int    studio::App::get_max_recent_files()      { return max_recent_files_; }
 void   studio::App::set_max_recent_files(int x) {        max_recent_files_ = x; }
 
-static int backup_files_ = 1;
+static int backup_files_ = 0;
 int    studio::App::get_num_backup_files()      { return backup_files_; }
 void   studio::App::set_num_backup_files(int x) {        backup_files_ = x; }
 

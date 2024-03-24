@@ -87,7 +87,7 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	Dialog_Template(parent,_("Synfig Studio Preferences")),
 	input_settings(synfigapp::Main::get_selected_input_device()->settings()),
 	adj_recent_files(Gtk::Adjustment::create(15,1,50,1,1,0)),
-	adj_backup_files(Gtk::Adjustment::create(1,1,10,1,1,0)),
+	adj_backup_files(Gtk::Adjustment::create(1,0,10,1,1,0)),
 	adj_undo_depth(Gtk::Adjustment::create(100,10,5000,1,1,1)),
 	time_format(Time::FORMAT_NORMAL),
 	listviewtext_brushes_path(manage (new Gtk::ListViewText(1, true, Gtk::SELECTION_BROWSE))),
@@ -915,7 +915,7 @@ Dialog_Setup::on_restore_pressed()
 	{
 		// Assign (without applying) default values
 		adj_recent_files->set_value(25);
-		adj_backup_files->set_value(1);
+		adj_backup_files->set_value(0);
 		timestamp_comboboxtext.set_active(5);
 		toggle_autobackup.set_active(true);
 		auto_backup_interval.set_value(15);

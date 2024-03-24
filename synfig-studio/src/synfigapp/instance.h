@@ -174,7 +174,7 @@ public:
 	bool save();
 
 	bool save_as(const synfig::String &filename);
-	bool save_backup(const synfig::String &file_name);
+	bool save_backup();
 
 	//! Saves the instance to current temporary container
 	bool backup(bool save_even_if_unchanged = false);
