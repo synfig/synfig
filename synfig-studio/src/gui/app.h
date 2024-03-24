@@ -336,6 +336,8 @@ public:
 
 	static Gtk::Box* scale_imported_box();
 
+	static bool save_backup();
+
 	static synfig::String get_base_path();
 	static void save_settings();
 	static bool load_settings(const synfig::String& key_filter = "");

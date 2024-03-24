@@ -1977,6 +1977,43 @@ App::set_time_format(synfig::Time::Format x)
 	_App_time_format=x;
 }
 
+/*
+
+Save backup file without altering the current file
+
+*/
+
+bool
+App::save_backup()
+{
+	FileSystemTemporary::Handle temporary_filesystem = FileSystemTemporary::Handle::cast_dynamic(App::get_selected_canvas_view()->get_canvas()->get_file_system());
+
+	// get original filename
+	String filename = temporary_filesystem->get_meta("filename");
+	String as = temporary_filesystem->get_meta("as");
+	String truncate = temporary_filesystem->get_meta("truncate");
+	if (filename.empty() || as.empty() || truncate.empty())
+		throw (String)strprintf(_("Original filename was not set in temporary container \n\n"));
+	FileContainerZip::file_size_t truncate_storage_size = stoll(truncate);
+
+	filesystem::Path backup_dir = filesystem::Path::dirname(filename) / filesystem::Path("backups");
+	filesystem::Path base_name = filesystem::Path::basename(filesystem::Path::filename_sans_extension(filename));
+	filesystem::Path file_ext = filesystem::Path::filename_extension(filename);
+
+	// make backup directory if not already created
+	App::get_selected_canvas_view()->get_canvas()->get_file_system()->directory_create(backup_dir.u8string());
+
+	int max_backups = get_num_backup_files();
+
+	const synfig::String &file_name = (backup_dir / base_name).u8string() + "_1" +file_ext.u8string();
+
+	// make canvas file-system
+	FileSystem::Handle canvas_container = CanvasFileNaming::make_filesystem_container(file_name, truncate_storage_size);
+	FileSystem::Handle canvas_file_system = CanvasFileNaming::make_filesystem(canvas_container);
+
+	return temporary_filesystem->save_changes(canvas_file_system, true);
+}
+
 
 void
 App::save_settings()

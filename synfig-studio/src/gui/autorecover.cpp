@@ -101,8 +101,10 @@ AutoRecover::auto_backup()
 		for (const auto& instance : App::instance_list) {
 			try
 			{
-				if (instance->backup())
+				if (instance->backup()){
 					++count;
+					App::save_backup();
+				}
 			}
 			catch(...)
 			{
