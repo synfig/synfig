@@ -69,7 +69,7 @@ Settings::~Settings()
 }
 
 synfig::String
-Settings::	get_value(const synfig::String& key)const
+Settings::get_value(const synfig::String& key)const
 {
 	synfig::String value;
 	if(!get_raw_value(key,value))

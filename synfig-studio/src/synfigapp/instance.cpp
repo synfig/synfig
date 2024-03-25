@@ -70,12 +70,10 @@
 #include <synfig/layers/layer_bitmap.h>
 #include <synfig/rendering/software/surfacesw.h>
 #include <synfig/target_scanline.h>
-#include <synfig/zstreambuf.h>
 #include "actions/valuedescexport.h"
 #include "actions/layerparamset.h"
 #include <map>
 
-#include <synfigapp/settings.h>
 #include <synfigapp/localization.h>
 
 #include <synfig/importer.h>
