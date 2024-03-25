@@ -1993,7 +1993,6 @@ App::save_backup()
 	}
 
 	FileSystemTemporary::Handle temporary_filesystem = FileSystemTemporary::Handle::cast_dynamic(App::get_selected_canvas_view()->get_canvas()->get_file_system());
-
 	// get original filename
 	String filename = temporary_filesystem->get_meta("filename");
 	String as = temporary_filesystem->get_meta("as");
@@ -2001,7 +2000,6 @@ App::save_backup()
 	if (filename.empty() || as.empty() || truncate.empty())
 		throw (String)strprintf(_("Original filename was not set in temporary container \n\n"));
 	FileContainerZip::file_size_t truncate_storage_size = stoll(truncate);
-
 	filesystem::Path proj_dir = filesystem::Path::dirname(filename);
 
 	// is new file, do not backup
@@ -2010,9 +2008,7 @@ App::save_backup()
 	}
 
 	filesystem::Path backup_dir = proj_dir / filesystem::Path("backups");
-
 	filesystem::Path base_name = filesystem::Path::basename(filesystem::Path::filename_sans_extension(filename));
-
 	filesystem::Path file_ext = filesystem::Path::filename_extension(filename);
 	int file_ext_len = file_ext.u8string().length();
 
