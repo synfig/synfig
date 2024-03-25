@@ -880,6 +880,16 @@ Dialog_Setup::create_interface_page(PageInfo pi)
 	toggle_handle_tooltip_transfo_value.set_halign(Gtk::ALIGN_START);
 	toggle_handle_tooltip_transfo_value.set_hexpand(false);
 
+	attach_label_section(pi.grid, _("Plugins"), ++row);
+	attach_label(pi.grid, _("Warning before you apply a plugin"), ++row);// HANDLE_TOOLTIP_TRANSFO_NAME
+	pi.grid->attach(plugin_warning, 1, row, 1, 1);
+	plugin_warning.set_halign(Gtk::ALIGN_START);
+	plugin_warning.set_hexpand(false);
+
+	plugin_warning.property_active().signal_changed().connect(
+		sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_NONE));
+
+
 	//! change resume signal connection
 	ui_language_combo.signal_changed().connect(
 			sigc::bind<int> (sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_UI_LANGUAGE));
@@ -911,6 +921,7 @@ Dialog_Setup::on_restore_pressed()
 		adj_recent_files->set_value(25);
 		timestamp_comboboxtext.set_active(5);
 		toggle_autobackup.set_active(true);
+		plugin_warning.set_active(true);
 		auto_backup_interval.set_value(15);
 		widget_enum->set_value(Distance::SYSTEM_POINTS);
 		toggle_restrict_radius_ducks.set_active(true);
@@ -981,6 +992,7 @@ void
 Dialog_Setup::on_apply_pressed()
 {
 	App::set_max_recent_files((int)adj_recent_files->get_value());
+	App::set_plugin_warning_enabled((bool) plugin_warning.get_active());
 
 	// Set the time format
 	App::set_time_format(get_time_format());
@@ -1276,6 +1288,7 @@ Dialog_Setup::refresh()
 	widget_enum->set_value(App::distance_system);
 
 	toggle_autobackup.set_active(App::auto_recover->get_enabled());
+	plugin_warning.set_active(App::get_plugin_warning_enabled());
 	// Refresh the value of the auto backup interval
 	auto_backup_interval.set_value(App::auto_recover->get_timeout_ms() / 1000);
 	auto_backup_interval.set_sensitive(App::auto_recover->get_enabled());

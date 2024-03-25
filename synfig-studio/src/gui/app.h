@@ -402,6 +402,9 @@ public:
 	static int get_max_recent_files();
 	static void set_max_recent_files(int x);
 
+	static bool get_plugin_warning_enabled();
+	static void set_plugin_warning_enabled(bool x);
+
 	static bool jack_is_locked();
 	static void jack_lock();
 	static void jack_unlock();
