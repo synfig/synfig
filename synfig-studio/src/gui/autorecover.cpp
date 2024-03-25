@@ -103,7 +103,6 @@ AutoRecover::auto_backup()
 			{
 				if (instance->backup()){
 					++count;
-					App::save_backup();
 				}
 			}
 			catch(...)
@@ -111,6 +110,7 @@ AutoRecover::auto_backup()
 				synfig::error("AutoRecover::auto_backup(): UNKNOWN EXCEPTION THROWN.");
 			}
 		}
+		App::save_backup();
 	}
 	catch(...)
 	{

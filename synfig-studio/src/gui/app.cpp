@@ -1986,6 +1986,12 @@ Save backup file without altering the current file
 bool
 App::save_backup()
 {
+	int max_backups = get_num_backup_files();
+
+	if (max_backups == 0){
+		return true;
+	}
+
 	FileSystemTemporary::Handle temporary_filesystem = FileSystemTemporary::Handle::cast_dynamic(App::get_selected_canvas_view()->get_canvas()->get_file_system());
 
 	// get original filename
@@ -1996,15 +2002,66 @@ App::save_backup()
 		throw (String)strprintf(_("Original filename was not set in temporary container \n\n"));
 	FileContainerZip::file_size_t truncate_storage_size = stoll(truncate);
 
-	filesystem::Path backup_dir = filesystem::Path::dirname(filename) / filesystem::Path("backups");
+	filesystem::Path proj_dir = filesystem::Path::dirname(filename);
+
+	// is new file, do not backup
+	if(proj_dir.u8string() == "."){
+		return true;
+	}
+
+	filesystem::Path backup_dir = proj_dir / filesystem::Path("backups");
 	filesystem::Path base_name = filesystem::Path::basename(filesystem::Path::filename_sans_extension(filename));
+
 	filesystem::Path file_ext = filesystem::Path::filename_extension(filename);
+	int file_ext_len = file_ext.u8string().length();
 
 	// make backup directory if not already created
 	App::get_selected_canvas_view()->get_canvas()->get_file_system()->directory_create(backup_dir.u8string());
 
-	int max_backups = get_num_backup_files();
+	int found_backups = 0;
+	std::vector<String> files;
 
+	if (!FileSystemNative::instance()->directory_scan(backup_dir.u8string(), files))
+		return false;
+
+	std::unordered_map<String, String> file_version_map;
+	String prefix = base_name.u8string() + "_";
+	int prefix_len = prefix.length();
+
+	for (std::vector<String>::const_iterator i = files.begin(); i != files.end(); ++i){
+		int word_len = (*i).length();
+
+		if (i->substr(0, prefix_len) == prefix && word_len > prefix_len + file_ext_len){
+			file_version_map[i->substr(prefix_len, word_len - prefix_len - file_ext_len)] = (*i);
+		}
+
+	}
+
+	while(found_backups < max_backups && file_version_map.find(std::to_string(found_backups + 1)) != file_version_map.end()){
+		found_backups += 1;
+	}
+
+	if (found_backups == max_backups){
+		String max_backup = (backup_dir / base_name).u8string() + "_" + std::to_string(found_backups) + file_ext.u8string();
+		if (0 != remove((max_backup.c_str()))){
+			return false;
+		}
+		found_backups -= 1;
+	}
+
+	// cascade rename all other backup files
+	while(found_backups != 0){
+
+		const synfig::String &file_cur_name = (backup_dir / base_name).u8string() + "_"+ std::to_string(found_backups) +file_ext.u8string();
+		const synfig::String &file_new_name = (backup_dir / base_name).u8string() + "_" +std::to_string(found_backups + 1) +file_ext.u8string();
+
+		if (0 !=  rename(file_cur_name.c_str(), file_new_name.c_str())){
+			return false;
+		}
+		found_backups -= 1;
+	}
+
+	// add recent backup file from temp file
 	const synfig::String &file_name = (backup_dir / base_name).u8string() + "_1" +file_ext.u8string();
 
 	// make canvas file-system
