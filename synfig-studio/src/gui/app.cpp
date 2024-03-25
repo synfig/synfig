@@ -2010,13 +2010,15 @@ App::save_backup()
 	}
 
 	filesystem::Path backup_dir = proj_dir / filesystem::Path("backups");
+
 	filesystem::Path base_name = filesystem::Path::basename(filesystem::Path::filename_sans_extension(filename));
 
 	filesystem::Path file_ext = filesystem::Path::filename_extension(filename);
 	int file_ext_len = file_ext.u8string().length();
 
 	// make backup directory if not already created
-	App::get_selected_canvas_view()->get_canvas()->get_file_system()->directory_create(backup_dir.u8string());
+	if (!FileSystemNative::instance()->directory_create(backup_dir.u8string()))
+		return false;
 
 	int found_backups = 0;
 	std::vector<String> files;
