@@ -48,6 +48,7 @@
 #include <gtkmm/image.h>
 #include <gtkmm/imagemenuitem.h>
 #include <gtkmm/menuitem.h>
+#include <gtkmm/messagedialog.h>
 #include <gtkmm/separatormenuitem.h>
 #include <gtkmm/stock.h>
 
@@ -376,21 +377,41 @@ studio::Instance::run_plugin(std::string plugin_id, bool modify_canvas, std::vec
 		return;
 	}
 
-	if ( modify_canvas )
+	if ( modify_canvas  && App::get_plugin_warning_enabled())
 	{
 		String message = strprintf(_("Do you really want to run plugin for file \"%s\"?" ),
 					this->get_canvas()->get_name().c_str());
 
 		String details = _("This operation cannot be undone and all undo history will be cleared.");
 
-		int answer = uim->confirmation(
-					message,
-					details,
-					_("Proceed"),
-					_("Cancel"),
-					synfigapp::UIInterface::RESPONSE_OK);
+		Gtk::MessageDialog plug_warn(
+			message,
+			false,
+			Gtk::MESSAGE_WARNING,
+			Gtk::BUTTONS_NONE,
+			true
+		);
 
-		if(answer != synfigapp::UIInterface::RESPONSE_OK)
+		if (! details.empty())
+			plug_warn.set_secondary_text(details);
+
+		plug_warn.add_button(_("Cancel"),  synfigapp::UIInterface::RESPONSE_CANCEL);
+		plug_warn.add_button(_("Proceed"), synfigapp::UIInterface::RESPONSE_OK);
+		plug_warn.set_default_response(synfigapp::UIInterface::RESPONSE_OK);
+
+		Gtk::Box *content = plug_warn.get_message_area();
+		Gtk::CheckButton *warning_disable = manage(new Gtk::CheckButton(_("Do not show again"), true));
+
+		content->pack_start(*warning_disable);
+
+		plug_warn.show_all();
+		int response = plug_warn.run();
+
+		if (warning_disable->get_active()){
+			App::set_plugin_warning_enabled(false);
+		}
+
+		if(response != synfigapp::UIInterface::RESPONSE_OK)
 			return;
 	}
 

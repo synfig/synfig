@@ -151,6 +151,7 @@ class Dialog_Setup : public Dialog_Template
 	Gtk::ComboBoxText icon_theme_combo;
 	Gtk::Switch toggle_handle_tooltip_transfo_value;
 	Gtk::Switch toggle_handle_tooltip_transfo_name;
+	Gtk::Switch plugin_warning;
 
 	Gtk::Entry textbox_custom_filename_prefix;
 	Glib::RefPtr<Gtk::Adjustment> adj_pref_x_size;
