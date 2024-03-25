@@ -336,6 +336,8 @@ public:
 
 	static Gtk::Box* scale_imported_box();
 
+	static bool save_backup();
+
 	static synfig::String get_base_path();
 	static void save_settings();
 	static bool load_settings(const synfig::String& key_filter = "");
@@ -401,6 +403,9 @@ public:
 
 	static int get_max_recent_files();
 	static void set_max_recent_files(int x);
+
+	static int get_num_backup_files();
+	static void set_num_backup_files(int x);
 
 	static bool jack_is_locked();
 	static void jack_lock();
