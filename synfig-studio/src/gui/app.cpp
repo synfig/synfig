@@ -1992,7 +1992,14 @@ App::save_backup()
 		return true;
 	}
 
-	FileSystemTemporary::Handle temporary_filesystem = FileSystemTemporary::Handle::cast_dynamic(App::get_selected_canvas_view()->get_canvas()->get_file_system());
+	CanvasView::LooseHandle canvas_view = App::get_selected_canvas_view();
+
+	// no canvas, return immediately
+	if (canvas_view.empty()){
+		return true;
+	}
+
+	FileSystemTemporary::Handle temporary_filesystem = FileSystemTemporary::Handle::cast_dynamic(canvas_view->get_canvas()->get_file_system());
 	// get original filename
 	String filename = temporary_filesystem->get_meta("filename");
 	String as = temporary_filesystem->get_meta("as");
