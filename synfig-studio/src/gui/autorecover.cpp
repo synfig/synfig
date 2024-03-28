@@ -101,14 +101,16 @@ AutoRecover::auto_backup()
 		for (const auto& instance : App::instance_list) {
 			try
 			{
-				if (instance->backup())
+				if (instance->backup()){
 					++count;
+				}
 			}
 			catch(...)
 			{
 				synfig::error("AutoRecover::auto_backup(): UNKNOWN EXCEPTION THROWN.");
 			}
 		}
+		App::save_backup();
 	}
 	catch(...)
 	{

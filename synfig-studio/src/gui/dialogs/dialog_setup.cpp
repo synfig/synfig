@@ -87,6 +87,7 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	Dialog_Template(parent,_("Synfig Studio Preferences")),
 	input_settings(synfigapp::Main::get_selected_input_device()->settings()),
 	adj_recent_files(Gtk::Adjustment::create(15,1,50,1,1,0)),
+	adj_backup_files(Gtk::Adjustment::create(1,0,10,1,1,0)),
 	adj_undo_depth(Gtk::Adjustment::create(100,10,5000,1,1,1)),
 	time_format(Time::FORMAT_NORMAL),
 	listviewtext_brushes_path(manage (new Gtk::ListViewText(1, true, Gtk::SELECTION_BROWSE))),
@@ -202,6 +203,10 @@ Dialog_Setup::create_system_page(PageInfo pi)
 	pi.grid->attach(auto_backup_interval, 1, row, 1, 1);
 	auto_backup_interval.set_hexpand(false);
 
+	attach_label(pi.grid, _("Backup files"), ++row);
+	Gtk::SpinButton* back_up_spinbutton(manage(new Gtk::SpinButton(adj_backup_files,1,0)));
+	pi.grid->attach(*back_up_spinbutton, 1, row, 1, 1);
+
 	// System - Brushes path
 	{
 		attach_label_section(pi.grid, _("Brush Presets Path"), ++row);
@@ -246,6 +251,7 @@ Dialog_Setup::create_system_page(PageInfo pi)
 		plugin_path_change->signal_clicked().connect(
 			sigc::mem_fun(*this, &Dialog_Setup::on_plugin_path_change_clicked));
 	}
+
 	// System - 11 enable_experimental_features
 	attach_label_section(pi.grid, _("Experimental features (requires restart)"), ++row);
 	pi.grid->attach(toggle_enable_experimental_features, 1, row, 1, 1);
@@ -909,6 +915,7 @@ Dialog_Setup::on_restore_pressed()
 	{
 		// Assign (without applying) default values
 		adj_recent_files->set_value(25);
+		adj_backup_files->set_value(0);
 		timestamp_comboboxtext.set_active(5);
 		toggle_autobackup.set_active(true);
 		auto_backup_interval.set_value(15);
@@ -981,6 +988,7 @@ void
 Dialog_Setup::on_apply_pressed()
 {
 	App::set_max_recent_files((int)adj_recent_files->get_value());
+	App::set_num_backup_files((int)adj_backup_files->get_value());
 
 	// Set the time format
 	App::set_time_format(get_time_format());
@@ -1266,6 +1274,7 @@ Dialog_Setup::refresh()
 	pref_modification_flag = CHANGE_NONE;
 	
 	adj_recent_files->set_value(App::get_max_recent_files());
+	adj_backup_files->set_value(App::get_num_backup_files());
 
 	// Refresh the ui language
 	ui_language_combo.set_active_id(App::ui_language);

@@ -124,6 +124,7 @@ class Dialog_Setup : public Dialog_Template
 	std::map<std::string, synfig::Time::Format> time_formats;
 
 	Glib::RefPtr<Gtk::Adjustment> adj_recent_files;
+	Glib::RefPtr<Gtk::Adjustment> adj_backup_files;
 	Glib::RefPtr<Gtk::Adjustment> adj_undo_depth;
 
 	synfig::Time::Format time_format;
