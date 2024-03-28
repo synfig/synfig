@@ -2020,13 +2020,25 @@ App::save_backup()
 	int file_ext_len = file_ext.u8string().length();
 
 	// make backup directory if not already created
-	if (!FileSystemNative::instance()->directory_create(backup_dir.u8string()))
+	if (!FileSystemNative::instance()->directory_create(backup_dir.u8string())){
+		dialog_message_1b(
+			"ERROR",
+			_("Autosave file backup error. Could not create backup directory..."),
+			"details",
+			_("Close"));
 		return false;
+	}
 
 	std::vector<String> files;
 
-	if (!FileSystemNative::instance()->directory_scan(backup_dir.u8string(), files))
+	if (!FileSystemNative::instance()->directory_scan(backup_dir.u8string(), files)){
+		dialog_message_1b(
+			"ERROR",
+			_("Could not scan backup directory..."),
+			"details",
+			_("Close"));
 		return false;
+	}
 
 	std::map<int, String> file_version_map;
 	
@@ -2061,12 +2073,22 @@ App::save_backup()
 		// delete files that go above max file limit
 		if(file_cur_name->first >= max_backups){
 			if(0 != remove(abs_cur_name.c_str())){
+				dialog_message_1b(
+					"ERROR",
+					_("Could not remove excess backup files..."),
+					"details",
+					_("Close"));
 				return false;
 			}
 			continue;
 		}
 		const synfig::String &file_new_name = (backup_dir / base_name).u8string() + "_" +std::to_string(file_cur_name->first + 1) +file_ext.u8string();
 		if (0 !=  rename(abs_cur_name.c_str(), file_new_name.c_str())){
+			dialog_message_1b(
+				"ERROR",
+				_("Could not update names of other backup files..."),
+				"details",
+				_("Close"));
 			return false;
 		}
 	}
@@ -2078,7 +2100,15 @@ App::save_backup()
 	FileSystem::Handle canvas_container = CanvasFileNaming::make_filesystem_container(file_name, truncate_storage_size);
 	FileSystem::Handle canvas_file_system = CanvasFileNaming::make_filesystem(canvas_container);
 
-	return temporary_filesystem->save_changes(canvas_file_system, true);
+	if(!temporary_filesystem->save_changes(canvas_file_system, true)){
+		dialog_message_1b(
+			"ERROR",
+			_("Could not make new backup file..."),
+			"details",
+			_("Close"));
+		return false;
+	}
+	return true;
 }
 
 
