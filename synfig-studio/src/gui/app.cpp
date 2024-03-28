@@ -2023,13 +2023,13 @@ App::save_backup()
 	if (!FileSystemNative::instance()->directory_create(backup_dir.u8string()))
 		return false;
 
-	int found_backups = 0;
 	std::vector<String> files;
 
 	if (!FileSystemNative::instance()->directory_scan(backup_dir.u8string(), files))
 		return false;
 
-	std::unordered_map<String, String> file_version_map;
+	std::map<int, String> file_version_map;
+	
 	String prefix = base_name.u8string() + "_";
 	int prefix_len = prefix.length();
 
@@ -2037,33 +2037,38 @@ App::save_backup()
 		int word_len = (*i).length();
 
 		if (i->substr(0, prefix_len) == prefix && word_len > prefix_len + file_ext_len){
-			file_version_map[i->substr(prefix_len, word_len - prefix_len - file_ext_len)] = (*i);
+			String version = i->substr(prefix_len, word_len - prefix_len - file_ext_len);
+
+			// check if string is int
+			std::string::const_iterator it = version.begin();
+    		while (it != version.end() && std::isdigit(*it)) ++it;
+			if (version.empty() || it != version.end()){
+				continue;
+			}
+
+			int val_version = std::stoi(version);
+			file_version_map[val_version] = (*i);
 		}
 
 	}
 
-	while(found_backups < max_backups && file_version_map.find(std::to_string(found_backups + 1)) != file_version_map.end()){
-		found_backups += 1;
-	}
-
-	if (found_backups == max_backups){
-		String max_backup = (backup_dir / base_name).u8string() + "_" + std::to_string(found_backups) + file_ext.u8string();
-		if (0 != remove((max_backup.c_str()))){
-			return false;
-		}
-		found_backups -= 1;
-	}
-
+	std::map<int, String>::reverse_iterator file_cur_name;
 	// cascade rename all other backup files
-	while(found_backups != 0){
+	for (file_cur_name = file_version_map.rbegin(); file_cur_name != file_version_map.rend(); ++file_cur_name){
 
-		const synfig::String &file_cur_name = (backup_dir / base_name).u8string() + "_"+ std::to_string(found_backups) +file_ext.u8string();
-		const synfig::String &file_new_name = (backup_dir / base_name).u8string() + "_" +std::to_string(found_backups + 1) +file_ext.u8string();
-
-		if (0 !=  rename(file_cur_name.c_str(), file_new_name.c_str())){
+		const synfig::String &abs_cur_name = (backup_dir / base_name).u8string() + "_" +std::to_string(file_cur_name->first) +file_ext.u8string();
+		
+		// delete files that go above max file limit
+		if(file_cur_name->first >= max_backups){
+			if(0 != remove(abs_cur_name.c_str())){
+				return false;
+			}
+			continue;
+		}
+		const synfig::String &file_new_name = (backup_dir / base_name).u8string() + "_" +std::to_string(file_cur_name->first + 1) +file_ext.u8string();
+		if (0 !=  rename(abs_cur_name.c_str(), file_new_name.c_str())){
 			return false;
 		}
-		found_backups -= 1;
 	}
 
 	// add recent backup file from temp file
