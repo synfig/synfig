@@ -210,7 +210,7 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 	tool_button->property_has_tooltip() = true;
 	tool_button->signal_query_tooltip().connect([state](int,int,bool,const Glib::RefPtr<Gtk::Tooltip>& tooltip) -> bool
 	{
-		std::string tooltip_string = state->get_local_name();
+		std::string tooltip_string = state->get_local_name() + std::string (" Tool") ;
 
 		Gtk::AccelKey key;
 		if (Gtk::AccelMap::lookup_entry(std::string("<Actions>/action_group_state_manager/state-") + state->get_name(), key)) {

@@ -91,7 +91,7 @@ StateFill studio::state_fill;
 /* === M E T H O D S ======================================================= */
 
 StateFill::StateFill():
-	Smach::state<StateFill_Context>("fill", N_("Fill Tool"))
+	Smach::state<StateFill_Context>("fill", N_("Fill"))
 {
 	insert(event_def(EVENT_LAYER_SELECTION_CHANGED,&StateFill_Context::event_stop_handler));
 	insert(event_def(EVENT_STOP,&StateFill_Context::event_stop_handler));

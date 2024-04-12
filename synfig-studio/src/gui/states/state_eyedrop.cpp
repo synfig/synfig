@@ -90,7 +90,7 @@ StateEyedrop studio::state_eyedrop;
 /* === M E T H O D S ======================================================= */
 
 StateEyedrop::StateEyedrop():
-	Smach::state<StateEyedrop_Context>("eyedrop", N_("Eyedropper Tool"))
+	Smach::state<StateEyedrop_Context>("eyedrop", N_("Eyedropper"))
 {
 	insert(event_def(EVENT_LAYER_SELECTION_CHANGED,&StateEyedrop_Context::event_stop_handler));
 	insert(event_def(EVENT_STOP,&StateEyedrop_Context::event_stop_handler));

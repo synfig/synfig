@@ -247,7 +247,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StatePolygon::StatePolygon():
-	Smach::state<StatePolygon_Context>("polygon", N_("Polygon Tool"))
+	Smach::state<StatePolygon_Context>("polygon", N_("Polygon"))
 {
 	insert(event_def(EVENT_LAYER_SELECTION_CHANGED,&StatePolygon_Context::event_layer_selection_changed_handler));
 	insert(event_def(EVENT_STOP,&StatePolygon_Context::event_stop_handler));
