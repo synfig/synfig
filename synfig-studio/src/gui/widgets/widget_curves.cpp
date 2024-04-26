@@ -57,6 +57,8 @@
 
 #include <vector>
 
+#include <app.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -80,10 +82,17 @@ using namespace studio;
 struct Widget_Curves::Channel
 {
 	String name;
-	Gdk::RGBA color;
+	Gdk::RGBA get_color() const {
+		if (App::use_dark_theme) return dark_theme_color;
+		return color;
+	};
 	std::map<Real, Real> values;
-	explicit Channel(const String &name = String(), const Gdk::RGBA& color = Gdk::RGBA()):
-		name(name), color(color) { }
+	explicit Channel(const String &name = String(), const Gdk::RGBA& color = Gdk::RGBA(), const Gdk::RGBA& dark_theme_color = Gdk::RGBA()):
+		name(name), color(color), dark_theme_color(dark_theme_color) { }
+
+private:
+	Gdk::RGBA color;
+	Gdk::RGBA dark_theme_color;
 };
 
 struct Widget_Curves::CurveStruct: sigc::trackable
@@ -92,10 +101,10 @@ struct Widget_Curves::CurveStruct: sigc::trackable
 	ValueDesc value_desc;
 	std::vector<Channel> channels;
 
-	void add_channel(const String &name, const Gdk::RGBA& color)
-		{ channels.push_back(Channel(name, color)); }
-	void add_channel(const String &name, const String &color)
-		{ add_channel(name, Gdk::RGBA(color)); }
+	void add_channel(const String &name, const Gdk::RGBA& color, const Gdk::RGBA& dark_theme_color)
+		{ channels.push_back(Channel(name, color, dark_theme_color)); }
+	void add_channel(const String &name, const std::string& color, const std::string& dark_theme_color)
+		{ add_channel(name, Gdk::RGBA(color), Gdk::RGBA(dark_theme_color)); }
 
 	CurveStruct() { }
 
@@ -109,50 +118,50 @@ struct Widget_Curves::CurveStruct: sigc::trackable
 
 		Type &type = value_desc.get_value_type();
 		if (type == type_real) {
-			add_channel("real",     "#007f7f");
+			add_channel("real",     "#007f7f", "#8cffff");
 		} else
 		if (type == type_time) {
-			add_channel("time",     "#7f7f00");
+			add_channel("time",     "#7f7f00", "#ffff50");
 		} else
 		if (type == type_integer) {
-			add_channel("int",      "#7f0000");
+			add_channel("int",      "#7f0000", "#ff8080");
 		} else
 		if (type == type_bool) {
-			add_channel("bool",     "#ff7f00");
+			add_channel("bool",     "#ff7f00", "#ff7f00");
 		} else
 		if (type == type_angle) {
-			add_channel("theta",    "#004f4f");
+			add_channel("theta",    "#004f4f", "#90ffff");
 		} else
 		if (type == type_color) {
-			add_channel("red",      "#7f0000");
-			add_channel("green",    "#007f00");
-			add_channel("blue",     "#00007f");
-			add_channel("alpha",    "#000000");
+			add_channel("red",      "#7f0000", "#ff6060");
+			add_channel("green",    "#007f00", "#65ff65");
+			add_channel("blue",     "#00007f", "#8c9fff");
+			add_channel("alpha",    "#000000", "#000000");
 		} else
 		if (type == type_vector) {
-			add_channel("x",        "#7f007f");
-			add_channel("y",        "#007f7f");
+			add_channel("x",        "#00f1f1", "#00f1f1");
+			add_channel("y",        "#00f1f1", "#00f1f1");
 		} else
 		if (type == type_bline_point) {
-			add_channel("v.x",      "#ff7f00");
-			add_channel("v.y",      "#7f3f00");
-			add_channel("width",    "#000000");
-			add_channel("origin",   "#ffffff");
-			add_channel("tsplit",   "#ff00ff");
-			add_channel("t1.x",     "#ff0000");
-			add_channel("t1.y",     "#7f0000");
-			add_channel("t2.x",     "#ffff00");
-			add_channel("t2.y",     "#7f7f00");
-			add_channel("rsplit",   "#ff00ff");
-			add_channel("asplit",   "#ff00ff");
+			add_channel("v.x",      "#ff7f00", "#ff7f00");
+			add_channel("v.y",      "#7f3f00", "#ffbc7b");
+			add_channel("width",    "#000000", "#000000");
+			add_channel("origin",   "#ffffff", "#ffffff");
+			add_channel("tsplit",   "#ff00ff", "#ff00ff");
+			add_channel("t1.x",     "#ff0000", "#ff0000");
+			add_channel("t1.y",     "#7f0000", "#ff5e5e");
+			add_channel("t2.x",     "#ffff00", "#ffff00");
+			add_channel("t2.y",     "#7f7f00", "#ffff7e");
+			add_channel("rsplit",   "#ff00ff", "#ff00ff");
+			add_channel("asplit",   "#ff00ff", "#ff00ff");
 		} else
 		if (type == type_width_point) {
-			add_channel("position", "#ff0000");
-			add_channel("width",    "#00ff00");
+			add_channel("position", "#ff0000", "#ff0000");
+			add_channel("width",    "#00ff00", "#00ff00");
 		} else
 		if (type == type_dash_item) {
-			add_channel("offset",   "#ff0000");
-			add_channel("length",   "#00ff00");
+			add_channel("offset",   "#ff0000", "#ff0000");
+			add_channel("length",   "#00ff00", "#00ff00");
 		}
 
 		return !channels.empty();
@@ -691,7 +700,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 			range_max = std::max(range_max, old_value);
 			range_min = std::min(range_min, old_value);
 
-			Gdk::Cairo::set_source_rgba(cr, curve_it->channels[c].color);
+			Gdk::Cairo::set_source_rgba(cr, curve_it->channels[c].get_color());
 			cr->move_to(x, y);
 			cr->line_to(x, old_y);
 			cr->stroke();
@@ -747,7 +756,7 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 				if (p_it->get_x() >= last_timepoint_pixel)
 					break;
 			}
-			Gdk::Cairo::set_source_rgba(cr, curve_it->channels[c].color);
+			Gdk::Cairo::set_source_rgba(cr, curve_it->channels[c].get_color());
 			cr->stroke();
 
 			// Draw the remaining curve
