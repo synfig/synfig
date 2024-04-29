@@ -204,7 +204,7 @@ Layer_MotionBlur::build_rendering_task_vfunc(Context context) const
 	}
 
 	const Color::BlendMethod blend_method = no_blur_effect ? Color::BLEND_COMPOSITE : Color::BLEND_ADD_COMPOSITE;
-	const Real k = no_blur_effect ? 1.0 : (1.0/sum);
+	const Real k = no_blur_effect ? 1.0 : (approximate_zero(sum) ? 0.0 : (1.0/sum));
 
 	rendering::Task::Handle task;
 	for(int i = 0; i < samples; i++)
@@ -226,5 +226,7 @@ Layer_MotionBlur::build_rendering_task_vfunc(Context context) const
 		task = task_blend;
 	}
 
+	if (!task)
+		return context.build_rendering_task();
 	return task;
 }
