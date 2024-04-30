@@ -1,3 +1,20 @@
+## Version 1.4.5 [ETL] [core] [studio]
+- [`5e0476b`](https://github.com/synfig/synfig/commit/5e0476bcc263b8906eb3855821a59f336d6be8ab) Fix distortions at the end of lines made with the drawing tool ([#2471](https://github.com/synfig/synfig/issues/2471)) [studio]
+- [`015305a`](https://github.com/synfig/synfig/commit/015305ae9fd56ff23a7b0b25c27e7f159a555d3d) fix: crash on moving a layer following a bline reference ([#2971](https://github.com/synfig/synfig/issues/2971)) [core] [studio]
+- [`feb62c5`](https://github.com/synfig/synfig/commit/feb62c586f9b8c5378ce724854c7180d674e8326) Replaced `abs` with `std::fabs` for float values and `std::abs` for templates and int values ([#2311](https://github.com/synfig/synfig/issues/2311)) [ETL] [core] [studio]
+- [`4c3f97d`](https://github.com/synfig/synfig/commit/4c3f97dfd4340b74e72f0b2a033aeed70b6efc5a) fix importing into unsaved SIF file ([#2243](https://github.com/synfig/synfig/issues/2243)) [studio]
+- [`db959bf`](https://github.com/synfig/synfig/commit/db959bf7d062bdb0eb658ddabb2735385a8872aa) Merge PR [#2505](https://github.com/synfig/synfig/issues/2505): Fixed issue with opening a file from a network folder on Windows [core]
+- [`86d3434`](https://github.com/synfig/synfig/commit/86d3434b9356064015d4dfe4fffd57ef25a1f9c8) Fixed Synfig Studio crash on exit (MacOS) ([#2540](https://github.com/synfig/synfig/issues/2540)) [studio]
+- [`3e130dc`](https://github.com/synfig/synfig/commit/3e130dc3de7161fa8385b8cd9f3a5920d3c20f18) fix: crash with a bline containing only 2 points that are too close ([#2855](https://github.com/synfig/synfig/issues/2855)) [studio]
+- [`2f4b441`](https://github.com/synfig/synfig/commit/2f4b441d4b04f4e20cd1c0f40e18c7f4afe13903) chore: bump year to 2024 ([#3299](https://github.com/synfig/synfig/issues/3299)) [studio]
+- [`784dbb1`](https://github.com/synfig/synfig/commit/784dbb1c773e9f1e6c145fa571b7083613106027) fix: crash occurs under Wayland when using tablet ([#2988](https://github.com/synfig/synfig/issues/2988)) [studio]
+- [`d0dba5b`](https://github.com/synfig/synfig/commit/d0dba5bd7aaa2ec3008b26050a0f73565d986b04) fix: a crash on program exit if bones were used ([#3037](https://github.com/synfig/synfig/issues/3037)) [core]
+- [`b5c8aa4`](https://github.com/synfig/synfig/commit/b5c8aa4dfc0546fe5a9b5c9ea64969f50ff1aaa0) fix: crash when clicking on rows of "Library Panel"  ([#3046](https://github.com/synfig/synfig/issues/3046)) [studio]
+- [`0e662dd`](https://github.com/synfig/synfig/commit/0e662dd1a22c6d9ff87699546bb2ffb900e85f37) fix: button `Open With History` is enabled only for .sfg files ([#3101](https://github.com/synfig/synfig/issues/3101)) [studio]
+- [`87e1315`](https://github.com/synfig/synfig/commit/87e131531c9f91be512650134227522fba756d72) fix: selecting a handle while the Graphs window tooltip is open crashes the GUI ([#3207](https://github.com/synfig/synfig/issues/3207)) [studio]
+- [`04afca0`](https://github.com/synfig/synfig/commit/04afca0085ec08dafafd033cefc210ca45ae4781) fix: added ImageMagick 7.1 library initialization ([#2876](https://github.com/synfig/synfig/issues/2876)) [core]
+- [`566fd7f`](https://github.com/synfig/synfig/commit/566fd7fa09f780caa7015196dc6c468944503c3b) perf: avoid canvas introspection when DockInfo is not shown ([#3328](https://github.com/synfig/synfig/issues/3328)) [studio]
+
 ## Version 1.4.4 [ETL] [core] [studio]
 - [`f6f153b`](https://github.com/synfig/synfig/commit/f6f153b5551f97cc6b50546ff53ca3c791d1c5cc) fix: missing last frame for ffmpeg target ([#2912](https://github.com/synfig/synfig/issues/2912)) [core]
 - [`0ab9d69`](https://github.com/synfig/synfig/commit/0ab9d69e4ce0b923d22185b2f6508b71ea7162cd) Merge PR ([#2445](https://github.com/synfig/synfig/issues/2445)): Fixed crash when using Draw tool (Fedora/Flatpak) [studio]
@@ -51,7 +68,7 @@
 - [`391f8a1`](https://github.com/synfig/synfig/commit/391f8a1540b4c9339bb1141f4067221f6cc87b8b) Fix magick++ target missing in AppImage (issue [#2320](https://github.com/synfig/synfig/issues/2320)) ([#2324](https://github.com/synfig/synfig/issues/2324)) [core]
 - [`b0d439b`](https://github.com/morevnaproject/morevna-builds/commit/b0d439ba0668a185512e1c49cae6caba25fe917a) Python updated to version 3.8.10 in Windows build.
 - [`ef1f618`](https://github.com/morevnaproject/morevna-builds/commit/ef1f618802ce1dc9a302017da4b7b225ffde6222) Use 64bit Python build in 64bit packages for Windows.
-- [`2e3aefb`](https://github.com/morevnaproject/morevna-builds/commit/2e3aefbb94cf5c7dc831a7f9c487ddae7568f889) Appimage: Fix fontconfig compatibiity for recent linux distros.
+- [`2e3aefb`](https://github.com/morevnaproject/morevna-builds/commit/2e3aefbb94cf5c7dc831a7f9c487ddae7568f889) Appimage: Fix fontconfig compatibility for recent linux distros.
 
 ## Version 1.4.2 [ETL] [core] [studio]
 - [`b7305a9`](https://github.com/synfig/synfig/commit/b7305a9a3893caefffc1c36118e67f2f0610a1d5) Merge pull request [#1173](https://github.com/synfig/synfig/issues/1173) from rodolforg/fix-sound-dock-scroll
