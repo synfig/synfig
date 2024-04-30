@@ -1,13 +1,13 @@
 [main]
 host = https://www.transifex.com
 
-[synfig.synfig-core-stable]
+[o:morevnaproject:p:synfig:r:synfig-core-stable]
 file_filter = synfig-core/po/<lang>.po
 source_file = synfig-core/po/synfig.pot
 source_lang = en
 type = PO
 
-[synfig.synfig-studio-stable]
+[o:morevnaproject:p:synfig:r:synfig-studio-stable]
 file_filter = synfig-studio/po/<lang>.po
 source_file = synfig-studio/po/synfigstudio.pot
 source_lang = en
