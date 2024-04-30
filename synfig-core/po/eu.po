@@ -4,17 +4,17 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Alexander Gabilondo <alexgabi@disroot.org>, 2022
+# Alexander Gabilondo <alexgabi@disroot.org>, 2023
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
-"POT-Creation-Date: 2022-10-24 08:55+0700\n"
+"POT-Creation-Date: 2022-10-26 07:53+0700\n"
 "PO-Revision-Date: 2022-05-25 14:46+0000\n"
-"Last-Translator: Alexander Gabilondo <alexgabi@disroot.org>, 2022\n"
-"Language-Team: Basque (https://www.transifex.com/morevnaproject/teams/34857/eu/)\n"
+"Last-Translator: Alexander Gabilondo <alexgabi@disroot.org>, 2023\n"
+"Language-Team: Basque (https://app.transifex.com/morevnaproject/teams/34857/eu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,7 +24,7 @@ msgstr ""
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:73
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:588
 msgid "Text"
-msgstr ""
+msgstr "Testua"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:74
 #: ../src/modules/lyr_std/import.cpp:70
@@ -42,7 +42,7 @@ msgstr "Beste bat"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:104
 msgid "Text Layer"
-msgstr "Testua geruza"
+msgstr "Testu-geruza"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:417
 msgid "unable to initialize"
@@ -50,11 +50,11 @@ msgstr "Ezin da abiarazi"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:436
 msgid "empty font set"
-msgstr ""
+msgstr "letra-tipo hutsik"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:589
 msgid "Text to Render"
-msgstr ""
+msgstr "Errendatzeko testua"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:594
 #: ../src/modules/lyr_std/shade.cpp:633
@@ -71,66 +71,66 @@ msgstr "Testuaren kolorea"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:599
 msgid "Font Family"
-msgstr ""
+msgstr "Letra-tipoen familia"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:604
 msgid "Style"
-msgstr ""
+msgstr "Estiloa"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:606
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:616
 #: ../src/synfig/valuenodes/valuenode_derivative.cpp:373
 msgid "Normal"
-msgstr ""
+msgstr "Normala"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:607
 msgid "Oblique"
-msgstr ""
+msgstr "Zeiharra"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:608
 msgid "Italic"
-msgstr ""
+msgstr "Etzana"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:612
 #: ../src/synfig/valuenodes/valuenode_composite.cpp:821
 msgid "Weight"
-msgstr ""
+msgstr "Pisua"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:614
 msgid "Ultralight"
-msgstr ""
+msgstr "Ultraarina"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:615
 msgid "light"
-msgstr ""
+msgstr "arina"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:617
 msgid "Bold"
-msgstr ""
+msgstr "Lodia"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:618
 msgid "Ultrabold"
-msgstr ""
+msgstr "Ultralodia"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:619
 msgid "Heavy"
-msgstr ""
+msgstr "Astuna"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:622
 msgid "Horizontal Spacing"
-msgstr ""
+msgstr "Tarte horizontala"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:623
 msgid "Describes how close glyphs are horizontally"
-msgstr ""
+msgstr "Glifoak horizontalki zein hurbil dauden deskribatzen du"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:627
 msgid "Vertical Spacing"
-msgstr ""
+msgstr "Tarte bertikala"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:628
 msgid "Describes how close lines of text are vertically"
-msgstr ""
+msgstr "Testu-lerroak bertikalki zein hurbil dauden deskribatzen du"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:632
 #: ../src/modules/lyr_std/shade.cpp:639
@@ -145,7 +145,7 @@ msgstr "Tamaina"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:633
 msgid "Size of the text"
-msgstr ""
+msgstr "Testuaren tamaina"
 
 #: ../src/modules/lyr_freetype/lyr_freetype.cpp:640
 msgid "Orientation"

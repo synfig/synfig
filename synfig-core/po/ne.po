@@ -1,16 +1,16 @@
 # Translation file for Synfig Core package.
-# Copyright (C) 2021 Synfig Contributors
+# Copyright (C) 2022 Synfig Contributors
 # This file is distributed under the same license as the Synfig Core package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
-# Translators:
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Synfig UI\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
-"POT-Creation-Date: 2021-05-28 22:52+0700\n"
-"PO-Revision-Date: 2021-05-28 15:52+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>\n"
-"Language-Team: Nepali (http://www.transifex.com/morevnaproject/synfig/language/ne/)\n"
+"POT-Creation-Date: 2022-10-26 07:53+0700\n"
+"PO-Revision-Date: 2022-05-25 14:46+0000\n"
+"Language-Team: Nepali (https://app.transifex.com/morevnaproject/teams/34857/ne/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -30,7 +30,7 @@ msgstr ""
 #: ../src/synfig/layers/layer_duplicate.cpp:63
 #: ../src/synfig/layers/layer_filtergroup.cpp:63
 #: ../src/synfig/layers/layer_group.cpp:66
-#: ../src/synfig/layers/layer_skeleton.cpp:59
+#: ../src/synfig/layers/layer_skeleton.cpp:62
 #: ../src/synfig/layers/layer_sound.cpp:60
 #: ../src/synfig/layers/layer_switch.cpp:64
 msgid "Other"
@@ -1040,11 +1040,11 @@ msgstr ""
 msgid "Unable to write info header"
 msgstr ""
 
-#: ../src/modules/mod_dv/trgt_dv.cpp:169 ../src/modules/mod_dv/trgt_dv.cpp:178
-#: ../src/modules/mod_dv/trgt_dv.cpp:185 ../src/modules/mod_dv/trgt_dv.cpp:195
-#: ../src/modules/mod_dv/trgt_dv.cpp:203 ../src/modules/mod_dv/trgt_dv.cpp:208
-#: ../src/modules/mod_dv/trgt_dv.cpp:212 ../src/modules/mod_dv/trgt_dv.cpp:221
-#: ../src/modules/mod_dv/trgt_dv.cpp:230
+#: ../src/modules/mod_dv/trgt_dv.cpp:167 ../src/modules/mod_dv/trgt_dv.cpp:176
+#: ../src/modules/mod_dv/trgt_dv.cpp:183 ../src/modules/mod_dv/trgt_dv.cpp:193
+#: ../src/modules/mod_dv/trgt_dv.cpp:201 ../src/modules/mod_dv/trgt_dv.cpp:206
+#: ../src/modules/mod_dv/trgt_dv.cpp:210 ../src/modules/mod_dv/trgt_dv.cpp:219
+#: ../src/modules/mod_dv/trgt_dv.cpp:228
 msgid "Unable to open pipe to encodedv"
 msgstr ""
 
@@ -1110,23 +1110,23 @@ msgid ""
 "Please install \"ffmpeg\" or \"avconv\" (libav-tools package)."
 msgstr ""
 
-#: ../src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:329
+#: ../src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:330
 msgid "Unable to open pipe to ffmpeg (no pipe)"
 msgstr ""
 
-#: ../src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:336
+#: ../src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:337
 msgid "Unable to open pipe to ffmpeg (pid == -1)"
 msgstr ""
 
-#: ../src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:346
+#: ../src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:347
 msgid "Unable to open pipe to ffmpeg (dup2( p[0], STDIN_FILENO ) == -1)"
 msgstr ""
 
-#: ../src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:368
+#: ../src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:369
 msgid "Unable to open pipe to ffmpeg (exec failed)"
 msgstr ""
 
-#: ../src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:386
+#: ../src/modules/mod_ffmpeg/trgt_ffmpeg.cpp:387
 msgid "Unable to open pipe to ffmpeg (no file)"
 msgstr ""
 
@@ -2111,6 +2111,14 @@ msgstr ""
 msgid "Import Svg"
 msgstr ""
 
+#: ../src/modules/mod_svg/svg_parser.cpp:268
+msgid "Synfig Animation 1"
+msgstr ""
+
+#: ../src/modules/mod_svg/svg_parser.cpp:482
+msgid "Inline Canvas"
+msgstr ""
+
 #: ../src/synfig/base_types.cpp:84 ../src/synfig/base_types.cpp:85
 msgid "bool"
 msgstr ""
@@ -2279,12 +2287,12 @@ msgid "Lower right-hand Corner of image"
 msgstr ""
 
 #: ../src/synfig/layers/layer_composite.cpp:181
-#: ../src/synfig/layers/layer_skeleton.cpp:139
+#: ../src/synfig/layers/layer_skeleton.cpp:142
 msgid "Opacity"
 msgstr ""
 
 #: ../src/synfig/layers/layer_composite.cpp:182
-#: ../src/synfig/layers/layer_skeleton.cpp:140
+#: ../src/synfig/layers/layer_skeleton.cpp:143
 msgid "Alpha channel of the layer"
 msgstr ""
 
@@ -2384,7 +2392,7 @@ msgid "Curve Type For Weighting Subsamples"
 msgstr ""
 
 #: ../src/synfig/layers/layer_motionblur.cpp:140
-#: ../src/synfig/valuenodes/valuenode_const.cpp:170
+#: ../src/synfig/valuenodes/valuenode_const.cpp:171
 msgid "Constant"
 msgstr ""
 
@@ -2508,16 +2516,16 @@ msgstr ""
 msgid "Even/Odd"
 msgstr ""
 
-#: ../src/synfig/layers/layer_skeleton.cpp:58
+#: ../src/synfig/layers/layer_skeleton.cpp:61
 msgid "Skeleton"
 msgstr ""
 
-#: ../src/synfig/layers/layer_skeleton.cpp:145
+#: ../src/synfig/layers/layer_skeleton.cpp:148
 #: ../src/synfig/valuenodes/valuenode_bone.cpp:582
 msgid "Name"
 msgstr ""
 
-#: ../src/synfig/layers/layer_skeleton.cpp:148
+#: ../src/synfig/layers/layer_skeleton.cpp:151
 #: ../src/synfig/layers/layer_skeletondeformation.cpp:105
 msgid "Bones"
 msgstr ""
@@ -2641,20 +2649,20 @@ msgstr ""
 
 #: ../src/synfig/loadcanvas.cpp:281 ../src/synfig/loadcanvas.cpp:300
 #: ../src/synfig/loadcanvas.cpp:319 ../src/synfig/loadcanvas.cpp:338
-#: ../src/synfig/loadcanvas.cpp:497 ../src/synfig/loadcanvas.cpp:1276
+#: ../src/synfig/loadcanvas.cpp:497 ../src/synfig/loadcanvas.cpp:1278
 #, c-format
 msgid "<%s> should not contain anything"
 msgstr ""
 
 #: ../src/synfig/loadcanvas.cpp:285 ../src/synfig/loadcanvas.cpp:304
 #: ../src/synfig/loadcanvas.cpp:323 ../src/synfig/loadcanvas.cpp:342
-#: ../src/synfig/loadcanvas.cpp:501 ../src/synfig/loadcanvas.cpp:1280
+#: ../src/synfig/loadcanvas.cpp:501 ../src/synfig/loadcanvas.cpp:1282
 #, c-format
 msgid "<%s> is missing \"value\" attribute"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:512 ../src/synfig/loadcanvas.cpp:1465
-#: ../src/synfig/loadcanvas.cpp:1483
+#: ../src/synfig/loadcanvas.cpp:512 ../src/synfig/loadcanvas.cpp:1467
+#: ../src/synfig/loadcanvas.cpp:1485
 #, c-format
 msgid "Bad value \"%s\" in <%s>"
 msgstr ""
@@ -2664,209 +2672,209 @@ msgstr ""
 msgid "<%s> is missing \"pos\" attribute"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1676
+#: ../src/synfig/loadcanvas.cpp:1678
 #, c-format
 msgid "Unable to create <animated> with type \"%s\""
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1698
+#: ../src/synfig/loadcanvas.cpp:1700
 msgid "<waypoint> is missing attribute \"time\""
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1711
+#: ../src/synfig/loadcanvas.cpp:1713
 msgid ""
 "Found \"use\" attribute for <waypoint>, but it wasn't empty. Ignoring "
 "contents..."
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1727
+#: ../src/synfig/loadcanvas.cpp:1729
 #, c-format
 msgid "Unknown ID (%s) referenced in waypoint"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1733 ../src/synfig/loadcanvas.cpp:1745
+#: ../src/synfig/loadcanvas.cpp:1735 ../src/synfig/loadcanvas.cpp:1747
 #, c-format
 msgid "<%s> is missing its data"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1762
+#: ../src/synfig/loadcanvas.cpp:1764
 msgid "Bad data for <waypoint>"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1778
+#: ../src/synfig/loadcanvas.cpp:1780
 #, c-format
 msgid "Unexpected element <%s> after <waypoint> data, ignoring..."
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1879
+#: ../src/synfig/loadcanvas.cpp:1881
 #, c-format
 msgid "Missing attribute \"type\" in <%s>"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1887
+#: ../src/synfig/loadcanvas.cpp:1889
 #, c-format
 msgid "Bad type in <%s>"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1899
+#: ../src/synfig/loadcanvas.cpp:1901
 #, c-format
 msgid "Error creating ValueNode <%s> with type '%s'.  Refer to '%s'"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1909
+#: ../src/synfig/loadcanvas.cpp:1911
 #, c-format
 msgid "<%s> did not accept type '%s'"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1941 ../src/synfig/loadcanvas.cpp:2028
+#: ../src/synfig/loadcanvas.cpp:1943 ../src/synfig/loadcanvas.cpp:2034
 #, c-format
 msgid "'%s' was already defined in <%s>"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1954
+#: ../src/synfig/loadcanvas.cpp:1960
 #, c-format
 msgid "'%s' attribute in <%s> references unknown ID '%s'"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1972
+#: ../src/synfig/loadcanvas.cpp:1978
 #, c-format
 msgid "Unable to set link '\"%s\" to ValueNode \"%s\" (link #%d in \"%s\")"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:1996
+#: ../src/synfig/loadcanvas.cpp:2002
 #, c-format
 msgid "Unknown Exception thrown when referencing ValueNode \"%s\""
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2043
+#: ../src/synfig/loadcanvas.cpp:2049
 #, c-format
 msgid "element <%s> is missing its contents"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2052
+#: ../src/synfig/loadcanvas.cpp:2058
 #, c-format
 msgid "Parse of '%s' failed"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2068
+#: ../src/synfig/loadcanvas.cpp:2074
 #, c-format
 msgid "Unable to connect value node ('%s' of type '%s') to link %d (%s)"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2086
+#: ../src/synfig/loadcanvas.cpp:2092
 #, c-format
 msgid "Unknown Exception thrown when working on element \"%s\""
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2187
+#: ../src/synfig/loadcanvas.cpp:2193
 #, c-format
 msgid "<%s> is missing link %d (%s)"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2237
+#: ../src/synfig/loadcanvas.cpp:2243
 msgid "Unable to create <list>"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2279 ../src/synfig/loadcanvas.cpp:2539
+#: ../src/synfig/loadcanvas.cpp:2285 ../src/synfig/loadcanvas.cpp:2545
 msgid "<entry> is missing its contents or missing \"use\" element"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2370
+#: ../src/synfig/loadcanvas.cpp:2376
 msgid "Unable to create <dynamic_list>"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2609
+#: ../src/synfig/loadcanvas.cpp:2615
 #, c-format
 msgid "Bad data in <%s>"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2675
+#: ../src/synfig/loadcanvas.cpp:2681
 #, c-format
 msgid "Expected a ValueNode.  Refer to '%s'"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2696
+#: ../src/synfig/loadcanvas.cpp:2702
 #, c-format
 msgid "Bad ID \"%s\""
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2702
+#: ../src/synfig/loadcanvas.cpp:2708
 #, c-format
 msgid "Duplicate ID \"%s\""
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2708
+#: ../src/synfig/loadcanvas.cpp:2714
 #, c-format
 msgid "Unknown Exception thrown when adding ValueNode \"%s\""
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2765
+#: ../src/synfig/loadcanvas.cpp:2773
 msgid "Missing \"type\" attribute to \"layer\" element"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2786
+#: ../src/synfig/loadcanvas.cpp:2794
 msgid "Installed layer version is smaller than layer version in file"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2835
+#: ../src/synfig/loadcanvas.cpp:2843
 msgid "<name> entry for <layer> is not yet supported. Ignoring..."
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2838
+#: ../src/synfig/loadcanvas.cpp:2846
 msgid "<desc> entry for <layer> is not yet supported. Ignoring..."
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2846
+#: ../src/synfig/loadcanvas.cpp:2854
 msgid "Missing \"name\" attribute for <param>."
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2863
+#: ../src/synfig/loadcanvas.cpp:2871
 msgid ""
 "Found \"use\" attribute for <param>, but it wasn't empty. Ignoring "
 "contents..."
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2868
+#: ../src/synfig/loadcanvas.cpp:2876
 msgid "Empty use=\"\" value in <param>"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2874
+#: ../src/synfig/loadcanvas.cpp:2882
 #, c-format
 msgid "Failed to load subcanvas '%s'"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2876
+#: ../src/synfig/loadcanvas.cpp:2884
 msgid "Layer rejected canvas link"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2929
+#: ../src/synfig/loadcanvas.cpp:2937
 #, c-format
 msgid "Unknown ID (%s) referenced in parameter \"%s\""
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2945
+#: ../src/synfig/loadcanvas.cpp:2953
 msgid "<param> is either missing its contents, or missing a \"use\" attribute."
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:2960 ../src/synfig/loadcanvas.cpp:2970
+#: ../src/synfig/loadcanvas.cpp:2968 ../src/synfig/loadcanvas.cpp:2978
 msgid "Bad data for <param>"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:3035
+#: ../src/synfig/loadcanvas.cpp:3043
 #, c-format
 msgid "Layer '%s' rejected value for parameter '%s'"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:3046
+#: ../src/synfig/loadcanvas.cpp:3054
 #, c-format
 msgid "Unexpected element <%s> after <param> data, ignoring..."
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:3201 ../src/synfig/loadcanvas.cpp:3209
+#: ../src/synfig/loadcanvas.cpp:3209 ../src/synfig/loadcanvas.cpp:3217
 msgid "Canvas with width or height less than one is not allowed"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:3228
+#: ../src/synfig/loadcanvas.cpp:3236
 msgid ""
 "ATTENTION!\n"
 "You are opening a file which was created in old version of Synfig. \n"
@@ -2875,60 +2883,60 @@ msgid ""
 "\n"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:3315
+#: ../src/synfig/loadcanvas.cpp:3323
 msgid "Group canvases cannot have a <defs> section"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:3322
+#: ../src/synfig/loadcanvas.cpp:3330
 msgid "Inline canvas cannot have a <bones> section"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:3330
+#: ../src/synfig/loadcanvas.cpp:3338
 msgid "Group canvases cannot have keyframes"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:3342
+#: ../src/synfig/loadcanvas.cpp:3350
 msgid "Group canvases cannot have metadata"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:3348
+#: ../src/synfig/loadcanvas.cpp:3356
 msgid "<meta> must have a name"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:3354
+#: ../src/synfig/loadcanvas.cpp:3362
 msgid "<meta> must have content"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:3394
+#: ../src/synfig/loadcanvas.cpp:3402
 msgid "blank \"name\" entity"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:3409
+#: ../src/synfig/loadcanvas.cpp:3417
 msgid "blank \"desc\" entity"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:3424
+#: ../src/synfig/loadcanvas.cpp:3432
 msgid "blank \"author\" entity"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:3459
+#: ../src/synfig/loadcanvas.cpp:3467
 #, c-format
 msgid "Canvas '%s' has undefined %s: %s"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:3461 ../src/synfig/valuenode.cpp:186
+#: ../src/synfig/loadcanvas.cpp:3469 ../src/synfig/valuenode.cpp:186
 msgid "ValueNode"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:3461
+#: ../src/synfig/loadcanvas.cpp:3469
 msgid "ValueNodes"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:3541
+#: ../src/synfig/loadcanvas.cpp:3549
 msgid "Can't find linked file"
 msgstr ""
 
-#: ../src/synfig/loadcanvas.cpp:3552 ../src/synfig/loadcanvas.cpp:3608
+#: ../src/synfig/loadcanvas.cpp:3560 ../src/synfig/loadcanvas.cpp:3616
 msgid "Can't open file"
 msgstr ""
 
@@ -3370,8 +3378,8 @@ msgid "Bad type: ValueNode '%s' doesn't accept type '%s'"
 msgstr ""
 
 #: ../src/synfig/valuenodes/valuenode_add.cpp:120
-#: ../src/synfig/valuenodes/valuenode_average.cpp:67
-#: ../src/synfig/valuenodes/valuenode_average.cpp:81
+#: ../src/synfig/valuenodes/valuenode_average.cpp:68
+#: ../src/synfig/valuenodes/valuenode_average.cpp:82
 #: ../src/synfig/valuenodes/valuenode_gradientrotate.cpp:82
 #: ../src/synfig/valuenodes/valuenode_integer.cpp:86
 #: ../src/synfig/valuenodes/valuenode_integer.cpp:148
@@ -3382,8 +3390,8 @@ msgstr ""
 #: ../src/synfig/valuenodes/valuenode_scale.cpp:92
 #: ../src/synfig/valuenodes/valuenode_stripes.cpp:85
 #: ../src/synfig/valuenodes/valuenode_subtract.cpp:117
-#: ../src/synfig/valuenodes/valuenode_weightedaverage.cpp:68
-#: ../src/synfig/valuenodes/valuenode_weightedaverage.cpp:78
+#: ../src/synfig/valuenodes/valuenode_weightedaverage.cpp:69
+#: ../src/synfig/valuenodes/valuenode_weightedaverage.cpp:79
 msgid ":Bad type "
 msgstr ""
 

@@ -14,17 +14,17 @@
 # Ricardo Graça <ricolandia@gmail.com>, 2022
 # Rui <xymarior@yandex.com>, 2022
 # Adriano Araújo Duarte <dhryko@hotmail.com>, 2022
-# rodolforg <rodolforg@gmail.com>, 2022
+# rodolforg <rodolforg@gmail.com>, 2023
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
-"POT-Creation-Date: 2022-10-24 08:55+0700\n"
+"POT-Creation-Date: 2022-10-26 07:53+0700\n"
 "PO-Revision-Date: 2022-05-25 14:47+0000\n"
-"Last-Translator: rodolforg <rodolforg@gmail.com>, 2022\n"
-"Language-Team: Portuguese (Brazil) (https://www.transifex.com/morevnaproject/teams/34857/pt_BR/)\n"
+"Last-Translator: rodolforg <rodolforg@gmail.com>, 2023\n"
+"Language-Team: Portuguese (Brazil) (https://app.transifex.com/morevnaproject/teams/34857/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -6737,7 +6737,7 @@ msgstr "Descrição do novo filtro"
 #: ../src/synfigapp/actions/layerencapsulateswitch.cpp:53
 #: ../src/synfigapp/actions/layerencapsulateswitch.cpp:73
 msgid "Group Layers into Switch"
-msgstr "Camadas de Grupo dentro da Comutação"
+msgstr "Agrupar Camadas em uma Comutação"
 
 #: ../src/synfigapp/actions/layerencapsulateswitch.cpp:73
 msgid "Group Layer into Switch"
@@ -6782,11 +6782,11 @@ msgstr "Você não pode ajustar camadas animadas"
 #: ../src/synfigapp/actions/layerlower.cpp:53
 #: ../src/synfigapp/actions/layerlower.cpp:73
 msgid "Lower Layer"
-msgstr "Camada Inferior"
+msgstr "Rebaixar Camada"
 
 #: ../src/synfigapp/actions/layerlower.cpp:73
 msgid "Lower Layers"
-msgstr "Camadas Inferiores"
+msgstr "Rebaixar Camadas"
 
 #: ../src/synfigapp/actions/layerlower.cpp:83
 msgid "Layer to be lowered"

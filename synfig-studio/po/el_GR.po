@@ -5,17 +5,17 @@
 # 
 # Translators:
 # Yannis Kaskamanidis <kiolalis@gmail.com>, 2022
-# BobSynfig, 2022
+# BobSynfig, 2023
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
-"POT-Creation-Date: 2022-10-24 08:55+0700\n"
+"POT-Creation-Date: 2022-10-26 07:53+0700\n"
 "PO-Revision-Date: 2022-05-25 14:47+0000\n"
-"Last-Translator: BobSynfig, 2022\n"
-"Language-Team: Greek (Greece) (https://www.transifex.com/morevnaproject/teams/34857/el_GR/)\n"
+"Last-Translator: BobSynfig, 2023\n"
+"Language-Team: Greek (Greece) (https://app.transifex.com/morevnaproject/teams/34857/el_GR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -28,7 +28,7 @@ msgstr "2D διανυσματικό στούντιο κινουμένων σχε
 
 #: ../org.synfig.SynfigStudio.desktop.in.h:2
 msgid "Create and edit 2D animations and compositions"
-msgstr ""
+msgstr "Δημιουργήστε και επεξεργαστείτε 2D κινούμενα σχέδια και συνθέσεις"
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:1
 msgid ""
@@ -59,7 +59,7 @@ msgstr ""
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:6
 msgid "Full-featured bone system"
-msgstr ""
+msgstr "Πλήρες σύστημα οστών"
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:7
 msgid ""
@@ -89,7 +89,7 @@ msgstr ""
 
 #: ../org.synfig.SynfigStudio.appdata.xml.in.h:13
 msgid "Synfig Studio workspace"
-msgstr ""
+msgstr "Χώρος εργασίας Synfig Studio"
 
 #: ../synfigstudio-thumbnailer.schemas.in.h:1
 msgid "enable"
@@ -7483,7 +7483,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/waypointremove.cpp:51
 msgid "Remove Waypoint"
-msgstr ""
+msgstr "Αφαιρέστε το waypoint"
 
 #: ../src/synfigapp/actions/waypointremove.cpp:76
 msgid "ValueNode (Animated)"
@@ -7491,7 +7491,7 @@ msgstr ""
 
 #: ../src/synfigapp/actions/waypointremove.cpp:81
 msgid "Waypoint to be Removed"
-msgstr ""
+msgstr "Waypoint προς κατάργηση"
 
 #: ../src/synfigapp/actions/waypointremove.cpp:126
 #, c-format
@@ -7521,83 +7521,84 @@ msgstr ""
 
 #: ../src/synfigapp/actions/waypointremove.cpp:197
 msgid "A Waypoint already exists at this point in time"
-msgstr ""
+msgstr "Ένα waypoint υπάρχει ήδη σε αυτό το χρονικό σημείο"
 
 #: ../src/synfigapp/actions/waypointset.cpp:51
 msgid "Set Waypoint"
-msgstr ""
+msgstr "Ορισμός waypoint"
 
 #: ../src/synfigapp/actions/waypointset.cpp:80
 msgid "Waypoint to be changed"
-msgstr ""
+msgstr "Waypoint προς αλλαγή"
 
 #: ../src/synfigapp/actions/waypointset.cpp:135
 #: ../src/synfigapp/actions/waypointset.cpp:196
 #: ../src/synfigapp/actions/waypointset.cpp:240
 #: ../src/synfigapp/actions/waypointset.cpp:261
 msgid "Unable to find waypoint"
-msgstr ""
+msgstr "Δεν είναι δυνατή η εύρεση του waypoint"
 
 #: ../src/synfigapp/actions/waypointsimpleadd.cpp:150
 msgid "The waypoint to remove no longer exists"
-msgstr ""
+msgstr "Το waypoint προς κατάργηση δεν υπάρχει πλέον"
 
 #: ../src/synfigapp/action_system.cpp:94
 msgid "Action is not ready."
-msgstr ""
+msgstr "Η δράση δεν είναι έτοιμη."
 
 #: ../src/synfigapp/action_system.cpp:114
 #, c-format
 msgid "Do you want to do action \"%s\"?"
-msgstr ""
+msgstr "Θέλετε να κάνετε δράση \"%s\";"
 
 #: ../src/synfigapp/action_system.cpp:115
 msgid "This action cannot be undone."
-msgstr ""
+msgstr "Αυτή η πράξη δε μπορεί να αναιρεθεί."
 
 #: ../src/synfigapp/action_system.cpp:120
 msgid "Continue"
-msgstr ""
+msgstr "Να συνεχίσει"
 
 #: ../src/synfigapp/action_system.cpp:132
 #: ../src/synfigapp/action_system.cpp:143
 #: ../src/synfigapp/action_system.cpp:149
 msgid "Failed"
-msgstr ""
+msgstr "Απέτυχε"
 
 #: ../src/synfigapp/action_system.cpp:177
 msgid "Successful"
-msgstr ""
+msgstr "Επιτυχής"
 
 #: ../src/synfigapp/action_system.cpp:196
 #: ../src/synfigapp/action_system.cpp:198
 msgid " (Undo): "
-msgstr ""
+msgstr "(Ξεκάνω):"
 
 #: ../src/synfigapp/action_system.cpp:244
 msgid "Failed to undo."
-msgstr ""
+msgstr "Αποτυχία αναίρεσης."
 
 #: ../src/synfigapp/action_system.cpp:265
 #: ../src/synfigapp/action_system.cpp:267
 msgid " (Redo): "
-msgstr ""
+msgstr "(Ξανακάνω):"
 
 #: ../src/synfigapp/action_system.cpp:313
 msgid "Failed to redo."
-msgstr ""
+msgstr "Αποτυχία επανάληψης."
 
 #: ../src/synfigapp/action_system.cpp:528
 msgid "State restore failure"
-msgstr ""
+msgstr "Αποτυχία επαναφοράς κατάστασης"
 
 #: ../src/synfigapp/canvasinterface.cpp:170
 msgid "Action Not Ready, unable to change mode"
 msgstr ""
+"Η ενέργεια δεν είναι έτοιμη, δεν είναι δυνατή η αλλαγή της λειτουργίας"
 
 #: ../src/synfigapp/canvasinterface.cpp:176
 msgid "Unable to change mode"
-msgstr ""
+msgstr "Δεν είναι δυνατή η αλλαγή λειτουργίας"
 
 #: ../src/synfigapp/canvasinterface.cpp:405
 #: ../src/synfigapp/canvasinterface.cpp:468
@@ -7607,84 +7608,86 @@ msgstr ""
 #: ../src/synfigapp/canvasinterface.cpp:1049
 #: ../src/synfigapp/canvasinterface.cpp:1067
 msgid "Action Not Ready"
-msgstr ""
+msgstr "Η δράση δεν είναι έτοιμη"
 
 #: ../src/synfigapp/canvasinterface.cpp:428
 msgid "Move Action Not Ready"
-msgstr ""
+msgstr "Μετακίνηση Η ενέργεια δεν είναι έτοιμη"
 
 #: ../src/synfigapp/canvasinterface.cpp:430
 msgid "Move Action Failed."
-msgstr ""
+msgstr "Η ενέργεια μετακίνησης απέτυχε."
 
 #: ../src/synfigapp/canvasinterface.cpp:438
 msgid "Add Layer To"
-msgstr ""
+msgstr "Προσθήκη επιπέδου σε"
 
 #: ../src/synfigapp/canvasinterface.cpp:484
 msgid "Empty name!"
-msgstr ""
+msgstr "Κενό όνομα!"
 
 #: ../src/synfigapp/canvasinterface.cpp:703
 msgid "File name must have an extension!"
-msgstr ""
+msgstr "Το όνομα αρχείου πρέπει να έχει επέκταση!"
 
 #: ../src/synfigapp/canvasinterface.cpp:716
 msgid "Import Lipsync"
-msgstr ""
+msgstr "Εισαγωγή Lipsync"
 
 #: ../src/synfigapp/canvasinterface.cpp:722
 msgid "Unable to create \"Switch\" layer"
-msgstr ""
+msgstr "Δεν είναι δυνατή η δημιουργία του επιπέδου \"Switch\""
 
 #: ../src/synfigapp/canvasinterface.cpp:732
 msgid "Unable to add \"Switch\" layer"
-msgstr ""
+msgstr "Δεν είναι δυνατή η προσθήκη του επιπέδου \"Switch\""
 
 #: ../src/synfigapp/canvasinterface.cpp:745
 #: ../src/synfigapp/canvasinterface.cpp:762
 msgid "Unable to create \"Sound\" layer"
-msgstr ""
+msgstr "Δεν είναι δυνατή η δημιουργία του επιπέδου \"Sound\""
 
 #: ../src/synfigapp/canvasinterface.cpp:752
 #: ../src/synfigapp/canvasinterface.cpp:769
 msgid "Unable to add \"Sound\" layer"
-msgstr ""
+msgstr "Δεν είναι δυνατή η προσθήκη του επιπέδου \"Sound\""
 
 #: ../src/synfigapp/canvasinterface.cpp:807
 msgid "Unable to open container"
-msgstr ""
+msgstr "Δεν είναι δυνατό το άνοιγμα του κοντέινερ"
 
 #: ../src/synfigapp/canvasinterface.cpp:811
 msgid "Unable to open this composition"
-msgstr ""
+msgstr "Δεν είναι δυνατό το άνοιγμα αυτής της σύνθεσης"
 
 #: ../src/synfigapp/canvasinterface.cpp:815
 msgid "Unable to create \"Group\" layer"
-msgstr ""
+msgstr "Δεν είναι δυνατή η δημιουργία του επιπέδου Group\""
 
 #: ../src/synfigapp/canvasinterface.cpp:819
 msgid "Could not set children lock of imported canvas"
-msgstr ""
+msgstr "Δεν ήταν δυνατός ο ορισμός παιδικού κλειδώματος εισαγόμενου καμβά"
 
 #: ../src/synfigapp/canvasinterface.cpp:833
 msgid ""
 "Uncaught exception when attempting\n"
 "to open this composition -- "
 msgstr ""
+"Ασύλληπτη εξαίρεση κατά την προσπάθεια\n"
+"για να ανοίξετε αυτή τη σύνθεση --"
 
 #: ../src/synfigapp/canvasinterface.cpp:839
 msgid "I don't know how to open images of this type -- "
-msgstr ""
+msgstr "Δεν ξέρω πώς να ανοίξω εικόνες αυτού του τύπου --"
 
 #: ../src/synfigapp/canvasinterface.cpp:946
 msgid "Import sequence"
-msgstr ""
+msgstr "Ακολουθία εισαγωγής"
 
 #: ../src/synfigapp/canvasinterface.cpp:957
 #: ../src/synfigapp/canvasinterface.cpp:1060
 msgid "Cannot create action"
-msgstr ""
+msgstr "Δεν είναι δυνατή η δημιουργία ενέργειας"
 
 #: ../src/synfigapp/canvasinterface.cpp:974
 #, c-format
@@ -7703,7 +7706,7 @@ msgstr ""
 
 #: ../src/synfigapp/canvasinterface.cpp:1047
 msgid "Nothing imported"
-msgstr ""
+msgstr "Τίποτα εισαγόμενο"
 
 #: ../src/synfigapp/canvasinterface.cpp:1221
 #, c-format
@@ -7727,7 +7730,7 @@ msgstr "(όχι/ναι)"
 
 #: ../src/synfigapp/uimanager.cpp:100
 msgid "(yes/no)"
-msgstr ""
+msgstr "(ναι/όχι)"
 
 #: ../src/synfigapp/uimanager.cpp:132
 msgid "error: "
@@ -7739,7 +7742,7 @@ msgstr "προειδοποίηση:"
 
 #: ../src/synfigapp/value_desc.cpp:78
 msgid "Layer Parameter"
-msgstr ""
+msgstr "Παράμετρος επιπέδου"
 
 #: ../src/synfigapp/value_desc.cpp:95
 msgid "Const ValueNode"

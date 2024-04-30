@@ -10,7 +10,7 @@
 # AlexL <loginov.alex.valer@gmail.com>, 2022
 # Илья Новиньков <vinurd@mail.ru>, 2022
 # Кира Гуляева, 2022
-# morevnaproject <ksee.zelgadis@gmail.com>, 2022
+# morevnaproject <ksee.zelgadis@gmail.com>, 2023
 # 
 #, fuzzy
 msgid ""
@@ -19,8 +19,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://github.com/synfig/synfig/issues\n"
 "POT-Creation-Date: 2022-10-26 07:53+0700\n"
 "PO-Revision-Date: 2022-05-25 14:46+0000\n"
-"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>, 2022\n"
-"Language-Team: Russian (https://www.transifex.com/morevnaproject/teams/34857/ru/)\n"
+"Last-Translator: morevnaproject <ksee.zelgadis@gmail.com>, 2023\n"
+"Language-Team: Russian (https://app.transifex.com/morevnaproject/teams/34857/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -2916,10 +2916,11 @@ msgid ""
 "\n"
 msgstr ""
 "ВНИМАНИЕ!\n"
-"Вы пытаетесь открыть файл созданный в устаревшей версии Synfig.\n"
-"Файл сохраненный  в текущей версии программы\n"
-"может некорректно открываться в предыдущих версиях Synfig.\n"
-"\n"
+"Вы пытаетесь открыть файл, который был создан в\n"
+"устаревшей версии Synfig.\n"
+"Если сохранить файл в текущей версии программы,\n"
+"то он может некорректно открываться в предыдущих\n"
+"версиях.\n"
 
 #: ../src/synfig/loadcanvas.cpp:3323
 msgid "Group canvases cannot have a <defs> section"

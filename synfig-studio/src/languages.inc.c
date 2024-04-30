@@ -32,6 +32,7 @@
 { "fa_IR",       "Farsi (Iran)",                     },
 { "fr",          "French",                           },
 { "gl",          "Galician",                         },
+{ "ka",          "Georgian",                         },
 { "he",          "Hebrew",                           },
 { "hi",          "Hindi",                            },
 { "hi_IN",       "Hindi (India)",                    },
