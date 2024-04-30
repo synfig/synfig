@@ -112,6 +112,7 @@ if [[ `uname` == "Darwin" ]]; then
 	#export LDFLAGS="-L$(brew --prefix libomp)/lib ${LDFLAGS}"
 	#export LDFLAGS="-L$(brew --prefix libtool)/lib ${LDFLAGS}"
 	#export CPPFLAGS="-I$(brew --prefix gettext)/include ${CPPFLAGS}"
+	export CPPFLAGS="-I/usr/local/include ${CPPFLAGS}"
 	#export PKG_CONFIG_PATH="$(brew --prefix libffi)/lib/pkgconfig:${PKG_CONFIG_PATH}"
 
 	# Force use system perl, see https://github.com/synfig/synfig/issues/794
