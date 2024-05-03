@@ -54,5 +54,4 @@
 { "ur",          "Urdu",                             },
 { "uz@Latn",     "Urdu (Latn)",                      },
 { "zh_CN",       "Chinese (China)",                  },
-{ "zh-Hant",     "Chinese Traditional",              },
 { "zh_TW",       "Chinese (Taiwan)",                 },
