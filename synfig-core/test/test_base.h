@@ -53,7 +53,7 @@ std::ostream& operator<<(std::ostream& os, const synfig::Vector& v)
 }
 
 // remove this operator after switch to c++17 (it is already implemented in c++17)
-#if !defined(__APPLE__) && !defined(__clang__)
+#if !defined(__APPLE__) && !defined(__clang__) || __clang_major__ == 6
 // macOS Clang toolchain has already defined this operator for all c++ versions
 std::ostream& operator<<(std::ostream& os, std::nullptr_t)
 {
