@@ -66,6 +66,8 @@ if ([ "$ID_LIKE" == "fedora" ] && [ "$VERSION_ID" > 22 ]); then
     PKG_LIST="git \
             intltool \
             cmake \
+            ninja-build \
+            ccache \
             libpng-devel \
             libjpeg-devel \
             fftw-devel \
@@ -112,6 +114,8 @@ elif ( [ "$ID_LIKE" == "fedora" ] && [ "$VERSION_ID" <= 22 ] ) || ( [ "$ID_LIKE"
     PKG_LIST="git \
             intltool \
             cmake \
+            ninja-build \
+            ccache \
             libpng-devel \
             libjpeg-devel \
             fftw-devel \
@@ -150,7 +154,7 @@ elif ( [ "$ID_LIKE" == "fedora" ] && [ "$VERSION_ID" <= 22 ] ) || ( [ "$ID_LIKE"
     fi
 
 elif [ "$ID_LIKE" == "suse opensuse" ]; then
-    PKG_LIST="git libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk3-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel shared-mime-info"
+    PKG_LIST="git cmake ninja ccache libpng-devel libjpeg-devel freetype-devel fontconfig-devel atk-devel pango-devel cairo-devel gtk3-devel gettext-devel libxml2-devel libxml++-devel gcc-c++ autoconf automake libtool libtool-ltdl-devel shared-mime-info"
     PKG_LIST="${PKG_LIST} OpenEXR-devel libmng-devel ImageMagick-c++-devel gtkmm3-devel glibmm2-devel"
 
     if ! ( rpm -qv $PKG_LIST ); then
@@ -189,7 +193,8 @@ elif [ "$ID_LIKE" == "arch" ]; then
             mlt \
             openexr \
             shared-mime-info \
-            cmake make \
+            cmake make ninja \
+            ccache \
             python-lxml"
     echo "Running pacman (root privileges are needed)..."
     echo
@@ -201,6 +206,8 @@ elif [ -f /etc/altlinux-release ]; then
                 git-core \
                 shared-mime-info \
                 cmake \
+                ninja-build \
+                ccache \
                 intltool \
                 gettext \
                 libjpeg-devel \
@@ -245,6 +252,8 @@ elif [ "$ID_LIKE" == "debian" ] || [ "$ID_LIKE" == "ubuntu" ] || [ "$ID_LIKE" ==
             PKG_LIST=" \
                 build-essential \
                 cmake \
+                ninja \
+                ccache \
                 autoconf automake autopoint \
                 shared-mime-info \
                 libltdl3-dev \
