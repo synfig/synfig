@@ -6,6 +6,7 @@ RENDERING_SOFTWARE_TASK_CC = \
 	rendering/software/task/taskblendsw.cpp \
 	rendering/software/task/taskblursw.cpp \
 	rendering/software/task/taskcontoursw.cpp \
+	rendering/software/task/taskdistortsw.cpp \
 	rendering/software/task/tasklayersw.cpp \
 	rendering/software/task/taskmeshsw.cpp \
 	rendering/software/task/taskpaintpixelsw.cpp \
