@@ -2,6 +2,7 @@ import os
 import subprocess
 import shutil
 import glob
+from distutils.dir_util import copy_tree as copytree
 
 # Define ANSI color codes
 COLOR_RED = '\033[91m'
@@ -12,10 +13,10 @@ COLOR_RESET = '\033[0m'
 PROJECT_ROOT = os.path.abspath(f"{os.path.dirname(__file__)}/../..")
 #BUILD_ROOT = f"{PROJECT_ROOT}/cmake-build-artem/output/Debug"
 BUILD_ROOT = f"{PROJECT_ROOT}/_production/build"
-BUNDLE_ROOT = f"{PROJECT_ROOT}/autobuild/macos-bundler/SynfigStudio-cmake.app"
+BUNDLE_ROOT = f"{PROJECT_ROOT}/autobuild/macos-bundler/SynfigStudio.app"
 TEMPLATE_ROOT = f"{PROJECT_ROOT}/autobuild/osx/app-template/"
 LAUNCHER_FILE = f"{PROJECT_ROOT}/autobuild/osx/synfig_osx_launcher.cpp"
-dmg_filename = "SynfigStudio-1.7.0-arm64.dmg"
+dmg_filename = "SynfigStudio-1.4.5-x86_64-osx.dmg"
 
 
 def print_colored(text, color):
@@ -85,7 +86,7 @@ Load command 32
 def resolve_loader_path(lib_path, owner):
     owner_folder = os.path.dirname(owner)
     full_path = lib_path.replace("@loader_path", owner_folder)
-    real_path = os.path.realpath(full_path, strict=False)
+    real_path = os.path.realpath(full_path)
     if os.path.exists(real_path):
         return real_path
 
@@ -98,7 +99,7 @@ def resolve_rpath(lib_path, owner):
 
     # first try to find dependency in the same folder as owner
     owner_folder = os.path.dirname(owner)
-    main_real_path = os.path.realpath(f"{owner_folder}/{lib_path}", strict=False)
+    main_real_path = os.path.realpath(f"{owner_folder}/{lib_path}")
     if os.path.exists(main_real_path):
         return main_real_path
 
@@ -107,7 +108,7 @@ def resolve_rpath(lib_path, owner):
         if is_loader_path(rpath):  # for @loader_path use binary folder
             rpath = rpath.replace("@loader_path", owner_folder)
 
-        real_path = os.path.realpath(f"{rpath}/{lib_path}", strict=False)
+        real_path = os.path.realpath(f"{rpath}/{lib_path}")
         if os.path.exists(real_path):
             return real_path
 
@@ -129,7 +130,7 @@ def get_dependencies(binary_file_path):
             continue
 
         try:
-            collected[file] = os.path.realpath(file, strict=True)
+            collected[file] = os.path.realpath(file)
         except FileNotFoundError:
             print_colored(f"Error get dependency for binary: `{binary_file_path}` ({file})", COLOR_RED)
 
@@ -174,6 +175,7 @@ def relocate_binary(src_file, dst, lib_dir):
     full_dst_path = dst
     if os.path.isdir(dst):
         full_dst_path = os.path.join(dst, os.path.basename(src_file))
+    subprocess.run(["chmod", "+w", full_dst_path], check=True)
 
     copy_dependencies(full_dst_path, lib_dir)
 
@@ -214,8 +216,8 @@ def main():
     # relocate(BUILD_ROOT, resource_dir, synfig_files, lib_dir)
 
     relocate_folder(f"{BUILD_ROOT}/lib/synfig/modules/*.so", f"{resource_dir}/lib/synfig/modules", lib_dir)
-    shutil.copytree(f"{BUILD_ROOT}/etc/", f"{resource_dir}/etc/", dirs_exist_ok=True)
-    shutil.copytree(f"{BUILD_ROOT}/share/", f"{resource_dir}/share/", dirs_exist_ok=True)
+    copytree(f"{BUILD_ROOT}/etc/", f"{resource_dir}/etc/")
+    copytree(f"{BUILD_ROOT}/share/", f"{resource_dir}/share/")
 
     print_colored("Preparing FFMPEG...", COLOR_YELLOW)
     for file in ['ffmpeg', 'ffprobe', 'encodedv', 'sox']:
@@ -227,18 +229,18 @@ def main():
     pixbuf_loaders = "lib/gdk-pixbuf-2.0/2.10.0/loaders"
     relocate_folder(f"{pkg_dir}/{pixbuf_loaders}/*.so", f"{resource_dir}/{pixbuf_loaders}/", lib_dir)
 
-    shutil.copytree(f"{pkg_dir}/share/gir-1.0", f"{resource_dir}/share/gir-1.0", dirs_exist_ok=True)
-    shutil.copytree(f"{pkg_dir}/share/locale", f"{resource_dir}/share/locale", dirs_exist_ok=True)
+    copytree(f"{pkg_dir}/share/gir-1.0", f"{resource_dir}/share/gir-1.0")
+    copytree(f"{pkg_dir}/share/locale", f"{resource_dir}/share/locale")
 
     for folder in ['lib/gtk-3.0/3.0.0/immodules', 'lib/gtk-3.0/3.0.0/printbackends']:
         relocate_folder(f"{pkg_dir}/{folder}/*.so", f"{resource_dir}/{folder}/", lib_dir)
 
     print_colored("Preparing themes and icons...", COLOR_YELLOW)
-    shutil.copytree(f"{pkg_dir}/share/themes/", f"{resource_dir}/share/themes/", dirs_exist_ok=True)
-    shutil.copytree(f"{pkg_dir}/share/icons/", f"{resource_dir}/share/icons/", dirs_exist_ok=True)
+    copytree(f"{pkg_dir}/share/themes/", f"{resource_dir}/share/themes/")
+    copytree(f"{pkg_dir}/share/icons/", f"{resource_dir}/share/icons/")
 
     print_colored("Preparing gsettings-desktop-schemas...", COLOR_YELLOW)
-    shutil.copytree(f"{pkg_dir}/share/glib-2.0/schemas/", f"{resource_dir}/share/glib-2.0/schemas/", dirs_exist_ok=True)
+    copytree(f"{pkg_dir}/share/glib-2.0/schemas/", f"{resource_dir}/share/glib-2.0/schemas/")
     subprocess.run(['glib-compile-schemas', f"{resource_dir}/share/glib-2.0/schemas"], check=True)
 
     print_colored("Preparing MLT...", COLOR_YELLOW)
