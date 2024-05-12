@@ -44,6 +44,7 @@
 #include <synfig/rendering/renderer.h>
 #include <synfig/rendering/common/task/tasktransformation.h>
 
+#include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/localization.h>
 #include <gui/timemodel.h>
@@ -361,7 +362,10 @@ Renderer_Canvas::build_onion_frames()
 	float          fps       = rend_desc.get_frame_rate();
 
 	current_frame = FrameId(base_time, w, h);
-	current_thumb = FrameId(base_time, thumb_w, thumb_h);
+	if (App::animation_thumbnail_preview)
+		current_thumb = FrameId(base_time, thumb_w, thumb_h);
+	else
+		current_thumb = FrameId();
 	frame_duration = Time(approximate_greater_lp(fps, 0.f) ? 1.0/(double)fps : 0.0);
 
 	// Set onion_frames
@@ -609,8 +613,9 @@ Renderer_Canvas::enqueue_render()
 
 				// generate rendering task for thumbnail
 				// do it first to be sure that thumbnails will always fully covered by the single tile
-				if (enqueue_render_frame(renderer, canvas, current_thumb.rect(), current_thumb))
-					++enqueued;
+				if (App::animation_thumbnail_preview)
+					if (enqueue_render_frame(renderer, canvas, current_thumb.rect(), current_thumb))
+						++enqueued;
 
 				// generate rendering tasks for visible areas
 				for(FrameList::const_iterator i = onion_frames.begin(); i != onion_frames.end(); ++i)
@@ -670,15 +675,17 @@ Renderer_Canvas::enqueue_render()
 
 					if(future_exists && (!past_exists || future_priority)) {
 						// queue future
-						if(enqueue_render_frame(renderer, canvas, current_thumb.rect(), current_thumb.with_time(future_time)))
-							++enqueued;
+						if (App::animation_thumbnail_preview)
+							if (enqueue_render_frame(renderer, canvas, current_thumb.rect(), current_thumb.with_time(future_time)))
+								++enqueued;
 						if(enqueue_render_frame(renderer, canvas, window_rect, current_frame.with_time(future_time)))
 							++enqueued;
 						++future;
 					} else {
 						// queue past
-						if(enqueue_render_frame(renderer, canvas, current_thumb.rect(), current_thumb.with_time(past_time)))
-							++enqueued;
+						if (App::animation_thumbnail_preview)
+							if (enqueue_render_frame(renderer, canvas, current_thumb.rect(), current_thumb.with_time(past_time)))
+								++enqueued;
 						if(enqueue_render_frame(renderer, canvas, window_rect, current_frame.with_time(past_time)))
 							++enqueued;
 						++past;
@@ -791,14 +798,16 @@ Renderer_Canvas::get_render_status(StatusMap &out_map)
 	out_map.clear();
 	for(TileMap::const_iterator i = tiles.begin(); i != tiles.end(); ++i)
 		if ( !i->second.empty()
-		  && ( (i->first.width == current_thumb.width && i->first.height == current_thumb.height)
+			&& ( (App::animation_thumbnail_preview && (i->first.width == current_thumb.width && i->first.height == current_thumb.height))
 			|| (i->first.width == current_frame.width && i->first.height == current_frame.height) ))
 				out_map[i->first.time] = FS_None;
 
 	for(StatusMap::iterator i = out_map.begin(); i != out_map.end(); ) {
-		i->second = merge_status(
-			calc_frame_status(current_frame.with_time(i->first), window_rect),
-			calc_frame_status(current_thumb.with_time(i->first), current_thumb.rect()) );
+		i->second = calc_frame_status(current_frame.with_time(i->first), window_rect);
+		if (App::animation_thumbnail_preview) {
+			FrameStatus thumb_status = calc_frame_status(current_thumb.with_time(i->first), current_thumb.rect());
+			i->second = merge_status(i->second, thumb_status);
+		}
 		if (i->second == FS_None) out_map.erase(i++); else ++i;
 	}
 }
