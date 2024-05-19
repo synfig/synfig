@@ -27,7 +27,7 @@ git add \
 git commit -m "Release version ${VERSION_CURRENT}"
 git push upstream testing
 
-#git tag v${VERSION_CURRENT}
-#git push --tags upstream
+git tag v${VERSION_CURRENT}
+git push upstream tag v${VERSION_CURRENT}
 
 echo "Done! Now go and create a PR from branch 'testing' to 'master' or 'relevant stable branch."
