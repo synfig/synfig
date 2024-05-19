@@ -1,3 +1,5 @@
+## Version 1.4.5
+- [`feb62c5`](https://github.com/synfig/synfig/commit/feb62c586f9b8c5378ce724854c7180d674e8326) Replaced `abs` with `std::fabs` for float values and `std::abs` for templates and int values ([#2311](https://github.com/synfig/synfig/issues/2311))
 ## Version 1.4.4
 - [`e06c83f`](https://github.com/synfig/synfig/commit/e06c83fbdcf01e6c73d67321926a52cc92ebaa38) build(autotools): allow to compile release build with debug info ([#2838](https://github.com/synfig/synfig/issues/2838))
 ## Version 1.4.3

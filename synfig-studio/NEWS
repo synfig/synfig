@@ -1,3 +1,16 @@
+## Version 1.4.5
+- [`5e0476b`](https://github.com/synfig/synfig/commit/5e0476bcc263b8906eb3855821a59f336d6be8ab) Fix distortions at the end of lines made with the drawing tool ([#2471](https://github.com/synfig/synfig/issues/2471))
+- [`015305a`](https://github.com/synfig/synfig/commit/015305ae9fd56ff23a7b0b25c27e7f159a555d3d) fix: crash on moving a layer following a bline reference ([#2971](https://github.com/synfig/synfig/issues/2971))
+- [`feb62c5`](https://github.com/synfig/synfig/commit/feb62c586f9b8c5378ce724854c7180d674e8326) Replaced `abs` with `std::fabs` for float values and `std::abs` for templates and int values ([#2311](https://github.com/synfig/synfig/issues/2311))
+- [`4c3f97d`](https://github.com/synfig/synfig/commit/4c3f97dfd4340b74e72f0b2a033aeed70b6efc5a) fix importing into unsaved SIF file ([#2243](https://github.com/synfig/synfig/issues/2243))
+- [`86d3434`](https://github.com/synfig/synfig/commit/86d3434b9356064015d4dfe4fffd57ef25a1f9c8) Fixed Synfig Studio crash on exit (MacOS) ([#2540](https://github.com/synfig/synfig/issues/2540))
+- [`3e130dc`](https://github.com/synfig/synfig/commit/3e130dc3de7161fa8385b8cd9f3a5920d3c20f18) fix: crash with a bline containing only 2 points that are too close ([#2855](https://github.com/synfig/synfig/issues/2855))
+- [`2f4b441`](https://github.com/synfig/synfig/commit/2f4b441d4b04f4e20cd1c0f40e18c7f4afe13903) chore: bump year to 2024 ([#3299](https://github.com/synfig/synfig/issues/3299))
+- [`784dbb1`](https://github.com/synfig/synfig/commit/784dbb1c773e9f1e6c145fa571b7083613106027) fix: crash occurs under Wayland when using tablet ([#2988](https://github.com/synfig/synfig/issues/2988))
+- [`b5c8aa4`](https://github.com/synfig/synfig/commit/b5c8aa4dfc0546fe5a9b5c9ea64969f50ff1aaa0) fix: crash when clicking on rows of "Library Panel"  ([#3046](https://github.com/synfig/synfig/issues/3046))
+- [`0e662dd`](https://github.com/synfig/synfig/commit/0e662dd1a22c6d9ff87699546bb2ffb900e85f37) fix: button `Open With History` is enabled only for .sfg files ([#3101](https://github.com/synfig/synfig/issues/3101))
+- [`87e1315`](https://github.com/synfig/synfig/commit/87e131531c9f91be512650134227522fba756d72) fix: selecting a handle while the Graphs window tooltip is open crashes the GUI ([#3207](https://github.com/synfig/synfig/issues/3207))
+- [`566fd7f`](https://github.com/synfig/synfig/commit/566fd7fa09f780caa7015196dc6c468944503c3b) perf: avoid canvas introspection when DockInfo is not shown ([#3328](https://github.com/synfig/synfig/issues/3328))
 ## Version 1.4.4
 - [`0ab9d69`](https://github.com/synfig/synfig/commit/0ab9d69e4ce0b923d22185b2f6508b71ea7162cd) Merge PR ([#2445](https://github.com/synfig/synfig/issues/2445)): Fixed crash when using Draw tool (Fedora/Flatpak)
 - [`bb36171`](https://github.com/synfig/synfig/commit/bb361718bc6d061d010e5d6ab5bebeeaae59ad71) fix: Right-clicking a layer on a just opened file shows empty menu ([#2781](https://github.com/synfig/synfig/issues/2781))

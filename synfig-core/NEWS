@@ -1,3 +1,10 @@
+## Version 1.4.5
+- [`015305a`](https://github.com/synfig/synfig/commit/015305ae9fd56ff23a7b0b25c27e7f159a555d3d) fix: crash on moving a layer following a bline reference ([#2971](https://github.com/synfig/synfig/issues/2971))
+- [`feb62c5`](https://github.com/synfig/synfig/commit/feb62c586f9b8c5378ce724854c7180d674e8326) Replaced `abs` with `std::fabs` for float values and `std::abs` for templates and int values ([#2311](https://github.com/synfig/synfig/issues/2311))
+- [`db959bf`](https://github.com/synfig/synfig/commit/db959bf7d062bdb0eb658ddabb2735385a8872aa) Merge PR [#2505](https://github.com/synfig/synfig/issues/2505): Fixed issue with opening a file from a network folder on Windows
+- [`d0dba5b`](https://github.com/synfig/synfig/commit/d0dba5bd7aaa2ec3008b26050a0f73565d986b04) fix: a crash on program exit if bones were used ([#3037](https://github.com/synfig/synfig/issues/3037))
+- [`04afca0`](https://github.com/synfig/synfig/commit/04afca0085ec08dafafd033cefc210ca45ae4781) fix: added ImageMagick 7.1 library initialization ([#2876](https://github.com/synfig/synfig/issues/2876))
+- [`674888a`](https://github.com/synfig/synfig/commit/674888a710f46b2a3cb6a4126757f22139c0a09c) fix: prevent memory leak on importing PNG files ([#3144](https://github.com/synfig/synfig/issues/3144))
 ## Version 1.4.4
 - [`f6f153b`](https://github.com/synfig/synfig/commit/f6f153b5551f97cc6b50546ff53ca3c791d1c5cc) fix: missing last frame for ffmpeg target ([#2912](https://github.com/synfig/synfig/issues/2912))
 - [`93d8f4c`](https://github.com/synfig/synfig/commit/93d8f4cb1b149dca8a6415f6f3cbfab0d22a4778) fix: Synfig CLI does not open file if path contains non-Latin characters (Windows) ([#2819](https://github.com/synfig/synfig/issues/2819))
