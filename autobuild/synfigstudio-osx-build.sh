@@ -264,8 +264,7 @@ mkdeps()
 		ffmpeg \
 		cairo \
 		libtool \
-    libsdl2 \
-    libsdl2_mixer"
+		libsdl2"
 	STUDIO_DEPS=" \
 		gtkmm3 \
 		python33 \
