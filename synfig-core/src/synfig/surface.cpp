@@ -137,7 +137,7 @@ synfig::Surface::clear()
 }
 
 void
-synfig::Surface::blit_to(alpha_pen& pen, int x, int y, int w, int h)
+synfig::Surface::blit_to(alpha_pen& pen, int x, int y, int w, int h) const
 {
 	static const float epsilon(0.00001);
 	const float alpha(pen.get_alpha());
@@ -172,7 +172,7 @@ synfig::Surface::blit_to(alpha_pen& pen, int x, int y, int w, int h)
 
 		for(int i=0;i<h;i++)
 		{
-			char* src(static_cast<char*>(static_cast<void*>(operator[](y)+x))+i*get_w()*sizeof(Color));
+			const char* src(static_cast<const char*>(static_cast<const void*>(operator[](y)+x))+i*get_w()*sizeof(Color));
 			char* dest(static_cast<char*>(static_cast<void*>(pen.x()))+i*pen.get_width()*sizeof(Color));
 			memcpy(dest,src,w*sizeof(Color));
 		}

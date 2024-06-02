@@ -372,12 +372,12 @@ public:
 			pen_.put_hline(w_);
 	}
 
-	template <class _pen> void blit_to(_pen &pen)
+	template <class _pen> void blit_to(_pen &pen) const
 	{ return blit_to(pen,0,0, get_w(),get_h()); }
 
 	template <class _pen> void
 	blit_to(_pen &DEST_PEN,
-			int x, int y, int w, int h) //src param
+			int x, int y, int w, int h) const //src param
 	{
 		if(x>=w_ || y>=h_)
 			return;
@@ -406,7 +406,7 @@ public:
 		if(w<=0 || h<=0)
 			return;
 
-		pen SOURCE_PEN(get_pen(x,y));
+		const_pen SOURCE_PEN(get_pen(x,y));
 
 		for(; h>0; h--,DEST_PEN.inc_y(),SOURCE_PEN.inc_y())
 		{
