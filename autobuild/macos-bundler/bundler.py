@@ -16,7 +16,8 @@ BUILD_ROOT = f"{PROJECT_ROOT}/_production/build"
 BUNDLE_ROOT = f"{PROJECT_ROOT}/autobuild/macos-bundler/SynfigStudio.app"
 TEMPLATE_ROOT = f"{PROJECT_ROOT}/autobuild/osx/app-template/"
 LAUNCHER_FILE = f"{PROJECT_ROOT}/autobuild/osx/synfig_osx_launcher.cpp"
-dmg_filename = "SynfigStudio-1.4.5-x86_64-osx.dmg"
+PYTHON_VERSION = "3.12"
+dmg_filename = "SynfigStudio-1.4.5-x86_64-macos.dmg"
 
 
 def print_colored(text, color):
@@ -151,23 +152,19 @@ def copy_dependencies(binary_path, lib_path):
     while need_checked:
         checking = set(need_checked)
         need_checked = set()
-        for full_path in checking:
-            new_path = os.path.join(lib_path, os.path.basename(full_path))
+        for dependency_path in checking:
+            new_path = os.path.join(lib_path, os.path.basename(dependency_path))
             if os.path.exists(new_path):  # file was already processed, skip it
                 continue
 
-            print(f"Processing {full_path}...")
-            shutil.copyfile(full_path, new_path)
+            print(f"Processing {dependency_path}...")
+            shutil.copyfile(dependency_path, new_path)
 
-            need_relinked = get_dependencies(full_path)
+            need_relinked = get_dependencies(dependency_path)
             change_non_system_libraries_path(need_relinked, new_path)
             need_checked.update(need_relinked.values())
         already_processed.update(checking)
         need_checked.difference_update(already_processed)
-
-
-def listdir_fullpath(dir_with_mask):
-    return [os.path.join(dir_with_mask, file_path) for file_path in glob.glob(dir_with_mask)]
 
 
 def relocate_binary(src_file, dst, lib_dir):
@@ -187,8 +184,11 @@ def relocate_folder(src_path, dst_path, lib_dir):
         relocate_binary(file, os.path.join(dst_path, os.path.basename(file)), lib_dir)
 
 
+def make_dmg():
+    subprocess.run(['./mk_dmg.sh'], check=True, capture_output=False)
+
 def main():
-    if os.path.exists(BUNDLE_ROOT):
+s    if os.path.exists(BUNDLE_ROOT):
         print("Cleaning up from previous packaging...")
         shutil.rmtree(BUNDLE_ROOT)
 
@@ -214,6 +214,26 @@ def main():
     # example of how syntax can be improved
     # synfig_files = ['bin/synfig', 'bin/synfigstudio', 'lib/synfig/modules/*.so', 'etc/', 'share/']
     # relocate(BUILD_ROOT, resource_dir, synfig_files, lib_dir)
+
+    # Cairo (for v1.4)
+
+
+    # Image Magick
+    magick_dir = f"{pkg_dir}/opt/imagemagick"
+    magick_modules_dir = f"lib/ImageMagick/modules-Q16HDRI"
+    magick_config_dir = f"lib/ImageMagick/config-Q16HDRI"
+    #magick_modules_dir = f"{magick_dir}/lib/ImageMagick/modules-Q16HDRI"
+    for file in ['animate', 'composite', 'convert']:
+        relocate_binary(f"{magick_dir}/bin/{file}", f"{resource_dir}/bin/", lib_dir)
+
+    # ImageMagick modules
+    relocate_folder(f"{magick_dir}/{magick_modules_dir}/coders/*.so",
+                    f"{resource_dir}/{magick_modules_dir}/coders/", lib_dir)
+    relocate_folder(f"{magick_dir}/{magick_modules_dir}/filters/*.so",
+                    f"{resource_dir}/{magick_modules_dir}/filters/", lib_dir)
+
+    copytree(f"{magick_dir}/{magick_config_dir}/", f"{resource_dir}/{magick_config_dir}/")
+    copytree(f"{magick_dir}/etc/", f"{resource_dir}/etc/")
 
     relocate_folder(f"{BUILD_ROOT}/lib/synfig/modules/*.so", f"{resource_dir}/lib/synfig/modules", lib_dir)
     copytree(f"{BUILD_ROOT}/etc/", f"{resource_dir}/etc/")
@@ -245,6 +265,27 @@ def main():
 
     print_colored("Preparing MLT...", COLOR_YELLOW)
     relocate_folder(f"{pkg_dir}/lib/mlt/*.so", f"{resource_dir}/lib/mlt/", lib_dir)
+
+    print_colored("Preparing Python3...", COLOR_YELLOW)
+    python_path = f"Frameworks/Python.framework/Versions/{PYTHON_VERSION}"
+    python_lib_path = f"{python_path}/lib/python{PYTHON_VERSION}/"
+    python_app_path = f"{python_path}/Resources/Python.app/Contents/MacOS"
+    python_local_site = f"{resource_dir}/lib/python{PYTHON_VERSION}/site-packages/"
+    os.makedirs(f"{resource_dir}/{python_lib_path}")
+    #os.makedirs(f"{lib_dir}/{python_app_path}")
+    relocate_binary(f"{pkg_dir}/{python_app_path}/Python", f"{resource_dir}/bin/python3", lib_dir)
+
+    #mkdir -p ../../../../../../lib/python${PYTHON_VERSION}/site-packages
+    os.makedirs(python_local_site)
+    # rsync -av --exclude "__pycache__" "${MACPORTS}${PKG_PREFIX}/Frameworks/Python.framework/Versions/${PYTHON_VERSION}/lib/python${PYTHON_VERSION}/" "${APPCONTENTS}/Frameworks/Python.framework/Versions/${PYTHON_VERSION}/lib/python${PYTHON_VERSION}/"
+    subprocess.run(['rsync', '-av', '--exclude', '__pycache__', f"{pkg_dir}/{python_lib_path}",
+                    f"{resource_dir}/{python_lib_path}"], check=True, capture_output=True)
+    # rsync -av --exclude "__pycache__" /usr/local/lib/python${PYTHON_VERSION}/site-packages/lxml* "${APPCONTENTS}/lib/python${PYTHON_VERSION}/site-packages/"
+    subprocess.run(['rsync', '-avL', '--exclude', '__pycache__', f"{pkg_dir}/{python_lib_path}/site-packages/lxml",
+                    python_local_site], check=True, capture_output=True)
+    # ln -sf ../../../../../../lib/python${PYTHON_VERSION}/site-packages site-packages
+    subprocess.run(['ln', '-sf', f"../../../../../../lib/python{PYTHON_VERSION}/site-packages",
+                    f"{resource_dir}/{python_lib_path}/site-packages"], check=True, capture_output=True)
 
     print_colored("Compiling launcher...", COLOR_YELLOW)
     subprocess.run(["clang++", LAUNCHER_FILE, '-O3', '-o', f'{BUNDLE_ROOT}/Contents/MacOS/SynfigStudio'], check=True)
