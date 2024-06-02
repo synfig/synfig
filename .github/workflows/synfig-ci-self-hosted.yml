@@ -17,7 +17,7 @@ on:
 jobs:
   build:
     runs-on: osx-10.9
-    continue-on-error: no
+    continue-on-error: false
     name: "Synfig Studio (OSX package)"
 
     # Steps represent a sequence of tasks that will be executed as part of the job
