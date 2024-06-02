@@ -252,7 +252,7 @@ elif [ "$ID_LIKE" == "debian" ] || [ "$ID_LIKE" == "ubuntu" ] || [ "$ID_LIKE" ==
             PKG_LIST=" \
                 build-essential \
                 cmake \
-                ninja \
+                ninja-build \
                 ccache \
                 autoconf automake autopoint \
                 shared-mime-info \
