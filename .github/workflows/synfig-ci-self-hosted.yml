@@ -14,7 +14,8 @@ on:
   workflow_dispatch:
 
 env:
-  BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+  REPO_NAME: ${{github.repository}}
  
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -27,4 +28,4 @@ jobs:
     steps:
       - name: "Synfig Studio (OSX package)"
         run: |
-          /home/data/2-data/vm/OSX-10.9-export/actions-runner/morevna-builds.osx/build-synfig.sh https://github.com/$GITHUB_REPOSITORY $BRANCH_NAME
+          /home/data/2-data/vm/OSX-10.9-export/actions-runner/morevna-builds.osx/build-synfig.sh https://github.com/$REPO_NAME $BRANCH_NAME
