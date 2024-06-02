@@ -45,8 +45,7 @@ mlt \
 ninja \
 pkg-config \
 python \
-sdl2 \
-sdl2_mixer"
+sdl2"
 
 export HOMEBREW_NO_AUTO_UPDATE=1
 export HOMEBREW_NO_ANALYTICS=1
