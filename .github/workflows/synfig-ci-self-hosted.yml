@@ -24,4 +24,5 @@ jobs:
     steps:
       - name: "Synfig Studio (OSX package)"
         run: |
+          ls ../..
           ../../morevna-builds.osx/build-synfig.sh https://github.com/$GITHUB_REPOSITORY $GITHUB_REF
