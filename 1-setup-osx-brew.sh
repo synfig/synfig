@@ -77,3 +77,8 @@ done
 if [[ -z "${CI}" ]]; then
     STATIC_DEPS=true pip3 install lxml
 fi
+
+# git submodules
+echo "Fetching synfig git submodules..."
+git submodule update --init --recursive
+
