@@ -97,11 +97,11 @@ public:
 
 	void set_canvas_interface(const etl::loose_handle<synfigapp::CanvasInterface>& x);
 
+protected:
 	ValueBase_Entry *value_entry;
 
 	void on_value_editing_done();
 
-protected:
 	virtual void
 	render_vfunc(
 		const ::Cairo::RefPtr< ::Cairo::Context>& cr,
