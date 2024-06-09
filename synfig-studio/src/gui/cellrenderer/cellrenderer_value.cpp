@@ -287,6 +287,12 @@ CellRenderer_ValueBase::~CellRenderer_ValueBase()
 }
 
 void
+CellRenderer_ValueBase::set_canvas_interface(const etl::loose_handle<synfigapp::CanvasInterface>& x)
+{
+	canvas_interface = x;
+}
+
+void
 CellRenderer_ValueBase::string_edited_(const Glib::ustring& path, const Glib::ustring& str)
 {
 	ValueBase old_value = property_value_.get_value();
@@ -558,6 +564,22 @@ CellRenderer_ValueBase::activate_vfunc(	GdkEvent* event,
 void
 CellRenderer_ValueBase::gradient_edited(synfig::Gradient gradient, Glib::ustring path)
 {
+	synfigapp::ValueDesc vd = App::dialog_gradient->get_value_desc();
+	if (vd.is_valid()) {
+		// do not emit signal_edited_ : gradient dialog may be opened by other cell
+		// and would try to update the parameter related to current one
+		// as it just remembered its parameter tree path
+		// Example:
+		// 1. Create a region layer
+		// 2. Create a gradient layer
+		// 3. Click on gradient parameter to edit it
+		// 4. Without closing gradient dialog, select the region layer instead
+		// 5. Try to edit the gradient
+		// 6. Error Message appears
+		canvas_interface->change_value(vd, gradient);
+		return;
+	}
+
 	ValueBase old_value(property_value_.get_value());
 	ValueBase value(gradient);
 	if (old_value != value)
@@ -567,6 +589,22 @@ CellRenderer_ValueBase::gradient_edited(synfig::Gradient gradient, Glib::ustring
 void
 CellRenderer_ValueBase::color_edited(synfig::Color color, Glib::ustring path)
 {
+	synfigapp::ValueDesc vd = App::dialog_color->get_value_desc();
+	if (vd.is_valid()) {
+		canvas_interface->change_value(vd, color);
+		// do not emit signal_edited_ : color dialog may be opened by other cell
+		// and would try to update the parameter related to current one
+		// as it just remembered its parameter tree path
+		// Example:
+		// 1. Create a region layer
+		// 2. Create an outline layer
+		// 3. Click on color parameter to edit it
+		// 4. Without closing color dialog, select the region layer instead
+		// 5. Try to edit the color
+		// 6. Error Message appears
+		return;
+	}
+
 	ValueBase old_value(property_value_.get_value());
 	ValueBase value(color);
 	if (old_value != value)
@@ -608,6 +646,7 @@ CellRenderer_ValueBase::start_editing_vfunc(
 	{
 		App::dialog_gradient->reset();
 		App::dialog_gradient->set_gradient( data.get(Gradient()) );
+		App::dialog_gradient->set_value_desc(get_value_desc());
 		App::dialog_gradient->signal_edited().connect(
 			sigc::bind(
 				sigc::mem_fun(*this, &studio::CellRenderer_ValueBase::gradient_edited),
@@ -623,6 +662,7 @@ CellRenderer_ValueBase::start_editing_vfunc(
 	{
 		App::dialog_color->reset();
 		App::dialog_color->set_color( data.get(Color()) );
+		App::dialog_color->set_value_desc(get_value_desc());
 		App::dialog_color->signal_edited().connect(
 			sigc::bind(
 				sigc::mem_fun(*this, &studio::CellRenderer_ValueBase::color_edited),
