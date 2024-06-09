@@ -93,7 +93,7 @@ public:
 				{
 					LockRead la(sub_task_a());
 					if (!la) return false;
-					synfig::Surface &a = la.cast_handle()->get_surface(); // TODO: make blit_to constant
+					const synfig::Surface &a = la.cast_handle()->get_surface();
 
 					assert( 0 <= ra.minx && ra.minx < ra.maxx && ra.maxx <= c.get_w()
 						 && 0 <= ra.miny && ra.miny < ra.maxy && ra.miny <= c.get_h() );
@@ -124,7 +124,7 @@ public:
 				{
 					LockRead lb(sub_task_b());
 					if (!lb) return false;
-					synfig::Surface &b = lb.cast_handle()->get_surface(); // TODO: make blit_to constant
+					const synfig::Surface &b = lb.cast_handle()->get_surface();
 
 					assert( 0 <= rb.minx && rb.minx < rb.maxx && rb.maxx <= c.get_w()
 						 && 0 <= rb.miny && rb.miny < rb.maxy && rb.miny <= c.get_h() );

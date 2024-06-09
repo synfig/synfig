@@ -99,18 +99,18 @@ public:
 	Surface(const _pen &_begin, const _pen &_end):
 		surface<Color, ColorPrep>(_begin,_end) { }
 
-	template <class _pen> void blit_to(_pen &pen)
+	template <class _pen> void blit_to(_pen &pen) const
 	{ return blit_to(pen,0,0, get_w(),get_h()); }
 
 	template <class _pen> void
-	blit_to(_pen& DEST_PEN,	int x, int y, int w, int h)
+	blit_to(_pen& DEST_PEN,	int x, int y, int w, int h) const
 	{
 		surface<Color, ColorPrep>::blit_to(DEST_PEN,x,y,w,h);
 	}
 
 	void clear();
 
-	void blit_to(alpha_pen& DEST_PEN, int x, int y, int w, int h);
+	void blit_to(alpha_pen& DEST_PEN, int x, int y, int w, int h) const;
 };	// END of class Surface
 
 

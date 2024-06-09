@@ -512,6 +512,37 @@ void test_blit_region_to_smaller_surface()
 	ASSERT_EQUAL( 0, dst_surface[1][1]);
 }
 
+void test_self_blit_region()
+{
+	int src_data[16] = {
+		 1, 2, 3, 4,
+		 5, 6, 7, 8,
+		 9,10,11,12,
+		13,14,15,16
+	};
+	surface<int> src_surface(src_data, 4, 4, false);
+
+	auto dst_pen = src_surface.get_pen(2, 2);
+	src_surface.blit_to(dst_pen, 1, 2, 1, 2);
+
+	ASSERT_EQUAL(1, src_surface[0][0]);
+	ASSERT_EQUAL(2, src_surface[0][1]);
+
+	ASSERT_EQUAL(5, src_surface[1][0]);
+	ASSERT_EQUAL(6, src_surface[1][1]);
+
+	ASSERT_EQUAL(10, src_surface[2][1]);
+	ASSERT_EQUAL(10, src_surface[2][2]); // blit
+	ASSERT_EQUAL(12, src_surface[2][3]);
+
+	ASSERT_EQUAL(14, src_surface[3][1]);
+	ASSERT_EQUAL(14, src_surface[3][2]); // blit
+	ASSERT_EQUAL(16, src_surface[3][3]);
+
+	ASSERT_EQUAL( 7, src_surface[1][2]);
+	ASSERT_EQUAL( 8, src_surface[1][3]);
+}
+
 void test_surface_blitting_clamp_negative_x()
 {
 	int src_data[16] = {
@@ -835,6 +866,8 @@ int main()
 		TEST_FUNCTION(test_blit_region_to_equal_size_surface);
 		TEST_FUNCTION(test_blit_region_to_larger_surface);
 		TEST_FUNCTION(test_blit_region_to_smaller_surface);
+
+		TEST_FUNCTION(test_self_blit_region);
 
 		TEST_FUNCTION(test_surface_blitting_clamp_negative_x);
 		TEST_FUNCTION(test_surface_blitting_clamp_negative_y);
