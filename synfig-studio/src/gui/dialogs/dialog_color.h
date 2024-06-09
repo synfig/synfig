@@ -32,6 +32,7 @@
 
 #include <gtkmm/dialog.h>
 #include <synfig/color.h>
+#include <synfigapp/value_desc.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -48,6 +49,8 @@ class Dialog_Color : public Gtk::Dialog
 	Widget_ColorEdit* color_edit_widget;
 
 	sigc::signal<void,synfig::Color> signal_edited_;
+
+	synfigapp::ValueDesc value_desc;
 
 	void create_color_edit_widget();
 	void create_set_color_button(const char *stock_id,
@@ -68,6 +71,10 @@ public:
 
 	void set_color(const synfig::Color& x);
 	synfig::Color get_color() const;
+
+	void set_value_desc(const synfigapp::ValueDesc& x);
+	synfigapp::ValueDesc get_value_desc() const;
+
 	void reset();
 }; // END of Dialog_Color
 

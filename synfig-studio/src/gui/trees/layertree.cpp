@@ -626,6 +626,8 @@ LayerTree::set_model(Glib::RefPtr<LayerTreeStore> layer_tree_store)
 	if(cellrenderer_time_track && layer_tree_store_ && layer_tree_store_->canvas_interface())
 		cellrenderer_time_track->set_canvas_interface(layer_tree_store_->canvas_interface());
 #endif	// TIMETRACK_IN_PARAMS_PANEL
+
+	cellrenderer_value->set_canvas_interface(layer_tree_store_->canvas_interface());
 }
 
 void
