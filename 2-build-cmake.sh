@@ -6,7 +6,14 @@ WORKDIR=$(dirname "$0")
 cd "${WORKDIR}"
 WORKDIR=$(pwd)
 
-mkdir -p cmake-build && cd cmake-build
+BUILDDIR=cmake-build
+
+if [[ "$(uname -s)" =~ ^MSYS_NT.* ]] || [[ "$(uname -s)" =~ Msys$ ]]
+then
+export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:/opt/mlt-7.2.0/lib/pkgconfig"
+fi
+
+mkdir -p "${BUILDDIR}" && cd "${BUILDDIR}"
 
 mode="Release"
 if [[ -n $1 ]]
@@ -22,8 +29,8 @@ ctest --output-on-failure
 echo
 echo
 echo "Done. Please check your Synfig installation in"
-echo " ${WORKDIR}/cmake-build/output/$mode/"
+echo " ${WORKDIR}/${BUILDDIR}/output/$mode/"
 echo
 echo "You can start Synfig by executing"
-echo " ${WORKDIR}/cmake-build/output/$mode/bin/synfigstudio"
+echo " ${WORKDIR}/${BUILDDIR}/output/$mode/bin/synfigstudio"
 echo
