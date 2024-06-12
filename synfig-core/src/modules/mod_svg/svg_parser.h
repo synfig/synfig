@@ -193,6 +193,7 @@ private:
 		void parser_layer(const xmlpp::Node* node, xmlpp::Element* root, Style style, const SVGMatrix& mtx);
 		void parser_rect(const xmlpp::Element* nodeElement, xmlpp::Element* root, const Style& style);
 		void parser_circle(const xmlpp::Element* nodeElement, xmlpp::Element* root, const Style& style);
+		void parser_text(const xmlpp::Element* nodeElement, xmlpp::Element* root, const Style& style, const SVGMatrix& mtx_parent);
 		/* === CONVERT TO PATH PARSERS ==================== */
 		std::list<BLine> parser_path_polygon(const Glib::ustring& polygon_points, const SVGMatrix& mtx);
 		std::list<BLine> parser_path_d(const String& path_d, const SVGMatrix& mtx);
@@ -236,6 +237,7 @@ private:
 		void build_vector (xmlpp::Element* root, const String& name, float x, float y, const String& guid);
 		void build_dilist(xmlpp::Element* root, const std::vector<float>& p, int linecap);
 		void build_color(xmlpp::Element* root,float r,float g,float b,float a);
+		void build_string(xmlpp::Element* root, const String& name, const String& value);
 		xmlpp::Element* initializeGroupLayerNode(xmlpp::Element* root, const String& name);
 
 		/* === COORDINATES & TRANSFORMATIONS ============== */
