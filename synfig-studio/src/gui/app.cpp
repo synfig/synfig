@@ -79,6 +79,7 @@
 
 #include <gui/dialogs/about.h>
 #include <gui/dialogs/dialog_color.h>
+#include <gui/dialogs/dialog_fixmissingfiles.h>
 #include <gui/dialogs/dialog_gradient.h>
 #include <gui/dialogs/dialog_input.h>
 #include <gui/dialogs/dialog_setup.h>
@@ -3575,39 +3576,61 @@ App::open(filesystem::Path filename, /* std::string as, */ synfig::FileContainer
 		// file to open inside canvas file-system
 		String canvas_filename = CanvasFileNaming::project_file(filename.u8string());
 
-		Canvas::Handle canvas = open_canvas_as(canvas_file_system ->get_identifier(canvas_filename), filename.u8string(), errors, warnings);
-		if(canvas && get_instance(canvas))
-		{
-			get_instance(canvas)->find_canvas_view(canvas)->present();
-			info("%s is already open", canvas_filename.c_str());
-			// throw (String)strprintf(_("\"%s\" appears to already be open!"),filename.c_str());
-		}
-		else
-		{
-			if(!canvas)
-				throw (String)strprintf(_("Unable to load \"%s\":\n\n"), filename.u8_str()) + errors;
+		CanvasBrokenUseIdMap broken_links;
+		Canvas::Handle canvas;
 
-			// Set new pixel ratio
-			canvas->rend_desc().set_pixel_ratio(canvas->rend_desc().get_w(), canvas->rend_desc().get_h());
+		do {
+			canvas = open_canvas_as(canvas_file_system ->get_identifier(canvas_filename), filename.u8string(), errors, warnings, &broken_links);
+			if (canvas && get_instance(canvas)) {
+				get_instance(canvas)->find_canvas_view(canvas)->present();
+				info("%s is already open", canvas_filename.c_str());
+				// throw (String)strprintf(_("\"%s\" appears to already be open!"),filename.c_str());
+			} else {
+				if (!canvas) {
+					if (!broken_links.empty()) {
+						// show dialog
+						// if dialog cancelled, resume loop;
+						// if confirmed, continue.
+						auto dialog = Dialog_FixMissingFiles::create(*App::main_window);
+						if (!dialog) {
+							synfig::error(_("Couldn't open dialog for fixing missing files"));
+						} else {
+							dialog->set_broken_useids(broken_links);
+							if (dialog->run() == Gtk::RESPONSE_OK) {
+								continue;
+							}
+						}
+					}
+					throw (String)strprintf(_("Unable to load \"%s\":\n\n"), filename.u8_str()) + errors;
+				}
 
-			if (!warnings.empty())
-				dialog_message_1b(
-					"WARNING",
-					_("Warning"),
-					"details",
-					_("Close"),
-					warnings);
+				// Set new pixel ratio
+				canvas->rend_desc().set_pixel_ratio(canvas->rend_desc().get_w(), canvas->rend_desc().get_h());
 
-			if (filename.u8string().find(custom_filename_prefix) != 0)
-				add_recent_file(filename);
+				if (!warnings.empty())
+					dialog_message_1b(
+						"WARNING",
+						_("Warning"),
+						"details",
+						_("Close"),
+						warnings);
 
-			etl::handle<Instance> instance(Instance::create(canvas, container));
+				if (filename.u8string().find(custom_filename_prefix) != 0)
+					add_recent_file(filename);
 
-			if(!instance)
-				throw (String)strprintf(_("Unable to create instance for \"%s\""), filename.u8_str());
+				etl::handle<Instance> instance(Instance::create(canvas, container));
 
-			one_moment.hide();
-		}
+				if (!instance)
+					throw (String)strprintf(_("Unable to create instance for \"%s\""), filename.u8_str());
+
+				one_moment.hide();
+
+				if (!broken_links.empty()) {
+					// This file isn't saved! mark it as such
+					instance->inc_action_count();
+				}
+			}
+		} while (!canvas);
 	}
 	catch(String &x)
 	{
