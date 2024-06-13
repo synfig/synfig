@@ -33,9 +33,9 @@
 #endif
 
 #include "layer_skeleton.h"
-#ifdef _DEBUG
+
 #include "synfig/general.h"
-#endif
+
 
 #include <synfig/localization.h>
 
@@ -73,7 +73,7 @@ Layer_Skeleton::Layer_Skeleton():
 {
 	std::vector<synfig::Bone> bones;
 	int bone_count = 1;
-	if (getenv("SYNFIG_NUMBER_OF_BONES_IN_SKELETON"))
+	if (DEBUG_GETENV("SYNFIG_NUMBER_OF_BONES_IN_SKELETON"))
 		bone_count = atoi(getenv("SYNFIG_NUMBER_OF_BONES_IN_SKELETON"));
 	if (bone_count < 1) bone_count = 1;
 	else if (bone_count > 10) bone_count = 10;
