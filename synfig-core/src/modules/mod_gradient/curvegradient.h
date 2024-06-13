@@ -74,7 +74,6 @@ private:
 	void compile();
 	void sync();
 	Color color_func(const Point &x, int quality=10, Real supersample=0)const;
-	Real calc_supersample(const Point &x, Real pw, Real ph)const;
 
 public:
 	CurveGradient();
@@ -82,10 +81,12 @@ public:
 	virtual bool set_param(const String &param, const ValueBase &value);
 	virtual ValueBase get_param(const String &param)const;
 	virtual Color get_color(Context context, const Point &pos)const;
-	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
 
 	virtual Vocab get_param_vocab()const;
+
+protected:
+	virtual rendering::Task::Handle build_composite_task_vfunc(synfig::ContextParams context_params) const;
 };
 
 /* === E N D =============================================================== */
