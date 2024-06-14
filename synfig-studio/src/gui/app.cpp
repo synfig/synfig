@@ -946,7 +946,7 @@ DEFINE_ACTION("select-all-layers",        _("Select All Layers"))
 DEFINE_ACTION("unselect-all-layers",      _("Unselect All Layers"))
 DEFINE_ACTION("select-parent-layer",      _("Select Parent Layer"))
 DEFINE_ACTION("input-devices",            _("Input Devices..."))
-DEFINE_ACTION("setup",                    _("Preferences..."))
+DEFINE_ACTION("preferences",              _("Preferences..."))
 
 // actions in View menu
 DEFINE_ACTION("toggle-mainwin-menubar",   _("Menubar"))
@@ -1046,7 +1046,7 @@ DEFINE_ACTION("help-tutorials", Gtk::Stock::HELP)
 DEFINE_ACTION("help-reference", Gtk::Stock::HELP)
 DEFINE_ACTION("help-faq",       Gtk::Stock::HELP)
 DEFINE_ACTION("help-support",   Gtk::Stock::HELP)
-DEFINE_ACTION("help-about",     Gtk::StockID("synfig-about"))
+DEFINE_ACTION("about",          Gtk::StockID("synfig-about"))
 
 // actions: Keyframe
 DEFINE_ACTION("keyframe-properties", _("Properties"))
@@ -1097,7 +1097,7 @@ DEFINE_ACTION("switch-to-rightmost-tab",  _("Switch to Rightmost Tab"))
 "		<menuitem action='select-parent-layer'/>"
 "		<separator name='sep-edit3'/>"
 "		<menuitem action='input-devices' />"
-"		<menuitem action='setup' />"
+"		<menuitem action='preferences' />"
 "	</menu>"
 "	<menu action='menu-view'>"
 "		<menuitem action='toggle-mainwin-menubar' />"
@@ -1212,7 +1212,7 @@ DEFINE_ACTION("switch-to-rightmost-tab",  _("Switch to Rightmost Tab"))
 "		<separator name='sep-help2'/>"
 "		<menuitem action='help-support'/>"
 "		<separator name='sep-help3'/>"
-"		<menuitem action='help-about'/>"
+"		<menuitem action='about'/>"
 "	</menu>";
 
 	Glib::ustring ui_info_main_tool =
