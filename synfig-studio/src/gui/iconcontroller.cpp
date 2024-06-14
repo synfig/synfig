@@ -125,6 +125,10 @@ static const std::map<std::string, std::pair<const char*, const char*>> known_ic
 	{"save_all", {"action_doc_saveall_icon", N_("Save All")}},
 	{"redo", {"action_doc_redo_icon", N_("Redo")}},
 	{"undo", {"action_doc_undo_icon", N_("Undo")}},
+	{"close-document", {"window-close", N_("Close Document")}},
+	{"quit", {"application-exit", N_("Quit")}},
+	{"add", {"list-add", N_("Add")}},
+	{"remove", {"list-remove", N_("Remove")}},
 
 	// Ghost Layers
 	{"layer_ghost_group", {"layer_other_ghostgroup_icon", N_("Group Ghost")}},
