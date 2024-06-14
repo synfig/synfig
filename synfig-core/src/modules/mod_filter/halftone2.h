@@ -72,17 +72,12 @@ private:
 
 	Color color_func(const Point &x, float supersample,const Color &under_color)const;
 
-	float calc_supersample(const Point &x, float pw,float ph)const;
-
-	//float halftone_func(Point x)const;
-
 public:
 	Halftone2();
 
 	virtual bool set_param(const String &param, const ValueBase &value);
 	virtual ValueBase get_param(const String &param)const;
 	virtual Color get_color(Context context, const Point &pos)const;
-	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	Layer::Handle hit_check(Context context, const Point &point)const;
 	virtual Vocab get_param_vocab()const;
 	virtual bool reads_context()const { return true; }
