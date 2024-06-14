@@ -178,15 +178,15 @@ MainWindow::init_menus()
 	action_group->add( Gtk::Action::create_with_icon_name("save-all", "action_doc_saveall_icon", _("Save All"), _("Save all opened documents")),
 		sigc::ptr_fun(&save_all)
 	);
-	action_group->add( Gtk::Action::create_with_icon_name("quit", "application-exit", _("_Quit"), _("Quit")),
+	action_group->add( Gtk::Action::create_with_icon_name("quit", "application-exit", _("Quit"), _("Quit Synfig")),
 		sigc::hide_return(sigc::ptr_fun(&studio::App::quit))
 	);
 
 	// Edit menu
-	action_group->add( Gtk::Action::create("input-devices", _("Input Devices...")),
+	action_group->add( Gtk::Action::create_with_icon_name("input-devices", "input_devices_icon", _("Input Devices..."), _("Open Input Devices options")),
 		sigc::ptr_fun(&MainWindow::show_dialog_input)
 	);
-	action_group->add( Gtk::Action::create("setup", _("Preferences...")),
+	action_group->add( Gtk::Action::create_with_icon_name("setup", "preferences_icon", _("Preferences..."), _("Open Synfig Preferences")),
 		sigc::ptr_fun(&studio::App::show_setup)
 	);
 
@@ -209,11 +209,11 @@ MainWindow::init_menus()
 	action_group->add( Gtk::Action::create("workspace-default", _("Default")),
 		sigc::ptr_fun(MainWindow::set_workspace_default)
 	);
-	action_group->add( Gtk::Action::create_with_icon_name("save-workspace", "action_doc_saveas_icon", _("Save workspace..."), _("Save workspace...")),
+	action_group->add( Gtk::Action::create_with_icon_name("save-workspace", "workspace_saveas_icon", _("Save workspace..."), _("Save workspace...")),
 		sigc::mem_fun(*this, &MainWindow::save_custom_workspace)
 	);
 
-	action_group->add( Gtk::Action::create("edit-workspacelist", _("Edit workspaces...")),
+	action_group->add( Gtk::Action::create_with_icon_name("edit-workspacelist", "workspace_edit_icon", _("Edit workspaces..."), _("Edit workspaces...")),
 		sigc::ptr_fun(MainWindow::edit_custom_workspace_list)
 	);
 
