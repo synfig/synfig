@@ -129,7 +129,7 @@ Dialog_Gradient::reset()
 {
 	value_changed_connection.disconnect();
 	signal_edited_.clear();
-	value_desc = synfigapp::ValueDesc();
+	set_value_desc(synfigapp::ValueDesc());
 }
 
 void
