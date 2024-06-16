@@ -169,5 +169,5 @@ void
 Dialog_Color::reset()
 {
 	signal_edited_.clear();
-	value_desc = synfigapp::ValueDesc();
+	set_value_desc(synfigapp::ValueDesc());
 }
