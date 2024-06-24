@@ -52,8 +52,6 @@ SUBDIRS = \
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = synfig.pc
 
-bin_SCRIPTS = synfig-config
-
 ACLOCAL_AMFLAGS = -I m4
 
 EXTRA_DIST = \
@@ -67,7 +65,6 @@ EXTRA_DIST = \
 	config/depcomp \
 	m4/synfig.m4 \
 	m4/cxx_macros.m4 \
-	synfig-config.in \
 	m4/ETL.m4 \
 	doxygen.cfg.in \
 	doxygen.cfg \
