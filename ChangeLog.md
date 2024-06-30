@@ -14,6 +14,7 @@
 - [`87e1315`](https://github.com/synfig/synfig/commit/87e131531c9f91be512650134227522fba756d72) fix: selecting a handle while the Graphs window tooltip is open crashes the GUI ([#3207](https://github.com/synfig/synfig/issues/3207)) [studio]
 - [`04afca0`](https://github.com/synfig/synfig/commit/04afca0085ec08dafafd033cefc210ca45ae4781) fix: added ImageMagick 7.1 library initialization ([#2876](https://github.com/synfig/synfig/issues/2876)) [core]
 - [`566fd7f`](https://github.com/synfig/synfig/commit/566fd7fa09f780caa7015196dc6c468944503c3b) perf: avoid canvas introspection when DockInfo is not shown ([#3328](https://github.com/synfig/synfig/issues/3328)) [studio]
+- [`674888a`](https://github.com/synfig/synfig/commit/674888a710f46b2a3cb6a4126757f22139c0a09c) fix: prevent memory leak on importing PNG files ([#3144](https://github.com/synfig/synfig/issues/3144)) [core]
 
 ## Version 1.4.4 [ETL] [core] [studio]
 - [`f6f153b`](https://github.com/synfig/synfig/commit/f6f153b5551f97cc6b50546ff53ca3c791d1c5cc) fix: missing last frame for ffmpeg target ([#2912](https://github.com/synfig/synfig/issues/2912)) [core]

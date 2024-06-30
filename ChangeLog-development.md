@@ -114,7 +114,6 @@
 - [`0925416`](https://github.com/synfig/synfig/commit/0925416d6323a4af2259399f35e66a80cde3b210) refactor: add missing fallthrough mark in other switch cases ([#3151](https://github.com/synfig/synfig/issues/3151)) [core]
 - [`329a584`](https://github.com/synfig/synfig/commit/329a584aa76928791fa6db67aa6e28eddeffa994) feat: double clicking guides opens edit dialog ([#3152](https://github.com/synfig/synfig/issues/3152)) [studio]
 - [`655a042`](https://github.com/synfig/synfig/commit/655a04290fba9f439eae14848ee571ba97e39941) refactor: add fallthrough mark in switch cases to avoid unneeded warning ([#3143](https://github.com/synfig/synfig/issues/3143)) [core] [studio]
-- [`674888a`](https://github.com/synfig/synfig/commit/674888a710f46b2a3cb6a4126757f22139c0a09c) fix: prevent memory leak on importing PNG files ([#3144](https://github.com/synfig/synfig/issues/3144)) [core]
 - [`5603b49`](https://github.com/synfig/synfig/commit/5603b4972b4c1c505fef45c155e540c3f3950ade) perf: use reference, not copy, on range-based for loops ([#3147](https://github.com/synfig/synfig/issues/3147)) [core] [studio]
 - [`1cdcfd5`](https://github.com/synfig/synfig/commit/1cdcfd5249b5e74880b2091114a56d8fd8c86431) refactor: make argument name consistent in method declaration and definition ([#3122](https://github.com/synfig/synfig/issues/3122)) [studio]
 - [`86bb59f`](https://github.com/synfig/synfig/commit/86bb59fd4b9680172fea61d3f6c4d44be3297c09) chore: add .cache folder to .gitignore ([#3145](https://github.com/synfig/synfig/issues/3145))
