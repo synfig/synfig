@@ -117,6 +117,7 @@ class Plugin
 {
 public:
 	std::string id;
+	std::string pluginDir;
 	PluginString name;
 
 	std::string author;
@@ -127,6 +128,7 @@ public:
 	PluginString description;
 
 	bool is_valid() const;
+	void launch_dir() const;
 };
 
 class PluginManager

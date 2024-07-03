@@ -1168,6 +1168,9 @@ DEFINE_ACTION("switch-to-rightmost-tab",  _("Switch to Rightmost Tab"))
 		ui_info_menu += strprintf("	<menuitem action='%s'/>", plugin.id.c_str());
 	}
 
+	DEFINE_ACTION("plugin-manager", "Plugin Manager")
+	ui_info_menu += "<menuitem action='plugin-manager' />";
+
 	ui_info_menu +=
 "	</menu>"
 "	<menu action='menu-window'>"
