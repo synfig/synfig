@@ -301,6 +301,11 @@ bool studio::Plugin::is_valid() const
 	return !name.fallback().empty();
 }
 
+void studio::Plugin::launch_dir() const
+{
+	synfig::info(pluginDir);
+	synfig::OS::launch_file_async(pluginDir);
+}
 
 studio::ImportExport studio::ImportExport::load(const xmlpp::Node& node)
 {
@@ -386,6 +391,7 @@ studio::PluginManager::load_plugin( const std::string &file, const std::string &
 			plugin.name = PluginString::load(*pNode, "name");
 			PluginScript script = PluginScript::load(*execlist[0], plugindir);
 			plugin.id = id;
+			plugin.pluginDir = plugindir;
 
 			plugin.release = PluginString::load(*pNode, "release");
 			for ( const xmlpp::Node* node : pNode->find("./author") )

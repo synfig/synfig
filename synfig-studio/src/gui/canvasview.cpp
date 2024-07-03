@@ -533,7 +533,8 @@ CanvasView::CanvasView(etl::loose_handle<studio::Instance> instance,etl::handle<
 	render_settings          (*App::main_window,canvas_interface_),
 	waypoint_dialog          (*App::main_window,canvas_interface_->get_canvas()),
 	keyframe_dialog          (*App::main_window,canvas_interface_),
-	preview_dialog           ()
+	preview_dialog           (),
+	plugin_manager_dialog    (*App::main_window)
 {
 	// Make this toolbar small for space efficiency
 	get_style_context()->add_class("synfigstudio-efficient-workspace");
@@ -1417,6 +1418,7 @@ CanvasView::init_menus()
 		{"jump-next-keyframe", "animate_seek_next_keyframe_icon", N_("Seek to Next Keyframe"),      "", sigc::mem_fun(*canvas_interface(), &CanvasInterface::jump_to_next_keyframe) },
 		{"jump-prev-keyframe", "animate_seek_prev_keyframe_icon", N_("Seek to Previous Keyframe") , "", sigc::mem_fun(*canvas_interface(), &CanvasInterface::jump_to_prev_keyframe) },
 
+		{"plugin-manager", "", N_("Plugin Manager"), "", sigc::mem_fun0(plugin_manager_dialog, &Dialog_PluginManager::present)},
 	};
 
 	action_group = Gtk::ActionGroup::create("canvasview");
