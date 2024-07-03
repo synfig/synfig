@@ -75,6 +75,7 @@
 #include "dialogs/dialog_keyframe.h"
 #include "dialogs/dialog_preview.h"
 #include "dialogs/dialog_waypoint.h"
+#include "dialogs/dialog_pluginmanager.h"
 #include "dials/framedial.h"
 #include "dials/jackdial.h"
 #include "dials/toggleducksdial.h"
@@ -410,7 +411,7 @@ public:
 	Dialog_Waypoint waypoint_dialog;
 	Dialog_Keyframe keyframe_dialog;
 	Dialog_Preview preview_dialog;
-
+	Dialog_PluginManager plugin_manager_dialog;
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
 	*/
