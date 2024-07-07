@@ -36,8 +36,6 @@
 #include <gtkmm/notebook.h>
 #include <gtkmm/messagedialog.h>
 #include <gui/pluginmanager.h>
-#include <synfig/os.h>
-#include <gui/app.h>
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
