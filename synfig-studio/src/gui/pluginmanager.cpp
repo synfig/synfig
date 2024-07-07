@@ -701,6 +701,11 @@ studio::Plugin studio::PluginManager::get_plugin(const std::string& id) const
 	return Plugin();
 }
 
+void studio::PluginManager::remove_plugin(const std::string& id)
+{
+	plugins_.erase(std::remove_if(plugins_.begin(), plugins_.end(), [&id](const Plugin& plugin) { return plugin.id == id; }), plugins_.end());
+}
+
 studio::PluginScript::ScriptArgs studio::PluginManager::get_script_args(const std::string& script_id) const
 {
 	auto it = scripts_.find(script_id);
