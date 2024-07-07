@@ -34,6 +34,7 @@
 
 #include <gtkmm/dialog.h>
 #include <gtkmm/notebook.h>
+#include <gtkmm/messagedialog.h>
 #include <gui/pluginmanager.h>
 #include <synfig/os.h>
 #include <gui/app.h>
@@ -57,6 +58,7 @@ public:
 private:
 
     Gtk::Notebook notebook;
+    Gtk::MessageDialog messageDialog;
     std::vector<studio::Plugin> pluginList;
     void clicked();
 }; // END of class Dialog_PluginManager

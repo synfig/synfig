@@ -151,7 +151,7 @@ private:
 public:
 	void load_dir( const std::string &pluginsprefix );
 	void load_plugin( const std::string &file, const std::string &plugindir );
-
+	void remove_plugin( const std::string &id);
 	bool run(const PluginScript& script, std::vector<std::string> args, const std::unordered_map<std::string,std::string>& view_state) const;
 	bool run(const std::string& script_id, const std::vector<std::string>& args, const std::unordered_map<std::string,std::string>& view_state = {}) const;
 
