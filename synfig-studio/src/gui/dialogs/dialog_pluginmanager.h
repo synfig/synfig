@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file dialogs/dialog_pluginmanager.h
-**	\brief Template Header
+**	\brief Plugin Manager Dialog
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -56,9 +56,9 @@ public:
 private:
 
     Gtk::Notebook notebook;
-    Gtk::MessageDialog messageDialog;
-    std::vector<studio::Plugin> pluginList;
-    void clicked();
+    Gtk::MessageDialog message_dialog;
+    std::vector<studio::Plugin> plugin_list;
+    void on_install_plugin_button_clicked();
 }; // END of class Dialog_PluginManager
 
 }; // END of namespace studio

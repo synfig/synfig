@@ -44,7 +44,7 @@ DIALOGS_CC = \
 	dialogs/dialog_guide.cpp \
 	dialogs/dialog_workspaces.cpp \
 	dialogs/dialog_template.cpp \
-	dialogs/vectorizersettings.cpp 
+	dialogs/vectorizersettings.cpp
 
 synfigstudio_src += \
 	$(DIALOGS_HH) \
