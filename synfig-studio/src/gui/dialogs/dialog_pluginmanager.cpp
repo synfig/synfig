@@ -38,10 +38,11 @@ using namespace studio;
 
 Dialog_PluginManager::Dialog_PluginManager(Gtk::Window& parent):
     Gtk::Dialog(_("Plugin Manager"), parent),
+    messageDialog(_("Are you sure you want to delete this plugin?"), false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL, true),
     pluginList(App::plugin_manager.plugins())
 {
     // this->set_resizable(false);
-
+    messageDialog.set_transient_for(*this);
     Gtk::Button *installPluginButton = manage(new Gtk::Button(_("Install Plugin")));
     installPluginButton->set_image_from_icon_name("document-open", Gtk::ICON_SIZE_BUTTON);
     installPluginButton->set_always_show_image(true);
@@ -72,6 +73,16 @@ Dialog_PluginManager::Dialog_PluginManager(Gtk::Window& parent):
         restoreSettings->set_image_from_icon_name("view-refresh", Gtk::ICON_SIZE_BUTTON);
         openFolder->set_image_from_icon_name("document-open", Gtk::ICON_SIZE_BUTTON);
         deletePlugin->set_image_from_icon_name("user-trash-symbolic", Gtk::ICON_SIZE_BUTTON);
+
+        deletePlugin->signal_clicked().connect([plugin, this](){
+            this->messageDialog.set_message("Do you want to delte the plugin: " + plugin.name.fallback());
+            int response = this->messageDialog.run();
+            if (response == Gtk::RESPONSE_OK)
+            {              
+                App::plugin_manager.remove_plugin(plugin.id);
+            }
+            this->messageDialog.close();
+        });
 
         openFolder->signal_clicked().connect([plugin](){
             plugin.launch_dir();
