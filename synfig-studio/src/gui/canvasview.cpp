@@ -1418,7 +1418,7 @@ CanvasView::init_menus()
 		{"jump-next-keyframe", "animate_seek_next_keyframe_icon", N_("Seek to Next Keyframe"),      "", sigc::mem_fun(*canvas_interface(), &CanvasInterface::jump_to_next_keyframe) },
 		{"jump-prev-keyframe", "animate_seek_prev_keyframe_icon", N_("Seek to Previous Keyframe") , "", sigc::mem_fun(*canvas_interface(), &CanvasInterface::jump_to_prev_keyframe) },
 
-		{"plugin-manager", "", N_("Plugin Manager"), "", sigc::mem_fun0(plugin_manager_dialog, &Dialog_PluginManager::present)}
+		{"open-plugin-manager", "", N_("Plugin Manager"), "", sigc::mem_fun0(plugin_manager_dialog, &Dialog_PluginManager::present)}
 	};
 
 	action_group = Gtk::ActionGroup::create("canvasview");
@@ -1441,7 +1441,7 @@ CanvasView::init_menus()
 	{
 		std::string id = plugin.id;
 		action_group->add(
-			Gtk::Action::create(id, plugin.name.get()),
+			Gtk::Action::create(id + "canvas", plugin.name.get()),
 			[instance, id](){instance->run_plugin(id, true);}
 		);
 	}
