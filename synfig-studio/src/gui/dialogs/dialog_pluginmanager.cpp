@@ -77,7 +77,7 @@ Dialog_PluginManager::Dialog_PluginManager(Gtk::Window& parent):
     Gtk::ListBox* plugin_list_box = manage(new Gtk::ListBox());
     plugin_list_box->set_selection_mode(Gtk::SELECTION_NONE);
 
-    for (const auto plugin : plugin_list) {
+    for (const auto& plugin : plugin_list) {
         synfig::info("  Plugin Dir: %s", plugin.pluginDir.c_str() );
         Gtk::HBox* plugin_list_item = manage(new Gtk::HBox());
         plugin_list_item->get_style_context()->add_class("plugin-list-item");
