@@ -65,6 +65,7 @@ Dialog_PluginManager::Dialog_PluginManager(Gtk::Window& parent):
     message_dialog(_("Are you sure you want to delete this plugin?"), false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL, true),
     plugin_list(App::plugin_manager.plugins())
 {
+    App::plugin_manager.signal_list_changed().connect(sigc::mem_fun(*this, &Dialog_PluginManager::refresh));
     // this->set_resizable(false);
     message_dialog.set_transient_for(*this);
     Gtk::Button* install_plugin_button = manage(new Gtk::Button(_("Install Plugin")));
@@ -74,13 +75,44 @@ Dialog_PluginManager::Dialog_PluginManager(Gtk::Window& parent):
 
     Gtk::VBox* plugin_tab = manage(new Gtk::VBox());
     plugin_tab->property_expand().set_value(false);
-    Gtk::ListBox* plugin_list_box = manage(new Gtk::ListBox());
-    plugin_list_box->set_selection_mode(Gtk::SELECTION_NONE);
+    plugin_list_box.set_selection_mode(Gtk::SELECTION_NONE);
 
+    build_listbox();
+
+    plugin_tab->pack_start(plugin_list_box, Gtk::PACK_SHRINK);
+    plugin_tab->pack_end(*install_plugin_button, Gtk::PACK_SHRINK);
+
+    Gtk::Label* custom_label = manage(new Gtk::Label());
+    custom_label->set_text("Installed Plugins");
+    custom_label->set_margin_bottom(10);
+    custom_label->set_margin_top(10);
+    custom_label->set_margin_left(20);
+    custom_label->set_margin_right(20);
+    notebook.append_page(*plugin_tab);
+    notebook.set_tab_label(*plugin_tab, *custom_label);
+    
+    notebook.set_tab_pos(Gtk::POS_LEFT);
+    get_content_area()->pack_start(notebook);
+    set_default_size(1200, 600);
+    show_all_children();
+}
+
+void Dialog_PluginManager::refresh()
+{
+    plugin_list = App::plugin_manager.plugins();
+    auto children = plugin_list_box.get_children();
+    for(auto child : children) {
+        plugin_list_box.remove(*child);
+        delete child;
+    }
+
+    build_listbox();
+}
+
+void Dialog_PluginManager::build_listbox()
+{
     for (const auto& plugin : plugin_list) {
-        synfig::info("  Plugin Dir: %s", plugin.pluginDir.c_str() );
         Gtk::HBox* plugin_list_item = manage(new Gtk::HBox());
-        plugin_list_item->get_style_context()->add_class("plugin-list-item");
         Gtk::Label* plugin_name = manage(new Gtk::Label());
 
         Gtk::HBox* plugin_option_box = manage(new Gtk::HBox());
@@ -89,7 +121,6 @@ Dialog_PluginManager::Dialog_PluginManager(Gtk::Window& parent):
         Gtk::Button* delete_plugin = manage(new Gtk::Button());
 
         plugin_list_item->property_expand().set_value(false);
-        // plugin_list_item->override_background_color(*(new Gdk::RGBA("rgb(242, 242, 242)")));
         plugin_list_item->set_margin_top(10);
         plugin_option_box->property_expand().set_value(false);
 
@@ -121,25 +152,10 @@ Dialog_PluginManager::Dialog_PluginManager(Gtk::Window& parent):
         plugin_list_item->pack_start(*plugin_name, Gtk::PACK_SHRINK, 20);
         plugin_list_item->pack_end(*plugin_option_box, Gtk::PACK_SHRINK, 20);
         
-        plugin_list_box->add(*plugin_list_item);
+        plugin_list_box.add(*plugin_list_item);
 
     }
-    plugin_tab->pack_start(*plugin_list_box, Gtk::PACK_SHRINK);
-    plugin_tab->pack_end(*install_plugin_button, Gtk::PACK_SHRINK);
-
-    Gtk::Label* custom_label = manage(new Gtk::Label());
-    custom_label->set_text("Installed Plugins");
-    custom_label->set_margin_bottom(10);
-    custom_label->set_margin_top(10);
-    custom_label->set_margin_left(20);
-    custom_label->set_margin_right(20);
-    notebook.append_page(*plugin_tab);
-    notebook.set_tab_label(*plugin_tab, *custom_label);
-    
-    notebook.set_tab_pos(Gtk::POS_LEFT);
-    get_content_area()->pack_start(notebook);
-    set_default_size(1200, 600);
-    show_all_children();
+    plugin_list_box.show_all_children();
 }
 
 Dialog_PluginManager::~Dialog_PluginManager()

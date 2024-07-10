@@ -1037,6 +1037,9 @@ DEFINE_ACTION("panel-pal_edit",        _("Palette Editor"))
 DEFINE_ACTION("panel-soundwave",       _("Sound"))
 DEFINE_ACTION("panel-timetrack",       _("Timetrack"))
 
+// actions in Plug-Ins
+DEFINE_ACTION("open-plugin-manager", _("Plugin Manager"))
+
 // actions in Help menu
 DEFINE_ACTION("help",           Gtk::Stock::HELP)
 #if GTK_CHECK_VERSION(3, 20, 0)
@@ -1159,19 +1162,7 @@ DEFINE_ACTION("switch-to-rightmost-tab",  _("Switch to Rightmost Tab"))
 "		<menuitem action='amount-dec'/>"
 "	</menu>"
 "	<menu action='menu-plugins'>"
-;
-
-	for ( const auto& plugin : studio::App::plugin_manager.plugins() ) {
-		// TODO: (Plugins) Arrange menu items into groups
-
-		DEFINE_ACTION(plugin.id, plugin.name.get())
-		ui_info_menu += strprintf("	<menuitem action='%s'/>", plugin.id.c_str());
-	}
-
-	DEFINE_ACTION("plugin-manager", "Plugin Manager")
-	ui_info_menu += "<menuitem action='plugin-manager' />";
-
-	ui_info_menu +=
+"		<menuitem action='open-plugin-manager'/>"
 "	</menu>"
 "	<menu action='menu-window'>"
 "		<menu action='menu-workspace'>"

@@ -354,10 +354,12 @@ studio::PluginManager::load_dir( const std::string &pluginsprefix )
 	} catch ( const Glib::FileError& e ) {
 		synfig::warning("Can't read plugin directory: %s", e.what().c_str());
 	}
+
+	signal_list_changed_.emit();
 } // END of synfigapp::PluginManager::load_dir()
 
 void
-studio::PluginManager::load_plugin( const std::string &file, const std::string &plugindir )
+studio::PluginManager::load_plugin( const std::string &file, const std::string &plugindir, bool notify )
 {
 	synfig::info("   Loading plugin: %s", synfig::filesystem::Path::basename(plugindir).c_str());
 
@@ -439,6 +441,9 @@ studio::PluginManager::load_plugin( const std::string &file, const std::string &
 		synfig::warning("Error while loading plugin.xml");
 		std::cout << "Exception caught: " << ex.what() << std::endl;
 	}
+
+	if(notify)
+		signal_list_changed_.emit();
 }
 
 void studio::PluginManager::load_import_export(
@@ -703,7 +708,25 @@ studio::Plugin studio::PluginManager::get_plugin(const std::string& id) const
 
 void studio::PluginManager::remove_plugin(const std::string& id)
 {
-	plugins_.erase(std::remove_if(plugins_.begin(), plugins_.end(), [&id](const Plugin& plugin) { return plugin.id == id; }), plugins_.end());
+	try
+	{
+		Plugin plugin = *(std::find_if(plugins_.begin(), plugins_.end(), [&id](const Plugin& plugin) { return plugin.id == id; }));
+		auto fileSystem = synfig::FileSystemNative::instance();
+		if(fileSystem->remove_recursive(plugin.pluginDir) && fileSystem->file_remove(plugin.pluginDir) )
+		{
+			plugins_.erase(std::remove_if(plugins_.begin(), plugins_.end(), [&id](const Plugin& plugin) { return plugin.id == id; }), plugins_.end());
+			signal_list_changed_.emit();
+		}
+	}
+	catch(const std::exception& e)
+	{
+		studio::App::dialog_message_1b("Error", synfig::strprintf(_("Plugin execution failed: %s"), e.what()), _("Plugin Deletion Failed"), _("Close"));
+	}
+}
+
+sigc::signal<void>& studio::PluginManager::signal_list_changed()
+{
+	return signal_list_changed_;
 }
 
 studio::PluginScript::ScriptArgs studio::PluginManager::get_script_args(const std::string& script_id) const

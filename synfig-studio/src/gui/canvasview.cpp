@@ -533,8 +533,7 @@ CanvasView::CanvasView(etl::loose_handle<studio::Instance> instance,etl::handle<
 	render_settings          (*App::main_window,canvas_interface_),
 	waypoint_dialog          (*App::main_window,canvas_interface_->get_canvas()),
 	keyframe_dialog          (*App::main_window,canvas_interface_),
-	preview_dialog           (),
-	plugin_manager_dialog    (*App::main_window)
+	preview_dialog           ()
 {
 	// Make this toolbar small for space efficiency
 	get_style_context()->add_class("synfigstudio-efficient-workspace");
@@ -1416,9 +1415,7 @@ CanvasView::init_menus()
 		{"seek-begin", "animate_seek_begin_icon", N_("Seek to Begin"), "", sigc::mem_fun(*this, &CanvasView::on_seek_begin_pressed) },
 
 		{"jump-next-keyframe", "animate_seek_next_keyframe_icon", N_("Seek to Next Keyframe"),      "", sigc::mem_fun(*canvas_interface(), &CanvasInterface::jump_to_next_keyframe) },
-		{"jump-prev-keyframe", "animate_seek_prev_keyframe_icon", N_("Seek to Previous Keyframe") , "", sigc::mem_fun(*canvas_interface(), &CanvasInterface::jump_to_prev_keyframe) },
-
-		{"open-plugin-manager", "", N_("Plugin Manager"), "", sigc::mem_fun0(plugin_manager_dialog, &Dialog_PluginManager::present)}
+		{"jump-prev-keyframe", "animate_seek_prev_keyframe_icon", N_("Seek to Previous Keyframe") , "", sigc::mem_fun(*canvas_interface(), &CanvasInterface::jump_to_prev_keyframe) }
 	};
 
 	action_group = Gtk::ActionGroup::create("canvasview");
@@ -1436,16 +1433,8 @@ CanvasView::init_menus()
 	// Prevent call to preview window before preview option has created the preview window
 	action_group->get_action("dialog-flipbook")->set_sensitive(false);
 
-	auto instance = get_instance().get();
-	for ( const auto& plugin : App::plugin_manager.plugins() )
-	{
-		std::string id = plugin.id;
-		action_group->add(
-			Gtk::Action::create(id + "canvas", plugin.name.get()),
-			[instance, id](){instance->run_plugin(id, true);}
-		);
-	}
-
+	init_plugins();
+	App::plugin_manager.signal_list_changed().connect(sigc::mem_fun(*this, &CanvasView::init_plugins));
 	// Low-Res Quality Menu
 	for (int i : get_pixel_sizes()) {
 		Glib::RefPtr<Gtk::RadioAction> action = Gtk::RadioAction::create(
@@ -1542,6 +1531,35 @@ CanvasView::init_menus()
 		action_group->add(Gtk::Action::create("mask-bone-ducks", _("Next Bone Handles")),
 						  sigc::mem_fun(*this,&CanvasView::mask_bone_ducks));
 	}
+
+}
+
+void
+CanvasView::init_plugins()
+{
+	auto instance = get_instance().get();
+	if(instance)
+		for ( const auto& plugin : App::plugin_manager.plugins() )
+		{
+			std::string id = plugin.id;
+			if(!action_group->get_action(id))
+				action_group->add(
+					Gtk::Action::create(id, plugin.name.get()),
+					[instance, id](){instance->run_plugin(id, true);}
+				);
+		}
+
+	// remove group if exists
+	typedef std::vector< Glib::RefPtr<Gtk::ActionGroup> > ActionGroupList;
+	ActionGroupList groups = App::ui_manager()->get_action_groups();
+	for(ActionGroupList::const_iterator it = groups.begin(); it != groups.end(); ++it)
+		if ((*it)->get_name() == action_group->get_name()) {
+			App::ui_manager()->remove_action_group(*it);
+			App::ui_manager()->insert_action_group(action_group);	
+			break;
+		}
+	groups.clear();
+	App::ui_manager()->ensure_update();
 
 }
 
