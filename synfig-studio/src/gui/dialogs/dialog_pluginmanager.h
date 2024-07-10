@@ -35,6 +35,7 @@
 #include <gtkmm/dialog.h>
 #include <gtkmm/notebook.h>
 #include <gtkmm/messagedialog.h>
+#include <gtkmm/listbox.h>
 #include <gui/pluginmanager.h>
 /* === M A C R O S ========================================================= */
 
@@ -47,18 +48,21 @@ namespace studio
 
 class Dialog_PluginManager : public Gtk::Dialog 
 {
-    PluginManager plugin_manager_;
 public:
     Dialog_PluginManager(Gtk::Window& parent);
     ~Dialog_PluginManager();
 
     static bool open_directory(const std::string& director);
 private:
-
-    Gtk::Notebook notebook;
+    Gtk::ListBox plugin_list_box;
     Gtk::MessageDialog message_dialog;
+    Gtk::Notebook notebook;
+
     std::vector<studio::Plugin> plugin_list;
+    void build_listbox();
     void on_install_plugin_button_clicked();
+    void refresh();
+
 }; // END of class Dialog_PluginManager
 
 }; // END of namespace studio
