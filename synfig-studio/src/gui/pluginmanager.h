@@ -30,6 +30,8 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <glibmm/refptr.h>
+#include <gtkmm/application.h>
 #include <synfig/string.h>
 #include <unordered_map>
 #include <vector>
@@ -148,9 +150,13 @@ private:
 
 	static bool check_and_run_dialog(const PluginScript& script, std::string& dialog_args);
 
+	sigc::signal<void> signal_list_changed_;
+
 public:
+	void init_menu();
 	void load_dir( const std::string &pluginsprefix );
-	void load_plugin( const std::string &file, const std::string &plugindir );
+	void load_plugin( const std::string &file, const std::string &plugindir, bool notify = false);
+	void refresh_menu();
 	void remove_plugin( const std::string &id);
 	bool run(const PluginScript& script, std::vector<std::string> args, const std::unordered_map<std::string,std::string>& view_state) const;
 	bool run(const std::string& script_id, const std::vector<std::string>& args, const std::unordered_map<std::string,std::string>& view_state = {}) const;
@@ -163,6 +169,8 @@ public:
 	const std::vector<ImportExport>& exporters() { return exporters_; };
 
 	const std::vector<ImportExport>& importers() { return importers_; };
+
+	sigc::signal<void> & signal_list_changed();
 
 }; // END class PluginManager
 
