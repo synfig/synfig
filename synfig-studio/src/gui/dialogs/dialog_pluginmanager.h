@@ -33,6 +33,7 @@
 #include <ETL/handle>
 
 #include <gtkmm/dialog.h>
+#include <gtkmm/filechooserdialog.h>
 #include <gtkmm/notebook.h>
 #include <gtkmm/messagedialog.h>
 #include <gtkmm/listbox.h>
@@ -52,9 +53,9 @@ public:
     Dialog_PluginManager(Gtk::Window& parent);
     ~Dialog_PluginManager();
 
-    static bool open_directory(const std::string& director);
 private:
     Gtk::ListBox plugin_list_box;
+    Gtk::FileChooserDialog plugin_file_dialog;
     Gtk::MessageDialog message_dialog;
     Gtk::Notebook notebook;
 

@@ -706,13 +706,36 @@ studio::Plugin studio::PluginManager::get_plugin(const std::string& id) const
 	return Plugin();
 }
 
+bool studio::PluginManager::remove_plugin_recursive(const std::string &filename)
+{
+	auto fileSystem = synfig::FileSystemNative::instance();
+
+	if (filename.empty())
+		return false;
+	if (fileSystem->is_file(filename))
+		return fileSystem->file_remove(filename);
+	if (fileSystem->is_directory(filename))
+	{
+		typedef std::vector<std::string> FileList;
+		FileList files;
+		fileSystem->directory_scan(filename, files);
+		bool success = true;
+		for(FileList::const_iterator i = files.begin(); i != files.end(); ++i)
+			if (!remove_plugin_recursive(filename + ETL_DIRECTORY_SEPARATOR + *i))
+				success = false;
+		fileSystem->file_remove(filename);
+		return success;
+	}
+	return true;
+}
+
 void studio::PluginManager::remove_plugin(const std::string& id)
 {
 	try
 	{
 		Plugin plugin = *(std::find_if(plugins_.begin(), plugins_.end(), [&id](const Plugin& plugin) { return plugin.id == id; }));
 		auto fileSystem = synfig::FileSystemNative::instance();
-		if(fileSystem->remove_recursive(plugin.pluginDir) && fileSystem->file_remove(plugin.pluginDir) )
+		if(remove_plugin_recursive(plugin.pluginDir))
 		{
 			plugins_.erase(std::remove_if(plugins_.begin(), plugins_.end(), [&id](const Plugin& plugin) { return plugin.id == id; }), plugins_.end());
 			signal_list_changed_.emit();
