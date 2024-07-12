@@ -30,8 +30,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <glibmm/refptr.h>
-#include <gtkmm/application.h>
+#include <sigc++/signal.h>
 #include <synfig/string.h>
 #include <unordered_map>
 #include <vector>
@@ -158,6 +157,7 @@ public:
 	void load_plugin( const std::string &file, const std::string &plugindir, bool notify = false);
 	void refresh_menu();
 	void remove_plugin( const std::string &id);
+	bool remove_plugin_recursive( const std::string &filename);
 	bool run(const PluginScript& script, std::vector<std::string> args, const std::unordered_map<std::string,std::string>& view_state) const;
 	bool run(const std::string& script_id, const std::vector<std::string>& args, const std::unordered_map<std::string,std::string>& view_state = {}) const;
 
