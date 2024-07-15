@@ -111,11 +111,16 @@ Dialog_PluginManager::Dialog_PluginManager(Gtk::Window& parent):
     show_all_children();
 }
 
-void Dialog_PluginManager::refresh()
+Dialog_PluginManager::~Dialog_PluginManager()
+{
+}
+
+void
+Dialog_PluginManager::refresh()
 {
     plugin_list = App::plugin_manager.plugins();
     auto children = plugin_list_box.get_children();
-    for(auto child : children) {
+    for (auto child : children) {
         plugin_list_box.remove(*child);
         delete child;
     }
@@ -123,7 +128,8 @@ void Dialog_PluginManager::refresh()
     build_listbox();
 }
 
-void Dialog_PluginManager::build_listbox()
+void
+Dialog_PluginManager::build_listbox()
 {
     for (const auto& plugin : plugin_list) {
         Gtk::HBox* plugin_list_item = manage(new Gtk::HBox());
@@ -172,14 +178,8 @@ void Dialog_PluginManager::build_listbox()
     plugin_list_box.show_all_children();
 }
 
-Dialog_PluginManager::~Dialog_PluginManager()
-{
-    
-}
-
-
-
-void Dialog_PluginManager::on_install_plugin_button_clicked()
+void
+Dialog_PluginManager::on_install_plugin_button_clicked()
 {
     // Show the dialog and wait for a user response
     int result = plugin_file_dialog.run();

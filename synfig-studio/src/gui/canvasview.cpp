@@ -1433,8 +1433,8 @@ CanvasView::init_menus()
 	// Prevent call to preview window before preview option has created the preview window
 	action_group->get_action("dialog-flipbook")->set_sensitive(false);
 
-	init_plugins();
-	App::plugin_manager.signal_list_changed().connect(sigc::mem_fun(*this, &CanvasView::init_plugins));
+	update_plugin_menu();
+	App::plugin_manager.signal_list_changed().connect(sigc::mem_fun(*this, &CanvasView::update_plugin_menu));
 	// Low-Res Quality Menu
 	for (int i : get_pixel_sizes()) {
 		Glib::RefPtr<Gtk::RadioAction> action = Gtk::RadioAction::create(
@@ -1535,29 +1535,30 @@ CanvasView::init_menus()
 }
 
 void
-CanvasView::init_plugins()
+CanvasView::update_plugin_menu()
 {
 	auto instance = get_instance().get();
-	if(instance)
-		for ( const auto& plugin : App::plugin_manager.plugins() )
-		{
+	if (instance) {
+		for (const auto& plugin : App::plugin_manager.plugins() ) {
 			std::string id = plugin.id;
-			if(!action_group->get_action(id))
+			if (!action_group->get_action(id))
 				action_group->add(
 					Gtk::Action::create(id, plugin.name.get()),
 					[instance, id](){instance->run_plugin(id, true);}
 				);
 		}
+	}
 
 	// remove group if exists
 	typedef std::vector< Glib::RefPtr<Gtk::ActionGroup> > ActionGroupList;
 	ActionGroupList groups = App::ui_manager()->get_action_groups();
-	for(ActionGroupList::const_iterator it = groups.begin(); it != groups.end(); ++it)
-		if ((*it)->get_name() == action_group->get_name()) {
-			App::ui_manager()->remove_action_group(*it);
-			App::ui_manager()->insert_action_group(action_group);	
+	for (const auto& group : groups) {
+		if (group->get_name() == action_group->get_name()) {
+			App::ui_manager()->remove_action_group(group);
+			App::ui_manager()->insert_action_group(action_group);
 			break;
 		}
+	}
 	groups.clear();
 	App::ui_manager()->ensure_update();
 
