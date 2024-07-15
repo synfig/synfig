@@ -422,7 +422,7 @@ private:
 
 	//! Constructor Helper - Initializes all of the menus
 	void init_menus();
-	void init_plugins();
+	void update_plugin_menu();
 	
 	bool duck_change_param(const synfig::Point &value,synfig::Layer::Handle layer, synfig::String param_name);
 
