@@ -73,7 +73,7 @@ std::istream::pos_type FileSystemNative::ReadStream::seekpos(std::istream::pos_t
 int FileSystemNative::ReadStream::pbackfail(int ch)
 {
 	if (fseek(file_, -1, SEEK_CUR)) {
-		return EOF;
+		return std::streambuf::traits_type::eof();
 	}
 	return FileSystem::ReadStream::underflow();
 }

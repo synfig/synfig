@@ -249,19 +249,19 @@ int zstreambuf::underflow()
 {
 	// is it actually underflow?
     if (gptr() < egptr()) return traits_type::to_int_type(*gptr());
-    if (!inflate_buf()) return EOF;
+	if (!inflate_buf()) return traits_type::eof();
 	return *(unsigned char *)gptr();
 }
 
 int zstreambuf::overflow(int c)
 {
 	// flush
-	if (c == EOF) { sync(); return EOF; }
+	if (c == traits_type::eof()) { sync(); return traits_type::eof(); }
 
 	// save data and prepare new buffer
 	if (pptr() >= epptr())
 	{
-		if (!deflate_buf(false)) return EOF;
+		if (!deflate_buf(false)) return traits_type::eof();
 		if (write_buffer_.size() < option_bufsize) write_buffer_.resize(option_bufsize);
 		char *pointer = &write_buffer_.front();
 		setp(pointer, pointer + write_buffer_.size());
