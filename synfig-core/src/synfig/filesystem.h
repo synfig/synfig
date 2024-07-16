@@ -80,7 +80,7 @@ namespace synfig
 			char buffer_;
 
 			ReadStream(FileSystem::Handle file_system);
-			virtual int underflow();
+			int underflow() override;
 			virtual size_t internal_read(void *buffer, size_t size) = 0;
 
 		public:
@@ -102,7 +102,7 @@ namespace synfig
 
 		protected:
 			WriteStream(FileSystem::Handle file_system);
-	        virtual int overflow(int ch);
+			int overflow(int ch) override;
 			virtual size_t internal_write(const void *buffer, size_t size) = 0;
 
 		public:

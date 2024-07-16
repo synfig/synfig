@@ -69,7 +69,7 @@ namespace synfig
 			friend class FileSystemNative;
 			FILE *file_;
 			WriteStream(FileSystem::Handle file_system, FILE *file_);
-			virtual size_t internal_write(const void *buffer, size_t size);
+			size_t internal_write(const void *buffer, size_t size) override;
 		public:
 			virtual ~WriteStream();
 		};
