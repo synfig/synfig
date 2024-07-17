@@ -28,6 +28,7 @@ export DEBUG=0
 WORKDIR=`dirname "$0"`
 pushd "${WORKDIR}" > /dev/null
 WORKDIR=`pwd`
+git submodule update --init --recursive
 popd > /dev/null
 
 [ -d "${WORKDIR}/${TYPE}" ] || mkdir "${WORKDIR}/${TYPE}"
