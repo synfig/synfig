@@ -5,6 +5,7 @@ set -e
 WORKDIR=$(dirname "$0")
 cd "${WORKDIR}"
 WORKDIR=$(pwd)
+git submodule update --init --recursive
 
 BUILDDIR=cmake-build
 
