@@ -90,9 +90,9 @@ namespace synfig {
 		virtual ~zstreambuf();
 
 	protected:
-		virtual int sync();
-		virtual int underflow();
-		virtual int overflow(int c = EOF);
+		int sync() override;
+		int underflow() override;
+		int overflow(int c = traits_type::eof()) override;
 
 	public:
 		static bool pack(std::vector<char> &dest, const void *src, size_t size, bool fast = false);
