@@ -791,29 +791,31 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 		{
 			//horizontal part
 			synfig::surface<float> temp_surface;
-			temp_surface.set_wh(w, h);
+			synfig::surface<float>& h_surface(temp_surface);
 
 			if(size[0])
 			{
 				int length = halfsizex;
 				length = std::max(1,length);
 
+				temp_surface.set_wh(w, h);
 				hbox_blur(out.begin(), out.end(), length, temp_surface.begin());
 			}
-			else temp_surface = out;
+			else h_surface = out;
 
 			//vertical part
 			synfig::surface<float> temp_surface2;
-			temp_surface2.set_wh(w, h);
+			synfig::surface<float>& v_surface(temp_surface2);
 
 			if(size[1])
 			{
 				int length = halfsizey;
 				length = std::max(1,length);
 
+				temp_surface2.set_wh(w, h);
 				vbox_blur(out.begin(), out.end(), length, temp_surface2.begin());
 			}
-			else temp_surface2 = out;
+			else v_surface = out;
 
 			//blend the two together
 			int x,y;
@@ -822,7 +824,7 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 			{
 				for(x=0;x<w;x++)
 				{
-					out[y][x] = (temp_surface[y][x] + temp_surface2[y][x]) / 2;
+					out[y][x] = (h_surface[y][x] + v_surface[y][x]) / 2;
 				}
 			}
 
