@@ -290,17 +290,13 @@ bool Blur::operator()(const Surface &surface,
 	int	halfsizex = (int) (std::fabs(size[0]*.5/pw) + 1),
 		halfsizey = (int) (std::fabs(size[1]*.5/ph) + 1);
 
-	int x,y;
-
 	SuperCallback blurcall(cb,0,5000,5000);
 
 	Surface worksurface(w,h);
 
 	// Premultiply the alpha
-	for(y=0;y<h;y++)
-	{
-		for(x=0;x<w;x++)
-		{
+	for (int y = 0; y < h; y++) {
+		for (int x = 0; x < w; x++) {
 			Color a = surface[y][x];
 			float aa = a.get_a();
 			a.set_r(a.get_r()*aa);
@@ -328,11 +324,9 @@ bool Blur::operator()(const Surface &surface,
 			{
 				int x2,y2;
 				Surface tmp_surface(worksurface);
-
-				for(y=0;y<h;y++)
-				{
-					for(x=0;x<w;x++)
-					{
+				
+				for (int y = 0; y < h; y++) {
+					for (int x = 0; x < w; x++) {
 						//accumulate all the pixels in an ellipse of w,h about the current pixel
 						Color color=Color::alpha();
 						int total=0;
@@ -352,14 +346,8 @@ bool Blur::operator()(const Surface &surface,
 									continue;
 
 								//cap the pixel indices to inside the surface
-								int u= x+x2,
-									v= y+y2;
-
-								if( u < 0 )					u = 0;
-								if( u >= w ) u = w-1;
-
-								if( v < 0 ) 				v = 0;
-								if( v >= h ) v = h-1;
+								int u = synfig::clamp(x+x2, 0, w-1);
+								int v = synfig::clamp(y+y2, 0, h-1);
 
 								//accumulate the color, and # of pixels added in
 								color += tmp_surface[v][u];
@@ -471,12 +459,8 @@ bool Blur::operator()(const Surface &surface,
 			else temp_surface2 = worksurface;
 
 			//blend the two together
-			int x,y;
-
-			for(y=0;y<h;y++)
-			{
-				for(x=0;x<w;x++)
-				{
+			for (int y = 0; y < h; y++) {
+				for (int x = 0; x < w; x++) {
 					worksurface[y][x] = (temp_surface[y][x]+temp_surface2[y][x])/2;//Color::blend((temp_surface[y][x]+temp_surface2[y][x])/2,worksurface[y][x],get_amount(),get_blend_method());
 				}
 			}
@@ -590,10 +574,8 @@ bool Blur::operator()(const Surface &surface,
 	out.set_wh(w,h);
 
 	//divide out the alpha
-	for(y=0;y<h;y++)
-	{
-		for(x=0;x<w;x++)
-		{
+	for (int y = 0; y < h; y++) {
+		for (int x = 0; x < w; x++) {
 			Color a = worksurface[y][x];
 			if(a.get_a())
 			{
@@ -633,7 +615,6 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 
 	int	halfsizex = (int) (std::fabs(size[0]*.5/pw) + 1),
 		halfsizey = (int) (std::fabs(size[1]*.5/ph) + 1);
-	int x,y;
 
 	SuperCallback blurcall(cb,0,5000,5000);
 
@@ -658,11 +639,9 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 			if(size[0] && size[1] && w*h>2)
 			{
 				int x2,y2;
-
-				for(y=0;y<h;y++)
-				{
-					for(x=0;x<w;x++)
-					{
+			
+				for (int y = 0; y < h; y++) {
+					for (int x = 0; x < w; x++) {
 						//accumulate all the pixels in an ellipse of w,h about the current pixel
 						float a = 0;
 						int total=0;
@@ -682,14 +661,8 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 									continue;
 
 								//cap the pixel indices to inside the surface
-								int u= x+x2,
-									v= y+y2;
-
-								if( u < 0 )					u = 0;
-								if( u >= w ) u = w-1;
-
-								if( v < 0 ) 				v = 0;
-								if( v >= h ) v = h-1;
+								int u = synfig::clamp(x+x2, 0, w-1);
+								int v = synfig::clamp(y+y2, 0, h-1);
 
 								//accumulate the color, and # of pixels added in
 								a += surface[v][u];
@@ -801,12 +774,8 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 			else v_surface = out;
 
 			//blend the two together
-			int x,y;
-
-			for(y=0;y<h;y++)
-			{
-				for(x=0;x<w;x++)
-				{
+			for (int y = 0; y < h; y++) {
+				for (int x = 0; x < w; x++) {
 					out[y][x] = (h_surface[y][x] + v_surface[y][x]) / 2;
 				}
 			}
