@@ -635,8 +635,13 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 					  const synfig::Vector &resolution,
 					  synfig::surface<float> &out) const
 {
-	int w = surface.get_w(),
-		h = surface.get_h();
+	if (&surface == &out) {
+		synfig::error(_("Internal error: Blur(surface of float): in and out surfaces cannot be the same"));
+		return false;
+	}
+
+	const int w = surface.get_w();
+	const int h = surface.get_h();
 
 	if(w == 0 || h == 0 || resolution[0] == 0 || resolution[1] == 0) return false;
 
@@ -649,7 +654,7 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 
 	SuperCallback blurcall(cb,0,5000,5000);
 
-	synfig::surface<float> worksurface(surface);
+	out = surface;
 
 	//don't need to premultiply because we are dealing with ONLY alpha
 
@@ -704,12 +709,12 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 								if( v >= h ) v = h-1;
 
 								//accumulate the color, and # of pixels added in
-								a += tmp_surface[v][u];
+								a += out[v][u];
 								total++;
 							}
 						}
 
-						worksurface[y][x] = a/total;
+						out[y][x] = a/total;
 					}
 					if (!blurcall.amount_complete(y, h)) {
 						return false;
@@ -732,17 +737,17 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 				int length = halfsizex;
 				length=std::max(1,length);
 
-				hbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface.begin());
+				hbox_blur(surface.begin(), surface.end(), length, temp_surface.begin());
 			}
-			else temp_surface = worksurface;
+			else temp_surface = surface;
 
 			if(size[1])
 			{
 				int length = halfsizey;
 				length = std::max(1,length);
-				vbox_blur(temp_surface.begin(),temp_surface.end(),length,worksurface.begin());
+				vbox_blur(temp_surface.begin(), temp_surface.end(), length, out.begin());
 			}
-			else worksurface = temp_surface;
+			else out = temp_surface;
 		}
 		break;
 
@@ -765,8 +770,8 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 				length=std::max(1.0,length);
 
 				//two box blurs produces: 1 2 1
-				hbox_blur(worksurface.begin(),w,h,(int)(length*3/4),temp_surface.begin());
-				hbox_blur(temp_surface.begin(),w,h,(int)(length*3/4),worksurface.begin());
+				hbox_blur(out.begin(), w, h, (int)(length*3/4), temp_surface.begin());
+				hbox_blur(temp_surface.begin(), w, h, (int)(length*3/4), out.begin());
 			}
 
 			//vertical part
@@ -776,8 +781,8 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 				length=std::max(1.0,length);
 
 				//two box blurs produces: 1 2 1 on the horizontal 1 2 1
-				vbox_blur(worksurface.begin(),w,h,(int)(length*3/4),temp_surface.begin());
-				vbox_blur(temp_surface.begin(),w,h,(int)(length*3/4),worksurface.begin());
+				vbox_blur(out.begin(), w, h, (int)(length*3/4), temp_surface.begin());
+				vbox_blur(temp_surface.begin(), w, h, (int)(length*3/4), out.begin());
 			}
 		}
 		break;
@@ -786,29 +791,29 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 		{
 			//horizontal part
 			synfig::surface<float> temp_surface;
-			temp_surface.set_wh(worksurface.get_w(),worksurface.get_h());
+			temp_surface.set_wh(w, h);
 
 			if(size[0])
 			{
 				int length = halfsizex;
 				length = std::max(1,length);
 
-				hbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface.begin());
+				hbox_blur(out.begin(), out.end(), length, temp_surface.begin());
 			}
-			else temp_surface = worksurface;
+			else temp_surface = out;
 
 			//vertical part
 			synfig::surface<float> temp_surface2;
-			temp_surface2.set_wh(worksurface.get_w(),worksurface.get_h());
+			temp_surface2.set_wh(w, h);
 
 			if(size[1])
 			{
 				int length = halfsizey;
 				length = std::max(1,length);
 
-				vbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface2.begin());
+				vbox_blur(out.begin(), out.end(), length, temp_surface2.begin());
 			}
-			else temp_surface2 = worksurface;
+			else temp_surface2 = out;
 
 			//blend the two together
 			int x,y;
@@ -817,7 +822,7 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 			{
 				for(x=0;x<w;x++)
 				{
-					worksurface[y][x] = (temp_surface[y][x]+temp_surface2[y][x])/2;
+					out[y][x] = (temp_surface[y][x] + temp_surface2[y][x]) / 2;
 				}
 			}
 
@@ -835,9 +840,9 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 
 			synfig::surface<float> *gauss_surface;
 
-			gauss_surface = &worksurface;
+			gauss_surface = &out;
 
-            /* Squaring the pw and ph values
+			/* Squaring the pw and ph values
 			   is necessary to insure consistent
 			   results when rendered to different
 			   resolutions.
@@ -945,11 +950,7 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 			break;
 	}
 
-	//be sure the surface is of the correct size
-	out.set_wh(w,h);
-
 	//divide out the alpha - don't need to cause we rock
-	out = worksurface;
 
 	//we are FRIGGGIN done....
 	blurcall.amount_complete(100,100);
