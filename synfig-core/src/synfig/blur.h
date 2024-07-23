@@ -122,7 +122,6 @@ public:
 	bool operator()(const synfig::Surface &surface, const synfig::Vector &resolution, synfig::Surface &out) const;
 
 	bool operator()(const synfig::surface<float> &surface, const synfig::Vector &resolution, synfig::surface<float> &out) const;
-	//bool operator()(const surface<unsigned char> &surface, const Vector &resolution, surface<unsigned char> &out) const;
 };
 
 /* === E N D =============================================================== */
