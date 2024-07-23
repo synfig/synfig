@@ -35,7 +35,7 @@
 
 #include "blur.h"
 
-#include <stdexcept>
+#include <vector>
 
 #include <synfig/blur/boxblur.h>
 #include <synfig/blur/gaussian.h>
@@ -513,19 +513,15 @@ bool Blur::operator()(const Surface &surface,
 			int bh = (int)(std::fabs(ph)*size[1]*GAUSSIAN_ADJUSTMENT+0.5);
 			int max=bw+bh;
 
-			Color* SC0=new Color[w+2];
-			Color* SC1=new Color[w+2];
-			Color* SC2=new Color[w+2];
-			Color* SC3=new Color[w+2];
+			std::vector<Color> SC(4*(w+2));
+			Color* SC0 = &SC[0*(w+2)];
+			Color* SC1 = &SC[1*(w+2)];
+			Color* SC2 = &SC[2*(w+2)];
+			Color* SC3 = &SC[3*(w+2)];
 
 			while(bw&&bh)
 			{
 				if(!blurcall.amount_complete(max-(bw+bh),max)) {
-					delete [] SC0;
-					delete [] SC1;
-					delete [] SC2;
-					delete [] SC3;
-
 					return false;
 				}
 
@@ -550,10 +546,6 @@ bool Blur::operator()(const Surface &surface,
 			while(bw)
 			{
 				if(!blurcall.amount_complete(max-(bw+bh),max)) {
-					delete [] SC0;
-					delete [] SC1;
-					delete [] SC2;
-					delete [] SC3;
 					return false;
 				}
 				if(bw>=2)
@@ -571,10 +563,6 @@ bool Blur::operator()(const Surface &surface,
 			while(bh)
 			{
 				if(!blurcall.amount_complete(max-(bw+bh),max)) {
-					delete [] SC0;
-					delete [] SC1;
-					delete [] SC2;
-					delete [] SC3;
 					return false;
 				}
 				if(bh>=2)
@@ -589,11 +577,6 @@ bool Blur::operator()(const Surface &surface,
 					bh--;
 				}
 			}
-
-			delete [] SC0;
-			delete [] SC1;
-			delete [] SC2;
-			delete [] SC3;
 		}
 		break;
 
@@ -859,19 +842,15 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 			int bh = (int)(std::fabs(ph)*size[1]*GAUSSIAN_ADJUSTMENT+0.5);
 			int max=bw+bh;
 
-			float *SC0=new float[w+2];
-			float *SC1=new float[w+2];
-			float *SC2=new float[w+2];
-			float *SC3=new float[w+2];
+			std::vector<float> SC(4*(w+2));
+			float* SC0 = &SC[0*(w+2)];
+			float* SC1 = &SC[1*(w+2)];
+			float* SC2 = &SC[2*(w+2)];
+			float* SC3 = &SC[3*(w+2)];
 
 			while(bw&&bh)
 			{
 				if (!blurcall.amount_complete(max-(bw+bh),max)) {
-					delete [] SC0;
-					delete [] SC1;
-					delete [] SC2;
-					delete [] SC3;
-
 					return false;
 				}
 
@@ -897,11 +876,6 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 			while(bw)
 			{
 				if (!blurcall.amount_complete(max-(bw+bh),max)) {
-					delete [] SC0;
-					delete [] SC1;
-					delete [] SC2;
-					delete [] SC3;
-
 					return false;
 				}
 				if(bw>=2)
@@ -920,11 +894,6 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 			while(bh)
 			{
 				if (!blurcall.amount_complete(max-(bw+bh),max)) {
-					delete [] SC0;
-					delete [] SC1;
-					delete [] SC2;
-					delete [] SC3;
-
 					return false;
 				}
 				if(bh>=2)
@@ -939,12 +908,6 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 					bh--;
 				}
 			}
-
-			delete [] SC0;
-			delete [] SC1;
-			delete [] SC2;
-			delete [] SC3;
-
 		}
 		break;
 
