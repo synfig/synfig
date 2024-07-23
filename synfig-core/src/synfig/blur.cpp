@@ -33,13 +33,14 @@
 #	include <config.h>
 #endif
 
+#include "blur.h"
+
 #include <stdexcept>
 
 #include <synfig/blur/boxblur.h>
 #include <synfig/blur/gaussian.h>
 
-#include "blur.h"
-
+#include <synfig/general.h>
 #include <synfig/localization.h>
 
 #endif
@@ -49,22 +50,6 @@
 using namespace synfig;
 
 /* === M A C R O S ========================================================= */
-
-#if defined(__has_cpp_attribute)
-# if __has_cpp_attribute(fallthrough)
-#  define fallthrough__ [[fallthrough]]
-# endif
-#endif
-
-#ifndef fallthrough__
-# if __GNUC__ >= 7
-#  define fallthrough__ __attribute__((fallthrough))
-# elif __clang__
-#  define fallthrough__ [[clang::fallthrough]]
-# else
-#  define fallthrough__ ((void)0)
-# endif
-#endif
 
 /* === G L O B A L S ======================================================= */
 
@@ -325,8 +310,15 @@ bool Blur::operator()(const Surface &surface,
 		}
 	}
 
-	switch(type)
-	{
+	Blur::Type parsed_type = Blur::Type(type);
+	if (type == Blur::DISC) {
+		if (!size[0] || !size[1] || w*h <= 2) {
+			//if we don't qualify for disc blur just use box blur
+			parsed_type = Blur::BOX;
+		}
+	}
+
+	switch(parsed_type) {
 	case Blur::DISC:	// D I S C ----------------------------------------------------------
 		{
 			int bw = halfsizex;
@@ -384,8 +376,7 @@ bool Blur::operator()(const Surface &surface,
 				break;
 			}
 
-			//if we don't qualify for disc blur just use box blur
-			fallthrough__;
+			break;
 		}
 
 	case Blur::BOX: // B O X -------------------------------------------------------
@@ -662,8 +653,15 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 
 	//don't need to premultiply because we are dealing with ONLY alpha
 
-	switch(type)
-	{
+	Blur::Type parsed_type = Blur::Type(type);
+	if (type == Blur::DISC) {
+		if (!size[0] || !size[1] || w*h <= 2) {
+			//if we don't qualify for disc blur just use box blur
+			parsed_type = Blur::BOX;
+		}
+	}
+
+	switch (parsed_type) {
 	case Blur::DISC:	// D I S C ----------------------------------------------------------
 		{
 			int bw = halfsizex;
@@ -720,8 +718,7 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 				break;
 			}
 
-			//if we don't qualify for disc blur just use box blur
-			fallthrough__;
+			break;
 		}
 
 	case Blur::BOX: // B O X -------------------------------------------------------
