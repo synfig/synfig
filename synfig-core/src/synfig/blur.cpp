@@ -284,11 +284,11 @@ bool Blur::operator()(const Surface &surface,
 
 	if(w == 0 || h == 0 || resolution[0] == 0 || resolution[1] == 0) return false;
 
-	const Real	pw = resolution[0]/w,
-				ph = resolution[1]/h;
+	const Real pw = resolution[0] / w;
+	const Real ph = resolution[1] / h;
 
-	int	halfsizex = (int) (std::fabs(size[0]*.5/pw) + 1),
-		halfsizey = (int) (std::fabs(size[1]*.5/ph) + 1);
+	int	halfsizex = (int) (std::fabs(size[0] * 0.5 / pw) + 1),
+		halfsizey = (int) (std::fabs(size[1] * 0.5 / ph) + 1);
 
 	SuperCallback blurcall(cb,0,5000,5000);
 
@@ -409,7 +409,7 @@ bool Blur::operator()(const Surface &surface,
 			//horizontal part
 			if(size[0])
 			{
-				Real length=std::fabs((float)w/(resolution[0]))*size[0]*0.5+1;
+				Real length = size[0]*0.5/std::fabs(pw) + 1;
 				length=std::max(1.0,length);
 
 				//two box blurs produces: 1 2 1
@@ -420,7 +420,7 @@ bool Blur::operator()(const Surface &surface,
 			//vertical part
 			if(size[1])
 			{
-				Real length=std::fabs((float)h/(resolution[1]))*size[1]*0.5+1;
+				Real length = size[1]*0.5/std::fabs(ph) + 1;
 				length=std::max(1.0,length);
 
 				//two box blurs produces: 1 2 1 on the horizontal 1 2 1
@@ -474,9 +474,6 @@ bool Blur::operator()(const Surface &surface,
 			#define GAUSSIAN_ADJUSTMENT		(0.05)
 			#endif
 
-			Real	pw = (Real)w/(resolution[0]);
-			Real 	ph = (Real)h/(resolution[1]);
-
 			Surface temp_surface;
 			Surface *gauss_surface;
 
@@ -490,11 +487,11 @@ bool Blur::operator()(const Surface &surface,
 			   squares our rendertime.
 			   There has got to be a faster way...
 			*/
-			pw=pw*pw;
-			ph=ph*ph;
+			const Real pw2 = pw*pw;
+			const Real ph2 = ph*ph;
 
-			int bw = (int)(std::fabs(pw)*size[0]*GAUSSIAN_ADJUSTMENT+0.5);
-			int bh = (int)(std::fabs(ph)*size[1]*GAUSSIAN_ADJUSTMENT+0.5);
+			int bw = (int)(size[0]*GAUSSIAN_ADJUSTMENT/std::fabs(pw2) + 0.5);
+			int bh = (int)(size[1]*GAUSSIAN_ADJUSTMENT/std::fabs(ph2) + 0.5);
 			int max=bw+bh;
 
 			std::vector<Color> SC(4*(w+2));
@@ -610,11 +607,11 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 
 	if(w == 0 || h == 0 || resolution[0] == 0 || resolution[1] == 0) return false;
 
-	const Real	pw = resolution[0]/w,
-				ph = resolution[1]/h;
+	const Real pw = resolution[0] / w;
+	const Real ph = resolution[1] / h;
 
-	int	halfsizex = (int) (std::fabs(size[0]*.5/pw) + 1),
-		halfsizey = (int) (std::fabs(size[1]*.5/ph) + 1);
+	int	halfsizex = (int) (std::fabs(size[0] * 0.5 / pw) + 1),
+		halfsizey = (int) (std::fabs(size[1] * 0.5 / ph) + 1);
 
 	SuperCallback blurcall(cb,0,5000,5000);
 
@@ -722,7 +719,7 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 			//horizontal part
 			if(size[0])
 			{
-				Real length=std::fabs((float)w/(resolution[0]))*size[0]*0.5+1;
+				Real length = size[0] * 0.5 / std::fabs(pw) + 1;
 				length=std::max(1.0,length);
 
 				//two box blurs produces: 1 2 1
@@ -733,7 +730,7 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 			//vertical part
 			if(size[1])
 			{
-				Real length=std::fabs((float)h/(resolution[1]))*size[1]*0.5+1;
+				Real length = size[1] * 0.5 / std::fabs(ph) + 1;
 				length=std::max(1.0,length);
 
 				//two box blurs produces: 1 2 1 on the horizontal 1 2 1
@@ -789,9 +786,6 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 			#define GAUSSIAN_ADJUSTMENT		(0.05)
 			#endif
 
-			Real	pw = (Real)w/(resolution[0]);
-			Real 	ph = (Real)h/(resolution[1]);
-
 			synfig::surface<float> *gauss_surface;
 
 			gauss_surface = &out;
@@ -804,11 +798,11 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 			   squares our rendertime.
 			   There has got to be a faster way...
 			*/
-			pw=pw*pw;
-			ph=ph*ph;
+			const Real pw2 = pw*pw;
+			const Real ph2 = ph*ph;
 
-			int bw = (int)(std::fabs(pw)*size[0]*GAUSSIAN_ADJUSTMENT+0.5);
-			int bh = (int)(std::fabs(ph)*size[1]*GAUSSIAN_ADJUSTMENT+0.5);
+			int bw = (int)(size[0]*GAUSSIAN_ADJUSTMENT/std::fabs(pw2) + 0.5);
+			int bh = (int)(size[1]*GAUSSIAN_ADJUSTMENT/std::fabs(ph2) + 0.5);
 			int max=bw+bh;
 
 			std::vector<float> SC(4*(w+2));
