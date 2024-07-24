@@ -287,8 +287,8 @@ bool Blur::operator()(const Surface &surface,
 	const Real pw = resolution[0] / w;
 	const Real ph = resolution[1] / h;
 
-	int	halfsizex = (int) (std::fabs(size[0] * 0.5 / pw) + 1),
-		halfsizey = (int) (std::fabs(size[1] * 0.5 / ph) + 1);
+	const Real halfsizex = std::fabs(size[0] * 0.5 / pw) + 1;
+	const Real halfsizey = std::fabs(size[1] * 0.5 / ph) + 1;
 
 	SuperCallback blurcall(cb,0,5000,5000);
 
@@ -317,8 +317,8 @@ bool Blur::operator()(const Surface &surface,
 	switch(parsed_type) {
 	case Blur::DISC:	// D I S C ----------------------------------------------------------
 		{
-			int bw = halfsizex;
-			int bh = halfsizey;
+			int bw = int(halfsizex);
+			int bh = int(halfsizey);
 
 			if(size[0] && size[1] && w*h>2)
 			{
@@ -376,8 +376,7 @@ bool Blur::operator()(const Surface &surface,
 
 			if(size[0])
 			{
-				int length = halfsizex;
-				length=std::max(1,length);
+				int length = std::max(1.0, halfsizex);
 
 				hbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface.begin());
 			}
@@ -385,8 +384,7 @@ bool Blur::operator()(const Surface &surface,
 
 			if(size[1])
 			{
-				int length = halfsizey;
-				length = std::max(1,length);
+				int length = std::max(1.0, halfsizey);
 
 				vbox_blur(temp_surface.begin(),temp_surface.end(),length,worksurface.begin());
 			}
@@ -409,8 +407,7 @@ bool Blur::operator()(const Surface &surface,
 			//horizontal part
 			if(size[0])
 			{
-				Real length = size[0]*0.5/std::fabs(pw) + 1;
-				length=std::max(1.0,length);
+				Real length = std::max(1.0, halfsizex);
 
 				//two box blurs produces: 1 2 1
 				hbox_blur(worksurface.begin(),w,h,(int)(length*3/4),temp_surface.begin());
@@ -420,8 +417,7 @@ bool Blur::operator()(const Surface &surface,
 			//vertical part
 			if(size[1])
 			{
-				Real length = size[1]*0.5/std::fabs(ph) + 1;
-				length=std::max(1.0,length);
+				Real length = std::max(1.0, halfsizey);
 
 				//two box blurs produces: 1 2 1 on the horizontal 1 2 1
 				vbox_blur(worksurface.begin(),w,h,(int)(length*3/4),temp_surface.begin());
@@ -438,8 +434,7 @@ bool Blur::operator()(const Surface &surface,
 
 			if(size[0])
 			{
-				int length = halfsizex;
-				length = std::max(1,length);
+				int length = std::max(1.0, halfsizex);
 
 				hbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface.begin());
 			}
@@ -451,8 +446,7 @@ bool Blur::operator()(const Surface &surface,
 
 			if(size[1])
 			{
-				int length = halfsizey;
-				length = std::max(1,length);
+				int length = std::max(1.0, halfsizey);
 
 				vbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface2.begin());
 			}
@@ -610,8 +604,8 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 	const Real pw = resolution[0] / w;
 	const Real ph = resolution[1] / h;
 
-	int	halfsizex = (int) (std::fabs(size[0] * 0.5 / pw) + 1),
-		halfsizey = (int) (std::fabs(size[1] * 0.5 / ph) + 1);
+	const Real halfsizex = std::fabs(size[0] * 0.5 / pw) + 1;
+	const Real halfsizey = std::fabs(size[1] * 0.5 / ph) + 1;
 
 	SuperCallback blurcall(cb,0,5000,5000);
 
@@ -630,8 +624,8 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 	switch (parsed_type) {
 	case Blur::DISC:	// D I S C ----------------------------------------------------------
 		{
-			int bw = halfsizex;
-			int bh = halfsizey;
+			int bw = int(halfsizex);
+			int bh = int(halfsizey);
 
 			if(size[0] && size[1] && w*h>2)
 			{
@@ -687,8 +681,7 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 
 			if(size[0])
 			{
-				int length = halfsizex;
-				length=std::max(1,length);
+				int length = std::max(1.0, halfsizex);
 
 				hbox_blur(surface.begin(), surface.end(), length, temp_surface.begin());
 			}
@@ -696,8 +689,7 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 
 			if(size[1])
 			{
-				int length = halfsizey;
-				length = std::max(1,length);
+				int length = std::max(1.0, halfsizey);
 				vbox_blur(temp_surface.begin(), temp_surface.end(), length, out.begin());
 			}
 			else out = temp_surface;
@@ -719,8 +711,7 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 			//horizontal part
 			if(size[0])
 			{
-				Real length = size[0] * 0.5 / std::fabs(pw) + 1;
-				length=std::max(1.0,length);
+				Real length = std::max(1.0, halfsizex);
 
 				//two box blurs produces: 1 2 1
 				hbox_blur(out.begin(), w, h, (int)(length*3/4), temp_surface.begin());
@@ -730,8 +721,7 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 			//vertical part
 			if(size[1])
 			{
-				Real length = size[1] * 0.5 / std::fabs(ph) + 1;
-				length=std::max(1.0,length);
+				Real length = std::max(1.0, halfsizey);
 
 				//two box blurs produces: 1 2 1 on the horizontal 1 2 1
 				vbox_blur(out.begin(), w, h, (int)(length*3/4), temp_surface.begin());
@@ -748,8 +738,7 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 
 			if(size[0])
 			{
-				int length = halfsizex;
-				length = std::max(1,length);
+				int length = std::max(1.0, halfsizex);
 
 				temp_surface.set_wh(w, h);
 				hbox_blur(out.begin(), out.end(), length, temp_surface.begin());
@@ -762,8 +751,7 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 
 			if(size[1])
 			{
-				int length = halfsizey;
-				length = std::max(1,length);
+				int length = std::max(1.0, halfsizey);
 
 				temp_surface2.set_wh(w, h);
 				vbox_blur(out.begin(), out.end(), length, temp_surface2.begin());
