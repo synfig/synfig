@@ -83,7 +83,7 @@ public:
 	virtual bool reads_context()const { return true; }
 
 protected:
-	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context) const;
+	virtual rendering::Task::Handle build_composite_fork_task_vfunc(ContextParams context_params, rendering::Task::Handle sub_task) const;
 }; // END of class Halftone2
 
 /* === E N D =============================================================== */

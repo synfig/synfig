@@ -236,23 +236,15 @@ Halftone2::get_color(Context context, const Point &point)const
 }
 
 rendering::Task::Handle
-Halftone2::build_rendering_task_vfunc(Context context) const
+Halftone2::build_composite_fork_task_vfunc(ContextParams /* context_params */, rendering::Task::Handle sub_task) const
 {
-	rendering::Task::Handle task = context.build_rendering_task();
+	if (!sub_task)
+		return sub_task;
 
 	TaskHalfTone2::Handle task_halftone2(new TaskHalfTone2());
 	task_halftone2->color_dark = param_color_dark.get(Color());
 	task_halftone2->color_light = param_color_light.get(Color());
 	task_halftone2->halftone = halftone;
-	task_halftone2->sub_task(0) = task;
-	task = task_halftone2;
-
-	rendering::TaskBlend::Handle task_blend(new rendering::TaskBlend());
-	task_blend->amount = get_amount() * Context::z_depth_visibility(context.get_params(), *this);
-	task_blend->blend_method = get_blend_method();
-	task_blend->sub_task_a() = context.build_rendering_task();
-	task_blend->sub_task_b() = task;
-	task = task_blend;
-
-	return task;
+	task_halftone2->sub_task(0) = sub_task;//->clone_recursive();
+	return task_halftone2;
 }

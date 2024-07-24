@@ -433,9 +433,10 @@ Halftone3::get_color(Context context, const Point &point)const
 }
 
 rendering::Task::Handle
-Halftone3::build_rendering_task_vfunc(Context context) const
+Halftone3::build_composite_fork_task_vfunc(ContextParams /* context_params */, rendering::Task::Handle sub_task) const
 {
-	rendering::Task::Handle task = context.build_rendering_task();
+	if (!sub_task)
+		return sub_task;
 
 	TaskHalfTone3::Handle task_halftone3(new TaskHalfTone3());
 	for (int i=0; i < 3; i++)
@@ -446,15 +447,7 @@ Halftone3::build_rendering_task_vfunc(Context context) const
 	for (int i=0; i < 3; i++)
 		for (int j=0; j < 3; j++)
 			task_halftone3->inverse_matrix[i][j] = inverse_matrix[i][j];
-	task_halftone3->sub_task(0) = task;
-	task = task_halftone3;
+	task_halftone3->sub_task(0) = sub_task;//->clone_recursive();
 
-	rendering::TaskBlend::Handle task_blend(new rendering::TaskBlend());
-	task_blend->amount = get_amount() * Context::z_depth_visibility(context.get_params(), *this);
-	task_blend->blend_method = get_blend_method();
-	task_blend->sub_task_a() = context.build_rendering_task();
-	task_blend->sub_task_b() = task;
-	task = task_blend;
-
-	return task;
+	return task_halftone3;
 }
