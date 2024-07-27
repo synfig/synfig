@@ -110,20 +110,20 @@ synfig::rendering::TaskPaintPixelSW::run_task() const
 	if (!la)
 		return false;
 
-	synfig::Surface::alpha_pen apen(la->get_surface().get_pen(target_rect.minx, target_rect.miny));
-	ColorReal amount = blend ? this->amount : ColorReal(1.0);
-	apen.set_blend_method(blend ? blend_method : Color::BLEND_COMPOSITE);
-
-	if (! is_filter_) {
+	if (!is_filter_) {
+		synfig::Surface::alpha_pen apen(la->get_surface().get_pen(target_rect.minx, target_rect.miny));
+		ColorReal amount = blend ? this->amount : ColorReal(1.0);
+		apen.set_blend_method(blend ? blend_method : Color::BLEND_COMPOSITE);
 		for (int iy = target_rect.miny; iy < target_rect.maxy; ++iy, p += dy, apen.inc_y(), apen.dec_x(tw)) {
 			for (int ix = target_rect.minx; ix < target_rect.maxx; ++ix, p += dx, apen.inc_x()) {
 				apen.put_value(get_color(p), amount);
 			}
 		}
 	} else {
-		for (int iy = target_rect.miny; iy < target_rect.maxy; ++iy, p += dy, apen.inc_y(), apen.dec_x(tw)) {
-			for (int ix = target_rect.minx; ix < target_rect.maxx; ++ix, p += dx, apen.inc_x()) {
-				apen.put_value(get_color(p, apen.get_value()), amount);
+		synfig::Surface::pen pen(la->get_surface().get_pen(target_rect.minx, target_rect.miny));
+		for (int iy = target_rect.miny; iy < target_rect.maxy; ++iy, p += dy, pen.inc_y(), pen.dec_x(tw)) {
+			for (int ix = target_rect.minx; ix < target_rect.maxx; ++ix, p += dx, pen.inc_x()) {
+				pen.put_value(get_color(p, pen.get_value()));
 			}
 		}
 	}
