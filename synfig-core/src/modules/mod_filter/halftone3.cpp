@@ -84,7 +84,7 @@ public:
 
 	Color get_color(const Vector& point, const Color& in_color) const override
 	{
-		float supersample = 0;
+		float supersample = 1/std::fabs(get_pixels_per_unit()[0]*(tone[0].param_size.get(Vector())).mag());
 		Color halfcolor;
 
 		float chan[3];
