@@ -83,7 +83,10 @@ public:
 
 	Color get_color(const Vector& p, const Color& c) const override
 	{
-		const float amount(halftone(p, c.get_y(), /*supersample*/0));
+		const float supersample_size(1/std::fabs(get_pixels_per_unit()[0]*(halftone.param_size.get(Vector())).mag()));
+
+
+		const float amount(halftone(p, c.get_y(), supersample_size));
 		Color halfcolor;
 
 		if (amount <= 0.0f)
