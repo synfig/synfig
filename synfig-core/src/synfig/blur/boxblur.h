@@ -65,7 +65,7 @@ hbox_blur(T1 pen,int w, int h, int length, T2 outpen)
 		iter=pen.x();
 		end=pen.end_x();
 
-		typename T1::value_type tot((*iter)*(length+1));
+		auto tot((*iter)*(length+1));
 
 		for (x=0;x<length && iter!=end;x++,++iter) tot+=*iter;
 		iter=pen.x();
@@ -111,7 +111,7 @@ vbox_blur(T1 pen,const int w, const int h, int length, T2 outpen)
 		iter=pen.y();
 		end=pen.end_y();
 
-		typename T1::value_type tot((*iter)*(length+1));
+		auto tot((*iter)*(length+1));
 
 		for (y=0;y<length && iter!=end;y++,++iter) tot+=*iter;
 		iter=pen.y();

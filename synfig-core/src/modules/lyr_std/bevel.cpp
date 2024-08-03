@@ -270,7 +270,7 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 
 	RendDesc	workdesc = get_sub_renddesc(renddesc);
 	Surface		worksurface;
-	synfig::surface<float> blurred;
+	synfig::surface<float> alpha_surface, blurred;
 
 	const Real	pw = renddesc.get_pw(),
 				ph = renddesc.get_ph();
@@ -326,13 +326,13 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 		return false;
 
 	// Copy over the alpha
-	blurred.set_wh(worksurface.get_w(),worksurface.get_h());
+	alpha_surface.set_wh(worksurface.get_w(), worksurface.get_h());
 	if(!use_luma)
 	{
 		for(int j=0;j<worksurface.get_h();j++)
 			for(int i=0;i<worksurface.get_w();i++)
 			{
-				blurred[j][i]=worksurface[j][i].get_a();
+				alpha_surface[j][i] = worksurface[j][i].get_a();
 			}
 	}
 	else
@@ -340,12 +340,12 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 		for(int j=0;j<worksurface.get_h();j++)
 			for(int i=0;i<worksurface.get_w();i++)
 			{
-				blurred[j][i]=worksurface[j][i].get_a()*worksurface[j][i].get_y();
+				alpha_surface[j][i] = worksurface[j][i].get_a() * worksurface[j][i].get_y();
 			}
 	}
 
 	//blur the image
-	Blur(size,type,&stagetwo)(blurred,workdesc.get_br()-workdesc.get_tl(),blurred);
+	Blur(size, type, &stagetwo)(alpha_surface, workdesc.get_br()-workdesc.get_tl(), blurred);
 
 	//be sure the surface is of the correct size
 	surface->set_wh(renddesc.get_w(),renddesc.get_h());
