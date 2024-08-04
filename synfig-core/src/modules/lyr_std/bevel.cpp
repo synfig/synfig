@@ -326,6 +326,12 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 	//be sure the surface is of the correct size
 	surface->set_wh(renddesc.get_w(),renddesc.get_h());
 
+	const float u0(offset[0]/pw),   v0(offset[1]/ph);
+	const float u1(offset45[0]/pw), v1(offset45[1]/ph);
+
+	const float amount = get_amount();
+	const Color::BlendMethod blend_method = get_blend_method();
+
 	int v = halfsizey+std::abs(offset_v);
 	for(y=0;y<renddesc.get_h();y++,v++)
 	{
@@ -335,30 +341,12 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 			Real alpha(0);
 			Color shade;
 
-			{
-				const float u2(offset[0]/pw),v2(offset[1]/ph);
-				alpha+=1.0f-blurred.linear_sample(u2+u,v2+v);
-			}
-			{
-				const float u2(-offset[0]/pw),v2(-offset[1]/ph);
-				alpha-=1.0f-blurred.linear_sample(u2+u,v2+v);
-			}
-			{
-				const float u2(offset45[0]/pw),v2(offset45[1]/ph);
-				alpha+=1.0f-blurred.linear_sample(u2+u,v2+v)*0.5f;
-			}
-			{
-				const float u2(offset45[1]/ph),v2(-offset45[0]/pw);
-				alpha+=1.0f-blurred.linear_sample(u2+u,v2+v)*0.5f;
-			}
-			{
-				const float u2(-offset45[0]/pw),v2(-offset45[1]/ph);
-				alpha-=1.0f-blurred.linear_sample(u2+u,v2+v)*0.5f;
-			}
-			{
-				const float u2(-offset45[1]/ph),v2(offset45[0]/pw);
-				alpha-=1.0f-blurred.linear_sample(u2+u,v2+v)*0.5f;
-			}
+			alpha += -blurred.linear_sample(u+u0, v+v0);
+			alpha -= -blurred.linear_sample(u-u0, v-v0);
+			alpha += -blurred.linear_sample(u+u1, v+v1)*0.5f;
+			alpha += -blurred.linear_sample(u+v1, v-u1)*0.5f;
+			alpha -= -blurred.linear_sample(u-u1, v-v1)*0.5f;
+			alpha -= -blurred.linear_sample(u-v1, v+u1)*0.5f;
 
 			if(solid)
 			{
@@ -379,7 +367,7 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 
 			if(shade.get_a())
 			{
-				(*surface)[y][x]=Color::blend(shade,worksurface[v][u],get_amount(),get_blend_method());
+				(*surface)[y][x] = Color::blend(shade, worksurface[v][u], amount, blend_method);
 			}
 			else (*surface)[y][x] = worksurface[v][u];
 		}
