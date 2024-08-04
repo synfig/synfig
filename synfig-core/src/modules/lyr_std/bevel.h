@@ -33,10 +33,6 @@
 /* -- H E A D E R S --------------------------------------------------------- */
 
 #include <synfig/layers/layer_composite_fork.h>
-#include <synfig/color.h>
-#include <synfig/vector.h>
-#include <synfig/blur.h>
-#include <synfig/angle.h>
 
 namespace synfig
 {
