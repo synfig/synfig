@@ -24,7 +24,7 @@ git add \
 	synfig-studio/org.synfig.SynfigStudio.appdata.xml.in \
 	# end
 
-git commit -m "Release version ${VERSION_CURRENT}"
+git commit -m "chore: Release version ${VERSION_CURRENT}"
 git push upstream testing --force
 
 git tag -d "v${VERSION_CURRENT}" || true
