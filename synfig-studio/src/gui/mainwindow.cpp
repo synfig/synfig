@@ -708,12 +708,13 @@ MainWindow::on_plugins_changed()
 	else {
 		typedef std::vector< Glib::RefPtr<Gtk::ActionGroup> > ActionGroupList;
 		ActionGroupList groups = App::ui_manager()->get_action_groups();
-		for(ActionGroupList::const_iterator it = groups.begin(); it != groups.end(); ++it)
-			if ((*it)->get_name() == plugins_action_group->get_name()) {
-				App::ui_manager()->remove_action_group(*it);
+		for (const auto& group : groups) {
+			if (group->get_name() == plugins_action_group->get_name()) {
+				App::ui_manager()->remove_action_group(group);
 				App::ui_manager()->insert_action_group(plugins_action_group);	
 				break;
 			}
+		}
 	}
 
 	save_plugins_merge_id = studio::App::ui_manager()->add_ui_from_string(ui_info);

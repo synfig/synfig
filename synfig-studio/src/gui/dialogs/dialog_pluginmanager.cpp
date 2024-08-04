@@ -70,8 +70,8 @@ Dialog_PluginManager::Dialog_PluginManager(Gtk::Window& parent):
     message_dialog(_("Are you sure you want to delete this plugin?"), false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL, true),
     plugin_list(App::plugin_manager.plugins())
 {
-    plugin_file_dialog.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
-    plugin_file_dialog.add_button("_Open", Gtk::RESPONSE_OK);
+    plugin_file_dialog.add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
+    plugin_file_dialog.add_button(_("Open"), Gtk::RESPONSE_OK);
 
     // Add a filter to show only text files
     auto filter_zip = Gtk::FileFilter::create();
@@ -97,7 +97,7 @@ Dialog_PluginManager::Dialog_PluginManager(Gtk::Window& parent):
     plugin_tab->pack_end(*install_plugin_button, Gtk::PACK_SHRINK);
 
     Gtk::Label* custom_label = manage(new Gtk::Label());
-    custom_label->set_text("Installed Plugins");
+    custom_label->set_text(_("Installed Plugins"));
     custom_label->set_margin_bottom(10);
     custom_label->set_margin_top(10);
     custom_label->set_margin_left(20);
@@ -204,40 +204,40 @@ Dialog_PluginManager::on_install_plugin_button_clicked()
                 PLUGIN_ZIP_AT_CHILD_DIR = 1 << 3
             } pluginStatus = PluginZipStatus::PLUGIN_ZIP_NO_PLUGIN_XML;
             
-            for(auto& file : files) {
-                if(file == "plugin.xml") {
+            for (const auto& file : files) {
+                if (file == "plugin.xml") {
                     pluginStatus = PluginZipStatus::PLUGIN_ZIP_AT_ROOT_DIR;
                     break;
                 }
             }
             std::string output_path ;
-            if(pluginStatus == PluginZipStatus::PLUGIN_ZIP_AT_ROOT_DIR) {
+            if (pluginStatus == PluginZipStatus::PLUGIN_ZIP_AT_ROOT_DIR) {
                 output_path = ((path_to_user_plugins / filesystem::Path(zip_filename).stem()).add_suffix("/")).u8string();
-                if(native_fs->directory_create(output_path))
-                for(auto &file : files)
+                if (native_fs->directory_create(output_path))
+                for (const auto &file : files)
                     zip_fs->copy_recursive(zip_fs, file, native_fs, output_path + file);
                 App::plugin_manager.load_plugin(output_path + "plugin.xml", output_path, true);
             }
             else {
-                for(auto& file : files)
-                    if(zip_fs->is_directory(file)) {
+                for (auto& file : files)
+                    if (zip_fs->is_directory(file)) {
                         std::vector<std::string> child_files;
                         zip_fs->directory_scan(file, child_files);
                         for (auto& file : child_files)
-                            if(file == "plugin.xml") {
+                            if (file == "plugin.xml") {
                                 pluginStatus = PluginZipStatus::PLUGIN_ZIP_AT_CHILD_DIR;
                                 break;
                             }
                     }
-                if(pluginStatus == PluginZipStatus::PLUGIN_ZIP_AT_CHILD_DIR) {
+                if (pluginStatus == PluginZipStatus::PLUGIN_ZIP_AT_CHILD_DIR) {
                     output_path = path_to_user_plugins.add_suffix("/").u8string();
-                    for(auto &file : files)
+                    for (auto &file : files)
                         zip_fs->copy_recursive(zip_fs, file, native_fs, output_path + file);
                 }
                 App::plugin_manager.load_plugin(output_path + files[0] + '/' + "plugin.xml", output_path +  files[0] , true);
             }
             zip_fs->close();
-            if(pluginStatus == PluginZipStatus::PLUGIN_ZIP_NO_PLUGIN_XML) {
+            if (pluginStatus == PluginZipStatus::PLUGIN_ZIP_NO_PLUGIN_XML) {
                 synfig::error("Failed to find plugin.xml in zip file: " + zip_filename);
             }
             plugin_file_dialog.close();
