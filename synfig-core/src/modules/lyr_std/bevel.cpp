@@ -208,14 +208,14 @@ Layer_Bevel::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
 		case Blur::GAUSSIAN:
 		{
 		#define GAUSSIAN_ADJUSTMENT		(0.05)
-			Real	pw = (Real)workdesc.get_w()/(workdesc.get_br()[0]-workdesc.get_tl()[0]);
-			Real 	ph = (Real)workdesc.get_h()/(workdesc.get_br()[1]-workdesc.get_tl()[1]);
+			Real pw = workdesc.get_pw();
+			Real ph = workdesc.get_ph();
 
-			pw=pw*pw;
-			ph=ph*ph;
+			Real pw2 = pw * pw;
+			Real ph2 = ph * ph;
 
-			halfsizex = (int)(std::fabs(pw)*size[0]*GAUSSIAN_ADJUSTMENT+0.5);
-			halfsizey = (int)(std::fabs(ph)*size[1]*GAUSSIAN_ADJUSTMENT+0.5);
+			halfsizex = (int)(size[0]*GAUSSIAN_ADJUSTMENT/std::fabs(pw2) + 0.5);
+			halfsizey = (int)(size[1]*GAUSSIAN_ADJUSTMENT/std::fabs(ph2) + 0.5);
 
 			halfsizex = (halfsizex + 1)/2;
 			halfsizey = (halfsizey + 1)/2;
@@ -281,14 +281,14 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 	{
 		case Blur::GAUSSIAN:
 		{
-			Real pw = (Real)workdesc.get_w()/(workdesc.get_br()[0]-workdesc.get_tl()[0]);
-			Real ph = (Real)workdesc.get_h()/(workdesc.get_br()[1]-workdesc.get_tl()[1]);
+			Real pw = workdesc.get_pw();
+			Real ph = workdesc.get_ph();
 
-			pw=pw*pw;
-			ph=ph*ph;
+			Real pw2 = pw * pw;
+			Real ph2 = ph * ph;
 
-			halfsizex = (int)(std::fabs(pw)*size[0]*GAUSSIAN_ADJUSTMENT+0.5);
-			halfsizey = (int)(std::fabs(ph)*size[1]*GAUSSIAN_ADJUSTMENT+0.5);
+			halfsizex = (int)(size[0]*GAUSSIAN_ADJUSTMENT/std::fabs(pw2) + 0.5);
+			halfsizey = (int)(size[1]*GAUSSIAN_ADJUSTMENT/std::fabs(ph2) + 0.5);
 
 			halfsizex = (halfsizex + 1)/2;
 			halfsizey = (halfsizey + 1)/2;
