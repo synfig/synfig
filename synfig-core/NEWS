@@ -1,3 +1,32 @@
+## Version 1.4.5
+- [`015305a`](https://github.com/synfig/synfig/commit/015305ae9fd56ff23a7b0b25c27e7f159a555d3d) fix: crash on moving a layer following a bline reference ([#2971](https://github.com/synfig/synfig/issues/2971))
+- [`feb62c5`](https://github.com/synfig/synfig/commit/feb62c586f9b8c5378ce724854c7180d674e8326) Replaced `abs` with `std::fabs` for float values and `std::abs` for templates and int values ([#2311](https://github.com/synfig/synfig/issues/2311))
+- [`db959bf`](https://github.com/synfig/synfig/commit/db959bf7d062bdb0eb658ddabb2735385a8872aa) Merge PR [#2505](https://github.com/synfig/synfig/issues/2505): Fixed issue with opening a file from a network folder on Windows
+- [`d0dba5b`](https://github.com/synfig/synfig/commit/d0dba5bd7aaa2ec3008b26050a0f73565d986b04) fix: a crash on program exit if bones were used ([#3037](https://github.com/synfig/synfig/issues/3037))
+- [`04afca0`](https://github.com/synfig/synfig/commit/04afca0085ec08dafafd033cefc210ca45ae4781) fix: added ImageMagick 7.1 library initialization ([#2876](https://github.com/synfig/synfig/issues/2876))
+- [`674888a`](https://github.com/synfig/synfig/commit/674888a710f46b2a3cb6a4126757f22139c0a09c) fix: prevent memory leak on importing PNG files ([#3144](https://github.com/synfig/synfig/issues/3144))
+## Version 1.4.4
+- [`f6f153b`](https://github.com/synfig/synfig/commit/f6f153b5551f97cc6b50546ff53ca3c791d1c5cc) fix: missing last frame for ffmpeg target ([#2912](https://github.com/synfig/synfig/issues/2912))
+- [`93d8f4c`](https://github.com/synfig/synfig/commit/93d8f4cb1b149dca8a6415f6f3cbfab0d22a4778) fix: Synfig CLI does not open file if path contains non-Latin characters (Windows) ([#2819](https://github.com/synfig/synfig/issues/2819))
+- [`e06c83f`](https://github.com/synfig/synfig/commit/e06c83fbdcf01e6c73d67321926a52cc92ebaa38) build(autotools): allow to compile release build with debug info ([#2838](https://github.com/synfig/synfig/issues/2838))
+- [`54ba18f`](https://github.com/synfig/synfig/commit/54ba18f2ff9a222b1bd8eb01f04cd88d4a54e188) Added support MLT++-7 in Autotools ([#2306](https://github.com/synfig/synfig/issues/2306))
+- [`081d9ab`](https://github.com/synfig/synfig/commit/081d9ab94fee9e3083b6db3a9f7f4dd002847d57) Merge PR [#2722](https://github.com/synfig/synfig/issues/2722): fix: palette loading
+- [`8cc24b1`](https://github.com/synfig/synfig/commit/8cc24b13868072e54b3cfa70488102cb5864e69a) fix: Synfig hangs when importing palette ([#2730](https://github.com/synfig/synfig/issues/2730))
+- [`091ac5c`](https://github.com/synfig/synfig/commit/091ac5c820f3bc6c9db773bfdd8669cc3ae23eb0) Fixed messed up translations for Russian language
+## Version 1.4.3
+- [`042c737`](https://github.com/synfig/synfig/commit/042c7378917c32af4354bac5d35283a63a7b828c) Fix bug with src offset in blur sw task ([#2570](https://github.com/synfig/synfig/issues/2570))
+- [`249cee7`](https://github.com/synfig/synfig/commit/249cee7d22df2501b4413c46be7d284687d3659a) fix layer Clamp not rendering ([#2550](https://github.com/synfig/synfig/issues/2550))
+- [`e23b229`](https://github.com/synfig/synfig/commit/e23b229208f2cc9e8b37c46857eeaf629b4d8e1a) perf: improved file opening speed in Windows ([#2826](https://github.com/synfig/synfig/issues/2826))
+- [`34b9c43`](https://github.com/synfig/synfig/commit/34b9c43c5c5a69816543478f0e77acf3708f88aa) Fixed video render with ffmpeg 3.x ([#2628](https://github.com/synfig/synfig/issues/2628))
+- [`1f202d3`](https://github.com/synfig/synfig/commit/1f202d3cb9bc0149f8e28b555dc6d384fb4bc533) Merge PR ([#2399](https://github.com/synfig/synfig/issues/2399)): ETL cleanup: remove unused files and deprecated functions
+- [`b4d1f62`](https://github.com/synfig/synfig/commit/b4d1f62778ea1c62215f7296509458ef67bc96ce) loadcanvas: fix loading of some non-value nodes lists ([#2482](https://github.com/synfig/synfig/issues/2482))
+- [`7fe4274`](https://github.com/synfig/synfig/commit/7fe42741fa7282a448368d7b30e54ef61eebeca1) Fix exported file with audio being smaller than it should ([#2477](https://github.com/synfig/synfig/issues/2477))
+- [`e932a39`](https://github.com/synfig/synfig/commit/e932a39ca8e6aca097a77622b5a7df91c2b0abe8) Allow Bones parameters to be connected to exported value nodes ([#2433](https://github.com/synfig/synfig/issues/2433))
+- [`326ee01`](https://github.com/synfig/synfig/commit/326ee01f2f07b95af83ad6b52435baa42015247d) Fixed crash when rendering to gif target ([#2389](https://github.com/synfig/synfig/issues/2389))
+- [`19a88f4`](https://github.com/synfig/synfig/commit/19a88f4400a727b0080c26f9ba833647369181c3) Added `seekpos` method for FileSystemNative::ReadStream ([#2224](https://github.com/synfig/synfig/issues/2224))
+- [`c0bebf6`](https://github.com/synfig/synfig/commit/c0bebf68b97fbc0b5451da07b9291234a9197793) Fix possible crash on get_local_name() of Layer_PasteCanvas ([#2300](https://github.com/synfig/synfig/issues/2300))
+- [`576c349`](https://github.com/synfig/synfig/commit/576c349ae84f2490f4997581f3b4cc0750e0a61b) Autotools: Remove @MAGICKPP_LIBS@ variable from LDFLAGS([#2326](https://github.com/synfig/synfig/issues/2326))
+- [`391f8a1`](https://github.com/synfig/synfig/commit/391f8a1540b4c9339bb1141f4067221f6cc87b8b) Fix magick++ target missing in AppImage (issue [#2320](https://github.com/synfig/synfig/issues/2320)) ([#2324](https://github.com/synfig/synfig/issues/2324))
 ## Version 1.4.2
 - [`6b0d418`](https://github.com/synfig/synfig/commit/6b0d4185255cc534940709c9001227d1ef52ba68) [Autotools] Fixed problem with missing \*.glsl files in distribution ([#1982](https://github.com/synfig/synfig/issues/1982))
 - [`4ddd22d`](https://github.com/synfig/synfig/commit/4ddd22d8de1f4729c83fe0b0e8cde5b46fd84e87) Merge PR [#1995](https://github.com/synfig/synfig/issues/1995): [Core] create stringhelper
@@ -26,7 +55,7 @@
 - [`23bf66a`](https://github.com/synfig/synfig/commit/23bf66ab53aa7bd3ef3a70fb4488a97b005da3da) Fix animation interpolation for boolean values ([#1826](https://github.com/synfig/synfig/issues/1826))
 - [`985afc4`](https://github.com/synfig/synfig/commit/985afc44935778396406150c130b9653b977def3) fix Duplicate layer ignoring all layers but the first one ([#1829](https://github.com/synfig/synfig/issues/1829))
 - [`a583e73`](https://github.com/synfig/synfig/commit/a583e73d4c47914284b15f4a8d7719eafddfe1b4) autotools: pango and imagemagick c++ flags and libs have been moved to their respective modules ([#1688](https://github.com/synfig/synfig/issues/1688))
-- [`383fcf8`](https://github.com/synfig/synfig/commit/383fcf8) [Autotools] remove support for broken OpenGL renderering ([#2055](https://github.com/synfig/synfig/issues/2055))
+- [`383fcf8`](https://github.com/synfig/synfig/commit/383fcf8) [Autotools] remove support for broken OpenGL rendering ([#2055](https://github.com/synfig/synfig/issues/2055))
 - [`19112f1`](https://github.com/synfig/synfig/commit/19112f10adf3b25aad93057d7a0ed03d35b0b2de) Fix crash in Spline Vertex converter ([#1802](https://github.com/synfig/synfig/issues/1802))
 - [`99a1cde`](https://github.com/synfig/synfig/commit/99a1cde2b1e54540857925e6899deb708e17f305) Export video files with sound ([#1623](https://github.com/synfig/synfig/issues/1623))
 
