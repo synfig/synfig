@@ -47,15 +47,6 @@ using namespace synfig;
 using namespace modules;
 using namespace lyr_std;
 
-/*#define TYPE_BOX			0
-#define TYPE_FASTGUASSIAN	1
-#define TYPE_FASTGAUSSIAN	1
-#define TYPE_CROSS			2
-#define TYPE_GUASSIAN		3
-#define TYPE_GAUSSIAN		3
-#define TYPE_DISC			4
-*/
-
 /* -- G L O B A L S --------------------------------------------------------- */
 
 SYNFIG_LAYER_INIT(Layer_Bevel);
@@ -65,12 +56,6 @@ SYNFIG_LAYER_SET_CATEGORY(Layer_Bevel,N_("Stylize"));
 SYNFIG_LAYER_SET_VERSION(Layer_Bevel,"0.2");
 
 /* -- F U N C T I O N S ----------------------------------------------------- */
-
-inline void clamp(Vector &v)
-{
-	if(v[0]<0.0)v[0]=0.0;
-	if(v[1]<0.0)v[1]=0.0;
-}
 
 Layer_Bevel::Layer_Bevel():
 	Layer_CompositeFork(0.75,Color::BLEND_ONTO),
