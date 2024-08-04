@@ -70,21 +70,21 @@ private:
 public:
 	Layer_Bevel();
 
-	virtual bool set_param(const String &param, const ValueBase &value);
+	bool set_param(const String& param, const ValueBase& value) override;
 
-	virtual ValueBase get_param(const String &param)const;
+	ValueBase get_param(const String& param) const override;
 
-	virtual Color get_color(Context context, const Point &pos)const;
+	Color get_color(Context context, const Point& pos) const override;
 
-	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+	bool accelerated_render(Context context, Surface* surface, int quality, const RendDesc& renddesc, ProgressCallback* cb) const override;
 
-	virtual Rect get_full_bounding_rect(Context context)const;
-	virtual Vocab get_param_vocab()const;
-	virtual bool reads_context()const { return true; }
+	Rect get_full_bounding_rect(Context context) const override;
+	Vocab get_param_vocab() const override;
+	bool reads_context() const override { return true; }
 
 protected:
-	virtual RendDesc get_sub_renddesc_vfunc(const RendDesc &renddesc) const;
-	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context) const;
+	RendDesc get_sub_renddesc_vfunc(const RendDesc& renddesc) const override;
+	rendering::Task::Handle build_rendering_task_vfunc(Context context) const override;
 }; // END of class Layer_Bevel
 
 }; // END of namespace lyr_std
