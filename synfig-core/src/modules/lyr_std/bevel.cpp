@@ -196,10 +196,6 @@ Layer_Bevel::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
 		case Blur::DISC:
 		case Blur::BOX:
 		case Blur::CROSS:
-		{
-			workdesc.set_subwindow(-std::max(1,halfsizex),-std::max(1,halfsizey),offset_w+2*std::max(1,halfsizex),offset_h+2*std::max(1,halfsizey));
-			break;
-		}
 		case Blur::FASTGAUSSIAN:
 		{
 			workdesc.set_subwindow(-std::max(1,halfsizex),-std::max(1,halfsizey),offset_w+2*std::max(1,halfsizex),offset_h+2*std::max(1,halfsizey));
