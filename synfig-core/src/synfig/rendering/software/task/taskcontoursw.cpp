@@ -87,13 +87,13 @@ public:
 
 		Vector ppu = get_pixels_per_unit();
 
-		Matrix bounds_transfromation;
-		bounds_transfromation.m00 = ppu[0];
-		bounds_transfromation.m11 = ppu[1];
-		bounds_transfromation.m20 = target_rect.minx - ppu[0]*source_rect.minx;
-		bounds_transfromation.m21 = target_rect.miny - ppu[1]*source_rect.miny;
+		Matrix bounds_transformation;
+		bounds_transformation.m00 = ppu[0];
+		bounds_transformation.m11 = ppu[1];
+		bounds_transformation.m20 = target_rect.minx - ppu[0]*source_rect.minx;
+		bounds_transformation.m21 = target_rect.miny - ppu[1]*source_rect.miny;
 
-		Matrix matrix = bounds_transfromation * transformation->matrix;
+		Matrix matrix = bounds_transformation * transformation->matrix;
 
 		Polyspan polyspan;
 		polyspan.init(target_rect);
