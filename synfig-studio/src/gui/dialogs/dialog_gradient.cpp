@@ -129,6 +129,7 @@ Dialog_Gradient::reset()
 {
 	value_changed_connection.disconnect();
 	signal_edited_.clear();
+	set_value_desc(synfigapp::ValueDesc());
 }
 
 void
@@ -188,4 +189,16 @@ Dialog_Gradient::edit(const synfigapp::ValueDesc &x, etl::handle<synfigapp::Canv
 	);
 
 	present();
+}
+
+void
+Dialog_Gradient::set_value_desc(const synfigapp::ValueDesc& x)
+{
+	value_desc = x;
+}
+
+synfigapp::ValueDesc
+Dialog_Gradient::get_value_desc() const
+{
+	return value_desc;
 }

@@ -80,6 +80,8 @@ class Dialog_Gradient : public Gtk::Dialog
 	Widget_ColorEdit* widget_color;
 	Gtk::Button *set_default_button;
 
+	synfigapp::ValueDesc value_desc;
+
 	void on_changed();
 
 public:
@@ -100,6 +102,9 @@ public:
 	//! Interface to external calls to fill in the Gradient Editor Dialog
 	//! when a Constant ValueNode or a Animated ValueNode is double cliked.
 	void edit(const synfigapp::ValueDesc &x, etl::handle<synfigapp::CanvasInterface> canvas_interface, synfig::Time time=0);
+
+	void set_value_desc(const synfigapp::ValueDesc& x);
+	synfigapp::ValueDesc get_value_desc() const;
 }; // END of Dialog_Gradient
 
 }; // END of namespace studio
