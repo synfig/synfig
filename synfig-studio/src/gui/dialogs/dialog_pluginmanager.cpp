@@ -36,6 +36,7 @@
 
 #include <fstream>
 
+#include <libxml++/libxml++.h>
 #include <gtkmm/label.h>
 #include <gtkmm/notebook.h>
 #include <gtkmm/listbox.h>
@@ -210,6 +211,18 @@ Dialog_PluginManager::on_install_plugin_button_clicked()
                     break;
                 }
             }
+            for (const auto& file : files) {
+                if (zip_fs->is_directory(file)) {
+                    std::vector<std::string> child_files;
+                    zip_fs->directory_scan(file, child_files);
+                    for (auto& innerFile : child_files) {
+                        if (innerFile == "plugin.xml") {
+                            pluginStatus = PluginZipStatus::PLUGIN_ZIP_AT_CHILD_DIR;
+                            break;
+                        }
+                    }
+                }
+            }
             std::string output_path ;
             if (pluginStatus == PluginZipStatus::PLUGIN_ZIP_AT_ROOT_DIR) {
                 output_path = ((path_to_user_plugins / filesystem::Path(zip_filename).stem()).add_suffix("/")).u8string();
@@ -218,23 +231,46 @@ Dialog_PluginManager::on_install_plugin_button_clicked()
                     zip_fs->copy_recursive(zip_fs, file, native_fs, output_path + file);
                 App::plugin_manager.load_plugin(output_path + "plugin.xml", output_path, true);
             }
-            else {
-                for (auto& file : files)
+            else if (pluginStatus == PluginZipStatus::PLUGIN_ZIP_AT_CHILD_DIR) {
+                std::string dir_name;
+                std::vector<std::string> child_files;
+                for (auto& file : files) {
                     if (zip_fs->is_directory(file)) {
-                        std::vector<std::string> child_files;
                         zip_fs->directory_scan(file, child_files);
-                        for (auto& file : child_files)
-                            if (file == "plugin.xml") {
-                                pluginStatus = PluginZipStatus::PLUGIN_ZIP_AT_CHILD_DIR;
+                        for (auto& innerFile : child_files) {
+                            if (innerFile == "plugin.xml") {
+
+                                xmlpp::DomParser parser;
+                                parser.set_substitute_entities();
+		                        parser.parse_stream(*zip_fs->get_read_stream(file + '/' + innerFile));
+
+                                const xmlpp::Node* pNode = parser.get_document()->get_root_node();
+                                if (std::string(pNode->get_name()) != std::string("plugin") ) {
+                                    synfig::warning("Invalid plugin.xml file (missing root <plugin>)");
+                                    return;
+                                }
+
+                                auto execlist = pNode->find("./exec");
+                                if (!execlist.empty())
+                                {
+                                    for (const xmlpp::Node* node : pNode->find("./name") ) {
+                                        const xmlpp::Element* element = dynamic_cast<const xmlpp::Element*>(node);
+                                        std::string lang = element->get_attribute_value("lang");
+                                        if (lang.empty()) {
+                                            dir_name = element->get_child_text()->get_content();
+                                            break;
+                                        }
+                                    }
+                                }
                                 break;
                             }
+                        }
                     }
-                if (pluginStatus == PluginZipStatus::PLUGIN_ZIP_AT_CHILD_DIR) {
-                    output_path = path_to_user_plugins.add_suffix("/").u8string();
-                    for (auto &file : files)
-                        zip_fs->copy_recursive(zip_fs, file, native_fs, output_path + file);
                 }
-                App::plugin_manager.load_plugin(output_path + files[0] + '/' + "plugin.xml", output_path +  files[0] , true);
+                output_path = path_to_user_plugins.add_suffix("/").u8string() + dir_name + "/";
+                if (native_fs->directory_create(output_path))
+                    zip_fs->copy_recursive(zip_fs, files[0], native_fs, output_path);
+                App::plugin_manager.load_plugin(output_path + "plugin.xml", output_path, true);
             }
             zip_fs->close();
             if (pluginStatus == PluginZipStatus::PLUGIN_ZIP_NO_PLUGIN_XML) {
