@@ -63,7 +63,7 @@ TaskMesh::set_coords_sub_tasks()
 		{ trunc_to_zero(); return; }
 	if (!is_valid_coords())
 		{ sub_task()->set_coords_zero(); return; }
-	// TODO: use mesh->get_resolution_transfrom()
+	// TODO: use mesh->get_resolution_transform()
 	sub_task()->set_coords(mesh->get_source_rectangle(), target_rect.get_size()*3/2);
 }
 

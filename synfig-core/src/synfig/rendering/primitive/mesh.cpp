@@ -48,7 +48,7 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 Mesh::Mesh():
-	resolution_transfrom_calculated(false) { }
+	resolution_transform_calculated(false) { }
 
 void
 Mesh::assign(const Mesh &other) {
@@ -56,13 +56,13 @@ Mesh::assign(const Mesh &other) {
 	triangles = other.triangles;
 	
 	// other mesh is constant, so we need to lock mutexes for read the relolution data
-	// see comment for calculate_resolution_transfrom() declaration
+	// see comment for calculate_resolution_transform() declaration
 	{
-		std::lock_guard<std::mutex> lock(other.resolution_transfrom_read_mutex);
-		resolution_transfrom_calculated = other.resolution_transfrom_calculated;
+		std::lock_guard<std::mutex> lock(other.resolution_transform_read_mutex);
+		resolution_transform_calculated = other.resolution_transform_calculated;
 		target_rectangle = other.target_rectangle;
 		source_rectangle = other.source_rectangle;
-		resolution_transfrom = other.resolution_transfrom;
+		resolution_transform = other.resolution_transform;
 	}
 }
 
@@ -71,12 +71,12 @@ Mesh::clear()
 {
 	vertices.clear();
 	triangles.clear();
-	reset_resolution_transfrom();
+	reset_resolution_transform();
 }
 
 void
-Mesh::reset_resolution_transfrom()
-	{ resolution_transfrom_calculated = false; }
+Mesh::reset_resolution_transform()
+	{ resolution_transform_calculated = false; }
 
 Rect
 Mesh::calc_target_rectangle() const
@@ -119,45 +119,45 @@ Mesh::calc_source_rectangle(const Matrix &transform_matrix) const
 }
 
 void
-Mesh::calculate_resolution_transfrom_no_lock(bool force) const
+Mesh::calculate_resolution_transform_no_lock(bool force) const
 {
-	if (resolution_transfrom_calculated && !force)
+	if (resolution_transform_calculated && !force)
 		return;
 	// TODO:
-	resolution_transfrom.set_identity();
+	resolution_transform.set_identity();
 	target_rectangle = calc_target_rectangle();
 	source_rectangle = calc_source_rectangle();
-	resolution_transfrom_calculated = true;
+	resolution_transform_calculated = true;
 }
 
 void
-Mesh::calculate_resolution_transfrom(bool force) const
+Mesh::calculate_resolution_transform(bool force) const
 {
-	std::lock_guard<std::mutex> lock(resolution_transfrom_read_mutex);
-	calculate_resolution_transfrom_no_lock(force);
+	std::lock_guard<std::mutex> lock(resolution_transform_read_mutex);
+	calculate_resolution_transform_no_lock(force);
 }
 
 Matrix2
-Mesh::get_resolution_transfrom() const
+Mesh::get_resolution_transform() const
 {
-	std::lock_guard<std::mutex> lock(resolution_transfrom_read_mutex);
-	calculate_resolution_transfrom_no_lock();
-	return resolution_transfrom;
+	std::lock_guard<std::mutex> lock(resolution_transform_read_mutex);
+	calculate_resolution_transform_no_lock();
+	return resolution_transform;
 }
 
 Rect
 Mesh::get_target_rectangle() const
 {
-	std::lock_guard<std::mutex> lock(resolution_transfrom_read_mutex);
-	calculate_resolution_transfrom_no_lock();
+	std::lock_guard<std::mutex> lock(resolution_transform_read_mutex);
+	calculate_resolution_transform_no_lock();
 	return target_rectangle;
 }
 
 Rect
 Mesh::get_source_rectangle() const
 {
-	std::lock_guard<std::mutex> lock(resolution_transfrom_read_mutex);
-	calculate_resolution_transfrom_no_lock();
+	std::lock_guard<std::mutex> lock(resolution_transform_read_mutex);
+	calculate_resolution_transform_no_lock();
 	return source_rectangle;
 }
 

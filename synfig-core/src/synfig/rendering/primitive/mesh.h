@@ -81,19 +81,19 @@ public:
 	TriangleList triangles;
 
 private:
-	mutable std::mutex resolution_transfrom_read_mutex;
-	mutable bool resolution_transfrom_calculated;
+	mutable std::mutex resolution_transform_read_mutex;
+	mutable bool resolution_transform_calculated;
 	mutable Rect target_rectangle;
 	mutable Rect source_rectangle;
-	mutable Matrix2 resolution_transfrom;
+	mutable Matrix2 resolution_transform;
 	
-	void calculate_resolution_transfrom_no_lock(bool force = false) const;
+	void calculate_resolution_transform_no_lock(bool force = false) const;
 
 public:
 	Mesh();
 	void assign(const Mesh &other);
 	void clear();
-	void reset_resolution_transfrom();
+	void reset_resolution_transform();
 
 	Rect calc_target_rectangle() const;
 	Rect calc_target_rectangle(const Matrix &transform_matrix) const;
@@ -103,8 +103,8 @@ public:
 
 	// actualize internal resolution data (if need) and return it
 	// method is thread-safe for constant meshes - you must not modify a mesh while call these methods
-	void calculate_resolution_transfrom(bool force = false) const;
-	Matrix2 get_resolution_transfrom() const;
+	void calculate_resolution_transform(bool force = false) const;
+	Matrix2 get_resolution_transform() const;
 	Rect get_target_rectangle() const;
 	Rect get_source_rectangle() const;
 
