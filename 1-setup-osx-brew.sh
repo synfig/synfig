@@ -72,6 +72,8 @@ do
     brew info "$pkg" | grep 'Not installed' >/dev/null && brew install "$pkg"
 done
 
+brew reinstall libtool
+
 
 # Do not install lxml for GitHub Actions
 if [[ -z "${CI}" ]]; then
