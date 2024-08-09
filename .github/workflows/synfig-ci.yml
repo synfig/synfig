@@ -63,7 +63,7 @@ jobs:
         env:
           HOMEBREW_NO_AUTO_UPDATE: 1
           HOMEBREW_NO_ANALYTICS: 1
-        run: ./1-setup-osx-brew.sh
+        run: brew update && ./1-setup-osx-brew.sh
 
       - name: Install dependencies (apt)
         if: runner.os == 'Linux'
