@@ -82,9 +82,13 @@ public:
 	SYNFIG_EXPORT static Token token;
 	Token::Handle get_token() const override { return token.handle(); }
 
+	void pre_run(const Matrix3& /*matrix*/) const override
+	{
+		supersample = 1/std::fabs(get_pixels_per_unit()[0]*(tone[0].param_size.get(Vector())).mag());
+	}
+
 	Color get_color(const Vector& point, const Color& in_color) const override
 	{
-		float supersample = 1/std::fabs(get_pixels_per_unit()[0]*(tone[0].param_size.get(Vector())).mag());
 		Color halfcolor;
 
 		float chan[3];
@@ -123,6 +127,9 @@ public:
 	bool run(RunParams&) const override {
 		return run_task();
 	}
+
+protected:
+	mutable float supersample = 1.0f;
 };
 
 SYNFIG_EXPORT rendering::Task::Token TaskHalfTone3::token(
