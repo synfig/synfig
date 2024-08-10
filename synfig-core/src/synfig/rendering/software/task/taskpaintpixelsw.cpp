@@ -56,8 +56,8 @@ rendering::TaskPaintPixelSW::on_target_set_as_source() {
 
 	Task::Handle &subtask = task->sub_task(0);
 	if ( subtask
-		 && subtask->target_surface == task->target_surface
-		 && !Color::is_straight(blend_method) )
+		&& subtask->target_surface == task->target_surface
+		&& !Color::is_straight(blend_method) )
 	{
 		task->trunc_by_bounds();
 		subtask->source_rect = task->source_rect;
@@ -110,20 +110,80 @@ synfig::rendering::TaskPaintPixelSW::run_task() const
 	if (!la)
 		return false;
 
-	if (!is_filter_) {
-		synfig::Surface::alpha_pen apen(la->get_surface().get_pen(target_rect.minx, target_rect.miny));
-		ColorReal amount = blend ? this->amount : ColorReal(1.0);
-		apen.set_blend_method(blend ? blend_method : Color::BLEND_COMPOSITE);
-		for (int iy = target_rect.miny; iy < target_rect.maxy; ++iy, p += dy, apen.inc_y(), apen.dec_x(tw)) {
-			for (int ix = target_rect.minx; ix < target_rect.maxx; ++ix, p += dx, apen.inc_x()) {
-				apen.put_value(get_color(p), amount);
-			}
+	synfig::Surface::alpha_pen apen(la->get_surface().get_pen(target_rect.minx, target_rect.miny));
+	ColorReal amount = blend ? this->amount : ColorReal(1.0);
+	apen.set_blend_method(blend ? blend_method : Color::BLEND_COMPOSITE);
+
+	for(int iy = target_rect.miny; iy < target_rect.maxy; ++iy, p += dy, apen.inc_y(), apen.dec_x(tw)) {
+		for(int ix = target_rect.minx; ix < target_rect.maxx; ++ix, p += dx, apen.inc_x()) {
+			apen.put_value(get_color(p), amount);
 		}
-	} else {
-		synfig::Surface::pen pen(la->get_surface().get_pen(target_rect.minx, target_rect.miny));
-		for (int iy = target_rect.miny; iy < target_rect.maxy; ++iy, p += dy, pen.inc_y(), pen.dec_x(tw)) {
-			for (int ix = target_rect.minx; ix < target_rect.maxx; ++ix, p += dx, pen.inc_x()) {
-				pen.put_value(get_color(p, pen.get_value()));
+	}
+
+	return true;
+}
+
+bool
+synfig::rendering::TaskFilterPixelSW::run_task() const
+{
+	const TaskPixelProcessor* task = dynamic_cast<const TaskPixelProcessor*>(this);
+	if (!task) {
+		const Task* task = dynamic_cast<const Task*>(this);
+		if (task)
+			synfig::error(_("Internal error: Cobra task %s isn't a TaskPixelProcessor"), task->get_token()->name.c_str());
+		else
+			synfig::error(_("Internal error: this TaskPaintPixelSW isn't even a Task"));
+		return false;
+	}
+	if (!task->is_valid())
+		return true;
+	if (!task->sub_task())
+		return true;
+
+	const RectInt r = task->target_rect;
+
+	if (r.valid()) {
+		VectorInt offset = task->get_offset();
+
+		RectInt ra = task->sub_task()->target_rect + r.get_min() + offset;
+		if (ra.valid()) {
+			rect_set_intersect(ra, ra, r);
+			if (ra.valid()) {
+				LockWrite ldst(task);
+				if (!ldst) return false;
+
+				synfig::Surface &c = ldst->get_surface();
+
+				const Vector upp = task->get_units_per_pixel();
+				const Rect w = task->source_rect;
+
+				// for raster r to 'world' w conversion: w = upp * r + (w0 * r1 + w1 * r0) / r_size
+				Vector constant;
+				constant[0] = (w.get_min()[0] * r.get_max()[0] + w.get_max()[0] * r.get_min()[0]) / r.get_size()[0];
+				constant[1] = (w.get_min()[1] * r.get_max()[1] + w.get_max()[1] * r.get_min()[1]) / r.get_size()[1];
+
+				Matrix3 raster_to_world;
+				raster_to_world.m00 = upp[0];
+				raster_to_world.m11 = upp[1];
+				raster_to_world.m20 = constant[0];
+				raster_to_world.m21 = constant[1];
+
+				pre_run(raster_to_world);
+
+				LockRead lsrc(task->sub_task());
+				if (!lsrc) return false;
+
+				const synfig::Surface &a = lsrc->get_surface();
+
+				for (int y = ra.miny; y < ra.maxy; ++y) {
+					const Color *ca = &a[y - r.miny + offset[1]][ra.minx - r.minx + offset[0]];
+					Color *cc = &c[y][ra.minx];
+					Real v = upp[1] * y + constant[1];
+					for (int x = ra.minx; x < ra.maxx; ++x, ++ca, ++cc) {
+						Real u = upp[0] * x + constant[0];
+						*cc = get_color(Vector(u, v), *ca);
+					}
+				}
 			}
 		}
 	}

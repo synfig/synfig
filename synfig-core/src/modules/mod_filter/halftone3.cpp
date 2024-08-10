@@ -61,7 +61,7 @@ SYNFIG_LAYER_SET_VERSION(Halftone3,"0.0");
 
 /* === P R O C E D U R E S ================================================= */
 
-class TaskHalfTone3: public rendering::Task
+class TaskHalfTone3: public rendering::TaskPixelProcessor
 {
 public:
 	typedef etl::handle<TaskHalfTone3> Handle;
@@ -447,7 +447,7 @@ Halftone3::build_composite_fork_task_vfunc(ContextParams /* context_params */, r
 	for (int i=0; i < 3; i++)
 		for (int j=0; j < 3; j++)
 			task_halftone3->inverse_matrix[i][j] = inverse_matrix[i][j];
-	task_halftone3->sub_task(0) = sub_task;//->clone_recursive();
+	task_halftone3->sub_task() = sub_task;//->clone_recursive();
 
 	return task_halftone3;
 }

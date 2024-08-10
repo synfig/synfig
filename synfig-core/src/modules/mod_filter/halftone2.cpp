@@ -43,6 +43,7 @@
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
 #include <synfig/rendering/common/task/taskpixelprocessor.h>
+#include <synfig/rendering/software/task/taskpaintpixelsw.h>
 #include <synfig/rendering/software/task/tasksw.h>
 
 #endif
@@ -74,16 +75,14 @@ public:
 };
 
 
-class TaskHalfTone2SW: public TaskHalfTone2, public rendering::TaskSW
+class TaskHalfTone2SW: public TaskHalfTone2, public rendering::TaskFilterPixelSW
 {
 public:
 	typedef etl::handle<TaskHalfTone2SW> Handle;
 	SYNFIG_EXPORT static Token token;
 	Token::Handle get_token() const override { return token.handle(); }
 
-	bool run(RunParams& params) const override;
-private:
-	Color get_color(const Vector& p, const Color& c) const
+	Color get_color(const Vector& p, const Color& c) const override
 	{
 		const float supersample_size(1/std::fabs(get_pixels_per_unit()[0]*(halftone.param_size.get(Vector())).mag()));
 
@@ -103,55 +102,10 @@ private:
 		return halfcolor;
 	}
 
-};
-
-
-bool
-TaskHalfTone2SW::run(RunParams&) const
-{
-	if (!sub_task())
-		return true;
-	
-	RectInt r = target_rect;
-	if (r.valid())
-	{
-		VectorInt offset = get_offset();
-
-		RectInt ra = sub_task()->target_rect + r.get_min() + get_offset();
-		if (ra.valid())
-		{
-			rect_set_intersect(ra, ra, r);
-			if (ra.valid())
-			{
-				LockWrite ldst(this);
-				if (!ldst) return false;
-				LockRead lsrc(sub_task());
-				if (!lsrc) return false;
-
-				const synfig::Surface &a = lsrc->get_surface();
-				synfig::Surface &c = ldst->get_surface();
-
-				// for raster r to 'world' w conversion: w = upp * r + (w0 * r1 + w1 * r0) / r_size
-				Vector constant;
-				constant[0] = (source_rect.get_min()[0] * target_rect.get_max()[0] + source_rect.get_max()[0] * target_rect.get_min()[0]) / target_rect.get_size()[0];
-				constant[1] = (source_rect.get_min()[1] * target_rect.get_max()[1] + source_rect.get_max()[1] * target_rect.get_min()[1]) / target_rect.get_size()[1];
-
-				for(int y = ra.miny; y < ra.maxy; ++y)
-				{
-					const Color *ca = &a[y - r.miny + offset[1]][ra.minx - r.minx + offset[0]];
-					Color *cc = &c[y][ra.minx];
-					for (int x = ra.minx; x < ra.maxx; ++x, ++ca, ++cc) {
-						Real u = get_units_per_pixel()[0] * x + constant[0];
-						Real v = get_units_per_pixel()[1] * y + constant[1];
-						*cc = get_color(Vector(u, v), *ca);
-					}
-				}
-			}
-		}
+	bool run(RunParams&) const override {
+		return run_task();
 	}
-
-	return true;
-}
+};
 
 SYNFIG_EXPORT rendering::Task::Token TaskHalfTone2::token(
 	DescAbstract<TaskHalfTone2>("HalfTone2") );
