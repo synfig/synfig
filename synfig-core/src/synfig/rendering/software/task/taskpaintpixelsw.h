@@ -34,6 +34,7 @@
 #include "tasksw.h"
 #include <synfig/rendering/task.h>
 #include <synfig/rendering/common/task/taskblend.h>
+#include <synfig/rendering/common/task/taskpixelprocessor.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -49,7 +50,7 @@ namespace rendering
 /**
  * Paint each pixel depending on its position.
  *
- * The color of each pixel is defined by get_color() or get_color_antialias() calls.
+ * The color of each pixel is defined by get_color() calls.
  *
  * To use this abstract class, call run_task() inside of your implementation of Task::run().
  *
@@ -70,37 +71,37 @@ public:
 	//! Fetch color at position p (in synfig units) when antialias is false
 	virtual Color get_color(const Vector& p) const = 0;
 
-	/** Fetch color at position @a p (in synfig units) given a previous Color @a c at same point */
-	virtual Color get_color(const Vector& /*p*/, const Color& /*c*/) const {  return Color::cyan(); };
-
 	//! Call this method from run() method of the real task implementation
 	virtual bool run_task() const;
 
 	void on_target_set_as_source() override;
 
 	Color::BlendMethodFlags get_supported_blend_methods() const override;
-
-protected:
-	bool is_filter_ = false;
 };
 
 /**
- * Paint each pixel depending on its position.
+ * Paint each pixel depending on its position and the context color at that point.
  *
- * The color of each pixel is defined by get_color() or get_color_antialias() calls.
+ * The color of each pixel is defined by get_color() calls.
  *
  * To use this abstract class, call run_task() inside of your implementation of Task::run().
  *
  */
 class TaskFilterPixelSW :
-		public TaskPaintPixelSW
+		public TaskSW
 {
 public:
-	TaskFilterPixelSW() { is_filter_ = true; }
-	//! Fetch color at position p (in synfig units) when antialias is false
-	Color get_color(const Vector& /*p*/) const override { return Color::magenta(); };
+	//! Called inside run() right before iterating over each pixel.
+	//! Useful for computing some parameters that are constant for all iterations.
+	//!
+	//! \param matrix transformation matrix : raster coordinates to world coordinates
+	virtual void pre_run(const Matrix3& /*matrix*/) const {}
+
 	/** Fetch color at position @a p (in synfig units) given a previous Color @a c at same point */
-	virtual Color get_color(const Vector& /*p*/, const Color& c) const override { return c; }
+	virtual Color get_color(const Vector& /*p*/, const Color& c) const = 0;
+
+	//! Call this method from run() method of the real task implementation
+	virtual bool run_task() const;
 };
 
 
