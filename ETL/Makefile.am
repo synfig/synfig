@@ -9,7 +9,6 @@ MAINTAINERCLEANFILES = \
 	config/aclocal.m4 \
 	config/missing \
 	config/texinfo.tex \
-	config/depcomp \
 	aclocal.m4 \
 	config.h.in \
 	configure \
@@ -41,7 +40,6 @@ EXTRA_DIST = \
 	ChangeLog.old \
 	COPYING \
 	m4/subs.m4 \
-	config/depcomp \
 	m4/cxx_macros.m4 \
 	ETL-config.in \
 	m4/ETL.m4 \
