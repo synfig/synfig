@@ -210,34 +210,6 @@ std::string extract_plugin_name(std::istream &fileStream)
         }
     }
 }
-std::string get_plugin_name(etl::handle<synfig::FileContainerZip> &zip_fs, const PluginZipStatus &pluginStatus, const std::vector<std::string> &files) {
-    switch (pluginStatus) {
-        case PLUGIN_ZIP_AT_ROOT_DIR:
-            for (const auto& file : files) {
-                if (file == "plugin.xml") {
-                        return extract_plugin_name(*zip_fs->get_read_stream(file));
-                        break;
-                    }
-                }
-            break;
-        case PLUGIN_ZIP_AT_CHILD_DIR:
-            for (const auto& file : files) {
-                std::vector<std::string> childFiles;
-                if (zip_fs->directory_scan(file, childFiles)) {
-                    for (const auto& childFile : childFiles) {
-                        if (childFile == "plugin.xml") {
-                            return extract_plugin_name(*zip_fs->get_read_stream(file + "/" + childFile));
-                            break;
-                        }
-                    }
-                }
-            }
-        default:
-            return "";
-            break;
-    }
-}
-
 void
 Dialog_PluginManager::on_install_plugin_button_clicked()
 {
@@ -253,6 +225,8 @@ Dialog_PluginManager::on_install_plugin_button_clicked()
             std::string zip_filename = plugin_file_dialog.get_filename();
             filesystem::Path path_to_user_plugins = synfigapp::Main::get_user_app_directory() / filesystem::Path("plugins");
             std::string output_path ;
+            std::string plugin_metadata_file;
+            std::string plugin_name ;
 
             if (!zip_fs->open(plugin_file_dialog.get_filename())) {
                 synfig::error("Failed to open zip file: " + zip_filename);
@@ -261,41 +235,49 @@ Dialog_PluginManager::on_install_plugin_button_clicked()
             zip_fs->directory_scan("", files);
             for (const auto& file : files) {
                 if (file == "plugin.xml") {
-                    pluginStatus = PluginZipStatus::PLUGIN_ZIP_AT_ROOT_DIR;
+                    plugin_metadata_file = file;
                     break;
                 } else if(zip_fs->is_directory(file)) {
                     std::vector<std::string> child_files;
                     if (zip_fs->directory_scan(file, child_files)) {
                         for (auto& innerFile : child_files) {
                             if (innerFile == "plugin.xml") {
-                                pluginStatus = PluginZipStatus::PLUGIN_ZIP_AT_CHILD_DIR;
+                                plugin_metadata_file = file + "/" + innerFile;
                                 break;
                             }
                         }
-                        if (pluginStatus != PluginZipStatus::PLUGIN_ZIP_NO_PLUGIN_XML)
-                            break;
+                    if (!plugin_metadata_file.empty())
+                        break;
                     }
                 }
             }
-            if(get_plugin_name(zip_fs, pluginStatus, files).empty()) {
-                synfig::error("Failed to find plugin.xml in zip file: " + zip_filename);
-                return;
+            plugin_name = extract_plugin_name(*zip_fs->get_read_stream(plugin_metadata_file));
+            output_path = ((path_to_user_plugins / plugin_name).add_suffix("/")).u8string();
+            if (native_fs->is_exists(output_path)) {
+                message_dialog.set_message(_("Plugin already exists. Do you want to overwrite it?"));
+                int response = message_dialog.run();
+                if (response == Gtk::RESPONSE_CANCEL) {
+                    message_dialog.close();
+                    return;
+                }
+                auto it = std::find_if(App::plugin_manager.plugins().begin(), App::plugin_manager.plugins().end(), [plugin_name](const Plugin& plugin) { return plugin.name.fallback() == plugin_name; });
+                if (it != App::plugin_manager.plugins().end()) {
+                    App::plugin_manager.remove_plugin(it->id);
+                }
+                native_fs->remove_recursive(output_path);
+                message_dialog.close();
             }
-            output_path = ((path_to_user_plugins / get_plugin_name(zip_fs, pluginStatus, files)).add_suffix("/")).u8string();
             if (native_fs->directory_create(output_path)) {
-                if (pluginStatus == PluginZipStatus::PLUGIN_ZIP_AT_ROOT_DIR) {
-                        for(const auto& file : files) {
-                            zip_fs->copy_recursive(zip_fs, file, native_fs, output_path + file);
-                        }
-                } else if (pluginStatus == PluginZipStatus::PLUGIN_ZIP_AT_CHILD_DIR) {
-                        zip_fs->copy_recursive(zip_fs, files[0], native_fs, output_path);
+                if (plugin_metadata_file.find("/") == std::string::npos) {
+                    for(const auto& file : files) {
+                        zip_fs->copy_recursive(zip_fs,  file, native_fs, output_path + file);
+                    }
+                } else {
+                    zip_fs->copy_recursive(zip_fs, files[0], native_fs, output_path);
                 }
             }
             App::plugin_manager.load_plugin(output_path + "plugin.xml", output_path, true);
             zip_fs->close();
-            if (pluginStatus == PluginZipStatus::PLUGIN_ZIP_NO_PLUGIN_XML) {
-                synfig::error("Failed to find plugin.xml in zip file: " + zip_filename);
-            }
             plugin_file_dialog.close();
             break;
         }
