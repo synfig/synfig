@@ -64,19 +64,19 @@ class TaskMeshSW: public TaskMesh, public TaskSW
 			return false;
 
 		Vector ppu = get_pixels_per_unit();
-		Matrix transfromation_matrix;
-		transfromation_matrix.m00 = ppu[0];
-		transfromation_matrix.m11 = ppu[1];
-		transfromation_matrix.m20 = target_rect.minx - source_rect.minx*ppu[0];
-		transfromation_matrix.m21 = target_rect.miny - source_rect.miny*ppu[1];
-		transfromation_matrix *=  transformation->matrix;
+		Matrix transformation_matrix;
+		transformation_matrix.m00 = ppu[0];
+		transformation_matrix.m11 = ppu[1];
+		transformation_matrix.m20 = target_rect.minx - source_rect.minx*ppu[0];
+		transformation_matrix.m21 = target_rect.miny - source_rect.miny*ppu[1];
+		transformation_matrix *=  transformation->matrix;
 
 		Vector sub_ppu = sub_task()->get_pixels_per_unit();
-		Matrix texture_transfromation_matrix;
-		texture_transfromation_matrix.m00 = sub_ppu[0];
-		texture_transfromation_matrix.m11 = sub_ppu[1];
-		texture_transfromation_matrix.m20 = sub_task()->target_rect.minx - sub_task()->source_rect.minx*sub_ppu[0];
-		texture_transfromation_matrix.m21 = sub_task()->target_rect.miny - sub_task()->source_rect.miny*sub_ppu[1];
+		Matrix texture_transformation_matrix;
+		texture_transformation_matrix.m00 = sub_ppu[0];
+		texture_transformation_matrix.m11 = sub_ppu[1];
+		texture_transformation_matrix.m20 = sub_task()->target_rect.minx - sub_task()->source_rect.minx*sub_ppu[0];
+		texture_transformation_matrix.m21 = sub_task()->target_rect.miny - sub_task()->source_rect.miny*sub_ppu[1];
 
 		if (target_surface == sub_task()->target_surface)
 			return false;
@@ -99,8 +99,8 @@ class TaskMeshSW: public TaskMesh, public TaskSW
 			*mesh,
 			lb->get_surface(),
 			sub_target_rect,
-			transfromation_matrix,
-			texture_transfromation_matrix,
+			transformation_matrix,
+			texture_transformation_matrix,
 			1.0,
 			Color::BLEND_COMPOSITE );
 

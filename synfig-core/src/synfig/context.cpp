@@ -272,7 +272,7 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 #endif	// SYNFIG_PROFILE_LAYERS
 	
 	const Rect bbox(renddesc.get_rect());
-	const Matrix &transfromation_matrix(renddesc.get_transformation_matrix());
+	const Matrix &transformation_matrix(renddesc.get_transformation_matrix());
 	// this is going to be set to true if this layer contributes
 	// nothing, but it's a straight blend with non-zero amount, and so
 	// it has an effect anyway
@@ -285,7 +285,7 @@ Context::accelerated_render(Surface *surface,int quality, const RendDesc &rendde
 		// If we are not active then move on to next layer
 		if(!context.active())
 			continue;
-		const Rect layer_bounds(Transformation::transform_bounds(transfromation_matrix, (*context)->get_bounding_rect()));
+		const Rect layer_bounds(Transformation::transform_bounds(transformation_matrix, (*context)->get_bounding_rect()));
 		// Cast current layer to composite
 		composite = etl::handle<Layer_Composite>::cast_dynamic(*context);
 		// If the box area is less than zero or the boxes do not
