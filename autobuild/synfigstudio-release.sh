@@ -182,6 +182,10 @@ studio()
 
 mkall()
 {
+	if [ -d "$BUILD_RELEASE_DIR" ];then
+		chmod -R u+w "$BUILD_RELEASE_DIR"
+		rm -rf "$BUILD_RELEASE_DIR"
+	fi
 	l10n
 	etl
 	core
@@ -191,15 +195,12 @@ mkall()
 do_cleanup()
 {
 	start_stage "Clean up"
-	#echo "Cleaning up..."
-	if [ "${PREFIX}" != "${DEPSPREFIX}" ]; then
-		[ ! -e ${DEPSPREFIX} ] || mv ${DEPSPREFIX} ${DEPSPREFIX}.off
+	if [ -d "$BUILD_RELEASE_DIR" ];then
+		chmod -R u+w "$BUILD_RELEASE_DIR"
 	fi
-	[ ! -e ${SYSPREFIX} ] || mv ${SYSPREFIX} ${SYSPREFIX}.off
-	exit
 }
 
-#trap do_cleanup INT SIGINT SIGTERM EXIT
+trap do_cleanup INT SIGINT SIGTERM SIGKILL EXIT
 
 if [ -z $1 ]; then
 	rm -rf "$PREFIX" || true
@@ -210,4 +211,4 @@ else
 	$@
 fi
 
-#do_cleanup
+do_cleanup
