@@ -182,6 +182,10 @@ studio()
 
 mkall()
 {
+	if [ -d "$BUILD_RELEASE_DIR" ];then
+		chmod -R u+w "$BUILD_RELEASE_DIR"
+		rm -rf "$BUILD_RELEASE_DIR"
+	fi
 	l10n
 	etl
 	core
