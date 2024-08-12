@@ -240,23 +240,25 @@ Dialog_PluginManager::on_install_plugin_button_clicked()
                 } else if(zip_fs->is_directory(file)) {
                     std::vector<std::string> child_files;
                     if (zip_fs->directory_scan(file, child_files)) {
-                        for (auto& innerFile : child_files) {
-                            if (innerFile == "plugin.xml") {
-                                plugin_metadata_file = file + "/" + innerFile;
-                                break;
-                            }
-                        }
+                    auto it = std::find(child_files.begin(), child_files.end(), "plugin.xml");
+                    if (it != child_files.end()) {
+                        plugin_metadata_file = file + "/" + *it;
+                    }
                     if (!plugin_metadata_file.empty())
                         break;
                     }
                 }
             }
+            if (plugin_metadata_file.empty() || !zip_fs->is_file(plugin_metadata_file)) {
+                synfig::error("Failed to find plugin.xml in zip file: " + zip_filename);
+                return;
+            }
             plugin_name = extract_plugin_name(*zip_fs->get_read_stream(plugin_metadata_file));
             output_path = ((path_to_user_plugins / plugin_name).add_suffix("/")).u8string();
-            if (native_fs->is_exists(output_path)) {
+            if (native_fs->is_exists(output_path) && native_fs->is_directory(output_path)) {
                 message_dialog.set_message(_("Plugin already exists. Do you want to overwrite it?"));
                 int response = message_dialog.run();
-                if (response == Gtk::RESPONSE_CANCEL) {
+                if (response != Gtk::RESPONSE_OK) {
                     message_dialog.close();
                     return;
                 }
@@ -266,6 +268,12 @@ Dialog_PluginManager::on_install_plugin_button_clicked()
                 }
                 native_fs->remove_recursive(output_path);
                 message_dialog.close();
+            }
+            if (native_fs->is_file(output_path)) {
+                if (!native_fs->file_remove(output_path)) {
+                    synfig::error("Failed to remove file: " + output_path);
+                    return;
+                }
             }
             if (native_fs->directory_create(output_path)) {
                 if (plugin_metadata_file.find("/") == std::string::npos) {
