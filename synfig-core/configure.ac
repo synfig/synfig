@@ -1,7 +1,7 @@
 # -- I N I T --------------------------------------------------
 
 AC_PREREQ([2.60])
-AC_INIT([Synfig Core],[1.5.1],[https://github.com/synfig/synfig/issues],[synfig])
+AC_INIT([Synfig Core],[1.5.3],[https://github.com/synfig/synfig/issues],[synfig])
 AC_REVISION()
 
 AM_SILENT_RULES([yes])
@@ -334,8 +334,8 @@ AM_GNU_GETTEXT([external])
 # This is here so autoreconf will run autopoint
 AM_GNU_GETTEXT_VERSION([0.15])
 
-PKG_CHECK_MODULES(ETL, [ETL >= 1.5.1],,[
-	AC_MSG_ERROR([ ** You need to install the ETL (version 1.5.1 or greater).])
+PKG_CHECK_MODULES(ETL, [ETL >= 1.5.3],,[
+	AC_MSG_ERROR([ ** You need to install the ETL (version 1.5.3 or greater).])
 ])
 CONFIG_DEPS="$CONFIG_DEPS ETL"
 
