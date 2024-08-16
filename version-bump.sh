@@ -53,4 +53,4 @@ git add \
 	synfig-studio/src/gui/CMakeLists.txt \
 	# end
 
-git commit -m "Bump version to ${VERSION_NEW}"
+git commit -m "chore: Bump version to ${VERSION_NEW}"
