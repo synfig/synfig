@@ -709,7 +709,7 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 								if( v >= h ) v = h-1;
 
 								//accumulate the color, and # of pixels added in
-								a += out[v][u];
+								a += surface[v][u];
 								total++;
 							}
 						}
