@@ -38,32 +38,14 @@
 #include <synfig/localization.h>
 #include <synfig/general.h>
 
-#include <synfig/string.h>
-#include <synfig/time.h>
+#include <synfig/blur.h>
 #include <synfig/context.h>
-#include <synfig/misc.h>
-#include <synfig/paramdesc.h>
-#include <synfig/renddesc.h>
-#include <synfig/surface.h>
-#include <synfig/value.h>
-#include <synfig/valuenode.h>
-
-#include <cstring>
 
 #endif
 
 using namespace synfig;
 using namespace modules;
 using namespace lyr_std;
-
-/*#define TYPE_BOX			0
-#define TYPE_FASTGUASSIAN	1
-#define TYPE_FASTGAUSSIAN	1
-#define TYPE_CROSS			2
-#define TYPE_GUASSIAN		3
-#define TYPE_GAUSSIAN		3
-#define TYPE_DISC			4
-*/
 
 /* -- G L O B A L S --------------------------------------------------------- */
 
@@ -74,12 +56,6 @@ SYNFIG_LAYER_SET_CATEGORY(Layer_Bevel,N_("Stylize"));
 SYNFIG_LAYER_SET_VERSION(Layer_Bevel,"0.2");
 
 /* -- F U N C T I O N S ----------------------------------------------------- */
-
-inline void clamp(Vector &v)
-{
-	if(v[0]<0.0)v[0]=0.0;
-	if(v[1]<0.0)v[1]=0.0;
-}
 
 Layer_Bevel::Layer_Bevel():
 	Layer_CompositeFork(0.75,Color::BLEND_ONTO),
@@ -220,35 +196,31 @@ Layer_Bevel::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
 		case Blur::DISC:
 		case Blur::BOX:
 		case Blur::CROSS:
-		{
-			workdesc.set_subwindow(-std::max(1,halfsizex),-std::max(1,halfsizey),offset_w+2*std::max(1,halfsizex),offset_h+2*std::max(1,halfsizey));
-			break;
-		}
 		case Blur::FASTGAUSSIAN:
 		{
-			workdesc.set_subwindow(-std::max(1,halfsizex),-std::max(1,halfsizey),offset_w+2*std::max(1,halfsizex),offset_h+2*std::max(1,halfsizey));
+			halfsizex = std::max(1, halfsizex);
+			halfsizey = std::max(1, halfsizey);
 			break;
 		}
 		case Blur::GAUSSIAN:
 		{
 		#define GAUSSIAN_ADJUSTMENT		(0.05)
-			Real	pw = (Real)workdesc.get_w()/(workdesc.get_br()[0]-workdesc.get_tl()[0]);
-			Real 	ph = (Real)workdesc.get_h()/(workdesc.get_br()[1]-workdesc.get_tl()[1]);
+			Real pw = workdesc.get_pw();
+			Real ph = workdesc.get_ph();
 
-			pw=pw*pw;
-			ph=ph*ph;
+			Real pw2 = pw * pw;
+			Real ph2 = ph * ph;
 
-			halfsizex = (int)(std::fabs(pw)*size[0]*GAUSSIAN_ADJUSTMENT+0.5);
-			halfsizey = (int)(std::fabs(ph)*size[1]*GAUSSIAN_ADJUSTMENT+0.5);
+			halfsizex = (int)(size[0]*GAUSSIAN_ADJUSTMENT/std::fabs(pw2) + 0.5);
+			halfsizey = (int)(size[1]*GAUSSIAN_ADJUSTMENT/std::fabs(ph2) + 0.5);
 
 			halfsizex = (halfsizex + 1)/2;
 			halfsizey = (halfsizey + 1)/2;
-			workdesc.set_subwindow( -halfsizex, -halfsizey, offset_w+2*halfsizex, offset_h+2*halfsizey );
-
 			break;
 		}
 	}
 
+	workdesc.set_subwindow( -halfsizex, -halfsizey, offset_w + 2*halfsizex, offset_h + 2*halfsizey );
 	return workdesc;
 }
 
@@ -305,14 +277,14 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 	{
 		case Blur::GAUSSIAN:
 		{
-			Real pw = (Real)workdesc.get_w()/(workdesc.get_br()[0]-workdesc.get_tl()[0]);
-			Real ph = (Real)workdesc.get_h()/(workdesc.get_br()[1]-workdesc.get_tl()[1]);
+			Real pw = workdesc.get_pw();
+			Real ph = workdesc.get_ph();
 
-			pw=pw*pw;
-			ph=ph*ph;
+			Real pw2 = pw * pw;
+			Real ph2 = ph * ph;
 
-			halfsizex = (int)(std::fabs(pw)*size[0]*GAUSSIAN_ADJUSTMENT+0.5);
-			halfsizey = (int)(std::fabs(ph)*size[1]*GAUSSIAN_ADJUSTMENT+0.5);
+			halfsizex = (int)(size[0]*GAUSSIAN_ADJUSTMENT/std::fabs(pw2) + 0.5);
+			halfsizey = (int)(size[1]*GAUSSIAN_ADJUSTMENT/std::fabs(ph2) + 0.5);
 
 			halfsizex = (halfsizex + 1)/2;
 			halfsizey = (halfsizey + 1)/2;
@@ -350,6 +322,12 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 	//be sure the surface is of the correct size
 	surface->set_wh(renddesc.get_w(),renddesc.get_h());
 
+	const float u0(offset[0]/pw),   v0(offset[1]/ph);
+	const float u1(offset45[0]/pw), v1(offset45[1]/ph);
+
+	const float amount = get_amount();
+	const Color::BlendMethod blend_method = get_blend_method();
+
 	int v = halfsizey+std::abs(offset_v);
 	for(y=0;y<renddesc.get_h();y++,v++)
 	{
@@ -359,30 +337,12 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 			Real alpha(0);
 			Color shade;
 
-			{
-				const float u2(offset[0]/pw),v2(offset[1]/ph);
-				alpha+=1.0f-blurred.linear_sample(u2+u,v2+v);
-			}
-			{
-				const float u2(-offset[0]/pw),v2(-offset[1]/ph);
-				alpha-=1.0f-blurred.linear_sample(u2+u,v2+v);
-			}
-			{
-				const float u2(offset45[0]/pw),v2(offset45[1]/ph);
-				alpha+=1.0f-blurred.linear_sample(u2+u,v2+v)*0.5f;
-			}
-			{
-				const float u2(offset45[1]/ph),v2(-offset45[0]/pw);
-				alpha+=1.0f-blurred.linear_sample(u2+u,v2+v)*0.5f;
-			}
-			{
-				const float u2(-offset45[0]/pw),v2(-offset45[1]/ph);
-				alpha-=1.0f-blurred.linear_sample(u2+u,v2+v)*0.5f;
-			}
-			{
-				const float u2(-offset45[1]/ph),v2(offset45[0]/pw);
-				alpha-=1.0f-blurred.linear_sample(u2+u,v2+v)*0.5f;
-			}
+			alpha += -blurred.linear_sample(u+u0, v+v0);
+			alpha -= -blurred.linear_sample(u-u0, v-v0);
+			alpha += -blurred.linear_sample(u+u1, v+v1)*0.5f;
+			alpha += -blurred.linear_sample(u+v1, v-u1)*0.5f;
+			alpha -= -blurred.linear_sample(u-u1, v-v1)*0.5f;
+			alpha -= -blurred.linear_sample(u-v1, v+u1)*0.5f;
 
 			if(solid)
 			{
@@ -403,7 +363,7 @@ Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, co
 
 			if(shade.get_a())
 			{
-				(*surface)[y][x]=Color::blend(shade,worksurface[v][u],get_amount(),get_blend_method());
+				(*surface)[y][x] = Color::blend(shade, worksurface[v][u], amount, blend_method);
 			}
 			else (*surface)[y][x] = worksurface[v][u];
 		}

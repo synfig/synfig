@@ -35,7 +35,7 @@
 
 #include "blur.h"
 
-#include <stdexcept>
+#include <vector>
 
 #include <synfig/blur/boxblur.h>
 #include <synfig/blur/gaussian.h>
@@ -284,23 +284,19 @@ bool Blur::operator()(const Surface &surface,
 
 	if(w == 0 || h == 0 || resolution[0] == 0 || resolution[1] == 0) return false;
 
-	const Real	pw = resolution[0]/w,
-				ph = resolution[1]/h;
+	const Real pw = resolution[0] / w;
+	const Real ph = resolution[1] / h;
 
-	int	halfsizex = (int) (std::fabs(size[0]*.5/pw) + 1),
-		halfsizey = (int) (std::fabs(size[1]*.5/ph) + 1);
-
-	int x,y;
+	const Real halfsizex = std::fabs(size[0] * 0.5 / pw) + 1;
+	const Real halfsizey = std::fabs(size[1] * 0.5 / ph) + 1;
 
 	SuperCallback blurcall(cb,0,5000,5000);
 
 	Surface worksurface(w,h);
 
 	// Premultiply the alpha
-	for(y=0;y<h;y++)
-	{
-		for(x=0;x<w;x++)
-		{
+	for (int y = 0; y < h; y++) {
+		for (int x = 0; x < w; x++) {
 			Color a = surface[y][x];
 			float aa = a.get_a();
 			a.set_r(a.get_r()*aa);
@@ -321,18 +317,16 @@ bool Blur::operator()(const Surface &surface,
 	switch(parsed_type) {
 	case Blur::DISC:	// D I S C ----------------------------------------------------------
 		{
-			int bw = halfsizex;
-			int bh = halfsizey;
+			int bw = int(halfsizex);
+			int bh = int(halfsizey);
 
 			if(size[0] && size[1] && w*h>2)
 			{
 				int x2,y2;
 				Surface tmp_surface(worksurface);
-
-				for(y=0;y<h;y++)
-				{
-					for(x=0;x<w;x++)
-					{
+				
+				for (int y = 0; y < h; y++) {
+					for (int x = 0; x < w; x++) {
 						//accumulate all the pixels in an ellipse of w,h about the current pixel
 						Color color=Color::alpha();
 						int total=0;
@@ -352,14 +346,8 @@ bool Blur::operator()(const Surface &surface,
 									continue;
 
 								//cap the pixel indices to inside the surface
-								int u= x+x2,
-									v= y+y2;
-
-								if( u < 0 )					u = 0;
-								if( u >= w ) u = w-1;
-
-								if( v < 0 ) 				v = 0;
-								if( v >= h ) v = h-1;
+								int u = synfig::clamp(x+x2, 0, w-1);
+								int v = synfig::clamp(y+y2, 0, h-1);
 
 								//accumulate the color, and # of pixels added in
 								color += tmp_surface[v][u];
@@ -388,8 +376,7 @@ bool Blur::operator()(const Surface &surface,
 
 			if(size[0])
 			{
-				int length = halfsizex;
-				length=std::max(1,length);
+				int length = std::max(1.0, halfsizex);
 
 				hbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface.begin());
 			}
@@ -397,8 +384,7 @@ bool Blur::operator()(const Surface &surface,
 
 			if(size[1])
 			{
-				int length = halfsizey;
-				length = std::max(1,length);
+				int length = std::max(1.0, halfsizey);
 
 				vbox_blur(temp_surface.begin(),temp_surface.end(),length,worksurface.begin());
 			}
@@ -421,8 +407,7 @@ bool Blur::operator()(const Surface &surface,
 			//horizontal part
 			if(size[0])
 			{
-				Real length=std::fabs((float)w/(resolution[0]))*size[0]*0.5+1;
-				length=std::max(1.0,length);
+				Real length = std::max(1.0, halfsizex);
 
 				//two box blurs produces: 1 2 1
 				hbox_blur(worksurface.begin(),w,h,(int)(length*3/4),temp_surface.begin());
@@ -432,8 +417,7 @@ bool Blur::operator()(const Surface &surface,
 			//vertical part
 			if(size[1])
 			{
-				Real length=std::fabs((float)h/(resolution[1]))*size[1]*0.5+1;
-				length=std::max(1.0,length);
+				Real length = std::max(1.0, halfsizey);
 
 				//two box blurs produces: 1 2 1 on the horizontal 1 2 1
 				vbox_blur(worksurface.begin(),w,h,(int)(length*3/4),temp_surface.begin());
@@ -450,8 +434,7 @@ bool Blur::operator()(const Surface &surface,
 
 			if(size[0])
 			{
-				int length = halfsizex;
-				length = std::max(1,length);
+				int length = std::max(1.0, halfsizex);
 
 				hbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface.begin());
 			}
@@ -463,20 +446,15 @@ bool Blur::operator()(const Surface &surface,
 
 			if(size[1])
 			{
-				int length = halfsizey;
-				length = std::max(1,length);
+				int length = std::max(1.0, halfsizey);
 
 				vbox_blur(worksurface.begin(),worksurface.end(),length,temp_surface2.begin());
 			}
 			else temp_surface2 = worksurface;
 
 			//blend the two together
-			int x,y;
-
-			for(y=0;y<h;y++)
-			{
-				for(x=0;x<w;x++)
-				{
+			for (int y = 0; y < h; y++) {
+				for (int x = 0; x < w; x++) {
 					worksurface[y][x] = (temp_surface[y][x]+temp_surface2[y][x])/2;//Color::blend((temp_surface[y][x]+temp_surface2[y][x])/2,worksurface[y][x],get_amount(),get_blend_method());
 				}
 			}
@@ -489,9 +467,6 @@ bool Blur::operator()(const Surface &surface,
 			#ifndef	GAUSSIAN_ADJUSTMENT
 			#define GAUSSIAN_ADJUSTMENT		(0.05)
 			#endif
-
-			Real	pw = (Real)w/(resolution[0]);
-			Real 	ph = (Real)h/(resolution[1]);
 
 			Surface temp_surface;
 			Surface *gauss_surface;
@@ -506,26 +481,22 @@ bool Blur::operator()(const Surface &surface,
 			   squares our rendertime.
 			   There has got to be a faster way...
 			*/
-			pw=pw*pw;
-			ph=ph*ph;
+			const Real pw2 = pw*pw;
+			const Real ph2 = ph*ph;
 
-			int bw = (int)(std::fabs(pw)*size[0]*GAUSSIAN_ADJUSTMENT+0.5);
-			int bh = (int)(std::fabs(ph)*size[1]*GAUSSIAN_ADJUSTMENT+0.5);
+			int bw = (int)(size[0]*GAUSSIAN_ADJUSTMENT/std::fabs(pw2) + 0.5);
+			int bh = (int)(size[1]*GAUSSIAN_ADJUSTMENT/std::fabs(ph2) + 0.5);
 			int max=bw+bh;
 
-			Color* SC0=new Color[w+2];
-			Color* SC1=new Color[w+2];
-			Color* SC2=new Color[w+2];
-			Color* SC3=new Color[w+2];
+			std::vector<Color> SC(4*(w+2));
+			Color* SC0 = &SC[0*(w+2)];
+			Color* SC1 = &SC[1*(w+2)];
+			Color* SC2 = &SC[2*(w+2)];
+			Color* SC3 = &SC[3*(w+2)];
 
 			while(bw&&bh)
 			{
 				if(!blurcall.amount_complete(max-(bw+bh),max)) {
-					delete [] SC0;
-					delete [] SC1;
-					delete [] SC2;
-					delete [] SC3;
-
 					return false;
 				}
 
@@ -550,10 +521,6 @@ bool Blur::operator()(const Surface &surface,
 			while(bw)
 			{
 				if(!blurcall.amount_complete(max-(bw+bh),max)) {
-					delete [] SC0;
-					delete [] SC1;
-					delete [] SC2;
-					delete [] SC3;
 					return false;
 				}
 				if(bw>=2)
@@ -571,10 +538,6 @@ bool Blur::operator()(const Surface &surface,
 			while(bh)
 			{
 				if(!blurcall.amount_complete(max-(bw+bh),max)) {
-					delete [] SC0;
-					delete [] SC1;
-					delete [] SC2;
-					delete [] SC3;
 					return false;
 				}
 				if(bh>=2)
@@ -589,11 +552,6 @@ bool Blur::operator()(const Surface &surface,
 					bh--;
 				}
 			}
-
-			delete [] SC0;
-			delete [] SC1;
-			delete [] SC2;
-			delete [] SC3;
 		}
 		break;
 
@@ -607,10 +565,8 @@ bool Blur::operator()(const Surface &surface,
 	out.set_wh(w,h);
 
 	//divide out the alpha
-	for(y=0;y<h;y++)
-	{
-		for(x=0;x<w;x++)
-		{
+	for (int y = 0; y < h; y++) {
+		for (int x = 0; x < w; x++) {
 			Color a = worksurface[y][x];
 			if(a.get_a())
 			{
@@ -645,12 +601,11 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 
 	if(w == 0 || h == 0 || resolution[0] == 0 || resolution[1] == 0) return false;
 
-	const Real	pw = resolution[0]/w,
-				ph = resolution[1]/h;
+	const Real pw = resolution[0] / w;
+	const Real ph = resolution[1] / h;
 
-	int	halfsizex = (int) (std::fabs(size[0]*.5/pw) + 1),
-		halfsizey = (int) (std::fabs(size[1]*.5/ph) + 1);
-	int x,y;
+	const Real halfsizex = std::fabs(size[0] * 0.5 / pw) + 1;
+	const Real halfsizey = std::fabs(size[1] * 0.5 / ph) + 1;
 
 	SuperCallback blurcall(cb,0,5000,5000);
 
@@ -669,17 +624,15 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 	switch (parsed_type) {
 	case Blur::DISC:	// D I S C ----------------------------------------------------------
 		{
-			int bw = halfsizex;
-			int bh = halfsizey;
+			int bw = int(halfsizex);
+			int bh = int(halfsizey);
 
 			if(size[0] && size[1] && w*h>2)
 			{
 				int x2,y2;
-
-				for(y=0;y<h;y++)
-				{
-					for(x=0;x<w;x++)
-					{
+			
+				for (int y = 0; y < h; y++) {
+					for (int x = 0; x < w; x++) {
 						//accumulate all the pixels in an ellipse of w,h about the current pixel
 						float a = 0;
 						int total=0;
@@ -699,17 +652,11 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 									continue;
 
 								//cap the pixel indices to inside the surface
-								int u= x+x2,
-									v= y+y2;
-
-								if( u < 0 )					u = 0;
-								if( u >= w ) u = w-1;
-
-								if( v < 0 ) 				v = 0;
-								if( v >= h ) v = h-1;
+								int u = synfig::clamp(x+x2, 0, w-1);
+								int v = synfig::clamp(y+y2, 0, h-1);
 
 								//accumulate the color, and # of pixels added in
-								a += out[v][u];
+								a += surface[v][u];
 								total++;
 							}
 						}
@@ -734,8 +681,7 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 
 			if(size[0])
 			{
-				int length = halfsizex;
-				length=std::max(1,length);
+				int length = std::max(1.0, halfsizex);
 
 				hbox_blur(surface.begin(), surface.end(), length, temp_surface.begin());
 			}
@@ -743,8 +689,7 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 
 			if(size[1])
 			{
-				int length = halfsizey;
-				length = std::max(1,length);
+				int length = std::max(1.0, halfsizey);
 				vbox_blur(temp_surface.begin(), temp_surface.end(), length, out.begin());
 			}
 			else out = temp_surface;
@@ -766,8 +711,7 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 			//horizontal part
 			if(size[0])
 			{
-				Real length=std::fabs((float)w/(resolution[0]))*size[0]*0.5+1;
-				length=std::max(1.0,length);
+				Real length = std::max(1.0, halfsizex);
 
 				//two box blurs produces: 1 2 1
 				hbox_blur(out.begin(), w, h, (int)(length*3/4), temp_surface.begin());
@@ -777,8 +721,7 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 			//vertical part
 			if(size[1])
 			{
-				Real length=std::fabs((float)h/(resolution[1]))*size[1]*0.5+1;
-				length=std::max(1.0,length);
+				Real length = std::max(1.0, halfsizey);
 
 				//two box blurs produces: 1 2 1 on the horizontal 1 2 1
 				vbox_blur(out.begin(), w, h, (int)(length*3/4), temp_surface.begin());
@@ -795,8 +738,7 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 
 			if(size[0])
 			{
-				int length = halfsizex;
-				length = std::max(1,length);
+				int length = std::max(1.0, halfsizex);
 
 				temp_surface.set_wh(w, h);
 				hbox_blur(out.begin(), out.end(), length, temp_surface.begin());
@@ -809,8 +751,7 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 
 			if(size[1])
 			{
-				int length = halfsizey;
-				length = std::max(1,length);
+				int length = std::max(1.0, halfsizey);
 
 				temp_surface2.set_wh(w, h);
 				vbox_blur(out.begin(), out.end(), length, temp_surface2.begin());
@@ -818,12 +759,8 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 			else v_surface = out;
 
 			//blend the two together
-			int x,y;
-
-			for(y=0;y<h;y++)
-			{
-				for(x=0;x<w;x++)
-				{
+			for (int y = 0; y < h; y++) {
+				for (int x = 0; x < w; x++) {
 					out[y][x] = (h_surface[y][x] + v_surface[y][x]) / 2;
 				}
 			}
@@ -837,9 +774,6 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 			#define GAUSSIAN_ADJUSTMENT		(0.05)
 			#endif
 
-			Real	pw = (Real)w/(resolution[0]);
-			Real 	ph = (Real)h/(resolution[1]);
-
 			synfig::surface<float> *gauss_surface;
 
 			gauss_surface = &out;
@@ -852,26 +786,22 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 			   squares our rendertime.
 			   There has got to be a faster way...
 			*/
-			pw=pw*pw;
-			ph=ph*ph;
+			const Real pw2 = pw*pw;
+			const Real ph2 = ph*ph;
 
-			int bw = (int)(std::fabs(pw)*size[0]*GAUSSIAN_ADJUSTMENT+0.5);
-			int bh = (int)(std::fabs(ph)*size[1]*GAUSSIAN_ADJUSTMENT+0.5);
+			int bw = (int)(size[0]*GAUSSIAN_ADJUSTMENT/std::fabs(pw2) + 0.5);
+			int bh = (int)(size[1]*GAUSSIAN_ADJUSTMENT/std::fabs(ph2) + 0.5);
 			int max=bw+bh;
 
-			float *SC0=new float[w+2];
-			float *SC1=new float[w+2];
-			float *SC2=new float[w+2];
-			float *SC3=new float[w+2];
+			std::vector<float> SC(4*(w+2));
+			float* SC0 = &SC[0*(w+2)];
+			float* SC1 = &SC[1*(w+2)];
+			float* SC2 = &SC[2*(w+2)];
+			float* SC3 = &SC[3*(w+2)];
 
 			while(bw&&bh)
 			{
 				if (!blurcall.amount_complete(max-(bw+bh),max)) {
-					delete [] SC0;
-					delete [] SC1;
-					delete [] SC2;
-					delete [] SC3;
-
 					return false;
 				}
 
@@ -897,11 +827,6 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 			while(bw)
 			{
 				if (!blurcall.amount_complete(max-(bw+bh),max)) {
-					delete [] SC0;
-					delete [] SC1;
-					delete [] SC2;
-					delete [] SC3;
-
 					return false;
 				}
 				if(bw>=2)
@@ -920,11 +845,6 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 			while(bh)
 			{
 				if (!blurcall.amount_complete(max-(bw+bh),max)) {
-					delete [] SC0;
-					delete [] SC1;
-					delete [] SC2;
-					delete [] SC3;
-
 					return false;
 				}
 				if(bh>=2)
@@ -939,12 +859,6 @@ bool Blur::operator()(const synfig::surface<float> &surface,
 					bh--;
 				}
 			}
-
-			delete [] SC0;
-			delete [] SC1;
-			delete [] SC2;
-			delete [] SC3;
-
 		}
 		break;
 
