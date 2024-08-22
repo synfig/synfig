@@ -53,6 +53,8 @@ mv -f po/Makefile.in.in.tmp po/Makefile.in.in
 # Fix https://github.com/synfig/synfig/issues/3398
 # For compatibility with MacOS we have to make sure "sh" binary 
 # is found in "/bin/sh", not "/usr/bin/sh"
-sed -i "s|#!/usr/bin/sh|#!/bin/sh|" config/install-sh
+sed "s|#!/usr/bin/sh|#!/bin/sh|" < config/install-sh > config/install-sh.tmp
+mv -f config/install-sh.tmp config/install-sh
+chmod +x config/install-sh
 
 echo "Done! Please run ./configure now."
