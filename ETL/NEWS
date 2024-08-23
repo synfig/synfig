@@ -1,3 +1,90 @@
+## Version 1.5.3
+- [`4422c5c`](https://github.com/synfig/synfig/commit/4422c5c95b4302afbe59dd2ef7ad6bb679487bde) Bump version to 1.5.3 ([#3402](https://github.com/synfig/synfig/issues/3402))
+- [`f54fada`](https://github.com/synfig/synfig/commit/f54fadad55f2553d46d379ea08cff305cf99ad57) chore: Fix generation of source packages using Autotools ([#3399](https://github.com/synfig/synfig/issues/3399))
+- [`6969840`](https://github.com/synfig/synfig/commit/69698402e7a88895b102bf4b35caf597259b9dba) refactor: clean etl::handle and alike ([#3233](https://github.com/synfig/synfig/issues/3233))
+- [`1171954`](https://github.com/synfig/synfig/commit/1171954999056ea360d887380d2b1639f0a9a0ed) refactor: remove unused synfig::rendering::Resource ([#3074](https://github.com/synfig/synfig/issues/3074))
+- [`009a5d0`](https://github.com/synfig/synfig/commit/009a5d040f74a06ec0ade1182d3d40da9cd91eb7) refactor!: move filepath handling methods to synfig::filesystem::Path ([#2710](https://github.com/synfig/synfig/issues/2710))
+- [`59791bf`](https://github.com/synfig/synfig/commit/59791bfa6d2732a6e9be03345b476777504bca77) ci: enabled tests on GitHub Actions ([#2740](https://github.com/synfig/synfig/issues/2740))
+- [`9290c60`](https://github.com/synfig/synfig/commit/9290c6089554592c6a33c90bdccfd233d314e6f2) refactor: remove unused #define POPEN_BINARY_READ_TYPE ([#2925](https://github.com/synfig/synfig/issues/2925))
+- [`abad0b8`](https://github.com/synfig/synfig/commit/abad0b8a481f3b914c9b182c0627f747ee3d04e7) refactor: move etl::reference_counter to synfig namespace ([#2949](https://github.com/synfig/synfig/issues/2949))
+- [`8ff76d0`](https://github.com/synfig/synfig/commit/8ff76d09afae5458f0ef2ce0d624c06329175f4b) refactor!: move ETL blur files to the new synfig/blur folder ([#2924](https://github.com/synfig/synfig/issues/2924))
+- [`8155567`](https://github.com/synfig/synfig/commit/81555677e3495fa0174470da0b4cc447019521ef) refactor: cleanup etl blur files ([#2910](https://github.com/synfig/synfig/issues/2910))
+- [`b88a544`](https://github.com/synfig/synfig/commit/b88a544996aff4112b2c801b47257f26916c0f4e) refactor: move pen classes from ETL to synfig-core ([#2888](https://github.com/synfig/synfig/issues/2888))
+- [`1e55a85`](https://github.com/synfig/synfig/commit/1e55a859e7de051ff6ad8ead0e5b97775ea7c47d) refactor: avoid std::iterator_traits in ETL/gaussian ([#2889](https://github.com/synfig/synfig/issues/2889))
+- [`94b9861`](https://github.com/synfig/synfig/commit/94b98610c974c1d30a78c93af9492be7592fa24f) refactor: cleanup on ETL/pen ([#2881](https://github.com/synfig/synfig/issues/2881))
+- [`8d50079`](https://github.com/synfig/synfig/commit/8d50079c16095b0cc8f49ff946d52a03c2226781) refactor: minor cleanup in ETL box_blur ([#2873](https://github.com/synfig/synfig/issues/2873))
+- [`7760dc2`](https://github.com/synfig/synfig/commit/7760dc2db65d0151da61b9c2b56de98ff3aab2ec) refactor: move ETL/misc to synfig/misc.h ([#2874](https://github.com/synfig/synfig/issues/2874))
+- [`284723d`](https://github.com/synfig/synfig/commit/284723da82463729b632d11a03f4a7dbc53647e1) refactor!: move ETL/surface to synfig/surface_etl.h and its test file ([#2870](https://github.com/synfig/synfig/issues/2870))
+- [`296bd31`](https://github.com/synfig/synfig/commit/296bd31b3636b51c6d65bdc2f6b30043525cdd60) refactor: remove unused alternative clamping functions ([#2845](https://github.com/synfig/synfig/issues/2845))
+- [`72ad997`](https://github.com/synfig/synfig/commit/72ad997726643b97112baa12ba3617adb99957be) refactor: remove Accumulator type for etl::pen and etl::surface ([#2854](https://github.com/synfig/synfig/issues/2854))
+- [`a747d1c`](https://github.com/synfig/synfig/commit/a747d1cdf902ddd2cb305da9720f438f0b41d3cc) refactor!: etl::bezier and etl::hermite are now in synfig folder and namespace ([#2840](https://github.com/synfig/synfig/issues/2840))
+- [`2e3bcd9`](https://github.com/synfig/synfig/commit/2e3bcd9d7dfa6cab8ec1505f06e2bd8469bd5a81) refactor: cleanup, add docs and merge ETL/hermite with ETL/bezier ([#2808](https://github.com/synfig/synfig/issues/2808))
+- [`9cc796e`](https://github.com/synfig/synfig/commit/9cc796e08727bf478c87dc93a74e46822398a16b) refactor!: add etl::hermite::derivative() and remove ETL/calculus ([#2791](https://github.com/synfig/synfig/issues/2791))
+- [`e049441`](https://github.com/synfig/synfig/commit/e049441d38a714e142a586d73086847c5330aba0) chore: fix various typos ([#2799](https://github.com/synfig/synfig/issues/2799))
+- [`be79626`](https://github.com/synfig/synfig/commit/be796264b44503bda1bcd6338ff033d1293c63e1) refactor!: remove etl::unix_to_local() ([#2773](https://github.com/synfig/synfig/issues/2773))
+- [`4f42a90`](https://github.com/synfig/synfig/commit/4f42a902e5bf5304a71b0afa843560db81f9cfd3) fix: Fix cross-compilation with MinGW on Debian 11 ([#2772](https://github.com/synfig/synfig/issues/2772))
+- [`fc4c3b3`](https://github.com/synfig/synfig/commit/fc4c3b390062d3e45c5451bc75b100dc56b6802e) fix: fixed a bug when saving a file to a Windows drive root path and then reusing the file dialog ([#2762](https://github.com/synfig/synfig/issues/2762))
+- [`c6075b3`](https://github.com/synfig/synfig/commit/c6075b308b9717c7591ed4b1f1afe4992d131406) Merge PR [#2735](https://github.com/synfig/synfig/issues/2735): refactor!: move strprintf(), strscan(), etc from etl to synfig namespace
+- [`cd4f64e`](https://github.com/synfig/synfig/commit/cd4f64e353fb6875d02cf6300adee4afc47dd669) build(autotools): removed Apple G5-specific flags ([#2745](https://github.com/synfig/synfig/issues/2745))
+- [`b142f0e`](https://github.com/synfig/synfig/commit/b142f0e39a89b37e83a4eb6c53932abce110e411) build(autotools): fixed node test build ([#2744](https://github.com/synfig/synfig/issues/2744))
+- [`cc088a0`](https://github.com/synfig/synfig/commit/cc088a06c4d0105c8883db60121e19725ccc2f59) Merge PR [#2733](https://github.com/synfig/synfig/issues/2733): refactor(ETL): delete unneeded etl_config.h
+- [`23adb48`](https://github.com/synfig/synfig/commit/23adb486a6a71091cb9bfb71b65a70ca4edd46ea) Merge PR [#2715](https://github.com/synfig/synfig/issues/2715): refactor!: removed etl::angle; replaced by synfig::Angle
+- [`1585dd5`](https://github.com/synfig/synfig/commit/1585dd5840e0b960ca7be0141a6571aa3f837acf) refactor!: rename `etl::clock` to `synfig::clock` ([#2711](https://github.com/synfig/synfig/issues/2711))
+- [`af37e2a`](https://github.com/synfig/synfig/commit/af37e2af26e0b49d7aabd4ec72d121c786142091) Merge PR [#2708](https://github.com/synfig/synfig/issues/2708): refactor!: clean etl::angle
+- [`16bab1d`](https://github.com/synfig/synfig/commit/16bab1d4d6cc679424ad32f4d60603832e197c32) refactor: remove `ETL_DIRECTORY_SEPARATORS`; use them directly ([#2706](https://github.com/synfig/synfig/issues/2706))
+- [`d768672`](https://github.com/synfig/synfig/commit/d7686727280ded16b14591393ba0252559324683) test(etl): remove unused methods for etl::angle ([#2705](https://github.com/synfig/synfig/issues/2705))
+- [`df98681`](https://github.com/synfig/synfig/commit/df98681de39d4e011020bf4515642a8bf805cd2d) test(etl): remove unused methods for etl::hermite ([#2707](https://github.com/synfig/synfig/issues/2707))
+- [`603ded0`](https://github.com/synfig/synfig/commit/603ded0b7fc27bc7da6ea61c53142e031a3fbec1) refactor: use etl::is_separator() instead of directory separator chars ([#2704](https://github.com/synfig/synfig/issues/2704))
+- [`9840962`](https://github.com/synfig/synfig/commit/984096283c18f8ba99f78484a3c2f987b05abf92) refactor: use `/` as directory separator where a fixed folder name is used ([#2703](https://github.com/synfig/synfig/issues/2703))
+- [`cd9c265`](https://github.com/synfig/synfig/commit/cd9c265f6a7c70377482d4894552ec5a0d38ddb4) Merge PR [#2699](https://github.com/synfig/synfig/issues/2699): refactor!: remove `etl::ceil_to_int` and `etl::floor_to_int`
+- [`5f3563a`](https://github.com/synfig/synfig/commit/5f3563a83884e867f1d9716dfa5751d50b074bad) refactor: removed deprecated `std::unary_function` and `std::binary_function` classes ([#2696](https://github.com/synfig/synfig/issues/2696))
+- [`c71f381`](https://github.com/synfig/synfig/commit/c71f381307afce72230a9aa690da2c3d85d74293) Merge PR [#2695](https://github.com/synfig/synfig/issues/2695): refactor: remove NULL; use nullptr instead - part 2
+- [`6bb848b`](https://github.com/synfig/synfig/commit/6bb848ba874392232d0a96492371451cb266e6aa) Merge PR [#2691](https://github.com/synfig/synfig/issues/2691): refactor: remove NULL; use nullptr instead
+- [`ec3fd21`](https://github.com/synfig/synfig/commit/ec3fd21b14f2e175bc7e79fd924310c10bae001a) BREAKING CHANGE: replace `etl::smart_ptr` with `std::shared_ptr` ([#2686](https://github.com/synfig/synfig/issues/2686))
+- [`eab541c`](https://github.com/synfig/synfig/commit/eab541c5b9e153cc543a5be20689f608a7a387b9) build: Use CMake's PkgConfig imported targets ([#2676](https://github.com/synfig/synfig/issues/2676))
+- [`1344831`](https://github.com/synfig/synfig/commit/1344831a0043b67ddc4e13051b67a43b60991dcd) Fixed PVS-Studio warning v730 ([#2522](https://github.com/synfig/synfig/issues/2522))
+- [`7f6b24e`](https://github.com/synfig/synfig/commit/7f6b24e7b396013f4c85b4e6115d14915f44bfec) Fixed ETL CMake tests ([#2545](https://github.com/synfig/synfig/issues/2545))
+- [`9b80219`](https://github.com/synfig/synfig/commit/9b8021936d2e00d5823055fe21037d30a79e9edc) Removed unused `using namespace etl;` ([#2530](https://github.com/synfig/synfig/issues/2530))
+- [`a5ec91d`](https://github.com/synfig/synfig/commit/a5ec91db5b751dc12e4400ccfb5c063fd6d2d928) Removed "using namespace std;" ([#2520](https://github.com/synfig/synfig/issues/2520))
+- [`333182e`](https://github.com/synfig/synfig/commit/333182e6d904251d6788da9f9c92b1f5eb79bec4) Merge PR ([#1793](https://github.com/synfig/synfig/issues/1793)): 'Update' file headers: license notices, \file and other minor changes
+## Version 1.5.1
+- [`fe640ca`](https://github.com/synfig/synfig/commit/fe640ca8dccdee12613bc28490c348d6bba08502) Removed unused variables ([#2361](https://github.com/synfig/synfig/issues/2361))
+- [`88c9e97`](https://github.com/synfig/synfig/commit/88c9e976c1a150ef86452c6fed81746af57322bc) Made shared_objects non-copyable ([#2291](https://github.com/synfig/synfig/issues/2291))
+- [`0cb03f3`](https://github.com/synfig/synfig/commit/0cb03f306ce8f12c92faa0349434177801dbb511) Replaced using std/etl namespaces with explicit namespace name ([#2292](https://github.com/synfig/synfig/issues/2292))
+- [`e074b30`](https://github.com/synfig/synfig/commit/e074b30da70e61b8b95ad9be2698f72853b4f1e0) Removed unused std/etl namespaces ([#2290](https://github.com/synfig/synfig/issues/2290))
+- [`f62997a`](https://github.com/synfig/synfig/commit/f62997ab0e426a7b46b41273fd73c665c1fc345c) Added glibmm dependency PR [#2278](https://github.com/synfig/synfig/issues/2278)
+## Version 1.5.0
+- [`4273435`](https://github.com/synfig/synfig/commit/4273435309266fa4181269fdb3e9cc454cf14337) Removed excessive use of std namespace ([#2193](https://github.com/synfig/synfig/issues/2193))
+- [`9048540`](https://github.com/synfig/synfig/commit/904854058c8a52c43a16fc8bcb30596172914ce4) [CMake] Fixed ETL tests ([#2135](https://github.com/synfig/synfig/issues/2135))
+- [`e6bbcab`](https://github.com/synfig/synfig/commit/e6bbcabf2273bfe67909a2bb3ef63036c8eebda7) [CMake] Bump minimum required CMake version to 3.5 ([#2128](https://github.com/synfig/synfig/issues/2128))
+- [`7f67cc2`](https://github.com/synfig/synfig/commit/7f67cc22dc831edb199b82c71aab22b407aa3292) [Autotools] Fixed `make distcheck`. Reduced build output for synfigstudio-release.sh script. ([#2004](https://github.com/synfig/synfig/issues/2004))
+- [`05b1ee2`](https://github.com/synfig/synfig/commit/05b1ee273f564b1422b2e14c039e22455b380a5a) [ETL/Core] Fixed warnings ([#2013](https://github.com/synfig/synfig/issues/2013))
+- [`53aebba`](https://github.com/synfig/synfig/commit/53aebba8412d1c28a3218365bf18d4105e955cd2) Merge PR [#1950](https://github.com/synfig/synfig/issues/1950): [ETL/Core] `rect` class moved from ETL to core.
+- [`bac00ea`](https://github.com/synfig/synfig/commit/bac00ea77cc0c318e22a85da266ea5e6e097e952) Removed `etl::trivial` class. Refactored `Param` class. ([#1839](https://github.com/synfig/synfig/issues/1839))
+- [`ebf2eea`](https://github.com/synfig/synfig/commit/ebf2eeac25a9f2b73920569e646bd959bf82002b) Merge PR [#1844](https://github.com/synfig/synfig/issues/1844):  Fix doxygen
+- [`677c1a7`](https://github.com/synfig/synfig/commit/677c1a78fc26933d1531daef105d9b92c7c3dd52) [Autotools] Verbose mode is disabled by default ([#1815](https://github.com/synfig/synfig/issues/1815))
+- [`144524a`](https://github.com/synfig/synfig/commit/144524a50d25bfd1b4bfdd43824bf7e3d972367e) Merge PR [#1791](https://github.com/synfig/synfig/issues/1791): Remove some old CVS/SVN stuff
+- [`b01d549`](https://github.com/synfig/synfig/commit/b01d549b87f4ae118a792cf1f40304e167696cff) Merge PR [#1781](https://github.com/synfig/synfig/issues/1781): MSVC build improvements
+- [`0450390`](https://github.com/synfig/synfig/commit/045039035ffc3c54c21f29d1c14957f4a47e1808) Merge PR [#1746](https://github.com/synfig/synfig/issues/1746): MSVC/vcpkg improving
+- [`a59e482`](https://github.com/synfig/synfig/commit/a59e48275d631876243634e4879899e48b793e68) Merge PR [#1741](https://github.com/synfig/synfig/issues/1741): Fixed clang warnings
+- [`75f78f2`](https://github.com/synfig/synfig/commit/75f78f249e76c70453c992f5795908979f8dd40d) Removed unused headers ([#1729](https://github.com/synfig/synfig/issues/1729))
+- [`6d3f1cb`](https://github.com/synfig/synfig/commit/6d3f1cb89cce05cb95341b38284b537975935a50) Merge PR [#1596](https://github.com/synfig/synfig/issues/1596): Fixed warnings
+- [`dc3c31e`](https://github.com/synfig/synfig/commit/dc3c31e7f85f1b46dee27805ec6a01c8ac1680e2) Removed unused ETL spline header ([#1563](https://github.com/synfig/synfig/issues/1563))
+- [`e60a668`](https://github.com/synfig/synfig/commit/e60a668e53cd718e910ad4172774f2672e797172) Cleaned clock functions. Fixed compilation on MSVC. ([#1426](https://github.com/synfig/synfig/issues/1426))
+- [`15a4167`](https://github.com/synfig/synfig/commit/15a41673a92458a735c5945759cb51852b92b4e7) ETL: CMake: Do not install non-existing header (PR [#1399](https://github.com/synfig/synfig/issues/1399))
+- [`d234429`](https://github.com/synfig/synfig/commit/d23442958d9b5546f9ba1dea21b150e52c424cd3) Moved state machine (smach) from ETL to synfig-studio/src/gui
+- [`11340af`](https://github.com/synfig/synfig/commit/11340afee34da98673f5aa6cc5846f15a86ffda2) Added necessary headers for MSVC
+- [`102dace`](https://github.com/synfig/synfig/commit/102daceabb934a50f2a8d337c950fbba052047f9) Deleted GCC __attribute__ ((unused)) (fixes MSVC compilation)
+- [`0da5999`](https://github.com/synfig/synfig/commit/0da59994cb17c895771e237a2c1f3897d1223ff2) remove test for (removed) etl::loose_smart_ptr
+- [`ee74a24`](https://github.com/synfig/synfig/commit/ee74a24c8ae4d8295d1e1c1ef5b9c5bf478271ce) Bump version to 1.5.0
+## Version 1.4.5
+- [`feb62c5`](https://github.com/synfig/synfig/commit/feb62c586f9b8c5378ce724854c7180d674e8326) Replaced `abs` with `std::fabs` for float values and `std::abs` for templates and int values ([#2311](https://github.com/synfig/synfig/issues/2311))
+## Version 1.4.4
+- [`e06c83f`](https://github.com/synfig/synfig/commit/e06c83fbdcf01e6c73d67321926a52cc92ebaa38) build(autotools): allow to compile release build with debug info ([#2838](https://github.com/synfig/synfig/issues/2838))
+## Version 1.4.3
+- [`b3b88c9`](https://github.com/synfig/synfig/commit/b3b88c9ad03d51ef2cf82b323eadd121429a9f33) ETL test: avoid clash between ETL::hermite and std::hermite ([#2547](https://github.com/synfig/synfig/issues/2547))
+- [`1f202d3`](https://github.com/synfig/synfig/commit/1f202d3cb9bc0149f8e28b555dc6d384fb4bc533) Merge PR ([#2399](https://github.com/synfig/synfig/issues/2399)): ETL cleanup: remove unused files and deprecated functions
+- [`7c8878b`](https://github.com/synfig/synfig/commit/7c8878b7cd735b72b637a794ddb7cbdda7ba3462) Removed tests for `fixed` class ([#2521](https://github.com/synfig/synfig/issues/2521))
 ## Version 1.4.2
 - [`d3906ca`](https://github.com/synfig/synfig/commit/d3906ca969de15df00776353d13387317e08ca38) Merge PR [#1853](https://github.com/synfig/synfig/issues/1853): `etl::clock` refactored to use `std::chrono`
 ## Version 1.4.1

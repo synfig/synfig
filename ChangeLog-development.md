@@ -1,3 +1,16 @@
+
+## Version 1.5.3 [ETL] [core] [studio]
+
+- [`78e866c`](https://github.com/synfig/synfig/commit/78e866cde56d844b1d2b66d83b5de7249788d0ab) chore: Fix [#3398](https://github.com/synfig/synfig/issues/3398) - Missing install-sh script on MacOS ([#3408](https://github.com/synfig/synfig/issues/3408)) [core] [studio]
+- [`efeeda8`](https://github.com/synfig/synfig/commit/efeeda8c0925ef8e075a454264ae177cb2539bb7) refactor: clean up Bevel layer ([#3394](https://github.com/synfig/synfig/issues/3394)) [core]
+- [`6cdaa8c`](https://github.com/synfig/synfig/commit/6cdaa8c2529fba5f66e0733d7d8ba68f4823b38f) chore: Make sure to update vcpkg.json on every release ([#3406](https://github.com/synfig/synfig/issues/3406))
+- [`4422c5c`](https://github.com/synfig/synfig/commit/4422c5c95b4302afbe59dd2ef7ad6bb679487bde) Bump version to 1.5.3 ([#3402](https://github.com/synfig/synfig/issues/3402)) [ETL] [core] [studio]
+- [`7f543c0`](https://github.com/synfig/synfig/commit/7f543c083000e1840e310391431adfc65e26877f) build(Github Actions): fix macOS build ([#3404](https://github.com/synfig/synfig/issues/3404))
+- [`8d1d1f1`](https://github.com/synfig/synfig/commit/8d1d1f1ec298793a29c40028ed1bcb6d6c8f2b67) ci: Build source tarballs on self-hosted CI runner ([#3395](https://github.com/synfig/synfig/issues/3395))
+- [`d6866a2`](https://github.com/synfig/synfig/commit/d6866a29c2a1c1f528ea8c8e0f9da014f318d9fd) chore: typo transfRomation -> transfoRmation ([#3397](https://github.com/synfig/synfig/issues/3397)) [core]
+- [`11d95ff`](https://github.com/synfig/synfig/commit/11d95ffa7fa313063b9eff1b3678281418674235) chore: Fix generation of source packages using Autotools (again) ([#3400](https://github.com/synfig/synfig/issues/3400)) [core]
+- [`f54fada`](https://github.com/synfig/synfig/commit/f54fadad55f2553d46d379ea08cff305cf99ad57) chore: Fix generation of source packages using Autotools ([#3399](https://github.com/synfig/synfig/issues/3399)) [ETL]
+- [`ec3030f`](https://github.com/synfig/synfig/commit/ec3030ffd81937f016ffabe1f381086eea6626a2) build: fix macos build ([#3396](https://github.com/synfig/synfig/issues/3396))
 - [`5714a7c`](https://github.com/synfig/synfig/commit/5714a7c421e7c21478d205f9b78e859428411fd7) chore: update Change Log for 1.4.5 ([#3359](https://github.com/synfig/synfig/issues/3359))
 - [`bbdcfc1`](https://github.com/synfig/synfig/commit/bbdcfc1fc2bc84bafa5f80ea79605cb9b053e38f) perf: minor optimization of Bevel layer ([#3384](https://github.com/synfig/synfig/issues/3384)) [core]
 - [`d281673`](https://github.com/synfig/synfig/commit/d2816730fd6e0a58785fd39571ec3f728e99c616) style: use of eof() and override for filesystem ([#3381](https://github.com/synfig/synfig/issues/3381)) [core]
