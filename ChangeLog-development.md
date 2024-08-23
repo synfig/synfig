@@ -577,6 +577,7 @@
 - [`f6b3f24`](https://github.com/synfig/synfig/commit/f6b3f24e9048a0eb1fd8b0061d8cf612a2b6d767) Merge PR ([#2382](https://github.com/synfig/synfig/issues/2382)): Widget_Keyframe_List: clean up (and make use of TimePlotData) [studio]
 
 ## Version 1.5.2 [core] [studio]
+
 - [`80a3386`](https://github.com/synfig/synfig/commit/80a3386c701049f597cf3642bb924d2ff832ae05) build(autotools): patch for autoconf 2.72 h/t Frédéric Bérat ([#2930](https://github.com/synfig/synfig/issues/2930)) [core]
 - [`1143a1d`](https://github.com/synfig/synfig/commit/1143a1da0e6c115b9659515ced5feeae9f7f042b) build(autotools): suppress warnings from libxml++ ([#3290](https://github.com/synfig/synfig/issues/3290)) [core]
 - [`18b9d2b`](https://github.com/synfig/synfig/commit/18b9d2b58b1cd07e0c7fb6306711766950f5a906) refactor: removed boost dependency ([#2792](https://github.com/synfig/synfig/issues/2792)) [core]
