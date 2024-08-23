@@ -205,14 +205,14 @@ filesystem::Path::from_uri(const std::string& uri)
 				if (c1 >= '0' && c1 <= '9')
 					c1 -= '0';
 				else
-					c1 -= (c1 >= 'a') ? 'a' : 'A';
+					c1 += 10 - ((c1 >= 'a') ? 'a' : 'A');
 				if (c1 < 0 || c1 > 15) {
 					break;
 				}
 				if (c2 >= '0' && c2 <= '9')
 					c2 -= '0';
 				else
-					c2 -= (c2 >= 'a') ? 'a' : 'A';
+					c2 += 10 - ((c2 >= 'a') ? 'a' : 'A');
 				if (c2 < 0 || c2 > 15) {
 					break;
 				}

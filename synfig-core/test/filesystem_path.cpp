@@ -1414,6 +1414,20 @@ test_from_uri()
 	ASSERT_EQUAL("\\\\host.example.com/path/to/file", Path::from_uri("file://///host.example.com/path/to/file").u8string());
 }
 
+void
+test_from_uri_with_escapes()
+{
+	ASSERT_EQUAL("/path/to/file with spaces", Path::from_uri("file:///path/to/file%20with%20spaces").u8string());
+
+	ASSERT_EQUAL("/path/to/file.a", Path::from_uri("file:///path/to/file%2ea").u8string());
+	ASSERT_EQUAL("/path/to/file.b", Path::from_uri("file:///path/to/file%2Eb").u8string());
+	ASSERT_EQUAL("/path/to/.file", Path::from_uri("file:///path/to/%2Efile").u8string());
+
+	ASSERT_EQUAL("/path/to/.file", Path::from_uri("file:///path/to/%2Efile").u8string());
+
+	ASSERT_EQUAL("/path/to/file\xc3\xb3", Path::from_uri("file:///path/to/file%c3%B3").u8string());
+}
+
 /* === E N T R Y P O I N T ================================================= */
 
 int main() {
@@ -1542,6 +1556,7 @@ int main() {
 	TEST_FUNCTION(test_proximate_between_different_root_paths)
 
 	TEST_FUNCTION(test_from_uri)
+	TEST_FUNCTION(test_from_uri_with_escapes)
 
 	TEST_SUITE_END()
 
