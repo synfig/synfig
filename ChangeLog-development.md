@@ -1,3 +1,31 @@
+
+## Version 1.5.3 [ETL] [core] [studio]
+
+- [`78e866c`](https://github.com/synfig/synfig/commit/78e866cde56d844b1d2b66d83b5de7249788d0ab) chore: Fix [#3398](https://github.com/synfig/synfig/issues/3398) - Missing install-sh script on MacOS ([#3408](https://github.com/synfig/synfig/issues/3408)) [core] [studio]
+- [`efeeda8`](https://github.com/synfig/synfig/commit/efeeda8c0925ef8e075a454264ae177cb2539bb7) refactor: clean up Bevel layer ([#3394](https://github.com/synfig/synfig/issues/3394)) [core]
+- [`6cdaa8c`](https://github.com/synfig/synfig/commit/6cdaa8c2529fba5f66e0733d7d8ba68f4823b38f) chore: Make sure to update vcpkg.json on every release ([#3406](https://github.com/synfig/synfig/issues/3406))
+- [`4422c5c`](https://github.com/synfig/synfig/commit/4422c5c95b4302afbe59dd2ef7ad6bb679487bde) Bump version to 1.5.3 ([#3402](https://github.com/synfig/synfig/issues/3402)) [ETL] [core] [studio]
+- [`7f543c0`](https://github.com/synfig/synfig/commit/7f543c083000e1840e310391431adfc65e26877f) build(Github Actions): fix macOS build ([#3404](https://github.com/synfig/synfig/issues/3404))
+- [`8d1d1f1`](https://github.com/synfig/synfig/commit/8d1d1f1ec298793a29c40028ed1bcb6d6c8f2b67) ci: Build source tarballs on self-hosted CI runner ([#3395](https://github.com/synfig/synfig/issues/3395))
+- [`d6866a2`](https://github.com/synfig/synfig/commit/d6866a29c2a1c1f528ea8c8e0f9da014f318d9fd) chore: typo transfRomation -> transfoRmation ([#3397](https://github.com/synfig/synfig/issues/3397)) [core]
+- [`11d95ff`](https://github.com/synfig/synfig/commit/11d95ffa7fa313063b9eff1b3678281418674235) chore: Fix generation of source packages using Autotools (again) ([#3400](https://github.com/synfig/synfig/issues/3400)) [core]
+- [`f54fada`](https://github.com/synfig/synfig/commit/f54fadad55f2553d46d379ea08cff305cf99ad57) chore: Fix generation of source packages using Autotools ([#3399](https://github.com/synfig/synfig/issues/3399)) [ETL]
+- [`ec3030f`](https://github.com/synfig/synfig/commit/ec3030ffd81937f016ffabe1f381086eea6626a2) build: fix macos build ([#3396](https://github.com/synfig/synfig/issues/3396))
+- [`5714a7c`](https://github.com/synfig/synfig/commit/5714a7c421e7c21478d205f9b78e859428411fd7) chore: update Change Log for 1.4.5 ([#3359](https://github.com/synfig/synfig/issues/3359))
+- [`bbdcfc1`](https://github.com/synfig/synfig/commit/bbdcfc1fc2bc84bafa5f80ea79605cb9b053e38f) perf: minor optimization of Bevel layer ([#3384](https://github.com/synfig/synfig/issues/3384)) [core]
+- [`d281673`](https://github.com/synfig/synfig/commit/d2816730fd6e0a58785fd39571ec3f728e99c616) style: use of eof() and override for filesystem ([#3381](https://github.com/synfig/synfig/issues/3381)) [core]
+- [`3f07959`](https://github.com/synfig/synfig/commit/3f0795986a0e0612f86695dade1ebd4f658d3c39) build: unify cmake build shell scripts ([#3370](https://github.com/synfig/synfig/issues/3370))
+- [`04ba862`](https://github.com/synfig/synfig/commit/04ba862ed6bef63c1a83cd129a1ad6f3fe109a49) refactor: make surface[_etl]::blit_to() const ([#3369](https://github.com/synfig/synfig/issues/3369)) [core]
+- [`ac93cec`](https://github.com/synfig/synfig/commit/ac93cec8fae45c123b5ac2164c077671c6d8564e) ci: Add CI action for OSX packaging script ([#3368](https://github.com/synfig/synfig/issues/3368))
+- [`237d503`](https://github.com/synfig/synfig/commit/237d5032db163f1360647b9ff4ff45246b8155b8) build: update script for building with cmake ([#3355](https://github.com/synfig/synfig/issues/3355))
+- [`9a589c5`](https://github.com/synfig/synfig/commit/9a589c5379d2a9ea0615342a84249e683812383f) refactor: remove broken (and unused) symlink ([#3365](https://github.com/synfig/synfig/issues/3365))
+- [`ad15a64`](https://github.com/synfig/synfig/commit/ad15a64580f3d4516419033903aa65a47280cd4f) chore: avoid installation of unused sdl2_mixer ([#3367](https://github.com/synfig/synfig/issues/3367))
+- [`e832255`](https://github.com/synfig/synfig/commit/e8322554c42075b5b4be647b19f6fd9aca367c10) perf(GUI): don't render frame thumbnails if disabled ([#3356](https://github.com/synfig/synfig/issues/3356)) [studio]
+- [`3c3b5b4`](https://github.com/synfig/synfig/commit/3c3b5b4b8c4fcfe1854533082faafbe61d2fb3c9) chore: update ChangeLog for version 1.4.5 ([#3348](https://github.com/synfig/synfig/issues/3348))
+- [`f0e7df3`](https://github.com/synfig/synfig/commit/f0e7df389abc6600714bb119d5a551bb1e1fb708) chore: removed zh-Hant locale as it has zero translations ([#3354](https://github.com/synfig/synfig/issues/3354)) [core] [studio]
+- [`f6dc2ac`](https://github.com/synfig/synfig/commit/f6dc2aca804f124c897c6f013523502f889755b2) chore: Update Transifex config to APIv3 ([#3349](https://github.com/synfig/synfig/issues/3349))
+- [`d51d65b`](https://github.com/synfig/synfig/commit/d51d65b81133e24329399f0185ba5fc79c035a4c) fix: build on OSX 10.9 ([#3353](https://github.com/synfig/synfig/issues/3353)) [core]
+- [`2d542c9`](https://github.com/synfig/synfig/commit/2d542c98f4d498f5d616b4f7330622be7da42c70) refactor: port CurveWarp to Cobra renderer engine ([#3329](https://github.com/synfig/synfig/issues/3329)) [core]
 - [`58f522e`](https://github.com/synfig/synfig/commit/58f522ec25d845ee7734dab0ca385a8ff5ccfd3c) fix(MotionBlur): undefined behavior when subsample range is 0 ([#3347](https://github.com/synfig/synfig/issues/3347)) [core]
 - [`c8ea2c2`](https://github.com/synfig/synfig/commit/c8ea2c2ecbd5fd9e3ad9c6937b56a203aaa1d1ea) feat: added ability to set colors for a dark theme for curves ([#3346](https://github.com/synfig/synfig/issues/3346)) [studio]
 - [`3c70fec`](https://github.com/synfig/synfig/commit/3c70fec324e36be898da18cee54d512535c6ecac) build: Add cmake to linux install script ([#3338](https://github.com/synfig/synfig/issues/3338))
@@ -22,7 +50,6 @@
 - [`bbaf283`](https://github.com/synfig/synfig/commit/bbaf28350c3c4b5fb14249fcc23d9d43fd0c7978) fix: synfig::OS::RunPipeWin32::is_open() return on fail ([#3298](https://github.com/synfig/synfig/issues/3298)) [core]
 - [`cdbb598`](https://github.com/synfig/synfig/commit/cdbb5983057a34d2f549a3ab47bff7dc81bc548b) feat: allow to change resource filepath in Canvas Dependencies dialog ([#3105](https://github.com/synfig/synfig/issues/3105)) [studio]
 - [`09a8045`](https://github.com/synfig/synfig/commit/09a8045048ba766ae4ccf30cb33833eb89eac224) fix: no need to show "Icon" header text to Layers Panel ([#3244](https://github.com/synfig/synfig/issues/3244)) [studio]
-- [`1143a1d`](https://github.com/synfig/synfig/commit/1143a1da0e6c115b9659515ced5feeae9f7f042b) build(autotools): suppress warnings from libxml++ ([#3290](https://github.com/synfig/synfig/issues/3290)) [core]
 - [`034ec88`](https://github.com/synfig/synfig/commit/034ec88a8d56d34ea8e0818a6ba9fb84bc418de2) fix: mingw cross-build ([#3291](https://github.com/synfig/synfig/issues/3291)) [core]
 - [`9f6cea0`](https://github.com/synfig/synfig/commit/9f6cea0776c04212d837f4ee6b511d571b5ac35a) chore(build): add support for installing build dependencies in Red OS ([#3289](https://github.com/synfig/synfig/issues/3289))
 - [`cb11697`](https://github.com/synfig/synfig/commit/cb11697a2f74b8b6fb44c8faf297b0d8965b8c0e) refactor: drop SIF file in Toolbox now uses filesystem::Path ([#3284](https://github.com/synfig/synfig/issues/3284)) [studio]
@@ -245,7 +272,6 @@
 - [`f1ff964`](https://github.com/synfig/synfig/commit/f1ff9649f6c96ad9edcd59c03d26c79193853162) fix: allow to open external editor for tiff, ppm (& variations) and webp ([#2934](https://github.com/synfig/synfig/issues/2934)) [studio]
 - [`9a5d209`](https://github.com/synfig/synfig/commit/9a5d209ca46fd21823956a01adfffb7ca269fa56) fix: wrong Papagayo file extension in Canvas Dependencies dialog ([#2936](https://github.com/synfig/synfig/issues/2936)) [studio]
 - [`26733dc`](https://github.com/synfig/synfig/commit/26733dc3b42cf415e8c63835d1bfac936664c625) refactor: no need to change locale on saving accel map ([#2937](https://github.com/synfig/synfig/issues/2937)) [studio]
-- [`80a3386`](https://github.com/synfig/synfig/commit/80a3386c701049f597cf3642bb924d2ff832ae05) build(autotools): patch for autoconf 2.72 h/t Frédéric Bérat ([#2930](https://github.com/synfig/synfig/issues/2930)) [core]
 - [`fcb0ea4`](https://github.com/synfig/synfig/commit/fcb0ea471c577f683f50c032b057dc11279475fc) chore: update ChangeLog ([#2929](https://github.com/synfig/synfig/issues/2929))
 - [`8f28ef7`](https://github.com/synfig/synfig/commit/8f28ef77418b9866352b4c77bb2fb842293019cf) refactor: remove unneeded `using namespace etl` and `Action` ([#2923](https://github.com/synfig/synfig/issues/2923)) [core] [studio]
 - [`63e661f`](https://github.com/synfig/synfig/commit/63e661f3e3fe99d50a5d572c6060e856adea000e) chore: added `build-cmake/` folder to .gitignore ([#2898](https://github.com/synfig/synfig/issues/2898))
@@ -310,7 +336,6 @@
 - [`2d4d77a`](https://github.com/synfig/synfig/commit/2d4d77a5711646544b8c7b65a6d250e32fc2ad82) refactor: clean up Magick++ target a bit ([#2822](https://github.com/synfig/synfig/issues/2822)) [core]
 - [`1ce65b6`](https://github.com/synfig/synfig/commit/1ce65b6f96a210c56c45d309be7310bffac16507) fix: pressing the cancel button still adds the text layer ([#2814](https://github.com/synfig/synfig/issues/2814)) [studio]
 - [`da13b77`](https://github.com/synfig/synfig/commit/da13b77425c833434723dc8d22ce5c25410105e1) build(vcpkg): `cmake --install` now also installs required dependencies ([#2816](https://github.com/synfig/synfig/issues/2816)) [core] [studio]
-- [`18b9d2b`](https://github.com/synfig/synfig/commit/18b9d2b58b1cd07e0c7fb6306711766950f5a906) refactor: removed boost dependency ([#2792](https://github.com/synfig/synfig/issues/2792)) [core]
 - [`dd55c0f`](https://github.com/synfig/synfig/commit/dd55c0f3f982d676696e58fafb9175e4cd388e13) fix(msvc): fixed debug build in MSVC ([#2812](https://github.com/synfig/synfig/issues/2812)) [core]
 - [`c6eb41d`](https://github.com/synfig/synfig/commit/c6eb41d71876092484cf2a814c6a294beb78ac1e) build: Use vcpkg to build synfig ([#2725](https://github.com/synfig/synfig/issues/2725)) [core] [studio]
 - [`9cecd2a`](https://github.com/synfig/synfig/commit/9cecd2abe143e29cf0564e511183beebab7dfafb) feat: added ability to show/hide rulers ([#2634](https://github.com/synfig/synfig/issues/2634)) [studio]
@@ -365,10 +390,8 @@
 - [`ae38d79`](https://github.com/synfig/synfig/commit/ae38d7928726fcc377fae111016e4d656a5f0647) refactor: Replaced deprecated Gtk::StockID in Sets panel ([#2683](https://github.com/synfig/synfig/issues/2683)) [studio]
 - [`aa8f1f3`](https://github.com/synfig/synfig/commit/aa8f1f35bcd67a7aaf765b6c7b3e152a39cfc1af) build(CMake): added synfig tests to CMake ([#2741](https://github.com/synfig/synfig/issues/2741)) [core]
 - [`f0acb53`](https://github.com/synfig/synfig/commit/f0acb53c4063513d0f3d89b7320f6068bc1fda0d) Merge PR [#2726](https://github.com/synfig/synfig/issues/2726): fix: Parameter & Library Panels are now more similar to TimeTrack Panel [studio]
-- [`0bd2c22`](https://github.com/synfig/synfig/commit/0bd2c224bff04a6c6de15f5821064e46518ad62a) fix: mod_libavcodec didn't compile with MinGW ([#2737](https://github.com/synfig/synfig/issues/2737)) [core]
 - [`e40d909`](https://github.com/synfig/synfig/commit/e40d90912e7103a4fcfd7cab51d92812a4bae9c9) build(CMake): enabled `mod_libavcodec` build in CMake ([#2736](https://github.com/synfig/synfig/issues/2736)) [core]
 - [`18bc75f`](https://github.com/synfig/synfig/commit/18bc75fed3c6034b067049cdc6e0012366962738) Merge PR [#2718](https://github.com/synfig/synfig/issues/2718): refactor!: `smach` class is now moved to `studio` namespace [studio]
-- [`f684b24`](https://github.com/synfig/synfig/commit/f684b24f0db31ab8ea7aadc417fc23e3084b4138) fix(mod_libavcodec): fixed build with FFMPEG 5.0 ([#2734](https://github.com/synfig/synfig/issues/2734)) [core]
 - [`cc088a0`](https://github.com/synfig/synfig/commit/cc088a06c4d0105c8883db60121e19725ccc2f59) Merge PR [#2733](https://github.com/synfig/synfig/issues/2733): refactor(ETL): delete unneeded etl_config.h [ETL]
 - [`23adb48`](https://github.com/synfig/synfig/commit/23adb486a6a71091cb9bfb71b65a70ca4edd46ea) Merge PR [#2715](https://github.com/synfig/synfig/issues/2715): refactor!: removed etl::angle; replaced by synfig::Angle [ETL] [core] [studio]
 - [`e64c7d6`](https://github.com/synfig/synfig/commit/e64c7d6784fa10ab8b1753c0c03ab120269fa1c0) fix: Indicate segments where points are disabled in Timetrack Panel (regression) ([#2719](https://github.com/synfig/synfig/issues/2719)) [studio]
@@ -493,7 +516,6 @@
 - [`ad03efe`](https://github.com/synfig/synfig/commit/ad03efe3b70e507a4632fe14a55acd149be60477) FileSystem::Identifier::empty() returned wrong value ([#2510](https://github.com/synfig/synfig/issues/2510)) [core]
 - [`78081fd`](https://github.com/synfig/synfig/commit/78081fd256b6a4a095f7240dd9875e6f82028415) make "Background" (layer description) string translatable ([#2515](https://github.com/synfig/synfig/issues/2515)) [studio]
 - [`cb9abcf`](https://github.com/synfig/synfig/commit/cb9abcf7ddd8f9a51dde5c5ede47a25486fbacda) fix error message on Target_Scanline ([#2511](https://github.com/synfig/synfig/issues/2511)) [core]
-- [`938cfc0`](https://github.com/synfig/synfig/commit/938cfc08f9453464f0ea78bbb7ccfb2ea0850263) fix Debian 9 building ([#2517](https://github.com/synfig/synfig/issues/2517)) [studio]
 - [`14b3ce6`](https://github.com/synfig/synfig/commit/14b3ce6b5c25a164534f53df0bd71f9f080f293d) Merge PR [#2514](https://github.com/synfig/synfig/issues/2514): Fix text layer hit check for Text Layer (issue when size was too small). Closes [#2508](https://github.com/synfig/synfig/issues/2508). [core]
 - [`7ae9d4a`](https://github.com/synfig/synfig/commit/7ae9d4a900ee8cadcf44606f9b050c96cde4bdb7) Re-enable "Create Child Bone" action ([#2507](https://github.com/synfig/synfig/issues/2507)) [studio]
 - [`d581517`](https://github.com/synfig/synfig/commit/d581517237410a685ac24dd86ee35a019294d7f5) Remove unused variables ([#2502](https://github.com/synfig/synfig/issues/2502)) [studio]
@@ -525,7 +547,6 @@
 - [`bea6969`](https://github.com/synfig/synfig/commit/bea6969f273a6bd2716a6c36c2dafde46a94df1a) Fixed potential null pointer dereferencing ([#2454](https://github.com/synfig/synfig/issues/2454)) [studio]
 - [`d37e72a`](https://github.com/synfig/synfig/commit/d37e72ac3dcb42bbf64deb0ae6b9d1c90649f229) Refactored import file: added is_same_file method ([#2451](https://github.com/synfig/synfig/issues/2451)) [studio]
 - [`55d09c2`](https://github.com/synfig/synfig/commit/55d09c27f3dd81bdf79c9d43303f5412280938f9) Added ability to import multiple files ([#2439](https://github.com/synfig/synfig/issues/2439)) [studio]
-- [`9c2796c`](https://github.com/synfig/synfig/commit/9c2796c2bde9d33dca7ac6524b93e6dc256c96da) Fixed includes for harfbuzz and fribidi libraries ([#2442](https://github.com/synfig/synfig/issues/2442)) [core]
 - [`32808d9`](https://github.com/synfig/synfig/commit/32808d9f80505505958aea012cae4d771bde48a1) Merge PR [#2449](https://github.com/synfig/synfig/issues/2449): Fix MSYS2 build
 - [`943ca1e`](https://github.com/synfig/synfig/commit/943ca1e9aa835935111ff53acaef703de5591158) Autotools: detects libpng via pkg-config ([#2443](https://github.com/synfig/synfig/issues/2443)) [core]
 - [`ed40cc0`](https://github.com/synfig/synfig/commit/ed40cc08f0bc9b1e421d7285ec784351dbcc0569) Autotools: remove code for very old libtool versions ([#2444](https://github.com/synfig/synfig/issues/2444)) [core]
@@ -567,6 +588,16 @@
 - [`2fe4a82`](https://github.com/synfig/synfig/commit/2fe4a8267bfa29bee1ea2be5a6b1a84305cb0a6e) Layer_Freetype: Added check if HOME environment is set on MacOS ([#2295](https://github.com/synfig/synfig/issues/2295)) [core]
 - [`333182e`](https://github.com/synfig/synfig/commit/333182e6d904251d6788da9f9c92b1f5eb79bec4) Merge PR ([#1793](https://github.com/synfig/synfig/issues/1793)): 'Update' file headers: license notices, \file and other minor changes [ETL] [core] [studio]
 - [`f6b3f24`](https://github.com/synfig/synfig/commit/f6b3f24e9048a0eb1fd8b0061d8cf612a2b6d767) Merge PR ([#2382](https://github.com/synfig/synfig/issues/2382)): Widget_Keyframe_List: clean up (and make use of TimePlotData) [studio]
+
+## Version 1.5.2 [core] [studio]
+
+- [`80a3386`](https://github.com/synfig/synfig/commit/80a3386c701049f597cf3642bb924d2ff832ae05) build(autotools): patch for autoconf 2.72 h/t Frédéric Bérat ([#2930](https://github.com/synfig/synfig/issues/2930)) [core]
+- [`1143a1d`](https://github.com/synfig/synfig/commit/1143a1da0e6c115b9659515ced5feeae9f7f042b) build(autotools): suppress warnings from libxml++ ([#3290](https://github.com/synfig/synfig/issues/3290)) [core]
+- [`18b9d2b`](https://github.com/synfig/synfig/commit/18b9d2b58b1cd07e0c7fb6306711766950f5a906) refactor: removed boost dependency ([#2792](https://github.com/synfig/synfig/issues/2792)) [core]
+- [`9c2796c`](https://github.com/synfig/synfig/commit/9c2796c2bde9d33dca7ac6524b93e6dc256c96da) Fixed includes for harfbuzz and fribidi libraries ([#2442](https://github.com/synfig/synfig/issues/2442)) [core]
+- [`f684b24`](https://github.com/synfig/synfig/commit/f684b24f0db31ab8ea7aadc417fc23e3084b4138) fix(mod_libavcodec): fixed build with FFMPEG 5.0 ([#2734](https://github.com/synfig/synfig/issues/2734)) [core]
+- [`0bd2c22`](https://github.com/synfig/synfig/commit/0bd2c224bff04a6c6de15f5821064e46518ad62a) fix: mod_libavcodec didn't compile with MinGW ([#2737](https://github.com/synfig/synfig/issues/2737)) [core]
+- [`938cfc0`](https://github.com/synfig/synfig/commit/938cfc08f9453464f0ea78bbb7ccfb2ea0850263) fix Debian 9 building ([#2517](https://github.com/synfig/synfig/issues/2517)) [studio]
 
 ## Version 1.5.1 [ETL] [core] [studio]
 

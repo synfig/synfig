@@ -1,3 +1,487 @@
+## Version 1.5.3
+- [`78e866c`](https://github.com/synfig/synfig/commit/78e866cde56d844b1d2b66d83b5de7249788d0ab) chore: Fix [#3398](https://github.com/synfig/synfig/issues/3398) - Missing install-sh script on MacOS ([#3408](https://github.com/synfig/synfig/issues/3408))
+- [`efeeda8`](https://github.com/synfig/synfig/commit/efeeda8c0925ef8e075a454264ae177cb2539bb7) refactor: clean up Bevel layer ([#3394](https://github.com/synfig/synfig/issues/3394))
+- [`4422c5c`](https://github.com/synfig/synfig/commit/4422c5c95b4302afbe59dd2ef7ad6bb679487bde) Bump version to 1.5.3 ([#3402](https://github.com/synfig/synfig/issues/3402))
+- [`d6866a2`](https://github.com/synfig/synfig/commit/d6866a29c2a1c1f528ea8c8e0f9da014f318d9fd) chore: typo transfRomation -> transfoRmation ([#3397](https://github.com/synfig/synfig/issues/3397))
+- [`11d95ff`](https://github.com/synfig/synfig/commit/11d95ffa7fa313063b9eff1b3678281418674235) chore: Fix generation of source packages using Autotools (again) ([#3400](https://github.com/synfig/synfig/issues/3400))
+- [`bbdcfc1`](https://github.com/synfig/synfig/commit/bbdcfc1fc2bc84bafa5f80ea79605cb9b053e38f) perf: minor optimization of Bevel layer ([#3384](https://github.com/synfig/synfig/issues/3384))
+- [`d281673`](https://github.com/synfig/synfig/commit/d2816730fd6e0a58785fd39571ec3f728e99c616) style: use of eof() and override for filesystem ([#3381](https://github.com/synfig/synfig/issues/3381))
+- [`04ba862`](https://github.com/synfig/synfig/commit/04ba862ed6bef63c1a83cd129a1ad6f3fe109a49) refactor: make surface[_etl]::blit_to() const ([#3369](https://github.com/synfig/synfig/issues/3369))
+- [`f0e7df3`](https://github.com/synfig/synfig/commit/f0e7df389abc6600714bb119d5a551bb1e1fb708) chore: removed zh-Hant locale as it has zero translations ([#3354](https://github.com/synfig/synfig/issues/3354))
+- [`d51d65b`](https://github.com/synfig/synfig/commit/d51d65b81133e24329399f0185ba5fc79c035a4c) fix: build on OSX 10.9 ([#3353](https://github.com/synfig/synfig/issues/3353))
+- [`2d542c9`](https://github.com/synfig/synfig/commit/2d542c98f4d498f5d616b4f7330622be7da42c70) refactor: port CurveWarp to Cobra renderer engine ([#3329](https://github.com/synfig/synfig/issues/3329))
+- [`58f522e`](https://github.com/synfig/synfig/commit/58f522ec25d845ee7734dab0ca385a8ff5ccfd3c) fix(MotionBlur): undefined behavior when subsample range is 0 ([#3347](https://github.com/synfig/synfig/issues/3347))
+- [`5fd6653`](https://github.com/synfig/synfig/commit/5fd6653d90e59be0439fb5f6ed4a48d007db6d3f) build: fix typos on magickpp module ([#3333](https://github.com/synfig/synfig/issues/3333))
+- [`1788462`](https://github.com/synfig/synfig/commit/17884628603c13c19ba11cbd5eafeb10955870db) fix: importing via magick++ for version >= 7.0.1 ([#3332](https://github.com/synfig/synfig/issues/3332))
+- [`e1f9a18`](https://github.com/synfig/synfig/commit/e1f9a1842e7f52e7b1e8ef75875ed20e4ad4bed7) refactor: remove unused variable ([#3322](https://github.com/synfig/synfig/issues/3322))
+- [`655bdaa`](https://github.com/synfig/synfig/commit/655bdaab12b8a50fd63e0b834901777f6fd9d155) feat: add WebM video format to ffmpeg codecs list ([#3330](https://github.com/synfig/synfig/issues/3330))
+- [`5359626`](https://github.com/synfig/synfig/commit/53596268520617f74d142adf67abd4dad1353539) feat: add Magick++ as possible importer too ([#3323](https://github.com/synfig/synfig/issues/3323))
+- [`b7e2cc5`](https://github.com/synfig/synfig/commit/b7e2cc528970242c02403ce8e490e855d2aff9a3) refactor: reduce scope of two variables ([#3321](https://github.com/synfig/synfig/issues/3321))
+- [`798e84e`](https://github.com/synfig/synfig/commit/798e84eb9a3822e01713cce193587348ee4ab2f4) fix: guide lines ignored on loading from old files ([#3303](https://github.com/synfig/synfig/issues/3303))
+- [`0fa608d`](https://github.com/synfig/synfig/commit/0fa608d45b5efa95aa5d1a4c32e746f50cf68242) refactor: port layer to Cobra renderer: Metaballs ([#3305](https://github.com/synfig/synfig/issues/3305))
+- [`bbaf283`](https://github.com/synfig/synfig/commit/bbaf28350c3c4b5fb14249fcc23d9d43fd0c7978) fix: synfig::OS::RunPipeWin32::is_open() return on fail ([#3298](https://github.com/synfig/synfig/issues/3298))
+- [`034ec88`](https://github.com/synfig/synfig/commit/034ec88a8d56d34ea8e0818a6ba9fb84bc418de2) fix: mingw cross-build ([#3291](https://github.com/synfig/synfig/issues/3291))
+- [`b2e04c1`](https://github.com/synfig/synfig/commit/b2e04c1e6f7533f9e34115b3c1a3ae29e2d78fad) fix: use u8_str() instead of c_str() for filesystem::Path ([#3287](https://github.com/synfig/synfig/issues/3287))
+- [`280024c`](https://github.com/synfig/synfig/commit/280024c5149d2e4e1e7ab58a697265e86b812d0f) refactor: remove unused #include ([#3285](https://github.com/synfig/synfig/issues/3285))
+- [`5c3e9bb`](https://github.com/synfig/synfig/commit/5c3e9bb422846ecaa3723770b0b0d681d28775ed) refactor: remove unused #include segment.h ([#3281](https://github.com/synfig/synfig/issues/3281))
+- [`0489837`](https://github.com/synfig/synfig/commit/048983714026696a91bbf6938be0833b430fd6d8) fix: dropped image file doesn't load (broken conversion URI to file path on Win32) ([#3280](https://github.com/synfig/synfig/issues/3280))
+- [`f58f015`](https://github.com/synfig/synfig/commit/f58f015cb0e15807290d93bf01e2794eeba81eaa) fix: prevent accessing invalid index while parsing Distance string ([#3277](https://github.com/synfig/synfig/issues/3277))
+- [`2610452`](https://github.com/synfig/synfig/commit/26104523f1f0b936cf4e98c80873df8e05cc73f7) fix: units in Tool Options panel didn't follow app settings (regression) ([#3276](https://github.com/synfig/synfig/issues/3276))
+- [`fae301f`](https://github.com/synfig/synfig/commit/fae301f558f6437317a7288fdd5af927e89842cc) fix: ListImporter was not able to fetch the right files on synfig CLI ([#3275](https://github.com/synfig/synfig/issues/3275))
+- [`ceeaa53`](https://github.com/synfig/synfig/commit/ceeaa53b7d06a51c0d4ae15801d8057dfb14da24) refactor: prefer synfig::filesystem::Path rather than synfig::String or std::string ([#3273](https://github.com/synfig/synfig/issues/3273))
+- [`69f4ea7`](https://github.com/synfig/synfig/commit/69f4ea71908f666a2e2c8907f77c1c284f1aa870) fix: memory leak on Layer_Freetype ([#3269](https://github.com/synfig/synfig/issues/3269))
+- [`e299657`](https://github.com/synfig/synfig/commit/e299657c0393d0890a0996fea638fa781f82e0ef) fix: missing OS namespace for MSVC compiler code ([#3253](https://github.com/synfig/synfig/issues/3253))
+- [`05da4e9`](https://github.com/synfig/synfig/commit/05da4e95023c3015096729d1444f9266a0175fb5) fix: build on Debian 9 ([#3169](https://github.com/synfig/synfig/issues/3169))
+- [`d3e1c8a`](https://github.com/synfig/synfig/commit/d3e1c8a93f9373409fd0c36acd7d9e0b853fe9ec) refactor: cleanup an old debug line ([#3266](https://github.com/synfig/synfig/issues/3266))
+- [`1e12862`](https://github.com/synfig/synfig/commit/1e12862be1346244c08cb56f4078df1abf8d8bd8) refactor: replace unsafe sprintf() with snprintf() ([#3263](https://github.com/synfig/synfig/issues/3263))
+- [`0e11669`](https://github.com/synfig/synfig/commit/0e116697e531af2eb14a7749e552908464526387) refactor: OS::launch_file_async() now uses synfig::filesystem::Path ([#3249](https://github.com/synfig/synfig/issues/3249))
+- [`efb719b`](https://github.com/synfig/synfig/commit/efb719b447ad8e507af8ded2a964320fd0fbe724) feat: add "invert" parameter to ChromaKey layer ([#3240](https://github.com/synfig/synfig/issues/3240))
+- [`0882a4e`](https://github.com/synfig/synfig/commit/0882a4e6b5d0a0734f3c46e4eeb06b3f58c73e9e) refactor: dialogs for saving and exporting now uses filesystem::Path ([#3234](https://github.com/synfig/synfig/issues/3234))
+- [`e872c19`](https://github.com/synfig/synfig/commit/e872c19142967eadf825cdd7c517b23569006f62) refactor: synfig::OS::get_binary_path() doesn't require a fallback anymore ([#3236](https://github.com/synfig/synfig/issues/3236))
+- [`21a1092`](https://github.com/synfig/synfig/commit/21a1092476dd4f6656a97bb2a11f803b7384f929) fix: file ETL/clock was moved to synfig-core ([#3228](https://github.com/synfig/synfig/issues/3228))
+- [`babf9e6`](https://github.com/synfig/synfig/commit/babf9e6188dccdc75a6d46ef995113e581f0840a) refactor: remove unused #include (somehow missed in [#3141](https://github.com/synfig/synfig/issues/3141)) ([#3235](https://github.com/synfig/synfig/issues/3235))
+- [`6969840`](https://github.com/synfig/synfig/commit/69698402e7a88895b102bf4b35caf597259b9dba) refactor: clean etl::handle and alike ([#3233](https://github.com/synfig/synfig/issues/3233))
+- [`fd63235`](https://github.com/synfig/synfig/commit/fd63235eae3eb95ca4f199fe262bfb3322583848) refactor: prefer synfig::filesystem::Path rather std::string ([#3229](https://github.com/synfig/synfig/issues/3229))
+- [`7681883`](https://github.com/synfig/synfig/commit/768188305412e231309cddf467c58bcc304863d9) refactor: use synfig:filesystem::Path for sketch, palette & others ([#3219](https://github.com/synfig/synfig/issues/3219))
+- [`2cf7e0e`](https://github.com/synfig/synfig/commit/2cf7e0eefae64dedc92103265d3c45bf14d58b0d) fix: issues when importing with absolute paths from different root path ([#3214](https://github.com/synfig/synfig/issues/3214))
+- [`9d76e50`](https://github.com/synfig/synfig/commit/9d76e502d4396f298db710b4ff926ee6cf36a31f) fix(Windows): plugins fail to execute for files with non-latin characters ([#3220](https://github.com/synfig/synfig/issues/3220))
+- [`57a063a`](https://github.com/synfig/synfig/commit/57a063ac650eb47590d909f602b070ed45dcaeab) refactor: avoid direct use of etl::handle ([#3226](https://github.com/synfig/synfig/issues/3226))
+- [`19218cf`](https://github.com/synfig/synfig/commit/19218cfe8c86fc0aedf047986a36df3c4b271660) refactor: remove not-needed 'using namespace etl' ([#3221](https://github.com/synfig/synfig/issues/3221))
+- [`7040b7f`](https://github.com/synfig/synfig/commit/7040b7f4452afebe131a4425bafb5171f7f6112f) refactor: make Filesystem::filename a filesystem::Path object ([#3209](https://github.com/synfig/synfig/issues/3209))
+- [`47b0888`](https://github.com/synfig/synfig/commit/47b088875c781ab4b5c41a7a50f5d4450806078a) fix: preview window not showing when there is a Layer_Sound ([#3211](https://github.com/synfig/synfig/issues/3211))
+- [`1596272`](https://github.com/synfig/synfig/commit/15962724f781570f4a6a943803d3b06b0301c1c6) refactor: increase the pixels per frame without render split in Target_Scanline ([#3205](https://github.com/synfig/synfig/issues/3205))
+- [`4d4726a`](https://github.com/synfig/synfig/commit/4d4726aafda7bbd05df7233daac31b13985f11e0) fix: avoid parser error of focus point on loading malformed synfig file ([#3206](https://github.com/synfig/synfig/issues/3206))
+- [`32c9da1`](https://github.com/synfig/synfig/commit/32c9da10772d758fee8662fe17419be7899978a7) refactor: avoid build warning due to unused parameter ([#3202](https://github.com/synfig/synfig/issues/3202))
+- [`a189a43`](https://github.com/synfig/synfig/commit/a189a43b1788a9fb4bc335c1b2a8ebc69ed97bac) fix: new MotionBLur subsampling None used wrong blend method ([#3201](https://github.com/synfig/synfig/issues/3201))
+- [`bb67147`](https://github.com/synfig/synfig/commit/bb67147365155d1ea3a048d2b55d98621b7c4b3b) feat: layer Motion Blur now can create an non blurred trail ([#3173](https://github.com/synfig/synfig/issues/3173))
+- [`b9afc45`](https://github.com/synfig/synfig/commit/b9afc452965f9bbc19c8487a6101cf9870b66ba0) refactor: port more layers to Cobra renderer: some Gradient layers ([#2562](https://github.com/synfig/synfig/issues/2562))
+- [`03eecaf`](https://github.com/synfig/synfig/commit/03eecafbef8daa814d578574f343a457305d8583) refactor: avoid g++ 13 compiler warning ([#3193](https://github.com/synfig/synfig/issues/3193))
+- [`c28287d`](https://github.com/synfig/synfig/commit/c28287df3596f3a9ad75a68b3f8d1ec53cec7ad7) fix: uninitialized value in ValueNode_DynamicList::ListEntry::amount_at_time() ([#3081](https://github.com/synfig/synfig/issues/3081))
+- [`dde975f`](https://github.com/synfig/synfig/commit/dde975f4fb8160bb32615e9b968afc1b5b953914) fix: missing cstring header in png_trgt ([#3171](https://github.com/synfig/synfig/issues/3171))
+- [`4d08c0f`](https://github.com/synfig/synfig/commit/4d08c0f0f4d4caf20d0564cbdce7d38c7481568e) refactor: remove unneeded special XML encoding for subtract valuenode ([#3141](https://github.com/synfig/synfig/issues/3141))
+- [`9b0df0e`](https://github.com/synfig/synfig/commit/9b0df0e88920ee9ed55a812d40278268dcbcad54) refactor: remove unnecessary `const` in internal typedef ([#3168](https://github.com/synfig/synfig/issues/3168))
+- [`9f76c7b`](https://github.com/synfig/synfig/commit/9f76c7bd71f4ec651180213a1cba7535258753f4) fix: filesystem::Path::relative_to() didn't work for empty paths ([#3135](https://github.com/synfig/synfig/issues/3135))
+- [`cf74901`](https://github.com/synfig/synfig/commit/cf7490198540254b4c602b554a30950dbd7fcd98) fix: build on Debian 9 ([#3164](https://github.com/synfig/synfig/issues/3164))
+- [`0925416`](https://github.com/synfig/synfig/commit/0925416d6323a4af2259399f35e66a80cde3b210) refactor: add missing fallthrough mark in other switch cases ([#3151](https://github.com/synfig/synfig/issues/3151))
+- [`655a042`](https://github.com/synfig/synfig/commit/655a04290fba9f439eae14848ee571ba97e39941) refactor: add fallthrough mark in switch cases to avoid unneeded warning ([#3143](https://github.com/synfig/synfig/issues/3143))
+- [`5603b49`](https://github.com/synfig/synfig/commit/5603b4972b4c1c505fef45c155e540c3f3950ade) perf: use reference, not copy, on range-based for loops ([#3147](https://github.com/synfig/synfig/issues/3147))
+- [`4222437`](https://github.com/synfig/synfig/commit/4222437f787b7209f122ad0fa538199fc84869ba) fix: properly report failure on pipe creation on POSIX systems ([#3045](https://github.com/synfig/synfig/issues/3045))
+- [`5bf2912`](https://github.com/synfig/synfig/commit/5bf2912d6e78f19288eb3312febebfcce8181655) refactor(Time): change epsilon_() method to constant; remove c_str() ([#3079](https://github.com/synfig/synfig/issues/3079))
+- [`5ecd9c1`](https://github.com/synfig/synfig/commit/5ecd9c1beb6998dd274426459ec81bb4018c5474) refactor: remove unused ParamDesc constructor argument ([#3092](https://github.com/synfig/synfig/issues/3092))
+- [`d08e269`](https://github.com/synfig/synfig/commit/d08e2694ebb7432385d2e3ed1299c7d3a79735c7) refactor: minor cleanup in synfig-core/tool/main.cpp ([#3102](https://github.com/synfig/synfig/issues/3102))
+- [`fd37089`](https://github.com/synfig/synfig/commit/fd370893420548fb7d53b02d85968d476362e7b3) refactor: use a common function as base to App::dialog_open_*() and simplify methods ([#3103](https://github.com/synfig/synfig/issues/3103))
+- [`3504138`](https://github.com/synfig/synfig/commit/35041381acb5aa111f025f21432fea214b6fbefc) refactor: create filesystem::current_path() and filesystem::absolute() ([#3100](https://github.com/synfig/synfig/issues/3100))
+- [`71b7633`](https://github.com/synfig/synfig/commit/71b7633893570cc0efd330507c77487677d3cbd2) refactor: prefer initialization list on constructor ([#3099](https://github.com/synfig/synfig/issues/3099))
+- [`4e1d286`](https://github.com/synfig/synfig/commit/4e1d28685a7ed6df7b5925523cc8a826c09023bf) refactor: avoid malloc() ([#3098](https://github.com/synfig/synfig/issues/3098))
+- [`4682ff4`](https://github.com/synfig/synfig/commit/4682ff40f5d4de27217a55b20293c482b0c8a98b) refactor: synfig-cli job now uses filesystem::Path ([#3095](https://github.com/synfig/synfig/issues/3095))
+- [`f8e7654`](https://github.com/synfig/synfig/commit/f8e7654b6f48c71575f39d4afd84a1b134c03293) refactor: cleanup Target::BookEntry ([#3093](https://github.com/synfig/synfig/issues/3093))
+- [`e94dece`](https://github.com/synfig/synfig/commit/e94dece405cef1f4486379257894d7110a194c1c) refactor: prefer initialization list rather constructor body ([#3086](https://github.com/synfig/synfig/issues/3086))
+- [`6d88671`](https://github.com/synfig/synfig/commit/6d886710f4a0456fad9b5471fc8b91fa326b2438) refactor: prefer prefix ++ operators for non-primitive types (part 2) ([#3085](https://github.com/synfig/synfig/issues/3085))
+- [`022a016`](https://github.com/synfig/synfig/commit/022a016d79b801409bee055c652fc16edf575075) refactor: prefer prefix `++` operators for non-primitive types ([#3077](https://github.com/synfig/synfig/issues/3077))
+- [`b8d1046`](https://github.com/synfig/synfig/commit/b8d104648f11ff46ceed0d1293ea346be3a16a73) refactor: add missing `const` on some synfig::ParamDesc methods ([#3080](https://github.com/synfig/synfig/issues/3080))
+- [`99aae13`](https://github.com/synfig/synfig/commit/99aae13aa4714da3bac72cb9baa3ebabdced7456) refactor: prefer Layer_*::Handle and alike rather etl::handle ([#3041](https://github.com/synfig/synfig/issues/3041))
+- [`1171954`](https://github.com/synfig/synfig/commit/1171954999056ea360d887380d2b1639f0a9a0ed) refactor: remove unused synfig::rendering::Resource ([#3074](https://github.com/synfig/synfig/issues/3074))
+- [`bb10cd1`](https://github.com/synfig/synfig/commit/bb10cd10240e057cc3f5dd35c270e94c527d7ba3) feat: add handles to Bevel layer parameters ([#3044](https://github.com/synfig/synfig/issues/3044))
+- [`d2e084f`](https://github.com/synfig/synfig/commit/d2e084ffa6492157a3fcc51858802abd2d9a09c8) build: fix `make distcheck` build ([#3069](https://github.com/synfig/synfig/issues/3069))
+- [`37fb8aa`](https://github.com/synfig/synfig/commit/37fb8aa790ed9474b18c1673c023ce662acb631b) test: use preset variable of AutoTools to some directories ([#3068](https://github.com/synfig/synfig/issues/3068))
+- [`61432e9`](https://github.com/synfig/synfig/commit/61432e9a0faedb46ed684f2d1358ca357c13f4d8) refactor: rename method to `get_link_description(...)` to avoid ambiguity ([#3060](https://github.com/synfig/synfig/issues/3060))
+- [`b13a58b`](https://github.com/synfig/synfig/commit/b13a58b60bd60b7ee534f29116bf0ba8f85e8af2) refactor: avoid mutable vars in Layer ([#3059](https://github.com/synfig/synfig/issues/3059))
+- [`009a5d0`](https://github.com/synfig/synfig/commit/009a5d040f74a06ec0ade1182d3d40da9cd91eb7) refactor!: move filepath handling methods to synfig::filesystem::Path ([#2710](https://github.com/synfig/synfig/issues/2710))
+- [`0ed2621`](https://github.com/synfig/synfig/commit/0ed2621015012cd41cd09f20a7eb2628349985f4) feat: new Chroma Key layer ([#2553](https://github.com/synfig/synfig/issues/2553))
+- [`5ac0a2b`](https://github.com/synfig/synfig/commit/5ac0a2b11d83772998192bccac231e1512462742) test: marking_node_as_changed_changes_the_last_time_changed fails on AppVeyor ([#3053](https://github.com/synfig/synfig/issues/3053))
+- [`1ff9bf0`](https://github.com/synfig/synfig/commit/1ff9bf03916bea7d7e28c914d3fefd824d755012) refactor: code cleanup in Targets ([#3043](https://github.com/synfig/synfig/issues/3043))
+- [`893c531`](https://github.com/synfig/synfig/commit/893c531a1fab065a6263c5e4155d1baf0525eb36) fix: possible invalid memory access on replacing valuenodes ([#3050](https://github.com/synfig/synfig/issues/3050))
+- [`eab7938`](https://github.com/synfig/synfig/commit/eab79388e4d7edecb905279634b52121c0424d99) refactor: remove unused method in CanvasFileNaming ([#3047](https://github.com/synfig/synfig/issues/3047))
+- [`f984fb2`](https://github.com/synfig/synfig/commit/f984fb2d7c2c89fd7c33d141b419ada21f1f4111) refactor: remove unused #include ([#3040](https://github.com/synfig/synfig/issues/3040))
+- [`59791bf`](https://github.com/synfig/synfig/commit/59791bfa6d2732a6e9be03345b476777504bca77) ci: enabled tests on GitHub Actions ([#2740](https://github.com/synfig/synfig/issues/2740))
+- [`5d645fe`](https://github.com/synfig/synfig/commit/5d645fe5923b23ac6294beb8a7237abd26be5a16) fix: added a missing `init_children_vocab()` call in ValueNode constructors ([#3027](https://github.com/synfig/synfig/issues/3027))
+- [`550b8bd`](https://github.com/synfig/synfig/commit/550b8bd92f034b68211a96ee5af945be79c8f8d0) fix: sigsegv when `LANGUAGE`/`LANG` environment variable is not set ([#3033](https://github.com/synfig/synfig/issues/3033))
+- [`df5cfaa`](https://github.com/synfig/synfig/commit/df5cfaa3695a117bd1b6dde92b96dc3e32659350) refactor: joblistprocessor code split into smaller functions ([#3032](https://github.com/synfig/synfig/issues/3032))
+- [`3af6898`](https://github.com/synfig/synfig/commit/3af689874af4b61346ff91c3979e8be33fe463ac) feat: cleaner cli render progress output ([#3024](https://github.com/synfig/synfig/issues/3024))
+- [`7a9dca4`](https://github.com/synfig/synfig/commit/7a9dca43ebb9a5f79dd7c4ec22df08138735e589) feat: added ability to choose render engine from command line ([#2970](https://github.com/synfig/synfig/issues/2970))
+- [`3eca7c9`](https://github.com/synfig/synfig/commit/3eca7c97a618bc1df28ffc1fd435185c63d6e588) fix: missing translation for plugin names in main menu ([#2998](https://github.com/synfig/synfig/issues/2998))
+- [`f0e2908`](https://github.com/synfig/synfig/commit/f0e2908c95e0817751791cba9039e7cd96b29f1e) refactor: simplified target_scanline.cpp ([#3025](https://github.com/synfig/synfig/issues/3025))
+- [`3af0969`](https://github.com/synfig/synfig/commit/3af09694ea3e7f8b30f4d51657fac9398813cbbe) chore: fix various typos ([#3031](https://github.com/synfig/synfig/issues/3031))
+- [`25ccd5a`](https://github.com/synfig/synfig/commit/25ccd5ad2e49ed8c01186450e3d363d719ba2e96) feat: add a CLI flag(--set-repeats) for rendering the same target multiple times ([#3018](https://github.com/synfig/synfig/issues/3018))
+- [`b2ee19d`](https://github.com/synfig/synfig/commit/b2ee19d997551ba186aa944b1899182fd5293f49) fix: inconsequential fixes regarding synfig::rendering::Tokens ([#3000](https://github.com/synfig/synfig/issues/3000))
+- [`7b25a95`](https://github.com/synfig/synfig/commit/7b25a95c3129a406e38e857aaaf38783db6f527d) build: change exported cmake targets and provide a way to find deps ([#2999](https://github.com/synfig/synfig/issues/2999))
+- [`55bba4b`](https://github.com/synfig/synfig/commit/55bba4bbc450e50fb6436dde7c09e16b6e7730c4) refactor: prefer <Class>::Handle rather etl::handle<Class> ([#2990](https://github.com/synfig/synfig/issues/2990))
+- [`38a85c0`](https://github.com/synfig/synfig/commit/38a85c0e70ed7f1576c4d00f5506e7f47de696d7) feat: simplified canvas resize ([#1895](https://github.com/synfig/synfig/issues/1895))
+- [`147b926`](https://github.com/synfig/synfig/commit/147b9265abdf7653955f3d2aa83fb6d21a1f36ec) refactor(valuenodes): remove some unused #include ([#2989](https://github.com/synfig/synfig/issues/2989))
+- [`93262db`](https://github.com/synfig/synfig/commit/93262dbc0e15fc1420de76f307936e29f03fe219) fix: build on Ubuntu 16.04 ([#2965](https://github.com/synfig/synfig/issues/2965))
+- [`edd4d48`](https://github.com/synfig/synfig/commit/edd4d485dabd0b81a96aa14c1f38203f1504df49) perf: don't iterate the whole Canvas if index is negative ([#2980](https://github.com/synfig/synfig/issues/2980))
+- [`f74ec83`](https://github.com/synfig/synfig/commit/f74ec83ca3ad08eea025e39f1386abc3374dc1c9) refactor: cleanup module.cpp ([#2960](https://github.com/synfig/synfig/issues/2960))
+- [`e087e44`](https://github.com/synfig/synfig/commit/e087e44e449510fd9da1f741e00a0fbeb0f42ba6) refactor: use camelcase for MotionBlur and SolidColor layer names ([#2978](https://github.com/synfig/synfig/issues/2978))
+- [`8557dde`](https://github.com/synfig/synfig/commit/8557dde5184ec0f8715b6ff84252b55ef843bb62) refactor: create methods strtolower() and strtoupper() to change cases ([#2977](https://github.com/synfig/synfig/issues/2977))
+- [`abad0b8`](https://github.com/synfig/synfig/commit/abad0b8a481f3b914c9b182c0627f747ee3d04e7) refactor: move etl::reference_counter to synfig namespace ([#2949](https://github.com/synfig/synfig/issues/2949))
+- [`41389cf`](https://github.com/synfig/synfig/commit/41389cfe1ea641075acc52a98ea0452758fc40e1) refactor: remove useless initialization in blur ([#2922](https://github.com/synfig/synfig/issues/2922))
+- [`1e0d777`](https://github.com/synfig/synfig/commit/1e0d777ce411e21a8761c17d097c7979b5ad765f) fix: support FontConfig older than version 2.11.91 ([#2917](https://github.com/synfig/synfig/issues/2917))
+- [`7480fb8`](https://github.com/synfig/synfig/commit/7480fb80de2f03692bd860606a07d33a76ef6211) fix: get_binary_path() for FreeBSD, DragonFlyBSD, NetBSD and OpenBSD ([#2950](https://github.com/synfig/synfig/issues/2950))
+- [`54667f3`](https://github.com/synfig/synfig/commit/54667f34bd7f86fd4fd582b1a70d63b4c5ab10bf) fix: no context menu when right-clicking on waypoint ([#2877](https://github.com/synfig/synfig/issues/2877))
+- [`8ff76d0`](https://github.com/synfig/synfig/commit/8ff76d09afae5458f0ef2ce0d624c06329175f4b) refactor!: move ETL blur files to the new synfig/blur folder ([#2924](https://github.com/synfig/synfig/issues/2924))
+- [`8f28ef7`](https://github.com/synfig/synfig/commit/8f28ef77418b9866352b4c77bb2fb842293019cf) refactor: remove unneeded `using namespace etl` and `Action` ([#2923](https://github.com/synfig/synfig/issues/2923))
+- [`09d6af8`](https://github.com/synfig/synfig/commit/09d6af81c7b579e30804ab0b2a1506a0287a63a9) refactor: removed unused #includes ([#2920](https://github.com/synfig/synfig/issues/2920))
+- [`ec6ec85`](https://github.com/synfig/synfig/commit/ec6ec85b3b0651aa343d5517c9b6714b5a89d2ae) fix(ffmpeg): logic for detection of image-only videos was inverted ([#2918](https://github.com/synfig/synfig/issues/2918))
+- [`cd34fb3`](https://github.com/synfig/synfig/commit/cd34fb30f955aa6ef39f3f4252c5998549bec3d9) revert: "fix: after exporting audio via ffmpeg, SoundProcessor wasn't stopped" ([#2919](https://github.com/synfig/synfig/issues/2919))
+- [`7a13496`](https://github.com/synfig/synfig/commit/7a13496534706c71a309273bc16126e68e28e85b) fix: after exporting audio via ffmpeg, SoundProcessor wasn't stopped ([#2914](https://github.com/synfig/synfig/issues/2914))
+- [`c91ce50`](https://github.com/synfig/synfig/commit/c91ce50797be72fa56b59f4aa36c986ef504e7b4) fix(ffmpeg): do not try to export audio for gif or mng ([#2915](https://github.com/synfig/synfig/issues/2915))
+- [`8155567`](https://github.com/synfig/synfig/commit/81555677e3495fa0174470da0b4cc447019521ef) refactor: cleanup etl blur files ([#2910](https://github.com/synfig/synfig/issues/2910))
+- [`b88a544`](https://github.com/synfig/synfig/commit/b88a544996aff4112b2c801b47257f26916c0f4e) refactor: move pen classes from ETL to synfig-core ([#2888](https://github.com/synfig/synfig/issues/2888))
+- [`3c0c35a`](https://github.com/synfig/synfig/commit/3c0c35ad0aa43c7f1efdf2236259cb66eaafaa8f) feat: New and updated icons for "width interpolation" ([#2882](https://github.com/synfig/synfig/issues/2882))
+- [`520bec6`](https://github.com/synfig/synfig/commit/520bec620d3070f110f760aced3bceed3a5c33b4) feat: add Show Canvas External Dependencies dialog ([#2472](https://github.com/synfig/synfig/issues/2472))
+- [`3d3f008`](https://github.com/synfig/synfig/commit/3d3f0086ade92630e2649e5e8b4c2df45ca77837) test: fix synfig/benchmark test build ([#2890](https://github.com/synfig/synfig/issues/2890))
+- [`ecd8ea6`](https://github.com/synfig/synfig/commit/ecd8ea634ee45dcbb6ceb941988c55d1ae99be46) refactor(NoiseDistort): remove useless method, argument, intermediate var ([#2887](https://github.com/synfig/synfig/issues/2887))
+- [`2c1244b`](https://github.com/synfig/synfig/commit/2c1244b5425ffeceea523fddf4c9d672b125f624) refactor: remove some unused methods and add docs to synfig::surface ([#2871](https://github.com/synfig/synfig/issues/2871))
+- [`7760dc2`](https://github.com/synfig/synfig/commit/7760dc2db65d0151da61b9c2b56de98ff3aab2ec) refactor: move ETL/misc to synfig/misc.h ([#2874](https://github.com/synfig/synfig/issues/2874))
+- [`8bf9c30`](https://github.com/synfig/synfig/commit/8bf9c30cbef249b842f3d5f2c002a71897ee94c5) fix: Fixes issue [#2857](https://github.com/synfig/synfig/issues/2857) when changing interpolation of Canvas parameter changes interpolation for other waypoints ([#2858](https://github.com/synfig/synfig/issues/2858))
+- [`284723d`](https://github.com/synfig/synfig/commit/284723da82463729b632d11a03f4a7dbc53647e1) refactor!: move ETL/surface to synfig/surface_etl.h and its test file ([#2870](https://github.com/synfig/synfig/issues/2870))
+- [`1cfeeee`](https://github.com/synfig/synfig/commit/1cfeeee8bcc18bd722a76241b68501db5addc330) chore: fix typos ([#2863](https://github.com/synfig/synfig/issues/2863))
+- [`71a3041`](https://github.com/synfig/synfig/commit/71a30418475bf1800d97b1437561a22272cad02d) perf: avoid double computation ([#2849](https://github.com/synfig/synfig/issues/2849))
+- [`296bd31`](https://github.com/synfig/synfig/commit/296bd31b3636b51c6d65bdc2f6b30043525cdd60) refactor: remove unused alternative clamping functions ([#2845](https://github.com/synfig/synfig/issues/2845))
+- [`cf5adb6`](https://github.com/synfig/synfig/commit/cf5adb6ad0c9b9f10cbf56d9adcbecde2d106214) refactor: remove some unused #include directives ([#2851](https://github.com/synfig/synfig/issues/2851))
+- [`d918328`](https://github.com/synfig/synfig/commit/d918328c60a553c9838ede48f0332d3fca967bca) fix: use correct `abs()` function for integer variable ([#2852](https://github.com/synfig/synfig/issues/2852))
+- [`72ad997`](https://github.com/synfig/synfig/commit/72ad997726643b97112baa12ba3617adb99957be) refactor: remove Accumulator type for etl::pen and etl::surface ([#2854](https://github.com/synfig/synfig/issues/2854))
+- [`c23a440`](https://github.com/synfig/synfig/commit/c23a44029d4a304ca3500a97de858a0b353331ae) refactor: remove unused methods in blur.cpp ([#2848](https://github.com/synfig/synfig/issues/2848))
+- [`3793e18`](https://github.com/synfig/synfig/commit/3793e18be9493a428ec8258e2ec8df6416efd359) refactor: move non-portable popen code to one place ([#2491](https://github.com/synfig/synfig/issues/2491))
+- [`6ae600b`](https://github.com/synfig/synfig/commit/6ae600b7e530e74aaec377336b9d9a824371a49a) perf: improved performance by reducing memory copying when working with valuenodes ([#2831](https://github.com/synfig/synfig/issues/2831))
+- [`a747d1c`](https://github.com/synfig/synfig/commit/a747d1cdf902ddd2cb305da9720f438f0b41d3cc) refactor!: etl::bezier and etl::hermite are now in synfig folder and namespace ([#2840](https://github.com/synfig/synfig/issues/2840))
+- [`2e3bcd9`](https://github.com/synfig/synfig/commit/2e3bcd9d7dfa6cab8ec1505f06e2bd8469bd5a81) refactor: cleanup, add docs and merge ETL/hermite with ETL/bezier ([#2808](https://github.com/synfig/synfig/issues/2808))
+- [`0be02a8`](https://github.com/synfig/synfig/commit/0be02a8f146429d88798766fe2c0fe62a10b2be3) fix: broken opengl build (due to ETL_DIRECTORY_SEPARATOR) and typos ([#2834](https://github.com/synfig/synfig/issues/2834))
+- [`994622b`](https://github.com/synfig/synfig/commit/994622bb93d3abcf2e4fa2b168951b8369422905) fix: prevent crash or hang when frame cannot be imported ([#2830](https://github.com/synfig/synfig/issues/2830))
+- [`fbe312d`](https://github.com/synfig/synfig/commit/fbe312da00d7a748b553f4b5b97dc2fe14b546de) feat: reduced displayed floating point precision ([#2809](https://github.com/synfig/synfig/issues/2809))
+- [`64b8aa0`](https://github.com/synfig/synfig/commit/64b8aa0f98acc7486cc684cd78a3fa7ee191bba9) build(autotools): fix MSYS2 build ([#2818](https://github.com/synfig/synfig/issues/2818))
+- [`9625d20`](https://github.com/synfig/synfig/commit/9625d20d90dc93cf98246a616a37eec5c6ace21a) feat: ico format added to `mod_imagemagick` list of exported formats ([#2820](https://github.com/synfig/synfig/issues/2820))
+- [`11387aa`](https://github.com/synfig/synfig/commit/11387aa840051300a5c7866b0b8fe89bd9dd731e) fix: "rule of two" : copy constructor and copy assignment operator ([#2823](https://github.com/synfig/synfig/issues/2823))
+- [`2d4d77a`](https://github.com/synfig/synfig/commit/2d4d77a5711646544b8c7b65a6d250e32fc2ad82) refactor: clean up Magick++ target a bit ([#2822](https://github.com/synfig/synfig/issues/2822))
+- [`da13b77`](https://github.com/synfig/synfig/commit/da13b77425c833434723dc8d22ce5c25410105e1) build(vcpkg): `cmake --install` now also installs required dependencies ([#2816](https://github.com/synfig/synfig/issues/2816))
+- [`dd55c0f`](https://github.com/synfig/synfig/commit/dd55c0f3f982d676696e58fafb9175e4cd388e13) fix(msvc): fixed debug build in MSVC ([#2812](https://github.com/synfig/synfig/issues/2812))
+- [`c6eb41d`](https://github.com/synfig/synfig/commit/c6eb41d71876092484cf2a814c6a294beb78ac1e) build: Use vcpkg to build synfig ([#2725](https://github.com/synfig/synfig/issues/2725))
+- [`9cc796e`](https://github.com/synfig/synfig/commit/9cc796e08727bf478c87dc93a74e46822398a16b) refactor!: add etl::hermite::derivative() and remove ETL/calculus ([#2791](https://github.com/synfig/synfig/issues/2791))
+- [`4c99713`](https://github.com/synfig/synfig/commit/4c997135228c7b2f3767bb2f6420bb9acdd93f59) fix: hit_check for gradient & paste_canvas layers with BEHIND and ONTO blends ([#2804](https://github.com/synfig/synfig/issues/2804))
+- [`ac8214e`](https://github.com/synfig/synfig/commit/ac8214e47fd71dbec1066f475e98bd9dda5859e7) fix: Fixed issue with incorrect ffmpeg search on Windows ([#2797](https://github.com/synfig/synfig/issues/2797))
+- [`e289d69`](https://github.com/synfig/synfig/commit/e289d69bbccffe77158d7d2b65d932896c0fac04) feat: added support for SVG image sequence with lst files ([#2795](https://github.com/synfig/synfig/issues/2795))
+- [`e049441`](https://github.com/synfig/synfig/commit/e049441d38a714e142a586d73086847c5330aba0) chore: fix various typos ([#2799](https://github.com/synfig/synfig/issues/2799))
+- [`226b22d`](https://github.com/synfig/synfig/commit/226b22dfc12b94bb064ab6fc9676c0f3ddd0ada1) build: remove nonexistent files listed in synfig-core/po/POTFILES.in ([#2794](https://github.com/synfig/synfig/issues/2794))
+- [`6bf36b9`](https://github.com/synfig/synfig/commit/6bf36b96769badbc4aa66976f6df928cac3acc78) fix: using invalid iterator in ValueNode_Bone ([#2793](https://github.com/synfig/synfig/issues/2793))
+- [`25f28b1`](https://github.com/synfig/synfig/commit/25f28b14214bcc98d736ce88138e79f087d56510) fix!: imagemagick didn't import anything ([#2789](https://github.com/synfig/synfig/issues/2789))
+- [`38cc869`](https://github.com/synfig/synfig/commit/38cc869732922a2f2e61fb986626fb4fb513c952) chore: typo in comment ([#2785](https://github.com/synfig/synfig/issues/2785))
+- [`671407c`](https://github.com/synfig/synfig/commit/671407c3e6e073a8127e82172206f5b88275af40) test: missing keyframe test in CMake ([#2784](https://github.com/synfig/synfig/issues/2784))
+- [`c7b3bf0`](https://github.com/synfig/synfig/commit/c7b3bf03b5e1b6cbcf02cb5660bb86388309dc14) refactor: removed code from ImageMagick module commented out from 2005 ([#2783](https://github.com/synfig/synfig/issues/2783))
+- [`fc38d7c`](https://github.com/synfig/synfig/commit/fc38d7c0daf676760ca06523a644ebdc386fd77e) refactor: prefer FileSystemNative rather GLib ([#2780](https://github.com/synfig/synfig/issues/2780))
+- [`021410d`](https://github.com/synfig/synfig/commit/021410d7ddde74960a4fbdc957b346457b42d7d6) fix: fixed broken synfig.dll debugging in MSVC build ([#2764](https://github.com/synfig/synfig/issues/2764))
+- [`fa54ae6`](https://github.com/synfig/synfig/commit/fa54ae61b8cf22a7de528a0ef6f2dc911f44fa34) refactor: clean `synfig::Target` a bit ([#2775](https://github.com/synfig/synfig/issues/2775))
+- [`be79626`](https://github.com/synfig/synfig/commit/be796264b44503bda1bcd6338ff033d1293c63e1) refactor!: remove etl::unix_to_local() ([#2773](https://github.com/synfig/synfig/issues/2773))
+- [`4f42a90`](https://github.com/synfig/synfig/commit/4f42a902e5bf5304a71b0afa843560db81f9cfd3) fix: Fix cross-compilation with MinGW on Debian 11 ([#2772](https://github.com/synfig/synfig/issues/2772))
+- [`f43ba68`](https://github.com/synfig/synfig/commit/f43ba68d4bdd0e7bda2abe84d5cfc68837e275c5) test: Disabled failing test of `synfig::Node` class for now ([#2769](https://github.com/synfig/synfig/issues/2769))
+- [`61fc780`](https://github.com/synfig/synfig/commit/61fc7801ae12f15c6f76d2409fb33acfc095606d) fix: fixed build when MLT library not found ([#2760](https://github.com/synfig/synfig/issues/2760))
+- [`2363d73`](https://github.com/synfig/synfig/commit/2363d73a95a586f6200daea3666f395a1063c28e) fix!: for some layers hit_check() missed some blend method influence ([#2754](https://github.com/synfig/synfig/issues/2754))
+- [`c5e6833`](https://github.com/synfig/synfig/commit/c5e6833f7d1b1da385ceba57c7809773b9aad600) fix: setting filename parameter of Layer Sound corrupts file ([#2758](https://github.com/synfig/synfig/issues/2758))
+- [`d1192e1`](https://github.com/synfig/synfig/commit/d1192e1d4685b0e4db9d1a0b94423fdcd0b0d90b) Merge PR [#2712](https://github.com/synfig/synfig/issues/2712): refactor!: clean `synfig::Keyframe`
+- [`77c13ef`](https://github.com/synfig/synfig/commit/77c13ef64ac70e813aefdd9f2687a0bb89fbebf0) fix: small memory leak with Mlt++ ([#2752](https://github.com/synfig/synfig/issues/2752))
+- [`c6075b3`](https://github.com/synfig/synfig/commit/c6075b308b9717c7591ed4b1f1afe4992d131406) Merge PR [#2735](https://github.com/synfig/synfig/issues/2735): refactor!: move strprintf(), strscan(), etc from etl to synfig namespace
+- [`aa3f1a7`](https://github.com/synfig/synfig/commit/aa3f1a7e39644c3e9bb6a6991da97b2dc7863fa8) test: create tests for synfig/string_helper.h ([#2738](https://github.com/synfig/synfig/issues/2738))
+- [`b836a72`](https://github.com/synfig/synfig/commit/b836a72d4149552d562863db62efd5fa567fbe51) build(CMake): moved synfig-core tests to `bin/test` folder ([#2746](https://github.com/synfig/synfig/issues/2746))
+- [`cd4f64e`](https://github.com/synfig/synfig/commit/cd4f64e353fb6875d02cf6300adee4afc47dd669) build(autotools): removed Apple G5-specific flags ([#2745](https://github.com/synfig/synfig/issues/2745))
+- [`b142f0e`](https://github.com/synfig/synfig/commit/b142f0e39a89b37e83a4eb6c53932abce110e411) build(autotools): fixed node test build ([#2744](https://github.com/synfig/synfig/issues/2744))
+- [`1958902`](https://github.com/synfig/synfig/commit/1958902d74a377987994fb3cc33a6e3f8b0533d9) test: define ‘operator<<’ for operands std::string and std::nullptr_t ([#2742](https://github.com/synfig/synfig/issues/2742))
+- [`aa8f1f3`](https://github.com/synfig/synfig/commit/aa8f1f35bcd67a7aaf765b6c7b3e152a39cfc1af) build(CMake): added synfig tests to CMake ([#2741](https://github.com/synfig/synfig/issues/2741))
+- [`e40d909`](https://github.com/synfig/synfig/commit/e40d90912e7103a4fcfd7cab51d92812a4bae9c9) build(CMake): enabled `mod_libavcodec` build in CMake ([#2736](https://github.com/synfig/synfig/issues/2736))
+- [`23adb48`](https://github.com/synfig/synfig/commit/23adb486a6a71091cb9bfb71b65a70ca4edd46ea) Merge PR [#2715](https://github.com/synfig/synfig/issues/2715): refactor!: removed etl::angle; replaced by synfig::Angle
+- [`383ac11`](https://github.com/synfig/synfig/commit/383ac11215883a80017d2754bb0718ae6eb7194c) fix(FreeType): Duplicating Text Layer resets Font Family parameter ([#2728](https://github.com/synfig/synfig/issues/2728))
+- [`9a6b616`](https://github.com/synfig/synfig/commit/9a6b6168eedc9b936b9227ddfc386328719f0e01) fix: layers parameter 'filename' does not accept backslash as directory separator ([#2727](https://github.com/synfig/synfig/issues/2727))
+- [`081d9ab`](https://github.com/synfig/synfig/commit/081d9ab94fee9e3083b6db3a9f7f4dd002847d57) Merge PR [#2722](https://github.com/synfig/synfig/issues/2722): fix: palette loading
+- [`0cead9d`](https://github.com/synfig/synfig/commit/0cead9d7c05e98f8cf7ab9ea2f4f9cbd3eb23628) refactor: remove unneeded #include <ETL/misc> directives ([#2713](https://github.com/synfig/synfig/issues/2713))
+- [`1585dd5`](https://github.com/synfig/synfig/commit/1585dd5840e0b960ca7be0141a6571aa3f837acf) refactor!: rename `etl::clock` to `synfig::clock` ([#2711](https://github.com/synfig/synfig/issues/2711))
+- [`4dbf2cd`](https://github.com/synfig/synfig/commit/4dbf2cdf7cacf3b3e0cebb88c0f7a77bdccabaf9) refactor: make use of synfig::clamp instead of std::max(std::min()) ([#2714](https://github.com/synfig/synfig/issues/2714))
+- [`69dc1f7`](https://github.com/synfig/synfig/commit/69dc1f7b9f06ba36273c393eebc29214e46a3e46) fix: Synfig does not start if the OS username contains non-Latin characters (Windows) ([#2650](https://github.com/synfig/synfig/issues/2650))
+- [`fb75250`](https://github.com/synfig/synfig/commit/fb7525059980eafb361f7bd435e05099271c3dfd) refactor(core)!: rename ValueNode::is_descendant() to is_ancestor_of() ([#2702](https://github.com/synfig/synfig/issues/2702))
+- [`603ded0`](https://github.com/synfig/synfig/commit/603ded0b7fc27bc7da6ea61c53142e031a3fbec1) refactor: use etl::is_separator() instead of directory separator chars ([#2704](https://github.com/synfig/synfig/issues/2704))
+- [`9840962`](https://github.com/synfig/synfig/commit/984096283c18f8ba99f78484a3c2f987b05abf92) refactor: use `/` as directory separator where a fixed folder name is used ([#2703](https://github.com/synfig/synfig/issues/2703))
+- [`d6f4d4d`](https://github.com/synfig/synfig/commit/d6f4d4d404e51c0716e30bcd4f4e544413d2023f) chore: update license statement for test_base.h ([#2700](https://github.com/synfig/synfig/issues/2700))
+- [`cd9c265`](https://github.com/synfig/synfig/commit/cd9c265f6a7c70377482d4894552ec5a0d38ddb4) Merge PR [#2699](https://github.com/synfig/synfig/issues/2699): refactor!: remove `etl::ceil_to_int` and `etl::floor_to_int`
+- [`3e5e005`](https://github.com/synfig/synfig/commit/3e5e00588650ff239ed1dd719d5c7039eac5dd05) refactor: remove unused header/class synfig::Protocol ([#2698](https://github.com/synfig/synfig/issues/2698))
+- [`5f3563a`](https://github.com/synfig/synfig/commit/5f3563a83884e867f1d9716dfa5751d50b074bad) refactor: removed deprecated `std::unary_function` and `std::binary_function` classes ([#2696](https://github.com/synfig/synfig/issues/2696))
+- [`886cff7`](https://github.com/synfig/synfig/commit/886cff70fdfe6c8881f59a28772e2b085eb82720) fix: Synfig hanging after right-click on sub-sub-parameter ([#2693](https://github.com/synfig/synfig/issues/2693))
+- [`c71f381`](https://github.com/synfig/synfig/commit/c71f381307afce72230a9aa690da2c3d85d74293) Merge PR [#2695](https://github.com/synfig/synfig/issues/2695): refactor: remove NULL; use nullptr instead - part 2
+- [`ec3fd21`](https://github.com/synfig/synfig/commit/ec3fd21b14f2e175bc7e79fd924310c10bae001a) BREAKING CHANGE: replace `etl::smart_ptr` with `std::shared_ptr` ([#2686](https://github.com/synfig/synfig/issues/2686))
+- [`c13d945`](https://github.com/synfig/synfig/commit/c13d9459607b4698b1c41d6a76bc886d4537a6fb) feat: Reproducible build ([#2613](https://github.com/synfig/synfig/issues/2613))
+- [`c7417c5`](https://github.com/synfig/synfig/commit/c7417c5bc1ecb211112659eff50d0d87b68f16d3) build(CMake): small refactoring and code cleanup ([#2684](https://github.com/synfig/synfig/issues/2684))
+- [`590ed73`](https://github.com/synfig/synfig/commit/590ed739ce27ee87d8e6408b952e04ce50dc0b87) refactor(core): Cleaned up registration function ([#2622](https://github.com/synfig/synfig/issues/2622))
+- [`eab541c`](https://github.com/synfig/synfig/commit/eab541c5b9e153cc543a5be20689f608a7a387b9) build: Use CMake's PkgConfig imported targets ([#2676](https://github.com/synfig/synfig/issues/2676))
+- [`17b8f43`](https://github.com/synfig/synfig/commit/17b8f43ab44d80b2d84ee9741b0b3b591f94c31d) Merge PR [#2465](https://github.com/synfig/synfig/issues/2465): Refactoring and bugfix for ValueDescBoneSetParent
+- [`8b2950e`](https://github.com/synfig/synfig/commit/8b2950e88fec2d50e1fcad0af188e07643e5f6af) Fix ValueNode local name not being translated ([#2569](https://github.com/synfig/synfig/issues/2569))
+- [`32a4153`](https://github.com/synfig/synfig/commit/32a4153e567cce245dbb41add47ead8838b0db28) Merge PR [#2398](https://github.com/synfig/synfig/issues/2398): Make Node::parent_set private
+- [`9b5140f`](https://github.com/synfig/synfig/commit/9b5140ffb49b6ec64a4c729e8862b9c87cb791e0) Fix typo in source ([#2631](https://github.com/synfig/synfig/issues/2631))
+- [`78f08a4`](https://github.com/synfig/synfig/commit/78f08a426835a98dcc40c4cc458218b05710b939) [CMake] Added option to link with tcmalloc library ([#2602](https://github.com/synfig/synfig/issues/2602))
+- [`05f5108`](https://github.com/synfig/synfig/commit/05f51084218d75c4317a7c9533dcc0a756b052b7) Fix various typos ([#2614](https://github.com/synfig/synfig/issues/2614))
+- [`473af1c`](https://github.com/synfig/synfig/commit/473af1c1b1a3b990812825c7e01ea46ec3728fd9) improve output readability of unit tests with test_base.h ([#2583](https://github.com/synfig/synfig/issues/2583))
+- [`a113b35`](https://github.com/synfig/synfig/commit/a113b35235bd35b6ae1aa8999f9fe9d6d0136c8e) Layer SuperSample: remove unused parameters and minor cleanup ([#2580](https://github.com/synfig/synfig/issues/2580))
+- [`0bcb812`](https://github.com/synfig/synfig/commit/0bcb812027ca334fdcc38b6627c4ac1a47a0feec) Merge PR [#2568](https://github.com/synfig/synfig/issues/2568): add new ValueNode "Modulo" for modulo operation
+- [`1d1a2eb`](https://github.com/synfig/synfig/commit/1d1a2ebef9ceec4c67b0d98012445f827dee4d90) fix RendDesc::get_pixels_to_world_matrix() contents ([#2574](https://github.com/synfig/synfig/issues/2574))
+- [`17a48a4`](https://github.com/synfig/synfig/commit/17a48a42d5263012c7019749dc40ccf72d9050b5) FFmpeg targets: allow to render alpha channel for webm and hap videos ([#2563](https://github.com/synfig/synfig/issues/2563))
+- [`dbbdd87`](https://github.com/synfig/synfig/commit/dbbdd87373d629c7370bebb5f5959c00cba57c28) WIP - basic support for importing .kra (Krita) and .ora (OpenRaster) ([#2513](https://github.com/synfig/synfig/issues/2513))
+- [`1344831`](https://github.com/synfig/synfig/commit/1344831a0043b67ddc4e13051b67a43b60991dcd) Fixed PVS-Studio warning v730 ([#2522](https://github.com/synfig/synfig/issues/2522))
+- [`630b036`](https://github.com/synfig/synfig/commit/630b0362b94d6ecb296106950ad43df2fb75f02e) add documentation to some synfig::rendering stuff ([#2549](https://github.com/synfig/synfig/issues/2549))
+- [`b23b68f`](https://github.com/synfig/synfig/commit/b23b68fd58ac7a4e07373cb4f86c6f50b873406e) make some cleanup on headers of synfig-core ([#2561](https://github.com/synfig/synfig/issues/2561))
+- [`640506a`](https://github.com/synfig/synfig/commit/640506a003d719c80b6bdc4197aeeda7d04b7e11) add more synfig::Node tests ([#2559](https://github.com/synfig/synfig/issues/2559))
+- [`be5c9f4`](https://github.com/synfig/synfig/commit/be5c9f4114163d5fba1a4f8ec60736eb26297517) Ensure computed GUID is not zero ([#2560](https://github.com/synfig/synfig/issues/2560))
+- [`ba24736`](https://github.com/synfig/synfig/commit/ba2473605d12bd0da326355c56202eeb95888fda) bump LumaKey layer version: it now have less parameters ([#2554](https://github.com/synfig/synfig/issues/2554))
+- [`364fa14`](https://github.com/synfig/synfig/commit/364fa14ba28a86596756a2ac624f3f96171cc57d) create synfig::Node unit tests ([#2558](https://github.com/synfig/synfig/issues/2558))
+- [`7920d18`](https://github.com/synfig/synfig/commit/7920d184f86b1220e8280b69ac437f46d0244a40) Merge PR [#2551](https://github.com/synfig/synfig/issues/2551): Port Luma Key to Cobra renderer engine
+- [`1e2fc13`](https://github.com/synfig/synfig/commit/1e2fc134eed71ac9db622cf2c9c1778d5449d032) BlinePoint Origin is not coordinates, but a relative position (0.0-1.0) ([#2548](https://github.com/synfig/synfig/issues/2548))
+- [`d870ad1`](https://github.com/synfig/synfig/commit/d870ad1069940a5f6389637c76c3990c679a175b) Removed unused "using namespace etl;" (Part 2) ([#2537](https://github.com/synfig/synfig/issues/2537))
+- [`462ea80`](https://github.com/synfig/synfig/commit/462ea802524e9e13bfa2aefdd213a7fc03c5adcb) Merge PR [#2518](https://github.com/synfig/synfig/issues/2518):  Added the ability to select a compression method for zstreambuf
+- [`9b80219`](https://github.com/synfig/synfig/commit/9b8021936d2e00d5823055fe21037d30a79e9edc) Removed unused `using namespace etl;` ([#2530](https://github.com/synfig/synfig/issues/2530))
+- [`a5ec91d`](https://github.com/synfig/synfig/commit/a5ec91db5b751dc12e4400ccfb5c063fd6d2d928) Removed "using namespace std;" ([#2520](https://github.com/synfig/synfig/issues/2520))
+- [`668e8c4`](https://github.com/synfig/synfig/commit/668e8c410f9bedd7f4faa7abba61da16163ed305) Fixed PVS-Studio warning v656 ([#2524](https://github.com/synfig/synfig/issues/2524))
+- [`efe9326`](https://github.com/synfig/synfig/commit/efe9326992418f9fbc1c9a654fa0050c35c2641e) Fixed PVS-Studio warning v817 ([#2523](https://github.com/synfig/synfig/issues/2523))
+- [`61eba07`](https://github.com/synfig/synfig/commit/61eba079c983db043f787d3c318bac3b60796673) Merge PR [#2497](https://github.com/synfig/synfig/issues/2497): Porting to Gtk::Application - part 1
+- [`ad03efe`](https://github.com/synfig/synfig/commit/ad03efe3b70e507a4632fe14a55acd149be60477) FileSystem::Identifier::empty() returned wrong value ([#2510](https://github.com/synfig/synfig/issues/2510))
+- [`cb9abcf`](https://github.com/synfig/synfig/commit/cb9abcf7ddd8f9a51dde5c5ede47a25486fbacda) fix error message on Target_Scanline ([#2511](https://github.com/synfig/synfig/issues/2511))
+- [`14b3ce6`](https://github.com/synfig/synfig/commit/14b3ce6b5c25a164534f53df0bd71f9f080f293d) Merge PR [#2514](https://github.com/synfig/synfig/issues/2514): Fix text layer hit check for Text Layer (issue when size was too small). Closes [#2508](https://github.com/synfig/synfig/issues/2508).
+- [`7019f19`](https://github.com/synfig/synfig/commit/7019f19d7bb12a98b94f3821ed6260a65e751f7e) Merge PR [#2499](https://github.com/synfig/synfig/issues/2499): Fix hit check for Layer_Freetype
+- [`52a105a`](https://github.com/synfig/synfig/commit/52a105a3bc57ba87c42291f09eacf61b146b27d6) Merge PR [#2480](https://github.com/synfig/synfig/issues/2480): Fix rendering of some glyphs
+- [`5cad551`](https://github.com/synfig/synfig/commit/5cad5518bc69c3e217f2483706beff8cdeda3974) Layer_Sound is Layer_Invisible, not Layer_Composite ([#2478](https://github.com/synfig/synfig/issues/2478))
+- [`3960ef2`](https://github.com/synfig/synfig/commit/3960ef2ad39dd65db11bf1895c784a8276979cd8) Svg_parser: fix not creating last vertex of cubic path segment ([#2473](https://github.com/synfig/synfig/issues/2473))
+- [`f1938c9`](https://github.com/synfig/synfig/commit/f1938c9cfc0ac60a529dcf04d38480891336b93f) Refactored SynfigToolGeneralOptions singleton ([#2453](https://github.com/synfig/synfig/issues/2453))
+- [`ec35bd8`](https://github.com/synfig/synfig/commit/ec35bd850a913b0c6e99660850cc4a771decd99a) Fixed warning on MODULE_INVENTORY_BEGIN: misleading indentation ([#2430](https://github.com/synfig/synfig/issues/2430))
+- [`943ca1e`](https://github.com/synfig/synfig/commit/943ca1e9aa835935111ff53acaef703de5591158) Autotools: detects libpng via pkg-config ([#2443](https://github.com/synfig/synfig/issues/2443))
+- [`ed40cc0`](https://github.com/synfig/synfig/commit/ed40cc08f0bc9b1e421d7285ec784351dbcc0569) Autotools: remove code for very old libtool versions ([#2444](https://github.com/synfig/synfig/issues/2444))
+- [`4bfeae6`](https://github.com/synfig/synfig/commit/4bfeae6b4a2d1d16b4fd441457b09c6883d668f0) [CMake] Improved libmng search ([#2441](https://github.com/synfig/synfig/issues/2441))
+- [`d312076`](https://github.com/synfig/synfig/commit/d3120764b4f8715b17d485353fededd5aac471be) Fixed build warnings ([#2425](https://github.com/synfig/synfig/issues/2425))
+- [`de82c5d`](https://github.com/synfig/synfig/commit/de82c5da235860481cd05ccfb643651df41d7157) [CMake] Improved search for libraries ([#2428](https://github.com/synfig/synfig/issues/2428))
+- [`ea4777d`](https://github.com/synfig/synfig/commit/ea4777dbe5ee4cbc03ec6323f0c0c357f5caf9de) Svg_parser: primitive rect properly uses style ([#2429](https://github.com/synfig/synfig/issues/2429))
+- [`957bc26`](https://github.com/synfig/synfig/commit/957bc26fb5c3815d0475d0ed410d95d7746ff3d1) fix compilation warning for unused parameters on valuenode methods ([#2432](https://github.com/synfig/synfig/issues/2432))
+- [`6e3a450`](https://github.com/synfig/synfig/commit/6e3a4502338b8c32b554d8b42b61a199c70ad113) Svg_parser: fix warning: unused parameters ([#2431](https://github.com/synfig/synfig/issues/2431))
+- [`2443e86`](https://github.com/synfig/synfig/commit/2443e8641c3d09001190af5275f8f378c29494db) Merge PR ([#2299](https://github.com/synfig/synfig/issues/2299)): [Core] fix access modifiers for valuenode classes
+- [`398c745`](https://github.com/synfig/synfig/commit/398c7450fab72700cba7b460f7bb8704cb29da6d) Svg_parser: remove unused properties & method, restrict var scope ([#2418](https://github.com/synfig/synfig/issues/2418))
+- [`cbc06c9`](https://github.com/synfig/synfig/commit/cbc06c90c135bdaadd2e48794d855e5ab4bd150c) Merge PR ([#2296](https://github.com/synfig/synfig/issues/2296)): Moved layer and valuenode iteration methods to synfig-core
+- [`26e22df`](https://github.com/synfig/synfig/commit/26e22dfc7139516496b9e3a3f2ff4dc964b25c7d) Svg_parser: support more outline/stroke styles ([#2407](https://github.com/synfig/synfig/issues/2407))
+- [`33ff874`](https://github.com/synfig/synfig/commit/33ff874b331af3075ef03c65dc558c98374d4417) Svg_parser: rename method to follow its meaning: isFirst -> isEqualTo() ([#2409](https://github.com/synfig/synfig/issues/2409))
+- [`c75975e`](https://github.com/synfig/synfig/commit/c75975ef35fd28f2761fddab9f7287439900de92) Merge PR ([#2216](https://github.com/synfig/synfig/issues/2216)): SVG importer: fix outlined rectangle and implement missing shapes
+- [`21ff720`](https://github.com/synfig/synfig/commit/21ff720f48d815e0af511447bd56c1cfaf45ee94) Svg_parser: better method name: initializeGroupLayerNode() ([#2408](https://github.com/synfig/synfig/issues/2408))
+- [`641f9da`](https://github.com/synfig/synfig/commit/641f9da82450bc54c8f58b109c364cd4c7796df0) Svg_parser: fix default fill color: black instead of none ([#2405](https://github.com/synfig/synfig/issues/2405))
+- [`a335c25`](https://github.com/synfig/synfig/commit/a335c2510e9f3d7e917f069468bcb9d1dca538ee) Merge PR ([#2406](https://github.com/synfig/synfig/issues/2406)): SVG: fix transform parsing
+- [`811a95a`](https://github.com/synfig/synfig/commit/811a95a72a59f1b6e4b0df4694bfd05d4d5dc809) Merge PR ([#2401](https://github.com/synfig/synfig/issues/2401)): Svg_parser: cleanups and some outline-related fixes
+- [`e4a48c0`](https://github.com/synfig/synfig/commit/e4a48c07dfee329ee2b4b7f0ed52d49a9018649a) Added support for MLT 7 for CMake build system ([#2386](https://github.com/synfig/synfig/issues/2386))
+- [`5582c6f`](https://github.com/synfig/synfig/commit/5582c6faaee43e9b4b97856b9599bec1a0b3d5c8) Merge PR ([#2394](https://github.com/synfig/synfig/issues/2394)): SVG: Ellipse arcs work now
+- [`aa3c69d`](https://github.com/synfig/synfig/commit/aa3c69d9dd30db8a42f1ae1ae63e764781f37e93) Fix various typos ([#2396](https://github.com/synfig/synfig/issues/2396))
+- [`6bea935`](https://github.com/synfig/synfig/commit/6bea935646041a54536d896c8ef01e8a29ee0423) Merge PR ([#2372](https://github.com/synfig/synfig/issues/2372)): Fix Orientation parameter display on Text Tool Options Panel
+- [`78e045f`](https://github.com/synfig/synfig/commit/78e045f940364f2754a09956c7990b5d270db833) CMake/Brew removed cairo/pango requirements ([#2387](https://github.com/synfig/synfig/issues/2387))
+- [`cf1c176`](https://github.com/synfig/synfig/commit/cf1c1769ea16e51385a1e82cf6c6c3784da68293) Merge PR ([#2327](https://github.com/synfig/synfig/issues/2327)): SVG: fix parser for `<path>` element (except for A commands)
+- [`2fe4a82`](https://github.com/synfig/synfig/commit/2fe4a8267bfa29bee1ea2be5a6b1a84305cb0a6e) Layer_Freetype: Added check if HOME environment is set on MacOS ([#2295](https://github.com/synfig/synfig/issues/2295))
+- [`333182e`](https://github.com/synfig/synfig/commit/333182e6d904251d6788da9f9c92b1f5eb79bec4) Merge PR ([#1793](https://github.com/synfig/synfig/issues/1793)): 'Update' file headers: license notices, \file and other minor changes
+## Version 1.5.2
+- [`80a3386`](https://github.com/synfig/synfig/commit/80a3386c701049f597cf3642bb924d2ff832ae05) build(autotools): patch for autoconf 2.72 h/t Frédéric Bérat ([#2930](https://github.com/synfig/synfig/issues/2930))
+- [`1143a1d`](https://github.com/synfig/synfig/commit/1143a1da0e6c115b9659515ced5feeae9f7f042b) build(autotools): suppress warnings from libxml++ ([#3290](https://github.com/synfig/synfig/issues/3290))
+- [`18b9d2b`](https://github.com/synfig/synfig/commit/18b9d2b58b1cd07e0c7fb6306711766950f5a906) refactor: removed boost dependency ([#2792](https://github.com/synfig/synfig/issues/2792))
+- [`9c2796c`](https://github.com/synfig/synfig/commit/9c2796c2bde9d33dca7ac6524b93e6dc256c96da) Fixed includes for harfbuzz and fribidi libraries ([#2442](https://github.com/synfig/synfig/issues/2442))
+- [`f684b24`](https://github.com/synfig/synfig/commit/f684b24f0db31ab8ea7aadc417fc23e3084b4138) fix(mod_libavcodec): fixed build with FFMPEG 5.0 ([#2734](https://github.com/synfig/synfig/issues/2734))
+- [`0bd2c22`](https://github.com/synfig/synfig/commit/0bd2c224bff04a6c6de15f5821064e46518ad62a) fix: mod_libavcodec didn't compile with MinGW ([#2737](https://github.com/synfig/synfig/issues/2737))
+## Version 1.5.1
+- [`17b5212`](https://github.com/synfig/synfig/commit/17b52129e04f721e6c26229f15f22fd534c1f3aa) Merge PR ([#2362](https://github.com/synfig/synfig/issues/2362)): Text Layer ported to Cobra render engine
+- [`1d38aea`](https://github.com/synfig/synfig/commit/1d38aeaa472c1dd4fbd7867e9834c050b6f27b76) fix rendering of empty rows inside contour when Invert is on ([#2367](https://github.com/synfig/synfig/issues/2367))
+- [`876ed89`](https://github.com/synfig/synfig/commit/876ed89d9c6602d9cf1acc12a9a72bdd060e8884) Merge PR ([#2376](https://github.com/synfig/synfig/issues/2376)): Remove dead/dummy translations
+- [`56fc601`](https://github.com/synfig/synfig/commit/56fc601b3ad5e261b2bbe7266d1a017625201718) Refactored open canvas map ([#2360](https://github.com/synfig/synfig/issues/2360))
+- [`2f91d69`](https://github.com/synfig/synfig/commit/2f91d69bde04939d0f93cca8b0570e73bb1d726e) Fix typos in translation strings ([#2370](https://github.com/synfig/synfig/issues/2370))
+- [`8384686`](https://github.com/synfig/synfig/commit/8384686e01629bfa0e0d944e79281c75546947c5) more Canvas class cleanup: remove unused field and signal ([#2371](https://github.com/synfig/synfig/issues/2371))
+- [`e0cdef3`](https://github.com/synfig/synfig/commit/e0cdef39ec5e91947a44c59d0679c0c558832a87) Merge PR ([#2364](https://github.com/synfig/synfig/issues/2364)): Refactored Canvas class
+- [`fe640ca`](https://github.com/synfig/synfig/commit/fe640ca8dccdee12613bc28490c348d6bba08502) Removed unused variables ([#2361](https://github.com/synfig/synfig/issues/2361))
+- [`b53d194`](https://github.com/synfig/synfig/commit/b53d1943891c69e6fc8883bb689ec6b5bd2ae0b2) Merge PR [#2358](https://github.com/synfig/synfig/issues/2358): cleanup and fix Intersector class
+- [`639585c`](https://github.com/synfig/synfig/commit/639585c618353fccd29a1673da1cd91288e96f68) remove unused file synfig/polygon.h ([#2353](https://github.com/synfig/synfig/issues/2353))
+- [`b613379`](https://github.com/synfig/synfig/commit/b613379476de2f3b0aba60a5554642ae740252b5) remove unneeded #include ([#2342](https://github.com/synfig/synfig/issues/2342))
+- [`014f0bd`](https://github.com/synfig/synfig/commit/014f0bd2e2f9308238a9f6ce216a58098f1818d4) Bone Parent parameter should be static by default ([#2349](https://github.com/synfig/synfig/issues/2349))
+- [`10e7c64`](https://github.com/synfig/synfig/commit/10e7c64962d36c273644edccd120264fbaaf6c95) Bevel parameter of Rectangle layer is a relative value, not distance ([#2350](https://github.com/synfig/synfig/issues/2350))
+- [`1210f50`](https://github.com/synfig/synfig/commit/1210f50b67ffa33d34f6312c7e6a14bf12e87a91) Add Handle type to Skeleton and SkeletonDeformation layers ([#2348](https://github.com/synfig/synfig/issues/2348))
+- [`5312fea`](https://github.com/synfig/synfig/commit/5312fea69f2bbbca5c8f552990a1f8c16d506ccc) Merge PR [#2232](https://github.com/synfig/synfig/issues/2232): Add better support for RTL text to Text Layer
+- [`3ed1d3f`](https://github.com/synfig/synfig/commit/3ed1d3fd87025fc5b318ea840f1fcbd1fa01cf44) Skeleton Deformation: improve "Bones" parameter tooltip/description ([#2332](https://github.com/synfig/synfig/issues/2332))
+- [`c185ad2`](https://github.com/synfig/synfig/commit/c185ad22c35e50d4cda20e2107a11940f9888c66) minor cleanup on SynfigCommandLineParser ([#2335](https://github.com/synfig/synfig/issues/2335))
+- [`88c9e97`](https://github.com/synfig/synfig/commit/88c9e976c1a150ef86452c6fed81746af57322bc) Made shared_objects non-copyable ([#2291](https://github.com/synfig/synfig/issues/2291))
+- [`be2b1db`](https://github.com/synfig/synfig/commit/be2b1dbf98d7d294fcb27c91f102848166de9fef) Improve hints for Dash item parameters ([#2314](https://github.com/synfig/synfig/issues/2314))
+- [`23d997a`](https://github.com/synfig/synfig/commit/23d997a803cb9f99cc7e3be2895eeea51fe4c67c) Merge PR [#2303](https://github.com/synfig/synfig/issues/2303): SVG parser: refactor style parser
+- [`0cb03f3`](https://github.com/synfig/synfig/commit/0cb03f306ce8f12c92faa0349434177801dbb511) Replaced using std/etl namespaces with explicit namespace name ([#2292](https://github.com/synfig/synfig/issues/2292))
+- [`e074b30`](https://github.com/synfig/synfig/commit/e074b30da70e61b8b95ad9be2698f72853b4f1e0) Removed unused std/etl namespaces ([#2290](https://github.com/synfig/synfig/issues/2290))
+## Version 1.5.0
+- [`247909c`](https://github.com/synfig/synfig/commit/247909c2cd07a4121192f8ee8eddeb31c800fb86) [Core] ValueNode_AnimatedFile now supports more data types ([#2240](https://github.com/synfig/synfig/issues/2240))
+- [`960c100`](https://github.com/synfig/synfig/commit/960c100c98e31a11023c525a9a77b7870237e6ba) Fixed missing namespace in unit test code ([#2214](https://github.com/synfig/synfig/issues/2214))
+- [`87d79b0`](https://github.com/synfig/synfig/commit/87d79b060a3a4542adb757517da13e88f8321fe9) Merge PR [#2207](https://github.com/synfig/synfig/issues/2207): Added support for Rhubarb Lip Sync TSV and XML file formats for ValueNode_AnimatedFile
+- [`132b09e`](https://github.com/synfig/synfig/commit/132b09e0a9936168c217f818843a271fe20e82e6) Removed excessive use of std namespace (part 2) ([#2194](https://github.com/synfig/synfig/issues/2194))
+- [`4273435`](https://github.com/synfig/synfig/commit/4273435309266fa4181269fdb3e9cc454cf14337) Removed excessive use of std namespace ([#2193](https://github.com/synfig/synfig/issues/2193))
+- [`eafeda4`](https://github.com/synfig/synfig/commit/eafeda4828fea262646abba906b6650fb16591f4) Removed reminiscent Cairo (and Pango) stuff ([#2174](https://github.com/synfig/synfig/issues/2174))
+- [`a578526`](https://github.com/synfig/synfig/commit/a578526a75d44a0868881fee2bfc85a4c38f5656) Merge PR [#2154](https://github.com/synfig/synfig/issues/2154): Fix Warp not properly clipping noise gradient layer. Closes [#2124](https://github.com/synfig/synfig/issues/2124).
+- [`e5d547a`](https://github.com/synfig/synfig/commit/e5d547af4e0cfbba6c01ac1d3ce31906fe55493e) Fixed mod_dv build with MSVC compiler ([#2159](https://github.com/synfig/synfig/issues/2159))
+- [`1233e4c`](https://github.com/synfig/synfig/commit/1233e4cd1913b64706881293e323a77d1d7641b6) Fixed misc. typos ([#2155](https://github.com/synfig/synfig/issues/2155))
+- [`ffb9852`](https://github.com/synfig/synfig/commit/ffb98528b4ec21bb888c5acd09448d0af0320239) [CMake] Removed unnecessary dependencies in modules ([#2129](https://github.com/synfig/synfig/issues/2129))
+- [`46ed36c`](https://github.com/synfig/synfig/commit/46ed36c9a100857b2f2b0a87de40c6ee734e5744) Merge PR [#2054](https://github.com/synfig/synfig/issues/2054): Removed unused CairoRenderer
+- [`2ef1e6f`](https://github.com/synfig/synfig/commit/2ef1e6f6553b2c6dd844a6b94014350b1b64ea83) [CMake] Disable the use of MLT if MLT library not found ([#2138](https://github.com/synfig/synfig/issues/2138))
+- [`7d4d8b7`](https://github.com/synfig/synfig/commit/7d4d8b79ba5e00e1e28d66fb3b2ebb30f875387e) Removed unused headers ([#2121](https://github.com/synfig/synfig/issues/2121))
+- [`e6bbcab`](https://github.com/synfig/synfig/commit/e6bbcabf2273bfe67909a2bb3ef63036c8eebda7) [CMake] Bump minimum required CMake version to 3.5 ([#2128](https://github.com/synfig/synfig/issues/2128))
+- [`c76ede2`](https://github.com/synfig/synfig/commit/c76ede2b0f8625886ae5c7a2b4f243d56b4b8ca1) Merge PR [#2104](https://github.com/synfig/synfig/issues/2104): MSVC compilation fixes (04-2021)
+- [`687f788`](https://github.com/synfig/synfig/commit/687f788b8019680f0c0a70a8292e6699d20b941c) [MSVC] Fixed unresolved external symbol error when building `lyr_std` ([#2096](https://github.com/synfig/synfig/issues/2096))
+- [`25e03d1`](https://github.com/synfig/synfig/commit/25e03d14d0eacb471f06724e7a22e0fe8b720190) [Core/Studio] Fix coverity warnings ([#2045](https://github.com/synfig/synfig/issues/2045))
+- [`a1f27de`](https://github.com/synfig/synfig/commit/a1f27de8c154776c1822bccbc2931cbc5d9150dd) [Core] avoid comma operator and prefer return value of std::list::erase() ([#2053](https://github.com/synfig/synfig/issues/2053))
+- [`23d0559`](https://github.com/synfig/synfig/commit/23d05595b97028b18a7b01b5aa2e4d0ecfeddc48) [Core] prefer std::thread rather deprecated Glib::Threads ([#2052](https://github.com/synfig/synfig/issues/2052))
+- [`94d8c47`](https://github.com/synfig/synfig/commit/94d8c476189891c0fab33fdff31f04b89db47daf) [Core/Studio] use std::thread::hardware_concurrency() instead of g_get_num_processors() ([#2042](https://github.com/synfig/synfig/issues/2042))
+- [`5664a71`](https://github.com/synfig/synfig/commit/5664a7140e1f9e6120b747f2c22583d905fcd7a7) Merge PR [#2040](https://github.com/synfig/synfig/issues/2040): [CLI] minor cleanup in command-line option parser
+- [`7f67cc2`](https://github.com/synfig/synfig/commit/7f67cc22dc831edb199b82c71aab22b407aa3292) [Autotools] Fixed `make distcheck`. Reduced build output for synfigstudio-release.sh script. ([#2004](https://github.com/synfig/synfig/issues/2004))
+- [`05b1ee2`](https://github.com/synfig/synfig/commit/05b1ee273f564b1422b2e14c039e22455b380a5a) [ETL/Core] Fixed warnings ([#2013](https://github.com/synfig/synfig/issues/2013))
+- [`73dcea6`](https://github.com/synfig/synfig/commit/73dcea631b8b5dd22d5babf613c63b6b2d2fc379) [Core] remove unused class GUIDHash ([#2030](https://github.com/synfig/synfig/issues/2030))
+- [`9e653c6`](https://github.com/synfig/synfig/commit/9e653c6b0a013b1a40a414f314d3035285dffb1a) [Core] remove unused synfig/nodebase.h ([#2024](https://github.com/synfig/synfig/issues/2024))
+- [`4c33e75`](https://github.com/synfig/synfig/commit/4c33e75956ae62185f0b5103d0d0b03af437f628) [Core/Studio] Added support for user-installed fonts on Windows 10 (1809) ([#1997](https://github.com/synfig/synfig/issues/1997))
+- [`fe6dd29`](https://github.com/synfig/synfig/commit/fe6dd2941ea77709ddf7f0ca0a98fb5a1b82917d) [Synfig Studio] Allow to set number of rendering threads from Preferences dialog ([#1999](https://github.com/synfig/synfig/issues/1999))
+- [`34127e8`](https://github.com/synfig/synfig/commit/34127e88e94ea3ec36a39a1246ee1d946093f58d) Merge PR [#1974](https://github.com/synfig/synfig/issues/1974): [Synfig Studio] Set Enum parameters to Static by default
+- [`76e827e`](https://github.com/synfig/synfig/commit/76e827e2ab186e4635cc5942478956b41cb86b0e) [Core] Refactored trgt_ffmpeg ([#1947](https://github.com/synfig/synfig/issues/1947))
+- [`44b46a2`](https://github.com/synfig/synfig/commit/44b46a230c1a3e7f14451b3cfde5ea8f45e163dc) [CMake/Core] Added glib dependency ([#2009](https://github.com/synfig/synfig/issues/2009))
+- [`53aebba`](https://github.com/synfig/synfig/commit/53aebba8412d1c28a3218365bf18d4105e955cd2) Merge PR [#1950](https://github.com/synfig/synfig/issues/1950): [ETL/Core] `rect` class moved from ETL to core.
+- [`99fe201`](https://github.com/synfig/synfig/commit/99fe201d203c450e69a9123a14f70b4d8a07069b) Merge PR [#1992](https://github.com/synfig/synfig/issues/1992): [Synfig Studio] Fix parameter values of several layers shown as distance metrics when they are not
+- [`4d7689b`](https://github.com/synfig/synfig/commit/4d7689b40a7a846400195672e9dfc3f2db653c1c) [CMake] Fixed issue with CMake generating file inside source tree when using out-of-source build ([#1964](https://github.com/synfig/synfig/issues/1964))
+- [`8a893b8`](https://github.com/synfig/synfig/commit/8a893b8e2821da000d9a5feebd60b730b558c235) [CMake/MSVC] Added required packages ([#1962](https://github.com/synfig/synfig/issues/1962))
+- [`3f6e3c9`](https://github.com/synfig/synfig/commit/3f6e3c9215d6097391617ca97f7a846865d0b0cb) [Synfig Core] Removed unused headers ([#1944](https://github.com/synfig/synfig/issues/1944))
+- [`c32de32`](https://github.com/synfig/synfig/commit/c32de327f81abcfb4786ca3f7f60e0440a67e036) [Synfig Core] Added freetype detail (font face/filename) to error description ([#1938](https://github.com/synfig/synfig/issues/1938))
+- [`7e63655`](https://github.com/synfig/synfig/commit/7e636558274ba7c1a89347d99994dc211c80b047) [Core] Cleanup blur code ([#1918](https://github.com/synfig/synfig/issues/1918))
+- [`95dea12`](https://github.com/synfig/synfig/commit/95dea12eca788eba8323f9fb0c59a839ac3213d1) [Autotools] Added missing synfig_export.h file ([#1886](https://github.com/synfig/synfig/issues/1886))
+- [`d80d64c`](https://github.com/synfig/synfig/commit/d80d64cc09c7f5f405da6686fd564704841a014e) Removed old CVS ID field from layers, importers, ([#1792](https://github.com/synfig/synfig/issues/1792))
+- [`24e6f86`](https://github.com/synfig/synfig/commit/24e6f868d63b1bbc8f37d0905b7f5c6ebdbe99c4) Removed unused `ETL/stringf` headers. Preparing to move stringf from ETL to core. ([#1856](https://github.com/synfig/synfig/issues/1856))
+- [`1b9ec56`](https://github.com/synfig/synfig/commit/1b9ec56dd3234ae403cacc908a5692e45f4b1497) Fixed OpenGL build. But it still doesn't render :( ([#1845](https://github.com/synfig/synfig/issues/1845))
+- [`05c760f`](https://github.com/synfig/synfig/commit/05c760f4506b42659e4aba0b3364c0e36159b677) Fix regression: didn't load font with relative path ([#1833](https://github.com/synfig/synfig/issues/1833))
+- [`ebf2eea`](https://github.com/synfig/synfig/commit/ebf2eeac25a9f2b73920569e646bd959bf82002b) Merge PR [#1844](https://github.com/synfig/synfig/issues/1844):  Fix doxygen
+- [`ebc4b31`](https://github.com/synfig/synfig/commit/ebc4b316373368b3254d9736c32703b155b764cb) [CMake] Added CFLAGS from MagickCore to mod_magickpp (fixes build on some OS) ([#1819](https://github.com/synfig/synfig/issues/1819))
+- [`d4eb1dc`](https://github.com/synfig/synfig/commit/d4eb1dc212b123e4b366588a471706cf4cd76cc1) OptionsProcessor small cleanup ([#1831](https://github.com/synfig/synfig/issues/1831))
+- [`dbde6c6`](https://github.com/synfig/synfig/commit/dbde6c6f34d621b9d4a1b81d88cefe0a10479c1c) Fix regression: Text layer accepts font filename again ([#1828](https://github.com/synfig/synfig/issues/1828))
+- [`5b37e43`](https://github.com/synfig/synfig/commit/5b37e43f9cccf160c7424d8a94a71206e2e5e657) Fixed clang warnings (unused variables, reorder) ([#1822](https://github.com/synfig/synfig/issues/1822))
+- [`7832633`](https://github.com/synfig/synfig/commit/7832633f8fe3069e5d83be9bebe0e3258d2f1f93) Merge PR [#1810](https://github.com/synfig/synfig/issues/1810): Delete ColorAccumulator
+- [`677c1a7`](https://github.com/synfig/synfig/commit/677c1a78fc26933d1531daef105d9b92c7c3dd52) [Autotools] Verbose mode is disabled by default ([#1815](https://github.com/synfig/synfig/issues/1815))
+- [`5a28c15`](https://github.com/synfig/synfig/commit/5a28c1593cb36bd94c76eea19a576db670c220a0) Merge PR [#1797](https://github.com/synfig/synfig/issues/1797): [MSVC] Added export variables
+- [`144524a`](https://github.com/synfig/synfig/commit/144524a50d25bfd1b4bfdd43824bf7e3d972367e) Merge PR [#1791](https://github.com/synfig/synfig/issues/1791): Remove some old CVS/SVN stuff
+- [`581535b`](https://github.com/synfig/synfig/commit/581535b971875e100bd715bf00b8725359e6bd46) Merge PR [#1783](https://github.com/synfig/synfig/issues/1783): MSVC build improvements [#2](https://github.com/synfig/synfig/issues/2)
+- [`b01d549`](https://github.com/synfig/synfig/commit/b01d549b87f4ae118a792cf1f40304e167696cff) Merge PR [#1781](https://github.com/synfig/synfig/issues/1781): MSVC build improvements
+- [`e51bebe`](https://github.com/synfig/synfig/commit/e51bebe7cff64ddef7c114cd749868eba0acf630) Merge PR [#1778](https://github.com/synfig/synfig/issues/1778): Performance improvements
+- [`044390e`](https://github.com/synfig/synfig/commit/044390e07476da87d0d957eb7b9770bc7d618f42) Merge PR [#1772](https://github.com/synfig/synfig/issues/1772): Various fixes for MSVC
+- [`37fe404`](https://github.com/synfig/synfig/commit/37fe4048f2b412865b1fe21e68b4e30143f8186a) [CMake] Fixed incomplete information in About dialog ([#1770](https://github.com/synfig/synfig/issues/1770))
+- [`dfcfdf9`](https://github.com/synfig/synfig/commit/dfcfdf9fc94953d10562d0fd01d2a83039538068) Don't search for linux paths on Windows for synfig_modules.cfg ([#1758](https://github.com/synfig/synfig/issues/1758))
+- [`cde6d0a`](https://github.com/synfig/synfig/commit/cde6d0a960a6bee84473fddcaa425fe6c67c9d64) Removed warning message if config file (synfig_modules.cfg) is found ([#1751](https://github.com/synfig/synfig/issues/1751))
+- [`0450390`](https://github.com/synfig/synfig/commit/045039035ffc3c54c21f29d1c14957f4a47e1808) Merge PR [#1746](https://github.com/synfig/synfig/issues/1746): MSVC/vcpkg improving
+- [`b377a11`](https://github.com/synfig/synfig/commit/b377a11865a0fc6a671e536e93e0f65efede8003) [Autotools] Make autotools use imagemagick++ cflags from pkg-config ([#1600](https://github.com/synfig/synfig/issues/1600))
+- [`a59e482`](https://github.com/synfig/synfig/commit/a59e48275d631876243634e4879899e48b793e68) Merge PR [#1741](https://github.com/synfig/synfig/issues/1741): Fixed clang warnings
+- [`60dc5b6`](https://github.com/synfig/synfig/commit/60dc5b6b29c215e73c38bd3da4d2884696faf49e) Remove unused headers (should reduce build time) ([#1740](https://github.com/synfig/synfig/issues/1740))
+- [`75f78f2`](https://github.com/synfig/synfig/commit/75f78f249e76c70453c992f5795908979f8dd40d) Removed unused headers ([#1729](https://github.com/synfig/synfig/issues/1729))
+- [`08893ed`](https://github.com/synfig/synfig/commit/08893ed697f5a79af90ee26f948affee3483b370) All enabled modules added as a dependency for synfig_bin. ([#1677](https://github.com/synfig/synfig/issues/1677))
+- [`6385086`](https://github.com/synfig/synfig/commit/63850863f68f56e85bed296fbddc8a12a6e9e042) Fixed unused/redefined variables warnings ([#1672](https://github.com/synfig/synfig/issues/1672))
+- [`8cd3084`](https://github.com/synfig/synfig/commit/8cd3084e7e4f1f6dfade4c8bf5ea307f63793f2e) [CMake] Added basic support for MSVS 2019 and vcpkg ([#1646](https://github.com/synfig/synfig/issues/1646))
+- [`bfe6612`](https://github.com/synfig/synfig/commit/bfe6612cb35a2264d225c543f56c6259bab88170) Fixed warnings 'format '%lx' expects argument of type...' ([#1668](https://github.com/synfig/synfig/issues/1668))
+- [`7a9a116`](https://github.com/synfig/synfig/commit/7a9a116b90afe65751c64e0a38e26969ef867b9d) Speed up Layer_Freetype: don't load face file on every rendering ([#1655](https://github.com/synfig/synfig/issues/1655))
+- [`bb1a80b`](https://github.com/synfig/synfig/commit/bb1a80b67738c0a581768219fb7ee7dfd4a4782a) Merge PR [#1653](https://github.com/synfig/synfig/issues/1653): Layer FreeType code cleanup
+- [`617fd4b`](https://github.com/synfig/synfig/commit/617fd4b7dbda9bdf0b7543eafcd9cba71a37505b) [CMake] Fixed FontConfig detection
+- [`14ca537`](https://github.com/synfig/synfig/commit/14ca5370be1aba5887cbcce114009fb02c72ffc1) Fixed memory leak when destroying ThreadPool ([#1651](https://github.com/synfig/synfig/issues/1651))
+- [`09d6069`](https://github.com/synfig/synfig/commit/09d60691618fbae84ad6384dab655ae95b63c004) Do not use Glib::locale_to_utf8() in synfig::get_binary_path() ([#1633](https://github.com/synfig/synfig/issues/1633))
+- [`e78053d`](https://github.com/synfig/synfig/commit/e78053d4c292c2d24b6f5d6773359fba8feac0b8) Avoid double "Loading modules" message ([#1631](https://github.com/synfig/synfig/issues/1631))
+- [`f89c807`](https://github.com/synfig/synfig/commit/f89c8079d407f5863f4f3ddf76bff37f36b6fb72) Merge PR [#1622](https://github.com/synfig/synfig/issues/1622): Freetype: avoid unneeded font search
+- [`161fd5b`](https://github.com/synfig/synfig/commit/161fd5b5f2f3294a6537d1e287002cf60bc84384) Canvas end-time could be set by wrong reason ([#1614](https://github.com/synfig/synfig/issues/1614))
+- [`e02a3a8`](https://github.com/synfig/synfig/commit/e02a3a8c944fbd3731c6486de9ecd2eea73f597d) Removed old (2005) simple hack for gcc < 4.1.2 bugged warning ([#1613](https://github.com/synfig/synfig/issues/1613))
+- [`d23807e`](https://github.com/synfig/synfig/commit/d23807e2e2e8278f2434bc4c66dbe12d090a5299) Fixed libmng linking problem on 32-bit platform ([#1598](https://github.com/synfig/synfig/issues/1598))
+- [`6d3f1cb`](https://github.com/synfig/synfig/commit/6d3f1cb89cce05cb95341b38284b537975935a50) Merge PR [#1596](https://github.com/synfig/synfig/issues/1596): Fixed warnings
+- [`5fe1258`](https://github.com/synfig/synfig/commit/5fe125846e4e5bdd8702eda3bbcb30089f0340ec) MergePR [#1491](https://github.com/synfig/synfig/issues/1491): Changes for Appveyor build using CMake and ninja.
+- [`8b93aa1`](https://github.com/synfig/synfig/commit/8b93aa1c2baf37ca687010c617db988632df79fb) Merge PR [#1432](https://github.com/synfig/synfig/issues/1432): Fixed text layer family search and allow user selection
+- [`dc3c31e`](https://github.com/synfig/synfig/commit/dc3c31e7f85f1b46dee27805ec6a01c8ac1680e2) Removed unused ETL spline header ([#1563](https://github.com/synfig/synfig/issues/1563))
+- [`acde8c3`](https://github.com/synfig/synfig/commit/acde8c3a7d81b52716598fa6eadc8ae6fb68b312) [CMake] CPack added ability to generate .deb package ([#1519](https://github.com/synfig/synfig/issues/1519))
+- [`978905c`](https://github.com/synfig/synfig/commit/978905c8facd6d084baec50c545fad72372ca8e5) [CMake] Fixed MacOS build ([#1534](https://github.com/synfig/synfig/issues/1534))
+- [`dec2884`](https://github.com/synfig/synfig/commit/dec28849cbb304ca58fe31efc764799b41460d85) Cleanup module.h ([#1530](https://github.com/synfig/synfig/issues/1530))
+- [`2af6b11`](https://github.com/synfig/synfig/commit/2af6b11f8e30efce45a7d67c3a470702305330c8) Cleanup general.h ([#1526](https://github.com/synfig/synfig/issues/1526))
+- [`97940e9`](https://github.com/synfig/synfig/commit/97940e960d81b7fd02c070bfd1d1416e5ab96b39) Cleanup module.cpp a bit ([#1418](https://github.com/synfig/synfig/issues/1418))
+- [`5862c76`](https://github.com/synfig/synfig/commit/5862c7611232cb180d8eb2934b17b2f306404f10) ThreadPool: prefer std::mutex and std::condition_variable ([#1036](https://github.com/synfig/synfig/issues/1036))
+- [`15080f9`](https://github.com/synfig/synfig/commit/15080f98a5fb3490865d006c2c250f6e316c71a1) Different CMake builds based on CMAKE_BUILD_TYPE. ([#1500](https://github.com/synfig/synfig/issues/1500))
+- [`7d16c26`](https://github.com/synfig/synfig/commit/7d16c263f412873329ef5a495e4a993dc1d57c8f) Edit tooltips for style consistency ([#1514](https://github.com/synfig/synfig/issues/1514))
+- [`13dab06`](https://github.com/synfig/synfig/commit/13dab0681156014e7c0c84db0e6750c284decfc8) Generate l10n files from .po files. ([#1462](https://github.com/synfig/synfig/issues/1462))
+- [`d72bbc9`](https://github.com/synfig/synfig/commit/d72bbc943d6b3205fb86b0e343b451fcfd49f2cc) VLA replaced by std::vector class (fixes MSVC compilation) ([#1474](https://github.com/synfig/synfig/issues/1474))
+- [`5a3f423`](https://github.com/synfig/synfig/commit/5a3f4232224bbf9d3524158682bd7eb0ff7166c7) Use ScrolledWindow and label wrapping for message dialog ([#1496](https://github.com/synfig/synfig/issues/1496))
+- [`b6995dc`](https://github.com/synfig/synfig/commit/b6995dc5864f43239b4e5ac9b119222328af6af1) Add test file for conversion between homogeneous and standard width points ([#1471](https://github.com/synfig/synfig/issues/1471))
+- [`068c884`](https://github.com/synfig/synfig/commit/068c884e8a10638cd625fbd3b42bfc6605eb2f34) Merge PR [#1466](https://github.com/synfig/synfig/issues/1466): fix POTFILES.in
+- [`7684be8`](https://github.com/synfig/synfig/commit/7684be864f20b5cda39dd07833e74e78a874e6d3) Removing Duplicate frames while importing an image sequence
+- [`e60a668`](https://github.com/synfig/synfig/commit/e60a668e53cd718e910ad4172774f2672e797172) Cleaned clock functions. Fixed compilation on MSVC. ([#1426](https://github.com/synfig/synfig/issues/1426))
+- [`5d56cdc`](https://github.com/synfig/synfig/commit/5d56cdcc1ee24de17007f77bdac335e2c6da5005) Merge PR [#1435](https://github.com/synfig/synfig/issues/1435): Minor cleanup in skeleton files
+- [`6d32e5b`](https://github.com/synfig/synfig/commit/6d32e5b21f53cf86bef1a420cbd34debf4aa35e9) hide GUID int constructor ([#1404](https://github.com/synfig/synfig/issues/1404))
+- [`30a059e`](https://github.com/synfig/synfig/commit/30a059e035768e99fd5eec7d812119f2188de2da) remove unneeded path var
+- [`5d873a3`](https://github.com/synfig/synfig/commit/5d873a34c7b9295a059ebed1007af330014140fd) Merge PR [#1408](https://github.com/synfig/synfig/issues/1408): Fixed 'font not found' error in FreeType layers (Fix [#1407](https://github.com/synfig/synfig/issues/1407))
+- [`77164ff`](https://github.com/synfig/synfig/commit/77164ff0d3b2b05476306300fbd57360ce34b478) Some clean up on layer freetype ([#1403](https://github.com/synfig/synfig/issues/1403))
+- [`e8589a5`](https://github.com/synfig/synfig/commit/e8589a5975fff82ed6a13953a4704b93a5e71318) core: CMake: Add include & library dirs for each pkg_config module (PR [#1399](https://github.com/synfig/synfig/issues/1399))
+- [`251f37a`](https://github.com/synfig/synfig/commit/251f37a0c255ee89beb94b523adc2ec21474bf4b) Merge PR [#1222](https://github.com/synfig/synfig/issues/1222): Warp layer is now renamed to perspective layer
+- [`7480aeb`](https://github.com/synfig/synfig/commit/7480aebdb3a988e38da5c0e08e64c6f75e9df111) fix readable name of Alpha parameter of Radial Composite valuenode
+- [`ccf39ec`](https://github.com/synfig/synfig/commit/ccf39ec9900fbd6835e651630e986e9645c1bbd8) Minor code cleanup trgt_jpeg and mptr_jpeg ([#1343](https://github.com/synfig/synfig/issues/1343))
+- [`70989c3`](https://github.com/synfig/synfig/commit/70989c3fda9bd031dbd74178019a3fbfecdc96cf) remove unused #include
+- [`d1459cf`](https://github.com/synfig/synfig/commit/d1459cfda8e12e8b01307fb5649aeeef5b87f990) Remove unused CairoImporter method ([#1331](https://github.com/synfig/synfig/issues/1331))
+- [`02eaf8c`](https://github.com/synfig/synfig/commit/02eaf8c033b574c361a8c1b84976908cfe0d3f0f) avoid duplicated dynamic_cast (other cases) ([#1328](https://github.com/synfig/synfig/issues/1328))
+- [`da3922e`](https://github.com/synfig/synfig/commit/da3922e92b2356dcb050478341d13e1a440a3af4) Fix uninitialized variable in CairoColor ([#1322](https://github.com/synfig/synfig/issues/1322))
+- [`5a6473b`](https://github.com/synfig/synfig/commit/5a6473b5629ff6a8423df2e687b16d08340bb2f3) Avoid duplicate dynamic cast calls ([#1323](https://github.com/synfig/synfig/issues/1323))
+- [`0b9ab1c`](https://github.com/synfig/synfig/commit/0b9ab1c1ce672f826fa1b9bb7d198b5f1b46ce81) prefer nullptr rather NULL or 0
+- [`54c666f`](https://github.com/synfig/synfig/commit/54c666fc54803b3dfef976c5d9b072b82a5beaf2) remove useless Importer::get_frame overloaded method
+- [`97acd21`](https://github.com/synfig/synfig/commit/97acd21167910c34c809a4363ea2e7a0746cf0ac) Code cleanup. Added MSVC compiler detection to About dialog. ([#1303](https://github.com/synfig/synfig/issues/1303))
+- [`11340af`](https://github.com/synfig/synfig/commit/11340afee34da98673f5aa6cc5846f15a86ffda2) Added necessary headers for MSVC
+- [`102dace`](https://github.com/synfig/synfig/commit/102daceabb934a50f2a8d337c950fbba052047f9) Deleted GCC __attribute__ ((unused)) (fixes MSVC compilation)
+- [`faa52c9`](https://github.com/synfig/synfig/commit/faa52c974ba8211f29dde123afcae1f648354245) Merge PR [#1273](https://github.com/synfig/synfig/issues/1273): [MSYS2] Enable building of images (Autotools)
+- [`0739b18`](https://github.com/synfig/synfig/commit/0739b1853c2c4a38d359f2ccd9a45e416dc4a8e3) Update notes about canvas versions.
+- [`15ad054`](https://github.com/synfig/synfig/commit/15ad054f18c37c0e36caca3c15b69d25ac51b04d) Fix typos and non translatable strings ([#1162](https://github.com/synfig/synfig/issues/1162))
+- [`50bab45`](https://github.com/synfig/synfig/commit/50bab454ff238af0a286f7a5a81bb7ef45eca914) Merge PR [#1224](https://github.com/synfig/synfig/issues/1224): [CMake] Updated CMake script to change layout of build files.
+- [`8f89ca2`](https://github.com/synfig/synfig/commit/8f89ca29ee724e59cce0271ef892272c9c68c7a0) Merge PR [#1192](https://github.com/synfig/synfig/issues/1192): upgrade minimum required version of libav/FFmpeg
+- [`6af075f`](https://github.com/synfig/synfig/commit/6af075f1fe0ef00a7dbfbbb77bf8c724b2702866) improve warl layer clipping
+- [`e2adcad`](https://github.com/synfig/synfig/commit/e2adcad8be02a3580c7af11247c01abbfc02d5e3) blend method Alpha
+- [`8af0f3d`](https://github.com/synfig/synfig/commit/8af0f3d41a7734c7a9428fac3dfd09eab3772cf3) draft: degrade underlayer for nonaffine transforms
+- [`7edc151`](https://github.com/synfig/synfig/commit/7edc151696dd73f15569b3df6ba4e8b64de20b68) cubic interpolation by default for Warp
+- [`9abc9ed`](https://github.com/synfig/synfig/commit/9abc9edef37b3ce4fea50b06609099e440d0f5b9) interpolation param for Warp
+- [`650b0cf`](https://github.com/synfig/synfig/commit/650b0cf6a8e15a45ade4014786ba91e19698d5cf) antialias param for CheckerBoard
+- [`57b243c`](https://github.com/synfig/synfig/commit/57b243cf78d0ed22957e2292ee4c63610064448a) remove some old rendering from modules
+- [`b8aa2b1`](https://github.com/synfig/synfig/commit/b8aa2b1e6d81296fe8a4a4e2cd644eb81bf5d062) remove old rendering from core layers
+- [`6b433d2`](https://github.com/synfig/synfig/commit/6b433d2503ed81bd6577c17748d2ae59ce0573c6) add noexcept to move constructor
+- [`fc7a046`](https://github.com/synfig/synfig/commit/fc7a046ad041978bf4071d1e15e6dc2e64176d4c) fix calculation of resolution
+- [`cf1df92`](https://github.com/synfig/synfig/commit/cf1df92b252699989e3c36ce4406259a1e40ddd3) refactoring of Warp Layer
+- [`61ff9b8`](https://github.com/synfig/synfig/commit/61ff9b8d620a045ad454fb55125dc69880c2b317) OptimizerTransformation: merge child into parent
+- [`3ae388d`](https://github.com/synfig/synfig/commit/3ae388d8789484ffdb0c14dd6785d4fbece682cf) remove extra const keyword
+- [`f44ff0a`](https://github.com/synfig/synfig/commit/f44ff0a64636419ff9d9e223ca355319fd0388e7) improve rendering::Transformation
+- [`34a6856`](https://github.com/synfig/synfig/commit/34a6856a6784c0f0959c64c173e0edf55fb15d7f) improve synfig::Matrix
+- [`7cea642`](https://github.com/synfig/synfig/commit/7cea64284d1326d05039b76648cf113040889b10) libmng made optional, fixed build using 2-build-cmake.sh
+- [`2cccbf4`](https://github.com/synfig/synfig/commit/2cccbf43557fd68b297a7b4b18b618ea4078581f) Merge PR [#1166](https://github.com/synfig/synfig/issues/1166): Do not require to explicitly call FileSystemTemporary::discard_changes() 
+- [`4df4085`](https://github.com/synfig/synfig/commit/4df4085e997213b6072364e9f36da6ab14746571) Update translations
+- [`b4b6a75`](https://github.com/synfig/synfig/commit/b4b6a752214c5f56f51788b78f3b71fcfdec2492) Fix some typos and some non translatable strings (#1159)
+- [`30ce7c4`](https://github.com/synfig/synfig/commit/30ce7c4209a618643b26f40144ae9e0bd99c0830) minor fixes for some ValueBase method comments
+- [`302b06d`](https://github.com/synfig/synfig/commit/302b06dd4bf726e063f6acd02dff882b76f53751) fix relation operators for ValueBase
+- [`2608b0c`](https://github.com/synfig/synfig/commit/2608b0c6ee0533346fba58adac38bfbc3e5a3945) remove unused definitions of libpng versions
+- [`f05955a`](https://github.com/synfig/synfig/commit/f05955ae30217fdc3c8d75bb12d85bab454ac89f) add a comment
+- [`7b7b2dd`](https://github.com/synfig/synfig/commit/7b7b2dd14dcf8a6bd3e0522b3f90fd139594dd26) synfig::Mutex no longer exists
+- [`96306f6`](https://github.com/synfig/synfig/commit/96306f6fc31918377aaecc481f860cf8714f43f4) autotools: remove unused definition
+- [`d974ed5`](https://github.com/synfig/synfig/commit/d974ed5af43b762a1d9c4e44f4c57cfcd17e562b) Update translations (new pot)
+- [`86eaf56`](https://github.com/synfig/synfig/commit/86eaf560d1eb7f4f3a14391c75a6474997fd051b) Update translations
+- [`b218c01`](https://github.com/synfig/synfig/commit/b218c019070e39afab50f244039575d1f88fac98) Merge PR [#1076](https://github.com/synfig/synfig/issues/1076): define copy constructor if assignment operator is defined
+- [`e8281c6`](https://github.com/synfig/synfig/commit/e8281c679184cf9e9e6a7554ccaac0a5bff761a2) Merge PR [#1034](https://github.com/synfig/synfig/issues/1034): there is no reason for using float instead of Real[core]
+- [`859cc1a`](https://github.com/synfig/synfig/commit/859cc1a3a720dae09cd61e76cbe567a93e85ce3e) Merge PR [#1128](https://github.com/synfig/synfig/issues/1128): Travis: Add distcheck job
+- [`ee74a24`](https://github.com/synfig/synfig/commit/ee74a24c8ae4d8295d1e1c1ef5b9c5bf478271ce) Bump version to 1.5.0
+## Version 1.4.5
+- [`015305a`](https://github.com/synfig/synfig/commit/015305ae9fd56ff23a7b0b25c27e7f159a555d3d) fix: crash on moving a layer following a bline reference ([#2971](https://github.com/synfig/synfig/issues/2971))
+- [`feb62c5`](https://github.com/synfig/synfig/commit/feb62c586f9b8c5378ce724854c7180d674e8326) Replaced `abs` with `std::fabs` for float values and `std::abs` for templates and int values ([#2311](https://github.com/synfig/synfig/issues/2311))
+- [`db959bf`](https://github.com/synfig/synfig/commit/db959bf7d062bdb0eb658ddabb2735385a8872aa) Merge PR [#2505](https://github.com/synfig/synfig/issues/2505): Fixed issue with opening a file from a network folder on Windows
+- [`d0dba5b`](https://github.com/synfig/synfig/commit/d0dba5bd7aaa2ec3008b26050a0f73565d986b04) fix: a crash on program exit if bones were used ([#3037](https://github.com/synfig/synfig/issues/3037))
+- [`04afca0`](https://github.com/synfig/synfig/commit/04afca0085ec08dafafd033cefc210ca45ae4781) fix: added ImageMagick 7.1 library initialization ([#2876](https://github.com/synfig/synfig/issues/2876))
+- [`674888a`](https://github.com/synfig/synfig/commit/674888a710f46b2a3cb6a4126757f22139c0a09c) fix: prevent memory leak on importing PNG files ([#3144](https://github.com/synfig/synfig/issues/3144))
+## Version 1.4.4
+- [`f6f153b`](https://github.com/synfig/synfig/commit/f6f153b5551f97cc6b50546ff53ca3c791d1c5cc) fix: missing last frame for ffmpeg target ([#2912](https://github.com/synfig/synfig/issues/2912))
+- [`93d8f4c`](https://github.com/synfig/synfig/commit/93d8f4cb1b149dca8a6415f6f3cbfab0d22a4778) fix: Synfig CLI does not open file if path contains non-Latin characters (Windows) ([#2819](https://github.com/synfig/synfig/issues/2819))
+- [`e06c83f`](https://github.com/synfig/synfig/commit/e06c83fbdcf01e6c73d67321926a52cc92ebaa38) build(autotools): allow to compile release build with debug info ([#2838](https://github.com/synfig/synfig/issues/2838))
+- [`54ba18f`](https://github.com/synfig/synfig/commit/54ba18f2ff9a222b1bd8eb01f04cd88d4a54e188) Added support MLT++-7 in Autotools ([#2306](https://github.com/synfig/synfig/issues/2306))
+- [`081d9ab`](https://github.com/synfig/synfig/commit/081d9ab94fee9e3083b6db3a9f7f4dd002847d57) Merge PR [#2722](https://github.com/synfig/synfig/issues/2722): fix: palette loading
+- [`8cc24b1`](https://github.com/synfig/synfig/commit/8cc24b13868072e54b3cfa70488102cb5864e69a) fix: Synfig hangs when importing palette ([#2730](https://github.com/synfig/synfig/issues/2730))
+- [`091ac5c`](https://github.com/synfig/synfig/commit/091ac5c820f3bc6c9db773bfdd8669cc3ae23eb0) Fixed messed up translations for Russian language
+## Version 1.4.3
+- [`042c737`](https://github.com/synfig/synfig/commit/042c7378917c32af4354bac5d35283a63a7b828c) Fix bug with src offset in blur sw task ([#2570](https://github.com/synfig/synfig/issues/2570))
+- [`249cee7`](https://github.com/synfig/synfig/commit/249cee7d22df2501b4413c46be7d284687d3659a) fix layer Clamp not rendering ([#2550](https://github.com/synfig/synfig/issues/2550))
+- [`e23b229`](https://github.com/synfig/synfig/commit/e23b229208f2cc9e8b37c46857eeaf629b4d8e1a) perf: improved file opening speed in Windows ([#2826](https://github.com/synfig/synfig/issues/2826))
+- [`34b9c43`](https://github.com/synfig/synfig/commit/34b9c43c5c5a69816543478f0e77acf3708f88aa) Fixed video render with ffmpeg 3.x ([#2628](https://github.com/synfig/synfig/issues/2628))
+- [`1f202d3`](https://github.com/synfig/synfig/commit/1f202d3cb9bc0149f8e28b555dc6d384fb4bc533) Merge PR ([#2399](https://github.com/synfig/synfig/issues/2399)): ETL cleanup: remove unused files and deprecated functions
+- [`b4d1f62`](https://github.com/synfig/synfig/commit/b4d1f62778ea1c62215f7296509458ef67bc96ce) loadcanvas: fix loading of some non-value nodes lists ([#2482](https://github.com/synfig/synfig/issues/2482))
+- [`7fe4274`](https://github.com/synfig/synfig/commit/7fe42741fa7282a448368d7b30e54ef61eebeca1) Fix exported file with audio being smaller than it should ([#2477](https://github.com/synfig/synfig/issues/2477))
+- [`e932a39`](https://github.com/synfig/synfig/commit/e932a39ca8e6aca097a77622b5a7df91c2b0abe8) Allow Bones parameters to be connected to exported value nodes ([#2433](https://github.com/synfig/synfig/issues/2433))
+- [`326ee01`](https://github.com/synfig/synfig/commit/326ee01f2f07b95af83ad6b52435baa42015247d) Fixed crash when rendering to gif target ([#2389](https://github.com/synfig/synfig/issues/2389))
+- [`19a88f4`](https://github.com/synfig/synfig/commit/19a88f4400a727b0080c26f9ba833647369181c3) Added `seekpos` method for FileSystemNative::ReadStream ([#2224](https://github.com/synfig/synfig/issues/2224))
+- [`c0bebf6`](https://github.com/synfig/synfig/commit/c0bebf68b97fbc0b5451da07b9291234a9197793) Fix possible crash on get_local_name() of Layer_PasteCanvas ([#2300](https://github.com/synfig/synfig/issues/2300))
+- [`576c349`](https://github.com/synfig/synfig/commit/576c349ae84f2490f4997581f3b4cc0750e0a61b) Autotools: Remove @MAGICKPP_LIBS@ variable from LDFLAGS([#2326](https://github.com/synfig/synfig/issues/2326))
+- [`391f8a1`](https://github.com/synfig/synfig/commit/391f8a1540b4c9339bb1141f4067221f6cc87b8b) Fix magick++ target missing in AppImage (issue [#2320](https://github.com/synfig/synfig/issues/2320)) ([#2324](https://github.com/synfig/synfig/issues/2324))
 ## Version 1.4.2
 - [`6b0d418`](https://github.com/synfig/synfig/commit/6b0d4185255cc534940709c9001227d1ef52ba68) [Autotools] Fixed problem with missing \*.glsl files in distribution ([#1982](https://github.com/synfig/synfig/issues/1982))
 - [`4ddd22d`](https://github.com/synfig/synfig/commit/4ddd22d8de1f4729c83fe0b0e8cde5b46fd84e87) Merge PR [#1995](https://github.com/synfig/synfig/issues/1995): [Core] create stringhelper
