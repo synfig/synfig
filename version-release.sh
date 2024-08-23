@@ -15,7 +15,7 @@ fi
 VERSION_CURRENT=`cat synfig-studio/configure.ac | grep "AC_INIT(\[Synfig Studio\]" | sed 's/.*Studio\],\[\(.*\)\],\[http.*/\1/'`
 
 # Update ChangeLog
-if ( cat synfig-studio/configure.ac | grep "AM_CONDITIONAL(DEVELOPMENT_SNAPSHOT, true)" ); then
+if ( cat synfig-studio/configure.ac | grep "AM_CONDITIONAL(DEVELOPMENT_SNAPSHOT, true)" >/dev/null ); then
 	./ChangeLog-generate.sh
 	{ echo -e "\n## Version ${VERSION_CURRENT} [ETL] [core] [studio]\n"; cat ChangeLog-development.md; } > ChangeLog-development.md.tmp
 	mv ChangeLog-development.md{.tmp,}
