@@ -58,21 +58,18 @@ SYNFIG_LAYER_SET_VERSION(ConicalGradient,"0.2");
 
 /* === M E T H O D S ======================================================= */
 
-class TaskConicalGradient: public rendering::Task, public rendering::TaskInterfaceTransformation
+class TaskConicalGradient: public rendering::Task
 {
 public:
 	typedef etl::handle<TaskConicalGradient> Handle;
-	static Token token;
+	SYNFIG_EXPORT static Token token;
 	Token::Handle get_token() const override { return token.handle(); }
 
 	Point center;
 	Angle angle;
 	CompiledGradient compiled_gradient;
-	rendering::Holder<rendering::TransformationAffine> transformation;
 
 	TaskConicalGradient() { }
-	virtual rendering::Transformation::Handle get_transformation() const override
-		{ return transformation.handle(); }
 };
 
 
@@ -80,8 +77,8 @@ class TaskConicalGradientSW: public TaskConicalGradient, public rendering::TaskP
 {
 public:
 	typedef etl::handle<TaskConicalGradientSW> Handle;
-	static Token token;
-	virtual Token::Handle get_token() const override { return token.handle(); }
+	SYNFIG_EXPORT static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
 
 	mutable Real pw = 0;
 	mutable Real ph = 0;
@@ -116,9 +113,9 @@ public:
 	}
 };
 
-rendering::Task::Token TaskConicalGradient::token(
+SYNFIG_EXPORT rendering::Task::Token TaskConicalGradient::token(
 	DescAbstract<TaskConicalGradient>("TaskConicalGradient") );
-rendering::Task::Token TaskConicalGradientSW::token(
+SYNFIG_EXPORT rendering::Task::Token TaskConicalGradientSW::token(
 	DescReal<TaskConicalGradientSW, TaskConicalGradient>("TaskConicalGradientSW") );
 
 

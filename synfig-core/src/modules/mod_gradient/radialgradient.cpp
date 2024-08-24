@@ -59,21 +59,18 @@ SYNFIG_LAYER_SET_VERSION(RadialGradient,"0.2");
 
 /* === M E T H O D S ======================================================= */
 
-class TaskRadialGradient: public rendering::Task, public rendering::TaskInterfaceTransformation
+class TaskRadialGradient: public rendering::Task
 {
 public:
 	typedef etl::handle<TaskRadialGradient> Handle;
-	static Token token;
+	SYNFIG_EXPORT static Token token;
 	Token::Handle get_token() const override { return token.handle(); }
 
 	Point center;
 	Real radius;
 	CompiledGradient compiled_gradient;
-	rendering::Holder<rendering::TransformationAffine> transformation;
 
 	TaskRadialGradient() { }
-	virtual rendering::Transformation::Handle get_transformation() const override
-		{ return transformation.handle(); }
 };
 
 
@@ -81,8 +78,8 @@ class TaskRadialGradientSW: public TaskRadialGradient, public rendering::TaskPai
 {
 public:
 	typedef etl::handle<TaskRadialGradientSW> Handle;
-	static Token token;
-	virtual Token::Handle get_token() const override { return token.handle(); }
+	SYNFIG_EXPORT static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
 
 	mutable Real supersample = 0.;
 
@@ -106,9 +103,9 @@ public:
 	}
 };
 
-rendering::Task::Token TaskRadialGradient::token(
+SYNFIG_EXPORT rendering::Task::Token TaskRadialGradient::token(
 	DescAbstract<TaskRadialGradient>("TaskRadialGradient") );
-rendering::Task::Token TaskRadialGradientSW::token(
+SYNFIG_EXPORT rendering::Task::Token TaskRadialGradientSW::token(
 	DescReal<TaskRadialGradientSW, TaskRadialGradient>("TaskRadialGradientSW") );
 
 
