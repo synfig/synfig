@@ -178,7 +178,7 @@ MainWindow::init_menus()
 	action_group->add( Gtk::Action::create_with_icon_name("save-all", "action_doc_saveall_icon", _("Save All"), _("Save all opened documents")),
 		sigc::ptr_fun(&save_all)
 	);
-	action_group->add( Gtk::Action::create_with_icon_name("quit", "application-exit", _("_Quit"), _("Quit")),
+	action_group->add( Gtk::Action::create_with_icon_name("quit", "application-exit", _("Quit"), _("Quit Synfig")),
 		sigc::hide_return(sigc::ptr_fun(&studio::App::quit))
 	);
 
