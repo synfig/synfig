@@ -89,7 +89,7 @@ Renderer_BoneSetup::render_vfunc(const Glib::RefPtr<Gdk::Window>& drawable,
 			get_work_area()->bonesetup_height = int(h*1.0/Pango::SCALE);
 		}
 		else
-			get_work_area()->timecode_width = get_work_area()->timecode_height = 0;
+			get_work_area()->bonesetup_width = get_work_area()->bonesetup_height = 0;
 
 		Gdk::RGBA c("#5f0000");
 		cr->set_source_rgb(c.get_red(), c.get_green(), c.get_blue());
