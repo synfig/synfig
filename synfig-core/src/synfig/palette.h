@@ -89,6 +89,8 @@ public:
 	void save_to_file(const synfig::filesystem::Path& filename)const;
 
 	static Palette load_from_file(const synfig::filesystem::Path& filename);
+        
+        bool is_color_present(const Color& color);
 }; // END of class Palette
 
 }; // END of namespace synfig
