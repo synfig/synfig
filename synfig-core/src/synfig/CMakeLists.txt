@@ -164,14 +164,3 @@ install(
     DESTINATION "lib/cmake/synfig"
 )
 
-include(CMakePackageConfigHelpers)
-configure_package_config_file(
-    ${CMAKE_CURRENT_LIST_DIR}/synfig-config.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/synfig-config.cmake
-    INSTALL_DESTINATION synfig
-)
-
-install(
-    FILES ${CMAKE_CURRENT_BINARY_DIR}/synfig-config.cmake
-    DESTINATION "lib/cmake/synfig"
-)
