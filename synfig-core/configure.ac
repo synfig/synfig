@@ -123,7 +123,6 @@ if test $with_magickpp = "yes" ; then {
 	PKG_CHECK_MODULES(MAGICKPP, Magick++ >= 6.4.2,[
 		with_magickpp="yes"
 		AM_CONDITIONAL(HAVE_LIBMAGICKPP,true)
-		CONFIG_DEPS="$CONFIG_DEPS Magick++"
 	],[
 		with_magickpp="no"
 		AC_MSG_ERROR([ *** Unable to find Magick++])
@@ -177,8 +176,8 @@ AC_ARG_WITH(libavcodec,
 
 if test $with_libavcodec != "no" ; then {
 	PKG_CHECK_MODULES(LIBAVCODEC, [libavcodec >= 57.0 libavformat >= 57.0 libavutil >= 55.0 libswscale >= 4.0],
-		[CONFIG_DEPS="$CONFIG_DEPS libavcodec libavformat libswscale"],
-		[echo no; with_libavcodec="no"])
+		[with_libavcodec="yes"],
+		[with_libavcodec="no"])
 } ; fi
 if test $with_libavcodec = "yes" ; then {
 	AC_DEFINE(WITH_LIBAVCODEC,[],[enable libavcodec support])
@@ -219,7 +218,6 @@ AC_ARG_WITH(freetype,
 if test $with_freetype != "no" ; then {
 	PKG_CHECK_MODULES(FREETYPE, freetype2,[
 		with_freetype="yes"
-		CONFIG_DEPS="$CONFIG_DEPS freetype2"
 	],[
 		PKG_CHECK_MODULES(FREETYPE, xft,[
 			with_freetype="yes"
@@ -242,7 +240,6 @@ AC_ARG_WITH(fontconfig,
 if test $with_fontconfig != "no" ; then {
 	PKG_CHECK_MODULES(FONTCONFIG, fontconfig,[
 		with_fontconfig="yes"
-		CONFIG_DEPS="$CONFIG_DEPS fontconfig"
 	],[
 		with_fontconfig="no"
 	])
@@ -294,9 +291,7 @@ AC_ARG_WITH(openexr,
 	with_openexr="yes"
 ])
 if test $with_openexr = "yes" ; then {
-	PKG_CHECK_MODULES(OPENEXR, OpenEXR,[
-		CONFIG_DEPS="$CONFIG_DEPS OpenEXR"
-	],
+	PKG_CHECK_MODULES(OPENEXR, OpenEXR,,
 	[
 		with_openexr="no"
 	])
@@ -389,9 +384,7 @@ if test $with_opengl != "no" ; then {
 		;;
 		*)
 			PKG_CHECK_MODULES(LIBGL, gl, [
-				CONFIG_DEPS="$CONFIG_DEPS gl"
 				LIBGL_CFLAGS="$LIBGL_CFLAGS -DGL_GLEXT_PROTOTYPES"
-				CONFIG_CFLAGS="$CONFIG_CFLAGS -DWITH_OPENGL"
 				with_opengl="yes"
 			],[
 				AC_MSG_RESULT([ ** Cannot find gl.pc. OpenGL disabled.])
@@ -411,7 +404,6 @@ AC_ARG_WITH(opencl,
 if test $with_opencl != "no" ; then {
 	AC_CHECK_HEADER(CL/opencl.h,,AC_MSG_ERROR([ ** You need to install opencl-headers package.]))
 	PKG_CHECK_MODULES(LIBCL, OpenCL,[
-		CONFIG_DEPS="$CONFIG_DEPS OpenCL"
 		with_opencl="yes"
 	],[
 		AC_MSG_ERROR([ ** You need to install OpenCL.])
@@ -424,14 +416,9 @@ AM_CONDITIONAL(WITH_OPENCL, test $with_opencl = yes)
 PKG_CHECK_MODULES(LIBFFTW, fftw3,,[
 	AC_MSG_ERROR([ ** You need to install FFTW 3.])
 ])
-CONFIG_DEPS="$CONFIG_DEPS fftw3"
 
-PKG_CHECK_MODULES(MLTPP, mlt++-7,[
-	CONFIG_DEPS="$CONFIG_DEPS mlt++-7"
-],[
-	PKG_CHECK_MODULES(MLTPP, mlt++,[
-		CONFIG_DEPS="$CONFIG_DEPS mlt++"
-	],[
+PKG_CHECK_MODULES(MLTPP, mlt++-7,,[
+	PKG_CHECK_MODULES(MLTPP, mlt++,,[
 		AC_MSG_ERROR([ ** You need to install mlt++.])
 	])
 ])
