@@ -136,6 +136,34 @@ public:
 		return *this;
 	}
 
+	ValueDesc& operator=(ValueDesc&& other) noexcept
+	{
+		if (this == &other)
+			return *this;
+
+		if (parent_desc && 0 >= --parent_desc->links_count)
+			delete parent_desc;
+
+		if (id_changed_connection.connected())
+			id_changed_connection.disconnect();
+
+		layer = std::move(other.layer);
+		name = std::move(other.name);
+		parent_value_node = std::move(other.parent_value_node);
+		index = other.index;
+		waypoint_time = std::move(other.waypoint_time);
+		canvas = std::move(other.canvas);
+		id_changed_connection = std::move(other.id_changed_connection);
+		sub_names = std::move(other.sub_names);
+		parent_desc = std::move(other.parent_desc);
+		links_count = other.links_count;
+
+		other.parent_desc = nullptr;
+		other.links_count = 0;
+
+		return *this;
+	}
+
 	ValueDesc(synfig::Layer::Handle layer,const synfig::String& param_name,const ValueDesc &parent = blank):
 		layer(layer),
 		name(param_name),
@@ -215,6 +243,15 @@ public:
 		if (other.id_changed_connection.connected() && is_valid())
 			id_changed_connection = get_value_node()->signal_id_changed().connect(sigc::mem_fun(*this, &ValueDesc::on_id_changed));
 		if (parent_desc) parent_desc->links_count++;
+	}
+
+	// move
+	ValueDesc(ValueDesc&& other) noexcept
+		: index(IS_CONST),
+		  parent_desc(nullptr),
+		  links_count(0)
+	{
+		*this = std::move(other);
 	}
 
 	ValueDesc():
