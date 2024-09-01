@@ -64,6 +64,9 @@ set(ICONS
 	action_doc_undo_icon
 	action_doc_redo_icon
 
+	workspace_saveas_icon
+	workspace_edit_icon
+
 	canvas_icon
 
 	animate_seek_next_keyframe_icon
@@ -103,6 +106,15 @@ set(ICONS
 	action_set_layer_description_icon
 	action_squared_interpolation_icon
 	action_unexport_icon
+	document-options
+	document-properties
+	document-resize
+	document-revert
+	action_import_icon
+	action_import_sequence_icon
+	action_show_dependencies_icon
+	input_devices_icon
+	preferences_icon
 	clear_redo_icon
 	clear_undo_icon
 	decr_resolution_icon
@@ -245,8 +257,24 @@ set(ICONS
 	type_string_icon
 	type_time_icon
 	type_vector_icon
+	type_transformation_icon
 	utils_timetrack_align_icon
 	valuenode_icon
+	edit-delete
+	window-close
+	application-exit
+	go-up
+	go-down
+	list-add
+	list-remove
+	brush_size_increase_icon
+	brush_size_decrease_icon
+	document-open
+	document-save
+	edit-clear
+	process-stop
+	view-refresh
+	keyframe_properties_icon
 )
 
 set(IMAGES
