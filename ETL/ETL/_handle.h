@@ -53,13 +53,24 @@ template <class T> class handle;
 template <class T> class loose_handle;
 template <class T> class rhandle;
 
-
-// ========================================================================
-/*!	\class	shared_object _handle.h	ETL/handle
-**	\brief	Shared Object Base Class
-**	\see handle, loose_handle
-**	\writeme
-*/
+/**
+ * A shared object, i.e. it stores a reference counter.
+ *
+ * It is a base class for object lifetime management to avoid memory leak
+ * and use after free (not freeing if being used/referenced somewhere else.
+ *
+ * Instances are expected to be pointers, not regular variables.
+ * As soon as the reference counter reaches back to zero (by unref()),
+ * the object is freed.
+ *
+ * Initial reference count is 0.
+ * In current code base, it is expected a shared_object to be wrapped in
+ * handle or rhandle objects, that increase the reference count.
+ *
+ * This class dates back 2005, when there were not std::shared_ptr<> and alike
+ *
+ * @see handle, loose_handle
+ */
 class shared_object
 {
 private:
@@ -75,12 +86,17 @@ protected:
 	virtual ~shared_object() { }
 
 public:
+	/** Increase the reference counter */
 	virtual void ref() const noexcept
 	{
 		++refcount;
 	}
 
-	//! Returns \c false if object needs to be deleted
+	/**
+	 *  Decreases the reference counter and destroy itself if it reaches 0.
+	 *
+	 *  It should be called only in objects in dynamic storage (heap allocation)
+	 */
 	virtual void unref() const
 	{
 		--refcount;
@@ -88,23 +104,37 @@ public:
 			delete this;
 	}
 
-	//! Decrease reference counter without deletion of object
-	//! Returns \c false if references exceed and object should be deleted
+	/**
+	 *  Decreases the reference counter.
+	 *
+	 *  It does not try to destroy itself. Use it carefully.
+	 */
 	virtual void unref_inactive() const noexcept
 	{
 		--refcount;
 	}
 
+	/** The current reference count */
 	int use_count() const noexcept { return refcount; }
 
 }; // END of class shared_object
 
-// ========================================================================
-/*!	\class	handle _handle.h	ETL/handle
-**	\brief	Object Handle
-**	\see shared_object, loose_handle
-**	\writeme
-*/
+/**
+ * A smart pointer that stores objects that have ref() and unref() methods.
+ *
+ * This class dates back 2005, when there were not std::shared_ptr<> and alike.
+ * It is somewhat similar to std::shared_ptr<>, but only works for objects
+ * that manages its reference count and lifetime by ref() and unref() methods.
+ *
+ * When it wraps an object, it makes sure its reference count is increase.
+ * As long as any handle for that same object exists, the object won't be
+ * destroyed.
+ *
+ * The stored object can be accessed transparently as if handle were an
+ * ordinary pointer.
+ *
+ * @see shared_object, loose_handle
+ */
 template <class T>
 class handle
 {
@@ -119,31 +149,37 @@ public:
 	typedef int size_type;
 
 protected:
-	value_type *obj;		//!< Pointer to object
+	/** The pointer to the owned object */
+	value_type* obj;
 
 public:
 
-	//! Default constructor - empty handle
+	/** Default constructor - empty handle */
 	handle() noexcept : obj(nullptr) { }
 
-	//! Constructor that constructs from a pointer to new object
+	/** Constructor with pointer to the managed object */
 	handle(pointer x):obj(x)
 	{
 		if(obj)
 			obj->ref();
 	}
 
-	//! Default copy constructor
+	/** Copy constructor */
 	handle(const handle<value_type>& x) noexcept : obj(x.get())
 	{
 		if(obj)
 			obj->ref();
 	}
 
-	//! Handle is released on deletion
+	/** Move constructor */
+	handle(handle<value_type>&& x) noexcept : obj(x.get())
+	{
+		x.obj = nullptr;
+	}
+
 	~handle() { reset(); }
 
-	//! Assignment operator
+	/** Copy assignment operator */
 	handle<value_type>&
 	operator=(const handle<value_type>& x) noexcept
 	{
@@ -157,7 +193,23 @@ public:
 		return *this;
 	}
 
-	//! Swaps the values of two handles without reference counts
+	/** Move assignment operator */
+	handle<value_type>&
+	operator=(handle<value_type>&& x) noexcept
+	{
+		if (this == &x || obj == x.get())
+			return *this;
+
+		if (obj)
+			obj->unref();
+
+		obj = x.get();
+		x.obj = nullptr;
+
+		return *this;
+	}
+
+	/** Swaps the values of two handles without touching the reference counts */
 	handle<value_type>&
 	swap(handle<value_type>& x) noexcept
 	{
@@ -167,8 +219,11 @@ public:
 		return *this;
 	}
 
-	//! Handle detach procedure
-	/*! unref()'s the object and sets the internal object pointer to \c nullptr */
+	/**
+	 * Handle detach procedure
+	 *
+	 * unref() the object and sets the internal object pointer to @c nullptr
+	 */
 	void
 	reset() noexcept
 	{
@@ -178,34 +233,48 @@ public:
 			xobj->unref();
 	}
 
+	/** Check if it does not own any object. @see operator bool() */
 	bool empty() const noexcept { return !obj; }
 
-	//! Creates a new instance of a T object and puts it in the handle.
-	/*! Uses the default constructor */
+	/**
+	 * Creates a new instance of a @c T object and puts it in the handle.
+	 *
+	 * Uses the default constructor
+	 */
 	void spawn() { operator=(handle(new T())); }
 
-	//! Returns a constant handle to our object
+	/** Returns a constant handle to owned object */
 	handle<const value_type> constant()const { assert(obj); return *this; }
 
-	//! Returns number of instances
+	/**
+	 * Returns number of instances/references of the owned object.
+	 *
+	 * Not reliable in a multithread environment.
+	 */
 	count_type
 	use_count() const noexcept
 		{ return obj ? obj->use_count() : 0; }
 
-	//! Returns true if there is only one instance of the object
+	/**
+	 * Checks if there is only one instance/reference of the owned object.
+	 *
+	 * Not reliable in a multithread environment.
+	 */
 	bool
 	unique() const noexcept
 		{ /* assert(obj); */ return use_count() == 1; }
 
+	/** Dereference the owned object pointer. */
 	reference
 	operator*() const noexcept
 		{ assert(obj); return *obj; }
 
+	/** Pointer to the owned object. */
 	pointer
 	operator->() const noexcept
 		{ assert(obj); return obj; }
 
-	//! More explicit bool cast
+	/** Explicit bool cast to check if it has an object pointer. @see empty() */
 	explicit operator bool() const noexcept
 		{ return obj != nullptr; }
 
@@ -236,18 +305,32 @@ public:
 	template <class U> static handle<T> cast_const		(U* x);
 	template <class U> static handle<T> cast_reinterpret(U* x);
 
-	//! Returns pointer to the object that is being wrapped
+	/** Returns pointer to the owned object */
 	pointer get() const noexcept { return obj; }
 
-	//! static_cast<> overload -- Useful for implicit casts
+	/** static_cast<> overload -- Useful for implicit casts */
 	template <class U>
 	operator handle<U>()const
 	{ return handle<U>(obj); }
 
+	/**
+	 * Check the type of owned object.
+	 *
+	 * @code{.cpp}
+	 * h.type_is<MyType>()
+	 * @endcode
+	 */
 	template<typename U>
 	bool type_is() const
 	{ return dynamic_cast<const U*>(obj); }
 
+	/**
+	 * Cast the pointer of owned object to other type.
+	 *
+	 * @code{.cpp}
+	 * MyType* p = h.type_pointer<MyType>()
+	 * @endcode
+	 */
 	template<typename U>
 	U* type_pointer() const
 	{ return dynamic_cast<U*>(obj); }
@@ -257,12 +340,23 @@ public:
 	{ return typeid(*obj) == typeid(U); }
 }; // END of template class handle
 
-// ========================================================================
-/*!	\class	rshared_object _handle.h	ETL/handle
-**	\brief	Replaceable Shared Object Base Class
-**	\see rhandle
-**	\writeme
-*/
+/**
+ * A replaceable shared object.
+ *
+ * Besides having its lifetime management, special smart pointers -
+ * called rhandles - that store this object are able to point to other
+ * object, if desired.
+ * In other words, rhandles that points to object A can be changed
+ * to point, all of them, to object B.
+ *
+ * This class is basically meant to be the base for ValueNodes, that
+ * can be replaced when connecting or linking value nodes, for example.
+ *
+ * The stored object can be accessed transparently as if handle were an
+ * ordinary pointer.
+ *
+ * @see rhandle, loose_handle, shared_object
+ */
 class rshared_object : public shared_object
 {
 	template<class T> friend class rhandle;
@@ -294,12 +388,29 @@ public:
 		{ return rrefcount; }
 }; // END of class rshared_object
 
-// ========================================================================
-/*!	\class	rhandle _handle.h	ETL/handle
-**	\brief	Replaceable Object Handle
-**	\see rshared_object, handle, loose_handle
-**	\writeme
-*/
+/**
+ * A smart pointer that is able to replace all others that store the same object
+ *
+ * Likewise handle class, this class dates back 2005, when C++ had not
+ * several of current standards.
+ * However, unlike handle class that is somehow similar to std::shared_ptr,
+ * rhandle does not have any equivalent on current C++ standard libraries.
+ *
+ * rhandle stands for "replaceable handle". It is a smart pointer, i.e. it
+ * manages a raw pointer, its lifetime via a reference counter.
+ * Additionally, it tracks all others rhandles that point to the same object
+ * in order to, if desired - by calling replace() - all rhandle smart pointers
+ * that manages that same object are changed all together to point to other
+ * object.
+ *
+ * This class expects a rshared_object to point to and it is aimed to deal
+ * with Synfig value nodes as layer parameters.
+ *
+ * The stored object can be accessed transparently as if handle were an
+ * ordinary pointer.
+ *
+ * @see rshared_object, handle, loose_handle
+ */
 template <class T>
 class rhandle : public handle<T>
 {
@@ -371,10 +482,10 @@ private:
 
 public:
 
-	//! Default constructor - empty handle
-	rhandle() noexcept {}
+	/** Default constructor - empty handle */
+	rhandle() noexcept : handle<T>() {}
 
-	//! Constructor that constructs from a pointer to new object
+	/** Constructor that constructs from a pointer to new object */
 	rhandle(pointer x):handle<T>(x)
 	{
 		if(obj)add_to_rlist();
@@ -385,16 +496,34 @@ public:
 		if(obj)add_to_rlist();
 	}
 
-	//! Default copy constructor
+	/** Copy constructor */
 	rhandle(const rhandle<value_type> &x):handle<T>(x)
 	{
 		if(obj)add_to_rlist();
 	}
 
-	//! Handle is released on deletion
+	/** Move constructor */
+	rhandle(rhandle<value_type>&& x) noexcept
+	{
+		obj = x.obj;
+		prev_ = x.prev_;
+		next_ = x.next_;
+		if (prev_)
+			prev_->next_ = this;
+		if (next_)
+			next_->prev_ = this;
+		if (obj) {
+			if (!obj->front_ || obj->front_ == &x)
+				obj->front_ = this;
+			if (!obj->back_ || obj->back_ == &x)
+				obj->back_ = this;
+		}
+		x.obj = nullptr;
+	}
+
 	~rhandle() { reset(); }
 
-	//! Assignment operator
+	/** Copy assignment operator */
 	rhandle<value_type> &
 	operator=(const rhandle<value_type> &x)
 	{
@@ -446,8 +575,37 @@ public:
 		return *this;
 	}
 
-	//! Handle release procedure
-	/*! unref()'s the object and sets the internal object pointer to \c nullptr */
+	/** Move assignment operator */
+	rhandle<value_type>&
+	operator=(rhandle<value_type>&& x) noexcept
+	{
+		if (x.get() == obj)
+			return *this;
+
+		reset();
+
+		obj = x.obj;
+		prev_ = x.prev_;
+		next_ = x.next_;
+		if (prev_)
+			prev_->next_ = this;
+		if (next_)
+			next_->prev_ = this;
+		if (obj) {
+			if (!obj->front_ || obj->front_ == &x)
+				obj->front_ = this;
+			if (!obj->back_ || obj->back_ == &x)
+				obj->back_ = this;
+		}
+		x.obj = nullptr;
+
+		return *this;
+	}
+
+	/**
+	 * Handle release procedure
+	 * unref()'s the object and sets the internal object pointer to @c nullptr
+	 */
 	void
 	reset() noexcept
 	{
@@ -456,25 +614,35 @@ public:
 		obj = nullptr;
 	}
 
-	//! Creates a new instance of a T object and puts it in the handle.
-	/*! Uses the default constructor */
+	/**
+	 * Creates a new instance of a T object and puts it in the rhandle.
+	 *
+	 * Uses the default constructor
+	 */
 	void spawn() { operator=(handle<value_type>(new T())); }
 
-	//! Returns number of reversible instances
+	/** Returns number of replaceable instances */
 	count_type
 	rcount() const noexcept
 	{
 		return obj?obj->rcount():0;
 	}
 
-	//! Returns true if there is only one instance of the object
+	/** Returns true if there is only one instance of the object */
 	bool
 	runique() const noexcept
 	{
 		assert(obj); return obj->front_==obj->back_;
 	}
 
-	//! \writeme
+	/**
+	 *  Replace the object pointer of this and all other 'sibbling' rhandle objects.
+	 *
+	 *  By 'sibbling' we mean rhandle that points to same rshared_object.
+	 *
+	 *  @param x the new object this rhandle and its sibblings shall point to.
+	 *  @return the number of replacements done
+	 */
 	int replace(const handle<value_type> &x)
 	{
 		assert(obj);
@@ -508,19 +676,28 @@ public:
 		return i;
 	}
 
-	//! Swaps the values of two handles without reference counts
-	/*!	\warning not yet implemented. \writeme */
+	/**
+	 * Swaps the values of two handles without reference counts
+	 * @warning not yet implemented.
+	 */
 	handle<value_type> &
 	swap(handle<value_type> &x);
 }; // END of template class rhandle
 
-
-// ========================================================================
-/*!	\class	loose_handle _handle.h	ETL/handle
-**	\brief	Loose Object Handle
-**	\see shared_object, handle
-**	\writeme
-*/
+/**
+ * A not-smart pointer to objects that have use_count() method.
+ *
+ * This class does not own a pointer, just stores it without any
+ * lifetime management or reference count deal. The object pointer
+ * is just wrapped to provide some convenient methods.
+ *
+ * It isn't like std::weak_ptr in 'modern' C++, it is way more simpler.
+ *
+ * The pointed object can be accessed transparently as if handle were an
+ * ordinary pointer.
+ *
+ * @see shared_object, handle
+ */
 template <class T>
 class loose_handle
 {
@@ -535,20 +712,26 @@ public:
 	typedef int size_type;
 
 protected:
-	value_type *obj;		//!< Pointer to object
+	/** The pointer to the owned object */
+	value_type* obj;
 
 public:
 
-	//! Default constructor - empty handle
+	/** Default constructor - empty handle */
 	loose_handle() noexcept : obj(nullptr) { }
 
-	//! Constructor that constructs from a pointer to new object
+	/** Constructor that constructs from a pointer to new object */
 	loose_handle(pointer x) noexcept : obj(x) { }
 
-	//! Default copy constructor
+	/** Copy constructor */
 	loose_handle(const loose_handle<value_type>& x) noexcept : obj(x.get()) { }
 
+	/** Move constructor */
+	loose_handle(loose_handle<value_type>&& x) noexcept : obj(x.get()) { }
+
 	loose_handle(const handle<value_type> &x) noexcept : obj(x.get()) { }
+
+	~loose_handle() {}
 
 	template <class U> const loose_handle<value_type>&
 	operator=(const handle<U>& x) noexcept
@@ -570,7 +753,7 @@ public:
 		return *this;
 	}
 
-	//! Assignment operator
+	/** Copy assignment operator */
 	const loose_handle<value_type>&
 	operator=(const loose_handle<value_type>& x) noexcept
 	{
@@ -581,7 +764,18 @@ public:
 		return *this;
 	}
 
-	//! Swaps the values of two handles without reference counts
+	/** Move assignment operator */
+	const loose_handle<value_type>&
+	operator=(loose_handle<value_type>&& x) noexcept
+	{
+		if (x.get() == obj)
+			return *this;
+
+		obj = x.get();
+		return *this;
+	}
+
+	/** Swaps the values of two handles without reference counts */
 	loose_handle<value_type>&
 	swap(loose_handle<value_type>& x) noexcept
 	{
@@ -591,31 +785,35 @@ public:
 		return *this;
 	}
 
-	//! Handle release procedure
+	/** Handle release procedure */
 	void reset() noexcept
 	{
 		obj = nullptr;
 	}
 
+	/** Check if it does not own any object. @see operator bool() */
 	bool empty() const noexcept { return !obj; }
 
-	//! Returns a constant handle to our object
+	/** Returns a constant handle to our object */
 	loose_handle<const value_type> constant()const { return *this; }
 
-	//! Returns number of instances
+	/** The current reference count */
 	count_type
 	use_count() const noexcept
 		{ return obj ? obj->use_count() : 0; }
 
+
+	/** Dereference the owned object pointer. */
 	reference
 	operator*() const noexcept
 		{ assert(obj); return *obj; }
 
+	/** Pointer to the owned object. */
 	pointer
 	operator->() const noexcept
 		{ assert(obj); return obj; }
 
-	//! static_cast<> overload (for consts)
+	/** static_cast<> overload (for consts) */
 	operator loose_handle<const value_type>()const
 	{ return loose_handle<const value_type>(static_cast<const_pointer>(obj)); }
 
@@ -625,17 +823,31 @@ public:
 	operator rhandle<value_type>()const
 	{ return rhandle<value_type>(obj); }
 
-	//! Returns pointer to the object that is being wrapped
+	/** Returns pointer to the owned object */
 	pointer get() const noexcept { return obj; }
 
-	//! More explicit bool cast
+	/** Explicit bool cast to check if it has an object pointer. @see empty() */
 	explicit operator bool() const noexcept
 		{ return obj != nullptr; }
 
+	/**
+	 * Check the type of owned object.
+	 *
+	 * @code{.cpp}
+	 * h.type_is<MyType>()
+	 * @endcode
+	 */
 	template<typename U>
 	bool type_is() const
 	{ return dynamic_cast<const U*>(obj); }
 
+	/**
+	 * Cast the pointer of owned object to other type.
+	 *
+	 * @code{.cpp}
+	 * MyType* p = h.type_pointer<MyType>()
+	 * @endcode
+	 */
 	template<typename U>
 	U* type_pointer() const
 	{ return dynamic_cast<U*>(obj); }

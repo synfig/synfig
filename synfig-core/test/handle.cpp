@@ -596,6 +596,210 @@ handle_swap_does_not_change_refcounts()
 	ASSERT_EQUAL(1, real_obj2->use_count());
 }
 
+void
+handle_move_constructor_stores_the_same_object()
+{
+	BasicSharedObject* real_obj = new BasicSharedObject();
+
+	BasicSharedObject::Handle obj((BasicSharedObject::Handle(real_obj)));
+
+	ASSERT(obj.get() == real_obj);
+}
+
+void
+handle_move_constructor_does_not_increase_refcount()
+{
+	BasicSharedObject* real_obj = new BasicSharedObject();
+
+	BasicSharedObject::Handle obj((BasicSharedObject::Handle(real_obj)));
+
+	ASSERT_EQUAL(1, real_obj->use_count());
+	ASSERT_EQUAL(1, obj->use_count());
+}
+
+void
+handle_move_constructor_removes_from_source_handle()
+{
+	BasicSharedObject* real_obj = new BasicSharedObject();
+
+	BasicSharedObject::Handle obj1(real_obj);
+	BasicSharedObject::Handle obj2(std::move(obj1));
+
+	ASSERT_FALSE(obj1);
+	ASSERT(obj1.get() == nullptr);
+	ASSERT(obj2.get() == real_obj);
+}
+
+void
+handle_move_assignment_stores_the_same_object()
+{
+	BasicSharedObject* real_obj = new BasicSharedObject();
+
+	BasicSharedObject::Handle obj1(real_obj);
+	BasicSharedObject::Handle obj2 = std::move(obj1);
+
+	ASSERT(obj2.get() == real_obj);
+}
+
+void
+handle_move_assignment_does_not_increase_refcount()
+{
+	BasicSharedObject* real_obj = new BasicSharedObject();
+
+	BasicSharedObject::Handle obj1(real_obj);
+	BasicSharedObject::Handle obj2 = std::move(obj1);
+
+	ASSERT_EQUAL(1, real_obj->use_count());
+}
+
+void
+handle_move_assignment_safely_moves_to_itself()
+{
+	BasicSharedObject* real_obj = new BasicSharedObject();
+
+	BasicSharedObject::Handle obj1(real_obj);
+	obj1 = std::move(obj1);
+
+	ASSERT_EQUAL(1, real_obj->use_count());
+	ASSERT(obj1.get() == real_obj);
+}
+
+void
+handle_move_assignment_from_empty_handle_discards_previous_object()
+{
+	BasicSharedObject* real_obj = new BasicSharedObject();
+	DeleteGuard<BasicSharedObject> guard(real_obj);
+
+	real_obj->ref();
+
+	BasicSharedObject::Handle obj1(real_obj);
+
+	obj1 = std::move(BasicSharedObject::Handle());
+	ASSERT(obj1.empty());
+	ASSERT_EQUAL(0, obj1.use_count());
+}
+
+void
+handle_move_assignment_from_empty_handle_decreases_previous_object_refcount()
+{
+	BasicSharedObject* real_obj1 = new BasicSharedObject();
+	DeleteGuard<BasicSharedObject> guard(real_obj1);
+
+	real_obj1->ref();
+
+	BasicSharedObject::Handle obj1(real_obj1);
+
+	BasicSharedObject::Handle obj2(new BasicSharedObject());
+
+	ASSERT_EQUAL(2, real_obj1->use_count());
+
+	obj1 = std::move(obj2);
+
+	ASSERT_EQUAL(1, real_obj1->use_count());
+}
+
+void
+handle_move_assignment_from_empty_deletes_previous_object_if_it_is_time()
+{
+	int delete_counter = 0;
+
+	RIPSharedObject* real_obj = new RIPSharedObject(delete_counter);
+
+	RIPSharedObject::Handle obj1(real_obj);
+
+	ASSERT_EQUAL(1, real_obj->use_count());
+
+	obj1 = std::move(RIPSharedObject::Handle());
+	ASSERT_EQUAL(1, delete_counter);
+}
+
+void
+handle_move_assignment_removes_from_source_handle()
+{
+	BasicSharedObject* real_obj = new BasicSharedObject();
+
+	BasicSharedObject::Handle obj1(real_obj);
+	BasicSharedObject::Handle obj2 = std::move(obj1);
+
+	ASSERT_FALSE(obj1);
+	ASSERT(obj1.get() == nullptr);
+}
+
+void
+handle_move_assignment_from_other_handle_discards_previous_object()
+{
+	BasicSharedObject* real_obj1 = new BasicSharedObject();
+	BasicSharedObject* real_obj2 = new BasicSharedObject();
+	DeleteGuard<BasicSharedObject> guard(real_obj1);
+
+	real_obj1->ref();
+
+	BasicSharedObject::Handle obj1(real_obj1);
+
+	BasicSharedObject::Handle obj2(real_obj2);
+
+	obj1 = std::move(obj2);
+
+	ASSERT_FALSE(obj1.get() == real_obj1);
+	ASSERT(obj1.get() == real_obj2);
+}
+
+void
+handle_move_assignment_from_other_handle_decreases_previous_object_refcount()
+{
+	BasicSharedObject* real_obj1 = new BasicSharedObject();
+	DeleteGuard<BasicSharedObject> guard(real_obj1);
+
+	real_obj1->ref();
+
+	BasicSharedObject::Handle obj1(real_obj1);
+
+	BasicSharedObject::Handle obj2(new BasicSharedObject());
+
+	obj1 = std::move(obj2);
+
+	ASSERT_EQUAL(1, real_obj1->use_count());
+}
+
+void
+handle_move_assignment_from_other_handle_with_same_object_does_not_decrease_object_refcount()
+{
+	BasicSharedObject* real_obj1 = new BasicSharedObject();
+	DeleteGuard<BasicSharedObject> guard(real_obj1);
+
+	real_obj1->ref();
+
+	BasicSharedObject::Handle obj1(real_obj1);
+
+	BasicSharedObject::Handle obj2(real_obj1);
+
+	ASSERT_EQUAL(3, obj1->use_count());
+	ASSERT_EQUAL(3, obj2->use_count());
+
+	obj1 = std::move(obj2);
+
+	ASSERT_EQUAL(3, real_obj1->use_count());
+}
+
+void
+handle_move_assignment_from_other_handle_deletes_previous_object_if_it_is_time()
+{
+	int delete_counter1 = 0;
+	int delete_counter2 = 0;
+	RIPSharedObject* real_obj1 = new RIPSharedObject(delete_counter1);
+
+	RIPSharedObject::Handle obj1(real_obj1);
+
+	RIPSharedObject::Handle obj2(new RIPSharedObject(delete_counter2));
+
+	ASSERT_EQUAL(1, obj1->use_count());
+	ASSERT_EQUAL(1, obj2->use_count());
+
+	obj1 = std::move(obj2);
+
+	ASSERT_EQUAL(1, delete_counter1);
+	ASSERT_EQUAL(0, delete_counter2);
+}
 
 void
 loose_handle_default_constructor_means_empty()
@@ -1190,6 +1394,469 @@ rhandle_general_use_test()
 }
 
 void
+rhandle_copy_constructor()
+{
+	MyTestObj::instance_count = 0;
+
+	RObjHandle obj1(new MyTestObj(1001));
+	RObjHandle obj2(obj1);
+
+	ASSERT(obj1.get() == obj2.get());
+	ASSERT_EQUAL(1001, obj1->my_id);
+	ASSERT_EQUAL(1001, obj2->my_id);
+	ASSERT_EQUAL(2, obj1.use_count());
+	ASSERT_EQUAL(2, obj2.use_count());
+	ASSERT_EQUAL(2, obj1.rcount());
+	ASSERT_EQUAL(2, obj2.rcount());
+
+	RObjHandle obj3(new MyTestObj(2002));
+	ASSERT_EQUAL(2, MyTestObj::instance_count);
+
+	ASSERT(obj1.replace(obj3));
+	ASSERT(obj1.get() == obj2.get());
+	ASSERT(obj1.get() == obj3.get());
+	ASSERT_EQUAL(2002, obj1->my_id);
+	ASSERT_EQUAL(2002, obj3->my_id);
+	ASSERT_EQUAL(3, obj1.use_count());
+	ASSERT_EQUAL(3, obj2.use_count());
+	ASSERT_EQUAL(3, obj1.rcount());
+	ASSERT_EQUAL(3, obj2.rcount());
+
+	ASSERT_EQUAL(1, MyTestObj::instance_count);
+}
+
+void
+rhandle_copy_assignment()
+{
+	MyTestObj::instance_count = 0;
+
+	RObjHandle obj1 = new MyTestObj(1001);
+	RObjHandle obj2 = obj1;
+
+	ASSERT(obj1.get() == obj2.get());
+	ASSERT_EQUAL(1001, obj1->my_id);
+	ASSERT_EQUAL(1001, obj2->my_id);
+	ASSERT_EQUAL(2, obj1.use_count());
+	ASSERT_EQUAL(2, obj2.use_count());
+	ASSERT_EQUAL(2, obj1.rcount());
+	ASSERT_EQUAL(2, obj2.rcount());
+
+	RObjHandle obj3 = new MyTestObj(2002);
+	ASSERT_EQUAL(2, MyTestObj::instance_count);
+
+	ASSERT(obj1.replace(obj3));
+	ASSERT(obj1.get() == obj2.get());
+	ASSERT(obj1.get() == obj3.get());
+	ASSERT_EQUAL(2002, obj1->my_id);
+	ASSERT_EQUAL(2002, obj3->my_id);
+	ASSERT_EQUAL(3, obj1.use_count());
+	ASSERT_EQUAL(3, obj2.use_count());
+	ASSERT_EQUAL(3, obj1.rcount());
+	ASSERT_EQUAL(3, obj2.rcount());
+
+	ASSERT_EQUAL(1, MyTestObj::instance_count);
+}
+
+void
+rhandle_copy_assignment_to_nonnull()
+{
+	MyTestObj::instance_count = 0;
+
+	RObjHandle obj1 = new MyTestObj(1001);
+	const RObjHandle obj2 = new MyTestObj(2002);
+
+	ASSERT_EQUAL(2, MyTestObj::instance_count);
+
+	ASSERT(obj1.get() != obj2.get());
+	ASSERT_EQUAL(1001, obj1->my_id);
+	ASSERT_EQUAL(2002, obj2->my_id);
+	ASSERT_EQUAL(1, obj1.use_count());
+	ASSERT_EQUAL(1, obj2.use_count());
+	ASSERT_EQUAL(1, obj1.rcount());
+	ASSERT_EQUAL(1, obj2.rcount());
+
+	obj1 = obj2;
+	ASSERT_EQUAL(1, MyTestObj::instance_count);
+
+	ASSERT(obj1.get() == obj2.get());
+	ASSERT_EQUAL(2002, obj1->my_id);
+	ASSERT_EQUAL(2002, obj2->my_id);
+	ASSERT_EQUAL(2, obj1.use_count());
+	ASSERT_EQUAL(2, obj2.use_count());
+	ASSERT_EQUAL(2, obj1.rcount());
+	ASSERT_EQUAL(2, obj2.rcount());
+}
+
+void
+rhandle_move_constructor()
+{
+	MyTestObj::instance_count = 0;
+
+	RObjHandle obj1(std::move(new MyTestObj(1001)));
+	RObjHandle obj2(std::move(new MyTestObj(2002)));
+	ASSERT_EQUAL(2, MyTestObj::instance_count);
+
+	ASSERT(obj1.get() != obj2.get());
+	ASSERT_EQUAL(1001, obj1->my_id);
+	ASSERT_EQUAL(2002, obj2->my_id);
+	ASSERT_EQUAL(1, obj1.use_count());
+	ASSERT_EQUAL(1, obj2.use_count());
+	ASSERT_EQUAL(1, obj1.rcount());
+	ASSERT_EQUAL(1, obj2.rcount());
+
+	RObjHandle obj4(std::move(obj1));
+
+	ASSERT_EQUAL(2, MyTestObj::instance_count);
+
+	ASSERT(obj1.get() != obj2.get());
+	ASSERT_FALSE(obj1);
+	ASSERT_EQUAL(1001, obj4->my_id);
+	ASSERT_EQUAL(0, obj1.use_count());
+	ASSERT_EQUAL(1, obj2.use_count());
+	ASSERT_EQUAL(1, obj4.use_count());
+	ASSERT_EQUAL(0, obj1.rcount());
+	ASSERT_EQUAL(1, obj2.rcount());
+	ASSERT_EQUAL(1, obj4.rcount());
+
+	RObjHandle obj3(std::move(new MyTestObj(3003)));
+	ASSERT_EQUAL(3, MyTestObj::instance_count);
+
+	ASSERT(obj2.replace(std::move(obj3)));
+	ASSERT_EQUAL(3003, obj2->my_id);
+}
+
+void
+rhandle_move_assignment_to_null()
+{
+	MyTestObj::instance_count = 0;
+
+	RObjHandle obj1 = std::move(new MyTestObj(1001));
+	RObjHandle obj2;
+	ASSERT_EQUAL(1, MyTestObj::instance_count);
+
+	ASSERT(obj1.get() != obj2.get());
+	ASSERT_EQUAL(1001, obj1->my_id);
+	ASSERT_FALSE(obj2);
+	ASSERT_EQUAL(1, obj1.use_count());
+	ASSERT_EQUAL(0, obj2.use_count());
+	ASSERT_EQUAL(1, obj1.rcount());
+	ASSERT_EQUAL(0, obj2.rcount());
+
+	obj2 = std::move(obj1);
+
+	ASSERT_EQUAL(1, MyTestObj::instance_count);
+
+	ASSERT(obj1.get() != obj2.get());
+	ASSERT_FALSE(obj1);
+	ASSERT_EQUAL(1001, obj2->my_id);
+	ASSERT_EQUAL(0, obj1.use_count());
+	ASSERT_EQUAL(1, obj2.use_count());
+	ASSERT_EQUAL(0, obj1.rcount());
+	ASSERT_EQUAL(1, obj2.rcount());
+}
+
+void
+rhandle_move_assignment_to_nonnull()
+{
+	MyTestObj::instance_count = 0;
+
+	RObjHandle obj1 = std::move(new MyTestObj(1001));
+	RObjHandle obj2 = std::move(new MyTestObj(2002));
+	ASSERT_EQUAL(2, MyTestObj::instance_count);
+
+	ASSERT(obj1.get() != obj2.get());
+	ASSERT_EQUAL(1001, obj1->my_id);
+	ASSERT_EQUAL(2002, obj2->my_id);
+	ASSERT_EQUAL(1, obj1.use_count());
+	ASSERT_EQUAL(1, obj2.use_count());
+	ASSERT_EQUAL(1, obj1.rcount());
+	ASSERT_EQUAL(1, obj2.rcount());
+
+	obj2 = std::move(obj1);
+
+	ASSERT_EQUAL(1, MyTestObj::instance_count);
+
+	ASSERT_FALSE(obj1);
+	ASSERT(obj1.get() != obj2.get());
+	ASSERT_EQUAL(1001, obj2->my_id);
+	ASSERT_EQUAL(0, obj1.use_count());
+	ASSERT_EQUAL(1, obj2.use_count());
+	ASSERT_EQUAL(0, obj1.rcount());
+	ASSERT_EQUAL(1, obj2.rcount());
+}
+
+void
+rhandle_replace_simple_case()
+{
+	MyTestObj::instance_count = 0;
+
+	RObjHandle obj1 = new MyTestObj(1001);
+	RObjHandle obj2 = obj1;
+	RObjHandle obj3 = obj1;
+	ASSERT_EQUAL(1, MyTestObj::instance_count);
+
+	ASSERT_EQUAL(1001, obj1->my_id);
+	ASSERT_EQUAL(1001, obj2->my_id);
+	ASSERT_EQUAL(1001, obj3->my_id);
+	ASSERT_EQUAL(3, obj1.use_count());
+	ASSERT_EQUAL(3, obj2.use_count());
+	ASSERT_EQUAL(3, obj3.use_count());
+	ASSERT_EQUAL(3, obj1.rcount());
+	ASSERT_EQUAL(3, obj2.rcount());
+	ASSERT_EQUAL(3, obj3.rcount());
+
+	RObjHandle obj4 = new MyTestObj(44);
+
+	ASSERT_EQUAL(2, MyTestObj::instance_count);
+
+	obj1.replace(obj4);
+	ASSERT_EQUAL(1, MyTestObj::instance_count);
+	ASSERT_EQUAL(44, obj1->my_id);
+	ASSERT_EQUAL(44, obj2->my_id);
+	ASSERT_EQUAL(44, obj3->my_id);
+	ASSERT_EQUAL(44, obj4->my_id);
+	ASSERT_EQUAL(4, obj1.use_count());
+	ASSERT_EQUAL(4, obj2.use_count());
+	ASSERT_EQUAL(4, obj3.use_count());
+	ASSERT_EQUAL(4, obj4.use_count());
+	ASSERT_EQUAL(4, obj1.rcount());
+	ASSERT_EQUAL(4, obj2.rcount());
+	ASSERT_EQUAL(4, obj3.rcount());
+	ASSERT_EQUAL(4, obj4.rcount());
+
+	obj2.replace(new MyTestObj(555));
+	ASSERT_EQUAL(1, MyTestObj::instance_count);
+	ASSERT_EQUAL(555, obj1->my_id);
+	ASSERT_EQUAL(555, obj2->my_id);
+	ASSERT_EQUAL(555, obj3->my_id);
+	ASSERT_EQUAL(555, obj4->my_id);
+	ASSERT_EQUAL(4, obj1.use_count());
+	ASSERT_EQUAL(4, obj2.use_count());
+	ASSERT_EQUAL(4, obj3.use_count());
+	ASSERT_EQUAL(4, obj4.use_count());
+	ASSERT_EQUAL(4, obj1.rcount());
+	ASSERT_EQUAL(4, obj2.rcount());
+	ASSERT_EQUAL(4, obj3.rcount());
+	ASSERT_EQUAL(4, obj4.rcount());
+
+	obj4.replace(new MyTestObj(66));
+	ASSERT_EQUAL(1, MyTestObj::instance_count);
+	ASSERT_EQUAL(66, obj1->my_id);
+	ASSERT_EQUAL(66, obj2->my_id);
+	ASSERT_EQUAL(66, obj3->my_id);
+	ASSERT_EQUAL(66, obj4->my_id);
+	ASSERT_EQUAL(4, obj1.use_count());
+	ASSERT_EQUAL(4, obj2.use_count());
+	ASSERT_EQUAL(4, obj3.use_count());
+	ASSERT_EQUAL(4, obj4.use_count());
+	ASSERT_EQUAL(4, obj1.rcount());
+	ASSERT_EQUAL(4, obj2.rcount());
+	ASSERT_EQUAL(4, obj3.rcount());
+	ASSERT_EQUAL(4, obj4.rcount());
+
+	obj3.replace(new MyTestObj(7));
+	ASSERT_EQUAL(1, MyTestObj::instance_count);
+	ASSERT_EQUAL(7, obj1->my_id);
+	ASSERT_EQUAL(7, obj2->my_id);
+	ASSERT_EQUAL(7, obj3->my_id);
+	ASSERT_EQUAL(7, obj4->my_id);
+	ASSERT_EQUAL(4, obj1.use_count());
+	ASSERT_EQUAL(4, obj2.use_count());
+	ASSERT_EQUAL(4, obj3.use_count());
+	ASSERT_EQUAL(4, obj4.use_count());
+	ASSERT_EQUAL(4, obj1.rcount());
+	ASSERT_EQUAL(4, obj2.rcount());
+	ASSERT_EQUAL(4, obj3.rcount());
+	ASSERT_EQUAL(4, obj4.rcount());
+}
+
+void
+rhandle_replace_merging_two_lists()
+{
+	MyTestObj::instance_count = 0;
+
+	RObjHandle obj1a = new MyTestObj(1001);
+	RObjHandle obj1b = obj1a;
+	RObjHandle obj1c = obj1a;
+	ASSERT_EQUAL(1, MyTestObj::instance_count);
+
+	ASSERT_EQUAL(1001, obj1a->my_id);
+	ASSERT_EQUAL(1001, obj1b->my_id);
+	ASSERT_EQUAL(1001, obj1c->my_id);
+	ASSERT_EQUAL(3, obj1a.use_count());
+	ASSERT_EQUAL(3, obj1b.use_count());
+	ASSERT_EQUAL(3, obj1c.use_count());
+	ASSERT_EQUAL(3, obj1a.rcount());
+	ASSERT_EQUAL(3, obj1b.rcount());
+	ASSERT_EQUAL(3, obj1c.rcount());
+
+	RObjHandle obj2a = new MyTestObj(222);
+	RObjHandle obj2b = obj2a;
+	RObjHandle obj2c = obj2a;
+
+	ASSERT_EQUAL(2, MyTestObj::instance_count);
+
+	obj1a.replace(obj2b);
+	ASSERT_EQUAL(1, MyTestObj::instance_count);
+	ASSERT_EQUAL(222, obj1a->my_id);
+	ASSERT_EQUAL(222, obj1b->my_id);
+	ASSERT_EQUAL(222, obj1c->my_id);
+	ASSERT_EQUAL(222, obj2a->my_id);
+	ASSERT_EQUAL(222, obj2b->my_id);
+	ASSERT_EQUAL(222, obj2c->my_id);
+	ASSERT_EQUAL(6, obj1a.use_count());
+	ASSERT_EQUAL(6, obj1b.use_count());
+	ASSERT_EQUAL(6, obj1c.use_count());
+	ASSERT_EQUAL(6, obj2a.use_count());
+	ASSERT_EQUAL(6, obj2b.use_count());
+	ASSERT_EQUAL(6, obj2c.use_count());
+	ASSERT_EQUAL(6, obj1a.rcount());
+	ASSERT_EQUAL(6, obj1b.rcount());
+	ASSERT_EQUAL(6, obj1c.rcount());
+	ASSERT_EQUAL(6, obj2a.rcount());
+	ASSERT_EQUAL(6, obj2b.rcount());
+	ASSERT_EQUAL(6, obj2c.rcount());
+}
+
+void
+rhandle_move_to_a_rhandle_list()
+{
+	MyTestObj::instance_count = 0;
+
+	RObjHandle obj1a = new MyTestObj(1001);
+	RObjHandle obj1b = obj1a;
+	RObjHandle obj1c = obj1a;
+	ASSERT_EQUAL(1, MyTestObj::instance_count);
+
+	ASSERT_EQUAL(1001, obj1a->my_id);
+	ASSERT_EQUAL(1001, obj1b->my_id);
+	ASSERT_EQUAL(1001, obj1c->my_id);
+	ASSERT_EQUAL(3, obj1a.use_count());
+	ASSERT_EQUAL(3, obj1b.use_count());
+	ASSERT_EQUAL(3, obj1c.use_count());
+	ASSERT_EQUAL(3, obj1a.rcount());
+	ASSERT_EQUAL(3, obj1b.rcount());
+	ASSERT_EQUAL(3, obj1c.rcount());
+
+	RObjHandle obj2a = new MyTestObj(222);
+	RObjHandle obj2b = obj2a;
+	RObjHandle obj2c = obj2a;
+
+	ASSERT_EQUAL(2, MyTestObj::instance_count);
+
+	obj1b = std::move(obj2b);
+	ASSERT_EQUAL(2, MyTestObj::instance_count);
+	ASSERT_FALSE(obj2b);
+	ASSERT_EQUAL(1001, obj1a->my_id);
+	ASSERT_EQUAL(222, obj1b->my_id);
+	ASSERT_EQUAL(1001, obj1c->my_id);
+	ASSERT_EQUAL(222, obj2a->my_id);
+	ASSERT_EQUAL(222, obj2c->my_id);
+	ASSERT_EQUAL(2, obj1a.use_count());
+	ASSERT_EQUAL(3, obj1b.use_count());
+	ASSERT_EQUAL(2, obj1c.use_count());
+	ASSERT_EQUAL(3, obj2a.use_count());
+	ASSERT_EQUAL(0, obj2b.use_count());
+	ASSERT_EQUAL(3, obj2c.use_count());
+	ASSERT_EQUAL(2, obj1a.rcount());
+	ASSERT_EQUAL(3, obj1b.rcount());
+	ASSERT_EQUAL(2, obj1c.rcount());
+	ASSERT_EQUAL(3, obj2a.rcount());
+	ASSERT_EQUAL(0, obj2b.rcount());
+	ASSERT_EQUAL(3, obj2c.rcount());
+
+	obj1b.replace(new MyTestObj(55));
+	ASSERT_EQUAL(2, MyTestObj::instance_count);
+	ASSERT_FALSE(obj2b);
+	ASSERT_EQUAL(1001, obj1a->my_id);
+	ASSERT_EQUAL(55, obj1b->my_id);
+	ASSERT_EQUAL(1001, obj1c->my_id);
+	ASSERT_EQUAL(55, obj2a->my_id);
+	ASSERT_EQUAL(55, obj2c->my_id);
+
+	obj2a.replace(new MyTestObj(6));
+	ASSERT_EQUAL(2, MyTestObj::instance_count);
+	ASSERT_FALSE(obj2b);
+	ASSERT_EQUAL(1001, obj1a->my_id);
+	ASSERT_EQUAL(6, obj1b->my_id);
+	ASSERT_EQUAL(1001, obj1c->my_id);
+	ASSERT_EQUAL(6, obj2a->my_id);
+	ASSERT_EQUAL(6, obj2c->my_id);
+
+	obj2c.replace(new MyTestObj(707));
+	ASSERT_EQUAL(2, MyTestObj::instance_count);
+	ASSERT_FALSE(obj2b);
+	ASSERT_EQUAL(1001, obj1a->my_id);
+	ASSERT_EQUAL(707, obj1b->my_id);
+	ASSERT_EQUAL(1001, obj1c->my_id);
+	ASSERT_EQUAL(707, obj2a->my_id);
+	ASSERT_EQUAL(707, obj2c->my_id);
+
+	obj1c.replace(new MyTestObj(88));
+	ASSERT_EQUAL(2, MyTestObj::instance_count);
+	ASSERT_FALSE(obj2b);
+	ASSERT_EQUAL(88, obj1a->my_id);
+	ASSERT_EQUAL(707, obj1b->my_id);
+	ASSERT_EQUAL(88, obj1c->my_id);
+	ASSERT_EQUAL(707, obj2a->my_id);
+	ASSERT_EQUAL(707, obj2c->my_id);
+}
+
+void
+rhandle_move_to_a_rhandle_list_start()
+{
+	MyTestObj::instance_count = 0;
+
+	RObjHandle obj1a = new MyTestObj(1001);
+	RObjHandle obj1b = obj1a;
+	RObjHandle obj1c = obj1a;
+	ASSERT_EQUAL(1, MyTestObj::instance_count);
+
+	RObjHandle obj2a = new MyTestObj(222);
+	RObjHandle obj2b = obj2a;
+
+	ASSERT_EQUAL(2, MyTestObj::instance_count);
+
+	obj1a = std::move(obj2a);
+	ASSERT_EQUAL(2, MyTestObj::instance_count);
+	ASSERT_FALSE(obj2a);
+
+	ASSERT_EQUAL(2, obj1b.replace(new MyTestObj(55)));
+	ASSERT_EQUAL(2, MyTestObj::instance_count);
+	ASSERT_EQUAL(222, obj1a->my_id);
+	ASSERT_EQUAL(55, obj1b->my_id);
+	ASSERT_EQUAL(55, obj1c->my_id);
+	ASSERT_EQUAL(222, obj2b->my_id);
+}
+
+void
+rhandle_move_to_a_rhandle_list_start_2()
+{
+	MyTestObj::instance_count = 0;
+
+	RObjHandle obj1a = new MyTestObj(1001);
+	RObjHandle obj1b = obj1a;
+	RObjHandle obj1c = obj1a;
+	ASSERT_EQUAL(1, MyTestObj::instance_count);
+
+	RObjHandle obj2a = new MyTestObj(222);
+	RObjHandle obj2b = obj2a;
+
+	ASSERT_EQUAL(2, MyTestObj::instance_count);
+
+	obj1a = std::move(obj2a);
+	ASSERT_EQUAL(2, MyTestObj::instance_count);
+	ASSERT_FALSE(obj2a);
+
+	ASSERT_EQUAL(2, obj2b.replace(new MyTestObj(55)));
+	ASSERT_EQUAL(2, MyTestObj::instance_count);
+	ASSERT_EQUAL(55, obj1a->my_id);
+	ASSERT_EQUAL(1001, obj1b->my_id);
+	ASSERT_EQUAL(1001, obj1c->my_id);
+	ASSERT_EQUAL(55, obj2b->my_id);
+}
+
+void
 handle_inheritance_test()
 {
 	MyTestObj::instance_count = 0;
@@ -1340,6 +2007,20 @@ int main()
 	TEST_FUNCTION(handle_comparing_to_a_different_object_means_always_false);
 	TEST_FUNCTION(handle_swap_does_its_job);
 	TEST_FUNCTION(handle_swap_does_not_change_refcounts);
+	TEST_FUNCTION(handle_move_constructor_stores_the_same_object);
+	TEST_FUNCTION(handle_move_constructor_does_not_increase_refcount);
+	TEST_FUNCTION(handle_move_constructor_removes_from_source_handle);
+	TEST_FUNCTION(handle_move_assignment_stores_the_same_object);
+	TEST_FUNCTION(handle_move_assignment_does_not_increase_refcount);
+	TEST_FUNCTION(handle_move_assignment_safely_moves_to_itself);
+	TEST_FUNCTION(handle_move_assignment_from_empty_handle_discards_previous_object);
+	TEST_FUNCTION(handle_move_assignment_from_empty_handle_decreases_previous_object_refcount);
+	TEST_FUNCTION(handle_move_assignment_from_empty_deletes_previous_object_if_it_is_time);
+	TEST_FUNCTION(handle_move_assignment_removes_from_source_handle);
+	TEST_FUNCTION(handle_move_assignment_from_other_handle_discards_previous_object);
+	TEST_FUNCTION(handle_move_assignment_from_other_handle_decreases_previous_object_refcount);
+	TEST_FUNCTION(handle_move_assignment_from_other_handle_with_same_object_does_not_decrease_object_refcount);
+	TEST_FUNCTION(handle_move_assignment_from_other_handle_deletes_previous_object_if_it_is_time);
 
 	TEST_FUNCTION(loose_handle_default_constructor_means_empty);
 	TEST_FUNCTION(loose_handle_constructor_does_not_increase_refcount);
@@ -1374,6 +2055,19 @@ int main()
 	TEST_FUNCTION(loose_handle_assignment_from_handle_does_not_increase_refcount);
 	TEST_FUNCTION(handle_assignment_from_loose_handle_stores_the_same_object);
 	TEST_FUNCTION(handle_assignment_from_loose_handle_increases_refcount);
+
+	TEST_FUNCTION(rhandle_replace_simple_case);
+	TEST_FUNCTION(rhandle_replace_merging_two_lists);
+
+	TEST_FUNCTION(rhandle_copy_constructor);
+	TEST_FUNCTION(rhandle_copy_assignment);
+	TEST_FUNCTION(rhandle_copy_assignment_to_nonnull);
+	TEST_FUNCTION(rhandle_move_constructor);
+	TEST_FUNCTION(rhandle_move_assignment_to_null);
+	TEST_FUNCTION(rhandle_move_assignment_to_nonnull);
+	TEST_FUNCTION(rhandle_move_to_a_rhandle_list);
+	TEST_FUNCTION(rhandle_move_to_a_rhandle_list_start);
+	TEST_FUNCTION(rhandle_move_to_a_rhandle_list_start_2);
 
 	// Original tests from older ETL/test folder
 
