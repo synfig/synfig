@@ -483,7 +483,7 @@ private:
 public:
 
 	/** Default constructor - empty handle */
-	rhandle() noexcept {}
+	rhandle() noexcept : handle<T>() {}
 
 	/** Constructor that constructs from a pointer to new object */
 	rhandle(pointer x):handle<T>(x)
@@ -500,6 +500,25 @@ public:
 	rhandle(const rhandle<value_type> &x):handle<T>(x)
 	{
 		if(obj)add_to_rlist();
+	}
+
+	/** Move constructor */
+	rhandle(rhandle<value_type>&& x) noexcept
+	{
+		obj = x.obj;
+		prev_ = x.prev_;
+		next_ = x.next_;
+		if (prev_)
+			prev_->next_ = this;
+		if (next_)
+			next_->prev_ = this;
+		if (obj) {
+			if (!obj->front_ || obj->front_ == &x)
+				obj->front_ = this;
+			if (!obj->back_ || obj->back_ == &x)
+				obj->back_ = this;
+		}
+		x.obj = nullptr;
 	}
 
 	~rhandle() { reset(); }
@@ -553,6 +572,33 @@ public:
 			obj->ref();
 			add_to_rlist();
 		}
+		return *this;
+	}
+
+	/** Move assignment operator */
+	rhandle<value_type>&
+	operator=(rhandle<value_type>&& x) noexcept
+	{
+		if (x.get() == obj)
+			return *this;
+
+		reset();
+
+		obj = x.obj;
+		prev_ = x.prev_;
+		next_ = x.next_;
+		if (prev_)
+			prev_->next_ = this;
+		if (next_)
+			next_->prev_ = this;
+		if (obj) {
+			if (!obj->front_ || obj->front_ == &x)
+				obj->front_ = this;
+			if (!obj->back_ || obj->back_ == &x)
+				obj->back_ = this;
+		}
+		x.obj = nullptr;
+
 		return *this;
 	}
 
