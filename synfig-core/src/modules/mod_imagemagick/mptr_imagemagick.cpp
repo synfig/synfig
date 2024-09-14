@@ -99,17 +99,35 @@ imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &re
 		}
 	}
 
-	OS::RunArgs args;
-	args.push_back(filename);
+	bool success = false;
+	// pair (binary name, first argument)
+	std::vector<std::pair<std::string, std::string>> binaries {
+		{"magick", "convert"}, // ImageMagick 7 with legacy syntax
+#ifdef _WIN32
+		{synfig::OS::get_binary_path().append("convert").u8string(), ""}, // legacy (version < 7) - Avoid Windows system "convert.exe"
+#else
+		{"convert", ""}, // legacy (version < 7)
+#endif
+	};
+	for (const auto& binary_info : binaries) {
+		OS::RunArgs args;
+		if (!binary_info.second.empty())
+			args.push_back(binary_info.second);
+		args.push_back(filename);
 
-	if (filename_extension == ".psd" || filename_extension == ".xcf")
-		args.push_back("-flatten");
+		if (filename_extension == ".psd" || filename_extension == ".xcf")
+			args.push_back("-flatten");
 
-	args.push_back(strprintf("png32:%s", target_filename.u8_str()));
+		args.push_back(strprintf("png32:%s", target_filename.u8_str()));
 
-	bool success = OS::run_sync({"convert"}, args);
+		success = OS::run_sync({binary_info.first}, args);
+		if (success)
+			break;
+
+		synfig::warning(_("Unable to open %s [ImageMagick]"), binary_info.first.c_str());
+	}
 	if (!success) {
-		synfig::error(_("Unable to open convert [ImageMagick]"));
+		synfig::error(_("Unable to open any known ImageMagick utility"));
 		return false;
 	}
 
