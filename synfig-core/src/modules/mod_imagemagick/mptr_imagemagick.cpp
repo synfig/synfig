@@ -104,7 +104,7 @@ imagemagick_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &re
 	std::vector<std::pair<std::string, std::string>> binaries {
 		{"magick", "convert"}, // ImageMagick 7 with legacy syntax
 #ifdef _WIN32
-		{synfig::OS::get_binary_path().append("convert").u8string(), ""}, // legacy (version < 7) - Avoid Windows system "convert.exe"
+		{synfig::OS::get_binary_path().parent_path().append("convert.exe").u8string(), ""}, // legacy (version < 7) - Avoid Windows system "convert.exe"
 #else
 		{"convert", ""}, // legacy (version < 7)
 #endif
