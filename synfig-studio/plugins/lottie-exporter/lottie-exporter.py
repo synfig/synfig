@@ -71,7 +71,7 @@ def gen_html(file_name):
     else:
         bodymovin_path = os.path.join(os.path.dirname(sys.argv[0]), "bodymovin.js")
 
-    with open(bodymovin_path, "r") as f:
+    with open(bodymovin_path, "r", encoding="utf-8") as f:
         bodymovin_script = f.read()
 
     html_text = \
@@ -146,5 +146,5 @@ out = parse(ns.infile)
 if ns.outfile.endswith(".html"):
     out = gen_html(out)
 
-with open(ns.outfile, "w") as fil:
+with open(ns.outfile, "w", encoding="utf-8") as fil:
     fil.write(out)
