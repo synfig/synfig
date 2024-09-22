@@ -197,6 +197,7 @@ In other words, it means you will not be able to load this file if any source fi
                         <property name="sizing">fixed</property>
                         <property name="min-width">80</property>
                         <property name="title" translatable="yes">Copy?</property>
+                        <property name="clickable">True</property>
                         <property name="alignment">0.5</property>
                         <child>
                           <object class="GtkCellRendererToggle" id="copy_column_renderer"/>
