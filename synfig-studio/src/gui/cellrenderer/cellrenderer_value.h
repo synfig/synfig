@@ -36,6 +36,8 @@
 
 #include <synfig/paramdesc.h>
 #include <synfig/value.h>
+
+#include <synfigapp/canvasinterface.h>
 #include <synfigapp/value_desc.h>
 
 
@@ -68,6 +70,9 @@ class CellRenderer_ValueBase : public Gtk::CellRendererText
 	bool edit_value_done_called;
 
 	synfig::ValueBase saved_data; //Issues 659, 526, 520
+
+	etl::loose_handle<synfigapp::CanvasInterface> canvas_interface;
+
 public:
 	sigc::signal<void, const Glib::ustring&> &signal_secondary_click()
 	{return signal_secondary_click_; }
@@ -90,11 +95,13 @@ public:
 	CellRenderer_ValueBase();
 	~CellRenderer_ValueBase();
 
+	void set_canvas_interface(const etl::loose_handle<synfigapp::CanvasInterface>& x);
+
+protected:
 	ValueBase_Entry *value_entry;
 
 	void on_value_editing_done();
 
-protected:
 	virtual void
 	render_vfunc(
 		const ::Cairo::RefPtr< ::Cairo::Context>& cr,

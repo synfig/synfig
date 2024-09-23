@@ -93,6 +93,18 @@ Dialog_Color::get_color() const
 }
 
 void
+Dialog_Color::set_value_desc(const synfigapp::ValueDesc& x)
+{
+	value_desc = x;
+}
+
+synfigapp::ValueDesc
+Dialog_Color::get_value_desc() const
+{
+	return value_desc;
+}
+
+void
 Dialog_Color::create_color_edit_widget()
 {
 	color_edit_widget = manage(new Widget_ColorEdit());
@@ -157,4 +169,5 @@ void
 Dialog_Color::reset()
 {
 	signal_edited_.clear();
+	set_value_desc(synfigapp::ValueDesc());
 }
