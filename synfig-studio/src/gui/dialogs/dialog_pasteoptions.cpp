@@ -27,6 +27,7 @@
 #include <gtkmm/icontheme.h>
 #include <gtkmm/label.h>
 #include <gtkmm/liststore.h>
+#include <gtkmm/treeviewcolumn.h>
 
 #include <gui/iconcontroller.h>
 #include <gui/localization.h>
@@ -77,6 +78,20 @@ Dialog_PasteOptions::Dialog_PasteOptions(Gtk::Dialog::BaseObjectType* cobject, c
 	pixbuf_conflict = theme->load_icon("dialog-error", Gtk::ICON_SIZE_SMALL_TOOLBAR, window_scale_factor, Gtk::ICON_LOOKUP_USE_BUILTIN);
 	pixbuf_empty = Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, true, pixbuf_link->get_bits_per_sample(), pixbuf_link->get_width(), pixbuf_link->get_height());
 	pixbuf_empty->fill(0);
+
+	Gtk::Widget* widget_copy_column_header = nullptr;
+	builder->get_widget("copy_column_header", widget_copy_column_header);
+	if (widget_copy_column_header) {
+		Gtk::manage(widget_copy_column_header);
+		auto copy_column_obj = refGlade->get_object("copy_column");
+		if (auto copy_column = Glib::RefPtr<Gtk::TreeViewColumn>::cast_dynamic(copy_column_obj)) {
+			copy_column->set_widget(*widget_copy_column_header);
+			if ((copy_all_checkbutton = dynamic_cast<Gtk::CheckButton*>(widget_copy_column_header))) {
+				copy_all_checkbutton->signal_toggled().connect(sigc::mem_fun(*this, &Dialog_PasteOptions::on_copy_all_toggled));
+				copy_column->signal_clicked().connect(sigc::hide_return(sigc::mem_fun(*copy_all_checkbutton, &Gtk::CheckButton::activate)));
+			}
+		}
+	}
 }
 
 std::shared_ptr<Dialog_PasteOptions> Dialog_PasteOptions::create(Gtk::Window& parent)
@@ -190,6 +205,7 @@ void Dialog_PasteOptions::on_valuenode_copy_toggled(const Glib::ustring& path)
 	}
 
 	update_ok_button_sensitivity();
+	update_copy_all_button_status();
 }
 
 void Dialog_PasteOptions::on_valuenode_name_edited(const Glib::ustring& path, const Glib::ustring& new_text)
@@ -235,6 +251,19 @@ void Dialog_PasteOptions::on_valuenode_name_edited(const Glib::ustring& path, co
 	update_ok_button_sensitivity();
 }
 
+void Dialog_PasteOptions::on_copy_all_toggled()
+{
+	if (copy_all_checkbutton) {
+		bool is_copy_all = copy_all_checkbutton->get_active();
+		copy_all_checkbutton->set_inconsistent(false);
+		valuenodes_model->foreach_iter([is_copy_all](const Gtk::TreeModel::iterator& iter) -> bool {
+			iter->set_value(COLUMN_COPY_OR_NOT, is_copy_all);
+			return false;
+		});
+		copy_all_checkbutton->set_active(is_copy_all);
+	}
+}
+
 void Dialog_PasteOptions::update_ok_button_sensitivity()
 {
 	bool enable_button = true;
@@ -257,11 +286,39 @@ void Dialog_PasteOptions::update_ok_button_sensitivity()
 	set_response_sensitive(Gtk::RESPONSE_OK, enable_button);
 }
 
+void Dialog_PasteOptions::update_copy_all_button_status()
+{
+	if (!copy_all_checkbutton)
+		return;
+
+	bool is_something_being_copied = false;
+	bool is_something_being_linked = false;
+
+	valuenodes_model->foreach_iter([=, &is_something_being_copied, &is_something_being_linked](const Gtk::TreeModel::iterator& iter) -> bool {
+		bool is_copy;
+		iter->get_value(COLUMN_COPY_OR_NOT, is_copy);
+		if (is_copy)
+			is_something_being_copied = true;
+		else
+			is_something_being_linked = true;
+
+		if (is_something_being_copied && is_something_being_linked)
+			return true;
+		return false;
+	});
+
+	if (is_something_being_copied && is_something_being_linked)
+		copy_all_checkbutton->set_inconsistent(true);
+	else
+		copy_all_checkbutton->set_active(is_something_being_copied);
+}
+
 void Dialog_PasteOptions::clear()
 {
 	if (valuenodes_model)
 		valuenodes_model->clear();
 	update_ok_button_sensitivity();
+	update_copy_all_button_status();
 }
 
 void Dialog_PasteOptions::rebuild_model()
@@ -293,6 +350,7 @@ void Dialog_PasteOptions::rebuild_model()
 
 	refresh_status();
 	update_ok_button_sensitivity();
+	update_copy_all_button_status();
 }
 
 void Dialog_PasteOptions::refresh_status()
