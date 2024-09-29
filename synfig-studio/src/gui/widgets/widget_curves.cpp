@@ -77,6 +77,47 @@ using namespace studio;
 
 /* === P R O C E D U R E S ================================================= */
 
+static bool
+is_a_kind_of_composite_value_node(const ValueNode::Handle& value_node)
+{
+	return value_node && (value_node->get_name() == "composite" || value_node->get_name() == "radial_composite");
+}
+
+/**
+ * List all value paths with their value descs.
+ *
+ * Composite and RadialComposite value nodes can't be handled directly, as they
+ * are not converted into Animated value nodes in Synfig Studio GUI, but their
+ * components are. So, we use their components instead of them directly.
+ *
+ * @param[in] value_path
+ * @param[in] value_desc
+ * @param[out] curve_descs
+ */
+static void
+gather_curve_descs(const std::string& value_path, const ValueDesc& value_desc, std::vector<std::pair<std::string, ValueDesc>>& curve_descs)
+{
+	ValueNode::Handle value_node = value_desc.get_value_node();
+	if (!is_a_kind_of_composite_value_node(value_node)) {
+		curve_descs.push_back({value_path, value_desc});
+	} else {
+		auto lvn = LinkableValueNode::Handle::cast_dynamic(value_node);
+		const auto& vocab = lvn->get_children_vocab();
+		int i = 0;
+		for (const auto& vocab_item : vocab) {
+			auto sub_value_desc = synfigapp::ValueDesc(lvn, i, value_desc);
+			auto sub_value_path = value_path + ":" + vocab_item.get_local_name();
+			auto sub_lvn = LinkableValueNode::Handle::cast_dynamic(lvn->get_link(i));
+			if (is_a_kind_of_composite_value_node(sub_lvn)) {
+				gather_curve_descs(sub_value_path, sub_value_desc, curve_descs);
+			} else {
+				curve_descs.push_back({sub_value_path, sub_value_desc});
+			}
+			++i;
+		}
+	}
+}
+
 /* === C L A S S E S ======================================================= */
 
 struct Widget_Curves::Channel
@@ -568,27 +609,34 @@ Widget_Curves::set_value_descs(etl::handle<synfigapp::CanvasInterface> canvas_in
 	clear();
 	CurveStruct curve_struct;
 	for(const auto& item : data) {
-		const ValueDesc* i = &item.second;
 
-		curve_struct.name = item.first;
-		curve_struct.init(*i);
-		if (curve_struct.channels.empty())
-			continue;
+		std::vector<std::pair<std::string, ValueDesc>> curve_descs;
 
-		curve_list.push_back(curve_struct);
+		gather_curve_descs(item.first, item.second, curve_descs);
+		for (const auto& curve_desc : curve_descs) {
+			// add curves to be drawn
+			curve_struct.name = curve_desc.first;
+			curve_struct.init(curve_desc.second);
+			if (curve_struct.channels.empty())
+				continue;
 
-		if (i->is_value_node())
-			value_desc_changed.push_back(
-				i->get_value_node()->signal_changed().connect(
+			curve_list.push_back(curve_struct);
+
+			// connect signals on-value-desc-change to refresh this widget
+			const ValueDesc* i = &curve_desc.second;
+			if (i->is_value_node())
+				value_desc_changed.push_back(
+					i->get_value_node()->signal_changed().connect(
+							sigc::mem_fun(*this, &Widget_Curves::refresh )));
+			if (i->parent_is_value_node())
+				value_desc_changed.push_back(
+					i->get_parent_value_node()->signal_changed().connect(
 						sigc::mem_fun(*this, &Widget_Curves::refresh )));
-		if (i->parent_is_value_node())
-			value_desc_changed.push_back(
-				i->get_parent_value_node()->signal_changed().connect(
-					sigc::mem_fun(*this, &Widget_Curves::refresh )));
-		if (i->parent_is_layer())
-			value_desc_changed.push_back(
-				i->get_layer()->signal_changed().connect(
-					sigc::mem_fun(*this, &Widget_Curves::refresh )));
+			if (i->parent_is_layer())
+				value_desc_changed.push_back(
+					i->get_layer()->signal_changed().connect(
+						sigc::mem_fun(*this, &Widget_Curves::refresh )));
+		}
 	}
 	queue_draw();
 }
