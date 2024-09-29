@@ -41,7 +41,8 @@ namespace synfig {
 
 class ValueNode_RadialComposite : public LinkableValueNode
 {
-	ValueNode::RHandle components[6];
+	static constexpr unsigned int MAX_LINKS = 6;
+	ValueNode::RHandle components[MAX_LINKS];
 
 	ValueNode_RadialComposite(const ValueBase &value);
 

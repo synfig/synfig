@@ -35,14 +35,13 @@
 
 /* === M A C R O S ========================================================= */
 
-#define MAX_LINKS 8
-
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfig {
 
 class ValueNode_Composite : public LinkableValueNode
 {
+	static constexpr unsigned int MAX_LINKS = 8;
 	ValueNode::RHandle components[MAX_LINKS];
 
 	ValueNode_Composite(const ValueBase &value, etl::loose_handle<Canvas> canvas = 0);
