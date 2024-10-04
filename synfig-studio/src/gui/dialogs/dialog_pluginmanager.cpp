@@ -74,8 +74,9 @@ enum PluginZipStatus
 
 Dialog_PluginManager::Dialog_PluginManager(Gtk::Window& parent):
     Gtk::Dialog(_("Plugin Manager"), parent),
-    plugin_file_dialog("Select plugin zip file", Gtk::FILE_CHOOSER_ACTION_OPEN),
-    message_dialog(_("Are you sure you want to delete this plugin?"), false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL, true),
+    plugin_file_dialog(*this, "Select plugin zip file", Gtk::FILE_CHOOSER_ACTION_OPEN),
+    message_dialog(*this, _(""), false, Gtk::MESSAGE_INFO, Gtk::BUTTONS_CLOSE, true),
+    confirmation_dialog(*this, _("Are you sure you want to delete this plugin?"), false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL, true),
     plugin_list(App::plugin_manager.plugins())
 {
     plugin_file_dialog.add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
@@ -89,7 +90,7 @@ Dialog_PluginManager::Dialog_PluginManager(Gtk::Window& parent):
 
     App::plugin_manager.signal_list_changed().connect(sigc::mem_fun(*this, &Dialog_PluginManager::refresh));
     // this->set_resizable(false);
-    message_dialog.set_transient_for(*this);
+    confirmation_dialog.set_transient_for(*this);
     Gtk::Button* install_plugin_button = manage(new Gtk::Button(_("Install Plugin")));
     install_plugin_button->set_image_from_icon_name("document-open", Gtk::ICON_SIZE_BUTTON);
     install_plugin_button->set_always_show_image(true);
@@ -156,13 +157,18 @@ Dialog_PluginManager::build_listbox()
         open_folder->set_image_from_icon_name("document-open", Gtk::ICON_SIZE_BUTTON);
         delete_plugin->set_image_from_icon_name("user-trash-symbolic", Gtk::ICON_SIZE_BUTTON);
 
-        delete_plugin->signal_clicked().connect([plugin, this](){
-            this->message_dialog.set_message(_("Do you want to delete the plugin: ") + plugin.name.get());
-            int response = this->message_dialog.run();
+        delete_plugin->signal_clicked().connect([plugin, this ](){
+            this->confirmation_dialog.set_message(_("Do you want to delete the plugin: ") + plugin.name.get());
+            int response = this->confirmation_dialog.run();
             if (response == Gtk::RESPONSE_OK) {              
                 App::plugin_manager.remove_plugin(plugin.id);
+                this->confirmation_dialog.hide();
+                this->message_dialog.set_message("Plugin uninstalled successfully");;
+                this->message_dialog.run();
+                this->message_dialog.close();
+            } else {
+                this->confirmation_dialog.close();
             }
-            this->message_dialog.close();
         });
 
         open_folder->signal_clicked().connect([plugin](){
@@ -209,90 +215,89 @@ std::string extract_plugin_name(std::istream &fileStream)
             }
         }
     }
+
+    return "";
 }
+
 void
 Dialog_PluginManager::on_install_plugin_button_clicked()
 {
     // Show the dialog and wait for a user response
     int result = plugin_file_dialog.run();
-    switch (result) {
-        case (Gtk::RESPONSE_OK):
-        { 
-            std::vector<std::string> files;
-            PluginZipStatus pluginStatus = PluginZipStatus::PLUGIN_ZIP_NO_PLUGIN_XML;
-            etl::handle<synfig::FileSystemNative> native_fs = FileSystemNative::instance();
-            etl::handle<synfig::FileContainerZip> zip_fs = new FileContainerZip();
-            std::string zip_filename = plugin_file_dialog.get_filename();
-            filesystem::Path path_to_user_plugins = synfigapp::Main::get_user_app_directory() / filesystem::Path("plugins");
-            std::string output_path ;
-            std::string plugin_metadata_file;
-            std::string plugin_name ;
+    if (result != Gtk::RESPONSE_OK) return;
+    std::vector<std::string> files;
+    synfig::FileSystemNative::Handle native_fs = FileSystemNative::instance();
+    synfig::FileContainerZip::Handle zip_fs = new FileContainerZip();
+    std::string zip_filename = plugin_file_dialog.get_filename();
+    filesystem::Path path_to_user_plugins = synfigapp::Main::get_user_app_directory() / filesystem::Path("plugins");
+    std::string output_path ;
+    std::string plugin_metadata_file;
+    std::string plugin_name ;
 
-            if (!zip_fs->open(plugin_file_dialog.get_filename())) {
-                synfig::error("Failed to open zip file: " + zip_filename);
-                return;
-            }
-            zip_fs->directory_scan("", files);
-            for (const auto& file : files) {
-                if (file == "plugin.xml") {
-                    plugin_metadata_file = file;
-                    break;
-                } else if(zip_fs->is_directory(file)) {
-                    std::vector<std::string> child_files;
-                    if (zip_fs->directory_scan(file, child_files)) {
-                    auto it = std::find(child_files.begin(), child_files.end(), "plugin.xml");
-                    if (it != child_files.end()) {
-                        plugin_metadata_file = file + "/" + *it;
-                    }
-                    if (!plugin_metadata_file.empty())
-                        break;
-                    }
-                }
-            }
-            if (plugin_metadata_file.empty() || !zip_fs->is_file(plugin_metadata_file)) {
-                synfig::error("Failed to find plugin.xml in zip file: " + zip_filename);
-                return;
-            }
-            plugin_name = extract_plugin_name(*zip_fs->get_read_stream(plugin_metadata_file));
-            output_path = ((path_to_user_plugins / plugin_name).add_suffix("/")).u8string();
-            if (native_fs->is_exists(output_path) && native_fs->is_directory(output_path)) {
-                message_dialog.set_message(_("Plugin already exists. Do you want to overwrite it?"));
-                int response = message_dialog.run();
-                if (response != Gtk::RESPONSE_OK) {
-                    message_dialog.close();
-                    return;
-                }
-                auto it = std::find_if(App::plugin_manager.plugins().begin(), App::plugin_manager.plugins().end(), [plugin_name](const Plugin& plugin) { return plugin.name.fallback() == plugin_name; });
-                if (it != App::plugin_manager.plugins().end()) {
-                    App::plugin_manager.remove_plugin(it->id);
-                }
-                native_fs->remove_recursive(output_path);
-                message_dialog.close();
-            }
-            if (native_fs->is_file(output_path)) {
-                if (!native_fs->file_remove(output_path)) {
-                    synfig::error("Failed to remove file: " + output_path);
-                    return;
-                }
-            }
-            if (native_fs->directory_create(output_path)) {
-                if (plugin_metadata_file.find("/") == std::string::npos) {
-                    for(const auto& file : files) {
-                        zip_fs->copy_recursive(zip_fs,  file, native_fs, output_path + file);
-                    }
-                } else {
-                    zip_fs->copy_recursive(zip_fs, files[0], native_fs, output_path);
-                }
-            }
-            App::plugin_manager.load_plugin(output_path + "plugin.xml", output_path, true);
-            zip_fs->close();
-            plugin_file_dialog.close();
+    if (!zip_fs->open(plugin_file_dialog.get_filename())) {
+        synfig::error("Failed to open zip file: " + zip_filename);
+        return;
+    }
+    zip_fs->directory_scan("", files);
+    for (const auto& file : files) {
+        if (file == "plugin.xml") {
+            plugin_metadata_file = file;
             break;
-        }
-        default:
-        {
-            std::cout << "Unexpected response" << std::endl;
-            break;
+        } else if(zip_fs->is_directory(file)) {
+            std::vector<std::string> child_files;
+            if (zip_fs->directory_scan(file, child_files)) {
+            auto it = std::find(child_files.begin(), child_files.end(), "plugin.xml");
+            if (it != child_files.end()) {
+                plugin_metadata_file = file + "/plugin.xml" ;
+            }
+            if (!plugin_metadata_file.empty())
+                break;
+            }
         }
     }
+    if (plugin_metadata_file.empty() || !zip_fs->is_file(plugin_metadata_file)) {
+        synfig::error("Failed to find plugin.xml in zip file: " + zip_filename);
+        message_dialog.set_message("Failed to find plugin.xml in zip file: " + zip_filename);
+        message_dialog.run();
+        message_dialog.close();
+        plugin_file_dialog.close();
+        return;
+    }
+    plugin_name = extract_plugin_name(*zip_fs->get_read_stream(plugin_metadata_file));
+    output_path = ((path_to_user_plugins / plugin_name).add_suffix("/")).u8string();
+    if (native_fs->is_exists(output_path) && native_fs->is_directory(output_path)) {
+        confirmation_dialog.set_message(_("Plugin already exists. Do you want to overwrite it?"));
+        int response = confirmation_dialog.run();
+        if (response != Gtk::RESPONSE_OK) {
+            confirmation_dialog.close();
+            plugin_file_dialog.close();
+            return;
+        }
+        auto it = std::find_if(App::plugin_manager.plugins().begin(), App::plugin_manager.plugins().end(), [plugin_name](const Plugin& plugin) { return plugin.name.fallback() == plugin_name; });
+        if (it != App::plugin_manager.plugins().end()) {
+            App::plugin_manager.remove_plugin(it->id);
+        }
+        native_fs->remove_recursive(output_path);
+        confirmation_dialog.close();
+    }
+    if (native_fs->is_file(output_path)) {
+        if (!native_fs->file_remove(output_path)) {
+            synfig::error("Failed to remove file: " + output_path);
+            return;
+        }
+    }
+    if (native_fs->directory_create(output_path)) {
+        if (plugin_metadata_file.find("/") == std::string::npos) {
+            for(const auto& file : files) {
+                zip_fs->copy_recursive(zip_fs,  file, native_fs, output_path + file);
+            }
+        } else {
+            zip_fs->copy_recursive(zip_fs, files[0], native_fs, output_path);
+        }
+    }
+    App::plugin_manager.load_plugin(output_path + "plugin.xml", output_path, true);
+    zip_fs->close();
+    Gtk::MessageDialog msg_dialog = Gtk::MessageDialog(plugin_file_dialog, _("Plugin installed successfully."), false, Gtk::MESSAGE_INFO, Gtk::BUTTONS_CLOSE, true);
+    msg_dialog.run();
+    plugin_file_dialog.close();
 }
