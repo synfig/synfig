@@ -57,6 +57,7 @@ private:
     Gtk::ListBox plugin_list_box;
     Gtk::FileChooserDialog plugin_file_dialog;
     Gtk::MessageDialog message_dialog;
+    Gtk::MessageDialog confirmation_dialog;
     Gtk::Notebook notebook;
 
     std::vector<studio::Plugin> plugin_list;
