@@ -10,7 +10,7 @@ BUILDDIR=cmake-build
 
 if [[ "$(uname -s)" =~ ^MSYS_NT.* ]] || [[ "$(uname -s)" =~ Msys$ ]]
 then
-export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:/opt/mlt-7.2.0/lib/pkgconfig"
+export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:/opt/mlt-7.28.0/lib/pkgconfig"
 fi
 
 mkdir -p "${BUILDDIR}" && cd "${BUILDDIR}"

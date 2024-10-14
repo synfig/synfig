@@ -4,7 +4,7 @@
 # -------------------------------------------------------------------------------
 set -e # exit on error
 
-VERSION_MLT="7.2.0"
+VERSION_MLT="7.28.0"
 # CMake cannot invoke `ccache` binaries in MSYS2 because they are just
 # bash scripts so it ends up with "invalid Win32 application" error
 # PATH="${MINGW_PREFIX}/lib/ccache/bin:${PATH}"
