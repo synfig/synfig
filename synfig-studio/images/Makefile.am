@@ -76,6 +76,15 @@ EXTRA_DIST = \
 	action_remove_from_set_icon.sif \
 	action_export_icon.sif \
 	action_unexport_icon.sif \
+	document-options.sif \
+	document-properties.sif \
+	document-resize.sif \
+	document-revert.sif \
+	action_import_icon.sif \
+	action_import_sequence_icon.sif \
+	action_show_dependencies_icon.sif \
+	input_devices_icon.sif \
+	preferences_icon.sif \
 	action_flat_interpolation_icon.sif \
 	action_interpolate_interpolation_icon.sif \
 	action_peak_interpolation_icon.sif \
@@ -85,6 +94,9 @@ EXTRA_DIST = \
 	action_squared_interpolation_icon.sif \
 	\
 	action_doc_icons.sif \
+	\
+	worspace_saveas_icon.sif \
+	worspace_edit_icon.sif \
 	\
 	interpolation_type_icons.sif\
 	\
@@ -192,6 +204,7 @@ EXTRA_DIST = \
 	type_string_icon.sif \
 	type_time_icon.sif \
 	type_vector_icon.sif \
+	type_transformation_icon.sif \
 	\
 	library_icon.sif \
 	graphs_icon.sif \
@@ -208,7 +221,23 @@ EXTRA_DIST = \
 	time_track_icon.sif \
 	\
 	utils_chain_link_icons.sif \
-	utils_timetrack_align_icon.sif
+	utils_timetrack_align_icon.sif \
+	\
+	edit-delete.sif \
+	window-close.sif \
+	application-exit.sif \
+	go-up.sif \
+	go-down.sif \
+	list-add.sif \
+	list-remove.sif \
+	brush_size_increase_icon.sif \
+	brush_size_decrease_icon.sif \
+	document-open.sif \
+	document-save.sif \
+	edit-clear.sif \
+	process-stop.sif \
+	view-refresh.sif \
+	keyframe_properties_icon.sif
 
 IMAGES = \
 	installer_logo.bmp \
@@ -274,6 +303,15 @@ ICONS = \
 	action_remove_from_set_icon.$(EXT) \
 	action_export_icon.$(EXT) \
 	action_unexport_icon.$(EXT) \
+	document-options.$(EXT) \
+	document-properties.$(EXT) \
+	document-resize.$(EXT) \
+	document-revert.$(EXT) \
+	action_import_icon.$(EXT) \
+	action_import_sequence_icon.$(EXT) \
+	action_show_dependencies_icon.$(EXT) \
+	input_devices_icon.$(EXT) \
+	preferences_icon.$(EXT) \
 	action_flat_interpolation_icon.$(EXT) \
 	action_interpolate_interpolation_icon.$(EXT) \
 	action_peak_interpolation_icon.$(EXT) \
@@ -289,6 +327,9 @@ ICONS = \
 	action_doc_saveall_icon.$(EXT) \
 	action_doc_redo_icon.$(EXT) \
 	action_doc_undo_icon.$(EXT) \
+	\
+	workspace_saveas_icon.$(EXT) \
+	workspace_edit_icon.$(EXT) \
 	\
 	interpolation_type_tcb_icon.$(EXT)\
 	interpolation_type_ease_icon.$(EXT)\
@@ -403,6 +444,7 @@ ICONS = \
 	type_string_icon.$(EXT) \
 	type_time_icon.$(EXT) \
 	type_vector_icon.$(EXT) \
+	type_transformation_icon.$(EXT) \
 	\
 	canvas_icon.$(EXT) \
 	library_icon.$(EXT) \
@@ -421,7 +463,23 @@ ICONS = \
 	\
 	utils_chain_link_on_icon.$(EXT) \
 	utils_chain_link_off_icon.$(EXT) \
-	utils_timetrack_align_icon.$(EXT)
+	utils_timetrack_align_icon.$(EXT) \
+	\
+	edit-delete.$(EXT) \
+	window-close.$(EXT) \
+	application-exit.$(EXT) \
+	go-up.$(EXT) \
+	go-down.$(EXT) \
+	list-add.$(EXT) \
+	list-remove.$(EXT) \
+	brush_size_increase_icon.$(EXT) \
+	brush_size_decrease_icon.$(EXT) \
+	document-open.$(EXT) \
+	document-save.$(EXT) \
+	edit-clear.$(EXT) \
+	process-stop.$(EXT) \
+	view-refresh.$(EXT) \
+	keyframe_properties_icon.$(EXT)
 
 if WIN32_PKG
 WIN32_ICONS = \

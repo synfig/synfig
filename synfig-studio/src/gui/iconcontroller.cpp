@@ -83,6 +83,7 @@ static const std::map<std::string, std::pair<const char*, const char*>> known_ic
 	{"type_string", {"type_string_icon", N_("String")}},
 	{"type_canvas", {"type_canvas_icon", N_("Canvas")}},
 	{"type_gradient", {"type_gradient_icon", N_("Gradient")}},
+	{"type_transformation", {"type_transformation_icon", N_("Transformation")}},
 
 	// ToolBox Tools
 	{"normal", {"tool_normal_icon", N_("Transform Tool")}},
@@ -125,7 +126,11 @@ static const std::map<std::string, std::pair<const char*, const char*>> known_ic
 	{"save_all", {"action_doc_saveall_icon", N_("Save All")}},
 	{"redo", {"action_doc_redo_icon", N_("Redo")}},
 	{"undo", {"action_doc_undo_icon", N_("Undo")}},
-
+	{"close-document", {"window-close", N_("Close Document")}},
+	{"quit", {"application-exit", N_("Quit")}},
+	{"add", {"list-add", N_("Add")}},
+	{"remove", {"list-remove", N_("Remove")}},
+	
 	// Ghost Layers
 	{"layer_ghost_group", {"layer_other_ghostgroup_icon", N_("Group Ghost")}},
 
@@ -381,6 +386,8 @@ studio::value_icon_name(Type &type)
 		return "type_string_icon";
 	if (type == type_gradient)
 		return "type_gradient_icon";
+	if (type == type_transformation)
+		return "type_transformation_icon";
 	if (!type.description.name.empty())
 		synfig::warning(_("no icon for value type: \"%s\""), type.description.name.c_str());
 	return "image-missing";

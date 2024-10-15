@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <canvas version="1.1" width="128" height="128" xres="2952.755900" yres="2952.755900" gamma-r="2.200000" gamma-g="2.200000" gamma-b="2.200000" view-box="-1.000000 1.000000 1.000000 -1.000000" antialias="1" fps="30.000" begin-time="0f" end-time="0f" bgcolor="0.500000 0.500000 0.500000 1.000000">
-  <name>brush_size_increase_icon.sif</name>
-  <desc>Placed in the Public Domain in 2023 by Pablo Gil Fernández</desc>
+  <name>edit-delete.sif</name>
+  <desc>original design by Adwaita team, ported to Synfig by Pablo Gil Fernández in 2023</desc>
   <meta name="background_first_color" content="0.880000 0.880000 0.880000"/>
   <meta name="background_rendering" content="0"/>
   <meta name="background_second_color" content="0.650000 0.650000 0.650000"/>
@@ -2703,31 +2703,12 @@
       </layer>
     </canvas>
   </defs>
-  <layer type="SolidColor" active="false" exclude_from_rendering="false" version="0.1">
+  <layer type="group" active="true" exclude_from_rendering="false" version="0.3" desc="shadow1">
     <param name="z_depth">
       <real value="0.0000000000"/>
     </param>
     <param name="amount">
-      <real value="1.0000000000"/>
-    </param>
-    <param name="blend_method">
-      <integer value="0" static="true"/>
-    </param>
-    <param name="color">
-      <color>
-        <r>1.000000</r>
-        <g>1.000000</g>
-        <b>1.000000</b>
-        <a>1.000000</a>
-      </color>
-    </param>
-  </layer>
-  <layer type="group" active="true" exclude_from_rendering="false" version="0.3" desc="outline">
-    <param name="z_depth">
-      <real value="0.0000000000"/>
-    </param>
-    <param name="amount">
-      <real value="0.9000000000"/>
+      <real value="0.2000000000"/>
     </param>
     <param name="blend_method">
       <integer value="0" static="true"/>
@@ -2762,7 +2743,7 @@
     </param>
     <param name="canvas">
       <canvas>
-        <layer type="rectangle" active="true" exclude_from_rendering="false" version="0.2" desc="Rectangle094">
+        <layer type="region" active="true" exclude_from_rendering="false" version="0.1" desc="Circle087 Region">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -2774,44 +2755,219 @@
           </param>
           <param name="color">
             <color>
-              <r>1.000000</r>
-              <g>1.000000</g>
-              <b>1.000000</b>
+              <r>0.000000</r>
+              <g>0.000000</g>
+              <b>0.000000</b>
               <a>1.000000</a>
             </color>
           </param>
-          <param name="point1">
+          <param name="origin">
             <vector>
-              <x>-0.3749999702</x>
-              <y>0.3750000000</y>
+              <x>0.0000000000</x>
+              <y>-0.6875000000</y>
             </vector>
-          </param>
-          <param name="point2">
-            <vector>
-              <x>0.9999999404</x>
-              <y>-1.0000000000</y>
-            </vector>
-          </param>
-          <param name="expand">
-            <real value="0.0000000000"/>
           </param>
           <param name="invert">
             <bool value="false"/>
           </param>
-          <param name="feather_x">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="feather_y">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="bevel">
-            <real value="0.1250000000"/>
-          </param>
-          <param name="bevCircle">
+          <param name="antialias">
             <bool value="true"/>
+          </param>
+          <param name="feather">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="blurtype">
+            <integer value="1"/>
+          </param>
+          <param name="winding_style">
+            <integer value="0"/>
+          </param>
+          <param name="bline">
+            <bline type="bline_point" loop="true">
+              <entry>
+                <composite guid="347423A3F0B4957E36295B1BB6ED1662" type="bline_point">
+                  <point>
+                    <vector>
+                      <x>0.8124999404</x>
+                      <y>0.0000000000</y>
+                    </vector>
+                  </point>
+                  <width>
+                    <real value="1.0000000000"/>
+                  </width>
+                  <origin>
+                    <real value="0.5000000000"/>
+                  </origin>
+                  <split>
+                    <bool value="false"/>
+                  </split>
+                  <t1>
+                    <radial_composite type="vector">
+                      <radius>
+                        <real value="0.5625000000"/>
+                      </radius>
+                      <theta>
+                        <angle value="90.000000"/>
+                      </theta>
+                    </radial_composite>
+                  </t1>
+                  <t2>
+                    <radial_composite type="vector">
+                      <radius>
+                        <real value="0.5625000000"/>
+                      </radius>
+                      <theta>
+                        <angle value="90.000000"/>
+                      </theta>
+                    </radial_composite>
+                  </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="false"/>
+                  </split_angle>
+                </composite>
+              </entry>
+              <entry>
+                <composite guid="512AB626E6E2A0F6912054460B22EC2B" type="bline_point">
+                  <point>
+                    <vector>
+                      <x>-0.0000000191</x>
+                      <y>0.2500000000</y>
+                    </vector>
+                  </point>
+                  <width>
+                    <real value="1.0000000000"/>
+                  </width>
+                  <origin>
+                    <real value="0.5000000000"/>
+                  </origin>
+                  <split>
+                    <bool value="false"/>
+                  </split>
+                  <t1>
+                    <radial_composite type="vector">
+                      <radius>
+                        <real value="0.9375000000"/>
+                      </radius>
+                      <theta>
+                        <angle value="-179.999985"/>
+                      </theta>
+                    </radial_composite>
+                  </t1>
+                  <t2>
+                    <radial_composite type="vector">
+                      <radius>
+                        <real value="0.9375000000"/>
+                      </radius>
+                      <theta>
+                        <angle value="-179.999985"/>
+                      </theta>
+                    </radial_composite>
+                  </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="false"/>
+                  </split_angle>
+                </composite>
+              </entry>
+              <entry>
+                <composite guid="F181BF11CED6F588C4D01A4C17D59A5A" type="bline_point">
+                  <point>
+                    <vector>
+                      <x>-0.8125000596</x>
+                      <y>0.0000000000</y>
+                    </vector>
+                  </point>
+                  <width>
+                    <real value="1.0000000000"/>
+                  </width>
+                  <origin>
+                    <real value="0.5000000000"/>
+                  </origin>
+                  <split>
+                    <bool value="false"/>
+                  </split>
+                  <t1>
+                    <radial_composite type="vector">
+                      <radius>
+                        <real value="0.5625000000"/>
+                      </radius>
+                      <theta>
+                        <angle value="-89.999992"/>
+                      </theta>
+                    </radial_composite>
+                  </t1>
+                  <t2>
+                    <radial_composite type="vector">
+                      <radius>
+                        <real value="0.5625000000"/>
+                      </radius>
+                      <theta>
+                        <angle value="-89.999992"/>
+                      </theta>
+                    </radial_composite>
+                  </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="false"/>
+                  </split_angle>
+                </composite>
+              </entry>
+              <entry>
+                <composite guid="9B46B8066258E487C44CBB2ED3E6B8CB" type="bline_point">
+                  <point>
+                    <vector>
+                      <x>-0.0000000410</x>
+                      <y>-0.2500000000</y>
+                    </vector>
+                  </point>
+                  <width>
+                    <real value="1.0000000000"/>
+                  </width>
+                  <origin>
+                    <real value="0.5000000000"/>
+                  </origin>
+                  <split>
+                    <bool value="false"/>
+                  </split>
+                  <t1>
+                    <radial_composite type="vector">
+                      <radius>
+                        <real value="0.9375000000"/>
+                      </radius>
+                      <theta>
+                        <angle value="0.000001"/>
+                      </theta>
+                    </radial_composite>
+                  </t1>
+                  <t2>
+                    <radial_composite type="vector">
+                      <radius>
+                        <real value="0.9375000000"/>
+                      </radius>
+                      <theta>
+                        <angle value="0.000001"/>
+                      </theta>
+                    </radial_composite>
+                  </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="false"/>
+                  </split_angle>
+                </composite>
+              </entry>
+            </bline>
           </param>
         </layer>
-        <layer type="rectangle" active="true" exclude_from_rendering="false" version="0.2" desc="Rectangle094">
+        <layer type="blur" active="true" exclude_from_rendering="false" version="0.3">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -2819,45 +2975,16 @@
             <real value="1.0000000000"/>
           </param>
           <param name="blend_method">
-            <integer value="0"/>
+            <integer value="1" static="true"/>
           </param>
-          <param name="color">
-            <color>
-              <r>1.000000</r>
-              <g>1.000000</g>
-              <b>1.000000</b>
-              <a>1.000000</a>
-            </color>
-          </param>
-          <param name="point1">
+          <param name="size">
             <vector>
-              <x>-0.9999999404</x>
-              <y>1.0000000000</y>
+              <x>0.0937500000</x>
+              <y>0.0937500000</y>
             </vector>
           </param>
-          <param name="point2">
-            <vector>
-              <x>0.3749999702</x>
-              <y>-0.3750000000</y>
-            </vector>
-          </param>
-          <param name="expand">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="invert">
-            <bool value="false"/>
-          </param>
-          <param name="feather_x">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="feather_y">
-            <real value="0.0000000000"/>
-          </param>
-          <param name="bevel">
-            <real value="0.1250000000"/>
-          </param>
-          <param name="bevCircle">
-            <bool value="true"/>
+          <param name="type">
+            <integer value="1"/>
           </param>
         </layer>
       </canvas>
@@ -2887,56 +3014,318 @@
       <real value="0.0000000000"/>
     </param>
   </layer>
-  <layer type="rectangle" active="true" exclude_from_rendering="false" version="0.2" desc="Rectangle094">
+  <layer type="group" active="true" exclude_from_rendering="false" version="0.3" desc="shadow2">
     <param name="z_depth">
       <real value="0.0000000000"/>
     </param>
     <param name="amount">
-      <real value="1.0000000000"/>
+      <real value="0.8000000000"/>
     </param>
     <param name="blend_method">
-      <integer value="0"/>
+      <integer value="0" static="true"/>
     </param>
-    <param name="color">
-      <color>
-        <r>0.000000</r>
-        <g>0.000000</g>
-        <b>0.000000</b>
-        <a>1.000000</a>
-      </color>
-    </param>
-    <param name="point1">
+    <param name="origin">
       <vector>
-        <x>-0.3125000000</x>
-        <y>0.3125000000</y>
+        <x>0.0000000000</x>
+        <y>0.0000000000</y>
       </vector>
     </param>
-    <param name="point2">
-      <vector>
-        <x>0.9374999404</x>
-        <y>-0.9375000000</y>
-      </vector>
+    <param name="transformation">
+      <composite type="transformation">
+        <offset>
+          <vector>
+            <x>0.0000000000</x>
+            <y>0.0000000000</y>
+          </vector>
+        </offset>
+        <angle>
+          <angle value="0.000000"/>
+        </angle>
+        <skew_angle>
+          <angle value="0.000000"/>
+        </skew_angle>
+        <scale>
+          <vector>
+            <x>1.0000000000</x>
+            <y>1.0000000000</y>
+          </vector>
+        </scale>
+      </composite>
     </param>
-    <param name="expand">
-      <real value="0.0000000000"/>
+    <param name="canvas">
+      <canvas>
+        <layer type="region" active="true" exclude_from_rendering="false" version="0.1" desc="Circle087 Region">
+          <param name="z_depth">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="amount">
+            <real value="1.0000000000"/>
+          </param>
+          <param name="blend_method">
+            <integer value="0"/>
+          </param>
+          <param name="color">
+            <color>
+              <r>0.000000</r>
+              <g>0.000000</g>
+              <b>0.000000</b>
+              <a>1.000000</a>
+            </color>
+          </param>
+          <param name="origin">
+            <vector>
+              <x>0.0000000000</x>
+              <y>-0.6875000000</y>
+            </vector>
+          </param>
+          <param name="invert">
+            <bool value="false"/>
+          </param>
+          <param name="antialias">
+            <bool value="true"/>
+          </param>
+          <param name="feather">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="blurtype">
+            <integer value="1"/>
+          </param>
+          <param name="winding_style">
+            <integer value="0"/>
+          </param>
+          <param name="bline">
+            <bline type="bline_point" loop="true">
+              <entry>
+                <composite guid="C55CBCA24FC98C2BB5EF748D890B385B" type="bline_point">
+                  <point>
+                    <vector>
+                      <x>0.4999999702</x>
+                      <y>0.0000000000</y>
+                    </vector>
+                  </point>
+                  <width>
+                    <real value="1.0000000000"/>
+                  </width>
+                  <origin>
+                    <real value="0.5000000000"/>
+                  </origin>
+                  <split>
+                    <bool value="false"/>
+                  </split>
+                  <t1>
+                    <radial_composite type="vector">
+                      <radius>
+                        <real value="0.1875000000"/>
+                      </radius>
+                      <theta>
+                        <angle value="90.000000"/>
+                      </theta>
+                    </radial_composite>
+                  </t1>
+                  <t2>
+                    <radial_composite type="vector">
+                      <radius>
+                        <real value="0.1875000000"/>
+                      </radius>
+                      <theta>
+                        <angle value="90.000000"/>
+                      </theta>
+                    </radial_composite>
+                  </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="false"/>
+                  </split_angle>
+                </composite>
+              </entry>
+              <entry>
+                <composite guid="A0022927599FB9A312E67BD034C4C212" type="bline_point">
+                  <point>
+                    <vector>
+                      <x>-0.0000000246</x>
+                      <y>0.1250000000</y>
+                    </vector>
+                  </point>
+                  <width>
+                    <real value="1.0000000000"/>
+                  </width>
+                  <origin>
+                    <real value="0.5000000000"/>
+                  </origin>
+                  <split>
+                    <bool value="false"/>
+                  </split>
+                  <t1>
+                    <radial_composite type="vector">
+                      <radius>
+                        <real value="0.9375000000"/>
+                      </radius>
+                      <theta>
+                        <angle value="-179.999985"/>
+                      </theta>
+                    </radial_composite>
+                  </t1>
+                  <t2>
+                    <radial_composite type="vector">
+                      <radius>
+                        <real value="0.9375000000"/>
+                      </radius>
+                      <theta>
+                        <angle value="-179.999985"/>
+                      </theta>
+                    </radial_composite>
+                  </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="false"/>
+                  </split_angle>
+                </composite>
+              </entry>
+              <entry>
+                <composite guid="00A9201071ABECDD471635DA2833B463" type="bline_point">
+                  <point>
+                    <vector>
+                      <x>-0.5000000596</x>
+                      <y>0.0000000000</y>
+                    </vector>
+                  </point>
+                  <width>
+                    <real value="1.0000000000"/>
+                  </width>
+                  <origin>
+                    <real value="0.5000000000"/>
+                  </origin>
+                  <split>
+                    <bool value="false"/>
+                  </split>
+                  <t1>
+                    <radial_composite type="vector">
+                      <radius>
+                        <real value="0.1875000000"/>
+                      </radius>
+                      <theta>
+                        <angle value="-89.999992"/>
+                      </theta>
+                    </radial_composite>
+                  </t1>
+                  <t2>
+                    <radial_composite type="vector">
+                      <radius>
+                        <real value="0.1875000000"/>
+                      </radius>
+                      <theta>
+                        <angle value="-89.999992"/>
+                      </theta>
+                    </radial_composite>
+                  </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="false"/>
+                  </split_angle>
+                </composite>
+              </entry>
+              <entry>
+                <composite guid="6A6E2707DD25FDD2478A94B8EC0096F2" type="bline_point">
+                  <point>
+                    <vector>
+                      <x>-0.0000000355</x>
+                      <y>-0.1250000000</y>
+                    </vector>
+                  </point>
+                  <width>
+                    <real value="1.0000000000"/>
+                  </width>
+                  <origin>
+                    <real value="0.5000000000"/>
+                  </origin>
+                  <split>
+                    <bool value="false"/>
+                  </split>
+                  <t1>
+                    <radial_composite type="vector">
+                      <radius>
+                        <real value="0.9375000000"/>
+                      </radius>
+                      <theta>
+                        <angle value="0.000001"/>
+                      </theta>
+                    </radial_composite>
+                  </t1>
+                  <t2>
+                    <radial_composite type="vector">
+                      <radius>
+                        <real value="0.9375000000"/>
+                      </radius>
+                      <theta>
+                        <angle value="0.000001"/>
+                      </theta>
+                    </radial_composite>
+                  </t2>
+                  <split_radius>
+                    <bool value="true"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="false"/>
+                  </split_angle>
+                </composite>
+              </entry>
+            </bline>
+          </param>
+        </layer>
+        <layer type="blur" active="true" exclude_from_rendering="false" version="0.3">
+          <param name="z_depth">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="amount">
+            <real value="1.0000000000"/>
+          </param>
+          <param name="blend_method">
+            <integer value="1" static="true"/>
+          </param>
+          <param name="size">
+            <vector>
+              <x>0.1250000000</x>
+              <y>0.1250000000</y>
+            </vector>
+          </param>
+          <param name="type">
+            <integer value="1"/>
+          </param>
+        </layer>
+      </canvas>
     </param>
-    <param name="invert">
+    <param name="time_dilation">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="time_offset">
+      <time value="0s"/>
+    </param>
+    <param name="children_lock">
       <bool value="false"/>
     </param>
-    <param name="feather_x">
+    <param name="outline_grow">
       <real value="0.0000000000"/>
     </param>
-    <param name="feather_y">
+    <param name="z_range">
+      <bool value="false" static="true"/>
+    </param>
+    <param name="z_range_position">
       <real value="0.0000000000"/>
     </param>
-    <param name="bevel">
-      <real value="0.1250000000"/>
+    <param name="z_range_depth">
+      <real value="0.0000000000"/>
     </param>
-    <param name="bevCircle">
-      <bool value="true"/>
+    <param name="z_range_blur">
+      <real value="0.0000000000"/>
     </param>
   </layer>
-  <layer type="rectangle" active="true" exclude_from_rendering="false" version="0.2" desc="Rectangle094">
+  <layer type="group" active="true" exclude_from_rendering="false" version="0.3" desc="red">
     <param name="z_depth">
       <real value="0.0000000000"/>
     </param>
@@ -2944,48 +3333,145 @@
       <real value="1.0000000000"/>
     </param>
     <param name="blend_method">
-      <integer value="0"/>
+      <integer value="0" static="true"/>
     </param>
-    <param name="color">
-      <color>
-        <r>1.000000</r>
-        <g>1.000000</g>
-        <b>1.000000</b>
-        <a>1.000000</a>
-      </color>
-    </param>
-    <param name="point1">
+    <param name="origin">
       <vector>
-        <x>-0.0624999963</x>
-        <y>0.0625000000</y>
+        <x>0.0000000000</x>
+        <y>0.0000000000</y>
       </vector>
     </param>
-    <param name="point2">
-      <vector>
-        <x>0.6874999404</x>
-        <y>-0.6875000000</y>
-      </vector>
+    <param name="transformation">
+      <composite type="transformation">
+        <offset>
+          <vector>
+            <x>0.0000000000</x>
+            <y>0.0000000000</y>
+          </vector>
+        </offset>
+        <angle>
+          <angle value="0.000000"/>
+        </angle>
+        <skew_angle>
+          <angle value="0.000000"/>
+        </skew_angle>
+        <scale>
+          <vector>
+            <x>1.0000000000</x>
+            <y>1.0000000000</y>
+          </vector>
+        </scale>
+      </composite>
     </param>
-    <param name="expand">
-      <real value="0.0000000000"/>
+    <param name="canvas">
+      <canvas>
+        <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle085">
+          <param name="z_depth">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="amount">
+            <real value="1.0000000000"/>
+          </param>
+          <param name="blend_method">
+            <integer value="0" static="true"/>
+          </param>
+          <param name="color">
+            <color>
+              <r>0.776586</r>
+              <g>0.000057</g>
+              <b>0.000057</b>
+              <a>1.000000</a>
+            </color>
+          </param>
+          <param name="radius">
+            <real value="0.9375000000"/>
+          </param>
+          <param name="feather">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="origin">
+            <vector>
+              <x>0.0000000027</x>
+              <y>0.0625000000</y>
+            </vector>
+          </param>
+          <param name="invert">
+            <bool value="false"/>
+          </param>
+        </layer>
+        <layer type="bevel" active="true" exclude_from_rendering="false" version="0.2">
+          <param name="z_depth">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="amount">
+            <real value="0.7500000000"/>
+          </param>
+          <param name="blend_method">
+            <integer value="13" static="true"/>
+          </param>
+          <param name="type">
+            <integer value="3"/>
+          </param>
+          <param name="color1">
+            <color>
+              <r>0.926310</r>
+              <g>0.626281</g>
+              <b>0.626281</b>
+              <a>1.000000</a>
+            </color>
+          </param>
+          <param name="color2">
+            <color>
+              <r>0.145441</r>
+              <g>0.000000</g>
+              <b>0.000000</b>
+              <a>1.000000</a>
+            </color>
+          </param>
+          <param name="angle">
+            <angle value="110.000000"/>
+          </param>
+          <param name="depth">
+            <real value="0.1562500000"/>
+          </param>
+          <param name="softness">
+            <real value="0.0625000000"/>
+          </param>
+          <param name="use_luma">
+            <bool value="false"/>
+          </param>
+          <param name="solid">
+            <bool value="false"/>
+          </param>
+        </layer>
+      </canvas>
     </param>
-    <param name="invert">
+    <param name="time_dilation">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="time_offset">
+      <time value="0s"/>
+    </param>
+    <param name="children_lock">
       <bool value="false"/>
     </param>
-    <param name="feather_x">
+    <param name="outline_grow">
       <real value="0.0000000000"/>
     </param>
-    <param name="feather_y">
+    <param name="z_range">
+      <bool value="false" static="true"/>
+    </param>
+    <param name="z_range_position">
       <real value="0.0000000000"/>
     </param>
-    <param name="bevel">
+    <param name="z_range_depth">
       <real value="0.0000000000"/>
     </param>
-    <param name="bevCircle">
-      <bool value="true"/>
+    <param name="z_range_blur">
+      <real value="0.0000000000"/>
     </param>
   </layer>
-  <layer type="rectangle" active="true" exclude_from_rendering="false" version="0.2" desc="Rectangle094">
+  <layer type="group" active="true" exclude_from_rendering="false" version="0.3" desc="white">
     <param name="z_depth">
       <real value="0.0000000000"/>
     </param>
@@ -2993,45 +3479,558 @@
       <real value="1.0000000000"/>
     </param>
     <param name="blend_method">
-      <integer value="0"/>
+      <integer value="0" static="true"/>
     </param>
-    <param name="color">
-      <color>
-        <r>0.000000</r>
-        <g>0.000000</g>
-        <b>0.000000</b>
-        <a>1.000000</a>
-      </color>
-    </param>
-    <param name="point1">
+    <param name="origin">
       <vector>
-        <x>-0.9374999404</x>
-        <y>0.9375000000</y>
+        <x>0.0000000000</x>
+        <y>0.0000000000</y>
       </vector>
     </param>
-    <param name="point2">
-      <vector>
-        <x>0.3125000000</x>
-        <y>-0.3125000000</y>
-      </vector>
+    <param name="transformation">
+      <composite type="transformation">
+        <offset>
+          <vector>
+            <x>0.0000000000</x>
+            <y>0.0000000000</y>
+          </vector>
+        </offset>
+        <angle>
+          <angle value="0.000000"/>
+        </angle>
+        <skew_angle>
+          <angle value="0.000000"/>
+        </skew_angle>
+        <scale>
+          <vector>
+            <x>1.0000000000</x>
+            <y>1.0000000000</y>
+          </vector>
+        </scale>
+      </composite>
     </param>
-    <param name="expand">
-      <real value="0.0000000000"/>
+    <param name="canvas">
+      <canvas>
+        <layer type="circle" active="true" exclude_from_rendering="false" version="0.2" desc="Circle086">
+          <param name="z_depth">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="amount">
+            <real value="1.0000000000"/>
+          </param>
+          <param name="blend_method">
+            <integer value="0" static="true"/>
+          </param>
+          <param name="color">
+            <color>
+              <r>0.900000</r>
+              <g>0.900000</g>
+              <b>0.900000</b>
+              <a>1.000000</a>
+            </color>
+          </param>
+          <param name="radius">
+            <real value="0.6875000000"/>
+          </param>
+          <param name="feather">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="origin">
+            <vector>
+              <x>0.0000000027</x>
+              <y>0.0625000000</y>
+            </vector>
+          </param>
+          <param name="invert">
+            <bool value="false"/>
+          </param>
+        </layer>
+        <layer type="linear_gradient" active="true" exclude_from_rendering="false" version="0.0" desc="Gradient012">
+          <param name="z_depth">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="amount">
+            <real value="1.0000000000"/>
+          </param>
+          <param name="blend_method">
+            <integer value="13"/>
+          </param>
+          <param name="p1">
+            <vector>
+              <x>0.0000000000</x>
+              <y>-0.5625000000</y>
+            </vector>
+          </param>
+          <param name="p2">
+            <vector>
+              <x>0.0000000000</x>
+              <y>0.6875000000</y>
+            </vector>
+          </param>
+          <param name="gradient">
+            <gradient>
+              <color pos="0.001083">
+                <r>0.831121</r>
+                <g>0.831121</g>
+                <b>0.831121</b>
+                <a>1.000000</a>
+              </color>
+              <color pos="0.758397">
+                <r>1.000000</r>
+                <g>1.000000</g>
+                <b>1.000000</b>
+                <a>1.000000</a>
+              </color>
+            </gradient>
+          </param>
+          <param name="loop">
+            <bool value="false"/>
+          </param>
+          <param name="zigzag">
+            <bool value="false"/>
+          </param>
+        </layer>
+      </canvas>
     </param>
-    <param name="invert">
+    <param name="time_dilation">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="time_offset">
+      <time value="0s"/>
+    </param>
+    <param name="children_lock">
       <bool value="false"/>
     </param>
-    <param name="feather_x">
+    <param name="outline_grow">
       <real value="0.0000000000"/>
     </param>
-    <param name="feather_y">
+    <param name="z_range">
+      <bool value="false" static="true"/>
+    </param>
+    <param name="z_range_position">
       <real value="0.0000000000"/>
     </param>
-    <param name="bevel">
-      <real value="0.1250000000"/>
+    <param name="z_range_depth">
+      <real value="0.0000000000"/>
     </param>
-    <param name="bevCircle">
-      <bool value="true"/>
+    <param name="z_range_blur">
+      <real value="0.0000000000"/>
+    </param>
+  </layer>
+  <layer type="group" active="true" exclude_from_rendering="false" version="0.3" desc="X">
+    <param name="z_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="amount">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="blend_method">
+      <integer value="0" static="true"/>
+    </param>
+    <param name="origin">
+      <vector>
+        <x>0.0000000000</x>
+        <y>0.0000000000</y>
+      </vector>
+    </param>
+    <param name="transformation">
+      <composite type="transformation">
+        <offset>
+          <vector>
+            <x>0.0000000000</x>
+            <y>0.0000000000</y>
+          </vector>
+        </offset>
+        <angle>
+          <angle value="0.000000"/>
+        </angle>
+        <skew_angle>
+          <angle value="0.000000"/>
+        </skew_angle>
+        <scale>
+          <vector>
+            <x>1.0000000000</x>
+            <y>1.0000000000</y>
+          </vector>
+        </scale>
+      </composite>
+    </param>
+    <param name="canvas">
+      <canvas>
+        <layer type="outline" active="true" exclude_from_rendering="false" version="0.3" desc="NewSpline047 Outline">
+          <param name="z_depth">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="amount">
+            <real value="1.0000000000"/>
+          </param>
+          <param name="blend_method">
+            <integer value="0" static="true"/>
+          </param>
+          <param name="color">
+            <color>
+              <r>0.000000</r>
+              <g>0.000000</g>
+              <b>0.000000</b>
+              <a>1.000000</a>
+            </color>
+          </param>
+          <param name="origin">
+            <vector>
+              <x>0.0000000000</x>
+              <y>0.0000000000</y>
+            </vector>
+          </param>
+          <param name="invert">
+            <bool value="false"/>
+          </param>
+          <param name="antialias">
+            <bool value="true"/>
+          </param>
+          <param name="feather">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="blurtype">
+            <integer value="1" static="true"/>
+          </param>
+          <param name="winding_style">
+            <integer value="0" static="true"/>
+          </param>
+          <param name="bline">
+            <bline type="bline_point">
+              <entry>
+                <composite guid="670E88C2F09A1A9B3FD4923E0C00A264" type="bline_point">
+                  <point>
+                    <vector>
+                      <x>-0.3124999702</x>
+                      <y>0.3750000000</y>
+                    </vector>
+                  </point>
+                  <width>
+                    <real value="1.0000000000"/>
+                  </width>
+                  <origin>
+                    <real value="0.5000000000"/>
+                  </origin>
+                  <split>
+                    <bool value="false"/>
+                  </split>
+                  <t1>
+                    <radial_composite type="vector">
+                      <radius>
+                        <real value="0.0000000000"/>
+                      </radius>
+                      <theta>
+                        <angle value="0.000000"/>
+                      </theta>
+                    </radial_composite>
+                  </t1>
+                  <t2>
+                    <radial_composite type="vector">
+                      <radius>
+                        <real value="0.0000000000"/>
+                      </radius>
+                      <theta>
+                        <angle value="0.000000"/>
+                      </theta>
+                    </radial_composite>
+                  </t2>
+                  <split_radius>
+                    <bool value="false"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="false"/>
+                  </split_angle>
+                </composite>
+              </entry>
+              <entry>
+                <composite guid="C7B1ECE4F679D56E016F34B82E9134A1" type="bline_point">
+                  <point>
+                    <vector>
+                      <x>0.3125000000</x>
+                      <y>-0.2500000000</y>
+                    </vector>
+                  </point>
+                  <width>
+                    <real value="1.0000000000"/>
+                  </width>
+                  <origin>
+                    <real value="0.5000000000"/>
+                  </origin>
+                  <split>
+                    <bool value="false"/>
+                  </split>
+                  <t1>
+                    <radial_composite type="vector">
+                      <radius>
+                        <real value="0.0000000000"/>
+                      </radius>
+                      <theta>
+                        <angle value="0.000000"/>
+                      </theta>
+                    </radial_composite>
+                  </t1>
+                  <t2>
+                    <radial_composite type="vector">
+                      <radius>
+                        <real value="0.0000000000"/>
+                      </radius>
+                      <theta>
+                        <angle value="0.000000"/>
+                      </theta>
+                    </radial_composite>
+                  </t2>
+                  <split_radius>
+                    <bool value="false"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="false"/>
+                  </split_angle>
+                </composite>
+              </entry>
+            </bline>
+          </param>
+          <param name="width">
+            <real value="0.1562500000"/>
+          </param>
+          <param name="expand">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="sharp_cusps">
+            <bool value="true"/>
+          </param>
+          <param name="round_tip[0]">
+            <bool value="true"/>
+          </param>
+          <param name="round_tip[1]">
+            <bool value="true"/>
+          </param>
+          <param name="homogeneous_width">
+            <bool value="true"/>
+          </param>
+        </layer>
+        <layer type="outline" active="true" exclude_from_rendering="false" version="0.3" desc="NewSpline048 Outline">
+          <param name="z_depth">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="amount">
+            <real value="1.0000000000"/>
+          </param>
+          <param name="blend_method">
+            <integer value="0" static="true"/>
+          </param>
+          <param name="color">
+            <color>
+              <r>0.000000</r>
+              <g>0.000000</g>
+              <b>0.000000</b>
+              <a>1.000000</a>
+            </color>
+          </param>
+          <param name="origin">
+            <vector>
+              <x>0.0000000000</x>
+              <y>0.0000000000</y>
+            </vector>
+          </param>
+          <param name="invert">
+            <bool value="false"/>
+          </param>
+          <param name="antialias">
+            <bool value="true"/>
+          </param>
+          <param name="feather">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="blurtype">
+            <integer value="1" static="true"/>
+          </param>
+          <param name="winding_style">
+            <integer value="0" static="true"/>
+          </param>
+          <param name="bline">
+            <bline type="bline_point">
+              <entry>
+                <composite guid="1CFB97350FAF4EC86677515921D27001" type="bline_point">
+                  <point>
+                    <vector>
+                      <x>0.3125000298</x>
+                      <y>0.3750000000</y>
+                    </vector>
+                  </point>
+                  <width>
+                    <real value="1.0000000000"/>
+                  </width>
+                  <origin>
+                    <real value="0.5000000000"/>
+                  </origin>
+                  <split>
+                    <bool value="false"/>
+                  </split>
+                  <t1>
+                    <radial_composite type="vector">
+                      <radius>
+                        <real value="0.0000000000"/>
+                      </radius>
+                      <theta>
+                        <angle value="0.000000"/>
+                      </theta>
+                    </radial_composite>
+                  </t1>
+                  <t2>
+                    <radial_composite type="vector">
+                      <radius>
+                        <real value="0.0000000000"/>
+                      </radius>
+                      <theta>
+                        <angle value="0.000000"/>
+                      </theta>
+                    </radial_composite>
+                  </t2>
+                  <split_radius>
+                    <bool value="false"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="false"/>
+                  </split_angle>
+                </composite>
+              </entry>
+              <entry>
+                <composite guid="3E2584FD54093C6B247F0565E1C1328C" type="bline_point">
+                  <point>
+                    <vector>
+                      <x>-0.3125000000</x>
+                      <y>-0.2500000000</y>
+                    </vector>
+                  </point>
+                  <width>
+                    <real value="1.0000000000"/>
+                  </width>
+                  <origin>
+                    <real value="0.5000000000"/>
+                  </origin>
+                  <split>
+                    <bool value="false"/>
+                  </split>
+                  <t1>
+                    <radial_composite type="vector">
+                      <radius>
+                        <real value="0.0000000000"/>
+                      </radius>
+                      <theta>
+                        <angle value="0.000000"/>
+                      </theta>
+                    </radial_composite>
+                  </t1>
+                  <t2>
+                    <radial_composite type="vector">
+                      <radius>
+                        <real value="0.0000000000"/>
+                      </radius>
+                      <theta>
+                        <angle value="0.000000"/>
+                      </theta>
+                    </radial_composite>
+                  </t2>
+                  <split_radius>
+                    <bool value="false"/>
+                  </split_radius>
+                  <split_angle>
+                    <bool value="false"/>
+                  </split_angle>
+                </composite>
+              </entry>
+            </bline>
+          </param>
+          <param name="width">
+            <real value="0.1562500000"/>
+          </param>
+          <param name="expand">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="sharp_cusps">
+            <bool value="true"/>
+          </param>
+          <param name="round_tip[0]">
+            <bool value="true"/>
+          </param>
+          <param name="round_tip[1]">
+            <bool value="true"/>
+          </param>
+          <param name="homogeneous_width">
+            <bool value="true"/>
+          </param>
+        </layer>
+        <layer type="linear_gradient" active="true" exclude_from_rendering="false" version="0.0" desc="Gradient010">
+          <param name="z_depth">
+            <real value="0.0000000000"/>
+          </param>
+          <param name="amount">
+            <real value="1.0000000000"/>
+          </param>
+          <param name="blend_method">
+            <integer value="13"/>
+          </param>
+          <param name="p1">
+            <vector>
+              <x>0.0000000000</x>
+              <y>-0.3125000000</y>
+            </vector>
+          </param>
+          <param name="p2">
+            <vector>
+              <x>0.0000000000</x>
+              <y>0.4375000000</y>
+            </vector>
+          </param>
+          <param name="gradient">
+            <gradient>
+              <color pos="0.000000">
+                <r>0.000000</r>
+                <g>0.000000</g>
+                <b>0.000000</b>
+                <a>1.000000</a>
+              </color>
+              <color pos="1.000000">
+                <r>0.252026</r>
+                <g>0.252026</g>
+                <b>0.252026</b>
+                <a>1.000000</a>
+              </color>
+            </gradient>
+          </param>
+          <param name="loop">
+            <bool value="false"/>
+          </param>
+          <param name="zigzag">
+            <bool value="false"/>
+          </param>
+        </layer>
+      </canvas>
+    </param>
+    <param name="time_dilation">
+      <real value="1.0000000000"/>
+    </param>
+    <param name="time_offset">
+      <time value="0s"/>
+    </param>
+    <param name="children_lock">
+      <bool value="false" static="true"/>
+    </param>
+    <param name="outline_grow">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="z_range">
+      <bool value="false" static="true"/>
+    </param>
+    <param name="z_range_position">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="z_range_depth">
+      <real value="0.0000000000"/>
+    </param>
+    <param name="z_range_blur">
+      <real value="0.0000000000"/>
     </param>
   </layer>
 </canvas>
