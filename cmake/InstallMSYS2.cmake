@@ -96,7 +96,7 @@ install(FILES ${MINGW_LIBS} DESTINATION bin)
 
 find_program(CYGPATH_EXECUTABLE cygpath ${MINGW_PATH}/../usr/bin/)
 if(CYGPATH_EXECUTABLE)
-    set(MLT_PATH "/opt/mlt-7.2.0")
+    set(MLT_PATH "/opt/mlt-7.28.0")
     execute_process(
 		    COMMAND ${CYGPATH_EXECUTABLE} -m ${MLT_PATH}
 		    OUTPUT_VARIABLE MLT_DIRECTORY
@@ -106,7 +106,7 @@ if(CYGPATH_EXECUTABLE)
     message(${MLT_DIRECTORY})
 else()
     message(WARNING "-- cygpath tool not found, using relative path for MLT.")
-    set(MLT_DIRECTORY "${MINGW_PATH}/../opt/mlt-7.2.0")
+    set(MLT_DIRECTORY "${MINGW_PATH}/../opt/mlt-7.28.0")
 endif()
 
 file(GLOB MLT_FILES
