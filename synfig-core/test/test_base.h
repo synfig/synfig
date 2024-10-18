@@ -52,9 +52,19 @@ std::ostream& operator<<(std::ostream& os, const synfig::Vector& v)
 	return os;
 }
 
-// remove this operator after switch to c++17 (it is already implemented in c++17)
-#if !defined(__APPLE__) && !defined(__clang__) || __clang_major__ == 6
-// macOS Clang toolchain has already defined this operator for all c++ versions
+/*
+In Clang, the `operator<<(nullptr_t)` was added in version 9 without the corresponding C++ version guard.
+This behavior was fixed in version 15 (commit: https://github.com/llvm/llvm-project/commit/50cfb76)
+
+todo: After switching to C++17, this workaround should be removed.
+
+P.S. As an alternative solution that does not depend on the compiler, the following code can be used:
+```
+#define NULLPTR_HELPER(out, val) (std::is_same<decltype(val), nullptr_t>::value ? (out << "null") : (out << val))
+oss << "\t - expected "; NULLPTR_HELPER(oss, a) << ", but got "; NULLPTR_HELPER(oss, b) << std::endl;
+```
+*/
+#if !defined(__clang__) || (__clang_major__  < 9 || __clang_major__ > 14)
 std::ostream& operator<<(std::ostream& os, std::nullptr_t)
 {
 	os << "null";
