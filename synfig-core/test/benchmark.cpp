@@ -131,7 +131,7 @@ int hermite_int_test()
 	int i;
 
 	synfig::clock timer;
-	float t;
+	float t = 0.0;
 
 	Hermie.p1()=0;
 	Hermie.t1()=40000;
@@ -140,7 +140,7 @@ int hermite_int_test()
 
 	Hermie.sync();
 
-	{float t;
+	{
 	for(f=0.0f,i=0,timer.reset();i<HERMITE_TEST_ITERATIONS;i++,f+=0.000005f)
 	{
 		t+=Hermie(f)+Hermie(f+0.1f);
@@ -179,7 +179,7 @@ int hermite_float_test(void)
 
 	Hermie.sync();
 
-	{float t;
+	{
 	for(f=0.0f,i=0,timer.reset();i<HERMITE_TEST_ITERATIONS;i++,f+=0.000005f)
 	{
 		t+=Hermie(f)+Hermie(f+0.1f);
@@ -209,7 +209,7 @@ int hermite_double_test(void)
 
 	hermite<double> Hermie;
 	synfig::clock timer;
-	double t;
+	double t = 0.0;
 
 	Hermie.p1()=0;
 	Hermie.t1()=1;

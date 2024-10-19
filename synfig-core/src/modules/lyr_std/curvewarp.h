@@ -82,7 +82,7 @@ protected:
 	rendering::Task::Handle build_rendering_task_vfunc(Context context) const override;
 
 public:
-	class Internal;
+	struct Internal;
 
 private:
 	Internal* internal;
