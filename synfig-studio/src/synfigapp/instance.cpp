@@ -616,7 +616,7 @@ Instance::save_as(const synfig::String &file_name)
 		new_canvas_filesystem = CanvasFileNaming::make_filesystem(new_container);
 		if (!new_canvas_filesystem)
 		{
-			warning("Cannot create canvas filesysem for: %s", new_canvas_filename.c_str());
+			warning("Cannot create canvas filesystem for: %s", new_canvas_filename.c_str());
 			return false;
 		}
 

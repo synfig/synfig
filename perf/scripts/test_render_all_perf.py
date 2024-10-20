@@ -11,7 +11,7 @@
 # 3. Don't have any applications running at the same time.  It can mess with the
 #    performance measurements.
 #
-# It can take an extremely long time to run (.e.g 25 mintues right now).  Before
+# It can take an extremely long time to run (eg. 25 minutes right now).  Before
 # trying to do any perf tweaking in the rendering code, make sure you generate
 # a reference/baseline to go off from.  This should be the latest commit on
 # `master`.  Don't forget to copy this CSV file to another location in case you

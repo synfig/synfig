@@ -45,7 +45,7 @@ namespace synfig {
 /**
  * A 2D surface row iterator: access surface samples of a single row.
  *
- * You can get or set a sample value with operator[] or the current sample by derefencing the iterator.
+ * You can get or set a sample value with operator[] or the current sample by dereferencing the iterator.
  *
  * Check if iterator is valid by casting it to bool.
  *

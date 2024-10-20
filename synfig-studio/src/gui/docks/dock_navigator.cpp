@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file dock_navigator.cpp
-**	\brief Dock Nagivator File
+**	\brief Dock Navigator File
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

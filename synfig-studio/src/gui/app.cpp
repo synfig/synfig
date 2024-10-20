@@ -2345,7 +2345,7 @@ App::dialog_open_file_ext(const std::string& title, std::vector<synfig::filesyst
 	filter_supported->add_pattern("*.tsv");
 	filter_supported->add_pattern("*.xml");
 
-	// Sub fileters
+	// Sub filters
 	// 1 Synfig documents. sfg is not supported to import
 	Glib::RefPtr<Gtk::FileFilter> filter_synfig = Gtk::FileFilter::create();
 	filter_synfig->set_name(_("Synfig files (*.sif, *.sifz)"));
