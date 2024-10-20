@@ -120,6 +120,18 @@ set(ICONS
 	info_icon
 	jack_icon
 	keyframe_icon
+	document-open
+	document-save
+	edit-clear
+	process-stop
+	view-refresh
+	edit-delete
+	window-close
+	application-exit
+	go-up
+	go-down
+	list-add
+	list-remove
 	layer_blur_blur_icon
 	layer_blur_motion_icon
 	layer_blur_radial_icon
