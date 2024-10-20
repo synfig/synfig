@@ -24,6 +24,7 @@
 #define SYNFIG_STUDIO_DIALOG_PASTEOPTIONS_H
 
 #include <gtkmm/builder.h>
+#include <gtkmm/checkbutton.h>
 #include <gtkmm/dialog.h>
 #include <gtkmm/treemodel.h>
 
@@ -81,6 +82,8 @@ class Dialog_PasteOptions : public Gtk::Dialog
 	Glib::RefPtr<Gdk::Pixbuf> pixbuf_external_link;
 	Glib::RefPtr<Gdk::Pixbuf> pixbuf_conflict;
 
+	Gtk::CheckButton* copy_all_checkbutton;
+
 
 	enum {
 		COLUMN_VALUENODE_POINTER,
@@ -117,8 +120,10 @@ public:
 private:
 	void on_valuenode_copy_toggled(const Glib::ustring& path);
 	void on_valuenode_name_edited(const Glib::ustring& path, const Glib::ustring& new_text);
+	void on_copy_all_toggled();
 
 	void update_ok_button_sensitivity();
+	void update_copy_all_button_status();
 
 	void clear();
 	void rebuild_model();
