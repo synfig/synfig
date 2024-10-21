@@ -182,7 +182,7 @@ Action::WaypointSetSmart::set_param(const synfig::String& name, const Action::Pa
 bool
 Action::WaypointSetSmart::is_ready()const
 {
-	//we either need a valuedesc for the inital waypoint added
+	//we either need a valuedesc for the initial waypoint added
 	//or a valuenode to add more waypoints to the parameter
 	if(!value_desc && !value_node){
 		synfig::error(_("Either value_desc or value_node must be set"));

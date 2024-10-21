@@ -328,7 +328,7 @@ void swap(synfig::filesystem::Path& lhs, synfig::filesystem::Path& rhs) noexcept
  * Returns the current path, also known as current working directory.
  *
  * It just calls the synfig::OS::get_current_working_directory().
- * It is defined here for convinience and to imitate the C++17 filesystem namespace.
+ * It is defined here for convenience and to imitate the C++17 filesystem namespace.
  *
  * @return the current working directory
  */

@@ -981,7 +981,7 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 		for (std::list<synfig::WidthPoint>::iterator iter = wplist.begin(); iter != wplist.end(); ++iter)
 			iter->set_position(hom_to_std(ValueBase::List(bline.begin(), bline.end()), iter->get_position(), false, false));
 	}
-	// print out resutls
+	// print out results
 	//synfig::info("-----------widths");
 	//for (std::list<synfig::WidthPoint>::iterator iter = wplist.begin(); iter != wplist.end(); ++iter) {
 		//if(!iter->get_dash())

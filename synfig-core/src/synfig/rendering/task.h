@@ -143,7 +143,7 @@ public:
 	class Token;
 
 	/// Special values for OptimizerPass
-	///   For optimzation purposes, some tasks may not be run itself,
+	///   For optimization purposes, some tasks may not be run itself,
 	///   but delegates to (a single) one of its subtasks.
 	/// These values indicates no delegation to a subtask: they are special cases
 	/// \sa get_pass_subtask_index()

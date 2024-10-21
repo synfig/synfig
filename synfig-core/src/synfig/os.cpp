@@ -505,7 +505,7 @@ public:
 			return false;
 		}
 
-		// pipe to comunicate error to parent process
+		// pipe to communicate error to parent process
 		int error_message_pipe[2];
 		if (pipe(error_message_pipe)) {
 			synfig::error(_("Unable to open exec error pipes to %s (no pipe)"), binary_path.u8_str());

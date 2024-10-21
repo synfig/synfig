@@ -60,7 +60,7 @@ private:
 	synfig::ValueBase param_style;
 	//!Parameter: (int) weight used in the font
 	synfig::ValueBase param_weight;
-	//!Parameter: (int) diretion of the text
+	//!Parameter: (int) direction of the text
 	synfig::ValueBase param_direction;
 	//!Parameter: (synfig::Real) horizontal spacing
 	synfig::ValueBase param_compress;

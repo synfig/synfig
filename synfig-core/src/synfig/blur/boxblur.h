@@ -42,7 +42,7 @@ namespace synfig {
 /**
  * Blur every row of a sample block based only on the samples of the same horizontal line.
  *
- * The formula for a blured sample is: ?
+ * The formula for a blurred sample is: ?
  *
  * @param pen the initial point of the sample block
  * @param w the block width
@@ -88,7 +88,7 @@ hbox_blur(T1 pen,int w, int h, int length, T2 outpen)
 /**
  * Blur every column of a sample block based only on the samples of the same vertical line.
  *
- * The formula for a blured sample is: ?
+ * The formula for a blurred sample is: ?
  *
  * @param pen the initial point of the sample block
  * @param w the block width

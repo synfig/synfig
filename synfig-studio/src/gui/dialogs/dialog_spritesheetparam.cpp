@@ -55,7 +55,7 @@ Dialog_SpriteSheetParam::Dialog_SpriteSheetParam(Gtk::Window &parent):
 	offset_y_label->set_valign(Gtk::ALIGN_CENTER);
 	offset_y_box = Gtk::manage(new Gtk::SpinButton(Gtk::Adjustment::create(0.0, 0.0,10000.0)));
 
-	//Dirrection
+	//Direction
 	Gtk::Label* direction_label(manage(new Gtk::Label(_("Direction:"))));
 	direction_label->set_halign(Gtk::ALIGN_START);
 	direction_label->set_valign(Gtk::ALIGN_CENTER);

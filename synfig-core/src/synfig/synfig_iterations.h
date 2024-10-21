@@ -81,7 +81,7 @@ enum TraverseCallbackAction {
 /// Walks into valuenode tree performing valuenode_callback() on each valuenode
 /// If value_node is LinkableValueNode, runs on each of its links too, according to return of the valuenode_callback (see TraverseCallbackAction)
 ///
-/// \param value_node The starting point to scannning
+/// \param value_node The starting point to scanning
 /// \param valuenode_callback A functor called at each valuenode found
 void traverse_valuenodes(ValueNode::Handle value_node, std::function<TraverseCallbackAction(ValueNode::Handle)> valuenode_callback);
 

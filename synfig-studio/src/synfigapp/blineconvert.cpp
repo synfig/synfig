@@ -615,7 +615,7 @@ synfigapp::BLineConverter::operator()(std::list<synfig::BLinePoint>  &blinepoint
 			deriv.resize(size);
 
 			// Wondering whether the modification of the deriv vector
-			// using a char* pointer and pointer arithmetric was safe,
+			// using a char* pointer and pointer arithmetic was safe,
 			// I looked it up...
 			//
 			// http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2007/n2369.pdf tells me:

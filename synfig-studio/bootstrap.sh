@@ -26,7 +26,7 @@ AUTOPOINT='intltoolize --automake --copy' autoreconf --force --install --verbose
 # for a bug in intltool.  
 # See https://launchpad.net/bugs/398571 and https://bugs.launchpad.net/bugs/992047
 #
-# TODO: Drop this hack, and bump our intltool version requiement once the issue
+# TODO: Drop this hack, and bump our intltool version requirement once the issue
 #       is fixed in intltool
 
 echo "patching po/Makefile.in.in..."

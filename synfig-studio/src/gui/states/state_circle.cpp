@@ -1372,7 +1372,7 @@ StateCircle_Context::toggle_layer_creation()
 		feather_dist.set_sensitive(false);
 	}
 
-	// orign is at center
+	// origin is at center
 	if (get_layer_region_flag() ||
 		get_layer_outline_flag() ||
 		get_layer_advanced_outline_flag() ||
