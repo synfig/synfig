@@ -175,7 +175,8 @@
 				</item>
 				<item>
 					<attribute name="label" translatable="yes">_Preferences...</attribute>
-					<attribute name="action">app.setup</attribute>
+					<attribute name="action">app.preferences</attribute>
+					<attribute name='hidden-when'>macos-menubar</attribute>
 				</item>
 			</section>
 		</submenu>
@@ -669,8 +670,9 @@
 			    <section>
                     <item>
                         <attribute name="label" translatable="yes">_About Synfig Studio</attribute>
-                        <attribute name="action">app.help-about</attribute>
+                        <attribute name="action">app.about</attribute>
                         <attribute name="icon">synfig_icon</attribute>
+                        <attribute name='hidden-when'>macos-menubar</attribute>
                     </item>
 			    </section>
 		</submenu>
