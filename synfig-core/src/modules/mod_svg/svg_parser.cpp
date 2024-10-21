@@ -77,6 +77,7 @@ static double getDimension(const String& ac, bool use_90_ppi = false);
 static float getRadian(float sexa);
 //string functions
 static std::vector<String> tokenize(const String& str,const String& delimiters);
+static String unquote(const String& str);
 
 static float get_inkscape_version(const xmlpp::Element* svgNodeElement);
 
@@ -268,13 +269,168 @@ Svg_parser::parser_canvas(const xmlpp::Node* node)
 }
 
 void
+Svg_parser::parser_text(const xmlpp::Element* nodeElement, xmlpp::Element* root, const Style& style, const SVGMatrix& mtx)
+{
+	Glib::ustring text_id = nodeElement->get_attribute_value("id");
+	double text_x = style.compute("x", "0");
+	if (auto attr = nodeElement->get_attribute("x")) {
+		text_x = getDimension(attr->get_value());
+	}
+	double text_y = style.compute("y", "0");
+	if (auto attr = nodeElement->get_attribute("y")) {
+		text_y = getDimension(attr->get_value());
+	}
+//	double text_dx = style.compute("dx", "0");
+//	if (auto attr = nodeElement->get_attribute("dx")) {
+//		text_dx = getDimension(attr->get_value());
+//	}
+//	double text_dy = style.compute("dy", "0");
+//	if (auto attr = nodeElement->get_attribute("dy")) {
+//		text_dy = getDimension(attr->get_value());
+//	}
+
+	Glib::ustring fill    = style.get("fill", "#000");
+	float fill_opacity    = style.compute("fill_opacity", "1");
+	float opacity         = style.compute("opacity", "1");
+
+	const bool is_fill_gradient = fill.compare(0,3,"url")==0;
+
+	// TODO: stroke
+
+	Glib::ustring font_family = style.get("font-family", "");
+	{
+		auto font_families = tokenize(font_family, ",");
+		if (font_families.empty())
+			font_family = "";
+		else
+			font_family = unquote(font_families.front());
+	}
+
+	float font_size = atof(style.get("font-size", "16px").c_str()) / kux / 2.; // Instead of 16px, use FontSize::default_size;
+	int font_style = 0;
+	{
+		Glib::ustring font_style_str = style.get("font-style", "normal");
+		if (font_style_str == "italic")
+			font_style = 2;
+		else if (font_style_str == "oblique")
+			font_style = 1;
+	}
+
+	int font_weight = 400;
+	{
+		Glib::ustring font_weight_str = style.get("font-weight", "normal");
+		if (font_weight_str == "normal") {
+			font_weight = 400;
+		} else if (font_weight_str == "bold") {
+			font_weight = 600;
+		} else if (font_weight_str == "380") {
+			font_weight = 380;
+		} else if (!font_weight_str.empty()) {
+			int weight = atoi(font_weight_str.c_str()) / 100;
+
+			if (weight <= 0) {
+				font_weight = 400;
+			} else if (weight > 10) {
+				font_weight = 900;
+			} else {
+				constexpr char conversion[] = "-0124566789";
+				font_weight = 100 * (conversion[weight] - '0');
+			}
+		}
+	}
+
+	int direction = 0;
+	{
+		Glib::ustring direction_str = nodeElement->get_attribute_value("direction");
+		if (direction_str.empty())
+			direction_str = style.get("direction", "0");
+		if (direction_str == "rtl") {
+			direction = 2;
+		} else if (direction_str == "ltr") {
+			direction = 1;
+		}
+	}
+
+	Vector text_align(0., 1.);
+	{
+		Glib::ustring text_align_str = style.get("text-align", "start");
+		if (text_align_str == "center") {
+			text_align[0] = 0.5;
+		} else if (text_align_str == "left") {
+			text_align[0] = 0.0;
+		} else if (text_align_str == "right") {
+			text_align[0] = 1.0;
+		} else if (text_align_str == "start") {
+			if (direction == 2)
+				text_align[0] = 1.0;
+		} else if (text_align_str == "end") {
+			if (direction != 2)
+				text_align[0] = 1.0;
+		}
+	}
+
+	Glib::ustring text;
+	for (const auto& child : nodeElement->get_children()) {
+		if (const xmlpp::Element* childElement = dynamic_cast<const xmlpp::Element*>(child)) {
+			const Glib::ustring childName = child->get_name();
+
+			// Is element known ?
+			const std::vector<const char*> valid_elements = {"tspan", "textPath", "a"};
+			if (valid_elements.end() == std::find(valid_elements.begin(), valid_elements.end(), childName)) {
+				synfig::error("not valid child node to <text>: %s", childName.c_str());
+				continue;
+			}
+			// actually, tspan and textPath can also have a and tspan children... must it be recursive?
+			text += childElement->get_child_text()->get_content();
+		} else if (const xmlpp::ContentNode* childElement = dynamic_cast<const xmlpp::TextNode*>(child)) {
+			text += childElement->get_content();
+		} else if (const xmlpp::ContentNode* childElement = dynamic_cast<const xmlpp::CdataNode*>(child)) {
+			text += childElement->get_content();
+		}
+	}
+
+	xmlpp::Element* text_node = root;
+	if (is_fill_gradient) {
+		root = initializeGroupLayerNode(root, "fill");
+		text_node = root->add_child("layer");
+	}
+
+	text_node->set_attribute("type","text");
+	text_node->set_attribute("active","true");
+	text_node->set_attribute("version","0.5");
+	text_node->set_attribute("desc",text_id);
+
+	build_real(text_node->add_child("param"),"z_depth",0.0);
+	build_real(text_node->add_child("param"),"amount",1.0);
+	build_integer(text_node->add_child("param"),"blend_method",0);
+	build_color(text_node->add_child("param"),getRed(fill),getGreen(fill),getBlue(fill),opacity*fill_opacity);
+
+	float auxx = text_x;
+	float auxy = text_y;
+	mtx.transformPoint2D(auxx, auxy);
+	coor2vect(&auxx, &auxy);
+	build_vector(text_node->add_child("param"), "origin", auxx, auxy);
+	build_vector(text_node->add_child("param"), "size", font_size, font_size);
+	build_vector(text_node->add_child("param"), "orient", text_align[0], text_align[1]);
+	build_string(text_node->add_child("param"), "family", font_family);
+	build_integer(text_node->add_child("param"), "style", font_style);
+	build_integer(text_node->add_child("param"), "weight", font_weight);
+	build_integer(text_node->add_child("param"), "direction", direction);
+	build_string(text_node->add_child("param"), "text", text);
+
+	if (is_fill_gradient) { //gradient in onto mode (stroke)
+		build_fill(root, fill, SVGMatrix::identity);
+	}
+}
+
+void
 Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style style, const SVGMatrix& mtx_parent)
 {
 	if(const xmlpp::Element* nodeElement = dynamic_cast<const xmlpp::Element*>(node)){
 		const Glib::ustring nodename = node->get_name();
 
 		// Is element known ?
-		const std::vector<const char*> valid_elements = {"g", "path", "polygon", "rect", "circle", "ellipse", "line", "polyline"};
+		const std::vector<const char*> valid_elements = {"g", "path", "polygon", "rect", "circle", "ellipse", "line", "polyline", "text"};
 		if (valid_elements.end() == std::find(valid_elements.begin(), valid_elements.end(), nodename))
 			return;
 
@@ -294,6 +450,12 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 		// Is it a group element?
 		if(nodename.compare("g")==0){
 			parser_layer(node,root->add_child("layer"),style,mtx);
+			return;
+		}
+
+		// Is it a text element?
+		if(nodename.compare("text")==0){
+			parser_text(nodeElement, root->add_child("layer"), style, mtx);
 			return;
 		}
 
@@ -1996,6 +2158,14 @@ Svg_parser::build_color(xmlpp::Element* root, float r, float g, float b, float a
 }
 
 void
+Svg_parser::build_string(xmlpp::Element* root, const String& name, const String& value)
+{
+	if(!name.empty()) root->set_attribute("name",name);
+	xmlpp::Element *child=root->add_child("string");
+	child->set_child_text(value);
+}
+
+void
 Svg_parser::build_vector(xmlpp::Element* root, const String& name, float x, float y)
 {
 	if(!name.empty()) root->set_attribute("name",name);
@@ -2522,6 +2692,19 @@ tokenize(const String& str,const String& delimiters){
 	return tokens;
 }
 
+static String
+unquote(const String& str){
+	String trimmed = synfig::trim(str);
+	if (trimmed.size() >= 2) {
+		const char& f = trimmed.front();
+		const char& b = trimmed.back();
+		if ((f == '"' && b == '"') || (f == '\'' && b == '\'')) {
+			return trimmed.substr(1, trimmed.length() - 2);
+		}
+	}
+	return trimmed;
+}
+
 #define COLOR_NAME(color, r, g, b) {color, {r, g, b}},
 
 static int
@@ -2704,6 +2887,112 @@ get_inkscape_version(const xmlpp::Element* svgNodeElement)
 	return 0; // not inkscape ;)
 }
 
+/**
+ * A parser for CSS style 'font-size'.
+ * Instantiate with parent font-size (or let the default value) and call parse() with the font-size value string.
+ */
+struct FontSize
+{
+	static constexpr float default_size = 16.; // 16.0 px
+	static constexpr float larger_factor = 1.2;
+
+	static const std::map<String, float> absolute_size_names;
+
+	float font_size = default_size;
+
+	FontSize() = default;
+	explicit FontSize(float size) : font_size(size) { }
+
+	bool parse(const String& value) {
+		if (value.empty())
+			return true;
+
+		auto length = value.length();
+
+		if (value.back() == '%') {
+			const auto factor = atof(value.substr(0, length-1).c_str()) / 100.;
+			if (approximate_less(factor, 0.))
+				return false;
+			font_size *= factor;
+			return true;
+		}
+
+		if (length >= 2) {
+
+			auto size_name_it = absolute_size_names.find(value);
+			if (size_name_it != absolute_size_names.end()) {
+				font_size = size_name_it->second;
+				return true;
+			}
+
+			if (value == "larger") {
+				larger();
+				return true;
+			}
+
+			if (value == "smaller") {
+				smaller();
+				return true;
+			}
+
+			const String unit = value.substr(length - 2, 2);
+
+			if (unit == "em") {
+				const auto factor = atof(value.substr(0, length-2).c_str());
+				if (approximate_less(factor, 0.))
+					return false;
+				font_size *= factor;
+				return true;
+			}
+
+		}
+
+		auto new_value = getDimension(value);
+		if (approximate_less(new_value, 0.))
+			return false;
+
+		font_size = new_value;
+		return true;
+	}
+
+	void larger()
+	{
+		for (auto it = absolute_size_names.begin(); it != absolute_size_names.end(); ++it) {
+			if (font_size < it->second) {
+				font_size = it->second;
+				return;
+			}
+		}
+		font_size *= larger_factor;
+	}
+
+	void smaller()
+	{
+		for (auto it = absolute_size_names.rbegin(); it != absolute_size_names.rend(); ++it) {
+			if (font_size > it->second) {
+				font_size = it->second;
+				return;
+			}
+		}
+		font_size /= larger_factor;
+	}
+
+	String to_string() const
+	{
+		return std::to_string(font_size) + "px";
+	}
+};
+
+const std::map<String, float> FontSize::absolute_size_names = {
+	{"xx-small", default_size * 3./5.},
+	{"x-small",  default_size * 3./4.},
+	{"small",    default_size * 8./9.},
+	{"medium",   default_size * 1.},
+	{"large",    default_size * 6./5.},
+	{"x-large",  default_size * 3./2.},
+	{"xx-large", default_size * 2.}
+};
+
 void
 Style::merge(const xmlpp::Element *elem)
 {
@@ -2739,7 +3028,29 @@ Style::merge(const xmlpp::Element *elem)
 	for (const auto& prop : style.data) {
 		if (prop.first == "clip-path" && prop.second == "none")
 			continue;
+
+		// Font size is special: it has relative values whose reference value is unrelated to viewport size,
+		// but parent font-size... So we cannot just store the 'percentual' value here.
+		// Possible solutions:
+		// 1. keep a stack of font-sizes
+		// 2. compute the font-size as soon as it is set (the chosen one)
+		if (prop.first == "font-size" && !prop.second.empty()) {
+			FontSize font_size;
+
+			auto font_size_it = data.find(prop.first);
+			if (font_size_it == data.end()) {
+				auto p = data.insert({"font-size", FontSize().to_string()});
+				font_size_it = p.first;
+			}
+
+			font_size.parse(font_size_it->second);
+			font_size.parse(prop.second);
+			font_size_it->second = font_size.to_string();
+			continue;
+		}
+
 		// TODO: Relative values?
+
 		data[prop.first] = prop.second;
 	}
 }
