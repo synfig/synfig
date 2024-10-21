@@ -301,6 +301,11 @@ bool studio::Plugin::is_valid() const
 	return !name.fallback().empty();
 }
 
+void studio::Plugin::launch_dir() const
+{
+	synfig::info(pluginDir);
+	synfig::OS::launch_file_async(pluginDir);
+}
 
 studio::ImportExport studio::ImportExport::load(const xmlpp::Node& node)
 {
@@ -349,10 +354,12 @@ studio::PluginManager::load_dir( const std::string &pluginsprefix )
 	} catch ( const Glib::FileError& e ) {
 		synfig::warning("Can't read plugin directory: %s", e.what().c_str());
 	}
+
+	signal_list_changed_.emit();
 } // END of synfigapp::PluginManager::load_dir()
 
 void
-studio::PluginManager::load_plugin( const std::string &file, const std::string &plugindir )
+studio::PluginManager::load_plugin( const std::string &file, const std::string &plugindir, bool notify )
 {
 	synfig::info("   Loading plugin: %s", synfig::filesystem::Path::basename(plugindir).c_str());
 
@@ -386,6 +393,7 @@ studio::PluginManager::load_plugin( const std::string &file, const std::string &
 			plugin.name = PluginString::load(*pNode, "name");
 			PluginScript script = PluginScript::load(*execlist[0], plugindir);
 			plugin.id = id;
+			plugin.pluginDir = plugindir;
 
 			plugin.release = PluginString::load(*pNode, "release");
 			for ( const xmlpp::Node* node : pNode->find("./author") )
@@ -433,6 +441,9 @@ studio::PluginManager::load_plugin( const std::string &file, const std::string &
 		synfig::warning("Error while loading plugin.xml");
 		std::cout << "Exception caught: " << ex.what() << std::endl;
 	}
+
+	if(notify)
+		signal_list_changed_.emit();
 }
 
 void studio::PluginManager::load_import_export(
@@ -693,6 +704,52 @@ studio::Plugin studio::PluginManager::get_plugin(const std::string& id) const
 		}
 	}
 	return Plugin();
+}
+
+bool studio::PluginManager::remove_plugin_recursive(const std::string &filename)
+{
+	auto fileSystem = synfig::FileSystemNative::instance();
+
+	if (filename.empty())
+		return false;
+	if (fileSystem->is_file(filename))
+		return fileSystem->file_remove(filename);
+	if (fileSystem->is_directory(filename))
+	{
+		typedef std::vector<std::string> FileList;
+		FileList files;
+		fileSystem->directory_scan(filename, files);
+		bool success = true;
+		for(FileList::const_iterator i = files.begin(); i != files.end(); ++i)
+			if (!remove_plugin_recursive(filename + ETL_DIRECTORY_SEPARATOR + *i))
+				success = false;
+		fileSystem->file_remove(filename);
+		return success;
+	}
+	return true;
+}
+
+void studio::PluginManager::remove_plugin(const std::string& id)
+{
+	try
+	{
+		Plugin plugin = *(std::find_if(plugins_.begin(), plugins_.end(), [&id](const Plugin& plugin) { return plugin.id == id; }));
+		auto fileSystem = synfig::FileSystemNative::instance();
+		if(remove_plugin_recursive(plugin.pluginDir))
+		{
+			plugins_.erase(std::remove_if(plugins_.begin(), plugins_.end(), [&id](const Plugin& plugin) { return plugin.id == id; }), plugins_.end());
+			signal_list_changed_.emit();
+		}
+	}
+	catch(const std::exception& e)
+	{
+		studio::App::dialog_message_1b("Error", synfig::strprintf(_("Plugin execution failed: %s"), e.what()), _("Plugin Deletion Failed"), _("Close"));
+	}
+}
+
+sigc::signal<void>& studio::PluginManager::signal_list_changed()
+{
+	return signal_list_changed_;
 }
 
 studio::PluginScript::ScriptArgs studio::PluginManager::get_script_args(const std::string& script_id) const
