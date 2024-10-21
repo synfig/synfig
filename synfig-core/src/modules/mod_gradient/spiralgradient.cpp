@@ -58,11 +58,11 @@ SYNFIG_LAYER_SET_VERSION(SpiralGradient,"0.2");
 
 /* === M E T H O D S ======================================================= */
 
-class TaskSpiralGradient: public rendering::Task, public rendering::TaskInterfaceTransformation
+class TaskSpiralGradient: public rendering::Task
 {
 public:
 	typedef etl::handle<TaskSpiralGradient> Handle;
-	static Token token;
+	SYNFIG_EXPORT static Token token;
 	Token::Handle get_token() const override { return token.handle(); }
 
 	Point center;
@@ -70,11 +70,8 @@ public:
 	Angle angle;
 	bool clockwise;
 	CompiledGradient compiled_gradient;
-	rendering::Holder<rendering::TransformationAffine> transformation;
 
 	TaskSpiralGradient() : clockwise(false) { }
-	virtual rendering::Transformation::Handle get_transformation() const override
-		{ return transformation.handle(); }
 };
 
 
@@ -82,8 +79,8 @@ class TaskSpiralGradientSW: public TaskSpiralGradient, public rendering::TaskPai
 {
 public:
 	typedef etl::handle<TaskSpiralGradientSW> Handle;
-	static Token token;
-	virtual Token::Handle get_token() const override { return token.handle(); }
+	SYNFIG_EXPORT static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
 
 	mutable Real pw = 0;
 
@@ -119,9 +116,9 @@ public:
 	}
 };
 
-rendering::Task::Token TaskSpiralGradient::token(
+SYNFIG_EXPORT rendering::Task::Token TaskSpiralGradient::token(
 	DescAbstract<TaskSpiralGradient>("TaskSpiralGradient") );
-rendering::Task::Token TaskSpiralGradientSW::token(
+SYNFIG_EXPORT rendering::Task::Token TaskSpiralGradientSW::token(
 	DescReal<TaskSpiralGradientSW, TaskSpiralGradient>("TaskSpiralGradientSW") );
 
 
