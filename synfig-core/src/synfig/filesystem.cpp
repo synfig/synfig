@@ -127,21 +127,21 @@ bool FileSystem::directory_create_recursive(const String &dirname) {
 		|| (directory_create_recursive(filesystem::Path::dirname(dirname)) && directory_create(dirname));
 }
 
-bool FileSystem::remove_recursive(const String &filename)
+bool FileSystem::remove_recursive(const filesystem::Path& filename)
 {
 	assert(!filename.empty());
 
 	if (filename.empty())
 		return false;
-	if (is_file(filename))
-		return file_remove(filename);
-	if (is_directory(filename))
+	if (is_file(filename.u8string()))
+		return file_remove(filename.u8string());
+	if (is_directory(filename.u8string()))
 	{
 		FileList files;
-		directory_scan(filename, files);
+		directory_scan(filename.u8string(), files);
 		bool success = true;
-		for(FileList::const_iterator i = files.begin(); i != files.end(); ++i)
-			if (!remove_recursive(filename + ETL_DIRECTORY_SEPARATOR + *i))
+		for (const auto& i : files)
+			if (!remove_recursive(filename / i))
 				success = false;
 		return success;
 	}

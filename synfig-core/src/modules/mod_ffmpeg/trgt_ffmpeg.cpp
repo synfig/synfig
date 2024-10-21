@@ -98,7 +98,7 @@ ffmpeg_trgt::~ffmpeg_trgt()
 
 	// Remove temporary sound file
 	if (FileSystemNative::instance()->is_file(sound_filename.u8string())) {
-		if(FileSystemNative::instance()->remove_recursive(sound_filename.u8string())) {
+		if (FileSystemNative::instance()->remove_recursive(sound_filename)) {
 			synfig::warning("Error deleting temporary sound file (%s).", sound_filename.u8_str());
 		}
 	}

@@ -3899,7 +3899,7 @@ App::open_from_plugin(const filesystem::Path& filename, const std::string& impor
 			dialog_message_1b("ERROR", errors, "details", _("Close"));
 	}
 
-	FileSystemNative::instance()->remove_recursive(tmp_filename.u8string());
+	FileSystemNative::instance()->remove_recursive(tmp_filename);
 	// lock file (temp_lock.second) is auto-deleted
 }
 
