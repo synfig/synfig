@@ -40,7 +40,7 @@
 #include "type.h"
 #include <glibmm.h>
 #include <gmodule.h>
-#include <giomm/file.h>
+#include <giomm/file.h> // for Gio::FILE_TYPE_DIRECTORY
 
 #endif
 
@@ -128,7 +128,7 @@ synfig::Module::book()
 }
 
 void
-synfig::Module::Register(Module::Handle mod)
+synfig::Module::Register(const Module::Handle& mod)
 {
 	book()[mod->Name()]=mod;
 }
@@ -165,12 +165,13 @@ synfig::Module::Register(const String &module_name, ProgressCallback *callback)
 	if(callback)callback->task(strprintf(_("Found module \"%s\""),module_name.c_str()));
 
 	Module::constructor_type constructor=nullptr;
-	Handle mod;
 
-	const std::vector<const char*> symbol_prefixes = {"", "lib", "_lib", "_"};
-	for (const char * symbol_prefix : symbol_prefixes)
+	const char* symbol_prefixes[] = {"", "lib", "_lib", "_"};
+	for (const char* symbol_prefix : symbol_prefixes)
 	{
-		if (g_module_symbol(module,(symbol_prefix+module_name+"_LTX_new_instance").c_str(), (gpointer*)&constructor))
+		std::string symbol_name = symbol_prefix + module_name + "_LTX_new_instance";
+		auto symbol = reinterpret_cast<gpointer*>(&constructor);
+		if (g_module_symbol(module,symbol_name.c_str(), symbol))
 			break;
 	}
 
@@ -180,7 +181,7 @@ synfig::Module::Register(const String &module_name, ProgressCallback *callback)
 		return false;
 	}
 
-	mod=etl::handle<Module>((*constructor)(callback));
+	Handle mod = etl::handle<Module>((*constructor)(callback));
 
 	if(!mod)
 	{
