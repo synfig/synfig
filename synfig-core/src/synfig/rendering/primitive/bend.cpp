@@ -215,7 +215,7 @@ Bend::loop(bool calc_length, int segments)
 {
 	if (points.empty()) return;
 	
-	Point &point = points.front();
+	Point point = points.front();
 	add(point.p, point.t0, point.t1, point.mode, calc_length, segments);
 	
 	Point &first = points.front();

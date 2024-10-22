@@ -224,7 +224,7 @@ nobase_include_synfig_HEADERS = \
 
 
 libsynfig_la_LIBADD = \
-	@LIBLTDL@ \
+	@GMODULE_LIBS@ \
 	@SYNFIG_LIBS@ \
 	@LIBADD_DL@
 
