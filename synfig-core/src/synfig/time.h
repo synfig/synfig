@@ -70,7 +70,7 @@ public:
 private:
 	value_type value_;
 
-	static const value_type epsilon_;
+	static constexpr value_type epsilon_ = static_cast<Time::value_type>(0.0005);
 
 public:
 	Time(): value_() { }

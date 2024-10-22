@@ -70,7 +70,7 @@ namespace synfig
 
 		class ReadStream :
 			public Stream,
-			private std::streambuf,
+			public std::streambuf,
 			public std::istream
 		{
 		public:
