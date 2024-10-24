@@ -33,13 +33,28 @@
 #include <sigc++/signal.h>
 #include <synfig/string.h>
 #include <unordered_map>
+#include <map>
 #include <vector>
-
+#include <gtkmm/widget.h>
 namespace xmlpp {
 	class Node;
 } // namespace xmlpp
 
 namespace JSON {
+class Parser {
+public:
+    static std::map<std::string, std::string> parse(const std::string& json);
+
+private:
+    const char* input_;
+    size_t pos_;
+    
+	explicit Parser(const char* input) : input_(input), pos_(0) {}
+    void skip_whitespace();
+    std::string parse_string();
+    std::map<std::string, std::string> parse_object();
+};
+
 std::string escape_string(const std::string& str);
 }
 
@@ -153,8 +168,9 @@ private:
 
 public:
 	void init_menu();
-	void load_dir( const std::string &pluginsprefix );
-	void load_plugin( const std::string &file, const std::string &plugindir, bool notify = false);
+    static std::map<std::string, std::string> parse_dialog(const Gtk::Widget &dialog_contents);
+    void load_dir(const std::string &pluginsprefix);
+    void load_plugin( const std::string &file, const std::string &plugindir, bool notify = false);
 	void refresh_menu();
 	void remove_plugin( const std::string &id);
 	bool remove_plugin_recursive( const std::string &filename);
