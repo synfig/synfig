@@ -157,6 +157,12 @@ Widget_Color::on_event(GdkEvent *event)
 	case GDK_BUTTON_PRESS:
 		if(event->button.button==1)
 		{
+			if(event->button.state & state_flags)
+			{
+				signal_activate_with_modifier_();
+				return true;
+			}
+
 			signal_activate_();
 			return true;
 		}

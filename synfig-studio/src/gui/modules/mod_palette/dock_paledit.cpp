@@ -408,7 +408,7 @@ Dock_PalEdit::refresh()
 				i
 			)
 		);
-		widget_color->signal_middle_click().connect(
+		widget_color->signal_activate_with_modifier(GDK_SHIFT_MASK).connect(
 			sigc::bind(
 				sigc::mem_fun(*this,&studio::Dock_PalEdit::select_outline_color),
 				i
