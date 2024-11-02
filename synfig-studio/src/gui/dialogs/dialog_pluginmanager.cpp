@@ -51,6 +51,7 @@
 #include <gtkmm/notebook.h>
 #include <gtkmm/scale.h>
 #include <gtkmm/scalebutton.h>
+#include <gtkmm/scrolledwindow.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/switch.h>
 #include <gtkmm/volumebutton.h>
@@ -187,12 +188,18 @@ Dialog_PluginManager::Dialog_PluginManager(Gtk::Window& parent):
     App::plugin_manager.signal_list_changed().connect(sigc::mem_fun(*this, &Dialog_PluginManager::refresh));
     // this->set_resizable(false);
     confirmation_dialog.set_transient_for(*this);
-    
+    set_resizable(false);
+    set_default_size(800, 600);
+
     build_listbox();
+
 
     build_notebook();
 
-    get_content_area()->pack_start(notebook);
+    Gtk::ScrolledWindow* scrolled_window = Gtk::manage(new Gtk::ScrolledWindow());
+    scrolled_window->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+    scrolled_window->add(notebook);
+    get_content_area()->pack_start(*scrolled_window);
     set_default_size(1200, 600);
     show_all_children();
 }
@@ -337,6 +344,9 @@ Dialog_PluginManager::build_notebook()
         notebook.remove_page(-1);
     }
 
+    Gtk::ScrolledWindow* installed_plugins_scroll = Gtk::manage(new Gtk::ScrolledWindow());
+    installed_plugins_scroll->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+
     Gtk::VBox* installed_plugins_tab = Gtk::manage(new Gtk::VBox());
     installed_plugins_tab->property_expand().set_value(false);
     
@@ -345,13 +355,15 @@ Dialog_PluginManager::build_notebook()
     install_plugin_button->set_always_show_image(true);
     install_plugin_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_PluginManager::on_install_plugin_button_clicked));
     plugin_list_box.set_selection_mode(Gtk::SELECTION_NONE);
+
+    installed_plugins_scroll->add(*installed_plugins_tab);
     
     Gtk::Label* installed_plugins_label = Gtk::manage(new Gtk::Label(_("Installed Plugins")));
     installed_plugins_label->set_margin_bottom(10);
     installed_plugins_label->set_margin_top(10);
     installed_plugins_label->set_margin_left(20);
     installed_plugins_label->set_margin_right(20);
-    notebook.append_page(*installed_plugins_tab, *installed_plugins_label);
+    notebook.append_page(*installed_plugins_scroll, *installed_plugins_label);
     
     installed_plugins_tab->pack_start(plugin_list_box, Gtk::PACK_SHRINK);
     installed_plugins_tab->pack_end(*install_plugin_button, Gtk::PACK_SHRINK);
@@ -359,8 +371,14 @@ Dialog_PluginManager::build_notebook()
     auto file_system = FileSystemNative::instance();
 
     for (const auto& plugin : plugin_list) {
+
+        Gtk::ScrolledWindow* plugin_scroll = Gtk::manage(new Gtk::ScrolledWindow());
+        plugin_scroll->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+
         // Create a new tab content for each plugin
         Gtk::VBox* plugin_tab = Gtk::manage(new Gtk::VBox());
+        plugin_tab->property_expand().set_value(false);
+
         
         // Create the label for the tab
         Gtk::Label* plugin_label = Gtk::manage(new Gtk::Label(plugin.name.get()));
@@ -503,7 +521,8 @@ Dialog_PluginManager::build_notebook()
             }
         }
         // Add the tab to the notebook
-        notebook.append_page(*plugin_tab, *plugin_label);
+        plugin_scroll->add(*plugin_tab);
+        notebook.append_page(*plugin_scroll, *plugin_label);
 
 }
 
