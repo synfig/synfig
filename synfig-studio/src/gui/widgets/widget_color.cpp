@@ -133,6 +133,13 @@ Widget_Color::~Widget_Color()
 {
 }
 
+void 
+Widget_Color::push_mouse_binding(const synfig::String& action, const std::pair<GdkModifierType, int>& mouse_binding)
+{
+	widget_mouse_bindings_.insert({ action, mouse_binding });
+	widget_mouse_binding_signals_.insert({ action, sigc::signal<void>() });
+}
+
 void
 Widget_Color::set_value(const synfig::Color &x)
 {
@@ -155,6 +162,30 @@ Widget_Color::on_event(GdkEvent *event)
 	switch(event->type)
 	{
 	case GDK_BUTTON_PRESS:
+
+		for(auto&& mouse_binding : widget_mouse_bindings_)
+		{
+			synfig::String mouse_binding_action_name = mouse_binding.first;
+			std::pair<GdkModifierType, int> mouse_binding_action_shortcut = mouse_binding.second;
+
+			GdkModifierType modifiers = mouse_binding_action_shortcut.first;
+			int button = mouse_binding_action_shortcut.second;
+
+			if(event->button.button == guint(button) && event->button.state == modifiers)
+			{
+				if(widget_mouse_binding_signals_.find(mouse_binding_action_name) != widget_mouse_binding_signals_.end())
+				{
+					sigc::signal<void> mouse_binding_signal = widget_mouse_binding_signals_[mouse_binding_action_name];
+					mouse_binding_signal();
+					return true;
+				}
+				else
+				{
+					std::cerr << "Mouse binding for the action \'" << mouse_binding_action_name << "\' not found!";
+					return false;
+				}
+			}
+		}
 		if(event->button.button==1)
 		{
 			if(event->button.state & state_flags)

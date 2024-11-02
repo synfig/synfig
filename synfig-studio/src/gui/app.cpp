@@ -218,6 +218,9 @@ bool App::shutdown_in_progress;
 
 Glib::RefPtr<studio::UIManager>	App::ui_manager_;
 
+// Mouse Bindings:
+std::map<synfig::String, std::pair<GdkModifierType, int>> App::mouse_bindings_;
+
 int        App::jack_locks_ = 0;
 synfig::Distance::System  App::distance_system;
 
@@ -254,6 +257,7 @@ static studio::Dock_Layers        *dock_layers;
 static studio::Dock_LayerGroups   *dock_layer_groups;
 static studio::Dock_MetaData      *dock_meta_data;
 static studio::Dock_Params        *dock_params;
+       studio::Dock_PalEdit  *App::dock_paledit = nullptr;
 static studio::Dock_Navigator     *dock_navigator;
 static studio::Dock_SoundWave     *dock_soundwave;
 static studio::Dock_Timetrack_Old *dock_timetrack_old;
@@ -1409,6 +1413,29 @@ Glib::RefPtr<App> App::instance() {
 	return app_reference;
 }
 
+const std::map<synfig::String, std::pair<GdkModifierType, int>>&
+App::get_default_mouse_binding_map()
+{ 
+	static const std::map<synfig::String, std::pair<GdkModifierType, int>> mouse_binding_map = {
+		{ "Color Palette/Select Fill Color",     { (GdkModifierType)0 , 1 } }, 
+		{ "Color Palette/Select Outline Color",  { GDK_SHIFT_MASK , 1 } },
+	};
+
+	return mouse_binding_map;
+}
+
+void 
+App::set_mouse_binding(const synfig::String& action, const std::pair<GdkModifierType, int>& binding)
+{
+	if(mouse_bindings_.find(action) != mouse_bindings_.end()) {
+		mouse_bindings_[action] = binding;
+	}
+	else {
+		std::cerr << "The action \'" << action << "\' is not a valid action!\n";
+	}
+}
+
+
 /* === M E T H O D S ======================================================= */
 App::App()
 	: Gtk::Application("org.synfig.SynfigStudio", Gio::APPLICATION_HANDLES_OPEN)
@@ -1667,8 +1694,14 @@ void App::init(const synfig::String& rootpath)
 
 		//Init Tools...was here
 
+		mouse_bindings_ = App::get_default_mouse_binding_map();
+
 		studio_init_cb.task(_("Init ModPalette..."));
-		module_list_.push_back(new ModPalette()); module_list_.back()->start();
+
+		ModPalette* mod_palette = new ModPalette();
+		module_list_.push_back(mod_palette); module_list_.back()->start();
+
+		App::dock_paledit = mod_palette->get_pal_edit();
 
 		studio_init_cb.task(_("Init Setup Dialog..."));
 		dialog_setup=new studio::Dialog_Setup(*App::main_window);

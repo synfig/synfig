@@ -106,6 +106,7 @@ class Dock_Canvases;
 
 class Dock_Keyframes;
 class Dock_Params;
+class Dock_PalEdit;
 class Dock_Layers;
 class Dock_MetaData;
 class Dock_Children;
@@ -176,6 +177,9 @@ private:
 
 	static int jack_locks_;
 
+	// Mouse Bindings:
+	static std::map<synfig::String, std::pair<GdkModifierType, int>> mouse_bindings_;
+
 //	static std::list< etl::handle< Module > > module_list_;
 
 	static std::string icon_theme_name;
@@ -206,6 +210,7 @@ public:
 	static About *about;
 	static MainWindow *main_window;
 	static Dock_Toolbox *dock_toolbox;
+	static Dock_PalEdit *dock_paledit;
 
 	static std::list<etl::handle<Instance> > instance_list;
 
@@ -341,8 +346,15 @@ public:
 	static bool load_settings(const synfig::String& key_filter = "");
 	static void load_accel_map();
 	static void save_accel_map();
+
 	/// \param[out] map Maps AccelKey to Action
 	static const std::map<const char*, const char*>& get_default_accel_map();
+	
+	static const std::map<synfig::String, std::pair<GdkModifierType, int>>& get_default_mouse_binding_map();
+	static const std::map<synfig::String, std::pair<GdkModifierType, int>>& get_current_mouse_binding_map() { return mouse_bindings_; }
+
+	static void set_mouse_binding(const synfig::String& action, const std::pair<GdkModifierType, int>& binding);
+	
 	static void load_recent_files();
 	static void load_language_settings();
 	static void apply_gtk_settings();

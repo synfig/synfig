@@ -58,6 +58,10 @@ private:
 	GdkModifierType state_flags;
 	sigc::signal<void> signal_activate_with_modifier_;
 
+	// Used for mouse binding:
+	std::map<synfig::String, std::pair<GdkModifierType, int>> widget_mouse_bindings_;
+	std::map<synfig::String, sigc::signal<void>> widget_mouse_binding_signals_;
+
 public:
 	sigc::signal<void>& signal_activate() { return signal_activate_; }
 	sigc::signal<void>& signal_clicked() { return signal_activate_; }
@@ -65,6 +69,9 @@ public:
 	sigc::signal<void>& signal_right_click() { return signal_right_click_; }
 
 	sigc::signal<void>& signal_activate_with_modifier(GdkModifierType flags) { state_flags = flags; return signal_activate_with_modifier_; } 
+
+	void push_mouse_binding(const synfig::String& action, const std::pair<GdkModifierType, int>& mouse_binding);
+	sigc::signal<void>& signal_mouse_binding(const synfig::String& action) { return widget_mouse_binding_signals_[action]; } 
 
 	const synfig::Color& get_value() const;
 	void set_value(const synfig::Color &x);
