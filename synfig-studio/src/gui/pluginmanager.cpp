@@ -58,7 +58,6 @@
 #include <gtkmm/volumebutton.h>
 
 #include <gui/app.h>
-#include <gui/localization.h>
 #include <gui/onemoment.h>
 
 #include <synfig/general.h>
@@ -512,8 +511,25 @@ studio::PluginManager::load_plugin( const std::string &file, const std::string &
 			Plugin plugin;
 			plugin.name = PluginString::load(*pNode, "name");
 			PluginScript script = PluginScript::load(*execlist[0], plugindir);
-			plugin.id = id;
 			plugin.pluginDir = plugindir;
+
+			bool has_explicit_id = false;
+            for ( const xmlpp::Node* node : pNode->find("./id") )
+            {
+                if ( node ) {
+                    const xmlpp::Element* element = dynamic_cast<const xmlpp::Element*>(node);
+                    if ( const xmlpp::TextNode* text = element->get_child_text() ) {
+                        plugin.id = text->get_content();
+                        has_explicit_id = true;
+                        break;
+                    }
+                }
+            }
+            
+            // If no explicit ID found, generate one
+            if (!has_explicit_id) {
+                plugin.id = "plugin" + std::to_string(++plugin_count);
+            }
 
 			plugin.release = PluginString::load(*pNode, "release");
 			for ( const xmlpp::Node* node : pNode->find("./author") )
