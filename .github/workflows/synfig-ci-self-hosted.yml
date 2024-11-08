@@ -32,6 +32,9 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      - name: "Fix permissions on build folder"
+        run: |
+          chmod -R u+w ./
       - uses: actions/checkout@v4
       - name: "Synfig Studio (source tarballs)"
         run: |
