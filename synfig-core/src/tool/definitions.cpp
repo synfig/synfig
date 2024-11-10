@@ -49,7 +49,7 @@ std::string SynfigToolGeneralOptions::get_binary_path() const
 }
 
 void SynfigToolGeneralOptions::set_fallback_binary_path(const std::string& path) {
-	synfig::OS::fallback_binary_path = path;
+	synfig::OS::get_fallback_binary_path() = path;
 	_binary_path = synfig::OS::get_binary_path().u8string();
 }
 

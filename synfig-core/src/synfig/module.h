@@ -242,7 +242,7 @@ public:
 	static void register_default_modules(ProgressCallback *cb=nullptr);
 
 	//! Register Module by handle
-	static void Register(Handle mod);
+	static void Register(const Handle& mod);
 	//! Register Module by name
 	static bool Register(const String &module_name, ProgressCallback *cb=nullptr);
 	//!Register Module by instance pointer

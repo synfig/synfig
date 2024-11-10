@@ -70,8 +70,6 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 /* === G L O B A L S ======================================================= */
 
-synfig::filesystem::Path synfig::OS::fallback_binary_path;
-
 /* === C L A S S E S ======================================================= */
 
 #ifdef WIN32_PIPE_TO_PROCCESSES
@@ -827,6 +825,11 @@ OS::get_user_lang()
 	}
 #endif
 	return language_list;
+}
+
+filesystem::Path& synfig::OS::get_fallback_binary_path() {
+	static synfig::filesystem::Path fallback_binary_path_;
+	return fallback_binary_path_;
 }
 
 filesystem::Path

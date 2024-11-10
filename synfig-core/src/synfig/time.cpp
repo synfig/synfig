@@ -60,7 +60,7 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-const Time::value_type Time::epsilon_ = static_cast<Time::value_type>(0.0005);
+//const Time::value_type Time::epsilon_ = static_cast<Time::value_type>(0.0005);
 
 /* === M E T H O D S ======================================================= */
 
