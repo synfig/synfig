@@ -212,6 +212,9 @@ MainWindow::init_menus()
 	action_group->add( Gtk::Action::create("workspace-previous", _("Previous workspace")),
 		sigc::ptr_fun(MainWindow::set_previous_workspace)
 	);
+	action_group->add( Gtk::Action::create("workspace-favorite", _("Switch to favorite")),
+		sigc::ptr_fun(MainWindow::switch_to_favorite_workspace)
+	);
 	action_group->add( Gtk::Action::create_with_icon_name("save-workspace", "action_doc_saveas_icon", _("Save workspace..."), _("Save workspace...")),
 		sigc::mem_fun(*this, &MainWindow::save_custom_workspace)
 	);
@@ -591,6 +594,17 @@ MainWindow::set_previous_workspace()
 {
 	App::dock_manager->toggle_to_previous_layout();
 	App::dock_manager->show_all_dock_dialogs();
+}
+
+void
+MainWindow::switch_to_favorite_workspace()
+{
+	if (!workspaces)
+		return;
+	std::string favorite = workspaces->get_favorite();
+	if (favorite.empty())
+		return;
+	set_workspace_from_name(favorite);
 }
 
 void

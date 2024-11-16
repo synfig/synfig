@@ -1018,6 +1018,7 @@ DEFINE_ACTION("workspace-compositing", _("Compositing"))
 DEFINE_ACTION("workspace-default",     _("Default"))
 DEFINE_ACTION("workspace-animating",   _("Animating"))
 DEFINE_ACTION("workspace-previous",    _("Previous workspace"))
+DEFINE_ACTION("workspace-favorite",    _("Switch to favorite"))
 DEFINE_ACTION("save-workspace",        _("Save workspace..."))
 DEFINE_ACTION("dialog-flipbook",       _("Preview Dialog"))
 DEFINE_ACTION("panel-toolbox",         _("Toolbox"))
@@ -1177,6 +1178,7 @@ DEFINE_ACTION("switch-to-rightmost-tab",  _("Switch to Rightmost Tab"))
 "			<menuitem action='workspace-compositing' />"
 "			<menuitem action='workspace-animating' />"
 "			<menuitem action='workspace-previous' />"
+"			<menuitem action='workspace-favorite' />"
 "		</menu>"
 "		<separator />"
 "		<menuitem action='dialog-flipbook'/>"
@@ -1354,6 +1356,7 @@ App::get_default_accel_map()
 		{"<Primary>8",              "<Actions>/mainwindow/switch-to-tab-8"},
 		{"<Primary>9",              "<Actions>/mainwindow/switch-to-rightmost-tab"},
 		{"<Primary>F11",            "<Actions>/mainwindow/workspace-previous"},
+		{"<Shift>F11",              "<Actions>/mainwindow/workspace-favorite"},
 		{"<Control>s",              "<Actions>/canvasview/save"},
 		{"<Control><Shift>s",       "<Actions>/canvasview/save-as"},
 		{"<Control>grave",          "<Actions>/canvasview/toggle-low-res"},
