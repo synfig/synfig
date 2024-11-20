@@ -865,15 +865,9 @@ Layer::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
 }
 
 void
-Layer::get_sub_renddesc_vfunc(const RendDesc &renddesc, std::vector<RendDesc> &out_descs) const
-{
-	out_descs.push_back( get_sub_renddesc_vfunc(renddesc) );
-}
-
-void
 Layer::get_sub_renddesc(const RendDesc &renddesc, std::vector<RendDesc> &out_descs) const
 {
-	get_sub_renddesc_vfunc(renddesc, out_descs);
+	out_descs.push_back(get_sub_renddesc_vfunc(renddesc));
 }
 
 RendDesc
