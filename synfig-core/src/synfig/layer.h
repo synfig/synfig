@@ -611,7 +611,6 @@ protected:
 	virtual RendDesc get_sub_renddesc_vfunc(const RendDesc &renddesc) const;
 
 public:
-	void get_sub_renddesc(const RendDesc &renddesc, std::vector<RendDesc> &out_descs) const;
 	RendDesc get_sub_renddesc(const RendDesc &renddesc) const;
 
 	//! Returns rendering task for context
