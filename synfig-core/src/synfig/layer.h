@@ -612,7 +612,7 @@ protected:
 
 public:
 	void get_sub_renddesc(const RendDesc &renddesc, std::vector<RendDesc> &out_descs) const;
-	RendDesc get_sub_renddesc(const RendDesc &renddesc, int index = 0) const;
+	RendDesc get_sub_renddesc(const RendDesc &renddesc) const;
 
 	//! Returns rendering task for context
 	/*!	\param context		Context iterator referring to next Layer.
