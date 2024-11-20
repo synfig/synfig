@@ -99,12 +99,12 @@ TaskLayer::set_coords_sub_tasks()
 	Task::Handle task = sub_task();
 	sub_tasks.clear();
 
-	for(std::vector<RendDesc>::const_iterator i = descs.begin(); i != descs.end(); ++i)
+	for(const auto& sub_desc : descs)
 	{
-		if (i->get_w() <= 0 || i->get_h() <= 0)
+		if (sub_desc.get_w() <= 0 || sub_desc.get_h() <= 0)
 			continue;
 
-		Point lt = i->get_tl(), rb = i->get_br();
+		Point lt = sub_desc.get_tl(), rb = sub_desc.get_br();
 		Rect rect(lt, rb);
 		if (!rect.is_valid())
 			continue;
@@ -114,7 +114,7 @@ TaskLayer::set_coords_sub_tasks()
 			{ matrix.m00 = -1.0; matrix.m20 = rb[0] - lt[0]; }
 		if (approximate_less(rb[1], lt[1]))
 			{ matrix.m11 = -1.0; matrix.m20 = rb[1] - lt[1]; }
-		matrix = i->get_transformation_matrix() * matrix;
+		matrix = sub_desc.get_transformation_matrix() * matrix;
 		if (!matrix.is_invertible())
 			continue;
 
@@ -127,7 +127,7 @@ TaskLayer::set_coords_sub_tasks()
 		}
 
 		sub_tasks.push_back(t);
-		t->set_coords(rect, VectorInt(i->get_w(), i->get_h()));
+		t->set_coords(rect, VectorInt(sub_desc.get_w(), sub_desc.get_h()));
 	}
 }
 
