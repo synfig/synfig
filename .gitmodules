@@ -1,0 +1,4 @@
+[submodule "synfig-studio/images"]
+	path = synfig-studio/images
+	url = ../synfig-ui-graphics.git
+	branch = master
