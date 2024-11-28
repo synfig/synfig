@@ -41,32 +41,13 @@
 #include <synfig/localization.h>
 #include <synfig/general.h>
 
-#include <synfig/angle.h>
-#include <synfig/bezier.h>
 #include <synfig/context.h>
-#include <synfig/paramdesc.h>
-#include <synfig/renddesc.h>
-#include <synfig/string.h>
-#include <synfig/surface.h>
-#include <synfig/value.h>
-#include <synfig/valuenode.h>
-
-#include <vector>
-
-#include <synfig/valuenodes/valuenode_bline.h>
 
 #include "random.h"
 
 #endif
 
 /* === M A C R O S ========================================================= */
-
-#define SAMPLES		300
-#define ROUND_END_FACTOR	(4)
-#define CUSP_THRESHOLD		(0.15)
-#define NO_LOOP_COOKIE		synfig::Vector(84951305,7836658)
-#define EPSILON				(0.000000001)
-#define CUSP_TANGENT_ADJUST	(0.025)
 
 /* === G L O B A L S ======================================================= */
 
