@@ -59,9 +59,6 @@ public:
 
 	virtual Rect calc_bounds() const;
 	virtual void set_coords_sub_tasks();
-
-private:
-	static bool renddesc_less(const RendDesc &a, const RendDesc &b);
 };
 
 } /* end namespace rendering */
