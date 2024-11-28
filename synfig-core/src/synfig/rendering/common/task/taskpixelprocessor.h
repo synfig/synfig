@@ -47,13 +47,12 @@ namespace rendering
 {
 
 
-class TaskPixelProcessor: public Task,
-	public TaskInterfaceTransformationPass,
+class TaskPixelProcessorBase: public Task,
 	public TaskInterfaceConstant,
 	public TaskInterfaceSplit
 {
 public:
-	typedef etl::handle<TaskPixelProcessor> Handle;
+	typedef etl::handle<TaskPixelProcessorBase> Handle;
 	SYNFIG_EXPORT static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 
@@ -89,6 +88,14 @@ public:
 		{ return false; }
 };
 
+class TaskPixelProcessor: public TaskPixelProcessorBase,
+						  public TaskInterfaceTransformationPass
+{
+public:
+	typedef etl::handle<TaskPixelProcessor> Handle;
+	SYNFIG_EXPORT static Token token;
+	virtual Token::Handle get_token() const { return token.handle(); }
+};
 
 class TaskPixelGamma: public TaskPixelProcessor
 {

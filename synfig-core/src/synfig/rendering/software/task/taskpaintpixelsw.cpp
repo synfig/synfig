@@ -126,11 +126,11 @@ synfig::rendering::TaskPaintPixelSW::run_task() const
 bool
 synfig::rendering::TaskFilterPixelSW::run_task() const
 {
-	const TaskPixelProcessor* task = dynamic_cast<const TaskPixelProcessor*>(this);
+	const TaskPixelProcessorBase* task = dynamic_cast<const TaskPixelProcessorBase*>(this);
 	if (!task) {
 		const Task* task = dynamic_cast<const Task*>(this);
 		if (task)
-			synfig::error(_("Internal error: Cobra task %s isn't a TaskPixelProcessor"), task->get_token()->name.c_str());
+			synfig::error(_("Internal error: Cobra task %s isn't a TaskPixelProcessorBase"), task->get_token()->name.c_str());
 		else
 			synfig::error(_("Internal error: this TaskPaintPixelSW isn't even a Task"));
 		return false;

@@ -62,7 +62,7 @@ SYNFIG_LAYER_SET_VERSION(Halftone2,"0.0");
 
 /* === P R O C E D U R E S ================================================= */
 
-class TaskHalfTone2: public rendering::TaskPixelProcessor
+class TaskHalfTone2: public rendering::TaskPixelProcessorBase
 {
 public:
 	typedef etl::handle<TaskHalfTone2> Handle;
