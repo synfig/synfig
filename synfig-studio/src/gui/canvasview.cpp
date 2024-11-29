@@ -3644,4 +3644,5 @@ CanvasView::set_show_toolbars(bool show)
 {
 	top_toolbar->set_visible(show);
 	right_toolbar->set_visible(show);
+	stopbutton->set_visible(show);
 };
