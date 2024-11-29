@@ -100,7 +100,6 @@ private:
 
 	mutable std::vector<Particle> particle_list;
 	mutable Rect	bounding_rect;
-	Real mass;
 
 	mutable bool needs_sync_;
 	mutable std::mutex mutex;

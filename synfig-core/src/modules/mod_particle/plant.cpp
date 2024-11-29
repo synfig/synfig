@@ -81,7 +81,6 @@ Plant::Plant():
 	param_use_width(ValueBase(true)),
 	bline_loop(true),
 	bounding_rect(Rect::zero()),
-	mass(0.5),
 	needs_sync_(true),
 	version(get_register_version())
 {
