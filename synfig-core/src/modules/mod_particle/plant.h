@@ -113,18 +113,17 @@ public:
 
 	Plant();
 
+	bool set_param(const String& param, const ValueBase& value) override;
 
-	virtual bool set_param(const String & param, const ValueBase &value);
+	ValueBase get_param(const String& param) const override;
 
-	virtual ValueBase get_param(const String & param)const;
+	bool set_version(const String& ver) override;
 
-	virtual bool set_version(const String &ver);
+	Vocab get_param_vocab() const override;
 
-	virtual Vocab get_param_vocab()const;
-
-	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
+	bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb) const override;
 	using Layer::get_bounding_rect;
-	virtual Rect get_bounding_rect(Context context)const;
+	virtual Rect get_bounding_rect(Context context) const;
 };
 
 /* === E N D =============================================================== */
