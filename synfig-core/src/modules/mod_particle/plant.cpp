@@ -153,43 +153,6 @@ Plant::branch(int n,int depth,float t, float stunt_growth, synfig::Point positio
 }
 
 void
-Plant::calc_bounding_rect()const
-{
-	std::vector<BLinePoint> bline(param_bline.get_list_of(BLinePoint()));
-	Real velocity=param_velocity.get(Real());
-	Vector gravity=param_gravity.get(Vector());
-	Real size=param_size.get(Real());
-
-	std::vector<synfig::BLinePoint>::const_iterator iter,next;
-
-	bounding_rect=Rect::zero();
-
-	// Bline must have at least 2 points in it
-	if(bline.size()<2)
-		return;
-
-	next=bline.begin();
-
-	if(bline_loop)
-		iter=--bline.end();
-	else
-		iter=next++;
-
-	for(;next!=bline.end();iter=next++)
-	{
-		bounding_rect.expand(iter->get_vertex());
-		bounding_rect.expand(next->get_vertex());
-		bounding_rect.expand(iter->get_vertex()+iter->get_tangent2()*0.3333333333333);
-		bounding_rect.expand(next->get_vertex()-next->get_tangent1()*0.3333333333333);
-		bounding_rect.expand(next->get_vertex()+next->get_tangent2()*velocity);
-	}
-	bounding_rect.expand_x(gravity[0]);
-	bounding_rect.expand_y(gravity[1]);
-	bounding_rect.expand_x(size);
-	bounding_rect.expand_y(size);
-}
-
-void
 Plant::sync()const
 {
 	std::vector<BLinePoint> bline(param_bline.get_list_of(BLinePoint()));
