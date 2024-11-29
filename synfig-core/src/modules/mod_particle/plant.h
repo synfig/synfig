@@ -113,7 +113,6 @@ public:
 
 	Plant();
 
-	void calc_bounding_rect()const;
 
 	virtual bool set_param(const String & param, const ValueBase &value);
 
