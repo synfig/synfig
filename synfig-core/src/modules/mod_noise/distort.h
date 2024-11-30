@@ -74,7 +74,6 @@ public:
 	virtual bool set_param(const synfig::String &param, const synfig::ValueBase &value);
 	virtual synfig::ValueBase get_param(const synfig::String &param)const;
 	virtual synfig::Color get_color(synfig::Context context, const synfig::Point &pos)const;
-	//virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
 	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
 	using Layer::get_bounding_rect;
 	virtual synfig::Rect get_bounding_rect(synfig::Context context)const;
@@ -82,8 +81,7 @@ public:
 	virtual bool reads_context()const { return true; }
 
 protected:
-	virtual synfig::RendDesc get_sub_renddesc_vfunc(const synfig::RendDesc &renddesc) const;
-	virtual synfig::rendering::Task::Handle build_rendering_task_vfunc(synfig::Context context) const;
+	synfig::rendering::Task::Handle build_composite_fork_task_vfunc(synfig::ContextParams /* context_params */, synfig::rendering::Task::Handle sub_task) const override;
 }; // EOF of class NoiseDistort
 
 /* === E N D =============================================================== */
