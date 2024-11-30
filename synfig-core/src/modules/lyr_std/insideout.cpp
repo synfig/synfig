@@ -38,14 +38,8 @@
 #include <synfig/localization.h>
 #include <synfig/general.h>
 
-#include <synfig/string.h>
-#include <synfig/time.h>
-#include <synfig/context.h>
-#include <synfig/paramdesc.h>
-#include <synfig/renddesc.h>
-#include <synfig/surface.h>
-#include <synfig/value.h>
-#include <synfig/valuenode.h>
+#include <synfig/rendering/common/task/taskdistort.h>
+#include <synfig/rendering/software/task/taskdistortsw.h>
 #include <synfig/transform.h>
 
 #endif
@@ -62,11 +56,70 @@ SYNFIG_LAYER_INIT(InsideOut);
 SYNFIG_LAYER_SET_NAME(InsideOut,"inside_out");
 SYNFIG_LAYER_SET_LOCAL_NAME(InsideOut,N_("Inside Out"));
 SYNFIG_LAYER_SET_CATEGORY(InsideOut,N_("Distortions"));
-SYNFIG_LAYER_SET_VERSION(InsideOut,"0.1");
+SYNFIG_LAYER_SET_VERSION(InsideOut,"0.2");
 
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
+
+class TaskInsideOut
+	: public rendering::TaskDistort
+{
+public:
+	typedef etl::handle<TaskInsideOut> Handle;
+	static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
+
+	Point origin;
+
+	Rect
+	compute_required_source_rect(const Rect& source_rect, const Matrix& /*inv_matrix*/) const override
+	{
+		Rect rect(source_rect.get_min() - Point(2,2), source_rect.get_max() + Point(2,2));
+		Rect::value_type diff = rect.get_width() - rect.get_height();
+		if (approximate_greater(diff, 0.)) {
+			rect.expand_y(diff);
+		} else if (approximate_less(diff, 0.)) {
+			rect.expand_x(-diff);
+		}
+		return rect;
+	}
+
+};
+
+class TaskInsideOutSW
+	: public TaskInsideOut, public rendering::TaskDistortSW
+{
+public:
+	typedef etl::handle<TaskInsideOutSW> Handle;
+	static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
+
+	TaskInsideOutSW()
+	{
+		rendering::TaskDistortSW::should_clamp_coordinates = true;
+	}
+
+	Point
+	point_vfunc(const Point& point) const override
+	{
+		Point pos(point - origin);
+		if (pos.mag_squared() == 0)
+			return point;
+		Point invpos(pos / pos.mag_squared());
+		return invpos + origin;
+	}
+
+	bool run(Task::RunParams& /*params*/) const override
+	{
+		return run_task(*this);
+	}
+};
+
+rendering::Task::Token TaskInsideOut::token(
+	DescAbstract<TaskInsideOut>("InsideOut") );
+rendering::Task::Token TaskInsideOutSW::token(
+	DescReal<TaskInsideOutSW, TaskInsideOut>("InsideOutSW") );
 
 InsideOut::InsideOut():
 	param_origin(ValueBase(Point(0,0)))
@@ -101,16 +154,6 @@ InsideOut::hit_check(Context context, const Point &p)const
 	Real inv_mag=pos.inv_mag();
 	Point invpos(pos*inv_mag*inv_mag);
 	return context.hit_check(invpos+origin);
-}
-
-RendDesc
-InsideOut::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
-{
-	RendDesc desc(renddesc);
-	desc.set_wh(512, 512);
-	desc.set_tl(Vector(-5.0, -5.0));
-	desc.set_br(Vector( 5.0,  5.0));
-	return desc;
 }
 
 Color
@@ -173,4 +216,19 @@ InsideOut::get_param_vocab()const
 	);
 
 	return ret;
+}
+
+rendering::Task::Handle
+InsideOut::build_rendering_task_vfunc(Context context) const
+{
+	rendering::Task::Handle task = context.build_rendering_task();
+
+	TaskInsideOut::Handle task_insideout(new TaskInsideOut());
+	task_insideout->origin = param_origin.get(Point());
+
+	task_insideout->sub_task() = task;
+
+	task = task_insideout;
+
+	return task;
 }
