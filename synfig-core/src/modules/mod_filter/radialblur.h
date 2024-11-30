@@ -62,12 +62,11 @@ public:
 	virtual bool set_param(const synfig::String & param, const synfig::ValueBase &value);
 	virtual ValueBase get_param(const synfig::String & param)const;
 	virtual Color get_color(Context context, const Point &pos)const;
-	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	virtual Vocab get_param_vocab()const;
 	virtual bool reads_context()const { return true; }
 
 protected:
-	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context) const;
+	rendering::Task::Handle build_composite_fork_task_vfunc(synfig::ContextParams /*context_params*/, synfig::rendering::Task::Handle sub_task) const override;
 }; // END of class RadialBlur
 
 /* === E N D =============================================================== */
