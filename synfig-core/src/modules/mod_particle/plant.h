@@ -89,6 +89,7 @@ private:
 
 	bool bline_loop;
 
+public:
 	struct Particle
 	{
 		Point point;
@@ -98,9 +99,9 @@ private:
 			point(point),color(color) { }
 	};
 
+private:
 	mutable std::vector<Particle> particle_list;
 	mutable Rect	bounding_rect;
-	Real mass;
 
 	mutable bool needs_sync_;
 	mutable std::mutex mutex;
@@ -108,25 +109,24 @@ private:
 	void branch(int n, int depth,float t, float stunt_growth, Point position,Vector velocity)const;
 	void sync()const;
 	String version;
-	void draw_particles(Surface *surface, const RendDesc &renddesc)const;
 
 public:
 
 	Plant();
 
-	void calc_bounding_rect()const;
+	bool set_param(const String& param, const ValueBase& value) override;
 
-	virtual bool set_param(const String & param, const ValueBase &value);
+	ValueBase get_param(const String& param) const override;
 
-	virtual ValueBase get_param(const String & param)const;
+	bool set_version(const String& ver) override;
 
-	virtual bool set_version(const String &ver);
+	Vocab get_param_vocab() const override;
 
-	virtual Vocab get_param_vocab()const;
-
-	virtual bool accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const;
 	using Layer::get_bounding_rect;
-	virtual Rect get_bounding_rect(Context context)const;
+	virtual Rect get_bounding_rect(Context context) const;
+
+protected:
+	rendering::Task::Handle build_composite_task_vfunc(ContextParams /*context_params*/) const override;
 };
 
 /* === E N D =============================================================== */
