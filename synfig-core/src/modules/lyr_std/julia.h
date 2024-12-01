@@ -31,9 +31,6 @@
 /* === H E A D E R S ======================================================= */
 
 #include <synfig/layer.h>
-#include <synfig/color.h>
-#include <synfig/vector.h>
-#include <synfig/angle.h>
 
 /* === M A C R O S ========================================================= */
 

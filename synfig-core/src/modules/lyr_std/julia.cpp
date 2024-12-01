@@ -37,12 +37,7 @@
 
 #include <synfig/localization.h>
 
-#include <synfig/string.h>
-#include <synfig/time.h>
 #include <synfig/context.h>
-#include <synfig/paramdesc.h>
-#include <synfig/renddesc.h>
-#include <synfig/value.h>
 
 #endif
 
