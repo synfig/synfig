@@ -57,6 +57,8 @@ class InsideOut : public Layer
 private:
 	//!Parameter: (Point)
 	ValueBase param_origin;
+	ValueBase param_cobra;
+	ValueBase param_draft;
 
 public:
 	InsideOut();
