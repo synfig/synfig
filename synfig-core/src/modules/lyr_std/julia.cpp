@@ -64,38 +64,6 @@ SYNFIG_LAYER_SET_VERSION(Julia,"0.1");
 
 /* === P R O C E D U R E S ================================================= */
 
-inline void
-color_neg_flip(Color &color)
-{
-	if(color.get_a()==0)
-	{
-		color=Color::alpha();
-		return;
-	}
-
-	if(color.get_a()<0)
-		color=-color;
-
-	if(color.get_r()<0)
-	{
-		color.set_g(color.get_g()-color.get_r());
-		color.set_b(color.get_b()-color.get_r());
-		color.set_r(0);
-	}
-	if(color.get_g()<0)
-	{
-		color.set_r(color.get_r()-color.get_g());
-		color.set_b(color.get_b()-color.get_g());
-		color.set_g(0);
-	}
-	if(color.get_b()<0)
-	{
-		color.set_r(color.get_r()-color.get_b());
-		color.set_g(color.get_g()-color.get_b());
-		color.set_b(0);
-	}
-}
-
 /* === M E T H O D S ======================================================= */
 
 Julia::Julia():
