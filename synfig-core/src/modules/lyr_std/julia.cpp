@@ -169,7 +169,6 @@ Julia::set_param(const String & param, const ValueBase &value)
 		Real bailout=param_bailout.get(Real());
 		bailout=value.get(bailout);
 		bailout*=bailout;
-		lp=log(log(bailout));
 		param_bailout.set(bailout);
 		return true;
 	}

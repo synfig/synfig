@@ -91,9 +91,6 @@ private:
 	ValueBase param_smooth_outside;
 	//!Parameter: (bool)
 	ValueBase param_broken;
-	Real lp;
-
-
 
 public:
 	Julia();
