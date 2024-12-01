@@ -89,6 +89,7 @@ private:
 	//!Parameter: (bool)
 	ValueBase param_broken;
 
+	Real squared_bailout;
 public:
 	Julia();
 
