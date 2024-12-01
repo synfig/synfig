@@ -57,6 +57,8 @@ class InsideOut : public Layer
 private:
 	//!Parameter: (Point)
 	ValueBase param_origin;
+	ValueBase param_cobra;
+	ValueBase param_draft;
 
 public:
 	InsideOut();
@@ -69,7 +71,7 @@ public:
 	virtual etl::handle<Transform> get_transform()const;
 
 protected:
-	virtual RendDesc get_sub_renddesc_vfunc(const RendDesc &renddesc) const;
+	rendering::Task::Handle build_rendering_task_vfunc(Context context) const override;
 };
 
 }; // END of namespace lyr_std
