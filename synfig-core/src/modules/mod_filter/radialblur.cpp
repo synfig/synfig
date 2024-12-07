@@ -75,7 +75,8 @@ public:
 	Real size;
 	bool fade_out;
 
-	void set_coords_sub_tasks() override
+	void
+	set_coords_sub_tasks() override
 	{
 		const Point tl(source_rect.get_min()), br(source_rect.get_max());
 		const int w(target_rect.get_width()), h(target_rect.get_height());
@@ -109,6 +110,35 @@ public:
 		int tmp_surface_height = int((tmp_surface_br[1]-tmp_surface_tl[1])/ph + 0.5);
 		sub_tasks[0]->set_coords(Rect(tmp_surface_tl, tmp_surface_br), VectorInt(tmp_surface_width, tmp_surface_height));
 	}
+
+	/**
+	 * Compute how large is the source_rect given a sub_task source_rect
+	 */
+	Rect
+	compute_expanded_rect(const Rect& original_rect, const Vector& upp) const
+	{
+		const Point tl(original_rect.get_min()), br(original_rect.get_max());
+
+		Rect rect(tl, br);
+		{
+			Point pos = tl;
+			// find how far towards the origin of the blur we are going to
+			// wander for each of the 4 corners of our tile, expanding the
+			// render description for each of them if necessary
+			for (int j = 0; j < 2; ++j, pos[1] = br[1] - upp[1]) {
+				pos[0]=tl[0];
+				for (int i = 0; i < 2; ++i, pos[0] = br[0] - upp[0])
+					rect.expand((pos-origin)/(1.0f-size) + origin);
+			}
+		}
+
+		Vector stl = rect.get_min();
+		Vector sbr = rect.get_max();
+		if (br[0] < tl[0]) std::swap(stl[0], sbr[0]);
+		if (br[1] < tl[1]) std::swap(stl[1], sbr[1]);
+
+		return Rect(stl, sbr);
+	}
 };
 
 class TaskRadialBlurSW
@@ -128,9 +158,30 @@ public:
 
 		Surface::value_prep_type cooker;
 
-		const Point tl(source_rect.get_min()), br(source_rect.get_max());
-		const int w(target_rect.get_width()), h(target_rect.get_height());
-		const Real pw(get_units_per_pixel()[0]),ph(get_units_per_pixel()[1]);
+		Rect expanded_subtask_source_rect = compute_expanded_rect(sub_task(0)->source_rect, sub_task(0)->get_units_per_pixel());
+		Rect common_source_rect;
+		rect_set_intersect(common_source_rect, source_rect, expanded_subtask_source_rect);
+		if (!common_source_rect.is_valid())
+			return true;
+
+		const Point tl(common_source_rect.get_min()), br(common_source_rect.get_max());
+
+		RectInt ra;
+		{
+			const Vector ppu = get_pixels_per_unit();
+			Matrix world_to_raster_transformation;
+			world_to_raster_transformation.m00 = ppu[0];
+			world_to_raster_transformation.m11 = ppu[1];
+			world_to_raster_transformation.m20 = target_rect.minx - ppu[0]*source_rect.minx;
+			world_to_raster_transformation.m21 = target_rect.miny - ppu[1]*source_rect.miny;
+
+			Rect raf{world_to_raster_transformation.get_transformed(tl), world_to_raster_transformation.get_transformed(br)};
+			ra = RectInt{VectorInt{int(raf.get_min()[0]), int(raf.get_min()[1])}, VectorInt{int(raf.get_max()[0]), int(raf.get_max()[1])}};
+		}
+
+		const int w(ra.get_width()), h(ra.get_height());
+		const Vector upp = get_units_per_pixel();
+		const Vector sub_ppu = sub_task(0)->get_pixels_per_unit();
 
 		rendering::TaskSW::LockWrite la(this);
 		if (!la)
@@ -141,20 +192,21 @@ public:
 			return false;
 		const synfig::Surface& sub_surface = lb->get_surface();
 
-		Point pos;
-		Surface::pen pen(la->get_surface().begin());
-		pos[1] = tl[1];
-		for (int y=0; y<h; y++, pen.inc_y(), pen.dec_x(w), pos[1]+=ph) {
-			pos[0] = tl[0];
-			for (int x=0; x<w; x++, pen.inc_x(), pos[0]+=pw) {
-				Point
-					begin(pos - sub_tasks[0]->source_rect.get_min()),
-					end((pos-origin)*(-size) + begin);
-				begin[0]/=pw;begin[1]/=ph;
-				end[0]/=pw;end[1]/=ph;
 
-				Color pool(Color::alpha());
-				int poolsize(0);
+		Matrix sub_world_to_raster_transformation;
+		sub_world_to_raster_transformation.m00 = sub_ppu[0];
+		sub_world_to_raster_transformation.m11 = sub_ppu[1];
+		sub_world_to_raster_transformation.m20 = sub_task(0)->target_rect.minx - sub_ppu[0]*sub_task(0)->source_rect.minx;
+		sub_world_to_raster_transformation.m21 = sub_task(0)->target_rect.miny - sub_ppu[1]*sub_task(0)->source_rect.miny;
+
+		Point pos;
+		Surface::pen pen(la->get_surface().get_pen(ra.get_min()[0], ra.get_min()[1]));
+		pos[1] = tl[1];
+		for (int y=ra.get_min()[1]; y<ra.get_max()[1]; y++, pen.inc_y(), pen.dec_x(w), pos[1]+=upp[1]) {
+			pos[0] = tl[0];
+			for (int x=ra.get_min()[0]; x<ra.get_max()[0]; x++, pen.inc_x(), pos[0]+=upp[0]) {
+				const Point begin = sub_world_to_raster_transformation.get_transformed(pos);//Point(pos - sub_tasks[0]->source_rect.get_min()).divide_coords(upp);
+				const Point end = sub_world_to_raster_transformation.get_transformed((pos-origin)*(1.0f-size) + origin);//Point((pos-origin)*(-size)).divide_coords(upp) + begin;
 
 				int x0(round_to_int(begin[0])),
 					y0(round_to_int(begin[1])),
@@ -180,6 +232,8 @@ public:
 					std::swap(sub_w, sub_h);
 				}
 				e = (dy << 1) - dx;
+				Color pool(Color::alpha());
+				int poolsize(0);
 				for (int i = 0; i < dx; i++) {
 					if(y0>=0 && x0>=0 && y0 < sub_h && x0 < sub_w) {
 						if (fade_out) {
