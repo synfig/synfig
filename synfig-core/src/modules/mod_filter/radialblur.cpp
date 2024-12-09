@@ -263,6 +263,8 @@ public:
 					pool /= poolsize;
 					pen.put_value(cooker.uncook(pool));
 				}
+				else
+					pen.put_value(sub_surface[y0][x0]);
 			}
 		}
 		return true;
