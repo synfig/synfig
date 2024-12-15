@@ -40,22 +40,28 @@
 
 #include <synfig/blur.h>
 #include <synfig/context.h>
+#include <synfig/rendering/software/task/tasksw.h>
+
 
 #endif
+
+/* === U S I N G =========================================================== */
 
 using namespace synfig;
 using namespace modules;
 using namespace lyr_std;
 
-/* -- G L O B A L S --------------------------------------------------------- */
+/* === G L O B A L S ======================================================= */
 
 SYNFIG_LAYER_INIT(Layer_Bevel);
 SYNFIG_LAYER_SET_NAME(Layer_Bevel,"bevel");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Bevel,N_("Bevel"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_Bevel,N_("Stylize"));
-SYNFIG_LAYER_SET_VERSION(Layer_Bevel,"0.2");
+SYNFIG_LAYER_SET_VERSION(Layer_Bevel,"0.3");
 
-/* -- F U N C T I O N S ----------------------------------------------------- */
+/* === P R O C E D U R E S ================================================= */
+
+/* === M E T H O D S ======================================================= */
 
 Layer_Bevel::Layer_Bevel():
 	Layer_CompositeFork(0.75,Color::BLEND_ONTO),
@@ -160,224 +166,221 @@ Layer_Bevel::get_color(Context context, const Point &pos)const
 	return Color::blend(shade,context.get_color(pos),get_amount(),get_blend_method());
 }
 
-RendDesc
-Layer_Bevel::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
+// TaskBevel performs Blur internally, and the behavior of
+// applying skew transformation before or after the blur is not the same.
+// Therefore, we can't inherit synfig::rendering::TaskInterfaceTransformationPass here
+class TaskBevel: public rendering::Task//, rendering::TaskInterfaceTransformationPass
 {
-	Real softness=param_softness.get(Real());
-	int type=param_type.get(int());
+public:
+	typedef etl::handle<TaskBevel> Handle;
+	SYNFIG_EXPORT static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
 
-	const int	w = renddesc.get_w(),
-				h = renddesc.get_h();
-	const Real	pw = renddesc.get_pw(),
-				ph = renddesc.get_ph();
-	const Vector size(softness,softness);
+	Real softness;
+	int type;
+	Color color1;
+	Color color2;
+	bool use_luma;
+	bool solid;
 
-	RendDesc workdesc(renddesc);
+	Vector offset, offset45;
 
-	//expand the working surface to accommodate the blur
-
-	//the expanded size = 1/2 the size in each direction rounded up
-	int	halfsizex = (int) (std::fabs(size[0]*.5/pw) + 3),
-		halfsizey = (int) (std::fabs(size[1]*.5/ph) + 3);
-
-	int offset_u(round_to_int(offset[0]/pw)),offset_v(round_to_int(offset[1]/ph));
-	int offset_w(w+std::abs(offset_u)*2),offset_h(h+std::abs(offset_v)*2);
-
-	workdesc.set_subwindow(
-		-std::abs(offset_u),
-		-std::abs(offset_v),
-		w+std::abs(offset_u),
-		h+std::abs(offset_v)
-	);
-
-	//expand by 1/2 size in each direction on either side
-	switch(type)
+	void set_coords_sub_tasks() override
 	{
-		case Blur::DISC:
-		case Blur::BOX:
-		case Blur::CROSS:
-		case Blur::FASTGAUSSIAN:
-		{
-			halfsizex = std::max(1, halfsizex);
-			halfsizey = std::max(1, halfsizey);
-			break;
+		if (!sub_task(0)) {
+			trunc_to_zero();
+			return;
 		}
-		case Blur::GAUSSIAN:
-		{
-		#define GAUSSIAN_ADJUSTMENT		(0.05)
-			Real pw = workdesc.get_pw();
-			Real ph = workdesc.get_ph();
-
-			Real pw2 = pw * pw;
-			Real ph2 = ph * ph;
-
-			halfsizex = (int)(size[0]*GAUSSIAN_ADJUSTMENT/std::fabs(pw2) + 0.5);
-			halfsizey = (int)(size[1]*GAUSSIAN_ADJUSTMENT/std::fabs(ph2) + 0.5);
-
-			halfsizex = (halfsizex + 1)/2;
-			halfsizey = (halfsizey + 1)/2;
-			break;
+		if (!is_valid_coords()) {
+			sub_task(0)->set_coords_zero();
+			return;
 		}
+
+		const int w = target_rect.get_width();
+		const int h = target_rect.get_height();
+		const Real pw = get_units_per_pixel()[0];
+		const Real ph = get_units_per_pixel()[1];
+
+		const Vector size(softness,softness);
+
+		//expand the working surface to accommodate the blur
+
+		//the expanded size = 1/2 the size in each direction rounded up
+		int	halfsizex = (int) (std::fabs(size[0]*.5/pw) + 3),
+			halfsizey = (int) (std::fabs(size[1]*.5/ph) + 3);
+
+		const int offset_u(round_to_int(offset[0]/pw));
+		const int offset_v(round_to_int(offset[1]/ph));
+		const int offset_w(w+std::abs(offset_u)*2);
+		const int offset_h(h+std::abs(offset_v)*2);
+
+		//expand by 1/2 size in each direction on either side
+		switch(type)
+		{
+			case Blur::DISC:
+			case Blur::BOX:
+			case Blur::CROSS:
+			case Blur::FASTGAUSSIAN:
+			{
+				halfsizex = std::max(1, halfsizex);
+				halfsizey = std::max(1, halfsizey);
+				break;
+			}
+			case Blur::GAUSSIAN:
+			{
+			#define GAUSSIAN_ADJUSTMENT		(0.05)
+
+				Real pw2 = pw * pw;
+				Real ph2 = ph * ph;
+
+				halfsizex = (int)(size[0]*GAUSSIAN_ADJUSTMENT/std::fabs(pw2) + 0.5);
+				halfsizey = (int)(size[1]*GAUSSIAN_ADJUSTMENT/std::fabs(ph2) + 0.5);
+
+				halfsizex = (halfsizex + 1)/2;
+				halfsizey = (halfsizey + 1)/2;
+				break;
+			}
+		}
+
+		Real delta_x = -std::abs(offset_u) - halfsizex;
+		Real delta_y = -std::abs(offset_v) - halfsizey;
+		Real new_w = std::abs(offset_u) + offset_w + 2*halfsizex;
+		Real new_h = std::abs(offset_v) + offset_h + 2*halfsizey;
+
+		Rect new_sub_source_rect(source_rect.minx + pw*delta_x, source_rect.miny + ph*delta_y, source_rect.minx + pw*delta_x + pw*new_w, source_rect.miny + ph*delta_y + ph*new_h);
+		sub_task(0)->set_coords(new_sub_source_rect, VectorInt(new_w, new_h));
 	}
+};
 
-	workdesc.set_subwindow( -halfsizex, -halfsizey, offset_w + 2*halfsizex, offset_h + 2*halfsizey );
-	return workdesc;
-}
+SYNFIG_EXPORT rendering::Task::Token TaskBevel::token(
+	DescAbstract<TaskBevel>("Bevel") );
 
-bool
-Layer_Bevel::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+class TaskBevelSW : public TaskBevel, public synfig::rendering::TaskSW
 {
-	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
+public:
+	typedef etl::handle<TaskBevel> Handle;
+	SYNFIG_EXPORT static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
 
-	Real softness=param_softness.get(Real());
-	int type=param_type.get(int());
-	Color color1=param_color1.get(Color());
-	Color color2=param_color2.get(Color());
-	bool use_luma=param_use_luma.get(bool());
-	bool solid=param_solid.get(bool());
+	bool run(RunParams&) const override {
+		if (!is_valid())
+			return true;
+		if (!sub_task(0))
+			return false;
 
-	int x,y;
-	SuperCallback stageone(cb,0,5000,10000);
-	SuperCallback stagetwo(cb,5000,10000,10000);
+		Rect common_source_rect;
+		rect_set_intersect(common_source_rect, source_rect, sub_task(0)->source_rect);
+		if (!common_source_rect.is_valid())
+			return false;
 
-	RendDesc	workdesc = get_sub_renddesc(renddesc);
-	Surface		worksurface;
-	synfig::surface<float> alpha_surface, blurred;
+		LockWrite la(this);
+		if (!la)
+			return false;
 
-	const Real	pw = renddesc.get_pw(),
-				ph = renddesc.get_ph();
-	const Vector size(softness,softness);
+		synfig::surface<float> blurred;
 
-	int	halfsizex = (int) (std::fabs(size[0]*.5/pw) + 3),
-		halfsizey = (int) (std::fabs(size[1]*.5/ph) + 3);
+		const Vector size(softness,softness);
 
-	int offset_u(round_to_int(offset[0]/pw)),offset_v(round_to_int(offset[1]/ph));
-
-	//callbacks depend on how long the blur takes
-	if(size[0] || size[1])
-	{
-		if(type == Blur::DISC)
 		{
-			stageone = SuperCallback(cb,0,5000,10000);
-			stagetwo = SuperCallback(cb,5000,10000,10000);
+			synfig::surface<float> alpha_surface;
+			get_alpha_surface(alpha_surface);
+			//blur the image
+			Blur(size, type)(alpha_surface, sub_task(0)->source_rect.get_size(), blurred);
 		}
-		else
-		{
-			stageone = SuperCallback(cb,0,9000,10000);
-			stagetwo = SuperCallback(cb,9000,10000,10000);
-		}
-	}
-	else
-	{
-		stageone = SuperCallback(cb,0,9999,10000);
-		stagetwo = SuperCallback(cb,9999,10000,10000);
-	}
 
-	switch(type)
-	{
-		case Blur::GAUSSIAN:
-		{
-			Real pw = workdesc.get_pw();
-			Real ph = workdesc.get_ph();
+		const Vector ppu = get_pixels_per_unit();
+		const Real pw = 1/ppu[0];
+		const Real ph = 1/ppu[1];
+		const int halfsizex = (int) (std::fabs(size[0]*.5/pw) + 3);
+		const int halfsizey = (int) (std::fabs(size[1]*.5/ph) + 3);
 
-			Real pw2 = pw * pw;
-			Real ph2 = ph * ph;
+		const int offset_u(round_to_int(offset[0]/pw)),offset_v(round_to_int(offset[1]/ph));
 
-			halfsizex = (int)(size[0]*GAUSSIAN_ADJUSTMENT/std::fabs(pw2) + 0.5);
-			halfsizey = (int)(size[1]*GAUSSIAN_ADJUSTMENT/std::fabs(ph2) + 0.5);
+		const float u0(offset[0]/pw),   v0(offset[1]/ph);
+		const float u1(offset45[0]/pw), v1(offset45[1]/ph);
 
-			halfsizex = (halfsizex + 1)/2;
-			halfsizey = (halfsizey + 1)/2;
+		// convert vector-coordinates to raster-coordinates (i.e. source rect to target rect)
+		Matrix transformation_matrix;
+		transformation_matrix.m00 = ppu[0];
+		transformation_matrix.m11 = ppu[1];
+		transformation_matrix.m20 = target_rect.minx - source_rect.minx*ppu[0];
+		transformation_matrix.m21 = target_rect.miny - source_rect.miny*ppu[1];
 
-			break;
-		}
-	}
+		const Point ftarget_min = transformation_matrix.get_transformed(common_source_rect.get_min());
+		const Point ftarget_max = transformation_matrix.get_transformed(common_source_rect.get_max());
+		const PointInt target_min = {static_cast<PointInt::value_type>(ftarget_min[0]), static_cast<PointInt::value_type>(ftarget_min[1])};
+		const PointInt target_max = {static_cast<PointInt::value_type>(ftarget_max[0]), static_cast<PointInt::value_type>(ftarget_max[1])};
 
-	//render the background onto the expanded surface
-	if(!context.accelerated_render(&worksurface,quality,workdesc,&stageone))
-		return false;
+		int v = halfsizey+std::abs(offset_v) + target_min[1];
+		for (int iy = target_min[1]; iy < target_max[1]; ++iy, ++v) {
+			int u = halfsizex+std::abs(offset_u) + target_min[0];
+			for (int ix = target_min[0]; ix < target_max[0]; ++ix, ++u) {
 
-	// Copy over the alpha
-	alpha_surface.set_wh(worksurface.get_w(), worksurface.get_h());
-	if(!use_luma)
-	{
-		for(int j=0;j<worksurface.get_h();j++)
-			for(int i=0;i<worksurface.get_w();i++)
-			{
-				alpha_surface[j][i] = worksurface[j][i].get_a();
-			}
-	}
-	else
-	{
-		for(int j=0;j<worksurface.get_h();j++)
-			for(int i=0;i<worksurface.get_w();i++)
-			{
-				alpha_surface[j][i] = worksurface[j][i].get_a() * worksurface[j][i].get_y();
-			}
-	}
+				Real alpha(0);
+				Color shade;
 
-	//blur the image
-	Blur(size, type, &stagetwo)(alpha_surface, workdesc.get_br()-workdesc.get_tl(), blurred);
+				alpha += -blurred.linear_sample(u+u0, v+v0);
+				alpha -= -blurred.linear_sample(u-u0, v-v0);
+				alpha += -blurred.linear_sample(u+u1, v+v1)*0.5f;
+				alpha += -blurred.linear_sample(u+v1, v-u1)*0.5f;
+				alpha -= -blurred.linear_sample(u-u1, v-v1)*0.5f;
+				alpha -= -blurred.linear_sample(u-v1, v+u1)*0.5f;
 
-	//be sure the surface is of the correct size
-	surface->set_wh(renddesc.get_w(),renddesc.get_h());
-
-	const float u0(offset[0]/pw),   v0(offset[1]/ph);
-	const float u1(offset45[0]/pw), v1(offset45[1]/ph);
-
-	const float amount = get_amount();
-	const Color::BlendMethod blend_method = get_blend_method();
-
-	int v = halfsizey+std::abs(offset_v);
-	for(y=0;y<renddesc.get_h();y++,v++)
-	{
-		int u = halfsizex+std::abs(offset_u);
-		for(x=0;x<renddesc.get_w();x++,u++)
-		{
-			Real alpha(0);
-			Color shade;
-
-			alpha += -blurred.linear_sample(u+u0, v+v0);
-			alpha -= -blurred.linear_sample(u-u0, v-v0);
-			alpha += -blurred.linear_sample(u+u1, v+v1)*0.5f;
-			alpha += -blurred.linear_sample(u+v1, v-u1)*0.5f;
-			alpha -= -blurred.linear_sample(u-u1, v-v1)*0.5f;
-			alpha -= -blurred.linear_sample(u-v1, v+u1)*0.5f;
-
-			if(solid)
-			{
-				alpha/=4.0f;
-				alpha+=0.5f;
-				shade=Color::blend(color1,color2,alpha,Color::BLEND_STRAIGHT);
-			}
-			else
-			{
-				alpha/=2;
-				if(alpha>0)
-					shade=color1,shade.set_a(shade.get_a()*alpha);
+				if(solid)
+				{
+					alpha/=4.0f;
+					alpha+=0.5f;
+					shade=Color::blend(color1,color2,alpha,Color::BLEND_STRAIGHT);
+				}
 				else
-					shade=color2,shade.set_a(shade.get_a()*-alpha);
+				{
+					alpha/=2;
+					if(alpha>0)
+						shade=color1,shade.set_a(shade.get_a()*alpha);
+					else
+						shade=color2,shade.set_a(shade.get_a()*-alpha);
+				}
+
+				if (shade.get_a())
+					la->get_surface()[iy][ix] = shade;
+				else
+					la->get_surface()[iy][ix] = Color::alpha();
 			}
-
-
-
-			if(shade.get_a())
-			{
-				(*surface)[y][x] = Color::blend(shade, worksurface[v][u], amount, blend_method);
-			}
-			else (*surface)[y][x] = worksurface[v][u];
 		}
+		return true;
 	}
 
-	if(cb && !cb->amount_complete(10000,10000))
+private:
+	bool get_alpha_surface(synfig::surface<float>& output) const
 	{
-		//if(cb)cb->error(strprintf(__FILE__"%d: Accelerated Renderer Failure",__LINE__));
-		return false;
+		LockRead lb(sub_tasks[0]);
+		if (!lb)
+			return false;
+
+		const Surface& context = lb->get_surface();
+		synfig::surface<float>& alpha_surface = output;
+		alpha_surface.set_wh(context.get_w(), context.get_h());
+		if (!use_luma) {
+			for (int y = 0; y < context.get_h(); ++y) {
+				for (int x = 0; x < context.get_w(); ++x) {
+					alpha_surface[y][x] = context[y][x].get_a();
+				}
+			}
+		} else {
+			for (int y = 0; y < context.get_h(); ++y) {
+				for (int x = 0; x < context.get_w(); ++x) {
+					const auto& value = context[y][x];
+					alpha_surface[y][x] = value.get_a() * value.get_y();
+				}
+			}
+		}
+
+		return true;
 	}
+};
 
-	return true;
-}
-
+SYNFIG_EXPORT rendering::Task::Token TaskBevelSW::token(
+	DescReal<TaskBevelSW, TaskBevel>("BevelSW") );
 
 ////
 
@@ -454,5 +457,20 @@ Layer_Bevel::get_full_bounding_rect(Context context)const
 }
 
 rendering::Task::Handle
-Layer_Bevel::build_rendering_task_vfunc(Context context) const
-	{ return Layer::build_rendering_task_vfunc(context); }
+Layer_Bevel::build_composite_fork_task_vfunc(ContextParams /*context_params*/, rendering::Task::Handle sub_task) const
+{
+	TaskBevel::Handle task_bevel(new TaskBevel());
+	task_bevel->softness = param_softness.get(Real());
+	task_bevel->type = param_type.get(int());
+	task_bevel->color1 = param_color1.get(Color());
+	task_bevel->color2 = param_color2.get(Color());
+	task_bevel->use_luma = param_use_luma.get(bool());
+	task_bevel->solid = param_solid.get(bool());
+
+	task_bevel->offset = offset;
+	task_bevel->offset45 = offset45;
+
+	task_bevel->sub_task(0) = sub_task;
+
+	return task_bevel;
+}
