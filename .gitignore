@@ -18,7 +18,7 @@
 _debug/
 _production/
 _packages/
-
+build/
 .cache
 .kdev4/
 
@@ -67,7 +67,8 @@ compile
 # ------------------------------------------------------------------------
 
 cmake-build
-
+CMakeFiles
+output
 ETL/ETL.pc.in
 ETL/ETL/etl_profile.h
 ETL/ETL/etl_profile_.h
