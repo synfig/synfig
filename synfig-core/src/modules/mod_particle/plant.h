@@ -86,6 +86,8 @@ private:
 	ValueBase param_drag;
 	//!Parameter: (bool)
 	ValueBase param_use_width;
+	//!Parameter: (bool)
+	ValueBase param_invert_gradient;
 
 	bool bline_loop;
 
@@ -119,6 +121,7 @@ public:
 	ValueBase get_param(const String& param) const override;
 
 	bool set_version(const String& ver) override;
+	void reset_version() override;
 
 	Vocab get_param_vocab() const override;
 

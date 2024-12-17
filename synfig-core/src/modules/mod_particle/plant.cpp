@@ -346,6 +346,7 @@ Plant::Plant():
 	param_random_factor(ValueBase(Real(0.2))),
 	param_drag(ValueBase(Real(0.1))),
 	param_use_width(ValueBase(true)),
+	param_invert_gradient(ValueBase(false)),
 	bline_loop(true),
 	bounding_rect(Rect::zero()),
 	needs_sync_(true),
@@ -386,6 +387,7 @@ Plant::branch(int n,int depth,float t, float stunt_growth, synfig::Point positio
 	Gradient gradient=param_gradient.get(Gradient());
 	Angle split_angle=param_split_angle.get(Angle());
 	Real random_factor=param_random_factor.get(Real());
+	bool invert_gradient = param_invert_gradient.get(bool());
 	Random random;
 	random.set_seed(param_random.get(int()));
 	
@@ -398,7 +400,11 @@ Plant::branch(int n,int depth,float t, float stunt_growth, synfig::Point positio
 		position[0]+=vel[0]*step;
 		position[1]+=vel[1]*step;
 
-		particle_list.push_back(Particle(position, gradient(t)));
+		float t2 = t;
+		if (invert_gradient)
+			t2 = 1.0 - t;
+
+		particle_list.push_back(Particle(position, gradient(t2)));
 		if (particle_list.size() % 1000000 == 0)
 			synfig::info("constructed %d million particles...", particle_list.size()/1000000);
 
@@ -563,6 +569,7 @@ Plant::set_param(const String & param, const ValueBase &value)
 	IMPORT_VALUE(param_size_as_alpha);
 	IMPORT_VALUE(param_reverse);
 	IMPORT_VALUE(param_use_width);
+	IMPORT_VALUE(param_invert_gradient);
 
 	if(param=="offset")
 		return set_param("origin", value);
@@ -595,6 +602,7 @@ Plant::get_param(const String& param)const
 	EXPORT_VALUE(param_reverse);
 	EXPORT_VALUE(param_use_width);
 	EXPORT_VALUE(param_random);
+	EXPORT_VALUE(param_invert_gradient);
 
 	EXPORT_NAME();
 
@@ -699,6 +707,12 @@ Plant::get_param_vocab()const
 		.set_description(_("Scale the velocity by the spline's width"))
 	);
 
+	ret.push_back(ParamDesc("invert_gradient")
+		.set_local_name(_("Invert Gradient"))
+		.set_description(_("Support wrong implementation of gradient in Synfig versions from 1.3.11 to 1.5.3"))
+		.hidden()
+	);
+
 	return ret;
 }
 
@@ -709,8 +723,17 @@ Plant::set_version(const String &ver)
 
 	if (version == "0.1")
 		param_use_width.set(false);
+	else if (version == "0.2-problematic-gradient") {
+		param_invert_gradient = true;
+	}
 
 	return true;
+}
+
+void
+Plant::reset_version()
+{
+	version = get_register_version();
 }
 
 Rect

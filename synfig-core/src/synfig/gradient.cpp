@@ -194,12 +194,12 @@ Gradient::operator() (const Real &x) const
 	Gradient::const_iterator i = std::upper_bound(begin(), end()-1, x);
 	Gradient::const_iterator j = i--;
 
-	Real d = j->pos - i->pos;
-	if (d <= real_high_precision<Real>()) return i->color;
+	Real d = i->pos - j->pos;
+	if (std::fabs(d) <= real_high_precision<Real>()) return i->color;
 
 	// operator+() also contains the same calculations
-	ColorReal amount = (x - i->pos)/d;
-	return Color::blend(i->color, j->color, amount, Color::BLEND_STRAIGHT);
+	ColorReal amount = (i->pos - x)/d;
+	return Color::blend(j->color, i->color, amount, Color::BLEND_STRAIGHT);
 }
 
 Real
