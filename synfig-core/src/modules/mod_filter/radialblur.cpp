@@ -72,12 +72,18 @@ public:
 	Token::Handle get_token() const override { return token.handle(); }
 
 	Vector origin;
-	Real size;
-	bool fade_out;
+	Real size = 0.2;
+	bool fade_out = false;
+
+	Real blend_amount = 1.0;
+	Color::BlendMethod blend_method = Color::BLEND_STRAIGHT;
 
 	void
 	set_coords_sub_tasks() override
 	{
+		if (sub_tasks.empty() || !sub_tasks.at(0))
+			return;
+
 		const Point tl(source_rect.get_min()), br(source_rect.get_max());
 		const int w(target_rect.get_width()), h(target_rect.get_height());
 		const Real pw(get_units_per_pixel()[0]),ph(get_units_per_pixel()[1]);
@@ -199,14 +205,12 @@ public:
 		sub_world_to_raster_transformation.m20 = sub_task(0)->target_rect.minx - sub_ppu[0]*sub_task(0)->source_rect.minx;
 		sub_world_to_raster_transformation.m21 = sub_task(0)->target_rect.miny - sub_ppu[1]*sub_task(0)->source_rect.miny;
 
-		Point pos;
-		Surface::pen pen(la->get_surface().get_pen(ra.get_min()[0], ra.get_min()[1]));
-		pos[1] = tl[1];
-		for (int y=ra.get_min()[1]; y<ra.get_max()[1]; y++, pen.inc_y(), pen.dec_x(w), pos[1]+=upp[1]) {
-			pos[0] = tl[0];
-			for (int x=ra.get_min()[0]; x<ra.get_max()[0]; x++, pen.inc_x(), pos[0]+=upp[0]) {
-				const Point begin = sub_world_to_raster_transformation.get_transformed(pos);//Point(pos - sub_tasks[0]->source_rect.get_min()).divide_coords(upp);
-				const Point end = sub_world_to_raster_transformation.get_transformed((pos-origin)*(1.0f-size) + origin);//Point((pos-origin)*(-size)).divide_coords(upp) + begin;
+		Point pos(tl);
+		Surface::alpha_pen apen(la->get_surface().get_pen(ra.get_min()[0], ra.get_min()[1]), blend_amount, blend_method);
+		for (int y=ra.get_min()[1]; y<ra.get_max()[1]; y++,  apen.inc_y(), apen.dec_x(w), pos[1]+=upp[1], pos[0] = tl[0]) {
+			for (int x=ra.get_min()[0]; x<ra.get_max()[0]; x++, apen.inc_x(), pos[0]+=upp[0]) {
+				const Point begin = sub_world_to_raster_transformation.get_transformed(pos);
+				const Point end = sub_world_to_raster_transformation.get_transformed((pos-origin)*(1.0f-size) + origin);
 
 				int x0(round_to_int(begin[0])),
 					y0(round_to_int(begin[1])),
@@ -259,12 +263,14 @@ public:
 					x0 += sx;
 					e += (dy << 1);
 				}
-				if (poolsize) {
-					pool /= poolsize;
-					pen.put_value(cooker.uncook(pool));
-				}
+
+				if (steep)
+					la->get_surface()[y][x] = sub_surface[y0][x0];
 				else
-					pen.put_value(sub_surface[y0][x0]);
+					la->get_surface()[y][x] = sub_surface[x0][y0];
+				if (poolsize) {
+					apen.put_value(cooker.uncook(pool / poolsize));
+				}
 			}
 		}
 		return true;
@@ -277,7 +283,7 @@ rendering::Task::Token TaskRadialBlurSW::token(
 	DescReal<TaskRadialBlurSW, TaskRadialBlur>("RadialBlurSW") );
 
 RadialBlur::RadialBlur():
-	Layer_CompositeFork(1.0,Color::BLEND_STRAIGHT),
+	synfig::Layer_Composite(1.0, Color::BLEND_STRAIGHT),
 	param_origin (ValueBase(Vector(0,0))),
 	param_size(ValueBase(Real(0.2))),
 	param_fade_out(ValueBase(false))
@@ -346,14 +352,17 @@ RadialBlur::get_color(Context context, const Point &p)const
 }
 
 rendering::Task::Handle
-RadialBlur::build_composite_fork_task_vfunc(synfig::ContextParams /*context_params*/, synfig::rendering::Task::Handle sub_task) const
+RadialBlur::build_rendering_task_vfunc(Context context)const
 {
 	TaskRadialBlur::Handle task_radialblur(new TaskRadialBlur());
 	task_radialblur->origin = param_origin.get(Vector());
 	task_radialblur->size = param_size.get(Real());
 	task_radialblur->fade_out = param_fade_out.get(bool());
 
-	task_radialblur->sub_task(0) = sub_task;
+	task_radialblur->blend_amount = get_amount();
+	task_radialblur->blend_method = get_blend_method();
+
+	task_radialblur->sub_task(0) = context.build_rendering_task();
 
 	return task_radialblur;
 }

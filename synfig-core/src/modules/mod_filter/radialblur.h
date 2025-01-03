@@ -33,7 +33,7 @@
 
 #include <synfig/vector.h>
 #include <synfig/angle.h>
-#include <synfig/layers/layer_composite_fork.h>
+#include <synfig/layers/layer_composite.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -43,7 +43,7 @@
 
 using namespace synfig;
 
-class RadialBlur : public Layer_CompositeFork
+class RadialBlur : public Layer_Composite
 {
 	SYNFIG_LAYER_MODULE_EXT
 	friend class RadialBlur_Trans;
@@ -66,7 +66,7 @@ public:
 	virtual bool reads_context()const { return true; }
 
 protected:
-	rendering::Task::Handle build_composite_fork_task_vfunc(synfig::ContextParams /*context_params*/, synfig::rendering::Task::Handle sub_task) const override;
+	rendering::Task::Handle build_rendering_task_vfunc(Context context)const override;
 }; // END of class RadialBlur
 
 /* === E N D =============================================================== */
