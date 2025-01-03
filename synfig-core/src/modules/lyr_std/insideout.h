@@ -69,6 +69,7 @@ public:
 	Layer::Handle hit_check(Context context, const Point &point)const;
 	virtual Vocab get_param_vocab()const;
 	virtual etl::handle<Transform> get_transform()const;
+	virtual bool reads_context() const { return true; }
 
 protected:
 	rendering::Task::Handle build_rendering_task_vfunc(Context context) const override;

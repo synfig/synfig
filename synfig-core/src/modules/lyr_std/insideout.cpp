@@ -98,14 +98,6 @@ public:
 			return;
 		}
 
-		const Vector ppu = get_pixels_per_unit();
-
-		Matrix bounds_transformation;
-		bounds_transformation.m00 = ppu[0];
-		bounds_transformation.m11 = ppu[1];
-		bounds_transformation.m20 = target_rect.minx - ppu[0]*source_rect.minx;
-		bounds_transformation.m21 = target_rect.miny - ppu[1]*source_rect.miny;
-
 		Rect required_source_rect = get_expanded_square(source_rect, Point(3,3));
 
 		sub_task(0)->set_coords(required_source_rect, target_rect.get_size());
@@ -113,6 +105,14 @@ public:
 			sub_tasks[1]->set_coords(Rect(origin - Point(1.5,1.5), origin + Point(1.5,1.5)), target_rect.get_size()*5);
 			sub_tasks[2]->set_coords(get_expanded_square(source_rect, Vector(20,20)), target_rect.get_size()/4);
 		}
+	}
+
+	int
+	get_pass_subtask_index() const override
+	{
+		if (sub_tasks.empty())
+			return PASSTO_NO_TASK;
+		return PASSTO_THIS_TASK;
 	}
 
 };
@@ -154,7 +154,7 @@ public:
 		if (!draft && !lc)
 			return false;
 
-		rendering::TaskSW::LockRead ld(!draft && sub_tasks.size() > 1 ? sub_tasks[2] : nullptr);
+		rendering::TaskSW::LockRead ld(!draft && sub_tasks.size() > 2 ? sub_tasks[2] : nullptr);
 		if (!draft && !ld)
 			return false;
 
@@ -162,44 +162,51 @@ public:
 
 		synfig::Surface::pen pen(la->get_surface().get_pen(target_rect.minx, target_rect.miny));
 
-		const Vector ppu = get_pixels_per_unit();
+		const Vector upp = get_units_per_pixel();
+		Matrix raster_to_world_transformation;
+		raster_to_world_transformation.m00 = upp[0];
+		raster_to_world_transformation.m11 = upp[1];
+		raster_to_world_transformation.m20 = source_rect.minx - upp[0]*target_rect.minx;
+		raster_to_world_transformation.m21 = source_rect.miny - upp[1]*target_rect.miny;
 
-		Matrix bounds_transformation;
-		bounds_transformation.m00 = ppu[0];
-		bounds_transformation.m11 = ppu[1];
-		bounds_transformation.m20 = target_rect.minx - ppu[0]*source_rect.minx;
-		bounds_transformation.m21 = target_rect.miny - ppu[1]*source_rect.miny;
+		const Vector dx = raster_to_world_transformation.axis_x();
+		const Vector dy = raster_to_world_transformation.axis_y() - dx*(Real)tw;
+		Vector p = raster_to_world_transformation.get_transformed( Vector((Real)target_rect.minx, (Real)target_rect.miny) );
 
-		Matrix inv_matrix = bounds_transformation.get_inverted();
-
-		Vector dx = inv_matrix.axis_x();
-		Vector dy = inv_matrix.axis_y() - dx*(Real)tw;
-		Vector p = inv_matrix.get_transformed( Vector((Real)target_rect.minx, (Real)target_rect.miny) );
-
-
-		std::vector<Vector> sub_ppu{sub_task(0)->get_pixels_per_unit()};
 		std::vector<const synfig::Surface*> sub_surfaces{&lb->get_surface()};
-		if (!draft) {
-			sub_ppu.push_back(sub_tasks[1]->get_pixels_per_unit());
-			sub_ppu.push_back(sub_tasks[2]->get_pixels_per_unit());
+		std::vector<Matrix> world_2_raster_transformations;
 
+		if (!draft) {
 			sub_surfaces.push_back(&lc->get_surface());
 			sub_surfaces.push_back(&ld->get_surface());
 		}
 
+		for (const auto& sub_task : sub_tasks) {
+			const Vector ppu = sub_task->get_pixels_per_unit();
+			Matrix world_to_raster_transformation;
+			world_to_raster_transformation.m00 = ppu[0];
+			world_to_raster_transformation.m11 = ppu[1];
+			world_to_raster_transformation.m20 = sub_task->target_rect.minx - ppu[0]*sub_task->source_rect.minx;
+			world_to_raster_transformation.m21 = sub_task->target_rect.miny - ppu[1]*sub_task->source_rect.miny;
+
+			world_2_raster_transformations.push_back(world_to_raster_transformation);
+		}
+
 		for (int iy = target_rect.miny; iy < target_rect.maxy; ++iy, p += dy, pen.inc_y(), pen.dec_x(tw)) {
 			for (int ix = target_rect.minx; ix < target_rect.maxx; ++ix, p += dx, pen.inc_x()) {
-				Point pos(p - origin);
-				int sub_task_idx = draft ? 0 : (pos.mag_squared() <= 0.05 ? 2 : (pos.mag_squared() < 0.5 ? 0 : 1));
+				// What subtask surface is best for this coordinate?
+				std::vector<Matrix>::size_type sub_task_idx = 0;
+				if (!draft) {
+					Real distance_to_origin_squared = Point(p - origin).mag_squared();
+					sub_task_idx = distance_to_origin_squared <= 0.05 ? 2 : (distance_to_origin_squared < 0.5 ? 0 : 1);
+					assert(sub_task_idx < sub_surfaces.size());
+				}
 				const synfig::Surface* sub_surface = sub_surfaces[sub_task_idx];
-				pos = point_vfunc(p);
 
-
-				Real u = (pos[0]-sub_tasks[sub_task_idx]->source_rect.minx)*sub_ppu[sub_task_idx][0];
-				Real v = (pos[1]-sub_tasks[sub_task_idx]->source_rect.miny)*sub_ppu[sub_task_idx][1];
-
-				u = synfig::clamp(u, 0., Real(sub_surface->get_w()-1));
-				v = synfig::clamp(v, 0., Real(sub_surface->get_h()-1));
+				Point pos = point_vfunc(p);
+				Point raster_pos = world_2_raster_transformations[sub_task_idx].get_transformed(pos);
+				Real u = synfig::clamp(raster_pos[0], 0., Real(sub_surface->get_w()-1));
+				Real v = synfig::clamp(raster_pos[1], 0., Real(sub_surface->get_h()-1));
 
 				if (u<0 || v<0 || u>=sub_surface->get_w() || v>=sub_surface->get_h() || std::isnan(u) || std::isnan(v)) {
 					// problem! It shouldn't happen!!
@@ -346,7 +353,7 @@ InsideOut::build_rendering_task_vfunc(Context context) const
 	task_insideout->draft = param_draft.get(bool());
 
 	task_insideout->sub_task(0) = task;
-	if (!task_insideout->draft) {
+	if (!task_insideout->draft && task) {
 		task_insideout->sub_tasks.push_back(task->clone_recursive());
 		task_insideout->sub_tasks.push_back(task->clone_recursive());
 	}
