@@ -96,6 +96,64 @@ public:
 	static LoopInfo get_loop_info(const rendering::Task& task);
 };
 
+/**
+ * Software implementation of TaskDistort base.
+ *
+ * This is a base/interface class to tasks that remap pixels from source surface
+ * to another coordinates in target surface.
+ *
+ * The final task class must implement point_vfunc() that has this role of remapping.
+ *
+ * The final task class should call run_task() in its run() method, that actually
+ * calls point_vfunc() pixel by pixel of target surface.
+ */
+class TaskDistortOrColorSW
+	: public synfig::rendering::TaskSW
+{
+protected:
+	/**
+	 * The distortion callback point_vfunc() may return the coordinate or a 'fixed' color directly.
+	 */
+	struct Result {
+		enum class Type {
+			POINT, COLOR
+		};
+
+		Result() = default;
+		Result(const Point& p) noexcept;
+		Result(Point&& p) noexcept;
+		Result(const Color& color) noexcept;
+		Result(Color&& color) noexcept;
+
+		operator bool() const;
+		Point point() const;
+		Color color() const;
+
+	private:
+		union Value {
+			Point point{-0xdead, -0xdead};
+			Color color;
+		} value_;
+		Type type_{Type::COLOR};
+	};
+
+	/**
+	 * Convert @a point coordinates in target vectorial region to the vectorial coordinates in source region.
+	 *
+	 * @param point The transformed vectorial coordinates in target region
+	 * @return From where in source region should take the color (in vectorial coordinates)
+	 */
+	virtual Result point_or_color_vfunc(const Point &point) const = 0;
+
+public:
+	/**
+	 * Scan the target surface and fill each pixel according to point_vfunc().
+	 * @param task the TaskDistort object
+	 * @return true, if successful
+	 */
+	bool run_task(const rendering::TaskDistort& task) const;
+};
+
 }
 }
 

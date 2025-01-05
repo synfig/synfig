@@ -147,3 +147,104 @@ TaskDistortSW::get_loop_info(const Task& task)
 
 	return info;
 }
+
+bool
+TaskDistortOrColorSW::run_task(const rendering::TaskDistort& task) const
+{
+	TaskDistortSW::LoopInfo info = TaskDistortSW::get_loop_info(task);
+
+	if (info.may_end)
+		return true;
+	if (info.should_abort)
+		return false;
+
+	rendering::TaskSW::LockWrite la(&task);
+	if (!la)
+		return false;
+
+	const rendering::Task::Handle& sub_task = task.sub_task();
+
+	rendering::TaskSW::LockRead sub_lock(sub_task);
+	if (!sub_lock)
+		return false;
+
+	const synfig::Surface& sub_surface = sub_lock->get_surface();
+
+	synfig::Surface::pen pen(la->get_surface().get_pen(task.target_rect.minx, task.target_rect.miny));
+
+	for (int iy = task.target_rect.miny; iy < task.target_rect.maxy; ++iy, info.initial_p += info.p_dy, pen.move(info.pen_dy[0], info.pen_dy[1])) {
+		for (int ix = task.target_rect.minx; ix < task.target_rect.maxx; ++ix, info.initial_p += info.p_dx, pen.inc_x()) {
+			Result res = point_or_color_vfunc(info.initial_p);
+
+			if (!res) {
+				pen.put_value(res.color());
+				continue;
+			}
+
+			Point raster_p = info.sub_world_to_raster_transformation.get_transformed(res.point());
+
+			if (!raster_p.is_valid()) {
+				// problem! It shouldn't happen!! At least one of the coordinates is NaN
+				pen.put_value(Color::cyan());
+				continue;
+			} else {
+				Real u = raster_p[0];
+				Real v = raster_p[1];
+				if (u<0 || v<0 || u>=sub_surface.get_w() || v>=sub_surface.get_h()) {
+					// problem! It shouldn't happen!! Out of sub_task surface bounds
+					pen.put_value(Color::magenta());
+					continue;
+				}
+
+				pen.put_value(sub_surface.cubic_sample(u,v));
+			}
+		}
+	}
+
+	return true;
+}
+
+TaskDistortOrColorSW::Result::Result(const Point& p) noexcept
+	: type_(Type::POINT)
+{
+	value_.point = p;
+}
+
+TaskDistortOrColorSW::Result::Result(Point&& p) noexcept
+	: type_(Type::POINT)
+{
+	value_.point = p;
+}
+
+TaskDistortOrColorSW::Result::Result(const Color& color) noexcept
+	: type_(Type::COLOR)
+{
+	value_.color = color;
+}
+
+TaskDistortOrColorSW::Result::Result(Color&& color) noexcept
+	: type_(Type::COLOR)
+{
+	value_.color = color;
+}
+
+TaskDistortOrColorSW::Result::operator bool() const
+{
+	return type_ == Type::POINT;
+}
+
+synfig::Point
+TaskDistortOrColorSW::Result::point() const
+{
+	if (type_ == Type::POINT)
+		return value_.point;
+	throw new std::logic_error("Internal error: trying to get an invalid point of Result");
+}
+
+synfig::Color
+TaskDistortOrColorSW::Result::color() const
+{
+	if (type_ == Type::COLOR)
+		return value_.color;
+	throw new std::logic_error("Internal error: trying to get an invalid color of Result");
+}
