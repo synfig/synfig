@@ -37,12 +37,7 @@
 
 #include <synfig/localization.h>
 
-#include <synfig/string.h>
-#include <synfig/time.h>
 #include <synfig/context.h>
-#include <synfig/paramdesc.h>
-#include <synfig/renddesc.h>
-#include <synfig/value.h>
 
 #endif
 
@@ -60,41 +55,9 @@ SYNFIG_LAYER_INIT(Julia);
 SYNFIG_LAYER_SET_NAME(Julia,"julia");
 SYNFIG_LAYER_SET_LOCAL_NAME(Julia,N_("Julia Set"));
 SYNFIG_LAYER_SET_CATEGORY(Julia,N_("Fractals"));
-SYNFIG_LAYER_SET_VERSION(Julia,"0.1");
+SYNFIG_LAYER_SET_VERSION(Julia,"0.2");
 
 /* === P R O C E D U R E S ================================================= */
-
-inline void
-color_neg_flip(Color &color)
-{
-	if(color.get_a()==0)
-	{
-		color=Color::alpha();
-		return;
-	}
-
-	if(color.get_a()<0)
-		color=-color;
-
-	if(color.get_r()<0)
-	{
-		color.set_g(color.get_g()-color.get_r());
-		color.set_b(color.get_b()-color.get_r());
-		color.set_r(0);
-	}
-	if(color.get_g()<0)
-	{
-		color.set_r(color.get_r()-color.get_g());
-		color.set_b(color.get_b()-color.get_g());
-		color.set_g(0);
-	}
-	if(color.get_b()<0)
-	{
-		color.set_r(color.get_r()-color.get_b());
-		color.set_g(color.get_g()-color.get_b());
-		color.set_b(0);
-	}
-}
 
 /* === M E T H O D S ======================================================= */
 
@@ -121,8 +84,8 @@ param_color_shift(ValueBase(Angle::deg(0)))
 	param_broken=ValueBase(false);
 	param_seed=ValueBase(Point(0,0));
 
-	param_bailout=ValueBase(Real(4));
-	lp=log(log(param_bailout.get(Real())));
+	param_bailout=ValueBase(Real(2));
+	squared_bailout = 4;
 
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
@@ -152,28 +115,17 @@ Julia::set_param(const String & param, const ValueBase &value)
 	IMPORT_VALUE(param_smooth_outside);
 	IMPORT_VALUE(param_broken);
 
-	IMPORT_VALUE_PLUS(param_iterations,
-	{
-		int iterations=param_iterations.get(int());
-		iterations=value.get(iterations);
-		if(iterations<0)
-			iterations=0;
-		if(iterations>500000)
-			iterations=500000;
+	IMPORT_VALUE_PLUS(param_iterations, {
+		int iterations = value.get(int());
+		iterations = synfig::clamp(iterations, 0, 500000);
 		param_iterations.set(iterations);
 		return true;
-	}
-	);
-	IMPORT_VALUE_PLUS(param_bailout,
-	{
+	});
+	IMPORT_VALUE_PLUS(param_bailout, {
 		Real bailout=param_bailout.get(Real());
-		bailout=value.get(bailout);
-		bailout*=bailout;
-		lp=log(log(bailout));
-		param_bailout.set(bailout);
+		squared_bailout = bailout * bailout;
 		return true;
-	}
-	);
+	});
 
 	return false;
 }
@@ -200,14 +152,7 @@ Julia::get_param(const String & param)const
 	EXPORT_VALUE(param_color_cycle);
 	EXPORT_VALUE(param_smooth_outside);
 	EXPORT_VALUE(param_broken);
-
-	if(param=="bailout")
-	{
-		// This line is needed to copy the static and interpolation options
-		ValueBase ret(param_bailout);
-		ret.set(sqrt(param_bailout.get(Real())));
-		return ret;
-	}
+	EXPORT_VALUE(param_bailout);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -277,7 +222,7 @@ Julia::get_color(Context context, const Point &pos)const
 		// Calculate Magnitude
 		mag=zr*zr+zi*zi;
 
-		if(mag>4)
+		if(mag>squared_bailout)
 		{
 			if(smooth_outside)
 			{
