@@ -50,7 +50,7 @@ using namespace synfig;
 void
 rendering::TaskDistort::set_coords_sub_tasks()
 {
-	if (!sub_task()) {
+	if (sub_tasks.empty() || !sub_task()) {
 		trunc_to_zero();
 		return;
 	}
