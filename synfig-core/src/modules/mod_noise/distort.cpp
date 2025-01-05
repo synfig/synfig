@@ -45,6 +45,7 @@
 #include <synfig/renddesc.h>
 #include <synfig/value.h>
 #include <ctime>
+#include <synfig/rendering/software/task/taskdistortsw.h>
 
 #endif
 
@@ -58,11 +59,124 @@ SYNFIG_LAYER_INIT(NoiseDistort);
 SYNFIG_LAYER_SET_NAME(NoiseDistort,"noise_distort");
 SYNFIG_LAYER_SET_LOCAL_NAME(NoiseDistort,N_("Noise Distort"));
 SYNFIG_LAYER_SET_CATEGORY(NoiseDistort,N_("Distortions"));
-SYNFIG_LAYER_SET_VERSION(NoiseDistort,"0.0");
+SYNFIG_LAYER_SET_VERSION(NoiseDistort,"0.1");
 
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
+
+Point
+NoiseDistort::Internal::transform(const Point& point) const
+{
+	float x(point[0]/size[0]*(1<<detail));
+	float y(point[1]/size[1]*(1<<detail));
+
+	Time time = speed * time_mark;
+	RandomNoise::SmoothType actual_smooth = (!speed && smooth == RandomNoise::SMOOTH_SPLINE) ? RandomNoise::SMOOTH_FAST_SPLINE : smooth;
+
+	Vector vect(0,0);
+	for (int i = 0; i < detail; i++) {
+		vect[0] = random(actual_smooth, 0+(detail-i)*5,x,y,time) + vect[0]*0.5;
+		vect[1] = random(actual_smooth, 1+(detail-i)*5,x,y,time) + vect[1]*0.5;
+
+		if (vect[0] < -1) vect[0] = -1;
+		if (vect[0] >  1) vect[0] =  1;
+
+		if (vect[1] < -1) vect[1] = -1;
+		if (vect[1] >  1) vect[1] =  1;
+
+		if (turbulent) {
+			vect[0] = std::fabs(vect[0]);
+			vect[1] = std::fabs(vect[1]);
+		}
+
+		x /= 2.0f;
+		y /= 2.0f;
+	}
+
+	if(!turbulent)
+	{
+		vect[0] = vect[0]/2.0f+0.5f;
+		vect[1] = vect[1]/2.0f+0.5f;
+	}
+	vect[0] = (vect[0]-0.5f) * displacement[0];
+	vect[1] = (vect[1]-0.5f) * displacement[1];
+
+	return point + vect;
+}
+
+
+TaskNoiseDistort::Token::Handle
+TaskNoiseDistort::get_token() const {
+	return token.handle();
+}
+
+Rect
+TaskNoiseDistort::compute_required_source_rect(const Rect& source_rect, const Matrix& /*raster_to_vector*/) const
+{
+	Vector offset(std::fabs(internal.displacement[0]) * 0.5, std::fabs(internal.displacement[1]) * 0.5);
+	return Rect(source_rect.get_min() - offset, source_rect.get_max() + offset);
+}
+
+class TaskNoiseDistortSW
+	: public TaskNoiseDistort, public rendering::TaskDistortSW
+{
+public:
+	typedef etl::handle<TaskNoiseDistortSW> Handle;
+	static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
+
+	Point
+	point_vfunc(const Point& point) const override
+	{
+		float x(point[0]/internal.size[0]*(1<<internal.detail));
+		float y(point[1]/internal.size[1]*(1<<internal.detail));
+
+		Time time = internal.speed * internal.time_mark;
+		RandomNoise::SmoothType actual_smooth = (!internal.speed && internal.smooth == RandomNoise::SMOOTH_SPLINE) ? RandomNoise::SMOOTH_FAST_SPLINE : internal.smooth;
+
+		Vector vect(0,0);
+		for (int i = 0; i < internal.detail; i++) {
+			vect[0] = internal.random(actual_smooth, 0+(internal.detail-i)*5,x,y,time) + vect[0]*0.5;
+			vect[1] = internal.random(actual_smooth, 1+(internal.detail-i)*5,x,y,time) + vect[1]*0.5;
+
+			if (vect[0] < -1) vect[0] = -1;
+			if (vect[0] >  1) vect[0] =  1;
+
+			if (vect[1] < -1) vect[1] = -1;
+			if (vect[1] >  1) vect[1] =  1;
+
+			if (internal.turbulent) {
+				vect[0] = std::fabs(vect[0]);
+				vect[1] = std::fabs(vect[1]);
+			}
+
+			x /= 2.0f;
+			y /= 2.0f;
+		}
+
+		if(!internal.turbulent)
+		{
+			vect[0] = vect[0]/2.0f+0.5f;
+			vect[1] = vect[1]/2.0f+0.5f;
+		}
+		vect[0] = (vect[0]-0.5f) * internal.displacement[0];
+		vect[1] = (vect[1]-0.5f) * internal.displacement[1];
+
+		return point + vect;
+	}
+
+	bool run(Task::RunParams& /*params*/) const override
+	{
+		return run_task(*this);
+	}
+};
+
+rendering::Task::Token TaskNoiseDistort::token(
+	DescAbstract<TaskNoiseDistort>("NoiseDistort") );
+rendering::Task::Token TaskNoiseDistortSW::token(
+	DescReal<TaskNoiseDistortSW, TaskNoiseDistort>("NoiseDistortSW") );
+
 
 NoiseDistort::NoiseDistort():
 	Layer_CompositeFork(1.0,Color::BLEND_STRAIGHT),
@@ -72,7 +186,8 @@ NoiseDistort::NoiseDistort():
 	param_smooth(ValueBase(int(RandomNoise::SMOOTH_COSINE))),
 	param_detail(ValueBase(int(4))),
 	param_speed(ValueBase(Real(0))),
-	param_turbulent(bool(false))
+	param_turbulent(bool(false)),
+	param_cobra(true)
 {
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
@@ -159,6 +274,7 @@ NoiseDistort::set_param(const String & param, const ValueBase &value)
 	IMPORT_VALUE(param_smooth);
 	IMPORT_VALUE(param_speed);
 	IMPORT_VALUE(param_turbulent);
+	IMPORT_VALUE(param_cobra);
 	if(param=="seed")
 		return set_param("random", value);
 	return Layer_Composite::set_param(param,value);
@@ -174,6 +290,7 @@ NoiseDistort::get_param(const String & param)const
 	EXPORT_VALUE(param_smooth);
 	EXPORT_VALUE(param_speed);
 	EXPORT_VALUE(param_turbulent);
+	EXPORT_VALUE(param_cobra);
 
 	if(param=="seed")
 		return get_param("random");
@@ -227,6 +344,10 @@ NoiseDistort::get_param_vocab()const
 	ret.push_back(ParamDesc("turbulent")
 		.set_local_name(_("Turbulent"))
 		.set_description(_("When checked, produces turbulent noise"))
+	);
+	ret.push_back(ParamDesc("cobra")
+		.set_local_name(_("Cobra"))
+		.set_description(_("When checked, uses Cobra renderer"))
 	);
 
 	return ret;
@@ -283,58 +404,29 @@ NoiseDistort::get_bounding_rect(Context context)const
 	return bounds;
 }
 
-
-/*
-bool
-NoiseDistort::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
-
-	SuperCallback supercb(cb,0,9500,10000);
-
-	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
-	{
-		surface->set_wh(renddesc.get_w(),renddesc.get_h());
-	}
-	else
-	{
-		if(!context.accelerated_render(surface,quality,renddesc,&supercb))
-			return false;
-		if(get_amount()==0)
-			return true;
-	}
-
-
-	int x,y;
-
-	Surface::pen pen(surface->begin());
-	const Real pw(renddesc.get_pw()),ph(renddesc.get_ph());
-	Point pos;
-	Point tl(renddesc.get_tl());
-	const int w(surface->get_w());
-	const int h(surface->get_h());
-
-	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
-	{
-		for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)
-			for(x=0,pos[0]=tl[0];x<w;x++,pen.inc_x(),pos[0]+=pw)
-				pen.put_value(color_func(pos,context));
-	}
-	else
-	{
-		for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)
-			for(x=0,pos[0]=tl[0];x<w;x++,pen.inc_x(),pos[0]+=pw)
-				pen.put_value(Color::blend(color_func(pos,context),pen.get_value(),get_amount(),get_blend_method()));
-	}
-
-	// Mark our progress as finished
-	if(cb && !cb->amount_complete(10000,10000))
-		return false;
-
-	return true;
-}
-*/
-
 rendering::Task::Handle
 NoiseDistort::build_rendering_task_vfunc(Context context) const
-	{ return Layer::build_rendering_task_vfunc(context); }
+{
+	if (!param_cobra.get(bool()))
+		return Layer::build_rendering_task_vfunc(context);
+	return Layer_CompositeFork::build_rendering_task_vfunc(context);
+}
+
+
+rendering::Task::Handle
+NoiseDistort::build_composite_fork_task_vfunc(ContextParams /* context_params */, rendering::Task::Handle sub_task) const
+{
+	TaskNoiseDistort::Handle task_noise_distort(new TaskNoiseDistort());
+	task_noise_distort->internal.displacement = param_displacement.get(Vector());
+	task_noise_distort->internal.size = param_size.get(Vector());
+	task_noise_distort->internal.random.set_seed(param_random.get(int()));
+	task_noise_distort->internal.smooth = RandomNoise::SmoothType(param_smooth.get(int()));
+	task_noise_distort->internal.detail = param_detail.get(int());
+	task_noise_distort->internal.speed = param_speed.get(Real());
+	task_noise_distort->internal.turbulent = param_turbulent.get(bool());
+	task_noise_distort->internal.time_mark = get_time_mark();
+
+	task_noise_distort->sub_task() = sub_task->clone_recursive();
+
+	return task_noise_distort;
+}
