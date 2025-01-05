@@ -207,25 +207,25 @@ TaskDistortOrColorSW::run_task(const rendering::TaskDistort& task) const
 TaskDistortOrColorSW::Result::Result(const Point& p) noexcept
 	: type_(Type::POINT)
 {
-	value_.point = p;
+	point_ = p;
 }
 
 TaskDistortOrColorSW::Result::Result(Point&& p) noexcept
 	: type_(Type::POINT)
 {
-	value_.point = p;
+	point_ = p;
 }
 
 TaskDistortOrColorSW::Result::Result(const Color& color) noexcept
 	: type_(Type::COLOR)
 {
-	value_.color = color;
+	color_ = color;
 }
 
 TaskDistortOrColorSW::Result::Result(Color&& color) noexcept
 	: type_(Type::COLOR)
 {
-	value_.color = color;
+	color_ = color;
 }
 
 TaskDistortOrColorSW::Result::operator bool() const
@@ -237,7 +237,7 @@ synfig::Point
 TaskDistortOrColorSW::Result::point() const
 {
 	if (type_ == Type::POINT)
-		return value_.point;
+		return point_;
 	throw new std::logic_error("Internal error: trying to get an invalid point of Result");
 }
 
@@ -245,6 +245,6 @@ synfig::Color
 TaskDistortOrColorSW::Result::color() const
 {
 	if (type_ == Type::COLOR)
-		return value_.color;
+		return color_;
 	throw new std::logic_error("Internal error: trying to get an invalid color of Result");
 }

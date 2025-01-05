@@ -130,10 +130,8 @@ protected:
 		Color color() const;
 
 	private:
-		union Value {
-			Point point{-0xdead, -0xdead};
-			Color color;
-		} value_;
+		Point point_{-0xdead, -0xdead};
+		Color color_;
 		Type type_{Type::COLOR};
 	};
 
