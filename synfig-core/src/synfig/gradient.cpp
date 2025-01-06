@@ -72,6 +72,12 @@ Gradient::Gradient(const Color &c1, const Color &c2, const Color &c3)
 	push_back(CPoint(1.0,c3));
 }
 
+void
+Gradient::sync()
+{
+	stable_sort(begin(), end());
+}
+
 // both input gradients should be already sorted
 Gradient
 Gradient::operator+(const Gradient &rhs) const
@@ -245,12 +251,24 @@ Gradient::proximity(Real x)
 	return iter;
 }
 
+Gradient::const_iterator
+Gradient::proximity(Real x) const
+{
+	return const_cast<Gradient*>(this)->proximity(x);
+}
+
 Gradient::iterator
 Gradient::find(const UniqueID &id)
 {
 	for (iterator i = begin(); i != end(); ++i)
 		if (id == *i) return i;
 	return end();
+}
+
+Gradient::const_iterator
+Gradient::find(const UniqueID& id) const
+{
+	return const_cast<Gradient*>(this)->find(id);
 }
 
 
@@ -270,7 +288,6 @@ CompiledGradient::Entry::Entry(const Accumulator &prev_sum, const GradientCPoint
 		next_sum = prev_sum + (next_color + prev_color)*(0.5*dp);
 	}
 }
-
 
 CompiledGradient::CompiledGradient():
 	is_empty(true), repeat()

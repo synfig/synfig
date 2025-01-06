@@ -538,7 +538,7 @@ CanvasParser::parse_gradient(xmlpp::Element *node)
 			ret.push_back(cpoint);
 		}
 	}
-	ret.sort();
+	ret.sync();
 	return ret;
 }
 

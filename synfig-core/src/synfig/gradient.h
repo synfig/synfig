@@ -33,7 +33,6 @@
 /* === H E A D E R S ======================================================= */
 
 #include <vector>
-#include <algorithm>
 
 #include "real.h"
 #include "color.h"
@@ -114,10 +113,7 @@ public:
 	Gradient(const Color& c1, const Color& c2, const Color& c3);
 
 	/** You should call this function after changing stuff. */
-	void sort() { stable_sort(begin(), end()); }
-
-	/** Alias for sort (Implemented for consistency) */
-	void sync() { sort(); }
+	void sync();
 
 	void push_back(const CPoint& cpoint) { cpoints.push_back(cpoint); }
 	iterator erase(iterator iter) { return cpoints.erase(iter); }
@@ -152,12 +148,10 @@ public:
 	/** Returns the iterator of the CPoint closest to position @a x */
 	iterator proximity(Real x);
 	/** Returns the iterator of the CPoint closest to position @a x */
-	const_iterator proximity(Real x) const
-		{ return const_cast<Gradient*>(this)->proximity(x); }
+	const_iterator proximity(Real x) const;
 
 	iterator find(const UniqueID& id);
-	const_iterator find(const UniqueID& id) const
-		{ return const_cast<Gradient*>(this)->find(id); }
+	const_iterator find(const UniqueID& id) const;
 }; // END of class Gradient
 
 
