@@ -14,6 +14,7 @@ TESTS = \
 	test_synfig_bone \
 	test_synfig_clock \
 	test_synfig_filesystem_path \
+	test_synfig_gradient \
 	test_synfig_handle \
 	test_synfig_keyframe \
 	test_synfig_node \
@@ -36,6 +37,8 @@ test_synfig_bline_SOURCES=bline.cpp
 test_synfig_clock_SOURCES=clock.cpp
 
 test_synfig_filesystem_path_SOURCES=filesystem_path.cpp
+
+test_synfig_gradient_SOURCES=gradient.cpp
 
 test_synfig_handle_SOURCES=handle.cpp
 
