@@ -178,7 +178,7 @@ Gradient::operator*=(const ColorReal &rhs)
 
 //! Returns color of point x
 Color
-Gradient::operator() (const Real &x) const
+Gradient::operator() (Real x) const
 {
 	if (cpoints.empty())
 		return Color();
@@ -219,7 +219,7 @@ Gradient::mag() const
 }
 
 Gradient::iterator
-Gradient::proximity(const Real &x)
+Gradient::proximity(Real x)
 {
 	// This algorithm requires a sorted list.
 	iterator iter;

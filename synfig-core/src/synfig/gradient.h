@@ -59,18 +59,18 @@ struct GradientCPoint : public UniqueID
 
 	bool operator< (const GradientCPoint& rhs) const
 		{ return pos < rhs.pos; }
-	bool operator< (const Real& rhs) const
+	bool operator< (Real rhs) const
 		{ return pos < rhs; }
 
 	GradientCPoint() : pos() { }
-	GradientCPoint(const Real& pos, const Color& color) : pos(pos), color(color) { }
+	GradientCPoint(Real pos, const Color& color) : pos(pos), color(color) { }
 }; // END of class GradientCPoint
 
 /**
  * For use in std::upper_bound, std::lower_bound, etc.
  * It must be inline to avoid 'multiple definition' linker error
  */
-inline bool operator<(const Real& a, const GradientCPoint& b)
+inline bool operator<(Real a, const GradientCPoint& b)
 	{ return a < b.pos; }
 
 /**
@@ -144,15 +144,15 @@ public:
 	Gradient operator/(const ColorReal& rhs) const { return Gradient(*this)/=rhs; }
 
 	/** Fetch the interpolated Color for a given position @a x */
-	Color operator() (const Real& x) const;
+	Color operator() (Real x) const;
 
 	/** Returns average luminance of gradient */
 	Real mag() const;
 
 	/** Returns the iterator of the CPoint closest to position @a x */
-	iterator proximity(const Real& x);
+	iterator proximity(Real x);
 	/** Returns the iterator of the CPoint closest to position @a x */
-	const_iterator proximity(const Real& x) const
+	const_iterator proximity(Real x) const
 		{ return const_cast<Gradient*>(this)->proximity(x); }
 
 	iterator find(const UniqueID& id);
@@ -243,7 +243,7 @@ public:
 
 		Entry(const Accumulator& prev_sum, const GradientCPoint& prev, const GradientCPoint& next);
 
-		inline bool operator< (const Real& x) const
+		inline bool operator< (Real x) const
 			{ return next_pos < x; } // to easy search by std::upper_bound and std::lower_bound
 
 		inline Color color(Real x) const {
