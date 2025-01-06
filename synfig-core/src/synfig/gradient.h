@@ -152,6 +152,13 @@ public:
 
 	iterator find(const UniqueID& id);
 	const_iterator find(const UniqueID& id) const;
+
+	/**
+	 * Create a Gradient with correct interpolation from
+	 * a bad one created with Synfig versions between 1.3.11 and 1.5.3.
+	 * Please avoid use this trick unless for fixing this issue.
+	 */
+	static Gradient from_bad_version(const Gradient& wrong_gradient);
 }; // END of class Gradient
 
 

@@ -28,11 +28,26 @@
 
 #include "test_base.h"
 
+#include <algorithm> // For std::upper_bound()
+
 /* === M A C R O S ========================================================= */
 
 using namespace synfig;
 
 /* === C L A S S E S ======================================================= */
+
+static Color
+original_bad_implementation_for_1311_to_153(const Gradient& gradient, Real pos)
+{
+	Gradient::const_iterator i = std::upper_bound(gradient.begin(), gradient.end()-1, pos);
+	Gradient::const_iterator j = i--;
+
+	Real d = j->pos - i->pos;
+	if (d <= real_high_precision<Real>()) return i->color;
+
+	ColorReal amount = (pos - i->pos)/d;
+	return Color::blend(i->color, j->color, amount, Color::BLEND_STRAIGHT);
+}
 
 void
 test_gradient_base_constructor_is_empty()
@@ -343,6 +358,252 @@ test_gradient_3_colors_fetches_similar_to_the_middle_color_for_position_near_to_
 	ASSERT_APPROX_EQUAL(0.0f, g1(0.6).get_r());
 	ASSERT_APPROX_EQUAL(0.8f, g1(0.6).get_g());
 	ASSERT_APPROX_EQUAL(0.2f, g1(0.6).get_b());
+	// ASSERT(Color(0, .8, .2, 1.) == g1(0.6));
+}
+
+/*** BAD GRADIENT ***/
+
+void
+test_BAD_gradient_2_colors_fetches_the_first_color_even_if_before_first_position()
+{
+	{
+		Gradient g1(Color::red(), Color::blue());
+		g1 = Gradient::from_bad_version(g1);
+		ASSERT(Color::red() == g1(-0.3));
+		ASSERT(Color::red() == g1(-0.6));
+		ASSERT(Color::red() == g1(-1.0));
+		ASSERT(Color::red() == g1(-8.0));
+	}
+
+	{
+		Gradient g2;
+		g2.push_back({-2.0, Color::red()});
+		g2.push_back({+3.0, Color::blue()});
+		g2 = Gradient::from_bad_version(g2);
+		ASSERT_FALSE(Color::red() == g2(-0.3));
+		ASSERT_FALSE(Color::red() == g2(-0.6));
+		ASSERT_FALSE(Color::red() == g2(-1.0));
+		ASSERT(Color::red() == g2(-8.0));
+	}
+}
+
+void
+test_BAD_gradient_2_colors_fetches_the_last_color_even_if_after_last_position()
+{
+	{
+		Gradient g1(Color::red(), Color::blue());
+		g1 = Gradient::from_bad_version(g1);
+		ASSERT(Color::blue() == g1(+1.3));
+		ASSERT(Color::blue() == g1(+1.6));
+		ASSERT(Color::blue() == g1(+2.0));
+		ASSERT(Color::blue() == g1(+8.0));
+	}
+
+	{
+		Gradient g2;
+		g2.push_back({-2.0, Color::red()});
+		g2.push_back({+3.0, Color::blue()});
+		g2 = Gradient::from_bad_version(g2);
+		ASSERT_FALSE(Color::blue() == g2(+1.3));
+		ASSERT_FALSE(Color::blue() == g2(+1.6));
+		ASSERT_FALSE(Color::blue() == g2(+2.0));
+		ASSERT(Color::blue() == g2(+8.0));
+	}
+}
+
+void
+test_BAD_gradient_2_colors_fetches_the_first_color_for_the_exact_first_position()
+{
+	{
+		Gradient g1(Color::red(), Color::blue());
+		g1 = Gradient::from_bad_version(g1);
+		ASSERT(Color::red() == g1(0.0));
+	}
+
+	{
+		Gradient g2;
+		g2.push_back({-2.0, Color::red()});
+		g2.push_back({+3.0, Color::blue()});
+		g2 = Gradient::from_bad_version(g2);
+		ASSERT(Color::red() == g2(-2.0));
+	}
+}
+
+void
+test_BAD_gradient_2_colors_fetches_the_last_color_for_the_exact_last_position()
+{
+	{
+		Gradient g1(Color::red(), Color::blue());
+		g1 = Gradient::from_bad_version(g1);
+		ASSERT(Color::blue() == g1(+1.0));
+	}
+
+	{
+		Gradient g2;
+		g2.push_back({-2.0, Color::red()});
+		g2.push_back({+3.0, Color::blue()});
+		g2 = Gradient::from_bad_version(g2);
+		ASSERT(Color::blue() == g2(+3.0));
+	}
+}
+
+void
+test_BAD_gradient_2_colors_fetches_the_middle_color_for_the_exact_middle_position()
+{
+	{
+		Gradient g1(Color::red(), Color::blue());
+		g1 = Gradient::from_bad_version(g1);
+		ASSERT(Color(.5, 0., .5, 1.) == g1(0.5));
+	}
+
+	{
+		Gradient g2;
+		g2.push_back({-2.0, Color::red()});
+		g2.push_back({+2.0, Color::blue()});
+		g2 = Gradient::from_bad_version(g2);
+		ASSERT(Color(.5, 0., .5, 1.) == g2(0.0));
+	}
+}
+
+void
+test_BAD_gradient_2_colors_fetches_similar_to_the_LAST_color_for_position_near_to_the_first_position()
+{
+	{
+		Gradient g1(Color::red(), Color::blue());
+		g1 = Gradient::from_bad_version(g1);
+		ASSERT(Color(.3, 0., .7, 1.) == g1(0.3));
+	}
+
+	{
+		Gradient g2;
+		g2.push_back({-2.0, Color::red()});
+		g2.push_back({+2.0, Color::blue()});
+		g2 = Gradient::from_bad_version(g2);
+		ASSERT_APPROX_EQUAL(.25f, g2(-1.0).get_r());
+		ASSERT_APPROX_EQUAL(.00f, g2(-1.0).get_g());
+		ASSERT_APPROX_EQUAL(.75f, g2(-1.0).get_b());
+		// ASSERT(Color(.25, 0., .75, 1.) == g2(-1.0));
+	}
+}
+
+void
+test_BAD_gradient_2_colors_fetches_similar_to_the_FIRST_color_for_position_near_to_the_last_position()
+{
+	{
+		Gradient g1(Color::red(), Color::blue());
+		g1 = Gradient::from_bad_version(g1);
+		ASSERT(Color(.7, 0., .3, 1.) == g1(0.7));
+	}
+
+	{
+		Gradient g2;
+		g2.push_back({-2.0, Color::red()});
+		g2.push_back({+2.0, Color::blue()});
+		g2 = Gradient::from_bad_version(g2);
+		ASSERT_APPROX_EQUAL(.75f, g2(+1.0).get_r());
+		ASSERT_APPROX_EQUAL(.00f, g2(+1.0).get_g());
+		ASSERT_APPROX_EQUAL(.25f, g2(+1.0).get_b());
+		// ASSERT(Color(.75, 0., .25, 1.) == g2(+1.0));
+	}
+}
+
+void
+test_BAD_gradient_3_colors_fetches_the_first_color_even_if_before_first_position()
+{
+	Gradient g1(Color::red(), Color::green(), Color::blue());
+	g1 = Gradient::from_bad_version(g1);
+	ASSERT(Color::red() == g1(-0.3));
+	ASSERT(Color::red() == g1(-0.6));
+	ASSERT(Color::red() == g1(-1.0));
+	ASSERT(Color::red() == g1(-8.0));
+}
+
+void
+test_BAD_gradient_3_colors_fetches_the_last_color_even_if_after_last_position()
+{
+	Gradient g1(Color::red(), Color::green(), Color::blue());
+	g1 = Gradient::from_bad_version(g1);
+	ASSERT(Color::blue() == g1(+1.3));
+	ASSERT(Color::blue() == g1(+1.6));
+	ASSERT(Color::blue() == g1(+2.0));
+	ASSERT(Color::blue() == g1(+8.0));
+}
+
+void
+test_BAD_gradient_3_colors_fetches_the_first_color_for_the_exact_first_position()
+{
+	Gradient g1(Color::red(), Color::green(), Color::blue());
+	g1 = Gradient::from_bad_version(g1);
+	ASSERT(Color::red() == g1(0.0));
+}
+
+void
+test_BAD_gradient_3_colors_fetches_the_last_color_for_the_exact_last_position()
+{
+	Gradient g1(Color::red(), Color::green(), Color::blue());
+	g1 = Gradient::from_bad_version(g1);
+	ASSERT(Color::blue() == g1(+1.0));
+}
+#include <algorithm>
+void
+test_BAD_gradient_3_colors_fetches_the_LAST_color_for_the_exact_middle_position()
+{
+	Gradient g1(Color::red(), Color::green(), Color::blue());
+
+	const Color bad_color = original_bad_implementation_for_1311_to_153(g1, 0.5);
+
+	g1 = Gradient::from_bad_version(g1);
+
+
+	fprintf(stderr, "COR ~: %s\n", bad_color.get_string().c_str());
+	fprintf(stderr, "COR #: %s\n", g1(0.5).get_string().c_str());
+
+	ASSERT_APPROX_EQUAL(0.0f, g1(0.5).get_r());
+	ASSERT_APPROX_EQUAL(0.0f, g1(0.5).get_g());
+	ASSERT_APPROX_EQUAL(1.0f, g1(0.5).get_b());
+	// ASSERT(Color::blue() == g1(0.5));
+}
+
+void
+test_BAD_gradient_3_colors_fetches_similar_to_the_MIDDLE_color_for_position_near_to_the_first_position()
+{
+	Gradient g1(Color::red(), Color::green(), Color::blue());
+	g1 = Gradient::from_bad_version(g1);
+	ASSERT_APPROX_EQUAL_MICRO(0.2f, g1(0.1).get_r());
+	ASSERT_APPROX_EQUAL(0.8f, g1(0.1).get_g());
+	ASSERT_APPROX_EQUAL(0.0f, g1(0.1).get_b());
+	// ASSERT(Color(.8, 0, .2, 1.) == g1(0.1));
+}
+
+void
+test_BAD_gradient_3_colors_fetches_similar_to_the_MIDDLE_color_for_position_near_to_the_last_position()
+{
+	Gradient g1(Color::red(), Color::green(), Color::blue());
+	g1 = Gradient::from_bad_version(g1);
+	ASSERT_APPROX_EQUAL(0.0f, g1(0.9).get_r());
+	ASSERT_APPROX_EQUAL_MICRO(0.8f, g1(0.9).get_g());
+	ASSERT_APPROX_EQUAL_MICRO(0.2f, g1(0.9).get_b());
+}
+
+void
+test_BAD_gradient_3_colors_fetches_similar_to_the_FIRST_color_for_position_near_to_the_middle_position_from_left()
+{
+	Gradient g1(Color::red(), Color::green(), Color::blue());
+	g1 = Gradient::from_bad_version(g1);
+	ASSERT_APPROX_EQUAL_MICRO(0.8f, g1(0.4).get_r());
+	ASSERT_APPROX_EQUAL_MICRO(0.2f, g1(0.4).get_g());
+	ASSERT_APPROX_EQUAL(0.0f, g1(0.4).get_b());
+	// ASSERT(Color(.8, .2, 0., 1.) == g1(0.4));
+}
+
+void
+test_BAD_gradient_3_colors_fetches_similar_to_the_LAST_color_for_position_near_to_the_middle_position_from_right()
+{
+	Gradient g1(Color::red(), Color::green(), Color::blue());
+	g1 = Gradient::from_bad_version(g1);
+	ASSERT_APPROX_EQUAL(0.0f, g1(0.6).get_r());
+	ASSERT_APPROX_EQUAL_MICRO(0.2f, g1(0.6).get_g());
+	ASSERT_APPROX_EQUAL_MICRO(0.8f, g1(0.6).get_b());
 	// ASSERT(Color(0, .2, .8, 1.) == g1(0.6));
 }
 
@@ -375,6 +636,25 @@ int main() {
 	TEST_FUNCTION(test_gradient_3_colors_fetches_similar_to_the_last_color_for_position_near_to_the_last_position)
 	TEST_FUNCTION(test_gradient_3_colors_fetches_similar_to_the_middle_color_for_position_near_to_the_middle_position_from_left)
 	TEST_FUNCTION(test_gradient_3_colors_fetches_similar_to_the_middle_color_for_position_near_to_the_middle_position_from_right)
+
+	TEST_FUNCTION(test_BAD_gradient_2_colors_fetches_the_first_color_even_if_before_first_position)
+	TEST_FUNCTION(test_BAD_gradient_2_colors_fetches_the_last_color_even_if_after_last_position)
+	TEST_FUNCTION(test_BAD_gradient_2_colors_fetches_the_first_color_for_the_exact_first_position)
+	TEST_FUNCTION(test_BAD_gradient_2_colors_fetches_the_last_color_for_the_exact_last_position)
+	TEST_FUNCTION(test_BAD_gradient_2_colors_fetches_the_middle_color_for_the_exact_middle_position)
+	TEST_FUNCTION(test_BAD_gradient_2_colors_fetches_similar_to_the_LAST_color_for_position_near_to_the_first_position)
+	TEST_FUNCTION(test_BAD_gradient_2_colors_fetches_similar_to_the_FIRST_color_for_position_near_to_the_last_position)
+
+	TEST_FUNCTION(test_BAD_gradient_3_colors_fetches_the_first_color_even_if_before_first_position)
+	TEST_FUNCTION(test_BAD_gradient_3_colors_fetches_the_last_color_even_if_after_last_position)
+	TEST_FUNCTION(test_BAD_gradient_3_colors_fetches_the_first_color_for_the_exact_first_position)
+	TEST_FUNCTION(test_BAD_gradient_3_colors_fetches_the_last_color_for_the_exact_last_position)
+	TEST_FUNCTION(test_BAD_gradient_3_colors_fetches_the_LAST_color_for_the_exact_middle_position)
+	TEST_FUNCTION(test_BAD_gradient_3_colors_fetches_similar_to_the_MIDDLE_color_for_position_near_to_the_first_position)
+	TEST_FUNCTION(test_BAD_gradient_3_colors_fetches_similar_to_the_MIDDLE_color_for_position_near_to_the_last_position)
+	TEST_FUNCTION(test_BAD_gradient_3_colors_fetches_similar_to_the_FIRST_color_for_position_near_to_the_middle_position_from_left)
+	TEST_FUNCTION(test_BAD_gradient_3_colors_fetches_similar_to_the_LAST_color_for_position_near_to_the_middle_position_from_right)
+
 	TEST_SUITE_END()
 
 	return tst_exit_status;
