@@ -27,8 +27,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_GRADIENT_H
-#define __SYNFIG_GRADIENT_H
+#ifndef SYNFIG_GRADIENT_H
+#define SYNFIG_GRADIENT_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -57,20 +57,20 @@ struct GradientCPoint : public UniqueID
 	Real pos;
 	Color color;
 
-	bool operator< (const GradientCPoint &rhs) const
+	bool operator< (const GradientCPoint& rhs) const
 		{ return pos < rhs.pos; }
-	bool operator< (const Real &rhs) const
+	bool operator< (const Real& rhs) const
 		{ return pos < rhs; }
 
-	GradientCPoint(): pos() { }
-	GradientCPoint(const Real &pos, const Color &color):pos(pos),color(color) { }
+	GradientCPoint() : pos() { }
+	GradientCPoint(const Real& pos, const Color& color) : pos(pos), color(color) { }
 }; // END of class GradientCPoint
 
 /**
  * For use in std::upper_bound, std::lower_bound, etc.
  * It must be inline to avoid 'multiple definition' linker error
  */
-inline bool operator<(const Real &a, const GradientCPoint &b)
+inline bool operator<(const Real& a, const GradientCPoint& b)
 	{ return a < b.pos; }
 
 /**
@@ -108,10 +108,10 @@ public:
 	Gradient() { }
 
 	/** Two-Tone Color Gradient Convenience Constructor */
-	Gradient(const Color &c1, const Color &c2);
+	Gradient(const Color& c1, const Color& c2);
 
 	/** Three-Tone Color Gradient Convenience Constructor */
-	Gradient(const Color &c1, const Color &c2, const Color &c3);
+	Gradient(const Color& c1, const Color& c2, const Color& c3);
 
 	/** You should call this function after changing stuff. */
 	void sort() { stable_sort(begin(), end()); }
@@ -121,42 +121,42 @@ public:
 
 	void push_back(const CPoint& cpoint) { cpoints.push_back(cpoint); }
 	iterator erase(iterator iter) { return cpoints.erase(iter); }
-	bool empty()const { return cpoints.empty(); }
-	size_t size()const { return cpoints.size(); }
+	bool empty() const { return cpoints.empty(); }
+	size_t size() const { return cpoints.size(); }
 
 	iterator begin() { return cpoints.begin(); }
 	iterator end() { return cpoints.end(); }
 	reverse_iterator rbegin() { return cpoints.rbegin(); }
 	reverse_iterator rend() { return cpoints.rend(); }
-	const_iterator begin()const { return cpoints.begin(); }
-	const_iterator end()const { return cpoints.end(); }
-	const_reverse_iterator rbegin()const { return cpoints.rbegin(); }
-	const_reverse_iterator rend()const { return cpoints.rend(); }
+	const_iterator begin() const { return cpoints.begin(); }
+	const_iterator end() const { return cpoints.end(); }
+	const_reverse_iterator rbegin() const { return cpoints.rbegin(); }
+	const_reverse_iterator rend() const { return cpoints.rend(); }
 
-	Gradient &operator+=(const Gradient  &rhs) { return *this = *this + rhs; }
-	Gradient &operator*=(const ColorReal &rhs);
-	Gradient &operator-=(const Gradient  &rhs) { return *this = *this + rhs*ColorReal(-1); }
-	Gradient &operator/=(const ColorReal &rhs) { return *this *= ColorReal(1)/rhs; }
+	Gradient& operator+=(const Gradient& rhs) { return *this = *this + rhs; }
+	Gradient& operator*=(const ColorReal& rhs);
+	Gradient& operator-=(const Gradient& rhs) { return *this = *this + rhs*ColorReal(-1); }
+	Gradient& operator/=(const ColorReal& rhs) { return *this *= ColorReal(1)/rhs; }
 
-	Gradient operator+(const Gradient  &rhs) const;
-	Gradient operator-(const Gradient  &rhs) const { return *this + rhs*ColorReal(-1); }
-	Gradient operator*(const ColorReal &rhs) const { return Gradient(*this)*=rhs; }
-	Gradient operator/(const ColorReal &rhs) const { return Gradient(*this)/=rhs; }
+	Gradient operator+(const Gradient& rhs) const;
+	Gradient operator-(const Gradient& rhs) const { return *this + rhs*ColorReal(-1); }
+	Gradient operator*(const ColorReal& rhs) const { return Gradient(*this)*=rhs; }
+	Gradient operator/(const ColorReal& rhs) const { return Gradient(*this)/=rhs; }
 
 	/** Fetch the interpolated Color for a given position @a x */
-	Color operator() (const Real &x) const;
+	Color operator() (const Real& x) const;
 
 	/** Returns average luminance of gradient */
 	Real mag() const;
 
 	/** Returns the iterator of the CPoint closest to position @a x */
-	iterator proximity(const Real &x);
+	iterator proximity(const Real& x);
 	/** Returns the iterator of the CPoint closest to position @a x */
-	const_iterator proximity(const Real &x)const
+	const_iterator proximity(const Real& x) const
 		{ return const_cast<Gradient*>(this)->proximity(x); }
 
-	iterator find(const UniqueID &id);
-	const_iterator find(const UniqueID &id)const
+	iterator find(const UniqueID& id);
+	const_iterator find(const UniqueID& id) const
 		{ return const_cast<Gradient*>(this)->find(id); }
 }; // END of class Gradient
 
@@ -180,7 +180,7 @@ public:
 		Accumulator(Real r, Real g, Real b, Real a):
 			r(r), g(g), b(b), a(a) { }
 
-		Accumulator(const Color &color)
+		Accumulator(const Color& color)
 		{
 			// premult alpha
 			a = (Real)color.get_a();
@@ -197,27 +197,27 @@ public:
 			return Color((ColorReal)(k*r), (ColorReal)(k*g), (ColorReal)(k*b), (ColorReal)a);
 		}
 
-		bool operator== (const Accumulator &x) const
+		bool operator== (const Accumulator& x) const
 			{ return r == x.r && g == x.g && b == x.b && a == x.a; }
 
-		Accumulator operator+ (const Accumulator &x) const
+		Accumulator operator+ (const Accumulator& x) const
 			{ return Accumulator( r+x.r, g+x.g, b+x.b, a+x.a ); }
-		Accumulator operator- (const Accumulator &x) const
+		Accumulator operator- (const Accumulator& x) const
 			{ return Accumulator( r-x.r, g-x.g, b-x.b, a-x.a ); }
 		Accumulator operator- () const
 			{ return Accumulator( -r, -g, -b, -a ); }
-		Accumulator operator* (const Accumulator &x) const
+		Accumulator operator* (const Accumulator& x) const
 			{ return Accumulator( r*x.r, g*x.g, b*x.b, a*x.a ); }
 		Accumulator operator* (Real x) const
 			{ return Accumulator( r*x, g*x, b*x, a*x ); }
 		Accumulator operator/ (Real x) const
 			{ return *this * (1.0/x); }
 
-		Accumulator& operator+= (const Accumulator &x)
+		Accumulator& operator+= (const Accumulator& x)
 			{ r+=x.r; g+=x.g; b+=x.b; a+=x.a; return *this; }
-		Accumulator& operator-= (const Accumulator &x)
+		Accumulator& operator-= (const Accumulator& x)
 			{ r-=x.r; g-=x.g; b-=x.b; a-=x.a; return *this; }
-		Accumulator& operator*= (const Accumulator &x)
+		Accumulator& operator*= (const Accumulator& x)
 			{ r*=x.r; g*=x.g; b*=x.b; a*=x.a; return *this; }
 		Accumulator& operator*= (Real x)
 			{ r*=x; g*=x; b*=x; a*=x; return *this; }
@@ -241,9 +241,9 @@ public:
 
 		Entry(): prev_pos(), next_pos() { }
 
-		Entry(const Accumulator &prev_sum, const GradientCPoint &prev, const GradientCPoint &next);
+		Entry(const Accumulator& prev_sum, const GradientCPoint& prev, const GradientCPoint& next);
 
-		inline bool operator< (const Real &x) const
+		inline bool operator< (const Real& x) const
 			{ return next_pos < x; } // to easy search by std::upper_bound and std::lower_bound
 
 		inline Color color(Real x) const {
@@ -271,11 +271,11 @@ private:
 
 public:
 	CompiledGradient();
-	explicit CompiledGradient(const Color &color);
-	explicit CompiledGradient(const Gradient &gradient, bool repeat = false, bool zigzag = false);
+	explicit CompiledGradient(const Color& color);
+	explicit CompiledGradient(const Gradient& gradient, bool repeat = false, bool zigzag = false);
 
-	void set(const Color &color);
-	void set(const Gradient &gradient, bool repeat = false, bool zigzag = false);
+	void set(const Color& color);
+	void set(const Gradient& gradient, bool repeat = false, bool zigzag = false);
 	void reset() { set(Color()); }
 
 	bool empty() const { return is_empty; }
