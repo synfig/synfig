@@ -194,11 +194,11 @@ Gradient::operator() (Real x) const
 	Gradient::const_iterator j = i--;
 
 	Real d = j->pos - i->pos;
-	if (d <= real_high_precision<Real>()) return i->color;
+	if (approximate_zero_hp(d)) return i->color;
 
 	// operator+() also contains the same calculations
 	ColorReal amount = (x - i->pos)/d;
-	return Color::blend(i->color, j->color, amount, Color::BLEND_STRAIGHT);
+	return Color::blend(j->color, i->color, amount, Color::BLEND_STRAIGHT);
 }
 
 Real
@@ -215,6 +215,27 @@ Gradient::mag() const
 		sum += v*v;
 	}
 	return sqrt(sum);
+}
+
+Gradient
+Gradient::from_bad_version(const Gradient& wrong_gradient)
+{
+	if (wrong_gradient.size() <= 1)
+		return wrong_gradient;
+
+	Gradient gradient;
+	gradient.push_back(*wrong_gradient.begin());
+
+	auto it = wrong_gradient.begin();
+	auto previous_it = it++;
+	for (; it != wrong_gradient.end(); ++it, ++previous_it) {
+		gradient.push_back(CPoint(previous_it->pos, it->color));
+		gradient.push_back(CPoint(it->pos, previous_it->color));
+	}
+
+	gradient.push_back(*wrong_gradient.rbegin());
+
+	return gradient;
 }
 
 Gradient::iterator

@@ -59,7 +59,7 @@ SYNFIG_LAYER_INIT(Mandelbrot);
 SYNFIG_LAYER_SET_NAME(Mandelbrot,"mandelbrot");
 SYNFIG_LAYER_SET_LOCAL_NAME(Mandelbrot,N_("Mandelbrot Set"));
 SYNFIG_LAYER_SET_CATEGORY(Mandelbrot,N_("Fractals"));
-SYNFIG_LAYER_SET_VERSION(Mandelbrot,"0.2");
+SYNFIG_LAYER_SET_VERSION(Mandelbrot,"0.3");
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -103,7 +103,8 @@ Mandelbrot::Mandelbrot():
 	param_gradient_loop_inside(ValueBase(true)),
 	param_gradient_outside(ValueBase(Gradient(Color::alpha(),Color::black()))),
 	param_gradient_offset_outside(ValueBase(Real(0.0))),
-	param_gradient_scale_outside(ValueBase(Real(1.0)))
+	param_gradient_scale_outside(ValueBase(Real(1.0))),
+	param_invert_gradient(ValueBase(bool(false)))
 {
 	param_iterations=ValueBase(int(32));
 
@@ -173,6 +174,7 @@ Mandelbrot::set_param(const String & param, const ValueBase &value)
 	  }
 	  );
 
+	IMPORT_VALUE(param_invert_gradient);
 	return false;
 }
 
@@ -206,6 +208,7 @@ Mandelbrot::get_param(const String & param)const
 		ret.set(sqrt(param_bailout.get(Real())));
 		return ret;
 	}
+	EXPORT_VALUE(param_invert_gradient);
 	EXPORT_NAME();
 	EXPORT_VERSION();
 
@@ -294,6 +297,12 @@ Mandelbrot::get_param_vocab()const
 		.set_group(_("Outside"))
 	);
 
+	ret.push_back(ParamDesc("invert_gradient")
+		.set_local_name(_("Invert Gradient"))
+		.set_description(_("Support wrong implementation of gradient in Synfig versions from 1.3.11 to 1.5.3"))
+		.hidden()
+	);
+
 	return ret;
 }
 
@@ -310,6 +319,7 @@ Mandelbrot::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
 Color
 Mandelbrot::get_color(Context context, const Point &pos)const
 {
+	const bool invert_gradient_to_fix = param_invert_gradient.get(bool());
 	int iterations=param_iterations.get(int());
 	Real bailout=param_bailout.get(Real());
 	bool broken=param_broken.get(bool());
@@ -319,6 +329,8 @@ Mandelbrot::get_color(Context context, const Point &pos)const
 	bool solid_inside=param_solid_inside.get(bool());
 	bool invert_inside=param_invert_inside.get(bool());
 	Gradient gradient_inside=param_gradient_inside.get(Gradient());
+	if (invert_gradient_to_fix)
+		gradient_inside = Gradient::from_bad_version(gradient_inside);
 	Real gradient_offset_inside=param_gradient_offset_inside.get(Real());
 	bool gradient_loop_inside=param_gradient_loop_inside.get(bool());
 
@@ -327,6 +339,8 @@ Mandelbrot::get_color(Context context, const Point &pos)const
 	bool solid_outside=param_solid_outside.get(bool());
 	bool invert_outside=param_invert_outside.get(bool());
 	Gradient gradient_outside=param_gradient_outside.get(Gradient());
+	if (invert_gradient_to_fix)
+		gradient_outside = Gradient::from_bad_version(gradient_outside);
 	bool smooth_outside=param_smooth_outside.get(bool());
 	Real gradient_offset_outside=param_gradient_offset_outside.get(Real());
 	Real gradient_scale_outside=param_gradient_scale_outside.get(Real());
@@ -422,4 +436,14 @@ Mandelbrot::get_color(Context context, const Point &pos)const
 	}
 
 	return ret;
+}
+
+bool
+Mandelbrot::set_version(const String &ver)
+{
+	if (ver == "0.2-problematic-gradient") {
+		param_invert_gradient = true;
+	}
+
+	return true;
 }
