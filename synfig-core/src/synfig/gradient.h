@@ -47,8 +47,11 @@
 
 namespace synfig {
 
-//! \struct GradientCPoint
-//! \brief Gradient color point
+/**
+ * Gradient Color point.
+ * A gradient is an ordered list of Color points,
+ * and each one has describes a color and a position in the gradient.
+ */
 struct GradientCPoint : public UniqueID
 {
 	Real pos;
@@ -63,13 +66,31 @@ struct GradientCPoint : public UniqueID
 	GradientCPoint(const Real &pos, const Color &color):pos(pos),color(color) { }
 }; // END of class GradientCPoint
 
-// for use in std::upper_bound, std::lower_bound, etc
-// must be inline to avoid 'multiple definition' linker error
+/**
+ * For use in std::upper_bound, std::lower_bound, etc.
+ * It must be inline to avoid 'multiple definition' linker error
+ */
 inline bool operator<(const Real &a, const GradientCPoint &b)
 	{ return a < b.pos; }
 
-//! \class Gradient
-//! \brief Color Gradient Class
+/**
+ * Color Gradient class.
+ * A Gradient is an ordered list of color points (GradientCPoint).
+ *
+ * There are convenient constructors for two or three color points.
+ * You can add any number of points you want by using push_back() method.
+ *
+ * Please note that the color points must be sorted by position in order
+ * to get correct interpolation. This requirement is due implementation
+ * decision for performance reasons.
+ * Therefore, you shall call sync() after you add the batch of color points
+ * or edit the position of the existent ones.
+ *
+ * For fetching the interpolated color, use the function call operator,
+ * i.e. operator() passing the desired intermediate point as argument.
+ *
+ * @see GradientCPoint
+ */
 class Gradient
 {
 public:
@@ -86,19 +107,19 @@ private:
 public:
 	Gradient() { }
 
-	//! Two-Tone Color Gradient Convenience Constructor
+	/** Two-Tone Color Gradient Convenience Constructor */
 	Gradient(const Color &c1, const Color &c2);
 
-	//! Three-Tone Color Gradient Convenience Constructor
+	/** Three-Tone Color Gradient Convenience Constructor */
 	Gradient(const Color &c1, const Color &c2, const Color &c3);
 
-	//! You should call this function after changing stuff.
+	/** You should call this function after changing stuff. */
 	void sort() { stable_sort(begin(), end()); }
 
-	//! Alias for sort (Implemented for consistency)
+	/** Alias for sort (Implemented for consistency) */
 	void sync() { sort(); }
 
-	void push_back(const CPoint cpoint) { cpoints.push_back(cpoint); }
+	void push_back(const CPoint& cpoint) { cpoints.push_back(cpoint); }
 	iterator erase(iterator iter) { return cpoints.erase(iter); }
 	bool empty()const { return cpoints.empty(); }
 	size_t size()const { return cpoints.size(); }
@@ -122,13 +143,15 @@ public:
 	Gradient operator*(const ColorReal &rhs) const { return Gradient(*this)*=rhs; }
 	Gradient operator/(const ColorReal &rhs) const { return Gradient(*this)/=rhs; }
 
+	/** Fetch the interpolated Color for a given position @a x */
 	Color operator() (const Real &x) const;
 
-	//! Returns average luminance of gradient
+	/** Returns average luminance of gradient */
 	Real mag() const;
 
-	//! Returns the iterator of the CPoint closest to \a x
+	/** Returns the iterator of the CPoint closest to position @a x */
 	iterator proximity(const Real &x);
+	/** Returns the iterator of the CPoint closest to position @a x */
 	const_iterator proximity(const Real &x)const
 		{ return const_cast<Gradient*>(this)->proximity(x); }
 
@@ -138,9 +161,10 @@ public:
 }; // END of class Gradient
 
 
-//! \class CompiledGradient
-//! \brief Compiled gradient can quickly calculate color of specified color
-//!        and average color of specified range
+/**
+ * Compiled gradient can quickly calculate color of specified color
+ * and average color of specified range.
+ */
 class CompiledGradient {
 public:
 	// High precision color accumulator, alpha premulted
