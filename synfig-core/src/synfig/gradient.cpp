@@ -37,13 +37,6 @@
 #include "gradient.h"
 
 #include <algorithm>
-#include <stdexcept>
-
-#include "general.h"
-#include <synfig/localization.h>
-#include <synfig/real.h>
-
-#include "exception.h"
 
 #endif
 
