@@ -121,17 +121,17 @@ public:
 
 	void push_back(const CPoint& cpoint) { cpoints.push_back(cpoint); }
 	iterator erase(iterator iter) { return cpoints.erase(iter); }
-	bool empty() const { return cpoints.empty(); }
-	size_t size() const { return cpoints.size(); }
+	bool empty() const noexcept { return cpoints.empty(); }
+	size_t size() const noexcept { return cpoints.size(); }
 
-	iterator begin() { return cpoints.begin(); }
-	iterator end() { return cpoints.end(); }
-	reverse_iterator rbegin() { return cpoints.rbegin(); }
-	reverse_iterator rend() { return cpoints.rend(); }
-	const_iterator begin() const { return cpoints.begin(); }
-	const_iterator end() const { return cpoints.end(); }
-	const_reverse_iterator rbegin() const { return cpoints.rbegin(); }
-	const_reverse_iterator rend() const { return cpoints.rend(); }
+	iterator begin() noexcept { return cpoints.begin(); }
+	iterator end() noexcept { return cpoints.end(); }
+	reverse_iterator rbegin() noexcept { return cpoints.rbegin(); }
+	reverse_iterator rend() noexcept { return cpoints.rend(); }
+	const_iterator begin() const noexcept { return cpoints.begin(); }
+	const_iterator end() const noexcept { return cpoints.end(); }
+	const_reverse_iterator rbegin() const noexcept { return cpoints.rbegin(); }
+	const_reverse_iterator rend() const noexcept { return cpoints.rend(); }
 
 	Gradient& operator+=(const Gradient& rhs) { return *this = *this + rhs; }
 	Gradient& operator*=(const ColorReal& rhs);
