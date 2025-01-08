@@ -83,6 +83,29 @@ protected:
 	rendering::Task::Handle build_composite_fork_task_vfunc(ContextParams, rendering::Task::Handle sub_task) const override;
 }; // END of class Layer_Bevel
 
+// TaskBevel performs Blur internally, and the behavior of
+// applying skew transformation before or after the blur is not the same.
+// Therefore, we can't inherit synfig::rendering::TaskInterfaceTransformationPass here
+class TaskBevel: public rendering::Task//, rendering::TaskInterfaceTransformationPass
+{
+public:
+	typedef etl::handle<TaskBevel> Handle;
+	SYNFIG_EXPORT static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
+
+	Real softness;
+	int type;
+	Color color1;
+	Color color2;
+	bool use_luma;
+	bool solid;
+
+	Vector offset, offset45;
+
+	void set_coords_sub_tasks() override;
+	Rect calc_bounds() const override;
+};
+
 }; // END of namespace lyr_std
 }; // END of namespace modules
 }; // END of namespace synfig
