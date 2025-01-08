@@ -41,6 +41,7 @@
 #include <synfig/blur.h>
 #include <synfig/context.h>
 #include <synfig/rendering/software/task/tasksw.h>
+#include <synfig/rendering/software/function/blur.h>
 
 
 #endif
@@ -166,91 +167,92 @@ Layer_Bevel::get_color(Context context, const Point &pos)const
 	return Color::blend(shade,context.get_color(pos),get_amount(),get_blend_method());
 }
 
-// TaskBevel performs Blur internally, and the behavior of
-// applying skew transformation before or after the blur is not the same.
-// Therefore, we can't inherit synfig::rendering::TaskInterfaceTransformationPass here
-class TaskBevel: public rendering::Task//, rendering::TaskInterfaceTransformationPass
+void
+TaskBevel::set_coords_sub_tasks()
 {
-public:
-	typedef etl::handle<TaskBevel> Handle;
-	SYNFIG_EXPORT static Token token;
-	Token::Handle get_token() const override { return token.handle(); }
-
-	Real softness;
-	int type;
-	Color color1;
-	Color color2;
-	bool use_luma;
-	bool solid;
-
-	Vector offset, offset45;
-
-	void set_coords_sub_tasks() override
-	{
-		if (!sub_task(0)) {
-			trunc_to_zero();
-			return;
-		}
-		if (!is_valid_coords()) {
-			sub_task(0)->set_coords_zero();
-			return;
-		}
-
-		const int w = target_rect.get_width();
-		const int h = target_rect.get_height();
-		const Real pw = get_units_per_pixel()[0];
-		const Real ph = get_units_per_pixel()[1];
-
-		const Vector size(softness,softness);
-
-		//expand the working surface to accommodate the blur
-
-		//the expanded size = 1/2 the size in each direction rounded up
-		int	halfsizex = (int) (std::fabs(size[0]*.5/pw) + 3),
-			halfsizey = (int) (std::fabs(size[1]*.5/ph) + 3);
-
-		const int offset_u(round_to_int(offset[0]/pw));
-		const int offset_v(round_to_int(offset[1]/ph));
-		const int offset_w(w+std::abs(offset_u)*2);
-		const int offset_h(h+std::abs(offset_v)*2);
-
-		//expand by 1/2 size in each direction on either side
-		switch(type)
-		{
-			case Blur::DISC:
-			case Blur::BOX:
-			case Blur::CROSS:
-			case Blur::FASTGAUSSIAN:
-			{
-				halfsizex = std::max(1, halfsizex);
-				halfsizey = std::max(1, halfsizey);
-				break;
-			}
-			case Blur::GAUSSIAN:
-			{
-			#define GAUSSIAN_ADJUSTMENT		(0.05)
-
-				Real pw2 = pw * pw;
-				Real ph2 = ph * ph;
-
-				halfsizex = (int)(size[0]*GAUSSIAN_ADJUSTMENT/std::fabs(pw2) + 0.5);
-				halfsizey = (int)(size[1]*GAUSSIAN_ADJUSTMENT/std::fabs(ph2) + 0.5);
-
-				halfsizex = (halfsizex + 1)/2;
-				halfsizey = (halfsizey + 1)/2;
-				break;
-			}
-		}
-
-		Real delta_x = -std::abs(offset_u) - halfsizex;
-		Real delta_y = -std::abs(offset_v) - halfsizey;
-		Real new_w = std::abs(offset_u) + offset_w + 2*halfsizex;
-		Real new_h = std::abs(offset_v) + offset_h + 2*halfsizey;
-
-		Rect new_sub_source_rect(source_rect.minx + pw*delta_x, source_rect.miny + ph*delta_y, source_rect.minx + pw*delta_x + pw*new_w, source_rect.miny + ph*delta_y + ph*new_h);
-		sub_task(0)->set_coords(new_sub_source_rect, VectorInt(new_w, new_h));
+	if (!sub_task(0)) {
+		trunc_to_zero();
+		return;
 	}
-};
+	if (!is_valid_coords()) {
+		sub_task(0)->set_coords_zero();
+		return;
+	}
+
+	const int w = target_rect.get_width();
+	const int h = target_rect.get_height();
+	const Real pw = get_units_per_pixel()[0];
+	const Real ph = get_units_per_pixel()[1];
+
+	const Vector size(softness,softness);
+
+	//expand the working surface to accommodate the blur
+
+	//the expanded size = 1/2 the size in each direction rounded up
+	int	halfsizex = (int) (std::fabs(size[0]*.5/pw) + 3),
+		halfsizey = (int) (std::fabs(size[1]*.5/(ph)) + 3);
+
+	const int offset_u(round_to_int(offset[0]/pw));
+	const int offset_v(round_to_int(offset[1]/(ph)));
+	const int offset_w(w+std::abs(offset_u)*2);
+	const int offset_h(h+std::abs(offset_v)*2);
+
+	//expand by 1/2 size in each direction on either side
+	switch(type)
+	{
+		case Blur::DISC:
+		case Blur::BOX:
+		case Blur::CROSS:
+		case Blur::FASTGAUSSIAN:
+		{
+			halfsizex = std::max(1, halfsizex);
+			halfsizey = std::max(1, halfsizey);
+			break;
+		}
+		case Blur::GAUSSIAN:
+		{
+		#define GAUSSIAN_ADJUSTMENT		(0.05)
+
+			Real pw2 = pw * pw;
+			Real ph2 = ph * ph;
+
+			halfsizex = (int)(size[0]*GAUSSIAN_ADJUSTMENT/std::fabs(pw2) + 0.5);
+			halfsizey = (int)(size[1]*GAUSSIAN_ADJUSTMENT/std::fabs(ph2) + 0.5);
+
+			halfsizex = (halfsizex + 1)/2;
+			halfsizey = (halfsizey + 1)/2;
+			break;
+		}
+	}
+
+	Real delta_x = -std::abs(offset_u) - halfsizex;
+	Real delta_y = -std::abs(offset_v) - halfsizey;
+	Real new_w = offset_w + 2*halfsizex;
+	Real new_h = offset_h + 2*halfsizey;
+
+	Rect new_sub_source_rect(source_rect.minx + pw*delta_x, source_rect.miny + ph*delta_y, source_rect.minx + pw*delta_x + pw*new_w, source_rect.miny + ph*delta_y + ph*new_h);
+
+
+	sub_task(0)->set_coords(new_sub_source_rect, VectorInt(new_w, new_h));
+}
+
+Rect
+TaskBevel::calc_bounds() const
+{
+	if (!sub_task(0))
+		return Rect::zero();
+
+	Rect bounds = sub_task(0)->get_bounds();
+	Vector size = Vector(softness,softness) * rendering::software::Blur::get_extra_size(rendering::Blur::Type(type));
+	size[0] = fabs(size[0]) + 1.0;
+	size[1] = fabs(size[1]) + 1.0;
+	bounds.minx -= size[0];
+	bounds.miny -= size[1];
+	bounds.maxx += size[0];
+	bounds.maxy += size[1];
+
+	return bounds;
+}
 
 SYNFIG_EXPORT rendering::Task::Token TaskBevel::token(
 	DescAbstract<TaskBevel>("Bevel") );
@@ -306,11 +308,10 @@ public:
 		transformation_matrix.m20 = target_rect.minx - source_rect.minx*ppu[0];
 		transformation_matrix.m21 = target_rect.miny - source_rect.miny*ppu[1];
 
-		const Point ftarget_min = transformation_matrix.get_transformed(common_source_rect.get_min());
-		const Point ftarget_max = transformation_matrix.get_transformed(common_source_rect.get_max());
-		const PointInt target_min = {static_cast<PointInt::value_type>(ftarget_min[0]), static_cast<PointInt::value_type>(ftarget_min[1])};
-		const PointInt target_max = {static_cast<PointInt::value_type>(ftarget_max[0]), static_cast<PointInt::value_type>(ftarget_max[1])};
-
+		const Point ftarget_min = transformation_matrix.get_transformed(source_rect.get_min());
+		const Point ftarget_max = transformation_matrix.get_transformed(source_rect.get_max());
+		const PointInt target_min = {round_to_int(ftarget_min[0]), round_to_int(ftarget_min[1])};
+		const PointInt target_max = {round_to_int(ftarget_max[0]), round_to_int(ftarget_max[1])};
 		int v = halfsizey+std::abs(offset_v) + target_min[1];
 		for (int iy = target_min[1]; iy < target_max[1]; ++iy, ++v) {
 			int u = halfsizex+std::abs(offset_u) + target_min[0];
@@ -470,7 +471,7 @@ Layer_Bevel::build_composite_fork_task_vfunc(ContextParams /*context_params*/, r
 	task_bevel->offset = offset;
 	task_bevel->offset45 = offset45;
 
-	task_bevel->sub_task(0) = sub_task;
+	task_bevel->sub_task(0) = sub_task->clone_recursive();
 
 	return task_bevel;
 }
