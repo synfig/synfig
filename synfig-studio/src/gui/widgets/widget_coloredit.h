@@ -37,6 +37,7 @@
 #include <gtkmm/spinbutton.h>
 #include <gui/widgets/widget_color.h>
 #include <synfig/color.h>
+#include <synfigapp/action_system.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -163,6 +164,13 @@ class Widget_ColorEdit : public Gtk::Grid
 	synfig::Color color;
 
 	Gtk::Notebook* notebook;
+
+	bool escape_cancel = false;
+	bool wheel_released = false;
+	bool get_initial_color = true;
+	bool current_action_cancelled = false;
+	synfig::Color initial_color;
+	synfigapp::Action::PassiveGrouper* group = nullptr;
 
 protected:
 
