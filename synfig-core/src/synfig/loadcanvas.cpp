@@ -3133,6 +3133,9 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 		layer->set_param("blend_method", Color::BLEND_STRAIGHT);
 	}
 
+	if (layer->get_name() == "plant" && version == "0.2" && (canvas->get_version() == "1.1" || canvas->get_version() == "1.2"))
+		layer->set_version("0.2-problematic-gradient");
+
 	layer->reset_version();
 	return layer;
 }
