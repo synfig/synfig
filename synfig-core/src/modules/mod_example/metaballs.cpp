@@ -55,7 +55,7 @@ SYNFIG_LAYER_INIT(Metaballs);
 SYNFIG_LAYER_SET_NAME(Metaballs,"metaballs");
 SYNFIG_LAYER_SET_LOCAL_NAME(Metaballs,N_("Metaballs"));
 SYNFIG_LAYER_SET_CATEGORY(Metaballs,N_("Example"));
-SYNFIG_LAYER_SET_VERSION(Metaballs,"0.1");
+SYNFIG_LAYER_SET_VERSION(Metaballs,"0.2");
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -141,7 +141,8 @@ Metaballs::Metaballs():
 	param_weights(ValueBase(std::vector<synfig::Real>())),
 	param_threshold(ValueBase(Real(0))),
 	param_threshold2(ValueBase(Real(1))),
-	param_positive(ValueBase(false))
+	param_positive(ValueBase(false)),
+	param_invert_gradient(ValueBase(false))
 {
 	std::vector<synfig::Point> centers;
 	std::vector<synfig::Real> radii;
@@ -167,6 +168,7 @@ Metaballs::set_param(const String & param, const ValueBase &value)
 	IMPORT_VALUE(param_threshold);
 	IMPORT_VALUE(param_threshold2);
 	IMPORT_VALUE(param_positive);
+	IMPORT_VALUE(param_invert_gradient);
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -181,6 +183,7 @@ Metaballs::get_param(const String &param)const
 	EXPORT_VALUE(param_threshold);
 	EXPORT_VALUE(param_threshold2);
 	EXPORT_VALUE(param_positive);
+	EXPORT_VALUE(param_invert_gradient);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -221,7 +224,23 @@ Metaballs::get_param_vocab()const
 		.set_local_name(_("Positive Only"))
 	);
 
+	ret.push_back(ParamDesc("invert_gradient")
+		.set_local_name(_("Invert Gradient"))
+		.set_description(_("Support wrong implementation of gradient in Synfig versions from 1.3.11 to 1.5.3"))
+		.hidden()
+	);
+
 	return ret;
+}
+
+bool
+Metaballs::set_version(const String &ver)
+{
+	if (ver == "0.1-problematic-gradient") {
+		param_invert_gradient = true;
+	}
+
+	return true;
 }
 
 synfig::Layer::Handle
@@ -302,6 +321,8 @@ Metaballs::build_composite_task_vfunc(ContextParams /*context_params*/) const
 	task->threshold = param_threshold.get(Real());
 	task->threshold2 = param_threshold2.get(Real());
 	task->gradient = param_gradient.get(Gradient());
+	if (param_invert_gradient.get(bool()))
+		task->gradient = Gradient::from_bad_version(task->gradient);
 	task->positive = param_positive.get(bool());
 
 	return task;
