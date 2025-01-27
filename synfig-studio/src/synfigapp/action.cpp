@@ -54,6 +54,7 @@
 #include "actions/layerparamunsetstatic.h"
 #include "actions/layerparamconnect.h"
 #include "actions/layerparamdisconnect.h"
+#include "actions/layerparamreset.h"
 #include "actions/layerencapsulate.h"
 #include "actions/layerencapsulatefilter.h"
 #include "actions/layerencapsulateswitch.h"
@@ -212,6 +213,7 @@ Action::Main::Main()
 	ADD_ACTION(Action::LayerParamUnSetStatic);
 	ADD_ACTION(Action::LayerParamConnect);
 	ADD_ACTION(Action::LayerParamDisconnect);
+	ADD_ACTION(Action::LayerParamReset);
 	ADD_ACTION(Action::LayerEncapsulate);
 	ADD_ACTION(Action::LayerEncapsulateFilter);
 	ADD_ACTION(Action::LayerEncapsulateSwitch);
