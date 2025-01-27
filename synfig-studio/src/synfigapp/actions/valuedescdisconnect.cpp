@@ -119,7 +119,7 @@ Action::ValueDescDisconnect::is_candidate(const ParamList &x)
 	// don't allow the Index parameter of the Duplicate layer to be disconnected
 	if(value_desc.parent_is_layer() && value_desc.get_layer()->get_name() == "duplicate" && value_desc.get_param_name() == "index")
 		return false;
-	if(!value_desc.parent_is_canvas() && value_desc.is_value_node() && value_desc.get_value_node()->rcount()>1)
+	if(!value_desc.parent_is_canvas() && value_desc.is_value_node() && value_desc.get_value_node() && value_desc.get_value_node()->rcount()>1)
 		return true;
 	if(value_desc.is_const())
 		return false;
