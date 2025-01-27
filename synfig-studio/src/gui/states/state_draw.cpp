@@ -342,7 +342,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateDraw::StateDraw():
-	Smach::state<StateDraw_Context>("draw", N_("Draw Tool"))
+	Smach::state<StateDraw_Context>("draw", N_("Draw"))
 {
 	insert(event_def(EVENT_STOP,&StateDraw_Context::event_stop_handler));
 	insert(event_def(EVENT_REFRESH,&StateDraw_Context::event_refresh_handler));

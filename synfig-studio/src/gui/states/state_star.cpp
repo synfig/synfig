@@ -309,7 +309,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateStar::StateStar():
-	Smach::state<StateStar_Context>("star", N_("Star Tool"))
+	Smach::state<StateStar_Context>("star", N_("Star"))
 {
 	insert(event_def(EVENT_LAYER_SELECTION_CHANGED,&StateStar_Context::event_layer_selection_changed_handler));
 	insert(event_def(EVENT_STOP,&StateStar_Context::event_stop_handler));

@@ -347,7 +347,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateLasso::StateLasso():
-	Smach::state<StateLasso_Context>("lasso", N_("Cutout Tool"))
+	Smach::state<StateLasso_Context>("lasso", N_("Cutout"))
 {
 	insert(event_def(EVENT_STOP,&StateLasso_Context::event_stop_handler));
 	insert(event_def(EVENT_REFRESH,&StateLasso_Context::event_refresh_handler));
