@@ -24,7 +24,6 @@ MAINTAINERCLEANFILES = \
 	config.status \
 	.doc_stamp \
 	.DS_Store \
-	include/etl_profile.h.in \
 	libltdl/COPYING.LIB \
 	libltdl/Makefile.in \
 	libltdl/acinclude.m4 \
@@ -68,7 +67,6 @@ EXTRA_DIST = \
 	m4/synfig.m4 \
 	m4/cxx_macros.m4 \
 	synfig-config.in \
-	m4/ETL.m4 \
 	doxygen.cfg.in \
 	doxygen.cfg \
 	synfig.pc.in \

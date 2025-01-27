@@ -33,16 +33,15 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-#include <synfig/layer.h>
-#include <ETL/handle>
 #include "vectorization.h"
-#include <synfigapp/canvasinterface.h>
-#include <synfigapp/main.h>
-#include <synfigapp/localization.h>
+
+#include <synfig/general.h>
 #include <synfig/layers/layer_bitmap.h>
 #include <synfig/layers/layer_pastecanvas.h>
 
+#include <synfigapp/canvasinterface.h>
+#include <synfigapp/main.h>
+#include <synfigapp/localization.h>
 
 #endif
 
