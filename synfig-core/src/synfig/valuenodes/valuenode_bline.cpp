@@ -185,8 +185,10 @@ synfig::find_closest_point(const ValueBase &bline, const Point &pos, Real radius
 	synfig::Point best_point;
 
 	const ValueBase::List &list = bline.get_list();
-	int size = (int)list.size();
-	int count = loop ? size : size - 1;
+	const int size = (int)list.size();
+	if (size == 0)
+		return 0;
+	const int count = loop ? size : size - 1;
 	
 	for(int i0 = 0; i0 < count; ++i0) {
 		int i1 = (i0 + 1) % size;
@@ -238,6 +240,8 @@ synfig::std_to_hom(const ValueBase &bline, Real pos, bool index_loop, bool bline
 
 	const std::vector<BLinePoint> list(bline.get_list_of(BLinePoint()));
 	size_t size = list.size();
+	if (size == 0)
+		return loops;
 	size_t count = bline_loop? size : size - 1;
 	if (count < 1)
 		return loops + pos;
@@ -282,6 +286,8 @@ synfig::hom_to_std(const ValueBase &bline, Real pos, bool index_loop, bool bline
 
 	const std::vector<BLinePoint> list(bline.get_list_of(BLinePoint()));
 	size_t size = list.size();
+	if (size == 0)
+		return loops;
 	size_t count = bline_loop? size : size - 1;
 	if (count < 1)
 		return loops + pos;
