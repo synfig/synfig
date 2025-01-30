@@ -608,9 +608,20 @@ protected:
 	virtual void set_outline_grow_vfunc(IndependentContext context, Real outline_grow);
 	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context) const;
 
+	//! \see Layer::get_sub_renddesc()
 	virtual RendDesc get_sub_renddesc_vfunc(const RendDesc &renddesc) const;
 
 public:
+	//! Get the needed renddesc for context layers.
+	/*!
+	 * For the given renddesc argument, returns the computed
+	 * neeed renddesc for the underlying layer.
+	 * It basically sets the vector rectangle coordinates of
+	 * the context/underlying layer.
+	 *
+	 * \param renddesc The required rend_desc for this layer
+	 * \return the needed RendDesc for the underlying layer
+	 */
 	RendDesc get_sub_renddesc(const RendDesc &renddesc) const;
 
 	//! Returns rendering task for context
