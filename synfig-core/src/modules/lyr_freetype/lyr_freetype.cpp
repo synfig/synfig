@@ -350,7 +350,9 @@ private:
 		FT_Face face = static_cast<FT_Face>(object);
 		FaceMetaData* meta_data = static_cast<FaceMetaData*>(face->generic.data);
         face->generic.data = nullptr;
+#if HAVE_HARFBUZZ
 		hb_font_destroy(meta_data->font);
+#endif
 		delete meta_data;
 	}
 };
