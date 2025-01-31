@@ -602,6 +602,7 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 		if (!font_path_from_canvas)
 			meta.canvas_path.clear();
 		face_cache.put(meta, face);
+		need_sync |= SYNC_FONT;
 	};
 
 	if (has_valid_font_extension(font_fam_))
