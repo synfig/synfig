@@ -404,8 +404,8 @@ C blendfunc_ALPHA_OVER(C &a,C &b,float amount)
 template <class C>
 C blendfunc_ALPHA_INTERSECTION(C& fg, C& bg, float amount)
 {
-	const bool fg_transparent = fg.get_a() == C::floor;
-	const bool bg_transparent = bg.get_a() == C::floor;
+	const bool fg_transparent = approximate_equal(fg.get_a(), C::floor);
+	const bool bg_transparent = approximate_equal(bg.get_a(), C::floor);
 
 	if (bg_transparent || fg_transparent)
 		return blendfunc_COMPOSITE(fg, bg, amount);

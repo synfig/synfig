@@ -212,7 +212,7 @@ Color::blend(Color a, Color b, float amount, Color::BlendMethod type)
 
 	const static blendfunc vtable[BLEND_END]=
 	{
-		blendfunc_COMPOSITE<Color>,	// 0
+		blendfunc_COMPOSITE<Color>,	   // 0
 		blendfunc_STRAIGHT<Color>,
 		blendfunc_BRIGHTEN<Color>,
 		blendfunc_DARKEN<Color>,
