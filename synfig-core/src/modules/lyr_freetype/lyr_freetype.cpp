@@ -314,16 +314,36 @@ struct FaceMetaData
 		return *static_cast<FaceMetaData*>(face->generic.data);
 	}
 
-	void
-	add_to_face(FT_Face face)
+	static void
+	add_to_face(FT_Face face, filesystem::Path path)
 	{
 		if (face->generic.data)
 			face->generic.finalizer(face);
-		face->generic.data = this;
+		face->generic.data = new FaceMetaData{path};
 		face->generic.finalizer = FaceMetaData::self_destroy;
 	}
 
+#if HAVE_HARFBUZZ
+	static void
+	add_to_face(FT_Face face, const filesystem::Path& path, hb_font_t* font)
+	{
+		if (face->generic.data)
+			face->generic.finalizer(face);
+		face->generic.data = new FaceMetaData{path, font};
+		face->generic.finalizer = FaceMetaData::self_destroy;
+	}
+#endif
 private:
+	explicit FaceMetaData(filesystem::Path path)
+		: path(path)
+	{ }
+
+#if HAVE_HARFBUZZ
+	FaceMetaData(filesystem::Path path, hb_font_t* font)
+		: path(path), font(font)
+	{ }
+#endif
+
 	static void
 	self_destroy(void* object)
 	{
@@ -703,13 +723,12 @@ Layer_Freetype::new_face(const String &newfont)
 		error = FT_New_Face(ft_library, path.c_str(), face_index, &face);
 		if (!error) {
 			face_cache.put(absolute_path, face);
-			FaceMetaData* data = new FaceMetaData();
-			data->path = path;
 #if HAVE_HARFBUZZ
-			data->font = hb_ft_font_create(face, nullptr);
-			this->font = data->font;
+			this->font = hb_ft_font_create(face, nullptr);
+			FaceMetaData::add_to_face(face, path, this->font);
+#else
+			FaceMetaData::add_to_face(face, path);
 #endif
-			data->add_to_face(face);
 			font_path_from_canvas = !canvas_path.empty() && path.compare(0, canvas_path.size(), canvas_path) == 0;
 			break;
 		}
