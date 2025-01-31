@@ -945,6 +945,7 @@ Layer_Freetype::get_param_vocab(void)const
 
 	ret.push_back(ParamDesc("family")
 		.set_local_name(_("Font Family"))
+		.set_description(_("You can select or type a font family name or the font file path"))
 		.set_hint("font_family")
 	);
 
