@@ -104,8 +104,10 @@ ValueNode_BLineCalcTangent::operator()(Time t, Real amount)const
 	const ValueBase bline_value_node = (*bline_)(t);
 
 	const bool looped = bline_value_node.get_loop();
-	int size = (int)bline.size();
-	int count = looped ? size : size - 1;
+	const int size = (int)bline.size();
+	if (size == 0)
+		return ValueBase();
+	const int count = looped ? size : size - 1;
 	if (count < 1)
 	{
 		Type &type(get_type());
