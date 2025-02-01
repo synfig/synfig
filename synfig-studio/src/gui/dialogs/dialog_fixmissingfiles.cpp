@@ -95,8 +95,17 @@ Dialog_FixMissingFiles::Dialog_FixMissingFiles(BaseObjectType* cobject, const Gl
 		return;
 
 	missing_file_list_ = Glib::RefPtr<Gtk::ListBox>::cast_dynamic(builder_->get_object("missing_file_list"));
+	canvas_filepath_label_ = Glib::RefPtr<Gtk::Label>::cast_dynamic(builder_->get_object("canvas_filepath"));
 
 	signal_response().connect(sigc::mem_fun(*this, &Dialog_FixMissingFiles::on_response));
+}
+
+void
+Dialog_FixMissingFiles::set_canvas_filepath(const synfig::filesystem::Path& path)
+{
+	canvas_filepath_ = path;
+	if (canvas_filepath_label_)
+		canvas_filepath_label_->set_label(path.u8string());
 }
 
 void
@@ -118,8 +127,7 @@ Dialog_FixMissingFiles::set_broken_useids(synfig::CanvasBrokenUseIdMap& map)
 		create_row(replacer_map_, iter);
 	}
 
-	Gtk::Button* button = static_cast<Gtk::Button*>(get_widget_for_response(Gtk::RESPONSE_OK));
-	button->set_sensitive(is_replacer_map_complete());
+	update_response_button_sensitivity();
 }
 
 void
@@ -141,10 +149,13 @@ Dialog_FixMissingFiles::create_row(Dialog_FixMissingFiles::FileReplacerMap& repl
 
 	auto box = Gtk::manage(new Gtk::Box());
 	box->set_hexpand(true);
+	box->set_spacing(6);
 
 	if (!synfig::FileSystemNative::instance()->is_file(missing_path.u8string())) {
 		auto icon = Gtk::manage(create_image_from_icon("image-missing", Gtk::ICON_SIZE_MENU));
 		icon->set_tooltip_text("Missing file");
+		icon->set_hexpand(false);
+		icon->set_halign(Gtk::ALIGN_START);
 		box->pack_start(*icon);
 	}
 
@@ -152,6 +163,8 @@ Dialog_FixMissingFiles::create_row(Dialog_FixMissingFiles::FileReplacerMap& repl
 	label->set_hexpand(true);
 	label->set_xalign(0);
 	label->set_ellipsize(Pango::ELLIPSIZE_START);
+	label->set_halign(Gtk::ALIGN_START);
+	label->set_selectable(true);
 	std::string reasons = _("Issues:");
 	for (const auto& item : iter->second.missing_items) {
 		reasons += '\n';
@@ -168,6 +181,8 @@ Dialog_FixMissingFiles::create_row(Dialog_FixMissingFiles::FileReplacerMap& repl
 	label->set_hexpand(true);
 	label->set_xalign(0);
 	label->set_ellipsize(Pango::ELLIPSIZE_START);
+	label->set_halign(Gtk::ALIGN_END);
+	label->set_selectable(true);
 	if (!uses.replacement.empty()) {
 		label->set_markup(synfig::strprintf("(<small>%s</small>)", uses.replacement.u8_str()));
 		label->set_tooltip_text(uses.replacement.u8string());
@@ -176,21 +191,25 @@ Dialog_FixMissingFiles::create_row(Dialog_FixMissingFiles::FileReplacerMap& repl
 
 	auto button = Gtk::manage(new Gtk::Button(_("Change")));
 	button->set_hexpand(false);
+	button->signal_clicked().connect(sigc::bind(sigc::bind(sigc::mem_fun(*this, &Dialog_FixMissingFiles::on_replace_button_clicked), label), missing_path));
 	box->pack_end(*button, Gtk::PACK_SHRINK);
-
-	button->signal_clicked().connect(sigc::track_obj([this, label, missing_path, &replacer_map]() {
-		synfig::filesystem::Path replacement(missing_path);
-		if (App::dialog_open_file(replacer_map[missing_path].u8string(), replacement, "file")) {
-			label->set_markup(synfig::strprintf("(<small>%s</small>)", replacement.u8_str()));
-			label->set_tooltip_text(replacement.u8string());
-			replacer_map[missing_path] = replacement;
-		}
-		Gtk::Button* button = static_cast<Gtk::Button*>(get_widget_for_response(Gtk::RESPONSE_OK));
-		button->set_sensitive(is_replacer_map_complete());
-	}, *label));
 
 	box->show_all();
 	missing_file_list_->append(*box);
+}
+
+void
+Dialog_FixMissingFiles::on_replace_button_clicked(const synfig::filesystem::Path& missing_path, Gtk::Label* label)
+{
+	synfig::filesystem::Path replacement(missing_path);
+	if (App::dialog_open_file(replacer_map_[missing_path].u8string(), replacement, "file")) {
+		if (label) {
+			label->set_markup(synfig::strprintf("(<small>%s</small>)", replacement.u8_str()));
+			label->set_tooltip_text(replacement.relative_to(canvas_filepath_).u8string());
+		}
+		replacer_map_[missing_path] = replacement;
+	}
+	update_response_button_sensitivity();
 }
 
 bool
@@ -201,4 +220,11 @@ Dialog_FixMissingFiles::is_replacer_map_complete() const
 			return false;
 	}
 	return true;
+}
+
+void
+Dialog_FixMissingFiles::update_response_button_sensitivity()
+{
+	Gtk::Button* button = static_cast<Gtk::Button*>(get_widget_for_response(Gtk::RESPONSE_OK));
+	button->set_sensitive(is_replacer_map_complete());
 }

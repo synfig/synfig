@@ -68,14 +68,21 @@ private:
 	synfig::filesystem::Path canvas_filepath_;
 
 	Glib::RefPtr<Gtk::ListBox> missing_file_list_;
+	Glib::RefPtr<Gtk::Label> canvas_filepath_label_;
 	synfig::CanvasBrokenUseIdMap* map_;
 
+	/** maps (original file path, replacer file path) **/
 	typedef std::map<synfig::filesystem::Path, synfig::filesystem::Path> FileReplacerMap;
 	FileReplacerMap replacer_map_;
 
 	void create_row(FileReplacerMap& replacer_map_, const synfig::CanvasBrokenUseIdMap::iterator& iter);
 
+	void on_replace_button_clicked(const synfig::filesystem::Path& missing_path, Gtk::Label* label);
+
+	/** return true if all missing files have a correspondent replacement file **/
 	bool is_replacer_map_complete() const;
+
+	void update_response_button_sensitivity();
 }; // END of Dialog_FixMissingFiles
 
 }; // END of namespace studio
