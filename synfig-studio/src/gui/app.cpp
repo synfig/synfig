@@ -3595,6 +3595,7 @@ App::open(filesystem::Path filename, /* std::string as, */ synfig::FileContainer
 						if (!dialog) {
 							synfig::error(_("Couldn't open dialog for fixing missing files"));
 						} else {
+							dialog->set_canvas_filepath(filename);
 							dialog->set_broken_useids(broken_links);
 							if (dialog->run() == Gtk::RESPONSE_OK) {
 								continue;
