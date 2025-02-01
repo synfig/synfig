@@ -859,29 +859,15 @@ Layer::accelerated_render(Context context,Surface *surface,int quality, const Re
 
 
 RendDesc
-Layer::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
+Layer::get_sub_renddesc_vfunc(const RendDesc& renddesc) const
 {
 	return renddesc;
 }
 
-void
-Layer::get_sub_renddesc_vfunc(const RendDesc &renddesc, std::vector<RendDesc> &out_descs) const
-{
-	out_descs.push_back( get_sub_renddesc_vfunc(renddesc) );
-}
-
-void
-Layer::get_sub_renddesc(const RendDesc &renddesc, std::vector<RendDesc> &out_descs) const
-{
-	get_sub_renddesc_vfunc(renddesc, out_descs);
-}
-
 RendDesc
-Layer::get_sub_renddesc(const RendDesc &renddesc, int index) const
+Layer::get_sub_renddesc(const RendDesc& renddesc) const
 {
-	std::vector<RendDesc> descs;
-	get_sub_renddesc(renddesc, descs);
-	return index >=0 && index < (int)descs.size() ? descs[index] : RendDesc::zero();
+	return get_sub_renddesc_vfunc(renddesc);
 }
 
 rendering::Task::Handle
