@@ -178,11 +178,8 @@ public:
 	//! Saves the instance to current temporary container
 	bool backup(bool save_even_if_unchanged = false);
 
-	//! generate layer name (also known in code as 'description')
-	synfig::String generate_new_description(const synfig::Layer::Handle &layer);
-
 	//! create unique file name for an embedded image layer (if image filename is empty, description layer is used)
-	void generate_new_name(
+	void generate_new_image_filename(
 		const synfig::Layer::Handle &layer,
 		synfig::String &out_description,
 		synfig::String &out_filename,
