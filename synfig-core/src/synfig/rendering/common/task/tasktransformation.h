@@ -54,6 +54,20 @@ public:
 };
 
 
+//! Interface for tasks which works identically while placed before or after transformation,
+//! but this intermediate task needs info about this transformation to be passed through.
+//! Useful for filters that create first masks independent of context/sub_task before
+//! handling it.
+class TaskInterfaceTransformationGetAndPass
+{
+public:
+	virtual ~TaskInterfaceTransformationGetAndPass() { }
+
+	virtual Transformation::Handle get_transformation() const
+		{ return Transformation::Handle(); }
+};
+
+
 class TaskInterfaceTransformation
 {
 public:

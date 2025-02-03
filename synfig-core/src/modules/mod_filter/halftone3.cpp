@@ -61,7 +61,7 @@ SYNFIG_LAYER_SET_VERSION(Halftone3,"0.0");
 
 /* === P R O C E D U R E S ================================================= */
 
-class TaskHalfTone3: public rendering::TaskPixelProcessor
+class TaskHalfTone3: public rendering::TaskPixelProcessorBase, public rendering::TaskInterfaceTransformationGetAndPass
 {
 public:
 	typedef etl::handle<TaskHalfTone3> Handle;
@@ -72,6 +72,13 @@ public:
 	Color color[3];
 	bool subtractive = false;
 	float inverse_matrix[3][3];
+
+	rendering::Holder<rendering::TransformationAffine> transformation;
+
+	rendering::Transformation::Handle get_transformation() const override
+	{
+		return transformation.handle();
+	}
 };
 
 
@@ -85,14 +92,16 @@ public:
 	void pre_run(const Matrix3& /*matrix*/) const override
 	{
 		supersample = 1/std::fabs(get_pixels_per_unit()[0]*(tone[0].param_size.get(Vector())).mag());
+		inverted_transformation = transformation->create_inverted();
 	}
 
-	Color get_color(const Vector& point, const Color& in_color) const override
+	Color get_color(const Vector& p, const Color& in_color) const override
 	{
 		Color halfcolor;
 
 		float chan[3];
 
+		const Vector point = inverted_transformation->transform(p);
 
 		if(subtractive)
 		{
@@ -124,12 +133,14 @@ public:
 		return halfcolor;
 	}
 
-	bool run(RunParams&) const override {
+	bool run(RunParams&) const override
+	{
 		return run_task();
 	}
 
 protected:
 	mutable float supersample = 1.0f;
+	mutable rendering::Transformation::Handle inverted_transformation;
 };
 
 SYNFIG_EXPORT rendering::Task::Token TaskHalfTone3::token(
