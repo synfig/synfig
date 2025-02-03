@@ -62,7 +62,7 @@ SYNFIG_LAYER_SET_VERSION(Halftone2,"0.0");
 
 /* === P R O C E D U R E S ================================================= */
 
-class TaskHalfTone2: public rendering::TaskPixelProcessorBase
+class TaskHalfTone2: public rendering::TaskPixelProcessorBase, public rendering::TaskInterfaceTransformationGetAndPass
 {
 public:
 	typedef etl::handle<TaskHalfTone2> Handle;
@@ -72,6 +72,13 @@ public:
 	Halftone halftone;
 	Color color_dark;
 	Color color_light;
+
+	rendering::Holder<rendering::TransformationAffine> transformation;
+
+	rendering::Transformation::Handle get_transformation() const override
+	{
+		return transformation.handle();
+	}
 };
 
 
@@ -85,11 +92,12 @@ public:
 	void pre_run(const Matrix3& /*matrix*/) const override
 	{
 		supersample_size = 1/std::fabs(get_pixels_per_unit()[0]*(halftone.param_size.get(Vector())).mag());
+		inverted_transformation = transformation->create_inverted();
 	}
 
 	Color get_color(const Vector& p, const Color& c) const override
 	{
-		const float amount(halftone(p, c.get_y(), supersample_size));
+		const float amount(halftone(inverted_transformation->transform(p), c.get_y(), supersample_size));
 		Color halfcolor;
 
 		if (amount <= 0.0f)
@@ -104,12 +112,14 @@ public:
 		return halfcolor;
 	}
 
-	bool run(RunParams&) const override {
+	bool run(RunParams&) const override
+	{
 		return run_task();
 	}
 
 protected:
 	mutable float supersample_size = 1.0f;
+	mutable rendering::Transformation::Handle inverted_transformation;
 };
 
 SYNFIG_EXPORT rendering::Task::Token TaskHalfTone2::token(
