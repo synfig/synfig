@@ -289,6 +289,9 @@ private:
 	*/
 	bool exclude_from_rendering_;
 
+	/*! When \c true, layer will be skipped on the hit_check() */
+	bool hit_locked_;
+
 	//! Handle to the canvas to which this layer belongs
 	etl::loose_handle<Canvas> canvas_;
 
@@ -639,6 +642,14 @@ public:
 	**	\see Context::hit_check
 	*/
 	virtual Handle hit_check(Context context, const Point &point)const;
+	//! Set the hit_locked flag of the layer.
+	/*! If locked, the layer is not hittable.
+	 *  @see hit_check() and Context::hit_check()
+	 */
+	void set_hit_locked(bool x);
+	//! Check the status of hit_locked flag of the layer
+	//! @see set_hit_locked()
+	bool is_hit_locked() const { return hit_locked_; }
 
 	//! Duplicates the Layer
 	virtual Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
