@@ -98,7 +98,7 @@ ffmpeg_trgt::~ffmpeg_trgt()
 
 	// Remove temporary sound file
 	if (FileSystemNative::instance()->is_file(sound_filename.u8string())) {
-		if (FileSystemNative::instance()->remove_recursive(sound_filename)) {
+		if (!FileSystemNative::instance()->remove_recursive(sound_filename)) {
 			synfig::warning("Error deleting temporary sound file (%s).", sound_filename.u8_str());
 		}
 	}
@@ -144,7 +144,7 @@ ffmpeg_trgt::set_rend_desc(RendDesc *given_desc)
 bool
 ffmpeg_trgt::init(ProgressCallback* cb = nullptr)
 {
-	bool with_sound = false;
+	bool with_sound = true;
 	const std::string extension = filename.extension().u8string();
 	const std::vector<const char*> image_only_extensions{".gif", ".mng"};
 	const bool does_file_format_support_audio = std::find(image_only_extensions.begin(), image_only_extensions.end(), extension) == image_only_extensions.end();
