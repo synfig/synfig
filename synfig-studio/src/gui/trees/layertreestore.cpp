@@ -1129,8 +1129,14 @@ LayerTreeStore::on_layer_raised(synfig::Layer::Handle layer)
 void
 LayerTreeStore::on_layer_moved(synfig::Layer::Handle layer,int depth, synfig::Canvas::Handle /*canvas*/)
 {
+	//if the layer was selected before movement it should remain selected
+	std::list<Layer::Handle> selected_layer_list  = get_canvas_interface()->get_selection_manager()->get_selected_layers();
 	on_layer_removed(layer);
 	on_layer_inserted(layer,depth);
+	if (!selected_layer_list.empty()){
+		canvas_interface()->get_selection_manager()->clear_selected_layers();
+		canvas_interface()->get_selection_manager()->set_selected_layers(selected_layer_list);
+	}
 }
 
 void
