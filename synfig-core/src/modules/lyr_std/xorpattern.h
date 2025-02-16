@@ -68,6 +68,9 @@ public:
 	virtual Color get_color(Context context, const Point &pos)const;
 	virtual Vocab get_param_vocab()const;
 	virtual Layer::Handle hit_check(Context context, const Point &point)const;
+
+protected:
+	virtual rendering::Task::Handle build_composite_task_vfunc(ContextParams /*context_params*/) const;
 };
 
 }; // END of namespace lyr_std
