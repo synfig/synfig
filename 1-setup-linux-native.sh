@@ -285,6 +285,9 @@ elif [ "$ID_LIKE" == "debian" ] || [ "$ID_LIKE" == "ubuntu" ] || [ "$ID_LIKE" ==
     echo
     sudo apt-get update -qq || true
     sudo apt-get install -y -q $PKG_LIST
+
+    echo "Fetching synfig git submodules..."
+    git submodule update --init --recursive
 else
     echo "WARNING: This build script does not work with package management systems other than yum, zypper, apt or pacman! You should install dependent packages manually."
     echo "REQUIRED PACKAGES: "
