@@ -111,7 +111,7 @@ HistoryTreeStore::rebuild()
 }
 
 void
-HistoryTreeStore::insert_action(Gtk::TreeRow row,etl::handle<synfigapp::Action::Undoable> action, bool is_undo, bool is_redo)
+HistoryTreeStore::insert_action(Gtk::TreeRow row,etl::handle<synfigapp::Action::Undoable> action, bool is_undo, bool is_redo, bool from_recursion)
 {
 	assert(action);
 
@@ -133,11 +133,16 @@ HistoryTreeStore::insert_action(Gtk::TreeRow row,etl::handle<synfigapp::Action::
 	group=etl::handle<synfigapp::Action::Group>::cast_dynamic(action);
 	if(group)
 	{
-		synfigapp::Action::ActionList::const_iterator iter;
-		for(iter=group->action_list().begin();iter!=group->action_list().end();++iter)
-		{
+		if (instance()->repeated_action && !from_recursion) {
 			Gtk::TreeRow child_row = *(append(row.children()));
-			insert_action(child_row,*iter,is_undo,is_redo);
+			insert_action(child_row,*(group->action_list().begin()),is_undo,is_redo,true);
+		} else {
+			synfigapp::Action::ActionList::const_iterator iter;
+			for(iter=group->action_list().begin();iter!=group->action_list().end();++iter)
+			{
+				Gtk::TreeRow child_row = *(append(row.children()));
+				insert_action(child_row,*iter,is_undo,is_redo,true);
+			}
 		}
 	}
 }
@@ -147,6 +152,9 @@ void
 HistoryTreeStore::on_undo()
 {
 	if (next_action_iter == children().begin())
+		return;
+
+	if (instance()->cancel_repeated_action)
 		return;
 
 	--next_action_iter;

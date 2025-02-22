@@ -53,6 +53,8 @@
 #include <gui/widgets/widget_gradient.h> // render_gradient_to_window()
 #include <gui/widgets/widget_value.h>
 
+#include<gui/trees/layertree.h>
+
 #endif
 
 using namespace synfig;
@@ -674,6 +676,10 @@ CellRenderer_ValueBase::start_editing_vfunc(
 	const Gdk::Rectangle&  /*cell_area*/,
 	Gtk::CellRendererState /*flags*/)
 {
+	if(!LayerTree::signal_handled){
+//	std::cout<<std::endl<<"nulptr"<<std::endl;
+	return nullptr;}
+
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	edit_value_done_called = false;
 	// If we aren't editable, then there is nothing to do

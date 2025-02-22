@@ -46,7 +46,7 @@
 #include <gui/app.h>
 #include <gui/exception_guard.h>
 #include <gui/localization.h>
-
+#include <gui/canvasview.h>
 
 #endif
 
@@ -427,6 +427,21 @@ Widget_ColorEdit::Widget_ColorEdit():
 		//I use Gtk::ColorSelection widget here.
 		hvsColorWidget = manage(new Gtk::ColorSelection());
 		setHVSColor(get_value());
+
+		//navigating to inner implementation color wheel widget
+		std::vector<Widget*> internal_child = hvsColorWidget->get_children();
+		Gtk::Box* box_cast = static_cast<Gtk::Box*>( internal_child[0] );
+		std::vector<Widget*> internal_child_2 = box_cast->get_children();
+		Gtk::Box* box_cast_2 = static_cast<Gtk::Box*>( internal_child_2[0] );
+		std::vector<Widget*> internal_child_3 = box_cast_2->get_children(); //internal_child_3[0] is the color wheel widget
+
+		internal_child_3[0]->signal_key_press_event().connect([&](GdkEventKey *ev){
+			if((ev->keyval == GDK_KEY_Escape) && (hvsColorWidget->is_adjusting())){
+				escape_cancel=true;on_color_changed();
+				return true;
+			}
+			return false;},false);
+
 		hvsColorWidget->signal_color_changed().connect(sigc::mem_fun(*this, &studio::Widget_ColorEdit::on_color_changed));
 		//TODO: Anybody knows how to set min size for this widget? I've tried use set_size_request(..). But it doesn't works.
 		hvs_grid->attach(*(hvsColorWidget), 0, 4, 1, 1);
@@ -492,18 +507,67 @@ Widget_ColorEdit::on_color_changed()
 {
 	//Spike! Gtk::ColorSelection emits this signal when I use
 	//set_current_color(...). It calls recursion. Used a flag to fix it.
-	if (!colorHVSChanged)
+
+	if (!hvsColorWidget->is_adjusting() && colorHVSChanged && current_action_cancelled) {
+		colorHVSChanged = false;
+		current_action_cancelled = false;
+		return;
+	}
+
+	if (!colorHVSChanged) //color change is from a wheel drag
 	{
 		Gdk::RGBA newColor = hvsColorWidget->get_current_rgba();
-		Color synfigColor(
-			newColor.get_red(),
-			newColor.get_green(),
-			newColor.get_blue(),
-			A_adjustment->get_value()/100);
-		synfigColor = App::get_selected_canvas_gamma().apply(synfigColor);
-		set_value(synfigColor);
-		colorHVSChanged = true; //I reset the flag in setHVSColor(..)
-		on_value_changed();
+		Color synfigColor;
+		etl::loose_handle<Instance> current_instance = App::get_selected_instance();
+
+		if(!(hvsColorWidget->is_adjusting())){//drag over
+			Color synfigColorTemp(
+					newColor.get_red(),
+					newColor.get_green(),
+					newColor.get_blue() );
+				synfigColor=synfigColorTemp;
+				get_initial_color= true;//rename
+				if (!group)
+					group = new synfigapp::Action::PassiveGrouper(App::get_selected_canvas_view()->get_instance().get(),_("Change color"),true);
+		}
+		else{//drag did not end
+			current_instance->repeated_action = true;
+			Color synfigColorTemp(
+				newColor.get_red(),
+				newColor.get_green(),
+				newColor.get_blue() );
+			synfigColor=synfigColorTemp;
+
+			if(get_initial_color){
+				group = new synfigapp::Action::PassiveGrouper(App::get_selected_canvas_view()->get_instance().get(),_("Change color"),true);
+			}
+			get_initial_color= false;
+		}
+
+		if(!escape_cancel){
+			synfigColor = App::get_selected_canvas_gamma().apply(synfigColor);
+			set_value(synfigColor);
+			colorHVSChanged = true;
+			on_value_changed();
+			wheel_released=false;
+		}
+
+		if(get_initial_color || escape_cancel){//last time now //we can reset the action cancelled thing here
+			current_instance->repeated_action = true;
+			if (escape_cancel) {
+				current_instance->cancel_repeated_action = true;
+				colorHVSChanged = true;
+				get_initial_color = true;
+				current_action_cancelled = true;
+			}
+			if (group)
+				delete group;
+			group = nullptr;
+		}
+		current_instance->repeated_action = false;
+		current_instance->cancel_repeated_action = false;
+		escape_cancel = false;
+		return;
 	}
 }
 

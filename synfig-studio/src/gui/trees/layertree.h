@@ -38,6 +38,7 @@
 #include <gui/widgets/widget_value.h>
 
 #include <synfigapp/value_desc.h>
+#include <synfigapp/action_system.h>
 
 
 /* === M A C R O S ========================================================= */
@@ -76,6 +77,8 @@ public:
 
 	LayerTreeStore::Model layer_model;
 	LayerParamTreeStore::Model param_model;
+
+	static bool signal_handled;
 
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
@@ -227,6 +230,28 @@ private:
 	void get_expanded_layers(LayerList &list, const Gtk::TreeNodeChildren &rows)const;
 
 	bool on_key_press_event(GdkEventKey* event);
+	bool on_param_tree_view_key_press_event(GdkEventKey* event);
+//	bool on_button_press_event(GdkEventButton* event);
+//	bool on_button_release_event(GdkEventButton* event);
+	bool on_button_press_or_release_event(GdkEventButton* event);
+	bool on_motion_notify_event(GdkEventMotion* event);
+	//all the row selection hbd
+	Glib::RefPtr<Gtk::TreeSelection> selected_param_object;
+	Gtk::TreeModel::iterator iter;
+	Gtk::TreeModel::Row row ; //shel el assignment = *iter an dassign in the constructor then when slection changed change it and then itll be ready for conditional use
+//	Glib::RefPtr<Gtk::TreeSelection> selected_param_object_event;
+//	Gtk::TreeModel::iterator iter_event ;
+//	Gtk::TreeModel::Row row_event;
+	void change_selection_param();
+	Glib::RefPtr<Gdk::Cursor> default_cursor = Gdk::Cursor::create(get_display(), "default");
+	synfig::ValueBase value_base;
+	int first_cord_x ;
+	int second_cord_x ;
+	float value_float ;
+	bool first_iteration=false;
+	float initial_value;
+	bool param_mouse_edit=false;
+	synfigapp::Action::PassiveGrouper* group = nullptr;
 
 }; // END of LayerTree
 
