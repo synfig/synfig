@@ -149,6 +149,9 @@ HistoryTreeStore::on_undo()
 	if (next_action_iter == children().begin())
 		return;
 
+	if (instance()->is_repeated_action_cancelled())
+		return;
+
 	--next_action_iter;
 	next_action_iter->set_value(model.is_redo, true);
 	next_action_iter->set_value(model.is_undo, false);
@@ -211,9 +214,15 @@ HistoryTreeStore::on_new_action(etl::handle<synfigapp::Action::Undoable> action)
 {
 	Gtk::TreeRow row;
 
-	row=*insert(next_action_iter);
+	etl::handle<synfigapp::Action::Group> group;
+	group=etl::handle<synfigapp::Action::Group>::cast_dynamic(action);
 
-	insert_action(row,action);
+	row=*insert(next_action_iter);//next action iter is a pointer to the next action
+
+	if (group && group->is_repeated_group())
+		insert_action(row, group->action_list().front());
+	else
+		insert_action(row,action);
 
 	next_action_iter = row;
 	++next_action_iter;

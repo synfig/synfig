@@ -326,10 +326,12 @@ class Group : public Super
 	synfig::String name_;
 
 	ActionList action_list_;
+
+	bool is_repeated_action_group;
 protected:
 	bool ready_;
 public:
-	Group(const synfig::String &str="Group");
+	Group(const synfig::String &str="Group", bool is_repeated = false);
 	virtual ~Group();
 
 	virtual synfig::String get_name()const { return name_; }
@@ -340,6 +342,8 @@ public:
 	virtual bool is_ready()const { return ready_; }
 
 	void set_name(std::string&x) { name_=x; }
+
+	bool is_repeated_group()const { return is_repeated_action_group; }
 }; // END of class Action::Group
 
 

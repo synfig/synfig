@@ -46,7 +46,7 @@
 #include <gui/app.h>
 #include <gui/exception_guard.h>
 #include <gui/localization.h>
-
+#include <gui/canvasview.h>
 
 #endif
 
@@ -427,6 +427,16 @@ Widget_ColorEdit::Widget_ColorEdit():
 		//I use Gtk::ColorSelection widget here.
 		hvsColorWidget = manage(new Gtk::ColorSelection());
 		setHVSColor(get_value());
+
+		//navigating to inner implementation color wheel widget
+		std::vector<Widget*> internal_child = hvsColorWidget->get_children();
+		Gtk::Box* box_cast = static_cast<Gtk::Box*>( internal_child[0] );
+		std::vector<Widget*> internal_child_2 = box_cast->get_children();
+		Gtk::Box* box_cast_2 = static_cast<Gtk::Box*>( internal_child_2[0] );
+		std::vector<Widget*> internal_child_3 = box_cast_2->get_children(); //internal_child_3[0] is the color wheel widget
+
+		internal_child_3[0]->signal_key_press_event().connect(sigc::mem_fun(*this, &Widget_ColorEdit::on_escape_pressed),false);
+
 		hvsColorWidget->signal_color_changed().connect(sigc::mem_fun(*this, &studio::Widget_ColorEdit::on_color_changed));
 		//TODO: Anybody knows how to set min size for this widget? I've tried use set_size_request(..). But it doesn't works.
 		hvs_grid->attach(*(hvsColorWidget), 0, 4, 1, 1);
@@ -487,6 +497,21 @@ void Widget_ColorEdit::setHVSColor(const synfig::Color& color)
 	colorHVSChanged = false;
 }
 
+bool
+Widget_ColorEdit::on_escape_pressed(GdkEventKey *ev)
+{
+	if ((ev->keyval == GDK_KEY_Escape) && (hvsColorWidget->is_adjusting())) {
+		escape_cancel=true;
+		App::get_selected_instance()->cancel_repeated_action();
+		if (group)
+			delete group;
+		group=nullptr;
+		on_color_changed();
+		return true;
+	}
+	return false;
+}
+
 void
 Widget_ColorEdit::on_color_changed()
 {
@@ -494,6 +519,19 @@ Widget_ColorEdit::on_color_changed()
 	//set_current_color(...). It calls recursion. Used a flag to fix it.
 	if (!colorHVSChanged)
 	{
+		if (hvsColorWidget->is_adjusting()){
+			if (group == nullptr && !escape_cancel)
+				group = new synfigapp::Action::PassiveGrouper(App::get_selected_canvas_view()->get_instance().get(),_("Change color"),true);
+		} else {
+			if (group)
+				delete group;
+			group = nullptr;
+			escape_cancel = false;
+			return;
+		}
+		if (escape_cancel)
+			return;
+
 		Gdk::RGBA newColor = hvsColorWidget->get_current_rgba();
 		Color synfigColor(
 			newColor.get_red(),

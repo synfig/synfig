@@ -549,8 +549,9 @@ Super::add_action_front(etl::handle<Undoable> action)
 }
 
 
-Group::Group(const synfig::String &str):
+Group::Group(const synfig::String &str, bool is_repeated):
 	name_(str),
+	is_repeated_action_group(is_repeated),
 	ready_(true)
 {
 }
