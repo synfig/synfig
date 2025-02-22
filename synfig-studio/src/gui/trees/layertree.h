@@ -163,6 +163,8 @@ private:
 
 	void on_selection_changed();
 
+	bool search_param_tree(const Glib::RefPtr<Gtk::TreeModel>&,int,const Glib::ustring&,const Gtk::TreeModel::iterator&);
+
 	void on_param_column_label_tree_style_updated();
 	bool on_param_column_label_tree_draw(const ::Cairo::RefPtr< ::Cairo::Context>& cr);
 
