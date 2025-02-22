@@ -43,7 +43,7 @@
 # * Builds from current repository, current revision. So you should manually checkout the desired revision to build
 # * Executing script without arguments makes a full clean build and produces installer package
 # * You can pass arguments to the script to invoke particular stage. 
-#	Available stages: mkprep, mketl, mksynfig, mksynfigstudio, mkpackage
+#	Available stages: mkprep, mksynfig, mksynfigstudio, mkpackage
 #	Example: 
 #		synfigstudio-cygwin-mingw-build.sh mkpackage
 # * You can pass a custom command to be invoked in the build environment.
@@ -967,29 +967,6 @@ fedora-mingw-install mingw${ARCH}-libltdl
 fedora-mingw-install mingw${ARCH}-libtiff
 }
 
-mketl()
-{
-cd $SRCPREFIX/ETL
-[ ! -e config.cache ] || rm config.cache
-autoreconf --install --force
-./configure \
---prefix=${MINGWPREFIX} \
---exec-prefix=${MINGWPREFIX} \
---bindir=${MINGWPREFIX}/bin \
---sbindir=${MINGWPREFIX}/sbin \
---libexecdir=${MINGWPREFIX}/lib \
---datadir=${MINGWPREFIX}/share \
---localstatedir=${MINGWPREFIX}/var \
---sysconfdir=${MINGWPREFIX}/etc \
---datarootdir=${MINGWPREFIX}/share \
---docdir=/usr/share/doc/mingw-synfig -C \
---build=i686-pc-cygwin --host=${TOOLCHAIN_HOST} \
---enable-shared --disable-static \
---with-libiconv-prefix=no --with-libintl-prefix=no \
---enable-maintainer-mode $DEBUG
-make install
-}
-
 mksynfig()
 {
 cd $SRCPREFIX/synfig-core
@@ -1234,7 +1211,6 @@ mkall()
 	mksox
 	mklibvorbis
 	mkmlt
-	mketl
 	mksynfig
 	mksynfigstudio
 	mkpackage

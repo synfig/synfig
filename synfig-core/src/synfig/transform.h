@@ -30,11 +30,12 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/handle>
-#include "vector.h"
 #include <list>
-#include "rect.h"
+
 #include "guid.h"
+#include "handle.h"
+#include "rect.h"
+#include "vector.h"
 
 /* === M A C R O S ========================================================= */
 

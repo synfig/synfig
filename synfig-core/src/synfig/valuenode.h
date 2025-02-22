@@ -33,21 +33,20 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "value.h"
-#include "string.h"
-#include "releases.h"
-#include "exception.h"
-#include "guid.h"
-#include "paramdesc.h"
-#include "node.h"
-
-#include <ETL/handle>
+#include <map>
+#include <memory>
+#include <set>
 
 #include <sigc++/signal.h>
 
-#include <map>
-#include <set>
-#include <memory>
+#include "exception.h"
+#include "guid.h"
+#include "handle.h"
+#include "node.h"
+#include "paramdesc.h"
+#include "releases.h"
+#include "string.h"
+#include "value.h"
 
 /* === M A C R O S ========================================================= */
 

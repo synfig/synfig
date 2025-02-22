@@ -32,13 +32,12 @@
 
 #include <cstring>
 
+#include <mutex>
 #include <vector>
 
-#include <ETL/handle>
-
-#include <synfig/rect.h>
+#include <synfig/handle.h>
 #include <synfig/matrix.h>
-#include <mutex>
+#include <synfig/rect.h>
 
 /* === M A C R O S ========================================================= */
 

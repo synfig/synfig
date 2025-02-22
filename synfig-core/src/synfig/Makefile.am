@@ -61,6 +61,7 @@ SYNFIGHEADERS = \
 	canvasbase.h \
 	clock.h \
 	general.h \
+	handle.h \
 	localization.h \
 	progresscallback.h \
 	guidset.h \

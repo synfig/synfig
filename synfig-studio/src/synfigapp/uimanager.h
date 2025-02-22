@@ -30,9 +30,9 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/handle>
 #include <sigc++/sigc++.h>
 
+#include <synfig/handle.h>
 #include <synfig/string.h>
 #include <synfig/progresscallback.h>
 

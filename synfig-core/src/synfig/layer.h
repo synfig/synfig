@@ -34,12 +34,11 @@
 
 #include <map>
 
-#include <ETL/handle>
-
 #include <sigc++/signal.h>
 #include <sigc++/connection.h>
 
 #include "guid.h"
+#include "handle.h"
 #include "interpolation.h"
 #include "filesystem_path.h"
 #include "node.h"

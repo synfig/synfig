@@ -33,9 +33,8 @@
 #include <list>
 #include <set>
 
-#include <ETL/handle>
-
 #include <synfig/canvas.h>
+#include <synfig/handle.h>
 #include <synfig/rendering/surface.h>
 #include <synfig/string.h>
 

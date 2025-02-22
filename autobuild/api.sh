@@ -44,13 +44,10 @@ git reset --hard
 git checkout remotes/origin/master
 
 #generating api to htmldir
-for module in ETL synfig-core synfig-studio; do
+for module in synfig-core synfig-studio; do
 cd $module
 echo "Generating API for $module..."
 case $module in
-	ETL)
-		MODULETITLE='Extended Template Library'
-		;;
 	synfig-core)
 		MODULETITLE='Synfig Core'
 		;;
@@ -74,11 +71,10 @@ done
 #index.html
 DATE=`date -R`
 cat > $HTMLDIR/index.html <<EOF
-<html><head><title>ETL, synfig, synfigstudio API docs</title></head>
+<html><head><title>synfig, synfigstudio API docs</title></head>
 <body>
-<h1>ETL, synfig, synfigstudio API docs</h1>
+<h1>synfig, synfigstudio API docs</h1>
 <ul>
-<li><a href="ETL/annotated.html">ETL</a></li>
 <li><a href="synfig-core/annotated.html">synfig-core</a></li>
 <li><a href="synfig-studio/annotated.html">synfig-studio</a></li>
 </ul>

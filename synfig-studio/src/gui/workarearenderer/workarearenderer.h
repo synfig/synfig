@@ -30,11 +30,12 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/handle>
 #include <sigc++/sigc++.h>
-#include <synfig/vector.h>
-#include <gdkmm/window.h>
 #include <gdkmm/rectangle.h>
+#include <gdkmm/window.h>
+
+#include <synfig/handle.h>
+#include <synfig/vector.h>
 
 /* === M A C R O S ========================================================= */
 #define GDK_COLOR_TO_RGB(color)               \

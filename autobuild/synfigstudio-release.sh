@@ -7,8 +7,6 @@
 #
 # It is also possible to run procedure for each module separately by 
 # passing specific arguments to the script:
-# * Run procedures for ETL:
-#    synfigstudio-release.sh etl
 # * Run procedures for synfig-core:
 #    synfigstudio-release.sh core
 # * Run procedures for synfig-studio:
@@ -27,8 +25,6 @@ BUILD_RELEASE_DIR=${SRCPREFIX}/_release/
 export PREFIX="$HOME/local-synfig"
 export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$PREFIX/lib/pkgconfig"
 export PATH="$PREFIX/bin:$PATH"
-export ETL_VERSION=`cat $SRCPREFIX/ETL/configure.ac |egrep "AC_INIT\(\[Extended Template Library\],"| sed "s|.*Library\],\[||" | sed "s|\],\[.*||"`
-echo "ETL_VERSION=$ETL_VERSION"
 export CORE_VERSION=`cat $SRCPREFIX/synfig-core/configure.ac |egrep "AC_INIT\(\[Synfig Core\],"| sed "s|.*Core\],\[||" | sed "s|\],\[.*||"`
 echo "CORE_VERSION=$CORE_VERSION"
 export STUDIO_VERSION=`cat $SRCPREFIX/synfig-studio/configure.ac |egrep "AC_INIT\(\[Synfig Studio\],"| sed "s|.*Studio\],\[||" | sed "s|\],\[.*||"`
@@ -78,39 +74,6 @@ l10n()
 	l10n_check "Synfig Core" "$SRCPREFIX/synfig-core/po"
 	l10n_check "Synfig Studio" "$SRCPREFIX/synfig-studio/po"
 	end_stage "l10n"
-}
-
-pack-etl()
-{
-	start_stage "Pack ETL"
-	cd $SRCPREFIX/ETL
-	autoreconf -if
-	mkdir -p ${BUILD_RELEASE_DIR}/ETL && cd $BUILD_RELEASE_DIR/ETL
-	$SRCPREFIX/ETL/configure --prefix="$PREFIX"
-	make V=0 CXXFLAGS="-w" distcheck -j${THREADS}
-	mv ETL-${ETL_VERSION}.tar.gz ${BUILD_RELEASE_DIR}
-	end_stage "Pack ETL"
-}
-
-test-etl()
-{
-	start_stage "Test ETL"
-	cd ${BUILD_RELEASE_DIR}
-	tar xf ETL-${ETL_VERSION}.tar.gz
-	cd ETL-${ETL_VERSION}
-	./configure --prefix="$PREFIX"
-	make V=0 CXXFLAGS="-w" install -j${THREADS}
-	cd ..
-	rm -rf ${BUILD_RELEASE_DIR}/ETL-${ETL_VERSION}
-	end_stage "Test ETL"
-}
-
-etl()
-{
-	start_stage "ETL"
-	pack-etl
-	test-etl
-	end_stage "ETL"
 }
 
 pack-core()
@@ -187,7 +150,6 @@ mkall()
 		rm -rf "$BUILD_RELEASE_DIR"
 	fi
 	l10n
-	etl
 	core
 	studio
 }

@@ -31,9 +31,11 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/handle>
-#include <gtkmm/adjustment.h>
 #include <list>
+
+#include <gtkmm/adjustment.h>
+
+#include <synfig/handle.h>
 #include <synfig/real.h>
 #include <synfig/time.h>
 

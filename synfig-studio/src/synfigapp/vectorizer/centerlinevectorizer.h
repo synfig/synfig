@@ -37,7 +37,7 @@
 
 /* === H E A D E R S ======================================================= */
 #include "vectorizerparameters.h"
-#include <ETL/handle>
+#include <synfig/handle.h>
 #include <synfig/layers/layer_bitmap.h>
 #include <synfig/vector.h>
 #include <synfigapp/uimanager.h>

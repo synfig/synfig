@@ -36,8 +36,7 @@
 #include <mutex>
 #include <glibmm/threads.h>
 
-#include <ETL/handle>
-
+#include <synfig/handle.h>
 #include <synfig/color.h>
 #include <synfig/vector.h>
 #include <synfig/token.h>
