@@ -149,7 +149,7 @@ void SoundProcessor::addSound(const PlayOptions &playOptions, const Sound &sound
 		track->set_in_and_out(-delay, -1);
 	} else
 	if (delay > 0) {
-		Mlt::Playlist *playlist = new Mlt::Playlist();
+		Mlt::Playlist *playlist = new Mlt::Playlist(internal->profile);
 		playlist->blank(delay);
 		playlist->append(*track);
 		delete track;
