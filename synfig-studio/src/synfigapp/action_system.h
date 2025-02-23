@@ -180,7 +180,7 @@ public:
 	template <typename T> bool
 	perform_action(T x)
 	{
-		etl::handle<Action::Base> action((Action::Base*)new T(x));
+		Action::Handle action((Action::Base*)new T(x));
 		return perform_action(action);
 	}
 	*/
@@ -193,7 +193,7 @@ public:
 
 	void request_redraw(etl::handle<CanvasInterface>);
 
-	bool perform_action(etl::handle<Action::Base> action);
+	bool perform_action(Action::Handle action);
 
 	bool set_action_status(etl::handle<Action::Undoable> action, bool x);
 
