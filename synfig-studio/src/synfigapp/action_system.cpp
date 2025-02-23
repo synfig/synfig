@@ -113,7 +113,7 @@ Action::System::perform_action(Action::Handle action)
 
 	// If we cannot undo this action, make sure
 	// that the user knows this.
-	etl::handle<Action::Undoable> undoable_action = etl::handle<Action::Undoable>::cast_dynamic(action);
+	Action::Undoable::Handle undoable_action = Action::Undoable::Handle::cast_dynamic(action);
 	assert(!undoable_action || undoable_action->is_active());
 	if (!undoable_action) {
 		String message = synfig::strprintf(_("Do you want to do action \"%s\"?"), action->get_local_name().c_str());
@@ -187,7 +187,7 @@ Action::System::perform_action(Action::Handle action)
 bool
 synfigapp::Action::System::undo_(etl::handle<UIInterface> uim)
 {
-	etl::handle<Action::Undoable> action = undo_action_stack().front();
+	Action::Undoable::Handle action = undo_action_stack().front();
 	most_recent_action_name_ = action->get_name();
 
 	try { if (action->is_active()) action->undo(); }
@@ -234,7 +234,7 @@ synfigapp::Action::System::undo()
 	if (undo_action_stack().empty())
 		return false;
 
-	etl::handle<Action::Undoable> action = undo_action_stack().front();
+	Action::Undoable::Handle action = undo_action_stack().front();
 	Action::CanvasSpecific *canvas_specific = dynamic_cast<Action::CanvasSpecific*>(action.get());
 
 	DirtySignalBlocker dirtyBlocker(canvas_specific);
@@ -254,7 +254,7 @@ synfigapp::Action::System::undo()
 bool
 Action::System::redo_(etl::handle<UIInterface> uim)
 {
-	etl::handle<Action::Undoable> action = redo_action_stack().front();
+	Action::Undoable::Handle action = redo_action_stack().front();
 	most_recent_action_name_ = action->get_name();
 
 	try { if(action->is_active()) action->perform(); }
@@ -301,7 +301,7 @@ Action::System::redo()
 	if (redo_action_stack_.empty())
 		return false;
 
-	etl::handle<Action::Undoable> action = redo_action_stack().front();
+	Action::Undoable::Handle action = redo_action_stack().front();
 	Action::CanvasSpecific *canvas_specific = dynamic_cast<Action::CanvasSpecific*>(action.get());
 
 	DirtySignalBlocker dirtyBlocker(canvas_specific);
@@ -366,12 +366,12 @@ Action::System::clear_redo_stack()
 }
 
 bool
-Action::System::set_action_status(etl::handle<Action::Undoable> action, bool x)
+Action::System::set_action_status(Action::Undoable::Handle action, bool x)
 {
 	if (action->is_active() == x)
 		return true;
 
-	etl::handle<Action::Undoable> cur_pos = undo_action_stack_.front();
+	Action::Undoable::Handle cur_pos = undo_action_stack_.front();
 	Action::CanvasSpecific *canvas_specific = dynamic_cast<Action::CanvasSpecific*>(action.get());
 
 	etl::handle<UIInterface> uim = new ConfidentUIInterface();
@@ -444,7 +444,7 @@ Action::PassiveGrouper::finish()
 
 	etl::handle<Action::Group> group;
 	if (depth_ == 1) {
-		etl::handle<Action::Undoable> action = instance_->undo_action_stack_.front();
+		Action::Undoable::Handle action = instance_->undo_action_stack_.front();
 		group = etl::handle<Action::Group>::cast_dynamic(action);
 		if (group) {
 			// If the only action inside of us is a group,
@@ -466,7 +466,7 @@ Action::PassiveGrouper::finish()
 		group = new Action::Group(name_);
 
 		for(int i=0; i < depth_; i++) {
-			etl::handle<Action::Undoable> action = instance_->undo_action_stack_.front();
+			Action::Undoable::Handle action = instance_->undo_action_stack_.front();
 
 			if (Action::CanvasSpecific* canvas_specific = dynamic_cast<Action::CanvasSpecific*>(action.get()))
 				if (canvas_specific->is_dirty()) {

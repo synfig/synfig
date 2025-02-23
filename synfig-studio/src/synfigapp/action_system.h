@@ -94,7 +94,7 @@ public:
 	const int &get_depth()const { return depth_; }
 }; // END of class Action::PassiveGrouper
 
-typedef std::list< etl::handle<Action::Undoable> > Stack;
+typedef std::list<Action::Undoable::Handle> Stack;
 
 class System : public etl::shared_object, public sigc::trackable
 {
@@ -136,12 +136,12 @@ private:
 
 	sigc::signal<void,bool> signal_undo_status_;
 	sigc::signal<void,bool> signal_redo_status_;
-	sigc::signal<void,etl::handle<Action::Undoable> > signal_new_action_;
+	sigc::signal<void,Action::Undoable::Handle> signal_new_action_;
 	sigc::signal<void> signal_undo_stack_cleared_;
 	sigc::signal<void> signal_redo_stack_cleared_;
 	sigc::signal<void> signal_undo_;
 	sigc::signal<void> signal_redo_;
-	sigc::signal<void,etl::handle<Action::Undoable> > signal_action_status_changed_;
+	sigc::signal<void,Action::Undoable::Handle> signal_action_status_changed_;
 
 	mutable sigc::signal<void,bool> signal_unsaved_status_changed_;
 
@@ -195,7 +195,7 @@ public:
 
 	bool perform_action(Action::Handle action);
 
-	bool set_action_status(etl::handle<Action::Undoable> action, bool x);
+	bool set_action_status(Action::Undoable::Handle action, bool x);
 
 	const Stack &undo_action_stack()const { return undo_action_stack_; }
 
@@ -257,9 +257,9 @@ public:
 	sigc::signal<void>& signal_redo() { return signal_redo_; }
 
 	//!	Called whenever an undoable action is processed and added to the stack.
-	sigc::signal<void,etl::handle<Action::Undoable> >& signal_new_action() { return signal_new_action_; }
+	sigc::signal<void,Action::Undoable::Handle>& signal_new_action() { return signal_new_action_; }
 
-	sigc::signal<void,etl::handle<Action::Undoable> >& signal_action_status_changed() { return signal_action_status_changed_; }
+	sigc::signal<void,Action::Undoable::Handle>& signal_action_status_changed() { return signal_action_status_changed_; }
 
 }; // END of class Action::System
 

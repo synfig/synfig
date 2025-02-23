@@ -224,6 +224,7 @@ private:
 	void set_active(bool x) { active_=x; }
 
 public:
+	typedef etl::handle<Undoable> Handle;
 
 	//! This function will throw an Action::Error() on failure
 	virtual void undo()=0;
@@ -275,7 +276,7 @@ public:
 
 }; // END of class Action::CanvasSpecific
 
-typedef std::list< etl::handle<Action::Undoable> > ActionList;
+typedef std::list< Action::Undoable::Handle > ActionList;
 
 /*!	\class synfigapp::Action::Super
 **	\brief Super-Action base class for actions composed of several other actions.
@@ -298,19 +299,19 @@ public:
 
 	bool first_time()const { return action_list_.empty(); }
 
-	void add_action(etl::handle<Undoable> action);
-	void add_action_front(etl::handle<Undoable> action);
+	void add_action(Undoable::Handle action);
+	void add_action_front(Undoable::Handle action);
 
 	void add_action(Action::Handle action)
 	{
-		etl::handle<Undoable> undoable = etl::handle<Undoable>::cast_dynamic(action);
+		Undoable::Handle undoable = Undoable::Handle::cast_dynamic(action);
 		assert(undoable);
 		add_action(undoable);
 	}
 
 	void add_action_front(Action::Handle action)
 	{
-		etl::handle<Undoable> undoable = etl::handle<Undoable>::cast_dynamic(action);
+		Undoable::Handle undoable = Undoable::Handle::cast_dynamic(action);
 		assert(undoable);
 		add_action_front(undoable);
 	}
