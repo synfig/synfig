@@ -86,7 +86,7 @@ Action::System::request_redraw(etl::handle<CanvasInterface> x)
 }
 
 bool
-Action::System::perform_action(etl::handle<Action::Base> action)
+Action::System::perform_action(Action::Handle action)
 {
 	assert(action);
 	DEBUG_LOG("SYNFIG_DEBUG_ACTIONS",
