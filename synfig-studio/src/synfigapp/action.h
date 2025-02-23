@@ -289,6 +289,7 @@ class Super : public Undoable, public CanvasSpecific
 	ActionList action_list_;
 
 public:
+	typedef etl::handle<Super> Handle;
 
 	ActionList &action_list() { return action_list_; }
 	const ActionList &action_list()const { return action_list_; }
@@ -330,6 +331,8 @@ class Group : public Super
 protected:
 	bool ready_;
 public:
+	typedef etl::handle<Group> Handle;
+
 	Group(const synfig::String &str="Group");
 	virtual ~Group();
 

@@ -431,21 +431,21 @@ Action::PassiveGrouper::request_redraw(etl::handle<CanvasInterface> x)
 Action::PassiveGrouper::~PassiveGrouper()
 	{ if (!finished_) finish(); }
 
-etl::handle<Action::Group>
+Action::Group::Handle
 Action::PassiveGrouper::finish()
 {
 	assert(!finished_);
-	if (finished_) return etl::handle<Action::Group>();
+	if (finished_) return Action::Group::Handle();
 	finished_ = true;
 
 	// Remove this group from the group stack
 	assert(instance_->group_stack_.front() == this);
 	instance_->group_stack_.pop_front();
 
-	etl::handle<Action::Group> group;
+	Action::Group::Handle group;
 	if (depth_ == 1) {
 		Action::Undoable::Handle action = instance_->undo_action_stack_.front();
-		group = etl::handle<Action::Group>::cast_dynamic(action);
+		group = Action::Group::Handle::cast_dynamic(action);
 		if (group) {
 			// If the only action inside of us is a group,
 			// then we should rename the group to our name.
