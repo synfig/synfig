@@ -83,7 +83,7 @@ public:
 
 	void request_redraw(etl::handle<CanvasInterface>);
 
-	etl::handle<Action::Group> finish();
+	Action::Group::Handle finish();
 
 	void cancel();
 

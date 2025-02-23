@@ -104,7 +104,7 @@ private:
 	std::list< synfig::Layer::Handle > layers_to_save;
 
 	bool import_external_canvas(synfig::Canvas::Handle canvas, std::map<synfig::Canvas*, synfig::Canvas::Handle> &imported);
-	etl::handle<Action::Group> import_external_canvases();
+	Action::Group::Handle import_external_canvases();
 
 	struct ProcessFilenamesParams
 	{
