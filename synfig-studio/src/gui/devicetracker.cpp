@@ -100,6 +100,8 @@ DeviceTracker::DeviceTracker()
 	list_devices(devices);
 	for(DeviceList::const_iterator i = devices.begin(); i != devices.end(); ++i) {
 		const Glib::RefPtr<Gdk::Device> &device = *i;
+		if(!device)
+		        continue;
 
 		bool unknown_type = false;
 		InputDevice::Type type = InputDevice::TYPE_MOUSE;
@@ -198,6 +200,8 @@ DeviceTracker::load_preferences()
 	list_devices(devices);
 	for(DeviceList::const_iterator i = devices.begin(); i != devices.end(); ++i) {
 		const Glib::RefPtr<Gdk::Device> &device = *i;
+		if(!device)
+			continue;
 
 		InputDevice::Handle synfig_device = synfigapp::Main::find_input_device(device->get_name());
 		if (!synfig_device)
