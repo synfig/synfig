@@ -30,6 +30,8 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <memory>
+#include <mutex>
 #include <vector>
 
 #include <ETL/handle>
@@ -38,7 +40,6 @@
 #include <synfig/rect.h>
 #include <synfig/matrix.h>
 #include <synfig/color.h>
-#include <mutex>
 
 /* === M A C R O S ========================================================= */
 
@@ -53,10 +54,10 @@ namespace rendering
 
 class Intersector;
 
-class Contour: public etl::shared_object
+class Contour
 {
 public:
-	typedef etl::handle<Contour> Handle;
+	typedef std::shared_ptr<Contour> Handle;
 
 	enum WindingStyle
 	{
