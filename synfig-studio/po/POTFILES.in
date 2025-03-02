@@ -402,6 +402,8 @@ src/synfigapp/actions/layerparamconnect.cpp
 src/synfigapp/actions/layerparamconnect.h
 src/synfigapp/actions/layerparamdisconnect.cpp
 src/synfigapp/actions/layerparamdisconnect.h
+src/synfigapp/actions/layerparamreset.cpp
+src/synfigapp/actions/layerparamreset.h
 src/synfigapp/actions/layerparamset.cpp
 src/synfigapp/actions/layerparamset.h
 src/synfigapp/actions/layerparamsetstatic.cpp
