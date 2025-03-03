@@ -381,6 +381,11 @@ public:
 		dialog.add_button(button2, RESPONSE_CANCEL);
 		dialog.add_button(button3, RESPONSE_YES);
 
+		if (destructive_response != RESPONSE_NONE) {
+			Gtk::Widget* no_button = dialog.get_widget_for_response(RESPONSE_NO);
+			no_button->get_style_context()->add_class("destructive-action");
+		}
+
 		dialog.set_default_response(dflt);
 		dialog.show();
 		int response = dialog.run();
