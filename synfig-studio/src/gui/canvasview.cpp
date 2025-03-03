@@ -135,10 +135,10 @@ public:
 
 	Response
 	confirmation(
-			const std::string &message,
-			const std::string &details,
-			const std::string &confirm,
-			const std::string &cancel,
+			const std::string& message,
+			const std::string& details,
+			const std::string& confirm,
+			const std::string& cancel,
 			Response dflt = RESPONSE_OK ) override
 	{
 		view->present();
@@ -168,11 +168,11 @@ public:
 
 	Response
 	yes_no_cancel(
-				const std::string &message,
-				const std::string &details,
-				const std::string &button1,
-				const std::string &button2,
-				const std::string &button3,
+				const std::string& message,
+				const std::string& details,
+				const std::string& button1,
+				const std::string& button2,
+				const std::string& button3,
 				Response destructive_response = RESPONSE_NONE,
 				Response dflt = RESPONSE_YES ) override
 	{
@@ -205,7 +205,7 @@ public:
 	}
 
 	bool
-	task(const std::string &task) override
+	task(const std::string& task) override
 	{
 		if(!view->is_playing())
 		{
@@ -219,7 +219,7 @@ public:
 	}
 
 	bool
-	error(const std::string &err) override
+	error(const std::string& err) override
 	{
 		view->statusbar->push(_("ERROR"));
 
@@ -235,7 +235,7 @@ public:
 	}
 
 	bool
-	warning(const std::string &err) override
+	warning(const std::string& err) override
 	{
 		view->statusbar->pop();
 		view->statusbar->push(err);
