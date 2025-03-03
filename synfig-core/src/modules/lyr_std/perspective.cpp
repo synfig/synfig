@@ -1113,7 +1113,7 @@ Perspective::build_rendering_task_vfunc(Context context) const
 	
 	if (clip) {
 		rendering::TaskContour::Handle task_contour(new rendering::TaskContour());
-		task_contour->contour = new rendering::Contour();
+		task_contour->contour = std::make_shared<rendering::Contour>();
 		task_contour->contour->move_to( Vector(clip_rect.minx, clip_rect.miny) );
 		task_contour->contour->line_to( Vector(clip_rect.minx, clip_rect.maxy) );
 		task_contour->contour->line_to( Vector(clip_rect.maxx, clip_rect.maxy) );

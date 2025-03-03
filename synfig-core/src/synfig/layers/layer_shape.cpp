@@ -347,7 +347,7 @@ Layer_Shape::build_composite_task_vfunc(ContextParams /*context_params*/)const
 	rendering::TaskContour::Handle task_contour(new rendering::TaskContour());
 	// TODO: multithreading without this copying
 	task_contour->transformation->matrix.set_translate( param_origin.get(Vector()) );
-	task_contour->contour = new rendering::Contour();
+	task_contour->contour = std::make_shared<rendering::Contour>();
 	task_contour->contour->assign(*contour);
 	task_contour->contour->color = param_color.get(Color());
 	task_contour->contour->invert = param_invert.get(bool());
