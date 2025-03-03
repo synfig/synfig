@@ -49,6 +49,7 @@ class UIInterface : public etl::shared_object, public synfig::ProgressCallback, 
 public:
 	enum Response
 	{
+		RESPONSE_NONE = -9, /*<< Shouldn't be used as response */
 		RESPONSE_CANCEL = -1,
 		RESPONSE_NO = 0,
 		RESPONSE_YES = 1,
@@ -70,8 +71,8 @@ public:
 				const std::string &button1,
 				const std::string &button2,
 				const std::string &button3,
-				bool hasDestructiveAction,
-				Response dflt=RESPONSE_YES
+				Response destructive_response = RESPONSE_NONE, /**< If UI should highlight the correspondent action is dangerous (data loss) */
+				Response dflt = RESPONSE_YES
 	) = 0;
 };
 
@@ -94,7 +95,7 @@ public:
 			const std::string &/*button1*/,
 			const std::string &/*button2*/,
 			const std::string &/*button3*/,
-			bool /*hasDestructiveAction*/,
+			Response /*destructive_response*/,
 			Response dflt
 	)
 	{ return dflt; }
@@ -129,7 +130,7 @@ public:
 			const std::string &/*button1*/,
 			const std::string &/*button2*/,
 			const std::string &/*button3*/,
-			bool /*hasDestructiveAction*/,
+			Response /*destructive_response*/,
 			Response /*dflt*/
 	)
 	{ return RESPONSE_YES; }
@@ -163,7 +164,7 @@ public:
 			const std::string &button1,
 			const std::string &button2,
 			const std::string &button3,
-			bool hasDestructiveAction,
+			Response destructive_response,
 			Response dflt
 	);
 
