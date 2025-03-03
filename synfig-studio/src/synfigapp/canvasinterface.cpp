@@ -975,6 +975,7 @@ CanvasInterface::import_sequence(
 		rendering::Surface::Handle  cur_surface,prev_surface= rendering::Surface::Handle();
 		bool first_time=true;
 		int layers_count = 0;
+		int removed_count = 0;
 		std::set<filesystem::Path>::const_iterator c1 = filenames.begin();
 		std::set<filesystem::Path>::const_iterator c2 = filenames.begin();
 
@@ -1021,6 +1022,7 @@ CanvasInterface::import_sequence(
 					if(c2!=std::next(filenames.end(), -1) && !first_time && cur_surface->compare_with(prev_surface)){
 						d_action->set_param("layer",layer);
 						advance(c2,1);
+						++removed_count;
 						++layers_count;
 						continue;
 					}
@@ -1058,7 +1060,7 @@ CanvasInterface::import_sequence(
 			{ get_ui_interface()->error(_("Action Not Ready")); throw int(); }
 		if(!get_instance()->perform_action(action))
 			{ get_ui_interface()->error(_("Action Failed.")); throw int(); }
-		if(remove_dups){
+		if (remove_dups && removed_count > 0) {
 			if(!get_instance()->perform_action(d_action))
 				{ get_ui_interface()->error(_("Delete Action Failed.")); throw int(); }
 		}
