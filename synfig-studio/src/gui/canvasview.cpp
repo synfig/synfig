@@ -139,7 +139,7 @@ public:
 			const std::string &details,
 			const std::string &confirm,
 			const std::string &cancel,
-			Response dflt = RESPONSE_OK )
+			Response dflt = RESPONSE_OK ) override
 	{
 		view->present();
 		//App::process_all_events();
@@ -174,7 +174,7 @@ public:
 				const std::string &button2,
 				const std::string &button3,
 				Response destructive_response = RESPONSE_NONE,
-				Response dflt = RESPONSE_YES )
+				Response dflt = RESPONSE_YES ) override
 	{
 		view->present();
 		//App::process_all_events();
@@ -204,8 +204,8 @@ public:
 		return Response(response);
 	}
 
-	virtual bool
-	task(const std::string &task)
+	bool
+	task(const std::string &task) override
 	{
 		if(!view->is_playing())
 		{
@@ -218,8 +218,8 @@ public:
 		return true;
 	}
 
-	virtual bool
-	error(const std::string &err)
+	bool
+	error(const std::string &err) override
 	{
 		view->statusbar->push(_("ERROR"));
 
@@ -234,8 +234,8 @@ public:
 		return true;
 	}
 
-	virtual bool
-	warning(const std::string &err)
+	bool
+	warning(const std::string &err) override
 	{
 		view->statusbar->pop();
 		view->statusbar->push(err);
@@ -245,8 +245,8 @@ public:
 		return true;
 	}
 
-	virtual bool
-	amount_complete(int current, int total)
+	bool
+	amount_complete(int current, int total) override
 	{
 		float temp = (float)current/(float)total;
 		

@@ -327,13 +327,14 @@ class GlobalUIInterface : public synfigapp::UIInterface
 {
 public:
 
-	virtual Response confirmation(
+	Response
+	confirmation(
 			const std::string &message,
 			const std::string &details,
 			const std::string &confirm,
 			const std::string &cancel,
 			Response dflt
-	)
+	) override
 	{
 		Gtk::MessageDialog dialog(
 			message,
@@ -358,7 +359,8 @@ public:
 	}
 
 
-	virtual Response yes_no_cancel(
+	Response
+	yes_no_cancel(
 				const std::string &message,
 				const std::string &details,
 				const std::string &button1,
@@ -366,7 +368,7 @@ public:
 				const std::string &button3,
 				Response destructive_response = RESPONSE_NONE,
 				Response dflt = RESPONSE_YES
-	)
+	) override
 	{
 		Gtk::MessageDialog dialog(
 			message,
@@ -395,16 +397,16 @@ public:
 	}
 
 
-	virtual bool
-	task(const std::string &task)
+	bool
+	task(const std::string &task) override
 	{
 		std::cerr<<task.c_str()<<std::endl;
 		App::process_all_events();
 		return true;
 	}
 
-	virtual bool
-	error(const std::string &err)
+	bool
+	error(const std::string &err) override
 	{
 		Gtk::MessageDialog dialog(err, false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_CLOSE, true);
 		dialog.set_transient_for(*App::main_window);
@@ -413,16 +415,16 @@ public:
 		return true;
 	}
 
-	virtual bool
-	warning(const std::string &err)
+	bool
+	warning(const std::string &err) override
 	{
 		std::cerr<<"warning: "<<err.c_str()<<std::endl;
 		App::process_all_events();
 		return true;
 	}
 
-	virtual bool
-	amount_complete(int /*current*/, int /*total*/)
+	bool
+	amount_complete(int /*current*/, int /*total*/) override
 	{
 		App::process_all_events();
 		return true;
