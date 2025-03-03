@@ -57,20 +57,20 @@ public:
 	};
 	virtual ~UIInterface() { }
 	virtual Response confirmation(
-				const std::string &message,
-				const std::string &details,
-				const std::string &confirm,
-				const std::string &cancel,
+				const std::string& message,
+				const std::string& details,
+				const std::string& confirm,
+				const std::string& cancel,
 				Response dflt = RESPONSE_OK
 	) = 0;
 
 
 	virtual Response yes_no_cancel(
-				const std::string &message,
-				const std::string &details,
-				const std::string &button1,
-				const std::string &button2,
-				const std::string &button3,
+				const std::string& message,
+				const std::string& details,
+				const std::string& button1,
+				const std::string& button2,
+				const std::string& button3,
 				Response destructive_response = RESPONSE_NONE, /**< If UI should highlight the correspondent action is dangerous (data loss) */
 				Response dflt = RESPONSE_YES
 	) = 0;
@@ -80,32 +80,32 @@ class DefaultUIInterface : public UIInterface
 {
 public:
 	Response confirmation(
-			const std::string &/*message*/,
-			const std::string &/*details*/,
-			const std::string &/*confirm*/,
-			const std::string &/*cancel*/,
+			const std::string& /*message*/,
+			const std::string& /*details*/,
+			const std::string& /*confirm*/,
+			const std::string& /*cancel*/,
 			Response dflt
 	) override
 	{ return dflt; }
 
 
 	Response yes_no_cancel(
-			const std::string &/*message*/,
-			const std::string &/*details*/,
-			const std::string &/*button1*/,
-			const std::string &/*button2*/,
-			const std::string &/*button3*/,
+			const std::string& /*message*/,
+			const std::string& /*details*/,
+			const std::string& /*button1*/,
+			const std::string& /*button2*/,
+			const std::string& /*button3*/,
 			Response /*destructive_response*/,
 			Response dflt
 	) override
 	{ return dflt; }
 
 
-	bool task(const std::string &/*task*/) override
+	bool task(const std::string& /*task*/) override
 		{ return true; }
-	bool error(const std::string &/*task*/) override
+	bool error(const std::string& /*task*/) override
 		{ return true; }
-	bool warning(const std::string &/*task*/) override
+	bool warning(const std::string& /*task*/) override
 		{ return true; }
 	bool amount_complete(int /*current*/, int /*total*/) override
 		{ return true; }
@@ -115,32 +115,32 @@ class ConfidentUIInterface : public UIInterface
 {
 public:
 	Response confirmation(
-			const std::string &/*message*/,
-			const std::string &/*details*/,
-			const std::string &/*confirm*/,
-			const std::string &/*cancel*/,
+			const std::string& /*message*/,
+			const std::string& /*details*/,
+			const std::string& /*confirm*/,
+			const std::string& /*cancel*/,
 			Response /*dflt*/
 	) override
 	{ return RESPONSE_OK; }
 
 
 	Response yes_no_cancel(
-			const std::string &/*message*/,
-			const std::string &/*details*/,
-			const std::string &/*button1*/,
-			const std::string &/*button2*/,
-			const std::string &/*button3*/,
+			const std::string& /*message*/,
+			const std::string& /*details*/,
+			const std::string& /*button1*/,
+			const std::string& /*button2*/,
+			const std::string& /*button3*/,
 			Response /*destructive_response*/,
 			Response /*dflt*/
 	) override
 	{ return RESPONSE_YES; }
 
 
-	bool task(const std::string &/*task*/) override
+	bool task(const std::string& /*task*/) override
 		{ return true; }
-	bool error(const std::string &/*task*/) override
+	bool error(const std::string& /*task*/) override
 		{ return true; }
-	bool warning(const std::string &/*task*/) override
+	bool warning(const std::string& /*task*/) override
 		{ return true; }
 	bool amount_complete(int /*current*/, int /*total*/) override
 		{ return true; }
@@ -150,28 +150,28 @@ class ConsoleUIInterface : public UIInterface
 {
 public:
 	Response confirmation(
-			const std::string &message,
-			const std::string &details,
-			const std::string &confirm,
-			const std::string &cancel,
+			const std::string& message,
+			const std::string& details,
+			const std::string& confirm,
+			const std::string& cancel,
 			Response dflt
 	) override;
 
 
 	Response yes_no_cancel(
-			const std::string &message,
-			const std::string &details,
-			const std::string &button1,
-			const std::string &button2,
-			const std::string &button3,
+			const std::string& message,
+			const std::string& details,
+			const std::string& button1,
+			const std::string& button2,
+			const std::string& button3,
 			Response destructive_response,
 			Response dflt
 	) override;
 
 
-	bool task(const std::string &task) override;
-	bool error(const std::string &task) override;
-	bool warning(const std::string &task) override;
+	bool task(const std::string& task) override;
+	bool error(const std::string& task) override;
+	bool warning(const std::string& task) override;
 	bool amount_complete(int current, int total) override;
 };
 
