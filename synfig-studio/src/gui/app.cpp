@@ -364,8 +364,8 @@ public:
 				const std::string &button1,
 				const std::string &button2,
 				const std::string &button3,
-				bool /*hasDestructiveAction*/,
-				Response dflt=RESPONSE_YES
+				Response destructive_response = RESPONSE_NONE,
+				Response dflt = RESPONSE_YES
 	)
 	{
 		Gtk::MessageDialog dialog(

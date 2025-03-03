@@ -133,7 +133,8 @@ public:
 		}
 	~CanvasViewUIInterface() { }
 
-	virtual Response confirmation(
+	Response
+	confirmation(
 			const std::string &message,
 			const std::string &details,
 			const std::string &confirm,
@@ -165,14 +166,15 @@ public:
 		return RESPONSE_OK;
 	}
 
-	virtual Response yes_no_cancel(
+	Response
+	yes_no_cancel(
 				const std::string &message,
 				const std::string &details,
 				const std::string &button1,
 				const std::string &button2,
 				const std::string &button3,
-				bool hasDestructiveAction,
-				Response dflt=RESPONSE_YES )
+				Response destructive_response = RESPONSE_NONE,
+				Response dflt = RESPONSE_YES )
 	{
 		view->present();
 		//App::process_all_events();
@@ -186,12 +188,14 @@ public:
 		);
 
 		dialog.set_secondary_text(details);
-		Gtk::Button* no_button = dialog.add_button(button1, RESPONSE_NO);
+		dialog.add_button(button1, RESPONSE_NO);
 		dialog.add_button(button2, RESPONSE_CANCEL);
 		dialog.add_button(button3, RESPONSE_YES);
 		//add destructive-action colored button if closed without saving
-		if (hasDestructiveAction)
+		if (destructive_response != RESPONSE_NONE) {
+			Gtk::Widget* no_button = dialog.get_widget_for_response(RESPONSE_NO);
 			no_button->get_style_context()->add_class("destructive-action");
+		}
 		dialog.set_default_response(dflt);
 		dialog.show();
 		int response = dialog.run();
@@ -3274,7 +3278,7 @@ CanvasView::import_sequence()
 				_("No"),
 				_("Cancel"),
 				_("Yes"),
-				false,
+				UIInterface::RESPONSE_NONE,
 				UIInterface::RESPONSE_NO);
 		if(answer!=UIInterface::RESPONSE_CANCEL){
 			canvas_interface()->import_sequence(filenames, errors, warnings, App::resize_imported_images,answer);
