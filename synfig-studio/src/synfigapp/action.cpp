@@ -530,7 +530,7 @@ Super::undo()
 }
 
 void
-Super::add_action(etl::handle<Undoable> action)
+Super::add_action(Undoable::Handle action)
 {
 	action_list_.push_back(action);
 	CanvasSpecific *specific_action=dynamic_cast<CanvasSpecific *>(action.get());
@@ -539,7 +539,7 @@ Super::add_action(etl::handle<Undoable> action)
 }
 
 void
-Super::add_action_front(etl::handle<Undoable> action)
+Super::add_action_front(Undoable::Handle action)
 {
 	assert(action);
 	action_list_.push_front(action);
