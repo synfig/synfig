@@ -94,7 +94,7 @@ public:
 			const std::string &/*button1*/,
 			const std::string &/*button2*/,
 			const std::string &/*button3*/,
-			bool hasDestructiveAction,
+			bool /*hasDestructiveAction*/,
 			Response dflt
 	)
 	{ return dflt; }
@@ -129,7 +129,7 @@ public:
 			const std::string &/*button1*/,
 			const std::string &/*button2*/,
 			const std::string &/*button3*/,
-			bool hasDestructiveAction,
+			bool /*hasDestructiveAction*/,
 			Response /*dflt*/
 	)
 	{ return RESPONSE_YES; }
