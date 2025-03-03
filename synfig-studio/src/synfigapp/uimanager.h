@@ -85,7 +85,7 @@ public:
 			const std::string &/*confirm*/,
 			const std::string &/*cancel*/,
 			Response dflt
-	)
+	) override
 	{ return dflt; }
 
 
@@ -97,17 +97,17 @@ public:
 			const std::string &/*button3*/,
 			Response /*destructive_response*/,
 			Response dflt
-	)
+	) override
 	{ return dflt; }
 
 
-	bool task(const std::string &/*task*/)
+	bool task(const std::string &/*task*/) override
 		{ return true; }
-	bool error(const std::string &/*task*/)
+	bool error(const std::string &/*task*/) override
 		{ return true; }
-	bool warning(const std::string &/*task*/)
+	bool warning(const std::string &/*task*/) override
 		{ return true; }
-	bool amount_complete(int /*current*/, int /*total*/)
+	bool amount_complete(int /*current*/, int /*total*/) override
 		{ return true; }
 };
 
@@ -120,7 +120,7 @@ public:
 			const std::string &/*confirm*/,
 			const std::string &/*cancel*/,
 			Response /*dflt*/
-	)
+	) override
 	{ return RESPONSE_OK; }
 
 
@@ -132,17 +132,17 @@ public:
 			const std::string &/*button3*/,
 			Response /*destructive_response*/,
 			Response /*dflt*/
-	)
+	) override
 	{ return RESPONSE_YES; }
 
 
-	bool task(const std::string &/*task*/)
+	bool task(const std::string &/*task*/) override
 		{ return true; }
-	bool error(const std::string &/*task*/)
+	bool error(const std::string &/*task*/) override
 		{ return true; }
-	bool warning(const std::string &/*task*/)
+	bool warning(const std::string &/*task*/) override
 		{ return true; }
-	bool amount_complete(int /*current*/, int /*total*/)
+	bool amount_complete(int /*current*/, int /*total*/) override
 		{ return true; }
 };
 
@@ -155,7 +155,7 @@ public:
 			const std::string &confirm,
 			const std::string &cancel,
 			Response dflt
-	);
+	) override;
 
 
 	Response yes_no_cancel(
@@ -166,13 +166,13 @@ public:
 			const std::string &button3,
 			Response destructive_response,
 			Response dflt
-	);
+	) override;
 
 
-	bool task(const std::string &task);
-	bool error(const std::string &task);
-	bool warning(const std::string &task);
-	bool amount_complete(int current, int total);
+	bool task(const std::string &task) override;
+	bool error(const std::string &task) override;
+	bool warning(const std::string &task) override;
+	bool amount_complete(int current, int total) override;
 };
 
 }; // END of namespace synfigapp
