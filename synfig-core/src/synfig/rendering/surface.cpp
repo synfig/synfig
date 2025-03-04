@@ -188,17 +188,23 @@ Surface::get_pixels(Color *dest) const
 }
 
 bool
-Surface::compare_with(synfig::rendering::Surface::Handle s) const
+Surface::equals_to(synfig::rendering::Surface::Handle s) const
 {
-	if(!(get_width()==s->get_width() && get_height()==s->get_height())){
+	if (!s)
 		return false;
-	}else{
-		std::vector<Color> buffer1(get_pixels_count()),buffer2(s->get_pixels_count());
-		get_pixels(&buffer1.front());
-		s->get_pixels(&buffer2.front());
-		if(buffer1==buffer2) return true;
-		else return false;
-	}
+
+	if (width != s->width || height != s->height)
+		return false;
+
+	// Since both surfaces have the same dimensions, if either dimension is <=0, they are considered equal.
+	if (width <= 0 || height <= 0)
+		return true;
+
+	std::vector<Color> buffer1(get_pixels_count()), buffer2(s->get_pixels_count());
+	get_pixels(buffer1.data());
+	s->get_pixels(buffer2.data());
+
+	return buffer1 == buffer2;
 }
 
 bool
