@@ -195,15 +195,15 @@ Action::LayerEncapsulateSwitch::prepare()
 
 		Canvas::Handle subcanvas(layer->get_canvas());
 
+		if (!subcanvas)
+			throw Error(_("This layer doesn't have a parent canvas"));
+
 		// Find the iterator for the layer
 		Canvas::iterator iter=find(subcanvas->begin(),subcanvas->end(),layer);
 
 		// If we couldn't find the layer in the canvas, then bail
 		if(*iter!=layer)
 			throw Error(_("This layer doesn't exist anymore."));
-
-		if(!subcanvas)
-			throw Error(_("This layer doesn't have a parent canvas"));
 
 		// If the subcanvas isn't the same as the canvas,
 		// then it had better be an inline canvas. If not,
