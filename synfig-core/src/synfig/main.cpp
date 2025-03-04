@@ -550,14 +550,14 @@ synfig::OS::get_binary_path()
 	
 #else
 
-	size_t buf_size = PATH_MAX - 1;
-	std::vector<char> path(buf_size);
+	constexpr ssize_t path_buf_size = PATH_MAX - 1;
+	std::vector<char> path(path_buf_size);
 
 	ssize_t size;
 	struct stat stat_buf;
 
 	/* Read from /proc/self/exe (symlink) */
-	std::vector<char> path2(buf_size);
+	std::vector<char> path2(path_buf_size);
 	const char* procfs_path =
 #if defined(__FreeBSD__) || defined (__DragonFly__) || defined (__OpenBSD__)
 		"/proc/curproc/file";
@@ -567,19 +567,19 @@ synfig::OS::get_binary_path()
 		"/proc/self/exe";
 #endif
 
-	strncpy(path2.data(), procfs_path, buf_size - 1);
+	strncpy(path2.data(), procfs_path, path_buf_size - 1);
 
 	while (1) {
 		int i;
 
-		size = readlink(path2.data(), path.data(), buf_size - 1);
+		size = readlink(path2.data(), path.data(), path_buf_size - 1);
 		if (size == -1) {
 			/* Error. */
 			break;
 		}
 
 		/* readlink() success. */
-		path[size] = '\0';
+		path[std::min(size, path_buf_size-1)] = '\0';
 
 		/* Check whether the symlink's target is also a symlink.
 		 * We want to get the final target. */
@@ -599,7 +599,7 @@ synfig::OS::get_binary_path()
 		}
 
 		/* path is a symlink. Continue loop and resolve this. */
-		strncpy(path.data(), path2.data(), buf_size - 1);
+		strncpy(path.data(), path2.data(), path_buf_size - 1);
 	}
 	
 	path2.clear();
