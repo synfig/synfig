@@ -279,7 +279,7 @@ Instance::import_external_canvas(Canvas::Handle canvas, std::map<Canvas*, Canvas
 	return false;
 }
 
-etl::handle<Action::Group>
+Action::Group::Handle
 Instance::import_external_canvases()
 {
 	synfigapp::Action::PassiveGrouper group(this, _("Import external canvases"));
@@ -667,7 +667,7 @@ Instance::save_as(const synfig::String &file_name)
 	bool embed_files = (bool)new_container_zip;
 	bool save_files = true;
 
-	etl::handle<Action::Group> import_external_canvases_action;
+	Action::Group::Handle import_external_canvases_action;
 	if (embed_files)
 		import_external_canvases_action = import_external_canvases();
 

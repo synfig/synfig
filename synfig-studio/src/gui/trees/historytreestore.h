@@ -56,7 +56,7 @@ public:
 	class Model : public Gtk::TreeModel::ColumnRecord
 	{
 	public:
-		Gtk::TreeModelColumn<etl::handle<synfigapp::Action::Undoable> > action;
+		Gtk::TreeModelColumn<synfigapp::Action::Undoable::Handle> action;
 		Gtk::TreeModelColumn<Glib::ustring> name;
 		Gtk::TreeModelColumn<Glib::RefPtr<Gdk::Pixbuf> > icon;
 		Gtk::TreeModelColumn<bool> is_active;
@@ -103,7 +103,7 @@ private:
 
 private:
 
-	void insert_action(Gtk::TreeRow row, etl::handle<synfigapp::Action::Undoable> action, bool is_undo=true, bool is_redo=false);
+	void insert_action(Gtk::TreeRow row, synfigapp::Action::Undoable::Handle action, bool is_undo=true, bool is_redo=false);
 
 	/*
  -- ** -- P R I V A T E   D A T A ---------------------------------------------
@@ -135,9 +135,9 @@ private:
 
 	void on_redo_stack_cleared();
 
-	void on_new_action(etl::handle<synfigapp::Action::Undoable> action);
+	void on_new_action(synfigapp::Action::Undoable::Handle action);
 
-	void on_action_status_changed(etl::handle<synfigapp::Action::Undoable> action);
+	void on_action_status_changed(synfigapp::Action::Undoable::Handle action);
 
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
