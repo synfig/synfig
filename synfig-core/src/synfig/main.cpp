@@ -519,7 +519,7 @@ synfig::info(const String &str)
 filesystem::Path
 synfig::OS::get_binary_path()
 {
-	
+	/* The path in UTF-8 */
 	String result;
 
 #ifdef _WIN32
@@ -657,7 +657,7 @@ synfig::OS::get_binary_path()
 	{
 		// In worst case use value specified as fallback 
 		// (usually should come from argv[0])
-		return filesystem::absolute(OS::fallback_binary_path).u8string();
+		return filesystem::absolute(OS::fallback_binary_path);
 	}
 	
 	
