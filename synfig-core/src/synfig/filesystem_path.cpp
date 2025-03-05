@@ -84,6 +84,7 @@ native_to_utf8(const filesystem::Path::string_type& native)
 /* === M E T H O D S ======================================================= */
 
 filesystem::Path::Path()
+	: native_path_dirty_(false)
 {
 }
 
