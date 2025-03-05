@@ -34,13 +34,13 @@ jobs:
           toolchain: cmake-ninja
           allow_failures: true
 
-        - os: ubuntu-20.04
-          name: Ubuntu 20.04 Focal (Autotools)
+        - os: ubuntu-22.04
+          name: Ubuntu 22.04 Jammy (Autotools)
           allow_failures: false
           toolchain: autotools
 
-        - os: ubuntu-22.04
-          name: Ubuntu 22.04 Jammy (CMake+Ninja)
+        - os: ubuntu-24.04
+          name: Ubuntu 24.04 Noble (CMake+Ninja)
           toolchain: cmake-ninja
           allow_failures: false
 
