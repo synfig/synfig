@@ -354,14 +354,14 @@ synfigapp::Main::set_blend_method(synfig::Color::BlendMethod x)
 */
 
 InputDevice::Handle
-synfigapp::Main::add_input_device(const synfig::String id, InputDevice::Type type)
+synfigapp::Main::add_input_device(synfig::String id, InputDevice::Type type)
 {
 	input_devices_.push_back(new InputDevice(id,type));
 	return input_devices_.back();
 }
 
 InputDevice::Handle
-synfigapp::Main::find_input_device(const synfig::String id)
+synfigapp::Main::find_input_device(const synfig::String& id)
 {
 	std::list<InputDevice::Handle>::iterator iter;
 	for(iter=input_devices_.begin();iter!=input_devices_.end();++iter)
@@ -371,7 +371,7 @@ synfigapp::Main::find_input_device(const synfig::String id)
 }
 
 InputDevice::Handle
-synfigapp::Main::select_input_device(const synfig::String id)
+synfigapp::Main::select_input_device(const synfig::String& id)
 {
 	InputDevice::Handle input_device(find_input_device(id));
 	if(!input_device)

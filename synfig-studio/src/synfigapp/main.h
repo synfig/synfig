@@ -90,9 +90,9 @@ public:
 	static sigc::signal<void>& signal_interpolation_changed();
 
 	// Input Device stuff
-	static InputDevice::Handle add_input_device(const synfig::String id_, InputDevice::Type type_=InputDevice::TYPE_MOUSE);
-	static InputDevice::Handle find_input_device(const synfig::String id_);
-	static InputDevice::Handle select_input_device(const synfig::String id_);
+	static InputDevice::Handle add_input_device(synfig::String id, InputDevice::Type type = InputDevice::TYPE_MOUSE);
+	static InputDevice::Handle find_input_device(const synfig::String& id);
+	static InputDevice::Handle select_input_device(const synfig::String& id);
 	static bool select_input_device(InputDevice::Handle input_device);
 	static InputDevice::Handle get_selected_input_device();
 	static void set_state(synfig::String state);
