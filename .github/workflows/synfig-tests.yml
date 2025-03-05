@@ -24,8 +24,8 @@ jobs:
         include:
         # includes a new variable of npm with a value of 2
         # for the matrix leg matching the os and version
-        - os: ubuntu-20.04
-          name: Ubuntu 20.04 (Focal)
+        - os: ubuntu-24.04
+          name: Ubuntu 24.04 (Noble)
           allow_failures: false
 
     # Steps represent a sequence of tasks that will be executed as part of the job

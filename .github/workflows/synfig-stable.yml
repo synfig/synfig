@@ -26,8 +26,8 @@ jobs:
           name: macOS 11 Big Sur (Autotools)
           toolchain: autotools-release
           allow_failures: false
-        - os: ubuntu-20.04
-          name: Ubuntu 20.04 Focal (Autotools)
+        - os: ubuntu-latest
+          name: Ubuntu (Autotools)
           allow_failures: false
           toolchain: autotools-release
 
