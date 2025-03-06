@@ -96,12 +96,13 @@ def add_image_asset(lottie, layer):
     head, tail = os.path.split(file_path)
     new_image_path = os.path.join(images_dir, tail)
 
-    # using shutil to make a copy of the image
-    shutil.copy(src, new_image_path)
-
-    # copy meta-data of the file
-    shutil.copystat(src, new_image_path)
-
+    try:
+        # using shutil to make a copy of the image
+        shutil.copy(src, new_image_path)
+        # copy meta-data of the file
+        shutil.copystat(src, new_image_path)
+    except shutil.SameFileError:
+        pass
     lottie["u"] = "images/"
     lottie["p"] = tail
     return st
