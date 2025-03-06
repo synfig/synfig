@@ -48,8 +48,10 @@ using namespace rendering;
 /* === M E T H O D S ======================================================= */
 
 
+SYNFIG_EXPORT Task::Token TaskPixelProcessorBase::token(
+	DescAbstract<TaskPixelProcessorBase>("PixelProcessorBase") );
 SYNFIG_EXPORT Task::Token TaskPixelProcessor::token(
-	DescAbstract<TaskPixelProcessor>("PixelProcessor") );
+	DescAbstract<TaskPixelProcessor, TaskPixelProcessorBase>("PixelProcessor") );
 Task::Token TaskPixelGamma::token(
 	DescAbstract<TaskPixelGamma, TaskPixelProcessor>("PixelGamma") );
 SYNFIG_EXPORT Task::Token TaskPixelColorMatrix::token(
@@ -57,7 +59,7 @@ SYNFIG_EXPORT Task::Token TaskPixelColorMatrix::token(
 
 
 Rect
-TaskPixelProcessor::calc_bounds() const
+TaskPixelProcessorBase::calc_bounds() const
 {
 	return is_transparent() ? Rect::zero()
 	     : is_affects_transparent() ? Rect::infinite()
@@ -66,7 +68,7 @@ TaskPixelProcessor::calc_bounds() const
 }
 
 VectorInt
-TaskPixelProcessor::get_offset() const
+TaskPixelProcessorBase::get_offset() const
 {
 	if (!sub_task()) return VectorInt::zero();
 	Vector offset = (sub_task()->source_rect.get_min() - source_rect.get_min()).multiply_coords(get_pixels_per_unit());
