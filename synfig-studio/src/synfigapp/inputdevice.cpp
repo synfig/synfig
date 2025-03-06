@@ -277,10 +277,10 @@ public:
 
 /* === M E T H O D S ======================================================= */
 
-InputDevice::InputDevice(const synfig::String id_, Type type_):
-	id_(id_),
-	type_(type_),
-	state_((type_==TYPE_PEN)?"draw":"normal"),
+InputDevice::InputDevice(synfig::String id, Type type):
+	id_(id),
+	type_(type),
+	state_((type == TYPE_PEN) ? "draw" : "normal"),
 	outline_color_(Color::black()),
 	fill_color_(Color::white()),
 	bline_width_(Distance(1,Distance::SYSTEM_POINTS)),
@@ -289,7 +289,7 @@ InputDevice::InputDevice(const synfig::String id_, Type type_):
 	mode_(MODE_DISABLED)
 {
 	device_settings=new DeviceSettings(this);
-	Main::settings().add_domain(device_settings,"input_device."+id_);
+	Main::settings().add_domain(device_settings,"input_device."+id);
 }
 
 InputDevice::~InputDevice()

@@ -77,6 +77,7 @@
 #include <giomm.h>
 
 #include <synfig/os.h>
+#include <synfig/smartfile.h>
 #include <synfig/synfig_export.h>
 
 #ifdef HAVE_SIGNAL_H
@@ -518,7 +519,7 @@ synfig::info(const String &str)
 filesystem::Path
 synfig::OS::get_binary_path()
 {
-	
+	/* The path in UTF-8 */
 	String result;
 
 #ifdef _WIN32
@@ -549,14 +550,14 @@ synfig::OS::get_binary_path()
 	
 #else
 
-	size_t buf_size = PATH_MAX - 1;
-	std::vector<char> path(buf_size);
+	constexpr ssize_t path_buf_size = PATH_MAX - 1;
+	std::vector<char> path(path_buf_size);
 
 	ssize_t size;
 	struct stat stat_buf;
 
 	/* Read from /proc/self/exe (symlink) */
-	std::vector<char> path2(buf_size);
+	std::vector<char> path2(path_buf_size);
 	const char* procfs_path =
 #if defined(__FreeBSD__) || defined (__DragonFly__) || defined (__OpenBSD__)
 		"/proc/curproc/file";
@@ -566,19 +567,19 @@ synfig::OS::get_binary_path()
 		"/proc/self/exe";
 #endif
 
-	strncpy(path2.data(), procfs_path, buf_size - 1);
+	strncpy(path2.data(), procfs_path, path_buf_size - 1);
 
 	while (1) {
 		int i;
 
-		size = readlink(path2.data(), path.data(), buf_size - 1);
+		size = readlink(path2.data(), path.data(), path_buf_size - 1);
 		if (size == -1) {
 			/* Error. */
 			break;
 		}
 
 		/* readlink() success. */
-		path[size] = '\0';
+		path[std::min(size, path_buf_size-1)] = '\0';
 
 		/* Check whether the symlink's target is also a symlink.
 		 * We want to get the final target. */
@@ -598,7 +599,7 @@ synfig::OS::get_binary_path()
 		}
 
 		/* path is a symlink. Continue loop and resolve this. */
-		strncpy(path.data(), path2.data(), buf_size - 1);
+		strncpy(path.data(), path2.data(), path_buf_size - 1);
 	}
 	
 	path2.clear();
@@ -610,41 +611,41 @@ synfig::OS::get_binary_path()
 		/* readlink() or stat() failed; this can happen when the program is
 		 * running in Valgrind 2.2. Read from /proc/self/maps as fallback. */
 
-		buf_size = PATH_MAX + 128;
-		char* line = (char*)malloc(buf_size);
+		size_t line_buf_size = PATH_MAX + 128;
+		std::vector<char> line(line_buf_size);
 
-		FILE* f = fopen("/proc/self/maps", "r");
+		synfig::SmartFILE f({"/proc/self/maps"}, "r");
 		if (!f) {
 			synfig::error("Cannot open /proc/self/maps.");
+		} else {
+			/* The first entry should be the executable name. */
+			char* r = fgets(line.data(), (int) line_buf_size, f.get());
+			if (!r) {
+				synfig::error("Cannot read /proc/self/maps.");
+			} else {
+				/* Force string end */
+				line[line_buf_size - 1] = 0;
+				/* Get rid of newline character. */
+				line_buf_size = strlen(line.data());
+				if (line_buf_size <= 0) {
+					/* Huh? An empty string? */
+					synfig::error("Invalid /proc/self/maps.");
+				} else {
+					if (line[line_buf_size - 1] == 10) /* = newline \n */
+						line[line_buf_size - 1] = 0;
+
+					/* Extract the filename; it is always an absolute path. */
+					char* path3 = strchr(line.data(), '/');
+
+					/* Sanity check. */
+					if (!path3 || strstr(line.data(), " r-xp ") == nullptr) {
+						synfig::error("Invalid /proc/self/maps.");
+					} else {
+						result = String(path3);
+					}
+				}
+			}
 		}
-
-		/* The first entry should be the executable name. */
-		char *r;
-		r = fgets(line, (int) buf_size, f);
-		if (!r) {
-			synfig::error("Cannot read /proc/self/maps.");
-		}
-
-		/* Get rid of newline character. */
-		buf_size = strlen(line);
-		if (buf_size <= 0) {
-			/* Huh? An empty string? */
-			synfig::error("Invalid /proc/self/maps.");
-		}
-		if (line[buf_size - 1] == 10)
-			line[buf_size - 1] = 0;
-
-		/* Extract the filename; it is always an absolute path. */
-		char* path3 = strchr(line, '/');
-
-		/* Sanity check. */
-		if (strstr(line, " r-xp ") == nullptr || !path3) {
-			synfig::error("Invalid /proc/self/maps.");
-		}
-
-		result = String(path3);
-		free(line);
-		fclose(f);
 	}
 #endif
 
@@ -656,7 +657,7 @@ synfig::OS::get_binary_path()
 	{
 		// In worst case use value specified as fallback 
 		// (usually should come from argv[0])
-		return filesystem::absolute(OS::fallback_binary_path).u8string();
+		return filesystem::absolute(OS::fallback_binary_path);
 	}
 	
 	
