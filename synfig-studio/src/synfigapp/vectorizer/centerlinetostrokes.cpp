@@ -944,8 +944,8 @@ void studio::conversionToStrokes(std::vector<synfig::Layer::Handle>& strokes, Ve
   max_thickness_zero                      = !g.currConfig->m_maxThickness; // if any value then false otherwise 0 then true
   unsigned int i, j, k;
 
-  synfig::Point topleft = image->param_tl.get(synfig::Point());
-  synfig::Point bottomright = image->param_br.get(synfig::Point());
+  synfig::Point topleft = image->get_param("tl").get(synfig::Point());
+  synfig::Point bottomright = image->get_param("br").get(synfig::Point());
   bottomleft[0] = topleft[0];
   bottomleft[1] = bottomright[1];
 
