@@ -13,7 +13,7 @@ from common.WidthPointList import WidthPointList
 from common.DashItemList import DashItemList
 from common.Vector import Vector
 from common.Hermite import Hermite
-from common.Angle import RadAngle, SinAngle, CosAngle
+from common.Angle import RadAngle, SinAngle, CosAngle, DegAngle
 from synfig.animation import to_Synfig_axis
 from properties.shapePropKeyframe.helper import add, insert_dict_at_adv_outline, animate_tangents
 from properties.shapePropKeyframe.outline import line_intersection, get_outline_grow
