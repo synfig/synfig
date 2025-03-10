@@ -179,9 +179,9 @@ ffmpeg_trgt::init(ProgressCallback* cb = nullptr)
 		}
 	}
 
-	synfig::filesystem::Path ffmpeg_binary_path;
+    synfig::filesystem::Path ffmpeg_binary_path;
 #ifdef _WIN32
-	// Windows always have ffmpeg
+    // Windows always have ffmpeg
     ffmpeg_binary_path = synfig::OS::get_binary_path().parent_path() / filesystem::Path("ffmpeg.exe");
     if (!FileSystemNative::instance()->is_file(ffmpeg_binary_path.u8string())) {
         synfig::warning("FFmpeg binary not found at expected path: %s, application will try to look at other paths", ffmpeg_binary_path.u8_str());
@@ -202,7 +202,7 @@ ffmpeg_trgt::init(ProgressCallback* cb = nullptr)
             std::wstringstream ws(pathVariable);
             std::wstring dir;
             constexpr wchar_t ENV_PATH_SEPARATOR = ';';
-            while (std::getline(ws, dir, ENV_PATH_SEPARATOR)) { //iterating over all the paths in ENVIRONMENT variable "PATH"
+            while (std::getline(ws, dir, ENV_PATH_SEPARATOR)) { //iterating over all the paths in ENVIRONMENT variable  "PATH"
 
                 // Convert UTF-16 (wchar_t) to UTF-8
                 int size_needed = WideCharToMultiByte(CP_UTF8, 0, dir.c_str(), -1, nullptr, 0, nullptr, nullptr);
