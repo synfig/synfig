@@ -36,11 +36,17 @@
 
 #include "trgt_ffmpeg.h"
 
+
+
 #include <synfig/filesystemnative.h>
 #include <synfig/general.h>
 #include <synfig/localization.h>
 #include <synfig/soundprocessor.h>
 
+#endif
+
+#ifdef _WIN32
+    #include <windows.h>
 #endif
 
 /* === M A C R O S ========================================================= */
@@ -176,31 +182,51 @@ ffmpeg_trgt::init(ProgressCallback* cb = nullptr)
 	synfig::filesystem::Path ffmpeg_binary_path;
 #ifdef _WIN32
 	// Windows always have ffmpeg
-	ffmpeg_binary_path = synfig::OS::get_binary_path().parent_path() / filesystem::Path("ffmpeg.exe");
-	if (!FileSystemNative::instance()->is_file(ffmpeg_binary_path.u8string())) {
-        synfig::error("Expected FFmpeg binary not found at expected path: %s, application will try to look at other paths", ffmpeg_binary_path.u8_str());
-		ffmpeg_binary_path.clear();
-	}
+    ffmpeg_binary_path = synfig::OS::get_binary_path().parent_path() / filesystem::Path("ffmpeg.exe");
+    if (!FileSystemNative::instance()->is_file(ffmpeg_binary_path.u8string())) {
+        synfig::warning("FFmpeg binary not found at expected path: %s, application will try to look at other paths", ffmpeg_binary_path.u8_str());
+        ffmpeg_binary_path.clear();
+    }
 
-    const char* path_env = std::getenv("PATH"); // fetching all the path from the ENVIRONMENT path variable
-    std::vector<std::string> paths;
-    if(ffmpeg_binary_path.empty()){
-        if (path_env) {
-            std::stringstream ss(path_env);
-            std::string dir;
-            char PATH_SEPARATOR = ';';
-            while (std::getline(ss, dir, PATH_SEPARATOR)) { // trying to seach ffmpeg in al
-                synfig::info("searching for ffmpeg exe in -> %s",dir.c_str());
-                ffmpeg_binary_path = filesystem::Path(dir) + filesystem::Path("\\ffmpeg.exe");
+    if (ffmpeg_binary_path.empty()) {
+
+        DWORD size = GetEnvironmentVariableW(L"PATH", nullptr, 0);
+        if (size != 0) {
+
+            std::vector<wchar_t> pathBuffer(size);
+            GetEnvironmentVariableW(L"PATH", pathBuffer.data(), size); // filling pathBuffer with the value of "PATH" ENVIRONMENT variable
+
+            // Convert buffer to std::wstring
+            std::wstring pathVariable(pathBuffer.data());
+
+            std::wstringstream ws(pathVariable);
+            std::wstring dir;
+            constexpr wchar_t ENV_PATH_SEPARATOR = ';';
+            while (std::getline(ws, dir, ENV_PATH_SEPARATOR)) { //iterating over all the paths in ENVIRONMENT variable "PATH"
+
+                // Convert UTF-16 (wchar_t) to UTF-8
+                int size_needed = WideCharToMultiByte(CP_UTF8, 0, dir.c_str(), -1, nullptr, 0, nullptr, nullptr);
+                if (size_needed == 0) {
+                    synfig::error("Failed to convert UTF-16 string  %s to UTF-8 string ",dir.c_str());
+                    continue;
+                }
+
+                std::vector<char> buffer(size_needed);
+                WideCharToMultiByte(CP_UTF8, 0, dir.c_str(), -1, buffer.data(), size_needed, nullptr, nullptr);
+
+
+                ffmpeg_binary_path = filesystem::Path::from_native(dir) / filesystem::Path("ffmpeg.exe");
+                synfig::info("searching for ffmpeg exe in -> %s",ffmpeg_binary_path.u8_str());
+
                 if (FileSystemNative::instance()->is_file(ffmpeg_binary_path.u8string())) {
                     synfig::info("Expected FFmpeg binary found: at %s", ffmpeg_binary_path.u8_str());
                     break;
-                }
-                else{
+                } else {
                     ffmpeg_binary_path.clear();
                 }
             }
         }
+
     }
 
 
