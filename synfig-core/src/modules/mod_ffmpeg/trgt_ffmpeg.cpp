@@ -178,9 +178,32 @@ ffmpeg_trgt::init(ProgressCallback* cb = nullptr)
 	// Windows always have ffmpeg
 	ffmpeg_binary_path = synfig::OS::get_binary_path().parent_path() / filesystem::Path("ffmpeg.exe");
 	if (!FileSystemNative::instance()->is_file(ffmpeg_binary_path.u8string())) {
-		synfig::error("Expected FFmpeg binary not found: %s", ffmpeg_binary_path.u8_str());
+        synfig::error("Expected FFmpeg binary not found at expected path: %s, application will try to look at other paths", ffmpeg_binary_path.u8_str());
 		ffmpeg_binary_path.clear();
 	}
+
+    const char* path_env = std::getenv("PATH"); // fetching all the path from the ENVIRONMENT path variable
+    std::vector<std::string> paths;
+    if(ffmpeg_binary_path.empty()){
+        if (path_env) {
+            std::stringstream ss(path_env);
+            std::string dir;
+            char PATH_SEPARATOR = ';';
+            while (std::getline(ss, dir, PATH_SEPARATOR)) { // trying to seach ffmpeg in al
+                synfig::info("searching for ffmpeg exe in -> %s",dir.c_str());
+                ffmpeg_binary_path = filesystem::Path(dir) + filesystem::Path("\\ffmpeg.exe");
+                if (FileSystemNative::instance()->is_file(ffmpeg_binary_path.u8string())) {
+                    synfig::info("Expected FFmpeg binary found: at %s", ffmpeg_binary_path.u8_str());
+                    break;
+                }
+                else{
+                    ffmpeg_binary_path.clear();
+                }
+            }
+        }
+    }
+
+
 #else
 	// Some Linux OS may have `avconv` instead of `ffmpeg`, so let's check both
 	const std::vector<std::string> binary_choices = {"ffmpeg", "avconv"};
