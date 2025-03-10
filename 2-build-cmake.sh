@@ -21,10 +21,19 @@ then
 mode=$1
 fi
 
+# AppVeyor cache size limit:
+# https://www.appveyor.com/docs/build-cache/#cache-size-beta
+ccache --set-config compression_level=5
+ccache --max-size=1G
+ccache --show-config
+
 cmake -GNinja -DENABLE_TESTS=ON -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_BUILD_TYPE="${mode}" ..
 cmake --build .
 cmake --install . >/dev/null
 ctest --output-on-failure
+
+ccache --show-stats
+ccache --show-compression
 
 echo
 echo
