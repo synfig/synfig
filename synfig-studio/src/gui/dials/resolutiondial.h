@@ -33,7 +33,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/toolbar.h>
+#include <gtkmm/box.h>
 #include <gtkmm/toolbutton.h>
 #include <gtkmm/toggletoolbutton.h>
 
@@ -55,8 +55,8 @@ class ResolutionDial
 public:
 	ResolutionDial();
 
-	void insert_to_toolbar(Gtk::Toolbar &toolbar, int index = -1);
-	void remove_from_toolbar(Gtk::Toolbar &toolbar);
+	void insert_to_toolbar(Gtk::Box &toolbar, int index = -1);
+	void remove_from_toolbar(Gtk::Box &toolbar);
 
 	void update_lowres(bool flag);
 	Glib::SignalProxy0<void> signal_increase_resolution()  { return increase_resolution.signal_clicked(); }
