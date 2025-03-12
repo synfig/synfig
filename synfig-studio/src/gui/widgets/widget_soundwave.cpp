@@ -253,22 +253,27 @@ void Widget_SoundWave::on_time_model_changed()
 	queue_draw();
 }
 
-bool Widget_SoundWave::isFileHeaderValid(const std::string &filename)
+bool Widget_SoundWave::is_file_header_valid(const std::string& filename)
 {
 	FILE* file = fopen(filename.c_str(), "rb");
 	if (!file)
 		return false;
-	unsigned char header[16];
-	size_t bytesRead = fread(header, 1, 16, file);
+	unsigned char header[4];
+	size_t bytes_read = fread(header, 1, 4, file);
 	fclose(file);
-	if (bytesRead < 16)
+	// Need 4 bytes for header check
+	if (bytes_read < 4)
 		return false;
+	// Check for WAV format
 	if (header[0]=='R' && header[1]=='I' && header[2]=='F' && header[3]=='F')
 		return true;
+	// Check for OGG format
 	if (header[0]=='O' && header[1]=='g' && header[2]=='g' && header[3]=='S')
 		return true;
+	// Check for MP3 with ID3 tag
 	if (header[0]=='I' && header[1]=='D' && header[2]=='3')
 		return true;
+	// Check for MP3 without ID3 tag
 	if (header[0] == 0xFF && (header[1] & 0xE0) == 0xE0)
 		return true;
 	return false;
@@ -297,8 +302,7 @@ bool Widget_SoundWave::do_load(const synfig::filesystem::Path& filename)
 {
 #ifndef WITHOUT_MLT	
 	std::string real_filename = Glib::filename_from_utf8(filename.u8string());
-	Widget_SoundWave obj;
-	if (!obj.isFileHeaderValid(real_filename)){
+	if (!Widget_SoundWave::is_file_header_valid(real_filename)) {
 		return false;
 	}
 	Mlt::Profile profile;
