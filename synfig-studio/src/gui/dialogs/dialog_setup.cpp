@@ -274,8 +274,8 @@ Dialog_Setup::create_document_page(PageInfo pi)
 	 *  fps   [_]                    [FPS]
 	 *  size  H[_]xW[_]      [resolutions]
 	 * DEFAULT BACKGROUND
-	 * (*) None (Transparent)
-	 * ( ) Solid Color         [colorbutton]
+	 * ( ) None (Transparent)
+	 * (*) Solid Color         [colorbutton]
 	 * ( ) Image               [file path  ]
 	 *
 	 *
@@ -931,7 +931,7 @@ Dialog_Setup::on_restore_pressed()
 		adj_number_of_threads->set_value(std::thread::hardware_concurrency());
 
 		workarea_renderer_combo.set_active_id("");
-		def_background_none.set_active();
+		def_background_color.set_active();
 		
 		Gdk::RGBA m_color;
 		m_color.set_rgba(1.000000, 1.000000, 1.000000, 1.000000);
