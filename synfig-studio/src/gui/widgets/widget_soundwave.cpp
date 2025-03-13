@@ -253,32 +253,6 @@ void Widget_SoundWave::on_time_model_changed()
 	queue_draw();
 }
 
-bool Widget_SoundWave::is_file_header_valid(const std::string& filename)
-{
-	FILE* file = fopen(filename.c_str(), "rb");
-	if (!file)
-		return false;
-	unsigned char header[4];
-	size_t bytes_read = fread(header, 1, 4, file);
-	fclose(file);
-	// Need 4 bytes for header check
-	if (bytes_read < 4)
-		return false;
-	// Check for WAV format
-	if (header[0]=='R' && header[1]=='I' && header[2]=='F' && header[3]=='F')
-		return true;
-	// Check for OGG format
-	if (header[0]=='O' && header[1]=='g' && header[2]=='g' && header[3]=='S')
-		return true;
-	// Check for MP3 with ID3 tag
-	if (header[0]=='I' && header[1]=='D' && header[2]=='3')
-		return true;
-	// Check for MP3 without ID3 tag
-	if (header[0] == 0xFF && (header[1] & 0xE0) == 0xE0)
-		return true;
-	return false;
-}
-
 void Widget_SoundWave::setup_mouse_handler()
 {
 	mouse_handler.set_pan_enabled(true);
@@ -302,15 +276,14 @@ bool Widget_SoundWave::do_load(const synfig::filesystem::Path& filename)
 {
 #ifndef WITHOUT_MLT	
 	std::string real_filename = Glib::filename_from_utf8(filename.u8string());
-	if (!Widget_SoundWave::is_file_header_valid(real_filename)) {
-		return false;
-	}
 	Mlt::Profile profile;
 	Mlt::Producer *track = new Mlt::Producer(profile, (std::string("avformat:") + real_filename).c_str());
-	if (!track->get_producer() || track->get_length() <= 0) {
+	int sample_rate = track->get_int("audio_sample_rate");
+	if (!track->get_producer() || track->get_length() <= 0 || sample_rate <= 0) {
 		delete track;
 		track = new Mlt::Producer(profile, (std::string("vorbis:") + real_filename).c_str());
-		if (!track->get_producer() || track->get_length() <= 0) {
+		sample_rate = track->get_int("audio_sample_rate");
+		if (!track->get_producer() || track->get_length() <= 0 || sample_rate <= 0) {
 			delete track;
 			return false;
 		}

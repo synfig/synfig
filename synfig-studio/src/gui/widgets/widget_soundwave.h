@@ -93,8 +93,6 @@ private:
 
 	bool do_load(const synfig::filesystem::Path& filename);
 
-	static bool is_file_header_valid(const std::string& filename);
-
 	// I'm too lazy to code/copy again mouse actions for panning/zooming/scrolling
 	struct MouseHandler : SelectDragHelper<int>
 	{
