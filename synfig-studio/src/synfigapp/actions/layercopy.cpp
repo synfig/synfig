@@ -158,7 +158,7 @@ Action::LayerCopy::prepare()
 		String description, filename, filename_param;
 		get_canvas_interface()
 			->get_instance()
-			->generate_new_name(
+			->generate_new_image_filename(
 				layer,
 				description,
 				filename,
