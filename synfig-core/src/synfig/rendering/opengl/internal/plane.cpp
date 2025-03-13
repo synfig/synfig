@@ -1,9 +1,9 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/internal/misc.cpp
-**	\brief Misc
+/*!	\file synfig/rendering/opengl/internal/plane.cpp
+**	\brief Plane
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2023 Bharat Sahlot
 **
 **	This file is part of Synfig.
 **
@@ -32,7 +32,10 @@
 #	include <config.h>
 #endif
 
-#include "misc.h"
+#include "plane.h"
+#include "synfig/general.h"
+#include <cassert>
+#include <vector>
 
 #endif
 
@@ -42,34 +45,59 @@ using namespace rendering;
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
+std::vector<float> vertices({
+		1, 1, 
+		1, -1,
+		-1, -1,
+		-1, 1, 
+		});
+
+std::vector<int> indices({
+		0, 1, 2,
+		0, 3, 2
+		});
 
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
 
-gl::Misc::Misc(Context &context):
-	context(context)
+gl::Plane::Plane()
 {
-	Context::Lock lock(context);
-	//
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+
+	glGenBuffers(1, &VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER,
+			vertices.size() * sizeof(float),
+			vertices.data(),
+			GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	glGenBuffers(1, &EBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+			indices.size() * sizeof(int),
+			indices.data(),
+			GL_STATIC_DRAW);
+
+	glBindVertexArray(0);
 }
 
-gl::Misc::~Misc()
+gl::Plane::~Plane()
 {
-	Context::Lock lock(context);
-	//
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &EBO);
 }
 
 void
-gl::Misc::clear(const Color &color)
+gl::Plane::render()
 {
-	Context::Lock lock(context);
-	GLclampf prev[4];
-	glGetFloatv(GL_COLOR_CLEAR_VALUE, prev);
-	glClearColor(color.get_r(), color.get_g(), color.get_b(), color.get_a());
-	glClear(GL_COLOR_BUFFER_BIT);
-	glClearColor(prev[0], prev[1], prev[2], prev[3]);
+	glBindVertexArray(VAO);
+	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 }
-
 
 /* === E N T R Y P O I N T ================================================= */
