@@ -33,29 +33,25 @@
 #include <gtkmm/box.h>
 #include <synfig/canvas.h>
 #include <synfig/vector.h>
-
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace Gtk {
-	class SpinButton;
-	class Entry;
-};
-
 namespace studio {
 
 class Widget_Distance;
+class Widget_Spin;
+class Widget_Entry;
 
 class Widget_Vector : public Gtk::Box
 {
-	Gtk::Entry* entry_x;
-	Gtk::Entry* entry_y;
+	Widget_Entry* entry_x;
+	Widget_Entry* entry_y;
     
-	Gtk::SpinButton* spinbutton_x;
-	Gtk::SpinButton* spinbutton_y;
+	Widget_Spin* spinbutton_x;
+	Widget_Spin* spinbutton_y;
 
 	Widget_Distance* distance_x;
 	Widget_Distance* distance_y;
