@@ -29,6 +29,10 @@ add_executable(test_synfig_filesystem_path filesystem_path.cpp)
 target_link_libraries(test_synfig_filesystem_path PRIVATE libsynfig)
 add_test(NAME test_synfig_filesystem_path COMMAND test_synfig_filesystem_path)
 
+add_executable(test_synfig_gradient gradient.cpp)
+target_link_libraries(test_synfig_gradient PRIVATE libsynfig)
+add_test(NAME test_synfig_gradient COMMAND test_synfig_gradient)
+
 add_executable(test_synfig_handle handle.cpp)
 target_link_libraries(test_synfig_handle PRIVATE libsynfig)
 add_test(NAME test_synfig_handle COMMAND test_synfig_handle)
