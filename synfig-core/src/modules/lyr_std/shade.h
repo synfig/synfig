@@ -36,6 +36,7 @@
 #include <synfig/color.h>
 #include <synfig/vector.h>
 #include <synfig/blur.h>
+#include <synfig/transformation.h>
 
 namespace synfig
 {
@@ -56,6 +57,8 @@ private:
 	ValueBase param_color;
 	//!Parameter: (Vector)
 	ValueBase param_origin;
+	//!Parameter: (Transformation)
+	ValueBase param_transformation;
 	//!Parameter: (bool)
 	ValueBase param_invert;
 
@@ -65,6 +68,14 @@ public:
 	virtual bool set_param(const String & param, const ValueBase &value);
 
 	virtual ValueBase get_param(const String & param)const;
+
+	// Required for group transformation widget
+	Point get_origin()const { return param_origin.get(Point()); }
+	Transformation get_transformation()const { return param_transformation.get(Transformation()); }
+	Transformation get_summary_transformation()const
+	{
+		return get_transformation().transform( Transformation(-get_origin()) );
+	}
 
 	virtual Color get_color(Context context, const Point &pos)const;
 	virtual Rect get_full_bounding_rect(Context context)const;
