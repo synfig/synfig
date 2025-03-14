@@ -361,7 +361,7 @@ public:
 	using bezier_base<V,T>::get_dt;
 
 public:
-	bezier() { }
+	bezier() = default;
 	bezier(const value_type &a, const value_type &b, const value_type &c, const value_type &d):
 		bezier_base<V,T>(a,b,c,d) { }
 

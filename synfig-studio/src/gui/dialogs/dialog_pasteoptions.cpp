@@ -439,7 +439,7 @@ void Dialog_PasteOptions::refresh_row_status(size_t row_index)
 		}
 
 		if (!existent_vn) {
-			status = "";
+			status.clear();
 			status_tooltip = _("This valuenode will be copied to target file and will be independent.");
 		} else {
 			if (v->get_type() != existent_vn->get_type()) {

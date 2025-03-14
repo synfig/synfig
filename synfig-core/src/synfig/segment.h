@@ -48,7 +48,7 @@ struct Segment
 	Point	p1,p2;
 	Vector	t1,t2;
 
-	Segment() { }
+	Segment() : p1(), p2(), t1(), t2() {}
 	Segment(Point p1,Vector t1,Point p2, Vector t2):
 		p1(p1),
 		p2(p2),
