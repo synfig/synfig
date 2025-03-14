@@ -508,7 +508,7 @@ public:
 			//! Now brush path(s) are hold by input preferences : brush.path_count & brush.path_%d
 			if(key=="brushes_path")
 			{
-				value="";
+				value.clear();
 				if (!App::brushes_path.empty())
 					value = App::brushes_path.begin()->u8string();
 				return true;
@@ -2636,7 +2636,7 @@ App::dialog_select_importer(const synfig::filesystem::Path& filename, std::strin
 	dialog.get_content_area()->pack_end(combo_importers);
 
 	int count = 0;
-	plugin = "";
+	plugin.clear();
 	for ( const auto& importer : App::plugin_manager.importers() )
 	{
 		if ( importer.has_extension(ext) )
@@ -2659,7 +2659,7 @@ App::dialog_select_importer(const synfig::filesystem::Path& filename, std::strin
 
 	if ( dialog.run() != Gtk::RESPONSE_ACCEPT )
 	{
-		plugin = "";
+		plugin.clear();
 		return false;
 	}
 
@@ -2724,7 +2724,7 @@ App::dialog_open_file_with_history_button(const std::string& title, filesystem::
 
 		auto filter = dialog->get_filter();
 
-		plugin_importer = "";
+		plugin_importer.clear();
 		if ( filter == filter_any || filter == filter_supported )
 		{
 			if ( !dialog_select_importer(filename, plugin_importer) )
@@ -3688,7 +3688,7 @@ App::open_from_temporary_filesystem(const filesystem::Path& temporary_filename)
 			if(!canvas)
 				throw (String)strprintf(_("Unable to load \"%s\":\n\n"), temporary_filename.u8_str()) + errors;
 
-			if (warnings != "")
+			if (!warnings.empty())
 				dialog_message_1b(
 						"WARNING",
 						strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
@@ -3827,13 +3827,13 @@ App::new_instance()
 			App::get_selected_canvas_view()->canvas_interface()->get_instance()->perform_action(action_LayerSetDesc);
 		}
 
-		if (warnings != "")
+		if (!warnings.empty())
 			App::dialog_message_1b(
 				"WARNING",
 				synfig::strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
 				"details",
 				_("Close"));
-		if (errors != "")
+		if (!errors.empty())
 			App::dialog_message_1b(
 				"ERROR",
 				synfig::strprintf("%s:\n\n%s", _("Error"), errors.c_str()),
@@ -3879,7 +3879,7 @@ App::open_from_plugin(const filesystem::Path& filename, const std::string& impor
 			{
 				if ( !get_instance(canvas) )
 				{
-					if (warnings != "")
+					if (!warnings.empty())
 						dialog_message_1b("WARNING", _("Warning"), "details", _("Close"), warnings);
 
 					etl::handle<Instance> instance(Instance::create(canvas, container));
