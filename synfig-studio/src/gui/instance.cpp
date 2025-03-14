@@ -580,7 +580,7 @@ studio::Instance::save()
 		std::string msg(strprintf(_("Unable to save to '%s'"), get_file_name().c_str()));
 		App::dialog_message_1b(
 				"ERROR",
-				msg.c_str(),
+				msg,
 				"details",
 				_("Close"));
 		return STATUS_ERROR;
@@ -621,7 +621,7 @@ studio::Instance::dialog_save_as()
 						"other files first before trying to use \"SaveAs\".")));
 					App::dialog_message_1b(
 							"ERROR",
-							msg.c_str(),
+							msg,
 							"details",
 							_("Close"));
 
@@ -682,7 +682,7 @@ studio::Instance::dialog_save_as()
 		if (!file_exists) {
 			if (FileSystemNative::instance()->is_exists(filename.u8string())) {
 				std::string msg(strprintf(_("There is a folder with the same name '%s'.\nPlease choose another name"), filename.u8_str()));
-				App::dialog_message_1b("ERROR", msg.c_str(), "details", _("Close"));
+				App::dialog_message_1b("ERROR", msg, "details", _("Close"));
 				continue;
 			}
 		} else {
@@ -705,7 +705,7 @@ studio::Instance::dialog_save_as()
 			return true;
 		}
 		std::string msg(strprintf(_("Unable to save to '%s'"), filename.u8_str()));
-		App::dialog_message_1b("ERROR", msg.c_str(), "details", _("Close"));
+		App::dialog_message_1b("ERROR", msg, "details", _("Close"));
 	}
 
 	return false;

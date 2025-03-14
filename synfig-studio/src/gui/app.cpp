@@ -1465,7 +1465,7 @@ void App::init(const synfig::String& rootpath)
 	load_language_settings();
 	if (ui_language != "os_LANG")
 	{
-		Glib::setenv ("LANGUAGE",  App::ui_language.c_str(), 1);
+		Glib::setenv("LANGUAGE", App::ui_language, true);
 	}
 
 	// paths
