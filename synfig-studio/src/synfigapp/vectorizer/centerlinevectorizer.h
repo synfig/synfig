@@ -73,7 +73,7 @@ class VectorizerCore
 
 public:
   VectorizerCore() : /*m_currPartial(0), m_totalPartials(0),*/ m_isCanceled(false) {}
-  ~VectorizerCore() {}
+  ~VectorizerCore() = default;
 
   //! Returns true if vectorization was aborted at user's request
   bool isCanceled() { return m_isCanceled; }

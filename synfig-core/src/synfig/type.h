@@ -166,7 +166,7 @@ public:
 		typedef void 		(*PutFunc)		(T &dest, ConstInternalPointer src);
 		typedef const T&	(*GetFunc)		(ConstInternalPointer);
 	private:
-		GenericFuncs() { }
+		GenericFuncs() = default;
 	};
 
 	class DefaultFuncs

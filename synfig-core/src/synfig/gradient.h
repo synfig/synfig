@@ -84,7 +84,7 @@ private:
 	CPointList cpoints;
 
 public:
-	Gradient() { }
+	Gradient() = default;
 
 	//! Two-Tone Color Gradient Convenience Constructor
 	Gradient(const Color &c1, const Color &c2);

@@ -40,7 +40,7 @@ namespace studio {
 class WorkspaceHandler
 {
 public:
-	WorkspaceHandler();
+	WorkspaceHandler() = default;;
 
 	static bool is_valid_name(const std::string &name);
 

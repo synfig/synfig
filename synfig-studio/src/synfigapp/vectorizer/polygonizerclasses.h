@@ -90,7 +90,7 @@ public:
     Link() : m_access(1) {}
     Link(UINT _next) : m_next(_next), m_access(1) {}
     Link(UINT _next, ArcType _arc) : m_next(_next), m_arc(_arc), m_access(1) {}
-    ~Link() {}
+    ~Link() = default;
 
     ArcType &operator*() { return m_arc; }
     const ArcType &operator*() const { return m_arc; }
@@ -117,7 +117,7 @@ public:
   public:
     Node() : m_attributes(0) {}
     Node(const NodeContentType &_cont) : m_content(_cont), m_attributes(0) {}
-    ~Node() {}
+    ~Node() = default;
 
     Link &link(UINT i) { return m_links[i]; }
     const Link &getLink(UINT i) const { return m_links[i]; }
@@ -155,7 +155,7 @@ public:
 
 public:
   Graph() : m_linksCount(0) {}
-  virtual ~Graph() {}
+  virtual ~Graph() = default;
 
   Node &node(UINT i) { return m_nodes[i]; }
   const Node &getNode(UINT i) const { return m_nodes[i]; }
@@ -380,7 +380,7 @@ public:
 		m_strokeIndex(0),
 		m_strokeHeight(0)
   {}
-  ~Sequence() {}
+  ~Sequence() = default;
 
   // Impose a property dependent only on the extremity we consider first
   // - so that the same sequence is not considered twice when head and tail
@@ -455,7 +455,7 @@ public:
   VectorizerCoreGlobals()
 	  : currConfig(nullptr)
   {}
-  ~VectorizerCoreGlobals() {}
+  ~VectorizerCoreGlobals() = default;
 };
 
 namespace {

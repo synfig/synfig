@@ -303,9 +303,6 @@ Contour::Contour():
 	winding_style(WINDING_NON_ZERO)
 	{ }
 
-Contour::~Contour()
-	{ }
-
 void
 Contour::touch_chunks()
 {

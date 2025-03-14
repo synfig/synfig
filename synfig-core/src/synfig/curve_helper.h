@@ -80,7 +80,7 @@ struct Ray
 	Point	p;
 	Vector	v;
 
-	Ray() {}
+	Ray() = default;
 	Ray(const Point &pin, const Vector &vin):p(pin), v(vin) {}
 };
 
