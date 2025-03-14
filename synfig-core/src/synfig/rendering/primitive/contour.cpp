@@ -634,7 +634,7 @@ Contour::to_intersector(Intersector &intersector) const
 Intersector::Handle
 Contour::create_intersector() const
 {
-	Intersector::Handle intersector(new Intersector());
+	Intersector::Handle intersector(std::make_shared<Intersector>());
 	to_intersector(*intersector);
 	intersector->close();
 	return intersector;

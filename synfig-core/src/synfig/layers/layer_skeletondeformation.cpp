@@ -132,7 +132,7 @@ Layer_SkeletonDeformation::get_param_vocab()const
 void
 Layer_SkeletonDeformation::prepare_mask()
 {
-	rendering::Contour::Handle mask(new rendering::Contour());
+	rendering::Contour::Handle mask(std::make_shared<rendering::Contour>());
 	mask->antialias = true;
   
 	const std::vector<ValueBase> &list = param_bones.get_list();
