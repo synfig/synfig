@@ -126,10 +126,10 @@ PackedSurface::Reader::close()
 			std::lock_guard<std::mutex> lock(surface->mutex);
 			surface->readers.erase(this);
 		}
-		if (cache) delete[] cache;
+		delete[] cache;
+		cache = nullptr;
 		first = nullptr;
 		last = nullptr;
-		cache = nullptr;
 		surface = nullptr;
 	}
 }

@@ -1854,7 +1854,7 @@ App::on_shutdown()
 
 	instance_list.clear();
 
-	if (sound_render_done) delete sound_render_done;
+	delete sound_render_done;
 	sound_render_done = nullptr;
 
 	process_all_events();

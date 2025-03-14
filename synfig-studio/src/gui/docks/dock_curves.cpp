@@ -64,7 +64,7 @@ Dock_Curves::Dock_Curves():
 
 Dock_Curves::~Dock_Curves()
 {
-	if (table_) delete table_;
+	delete table_;
 }
 
 static void

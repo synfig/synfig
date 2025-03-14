@@ -315,7 +315,7 @@ ThreadPool::subsys_init() {
 bool
 ThreadPool::subsys_stop() {
 	assert(instance_);
-	if (instance_) delete instance_;
-	instance_ = 0;
+	delete instance_;
+	instance_ = nullptr;
 	return true;
 }

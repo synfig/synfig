@@ -156,10 +156,8 @@ private:
 		// children and siblings.
 		~lzwcode()
 		{
-			if(kids)
-				delete kids;
-			if(next)
-				delete next;
+			delete kids;
+			delete next;
 		}
 	};
 
