@@ -311,7 +311,7 @@ bool Widget_SoundWave::do_load(const synfig::filesystem::Path& filename)
 	n_channels = 0;
 
 	for (int i = start_frame; i < end_frame; ++i) {
-		Mlt::Frame *frame = track->get_frame(0);
+		std::unique_ptr<Mlt::Frame> frame(track->get_frame(0));
 		if (!frame)
 			break;
 
@@ -328,7 +328,6 @@ bool Widget_SoundWave::do_load(const synfig::filesystem::Path& filename)
 		void * _buffer = frame->get_audio(format, _frequency, _channels, _n_samples);
 		if (_buffer == nullptr) {
 			synfig::warning("couldn't get sound frame #%i", i);
-			delete frame;
 			break;
 		}
 		if (buffer.empty()) {
@@ -337,13 +336,19 @@ bool Widget_SoundWave::do_load(const synfig::filesystem::Path& filename)
 			buffer.resize(buffer_length);
 		}
 		int _n_bytes = _n_samples * _channels * bytes_per_sample;
-		std::copy(static_cast<unsigned char*>(_buffer), static_cast<unsigned char*>(_buffer) + _n_bytes, buffer.begin()+bytes_written);
+		if (bytes_written + _n_bytes > buffer.size()) {
+			if (buffer.size() <= bytes_written) {
+				synfig::error(_("Internal error: Widget_SoundWave: trying to read more bytes than buffer size: %i x %zu"), _n_bytes + bytes_written, buffer.size());
+				break;
+			}
+			_n_bytes = buffer.size() - bytes_written;
+		}
+		std::copy(static_cast<unsigned char*>(_buffer), static_cast<unsigned char*>(_buffer) + _n_bytes, buffer.begin() + bytes_written);
 		bytes_written += _n_bytes;
 		outbuffer += _n_bytes;
 		frequency = _frequency;
 		n_channels = _channels;
 		n_samples += _n_samples;
-		delete frame;
 	}
 	if (channel_idx > n_channels)
 		channel_idx = 0;
