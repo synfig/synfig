@@ -189,15 +189,16 @@ bool Widget_SoundWave::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 
 	std::lock_guard<std::mutex> lock(mutex);
 
-	const int bytes_per_sample = 1;
 
 	Gdk::RGBA color = get_style_context()->get_color();
 	cr->set_source_rgb(color.get_red(), color.get_green(), color.get_blue());
 
-	const int middle_y = 127;
-	cr->move_to(0, middle_y);
-
+	constexpr int bytes_per_sample = 1;
 	const int stride = frequency * bytes_per_sample * n_channels;
+	const unsigned long max_index = buffer.size() - bytes_per_sample;
+
+	const int middle_y = 127; // std::pow(2, bytes_per_sample) - 1;
+	cr->move_to(0, middle_y);
 
 	for (double x = 0; x < get_width(); x+=.1) {
 		synfig::Time t = time_plot_data->get_t_from_pixel_coord(x);
@@ -205,8 +206,9 @@ bool Widget_SoundWave::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		if (t >= sound_delay) {
 			synfig::Time dt = t - sound_delay;
 			unsigned long index = int(dt * stride) + channel_idx;
-			if (index < buffer.size())
-				std::copy(buffer.begin() + index, buffer.begin() + index + bytes_per_sample, &value);
+			if (index >= max_index)
+				break;
+			std::copy(buffer.begin() + index, buffer.begin() + index + bytes_per_sample, &value);
 		}
 		int y = time_plot_data->get_pixel_y_coord(value);
 		cr->line_to(x, y);
