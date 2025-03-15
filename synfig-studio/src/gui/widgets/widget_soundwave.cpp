@@ -337,7 +337,14 @@ bool Widget_SoundWave::do_load(const synfig::filesystem::Path& filename)
 			buffer.resize(buffer_length);
 		}
 		int _n_bytes = _n_samples * _channels * bytes_per_sample;
-		std::copy(static_cast<unsigned char*>(_buffer), static_cast<unsigned char*>(_buffer) + _n_bytes, buffer.begin()+bytes_written);
+		if (bytes_written + _n_bytes > buffer.size()) {
+			if (buffer.size() <= bytes_written) {
+				synfig::error(_("Internal error: Widget_SoundWave: trying to read more bytes than buffer size: %i x %zu"), _n_bytes + bytes_written, buffer.size());
+				break;
+			}
+			_n_bytes = buffer.size() - bytes_written;
+		}
+		std::copy(static_cast<unsigned char*>(_buffer), static_cast<unsigned char*>(_buffer) + _n_bytes, buffer.begin() + bytes_written);
 		bytes_written += _n_bytes;
 		outbuffer += _n_bytes;
 		frequency = _frequency;
