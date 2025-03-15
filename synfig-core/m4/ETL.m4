@@ -6,19 +6,6 @@
 
 AC_DEFUN([ETL_DEPS],
 [
-	AC_C_BIGENDIAN
-	
-	AC_CHECK_LIB(user32, main)
-	
-	AC_CHECK_HEADERS(sys/times.h)
-	AC_CHECK_HEADERS(sys/time.h)
-	AC_CHECK_HEADERS(unistd.h)
-	AC_CHECK_HEADERS(windows.h)
-	AC_CHECK_FUNCS([__clone])
-	AC_CHECK_FUNCS([QueryPerformanceCounter])
-	
-	AC_CHECK_FUNCS([gettimeofday])
-	
 	$1
 ])
 
