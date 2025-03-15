@@ -333,7 +333,7 @@ bool Widget_SoundWave::do_load(const synfig::filesystem::Path& filename)
 		}
 		if (buffer.empty()) {
 			synfig::warning("sound frame #%i got empty buffer", i);
-			int buffer_length = (end_frame - start_frame + 1) * _channels * bytes_per_sample * std::round(_frequency/fps);
+			int buffer_length = (end_frame - start_frame) * _channels * bytes_per_sample * std::round(_frequency/fps);
 			buffer.resize(buffer_length);
 		}
 		int _n_bytes = _n_samples * _channels * bytes_per_sample;
