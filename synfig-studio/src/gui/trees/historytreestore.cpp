@@ -129,10 +129,7 @@ HistoryTreeStore::insert_action(Gtk::TreeRow row, synfigapp::Action::Undoable::H
 		row[model.canvas_id] = specific_action->get_canvas()->get_id();
 	}
 
-	synfigapp::Action::Group::Handle group;
-	synfigapp::Action::Group::Handle::cast_dynamic(action);
-	if(group)
-	{
+	if (auto group = synfigapp::Action::Group::Handle::cast_dynamic(action)) {
 		synfigapp::Action::ActionList::const_iterator iter;
 		for(iter=group->action_list().begin();iter!=group->action_list().end();++iter)
 		{
