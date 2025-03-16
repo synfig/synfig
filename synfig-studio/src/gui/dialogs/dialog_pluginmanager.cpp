@@ -574,7 +574,7 @@ Dialog_PluginManager::build_listbox()
 	plugin_list_box.show_all_children();
 }
 
-std::string extract_plugin_name(std::istream &fileStream)
+std::string extract_plugin_name(std::istream& fileStream)
 {
 	xmlpp::DomParser parser;
 	parser.set_substitute_entities();

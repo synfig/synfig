@@ -457,7 +457,7 @@ bool studio::ImportExport::has_extension(const std::string& ext) const
 
 
 void
-studio::PluginManager::load_dir( const std::string &pluginsprefix )
+studio::PluginManager::load_dir( const std::string& pluginsprefix )
 {
 	
 	synfig::info("Loading plugins from %s", pluginsprefix.c_str());
@@ -479,7 +479,7 @@ studio::PluginManager::load_dir( const std::string &pluginsprefix )
 } // END of synfigapp::PluginManager::load_dir()
 
 void
-studio::PluginManager::load_plugin( const std::string &file, const std::string &plugindir, bool notify )
+studio::PluginManager::load_plugin( const std::string& file, const std::string& plugindir, bool notify )
 {
 	synfig::info("   Loading plugin: %s", synfig::filesystem::Path::basename(plugindir).c_str());
 
@@ -826,7 +826,7 @@ studio::Plugin studio::PluginManager::get_plugin(const std::string& id) const
 	return Plugin();
 }
 
-bool studio::PluginManager::remove_plugin_recursive(const std::string &filename)
+bool studio::PluginManager::remove_plugin_recursive(const std::string& filename)
 {
 	auto fileSystem = synfig::FileSystemNative::instance();
 
