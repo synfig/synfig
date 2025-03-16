@@ -704,9 +704,9 @@ MainWindow::on_plugins_changed()
 			"</ui>";
 	plugins_action_group->set_sensitive(false);
 
-	if (!save_plugins_merge_id)
-		App::ui_manager()->insert_action_group(plugins_action_group);	
-	else {
+	if (!save_plugins_merge_id) {
+		App::ui_manager()->insert_action_group(plugins_action_group);
+	} else {
 		typedef std::vector< Glib::RefPtr<Gtk::ActionGroup> > ActionGroupList;
 		ActionGroupList groups = App::ui_manager()->get_action_groups();
 		for (const auto& group : groups) {

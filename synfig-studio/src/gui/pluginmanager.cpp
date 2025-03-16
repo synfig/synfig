@@ -136,9 +136,9 @@ namespace JSON {
 			pos_++;
 
 			skip_whitespace();
-			if (input_[pos_] == '"')
+			if (input_[pos_] == '"') {
 				object[key] = parse_string();
-			else if (input_[pos_] == '{') {
+			} else if (input_[pos_] == '{') {
 				// Skip nested objects for now, treat as empty string
 				int depth = 1;
 				while (depth > 0) {
@@ -148,8 +148,7 @@ namespace JSON {
 				}
 				pos_++;
 				object[key] = "";
-			}
-			else if (input_[pos_] == '[') {
+			} else if (input_[pos_] == '[') {
 				// Skip arrays for now, treat as empty string
 				int depth = 1;
 				while (depth > 0) {
@@ -159,8 +158,7 @@ namespace JSON {
 				}
 				pos_++;
 				object[key] = "";
-			}
-			else {
+			} else {
 				// Parse number or other value until next delimiter
 				std::string value;
 				while (input_[pos_] != ',' && input_[pos_] != '}') {
@@ -198,9 +196,9 @@ JSON::escape_string(const std::string& str)
 		case '\r': value += "\\r"; break;
 		case '\t': value += "\\t"; break;
 		default:
-			if ((unsigned char)c >= 0x20)
+			if ((unsigned char)c >= 0x20) {
 				value.push_back(c);
-			else {
+			} else {
 				char unicode[8];
 				snprintf(unicode, 8, "\\u00%02x", (unsigned char)c);
 				value += unicode;
@@ -542,12 +540,9 @@ studio::PluginManager::load_plugin( const std::string& file, const std::string& 
 			}
 			plugin.description = PluginString::load(*pNode, "description");
 
-			if ( !plugin.is_valid() || !script.is_valid() )
-			{
+			if ( !plugin.is_valid() || !script.is_valid() ) {
 				synfig::warning("Invalid plugin metadata description");
-			}
-			else
-			{
+			} else {
 				scripts_.emplace(plugin.id, std::move(script));
 				plugins_.emplace_back(std::move(plugin));
 			}
@@ -633,9 +628,7 @@ std::string studio::PluginManager::interpreter_executable(const std::string& int
 		} else {
 			synfig::info("Python 3 binary found: "+command);
 		}
-	}
-	else
-	{
+	} else {
 		studio::App::dialog_message_1b(
 			"Error",
 			_("Error: Unsupported interpreter"),
