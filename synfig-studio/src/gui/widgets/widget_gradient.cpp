@@ -181,8 +181,7 @@ Widget_Gradient::insert_cpoint(float x)
 	new_cpoint.pos=x;
 	new_cpoint.color=gradient_(x);
 	gradient_.push_back(new_cpoint);
-	gradient_.sort();
-	gradient_.sort();
+	gradient_.sync();
 	set_selected_cpoint(new_cpoint);
 	queue_draw();
 }
@@ -253,7 +252,7 @@ Widget_Gradient::update_cpoint(const synfig::Gradient::CPoint &x)
 	if (iter != gradient_.end()) {
 		iter->pos=x.pos;
 		iter->color=x.color;
-		gradient_.sort();
+		gradient_.sync();
 		queue_draw();
 	}
 }
@@ -304,7 +303,7 @@ Widget_Gradient::on_event(GdkEvent *event)
 				else
 				{
 					iter->pos=pos;
-					gradient_.sort();
+					gradient_.sync();
 				}
 
 //				signal_value_changed_();
