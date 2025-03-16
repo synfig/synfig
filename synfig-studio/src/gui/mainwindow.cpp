@@ -42,6 +42,7 @@
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/dialogs/dialog_input.h>
+#include <gui/dialogs/dialog_pluginmanager.h>
 #include <gui/dialogs/dialog_workspaces.h>
 #include <gui/docks/dockable.h>
 #include <gui/docks/dockbook.h>
@@ -87,7 +88,7 @@ escape_underline(const std::string& raw)
 
 MainWindow::MainWindow(const Glib::RefPtr<Gtk::Application>& application)
 	: Gtk::ApplicationWindow(application),
-	  plugin_manager_dialog(*this),
+	  plugin_manager_dialog(std::unique_ptr<Dialog_PluginManager>(new Dialog_PluginManager(*this))),
 	  save_workspace_merge_id(0), custom_workspaces_merge_id(0),
 	  save_plugins_merge_id(0)
 {
@@ -233,7 +234,7 @@ MainWindow::init_menus()
 	);
 
 	action_group->add( Gtk::Action::create("open-plugin-manager", _("Plugin Manager")),
-		sigc::mem_fun0(plugin_manager_dialog, &Dialog_PluginManager::present)
+		sigc::mem_fun0(*plugin_manager_dialog, &Dialog_PluginManager::present)
 	);
 
 	// help
