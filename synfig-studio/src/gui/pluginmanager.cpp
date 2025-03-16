@@ -68,112 +68,112 @@
 #endif
 
 namespace JSON {
-   
-    void Parser::skip_whitespace() {
-        while (input_[pos_] == ' ' || input_[pos_] == '\n' || 
-               input_[pos_] == '\r' || input_[pos_] == '\t')
-            pos_++;
-    }
-    
-    std::string Parser::parse_string() {
-        pos_++;
-        std::string value;
-        while (input_[pos_] != '"' || (pos_ > 0 && input_[pos_-1] == '\\')) {
-            if (input_[pos_] == '\\') {
-                pos_++;
-                switch (input_[pos_]) {
-                    case '"': value += '"'; break;
-                    case '\\': value += '\\'; break;
-                    case '/': value += '/'; break;
-                    case 'b': value += '\b'; break;
-                    case 'f': value += '\f'; break;
-                    case 'n': value += '\n'; break;
-                    case 'r': value += '\r'; break;
-                    case 't': value += '\t'; break;
-                    case 'u': {
-                        // Skip unicode handling for now
-                        pos_ += 4;
-                        value += '?';
-                        break;
-                    }
-                    default: value += input_[pos_];
-                }
-            } else {
-                value += input_[pos_];
-            }
-            pos_++;
-        }
-        pos_++; // Skip closing quote
-        return value;
-    }
-    
-    std::map<std::string, std::string> Parser::parse_object() {
-        pos_++; // Skip opening brace
-        std::map<std::string, std::string> object;
-        
-        while (true) {
-            skip_whitespace();
-            if (input_[pos_] == '}') {
-                pos_++;
-                break;
-            }
-            
-            if (!object.empty()) {
-                if (input_[pos_] != ',')
-                    throw std::runtime_error("Expected comma in object");
-                pos_++;
-                skip_whitespace();
-            }
-            
-            if (input_[pos_] != '"')
-                throw std::runtime_error("Expected string key in object");
-            
-            std::string key = parse_string();
-            
-            skip_whitespace();
-            if (input_[pos_] != ':')
-                throw std::runtime_error("Expected colon after key in object");
-            pos_++;
-            
-            skip_whitespace();
-            if (input_[pos_] == '"')
-                object[key] = parse_string();
-            else if (input_[pos_] == '{') {
-                // Skip nested objects for now, treat as empty string
-                int depth = 1;
-                while (depth > 0) {
-                    pos_++;
-                    if (input_[pos_] == '{') depth++;
-                    if (input_[pos_] == '}') depth--;
-                }
-                pos_++;
-                object[key] = "";
-            }
-            else if (input_[pos_] == '[') {
-                // Skip arrays for now, treat as empty string
-                int depth = 1;
-                while (depth > 0) {
-                    pos_++;
-                    if (input_[pos_] == '[') depth++;
-                    if (input_[pos_] == ']') depth--;
-                }
-                pos_++;
-                object[key] = "";
-            }
-            else {
-                // Parse number or other value until next delimiter
-                std::string value;
-                while (input_[pos_] != ',' && input_[pos_] != '}') {
-                    value += input_[pos_];
-                    pos_++;
-                }
-                object[key] = value;
-            }
-        }
-        
-        return object;
-    }
-    
+
+	void Parser::skip_whitespace() {
+		while (input_[pos_] == ' ' || input_[pos_] == '\n' ||
+			   input_[pos_] == '\r' || input_[pos_] == '\t')
+			pos_++;
+	}
+
+	std::string Parser::parse_string() {
+		pos_++;
+		std::string value;
+		while (input_[pos_] != '"' || (pos_ > 0 && input_[pos_-1] == '\\')) {
+			if (input_[pos_] == '\\') {
+				pos_++;
+				switch (input_[pos_]) {
+					case '"': value += '"'; break;
+					case '\\': value += '\\'; break;
+					case '/': value += '/'; break;
+					case 'b': value += '\b'; break;
+					case 'f': value += '\f'; break;
+					case 'n': value += '\n'; break;
+					case 'r': value += '\r'; break;
+					case 't': value += '\t'; break;
+					case 'u': {
+						// Skip unicode handling for now
+						pos_ += 4;
+						value += '?';
+						break;
+					}
+					default: value += input_[pos_];
+				}
+			} else {
+				value += input_[pos_];
+			}
+			pos_++;
+		}
+		pos_++; // Skip closing quote
+		return value;
+	}
+
+	std::map<std::string, std::string> Parser::parse_object() {
+		pos_++; // Skip opening brace
+		std::map<std::string, std::string> object;
+
+		while (true) {
+			skip_whitespace();
+			if (input_[pos_] == '}') {
+				pos_++;
+				break;
+			}
+
+			if (!object.empty()) {
+				if (input_[pos_] != ',')
+					throw std::runtime_error("Expected comma in object");
+				pos_++;
+				skip_whitespace();
+			}
+
+			if (input_[pos_] != '"')
+				throw std::runtime_error("Expected string key in object");
+
+			std::string key = parse_string();
+
+			skip_whitespace();
+			if (input_[pos_] != ':')
+				throw std::runtime_error("Expected colon after key in object");
+			pos_++;
+
+			skip_whitespace();
+			if (input_[pos_] == '"')
+				object[key] = parse_string();
+			else if (input_[pos_] == '{') {
+				// Skip nested objects for now, treat as empty string
+				int depth = 1;
+				while (depth > 0) {
+					pos_++;
+					if (input_[pos_] == '{') depth++;
+					if (input_[pos_] == '}') depth--;
+				}
+				pos_++;
+				object[key] = "";
+			}
+			else if (input_[pos_] == '[') {
+				// Skip arrays for now, treat as empty string
+				int depth = 1;
+				while (depth > 0) {
+					pos_++;
+					if (input_[pos_] == '[') depth++;
+					if (input_[pos_] == ']') depth--;
+				}
+				pos_++;
+				object[key] = "";
+			}
+			else {
+				// Parse number or other value until next delimiter
+				std::string value;
+				while (input_[pos_] != ',' && input_[pos_] != '}') {
+					value += input_[pos_];
+					pos_++;
+				}
+				object[key] = value;
+			}
+		}
+
+		return object;
+	}
+
 	std::map<std::string, std::string> Parser::parse(const std::string& json) {
 		Parser parser(json.c_str());
 		parser.skip_whitespace();
@@ -295,7 +295,7 @@ fetch_data_in_widget(const Gtk::Widget* w, std::map<std::string, std::string>& d
 		} else if (GTK_IS_FONT_BUTTON(w->gobj())) {
 			// https://docs.gtk.org/Pango/type_func.FontDescription.from_string.html
 			const auto* font_button = static_cast<const Gtk::FontButton*>(w);
-		    data[w->get_name()] = font_button->get_font_name();
+			data[w->get_name()] = font_button->get_font_name();
 			PangoFontDescription* font_desc = gtk_font_chooser_get_font_desc(GTK_FONT_CHOOSER(w->gobj()));
 			char* str = pango_font_description_to_string(font_desc);
 			pango_font_description_free(font_desc);
