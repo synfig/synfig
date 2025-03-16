@@ -101,7 +101,7 @@ public:
   // be SPLIT (new entry in a list) and MERGED (two lists merge).
 
 public:
-  IndexTable() {}
+  IndexTable() = default;
 
   IndexColumn *operator[](int i) { return &m_columns[i]; }
   IndexColumn &columnOfId(int id) { return m_columns[m_identifiers[id]]; }
@@ -180,7 +180,7 @@ struct EventGreater {
 class Timeline final
     : public std::priority_queue<Event, std::vector<Event>, EventGreater> {
 public:
-  Timeline() {}
+  Timeline() = default;
 
   // NOTE: Timeline construction contains the most complex part of
   // vectorization;
@@ -600,7 +600,7 @@ public:
   ContourNode *m_node = nullptr;
   int m_number = 0;
 
-  RandomizedNode() {}
+  RandomizedNode() = default;
   RandomizedNode(ContourNode *node) : m_node(node), m_number(rand()) {}
 
   inline ContourNode *operator->(void) { return m_node; }

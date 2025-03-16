@@ -249,7 +249,7 @@ Settings::load_from_file(const synfig::filesystem::Path& filename, const synfig:
 
 			//synfig::info("Settings::load_from_file(): Trying Key \"%s\" with a value of \"%s\".",key.c_str(),value.c_str());
 			try{
-				if (key_filter=="" || (key==key_filter) )
+				if (key_filter.empty() || (key==key_filter) )
 				{
 					if(!set_value(key,value))
 						synfig::warning("Settings::load_from_file(): Key \"%s\" with a value of \"%s\" was rejected.",key.c_str(),value.c_str());

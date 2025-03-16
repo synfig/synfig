@@ -376,7 +376,7 @@ Dock_Timetrack_Old::Dock_Timetrack_Old():
 
 Dock_Timetrack_Old::~Dock_Timetrack_Old()
 {
-	if (grid_) delete grid_;
+	delete grid_;
 }
 
 void
