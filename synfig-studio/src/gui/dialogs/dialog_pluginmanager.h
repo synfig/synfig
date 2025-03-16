@@ -30,14 +30,13 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/handle>
-
-#include <gtkmm/dialog.h>
 #include <gtkmm/filechooserdialog.h>
-#include <gtkmm/notebook.h>
-#include <gtkmm/messagedialog.h>
 #include <gtkmm/listbox.h>
+#include <gtkmm/messagedialog.h>
+#include <gtkmm/notebook.h>
+
 #include <gui/pluginmanager.h>
+
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
