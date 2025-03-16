@@ -73,7 +73,6 @@
 #include "dialogs/canvasproperties.h"
 #include "dialogs/canvasresize.h"
 #include "dialogs/dialog_keyframe.h"
-#include "dialogs/dialog_pluginmanager.h"
 #include "dialogs/dialog_preview.h"
 #include "dialogs/dialog_waypoint.h"
 #include "dials/framedial.h"
