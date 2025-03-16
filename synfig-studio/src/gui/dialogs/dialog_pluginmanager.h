@@ -50,23 +50,23 @@ namespace studio
 class Dialog_PluginManager : public Gtk::Dialog 
 {
 public:
-    Dialog_PluginManager(Gtk::Window& parent);
-    ~Dialog_PluginManager();
+	Dialog_PluginManager(Gtk::Window& parent);
+	~Dialog_PluginManager();
 
 private:
-    Gtk::ListBox plugin_list_box;
-    Gtk::FileChooserDialog plugin_file_dialog;
-    Gtk::MessageDialog message_dialog;
-    Gtk::MessageDialog confirmation_dialog;
-    Gtk::Notebook notebook;
+	Gtk::ListBox plugin_list_box;
+	Gtk::FileChooserDialog plugin_file_dialog;
+	Gtk::MessageDialog message_dialog;
+	Gtk::MessageDialog confirmation_dialog;
+	Gtk::Notebook notebook;
 
-    std::vector<studio::Plugin> plugin_list;
-    void build_listbox();
-    void build_notebook();
-    void save_plugin_config(const std::string &plugin_id, Gtk::Widget *config_widget);
-    void reset_plugin_config(const std::string &plugin_id, Gtk::Widget *config_widget);
-    void on_install_plugin_button_clicked();
-    void refresh();
+	std::vector<studio::Plugin> plugin_list;
+	void build_listbox();
+	void build_notebook();
+	void save_plugin_config(const std::string &plugin_id, Gtk::Widget *config_widget);
+	void reset_plugin_config(const std::string &plugin_id, Gtk::Widget *config_widget);
+	void on_install_plugin_button_clicked();
+	void refresh();
 
 }; // END of class Dialog_PluginManager
 
