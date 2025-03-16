@@ -69,7 +69,6 @@
 
 using namespace synfig;
 using namespace studio;
-using namespace synfigapp;
 
 /* === M A C R O S ========================================================= */
 
@@ -78,15 +77,6 @@ using namespace synfigapp;
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
-
-
-enum PluginZipStatus 
-{
-    PLUGIN_ZIP_NO_PLUGIN_XML = 1 << 1,
-    PLUGIN_ZIP_AT_ROOT_DIR = 1 << 2,
-    PLUGIN_ZIP_AT_CHILD_DIR = 1 << 3
-};
-
 
 static void set_widget_value(Gtk::Widget* widget, const std::string& value) {
 	if (!widget) return;
@@ -423,7 +413,6 @@ Dialog_PluginManager::build_notebook()
 					}
 					Gtk::Widget* config_widget = nullptr;
 					builder->get_widget("dialog_contents", config_widget);
-					// if(config_widget) {
 					synfig::FileSystemNative::Handle native_fs = synfig::FileSystemNative::instance();
 					if (!native_fs->is_file(plugin.pluginDir + "/user_config.json")) {
 						// Copy default config to user config using native filesystem
