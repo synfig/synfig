@@ -33,7 +33,6 @@
 #include <gtkmm/actiongroup.h>
 #include <gtkmm/applicationwindow.h>
 
-#include <gui/dialogs/dialog_pluginmanager.h>
 #include <synfig/filesystem_path.h>
 #include <synfig/string.h>
 
@@ -47,6 +46,7 @@ namespace studio {
 	class Dockable;
 	class DockBook;
 	class WorkspaceHandler;
+	class Dialog_PluginManager;
 
 	class MainWindow: public Gtk::ApplicationWindow
 	{
@@ -54,7 +54,7 @@ namespace studio {
 		Gtk::Bin *bin_;
 		DockBook *main_dock_book_;
 		Glib::RefPtr<Gtk::ActionGroup> window_action_group;
-		Dialog_PluginManager plugin_manager_dialog;
+		std::unique_ptr<Dialog_PluginManager> plugin_manager_dialog;
 
 		//! Constructor Helper - Initializes all of the menus
 		void init_menus();
