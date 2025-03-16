@@ -87,55 +87,42 @@ static void set_widget_value(Gtk::Widget* widget, const std::string& value) {
 			if (auto entry = combo->get_entry()) {
 				entry->set_text(value);
 			}
-		}
-		else {
+		} else {
 			combo->set_active_id(value);
 		}
-	}
-	else if (GTK_IS_COMBO_BOX(widget->gobj())) {
+	} else if (GTK_IS_COMBO_BOX(widget->gobj())) {
 		auto* combo = static_cast<Gtk::ComboBox*>(widget);
 		if (combo->get_has_entry()) {
 			if (auto entry = combo->get_entry()) {
 				entry->set_text(value);
 				entry->set_editable(true);
 			}
-		}
-		else
+		} else {
 			combo->set_active_id(value);
-	}
-	else if (GTK_IS_SWITCH(widget->gobj())) {
+		}
+	} else if (GTK_IS_SWITCH(widget->gobj())) {
 		static_cast<Gtk::Switch*>(widget)->set_active(value == "1" || value == "true");
-	}
-	else if (GTK_IS_CHECK_BUTTON(widget->gobj())) {
+	} else if (GTK_IS_CHECK_BUTTON(widget->gobj())) {
 		static_cast<Gtk::CheckButton*>(widget)->set_active(value == "1" || value == "true");
-	}
-	else if (GTK_IS_TOGGLE_BUTTON(widget->gobj())) {
+	} else if (GTK_IS_TOGGLE_BUTTON(widget->gobj())) {
 		static_cast<Gtk::ToggleButton*>(widget)->set_active(value == "1" || value == "true");
-	}
-	else if (GTK_IS_FILE_CHOOSER_BUTTON(widget->gobj())) {
+	} else if (GTK_IS_FILE_CHOOSER_BUTTON(widget->gobj())) {
 		static_cast<Gtk::FileChooserButton*>(widget)->set_filename(value);
-	}
-	else if (GTK_IS_COLOR_BUTTON(widget->gobj())) {
+	} else if (GTK_IS_COLOR_BUTTON(widget->gobj())) {
 		Gdk::RGBA color;
 		color.set(value);
 		static_cast<Gtk::ColorButton*>(widget)->set_rgba(color);
-	}
-	else if (GTK_IS_FONT_BUTTON(widget->gobj())) {
+	} else if (GTK_IS_FONT_BUTTON(widget->gobj())) {
 		static_cast<Gtk::FontButton*>(widget)->set_font_name(value);
-	}
-	else if (GTK_IS_SCALE_BUTTON(widget->gobj())) {
+	} else if (GTK_IS_SCALE_BUTTON(widget->gobj())) {
 		static_cast<Gtk::ScaleButton*>(widget)->set_value(std::stod(value));
-	}
-	else if (GTK_IS_VOLUME_BUTTON(widget->gobj())) {
+	} else if (GTK_IS_VOLUME_BUTTON(widget->gobj())) {
 		static_cast<Gtk::VolumeButton*>(widget)->set_value(std::stod(value));
-	}
-	else if (GTK_IS_SCALE(widget->gobj())) {
+	} else if (GTK_IS_SCALE(widget->gobj())) {
 		static_cast<Gtk::Scale*>(widget)->set_value(std::stod(value));
-	}
-	else if (GTK_IS_SPIN_BUTTON(widget->gobj())) {
+	} else if (GTK_IS_SPIN_BUTTON(widget->gobj())) {
 		static_cast<Gtk::SpinButton*>(widget)->set_value(std::stod(value));
-	}
-	else if (GTK_IS_ENTRY(widget->gobj())) {
+	} else if (GTK_IS_ENTRY(widget->gobj())) {
 		static_cast<Gtk::Entry*>(widget)->set_text(value);
 	}
 }
