@@ -167,11 +167,9 @@ private:
 	sigc::signal<void> signal_list_changed_;
 
 public:
-	void init_menu();
 	static std::map<std::string, std::string> parse_dialog(const Gtk::Widget &dialog_contents);
 	void load_dir(const std::string &pluginsprefix);
 	void load_plugin( const std::string &file, const std::string &plugindir, bool notify = false);
-	void refresh_menu();
 	void remove_plugin( const std::string &id);
 	bool remove_plugin_recursive( const std::string &filename);
 	bool run(const PluginScript& script, std::vector<std::string> args, const std::unordered_map<std::string,std::string>& view_state) const;
