@@ -33,7 +33,6 @@
 #endif
 
 #include "dialog_pluginmanager.h"
-#include <fstream>
 
 #include <libxml++/libxml++.h>
 #include <glibmm/fileutils.h>
@@ -56,12 +55,13 @@
 #include <gtkmm/switch.h>
 #include <gtkmm/volumebutton.h>
 
+#include <synfig/general.h>
+
+#include <synfigapp/main.h>
+
 #include <gui/localization.h>
 #include <gui/app.h>
 
-#include <synfig/general.h>
-#include <synfigapp/main.h>
-#include <synfig/os.h>
 
 #endif
 
