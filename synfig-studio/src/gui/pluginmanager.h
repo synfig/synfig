@@ -144,7 +144,6 @@ public:
 	PluginString description;
 
 	bool is_valid() const;
-	void launch_dir() const;
 };
 
 class PluginManager
