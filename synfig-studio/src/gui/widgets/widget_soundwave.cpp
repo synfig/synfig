@@ -278,13 +278,20 @@ bool Widget_SoundWave::do_load(const synfig::filesystem::Path& filename)
 	std::string real_filename = Glib::filename_from_utf8(filename.u8string());
 	Mlt::Profile profile;
 	Mlt::Producer *track = new Mlt::Producer(profile, (std::string("avformat:") + real_filename).c_str());
-	if (!track->get_producer() || track->get_length() <= 0) {
+	Mlt::Frame *frame = track->get_frame(0);
+	int sample_rate = frame ? frame->get_int("audio_frequency") : 0;
+	if (!track->get_producer() || track->get_length() <= 0 || track->get_length() == 2147483647 || sample_rate <= 0) {
+		delete frame;
 		delete track;
 		track = new Mlt::Producer(profile, (std::string("vorbis:") + real_filename).c_str());
-		if (!track->get_producer() || track->get_length() <= 0) {
+		frame = track->get_frame(0);
+		sample_rate = frame ? frame->get_int("audio_frequency") : 0;
+		if (!track->get_producer() || track->get_length() <= 0 || track->get_length() == 2147483647 || sample_rate <= 0) {
+			delete frame;
 			delete track;
 			return false;
 		}
+		delete frame;
 	}
 
 	const int length = track->get_length();
