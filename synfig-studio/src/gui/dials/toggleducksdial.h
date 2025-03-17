@@ -33,7 +33,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/toolbar.h>
+#include <gtkmm/box.h>
 #include <gtkmm/toggletoolbutton.h>
 
 #include <gui/duckmatic.h>
@@ -62,8 +62,8 @@ public:
 	ToggleDucksDial(const Gtk::IconSize &size);
 	void update_toggles(Duck::Type mask);
 
-	void insert_to_toolbar(Gtk::Toolbar &toolbar, int index = -1);
-	void remove_from_toolbar(Gtk::Toolbar &toolbar);
+	void insert_to_toolbar(Gtk::Box &toolbar, int index = -1);
+	void remove_from_toolbar(Gtk::Box &toolbar);
 
 	Glib::SignalProxy0<void> signal_ducks_position()  { return ducks_position.signal_toggled(); }
 	Glib::SignalProxy0<void> signal_ducks_vertex()    { return ducks_vertex.  signal_toggled(); }
