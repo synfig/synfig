@@ -1163,6 +1163,7 @@ DEFINE_ACTION("switch-to-rightmost-tab",  _("Switch to Rightmost Tab"))
 "	</menu>"
 "	<menu action='menu-plugins'>"
 "		<menuitem action='open-plugin-manager'/>"
+"       <separator />"
 "	</menu>"
 "	<menu action='menu-window'>"
 "		<menu action='menu-workspace'>"
