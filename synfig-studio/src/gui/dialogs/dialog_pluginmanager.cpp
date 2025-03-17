@@ -79,8 +79,9 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 static void set_widget_value(Gtk::Widget* widget, const std::string& value) {
-	if (!widget) return;
-
+	if (!widget)
+		return;
+    
 	if (GTK_IS_COMBO_BOX_TEXT(widget->gobj())) {
 		auto* combo = static_cast<Gtk::ComboBoxText*>(widget);
 		if (combo->get_has_entry()) {
@@ -128,7 +129,8 @@ static void set_widget_value(Gtk::Widget* widget, const std::string& value) {
 }
 
 static void hydrate_config(Gtk::Container* container, const std::map<std::string, std::string>& values) {
-	if (!container) return;
+	if (!container)
+		return;
 
 	// Process all children
 
@@ -202,10 +204,12 @@ Dialog_PluginManager::refresh()
 void
 Dialog_PluginManager::save_plugin_config(const std::string& plugin_id, Gtk::Widget* config_widget)
 {
-	if (!config_widget) return;
+	if (!config_widget)
+		return;
 
 	Plugin plugin = App::plugin_manager.get_plugin(plugin_id);
-	if (!plugin.is_valid()) return;
+	if (!plugin.is_valid())
+		return;
 
 	// Construct file paths
 	std::string user_config_file = plugin.pluginDir + "/user_config.json";
@@ -246,7 +250,8 @@ Dialog_PluginManager::save_plugin_config(const std::string& plugin_id, Gtk::Widg
 void
 Dialog_PluginManager::reset_plugin_config(const std::string& plugin_id, Gtk::Widget* config_widget)
 {
-	if (!config_widget) return;
+	if (!config_widget)
+		return;
 
 	// Ask for confirmation
 	confirmation_dialog.set_message(_("Are you sure you want to reset all settings to default?"));
@@ -255,7 +260,8 @@ Dialog_PluginManager::reset_plugin_config(const std::string& plugin_id, Gtk::Wid
 
 	if (response == Gtk::RESPONSE_OK) {
 		Plugin plugin = App::plugin_manager.get_plugin(plugin_id);
-		if (!plugin.is_valid()) return;
+		if (!plugin.is_valid())
+			return;
 
 		std::string default_config_file = plugin.pluginDir + "/default_config.json";
 		std::string user_config_file = plugin.pluginDir + "/user_config.json";
@@ -592,7 +598,8 @@ Dialog_PluginManager::on_install_plugin_button_clicked()
 {
 	// Show the dialog and wait for a user response
 	const int result = plugin_file_dialog.run();
-	if (result != Gtk::RESPONSE_OK) return;
+	if (result != Gtk::RESPONSE_OK)
+		return;
 	std::vector<std::string> files;
 	synfig::FileSystemNative::Handle native_fs = FileSystemNative::instance();
 	synfig::FileContainerZip::Handle zip_fs = new FileContainerZip();
