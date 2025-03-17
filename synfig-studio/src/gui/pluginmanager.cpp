@@ -416,12 +416,6 @@ bool studio::Plugin::is_valid() const
 	return !name.fallback().empty();
 }
 
-void studio::Plugin::launch_dir() const
-{
-	synfig::info(pluginDir);
-	synfig::OS::launch_file_async(pluginDir);
-}
-
 studio::ImportExport studio::ImportExport::load(const xmlpp::Node& node)
 {
 	ImportExport ie;

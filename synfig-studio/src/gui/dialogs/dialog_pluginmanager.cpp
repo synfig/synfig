@@ -56,12 +56,12 @@
 #include <gtkmm/volumebutton.h>
 
 #include <synfig/general.h>
+#include <synfig/os.h>
 
 #include <synfigapp/main.h>
 
 #include <gui/localization.h>
 #include <gui/app.h>
-
 
 #endif
 
@@ -547,7 +547,7 @@ Dialog_PluginManager::build_listbox()
 		});
 
 		open_folder->signal_clicked().connect([plugin]() {
-			plugin.launch_dir();
+			synfig::OS::launch_file_async(plugin.pluginDir);
 		});
 
 		plugin_option_box->pack_start(*restore_settings, Gtk::PACK_SHRINK, 10);
