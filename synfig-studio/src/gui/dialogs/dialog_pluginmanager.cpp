@@ -598,8 +598,10 @@ Dialog_PluginManager::on_install_plugin_button_clicked()
 {
 	// Show the dialog and wait for a user response
 	const int result = plugin_file_dialog.run();
-	if (result != Gtk::RESPONSE_OK)
+	if (result != Gtk::RESPONSE_OK) {
+		plugin_file_dialog.close();
 		return;
+	}
 	std::vector<std::string> files;
 	synfig::FileSystemNative::Handle native_fs = FileSystemNative::instance();
 	synfig::FileContainerZip::Handle zip_fs = new FileContainerZip();
