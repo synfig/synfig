@@ -715,7 +715,7 @@ Instance::save_as(const synfig::String &file_name)
 }
 
 void
-Instance::generate_new_name(
+Instance::generate_new_image_filename(
 	const Layer::Handle &layer,
 	String &out_description,
 	String &out_filename,
