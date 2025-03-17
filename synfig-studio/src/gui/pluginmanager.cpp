@@ -237,9 +237,7 @@ parse_boolean_attribute(const xmlpp::Element& element, const std::string& attrib
 {
 	std::string attr = element.get_attribute_value(attribute_name);
 	if ( !attr.empty() )
-	{
 		return parse_boolean_string(attr);
-	}
 	return default_value;
 }
 
@@ -247,8 +245,7 @@ static studio::PluginScript::ArgNecessity
 parse_argument_necessity(const xmlpp::Element& element, const std::string& attribute_name, studio::PluginScript::ArgNecessity default_value)
 {
 	std::string attr = element.get_attribute_value(attribute_name);
-	if ( !attr.empty() )
-	{
+	if ( !attr.empty() ) {
 		auto s = synfig::trim(attr);
 		synfig::strtolower(s);
 		if (s == "optional")
@@ -491,8 +488,7 @@ studio::PluginManager::load_plugin( const std::string& file, const std::string& 
 		//parser.set_validate();
 		parser.set_substitute_entities(); //We just want the text to be resolved/unescaped automatically.
 		parser.parse_file(file);
-		if ( !parser )
-		{
+		if ( !parser ) {
 			synfig::warning("Invalid plugin.xml file!");
 			return;
 		}
@@ -505,8 +501,7 @@ studio::PluginManager::load_plugin( const std::string& file, const std::string& 
 		}
 
 		auto execlist = pNode->find("./exec");
-		if ( !execlist.empty() )
-		{
+		if ( !execlist.empty() ) {
 			Plugin plugin;
 			plugin.name = PluginString::load(*pNode, "name");
 			PluginScript script = PluginScript::load(*execlist[0], plugindir);
@@ -557,7 +552,7 @@ studio::PluginManager::load_plugin( const std::string& file, const std::string& 
 		std::cout << "Exception caught: " << ex.what() << std::endl;
 	}
 
-	if(notify)
+	if (notify)
 		signal_list_changed_.emit();
 }
 
@@ -577,8 +572,7 @@ void studio::PluginManager::load_import_export(
 
 		ImportExport ie = ImportExport::load(*exporter_node);
 		PluginScript script = PluginScript::load(*execlist[0], plugindir);
-		if ( ie.is_valid() && script.is_valid() )
-		{
+		if ( ie.is_valid() && script.is_valid() ) {
 			ie.id  = id + "/" + name + std::to_string(number++);
 			scripts_.emplace(ie.id, std::move(script));
 			output.emplace_back(std::move(ie));
@@ -594,8 +588,7 @@ std::string studio::PluginManager::interpreter_executable(const std::string& int
 	// with SYNFIG_PYTHON_BINARY env variable:
 	std::string command;
 
-	if ( interpreter == "python" )
-	{
+	if ( interpreter == "python" ) {
 		std::vector<std::string> search_paths;
 		std::string custom_python_binary = Glib::getenv("SYNFIG_PYTHON_BINARY");
 		if (!custom_python_binary.empty()) {
@@ -643,11 +636,9 @@ std::string studio::PluginManager::interpreter_executable(const std::string& int
 
 bool studio::PluginManager::check_and_run_dialog(const PluginScript& script, std::string& dialog_args)
 {
-	if (!script.script.empty())
-	{
+	if (!script.script.empty()) {
 		auto ui_file = script.working_directory + "/" + synfig::filesystem::Path::filename_sans_extension(script.script) + ".ui";
-		if (Glib::file_test(ui_file, Glib::FILE_TEST_EXISTS | Glib::FILE_TEST_IS_REGULAR))
-		{
+		if (Glib::file_test(ui_file, Glib::FILE_TEST_EXISTS | Glib::FILE_TEST_IS_REGULAR)) {
 			std::string error_msg;
 			try {
 				auto builder = Gtk::Builder::create_from_file(ui_file);
@@ -685,8 +676,7 @@ bool studio::PluginManager::check_and_run_dialog(const PluginScript& script, std
 				error_msg = _("Unknown exception");
 			}
 
-			if (!error_msg.empty())
-			{
+			if (!error_msg.empty()) {
 				studio::App::dialog_message_1b("Error", synfig::strprintf(_("Plugin execution failed: %s"), error_msg.c_str()), _("User Interface failed to be load"), _("Close"));
 				return false;
 			}
@@ -698,8 +688,7 @@ bool studio::PluginManager::check_and_run_dialog(const PluginScript& script, std
 bool studio::PluginManager::run(const studio::PluginScript& script, std::vector<std::string> args, const std::unordered_map<std::string,std::string>& view_state) const
 {
 	std::string exec = interpreter_executable(script.interpreter);
-	if ( exec.empty() )
-	{
+	if ( exec.empty() ) {
 		return false;
 	}
 
@@ -772,8 +761,7 @@ bool studio::PluginManager::run(const studio::PluginScript& script, std::vector<
 	handle_stream(script.stdout_behaviour, stdout_str);
 	handle_stream(script.stderr_behaviour, stderr_str);
 
-	if ( exit_status && (stderr_str.empty() || script.stderr_behaviour != PluginStream::Message) )
-	{
+	if ( exit_status && (stderr_str.empty() || script.stderr_behaviour != PluginStream::Message) ) {
 		studio::App::dialog_message_1b("Error", _("Plugin execution failed"), "details", _("Close"));
 	}
 
@@ -827,8 +815,7 @@ bool studio::PluginManager::remove_plugin_recursive(const std::string& filename)
 		return false;
 	if (fileSystem->is_file(filename))
 		return fileSystem->file_remove(filename);
-	if (fileSystem->is_directory(filename))
-	{
+	if (fileSystem->is_directory(filename)) {
 		typedef std::vector<std::string> FileList;
 		FileList files;
 		fileSystem->directory_scan(filename, files);
@@ -848,8 +835,7 @@ void studio::PluginManager::remove_plugin(const std::string& id)
 	{
 		Plugin plugin = *(std::find_if(plugins_.begin(), plugins_.end(), [&id](const Plugin& plugin) { return plugin.id == id; }));
 		auto fileSystem = synfig::FileSystemNative::instance();
-		if(remove_plugin_recursive(plugin.pluginDir))
-		{
+		if (remove_plugin_recursive(plugin.pluginDir)) {
 			plugins_.erase(std::remove_if(plugins_.begin(), plugins_.end(), [&id](const Plugin& plugin) { return plugin.id == id; }), plugins_.end());
 			signal_list_changed_.emit();
 		}

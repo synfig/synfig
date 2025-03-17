@@ -574,8 +574,7 @@ std::string extract_plugin_name(std::istream& fileStream)
 	}
 
 	auto execlist = pNode->find("./exec");
-	if (!execlist.empty())
-	{
+	if (!execlist.empty()) {
 		for (const xmlpp::Node* node : pNode->find("./name") ) {
 			const xmlpp::Element* element = dynamic_cast<const xmlpp::Element*>(node);
 			std::string lang = element->get_attribute_value("lang");
@@ -612,7 +611,7 @@ Dialog_PluginManager::on_install_plugin_button_clicked()
 		if (file == "plugin.xml") {
 			plugin_metadata_file = file;
 			break;
-		} else if(zip_fs->is_directory(file)) {
+		} else if (zip_fs->is_directory(file)) {
 			std::vector<std::string> child_files;
 			if (zip_fs->directory_scan(file, child_files)) {
 			auto it = std::find(child_files.begin(), child_files.end(), "plugin.xml");
