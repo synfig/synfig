@@ -25,8 +25,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_GTKMM_PLUGINMANAGER_H
-#define __SYNFIG_GTKMM_PLUGINMANAGER_H
+#ifndef SYNFIG_STUDIO_PLUGINMANAGER_H
+#define SYNFIG_STUDIO_PLUGINMANAGER_H
 
 /* === H E A D E R S ======================================================= */
 
