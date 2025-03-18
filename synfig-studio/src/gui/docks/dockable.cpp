@@ -26,16 +26,16 @@
 /* === H E A D E R S ======================================================= */
 
 #ifdef USING_PCH
-#	include "pch.h"
+#include "pch.h"
 #else
 #ifdef HAVE_CONFIG_H
-#	include <config.h>
+#include <config.h>
 #endif
 
 #include "docks/dockable.h"
 
 #include <gtkmm/stock.h>
-#if GTK_CHECK_VERSION (3,20,0)
+#if GTK_CHECK_VERSION(3, 20, 0)
 #include <gdkmm/seat.h>
 #else
 #include <gdkmm/devicemanager.h>
@@ -62,14 +62,13 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-Dockable::Dockable(const synfig::String& name, const synfig::String& local_name, std::string icon_name_):
-	name_(name),
-	local_name_(local_name),
-	icon_name(icon_name_),
-	use_scrolled(true),
-	container(),
-	toolbar_container(),
-	dnd_success_()
+Dockable::Dockable(const synfig::String &name, const synfig::String &local_name, std::string icon_name_) : name_(name),
+																										   local_name_(local_name),
+																										   icon_name(icon_name_),
+																										   use_scrolled(true),
+																										   container(),
+																										   toolbar_container(),
+																										   dnd_success_()
 {
 	clear();
 	set_size_request(175, 120);
@@ -77,31 +76,32 @@ Dockable::Dockable(const synfig::String& name, const synfig::String& local_name,
 }
 
 Dockable::~Dockable()
-{ }
+{
+}
 
-bool
-Dockable::get_use_scrolled() const
-	{ return use_scrolled; }
+bool Dockable::get_use_scrolled() const
+{
+	return use_scrolled;
+}
 
-void
-Dockable::set_use_scrolled(bool x) {
+void Dockable::set_use_scrolled(bool x)
+{
 	use_scrolled = x;
-	if (!container) return;
+	if (!container)
+		return;
 	Gtk::PolicyType policy = use_scrolled ? Gtk::POLICY_AUTOMATIC : Gtk::POLICY_NEVER;
 	container->set_policy(policy, policy);
 }
 
-void
-Dockable::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int, int, const Gtk::SelectionData& selection_data, guint, guint time)
+void Dockable::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext> &context, int, int, const Gtk::SelectionData &selection_data, guint, guint time)
 {
-	if (selection_data.get_length() >= 0
-	 && selection_data.get_format() == 8
-	 && selection_data.get_data_type() == "SYNFIG_DOCK")
+	if (selection_data.get_length() >= 0 && selection_data.get_format() == 8 && selection_data.get_data_type() == "SYNFIG_DOCK")
 	{
-		Dockable& dockable(**reinterpret_cast<Dockable**>(const_cast<guint8*>(selection_data.get_data())));
-		DockBook *parent = dynamic_cast<DockBook*>(get_parent());
-		DockBook *dockable_parent = dynamic_cast<DockBook*>(dockable.get_parent());
-		if (parent) {
+		Dockable &dockable(**reinterpret_cast<Dockable **>(const_cast<guint8 *>(selection_data.get_data())));
+		DockBook *parent = dynamic_cast<DockBook *>(get_parent());
+		DockBook *dockable_parent = dynamic_cast<DockBook *>(dockable.get_parent());
+		if (parent)
+		{
 			if (dockable_parent != parent)
 				parent->add(dockable, parent->page_num(*this));
 			else
@@ -115,51 +115,47 @@ Dockable::on_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, i
 	context->drag_finish(false, false, time);
 }
 
-void
-Dockable::on_drag_end(const Glib::RefPtr<Gdk::DragContext>&/*context*/)
+void Dockable::on_drag_end(const Glib::RefPtr<Gdk::DragContext> & /*context*/)
 {
-	if (!dnd_success_) {
+	if (!dnd_success_)
+	{
 		detach_to_pointer();
 	}
 	App::dock_manager->set_dock_area_visibility(false, nullptr);
 }
 
-void
-Dockable::on_drag_begin(const Glib::RefPtr<Gdk::DragContext>&/*context*/)
+void Dockable::on_drag_begin(const Glib::RefPtr<Gdk::DragContext> & /*context*/)
 {
 	dnd_success_ = false;
-	App::dock_manager->set_dock_area_visibility(true, dynamic_cast<DockBook*>(get_parent()));
+	App::dock_manager->set_dock_area_visibility(true, dynamic_cast<DockBook *>(get_parent()));
 }
 
-void
-Dockable::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext>&, Gtk::SelectionData& selection_data, guint /*info*/, guint /*time*/)
+void Dockable::on_drag_data_get(const Glib::RefPtr<Gdk::DragContext> &, Gtk::SelectionData &selection_data, guint /*info*/, guint /*time*/)
 {
-	Dockable* tmp(this);
+	Dockable *tmp(this);
 	dnd_success_ = true;
-	selection_data.set(8, reinterpret_cast<const guchar*>(&tmp), sizeof(Dockable**));
+	selection_data.set(8, reinterpret_cast<const guchar *>(&tmp), sizeof(Dockable **));
 }
 
-void
-Dockable::set_local_name(const synfig::String& local_name)
+void Dockable::set_local_name(const synfig::String &local_name)
 {
 	local_name_ = local_name;
 	signal_icon_changed()();
 }
 
-void
-Dockable::attach_dnd_to(Gtk::Widget& widget)
+void Dockable::attach_dnd_to(Gtk::Widget &widget)
 {
 	std::vector<Gtk::TargetEntry> listTargets;
-	listTargets.push_back( Gtk::TargetEntry("SYNFIG_DOCK") );
+	listTargets.push_back(Gtk::TargetEntry("SYNFIG_DOCK"));
 
 	widget.drag_source_set(listTargets);
 	if (Gtk::IconTheme::get_default()->has_icon(icon_name))
 		widget.drag_source_set_icon(icon_name);
 	widget.drag_dest_set(listTargets);
-	widget.signal_drag_data_get().connect( sigc::mem_fun(*this, &Dockable::on_drag_data_get ));
-	widget.signal_drag_end().connect( sigc::mem_fun(*this, &Dockable::on_drag_end ));
-	widget.signal_drag_begin().connect( sigc::mem_fun(*this, &Dockable::on_drag_begin ));
-	widget.signal_drag_data_received().connect( sigc::mem_fun(*this, &Dockable::on_drag_data_received ));
+	widget.signal_drag_data_get().connect(sigc::mem_fun(*this, &Dockable::on_drag_data_get));
+	widget.signal_drag_end().connect(sigc::mem_fun(*this, &Dockable::on_drag_end));
+	widget.signal_drag_begin().connect(sigc::mem_fun(*this, &Dockable::on_drag_begin));
+	widget.signal_drag_data_received().connect(sigc::mem_fun(*this, &Dockable::on_drag_data_received));
 }
 
 void Dockable::detach()
@@ -171,7 +167,7 @@ void Dockable::detach()
 void Dockable::detach_to_pointer()
 {
 	Glib::RefPtr<Gdk::Device> mouse_device;
-#if GTK_CHECK_VERSION (3,20,0)
+#if GTK_CHECK_VERSION(3, 20, 0)
 	Glib::RefPtr<Gdk::Seat> seat = get_display()->get_default_seat();
 	mouse_device = seat->get_pointer();
 #else
@@ -186,8 +182,7 @@ void Dockable::detach_to_pointer()
 	get_window()->move(x, y);
 }
 
-void
-Dockable::add(Gtk::Widget& x)
+void Dockable::add(Gtk::Widget &x)
 {
 	reset_container();
 	x.set_hexpand();
@@ -196,8 +191,7 @@ Dockable::add(Gtk::Widget& x)
 	container->add(x);
 }
 
-void
-Dockable::set_toolbar(Gtk::Toolbar& toolbar)
+void Dockable::set_toolbar(Gtk::Toolbar &toolbar)
 {
 	reset_toolbar();
 	toolbar.set_icon_size(Gtk::BuiltinIconSize::ICON_SIZE_MENU);
@@ -208,29 +202,35 @@ Dockable::set_toolbar(Gtk::Toolbar& toolbar)
 	toolbar_container->add(toolbar);
 }
 
-Gtk::ToolButton*
-Dockable::add_button(const std::string& icon_name, const synfig::String& tooltip)
+Gtk::ToolButton *
+Dockable::add_button(const std::string &icon_name, const synfig::String &tooltip)
 {
-	if (!toolbar_container) reset_toolbar();
-	Gtk::Toolbar *toolbar = dynamic_cast<Gtk::Toolbar*>(toolbar_container->get_child());
-	if (!toolbar) {
+	if (!toolbar_container)
+		reset_toolbar();
+	Gtk::Toolbar *toolbar = dynamic_cast<Gtk::Toolbar *>(toolbar_container->get_child());
+	if (!toolbar)
+	{
 		toolbar = manage(new Gtk::Toolbar());
 		set_toolbar(*toolbar);
 	}
 
-	Gtk::ToolButton* ret(manage(new Gtk::ToolButton()));
+	Gtk::ToolButton *ret(manage(new Gtk::ToolButton()));
 	ret->set_icon_name(icon_name);
 	ret->set_tooltip_text(tooltip);
 	ret->show();
 	toolbar->set_has_tooltip();
 	toolbar->append(*ret);
+	ret->set_margin_start(10); // Add space to the left
+	ret->set_margin_end(10);   // Add space to the right
+	ret->set_margin_top(5);	   // Add vertical spacing
+	ret->set_margin_bottom(5);
 	return ret;
 }
 
-void
-Dockable::reset_container()
+void Dockable::reset_container()
 {
-	if (container) delete container;
+	if (container)
+		delete container;
 	container = manage(new Gtk::ScrolledWindow);
 	container->set_shadow_type(Gtk::SHADOW_NONE);
 	container->set_hexpand();
@@ -243,74 +243,77 @@ Dockable::reset_container()
 	//   Allocating size to widget without calling gtk_widget_get_preferred_width/height().
 	//   How does the code know the size to allocate?
 	// related with combination of Grid, ScrolledWindow and TreeView
-	//App::process_all_events();
+	// App::process_all_events();
 	// Update:
 	// Seems bug in other place, process_all_events() here produces
 	// a concurrent event processing and collisions
 }
 
-void
-Dockable::reset_toolbar()
+void Dockable::reset_toolbar()
 {
-	if (toolbar_container) delete toolbar_container;
+	if (toolbar_container)
+		delete toolbar_container;
 	toolbar_container = manage(new Gtk::EventBox);
 	toolbar_container->set_hexpand();
 	toolbar_container->show();
 	attach(*toolbar_container, 0, 1, 1, 1);
 }
 
-void
-Dockable::clear()
+void Dockable::clear()
 {
 	reset_container();
 	reset_toolbar();
 }
 
-void
-Dockable::present()
+void Dockable::present()
 {
-	DockBook *parent = dynamic_cast<DockBook*>(get_parent());
-	if (parent) {
+	DockBook *parent = dynamic_cast<DockBook *>(get_parent());
+	if (parent)
+	{
 		parent->set_current_page(parent->page_num(*this));
 		parent->present();
-	} else {
+	}
+	else
+	{
 		show();
 
-		DockBook* book = manage(new DockBook());
+		DockBook *book = manage(new DockBook());
 		book->add(*this);
 		book->show();
 
-		DockDialog* dock_dialog(new DockDialog());
+		DockDialog *dock_dialog(new DockDialog());
 		dock_dialog->add(*book);
 		dock_dialog->present();
 	}
 	App::dock_manager->update_window_titles();
 }
 
-Gtk::Widget*
+Gtk::Widget *
 Dockable::create_tab_label()
 {
 	Gtk::EventBox *event_box = manage(new Gtk::EventBox());
 	attach_dnd_to(*event_box);
 
 	// Check to make sure the icon is valid
-	if (Gtk::IconTheme::get_default()->has_icon(icon_name)) {
+	if (Gtk::IconTheme::get_default()->has_icon(icon_name))
+	{
 		// add icon
 		Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
 
-#if GTK_CHECK_VERSION(3,24,0)
-		Gtk::Image* icon(manage(new Gtk::Image(icon_name, iconsize)));
+#if GTK_CHECK_VERSION(3, 24, 0)
+		Gtk::Image *icon(manage(new Gtk::Image(icon_name, iconsize)));
 #else
-		Gtk::Image* icon(manage(new Gtk::Image()));
+		Gtk::Image *icon(manage(new Gtk::Image()));
 		icon->set_from_icon_name(icon_name, iconsize);
 #endif
 		icon->show();
 		event_box->set_tooltip_text(get_local_name());
 		event_box->add(*icon);
-
-	} else {
+	}
+	else
+	{
 		// bad icon, add label
-		Gtk::Label* label = manage(new Gtk::Label(get_local_name()));
+		Gtk::Label *label = manage(new Gtk::Label(get_local_name()));
 		label->show();
 		event_box->add(*label);
 	}
@@ -318,10 +321,10 @@ Dockable::create_tab_label()
 	return event_box;
 }
 
-void Dockable::write_layout_string(std::string& /*params*/) const
+void Dockable::write_layout_string(std::string & /*params*/) const
 {
 }
 
-void Dockable::read_layout_string(const std::string& /*params*/) const
+void Dockable::read_layout_string(const std::string & /*params*/) const
 {
 }
