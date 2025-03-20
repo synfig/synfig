@@ -685,12 +685,12 @@ MainWindow::edit_custom_workspace_list()
 void
 MainWindow::on_plugins_changed()
 {
-	if(save_plugins_merge_id)
+	if (save_plugins_merge_id)
 		App::ui_manager()->remove_ui(save_plugins_merge_id);
 
 	Glib::RefPtr<Gtk::ActionGroup> plugins_action_group = Gtk::ActionGroup::create("plugin-actions");
 	std::string ui_info_menu = "	<menu action='menu-plugins'>";
-	for ( const auto& plugin : studio::App::plugin_manager.plugins() ) {
+	for (const auto& plugin : studio::App::plugin_manager.plugins()) {
 		Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(plugin.id, plugin.name.get()) ); 
 		plugins_action_group->add(action);
 		ui_info_menu += "	<menuitem action='" + plugin.id + "'/>";
@@ -704,7 +704,7 @@ MainWindow::on_plugins_changed()
 			"</ui>";
 	plugins_action_group->set_sensitive(false);
 
-	if(!save_plugins_merge_id)
+	if (!save_plugins_merge_id)
 		App::ui_manager()->insert_action_group(plugins_action_group);	
 	else {
 		typedef std::vector< Glib::RefPtr<Gtk::ActionGroup> > ActionGroupList;

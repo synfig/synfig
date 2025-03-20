@@ -1539,7 +1539,7 @@ CanvasView::update_plugin_menu()
 {
 	auto instance = get_instance().get();
 	if (instance) {
-		for (const auto& plugin : App::plugin_manager.plugins() ) {
+		for (const auto& plugin : App::plugin_manager.plugins()) {
 			std::string id = plugin.id;
 			if (!action_group->get_action(id))
 				action_group->add(

@@ -670,7 +670,7 @@ Dialog_PluginManager::on_install_plugin_button_clicked()
 	}
 	if (native_fs->directory_create(output_path)) {
 		if (plugin_metadata_file.find("/") == std::string::npos) {
-			for(const auto& file : files) {
+			for (const auto& file : files) {
 				zip_fs->copy_recursive(zip_fs,  file, native_fs, output_path + file);
 			}
 		} else {
