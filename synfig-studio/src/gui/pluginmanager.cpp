@@ -840,8 +840,8 @@ bool studio::PluginManager::remove_plugin_recursive(const std::string& filename)
 		FileList files;
 		fileSystem->directory_scan(filename, files);
 		bool success = true;
-		for(FileList::const_iterator i = files.begin(); i != files.end(); ++i)
-			if (!remove_plugin_recursive(filename + ETL_DIRECTORY_SEPARATOR + *i))
+		for (const auto& file : files)
+			if (!remove_plugin_recursive(filename + ETL_DIRECTORY_SEPARATOR + file))
 				success = false;
 		fileSystem->file_remove(filename);
 		return success;
