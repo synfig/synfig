@@ -1543,8 +1543,8 @@ CanvasView::update_plugin_menu()
 			std::string id = plugin.id;
 			if (!action_group->get_action(id))
 				action_group->add(
-					Gtk::Action::create(id, plugin.name.get()),
-					[instance, id](){instance->run_plugin(id, true);}
+					Gtk::Action::create(id, plugin.name.get() + " - " + instance->get_file_name()),
+					sigc::bind(sigc::mem_fun(*instance, &studio::Instance::run_plugin), id, true, std::vector<std::string>{})
 				);
 		}
 	}
