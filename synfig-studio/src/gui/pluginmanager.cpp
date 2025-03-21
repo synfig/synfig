@@ -801,28 +801,6 @@ studio::Plugin studio::PluginManager::get_plugin(const std::string& id) const
 	return Plugin();
 }
 
-bool studio::PluginManager::remove_plugin_recursive(const std::string& filename)
-{
-	auto fileSystem = synfig::FileSystemNative::instance();
-
-	if (filename.empty())
-		return false;
-	if (fileSystem->is_file(filename))
-		return fileSystem->file_remove(filename);
-	if (fileSystem->is_directory(filename)) {
-		typedef std::vector<std::string> FileList;
-		FileList files;
-		fileSystem->directory_scan(filename, files);
-		bool success = true;
-		for (const auto& file : files)
-			if (!remove_plugin_recursive(filename + ETL_DIRECTORY_SEPARATOR + file))
-				success = false;
-		fileSystem->file_remove(filename);
-		return success;
-	}
-	return true;
-}
-
 void studio::PluginManager::remove_plugin(const std::string& id)
 {
 	try {
@@ -830,7 +808,7 @@ void studio::PluginManager::remove_plugin(const std::string& id)
 		if (plugin_it == plugins_.end())
 			return;
 		auto fileSystem = synfig::FileSystemNative::instance();
-		if (remove_plugin_recursive(plugin_it->pluginDir)) {
+		if (fileSystem->remove_recursive(plugin_it->pluginDir)) {
 			plugins_.erase(plugin_it);
 			signal_list_changed_.emit();
 		}
