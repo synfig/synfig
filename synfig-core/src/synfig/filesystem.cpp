@@ -143,6 +143,8 @@ bool FileSystem::remove_recursive(const filesystem::Path& filename)
 		for (const auto& i : files)
 			if (!remove_recursive(filename / i))
 				success = false;
+		if (success)
+			success = file_remove(filename.u8string());
 		return success;
 	}
 	return true;
