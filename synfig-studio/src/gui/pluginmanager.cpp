@@ -825,17 +825,16 @@ bool studio::PluginManager::remove_plugin_recursive(const std::string& filename)
 
 void studio::PluginManager::remove_plugin(const std::string& id)
 {
-	try
-	{
-		Plugin plugin = *(std::find_if(plugins_.begin(), plugins_.end(), [&id](const Plugin& plugin) { return plugin.id == id; }));
+	try {
+		auto plugin_it = std::find_if(plugins_.begin(), plugins_.end(), [&id](const Plugin& plugin) { return plugin.id == id; });
+		if (plugin_it == plugins_.end())
+			return;
 		auto fileSystem = synfig::FileSystemNative::instance();
-		if (remove_plugin_recursive(plugin.pluginDir)) {
-			plugins_.erase(std::remove_if(plugins_.begin(), plugins_.end(), [&id](const Plugin& plugin) { return plugin.id == id; }), plugins_.end());
+		if (remove_plugin_recursive(plugin_it->pluginDir)) {
+			plugins_.erase(plugin_it);
 			signal_list_changed_.emit();
 		}
-	}
-	catch(const std::exception& e)
-	{
+	} catch(const std::exception& e) {
 		studio::App::dialog_message_1b("Error", synfig::strprintf(_("Plugin execution failed: %s"), e.what()), _("Plugin Deletion Failed"), _("Close"));
 	}
 }
