@@ -278,33 +278,9 @@ Dialog_PluginManager::reset_plugin_config(const std::string& plugin_id, Gtk::Wid
 			}
 
 			// Copy default_config.json to user_config.json using FileSystemNative
-			auto src_stream = file_system->get_read_stream(default_config_file);
-			if (!src_stream) {
-				throw std::runtime_error(_("Could not open default configuration file"));
+			if (!synfig::FileSystem::copy(file_system, default_config_file, file_system, user_config_file)) {
+				throw std::runtime_error(_("Could not restore default configuration file"));
 			}
-
-			// Read the default config
-			std::string config_data;
-			char buffer[4096];
-			while (!src_stream->eof()) {
-				src_stream->read(buffer, sizeof(buffer));
-				std::streamsize bytes_read = src_stream->gcount();
-				if (bytes_read > 0) {
-					config_data.append(buffer, bytes_read);
-				}
-			}
-
-			// Then write it to user config
-			auto dst_stream = file_system->get_write_stream(user_config_file);
-			if (!dst_stream) {
-				throw std::runtime_error(_("Could not open user configuration file for writing"));
-			}
-
-			if (!config_data.empty()) {
-				dst_stream->write(config_data.c_str(), config_data.size());
-			}
-			dst_stream->flush();
-			dst_stream.reset();
 
 			message_dialog.set_message(_("Configuration reset to defaults successfully"));
 			message_dialog.run();
@@ -409,27 +385,9 @@ Dialog_PluginManager::build_notebook()
 					synfig::FileSystemNative::Handle native_fs = synfig::FileSystemNative::instance();
 					if (!native_fs->is_file(plugin.pluginDir + "/user_config.json")) {
 						// Copy default config to user config using native filesystem
-						auto src_stream = native_fs->get_read_stream(plugin.pluginDir + "/default_config.json");
-						if (!src_stream) {
-							throw std::runtime_error(_("Could not open default configuration file"));
-						}
-
-						// Read the default config
-						std::stringstream buffer;
-						buffer << src_stream->rdbuf();
-						std::string config_data = buffer.str();
-
-						// Create user config file with the same content
-						auto dst_stream = native_fs->get_write_stream(plugin.pluginDir + "/user_config.json");
-						if (!dst_stream) {
+						if (!synfig::FileSystem::copy(native_fs, default_config_file, native_fs, user_config_file)) {
 							throw std::runtime_error(_("Could not create user configuration file"));
 						}
-
-						if (!config_data.empty()) {
-							dst_stream->write(config_data.c_str(), config_data.size());
-						}
-						dst_stream->flush();
-						dst_stream.reset();
 					}
 
 					// Now try to read the user config file (which should always exist)
