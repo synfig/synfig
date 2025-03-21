@@ -1548,20 +1548,6 @@ CanvasView::update_plugin_menu()
 				);
 		}
 	}
-
-	// remove group if exists
-	typedef std::vector< Glib::RefPtr<Gtk::ActionGroup> > ActionGroupList;
-	ActionGroupList groups = App::ui_manager()->get_action_groups();
-	for (const auto& group : groups) {
-		if (group->get_name() == action_group->get_name()) {
-			App::ui_manager()->remove_action_group(group);
-			App::ui_manager()->insert_action_group(action_group);
-			break;
-		}
-	}
-	groups.clear();
-	App::ui_manager()->ensure_update();
-
 }
 
 void
