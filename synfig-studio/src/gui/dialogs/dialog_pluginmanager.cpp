@@ -76,8 +76,6 @@ using namespace studio;
 
 /* === P R O C E D U R E S ================================================= */
 
-/* === M E T H O D S ======================================================= */
-
 static void set_widget_value(Gtk::Widget* widget, const std::string& value) {
 	if (!widget)
 		return;
@@ -147,6 +145,8 @@ static void hydrate_config(Gtk::Container* container, const std::map<std::string
 			hydrate_config(dynamic_cast<Gtk::Container*>(child), values);
 	}
 }
+
+/* === M E T H O D S ======================================================= */
 
 Dialog_PluginManager::Dialog_PluginManager(Gtk::Window& parent):
     Gtk::Dialog(_("Plugin Manager"), parent),
