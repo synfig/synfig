@@ -133,7 +133,7 @@ class Plugin
 {
 public:
 	std::string id;
-	std::string pluginDir;
+	std::string dir;
 	PluginString name;
 
 	std::string author;
