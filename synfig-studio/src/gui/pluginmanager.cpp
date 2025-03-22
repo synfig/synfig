@@ -500,7 +500,7 @@ studio::PluginManager::load_plugin( const std::string& file, const std::string& 
 			plugin.name = PluginString::load(*pNode, "name");
 			PluginScript script = PluginScript::load(*execlist[0], plugindir);
 			plugin.id = id;
-			plugin.pluginDir = plugindir;
+			plugin.dir = plugindir;
 
 			plugin.release = PluginString::load(*pNode, "release");
 			for ( const xmlpp::Node* node : pNode->find("./author") )
@@ -808,7 +808,7 @@ void studio::PluginManager::remove_plugin(const std::string& id)
 		if (plugin_it == plugins_.end())
 			return;
 		auto fileSystem = synfig::FileSystemNative::instance();
-		if (fileSystem->remove_recursive(plugin_it->pluginDir)) {
+		if (fileSystem->remove_recursive(plugin_it->dir)) {
 			plugins_.erase(plugin_it);
 			signal_list_changed_.emit();
 		}

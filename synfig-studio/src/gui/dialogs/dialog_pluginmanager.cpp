@@ -212,7 +212,7 @@ Dialog_PluginManager::save_plugin_config(const std::string& plugin_id, Gtk::Widg
 		return;
 
 	// Construct file paths
-	std::string user_config_file = plugin.pluginDir + "/user_config.json";
+	const std::string user_config_file = plugin.dir + "/user_config.json";
 
 	// Get configuration data from widgets
 	auto config_data = PluginManager::parse_dialog(*config_widget);
@@ -263,8 +263,8 @@ Dialog_PluginManager::reset_plugin_config(const std::string& plugin_id, Gtk::Wid
 		if (!plugin.is_valid())
 			return;
 
-		std::string default_config_file = plugin.pluginDir + "/default_config.json";
-		std::string user_config_file = plugin.pluginDir + "/user_config.json";
+		const std::string default_config_file = plugin.dir + "/default_config.json";
+		const std::string user_config_file = plugin.dir + "/user_config.json";
 
 		try {
 			auto file_system = FileSystemNative::instance();
@@ -346,11 +346,11 @@ Dialog_PluginManager::build_notebook()
 		plugin_label->set_margin_left(20);
 		plugin_label->set_margin_right(20);
 
-		std::string config_ui_path = plugin.pluginDir + "/configuration.ui";
-		std::string default_config_file = plugin.pluginDir + "/default_config.json";
-		std::string user_config_file = plugin.pluginDir + "/user_config.json";
+		const std::string config_ui_file = plugin.dir + "/configuration.ui";
+		const std::string default_config_file = plugin.dir + "/default_config.json";
+		const std::string user_config_file = plugin.dir + "/user_config.json";
 
-		if (!file_system->is_file(config_ui_path)) {
+		if (!file_system->is_file(config_ui_file)) {
 			// If configuration UI doesn't exist, show simple message that no configuration is available
 			Gtk::Label* info_label = Gtk::manage(new Gtk::Label(
 				_("This plugin doesn't have any configuration available (configuration file doesn't exist)")
@@ -376,14 +376,14 @@ Dialog_PluginManager::build_notebook()
 				try {
 					auto builder = Gtk::Builder::create();
 					try {
-						builder->add_from_file(config_ui_path);
+						builder->add_from_file(config_ui_file);
 					} catch (const Glib::FileError& ex) {
 						throw std::runtime_error(ex.what());
 					}
 					Gtk::Widget* config_widget = nullptr;
 					builder->get_widget("dialog_contents", config_widget);
 					synfig::FileSystemNative::Handle native_fs = synfig::FileSystemNative::instance();
-					if (!native_fs->is_file(plugin.pluginDir + "/user_config.json")) {
+					if (!native_fs->is_file(user_config_file)) {
 						// Copy default config to user config using native filesystem
 						if (!synfig::FileSystem::copy(native_fs, default_config_file, native_fs, user_config_file)) {
 							throw std::runtime_error(_("Could not create user configuration file"));
@@ -391,7 +391,7 @@ Dialog_PluginManager::build_notebook()
 					}
 
 					// Now try to read the user config file (which should always exist)
-					auto stream = native_fs->get_read_stream(plugin.pluginDir + "/user_config.json");
+					auto stream = native_fs->get_read_stream(user_config_file);
 					if (!stream) {
 						throw std::runtime_error(_("Could not open user configuration file for reading"));
 					}
@@ -505,7 +505,7 @@ Dialog_PluginManager::build_listbox()
 		});
 
 		open_folder->signal_clicked().connect([plugin]() {
-			synfig::OS::launch_file_async(plugin.pluginDir);
+			synfig::OS::launch_file_async(plugin.dir);
 		});
 
 		plugin_option_box->pack_start(*restore_settings, Gtk::PACK_SHRINK, 10);
