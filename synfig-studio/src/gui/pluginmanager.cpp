@@ -317,6 +317,10 @@ fetch_data_in_widget(const Gtk::Widget* w, std::map<std::string, std::string>& d
 	}
 };
 
+const synfig::filesystem::Path studio::Plugin::default_config_filename{"default_config.json"};
+const synfig::filesystem::Path studio::Plugin::user_config_filename{"user_config.json"};
+const synfig::filesystem::Path studio::Plugin::config_ui_filename{"configuration.ui"};
+
 std::map<std::string, std::string>
 studio::PluginManager::parse_dialog(const Gtk::Widget& dialog_contents)
 {
@@ -381,7 +385,7 @@ studio::PluginStream studio::PluginScript::stream_from_name(const std::string& n
 	return default_value;
 }
 
-studio::PluginScript studio::PluginScript::load(const xmlpp::Node& node, const std::string& working_directory)
+studio::PluginScript studio::PluginScript::load(const xmlpp::Node& node, const synfig::filesystem::Path& working_directory)
 {
 	const xmlpp::Element& element = dynamic_cast<const xmlpp::Element&>(node);
 	PluginScript script;
@@ -414,6 +418,21 @@ bool studio::PluginScript::is_valid() const
 bool studio::Plugin::is_valid() const
 {
 	return !name.fallback().empty();
+}
+
+synfig::filesystem::Path studio::Plugin::default_config_filepath() const
+{
+	return dir / default_config_filename;
+}
+
+synfig::filesystem::Path studio::Plugin::user_config_filepath() const
+{
+	return dir / user_config_filename;
+}
+
+synfig::filesystem::Path studio::Plugin::config_ui_filepath() const
+{
+	return dir / config_ui_filename;
 }
 
 studio::ImportExport studio::ImportExport::load(const xmlpp::Node& node)
@@ -467,9 +486,9 @@ studio::PluginManager::load_dir( const std::string& pluginsprefix )
 } // END of synfigapp::PluginManager::load_dir()
 
 void
-studio::PluginManager::load_plugin( const std::string& file, const std::string& plugindir, bool notify )
+studio::PluginManager::load_plugin( const synfig::filesystem::Path& file, const synfig::filesystem::Path& plugindir, bool notify )
 {
-	synfig::info(_("   Loading plugin: %s"), synfig::filesystem::Path::basename(plugindir).c_str());
+	synfig::info(_("   Loading plugin: %s"), plugindir.filename().u8_str());
 
 	static int plugin_count = 0;
 	const std::string id = "plugin" + std::to_string(++plugin_count);
@@ -480,7 +499,7 @@ studio::PluginManager::load_plugin( const std::string& file, const std::string& 
 		xmlpp::DomParser parser;
 		//parser.set_validate();
 		parser.set_substitute_entities(); //We just want the text to be resolved/unescaped automatically.
-		parser.parse_file(file);
+		parser.parse_file(file.u8string());
 		if ( !parser ) {
 			synfig::warning("Invalid plugin.xml file!");
 			return;
@@ -550,7 +569,7 @@ studio::PluginManager::load_plugin( const std::string& file, const std::string& 
 }
 
 void studio::PluginManager::load_import_export(
-	const std::string& id, const std::string& plugindir, const xmlpp::Node* node,
+	const std::string& id, const synfig::filesystem::Path& plugindir, const xmlpp::Node* node,
 	const std::string& name, std::vector<ImportExport>& output
 )
 {
@@ -630,11 +649,11 @@ std::string studio::PluginManager::interpreter_executable(const std::string& int
 bool studio::PluginManager::check_and_run_dialog(const PluginScript& script, std::string& dialog_args)
 {
 	if (!script.script.empty()) {
-		auto ui_file = script.working_directory + "/" + synfig::filesystem::Path::filename_sans_extension(script.script) + ".ui";
-		if (Glib::file_test(ui_file, Glib::FILE_TEST_EXISTS | Glib::FILE_TEST_IS_REGULAR)) {
+		auto ui_file = (script.working_directory / script.script).replace_extension({".ui"});
+		if (Glib::file_test(ui_file.u8string(), Glib::FILE_TEST_EXISTS | Glib::FILE_TEST_IS_REGULAR)) {
 			std::string error_msg;
 			try {
-				auto builder = Gtk::Builder::create_from_file(ui_file);
+				auto builder = Gtk::Builder::create_from_file(ui_file.u8string());
 				Gtk::Widget* contents;
 				builder->get_widget("dialog_contents", contents);
 				if (!contents) {
@@ -689,7 +708,7 @@ bool studio::PluginManager::run(const studio::PluginScript& script, std::vector<
 	if (!check_and_run_dialog(script, dialog_data))
 		return false;
 
-	args.insert(args.begin(), script.script);
+	args.insert(args.begin(), script.script.u8string());
 	args.insert(args.begin(), exec);
 
 	std::string canvas_state;
@@ -737,7 +756,7 @@ bool studio::PluginManager::run(const studio::PluginScript& script, std::vector<
 	studio::OneMoment one_moment;
 	try {
 		Glib::spawn_sync(
-			script.working_directory,
+			script.working_directory.u8string(),
 			args,
 			Glib::SPAWN_SEARCH_PATH,
 			Glib::SlotSpawnChildSetup(),

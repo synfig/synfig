@@ -212,7 +212,7 @@ Dialog_PluginManager::save_plugin_config(const std::string& plugin_id, Gtk::Widg
 		return;
 
 	// Construct file paths
-	const std::string user_config_file = plugin.dir + "/user_config.json";
+	const filesystem::Path user_config_file = plugin.user_config_filepath();
 
 	// Get configuration data from widgets
 	auto config_data = PluginManager::parse_dialog(*config_widget);
@@ -231,7 +231,7 @@ Dialog_PluginManager::save_plugin_config(const std::string& plugin_id, Gtk::Widg
 	// Save to user_config.json using FileSystemNative
 	try {
 		auto file_system = FileSystemNative::instance();
-		auto stream = file_system->get_write_stream(user_config_file);
+		auto stream = file_system->get_write_stream(user_config_file.u8string());
 		if (!stream) {
 			throw std::runtime_error(_("Could not open file for writing"));
 		}
@@ -263,14 +263,14 @@ Dialog_PluginManager::reset_plugin_config(const std::string& plugin_id, Gtk::Wid
 		if (!plugin.is_valid())
 			return;
 
-		const std::string default_config_file = plugin.dir + "/default_config.json";
-		const std::string user_config_file = plugin.dir + "/user_config.json";
+		const filesystem::Path default_config_file = plugin.default_config_filepath();
+		const filesystem::Path user_config_file = plugin.user_config_filepath();
 
 		try {
 			auto file_system = FileSystemNative::instance();
 
 			// Check if default config exists
-			if (!file_system->is_file(default_config_file)) {
+			if (!file_system->is_file(default_config_file.u8string())) {
 				message_dialog.set_message(_("Error: Default configuration file not found"));
 				message_dialog.run();
 				message_dialog.hide();
@@ -278,7 +278,7 @@ Dialog_PluginManager::reset_plugin_config(const std::string& plugin_id, Gtk::Wid
 			}
 
 			// Copy default_config.json to user_config.json using FileSystemNative
-			if (!synfig::FileSystem::copy(file_system, default_config_file, file_system, user_config_file)) {
+			if (!synfig::FileSystem::copy(file_system, default_config_file.u8string(), file_system, user_config_file.u8string())) {
 				throw std::runtime_error(_("Could not restore default configuration file"));
 			}
 
@@ -346,11 +346,11 @@ Dialog_PluginManager::build_notebook()
 		plugin_label->set_margin_left(20);
 		plugin_label->set_margin_right(20);
 
-		const std::string config_ui_file = plugin.dir + "/configuration.ui";
-		const std::string default_config_file = plugin.dir + "/default_config.json";
-		const std::string user_config_file = plugin.dir + "/user_config.json";
+		const filesystem::Path config_ui_file = plugin.config_ui_filepath();
+		const filesystem::Path default_config_file = plugin.default_config_filepath();
+		const filesystem::Path user_config_file = plugin.user_config_filepath();
 
-		if (!file_system->is_file(config_ui_file)) {
+		if (!file_system->is_file(config_ui_file.u8string())) {
 			// If configuration UI doesn't exist, show simple message that no configuration is available
 			Gtk::Label* info_label = Gtk::manage(new Gtk::Label(
 				_("This plugin doesn't have any configuration available (configuration file doesn't exist)")
@@ -362,7 +362,7 @@ Dialog_PluginManager::build_notebook()
 			plugin_tab->pack_start(*info_label, Gtk::PACK_SHRINK);
 		} else {
 			// Configuration UI exists, check for default config
-			if (!file_system->is_file(default_config_file)) {
+			if (!file_system->is_file(default_config_file.u8string())) {
 				// Show error if default config is missing
 				Gtk::Label* error_label = Gtk::manage(new Gtk::Label(
 					_("Configuration cannot be loaded - missing default_config.json")
@@ -376,22 +376,22 @@ Dialog_PluginManager::build_notebook()
 				try {
 					auto builder = Gtk::Builder::create();
 					try {
-						builder->add_from_file(config_ui_file);
+						builder->add_from_file(config_ui_file.u8string());
 					} catch (const Glib::FileError& ex) {
 						throw std::runtime_error(ex.what());
 					}
 					Gtk::Widget* config_widget = nullptr;
 					builder->get_widget("dialog_contents", config_widget);
 					synfig::FileSystemNative::Handle native_fs = synfig::FileSystemNative::instance();
-					if (!native_fs->is_file(user_config_file)) {
+					if (!native_fs->is_file(user_config_file.u8string())) {
 						// Copy default config to user config using native filesystem
-						if (!synfig::FileSystem::copy(native_fs, default_config_file, native_fs, user_config_file)) {
+						if (!synfig::FileSystem::copy(native_fs, default_config_file.u8string(), native_fs, user_config_file.u8string())) {
 							throw std::runtime_error(_("Could not create user configuration file"));
 						}
 					}
 
 					// Now try to read the user config file (which should always exist)
-					auto stream = native_fs->get_read_stream(user_config_file);
+					auto stream = native_fs->get_read_stream(user_config_file.u8string());
 					if (!stream) {
 						throw std::runtime_error(_("Could not open user configuration file for reading"));
 					}
@@ -565,7 +565,6 @@ Dialog_PluginManager::on_install_plugin_button_clicked()
 	synfig::FileContainerZip::Handle zip_fs = new FileContainerZip();
 	const filesystem::Path zip_filename = plugin_file_dialog.get_filename();
 	const filesystem::Path path_to_user_plugins = synfigapp::Main::get_user_app_directory() / filesystem::Path("plugins");
-	std::string output_path;
 	std::string plugin_metadata_file;
 	std::string plugin_name;
 
@@ -599,8 +598,8 @@ Dialog_PluginManager::on_install_plugin_button_clicked()
 		return;
 	}
 	plugin_name = extract_plugin_name(*zip_fs->get_read_stream(plugin_metadata_file));
-	output_path = ((path_to_user_plugins / plugin_name).add_suffix("/")).u8string();
-	if (native_fs->is_exists(output_path) && native_fs->is_directory(output_path)) {
+	const filesystem::Path output_path = path_to_user_plugins / plugin_name;
+	if (native_fs->is_exists(output_path.u8string()) && native_fs->is_directory(output_path.u8string())) {
 		confirmation_dialog.set_message(_("Plugin already exists. Do you want to overwrite it?"));
 		int response = confirmation_dialog.run();
 		if (response != Gtk::RESPONSE_OK) {
@@ -615,22 +614,22 @@ Dialog_PluginManager::on_install_plugin_button_clicked()
 		native_fs->remove_recursive(output_path);
 		confirmation_dialog.close();
 	}
-	if (native_fs->is_file(output_path)) {
-		if (!native_fs->file_remove(output_path)) {
+	if (native_fs->is_file(output_path.u8string())) {
+		if (!native_fs->file_remove(output_path.u8string())) {
 			synfig::error(_("Failed to remove file: %s"), output_path.c_str());
 			return;
 		}
 	}
-	if (native_fs->directory_create(output_path)) {
+	if (native_fs->directory_create(output_path.u8string())) {
 		if (plugin_metadata_file.find("/") == std::string::npos) {
 			for (const auto& file : files) {
-				zip_fs->copy_recursive(zip_fs,  file, native_fs, output_path + file);
+				zip_fs->copy_recursive(zip_fs, file, native_fs, (output_path / file).u8string());
 			}
 		} else {
-			zip_fs->copy_recursive(zip_fs, files[0], native_fs, output_path);
+			zip_fs->copy_recursive(zip_fs, files[0], native_fs, output_path.u8string());
 		}
 	}
-	App::plugin_manager.load_plugin(output_path + "plugin.xml", output_path, true);
+	App::plugin_manager.load_plugin(output_path / filesystem::Path{"plugin.xml"}, output_path, true);
 	zip_fs->close();
 	Gtk::MessageDialog msg_dialog = Gtk::MessageDialog(plugin_file_dialog, _("Plugin installed successfully."), false, Gtk::MESSAGE_INFO, Gtk::BUTTONS_CLOSE, true);
 	msg_dialog.run();
