@@ -581,12 +581,11 @@ Dialog_PluginManager::on_install_plugin_button_clicked()
 		} else if (zip_fs->is_directory(file)) {
 			std::vector<std::string> child_files;
 			if (zip_fs->directory_scan(file, child_files)) {
-			auto it = std::find(child_files.begin(), child_files.end(), "plugin.xml");
-			if (it != child_files.end()) {
-				plugin_metadata_file = file + "/plugin.xml" ;
-			}
-			if (!plugin_metadata_file.empty())
-				break;
+				auto it = std::find(child_files.begin(), child_files.end(), "plugin.xml");
+				if (it != child_files.end()) {
+					plugin_metadata_file = file + "/plugin.xml" ;
+					break;
+				}
 			}
 		}
 	}
