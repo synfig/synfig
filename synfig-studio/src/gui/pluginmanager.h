@@ -30,12 +30,16 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <sigc++/signal.h>
-#include <synfig/string.h>
 #include <unordered_map>
 #include <map>
 #include <vector>
+
 #include <gtkmm/widget.h>
+
+#include <sigc++/signal.h>
+
+#include <synfig/filesystem_path.h>
+
 namespace xmlpp {
 	class Node;
 } // namespace xmlpp
@@ -90,8 +94,8 @@ struct PluginScript
 	PluginStream stdout_behaviour = PluginStream::Ignore;
 	PluginStream stderr_behaviour = PluginStream::Message;
 	std::string interpreter;
-	std::string script;
-	std::string working_directory;
+	synfig::filesystem::Path script;
+	synfig::filesystem::Path working_directory;
 
 	// Behavior
 	bool modify_document = true;
@@ -109,7 +113,7 @@ struct PluginScript
 		ArgNecessity selected_layers = ArgNecessity::ARGUMENT_UNUSED;
 	} extra_args;
 
-	static PluginScript load(const xmlpp::Node& node, const std::string& working_directory);
+	static PluginScript load(const xmlpp::Node& node, const synfig::filesystem::Path& working_directory);
 	static PluginStream stream_from_name(const std::string& name, PluginStream default_value);
 
 	bool is_valid() const;
@@ -133,7 +137,7 @@ class Plugin
 {
 public:
 	std::string id;
-	std::string dir;
+	synfig::filesystem::Path dir;
 	PluginString name;
 
 	std::string author;
@@ -144,6 +148,15 @@ public:
 	PluginString description;
 
 	bool is_valid() const;
+
+	synfig::filesystem::Path default_config_filepath() const;
+	synfig::filesystem::Path user_config_filepath() const;
+	synfig::filesystem::Path config_ui_filepath() const;
+
+private:
+	static const synfig::filesystem::Path default_config_filename;
+	static const synfig::filesystem::Path user_config_filename;
+	static const synfig::filesystem::Path config_ui_filename;
 };
 
 class PluginManager
@@ -157,7 +170,7 @@ private:
 	std::string interpreter_executable(const std::string& interpreter) const;
 	void handle_stream(PluginStream behaviour, const std::string& output) const;
 	void load_import_export(
-		const std::string& id, const std::string& plugindir, const xmlpp::Node* node,
+		const std::string& id, const synfig::filesystem::Path& plugindir, const xmlpp::Node* node,
 		const std::string& name, std::vector<ImportExport>& output
 	);
 
@@ -168,8 +181,8 @@ private:
 public:
 	static std::map<std::string, std::string> parse_dialog(const Gtk::Widget& dialog_contents);
 	void load_dir(const std::string& pluginsprefix);
-	void load_plugin( const std::string& file, const std::string& plugindir, bool notify = false);
-	void remove_plugin( const std::string& id);
+	void load_plugin(const synfig::filesystem::Path& file, const synfig::filesystem::Path& plugindir, bool notify = false);
+	void remove_plugin(const std::string& id);
 	bool run(const PluginScript& script, std::vector<std::string> args, const std::unordered_map<std::string,std::string>& view_state) const;
 	bool run(const std::string& script_id, const std::vector<std::string>& args, const std::unordered_map<std::string,std::string>& view_state = {}) const;
 
