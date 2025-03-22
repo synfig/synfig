@@ -32,6 +32,7 @@
 
 #include "../../task.h"
 #include "../../primitive/blur.h"
+#include "./tasktransformation.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -44,7 +45,9 @@ namespace synfig
 namespace rendering
 {
 
-class TaskBlur: public Task
+// Blur works identically after or before transformation, so we make it a
+// member of TaskInterfaceTransformationPass to avoid unnecessarily resampling
+class TaskBlur: public Task, public TaskInterfaceTransformationPass
 {
 public:
 	typedef etl::handle<TaskBlur> Handle;
