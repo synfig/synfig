@@ -192,7 +192,7 @@ Dialog_PluginManager::refresh()
 {
 	plugin_list = App::plugin_manager.plugins();
 	auto children = plugin_list_box.get_children();
-	for (auto child : children) {
+	for (Gtk::Widget* child : children) {
 		plugin_list_box.remove(*child);
 		delete child;
 	}
