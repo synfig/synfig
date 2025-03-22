@@ -160,7 +160,7 @@ Dialog_PluginManager::Dialog_PluginManager(Gtk::Window& parent):
 
 	// Add a filter to show only text files
 	auto filter_zip = Gtk::FileFilter::create();
-	filter_zip->set_name("Zip File (A synfig plugin zip file)");
+	filter_zip->set_name(_("Zip File (A synfig plugin zip file)"));
 	filter_zip->add_mime_type("application/zip");
 	plugin_file_dialog.add_filter(filter_zip);
 
@@ -241,7 +241,7 @@ Dialog_PluginManager::save_plugin_config(const std::string& plugin_id, Gtk::Widg
 		message_dialog.run();
 		message_dialog.hide();
 	} catch (const std::exception& ex) {
-		message_dialog.set_message(_("Error saving configuration: ") + std::string(ex.what()));
+		message_dialog.set_message(strprintf(_("Error saving configuration: %s"), ex.what()));
 		message_dialog.run();
 		message_dialog.hide();
 	}
@@ -289,7 +289,7 @@ Dialog_PluginManager::reset_plugin_config(const std::string& plugin_id, Gtk::Wid
 			// Reload the configuration UI
 			build_notebook();
 		} catch (const std::exception& ex) {
-			message_dialog.set_message(_("Error resetting configuration: ") + std::string(ex.what()));
+			message_dialog.set_message(strprintf(_("Error resetting configuration: %s"), ex.what()));
 			message_dialog.run();
 			message_dialog.hide();
 		}
@@ -456,7 +456,7 @@ Dialog_PluginManager::build_notebook()
 					plugin_tab->pack_start(*error_label, Gtk::PACK_SHRINK);
 				}
 				catch (const std::exception& ex) {
-					synfig::error("Error loading configuration UI: " + std::string(ex.what()));
+					synfig::error(_("Error loading configuration UI: %s"), ex.what());
 				}
 			}
 		}
@@ -491,12 +491,12 @@ Dialog_PluginManager::build_listbox()
 		delete_plugin->set_image_from_icon_name("user-trash-symbolic", Gtk::ICON_SIZE_BUTTON);
 
 		delete_plugin->signal_clicked().connect([plugin, this ](){
-			this->confirmation_dialog.set_message(_("Do you want to delete the plugin: ") + plugin.name.get());
+			this->confirmation_dialog.set_message(strprintf(_("Do you want to delete the plugin: %s"), plugin.name.get().c_str()));
 			int response = this->confirmation_dialog.run();
 			if (response == Gtk::RESPONSE_OK) {
 				App::plugin_manager.remove_plugin(plugin.id);
 				this->confirmation_dialog.hide();
-				this->message_dialog.set_message("Plugin uninstalled successfully");;
+				this->message_dialog.set_message(_("Plugin uninstalled successfully"));
 				this->message_dialog.run();
 				this->message_dialog.close();
 			} else {
@@ -533,7 +533,7 @@ std::string extract_plugin_name(std::istream& fileStream)
 
 	const xmlpp::Node* pNode = parser.get_document()->get_root_node();
 	if (std::string(pNode->get_name()) != std::string("plugin") ) {
-		synfig::warning("Invalid plugin.xml file (missing root <plugin>)");
+		synfig::warning(_("Invalid plugin.xml file (missing root <plugin>)"));
 		return std::string("");
 	}
 
@@ -563,14 +563,14 @@ Dialog_PluginManager::on_install_plugin_button_clicked()
 	std::vector<std::string> files;
 	synfig::FileSystemNative::Handle native_fs = FileSystemNative::instance();
 	synfig::FileContainerZip::Handle zip_fs = new FileContainerZip();
-	std::string zip_filename = plugin_file_dialog.get_filename();
-	filesystem::Path path_to_user_plugins = synfigapp::Main::get_user_app_directory() / filesystem::Path("plugins");
+	const filesystem::Path zip_filename = plugin_file_dialog.get_filename();
+	const filesystem::Path path_to_user_plugins = synfigapp::Main::get_user_app_directory() / filesystem::Path("plugins");
 	std::string output_path;
 	std::string plugin_metadata_file;
 	std::string plugin_name;
 
-	if (!zip_fs->open(plugin_file_dialog.get_filename())) {
-		synfig::error("Failed to open zip file: " + zip_filename);
+	if (!zip_fs->open(zip_filename.u8string())) {
+		synfig::error(_("Failed to open plugin zip file: %s"), zip_filename.u8_str());
 		return;
 	}
 	zip_fs->directory_scan("", files);
@@ -591,8 +591,9 @@ Dialog_PluginManager::on_install_plugin_button_clicked()
 		}
 	}
 	if (plugin_metadata_file.empty() || !zip_fs->is_file(plugin_metadata_file)) {
-		synfig::error("Failed to find plugin.xml in zip file: " + zip_filename);
-		message_dialog.set_message("Failed to find plugin.xml in zip file: " + zip_filename);
+		const std::string error_message = strprintf(_("Failed to find plugin.xml in zip file: %s"), zip_filename.u8_str());
+		synfig::error(error_message);
+		message_dialog.set_message(error_message);
 		message_dialog.run();
 		message_dialog.close();
 		plugin_file_dialog.close();
@@ -617,7 +618,7 @@ Dialog_PluginManager::on_install_plugin_button_clicked()
 	}
 	if (native_fs->is_file(output_path)) {
 		if (!native_fs->file_remove(output_path)) {
-			synfig::error("Failed to remove file: " + output_path);
+			synfig::error(_("Failed to remove file: %s"), output_path.c_str());
 			return;
 		}
 	}

@@ -448,8 +448,7 @@ bool studio::ImportExport::has_extension(const std::string& ext) const
 void
 studio::PluginManager::load_dir( const std::string& pluginsprefix )
 {
-	
-	synfig::info("Loading plugins from %s", pluginsprefix.c_str());
+	synfig::info(_("Loading plugins from %s"), pluginsprefix.c_str());
 
 	try {
 		Glib::Dir dir(pluginsprefix);
@@ -470,7 +469,7 @@ studio::PluginManager::load_dir( const std::string& pluginsprefix )
 void
 studio::PluginManager::load_plugin( const std::string& file, const std::string& plugindir, bool notify )
 {
-	synfig::info("   Loading plugin: %s", synfig::filesystem::Path::basename(plugindir).c_str());
+	synfig::info(_("   Loading plugin: %s"), synfig::filesystem::Path::basename(plugindir).c_str());
 
 	static int plugin_count = 0;
 	const std::string id = "plugin" + std::to_string(++plugin_count);
@@ -530,7 +529,7 @@ studio::PluginManager::load_plugin( const std::string& file, const std::string& 
 			plugin.description = PluginString::load(*pNode, "description");
 
 			if ( !plugin.is_valid() || !script.is_valid() ) {
-				synfig::warning("Invalid plugin metadata description");
+				synfig::warning(_("Invalid plugin metadata description"));
 			} else {
 				scripts_.emplace(plugin.id, std::move(script));
 				plugins_.emplace_back(std::move(plugin));
@@ -542,7 +541,7 @@ studio::PluginManager::load_plugin( const std::string& file, const std::string& 
 	}
 	catch(const std::exception& ex)
 	{
-		synfig::warning("Error while loading plugin.xml");
+		synfig::warning(_("Error while loading plugin.xml"));
 		std::cout << "Exception caught: " << ex.what() << std::endl;
 	}
 
