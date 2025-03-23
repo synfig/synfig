@@ -42,9 +42,9 @@
 #include <synfig/string.h>
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
-#include <synfig/renddesc.h>
-#include <synfig/surface.h>
-#include <synfig/value.h>
+#include <synfig/rendering/common/task/taskpixelprocessor.h>
+#include <synfig/rendering/software/task/taskpaintpixelsw.h>
+#include <synfig/rendering/software/task/tasksw.h>
 
 #endif
 
@@ -61,6 +61,71 @@ SYNFIG_LAYER_SET_CATEGORY(Halftone2,N_("Filters"));
 SYNFIG_LAYER_SET_VERSION(Halftone2,"0.0");
 
 /* === P R O C E D U R E S ================================================= */
+
+class TaskHalfTone2: public rendering::TaskPixelProcessorBase, public rendering::TaskInterfaceTransformationGetAndPass
+{
+public:
+	typedef etl::handle<TaskHalfTone2> Handle;
+	SYNFIG_EXPORT static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
+
+	Halftone halftone;
+	Color color_dark;
+	Color color_light;
+
+	rendering::Holder<rendering::TransformationAffine> transformation;
+
+	rendering::Transformation::Handle get_transformation() const override
+	{
+		return transformation.handle();
+	}
+};
+
+
+class TaskHalfTone2SW: public TaskHalfTone2, public rendering::TaskFilterPixelSW
+{
+public:
+	typedef etl::handle<TaskHalfTone2SW> Handle;
+	SYNFIG_EXPORT static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
+
+	void pre_run(const Matrix3& /*matrix*/) const override
+	{
+		supersample_size = 1/std::fabs(get_pixels_per_unit()[0]*(halftone.param_size.get(Vector())).mag());
+		inverted_transformation = transformation->create_inverted();
+	}
+
+	Color get_color(const Vector& p, const Color& c) const override
+	{
+		const float amount(halftone(inverted_transformation->transform(p), c.get_y(), supersample_size));
+		Color halfcolor;
+
+		if (amount <= 0.0f)
+			halfcolor = color_dark;
+		else if (amount >= 1.0f)
+			halfcolor = color_light;
+		else
+			halfcolor = Color::blend(color_light, color_dark, amount, Color::BLEND_STRAIGHT);
+
+		halfcolor.set_a(c.get_a());
+
+		return halfcolor;
+	}
+
+	bool run(RunParams&) const override
+	{
+		return run_task();
+	}
+
+protected:
+	mutable float supersample_size = 1.0f;
+	mutable rendering::Transformation::Handle inverted_transformation;
+};
+
+SYNFIG_EXPORT rendering::Task::Token TaskHalfTone2::token(
+	DescAbstract<TaskHalfTone2>("HalfTone2") );
+SYNFIG_EXPORT rendering::Task::Token TaskHalfTone2SW::token(
+	DescReal<TaskHalfTone2SW, TaskHalfTone2>("HalfTone2SW") );
 
 /* === M E T H O D S ======================================================= */
 
@@ -97,12 +162,6 @@ Halftone2::color_func(const Point &point, float supersample,const Color& color)c
 	halfcolor.set_a(color.get_a());
 
 	return halfcolor;
-}
-
-inline float
-Halftone2::calc_supersample(const synfig::Point &/*x*/, float pw,float /*ph*/)const
-{
-	return std::fabs(pw/(halftone.param_size.get(Vector())).mag());
 }
 
 synfig::Layer::Handle
@@ -195,69 +254,16 @@ Halftone2::get_color(Context context, const Point &point)const
 		return Color::blend(color,undercolor,get_amount(),get_blend_method());
 }
 
-bool
-Halftone2::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
-
-	SuperCallback supercb(cb,0,9500,10000);
-
-	if(!context.accelerated_render(surface,quality,renddesc,&supercb))
-		return false;
-	if(get_amount()==0)
-		return true;
-
-	const Real pw(renddesc.get_pw()),ph(renddesc.get_ph());
-	const Point tl(renddesc.get_tl());
-	const int w(surface->get_w());
-	const int h(surface->get_h());
-	const float supersample_size(std::fabs(pw/(halftone.param_size.get(Vector())).mag()));
-
-	Surface::pen pen(surface->begin());
-	Point pos;
-	int x,y;
-
-	if(is_solid_color())
-	{
-		for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)
-			for(x=0,pos[0]=tl[0];x<w;x++,pen.inc_x(),pos[0]+=pw)
-				pen.put_value(
-					color_func(
-						pos,
-						supersample_size,
-						pen.get_value()
-					)
-				);
-	}
-	else
-	{
-		for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)
-			for(x=0,pos[0]=tl[0];x<w;x++,pen.inc_x(),pos[0]+=pw)
-				pen.put_value(
-					Color::blend(
-				 		color_func(
-							pos,
-							supersample_size,
-							pen.get_value()
-						),
-						pen.get_value(),
-						get_amount(),
-						get_blend_method()
-					)
-				);
-	}
-
-	// Mark our progress as finished
-	if(cb && !cb->amount_complete(10000,10000))
-		return false;
-
-	return true;
-}
-
-///
-
 rendering::Task::Handle
-Halftone2::build_rendering_task_vfunc(Context context) const
-	{ return Layer::build_rendering_task_vfunc(context); }
+Halftone2::build_composite_fork_task_vfunc(ContextParams /* context_params */, rendering::Task::Handle sub_task) const
+{
+	if (!sub_task)
+		return sub_task;
 
-///
+	TaskHalfTone2::Handle task_halftone2(new TaskHalfTone2());
+	task_halftone2->color_dark = param_color_dark.get(Color());
+	task_halftone2->color_light = param_color_light.get(Color());
+	task_halftone2->halftone = halftone;
+	task_halftone2->sub_task() = sub_task;//->clone_recursive();
+	return task_halftone2;
+}

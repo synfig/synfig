@@ -3453,7 +3453,7 @@ App::dialog_sets_entry(const std::string &action, const std::string &content, st
 	dialog.add_button(button2, Gtk::RESPONSE_OK);
 
 	dialog.set_default_response(Gtk::RESPONSE_OK);
-	//entry->signal_activate().connect(sigc::bind(sigc::mem_fun(dialog,&Gtk::Dialog::response),Gtk::RESPONSE_OK));
+	combo_entry->get_entry()->signal_activate().connect(sigc::bind(sigc::mem_fun(dialog, &Gtk::Dialog::response), Gtk::RESPONSE_OK));
 	dialog.show();
 
 	if(dialog.run()!=Gtk::RESPONSE_OK)

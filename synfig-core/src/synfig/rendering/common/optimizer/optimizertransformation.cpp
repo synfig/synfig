@@ -133,7 +133,14 @@ OptimizerTransformation::run(const RunParams& params) const
 	// fall deeper in tree to make a chance to merge with others (for affine only)
 	if ( transformation->get_transformation().type_is<TransformationAffine>() )
 	{
-		if ( sub_task.type_is<TaskInterfaceTransformationPass>() )
+		TaskInterfaceTransformationGetAndPass* get_and_pass_interface = sub_task.type_pointer<TaskInterfaceTransformationGetAndPass>();
+
+		if (get_and_pass_interface && get_and_pass_interface->get_transformation()->can_merge_outer(transformation->get_transformation()))
+		{
+			get_and_pass_interface->get_transformation()->merge_outer(transformation/*->clone()*/->get_transformation());
+		}
+
+		if ( get_and_pass_interface || sub_task.type_is<TaskInterfaceTransformationPass>() )
 		{
 			sub_task = sub_task->clone();
 			sub_task->assign_target(*transformation);

@@ -4,18 +4,6 @@
 # By Robert B. Quattlebaum Jr. <darco@users.sf.net>
 #
 
-AC_DEFUN([ETL_DEPS],
-[
-	AC_CHECK_LIB(user32, main)
-	
-	AC_CHECK_HEADERS(sys/time.h)
-	AC_CHECK_HEADERS(unistd.h)
-	AC_CHECK_HEADERS(windows.h)
-	AC_CHECK_FUNCS([QueryPerformanceCounter])
-	
-	AC_CHECK_FUNCS([gettimeofday])
-])
-
 AC_DEFUN([USING_ETL],
 [
 	AC_ARG_WITH(ETL-includes,
@@ -41,8 +29,6 @@ AC_DEFUN([USING_ETL],
 			$2
 		fi
 	fi
-
-	ETL_DEPS
 ])
 
 

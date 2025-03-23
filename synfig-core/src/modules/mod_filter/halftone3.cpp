@@ -40,11 +40,9 @@
 #include <synfig/localization.h>
 
 #include <synfig/string.h>
-#include <synfig/time.h>
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
-#include <synfig/renddesc.h>
-#include <synfig/surface.h>
+#include <synfig/rendering/software/task/taskpaintpixelsw.h>
 #include <synfig/value.h>
 
 #endif
@@ -63,8 +61,92 @@ SYNFIG_LAYER_SET_VERSION(Halftone3,"0.0");
 
 /* === P R O C E D U R E S ================================================= */
 
-#define HALFSQRT2	(0.7)
-#define SQRT2	(1.414213562f)
+class TaskHalfTone3: public rendering::TaskPixelProcessorBase, public rendering::TaskInterfaceTransformationGetAndPass
+{
+public:
+	typedef etl::handle<TaskHalfTone3> Handle;
+	SYNFIG_EXPORT static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
+
+	Halftone tone[3];
+	Color color[3];
+	bool subtractive = false;
+	float inverse_matrix[3][3];
+
+	rendering::Holder<rendering::TransformationAffine> transformation;
+
+	rendering::Transformation::Handle get_transformation() const override
+	{
+		return transformation.handle();
+	}
+};
+
+
+class TaskHalfTone3SW: public TaskHalfTone3, public rendering::TaskFilterPixelSW
+{
+public:
+	typedef etl::handle<TaskHalfTone3> Handle;
+	SYNFIG_EXPORT static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
+
+	void pre_run(const Matrix3& /*matrix*/) const override
+	{
+		supersample = 1/std::fabs(get_pixels_per_unit()[0]*(tone[0].param_size.get(Vector())).mag());
+		inverted_transformation = transformation->create_inverted();
+	}
+
+	Color get_color(const Vector& p, const Color& in_color) const override
+	{
+		Color halfcolor;
+
+		float chan[3];
+
+		const Vector point = inverted_transformation->transform(p);
+
+		if(subtractive)
+		{
+			chan[0]=inverse_matrix[0][0]*(1.0f-in_color.get_r())+inverse_matrix[0][1]*(1.0f-in_color.get_g())+inverse_matrix[0][2]*(1.0f-in_color.get_b());
+			chan[1]=inverse_matrix[1][0]*(1.0f-in_color.get_r())+inverse_matrix[1][1]*(1.0f-in_color.get_g())+inverse_matrix[1][2]*(1.0f-in_color.get_b());
+			chan[2]=inverse_matrix[2][0]*(1.0f-in_color.get_r())+inverse_matrix[2][1]*(1.0f-in_color.get_g())+inverse_matrix[2][2]*(1.0f-in_color.get_b());
+
+			halfcolor=Color::white();
+			halfcolor-=(~color[0])*tone[0](point,chan[0],supersample);
+			halfcolor-=(~color[1])*tone[1](point,chan[1],supersample);
+			halfcolor-=(~color[2])*tone[2](point,chan[2],supersample);
+
+			halfcolor.set_a(in_color.get_a());
+		}
+		else
+		{
+			chan[0]=inverse_matrix[0][0]*in_color.get_r()+inverse_matrix[0][1]*in_color.get_g()+inverse_matrix[0][2]*in_color.get_b();
+			chan[1]=inverse_matrix[1][0]*in_color.get_r()+inverse_matrix[1][1]*in_color.get_g()+inverse_matrix[1][2]*in_color.get_b();
+			chan[2]=inverse_matrix[2][0]*in_color.get_r()+inverse_matrix[2][1]*in_color.get_g()+inverse_matrix[2][2]*in_color.get_b();
+
+			halfcolor=Color::black();
+			halfcolor+=color[0]*tone[0](point,chan[0],supersample);
+			halfcolor+=color[1]*tone[1](point,chan[1],supersample);
+			halfcolor+=color[2]*tone[2](point,chan[2],supersample);
+
+			halfcolor.set_a(in_color.get_a());
+		}
+
+		return halfcolor;
+	}
+
+	bool run(RunParams&) const override
+	{
+		return run_task();
+	}
+
+protected:
+	mutable float supersample = 1.0f;
+	mutable rendering::Transformation::Handle inverted_transformation;
+};
+
+SYNFIG_EXPORT rendering::Task::Token TaskHalfTone3::token(
+	DescAbstract<TaskHalfTone3>("HalfTone3") );
+SYNFIG_EXPORT rendering::Task::Token TaskHalfTone3SW::token(
+	DescReal<TaskHalfTone3SW, TaskHalfTone3>("HalfTone3SW") );
 
 /* === M E T H O D S ======================================================= */
 
@@ -244,12 +326,6 @@ Halftone3::color_func(const Point &point, float supersample,const Color& in_colo
 	return halfcolor;
 }
 
-inline float
-Halftone3::calc_supersample(const synfig::Point &/*x*/, float pw,float /*ph*/)const
-{
-	return std::fabs(pw/(tone[0].param_size.get(Vector())).mag());
-}
-
 synfig::Layer::Handle
 Halftone3::hit_check(synfig::Context /*context*/, const synfig::Point &/*point*/)const
 {
@@ -374,70 +450,22 @@ Halftone3::get_color(Context context, const Point &point)const
 		return Color::blend(color,undercolor,get_amount(),get_blend_method());
 }
 
-bool
-Halftone3::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
-{
-	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
-
-	SuperCallback supercb(cb,0,9500,10000);
-
-	if(!context.accelerated_render(surface,quality,renddesc,&supercb))
-		return false;
-	if(get_amount()==0)
-		return true;
-
-	const Real pw(renddesc.get_pw()),ph(renddesc.get_ph());
-	const Point tl(renddesc.get_tl());
-	const int w(surface->get_w());
-	const int h(surface->get_h());
-	const float supersample_size(std::fabs(pw/(tone[0].param_size.get(Vector())).mag()));
-
-	Surface::pen pen(surface->begin());
-	Point pos;
-	int x,y;
-
-	if(is_solid_color())
-	{
-		for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)
-			for(x=0,pos[0]=tl[0];x<w;x++,pen.inc_x(),pos[0]+=pw)
-				pen.put_value(
-					color_func(
-						pos,
-						supersample_size,
-						pen.get_value()
-					)
-				);
-	}
-	else
-	{
-		for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)
-			for(x=0,pos[0]=tl[0];x<w;x++,pen.inc_x(),pos[0]+=pw)
-				pen.put_value(
-					Color::blend(
-				 		color_func(
-							pos,
-							supersample_size,
-							pen.get_value()
-						),
-						pen.get_value(),
-						get_amount(),
-						get_blend_method()
-					)
-				);
-	}
-
-	// Mark our progress as finished
-	if(cb && !cb->amount_complete(10000,10000))
-		return false;
-
-	return true;
-}
-
-////
-
-
 rendering::Task::Handle
-Halftone3::build_rendering_task_vfunc(Context context) const
-	{ return Layer::build_rendering_task_vfunc(context); }
+Halftone3::build_composite_fork_task_vfunc(ContextParams /* context_params */, rendering::Task::Handle sub_task) const
+{
+	if (!sub_task)
+		return sub_task;
 
-////
+	TaskHalfTone3::Handle task_halftone3(new TaskHalfTone3());
+	for (int i=0; i < 3; i++)
+		task_halftone3->color[i] = param_color[i].get(Color());
+	task_halftone3->subtractive = param_subtractive.get(bool());
+	for (int i=0; i < 3; i++)
+		task_halftone3->tone[i] = tone[i];
+	for (int i=0; i < 3; i++)
+		for (int j=0; j < 3; j++)
+			task_halftone3->inverse_matrix[i][j] = inverse_matrix[i][j];
+	task_halftone3->sub_task() = sub_task;//->clone_recursive();
+
+	return task_halftone3;
+}
