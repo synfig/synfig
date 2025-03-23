@@ -620,7 +620,7 @@ Dialog_PluginManager::on_install_plugin_button_clicked()
 	// - Ask about the user settings file
 	// Check if folder with same name already exists
 	const filesystem::Path output_path = path_to_user_plugins / plugin_name;
-	if (native_fs->is_exists(output_path.u8string()) && native_fs->is_directory(output_path.u8string())) {
+	if (native_fs->is_directory(output_path.u8string())) {
 		confirmation_dialog.set_message(_("Plugin already exists. Do you want to overwrite it?"));
 		int response = confirmation_dialog.run();
 		if (response != Gtk::RESPONSE_OK) {
@@ -634,11 +634,22 @@ Dialog_PluginManager::on_install_plugin_button_clicked()
 		}
 		native_fs->remove_recursive(output_path);
 		confirmation_dialog.close();
-	}
-	// Is there a weird file with this name in the folder for installed plugins?
-	if (native_fs->is_file(output_path.u8string())) {
+	} else if (native_fs->is_file(output_path.u8string())) {
+		// There is a weird file with this name in the folder for installed plugins
+		confirmation_dialog.set_message(_("There is a file with the same name in the folder for installed plugins.\nInstalling this plugin will remove this file.\nDo you want to continue the installation?"));
+		int response = confirmation_dialog.run();
+		if (response != Gtk::RESPONSE_OK) {
+			confirmation_dialog.close();
+			plugin_file_dialog.close();
+			return;
+		}
 		if (!native_fs->file_remove(output_path.u8string())) {
-			synfig::error(_("Failed to remove file: %s"), output_path.c_str());
+			const std::string error_message = strprintf(_("Failed to remove file: %s"), output_path.u8_str());
+			synfig::error(error_message);
+			message_dialog.set_message(error_message);
+			message_dialog.run();
+			message_dialog.close();
+			plugin_file_dialog.close();
 			return;
 		}
 	}
