@@ -576,6 +576,8 @@ Dialog_PluginManager::on_install_plugin_button_clicked()
 		plugin_file_dialog.close();
 		return;
 	}
+	// find plugin.xml in root dir or inside first-level directory
+	std::string folder_name_in_zip;
 	zip_fs->directory_scan("", files);
 	for (const auto& file : files) {
 		if (file == "plugin.xml") {
@@ -587,6 +589,7 @@ Dialog_PluginManager::on_install_plugin_button_clicked()
 				auto it = std::find(child_files.begin(), child_files.end(), "plugin.xml");
 				if (it != child_files.end()) {
 					plugin_metadata_file = file + "/plugin.xml" ;
+					folder_name_in_zip = file;
 					break;
 				}
 			}
@@ -635,12 +638,12 @@ Dialog_PluginManager::on_install_plugin_button_clicked()
 		}
 	}
 	if (native_fs->directory_create(output_path.u8string())) {
-		if (plugin_metadata_file.find("/") == std::string::npos) {
+		if (folder_name_in_zip.empty()) {
 			for (const auto& file : files) {
 				zip_fs->copy_recursive(zip_fs, file, native_fs, (output_path / file).u8string());
 			}
 		} else {
-			zip_fs->copy_recursive(zip_fs, files[0], native_fs, output_path.u8string());
+			zip_fs->copy_recursive(zip_fs, folder_name_in_zip, native_fs, output_path.u8string());
 		}
 	}
 	App::plugin_manager.load_plugin(output_path / filesystem::Path{"plugin.xml"}, output_path, true);
