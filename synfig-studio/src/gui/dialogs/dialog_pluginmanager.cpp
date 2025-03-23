@@ -569,7 +569,12 @@ Dialog_PluginManager::on_install_plugin_button_clicked()
 	std::string plugin_name;
 
 	if (!zip_fs->open(zip_filename.u8string())) {
-		synfig::error(_("Failed to open plugin zip file: %s"), zip_filename.u8_str());
+		const std::string error_message = strprintf(_("Failed to open plugin zip file: %s"), zip_filename.u8_str());
+		synfig::error(error_message);
+		message_dialog.set_message(error_message);
+		message_dialog.run();
+		message_dialog.close();
+		plugin_file_dialog.close();
 		return;
 	}
 	zip_fs->directory_scan("", files);
