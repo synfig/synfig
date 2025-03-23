@@ -278,10 +278,15 @@ bool Widget_SoundWave::do_load(const synfig::filesystem::Path& filename)
 	std::string real_filename = Glib::filename_from_utf8(filename.u8string());
 	Mlt::Profile profile;
 	Mlt::Producer *track = new Mlt::Producer(profile, (std::string("avformat:") + real_filename).c_str());
-	if (!track->get_producer() || track->get_length() <= 0) {
+
+	// That value is INT_MAX, which is our special value that means unknown or possibly a live source.
+	// https://github.com/mltframework/mlt/issues/1073#issuecomment-2730111264
+	constexpr int mlt_error_length = INT_MAX;
+
+	if (!track->get_producer() || track->get_length() <= 0 || track->get_length() == mlt_error_length) {
 		delete track;
 		track = new Mlt::Producer(profile, (std::string("vorbis:") + real_filename).c_str());
-		if (!track->get_producer() || track->get_length() <= 0) {
+		if (!track->get_producer() || track->get_length() <= 0 || track->get_length() == mlt_error_length) {
 			delete track;
 			return false;
 		}
