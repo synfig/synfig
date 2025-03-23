@@ -566,7 +566,6 @@ Dialog_PluginManager::on_install_plugin_button_clicked()
 	const filesystem::Path zip_filename = plugin_file_dialog.get_filename();
 	const filesystem::Path path_to_user_plugins = synfigapp::Main::get_user_app_directory() / filesystem::Path("plugins");
 	std::string plugin_metadata_file;
-	std::string plugin_name;
 
 	if (!zip_fs->open(zip_filename.u8string())) {
 		const std::string error_message = strprintf(_("Failed to open plugin zip file: %s"), zip_filename.u8_str());
@@ -602,7 +601,17 @@ Dialog_PluginManager::on_install_plugin_button_clicked()
 		plugin_file_dialog.close();
 		return;
 	}
-	plugin_name = extract_plugin_name(*zip_fs->get_read_stream(plugin_metadata_file));
+	//
+	const std::string plugin_name = extract_plugin_name(*zip_fs->get_read_stream(plugin_metadata_file));
+	if (plugin_name.empty()) {
+		const std::string error_message = strprintf(_("Plugin package is invalid: couldn't find \"name\" tag in metadata file: %s"), zip_filename.u8_str());
+		synfig::error(error_message);
+		message_dialog.set_message(error_message);
+		message_dialog.run();
+		message_dialog.close();
+		plugin_file_dialog.close();
+		return;
+	}
 	const filesystem::Path output_path = path_to_user_plugins / plugin_name;
 	if (native_fs->is_exists(output_path.u8string()) && native_fs->is_directory(output_path.u8string())) {
 		confirmation_dialog.set_message(_("Plugin already exists. Do you want to overwrite it?"));
