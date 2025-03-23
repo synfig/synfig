@@ -604,7 +604,7 @@ Dialog_PluginManager::on_install_plugin_button_clicked()
 		plugin_file_dialog.close();
 		return;
 	}
-	//
+	// Get plugin name from metadata file (it will be the plugin installation folder name)
 	const std::string plugin_name = extract_plugin_name(*zip_fs->get_read_stream(plugin_metadata_file));
 	if (plugin_name.empty()) {
 		const std::string error_message = strprintf(_("Plugin package is invalid: couldn't find \"name\" tag in metadata file: %s"), zip_filename.u8_str());
@@ -615,6 +615,10 @@ Dialog_PluginManager::on_install_plugin_button_clicked()
 		plugin_file_dialog.close();
 		return;
 	}
+	// TODO: Check if plugin is already installed:
+	// - Compare versions
+	// - Ask about the user settings file
+	// Check if folder with same name already exists
 	const filesystem::Path output_path = path_to_user_plugins / plugin_name;
 	if (native_fs->is_exists(output_path.u8string()) && native_fs->is_directory(output_path.u8string())) {
 		confirmation_dialog.set_message(_("Plugin already exists. Do you want to overwrite it?"));
@@ -631,12 +635,14 @@ Dialog_PluginManager::on_install_plugin_button_clicked()
 		native_fs->remove_recursive(output_path);
 		confirmation_dialog.close();
 	}
+	// Is there a weird file with this name in the folder for installed plugins?
 	if (native_fs->is_file(output_path.u8string())) {
 		if (!native_fs->file_remove(output_path.u8string())) {
 			synfig::error(_("Failed to remove file: %s"), output_path.c_str());
 			return;
 		}
 	}
+	// Do install
 	if (native_fs->directory_create(output_path.u8string())) {
 		if (folder_name_in_zip.empty()) {
 			for (const auto& file : files) {
