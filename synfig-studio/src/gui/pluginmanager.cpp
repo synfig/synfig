@@ -291,11 +291,6 @@ fetch_data_in_widget(const Gtk::Widget* w, std::map<std::string, std::string>& d
 			// https://docs.gtk.org/Pango/type_func.FontDescription.from_string.html
 			const auto* font_button = static_cast<const Gtk::FontButton*>(w);
 			data[w->get_name()] = font_button->get_font_name();
-			PangoFontDescription* font_desc = gtk_font_chooser_get_font_desc(GTK_FONT_CHOOSER(w->gobj()));
-			char* str = pango_font_description_to_string(font_desc);
-			pango_font_description_free(font_desc);
-			data[w->get_name()] = str;
-			g_free(str);
 		} else if (GTK_IS_SCALE_BUTTON(w->gobj())) {
 			data[w->get_name()] = std::to_string(static_cast<const Gtk::ScaleButton*>(w)->get_value());
 		} else if (GTK_IS_VOLUME_BUTTON(w->gobj())) {
