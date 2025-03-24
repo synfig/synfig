@@ -102,10 +102,8 @@ ValueNode_BLineCalcWidth::operator()(Time t, Real amount)const
 	const ValueBase bline_value_node = (*bline_)(t);
 
 	const bool looped = bline_value_node.get_loop();
-	const int size = (int)bline.size();
-	if (size == 0)
-		return ValueBase();
-	const int count = looped ? size : size - 1;
+	int size = (int)bline.size();
+ 	int count = looped ? size : size - 1;
 	if (count < 1) return Real();
 
 	bool loop         = (*loop_)(t).get(bool());
