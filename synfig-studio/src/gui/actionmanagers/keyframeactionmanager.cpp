@@ -68,9 +68,6 @@ KeyframeActionManager::KeyframeActionManager():
 	queued(false)
 { }
 
-KeyframeActionManager::~KeyframeActionManager()
-{ }
-
 void
 KeyframeActionManager::set_ui_manager(const Glib::RefPtr<Gtk::UIManager> &x)
 {
