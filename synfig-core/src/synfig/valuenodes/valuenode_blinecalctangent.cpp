@@ -110,9 +110,9 @@ ValueNode_BLineCalcTangent::operator()(Time t, Real amount)const
 		if (type == type_angle)  return Angle();
 		if (type == type_real)   return Real();
 		if (type == type_vector) return Vector();
-	    return ValueBase();
+		return ValueBase();
 	}
- 	const int count = looped ? size : size - 1;
+	const int count = looped ? size : size - 1;
 	if (count < 1)
 	{
 		Type &type(get_type());
