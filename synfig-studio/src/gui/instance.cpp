@@ -56,6 +56,7 @@
 #include <gui/canvasview.h>
 #include <gui/docks/dock_toolbox.h>
 #include <gui/iconcontroller.h>
+#include <gui/json.h>
 #include <gui/localization.h>
 #include <gui/onemoment.h>
 #include <gui/widgets/widget_waypointmodel.h>
