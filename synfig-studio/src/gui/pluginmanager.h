@@ -44,24 +44,6 @@ namespace xmlpp {
 	class Node;
 } // namespace xmlpp
 
-namespace JSON {
-class Parser {
-public:
-	static std::map<std::string, std::string> parse(const std::string& json);
-
-private:
-	const char* input_;
-	size_t pos_;
-
-	explicit Parser(const char* input) : input_(input), pos_(0) {}
-	void skip_whitespace();
-	std::string parse_string();
-	std::map<std::string, std::string> parse_object();
-};
-
-std::string escape_string(const std::string& str);
-}
-
 namespace studio {
 
 class PluginString

@@ -48,6 +48,7 @@ OTHER_HH = \
 	dialogsettings.h \
 	duckmatic.h \
 	exception_guard.h \
+	json.h \
 	localization.h \
 	iconcontroller.h \
 	instance.h \
@@ -81,6 +82,7 @@ OTHER_CC = \
 	duckmatic.cpp \
 	iconcontroller.cpp \
 	instance.cpp \
+	json.cpp \
 	keymapsettings.cpp \
 	onemoment.cpp \
 	pluginmanager.cpp \
