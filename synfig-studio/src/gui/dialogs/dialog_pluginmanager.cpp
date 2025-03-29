@@ -62,6 +62,7 @@
 
 #include <gui/localization.h>
 #include <gui/app.h>
+#include <gui/json.h>
 
 #endif
 
