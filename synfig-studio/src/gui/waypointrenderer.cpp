@@ -38,6 +38,7 @@
 #include <gdkmm/rgba.h>
 
 #include <synfig/interpolation.h>
+#include <synfig/general.h>
 #include <synfig/layers/layer_pastecanvas.h>
 #include <synfig/valuenodes/valuenode_dynamiclist.h>
 #endif
@@ -402,7 +403,7 @@ static Time
 get_time_offset_from_vdesc(const ValueDesc &v)
 {
 #ifdef ADJUST_WAYPOINTS_FOR_TIME_OFFSET
-	if (v.get_value_type() != type_canvas || getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS"))
+	if (v.get_value_type() != type_canvas || DEBUG_GETENV("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS"))
 		return Time::zero();
 
 	if (!v.get_value().get(Canvas::Handle()))
@@ -426,7 +427,7 @@ static Time
 get_time_dilation_from_vdesc(const ValueDesc &v)
 {
 #ifdef ADJUST_WAYPOINTS_FOR_TIME_OFFSET
-	if (v.get_value_type() != type_canvas || getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS"))
+	if (v.get_value_type() != type_canvas || DEBUG_GETENV("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS"))
 		return Time(1.0);
 
 	if (!v.get_value().get(Canvas::Handle()))
@@ -451,7 +452,7 @@ static const Node::time_set empty_time_set {};
 const Node::time_set&
 WaypointRenderer::get_times_from_valuedesc(const ValueDesc &v)
 {
-	if (v.get_value_type() == type_canvas && !getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS"))
+	if (v.get_value_type() == type_canvas && !DEBUG_GETENV("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS"))
 		if(Canvas::Handle canvasparam = v.get_value().get(Canvas::Handle()))
 			return canvasparam->get_times();
 
