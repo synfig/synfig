@@ -490,6 +490,10 @@ Dialog_PluginManager::build_listbox()
 		open_folder->set_image_from_icon_name("document-open", Gtk::ICON_SIZE_BUTTON);
 		delete_plugin->set_image_from_icon_name("user-trash-symbolic", Gtk::ICON_SIZE_BUTTON);
 
+		restore_settings->set_tooltip_text(_("Restore default plugin settings"));
+		open_folder->set_tooltip_text(_("Open plugin folder"));
+		delete_plugin->set_tooltip_text(_("Remove plugin"));
+
 		delete_plugin->signal_clicked().connect([plugin, this ](){
 			this->confirmation_dialog.set_message(strprintf(_("Do you want to delete the plugin: %s"), plugin.name.get().c_str()));
 			int response = this->confirmation_dialog.run();
