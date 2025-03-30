@@ -51,8 +51,9 @@ public:
 private:
 	const char* input_;
 	size_t pos_;
+	size_t end_pos_;
 
-	explicit Parser(const char* input) : input_(input), pos_(0) {}
+	explicit Parser(const char* input, size_t length) : input_(input), pos_(0), end_pos_(length) {}
 	void skip_whitespace();
 	std::string parse_string();
 	std::map<std::string, std::string> parse_object();
