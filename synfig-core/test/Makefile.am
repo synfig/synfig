@@ -12,15 +12,16 @@ TESTS = \
 	bezier \
 	bline \
 	bone \
-	clock \
 	filesystem_path \
+	gradient \
 	handle \
 	keyframe \
 	node \
 	pen \
 	reference_counter \
 	string \
-	surface_etl
+	surface_etl \
+	clock # last because it is slow... let's check all others before waiting for clock
 
 angle_SOURCES=angle.cpp
 
@@ -35,6 +36,8 @@ bline_SOURCES=bline.cpp
 clock_SOURCES=clock.cpp
 
 filesystem_path_SOURCES=filesystem_path.cpp
+
+gradient_SOURCES=gradient.cpp
 
 handle_SOURCES=handle.cpp
 

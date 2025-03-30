@@ -55,7 +55,7 @@ SYNFIG_LAYER_INIT(Plant);
 SYNFIG_LAYER_SET_NAME(Plant,"plant");
 SYNFIG_LAYER_SET_LOCAL_NAME(Plant,N_("Plant"));
 SYNFIG_LAYER_SET_CATEGORY(Plant,N_("Other"));
-SYNFIG_LAYER_SET_VERSION(Plant,"0.2");
+SYNFIG_LAYER_SET_VERSION(Plant,"0.3");
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -79,6 +79,7 @@ Plant::Plant():
 	param_random_factor(ValueBase(Real(0.2))),
 	param_drag(ValueBase(Real(0.1))),
 	param_use_width(ValueBase(true)),
+	param_invert_gradient(ValueBase(false)),
 	bline_loop(true),
 	bounding_rect(Rect::zero()),
 	mass(0.5),
@@ -118,6 +119,10 @@ Plant::branch(int n,int depth,float t, float stunt_growth, synfig::Point positio
 	Vector gravity=param_gravity.get(Vector());
 	Real drag=param_drag.get(Real());
 	Gradient gradient=param_gradient.get(Gradient());
+	const bool invert_gradient = param_invert_gradient.get(bool());
+	if (invert_gradient)
+		gradient = Gradient::from_bad_version(gradient);
+
 	Angle split_angle=param_split_angle.get(Angle());
 	Real random_factor=param_random_factor.get(Real());
 	Random random;
@@ -196,6 +201,10 @@ Plant::sync()const
 	std::vector<BLinePoint> bline(param_bline.get_list_of(BLinePoint()));
 	Real step_=param_step.get(Real());
 	Gradient gradient=param_gradient.get(Gradient());
+	const bool invert_gradient = param_invert_gradient.get(bool());
+	if (invert_gradient)
+		gradient = Gradient::from_bad_version(gradient);
+
 	Real random_factor=param_random_factor.get(Real());
 	Random random;
 	random.set_seed(param_random.get(int()));
@@ -204,7 +213,7 @@ Plant::sync()const
 	Real perp_velocity=param_perp_velocity.get(Real());
 	int splits=param_splits.get(int());
 	bool use_width=param_use_width.get(bool());
-	
+
 	std::lock_guard<std::mutex> lock(mutex);
 	if (!needs_sync_) return;
 	time_t start_time; time(&start_time);
@@ -334,6 +343,7 @@ Plant::set_param(const String & param, const ValueBase &value)
 	IMPORT_VALUE(param_size_as_alpha);
 	IMPORT_VALUE(param_reverse);
 	IMPORT_VALUE(param_use_width);
+	IMPORT_VALUE(param_invert_gradient);
 
 	if(param=="offset")
 		return set_param("origin", value);
@@ -366,6 +376,7 @@ Plant::get_param(const String& param)const
 	EXPORT_VALUE(param_reverse);
 	EXPORT_VALUE(param_use_width);
 	EXPORT_VALUE(param_random);
+	EXPORT_VALUE(param_invert_gradient);
 
 	EXPORT_NAME();
 
@@ -470,6 +481,12 @@ Plant::get_param_vocab()const
 		.set_description(_("Scale the velocity by the spline's width"))
 	);
 
+	ret.push_back(ParamDesc("invert_gradient")
+		.set_local_name(_("Invert Gradient"))
+		.set_description(_("Support wrong implementation of gradient in Synfig versions from 1.3.11 to 1.5.3"))
+		.hidden()
+	);
+
 	return ret;
 }
 
@@ -480,8 +497,17 @@ Plant::set_version(const String &ver)
 
 	if (version == "0.1")
 		param_use_width.set(false);
+	else if (version == "0.2-problematic-gradient") {
+		param_invert_gradient = true;
+	}
 
 	return true;
+}
+
+void
+Plant::reset_version()
+{
+	version = get_register_version();
 }
 
 bool
