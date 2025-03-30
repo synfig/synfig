@@ -58,19 +58,29 @@ using namespace JSON;
 void
 Parser::skip_whitespace()
 {
-	while (input_[pos_] == ' ' || input_[pos_] == '\n' ||
-		   input_[pos_] == '\r' || input_[pos_] == '\t')
+	while (pos_ < end_pos_ && (
+			input_[pos_] == ' ' || input_[pos_] == '\n' ||
+			input_[pos_] == '\r' || input_[pos_] == '\t')
+		   ) {
 		pos_++;
+	}
 }
 
 std::string
 Parser::parse_string()
 {
-	pos_++;
+	pos_++; // Skip opening quote
 	std::string value;
-	while (input_[pos_] != '"' || (pos_ > 0 && input_[pos_-1] == '\\')) {
-		if (input_[pos_] == '\\') {
+	while (pos_ < end_pos_ && input_[pos_] != '"') {
+		if (input_[pos_] != '\\') {
+			value += input_[pos_];
+		} else {
 			pos_++;
+			if (pos_ >= end_pos_) {
+				value += u8"�";
+				synfig::error("JSON: malformed string: incomplete escape sequence");
+				break;
+			}
 			switch (input_[pos_]) {
 			case '"': value += '"'; break;
 			case '\\': value += '\\'; break;
@@ -81,19 +91,31 @@ Parser::parse_string()
 			case 'r': value += '\r'; break;
 			case 't': value += '\t'; break;
 			case 'u': {
+				// unicode escape: \u____ (codepoint in hexadecimal)
+				if (pos_ + 4 >= end_pos_) {
+					value += u8"�";
+					synfig::error("JSON: malformed string: incomplete unicode escape sequence");
+					break;
+				}
 				// Skip unicode handling for now
 				pos_ += 4;
 				value += '?';
 				break;
 			}
-			default: value += input_[pos_];
+			default: {
+				value += u8"�";
+				synfig::error("JSON: malformed string: unknown escape sequence");
+				break;
 			}
-		} else {
-			value += input_[pos_];
+			}
 		}
 		pos_++;
 	}
-	pos_++; // Skip closing quote
+	if (pos_ < end_pos_) {
+		pos_++; // Skip closing quote
+	} else {
+		synfig::error("JSON: malformed string: string must end with a closing quote \"");
+	}
 	return value;
 }
 
@@ -105,6 +127,10 @@ Parser::parse_object()
 
 	while (true) {
 		skip_whitespace();
+		if (pos_ >= end_pos_) {
+			throw std::runtime_error("JSON: unfinished object: missing closing brace");
+		}
+
 		if (input_[pos_] == '}') {
 			pos_++;
 			break;
@@ -112,48 +138,69 @@ Parser::parse_object()
 
 		if (!object.empty()) {
 			if (input_[pos_] != ',')
-				throw std::runtime_error("Expected comma in object");
+				throw std::runtime_error("JSON: Expected comma in object");
 			pos_++;
 			skip_whitespace();
+			if (pos_ >= end_pos_) {
+				throw std::runtime_error("JSON: malformed object: missing next key-value pair");
+			}
 		}
 
 		if (input_[pos_] != '"')
-			throw std::runtime_error("Expected string key in object");
+			throw std::runtime_error("JSON: Expected string key in object");
 
 		std::string key = parse_string();
+		if (pos_ >= end_pos_ || key.empty()) {
+			throw std::runtime_error("JSON: malformed object: missing key string");
+		}
+		skip_whitespace();
+		if (pos_ >= end_pos_)
+			throw std::runtime_error("JSON: Expected colon after key in object");
+
+		pos_++; // Skip colon
 
 		skip_whitespace();
-		if (input_[pos_] != ':')
-			throw std::runtime_error("Expected colon after key in object");
-		pos_++;
+		if (pos_ >= end_pos_)
+			throw std::runtime_error("JSON: missing value for key in object");
 
-		skip_whitespace();
 		if (input_[pos_] == '"') {
 			object[key] = parse_string();
+			if (pos_ >= end_pos_)
+				throw std::runtime_error("JSON: incomplete string value in object");
 		} else if (input_[pos_] == '{') {
 			// Skip nested objects for now, treat as empty string
 			int depth = 1;
 			while (depth > 0) {
 				pos_++;
+				if (pos_ >= end_pos_)
+					throw std::runtime_error("JSON: malformed object");
+
 				if (input_[pos_] == '{') depth++;
 				if (input_[pos_] == '}') depth--;
 			}
 			pos_++;
+			if (pos_ >= end_pos_)
+				throw std::runtime_error("JSON: malformed object");
 			object[key] = "";
 		} else if (input_[pos_] == '[') {
 			// Skip arrays for now, treat as empty string
 			int depth = 1;
 			while (depth > 0) {
 				pos_++;
+				if (pos_ >= end_pos_)
+					throw std::runtime_error("JSON: malformed array");
+
 				if (input_[pos_] == '[') depth++;
 				if (input_[pos_] == ']') depth--;
 			}
 			pos_++;
+			if (pos_ >= end_pos_)
+				throw std::runtime_error("JSON: malformed object");
 			object[key] = "";
 		} else {
 			// Parse number or other value until next delimiter
 			std::string value;
-			while (input_[pos_] != ',' && input_[pos_] != '}') {
+			while (pos_ < end_pos_ && input_[pos_] != ',' && input_[pos_] != '}') {
 				value += input_[pos_];
 				pos_++;
 			}
@@ -167,7 +214,7 @@ Parser::parse_object()
 std::map<std::string, std::string>
 Parser::parse(const std::string& json_string)
 {
-	Parser parser(json_string.c_str());
+	Parser parser(json_string.c_str(), json_string.size());
 	parser.skip_whitespace();
 	if (parser.input_[parser.pos_] != '{')
 		throw std::runtime_error("Expected object");
