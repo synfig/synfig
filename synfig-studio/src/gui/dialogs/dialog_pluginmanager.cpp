@@ -392,14 +392,7 @@ Dialog_PluginManager::build_notebook()
 					}
 
 					// Now try to read the user config file (which should always exist)
-					auto stream = native_fs->get_read_stream(user_config_file.u8string());
-					if (!stream) {
-						throw std::runtime_error(_("Could not open user configuration file for reading"));
-					}
-					std::stringstream buffer;
-					buffer << stream->rdbuf();
-					std::string config_data = buffer.str();
-					auto values = JSON::Parser::parse(config_data);
+					auto values = JSON::Parser::parse(user_config_file);
 					if (config_widget && GTK_IS_CONTAINER(config_widget->gobj())) {
 						auto container = static_cast<Gtk::Container*>(config_widget);
 						hydrate_config(container, values);
