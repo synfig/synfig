@@ -34,7 +34,12 @@
 
 #include "json.h"
 
+#include <sstream>
 #include <stdexcept>
+
+#include <synfig/filesystemnative.h>
+#include <synfig/general.h>
+#include <synfig/localization.h>
 
 #endif
 
@@ -167,6 +172,18 @@ Parser::parse(const std::string& json_string)
 	if (parser.input_[parser.pos_] != '{')
 		throw std::runtime_error("Expected object");
 	return parser.parse_object();
+}
+
+std::map<std::string, std::string>
+Parser::parse(const synfig::filesystem::Path& json_filepath) {
+	auto stream = synfig::FileSystemNative::instance()->get_read_stream(json_filepath.u8string());
+	if (!stream) {
+		synfig::error(_("Could not open JSON file for reading: %s"), json_filepath.u8_str());
+		return std::map<std::string, std::string>{};
+	}
+	std::stringstream buffer;
+	buffer << stream->rdbuf();
+	return JSON::Parser::parse(buffer.str());
 }
 
 std::string

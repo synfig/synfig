@@ -33,6 +33,8 @@
 #include <map>
 #include <string>
 
+#include <synfig/filesystem_path.h>
+
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -44,6 +46,7 @@ namespace JSON {
 class Parser {
 public:
 	static std::map<std::string, std::string> parse(const std::string& json_string);
+	static std::map<std::string, std::string> parse(const synfig::filesystem::Path& json_filepath);
 
 private:
 	const char* input_;
