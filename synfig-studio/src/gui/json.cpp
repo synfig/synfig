@@ -204,7 +204,7 @@ Parser::parse_object()
 				value += input_[pos_];
 				pos_++;
 			}
-			object[key] = value;
+			object[key] = synfig::right_trim(value);
 		}
 	}
 
