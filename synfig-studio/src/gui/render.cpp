@@ -364,6 +364,7 @@ RenderSettings::on_render_pressed()
 	App::dock_info_->set_n_passes_requested(render_passes.size());
 	App::dock_info_->set_n_passes_pending(render_passes.size());
 	App::dock_info_->set_render_progress(0.0);
+	App::dock_info_->hide_open_button();
 	App::dock_manager->find_dockable("info").present(); //Bring Dock_Info to front
 
 	progress_logger->clear();
@@ -576,6 +577,19 @@ RenderSettings::on_finished(std::string error_message)
 			App::sound_render_done->set_position(Time());
 			App::sound_render_done->set_playing(true);
 		}
+
+		filesystem::Path filename(entry_filename.get_text());
+		std::list<std::string> ext_mult = {{".bmp"}, {".png"},
+				{".jpg"},{".exr"},{".ppm"}};		
+		
+		bool ext_multi_file = !toggle_single_frame.get_active() 
+		        && (find(ext_mult.begin(), ext_mult.end(),
+				filename.extension()) != ext_mult.end());		
+		
+		if (ext_multi_file)
+		  App::dock_info_->set_open_button(filesystem::Path::dirname(filename.c_str()).c_str());
+		else 
+		  App::dock_info_->set_open_button(filename.c_str());
 		App::dock_info_->set_render_progress(1.0);
 	}
 
