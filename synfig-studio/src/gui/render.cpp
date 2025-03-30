@@ -587,9 +587,9 @@ RenderSettings::on_finished(std::string error_message)
 				filename.extension()) != ext_mult.end());		
 		
 		if (ext_multi_file)
-		  App::dock_info_->set_open_button(filesystem::Path::dirname(filename.c_str()).c_str());
+		  App::dock_info_->set_open_button(filesystem::Path::dirname(filename.u8string()));	
 		else 
-		  App::dock_info_->set_open_button(filename.c_str());
+		  App::dock_info_->set_open_button(filename.u8string());
 		App::dock_info_->set_render_progress(1.0);
 	}
 
