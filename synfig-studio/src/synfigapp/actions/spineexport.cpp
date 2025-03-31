@@ -32,21 +32,15 @@
 #	include <config.h>
 #endif
 
-#include <synfigapp/main.h>
-#include <json/json.h>
-#include <fstream>
-#include <synfig/general.h>
 #include "spineexport.h"
 #include "layeradd.h"
 #include "layerremove.h"
-#include <synfigapp/canvasinterface.h>
+#include <synfig/general.h>
+#include <fstream>
 #include <synfigapp/localization.h>
-//#include <nlohmann/json.hpp>
-#include <curl/curl.h>  // ✅ Add libcurl for downloading JSON
-
-//using json = nlohmann::json;
-
-
+#include <synfigapp/canvasinterface.h>
+#include <synfigapp/main.h>
+#include <json/json.h>
 
 #endif
 
@@ -111,7 +105,8 @@ Action::SpineExport::lowest_depth()const
 	return 0;
 }
 
-void Action::SpineExport::prepare() {
+void 
+Action::SpineExport::prepare() {
     std::string filename = synfigapp::Main::get_user_app_directory().u8string() + "/exported_spine.json";
 
     synfig::info("Creating Spine JSON file at: " + filename);
