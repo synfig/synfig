@@ -985,16 +985,23 @@ xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas)
 		xmlpp::Element *node=root->add_child("defs");
 		const ValueNodeList &value_node_list(canvas->value_node_list());
 
+		// Save all the constant 'value_node' nodes first.
 		for(ValueNodeList::const_iterator iter=value_node_list.begin();iter!=value_node_list.end();++iter)
 		{
 			// If the value_node is a constant, then use the shorthand
 			if (ValueNode_Const::Handle value_node = ValueNode_Const::Handle::cast_dynamic(*iter))
 			{
 				reinterpret_cast<xmlpp::Element*>(encode_value(node->add_child("value"),value_node->get_value(),canvas))->set_attribute("id",value_node->get_id());
-				continue;
 			}
-			encode_value_node(node->add_child("value_node"),*iter,canvas);
-			// writeme
+		}
+
+		// Save the non-constant ones at the last. This would prevent "Unable to resolve" messages when loading the project.
+		for(ValueNodeList::const_iterator iter=value_node_list.begin();iter!=value_node_list.end();++iter)
+		{
+			if (!ValueNode_Const::Handle::cast_dynamic(*iter))
+			{
+				encode_value_node(node->add_child("value_node"),*iter,canvas);
+			}
 		}
 
 		for(Canvas::Children::const_iterator iter=canvas->children().begin();iter!=canvas->children().end();++iter)
