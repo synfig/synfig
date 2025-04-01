@@ -1,10 +1,7 @@
-# Define the shared library
 add_library(synfigapp SHARED "")
 
-# Include necessary directories
 target_include_directories(synfigapp SYSTEM PUBLIC ${LIBXML_INCLUDE_DIRS})
 
-# List source files
 target_sources(synfigapp
     PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/action.cpp"
@@ -22,21 +19,19 @@ target_sources(synfigapp
         "${CMAKE_CURRENT_LIST_DIR}/value_desc.cpp"
 )
 
-# Find and link cURL
+target_link_libraries(synfigapp libsynfig)
+
 find_package(CURL REQUIRED)
 
-# Link against necessary libraries
 target_link_libraries(synfigapp
     PRIVATE
         libsynfig
         CURL::libcurl
 )
 
-# Include additional CMakeLists files
 include(actions/CMakeLists.txt)
 include(vectorizer/CMakeLists.txt)
 
-# Define installation rules
 if(WIN32)
     install(
         TARGETS synfigapp
