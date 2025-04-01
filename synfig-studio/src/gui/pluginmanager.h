@@ -30,15 +30,31 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <sigc++/signal.h>
 #include <synfig/string.h>
 #include <unordered_map>
+#include <map>
 #include <vector>
-
+#include <gtkmm/widget.h>
 namespace xmlpp {
 	class Node;
 } // namespace xmlpp
 
 namespace JSON {
+class Parser {
+public:
+    static std::map<std::string, std::string> parse(const std::string& json);
+
+private:
+    const char* input_;
+    size_t pos_;
+    
+	explicit Parser(const char* input) : input_(input), pos_(0) {}
+    void skip_whitespace();
+    std::string parse_string();
+    std::map<std::string, std::string> parse_object();
+};
+
 std::string escape_string(const std::string& str);
 }
 
@@ -117,6 +133,7 @@ class Plugin
 {
 public:
 	std::string id;
+	std::string pluginDir;
 	PluginString name;
 
 	std::string author;
@@ -127,6 +144,7 @@ public:
 	PluginString description;
 
 	bool is_valid() const;
+	void launch_dir() const;
 };
 
 class PluginManager
@@ -146,10 +164,16 @@ private:
 
 	static bool check_and_run_dialog(const PluginScript& script, std::string& dialog_args);
 
-public:
-	void load_dir( const std::string &pluginsprefix );
-	void load_plugin( const std::string &file, const std::string &plugindir );
+	sigc::signal<void> signal_list_changed_;
 
+public:
+	void init_menu();
+    static std::map<std::string, std::string> parse_dialog(const Gtk::Widget &dialog_contents);
+    void load_dir(const std::string &pluginsprefix);
+    void load_plugin( const std::string &file, const std::string &plugindir, bool notify = false);
+	void refresh_menu();
+	void remove_plugin( const std::string &id);
+	bool remove_plugin_recursive( const std::string &filename);
 	bool run(const PluginScript& script, std::vector<std::string> args, const std::unordered_map<std::string,std::string>& view_state) const;
 	bool run(const std::string& script_id, const std::vector<std::string>& args, const std::unordered_map<std::string,std::string>& view_state = {}) const;
 
@@ -161,6 +185,8 @@ public:
 	const std::vector<ImportExport>& exporters() { return exporters_; };
 
 	const std::vector<ImportExport>& importers() { return importers_; };
+
+	sigc::signal<void> & signal_list_changed();
 
 }; // END class PluginManager
 
