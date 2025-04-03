@@ -70,7 +70,13 @@ public:
 private:
 	value_type value_;
 
+// To fix linker errors in MSVC and GCC. 
+// An alternative would be to use "static inline constexpr" but this project uses C++11
+#ifdef _MSC_VER
 	static constexpr value_type epsilon_ = static_cast<Time::value_type>(0.0005);
+#else
+	static const value_type epsilon_;
+#endif
 
 public:
 	Time(): value_() { }
