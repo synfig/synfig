@@ -60,7 +60,7 @@ class TaskLinearGradient: public rendering::Task
 {
 public:
 	typedef etl::handle<TaskLinearGradient> Handle;
-	SYNFIG_EXPORT static Token token;
+	static Token token;
 	Token::Handle get_token() const override { return token.handle(); }
 
 	LinearGradient::Params params;
@@ -73,7 +73,7 @@ class TaskLinearGradientSW: public TaskLinearGradient, public rendering::TaskPai
 {
 public:
 	typedef etl::handle<TaskLinearGradientSW> Handle;
-	SYNFIG_EXPORT static Token token;
+	static Token token;
 	Token::Handle get_token() const override { return token.handle(); }
 
 	mutable Real supersample = 0.;
@@ -96,9 +96,9 @@ public:
 	}
 };
 
-SYNFIG_EXPORT rendering::Task::Token TaskLinearGradient::token(
+rendering::Task::Token TaskLinearGradient::token(
 	DescAbstract<TaskLinearGradient>("TaskLinearGradient") );
-SYNFIG_EXPORT rendering::Task::Token TaskLinearGradientSW::token(
+rendering::Task::Token TaskLinearGradientSW::token(
 	DescReal<TaskLinearGradientSW, TaskLinearGradient>("TaskLinearGradientSW") );
 
 inline void
