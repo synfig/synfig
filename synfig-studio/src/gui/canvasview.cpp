@@ -62,6 +62,7 @@
 #include <gui/dialogs/dialog_canvasdependencies.h>
 #include <gui/dials/keyframedial.h>
 #include <gui/dials/resolutiondial.h>
+#include <gui/docks/dialog_tooloptions.h>
 #include <gui/docks/dockbook.h>
 #include <gui/docks/dockmanager.h>
 #include <gui/docks/dock_toolbox.h>
@@ -1845,35 +1846,43 @@ CanvasView::on_button_press_event(GdkEventButton * /* event */)
 bool
 CanvasView::on_key_press_event(GdkEventKey* event)
 {
-	SYNFIG_EXCEPTION_GUARD_BEGIN()
-	Gtk::Widget* focused_widget = App::main_window->get_focus();
-	if(focused_widget && focused_widget_has_priority(focused_widget))
-	{
-		if(focused_widget->event((GdkEvent*)event))
-			return true;
-	}
-	else if(Dockable::on_key_press_event(event))
-			return true;
-		else
-			if (focused_widget) {
-				if (focused_widget->event((GdkEvent*)event))
-					return true;
-			}
+    SYNFIG_EXCEPTION_GUARD_BEGIN()
+    synfig::info("Key press event received: keyval=%d", event->keyval);
 
-	if (event->type == GDK_KEY_PRESS) {
-		switch (event->keyval) {
-		case GDK_KEY_Home:
-		case GDK_KEY_KP_Home:
-			action_group->get_action("seek-begin")->activate();
-			return  true;
-		case GDK_KEY_End:
-		case GDK_KEY_KP_End:
-			action_group->get_action("seek-end")->activate();
-			return  true;
-		}
-	}
-	return false;
-	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
+    Gtk::Widget* focused_widget = App::main_window->get_focus();
+    if(focused_widget && focused_widget_has_priority(focused_widget))
+    {
+        synfig::info("Focused widget has priority: %s", typeid(*focused_widget).name());
+        if(focused_widget->event((GdkEvent*)event))
+            return true;
+    }
+    else if(Dockable::on_key_press_event(event))
+    {
+        synfig::info("Dockable consumed the event");
+        return true;
+    }
+    else if (focused_widget) {
+        synfig::info("Passing event to focused widget: %s", typeid(*focused_widget).name());
+        if (focused_widget->event((GdkEvent*)event))
+            return true;
+    }
+
+    if (event->type == GDK_KEY_PRESS) {
+        switch (event->keyval) {
+        case GDK_KEY_Home:
+        case GDK_KEY_KP_Home:
+            action_group->get_action("seek-begin")->activate();
+            return true;
+        case GDK_KEY_End:
+        case GDK_KEY_KP_End:
+            action_group->get_action("seek-end")->activate();
+            return true;
+            break;
+        }
+    }
+    synfig::info("Event not handled");
+    return false;
+    SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 bool

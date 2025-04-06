@@ -592,6 +592,7 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 	options_grid.show_all();
 
 	refresh_tool_options();
+	App::dialog_tool_options->set_primary_focus_widget(&id_entry);
 	App::dialog_tool_options->present();
 
 	// Turn off layer clicking

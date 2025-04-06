@@ -43,6 +43,7 @@
 #include <gui/canvasview.h>
 #include <gui/dialogs/dialog_input.h>
 #include <gui/dialogs/dialog_workspaces.h>
+#include <gui/docks/dialog_tooloptions.h>
 #include <gui/docks/dockable.h>
 #include <gui/docks/dockbook.h>
 #include <gui/docks/dockmanager.h>
@@ -341,15 +342,25 @@ MainWindow::get_workspaces()
 bool
 MainWindow::on_key_press_event(GdkEventKey* key_event)
 {
-	SYNFIG_EXCEPTION_GUARD_BEGIN()
-	Gtk::Widget * widget = get_focus();
-	if (widget && (dynamic_cast<Gtk::Editable*>(widget) || dynamic_cast<Gtk::TextView*>(widget) || dynamic_cast<Gtk::DrawingArea*>(widget))) {
-		bool handled = gtk_window_propagate_key_event(GTK_WINDOW(this->gobj()), key_event);
-		if (handled)
-			return true;
-	}
-	return Gtk::Window::on_key_press_event(key_event);
-	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
+    SYNFIG_EXCEPTION_GUARD_BEGIN()
+   if(key_event->keyval == GDK_KEY_F2)
+    {
+        if(App::dialog_tool_options && App::dialog_tool_options->is_visible())
+        {
+            App::dialog_tool_options->focus_primary_widget();
+            return true; // Event handled
+        }
+    }
+    
+
+    Gtk::Widget* widget = get_focus();
+    if (widget && (dynamic_cast<Gtk::Editable*>(widget) || dynamic_cast<Gtk::TextView*>(widget) || dynamic_cast<Gtk::DrawingArea*>(widget))) {
+        bool handled = gtk_window_propagate_key_event(GTK_WINDOW(this->gobj()), key_event);
+        if (handled)
+            return true;
+    }
+    return Gtk::Window::on_key_press_event(key_event);
+    SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 void

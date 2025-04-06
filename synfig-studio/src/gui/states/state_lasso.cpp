@@ -638,6 +638,8 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 	// Toolbox layout
 	options_grid.attach(title_label,
 		0, 0, 2, 1);
+	options_grid.attach(id_box,
+		0, 1, 2, 1);
 	options_grid.attach(smoothness_label,
 		0, 1, 2, 1);
 	options_grid.attach(localthres_box,
@@ -658,6 +660,7 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 	options_grid.set_row_spacing(GAP);
 	options_grid.set_margin_bottom(0);
 	options_grid.show_all();
+	
 
 	fill_last_stroke_button.signal_clicked().connect(
 		sigc::mem_fun(*this, &StateLasso_Context::fill_last_stroke));
@@ -672,6 +675,7 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 
 	refresh_tool_options();
 	App::dialog_tool_options->present();
+	App::dialog_tool_options->set_primary_focus_widget(&id_entry);
 
 	// Hide all tangent and width ducks
 	get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
