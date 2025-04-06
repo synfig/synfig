@@ -408,7 +408,6 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	App::dialog_tool_options->present();
 	App::dialog_tool_options->set_primary_focus_widget(&id_entry);
 	
-
 	// remembering previous type mask
 	prev_type_mask = get_work_area()->get_type_mask();
 

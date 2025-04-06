@@ -32,13 +32,12 @@
 #ifdef HAVE_CONFIG_H
 #	include <config.h>
 #endif
-#include <queue>
+
 #include <vector>
 #include <gtkmm/entry.h>
-#include <gtkmm/table.h>
-#include <synfig/general.h>
 #include "docks/dialog_tooloptions.h"
 #include <gui/localization.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -59,10 +58,12 @@ Dialog_ToolOptions::Dialog_ToolOptions():
 	empty_label(_("This tool has no options")),
 	primary_focus_widget_(nullptr)
 {
-	primary_focus_widget_ = nullptr; 
+
 	add(sub_vbox_);
+	
 	sub_vbox_.set_margin_end(10);
 	sub_vbox_.set_margin_bottom(10);
+	
 	set_widget(empty_label);
 	empty_label.show();
 }
@@ -83,7 +84,6 @@ Dialog_ToolOptions::clear()
 
     set_icon("about_icon");
     
-    // Reset the primary focus widget
     primary_focus_widget_ = nullptr;
 }
 
@@ -94,20 +94,15 @@ Dialog_ToolOptions::set_primary_focus_widget(Gtk::Widget* widget)
 }
 
 void
-Dialog_ToolOptions::set_widget(Gtk::Widget& x)
+Dialog_ToolOptions::set_widget(Gtk::Widget&x)
 {
-    synfig::info("Setting widget: %s", typeid(x).name());
-    static bool allow_focus = false;
-    allow_focus = false;
-    std::vector<Gtk::Widget*> children = sub_vbox_.get_children();
-    for (std::vector<Gtk::Widget*>::iterator i = children.begin(); i != children.end(); ++i)
-        sub_vbox_.remove(**i);
-    sub_vbox_.show();
-    sub_vbox_.pack_start(x, false, false);
-    sub_vbox_.set_valign(Gtk::ALIGN_FILL);
-    x.show();
-    allow_focus = true;
-    synfig::info("Widget set, sub_vbox_ children: %zu", sub_vbox_.get_children().size());
+	std::vector<Gtk::Widget*> children = sub_vbox_.get_children();
+	for(std::vector<Gtk::Widget*>::iterator i = children.begin(); i != children.end(); ++i)
+		sub_vbox_.remove(**i);
+	sub_vbox_.show();
+	sub_vbox_.pack_start(x,false,false);
+	sub_vbox_.set_valign(Gtk::Align::ALIGN_FILL);
+	x.show();
 }
 
 void
@@ -120,7 +115,6 @@ Dialog_ToolOptions::focus_primary_widget()
     {
         primary_focus_widget_->grab_focus();
         
-        // If it's an entry, select all text
         Gtk::Entry* entry = dynamic_cast<Gtk::Entry*>(primary_focus_widget_);
         if (entry) {
             entry->select_region(0, -1);
