@@ -207,6 +207,61 @@ test_parse_string_inexistent_basic_backslash_escape()
 	ASSERT_EQUAL(u8"In�xistent", d.at("key"));
 }
 
+void
+test_parse_string_unicode_escape_simple()
+{
+	auto d = JSON::Parser::parse("{\"key\":\"\\u0031\"}");
+	ASSERT_EQUAL("1", d.at("key"));
+
+	d = JSON::Parser::parse("{\"key\":\"A\\u0031-\"}");
+	ASSERT_EQUAL("A1-", d.at("key"));
+}
+
+void
+test_parse_string_incomplete_unicode_escape()
+{
+	auto d = JSON::Parser::parse("{\"key\":\"\\u00b\"}");
+	ASSERT_EQUAL(u8"�", d.at("key"));
+}
+
+void
+test_parse_string_incomplete_unicode_escape_continues_parsing_from_last_valid_hex_char()
+{
+	auto d = JSON::Parser::parse("{\"key\":\"\\u00b Here\"}");
+	ASSERT_EQUAL("� Here", d.at("key"));
+
+	d = JSON::Parser::parse("{\"key\":\"\\u00b\\u0030\"}");
+	ASSERT_EQUAL("�0", d.at("key"));
+}
+
+void
+test_parse_string_unicode_escape()
+{
+	auto d = JSON::Parser::parse("{\"key\":\"\\u64\"}");
+	ASSERT_EQUAL(u8"d", d.at("key"));
+}
+
+void
+test_parse_string_unicode_escape_utf8_two_bytes()
+{
+	auto d = JSON::Parser::parse("{\"key\":\"\\u061f\"}");
+	ASSERT_EQUAL(u8"؟", d.at("key"));
+}
+
+void
+test_parse_string_unicode_escape_utf8_three_bytes()
+{
+	auto d = JSON::Parser::parse("{\"key\":\"\\u27f5\"}");
+	ASSERT_EQUAL(u8"⟵", d.at("key"));
+}
+
+void
+test_parse_string_non_bmp_unicode_escape()
+{
+	auto d = JSON::Parser::parse("{\"key\":\"\\ud83d\\ude00\"}");
+	ASSERT_EQUAL(u8"😀", d.at("key")); // U+1F600 -> f0 9f 98 80
+}
+
 int main(int argc, const char* argv[])
 {
 	TEST_SUITE_BEGIN();
@@ -233,6 +288,12 @@ int main(int argc, const char* argv[])
 	TEST_FUNCTION(test_parse_string_basic_backslash_escape_at_the_beginning_of_string);
 	TEST_FUNCTION(test_parse_string_incomplete_basic_backslash_escape);
 	TEST_FUNCTION(test_parse_string_inexistent_basic_backslash_escape);
+	TEST_FUNCTION(test_parse_string_unicode_escape_simple);
+	TEST_FUNCTION(test_parse_string_incomplete_unicode_escape);
+	TEST_FUNCTION(test_parse_string_incomplete_unicode_escape_continues_parsing_from_last_valid_hex_char);
+	TEST_FUNCTION(test_parse_string_unicode_escape_utf8_two_bytes);
+	TEST_FUNCTION(test_parse_string_unicode_escape_utf8_three_bytes);
+	TEST_FUNCTION(test_parse_string_non_bmp_unicode_escape);
 
 	TEST_SUITE_END();
 
