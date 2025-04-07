@@ -53,6 +53,86 @@ using namespace JSON;
 
 /* === P R O C E D U R E S ================================================= */
 
+static char
+decode_hexadecimal(char c)
+{
+	if (c >= '0' && c <= '9') {
+		return c - '0';
+	} else if (c >= 'a' && c <= 'f') {
+		return 10 + c - 'a';
+	} else if (c >= 'A' && c <= 'F') {
+		return 10 + c - 'A';
+	}
+	return -1;
+}
+
+static bool
+decode_hexstring_to_codepoint(const char* input, size_t pos, uint16_t& codepoint)
+{
+	codepoint = 0;
+	bool valid_codepoint = true;
+
+	for (int i = 0; i < 4; ++i) {
+		char c = input[pos + i];
+		codepoint <<= 4;
+		if (c >= '0' && c <= '9') {
+			codepoint |= c - '0';
+		} else if (c >= 'a' && c <= 'f') {
+			codepoint |= 10 + (c - 'a');
+		} else if (c >= 'A' && c <= 'F') {
+			codepoint |= 10 + (c - 'A');
+		} else {
+			valid_codepoint = false;
+			break;
+		}
+	}
+	return valid_codepoint;
+}
+
+static void
+codepoint_to_utf8(uint32_t codepoint, std::string& utf8)
+{
+	// check for invalid codepoints
+	if (codepoint >= 0xE000 && codepoint < 0xF900) {
+		utf8 += u8"�";
+		synfig::error("JSON: malformed string: invalid UTF-8 character (private use area)");
+		return;
+	} else if (codepoint >= 0xF0000 && codepoint < 0xFFFFE) {
+		utf8 += u8"�";
+		synfig::error("JSON: malformed string: invalid UTF-8 character (supplementary private use area - A)");
+		return;
+	} else if (codepoint >= 0x100000 && codepoint < 0x10FFFE) {
+		utf8 += u8"�";
+		synfig::error("JSON: malformed string: invalid UTF-8 character (supplementary private use area - B)");
+		return;
+	} else if (codepoint >= 0xD800 && codepoint < 0xE000) {
+		utf8 += u8"�";
+		synfig::error("JSON: malformed string: invalid UTF-8 character (surrogates)");
+		return;
+	}
+
+	// codepoint to UTF-8
+	if (codepoint < 0x0080) {
+		utf8 += codepoint & 0x7F;
+	} else if (codepoint < 0x0800) {
+		utf8 += 0xC0 | (codepoint >> 6);
+		utf8 += 0x80 | (codepoint & 0x3F);
+	} else if (codepoint < 0xE000) {
+		utf8 += 0xE0 | (codepoint >> 12);
+		utf8 += 0x80 | ((codepoint & 0x0FC0) >> 6);
+		utf8 += 0x80 | (codepoint & 0x3F);
+	} else if (codepoint < 0x10000) {
+		utf8 += 0xE0 | (codepoint >> 12);
+		utf8 += 0x80 | ((codepoint & 0x0FC0) >> 6);
+		utf8 += 0x80 | (codepoint & 0x3F);
+	} else {
+		utf8 += 0xF0 | ((codepoint >> 18) & 0x07);
+		utf8 += 0x80 | ((codepoint >> 12) & 0x3F);
+		utf8 += 0x80 | ((codepoint >>  6) & 0x3F);
+		utf8 += 0x80 | ((codepoint >>  0) & 0x3F);
+	}
+}
+
 /* === M E T H O D S ======================================================= */
 
 void
@@ -92,14 +172,71 @@ Parser::parse_string()
 			case 't': value += '\t'; break;
 			case 'u': {
 				// unicode escape: \u____ (codepoint in hexadecimal)
+				uint32_t codepoint = 0;
+
 				if (pos_ + 4 >= end_pos_) {
 					value += u8"�";
+					pos_ += 4;
 					synfig::error("JSON: malformed string: incomplete unicode escape sequence");
 					break;
 				}
-				// Skip unicode handling for now
+
+				uint16_t codepoint1 = 0;
+				bool valid_codepoint = decode_hexstring_to_codepoint(input_, pos_ + 1, codepoint1);
+				if (!valid_codepoint) {
+					while (decode_hexadecimal(input_[pos_+1]) != -1)
+						++pos_;
+					value += u8"�";
+					synfig::error("JSON: malformed string: invalid/incomplete unicode escape sequence");
+					break;
+				}
 				pos_ += 4;
-				value += '?';
+
+				if (codepoint1 < 0xD800 || codepoint1 >= 0xE000) {
+					codepoint = codepoint1;
+				} else if (codepoint1 >= 0xDC00){
+					// UTF-16 low surrogate without previous hight surrogate
+					value += u8"�";
+					synfig::error("JSON: malformed string: invalid unicode escape sequence for non BMP character: low surrogate only");
+					break;
+				} else {
+					// found UTF-16 high surrogate
+
+					if (pos_ + 1 + 2 + 4 >= end_pos_) { // additional \uXXXX
+						value += u8"�";
+						synfig::error("JSON: malformed string: incomplete unicode escape sequence for non BMP character");
+						break;
+					}
+
+					// checking for low surrogate
+					if (input_[pos_ + 1] != '\\' && input_[pos_ + 2] != 'u') {
+						value += u8"�";
+						synfig::error("JSON: malformed string: invalid unicode escape sequence for non BMP character: high surrogate only");
+						break;
+					}
+					pos_ += 2;
+					uint16_t codepoint2 = 0;
+					bool valid_codepoint2 = decode_hexstring_to_codepoint(input_, pos_ + 1, codepoint2);
+					if (!valid_codepoint2) {
+						while (decode_hexadecimal(input_[pos_+1]) != -1)
+							++pos_;
+						synfig::error("JSON: malformed string: incomplete unicode escape sequence: missing low surrogate");
+						break;
+					}
+					if (codepoint2 < 0xDC00 || codepoint2 > 0xDFFF) {
+						value += u8"�";
+						synfig::error("JSON: malformed string: invalid unicode escape sequence for non BMP character: no low surrogate");
+						break;
+					}
+
+					codepoint = codepoint1 & 0x03FF;
+					codepoint <<= 10;
+					codepoint |= codepoint2 & 0x03FF;
+					codepoint |= 0x10000;
+					pos_ += 4;
+				}
+
+				codepoint_to_utf8(codepoint, value);
 				break;
 			}
 			default: {
