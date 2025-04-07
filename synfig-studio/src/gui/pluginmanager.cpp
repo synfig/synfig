@@ -40,22 +40,8 @@
 #include <glibmm/miscutils.h>
 #include <glibmm/spawn.h>
 
-#include <gtkmm/appchooserbutton.h>
 #include <gtkmm/builder.h>
-#include <gtkmm/checkbutton.h>
-#include <gtkmm/colorbutton.h>
-#include <gtkmm/combobox.h>
-#include <gtkmm/comboboxtext.h>
 #include <gtkmm/dialog.h>
-#include <gtkmm/entry.h>
-#include <gtkmm/filechooserbutton.h>
-#include <gtkmm/fontbutton.h>
-#include <gtkmm/radiobutton.h>
-#include <gtkmm/scale.h>
-#include <gtkmm/scalebutton.h>
-#include <gtkmm/spinbutton.h>
-#include <gtkmm/switch.h>
-#include <gtkmm/volumebutton.h>
 
 #include <gui/app.h>
 #include <gui/localization.h>
@@ -63,9 +49,9 @@
 
 #include <synfig/general.h>
 #include <synfig/os.h>
-#include "pluginmanager.h"
 
 #include <gui/json.h>
+#include <gui/json_to_dialog_converter.h>
 
 #endif
 
@@ -120,71 +106,9 @@ parse_argument_necessity(const xmlpp::Element& element, const std::string& attri
 	return default_value;
 }
 
-static void
-fetch_data_in_widget(const Gtk::Widget* w, std::map<std::string, std::string>& data)
-{
-	if (!w->get_name().empty()) {
-		if (GTK_IS_COMBO_BOX_TEXT(w->gobj())) {
-			const Gtk::ComboBoxText* combo = static_cast<const Gtk::ComboBoxText*>(w);
-			if (combo->get_has_entry())
-				data[w->get_name()] = combo->get_entry_text();
-			else
-				data[w->get_name()] = combo->get_active_id();
-		} else if (GTK_IS_COMBO_BOX(w->gobj())) {
-			const Gtk::ComboBox* combo = static_cast<const Gtk::ComboBox*>(w);
-			if (combo->get_has_entry())
-				data[w->get_name()] = combo->get_entry_text();
-			else
-				data[w->get_name()] = combo->get_active_id();
-		} else if (GTK_IS_SWITCH(w->gobj())) {
-			data[w->get_name()] = std::to_string(static_cast<const Gtk::Switch*>(w)->get_active());
-//			} else if (GTK_IS_RADIO_BUTTON(w->gobj())) {
-//				data[w->get_name()] = std::to_string(static_cast<const Gtk::RadioButton*>(w)->get_());
-		} else if (GTK_IS_CHECK_BUTTON(w->gobj())) {
-			data[w->get_name()] = std::to_string(static_cast<const Gtk::CheckButton*>(w)->get_active());
-		} else if (GTK_IS_TOGGLE_BUTTON(w->gobj())) {
-			data[w->get_name()] = std::to_string(static_cast<const Gtk::ToggleButton*>(w)->get_active());
-		} else if (GTK_IS_FILE_CHOOSER_BUTTON(w->gobj())) {
-			data[w->get_name()] = static_cast<const Gtk::FileChooserButton*>(w)->get_filename();
-		} else if (GTK_IS_COLOR_BUTTON(w->gobj())) {
-			data[w->get_name()] = static_cast<const Gtk::ColorButton*>(w)->get_rgba().to_string();
-		} else if (GTK_IS_FONT_BUTTON(w->gobj())) {
-			// https://docs.gtk.org/Pango/type_func.FontDescription.from_string.html
-			const auto* font_button = static_cast<const Gtk::FontButton*>(w);
-			data[w->get_name()] = font_button->get_font_name();
-		} else if (GTK_IS_SCALE_BUTTON(w->gobj())) {
-			data[w->get_name()] = std::to_string(static_cast<const Gtk::ScaleButton*>(w)->get_value());
-		} else if (GTK_IS_VOLUME_BUTTON(w->gobj())) {
-			data[w->get_name()] = std::to_string(static_cast<const Gtk::VolumeButton*>(w)->get_value());
-		} else if (GTK_IS_APP_CHOOSER_BUTTON(w->gobj())) {
-			data[w->get_name()] = static_cast<const Gtk::AppChooserButton*>(w)->get_app_info()->get_commandline();
-		} else if (GTK_IS_SCALE(w->gobj())) {
-			data[w->get_name()] = std::to_string(static_cast<const Gtk::Scale*>(w)->get_value());
-		} else if (GTK_IS_SPIN_BUTTON(w->gobj())) {
-			data[w->get_name()] = std::to_string(static_cast<const Gtk::SpinButton*>(w)->get_value());
-		} else if (GTK_IS_ENTRY(w->gobj())) {
-			data[w->get_name()] = static_cast<const Gtk::Entry*>(w)->get_text();
-		}
-	}
-	if (GTK_IS_CONTAINER(w->gobj()) && (w->get_name().find("gtkmm__") == 0)) {
-		// synfig::info("Fetching children of " + w->get_name() + ((w->get_name().find("gtkmm__") == 0) ? "0" : "1"));
-		for (const Gtk::Widget* c : static_cast<const Gtk::Container*>(w)->get_children())
-			fetch_data_in_widget(c, data);
-	}
-};
-
 const synfig::filesystem::Path studio::Plugin::default_config_filename{"default_config.json"};
 const synfig::filesystem::Path studio::Plugin::user_config_filename{"user_config.json"};
 const synfig::filesystem::Path studio::Plugin::config_ui_filename{"configuration.ui"};
-
-std::map<std::string, std::string>
-studio::PluginManager::parse_dialog(const Gtk::Widget& dialog_contents)
-{
-	std::map<std::string, std::string> data;
-	fetch_data_in_widget(&dialog_contents, data);
-	return data;
-}
-
 
 studio::PluginString::PluginString(std::string fallback)
 	: fallback_(std::move(fallback))
@@ -525,7 +449,7 @@ bool studio::PluginManager::check_and_run_dialog(const PluginScript& script, std
 					int result = dialog.run();
 					if (result != Gtk::RESPONSE_ACCEPT)
 						return false;
-					auto dialog_data = PluginManager::parse_dialog(*contents);
+					auto dialog_data = JSON::parse_dialog(*contents);
 //					delete dialog;
 					for (const auto& d : dialog_data) {
 						if (!dialog_args.empty())
