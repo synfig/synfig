@@ -31,10 +31,7 @@
 /* === H E A D E R S ======================================================= */
 
 #include <unordered_map>
-#include <map>
 #include <vector>
-
-#include <gtkmm/widget.h>
 
 #include <sigc++/signal.h>
 
@@ -161,7 +158,6 @@ private:
 	sigc::signal<void> signal_list_changed_;
 
 public:
-	static std::map<std::string, std::string> parse_dialog(const Gtk::Widget& dialog_contents);
 	void load_dir(const std::string& pluginsprefix);
 	void load_plugin(const synfig::filesystem::Path& file, const synfig::filesystem::Path& plugindir, bool notify = false);
 	void remove_plugin(const std::string& id);

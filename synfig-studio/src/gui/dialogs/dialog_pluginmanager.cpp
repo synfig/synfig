@@ -37,23 +37,7 @@
 #include <libxml++/libxml++.h>
 #include <glibmm/fileutils.h>
 #include <gtkmm/builder.h>
-#include <gtkmm/checkbutton.h>
-#include <gtkmm/colorbutton.h>
-#include <gtkmm/combobox.h>
-#include <gtkmm/comboboxtext.h>
-#include <gtkmm/entry.h>
-#include <gtkmm/filechooserbutton.h>
-#include <gtkmm/fontbutton.h>
-#include <gtkmm/label.h>
-#include <gtkmm/listbox.h>
-#include <gtkmm/listboxrow.h>
-#include <gtkmm/notebook.h>
-#include <gtkmm/scale.h>
-#include <gtkmm/scalebutton.h>
 #include <gtkmm/scrolledwindow.h>
-#include <gtkmm/spinbutton.h>
-#include <gtkmm/switch.h>
-#include <gtkmm/volumebutton.h>
 
 #include <synfig/general.h>
 #include <synfig/os.h>
@@ -63,6 +47,7 @@
 #include <gui/localization.h>
 #include <gui/app.h>
 #include <gui/json.h>
+#include <gui/json_to_dialog_converter.h>
 
 #endif
 
@@ -76,76 +61,6 @@ using namespace studio;
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
-
-static void set_widget_value(Gtk::Widget* widget, const std::string& value) {
-	if (!widget)
-		return;
-    
-	if (GTK_IS_COMBO_BOX_TEXT(widget->gobj())) {
-		auto* combo = static_cast<Gtk::ComboBoxText*>(widget);
-		if (combo->get_has_entry()) {
-			if (auto entry = combo->get_entry()) {
-				entry->set_text(value);
-			}
-		} else {
-			combo->set_active_id(value);
-		}
-	} else if (GTK_IS_COMBO_BOX(widget->gobj())) {
-		auto* combo = static_cast<Gtk::ComboBox*>(widget);
-		if (combo->get_has_entry()) {
-			if (auto entry = combo->get_entry()) {
-				entry->set_text(value);
-				entry->set_editable(true);
-			}
-		} else {
-			combo->set_active_id(value);
-		}
-	} else if (GTK_IS_SWITCH(widget->gobj())) {
-		static_cast<Gtk::Switch*>(widget)->set_active(value == "1" || value == "true");
-	} else if (GTK_IS_CHECK_BUTTON(widget->gobj())) {
-		static_cast<Gtk::CheckButton*>(widget)->set_active(value == "1" || value == "true");
-	} else if (GTK_IS_TOGGLE_BUTTON(widget->gobj())) {
-		static_cast<Gtk::ToggleButton*>(widget)->set_active(value == "1" || value == "true");
-	} else if (GTK_IS_FILE_CHOOSER_BUTTON(widget->gobj())) {
-		static_cast<Gtk::FileChooserButton*>(widget)->set_filename(value);
-	} else if (GTK_IS_COLOR_BUTTON(widget->gobj())) {
-		Gdk::RGBA color;
-		color.set(value);
-		static_cast<Gtk::ColorButton*>(widget)->set_rgba(color);
-	} else if (GTK_IS_FONT_BUTTON(widget->gobj())) {
-		static_cast<Gtk::FontButton*>(widget)->set_font_name(value);
-	} else if (GTK_IS_SCALE_BUTTON(widget->gobj())) {
-		static_cast<Gtk::ScaleButton*>(widget)->set_value(std::stod(value));
-	} else if (GTK_IS_VOLUME_BUTTON(widget->gobj())) {
-		static_cast<Gtk::VolumeButton*>(widget)->set_value(std::stod(value));
-	} else if (GTK_IS_SCALE(widget->gobj())) {
-		static_cast<Gtk::Scale*>(widget)->set_value(std::stod(value));
-	} else if (GTK_IS_SPIN_BUTTON(widget->gobj())) {
-		static_cast<Gtk::SpinButton*>(widget)->set_value(std::stod(value));
-	} else if (GTK_IS_ENTRY(widget->gobj())) {
-		static_cast<Gtk::Entry*>(widget)->set_text(value);
-	}
-}
-
-static void hydrate_config(Gtk::Container* container, const std::map<std::string, std::string>& values) {
-	if (!container)
-		return;
-
-	// Process all children
-
-	std::vector<Gtk::Widget*> children = container->get_children();
-	for (Gtk::Widget* child : children) {
-		if (!child->get_name().empty()) {
-			auto it = values.find(child->get_name());
-			if (it != values.end())
-				set_widget_value(child, it->second);
-		}
-
-		// Recursively process child containers
-		if (GTK_IS_CONTAINER(child->gobj()))
-			hydrate_config(dynamic_cast<Gtk::Container*>(child), values);
-	}
-}
 
 /* === M E T H O D S ======================================================= */
 
@@ -216,7 +131,7 @@ Dialog_PluginManager::save_plugin_config(const std::string& plugin_id, Gtk::Widg
 	const filesystem::Path user_config_file = plugin.user_config_filepath();
 
 	// Get configuration data from widgets
-	auto config_data = PluginManager::parse_dialog(*config_widget);
+	auto config_data = JSON::parse_dialog(*config_widget);
 
 	// Convert to JSON format
 	std::string json_data;
@@ -395,8 +310,7 @@ Dialog_PluginManager::build_notebook()
 					auto values = JSON::Parser::parse(user_config_file);
 					if (config_widget && GTK_IS_CONTAINER(config_widget->gobj())) {
 						auto container = static_cast<Gtk::Container*>(config_widget);
-						hydrate_config(container, values);
-						synfig::info("Hydrated");
+						JSON::hydrate_dialog(container, values);
 						// If configuration UI was found, add it to the tab
 						plugin_tab->pack_start(*config_widget, Gtk::PACK_SHRINK);
 

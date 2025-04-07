@@ -53,6 +53,7 @@ target_sources(synfigstudio
 		"${CMAKE_CURRENT_LIST_DIR}/iconcontroller.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/instance.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/json.cpp"
+		"${CMAKE_CURRENT_LIST_DIR}/json_to_dialog_converter.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/keymapsettings.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/onemoment.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/pluginmanager.cpp"
