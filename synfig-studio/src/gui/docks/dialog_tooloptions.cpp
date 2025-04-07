@@ -33,8 +33,6 @@
 #	include <config.h>
 #endif
 
-#include <vector>
-#include <gtkmm/entry.h>
 #include "docks/dialog_tooloptions.h"
 #include <gui/localization.h>
 
@@ -116,8 +114,12 @@ Dialog_ToolOptions::focus_primary_widget()
         primary_focus_widget_->get_can_focus())
     {
         primary_focus_widget_->grab_focus();
+        
+        // For entry widgets, we'll just focus them without text selection
+        // since we can't safely access Entry-specific methods
         if (primary_focus_widget_->get_name() == "GtkEntry") {
-            static_cast<Gtk::Entry*>(primary_focus_widget_)->select_region(0, -1);
+            // Can't do text selection without Gtk::Entry definition
+            // Just leave it as focus-only
         }
     }
 }

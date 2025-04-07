@@ -216,7 +216,7 @@ MainWindow::init_menus()
 	action_group->add( Gtk::Action::create("edit-workspacelist", _("Edit workspaces...")),
 		sigc::ptr_fun(MainWindow::edit_custom_workspace_list)
 	);
-	
+
 	//animation tabs
 	for (int i = 1; i <= 8; ++i) {
 		const std::string tab = std::to_string(i);
@@ -341,8 +341,7 @@ MainWindow::get_workspaces()
 bool MainWindow::on_key_press_event(GdkEventKey* key_event)
 {
     SYNFIG_EXCEPTION_GUARD_BEGIN()
-
-        if (key_event->keyval == GDK_KEY_F2) {
+    if (key_event->keyval == GDK_KEY_F2) {
         App::focus_tool_options();
         return true; 
     }
@@ -351,12 +350,9 @@ bool MainWindow::on_key_press_event(GdkEventKey* key_event)
     if (widget && (dynamic_cast<Gtk::Editable*>(widget) || dynamic_cast<Gtk::TextView*>(widget) || dynamic_cast<Gtk::DrawingArea*>(widget))) {
         bool handled = gtk_window_propagate_key_event(GTK_WINDOW(this->gobj()), key_event);
         if (handled) {
-            synfig::info("Key event handled by focused widget");
             return true;
         }
     }
-
-
     SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
@@ -776,4 +772,3 @@ MainWindow::on_dockable_unregistered(Dockable* dockable)
 	}
 }
 /* === E N T R Y P O I N T ================================================= */
-

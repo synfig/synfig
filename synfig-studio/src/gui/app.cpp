@@ -1289,10 +1289,7 @@ DEFINE_ACTION("switch-to-rightmost-tab",  _("Switch to Rightmost Tab"))
 		Gtk::AccelKey accel_key(accel_item.first, accel_item.second);
 		if (accel_key.get_key() == 0)
 			synfig::warning(_("Invalid accelerator: %s (for action: %s)"), accel_item.first, accel_item.second);
-			else
-		            synfig::info("Loading accelerator: %s -> %s", accel_item.first, accel_item.second);
-		Gtk::AccelMap::add_entry(accel_key.get_path(), accel_key.get_key(), accel_key.get_mod());
-		
+		Gtk::AccelMap::add_entry(accel_key.get_path(), accel_key.get_key(), accel_key.get_mod());		
 	}
 }
 
@@ -1354,7 +1351,6 @@ App::get_default_accel_map()
 		{"<Primary>7",              "<Actions>/mainwindow/switch-to-tab-7"},
 		{"<Primary>8",              "<Actions>/mainwindow/switch-to-tab-8"},
 		{"<Primary>9",              "<Actions>/mainwindow/switch-to-rightmost-tab"},
-		{"F2", "<Actions>/mainwindow/panel-tool_options-focus"},
 		{"<Control>s",              "<Actions>/canvasview/save"},
 		{"<Control><Shift>s",       "<Actions>/canvasview/save-as"},
 		{"<Control>grave",          "<Actions>/canvasview/toggle-low-res"},
@@ -1405,7 +1401,6 @@ App::get_default_accel_map()
 		{"<Shift>space",            "<Actions>/canvasview/pause"},
 		{"<Control>space",          "<Actions>/canvasview/animate"},
 	};
-	synfig::info("Accel Map: F2 -> %s", default_accel_map.at("F2"));
 
 	return default_accel_map;
 }

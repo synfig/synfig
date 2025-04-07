@@ -53,7 +53,6 @@ namespace studio {
 		Gtk::Bin *bin_;
 		DockBook *main_dock_book_;
 		Glib::RefPtr<Gtk::ActionGroup> window_action_group;
-		Glib::RefPtr<Gtk::ActionGroup> action_group_;
 
 		//! Constructor Helper - Initializes all of the menus
 		void init_menus();
@@ -96,6 +95,7 @@ namespace studio {
 
 		DockBook& main_dock_book() { return *main_dock_book_; }
 		const DockBook& main_dock_book() const { return *main_dock_book_; }
+		
 		static void set_workspace_default();
 		static void set_workspace_compositing();
 		static void set_workspace_animating();

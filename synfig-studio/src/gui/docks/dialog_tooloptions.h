@@ -52,14 +52,10 @@ public:
 
 	void clear();
 	void set_widget(Gtk::Widget&);
-	void focus_first_editable();
 	Dialog_ToolOptions();
 	~Dialog_ToolOptions();
-	    void set_primary_focus_widget(Gtk::Widget* widget);
-    
-
-    void focus_primary_widget();
-
+	void set_primary_focus_widget(Gtk::Widget* widget);
+	void focus_primary_widget();
 }; // END of Dialog_ToolOptions
 
 }; // END of namespace studio

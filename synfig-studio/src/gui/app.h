@@ -481,10 +481,10 @@ public:
 	// (By now it updates the System Units or Time Format for all the canvases).
 	// This fixes bug 1890020
 	static void setup_changed();
+	static void focus_tool_options();
 
 	static void process_all_events();
 	static bool check_python_version(const std::string& path);
-	
 }; // END of class App
 
 	void delete_widget(Gtk::Widget *widget);
