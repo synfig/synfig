@@ -128,5 +128,4 @@ class Layer:
         if they reside inside another composition. For now, this functionality
         is a stub and can be developed further if needed.
         """
-        # Not implementing for spine-exporter unless required.
-        pass
+        

@@ -25,7 +25,7 @@ def compute_bone_transform(bone_param, frame=0):
     # For this basic example, we use frame=0
     try:
         origin, angle, local_scale, recursive_scale = bone_param.__get_value(frame)
-    except Exception as e:
+    except Exception:
         # Fallback values in case of error
         origin, angle, local_scale, recursive_scale = [0, 0], 0, 1, [1, 1]
 
@@ -86,10 +86,8 @@ def parse_bones(canvas, frame=0):
     for guid, bone_param in canvas.bones.items():
         # Retrieve a bone's name from the parameter. Fallback to using guid if "name" is absent.
         bone_name = bone_param.param.attrib.get("name", guid)
-        
         # Compute transformation values (origin, angle, and scaling)
         origin, angle, (scaleX, scaleY) = compute_bone_transform(bone_param, frame)
-
         # Get parent name based on the bone's subparams (if exists)
         parent_name = get_parent_name(bone_param, canvas)
 

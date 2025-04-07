@@ -1,6 +1,5 @@
 import sys
-import math
-from lxml import etree
+#from lxml import etree
 import settings
 sys.path.append("..")
 
@@ -49,9 +48,8 @@ class Param:
         """
         # Check for bone-specific tags using settings (e.g., settings.BONES).
         if self.param.tag in settings.BONES or (len(self.param) and self.param[0].tag in settings.CONVERT_METHODS):
-            #
+
             # CASE 1: bone node
-            #
             if self.param.tag == "bone":
                 # Retrieve subparameters if they exist.
                 origin_param  = self.subparams.get("origin")
@@ -74,9 +72,9 @@ class Param:
                     parent_bone = canvas.get_bone(guid)
                     if parent_bone is not None:
                         # Recursively get the parent's transformation values.
-                        par_origin, par_angle, par_lls, par_rls, par_eff = parent_bone.recur_animate("vector")
+                        par_origin, par_angle, par_lls, par_rls = parent_bone.recur_animate("vector")
                         # Combine the parent's values and the current bone's own values.
-                        # (For a real implementation, use proper vector math; 
+                        # For a real implementation, use proper vector math
                         # here we simply form an expression string.)
                         combined_origin = "add({par_origin}, mul({bone_origin}, {par_lls}, {par_rls}))".format(
                             par_origin=par_origin, bone_origin=bone_origin, par_lls=par_lls, par_rls=par_rls
@@ -86,15 +84,11 @@ class Param:
                 # If no parent is defined, return the bone’s own values.
                 return bone_origin, bone_angle, lls, rls, self.expression_controllers
 
-            #
             # CASE 2: bone_root node; the root uses default transformation.
-            #
             elif self.param.tag == "bone_root":
                 return "[0, 0]", "0", "1", "1", []
 
-            #
             # CASE 3: bone_link node: lookup a referenced bone and add a base offset.
-            #
             elif len(self.param) and self.param[0].tag == "bone_link":
                 bone_link_param = self.subparams.get("bone_link")
                 if bone_link_param:
@@ -137,7 +131,7 @@ class Param:
                     canvas = self.get_canvas()
                     parent_bone = canvas.get_bone(guid)
                     if parent_bone is not None:
-                        parent_origin, parent_angle, p_lls, p_rls = parent_bone.__get_value(frame)
+                        parent_origin, parent_angle, _, p_rls = parent_bone.__get_value(frame)
                         # Combine the parent's origin with the current origin.
                         final_origin = [parent_origin[0] + origin_value[0], parent_origin[1] + origin_value[1]]
                         final_angle  = parent_angle + angle_value

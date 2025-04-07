@@ -16,7 +16,6 @@ Usage:
 
 import sys
 from lxml import etree
-import settings
 from core.Canvas import Canvas
 from bones.BoneParser import parse_bones
 from exporters.spine_json_exporter import export_spine_json
