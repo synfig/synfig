@@ -105,19 +105,20 @@ Dialog_ToolOptions::set_widget(Gtk::Widget&x)
 	x.show();
 }
 
+
 void
 Dialog_ToolOptions::focus_primary_widget()
 {
-    if (primary_focus_widget_ && 
-        primary_focus_widget_->is_sensitive() && 
+    if (!primary_focus_widget_) return;
+    
+    if (primary_focus_widget_->is_sensitive() && 
         primary_focus_widget_->is_visible() && 
         primary_focus_widget_->get_can_focus())
     {
         primary_focus_widget_->grab_focus();
-        
-        Gtk::Entry* entry = dynamic_cast<Gtk::Entry*>(primary_focus_widget_);
-        if (entry) {
-            entry->select_region(0, -1);
+        if (primary_focus_widget_->get_name() == "GtkEntry") {
+            static_cast<Gtk::Entry*>(primary_focus_widget_)->select_region(0, -1);
         }
     }
 }
+

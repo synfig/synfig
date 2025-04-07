@@ -484,6 +484,7 @@ public:
 
 	static void process_all_events();
 	static bool check_python_version(const std::string& path);
+	
 }; // END of class App
 
 	void delete_widget(Gtk::Widget *widget);

@@ -43,7 +43,6 @@
 #include <gui/canvasview.h>
 #include <gui/dialogs/dialog_input.h>
 #include <gui/dialogs/dialog_workspaces.h>
-#include <gui/docks/dialog_tooloptions.h>
 #include <gui/docks/dockable.h>
 #include <gui/docks/dockbook.h>
 #include <gui/docks/dockmanager.h>
@@ -217,7 +216,7 @@ MainWindow::init_menus()
 	action_group->add( Gtk::Action::create("edit-workspacelist", _("Edit workspaces...")),
 		sigc::ptr_fun(MainWindow::edit_custom_workspace_list)
 	);
-
+	
 	//animation tabs
 	for (int i = 1; i <= 8; ++i) {
 		const std::string tab = std::to_string(i);
@@ -339,27 +338,25 @@ MainWindow::get_workspaces()
 	return list;
 }
 
-bool
-MainWindow::on_key_press_event(GdkEventKey* key_event)
+bool MainWindow::on_key_press_event(GdkEventKey* key_event)
 {
     SYNFIG_EXCEPTION_GUARD_BEGIN()
-   if(key_event->keyval == GDK_KEY_F2)
-    {
-        if(App::dialog_tool_options && App::dialog_tool_options->is_visible())
-        {
-            App::dialog_tool_options->focus_primary_widget();
-            return true; // Event handled
-        }
+
+        if (key_event->keyval == GDK_KEY_F2) {
+        App::focus_tool_options();
+        return true; 
     }
-    
 
     Gtk::Widget* widget = get_focus();
     if (widget && (dynamic_cast<Gtk::Editable*>(widget) || dynamic_cast<Gtk::TextView*>(widget) || dynamic_cast<Gtk::DrawingArea*>(widget))) {
         bool handled = gtk_window_propagate_key_event(GTK_WINDOW(this->gobj()), key_event);
-        if (handled)
+        if (handled) {
+            synfig::info("Key event handled by focused widget");
             return true;
+        }
     }
-    return Gtk::Window::on_key_press_event(key_event);
+
+
     SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
@@ -779,3 +776,4 @@ MainWindow::on_dockable_unregistered(Dockable* dockable)
 	}
 }
 /* === E N T R Y P O I N T ================================================= */
+
