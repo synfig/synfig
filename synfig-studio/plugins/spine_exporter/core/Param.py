@@ -131,7 +131,7 @@ class Param:
                     canvas = self.get_canvas()
                     parent_bone = canvas.get_bone(guid)
                     if parent_bone is not None:
-                        parent_origin, parent_angle, _, p_rls = parent_bone.__get_value(frame)
+                        parent_origin, parent_angle, _, _ = parent_bone.__get_value(frame)
                         # Combine the parent's origin with the current origin.
                         final_origin = [parent_origin[0] + origin_value[0], parent_origin[1] + origin_value[1]]
                         final_angle  = parent_angle + angle_value
