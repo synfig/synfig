@@ -63,7 +63,7 @@ private:
 	void build_listbox();
 	void build_notebook();
 	void save_plugin_config(const std::string& plugin_id, Gtk::Widget* config_widget);
-	void reset_plugin_config(const std::string& plugin_id, Gtk::Widget* config_widget);
+	void reset_plugin_config(const std::string& plugin_id);
 	void on_install_plugin_button_clicked();
 	void refresh();
 

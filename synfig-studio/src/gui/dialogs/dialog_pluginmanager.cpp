@@ -164,11 +164,8 @@ Dialog_PluginManager::save_plugin_config(const std::string& plugin_id, Gtk::Widg
 }
 
 void
-Dialog_PluginManager::reset_plugin_config(const std::string& plugin_id, Gtk::Widget* config_widget)
+Dialog_PluginManager::reset_plugin_config(const std::string& plugin_id)
 {
-	if (!config_widget)
-		return;
-
 	// Ask for confirmation
 	confirmation_dialog.set_message(_("Are you sure you want to reset all settings to default?"));
 	int response = confirmation_dialog.run();
@@ -203,7 +200,16 @@ Dialog_PluginManager::reset_plugin_config(const std::string& plugin_id, Gtk::Wid
 			message_dialog.hide();
 
 			// Reload the configuration UI
-			build_notebook();
+			const int n_pages = notebook.get_n_pages();
+			for (int i = 0; i < n_pages; ++i) {
+				auto widget = notebook.get_nth_page(i);
+				auto container = dynamic_cast<Gtk::Container*>(widget);
+				if (container && notebook.get_tab_label_text(*widget) == plugin.name.get()) {
+					auto config = JSON::Parser::parse(user_config_file);
+					JSON::hydrate_dialog(container, config);
+					break;
+				}
+			}
 		} catch (const std::exception& ex) {
 			message_dialog.set_message(strprintf(_("Error resetting configuration: %s"), ex.what()));
 			message_dialog.run();
@@ -336,7 +342,7 @@ Dialog_PluginManager::build_notebook()
 							plugin.id, config_widget));
 						reset_button->signal_clicked().connect(
 							sigc::bind(sigc::mem_fun(*this, &Dialog_PluginManager::reset_plugin_config),
-							plugin.id, config_widget));
+							plugin.id));
 
 						button_box->pack_end(*save_button, Gtk::PACK_SHRINK);
 						button_box->pack_end(*reset_button, Gtk::PACK_SHRINK);
@@ -419,6 +425,13 @@ Dialog_PluginManager::build_listbox()
 		open_folder->signal_clicked().connect([plugin]() {
 			synfig::OS::launch_file_async(plugin.dir);
 		});
+
+		restore_settings->signal_clicked().connect(
+			sigc::bind(
+				sigc::mem_fun(*this, &Dialog_PluginManager::reset_plugin_config),
+				plugin.id
+			)
+		);
 
 		plugin_option_box->pack_start(*restore_settings, Gtk::PACK_SHRINK, 10);
 		plugin_option_box->pack_start(*open_folder, Gtk::PACK_SHRINK, 10);
