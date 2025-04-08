@@ -396,3 +396,70 @@ JSON::escape_string(const std::string& str)
 	}
 	return value;
 }
+
+std::string
+JSON::stringify(const std::map<std::string, std::string>& obj)
+{
+	std::string json_data;
+	for (const auto& d : obj) {
+		json_data += synfig::strprintf("\"%s\":\"%s\",",
+									   JSON::escape_string(d.first).c_str(),
+									   JSON::escape_string(d.second).c_str());
+	}
+	if (!json_data.empty())
+		json_data.pop_back();
+	json_data = "{" + json_data + "}";
+	return json_data;
+}
+
+std::string
+JSON::stringify(const std::vector<std::string>& arr)
+{
+	std::string json_data;
+	for (const auto& e : arr) {
+		json_data += synfig::strprintf("\"%s\",", JSON::escape_string(e).c_str());
+	}
+	if (!json_data.empty())
+		json_data.pop_back();
+	json_data = "[" + json_data + "]";
+	return json_data;
+}
+
+std::string
+JSON::stringify(const std::string& str)
+{
+	return synfig::strprintf("\"%s\"", JSON::escape_string(str).c_str());
+}
+
+std::string
+JSON::stringify(const char* str)
+{
+	return synfig::strprintf("\"%s\"", JSON::escape_string(str).c_str());
+}
+
+std::string
+JSON::stringify(bool data)
+{
+	return data ? "true" : "false";
+}
+
+std::string
+JSON::stringify(int data)
+{
+	return std::to_string(data);
+}
+
+std::string
+JSON::stringify(double data)
+{
+	std::ostringstream os;
+	synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
+	os << data;
+	return os.str();
+}
+
+std::string
+JSON::stringify(std::nullptr_t)
+{
+	return "null";
+}
