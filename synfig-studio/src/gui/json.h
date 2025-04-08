@@ -32,6 +32,7 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 #include <synfig/filesystem_path.h>
 
@@ -59,7 +60,25 @@ private:
 	std::map<std::string, std::string> parse_object();
 };
 
+/** Escape UTF-8 string to JSON string */
 std::string escape_string(const std::string& str);
+
+/** Convert a JSON 'object' to JSON string {"key1":"value1","key2":"value2"} */
+std::string stringify(const std::map<std::string, std::string>& obj);
+/** Convert a JSON 'array' to JSON string ["value1","value2"] */
+std::string stringify(const std::vector<std::string>& arr);
+/** Convert a string value to JSON string "multiple\\nlines." (quotes + escapes) */
+std::string stringify(const std::string& str);
+/** Convert a string value to JSON string "multiple\\nlines." (quotes + escapes) */
+std::string stringify(const char* str);
+/** Convert a boolean value to JSON token: true or false */
+std::string stringify(bool data);
+/** Convert an integer number to JSON string representation */
+std::string stringify(int data);
+/** Convert a real number to JSON string representation */
+std::string stringify(double data);
+/** Convert a null value to JSON string representation: null */
+std::string stringify(std::nullptr_t data);
 }
 
 #endif // JSON_H

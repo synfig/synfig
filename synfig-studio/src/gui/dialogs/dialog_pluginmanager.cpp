@@ -134,15 +134,7 @@ Dialog_PluginManager::save_plugin_config(const std::string& plugin_id, Gtk::Widg
 	auto config_data = JSON::parse_dialog(*config_widget);
 
 	// Convert to JSON format
-	std::string json_data;
-	for (const auto& d : config_data) {
-		if (!json_data.empty())
-			json_data.push_back(',');
-		json_data += synfig::strprintf("\"%s\":\"%s\"",
-			JSON::escape_string(d.first).c_str(),
-			JSON::escape_string(d.second).c_str());
-	}
-	json_data = "{" + json_data + "}";
+	const std::string json_data = JSON::stringify(config_data);
 
 	// Save to user_config.json using FileSystemNative
 	try {

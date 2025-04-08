@@ -262,6 +262,94 @@ test_parse_string_non_bmp_unicode_escape()
 	ASSERT_EQUAL(u8"😀", d.at("key")); // U+1F600 -> f0 9f 98 80
 }
 
+void
+test_stringify_string_value()
+{
+	ASSERT_EQUAL("\"simple\"", JSON::stringify("simple"));
+}
+
+void
+test_stringify_quotable_string_value()
+{
+	ASSERT_EQUAL("\"not that \\\"simple\\\"\"", JSON::stringify("not that \"simple\""));
+}
+
+void
+test_stringify_int_value()
+{
+	ASSERT_EQUAL("3", JSON::stringify(3));
+	ASSERT_EQUAL("34", JSON::stringify(34));
+}
+
+void
+test_stringify_negative_int_value()
+{
+	ASSERT_EQUAL("-3", JSON::stringify(-3));
+	ASSERT_EQUAL("-43", JSON::stringify(-43));
+}
+
+void
+test_stringify_real_value()
+{
+	ASSERT_EQUAL("3.255", JSON::stringify(3.255));
+	ASSERT_EQUAL("-43.12", JSON::stringify(-43.12));
+}
+
+void
+test_stringify_real_value_with_exponential_notation()
+{
+	ASSERT_EQUAL("1.2e+23", JSON::stringify(1.2e+23));
+}
+
+void
+test_stringify_boolean_value()
+{
+	ASSERT_EQUAL("true", JSON::stringify(true));
+	ASSERT_EQUAL("false", JSON::stringify(false));
+}
+
+void
+test_stringify_null_value()
+{
+	ASSERT_EQUAL("null", JSON::stringify(nullptr));
+}
+
+void
+test_stringify_empty_object()
+{
+	ASSERT_EQUAL("{}", JSON::stringify(std::map<std::string, std::string>{}));
+}
+
+void
+test_stringify_simple_object()
+{
+	ASSERT_EQUAL("{\"key\":\"value\"}", JSON::stringify(std::map<std::string, std::string>{{"key", "value"}}));
+}
+
+void
+test_stringify_object_with_two_keys()
+{
+	ASSERT_EQUAL("{\"key1\":\"value1\",\"key2\":\"value2\"}", JSON::stringify(std::map<std::string, std::string>{{"key1", "value1"},{"key2", "value2"}}));
+}
+
+void
+test_stringify_empty_array()
+{
+	ASSERT_EQUAL("[]", JSON::stringify(std::vector<std::string>{}));
+}
+
+void
+test_stringify_simple_array()
+{
+	ASSERT_EQUAL("[\"value\"]", JSON::stringify(std::vector<std::string>{"value"}));
+}
+
+void
+test_stringify_array_with_two_items()
+{
+	ASSERT_EQUAL("[\"value1\",\"value2\"]", JSON::stringify(std::vector<std::string>{"value1", "value2"}));
+}
+
 int main(int argc, const char* argv[])
 {
 	TEST_SUITE_BEGIN();
@@ -294,6 +382,21 @@ int main(int argc, const char* argv[])
 	TEST_FUNCTION(test_parse_string_unicode_escape_utf8_two_bytes);
 	TEST_FUNCTION(test_parse_string_unicode_escape_utf8_three_bytes);
 	TEST_FUNCTION(test_parse_string_non_bmp_unicode_escape);
+
+	TEST_FUNCTION(test_stringify_string_value);
+	TEST_FUNCTION(test_stringify_quotable_string_value);
+	TEST_FUNCTION(test_stringify_int_value);
+	TEST_FUNCTION(test_stringify_negative_int_value);
+	TEST_FUNCTION(test_stringify_real_value);
+	TEST_FUNCTION(test_stringify_real_value_with_exponential_notation);
+	TEST_FUNCTION(test_stringify_boolean_value);
+	TEST_FUNCTION(test_stringify_null_value);
+	TEST_FUNCTION(test_stringify_empty_object);
+	TEST_FUNCTION(test_stringify_simple_object);
+	TEST_FUNCTION(test_stringify_object_with_two_keys);
+	TEST_FUNCTION(test_stringify_empty_array);
+	TEST_FUNCTION(test_stringify_simple_array);
+	TEST_FUNCTION(test_stringify_array_with_two_items);
 
 	TEST_SUITE_END();
 
