@@ -193,6 +193,8 @@ public:
 
 	bool dialog_export();
 
+	bool dialog_export_skeleton();
+
 	void open();
 
 	Status save();

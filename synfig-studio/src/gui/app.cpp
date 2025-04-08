@@ -925,6 +925,7 @@ DEFINE_ACTION("save",           Gtk::StockID("synfig-save"))
 DEFINE_ACTION("save-as",        Gtk::StockID("synfig-save_as"))
 DEFINE_ACTION("save-all",       Gtk::StockID("synfig-save_all"))
 DEFINE_ACTION("export",         Gtk::StockID("synfig-export"))
+DEFINE_ACTION("export-skeleton",Gtk::StockID("synfig-export-skeleton"))
 DEFINE_ACTION("revert",         Gtk::Stock::REVERT_TO_SAVED)
 DEFINE_ACTION("import",         _("Import..."))
 DEFINE_ACTION("import-sequence",_("Import Sequence..."))
@@ -1069,6 +1070,7 @@ DEFINE_ACTION("switch-to-rightmost-tab",  _("Switch to Rightmost Tab"))
 "		<menuitem action='save-as' />"
 "		<menuitem action='save-all' />"
 "		<menuitem action='export' />"
+"		<menuitem action='export-skeleton' />"
 "		<menuitem action='revert' />"
 "		<separator name='sep-file2'/>"
 "		<menuitem action='import' />"
@@ -2958,6 +2960,38 @@ App::dialog_save_file(const std::string& title, synfig::filesystem::Path& filena
 #endif
 }
 
+bool
+App::dialog_export_skeleton_file(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference)
+{
+    filesystem::Path prev_path = _preferences.get_value(preference, Glib::get_home_dir());
+	prev_path = filesystem::absolute(prev_path);
+
+	Gtk::FileChooserDialog *dialog = new Gtk::FileChooserDialog(*App::main_window, title, Gtk::FILE_CHOOSER_ACTION_SAVE);
+
+	Glib::RefPtr<Gtk::FileFilter> filter_spline_json = Gtk::FileFilter::create();
+	filter_spline_json->set_name(_("Spline Json File (*.json)"));
+	filter_spline_json->add_pattern("*.json");
+	dialog->add_filter(filter_spline_json);
+
+	dialog->set_current_folder(prev_path.u8string());
+	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
+	dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
+
+	if (filename.empty()) {
+		dialog->set_filename(prev_path.u8string());
+	} else {
+		dialog->set_current_name(filename.stem().u8string());
+	}
+
+	if(dialog->run() == Gtk::RESPONSE_ACCEPT) {
+		filename = dialog->get_filename();
+		_preferences.set_value(preference, filename.parent_path());
+		delete dialog;
+		return true;
+	}
+	delete dialog;
+	return false;
+}
 
 std::string
 App::dialog_export_file(const std::string& title, synfig::filesystem::Path& filename, const std::string& preference)

@@ -133,6 +133,7 @@ SYNFIGHEADERS = \
 	valueoperations.h \
 	valuetransformation.h \
 	soundprocessor.h \
+	splineexporter.h \
 	canvasfilenaming.h \
 	os.h \
 	token.h \
@@ -185,6 +186,7 @@ SYNFIGSOURCES = \
 	filecontainerzip.cpp \
 	zstreambuf.cpp \
 	valueoperations.cpp \
+	splineexporter.cpp \
 	soundprocessor.cpp \
 	canvasfilenaming.cpp \
 	os.cpp \
@@ -240,4 +242,3 @@ libsynfig_la_LDFLAGS = \
 
 
 include_synfigdir = @synfigincludedir@/synfig
-

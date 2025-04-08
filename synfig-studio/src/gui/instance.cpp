@@ -73,6 +73,7 @@
 #include <synfig/valuenodes/valuenode_duplicate.h>
 #include <synfig/widthpoint.h>
 #include <synfig/zstreambuf.h>
+#include "synfig/splineexporter.h"
 
 #include <synfigapp/main.h>
 
@@ -711,6 +712,31 @@ studio::Instance::dialog_save_as()
 	return false;
 }
 
+bool
+studio::Instance::dialog_export_skeleton()
+{
+    filesystem::Path filename = get_file_name();
+	Canvas::Handle canvas(get_canvas());
+
+	if (has_real_filename())
+		filename = filesystem::absolute(filename);
+
+    bool sucess = App::dialog_export_skeleton_file(
+		(_("Please choose a file name") +
+		String(" (") +
+		(canvas->get_name().empty() ? canvas->get_id() : canvas->get_name()) +
+		")"),
+		filename, ANIMATION_DIR_PREFERENCE
+	);
+
+	if (sucess) {
+		synfig::SplineExporter se;
+		se.export_json_to_file(filename.u8string());
+		return true;
+	}
+
+	return false;
+}
 
 bool
 studio::Instance::dialog_export()

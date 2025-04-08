@@ -1367,6 +1367,7 @@ CanvasView::init_menus()
 		{"save-as", "action_doc_saveas_icon", N_("Save As..."), N_("Save As"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::dialog_save_as)) },
 
 		{"export",            "action_doc_saveas_icon", N_("Export..."),            N_("Export"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::dialog_export)) },
+		{"export-skeleton",   "action_doc_saveas_icon", N_("Export Skeleton..."),   N_("Export Skeleton"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::dialog_export_skeleton)) },
 		{"revert",            "document-revert",        N_("Revert"),               N_("Revert document as it was last saved"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::safe_revert)) },
 		{"import",            "",                       N_("Import..."),            "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_file)) },
 		{"import-sequence",   "",                       N_("Import Sequence..."),   "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_sequence)) },
