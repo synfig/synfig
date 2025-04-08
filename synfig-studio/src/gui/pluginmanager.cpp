@@ -451,12 +451,7 @@ bool studio::PluginManager::check_and_run_dialog(const PluginScript& script, std
 						return false;
 					auto dialog_data = JSON::parse_dialog(*contents);
 //					delete dialog;
-					for (const auto& d : dialog_data) {
-						if (!dialog_args.empty())
-							dialog_args.push_back(',');
-						dialog_args += synfig::strprintf("\"%s\":\"%s\"", JSON::escape_string(d.first).c_str(), JSON::escape_string(d.second).c_str());
-					}
-					dialog_args = "{" + dialog_args + "}";
+					dialog_args = JSON::stringify(dialog_data);
 				}
 			} catch (const Glib::FileError& ex) {
 				error_msg = ex.what();
