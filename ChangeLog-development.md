@@ -1,3 +1,4 @@
+- [`48f69a5`](https://github.com/synfig/synfig/commit/48f69a5e5d6eaacc8107ba5efde9add6b7f43a7a) feat: added gui for exporting spline json file [core] [studio]
 
 ## Version 1.5.3 [ETL] [core] [studio]
 

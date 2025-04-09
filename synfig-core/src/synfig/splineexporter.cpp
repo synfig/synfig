@@ -31,9 +31,8 @@
 #ifdef HAVE_CONFIG_H
 #	include <config.h>
 #endif
-
+#include <fstream>
 #include "splineexporter.h"
-#include <cstdio>
 
 
 #endif
@@ -63,10 +62,9 @@ SplineExporter::~SplineExporter()
 bool
 SplineExporter::export_json_to_file(const synfig::String filepath)
 {
-    FILE* f = fopen(filepath.c_str(),"w");
-    std::string data = "{}";
-    fwrite(data.c_str(), sizeof(char), data.size(), f);
-    fclose(f);
+    std::ofstream f(filepath.c_str());
+    f << "{}";
+    f.close();
     return true;
 }
 /* === E N T R Y P O I N T ================================================= */
