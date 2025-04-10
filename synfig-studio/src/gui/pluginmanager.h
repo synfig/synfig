@@ -128,12 +128,10 @@ public:
 
 	bool is_valid() const;
 
-	synfig::filesystem::Path default_config_filepath() const;
 	synfig::filesystem::Path user_config_filepath() const;
 	synfig::filesystem::Path config_ui_filepath() const;
 
 private:
-	static const synfig::filesystem::Path default_config_filename;
 	static const synfig::filesystem::Path user_config_filename;
 	static const synfig::filesystem::Path config_ui_filename;
 };
