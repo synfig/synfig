@@ -453,7 +453,7 @@ Layer::simple_clone()const
 }
 
 Layer::Handle
-Layer::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid) const
+Layer::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid , bool flag) const
 {
 	if(!book().count(get_name())) return 0;
 
@@ -462,7 +462,11 @@ Layer::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid) const
 
 	ret->group_=group_;
 	//ret->set_canvas(get_canvas());
-	ret->set_description(get_description()+"#");
+	if (flag) {
+			ret->set_description(get_description()+"#");  // Add "#" if flag is 1
+		} else {
+			ret->set_description(get_description());  // No "#" if flag is 0
+	}
 	ret->set_active(active());
 	ret->set_optimized(optimized());
 	ret->set_exclude_from_rendering(get_exclude_from_rendering());

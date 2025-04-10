@@ -641,7 +641,7 @@ public:
 	virtual Handle hit_check(Context context, const Point &point)const;
 
 	//! Duplicates the Layer
-	virtual Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
+	virtual Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID(), bool flag=true)const;
 
 	//! Returns true if the layer needs to be able to examine its context.
 	/*! context to render itself, other than for simple blending.  For
