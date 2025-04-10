@@ -52,7 +52,7 @@ public:
 	Layer_Duplicate();
 
 	//! Duplicates the Layer
-	virtual Layer::Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID())const;
+	virtual Layer::Handle clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid=GUID(),bool flag=true)const;
 	virtual bool set_param(const String & param, const synfig::ValueBase &value);
 	virtual ValueBase get_param(const String & param)const;
 	virtual Color get_color(Context context, const Point &pos)const;

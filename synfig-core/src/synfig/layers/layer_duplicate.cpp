@@ -77,7 +77,7 @@ Layer_Duplicate::Layer_Duplicate():
 }
 
 Layer::Handle
-Layer_Duplicate::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid)const
+Layer_Duplicate::clone(Canvas::LooseHandle canvas, const GUID& deriv_guid ,bool flag)const
 {
 	Layer::Handle ret = (Layer::Handle)Layer_Composite::clone(canvas, deriv_guid);
 
