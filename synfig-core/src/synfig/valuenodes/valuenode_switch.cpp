@@ -161,3 +161,33 @@ ValueNode_Switch::get_children_vocab_vfunc()const
 
 	return ret;
 }
+
+// Add these two methods to the ValueNode_Switch class definition in the header file,
+// then implement them in the .cpp file as shown below.
+
+LinkableValueNode::InvertibleStatus
+ValueNode_Switch::is_invertible(const Time& t, const ValueBase& target_value, int* link_index) const
+{
+	if (!t.is_valid())
+		return INVERSE_ERROR_BAD_TIME;
+
+	if (target_value.get_type() != get_type())
+		return INVERSE_ERROR_BAD_TYPE;
+
+	const bool switch_state = (*switch_)(t).get(bool());
+
+	if (link_index)
+		*link_index = switch_state ? 1 : 0; // 1=link_on, 0=link_off
+
+	return INVERSE_OK;
+}
+
+ValueBase
+ValueNode_Switch::get_inverse(const Time& t, const ValueBase& target_value) const
+{
+	const bool switch_state = (*switch_)(t).get(bool());
+
+	// The active link's value directly equals the output when the switch is in its current state.
+	// To invert, return the target value for the active link.
+	return target_value;
+}
