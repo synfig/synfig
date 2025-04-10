@@ -60,7 +60,86 @@ using namespace studio;
 
 /* === G L O B A L S ======================================================= */
 
+enum class ValueType
+{
+	DEFAULT,
+	SAVED,
+};
+
+struct MetaValues
+{
+	std::string default_value;
+	std::string saved_value;
+};
+
 /* === P R O C E D U R E S ================================================= */
+
+static void*
+delete_meta_value(void* pdata)
+{
+	delete static_cast<MetaValues*>(pdata);
+	return nullptr;
+}
+
+static void
+set_meta_values_in_widget(Gtk::Widget& widget, const std::map<std::string, std::string>& values, ValueType value_type)
+{
+	auto it = values.find(widget.get_name());
+	if (it != values.end()) {
+		void* pdata = widget.get_data("meta_values");
+		if (!pdata) {
+			pdata = new MetaValues{};
+			widget.set_data("meta_values", pdata);
+			widget.add_destroy_notify_callback(pdata, delete_meta_value);
+		}
+		if (value_type == ValueType::DEFAULT)
+			static_cast<MetaValues*>(pdata)->default_value = it->second;
+		else if (value_type == ValueType::SAVED)
+			static_cast<MetaValues*>(pdata)->saved_value = it->second;
+	}
+
+	if (GTK_IS_CONTAINER(widget.gobj())) {
+		for (auto child : static_cast<Gtk::Container*>(&widget)->get_children()) {
+			if (child)
+				set_meta_values_in_widget(*child, values, value_type);
+		}
+	}
+}
+
+static void
+get_meta_values_in_widget(Gtk::Widget& widget, std::map<std::string, std::string>& values, ValueType value_type)
+{
+	std::string name = widget.get_name();
+	if (!name.empty()) {
+		void* pdata = widget.get_data("meta_values"); // widget cannot be const o.O
+		if (pdata) {
+			if (value_type == ValueType::DEFAULT)
+				values[name] = static_cast<MetaValues*>(pdata)->default_value;
+			else if (value_type == ValueType::SAVED)
+				values[name] = static_cast<MetaValues*>(pdata)->saved_value;
+		}
+	}
+
+	if (GTK_IS_CONTAINER(widget.gobj())) {
+		for (auto child : static_cast<Gtk::Container*>(&widget)->get_children()) {
+			if (child)
+				get_meta_values_in_widget(*child, values, value_type);
+		}
+	}
+}
+
+static Gtk::Container*
+get_plugin_tab_content_widget(Gtk::Notebook& notebook, const std::string& plugin_name)
+{
+	const int n_pages = notebook.get_n_pages();
+	for (int i = 0; i < n_pages; ++i) {
+		auto widget = notebook.get_nth_page(i);
+		if (notebook.get_tab_label_text(*widget) == plugin_name) {
+			return dynamic_cast<Gtk::Container*>(widget);
+		}
+	}
+	return nullptr;
+}
 
 /* === M E T H O D S ======================================================= */
 
@@ -145,6 +224,8 @@ Dialog_PluginManager::save_plugin_config(const std::string& plugin_id, Gtk::Widg
 		}
 		stream->write(json_data.c_str(), json_data.size());
 
+		set_meta_values_in_widget(*config_widget, config_data, ValueType::SAVED);
+
 		message_dialog.set_message(_("Configuration saved successfully"));
 		message_dialog.run();
 		message_dialog.hide();
@@ -168,40 +249,27 @@ Dialog_PluginManager::reset_plugin_config(const std::string& plugin_id)
 		if (!plugin.is_valid())
 			return;
 
-		const filesystem::Path default_config_file = plugin.default_config_filepath();
 		const filesystem::Path user_config_file = plugin.user_config_filepath();
 
 		try {
 			auto file_system = FileSystemNative::instance();
 
-			// Check if default config exists
-			if (!file_system->is_file(default_config_file.u8string())) {
-				message_dialog.set_message(_("Error: Default configuration file not found"));
-				message_dialog.run();
-				message_dialog.hide();
-				return;
-			}
+			if (file_system->is_file(user_config_file.u8string()))
+				file_system->remove_recursive(user_config_file.u8string());
 
-			// Copy default_config.json to user_config.json using FileSystemNative
-			if (!synfig::FileSystem::copy(file_system, default_config_file.u8string(), file_system, user_config_file.u8string())) {
-				throw std::runtime_error(_("Could not restore default configuration file"));
+			// Reload the configuration UI
+			Gtk::Container* container = get_plugin_tab_content_widget(notebook, plugin.name.get());
+			if (container) {
+				std::map<std::string, std::string> default_values;
+				get_meta_values_in_widget(*container, default_values, ValueType::DEFAULT);
+
+				JSON::hydrate_dialog(container, default_values);
 			}
 
 			message_dialog.set_message(_("Configuration reset to defaults successfully"));
 			message_dialog.run();
 			message_dialog.hide();
 
-			// Reload the configuration UI
-			const int n_pages = notebook.get_n_pages();
-			for (int i = 0; i < n_pages; ++i) {
-				auto widget = notebook.get_nth_page(i);
-				auto container = dynamic_cast<Gtk::Container*>(widget);
-				if (container && notebook.get_tab_label_text(*widget) == plugin.name.get()) {
-					auto config = JSON::Parser::parse(user_config_file);
-					JSON::hydrate_dialog(container, config);
-					break;
-				}
-			}
 		} catch (const std::exception& ex) {
 			message_dialog.set_message(strprintf(_("Error resetting configuration: %s"), ex.what()));
 			message_dialog.run();
@@ -209,6 +277,7 @@ Dialog_PluginManager::reset_plugin_config(const std::string& plugin_id)
 		}
 	}
 }
+
 void
 Dialog_PluginManager::build_notebook()
 {
@@ -261,7 +330,6 @@ Dialog_PluginManager::build_notebook()
 		plugin_label->set_margin_right(20);
 
 		const filesystem::Path config_ui_file = plugin.config_ui_filepath();
-		const filesystem::Path default_config_file = plugin.default_config_filepath();
 		const filesystem::Path user_config_file = plugin.user_config_filepath();
 
 		if (!file_system->is_file(config_ui_file.u8string())) {
@@ -275,95 +343,80 @@ Dialog_PluginManager::build_notebook()
 			info_label->set_margin_right(20);
 			plugin_tab->pack_start(*info_label, Gtk::PACK_SHRINK);
 		} else {
-			// Configuration UI exists, check for default config
-			if (!file_system->is_file(default_config_file.u8string())) {
-				// Show error if default config is missing
-				Gtk::Label* error_label = Gtk::manage(new Gtk::Label(
-					_("Configuration cannot be loaded - missing default_config.json")
-				));
-				error_label->set_margin_top(20);
+			// Configuration UI exists
+
+			std::string error_msg;
+
+			try {
+				auto builder = Gtk::Builder::create();
+				builder->add_from_file(config_ui_file.u8string());
+
+				Gtk::Widget* config_widget = nullptr;
+				builder->get_widget("dialog_contents", config_widget);
+				if (config_widget && GTK_IS_CONTAINER(config_widget->gobj())) {
+					// Parse the default values set in configuration.ui file
+					auto default_values = JSON::parse_dialog(*config_widget);
+
+					// Fetch the stored user settings in user_config.json, if it exists
+					auto user_saved_values = JSON::Parser::parse(user_config_file);
+
+					set_meta_values_in_widget(*config_widget, default_values, ValueType::DEFAULT);
+					set_meta_values_in_widget(*config_widget, user_saved_values, ValueType::SAVED);
+
+					// Fill dialog with user settings
+					if (!user_saved_values.empty()) {
+						auto container = static_cast<Gtk::Container*>(config_widget);
+						JSON::hydrate_dialog(container, user_saved_values);
+					}
+
+					plugin_tab->pack_start(*config_widget, Gtk::PACK_SHRINK);
+
+					// Add Save and Reset buttons
+					Gtk::HBox* button_box = Gtk::manage(new Gtk::HBox());
+					button_box->set_spacing(10);
+					button_box->set_margin_top(10);
+					button_box->set_margin_bottom(10);
+					button_box->set_margin_left(20);
+					button_box->set_margin_right(20);
+
+					Gtk::Button* save_button = Gtk::manage(new Gtk::Button(_("Save Configuration")));
+					Gtk::Button* reset_button = Gtk::manage(new Gtk::Button(_("Reset to Defaults")));
+
+					save_button->set_image_from_icon_name("document-save", Gtk::ICON_SIZE_BUTTON);
+					reset_button->set_image_from_icon_name("edit-undo", Gtk::ICON_SIZE_BUTTON);
+
+					save_button->set_always_show_image(true);
+					reset_button->set_always_show_image(true);
+
+					save_button->signal_clicked().connect(
+						sigc::bind(sigc::mem_fun(*this, &Dialog_PluginManager::save_plugin_config),
+						plugin.id, config_widget));
+					reset_button->signal_clicked().connect(
+						sigc::bind(sigc::mem_fun(*this, &Dialog_PluginManager::reset_plugin_config),
+						plugin.id));
+
+					button_box->pack_end(*save_button, Gtk::PACK_SHRINK);
+					button_box->pack_end(*reset_button, Gtk::PACK_SHRINK);
+					plugin_tab->pack_end(*button_box, Gtk::PACK_SHRINK);
+				} else {
+					// Show error if dialog_contents not found
+					error_msg = _("Error: Configuration UI file found but missing 'dialog_contents' element");
+				}
+			} catch (const Glib::Error& ex) {
+				// Show error if UI file couldn't be loaded
+				error_msg = _("Error loading configuration UI: ") + ex.what();
+			} catch (const std::exception& ex) {
+				error_msg = strprintf(_("Error loading configuration UI: %s"), ex.what());
+			}
+
+			if (!error_msg.empty()) {
+				Gtk::Label* error_label = Gtk::manage(new Gtk::Label(error_msg));
 				error_label->set_margin_bottom(20);
+				error_label->set_margin_top(20);
 				error_label->set_margin_left(20);
 				error_label->set_margin_right(20);
+				error_label->set_selectable(true);
 				plugin_tab->pack_start(*error_label, Gtk::PACK_SHRINK);
-			} else {
-				try {
-					auto builder = Gtk::Builder::create();
-					try {
-						builder->add_from_file(config_ui_file.u8string());
-					} catch (const Glib::FileError& ex) {
-						throw std::runtime_error(ex.what());
-					}
-					Gtk::Widget* config_widget = nullptr;
-					builder->get_widget("dialog_contents", config_widget);
-					synfig::FileSystemNative::Handle native_fs = synfig::FileSystemNative::instance();
-					if (!native_fs->is_file(user_config_file.u8string())) {
-						// Copy default config to user config using native filesystem
-						if (!synfig::FileSystem::copy(native_fs, default_config_file.u8string(), native_fs, user_config_file.u8string())) {
-							throw std::runtime_error(_("Could not create user configuration file"));
-						}
-					}
-
-					// Now try to read the user config file (which should always exist)
-					auto values = JSON::Parser::parse(user_config_file);
-					if (config_widget && GTK_IS_CONTAINER(config_widget->gobj())) {
-						auto container = static_cast<Gtk::Container*>(config_widget);
-						JSON::hydrate_dialog(container, values);
-						// If configuration UI was found, add it to the tab
-						plugin_tab->pack_start(*config_widget, Gtk::PACK_SHRINK);
-
-						// Add Save and Reset buttons
-						Gtk::HBox* button_box = Gtk::manage(new Gtk::HBox());
-						button_box->set_spacing(10);
-						button_box->set_margin_top(10);
-						button_box->set_margin_bottom(10);
-						button_box->set_margin_left(20);
-						button_box->set_margin_right(20);
-
-						Gtk::Button* save_button = Gtk::manage(new Gtk::Button(_("Save Configuration")));
-						Gtk::Button* reset_button = Gtk::manage(new Gtk::Button(_("Reset to Defaults")));
-
-						save_button->set_image_from_icon_name("document-save", Gtk::ICON_SIZE_BUTTON);
-						reset_button->set_image_from_icon_name("edit-undo", Gtk::ICON_SIZE_BUTTON);
-
-						save_button->set_always_show_image(true);
-						reset_button->set_always_show_image(true);
-
-						save_button->signal_clicked().connect(
-							sigc::bind(sigc::mem_fun(*this, &Dialog_PluginManager::save_plugin_config),
-							plugin.id, config_widget));
-						reset_button->signal_clicked().connect(
-							sigc::bind(sigc::mem_fun(*this, &Dialog_PluginManager::reset_plugin_config),
-							plugin.id));
-
-						button_box->pack_end(*save_button, Gtk::PACK_SHRINK);
-						button_box->pack_end(*reset_button, Gtk::PACK_SHRINK);
-						plugin_tab->pack_end(*button_box, Gtk::PACK_SHRINK);
-					} else {
-						// Show error if dialog_contents not found
-						Gtk::Label* error_label = Gtk::manage(new Gtk::Label(
-							_("Error: Configuration UI file found but missing 'dialog_contents' element")));
-						plugin_label->set_margin_bottom(10);
-						plugin_label->set_margin_top(10);
-						plugin_label->set_margin_left(20);
-						plugin_label->set_margin_right(20);
-						plugin_tab->pack_start(*error_label, Gtk::PACK_SHRINK);
-					}
-				}
-				catch (const Glib::Error& ex) {
-					// Show error if UI file couldn't be loaded
-					Gtk::Label* error_label = Gtk::manage(new Gtk::Label(
-						_("Error loading configuration UI: ") + ex.what()));
-					error_label->set_margin_bottom(20);
-					error_label->set_margin_top(20);
-					error_label->set_margin_left(20);
-					error_label->set_margin_right(20);
-					error_label->set_selectable(true);
-					plugin_tab->pack_start(*error_label, Gtk::PACK_SHRINK);
-				}
-				catch (const std::exception& ex) {
-					synfig::error(_("Error loading configuration UI: %s"), ex.what());
-				}
 			}
 		}
 		// Add the tab to the notebook

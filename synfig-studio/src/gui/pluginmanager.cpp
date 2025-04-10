@@ -106,7 +106,6 @@ parse_argument_necessity(const xmlpp::Element& element, const std::string& attri
 	return default_value;
 }
 
-const synfig::filesystem::Path studio::Plugin::default_config_filename{"default_config.json"};
 const synfig::filesystem::Path studio::Plugin::user_config_filename{"user_config.json"};
 const synfig::filesystem::Path studio::Plugin::config_ui_filename{"configuration.ui"};
 
@@ -198,11 +197,6 @@ bool studio::PluginScript::is_valid() const
 bool studio::Plugin::is_valid() const
 {
 	return !name.fallback().empty();
-}
-
-synfig::filesystem::Path studio::Plugin::default_config_filepath() const
-{
-	return dir / default_config_filename;
 }
 
 synfig::filesystem::Path studio::Plugin::user_config_filepath() const
