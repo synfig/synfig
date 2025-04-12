@@ -37,53 +37,64 @@
 
 using namespace synfig;
 
-void fill_list(std::vector<ValueBase> &list) {
-	BLinePoint p;
-	list.push_back(p);
-	p.set_vertex(Point(0.0,1.0));
-	list.push_back(p);
-	p.set_vertex(Point(0.0,2.0));
-	list.push_back(p);
+void
+fill_list(std::vector<ValueBase> &list)
+{
+	const std::vector<Point> points {{0.0, 0.0}, {0.0, 1.0}, {0.0, 2.0}};
+	for (const auto& point : points) {
+		BLinePoint p;
+		p.set_vertex(point);
+		list.push_back(p);
+	}
 }
 
-void test_bline_length() {
+void
+test_bline_length_single_vertex()
+{
 	std::vector<ValueBase> list;
-	fill_list(list);
-	
+
 	bool loop = false;
 	std::vector<Real> lengths;
-
-	Real l = bline_length(list, loop, &lengths);
-	ASSERT_EQUAL(2, lengths.size());
-	ASSERT_APPROX_EQUAL(1.0, lengths[0]);
-	ASSERT_APPROX_EQUAL(1.0, lengths[1]);
-	ASSERT_APPROX_EQUAL(2.0, l);
-
-	loop = true;
-	l = bline_length(list, loop, &lengths);
-	ASSERT_EQUAL(3, lengths.size());
-	ASSERT_APPROX_EQUAL(1.0, lengths[0]);
-	ASSERT_APPROX_EQUAL(1.0, lengths[1]);
-	ASSERT_APPROX_EQUAL(2.0, lengths[2]);
-	ASSERT_APPROX_EQUAL(4.0, l);
+	Real total_length;
 
 	BLinePoint p1;
 	p1.set_tangent1(Point(-1,0));
 	p1.set_tangent2(Point(1,0));
-
-	list.clear();
 	list.push_back(p1);
-	lengths.clear();
-	// single point
+
 	loop = false;
-	l = bline_length(list, loop, &lengths);
+	total_length = bline_length(list, loop, &lengths);
 	ASSERT_EQUAL(0, lengths.size());
-	ASSERT_APPROX_EQUAL(0.0, l);
+	ASSERT_APPROX_EQUAL(0.0, total_length);
 
 	loop = true;
-	l = bline_length(list, loop, &lengths);
+	total_length = bline_length(list, loop, &lengths);
 	ASSERT_EQUAL(1, lengths.size());
-	ASSERT_APPROX_EQUAL_MICRO(0.349854, l);
+	ASSERT_APPROX_EQUAL_MICRO(0.349854, total_length);
+}
+
+void
+test_bline_length()
+{
+	std::vector<ValueBase> list;
+	fill_list(list);
+
+	bool loop = false;
+	std::vector<Real> lengths;
+
+	Real total_length = bline_length(list, loop, &lengths);
+	ASSERT_EQUAL(2, lengths.size());
+	ASSERT_APPROX_EQUAL(1.0, lengths[0]);
+	ASSERT_APPROX_EQUAL(1.0, lengths[1]);
+	ASSERT_APPROX_EQUAL(2.0, total_length);
+
+	loop = true;
+	total_length = bline_length(list, loop, &lengths);
+	ASSERT_EQUAL(3, lengths.size());
+	ASSERT_APPROX_EQUAL(1.0, lengths[0]);
+	ASSERT_APPROX_EQUAL(1.0, lengths[1]);
+	ASSERT_APPROX_EQUAL(2.0, lengths[2]);
+	ASSERT_APPROX_EQUAL(4.0, total_length);
 }
 
 void test_bline_std_to_hom_without_loop() {
@@ -237,14 +248,18 @@ void test_calc_vertex() {
 int main() {
 	Type::subsys_init();
 
-	TEST_SUITE_BEGIN()
-		TEST_FUNCTION(test_bline_length)
-		TEST_FUNCTION(test_bline_std_to_hom_without_loop)
-		TEST_FUNCTION(test_bline_std_to_hom_with_loop)
-		TEST_FUNCTION(test_bline_hom_to_std_without_loop)
-		TEST_FUNCTION(test_bline_hom_to_std_with_loop)
-		TEST_FUNCTION(test_calc_vertex)
-	TEST_SUITE_END()
+	TEST_SUITE_BEGIN();
+
+	TEST_FUNCTION(test_bline_length_single_vertex);
+	TEST_FUNCTION(test_bline_length);
+
+	TEST_FUNCTION(test_bline_std_to_hom_without_loop);
+	TEST_FUNCTION(test_bline_std_to_hom_with_loop);
+	TEST_FUNCTION(test_bline_hom_to_std_without_loop);
+	TEST_FUNCTION(test_bline_hom_to_std_with_loop);
+	TEST_FUNCTION(test_calc_vertex);
+
+	TEST_SUITE_END();
 
 	Type::subsys_stop();
 
