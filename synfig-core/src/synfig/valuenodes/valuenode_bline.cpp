@@ -250,13 +250,13 @@ synfig::std_to_hom(const ValueBase &bline, Real pos, bool index_loop, bool bline
 	std::vector<Real> lengths;
 	const Real bline_total_length = bline_length(list, bline_loop, &lengths);
 	// If the total length of the bline is zero return pos
-	if(approximate_equal(bline_total_length, 0.0))
+	if (approximate_equal(bline_total_length, 0.0))
 		return pos;
 	const size_t from_vertex = size_t(pos*count);
 	// Calculate the partial length until the bezier that holds the current
 	Real partial_length = 0;
 	std::vector<Real>::const_iterator length_iter(lengths.begin());
-	for(size_t i=0; i < from_vertex; ++i, ++length_iter)
+	for (size_t i = 0; i < from_vertex; ++i, ++length_iter)
 		partial_length += *length_iter;
 	// Calculate the remaining length of the position over current bezier
 	// Setup the curve of the current bezier.
@@ -304,8 +304,7 @@ synfig::hom_to_std(const ValueBase &bline, Real pos, bool index_loop, bool bline
 	Real cumulative_length = 0;
 	size_t from_vertex = 0;
 	Real segment_length = 0;
-	while(target_length > cumulative_length && length_iter != lengths.end())
-	{
+	while (target_length > cumulative_length && length_iter != lengths.end()) {
 		segment_length = *length_iter;
 		cumulative_length += segment_length;
 
@@ -313,8 +312,7 @@ synfig::hom_to_std(const ValueBase &bline, Real pos, bool index_loop, bool bline
 		++from_vertex;
 	}
 	// correct the iters and partial length in case we passed over
-	if(cumulative_length > target_length)
-	{
+	if (cumulative_length > target_length) {
 		--length_iter;
 		cumulative_length -= *length_iter;
 		--from_vertex;
@@ -336,8 +334,7 @@ synfig::hom_to_std(const ValueBase &bline, Real pos, bool index_loop, bool bline
 	Real error;
 	Real fsn1(t0-curve.find_distance(0.0,sn1)/segment_length);
 	Real fsn2(t0-curve.find_distance(0.0,sn2)/segment_length);
-	do
-	{
+	do {
 		sn=sn1-fsn1*((sn1-sn2)/(fsn1-fsn2));
 		Real fsn=t0-curve.find_distance(0.0, sn)/segment_length;
 		sn2=sn1;
@@ -361,14 +358,15 @@ synfig::bline_length(const ValueBase &bline, bool bline_loop, std::vector<Real> 
 	if (list.empty())
 		return 0;
 	const size_t max_vertex_index = bline_loop ? list.size() : list.size() - 1;
-	if(max_vertex_index < 1) return Real();
+	if (max_vertex_index < 1)
+		return Real();
 
 	if (lengths)
 		lengths->reserve(max_vertex_index);
 
 	// Calculate the lengths and the total length
 	Real total_length = 0;
-	for(size_t i0 = 0; i0 < max_vertex_index; ++i0) {
+	for (size_t i0 = 0; i0 < max_vertex_index; ++i0) {
 		const size_t i1 = (i0 + 1) % list.size();
 		const BLinePoint& blinepoint0 = list[i0];
 		const BLinePoint& blinepoint1 = list[i1];
