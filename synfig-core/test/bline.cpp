@@ -38,9 +38,20 @@
 using namespace synfig;
 
 void
-fill_list(std::vector<ValueBase> &list)
+fill_list_colinear(std::vector<ValueBase> &list)
 {
 	const std::vector<Point> points {{0.0, 0.0}, {0.0, 1.0}, {0.0, 2.0}};
+	for (const auto& point : points) {
+		BLinePoint p;
+		p.set_vertex(point);
+		list.push_back(p);
+	}
+}
+
+void
+fill_list_open_rectangle(std::vector<ValueBase> &list)
+{
+	const std::vector<Point> points {{0.0, 0.0}, {0.0, 2.0}, {1.0, 2.0}, {1.0, 0.0}};
 	for (const auto& point : points) {
 		BLinePoint p;
 		p.set_vertex(point);
@@ -74,12 +85,12 @@ test_bline_length_single_vertex()
 }
 
 void
-test_bline_length()
+test_bline_length_without_loop()
 {
 	std::vector<ValueBase> list;
-	fill_list(list);
+	fill_list_colinear(list);
 
-	bool loop = false;
+	const bool loop = false;
 	std::vector<Real> lengths;
 
 	Real total_length = bline_length(list, loop, &lengths);
@@ -88,21 +99,51 @@ test_bline_length()
 	ASSERT_APPROX_EQUAL(1.0, lengths[1]);
 	ASSERT_APPROX_EQUAL(2.0, total_length);
 
-	loop = true;
+	list.clear();
+	fill_list_open_rectangle(list);
+
 	total_length = bline_length(list, loop, &lengths);
+	ASSERT_EQUAL(3, lengths.size());
+	ASSERT_APPROX_EQUAL(2.0, lengths[0]);
+	ASSERT_APPROX_EQUAL(1.0, lengths[1]);
+	ASSERT_APPROX_EQUAL(2.0, lengths[2]);
+	ASSERT_APPROX_EQUAL(5.0, total_length);
+}
+
+void
+test_bline_length_with_loop()
+{
+	std::vector<ValueBase> list;
+	fill_list_colinear(list);
+
+	const bool loop = true;
+	std::vector<Real> lengths;
+
+	Real total_length = bline_length(list, loop, &lengths);
 	ASSERT_EQUAL(3, lengths.size());
 	ASSERT_APPROX_EQUAL(1.0, lengths[0]);
 	ASSERT_APPROX_EQUAL(1.0, lengths[1]);
 	ASSERT_APPROX_EQUAL(2.0, lengths[2]);
 	ASSERT_APPROX_EQUAL(4.0, total_length);
+
+	list.clear();
+	fill_list_open_rectangle(list);
+
+	total_length = bline_length(list, loop, &lengths);
+	ASSERT_EQUAL(4, lengths.size());
+	ASSERT_APPROX_EQUAL(2.0, lengths[0]);
+	ASSERT_APPROX_EQUAL(1.0, lengths[1]);
+	ASSERT_APPROX_EQUAL(2.0, lengths[2]);
+	ASSERT_APPROX_EQUAL(1.0, lengths[3]);
+	ASSERT_APPROX_EQUAL(6.0, total_length);
 }
 
 void test_bline_std_to_hom_without_loop() {
 	std::vector<ValueBase> list;
-	fill_list(list);
+	fill_list_colinear(list);
 
 	const std::vector<Real> positions = {0.0, 0.2, 1/3., 0.5, 2/3., 0.8, 1.0};
-	std::vector<Real> expected = {0.0, 0.176000, 0.370370, 0.5, 0.629630, 0.824000, 1.0};
+	const std::vector<Real> expected = {0.0, 0.176000, 0.370370, 0.5, 0.629630, 0.824000, 1.0};
 	for (size_t i = 0; i < positions.size(); ++i) {
 		Real value = synfig::std_to_hom(list, positions[i], false, false);
 		ASSERT_APPROX_EQUAL_MICRO(expected[i], value);
@@ -124,10 +165,10 @@ void test_bline_std_to_hom_without_loop() {
 
 void test_bline_std_to_hom_with_loop() {
 	std::vector<ValueBase> list;
-	fill_list(list);
+	fill_list_colinear(list);
 
 	const std::vector<Real> positions = {0.0, 0.2, 1/3., 0.5, 2/3., 0.8, 1.0};
-	std::vector<Real> expected = {0.0, 0.162, 0.25, 0.375, 0.5, 0.676, 1.0};
+	const std::vector<Real> expected = {0.0, 0.162, 0.25, 0.375, 0.5, 0.676, 1.0};
 	for (size_t i = 0; i < positions.size(); ++i) {
 		Real value = synfig::std_to_hom(list, positions[i], false, true);
 		ASSERT_APPROX_EQUAL_MICRO(expected[i], value);
@@ -149,10 +190,10 @@ void test_bline_std_to_hom_with_loop() {
 
 void test_bline_hom_to_std_without_loop() {
 	std::vector<ValueBase> list;
-	fill_list(list);
+	fill_list_colinear(list);
 
 	const std::vector<Real> positions = {0.0, 0.2, 1/3., 0.5, 2/3., 0.8, 1.0};
-	std::vector<Real> expected = {0.0, 0.216466, 0.306518, 0.5, 0.693482, 0.783534, 1.0};
+	const std::vector<Real> expected = {0.0, 0.216466, 0.306518, 0.5, 0.693482, 0.783534, 1.0};
 	for (size_t i = 0; i < positions.size(); ++i) {
 		Real value = synfig::hom_to_std(list, positions[i], false, false);
 		ASSERT_APPROX_EQUAL_MICRO(expected[i], value);
@@ -174,10 +215,10 @@ void test_bline_hom_to_std_without_loop() {
 
 void test_bline_hom_to_std_with_loop() {
 	std::vector<ValueBase> list;
-	fill_list(list);
+	fill_list_colinear(list);
 
 	const std::vector<Real> positions = {0.0, 0.2, 1/3., 0.5, 2/3., 0.8, 1.0};
-	std::vector<Real> expected = {0.0, 0.237620, 0.462321, 0.666667, 0.795654, 0.855690, 1.0};
+	const std::vector<Real> expected = {0.0, 0.237620, 0.462321, 0.666667, 0.795654, 0.855690, 1.0};
 	for (size_t i = 0; i < positions.size(); ++i) {
 		Real value = synfig::hom_to_std(list, positions[i], false, true);
 		ASSERT_APPROX_EQUAL_MICRO(expected[i], value);
@@ -251,7 +292,8 @@ int main() {
 	TEST_SUITE_BEGIN();
 
 	TEST_FUNCTION(test_bline_length_single_vertex);
-	TEST_FUNCTION(test_bline_length);
+	TEST_FUNCTION(test_bline_length_without_loop);
+	TEST_FUNCTION(test_bline_length_with_loop);
 
 	TEST_FUNCTION(test_bline_std_to_hom_without_loop);
 	TEST_FUNCTION(test_bline_std_to_hom_with_loop);
