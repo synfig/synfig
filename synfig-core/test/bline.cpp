@@ -138,7 +138,43 @@ test_bline_length_with_loop()
 	ASSERT_APPROX_EQUAL(6.0, total_length);
 }
 
-void test_bline_std_to_hom_without_loop() {
+void
+test_bline_std_to_hom_without_bline_loop_without_index_loop_clamps_to_zero_for_negative_position()
+{
+	std::vector<ValueBase> list;
+	fill_list_colinear(list);
+
+	ASSERT_APPROX_EQUAL(0.0, synfig::std_to_hom(list,  0.0, false, false));
+	ASSERT_APPROX_EQUAL(0.0, synfig::std_to_hom(list, -1.0, false, false));
+	ASSERT_APPROX_EQUAL(0.0, synfig::std_to_hom(list, -0.5, false, false));
+}
+
+void
+test_bline_std_to_hom_without_bline_loop_without_index_loop_clamps_to_one_for_position_greater_than_one()
+{
+	std::vector<ValueBase> list;
+	fill_list_colinear(list);
+
+	ASSERT_APPROX_EQUAL(1.0, synfig::std_to_hom(list, 1.0, false, false));
+	ASSERT_APPROX_EQUAL(1.0, synfig::std_to_hom(list, 2.0, false, false));
+	ASSERT_APPROX_EQUAL(1.0, synfig::std_to_hom(list, 2.5, false, false));
+}
+
+void
+test_bline_std_to_hom_without_bline_loop_with_index_loop_keeps_position_for_both_edges()
+{
+	std::vector<ValueBase> list;
+	fill_list_colinear(list);
+
+	ASSERT_APPROX_EQUAL( 0.0, synfig::std_to_hom(list,  0.0, true, false));
+	ASSERT_APPROX_EQUAL(-1.0, synfig::std_to_hom(list, -1.0, true, false));
+	ASSERT_APPROX_EQUAL(1.0, synfig::std_to_hom(list, 1.0, true, false));
+	ASSERT_APPROX_EQUAL(2.0, synfig::std_to_hom(list, 2.0, true, false));
+}
+
+void
+test_bline_std_to_hom_without_loop()
+{
 	std::vector<ValueBase> list;
 	fill_list_colinear(list);
 
@@ -294,6 +330,10 @@ int main() {
 	TEST_FUNCTION(test_bline_length_single_vertex);
 	TEST_FUNCTION(test_bline_length_without_loop);
 	TEST_FUNCTION(test_bline_length_with_loop);
+
+	TEST_FUNCTION(test_bline_std_to_hom_without_bline_loop_without_index_loop_clamps_to_zero_for_negative_position);
+	TEST_FUNCTION(test_bline_std_to_hom_without_bline_loop_without_index_loop_clamps_to_one_for_position_greater_than_one);
+	TEST_FUNCTION(test_bline_std_to_hom_without_bline_loop_with_index_loop_keeps_position_for_both_edges);
 
 	TEST_FUNCTION(test_bline_std_to_hom_without_loop);
 	TEST_FUNCTION(test_bline_std_to_hom_with_loop);
