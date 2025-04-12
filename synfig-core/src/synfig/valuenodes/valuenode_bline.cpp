@@ -303,15 +303,17 @@ synfig::hom_to_std(const ValueBase &bline, Real pos, bool index_loop, bool bline
 	Real cumulative_length = 0;
 	size_t from_vertex = 0;
 	Real segment_length = 0;
-	while (target_length > cumulative_length && length_iter != lengths.end()) {
+	while (approximate_greater(target_length, cumulative_length) && length_iter != lengths.end()) {
 		segment_length = *length_iter;
 		cumulative_length += segment_length;
 
 		++length_iter;
 		++from_vertex;
 	}
-	// correct the iters and partial length in case we passed over
-	if (cumulative_length > target_length) {
+	if (approximate_equal(target_length, cumulative_length)) {
+		return loops + Real(from_vertex) / count;
+	} else {
+		// correct the iters and partial length in case we passed over
 		--length_iter;
 		cumulative_length -= *length_iter;
 		--from_vertex;
