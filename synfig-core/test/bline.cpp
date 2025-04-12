@@ -321,6 +321,162 @@ void test_calc_vertex() {
 	ASSERT_VECTOR_APPROX_EQUAL_MICRO(Vector(-0.260716, 0.341317), vertex)
 }
 
+void
+test_bline_length_for_bline_with_two_vertices_at_same_spot()
+{
+	std::vector<ValueBase> list;
+	const std::vector<Point> points {{0,0}, {0,1}, {0,1}, {0,2}};
+	for (const auto& point : points) {
+		BLinePoint p;
+		p.set_vertex(point);
+		list.push_back(p);
+	}
+
+	bool loop = false;
+	std::vector<Real> lengths;
+
+	Real l = bline_length(list, loop, &lengths);
+	ASSERT_EQUAL(3, lengths.size());
+	ASSERT_APPROX_EQUAL(1.0, lengths[0]);
+	ASSERT_APPROX_EQUAL(0.0, lengths[1]);
+	ASSERT_APPROX_EQUAL(1.0, lengths[2]);
+	ASSERT_APPROX_EQUAL(2.0, l);
+
+	loop = true;
+	l = bline_length(list, loop, &lengths);
+	ASSERT_EQUAL(4, lengths.size());
+	ASSERT_APPROX_EQUAL(1.0, lengths[0]);
+	ASSERT_APPROX_EQUAL(0.0, lengths[1]);
+	ASSERT_APPROX_EQUAL(1.0, lengths[2]);
+	ASSERT_APPROX_EQUAL(2.0, lengths[3]);
+	ASSERT_APPROX_EQUAL(4.0, l);
+}
+
+void
+test_bline_std_to_hom_without_loop_with_two_vertices_at_same_spot() {
+	std::vector<ValueBase> list;
+	const std::vector<Point> points {{0,0}, {0,1}, {0,1}, {0,2}, {0,3}};
+	for (const auto& point : points) {
+		BLinePoint p;
+		p.set_vertex(point);
+		list.push_back(p);
+	}
+
+	const std::vector<Real> positions = {0.0, 0.25, 0.5, 0.75, 1.0,      /* 0.2, */ 0.4, /*0.8*/};
+	const std::vector<Real> expected = {0.0, 1/3., 1/3., 2/3., 1.0, /* 0.8*1/3., */1/3., /*2/3.+0.2*1/3.*/};
+
+	for (size_t i = 0; i < positions.size(); ++i) {
+		Real value = synfig::std_to_hom(list, positions[i], false, false);
+		ASSERT_APPROX_EQUAL(expected[i], value);
+	}
+
+	// check index loop
+	Real index_offset = 2.0;
+	for (size_t i = 0; i < positions.size(); ++i) {
+		Real value = synfig::std_to_hom(list, positions[i] + index_offset, true, false);
+		ASSERT_APPROX_EQUAL(expected[i] + index_offset, value);
+	}
+
+	index_offset = -2.0;
+	for (size_t i = 0; i < positions.size(); ++i) {
+		Real value = synfig::std_to_hom(list, positions[i] + index_offset, true, false);
+		ASSERT_APPROX_EQUAL(expected[i] + index_offset, value);
+	}
+}
+
+void
+test_bline_std_to_hom_with_loop_with_two_vertices_at_same_spot() {
+	std::vector<ValueBase> list;
+	const std::vector<Point> points {{0,0}, {0,1}, {0,1}, {0,2}};
+	for (const auto& point : points) {
+		BLinePoint p;
+		p.set_vertex(point);
+		list.push_back(p);
+	}
+
+	const std::vector<Real> positions = {0.0, 0.25, 0.5, 0.75, 1.0,      /* 0.2, */ 0.4, /*0.8*/};
+	const std::vector<Real> expected = {0.0, 0.25, 0.25, 0.50, 1.0, /* 0.8*1/3., */0.25, /*2/3.+0.2*1/3.*/};
+
+	for (size_t i = 0; i < positions.size(); ++i) {
+		Real value = synfig::std_to_hom(list, positions[i], false, true);
+		ASSERT_APPROX_EQUAL(expected[i], value);
+	}
+
+	// check index loop
+	Real index_offset = 2.0;
+	for (size_t i = 0; i < positions.size(); ++i) {
+		Real value = synfig::std_to_hom(list, positions[i] + index_offset, true, true);
+		ASSERT_APPROX_EQUAL(expected[i] + index_offset, value);
+	}
+
+	index_offset = -2.0;
+	for (size_t i = 0; i < positions.size(); ++i) {
+		Real value = synfig::std_to_hom(list, positions[i] + index_offset, true, true);
+		ASSERT_APPROX_EQUAL(expected[i] + index_offset, value);
+	}
+}
+
+void
+test_bline_hom_to_std_without_loop_with_two_vertices_at_same_spot() {
+	std::vector<ValueBase> list;
+	const std::vector<Point> points {{0,0}, {0,1}, {0,1}, {0,2}, {0,3}};
+	for (const auto& point : points) {
+		BLinePoint p;
+		p.set_vertex(point);
+		list.push_back(p);
+	}
+
+	const std::vector<Real> positions = {0.0, 1/3., 2/3., 1.0};
+	const std::vector<Real> expected = {0.0, 0.25, 0.75, 1.0};
+	for (size_t i = 0; i < positions.size(); ++i) {
+		Real value = synfig::hom_to_std(list, positions[i], false, false);
+		ASSERT_APPROX_EQUAL_MICRO(expected[i], value);
+	}
+
+	// check index loop
+	Real index_offset = 2.0;
+	for (size_t i = 0; i < positions.size(); ++i) {
+		Real value = synfig::hom_to_std(list, positions[i] + index_offset, true, false);
+		ASSERT_APPROX_EQUAL_MICRO(expected[i] + index_offset, value);
+	}
+
+	index_offset = -2.0;
+	for (size_t i = 0; i < positions.size(); ++i) {
+		Real value = synfig::hom_to_std(list, positions[i] + index_offset, true, false);
+		ASSERT_APPROX_EQUAL_MICRO(expected[i] + index_offset, value);
+	}
+}
+
+void
+test_bline_hom_to_std_with_loop_with_two_vertices_at_same_spot() {
+	std::vector<ValueBase> list;
+	const std::vector<Point> points {{0,0}, {0,1}, {0,1}, {0,2}, {0,4}};
+	for (const auto& point : points) {
+		BLinePoint p;
+		p.set_vertex(point);
+		list.push_back(p);
+	}
+
+	const std::vector<Real> positions = {0.0, 1/8., 2/8., 4/8., 1.0};
+	const std::vector<Real> expected = {0.0, 1/5., 3/5., 4/5., 1.0};
+	for (size_t i = 0; i < positions.size(); ++i) {
+		Real value = synfig::hom_to_std(list, positions[i], false, true);
+		ASSERT_APPROX_EQUAL_MICRO(expected[i], value);
+	}
+
+	// check index loop
+	Real index_offset = 2.0;
+	for (size_t i = 0; i < positions.size(); ++i) {
+		Real value = synfig::hom_to_std(list, positions[i] + index_offset, true, true);
+		ASSERT_APPROX_EQUAL_MICRO(expected[i] + index_offset, value);
+	}
+
+	index_offset = -2.0;
+	for (size_t i = 0; i < positions.size(); ++i) {
+		Real value = synfig::hom_to_std(list, positions[i] + index_offset, true, true);
+		ASSERT_APPROX_EQUAL_MICRO(expected[i] + index_offset, value);
+	}
+}
 
 int main() {
 	Type::subsys_init();
@@ -341,6 +497,11 @@ int main() {
 	TEST_FUNCTION(test_bline_hom_to_std_with_loop);
 	TEST_FUNCTION(test_calc_vertex);
 
+	TEST_FUNCTION(test_bline_length_for_bline_with_two_vertices_at_same_spot);
+	TEST_FUNCTION(test_bline_std_to_hom_without_loop_with_two_vertices_at_same_spot);
+	TEST_FUNCTION(test_bline_std_to_hom_with_loop_with_two_vertices_at_same_spot);
+	TEST_FUNCTION(test_bline_hom_to_std_without_loop_with_two_vertices_at_same_spot);
+	TEST_FUNCTION(test_bline_hom_to_std_with_loop_with_two_vertices_at_same_spot);
 	TEST_SUITE_END();
 
 	Type::subsys_stop();
