@@ -105,7 +105,7 @@ ValueNode_BLineCalcVertex::operator()(Time t)const
 	if (size == 0)
 		return Vector();
 	const int count = looped ? size : size - 1;
-	if (count < 1) return Vector();
+	if (count < 1) return bline[0].get(BLinePoint()).get_vertex();
 
 	bool loop = (*loop_)(t).get(bool());
 	bool homogeneous = (*homogeneous_)(t).get(bool());
