@@ -212,7 +212,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateGradient::StateGradient():
-	Smach::state<StateGradient_Context>("gradient", N_("Gradient Tool"))
+	Smach::state<StateGradient_Context>("gradient", N_("Gradient"))
 {
 	insert(event_def(EVENT_LAYER_SELECTION_CHANGED,&StateGradient_Context::event_layer_selection_changed_handler));
 	insert(event_def(EVENT_STOP,&StateGradient_Context::event_stop_handler));
