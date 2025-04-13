@@ -230,7 +230,6 @@ synfig::std_to_hom(const ValueBase &bline, Real pos, bool index_loop, bool bline
 {
 	const Real loops = index_loop ? floor(pos) : 0.0;
 	pos -= loops;
-	assert(approximate_greater_or_equal(pos, 0.0));
 
 	// trivial cases
 	if (approximate_less_or_equal(pos, Real(0)))
