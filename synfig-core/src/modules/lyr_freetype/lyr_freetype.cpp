@@ -358,6 +358,7 @@ private:
 };
 
 static FaceCache face_cache;
+std::mutex Layer_Freetype::global_face_mutex;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -578,13 +579,6 @@ Layer_Freetype::new_font(const synfig::String &family, int style, int weight)
 		new_font_("sans serif",TEXT_STYLE_NORMAL,TEXT_WEIGHT_NORMAL);
 }
 
-bool should_bypass_cache(const synfig::String& font_family) {
-    const std::vector<synfig::String> bypass_fonts = {
-        "Devanagari MT",
-        "Devanagari Sangam MN"
-    };
-    return std::find(bypass_fonts.begin(), bypass_fonts.end(), font_family) != bypass_fonts.end();
-}
 
 bool
 Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight)
@@ -593,10 +587,6 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 	if (get_canvas())
 		meta.canvas_path = get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR;
 
-	// Skip cache for problematic fonts
-	bool bypass_cache = should_bypass_cache(font_fam_);
-
-	if (!bypass_cache) {
 		FT_Face tmp_face = face_cache.get(meta);
 		if (tmp_face) {
 			if (face != tmp_face)
@@ -607,10 +597,8 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 #endif
 			return true;
 		}
-	}
 
 	auto cache_face = [&](FT_Face face) {
-		if (bypass_cache) return; // Skip caching for problematic fonts
 		if (!font_path_from_canvas)
 			meta.canvas_path.clear();
 		face_cache.put(meta, face);
@@ -730,19 +718,15 @@ Layer_Freetype::new_face(const String &newfont)
 
 	for (const std::string& path : filenames) {
 		filesystem::Path absolute_path = filesystem::absolute(path);
-		bool bypass_cache = should_bypass_cache(param_family.get(String()));
 
-		// Skip cache check for problematic fonts
-		if (!bypass_cache) {
 			auto face_ptr = face_cache.get(absolute_path);
 			if (face_ptr) {
 				face = face_ptr;
 				break;
 			}
-		}
+
 		error = FT_New_Face(ft_library, path.c_str(), face_index, &face);
 		if (!error) {
-			if (!bypass_cache) // Only cache non-problematic fonts
 				face_cache.put(absolute_path, face);
 #if HAVE_HARFBUZZ
 			this->font = hb_ft_font_create(face, nullptr);
@@ -1070,6 +1054,7 @@ Layer_Freetype::sync_vfunc()
 		lines.clear();
 		return;
 	}
+    std::lock_guard<std::mutex> global_lock(global_face_mutex);
 
 	const bool use_kerning = param_use_kerning.get(bool());
 	const bool grid_fit    = param_grid_fit.get(bool());
