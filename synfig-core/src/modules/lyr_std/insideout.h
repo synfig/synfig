@@ -57,6 +57,8 @@ class InsideOut : public Layer
 private:
 	//!Parameter: (Point)
 	ValueBase param_origin;
+	ValueBase param_cobra;
+	ValueBase param_draft;
 
 public:
 	InsideOut();
@@ -67,9 +69,10 @@ public:
 	Layer::Handle hit_check(Context context, const Point &point)const;
 	virtual Vocab get_param_vocab()const;
 	virtual etl::handle<Transform> get_transform()const;
+	virtual bool reads_context() const { return true; }
 
 protected:
-	virtual RendDesc get_sub_renddesc_vfunc(const RendDesc &renddesc) const;
+	rendering::Task::Handle build_rendering_task_vfunc(Context context) const override;
 };
 
 }; // END of namespace lyr_std
