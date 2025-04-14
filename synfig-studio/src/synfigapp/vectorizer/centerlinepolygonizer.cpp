@@ -91,7 +91,7 @@ public:
 		m_coordinateSquareSums(nullptr),
 		m_coordinateMixedSums(nullptr)
   {}
-  ~RawBorder() {}
+  ~RawBorder() = default;
 
   void setXExternalPixel(int a) { m_xExternal = a; }
   int xExternalPixel() { return m_xExternal; }
