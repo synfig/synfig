@@ -133,7 +133,7 @@ void Dialog_Input::take_options()
 	for(DeviceList::const_iterator i = devices.begin(); i != devices.end(); ++i) {
 		const Glib::RefPtr<Gdk::Device> &device = *i;
 
-		if (!synfigapp::Main::find_input_device(device->get_name()))
+		if (!device || !synfigapp::Main::find_input_device(device->get_name()))
 			continue;
 
 		options->devices.push_back(DeviceOptions::Device());
