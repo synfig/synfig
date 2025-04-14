@@ -91,6 +91,8 @@ private:
 	ValueBase param_gradient_offset_outside;
 	//!Parameter: (Real)
 	ValueBase param_gradient_scale_outside;
+	//!Parameter: (bool)
+	synfig::ValueBase param_invert_gradient;
 
 public:
 	Mandelbrot();
@@ -99,6 +101,8 @@ public:
 	virtual ValueBase get_param(const String &param)const;
 	virtual Color get_color(Context context, const Point &pos)const;
 	virtual Vocab get_param_vocab()const;
+
+	virtual bool set_version(const synfig::String& ver);
 
 protected:
 	virtual RendDesc get_sub_renddesc_vfunc(const RendDesc &renddesc) const;
