@@ -356,15 +356,15 @@ Dialog_PluginManager::build_notebook()
 				if (config_widget && GTK_IS_CONTAINER(config_widget->gobj())) {
 					// Parse the default values set in configuration.ui file
 					auto default_values = JSON::parse_dialog(*config_widget);
-
-					// Fetch the stored user settings in user_config.json, if it exists
-					auto user_saved_values = JSON::Parser::parse(user_config_file);
-
 					set_meta_values_in_widget(*config_widget, default_values, ValueType::DEFAULT);
-					set_meta_values_in_widget(*config_widget, user_saved_values, ValueType::SAVED);
 
 					// Fill dialog with user settings
-					if (!user_saved_values.empty()) {
+					if (file_system->is_file(user_config_file.u8string())) {
+						auto user_saved_values = JSON::Parser::parse(user_config_file);
+
+						set_meta_values_in_widget(*config_widget, user_saved_values, ValueType::SAVED);
+
+						// Fetch the stored user settings in user_config.json, if it exists
 						auto container = static_cast<Gtk::Container*>(config_widget);
 						JSON::hydrate_dialog(container, user_saved_values);
 					}
