@@ -61,12 +61,12 @@ class TaskPaintPixelSW :
 		public TaskInterfaceSplit
 {
 public:
-	//! Called inside run() right before iterating over each pixel.
+	//! Called inside run() right before start iterating over each pixel.
 	//! Useful for computing some parameters that are constant for all iterations.
 	//!
-	//! \param matrix transformation matrix mixing affine and bound transformations
-	//! \param inverse_matrix the inverse of matrix
-	virtual void pre_run(const Matrix3& /*matrix*/, const Matrix3& /*inverse_matrix*/) const {}
+	//! \param world_to_raster full transformation matrix mixing transformation of vector to raster coords and task affine transformation
+	//! \param raster_to_world the inverse of world_to_raster
+	virtual void pre_run(const Matrix3& /*world_to_raster*/, const Matrix3& /*raster_to_world*/) const {}
 
 	//! Fetch color at position p (in synfig units) when antialias is false
 	virtual Color get_color(const Vector& p) const = 0;
