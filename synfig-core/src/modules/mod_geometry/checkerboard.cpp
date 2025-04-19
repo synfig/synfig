@@ -136,10 +136,10 @@ public:
 		return (this->*selected_get_color_method)(p);
 	}
 
-	void pre_run(const Matrix3& matrix, const Matrix3& /*inverse_matrix*/) const override
+	void pre_run(const Matrix3& world_to_raster, const Matrix3& /*raster_to_world*/) const override
 	{
-		kx = matrix.axis_x().mag()*0.5;
-		ky = matrix.axis_y().mag()*0.5;
+		kx = world_to_raster.axis_x().mag()*0.5;
+		ky = world_to_raster.axis_y().mag()*0.5;
 		selected_get_color_method = antialias ? &TaskCheckerBoardSW::get_color_antialias : &TaskCheckerBoardSW::get_color_simple;
 	}
 

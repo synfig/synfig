@@ -84,27 +84,27 @@ synfig::rendering::TaskPaintPixelSW::run_task() const
 
 	const synfig::RectInt& target_rect = task->target_rect;
 
-	Matrix bounds_transformation;
-	bounds_transformation.m00 = ppu[0];
-	bounds_transformation.m11 = ppu[1];
-	bounds_transformation.m20 = target_rect.minx - ppu[0]*task->source_rect.minx;
-	bounds_transformation.m21 = target_rect.miny - ppu[1]*task->source_rect.miny;
+	Matrix world_to_raster;
+	world_to_raster.m00 = ppu[0];
+	world_to_raster.m11 = ppu[1];
+	world_to_raster.m20 = target_rect.minx - ppu[0]*task->source_rect.minx;
+	world_to_raster.m21 = target_rect.miny - ppu[1]*task->source_rect.miny;
 
-	Matrix matrix = bounds_transformation;
 	if (auto interface_transformation = dynamic_cast<const TaskInterfaceTransformation*>(this)) {
 		if (auto affine = TransformationAffine::Handle::cast_dynamic(interface_transformation->get_transformation()))
-			matrix *= affine->matrix;
+			world_to_raster *= affine->matrix;
 		else
 			synfig::error(_("Internal Error: unsupported transformation for %s. It should be TransformationAffine."), task->get_token()->name.c_str());
 	}
-	Matrix inv_matrix = matrix.get_inverted();
 
-	int tw = target_rect.get_width();
-	Vector dx = inv_matrix.axis_x();
-	Vector dy = inv_matrix.axis_y() - dx*(Real)tw;
-	Vector p = inv_matrix.get_transformed( Vector((Real)target_rect.minx, (Real)target_rect.miny) );
+	const Matrix raster_to_world = world_to_raster.get_inverted();
 
-	pre_run(matrix, inv_matrix);
+	const int tw = target_rect.get_width();
+	const Vector dx = raster_to_world.axis_x();
+	const Vector dy = raster_to_world.axis_y() - dx*(Real)tw;
+	Vector p = raster_to_world.get_transformed( Vector((Real)target_rect.minx, (Real)target_rect.miny) );
+
+	pre_run(world_to_raster, raster_to_world);
 
 	LockWrite la(task);
 	if (!la)
