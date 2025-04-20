@@ -94,8 +94,8 @@ public:
 	//! Called inside run() right before iterating over each pixel.
 	//! Useful for computing some parameters that are constant for all iterations.
 	//!
-	//! \param matrix transformation matrix : raster coordinates to world coordinates
-	virtual void pre_run(const Matrix3& /*matrix*/) const {}
+	//! \param raster_to_world transformation matrix : raster coordinates to world coordinates
+	virtual void pre_run(const Matrix3& /*raster_to_world*/) const {}
 
 	/** Fetch color at position @a p (in synfig units) given a previous Color @a c at same point */
 	virtual Color get_color(const Vector& /*p*/, const Color& c) const = 0;
