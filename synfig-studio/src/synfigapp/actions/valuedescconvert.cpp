@@ -172,7 +172,8 @@ Action::ValueDescConvert::is_ready()const
 void
 Action::ValueDescConvert::prepare()
 {
-	clear();
+	if (!first_time())
+		return;
 
 	ValueBase value;
 
