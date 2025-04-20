@@ -40,7 +40,7 @@
 #include <gui/localization.h>
 #include <gui/workarea.h>
 
-#include "synfig/os.h"
+#include <synfig/os.h>
 
 #endif
 
@@ -189,7 +189,7 @@ studio::Dock_Info::Dock_Info()
 
 	open_button.set_label("Open Rendered File");
 	open_button.set_halign(Gtk::ALIGN_START);
-	open_button.signal_clicked().connect(sigc::mem_fun(*this,&studio::Dock_Info::on_open_button_clicked));
+	open_button.signal_clicked().connect(sigc::mem_fun(*this, &studio::Dock_Info::on_open_button_clicked));
 
 	render_box->pack_start(*overlay, true, true, 0);
 	render_box->pack_start(stop_button, false, false, 0);
