@@ -58,7 +58,7 @@ SYNFIG_LAYER_INIT(Halftone2);
 SYNFIG_LAYER_SET_NAME(Halftone2,"halftone2");
 SYNFIG_LAYER_SET_LOCAL_NAME(Halftone2,N_("Halftone 2"));
 SYNFIG_LAYER_SET_CATEGORY(Halftone2,N_("Filters"));
-SYNFIG_LAYER_SET_VERSION(Halftone2,"0.0");
+SYNFIG_LAYER_SET_VERSION(Halftone2,"0.1");
 
 /* === P R O C E D U R E S ================================================= */
 
