@@ -80,15 +80,16 @@ synfig::rendering::TaskPaintPixelSW::run_task() const
 	if (!task->is_valid())
 		return true;
 
-	Vector ppu = task->get_pixels_per_unit();
-
 	const synfig::RectInt& target_rect = task->target_rect;
 
 	Matrix world_to_raster;
-	world_to_raster.m00 = ppu[0];
-	world_to_raster.m11 = ppu[1];
-	world_to_raster.m20 = target_rect.minx - ppu[0]*task->source_rect.minx;
-	world_to_raster.m21 = target_rect.miny - ppu[1]*task->source_rect.miny;
+	{
+		const Vector ppu = task->get_pixels_per_unit();
+		world_to_raster.m00 = ppu[0];
+		world_to_raster.m11 = ppu[1];
+		world_to_raster.m20 = target_rect.minx - ppu[0] * task->source_rect.minx;
+		world_to_raster.m21 = target_rect.miny - ppu[1] * task->source_rect.miny;
+	}
 
 	if (auto interface_transformation = dynamic_cast<const TaskInterfaceTransformation*>(this)) {
 		if (auto affine = TransformationAffine::Handle::cast_dynamic(interface_transformation->get_transformation()))
@@ -101,7 +102,7 @@ synfig::rendering::TaskPaintPixelSW::run_task() const
 
 	const int tw = target_rect.get_width();
 	const Vector dx = raster_to_world.axis_x();
-	const Vector dy = raster_to_world.axis_y() - dx*(Real)tw;
+	const Vector dy = raster_to_world.axis_y() - dx * (Real)tw;
 	Vector p = raster_to_world.get_transformed( Vector((Real)target_rect.minx, (Real)target_rect.miny) );
 
 	pre_run(world_to_raster, raster_to_world);
@@ -111,11 +112,11 @@ synfig::rendering::TaskPaintPixelSW::run_task() const
 		return false;
 
 	synfig::Surface::alpha_pen apen(la->get_surface().get_pen(target_rect.minx, target_rect.miny));
-	ColorReal amount = blend ? this->amount : ColorReal(1.0);
+	const ColorReal amount = blend ? this->amount : ColorReal(1.0);
 	apen.set_blend_method(blend ? blend_method : Color::BLEND_COMPOSITE);
 
-	for(int iy = target_rect.miny; iy < target_rect.maxy; ++iy, p += dy, apen.inc_y(), apen.dec_x(tw)) {
-		for(int ix = target_rect.minx; ix < target_rect.maxx; ++ix, p += dx, apen.inc_x()) {
+	for (int iy = target_rect.miny; iy < target_rect.maxy; ++iy, p += dy, apen.inc_y(), apen.dec_x(tw)) {
+		for (int ix = target_rect.minx; ix < target_rect.maxx; ++ix, p += dx, apen.inc_x()) {
 			apen.put_value(get_color(p), amount);
 		}
 	}
