@@ -56,7 +56,7 @@ SYNFIG_LAYER_SET_VERSION(LinearGradient,"0.1");
 
 /* === M E T H O D S ======================================================= */
 
-class TaskLinearGradient: public rendering::Task
+class TaskLinearGradient: public rendering::Task, public rendering::TaskInterfaceTransformation
 {
 public:
 	typedef etl::handle<TaskLinearGradient> Handle;
@@ -66,6 +66,13 @@ public:
 	LinearGradient::Params params;
 
 	TaskLinearGradient() { }
+
+	rendering::Transformation::Handle get_transformation() const override {
+		return transformation.handle();
+	}
+
+private:
+	rendering::Holder<rendering::TransformationAffine> transformation;
 };
 
 
