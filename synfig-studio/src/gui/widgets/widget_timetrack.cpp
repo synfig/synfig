@@ -963,10 +963,13 @@ bool Widget_Timetrack::fetch_waypoints(const WaypointItem &wi, std::set<synfig::
 		const synfigapp::ValueDesc &value_desc = param_info_map.at(wi.path.to_string()).get_value_desc();
 
 		etl::handle<synfig::Node> node;
-		if (value_desc.is_value_node())
-			node = value_desc.get_value_node() ;
-		else if (value_desc.parent_is_layer() && value_desc.get_layer()->get_param(value_desc.get_param_name()).get_type() == synfig::type_canvas)
-			node = value_desc.get_canvas();
+		if (value_desc.is_value_node()) {
+			node = value_desc.get_value_node();
+		} else if (value_desc.parent_is_layer()) {
+			synfig::ValueBase value = value_desc.get_layer()->get_param(value_desc.get_param_name());
+			if (value.get_type() == synfig::type_canvas)
+				node = value.get(synfig::Canvas::Handle());
+		}
 
 		if (node)
 			synfig::waypoint_collect(waypoint_set, wi.time_point.get_time(), node, true);
