@@ -221,7 +221,7 @@ studio::Dock_Info::~Dock_Info()
 
 void studio::Dock_Info::on_open_button_clicked()
 {
-    synfig::OS::launch_file_async(output_target);    
+	synfig::OS::launch_file_async(output_target);    
 }
 
 void studio::Dock_Info::on_stop_button_clicked()
@@ -283,11 +283,11 @@ void studio::Dock_Info::set_render_progress(float value)
 
 void studio::Dock_Info::hide_open_button()
 {
-    open_button.hide();
+	open_button.hide();
 }
 
 void studio::Dock_Info::set_open_button(synfig::filesystem::Path target_filepath)
 {
-    output_target = target_filepath;
-    open_button.show();
+	output_target = target_filepath;
+	open_button.show();
 }
