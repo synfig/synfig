@@ -55,7 +55,7 @@ class Dock_Info : public Dock_CanvasSpecific
 	Gtk::Button      stop_button;
 	Gtk::Button   open_button;
 
-	std::string   output_target;
+	synfig::filesystem::Path   output_target;
 
 	etl::handle<AsyncRenderer> async_renderer;
 
@@ -82,7 +82,7 @@ public:
 	void set_render_progress   (float value);
 	void set_n_passes_requested(int   value);
 	void set_n_passes_pending  (int   value);
-	void set_open_button(std::string output_path);
+	void set_open_button(synfig::filesystem::Path target_filepath);
 	void hide_open_button();
 };
 

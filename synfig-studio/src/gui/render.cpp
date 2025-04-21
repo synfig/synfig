@@ -578,16 +578,16 @@ RenderSettings::on_finished(std::string error_message)
 			App::sound_render_done->set_playing(true);
 		}
 
-		const filesystem::Path filename(entry_filename.get_text());
-		std::vector<std::string> ext_mult = {{".bmp"}, {".png"}, {".jpg"}, {".exr"}, {".ppm"}};		
+		const filesystem::Path target_filepath(entry_filename.get_text());
+		const std::vector<std::string> ext_multi = {{".bmp"}, {".png"}, {".jpg"}, {".exr"}, {".ppm"}};		
 		
-		bool ext_multi_file = !toggle_single_frame.get_active() 
-		        && (std::find(ext_mult.begin(), ext_mult.end(), filename.extension()) != ext_mult.end());
+		bool has_multiple_files = !toggle_single_frame.get_active() 
+		        && (std::find(ext_multi.begin(), ext_multi.end(), target_filepath.extension()) != ext_multi.end());
 		
-		if (ext_multi_file)
-			App::dock_info_->set_open_button(filename.parent_path().u8string());
+		if (has_multiple_files)
+			App::dock_info_->set_open_button(target_filepath.parent_path());
 		else 
-			App::dock_info_->set_open_button(filename.u8string());
+			App::dock_info_->set_open_button(target_filepath);
 		App::dock_info_->set_render_progress(1.0);
 	}
 
