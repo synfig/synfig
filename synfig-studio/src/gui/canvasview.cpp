@@ -2124,7 +2124,7 @@ CanvasView::on_mode_changed(CanvasInterface::Mode mode)
 		animatebutton->set_active(false);
 	}
 	//Keyframe lock icons
-	keyframedial->on_mode_changed(mode);
+	//keyframedial->on_mode_changed(mode);
 
 	work_area->queue_draw();
 	toggling_animate_mode_=false;
