@@ -59,7 +59,7 @@ SYNFIG_LAYER_SET_VERSION(RadialGradient,"0.2");
 
 /* === M E T H O D S ======================================================= */
 
-class TaskRadialGradient: public rendering::Task
+class TaskRadialGradient: public rendering::Task, public rendering::TaskInterfaceTransformation
 {
 public:
 	typedef etl::handle<TaskRadialGradient> Handle;
@@ -71,6 +71,13 @@ public:
 	CompiledGradient compiled_gradient;
 
 	TaskRadialGradient() { }
+
+	rendering::Transformation::Handle get_transformation() const override {
+		return transformation.handle();
+	}
+
+private:
+	rendering::Holder<rendering::TransformationAffine> transformation;
 };
 
 
