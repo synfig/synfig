@@ -104,94 +104,82 @@ public:
 
 	Color get_color(const Vector& point) const override
 	{
-		Color ret(0,0,0,0);
+		float x(point[0] / size[0] * (1 << detail));
+		float y(point[1] / size[1] * (1 << detail));
+		float x2(0), y2(0);
 
-		float x(point[0]/size[0]*(1<<detail));
-		float y(point[1]/size[1]*(1<<detail));
-		float x2(0),y2(0);
-
-		if(super_sample&&pixel_size)
-		{
-			x2=(point[0]+pixel_size)/size[0]*(1<<detail);
-			y2=(point[1]+pixel_size)/size[1]*(1<<detail);
+		if (super_sample && pixel_size) {
+			x2 = (point[0] + pixel_size) / size[0] * (1 << detail);
+			y2 = (point[1] + pixel_size) / size[1] * (1 << detail);
 		}
 
-		Time time = speed * time_mark;
-		RandomNoise::SmoothType smooth_type((!speed && smooth == RandomNoise::SMOOTH_SPLINE) ? RandomNoise::SMOOTH_FAST_SPLINE : smooth);
+		const RandomNoise::SmoothType smooth_type((!speed && smooth == RandomNoise::SMOOTH_SPLINE)
+													? RandomNoise::SMOOTH_FAST_SPLINE
+													: smooth);
 
-		float ftime(time);
+		const float ftime(speed * time_mark);
 
-		{
-			float amount=0.0f;
-			float amount2=0.0f;
-			float amount3=0.0f;
-			float alpha=0.0f;
-			for (int i = 0; i < detail; i++) {
-				amount=random(smooth_type,0+(detail-i)*5,x,y,ftime)+amount*0.5;
-				if (amount < -1) amount = -1;
-				if (amount >  1) amount =  1;
+		float amount = 0.0f;
+		float amount2 = 0.0f;
+		float amount3 = 0.0f;
+		float alpha = 0.0f;
+		for (int i = 0; i < detail; i++) {
+			amount = random(smooth_type, 0 + (detail - i) * 5, x, y, ftime) + amount * 0.5;
+			amount = synfig::clamp(amount, -1.f, 1.f);
 
-				if(super_sample&&pixel_size)
-				{
-					amount2=random(smooth_type,0+(detail-i)*5,x2,y,ftime)+amount2*0.5;
-					if (amount2 < -1) amount2 = -1;
-					if (amount2 >  1) amount2 =  1;
+			if (super_sample && pixel_size) {
+				amount2 = random(smooth_type, 0 + (detail - i) * 5, x2, y, ftime) + amount2 * 0.5;
+				amount2 = synfig::clamp(amount2, -1.f, 1.f);
 
-					amount3=random(smooth_type,0+(detail-i)*5,x,y2,ftime)+amount3*0.5;
-					if (amount3 < -1) amount3 = -1;
-					if (amount3 >  1) amount3 =  1;
+				amount3 = random(smooth_type, 0 + (detail - i) * 5, x, y2, ftime) + amount3 * 0.5;
+				amount3 = synfig::clamp(amount3, -1.f, 1.f);
 
-					if(turbulent)
-					{
-						amount2=std::fabs(amount2);
-						amount3=std::fabs(amount3);
-					}
-
-					x2*=0.5f;
-					y2*=0.5f;
+				if (turbulent) {
+					amount2 = std::fabs(amount2);
+					amount3 = std::fabs(amount3);
 				}
 
-				if(do_alpha)
-				{
-					alpha=random(smooth_type,3+(detail-i)*5,x,y,ftime)+alpha*0.5;
-					if (alpha < -1) alpha = -1;
-					if (alpha > 1) alpha = 1;
-				}
-
-				if(turbulent)
-				{
-					amount=std::fabs(amount);
-					alpha=std::fabs(alpha);
-				}
-
-				x*=0.5f;
-				y*=0.5f;
-				//ftime*=0.5f;
+				x2 *= 0.5f;
+				y2 *= 0.5f;
 			}
 
-			if(!turbulent)
-			{
-				amount=amount/2.0f+0.5f;
-				alpha=alpha/2.0f+0.5f;
-
-				if(super_sample&&pixel_size)
-				{
-					amount2=amount2/2.0f+0.5f;
-					amount3=amount3/2.0f+0.5f;
-				}
+			if (do_alpha) {
+				alpha = random(smooth_type, 3 + (detail - i) * 5, x, y, ftime) + alpha * 0.5;
+				alpha = synfig::clamp(alpha, -1.f, 1.f);
 			}
 
-			if(super_sample && pixel_size) {
-				Real da = std::max(amount3, std::max(amount,amount2)) - std::min(amount3, std::min(amount,amount2));
-				ret = compiled_gradient.average(amount - da, amount + da);
-			} else {
-				ret = compiled_gradient.color(amount);
+			if (turbulent) {
+				amount = std::fabs(amount);
+				alpha = std::fabs(alpha);
 			}
 
-			if(do_alpha)
-				ret.set_a(ret.get_a()*(alpha));
+			x *= 0.5f;
+			y *= 0.5f;
 		}
-		return ret;
+
+		if (!turbulent) {
+			amount = amount / 2.0f + 0.5f;
+			alpha = alpha / 2.0f + 0.5f;
+
+			if (super_sample && pixel_size) {
+				amount2 = amount2 / 2.0f + 0.5f;
+				amount3 = amount3 / 2.0f + 0.5f;
+			}
+		}
+
+		Color color;
+
+		if (super_sample && pixel_size) {
+			Real da = std::max(amount3, std::max(amount, amount2)) - std::min(amount3, std::min(amount, amount2));
+			color = compiled_gradient.average(amount - da, amount + da);
+		} else {
+			color = compiled_gradient.color(amount);
+		}
+
+		if (do_alpha)
+			color.set_a(color.get_a() * alpha);
+
+		return color;
 	}
 
 	bool run(RunParams&) const override {
