@@ -97,10 +97,13 @@ public:
 	SYNFIG_EXPORT static Token token;
 	Token::Handle get_token() const override { return token.handle(); }
 
+	void pre_run(const Matrix3& /*matrix*/, const Matrix3& /*inverse_matrix*/) const override
+	{
+		pixel_size = (std::fabs(get_units_per_pixel()[0]) + std::fabs(get_units_per_pixel()[1])) * 0.5f;
+	}
+
 	Color get_color(const Vector& point) const override
 	{
-		const float pixel_size = .01f;
-
 		Color ret(0,0,0,0);
 
 		float x(point[0]/size[0]*(1<<detail));
@@ -194,6 +197,9 @@ public:
 	bool run(RunParams&) const override {
 		return run_task();
 	}
+
+protected:
+	mutable float pixel_size = 0.0f;
 };
 
 SYNFIG_EXPORT rendering::Task::Token TaskNoise::token(
