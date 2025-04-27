@@ -65,34 +65,43 @@ create_toggle_button(const std::string& icon_name, const std::string& tooltip)
 	return button;
 }
 
-void KeyFrameDial::on_mode_changed(synfigapp::EditMode mode)
+void 
+KeyFrameDial::on_mode_changed(synfigapp::EditMode mode)
 {
-	if (mode & synfigapp::EditMode::MODE_ANIMATE_FUTURE)
-	{
-		toggle_keyframe_future->set_image_from_icon_name("keyframe_lock_future_on_icon");
-		toggle_keyframe_future->set_tooltip_text(_("Unlock future keyframes"));
-		toggle_keyframe_future->set_active(true);
-	}
-	else
-	{
-		toggle_keyframe_future->set_image_from_icon_name("keyframe_lock_future_off_icon");
-		toggle_keyframe_future->set_tooltip_text(_("Lock future keyframes"));
-		toggle_keyframe_future->set_active(false);
-	}
-
-	if (mode & synfigapp::EditMode::MODE_ANIMATE_PAST)
-	{
-		toggle_keyframe_past->set_image_from_icon_name("keyframe_lock_past_on_icon");
-		toggle_keyframe_past->set_tooltip_text(_("Unlock past keyframes"));
-		toggle_keyframe_past->set_active(true);
-	}
-	else
-	{
-		toggle_keyframe_past->set_image_from_icon_name("keyframe_lock_past_off_icon");
-		toggle_keyframe_past->set_tooltip_text(_("Lock past keyframes"));
-		toggle_keyframe_past->set_active(false);
-	}
+	
+    if ((mode & synfigapp::EditMode::MODE_ANIMATE_FUTURE) != toggle_keyframe_future->get_active())
+    {
+        if (mode & synfigapp::EditMode::MODE_ANIMATE_FUTURE)
+        {
+            toggle_keyframe_future->set_image_from_icon_name("keyframe_lock_future_on_icon");
+            toggle_keyframe_future->set_tooltip_text(_("Unlock future keyframes"));
+            toggle_keyframe_future->set_active(true);
+        }
+        else
+        {
+            toggle_keyframe_future->set_image_from_icon_name("keyframe_lock_future_off_icon");
+            toggle_keyframe_future->set_tooltip_text(_("Lock future keyframes"));
+            toggle_keyframe_future->set_active(false);
+        }
+    }
+	
+    if ((mode & synfigapp::EditMode::MODE_ANIMATE_PAST) != toggle_keyframe_past->get_active())
+    {
+        if (mode & synfigapp::EditMode::MODE_ANIMATE_PAST)
+        {
+            toggle_keyframe_past->set_image_from_icon_name("keyframe_lock_past_on_icon");
+            toggle_keyframe_past->set_tooltip_text(_("Unlock past keyframes"));
+            toggle_keyframe_past->set_active(true);
+        }
+        else
+        {
+            toggle_keyframe_past->set_image_from_icon_name("keyframe_lock_past_off_icon");
+            toggle_keyframe_past->set_tooltip_text(_("Lock past keyframes"));
+            toggle_keyframe_past->set_active(false);
+        }
+    }
 }
+
 KeyFrameDial::KeyFrameDial(): Gtk::Box(Gtk::Orientation::ORIENTATION_HORIZONTAL, 1)
 {
 	toggle_keyframe_past = create_toggle_button("keyframe_lock_past_on_icon",_("Unlock past keyframe"));
@@ -101,7 +110,8 @@ KeyFrameDial::KeyFrameDial(): Gtk::Box(Gtk::Orientation::ORIENTATION_HORIZONTAL,
 	add(*toggle_keyframe_future);
 }
 
-void KeyFrameDial::set_past_toggle(bool active)
+void 
+KeyFrameDial::set_past_toggle(bool active)
 {
     toggle_keyframe_past->set_active(active);
     if (active)
@@ -116,12 +126,14 @@ void KeyFrameDial::set_past_toggle(bool active)
     }
 }
 
-bool KeyFrameDial::get_past_toggle() const
+bool 
+KeyFrameDial::get_past_toggle() const
 {
     return toggle_keyframe_past->get_active();
 }
 
-void KeyFrameDial::set_future_toggle(bool active)
+void 
+KeyFrameDial::set_future_toggle(bool active)
 {
     toggle_keyframe_future->set_active(active);
     if (active)
@@ -136,7 +148,8 @@ void KeyFrameDial::set_future_toggle(bool active)
     }
 }
 
-bool KeyFrameDial::get_future_toggle() const
+bool 
+KeyFrameDial::get_future_toggle() const
 {
     return toggle_keyframe_future->get_active();
 }

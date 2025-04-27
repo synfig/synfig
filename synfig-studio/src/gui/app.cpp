@@ -3806,9 +3806,6 @@ App::new_instance()
 	canvas->rend_desc().set_flags(RendDesc::PX_ASPECT|RendDesc::IM_SPAN);
 	canvas->set_file_name(filename);
 	canvas->keyframe_list().add(synfig::Keyframe());
-	KeyFrameDial* keyframedial = new KeyFrameDial();
-	keyframedial->set_past_toggle(App::default_keyframedial_past);
-	keyframedial->set_future_toggle(App::default_keyframedial_future);
 	canvas->set_interpolation(App::default_interpolation);
 
 	FileSystem::Handle container = new FileSystemEmpty();
@@ -3820,6 +3817,25 @@ App::new_instance()
 	canvas->set_identifier(file_system->get_identifier(canvas_filename));
 
 	etl::handle<Instance> instance = Instance::create(canvas, container);
+
+	
+	etl::handle<synfigapp::CanvasInterface> canvas_interface = instance->find_canvas_interface(canvas);
+
+	if (App::default_keyframedial_past) {
+		canvas_interface->set_mode(static_cast<synfigapp::CanvasInterface::Mode>(
+			canvas_interface->get_mode() | synfigapp::MODE_ANIMATE_PAST));
+	} else {
+		canvas_interface->set_mode(static_cast<synfigapp::CanvasInterface::Mode>(
+			canvas_interface->get_mode() & ~synfigapp::MODE_ANIMATE_PAST));
+	}
+
+	if (App::default_keyframedial_future) {
+		canvas_interface->set_mode(static_cast<synfigapp::CanvasInterface::Mode>(
+			canvas_interface->get_mode() | synfigapp::MODE_ANIMATE_FUTURE));
+	} else {
+		canvas_interface->set_mode(static_cast<synfigapp::CanvasInterface::Mode>(
+			canvas_interface->get_mode() & ~synfigapp::MODE_ANIMATE_FUTURE));
+	}
 
 	if (App::default_background_layer_type == "solid_color")
 	{
