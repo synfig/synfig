@@ -361,11 +361,14 @@ public:
 				thickness=(next->get_width()-iter->get_width())*t+iter->get_width();
 		}
 
+		Real supersample = get_units_per_pixel()[0];
+
 		if (perpendicular && bline.size() > 1)
 		{
 			diff=tangent.perp();
 			//p1-=diff*0.5;
 			const Real mag(diff.inv_mag());
+			supersample = supersample*mag;
 			diff*=mag*mag;
 			dist=(p-origin - p1)*diff;
 		}
@@ -382,11 +385,12 @@ public:
 
 			p1-=diff*0.5;
 			const Real mag(diff.inv_mag());
+			supersample = supersample*mag;
 			diff*=mag*mag;
 			dist=(p-origin - p1)*diff;
 		}
 
-		Real supersample = 0;
+		supersample *= 0.5;
 		return compiled_gradient.average(dist - supersample, dist + supersample);
 	}
 
