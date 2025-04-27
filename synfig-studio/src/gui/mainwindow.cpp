@@ -352,6 +352,7 @@ bool MainWindow::on_key_press_event(GdkEventKey* key_event)
         if (handled) 
             return true;
     }
+    return Gtk::Window::on_key_press_event(key_event);
     SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
