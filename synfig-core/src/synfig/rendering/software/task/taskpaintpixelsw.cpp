@@ -132,7 +132,7 @@ synfig::rendering::TaskFilterPixelSW::run_task() const
 		if (task)
 			synfig::error(_("Internal error: Cobra task %s isn't a TaskPixelProcessorBase"), task->get_token()->name.c_str());
 		else
-			synfig::error(_("Internal error: this TaskPaintPixelSW isn't even a Task"));
+			synfig::error(_("Internal error: this TaskFilterPixelSW isn't even a Task"));
 		return false;
 	}
 	if (!task->is_valid())
