@@ -498,7 +498,7 @@ protected:
 	affine_combo<value_type,time_type> affine_func;
 
 public:
-	bezier_base() { }
+	bezier_base() = default;
 	bezier_base(
 		const value_type &a, const value_type &b, const value_type &c, const value_type &d,
 		const time_type &r=0.0, const time_type &s=1.0):

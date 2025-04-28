@@ -44,10 +44,6 @@
 
 using namespace studio;
 
-WorkspaceHandler::WorkspaceHandler()
-{
-}
-
 bool
 WorkspaceHandler::is_valid_name(const std::string& name)
 {

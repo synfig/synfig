@@ -420,7 +420,7 @@ ValueNode_AnimatedFile::load_file(const String &filename, bool force)
 		String uri = get_parent_canvas()->get_identifier().file_system->get_real_uri(full_filename);
 		if (!uri.empty())
 		{
-			internal->file_monitor = Gio::File::create_for_uri(uri.c_str())->monitor_file();
+			internal->file_monitor = Gio::File::create_for_uri(uri)->monitor_file();
 			internal->file_monitor->signal_changed().connect(
 				sigc::hide( sigc::hide( sigc::hide(
 					sigc::mem_fun(*this, &ValueNode_AnimatedFile::file_changed) ))));

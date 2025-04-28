@@ -93,7 +93,7 @@ public:
 	{
 		event_key key;
 
-		event() { }
+		event() = default;
 		event(const event_key& key):key(key) { }
 
 		operator event_key()const { return key; }
@@ -137,7 +137,7 @@ public:
 			{ return id==rhs; }
 
 		//! Trivial Constructor
-		event_def_internal() { }
+		event_def_internal() = default;
 
 		//! Constructor for creating an event_def_internal from the given key and function reference.
 		event_def_internal(event_key a, funcptr b):id(a),handler(b) { }
@@ -199,7 +199,7 @@ public:
 			: nested(nest), name(n), local_name_(local_name), default_handler(nullptr)
 		{ }
 
-		virtual ~state() { }
+		virtual ~state() = default;
 
 		//! Setup a nested state machine
 		/*! A more detailed explanation needs to be written */
