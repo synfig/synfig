@@ -89,7 +89,7 @@ public:
 	SYNFIG_EXPORT static Token token;
 	Token::Handle get_token() const override { return token.handle(); }
 
-	void pre_run(const Matrix3& /*matrix*/) const override
+	void pre_run(const Matrix3& /*raster_to_world*/) const override
 	{
 		supersample = 1/std::fabs(get_pixels_per_unit()[0]*(tone[0].param_size.get(Vector())).mag());
 		inverted_transformation = transformation->create_inverted();

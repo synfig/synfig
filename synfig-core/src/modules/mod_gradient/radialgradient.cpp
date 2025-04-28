@@ -90,7 +90,7 @@ public:
 
 	mutable Real supersample = 0.;
 
-	void pre_run(const Matrix3& /*matrix*/, const Matrix3& /*inverse_matrix*/) const override
+	void pre_run(const Matrix3& /*world_to_raster*/, const Matrix3& /*raster_to_world*/) const override
 	{
 		supersample = 1.2*get_units_per_pixel()[0]/radius;
 		supersample *= 0.5;
