@@ -343,7 +343,7 @@ synfig::Main::Main(const synfig::String& rootpath,ProgressCallback *cb):
 	std::list<String> modules_to_load;
 	std::vector<String> locations;
 
-	if(getenv("SYNFIG_MODULE_LIST"))
+	if(DEBUG_GETENV("SYNFIG_MODULE_LIST"))
 		locations.push_back(getenv("SYNFIG_MODULE_LIST"));
 	else
 	{
@@ -363,7 +363,7 @@ synfig::Main::Main(const synfig::String& rootpath,ProgressCallback *cb):
 	#ifdef __APPLE__
 		locations.push_back("/Library/Frameworks/synfig.framework/Resources/" MODULE_LIST_FILENAME);
 		locations.push_back("/Library/Synfig/" MODULE_LIST_FILENAME);
-		if(getenv("HOME"))
+		if(DEBUG_GETENV("HOME"))
 			locations.push_back(strprintf("%s/Library/Synfig/%s", getenv("HOME"), MODULE_LIST_FILENAME));
 	#endif
 	}
