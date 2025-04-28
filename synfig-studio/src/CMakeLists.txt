@@ -21,6 +21,7 @@ pkg_check_modules(GTKMM3 REQUIRED IMPORTED_TARGET gtkmm-3.0)
 pkg_check_modules(XMLPP REQUIRED IMPORTED_TARGET libxml++-2.6)
 pkg_check_modules(FONTCONFIG IMPORTED_TARGET fontconfig) # for FontConfig
 pkg_check_modules(JACK IMPORTED_TARGET jack)
+pkg_check_modules(CURL REQUIRED IMPORTED_TARGET libcurl)
 pkg_search_module(MLT IMPORTED_TARGET mlt++-7 mlt++) # required for widget_soundwave
 
 if(FONTCONFIG_FOUND)
