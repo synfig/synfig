@@ -76,7 +76,6 @@ private:
 	synfig::ValueBase param_use_kerning;
 	//!Parameter: (bool)
 	synfig::ValueBase param_grid_fit;
-	static std::mutex global_face_mutex;
 
 	FT_Face face;
 #if HAVE_HARFBUZZ
