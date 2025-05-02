@@ -64,13 +64,13 @@ def gen_layer_group(lottie, layer, idx):
     origin.animate("vector")
     anchor = origin
 
+    has_canvas_a_text_layer = False
     for l in canvas.layers:
         if l.get_type() in settings.TEXT_LAYER:
-            settings.TEXT_LAYER_FLAG = True #To indicate text in a group layer
+            has_canvas_a_text_layer = True #To indicate text in a group layer
+            break
 
-    if settings.TEXT_LAYER_FLAG:
-        settings.TEXT_LAYER_FLAG = False
-    else:
+    if not has_canvas_a_text_layer:
         anchor.add_offset()
 
     angle.animate("rotate_layer_angle")
