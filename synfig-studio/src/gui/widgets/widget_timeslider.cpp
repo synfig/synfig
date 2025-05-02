@@ -425,13 +425,11 @@ const synfig::Rect
 Widget_Timeslider::get_bounds_rectangle(bool lower) const
 {
 	if (lower) {
-		 double x0 = time_plot_data->get_double_pixel_t_coord(time_plot_data->lower_ex);
 		 double x1 = time_plot_data->get_double_pixel_t_coord(time_plot_data->time_model->get_play_bounds_lower());
 		 synfig::Rect lower_bound(synfig::Point(x1 - handle_dimension, 0.0), synfig::Point(x1, 0.0));
 		 return lower_bound;
 	} else {
 		 double x0 = time_plot_data->get_double_pixel_t_coord(time_plot_data->time_model->get_play_bounds_upper());
-		 double x1 = time_plot_data->get_double_pixel_t_coord(time_plot_data->upper_ex);
 		 synfig::Rect upper_bound(synfig::Point(x0, 0.0), synfig::Point(x0 + handle_dimension, 0.0));
 		 return upper_bound;
 	}
