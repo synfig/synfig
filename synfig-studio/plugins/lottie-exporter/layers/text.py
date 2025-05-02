@@ -94,14 +94,15 @@ def calc_default_text_properties(layer):
     default_dict["nm"] = layer.get_description()
 
     return default_dict
+
 def calc_anchor_alignment(lottie):
     """
     Generates the dictionary corresponding to the anchor alignment properties
-    
+
     Args:
         lottie (dict) : Lottie generated text layer stored here
     """
-    lottie["t"]["m"] = {  
+    lottie["t"]["m"] = {
                           "g": 1,
                           "a": {}
                        } #Has no corresponding synfig property, so using default values
@@ -119,7 +120,7 @@ def calculate_text_animation(lottie,animated):
         lottie  (dict)                 : Lottie generated text properties dictionary
         animated (lxml.etree._Element) : Synfig format animation
     """
-    
+
     waypoints = len(animated)
     #Adding text to each waypoint
     for waypoint in range(waypoints):
@@ -164,7 +165,7 @@ def gen_layer_text(lottie, layer, idx):
     lottie["nm"] = layer.get_description()
     lottie["sr"] = settings.LAYER_DEFAULT_STRETCH
     lottie["ks"] = {}   # Transform properties to be filled
-        
+
     calc_font_data(settings.lottie_format,layer)
 
     lottie["ao"] = settings.LAYER_DEFAULT_AUTO_ORIENT
@@ -177,7 +178,7 @@ def gen_layer_text(lottie, layer, idx):
 
     origin = layer.get_param("origin")
     origin.animate("vector")
-    
+
     anchor = layer.get_param("orient")
     anchor.animate("vector",True)
 
@@ -187,10 +188,10 @@ def gen_layer_text(lottie, layer, idx):
     pos.animate("vector",True)
 
     gen_helpers_transform(lottie["ks"], pos, anchor, scale)
-    
+
     lottie["t"]["a"].append(calc_default_text_properties(layer))
     lottie["t"]["a"][0]["a"] = {"fc":{},"o":{},"t":{}}
-    
+
     color = layer.get_param("color")
     color.animate("color")
     color.fill_path(lottie["t"]["a"][0]["a"],"fc")
@@ -253,7 +254,7 @@ def gen_layer_text(lottie, layer, idx):
               },
               "t": 0
             }
-    
+
     texts = layer.get_param("text").get()
     is_animate = is_animated(texts[0])
     if is_animate == settings.ANIMATED:
@@ -269,3 +270,4 @@ def gen_layer_text(lottie, layer, idx):
         lottie["t"]["d"]["k"].append(default)
 
     get_blend(lottie, layer)
+

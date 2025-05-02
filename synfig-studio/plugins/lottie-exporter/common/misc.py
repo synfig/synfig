@@ -125,11 +125,12 @@ def parse_position(animated, i):
                get_frame(animated[i])]
 
     elif animated.attrib["type"] == "separation":
-        if float(animated[i][0].attrib["value"]) == 1 :
-            pos = [(float(animated[i][0].attrib["value"]) - 0.45) * settings.SEPARATION_CONSTANT,get_frame(animated[i])]
+        if float(animated[i][0].attrib["value"]) == 1:
+            pos = [(float(animated[i][0].attrib["value"]) - 0.45) * settings.SEPARATION_CONSTANT,
+                   get_frame(animated[i])]
         else:
             pos = [float(animated[i][0].attrib["value"]) * settings.SEPARATION_CONSTANT,
-               get_frame(animated[i])]
+                   get_frame(animated[i])]
 
     elif animated.attrib["type"] == "effects_opacity":
         pos = [float(animated[i][0].attrib["value"]),
@@ -202,12 +203,12 @@ def parse_position(animated, i):
         green = green ** (1/settings.GAMMA[1])
         blue = blue ** (1/settings.GAMMA[2])
         return Color(red, green, blue, alpha)
-    
+
     elif animated.attrib["type"] == "gradient":
         return Gradient(animated[i][0])
 
     elif animated.attrib["type"] == "text":
-        pos = [animated[i][0].text,get_frame(animated[i])]
+        pos = [animated[i][0].text, get_frame(animated[i])]
 
     return Vector(pos[0], pos[1], animated.attrib["type"])
 
