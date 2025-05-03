@@ -205,9 +205,10 @@ def gen_layer_text(lottie, layer, idx):
 
     else:
         if is_animate == settings.NOT_ANIMATED:
-            val = float(opacity[0].attrib["value"]) * settings.OPACITY_CONSTANT
+            val = float(opacity[0].attrib["value"])
         else:
-            val = float(opacity[0][0][0].attrib["value"]) * settings.OPACITY_CONSTANT
+            val = float(opacity[0][0][0].attrib["value"])
+        val = val * settings.OPACITY_CONSTANT
         gen_properties_value(lottie["t"]["a"][0]["a"]["o"],
                              val,
                              index.inc(),
@@ -223,15 +224,13 @@ def gen_layer_text(lottie, layer, idx):
 
     else:
         if is_animate == settings.NOT_ANIMATED:
-            if float(tracking[0].attrib['value']) == 1.0:
-                val = (float(tracking[0].attrib["value"]) - 0.45) * settings.SEPARATION_CONSTANT
-            else:
-                val = float(tracking[0].attrib["value"]) * settings.SEPARATION_CONSTANT
+            val = float(tracking[0].attrib["value"])
         else:
-            if float(tracking[0][0][0].attrib["value"]) == 1.0:
-                val = (float(tracking[0].attrib["value"]) - 0.45) * settings.SEPARATION_CONSTANT
-            else:
-                val = float(tracking[0][0][0].attrib["value"]) * settings.SEPARATION_CONSTANT
+            val = float(tracking[0][0][0].attrib["value"])
+        if val == 1.0:
+            val = (val - 0.45) * settings.SEPARATION_CONSTANT
+        else:
+            val = val * settings.SEPARATION_CONSTANT
         gen_properties_value(lottie["t"]["a"][0]["a"]["t"],
                              val,
                              index.inc(),
