@@ -385,8 +385,8 @@ Widget_Timeslider::on_button_press_event(GdkEventButton *event) //for clicking
 	//if moving timeslider along with handle isnt wanted move these above prev if and add cond.
 	bool bounds_enabled = time_plot_data->time_model->get_play_bounds_enabled();
 	if (bounds_enabled) {
-		synfig::Rect lower_bound = 	get_bounds_rectangle(true);
-		synfig::Rect upper_bound =	get_bounds_rectangle(false);
+		synfig::Rect lower_bound = get_bounds_rectangle(true);
+		synfig::Rect upper_bound = get_bounds_rectangle(false);
 		synfig::Point cursor_pos(event->x, 0.0);
 
 		if (lower_bound.is_inside(cursor_pos))
