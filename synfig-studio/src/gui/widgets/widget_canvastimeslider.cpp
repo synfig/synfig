@@ -206,11 +206,11 @@ Widget_CanvasTimeslider::on_motion_notify_event(GdkEventMotion* event)
 }
 
 bool
-Widget_CanvasTimeslider::on_leave_notify_event(GdkEventCrossing*)
+Widget_CanvasTimeslider::on_leave_notify_event(GdkEventCrossing* event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	tooltip.hide();
-	return true;
+	return Widget_Timeslider::on_leave_notify_event(event);
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 

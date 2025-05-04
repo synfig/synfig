@@ -34,6 +34,8 @@
 #include <gtkmm/drawingarea.h>
 #include <gui/timemodel.h>
 
+#include <synfig/rect.h>
+
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -56,8 +58,19 @@ protected: // implementation that other interfaces can see
 
 	Cairo::RefPtr<Cairo::SurfacePattern> play_bounds_pattern;
 
+	Glib::RefPtr<Gdk::Cursor> bounds_cursor;
+	Glib::RefPtr<Gdk::Cursor> default_cursor;
+
+	Glib::RefPtr<Gdk::Pixbuf> lower_bound_pixbuf;
+	Glib::RefPtr<Gdk::Pixbuf> upper_bound_pixbuf;
+
 	// last mouse position for dragging
 	double lastx;
+
+	bool moving_lower_bound_handle = false;
+	bool moving_upper_bound_handle = false;
+	bool hovering_on_lower_bound_handle = false;
+	bool hovering_on_upper_bound_handle = false;
 
 	// distance between two small marks, also uses for left/right scroll
 	synfig::Time step;
@@ -71,10 +84,12 @@ protected: // implementation that other interfaces can see
 	virtual bool on_button_release_event(GdkEventButton *event); //for clicking
 	virtual bool on_motion_notify_event(GdkEventMotion* event); //for dragging
 	virtual bool on_scroll_event(GdkEventScroll* event); //for zooming
+	virtual bool on_leave_notify_event(GdkEventCrossing* event);
 	virtual bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 
 	virtual void draw_background(const Cairo::RefPtr<Cairo::Context> &cr);
 
+	const synfig::Rect get_bounds_rectangle(bool lower) const;
 public:
 	Widget_Timeslider();
 	~Widget_Timeslider();
