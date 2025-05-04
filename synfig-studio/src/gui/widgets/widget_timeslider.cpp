@@ -384,15 +384,15 @@ Widget_Timeslider::on_button_press_event(GdkEventButton *event) //for clicking
 	}
 	//if moving timeslider along with handle isnt wanted move these above prev if and add cond.
 	bool bounds_enabled = time_plot_data->time_model->get_play_bounds_enabled();
-	if (bounds_enabled)	{
+	if (bounds_enabled) {
 		synfig::Rect lower_bound = 	get_bounds_rectangle(true);
 		synfig::Rect upper_bound =	get_bounds_rectangle(false);
 		synfig::Point cursor_pos(event->x, 0.0);
 
 		if (lower_bound.is_inside(cursor_pos))
-				moving_lower_bound_handle = true;
+			moving_lower_bound_handle = true;
 		else if (upper_bound.is_inside(cursor_pos))
-				moving_upper_bound_handle = true;
+			moving_upper_bound_handle = true;
 	}
 	queue_draw();
 	return event->button == 1 || event->button == 2;
@@ -425,13 +425,13 @@ const synfig::Rect
 Widget_Timeslider::get_bounds_rectangle(bool lower) const
 {
 	if (lower) {
-		 double x1 = time_plot_data->get_double_pixel_t_coord(time_plot_data->time_model->get_play_bounds_lower());
-		 synfig::Rect lower_bound(synfig::Point(x1 - handle_dimension, 0.0), synfig::Point(x1, 0.0));
-		 return lower_bound;
+		double x1 = time_plot_data->get_double_pixel_t_coord(time_plot_data->time_model->get_play_bounds_lower());
+		synfig::Rect lower_bound(synfig::Point(x1 - handle_dimension, 0.0), synfig::Point(x1, 0.0));
+		return lower_bound;
 	} else {
-		 double x0 = time_plot_data->get_double_pixel_t_coord(time_plot_data->time_model->get_play_bounds_upper());
-		 synfig::Rect upper_bound(synfig::Point(x0, 0.0), synfig::Point(x0 + handle_dimension, 0.0));
-		 return upper_bound;
+		double x0 = time_plot_data->get_double_pixel_t_coord(time_plot_data->time_model->get_play_bounds_upper());
+		synfig::Rect upper_bound(synfig::Point(x0, 0.0), synfig::Point(x0 + handle_dimension, 0.0));
+		return upper_bound;
 	}
 }
 
@@ -450,9 +450,9 @@ Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for dragging
 	bool hovering_on_handle = hovering_on_lower_bound_handle || hovering_on_upper_bound_handle;
 
 	if ((moving_handle || hovering_on_handle) && (bounds_enabled))
-		   get_window()->set_cursor(bounds_cursor);
+		get_window()->set_cursor(bounds_cursor);
 	else
-		   get_window()->set_cursor(default_cursor);
+		get_window()->set_cursor(default_cursor);
 
 	queue_draw();
 
