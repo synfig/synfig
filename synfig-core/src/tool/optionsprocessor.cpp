@@ -154,7 +154,7 @@ SynfigCommandLineParser::SynfigCommandLineParser() :
 	add_option(og_set, "height",      'h', set_height,		_("Set the image height in pixels (Use zero for file default)"), "NUM");
 	add_option(og_set, "span",        's', set_span,		_("Set the diagonal size of image window (Span)"), "NUM");
 	add_option(og_set, "antialias",   'a', set_antialias,	_("Set antialias amount for parametric renderer."), "1..30");
-	//og_set.add_option("quality",     'Q', quality_arg_desc, strprintf(_("Specify image quality for accelerated renderer (Default: %d)"), DEFAULT_QUALITY).c_str(), "NUM");
+	add_option(og_set, "quality",     'Q', set_quality,     strprintf(_("Specify image quality for accelerated renderer (Default: %d)"), DEFAULT_QUALITY).c_str(), "NUM");
 	add_option(og_set, "threads",     'T', set_num_threads, _("Enable multithreaded renderer using the specified number of threads"), "NUM");
 	add_option(og_set, "input-file",  'i', set_input_file, 	_("Specify input filename"), "filename");
 	add_option(og_set, "output-file", 'o', set_output_file, _("Specify output filename"), "filename");
