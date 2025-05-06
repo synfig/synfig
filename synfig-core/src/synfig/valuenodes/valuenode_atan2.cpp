@@ -65,6 +65,14 @@ ValueNode_Atan2::ValueNode_Atan2(const ValueBase &value):
 		set_link("x",ValueNode_Const::create(Angle::cos(value.get(Angle())).get()));
 		set_link("y",ValueNode_Const::create(Angle::sin(value.get(Angle())).get()));
 	}
+	else if (value.get_type() == type_real)
+	{
+		double degrees = value.get(Real());
+		double pi = 3.14159265358979323846;
+		double radians = degrees * (pi / 180.0);
+		set_link("x", ValueNode_Const::create(std::cos(radians)));
+		set_link("y", ValueNode_Const::create(std::sin(radians)));
+	}
 	else
 	{
 		throw Exception::BadType(value.get_type().description.local_name);
@@ -94,8 +102,11 @@ ValueNode_Atan2::operator()(Time t)const
 	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
 		"%s:%d operator()\n", __FILE__, __LINE__);
 
-	return Angle::tan((*y_)(t).get(Real()),
-					  (*x_)(t).get(Real()));
+	if (get_type() == type_angle)
+		return Angle::tan((*y_)(t).get(Real()),
+						(*x_)(t).get(Real()));
+	else
+		return std::atan2((*y_)(t).get(Real()), (*x_)(t).get(Real()));
 }
 
 
@@ -104,7 +115,7 @@ ValueNode_Atan2::operator()(Time t)const
 bool
 ValueNode_Atan2::check_type(Type &type)
 {
-	return type==type_angle;
+	return type == type_angle || type == type_real;
 }
 
 bool
