@@ -37,13 +37,6 @@
 #include "gradient.h"
 
 #include <algorithm>
-#include <stdexcept>
-
-#include "general.h"
-#include <synfig/localization.h>
-#include <synfig/real.h>
-
-#include "exception.h"
 
 #endif
 
@@ -70,6 +63,12 @@ Gradient::Gradient(const Color &c1, const Color &c2, const Color &c3)
 	push_back(CPoint(0.0,c1));
 	push_back(CPoint(0.5,c2));
 	push_back(CPoint(1.0,c3));
+}
+
+void
+Gradient::sync()
+{
+	stable_sort(begin(), end());
 }
 
 // both input gradients should be already sorted
@@ -178,7 +177,7 @@ Gradient::operator*=(const ColorReal &rhs)
 
 //! Returns color of point x
 Color
-Gradient::operator() (const Real &x) const
+Gradient::operator() (Real x) const
 {
 	if (cpoints.empty())
 		return Color();
@@ -195,11 +194,11 @@ Gradient::operator() (const Real &x) const
 	Gradient::const_iterator j = i--;
 
 	Real d = j->pos - i->pos;
-	if (d <= real_high_precision<Real>()) return i->color;
+	if (approximate_zero_hp(d)) return i->color;
 
 	// operator+() also contains the same calculations
 	ColorReal amount = (x - i->pos)/d;
-	return Color::blend(i->color, j->color, amount, Color::BLEND_STRAIGHT);
+	return Color::blend(j->color, i->color, amount, Color::BLEND_STRAIGHT);
 }
 
 Real
@@ -218,8 +217,29 @@ Gradient::mag() const
 	return sqrt(sum);
 }
 
+Gradient
+Gradient::from_bad_version(const Gradient& wrong_gradient)
+{
+	if (wrong_gradient.size() <= 1)
+		return wrong_gradient;
+
+	Gradient gradient;
+	gradient.push_back(*wrong_gradient.begin());
+
+	auto it = wrong_gradient.begin();
+	auto previous_it = it++;
+	for (; it != wrong_gradient.end(); ++it, ++previous_it) {
+		gradient.push_back(CPoint(previous_it->pos, it->color));
+		gradient.push_back(CPoint(it->pos, previous_it->color));
+	}
+
+	gradient.push_back(*wrong_gradient.rbegin());
+
+	return gradient;
+}
+
 Gradient::iterator
-Gradient::proximity(const Real &x)
+Gradient::proximity(Real x)
 {
 	// This algorithm requires a sorted list.
 	iterator iter;
@@ -245,12 +265,24 @@ Gradient::proximity(const Real &x)
 	return iter;
 }
 
+Gradient::const_iterator
+Gradient::proximity(Real x) const
+{
+	return const_cast<Gradient*>(this)->proximity(x);
+}
+
 Gradient::iterator
 Gradient::find(const UniqueID &id)
 {
 	for (iterator i = begin(); i != end(); ++i)
 		if (id == *i) return i;
 	return end();
+}
+
+Gradient::const_iterator
+Gradient::find(const UniqueID& id) const
+{
+	return const_cast<Gradient*>(this)->find(id);
 }
 
 
@@ -270,7 +302,6 @@ CompiledGradient::Entry::Entry(const Accumulator &prev_sum, const GradientCPoint
 		next_sum = prev_sum + (next_color + prev_color)*(0.5*dp);
 	}
 }
-
 
 CompiledGradient::CompiledGradient():
 	is_empty(true), repeat()
