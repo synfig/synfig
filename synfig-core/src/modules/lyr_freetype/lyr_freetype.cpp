@@ -308,6 +308,8 @@ struct FaceMetaData
 	hb_font_t* font{nullptr};
 #endif
 
+std::mutex mutex;
+
 	static FaceMetaData&
 	get_from_face(FT_Face face)
 	{
@@ -358,6 +360,7 @@ private:
 };
 
 static FaceCache face_cache;
+
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -578,6 +581,7 @@ Layer_Freetype::new_font(const synfig::String &family, int style, int weight)
 		new_font_("sans serif",TEXT_STYLE_NORMAL,TEXT_WEIGHT_NORMAL);
 }
 
+
 bool
 Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight)
 {
@@ -585,18 +589,20 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 	if (get_canvas())
 		meta.canvas_path = get_canvas()->get_file_path()+ETL_DIRECTORY_SEPARATOR;
 
-	{
 		FT_Face tmp_face = face_cache.get(meta);
 		if (tmp_face) {
 			if (face != tmp_face)
 				need_sync |= SYNC_FONT;
 			face = tmp_face;
 #if HAVE_HARFBUZZ
-			font = FaceMetaData::get_from_face(face).font;
+			
+			// Lock the face's mutex when accessing its metadata
+			FaceMetaData& meta_data = FaceMetaData::get_from_face(face);
+			std::lock_guard<std::mutex> face_lock(meta_data.mutex);
+			font = meta_data.font;
 #endif
 			return true;
 		}
-	}
 
 	auto cache_face = [&](FT_Face face) {
 		if (!font_path_from_canvas)
@@ -718,14 +724,16 @@ Layer_Freetype::new_face(const String &newfont)
 
 	for (const std::string& path : filenames) {
 		filesystem::Path absolute_path = filesystem::absolute(path);
+
 		auto face_ptr = face_cache.get(absolute_path);
 		if (face_ptr) {
 			face = face_ptr;
 			break;
 		}
+
 		error = FT_New_Face(ft_library, path.c_str(), face_index, &face);
 		if (!error) {
-			face_cache.put(absolute_path, face);
+				face_cache.put(absolute_path, face);
 #if HAVE_HARFBUZZ
 			this->font = hb_ft_font_create(face, nullptr);
 			FaceMetaData::add_to_face(face, path, this->font);
@@ -1090,6 +1098,10 @@ Layer_Freetype::sync_vfunc()
 
 			hb_buffer_add_utf32(span_buffer, span.codepoints.data(), span.codepoints.size(), 0, -1);
 
+			// Lock the face's mutex when using it with HarfBuzz
+			FaceMetaData& meta_data = FaceMetaData::get_from_face(face);
+			std::lock_guard<std::mutex> face_lock(meta_data.mutex);
+
 			hb_shape(font, span_buffer, nullptr, 0);
 
 			unsigned int glyph_count;
@@ -1103,6 +1115,9 @@ Layer_Freetype::sync_vfunc()
 #if HAVE_HARFBUZZ
 				glyph_index = glyph_info[i].codepoint;
 #else
+				// Lock the face's mutex when getting char index
+				FaceMetaData& meta_data = FaceMetaData::get_from_face(face);
+				std::lock_guard face_lock(meta_data.mutex);
 				glyph_index = FT_Get_Char_Index(face, span.codepoints[i]);
 #endif
 				glyph_index_line.push_back(glyph_index);
@@ -1127,6 +1142,10 @@ Layer_Freetype::sync_vfunc()
 		for (const uint32_t glyph_index : glyph_line) {
 			if (glyph_map.count(glyph_index))
 				continue;
+
+			// Lock the face's mutex
+			FaceMetaData& meta_data = FaceMetaData::get_from_face(face);
+			std::lock_guard<std::mutex> lock(meta_data.mutex);
 
 			// load glyph image into the slot. DO NOT RENDER IT !!
 			FT_Error error;
@@ -1178,6 +1197,10 @@ Layer_Freetype::sync_vfunc()
 			{
 				FT_Vector delta;
 				FT_Error error;
+				// Lock the face's mutex when getting kerning
+				FaceMetaData& meta_data = FaceMetaData::get_from_face(face);
+				std::lock_guard<std::mutex> lock(meta_data.mutex);
+
 				error = FT_Get_Kerning( face, previous_glyph_index, glyph_index, kern_mode, &delta );
 				if (!error) {
 					offset[0] += delta.x*compress;
@@ -1475,6 +1498,11 @@ Layer_Freetype::world_to_contour(const synfig::Point &p) const
 {
 	if (!face)
 		return p;
+
+	// Lock the face's mutex to ensure thread-safe access to FT_Face during glyph loading
+	FaceMetaData& meta_data = FaceMetaData::get_from_face(face);
+	std::lock_guard<std::mutex> lock(meta_data.mutex);
+
 	Vector size = param_size.get(Vector()) * 2;
 
 	// Multiplies by face->units_per_EM to avoid rounding errors due to matrix inversion
@@ -1493,6 +1521,11 @@ Point Layer_Freetype::contour_to_world(const synfig::Point &p) const
 {
 	if (!face)
 		return p;
+
+	// Lock the face's mutex
+	FaceMetaData& meta_data = FaceMetaData::get_from_face(face);
+	std::lock_guard<std::mutex> lock(meta_data.mutex);
+
 	Vector size = param_size.get(Vector()) * 2;
 
 	Matrix matrix = Matrix().set_translate(param_origin.get(Vector()))
