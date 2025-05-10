@@ -74,6 +74,7 @@ static const std::map<std::string, std::pair<const char*, const char*>> known_ic
 	{"type_integer", {"type_integer_icon", N_("Integer")}},
 	{"type_angle", {"type_angle_icon", N_("Angle")}},
 	{"type_time", {"type_time_icon", N_("Time")}},
+	{"type_transformation", {"type_transformation_icon", N_("Transformation")}},
 	{"type_real", {"type_real_icon", N_("Real")}},
 	{"type_vector", {"type_vector_icon", N_("Vector")}},
 	{"type_color", {"type_color_icon", N_("Color")}},
@@ -363,6 +364,8 @@ studio::value_icon_name(Type &type)
 		return "type_angle_icon";
 	if (type == type_time)
 		return "type_time_icon";
+	if (type == type_transformation)
+		return "type_transformation_icon";
 	if (type == type_real)
 		return "type_real_icon";
 	if (type == type_vector)
