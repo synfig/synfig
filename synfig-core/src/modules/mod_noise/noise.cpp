@@ -171,6 +171,11 @@ public:
 
 		if (super_sample && pixel_size) {
 			Real da = std::max(amount3, std::max(amount, amount2)) - std::min(amount3, std::min(amount, amount2));
+			if (da < 0)
+				da = -da;
+			if (approximate_greater(da, 2.))
+				da = 2.;
+			da *= 0.5;
 			color = compiled_gradient.average(amount - da, amount + da);
 		} else {
 			color = compiled_gradient.color(amount);
