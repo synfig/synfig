@@ -193,6 +193,7 @@ EXTRA_DIST = \
 	type_segment_icon.sif \
 	type_string_icon.sif \
 	type_time_icon.sif \
+	type_transformation_icon.sif \
 	type_vector_icon.sif \
 	\
 	library_icon.sif \
@@ -406,6 +407,7 @@ ICONS = \
 	type_segment_icon.$(EXT) \
 	type_string_icon.$(EXT) \
 	type_time_icon.$(EXT) \
+	type_transformation_icon.$(EXT) \
 	type_vector_icon.$(EXT) \
 	\
 	canvas_icon.$(EXT) \
