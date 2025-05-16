@@ -416,6 +416,9 @@ NoiseDistort::build_rendering_task_vfunc(Context context) const
 rendering::Task::Handle
 NoiseDistort::build_composite_fork_task_vfunc(ContextParams /* context_params */, rendering::Task::Handle sub_task) const
 {
+	if (!sub_task)
+		return nullptr;
+
 	TaskNoiseDistort::Handle task_noise_distort(new TaskNoiseDistort());
 	task_noise_distort->internal.displacement = param_displacement.get(Vector());
 	task_noise_distort->internal.size = param_size.get(Vector());
