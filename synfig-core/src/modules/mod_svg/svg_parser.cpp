@@ -1422,6 +1422,19 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			break;
 		}
 		case 'z':{
+			if (k1.size() > 1) {
+				Vertex& first = k1.front();
+				const Vertex& last = k1.back();
+				if (approximate_equal(first.x, last.x) && approximate_equal(first.y, last.y)) {
+					// Merge!
+					first.angle1 = last.angle1;
+					first.radius1 = last.radius1;
+					first.split_angle = approximate_not_equal(first.angle1, first.angle2);
+					first.split_radius = approximate_not_equal(first.radius1, first.radius2);
+
+					k1.pop_back();
+				}
+			}
 			k.push_front(BLine(k1, true));
 			k1.clear();
 			current_x=init_x;
