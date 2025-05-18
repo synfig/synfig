@@ -75,7 +75,6 @@ private:
    	String name_;			//! The actual parameter name
    	String local_name_; 	//! Localized name
    	String desc_;			//! Short description of parameter (Think tooltops)
-   	String group_;			//! Which group this parameter is a member of (optional)
    	String hint_;			//! Parameter hint
    	String origin_;			//! Parameter origin
    	String connect_;
@@ -128,9 +127,6 @@ public:
 
    	//! Sets the localized description of the parameter.
    	ParamDesc &set_description(const String &d) { desc_=d; return *this; }
-
-   	//! Sets the group that this parameter is a member of
-   	ParamDesc &set_group(const String &n) { group_=n; return *this; }
 
    	//! Sets a "hint" for the parameter.
    	ParamDesc &set_hint(const String &h) { hint_=h; return *this; }
@@ -194,9 +190,6 @@ public:
 
    	//! Returns the localized description of the parameter
    	const String &get_description()const { return desc_; }
-
-   	//! Returns the parameter's group
-   	const String &get_group()const { return group_; }
 
    	//! Returns a "hint" about the parameter, regarding how it is to be displayed to the user
    	const String &get_hint()const { return hint_; }
