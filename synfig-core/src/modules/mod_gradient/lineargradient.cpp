@@ -56,7 +56,7 @@ SYNFIG_LAYER_SET_VERSION(LinearGradient,"0.1");
 
 /* === M E T H O D S ======================================================= */
 
-class TaskLinearGradient: public rendering::Task
+class TaskLinearGradient: public rendering::Task, public rendering::TaskInterfaceTransformation
 {
 public:
 	typedef etl::handle<TaskLinearGradient> Handle;
@@ -66,6 +66,13 @@ public:
 	LinearGradient::Params params;
 
 	TaskLinearGradient() { }
+
+	rendering::Transformation::Handle get_transformation() const override {
+		return transformation.handle();
+	}
+
+private:
+	rendering::Holder<rendering::TransformationAffine> transformation;
 };
 
 
@@ -78,7 +85,7 @@ public:
 
 	mutable Real supersample = 0.;
 
-	void pre_run(const Matrix3& /*matrix*/, const Matrix3& /*inverse_matrix*/) const override
+	void pre_run(const Matrix3& /*world_to_raster*/, const Matrix3& /*raster_to_world*/) const override
 	{
 		supersample = get_units_per_pixel()[0]*.1;
 	}

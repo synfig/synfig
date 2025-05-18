@@ -64,6 +64,8 @@ EXTRA_DIST = \
 	show_grid_icon.sif \
 	snap_grid_icon.sif \
 	show_guideline_icon.sif \
+	lower_bound_handle_icon.sif \
+	upper_bound_handle_icon.sif \
 	snap_guideline_icon.sif \
 	onion_skin_icon.sif \
 	incr_resolution_icon.sif \
@@ -191,6 +193,7 @@ EXTRA_DIST = \
 	type_segment_icon.sif \
 	type_string_icon.sif \
 	type_time_icon.sif \
+	type_transformation_icon.sif \
 	type_vector_icon.sif \
 	\
 	library_icon.sif \
@@ -262,6 +265,8 @@ ICONS = \
 	show_grid_icon.$(EXT) \
 	snap_grid_icon.$(EXT) \
 	show_guideline_icon.$(EXT) \
+	lower_bound_handle_icon.$(EXT) \
+	upper_bound_handle_icon.$(EXT) \
 	snap_guideline_icon.$(EXT) \
 	onion_skin_icon.$(EXT) \
 	incr_resolution_icon.$(EXT) \
@@ -402,6 +407,7 @@ ICONS = \
 	type_segment_icon.$(EXT) \
 	type_string_icon.$(EXT) \
 	type_time_icon.$(EXT) \
+	type_transformation_icon.$(EXT) \
 	type_vector_icon.$(EXT) \
 	\
 	canvas_icon.$(EXT) \

@@ -1,11 +1,11 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file xorpattern.h
-**	\brief Header file for implementation of the "XOR Pattern" layer
+/*!	\file valuenode_angle.h
+**	\brief Header file for implementation of the "Real" valuenode conversion.
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
-**	Copyright (c) 2007-2008 Chris Moore
-**	Copyright (c) 2012-2013 Carlos López
+**	Copyright (c) 2007 Chris Moore
+**  Copyright (c) 2011 Carlos López
 **
 **	This file is part of Synfig.
 **
@@ -22,59 +22,52 @@
 **	You should have received a copy of the GNU General Public License
 **	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
 **	\endlegal
-**
-** ========================================================================= */
+*/
+/* ========================================================================= */
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_XORPATTERN_H
-#define __SYNFIG_XORPATTERN_H
+#ifndef __SYNFIG_VALUENODE_ANGLE_H
+#define __SYNFIG_VALUENODE_ANGLE_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/layers/layer_composite.h>
-#include <synfig/color.h>
-#include <synfig/context.h>
-#include <synfig/vector.h>
+#include <synfig/valuenode.h>
 
 /* === M A C R O S ========================================================= */
 
-/* === T Y P E D E F S ===================================================== */
-
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-namespace synfig
-{
-namespace modules
-{
-namespace lyr_std
-{
+namespace synfig {
 
-class XORPattern : public Layer_Composite, public Layer_NoDeform
+class ValueNode_Angle : public LinkableValueNode
 {
-	SYNFIG_LAYER_MODULE_EXT
+	ValueNode::RHandle angle_;
 
-private:
-	//! Parameter: (Point)
-	ValueBase param_origin;
-	//! Parameter: (Point)
-	ValueBase param_size;
+	ValueNode_Angle(const ValueBase &value);
 
 public:
-	XORPattern();
+	typedef etl::handle<ValueNode_Angle> Handle;
+	typedef etl::handle<const ValueNode_Angle> ConstHandle;
 
-	virtual bool set_param(const String &param, const ValueBase &value);
-	virtual ValueBase get_param(const String &param)const;
-	virtual Color get_color(Context context, const Point &pos)const;
-	virtual Vocab get_param_vocab()const;
-	virtual Layer::Handle hit_check(Context context, const Point &point)const;
+	static ValueNode_Angle* create(const ValueBase& value=ValueBase(), etl::loose_handle<Canvas> canvas=nullptr);
+	virtual ~ValueNode_Angle();
+
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
+	static bool check_type(Type &type);
+
+	virtual ValueBase operator()(Time t) const override;
 
 protected:
-	virtual rendering::Task::Handle build_composite_task_vfunc(ContextParams /*context_params*/) const;
-};
+	virtual LinkableValueNode* create_new() const override;
 
-}; // END of namespace lyr_std
-}; // END of namespace modules
+	virtual bool set_link_vfunc(int i,ValueNode::Handle x) override;
+	virtual ValueNode::LooseHandle get_link_vfunc(int i) const override;
+
+	virtual Vocab get_children_vocab_vfunc() const override;
+}; // END of class ValueNode_Angle
+
 }; // END of namespace synfig
 
 /* === E N D =============================================================== */

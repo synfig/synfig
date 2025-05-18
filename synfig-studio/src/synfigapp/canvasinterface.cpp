@@ -965,11 +965,12 @@ CanvasInterface::import_sequence(
 {
 	Action::PassiveGrouper group(get_instance().get(),_("Import sequence"));
 
-	float fps = get_canvas()->rend_desc().get_frame_rate();
-	
+	const float fps = get_canvas()->rend_desc().get_frame_rate();
+
 	synfig::info("Attempting to import sequence");
 	Layer::Handle layer_switch;
 	ValueNode_Animated::Handle layer_name_animated = ValueNode_Animated::create(type_string);
+
 	try {
 		// add imported layers into switch
 		Action::Handle action(Action::create("LayerEncapsulateSwitch"));
@@ -982,17 +983,10 @@ CanvasInterface::import_sequence(
 		d_action->set_param("canvas_interface",etl::loose_handle<CanvasInterface>(this));
 
 		// create layers and assign them with LayerEncapsulateSwitch action
-		Layer::Handle layer;
-		Layer_Bitmap::Handle curr_layer;
-		rendering::Surface::Handle  cur_surface,prev_surface= rendering::Surface::Handle();
-		bool first_time=true;
+		Layer::Handle first_imported_layer;
+		rendering::Surface::Handle prev_surface;
 		int layers_count = 0;
-		int removed_count = 0;
-		std::set<filesystem::Path>::const_iterator c1 = filenames.begin();
-		std::set<filesystem::Path>::const_iterator c2 = filenames.begin();
-
-		while (c2 != filenames.end()) {
-			const filesystem::Path& filename = *c2;
+		for (const auto& filename : filenames) {
 			synfig::info("Attempting to import '%s' into sequence", filename.u8_str());
 			
 			String ext(filename.extension().u8string());
@@ -1014,73 +1008,75 @@ CanvasInterface::import_sequence(
 			String short_filename = CanvasFileNaming::make_short_filename(get_canvas()->get_file_name(), filename.u8string());
 			
 			try {
-				layer = add_layer_to("Import",get_canvas());
+				Layer::Handle layer = add_layer_to("Import", get_canvas());
 				if (!layer)
 					throw int();
 				if (!layer->set_param("filename", ValueBase(short_filename)))
 					throw int();
 
-				if(remove_dups){
-					curr_layer= Layer_Bitmap::Handle::cast_dynamic(layer);
-					if(!curr_layer){
-						throw int();
-					}
-					rendering::SurfaceResource::LockRead<rendering::SurfaceSW> cur_lock(curr_layer->rendering_surface);
-					if(!cur_lock) {
-						throw int();
-					}
-					cur_surface=cur_lock.get_handle();
+				bool is_layer_equal_previous_one = false;
 
-					if(c2!=std::next(filenames.end(), -1) && !first_time && cur_surface->compare_with(prev_surface)){
-						d_action->set_param("layer",layer);
-						advance(c2,1);
-						++removed_count;
-						++layers_count;
-						continue;
-					}
-					if(first_time) {
-						first_time = false;
+				if (remove_dups) {
+					// Gets the surface of current imported image
+					auto curr_layer = Layer_Bitmap::Handle::cast_dynamic(layer);
+					if (!curr_layer)
+						throw int();
+					rendering::SurfaceResource::LockRead<rendering::SurfaceSW> cur_lock(curr_layer->rendering_surface);
+					if (!cur_lock)
+						throw int();
+					rendering::Surface::Handle cur_surface = cur_lock.get_handle();
+
+					// Finally checks if it is equal to previous imported frame
+					if (prev_surface && cur_surface && cur_surface->equals_to(prev_surface)) {
+						is_layer_equal_previous_one = true;
+						d_action->set_param("layer", layer);
+						synfig::info("\tEquals to previous sequence item");
+					} else {
+						prev_surface = cur_surface;
 					}
 				}
-				update_layer_size(get_canvas()->rend_desc(), layer, resize_image);
-				layer->monitor(filename);
-				String desc = filename.filename().u8string();
-				layer->set_description(desc);
-				signal_layer_new_description()(layer, desc);
+				// Do add the new layer and the waypoint to it
+				if (!is_layer_equal_previous_one) {
+					if (!first_imported_layer)
+						first_imported_layer = layer;
+					update_layer_size(get_canvas()->rend_desc(), layer, resize_image);
+					layer->monitor(filename);
+					String desc = filename.filename().u8string();
+					layer->set_description(desc);
+					signal_layer_new_description()(layer, desc);
 
-				action->set_param("layer", layer);
-				if (!layers_count)
-					action->set_param("description", desc);
+					action->set_param("layer", layer);
+					if (layers_count == 0)
+						action->set_param("description", desc);
 
-				Waypoint &wp = *layer_name_animated->new_waypoint(Time(layers_count/fps), ValueBase(desc));
-				wp.set_before(INTERPOLATION_CONSTANT);
-				wp.set_after(INTERPOLATION_CONSTANT);
+					Waypoint& wp = *layer_name_animated->new_waypoint(Time(layers_count/fps), ValueBase(desc));
+					wp.set_before(INTERPOLATION_CONSTANT);
+					wp.set_after(INTERPOLATION_CONSTANT);
+				}
 
 				++layers_count;
-				c1=c2;
-				prev_surface=cur_surface;
-				advance(c2,1);
 			} catch(...) {
 				errors += synfig::strprintf(_("Unable to import file: %s"), filename.u8_str());
 				group.cancel();
 				return false;
 			}
 		}
+
 		if (!layers_count)
 			{ get_ui_interface()->error(_("Nothing imported")); throw int(); }
 		if(!action->is_ready())
 			{ get_ui_interface()->error(_("Action Not Ready")); throw int(); }
 		if(!get_instance()->perform_action(action))
 			{ get_ui_interface()->error(_("Action Failed.")); throw int(); }
-		if (remove_dups && removed_count > 0) {
-			if(!get_instance()->perform_action(d_action))
-				{ get_ui_interface()->error(_("Delete Action Failed.")); throw int(); }
+		if (remove_dups) {
+			if (d_action->is_ready())
+				if (!get_instance()->perform_action(d_action))
+					{ get_ui_interface()->error(_("Delete Action Failed.")); throw int(); }
 		}
 
-		if (layer) {
+		if (first_imported_layer) {
 			// get parent layer, because image is encapsulated into action switch
-			Layer::Handle layer_switch = layer->get_parent_paste_canvas_layer();
-
+			layer_switch = first_imported_layer->get_parent_paste_canvas_layer();
 			// connect animated layer_name param
 			action = Action::create("LayerParamConnect");
 			if(!action)

@@ -13,7 +13,7 @@ from layers.shape_solid import gen_layer_shape_solid
 from layers.preComp import gen_layer_precomp
 from layers.group import gen_layer_group
 from layers.blur import gen_layer_blur
-
+from layers.text import gen_layer_text
 sys.path.append("..")
 
 def blur_test(lottie):
@@ -98,7 +98,8 @@ def gen_layers(lottie, canvas, layer_itr):
 	group = settings.GROUP_LAYER
 	skeleton = settings.SKELETON_LAYER
 	blur = settings.BLUR_LAYER
-	supported_layers = set.union(shape, solid, shape_solid, image, pre_comp, group, skeleton,blur)
+	text = settings.TEXT_LAYER
+	supported_layers = set.union(shape, solid, shape_solid, image, pre_comp, group, skeleton, blur, text)
 	if settings.WITHOUT_VARIABLE_WIDTH:
 		shape.add("outline")
 		settings.WITHOUT_VARIABLE_WIDTH = False
@@ -138,8 +139,8 @@ def gen_layers(lottie, canvas, layer_itr):
 
 		elif layer.get_type() in shape_solid:   # Goto shape_solid layer
 			gen_layer_shape_solid(lottie[-1],
-								  layer,
-								  itr)
+							layer,
+							itr)
 			calculate_blurs_needed(settings.LEVEL)
 			append_blur_dict(layer,settings.LEVEL,settings.INSIDE_PRECOMP)
 
@@ -155,14 +156,20 @@ def gen_layers(lottie, canvas, layer_itr):
 
 		elif layer.get_type() in pre_comp:      # Goto precomp layer
 			gen_layer_precomp(lottie[-1],
-							  layer,
-							  itr)
+							layer,
+							itr)
 			return  # other layers will be generated inside the precomp
 		elif layer.get_type() in group:       # Goto group layer
 			gen_layer_group(lottie[-1],
 							layer,
 							itr)
 			# No return statement here
+
+		elif layer.get_type() in text:
+			gen_layer_text(lottie[-1],
+							layer,
+							itr)
+
 		elif layer.get_type() in skeleton:
 			pass
 			# skeletons are just for linking purposes which is served by bones

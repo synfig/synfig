@@ -40,6 +40,7 @@
 #include <cmath>
 
 #include <gdkmm/general.h>
+#include <gtkmm/icontheme.h>
 
 #include <gui/app.h>
 #include <gui/exception_guard.h>
@@ -59,6 +60,7 @@ using namespace studio;
 const double zoominfactor = 1.25;
 const double zoomoutfactor = 1/zoominfactor;
 const int fullheight = 20;
+const double handle_dimension = 8;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -174,6 +176,13 @@ Widget_Timeslider::Widget_Timeslider():
 			  | Gdk::BUTTON_RELEASE_MASK
 			  | Gdk::BUTTON_MOTION_MASK
 			  | Gdk::SCROLL_MASK );
+
+	auto icon_theme = Gtk::IconTheme::get_default();
+	lower_bound_pixbuf = icon_theme->load_icon("lower_bound_handle_icon", 1);
+	upper_bound_pixbuf = icon_theme->load_icon("upper_bound_handle_icon", 1);
+
+	bounds_cursor = Gdk::Cursor::create(get_display(), "ew-resize");
+	default_cursor = Gdk::Cursor::create(get_display(), "default");
 }
 
 Widget_Timeslider::~Widget_Timeslider()
@@ -305,22 +314,53 @@ Widget_Timeslider::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 				double x1 = time_plot_data->get_double_pixel_t_coord(bounds[i][1]);
 				double w = x1 - x0;
 
+				double boundary_adjust = handle_dimension;
+				double background_adjust = (i == 0) ? 0 : handle_dimension;
+
 				cr->save();
-				cr->rectangle(x0, 0.0, w, (double)get_height());
+				cr->rectangle(x0 + background_adjust, 0.0, w - handle_dimension, (double)get_height());
 				cr->clip();
 				cr->translate(offset, 0.0);
 				cr->set_source(play_bounds_pattern);
 				cr->paint();
 				cr->restore();
 
+				boundary_adjust = (i == 0) ? 0 : handle_dimension;
+
 				cr->save();
 				cr->set_line_width(1.0);
-				cr->set_source_rgba(0.0, 0.0, 0.0, 0.25);
-				cr->rectangle(x0 + 1.0, 1.0, w - 2.0, (double)get_height() - 2.0);
+				cr->set_source_rgba(0.0, 0.0, 0.0, 0.25);//inner border
+				cr->rectangle(x0 + 1.0 + boundary_adjust, 1.0, w - 2.0 - handle_dimension, (double)get_height() - 2.0);
 				cr->stroke();
-				cr->set_source_rgba(0.0, 0.0, 0.0, 0.3);
-				cr->rectangle(x0 + 0.5, 0.5, w - 1.0, (double)get_height() - 1.0);
+				cr->set_source_rgba(0.0, 0.0, 0.0, 0.3);//outer border
+				cr->rectangle(x0 + 0.5 + boundary_adjust, 0.5, w - 1.0 - handle_dimension, (double)get_height() - 1.0);
 				cr->stroke();
+				cr->restore();
+
+				Glib::RefPtr<Gdk::Pixbuf> icon;
+				if (i == 0) {
+					boundary_adjust = -handle_dimension;
+					icon = lower_bound_pixbuf;
+				} else {
+					boundary_adjust = -w;
+					icon = upper_bound_pixbuf;
+				}
+
+				cr->save();
+				Gdk::Cairo::set_source_pixbuf(cr, icon, x0 + w + boundary_adjust, 0);
+				cr->rectangle(x0 + w + boundary_adjust, 0.0, handle_dimension, (double)get_height());
+				cr->fill();
+				if ((moving_lower_bound_handle && i==0) || (moving_upper_bound_handle && i==1)) { //highlight/lighten bound on move
+					cairo_set_operator(cr->cobj(), CAIRO_OPERATOR_LIGHTEN);
+					cr->set_source_rgba(1.0, 1.0, 1.0, 0.4);
+					cr->rectangle(x0 + w + boundary_adjust, 0.0, handle_dimension, (double)get_height());
+					cr->fill();
+				} else if ((hovering_on_lower_bound_handle && i==0) ||	(hovering_on_upper_bound_handle && i==1)) { //highlight/lighten bound on hover
+					cairo_set_operator(cr->cobj(), CAIRO_OPERATOR_LIGHTEN);
+					cr->set_source_rgba(1.0, 1.0, 1.0, 0.2);
+					cr->rectangle(x0 + w + boundary_adjust, 0.0, handle_dimension, (double)get_height());
+					cr->fill();
+				}
 				cr->restore();
 			}
 		}
@@ -342,7 +382,19 @@ Widget_Timeslider::on_button_press_event(GdkEventButton *event) //for clicking
 		Time time = time_plot_data->get_t_from_pixel_coord(event->x);
 		time_plot_data->time_model->set_time(time);
 	}
+	//if moving timeslider along with handle isnt wanted move these above prev if and add cond.
+	bool bounds_enabled = time_plot_data->time_model->get_play_bounds_enabled();
+	if (bounds_enabled) {
+		synfig::Rect lower_bound = get_bounds_rectangle(true);
+		synfig::Rect upper_bound = get_bounds_rectangle(false);
+		synfig::Point cursor_pos(event->x, 0.0);
 
+		if (lower_bound.is_inside(cursor_pos))
+			moving_lower_bound_handle = true;
+		else if (upper_bound.is_inside(cursor_pos))
+			moving_upper_bound_handle = true;
+	}
+	queue_draw();
 	return event->button == 1 || event->button == 2;
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
@@ -351,14 +403,59 @@ bool
 Widget_Timeslider::on_button_release_event(GdkEventButton *event){
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	lastx = (double)event->x;
+	moving_lower_bound_handle = false;
+	moving_upper_bound_handle = false;
+	queue_draw();
 	return event->button == 1 || event->button == 2;
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
+}
+
+bool
+Widget_Timeslider::on_leave_notify_event(GdkEventCrossing*)
+{
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
+	hovering_on_lower_bound_handle = false;
+	hovering_on_upper_bound_handle = false;
+	queue_draw();
+	return true;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
+}
+
+const synfig::Rect
+Widget_Timeslider::get_bounds_rectangle(bool lower) const
+{
+	if (lower) {
+		double x1 = time_plot_data->get_double_pixel_t_coord(time_plot_data->time_model->get_play_bounds_lower());
+		synfig::Rect lower_bound(synfig::Point(x1 - handle_dimension, 0.0), synfig::Point(x1, 0.0));
+		return lower_bound;
+	} else {
+		double x0 = time_plot_data->get_double_pixel_t_coord(time_plot_data->time_model->get_play_bounds_upper());
+		synfig::Rect upper_bound(synfig::Point(x0, 0.0), synfig::Point(x0 + handle_dimension, 0.0));
+		return upper_bound;
+	}
 }
 
 bool
 Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for dragging
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
+
+	synfig::Rect lower_bound = get_bounds_rectangle(true);
+	synfig::Rect upper_bound = get_bounds_rectangle(false);
+	synfig::Point cursor_pos(event->x, 0.0);
+	bool moving_handle = moving_lower_bound_handle || moving_upper_bound_handle;
+	bool bounds_enabled = time_plot_data->time_model->get_play_bounds_enabled();
+	hovering_on_lower_bound_handle = lower_bound.is_inside(cursor_pos);
+	hovering_on_upper_bound_handle = upper_bound.is_inside(cursor_pos);
+	bool hovering_on_handle = hovering_on_lower_bound_handle || hovering_on_upper_bound_handle;
+
+	if ((moving_handle || hovering_on_handle) && (bounds_enabled))
+		get_window()->set_cursor(bounds_cursor);
+	else
+		get_window()->set_cursor(default_cursor);
+
+	queue_draw();
+
 	double dx = (double)event->x - lastx;
 	lastx = (double)event->x;
 
@@ -366,7 +463,13 @@ Widget_Timeslider::on_motion_notify_event(GdkEventMotion* event) //for dragging
 		return false;
 
 	Gdk::ModifierType mod = Gdk::ModifierType(event->state);
-	if (mod & Gdk::BUTTON1_MASK) {
+
+	if (moving_lower_bound_handle)
+		time_plot_data->time_model->set_play_bounds_lower(time_plot_data->get_t_from_pixel_coord(event->x));
+	else if (moving_upper_bound_handle)
+		time_plot_data->time_model->set_play_bounds_upper(time_plot_data->get_t_from_pixel_coord(event->x));
+
+	if ((mod & Gdk::BUTTON1_MASK) /*&& (!moving_lower_bound_handle) && (!moving_upper_bound_handle)*/) {//commented code is for disabling moving timeslider while moving bound
 		// scrubbing
 		Time time = time_plot_data->get_t_from_pixel_coord(event->x);
 		time_plot_data->time_model->set_time(time);

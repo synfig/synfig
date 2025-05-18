@@ -1,6 +1,7 @@
 VALUENODES_HH = \
 	valuenodes/valuenode_add.h \
 	valuenodes/valuenode_and.h \
+	valuenodes/valuenode_angle.h \
 	valuenodes/valuenode_anglestring.h \
 	valuenodes/valuenode_animated.h \
 	valuenodes/valuenode_animatedfile.h \
@@ -70,6 +71,7 @@ VALUENODES_HH = \
 VALUENODES_CC = \
 	valuenodes/valuenode_add.cpp \
 	valuenodes/valuenode_and.cpp \
+	valuenodes/valuenode_angle.cpp \
 	valuenodes/valuenode_anglestring.cpp \
 	valuenodes/valuenode_animated.cpp \
 	valuenodes/valuenode_animatedfile.cpp \

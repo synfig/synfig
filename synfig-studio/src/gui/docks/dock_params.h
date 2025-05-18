@@ -46,10 +46,13 @@ class Dock_Params : public Dock_CanvasSpecific
 	Glib::RefPtr<Gtk::ActionGroup> action_group;
 	Glib::RefPtr<Gtk::Adjustment> vadjustment;
 	sigc::connection refresh_selected_param_connection;
+	sigc::connection canvas_changed_connection;
 
 protected:
 	virtual void init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
 	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
+
+	void refresh_tree_view();
 
 	void refresh_selected_param();
 

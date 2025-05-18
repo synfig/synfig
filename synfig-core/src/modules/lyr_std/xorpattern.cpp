@@ -45,6 +45,8 @@
 #include <synfig/renddesc.h>
 #include <synfig/value.h>
 
+#include <synfig/rendering/software/task/taskpaintpixelsw.h>
+
 #endif
 
 using namespace synfig;
@@ -59,11 +61,63 @@ SYNFIG_LAYER_INIT(XORPattern);
 SYNFIG_LAYER_SET_NAME(XORPattern,"xor_pattern");
 SYNFIG_LAYER_SET_LOCAL_NAME(XORPattern,N_("XOR Pattern"));
 SYNFIG_LAYER_SET_CATEGORY(XORPattern,N_("Other"));
-SYNFIG_LAYER_SET_VERSION(XORPattern,"0.1");
+SYNFIG_LAYER_SET_VERSION(XORPattern,"0.2");
 
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
+
+class TaskXORPattern: public rendering::Task, public rendering::TaskInterfaceTransformation
+{
+public:
+	typedef etl::handle<TaskXORPattern> Handle;
+	SYNFIG_EXPORT static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
+
+	Vector origin;
+	Vector size;
+
+	rendering::Transformation::Handle get_transformation() const override {
+		return transformation.handle();
+	}
+
+private:
+	rendering::Holder<rendering::TransformationAffine> transformation;
+};
+
+class TaskXORPatternSW: public TaskXORPattern, public rendering::TaskPaintPixelSW
+{
+public:
+	typedef etl::handle<TaskXORPatternSW> Handle;
+	SYNFIG_EXPORT static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
+
+	bool run(RunParams&) const override
+	{
+		return run_task();
+	}
+
+	Color get_color(const Vector& point) const override
+	{
+		const unsigned int a = floor((point[0] - origin[0]) / size[0]);
+		const unsigned int b = floor((point[1] - origin[1]) / size[1]);
+		unsigned char rindex = (a^b);
+		unsigned char gindex = (a^(~b)) * 4;
+		unsigned char bindex = ~(a^b) * 2;
+
+		return
+			Color(
+				(Color::value_type)rindex / (Color::value_type)255.0,
+				(Color::value_type)gindex / (Color::value_type)255.0,
+				(Color::value_type)bindex / (Color::value_type)255.0,
+				1.0);
+	}
+};
+
+SYNFIG_EXPORT rendering::Task::Token TaskXORPattern::token(
+	DescAbstract<TaskXORPattern>("TaskXORPattern") );
+SYNFIG_EXPORT rendering::Task::Token TaskXORPatternSW::token(
+	DescReal<TaskXORPatternSW, TaskXORPattern>("TaskXORPatternSW") );
 
 XORPattern::XORPattern():
 	Layer_Composite(1.0,Color::BLEND_COMPOSITE),
@@ -154,4 +208,14 @@ XORPattern::hit_check(Context context, const Point &getpos)const
 		return layer;
 
 	return const_cast<XORPattern*>(this);
+}
+
+rendering::Task::Handle
+XORPattern::build_composite_task_vfunc(ContextParams /*context_params*/) const
+{
+	TaskXORPattern::Handle task(new TaskXORPattern());
+	task->origin = param_origin.get(Vector());
+	task->size = param_size.get(Vector());
+
+	return task;
 }

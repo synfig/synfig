@@ -189,15 +189,16 @@ bool Widget_SoundWave::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 
 	std::lock_guard<std::mutex> lock(mutex);
 
-	const int bytes_per_sample = 1;
 
 	Gdk::RGBA color = get_style_context()->get_color();
 	cr->set_source_rgb(color.get_red(), color.get_green(), color.get_blue());
 
-	const int middle_y = 127;
-	cr->move_to(0, middle_y);
-
+	constexpr int bytes_per_sample = 1;
 	const int stride = frequency * bytes_per_sample * n_channels;
+	const unsigned long max_index = buffer.size() - bytes_per_sample;
+
+	const int middle_y = 127; // std::pow(2, bytes_per_sample) - 1;
+	cr->move_to(0, middle_y);
 
 	for (double x = 0; x < get_width(); x+=.1) {
 		synfig::Time t = time_plot_data->get_t_from_pixel_coord(x);
@@ -205,8 +206,9 @@ bool Widget_SoundWave::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 		if (t >= sound_delay) {
 			synfig::Time dt = t - sound_delay;
 			unsigned long index = int(dt * stride) + channel_idx;
-			if (index < buffer.size())
-				std::copy(buffer.begin() + index, buffer.begin() + index + bytes_per_sample, &value);
+			if (index >= max_index)
+				break;
+			std::copy(buffer.begin() + index, buffer.begin() + index + bytes_per_sample, &value);
 		}
 		int y = time_plot_data->get_pixel_y_coord(value);
 		cr->line_to(x, y);
@@ -278,10 +280,15 @@ bool Widget_SoundWave::do_load(const synfig::filesystem::Path& filename)
 	std::string real_filename = Glib::filename_from_utf8(filename.u8string());
 	Mlt::Profile profile;
 	Mlt::Producer *track = new Mlt::Producer(profile, (std::string("avformat:") + real_filename).c_str());
-	if (!track->get_producer() || track->get_length() <= 0) {
+
+	// That value is INT_MAX, which is our special value that means unknown or possibly a live source.
+	// https://github.com/mltframework/mlt/issues/1073#issuecomment-2730111264
+	constexpr int mlt_error_length = INT_MAX;
+
+	if (!track->get_producer() || track->get_length() <= 0 || track->get_length() == mlt_error_length) {
 		delete track;
 		track = new Mlt::Producer(profile, (std::string("vorbis:") + real_filename).c_str());
-		if (!track->get_producer() || track->get_length() <= 0) {
+		if (!track->get_producer() || track->get_length() <= 0 || track->get_length() == mlt_error_length) {
 			delete track;
 			return false;
 		}
@@ -306,7 +313,7 @@ bool Widget_SoundWave::do_load(const synfig::filesystem::Path& filename)
 	n_channels = 0;
 
 	for (int i = start_frame; i < end_frame; ++i) {
-		Mlt::Frame *frame = track->get_frame(0);
+		std::unique_ptr<Mlt::Frame> frame(track->get_frame(0));
 		if (!frame)
 			break;
 
@@ -323,22 +330,27 @@ bool Widget_SoundWave::do_load(const synfig::filesystem::Path& filename)
 		void * _buffer = frame->get_audio(format, _frequency, _channels, _n_samples);
 		if (_buffer == nullptr) {
 			synfig::warning("couldn't get sound frame #%i", i);
-			delete frame;
 			break;
 		}
 		if (buffer.empty()) {
 			synfig::warning("sound frame #%i got empty buffer", i);
-			int buffer_length = (end_frame - start_frame + 1) * _channels * bytes_per_sample * std::round(_frequency/fps);
+			int buffer_length = (end_frame - start_frame) * _channels * bytes_per_sample * std::round(_frequency/fps);
 			buffer.resize(buffer_length);
 		}
 		int _n_bytes = _n_samples * _channels * bytes_per_sample;
-		std::copy(static_cast<unsigned char*>(_buffer), static_cast<unsigned char*>(_buffer) + _n_bytes, buffer.begin()+bytes_written);
+		if (bytes_written + _n_bytes > buffer.size()) {
+			if (buffer.size() <= bytes_written) {
+				synfig::error(_("Internal error: Widget_SoundWave: trying to read more bytes than buffer size: %i x %zu"), _n_bytes + bytes_written, buffer.size());
+				break;
+			}
+			_n_bytes = buffer.size() - bytes_written;
+		}
+		std::copy(static_cast<unsigned char*>(_buffer), static_cast<unsigned char*>(_buffer) + _n_bytes, buffer.begin() + bytes_written);
 		bytes_written += _n_bytes;
 		outbuffer += _n_bytes;
 		frequency = _frequency;
 		n_channels = _channels;
 		n_samples += _n_samples;
-		delete frame;
 	}
 	if (channel_idx > n_channels)
 		channel_idx = 0;
