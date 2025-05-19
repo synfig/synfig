@@ -37,6 +37,7 @@ glibmm \
 gtkmm3 \
 imagemagick \
 intltool \
+jpeg \
 libtool \
 libxml++ \
 libxml2 \
