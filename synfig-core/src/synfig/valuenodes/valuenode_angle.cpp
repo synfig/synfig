@@ -52,11 +52,17 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
-REGISTER_VALUENODE(ValueNode_Angle, RELEASE_VERSION_1_6_0, "angle", N_("Angle"))
+REGISTER_VALUENODE(ValueNode_Angle, RELEASE_VERSION_1_6_0, "fromangle", N_("Angle"))
 
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
+
+ValueNode_Angle::ValueNode_Angle(Type& x):
+	LinkableValueNode(x)
+{
+	init_children_vocab();
+}
 
 ValueNode_Angle::ValueNode_Angle(const ValueBase &value):
 	LinkableValueNode(value.get_type())
@@ -64,7 +70,7 @@ ValueNode_Angle::ValueNode_Angle(const ValueBase &value):
 	init_children_vocab();
 	if (value.get_type() == type_real)
 	{
-		set_link("angle", ValueNode_Const::create(Angle::deg(value.get(Real()))));
+		set_link("link", ValueNode_Const::create(Angle::deg(value.get(Real()))));
 	}
 	else
 	{
@@ -95,7 +101,12 @@ ValueNode_Angle::operator()(Time t)const
 	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
 		"%s:%d operator()\n", __FILE__, __LINE__);
 
-	return Angle::deg((*angle_)(t).get(Angle())).get();
+	const Type& type(get_type());
+	if (type == type_real)
+		return Angle::deg((*angle_)(t).get(Angle())).get();
+
+	assert(0);
+	throw std::runtime_error(get_local_name() + _(":Bad type ") + get_type().description.local_name);
 }
 
 bool
@@ -132,8 +143,8 @@ ValueNode_Angle::get_children_vocab_vfunc()const
 {
 	LinkableValueNode::Vocab ret;
 
-	ret.push_back(ParamDesc("angle")
-		.set_local_name(_("Angle"))
+	ret.push_back(ParamDesc("link")
+		.set_local_name(_("Link"))
 		.set_description(_("Angle value in degrees"))
 	);
 
