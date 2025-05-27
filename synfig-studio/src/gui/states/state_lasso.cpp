@@ -1133,13 +1133,10 @@ StateLasso_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synf
 			BLinePoint bline_point(*iter);
 			Point new_vertex(transform.unperform(bline_point.get_vertex()));
 
-			bline_point.set_tangent1(
+			bline_point.set_tangents(
 				transform.unperform(
 					bline_point.get_tangent1()+bline_point.get_vertex()
-				) -new_vertex
-			);
-
-			bline_point.set_tangent2(
+				) -new_vertex,
 				transform.unperform(
 					bline_point.get_tangent2()+bline_point.get_vertex()
 				) -new_vertex
