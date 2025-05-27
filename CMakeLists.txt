@@ -72,6 +72,7 @@ endif(MSVC)
 
 message("-- CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
 
+set(ENABLE_TESTS OFF CACHE BOOL "Enable testing")
 if (${ENABLE_TESTS})
 	enable_testing()
 endif()
