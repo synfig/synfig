@@ -262,8 +262,7 @@ synfig::ValueNode_Composite::operator()(Time t)const
 		ret.set_split_tangent_both((*components[3])(t).get(bool()));
 		ret.set_split_tangent_radius((*components[6])(t).get(bool()));
 		ret.set_split_tangent_angle((*components[7])(t).get(bool()));
-		ret.set_tangent1((*components[4])(t).get(Vector()));
-		ret.set_tangent2((*components[5])(t).get(Vector()));
+		ret.set_tangents((*components[4])(t).get(Vector()), (*components[5])(t).get(Vector()));
 		return ret;
 	}
 	else

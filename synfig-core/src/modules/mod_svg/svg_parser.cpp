@@ -777,8 +777,7 @@ Svg_parser::build_outline(xmlpp::Node* root, Style style, const std::list<BLine>
 			for (const auto& point : k.front().points) {
 				v.push_back(BLinePoint());
 				v.back().set_vertex(synfig::Point(point.x, point.y));
-				v.back().set_tangent1(synfig::Point(point.radius1, point.angle1));
-				v.back().set_tangent2(synfig::Point(point.radius2, point.angle2));
+				v.back().set_tangents(synfig::Point(point.radius1, point.angle1), synfig::Point(point.radius2, point.angle2));
 				v.back().set_split_tangent_angle(point.split_angle);
 				v.back().set_split_tangent_radius(point.split_radius);
 			}

@@ -79,9 +79,9 @@ ValueTransformation::transform(const Transformation &transformation, const Value
 	if (type == type_bline_point)
 	{
 		BLinePoint bp(value.get(BLinePoint()));
-		bp.set_vertex(transformation.transform(bp.get_vertex()) );
-		bp.set_tangent2(transformation.transform(bp.get_tangent2(), false));
-		bp.set_tangent1(transformation.transform(bp.get_tangent1(), false));
+		bp.set_vertex(transformation.transform(bp.get_vertex()));
+		bp.set_tangents(transformation.transform(bp.get_tangent1(), false),
+						transformation.transform(bp.get_tangent2(), false));
 		return bp;
 	}
 	else
@@ -127,9 +127,9 @@ ValueAverage::add(const ValueBase &value_a, const ValueBase &value_b, const Valu
 	{
 		BLinePoint res(value_a.get(BLinePoint()));
 		const BLinePoint &b = value_b.get(BLinePoint());
-		res.set_vertex( res.get_vertex() + b.get_vertex() );
-		res.set_tangent1( res.get_tangent1() + b.get_tangent1() );
-		res.set_tangent2( res.get_tangent2() + b.get_tangent2() );
+		res.set_vertex(res.get_vertex() + b.get_vertex());
+		res.set_tangents(res.get_tangent1() + b.get_tangent1(),
+						 res.get_tangent2() + b.get_tangent2());
 		return res;
 	}
 	else
@@ -176,9 +176,9 @@ ValueAverage::multiply(const ValueBase &value, Real amplifier)
 	if (type == type_bline_point)
 	{
 		BLinePoint res(value.get(BLinePoint()));
-		res.set_vertex( res.get_vertex() * amplifier );
-		res.set_tangent1( res.get_tangent1() * amplifier );
-		res.set_tangent2( res.get_tangent2() * amplifier );
+		res.set_vertex(res.get_vertex() * amplifier);
+		res.set_tangents(res.get_tangent1() * amplifier,
+						 res.get_tangent2() * amplifier);
 		return res;
 	}
 	else
