@@ -728,6 +728,7 @@ StateBLine_Context::run_()
 	}
 	if(bline_point_list.size()<2)
 	{
+		reset();
 		get_canvas_view()->get_ui_interface()->task(_("Information: You need at least two (2) points to create a spline"));
 		return false;
 	}
