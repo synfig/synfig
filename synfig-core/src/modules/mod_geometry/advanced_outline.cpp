@@ -183,13 +183,15 @@ namespace {
 				}
 				
 				Real ky = kx*s1;
+				// i0: the first vertex, i1: the second one
 				i1 = begin(); i0 = i1++;
 				i0->second.pp1[0] = i0->first + (i1->first - i0->first)*kx;
 				i0->second.pp1[1] = i0->second.y1() + (i1->second.y0() - i0->second.y1())*ky;
 
+				// i0: the penultimate vertex, i1: the last one
 				i0 = end(); i1 = (--i0)--;
 				i1->second.pp0[0] = i1->first - (i1->first - i0->first)*kx;
-				i1->second.pp0[1] = i1->second.y1() - (i1->second.y0() - i0->second.y1())*ky;
+				i1->second.pp0[1] = i1->second.y0() - (i1->second.y0() - i0->second.y1())*ky;
 			}
 			
 			i0 = begin(); i1 = end(); --i1;
