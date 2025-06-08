@@ -326,6 +326,8 @@ src/synfig/valuenodes/valuenode_add.cpp
 src/synfig/valuenodes/valuenode_add.h
 src/synfig/valuenodes/valuenode_and.cpp
 src/synfig/valuenodes/valuenode_and.h
+src/synfig/valuenodes/valuenode_ik_angle.cpp
+src/synfig/valuenodes/valuenode_ik_angle.h
 src/synfig/valuenodes/valuenode_anglestring.cpp
 src/synfig/valuenodes/valuenode_anglestring.h
 src/synfig/valuenodes/valuenode_animated.cpp
