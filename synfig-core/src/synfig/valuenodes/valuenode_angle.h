@@ -44,6 +44,7 @@ class ValueNode_Angle : public LinkableValueNode
 {
 	ValueNode::RHandle angle_;
 
+	ValueNode_Angle(Type& x);
 	ValueNode_Angle(const ValueBase &value);
 
 public:
