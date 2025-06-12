@@ -248,6 +248,9 @@ set(ICONS
 	type_time_icon
 	type_transformation_icon
 	type_vector_icon
+	type_pair_bone_object_bone_object_icon
+	type_bone_object_icon
+	type_bone_valuenode_icon
 	utils_timetrack_align_icon
 	valuenode_icon
 )

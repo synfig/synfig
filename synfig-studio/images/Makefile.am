@@ -195,6 +195,9 @@ EXTRA_DIST = \
 	type_time_icon.sif \
 	type_transformation_icon.sif \
 	type_vector_icon.sif \
+	type_pair_bone_object_bone_object_icon.sif \
+	type_bone_object_icon.sif \
+	type_bone_valuenode_icon.sif \
 	\
 	library_icon.sif \
 	graphs_icon.sif \
@@ -409,6 +412,9 @@ ICONS = \
 	type_time_icon.$(EXT) \
 	type_transformation_icon.$(EXT) \
 	type_vector_icon.$(EXT) \
+	type_pair_bone_object_bone_object_icon.$(EXT) \
+	type_bone_object_icon.$(EXT) \
+	type_bone_valuenode_icon.$(EXT) \
 	\
 	canvas_icon.$(EXT) \
 	library_icon.$(EXT) \

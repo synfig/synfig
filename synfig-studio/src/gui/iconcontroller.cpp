@@ -47,6 +47,10 @@
 #include <synfig/valuenodes/valuenode_const.h>
 #include <synfigapp/action.h>
 
+// Needed for various bone icons
+#include <synfig/pair.h>
+#include <synfig/valuenodes/valuenode_bone.h>
+
 #include <gtkmm/icontheme.h>
 
 #endif
@@ -384,6 +388,12 @@ studio::value_icon_name(Type &type)
 		return "type_string_icon";
 	if (type == type_gradient)
 		return "type_gradient_icon";
+	if (type == types_namespace::TypePair<Bone, Bone>::instance)
+		return "type_pair_bone_object_bone_object_icon";
+	if (type == type_bone_object)
+		return "type_bone_object_icon";
+	if (type == type_bone_valuenode)
+		return "type_bone_valuenode_icon";
 	if (!type.description.name.empty())
 		synfig::warning(_("no icon for value type: \"%s\""), type.description.name.c_str());
 	return "image-missing";
