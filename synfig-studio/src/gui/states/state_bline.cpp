@@ -1578,6 +1578,8 @@ StateBLine_Context::on_tangent2_change(const studio::Duck& duck, WorkArea::Duck:
 void
 StateBLine_Context::on_first_duck_clicked()
 {
+	if (!curr_duck)
+		return;
 	loop_=true;
 	run();
 }
