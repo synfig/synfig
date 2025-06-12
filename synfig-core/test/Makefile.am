@@ -20,7 +20,8 @@ TESTS = \
 	pen \
 	reference_counter \
 	string \
-	surface_etl
+	surface_etl \
+	valuenode_maprange
 
 angle_SOURCES=angle.cpp
 
@@ -49,5 +50,7 @@ reference_counter_SOURCES=reference_counter.cpp
 string_SOURCES=string.cpp
 
 surface_etl_SOURCES=surface_etl.cpp
+
+valuenode_maprange_SOURCES=valuenode_maprange.cpp
 
 EXTRA_DIST = test_base.h

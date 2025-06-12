@@ -394,6 +394,8 @@ src/synfig/valuenodes/valuenode_linear.cpp
 src/synfig/valuenodes/valuenode_linear.h
 src/synfig/valuenodes/valuenode_log.cpp
 src/synfig/valuenodes/valuenode_log.h
+src/synfig/valuenodes/valuenode_maprange.cpp
+src/synfig/valuenodes/valuenode_maprange.h
 src/synfig/valuenodes/valuenode_modulo.cpp
 src/synfig/valuenodes/valuenode_modulo.h
 src/synfig/valuenodes/valuenode_not.cpp
