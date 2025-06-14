@@ -747,13 +747,10 @@ StateBLine_Context::run_()
 			BLinePoint bline_point((*iter)->get_value().get(BLinePoint()));
 			Point new_vertex(transform.unperform(bline_point.get_vertex()));
 
-			bline_point.set_tangent1(
+			bline_point.set_tangents(
 				transform.unperform(
 					bline_point.get_tangent1()+bline_point.get_vertex()
-				) -new_vertex
-			);
-
-			bline_point.set_tangent2(
+				) -new_vertex,
 				transform.unperform(
 					bline_point.get_tangent2()+bline_point.get_vertex()
 				) -new_vertex
@@ -1554,12 +1551,10 @@ StateBLine_Context::on_tangent2_change(const studio::Duck& duck, WorkArea::Duck:
 		bline_point.set_tangent2(duck.get_point());
 	} else
 	if (split_angle && !split_radius) {
-		bline_point.set_tangent1(Vector(duck.get_point().mag(), bline_point.get_tangent1().angle()));
-		bline_point.set_tangent2(duck.get_point());
+		bline_point.set_tangents(Vector(duck.get_point().mag(), bline_point.get_tangent1().angle()), duck.get_point());
 	} else
 	if (!split_angle && split_radius) {
-		bline_point.set_tangent1(Vector(bline_point.get_tangent1().mag(), duck.get_point().angle()));
-		bline_point.set_tangent2(duck.get_point());
+		bline_point.set_tangents(Vector(bline_point.get_tangent1().mag(), duck.get_point().angle()), duck.get_point());
 	} else
 	if (!split_angle && !split_radius) {
 		bline_point.set_tangent1(duck.get_point());
