@@ -33,16 +33,14 @@
 #	include <config.h>
 #endif
 
-// Own header
 #include "state_brush2.h"
 
-// Includes needed for the minimal implementation
-#include "state_normal.h" // To switch back to the normal tool
+#include "state_normal.h"
 #include <gui/canvasview.h>
 #include <gui/event_mouse.h>
 #include <gui/workarea.h>
 #include <synfig/rendering/surface.h>
-#include <synfigapp/main.h> // For settings, etc. in the future
+#include <synfigapp/main.h>
 #include <gui/localization.h>
 
 #endif
@@ -60,11 +58,7 @@ StateBrush2 studio::state_brush2;
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-/**
- * The StateBrush2_Context class holds all the data and logic for the tool
- * while it is active on a canvas. An instance of this class is created
- * when the user selects the tool.
- */
+
 class studio::StateBrush2_Context : public sigc::trackable
 {
 private:
@@ -76,7 +70,6 @@ private:
 	bool is_drawing_;
 
 public:
-	// Constructor and Destructor
 	StateBrush2_Context(CanvasView* canvas_view);
 	~StateBrush2_Context();
 
