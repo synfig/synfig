@@ -113,6 +113,7 @@
 #include <gui/states/state_bline.h>
 #include <gui/states/state_bone.h>
 #include <gui/states/state_brush.h>
+#include <gui/states/state_brush2.h>
 #include <gui/states/state_circle.h>
 #include <gui/states/state_draw.h>
 #include <gui/states/state_eyedrop.h>
@@ -1723,6 +1724,7 @@ void App::init(const synfig::String& rootpath)
 		/* other */
 		state_manager->add_state(&state_text);
 		if(!getenv("SYNFIG_DISABLE_SKETCH" )) state_manager->add_state(&state_sketch);
+		if(!getenv("SYNFIG_DISABLE_SKETCH" )) state_manager->add_state(&state_brush2);
 		if(!getenv("SYNFIG_DISABLE_BRUSH"  ) && App::enable_experimental_features) state_manager->add_state(&state_brush);
 		state_manager->add_state(&state_zoom);
 

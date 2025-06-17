@@ -22,4 +22,5 @@ target_sources(synfigstudio
         "${CMAKE_CURRENT_LIST_DIR}/state_width.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_zoom.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_brush.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/state_brush2.cpp"
 )
