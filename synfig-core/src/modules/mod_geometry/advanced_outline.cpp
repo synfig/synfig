@@ -94,7 +94,7 @@ namespace {
 	Real calc_position(Real p, const rendering::Bend &bend, bool homogeneous) {
 		return homogeneous
 			 ? p*bend.length1()
-			 : bend.length_by_l( p*bend.l1() );
+			 : bend.length_by_index( p*bend.l1() );
 	}
 	
 	class AdvancedPoint {
