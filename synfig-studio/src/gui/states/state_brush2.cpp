@@ -167,6 +167,14 @@ Smach::event_result
 StateBrush2_Context::event_mouse_down_handler(const Smach::event& x)
 {
 	is_drawing_ = true;
+ 	const int width = get_work_area()->get_width();
+    const int height = get_work_area()->get_height();
+
+    overlay_surface_ = synfig::Surface(width, height);
+    overlay_surface_.clear();
+
+    get_work_area()->queue_draw();
+
 	return Smach::RESULT_ACCEPT;
 }
 
@@ -175,6 +183,10 @@ StateBrush2_Context::event_mouse_up_handler(const Smach::event& x)
 {
 	if (!is_drawing_) return Smach::RESULT_OK;
 	is_drawing_ = false;
+
+    overlay_surface_.clear();
+    get_work_area()->queue_draw();
+
 	return Smach::RESULT_ACCEPT;
 }
 
