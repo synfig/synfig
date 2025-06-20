@@ -39,9 +39,9 @@
 #include <gui/canvasview.h>
 #include <gui/event_mouse.h>
 #include <gui/workarea.h>
-#include <synfig/rendering/surface.h>
 #include <synfigapp/main.h>
 #include <gui/localization.h>
+#include <gui/workarearenderer/renderer_brush_overlay.h>
 
 #include <gui/app.h>
 #include <gui/docks/dialog_tooloptions.h>
@@ -74,6 +74,7 @@ private:
 
     // for the overlay system
     synfig::Surface overlay_surface_;
+    synfig::Rect overlay_rect_;
     bool is_drawing_;
 
     // UI elements for the tool options panel
@@ -92,6 +93,10 @@ public:
 
     void refresh_tool_options();
     Smach::event_result event_refresh_tool_options(const Smach::event& x);
+
+    // Overlay management methods
+    void update_overlay_preview(const synfig::Surface& surface, const synfig::Rect& rect);
+    void clear_overlay_preview();
 
     WorkArea* get_work_area() const { return canvas_view_->get_work_area(); }
 };
@@ -143,6 +148,9 @@ StateBrush2_Context::StateBrush2_Context(CanvasView* canvas_view) :
 
 StateBrush2_Context::~StateBrush2_Context()
 {
+    // Clear overlay when context is destroyed
+    clear_overlay_preview();
+
     get_work_area()->reset_cursor();
     App::dialog_tool_options->clear();
     App::dock_toolbox->refresh();
@@ -163,19 +171,57 @@ StateBrush2_Context::event_refresh_tool_options(const Smach::event& /*x*/)
     return Smach::RESULT_ACCEPT;
 }
 
+void
+StateBrush2_Context::update_overlay_preview(const synfig::Surface& surface, const synfig::Rect& rect)
+{
+    if (get_work_area() && get_work_area()->get_renderer_brush_overlay()) {
+        get_work_area()->get_renderer_brush_overlay()->set_overlay_surface(surface, rect);
+    }
+}
+
+void
+StateBrush2_Context::clear_overlay_preview()
+{
+    if (get_work_area() && get_work_area()->get_renderer_brush_overlay()) {
+        get_work_area()->get_renderer_brush_overlay()->clear_overlay();
+    }
+}
+
 Smach::event_result
 StateBrush2_Context::event_mouse_down_handler(const Smach::event& x)
 {
-	is_drawing_ = true;
-	return Smach::RESULT_ACCEPT;
+    const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
+
+    is_drawing_ = true;
+
+    const int width = get_work_area()->get_w();
+    const int height = get_work_area()->get_h();
+
+    // Create overlay surface with canvas size
+    overlay_surface_ = synfig::Surface(width, height);
+    overlay_surface_.clear();
+
+    // Fill entire surface with transparent red for testing
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            overlay_surface_[y][x] = Color(1.0f, 0.0f, 0.0f, 0.5f); // transparent red
+        }
+    }
+
+    overlay_rect_ = synfig::Rect(0, 0, width, height);
+    update_overlay_preview(overlay_surface_, overlay_rect_);
+    return Smach::RESULT_ACCEPT;
 }
 
 Smach::event_result
 StateBrush2_Context::event_mouse_up_handler(const Smach::event& x)
 {
-	if (!is_drawing_) return Smach::RESULT_OK;
-	is_drawing_ = false;
-	return Smach::RESULT_ACCEPT;
+    if (!is_drawing_) return Smach::RESULT_OK;
+    is_drawing_ = false;
+    // Clear the overlay when mouse is released
+    clear_overlay_preview();
+
+    return Smach::RESULT_ACCEPT;
 }
 
 Smach::event_result
@@ -188,6 +234,9 @@ StateBrush2_Context::event_mouse_draw_handler(const Smach::event& x)
 Smach::event_result
 StateBrush2_Context::event_stop_handler(const Smach::event& x)
 {
-	throw &state_normal;
-	return Smach::RESULT_OK;
+    // Clear overlay when stopping
+    clear_overlay_preview();
+
+    throw &state_normal;
+    return Smach::RESULT_OK;
 }

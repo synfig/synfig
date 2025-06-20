@@ -71,6 +71,7 @@ namespace studio
 class CanvasView;
 class WorkAreaRenderer;
 class Renderer_Canvas;
+class Renderer_BrushOverlay;
 class LockDucks;
 class Dialog_Guide;
 
@@ -139,6 +140,7 @@ private:
 	etl::loose_handle<studio::Instance> instance;
 	etl::loose_handle<studio::CanvasView> canvas_view;
 	etl::handle<Renderer_Canvas> renderer_canvas;
+	etl::handle<Renderer_BrushOverlay> renderer_brush_overlay;
 
 	// Widgets
 	Gtk::Button* menubutton_box;
@@ -359,6 +361,7 @@ public:
 	const etl::loose_handle<studio::Instance>& get_instance() const { return instance; }
 	const etl::loose_handle<studio::CanvasView>& get_canvas_view() const { return canvas_view; }
 	const etl::handle<Renderer_Canvas>& get_renderer_canvas() const { return renderer_canvas; }
+	const etl::handle<Renderer_BrushOverlay>& get_renderer_brush_overlay() const { return renderer_brush_overlay; }
 
 	void refresh_dimension_info();
 
