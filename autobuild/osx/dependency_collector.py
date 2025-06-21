@@ -241,9 +241,11 @@ def copy_dependency(lib_path, app_bundle_path, binary_path=None):
 
         # Determine destination
         if "mach-o executable" in file_type:
-            dest_dir = os.path.join(app_bundle_path, "Contents", "Resources", "bin")
+            # Standard: Helper executables go in Contents/MacOS/
+            dest_dir = os.path.join(app_bundle_path, "Contents", "MacOS")
         elif "shared library" in file_type or ".dylib" in actual_path or ".so" in actual_path:
-            dest_dir = os.path.join(app_bundle_path, "Contents", "Resources", "lib")
+            # Standard: All dynamic libraries go in Contents/Frameworks/
+            dest_dir = os.path.join(app_bundle_path, "Contents", "Frameworks")
         else:
             logging.warning(f"Unhandled file type: {actual_path}")
             return None
@@ -291,11 +293,12 @@ def update_library_paths(binary_path, dependencies, app_bundle_path):
                 capture_output=True, text=True
             ).stdout.lower()
 
-            # Place executables in Resources/bin, libraries in Resources/lib
             if "mach-o executable" in file_type:
-                new_path = f"@executable_path/../Resources/bin/{lib_name}"
+                # Standard: Helper executables are in same directory as main executable
+                new_path = f"@executable_path/{lib_name}"
             else:
-                new_path = f"@executable_path/../Resources/lib/{lib_name}"
+                # Standard: All dynamic libraries go in Frameworks directory
+                new_path = f"@executable_path/../Frameworks/{lib_name}"
 
         logging.info(f"Updating reference in {binary_path}: {original_path} -> {new_path}")
         try:
@@ -314,15 +317,19 @@ def update_library_id(lib_path):
         return
 
     if "Contents/Frameworks" in lib_path:
-        framework_parts = lib_path.split("Frameworks/")[1].split(".framework/")
-        framework_name = framework_parts[0]
-        new_id = f"@executable_path/../Frameworks/{framework_name}.framework/{framework_parts[1] if len(framework_parts) > 1 else framework_name}"
-    elif "Contents/Resources/bin" in lib_path:
+        if ".framework" in lib_path:
+            # Handle framework libraries
+            framework_parts = lib_path.split("Frameworks/")[1].split(".framework/")
+            framework_name = framework_parts[0]
+            new_id = f"@executable_path/../Frameworks/{framework_name}.framework/{framework_parts[1] if len(framework_parts) > 1 else framework_name}"
+        else:
+            # Handle regular .dylib files in Frameworks directory
+            lib_name = os.path.basename(lib_path)
+            new_id = f"@executable_path/../Frameworks/{lib_name}"
+    elif "Contents/MacOS" in lib_path:
+        # Handle executables in MacOS directory
         lib_name = os.path.basename(lib_path)
-        new_id = f"@executable_path/../Resources/bin/{lib_name}"
-    elif "Contents/Resources/lib" in lib_path:
-        lib_name = os.path.basename(lib_path)
-        new_id = f"@executable_path/../Resources/lib/{lib_name}"
+        new_id = f"@executable_path/{lib_name}"
     else:
         return
 
@@ -368,8 +375,8 @@ def process_binary(binary_path, app_bundle_path):
         # update path
         update_library_paths(binary_path, dependencies, app_bundle_path)
         
-        # update library ID
-        if "Contents/Frameworks" in binary_path or "Contents/Resources" in binary_path:
+        # Update library ID
+        if "Contents/Frameworks" in binary_path or "Contents/MacOS" in binary_path:
             update_library_id(binary_path)
             
         logging.info(f"Successfully processed {binary_path}")
@@ -382,8 +389,10 @@ def process_app_bundle(app_bundle_path):
     logging.info(f"Starting to process app bundle: {app_bundle_path}")
     
     # Create required directories
-    for d in ["Frameworks", "Resources/bin", "Resources/lib"]:
-        os.makedirs(os.path.join(app_bundle_path, "Contents", d), exist_ok=True)
+    # Note: MacOS directory usually already exists, but we ensure Frameworks exists
+    os.makedirs(os.path.join(app_bundle_path, "Contents", "Frameworks"), exist_ok=True)
+    # MacOS directory should already exist (contains main executable)
+    os.makedirs(os.path.join(app_bundle_path, "Contents", "MacOS"), exist_ok=True)
     
     binaries = find_binaries(app_bundle_path)
     logging.info(f"Found {len(binaries)} binaries to process")
@@ -419,8 +428,14 @@ def is_binary_file(file_path):
 if __name__ == "__main__":
     setup_logging()
     parser = argparse.ArgumentParser(description="Process dependencies for macOS app bundle")
-    parser.add_argument("--app", required=True, help="Path to the .app bundle")Add commentMore actions
+    parser.add_argument("--app", required=True, help="Path to the .app bundle")
     args = parser.parse_args()
+    
+    # Add more detailed logging
+    logging.info(f"Python version: {sys.version}")
+    logging.info(f"Working directory: {os.getcwd()}")
+    logging.info(f"App bundle path: {args.app}")
+    logging.info(f"App bundle exists: {os.path.exists(args.app)}")
     
     if not os.path.exists(args.app):
         logging.error(f"App bundle not found at {args.app}")
@@ -432,4 +447,6 @@ if __name__ == "__main__":
         sys.exit(0)
     except Exception as e:
         logging.error(f"Fatal error: {str(e)}")
+        import traceback
+        logging.error(f"Traceback: {traceback.format_exc()}")
         sys.exit(1)
