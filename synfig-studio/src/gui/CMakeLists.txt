@@ -44,7 +44,7 @@ if(APPLE)
         @ONLY
     )
 	target_sources(synfigstudio PRIVATE
-        "${CMAKE_CURRENT_SOURCE_DIR}/synfig_icon.icns"
+        "${CMAKE_SOURCE_DIR}/autobuild/osx/app-template/Contents/Resources/SynfigStudio.icns"
     )
     set_target_properties(synfigstudio PROPERTIES
         MACOSX_BUNDLE TRUE
