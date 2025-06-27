@@ -104,7 +104,7 @@ public:
 	Color get_color(const Vector& p) const override
 	{
 		const Point centered(p-center);
-		Real supersample = (1.41421*pw/radius+(1.41421*pw/centered.mag())/(PI*2))*0.5;
+		Real supersample = (M_SQRT2*pw/radius+(M_SQRT2*pw/centered.mag())/(M_PI*2))*0.5;
 
 		Angle a = Angle::tan(-centered[1],centered[0]).mod();
 		a += angle;

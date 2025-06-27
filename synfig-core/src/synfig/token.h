@@ -102,7 +102,7 @@ public:
 	class SetBuilder {
 	public:
 		Set set;
-		inline SetBuilder() { }
+		inline SetBuilder() = default;
 		inline explicit SetBuilder(Handle x)
 			{ add(x); }
 		inline SetBuilder& add(Handle x)
