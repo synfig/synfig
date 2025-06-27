@@ -17,15 +17,19 @@ def setup_logging():
         ]
     )
 
-# Recursively find all executable files in the app bundle.
-def find_binaries(app_folder):
-    binaries = []
-    for root, _, files in os.walk(app_folder):
-        for file in files:
-            file_path = os.path.join(root, file)
-            if os.access(file_path, os.X_OK) and not os.path.isdir(file_path):
-                binaries.append(file_path)
-    return binaries
+def is_executable_file(file_path):
+    """Check if the given path is an executable file."""
+    return os.access(file_path, os.X_OK) and os.path.isfile(file_path)
+
+def find_executable_files(directory):
+    """Find all executable files in the specified directory and its subdirectories."""
+    executable_files = []
+    for root, _, files in os.walk(directory):
+        for filename in files:
+            file_path = os.path.join(root, filename)
+            if is_executable_file(file_path):
+                executable_files.append(file_path)
+    return executable_files
 
 def is_binary_file(file_path):
     try:
@@ -53,34 +57,45 @@ def get_dependencies(binary_path):
         logging.error(f"Error running otool: {e}")
         return []
 
+def _extract_rpaths_from_otool(output, binary_path):
+    """
+    Parses the output of 'otool -l' to find and expand LC_RPATH entries.
+
+    Returns: list[str]: A list of resolved rpaths.
+    """
+    rpaths = []
+    # @loader_path is the directory containing the binary/library being loaded.
+    binary_dir = os.path.dirname(binary_path)
+
+    for i, line in enumerate(output.splitlines()):
+        if "cmd LC_RPATH" in line:
+            # Look ahead a few lines for the path (because in the output of the otool -l the path information appears 1-3 lines after the cmd LC_RPATH line )
+            for j in range(1, 5):
+                # Safety checks to ensure we don't go beyond the end of output and that we've found the line containing the actual path
+                if i+j < len(output.splitlines()) and "path" in output.splitlines()[i+j]:
+                    path_line = output.splitlines()[i+j]
+                    rpath = path_line.strip().split("path ")[1].strip() # Extract everything after "path"
+
+                    # Expand @loader_path and @executable_path
+                    expanded = rpath
+                    if "@loader_path" in rpath:
+                        expanded = os.path.normpath(rpath.replace("@loader_path", binary_dir))
+                    elif "@executable_path" in rpath:
+                        expanded = os.path.normpath(rpath.replace("@executable_path",
+                            os.path.dirname(os.path.dirname(binary_dir))))
+
+                    rpaths.append(expanded)
+                    break
+    return rpaths
+
 # Function for @rpath references in libraries
 def resolve_rpath(binary_path, rpath_lib):
     try:
         # Extracting load commands (including LC_RPATH entries).
         output = subprocess.check_output(["otool", "-l", binary_path], text=True)
-        rpaths = []
-        binary_dir = os.path.dirname(binary_path)
         
-    
-        for i, line in enumerate(output.splitlines()):
-            if "cmd LC_RPATH" in line:
-                # Look ahead a few lines for the path (because in the output of the otool -l the path information appears 1-3 lines after the cmd LC_RPATH line )
-                for j in range(1, 5):
-                    # Safety checks to ensure we don't go beyond the end of output and that we've found the line containing the actual path
-                    if i+j < len(output.splitlines()) and "path" in output.splitlines()[i+j]:
-                        path_line = output.splitlines()[i+j]
-                        rpath = path_line.strip().split("path ")[1].strip() # Extract everything after "path"
-                        
-                        # Expand @loader_path and @executable_path
-                        expanded = rpath
-                        if "@loader_path" in rpath:
-                            expanded = os.path.normpath(rpath.replace("@loader_path", binary_dir))
-                        elif "@executable_path" in rpath:
-                            expanded = os.path.normpath(rpath.replace("@executable_path", 
-                                os.path.dirname(os.path.dirname(binary_dir))))
-                        
-                        rpaths.append(expanded)
-                        break
+        #Extract and resolve all rpaths using the helper function.
+        rpaths = _extract_rpaths_from_otool(output, binary_path)
         
         # For synfig and mlt libraries specifically (hardcoded for now)
         special_paths = [
@@ -394,7 +409,7 @@ def process_app_bundle(app_bundle_path):
     # MacOS directory should already exist (contains main executable)
     os.makedirs(os.path.join(app_bundle_path, "Contents", "MacOS"), exist_ok=True)
     
-    binaries = find_binaries(app_bundle_path)
+    binaries = find_executable_files(app_bundle_path)
     logging.info(f"Found {len(binaries)} binaries to process")
     
     for binary in binaries:
@@ -402,28 +417,6 @@ def process_app_bundle(app_bundle_path):
     
     logging.info(f"Finished processing app bundle: {app_bundle_path}")
     return True
-
-# Recursively find all executable files in the app bundle.
-def find_binaries(app_folder):
-    binaries = []
-    for root, _, files in os.walk(app_folder):
-        for file in files:
-            file_path = os.path.join(root, file)
-            if os.access(file_path, os.X_OK) and not os.path.isdir(file_path):
-                binaries.append(file_path)
-    return binaries
-
-def is_binary_file(file_path):
-    try:
-        result = subprocess.run(
-            ["file", "-b", file_path], 
-            capture_output=True, 
-            text=True, 
-            check=True
-        )
-        return any(x in result.stdout for x in ["Mach-O", "shared library"])
-    except:
-        return False
 
 if __name__ == "__main__":
     setup_logging()
