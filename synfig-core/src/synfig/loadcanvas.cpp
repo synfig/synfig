@@ -538,7 +538,7 @@ CanvasParser::parse_gradient(xmlpp::Element *node)
 			ret.push_back(cpoint);
 		}
 	}
-	ret.sort();
+	ret.sync();
 	return ret;
 }
 
@@ -3131,6 +3131,16 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 		layer->disconnect_dynamic_param("blend_method");
 		layer->set_param("amount", 1.0);
 		layer->set_param("blend_method", Color::BLEND_STRAIGHT);
+	}
+
+	// Possible issue with Gradient parameters:
+	if (canvas->get_version() == "1.1" || canvas->get_version() == "1.2") {
+		if (layer->get_name() == "plant" && version == "0.2")
+			layer->set_version("0.2-problematic-gradient");
+		else if (layer->get_name() == "mandelbrot" && version == "0.2")
+			layer->set_version("0.2-problematic-gradient");
+		else if (layer->get_name() == "metaballs" && version == "0.1")
+			layer->set_version("0.1-problematic-gradient");
 	}
 
 	layer->reset_version();

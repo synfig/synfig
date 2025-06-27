@@ -61,6 +61,8 @@ private:
 	synfig::ValueBase param_threshold2;
 	//! Parameter: (bool)
 	synfig::ValueBase param_positive;
+	//!Parameter: (bool)
+	synfig::ValueBase param_invert_gradient;
 
 	synfig::Real densityfunc(const synfig::Point &p, const synfig::Point &c, synfig::Real R)const;
 
@@ -79,6 +81,8 @@ public:
 	virtual Vocab get_param_vocab()const;
 
 	virtual synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
+
+	virtual bool set_version(const synfig::String& ver);
 
 protected:
 	synfig::rendering::Task::Handle build_composite_task_vfunc(synfig::ContextParams /*context_params*/) const;

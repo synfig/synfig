@@ -248,7 +248,7 @@ xmlpp::Element* encode_dash_item(xmlpp::Element* root, DashItem dash_item)
 xmlpp::Element* encode_gradient(xmlpp::Element* root,Gradient x)
 {
 	root->set_name("gradient");
-	x.sort();
+	x.sync();
 	for (Gradient::const_iterator iter = x.begin(); iter != x.end(); ++iter) {
 		xmlpp::Element *cpoint(encode_color(root->add_child("color"),iter->color));
 		cpoint->set_attribute("pos",strprintf("%f",iter->pos));
