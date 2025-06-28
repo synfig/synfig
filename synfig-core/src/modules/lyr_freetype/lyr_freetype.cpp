@@ -696,12 +696,11 @@ static std::string fontconfig_get_filename(const std::string& font_fam, int styl
 bool
 Layer_Freetype::new_face(const String &newfont)
 {
-	synfig::String font=param_font.get(synfig::String());
 	int error = 0;
 	FT_Long face_index=0;
 
 	// If we are already loaded, don't bother reloading.
-	if(face && font==newfont)
+	if (face && param_font.get(synfig::String()) == newfont)
 		return true;
 
 	if(face)
@@ -721,14 +720,17 @@ Layer_Freetype::new_face(const String &newfont)
 		auto face_ptr = face_cache.get(absolute_path);
 		if (face_ptr) {
 			face = face_ptr;
+#if HAVE_HARFBUZZ
+			font = FaceMetaData::get_from_face(face).font;
+#endif
 			break;
 		}
 		error = FT_New_Face(ft_library, path.c_str(), face_index, &face);
 		if (!error) {
 			face_cache.put(absolute_path, face);
 #if HAVE_HARFBUZZ
-			this->font = hb_ft_font_create(face, nullptr);
-			FaceMetaData::add_to_face(face, path, this->font);
+			font = hb_ft_font_create(face, nullptr);
+			FaceMetaData::add_to_face(face, path, font);
 #else
 			FaceMetaData::add_to_face(face, path);
 #endif
@@ -742,9 +744,6 @@ Layer_Freetype::new_face(const String &newfont)
 		synfig::error(strprintf("Layer_Freetype: %s (err=%d): %s",_("Unable to open font face."),error,newfont.c_str()));
 		return false;
 	}
-
-	// ???
-	font=newfont;
 
 	need_sync |= SYNC_FONT;
 	return true;
