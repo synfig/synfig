@@ -103,44 +103,20 @@ namespace brushlib {
 			float cs = cosf(angle/180.f*(float)PI);
 			float sn = sinf(angle/180.f*(float)PI);
 
-			// calculate bounds
-			if (aspect_ratio < 1.0) aspect_ratio = 1.0;
-			if (hardness > 1.0) hardness = 1.0;
-			if (hardness < 0.0) hardness = 0.0;
-			float maxr = fabsf(radius);
-			int x0 = (int)(x - maxr - 1.f);
-			int x1 = (int)(x + maxr + 1.f);
-			int y0 = (int)(y - maxr - 1.f);
-			int y1 = (int)(y + maxr + 1.f);
+    // calculate bounds
+    if (aspect_ratio < 1.0) aspect_ratio = 1.0;
+    if (hardness > 1.0) hardness = 1.0;
+    if (hardness < 0.0) hardness = 0.0;
+    float maxr = fabsf(radius);
 
-			if (x0 < 0
-			 || y0 < 0
-			 || x1+1 > surface->get_w()
-			 || y1+1 > surface->get_h() )
-			{
-				int l = x0 < 0 ? x0 : 0;
-				int t = y0 < 0 ? y0 : 0;
-				int r = x1+1 > surface->get_w() ? x1+1 : surface->get_w();
-				int b = y1+1 > surface->get_h() ? y1+1 : surface->get_h();
+    // Clamp bounds to surface dimensions instead of expanding
+    int x0 = std::max(0, (int)(x - maxr - 1.f));
+    int x1 = std::min(surface->get_w() - 1, (int)(x + maxr + 1.f));
+    int y0 = std::max(0, (int)(y - maxr - 1.f));
+    int y1 = std::min(surface->get_h() - 1, (int)(y + maxr + 1.f));
 
-				extra_left   -= l; // increase because l and t is negative
-				extra_top    -= t;
-				extra_right  += r - surface->get_w();
-				extra_bottom += b - surface->get_h();
-
-				synfig::Surface tmp;
-				tmp = *surface;
-				surface->set_wh(r-l, b-t);
-				surface->clear();
-				synfig::Surface::pen p(surface->get_pen(-l, -t));
-				tmp.blit_to(p);
-
-				offset_x -= l;
-				offset_y -= t;
-				x -= (float)l; y -= (float)t;
-				x0 -= l; y0 -= t;
-				x1 -= l; y1 -= t;
-			}
+    // Skip if completely outside bounds
+    if (x0 > x1 || y0 > y1) return false;
 
 			bool erase = alpha_eraser < 1.0;
 			for(int py = y0; py <= y1; py++)
