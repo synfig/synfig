@@ -38,24 +38,20 @@ else()
 endif()
 
 if(APPLE)
+	set_target_properties(synfigstudio PROPERTIES
+		INSTALL_RPATH "@executable_path/../Frameworks"
+		BUILD_WITH_INSTALL_RPATH TRUE
+	)
 	configure_file(
-        "${CMAKE_CURRENT_SOURCE_DIR}/Info.plist.in"
-        "${CMAKE_CURRENT_BINARY_DIR}/Info.plist"
-        @ONLY
-    )
-	target_sources(synfigstudio PRIVATE
-        "${CMAKE_SOURCE_DIR}/autobuild/osx/app-template/Contents/Resources/SynfigStudio.icns"
-    )
-    set_target_properties(synfigstudio PROPERTIES
-        MACOSX_BUNDLE TRUE
-		MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_BINARY_DIR}/Info.plist"
-    )
+		"${CMAKE_SOURCE_DIR}/autobuild/osx/app_skeleton/Contents/Info.plist.in"
+		"${CMAKE_BINARY_DIR}/Info.plist"
+		@ONLY
+	)
 endif()
 
 install(
-    TARGETS synfigstudio
-    DESTINATION Applications
-    COMPONENT applications
+	TARGETS synfigstudio
+	DESTINATION bin
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
