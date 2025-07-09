@@ -3151,9 +3151,9 @@ void CanvasParser::process_deferred_layers()
 
 	// Launch all layer parsing tasks concurrently
 	const std::string image_threads = Glib::getenv("SYNFIG_IMAGE_THREADS");
-	const uint32_t max_image_threads = image_threads.empty() ? 1 : stratoi(image_threads);
-	const auto policy = image_threads.empty() ? std::launch::deferred : std::launch::async;
-
+	const uint32_t max_image_threads = image_threads.empty() ? 20 : stratoi(image_threads);
+	const auto policy = (max_image_threads == 1) ? std::launch::deferred : std::launch::async;
+	
 	for (const auto& layer : deferred_layers_) {
 		futures.emplace_back(std::async(policy, [layer]() {
 			layer.first->set_param("filename", layer.second);
