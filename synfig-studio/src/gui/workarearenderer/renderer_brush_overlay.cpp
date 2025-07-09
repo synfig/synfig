@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file renderer_brush_overlay.cpp
- **	\brief Implementation of the background renderer. Usually a checkerboard
+ **	\brief Template File
  **
  **	\legal
  **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -67,8 +67,6 @@ Renderer_BrushOverlay::set_overlay_surface(const synfig::Surface& surface, const
     overlay_surface = surface;
     overlay_rect = rect;
     overlay_enabled = true;
-
-    // Trigger a redraw
     if (get_work_area())
         get_work_area()->queue_draw();
 }
@@ -105,33 +103,51 @@ Renderer_BrushOverlay::render_vfunc(
         return;
 
     Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
-    // Create Cairo surface from synfig::Surface
+
+    // Convert Synfig surface to Cairo surface using modern C++ API
     int width = overlay_surface.get_w();
     int height = overlay_surface.get_h();
+    if (width <= 0 || height <= 0) return;
 
     Cairo::RefPtr<Cairo::ImageSurface> cairo_surface =
         Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, width, height);
 
-    // Convert synfig::Surface to Cairo format
     cairo_surface->flush();
-    unsigned char* data = cairo_surface->get_data();
-    int stride = cairo_surface->get_stride();
 
-    for (int y = 0; y < height; ++y) {
-        for (int x = 0; x < width; ++x) {
-            Color pixel = overlay_surface[y][x];
-            unsigned char* pixel_data = data + y * stride + x * 4;
+    union { int i; char c[4]; } checker = {0x01020304};
+    bool big_endian = checker.c[0] == 1;
+    PixelFormat pixel_format = big_endian
+        ? (PF_A_START | PF_RGB | PF_A_PREMULT)
+        : (PF_BGR | PF_A | PF_A_PREMULT);
 
-            pixel_data[0] = (unsigned char)(pixel.get_b() * pixel.get_a() * 255); // B
-            pixel_data[1] = (unsigned char)(pixel.get_g() * pixel.get_a() * 255); // G
-            pixel_data[2] = (unsigned char)(pixel.get_r() * pixel.get_a() * 255); // R
-            pixel_data[3] = (unsigned char)(pixel.get_a() * 255);                 // A
-        }
-    }
+    color_to_pixelformat(
+        cairo_surface->get_data(),
+        overlay_surface[0],
+        pixel_format,
+        0,
+        cairo_surface->get_width(),
+        cairo_surface->get_height(),
+        cairo_surface->get_stride());
+
     cairo_surface->mark_dirty();
-    VectorInt offset = get_work_area()->get_windows_offset();
+    cairo_surface->flush();
+
+    // Compute screen coordinates for proper zoom handling
+    synfig::Point world_top_left_layer(overlay_rect.minx, overlay_rect.maxy);
+    synfig::Point world_bottom_right_layer(overlay_rect.maxx, overlay_rect.miny);
+    synfig::Point screen_top_left = get_work_area()->comp_to_screen_coords(world_top_left_layer);
+    synfig::Point screen_bottom_right = get_work_area()->comp_to_screen_coords(world_bottom_right_layer);
+    double screen_x = screen_top_left[0];
+    double screen_y = screen_top_left[1];
+    double screen_w = screen_bottom_right[0] - screen_top_left[0];
+    double screen_h = screen_bottom_right[1] - screen_top_left[1];
+    if (screen_w <= 0 || screen_h <= 0) return;
+
     cr->save();
-    cr->set_source(cairo_surface, offset[0], offset[1]);
+    cr->translate(screen_x, screen_y);
+    cr->scale(screen_w / width, screen_h / height);
+    cr->set_source(cairo_surface, 0, 0);
+    cr->rectangle(0, 0, width, height);
     cr->paint();
     cr->restore();
 }
