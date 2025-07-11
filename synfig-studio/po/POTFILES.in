@@ -376,6 +376,8 @@ src/synfigapp/actions/layeradd.cpp
 src/synfigapp/actions/layeradd.h
 src/synfigapp/actions/layeraddframe.cpp
 src/synfigapp/actions/layeraddframe.h
+src/synfigapp/actions/layerbrush.cpp
+src/synfigapp/actions/layerbrush.h
 src/synfigapp/actions/layercopy.cpp
 src/synfigapp/actions/layercopy.h
 src/synfigapp/actions/layerduplicate.cpp
