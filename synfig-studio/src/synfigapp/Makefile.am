@@ -9,6 +9,7 @@ LAYER_ACTION_HH = \
 	actions/layeractivate.h \
 	actions/layeradd.h \
 	actions/layeraddframe.h \
+	actions/layerbrush.h \
 	actions/layercopy.h \
 	actions/layerduplicate.h \
 	actions/layerembed.h \
@@ -39,6 +40,7 @@ LAYER_ACTION_CC = \
 	actions/layeractivate.cpp \
 	actions/layeradd.cpp \
 	actions/layeraddframe.cpp \
+	actions/layerbrush.cpp \
 	actions/layercopy.cpp \
 	actions/layerduplicate.cpp \
 	actions/layerembed.cpp \

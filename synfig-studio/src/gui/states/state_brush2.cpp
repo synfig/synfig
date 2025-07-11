@@ -41,14 +41,17 @@
 #include <gui/workarea.h>
 #include <synfigapp/main.h>
 #include <gui/workarearenderer/renderer_brush_overlay.h>
+#include <synfig/rendering/software/surfacesw.h>
 #include <brushlib.h>
 #include <gui/app.h>
 #include <gui/docks/dialog_tooloptions.h>
 #include <gui/docks/dock_toolbox.h>
+#include <gui/ducktransform_matrix.h>
 #include <gui/resourcehelper.h>
 #include <gtkmm/toolpalette.h>
 #include <synfig/general.h>
 #include <glibmm/fileutils.h>
+#include <synfigapp/actions/layerbrush.h>
 
 #endif
 
@@ -118,11 +121,19 @@ private:
 
     synfig::Surface overlay_surface_;
     synfig::Rect overlay_rect_;
-    bool is_drawing_;
+	sigc::connection clear_overlay_timer_;
 
     brushlib::Brush brush_;
     Glib::TimeVal time_;
-    bool brush_initialized_;
+
+    etl::handle<synfigapp::Action::LayerBrush> action_;
+
+	TransformStack transform_stack_;
+	static bool build_transform_stack(
+	   Canvas::Handle canvas,
+	   Layer::Handle layer,
+	   CanvasView::Handle canvas_view,
+	   TransformStack& transform_stack);
 
     BrushConfig selected_brush_config;
     Gtk::ToggleToolButton *selected_brush_button;
@@ -152,6 +163,11 @@ public:
 
     void draw_to(Vector pos, Real pressure);
     void reset_brush(float x, float y, float pressure);
+    Layer_Bitmap::Handle find_or_create_layer();
+	const CanvasView::Handle& get_canvas_view() const { return canvas_view_; }
+	etl::handle<synfigapp::CanvasInterface> get_canvas_interface() const { return canvas_view_->canvas_interface(); }
+	synfig::Canvas::Handle get_canvas() const { return canvas_view_->get_canvas(); }
+    Point mouse_to_overlay_coords(Vector mouse_pos, const synfig::Rect& full_layer_bounds);
 
 	Smach::event_result event_mouse_down_handler(const Smach::event& x);
 	Smach::event_result event_mouse_up_handler(const Smach::event& x);
@@ -489,34 +505,27 @@ StateBrush2_Context::save_settings()
 StateBrush2_Context::StateBrush2_Context(CanvasView* canvas_view) :
 	canvas_view_(canvas_view),
 	push_state(*get_work_area()),
-	is_drawing_(false),
-	brush_initialized_(false),
+	action_(nullptr),
 	selected_brush_button(nullptr),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
 	eraser_checkbox(_("Eraser"))
 {
-	// Initialize brush tool state and UI
 	load_settings();
 	App::dialog_tool_options->present();
 	get_work_area()->set_cursor(Gdk::Cursor::create(Gdk::PENCIL));
-	brush_initialized_ = true;
 
-	// create surface
-	const int width = get_work_area()->get_w();
-	const int height = get_work_area()->get_h();
-	overlay_surface_ = synfig::Surface(width, height);
-
-	refresh_tool_options();
-	App::dock_toolbox->refresh();
+    refresh_tool_options();
+    App::dock_toolbox->refresh();
 }
 
 StateBrush2_Context::~StateBrush2_Context()
 {
-	save_settings();
+    if (action_)
+        action_ = nullptr;
 
+	save_settings();
 	brush_buttons.clear();
 	selected_brush_button = nullptr;
-
 	clear_overlay_preview();
 	get_work_area()->reset_cursor();
 	App::dialog_tool_options->clear();
@@ -545,7 +554,7 @@ StateBrush2_Context::scan_directory(const String &path, int scan_sub_levels, std
 			out_files.insert(filepath);
 	}
 
-	return true;
+    return true;
 }
 
 void
@@ -667,37 +676,60 @@ StateBrush2_Context::clear_overlay_preview()
     }
 }
 
+Point
+StateBrush2_Context::mouse_to_overlay_coords(Vector mouse_pos, const synfig::Rect& full_layer_bounds)
+{
+    // Transform mouse coordinates to overlay surface coordinates
+    float full_layer_x_span = full_layer_bounds.maxx - full_layer_bounds.minx;
+    float full_layer_y_span = full_layer_bounds.maxy - full_layer_bounds.miny;
+
+    float norm_x_full = (mouse_pos[0] - full_layer_bounds.minx) / full_layer_x_span;
+    float norm_y_full = (mouse_pos[1] - full_layer_bounds.miny) / full_layer_y_span;
+
+    float offset_x = (overlay_rect_.minx - full_layer_bounds.minx) / full_layer_x_span;
+    float offset_y = (overlay_rect_.miny - full_layer_bounds.miny) / full_layer_y_span;
+
+    float scale_x = (overlay_rect_.maxx - overlay_rect_.minx) / full_layer_x_span;
+    float scale_y = (overlay_rect_.maxy - overlay_rect_.miny) / full_layer_y_span;
+
+    float norm_x = (norm_x_full - offset_x) / scale_x;
+    float norm_y = (norm_y_full - offset_y) / scale_y;
+
+    float surface_x = norm_x * overlay_surface_.get_w();
+    float surface_y = (1.0f - norm_y) * overlay_surface_.get_h();
+
+    return Point(surface_x, surface_y);
+}
+
 void
 StateBrush2_Context::draw_to(Vector pos, Real pressure)
 {
-    if (!brush_initialized_ || !is_drawing_)
-        return;
+	Layer_Bitmap::Handle layer = find_or_create_layer();
 
-    // Calculate the dimensions of the canvas area being painted
-    float canvas_x_span = overlay_rect_.maxx - overlay_rect_.minx;
-    float canvas_y_span = overlay_rect_.maxy - overlay_rect_.miny;
+    synfig::Rect layer_bounds = layer->get_bounding_rect();
+    synfig::Rect full_layer_bounds;
 
-    // Get the dimensions of the overlay surface
-    int w = overlay_surface_.get_w();
-    int h = overlay_surface_.get_h();
+    if (!transform_stack_.empty()) {
+        Point tl_transformed = transform_stack_.perform(Point(layer_bounds.minx, layer_bounds.miny));
+        Point br_transformed = transform_stack_.perform(Point(layer_bounds.maxx, layer_bounds.maxy));
+        full_layer_bounds = synfig::Rect(
+            std::min(tl_transformed[0], br_transformed[0]),
+            std::min(tl_transformed[1], br_transformed[1]),
+            std::max(tl_transformed[0], br_transformed[0]),
+            std::max(tl_transformed[1], br_transformed[1])
+        );
+    } else {
+        full_layer_bounds = layer_bounds;
+    }
 
-    // Convert world coordinates to normalized coordinates
-    float norm_x = (pos[0] - overlay_rect_.minx) / canvas_x_span;
-    float norm_y = (pos[1] - overlay_rect_.miny) / canvas_y_span;
+    Point overlay_coords = mouse_to_overlay_coords(pos, full_layer_bounds);
 
-    // Convert normalized coordinates to surface pixel coordinates
-    float surface_x = norm_x * w;
-    float surface_y = (1.0f - norm_y) * h;
-
-    // Calculate time delta since last brush stroke
     Glib::TimeVal current_time;
     current_time.assign_current_time();
     double dtime = (current_time - time_).as_double();
     time_ = current_time;
-
-    // Apply the brush stroke to the overlay surface
-    brushlib::SurfaceWrapper wrapper(&overlay_surface_);
-    brush_.stroke_to(&wrapper, surface_x, surface_y, pressure, 0.0f, 0.0f, dtime);
+	brushlib::SurfaceWrapper wrapper(&overlay_surface_);
+    brush_.stroke_to(&wrapper, overlay_coords[0], overlay_coords[1], pressure, 0.0f, 0.0f, dtime);
     update_overlay_preview(overlay_surface_, overlay_rect_);
 }
 
@@ -723,53 +755,221 @@ StateBrush2_Context::get_work_area() const
 	return canvas_view_->get_work_area();
 }
 
+Layer_Bitmap::Handle StateBrush2_Context::find_or_create_layer()
+{
+    // 1- is the selected layer a bitmap ?
+    Layer::Handle selected_layer = canvas_view_->get_selection_manager()->get_selected_layer();
+    Layer_Bitmap::Handle layer = Layer_Bitmap::Handle::cast_dynamic(selected_layer);
+
+    if (layer) {
+        return layer;
+    }
+
+    // 2- is it a switch && active layer is a bitmap ?
+    if (!layer) {
+        etl::handle<Layer_Switch> layer_switch = etl::handle<Layer_Switch>::cast_dynamic(selected_layer);
+        if (layer_switch) {
+            Layer::Handle current_layer = layer_switch->get_current_layer();
+            if (current_layer) {
+                layer = Layer_Bitmap::Handle::cast_dynamic(current_layer);
+                if (layer) {
+                    return layer;
+                }
+            }
+        }
+    }
+
+    // 3- creates a canvas size layer with proper surface initialization
+    if (!layer) {
+        Canvas::Handle canvas = canvas_view_->get_canvas();
+    	Layer::Handle new_layer = canvas_view_->canvas_interface()->add_layer_to("import", canvas);
+        if (!new_layer)
+            return Layer_Bitmap::Handle();
+
+        layer = etl::handle<synfig::Layer_Bitmap>::cast_dynamic(new_layer);
+        if (!layer)
+        	return Layer_Bitmap::Handle();
+
+        layer->set_description(_("brush image"));
+
+        Point canvas_tl = canvas->rend_desc().get_tl();
+        Point canvas_br = canvas->rend_desc().get_br();
+
+        layer->set_param("tl", canvas_tl);
+        layer->set_param("br", canvas_br);
+        layer->set_param("c", int(1));
+
+        int width = canvas->rend_desc().get_w();
+        int height = canvas->rend_desc().get_h();
+
+        if (width > 0 && height > 0) {
+            Surface *initial_surface = new Surface(width, height);
+            layer->rendering_surface = new rendering::SurfaceResource(
+                new rendering::SurfaceSW(*initial_surface, true));
+        }
+
+        canvas_view_->get_selection_manager()->clear_selected_layers();
+        canvas_view_->get_selection_manager()->set_selected_layer(layer);
+    }
+
+    return layer;
+}
+
+bool
+StateBrush2_Context::build_transform_stack(
+    Canvas::Handle canvas,
+    Layer::Handle layer,
+    CanvasView::Handle canvas_view,
+    TransformStack& transform_stack )
+{
+    int count = 0;
+    for(Canvas::iterator i = canvas->begin(); i != canvas->end() ;++i)
+    {
+       if(*i == layer) return true;
+
+       if((*i)->active())
+       {
+          Transform::Handle trans((*i)->get_transform());
+          if(trans) { transform_stack.push(trans); count++; }
+       }
+
+       // If this is a paste canvas layer, then we need to
+       // descend into it
+       if(Layer_PasteCanvas::Handle layer_pastecanvas = Layer_PasteCanvas::Handle::cast_dynamic(*i))
+       {
+          transform_stack.push_back(
+             new Transform_Matrix(
+                   layer_pastecanvas->get_guid(),
+                layer_pastecanvas->get_summary_transformation().get_matrix()
+             )
+          );
+          if (build_transform_stack(layer_pastecanvas->get_sub_canvas(), layer, canvas_view, transform_stack))
+             return true;
+          transform_stack.pop();
+       }
+    }
+    while(count-- > 0) transform_stack.pop();
+    return false;
+}
+
 Smach::event_result
 StateBrush2_Context::event_mouse_down_handler(const Smach::event& x)
 {
     const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
-
     if (event.button != BUTTON_LEFT)
         return Smach::RESULT_OK;
 
-    is_drawing_ = true;
-    // Change overlay dimensions if work area dimensions changed
-    int width  = get_work_area()->get_w();
-    int height = get_work_area()->get_h();
-    if (overlay_surface_.get_w() != width || overlay_surface_.get_h() != height)
-        overlay_surface_ = synfig::Surface(width, height);
+	Layer_Bitmap::Handle layer = find_or_create_layer();
+    if (!layer) return Smach::RESULT_OK;
 
-    overlay_surface_.clear();
-    // Get canvas bounds
-    Point tl = get_work_area()->get_canvas_view()->get_canvas()->rend_desc().get_tl();
-    Point br = get_work_area()->get_canvas_view()->get_canvas()->rend_desc().get_br();
-    overlay_rect_ = synfig::Rect(tl[0], tl[1], br[0], br[1]);
+    action_ = new synfigapp::Action::LayerBrush();
+    action_->set_param("canvas", get_canvas());
+    action_->set_param("canvas_interface", get_canvas_interface());
+    action_->set_param("layer", Layer::Handle(layer));
 
-    time_.assign_current_time();
-
-    if (brush_initialized_)
-    {
-        // Calculate canvas dimensions
-        float canvas_x_span = overlay_rect_.maxx - overlay_rect_.minx;
-        float canvas_y_span = overlay_rect_.maxy - overlay_rect_.miny;
-
-        // Convert world coordinates to normalized coordinates
-        float norm_x = (event.pos[0] - overlay_rect_.minx) / canvas_x_span;
-        float norm_y = (event.pos[1] - overlay_rect_.miny) / canvas_y_span;
-
-        // Convert to surface pixel coordinates
-        float start_x = norm_x * overlay_surface_.get_w();
-        float start_y = (1.0f - norm_y) * overlay_surface_.get_h();
-
-        // Initialize brush state at starting position
-        reset_brush(start_x, start_y, event.pressure);
-
-        // Apply brush configuration settings
-        selected_brush_config.apply(brush_);
-
-        // Begin the stroke
-        draw_to(event.pos, event.pressure);
+    transform_stack_.clear();
+    if (!build_transform_stack(canvas_view_->get_canvas(), layer, canvas_view_, transform_stack_)) {
+        transform_stack_.clear();
     }
 
+    // Get layer bounds
+    synfig::Rect layer_bounds = layer->get_bounding_rect();
+    synfig::Rect full_layer_bounds = transform_stack_.empty() ? layer_bounds : transform_stack_.perform(layer_bounds);
+
+    // Get canvas bounds
+    Point canvas_tl = get_canvas()->rend_desc().get_tl();
+    Point canvas_br = get_canvas()->rend_desc().get_br();
+    synfig::Rect canvas_rect(canvas_tl[0], canvas_tl[1], canvas_br[0], canvas_br[1]);
+
+    // Calculate overlay rectangle (intersection of layer and canvas)
+    overlay_rect_ = full_layer_bounds;
+    overlay_rect_ &= canvas_rect;
+
+    if (!overlay_rect_.valid()) {
+        overlay_rect_ = canvas_rect;
+    }
+	// Calculate overlay surface dimensions
+    int canvas_w = get_canvas()->rend_desc().get_w();
+    int canvas_h = get_canvas()->rend_desc().get_h();
+    float canvas_span_x = canvas_br[0] - canvas_tl[0];
+    float canvas_span_y = canvas_br[1] - canvas_tl[1];
+    float overlay_span_x = overlay_rect_.maxx - overlay_rect_.minx;
+    float overlay_span_y = overlay_rect_.maxy - overlay_rect_.miny;
+
+    int overlay_w = (int)(canvas_w * overlay_span_x / canvas_span_x);
+    int overlay_h = (int)(canvas_h * overlay_span_y / canvas_span_y);
+	if (overlay_w <= 0) overlay_w = canvas_w;
+    if (overlay_h <= 0) overlay_h = canvas_h;
+
+    // Create new overlay surface if needed
+    if (overlay_surface_.get_w() != overlay_w || overlay_surface_.get_h() != overlay_h) {
+        overlay_surface_ = synfig::Surface(overlay_w, overlay_h);
+    }
+    overlay_surface_.clear();
+
+    Glib::TimeVal current_time;
+    current_time.assign_current_time();
+
+    Point pos = transform_stack_.unperform(event.pos);
+	Point layer_tl = layer->get_param("tl").get(Point());
+    Point layer_br = layer->get_param("br").get(Point());
+
+    // Get layer surface dimensions
+    int surface_w = 0, surface_h = 0;
+    if (layer->rendering_surface) {
+        rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer->rendering_surface);
+        if (lock && lock->get_surface().is_valid()) {
+            surface_w = lock->get_surface().get_w();
+            surface_h = lock->get_surface().get_h();
+        }
+    }
+
+    // Convert to surface pixel coordinates
+    float surface_x = ((pos[0] - layer_tl[0]) / (layer_br[0] - layer_tl[0])) * surface_w;
+    float surface_y = ((pos[1] - layer_tl[1]) / (layer_br[1] - layer_tl[1])) * surface_h;
+
+	selected_brush_config.apply(action_->stroke.brush());
+	action_->stroke.prepare();
+    action_->stroke.add_point({Point(surface_x, surface_y), event.pressure, current_time});
+    selected_brush_config.apply(brush_);
+    Point overlay_coords = mouse_to_overlay_coords(event.pos, full_layer_bounds);
+    reset_brush(overlay_coords[0], overlay_coords[1], event.pressure);
+    time_.assign_current_time();
+    draw_to(event.pos, event.pressure);
+
+    return Smach::RESULT_ACCEPT;
+}
+
+Smach::event_result
+StateBrush2_Context::event_mouse_draw_handler(const Smach::event& x)
+{
+	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
+	if (event.button != BUTTON_LEFT || !action_)
+		return Smach::RESULT_OK;
+
+	Layer_Bitmap::Handle layer = find_or_create_layer();
+	Glib::TimeVal current_time;
+	current_time.assign_current_time();
+	int surface_w = 0, surface_h = 0;
+	if (layer->rendering_surface) {
+		rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer->rendering_surface);
+		if (lock && lock->get_surface().is_valid()) {
+			surface_w = lock->get_surface().get_w();
+			surface_h = lock->get_surface().get_h();
+		}
+	}
+
+	Point pos = transform_stack_.unperform(event.pos);
+	Point layer_tl = layer->get_param("tl").get(Point());
+	Point layer_br = layer->get_param("br").get(Point());
+
+	// Convert to surface pixel coords
+	float surface_x = ((pos[0] - layer_tl[0]) / (layer_br[0] - layer_tl[0])) * surface_w;
+	float surface_y = ((pos[1] - layer_tl[1]) / (layer_br[1] - layer_tl[1])) * surface_h;
+
+	action_->stroke.add_point({Point(surface_x, surface_y), event.pressure, current_time});
+
+	draw_to(event.pos, event.pressure);
 	return Smach::RESULT_ACCEPT;
 }
 
@@ -777,22 +977,23 @@ Smach::event_result
 StateBrush2_Context::event_mouse_up_handler(const Smach::event& x)
 {
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
-	if (event.button != BUTTON_LEFT || !is_drawing_ )
+	if (event.button != BUTTON_LEFT || !action_)
 		return Smach::RESULT_OK;
 
-	is_drawing_ = false;
-	clear_overlay_preview();
-	return Smach::RESULT_ACCEPT;
-}
+    if (action_->is_ready()) {
+    	get_canvas_interface()->get_instance()->perform_action(action_);
+    }
+	action_ = nullptr;
+    transform_stack_.clear();
 
-Smach::event_result
-StateBrush2_Context::event_mouse_draw_handler(const Smach::event& x)
-{
-	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
-	if (event.button != BUTTON_LEFT || !is_drawing_)
-		return Smach::RESULT_OK;
-
-	draw_to(event.pos, event.pressure);
+	// delay to allow the layer to render
+	clear_overlay_timer_ = Glib::signal_timeout().connect(
+		[this]() -> bool {
+			clear_overlay_preview();
+			return false;
+		},
+		200
+	);
 	return Smach::RESULT_ACCEPT;
 }
 
@@ -801,5 +1002,6 @@ StateBrush2_Context::event_stop_handler(const Smach::event& x)
 {
 	clear_overlay_preview();
 	throw &state_normal;
+	action_ = nullptr;
 	return Smach::RESULT_OK;
 }
