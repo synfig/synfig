@@ -104,7 +104,6 @@ Renderer_BrushOverlay::render_vfunc(
 
     Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
 
-    // Convert Synfig surface to Cairo surface using modern C++ API
     int width = overlay_surface.get_w();
     int height = overlay_surface.get_h();
     if (width <= 0 || height <= 0) return;

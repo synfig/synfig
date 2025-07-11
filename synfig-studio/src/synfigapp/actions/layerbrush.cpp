@@ -135,8 +135,6 @@ Action::LayerBrush::BrushStroke::prepare()
 {
 	if (!layer || prepared) return;
 	
-	// Initialize surface from the layer's rendering surface
-	// Based on LayerPaint::PaintStroke::prepare() implementation
 	if (layer->rendering_surface) {
 		rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer->rendering_surface);
 		if (lock) {
@@ -183,13 +181,11 @@ Action::LayerBrush::BrushStroke::undo()
 	
 	{
 		std::lock_guard<std::mutex> lock(layer->mutex);
-		// Allocate a new heap Surface copy to avoid double free
 		synfig::Surface* surface_copy = new synfig::Surface(original_surface);
 		layer->rendering_surface = new rendering::SurfaceResource(
 			new rendering::SurfaceSW(*surface_copy, true));
 	}
 	
-	// Restore original layer bounds
 	layer->set_param("tl", ValueBase(original_tl));
 	layer->set_param("br", ValueBase(original_br));
 	layer->changed();
