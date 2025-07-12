@@ -39,6 +39,34 @@ def setup_logging(log_file_path=None):
         except IOError as e:
             logging.error(f"Could not open log file {log_file_path} for writing: {e}")
 
+def find_system_executable(name):
+    """
+    Searches for an executable in standard system paths.
+    """
+    logging.info(f"Searching for system executable: '{name}'")
+    
+    # A list of standard locations where command-line tools are installed.
+    search_paths = [
+        "/usr/local/bin",
+        "/opt/local/bin",
+        "/usr/bin",
+    ]
+    
+    homebrew_prefix = get_homebrew_prefix()
+    if homebrew_prefix:
+        # Prepending the brew path
+        search_paths.insert(0, os.path.join(homebrew_prefix, "bin"))
+
+    for path in search_paths:
+        candidate = os.path.join(path, name)
+        # Check if a file exists at this path and if it's executable.
+        if os.path.exists(candidate) and os.access(candidate, os.X_OK):
+            logging.info(f"Found '{name}' at: {candidate}")
+            return os.path.realpath(candidate)
+
+    logging.warning(f"Could not find executable '{name}' in any standard search path.")
+    return None
+
 def get_dependencies(binary_path):
     """Uses otool to find all non-system library dependencies for a given binary."""
     try:
@@ -253,15 +281,19 @@ def main():
     parser.add_argument("--bin-dir", required=True, help="The directory inside the build folder that contains the compiled executables.")
     parser.add_argument("--skeleton-dir", required=True, help="Path to the skeleton app directory.")
     parser.add_argument("--binaries", required=True, help="Semicolon-separated list of primary binaries to bundle.")
-    
     parser.add_argument("--log-file", help="Optional. Path to save the detailed log file.")
+
+    parser.add_argument(
+        "--extra-binaries",
+        help="Semicolon-separated list of third-party binaries to find and bundle (e.g., 'ffmpeg;magick')."
+    )
     args = parser.parse_args()
 
     setup_logging(args.log_file)
-    
+
     app_name = "SynfigStudio.app"
     app_bundle_path = os.path.join(args.output_dir, app_name)
-    
+
     logging.info(f"Creating bundle '{app_name}' from skeleton '{args.skeleton_dir}'")
     if os.path.exists(app_bundle_path):
         logging.info("Removing existing app bundle.")
@@ -284,7 +316,19 @@ def main():
             process_and_bundle_dependencies(source_path, app_bundle_path, processed_files)
         else:
             logging.error(f"PRIMARY BINARY NOT FOUND at '{source_path}'. Please check the --bin-dir path.")
-    
+
+    if args.extra_binaries:
+        extra_binaries_list = args.extra_binaries.split(';')
+        logging.info(f"Processing extra third-party binaries: {', '.join(extra_binaries_list)}")
+
+        for binary_name in extra_binaries_list:
+            source_path = find_system_executable(binary_name)
+
+            if source_path:
+                process_and_bundle_dependencies(source_path, app_bundle_path, processed_files)
+            else:
+                logging.warning(f"SKIPPING: Could not find extra binary '{binary_name}' on the system.")
+
     logging.info(f"Successfully created and populated {app_name}")
 
 if __name__ == "__main__":
