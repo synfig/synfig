@@ -78,34 +78,35 @@ def resolve_library_path(lib_path, binary_path=None):
             return os.path.realpath(lib_path)
 
         # 3. Search in standard and Homebrew locations
-        lib_basename = os.path.basename(lib_path)
-        lib_name_base = lib_basename.split('.dylib', 1)[0]
-        
-        search_paths = []
-        homebrew_prefix = get_homebrew_prefix()
+        lib_name_base = os.path.basename(lib_path).split('.dylib', 1)[0] # # Gets base name without extension
+        search_paths = [
+            "/opt/homebrew/lib",  # Core Homebrew libraries
+            "/opt/homebrew/opt/*/lib",  # to cover all Homebrew formulae
+            "/usr/local/opt/*/lib",  # Intel Homebrew formula libraries
+            "/usr/local/opt/sqlite/lib", # Intel Homebrew SQLite
+            "/opt/homebrew/opt/sqlite/lib", # ARM Homebrew SQLite
+            "/usr/local/lib", # legacy homebrew installation directory
+            "/opt/local/lib", # MacPorts installation directory
+            "/usr/lib", # System libraries
+            "/Library/Frameworks", # System-wide frameworks
+            os.path.join(os.path.dirname(binary_path), "..", "lib") if binary_path else None
+        ]
 
-        if homebrew_prefix:
-            search_paths.append(os.path.join(homebrew_prefix, "lib"))
-            search_paths.extend(glob.glob(os.path.join(homebrew_prefix, "opt", "*", "lib")))
-        else:
-            search_paths.extend(["/opt/homebrew/lib", "/usr/local/lib"])
-            search_paths.extend(glob.glob("/opt/homebrew/opt/*/lib"))
-            search_paths.extend(glob.glob("/usr/local/opt/*/lib"))
-
-        search_paths.extend(["/opt/local/lib", "/Library/Frameworks", os.path.join(os.path.dirname(binary_path), "..", "lib") if binary_path else None])
+        # Regex pattern for versioned libraries
         version_pattern = re.compile(rf'^{re.escape(lib_name_base)}(\.\d+)*\.dylib$')
-        
-        for search_dir in filter(None, search_paths):
-            if not os.path.isdir(search_dir): continue
-            
-            # Check for exact name first
-            exact_candidate = os.path.join(search_dir, lib_basename)
-            if os.path.exists(exact_candidate): return os.path.realpath(exact_candidate)
 
-            # Check for versioned alternatives (e.g., libfoo.1.dylib for libfoo.dylib)
-            for f in os.listdir(search_dir):
-                if version_pattern.match(f): return os.path.realpath(os.path.join(search_dir, f))
-        
+        for path in filter(None, search_paths):
+            # Check for exact match first
+            candidate = os.path.join(path, lib_name_base + ".dylib")
+            if os.path.exists(candidate):
+                return os.path.realpath(candidate)
+
+            # Check for versioned matches
+            if os.path.exists(path):
+                for f in os.listdir(path):
+                    if version_pattern.match(f):
+                        return os.path.realpath(os.path.join(path, f))
+
         logging.warning(f"Could not resolve library path: {lib_path}")
         return None
     except Exception as e:
