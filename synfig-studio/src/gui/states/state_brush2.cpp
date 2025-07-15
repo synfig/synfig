@@ -48,6 +48,7 @@
 #include <gui/docks/dock_toolbox.h>
 #include <gui/ducktransform_matrix.h>
 #include <gui/resourcehelper.h>
+#include <gui/widgets/widget_link.h>
 #include <gtkmm/toolpalette.h>
 #include <synfig/general.h>
 #include <glibmm/fileutils.h>
@@ -157,6 +158,7 @@ public:
 
     void refresh_tool_options();
     Smach::event_result event_refresh_tool_options(const Smach::event& x);
+	void create_image_layer_dialog();
 
     void update_overlay_preview(const synfig::Surface& surface, const synfig::Rect& rect);
     void clear_overlay_preview();
@@ -627,6 +629,12 @@ StateBrush2_Context::refresh_tool_options()
 	}
 
 	brush_option_grid->add(*brushes_scroll);
+
+	// Add create image layer button
+	Gtk::Button* create_image_layer_btn = Gtk::manage(new Gtk::Button(_("Create image layer")));
+	brush_option_grid->add(*create_image_layer_btn);
+	create_image_layer_btn->signal_clicked().connect(sigc::mem_fun(*this, &StateBrush2_Context::create_image_layer_dialog));
+
 	brush_option_grid->show_all();
 
 	App::dialog_tool_options->add(*brush_option_grid);
@@ -650,6 +658,171 @@ StateBrush2_Context::select_brush(Gtk::ToggleToolButton *button, String filename
 		eraser_checkbox.set_active(selected_brush_config.settings[BRUSH_ERASER].base > 0.0);
 		selected_brush_button = button;
 	}
+}
+
+void StateBrush2_Context::create_image_layer_dialog()
+{
+    // Create dialog window
+    Gtk::Dialog dialog(_("Create Image Layer"), *App::main_window, true);
+    dialog.add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
+    dialog.add_button(_("Create"), Gtk::RESPONSE_OK);
+    dialog.set_default_response(Gtk::RESPONSE_OK);
+
+    // Create the layout grid
+    Gtk::Grid* layout_grid = Gtk::manage(new Gtk::Grid());
+    layout_grid->set_row_spacing(12);
+    layout_grid->set_column_spacing(12);
+    layout_grid->set_border_width(12);
+    dialog.get_content_area()->pack_start(*layout_grid);
+
+    // Get default width and height from the canvas, fallback to 512x512
+    auto canvas = get_canvas();
+    int canvas_width = 512, canvas_height = 512;
+    if (canvas) {
+        canvas_width = canvas->rend_desc().get_w();
+        canvas_height = canvas->rend_desc().get_h();
+    }
+
+    // Create spin buttons for width and height input
+    auto width_input = Gtk::manage(new Gtk::SpinButton(Gtk::Adjustment::create(canvas_width, 1, 4096, 1, 10, 0)));
+    auto height_input = Gtk::manage(new Gtk::SpinButton(Gtk::Adjustment::create(canvas_height, 1, 3112, 1, 10, 0)));
+    width_input->set_numeric(true);
+    height_input->set_numeric(true);
+
+    // Presets
+    auto preset_selector = Gtk::manage(new Gtk::ComboBoxText());
+    preset_selector->append("custom", _("Custom Size"));
+    preset_selector->append("4096x3112", _("4096x3112 4K"));
+    preset_selector->append("2048x1556", _("2048x1556 2K"));
+    preset_selector->append("1920x1080", _("1920x1080 HD"));
+    preset_selector->append("1280x720", _("1280x720 HD"));
+    preset_selector->append("720x576", _("720x576 PAL"));
+    preset_selector->append("720x480", _("720x480 NTSC"));
+    preset_selector->append("640x480", _("640x480 Web"));
+    preset_selector->append("480x360", _("480x360 Web"));
+    preset_selector->set_active_id("custom");
+
+    // Add labels and widgets to the grid layout
+    layout_grid->attach(*Gtk::manage(new Gtk::Label(_("Preset:"))), 0, 0, 1, 1);
+    layout_grid->attach(*preset_selector, 1, 0, 2, 1);
+    layout_grid->attach(*Gtk::manage(new Gtk::Label(_("Width:"))), 0, 1, 1, 1);
+    layout_grid->attach(*width_input, 1, 1, 1, 1);
+    layout_grid->attach(*Gtk::manage(new Gtk::Label(_("Height:"))), 0, 2, 1, 1);
+    layout_grid->attach(*height_input, 1, 2, 1, 1);
+
+    // Link width and height toggle button
+    auto link_label = _("link width and height");
+    auto unlink_label = _("Unlink width and height");
+    auto aspect_link = Gtk::manage(new studio::Widget_Link(link_label, unlink_label));
+    aspect_link->set_active(true);
+    layout_grid->attach(*aspect_link, 2, 1, 1, 2);
+
+    bool is_updating = false;
+    double aspect_ratio = (double)canvas_width / (double)canvas_height;
+
+    // Update aspect ratio value when toggling the link button
+    aspect_link->signal_toggled().connect([&]() {
+        if (aspect_link->get_active())
+            aspect_ratio = (double)width_input->get_value() / (double)height_input->get_value();
+    });
+
+    // Automatically update height when width changes (if aspect ratio is locked)
+    width_input->signal_value_changed().connect([&]() {
+        if (is_updating || !aspect_link->get_active()) return;
+        is_updating = true;
+        height_input->set_value(std::max(1.0, width_input->get_value() / aspect_ratio));
+        is_updating = false;
+    });
+    height_input->signal_value_changed().connect([&]() {
+        if (is_updating || !aspect_link->get_active()) return;
+        is_updating = true;
+        width_input->set_value(std::max(1.0, height_input->get_value() * aspect_ratio));
+        is_updating = false;
+    });
+
+    // Update width and height when preset is selected
+    preset_selector->signal_changed().connect([&]() {
+        std::string selected_preset = preset_selector->get_active_id();
+        if (selected_preset == "custom") {
+            width_input->set_sensitive(true);
+            height_input->set_sensitive(true);
+            return;
+        }
+
+        size_t separator = selected_preset.find('x');
+        if (separator == std::string::npos) return;
+
+        int preset_width = std::stoi(selected_preset.substr(0, separator));
+        int preset_height = std::stoi(selected_preset.substr(separator + 1));
+
+        is_updating = true;
+        width_input->set_value(preset_width);
+        height_input->set_value(preset_height);
+        width_input->set_sensitive(false);
+        height_input->set_sensitive(false);
+        aspect_link->set_active(true);
+        aspect_ratio = (double)preset_width / (double)preset_height;
+        is_updating = false;
+    });
+
+    dialog.show_all();
+
+    // Generates next unique image ID
+    auto generate_next_id = [](std::string current_id) {
+        int number = 1, digit_count = 0;
+        if (!current_id.empty() && isdigit(current_id.back())) {
+            while (digit_count < current_id.size() && isdigit(current_id[current_id.size() - 1 - digit_count]))
+                digit_count++;
+            std::string number_part = current_id.substr(current_id.size() - digit_count, digit_count);
+            current_id = current_id.substr(0, current_id.size() - digit_count);
+            number = atoi(number_part.c_str());
+        }
+        number++;
+        char buffer[32];
+        int min_digits = std::min(digit_count, 9);
+        snprintf(buffer, sizeof(buffer), "%s%0*d", current_id.c_str(), min_digits, number);
+        return std::string(buffer);
+    };
+
+    // Load previous brush image ID
+    std::string image_layer_id = settings.get_value("brush.image_id", std::string("brush image001"));
+
+    // Dialog event loop: creates image layer if user clicks OK
+    while (dialog.run() == Gtk::RESPONSE_OK) {
+        int final_width = width_input->get_value_as_int();
+        int final_height = height_input->get_value_as_int();
+
+        // Group canvas actions for undo
+        synfigapp::Action::PassiveGrouper action_group(
+            get_canvas_interface()->get_instance().get(), _("Create Image Layer")
+        );
+
+        Layer::Handle new_layer = get_canvas_interface()->add_layer_to("import", get_canvas(), 0);
+        Layer_Bitmap::Handle bitmap_layer = etl::handle<synfig::Layer_Bitmap>::cast_dynamic(new_layer);
+
+        bitmap_layer->set_description(image_layer_id);
+        get_canvas_interface()->signal_layer_new_description()(bitmap_layer, bitmap_layer->get_description());
+
+        if (canvas) {
+            bitmap_layer->set_param("tl", canvas->rend_desc().get_tl());
+            bitmap_layer->set_param("br", canvas->rend_desc().get_br());
+            bitmap_layer->set_param("c", int(1));
+        }
+
+        // Initialize a blank surface to the layer
+        if (final_width > 0 && final_height > 0) {
+            Surface* blank_surface = new Surface(final_width, final_height);
+            blank_surface->clear();
+            bitmap_layer->rendering_surface = new rendering::SurfaceResource(
+                new rendering::SurfaceSW(*blank_surface, true)
+            );
+        }
+    	get_canvas_view()->get_selection_manager()->clear_selected_layers();
+        get_canvas_view()->get_selection_manager()->set_selected_layer(bitmap_layer);
+        image_layer_id = generate_next_id(image_layer_id);
+        settings.set_value("brush.image_id", image_layer_id);
+        break;
+    }
 }
 
 Smach::event_result
