@@ -102,6 +102,17 @@ Renderer_BrushOverlay::render_vfunc(
     if (!get_work_area() || !overlay_enabled || !overlay_surface.is_valid())
         return;
 
+    if (!get_work_area()->get_canvas()) return;
+    const RendDesc &rend_desc = get_work_area()->get_canvas()->rend_desc();
+    int canvas_w = get_work_area()->get_w();
+    int canvas_h = get_work_area()->get_h();
+    Vector canvas_tl = rend_desc.get_tl();
+    Vector canvas_br = rend_desc.get_br();
+
+    if (canvas_w <= 0 || canvas_h <= 0
+        || approximate_equal(canvas_tl[0], canvas_br[0])
+        || approximate_equal(canvas_tl[1], canvas_br[1])) return;
+
     Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
 
     int width = overlay_surface.get_w();
@@ -142,7 +153,21 @@ Renderer_BrushOverlay::render_vfunc(
     double screen_h = screen_bottom_right[1] - screen_top_left[1];
     if (screen_w <= 0 || screen_h <= 0) return;
 
+    synfig::Point canvas_screen_tl = get_work_area()->comp_to_screen_coords(canvas_tl);
+    synfig::Point canvas_screen_br = get_work_area()->comp_to_screen_coords(canvas_br);
+
+    // clip the rendering area to canvas bounds
+    double clip_x = std::max(screen_x, canvas_screen_tl[0]);
+    double clip_y = std::max(screen_y, canvas_screen_tl[1]);
+    double clip_w = std::min(screen_x + screen_w, canvas_screen_br[0]) - clip_x;
+    double clip_h = std::min(screen_y + screen_h, canvas_screen_br[1]) - clip_y;
+
+    if (clip_w <= 0 || clip_h <= 0) return;
+
     cr->save();
+    cr->rectangle(clip_x, clip_y, clip_w, clip_h);
+    cr->clip();
+    
     cr->translate(screen_x, screen_y);
     cr->scale(screen_w / width, screen_h / height);
     cr->set_source(cairo_surface, 0, 0);
