@@ -233,6 +233,128 @@ void test_calc_vertex() {
 	ASSERT_VECTOR_APPROX_EQUAL_MICRO(Vector(-0.260716, 0.341317), vertex)
 }
 
+void test_blinepoint_merged() {
+	BLinePoint bp;
+	bp.set_merge_tangent_both();
+
+	// default state: merged angle, split radius
+	ASSERT_FALSE(bp.get_split_tangent_both())
+	ASSERT_FALSE(bp.get_split_tangent_angle())
+	ASSERT_FALSE(bp.get_split_tangent_radius());
+	ASSERT(bp.get_merge_tangent_both())
+
+	bp.set_tangent(Vector{3, 0});
+	ASSERT_EQUAL((Vector{3, 0}), bp.get_tangent1())
+	ASSERT_EQUAL((Vector{3, 0}), bp.get_tangent2())
+
+	bp.set_tangent1(Vector{0, 3});
+	bp.set_tangent2(Vector{1, 1});
+	ASSERT_EQUAL((Vector{0, 3}), bp.get_tangent1())
+	ASSERT_EQUAL((Vector{0, 3}), bp.get_tangent2())
+
+	bp.set_tangents(bp.get_tangent2(), bp.get_tangent1());
+	ASSERT_VECTOR_APPROX_EQUAL((Vector{0, 3}), bp.get_tangent1())
+	ASSERT_VECTOR_APPROX_EQUAL((Vector{0, 3}), bp.get_tangent2())
+}
+
+void test_blinepoint_split_radius() {
+	BLinePoint bp;
+
+	// this is the default state, no assignment necessary
+	ASSERT_FALSE(bp.get_split_tangent_both())
+	ASSERT_FALSE(bp.get_split_tangent_angle())
+	ASSERT(bp.get_split_tangent_radius())
+	ASSERT_FALSE(bp.get_merge_tangent_both())
+
+	bp.set_tangent(Vector{3, 0});
+	ASSERT_EQUAL((Vector{3, 0}), bp.get_tangent1())
+	ASSERT_EQUAL((Vector{3, 0}), bp.get_tangent2())
+
+	bp.set_tangent1(Vector{5, 0});
+	bp.set_tangent2(Vector{0, 1});
+	ASSERT_EQUAL((Vector{5, 0}), bp.get_tangent1())
+	ASSERT_VECTOR_APPROX_EQUAL((Vector{1, 0}), bp.get_tangent2())
+
+	bp.set_tangents(Vector{4, 0}, Vector{0, 2});
+	ASSERT_EQUAL((Vector{4, 0}), bp.get_tangent1())
+	ASSERT_VECTOR_APPROX_EQUAL((Vector{2, 0}), bp.get_tangent2())
+
+	bp.set_tangents(bp.get_tangent1(), Vector{-3, 0});
+	ASSERT_EQUAL((Vector{4, 0}), bp.get_tangent1())
+	ASSERT_VECTOR_APPROX_EQUAL((Vector{3, 0}), bp.get_tangent2())
+
+	bp.set_tangents(Vector{0, -5}, bp.get_tangent2());
+	ASSERT_EQUAL((Vector{0, -5}), bp.get_tangent1())
+	ASSERT_VECTOR_APPROX_EQUAL((Vector{0, -3}), bp.get_tangent2())
+
+	bp.set_tangents(bp.get_tangent2(), bp.get_tangent1());
+	ASSERT_VECTOR_APPROX_EQUAL((Vector{0, -3}), bp.get_tangent1())
+	ASSERT_VECTOR_APPROX_EQUAL((Vector{0, -5}), bp.get_tangent2())
+}
+
+void test_blinepoint_split_angle() {
+	BLinePoint bp;
+	bp.set_split_tangent_angle(true);
+	bp.set_split_tangent_radius(false);
+
+	ASSERT_FALSE(bp.get_split_tangent_both())
+	ASSERT(bp.get_split_tangent_angle())
+	ASSERT_FALSE(bp.get_split_tangent_radius())
+	ASSERT_FALSE(bp.get_merge_tangent_both())
+
+	bp.set_tangent(Vector{3, 0});
+	ASSERT_EQUAL((Vector{3, 0}), bp.get_tangent1())
+	ASSERT_EQUAL((Vector{3, 0}), bp.get_tangent2())
+
+	bp.set_tangent1(Vector{5, 0});
+	bp.set_tangent2(Vector{0, 1});
+	ASSERT_EQUAL((Vector{5, 0}), bp.get_tangent1())
+	ASSERT_VECTOR_APPROX_EQUAL((Vector{0, 5}), bp.get_tangent2())
+
+	bp.set_tangents(Vector{4, 0}, Vector{0, 2});
+	ASSERT_EQUAL((Vector{4, 0}), bp.get_tangent1())
+	ASSERT_VECTOR_APPROX_EQUAL((Vector{0, 4}), bp.get_tangent2())
+
+	bp.set_tangents(bp.get_tangent1(), Vector{-3, 0});
+	ASSERT_EQUAL((Vector{4, 0}), bp.get_tangent1())
+	ASSERT_VECTOR_APPROX_EQUAL((Vector{-4, 0}), bp.get_tangent2())
+
+	bp.set_tangents(Vector{0, -5}, bp.get_tangent2());
+	ASSERT_EQUAL((Vector{0, -5}), bp.get_tangent1())
+	ASSERT_VECTOR_APPROX_EQUAL((Vector{-5, 0}), bp.get_tangent2())
+
+	bp.set_tangents(bp.get_tangent2(), bp.get_tangent1());
+	ASSERT_VECTOR_APPROX_EQUAL((Vector{-5, 0}), bp.get_tangent1())
+	ASSERT_VECTOR_APPROX_EQUAL((Vector{0, -5}), bp.get_tangent2())
+}
+
+void test_blinepoint_split_both() {
+	BLinePoint bp;
+	bp.set_split_tangent_both();
+
+	ASSERT(bp.get_split_tangent_both())
+	ASSERT(bp.get_split_tangent_angle())
+	ASSERT(bp.get_split_tangent_radius())
+	ASSERT_FALSE(bp.get_merge_tangent_both())
+
+	bp.set_tangent(Vector{3, 0});
+	ASSERT_EQUAL((Vector{3, 0}), bp.get_tangent1())
+	ASSERT_EQUAL((Vector{3, 0}), bp.get_tangent2())
+
+	bp.set_tangent1(Vector{5, 0});
+	bp.set_tangent2(Vector{0, 1});
+	ASSERT_EQUAL((Vector{5, 0}), bp.get_tangent1())
+	ASSERT_EQUAL((Vector{0, 1}), bp.get_tangent2())
+
+	bp.set_tangents(Vector{4, 0}, Vector{0, 2});
+	ASSERT_EQUAL((Vector{4, 0}), bp.get_tangent1())
+	ASSERT_EQUAL((Vector{0, 2}), bp.get_tangent2())
+
+	bp.set_tangents(bp.get_tangent2(), bp.get_tangent1());
+	ASSERT_VECTOR_APPROX_EQUAL((Vector{0, 2}), bp.get_tangent1())
+	ASSERT_VECTOR_APPROX_EQUAL((Vector{4, 0}), bp.get_tangent2())
+}
+
 
 int main() {
 	Type::subsys_init();
@@ -244,6 +366,10 @@ int main() {
 		TEST_FUNCTION(test_bline_hom_to_std_without_loop)
 		TEST_FUNCTION(test_bline_hom_to_std_with_loop)
 		TEST_FUNCTION(test_calc_vertex)
+		TEST_FUNCTION(test_blinepoint_merged)
+		TEST_FUNCTION(test_blinepoint_split_radius)
+		TEST_FUNCTION(test_blinepoint_split_angle)
+		TEST_FUNCTION(test_blinepoint_split_both)
 	TEST_SUITE_END()
 
 	Type::subsys_stop();
