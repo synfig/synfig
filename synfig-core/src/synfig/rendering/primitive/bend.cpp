@@ -173,6 +173,7 @@ Bend::add(const Vector &p, const Vector &t0, const Vector &t1, Mode mode, bool c
 		  && t0.is_equal_to(Vector()) )
 		{
 			// skip zero length segment
+			last.last_index += 1;
 			last.t1 = t1;
 			last.tn1 = t1.norm();
 			last.mode = mode;
@@ -185,18 +186,21 @@ Bend::add(const Vector &p, const Vector &t0, const Vector &t1, Mode mode, bool c
 		
 		point.p = last.p;
 		point.length = last.length;
-		Real l0 = last.l, l = step;
+		const Real l0 = last.last_index;
+		Real l = step;
 		for(int i = 1; i < segments; ++i, l += step) {
 			Vector pp = h.p(l);
-			point.l = l0 + l;
-			point.length = calc_length ? point.length + (pp - point.p).mag() : point.l;
+			point.index = l0 + l;
+			point.last_index = l0 + l;
+			point.length = calc_length ? point.length + (pp - point.p).mag() : point.index;
 			point.p = pp;
 			point.t0 = point.t1 = h.t(l);
 			point.tn0 = point.tn1 = h.d(l);
 			points.push_back(point);
 		}
-		point.l = l0 + 1;
-		point.length = calc_length ? point.length + (p - point.p).mag() : point.l;
+		point.index = l0 + 1;
+		point.last_index = l0 + 1;
+		point.length = calc_length ? point.length + (p - point.p).mag() : point.index;
 		point.tn0 = h.d(1);
 	} else {
 		point.tn0 = t0.norm();
@@ -235,7 +239,7 @@ Bend::tails()
 
 	{
 		PointList::iterator i1 = points.begin(), i0 = i1++;
-		Real dl = i1->l - i0->l;
+		Real dl = i1->index - i0->last_index;
 		Hermite h(i0->p, i1->p, i0->t1*dl, i1->t0*dl);
 		i0->t0 = i0->tn0 = h.d(0);
 		i0->mode = NONE;
@@ -243,7 +247,7 @@ Bend::tails()
 
 	{
 		PointList::iterator i0 = points.end(), i1 = (--i0)--;
-		Real dl = i1->l - i0->l;
+		Real dl = i1->index - i0->last_index;
 		Hermite h(i0->p, i1->p, i0->t1*dl, i1->t0*dl);
 		i1->t1 = i1->tn1 = h.d(1);
 		i1->mode = NONE;
@@ -252,16 +256,21 @@ Bend::tails()
 
 
 Bend::PointList::const_iterator
-Bend::find_by_l(Real l) const
+Bend::find_by_index(Real index) const
 {
 	if (points.empty())
 		return points.end();
 	PointList::const_iterator a = points.begin(), b = points.end() - 1, c;
-	if (!approximate_less(a->l, l)) return a;
-	if (!approximate_less(l, b->l)) return b;
+
+	if (approximate_greater_or_equal(a->last_index, index))
+		return a;
+	if (approximate_greater_or_equal(index, b->index))
+		return b;
+
 	while( (c = a + (b - a)/2) != a ) {
-		if (approximate_equal(l, c->l)) return c;
-		(l < c->l ? b : a) = c;
+		if (approximate_greater_or_equal(index, c->index) && approximate_less_or_equal(index, c->last_index))
+			return c;
+		(index < c->index ? b : a) = c;
 	}
 	return c;
 }
@@ -272,8 +281,12 @@ Bend::find(Real length) const
 	if (points.empty())
 		return points.end();
 	PointList::const_iterator a = points.begin(), b = points.end() - 1, c;
-	if (!approximate_less(a->length, length)) return a;
-	if (!approximate_less(length, b->length)) return b;
+
+	if (approximate_greater_or_equal(a->length, length))
+		return a;
+	if (approximate_greater_or_equal(length, b->length))
+		return b;
+
 	while( (c = a + (b - a)/2) != a ) {
 		if (approximate_equal(length, c->length)) return c;
 		(length < c->length ? b : a) = c;
@@ -281,21 +294,22 @@ Bend::find(Real length) const
 	return c;
 }
 
-Real Bend::length_by_l(Real l) const {
-	PointList::const_iterator i = find_by_l(l);
+Real Bend::length_by_index(Real index) const {
+	PointList::const_iterator i = find_by_index(index);
 	if (i == points.end())
 		return 0;
 	
-	if (approximate_equal(l, i->l)) return i->length;
-	if (l < i->l)
-		return i->length + (l - i->l);
+	if (approximate_greater_or_equal(index, i->index) && approximate_less_or_equal(index, i->last_index))
+		return i->length;
+	if (index < i->index)
+		return i->length + (index - i->index); // TODO: review: shouldn't interpolate?
 	
 	PointList::const_iterator j = i + 1;
 	if (j == points.end())
-		return i->length + (l - i->l);
+		return i->length + (index - i->last_index); // TODO: review: shouldn't interpolate?
 	
-	Real dl = j->l - i->l;
-	return approximate_zero(dl) ? i->length : i->length + (j->length - i->length)*(l - i->l)/dl;
+	Real dl = j->index - i->last_index;
+	return approximate_zero(dl) ? i->length : i->length + (j->length - i->length)*(index - i->last_index)/dl;
 }
 
 Bend::Point
@@ -312,7 +326,8 @@ Bend::interpolate(Real length) const
 		Point s;
 		s.p = i->p + i->tn0*dlen;
 		s.t0 = s.t1 = s.tn0 = s.tn1 = i->tn0;
-		s.l = i->l + dlen;
+		s.index = i->last_index + dlen;
+		s.last_index = s.index;
 		s.length = length;
 		s.e0 = s.e1 = i->e0;
 		return s;
@@ -325,7 +340,8 @@ Bend::interpolate(Real length) const
 		Point s;
 		s.p = i->p + i->tn1*dlen;
 		s.t0 = s.t1 = s.tn0 = s.tn1 = i->t1;
-		s.l = i->l + dlen;
+		s.index = i->last_index + dlen;
+		s.last_index = s.index;
 		s.length = length;
 		s.e0 = s.e1 = i->e1;
 		return s;
@@ -334,14 +350,15 @@ Bend::interpolate(Real length) const
 	// interpolation
 	Real l = j->length - i->length;
 	l = approximate_zero(l) ? 0 : (length - i->length)/l;
-	Real dl = j->l - i->l;
+	Real dl = j->index - i->last_index;
 	Hermite h(i->p, j->p, i->t1*dl, j->t0*dl);
 	
 	Point s;
 	s.p = h.p(l);
 	s.t0 = s.t1 = h.t(l);
 	s.tn0 = s.tn1 = h.d(l);
-	s.l = i->l + l*(j->l - i->l);
+	s.index = i->last_index + l*(j->index - i->last_index);
+	s.last_index = s.index;
 	s.length = length;
 	s.e0 = s.e1 = (i->e1 && j->e0);
 	
@@ -456,7 +473,7 @@ Bend::bend(Contour &dst, const Contour &src, const Matrix &matrix, int segments)
 			const Intersection &next = *bi;
 			if (approximate_equal(prev.l, next.l)) continue;
 
-			bool flip = next.point.l < prev.point.l;
+			bool flip = next.point.index < prev.point.last_index;
 			bool e0 = flip ? prev.point.e0 : prev.point.e1;
 			bool e1 = flip ? next.point.e1 : next.point.e0;
 			if (e0 && e1) {
@@ -469,7 +486,7 @@ Bend::bend(Contour &dst, const Contour &src, const Matrix &matrix, int segments)
 				Vector dst_p0 = prev.point.p + tn0.perp()*src_p0y;
 				Vector dst_p1 = next.point.p + tn1.perp()*src_p1y;
 				
-				bool vertical = approximate_equal(next.point.l, prev.point.l);
+				bool vertical = approximate_greater_or_equal(next.point.index, prev.point.index) && approximate_less_or_equal(next.point.index, prev.point.last_index);
 				
 				half_corner(dst, dst_move_flag, prev.point, src_p0y, flip || vertical, true);
 				touch(dst, dst_move_flag, dst_p0);
