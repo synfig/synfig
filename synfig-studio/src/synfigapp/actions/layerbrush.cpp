@@ -170,6 +170,9 @@ Action::LayerBrush::BrushStroke::undo()
             
             layer->set_param("tl", ValueBase(original_tl));
             layer->set_param("br", ValueBase(original_br));
+            // reselect layer
+			// get_canvas_interface()->get_selection_manager()->clear_selected_layers(); // Moved to LayerBrush::undo()
+            // get_canvas_interface()->get_selection_manager()->set_selected_layer(stroke.get_layer()); // Moved to LayerBrush::undo()
             layer->changed();
             applied = false;
             break;
@@ -271,8 +274,10 @@ Action::LayerBrush::perform()
     }
 
     applied = true;
-    if (get_canvas_interface())
-        get_canvas_interface()->signal_layer_param_changed()(stroke.get_layer(), "rendering_surface");
+    if (get_canvas_interface()) {
+		get_canvas_interface()->signal_layer_param_changed()(stroke.get_layer(), "rendering_surface");
+		get_canvas_interface()->get_selection_manager()->set_selected_layer(stroke.get_layer());
+	}
 }
 
 void
@@ -283,6 +288,9 @@ Action::LayerBrush::undo()
 		applied = false;
 		if (get_canvas_interface()) {
 			get_canvas_interface()->signal_layer_param_changed()(stroke.get_layer(), "rendering_surface");
+			// Reselect the layer
+			get_canvas_interface()->get_selection_manager()->clear_selected_layers();
+			get_canvas_interface()->get_selection_manager()->set_selected_layer(stroke.get_layer());
 		}
 	}
 }
