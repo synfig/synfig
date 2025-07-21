@@ -876,12 +876,16 @@ StateBrush2_Context::draw_to(Vector event_pos, Real pressure)
 	float surface_x = ((pos[0] - layer_tl[0]) / (layer_br[0] - layer_tl[0])) * overlay_surface_.get_w();
 	float surface_y = ((pos[1] - layer_tl[1]) / (layer_br[1] - layer_tl[1])) * overlay_surface_.get_h();
 
+	// calcluate dtime
     Glib::TimeVal current_time;
     current_time.assign_current_time();
     double dtime = (current_time - time_).as_double();
     time_ = current_time;
+
+	// apply stroke point
 	brushlib::SurfaceWrapper wrapper(&overlay_surface_);
     brush_.stroke_to(&wrapper, surface_x, surface_y, pressure, 0.0f, 0.0f, dtime);
+	action_->stroke.add_point({surface_x, surface_y, pressure, dtime});
     update_overlay_preview(overlay_surface_, overlay_rect_);
 }
 
@@ -909,7 +913,7 @@ StateBrush2_Context::get_work_area() const
 
 Layer_Bitmap::Handle StateBrush2_Context::find_or_create_layer()
 {
-    // 1- is the selected layer a bitmap ?
+    // is the selected layer a bitmap ?
     Layer::Handle selected_layer = canvas_view_->get_selection_manager()->get_selected_layer();
     Layer_Bitmap::Handle layer = Layer_Bitmap::Handle::cast_dynamic(selected_layer);
 
@@ -917,7 +921,7 @@ Layer_Bitmap::Handle StateBrush2_Context::find_or_create_layer()
         return layer;
     }
 
-    // 2- is it a switch && active layer is a bitmap ?
+    // is it a switch && active layer is a bitmap ?
     if (!layer) {
         etl::handle<Layer_Switch> layer_switch = etl::handle<Layer_Switch>::cast_dynamic(selected_layer);
         if (layer_switch) {
@@ -931,7 +935,7 @@ Layer_Bitmap::Handle StateBrush2_Context::find_or_create_layer()
         }
     }
 
-    // 3- creates a canvas size layer with proper surface initialization
+    // creates a canvas size layer
     if (!layer) {
         Canvas::Handle canvas = canvas_view_->get_canvas();
     	Layer::Handle new_layer = canvas_view_->canvas_interface()->add_layer_to("import", canvas);
@@ -1011,6 +1015,11 @@ StateBrush2_Context::event_mouse_down_handler(const Smach::event& x)
     if (event.button != BUTTON_LEFT)
         return Smach::RESULT_OK;
 
+	// clear any pending overlay clear signal
+	if (clear_overlay_timer_.connected()) {
+	    clear_overlay_timer_.disconnect();
+	}
+
 	Layer_Bitmap::Handle layer = find_or_create_layer();
     if (!layer) return Smach::RESULT_OK;
 
@@ -1030,6 +1039,7 @@ StateBrush2_Context::event_mouse_down_handler(const Smach::event& x)
     layer_bounds = transform_stack_.empty() ? layer_bounds : transform_stack_.perform(layer_bounds);
 	overlay_rect_ = layer_bounds;
 
+	// copy layer to overlay
     if (layer->rendering_surface) {
         rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer->rendering_surface);
         if (lock && lock->get_surface().is_valid()) {
@@ -1039,29 +1049,19 @@ StateBrush2_Context::event_mouse_down_handler(const Smach::event& x)
         }
     }
 
-	Glib::TimeVal current_time;
-    current_time.assign_current_time();
+    selected_brush_config.apply(action_->stroke.brush());
+    action_->stroke.prepare();
+    selected_brush_config.apply(brush_);
 
+    // reset brush and paint first point
     Point pos = transform_stack_.unperform(event.pos);
     Point layer_tl = layer->get_param("tl").get(Point());
     Point layer_br = layer->get_param("br").get(Point());
-
-    // transform coords
-    int surface_w = overlay_surface_.get_w();
-    int surface_h = overlay_surface_.get_h();
-	float surface_x = ((pos[0] - layer_tl[0]) / (layer_br[0] - layer_tl[0])) * surface_w;
-    float surface_y = ((pos[1] - layer_tl[1]) / (layer_br[1] - layer_tl[1])) * surface_h;
-
-    selected_brush_config.apply(action_->stroke.brush());
-    action_->stroke.prepare();
-    action_->stroke.add_point({Point(surface_x, surface_y), event.pressure, current_time});
-
-    selected_brush_config.apply(brush_);
+    float surface_x = ((pos[0] - layer_tl[0]) / (layer_br[0] - layer_tl[0])) * overlay_surface_.get_w();
+    float surface_y = ((pos[1] - layer_tl[1]) / (layer_br[1] - layer_tl[1])) * overlay_surface_.get_h();
     reset_brush(surface_x, surface_y, event.pressure);
-    time_.assign_current_time();
-    draw_to(event.pos, event.pressure);
-
-    return Smach::RESULT_ACCEPT;
+	draw_to(event.pos , event.pressure);
+	return Smach::RESULT_ACCEPT;
 }
 
 Smach::event_result
@@ -1070,29 +1070,6 @@ StateBrush2_Context::event_mouse_draw_handler(const Smach::event& x)
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
 	if (event.button != BUTTON_LEFT || !action_)
 		return Smach::RESULT_OK;
-
-	Layer_Bitmap::Handle layer = find_or_create_layer();
-	Glib::TimeVal current_time;
-	current_time.assign_current_time();
-	int surface_w = 0, surface_h = 0;
-	if (layer->rendering_surface) {
-		rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer->rendering_surface);
-		if (lock && lock->get_surface().is_valid()) {
-			surface_w = lock->get_surface().get_w();
-			surface_h = lock->get_surface().get_h();
-		}
-	}
-
-	Point pos = transform_stack_.unperform(event.pos);
-	Point layer_tl = layer->get_param("tl").get(Point());
-	Point layer_br = layer->get_param("br").get(Point());
-
-	// Convert to surface pixel coords
-	float surface_x = ((pos[0] - layer_tl[0]) / (layer_br[0] - layer_tl[0])) * surface_w;
-	float surface_y = ((pos[1] - layer_tl[1]) / (layer_br[1] - layer_tl[1])) * surface_h;
-
-	action_->stroke.add_point({Point(surface_x, surface_y), event.pressure, current_time});
-
 	draw_to(event.pos, event.pressure);
 	return Smach::RESULT_ACCEPT;
 }

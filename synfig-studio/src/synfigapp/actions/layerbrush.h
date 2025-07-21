@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file layerpaint.h
+/*!	\file layerbrush.h
 **	\brief Template File
 **
 **	\legal
@@ -33,14 +33,11 @@
 #include <synfig/guid.h>
 #include <synfig/layers/layer_bitmap.h>
 #include <synfig/surface.h>
-#include <synfig/rect.h>
 #include <synfig/vector.h>
 
 #include <synfigapp/action.h>
 
 #include <brushlib.h>
-#include <glibmm/timeval.h>
-#include <vector>
 
 /* === M A C R O S ========================================================= */
 
@@ -60,15 +57,21 @@ class LayerBrush :
 {
 public:
 	struct StrokePoint {
-		synfig::Vector pos;
+		float x, y;
 		synfig::Real pressure;
-		Glib::TimeVal timestamp;
-		StrokePoint(): pos(0,0), pressure(0.0) { }
-		StrokePoint(const synfig::Vector& p, synfig::Real pr, const Glib::TimeVal& t):
-			pos(p), pressure(pr), timestamp(t) { }
+		double dtime;
+		StrokePoint(): x(0), y(0), pressure(0.0) { }
+		StrokePoint(float x, float y, synfig::Real pr, double dtime):
+			x(x), y(y), pressure(pr), dtime(dtime) { }
 	};
 
 	class BrushStroke {
+	public:
+		enum UndoMode {
+			SURFACE_SAVING,
+			REDRAW,
+			CHECKPOINTING
+		};
 	private:
 		synfig::Layer_Bitmap::Handle layer;
 		brushlib::Brush brush_;
@@ -80,8 +83,9 @@ public:
 		std::vector<StrokePoint> points;
 		bool prepared;
 		bool applied;
+        UndoMode undo_mode = SURFACE_SAVING;
 
-		void reset_brush(const StrokePoint& point, int surface_w, int surface_h);
+		void reset_brush(const StrokePoint& point);
 		void render_stroke_to_surface(synfig::Surface& surface);
 
 	public:
