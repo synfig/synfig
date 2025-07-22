@@ -309,7 +309,17 @@ def main():
         shutil.copy2(configured_plist, os.path.join(app_bundle_path, "Contents", "Info.plist"))
     else:
         logging.error(f"Configured Info.plist not found at {configured_plist}"); return
-        
+ 
+    logging.info("--- Bundling App Resources (Icons and Themes) ---")
+    source_share_dir = os.path.join(os.path.dirname(args.bin_dir), "share")
+    dest_share_dir = os.path.join(app_bundle_path, "Contents", "Resources", "share")
+    
+    if os.path.exists(source_share_dir):
+        logging.info(f"Copying resources from '{source_share_dir}' to '{os.path.relpath(dest_share_dir)}'")
+        shutil.copytree(source_share_dir, dest_share_dir)
+    else:
+        logging.error(f"RESOURCE DIRECTORY NOT FOUND at '{source_share_dir}'. Icons will be missing.")
+
     processed_files = set()
     primary_binaries = args.binaries.split(';')
     logging.info(f"Relocating primary binaries: {', '.join(primary_binaries)}")
