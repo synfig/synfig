@@ -233,42 +233,45 @@ def update_library_id(lib_path):
     except subprocess.CalledProcessError as e:
         logging.error(f"Error updating library ID: {e}")
 
-def process_and_bundle_dependencies(src_path, app_bundle_path, processed_set):
+def process_and_bundle_dependencies(src_path, app_bundle_path, processed_set, dest_basename=None):
     """
     Recursively finds all dependencies for a file, copies them into the
     bundle, rewires their paths, and then processes their own dependencies.
     """
     real_src_path = os.path.realpath(src_path)
     if real_src_path in processed_set: return
-    
-    logging.info(f"--- Analyzing: {os.path.basename(src_path)} ---")
-    lib_name = os.path.basename(real_src_path)
-    
+
+    # Use the desired destination name if provided, otherwise use the real file's name.
+    # This ensures symlinked libraries are renamed correctly in the bundle.
+    lib_name = dest_basename if dest_basename else os.path.basename(real_src_path)
+    logging.info(f"--- Analyzing: {os.path.basename(real_src_path)} (as {lib_name}) ---")
+
     # Determine if it's an executable or a library and set destination
     if ".dylib" in lib_name or ".so" in lib_name:
         dest_dir = os.path.join(app_bundle_path, "Contents", "Frameworks")
     else:
         dest_dir = os.path.join(app_bundle_path, "Contents", "MacOS")
-    
+
     os.makedirs(dest_dir, exist_ok=True)
     dest_path = os.path.join(dest_dir, lib_name)
-    
-    logging.info(f"Relocating '{lib_name}' to '{os.path.relpath(dest_dir, app_bundle_path)}'")
+
+    logging.info(f"Relocating '{os.path.basename(real_src_path)}' to '{os.path.relpath(dest_dir, app_bundle_path)}' as '{lib_name}'")
     shutil.copy2(real_src_path, dest_path)
     os.chmod(dest_path, 0o755)
     processed_set.add(real_src_path)
-    
+
     # After copying, get its dependencies and rewire paths and ID
     dependencies = get_dependencies(dest_path)
     update_library_paths(dest_path, dependencies, app_bundle_path)
     update_library_id(dest_path)
-    
+
     # Recurse for all found dependencies
     logging.info(f"Found {len(dependencies)} dependencies for {lib_name} to process.")
     for lib_path in dependencies:
         actual_path = resolve_library_path(lib_path, src_path) # Use original src_path for context
         if actual_path:
-            process_and_bundle_dependencies(actual_path, app_bundle_path, processed_set)
+            # Pass the symlink's name as the intended destination filename for the next recursion
+            process_and_bundle_dependencies(actual_path, app_bundle_path, processed_set, dest_basename=os.path.basename(lib_path))
         else:
             # This error is critical, as it means the final bundle will be broken
             logging.error(f"COULD NOT FIND dependency '{lib_path}' required by '{lib_name}'.")
