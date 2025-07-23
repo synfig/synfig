@@ -1,5 +1,6 @@
 target_sources(libsynfig
     PRIVATE
+        "${CMAKE_CURRENT_LIST_DIR}/valuenode_absolute.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_add.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_and.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_angle.cpp"
