@@ -275,6 +275,141 @@ def process_and_bundle_dependencies(src_path, app_bundle_path, processed_set, de
         else:
             # This error is critical, as it means the final bundle will be broken
             logging.error(f"COULD NOT FIND dependency '{lib_path}' required by '{lib_name}'.")
+   
+def bundle_data_resources(app_bundle_path, args):
+    """Copies shared data resources (icons, themes, etc.) into the bundle."""
+    logging.info("--- Bundling App Resources (share directory) ---")
+
+    # This path assumes the 'share' directory is in the build directory, one level up from bin_dir
+    source_share_dir = os.path.join(os.path.dirname(args.bin_dir), "share")
+    dest_share_dir = os.path.join(app_bundle_path, "Contents", "share")
+
+    if os.path.isdir(source_share_dir):
+        logging.info(f"Copying resources from '{source_share_dir}' to '{os.path.relpath(dest_share_dir, app_bundle_path)}'")
+        # dirs_exist_ok=True is useful to avoid errors if the dir already exists
+        shutil.copytree(source_share_dir, dest_share_dir, dirs_exist_ok=True)
+    else:
+        logging.warning(f"RESOURCE DIRECTORY NOT FOUND at '{source_share_dir}'. UI may be broken.")
+
+
+def bundle_synfig_modules(app_bundle_path, args):
+    """Finds, bundles, and fixes Synfig's functional modules."""
+    logging.info("--- Processing Synfig Modules ---")
+
+    homebrew_prefix = get_homebrew_prefix()
+    build_modules_path = os.path.normpath(os.path.join(args.bin_dir, "..", "lib", "synfig", "modules"))
+
+    module_search_paths = [
+        build_modules_path,
+        os.path.join(homebrew_prefix, "lib/synfig/modules") if homebrew_prefix else None,
+        "/usr/local/lib/synfig/modules",
+    ]
+
+    synfig_modules_dir = None
+    for path in filter(None, module_search_paths):
+        if os.path.isdir(path):
+            synfig_modules_dir = path
+            logging.info(f"Found Synfig modules at: {synfig_modules_dir}")
+            break
+
+    if not synfig_modules_dir:
+        logging.warning("Could not find Synfig modules directory. Plugin functionality may be limited.")
+        return
+
+    bundle_modules_dest = os.path.join(app_bundle_path, "Contents", "Resources", "synfig", "modules")
+    logging.info(f"Copying modules to: {os.path.relpath(bundle_modules_dest, app_bundle_path)}")
+    shutil.copytree(synfig_modules_dir, bundle_modules_dest, dirs_exist_ok=True)
+
+    logging.info("Fixing dependencies for all copied modules...")
+    for module_file in glob.glob(os.path.join(bundle_modules_dest, "*")):
+        if not os.path.isfile(module_file) or ".DS_Store" in module_file: continue
+
+        logging.info(f"Processing module: {os.path.basename(module_file)}")
+        module_deps = get_dependencies(module_file)
+        update_library_paths(module_file, module_deps, app_bundle_path)
+        update_library_id(module_file) 
+
+
+def generate_gtk_caches(app_bundle_path):
+    """Generates the necessary cache files for bundled GTK resources to work correctly."""
+    logging.info("--- Generating GTK Resource Caches ---")
+    homebrew_prefix = get_homebrew_prefix()
+
+    # Update the Icon Caches (Hicolor and Adwaita)
+    gtk_icon_cache_tool = find_system_executable("gtk-update-icon-cache")
+    if gtk_icon_cache_tool:
+        icon_themes = ["hicolor", "Adwaita"]
+        for theme in icon_themes:
+            theme_dir = os.path.join(app_bundle_path, "Contents", "share", "icons", theme)
+            if os.path.isdir(theme_dir):
+                try:
+                    logging.info(f"Updating icon cache in '{theme_dir}'...")
+                    subprocess.run([gtk_icon_cache_tool, "--force", "--quiet", theme_dir], check=True)
+                    logging.info(f"Successfully updated {theme} icon cache.")
+                except subprocess.CalledProcessError as e:
+                    logging.error(f"Failed to update {theme} icon cache: {e}")
+            else:
+                logging.warning(f"Icon theme '{theme}' not found in bundle. Skipping cache update.")
+    else:
+        logging.warning("'gtk-update-icon-cache' not found. Icons may fail to load.")
+
+    # Compile GSettings Schemas
+    glib_schema_tool = find_system_executable("glib-compile-schemas")
+    if glib_schema_tool:
+        schemas_dir = os.path.join(app_bundle_path, "Contents", "share", "glib-2.0", "schemas")
+        if os.path.isdir(schemas_dir):
+            try:
+                logging.info(f"Compiling GSettings schemas in '{schemas_dir}'...")
+                subprocess.run([glib_schema_tool, schemas_dir], check=True)
+                logging.info("Successfully compiled GSettings schemas.")
+            except subprocess.CalledProcessError as e:
+                logging.error(f"Failed to compile GSettings schemas: {e}")
+        else:
+            logging.warning(f"GSettings schemas directory not found at '{schemas_dir}'.")
+    else:
+        logging.warning("'glib-compile-schemas' not found. App settings may not work correctly.")
+
+
+def create_launcher_script(app_bundle_path, executable_name):
+    """Creates a shell script to set environment variables and launch the real executable."""
+    logging.info(f"Creating launcher script for '{executable_name}'...")
+
+    macos_dir = os.path.join(app_bundle_path, "Contents", "MacOS")
+    original_executable_path = os.path.join(macos_dir, executable_name)
+    real_executable_path = os.path.join(macos_dir, f"{executable_name}_real")
+
+    if not os.path.exists(original_executable_path):
+        logging.error(f"Cannot create launcher script. Original executable not found at '{original_executable_path}'.")
+        return
+
+    # Only create the launcher if it hasn't been done already
+    if not os.path.exists(real_executable_path):
+        os.rename(original_executable_path, real_executable_path)
+        logging.info(f"Renamed original executable to '{os.path.basename(real_executable_path)}'")
+
+        launcher_script_content = f"""#!/bin/bash
+# This script sets up the complete environment for a bundled GTK application.
+
+DIR=$(cd "$(dirname "$0")" && pwd)
+
+# Prioritize our bundled libraries to avoid system conflicts.
+export DYLD_LIBRARY_PATH="$DIR/../Frameworks"
+
+# Point the module loader to our bundled Synfig modules.
+export LTDL_LIBRARY_PATH="$DIR/../Resources/synfig/modules"
+
+# Point GTK to our bundled data files (icons, themes, etc.).
+export XDG_DATA_DIRS="$DIR/../share"
+
+# Execute the real binary, passing along all arguments.
+exec "$DIR/{os.path.basename(real_executable_path)}" "$@"
+"""
+        with open(original_executable_path, 'w') as f:
+            f.write(launcher_script_content)
+
+        os.chmod(original_executable_path, 0o755)
+        logging.info(f"Created new executable launcher script at '{os.path.basename(original_executable_path)}'")
+
 
 def main():
     setup_logging()
@@ -301,7 +436,10 @@ def main():
     if os.path.exists(app_bundle_path):
         logging.info("Removing existing app bundle.")
         shutil.rmtree(app_bundle_path)
-    shutil.copytree(args.skeleton_dir, app_bundle_path)
+
+    ignore_list = shutil.ignore_patterns('Info.plist.in', '.DS_Store')
+    # Copy the skeleton, excluding the ignored files
+    shutil.copytree(args.skeleton_dir, app_bundle_path, ignore=ignore_list)
     
     # Use the argument for the path, not a hardcoded one ---
     configured_plist = os.path.join(args.build_dir, "Info.plist")
@@ -309,16 +447,6 @@ def main():
         shutil.copy2(configured_plist, os.path.join(app_bundle_path, "Contents", "Info.plist"))
     else:
         logging.error(f"Configured Info.plist not found at {configured_plist}"); return
- 
-    logging.info("--- Bundling App Resources (Icons and Themes) ---")
-    source_share_dir = os.path.join(os.path.dirname(args.bin_dir), "share")
-    dest_share_dir = os.path.join(app_bundle_path, "Contents", "Resources", "share")
-    
-    if os.path.exists(source_share_dir):
-        logging.info(f"Copying resources from '{source_share_dir}' to '{os.path.relpath(dest_share_dir)}'")
-        shutil.copytree(source_share_dir, dest_share_dir)
-    else:
-        logging.error(f"RESOURCE DIRECTORY NOT FOUND at '{source_share_dir}'. Icons will be missing.")
 
     processed_files = set()
     primary_binaries = args.binaries.split(';')
@@ -342,6 +470,16 @@ def main():
             else:
                 logging.warning(f"SKIPPING: Could not find extra binary '{binary_name}' on the system.")
 
+    
+    # Bundle application-specific resources and plugins
+    bundle_data_resources(app_bundle_path, args)
+    bundle_synfig_modules(app_bundle_path, args)
+    
+    # Generate necessary caches for GTK
+    generate_gtk_caches(app_bundle_path)
+
+    # Create the launcher script
+    create_launcher_script(app_bundle_path, "synfigstudio")
     logging.info(f"Successfully created and populated {app_name}")
 
 if __name__ == "__main__":
