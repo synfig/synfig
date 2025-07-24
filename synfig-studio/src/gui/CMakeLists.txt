@@ -37,6 +37,23 @@ else()
 	add_executable(synfigstudio main.cpp)
 endif()
 
+if(APPLE)
+	set_target_properties(synfigstudio PROPERTIES
+		INSTALL_RPATH "@executable_path/../Frameworks"
+		BUILD_WITH_INSTALL_RPATH TRUE
+	)
+	configure_file(
+		"${CMAKE_SOURCE_DIR}/autobuild/osx/app_skeleton/Contents/Info.plist.in"
+		"${CMAKE_BINARY_DIR}/Info.plist"
+		@ONLY
+	)
+endif()
+
+install(
+	TARGETS synfigstudio
+	DESTINATION bin
+)
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 target_sources(synfigstudio
