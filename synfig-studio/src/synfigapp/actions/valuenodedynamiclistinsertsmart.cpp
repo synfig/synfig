@@ -36,8 +36,10 @@
 #include <synfig/general.h>
 
 #include "valuenodedynamiclistinsertsmart.h"
-#include <synfigapp/canvasinterface.h>
 
+#include <synfig/valuenodes/valuenode_wplist.h>
+
+#include <synfigapp/canvasinterface.h>
 #include <synfigapp/localization.h>
 
 #endif
@@ -67,6 +69,148 @@ ACTION_SET_VERSION(Action::ValueNodeDynamicListInsertSmartKeepShape,"0.0");
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
+
+namespace synfigapp {
+
+class Instance;
+
+namespace Action {
+
+class WidthPointListConvertPositions
+	: public Super
+{
+public:
+	enum class ConversionType {
+		UNKNOWN,
+		TO_HOMOGENEOUS,
+		TO_STANDARD,
+	};
+
+private:
+	synfig::ValueNode_WPList::Handle value_node;
+	synfig::Time time;
+	ConversionType conversion_type = ConversionType::UNKNOWN;
+
+public:
+	WidthPointListConvertPositions(){};
+
+	static ParamVocab get_param_vocab()
+	{
+		ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
+
+		ret.push_back(ParamDesc("value_desc", Param::TYPE_VALUEDESC)
+			.set_local_name(_("ValueDesc"))
+		);
+		ret.push_back(ParamDesc("time", Param::TYPE_TIME)
+			.set_local_name(_("Time"))
+			.set_optional()
+		);
+		ret.push_back(ParamDesc("type", Param::TYPE_INTEGER)
+			.set_local_name(_("Type"))
+		);
+
+		return ret;
+	}
+	
+	static bool is_candidate(const ParamList& /*x*/) { return false; }
+
+	bool set_param(const synfig::String& name, const Param& param) override
+	{
+		if (name == "value_desc" && param.get_type() == Param::TYPE_VALUEDESC) {
+			const ValueDesc value_desc(param.get_value_desc());
+
+			if (value_desc.parent_is_value_node()) {
+				value_node = ValueNode_WPList::Handle::cast_dynamic(value_desc.get_parent_value_node());
+			} else if (value_desc.is_value_node()) {
+				value_node = ValueNode_WPList::Handle::cast_dynamic(value_desc.get_value_node());
+			}
+			if (!value_node)
+				return false;
+			if (value_node->get_contained_type() != type_width_point) {
+				value_node = nullptr;
+				return false;
+			}
+			return true;
+		}
+		if (name == "time" && param.get_type() == Param::TYPE_TIME) {
+			time = param.get_time();
+			return true;
+		}
+		if (name == "type" && param.get_type() == Param::TYPE_INTEGER) {
+			const int type = param.get_integer();
+			if (type <= 0 || type > 2)
+				return false;
+			conversion_type = ConversionType(type);
+			if (conversion_type == ConversionType::UNKNOWN)
+				return false;
+
+			return true;
+		}
+
+		return Action::CanvasSpecific::set_param(name,param);
+	}
+
+	bool is_ready() const override
+	{
+		if (!value_node)
+			return false;
+		if (conversion_type == ConversionType::UNKNOWN)
+			return false;
+		return Action::CanvasSpecific::is_ready();
+	}
+
+	void prepare() override
+	{
+		auto bline = value_node->get_bline();
+		auto current_bline = (*bline)(time);
+		for (int link_index = 0; link_index < value_node->link_count(); ++link_index) {
+			const auto wp_valuenode = value_node->get_link(link_index);
+			const WidthPoint wp = (*wp_valuenode)(time).get(WidthPoint());
+			const Real new_wp_pos =
+				conversion_type == ConversionType::TO_HOMOGENEOUS
+				? synfig::std_to_hom(current_bline.get_list(), wp.get_position(), false, current_bline.get_loop())
+				: synfig::hom_to_std(current_bline.get_list(), wp.get_position(), false, current_bline.get_loop());
+
+			Action::Handle action(Action::create("ValueDescSet"));
+
+			if (!action)
+				throw Error(_("Unable to find action (bug)"));
+
+			action->set_param("canvas", get_canvas());
+			action->set_param("canvas_interface", get_canvas_interface());
+			action->set_param("time", time);
+			if (auto wp_link = LinkableValueNode::Handle::cast_dynamic(wp_valuenode)) {
+				action->set_param("new_value", ValueBase(new_wp_pos));
+				action->set_param("value_desc", ValueDesc(wp_link, wp_link->get_link_index_from_name("position")));
+			} else {
+				WidthPoint new_wp(wp);
+				new_wp.set_position(new_wp_pos);
+				action->set_param("new_value", ValueBase(new_wp));
+				action->set_param("value_desc", ValueDesc(value_node, link_index));
+			}
+
+			if (!action->is_ready())
+				throw Error(Error::TYPE_NOTREADY);
+
+			add_action(action);
+		}
+	}
+
+	ACTION_MODULE_EXT
+};
+
+}
+}
+
+
+ACTION_INIT(Action::WidthPointListConvertPositions);
+ACTION_SET_NAME(Action::WidthPointListConvertPositions, "WidthPointListConvertPositions");
+ACTION_SET_LOCAL_NAME(Action::WidthPointListConvertPositions, N_("Convert position system"));
+ACTION_SET_TASK(Action::WidthPointListConvertPositions, "convert");
+ACTION_SET_CATEGORY(Action::WidthPointListConvertPositions, Action::CATEGORY_VALUEDESC|Action::CATEGORY_VALUENODE);
+ACTION_SET_PRIORITY(Action::WidthPointListConvertPositions, -20);
+ACTION_SET_VERSION(Action::WidthPointListConvertPositions, "0.0");
+
 
 /* === M E T H O D S ======================================================= */
 ///////////// VALUENODEDYNAMICLISTINSERTITEMSMART
@@ -170,6 +314,27 @@ Action::ValueNodeDynamicListInsertSmart::prepare()
 	// HACK
 	if(!first_time())
 		return;
+
+	// If we are adding points to a bline and keeping its shape,
+	// let's check if it is a bline of an advanced outline layer.
+	// If so, let's keep the outline thickness as well.
+	// If the advanced outline is not set as 'homogeneous',
+	// we need to convert it to homogenous before adding any points
+	// and then convert it back to 'standard' width point coordinates.
+	std::vector<Layer::LooseHandle> non_homogeneous_advanced_outline_layers;
+	if (keep_shape) {
+		const bool is_inserting_in_a_spline = value_node->list.size() > 0 && value_node->get_contained_type() == type_bline_point;
+		if (is_inserting_in_a_spline) {
+			value_node->foreach_parent([&non_homogeneous_advanced_outline_layers](Node* node) -> bool {
+				if (auto layer = dynamic_cast<Layer*>(node)) {
+					if (layer->get_name() == "advanced_outline" && layer->get_param("homogeneous").get(bool()) == false) {
+						non_homogeneous_advanced_outline_layers.push_back(layer);
+					}
+				}
+				return false;
+			});
+		}
+	}
 
 	// If we are in animate editing mode
 	if(get_edit_mode()&MODE_ANIMATE)
@@ -343,6 +508,26 @@ Action::ValueNodeDynamicListInsertSmart::prepare()
 	}
 	else
 	{
+		if (!non_homogeneous_advanced_outline_layers.empty()) {
+			// Before doing the insertion, convert the width point positions back to 'homogeneous' coordinates.
+			for (const Layer::LooseHandle layer : non_homogeneous_advanced_outline_layers) {
+				Action::Handle action(new WidthPointListConvertPositions());
+
+				if (!action)
+					throw Error(_("Unable to find action (bug)"));
+
+				action->set_param("canvas",get_canvas());
+				action->set_param("canvas_interface",get_canvas_interface());
+				action->set_param("type", int(WidthPointListConvertPositions::ConversionType::TO_HOMOGENEOUS));
+				action->set_param("value_desc", ValueDesc(Layer::LooseHandle(layer), "wplist"));
+
+				if (!action->is_ready())
+					throw Error(Error::TYPE_NOTREADY);
+
+				add_action(action);
+			}
+		}
+
 		Action::Handle action(Action::create("ValueNodeDynamicListInsert"));
 
 		if(!action)
@@ -426,7 +611,25 @@ Action::ValueNodeDynamicListInsertSmart::prepare()
 						throw Error(Error::TYPE_NOTREADY);
 					add_action(action);
 				}
+
 			}
+		}
+
+		// Convert the width point positions back from 'homogeneous' to the 'standard' coordinates.
+		for (const Layer::LooseHandle layer : non_homogeneous_advanced_outline_layers) {
+			Action::Handle action(new WidthPointListConvertPositions());
+
+			if (!action)
+				throw Error(_("Unable to find action (bug)"));
+
+			action->set_param("canvas",get_canvas());
+			action->set_param("canvas_interface",get_canvas_interface());
+			action->set_param("type", int(WidthPointListConvertPositions::ConversionType::TO_STANDARD));
+			action->set_param("value_desc", ValueDesc(Layer::LooseHandle(layer), "wplist"));
+
+			if (!action->is_ready())
+				throw Error(Error::TYPE_NOTREADY);
+			add_action(action);
 		}
 	}
 }
