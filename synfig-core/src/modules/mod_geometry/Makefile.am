@@ -31,6 +31,8 @@ libmod_geometry_la_SOURCES = \
 	outline.cpp \
 	advanced_outline.h \
 	advanced_outline.cpp \
+	advancedline.h \
+	advancedline.cpp \
 	main.cpp
 
 libmod_geometry_la_CXXFLAGS = \
@@ -49,3 +51,17 @@ libmod_geometry_la_LDFLAGS = \
 EXTRA_DIST = \
 	mod_geometry.nsh \
 	unmod_geometry.nsh
+	
+check_PROGRAMS=$(TESTS)
+
+TESTS = \
+	testadvancedline
+
+testadvancedline_CXXFLAGS=@CXXFLAGS@ @ETL_CFLAGS@ @SYNFIG_CFLAGS@
+testadvancedline_LDFLAGS = \
+	libmod_geometry.la \
+	$(top_builddir)/src/synfig/libsynfig.la \
+	@SYNFIG_LIBS@
+
+testadvancedline_SOURCES=test/advancedline.cpp
+
