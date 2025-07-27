@@ -5,6 +5,7 @@
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **	......... ... 2014 Jerome Blanchi
+**  ......... ... 2025 Abdelhadi Wael
 **
 **	This file is part of Synfig.
 **
@@ -144,6 +145,9 @@ private:
 
     Gtk::Grid options_grid;
     Gtk::Label title_label;
+
+	void update_cursor();
+	void create_radius_cursor(float radius);
 
 	void load_settings();
 	void save_settings();
@@ -513,8 +517,7 @@ StateBrush2_Context::StateBrush2_Context(CanvasView* canvas_view) :
 {
 	load_settings();
 	App::dialog_tool_options->present();
-	get_work_area()->set_cursor(Gdk::Cursor::create(Gdk::PENCIL));
-
+	update_cursor();
     refresh_tool_options();
     App::dock_toolbox->refresh();
 }
@@ -657,7 +660,79 @@ StateBrush2_Context::select_brush(Gtk::ToggleToolButton *button, String filename
 		selected_brush_config.load(filename);
 		eraser_checkbox.set_active(selected_brush_config.settings[BRUSH_ERASER].base > 0.0);
 		selected_brush_button = button;
+		Real brush_radius = expf(selected_brush_config.settings[BRUSH_RADIUS_LOGARITHMIC].base);
+		synfigapp::Main::set_bline_width(Distance(brush_radius, Distance::SYSTEM_UNITS));
+	    update_cursor();
 	}
+}
+
+void StateBrush2_Context::update_cursor()
+{
+	const float brush_radius_px = synfigapp::Main::get_bline_width();
+	float display_radius = 10.0f;
+
+	auto layer = find_or_create_layer();
+	if (!layer || !layer->rendering_surface)
+		return;
+	rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer->rendering_surface);
+	if (!lock || !lock->get_surface().is_valid())
+		return;
+
+	RendDesc& desc = get_canvas()->rend_desc();
+	synfig::Rect layer_bounds(
+		layer->get_param("tl").get(Point()),
+		layer->get_param("br").get(Point()));
+
+	TransformStack stack;
+	build_transform_stack(get_canvas(), layer, get_canvas_view(), stack);
+	synfig::Rect transformed_bounds = stack.perform(layer_bounds);
+	int layer_pixel_width = lock->get_surface().get_w();
+	float transformed_width = transformed_bounds.maxx - transformed_bounds.minx;
+	float canvas_width = desc.get_br()[0] - desc.get_tl()[0];
+
+	float scale_layer = transformed_width / layer_pixel_width;
+	float scale_canvas = desc.get_w() / canvas_width;
+	float scale_view = get_work_area()->get_zoom() * get_work_area()->get_scale_factor();
+
+	display_radius = fabs(brush_radius_px * scale_layer * scale_canvas * scale_view);
+	create_radius_cursor(display_radius);
+}
+
+void
+StateBrush2_Context::create_radius_cursor(float radius)
+{
+	int diameter = static_cast<int>(ceil(radius * 2.0f));
+	int size = diameter + 4;
+	int hotspot = size / 2;
+
+	auto pixbuf = Gdk::Pixbuf::create(Gdk::COLORSPACE_RGB, true, 8, size, size);
+	pixbuf->fill(0x00000000); // transparent
+
+	auto surface = Cairo::ImageSurface::create(
+		pixbuf->get_pixels(),
+		Cairo::FORMAT_ARGB32,
+		pixbuf->get_width(),
+		pixbuf->get_height(),
+		pixbuf->get_rowstride()
+	);
+
+	auto cr = Cairo::Context::create(surface);
+
+	double center = hotspot + 0.5;
+	cr->set_line_width(1.0);
+
+	// Black outer circle
+	cr->arc(center, center, radius, 0, 2 * M_PI);
+	cr->set_source_rgba(0, 0, 0, 1);
+	cr->stroke();
+
+	// White inner circle
+	cr->arc(center, center, radius - 1.0, 0, 2 * M_PI);
+	cr->set_source_rgba(1, 1, 1, 1);
+	cr->stroke();
+
+	auto cursor = Gdk::Cursor::create(Gdk::Display::get_default(), pixbuf, hotspot, hotspot);
+	get_work_area()->set_cursor(cursor);
 }
 
 void StateBrush2_Context::create_image_layer_dialog()
@@ -1034,7 +1109,7 @@ StateBrush2_Context::event_mouse_down_handler(const Smach::event& x)
         transform_stack_.clear();
     }
 
-    // Get actual layer bounds after tranformation
+    // Get actual layer bounds after transformation
     synfig::Rect layer_bounds = layer->get_bounding_rect();
     layer_bounds = transform_stack_.empty() ? layer_bounds : transform_stack_.perform(layer_bounds);
 	overlay_rect_ = layer_bounds;
@@ -1050,8 +1125,44 @@ StateBrush2_Context::event_mouse_down_handler(const Smach::event& x)
     }
 
     selected_brush_config.apply(action_->stroke.brush());
+	Color color = synfigapp::Main::get_outline_color();
+
+    Real epsilon = 0.00000001;
+    Real r(color.get_r()), g(color.get_g()), b(color.get_b());
+    Real max_rgb = std::max(r, std::max(g, b));
+    Real min_rgb = std::min(r, std::min(g, b));
+    Real diff = max_rgb-min_rgb;
+
+    Real val = max_rgb;
+    Real sat = fabs(max_rgb) > epsilon ? 1.0 - (min_rgb / max_rgb) : 0;
+    Real hue = fabs(diff) <= epsilon ?
+            0 : max_rgb == r ?
+                60.0 * fmod ((g - b)/(diff), 6.0) : max_rgb == g ?
+                    60.0 * (((b - r)/(diff))+2.0) : 60.0 * (((r - g)/(diff))+4.0);
+
+    Real opaque = color.get_a();
+    Real radius = synfigapp::Main::get_bline_width();
+    Real eraser = eraser_checkbox.get_active() ? 1.0 : 0.0;
+
+    // Apply the settings to the action brush
+    action_->stroke.brush().set_base_value(BRUSH_COLOR_H, hue/360.0);
+    action_->stroke.brush().set_base_value(BRUSH_COLOR_S, sat);
+    action_->stroke.brush().set_base_value(BRUSH_COLOR_V, val);
+    action_->stroke.brush().set_base_value(BRUSH_OPAQUE, opaque);
+    action_->stroke.brush().set_base_value(BRUSH_RADIUS_LOGARITHMIC, log(radius));
+    action_->stroke.brush().set_base_value(BRUSH_ERASER, eraser);
+
     action_->stroke.prepare();
+
+    // apply settings to overlay brush
     selected_brush_config.apply(brush_);
+    brush_.set_base_value(BRUSH_COLOR_H, hue/360.0);
+    brush_.set_base_value(BRUSH_COLOR_S, sat);
+    brush_.set_base_value(BRUSH_COLOR_V, val);
+    brush_.set_base_value(BRUSH_OPAQUE, opaque);
+    brush_.set_base_value(BRUSH_RADIUS_LOGARITHMIC, log(radius));
+    brush_.set_base_value(BRUSH_ERASER, eraser);
+	update_cursor();
 
     // reset brush and paint first point
     Point pos = transform_stack_.unperform(event.pos);
