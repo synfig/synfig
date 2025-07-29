@@ -103,20 +103,20 @@ namespace brushlib {
 			float cs = cosf(angle/180.f*(float)PI);
 			float sn = sinf(angle/180.f*(float)PI);
 
-    // calculate bounds
-    if (aspect_ratio < 1.0) aspect_ratio = 1.0;
-    if (hardness > 1.0) hardness = 1.0;
-    if (hardness < 0.0) hardness = 0.0;
-    float maxr = fabsf(radius);
+			// calculate bounds
+			if (aspect_ratio < 1.0) aspect_ratio = 1.0;
+			if (hardness > 1.0) hardness = 1.0;
+			if (hardness < 0.0) hardness = 0.0;
+			float maxr = fabsf(radius);
 
-    // Clamp bounds to surface dimensions instead of expanding
-    int x0 = std::max(0, (int)(x - maxr - 1.f));
-    int x1 = std::min(surface->get_w() - 1, (int)(x + maxr + 1.f));
-    int y0 = std::max(0, (int)(y - maxr - 1.f));
-    int y1 = std::min(surface->get_h() - 1, (int)(y + maxr + 1.f));
+			// Clamp bounds to surface dimensions instead of expanding
+			int x0 = std::max(0, (int)(x - maxr - 1.f));
+			int x1 = std::min(surface->get_w() - 1, (int)(x + maxr + 1.f));
+			int y0 = std::max(0, (int)(y - maxr - 1.f));
+			int y1 = std::min(surface->get_h() - 1, (int)(y + maxr + 1.f));
 
-    // Skip if completely outside bounds
-    if (x0 > x1 || y0 > y1) return false;
+			// Skip if completely outside bounds
+			if (x0 > x1 || y0 > y1) return false;
 
 			bool erase = alpha_eraser < 1.0;
 			for(int py = y0; py <= y1; py++)
@@ -141,13 +141,25 @@ namespace brushlib {
 						}
 						else
 						{
-							float sum_alpha = opa + c.get_a();
-							if (sum_alpha > 1.0) sum_alpha = 1.0;
-							float inv_opa = sum_alpha - opa;
-							c.set_r(c.get_r()*inv_opa + color_r*opa);
-							c.set_g(c.get_g()*inv_opa + color_g*opa);
-							c.set_b(c.get_b()*inv_opa + color_b*opa);
-							c.set_a(sum_alpha);
+							float bg_alpha = c.get_a();
+							float src_alpha = opa;
+							
+							float final_alpha = src_alpha + bg_alpha * (1.0 - src_alpha);
+							
+							if (final_alpha > 0.0001) {
+								float src_weight = src_alpha / final_alpha;
+								float bg_weight = (bg_alpha * (1.0 - src_alpha)) / final_alpha;
+								
+								c.set_r(color_r * src_weight + c.get_r() * bg_weight);
+								c.set_g(color_g * src_weight + c.get_g() * bg_weight);
+								c.set_b(color_b * src_weight + c.get_b() * bg_weight);
+								c.set_a(std::min(1.0f, final_alpha));
+							} else {
+								c.set_r(color_r);
+								c.set_g(color_g);
+								c.set_b(color_b);
+								c.set_a(src_alpha);
+							}
 						}
 					}
 				}
