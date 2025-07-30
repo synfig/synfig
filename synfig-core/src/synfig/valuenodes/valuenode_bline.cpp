@@ -538,8 +538,7 @@ ValueNode_BLine::create_list_entry(int index, Time time, Real origin)
 		bline_point.set_width((next.get_width()-prev.get_width())*origin+prev.get_width());
 		bline_point.set_split_tangent_radius(true);
 		bline_point.set_split_tangent_angle(false);
-		bline_point.set_tangent1((left[2]-left[3])*-3);
-		bline_point.set_tangent2((right[1]-right[0])*3);
+		bline_point.set_tangents((left[2]-left[3])*-3, (right[1]-right[0])*3);
 		bline_point.set_origin(origin);
 	}
 	ret.index=index;
@@ -599,8 +598,7 @@ ValueNode_BLine::operator()(Time t)const
 				ret_list.push_back(curr);
 
 				ret_list.back().set_split_tangent_both(true);
-				ret_list.back().set_tangent2(curr.get_tangent2());
-				ret_list.back().set_tangent1(curr.get_tangent1()*next_scale);
+				ret_list.back().set_tangents(curr.get_tangent1()*next_scale, curr.get_tangent2());
 
 				next_scale=1.0f;
 			}
@@ -716,8 +714,7 @@ ValueNode_BLine::operator()(Time t)const
 			// where will our tangents point (all assuming that we hadn't vanished)
 			blp_here_off.set_vertex(curve(blp_here_on.get_origin()));
 			blp_here_off.set_width((blp_next_off.get_width()-blp_prev_off.get_width())*blp_here_on.get_origin()+blp_prev_off.get_width());
-			blp_here_off.set_tangent1(curve.derivative(blp_here_on.get_origin()));
-			blp_here_off.set_tangent2(curve.derivative(blp_here_on.get_origin()));
+			blp_here_off.set_tangents(curve.derivative(blp_here_on.get_origin()), curve.derivative(blp_here_on.get_origin()));
 
 			float prev_tangent_scalar(1.0f);
 			float next_tangent_scalar(1.0f);
@@ -992,8 +989,7 @@ ValueNode_BLine::get_blinepoint(std::vector<ListEntry>::const_iterator current, 
 	tt1[1]=t1.mag()*Angle::sin(beta1).get();
 	tt2[0]=t2.mag()*Angle::cos(beta2).get();
 	tt2[1]=t2.mag()*Angle::sin(beta2).get();
-	bpcurr.set_tangent1(tt1);
-	bpcurr.set_tangent2(tt2);
+	bpcurr.set_tangents(tt1, tt2);
 
 	return bpcurr;
 }

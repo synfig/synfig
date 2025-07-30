@@ -121,6 +121,13 @@ std::ostream& operator<<(std::ostream& os, std::nullptr_t)
 	} \
 }
 
+#define ASSERT_VECTOR_APPROX_EQUAL(expected, value) {\
+	if (!synfig::approximate_equal_lp(expected[0], value[0]) || \
+		!synfig::approximate_equal_lp(expected[1], value[1])) { \
+		ERROR_MESSAGE_TWO_VALUES(expected, value) \
+	} \
+}
+
 #define ASSERT_VECTOR_APPROX_EQUAL_MICRO(expected, value) {\
 	if (std::abs(expected[0] - value[0]) > 2e-6 || std::abs(expected[1] - value[1]) > 2e-6) { \
 		ERROR_MESSAGE_TWO_VALUES(expected, value) \
