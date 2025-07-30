@@ -52,6 +52,18 @@ std::ostream& operator<<(std::ostream& os, const synfig::Vector& v)
 	return os;
 }
 
+std::ostream& operator<<(std::ostream& os, const synfig::Angle& a)
+{
+	os << '(' << synfig::Angle::deg(a).get() << "°)'";
+	return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const synfig::Angle::deg& a)
+{
+	os << '(' << a.get() << "°)";
+	return os;
+}
+
 /*
 In Clang, the `operator<<(nullptr_t)` was added in version 9 without the corresponding C++ version guard.
 This behavior was fixed in version 15 (commit: https://github.com/llvm/llvm-project/commit/50cfb76)
