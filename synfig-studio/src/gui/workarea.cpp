@@ -53,6 +53,7 @@
 #include <gui/workarearenderer/renderer_bbox.h>
 #include <gui/workarearenderer/renderer_bonedeformarea.h>
 #include <gui/workarearenderer/renderer_bonesetup.h>
+#include <gui/workarearenderer/renderer_brush_overlay.h>
 #include <gui/workarearenderer/renderer_canvas.h>
 #include <gui/workarearenderer/renderer_dragbox.h>
 #include <gui/workarearenderer/renderer_ducks.h>
@@ -166,10 +167,12 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	onion_skins[1] = 0;
 
 	renderer_canvas = new Renderer_Canvas();
+	renderer_brush_overlay = new Renderer_BrushOverlay();
 	insert_renderer(new Renderer_Background,   0);
 	insert_renderer(renderer_canvas,          10);
 	insert_renderer(new Renderer_Grid,       100);
 	insert_renderer(new Renderer_Guides,     200);
+	insert_renderer(renderer_brush_overlay,  250);
 	insert_renderer(new Renderer_BoneDeformArea, 299);
 	insert_renderer(new Renderer_Ducks,      300);
 	insert_renderer(new Renderer_BBox,       399);
