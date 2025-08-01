@@ -493,6 +493,8 @@ Widget_Defaults::on_brush_decrease_clicked()
 {
 	synfig::Distance distance(synfigapp::Main::get_bline_width());
 	distance-=1;
+	if (distance.get() < 1)
+		distance = 1;
 	synfigapp::Main::set_bline_width(distance);
 }
 
