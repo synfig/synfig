@@ -262,6 +262,7 @@ private:
 	/*! \see get_grow_value set_grow_value */
 	Real outline_grow;
 
+	int interpolation_mode_; 
 
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------
@@ -683,6 +684,9 @@ public:
 	//! Set/Get members for the outline grow value
 	Real get_outline_grow()const;
 	void set_outline_grow(Real x);
+
+	void set_interpolation(int mode) { interpolation_mode_ = mode; }
+    int get_interpolation() const { return interpolation_mode_; }
 
 #if 0
 	void show_canvas_ancestry(String file, int line, String note)const;
