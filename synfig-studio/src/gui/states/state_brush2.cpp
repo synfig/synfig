@@ -701,6 +701,11 @@ void StateBrush2_Context::update_cursor()
 void
 StateBrush2_Context::create_radius_cursor(float radius)
 {
+    if (radius < 1.0f || radius > 200.0f) {
+        get_work_area()->set_cursor(Gdk::PENCIL);
+        return;
+    }
+
 	int diameter = static_cast<int>(ceil(radius * 2.0f));
 	int size = diameter + 4;
 	int hotspot = size / 2;
@@ -891,6 +896,27 @@ void StateBrush2_Context::create_image_layer_dialog()
             bitmap_layer->rendering_surface = new rendering::SurfaceResource(
                 new rendering::SurfaceSW(*blank_surface, true)
             );
+
+        	if (bitmap_layer->get_param_list().count("filename") != 0)
+            {
+        		// generate name based on description
+                String description, filename, filename_param;
+                get_canvas_interface()
+                    ->get_instance()
+                    ->generate_new_name(
+                        bitmap_layer,
+                        description,
+                        filename,
+                        filename_param );
+
+                // create and save surface
+                get_canvas_interface()
+                    ->get_instance()
+                    ->save_surface(bitmap_layer->rendering_surface, filename);
+
+        		bitmap_layer->set_param("filename", filename_param);
+                bitmap_layer->set_description(description);
+            }
         }
     	get_canvas_view()->get_selection_manager()->clear_selected_layers();
         get_canvas_view()->get_selection_manager()->set_selected_layer(bitmap_layer);
@@ -1035,8 +1061,30 @@ Layer_Bitmap::Handle StateBrush2_Context::find_or_create_layer()
 
         if (width > 0 && height > 0) {
             Surface *initial_surface = new Surface(width, height);
+            initial_surface->clear();
             layer->rendering_surface = new rendering::SurfaceResource(
                 new rendering::SurfaceSW(*initial_surface, true));
+
+            if (layer->get_param_list().count("filename") != 0)
+            {
+            	// generate name based on description
+                String description, filename, filename_param;
+            	get_canvas_interface()
+                    ->get_instance()
+                    ->generate_new_name(
+                        layer,
+                        description,
+                        filename,
+                        filename_param );
+
+                // create and save surface
+                get_canvas_interface()
+                    ->get_instance()
+                    ->save_surface(layer->rendering_surface, filename);
+
+                layer->set_param("filename", filename_param);
+                layer->set_description(description);
+            }
         }
 
         canvas_view_->get_selection_manager()->clear_selected_layers();
@@ -1202,6 +1250,15 @@ StateBrush2_Context::event_mouse_up_handler(const Smach::event& x)
 	action_ = nullptr;
     transform_stack_.clear();
 
+	if (layer && layer->rendering_surface) {
+		// save the updated surface to file
+		String filename_param = layer->get_param("filename").get(String());
+		if (!filename_param.empty()) {
+			get_canvas_interface()
+				->get_instance()
+				->save_surface(layer->rendering_surface, filename_param);
+		}
+	}
 	// delay to allow the layer to render
 	// todo : replace with an accurate signal
 	clear_overlay_timer_ = Glib::signal_timeout().connect(
