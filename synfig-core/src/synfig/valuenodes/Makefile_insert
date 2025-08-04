@@ -24,6 +24,7 @@ VALUENODES_HH = \
 	valuenodes/valuenode_gradientcolor.h \
 	valuenodes/valuenode_gradientrotate.h \
 	valuenodes/valuenode_greyed.h \
+	valuenodes/valuenode_ik_angle.h \
 	valuenodes/valuenode_integer.h \
 	valuenodes/valuenode_intstring.h \
 	valuenodes/valuenode_join.h \
@@ -95,6 +96,7 @@ VALUENODES_CC = \
 	valuenodes/valuenode_gradientcolor.cpp \
 	valuenodes/valuenode_gradientrotate.cpp \
 	valuenodes/valuenode_greyed.cpp \
+	valuenodes/valuenode_ik_angle.cpp \
 	valuenodes/valuenode_integer.cpp \
 	valuenodes/valuenode_intstring.cpp \
 	valuenodes/valuenode_join.cpp \
