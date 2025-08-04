@@ -32,14 +32,10 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-
 #include "layerbrush.h"
+#include <synfig/rendering/software/surfacesw.h>
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/localization.h>
-#include <synfigapp/instance.h>
-
-#include <synfig/rendering/software/surfacesw.h>
 
 #endif
 
@@ -59,13 +55,25 @@ ACTION_SET_VERSION(Action::LayerBrush,"0.0");
 
 /* === G L O B A L S ======================================================= */
 
+struct StrokeData {
+	Layer_Bitmap::Handle layer;
+	std::vector<Action::LayerBrush::StrokePoint> points;
+	std::unique_ptr<brushlib::Brush> brush;
+};
+
+static std::vector<StrokeData> strokes_history;
+static std::map<Layer_Bitmap::Handle, Surface> original_layer_surface;
+
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
 
 Action::LayerBrush::BrushStroke::BrushStroke():
 	prepared(false),
-	applied(false)
+	applied(false),
+	stroke_index(-1),
+	brush_(new brushlib::Brush()),
+	undo_mode(REDRAW)
 {
 }
 
@@ -77,110 +85,195 @@ void
 Action::LayerBrush::BrushStroke::reset_brush(const StrokePoint& point)
 {
 	for (int i = 0; i < STATE_COUNT; i++) {
-		brush_.set_state(i, 0);
+		brush_->set_state(i, 0);
 	}
-	brush_.set_state(STATE_X, point.x);
-	brush_.set_state(STATE_Y, point.y);
-	brush_.set_state(STATE_PRESSURE, point.pressure);
-	brush_.set_state(STATE_ACTUAL_X, brush_.get_state(STATE_X));
-	brush_.set_state(STATE_ACTUAL_Y, brush_.get_state(STATE_Y));
-	brush_.set_state(STATE_STROKE, 1.0);
+	brush_->set_state(STATE_X, point.x);
+	brush_->set_state(STATE_Y, point.y);
+	brush_->set_state(STATE_PRESSURE, point.pressure);
+	brush_->set_state(STATE_ACTUAL_X, brush_->get_state(STATE_X));
+	brush_->set_state(STATE_ACTUAL_Y, brush_->get_state(STATE_Y));
+	brush_->set_state(STATE_STROKE, 1.0);
 }
 
 void
-Action::LayerBrush::BrushStroke::render_stroke_to_surface(synfig::Surface& surface)
+Action::LayerBrush::BrushStroke::paint_stroke(synfig::Surface& surface)
 {
-    if (points.empty() || !surface.is_valid() || surface.get_w() <= 0 || surface.get_h() <= 0)
-        return;
+	if (!brush_ || points.empty() || !surface.is_valid()) return;
 
-    brushlib::SurfaceWrapper wrapper(&surface);
-    reset_brush(points[0]);
-    brush_.stroke_to(&wrapper, points[0].x, points[0].y, points[0].pressure, 0.0f, 0.0f, 0.0f);
-    for (auto &point : points) {
-        brush_.stroke_to(&wrapper, point.x, point.y, point.pressure, 0.0f, 0.0f, point.dtime);
-    }
+	brushlib::SurfaceWrapper wrapper(&surface);
+	reset_brush(points[0]);
+	brush_->stroke_to(&wrapper, points[0].x, points[0].y, points[0].pressure, 0.0f, 0.0f, 0.0f);
+	for (auto &point : points) {
+		brush_->stroke_to(&wrapper, point.x, point.y, point.pressure, 0.0f, 0.0f, point.dtime);
+	}
 }
 
 void
 Action::LayerBrush::BrushStroke::prepare()
 {
-    switch (undo_mode) {
-        case SURFACE_SAVING:
-            if (!layer || prepared) return;
-
-            if (layer->rendering_surface) {
-                rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer->rendering_surface);
-                if (lock) {
-                    original_surface = lock->get_surface();
-                }
-            }
-
-            original_tl = layer->get_param("tl").get(Point());
-            original_br = layer->get_param("br").get(Point());
-            prepared = true;
-            break;
-        case REDRAW:
-            break;
-        case CHECKPOINTING:
-            break;
-    }
+	switch (undo_mode) {
+		case SURFACE_SAVING:
+			if (!layer || prepared) return;
+			if (layer->rendering_surface) {
+				rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer->rendering_surface);
+				if (lock) {
+					original_surface = lock->get_surface();
+				}
+			}
+			prepared = true;
+			break;
+		case REDRAW:
+			if (!layer || prepared) return;
+			prepared = true;
+			break;
+		case CHECKPOINTING:
+			break;
+	}
 }
 
 void
 Action::LayerBrush::BrushStroke::apply()
 {
-    switch (undo_mode) {
-        case SURFACE_SAVING:
-            if (!prepared || applied || !layer) {
-                return;
-            }
+	switch (undo_mode) {
+		case SURFACE_SAVING:
+		{
+			if (!prepared || applied || !layer) {
+				return;
+			}
+			if (layer->rendering_surface) {
+				rendering::SurfaceResource::LockWrite<rendering::SurfaceSW> lock(layer->rendering_surface);
+				if (lock && lock->get_surface().is_valid()) {
+					Surface& surface = lock->get_surface();
+					paint_stroke(surface);
+					layer->changed();
+					applied = true;
+				}
+			}
+			break;
+		}
+		case REDRAW:
+		{
+			if (!prepared || applied || !layer || points.empty() || !brush_) return;
 
-            if (layer->rendering_surface) {
-                rendering::SurfaceResource::LockWrite<rendering::SurfaceSW> lock(layer->rendering_surface);
-                if (lock && lock->get_surface().is_valid()) {
-                    Surface& surface = lock->get_surface();
-                    render_stroke_to_surface(surface);
-                    layer->changed();
-                    applied = true;
-                }
-            }
-            break;
-        case REDRAW:
-            break;
-        case CHECKPOINTING:
-            break;
-    }
+			// if this is the first stroke on this layer store the original surface
+			if (original_layer_surface.find(layer) == original_layer_surface.end()) {
+				if (layer->rendering_surface) {
+					rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer->rendering_surface);
+					if (lock && lock->get_surface().is_valid()) {
+						original_layer_surface[layer] = lock->get_surface();
+					}
+				}
+			}
+			// apply stroke
+			if (layer->rendering_surface) {
+				rendering::SurfaceResource::LockWrite<rendering::SurfaceSW> lock(layer->rendering_surface);
+				if (lock && lock->get_surface().is_valid()) {
+					Surface& surface = lock->get_surface();
+					paint_stroke(surface);
+					layer->changed();
+					applied = true;
+				}
+			}
+			// add to history
+			StrokeData stroke_data;
+			stroke_data.points = points;
+			stroke_data.layer = layer;
+			stroke_data.brush = std::move(brush_);
+			strokes_history.push_back(std::move(stroke_data));
+			stroke_index = strokes_history.size() - 1;
+			break;
+		}
+		case CHECKPOINTING:
+			break;
+	}
 }
 
 void
 Action::LayerBrush::BrushStroke::undo()
 {
-    switch (undo_mode) {
-        case SURFACE_SAVING:
-            if (!prepared || !applied || !layer || !original_surface.is_valid()) {
-                return;
+	switch (undo_mode) {
+		case SURFACE_SAVING:
+		{
+			if (!prepared || !applied || !layer || !original_surface.is_valid()) {
+				return;
+			}
+			{
+				std::lock_guard<std::mutex> lock(layer->mutex);
+				synfig::Surface* surface_copy = new synfig::Surface(original_surface);
+				layer->rendering_surface = new rendering::SurfaceResource(
+					new rendering::SurfaceSW(*surface_copy, true));
             }
+			layer->changed();
+			applied = false;
+			break;
+		}
+		case REDRAW:
+		{
+			if (!applied || !layer || strokes_history.empty() || stroke_index != (int)strokes_history.size() - 1) {
+				return;
+			}
+			// remove last stroke
+			brush_ = std::move(strokes_history.back().brush);
+			Layer_Bitmap::Handle undone_layer = strokes_history.back().layer;
+			strokes_history.pop_back();
 
-            {
-                std::lock_guard<std::mutex> lock(layer->mutex);
-                synfig::Surface* surface_copy = new synfig::Surface(original_surface);
-                layer->rendering_surface = new rendering::SurfaceResource(
-                    new rendering::SurfaceSW(*surface_copy, true));
-            }
-            
-            layer->set_param("tl", ValueBase(original_tl));
-            layer->set_param("br", ValueBase(original_br));
-            // reselect layer
-			// get_canvas_interface()->get_selection_manager()->clear_selected_layers(); // Moved to LayerBrush::undo()
-            // get_canvas_interface()->get_selection_manager()->set_selected_layer(stroke.get_layer()); // Moved to LayerBrush::undo()
-            layer->changed();
-            applied = false;
-            break;
-        case REDRAW:
-            break;
-        case CHECKPOINTING:
-            break;
-    }
+			// group strokes by layer
+			std::map<Layer_Bitmap::Handle, std::vector<StrokeData*>> strokes_by_layer;
+			for (auto& stroke_data : strokes_history) {
+				strokes_by_layer[stroke_data.layer].push_back(&stroke_data);
+			}
+			strokes_by_layer[undone_layer];
+
+			// for each layer reapply all past strokes
+			for (auto& pair : strokes_by_layer) {
+				Layer_Bitmap::Handle current_layer = pair.first;
+				std::vector<StrokeData*>& strokes = pair.second;
+
+				if (!current_layer) continue;
+
+				Surface restored_surface = original_layer_surface.find(current_layer)->second;
+
+				for (auto* stroke_data : strokes) {
+					if (!restored_surface.is_valid()) continue;
+
+					auto& stroke_points = stroke_data->points;
+					brushlib::Brush& stroke_brush = *stroke_data->brush;
+					if (stroke_points.empty()) continue;
+
+					auto& first_point = stroke_points[0];
+					for (int i = 0; i < STATE_COUNT; i++) {
+						stroke_brush.set_state(i, 0);
+					}
+					stroke_brush.set_state(STATE_X, first_point.x);
+					stroke_brush.set_state(STATE_Y, first_point.y);
+					stroke_brush.set_state(STATE_PRESSURE, first_point.pressure);
+					stroke_brush.set_state(STATE_ACTUAL_X, stroke_brush.get_state(STATE_X));
+					stroke_brush.set_state(STATE_ACTUAL_Y, stroke_brush.get_state(STATE_Y));
+					stroke_brush.set_state(STATE_STROKE, 1.0);
+
+					brushlib::SurfaceWrapper wrapper(&restored_surface);
+					stroke_brush.stroke_to(&wrapper, first_point.x, first_point.y, first_point.pressure, 0.0f, 0.0f, 0.0f);
+					for (auto &point : stroke_points) {
+						stroke_brush.stroke_to(&wrapper, point.x, point.y, point.pressure, 0.0f, 0.0f, point.dtime);
+					}
+				}
+				// assign the restored surface to the layer
+				if (current_layer->rendering_surface) {
+					rendering::SurfaceResource::LockWrite<rendering::SurfaceSW> lock(current_layer->rendering_surface);
+					if (lock && lock->get_surface().is_valid()) {
+						lock->get_surface() = restored_surface;
+						current_layer->changed();
+					}
+				}
+			}
+			applied = false;
+			stroke_index = -1;
+			break;
+		}
+
+		case CHECKPOINTING:
+			break;
+	}
 }
 
 Action::LayerBrush::LayerBrush():
@@ -235,47 +328,46 @@ Action::LayerBrush::set_param(const synfig::String& name, const Action::Param& p
 bool
 Action::LayerBrush::is_ready() const
 {
-	if (!stroke.get_layer()) return false;
-	if (stroke.get_points().empty()) return false;
-	return Action::CanvasSpecific::is_ready();
+	return stroke.get_layer() && !stroke.get_points().empty() && Action::CanvasSpecific::is_ready();
 }
 
 void
 Action::LayerBrush::perform()
 {
-    // store surface before applying stroke
-    synfig::Surface before_surface;
-    if (stroke.get_layer() && stroke.get_layer()->rendering_surface) {
-        rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(stroke.get_layer()->rendering_surface);
-        if (lock && lock->get_surface().is_valid())
-            before_surface = lock->get_surface();
-    }
+	// store surface before applying stroke
+	synfig::Surface before_surface;
+	if (stroke.get_layer() && stroke.get_layer()->rendering_surface) {
+		rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(stroke.get_layer()->rendering_surface);
+		if (lock && lock->get_surface().is_valid())
+			before_surface = lock->get_surface();
+	}
 
-    // apply stroke
-    if (!stroke.is_prepared()) stroke.prepare();
-    stroke.apply();
+	// apply stroke
+	if (!stroke.is_prepared()) stroke.prepare();
+	stroke.apply();
 
-    // check if surface changed
-    bool surfaces_are_equal = false;
-    if (stroke.get_layer() && stroke.get_layer()->rendering_surface) {
-        rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(stroke.get_layer()->rendering_surface);
-        if (lock && lock->get_surface().is_valid() && before_surface.is_valid()) {
-            auto after = synfig::rendering::Surface::Handle(new synfig::rendering::SurfaceSW(const_cast<synfig::Surface&>(lock->get_surface()), false));
-            auto before = synfig::rendering::Surface::Handle(new synfig::rendering::SurfaceSW(before_surface, false));
-            surfaces_are_equal = after->equals_to(before);
-        }
-    }
+	// check if surface changed
+	bool surfaces_are_equal = false;
+	if (stroke.get_layer() && stroke.get_layer()->rendering_surface) {
+		rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(stroke.get_layer()->rendering_surface);
+		if (lock && lock->get_surface().is_valid() && before_surface.is_valid()) {
+			auto after = synfig::rendering::Surface::Handle(new synfig::rendering::SurfaceSW(const_cast<synfig::Surface&>(lock->get_surface()), false));
+			auto before = synfig::rendering::Surface::Handle(new synfig::rendering::SurfaceSW(before_surface, false));
+			surfaces_are_equal = after->equals_to(before);
+		}
+	}
 
-    // if no changes detected don't save surface don't register action
-    if (surfaces_are_equal) {
-        stroke.undo();
+	// if no changes detected don't register the action
+	if (surfaces_are_equal) {
+		stroke.undo();
 		applied = true;
-        throw Action::Error(Action::Error::TYPE_UNABLE, "");
-    }
+		throw Action::Error(Action::Error::TYPE_UNABLE, "");
+	}
 
-    applied = true;
-    if (get_canvas_interface()) {
+	applied = true;
+	if (get_canvas_interface()) {
 		get_canvas_interface()->signal_layer_param_changed()(stroke.get_layer(), "rendering_surface");
+		get_canvas_interface()->get_selection_manager()->clear_selected_layers();
 		get_canvas_interface()->get_selection_manager()->set_selected_layer(stroke.get_layer());
 	}
 }

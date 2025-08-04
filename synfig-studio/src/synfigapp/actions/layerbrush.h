@@ -30,13 +30,8 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/guid.h>
 #include <synfig/layers/layer_bitmap.h>
-#include <synfig/surface.h>
-#include <synfig/vector.h>
-
 #include <synfigapp/action.h>
-
 #include <brushlib.h>
 
 /* === M A C R O S ========================================================= */
@@ -74,19 +69,17 @@ public:
 		};
 	private:
 		synfig::Layer_Bitmap::Handle layer;
-		brushlib::Brush brush_;
+		std::unique_ptr<brushlib::Brush> brush_;
 
 		synfig::Surface original_surface;
-		synfig::Point original_tl;
-		synfig::Point original_br;
 
 		std::vector<StrokePoint> points;
 		bool prepared;
 		bool applied;
-        UndoMode undo_mode = SURFACE_SAVING;
-
+		int stroke_index;
+		UndoMode undo_mode;
 		void reset_brush(const StrokePoint& point);
-		void render_stroke_to_surface(synfig::Surface& surface);
+		void paint_stroke(synfig::Surface& surface);
 
 	public:
 		BrushStroke();
@@ -95,8 +88,8 @@ public:
 		void set_layer(synfig::Layer_Bitmap::Handle layer) { this->layer = layer; }
 		synfig::Layer_Bitmap::Handle get_layer() const { return layer; }
 
-		brushlib::Brush& brush() { return brush_; }
-		const brushlib::Brush& get_brush() const { return brush_; }
+		brushlib::Brush& brush() { return *brush_; }
+		const brushlib::Brush& get_brush() const { return *brush_; }
 
 		void add_point(const StrokePoint& point) { points.push_back(point); }
 		const std::vector<StrokePoint>& get_points() const { return points; }
@@ -110,7 +103,6 @@ public:
 	};
 
 private:
-	synfig::GUID id;
 	bool applied;
 
 public:
