@@ -53,12 +53,15 @@ ACTION_SET_CATEGORY(Action::LayerBrush,Action::CATEGORY_NONE);
 ACTION_SET_PRIORITY(Action::LayerBrush,0);
 ACTION_SET_VERSION(Action::LayerBrush,"0.0");
 
+#define CHECKPOINT_INTERVAL 100
+
 /* === G L O B A L S ======================================================= */
 
 struct StrokeData {
 	Layer_Bitmap::Handle layer;
 	std::vector<Action::LayerBrush::StrokePoint> points;
 	std::unique_ptr<brushlib::Brush> brush;
+	std::unique_ptr<synfig::Surface> checkpoint_surface;
 };
 
 static std::vector<StrokeData> strokes_history;
@@ -73,7 +76,7 @@ Action::LayerBrush::BrushStroke::BrushStroke():
 	applied(false),
 	stroke_index(-1),
 	brush_(new brushlib::Brush()),
-	undo_mode(REDRAW)
+	undo_mode(CHECKPOINTING)
 {
 }
 
@@ -127,6 +130,8 @@ Action::LayerBrush::BrushStroke::prepare()
 			prepared = true;
 			break;
 		case CHECKPOINTING:
+			if (!layer || prepared) return;
+			prepared = true;
 			break;
 	}
 }
@@ -184,7 +189,51 @@ Action::LayerBrush::BrushStroke::apply()
 			break;
 		}
 		case CHECKPOINTING:
+		{
+			if (!prepared || applied || !layer || points.empty() || !brush_) return;
+
+			// If this is the first stroke on this layer store the original surface
+			if (original_layer_surface.find(layer) == original_layer_surface.end()) {
+				if (layer->rendering_surface) {
+					rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer->rendering_surface);
+					if (lock && lock->get_surface().is_valid()) {
+						original_layer_surface[layer] = lock->get_surface();
+					}
+				}
+			}
+
+			// if we need to checkpoint save the surface
+			std::unique_ptr<Surface> temp_checkpoint;
+			if (strokes_history.size() % CHECKPOINT_INTERVAL == 0) {
+				if(layer->rendering_surface) {
+					rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer->rendering_surface);
+					if (lock && lock->get_surface().is_valid()) {
+						temp_checkpoint.reset(new Surface(lock->get_surface()));
+					}
+				}
+			}
+
+			// apply the stroke
+			if (layer->rendering_surface) {
+				rendering::SurfaceResource::LockWrite<rendering::SurfaceSW> lock(layer->rendering_surface);
+				if (lock && lock->get_surface().is_valid()) {
+					paint_stroke(lock->get_surface());
+					layer->changed();
+					applied = true;
+				}
+			}
+
+			// add to history
+			StrokeData stroke_data;
+			stroke_data.layer = layer;
+			stroke_data.points = std::move(points);
+			stroke_data.brush = std::move(brush_);
+			stroke_data.checkpoint_surface = std::move(temp_checkpoint);
+
+			strokes_history.push_back(std::move(stroke_data));
+			stroke_index = strokes_history.size() - 1;
 			break;
+		}
 	}
 }
 
@@ -212,58 +261,35 @@ Action::LayerBrush::BrushStroke::undo()
 			if (!applied || !layer || strokes_history.empty() || stroke_index != (int)strokes_history.size() - 1) {
 				return;
 			}
-			// remove last stroke
 			brush_ = std::move(strokes_history.back().brush);
-			Layer_Bitmap::Handle undone_layer = strokes_history.back().layer;
+			points = std::move(strokes_history.back().points);
 			strokes_history.pop_back();
 
-			// group strokes by layer
-			std::map<Layer_Bitmap::Handle, std::vector<StrokeData*>> strokes_by_layer;
+			Surface restored_surface = original_layer_surface.find(layer)->second;
+			// replay strokes that belong to this layer
 			for (auto& stroke_data : strokes_history) {
-				strokes_by_layer[stroke_data.layer].push_back(&stroke_data);
-			}
-			strokes_by_layer[undone_layer];
-
-			// for each layer reapply all past strokes
-			for (auto& pair : strokes_by_layer) {
-				Layer_Bitmap::Handle current_layer = pair.first;
-				std::vector<StrokeData*>& strokes = pair.second;
-
-				if (!current_layer) continue;
-
-				Surface restored_surface = original_layer_surface.find(current_layer)->second;
-
-				for (auto* stroke_data : strokes) {
-					if (!restored_surface.is_valid()) continue;
-
-					auto& stroke_points = stroke_data->points;
-					brushlib::Brush& stroke_brush = *stroke_data->brush;
-					if (stroke_points.empty()) continue;
-
-					auto& first_point = stroke_points[0];
-					for (int i = 0; i < STATE_COUNT; i++) {
-						stroke_brush.set_state(i, 0);
+				if (stroke_data.layer == layer) {
+					if (!stroke_data.brush || stroke_data.points.empty()) {
+						continue;
 					}
-					stroke_brush.set_state(STATE_X, first_point.x);
-					stroke_brush.set_state(STATE_Y, first_point.y);
-					stroke_brush.set_state(STATE_PRESSURE, first_point.pressure);
-					stroke_brush.set_state(STATE_ACTUAL_X, stroke_brush.get_state(STATE_X));
-					stroke_brush.set_state(STATE_ACTUAL_Y, stroke_brush.get_state(STATE_Y));
-					stroke_brush.set_state(STATE_STROKE, 1.0);
-
 					brushlib::SurfaceWrapper wrapper(&restored_surface);
-					stroke_brush.stroke_to(&wrapper, first_point.x, first_point.y, first_point.pressure, 0.0f, 0.0f, 0.0f);
-					for (auto &point : stroke_points) {
-						stroke_brush.stroke_to(&wrapper, point.x, point.y, point.pressure, 0.0f, 0.0f, point.dtime);
+					for (int i = 0; i < STATE_COUNT; i++) stroke_data.brush->set_state(i, 0);
+
+					stroke_data.brush->set_state(STATE_X, stroke_data.points[0].x);
+					stroke_data.brush->set_state(STATE_Y, stroke_data.points[0].y);
+					stroke_data.brush->set_state(STATE_PRESSURE, stroke_data.points[0].pressure);
+					stroke_data.brush->stroke_to(&wrapper, stroke_data.points[0].x, stroke_data.points[0].y, stroke_data.points[0].pressure, 0.0f, 0.0f, 0.0f);
+					for (auto& point : stroke_data.points) {
+						stroke_data.brush->stroke_to(&wrapper, point.x, point.y, point.pressure, 0.0f, 0.0f, point.dtime);
 					}
 				}
-				// assign the restored surface to the layer
-				if (current_layer->rendering_surface) {
-					rendering::SurfaceResource::LockWrite<rendering::SurfaceSW> lock(current_layer->rendering_surface);
-					if (lock && lock->get_surface().is_valid()) {
-						lock->get_surface() = restored_surface;
-						current_layer->changed();
-					}
+			}
+			// assign the restored surface to the layer
+			if (layer->rendering_surface) {
+				rendering::SurfaceResource::LockWrite<rendering::SurfaceSW> lock(layer->rendering_surface);
+				if (lock) {
+					lock->get_surface() = restored_surface;
+					layer->changed();
 				}
 			}
 			applied = false;
@@ -272,7 +298,67 @@ Action::LayerBrush::BrushStroke::undo()
 		}
 
 		case CHECKPOINTING:
+		{
+			if (!applied || !layer || strokes_history.empty() || stroke_index != (int)strokes_history.size() - 1) {
+				return;
+			}
+
+			brush_ = std::move(strokes_history.back().brush);
+			points = std::move(strokes_history.back().points);
+			strokes_history.pop_back();
+
+			// find the most recent checkpoint
+			int checkpoint_idx = -1;
+			for (int i = strokes_history.size() - 1; i >= 0; --i) {
+				if (strokes_history[i].layer == layer && strokes_history[i].checkpoint_surface) {
+					checkpoint_idx = i;
+					break;
+				}
+			}
+
+			Surface restored_surface;
+			int redraw_start = 0;
+			if (checkpoint_idx != -1) {
+				restored_surface = *strokes_history[checkpoint_idx].checkpoint_surface;
+				redraw_start = checkpoint_idx;
+			} else {
+				auto it = original_layer_surface.find(layer);
+				if (it != original_layer_surface.end()) {
+					restored_surface = it->second;
+				}
+			}
+
+			// replay strokes that belong to this layer since the checkpoint
+			for (int i = redraw_start; i < strokes_history.size(); ++i) {
+				StrokeData& stroke_data = strokes_history[i];
+				if (stroke_data.layer != layer) continue;
+
+				brushlib::SurfaceWrapper wrapper(&restored_surface);
+				for (int j = 0; j < STATE_COUNT; j++) {
+					stroke_data.brush->set_state(j, 0);
+				}
+				stroke_data.brush->set_state(STATE_X, stroke_data.points[0].x);
+				stroke_data.brush->set_state(STATE_Y, stroke_data.points[0].y);
+				stroke_data.brush->set_state(STATE_PRESSURE, stroke_data.points[0].pressure);
+				stroke_data.brush->stroke_to(&wrapper, stroke_data.points[0].x, stroke_data.points[0].y, stroke_data.points[0].pressure, 0.0f, 0.0f, 0.0f);
+				for (auto &point : stroke_data.points) {
+					stroke_data.brush->stroke_to(&wrapper, point.x, point.y, point.pressure, 0.0f, 0.0f, point.dtime);
+				}
+			}
+
+			// assign the restored surface to the layer.
+			if(layer->rendering_surface) {
+				rendering::SurfaceResource::LockWrite<rendering::SurfaceSW> lock(layer->rendering_surface);
+				if (lock) {
+					lock->get_surface() = restored_surface;
+					layer->changed();
+				}
+			}
+
+			applied = false;
+			stroke_index = -1;
 			break;
+		}
 	}
 }
 
