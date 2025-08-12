@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file ValueNode_ik.cpp
+/*!	\file valuenode_ik_angle.cpp
 **	\brief Implementation of the "Ik angle" valuenode conversion.
 **
 **	\legal
@@ -63,7 +63,6 @@ ValueNode_IK::ValueNode_IK(const ValueBase &value):
 {
 	init_children_vocab();
 	if (value.get_type() == type_angle)
-		
 	{
 		set_link("link_pole",ValueNode_Const::create(Vector(Angle::cos(value.get(Angle())).get(),
 														 Angle::sin(value.get(Angle())).get())));
@@ -73,9 +72,9 @@ ValueNode_IK::ValueNode_IK(const ValueBase &value):
 		set_link("length_bone2",ValueNode_Const::create(Real(2.0)));
 		set_link("length_bone3",ValueNode_Const::create(Real(2.0)));
 		set_link("flip",ValueNode_Const::create(bool(true))); 
-		set_link("joint_bone",ValueNode_Const::create(int(1))); 
-		set_link("t_bone",ValueNode_Const::create(int(1))); 
-		set_link("f_bone",ValueNode_Const::create(int(1))); // 1 = for bone 1 ,2 for bone 2, 3 for bone 3
+		set_link("joint_bone",ValueNode_Const::create(int(Joint::TWOBONE))); 
+		set_link("t_bone",ValueNode_Const::create(int(RigType::ANIMAL))); 
+		set_link("f_bone",ValueNode_Const::create(int(TargetBone::BONE1)));
 		set_link("weight",ValueNode_Const::create(Real(25.0)));
 	}
 	
@@ -104,7 +103,7 @@ ValueNode_IK::operator()(Time t)const
 	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
 		"%s:%d operator()\n", __FILE__, __LINE__);
 
-    auto hitung_theta2_alpha = [](Real d, Real L1, Real L2, Real p) -> std::pair<Real, Real> {
+    auto calculate_theta2_alpha = [](Real d, Real L1, Real L2, Real p) -> std::pair<Real, Real> {
 	    L1 = (L1 > p) ? L1 : p;
 	    L2 = (L2 > p) ? L2 : p;
 	    Real cos_theta2 = synfig::clamp((d*d - L1*L1 - L2*L2) / (2 * L1 * L2), -1.0, 1.0);
@@ -120,24 +119,24 @@ ValueNode_IK::operator()(Time t)const
 	Real L2 = (*length_bone2_)(Time(0)).get(Real());
 	Real L3 = (*length_bone3_)(Time(0)).get(Real());
 	bool flip = (*flip_)(t).get(bool());
-	int bone2 = (*joint_bone_)(Time(0)).get(int());
-	int type = (*t_bone_)(Time(0)).get(int());
-	int for_bone = (*f_bone_)(Time(0)).get(int());
+	int joint_mode = (*joint_bone_)(Time(0)).get(int());
+	int rig_type = (*t_bone_)(Time(0)).get(int());
+	int output_bone_index = (*f_bone_)(Time(0)).get(int());
 	Real weight = synfig::clamp((*weight_)(t).get(Real()), 0.0, 100.0);
 	Vector delta = target - origin;
 	Real dist = delta.mag();
 	// ----- 2-BONE MODE -----
-	if (bone2==1) {
+	if (joint_mode==Joint::TWOBONE) {
 		dist = std::min(dist, L1 + L2);
-		auto [theta2, alpha] = hitung_theta2_alpha(dist, L1, L2, precision);
+		auto [theta2, alpha] = calculate_theta2_alpha(dist, L1, L2, precision);
 		Real angle_to_target = std::atan2(delta[1], delta[0]);
 		Real theta1 = angle_to_target - alpha;
 		if (flip) {
 			theta2 = -theta2;
 			theta1 = angle_to_target + alpha;
 		}
-		if (for_bone == 1) return Angle::rad(theta1);
-		if (for_bone == 2) return Angle::rad(theta2);
+		if (output_bone_index == TargetBone::BONE1) return Angle::rad(theta1);
+		if (output_bone_index == TargetBone::BONE2) return Angle::rad(theta2);
 	}
 	// ----- 3-BONE MODE -----
 	Real x0 = origin[0], y0 = origin[1];
@@ -159,9 +158,9 @@ ValueNode_IK::operator()(Time t)const
 		else L4 = tomin;
 	}
 	Real angle_to_target = std::atan2(delta[1], delta[0]);
-	auto [theta2, alpha] = hitung_theta2_alpha(dist, L4, L3, precision);
+	auto [theta2, alpha] = calculate_theta2_alpha(dist, L4, L3, precision);
 	Real theta1 = angle_to_target - alpha;
-	if ((flip && type !=1) || (!flip && type == 1)) {
+	if (flip != (rig_type == RigType::ANIMAL)){
 		theta2 = -theta2;
 		theta1 = angle_to_target + alpha;
 	}
@@ -171,14 +170,14 @@ ValueNode_IK::operator()(Time t)const
 	Vector base_to_virtual = vt - origin;
 	Real distb = L4;
 	Real angleb = std::atan2(base_to_virtual[1], base_to_virtual[0]);
-	auto [theta2b, alphab] = hitung_theta2_alpha(distb, L1, L2, precision);
+	auto [theta2b, alphab] = calculate_theta2_alpha(distb, L1, L2, precision);
 	Real theta1b = angleb - alphab;
 	if (flip) {
 		theta2b = -theta2b;
 		theta1b = angleb + alphab;
 	}
-	if (for_bone == 1) return Angle::rad(theta1b);
-	if (for_bone == 2) return Angle::rad(theta2b);
+	if (output_bone_index == TargetBone::BONE1) return Angle::rad(theta1b);
+	if (output_bone_index == TargetBone::BONE2) return Angle::rad(theta2b);
 	Real sx = x0 + L1 * std::cos(theta1b);
 	Real sy = y0 + L1 * std::sin(theta1b);
 	Real x2 = tx + L3 * std::cos(theta1 + theta2);
@@ -186,11 +185,11 @@ ValueNode_IK::operator()(Time t)const
 	Real dx3 = (sx - x0) - (x2 - x0);
 	Real dy3 = (sy - y0) - (y2 - y0);
 	Real dist3 = std::sqrt(dx3 * dx3 + dy3 * dy3);
-	auto [theta3, alphax] = hitung_theta2_alpha(dist3, L2, L3, precision);
-	if ((flip && type !=1) || (!flip && type == 1)) {
+	auto [theta3, alphax] = calculate_theta2_alpha(dist3, L2, L3, precision);
+	if (flip != (rig_type == RigType::ANIMAL)){
 		theta3 = -theta3;
 	}
-	if (for_bone == 3) return Angle::rad(theta3);
+	if (output_bone_index == TargetBone::BONE3) return Angle::rad(theta3);
 	return Angle::rad(0); // fallback default
 }
 
@@ -218,17 +217,20 @@ ValueNode::LooseHandle
 ValueNode_IK::get_link_vfunc(int i)const
 {
 	assert(i>=0 && i<link_count());
-	if(i==0) return link_pole_;
-	if(i==1) return link_target_;
-	if(i==2) return length_bone1_;
-	if(i==3) return length_bone2_;
-	if(i==4) return length_bone3_;
-	if(i==5) return flip_;
-	if(i==6) return joint_bone_;
-	if(i==7) return t_bone_;
-	if(i==8) return f_bone_;
-	if(i==9) return weight_;
-	return 0;
+	switch(i)
+    {
+        case 0: return link_pole_;
+        case 1: return link_target_;
+        case 2: return length_bone1_;
+        case 3: return length_bone2_;
+        case 4: return length_bone3_;
+        case 5: return flip_;
+        case 6: return joint_bone_;
+        case 7: return t_bone_;
+        case 8: return f_bone_;
+        case 9: return weight_;
+    }
+    return 0;
 }
 
 bool
@@ -284,17 +286,17 @@ ValueNode_IK::get_children_vocab_vfunc()const
 		.set_description(_("Select bone hand/human or foot/animal rig only for 3 joint bone."))
 		.set_hint("enum")
 		.set_static(true)
-		.add_enum_value(Jenisbone::HUMAN, "hand", _("Hand"))
-		.add_enum_value(Jenisbone::ANIMAL, "foot", _("Foot"))
+		.add_enum_value(RigType::HUMAN, "hand", _("Hand"))
+		.add_enum_value(RigType::ANIMAL, "foot", _("Foot"))
 	);
 	ret.push_back(ParamDesc("f_bone")
 		.set_local_name(_("F bone"))
 		.set_description(_("Select for bone 1 = up,2 = mid or 3 = down, down only for 3 joint bone"))
 		.set_hint("enum")
 		.set_static(true)
-		.add_enum_value(Forbone::BONE1, "for bone1", _("For bone1"))
-		.add_enum_value(Forbone::BONE2, "for bone2", _("For bone2"))
-		.add_enum_value(Forbone::BONE3, "for bone3", _("For bone3"))
+		.add_enum_value(TargetBone::BONE1, "for bone1", _("For bone1"))
+		.add_enum_value(TargetBone::BONE2, "for bone2", _("For bone2"))
+		.add_enum_value(TargetBone::BONE3, "for bone3", _("For bone3"))
 	);
 	ret.push_back(ParamDesc("weight")
 		.set_local_name(_("Weight"))
