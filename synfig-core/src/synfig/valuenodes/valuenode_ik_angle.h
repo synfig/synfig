@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*! \file ValueNode_IK.h
+/*! \file valuenode_ik_angle.h
 **  \brief Header file for implementation of the "Ik angle" valuenode conversion.
 **
 **  \legal
@@ -26,8 +26,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_VALUENODE_IK_H
-#define __SYNFIG_VALUENODE_IK_H
+#ifndef __SYNFIG_VALUENODE_IK_ANGLE_H
+#define __SYNFIG_VALUENODE_IK_ANGLE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -46,11 +46,11 @@ class ValueNode_IK : public LinkableValueNode
         TWOBONE = 1,THREEBONE = 2,
     };
 
-    enum Jenisbone {
+    enum RigType {
         ANIMAL= 1,HUMAN = 2,
     };
 
-    enum Forbone {
+    enum TargetBone {
         BONE1 = 1,BONE2 = 2, BONE3 = 3,
     };
     
@@ -94,4 +94,4 @@ protected:
 
 /* === E N D =============================================================== */
 
-#endif
+#endif //__SYNFIG_VALUENODE_IK_ANGLE_H
