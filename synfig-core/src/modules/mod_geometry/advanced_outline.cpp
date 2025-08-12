@@ -494,7 +494,8 @@ Advanced_Outline::Advanced_Outline():
 	param_smoothness(ValueBase(Real(1))),
 	param_homogeneous(ValueBase(false)),
 	param_dash_offset(ValueBase(Real(0))),
-	param_dash_enabled(ValueBase(false))
+	param_dash_enabled(ValueBase(false)),
+	param_use_vertex_widths(ValueBase(false))
 {
 	clear();
 
@@ -571,7 +572,7 @@ Advanced_Outline::sync_vfunc()
 		const Real gv = exp(get_outline_grow_mark());
 		const Real wk = 0.5*gv*width;
 		const Real we = gv*expand;
-		const bool use_bline_width = wplist.empty();
+		const bool use_bline_width = wplist.empty() || param_use_vertex_widths.get(bool());
 		
 		// build bend
 		rendering::Bend bend;
@@ -714,6 +715,7 @@ Advanced_Outline::set_shape_param(const String & param, const ValueBase &value)
 	IMPORT_VALUE(param_homogeneous);
 	IMPORT_VALUE(param_dash_offset);
 	IMPORT_VALUE(param_dash_enabled);
+	IMPORT_VALUE(param_use_vertex_widths); 
 
 	// Skip polygon parameters
 	return Layer_Shape::set_shape_param(param,value);
@@ -734,6 +736,7 @@ Advanced_Outline::get_param(const String& param)const
 	EXPORT_VALUE(param_homogeneous);
 	EXPORT_VALUE(param_dash_offset);
 	EXPORT_VALUE(param_dash_enabled);
+	EXPORT_VALUE(param_use_vertex_widths);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -825,6 +828,11 @@ Advanced_Outline::get_param_vocab()const
 		.set_is_distance()
 		.set_description(_("Distance to Offset the Dash Items"))
 	);
+	ret.push_back(ParamDesc("use_vertex_widths")
+		.set_local_name(_("Use Vertex Widths"))
+		.set_description(_("When checked, uses the Width value of each vertex point (from the Spline) instead of the Width Points list"))
+		.set_hint("bool")
+	);
 	return ret;
 }
 
@@ -878,4 +886,9 @@ Advanced_Outline::connect_bline_to_wplist(ValueNode::LooseHandle x)
 		return false;
 	wplist->set_bline(ValueNode::Handle(x));
 	return true;
+}
+
+bool 
+Advanced_Outline::get_use_vertex_widths() const {
+    return param_use_vertex_widths.get(bool());
 }
