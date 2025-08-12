@@ -1152,6 +1152,9 @@ StateBrush2_Context::event_mouse_down_handler(const Smach::event& x)
     action_->set_param("canvas_interface", get_canvas_interface());
     action_->set_param("layer", Layer::Handle(layer));
 
+	int undo_mode = synfigapp::Main::settings().get_value("pref.brush_undo_mode", 1);
+    action_->stroke.set_undo_mode(static_cast<synfigapp::Action::LayerBrush::BrushStroke::UndoMode>(undo_mode));
+
     transform_stack_.clear();
     if (!build_transform_stack(canvas_view_->get_canvas(), layer, canvas_view_, transform_stack_)) {
         transform_stack_.clear();

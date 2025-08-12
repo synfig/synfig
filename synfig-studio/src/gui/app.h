@@ -240,6 +240,8 @@ public:
 	static synfig::String default_background_layer_image;
 	static synfig::Color  preview_background_color;
 
+	static int brush_undo_mode;
+
 	//The sound effects that will be used
 	static synfig::SoundProcessor* sound_render_done;
 	static bool use_render_done_sound;

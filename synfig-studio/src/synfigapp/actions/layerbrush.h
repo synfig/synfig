@@ -63,9 +63,9 @@ public:
 	class BrushStroke {
 	public:
 		enum UndoMode {
-			SURFACE_SAVING,
 			REDRAW,
-			CHECKPOINTING
+			CHECKPOINTING,
+			SURFACE_SAVING
 		};
 	private:
 		synfig::Layer_Bitmap::Handle layer;
@@ -87,6 +87,7 @@ public:
 
 		void set_layer(synfig::Layer_Bitmap::Handle layer) { this->layer = layer; }
 		synfig::Layer_Bitmap::Handle get_layer() const { return layer; }
+		void set_undo_mode(UndoMode mode) { undo_mode = mode; }
 
 		brushlib::Brush& brush() { return *brush_; }
 		const brushlib::Brush& get_brush() const { return *brush_; }

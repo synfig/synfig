@@ -258,6 +258,18 @@ Dialog_Setup::create_system_page(PageInfo pi)
 	toggle_clear_redo_stack_on_new_action.set_halign(Gtk::ALIGN_START);
 	toggle_clear_redo_stack_on_new_action.set_hexpand(false);
 
+	// System - Brush Undo Mode
+	attach_label_section(pi.grid, _("Brush Undo Mode"), ++row);
+	pi.grid->attach(brush_undo_mode_combo, 1, row, 1, 1);
+	brush_undo_mode_combo.set_hexpand(true);
+	brush_undo_mode_combo.append("0", _("Redraw (low memory , slower)"));
+	brush_undo_mode_combo.append("1", _("Checkpointing (balanced)"));
+	brush_undo_mode_combo.append("2", _("Surface Saving (high memory , fast)"));
+	
+	brush_undo_mode_combo.set_active_id(strprintf("%i", App::brush_undo_mode));
+	brush_undo_mode_combo.signal_changed().connect(
+		sigc::mem_fun(*this, &Dialog_Setup::on_brush_undo_mode_changed));
+
 	// signal for change resume
 	auto_backup_interval.signal_changed().connect(
 			sigc::bind<int>(sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_AUTOBACKUP));
@@ -663,6 +675,13 @@ Dialog_Setup::on_choose_editor_pressed()
 	}
 }
 
+void
+Dialog_Setup::on_brush_undo_mode_changed()
+{
+	App::brush_undo_mode = atoi(brush_undo_mode_combo.get_active_id().c_str());
+	synfigapp::Main::settings().set_value("pref.brush_undo_mode", brush_undo_mode_combo.get_active_id().c_str());
+}
+
 bool 
 Dialog_Setup::select_path_dialog(const std::string &title, std::string &filepath)
 {
@@ -917,6 +936,8 @@ Dialog_Setup::on_restore_pressed()
 		toggle_animation_thumbnail_preview.set_active(true);
 		toggle_enable_experimental_features.set_active(false);
 		toggle_clear_redo_stack_on_new_action.set_active(true);
+		brush_undo_mode_combo.set_active_id("1");
+		App::brush_undo_mode = 1;
 		toggle_use_dark_theme.set_active(false);
 		toggle_show_file_toolbar.set_active(true);
 		listviewtext_brushes_path->clear_items();
@@ -1294,6 +1315,9 @@ Dialog_Setup::refresh()
 		bool active = synfigapp::Main::settings().get_value("pref.clear_redo_stack_on_new_action", true);
 		toggle_clear_redo_stack_on_new_action.set_active(active);
 	}
+
+	// Refresh the brush undo mode
+	brush_undo_mode_combo.set_active_id(strprintf("%i", App::brush_undo_mode));
 
 	// Refresh the status of the theme flag
 	toggle_use_dark_theme.set_active(App::use_dark_theme);
