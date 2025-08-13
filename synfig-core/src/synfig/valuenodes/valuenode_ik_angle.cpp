@@ -102,16 +102,7 @@ ValueNode_IK::operator()(Time t)const
 {
 	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
 		"%s:%d operator()\n", __FILE__, __LINE__);
-
-    auto calculate_theta2_alpha = [](Real d, Real L1, Real L2, Real p) -> std::pair<Real, Real> {
-	    L1 = (L1 > p) ? L1 : p;
-	    L2 = (L2 > p) ? L2 : p;
-	    Real cos_theta2 = synfig::clamp((d*d - L1*L1 - L2*L2) / (2 * L1 * L2), -1.0, 1.0);
-	    Real theta2 = std::acos(cos_theta2);
-	    Real cos_alpha = synfig::clamp((d*d + L1*L1 - L2*L2) / (2 * d * L1), -1.0, 1.0);
-	    Real alpha = std::acos(cos_alpha);
-	    return std::make_pair(theta2, alpha);
-	};
+	
     static const Real precision = 0.000000001;
 	Vector origin = (*link_pole_)(t).get(Vector());
 	Vector target = (*link_target_)(t).get(Vector());
@@ -125,10 +116,15 @@ ValueNode_IK::operator()(Time t)const
 	Real weight = synfig::clamp((*weight_)(t).get(Real()), 0.0, 100.0);
 	Vector delta = target - origin;
 	Real dist = delta.mag();
+	L1 = (L1 > precision) ? L1 : precision;
+	L2 = (L2 > precision) ? L2 : precision;
 	// ----- 2-BONE MODE -----
 	if (joint_mode==Joint::TWOBONE) {
 		dist = std::min(dist, L1 + L2);
-		auto [theta2, alpha] = calculate_theta2_alpha(dist, L1, L2, precision);
+		Real cos_theta2 = synfig::clamp((dist*dist - L1*L1 - L2*L2) / (2 * L1 * L2), -1.0, 1.0);
+	    Real theta2 = std::acos(cos_theta2);
+		Real cos_alpha = synfig::clamp((dist*dist + L1*L1 - L2*L2) / (2 * dist * L1), -1.0, 1.0);
+		Real alpha = std::acos(cos_alpha);
 		Real angle_to_target = std::atan2(delta[1], delta[0]);
 		Real theta1 = angle_to_target - alpha;
 		if (flip) {
@@ -151,14 +147,19 @@ ValueNode_IK::operator()(Time t)const
 		else L4 = tomin;
 	} else {
 		tomin = L3 - (L3 * weight / 100);
-		Real fmin = (type == 1) ? L3 : 0.0;
+		Real fmin = (rig_type == RigType::ANIMAL ) ? L3 : 0.0;
 		if (fabs(fmax - fmin) > precision){
 			L4 = tomin + (l1l2 - tomin) * (dist - fmin) / (fmax - fmin);
 		}
 		else L4 = tomin;
 	}
 	Real angle_to_target = std::atan2(delta[1], delta[0]);
-	auto [theta2, alpha] = calculate_theta2_alpha(dist, L4, L3, precision);
+	L4 = (L4 > precision) ? L4 : precision;
+	L3 = (L3 > precision) ? L3 : precision;
+	Real cos_theta2 = synfig::clamp((dist*dist - L4*L4 - L3*L3) / (2 * L4 * L3), -1.0, 1.0);
+	Real theta2 = std::acos(cos_theta2);
+	Real cos_alpha = synfig::clamp((dist*dist + L4*L4 - L3*L3) / (2 * dist * L4), -1.0, 1.0);
+	Real alpha = std::acos(cos_alpha);
 	Real theta1 = angle_to_target - alpha;
 	if (flip != (rig_type == RigType::ANIMAL)){
 		theta2 = -theta2;
@@ -170,7 +171,10 @@ ValueNode_IK::operator()(Time t)const
 	Vector base_to_virtual = vt - origin;
 	Real distb = L4;
 	Real angleb = std::atan2(base_to_virtual[1], base_to_virtual[0]);
-	auto [theta2b, alphab] = calculate_theta2_alpha(distb, L1, L2, precision);
+	Real cos_theta2b = synfig::clamp((distb*distb - L1*L1 - L2*L2) / (2 * L1 * L2), -1.0, 1.0);
+	Real theta2b = std::acos(cos_theta2b);
+	Real cos_alphab = synfig::clamp((distb*distb + L1*L1 - L2*L2) / (2 * distb * L1), -1.0, 1.0);
+	Real alphab = std::acos(cos_alphab);
 	Real theta1b = angleb - alphab;
 	if (flip) {
 		theta2b = -theta2b;
@@ -185,7 +189,8 @@ ValueNode_IK::operator()(Time t)const
 	Real dx3 = (sx - x0) - (x2 - x0);
 	Real dy3 = (sy - y0) - (y2 - y0);
 	Real dist3 = std::sqrt(dx3 * dx3 + dy3 * dy3);
-	auto [theta3, alphax] = calculate_theta2_alpha(dist3, L2, L3, precision);
+	Real cos_theta3 = synfig::clamp((dist3*dist3 - L2*L2 - L3*L3) / (2 * L2 * L3), -1.0, 1.0);
+	Real theta3 = std::acos(cos_theta3);
 	if (flip != (rig_type == RigType::ANIMAL)){
 		theta3 = -theta3;
 	}
