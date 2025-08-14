@@ -208,6 +208,17 @@ Dockable::set_toolbar(Gtk::Toolbar& toolbar)
 	toolbar_container->add(toolbar);
 }
 
+void
+Dockable::set_toolbar(Gtk::Box& box)
+{
+    reset_toolbar();
+    box.set_spacing(4);
+    box.set_hexpand(true);
+    box.set_vexpand(false);
+    box.show_all();
+    toolbar_container->add(box);
+}
+
 Gtk::ToolButton*
 Dockable::add_button(const std::string& icon_name, const synfig::String& tooltip)
 {
