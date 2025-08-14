@@ -202,7 +202,7 @@ Action::LayerEmbed::prepare()
 		String new_filename;
 		String new_filename_param;
 
-		get_canvas_interface()->get_instance()->generate_new_name(
+		get_canvas_interface()->get_instance()->generate_new_image_filename(
 			layer_import,
 			new_description,
 			new_filename,
