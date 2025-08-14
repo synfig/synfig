@@ -252,10 +252,6 @@ LayerActionManager::LayerActionManager():
 	action_select_all_child_layers_->set_sensitive(false);
 }
 
-LayerActionManager::~LayerActionManager()
-{
-}
-
 void
 LayerActionManager::set_ui_manager(const Glib::RefPtr<Gtk::UIManager> &x)
 {

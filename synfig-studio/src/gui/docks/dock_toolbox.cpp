@@ -135,7 +135,7 @@ void Dock_Toolbox::write_layout_string(std::string& params) const
 void Dock_Toolbox::read_layout_string(const std::string& params) const
 {
 	try {
-		int pos = std::stoi(params.c_str());
+		int pos = std::stoi(params);
 		tool_box_paned->set_position(pos);
 	} catch (...) {
 		// ignores invalid value and let it use the default one

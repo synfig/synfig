@@ -83,8 +83,8 @@ Layer_Bevel::calc_offset()
 	offset[0]=Angle::cos(angle).get()*depth;
 	offset[1]=Angle::sin(angle).get()*depth;
 
-	offset45[0]=Angle::cos(angle-Angle::deg(45)).get()*depth*0.707106781;
-	offset45[1]=Angle::sin(angle-Angle::deg(45)).get()*depth*0.707106781;
+	offset45[0]=Angle::cos(angle-Angle::deg(45)).get()*depth*M_SQRT1_2;
+	offset45[1]=Angle::sin(angle-Angle::deg(45)).get()*depth*M_SQRT1_2;
 }
 
 bool

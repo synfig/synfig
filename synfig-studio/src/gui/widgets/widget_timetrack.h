@@ -115,7 +115,7 @@ private:
 		synfig::TimePoint time_point;
 		Gtk::TreePath path;
 
-		WaypointItem() {}
+		WaypointItem() = default;
 		WaypointItem(const synfig::TimePoint time_point, const Gtk::TreePath &path);
 
 		bool is_draggable() const;

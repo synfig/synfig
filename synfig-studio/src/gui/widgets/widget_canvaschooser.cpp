@@ -143,7 +143,7 @@ Widget_CanvasChooser::chooser_menu()
 		return;
 	}
 
-	if (canvas_name == "")
+	if (canvas_name.empty())
 	{
 		App::dialog_message_1b(
 				"ERROR",
