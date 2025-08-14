@@ -125,7 +125,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateSketch::StateSketch():
-	Smach::state<StateSketch_Context>("sketch", N_("Sketch Tool"))
+	Smach::state<StateSketch_Context>("sketch", N_("Sketch"))
 {
 	insert(event_def(EVENT_STOP,&StateSketch_Context::event_stop_handler));
 	//insert(event_def(EVENT_REFRESH,&StateSketch_Context::event_refresh_handler));
