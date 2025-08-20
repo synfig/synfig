@@ -125,9 +125,7 @@ private:
     synfig::Rect overlay_rect_;
 	sigc::connection clear_overlay_timer_;
 
-    brushlib::Brush brush_;
     Glib::TimeVal time_;
-
     etl::handle<synfigapp::Action::LayerBrush> action_;
 
 	TransformStack transform_stack_;
@@ -138,6 +136,10 @@ private:
 	   TransformStack& transform_stack);
 
     BrushConfig selected_brush_config;
+    BrushConfig original_brush_config;
+
+	std::map<int, Gtk::Scale*> setting_controls;
+	std::map<int, Gtk::Button*> reset_buttons;
     Gtk::ToggleToolButton *selected_brush_button;
     std::map<String, Gtk::ToggleToolButton*> brush_buttons;
     synfigapp::Settings &settings;
@@ -158,8 +160,6 @@ public:
     StateBrush2_Context(CanvasView* canvas_view);
     ~StateBrush2_Context();
 
-	WorkArea* get_work_area() const;
-
     void refresh_tool_options();
     Smach::event_result event_refresh_tool_options(const Smach::event& x);
 	void create_image_layer_dialog();
@@ -167,12 +167,16 @@ public:
     void update_overlay_preview(const synfig::Surface& surface, const synfig::Rect& rect);
     void clear_overlay_preview();
 
+	void create_brushes_tab(Gtk::Notebook *notebook);
+	void create_settings_tab(Gtk::Notebook *notebook);
+
     void draw_to(Vector pos, Real pressure);
-    void reset_brush(float x, float y, float pressure);
     Layer_Bitmap::Handle find_or_create_layer();
+
 	const CanvasView::Handle& get_canvas_view() const { return canvas_view_; }
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface() const { return canvas_view_->canvas_interface(); }
 	synfig::Canvas::Handle get_canvas() const { return canvas_view_->get_canvas(); }
+	WorkArea* get_work_area() const { return canvas_view_->get_work_area();}
 
 	Smach::event_result event_mouse_down_handler(const Smach::event& x);
 	Smach::event_result event_mouse_up_handler(const Smach::event& x);
@@ -529,6 +533,9 @@ StateBrush2_Context::~StateBrush2_Context()
 
 	save_settings();
 	brush_buttons.clear();
+	setting_controls.clear();
+	reset_buttons.clear();
+	original_brush_config.clear();
 	selected_brush_button = nullptr;
 	clear_overlay_preview();
 	get_work_area()->reset_cursor();
@@ -565,16 +572,42 @@ void
 StateBrush2_Context::refresh_tool_options()
 {
 	brush_buttons.clear();
+	setting_controls.clear();
+	reset_buttons.clear();
+	original_brush_config.clear();
 	App::dialog_tool_options->clear();
 	App::dialog_tool_options->set_local_name(_("Brush Tool"));
 	App::dialog_tool_options->set_name("brush");
 
+	Gtk::Notebook *notebook = Gtk::manage(new Gtk::Notebook());
+	notebook->set_hexpand(true);
+	notebook->set_vexpand(true);
+
+	create_brushes_tab(notebook);
+	create_settings_tab(notebook);
+	notebook->show_all();
+	App::dialog_tool_options->add(*notebook);
+}
+
+void
+StateBrush2_Context::create_brushes_tab(Gtk::Notebook *notebook)
+{
 	// create the brush options container
 	Gtk::Grid *brush_option_grid = Gtk::manage(new Gtk::Grid());
 	brush_option_grid->set_orientation(Gtk::ORIENTATION_VERTICAL);
 
 	// add options
 	brush_option_grid->add(eraser_checkbox);
+
+	// connect eraser checkbox signal to update brush
+	eraser_checkbox.signal_toggled().connect([this]() {
+		if (selected_brush_button && selected_brush_config.filename.length() > 0) {
+			selected_brush_config.settings[BRUSH_ERASER].base = eraser_checkbox.get_active() ? 1.0 : 0.0;
+			if (action_) {
+				selected_brush_config.apply(action_->stroke.brush());
+			}
+		}
+	});
 
 	// create brushes scrollable palette
 	Gtk::ToolItemGroup *tool_item_group = manage(new class Gtk::ToolItemGroup());
@@ -599,6 +632,7 @@ StateBrush2_Context::refresh_tool_options()
 
 	// run through brush definition and assign a button
 	Gtk::ToggleToolButton* first_button = nullptr;
+	String first_button_filename;
 	for(std::set<String>::const_iterator i = files.begin(); i != files.end(); ++i)
 	{
 		if (!brush_buttons.count(*i) && filesystem::Path::filename_extension(*i) == ".myb")
@@ -627,26 +661,147 @@ StateBrush2_Context::refresh_tool_options()
 				// keep the first brush
 				if (!first_button)
 					first_button = brush_button;
+					first_button_filename = brush_file;
 			}
 		}
 	}
-
 	brush_option_grid->add(*brushes_scroll);
 
-	// Add create image layer button
+	// add create image layer button
 	Gtk::Button* create_image_layer_btn = Gtk::manage(new Gtk::Button(_("Create image layer")));
 	brush_option_grid->add(*create_image_layer_btn);
 	create_image_layer_btn->signal_clicked().connect(sigc::mem_fun(*this, &StateBrush2_Context::create_image_layer_dialog));
-
 	brush_option_grid->show_all();
 
-	App::dialog_tool_options->add(*brush_option_grid);
+	Gtk::Label *tab_label = Gtk::manage(new Gtk::Label(_("Brushes")));
+	notebook->append_page(*brush_option_grid, *tab_label);
 
 	// select first brush
 	if (first_button) {
+		select_brush(first_button, first_button_filename);
 		first_button->set_active(true);
-		selected_brush_button = first_button;
 	}
+}
+
+void
+StateBrush2_Context::create_settings_tab(Gtk::Notebook *notebook)
+{
+	// create settings scrollable container
+	Gtk::ScrolledWindow *settings_scroll = Gtk::manage(new Gtk::ScrolledWindow());
+	settings_scroll->set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
+	settings_scroll->set_hexpand(true);
+	settings_scroll->set_vexpand(true);
+
+	// create settings grid
+	Gtk::Grid *settings_grid = Gtk::manage(new Gtk::Grid());
+	settings_grid->set_row_spacing(4);
+	settings_grid->set_column_spacing(8);
+	settings_grid->set_border_width(12);
+	settings_grid->set_row_homogeneous(true);
+
+	struct SettingInfo {
+		const char* display_name;
+		float min_value;
+		float max_value;
+		const char* tooltip;
+	};
+	const SettingInfo setting_info[BRUSH_SETTINGS_COUNT] = {
+		{"Opacity", 0.0f, 2.0f, "0 means brush is transparent, 1 fully visible\n(also known as alpha or opacity)"},
+		{"Opacity multiply", 0.0f, 2.0f, "This gets multiplied with opaque. You should only change the pressure input of this setting."},
+		{"Opacity linearize", 0.0f, 2.0f, "Correct the nonlinearity introduced by blending multiple dabs on top of each other."},
+		{"Radius", -2.0f, 5.0f, "Basic brush radius (logarithmic)\n 0.7 means 2 pixels\n 3.0 means 20 pixels"},
+		{"Hardness", 0.0f, 1.0f, "Hard brush-circle borders (setting to zero will draw nothing)."},
+		{"Anti-aliasing", 0.0f, 5.0f, "This setting decreases the hardness when necessary to prevent a pixel staircase effect."},
+		{"Dabs per basic radius", 0.0f, 6.0f, "How many dabs to draw while the pointer moves a distance of one brush radius"},
+		{"Dabs per actual radius", 0.0f, 6.0f, "Same as above, but the radius actually drawn is used, which can change dynamically"},
+		{"Dabs per second", 0.0f, 80.0f, "Dabs to draw each second, no matter how far the pointer moves"},
+		{"Radius by random", 0.0f, 1.5f, "Alter the radius randomly each dab."},
+		{"Fine speed filter", 0.0f, 0.2f, "How slow the input fine speed is following the real speed"},
+		{"Gross speed filter", 0.0f, 3.0f, "Same as 'fine speed filter', but note that the range is different"},
+		{"Fine speed gamma", -8.0f, 8.0f, "This changes the reaction of the 'fine speed' input to extreme physical speed."},
+		{"Gross speed gamma", -8.0f, 8.0f, "Same as 'fine speed gamma' for gross speed"},
+		{"Jitter", 0.0f, 25.0f, "Add a random offset to the position where each dab is drawn"},
+		{"Offset by speed", -3.0f, 3.0f, "Change position depending on pointer speed"},
+		{"Offset by speed filter", 0.0f, 15.0f, "How slow the offset goes back to zero when the cursor stops moving"},
+		{"Slow position tracking", 0.0f, 10.0f, "Slowdown pointer tracking speed. 0 disables it, higher values remove more jitter"},
+		{"Slow tracking per dab", 0.0f, 10.0f, "Similar as above but at brushdab level"},
+		{"Tracking noise", 0.0f, 12.0f, "Add randomness to the mouse pointer"},
+		{"Color hue", 0.0f, 1.0f, "Color hue"},
+		{"Color saturation", -0.5f, 1.5f, "Color saturation"},
+		{"Color value", -0.5f, 1.5f, "Color value (brightness, intensity)"},
+		{"Save color", 0.0f, 1.0f, "When selecting a brush, the color can be restored to the color that the brush was saved with."},
+		{"Change color hue", -2.0f, 2.0f, "Change color hue."},
+		{"Change color lightness (HSL)", -2.0f, 2.0f, "Change the color lightness (luminance) using the HSL color model."},
+		{"Change color satur. (HSL)", -2.0f, 2.0f, "Change the color saturation using the HSL color model."},
+		{"Change color value (HSV)", -2.0f, 2.0f, "Change the color value (brightness, intensity) using the HSV color model."},
+		{"Change color satur. (HSV)", -2.0f, 2.0f, "Change the color saturation using the HSV color model."},
+		{"Smudge", 0.0f, 1.0f, "Paint with the smudge color instead of the brush color."},
+		{"Smudge length", 0.0f, 1.0f, "This controls how fast the smudge color becomes the color you are painting on."},
+		{"Smudge radius", -1.6f, 1.6f, "This modifies the radius of the circle where color is picked up for smudging."},
+		{"Eraser", 0.0f, 1.0f, "How much this tool behaves like an eraser"},
+		{"Stroke threshold", 0.0f, 0.5f, "How much pressure is needed to start a stroke."},
+		{"Stroke duration", -1.0f, 7.0f, "How far you have to move until the stroke input reaches 1.0."},
+		{"Stroke hold time", 0.0f, 10.0f, "This defines how long the stroke input stays at 1.0."},
+		{"Custom input", -5.0f, 5.0f, "Set the custom input to this value."},
+		{"Custom input filter", 0.0f, 10.0f, "How slow the custom input actually follows the desired value."},
+		{"Elliptical dab: ratio", 1.0f, 10.0f, "Aspect ratio of the dabs; must be >= 1.0"},
+		{"Elliptical dab: angle", 0.0f, 180.0f, "Angle by which elliptical dabs are tilted"},
+		{"Direction filter", 0.0f, 10.0f, "A low value will make the direction input adapt more quickly"},
+		{"Lock alpha", 0.0f, 1.0f, "Do not modify the alpha channel of the layer"}
+	};
+
+	// build rows
+	for (int i = 0; i < BRUSH_SETTINGS_COUNT; ++i) {
+		const SettingInfo& info = setting_info[i];
+		Gtk::Box *row_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 8));
+
+		// label
+		Gtk::Label *label = Gtk::manage(new Gtk::Label(_(info.display_name)));
+		label->set_halign(Gtk::ALIGN_START);
+		label->set_tooltip_text(_(info.tooltip));
+		label->set_size_request(150, -1);
+		label->set_ellipsize(Pango::ELLIPSIZE_END);
+		label->set_xalign(0.0);
+		row_box->pack_start(*label, false, false, 0);
+
+		// slider
+		Gtk::Scale *slider = Gtk::manage(new Gtk::Scale(Gtk::ORIENTATION_HORIZONTAL));
+		slider->set_range(info.min_value, info.max_value);
+		slider->set_digits(3);
+		slider->set_draw_value(true);
+		slider->set_value_pos(Gtk::POS_RIGHT);
+		slider->set_tooltip_text(_(info.tooltip));
+		slider->set_hexpand(true);
+
+		float initial_value = selected_brush_button ? selected_brush_config.settings[i].base : info.min_value;
+		slider->set_value(initial_value);
+		// apply values changes to brush
+		slider->signal_value_changed().connect([this, i, slider]() {
+			selected_brush_config.settings[i].base = slider->get_value();
+			if (action_) selected_brush_config.apply(action_->stroke.brush());
+			if (i == BRUSH_RADIUS_LOGARITHMIC) {
+				Real brush_radius = expf(selected_brush_config.settings[i].base);
+				synfigapp::Main::set_bline_width(Distance(brush_radius, Distance::SYSTEM_UNITS));
+				update_cursor();
+			}
+		});
+		row_box->pack_start(*slider, true, true, 0);
+		setting_controls[i] = slider;
+
+		// reset button
+		Gtk::Button *reset_btn = Gtk::manage(new Gtk::Button("↺"));
+		reset_btn->set_valign(Gtk::ALIGN_CENTER);
+		reset_btn->signal_clicked().connect([this, i, slider]() {
+			slider->set_value(original_brush_config.settings[i].base);
+		});
+		row_box->pack_start(*reset_btn, false, false, 0);
+		settings_grid->attach(*row_box, 0, i, 1, 1);
+	}
+	// add to tab
+	settings_scroll->add(*settings_grid);
+	Gtk::Label *tab_label = Gtk::manage(new Gtk::Label(_("Settings")));
+	notebook->append_page(*settings_scroll, *tab_label);
+	settings_scroll->show_all();
 }
 
 void
@@ -660,9 +815,20 @@ StateBrush2_Context::select_brush(Gtk::ToggleToolButton *button, String filename
 		selected_brush_config.load(filename);
 		eraser_checkbox.set_active(selected_brush_config.settings[BRUSH_ERASER].base > 0.0);
 		selected_brush_button = button;
+	    original_brush_config = selected_brush_config;
 		Real brush_radius = expf(selected_brush_config.settings[BRUSH_RADIUS_LOGARITHMIC].base);
 		synfigapp::Main::set_bline_width(Distance(brush_radius, Distance::SYSTEM_UNITS));
-	    update_cursor();
+		update_cursor();
+		// apply brush settings to sliders
+		for (int i = 0; i < BRUSH_SETTINGS_COUNT; ++i) {
+			auto it = setting_controls.find(i);
+			if (it != setting_controls.end()) {
+				Gtk::Scale* slider = it->second;
+				if (slider) {
+					slider->set_value(selected_brush_config.settings[i].base);
+				}
+			}
+		}
 	}
 }
 
@@ -985,31 +1151,9 @@ StateBrush2_Context::draw_to(Vector event_pos, Real pressure)
 
 	// apply stroke point
 	brushlib::SurfaceWrapper wrapper(&overlay_surface_);
-    brush_.stroke_to(&wrapper, surface_x, surface_y, pressure, 0.0f, 0.0f, dtime);
+	action_->stroke.brush().stroke_to(&wrapper, surface_x, surface_y, pressure, 0.0f, 0.0f, dtime);
 	action_->stroke.add_point({surface_x, surface_y, pressure, dtime});
-    update_overlay_preview(overlay_surface_, overlay_rect_);
-}
-
-void
-StateBrush2_Context::reset_brush(float x, float y, float pressure)
-{
-	for (int i = 0; i < STATE_COUNT; i++)
-	{
-		brush_.set_state(i, 0);
-	}
-
-	brush_.set_state(STATE_X, x);
-	brush_.set_state(STATE_Y, y);
-	brush_.set_state(STATE_PRESSURE, pressure);
-	brush_.set_state(STATE_ACTUAL_X, x);
-	brush_.set_state(STATE_ACTUAL_Y, y);
-	brush_.set_state(STATE_STROKE, 1.0);
-}
-
-WorkArea*
-StateBrush2_Context::get_work_area() const
-{
-	return canvas_view_->get_work_area();
+	update_overlay_preview(overlay_surface_, overlay_rect_);
 }
 
 Layer_Bitmap::Handle StateBrush2_Context::find_or_create_layer()
@@ -1175,9 +1319,8 @@ StateBrush2_Context::event_mouse_down_handler(const Smach::event& x)
         }
     }
 
-    selected_brush_config.apply(action_->stroke.brush());
+	selected_brush_config.apply(action_->stroke.brush());
 	Color color = synfigapp::Main::get_outline_color();
-
     Real epsilon = 0.00000001;
     Real r(color.get_r()), g(color.get_g()), b(color.get_b());
     Real max_rgb = std::max(r, std::max(g, b));
@@ -1191,37 +1334,20 @@ StateBrush2_Context::event_mouse_down_handler(const Smach::event& x)
                 60.0 * fmod ((g - b)/(diff), 6.0) : max_rgb == g ?
                     60.0 * (((b - r)/(diff))+2.0) : 60.0 * (((r - g)/(diff))+4.0);
 
-    Real opaque = color.get_a();
-    Real radius = synfigapp::Main::get_bline_width();
-    Real eraser = eraser_checkbox.get_active() ? 1.0 : 0.0;
-
-    // Apply the settings to the action brush
-    action_->stroke.brush().set_base_value(BRUSH_COLOR_H, hue/360.0);
-    action_->stroke.brush().set_base_value(BRUSH_COLOR_S, sat);
-    action_->stroke.brush().set_base_value(BRUSH_COLOR_V, val);
-    action_->stroke.brush().set_base_value(BRUSH_OPAQUE, opaque);
-    action_->stroke.brush().set_base_value(BRUSH_RADIUS_LOGARITHMIC, log(radius));
-    action_->stroke.brush().set_base_value(BRUSH_ERASER, eraser);
-
-    action_->stroke.prepare();
-
-    // apply settings to overlay brush
-    selected_brush_config.apply(brush_);
-    brush_.set_base_value(BRUSH_COLOR_H, hue/360.0);
-    brush_.set_base_value(BRUSH_COLOR_S, sat);
-    brush_.set_base_value(BRUSH_COLOR_V, val);
-    brush_.set_base_value(BRUSH_OPAQUE, opaque);
-    brush_.set_base_value(BRUSH_RADIUS_LOGARITHMIC, log(radius));
-    brush_.set_base_value(BRUSH_ERASER, eraser);
+	Real radius = synfigapp::Main::get_bline_width();
+	action_->stroke.brush().set_base_value(BRUSH_COLOR_H, hue/360.0);
+	action_->stroke.brush().set_base_value(BRUSH_COLOR_S, sat);
+	action_->stroke.brush().set_base_value(BRUSH_COLOR_V, val);
+	action_->stroke.brush().set_base_value(BRUSH_RADIUS_LOGARITHMIC, log(radius));
+	action_->stroke.prepare();
 	update_cursor();
 
-    // reset brush and paint first point
+	// paint first point
     Point pos = transform_stack_.unperform(event.pos);
     Point layer_tl = layer->get_param("tl").get(Point());
     Point layer_br = layer->get_param("br").get(Point());
     float surface_x = ((pos[0] - layer_tl[0]) / (layer_br[0] - layer_tl[0])) * overlay_surface_.get_w();
     float surface_y = ((pos[1] - layer_tl[1]) / (layer_br[1] - layer_tl[1])) * overlay_surface_.get_h();
-    reset_brush(surface_x, surface_y, event.pressure);
 	draw_to(event.pos , event.pressure);
 	return Smach::RESULT_ACCEPT;
 }
