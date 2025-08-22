@@ -264,20 +264,25 @@ Action::LayerBrush::BrushStroke::undo()
 			brush_ = std::move(strokes_history.back().brush);
 			points = std::move(strokes_history.back().points);
 			strokes_history.pop_back();
-
 			Surface restored_surface = original_layer_surface.find(layer)->second;
+
+			brushlib::SurfaceWrapper wrapper(&restored_surface);
 			// replay strokes that belong to this layer
 			for (auto& stroke_data : strokes_history) {
 				if (stroke_data.layer == layer) {
 					if (!stroke_data.brush || stroke_data.points.empty()) {
 						continue;
 					}
-					brushlib::SurfaceWrapper wrapper(&restored_surface);
+					// reset brush
 					for (int i = 0; i < STATE_COUNT; i++) stroke_data.brush->set_state(i, 0);
 
 					stroke_data.brush->set_state(STATE_X, stroke_data.points[0].x);
 					stroke_data.brush->set_state(STATE_Y, stroke_data.points[0].y);
 					stroke_data.brush->set_state(STATE_PRESSURE, stroke_data.points[0].pressure);
+					stroke_data.brush->set_state(STATE_ACTUAL_X, stroke_data.brush->get_state(STATE_X));
+					stroke_data.brush->set_state(STATE_ACTUAL_Y, stroke_data.brush->get_state(STATE_Y));
+					stroke_data.brush->set_state(STATE_STROKE, 1.0);
+					
 					stroke_data.brush->stroke_to(&wrapper, stroke_data.points[0].x, stroke_data.points[0].y, stroke_data.points[0].pressure, 0.0f, 0.0f, 0.0f);
 					for (auto& point : stroke_data.points) {
 						stroke_data.brush->stroke_to(&wrapper, point.x, point.y, point.pressure, 0.0f, 0.0f, point.dtime);
@@ -328,18 +333,24 @@ Action::LayerBrush::BrushStroke::undo()
 				}
 			}
 
+			brushlib::SurfaceWrapper wrapper(&restored_surface);
+
 			// replay strokes that belong to this layer since the checkpoint
 			for (int i = redraw_start; i < strokes_history.size(); ++i) {
 				StrokeData& stroke_data = strokes_history[i];
 				if (stroke_data.layer != layer) continue;
 
-				brushlib::SurfaceWrapper wrapper(&restored_surface);
+				// reset brush
 				for (int j = 0; j < STATE_COUNT; j++) {
 					stroke_data.brush->set_state(j, 0);
 				}
 				stroke_data.brush->set_state(STATE_X, stroke_data.points[0].x);
 				stroke_data.brush->set_state(STATE_Y, stroke_data.points[0].y);
 				stroke_data.brush->set_state(STATE_PRESSURE, stroke_data.points[0].pressure);
+				stroke_data.brush->set_state(STATE_ACTUAL_X, stroke_data.brush->get_state(STATE_X));
+				stroke_data.brush->set_state(STATE_ACTUAL_Y, stroke_data.brush->get_state(STATE_Y));
+				stroke_data.brush->set_state(STATE_STROKE, 1.0);
+				
 				stroke_data.brush->stroke_to(&wrapper, stroke_data.points[0].x, stroke_data.points[0].y, stroke_data.points[0].pressure, 0.0f, 0.0f, 0.0f);
 				for (auto &point : stroke_data.points) {
 					stroke_data.brush->stroke_to(&wrapper, point.x, point.y, point.pressure, 0.0f, 0.0f, point.dtime);
