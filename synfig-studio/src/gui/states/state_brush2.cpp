@@ -5,7 +5,7 @@
 **	\legal
 **	......... ... 2014 Ivan Mahonin
 **	......... ... 2014 Jerome Blanchi
-**  ......... ... 2025 Abdelhadi Wael
+**	......... ... 2025 Abdelhadi Wael
 **
 **	This file is part of Synfig.
 **
@@ -28,10 +28,10 @@
 /* === H E A D E R S ======================================================= */
 
 #ifdef USING_PCH
-#   include "pch.h"
+#	include "pch.h"
 #else
 #ifdef HAVE_CONFIG_H
-#   include <config.h>
+#	include <config.h>
 #endif
 
 #include "state_brush2.h"
@@ -65,7 +65,7 @@ using namespace synfig;
 /* === M A C R O S ========================================================= */
 
 #ifndef BRUSH_ICON_SIZE
-#   define BRUSH_ICON_SIZE 48
+#	define BRUSH_ICON_SIZE 48
 #endif
 
 /* === G L O B A L S ======================================================= */
@@ -118,35 +118,35 @@ public:
 	};
 
 private:
-    CanvasView::Handle canvas_view_;
-    WorkArea::PushState push_state;
+	CanvasView::Handle canvas_view_;
+	WorkArea::PushState push_state;
 
-    synfig::Surface overlay_surface_;
-    synfig::Rect overlay_rect_;
+	synfig::Surface overlay_surface_;
+	synfig::Rect overlay_rect_;
 	sigc::connection clear_overlay_timer_;
 
-    Glib::TimeVal time_;
-    etl::handle<synfigapp::Action::LayerBrush> action_;
+	Glib::TimeVal time_;
+	etl::handle<synfigapp::Action::LayerBrush> action_;
 
 	TransformStack transform_stack_;
 	static bool build_transform_stack(
-	   Canvas::Handle canvas,
-	   Layer::Handle layer,
-	   CanvasView::Handle canvas_view,
-	   TransformStack& transform_stack);
+	Canvas::Handle canvas,
+	Layer::Handle layer,
+	CanvasView::Handle canvas_view,
+	TransformStack& transform_stack);
 
-    BrushConfig selected_brush_config;
-    BrushConfig original_brush_config;
+	BrushConfig selected_brush_config;
+	BrushConfig original_brush_config;
 
 	std::map<int, Gtk::Scale*> setting_controls;
 	std::map<int, Gtk::Button*> reset_buttons;
-    Gtk::ToggleToolButton *selected_brush_button;
-    std::map<String, Gtk::ToggleToolButton*> brush_buttons;
-    synfigapp::Settings &settings;
-    Gtk::CheckButton eraser_checkbox;
+	Gtk::ToggleToolButton *selected_brush_button;
+	std::map<String, Gtk::ToggleToolButton*> brush_buttons;
+	synfigapp::Settings &settings;
+	Gtk::CheckButton eraser_checkbox;
 
-    Gtk::Grid options_grid;
-    Gtk::Label title_label;
+	Gtk::Grid options_grid;
+	Gtk::Label title_label;
 
 	void update_cursor();
 	void create_radius_cursor(float radius);
@@ -157,21 +157,21 @@ private:
 	void select_brush(Gtk::ToggleToolButton *button, String filename);
 
 public:
-    StateBrush2_Context(CanvasView* canvas_view);
-    ~StateBrush2_Context();
+	StateBrush2_Context(CanvasView* canvas_view);
+	~StateBrush2_Context();
 
-    void refresh_tool_options();
-    Smach::event_result event_refresh_tool_options(const Smach::event& x);
+	void refresh_tool_options();
+	Smach::event_result event_refresh_tool_options(const Smach::event& x);
 	void create_image_layer_dialog();
 
-    void update_overlay_preview(const synfig::Surface& surface, const synfig::Rect& rect);
-    void clear_overlay_preview();
+	void update_overlay_preview(const synfig::Surface& surface, const synfig::Rect& rect);
+	void clear_overlay_preview();
 
 	void create_brushes_tab(Gtk::Notebook *notebook);
 	void create_settings_tab(Gtk::Notebook *notebook);
 
-    void draw_to(Vector pos, Real pressure);
-    Layer_Bitmap::Handle find_or_create_layer();
+	void draw_to(Vector pos, Real pressure);
+	Layer_Bitmap::Handle find_or_create_layer();
 
 	const CanvasView::Handle& get_canvas_view() const { return canvas_view_; }
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface() const { return canvas_view_->canvas_interface(); }
@@ -244,13 +244,13 @@ const char * StateBrush2_Context::BrushConfig::input_names[] = {
 };
 
 StateBrush2::StateBrush2() :
-    Smach::state<StateBrush2_Context>("brush2", N_("Brush Tool 2"))
+	Smach::state<StateBrush2_Context>("brush2", N_("Brush Tool 2"))
 {
-    insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DOWN, &StateBrush2_Context::event_mouse_down_handler));
-    insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_UP,   &StateBrush2_Context::event_mouse_up_handler));
-    insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DRAG, &StateBrush2_Context::event_mouse_draw_handler));
-    insert(event_def(EVENT_STOP,                       &StateBrush2_Context::event_stop_handler));
-    insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,       &StateBrush2_Context::event_refresh_tool_options));
+	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DOWN, &StateBrush2_Context::event_mouse_down_handler));
+	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_UP,   &StateBrush2_Context::event_mouse_up_handler));
+	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DRAG, &StateBrush2_Context::event_mouse_draw_handler));
+	insert(event_def(EVENT_STOP,                       &StateBrush2_Context::event_stop_handler));
+	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,       &StateBrush2_Context::event_refresh_tool_options));
 }
 
 StateBrush2::~StateBrush2()
@@ -259,99 +259,99 @@ StateBrush2::~StateBrush2()
 
 void* StateBrush2::enter_state(studio::CanvasView* machine_context) const
 {
-    return new StateBrush2_Context(machine_context);
+	return new StateBrush2_Context(machine_context);
 }
 
 void
 StateBrush2_Context::BrushConfig::clear()
 {
-    filename.clear();
-    for(int i = 0; i < BRUSH_SETTINGS_COUNT; ++i)
-    {
-        settings[i].base = 0;
-        settings[i].inputs.clear();
-    }
+	filename.clear();
+	for(int i = 0; i < BRUSH_SETTINGS_COUNT; ++i)
+	{
+		settings[i].base = 0;
+		settings[i].inputs.clear();
+	}
 }
 
 bool StateBrush2_Context::BrushConfig::read_space(const char **pos)
 {
-    // Skip whitespace characters
-    while (**pos > 0 && **pos <= ' ') ++(*pos);
-    return true;
+	// Skip whitespace characters
+	while (**pos > 0 && **pos <= ' ') ++(*pos);
+	return true;
 }
 
 bool StateBrush2_Context::BrushConfig::read_to_line_end(const char **pos)
 {
-    // Advance pointer to the end of the line
-    while (**pos != 0 && **pos != '\n' && **pos != '\r') ++(*pos);
-    if (**pos == 0) return false;
-    if (**pos == '\n' && *(++(*pos)) == '\r') ++(*pos);
-    if (**pos == '\r' && *(++(*pos)) == '\n') ++(*pos);
-    return true;
+	// Advance pointer to the end of the line
+	while (**pos != 0 && **pos != '\n' && **pos != '\r') ++(*pos);
+	if (**pos == 0) return false;
+	if (**pos == '\n' && *(++(*pos)) == '\r') ++(*pos);
+	if (**pos == '\r' && *(++(*pos)) == '\n') ++(*pos);
+	return true;
 }
 
 bool StateBrush2_Context::BrushConfig::read_key(const char **pos, const char *key)
 {
-    // Check if the current position matches the given key string
-    size_t l = strlen(key);
-    if (strncmp(*pos, key, l) == 0)
-        { *pos += l; return true; }
-    return false;
+	// Check if the current position matches the given key string
+	size_t l = strlen(key);
+	if (strncmp(*pos, key, l) == 0)
+		{ *pos += l; return true; }
+	return false;
 }
 
 bool StateBrush2_Context::BrushConfig::read_word(const char **pos, String &out_value)
 {
-    // Read a word (a-z or '_') from the current position
-    out_value.clear();
-    const char *p = *pos;
-    while ((*p >= 'a' && *p <= 'z') || *p == '_') ++p;
-    if (p > *pos) { out_value.assign(*pos, p); *pos = p; return true; }
-    return false;
+	// Read a word (a-z or '_') from the current position
+	out_value.clear();
+	const char *p = *pos;
+	while ((*p >= 'a' && *p <= 'z') || *p == '_') ++p;
+	if (p > *pos) { out_value.assign(*pos, p); *pos = p; return true; }
+	return false;
 }
 
 bool StateBrush2_Context::BrushConfig::read_float(const char **pos, float &out_value)
 {
-    // Parse a floating point number from the current position
-    out_value = 0.f;
+	// Parse a floating point number from the current position
+	out_value = 0.f;
 
-    const char *p = *pos;
-    bool negative = *p == '-';
-    if (negative) ++p;
-    const char *num_start = p;
-    while(*p >= '0' && *p <= '9')
-        out_value = 10.f*out_value + (float)(*(p++) - '0');
-    if (p <= num_start) return false;
+	const char *p = *pos;
+	bool negative = *p == '-';
+	if (negative) ++p;
+	const char *num_start = p;
+	while(*p >= '0' && *p <= '9')
+		out_value = 10.f*out_value + (float)(*(p++) - '0');
+	if (p <= num_start) return false;
 
-    if (*p == '.')
-    {
-        ++p;
-        float amplifier = 1.f;
-        while(*p >= '0' && *p <= '9')
-            out_value += (amplifier *= 0.1f)*(float)(*(p++) - '0');
-    }
+	if (*p == '.')
+	{
+		++p;
+		float amplifier = 1.f;
+		while(*p >= '0' && *p <= '9')
+			out_value += (amplifier *= 0.1f)*(float)(*(p++) - '0');
+	}
 
-    if (negative) out_value = -out_value;
-    *pos = p;
-    return true;
+	if (negative) out_value = -out_value;
+	*pos = p;
+	return true;
 }
 
 bool StateBrush2_Context::BrushConfig::read_map_entry(const char **pos, MapEntry &out_value)
 {
-    // Parse a mapping entry in the form (x y)
-    out_value.x = 0.f;
-    out_value.y = 0.f;
-    const char *p = *pos;
-    bool success = read_key(&p, "(")
-                && read_space(&p)
-                && read_float(&p, out_value.x)
-                && read_space(&p)
-                && read_float(&p, out_value.y)
-                && read_space(&p)
-                && read_key(&p, ")");
-    if (success) { *pos = p; return true; }
-    out_value.x = 0.f;
-    out_value.y = 0.f;
-    return false;
+	// Parse a mapping entry in the form (x y)
+	out_value.x = 0.f;
+	out_value.y = 0.f;
+	const char *p = *pos;
+	bool success = read_key(&p, "(")
+				&& read_space(&p)
+				&& read_float(&p, out_value.x)
+				&& read_space(&p)
+				&& read_float(&p, out_value.y)
+				&& read_space(&p)
+				&& read_key(&p, ")");
+	if (success) { *pos = p; return true; }
+	out_value.x = 0.f;
+	out_value.y = 0.f;
+	return false;
 }
 
 bool StateBrush2_Context::BrushConfig::read_input_entry(const char **pos, InputEntry &out_value)
@@ -416,8 +416,8 @@ StateBrush2_Context::BrushConfig::read_row(const char **pos)
 void
 StateBrush2_Context::BrushConfig::load(const String &filename)
 {
-    // Load brush configuration from file and parse settings
-    clear();
+	// Load brush configuration from file and parse settings
+	clear();
 
 	char* buffer = nullptr;
 	{
@@ -442,7 +442,7 @@ StateBrush2_Context::BrushConfig::load(const String &filename)
 void
 StateBrush2_Context::BrushConfig::apply(brushlib::Brush &brush)
 {
-	 // Apply all loaded settings and input mappings to the brush instance
+	// Apply all loaded settings and input mappings to the brush instance
 	for(int i = 0; i < BRUSH_SETTINGS_COUNT; ++i)
 	{
 		brush.set_base_value(i, settings[i].base);
@@ -522,14 +522,14 @@ StateBrush2_Context::StateBrush2_Context(CanvasView* canvas_view) :
 	load_settings();
 	App::dialog_tool_options->present();
 	update_cursor();
-    refresh_tool_options();
-    App::dock_toolbox->refresh();
+	refresh_tool_options();
+	App::dock_toolbox->refresh();
 }
 
 StateBrush2_Context::~StateBrush2_Context()
 {
-    if (action_)
-        action_ = nullptr;
+	if (action_)
+	  action_ = nullptr;
 
 	save_settings();
 	brush_buttons.clear();
@@ -565,7 +565,7 @@ StateBrush2_Context::scan_directory(const String &path, int scan_sub_levels, std
 			out_files.insert(filepath);
 	}
 
-    return true;
+	return true;
 }
 
 void
@@ -815,7 +815,7 @@ StateBrush2_Context::select_brush(Gtk::ToggleToolButton *button, String filename
 		selected_brush_config.load(filename);
 		eraser_checkbox.set_active(selected_brush_config.settings[BRUSH_ERASER].base > 0.0);
 		selected_brush_button = button;
-	    original_brush_config = selected_brush_config;
+		original_brush_config = selected_brush_config;
 		Real brush_radius = expf(selected_brush_config.settings[BRUSH_RADIUS_LOGARITHMIC].base);
 		synfigapp::Main::set_bline_width(Distance(brush_radius, Distance::SYSTEM_UNITS));
 		update_cursor();
@@ -867,10 +867,10 @@ void StateBrush2_Context::update_cursor()
 void
 StateBrush2_Context::create_radius_cursor(float radius)
 {
-    if (radius < 1.0f || radius > 200.0f) {
-        get_work_area()->set_cursor(Gdk::PENCIL);
-        return;
-    }
+	if (radius < 1.0f || radius > 200.0f) {
+		get_work_area()->set_cursor(Gdk::PENCIL);
+		return;
+	}
 
 	int diameter = static_cast<int>(ceil(radius * 2.0f));
 	int size = diameter + 4;
@@ -908,130 +908,129 @@ StateBrush2_Context::create_radius_cursor(float radius)
 
 void StateBrush2_Context::create_image_layer_dialog()
 {
-    // Create dialog window
-    Gtk::Dialog dialog(_("Create Image Layer"), *App::main_window, true);
-    dialog.add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
-    dialog.add_button(_("Create"), Gtk::RESPONSE_OK);
-    dialog.set_default_response(Gtk::RESPONSE_OK);
+	// Create dialog window
+	Gtk::Dialog dialog(_("Create Image Layer"), *App::main_window, true);
+	dialog.add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
+	dialog.add_button(_("Create"), Gtk::RESPONSE_OK);
+	dialog.set_default_response(Gtk::RESPONSE_OK);
 
-    // Create the layout grid
-    Gtk::Grid* layout_grid = Gtk::manage(new Gtk::Grid());
-    layout_grid->set_row_spacing(12);
-    layout_grid->set_column_spacing(12);
-    layout_grid->set_border_width(12);
-    dialog.get_content_area()->pack_start(*layout_grid);
+	// Create the layout grid
+	Gtk::Grid* layout_grid = Gtk::manage(new Gtk::Grid());
+	layout_grid->set_row_spacing(12);
+	layout_grid->set_column_spacing(12);
+	layout_grid->set_border_width(12);
+	dialog.get_content_area()->pack_start(*layout_grid);
 
-    // Get default width and height from the canvas, fallback to 512x512
-    auto canvas = get_canvas();
-    int canvas_width = 512, canvas_height = 512;
-    if (canvas) {
-        canvas_width = canvas->rend_desc().get_w();
-        canvas_height = canvas->rend_desc().get_h();
-    }
+    // Get default width and height from the canvas
+	auto canvas = get_canvas();
+	int canvas_width = 512, canvas_height = 512;
+	if (canvas) {
+		canvas_width = canvas->rend_desc().get_w();
+		canvas_height = canvas->rend_desc().get_h();
+	}
 
-    // Create spin buttons for width and height input
-    auto width_input = Gtk::manage(new Gtk::SpinButton(Gtk::Adjustment::create(canvas_width, 1, 4096, 1, 10, 0)));
-    auto height_input = Gtk::manage(new Gtk::SpinButton(Gtk::Adjustment::create(canvas_height, 1, 3112, 1, 10, 0)));
-    width_input->set_numeric(true);
-    height_input->set_numeric(true);
+	// Create spin buttons for width and height input
+	auto width_input = Gtk::manage(new Gtk::SpinButton(Gtk::Adjustment::create(canvas_width, 1, 4096, 1, 10, 0)));
+	auto height_input = Gtk::manage(new Gtk::SpinButton(Gtk::Adjustment::create(canvas_height, 1, 3112, 1, 10, 0)));
+	width_input->set_numeric(true);
+	height_input->set_numeric(true);
 
-    // Presets
-    auto preset_selector = Gtk::manage(new Gtk::ComboBoxText());
-    preset_selector->append("custom", _("Custom Size"));
-    preset_selector->append("4096x3112", _("4096x3112 4K"));
-    preset_selector->append("2048x1556", _("2048x1556 2K"));
-    preset_selector->append("1920x1080", _("1920x1080 HD"));
-    preset_selector->append("1280x720", _("1280x720 HD"));
-    preset_selector->append("720x576", _("720x576 PAL"));
-    preset_selector->append("720x480", _("720x480 NTSC"));
-    preset_selector->append("640x480", _("640x480 Web"));
-    preset_selector->append("480x360", _("480x360 Web"));
-    preset_selector->set_active_id("custom");
+	// Presets
+	auto preset_selector = Gtk::manage(new Gtk::ComboBoxText());
+	preset_selector->append("custom", _("Custom Size"));
+	preset_selector->append("4096x3112", _("4096x3112 4K"));
+	preset_selector->append("2048x1556", _("2048x1556 2K"));
+	preset_selector->append("1920x1080", _("1920x1080 HD"));
+	preset_selector->append("1280x720", _("1280x720 HD"));
+	preset_selector->append("720x576", _("720x576 PAL"));
+	preset_selector->append("720x480", _("720x480 NTSC"));
+	preset_selector->append("640x480", _("640x480 Web"));
+	preset_selector->append("480x360", _("480x360 Web"));
+	preset_selector->set_active_id("custom");
 
-    // Add labels and widgets to the grid layout
-    layout_grid->attach(*Gtk::manage(new Gtk::Label(_("Preset:"))), 0, 0, 1, 1);
-    layout_grid->attach(*preset_selector, 1, 0, 2, 1);
-    layout_grid->attach(*Gtk::manage(new Gtk::Label(_("Width:"))), 0, 1, 1, 1);
-    layout_grid->attach(*width_input, 1, 1, 1, 1);
-    layout_grid->attach(*Gtk::manage(new Gtk::Label(_("Height:"))), 0, 2, 1, 1);
-    layout_grid->attach(*height_input, 1, 2, 1, 1);
+	// Add labels and widgets to the grid layout
+	layout_grid->attach(*Gtk::manage(new Gtk::Label(_("Preset:"))), 0, 0, 1, 1);
+	layout_grid->attach(*preset_selector, 1, 0, 2, 1);
+	layout_grid->attach(*Gtk::manage(new Gtk::Label(_("Width:"))), 0, 1, 1, 1);
+	layout_grid->attach(*width_input, 1, 1, 1, 1);
+	layout_grid->attach(*Gtk::manage(new Gtk::Label(_("Height:"))), 0, 2, 1, 1);
+	layout_grid->attach(*height_input, 1, 2, 1, 1);
 
-    // Link width and height toggle button
-    auto link_label = _("link width and height");
-    auto unlink_label = _("Unlink width and height");
-    auto aspect_link = Gtk::manage(new studio::Widget_Link(link_label, unlink_label));
-    aspect_link->set_active(true);
-    layout_grid->attach(*aspect_link, 2, 1, 1, 2);
+	// Link width and height toggle button
+	auto link_label = _("link width and height");
+	auto unlink_label = _("Unlink width and height");
+	auto aspect_link = Gtk::manage(new studio::Widget_Link(link_label, unlink_label));
+	aspect_link->set_active(true);
+	layout_grid->attach(*aspect_link, 2, 1, 1, 2);
 
-    bool is_updating = false;
-    double aspect_ratio = (double)canvas_width / (double)canvas_height;
+	bool is_updating = false;
+	double aspect_ratio = (double)canvas_width / (double)canvas_height;
 
-    // Update aspect ratio value when toggling the link button
-    aspect_link->signal_toggled().connect([&]() {
-        if (aspect_link->get_active())
-            aspect_ratio = (double)width_input->get_value() / (double)height_input->get_value();
-    });
+	// Update aspect ratio value when toggling the link button
+	aspect_link->signal_toggled().connect([&]() {
+		if (aspect_link->get_active())
+			aspect_ratio = (double)width_input->get_value() / (double)height_input->get_value();
+	});
 
-    // Automatically update height when width changes (if aspect ratio is locked)
-    width_input->signal_value_changed().connect([&]() {
-        if (is_updating || !aspect_link->get_active()) return;
-        is_updating = true;
-        height_input->set_value(std::max(1.0, width_input->get_value() / aspect_ratio));
-        is_updating = false;
-    });
-    height_input->signal_value_changed().connect([&]() {
-        if (is_updating || !aspect_link->get_active()) return;
-        is_updating = true;
-        width_input->set_value(std::max(1.0, height_input->get_value() * aspect_ratio));
-        is_updating = false;
-    });
+	// Automatically update height when width changes (if aspect ratio is locked)
+	width_input->signal_value_changed().connect([&]() {
+		if (is_updating || !aspect_link->get_active()) return;
+		is_updating = true;
+		height_input->set_value(std::max(1.0, width_input->get_value() / aspect_ratio));
+		is_updating = false;
+	});
+	height_input->signal_value_changed().connect([&]() {
+		if (is_updating || !aspect_link->get_active()) return;
+		is_updating = true;
+		width_input->set_value(std::max(1.0, height_input->get_value() * aspect_ratio));
+		is_updating = false;
+	});
 
-    // Update width and height when preset is selected
-    preset_selector->signal_changed().connect([&]() {
-        std::string selected_preset = preset_selector->get_active_id();
-        if (selected_preset == "custom") {
-            width_input->set_sensitive(true);
-            height_input->set_sensitive(true);
-            return;
-        }
+	// Update width and height when preset is selected
+	preset_selector->signal_changed().connect([&]() {
+		std::string selected_preset = preset_selector->get_active_id();
+		if (selected_preset == "custom") {
+			width_input->set_sensitive(true);
+			height_input->set_sensitive(true);
+			return;
+		}
 
-        size_t separator = selected_preset.find('x');
-        if (separator == std::string::npos) return;
+		size_t separator = selected_preset.find('x');
+		if (separator == std::string::npos) return;
 
-        int preset_width = std::stoi(selected_preset.substr(0, separator));
-        int preset_height = std::stoi(selected_preset.substr(separator + 1));
+		int preset_width = std::stoi(selected_preset.substr(0, separator));
+		int preset_height = std::stoi(selected_preset.substr(separator + 1));
 
-        is_updating = true;
-        width_input->set_value(preset_width);
-        height_input->set_value(preset_height);
-        width_input->set_sensitive(false);
-        height_input->set_sensitive(false);
-        aspect_link->set_active(true);
-        aspect_ratio = (double)preset_width / (double)preset_height;
-        is_updating = false;
-    });
+		is_updating = true;
+		width_input->set_value(preset_width);
+		height_input->set_value(preset_height);
+		width_input->set_sensitive(false);
+		height_input->set_sensitive(false);
+		aspect_link->set_active(true);
+		aspect_ratio = (double)preset_width / (double)preset_height;
+		is_updating = false;
+	});
+	dialog.show_all();
 
-    dialog.show_all();
+	// Generates next unique image ID
+	auto generate_next_id = [](std::string current_id) {
+		int number = 1, digit_count = 0;
+		if (!current_id.empty() && isdigit(current_id.back())) {
+			while (digit_count < current_id.size() && isdigit(current_id[current_id.size() - 1 - digit_count]))
+				digit_count++;
+			std::string number_part = current_id.substr(current_id.size() - digit_count, digit_count);
+			current_id = current_id.substr(0, current_id.size() - digit_count);
+			number = atoi(number_part.c_str());
+		}
+		number++;
+		char buffer[32];
+		int min_digits = std::min(digit_count, 9);
+		snprintf(buffer, sizeof(buffer), "%s%0*d", current_id.c_str(), min_digits, number);
+		return std::string(buffer);
+	};
 
-    // Generates next unique image ID
-    auto generate_next_id = [](std::string current_id) {
-        int number = 1, digit_count = 0;
-        if (!current_id.empty() && isdigit(current_id.back())) {
-            while (digit_count < current_id.size() && isdigit(current_id[current_id.size() - 1 - digit_count]))
-                digit_count++;
-            std::string number_part = current_id.substr(current_id.size() - digit_count, digit_count);
-            current_id = current_id.substr(0, current_id.size() - digit_count);
-            number = atoi(number_part.c_str());
-        }
-        number++;
-        char buffer[32];
-        int min_digits = std::min(digit_count, 9);
-        snprintf(buffer, sizeof(buffer), "%s%0*d", current_id.c_str(), min_digits, number);
-        return std::string(buffer);
-    };
-
-    // Load previous brush image ID
-    std::string image_layer_id = settings.get_value("brush.image_id", std::string("brush image001"));
+	// Load previous brush image ID
+	std::string image_layer_id = settings.get_value("brush.image_id", std::string("brush image001"));
 
     // Dialog event loop: creates image layer if user clicks OK
     while (dialog.run() == Gtk::RESPONSE_OK) {
@@ -1043,11 +1042,11 @@ void StateBrush2_Context::create_image_layer_dialog()
             get_canvas_interface()->get_instance().get(), _("Create Image Layer")
         );
 
-        Layer::Handle new_layer = get_canvas_interface()->add_layer_to("import", get_canvas(), 0);
-        Layer_Bitmap::Handle bitmap_layer = etl::handle<synfig::Layer_Bitmap>::cast_dynamic(new_layer);
+		Layer::Handle new_layer = get_canvas_interface()->add_layer_to("import", get_canvas(), 0);
+		Layer_Bitmap::Handle bitmap_layer = etl::handle<synfig::Layer_Bitmap>::cast_dynamic(new_layer);
 
-        bitmap_layer->set_description(image_layer_id);
-        get_canvas_interface()->signal_layer_new_description()(bitmap_layer, bitmap_layer->get_description());
+		bitmap_layer->set_description(image_layer_id);
+		get_canvas_interface()->signal_layer_new_description()(bitmap_layer, bitmap_layer->get_description());
 
         if (canvas) {
             bitmap_layer->set_param("tl", canvas->rend_desc().get_tl());
@@ -1063,56 +1062,56 @@ void StateBrush2_Context::create_image_layer_dialog()
                 new rendering::SurfaceSW(*blank_surface, true)
             );
 
-        	if (bitmap_layer->get_param_list().count("filename") != 0)
-            {
-        		// generate name based on description
-                String description, filename, filename_param;
-                get_canvas_interface()
-                    ->get_instance()
-                    ->generate_new_name(
-                        bitmap_layer,
-                        description,
-                        filename,
-                        filename_param );
+				if (bitmap_layer->get_param_list().count("filename") != 0)
+				{
+					// generate name based on description
+					String description, filename, filename_param;
+					get_canvas_interface()
+						->get_instance()
+						->generate_new_name(
+							bitmap_layer,
+							description,
+							filename,
+							filename_param );
 
-                // create and save surface
-                get_canvas_interface()
-                    ->get_instance()
-                    ->save_surface(bitmap_layer->rendering_surface, filename);
+					// create and save surface
+					get_canvas_interface()
+						->get_instance()
+						->save_surface(bitmap_layer->rendering_surface, filename);
 
-        		bitmap_layer->set_param("filename", filename_param);
-                bitmap_layer->set_description(description);
-            }
-        }
-    	get_canvas_view()->get_selection_manager()->clear_selected_layers();
-        get_canvas_view()->get_selection_manager()->set_selected_layer(bitmap_layer);
-        image_layer_id = generate_next_id(image_layer_id);
-        settings.set_value("brush.image_id", image_layer_id);
-        break;
-    }
+				bitmap_layer->set_param("filename", filename_param);
+				bitmap_layer->set_description(description);
+			}
+		}
+		get_canvas_view()->get_selection_manager()->clear_selected_layers();
+		get_canvas_view()->get_selection_manager()->set_selected_layer(bitmap_layer);
+		image_layer_id = generate_next_id(image_layer_id);
+		settings.set_value("brush.image_id", image_layer_id);
+		break;
+	}
 }
 
 Smach::event_result
 StateBrush2_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 {
-    refresh_tool_options();
-    return Smach::RESULT_ACCEPT;
+	refresh_tool_options();
+	return Smach::RESULT_ACCEPT;
 }
 
 void
 StateBrush2_Context::update_overlay_preview(const synfig::Surface& surface, const synfig::Rect& rect)
 {
-    if (get_work_area() && get_work_area()->get_renderer_brush_overlay()) {
-        get_work_area()->get_renderer_brush_overlay()->set_overlay_surface(surface, rect);
-    }
+	if (get_work_area() && get_work_area()->get_renderer_brush_overlay()) {
+	  get_work_area()->get_renderer_brush_overlay()->set_overlay_surface(surface, rect);
+	}
 }
 
 void
 StateBrush2_Context::clear_overlay_preview()
 {
-    if (get_work_area() && get_work_area()->get_renderer_brush_overlay()) {
-        get_work_area()->get_renderer_brush_overlay()->clear_overlay();
-    }
+	if (get_work_area() && get_work_area()->get_renderer_brush_overlay()) {
+	  get_work_area()->get_renderer_brush_overlay()->clear_overlay();
+	}
 }
 
 void
@@ -1120,21 +1119,21 @@ StateBrush2_Context::draw_to(Vector event_pos, Real pressure)
 {
 	Layer_Bitmap::Handle layer = find_or_create_layer();
 
-    synfig::Rect layer_bounds = layer->get_bounding_rect();
-    synfig::Rect full_layer_bounds;
+	synfig::Rect layer_bounds = layer->get_bounding_rect();
+	synfig::Rect full_layer_bounds;
 
-    if (!transform_stack_.empty()) {
-        Point tl_transformed = transform_stack_.perform(Point(layer_bounds.minx, layer_bounds.miny));
-        Point br_transformed = transform_stack_.perform(Point(layer_bounds.maxx, layer_bounds.maxy));
-        full_layer_bounds = synfig::Rect(
-            std::min(tl_transformed[0], br_transformed[0]),
-            std::min(tl_transformed[1], br_transformed[1]),
-            std::max(tl_transformed[0], br_transformed[0]),
-            std::max(tl_transformed[1], br_transformed[1])
-        );
-    } else {
-        full_layer_bounds = layer_bounds;
-    }
+	if (!transform_stack_.empty()) {
+	  Point tl_transformed = transform_stack_.perform(Point(layer_bounds.minx, layer_bounds.miny));
+	  Point br_transformed = transform_stack_.perform(Point(layer_bounds.maxx, layer_bounds.maxy));
+	  full_layer_bounds = synfig::Rect(
+	      std::min(tl_transformed[0], br_transformed[0]),
+	      std::min(tl_transformed[1], br_transformed[1]),
+	      std::max(tl_transformed[0], br_transformed[0]),
+	      std::max(tl_transformed[1], br_transformed[1])
+	  );
+	} else {
+	  full_layer_bounds = layer_bounds;
+	}
 
 	// transform coords
 	Point pos = transform_stack_.unperform(event_pos);
@@ -1144,10 +1143,10 @@ StateBrush2_Context::draw_to(Vector event_pos, Real pressure)
 	float surface_y = ((pos[1] - layer_tl[1]) / (layer_br[1] - layer_tl[1])) * overlay_surface_.get_h();
 
 	// calcluate dtime
-    Glib::TimeVal current_time;
-    current_time.assign_current_time();
-    double dtime = (current_time - time_).as_double();
-    time_ = current_time;
+	Glib::TimeVal current_time;
+	current_time.assign_current_time();
+	double dtime = (current_time - time_).as_double();
+	time_ = current_time;
 
 	// apply stroke point
 	brushlib::SurfaceWrapper wrapper(&overlay_surface_);
@@ -1158,181 +1157,181 @@ StateBrush2_Context::draw_to(Vector event_pos, Real pressure)
 
 Layer_Bitmap::Handle StateBrush2_Context::find_or_create_layer()
 {
-    // is the selected layer a bitmap ?
-    Layer::Handle selected_layer = canvas_view_->get_selection_manager()->get_selected_layer();
-    Layer_Bitmap::Handle layer = Layer_Bitmap::Handle::cast_dynamic(selected_layer);
+	// is the selected layer a bitmap ?
+	Layer::Handle selected_layer = canvas_view_->get_selection_manager()->get_selected_layer();
+	Layer_Bitmap::Handle layer = Layer_Bitmap::Handle::cast_dynamic(selected_layer);
 
-    if (layer) {
-        return layer;
-    }
+	if (layer) {
+	  return layer;
+	}
 
-    // is it a switch && active layer is a bitmap ?
-    if (!layer) {
-        etl::handle<Layer_Switch> layer_switch = etl::handle<Layer_Switch>::cast_dynamic(selected_layer);
-        if (layer_switch) {
-            Layer::Handle current_layer = layer_switch->get_current_layer();
-            if (current_layer) {
-                layer = Layer_Bitmap::Handle::cast_dynamic(current_layer);
-                if (layer) {
-                    return layer;
-                }
-            }
-        }
-    }
+	// is it a switch && active layer is a bitmap ?
+	if (!layer) {
+	  etl::handle<Layer_Switch> layer_switch = etl::handle<Layer_Switch>::cast_dynamic(selected_layer);
+	  if (layer_switch) {
+	      Layer::Handle current_layer = layer_switch->get_current_layer();
+	      if (current_layer) {
+	          layer = Layer_Bitmap::Handle::cast_dynamic(current_layer);
+	          if (layer) {
+	              return layer;
+	          }
+	      }
+	  }
+	}
 
-    // creates a canvas size layer
-    if (!layer) {
-        Canvas::Handle canvas = canvas_view_->get_canvas();
-    	Layer::Handle new_layer = canvas_view_->canvas_interface()->add_layer_to("import", canvas);
-        if (!new_layer)
-            return Layer_Bitmap::Handle();
+	// creates a canvas size layer
+	if (!layer) {
+	  Canvas::Handle canvas = canvas_view_->get_canvas();
+	  Layer::Handle new_layer = canvas_view_->canvas_interface()->add_layer_to("import", canvas);
+	  if (!new_layer)
+	      return Layer_Bitmap::Handle();
 
-        layer = etl::handle<synfig::Layer_Bitmap>::cast_dynamic(new_layer);
-        if (!layer)
-        	return Layer_Bitmap::Handle();
+	  layer = etl::handle<synfig::Layer_Bitmap>::cast_dynamic(new_layer);
+	  if (!layer)
+	      return Layer_Bitmap::Handle();
 
-        layer->set_description(_("brush image"));
+	  layer->set_description(_("brush image"));
 
-        Point canvas_tl = canvas->rend_desc().get_tl();
-        Point canvas_br = canvas->rend_desc().get_br();
+	  Point canvas_tl = canvas->rend_desc().get_tl();
+	  Point canvas_br = canvas->rend_desc().get_br();
 
-        layer->set_param("tl", canvas_tl);
-        layer->set_param("br", canvas_br);
-        layer->set_param("c", int(1));
+	  layer->set_param("tl", canvas_tl);
+	  layer->set_param("br", canvas_br);
+	  layer->set_param("c", int(1));
 
-        int width = canvas->rend_desc().get_w();
-        int height = canvas->rend_desc().get_h();
+	  int width = canvas->rend_desc().get_w();
+	  int height = canvas->rend_desc().get_h();
 
-        if (width > 0 && height > 0) {
-            Surface *initial_surface = new Surface(width, height);
-            initial_surface->clear();
-            layer->rendering_surface = new rendering::SurfaceResource(
-                new rendering::SurfaceSW(*initial_surface, true));
+	  if (width > 0 && height > 0) {
+	      Surface *initial_surface = new Surface(width, height);
+	      initial_surface->clear();
+	      layer->rendering_surface = new rendering::SurfaceResource(
+	          new rendering::SurfaceSW(*initial_surface, true));
 
-            if (layer->get_param_list().count("filename") != 0)
-            {
-            	// generate name based on description
-                String description, filename, filename_param;
-            	get_canvas_interface()
-                    ->get_instance()
-                    ->generate_new_name(
-                        layer,
-                        description,
-                        filename,
-                        filename_param );
+	      if (layer->get_param_list().count("filename") != 0)
+	      {
+	          // generate name based on description
+	          String description, filename, filename_param;
+	          get_canvas_interface()
+	              ->get_instance()
+	              ->generate_new_name(
+	                  layer,
+	                  description,
+	                  filename,
+	                  filename_param );
 
-                // create and save surface
-                get_canvas_interface()
-                    ->get_instance()
-                    ->save_surface(layer->rendering_surface, filename);
+	          // create and save surface
+	          get_canvas_interface()
+	              ->get_instance()
+	              ->save_surface(layer->rendering_surface, filename);
 
-                layer->set_param("filename", filename_param);
-                layer->set_description(description);
-            }
-        }
+	          layer->set_param("filename", filename_param);
+	          layer->set_description(description);
+	      }
+	  }
 
-        canvas_view_->get_selection_manager()->clear_selected_layers();
-        canvas_view_->get_selection_manager()->set_selected_layer(layer);
-    }
+	  canvas_view_->get_selection_manager()->clear_selected_layers();
+	  canvas_view_->get_selection_manager()->set_selected_layer(layer);
+	}
 
-    return layer;
+	return layer;
 }
 
 bool
 StateBrush2_Context::build_transform_stack(
-    Canvas::Handle canvas,
-    Layer::Handle layer,
-    CanvasView::Handle canvas_view,
-    TransformStack& transform_stack )
+	Canvas::Handle canvas,
+	Layer::Handle layer,
+	CanvasView::Handle canvas_view,
+	TransformStack& transform_stack )
 {
-    int count = 0;
-    for(Canvas::iterator i = canvas->begin(); i != canvas->end() ;++i)
-    {
-       if(*i == layer) return true;
+	int count = 0;
+	for(Canvas::iterator i = canvas->begin(); i != canvas->end() ;++i)
+	{
+	 if(*i == layer) return true;
 
-       if((*i)->active())
-       {
-          Transform::Handle trans((*i)->get_transform());
-          if(trans) { transform_stack.push(trans); count++; }
-       }
+	 if((*i)->active())
+	 {
+		  Transform::Handle trans((*i)->get_transform());
+		  if(trans) { transform_stack.push(trans); count++; }
+	 }
 
-       // If this is a paste canvas layer, then we need to
-       // descend into it
-       if(Layer_PasteCanvas::Handle layer_pastecanvas = Layer_PasteCanvas::Handle::cast_dynamic(*i))
-       {
-          transform_stack.push_back(
-             new Transform_Matrix(
-                   layer_pastecanvas->get_guid(),
-                layer_pastecanvas->get_summary_transformation().get_matrix()
-             )
-          );
-          if (build_transform_stack(layer_pastecanvas->get_sub_canvas(), layer, canvas_view, transform_stack))
-             return true;
-          transform_stack.pop();
-       }
-    }
-    while(count-- > 0) transform_stack.pop();
-    return false;
+	 // If this is a paste canvas layer, then we need to
+	 // descend into it
+	 if(Layer_PasteCanvas::Handle layer_pastecanvas = Layer_PasteCanvas::Handle::cast_dynamic(*i))
+	 {
+		  transform_stack.push_back(
+			 new Transform_Matrix(
+				   layer_pastecanvas->get_guid(),
+				layer_pastecanvas->get_summary_transformation().get_matrix()
+			 )
+		  );
+		  if (build_transform_stack(layer_pastecanvas->get_sub_canvas(), layer, canvas_view, transform_stack))
+			 return true;
+		  transform_stack.pop();
+	 }
+	}
+	while(count-- > 0) transform_stack.pop();
+	return false;
 }
 
 Smach::event_result
 StateBrush2_Context::event_mouse_down_handler(const Smach::event& x)
 {
-    const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
-    if (event.button != BUTTON_LEFT)
-        return Smach::RESULT_OK;
+	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
+	if (event.button != BUTTON_LEFT)
+	  return Smach::RESULT_OK;
 
 	// clear any pending overlay clear signal
 	if (clear_overlay_timer_.connected()) {
-	    clear_overlay_timer_.disconnect();
+	  clear_overlay_timer_.disconnect();
 	}
 
 	Layer_Bitmap::Handle layer = find_or_create_layer();
-    if (!layer) return Smach::RESULT_OK;
+	if (!layer) return Smach::RESULT_OK;
 
-    layer->set_active(false);
-    action_ = new synfigapp::Action::LayerBrush();
-    action_->set_param("canvas", get_canvas());
-    action_->set_param("canvas_interface", get_canvas_interface());
-    action_->set_param("layer", Layer::Handle(layer));
+	layer->set_active(false);
+	action_ = new synfigapp::Action::LayerBrush();
+	action_->set_param("canvas", get_canvas());
+	action_->set_param("canvas_interface", get_canvas_interface());
+	action_->set_param("layer", Layer::Handle(layer));
 
 	int undo_mode = synfigapp::Main::settings().get_value("pref.brush_undo_mode", 1);
-    action_->stroke.set_undo_mode(static_cast<synfigapp::Action::LayerBrush::BrushStroke::UndoMode>(undo_mode));
+	action_->stroke.set_undo_mode(static_cast<synfigapp::Action::LayerBrush::BrushStroke::UndoMode>(undo_mode));
 
-    transform_stack_.clear();
-    if (!build_transform_stack(canvas_view_->get_canvas(), layer, canvas_view_, transform_stack_)) {
-        transform_stack_.clear();
-    }
+	transform_stack_.clear();
+	if (!build_transform_stack(canvas_view_->get_canvas(), layer, canvas_view_, transform_stack_)) {
+	  transform_stack_.clear();
+	}
 
-    // Get actual layer bounds after transformation
-    synfig::Rect layer_bounds = layer->get_bounding_rect();
-    layer_bounds = transform_stack_.empty() ? layer_bounds : transform_stack_.perform(layer_bounds);
+	// Get actual layer bounds after transformation
+	synfig::Rect layer_bounds = layer->get_bounding_rect();
+	layer_bounds = transform_stack_.empty() ? layer_bounds : transform_stack_.perform(layer_bounds);
 	overlay_rect_ = layer_bounds;
 
 	// copy layer to overlay
-    if (layer->rendering_surface) {
-        rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer->rendering_surface);
-        if (lock && lock->get_surface().is_valid()) {
-            const Surface& src = lock->get_surface();
-        	overlay_surface_ = synfig::Surface(src.get_w(), src.get_h());
-        	overlay_surface_.copy(src);
-        }
-    }
+	if (layer->rendering_surface) {
+		rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer->rendering_surface);
+		if (lock && lock->get_surface().is_valid()) {
+			const Surface& src = lock->get_surface();
+			overlay_surface_ = synfig::Surface(src.get_w(), src.get_h());
+			overlay_surface_.copy(src);
+		}
+	}
 
 	selected_brush_config.apply(action_->stroke.brush());
 	Color color = synfigapp::Main::get_outline_color();
-    Real epsilon = 0.00000001;
-    Real r(color.get_r()), g(color.get_g()), b(color.get_b());
-    Real max_rgb = std::max(r, std::max(g, b));
-    Real min_rgb = std::min(r, std::min(g, b));
-    Real diff = max_rgb-min_rgb;
+	Real epsilon = 0.00000001;
+	Real r(color.get_r()), g(color.get_g()), b(color.get_b());
+	Real max_rgb = std::max(r, std::max(g, b));
+	Real min_rgb = std::min(r, std::min(g, b));
+	Real diff = max_rgb-min_rgb;
 
-    Real val = max_rgb;
-    Real sat = fabs(max_rgb) > epsilon ? 1.0 - (min_rgb / max_rgb) : 0;
-    Real hue = fabs(diff) <= epsilon ?
-            0 : max_rgb == r ?
-                60.0 * fmod ((g - b)/(diff), 6.0) : max_rgb == g ?
-                    60.0 * (((b - r)/(diff))+2.0) : 60.0 * (((r - g)/(diff))+4.0);
+	Real val = max_rgb;
+	Real sat = fabs(max_rgb) > epsilon ? 1.0 - (min_rgb / max_rgb) : 0;
+	Real hue = fabs(diff) <= epsilon ?
+			0 : max_rgb == r ?
+				60.0 * fmod ((g - b)/(diff), 6.0) : max_rgb == g ?
+					60.0 * (((b - r)/(diff))+2.0) : 60.0 * (((r - g)/(diff))+4.0);
 
 	Real radius = synfigapp::Main::get_bline_width();
 	action_->stroke.brush().set_base_value(BRUSH_COLOR_H, hue/360.0);
@@ -1343,11 +1342,11 @@ StateBrush2_Context::event_mouse_down_handler(const Smach::event& x)
 	update_cursor();
 
 	// paint first point
-    Point pos = transform_stack_.unperform(event.pos);
-    Point layer_tl = layer->get_param("tl").get(Point());
-    Point layer_br = layer->get_param("br").get(Point());
-    float surface_x = ((pos[0] - layer_tl[0]) / (layer_br[0] - layer_tl[0])) * overlay_surface_.get_w();
-    float surface_y = ((pos[1] - layer_tl[1]) / (layer_br[1] - layer_tl[1])) * overlay_surface_.get_h();
+	Point pos = transform_stack_.unperform(event.pos);
+	Point layer_tl = layer->get_param("tl").get(Point());
+	Point layer_br = layer->get_param("br").get(Point());
+	float surface_x = ((pos[0] - layer_tl[0]) / (layer_br[0] - layer_tl[0])) * overlay_surface_.get_w();
+	float surface_y = ((pos[1] - layer_tl[1]) / (layer_br[1] - layer_tl[1])) * overlay_surface_.get_h();
 	draw_to(event.pos , event.pressure);
 	return Smach::RESULT_ACCEPT;
 }
@@ -1373,16 +1372,16 @@ StateBrush2_Context::event_mouse_up_handler(const Smach::event& x)
 	if (!layer) return Smach::RESULT_OK;
 	layer->set_active(true);
 
-    if (action_->is_ready()) {
-    	get_canvas_interface()->get_instance()->perform_action(action_);
-    }
+	if (action_->is_ready()) {
+		get_canvas_interface()->get_instance()->perform_action(action_);
+	}
 	action_ = nullptr;
-    transform_stack_.clear();
+	transform_stack_.clear();
 
 	if (layer && layer->rendering_surface) {
 		// save the updated surface to file
 		String filename_param = layer->get_param("filename").get(String());
-		if (!filename_param.empty()) {
+	if (!filename_param.empty()) {
 			get_canvas_interface()
 				->get_instance()
 				->save_surface(layer->rendering_surface, filename_param);

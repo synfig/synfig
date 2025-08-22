@@ -251,7 +251,7 @@ Action::LayerBrush::BrushStroke::undo()
 				synfig::Surface* surface_copy = new synfig::Surface(original_surface);
 				layer->rendering_surface = new rendering::SurfaceResource(
 					new rendering::SurfaceSW(*surface_copy, true));
-            }
+			}
 			layer->changed();
 			applied = false;
 			break;
