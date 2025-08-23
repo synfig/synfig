@@ -1057,6 +1057,21 @@ Dialog_Setup::on_apply_pressed()
 			App::brushes_path.insert(path);
 		}
 		input_settings.set_value("brush.path_count", path_count);
+
+		synfigapp::Main::get_selected_input_device()->settings().set_value("brush.path_count", path_count);
+		for(int i = 0; i < path_count; ++i) {
+			std::string path = input_settings.get_value(strprintf("brush.path_%d", i), "");
+			synfigapp::Main::get_selected_input_device()->settings().set_value(strprintf("brush.path_%d", i), path);
+		}
+		App::setup_changed();
+		App::brushes_path.clear();
+
+		for(int i = 0; i < path_count; ++i) {
+			std::string path = input_settings.get_value(strprintf("brush.path_%d", i), "");
+			if(!path.empty()) {
+				App::brushes_path.insert(path);
+			}
+		}
 	}
 
 	// Set the preferred file name prefix
@@ -1163,7 +1178,8 @@ Dialog_Setup::on_apply_pressed()
 	App::setup_changed();
 
 	if ((pref_modification_flag&CHANGE_BRUSH_PATH) &&
-			String(App::get_selected_canvas_view()->get_smach().get_state_name()) == String("brush"))
+			(String(App::get_selected_canvas_view()->get_smach().get_state_name()) == String("brush")
+			|| String(App::get_selected_canvas_view()->get_smach().get_state_name()) == String("brush2")))
 	{
 		App::get_selected_canvas_view()->get_smach().process_event(EVENT_REFRESH_TOOL_OPTIONS);
 	}
@@ -1378,7 +1394,7 @@ Dialog_Setup::refresh()
 			std::string path = input_settings.get_value(strprintf("brush.path_%d", j), "");
 			if(!path.empty())
 			{
-				App::brushes_path.insert(value);
+				App::brushes_path.insert(path);
 			}
 		}
 	}
