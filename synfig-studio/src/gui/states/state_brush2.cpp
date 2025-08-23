@@ -3,9 +3,9 @@
 **	\brief Template File
 **
 **	\legal
-**	......... ... 2014 Ivan Mahonin
-**	......... ... 2014 Jerome Blanchi
-**	......... ... 2025 Abdelhadi Wael
+**	Copyright (c) 2014 Ivan Mahonin
+**	Copyright (c) 2014 Jerome Blanchi
+**	Copyright (c) 2025 Abdelhadi Wael
 **
 **	This file is part of Synfig.
 **
@@ -1118,23 +1118,6 @@ void
 StateBrush2_Context::draw_to(Vector event_pos, Real pressure)
 {
 	Layer_Bitmap::Handle layer = find_or_create_layer();
-
-	synfig::Rect layer_bounds = layer->get_bounding_rect();
-	synfig::Rect full_layer_bounds;
-
-	if (!transform_stack_.empty()) {
-	  Point tl_transformed = transform_stack_.perform(Point(layer_bounds.minx, layer_bounds.miny));
-	  Point br_transformed = transform_stack_.perform(Point(layer_bounds.maxx, layer_bounds.maxy));
-	  full_layer_bounds = synfig::Rect(
-	      std::min(tl_transformed[0], br_transformed[0]),
-	      std::min(tl_transformed[1], br_transformed[1]),
-	      std::max(tl_transformed[0], br_transformed[0]),
-	      std::max(tl_transformed[1], br_transformed[1])
-	  );
-	} else {
-	  full_layer_bounds = layer_bounds;
-	}
-
 	// transform coords
 	Point pos = transform_stack_.unperform(event_pos);
 	Point layer_tl = layer->get_param("tl").get(Point());

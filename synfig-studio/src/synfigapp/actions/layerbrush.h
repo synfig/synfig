@@ -3,7 +3,7 @@
 **	\brief Template File
 **
 **	\legal
-**	......... ... 2014 Ivan Mahonin
+**	Copyright (c) 2025 Abdelhadi Wael
 **
 **	This file is part of Synfig.
 **
@@ -25,8 +25,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_APP_ACTION_LAYERBRUSH_H
-#define __SYNFIG_APP_ACTION_LAYERBRUSH_H
+#ifndef SYNFIG_APP_ACTION_LAYERBRUSH_H
+#define SYNFIG_APP_ACTION_LAYERBRUSH_H
 
 /* === H E A D E R S ======================================================= */
 

@@ -102,8 +102,9 @@ Renderer_BrushOverlay::render_vfunc(
 	if (!get_work_area() || !overlay_enabled || !overlay_surface.is_valid())
 		return;
 
-	if (!get_work_area()->get_canvas()) return;
-	const RendDesc &rend_desc = get_work_area()->get_canvas()->rend_desc();
+	if (!get_work_area()->get_canvas())
+		return;
+	const RendDesc& rend_desc = get_work_area()->get_canvas()->rend_desc();
 	int canvas_w = get_work_area()->get_w();
 	int canvas_h = get_work_area()->get_h();
 	Vector canvas_tl = rend_desc.get_tl();
@@ -111,13 +112,15 @@ Renderer_BrushOverlay::render_vfunc(
 
 	if (canvas_w <= 0 || canvas_h <= 0
 		|| approximate_equal(canvas_tl[0], canvas_br[0])
-		|| approximate_equal(canvas_tl[1], canvas_br[1])) return;
+		|| approximate_equal(canvas_tl[1], canvas_br[1]))
+		return;
 
 	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
 
 	int width = overlay_surface.get_w();
 	int height = overlay_surface.get_h();
-	if (width <= 0 || height <= 0) return;
+	if (width <= 0 || height <= 0)
+		return;
 
 	Cairo::RefPtr<Cairo::ImageSurface> cairo_surface =
 		Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, width, height);
@@ -151,7 +154,8 @@ Renderer_BrushOverlay::render_vfunc(
 	double screen_y = screen_top_left[1];
 	double screen_w = screen_bottom_right[0] - screen_top_left[0];
 	double screen_h = screen_bottom_right[1] - screen_top_left[1];
-	if (screen_w <= 0 || screen_h <= 0) return;
+	if (screen_w <= 0 || screen_h <= 0)
+		return;
 
 	synfig::Point canvas_screen_tl = get_work_area()->comp_to_screen_coords(canvas_tl);
 	synfig::Point canvas_screen_br = get_work_area()->comp_to_screen_coords(canvas_br);
@@ -162,7 +166,8 @@ Renderer_BrushOverlay::render_vfunc(
 	double clip_w = std::min(screen_x + screen_w, canvas_screen_br[0]) - clip_x;
 	double clip_h = std::min(screen_y + screen_h, canvas_screen_br[1]) - clip_y;
 
-	if (clip_w <= 0 || clip_h <= 0) return;
+	if (clip_w <= 0 || clip_h <= 0)
+		return;
 
 	cr->save();
 	cr->rectangle(clip_x, clip_y, clip_w, clip_h);

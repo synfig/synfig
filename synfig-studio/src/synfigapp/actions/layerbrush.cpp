@@ -3,7 +3,7 @@
 **	\brief Template File
 **
 **	\legal
-**	......... ... 2014 Ivan Mahonin
+**	Copyright (c) 2025 Abdelhadi Wael
 **
 **	This file is part of Synfig.
 **
@@ -41,7 +41,6 @@
 
 using namespace synfig;
 using namespace synfigapp;
-using namespace Action;
 
 /* === M A C R O S ========================================================= */
 

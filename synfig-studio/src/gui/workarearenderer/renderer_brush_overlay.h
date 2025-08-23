@@ -25,8 +25,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERER_BRUSH_OVERLAY_H
-#define __SYNFIG_RENDERER_BRUSH_OVERLAY_H
+#ifndef SYNFIG_RENDERER_BRUSH_OVERLAY_H
+#define SYNFIG_RENDERER_BRUSH_OVERLAY_H
 
 /* === H E A D E R S ======================================================= */
 

@@ -3,7 +3,7 @@
 **	\brief Template Header
 **
 **	\legal
-**	......... ... 2014 Ivan Mahonin
+**	Copyright (c) 2025 Abdelhadi Wael
 **
 **	This file is part of Synfig.
 **
@@ -25,8 +25,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_STATE_BRUSH2_H
-#define __SYNFIG_STUDIO_STATE_BRUSH2_H
+#ifndef SYNFIG_STUDIO_STATE_BRUSH2_H
+#define SYNFIG_STUDIO_STATE_BRUSH2_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -47,7 +47,7 @@ namespace studio {
 	public:
 		StateBrush2();
 		~StateBrush2();
-		virtual void* enter_state(studio::CanvasView* machine_context) const;
+		void* enter_state(studio::CanvasView* machine_context) const override;
 	}; // END of class StateBrush2
 
 	extern StateBrush2 state_brush2;
