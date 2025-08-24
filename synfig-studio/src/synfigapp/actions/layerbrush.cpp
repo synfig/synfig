@@ -463,8 +463,6 @@ Action::LayerBrush::perform()
 	applied = true;
 	if (get_canvas_interface()) {
 		get_canvas_interface()->signal_layer_param_changed()(stroke.get_layer(), "rendering_surface");
-		get_canvas_interface()->get_selection_manager()->clear_selected_layers();
-		get_canvas_interface()->get_selection_manager()->set_selected_layer(stroke.get_layer());
 	}
 }
 
@@ -476,9 +474,6 @@ Action::LayerBrush::undo()
 		applied = false;
 		if (get_canvas_interface()) {
 			get_canvas_interface()->signal_layer_param_changed()(stroke.get_layer(), "rendering_surface");
-			// Reselect the layer
-			get_canvas_interface()->get_selection_manager()->clear_selected_layers();
-			get_canvas_interface()->get_selection_manager()->set_selected_layer(stroke.get_layer());
 		}
 	}
 }

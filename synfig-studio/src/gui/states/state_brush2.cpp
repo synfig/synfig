@@ -127,6 +127,7 @@ private:
 
 	Glib::TimeVal time_;
 	etl::handle<synfigapp::Action::LayerBrush> action_;
+	Layer_Bitmap::Handle layer_;
 
 	TransformStack transform_stack_;
 	static bool build_transform_stack(
@@ -139,14 +140,10 @@ private:
 	BrushConfig original_brush_config;
 
 	std::map<int, Gtk::Scale*> setting_controls;
-	std::map<int, Gtk::Button*> reset_buttons;
 	Gtk::ToggleToolButton *selected_brush_button;
 	std::map<String, Gtk::ToggleToolButton*> brush_buttons;
 	synfigapp::Settings &settings;
 	Gtk::CheckButton eraser_checkbox;
-
-	Gtk::Grid options_grid;
-	Gtk::Label title_label;
 
 	void update_cursor();
 	void create_radius_cursor(float radius);
@@ -517,7 +514,8 @@ StateBrush2_Context::StateBrush2_Context(CanvasView* canvas_view) :
 	action_(nullptr),
 	selected_brush_button(nullptr),
 	settings(synfigapp::Main::get_selected_input_device()->settings()),
-	eraser_checkbox(_("Eraser"))
+	eraser_checkbox(_("Eraser")),
+	layer_(nullptr)
 {
 	load_settings();
 	App::dialog_tool_options->present();
@@ -534,9 +532,9 @@ StateBrush2_Context::~StateBrush2_Context()
 	save_settings();
 	brush_buttons.clear();
 	setting_controls.clear();
-	reset_buttons.clear();
 	original_brush_config.clear();
 	selected_brush_button = nullptr;
+	layer_ = nullptr;
 	clear_overlay_preview();
 	get_work_area()->reset_cursor();
 	App::dialog_tool_options->clear();
@@ -573,7 +571,6 @@ StateBrush2_Context::refresh_tool_options()
 {
 	brush_buttons.clear();
 	setting_controls.clear();
-	reset_buttons.clear();
 	original_brush_config.clear();
 	App::dialog_tool_options->clear();
 	App::dialog_tool_options->set_local_name(_("Brush Tool"));
@@ -837,30 +834,30 @@ void StateBrush2_Context::update_cursor()
 	const float brush_radius_px = synfigapp::Main::get_bline_width();
 	float display_radius = 10.0f;
 
-	auto layer = find_or_create_layer();
-	if (!layer || !layer->rendering_surface)
-		return;
-	rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer->rendering_surface);
-	if (!lock || !lock->get_surface().is_valid())
-		return;
+	if (layer_ && layer_->rendering_surface) {
+		rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer_->rendering_surface);
+		if (lock && lock->get_surface().is_valid()) {
+			RendDesc& desc = get_canvas()->rend_desc();
+			synfig::Rect layer_bounds(
+				layer_->get_param("tl").get(Point()),
+				layer_->get_param("br").get(Point()));
+			TransformStack stack;
+			build_transform_stack(get_canvas(), layer_, get_canvas_view(), stack);
+			synfig::Rect transformed_bounds = stack.perform(layer_bounds);
 
-	RendDesc& desc = get_canvas()->rend_desc();
-	synfig::Rect layer_bounds(
-		layer->get_param("tl").get(Point()),
-		layer->get_param("br").get(Point()));
-
-	TransformStack stack;
-	build_transform_stack(get_canvas(), layer, get_canvas_view(), stack);
-	synfig::Rect transformed_bounds = stack.perform(layer_bounds);
-	int layer_pixel_width = lock->get_surface().get_w();
-	float transformed_width = transformed_bounds.maxx - transformed_bounds.minx;
-	float canvas_width = desc.get_br()[0] - desc.get_tl()[0];
-
-	float scale_layer = transformed_width / layer_pixel_width;
-	float scale_canvas = desc.get_w() / canvas_width;
-	float scale_view = get_work_area()->get_zoom() * get_work_area()->get_scale_factor();
-
-	display_radius = fabs(brush_radius_px * scale_layer * scale_canvas * scale_view);
+			int layer_pixel_width = lock->get_surface().get_w();
+			float transformed_width = transformed_bounds.maxx - transformed_bounds.minx;
+			float canvas_width = desc.get_br()[0] - desc.get_tl()[0];
+			float scale_layer = transformed_width / layer_pixel_width;
+			float scale_canvas = desc.get_w() / canvas_width;
+			float scale_view = get_work_area()->get_zoom() * get_work_area()->get_scale_factor();
+			display_radius = fabs(brush_radius_px * scale_layer * scale_canvas * scale_view);
+		}
+	} else {
+		// if we don't have a layer use work area dimensions
+		float scale_view = get_work_area()->get_zoom() * get_work_area()->get_scale_factor();
+		display_radius = fabs(brush_radius_px * scale_view);
+	}
 	create_radius_cursor(display_radius);
 }
 
@@ -1117,15 +1114,16 @@ StateBrush2_Context::clear_overlay_preview()
 void
 StateBrush2_Context::draw_to(Vector event_pos, Real pressure)
 {
-	Layer_Bitmap::Handle layer = find_or_create_layer();
+	if (!layer_)
+		return;
 	// transform coords
 	Point pos = transform_stack_.unperform(event_pos);
-	Point layer_tl = layer->get_param("tl").get(Point());
-	Point layer_br = layer->get_param("br").get(Point());
+	Point layer_tl = layer_->get_param("tl").get(Point());
+	Point layer_br = layer_->get_param("br").get(Point());
 	float surface_x = ((pos[0] - layer_tl[0]) / (layer_br[0] - layer_tl[0])) * overlay_surface_.get_w();
 	float surface_y = ((pos[1] - layer_tl[1]) / (layer_br[1] - layer_tl[1])) * overlay_surface_.get_h();
 
-	// calcluate dtime
+	// calculate dtime
 	Glib::TimeVal current_time;
 	current_time.assign_current_time();
 	double dtime = (current_time - time_).as_double();
@@ -1269,31 +1267,31 @@ StateBrush2_Context::event_mouse_down_handler(const Smach::event& x)
 	  clear_overlay_timer_.disconnect();
 	}
 
-	Layer_Bitmap::Handle layer = find_or_create_layer();
-	if (!layer) return Smach::RESULT_OK;
-
-	layer->set_active(false);
+	layer_ = find_or_create_layer();
+	if (!layer_)
+		return Smach::RESULT_OK;
+	layer_->set_active(false);
 	action_ = new synfigapp::Action::LayerBrush();
 	action_->set_param("canvas", get_canvas());
 	action_->set_param("canvas_interface", get_canvas_interface());
-	action_->set_param("layer", Layer::Handle(layer));
+	action_->set_param("layer", Layer::Handle(layer_));
 
 	int undo_mode = synfigapp::Main::settings().get_value("pref.brush_undo_mode", 1);
 	action_->stroke.set_undo_mode(static_cast<synfigapp::Action::LayerBrush::BrushStroke::UndoMode>(undo_mode));
 
 	transform_stack_.clear();
-	if (!build_transform_stack(canvas_view_->get_canvas(), layer, canvas_view_, transform_stack_)) {
+	if (!build_transform_stack(canvas_view_->get_canvas(), layer_, canvas_view_, transform_stack_)) {
 	  transform_stack_.clear();
 	}
 
 	// Get actual layer bounds after transformation
-	synfig::Rect layer_bounds = layer->get_bounding_rect();
+	synfig::Rect layer_bounds = layer_->get_bounding_rect();
 	layer_bounds = transform_stack_.empty() ? layer_bounds : transform_stack_.perform(layer_bounds);
 	overlay_rect_ = layer_bounds;
 
 	// copy layer to overlay
-	if (layer->rendering_surface) {
-		rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer->rendering_surface);
+	if (layer_->rendering_surface) {
+		rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer_->rendering_surface);
 		if (lock && lock->get_surface().is_valid()) {
 			const Surface& src = lock->get_surface();
 			overlay_surface_ = synfig::Surface(src.get_w(), src.get_h());
@@ -1325,11 +1323,6 @@ StateBrush2_Context::event_mouse_down_handler(const Smach::event& x)
 	update_cursor();
 
 	// paint first point
-	Point pos = transform_stack_.unperform(event.pos);
-	Point layer_tl = layer->get_param("tl").get(Point());
-	Point layer_br = layer->get_param("br").get(Point());
-	float surface_x = ((pos[0] - layer_tl[0]) / (layer_br[0] - layer_tl[0])) * overlay_surface_.get_w();
-	float surface_y = ((pos[1] - layer_tl[1]) / (layer_br[1] - layer_tl[1])) * overlay_surface_.get_h();
 	draw_to(event.pos , event.pressure);
 	return Smach::RESULT_ACCEPT;
 }
@@ -1348,26 +1341,23 @@ Smach::event_result
 StateBrush2_Context::event_mouse_up_handler(const Smach::event& x)
 {
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
-	if (event.button != BUTTON_LEFT || !action_)
+	if (event.button != BUTTON_LEFT || !action_ || !layer_)
 		return Smach::RESULT_OK;
 
-	Layer_Bitmap::Handle layer = find_or_create_layer();
-	if (!layer) return Smach::RESULT_OK;
-	layer->set_active(true);
-
+	layer_->set_active(true);
 	if (action_->is_ready()) {
 		get_canvas_interface()->get_instance()->perform_action(action_);
 	}
 	action_ = nullptr;
 	transform_stack_.clear();
 
-	if (layer && layer->rendering_surface) {
+	if (layer_ && layer_->rendering_surface) {
 		// save the updated surface to file
-		String filename_param = layer->get_param("filename").get(String());
+		String filename_param = layer_->get_param("filename").get(String());
 	if (!filename_param.empty()) {
 			get_canvas_interface()
 				->get_instance()
-				->save_surface(layer->rendering_surface, filename_param);
+				->save_surface(layer_->rendering_surface, filename_param);
 		}
 	}
 	// delay to allow the layer to render
