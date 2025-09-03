@@ -25,6 +25,7 @@ target_sources(libsynfig
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_gradientcolor.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_gradientrotate.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_greyed.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/valuenode_ik_angle.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_integer.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_intstring.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_join.cpp"
