@@ -93,13 +93,16 @@ def resolve_library_path(lib_path, binary_path=None):
     """
     Tries to find the real path of a library on the system.
     It handles @rpath, absolute paths, and searches standard locations.
+    Prioritizes build directory paths over system paths when resolving @rpath references.
     """
     try:
         # 1. Handle @rpath by using the rpaths from the referring binary
         if lib_path.startswith("@rpath") and binary_path:
             rpath_lib = lib_path.split("@rpath/", 1)[1]
             resolved = resolve_rpath(binary_path, rpath_lib)
-            if resolved: return resolved
+            if resolved: 
+                logging.info(f"Resolved @rpath reference '{lib_path}' to '{resolved}'")
+                return resolved
 
         # 2. Handle direct paths that already exist
         if os.path.exists(lib_path):
@@ -107,7 +110,22 @@ def resolve_library_path(lib_path, binary_path=None):
 
         # 3. Search in standard and Homebrew locations
         lib_name_base = os.path.basename(lib_path).split('.dylib', 1)[0] # # Gets base name without extension
-        search_paths = [
+        
+        # Build directory paths should be prioritized over system paths
+        build_search_paths = []
+        if binary_path:
+            # Add build directory paths first
+            build_search_paths.append(os.path.join(os.path.dirname(binary_path), "..", "lib"))
+            # Also try to extract rpaths and add them to build search paths
+            try:
+                output = subprocess.check_output(["otool", "-l", binary_path], text=True)
+                rpaths = _extract_rpaths_from_otool(output, binary_path)
+                build_search_paths.extend(rpaths)
+            except subprocess.CalledProcessError:
+                pass
+        
+        # System paths (lower priority)
+        system_search_paths = [
             "/opt/homebrew/lib",  # Core Homebrew libraries
             "/opt/homebrew/opt/*/lib",  # to cover all Homebrew formulae
             "/usr/local/opt/*/lib",  # Intel Homebrew formula libraries
@@ -117,8 +135,10 @@ def resolve_library_path(lib_path, binary_path=None):
             "/opt/local/lib", # MacPorts installation directory
             "/usr/lib", # System libraries
             "/Library/Frameworks", # System-wide frameworks
-            os.path.join(os.path.dirname(binary_path), "..", "lib") if binary_path else None
         ]
+        
+        # Combine search paths with build paths first
+        search_paths = build_search_paths + system_search_paths
 
         # Regex pattern for versioned libraries
         version_pattern = re.compile(rf'^{re.escape(lib_name_base)}(\.\d+)*\.dylib$')
@@ -127,13 +147,17 @@ def resolve_library_path(lib_path, binary_path=None):
             # Check for exact match first
             candidate = os.path.join(path, lib_name_base + ".dylib")
             if os.path.exists(candidate):
-                return os.path.realpath(candidate)
+                resolved_path = os.path.realpath(candidate)
+                logging.info(f"Found library '{lib_name_base}' at '{resolved_path}'")
+                return resolved_path
 
             # Check for versioned matches
             if os.path.exists(path):
                 for f in os.listdir(path):
                     if version_pattern.match(f):
-                        return os.path.realpath(os.path.join(path, f))
+                        resolved_path = os.path.realpath(os.path.join(path, f))
+                        logging.info(f"Found versioned library '{f}' at '{resolved_path}'")
+                        return resolved_path
 
         logging.warning(f"Could not resolve library path: {lib_path}")
         return None
@@ -156,9 +180,9 @@ def _extract_rpaths_from_otool(output, binary_path):
                     if "@loader_path" in rpath:
                         expanded = os.path.normpath(rpath.replace("@loader_path", binary_dir))
                     elif "@executable_path" in rpath:
-                        # Assuming @executable_path points to the MacOS directory in a bundle
-                        executable_dir = os.path.dirname(os.path.dirname(binary_dir))
-                        expanded = os.path.normpath(rpath.replace("@executable_path", executable_dir))
+                        # @executable_path should be replaced with the directory containing the executable
+                        # For a binary in build/output/Debug/bin/, @executable_path should be build/output/Debug/bin/
+                        expanded = os.path.normpath(rpath.replace("@executable_path", binary_dir))
                     rpaths.append(expanded)
                     break
     return rpaths
@@ -168,22 +192,51 @@ def resolve_rpath(binary_path, rpath_lib):
     try:
         output = subprocess.check_output(["otool", "-l", binary_path], text=True)
         rpaths = _extract_rpaths_from_otool(output, binary_path)
+        logging.info(f"Resolving @rpath for '{rpath_lib}' using rpaths: {rpaths}")
+        
+        # First, try the rpaths from the binary
         for rpath in rpaths:
             possible_path = os.path.join(rpath, rpath_lib)
-            if os.path.exists(possible_path): return os.path.realpath(possible_path)
+            if os.path.exists(possible_path): 
+                resolved_path = os.path.realpath(possible_path)
+                logging.info(f"Found @rpath library '{rpath_lib}' at '{resolved_path}'")
+                return resolved_path
+        
+        # If not found in rpaths, try build directory paths as fallback
+        build_search_paths = []
+        if binary_path:
+            # Add build directory paths
+            build_search_paths.append(os.path.join(os.path.dirname(binary_path), "..", "lib"))
+            # Also try to extract rpaths and add them to build search paths
+            try:
+                rpaths_from_binary = _extract_rpaths_from_otool(output, binary_path)
+                build_search_paths.extend(rpaths_from_binary)
+            except:
+                pass
+        
+        for build_path in build_search_paths:
+            possible_path = os.path.join(build_path, rpath_lib)
+            if os.path.exists(possible_path):
+                resolved_path = os.path.realpath(possible_path)
+                logging.info(f"Found @rpath library '{rpath_lib}' in build directory at '{resolved_path}'")
+                return resolved_path
+        
+        logging.warning(f"Could not find @rpath library '{rpath_lib}' in any rpath: {rpaths}")
         return None
     except Exception as e:
         logging.error(f"Error resolving @rpath for '{rpath_lib}': {e}")
         return None
 
-def update_library_paths(binary_path, dependencies, app_bundle_path):
+def update_library_paths(binary_path, dependencies, app_bundle_path, original_source_path=None):
     """
     Uses install_name_tool to change a binary's dependency references
     to be relative to the new .app bundle structure.
     """
     for original_path in dependencies:
         lib_name = os.path.basename(original_path)
-        actual_path = resolve_library_path(original_path, binary_path)
+        # Use original source path for rpath resolution if available, otherwise use binary_path
+        context_path = original_source_path if original_source_path else binary_path
+        actual_path = resolve_library_path(original_path, context_path)
         
         # If a dependency can't be found, log it and skip to the next one.
         # This prevents the script from crashing with a TypeError (But the error can be examined in the log file)
@@ -260,9 +313,9 @@ def process_and_bundle_dependencies(src_path, app_bundle_path, processed_set, de
     os.chmod(dest_path, 0o755)
     processed_set.add(real_src_path)
 
-    # After copying, get its dependencies and rewire paths and ID
-    dependencies = get_dependencies(dest_path)
-    update_library_paths(dest_path, dependencies, app_bundle_path)
+    # After copying, get its dependencies from the original source and rewire paths and ID
+    dependencies = get_dependencies(real_src_path)
+    update_library_paths(dest_path, dependencies, app_bundle_path, original_source_path=real_src_path)
     update_library_id(dest_path)
 
     # Recurse for all found dependencies
@@ -325,8 +378,11 @@ def bundle_synfig_modules(app_bundle_path, args):
         if not os.path.isfile(module_file) or ".DS_Store" in module_file: continue
 
         logging.info(f"Processing module: {os.path.basename(module_file)}")
-        module_deps = get_dependencies(module_file)
-        update_library_paths(module_file, module_deps, app_bundle_path)
+        # Get the original source path for the module
+        module_name = os.path.basename(module_file)
+        original_module_path = os.path.join(synfig_modules_dir, module_name)
+        module_deps = get_dependencies(original_module_path)
+        update_library_paths(module_file, module_deps, app_bundle_path, original_source_path=original_module_path)
         update_library_id(module_file) 
 
 
