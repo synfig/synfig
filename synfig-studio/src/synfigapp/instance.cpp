@@ -548,7 +548,10 @@ Instance::save_layer(const synfig::Layer::Handle &layer)
 			{
 				String filename = value.get(String());
 				if (save_surface(layer_bitmap->rendering_surface, filename))
+				{
+					layer_bitmap->reset_surface_modification_id();
 					return true;
+				}
 				error("Cannot save image: %s", filename.c_str());
 				return false;
 			}

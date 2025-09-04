@@ -460,10 +460,11 @@ Action::LayerBrush::perform()
 		throw Action::Error(Action::Error::TYPE_UNABLE, "");
 	}
 
-	applied = true;
 	if (get_canvas_interface()) {
 		get_canvas_interface()->signal_layer_param_changed()(stroke.get_layer(), "rendering_surface");
 	}
+	if (!applied) stroke.get_layer()->add_surface_modification_id(id);
+	applied = !applied;
 }
 
 void
@@ -471,9 +472,10 @@ Action::LayerBrush::undo()
 {
 	if (applied) {
 		stroke.undo();
-		applied = false;
 		if (get_canvas_interface()) {
 			get_canvas_interface()->signal_layer_param_changed()(stroke.get_layer(), "rendering_surface");
 		}
+		if (applied) stroke.get_layer()->add_surface_modification_id(id);
+		applied = !applied;
 	}
 }

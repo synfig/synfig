@@ -104,6 +104,7 @@ public:
 	};
 
 private:
+	synfig::GUID id;
 	bool applied;
 
 public:
