@@ -44,16 +44,43 @@
 using namespace synfig;
 using namespace studio;
 
-/* === M A C R O S ========================================================= */
+/* === H E L P E R S ======================================================= */
 
-/* === G L O B A L S ======================================================= */
+static Cairo::RefPtr<Cairo::ImageSurface>to_cairo_surface(const Surface& synfig_surface)
+{
+	int width = synfig_surface.get_w();
+	int height = synfig_surface.get_h();
+	if (width <= 0 || height <= 0) {
+		return Cairo::RefPtr<Cairo::ImageSurface>();
+	}
+	Cairo::RefPtr<Cairo::ImageSurface> cairo_surface =
+		Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, width, height);
+	cairo_surface->flush();
 
-/* === P R O C E D U R E S ================================================= */
+	union { int i; char c[4]; } checker = {0x01020304};
+	bool big_endian = checker.c[0] == 1;
+	PixelFormat pixel_format = big_endian
+		? (PF_A_START | PF_RGB | PF_A_PREMULT)
+		: (PF_BGR | PF_A | PF_A_PREMULT);
+
+	color_to_pixelformat(
+	 cairo_surface->get_data(),
+		synfig_surface[0],
+		pixel_format,
+		0, width, height,
+		cairo_surface->get_stride());
+
+	cairo_surface->mark_dirty();
+	cairo_surface->flush();
+	return cairo_surface;
+}
+
 
 /* === M E T H O D S ======================================================= */
 
 Renderer_BrushOverlay::Renderer_BrushOverlay():
-	overlay_enabled(false)
+	overlay_enabled(false),
+	has_transformation(false)
 {
 }
 
@@ -62,10 +89,16 @@ Renderer_BrushOverlay::~Renderer_BrushOverlay()
 }
 
 void
-Renderer_BrushOverlay::set_overlay_surface(const synfig::Surface& surface, const synfig::Rect& rect)
+Renderer_BrushOverlay::set_overlay_surface(const Surface& surface, const Rect& rect, const Matrix& transform)
 {
 	overlay_surface = surface;
 	overlay_rect = rect;
+
+	if (!transform.is_identity()) {
+		transformation_matrix = transform;
+		has_transformation = true;
+	}
+
 	overlay_enabled = true;
 	if (get_work_area())
 		get_work_area()->queue_draw();
@@ -75,6 +108,7 @@ void
 Renderer_BrushOverlay::clear_overlay()
 {
 	overlay_enabled = false;
+    has_transformation = false;
 	if (get_work_area())
 		get_work_area()->queue_draw();
 }
@@ -98,85 +132,78 @@ Renderer_BrushOverlay::render_vfunc(
 	const Glib::RefPtr<Gdk::Window>& drawable,
 	const Gdk::Rectangle& /*expose_area*/)
 {
-	assert(get_work_area());
-	if (!get_work_area() || !overlay_enabled || !overlay_surface.is_valid())
+	if (!get_work_area() || !overlay_enabled || !overlay_surface.is_valid()) {
 		return;
-
-	if (!get_work_area()->get_canvas())
-		return;
-	const RendDesc& rend_desc = get_work_area()->get_canvas()->rend_desc();
-	int canvas_w = get_work_area()->get_w();
-	int canvas_h = get_work_area()->get_h();
-	Vector canvas_tl = rend_desc.get_tl();
-	Vector canvas_br = rend_desc.get_br();
-
-	if (canvas_w <= 0 || canvas_h <= 0
-		|| approximate_equal(canvas_tl[0], canvas_br[0])
-		|| approximate_equal(canvas_tl[1], canvas_br[1]))
-		return;
-
+	}
 	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
+	// calculate the overlay bounding box in world coordinates
+	Rect world_bounds;
+	if (has_transformation) {
+		Point p1(overlay_rect.minx, overlay_rect.miny);
+		Point p2(overlay_rect.maxx, overlay_rect.miny);
+		Point p3(overlay_rect.maxx, overlay_rect.maxy);
+		Point p4(overlay_rect.minx, overlay_rect.maxy);
+		auto transform_point = [&](const Point& p) {
+			return (transformation_matrix * Vector3(p[0], p[1], 1.0)).to_2d();
+		};
+		// get real (transformed) corners
+		Point p1_t = transform_point(p1);
+		Point p2_t = transform_point(p2);
+		Point p3_t = transform_point(p3);
+		Point p4_t = transform_point(p4);
 
-	int width = overlay_surface.get_w();
-	int height = overlay_surface.get_h();
-	if (width <= 0 || height <= 0)
-		return;
-
-	Cairo::RefPtr<Cairo::ImageSurface> cairo_surface =
-		Cairo::ImageSurface::create(Cairo::FORMAT_ARGB32, width, height);
-
-	cairo_surface->flush();
-
-	union { int i; char c[4]; } checker = {0x01020304};
-	bool big_endian = checker.c[0] == 1;
-	PixelFormat pixel_format = big_endian
-		? (PF_A_START | PF_RGB | PF_A_PREMULT)
-		: (PF_BGR | PF_A | PF_A_PREMULT);
-
-	color_to_pixelformat(
-		cairo_surface->get_data(),
-		overlay_surface[0],
-		pixel_format,
-		0,
-		cairo_surface->get_width(),
-		cairo_surface->get_height(),
-		cairo_surface->get_stride());
-
-	cairo_surface->mark_dirty();
-	cairo_surface->flush();
-
-	// Compute screen coordinates for proper zoom handling
-	synfig::Point world_top_left_layer(overlay_rect.minx, overlay_rect.maxy);
-	synfig::Point world_bottom_right_layer(overlay_rect.maxx, overlay_rect.miny);
-	synfig::Point screen_top_left = get_work_area()->comp_to_screen_coords(world_top_left_layer);
-	synfig::Point screen_bottom_right = get_work_area()->comp_to_screen_coords(world_bottom_right_layer);
-	double screen_x = screen_top_left[0];
-	double screen_y = screen_top_left[1];
-	double screen_w = screen_bottom_right[0] - screen_top_left[0];
-	double screen_h = screen_bottom_right[1] - screen_top_left[1];
-	if (screen_w <= 0 || screen_h <= 0)
-		return;
-
-	synfig::Point canvas_screen_tl = get_work_area()->comp_to_screen_coords(canvas_tl);
-	synfig::Point canvas_screen_br = get_work_area()->comp_to_screen_coords(canvas_br);
+		// get bounding box
+		world_bounds.minx = std::min({p1_t[0], p2_t[0], p3_t[0], p4_t[0]});
+		world_bounds.miny = std::min({p1_t[1], p2_t[1], p3_t[1], p4_t[1]});
+		world_bounds.maxx = std::max({p1_t[0], p2_t[0], p3_t[0], p4_t[0]});
+		world_bounds.maxy = std::max({p1_t[1], p2_t[1], p3_t[1], p4_t[1]});
+	} else {
+		world_bounds = overlay_rect;
+	}
 
 	// clip the rendering area to canvas bounds
-	double clip_x = std::max(screen_x, canvas_screen_tl[0]);
-	double clip_y = std::max(screen_y, canvas_screen_tl[1]);
-	double clip_w = std::min(screen_x + screen_w, canvas_screen_br[0]) - clip_x;
-	double clip_h = std::min(screen_y + screen_h, canvas_screen_br[1]) - clip_y;
-
-	if (clip_w <= 0 || clip_h <= 0)
-		return;
-
+	const RendDesc& rend_desc = get_work_area()->get_canvas()->rend_desc();
+	Point screen_top_left = get_work_area()->comp_to_screen_coords(Point(world_bounds.minx, world_bounds.maxy));
+	Point screen_bottom_right = get_work_area()->comp_to_screen_coords(Point(world_bounds.maxx, world_bounds.miny));
+	Point canvas_screen_tl = get_work_area()->comp_to_screen_coords(rend_desc.get_tl());
+	Point canvas_screen_br = get_work_area()->comp_to_screen_coords(rend_desc.get_br());
+	double clip_x = std::max(screen_top_left[0], canvas_screen_tl[0]);
+	double clip_y = std::max(screen_top_left[1], canvas_screen_tl[1]);
+	double clip_w = std::min(screen_bottom_right[0], canvas_screen_br[0]) - clip_x;
+	double clip_h = std::min(screen_bottom_right[1], canvas_screen_br[1]) - clip_y;
+	if (clip_w <= 0 || clip_h <= 0) {
+	 	return;
+	}
 	cr->save();
 	cr->rectangle(clip_x, clip_y, clip_w, clip_h);
 	cr->clip();
-	
-	cr->translate(screen_x, screen_y);
-	cr->scale(screen_w / width, screen_h / height);
+	Cairo::RefPtr<Cairo::ImageSurface> cairo_surface = to_cairo_surface(overlay_surface);
+	if (!cairo_surface) {
+		cr->restore();
+		return;
+	}
+
+	const Point screen_origin = get_work_area()->comp_to_screen_coords(Point(0,0));
+	const Point screen_one_x = get_work_area()->comp_to_screen_coords(Point(1,0));
+	const Point screen_one_y = get_work_area()->comp_to_screen_coords(Point(0,1));
+	Cairo::Matrix view_matrix(
+		screen_one_x[0] - screen_origin[0], screen_one_y[0] - screen_origin[0],
+		screen_one_x[1] - screen_origin[1], screen_one_y[1] - screen_origin[1],
+		screen_origin[0], screen_origin[1]
+	);
+	cr->transform(view_matrix);
+	if (has_transformation) {
+		 Cairo::Matrix model_matrix(
+			transformation_matrix.m00, transformation_matrix.m01,
+			transformation_matrix.m10, transformation_matrix.m11,
+			transformation_matrix.m20, transformation_matrix.m21
+		);
+	 	cr->transform(model_matrix);
+	}
+	cr->translate(overlay_rect.minx, overlay_rect.maxy);
+	cr->scale(overlay_rect.get_width() / cairo_surface->get_width(), -overlay_rect.get_height() / cairo_surface->get_height());
 	cr->set_source(cairo_surface, 0, 0);
-	cr->rectangle(0, 0, width, height);
+	cr->rectangle(0, 0, cairo_surface->get_width(), cairo_surface->get_height());
 	cr->paint();
 	cr->restore();
 }

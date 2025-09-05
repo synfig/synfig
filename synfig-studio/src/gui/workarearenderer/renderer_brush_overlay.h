@@ -33,6 +33,7 @@
 #include "workarearenderer.h"
 #include <synfig/surface.h>
 #include <synfig/rect.h>
+#include <synfig/matrix.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -48,12 +49,13 @@ namespace studio {
 		synfig::Surface overlay_surface;
 		synfig::Rect overlay_rect;
 		bool overlay_enabled;
-
+		bool has_transformation;
+		synfig::Matrix transformation_matrix;
 	public:
 		Renderer_BrushOverlay();
 		~Renderer_BrushOverlay();
 
-		void set_overlay_surface(const synfig::Surface& surface, const synfig::Rect& rect);
+		void set_overlay_surface(const synfig::Surface &surface, const synfig::Rect &rect, const synfig::Matrix &transform = synfig::Matrix());
 		void clear_overlay();
 		void enable_overlay(bool enabled = true);
 
