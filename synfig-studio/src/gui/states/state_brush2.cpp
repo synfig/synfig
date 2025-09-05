@@ -1260,11 +1260,11 @@ StateBrush2_Context::event_mouse_down_handler(const Smach::event& x)
 {
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
 	if (event.button != BUTTON_LEFT)
-	  return Smach::RESULT_OK;
+		return Smach::RESULT_OK;
 
 	// clear any pending overlay clear signal
 	if (clear_overlay_timer_.connected()) {
-	  clear_overlay_timer_.disconnect();
+		clear_overlay_timer_.disconnect();
 	}
 
 	layer_ = find_or_create_layer();
@@ -1281,12 +1281,10 @@ StateBrush2_Context::event_mouse_down_handler(const Smach::event& x)
 
 	transform_stack_.clear();
 	if (!build_transform_stack(canvas_view_->get_canvas(), layer_, canvas_view_, transform_stack_)) {
-	  transform_stack_.clear();
+		transform_stack_.clear();
 	}
 
-	// Get actual layer bounds after transformation
 	synfig::Rect layer_bounds = layer_->get_bounding_rect();
-	layer_bounds = transform_stack_.empty() ? layer_bounds : transform_stack_.perform(layer_bounds);
 	overlay_rect_ = layer_bounds;
 
 	// copy layer to overlay
@@ -1296,6 +1294,30 @@ StateBrush2_Context::event_mouse_down_handler(const Smach::event& x)
 			const Surface& src = lock->get_surface();
 			overlay_surface_ = synfig::Surface(src.get_w(), src.get_h());
 			overlay_surface_.copy(src);
+
+			// extract transformation matrix to apply transformations to cairo surface
+			Matrix transform_matrix;
+			if (!transform_stack_.empty()) {
+				Vector p00 = transform_stack_.perform(Vector(0, 0));
+				Vector p10 = transform_stack_.perform(Vector(1, 0));
+				Vector p01 = transform_stack_.perform(Vector(0, 1));
+
+				transform_matrix.m00 = p10[0] - p00[0];
+				transform_matrix.m01 = p10[1] - p00[1];
+				transform_matrix.m10 = p01[0] - p00[0];
+				transform_matrix.m11 = p01[1] - p00[1];
+				transform_matrix.m20 = p00[0];
+				transform_matrix.m21 = p00[1];
+				transform_matrix.m02 = 0;
+				transform_matrix.m12 = 0;
+				transform_matrix.m22 = 1;
+			}
+
+			canvas_view_->get_work_area()->get_renderer_brush_overlay()->set_overlay_surface(
+				overlay_surface_,
+				overlay_rect_,
+				transform_matrix
+			);
 		}
 	}
 

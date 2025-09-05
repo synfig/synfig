@@ -53,7 +53,8 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Renderer_BrushOverlay::Renderer_BrushOverlay():
-	overlay_enabled(false)
+	overlay_enabled(false),
+    has_transformation(false)
 {
 }
 
@@ -62,10 +63,16 @@ Renderer_BrushOverlay::~Renderer_BrushOverlay()
 }
 
 void
-Renderer_BrushOverlay::set_overlay_surface(const synfig::Surface& surface, const synfig::Rect& rect)
+Renderer_BrushOverlay::set_overlay_surface(const synfig::Surface& surface, const synfig::Rect& rect, const synfig::Matrix& transform)
 {
 	overlay_surface = surface;
 	overlay_rect = rect;
+
+	if (!transform.is_identity()) {
+		transformation_matrix = transform;
+		has_transformation = true;
+	}
+
 	overlay_enabled = true;
 	if (get_work_area())
 		get_work_area()->queue_draw();
@@ -75,6 +82,7 @@ void
 Renderer_BrushOverlay::clear_overlay()
 {
 	overlay_enabled = false;
+    has_transformation = false;
 	if (get_work_area())
 		get_work_area()->queue_draw();
 }
@@ -145,7 +153,6 @@ Renderer_BrushOverlay::render_vfunc(
 	cairo_surface->mark_dirty();
 	cairo_surface->flush();
 
-	// Compute screen coordinates for proper zoom handling
 	synfig::Point world_top_left_layer(overlay_rect.minx, overlay_rect.maxy);
 	synfig::Point world_bottom_right_layer(overlay_rect.maxx, overlay_rect.miny);
 	synfig::Point screen_top_left = get_work_area()->comp_to_screen_coords(world_top_left_layer);
@@ -172,8 +179,24 @@ Renderer_BrushOverlay::render_vfunc(
 	cr->save();
 	cr->rectangle(clip_x, clip_y, clip_w, clip_h);
 	cr->clip();
-	
 	cr->translate(screen_x, screen_y);
+
+	if (has_transformation) {
+		cr->translate(screen_w / 2.0, screen_h / 2.0);
+		cr->scale(1.0, -1.0);
+		Cairo::Matrix cairo_matrix(
+			transformation_matrix.m00,
+			transformation_matrix.m01,
+			transformation_matrix.m10,
+			transformation_matrix.m11,
+			0.0,
+			0.0
+		);
+		cr->transform(cairo_matrix);
+		cr->scale(1.0, -1.0);
+		cr->translate(-screen_w / 2.0, -screen_h / 2.0);
+	}
+
 	cr->scale(screen_w / width, screen_h / height);
 	cr->set_source(cairo_surface, 0, 0);
 	cr->rectangle(0, 0, width, height);
