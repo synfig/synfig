@@ -391,6 +391,27 @@ def generate_gtk_caches(app_bundle_path):
     logging.info("--- Generating GTK Resource Caches ---")
     homebrew_prefix = get_homebrew_prefix()
 
+    # Bundle complete icon themes from system
+    icon_themes = ["hicolor", "Adwaita"]
+    for theme in icon_themes:
+        system_theme_dir = os.path.join(homebrew_prefix, "share", "icons", theme)
+        bundle_theme_dir = os.path.join(app_bundle_path, "Contents", "share", "icons", theme)
+        
+        if os.path.isdir(system_theme_dir):
+            logging.info(f"Bundling {theme} icon theme from '{system_theme_dir}'...")
+            try:
+                # Remove existing theme directory in bundle
+                if os.path.exists(bundle_theme_dir):
+                    shutil.rmtree(bundle_theme_dir)
+                
+                # Copy complete theme from system
+                shutil.copytree(system_theme_dir, bundle_theme_dir)
+                logging.info(f"Successfully bundled {theme} icon theme.")
+            except Exception as e:
+                logging.error(f"Failed to bundle {theme} icon theme: {e}")
+        else:
+            logging.warning(f"Icon theme '{theme}' not found in system at '{system_theme_dir}'.")
+    
     # Update the Icon Caches (Hicolor and Adwaita)
     gtk_icon_cache_tool = find_system_executable("gtk-update-icon-cache")
     if gtk_icon_cache_tool:
@@ -409,19 +430,33 @@ def generate_gtk_caches(app_bundle_path):
     else:
         logging.warning("'gtk-update-icon-cache' not found. Icons may fail to load.")
 
-    # Compile GSettings Schemas
+    # Bundle GSettings schemas from system
     glib_schema_tool = find_system_executable("glib-compile-schemas")
     if glib_schema_tool:
-        schemas_dir = os.path.join(app_bundle_path, "Contents", "share", "glib-2.0", "schemas")
-        if os.path.isdir(schemas_dir):
+        system_schemas_dir = os.path.join(homebrew_prefix, "share", "glib-2.0", "schemas") if homebrew_prefix else None
+        bundle_schemas_dir = os.path.join(app_bundle_path, "Contents", "share", "glib-2.0", "schemas")
+        
+        if system_schemas_dir and os.path.isdir(system_schemas_dir):
+            logging.info(f"Bundling GSettings schemas from '{system_schemas_dir}'...")
             try:
-                logging.info(f"Compiling GSettings schemas in '{schemas_dir}'...")
-                subprocess.run([glib_schema_tool, schemas_dir], check=True)
-                logging.info("Successfully compiled GSettings schemas.")
-            except subprocess.CalledProcessError as e:
-                logging.error(f"Failed to compile GSettings schemas: {e}")
+                # Create schemas directory if it doesn't exist
+                os.makedirs(bundle_schemas_dir, exist_ok=True)
+                
+                # Copy schemas from system
+                for schema_file in os.listdir(system_schemas_dir):
+                    if schema_file.endswith('.gschema.xml'):
+                        src_file = os.path.join(system_schemas_dir, schema_file)
+                        dst_file = os.path.join(bundle_schemas_dir, schema_file)
+                        shutil.copy2(src_file, dst_file)
+                
+                # Compile schemas
+                logging.info(f"Compiling GSettings schemas in '{bundle_schemas_dir}'...")
+                subprocess.run([glib_schema_tool, bundle_schemas_dir], check=True)
+                logging.info("Successfully bundled and compiled GSettings schemas.")
+            except Exception as e:
+                logging.error(f"Failed to bundle GSettings schemas: {e}")
         else:
-            logging.warning(f"GSettings schemas directory not found at '{schemas_dir}'.")
+            logging.warning(f"System GSettings schemas directory not found at '{system_schemas_dir}'.")
     else:
         logging.warning("'glib-compile-schemas' not found. App settings may not work correctly.")
 
