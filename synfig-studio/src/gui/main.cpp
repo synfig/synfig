@@ -44,6 +44,13 @@
 
 #include <iostream>
 
+#ifdef __APPLE__
+#include <unistd.h>
+#include <libgen.h>
+#include <cstring>
+#include <mach-o/dyld.h>
+#endif
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -63,6 +70,54 @@ using namespace studio;
 
 int main(int argc, char **argv)
 {
+#ifdef __APPLE__
+	// Set up macOS app bundle environment
+	char exe_path[PATH_MAX];
+	uint32_t size = sizeof(exe_path);
+	if (_NSGetExecutablePath(exe_path, &size) == 0) {
+		char* dir = dirname(exe_path);
+		char resources_path[PATH_MAX];
+		snprintf(resources_path, sizeof(resources_path), "%s/../Resources", dir);
+		
+		// Set non-library environment variables
+		char modules_path[PATH_MAX];
+		snprintf(modules_path, sizeof(modules_path), "%s/synfig/modules", resources_path);
+		setenv("LTDL_LIBRARY_PATH", modules_path, 1);
+		
+		char share_path[PATH_MAX];
+		snprintf(share_path, sizeof(share_path), "%s/share", resources_path);
+		setenv("XDG_DATA_DIRS", share_path, 1);
+		
+		// GTK and other application-specific environment variables
+		setenv("GTK_EXE_PREFIX", resources_path, 1);
+		char gtk_data_prefix_path[PATH_MAX];
+		snprintf(gtk_data_prefix_path, sizeof(gtk_data_prefix_path), "%s/share", resources_path);
+		setenv("GTK_DATA_PREFIX", gtk_data_prefix_path, 1);
+
+		char gsettings_schema_dir_path[PATH_MAX];
+		snprintf(gsettings_schema_dir_path, sizeof(gsettings_schema_dir_path), "%s/share/glib-2.0/schemas/", resources_path);
+		setenv("GSETTINGS_SCHEMA_DIR", gsettings_schema_dir_path, 1);
+
+		char fontconfig_path[PATH_MAX];
+		snprintf(fontconfig_path, sizeof(fontconfig_path), "%s/etc/fonts", resources_path);
+		setenv("FONTCONFIG_PATH", fontconfig_path, 1);
+
+		char mlt_data_path[PATH_MAX];
+		snprintf(mlt_data_path, sizeof(mlt_data_path), "%s/share/mlt/", resources_path);
+		setenv("MLT_DATA", mlt_data_path, 1);
+
+		char mlt_repository_path[PATH_MAX];
+		snprintf(mlt_repository_path, sizeof(mlt_repository_path), "%s/lib/mlt/", resources_path);
+		setenv("MLT_REPOSITORY", mlt_repository_path, 1);
+
+		char path_env[PATH_MAX * 2];
+		snprintf(path_env, sizeof(path_env), "%s/bin:%s/synfig-production/bin:%s", resources_path, resources_path, getenv("PATH") ? getenv("PATH") : "");
+		setenv("PATH", path_env, 1);
+
+		setenv("SYNFIG_ROOT", resources_path, 1);
+	}
+#endif
+
 	synfig::OS::fallback_binary_path = filesystem::Path(Glib::filename_to_utf8(argv[0]));
 	const filesystem::Path rootpath = synfig::OS::get_binary_path().parent_path().parent_path();
 	

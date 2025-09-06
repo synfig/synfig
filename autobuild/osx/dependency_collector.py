@@ -335,7 +335,7 @@ def bundle_data_resources(app_bundle_path, args):
 
     # This path assumes the 'share' directory is in the build directory, one level up from bin_dir
     source_share_dir = os.path.join(os.path.dirname(args.bin_dir), "share")
-    dest_share_dir = os.path.join(app_bundle_path, "Contents", "share")
+    dest_share_dir = os.path.join(app_bundle_path, "Contents", "Resources", "share")
 
     if os.path.isdir(source_share_dir):
         logging.info(f"Copying resources from '{source_share_dir}' to '{os.path.relpath(dest_share_dir, app_bundle_path)}'")
@@ -343,6 +343,32 @@ def bundle_data_resources(app_bundle_path, args):
         shutil.copytree(source_share_dir, dest_share_dir, dirs_exist_ok=True)
     else:
         logging.warning(f"RESOURCE DIRECTORY NOT FOUND at '{source_share_dir}'. UI may be broken.")
+
+    # Also copy GTK resources from system
+    homebrew_prefix = get_homebrew_prefix()
+    if homebrew_prefix:
+        gtk_resources = [
+            ("glib-2.0", "glib-2.0"),
+            ("gtk-3.0", "gtk-3.0"),
+            ("gdk-pixbuf-2.0", "gdk-pixbuf-2.0"),
+            ("pango", "pango"),
+            ("icons", "icons")
+        ]
+        
+        for src_name, dest_name in gtk_resources:
+            src_path = os.path.join(homebrew_prefix, "share", src_name)
+            dest_path = os.path.join(dest_share_dir, dest_name)
+            
+            if os.path.isdir(src_path):
+                logging.info(f"Copying GTK resource '{src_name}' from '{src_path}' to '{os.path.relpath(dest_path, app_bundle_path)}'")
+                try:
+                    if os.path.exists(dest_path):
+                        shutil.rmtree(dest_path)
+                    shutil.copytree(src_path, dest_path)
+                except Exception as e:
+                    logging.error(f"Failed to copy GTK resource '{src_name}': {e}")
+            else:
+                logging.warning(f"GTK resource '{src_name}' not found at '{src_path}'")
 
 
 def bundle_synfig_modules(app_bundle_path, args):
@@ -461,45 +487,6 @@ def generate_gtk_caches(app_bundle_path):
         logging.warning("'glib-compile-schemas' not found. App settings may not work correctly.")
 
 
-def create_launcher_script(app_bundle_path, executable_name):
-    """Creates a shell script to set environment variables and launch the real executable."""
-    logging.info(f"Creating launcher script for '{executable_name}'...")
-
-    macos_dir = os.path.join(app_bundle_path, "Contents", "MacOS")
-    original_executable_path = os.path.join(macos_dir, executable_name)
-    real_executable_path = os.path.join(macos_dir, f"{executable_name}_real")
-
-    if not os.path.exists(original_executable_path):
-        logging.error(f"Cannot create launcher script. Original executable not found at '{original_executable_path}'.")
-        return
-
-    # Only create the launcher if it hasn't been done already
-    if not os.path.exists(real_executable_path):
-        os.rename(original_executable_path, real_executable_path)
-        logging.info(f"Renamed original executable to '{os.path.basename(real_executable_path)}'")
-
-        launcher_script_content = f"""#!/bin/bash
-# This script sets up the complete environment for a bundled GTK application.
-
-DIR=$(cd "$(dirname "$0")" && pwd)
-
-# Prioritize our bundled libraries to avoid system conflicts.
-export DYLD_LIBRARY_PATH="$DIR/../Frameworks"
-
-# Point the module loader to our bundled Synfig modules.
-export LTDL_LIBRARY_PATH="$DIR/../Resources/synfig/modules"
-
-# Point GTK to our bundled data files (icons, themes, etc.).
-export XDG_DATA_DIRS="$DIR/../share"
-
-# Execute the real binary, passing along all arguments.
-exec "$DIR/{os.path.basename(real_executable_path)}" "$@"
-"""
-        with open(original_executable_path, 'w') as f:
-            f.write(launcher_script_content)
-
-        os.chmod(original_executable_path, 0o755)
-        logging.info(f"Created new executable launcher script at '{os.path.basename(original_executable_path)}'")
 
 
 def main():
@@ -569,8 +556,6 @@ def main():
     # Generate necessary caches for GTK
     generate_gtk_caches(app_bundle_path)
 
-    # Create the launcher script
-    create_launcher_script(app_bundle_path, "synfigstudio")
     logging.info(f"Successfully created and populated {app_name}")
 
 if __name__ == "__main__":
