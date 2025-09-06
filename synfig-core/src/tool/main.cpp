@@ -53,11 +53,38 @@
 #include "joblistprocessor.h"
 #include "printing_functions.h"
 
+#ifdef __APPLE__
+#include <unistd.h>
+#include <libgen.h>
+#include <cstring>
+#include <mach-o/dyld.h>
+#endif
+
 #endif
 
 
 int main(int argc, char* argv[])
 {
+#ifdef __APPLE__
+	// Set up macOS app bundle environment
+	char exe_path[PATH_MAX];
+	uint32_t size = sizeof(exe_path);
+	if (_NSGetExecutablePath(exe_path, &size) == 0) {
+		char* dir = dirname(exe_path);
+		char resources_path[PATH_MAX];
+		snprintf(resources_path, sizeof(resources_path), "%s/../Resources", dir);
+		
+		// Set non-library environment variables
+		char modules_path[PATH_MAX];
+		snprintf(modules_path, sizeof(modules_path), "%s/synfig/modules", resources_path);
+		setenv("LTDL_LIBRARY_PATH", modules_path, 1);
+		
+		char share_path[PATH_MAX];
+		snprintf(share_path, sizeof(share_path), "%s/share", resources_path);
+		setenv("XDG_DATA_DIRS", share_path, 1);
+	}
+#endif
+
 	setlocale(LC_ALL, "");
 	Glib::init(); // need to use Gio functions before app is started
 
