@@ -749,6 +749,9 @@ StateBrush2_Context::create_settings_tab(Gtk::Notebook *notebook)
 
 	// build rows
 	for (int i = 0; i < BRUSH_SETTINGS_COUNT; ++i) {
+		// skip change color settings
+		if (i >= 24 && i <= 28)
+			continue;
 		const SettingInfo& info = setting_info[i];
 		Gtk::Box *row_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 8));
 
@@ -770,28 +773,40 @@ StateBrush2_Context::create_settings_tab(Gtk::Notebook *notebook)
 		slider->set_tooltip_text(_(info.tooltip));
 		slider->set_hexpand(true);
 
-		float initial_value = selected_brush_button ? selected_brush_config.settings[i].base : info.min_value;
+		float initial_value = selected_brush_config.settings[i].base;
 		slider->set_value(initial_value);
-		// apply values changes to brush
-		slider->signal_value_changed().connect([this, i, slider]() {
+		row_box->pack_start(*slider, true, true, 0);
+		setting_controls[i] = slider;
+
+		// reset button
+		Gtk::Button *reset_btn = Gtk::manage(new Gtk::Button("-"));
+		reset_btn->set_valign(Gtk::ALIGN_CENTER);
+		reset_btn->set_sensitive(false);
+		row_box->pack_start(*reset_btn, false, false, 0);
+
+		slider->signal_value_changed().connect([this, i, slider, label, reset_btn]() {
 			selected_brush_config.settings[i].base = slider->get_value();
-			if (action_) selected_brush_config.apply(action_->stroke.brush());
+			if (action_)
+				selected_brush_config.apply(action_->stroke.brush());
+
 			if (i == BRUSH_RADIUS_LOGARITHMIC) {
 				Real brush_radius = expf(selected_brush_config.settings[i].base);
 				synfigapp::Main::set_bline_width(Distance(brush_radius, Distance::SYSTEM_UNITS));
 				update_cursor();
 			}
-		});
-		row_box->pack_start(*slider, true, true, 0);
-		setting_controls[i] = slider;
 
-		// reset button
-		Gtk::Button *reset_btn = Gtk::manage(new Gtk::Button("↺"));
-		reset_btn->set_valign(Gtk::ALIGN_CENTER);
+			bool changed = fabs(slider->get_value() - original_brush_config.settings[i].base) > 1e-6f;
+			if (changed) {
+				reset_btn->set_label("↺");
+				reset_btn->set_sensitive(true);
+			} else {
+				reset_btn->set_label("-");
+				reset_btn->set_sensitive(false);
+			}
+		});
 		reset_btn->signal_clicked().connect([this, i, slider]() {
 			slider->set_value(original_brush_config.settings[i].base);
 		});
-		row_box->pack_start(*reset_btn, false, false, 0);
 		settings_grid->attach(*row_box, 0, i, 1, 1);
 	}
 	// add to tab
