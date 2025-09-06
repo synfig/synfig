@@ -46,6 +46,7 @@
 #include "actions/layeradd.h"
 #include "actions/layeraddframe.h"
 #include "actions/layeractivate.h"
+#include "actions/layerbrush.h"
 #include "actions/layercopy.h"
 #include "actions/layerfit.h"
 #include "actions/layermakebline.h"
@@ -191,6 +192,7 @@ Action::Main::Main()
 {
 	book_=new synfigapp::Action::Book();
 
+	ADD_ACTION(Action::LayerBrush);
 	ADD_ACTION(Action::LayerRemove);
 	ADD_ACTION(Action::LayerMove);
 	ADD_ACTION(Action::LayerRaise);
