@@ -54,6 +54,7 @@
 #include <synfig/general.h>
 #include <glibmm/fileutils.h>
 #include <synfigapp/actions/layerbrush.h>
+#include <synfig/canvasfilenaming.h>
 
 #endif
 
@@ -1085,12 +1086,11 @@ void StateBrush2_Context::create_image_layer_dialog()
 							description,
 							filename,
 							filename_param );
-
+					String full_filename = CanvasFileNaming::make_full_filename(get_canvas()->get_file_name(),filename_param);
 					// create and save surface
 					get_canvas_interface()
 						->get_instance()
-						->save_surface(bitmap_layer->rendering_surface, filename);
-
+						->save_surface(bitmap_layer->rendering_surface, full_filename);
 				bitmap_layer->set_param("filename", filename_param);
 				bitmap_layer->set_description(description);
 			}
@@ -1153,84 +1153,83 @@ StateBrush2_Context::draw_to(Vector event_pos, Real pressure)
 
 Layer_Bitmap::Handle StateBrush2_Context::find_or_create_layer()
 {
-	// is the selected layer a bitmap ?
-	Layer::Handle selected_layer = canvas_view_->get_selection_manager()->get_selected_layer();
-	Layer_Bitmap::Handle layer = Layer_Bitmap::Handle::cast_dynamic(selected_layer);
+    // is the selected layer a bitmap ?
+    Layer::Handle selected_layer = canvas_view_->get_selection_manager()->get_selected_layer();
+    Layer_Bitmap::Handle layer = Layer_Bitmap::Handle::cast_dynamic(selected_layer);
 
-	if (layer) {
-	  return layer;
-	}
+    if (layer) {
+        return layer;
+    }
 
-	// is it a switch && active layer is a bitmap ?
-	if (!layer) {
-	  etl::handle<Layer_Switch> layer_switch = etl::handle<Layer_Switch>::cast_dynamic(selected_layer);
-	  if (layer_switch) {
-	      Layer::Handle current_layer = layer_switch->get_current_layer();
-	      if (current_layer) {
-	          layer = Layer_Bitmap::Handle::cast_dynamic(current_layer);
-	          if (layer) {
-	              return layer;
-	          }
-	      }
-	  }
-	}
+    // is it a switch && active layer is a bitmap ?
+    if (!layer) {
+        etl::handle<Layer_Switch> layer_switch = etl::handle<Layer_Switch>::cast_dynamic(selected_layer);
+        if (layer_switch) {
+            Layer::Handle current_layer = layer_switch->get_current_layer();
+            if (current_layer) {
+                layer = Layer_Bitmap::Handle::cast_dynamic(current_layer);
+                if (layer) {
+                    return layer;
+                }
+            }
+        }
+    }
 
-	// creates a canvas size layer
-	if (!layer) {
-	  Canvas::Handle canvas = canvas_view_->get_canvas();
-	  Layer::Handle new_layer = canvas_view_->canvas_interface()->add_layer_to("import", canvas);
-	  if (!new_layer)
-	      return Layer_Bitmap::Handle();
+    // creates a canvas size layer
+    if (!layer) {
+        Canvas::Handle canvas = canvas_view_->get_canvas();
+        Layer::Handle new_layer = canvas_view_->canvas_interface()->add_layer_to("import", canvas);
+        if (!new_layer)
+            return Layer_Bitmap::Handle();
 
-	  layer = etl::handle<synfig::Layer_Bitmap>::cast_dynamic(new_layer);
-	  if (!layer)
-	      return Layer_Bitmap::Handle();
+        layer = etl::handle<synfig::Layer_Bitmap>::cast_dynamic(new_layer);
+        if (!layer)
+            return Layer_Bitmap::Handle();
 
-	  layer->set_description(_("brush image"));
+        layer->set_description(_("brush image"));
 
-	  Point canvas_tl = canvas->rend_desc().get_tl();
-	  Point canvas_br = canvas->rend_desc().get_br();
+        Point canvas_tl = canvas->rend_desc().get_tl();
+        Point canvas_br = canvas->rend_desc().get_br();
 
-	  layer->set_param("tl", canvas_tl);
-	  layer->set_param("br", canvas_br);
-	  layer->set_param("c", int(1));
+        layer->set_param("tl", canvas_tl);
+        layer->set_param("br", canvas_br);
+        layer->set_param("c", int(1));
 
-	  int width = canvas->rend_desc().get_w();
-	  int height = canvas->rend_desc().get_h();
+        int width = canvas->rend_desc().get_w();
+        int height = canvas->rend_desc().get_h();
 
-	  if (width > 0 && height > 0) {
-	      Surface *initial_surface = new Surface(width, height);
-	      initial_surface->clear();
-	      layer->rendering_surface = new rendering::SurfaceResource(
-	          new rendering::SurfaceSW(*initial_surface, true));
+        if (width > 0 && height > 0) {
+            Surface *initial_surface = new Surface(width, height);
+            initial_surface->clear();
+            layer->rendering_surface = new rendering::SurfaceResource(
+                new rendering::SurfaceSW(*initial_surface, true));
 
-	      if (layer->get_param_list().count("filename") != 0)
-	      {
-	          // generate name based on description
-	          String description, filename, filename_param;
-	          get_canvas_interface()
-	              ->get_instance()
-	              ->generate_new_name(
-	                  layer,
-	                  description,
-	                  filename,
-	                  filename_param );
+            if (layer->get_param_list().count("filename") != 0)
+            {
+                // generate name based on description
+                String description, filename, filename_param;
+                get_canvas_interface()
+                    ->get_instance()
+                    ->generate_new_name(
+                        layer,
+                        description,
+                        filename,
+                        filename_param );
+				String full_filename = CanvasFileNaming::make_full_filename(get_canvas()->get_file_name(),filename_param);
+                // create and save surface
+                get_canvas_interface()
+                    ->get_instance()
+                    ->save_surface(layer->rendering_surface, full_filename);
+                layer->set_param("filename", filename_param);
+                layer->set_description(description);
+            }
+        }
 
-	          // create and save surface
-	          get_canvas_interface()
-	              ->get_instance()
-	              ->save_surface(layer->rendering_surface, filename);
+        canvas_view_->get_selection_manager()->clear_selected_layers();
+        canvas_view_->get_selection_manager()->set_selected_layer(layer);
+    }
 
-	          layer->set_param("filename", filename_param);
-	          layer->set_description(description);
-	      }
-	  }
-
-	  canvas_view_->get_selection_manager()->clear_selected_layers();
-	  canvas_view_->get_selection_manager()->set_selected_layer(layer);
-	}
-
-	return layer;
+    return layer;
 }
 
 bool
@@ -1391,10 +1390,11 @@ StateBrush2_Context::event_mouse_up_handler(const Smach::event& x)
 	if (layer_ && layer_->rendering_surface) {
 		// save the updated surface to file
 		String filename_param = layer_->get_param("filename").get(String());
-	if (!filename_param.empty()) {
+		if (!filename_param.empty()) {
+			String full_filename = CanvasFileNaming::make_full_filename(get_canvas()->get_file_name(),filename_param);
 			get_canvas_interface()
 				->get_instance()
-				->save_surface(layer_->rendering_surface, filename_param);
+				->save_surface(layer_->rendering_surface, full_filename);
 		}
 	}
 	// delay to allow the layer to render
