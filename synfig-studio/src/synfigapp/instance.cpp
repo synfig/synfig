@@ -547,7 +547,8 @@ Instance::save_layer(const synfig::Layer::Handle &layer)
 			if (value.same_type_as(String()))
 			{
 				String filename = value.get(String());
-				if (save_surface(layer_bitmap->rendering_surface, filename))
+				String full_filename = CanvasFileNaming::make_full_filename(get_canvas()->get_file_name(), filename);
+				if (save_surface(layer_bitmap->rendering_surface, full_filename))
 				{
 					layer_bitmap->reset_surface_modification_id();
 					return true;
