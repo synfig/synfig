@@ -70,7 +70,8 @@ public:
 	private:
 		synfig::Layer_Bitmap::Handle layer;
 		std::unique_ptr<brushlib::Brush> brush_;
-
+		synfig::Point new_tl , new_br;
+		synfig::Point original_tl , original_br;
 		synfig::Surface original_surface;
 
 		std::vector<StrokePoint> points;

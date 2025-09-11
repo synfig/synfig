@@ -125,7 +125,7 @@ private:
 	synfig::Surface overlay_surface_;
 	synfig::Rect overlay_rect_;
 	sigc::connection clear_overlay_timer_;
-
+	synfig::Point tl_ , br_;
 	Glib::TimeVal time_;
 	etl::handle<synfigapp::Action::LayerBrush> action_;
 	Layer_Bitmap::Handle layer_;
@@ -1128,22 +1128,40 @@ StateBrush2_Context::draw_to(Vector event_pos, Real pressure)
 		return;
 	// transform coords
 	Point pos = transform_stack_.unperform(event_pos);
-	Point layer_tl = layer_->get_param("tl").get(Point());
-	Point layer_br = layer_->get_param("br").get(Point());
-	float surface_x = ((pos[0] - layer_tl[0]) / (layer_br[0] - layer_tl[0])) * overlay_surface_.get_w();
-	float surface_y = ((pos[1] - layer_tl[1]) / (layer_br[1] - layer_tl[1])) * overlay_surface_.get_h();
+	float surface_x = ((pos[0] - tl_[0]) / (br_[0] - tl_[0])) * overlay_surface_.get_w();
+	float surface_y = ((pos[1] - tl_[1]) / (br_[1] - tl_[1])) * overlay_surface_.get_h();
+	int old_w = overlay_surface_.get_w();
+	int old_h = overlay_surface_.get_h();
 
 	// calculate dtime
 	Glib::TimeVal current_time;
 	current_time.assign_current_time();
 	double dtime = (current_time - time_).as_double();
 	time_ = current_time;
-
-	// apply stroke point
 	brushlib::SurfaceWrapper wrapper(&overlay_surface_);
 	action_->stroke.brush().stroke_to(&wrapper, surface_x, surface_y, pressure, 0.0f, 0.0f, dtime);
 	action_->stroke.add_point({surface_x, surface_y, pressure, dtime});
-	update_overlay_preview(overlay_surface_, overlay_rect_);
+
+	bool expanded = wrapper.offset_x != 0 || wrapper.offset_y != 0 ||
+                wrapper.extra_right > 0 || wrapper.extra_bottom > 0;
+	if (expanded) {
+    	float w = br_[0] - tl_[0];
+    	float h = br_[1] - tl_[1];
+
+		if (old_w > 0 && old_h > 0)	{
+			float units_per_pixel_x = w / old_w;
+			float units_per_pixel_y = h / old_h;
+			tl_[0] -= wrapper.offset_x * units_per_pixel_x;
+			tl_[1] -= wrapper.offset_y * units_per_pixel_y;
+			br_[0] += wrapper.extra_right * units_per_pixel_x;
+			br_[1] += wrapper.extra_bottom * units_per_pixel_y;
+		}
+	}
+	float new_x = action_->stroke.brush().get_state(STATE_X) + wrapper.offset_x;
+	float new_y = action_->stroke.brush().get_state(STATE_Y) + wrapper.offset_y;
+	action_->stroke.brush().set_state(STATE_X, new_x);
+	action_->stroke.brush().set_state(STATE_Y, new_y);
+	update_overlay_preview(overlay_surface_, Rect(tl_,br_));
 }
 
 Layer_Bitmap::Handle StateBrush2_Context::find_or_create_layer()
@@ -1280,6 +1298,8 @@ StateBrush2_Context::event_mouse_down_handler(const Smach::event& x)
 	layer_ = find_or_create_layer();
 	if (!layer_)
 		return Smach::RESULT_OK;
+	tl_ = layer_->get_param("tl").get(Point());
+	br_ = layer_->get_param("br").get(Point());
 	layer_->set_active(false);
 	action_ = new synfigapp::Action::LayerBrush();
 	action_->set_param("canvas", get_canvas());
