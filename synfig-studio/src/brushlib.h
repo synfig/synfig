@@ -165,13 +165,25 @@ namespace brushlib {
 						}
 						else
 						{
-							float sum_alpha = opa + c.get_a();
-							if (sum_alpha > 1.0) sum_alpha = 1.0;
-							float inv_opa = sum_alpha - opa;
-							c.set_r(c.get_r()*inv_opa + color_r*opa);
-							c.set_g(c.get_g()*inv_opa + color_g*opa);
-							c.set_b(c.get_b()*inv_opa + color_b*opa);
-							c.set_a(sum_alpha);
+							float bg_alpha = c.get_a();
+							float src_alpha = opa;
+
+							float final_alpha = src_alpha + bg_alpha * (1.0 - src_alpha);
+
+							if (final_alpha > 0.0001) {
+								float src_weight = src_alpha / final_alpha;
+								float bg_weight = (bg_alpha * (1.0 - src_alpha)) / final_alpha;
+
+								c.set_r(color_r * src_weight + c.get_r() * bg_weight);
+								c.set_g(color_g * src_weight + c.get_g() * bg_weight);
+								c.set_b(color_b * src_weight + c.get_b() * bg_weight);
+								c.set_a(std::min(1.0f, final_alpha));
+							} else {
+								c.set_r(color_r);
+								c.set_g(color_g);
+								c.set_b(color_b);
+								c.set_a(src_alpha);
+							}
 						}
 					}
 				}
