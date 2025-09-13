@@ -47,7 +47,8 @@ namespace studio {
 	{
 	private:
 		synfig::Surface overlay_surface;
-		synfig::Rect overlay_rect;
+		synfig::Point tl;
+		synfig::Point br;
 		bool overlay_enabled;
 		bool has_transformation;
 		synfig::Matrix transformation_matrix;
@@ -55,7 +56,7 @@ namespace studio {
 		Renderer_BrushOverlay();
 		~Renderer_BrushOverlay();
 
-		void set_overlay_surface(const synfig::Surface &surface, const synfig::Rect &rect, const synfig::Matrix &transform = synfig::Matrix());
+		void set_overlay_surface(const synfig::Surface &surface, const synfig::Point &tl, const synfig::Point &br, const synfig::Matrix &transform = synfig::Matrix());
 		void clear_overlay();
 		void enable_overlay(bool enabled = true);
 

@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file renderer_brush_overlay.cpp
+/*! \file renderer_brush_overlay.cpp
 **	\brief Template File
 **
 **	\legal
@@ -89,10 +89,11 @@ Renderer_BrushOverlay::~Renderer_BrushOverlay()
 }
 
 void
-Renderer_BrushOverlay::set_overlay_surface(const Surface& surface, const Rect& rect, const Matrix& transform)
+Renderer_BrushOverlay::set_overlay_surface(const Surface& surface, const Point& tl_, const Point& br_, const Matrix& transform)
 {
 	overlay_surface = surface;
-	overlay_rect = rect;
+	tl = tl_;
+	br = br_;
 
 	if (!transform.is_identity()) {
 		transformation_matrix = transform;
@@ -136,7 +137,7 @@ Renderer_BrushOverlay::render_vfunc(
 		return;
 	}
 	Cairo::RefPtr<Cairo::Context> cr = drawable->create_cairo_context();
-	// calculate the overlay bounding box in world coordinates
+	Rect overlay_rect(tl, br);
 	Rect world_bounds;
 	if (has_transformation) {
 		Point p1(overlay_rect.minx, overlay_rect.miny);
@@ -200,8 +201,10 @@ Renderer_BrushOverlay::render_vfunc(
 		);
 	 	cr->transform(model_matrix);
 	}
-	cr->translate(overlay_rect.minx, overlay_rect.maxy);
-	cr->scale(overlay_rect.get_width() / cairo_surface->get_width(), -overlay_rect.get_height() / cairo_surface->get_height());
+	cr->translate(tl[0], tl[1]);
+	Real world_width = br[0] - tl[0];
+	Real world_height = br[1] - tl[1];
+	cr->scale(world_width / cairo_surface->get_width(), world_height / cairo_surface->get_height());
 	cr->set_source(cairo_surface, 0, 0);
 	cr->rectangle(0, 0, cairo_surface->get_width(), cairo_surface->get_height());
 	cr->paint();

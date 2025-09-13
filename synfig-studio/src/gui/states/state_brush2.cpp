@@ -123,9 +123,8 @@ private:
 	WorkArea::PushState push_state;
 
 	synfig::Surface overlay_surface_;
-	synfig::Rect overlay_rect_;
-	sigc::connection clear_overlay_timer_;
 	synfig::Point tl_ , br_;
+	sigc::connection clear_overlay_timer_;
 	Glib::TimeVal time_;
 	etl::handle<synfigapp::Action::LayerBrush> action_;
 	Layer_Bitmap::Handle layer_;
@@ -162,7 +161,7 @@ public:
 	Smach::event_result event_refresh_tool_options(const Smach::event& x);
 	void create_image_layer_dialog();
 
-	void update_overlay_preview(const synfig::Surface& surface, const synfig::Rect& rect);
+	void update_overlay_preview();
 	void clear_overlay_preview();
 
 	void create_brushes_tab(Gtk::Notebook *notebook);
@@ -1106,10 +1105,10 @@ StateBrush2_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 }
 
 void
-StateBrush2_Context::update_overlay_preview(const synfig::Surface& surface, const synfig::Rect& rect)
+StateBrush2_Context::update_overlay_preview()
 {
 	if (get_work_area() && get_work_area()->get_renderer_brush_overlay()) {
-	  get_work_area()->get_renderer_brush_overlay()->set_overlay_surface(surface, rect);
+		get_work_area()->get_renderer_brush_overlay()->set_overlay_surface(overlay_surface_, tl_ , br_);
 	}
 }
 
@@ -1117,7 +1116,7 @@ void
 StateBrush2_Context::clear_overlay_preview()
 {
 	if (get_work_area() && get_work_area()->get_renderer_brush_overlay()) {
-	  get_work_area()->get_renderer_brush_overlay()->clear_overlay();
+		get_work_area()->get_renderer_brush_overlay()->clear_overlay();
 	}
 }
 
@@ -1161,7 +1160,7 @@ StateBrush2_Context::draw_to(Vector event_pos, Real pressure)
 	float new_y = action_->stroke.brush().get_state(STATE_Y) + wrapper.offset_y;
 	action_->stroke.brush().set_state(STATE_X, new_x);
 	action_->stroke.brush().set_state(STATE_Y, new_y);
-	update_overlay_preview(overlay_surface_, Rect(tl_,br_));
+	update_overlay_preview();
 }
 
 Layer_Bitmap::Handle StateBrush2_Context::find_or_create_layer()
@@ -1314,9 +1313,6 @@ StateBrush2_Context::event_mouse_down_handler(const Smach::event& x)
 		transform_stack_.clear();
 	}
 
-	synfig::Rect layer_bounds = layer_->get_bounding_rect();
-	overlay_rect_ = layer_bounds;
-
 	// copy layer to overlay
 	if (layer_->rendering_surface) {
 		rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer_->rendering_surface);
@@ -1345,7 +1341,8 @@ StateBrush2_Context::event_mouse_down_handler(const Smach::event& x)
 
 			canvas_view_->get_work_area()->get_renderer_brush_overlay()->set_overlay_surface(
 				overlay_surface_,
-				overlay_rect_,
+				tl_,
+				br_,
 				transform_matrix
 			);
 		}
@@ -1373,9 +1370,8 @@ StateBrush2_Context::event_mouse_down_handler(const Smach::event& x)
 	action_->stroke.brush().set_base_value(BRUSH_RADIUS_LOGARITHMIC, log(radius));
 	action_->stroke.prepare();
 	update_cursor();
+	draw_to(event.pos, event.pressure);
 
-	// paint first point
-	draw_to(event.pos , event.pressure);
 	return Smach::RESULT_ACCEPT;
 }
 
