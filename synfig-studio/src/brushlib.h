@@ -113,10 +113,11 @@ namespace brushlib {
 			int y0 = (int)(y - maxr - 1.f);
 			int y1 = (int)(y + maxr + 1.f);
 
-			if (x0 < 0
+			bool erase = alpha_eraser < 1.0;
+			if ( !erase && (x0 < 0
 			 || y0 < 0
 			 || x1+1 > surface->get_w()
-			 || y1+1 > surface->get_h() )
+			 || y1+1 > surface->get_h()) )
 			{
 				int l = x0 < 0 ? x0 : 0;
 				int t = y0 < 0 ? y0 : 0;
@@ -142,7 +143,11 @@ namespace brushlib {
 				x1 -= l; y1 -= t;
 			}
 
-			bool erase = alpha_eraser < 1.0;
+			y0 = std::max(y0, 0);
+			y1 = std::min(y1, surface->get_h() - 1);
+			x0 = std::max(x0, 0);
+			x1 = std::min(x1, surface->get_w() - 1);
+
 			for(int py = y0; py <= y1; py++)
 			{
 				for(int px = x0; px <= x1; px++)
