@@ -79,6 +79,11 @@ int main(int argc, char **argv)
 		char resources_path[PATH_MAX];
 		snprintf(resources_path, sizeof(resources_path), "%s/../Resources", dir);
 		
+		// Set DYLD_LIBRARY_PATH
+		char frameworks_path[PATH_MAX];
+		snprintf(frameworks_path, sizeof(frameworks_path), "%s/../Frameworks", dir);
+		setenv("DYLD_LIBRARY_PATH", frameworks_path, 1);
+
 		// Set non-library environment variables
 		char modules_path[PATH_MAX];
 		snprintf(modules_path, sizeof(modules_path), "%s/synfig/modules", resources_path);
@@ -97,6 +102,17 @@ int main(int argc, char **argv)
 		char gsettings_schema_dir_path[PATH_MAX];
 		snprintf(gsettings_schema_dir_path, sizeof(gsettings_schema_dir_path), "%s/share/glib-2.0/schemas/", resources_path);
 		setenv("GSETTINGS_SCHEMA_DIR", gsettings_schema_dir_path, 1);
+
+		char gdk_pixbuf_moduledir_path[PATH_MAX];
+		snprintf(gdk_pixbuf_moduledir_path, sizeof(gdk_pixbuf_moduledir_path), "%s/lib/gdk-pixbuf-2.0/2.10.0/loaders/", resources_path);
+		setenv("GDK_PIXBUF_MODULEDIR", gdk_pixbuf_moduledir_path, 1);
+
+		char* home_dir = getenv("HOME");
+		if (home_dir) {
+			char gdk_pixbuf_module_file_path[PATH_MAX];
+			snprintf(gdk_pixbuf_module_file_path, sizeof(gdk_pixbuf_module_file_path), "%s/.synfig-gdk-loaders", home_dir);
+			setenv("GDK_PIXBUF_MODULE_FILE", gdk_pixbuf_module_file_path, 1);
+		}
 
 		char fontconfig_path[PATH_MAX];
 		snprintf(fontconfig_path, sizeof(fontconfig_path), "%s/etc/fonts", resources_path);
