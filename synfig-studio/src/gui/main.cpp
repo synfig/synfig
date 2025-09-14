@@ -49,6 +49,8 @@
 #include <libgen.h>
 #include <cstring>
 #include <mach-o/dyld.h>
+#include <cstdlib>
+#include <sys/stat.h>
 #endif
 
 #endif
@@ -112,7 +114,20 @@ int main(int argc, char **argv)
 			char gdk_pixbuf_module_file_path[PATH_MAX];
 			snprintf(gdk_pixbuf_module_file_path, sizeof(gdk_pixbuf_module_file_path), "%s/.synfig-gdk-loaders", home_dir);
 			setenv("GDK_PIXBUF_MODULE_FILE", gdk_pixbuf_module_file_path, 1);
+
+			// Generate the loaders file
+			struct stat buffer;
+			if (stat(gdk_pixbuf_module_file_path, &buffer) == 0) {
+				remove(gdk_pixbuf_module_file_path);
+			}
+			char command[PATH_MAX * 2];
+			snprintf(command, sizeof(command), "\"%s/bin/gdk-pixbuf-query-loaders\" > \"%s\"", resources_path, gdk_pixbuf_module_file_path);
+			system(command);
 		}
+
+		char synfig_module_list_path[PATH_MAX];
+		snprintf(synfig_module_list_path, sizeof(synfig_module_list_path), "%s/etc/synfig_modules.cfg", resources_path);
+		setenv("SYNFIG_MODULE_LIST", synfig_module_list_path, 1);
 
 		char fontconfig_path[PATH_MAX];
 		snprintf(fontconfig_path, sizeof(fontconfig_path), "%s/etc/fonts", resources_path);
@@ -131,6 +146,22 @@ int main(int argc, char **argv)
 		setenv("PATH", path_env, 1);
 
 		setenv("SYNFIG_ROOT", resources_path, 1);
+
+		// Python environment variables
+		setenv("PYTHONHOME", resources_path, 1);
+
+		// ImageMagick environment variables
+		char magick_configure_path[PATH_MAX];
+		snprintf(magick_configure_path, sizeof(magick_configure_path), "%s/lib/ImageMagick-7/config-Q16HDRI", resources_path);
+		setenv("MAGICK_CONFIGURE_PATH", magick_configure_path, 1);
+
+		char magick_coder_module_path[PATH_MAX];
+		snprintf(magick_coder_module_path, sizeof(magick_coder_module_path), "%s/lib/ImageMagick-7/modules-Q16HDRI/coders", resources_path);
+		setenv("MAGICK_CODER_MODULE_PATH", magick_coder_module_path, 1);
+
+		char magick_coder_filter_path[PATH_MAX];
+		snprintf(magick_coder_filter_path, sizeof(magick_coder_filter_path), "%s/lib/ImageMagick-7/modules-Q16HDRI/filters", resources_path);
+		setenv("MAGICK_CODER_FILTER_PATH", magick_coder_filter_path, 1);
 	}
 #endif
 
