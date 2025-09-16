@@ -74,94 +74,76 @@ int main(int argc, char **argv)
 {
 #ifdef __APPLE__
 	// Set up macOS app bundle environment
-	char exe_path[PATH_MAX];
-	uint32_t size = sizeof(exe_path);
-	if (_NSGetExecutablePath(exe_path, &size) == 0) {
-		char* dir = dirname(exe_path);
-		char resources_path[PATH_MAX];
-		snprintf(resources_path, sizeof(resources_path), "%s/../Resources", dir);
-		
+	char exe_path_c[PATH_MAX];
+	uint32_t size = sizeof(exe_path_c);
+	if (_NSGetExecutablePath(exe_path_c, &size) == 0) {
+		// Use Glib for safer and more readable path manipulation
+		std::string exe_path(exe_path_c);
+		std::string dir = Glib::path_get_dirname(exe_path);
+		std::string resources_path = Glib::build_filename(dir, "..", "Resources");
+		std::string frameworks_path = Glib::build_filename(dir, "..", "Frameworks");
+
 		// Set DYLD_LIBRARY_PATH
-		char frameworks_path[PATH_MAX];
-		snprintf(frameworks_path, sizeof(frameworks_path), "%s/../Frameworks", dir);
-		setenv("DYLD_LIBRARY_PATH", frameworks_path, 1);
+		Glib::setenv("DYLD_LIBRARY_PATH", frameworks_path);
 
 		// Set non-library environment variables
-		char modules_path[PATH_MAX];
-		snprintf(modules_path, sizeof(modules_path), "%s/synfig/modules", resources_path);
-		setenv("LTDL_LIBRARY_PATH", modules_path, 1);
-		
-		char share_path[PATH_MAX];
-		snprintf(share_path, sizeof(share_path), "%s/share", resources_path);
-		setenv("XDG_DATA_DIRS", share_path, 1);
+		Glib::setenv("LTDL_LIBRARY_PATH", Glib::build_filename(resources_path, "synfig", "modules"));
+
+		// Handle XDG_DATA_DIRS, appending our path if it already exists
+		std::string share_path = Glib::build_filename(resources_path, "share");
+		std::string xdg_data_dirs = Glib::getenv("XDG_DATA_DIRS");
+		if (!xdg_data_dirs.empty()) {
+			xdg_data_dirs = share_path + G_SEARCHPATH_SEPARATOR_S + xdg_data_dirs;
+		} else {
+			xdg_data_dirs = share_path;
+		}
+		Glib::setenv("XDG_DATA_DIRS", xdg_data_dirs);
 		
 		// GTK and other application-specific environment variables
-		setenv("GTK_EXE_PREFIX", resources_path, 1);
-		char gtk_data_prefix_path[PATH_MAX];
-		snprintf(gtk_data_prefix_path, sizeof(gtk_data_prefix_path), "%s/share", resources_path);
-		setenv("GTK_DATA_PREFIX", gtk_data_prefix_path, 1);
+		Glib::setenv("GTK_EXE_PREFIX", resources_path);
+		Glib::setenv("GTK_DATA_PREFIX", share_path);
+		Glib::setenv("GSETTINGS_SCHEMA_DIR", Glib::build_filename(share_path, "glib-2.0", "schemas"));
+		Glib::setenv("GDK_PIXBUF_MODULEDIR", Glib::build_filename(resources_path, "lib", "gdk-pixbuf-2.0", "2.10.0", "loaders"));
 
-		char gsettings_schema_dir_path[PATH_MAX];
-		snprintf(gsettings_schema_dir_path, sizeof(gsettings_schema_dir_path), "%s/share/glib-2.0/schemas/", resources_path);
-		setenv("GSETTINGS_SCHEMA_DIR", gsettings_schema_dir_path, 1);
-
-		char gdk_pixbuf_moduledir_path[PATH_MAX];
-		snprintf(gdk_pixbuf_moduledir_path, sizeof(gdk_pixbuf_moduledir_path), "%s/lib/gdk-pixbuf-2.0/2.10.0/loaders/", resources_path);
-		setenv("GDK_PIXBUF_MODULEDIR", gdk_pixbuf_moduledir_path, 1);
-
-		char* home_dir = getenv("HOME");
-		if (home_dir) {
-			char gdk_pixbuf_module_file_path[PATH_MAX];
-			snprintf(gdk_pixbuf_module_file_path, sizeof(gdk_pixbuf_module_file_path), "%s/.synfig-gdk-loaders", home_dir);
-			setenv("GDK_PIXBUF_MODULE_FILE", gdk_pixbuf_module_file_path, 1);
+		// Handle GDK Pixbuf module file
+		std::string home_dir = Glib::getenv("HOME");
+		if (!home_dir.empty()) {
+			std::string gdk_pixbuf_module_file = Glib::build_filename(home_dir, ".synfig-gdk-loaders");
+			Glib::setenv("GDK_PIXBUF_MODULE_FILE", gdk_pixbuf_module_file);
 
 			// Generate the loaders file
 			struct stat buffer;
-			if (stat(gdk_pixbuf_module_file_path, &buffer) == 0) {
-				remove(gdk_pixbuf_module_file_path);
+			if (stat(gdk_pixbuf_module_file.c_str(), &buffer) == 0) {
+				remove(gdk_pixbuf_module_file.c_str());
 			}
-			char command[PATH_MAX * 2];
-			snprintf(command, sizeof(command), "\"%s/bin/gdk-pixbuf-query-loaders\" > \"%s\"", resources_path, gdk_pixbuf_module_file_path);
-			system(command);
+			std::string gdk_query_loaders_path = Glib::build_filename(resources_path, "bin", "gdk-pixbuf-query-loaders");
+			std::string command = "\"" + gdk_query_loaders_path + "\" > \"" + gdk_pixbuf_module_file + "\"";
+			system(command.c_str());
 		}
 
-		char synfig_module_list_path[PATH_MAX];
-		snprintf(synfig_module_list_path, sizeof(synfig_module_list_path), "%s/etc/synfig_modules.cfg", resources_path);
-		setenv("SYNFIG_MODULE_LIST", synfig_module_list_path, 1);
+		Glib::setenv("SYNFIG_MODULE_LIST", Glib::build_filename(resources_path, "etc", "synfig_modules.cfg"));
+		Glib::setenv("FONTCONFIG_PATH", Glib::build_filename(resources_path, "etc", "fonts"));
+		Glib::setenv("MLT_DATA", Glib::build_filename(share_path, "mlt") + "/");
+		Glib::setenv("MLT_REPOSITORY", Glib::build_filename(resources_path, "lib", "mlt") + "/");
 
-		char fontconfig_path[PATH_MAX];
-		snprintf(fontconfig_path, sizeof(fontconfig_path), "%s/etc/fonts", resources_path);
-		setenv("FONTCONFIG_PATH", fontconfig_path, 1);
+		// Handle PATH, prepending our paths
+		std::string old_path = Glib::getenv("PATH");
+		std::string new_path = Glib::build_filename(resources_path, "bin") + G_SEARCHPATH_SEPARATOR_S +
+		                     Glib::build_filename(resources_path, "synfig-production", "bin");
+		if (!old_path.empty()) {
+			new_path += G_SEARCHPATH_SEPARATOR_S + old_path;
+		}
+		Glib::setenv("PATH", new_path);
 
-		char mlt_data_path[PATH_MAX];
-		snprintf(mlt_data_path, sizeof(mlt_data_path), "%s/share/mlt/", resources_path);
-		setenv("MLT_DATA", mlt_data_path, 1);
-
-		char mlt_repository_path[PATH_MAX];
-		snprintf(mlt_repository_path, sizeof(mlt_repository_path), "%s/lib/mlt/", resources_path);
-		setenv("MLT_REPOSITORY", mlt_repository_path, 1);
-
-		char path_env[PATH_MAX * 2];
-		snprintf(path_env, sizeof(path_env), "%s/bin:%s/synfig-production/bin:%s", resources_path, resources_path, getenv("PATH") ? getenv("PATH") : "");
-		setenv("PATH", path_env, 1);
-
-		setenv("SYNFIG_ROOT", resources_path, 1);
+		Glib::setenv("SYNFIG_ROOT", resources_path + "/");
 
 		// Python environment variables
 		setenv("PYTHONHOME", resources_path, 1);
 
 		// ImageMagick environment variables
-		char magick_configure_path[PATH_MAX];
-		snprintf(magick_configure_path, sizeof(magick_configure_path), "%s/lib/ImageMagick-7/config-Q16HDRI", resources_path);
-		setenv("MAGICK_CONFIGURE_PATH", magick_configure_path, 1);
-
-		char magick_coder_module_path[PATH_MAX];
-		snprintf(magick_coder_module_path, sizeof(magick_coder_module_path), "%s/lib/ImageMagick-7/modules-Q16HDRI/coders", resources_path);
-		setenv("MAGICK_CODER_MODULE_PATH", magick_coder_module_path, 1);
-
-		char magick_coder_filter_path[PATH_MAX];
-		snprintf(magick_coder_filter_path, sizeof(magick_coder_filter_path), "%s/lib/ImageMagick-7/modules-Q16HDRI/filters", resources_path);
-		setenv("MAGICK_CODER_FILTER_PATH", magick_coder_filter_path, 1);
+		Glib::setenv("MAGICK_CONFIGURE_PATH", Glib::build_filename(resources_path, "lib", "ImageMagick-7", "config-Q16HDRI"));
+		Glib::setenv("MAGICK_CODER_MODULE_PATH", Glib::build_filename(resources_path, "lib", "ImageMagick-7", "modules-Q16HDRI", "coders"));
+		Glib::setenv("MAGICK_CODER_FILTER_PATH", Glib::build_filename(resources_path, "lib", "ImageMagick-7", "modules-Q16HDRI", "filters"));
 	}
 #endif
 
