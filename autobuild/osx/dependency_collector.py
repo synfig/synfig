@@ -6,6 +6,14 @@ import logging
 import re
 import glob
 import sys
+import tarfile
+import urllib.request
+
+try:
+	import lxml
+	LXML_AVAILABLE = True
+except ImportError:
+	LXML_AVAILABLE = False
 
 def setup_logging(log_file_path=None):
     """
@@ -412,6 +420,92 @@ def bundle_synfig_modules(app_bundle_path, args):
         update_library_id(module_file) 
 
 
+def bundle_python_framework(app_bundle_path, build_dir):
+    """
+    Downloads, extracts, and bundles a portable Python environment,
+    then uses its pip to install lxml into it.
+    """
+    logging.info("--- Bundling Portable Python Framework ---")
+
+    # Configuration for the portable Python
+    python_url = "https://github.com/astral-sh/python-build-standalone/releases/download/20250918/cpython-3.12.11+20250918-aarch64-apple-darwin-install_only.tar.gz"
+    download_dir = os.path.join(build_dir, "cache")
+    archive_name = os.path.basename(python_url)
+    archive_path = os.path.join(download_dir, archive_name)
+    extracted_dir_name = "python" # The archive extracts to a 'python' folder
+    extracted_path = os.path.join(download_dir, extracted_dir_name)
+
+    os.makedirs(download_dir, exist_ok=True)
+
+    # 1. Download and Extract if not already present
+    if not os.path.isdir(extracted_path):
+        logging.info(f"Portable Python not found at {extracted_path}.")
+        
+        # Download
+        if not os.path.exists(archive_path):
+            logging.info(f"Downloading from {python_url}...")
+            try:
+                with urllib.request.urlopen(python_url) as response, open(archive_path, 'wb') as out_file:
+                    shutil.copyfileobj(response, out_file)
+                logging.info(f"Successfully downloaded to {archive_path}")
+            except Exception as e:
+                logging.error(f"Failed to download Python: {e}")
+                return # Cannot proceed
+        else:
+            logging.info(f"Archive already exists at {archive_path}.")
+
+        # Extract
+        logging.info(f"Extracting {archive_name}...")
+        try:
+            with tarfile.open(archive_path, "r:gz") as tar:
+                tar.extractall(path=download_dir)
+            logging.info(f"Successfully extracted to {extracted_path}")
+        except Exception as e:
+            logging.error(f"Failed to extract Python archive: {e}")
+            return # Cannot proceed
+    else:
+        logging.info(f"Found existing portable Python at {extracted_path}.")
+
+    # 2. Use the portable Python's pip to install lxml
+    python_executable = os.path.join(extracted_path, "bin", "python3")
+    
+    # First, ensure pip is installed in the portable environment
+    try:
+        logging.info("Ensuring pip is installed in the portable Python environment...")
+        subprocess.run([python_executable, "-m", "ensurepip", "--upgrade"], check=True, capture_output=True, text=True)
+        logging.info("pip installed or upgraded successfully.")
+    except subprocess.CalledProcessError as e:
+        logging.error("Failed to install pip using ensurepip.")
+        logging.error(f"STDOUT: {e.stdout.strip()}")
+        logging.error(f"STDERR: {e.stderr.strip()}")
+
+    pip_executable = os.path.join(extracted_path, "bin", "pip3")
+
+    if os.path.exists(pip_executable):
+        logging.info("Attempting to install lxml using the portable pip...")
+        try:
+            # We target the installation to the portable python's own site-packages
+            subprocess.run([pip_executable, "install", "lxml"], check=True, capture_output=True, text=True)
+            logging.info("Successfully installed lxml into the portable Python environment.")
+        except subprocess.CalledProcessError as e:
+            logging.error(f"Failed to install lxml using portable pip.")
+            logging.error(f"STDOUT: {e.stdout.strip()}")
+            logging.error(f"STDERR: {e.stderr.strip()}")
+            # Continue anyway, as lxml might not be critical for all users
+    else:
+        logging.warning(f"Could not find pip at {pip_executable}. Cannot install lxml.")
+
+
+    # 3. Copy the entire portable Python installation into the app bundle
+    dest_python_path = os.path.join(app_bundle_path, "Contents", "Resources", "python")
+    logging.info(f"Copying portable Python to: {os.path.relpath(dest_python_path, app_bundle_path)}")
+    if os.path.exists(dest_python_path):
+        shutil.rmtree(dest_python_path)
+    shutil.copytree(extracted_path, dest_python_path, symlinks=True)
+
+    logging.info("Portable Python bundled successfully.")
+
+
 def generate_gtk_caches(app_bundle_path):
     """Generates the necessary cache files for bundled GTK resources to work correctly."""
     logging.info("--- Generating GTK Resource Caches ---")
@@ -555,6 +649,17 @@ def main():
     
     # Generate necessary caches for GTK
     generate_gtk_caches(app_bundle_path)
+
+    # --- Bundle the Python Framework ---
+    bundle_python_framework(app_bundle_path, args.build_dir)
+
+    logging.info(f"--- Clearing extended attributes before signing ---")
+    try:
+        subprocess.run(["xattr", "-cr", app_bundle_path], check=True, capture_output=True, text=True)
+        logging.info(f"Successfully cleared extended attributes from {app_name}")
+    except (subprocess.CalledProcessError, FileNotFoundError) as e:
+        logging.warning(f"Could not clear extended attributes: {e}. Code signing may fail.")
+
 
     logging.info(f"Successfully created and populated {app_name}")
 
