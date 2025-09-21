@@ -73,77 +73,82 @@ using namespace studio;
 int main(int argc, char **argv)
 {
 #ifdef __APPLE__
-	// Set up macOS app bundle environment
+	// Set up macOS app bundle environment, but only if running from a bundle.
 	char exe_path_c[PATH_MAX];
 	uint32_t size = sizeof(exe_path_c);
 	if (_NSGetExecutablePath(exe_path_c, &size) == 0) {
-		// Use Glib for safer and more readable path manipulation
 		std::string exe_path(exe_path_c);
-		std::string dir = Glib::path_get_dirname(exe_path);
-		std::string resources_path = Glib::build_filename(dir, "..", "Resources");
-		std::string frameworks_path = Glib::build_filename(dir, "..", "Frameworks");
+		// Check if we are running from a standard .app bundle structure
+		if (exe_path.find("/Contents/MacOS/") != std::string::npos) {
+			// Use Glib for safer and more readable path manipulation
+			std::string dir = Glib::path_get_dirname(exe_path);
+			std::string resources_path = Glib::build_filename(dir, "..", "Resources");
+			std::string frameworks_path = Glib::build_filename(dir, "..", "Frameworks");
 
-		// Set DYLD_LIBRARY_PATH
-		Glib::setenv("DYLD_LIBRARY_PATH", frameworks_path);
+			// Set DYLD_LIBRARY_PATH
+			Glib::setenv("DYLD_LIBRARY_PATH", frameworks_path);
 
-		// Set non-library environment variables
-		Glib::setenv("LTDL_LIBRARY_PATH", Glib::build_filename(resources_path, "synfig", "modules"));
+			// Set non-library environment variables
+			Glib::setenv("LTDL_LIBRARY_PATH", Glib::build_filename(resources_path, "synfig", "modules"));
 
-		// Handle XDG_DATA_DIRS, appending our path if it already exists
-		std::string share_path = Glib::build_filename(resources_path, "share");
-		std::string xdg_data_dirs = Glib::getenv("XDG_DATA_DIRS");
-		if (!xdg_data_dirs.empty()) {
-			xdg_data_dirs = share_path + G_SEARCHPATH_SEPARATOR_S + xdg_data_dirs;
-		} else {
-			xdg_data_dirs = share_path;
-		}
-		Glib::setenv("XDG_DATA_DIRS", xdg_data_dirs);
-		
-		// GTK and other application-specific environment variables
-		Glib::setenv("GTK_EXE_PREFIX", resources_path);
-		Glib::setenv("GTK_DATA_PREFIX", share_path);
-		Glib::setenv("GSETTINGS_SCHEMA_DIR", Glib::build_filename(share_path, "glib-2.0", "schemas"));
-		Glib::setenv("GDK_PIXBUF_MODULEDIR", Glib::build_filename(resources_path, "lib", "gdk-pixbuf-2.0", "2.10.0", "loaders"));
-
-		// Handle GDK Pixbuf module file
-		std::string home_dir = Glib::getenv("HOME");
-		if (!home_dir.empty()) {
-			std::string gdk_pixbuf_module_file = Glib::build_filename(home_dir, ".synfig-gdk-loaders");
-			Glib::setenv("GDK_PIXBUF_MODULE_FILE", gdk_pixbuf_module_file);
-
-			// Generate the loaders file
-			struct stat buffer;
-			if (stat(gdk_pixbuf_module_file.c_str(), &buffer) == 0) {
-				remove(gdk_pixbuf_module_file.c_str());
+			// Handle XDG_DATA_DIRS, appending our path if it already exists
+			std::string share_path = Glib::build_filename(resources_path, "share");
+			std::string xdg_data_dirs = Glib::getenv("XDG_DATA_DIRS");
+			if (!xdg_data_dirs.empty()) {
+				xdg_data_dirs = share_path + G_SEARCHPATH_SEPARATOR_S + xdg_data_dirs;
+			} else {
+				xdg_data_dirs = share_path;
 			}
-			std::string gdk_query_loaders_path = Glib::build_filename(resources_path, "bin", "gdk-pixbuf-query-loaders");
-			std::string command = "\"" + gdk_query_loaders_path + "\" > \"" + gdk_pixbuf_module_file + "\"";
-			system(command.c_str());
+			Glib::setenv("XDG_DATA_DIRS", xdg_data_dirs);
+			
+			// GTK and other application-specific environment variables
+			Glib::setenv("GTK_EXE_PREFIX", resources_path);
+			Glib::setenv("GTK_DATA_PREFIX", share_path);
+			Glib::setenv("GSETTINGS_SCHEMA_DIR", Glib::build_filename(share_path, "glib-2.0", "schemas"));
+			Glib::setenv("GDK_PIXBUF_MODULEDIR", Glib::build_filename(resources_path, "lib", "gdk-pixbuf-2.0", "2.10.0", "loaders"));
+
+			// Handle GDK Pixbuf module file
+			std::string home_dir = Glib::getenv("HOME");
+			if (!home_dir.empty()) {
+				std::string gdk_pixbuf_module_file = Glib::build_filename(home_dir, ".synfig-gdk-loaders");
+				Glib::setenv("GDK_PIXBUF_MODULE_FILE", gdk_pixbuf_module_file);
+
+				// Generate the loaders file
+				struct stat buffer;
+				if (stat(gdk_pixbuf_module_file.c_str(), &buffer) == 0) {
+					remove(gdk_pixbuf_module_file.c_str());
+				}
+				std::string gdk_query_loaders_path = Glib::build_filename(resources_path, "bin", "gdk-pixbuf-query-loaders");
+				std::string command = "\"" + gdk_query_loaders_path + "\" > \"" + gdk_pixbuf_module_file + "\"";
+				system(command.c_str());
+			}
+
+			Glib::setenv("SYNFIG_MODULE_LIST", Glib::build_filename(resources_path, "etc", "synfig_modules.cfg"));
+			Glib::setenv("FONTCONFIG_PATH", Glib::build_filename(resources_path, "etc", "fonts"));
+			Glib::setenv("MLT_DATA", Glib::build_filename(share_path, "mlt") + "/");
+			Glib::setenv("MLT_REPOSITORY", Glib::build_filename(resources_path, "lib", "mlt") + "/");
+
+			// Handle PATH, prepending our paths
+			std::string old_path = Glib::getenv("PATH");
+			std::string new_path = Glib::build_filename(resources_path, "bin") + G_SEARCHPATH_SEPARATOR_S +
+								 Glib::build_filename(resources_path, "synfig-production", "bin");
+			if (!old_path.empty()) {
+				new_path += G_SEARCHPATH_SEPARATOR_S + old_path;
+			}
+			Glib::setenv("PATH", new_path);
+
+			Glib::setenv("SYNFIG_ROOT", resources_path + "/");
+
+			// Python environment variables for the portable distribution
+			std::string python_install_path = Glib::build_filename(resources_path, "python");
+			Glib::setenv("PYTHONHOME", python_install_path);
+			Glib::setenv("SYNFIG_PYTHON_BINARY", Glib::build_filename(python_install_path, "bin", "python3"));
+
+			// ImageMagick environment variables
+			Glib::setenv("MAGICK_CONFIGURE_PATH", Glib::build_filename(resources_path, "lib", "ImageMagick-7", "config-Q16HDRI"));
+			Glib::setenv("MAGICK_CODER_MODULE_PATH", Glib::build_filename(resources_path, "lib", "ImageMagick-7", "modules-Q16HDRI", "coders"));
+			Glib::setenv("MAGICK_CODER_FILTER_PATH", Glib::build_filename(resources_path, "lib", "ImageMagick-7", "modules-Q16HDRI", "filters"));
 		}
-
-		Glib::setenv("SYNFIG_MODULE_LIST", Glib::build_filename(resources_path, "etc", "synfig_modules.cfg"));
-		Glib::setenv("FONTCONFIG_PATH", Glib::build_filename(resources_path, "etc", "fonts"));
-		Glib::setenv("MLT_DATA", Glib::build_filename(share_path, "mlt") + "/");
-		Glib::setenv("MLT_REPOSITORY", Glib::build_filename(resources_path, "lib", "mlt") + "/");
-
-		// Handle PATH, prepending our paths
-		std::string old_path = Glib::getenv("PATH");
-		std::string new_path = Glib::build_filename(resources_path, "bin") + G_SEARCHPATH_SEPARATOR_S +
-		                     Glib::build_filename(resources_path, "synfig-production", "bin");
-		if (!old_path.empty()) {
-			new_path += G_SEARCHPATH_SEPARATOR_S + old_path;
-		}
-		Glib::setenv("PATH", new_path);
-
-		Glib::setenv("SYNFIG_ROOT", resources_path + "/");
-
-		// Python environment variables
-		setenv("PYTHONHOME", resources_path, 1);
-
-		// ImageMagick environment variables
-		Glib::setenv("MAGICK_CONFIGURE_PATH", Glib::build_filename(resources_path, "lib", "ImageMagick-7", "config-Q16HDRI"));
-		Glib::setenv("MAGICK_CODER_MODULE_PATH", Glib::build_filename(resources_path, "lib", "ImageMagick-7", "modules-Q16HDRI", "coders"));
-		Glib::setenv("MAGICK_CODER_FILTER_PATH", Glib::build_filename(resources_path, "lib", "ImageMagick-7", "modules-Q16HDRI", "filters"));
 	}
 #endif
 
