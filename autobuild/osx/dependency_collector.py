@@ -8,6 +8,7 @@ import glob
 import sys
 import tarfile
 import urllib.request
+import platform
 
 try:
 	import lxml
@@ -428,7 +429,16 @@ def bundle_python_framework(app_bundle_path, build_dir):
     logging.info("--- Bundling Portable Python Framework ---")
 
     # Configuration for the portable Python
-    python_url = "https://github.com/astral-sh/python-build-standalone/releases/download/20250918/cpython-3.12.11+20250918-aarch64-apple-darwin-install_only.tar.gz"
+    machine_arch = platform.machine()
+    if machine_arch == "arm64":
+        python_arch_str = "aarch64"
+    elif machine_arch == "x86_64":
+        python_arch_str = "x86_64"
+    else:
+        logging.error(f"Unsupported macOS architecture: {machine_arch}. Cannot download portable Python.")
+        return
+
+    python_url = f"https://github.com/astral-sh/python-build-standalone/releases/download/20250918/cpython-3.12.11+20250918-{python_arch_str}-apple-darwin-install_only.tar.gz"
     download_dir = os.path.join(build_dir, "cache")
     archive_name = os.path.basename(python_url)
     archive_path = os.path.join(download_dir, archive_name)
