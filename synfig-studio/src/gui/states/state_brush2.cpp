@@ -1363,11 +1363,28 @@ StateBrush2_Context::event_mouse_down_handler(const Smach::event& x)
 				60.0 * fmod ((g - b)/(diff), 6.0) : max_rgb == g ?
 					60.0 * (((b - r)/(diff))+2.0) : 60.0 * (((r - g)/(diff))+4.0);
 
-	Real radius = synfigapp::Main::get_bline_width();
+	float radius = log(synfigapp::Main::get_bline_width());
+
+	// adjust the radius based on inputs we assume that all inputs make their max effect
+	// fixes cursor/dab mismatch
+	float radius_adjustment = 0.0f;
+	for (const auto& input_entry : selected_brush_config.settings[BRUSH_RADIUS_LOGARITHMIC].inputs) {
+		if (!input_entry.mapping.empty()) {
+			float max_effect = -1e9f;
+			for (const auto& map_point : input_entry.mapping) {
+				if (map_point.y > max_effect) {
+					max_effect = map_point.y;
+				}
+			}
+			radius_adjustment += max_effect;
+		}
+	}
+	float new_radius = radius - radius_adjustment;
+
 	action_->stroke.brush().set_base_value(BRUSH_COLOR_H, hue/360.0);
 	action_->stroke.brush().set_base_value(BRUSH_COLOR_S, sat);
 	action_->stroke.brush().set_base_value(BRUSH_COLOR_V, val);
-	action_->stroke.brush().set_base_value(BRUSH_RADIUS_LOGARITHMIC, log(radius));
+	action_->stroke.brush().set_base_value(BRUSH_RADIUS_LOGARITHMIC, new_radius);
 	action_->stroke.prepare();
 	update_cursor();
 	draw_to(event.pos, event.pressure);
