@@ -160,7 +160,6 @@ EXTRA_DIST = \
 	tangent_merge_split_icons.sif \
 	\
 	tool_brush_icon.sif \
-	tool_brush2_icon.sif \
 	tool_cutout_icon.sif \
 	tool_spline_icon.sif \
 	tool_skeleton_icon.sif\
@@ -378,7 +377,6 @@ ICONS = \
 	tangent_split_icon.$(EXT) \
 	\
 	tool_brush_icon.$(EXT) \
-	tool_brush2_icon.$(EXT) \
 	tool_cutout_icon.$(EXT) \
 	tool_spline_icon.$(EXT) \
 	tool_skeleton_icon.$(EXT)\

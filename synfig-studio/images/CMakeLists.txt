@@ -214,7 +214,6 @@ set(ICONS
 	swap_colors_icon
 	time_track_icon
 	tool_brush_icon
-	tool_brush2_icon
 	tool_circle_icon
 	tool_cutout_icon
 	tool_draw_icon
