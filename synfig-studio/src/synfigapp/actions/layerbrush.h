@@ -73,6 +73,7 @@ public:
 		synfig::Point new_tl , new_br;
 		synfig::Point original_tl , original_br;
 		synfig::Surface original_surface;
+		std::unique_ptr<synfig::Surface> final_surface;
 
 		std::vector<StrokePoint> points;
 		bool prepared;
@@ -89,6 +90,7 @@ public:
 		void set_layer(synfig::Layer_Bitmap::Handle layer) { this->layer = layer; }
 		synfig::Layer_Bitmap::Handle get_layer() const { return layer; }
 		void set_undo_mode(UndoMode mode) { undo_mode = mode; }
+    	void set_final_data(std::unique_ptr<synfig::Surface> surface) { final_surface = std::move(surface); }
 
 		brushlib::Brush& brush() { return *brush_; }
 		const brushlib::Brush& get_brush() const { return *brush_; }

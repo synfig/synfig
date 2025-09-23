@@ -1162,6 +1162,9 @@ StateBrush2_Context::draw_to(Vector event_pos, Real pressure)
 			br_[1] += wrapper.extra_bottom * units_per_pixel_y;
 		}
 	}
+	layer_->set_param("tl", tl_);
+	layer_->set_param("br", br_);
+	layer_->changed();
 	float new_x = action_->stroke.brush().get_state(STATE_X) + wrapper.offset_x;
 	float new_y = action_->stroke.brush().get_state(STATE_Y) + wrapper.offset_y;
 	action_->stroke.brush().set_state(STATE_X, new_x);
@@ -1417,6 +1420,8 @@ StateBrush2_Context::event_mouse_up_handler(const Smach::event& x)
 
 	layer_->set_active(true);
 	if (action_->is_ready()) {
+		std::unique_ptr<synfig::Surface> final_surface(new synfig::Surface(std::move(overlay_surface_)));
+		action_->stroke.set_final_data(std::move(final_surface));
 		get_canvas_interface()->get_instance()->perform_action(action_);
 	}
 	action_ = nullptr;

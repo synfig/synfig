@@ -231,7 +231,7 @@ void
 Action::LayerBrush::BrushStroke::prepare()
 {
 	new_tl = original_tl = layer->get_param("tl").get(Point());
-	new_tl = original_br = layer->get_param("br").get(Point());
+	new_br = original_br = layer->get_param("br").get(Point());
 	switch (undo_mode) {
 		case SURFACE_SAVING:
 			if (!layer || prepared)
@@ -264,14 +264,13 @@ Action::LayerBrush::BrushStroke::apply()
 			if (!prepared || applied || !layer) {
 				return;
 			}
-			if (layer->rendering_surface) {
-				rendering::SurfaceResource::LockWrite<rendering::SurfaceSW> lock(layer->rendering_surface);
-				if (lock && lock->get_surface().is_valid()) {
-					Surface& surface = lock->get_surface();
-					paint_stroke(surface);
-					layer->changed();
-					applied = true;
-				}
+			if (layer->rendering_surface && final_surface && final_surface->is_valid()) {
+				Surface *surface_copy = new Surface(*final_surface);
+				layer->rendering_surface = new rendering::SurfaceResource(
+					new rendering::SurfaceSW(*surface_copy, true)
+				);
+				layer->changed();
+				applied = true;
 			}
 			break;
 		}
@@ -290,14 +289,13 @@ Action::LayerBrush::BrushStroke::apply()
 				}
 			}
 			// apply stroke
-			if (layer->rendering_surface) {
-				rendering::SurfaceResource::LockWrite<rendering::SurfaceSW> lock(layer->rendering_surface);
-				if (lock && lock->get_surface().is_valid()) {
-					Surface& surface = lock->get_surface();
-					paint_stroke(surface);
-					layer->changed();
-					applied = true;
-				}
+			if (layer->rendering_surface && final_surface && final_surface->is_valid()) {
+				Surface *surface_copy = new Surface(*final_surface);
+				layer->rendering_surface = new rendering::SurfaceResource(
+					new rendering::SurfaceSW(*surface_copy, true)
+				);
+				layer->changed();
+				applied = true;
 			}
 			// add to history
 			StrokeData stroke_data;
@@ -336,14 +334,13 @@ Action::LayerBrush::BrushStroke::apply()
 				}
 			}
 
-			// apply the stroke
-			if (layer->rendering_surface) {
-				rendering::SurfaceResource::LockWrite<rendering::SurfaceSW> lock(layer->rendering_surface);
-				if (lock && lock->get_surface().is_valid()) {
-					paint_stroke(lock->get_surface());
-					layer->changed();
-					applied = true;
-				}
+			if (layer->rendering_surface && final_surface && final_surface->is_valid()) {
+				Surface *surface_copy = new Surface(*final_surface);
+				layer->rendering_surface = new rendering::SurfaceResource(
+					new rendering::SurfaceSW(*surface_copy, true)
+				);
+				layer->changed();
+				applied = true;
 			}
 
 			// add to history
