@@ -55,6 +55,7 @@
 #include <glibmm/fileutils.h>
 #include <synfigapp/actions/layerbrush.h>
 #include <synfig/canvasfilenaming.h>
+#include <glibmm/miscutils.h>
 
 #endif
 
@@ -648,6 +649,10 @@ StateBrush2_Context::create_brushes_tab(Gtk::Notebook *notebook)
 				brush_button->set_icon_widget(*Gtk::manage(new Gtk::Image(pixbuf_scaled)));
 				brush_button->set_halign(Gtk::ALIGN_CENTER);
 
+				String filename = Glib::path_get_basename(brush_file);
+				String base_name = filesystem::Path::filename_sans_extension(filename);
+				brush_button->set_tooltip_text(base_name);
+
 				// connect the button click event and brush file definition
 				brush_button->signal_clicked().connect(
 					sigc::bind(sigc::mem_fun(*this, &StateBrush2_Context::select_brush), brush_button, brush_file) );
@@ -656,9 +661,10 @@ StateBrush2_Context::create_brushes_tab(Gtk::Notebook *notebook)
 				tool_item_group->insert(*brush_button);
 
 				// keep the first brush
-				if (!first_button)
+				if (!first_button) {
 					first_button = brush_button;
 					first_button_filename = brush_file;
+				}
 			}
 		}
 	}
