@@ -80,9 +80,6 @@ public:
 		bool applied;
 		int stroke_index;
 		UndoMode undo_mode;
-		void reset_brush(const StrokePoint& point);
-		void paint_stroke(synfig::Surface& surface);
-
 	public:
 		BrushStroke();
 		~BrushStroke();
