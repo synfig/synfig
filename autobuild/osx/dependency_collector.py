@@ -254,17 +254,20 @@ def update_library_paths(binary_path, dependencies, app_bundle_path, original_so
             continue
         
         # Determine the new, portable path inside the bundle
+        frameworks_dir = os.path.join(app_bundle_path, "Contents", "Frameworks")
+        binary_dir = os.path.dirname(binary_path)
+        relative_path_to_frameworks = os.path.relpath(frameworks_dir, start=binary_dir)
+
         if ".framework" in original_path:
             framework_parts = original_path.split(".framework/")
             framework_name = os.path.basename(framework_parts[0] + ".framework")
-            new_path = f"@executable_path/../Frameworks/{framework_name}/{framework_parts[1] if len(framework_parts) > 1 else framework_name}"
+            new_path = f"@loader_path/{relative_path_to_frameworks}/{framework_name}/{framework_parts[1] if len(framework_parts) > 1 else framework_name}"
         else:
-            file_type = subprocess.run(["file", "-b", actual_path], capture_output=True, text=True).stdout.lower()
-            if "executable" in file_type:
-                new_path = f"@executable_path/{lib_name}"
-            else:
-                new_path = f"@executable_path/../Frameworks/{lib_name}"
+            new_path = f"@loader_path/{relative_path_to_frameworks}/{lib_name}"
         
+        # Cleanup the path for the case where the relative path is '.'
+        new_path = new_path.replace("/./", "/")
+
         logging.info(f"In {os.path.basename(binary_path)}: changing '{original_path}' -> '{new_path}'")
         try:
             subprocess.run(["install_name_tool", "-change", original_path, new_path, binary_path], check=True)
@@ -322,10 +325,17 @@ def process_and_bundle_dependencies(src_path, app_bundle_path, processed_set, de
     os.chmod(dest_path, 0o755)
     processed_set.add(real_src_path)
 
-    # After copying, get its dependencies from the original source and rewire paths and ID
+    # First, get dependencies and rewire all paths.
     dependencies = get_dependencies(real_src_path)
     update_library_paths(dest_path, dependencies, app_bundle_path, original_source_path=real_src_path)
     update_library_id(dest_path)
+
+    # Now, with all modifications complete, apply the ad-hoc signature.
+    try:
+        logging.info(f"Applying ad-hoc signature to '{lib_name}'")
+        subprocess.run(["codesign", "--force", "--sign", "-", dest_path], check=True, capture_output=True)
+    except (subprocess.CalledProcessError, FileNotFoundError) as e:
+        logging.warning(f"Could not sign '{lib_name}'. The app may be killed on launch. Error: {e}")
 
     # Recurse for all found dependencies
     logging.info(f"Found {len(dependencies)} dependencies for {lib_name} to process.")
@@ -338,6 +348,48 @@ def process_and_bundle_dependencies(src_path, app_bundle_path, processed_set, de
             # This error is critical, as it means the final bundle will be broken
             logging.error(f"COULD NOT FIND dependency '{lib_path}' required by '{lib_name}'.")
    
+def bundle_support_executable(executable_name, app_bundle_path, processed_set):
+    """
+    Finds a required support executable, bundles it into Resources/bin,
+    and processes its dependencies.
+    """
+    logging.info(f"--- Bundling support executable: {executable_name} ---")
+    source_path = find_system_executable(executable_name)
+    if not source_path:
+        logging.error(f"Could not find required support executable '{executable_name}'. Image loading will likely fail.")
+        return
+
+    dest_dir = os.path.join(app_bundle_path, "Contents", "Resources", "bin")
+    os.makedirs(dest_dir, exist_ok=True)
+    dest_path = os.path.join(dest_dir, executable_name)
+
+    if os.path.realpath(source_path) in processed_set:
+        return
+
+    logging.info(f"Copying '{executable_name}' to '{os.path.relpath(dest_dir, app_bundle_path)}'")
+    shutil.copy2(source_path, dest_path)
+    os.chmod(dest_path, 0o755)
+    processed_set.add(os.path.realpath(source_path))
+
+    # First, fix the library paths for the support executable's dependencies.
+    dependencies = get_dependencies(source_path)
+    update_library_paths(dest_path, dependencies, app_bundle_path, original_source_path=source_path)
+
+    # Now, with all modifications complete, sign the support executable.
+    try:
+        logging.info(f"Applying ad-hoc signature to '{executable_name}'")
+        subprocess.run(["codesign", "--force", "--sign", "-", dest_path], check=True, capture_output=True)
+    except (subprocess.CalledProcessError, FileNotFoundError) as e:
+        logging.warning(f"Could not sign '{executable_name}'. The app may be killed on launch. Error: {e}")
+
+    # Recursively bundle the dependencies of the support tool.
+    for lib_path in dependencies:
+        actual_path = resolve_library_path(lib_path, source_path)
+        if actual_path:
+            process_and_bundle_dependencies(actual_path, app_bundle_path, processed_set, dest_basename=os.path.basename(lib_path))
+        else:
+            logging.error(f"COULD NOT FIND dependency '{lib_path}' required by '{executable_name}'.")
+
 def bundle_data_resources(app_bundle_path, args):
     """Copies shared data resources (icons, themes, etc.) into the bundle."""
     logging.info("--- Bundling App Resources (share directory) ---")
@@ -356,28 +408,50 @@ def bundle_data_resources(app_bundle_path, args):
     # Also copy GTK resources from system
     homebrew_prefix = get_homebrew_prefix()
     if homebrew_prefix:
-        gtk_resources = [
-            ("glib-2.0", "glib-2.0"),
-            ("gtk-3.0", "gtk-3.0"),
-            ("gdk-pixbuf-2.0", "gdk-pixbuf-2.0"),
+        # --- Package-specific resources ---
+        pkg_specific_resources = [
+            ("glib", "glib-2.0"),
+            ("gtk+3", "gtk-3.0"),
+            ("gdk-pixbuf", "gdk-pixbuf-2.0"), # Corrected package name
             ("pango", "pango"),
-            ("icons", "icons")
         ]
         
-        for src_name, dest_name in gtk_resources:
-            src_path = os.path.join(homebrew_prefix, "share", src_name)
-            dest_path = os.path.join(dest_share_dir, dest_name)
-            
-            if os.path.isdir(src_path):
-                logging.info(f"Copying GTK resource '{src_name}' from '{src_path}' to '{os.path.relpath(dest_path, app_bundle_path)}'")
-                try:
+        for pkg_name, resource_folder in pkg_specific_resources:
+            try:
+                pkg_prefix = subprocess.check_output(["brew", "--prefix", pkg_name], text=True, stderr=subprocess.DEVNULL).strip()
+                # The resource folder is directly inside the package's share directory.
+                src_path = os.path.join(pkg_prefix, "share", resource_folder)
+                dest_path = os.path.join(dest_share_dir, resource_folder)
+                
+                if os.path.isdir(src_path):
+                    logging.info(f"Copying GTK resource '{resource_folder}' from '{src_path}'")
                     if os.path.exists(dest_path):
                         shutil.rmtree(dest_path)
                     shutil.copytree(src_path, dest_path)
-                except Exception as e:
-                    logging.error(f"Failed to copy GTK resource '{src_name}': {e}")
+                else:
+                    # Fallback for packages where the content is the share folder itself
+                    src_path_alt = os.path.join(pkg_prefix, "share")
+                    if os.path.isdir(src_path_alt):
+                        logging.info(f"Copying GTK resource content from '{src_path_alt}' for package '{pkg_name}'")
+                        shutil.copytree(src_path_alt, dest_path, dirs_exist_ok=True)
+                    else:
+                        logging.warning(f"GTK resource '{resource_folder}' not found at '{src_path}' or in '{src_path_alt}' for package '{pkg_name}'")
+
+            except (subprocess.CalledProcessError, FileNotFoundError):
+                 logging.warning(f"Could not find brew package '{pkg_name}'. Skipping its resources.")
+
+        # --- Shared resources (like icon themes) ---
+        icon_themes = ["hicolor", "Adwaita"]
+        for theme in icon_themes:
+            src_path = os.path.join(homebrew_prefix, "share", "icons", theme)
+            dest_path = os.path.join(dest_share_dir, "icons", theme)
+            if os.path.isdir(src_path):
+                logging.info(f"Copying icon theme '{theme}' from '{src_path}'")
+                if os.path.exists(dest_path):
+                    shutil.rmtree(dest_path)
+                shutil.copytree(src_path, dest_path)
             else:
-                logging.warning(f"GTK resource '{src_name}' not found at '{src_path}'")
+                logging.warning(f"Icon theme '{theme}' not found at '{src_path}'.")
 
 
 def bundle_synfig_modules(app_bundle_path, args):
@@ -565,28 +639,39 @@ def generate_gtk_caches(app_bundle_path):
     if glib_schema_tool:
         system_schemas_dir = os.path.join(homebrew_prefix, "share", "glib-2.0", "schemas") if homebrew_prefix else None
         bundle_schemas_dir = os.path.join(app_bundle_path, "Contents", "share", "glib-2.0", "schemas")
+
+        # Define a list of packages that provide essential schemas.
+        schema_packages = ["glib", "gsettings-desktop-schemas", "gtk+3"]
         
-        if system_schemas_dir and os.path.isdir(system_schemas_dir):
-            logging.info(f"Bundling GSettings schemas from '{system_schemas_dir}'...")
+        # Create the destination directory if it doesn't exist
+        os.makedirs(bundle_schemas_dir, exist_ok=True)
+        
+        logging.info(f"Bundling GSettings schemas into '{bundle_schemas_dir}'...")
+
+        # Find and copy schemas from each specified package
+        for package in schema_packages:
             try:
-                # Create schemas directory if it doesn't exist
-                os.makedirs(bundle_schemas_dir, exist_ok=True)
+                package_prefix = subprocess.check_output(["brew", "--prefix", package], text=True, stderr=subprocess.DEVNULL).strip()
+                source_schemas_dir = os.path.join(package_prefix, "share", "glib-2.0", "schemas")
                 
-                # Copy schemas from system
-                for schema_file in os.listdir(system_schemas_dir):
-                    if schema_file.endswith('.gschema.xml'):
-                        src_file = os.path.join(system_schemas_dir, schema_file)
-                        dst_file = os.path.join(bundle_schemas_dir, schema_file)
-                        shutil.copy2(src_file, dst_file)
-                
-                # Compile schemas
-                logging.info(f"Compiling GSettings schemas in '{bundle_schemas_dir}'...")
-                subprocess.run([glib_schema_tool, bundle_schemas_dir], check=True)
-                logging.info("Successfully bundled and compiled GSettings schemas.")
-            except Exception as e:
-                logging.error(f"Failed to bundle GSettings schemas: {e}")
-        else:
-            logging.warning(f"System GSettings schemas directory not found at '{system_schemas_dir}'.")
+                if os.path.isdir(source_schemas_dir):
+                    logging.info(f"Copying schemas from '{package}' package at '{source_schemas_dir}'")
+                    shutil.copytree(source_schemas_dir, bundle_schemas_dir, dirs_exist_ok=True)
+                else:
+                    logging.warning(f"Schema directory for '{package}' not found at '{source_schemas_dir}'")
+            except (FileNotFoundError, subprocess.CalledProcessError):
+                logging.warning(f"Could not find brew prefix for package '{package}'. Schemas may be incomplete.")
+        
+        # Now that all schemas are collected, compile them.
+        try:
+            logging.info(f"Compiling all collected GSettings schemas in '{bundle_schemas_dir}'...")
+            subprocess.run([glib_schema_tool, bundle_schemas_dir], check=True, capture_output=True, text=True)
+            logging.info("Successfully compiled GSettings schemas.")
+        except subprocess.CalledProcessError as e:
+            # Log the detailed error from the tool if it fails
+            logging.error(f"Failed to compile GSettings schemas.")
+            logging.error(f"STDOUT: {e.stdout.strip()}")
+            logging.error(f"STDERR: {e.stderr.strip()}")
     else:
         logging.warning("'glib-compile-schemas' not found. App settings may not work correctly.")
 
@@ -652,6 +737,8 @@ def main():
             else:
                 logging.warning(f"SKIPPING: Could not find extra binary '{binary_name}' on the system.")
 
+    # --- Bundle Required Support Binaries ---
+    bundle_support_executable("gdk-pixbuf-query-loaders", app_bundle_path, processed_files)
     
     # Bundle application-specific resources and plugins
     bundle_data_resources(app_bundle_path, args)
