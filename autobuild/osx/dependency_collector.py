@@ -117,8 +117,51 @@ def resolve_library_path(lib_path, binary_path=None):
         if os.path.exists(lib_path):
             return os.path.realpath(lib_path)
 
-        # 3. Search in standard and Homebrew locations
-        lib_name_base = os.path.basename(lib_path).split('.dylib', 1)[0] # # Gets base name without extension
+        # 3. Handle frameworks specially
+        if ".framework" in lib_path:
+            # Extract framework name and internal path
+            if ".framework/Versions/A/" in lib_path:
+                parts = lib_path.split(".framework/Versions/A/")
+                framework_base = os.path.basename(parts[0]) + ".framework"
+                internal_path = "Versions/A/" + parts[1] if len(parts) > 1 else "Versions/A/" + framework_base.replace(".framework", "")
+            else:
+                parts = lib_path.split(".framework/")
+                framework_base = os.path.basename(parts[0]) + ".framework"
+                internal_path = parts[1] if len(parts) > 1 else framework_base.replace(".framework", "")
+            
+            # Search for frameworks
+            framework_search_paths = [
+                "/opt/homebrew/lib",
+                "/opt/homebrew/opt/qt/lib",
+                "/usr/local/lib", 
+                "/Library/Frameworks",
+                "/System/Library/Frameworks"
+            ]
+            
+            homebrew_prefix = get_homebrew_prefix()
+            if homebrew_prefix:
+                framework_search_paths.extend([
+                    os.path.join(homebrew_prefix, "opt", "*", "lib"),
+                    os.path.join(homebrew_prefix, "lib"),
+                ])
+            
+            for search_path in framework_search_paths:
+                if '*' in search_path:
+                    for expanded_path in glob.glob(search_path):
+                        candidate = os.path.join(expanded_path, framework_base, internal_path)
+                        if os.path.exists(candidate):
+                            resolved_path = os.path.realpath(candidate)
+                            logging.info(f"Found framework '{framework_base}' at '{resolved_path}'")
+                            return resolved_path
+                else:
+                    candidate = os.path.join(search_path, framework_base, internal_path)
+                    if os.path.exists(candidate):
+                        resolved_path = os.path.realpath(candidate)
+                        logging.info(f"Found framework '{framework_base}' at '{resolved_path}'")
+                        return resolved_path
+
+        # 4. Search in standard and Homebrew locations for regular libraries
+        lib_name_base = os.path.basename(lib_path).split('.dylib', 1)[0] # Gets base name without extension
         
         # Build directory paths should be prioritized over system paths
         build_search_paths = []
@@ -136,7 +179,7 @@ def resolve_library_path(lib_path, binary_path=None):
         # System paths (lower priority)
         system_search_paths = [
             "/opt/homebrew/lib",  # Core Homebrew libraries
-            "/opt/homebrew/opt/*/lib",  # to cover all Homebrew formulae
+            "/opt/homebrew/opt/gcc/lib/gcc/current",  # GCC runtime libraries
             "/usr/local/opt/*/lib",  # Intel Homebrew formula libraries
             "/usr/local/opt/sqlite/lib", # Intel Homebrew SQLite
             "/opt/homebrew/opt/sqlite/lib", # ARM Homebrew SQLite
@@ -146,6 +189,14 @@ def resolve_library_path(lib_path, binary_path=None):
             "/Library/Frameworks", # System-wide frameworks
         ]
         
+        # Add specific Homebrew package lib directories
+        homebrew_prefix = get_homebrew_prefix()
+        if homebrew_prefix:
+            system_search_paths.extend([
+                os.path.join(homebrew_prefix, "opt", "*", "lib"),
+                os.path.join(homebrew_prefix, "lib"),
+            ])
+        
         # Combine search paths with build paths first
         search_paths = build_search_paths + system_search_paths
 
@@ -153,20 +204,43 @@ def resolve_library_path(lib_path, binary_path=None):
         version_pattern = re.compile(rf'^{re.escape(lib_name_base)}(\.\d+)*\.dylib$')
 
         for path in filter(None, search_paths):
-            # Check for exact match first
-            candidate = os.path.join(path, lib_name_base + ".dylib")
-            if os.path.exists(candidate):
-                resolved_path = os.path.realpath(candidate)
-                logging.info(f"Found library '{lib_name_base}' at '{resolved_path}'")
-                return resolved_path
-
-            # Check for versioned matches
-            if os.path.exists(path):
-                for f in os.listdir(path):
-                    if version_pattern.match(f):
-                        resolved_path = os.path.realpath(os.path.join(path, f))
-                        logging.info(f"Found versioned library '{f}' at '{resolved_path}'")
+            # Handle glob patterns in paths
+            if '*' in path:
+                for expanded_path in glob.glob(path):
+                    candidate = os.path.join(expanded_path, lib_name_base + ".dylib")
+                    if os.path.exists(candidate):
+                        resolved_path = os.path.realpath(candidate)
+                        logging.info(f"Found library '{lib_name_base}' at '{resolved_path}'")
                         return resolved_path
+                    
+                    # Check for versioned matches in expanded paths
+                    if os.path.exists(expanded_path):
+                        try:
+                            for f in os.listdir(expanded_path):
+                                if version_pattern.match(f):
+                                    resolved_path = os.path.realpath(os.path.join(expanded_path, f))
+                                    logging.info(f"Found versioned library '{f}' at '{resolved_path}'")
+                                    return resolved_path
+                        except (OSError, PermissionError):
+                            continue
+            else:
+                # Check for exact match first
+                candidate = os.path.join(path, lib_name_base + ".dylib")
+                if os.path.exists(candidate):
+                    resolved_path = os.path.realpath(candidate)
+                    logging.info(f"Found library '{lib_name_base}' at '{resolved_path}'")
+                    return resolved_path
+
+                # Check for versioned matches
+                if os.path.exists(path):
+                    try:
+                        for f in os.listdir(path):
+                            if version_pattern.match(f):
+                                resolved_path = os.path.realpath(os.path.join(path, f))
+                                logging.info(f"Found versioned library '{f}' at '{resolved_path}'")
+                                return resolved_path
+                    except (OSError, PermissionError):
+                        continue
 
         logging.warning(f"Could not resolve library path: {lib_path}")
         return None
@@ -311,42 +385,75 @@ def process_and_bundle_dependencies(src_path, app_bundle_path, processed_set, de
     lib_name = dest_basename if dest_basename else os.path.basename(real_src_path)
     logging.info(f"--- Analyzing: {os.path.basename(real_src_path)} (as {lib_name}) ---")
 
-    # Determine if it's an executable or a library and set destination
-    if ".dylib" in lib_name or ".so" in lib_name:
+    # Determine destination based on file type
+    if ".framework" in real_src_path:
+        # Handle frameworks specially - copy entire framework structure
+        if ".framework/Versions/A/" in real_src_path:
+            # Extract framework base directory
+            framework_part = real_src_path.split(".framework/Versions/A/")[0] + ".framework"
+        else:
+            framework_part = real_src_path.split(".framework/")[0] + ".framework"
+        
+        framework_name = os.path.basename(framework_part)
         dest_dir = os.path.join(app_bundle_path, "Contents", "Frameworks")
+        os.makedirs(dest_dir, exist_ok=True)
+        dest_framework_path = os.path.join(dest_dir, framework_name)
+        dest_path = os.path.join(dest_framework_path, os.path.relpath(real_src_path, framework_part))
+        
+        # Copy entire framework if not already copied
+        if not os.path.exists(dest_framework_path):
+            logging.info(f"Copying framework '{framework_name}' to '{os.path.relpath(dest_dir, app_bundle_path)}'")
+            shutil.copytree(framework_part, dest_framework_path, symlinks=True)
+            # Set executable permissions on the main framework binary
+            os.chmod(dest_path, 0o755)
+        else:
+            logging.info(f"Framework '{framework_name}' already exists in bundle")
+        
+        processed_set.add(real_src_path)
+    elif ".dylib" in lib_name or ".so" in lib_name:
+        dest_dir = os.path.join(app_bundle_path, "Contents", "Frameworks")
+        os.makedirs(dest_dir, exist_ok=True)
+        dest_path = os.path.join(dest_dir, lib_name)
+        
+        logging.info(f"Relocating '{os.path.basename(real_src_path)}' to '{os.path.relpath(dest_dir, app_bundle_path)}' as '{lib_name}'")
+        shutil.copy2(real_src_path, dest_path)
+        os.chmod(dest_path, 0o755)
+        processed_set.add(real_src_path)
     else:
         dest_dir = os.path.join(app_bundle_path, "Contents", "MacOS")
+        os.makedirs(dest_dir, exist_ok=True)
+        dest_path = os.path.join(dest_dir, lib_name)
+        
+        logging.info(f"Relocating '{os.path.basename(real_src_path)}' to '{os.path.relpath(dest_dir, app_bundle_path)}' as '{lib_name}'")
+        shutil.copy2(real_src_path, dest_path)
+        os.chmod(dest_path, 0o755)
+        processed_set.add(real_src_path)
 
-    os.makedirs(dest_dir, exist_ok=True)
-    dest_path = os.path.join(dest_dir, lib_name)
+    # First, get dependencies and rewire all paths (skip for entire frameworks)
+    if not ".framework" in real_src_path or ".framework/Versions/A/" in real_src_path:
+        dependencies = get_dependencies(real_src_path)
+        update_library_paths(dest_path, dependencies, app_bundle_path, original_source_path=real_src_path)
+        update_library_id(dest_path)
 
-    logging.info(f"Relocating '{os.path.basename(real_src_path)}' to '{os.path.relpath(dest_dir, app_bundle_path)}' as '{lib_name}'")
-    shutil.copy2(real_src_path, dest_path)
-    os.chmod(dest_path, 0o755)
-    processed_set.add(real_src_path)
+        # Now, with all modifications complete, apply the ad-hoc signature.
+        try:
+            logging.info(f"Applying ad-hoc signature to '{lib_name}'")
+            subprocess.run(["codesign", "--force", "--sign", "-", dest_path], check=True, capture_output=True)
+        except (subprocess.CalledProcessError, FileNotFoundError) as e:
+            logging.warning(f"Could not sign '{lib_name}'. The app may be killed on launch. Error: {e}")
 
-    # First, get dependencies and rewire all paths.
-    dependencies = get_dependencies(real_src_path)
-    update_library_paths(dest_path, dependencies, app_bundle_path, original_source_path=real_src_path)
-    update_library_id(dest_path)
-
-    # Now, with all modifications complete, apply the ad-hoc signature.
-    try:
-        logging.info(f"Applying ad-hoc signature to '{lib_name}'")
-        subprocess.run(["codesign", "--force", "--sign", "-", dest_path], check=True, capture_output=True)
-    except (subprocess.CalledProcessError, FileNotFoundError) as e:
-        logging.warning(f"Could not sign '{lib_name}'. The app may be killed on launch. Error: {e}")
-
-    # Recurse for all found dependencies
-    logging.info(f"Found {len(dependencies)} dependencies for {lib_name} to process.")
-    for lib_path in dependencies:
-        actual_path = resolve_library_path(lib_path, src_path) # Use original src_path for context
-        if actual_path:
-            # Pass the symlink's name as the intended destination filename for the next recursion
-            process_and_bundle_dependencies(actual_path, app_bundle_path, processed_set, dest_basename=os.path.basename(lib_path))
-        else:
-            # This error is critical, as it means the final bundle will be broken
-            logging.error(f"COULD NOT FIND dependency '{lib_path}' required by '{lib_name}'.")
+        # Recurse for all found dependencies
+        logging.info(f"Found {len(dependencies)} dependencies for {lib_name} to process.")
+        for lib_path in dependencies:
+            actual_path = resolve_library_path(lib_path, src_path) # Use original src_path for context
+            if actual_path:
+                # Pass the symlink's name as the intended destination filename for the next recursion
+                process_and_bundle_dependencies(actual_path, app_bundle_path, processed_set, dest_basename=os.path.basename(lib_path))
+            else:
+                # This error is critical, as it means the final bundle will be broken
+                logging.error(f"COULD NOT FIND dependency '{lib_path}' required by '{lib_name}'.")
+    else:
+        logging.info(f"Skipping dependency processing for framework directory (not main binary): {lib_name}")
    
 def bundle_support_executable(executable_name, app_bundle_path, processed_set):
     """
@@ -390,7 +497,7 @@ def bundle_support_executable(executable_name, app_bundle_path, processed_set):
         else:
             logging.error(f"COULD NOT FIND dependency '{lib_path}' required by '{executable_name}'.")
 
-def bundle_data_resources(app_bundle_path, args):
+def bundle_data_resources(app_bundle_path, args, processed_set):
     """Copies shared data resources (icons, themes, etc.) into the bundle."""
     logging.info("--- Bundling App Resources (share directory) ---")
 
@@ -439,6 +546,120 @@ def bundle_data_resources(app_bundle_path, args):
 
             except (subprocess.CalledProcessError, FileNotFoundError):
                  logging.warning(f"Could not find brew package '{pkg_name}'. Skipping its resources.")
+
+        # --- GDK Pixbuf Loaders ---
+        try:
+            pkg_prefix = subprocess.check_output(["brew", "--prefix", "gdk-pixbuf"], text=True, stderr=subprocess.DEVNULL).strip()
+            # The loaders are in the lib directory
+            src_path = os.path.join(pkg_prefix, "lib", "gdk-pixbuf-2.0")
+            dest_path = os.path.join(app_bundle_path, "Contents", "Resources", "lib", "gdk-pixbuf-2.0")
+            
+            if os.path.isdir(src_path):
+                logging.info(f"Copying GDK Pixbuf loaders from '{src_path}'")
+                if os.path.exists(dest_path):
+                    shutil.rmtree(dest_path)
+                shutil.copytree(src_path, dest_path)
+                
+                # The GDK Pixbuf loader plugins are libraries themselves and have dependencies that need bundling.
+                logging.info("Fixing dependencies for all copied GDK Pixbuf loader plugins...")
+                for root, _, files in os.walk(dest_path):
+                    for file in files:
+                        if file.endswith(".so"):
+                            plugin_path = os.path.join(root, file)
+                            logging.info(f"Processing GDK Pixbuf loader plugin: {file}")
+                            original_plugin_path = os.path.join(src_path, os.path.relpath(plugin_path, dest_path))
+                            plugin_deps = get_dependencies(original_plugin_path)
+                            update_library_paths(plugin_path, plugin_deps, app_bundle_path, original_source_path=original_plugin_path)
+                            update_library_id(plugin_path)
+                            # Re-sign the plugin after modification
+                            try:
+                                logging.info(f"Applying ad-hoc signature to '{file}'")
+                                subprocess.run(["codesign", "--force", "--sign", "-", plugin_path], check=True, capture_output=True)
+                            except (subprocess.CalledProcessError, FileNotFoundError) as e:
+                                logging.warning(f"Could not sign GDK Pixbuf plugin '{file}'. Error: {e}")
+                            
+                            # Now recursively bundle all dependencies of this plugin
+                            for dep_path in plugin_deps:
+                                actual_path = resolve_library_path(dep_path, original_plugin_path)
+                                if actual_path:
+                                    process_and_bundle_dependencies(actual_path, app_bundle_path, processed_set, dest_basename=os.path.basename(dep_path))
+                                else:
+                                    logging.error(f"COULD NOT FIND dependency '{dep_path}' required by GDK Pixbuf plugin '{file}'.")
+                                    
+            else:
+                logging.warning(f"GDK Pixbuf loaders not found at '{src_path}'")
+        except (subprocess.CalledProcessError, FileNotFoundError):
+                logging.warning(f"Could not find brew package 'gdk-pixbuf'. Image loaders will not be bundled.")
+
+        # --- Fontconfig Configuration ---
+        try:
+            pkg_prefix = subprocess.check_output(["brew", "--prefix", "fontconfig"], text=True, stderr=subprocess.DEVNULL).strip()
+            src_path = os.path.join(pkg_prefix, "share", "fontconfig")
+            dest_path = os.path.join(app_bundle_path, "Contents", "Resources", "etc", "fonts")
+
+            if os.path.isdir(src_path):
+                logging.info(f"Copying Fontconfig data from '{src_path}'")
+                if os.path.exists(dest_path):
+                    shutil.rmtree(dest_path)
+                shutil.copytree(src_path, dest_path)
+            else:
+                logging.warning(f"Fontconfig data not found at '{src_path}'")
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            logging.warning("Could not find brew package 'fontconfig'. Fonts may not work correctly.")
+            
+        # --- MLT Plugins ---
+        try:
+            pkg_prefix = subprocess.check_output(["brew", "--prefix", "mlt"], text=True, stderr=subprocess.DEVNULL).strip()
+            src_path = os.path.join(pkg_prefix, "lib", "mlt")
+            dest_path = os.path.join(app_bundle_path, "Contents", "Resources", "lib", "mlt")
+
+            if os.path.isdir(src_path):
+                logging.info(f"Copying MLT plugins from '{src_path}'")
+                if os.path.exists(dest_path):
+                    shutil.rmtree(dest_path)
+                shutil.copytree(src_path, dest_path)
+                
+                # The MLT plugins are libraries themselves and may have dependencies that need fixing.
+                logging.info("Fixing dependencies for all copied MLT plugins...")
+                for root, _, files in os.walk(dest_path):
+                    for file in files:
+                        if file.endswith(".so"):
+                            module_path = os.path.join(root, file)
+                            logging.info(f"Processing MLT plugin: {file}")
+                            original_module_path = os.path.join(src_path, os.path.relpath(module_path, dest_path))
+                            module_deps = get_dependencies(original_module_path)
+                            update_library_paths(module_path, module_deps, app_bundle_path, original_source_path=original_module_path)
+                            update_library_id(module_path)
+                            # Re-sign the module after modification
+                            try:
+                                logging.info(f"Applying ad-hoc signature to '{file}'")
+                                subprocess.run(["codesign", "--force", "--sign", "-", module_path], check=True, capture_output=True)
+                            except (subprocess.CalledProcessError, FileNotFoundError) as e:
+                                logging.warning(f"Could not sign MLT plugin '{file}'. Error: {e}")
+                            
+                            # Now recursively bundle all dependencies of this MLT plugin
+                            for dep_path in module_deps:
+                                actual_path = resolve_library_path(dep_path, original_module_path)
+                                if actual_path:
+                                    process_and_bundle_dependencies(actual_path, app_bundle_path, processed_set, dest_basename=os.path.basename(dep_path))
+                                else:
+                                    logging.error(f"COULD NOT FIND dependency '{dep_path}' required by MLT plugin '{file}'.")
+
+            else:
+                logging.warning(f"MLT plugins not found at '{src_path}'")
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            logging.warning("Could not find brew package 'mlt'. Some media functionality may not work.")
+
+        # --- Set Writable Permissions ---
+        # Ensure all bundled resources are writable so that their extended attributes can be cleared.
+        logging.info("Ensuring all bundled resources are user-writable...")
+        for dir_name in ["lib", "share", "etc"]:
+            path = os.path.join(app_bundle_path, "Contents", "Resources", dir_name)
+            if os.path.isdir(path):
+                try:
+                    subprocess.run(["chmod", "-R", "u+w", path], check=True)
+                except (subprocess.CalledProcessError, FileNotFoundError):
+                    logging.warning(f"Could not make the contents of '{dir_name}' writable. Clearing attributes may fail.")
 
         # --- Shared resources (like icon themes) ---
         icon_themes = ["hicolor", "Adwaita"]
@@ -741,7 +962,7 @@ def main():
     bundle_support_executable("gdk-pixbuf-query-loaders", app_bundle_path, processed_files)
     
     # Bundle application-specific resources and plugins
-    bundle_data_resources(app_bundle_path, args)
+    bundle_data_resources(app_bundle_path, args, processed_files)
     bundle_synfig_modules(app_bundle_path, args)
     
     # Generate necessary caches for GTK
