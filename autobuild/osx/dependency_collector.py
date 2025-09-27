@@ -412,7 +412,7 @@ def bundle_data_resources(app_bundle_path, args):
         pkg_specific_resources = [
             ("glib", "glib-2.0"),
             ("gtk+3", "gtk-3.0"),
-            ("gdk-pixbuf", "gdk-pixbuf-2.0"), # Corrected package name
+            ("gdk-pixbuf", "gdk-pixbuf-2.0"),
             ("pango", "pango"),
         ]
         
@@ -599,7 +599,7 @@ def generate_gtk_caches(app_bundle_path):
     icon_themes = ["hicolor", "Adwaita"]
     for theme in icon_themes:
         system_theme_dir = os.path.join(homebrew_prefix, "share", "icons", theme)
-        bundle_theme_dir = os.path.join(app_bundle_path, "Contents", "share", "icons", theme)
+        bundle_theme_dir = os.path.join(app_bundle_path, "Contents", "Resources", "share", "icons", theme)
         
         if os.path.isdir(system_theme_dir):
             logging.info(f"Bundling {theme} icon theme from '{system_theme_dir}'...")
@@ -621,7 +621,7 @@ def generate_gtk_caches(app_bundle_path):
     if gtk_icon_cache_tool:
         icon_themes = ["hicolor", "Adwaita"]
         for theme in icon_themes:
-            theme_dir = os.path.join(app_bundle_path, "Contents", "share", "icons", theme)
+            theme_dir = os.path.join(app_bundle_path, "Contents", "Resources", "share", "icons", theme)
             if os.path.isdir(theme_dir):
                 try:
                     logging.info(f"Updating icon cache in '{theme_dir}'...")
@@ -638,7 +638,7 @@ def generate_gtk_caches(app_bundle_path):
     glib_schema_tool = find_system_executable("glib-compile-schemas")
     if glib_schema_tool:
         system_schemas_dir = os.path.join(homebrew_prefix, "share", "glib-2.0", "schemas") if homebrew_prefix else None
-        bundle_schemas_dir = os.path.join(app_bundle_path, "Contents", "share", "glib-2.0", "schemas")
+        bundle_schemas_dir = os.path.join(app_bundle_path, "Contents", "Resources", "share", "glib-2.0", "schemas")
 
         # Define a list of packages that provide essential schemas.
         schema_packages = ["glib", "gsettings-desktop-schemas", "gtk+3"]
