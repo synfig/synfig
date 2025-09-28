@@ -59,7 +59,7 @@ public:
 	}
 	static Color uncook_static(Color x)
 	{
-		if(!x.get_a())
+		if(fabs(x.get_a()) < 1e-8)
 			return Color::alpha();
 
 		const float a(1.0f/x.get_a());
