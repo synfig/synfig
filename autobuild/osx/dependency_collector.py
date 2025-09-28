@@ -10,6 +10,13 @@ import tarfile
 import urllib.request
 import platform
 
+# Import code signing functions
+try:
+    from . import code_signing
+except ImportError:
+    # Handle case when running as script directly
+    import code_signing
+
 try:
 	import lxml
 	LXML_AVAILABLE = True
@@ -436,11 +443,7 @@ def process_and_bundle_dependencies(src_path, app_bundle_path, processed_set, de
         update_library_id(dest_path)
 
         # Now, with all modifications complete, apply the ad-hoc signature.
-        try:
-            logging.info(f"Applying ad-hoc signature to '{lib_name}'")
-            subprocess.run(["codesign", "--force", "--sign", "-", dest_path], check=True, capture_output=True)
-        except (subprocess.CalledProcessError, FileNotFoundError) as e:
-            logging.warning(f"Could not sign '{lib_name}'. The app may be killed on launch. Error: {e}")
+        code_signing.sign_file_adhoc(dest_path)
 
         # Recurse for all found dependencies
         logging.info(f"Found {len(dependencies)} dependencies for {lib_name} to process.")
@@ -483,11 +486,8 @@ def bundle_support_executable(executable_name, app_bundle_path, processed_set):
     update_library_paths(dest_path, dependencies, app_bundle_path, original_source_path=source_path)
 
     # Now, with all modifications complete, sign the support executable.
-    try:
-        logging.info(f"Applying ad-hoc signature to '{executable_name}'")
-        subprocess.run(["codesign", "--force", "--sign", "-", dest_path], check=True, capture_output=True)
-    except (subprocess.CalledProcessError, FileNotFoundError) as e:
-        logging.warning(f"Could not sign '{executable_name}'. The app may be killed on launch. Error: {e}")
+    # Apply ad-hoc signature to the executable after all modifications
+    code_signing.sign_file_adhoc(dest_path)
 
     # Recursively bundle the dependencies of the support tool.
     for lib_path in dependencies:
@@ -572,11 +572,8 @@ def bundle_data_resources(app_bundle_path, args, processed_set):
                             update_library_paths(plugin_path, plugin_deps, app_bundle_path, original_source_path=original_plugin_path)
                             update_library_id(plugin_path)
                             # Re-sign the plugin after modification
-                            try:
-                                logging.info(f"Applying ad-hoc signature to '{file}'")
-                                subprocess.run(["codesign", "--force", "--sign", "-", plugin_path], check=True, capture_output=True)
-                            except (subprocess.CalledProcessError, FileNotFoundError) as e:
-                                logging.warning(f"Could not sign GDK Pixbuf plugin '{file}'. Error: {e}")
+                            # Apply ad-hoc signature to the plugin
+                            code_signing.sign_file_adhoc(plugin_path)
                             
                             # Now recursively bundle all dependencies of this plugin
                             for dep_path in plugin_deps:
@@ -631,11 +628,8 @@ def bundle_data_resources(app_bundle_path, args, processed_set):
                             update_library_paths(module_path, module_deps, app_bundle_path, original_source_path=original_module_path)
                             update_library_id(module_path)
                             # Re-sign the module after modification
-                            try:
-                                logging.info(f"Applying ad-hoc signature to '{file}'")
-                                subprocess.run(["codesign", "--force", "--sign", "-", module_path], check=True, capture_output=True)
-                            except (subprocess.CalledProcessError, FileNotFoundError) as e:
-                                logging.warning(f"Could not sign MLT plugin '{file}'. Error: {e}")
+                            # Apply ad-hoc signature to the plugin
+                            code_signing.sign_file_adhoc(module_path)
                             
                             # Now recursively bundle all dependencies of this MLT plugin
                             for dep_path in module_deps:

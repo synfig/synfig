@@ -88,6 +88,26 @@ def find_signable_files(app_bundle_path):
     
     return signable_files
 
+def sign_file_adhoc(file_path):
+    """
+    Sign a single file with ad-hoc signature (for development/testing).
+    
+    Args:
+        file_path (str): Path to the file to sign
+    """
+    cmd = [
+        "codesign",
+        "--force",         # Replace any existing signature
+        "--sign", "-",     # Use ad-hoc signature
+        file_path
+    ]
+    
+    try:
+        logging.debug(f"Ad-hoc signing {os.path.basename(file_path)}")
+        subprocess.run(cmd, check=True, capture_output=True)
+    except subprocess.CalledProcessError as e:
+        logging.warning(f"Could not sign '{os.path.basename(file_path)}'. The app may be killed on launch. Error: {e}")
+
 def sign_file(file_path, signing_identity, entitlements=None):
     """
     Sign a single file with the specified code signing identity.
@@ -118,6 +138,31 @@ def sign_file(file_path, signing_identity, entitlements=None):
     except subprocess.CalledProcessError as e:
         logging.error(f"Failed to sign {file_path}: {e}")
         raise  # Re-raise the exception to be handled by the caller
+
+def sign_app_bundle_adhoc(app_bundle_path):
+    """
+    Sign an entire macOS application bundle with ad-hoc signatures (for development/testing).
+    """
+    setup_logging()
+    
+    logging.info(f"Ad-hoc signing app bundle: {app_bundle_path}")
+    
+    # Use simple codesign command for the entire bundle with deep signing
+    cmd = [
+        "codesign",
+        "--force",
+        "--deep", 
+        "--verbose",
+        "--sign", "-",
+        app_bundle_path
+    ]
+    
+    try:
+        subprocess.run(cmd, check=True)
+        logging.info("App bundle signed successfully with ad-hoc signature")
+    except subprocess.CalledProcessError as e:
+        logging.error(f"Failed to sign app bundle: {e}")
+        raise
 
 def sign_app_bundle(app_bundle_path, signing_identity, entitlements=None):
     """
@@ -182,8 +227,9 @@ if __name__ == "__main__":
     # Set up command-line argument parsing
     parser = argparse.ArgumentParser(description="Sign macOS app bundle")
     parser.add_argument("--app", required=True, help="Path to .app bundle")
-    parser.add_argument("--identity", required=True, help="Signing identity (e.g., 'Developer ID Application: Name (ID)')")
+    parser.add_argument("--identity", help="Signing identity (e.g., 'Developer ID Application: Name (ID)')")
     parser.add_argument("--entitlements", help="Path to entitlements.plist")
+    parser.add_argument("--adhoc", action="store_true", help="Use ad-hoc signing for development/testing")
     
     args = parser.parse_args()
     
@@ -192,9 +238,18 @@ if __name__ == "__main__":
         logging.error(f"App bundle not found: {args.app}")
         sys.exit(1)  # Exit with error code
     
+    # Check arguments
+    if not args.adhoc and not args.identity:
+        logging.error("Either --identity or --adhoc must be specified")
+        sys.exit(1)
+    
     try:
-        # Perform the signing process
-        sign_app_bundle(args.app, args.identity, args.entitlements)
+        if args.adhoc:
+            # Perform ad-hoc signing
+            sign_app_bundle_adhoc(args.app)
+        else:
+            # Perform the signing process with identity
+            sign_app_bundle(args.app, args.identity, args.entitlements)
     except Exception as e:
         # Handle any exceptions that occurred during signing
         logging.error(f"Signing failed: {e}")
