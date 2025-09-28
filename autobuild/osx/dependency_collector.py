@@ -604,6 +604,17 @@ def bundle_data_resources(app_bundle_path, args, processed_set):
         except (subprocess.CalledProcessError, FileNotFoundError):
             logging.warning("Could not find brew package 'fontconfig'. Fonts may not work correctly.")
             
+        # --- Synfig Modules Configuration ---
+        synfig_modules_cfg_src = os.path.join(args.build_dir, "output", "Debug", "etc", "synfig_modules.cfg")
+        synfig_modules_cfg_dest = os.path.join(app_bundle_path, "Contents", "Resources", "etc", "synfig_modules.cfg")
+        
+        if os.path.exists(synfig_modules_cfg_src):
+            logging.info(f"Copying synfig_modules.cfg from '{synfig_modules_cfg_src}'")
+            os.makedirs(os.path.dirname(synfig_modules_cfg_dest), exist_ok=True)
+            shutil.copy2(synfig_modules_cfg_src, synfig_modules_cfg_dest)
+        else:
+            logging.warning(f"synfig_modules.cfg not found at '{synfig_modules_cfg_src}'")
+            
         # --- MLT Plugins ---
         try:
             pkg_prefix = subprocess.check_output(["brew", "--prefix", "mlt"], text=True, stderr=subprocess.DEVNULL).strip()
