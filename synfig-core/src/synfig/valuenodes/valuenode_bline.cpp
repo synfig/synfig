@@ -228,9 +228,8 @@ synfig::find_closest_point(const ValueBase &bline, const Point &pos, Real radius
 Real
 synfig::std_to_hom(const ValueBase &bline, Real pos, bool index_loop, bool bline_loop)
 {
-	Real loops = index_loop ? floor(pos) : 0.0;
+	const Real loops = index_loop ? floor(pos) : 0.0;
 	pos -= loops;
-	assert(approximate_greater_or_equal(pos, 0.0));
 
 	// trivial cases
 	if (approximate_less_or_equal(pos, Real(0)))
@@ -239,31 +238,31 @@ synfig::std_to_hom(const ValueBase &bline, Real pos, bool index_loop, bool bline
 		return loops + 1;
 
 	const std::vector<BLinePoint> list(bline.get_list_of(BLinePoint()));
-	size_t size = list.size();
+	const size_t size = list.size();
 	if (size == 0)
 		return loops;
-	size_t count = bline_loop? size : size - 1;
+	const size_t count = bline_loop? size : size - 1;
 	if (count < 1)
 		return loops + pos;
 
 	// Calculate the lengths and the total length
 	std::vector<Real> lengths;
-	Real bline_total_length = bline_length(list, bline_loop, &lengths);
+	const Real bline_total_length = bline_length(list, bline_loop, &lengths);
 	// If the total length of the bline is zero return pos
-	if(approximate_equal(bline_total_length, 0.0))
+	if (approximate_equal(bline_total_length, 0.0))
 		return pos;
-	size_t from_vertex = size_t(pos*count);
+	const size_t from_vertex = size_t(pos*count);
 	// Calculate the partial length until the bezier that holds the current
 	Real partial_length = 0;
 	std::vector<Real>::const_iterator length_iter(lengths.begin());
-	for(size_t i=0; i < from_vertex; ++i, ++length_iter)
+	for (size_t i = 0; i < from_vertex; ++i, ++length_iter)
 		partial_length += *length_iter;
 	// Calculate the remaining length of the position over current bezier
 	// Setup the curve of the current bezier.
-	size_t next_vertex = (from_vertex + 1) % size;
-	const BLinePoint &blinepoint0 = list[from_vertex];
-	const BLinePoint &blinepoint1 = list[next_vertex];
-	hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
+	const size_t next_vertex = (from_vertex + 1) % size;
+	const BLinePoint& blinepoint0 = list[from_vertex];
+	const BLinePoint& blinepoint1 = list[next_vertex];
+	const hermite<Vector> curve(blinepoint0.get_vertex(), blinepoint1.get_vertex(),
 							blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
 	// add the distance on the bezier we are on.
 	partial_length += curve.find_distance(0.0, pos*count - from_vertex);
@@ -274,7 +273,7 @@ synfig::std_to_hom(const ValueBase &bline, Real pos, bool index_loop, bool bline
 Real
 synfig::hom_to_std(const ValueBase &bline, Real pos, bool index_loop, bool bline_loop)
 {
-	Real loops = index_loop ? floor(pos) : 0.0;
+	const Real loops = index_loop ? floor(pos) : 0.0;
 	pos -= loops;
 	assert(approximate_greater_or_equal(pos, 0.0));
 
@@ -285,18 +284,18 @@ synfig::hom_to_std(const ValueBase &bline, Real pos, bool index_loop, bool bline
 		return loops + 1;
 
 	const std::vector<BLinePoint> list(bline.get_list_of(BLinePoint()));
-	size_t size = list.size();
+	const size_t size = list.size();
 	if (size == 0)
 		return loops;
-	size_t count = bline_loop? size : size - 1;
+	const size_t count = bline_loop? size : size - 1;
 	if (count < 1)
 		return loops + pos;
 
 	// Calculate the lengths and the total length
 	std::vector<Real> lengths;
-	Real bline_total_length=bline_length(bline, bline_loop,&lengths);
+	const Real bline_total_length = bline_length(bline, bline_loop, &lengths);
 	// Calculate the my partial length (the length where pos is)
-	Real target_length = pos * bline_total_length;
+	const Real target_length = pos * bline_total_length;
 	std::vector<Real>::const_iterator length_iter(lengths.begin());
 	// Find the previous bezier where we pos is placed and the sum
 	// of lengths to it (cumulative_length)
@@ -304,40 +303,39 @@ synfig::hom_to_std(const ValueBase &bline, Real pos, bool index_loop, bool bline
 	Real cumulative_length = 0;
 	size_t from_vertex = 0;
 	Real segment_length = 0;
-	while(target_length > cumulative_length && length_iter != lengths.end())
-	{
+	while (approximate_greater(target_length, cumulative_length) && length_iter != lengths.end()) {
 		segment_length = *length_iter;
 		cumulative_length += segment_length;
 
 		++length_iter;
 		++from_vertex;
 	}
-	// correct the iters and partial length in case we passed over
-	if(cumulative_length > target_length)
-	{
+	if (approximate_equal(target_length, cumulative_length)) {
+		return loops + Real(from_vertex) / count;
+	} else {
+		// correct the iters and partial length in case we passed over
 		--length_iter;
 		cumulative_length -= *length_iter;
 		--from_vertex;
 	}
 	// set up the curve
-	const BLinePoint &blinepoint0 = list[from_vertex];
-	const BLinePoint &blinepoint1 = list[(from_vertex+1) % size];
-	hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
+	const BLinePoint& blinepoint0 = list[from_vertex];
+	const BLinePoint& blinepoint1 = list[(from_vertex+1) % size];
+	const hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
 	                           blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
 	// Find the solution to which is the standard position which matches the current
 	// homogeneous position
 	// Secant method: http://en.wikipedia.org/wiki/Secant_method
 	Real sn(0.0); // the standard position on current bezier
 	Real sn1(0.0), sn2(1.0);
-	Real t0((target_length-cumulative_length)/segment_length); // the homogeneous position on the current bezier
+	const Real t0((target_length-cumulative_length)/segment_length); // the homogeneous position on the current bezier
 	int iterations=0;
 	const int max_iterations=100;
 	const Real max_error(0.00001);
 	Real error;
 	Real fsn1(t0-curve.find_distance(0.0,sn1)/segment_length);
 	Real fsn2(t0-curve.find_distance(0.0,sn2)/segment_length);
-	do
-	{
+	do {
 		sn=sn1-fsn1*((sn1-sn2)/(fsn1-fsn2));
 		Real fsn=t0-curve.find_distance(0.0, sn)/segment_length;
 		sn2=sn1;
@@ -360,22 +358,22 @@ synfig::bline_length(const ValueBase &bline, bool bline_loop, std::vector<Real> 
 	const std::vector<BLinePoint> list(bline.get_list_of(BLinePoint()));
 	if (list.empty())
 		return 0;
-	size_t max_vertex_index(list.size());
-	if(!bline_loop) max_vertex_index--;
-	if(max_vertex_index < 1) return Real();
+	const size_t max_vertex_index = bline_loop ? list.size() : list.size() - 1;
+	if (max_vertex_index < 1)
+		return Real();
 
 	if (lengths)
 		lengths->reserve(max_vertex_index);
 
 	// Calculate the lengths and the total length
 	Real total_length = 0;
-	for(size_t i0 = 0; i0 < max_vertex_index; ++i0) {
-		size_t i1 = (i0 + 1)%list.size();
-		const BLinePoint &blinepoint0 = list[i0];
-		const BLinePoint &blinepoint1 = list[i1];
-		hermite<Vector> curve(blinepoint0.get_vertex(),   blinepoint1.get_vertex(),
+	for (size_t i0 = 0; i0 < max_vertex_index; ++i0) {
+		const size_t i1 = (i0 + 1) % list.size();
+		const BLinePoint& blinepoint0 = list[i0];
+		const BLinePoint& blinepoint1 = list[i1];
+		const hermite<Vector> curve(blinepoint0.get_vertex(), blinepoint1.get_vertex(),
 							blinepoint0.get_tangent2(), blinepoint1.get_tangent1());
-		Real l=curve.length();
+		const Real l = curve.length();
 		if(lengths) lengths->push_back(l);
 		total_length+=l;
 	}

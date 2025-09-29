@@ -58,6 +58,7 @@
 #include <synfig/valuenodes/valuenode_blinecalcvertex.h>
 #include <synfig/valuenodes/valuenode_blinecalcwidth.h>
 #include <synfig/valuenodes/valuenode_wplist.h>
+#include <synfig/valuenodes/valuenode_maprange.h>
 #include <synfig/valuenodes/valuenode_scale.h>
 #include <synfig/valuenodes/valuenode_range.h>
 #include <synfig/valuenodes/valuenode_integer.h>
@@ -106,6 +107,7 @@ synfigapp::is_editable(synfig::ValueNode::Handle value_node)
 		|| ValueNode_BLineCalcVertex::Handle::cast_dynamic(value_node)
 		|| ValueNode_BLineCalcTangent::Handle::cast_dynamic(value_node)
 		|| ValueNode_BLineCalcWidth::Handle::cast_dynamic(value_node)
+		|| ValueNode_MapRange::Handle::cast_dynamic(value_node)
 		|| ValueNode_Scale::Handle::cast_dynamic(value_node)
 		|| ValueNode_Range::Handle::cast_dynamic(value_node)
 		|| ValueNode_Integer::Handle::cast_dynamic(value_node)

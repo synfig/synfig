@@ -728,6 +728,7 @@ StateBLine_Context::run_()
 	}
 	if(bline_point_list.size()<2)
 	{
+		reset();
 		get_canvas_view()->get_ui_interface()->task(_("Information: You need at least two (2) points to create a spline"));
 		return false;
 	}
@@ -1578,6 +1579,8 @@ StateBLine_Context::on_tangent2_change(const studio::Duck& duck, WorkArea::Duck:
 void
 StateBLine_Context::on_first_duck_clicked()
 {
+	if (!curr_duck)
+		return;
 	loop_=true;
 	run();
 }
