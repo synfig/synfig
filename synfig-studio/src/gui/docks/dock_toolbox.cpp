@@ -113,6 +113,9 @@ Dock_Toolbox::Dock_Toolbox():
 	signal_drag_data_received().connect( sigc::mem_fun(*this, &studio::Dock_Toolbox::on_drop_drag_data_received) );
 
 	App::signal_present_all().connect(sigc::mem_fun0(*this,&Dock_Toolbox::present));
+	action_new_layer = Gtk::Action::create_with_icon_name("popup-layer-new", "list-add", _("New Layer"), _("New Layer"));
+	action_new_layer->signal_activate().connect(sigc::mem_fun(*this, &Dock_Toolbox::popup_add_layer_menu));
+
 }
 
 Dock_Toolbox::~Dock_Toolbox()
@@ -232,6 +235,27 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 	refresh();
 }
 
+void 
+Dock_Toolbox::button_new_layer_creator()
+{
+	Gtk::RadioToolButton *tool_button = manage(new Gtk::RadioToolButton());
+	tool_button->set_group(radio_tool_button_group);
+	tool_button->set_related_action(action_new_layer);
+
+	tool_item_group->insert(*tool_button);
+	tool_item_group->show_all();
+
+	refresh();
+
+}
+
+void
+Dock_Toolbox::popup_add_layer_menu()
+{
+	if (auto menu = dynamic_cast<Gtk::Menu*>(App::ui_manager()->get_widget("/popup-layer-new")))
+		menu->popup(0, gtk_get_current_event_time());
+}
+
 
 void
 Dock_Toolbox::update_tools()
@@ -258,6 +282,7 @@ Dock_Toolbox::update_tools()
 	// Disable buttons if there isn't any open document instance
 	bool sensitive = instance && canvas_view;
 	state_action_group->set_sensitive(sensitive);
+	action_new_layer->set_sensitive(sensitive);
 }
 
 
