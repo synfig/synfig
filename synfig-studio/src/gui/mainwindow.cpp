@@ -33,6 +33,7 @@
 #endif
 
 #include <gui/mainwindow.h>
+#include <gui/instance.h>
 
 #include <gtkmm/box.h>
 #include <gtkmm/cssprovider.h>
@@ -71,6 +72,23 @@ std::unique_ptr<studio::WorkspaceHandler> studio::MainWindow::workspaces = nullp
 static sigc::signal<void> signal_custom_workspaces_changed_;
 
 /* === P R O C E D U R E S ================================================= */
+
+namespace {
+void run_plugin(const std::string& id)
+{
+	auto instance = studio::App::get_selected_instance();
+	if (instance) {
+		instance->run_plugin(id, true);
+	} else {
+		studio::App::dialog_message_1b(
+			_("Plugin Error"),
+			_("This plugin requires an open document."),
+			"details",
+			_("Close")
+		);
+	}
+}
+} // namespace
 
 // replace _ in menu item labels with __ or it won't show up in the menu
 static std::string
@@ -195,7 +213,11 @@ MainWindow::init_menus()
 	// plugins
 	if (App::menu_plugins) {
 		for (const auto& plugin : studio::App::plugin_manager.plugins()) {
-			App::menu_plugins->append(plugin.name.get(), "doc.plugin-" + plugin.id);
+			auto action = add_action("plugin-" + plugin.id, sigc::bind(sigc::ptr_fun(&run_plugin), plugin.id));
+			action->set_enabled(true);
+
+			auto menu_item = Gio::MenuItem::create(plugin.name.get(), "win.plugin-" + plugin.id);
+			App::menu_plugins->append_item(menu_item);
 		}
 	}
 
@@ -346,7 +368,6 @@ void MainWindow::add_custom_workspace_menu_item_handlers()
 			"	<menu action='menu-workspace'>"
 			"	    <separator name='sep-window2'/>"
 			"		<menuitem action='save-workspace' />"
-			"		<menuitem action='edit-workspacelist' />"
 			"	</menu>"
 			"</menu>";
 
