@@ -144,9 +144,14 @@ void Dock_Toolbox::read_layout_string(const std::string& params) const
 void
 Dock_Toolbox::set_active_state(const synfig::String& statename)
 {
+	if (changing_state_) {
+		return;
+	}
+
 	synfigapp::Main::set_state(statename);
 
 	try {
+		changing_state_ = true;
 		for (const auto& item : state_button_map) {
 			if (item.first == statename && !item.second.first->get_active()) {
 				item.second.first->set_active(true);
@@ -185,17 +190,24 @@ Dock_Toolbox::change_state(const synfig::String& statename, bool force)
 void
 Dock_Toolbox::change_state_(const Smach::state_base *state)
 {
+	if (changing_state_) {
+		return;
+	}
 
 	try
 	{
 		studio::CanvasView::Handle canvas_view(studio::App::get_selected_canvas_view());
-		if(canvas_view)
+		if(canvas_view) {
+			changing_state_ = true;
 			canvas_view->get_smach().enter(state);
-		else
+			changing_state_ = false;
+		} else {
 			refresh();
+		}
 	}
 	catch(...)
 	{
+		changing_state_ = false;
 		throw;
 	}
 }
@@ -236,7 +248,10 @@ Dock_Toolbox::add_state(const Smach::state_base* state)
 
 	state_button_map[name] = std::make_pair(tool_button, state);
 
-	tool_button->signal_clicked().connect([name]() {
+	tool_button->signal_clicked().connect([this, name]() {
+		if (changing_state_) {
+			return;
+		}
 		App::instance()->main_window->activate_action("set-tool-" + name);
 	});
 
@@ -247,6 +262,10 @@ Dock_Toolbox::add_state(const Smach::state_base* state)
 void
 Dock_Toolbox::update_tools()
 {
+	if (changing_state_) {
+		return;
+	}
+	
 	etl::handle<Instance> instance = App::get_selected_instance();
 	CanvasView::Handle canvas_view = App::get_selected_canvas_view();
 
@@ -257,10 +276,11 @@ Dock_Toolbox::update_tools()
 	for (const auto& item : state_button_map)
 		item.second.first->set_sensitive(sensitive);
 
-	if (canvas_view && canvas_view->get_smach().get_state_name())
+	if (canvas_view && canvas_view->get_smach().get_state_name()) {
 		set_active_state(canvas_view->get_smach().get_state_name());
-	else
+	} else {
 		set_active_state("none");
+	}
 }
 
 

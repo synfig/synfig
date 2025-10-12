@@ -65,7 +65,7 @@ class Dock_Toolbox : public Dockable
 	// Tool/state name => {Tool button, Smach::state}
 	std::map<synfig::String, std::pair<Gtk::RadioToolButton *, const void*>> state_button_map;
 
-	bool changing_state_;
+	bool changing_state_ = false;
 
 	Gtk::RadioToolButton::Group radio_tool_button_group;
 
