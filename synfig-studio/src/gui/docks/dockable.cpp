@@ -230,8 +230,8 @@ Dockable::add_button(const std::string& icon_name, const synfig::String& tooltip
 void
 Dockable::reset_container()
 {
-	if (container) delete container;
-	container = manage(new Gtk::ScrolledWindow);
+	if (container) remove(*container);
+	container = Gtk::manage(new Gtk::ScrolledWindow);
 	container->set_shadow_type(Gtk::SHADOW_NONE);
 	container->set_hexpand();
 	container->set_vexpand();
@@ -252,8 +252,8 @@ Dockable::reset_container()
 void
 Dockable::reset_toolbar()
 {
-	if (toolbar_container) delete toolbar_container;
-	toolbar_container = manage(new Gtk::EventBox);
+	if (container) remove(*toolbar_container);
+	toolbar_container = Gtk::manage(new Gtk::EventBox);
 	toolbar_container->set_hexpand();
 	toolbar_container->show();
 	attach(*toolbar_container, 0, 1, 1, 1);

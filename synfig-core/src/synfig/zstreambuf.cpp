@@ -232,6 +232,7 @@ bool zstreambuf::deflate_buf(bool flush)
 			if (deflate_stream_.avail_out < sizeof(out_buf))
 				buf_->sputn(out_buf, sizeof(out_buf) - deflate_stream_.avail_out);
 		} while (deflate_stream_.avail_out == 0);
+		deflate_stream_.next_out = nullptr; // clear pointer to local array (out_buf)
 		assert(deflate_stream_.avail_in == 0);
 		setp(nullptr, nullptr);
 	}
