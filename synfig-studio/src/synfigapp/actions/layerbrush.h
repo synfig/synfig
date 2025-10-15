@@ -121,6 +121,7 @@ public:
 	virtual void perform();
 	virtual void undo();
 
+	static void cleanup_history();
 	ACTION_MODULE_EXT
 };
 

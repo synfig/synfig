@@ -149,6 +149,7 @@
 #include <gui/exception_guard.h>
 
 #include <synfigapp/action.h>
+#include <synfigapp/actions/layerbrush.h>
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/main.h>
 #include <synfigapp/settings.h>
@@ -2232,6 +2233,7 @@ App::quit()
 			_("Close"));
 		return;
 	}
+	synfigapp::Action::LayerBrush::cleanup_history();
 
 	while(!instance_list.empty())
 		if (!instance_list.front()->safe_close())

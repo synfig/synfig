@@ -67,6 +67,12 @@ struct StrokeData {
 static std::vector<StrokeData> strokes_history;
 static std::map<Layer_Bitmap::Handle, Surface> original_layer_surface;
 
+void
+Action::LayerBrush::cleanup_history()
+{
+	strokes_history.clear();
+	original_layer_surface.clear();
+}
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
