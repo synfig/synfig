@@ -104,9 +104,13 @@ namespace brushlib {
 			float sn = sinf(angle/180.f*(float)PI);
 
 			// calculate bounds
-			if (aspect_ratio < 1.0) aspect_ratio = 1.0;
-			if (hardness > 1.0) hardness = 1.0;
-			if (hardness < 0.0) hardness = 0.0;
+			if (aspect_ratio < 1.0)
+				aspect_ratio = 1.0;
+			if (hardness > 1.0)
+				hardness = 1.0;
+			if (hardness < 0.0)
+				hardness = 0.0;
+
 			float maxr = fabsf(radius);
 			int x0 = (int)(x - maxr - 1.f);
 			int x1 = (int)(x + maxr + 1.f);

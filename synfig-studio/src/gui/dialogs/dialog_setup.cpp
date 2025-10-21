@@ -262,9 +262,9 @@ Dialog_Setup::create_system_page(PageInfo pi)
 	attach_label_section(pi.grid, _("Brush Undo Mode"), ++row);
 	pi.grid->attach(brush_undo_mode_combo, 1, row, 1, 1);
 	brush_undo_mode_combo.set_hexpand(true);
-	brush_undo_mode_combo.append("0", _("Redraw (low memory , slower)"));
+	brush_undo_mode_combo.append("0", _("Redraw (low memory, slower)"));
 	brush_undo_mode_combo.append("1", _("Checkpointing (balanced)"));
-	brush_undo_mode_combo.append("2", _("Surface Saving (high memory , fast)"));
+	brush_undo_mode_combo.append("2", _("Surface Saving (high memory, fast)"));
 	
 	brush_undo_mode_combo.set_active_id(strprintf("%i", App::brush_undo_mode));
 	brush_undo_mode_combo.signal_changed().connect(
@@ -678,8 +678,9 @@ Dialog_Setup::on_choose_editor_pressed()
 void
 Dialog_Setup::on_brush_undo_mode_changed()
 {
-	App::brush_undo_mode = atoi(brush_undo_mode_combo.get_active_id().c_str());
-	synfigapp::Main::settings().set_value("pref.brush_undo_mode", brush_undo_mode_combo.get_active_id().c_str());
+	std::string active_id = brush_undo_mode_combo.get_active_id();
+	App::brush_undo_mode = atoi(active_id.c_str());
+	synfigapp::Main::settings().set_value("pref.brush_undo_mode", active_id.c_str());
 }
 
 bool 
@@ -1378,7 +1379,6 @@ Dialog_Setup::refresh()
 			listviewtext_brushes_path->get_model());
 	//! Keep "brushes_path" preferences entry for backward compatibility (15/12 - v1.0.3)
 	//! Now brush path(s) are hold by input preferences : brush.path_count & brush.path_%d
-	String value;
 	Gtk::TreeIter ui_iter;
 	int brush_path_count = input_settings.get_value("brush.path_count", 0);
 	App::brushes_path.clear();
