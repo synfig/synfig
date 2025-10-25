@@ -242,12 +242,6 @@ Layer_Shade::build_composite_fork_task_vfunc(ContextParams /* context_params */,
 	if (!sub_task)
 		return sub_task;
 
-	rendering::TaskBlur::Handle task_blur(new rendering::TaskBlur());
-	task_blur->blur.size = size;
-	task_blur->blur.type = type;
-	if (sub_task)
-		task_blur->sub_task() = sub_task->clone_recursive();
-
 	ColorMatrix matrix;
 	matrix *= ColorMatrix().set_replace_color(color);
 	if (invert)
@@ -255,11 +249,20 @@ Layer_Shade::build_composite_fork_task_vfunc(ContextParams /* context_params */,
 
 	rendering::TaskPixelColorMatrix::Handle task_colormatrix(new rendering::TaskPixelColorMatrix());
 	task_colormatrix->matrix = matrix;
-	task_colormatrix->sub_task() = task_blur;
+	if (sub_task) {task_colormatrix->sub_task() = sub_task->clone_recursive();}
 
 	rendering::TaskTransformationAffine::Handle task_transformation(new rendering::TaskTransformationAffine());
 	task_transformation->transformation->matrix.set_translate(origin);
 	task_transformation->sub_task() = task_colormatrix;
+
+	if (size != Vector::zero())
+	{
+		rendering::TaskBlur::Handle task_blur(new rendering::TaskBlur());
+		task_blur->blur.size = size;
+		task_blur->blur.type = type;
+		task_blur->sub_task() = task_transformation;
+		return task_blur;
+	}
 
 	return task_transformation;
 }
