@@ -249,7 +249,7 @@ Layer_Shade::build_composite_fork_task_vfunc(ContextParams /* context_params */,
 
 	rendering::TaskPixelColorMatrix::Handle task_colormatrix(new rendering::TaskPixelColorMatrix());
 	task_colormatrix->matrix = matrix;
-	if (sub_task) {task_colormatrix->sub_task() = sub_task->clone_recursive();}
+	task_colormatrix->sub_task() = sub_task->clone_recursive();
 
 	rendering::TaskTransformationAffine::Handle task_transformation(new rendering::TaskTransformationAffine());
 	task_transformation->transformation->matrix.set_translate(origin);
