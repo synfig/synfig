@@ -36,26 +36,27 @@
 
 #include "state_brush2.h"
 
-#include "state_normal.h"
-#include <gui/canvasview.h>
-#include <gui/event_mouse.h>
-#include <gui/workarea.h>
-#include <synfigapp/main.h>
-#include <gui/workarearenderer/renderer_brush_overlay.h>
-#include <synfig/rendering/software/surfacesw.h>
-#include <brushlib.h>
+#include <glibmm/fileutils.h>
+#include <glibmm/miscutils.h>
+
+#include <gtkmm/toolpalette.h>
+
 #include <gui/app.h>
+#include <gui/canvasview.h>
 #include <gui/docks/dialog_tooloptions.h>
 #include <gui/docks/dock_toolbox.h>
 #include <gui/ducktransform_matrix.h>
+#include <gui/event_mouse.h>
 #include <gui/resourcehelper.h>
+#include <gui/states/state_normal.h>
 #include <gui/widgets/widget_link.h>
-#include <gtkmm/toolpalette.h>
-#include <synfig/general.h>
-#include <glibmm/fileutils.h>
+#include <gui/workarea.h>
+#include <gui/workarearenderer/renderer_brush_overlay.h>
+
+#include <synfig/rendering/software/surfacesw.h>
+
+#include <synfigapp/main.h>
 #include <synfigapp/actions/layerbrush.h>
-#include <synfig/canvasfilenaming.h>
-#include <glibmm/miscutils.h>
 
 #endif
 
@@ -131,11 +132,7 @@ private:
 	Layer_Bitmap::Handle layer_;
 
 	TransformStack transform_stack_;
-	static bool build_transform_stack(
-	Canvas::Handle canvas,
-	Layer::Handle layer,
-	CanvasView::Handle canvas_view,
-	TransformStack& transform_stack);
+	static bool build_transform_stack(Canvas::Handle canvas, Layer::Handle layer, CanvasView::Handle canvas_view, TransformStack& transform_stack);
 
 	BrushConfig selected_brush_config;
 	BrushConfig original_brush_config;
@@ -274,17 +271,22 @@ StateBrush2_Context::BrushConfig::clear()
 bool StateBrush2_Context::BrushConfig::read_space(const char **pos)
 {
 	// Skip whitespace characters
-	while (**pos > 0 && **pos <= ' ') ++(*pos);
+	while (**pos > 0 && **pos <= ' ')
+		++(*pos);
 	return true;
 }
 
 bool StateBrush2_Context::BrushConfig::read_to_line_end(const char **pos)
 {
 	// Advance pointer to the end of the line
-	while (**pos != 0 && **pos != '\n' && **pos != '\r') ++(*pos);
-	if (**pos == 0) return false;
-	if (**pos == '\n' && *(++(*pos)) == '\r') ++(*pos);
-	if (**pos == '\r' && *(++(*pos)) == '\n') ++(*pos);
+	while (**pos != 0 && **pos != '\n' && **pos != '\r')
+		++(*pos);
+	if (**pos == 0)
+		return false;
+	if (**pos == '\n' && *(++(*pos)) == '\r')
+		++(*pos);
+	if (**pos == '\r' && *(++(*pos)) == '\n')
+		++(*pos);
 	return true;
 }
 
@@ -292,8 +294,10 @@ bool StateBrush2_Context::BrushConfig::read_key(const char **pos, const char *ke
 {
 	// Check if the current position matches the given key string
 	size_t l = strlen(key);
-	if (strncmp(*pos, key, l) == 0)
-		{ *pos += l; return true; }
+	if (strncmp(*pos, key, l) == 0) {
+		*pos += l;
+		return true;
+	}
 	return false;
 }
 
@@ -302,8 +306,12 @@ bool StateBrush2_Context::BrushConfig::read_word(const char **pos, String &out_v
 	// Read a word (a-z or '_') from the current position
 	out_value.clear();
 	const char *p = *pos;
-	while ((*p >= 'a' && *p <= 'z') || *p == '_') ++p;
-	if (p > *pos) { out_value.assign(*pos, p); *pos = p; return true; }
+	while ((*p >= 'a' && *p <= 'z') || *p == '_')
+		++p;
+	if (p > *pos) {
+		out_value.assign(*pos, p);
+		*pos = p; return true;
+	}
 	return false;
 }
 
@@ -318,7 +326,8 @@ bool StateBrush2_Context::BrushConfig::read_float(const char **pos, float &out_v
 	const char *num_start = p;
 	while(*p >= '0' && *p <= '9')
 		out_value = 10.f*out_value + (float)(*(p++) - '0');
-	if (p <= num_start) return false;
+	if (p <= num_start)
+		return false;
 
 	if (*p == '.')
 	{
@@ -328,7 +337,8 @@ bool StateBrush2_Context::BrushConfig::read_float(const char **pos, float &out_v
 			out_value += (amplifier *= 0.1f)*(float)(*(p++) - '0');
 	}
 
-	if (negative) out_value = -out_value;
+	if (negative)
+		out_value = -out_value;
 	*pos = p;
 	return true;
 }
@@ -346,7 +356,10 @@ bool StateBrush2_Context::BrushConfig::read_map_entry(const char **pos, MapEntry
 				&& read_float(&p, out_value.y)
 				&& read_space(&p)
 				&& read_key(&p, ")");
-	if (success) { *pos = p; return true; }
+	if (success) {
+		*pos = p;
+		return true;
+	}
 	out_value.x = 0.f;
 	out_value.y = 0.f;
 	return false;
@@ -368,8 +381,10 @@ bool StateBrush2_Context::BrushConfig::read_input_entry(const char **pos, InputE
 			{
 				MapEntry entry;
 				const char *pp = p;
-				while(read_space(&pp) && (out_value.mapping.empty() || (read_key(&pp, ",") && read_space(&pp))) && read_map_entry(&pp, entry))
-					{ out_value.mapping.push_back(entry); p = pp; }
+				while(read_space(&pp) && (out_value.mapping.empty() || (read_key(&pp, ",") && read_space(&pp))) && read_map_entry(&pp, entry)) {
+					out_value.mapping.push_back(entry);
+					p = pp;
+				}
 				if (out_value.mapping.size() > 1)
 				{
 					out_value.input = i;
@@ -392,7 +407,7 @@ StateBrush2_Context::BrushConfig::read_row(const char **pos)
 	String word;
 	if (read_space(&p) && read_word(&p, word))
 	{
-		for(int i = 0; i < BRUSH_SETTINGS_COUNT; ++i)
+		for (int i = 0; i < BRUSH_SETTINGS_COUNT; ++i)
 		{
 			if (word == setting_names[i])
 			{
@@ -400,8 +415,10 @@ StateBrush2_Context::BrushConfig::read_row(const char **pos)
 				{
 					InputEntry entry;
 					const char *pp = p;
-					while(read_space(&pp) && read_key(&pp, "|") && read_space(&pp) && read_input_entry(&pp, entry))
-						{ settings[i].inputs.push_back(entry); p = pp; }
+					while(read_space(&pp) && read_key(&pp, "|") && read_space(&pp) && read_input_entry(&pp, entry)) {
+						settings[i].inputs.push_back(entry);
+						p = pp;
+					}
 					*pos = p;
 				}
 				break;
@@ -421,7 +438,8 @@ StateBrush2_Context::BrushConfig::load(const String &filename)
 	{
 		Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(filename);
 		goffset s = file->query_info()->get_size();
-		if (s < 0) return;
+		if (s < 0)
+			return;
 		size_t size = s > INT_MAX-1 ? INT_MAX-1 : (size_t)s;
 		buffer = new char[size+1];
 		memset(buffer, 0, size+1);
@@ -432,8 +450,12 @@ StateBrush2_Context::BrushConfig::load(const String &filename)
 	}
 
 	const char *pos = buffer;
-	if (pos) while(read_row(&pos)) { }
-	if (buffer) delete[] buffer;
+	if (pos) {
+		while(read_row(&pos)) {
+		}
+	}
+	if (buffer)
+		delete[] buffer;
 	this->filename = filename;
 }
 
@@ -441,15 +463,15 @@ void
 StateBrush2_Context::BrushConfig::apply(brushlib::Brush &brush)
 {
 	// Apply all loaded settings and input mappings to the brush instance
-	for(int i = 0; i < BRUSH_SETTINGS_COUNT; ++i)
+	for (int i = 0; i < BRUSH_SETTINGS_COUNT; ++i)
 	{
 		brush.set_base_value(i, settings[i].base);
-		for(int j = 0; j < INPUT_COUNT; ++j)
+		for (int j = 0; j < INPUT_COUNT; ++j)
 			brush.set_mapping_n(i, j, 0);
-		for(std::vector<InputEntry>::const_iterator j = settings[i].inputs.begin(); j != settings[i].inputs.end(); ++j)
+		for (std::vector<InputEntry>::const_iterator j = settings[i].inputs.begin(); j != settings[i].inputs.end(); ++j)
 		{
 			brush.set_mapping_n(i, j->input, (int)j->mapping.size());
-			for(std::vector<MapEntry>::const_iterator k = j->mapping.begin(); k != j->mapping.end(); ++k)
+			for (std::vector<MapEntry>::const_iterator k = j->mapping.begin(); k != j->mapping.end(); ++k)
 				brush.set_mapping_point(i, j->input, (int)(k - j->mapping.begin()), k->x, k->y);
 		}
 	}
@@ -465,9 +487,8 @@ StateBrush2_Context::load_settings()
 		{
 			String value;
 			App::brushes_path.clear();
-			//int count = atoi(value.c_str());
-			for(int i = 0; i < brush_path_count; ++i)
-				if(settings.get_raw_value(strprintf("brush.path_%d", i),value))
+			for (int i = 0; i < brush_path_count; ++i)
+				if (settings.get_raw_value(strprintf("brush.path_%d", i),value))
 					App::brushes_path.insert(value);
 		}
 		else
@@ -545,7 +566,8 @@ StateBrush2_Context::~StateBrush2_Context()
 bool
 StateBrush2_Context::scan_directory(const String &path, int scan_sub_levels, std::set<String> &out_files)
 {
-	if (scan_sub_levels < 0) return false;
+	if (scan_sub_levels < 0)
+		return false;
 	Glib::RefPtr<Gio::File> directory = Gio::File::create_for_path(path);
 	Glib::RefPtr<Gio::FileEnumerator> e;
 
@@ -553,11 +575,15 @@ StateBrush2_Context::scan_directory(const String &path, int scan_sub_levels, std
 	{
 		e = directory->enumerate_children();
 	}
-	catch(Gio::Error&) { return false; }
-	catch(Glib::FileError&) { return false; }
+	catch(Gio::Error&) {
+		return false;
+	}
+	catch(Glib::FileError&) {
+		return false;
+	}
 
 	Glib::RefPtr<Gio::FileInfo> info;
-	while((bool)(info = e->next_file()))
+	while ((bool)(info = e->next_file()))
 	{
 		String filepath = FileSystem::fix_slashes(directory->get_child(info->get_name())->get_path());
 		if (!scan_directory(filepath, scan_sub_levels-1, out_files))
@@ -631,7 +657,7 @@ StateBrush2_Context::create_brushes_tab(Gtk::Notebook *notebook)
 	// run through brush definition and assign a button
 	Gtk::ToggleToolButton* first_button = nullptr;
 	String first_button_filename;
-	for(std::set<String>::const_iterator i = files.begin(); i != files.end(); ++i)
+	for (std::set<String>::const_iterator i = files.begin(); i != files.end(); ++i)
 	{
 		if (!brush_buttons.count(*i) && filesystem::Path::filename_extension(*i) == ".myb")
 		{
@@ -859,12 +885,12 @@ void StateBrush2_Context::update_cursor()
 		rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer_->rendering_surface);
 		if (lock && lock->get_surface().is_valid()) {
 			RendDesc& desc = get_canvas()->rend_desc();
-			synfig::Rect layer_bounds(
+			Rect layer_bounds(
 				layer_->get_param("tl").get(Point()),
 				layer_->get_param("br").get(Point()));
 			TransformStack stack;
 			build_transform_stack(get_canvas(), layer_, get_canvas_view(), stack);
-			synfig::Rect transformed_bounds = stack.perform(layer_bounds);
+			Rect transformed_bounds = stack.perform(layer_bounds);
 
 			int layer_pixel_width = lock->get_surface().get_w();
 			float transformed_width = transformed_bounds.maxx - transformed_bounds.minx;
@@ -1262,32 +1288,39 @@ StateBrush2_Context::build_transform_stack(
 	TransformStack& transform_stack )
 {
 	int count = 0;
-	for(Canvas::iterator i = canvas->begin(); i != canvas->end() ;++i)
-	{
-	 if(*i == layer) return true;
+	for (Canvas::iterator i = canvas->begin(); i != canvas->end(); ++i) {
 
-	 if((*i)->active())
-	 {
-		  Transform::Handle trans((*i)->get_transform());
-		  if(trans) { transform_stack.push(trans); count++; }
-	 }
+		if (*i == layer)
+			return true;
 
-	 // If this is a paste canvas layer, then we need to
-	 // descend into it
-	 if(Layer_PasteCanvas::Handle layer_pastecanvas = Layer_PasteCanvas::Handle::cast_dynamic(*i))
-	 {
-		  transform_stack.push_back(
-			 new Transform_Matrix(
-				   layer_pastecanvas->get_guid(),
-				layer_pastecanvas->get_summary_transformation().get_matrix()
-			 )
-		  );
-		  if (build_transform_stack(layer_pastecanvas->get_sub_canvas(), layer, canvas_view, transform_stack))
-			 return true;
-		  transform_stack.pop();
-	 }
+		if ((*i)->active()) {
+			Transform::Handle trans((*i)->get_transform());
+			if (trans) {
+				transform_stack.push(trans);
+				count++;
+			}
+		}
+
+		// If this is a paste canvas layer, then we need to
+		// descend into it
+		if (Layer_PasteCanvas::Handle layer_pastecanvas = Layer_PasteCanvas::Handle::cast_dynamic(*i)) {
+			transform_stack.push_back(
+				new Transform_Matrix(
+					layer_pastecanvas->get_guid(),
+					layer_pastecanvas->get_summary_transformation().get_matrix()
+				)
+			);
+
+			if (build_transform_stack(layer_pastecanvas->get_sub_canvas(), layer, canvas_view, transform_stack)) {
+				return true;
+			}
+			transform_stack.pop();
+		}
 	}
-	while(count-- > 0) transform_stack.pop();
+
+	while (count-- > 0) {
+		transform_stack.pop();
+	}
 	return false;
 }
 
