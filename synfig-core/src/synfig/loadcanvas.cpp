@@ -48,6 +48,8 @@
 
 #include <libxml++/libxml++.h>
 #include <sigc++/bind.h>
+#include <future>
+#include <glibmm/miscutils.h>
 
 #include "loadcanvas.h"
 
@@ -100,6 +102,8 @@ inline bool is_true(const std::string& s) { return s=="1" || s=="true" || s=="TR
 inline bool is_false(const std::string& s) { return s=="0" || s=="false" || s=="FALSE" || s=="False"; }
 
 std::set<FileSystem::Identifier> CanvasParser::loading_;
+std::vector<std::pair<Layer::Handle, ValueBase>> deferred_layers_;
+
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -3005,6 +3009,10 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 					processed = false;
 			}
 
+			if (param_name == "filename" && element->get_attribute("type")->get_value() == "import") {
+				deferred_layers_.emplace_back(layer, data);
+				processed = true; // skip `filename` param processing
+			}
 			if (!processed)
 			{
 				if (value_node) {
@@ -3135,6 +3143,35 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 
 	layer->reset_version();
 	return layer;
+}
+
+void CanvasParser::process_deferred_layers()
+{
+	std::vector<std::future<void>> futures;
+
+	// Launch all layer parsing tasks concurrently
+	const std::string image_threads = Glib::getenv("SYNFIG_IMAGE_THREADS");
+	const uint32_t max_image_threads = image_threads.empty() ? 1 : stratoi(image_threads);
+	const auto policy = image_threads.empty() ? std::launch::deferred : std::launch::async;
+
+	for (const auto& layer : deferred_layers_) {
+		futures.emplace_back(std::async(policy, [layer]() {
+			layer.first->set_param("filename", layer.second);
+		}));
+		// Limit to max image threads
+		if (futures.size() >= max_image_threads) {
+			for (auto& future : futures) {
+				future.get();
+			}
+			futures.clear();
+		}
+	}
+
+	// Collect results in original order
+	for (auto& future : futures) {
+		future.get();
+	}
+	deferred_layers_.clear();
 }
 
 Canvas::Handle
@@ -3464,6 +3501,7 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 //		if((child->get_name()=="text"||child->get_name()=="comment") && child->has_child_text())
 //			continue;
 	}
+	process_deferred_layers();
 
 	if(canvas->value_node_list().placeholder_count())
 	{

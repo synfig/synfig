@@ -174,6 +174,9 @@ private:
 
 	//! Layer Parsing Function
 	etl::handle<Layer> parse_layer(xmlpp::Element *node,Canvas::Handle canvas);
+
+	void process_deferred_layers();
+
 	//! Generic Value Base Parsing Function
 	ValueBase parse_value(xmlpp::Element *node,Canvas::Handle canvas);
 	//! Generic Value Node Parsing Function
