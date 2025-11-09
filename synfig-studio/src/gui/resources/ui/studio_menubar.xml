@@ -317,7 +317,7 @@
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Use Low-Res</attribute>
-							<attribute name="action">doc.toggle-low-res</attribute>
+							<attribute name="action">doc.toggle-low-resolution</attribute>
 	          				<attribute name="accel">&lt;Control&gt;grave</attribute>
 						</item>
 						<item>

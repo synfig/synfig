@@ -546,13 +546,6 @@ CanvasView::CanvasView(etl::loose_handle<studio::Instance> instance,etl::handle<
 	toggling_ducks_=false;
 	toggling_animate_mode_=false;
 	changing_resolution_=false;
-	toggling_show_grid=false;
-	toggling_snap_grid=false;
-	toggling_show_guides=false;
-	toggling_snap_guides=false;
-	toggling_onion_skin=false;
-	toggling_onion_skin_keyframes=false;
-	toggling_background_rendering=false;
 
 	set_use_scrolled(false);
 
@@ -922,8 +915,6 @@ CanvasView::create_time_bar()
 
 	//Setup the KeyFrameDial widget
 	keyframedial = Gtk::manage(new KeyFrameDial());
-	keyframedial->signal_toggle_keyframe_past().connect(sigc::mem_fun(*this, &CanvasView::toggle_past_keyframe_button));
-	keyframedial->signal_toggle_keyframe_future().connect(sigc::mem_fun(*this, &CanvasView::toggle_future_keyframe_button));
 	keyframedial->set_margin_start(4);
 	keyframedial->set_margin_end(4);
 	keyframedial->show();
@@ -1120,10 +1111,9 @@ CanvasView::create_top_toolbar()
 
 	{ // Background rendering button
 		background_rendering_button = Gtk::manage(new Gtk::ToggleToolButton());
+		gtk_actionable_set_action_name(GTK_ACTIONABLE(background_rendering_button->gobj()), "doc.toggle-background-rendering");
 		background_rendering_button->set_active(work_area->get_background_rendering());
 		background_rendering_button->set_icon_name("background_rendering_icon");
-		background_rendering_button->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_background_rendering));
 		background_rendering_button->set_label(_("Background rendering"));
 		background_rendering_button->set_tooltip_text(_("Render future and past frames in background when enabled"));
 		background_rendering_button->show();
@@ -1136,12 +1126,6 @@ CanvasView::create_top_toolbar()
 
 	// ResolutionDial widget
 	resolutiondial_->update_lowres(work_area->get_low_resolution_flag());
-	resolutiondial_->signal_increase_resolution().connect(
-		sigc::mem_fun(*this, &CanvasView::decrease_low_res_pixel_size));
-	resolutiondial_->signal_decrease_resolution().connect(
-		sigc::mem_fun(*this, &CanvasView::increase_low_res_pixel_size));
-	resolutiondial_->signal_use_low_resolution().connect(
-		sigc::mem_fun(*this, &CanvasView::toggle_low_res_pixel_flag));
 	resolutiondial_->insert_to_toolbar(*top_toolbar);
 
 	// Separator
@@ -1149,10 +1133,9 @@ CanvasView::create_top_toolbar()
 
 	{ // Onion skin toggle button
 		onion_skin = Gtk::manage(new Gtk::ToggleToolButton());
+		gtk_actionable_set_action_name(GTK_ACTIONABLE(onion_skin->gobj()), "doc.toggle-onion-skin");
 		onion_skin->set_active(work_area->get_onion_skin());
 		onion_skin->set_icon_name("onion_skin_icon");
-		onion_skin->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_onion_skin));
 		onion_skin->set_label(_("Onion Skin"));
 		onion_skin->set_tooltip_text(_("Show Onion Skin when enabled"));
 		onion_skin->show();
@@ -1194,10 +1177,9 @@ CanvasView::create_top_toolbar()
 
 	{ // Onion skin on Keyframes/Frames toggle button
 		onion_skin_keyframes = Gtk::manage(new Gtk::ToggleToolButton());
+		gtk_actionable_set_action_name(GTK_ACTIONABLE(onion_skin_keyframes->gobj()), "doc.toggle-onion-skin-keyframes");
 		onion_skin_keyframes->set_active(work_area->get_onion_skin_keyframes());
 		onion_skin_keyframes->set_icon_name("keyframe_icon");
-		onion_skin_keyframes->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_onion_skin_keyframes));
 		onion_skin_keyframes->set_label(_("Keyframes"));
 		onion_skin_keyframes->set_tooltip_text(_("Show Onion Skin on Keyframes when enabled, on Frames when disabled"));
 		onion_skin_keyframes->show();
@@ -1238,10 +1220,9 @@ CanvasView::create_right_toolbar()
 
 	{ // Show grid toggle button
 		show_grid = Gtk::manage(new Gtk::ToggleToolButton());
+		gtk_actionable_set_action_name(GTK_ACTIONABLE(show_grid->gobj()), "doc.toggle-grid-show");
 		show_grid->set_active(work_area->grid_status());
 		show_grid->set_icon_name("show_grid_icon");
-		show_grid->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_show_grid));
 		show_grid->set_label(_("Show Grid"));
 		show_grid->set_tooltip_text(_("Show Grid when enabled"));
 		show_grid->show();
@@ -1251,10 +1232,9 @@ CanvasView::create_right_toolbar()
 
 	{ // Snap to grid toggle button
 		snap_grid = Gtk::manage(new Gtk::ToggleToolButton());
+		gtk_actionable_set_action_name(GTK_ACTIONABLE(snap_grid->gobj()), "doc.toggle-grid-snap");
 		snap_grid->set_active(work_area->grid_status());
 		snap_grid->set_icon_name("snap_grid_icon");
-		snap_grid->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_snap_grid));
 		snap_grid->set_label(_("Snap to Grid"));
 		snap_grid->set_tooltip_text(_("Snap to Grid when enabled"));
 		snap_grid->show();
@@ -1264,10 +1244,9 @@ CanvasView::create_right_toolbar()
 
 	{ // Show guide toggle button
 		show_guides = Gtk::manage(new Gtk::ToggleToolButton());
+		gtk_actionable_set_action_name(GTK_ACTIONABLE(show_guides->gobj()), "doc.toggle-guide-show");
 		show_guides->set_active(work_area->get_show_guides());
 		show_guides->set_icon_name("show_guideline_icon");
-		show_guides->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_show_guides));
 		show_guides->set_label(_("Show Guides"));
 		show_guides->set_tooltip_text(_("Show Guides when enabled"));
 		show_guides->show();
@@ -1277,10 +1256,9 @@ CanvasView::create_right_toolbar()
 
 	{ // Snap to guides toggle button
 		snap_guides = Gtk::manage(new Gtk::ToggleToolButton());
+		gtk_actionable_set_action_name(GTK_ACTIONABLE(snap_guides->gobj()), "doc.toggle-guide-snap");
 		snap_guides->set_active(work_area->get_guide_snap());
 		snap_guides->set_icon_name("snap_guideline_icon");
-		snap_guides->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_snap_guides));
 		snap_guides->set_label(_("Snap to Guides"));
 		snap_guides->set_tooltip_text(_("Snap to Guides when enabled"));
 		snap_guides->show();
@@ -1311,6 +1289,51 @@ CanvasView::create_right_toolbar()
 	right_toolbar->show();
 
 	return right_toolbar;
+}
+
+void
+CanvasView::set_grid_snap_toggle(bool flag) {
+	grid_snap_toggle->set_state(Glib::Variant<bool>::create(flag));
+}
+
+void
+CanvasView::set_grid_show(bool flag) {
+	grid_show_toggle->set_state(Glib::Variant<bool>::create(flag));
+}
+
+void
+CanvasView::set_guides_snap_toggle(bool flag) {
+	guides_snap_toggle->set_state(Glib::Variant<bool>::create(flag));
+}
+
+void
+CanvasView::set_guides_show_toggle(bool flag) {
+	guides_show_toggle->set_state(Glib::Variant<bool>::create(flag));
+}
+
+void
+CanvasView::set_onion_skin_toggle(bool flag) {
+	onion_skin_toggle->set_state(Glib::Variant<bool>::create(flag));
+}
+
+void
+CanvasView::set_onion_skin_keyframes_toggle(bool flag) {
+	onion_skin_keyframes_toggle->set_state(Glib::Variant<bool>::create(flag));
+}
+
+void
+CanvasView::set_background_rendering_toggle(bool flag) {
+	background_rendering_toggle->set_state(Glib::Variant<bool>::create(flag));
+}
+
+void
+CanvasView::set_past_keyframe_lock_toggle(bool flag) {
+	past_keyframe_lock_toggle->set_state(Glib::Variant<bool>::create(flag));
+}
+
+void
+CanvasView::set_future_keyframe_lock_toggle(bool flag) {
+	future_keyframe_lock_toggle->set_state(Glib::Variant<bool>::create(flag));
 }
 
 void CanvasView::grab_focus()
@@ -1391,8 +1414,8 @@ CanvasView::init_menus()
 		{"properties",          "document-properties", N_("Properties..."), "", sigc::mem_fun0(canvas_properties, &CanvasProperties::present) },
 		{"resize-canvas",       "",                    N_("Resize..."), "", sigc::mem_fun0(canvas_resize, &CanvasResize::present)},
 
-		{"decrease-low-res-pixel-size", "", N_("Decrease Low-Res Pixel Size"), "", sigc::mem_fun(this, &CanvasView::decrease_low_res_pixel_size) },
-		{"increase-low-res-pixel-size", "", N_("Increase Low-Res Pixel Size"), "",  sigc::mem_fun(this, &CanvasView::increase_low_res_pixel_size) },
+		{"decrease-lowres-pixel-size", "", N_("Decrease Low-Res Pixel Size"), "", sigc::mem_fun(this, &CanvasView::decrease_low_res_pixel_size) },
+		{"increase-lowres-pixel-size", "", N_("Increase Low-Res Pixel Size"), "",  sigc::mem_fun(this, &CanvasView::increase_low_res_pixel_size) },
 
 		{"play",            "media-playback-start", N_("_Play"),          N_("Play"), sigc::mem_fun(*this, &CanvasView::on_play_pause_pressed) },
 		{"dialog-flipbook", "",                     N_("Preview Window"), "", sigc::mem_fun0(preview_dialog, &Dialog_Preview::present) },
@@ -1483,54 +1506,39 @@ CanvasView::init_menus()
 	}, *this), initial_low_res_pixel_size);
 	work_area->set_low_res_pixel_size(initial_low_res_pixel_size);
 
+	action_group_->add_action("decrease-lowres-pixel-size", sigc::mem_fun(*this, &CanvasView::decrease_low_res_pixel_size));
+	action_group_->add_action("increase-lowres-pixel-size", sigc::mem_fun(*this, &CanvasView::increase_low_res_pixel_size));
+
 	struct BoolActionMetadata {
-		std::string name;
-		std::string icon;
-		std::string label;
-		std::string tooltip;
+		const std::string name;
+		const std::string icon;
+		const std::string label;
+		const std::string tooltip;
 		bool (WorkArea::*slot_to_get)(void) const;
 		void (CanvasView::*slot_to_toogle)(void);
+		Glib::RefPtr<Gio::SimpleAction>& action;
 	};
 
-	static const std::vector<BoolActionMetadata> bool_action_list = {
-		{"toggle-rulers-show",          "",                          N_("Show Rulers"),             "", &WorkArea::get_show_rulers, &CanvasView::toggle_show_ruler },
-		{"toggle-grid-show",            "show_grid_icon",            N_("Show Grid"),               "", &WorkArea::grid_status, &CanvasView::toggle_show_grid },
-		{"toggle-grid-snap",            "snap_grid_icon",            N_("Snap to Grid"),            "", &WorkArea::get_grid_snap, &CanvasView::toggle_snap_grid },
-		{"toggle-guide-show",           "show_guideline_icon",       N_("Show Guides"),             "", &WorkArea::get_show_guides, &CanvasView::toggle_show_guides },
-		{"toggle-guide-snap",           "snap_guideline_icon",       N_("Snap to Guides"),          "", &WorkArea::get_guide_snap, &CanvasView::toggle_snap_guides },
-		{"toggle-low-res",              "",                          N_("Use Low-Res"),             "", &WorkArea::get_low_resolution_flag, &CanvasView::toggle_low_res_pixel_flag },
-		{"toggle-background-rendering", "background_rendering_icon", N_("Enable rendering in background"), "", &WorkArea::get_background_rendering, &CanvasView::toggle_background_rendering },
-		{"toggle-onion-skin",           "onion_skin_icon",           N_("Show Onion Skin"),         "", &WorkArea::get_onion_skin, &CanvasView::toggle_onion_skin },
-		{"toggle-onion-skin-keyframes", "keyframe_icon",             N_("Onion Skin on Keyframes"), "", &WorkArea::get_onion_skin_keyframes, &CanvasView::toggle_onion_skin_keyframes },
-		{"toggle-keyframe-lock-past",   "keyframe_lock_past_on_icon",   N_("Lock Past Keyframes"),    "", &WorkArea::get_keyframe_lock_past, &CanvasView::toggle_past_keyframe_button },
-		{"toggle-keyframe-lock-future", "keyframe_lock_future_on_icon", N_("Lock Future Keyframes"),  "", &WorkArea::get_keyframe_lock_future, &CanvasView::toggle_future_keyframe_button },
+	static std::vector<BoolActionMetadata> bool_action_list = {
+		{"toggle-rulers-show",          "",                          N_("Show Rulers"),             "", &WorkArea::get_show_rulers, &CanvasView::on_show_ruler_toggled,  rulers_show_toggle },
+		{"toggle-grid-show",            "show_grid_icon",            N_("Show Grid"),               "", &WorkArea::grid_status,     &CanvasView::on_show_grid_toggled,   grid_show_toggle },
+		{"toggle-grid-snap",            "snap_grid_icon",            N_("Snap to Grid"),            "", &WorkArea::get_grid_snap,   &CanvasView::on_snap_grid_toggled,   grid_snap_toggle },
+		{"toggle-guide-show",           "show_guideline_icon",       N_("Show Guides"),             "", &WorkArea::get_show_guides, &CanvasView::on_show_guides_toggled, guides_show_toggle },
+		{"toggle-guide-snap",           "snap_guideline_icon",       N_("Snap to Guides"),          "", &WorkArea::get_guide_snap,  &CanvasView::on_snap_guides_toggled, guides_snap_toggle },
+		{"toggle-low-resolution",       "",                          N_("Use Low-Res"),             "", &WorkArea::get_low_resolution_flag, &CanvasView::on_low_resolution_toggled, low_resolution_toggle },
+		{"toggle-background-rendering", "background_rendering_icon", N_("Enable rendering in background"), "", &WorkArea::get_background_rendering, &CanvasView::on_background_rendering_toggled, background_rendering_toggle },
+		{"toggle-onion-skin",           "onion_skin_icon",           N_("Show Onion Skin"),         "", &WorkArea::get_onion_skin,  &CanvasView::on_onion_skin_toggled, onion_skin_toggle },
+		{"toggle-onion-skin-keyframes", "keyframe_icon",             N_("Onion Skin on Keyframes"), "", &WorkArea::get_onion_skin_keyframes, &CanvasView::on_onion_skin_keyframes_toggled, onion_skin_keyframes_toggle },
+		{"toggle-keyframe-lock-past",   "keyframe_lock_past_on_icon",   N_("Lock Past Keyframes"),    "", &WorkArea::get_keyframe_lock_past, &CanvasView::on_past_keyframe_lock_toggled, past_keyframe_lock_toggle },
+		{"toggle-keyframe-lock-future", "keyframe_lock_future_on_icon", N_("Lock Future Keyframes"),  "", &WorkArea::get_keyframe_lock_future, &CanvasView::on_future_keyframe_lock_toggled, future_keyframe_lock_toggle },
 	};
 
-	for (const auto& item : bool_action_list) {
+	for (auto& item : bool_action_list) {
 		bool current_value = (work_area->*item.slot_to_get)();
 		auto action_name = item.name;
-		action_group_->add_action_bool(action_name, sigc::mem_fun(*this, item.slot_to_toogle), current_value);
+		item.action = action_group_->add_action_bool(action_name, sigc::mem_fun(*this, item.slot_to_toogle), current_value);
 
-		auto action = Gtk::ToggleAction::create(item.name, _(item.label.c_str()));
-		action->set_active(current_value);
-		if (!item.icon.empty())
-			action->set_icon_name(item.icon);
-		if (!item.tooltip.empty())
-			action->set_tooltip(_(item.tooltip.c_str()));
-		action_group->add(action, sigc::mem_fun(*this, item.slot_to_toogle));
 	}
-	work_area->set_show_rulers(work_area->get_show_rulers());
-
-	rulers_show_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-rulers-show"));
-	grid_show_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-grid-show"));
-	grid_snap_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-grid-snap"));
-	guides_show_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-guide-show"));
-	guides_snap_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-guide-snap"));
-	background_rendering_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-background-rendering"));
-	onion_skin_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-onion-skin"));
-	onion_skin_keyframes_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-onion-skin-keyframes"));
-	past_keyframes_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-keyframe-lock-past"));
-	future_keyframes_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-keyframe-lock-future"));
 
 	{
 		Glib::RefPtr<Gtk::ToggleAction> action;
@@ -2160,9 +2168,9 @@ CanvasView::toggle_timetrackbutton()
 }
 
 void
-CanvasView::toggle_past_keyframe_button()
+CanvasView::on_past_keyframe_lock_toggled()
 {
-	if(toggling_animate_mode_)
+	if (toggling_animate_mode_)
 		return;
 	CanvasInterface::Mode mode(get_mode());
 	bool enable = !synfigapp::has_flag(mode, MODE_ANIMATE_PAST);
@@ -2171,9 +2179,9 @@ CanvasView::toggle_past_keyframe_button()
 
 
 void
-CanvasView::toggle_future_keyframe_button()
+CanvasView::on_future_keyframe_lock_toggled()
 {
-	if(toggling_animate_mode_)
+	if (toggling_animate_mode_)
 		return;
 	CanvasInterface::Mode mode(get_mode());
 	bool enable = !synfigapp::has_flag(mode, MODE_ANIMATE_FUTURE);
@@ -2266,19 +2274,16 @@ CanvasView::decrease_low_res_pixel_size()
 			if (iter == sizes.begin()) {
 				// we already have the smallest low-res pixels possible - turn off low-res instead
 				work_area->set_low_resolution_flag(false);
+				low_resolution_toggle->change_state(false);
 			} else {
 				--iter;
-				Glib::RefPtr<Gtk::Action> action = action_group->get_action(synfig::strprintf("lowres-pixel-%d", *iter));
-				assert(action);
-				action->activate(); // to make sure the radiobutton in the menu is updated too
 				work_area->set_low_resolution_flag(true);
+				low_resolution_toggle->change_state(true);
 				action_group_->lookup_action("set-lowres-pixel")->activate(*iter);
 			}
 			break;
 		}
 	// Update the "toggle-low-res" action
-	Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
-	action->set_active(work_area->get_low_resolution_flag());
 	// Update toggle low res button
 	resolutiondial_->update_lowres(work_area->get_low_resolution_flag());
 	changing_resolution_=false;
@@ -2296,9 +2301,8 @@ CanvasView::increase_low_res_pixel_size()
 	{
 		// We were using "hi res" so change it to low res.
 		work_area->set_low_resolution_flag(true);
+		low_resolution_toggle->change_state(true);
 		// Update the "toggle-low-res" action
-		Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
-		action->set_active(true);
 		// Update the toggle low res button
 		resolutiondial_->update_lowres(true);
 		changing_resolution_=false;
@@ -2308,43 +2312,34 @@ CanvasView::increase_low_res_pixel_size()
 	for (std::list<int>::iterator iter = sizes.begin(); iter != sizes.end(); ++iter)
 		if (*iter == pixel_size) {
 			if (++iter != sizes.end()) {
-				Glib::RefPtr<Gtk::Action> action = action_group->get_action(synfig::strprintf("lowres-pixel-%d", *iter));
-				assert(action);
-				action->activate(); // to make sure the radiobutton in the menu is updated too
 				work_area->set_low_resolution_flag(true);
+				low_resolution_toggle->change_state(true);
 				action_group_->lookup_action("set-lowres-pixel")->activate(*iter);
 			}
 			break;
 		}
 	// Update the "toggle-low-res" action
-	Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
-	action->set_active(work_area->get_low_resolution_flag());
 	// Update toggle low res button
 	resolutiondial_->update_lowres(work_area->get_low_resolution_flag());
 	changing_resolution_=false;
 }
 
 void
-CanvasView::toggle_low_res_pixel_flag()
+CanvasView::on_low_resolution_toggled()
 {
 	if(changing_resolution_)
 		return;
 	changing_resolution_=true;
 	work_area->toggle_low_resolution_flag();
 	// Update the toggle low res button
-	resolutiondial_->update_lowres(work_area->get_low_resolution_flag());
 	// Update the "toggle-low-res" action
-	Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
-	action->set_active(work_area->get_low_resolution_flag());
-	action_group_->lookup_action("toggle-low-res")->change_state(work_area->get_low_resolution_flag());
+	action_group_->lookup_action("toggle-low-resolution")->change_state(work_area->get_low_resolution_flag());
 	changing_resolution_=false;
 }
 
 void
 CanvasView::set_onion_skins()
 {
-	if(toggling_onion_skin)
-		return;
 	int onion_skins[2];
 	onion_skins[0]=past_onion_spin->get_value();
 	onion_skins[1]=future_onion_spin->get_value();
@@ -2352,7 +2347,7 @@ CanvasView::set_onion_skins()
 }
 
 void
-CanvasView::toggle_show_ruler()
+CanvasView::on_show_ruler_toggled()
 {
 	bool visible = !(work_area->get_show_rulers());
 	work_area->set_show_rulers(visible);
@@ -2360,102 +2355,53 @@ CanvasView::toggle_show_ruler()
 }
 
 void
-CanvasView::toggle_show_grid()
+CanvasView::on_show_grid_toggled()
 {
-	if(toggling_show_grid)
-		return;
-	toggling_show_grid=true;
 	work_area->toggle_grid();
 	// Update the toggle grid show action
-	set_grid_show_toggle(work_area->grid_status());
-	// Update the toggle grid show check button
-	show_grid->set_active(work_area->grid_status());
 	action_group_->lookup_action("toggle-grid-show")->change_state(work_area->grid_status());
-	toggling_show_grid=false;
 }
 
 void
-CanvasView::toggle_snap_grid()
+CanvasView::on_snap_grid_toggled()
 {
-	if(toggling_snap_grid)
-		return;
-	toggling_snap_grid=true;
 	work_area->toggle_grid_snap();
-	// Update the toggle grid snap action
-	set_grid_snap_toggle(work_area->get_grid_snap());
-	// Update the toggle grid snap check button
-	snap_grid->set_active(work_area->get_grid_snap());
 	action_group_->lookup_action("toggle-grid-snap")->change_state(work_area->get_grid_snap());
-	toggling_snap_grid=false;
 }
 
 void
-CanvasView::toggle_show_guides()
+CanvasView::on_show_guides_toggled()
 {
-	if(toggling_show_guides)
-		return;
-	toggling_show_guides=true;
 	work_area->toggle_show_guides();
-	set_guides_show_toggle(work_area->get_show_guides());
-	show_guides->set_active(work_area->get_show_guides());
 	action_group_->lookup_action("toggle-guide-show")->change_state(work_area->get_show_guides());
-	toggling_show_guides=false;
 }
 
 void
-CanvasView::toggle_snap_guides()
+CanvasView::on_snap_guides_toggled()
 {
-	if(toggling_snap_guides)
-		return;
-	toggling_snap_guides=true;
 	work_area->toggle_guide_snap();
-	set_guides_snap_toggle(work_area->get_guide_snap());
-	snap_guides->set_active(work_area->get_guide_snap());
 	action_group_->lookup_action("toggle-guide-snap")->change_state(work_area->get_guide_snap());
-	toggling_snap_guides=false;
 }
 
 void
-CanvasView::toggle_onion_skin()
+CanvasView::on_onion_skin_toggled()
 {
-	if(toggling_onion_skin)
-		return;
-	toggling_onion_skin=true;
 	work_area->set_onion_skin(!work_area->get_onion_skin());
-	// Update the toggle onion skin action
-	set_onion_skin_toggle(work_area->get_onion_skin());
-	// Update the toggle onion skin button
-	onion_skin->set_active(work_area->get_onion_skin());
 	action_group_->lookup_action("toggle-onion-skin")->change_state(work_area->get_onion_skin());
-	toggling_onion_skin=false;
 }
 
 void
-CanvasView::toggle_onion_skin_keyframes()
+CanvasView::on_onion_skin_keyframes_toggled()
 {
-	if(toggling_onion_skin_keyframes)
-		return;
-	toggling_onion_skin_keyframes=true;
 	work_area->set_onion_skin_keyframes(!work_area->get_onion_skin_keyframes());
-	set_onion_skin_keyframes_toggle(work_area->get_onion_skin_keyframes());
-	onion_skin_keyframes->set_active(work_area->get_onion_skin_keyframes());
 	action_group_->lookup_action("toggle-onion-skin-keyframes")->change_state(work_area->get_onion_skin_keyframes());
-	toggling_onion_skin_keyframes=false;
 }
 
 void
-CanvasView::toggle_background_rendering()
+CanvasView::on_background_rendering_toggled()
 {
-	if(toggling_background_rendering)
-		return;
-	toggling_background_rendering=true;
 	work_area->set_background_rendering(!work_area->get_background_rendering());
-	// Update the toggle background rendering action
-	set_background_rendering_toggle(work_area->get_background_rendering());
-	// Update the toggle background rendering button
-	background_rendering_button->set_active(work_area->get_background_rendering());
 	action_group_->lookup_action("toggle-background-rendering")->change_state(work_area->get_background_rendering());
-	toggling_background_rendering=false;
 }
 
 void
@@ -3163,60 +3109,23 @@ void
 CanvasView::on_meta_data_changed()
 {
 	// update the buttons and actions that are associated
-	toggling_show_grid=true;
-	toggling_snap_grid=true;
-	toggling_show_guides=true;
-	toggling_snap_guides=true;
-	toggling_onion_skin=true;
-	toggling_onion_skin_keyframes=true;
-	toggling_background_rendering=true;
+
 	try
 	{
-		// Update the toggle ducks actions
-		Glib::RefPtr<Gtk::ToggleAction> action;
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-background-rendering"));
-		action->set_active((bool)(work_area->get_background_rendering()));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-onion-skin"));
-		action->set_active((bool)(work_area->get_onion_skin()));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-onion-skin-keyframes"));
-		action->set_active((bool)(work_area->get_onion_skin_keyframes()));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-grid-show"));
-		action->set_active((bool)(work_area->grid_status()));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-grid-snap"));
-		action->set_active((bool)(work_area->get_grid_snap()));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-guide-show"));
-		action->set_active((bool)(work_area->get_show_guides()));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-guide-snap"));
-		action->set_active((bool)(work_area->get_guide_snap()));
-		// Update the toggle buttons
-		background_rendering_button->set_active(work_area->get_background_rendering());
-		onion_skin->set_active(work_area->get_onion_skin());
-		onion_skin_keyframes->set_active(work_area->get_onion_skin_keyframes());
-		snap_grid->set_active(work_area->get_grid_snap());
-		show_grid->set_active(work_area->grid_status());
-		snap_guides->set_active(work_area->get_guide_snap());
-		show_guides->set_active(work_area->get_show_guides());
+		background_rendering_toggle->set_state(Glib::Variant<bool>::create(work_area->get_background_rendering()));
+		onion_skin_toggle->set_state(Glib::Variant<bool>::create(work_area->get_onion_skin()));
+		onion_skin_keyframes_toggle->set_state(Glib::Variant<bool>::create(work_area->get_onion_skin_keyframes()));
+		grid_show_toggle->set_state(Glib::Variant<bool>::create(work_area->grid_status()));
+		grid_snap_toggle->set_state(Glib::Variant<bool>::create(work_area->get_grid_snap()));
+		guides_show_toggle->set_state(Glib::Variant<bool>::create(work_area->get_show_guides()));
+		guides_snap_toggle->set_state(Glib::Variant<bool>::create(work_area->get_guide_snap()));
 		// Update the onion skin spins
 		past_onion_spin->set_value(work_area->get_onion_skins()[0]);
 		future_onion_spin->set_value(work_area->get_onion_skins()[1]);
 	}
 	catch(...)
 	{
-		toggling_show_grid=false;
-		toggling_snap_grid=false;
-		toggling_show_guides=false;
-		toggling_snap_guides=false;
-		toggling_onion_skin=false;
-		toggling_onion_skin_keyframes=false;
-		toggling_background_rendering=false;
 	}
-	toggling_show_grid=false;
-	toggling_snap_grid=false;
-	toggling_show_guides=false;
-	toggling_snap_guides=false;
-	toggling_onion_skin=false;
-	toggling_onion_skin_keyframes=false;
-	toggling_background_rendering=false;
 }
 
 void

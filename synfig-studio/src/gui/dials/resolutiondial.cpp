@@ -51,16 +51,18 @@ using namespace studio;
 /* === P R O C E D U R E S ================================================= */
 
 static void
-init_button(Gtk::ToolButton& button, const std::string& icon_name, const std::string& label, const std::string& tooltip)
+init_button(Gtk::ToolButton& button, const std::string& icon_name, const std::string& label, const std::string& tooltip, const std::string& action)
 {
 	button.set_icon_name(icon_name);
 	button.set_label(label);
 	button.set_tooltip_text(tooltip);
 	button.show();
+
+	gtk_actionable_set_action_name(GTK_ACTIONABLE(button.gobj()), action.c_str());
 }
 
 static void
-init_toggle_button(Gtk::ToggleToolButton& button, const std::string& label, const std::string& tooltip)
+init_toggle_button(Gtk::ToggleToolButton& button, const std::string& label, const std::string& tooltip, const std::string& action)
 {
 	// For label left/right padding
 	button.set_name("low-resolution");
@@ -69,15 +71,17 @@ init_toggle_button(Gtk::ToggleToolButton& button, const std::string& label, cons
 	button.set_tooltip_text(tooltip);
 	button.set_is_important(true);
 	button.show();
+
+	gtk_actionable_set_action_name(GTK_ACTIONABLE(button.gobj()), action.c_str());
 }
 
 /* === M E T H O D S ======================================================= */
 
 ResolutionDial::ResolutionDial()
 {
-	init_button(increase_resolution, "incr_resolution_icon", _("Increase Resolution"), _("Increase Display Resolution"));
-	init_button(decrease_resolution, "decr_resolution_icon", _("Decrease Resolution"), _("Decrease Display Resolution"));
-	init_toggle_button(use_low_resolution, _("Low Res"), _("Use Low Resolution when enabled"));
+	init_button(increase_resolution, "incr_resolution_icon", _("Increase Resolution"), _("Increase Display Resolution"), "doc.decrease-lowres-pixel-size");
+	init_button(decrease_resolution, "decr_resolution_icon", _("Decrease Resolution"), _("Decrease Display Resolution"), "doc.increase-lowres-pixel-size");
+	init_toggle_button(use_low_resolution, _("Low Res"), _("Use Low Resolution when enabled"), "doc.toggle-low-resolution");
 }
 
 void

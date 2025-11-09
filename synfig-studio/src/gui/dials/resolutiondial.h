@@ -59,10 +59,6 @@ public:
 	void remove_from_toolbar(Gtk::Toolbar &toolbar);
 
 	void update_lowres(bool flag);
-	Glib::SignalProxy0<void> signal_increase_resolution()  { return increase_resolution.signal_clicked(); }
-	Glib::SignalProxy0<void> signal_decrease_resolution()  { return decrease_resolution.signal_clicked(); }
-	Glib::SignalProxy0<void> signal_use_low_resolution()   { return use_low_resolution. signal_toggled(); }
-
 }; // END of class ResolutionDial
 
 } // END of namespace studio
