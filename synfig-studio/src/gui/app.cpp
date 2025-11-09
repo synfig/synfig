@@ -978,8 +978,8 @@ DEFINE_ACTION("mask-bone-setup-ducks",          _("Show Bone Setup Handles"))
 DEFINE_ACTION("mask-bone-recursive-ducks",      _("Show Recursive Scale Bone Handles"))
 DEFINE_ACTION("mask-bone-ducks",                _("Next Bone Handles"))
 
-for (std::list<int>::iterator iter = CanvasView::get_pixel_sizes().begin(); iter != CanvasView::get_pixel_sizes().end(); ++iter)
-DEFINE_ACTION(strprintf("lowres-pixel-%d", *iter), strprintf(_("Set Low-Res pixel size to %d"), *iter))
+for (const auto& pixel_size : CanvasView::get_pixel_sizes())
+DEFINE_ACTION(strprintf("lowres-pixel-%d", pixel_size), strprintf(_("Set Low-Res pixel size to %d"), pixel_size))
 
 DEFINE_ACTION("toggle-rulers-show",  _("Toggle Rulers Show"))
 DEFINE_ACTION("toggle-grid-show",  _("Toggle Grid Show"))
@@ -1138,8 +1138,8 @@ DEFINE_ACTION("switch-to-rightmost-tab",  _("Switch to Rightmost Tab"))
 "			<separator name='pixel-size-separator'/>"
 ;
 
-	for (std::list<int>::iterator iter = CanvasView::get_pixel_sizes().begin(); iter != CanvasView::get_pixel_sizes().end(); ++iter)
-		ui_info_menu += strprintf("			<menuitem action='lowres-pixel-%d' />", *iter);
+	for (const auto& pixel_size : CanvasView::get_pixel_sizes())
+		ui_info_menu += strprintf("			<menuitem action='lowres-pixel-%d' />", pixel_size);
 
 	ui_info_menu +=
 "		</menu>"
