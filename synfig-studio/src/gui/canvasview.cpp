@@ -1271,18 +1271,6 @@ CanvasView::create_right_toolbar()
 	// ToggleDuckDial widget
 	Duck::Type m = work_area->get_type_mask();
 	toggleducksdial.update_toggles(m);
-	toggleducksdial.signal_ducks_position().connect(
-		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_POSITION));
-	toggleducksdial.signal_ducks_vertex().connect(
-		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_VERTEX));
-	toggleducksdial.signal_ducks_tangent().connect(
-		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_TANGENT));
-	toggleducksdial.signal_ducks_radius().connect(
-		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_RADIUS));
-	toggleducksdial.signal_ducks_width().connect(
-		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_WIDTH));
-	toggleducksdial.signal_ducks_angle().connect(
-		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_ANGLE));
 	toggleducksdial.insert_to_toolbar(*right_toolbar);
 
 	right_toolbar->show();
@@ -1540,11 +1528,7 @@ CanvasView::init_menus()
 	}
 
 	{
-		Glib::RefPtr<Gtk::ToggleAction> action;
 		// toggle none/last visible
-		action= Gtk::ToggleAction::create("mask-none-ducks", _("Toggle None/Last visible Handles"));
-		action->set_active(false);
-		action_group->add(action,  sigc::mem_fun(*this,&CanvasView::toggle_duck_mask_all));
 		action_group_->add_action_bool("mask-none-ducks", sigc::mem_fun(*this, &CanvasView::toggle_duck_mask_all));
 
 		struct DuckActionMetaData {
@@ -1569,17 +1553,10 @@ CanvasView::init_menus()
 			auto duck_slot = sigc::bind(
 						sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),
 						item.type);
-			action=Gtk::ToggleAction::create(item.action, _(item.label));
-			action->set_active(duck_active);
-			action_group->add(action, duck_slot);
 			action_group_->add_action_bool(item.action, duck_slot, duck_active);
 		}
-		action_mask_bone_setup_ducks = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("mask-angle-ducks"));
-		action_mask_bone_recursive_ducks = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("mask-bone-recursive-ducks"));
 
-		action_group->add(Gtk::Action::create("mask-bone-ducks", _("Next Bone Handles")),
-						  sigc::mem_fun(*this,&CanvasView::mask_bone_ducks));
-		action_group_->add_action("mask-bone-ducks", sigc::mem_fun(*this,&CanvasView::mask_bone_ducks));
+		action_group_->add_action("mask-bone-ducks", sigc::mem_fun(*this, &CanvasView::mask_bone_ducks));
 	}
 
 	insert_action_group("doc", action_group_);
@@ -3046,23 +3023,7 @@ CanvasView::toggle_duck_mask(Duckmatic::Type type)
 		action_group_->lookup_action("mask-width-ducks")->change_state(bool(work_area->get_type_mask()&Duck::TYPE_WIDTH));
 		action_group_->lookup_action("mask-angle-ducks")->change_state(bool(work_area->get_type_mask()&Duck::TYPE_ANGLE));
 
-
-		Glib::RefPtr<Gtk::ToggleAction> action;
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-position-ducks"));
-		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_POSITION));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-tangent-ducks"));
-		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_TANGENT));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-vertex-ducks"));
-		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_VERTEX));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-radius-ducks"));
-		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_RADIUS));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-width-ducks"));
-		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_WIDTH));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-angle-ducks"));
-		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_ANGLE));
-
 		// Update toggle ducks buttons
-		action->get_active();
 		toggleducksdial.update_toggles(work_area->get_type_mask());
 	}
 	catch(...)
@@ -3092,16 +3053,18 @@ CanvasView::toggle_duck_mask_all()
 void
 CanvasView::mask_bone_ducks()
 {
-	Duck::Type mask(work_area->get_type_mask());
-	bool recursive(mask & Duck::TYPE_BONE_RECURSIVE);
+	const Duck::Type mask(work_area->get_type_mask());
+	const bool recursive(mask & Duck::TYPE_BONE_RECURSIVE);
 
-	if (recursive)
-	{
-		action_mask_bone_setup_ducks->set_active(true);
-		action_mask_bone_recursive_ducks->set_active(false);
+	Glib::RefPtr<Gio::Action> action_mask_bone_recursive_ducks = action_group_->lookup_action("mask-bone-recursive-ducks");
+
+	if (recursive) {
+		Glib::RefPtr<Gio::Action> action_mask_bone_setup_ducks = action_group_->lookup_action("mask-angle-ducks");
+		action_mask_bone_recursive_ducks->change_state(true);
+		action_mask_bone_setup_ducks->change_state(true);
+	} else {
+		action_mask_bone_recursive_ducks->change_state(true);
 	}
-	else
-		action_mask_bone_recursive_ducks->set_active(true);
 }
 
 void

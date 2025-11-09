@@ -378,8 +378,6 @@ private:
 	bool toggling_jack;
 	#endif
 
-	Glib::RefPtr<Gtk::ToggleAction> action_mask_bone_setup_ducks, action_mask_bone_recursive_ducks;
-
 	int ducks_locks;
 	bool ducks_rebuild_requested;
 	bool ducks_rebuild_queue_requested;
