@@ -688,7 +688,7 @@ protected:
 	*/
 public:
 	static studio::CanvasView::Handle create(etl::loose_handle<Instance> instance, synfig::Canvas::Handle canvas);
-	static std::list<int>& get_pixel_sizes();
+	static const std::vector<int>& get_pixel_sizes();
 
 private:
 	#ifdef WITH_JACK
