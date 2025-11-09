@@ -53,14 +53,16 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 static Gtk::ToggleButton*
-create_toggle_button(const std::string& icon_name, const std::string& tooltip)
+create_toggle_button(const std::string& icon_name, const std::string& tooltip, const std::string& action)
 {
-	Gtk::ToggleButton *button = manage(new class Gtk::ToggleButton());
+	Gtk::ToggleButton* button = manage(new class Gtk::ToggleButton());
 	button->set_tooltip_text(tooltip);
 	button->set_image_from_icon_name(icon_name);
 	button->set_relief(Gtk::RELIEF_NONE);
 	button->set_active();
 	button->show();
+
+	gtk_actionable_set_action_name(GTK_ACTIONABLE(button->gobj()), action.c_str());
 
 	return button;
 }
@@ -95,8 +97,8 @@ void KeyFrameDial::on_mode_changed(synfigapp::EditMode mode)
 }
 KeyFrameDial::KeyFrameDial(): Gtk::Box(Gtk::Orientation::ORIENTATION_HORIZONTAL, 1)
 {
-	toggle_keyframe_past = create_toggle_button("keyframe_lock_past_on_icon",_("Unlock past keyframe"));
-	toggle_keyframe_future = create_toggle_button("keyframe_lock_future_on_icon",_("Unlock future keyframe"));
+	toggle_keyframe_past = create_toggle_button("keyframe_lock_past_on_icon", _("Unlock past keyframe"), "doc.toggle-keyframe-lock-past");
+	toggle_keyframe_future = create_toggle_button("keyframe_lock_future_on_icon", _("Unlock future keyframe"), "doc.toggle-keyframe-lock-future");
 	add(*toggle_keyframe_past);
 	add(*toggle_keyframe_future);
 }
