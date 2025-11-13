@@ -58,6 +58,7 @@
 #include <gtkmm/toolbutton.h>
 #include <gtkmm/toolitem.h>
 
+#include <gui/actionmanagers/actionmanager.h>
 #include <gui/app.h>
 #include <gui/dialogs/dialog_canvasdependencies.h>
 #include <gui/dials/keyframedial.h>
@@ -1384,8 +1385,8 @@ CanvasView::init_menus()
 		{"import",            "",                       N_("Import..."),            "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_file)) },
 		{"import-sequence",   "",                       N_("Import Sequence..."),   "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_sequence)) },
 		{"show-dependencies", "",                       N_("Show Dependencies..."), "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::show_dependencies)) },
-		{"render",            "render_options_icon",    N_("Render..."),            "", sigc::mem_fun0(render_settings, &RenderSettings::present) },
-		{"preview",           "preview_options_icon",   N_("Preview..."),           "", sigc::mem_fun(*this, &CanvasView::on_preview_option) },
+		{"render",            "render_options_icon",    N_("Render..."),            N_("Shows the Render Settings Dialog"), sigc::mem_fun0(render_settings, &RenderSettings::present) },
+		{"preview",           "preview_options_icon",   N_("Preview..."),           N_("Shows the Preview Settings Dialog"), sigc::mem_fun(*this, &CanvasView::on_preview_option) },
 		{"options",           "",                       N_("Options..."),           "", sigc::mem_fun0(canvas_options, &CanvasOptions::present) },
 		{"close-document",    "window-close",           N_("Close Document"),       "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::close_instance)) },
 		{"quit",              "application-exit",       N_("Quit"),                 "",  sigc::hide_return(sigc::ptr_fun(&App::quit)) },
@@ -1396,13 +1397,14 @@ CanvasView::init_menus()
 		{"unselect-all-layers", "", N_("Unselect All Layers"), "", sigc::mem_fun(*this, &CanvasView::on_unselect_layers) },
 		{"select-parent-layer", "", N_("Select Parent Layer"), "", sigc::mem_fun(*this, &CanvasView::on_select_parent_layer) },
 
-		{"pause",               "animate_pause_icon",  N_("Pause"), "", sigc::mem_fun(*this, &CanvasView::stop_async) },
-		{"refresh",             "view-refresh",        N_("Refresh"), "", sigc::hide_return(sigc::bind(sigc::mem_fun(*this, &CanvasView::process_event_key), EVENT_REFRESH)) },
+		{"stop-process",        "process-stop",        N_("Stop"),    N_("Stop current operation"), SLOT_EVENT(EVENT_STOP) },
+		{"pause",               "animate_pause_icon",  N_("Pause"),   "", sigc::mem_fun(*this, &CanvasView::stop_async) },
+		{"refresh",             "view-refresh",        N_("Refresh"), N_("Refresh workarea"), sigc::hide_return(sigc::bind(sigc::mem_fun(*this, &CanvasView::process_event_key), EVENT_REFRESH)) },
 		{"properties",          "document-properties", N_("Properties..."), "", sigc::mem_fun0(canvas_properties, &CanvasProperties::present) },
 		{"resize-canvas",       "",                    N_("Resize..."), "", sigc::mem_fun0(canvas_resize, &CanvasResize::present)},
 
-		{"decrease-lowres-pixel-size", "", N_("Decrease Low-Res Pixel Size"), "", sigc::mem_fun(this, &CanvasView::decrease_low_res_pixel_size) },
-		{"increase-lowres-pixel-size", "", N_("Increase Low-Res Pixel Size"), "",  sigc::mem_fun(this, &CanvasView::increase_low_res_pixel_size) },
+		{"decrease-lowres-pixel-size", "", N_("Increase Resolution"), N_("Increase Display Resolution"), sigc::mem_fun(this, &CanvasView::decrease_low_res_pixel_size) },
+		{"increase-lowres-pixel-size", "", N_("Decrease Resolution"), N_("Decrease Display Resolution"),  sigc::mem_fun(this, &CanvasView::increase_low_res_pixel_size) },
 
 		{"play",            "media-playback-start", N_("_Play"),          N_("Play"), sigc::mem_fun(*this, &CanvasView::on_play_pause_pressed) },
 		{"dialog-flipbook", "",                     N_("Preview Window"), "", sigc::mem_fun0(preview_dialog, &Dialog_Preview::present) },
@@ -1445,6 +1447,7 @@ CanvasView::init_menus()
 		} else {
 			action_group->add( Gtk::Action::create(item.name, _(item.label.c_str()), _(item.tooltip.c_str())), item.slot);
 		}
+		App::get_action_database()->add(ActionDatabase::Entry{"doc." + item.name, item.label, "", item.icon, item.tooltip});
 		action_group_->add_action(item.name, item.slot);
 	}
 
@@ -1469,7 +1472,9 @@ CanvasView::init_menus()
 			Gtk::Action::create(id, plugin.name.get()),
 			[instance, id](){instance->run_plugin(id, true);}
 		);
-		action_group_->add_action("plugin-" + id, [instance, id](){ instance->run_plugin(id, true); });
+		const std::string action_name = "plugin-" + id;
+		App::get_action_database()->add(ActionDatabase::Entry{"doc." + action_name, plugin.name.get(), "", "", plugin.description.get()});
+		action_group_->add_action(action_name, [instance, id](){ instance->run_plugin(id, true); });
 	}
 
 	// Low-Res Quality Menu
@@ -1493,8 +1498,6 @@ CanvasView::init_menus()
 	}, *this), initial_low_res_pixel_size);
 	work_area->set_low_res_pixel_size(initial_low_res_pixel_size);
 
-	action_group_->add_action("decrease-lowres-pixel-size", sigc::mem_fun(*this, &CanvasView::decrease_low_res_pixel_size));
-	action_group_->add_action("increase-lowres-pixel-size", sigc::mem_fun(*this, &CanvasView::increase_low_res_pixel_size));
 
 	struct BoolActionMetadata {
 		const std::string name;
@@ -1508,16 +1511,16 @@ CanvasView::init_menus()
 
 	static std::vector<BoolActionMetadata> bool_action_list = {
 		{"toggle-rulers-show",          "",                          N_("Show Rulers"),             "", &WorkArea::get_show_rulers, &CanvasView::on_show_ruler_toggled,  rulers_show_toggle },
-		{"toggle-grid-show",            "show_grid_icon",            N_("Show Grid"),               "", &WorkArea::grid_status,     &CanvasView::on_show_grid_toggled,   grid_show_toggle },
-		{"toggle-grid-snap",            "snap_grid_icon",            N_("Snap to Grid"),            "", &WorkArea::get_grid_snap,   &CanvasView::on_snap_grid_toggled,   grid_snap_toggle },
-		{"toggle-guide-show",           "show_guideline_icon",       N_("Show Guides"),             "", &WorkArea::get_show_guides, &CanvasView::on_show_guides_toggled, guides_show_toggle },
-		{"toggle-guide-snap",           "snap_guideline_icon",       N_("Snap to Guides"),          "", &WorkArea::get_guide_snap,  &CanvasView::on_snap_guides_toggled, guides_snap_toggle },
-		{"toggle-low-resolution",       "",                          N_("Use Low-Res"),             "", &WorkArea::get_low_resolution_flag, &CanvasView::on_low_resolution_toggled, low_resolution_toggle },
-		{"toggle-background-rendering", "background_rendering_icon", N_("Enable rendering in background"), "", &WorkArea::get_background_rendering, &CanvasView::on_background_rendering_toggled, background_rendering_toggle },
-		{"toggle-onion-skin",           "onion_skin_icon",           N_("Show Onion Skin"),         "", &WorkArea::get_onion_skin,  &CanvasView::on_onion_skin_toggled, onion_skin_toggle },
-		{"toggle-onion-skin-keyframes", "keyframe_icon",             N_("Onion Skin on Keyframes"), "", &WorkArea::get_onion_skin_keyframes, &CanvasView::on_onion_skin_keyframes_toggled, onion_skin_keyframes_toggle },
-		{"toggle-keyframe-lock-past",   "keyframe_lock_past_on_icon",   N_("Lock Past Keyframes"),    "", &WorkArea::get_keyframe_lock_past, &CanvasView::on_past_keyframe_lock_toggled, past_keyframe_lock_toggle },
-		{"toggle-keyframe-lock-future", "keyframe_lock_future_on_icon", N_("Lock Future Keyframes"),  "", &WorkArea::get_keyframe_lock_future, &CanvasView::on_future_keyframe_lock_toggled, future_keyframe_lock_toggle },
+		{"toggle-grid-show",            "show_grid_icon",            N_("Show Grid"),               N_("Show Grid when enabled"), &WorkArea::grid_status,     &CanvasView::on_show_grid_toggled,   grid_show_toggle },
+		{"toggle-grid-snap",            "snap_grid_icon",            N_("Snap to Grid"),            N_("Snap to Grid when enabled"), &WorkArea::get_grid_snap,   &CanvasView::on_snap_grid_toggled,   grid_snap_toggle },
+		{"toggle-guide-show",           "show_guideline_icon",       N_("Show Guides"),             N_("Show Guides when enabled"), &WorkArea::get_show_guides, &CanvasView::on_show_guides_toggled, guides_show_toggle },
+		{"toggle-guide-snap",           "snap_guideline_icon",       N_("Snap to Guides"),          N_("Snap to Guides when enabled"), &WorkArea::get_guide_snap,  &CanvasView::on_snap_guides_toggled, guides_snap_toggle },
+		{"toggle-low-resolution",       "",                          N_("Use Low-Res"),             N_("Use Low Resolution when enabled"), &WorkArea::get_low_resolution_flag, &CanvasView::on_low_resolution_toggled, low_resolution_toggle },
+		{"toggle-background-rendering", "background_rendering_icon", N_("Enable rendering in background"), N_("Render future and past frames in background when enabled"), &WorkArea::get_background_rendering, &CanvasView::on_background_rendering_toggled, background_rendering_toggle },
+		{"toggle-onion-skin",           "onion_skin_icon",           N_("Show Onion Skin"),         N_("Show Onion Skin when enabled"), &WorkArea::get_onion_skin,  &CanvasView::on_onion_skin_toggled, onion_skin_toggle },
+		{"toggle-onion-skin-keyframes", "keyframe_icon",             N_("Onion Skin on Keyframes"), N_("Show Onion Skin on Keyframes when enabled, on Frames when disabled"), &WorkArea::get_onion_skin_keyframes, &CanvasView::on_onion_skin_keyframes_toggled, onion_skin_keyframes_toggle },
+		{"toggle-keyframe-lock-past",   "keyframe_lock_past_on_icon",   N_("Lock Past Keyframes"),  N_("When a parameter is changed, waypoints will be created in the immediately preceding keyframe with previous value before changing.\nThe setting has no effect unless the canvas is in animate editing mode."), &WorkArea::get_keyframe_lock_past, &CanvasView::on_past_keyframe_lock_toggled, past_keyframe_lock_toggle },
+		{"toggle-keyframe-lock-future", "keyframe_lock_future_on_icon", N_("Lock Future Keyframes"),N_("When a parameter is changed, waypoints will be created in the immediately following keyframe with previous value before changing.\nThe setting has no effect unless the canvas is in animate editing mode."), &WorkArea::get_keyframe_lock_future, &CanvasView::on_future_keyframe_lock_toggled, future_keyframe_lock_toggle },
 	};
 
 	for (auto& item : bool_action_list) {
@@ -1525,6 +1528,7 @@ CanvasView::init_menus()
 		auto action_name = item.name;
 		item.action = action_group_->add_action_bool(action_name, sigc::mem_fun(*this, item.slot_to_toogle), current_value);
 
+		App::get_action_database()->add(ActionDatabase::Entry{"doc." + item.name, item.label, "", item.icon, item.tooltip});
 	}
 
 	{
@@ -1534,18 +1538,20 @@ CanvasView::init_menus()
 		struct DuckActionMetaData {
 			std::string action;
 			Duck::Type type;
+			const char* icon;
 			const char* label;
+			const char* tooltip;
 		};
 
 		static const std::vector<DuckActionMetaData> duck_action_list = {
-			{"mask-position-ducks",            Duck::TYPE_POSITION,            N_("Show Position Handles")},
-			{"mask-tangent-ducks",             Duck::TYPE_TANGENT,             N_("Show Tangent Handles")},
-			{"mask-vertex-ducks",              Duck::TYPE_VERTEX,              N_("Show Vertex Handles")},
-			{"mask-radius-ducks",              Duck::TYPE_RADIUS,              N_("Show Radius Handles")},
-			{"mask-width-ducks",               Duck::TYPE_WIDTH,               N_("Show Width Handles")},
-			{"mask-widthpoint-position-ducks", Duck::TYPE_WIDTHPOINT_POSITION, N_("Show WidthPoint Position Handles")},
-			{"mask-angle-ducks",               Duck::TYPE_ANGLE,               N_("Show Angle Handles")},
-			{"mask-bone-recursive-ducks",      Duck::TYPE_BONE_RECURSIVE,      N_("Show Recursive Scale Bone Handles")},
+			{"mask-position-ducks",            Duck::TYPE_POSITION,            "duck_position_icon", N_("Position handles"), N_("Show Position Handles")},
+			{"mask-tangent-ducks",             Duck::TYPE_TANGENT,             "duck_tangent_icon", N_("Tangent handles"), N_("Show Tangent Handles")},
+			{"mask-vertex-ducks",              Duck::TYPE_VERTEX,              "duck_vertex_icon", N_("Vertex handles"), N_("Show Vertex Handles")},
+			{"mask-radius-ducks",              Duck::TYPE_RADIUS,              "duck_radius_icon", N_("Radius handles"), N_("Show Radius Handles")},
+			{"mask-width-ducks",               Duck::TYPE_WIDTH,               "duck_width_icon", N_("Width handles"), N_("Show Width Handles")},
+			{"mask-widthpoint-position-ducks", Duck::TYPE_WIDTHPOINT_POSITION, "", N_("Width Position handles"), N_("Show WidthPoint Position Handles")},
+			{"mask-angle-ducks",               Duck::TYPE_ANGLE,               "duck_angle_icon", N_("Angle handles"), N_("Show Angle Handles")},
+			{"mask-bone-recursive-ducks",      Duck::TYPE_BONE_RECURSIVE,      "", N_("Recursive Bone handles"), N_("Show Recursive Scale Bone Handles")},
 		};
 
 		for (const auto& item : duck_action_list) {
@@ -1554,6 +1560,7 @@ CanvasView::init_menus()
 						sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),
 						item.type);
 			action_group_->add_action_bool(item.action, duck_slot, duck_active);
+			App::get_action_database()->add(ActionDatabase::Entry{"doc." + item.action, _(item.label), "", item.icon, _(item.tooltip)});
 		}
 
 		action_group_->add_action("mask-bone-ducks", sigc::mem_fun(*this, &CanvasView::mask_bone_ducks));
