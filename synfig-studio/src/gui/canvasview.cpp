@@ -1003,10 +1003,41 @@ CanvasView::create_work_area()
 }
 
 Gtk::ToolButton*
-CanvasView::create_action_toolbutton(const Glib::RefPtr<Gtk::Action> &action)
+CanvasView::create_action_toolbutton(const std::string& action)
 {
-	Gtk::ToolButton *button = Gtk::manage(new Gtk::ToolButton());
-	button->set_related_action(action);
+	Gtk::ToolButton* button = Gtk::manage(new Gtk::ToolButton());
+	gtk_actionable_set_action_name(GTK_ACTIONABLE(button->gobj()), action.c_str());
+	try {
+		ActionDatabase::Entry action_entry = App::get_action_database()->get(action);
+		if (!action_entry.icon_.empty())
+			button->set_icon_name(action_entry.icon_);
+		if (!action_entry.label_.empty())
+			button->set_label(_(action_entry.label_.c_str()));
+		if (!action_entry.tooltip_.empty())
+			button->set_tooltip_text(_(action_entry.tooltip_.c_str()));
+	} catch (...) {
+		synfig::warning(_("Couldn't find action: %s"), action.c_str());
+	}
+	button->show();
+	return button;
+}
+
+Gtk::ToolButton*
+CanvasView::create_action_toggletoolbutton(const std::string& action)
+{
+	Gtk::ToggleToolButton* button = Gtk::manage(new Gtk::ToggleToolButton());
+	gtk_actionable_set_action_name(GTK_ACTIONABLE(button->gobj()), action.c_str());
+	try {
+		ActionDatabase::Entry action_entry = App::get_action_database()->get(action);
+		if (!action_entry.icon_.empty())
+			button->set_icon_name(action_entry.icon_);
+		if (!action_entry.label_.empty())
+			button->set_label(_(action_entry.label_.c_str()));
+		if (!action_entry.tooltip_.empty())
+			button->set_tooltip_text(_(action_entry.tooltip_.c_str()));
+	} catch (...) {
+		synfig::warning(_("Couldn't find action: %s"), action.c_str());
+	}
 	button->show();
 	return button;
 }
@@ -1036,59 +1067,39 @@ CanvasView::create_top_toolbar()
 
 	// File buttons
 	if (App::show_file_toolbar) {
-		top_toolbar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/new")));
-		top_toolbar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/open")));
-		top_toolbar->append(*create_action_toolbutton(action_group->get_action("save")));
-		top_toolbar->append(*create_action_toolbutton(action_group->get_action("save-as")));
-		top_toolbar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/save-all")));
+		top_toolbar->append(*create_action_toolbutton("app.new"));
+		top_toolbar->append(*create_action_toolbutton("app.open"));
+		top_toolbar->append(*create_action_toolbutton("doc.save"));
+		top_toolbar->append(*create_action_toolbutton("doc.save-as"));
+		top_toolbar->append(*create_action_toolbutton("win.save-all"));
 
 		// Separator
 		top_toolbar->append( *create_tool_separator() );
 	}
 
 	// Undo/Redo buttons
-	top_toolbar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/undo")));
-	top_toolbar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/redo")));
+	top_toolbar->append(*create_action_toolbutton("doc.undo"));
+	top_toolbar->append(*create_action_toolbutton("doc.redo"));
 
 	// Separator
 	top_toolbar->append(*create_tool_separator());
 
 	{ // Preview Settings dialog button
-		preview_options_button = Gtk::manage(new Gtk::ToolButton());
-		preview_options_button->set_icon_name("preview_options_icon");
-		preview_options_button->signal_clicked().connect(
-			sigc::mem_fun(*this,&CanvasView::on_preview_option));
-		preview_options_button->set_label(_("Preview"));
-		preview_options_button->set_tooltip_text(_("Shows the Preview Settings Dialog"));
-		preview_options_button->show();
+		top_toolbar->append(*create_action_toolbutton("doc.preview"));
 
-		top_toolbar->append(*preview_options_button);
 	}
 
 	{ // Render Settings dialog button
-		render_options_button = Gtk::manage(new Gtk::ToolButton());
-		render_options_button->set_icon_name("render_options_icon");
-		render_options_button->signal_clicked().connect(
-			sigc::mem_fun0(render_settings,&RenderSettings::present));
-		render_options_button->set_label(_("Render"));
-		render_options_button->set_tooltip_text(_("Shows the Render Settings Dialog"));
-		render_options_button->show();
+		top_toolbar->append(*create_action_toolbutton("doc.render"));
 
-		top_toolbar->append(*render_options_button);
 	}
 
 	// Separator
 	top_toolbar->append(*create_tool_separator());
 
 	{ // Refresh button
-		refreshbutton = Gtk::manage(new Gtk::ToolButton());
-		refreshbutton->set_icon_name("view-refresh");
-		refreshbutton->signal_clicked().connect(SLOT_EVENT(EVENT_REFRESH));
-		refreshbutton->set_label(_("Refresh"));
-		refreshbutton->set_tooltip_text( _("Refresh workarea"));
-		refreshbutton->show();
+		top_toolbar->append(*create_action_toolbutton("doc.refresh"));
 
-		top_toolbar->append(*refreshbutton);
 	}
 
 	{ // Rendering mode ComboBox
@@ -1110,15 +1121,8 @@ CanvasView::create_top_toolbar()
 	}
 
 	{ // Background rendering button
-		background_rendering_button = Gtk::manage(new Gtk::ToggleToolButton());
-		gtk_actionable_set_action_name(GTK_ACTIONABLE(background_rendering_button->gobj()), "doc.toggle-background-rendering");
-		background_rendering_button->set_active(work_area->get_background_rendering());
-		background_rendering_button->set_icon_name("background_rendering_icon");
-		background_rendering_button->set_label(_("Background rendering"));
-		background_rendering_button->set_tooltip_text(_("Render future and past frames in background when enabled"));
-		background_rendering_button->show();
+		top_toolbar->append(*create_action_toggletoolbutton("doc.toggle-background-rendering"));
 
-		top_toolbar->append(*background_rendering_button);
 	}
 
 	// Separator
@@ -1132,15 +1136,8 @@ CanvasView::create_top_toolbar()
 	top_toolbar->append(*create_tool_separator());
 
 	{ // Onion skin toggle button
-		onion_skin = Gtk::manage(new Gtk::ToggleToolButton());
-		gtk_actionable_set_action_name(GTK_ACTIONABLE(onion_skin->gobj()), "doc.toggle-onion-skin");
-		onion_skin->set_active(work_area->get_onion_skin());
-		onion_skin->set_icon_name("onion_skin_icon");
-		onion_skin->set_label(_("Onion Skin"));
-		onion_skin->set_tooltip_text(_("Show Onion Skin when enabled"));
-		onion_skin->show();
+		top_toolbar->append(*create_action_toggletoolbutton("doc.toggle-onion-skin"));
 
-		top_toolbar->append(*onion_skin);
 	}
 
 	{ // Past onion skin spin button
@@ -1176,15 +1173,8 @@ CanvasView::create_top_toolbar()
 	}
 
 	{ // Onion skin on Keyframes/Frames toggle button
-		onion_skin_keyframes = Gtk::manage(new Gtk::ToggleToolButton());
-		gtk_actionable_set_action_name(GTK_ACTIONABLE(onion_skin_keyframes->gobj()), "doc.toggle-onion-skin-keyframes");
-		onion_skin_keyframes->set_active(work_area->get_onion_skin_keyframes());
-		onion_skin_keyframes->set_icon_name("keyframe_icon");
-		onion_skin_keyframes->set_label(_("Keyframes"));
-		onion_skin_keyframes->set_tooltip_text(_("Show Onion Skin on Keyframes when enabled, on Frames when disabled"));
-		onion_skin_keyframes->show();
+		top_toolbar->append(*create_action_toggletoolbutton("doc.toggle-onion-skin-keyframes"));
 
-		top_toolbar->append(*onion_skin_keyframes);
 	}
 
 	if(App::enable_mainwin_toolbar)
