@@ -1361,69 +1361,73 @@ CanvasView::init_menus()
 	struct ActionMetadata {
 		std::string name;
 		std::string icon;
+		std::string shortcut;
 		std::string label;
 		std::string tooltip;
 		std::function<void()> slot;
 	};
 
 	const std::vector<ActionMetadata> action_list = {
-		{"save",    "action_doc_save_icon",   N_("Save"),      N_("Save"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::save)) },
-		{"save-as", "action_doc_saveas_icon", N_("Save As..."), N_("Save As"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::dialog_save_as)) },
+		{"save",    "action_doc_save_icon",   "<Primary>s", N_("Save"),      N_("Save"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::save)) },
+		{"save-as", "action_doc_saveas_icon", "<Primary><Shift>s", N_("Save As..."), N_("Save As"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::dialog_save_as)) },
 
-		{"export",            "action_doc_saveas_icon", N_("Export..."),            N_("Export"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::dialog_export)) },
-		{"revert",            "document-revert",        N_("Revert"),               N_("Revert document as it was last saved"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::safe_revert)) },
-		{"import",            "",                       N_("Import..."),            "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_file)) },
-		{"import-sequence",   "",                       N_("Import Sequence..."),   "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_sequence)) },
-		{"show-dependencies", "",                       N_("Show Dependencies..."), "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::show_dependencies)) },
-		{"render",            "render_options_icon",    N_("Render..."),            N_("Shows the Render Settings Dialog"), sigc::mem_fun0(render_settings, &RenderSettings::present) },
-		{"preview",           "preview_options_icon",   N_("Preview..."),           N_("Shows the Preview Settings Dialog"), sigc::mem_fun(*this, &CanvasView::on_preview_option) },
-		{"options",           "",                       N_("Options..."),           "", sigc::mem_fun0(canvas_options, &CanvasOptions::present) },
-		{"close-document",    "window-close",           N_("Close Document"),       "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::close_instance)) },
-		{"quit",              "application-exit",       N_("Quit"),                 "",  sigc::hide_return(sigc::ptr_fun(&App::quit)) },
+		{"export",            "action_doc_saveas_icon", "",           N_("Export..."),            N_("Export"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::dialog_export)) },
+		{"revert",            "document-revert",        "",           N_("Revert"),               N_("Revert document as it was last saved"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::safe_revert)) },
+		{"import",            "",                       "<Primary>i", N_("Import..."),            "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_file)) },
+		{"import-sequence",   "",                       "",           N_("Import Sequence..."),   "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_sequence)) },
+		{"show-dependencies", "",                       "",           N_("Show Dependencies..."), "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::show_dependencies)) },
+		{"render",            "render_options_icon",    "F9",         N_("Render..."),            N_("Shows the Render Settings Dialog"), sigc::mem_fun0(render_settings, &RenderSettings::present) },
+		{"preview",           "preview_options_icon",   "F11",        N_("Preview..."),           N_("Shows the Preview Settings Dialog"), sigc::mem_fun(*this, &CanvasView::on_preview_option) },
+		{"options",           "",                       "F12",        N_("Options..."),           "", sigc::mem_fun0(canvas_options, &CanvasOptions::present) },
+		{"close-document",    "window-close",           "<Primary>w", N_("Close Document"),       "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::close_instance)) },
 
-		{"select-all-ducks",    "", N_("Select All Handles"), "", sigc::mem_fun(*work_area, &WorkArea::select_all_ducks) },
-		{"unselect-all-ducks",  "", N_("Unselect All Handles"), "", sigc::mem_fun(*work_area, &WorkArea::unselect_all_ducks) },
-		{"select-all-layers",   "", N_("Select All Layers"), "", sigc::mem_fun(*this, &CanvasView::on_select_layers) },
-		{"unselect-all-layers", "", N_("Unselect All Layers"), "", sigc::mem_fun(*this, &CanvasView::on_unselect_layers) },
-		{"select-parent-layer", "", N_("Select Parent Layer"), "", sigc::mem_fun(*this, &CanvasView::on_select_parent_layer) },
+		{"select-all-ducks",    "", "<Primary>a",        N_("Select All Handles"), "", sigc::mem_fun(*work_area, &WorkArea::select_all_ducks) },
+		{"unselect-all-ducks",  "", "<Primary>d",        N_("Unselect All Handles"), "", sigc::mem_fun(*work_area, &WorkArea::unselect_all_ducks) },
+		{"select-all-layers",   "", "<Primary><Shift>a", N_("Select All Layers"), "", sigc::mem_fun(*this, &CanvasView::on_select_layers) },
+		{"unselect-all-layers", "", "<Primary><Shift>d", N_("Unselect All Layers"), "", sigc::mem_fun(*this, &CanvasView::on_unselect_layers) },
+		{"select-parent-layer", "", "<Mod1>Page_Up",     N_("Select Parent Layer"), "", sigc::mem_fun(*this, &CanvasView::on_select_parent_layer) },
 
-		{"stop-process",        "process-stop",        N_("Stop"),    N_("Stop current operation"), SLOT_EVENT(EVENT_STOP) },
-		{"pause",               "animate_pause_icon",  N_("Pause"),   "", sigc::mem_fun(*this, &CanvasView::stop_async) },
-		{"refresh",             "view-refresh",        N_("Refresh"), N_("Refresh workarea"), sigc::hide_return(sigc::bind(sigc::mem_fun(*this, &CanvasView::process_event_key), EVENT_REFRESH)) },
-		{"properties",          "document-properties", N_("Properties..."), "", sigc::mem_fun0(canvas_properties, &CanvasProperties::present) },
-		{"resize-canvas",       "",                    N_("Resize..."), "", sigc::mem_fun0(canvas_resize, &CanvasResize::present)},
+		{"stop-process",        "process-stop",        "",           N_("Stop"),    N_("Stop current operation"), SLOT_EVENT(EVENT_STOP) },
+		{"pause",               "animate_pause_icon",  "",           N_("Pause"),   "", sigc::mem_fun(*this, &CanvasView::stop_async) },
+		{"refresh",             "view-refresh",        "",           N_("Refresh"), N_("Refresh workarea"), sigc::hide_return(sigc::bind(sigc::mem_fun(*this, &CanvasView::process_event_key), EVENT_REFRESH)) },
+		{"properties",          "document-properties", "F8",         N_("Properties..."), "", sigc::mem_fun0(canvas_properties, &CanvasProperties::present) },
+		{"resize-canvas",       "",                    "",           N_("Resize..."), "", sigc::mem_fun0(canvas_resize, &CanvasResize::present)},
 
-		{"decrease-lowres-pixel-size", "", N_("Increase Resolution"), N_("Increase Display Resolution"), sigc::mem_fun(this, &CanvasView::decrease_low_res_pixel_size) },
-		{"increase-lowres-pixel-size", "", N_("Decrease Resolution"), N_("Decrease Display Resolution"),  sigc::mem_fun(this, &CanvasView::increase_low_res_pixel_size) },
+		{"decrease-lowres-pixel-size", "", "<Primary>parenleft",  N_("Increase Resolution"), N_("Increase Display Resolution"), sigc::mem_fun(this, &CanvasView::decrease_low_res_pixel_size) },
+		{"increase-lowres-pixel-size", "", "<Primary>parenright", N_("Decrease Resolution"), N_("Decrease Display Resolution"),  sigc::mem_fun(this, &CanvasView::increase_low_res_pixel_size) },
 
-		{"play",            "media-playback-start", N_("_Play"),          N_("Play"), sigc::mem_fun(*this, &CanvasView::on_play_pause_pressed) },
-		{"dialog-flipbook", "",                     N_("Preview Window"), "", sigc::mem_fun0(preview_dialog, &Dialog_Preview::present) },
+		{"play",            "media-playback-start", "", N_("_Play"),          N_("Play"), sigc::mem_fun(*this, &CanvasView::on_play_pause_pressed) },
+		{"dialog-flipbook", "", "",                     N_("Preview Window"), "", sigc::mem_fun0(preview_dialog, &Dialog_Preview::present) },
 
-		{"canvas-zoom-fit",   "zoom-fit-best", N_("Best _Fit"),    N_("Best Fit"), sigc::mem_fun(*work_area, &WorkArea::zoom_fit) },
-		{"canvas-zoom-100",   "zoom-original", N_("_Normal Size"), N_("Normal Size"), sigc::mem_fun(*work_area, &WorkArea::zoom_norm) },
-		{"canvas-zoom-fit-2", "zoom-fit-best", N_("Best _Fit"),    N_("Best Fit"), sigc::mem_fun(*work_area, &WorkArea::zoom_fit) },
-		{"canvas-zoom-in",    "zoom-in",       N_("Zoom _In"),     N_("Zoom In"), sigc::mem_fun(*work_area, &WorkArea::zoom_in) },
-		{"canvas-zoom-in-2",  "zoom-in",       N_("Zoom _In"),     N_("Zoom In"), sigc::mem_fun(*work_area, &WorkArea::zoom_in) },
-		{"canvas-zoom-out",   "zoom-out",      N_("Zoom _Out"),    N_("Zoom Out"), sigc::mem_fun(*work_area, &WorkArea::zoom_out) },
-		{"canvas-zoom-out-2", "zoom-out",      N_("Zoom _Out"),    N_("Zoom Out"), sigc::mem_fun(*work_area, &WorkArea::zoom_out) },
+		{"canvas-zoom-fit",   "zoom-fit-best", "0",              N_("Best _Fit"),    N_("Best Fit"), sigc::mem_fun(*work_area, &WorkArea::zoom_fit) },
+		{"canvas-zoom-100",   "zoom-original", "",               N_("_Normal Size"), N_("Normal Size"), sigc::mem_fun(*work_area, &WorkArea::zoom_norm) },
+		{"canvas-zoom-fit-2", "zoom-fit-best", "<Primary>0",     N_("Best _Fit"),    N_("Best Fit"), sigc::mem_fun(*work_area, &WorkArea::zoom_fit) },
+		{"canvas-zoom-in",    "zoom-in",       "minus",          N_("Zoom _In"),     N_("Zoom In"), sigc::mem_fun(*work_area, &WorkArea::zoom_in) },
+		{"canvas-zoom-in-2",  "zoom-in",       "<Primary>minus", N_("Zoom _In"),     N_("Zoom In"), sigc::mem_fun(*work_area, &WorkArea::zoom_in) },
+		{"canvas-zoom-out",   "zoom-out",      "equal",          N_("Zoom _Out"),    N_("Zoom Out"), sigc::mem_fun(*work_area, &WorkArea::zoom_out) },
+		{"canvas-zoom-out-2", "zoom-out",      "<Primary>equal", N_("Zoom _Out"),    N_("Zoom Out"), sigc::mem_fun(*work_area, &WorkArea::zoom_out) },
 
-		{"time-zoom-in",  "zoom-in",  N_("Zoom In on Timeline"),  "", sigc::mem_fun(*this, &CanvasView::time_zoom_in) },
-		{"time-zoom-out", "zoom-out", N_("Zoom Out on Timeline"), "", sigc::mem_fun(*this, &CanvasView::time_zoom_out) },
+		{"time-zoom-in",  "zoom-in",  "<Primary>plus",       N_("Zoom In on Timeline"),  "", sigc::mem_fun(*this, &CanvasView::time_zoom_in) },
+		{"time-zoom-out", "zoom-out", "<Primary>underscore", N_("Zoom Out on Timeline"), "", sigc::mem_fun(*this, &CanvasView::time_zoom_out) },
 
-		{"seek-next-frame", "animate_seek_next_frame_icon", N_("Seek to Next frame"),     "", sigc::bind(sigc::mem_fun(*canvas_interface(), &CanvasInterface::seek_frame),1) },
-		{"seek-prev-frame", "animate_seek_prev_frame_icon", N_("Seek to Previous Frame"), "", sigc::bind(sigc::mem_fun(*canvas_interface(), &CanvasInterface::seek_frame),-1) },
+		{"seek-next-frame",    "animate_seek_next_frame_icon",    "period",                  N_("Seek to Next frame"),     N_("Seek to next frame"),     sigc::bind(sigc::mem_fun(*canvas_interface(), &CanvasInterface::seek_frame),1) },
+		{"seek-prev-frame",    "animate_seek_prev_frame_icon",    "comma",                   N_("Seek to Previous Frame"), N_("Seek to previous frame"), sigc::bind(sigc::mem_fun(*canvas_interface(), &CanvasInterface::seek_frame),-1) },
 
-		{"seek-next-second", "go-next",     N_("Seek Forward"),  N_("Seek Forward"), sigc::bind(sigc::mem_fun(*canvas_interface(), &CanvasInterface::seek_time),Time(1)) },
-		{"seek-prev-second", "go-previous", N_("Seek Backward"), N_("Seek Backward"), sigc::bind(sigc::mem_fun(*canvas_interface(), &CanvasInterface::seek_time),Time(-1)) },
+		{"seek-next-second",   "go-next",                         "<Shift>greater",          N_("Seek Forward"),  N_("Seek Forward"),  sigc::bind(sigc::mem_fun(*canvas_interface(), &CanvasInterface::seek_time),Time(1)) },
+		{"seek-prev-second",   "go-previous",                     "<Shift>less",             N_("Seek Backward"), N_("Seek Backward"), sigc::bind(sigc::mem_fun(*canvas_interface(), &CanvasInterface::seek_time),Time(-1)) },
 
-		{"seek-end",   "animate_seek_end_icon",   N_("Seek to End"),   "", sigc::mem_fun(*this, &CanvasView::on_seek_end_pressed) },
-		{"seek-begin", "animate_seek_begin_icon", N_("Seek to Begin"), "", sigc::mem_fun(*this, &CanvasView::on_seek_begin_pressed) },
+		{"seek-end",           "animate_seek_end_icon",           "<Primary><Shift>greater", N_("Seek to End"),   N_("Seek to End"),   sigc::mem_fun(*this, &CanvasView::on_seek_end_pressed) },
+		{"seek-begin",         "animate_seek_begin_icon",         "<Primary><Shift>less",    N_("Seek to Begin"), N_("Seek to Begin"), sigc::mem_fun(*this, &CanvasView::on_seek_begin_pressed) },
 
-		{"jump-next-keyframe", "animate_seek_next_keyframe_icon", N_("Seek to Next Keyframe"),      "", sigc::mem_fun(*canvas_interface(), &CanvasInterface::jump_to_next_keyframe) },
-		{"jump-prev-keyframe", "animate_seek_prev_keyframe_icon", N_("Seek to Previous Keyframe") , "", sigc::mem_fun(*canvas_interface(), &CanvasInterface::jump_to_prev_keyframe) },
+		{"jump-next-keyframe", "animate_seek_next_keyframe_icon", "bracketright",            N_("Seek to Next Keyframe"),      N_("Seek to next keyframe"),     sigc::mem_fun(*canvas_interface(), &CanvasInterface::jump_to_next_keyframe) },
+		{"jump-prev-keyframe", "animate_seek_prev_keyframe_icon", "bracketleft",             N_("Seek to Previous Keyframe") , N_("Seek to previous keyframe"), sigc::mem_fun(*canvas_interface(), &CanvasInterface::jump_to_prev_keyframe) },
 
-		{"undo", "edit-undo", N_("Undo"), "", sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::undo))},
-		{"redo", "edit-redo", N_("Redo"), "", sigc::ptr_fun(App::redo)},
+		{"undo", "edit-undo", "<Primary>z",        N_("Undo"), N_("Undo"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::undo))},
+#ifdef _WIN32
+		{"redo", "edit-redo", "<Primary>y",        N_("Redo"), N_("Redo"), sigc::ptr_fun(App::redo)},
+#else
+		{"redo", "edit-redo", "<Primary><Shift>z", N_("Redo"), N_("Redo"), sigc::ptr_fun(App::redo)},
+#endif
 	};
 
 	action_group = Gtk::ActionGroup::create("canvasview");
@@ -1437,7 +1441,7 @@ CanvasView::init_menus()
 		} else {
 			action_group->add( Gtk::Action::create(item.name, _(item.label.c_str()), _(item.tooltip.c_str())), item.slot);
 		}
-		App::get_action_database()->add(ActionDatabase::Entry{"doc." + item.name, item.label, "", item.icon, item.tooltip});
+		App::get_action_database()->add(ActionDatabase::Entry{"doc." + item.name, item.label, item.shortcut, item.icon, item.tooltip});
 		action_group_->add_action(item.name, item.slot);
 	}
 
@@ -1492,6 +1496,7 @@ CanvasView::init_menus()
 	struct BoolActionMetadata {
 		const std::string name;
 		const std::string icon;
+		const std::string shortcut;
 		const std::string label;
 		const std::string tooltip;
 		bool (WorkArea::*slot_to_get)(void) const;
@@ -1500,17 +1505,17 @@ CanvasView::init_menus()
 	};
 
 	static std::vector<BoolActionMetadata> bool_action_list = {
-		{"toggle-rulers-show",          "",                          N_("Show Rulers"),             "", &WorkArea::get_show_rulers, &CanvasView::on_show_ruler_toggled,  rulers_show_toggle },
-		{"toggle-grid-show",            "show_grid_icon",            N_("Show Grid"),               N_("Show Grid when enabled"), &WorkArea::grid_status,     &CanvasView::on_show_grid_toggled,   grid_show_toggle },
-		{"toggle-grid-snap",            "snap_grid_icon",            N_("Snap to Grid"),            N_("Snap to Grid when enabled"), &WorkArea::get_grid_snap,   &CanvasView::on_snap_grid_toggled,   grid_snap_toggle },
-		{"toggle-guide-show",           "show_guideline_icon",       N_("Show Guides"),             N_("Show Guides when enabled"), &WorkArea::get_show_guides, &CanvasView::on_show_guides_toggled, guides_show_toggle },
-		{"toggle-guide-snap",           "snap_guideline_icon",       N_("Snap to Guides"),          N_("Snap to Guides when enabled"), &WorkArea::get_guide_snap,  &CanvasView::on_snap_guides_toggled, guides_snap_toggle },
-		{"toggle-low-resolution",       "",                          N_("Use Low-Res"),             N_("Use Low Resolution when enabled"), &WorkArea::get_low_resolution_flag, &CanvasView::on_low_resolution_toggled, low_resolution_toggle },
-		{"toggle-background-rendering", "background_rendering_icon", N_("Enable rendering in background"), N_("Render future and past frames in background when enabled"), &WorkArea::get_background_rendering, &CanvasView::on_background_rendering_toggled, background_rendering_toggle },
-		{"toggle-onion-skin",           "onion_skin_icon",           N_("Show Onion Skin"),         N_("Show Onion Skin when enabled"), &WorkArea::get_onion_skin,  &CanvasView::on_onion_skin_toggled, onion_skin_toggle },
-		{"toggle-onion-skin-keyframes", "keyframe_icon",             N_("Onion Skin on Keyframes"), N_("Show Onion Skin on Keyframes when enabled, on Frames when disabled"), &WorkArea::get_onion_skin_keyframes, &CanvasView::on_onion_skin_keyframes_toggled, onion_skin_keyframes_toggle },
-		{"toggle-keyframe-lock-past",   "keyframe_lock_past_on_icon",   N_("Lock Past Keyframes"),  N_("When a parameter is changed, waypoints will be created in the immediately preceding keyframe with previous value before changing.\nThe setting has no effect unless the canvas is in animate editing mode."), &WorkArea::get_keyframe_lock_past, &CanvasView::on_past_keyframe_lock_toggled, past_keyframe_lock_toggle },
-		{"toggle-keyframe-lock-future", "keyframe_lock_future_on_icon", N_("Lock Future Keyframes"),N_("When a parameter is changed, waypoints will be created in the immediately following keyframe with previous value before changing.\nThe setting has no effect unless the canvas is in animate editing mode."), &WorkArea::get_keyframe_lock_future, &CanvasView::on_future_keyframe_lock_toggled, future_keyframe_lock_toggle },
+		{"toggle-rulers-show",          "",                          "",               N_("Show Rulers"),             "", &WorkArea::get_show_rulers, &CanvasView::on_show_ruler_toggled,  rulers_show_toggle },
+		{"toggle-grid-show",            "show_grid_icon",            "numbersign",     N_("Show Grid"),               N_("Show Grid when enabled"), &WorkArea::grid_status,     &CanvasView::on_show_grid_toggled,   grid_show_toggle },
+		{"toggle-grid-snap",            "snap_grid_icon",            "<Primary>l",     N_("Snap to Grid"),            N_("Snap to Grid when enabled"), &WorkArea::get_grid_snap,   &CanvasView::on_snap_grid_toggled,   grid_snap_toggle },
+		{"toggle-guide-show",           "show_guideline_icon",       "",               N_("Show Guides"),             N_("Show Guides when enabled"), &WorkArea::get_show_guides, &CanvasView::on_show_guides_toggled, guides_show_toggle },
+		{"toggle-guide-snap",           "snap_guideline_icon",       "",               N_("Snap to Guides"),          N_("Snap to Guides when enabled"), &WorkArea::get_guide_snap,  &CanvasView::on_snap_guides_toggled, guides_snap_toggle },
+		{"toggle-low-resolution",       "",                          "<Primary>grave", N_("Use Low-Res"),             N_("Use Low Resolution when enabled"), &WorkArea::get_low_resolution_flag, &CanvasView::on_low_resolution_toggled, low_resolution_toggle },
+		{"toggle-background-rendering", "background_rendering_icon", "",               N_("Enable rendering in background"), N_("Render future and past frames in background when enabled"), &WorkArea::get_background_rendering, &CanvasView::on_background_rendering_toggled, background_rendering_toggle },
+		{"toggle-onion-skin",           "onion_skin_icon",           "<Mod1>o",        N_("Show Onion Skin"),         N_("Show Onion Skin when enabled"), &WorkArea::get_onion_skin,  &CanvasView::on_onion_skin_toggled, onion_skin_toggle },
+		{"toggle-onion-skin-keyframes", "keyframe_icon",             "",               N_("Onion Skin on Keyframes"), N_("Show Onion Skin on Keyframes when enabled, on Frames when disabled"), &WorkArea::get_onion_skin_keyframes, &CanvasView::on_onion_skin_keyframes_toggled, onion_skin_keyframes_toggle },
+		{"toggle-keyframe-lock-past",   "keyframe_lock_past_on_icon",  "<Control>Left",  N_("Lock Past Keyframes"),  N_("When a parameter is changed, waypoints will be created in the immediately preceding keyframe with previous value before changing.\nThe setting has no effect unless the canvas is in animate editing mode."), &WorkArea::get_keyframe_lock_past, &CanvasView::on_past_keyframe_lock_toggled, past_keyframe_lock_toggle },
+		{"toggle-keyframe-lock-future", "keyframe_lock_future_on_icon","<Control>Right", N_("Lock Future Keyframes"),N_("When a parameter is changed, waypoints will be created in the immediately following keyframe with previous value before changing.\nThe setting has no effect unless the canvas is in animate editing mode."), &WorkArea::get_keyframe_lock_future, &CanvasView::on_future_keyframe_lock_toggled, future_keyframe_lock_toggle },
 	};
 
 	for (auto& item : bool_action_list) {
@@ -1518,30 +1523,33 @@ CanvasView::init_menus()
 		auto action_name = item.name;
 		item.action = action_group_->add_action_bool(action_name, sigc::mem_fun(*this, item.slot_to_toogle), current_value);
 
-		App::get_action_database()->add(ActionDatabase::Entry{"doc." + item.name, item.label, "", item.icon, item.tooltip});
+		App::get_action_database()->add(ActionDatabase::Entry{"doc." + item.name, item.label, item.shortcut, item.icon, item.tooltip});
 	}
 
 	{
 		// toggle none/last visible
 		action_group_->add_action_bool("mask-none-ducks", sigc::mem_fun(*this, &CanvasView::toggle_duck_mask_all));
+		App::get_action_database()->add(ActionDatabase::Entry{"doc.mask-none-ducks", _("Toggle None/Last visible Handles"), "<Mod1>0", "", _("Toggle None/Last visible Handles")});
 
 		struct DuckActionMetaData {
 			std::string action;
 			Duck::Type type;
 			const char* icon;
+			const char* shortcut;
 			const char* label;
 			const char* tooltip;
 		};
 
 		static const std::vector<DuckActionMetaData> duck_action_list = {
-			{"mask-position-ducks",            Duck::TYPE_POSITION,            "duck_position_icon", N_("Position handles"), N_("Show Position Handles")},
-			{"mask-tangent-ducks",             Duck::TYPE_TANGENT,             "duck_tangent_icon", N_("Tangent handles"), N_("Show Tangent Handles")},
-			{"mask-vertex-ducks",              Duck::TYPE_VERTEX,              "duck_vertex_icon", N_("Vertex handles"), N_("Show Vertex Handles")},
-			{"mask-radius-ducks",              Duck::TYPE_RADIUS,              "duck_radius_icon", N_("Radius handles"), N_("Show Radius Handles")},
-			{"mask-width-ducks",               Duck::TYPE_WIDTH,               "duck_width_icon", N_("Width handles"), N_("Show Width Handles")},
-			{"mask-widthpoint-position-ducks", Duck::TYPE_WIDTHPOINT_POSITION, "", N_("Width Position handles"), N_("Show WidthPoint Position Handles")},
-			{"mask-angle-ducks",               Duck::TYPE_ANGLE,               "duck_angle_icon", N_("Angle handles"), N_("Show Angle Handles")},
-			{"mask-bone-recursive-ducks",      Duck::TYPE_BONE_RECURSIVE,      "", N_("Recursive Bone handles"), N_("Show Recursive Scale Bone Handles")},
+			{"mask-position-ducks",            Duck::TYPE_POSITION,            "duck_position_icon", "<Mod1>1", N_("Position handles"), N_("Show Position Handles")},
+			{"mask-tangent-ducks",             Duck::TYPE_TANGENT,             "duck_tangent_icon",  "<Mod1>3", N_("Tangent handles"), N_("Show Tangent Handles")},
+			{"mask-vertex-ducks",              Duck::TYPE_VERTEX,              "duck_vertex_icon",   "<Mod1>2", N_("Vertex handles"), N_("Show Vertex Handles")},
+			{"mask-radius-ducks",              Duck::TYPE_RADIUS,              "duck_radius_icon",   "<Mod1>4", N_("Radius handles"), N_("Show Radius Handles")},
+			{"mask-width-ducks",               Duck::TYPE_WIDTH,               "duck_width_icon",    "<Mod1>5", N_("Width handles"), N_("Show Width Handles")},
+			{"mask-widthpoint-position-ducks", Duck::TYPE_WIDTHPOINT_POSITION, "",                   "<Mod1>5", N_("Width Position handles"), N_("Show WidthPoint Position Handles")},
+			{"mask-angle-ducks",               Duck::TYPE_ANGLE,               "duck_angle_icon",    "<Mod1>6", N_("Angle handles"), N_("Show Angle Handles")},
+			// {"mask-bone-setup",                Duck::TYPE_ANGLE,               "", "", "", ""},
+			{"mask-bone-recursive-ducks",      Duck::TYPE_BONE_RECURSIVE,      "",                   "<Mod1>8", N_("Recursive Bone handles"), N_("Show Recursive Scale Bone Handles")},
 		};
 
 		for (const auto& item : duck_action_list) {
@@ -1550,10 +1558,11 @@ CanvasView::init_menus()
 						sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),
 						item.type);
 			action_group_->add_action_bool(item.action, duck_slot, duck_active);
-			App::get_action_database()->add(ActionDatabase::Entry{"doc." + item.action, _(item.label), "", item.icon, _(item.tooltip)});
+			App::get_action_database()->add(ActionDatabase::Entry{"doc." + item.action, _(item.label), item.shortcut, item.icon, _(item.tooltip)});
 		}
 
 		action_group_->add_action("mask-bone-ducks", sigc::mem_fun(*this, &CanvasView::mask_bone_ducks));
+		App::get_action_database()->add(ActionDatabase::Entry{"doc.mask-bone-ducks", _("Next Bone Handles"), "<Mod1>9", "", ""});
 	}
 
 	insert_action_group("doc", action_group_);
