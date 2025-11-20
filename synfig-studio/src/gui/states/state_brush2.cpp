@@ -75,6 +75,9 @@ using namespace synfig;
 
 StateBrush2 studio::state_brush2;
 
+// brush -> (idx -> val)
+static std::map<String, std::map<int, float>> custom_settings;
+
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 class studio::StateBrush2_Context : public sigc::trackable
@@ -496,18 +499,12 @@ StateBrush2_Context::load_settings()
 			if (App::brushes_path.empty())
 				App::brushes_path.insert(ResourceHelper::get_brush_path());
 		}
-		refresh_tool_options();
-
-		std::string value;
-		if (settings.get_raw_value("brush.selected_brush_filename", value))
-			if (brush_buttons.count(value))
-				brush_buttons[value]->set_active(true);
 
 		eraser_checkbox.set_active(settings.get_value("brush.eraser", false));
 	}
 	catch(...)
 	{
-		synfig::warning("State Brush: Caught exception when attempting to load settings.");
+		warning("State Brush: Caught exception when attempting to load settings.");
 	}
 }
 
@@ -523,10 +520,24 @@ StateBrush2_Context::save_settings()
 
 		settings.set_value("brush.selected_brush_filename", selected_brush_config.filename);
 		settings.set_value("brush.eraser", eraser_checkbox.get_active());
+
+		if (!selected_brush_config.filename.empty()) {
+			std::map<int, float> custom;
+			for (int i = 0; i < BRUSH_SETTINGS_COUNT; ++i) {
+				if (fabs(selected_brush_config.settings[i].base - original_brush_config.settings[i].base) > 1e-6f) {
+					custom[i] = selected_brush_config.settings[i].base;
+				}
+			}
+
+			if (!custom.empty())
+				custom_settings[selected_brush_config.filename] = custom;
+			else
+				custom_settings.erase(selected_brush_config.filename);
+		}
 	}
 	catch(...)
 	{
-		synfig::warning("State Brush: Caught exception when attempting to save settings.");
+		warning("State Brush: Caught exception when attempting to save settings.");
 	}
 }
 
@@ -654,10 +665,11 @@ StateBrush2_Context::create_brushes_tab(Gtk::Notebook *notebook)
 	for (const auto& path : App::brushes_path)
 		scan_directory(path.u8string(), 1, files);
 
-	// run through brush definition and assign a button
-	Gtk::ToggleToolButton* first_button = nullptr;
-	String first_button_filename;
-	for (std::set<String>::const_iterator i = files.begin(); i != files.end(); ++i)
+	String last_brush_filename = settings.get_value("brush.selected_brush_filename", String());
+	Gtk::ToggleToolButton* active_button = nullptr;
+	String active_filename;
+
+	for (auto i = files.begin(); i != files.end(); ++i)
 	{
 		if (!brush_buttons.count(*i) && filesystem::Path::filename_extension(*i) == ".myb")
 		{
@@ -686,10 +698,10 @@ StateBrush2_Context::create_brushes_tab(Gtk::Notebook *notebook)
 				// add the button to the palette
 				tool_item_group->insert(*brush_button);
 
-				// keep the first brush
-				if (!first_button) {
-					first_button = brush_button;
-					first_button_filename = brush_file;
+				// select first overwrite if matches last used
+				if (!active_button || brush_file == last_brush_filename) {
+					active_button = brush_button;
+					active_filename = brush_file;
 				}
 			}
 		}
@@ -705,10 +717,9 @@ StateBrush2_Context::create_brushes_tab(Gtk::Notebook *notebook)
 	Gtk::Label *tab_label = Gtk::manage(new Gtk::Label(_("Brushes")));
 	notebook->append_page(*brush_option_grid, *tab_label);
 
-	// select first brush
-	if (first_button) {
-		select_brush(first_button, first_button_filename);
-		first_button->set_active(true);
+	if (active_button) {
+		select_brush(active_button, active_filename);
+		active_button->set_active(true);
 	}
 }
 
@@ -816,6 +827,11 @@ StateBrush2_Context::create_settings_tab(Gtk::Notebook *notebook)
 		reset_btn->set_sensitive(false);
 		row_box->pack_start(*reset_btn, false, false, 0);
 
+		if (fabs(initial_value - original_brush_config.settings[i].base) > 1e-6f) {
+			reset_btn->set_label("↺");
+			reset_btn->set_sensitive(true);
+		}
+
 		slider->signal_value_changed().connect([this, i, slider, label, reset_btn]() {
 			selected_brush_config.settings[i].base = slider->get_value();
 			if (action_)
@@ -856,13 +872,42 @@ StateBrush2_Context::select_brush(Gtk::ToggleToolButton *button, String filename
 		if (selected_brush_button)
 			selected_brush_button->set_active(false);
 
+		// save custom settings of the old brush
+		if (!selected_brush_config.filename.empty()) {
+			std::map<int, float> custom;
+			bool has_changes = false;
+			for (int i = 0; i < BRUSH_SETTINGS_COUNT; ++i) {
+				if (fabs(selected_brush_config.settings[i].base - original_brush_config.settings[i].base) > 1e-6f) {
+					custom[i] = selected_brush_config.settings[i].base;
+					has_changes = true;
+				}
+			}
+			if (has_changes) {
+				custom_settings[selected_brush_config.filename] = custom;
+			} else {
+				custom_settings.erase(selected_brush_config.filename);
+			}
+		}
+
+		// load new brush
 		selected_brush_config.load(filename);
+		original_brush_config = selected_brush_config;
+
+		// apply saved custom settings to the new brush
+		if (custom_settings.count(filename)) {
+			const std::map<int, float> &overrides = custom_settings[filename];
+			for(auto & override : overrides) {
+				selected_brush_config.settings[override.first].base = override.second;
+			}
+		}
+
 		eraser_checkbox.set_active(selected_brush_config.settings[BRUSH_ERASER].base > 0.0);
 		selected_brush_button = button;
-		original_brush_config = selected_brush_config;
+
 		Real brush_radius = expf(selected_brush_config.settings[BRUSH_RADIUS_LOGARITHMIC].base);
 		synfigapp::Main::set_bline_width(Distance(brush_radius, Distance::SYSTEM_UNITS));
 		update_cursor();
+
 		// apply brush settings to sliders
 		for (int i = 0; i < BRUSH_SETTINGS_COUNT; ++i) {
 			auto it = setting_controls.find(i);
