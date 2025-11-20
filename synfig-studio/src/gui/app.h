@@ -234,6 +234,7 @@ public:
 	static int number_of_threads;
 	static Glib::RefPtr<Gio::Menu> menu_recent_files;
 	static Glib::RefPtr<Gio::Menu> menu_plugins;
+	static Glib::RefPtr<Gio::Menu> menu_layer;
 	static Glib::RefPtr<Gio::Menu> menu_layers;
 	static Glib::RefPtr<Gio::Menu> menu_selected_layers;
 	static Glib::RefPtr<Gio::Menu> menu_special_layers;
