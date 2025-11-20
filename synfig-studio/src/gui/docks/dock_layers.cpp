@@ -104,7 +104,7 @@ Dock_Layers::Dock_Layers():
 	if (layer_action_manager)
 		layer_action_manager->set_action_widget_and_menu(App::main_window, App::menu_selected_layers, App::menu_special_layers);
 
-	action_group_new_layers2 = Gio::SimpleActionGroup::create();
+	action_group_new_layers = Gio::SimpleActionGroup::create();
 
 	// map: category local name -> (layer name, layer local name)
 	std::map<std::string, std::vector<std::pair<std::string, std::string>>> layer_category_map;
@@ -113,7 +113,7 @@ Dock_Layers::Dock_Layers():
 		std::string layer_name = Glib::VariantBase::cast_dynamic<Glib::Variant<Glib::ustring>>(v).get();
 		add_layer(layer_name);
 	}, *this);
-	action_group_new_layers2->add_action_with_parameter("layer-new", Glib::VARIANT_TYPE_STRING, new_layer_slot);
+	action_group_new_layers->add_action_with_parameter("layer-new", Glib::VARIANT_TYPE_STRING, new_layer_slot);
 
 	// Build layer creation actions
 	for (const auto& lyr : synfig::Layer::book()) {
@@ -253,7 +253,7 @@ Dock_Layers::changed_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 
 		add(*tree_view);
 		tree_view->show();
-		App::main_window->insert_action_group("new_layers", action_group_new_layers2);
+		App::main_window->insert_action_group("new_layers", action_group_new_layers);
 		if(layer_action_manager)
 		{
 			layer_action_manager->set_layer_tree(dynamic_cast<LayerTree*>(canvas_view->get_ext_widget(get_name()+"_cmp")));

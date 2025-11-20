@@ -186,34 +186,34 @@ remove_layers_inside_included_pastelayers(const std::list<Layer::Handle>& layer_
 LayerActionManager::LayerActionManager():
 	action_widget_(nullptr),
 	layer_tree_(nullptr),
-	action_group2_(Gio::SimpleActionGroup::create()),
+	action_group_(Gio::SimpleActionGroup::create()),
 	queued(false)
 {
-	action_cut2_ = Gio::SimpleAction::create("cut");
-	action_cut2_->signal_activate().connect(sigc::hide(sigc::mem_fun(*this, &LayerActionManager::cut)));
-	action_copy2_ = Gio::SimpleAction::create("copy");
-	action_copy2_->signal_activate().connect(sigc::hide(sigc::mem_fun(*this, &LayerActionManager::copy)));
-	action_paste2_ = Gio::SimpleAction::create("paste");
-	action_paste2_->signal_activate().connect(sigc::hide(sigc::mem_fun(*this, &LayerActionManager::paste)));
+	action_cut_ = Gio::SimpleAction::create("cut");
+	action_cut_->signal_activate().connect(sigc::hide(sigc::mem_fun(*this, &LayerActionManager::cut)));
+	action_copy_ = Gio::SimpleAction::create("copy");
+	action_copy_->signal_activate().connect(sigc::hide(sigc::mem_fun(*this, &LayerActionManager::copy)));
+	action_paste_ = Gio::SimpleAction::create("paste");
+	action_paste_->signal_activate().connect(sigc::hide(sigc::mem_fun(*this, &LayerActionManager::paste)));
 
 
-	action_amount_inc2_ = Gio::SimpleAction::create("amount-inc");
-	action_amount_inc2_->signal_activate().connect(sigc::hide(sigc::mem_fun(*this, &LayerActionManager::amount_inc)));
+	action_amount_inc_ = Gio::SimpleAction::create("amount-inc");
+	action_amount_inc_->signal_activate().connect(sigc::hide(sigc::mem_fun(*this, &LayerActionManager::amount_inc)));
 
-	action_amount_dec2_ = Gio::SimpleAction::create("amount-dec");
-	action_amount_dec2_->signal_activate().connect(sigc::hide(sigc::mem_fun(*this, &LayerActionManager::amount_dec)));
+	action_amount_dec_ = Gio::SimpleAction::create("amount-dec");
+	action_amount_dec_->signal_activate().connect(sigc::hide(sigc::mem_fun(*this, &LayerActionManager::amount_dec)));
 
-	action_select_all_child_layers2_ = Gio::SimpleAction::create("select-all-child-layers");
-	action_select_all_child_layers2_->set_enabled(false);
+	action_select_all_child_layers_ = Gio::SimpleAction::create("select-all-child-layers");
+	action_select_all_child_layers_->set_enabled(false);
 
-	action_group2_->add_action(action_cut2_);
-	action_group2_->add_action(action_copy2_);
-	action_group2_->add_action(action_paste2_);
+	action_group_->add_action(action_cut_);
+	action_group_->add_action(action_copy_);
+	action_group_->add_action(action_paste_);
 
-	action_group2_->add_action(action_amount_inc2_);
-	action_group2_->add_action(action_amount_dec2_);
+	action_group_->add_action(action_amount_inc_);
+	action_group_->add_action(action_amount_dec_);
 
-	action_group2_->add_action(action_select_all_child_layers2_);
+	action_group_->add_action(action_select_all_child_layers_);
 }
 
 LayerActionManager::~LayerActionManager()
@@ -255,12 +255,12 @@ LayerActionManager::clear()
 	if (action_widget_) {
 		const auto preservable_actions = {"cut", "copy", "paste", "amount-inc", "amount-dec", "select-all-child-layers"};
 
-		if (action_group2_) {
-			auto actions = action_group2_->list_actions();
+		if (action_group_) {
+			auto actions = action_group_->list_actions();
 			for (const auto& action_name : actions) {
 				if (std::find(preservable_actions.begin(), preservable_actions.end(), action_name) != preservable_actions.end())
 					continue;
-				action_group2_->remove_action(action_name);
+				action_group_->remove_action(action_name);
 			}
 		}
 
@@ -314,16 +314,16 @@ LayerActionManager::refresh()
 
 	const std::string symbolic_suffix = ""; // "-symbolic"
 
-	action_paste2_->set_enabled(!clipboard_.empty());
+	action_paste_->set_enabled(!clipboard_.empty());
 
 	if (layer_tree_->get_selection()->count_selected_rows() == 0) {
-		action_copy2_->set_enabled(false);
-		action_cut2_->set_enabled(false);
+		action_copy_->set_enabled(false);
+		action_cut_->set_enabled(false);
 
-		action_amount_inc2_->set_enabled(false);
-		action_amount_dec2_->set_enabled(false);
+		action_amount_inc_->set_enabled(false);
+		action_amount_dec_->set_enabled(false);
 
-		action_select_all_child_layers2_->set_enabled(false);
+		action_select_all_child_layers_->set_enabled(false);
 	} else {
 		bool multiple_selected(layer_tree_->get_selection()->count_selected_rows()>1);
 		Layer::Handle layer(layer_tree_->get_selected_layer());
@@ -356,11 +356,11 @@ LayerActionManager::refresh()
 					menu_selected_layers_->append_item(menu_item);
 				}
 
-				action_copy2_->set_enabled(!layer_list.empty());
-				action_cut2_->set_enabled(!layer_list.empty());
+				action_copy_->set_enabled(!layer_list.empty());
+				action_cut_->set_enabled(!layer_list.empty());
 
-				action_amount_inc2_->set_enabled(!layer_list.empty());
-				action_amount_dec2_->set_enabled(!layer_list.empty());
+				action_amount_inc_->set_enabled(!layer_list.empty());
+				action_amount_dec_->set_enabled(!layer_list.empty());
 
 				for(iter=layer_list.begin();iter!=layer_list.end();++iter)
 				{
@@ -389,12 +389,12 @@ LayerActionManager::refresh()
 				if (select_all_child_layers_connection)
 					select_all_child_layers_connection.disconnect();
 
-				select_all_child_layers_connection = action_select_all_child_layers2_->signal_activate().connect(
+				select_all_child_layers_connection = action_select_all_child_layers_->signal_activate().connect(
 					sigc::hide(bind(sigc::mem_fun(*layer_tree_,
 											 &studio::LayerTree::select_all_children_layers),
 							   Layer::LooseHandle(layer))));
 
-				action_select_all_child_layers2_->set_enabled(true);
+				action_select_all_child_layers_->set_enabled(true);
 
 				{
 					auto menu_item = Gio::MenuItem::create(_("Select All Child Layers"), group_name + ".select-all-child-layers");
@@ -404,20 +404,20 @@ LayerActionManager::refresh()
 				}
 			}
 			else {
-				action_select_all_child_layers2_->set_enabled(false);
+				action_select_all_child_layers_->set_enabled(false);
 			}
 
 			auto instance = etl::handle<studio::Instance>::cast_static(get_canvas_interface()->get_instance());
 
 			instance->
-				add_actions_to_group_and_menu(action_group2_, group_name, menu_selected_layers_, param_list, synfigapp::Action::CATEGORY_LAYER);
+				add_actions_to_group_and_menu(action_group_, group_name, menu_selected_layers_, param_list, synfigapp::Action::CATEGORY_LAYER);
 
 			instance->
-				add_special_layer_actions_to_group_and_menu(action_group2_, group_name, menu_special_layers_, layer_list);
+				add_special_layer_actions_to_group_and_menu(action_group_, group_name, menu_special_layers_, layer_list);
 		}
 	}
 
-	action_widget_->insert_action_group(group_name, action_group2_);
+	action_widget_->insert_action_group(group_name, action_group_);
 }
 
 void
@@ -425,7 +425,7 @@ LayerActionManager::cut()
 {
 	copy();
 
-	auto layer_remove_action = action_group2_->lookup_action("action-LayerRemove");
+	auto layer_remove_action = action_group_->lookup_action("action-LayerRemove");
 	if (layer_remove_action) {
 		layer_remove_action->activate();
 	}
@@ -448,7 +448,7 @@ LayerActionManager::copy()
 		layer_list.pop_front();
 	}
 
-	action_paste2_->set_enabled(!clipboard_.empty());
+	action_paste_->set_enabled(!clipboard_.empty());
 
 	//queue_refresh();
 }
