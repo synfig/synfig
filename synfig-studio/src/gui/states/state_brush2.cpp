@@ -1121,15 +1121,15 @@ void StateBrush2_Context::create_image_layer_dialog()
 	// Load previous brush image ID
 	std::string image_layer_id = settings.get_value("brush.image_id", std::string("brush image001"));
 
-    // Dialog event loop: creates image layer if user clicks OK
-    while (dialog.run() == Gtk::RESPONSE_OK) {
-        int final_width = width_input->get_value_as_int();
-        int final_height = height_input->get_value_as_int();
+	// Dialog event loop: creates image layer if user clicks OK
+	while (dialog.run() == Gtk::RESPONSE_OK) {
+		int final_width = width_input->get_value_as_int();
+		int final_height = height_input->get_value_as_int();
 
-        // Group canvas actions for undo
-        synfigapp::Action::PassiveGrouper action_group(
-            get_canvas_interface()->get_instance().get(), _("Create Image Layer")
-        );
+		// Group canvas actions for undo
+		synfigapp::Action::PassiveGrouper action_group(
+			get_canvas_interface()->get_instance().get(), _("Create Image Layer")
+		);
 
 		Layer::Handle new_layer = get_canvas_interface()->add_layer_to("import", get_canvas(), 0);
 		Layer_Bitmap::Handle bitmap_layer = etl::handle<synfig::Layer_Bitmap>::cast_dynamic(new_layer);
@@ -1137,31 +1137,31 @@ void StateBrush2_Context::create_image_layer_dialog()
 		bitmap_layer->set_description(image_layer_id);
 		get_canvas_interface()->signal_layer_new_description()(bitmap_layer, bitmap_layer->get_description());
 
-        if (canvas) {
-            bitmap_layer->set_param("tl", canvas->rend_desc().get_tl());
-            bitmap_layer->set_param("br", canvas->rend_desc().get_br());
-            bitmap_layer->set_param("c", int(1));
-        }
+		if (canvas) {
+			bitmap_layer->set_param("tl", canvas->rend_desc().get_tl());
+			bitmap_layer->set_param("br", canvas->rend_desc().get_br());
+			bitmap_layer->set_param("c", int(1));
+		}
 
-        // Initialize a blank surface to the layer
-        if (final_width > 0 && final_height > 0) {
-            Surface* blank_surface = new Surface(final_width, final_height);
-            blank_surface->clear();
-            bitmap_layer->rendering_surface = new rendering::SurfaceResource(
-                new rendering::SurfaceSW(*blank_surface, true)
-            );
+		// Initialize a blank surface to the layer
+		if (final_width > 0 && final_height > 0) {
+			Surface* blank_surface = new Surface(final_width, final_height);
+			blank_surface->clear();
+			bitmap_layer->rendering_surface = new rendering::SurfaceResource(
+				new rendering::SurfaceSW(*blank_surface, true)
+			);
 
-				if (bitmap_layer->get_param_list().count("filename") != 0)
-				{
-					// generate name based on description
-					String description, filename, filename_param;
-					get_canvas_interface()
-						->get_instance()
-						->generate_new_name(
-							bitmap_layer,
-							description,
-							filename,
-							filename_param );
+			if (bitmap_layer->get_param_list().count("filename") != 0)
+			{
+				// generate name based on description
+				String description, filename, filename_param;
+				get_canvas_interface()
+					->get_instance()
+					->generate_new_name(
+						bitmap_layer,
+						description,
+						filename,
+						filename_param );
 				bitmap_layer->set_param("filename", filename_param);
 				bitmap_layer->set_description(description);
 			}
@@ -1219,10 +1219,10 @@ StateBrush2_Context::draw_to(Vector event_pos, Real pressure)
 	action_->stroke.add_point({surface_x, surface_y, pressure, dtime});
 
 	bool expanded = wrapper.offset_x != 0 || wrapper.offset_y != 0 ||
-                wrapper.extra_right > 0 || wrapper.extra_bottom > 0;
+				wrapper.extra_right > 0 || wrapper.extra_bottom > 0;
 	if (expanded) {
-    	float w = br_[0] - tl_[0];
-    	float h = br_[1] - tl_[1];
+		float w = br_[0] - tl_[0];
+		float h = br_[1] - tl_[1];
 
 		if (old_w > 0 && old_h > 0)	{
 			float units_per_pixel_x = w / old_w;
@@ -1245,7 +1245,7 @@ StateBrush2_Context::draw_to(Vector event_pos, Real pressure)
 
 Layer_Bitmap::Handle StateBrush2_Context::find_or_create_layer()
 {
-    // is the selected layer a bitmap ?
+	// is the selected layer a bitmap ?
 	Layer::Handle selected_layer = canvas_view_->get_selection_manager()->get_selected_layer();
 	Layer_Bitmap::Handle layer = Layer_Bitmap::Handle::cast_dynamic(selected_layer);
 
@@ -1282,8 +1282,8 @@ Layer_Bitmap::Handle StateBrush2_Context::find_or_create_layer()
 		int counter = 1;
 		while (true) {
 			bool exists = false;
-		    for (Canvas::iterator i = canvas->begin(); i != canvas->end(); ++i) {
-				if ((*i)->get_description() == name) {
+			for (auto & i : *canvas) {
+				if (i->get_description() == name) {
 					exists = true;
 					break;
 				}
@@ -1333,13 +1333,13 @@ StateBrush2_Context::build_transform_stack(
 	TransformStack& transform_stack )
 {
 	int count = 0;
-	for (Canvas::iterator i = canvas->begin(); i != canvas->end(); ++i) {
+	for (auto & i : *canvas) {
 
-		if (*i == layer)
+		if (i == layer)
 			return true;
 
-		if ((*i)->active()) {
-			Transform::Handle trans((*i)->get_transform());
+		if (i->active()) {
+			Transform::Handle trans(i->get_transform());
 			if (trans) {
 				transform_stack.push(trans);
 				count++;
@@ -1348,7 +1348,7 @@ StateBrush2_Context::build_transform_stack(
 
 		// If this is a paste canvas layer, then we need to
 		// descend into it
-		if (Layer_PasteCanvas::Handle layer_pastecanvas = Layer_PasteCanvas::Handle::cast_dynamic(*i)) {
+		if (Layer_PasteCanvas::Handle layer_pastecanvas = Layer_PasteCanvas::Handle::cast_dynamic(i)) {
 			transform_stack.push_back(
 				new Transform_Matrix(
 					layer_pastecanvas->get_guid(),
