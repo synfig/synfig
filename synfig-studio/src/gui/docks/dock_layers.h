@@ -45,7 +45,7 @@ class LayerActionManager;
 
 class Dock_Layers : public Dock_CanvasSpecific
 {
-	Glib::RefPtr<Gio::SimpleActionGroup> action_group_new_layers2;
+	Glib::RefPtr<Gio::SimpleActionGroup> action_group_new_layers;
 
 	Glib::RefPtr<Gio::SimpleAction> action_popup_new_layer;
 

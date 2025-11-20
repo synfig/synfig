@@ -55,18 +55,18 @@ class LayerActionManager
 	LayerTree* layer_tree_;
 	etl::handle<synfigapp::CanvasInterface> canvas_interface_;
 
-	Glib::RefPtr<Gio::SimpleActionGroup> action_group2_;
+	Glib::RefPtr<Gio::SimpleActionGroup> action_group_;
 
 	sigc::connection			select_all_child_layers_connection;
 
-	Glib::RefPtr<Gio::SimpleAction>	action_cut2_;
-	Glib::RefPtr<Gio::SimpleAction>	action_copy2_;
-	Glib::RefPtr<Gio::SimpleAction>	action_paste2_;
+	Glib::RefPtr<Gio::SimpleAction>	action_cut_;
+	Glib::RefPtr<Gio::SimpleAction>	action_copy_;
+	Glib::RefPtr<Gio::SimpleAction>	action_paste_;
 
-	Glib::RefPtr<Gio::SimpleAction>	action_amount_inc2_;
-	Glib::RefPtr<Gio::SimpleAction>	action_amount_dec2_;
+	Glib::RefPtr<Gio::SimpleAction>	action_amount_inc_;
+	Glib::RefPtr<Gio::SimpleAction>	action_amount_dec_;
 
-	Glib::RefPtr<Gio::SimpleAction>	action_select_all_child_layers2_;
+	Glib::RefPtr<Gio::SimpleAction>	action_select_all_child_layers_;
 
 	std::list<synfig::Layer::Handle> clipboard_;
 
@@ -111,7 +111,7 @@ public:
 	void refresh();
 	void clear();
 
-	Glib::RefPtr<Gio::Action> get_action_select_all_child_layers() { return action_select_all_child_layers2_; }
+	Glib::RefPtr<Gio::Action> get_action_select_all_child_layers() { return action_select_all_child_layers_; }
 }; // END of LayerActionManager
 
 }; // END of namespace studio
