@@ -60,6 +60,36 @@ using namespace studio;
 
 /* === P R O C E D U R E S ================================================= */
 
+static Gtk::ToolButton*
+create_action_toolbutton(const std::string& action_name, const std::string& icon_name, const std::string& tooltip)
+{
+	Gtk::ToolButton* button = Gtk::manage(new Gtk::ToolButton());
+	gtk_actionable_set_action_name(GTK_ACTIONABLE(button->gobj()), action_name.c_str());
+	button->set_icon_name(icon_name);
+	button->set_tooltip_text(tooltip);
+	button->show();
+	return button;
+}
+
+static Gtk::ToolButton*
+create_synfigapp_action_toolbutton(const std::string& action_name)
+{
+	auto action_it = synfigapp::Action::book().find(action_name);
+	if (action_it == synfigapp::Action::book().end()) {
+		synfig::error(_("Internal error: can't find synfigapp action to create its button: '%s'"), action_name.c_str());
+		return nullptr; // FIXME: SHOULD RETURN NULL OR an empty ToolButton?
+	}
+	return create_action_toolbutton("layer.action-" + action_name, get_action_icon_name(action_it->second), action_it->second.local_name);
+}
+
+static Gtk::SeparatorToolItem*
+create_separator_toolitem()
+{
+	Gtk::SeparatorToolItem* separator = Gtk::manage(new Gtk::SeparatorToolItem());
+	separator->show();
+	return separator;
+}
+
 /* === M E T H O D S ======================================================= */
 
 Dock_Layers::Dock_Layers():
@@ -71,16 +101,11 @@ Dock_Layers::Dock_Layers():
 	// Make Layers button small for space efficiency
 	get_style_context()->add_class("synfigstudio-efficient-workspace");
 
-	if(layer_action_manager)layer_action_manager->set_ui_manager(App::ui_manager());
 	if (layer_action_manager)
 		layer_action_manager->set_action_widget_and_menu(App::main_window, App::menu_selected_layers, App::menu_special_layers);
 
-	action_group_new_layers=Gtk::ActionGroup::create("action_group_new_layers");
-	action_group_layer_ops=Gtk::ActionGroup::create("action_group_layer_ops");
-
 	action_group_new_layers2 = Gio::SimpleActionGroup::create();
 
-	std::map<synfig::String,synfig::String> category_map;
 	// map: category local name -> (layer name, layer local name)
 	std::map<std::string, std::vector<std::pair<std::string, std::string>>> layer_category_map;
 
@@ -91,53 +116,14 @@ Dock_Layers::Dock_Layers():
 	action_group_new_layers2->add_action_with_parameter("layer-new", Glib::VARIANT_TYPE_STRING, new_layer_slot);
 
 	// Build layer creation actions
-	synfig::Layer::Book::iterator iter;
-	for(iter=synfig::Layer::book().begin();iter!=synfig::Layer::book().end();++iter)
-	{
-		synfig::Layer::Book::value_type lyr(*iter);
-
+	for (const auto& lyr : synfig::Layer::book()) {
 		if(lyr.second.category==CATEGORY_DO_NOT_USE)
 			continue;
 		
-		action_group_new_layers->add(Gtk::Action::create_with_icon_name(
-			strprintf("layer-new-%s",lyr.first.c_str()),
-			layer_icon_name(lyr.first),
-			lyr.second.local_name,lyr.second.local_name
-		),
-			sigc::hide_return(
-				sigc::bind(
-					sigc::mem_fun(*this,&studio::Dock_Layers::add_layer),
-					lyr.first
-				)
-			)
-		);
-
 		layer_category_map[dgettext("synfig", lyr.second.category.c_str())].push_back({lyr.first, lyr.second.local_name});
-
-		category_map[lyr.second.category]+=strprintf("<menuitem action='layer-new-%s' />",lyr.first.c_str());
-
-		//(*category_map)[lyr.second.category]->items().push_back(Gtk::Menu_Helpers::MenuElem(lyr.second.local_name,
-		//));
 	}
 
 	{
-		Glib::RefPtr<Gtk::ActionGroup> action_group_categories(Gtk::ActionGroup::create("layer-category"));
-		synfig::String layer_ui_info;
-
-		std::map<synfig::String,synfig::String>::iterator iter;
-		for(iter=category_map.begin();iter!=category_map.end();++iter)
-		{
-			layer_ui_info+=strprintf("<menu action='%s'>%s</menu>",iter->first.c_str(),iter->second.c_str());
-			#ifdef ENABLE_NLS
-				action_group_categories->add(Gtk::Action::create(iter->first.c_str(), dgettext("synfig", iter->first.c_str())));
-			#else
-				action_group_categories->add(Gtk::Action::create(iter->first.c_str(), iter->first.c_str()));
-			#endif
-		}
-
-		App::ui_manager()->insert_action_group(action_group_categories);
-		App::ui_manager()->insert_action_group(action_group_new_layers);
-
 		const std::string symbolic_suffix = ""; // App::use-symbolic-icons ? "-symbolic" : "";
 
 		for (const auto& item : layer_category_map) {
@@ -153,43 +139,15 @@ Dock_Layers::Dock_Layers():
 			}
 			App::menu_layers->append_submenu(category, submenu);
 		}
-
-		try
-		{
-			synfig::String ui_info;
-			ui_info = "<ui><popup action='menu-main'><menu action='menu-layer'><menu action='menu-layer-new'>"
-			        + layer_ui_info
-			        + "</menu></menu></popup></ui>";
-			App::ui_manager()->add_ui_from_string(ui_info);
-			ui_info = "<ui><menubar action='menubar-main'><menu action='menu-layer'><menu action='menu-layer-new'>"
-			        + layer_ui_info
-			        + "</menu></menu></menubar></ui>";
-			App::ui_manager()->add_ui_from_string(ui_info);
-			ui_info = "<ui><popup action='popup-layer-new'>"
-					+ layer_ui_info
-			        + "</popup></ui>";
-			App::ui_manager()->add_ui_from_string(ui_info);
-		}
-		catch(Glib::MarkupError& x)
-		{
-			error("%s:%d caught MarkupError code %d: %s", __FILE__, __LINE__, x.code(), x.what().c_str());
-			error("%s:%d with markup: \"%s\"", __FILE__, __LINE__, layer_ui_info.c_str());
-			exit(1);
-		}
 	}
 
-	if(layer_action_manager)
-		action_group_layer_ops->add(layer_action_manager->get_action_select_all_child_layers());
 
-	action_group_layer_ops->add( Gtk::Action::create("toolbar-layer", _("Layer Ops")) );
 
-	action_new_layer = Gtk::Action::create_with_icon_name("popup-layer-new", "list-add", _("New Layer"), _("New Layer"));
-	action_new_layer->signal_activate().connect(sigc::mem_fun(*this, &Dock_Layers::popup_add_layer_menu));
 
-	action_group_layer_ops->add( action_new_layer );
-	App::ui_manager()->insert_action_group(action_group_layer_ops);
+	action_popup_new_layer = Gio::SimpleAction::create("popup-layer-new");
+	action_popup_new_layer->signal_activate().connect(sigc::hide(sigc::mem_fun(*this, &Dock_Layers::popup_add_layer_menu)));
 
-    Glib::ustring ui_info =
+	Glib::ustring ui_info =
 	"<ui>"
 	"	<toolbar action='toolbar-layer'>"
 	"	<toolitem action='popup-layer-new' />"
@@ -209,13 +167,32 @@ Dock_Layers::Dock_Layers():
 	"</ui>"
 	;
 
-	App::ui_manager()->add_ui_from_string(ui_info);
 
-	action_group_new_layers->set_sensitive(false);
 
-	if (Gtk::Toolbar* toolbar = dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-layer"))) {
-		set_toolbar(*toolbar);
-	}
+	auto toolbar = Gtk::manage(new Gtk::Toolbar());
+	toolbar->show_all();
+	toolbar->append(*create_action_toolbutton("doc.popup-layer-new", "list-add", _("New Layer")));
+
+	toolbar->append(*create_separator_toolitem());
+
+	toolbar->append(*create_synfigapp_action_toolbutton("LayerRaise"));
+	toolbar->append(*create_synfigapp_action_toolbutton("LayerLower"));
+
+	toolbar->append(*create_separator_toolitem());
+
+	toolbar->append(*create_synfigapp_action_toolbutton("LayerDuplicate"));
+	toolbar->append(*create_synfigapp_action_toolbutton("LayerEncapsulate"));
+	toolbar->append(*create_action_toolbutton("layer.select-all-child-layers", "select_all_child_layers_icon", _("Select All Child Layers")));
+	toolbar->append(*create_synfigapp_action_toolbutton("LayerRemove"));
+
+
+	toolbar->append(*create_separator_toolitem());
+
+	toolbar->append(*create_action_toolbutton("layer.cut", "edit-cut", _("Cut")));
+	toolbar->append(*create_action_toolbutton("layer.copy", "edit-copy", _("Copy")));
+	toolbar->append(*create_action_toolbutton("layer.paste", "edit-paste", _("Paste")));
+
+	set_toolbar(*toolbar);
 }
 
 
@@ -245,15 +222,7 @@ Dock_Layers::init_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 			sigc::bind(sigc::mem_fun(*canvas_view->canvas_interface(), &synfigapp::CanvasInterface::change_value), false)
 		)
 	);
-	layer_tree->signal_no_layer_user_click().connect([=](GdkEventButton *ev){
-		SYNFIG_EXCEPTION_GUARD_BEGIN()
-		if (ev->button == 3 && action_new_layer->is_sensitive()) {
-			popup_add_layer_menu();
-			return true;
-		}
-		return false;
-		SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
-	});
+	layer_tree->signal_no_layer_user_click().connect(sigc::mem_fun(*this, &Dock_Layers::on_layertree_no_layer_clicked));
 
 	// (a) should be before (b), (b) should be before (c)
 	canvas_view->set_ext_widget(get_name()+"_cmp", layer_tree); // (a)
@@ -265,6 +234,9 @@ Dock_Layers::init_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 	layer_tree->set_model(layer_tree_store); // (b)
 	canvas_view->set_tree_model("params", layer_tree->param_tree_view().get_model()); // (c)
 
+	if (auto doc_action_group = Glib::RefPtr<Gio::SimpleActionGroup>::cast_dynamic(canvas_view->get_action_group("doc"))) {
+		doc_action_group->add_action(action_popup_new_layer);
+	}
 	// Hide the time bar
 	//if(canvas_view->get_canvas()->rend_desc().get_time_start()==canvas_view->get_canvas()->rend_desc().get_time_end())
 	//	canvas_view->hide_timebar();
@@ -281,8 +253,6 @@ Dock_Layers::changed_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 
 		add(*tree_view);
 		tree_view->show();
-		action_group_new_layers->set_sensitive(true);
-		action_new_layer->set_sensitive(true);
 		App::main_window->insert_action_group("new_layers", action_group_new_layers2);
 		if(layer_action_manager)
 		{
@@ -293,8 +263,6 @@ Dock_Layers::changed_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 	}
 	else
 	{
-		action_group_new_layers->set_sensitive(false);
-		action_new_layer->set_sensitive(false);
 		App::main_window->remove_action_group("new_layers");
 		if(layer_action_manager)
 		{
@@ -317,9 +285,24 @@ Dock_Layers::add_layer(synfig::String id)
 
 void Dock_Layers::popup_add_layer_menu()
 {
-	if (!action_new_layer->is_sensitive())
+	Gtk::Menu* menu = Gtk::manage(new Gtk::Menu(App::menu_layers));
+	if (!menu) {
+		synfig::error(_("Internal error: couldn't instantiate menu Add Layer to pop it up."));
 		return;
-	Gtk::Menu* menu = dynamic_cast<Gtk::Menu*>(App::ui_manager()->get_widget("/popup-layer-new"));
-	if (menu)
-		menu->popup(0, gtk_get_current_event_time());
+	}
+	menu->attach_to_widget(*this);
+	menu->popup(0, gtk_get_current_event_time());
+}
+
+bool
+studio::Dock_Layers::on_layertree_no_layer_clicked(GdkEventButton* ev)
+{
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
+	if (ev->button == 3) {
+		// No need to check if there is an open document, because LayerTree only exists for a document/CanvasView
+		popup_add_layer_menu();
+		return true;
+	}
+	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }

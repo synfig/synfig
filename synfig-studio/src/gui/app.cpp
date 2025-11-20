@@ -295,6 +295,7 @@ synfig::Color studio::App::preview_background_color =
 
 Glib::RefPtr<Gio::Menu> studio::App::menu_recent_files;
 Glib::RefPtr<Gio::Menu> studio::App::menu_plugins;
+Glib::RefPtr<Gio::Menu> studio::App::menu_layer;
 Glib::RefPtr<Gio::Menu> studio::App::menu_layers;
 Glib::RefPtr<Gio::Menu> studio::App::menu_selected_layers;
 Glib::RefPtr<Gio::Menu> studio::App::menu_special_layers;
@@ -1603,6 +1604,7 @@ void App::init(const synfig::String& rootpath)
 		set_menubar(gmenu);
 		menu_recent_files = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-recent-files"));
 		menu_plugins = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-plugins"));
+		menu_layer = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-layer"));
 		menu_layers = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-layer-new"));
 		menu_selected_layers = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("selected-layer-actions"));
 		menu_special_layers = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("special-layer-actions"));
